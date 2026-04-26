@@ -183,6 +183,7 @@ type
     function bits: PByte;
     function numBytes: LongWord;
     function bytesPerLine: Integer;
+    property Data: PByte read FData;
     property Format: Tcairo_format_t read FFormat;
     procedure UpdatePixbufFromSurface;
     property Handle: PGdkPixbuf read FHandle;
@@ -1605,7 +1606,9 @@ var
   rgb:array[0..3] of byte absolute aColor;
   pat_sample,psrc,pdst:pdword;
 begin
-  if (LogBrush.lbStyle <> BS_HATCHED) and (LogBrush.lbStyle <> BS_PATTERN) then
+  if LogBrush.lbStyle = BS_PATTERN then
+    exit;
+  if LogBrush.lbStyle <> BS_HATCHED then
     exit;
 
   if Assigned(Self.brush_pattern) then

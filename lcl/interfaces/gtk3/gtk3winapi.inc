@@ -605,31 +605,68 @@ end;
 function TGtk3WidgetSet.CreatePatternBrush(ABitmap: HBITMAP): HBRUSH;
 var
   Brush: TGtk3Brush;
+  Img: TGtk3Image;
   Pixbuf: PGdkPixbuf;
   Surface: Pcairo_surface_t;
   Pattern: Pcairo_pattern_t;
+  W, H, X, Y: Integer;
+  SrcStride, DstStride: Integer;
+  SrcByte: Byte;
+  SrcData, DstData: PByte;
+  SrcRow: PByte;
+  DstRow: PCardinal;
 begin
   Result := 0;
 
   if ABitmap = 0 then Exit;
 
-  Pixbuf := TGtk3Image(ABitmap).Handle;
-  if Pixbuf = nil then Exit;
+  Img := TGtk3Image(ABitmap);
 
-  Surface := gdk_cairo_surface_create_from_pixbuf(Pixbuf, 0, nil);
-  if Surface = nil then Exit;
+  if (Img.Format = CAIRO_FORMAT_A1) and (Img.Data <> nil) then
+  begin
+    W := Img.width;
+    H := Img.height;
+    if (W <= 0) or (H <= 0) then Exit;
+    Surface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, W, H);
+    if Surface = nil then Exit;
+    cairo_surface_flush(Surface);
+    DstData := PByte(cairo_image_surface_get_data(Surface));
+    DstStride := cairo_image_surface_get_stride(Surface);
+    SrcData := Img.Data;
+    SrcStride := GetBytesPerLine(W, 1, rileDWordBoundary);
+    for Y := 0 to H - 1 do
+    begin
+      SrcRow := SrcData + (H - 1 - Y) * SrcStride;
+      DstRow := PCardinal(DstData + Y * DstStride);
+      for X := 0 to W - 1 do
+      begin
+        SrcByte := SrcRow[X shr 3];
+        if (SrcByte and (1 shl (7 - (X and 7)))) <> 0 then
+          DstRow^ := $FF000000
+        else
+          DstRow^ := 0;
+        Inc(DstRow);
+      end;
+    end;
+    cairo_surface_mark_dirty(Surface);
+  end
+  else
+  begin
+    Pixbuf := Img.Handle;
+    if Pixbuf = nil then Exit;
+    Surface := gdk_cairo_surface_create_from_pixbuf(Pixbuf, 0, nil);
+    if Surface = nil then Exit;
+  end;
 
   Pattern := cairo_pattern_create_for_surface(Surface);
   cairo_pattern_set_extend(Pattern, CAIRO_EXTEND_REPEAT);
-
   cairo_surface_destroy(Surface);
 
-
   Brush := TGtk3Brush.Create;
-
   Brush.LogBrush.lbStyle := BS_PATTERN;
+  Brush.LogBrush.lbHatch := ABitmap;
   Brush.brush_pattern := Pattern;
-  Brush.UpdatePattern(clNone);
+  Brush.Style := BS_PATTERN;
 
   Result := HBRUSH(Brush);
 end;
