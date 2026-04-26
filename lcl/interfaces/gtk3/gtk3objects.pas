@@ -3401,28 +3401,38 @@ end;
 
 function TGtk3DeviceContext.drawFocusRect(const aRect: TRect): boolean;
 var
-  Context: PGtkStyleContext;
-  UnRefContext: boolean;
+  X1, Y1, X2, Y2, i: Integer;
 begin
   Result := False;
-  UnRefContext := False;
-  if Parent <> nil then
-    Context := Parent^.get_style_context
-  else
+  if not Assigned(pcr) then
+    Exit;
+  X1 := aRect.Left - WindowOrg.X;
+  Y1 := aRect.Top - WindowOrg.Y;
+  X2 := aRect.Right - WindowOrg.X;
+  Y2 := aRect.Bottom - WindowOrg.Y;
+  if (X2 <= X1) or (Y2 <= Y1) then
+    Exit;
+  cairo_save(pcr);
+  cairo_set_antialias(pcr, CAIRO_ANTIALIAS_NONE);
+  cairo_set_operator(pcr, CAIRO_OPERATOR_DIFFERENCE);
+  cairo_set_source_rgb(pcr, 1, 1, 1);
+  cairo_new_path(pcr);
+  i := X1;
+  while i < X2 do
   begin
-    UnRefContext := True;
-    Context:=TGtkStyleContext.new();
-    Context^.add_class('button');
+    cairo_rectangle(pcr, i, Y1, 1, 1);
+    cairo_rectangle(pcr, i, Y2 - 1, 1, 1);
+    Inc(i, 2);
   end;
-  if Context = nil then
+  i := Y1 + 2;
+  while i < Y2 - 1 do
   begin
-    DebugLn('WARNING: TGtk3WidgetSet.DrawFocusRect drawing focus on non widget context isn''t implemented.');
-    exit;
+    cairo_rectangle(pcr, X1, i, 1, 1);
+    cairo_rectangle(pcr, X2 - 1, i, 1, 1);
+    Inc(i, 2);
   end;
-  with aRect do
-    gtk_render_focus(Context, pcr, Left - WindowOrg.X, Top - WindowOrg.Y, Right - Left, Bottom - Top);
-  if UnRefContext then
-    Context^.unref;
+  cairo_fill(pcr);
+  cairo_restore(pcr);
   Result := True;
 end;
 
