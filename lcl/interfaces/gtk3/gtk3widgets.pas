@@ -8573,10 +8573,14 @@ begin
 
   if ARange^.adjustment^.page_size > 0 then
   begin
-    if Msg.Msg = LM_HSCROLL then
+    if (Msg.Msg = LM_HSCROLL) and Assigned(ACtl.LCLHAdj) and
+       (ACtl.LCLHAdj^.upper > 0) then
       MaxValue := ACtl.LCLHAdj^.upper - ACtl.LCLHAdj^.page_size + 1
+    else if (Msg.Msg = LM_VSCROLL) and Assigned(ACtl.LCLVAdj) and
+       (ACtl.LCLVAdj^.upper > 0) then
+      MaxValue := ACtl.LCLVAdj^.upper - ACtl.LCLVAdj^.page_size + 1
     else
-      MaxValue := ACtl.LCLVAdj^.upper - ACtl.LCLVAdj^.page_size + 1;
+      MaxValue := ARange^.adjustment^.upper - ARange^.adjustment^.page_size;
 
     if AAtGTKMax then
       AValue := MaxValue
@@ -8688,16 +8692,22 @@ begin
          (Adjustment^.upper > Control.LCLVAdj^.upper + 0.5) then
         CurrentValue := CurrentValue * Control.LCLVAdj^.upper / Adjustment^.upper;
 
-      if AAtGTKMax and Assigned(Control.LCLVAdj) and (Control.LCLVAdj^.page_size > 0) then
-        CurrentValue := Control.LCLVAdj^.upper - Control.LCLVAdj^.page_size + 1;
+      if AAtGTKMax and Assigned(Control.LCLVAdj) and
+         (Control.LCLVAdj^.upper > 0) and (Control.LCLVAdj^.page_size > 0) then
+        CurrentValue := Control.LCLVAdj^.upper - Control.LCLVAdj^.page_size + 1
+      else if AAtGTKMax then
+        CurrentValue := Adjustment^.upper - Adjustment^.page_size;
     end else
     begin
       if Assigned(Control.LCLHAdj) and (Control.LCLHAdj^.upper > 0) and
          (Adjustment^.upper > Control.LCLHAdj^.upper + 0.5) then
         CurrentValue := CurrentValue * Control.LCLHAdj^.upper / Adjustment^.upper;
 
-      if AAtGTKMax and Assigned(Control.LCLHAdj) and (Control.LCLHAdj^.page_size > 0) then
-        CurrentValue := Control.LCLHAdj^.upper - Control.LCLHAdj^.page_size + 1;
+      if AAtGTKMax and Assigned(Control.LCLHAdj) and
+         (Control.LCLHAdj^.upper > 0) and (Control.LCLHAdj^.page_size > 0) then
+        CurrentValue := Control.LCLHAdj^.upper - Control.LCLHAdj^.page_size + 1
+      else if AAtGTKMax then
+        CurrentValue := Adjustment^.upper - Adjustment^.page_size;
     end;
 
     Msg.Pos := Round(CurrentValue);
@@ -11905,8 +11915,10 @@ begin
 
   with PGtkScrolledWindow(Result)^.get_vadjustment^ do
     LCLVAdj := gtk_adjustment_new(value, lower, upper, step_increment, page_increment, page_size);
+  g_object_ref_sink(PGObject(LCLVAdj));
   with PGtkScrolledWindow(Result)^.get_hadjustment^ do
     LCLHAdj := gtk_adjustment_new(value, lower, upper, step_increment, page_increment, page_size);
+  g_object_ref_sink(PGObject(LCLHAdj));
 
   // Disconnect GtkLayout's bin_window from BOTH scroll adjustments for pure TCustomControl
   // TGtk3ScrollingWinControl.CreateWidget reconnects both after this call,
@@ -12996,8 +13008,10 @@ begin
 
   with PGtkScrolledWindow(FScrollWin)^.get_vadjustment^ do
     LCLVAdj := gtk_adjustment_new(value, lower, upper, step_increment, page_increment, page_size);
+  g_object_ref_sink(PGObject(LCLVAdj));
   with PGtkScrolledWindow(FScrollWin)^.get_hadjustment^ do
     LCLHAdj := gtk_adjustment_new(value, lower, upper, step_increment, page_increment, page_size);
+  g_object_ref_sink(PGObject(LCLHAdj));
 
   {Embedded forms (LCLObject.Parent <> nil) create a GtkScrolledWindow as
    their root widget; it has no parent yet at this point, so calling
