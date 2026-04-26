@@ -58,6 +58,9 @@ type
   protected
   public
     constructor Create;
+    procedure Assign(pcSource: TParseTreeNode; pcParent: TParseTreeNode;
+      piFromChild: integer = 0; piToChild: integer = MaxInt); override;
+    function Clone:TParseTreeNode;override;
 
     function Describe: string; override;
     function DescribePosition: string;
@@ -334,6 +337,29 @@ end;
 procedure TSourceToken.GeneratePreProcessorData;
 begin
   GetPreprocessorSymbolData(SourceCode, fePreprocessorSymbol, fsPreProcessorText);
+end;
+
+procedure TSourceToken.Assign(pcSource: TParseTreeNode;pcParent:TParseTreeNode;piFromChild:integer=0;piToChild:integer=MaxInt);
+var
+  lcST: TSourceToken absolute pcSource;
+begin
+  inherited Assign(pcSource, pcParent, piFromChild, piToChild);
+  fsSourceCode := lcST.fsSourceCode;
+  feTokenType := lcST.feTokenType;
+  feWordType := lcST.feWordType;
+  feCommentStyle := lcST.feCommentStyle;
+  fsFileName := lcST.fsFilename;
+  fiXPosition := lcST.fiXPosition;
+  fiYPosition := lcST.fiYPosition;
+  fiSolidTokenOnLineIndex := lcST.fiSolidTokenOnlineIndex;
+  fbPreprocessedOut := lcST.fbPreprocessedOut;
+  fePreprocessorSymbol := lcST.fePreprocessorSymbol;
+  fsPreProcessorText := lcST.fsPreProcessorText;
+end;
+
+function TSourceToken.Clone:TParseTreeNode;
+begin
+  result:=TParseTreeNode(TSourceToken.Create);
 end;
 
 end.

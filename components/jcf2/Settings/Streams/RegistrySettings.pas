@@ -1,4 +1,4 @@
-unit RegistrySettings deprecated 'Not used by JPF component';
+unit RegistrySettings deprecated 'Not used by JCF component';
 // Unit not used in any package.
 // TODO: delete from jcfbase and delete file.
 {(*}

@@ -40,6 +40,7 @@ type
   TfTransform = class(TAbstractIDEOptionsEditor)
     btnAdvancedSettings: TButton;
     cbBlockEndSemicolons: TCheckBox;
+    cbReplaceCOperators: TCheckBox;
     lbWarningSortUsesClauses: TLabel;
     rbBeginEnd: TRadioGroup;
     bgSortUses: TGroupBox;
@@ -118,6 +119,7 @@ begin
   rgUsesSortOrder.Items[3] := lisTransformLongestToShortest;
   lbWarningSortUsesClauses.Caption := lisTransformWarningSortUsesClauses;
   btnAdvancedSettings.Caption := lisTransformAdvancedSettings;
+  cbReplaceCOperators.Caption := lisReplaceCStyleOperators;
 
   if FormattingSettings.Transform.SortProgramUses or
      FormattingSettings.Transform.SortInterfaceUses or
@@ -135,18 +137,15 @@ begin
   begin
     rbBeginEnd.ItemIndex := Ord(BeginEndStyle);
     cbBlockEndSemicolons.Checked := AddBlockEndSemicolon;
-
     cbSortInterfaceUses.Checked := SortInterfaceUses;
     cbSortImplementationUses.Checked := SortImplementationUses;
     cbSortProgramUses.Checked := SortProgramUses;
     cbBreakUsesSortOnReturn.Checked := BreakUsesSortOnReturn;
     cbBreakUsesSortOnComment.Checked := BreakUsesSortOnComment;
-
+    cbReplaceCOperators.Checked := ReplaceCStyleOperators=eNever;
     rgUsesSortOrder.ItemIndex := Ord(UsesSortOrder);
-
     cbNoComments.Checked := SortUsesNoComments;
   end;
-
 end;
 
 procedure TfTransform.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -166,8 +165,11 @@ begin
     UsesSortOrder := TUsesSortOrder(rgUsesSortOrder.ItemIndex);
 
     SortUsesNoComments := cbNoComments.Checked;
+    if cbReplaceCOperators.Checked then
+      ReplaceCStyleOperators := eNever
+    else
+      ReplaceCStyleOperators := eLeave;
   end;
-
 end;
 
 class function TfTransform.SupportedOptionsClass: TAbstractIDEOptionsClass;

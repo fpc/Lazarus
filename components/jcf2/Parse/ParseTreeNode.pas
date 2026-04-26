@@ -54,7 +54,9 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-
+    procedure Assign(pcSource: TParseTreeNode; pcParent: TParseTreeNode;
+      piFromChild: integer = 0; piToChild: integer = maxint); virtual;
+    function Clone:TParseTreeNode;virtual;
     function ChildNodeCount: integer;
     procedure SortChildNodes(Compare: TListSortCompare);
 
@@ -862,6 +864,41 @@ end;
 function TParseTreeNode.CountImmediateChild(const peNodeType: TParseTreeNodeType): integer;
 begin
   Result := CountImmediateChild([peNodeType]);
+end;
+
+procedure TParseTreeNode.Assign(pcSource: TParseTreeNode; pcParent: TParseTreeNode;
+  piFromChild: integer; piToChild: integer);
+var
+  liNodeCount, liNodeIndex, liLastChild: integer;
+  lcChildNode, lcChildSourceNode: TParseTreeNode;
+begin
+  fcParent := pcParent;
+  fiUserTag := pcSource.fiUserTag;
+  feNodeType := pcSource.feNodeType;
+  fcNestings.Assign(pcSource.fcNestings);
+  //copy child nodes.
+  liNodeCount := pcSource.ChildNodeCount;
+  liLastChild := min(liNodeCount - 1, piToChild);
+  if (liNodeCount = 0) or (piFromChild > (liNodeCount - 1)) or (piFromChild < 0)
+    or (liLastChild < piFromChild) then
+    Exit;
+  for liNodeIndex := piFromChild to liLastChild do
+  begin
+    lcChildSourceNode := TParseTreeNode(pcSource.fcChildNodes[liNodeIndex]);
+    if lcChildSourceNode <> nil then
+    begin
+      lcChildNode := lcChildSourceNode.Clone;
+      fcChildNodes.Add(lcChildNode);
+      lcChildNode.Assign(lcChildSourceNode, Self);
+    end
+    else
+      fcChildNodes.Add(nil);
+  end;
+end;
+
+function TParseTreeNode.Clone:TParseTreeNode;
+begin
+  result:=TParseTreeNode.Create;
 end;
 
 end.

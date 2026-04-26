@@ -82,7 +82,7 @@ uses
   RemoveConsecutiveWhiteSpace, RemoveUnneededWhiteSpace, RebreakLines, SettingsTypes,
   { transform }
   FindReplace, UsesClauseInsert, UsesClauseRemove, UsesClauseFindReplace,
-  RemoveEmptyComment, AddBeginEnd, AddBlockEndSemicolon, SortUses,
+  RemoveEmptyComment, AddBeginEnd, AddBlockEndSemicolon, SortUses, ReplaceCOperators,
   { warnings }
   Warning, WarnEmptyBlock, WarnRealType, WarnAssignToFunctionName,
   WarnCaseNoElse, WarnDestroy, WarnUnusedParam, WarnImbalancedComment,
@@ -259,6 +259,7 @@ begin
   ApplyVisitorType(TUsesClauseFindReplace);
 
   ApplyVisitorType(TRemoveEmptyComment);
+  ApplyVisitorType(TReplaceCOperators);
 
   ApplyVisitorType(TAddBeginEnd, [TVisitSetNestings, TVisitSetXY]);
   ApplyVisitorType(TBlockEndSemicolon, [TVisitSetNestings, TVisitSetXY]);

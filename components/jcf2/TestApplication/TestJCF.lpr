@@ -20,12 +20,12 @@ uses {$IFDEF UNIX}
   AlignField, AlignTypedef, AlignVars, Capitalisation, IdentifierCaps,
   SpecificWordCaps, UnitNameCaps, AddBeginEnd, AddBlockEndSemicolon,
   FindReplace, SortUses, SortUsesData, UsesClauseFindReplace, UsesClauseInsert,
-  UsesClauseRemove, BasicStats, FixCase, RebreakLines, ReduceWhiteSpace,
-  RemoveBlankLine, RemoveComment, RemoveConsecutiveWhiteSpace, RemoveReturn,
-  RemoveUnneededWhiteSpace, WarnAssignToFunctionName, WarnCaseNoElse,
-  WarnDestroy, WarnEmptyBlock, WarnImbalancedComment, Warning, WarnRealType,
-  WarnUnusedParam, AllProcesses, BaseVisitor, FormatFlags, Nesting,
-  RemoveEmptyComment, SwitchableVisitor, TreeWalker, VisitSetNesting,
+  UsesClauseRemove, ReplaceCOperators, BasicStats, FixCase, RebreakLines,
+  ReduceWhiteSpace, RemoveBlankLine, RemoveComment, RemoveConsecutiveWhiteSpace,
+  RemoveReturn, RemoveUnneededWhiteSpace, WarnAssignToFunctionName,
+  WarnCaseNoElse, WarnDestroy, WarnEmptyBlock, WarnImbalancedComment, Warning,
+  WarnRealType, WarnUnusedParam, AllProcesses, BaseVisitor, FormatFlags,
+  Nesting, RemoveEmptyComment, SwitchableVisitor, TreeWalker, VisitSetNesting,
   VisitSetXY, VisitStripEmptySpace, SysUtils;
 
 {$R *.res}

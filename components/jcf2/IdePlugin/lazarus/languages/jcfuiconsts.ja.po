@@ -880,6 +880,10 @@ msgstr "プリプロセッサ"
 msgid "Symbols defined for conditional compilation:"
 msgstr "条件コンパイルとして定義されているシンボル"
 
+#: jcfuiconsts.lisreplacecstyleoperators
+msgid "Replace C-style operators  +=, -=, *=, and /=. Example:   x+=y;  -->  x := x + y;"
+msgstr ""
+
 #: jcfuiconsts.lisreturnsafteruses
 msgid "After uses"
 msgstr "uses の後ろ"

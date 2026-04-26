@@ -311,6 +311,7 @@ resourcestring
   lisTransformLongestToShortest = 'Longest to shortest';
   lisTransformWarningSortUsesClauses = 'WARNING: changing order of uses clauses may break your code.';
   lisTransformAdvancedSettings = 'Advanced settings';
+  lisReplaceCStyleOperators = 'Replace C-style operators  +=, -=, *=, and /=. Example:   x+=y;  -->  x := x + y;';
 
   //Asm tab
   lisAsmAsm = 'Asm';

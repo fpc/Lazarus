@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="12"/>
+    <Version Value="13"/>
     <PathDelim Value="\"/>
     <General>
       <Flags>
@@ -106,7 +106,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="97">
+    <Units Count="98">
       <Unit0>
         <Filename Value="TestJCF.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -504,6 +504,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="JcfUiToolsGUI"/>
       </Unit96>
+      <Unit97>
+        <Filename Value="..\Process\Transform\replacecoperators.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ReplaceCOperators"/>
+      </Unit97>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

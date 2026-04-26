@@ -14,7 +14,7 @@
     <Description Value="Jedi code format base package"/>
     <License Value="Mozilla Public License v1.1  or  GNU General Public License v2 (dual license)"/>
     <Version Major="1"/>
-    <Files Count="122">
+    <Files Count="123">
       <Item1>
         <Filename Value="Parse\AsmKeywords.pas"/>
         <UnitName Value="AsmKeywords"/>
@@ -503,6 +503,10 @@
         <Filename Value="jcfbaseconsts.pas"/>
         <UnitName Value="jcfbaseconsts"/>
       </Item122>
+      <Item123>
+        <Filename Value="Process\Transform\ReplaceCOperators.pas"/>
+        <UnitName Value="ReplaceCOperators"/>
+      </Item123>
     </Files>
     <CompatibilityMode Value="True"/>
     <i18n>

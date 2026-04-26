@@ -871,6 +871,10 @@ msgstr "预处理程序"
 msgid "Symbols defined for conditional compilation:"
 msgstr "为条件编译定义的符号："
 
+#: jcfuiconsts.lisreplacecstyleoperators
+msgid "Replace C-style operators  +=, -=, *=, and /=. Example:   x+=y;  -->  x := x + y;"
+msgstr ""
+
 #: jcfuiconsts.lisreturnsafteruses
 msgid "After uses"
 msgstr "在 uses 后"

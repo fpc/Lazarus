@@ -58,6 +58,8 @@ type
     fbBreakUsesSortOnReturn: Boolean;
     fbBreakUsesSortOnComment: Boolean;
     feUsesSortOrder: TUsesSortOrder;
+    {replace C style operators x+=y,x-=y,x*=y,x/=y   -->  x:=x+y }
+    feReplaceCStyleOperators: TTriOptionStyle;
   public
     constructor Create;
 
@@ -76,6 +78,7 @@ type
     property BreakUsesSortOnReturn: Boolean read fbBreakUsesSortOnReturn write fbBreakUsesSortOnReturn;
     property BreakUsesSortOnComment: Boolean read fbBreakUsesSortOnComment write fbBreakUsesSortOnComment;
     property UsesSortOrder: TUsesSortOrder read feUsesSortOrder write feUsesSortOrder;
+    property ReplaceCStyleOperators: TTriOptionStyle read feReplaceCStyleOperators write feReplaceCStyleOperators;
 
   end;
 
@@ -91,6 +94,7 @@ const
   REG_SORT_USES_BREAK_ON_COMMENT = 'SortUsesBreakOnComment';
   REG_SORT_USES_SORT_ORDER = 'SortUsesSortOrder';
   REG_SORT_USES_NO_COMMENTS = 'SortUsesNoComments';
+  REG_CSTYLE_OPERATORS = 'CStyleOperators';
 
 constructor TSetTransform.Create;
 begin
@@ -112,6 +116,7 @@ begin
   fbBreakUsesSortOnComment := pcStream.Read(REG_SORT_USES_BREAK_ON_COMMENT, True);
   feUsesSortOrder := TUsesSortOrder(pcStream.Read(REG_SORT_USES_SORT_ORDER, Ord(eAlpha)));
   fbSortUsesNoComments := pcStream.Read(REG_SORT_USES_NO_COMMENTS, True);
+  feReplaceCStyleOperators := TTriOptionStyle(pcStream.Read(REG_CSTYLE_OPERATORS, Ord(eLeave)));
 end;
 
 procedure TSetTransform.WriteToStream(const pcOut: TSettingsOutput);
@@ -129,6 +134,7 @@ begin
   pcOut.Write(REG_SORT_USES_BREAK_ON_COMMENT, fbBreakUsesSortOnComment);
   pcOut.Write(REG_SORT_USES_SORT_ORDER, Ord(feUsesSortOrder));
   pcOut.Write(REG_SORT_USES_NO_COMMENTS, fbSortUsesNoComments);
+  pcOut.Write(REG_CSTYLE_OPERATORS, Ord(feReplaceCStyleOperators));
 end;
 
 end.

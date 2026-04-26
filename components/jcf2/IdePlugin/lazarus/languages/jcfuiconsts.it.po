@@ -881,6 +881,10 @@ msgstr "Preprocessore"
 msgid "Symbols defined for conditional compilation:"
 msgstr "Simboli definiti per la compilazione condizionale:"
 
+#: jcfuiconsts.lisreplacecstyleoperators
+msgid "Replace C-style operators  +=, -=, *=, and /=. Example:   x+=y;  -->  x := x + y;"
+msgstr ""
+
 #: jcfuiconsts.lisreturnsafteruses
 msgid "After uses"
 msgstr "Dopo uses"
