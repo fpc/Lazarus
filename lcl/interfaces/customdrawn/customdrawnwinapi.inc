@@ -4231,9 +4231,21 @@ begin
   end
   else if lObject is TCDWinControl then
   begin
+    { Return the WS's idea of the window size (its region bounds),
+      NOT the LCL's WinControl.Width/Height. The LCL relies on this to
+      detect that the WS hasn't caught up with a bounds change yet
+      (TWinControl.GetClientRect compares Width to InterfaceWidth and
+      adjusts the cached client rect by the delta if they differ). If
+      we return WinControl.Width/Height, the LCL sees no mismatch, trusts
+      the stale region, and child-alignment computes against old bounds
+      -- leaving alRight/alBottom children stuck at their pre-resize
+      offsets. }
     lCDWinControl := lObject as TCDWinControl;
-    Width := lCDWinControl.WinControl.Width;
-    Height := lCDWinControl.WinControl.Height;
+    with TCDWinControl(lObject).Region.GetBoundingRect do
+    begin
+      Width := Right - Left;
+      Height := Bottom - Top;
+    end;
     Result := True;
     {$ifdef VerboseCDWinAPI}
       DebugLn(Format(':[WinAPI GetWindowSize] WinControl %s:%s',
