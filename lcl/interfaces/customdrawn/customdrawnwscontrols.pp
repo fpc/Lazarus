@@ -298,11 +298,20 @@ class procedure TCDWSWinControl.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
 var
   lCDWinControl: TCDWinControl;
+  lFormPos: TPoint;
 begin
   //WriteLn(Format('[TCDWSWinControl.SetBounds Control=%s:%s x=%d y=%d w=%d h=%d',
   //  [AWinControl.Name, AWinControl.ClassName, ALeft, ATop, AWidth, AHeight]));
   lCDWinControl := TCDWinControl(AWinControl.Handle);
-  lCDWinControl.Region.SetAsSimpleRectRegion(Bounds(ALeft, ATop, AWidth, AHeight));
+  { Region must be in form-relative coords because that is the space
+    FindControlWhichReceivedEvent / Region.IsPointInRegion use, and the
+    space CreateHandle initialised the region in (via
+    FindControlPositionRelativeToTheForm). ALeft/ATop here are
+    parent-relative; using them directly puts the region in the wrong
+    space and breaks hit-testing for any control whose parent is not
+    the form. }
+  lFormPos := FindControlPositionRelativeToTheForm(AWinControl);
+  lCDWinControl.Region.SetAsSimpleRectRegion(Bounds(lFormPos.X, lFormPos.Y, AWidth, AHeight));
   Invalidate(AWinControl);
 end;
 
