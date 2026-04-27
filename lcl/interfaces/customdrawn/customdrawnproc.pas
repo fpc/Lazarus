@@ -668,8 +668,18 @@ begin
         raise Exception.Create('[FindControlWhichReceivedEvent] Malformed tree of regions');
       Result := TWinControl(lRegionOfEvent.UserData);
 
-      // If it is a native LCL control, redirect to the CDControl
-      if lCurCDControl.CDControl <> nil then
+      { Redirect to the injected CDControl only when the hit was on the
+        outer control itself (not on one of its child sub-regions). For a
+        click that landed on a real LCL child (e.g. a TUpDown nested
+        inside an injected TCDIntfSpinEdit), the inner region's
+        UserData IS the actual target -- redirecting to the parent's
+        CDControl would swallow the click and lose the inner control.
+        (Region-tree consistency for invisible controls is maintained
+        in TCDWSWinControl.ShowHide; if a control is hidden its region
+        is taken out of the parent's region tree, so IsPointInRegion
+        never descends through it.) }
+      if (lCurCDControl.CDControl <> nil)
+        and (lRegionOfEvent = lCurCDControl.Region) then
         Result := lCurCDControl.CDControl;
 
       Exit;
