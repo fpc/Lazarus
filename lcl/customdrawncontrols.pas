@@ -2433,26 +2433,30 @@ end;
 procedure TCDPositionedControl.KeyDown(var Key: word; Shift: TShiftState);
 var
   NewPosition: Integer;
+  HandledKey: Boolean;
 begin
   inherited KeyDown(Key, Shift);
 
-  NewPosition := 0;
-  if (Key = VK_LEFT) or (Key = VK_DOWN) then
-    NewPosition := FPosition - FSmallChange;
-  if (Key = VK_UP) or (Key = VK_RIGHT) then
-    NewPosition := FPosition + FSmallChange;
-  if (Key = VK_PRIOR) then
-    NewPosition := FPosition - FLargeChange;
-  if (Key = VK_NEXT) then
-    NewPosition := FPosition + FLargeChange;
+  { 0 used to be the "no movement" sentinel, but 0 is a perfectly
+    valid Position. Any unhandled key (Tab, letters, ...) fell into
+    the clamp+assign branch and snapped Position to Max(FMin, 0). }
+  NewPosition := FPosition;
+  HandledKey := True;
+  case Key of
+    VK_LEFT, VK_DOWN:  NewPosition := FPosition - FSmallChange;
+    VK_RIGHT, VK_UP:   NewPosition := FPosition + FSmallChange;
+    VK_PRIOR:          NewPosition := FPosition - FLargeChange;
+    VK_NEXT:           NewPosition := FPosition + FLargeChange;
+  else
+    HandledKey := False;
+  end;
 
-  // sanity check
-  if NewPosition >= 0 then
+  if HandledKey then
   begin
     if NewPosition > FMax then NewPosition := FMax;
     if NewPosition < FMin then NewPosition := FMin;
 
-    if (NewPosition <> Position) then
+    if NewPosition <> Position then
     begin
       Position := NewPosition;
       if Assigned(FOnChangeByUser) then FOnChangeByUser(Self);
