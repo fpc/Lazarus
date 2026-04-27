@@ -20,6 +20,7 @@ type
 
   TCDIntfButton = class(TCDButton)
   protected
+    procedure KeyUp(var Key: word; Shift: TShiftState); override;
     procedure PrepareControlState; override;
   public
     LCLControl: TCustomButton;
@@ -38,6 +39,7 @@ type
 
   TCDIntfCheckBox = class(TCDCheckBox)
   protected
+    procedure KeyUp(var Key: word; Shift: TShiftState); override;
     procedure PrepareControlState; override;
   public
     LCLControl: TCustomCheckBox;
@@ -45,6 +47,9 @@ type
 
   TCDIntfRadioButton = class(TCDRadioButton)
   protected
+    procedure KeyDown(var Key: word; Shift: TShiftState); override;
+    procedure KeyUp(var Key: word; Shift: TShiftState); override;
+    procedure DoButtonUp; override;
     procedure PrepareControlState; override;
   public
     LCLControl: TCustomCheckBox;
@@ -432,6 +437,140 @@ begin
     FState := FState + [csfHasFocus]
   else
     FState := FState - [csfHasFocus];
+end;
+
+{ Forward Space/Enter activation from the injected TCDIntf*-control to
+  the user's LCL control. TCDButtonControl.KeyUp only fires Self.Click,
+  which lands on the injected control and not on the user-facing TButton
+  / TCheckBox / TRadioButton -- so the LCL OnClick handler never runs.
+  The mouse path in CallbackMouseUp does this same dispatch via the
+  IsIntfControl check; the keyboard path didn't. }
+
+procedure TCDIntfButton.KeyUp(var Key: word; Shift: TShiftState);
+var
+  WasActivator: Boolean;
+begin
+  WasActivator := (Key = VK_SPACE) or (Key = VK_RETURN);
+  inherited KeyUp(Key, Shift);
+  if WasActivator and Assigned(LCLControl) then
+    LCLSendClickedMsg(LCLControl);
+end;
+
+procedure TCDIntfCheckBox.KeyUp(var Key: word; Shift: TShiftState);
+var
+  WasActivator: Boolean;
+begin
+  WasActivator := (Key = VK_SPACE) or (Key = VK_RETURN);
+  inherited KeyUp(Key, Shift);
+  if WasActivator and Assigned(LCLControl) then
+    LCLSendClickedMsg(LCLControl);
+end;
+
+procedure TCDIntfRadioButton.KeyUp(var Key: word; Shift: TShiftState);
+var
+  WasActivator: Boolean;
+begin
+  WasActivator := (Key = VK_SPACE) or (Key = VK_RETURN);
+  inherited KeyUp(Key, Shift);
+  if WasActivator and Assigned(LCLControl) then
+    LCLSendClickedMsg(LCLControl);
+end;
+
+{ Arrow-key navigation between radios in the same LCL group. Up/Left
+  move to the previous sibling radio; Down/Right to the next; selecting
+  the new one as it gains focus, mirroring Win32/GTK convention. Tab
+  alone can't be used because LCL marks unchecked radios with
+  TabStop=False, so they're skipped by Tab traversal. }
+
+procedure TCDIntfRadioButton.KeyDown(var Key: word; Shift: TShiftState);
+var
+  LCLParent: TWinControl;
+  i, MyIdx, Step, J, N: Integer;
+  Target: TCustomCheckBox;
+begin
+  case Key of
+    VK_UP, VK_LEFT:    Step := -1;
+    VK_DOWN, VK_RIGHT: Step := +1;
+  else
+    inherited KeyDown(Key, Shift);
+    Exit;
+  end;
+
+  if (LCLControl = nil) or (LCLControl.Parent = nil) then
+  begin
+    inherited KeyDown(Key, Shift);
+    Exit;
+  end;
+
+  LCLParent := LCLControl.Parent;
+
+  { Find Self's index among the LCL parent's TRadioButton children. }
+  MyIdx := -1;
+  N := 0;
+  for i := 0 to LCLParent.ControlCount - 1 do
+    if LCLParent.Controls[i] is TRadioButton then
+    begin
+      if LCLParent.Controls[i] = LCLControl then MyIdx := N;
+      Inc(N);
+    end;
+  if (MyIdx < 0) or (N < 2) then
+  begin
+    inherited KeyDown(Key, Shift);
+    Exit;
+  end;
+
+  { Walk to the next/prev radio with wrap-around. }
+  J := (MyIdx + Step + N) mod N;
+  Target := nil;
+  N := 0;
+  for i := 0 to LCLParent.ControlCount - 1 do
+    if LCLParent.Controls[i] is TRadioButton then
+    begin
+      if N = J then
+      begin
+        Target := TCustomCheckBox(LCLParent.Controls[i]);
+        Break;
+      end;
+      Inc(N);
+    end;
+
+  if (Target = nil) or (Target = LCLControl) then Exit;
+  Target.SetFocus;
+  TRadioButton(Target).Checked := True;   { selects target; unchecks Self via DoButtonUp override }
+  Key := 0;                               { event consumed }
+end;
+
+{ Mutual-exclusion fix.
+  TCDRadioButton.DoButtonUp walks Parent.Controls[] looking for sibling
+  TCDButtonControls with the same FGroupIndex to uncheck. But for the
+  injected case, InjectCDControl reparents the TCDIntfRadioButton onto
+  its own LCL TRadioButton -- so Parent.Controls is empty (or contains
+  only Self) and no sibling is ever found.
+  The actual sibling injected radios live one level up, as the CDControl
+  fields of the LCL TRadioButtons that share the same LCL parent. Walk
+  that list instead and uncheck via the corresponding injected control. }
+
+procedure TCDIntfRadioButton.DoButtonUp;
+var
+  i: Integer;
+  LCLParent: TWinControl;
+  Sibling: TControl;
+  SiblingHandle: TCDWinControl;
+begin
+  inherited DoButtonUp;   { handles state, draws checked }
+  if (LCLControl = nil) or (LCLControl.Parent = nil) then Exit;
+
+  LCLParent := LCLControl.Parent;
+  for i := 0 to LCLParent.ControlCount - 1 do
+  begin
+    Sibling := LCLParent.Controls[i];
+    if (Sibling = LCLControl) or not (Sibling is TCustomCheckBox) then Continue;
+    if not (Sibling is TRadioButton) then Continue;     { only uncheck radios }
+    if TWinControl(Sibling).Handle = 0 then Continue;
+    SiblingHandle := TCDWinControl(TWinControl(Sibling).Handle);
+    if (SiblingHandle.CDControl is TCDIntfRadioButton) then
+      TCDIntfRadioButton(SiblingHandle.CDControl).DoUncheckButton;
+  end;
 end;
 
 end.
