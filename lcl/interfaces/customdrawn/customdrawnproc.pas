@@ -59,6 +59,15 @@ type
 
   { TCDWinControl }
 
+  // WARNING: TCDWinControl and TCDForm are SIBLING classes under
+  // TCDBaseControl, not parent-child. Never cast a TCDForm to a
+  // TCDWinControl (or vice versa): the field layouts differ past
+  // TCDBaseControl, so e.g. TCDWinControl(form.Handle).Region would
+  // type-pun TCDForm.LCLForm into a region pointer, and writing through
+  // .Region.Childs lands inside TComponent.FComponents of the form.
+  // To branch on form-vs-non-form, test AWinControl.Parent against
+  // TCustomForm at the LCL level (see TCDWSWinControl.CreateHandle for
+  // the canonical pattern).
   TCDWinControl = class(TCDBaseControl)
   public
     Region: TLazRegionWithChilds;
@@ -72,6 +81,7 @@ type
 
   { TCDForm }
 
+  // See WARNING on TCDWinControl: do not cross-cast.
   TCDForm = class(TCDBaseControl)
   public
     LCLForm: TCustomForm;
