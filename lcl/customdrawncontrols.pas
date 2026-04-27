@@ -947,7 +947,17 @@ procedure TCDControl.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
-  if CanFocus() then SetFocus(); // Checking CanFocus fixes a crash
+  { Do NOT call SetFocus here. The mouse-event router
+    (CallbackMouseDown -> CDSetFocusToControl) already assigns focus
+    using the host+intf model (parent LCL control = ALCLControl,
+    injected = AIntfControl). Calling SetFocus on the CD control
+    itself goes through WS.SetFocus(self.Handle), which calls
+    CDSetFocusToControl(self, NIL) -- treating the CD control as a
+    top-level focusable. For an injected CD control, that conflicts
+    with the host+intf assignment that fires immediately afterwards:
+    the two CDSetFocusToControl calls thrash FocusedControl /
+    FocusedIntfControl and each fires a CMExit on the injected, which
+    cleared edit-control selections via DoExit's DoClearSelection. }
 end;
 
 constructor TCDControl.Create(AOwner: TComponent);
