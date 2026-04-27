@@ -234,7 +234,7 @@ end;
 
 procedure CallbackKeyDown(AWindowHandle: TCDForm; AKey: Word);
 var
-  lTarget: TWinControl;
+  lTarget, lScope, lBubble: TWinControl;
   lIsTab, lTabDirForward: Boolean;
   lTabNextControl: TWinControl;
   i: Integer;
@@ -257,13 +257,43 @@ begin
     LCLSendKeyDownEvent(lTarget, AKey, 0, True, False);
   end;
 
+  { Bubble unhandled keys up the parent chain so container controls can
+    intercept (e.g. TPageControl's KeyDown switches pages on Ctrl+Tab
+    when nboKeyboardTabSwitch is in Options). Win32 LCL gets this from
+    the OS routing WM_KEYDOWN; in customdrawn we must do it ourselves.
+    The BeforeEvent (CN_KEYDOWN) chain fires KeyDown on each parent;
+    if any parent handles it, AKey becomes 0 and the bubble stops.
+    Plain Tab (no Ctrl) is handled by the SelectNext logic below, so
+    don't bubble it -- otherwise a TPageControl ancestor's KeyDown
+    would treat it as part of its own tab handling. Modified Tab
+    (Ctrl+Tab, Ctrl+Shift+Tab) DOES bubble so the page control can
+    switch pages. }
+  if (AKey <> 0) and not ((AKey = VK_TAB)
+    and (LCLIntf.GetKeyState(VK_CONTROL) >= 0)) then
+  begin
+    lBubble := lTarget.Parent;
+    while (lBubble <> nil) and (AKey <> 0) do
+    begin
+      LCLSendKeyDownEvent(lBubble, AKey, 0, True, False);
+      lBubble := lBubble.Parent;
+    end;
+  end;
+
   // If the control didn't eat the tab, then circle around controls
   // Shift+Tab circles in the opposite direction
   lIsTab := lIsTab and (AKey = VK_TAB);
   if (lTarget.Parent <> nil) and lIsTab then
   begin
     lTabDirForward := LCLIntf.GetKeyState(VK_SHIFT) = 0;
-    lTarget.Parent.SelectNext(lTarget, lTabDirForward, True);
+    { Walk up to the topmost container so SelectNext sees the full,
+      form-wide tab order. Calling lTarget.Parent.SelectNext alone
+      restricts traversal to the immediate parent's tab list, so a
+      control inside a TGroupBox / TPanel / TPageControl page can
+      never escape its container with Tab. }
+    lScope := lTarget.Parent;
+    while lScope.Parent <> nil do
+      lScope := lScope.Parent;
+    lScope.SelectNext(lTarget, lTabDirForward, True);
   end
   // slightly different code when the currently selected item is the form itself
   else if lIsTab then
