@@ -43,6 +43,9 @@ type
       const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+      var PreferredWidth, PreferredHeight: integer;
+      WithThemeSpace: Boolean); override;
 
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
 
@@ -105,6 +108,34 @@ begin
     InjectCDControl(AWinControl, lCDWinControl.CDControl);
     lCDWinControl.CDControlInjected := True;
   end;
+end;
+
+{ Lazarus's WSClass dispatch (wslclclasses.pp:347 CreateVClass) walks the
+  *LCL component* class hierarchy and patches the spin's VClass VMT with
+  TCDWSCustomEdit's overrides for any slot the spin's WS class doesn't
+  itself override -- because TCustomFloatSpinEdit IS-A TCustomEdit and
+  TCDWSCustomEdit is the WS for TCustomEdit. So virtual dispatch on
+  GetPreferredSize for the spin would land in TCDWSCustomEdit.GetPreferredSize,
+  which calls InjectCDControl statically resolved to TCDWSCustomEdit.InjectCDControl,
+  which casts the spin's TCDIntfSpinEdit as TCDIntfEdit and writes LCLControl
+  -- a sibling-class field at a different offset -- corrupting TCDSpinEdit's
+  FDecimalPlaces. Override here so the patched slot is replaced with our
+  spin-aware version that calls our own InjectCDControl with the right cast. }
+class procedure TCDWSCustomFloatSpinEdit.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  if (lCDWinControl = nil) or (lCDWinControl.CDControl = nil) then Exit;
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(AWinControl, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
+  lCDWinControl.CDControl.LCLWSCalculatePreferredSize(
+    PreferredWidth, PreferredHeight, WithThemeSpace, AWinControl.AutoSize, False);
 end;
 
 class function  TCDWSCustomFloatSpinEdit.GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double;

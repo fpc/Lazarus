@@ -796,7 +796,8 @@ type
     procedure SetIncrement(AValue: Double);
     procedure SetMaxValue(AValue: Double);
     procedure SetMinValue(AValue: Double);
-    procedure UpDownChanging(Sender: TObject; var AllowChange: Boolean);
+    procedure UpDownChangingEx(Sender: TObject; var AllowChange: Boolean;
+      NewValue: SmallInt; Direction: TUpDownDirection);
     procedure SetValue(AValue: Double);
     procedure DoUpdateText;
     procedure DoUpdateUpDown;
@@ -3665,9 +3666,18 @@ end;
 
 { TCDSpinEdit }
 
-procedure TCDSpinEdit.UpDownChanging(Sender: TObject; var AllowChange: Boolean);
+procedure TCDSpinEdit.UpDownChangingEx(Sender: TObject;
+  var AllowChange: Boolean; NewValue: SmallInt; Direction: TUpDownDirection);
 begin
-  Value := FUpDown.Position / Power(10, FDecimalPlaces);
+  { Use the NewValue passed in, NOT FUpDown.Position. TCustomUpDown.Click
+    fires OnChanging/OnChangingEx via CanChange BEFORE assigning Position
+    := FCanChangePos, so FUpDown.Position is still the OLD value at this
+    point. Reading it would lag by one click on every click. }
+  Value := NewValue / Power(10, FDecimalPlaces);
+  { SetValue updates the injected FValue and Text but does not fire
+    DoChange, so the host LCL TCustomFloatSpinEdit never receives the
+    CM_TEXTCHANGED that TCDIntfSpinEdit.DoChange dispatches. }
+  DoChange;
 end;
 
 procedure TCDSpinEdit.SetIncrement(AValue: Double);
@@ -3741,7 +3751,7 @@ begin
   FUpDown := TUpDown.Create(Self);
   FUpDown.Align := alRight;
   FUpDown.Parent := Self;
-  FUpDown.OnChanging :=@UpDownChanging;
+  FUpDown.OnChangingEx := @UpDownChangingEx;
 
   FMinValue := 0;
   FMaxValue := 100;
