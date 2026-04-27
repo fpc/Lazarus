@@ -19,6 +19,8 @@ type
   { TCDIntfButton }
 
   TCDIntfButton = class(TCDButton)
+  protected
+    procedure PrepareControlState; override;
   public
     LCLControl: TCustomButton;
   end;
@@ -29,16 +31,21 @@ type
   protected
     // for descendents to override
     procedure DoChange; override;
+    procedure PrepareControlState; override;
   public
     LCLControl: TCustomEdit;
   end;
 
   TCDIntfCheckBox = class(TCDCheckBox)
+  protected
+    procedure PrepareControlState; override;
   public
     LCLControl: TCustomCheckBox;
   end;
 
   TCDIntfRadioButton = class(TCDRadioButton)
+  protected
+    procedure PrepareControlState; override;
   public
     LCLControl: TCustomCheckBox;
   end;
@@ -73,6 +80,8 @@ type
   end;
 
   TCDIntfPageControl = class(TCDPageControl)
+  protected
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
   public
     LCLControl: TCustomTabControl;
   end;
@@ -80,6 +89,8 @@ type
   // Misc Tab
 
   TCDIntfSpinEdit = class(TCDSpinEdit)
+  protected
+    procedure DoChange; override;
   public
     LCLControl: TCustomFloatSpinEdit;
   end;
@@ -96,7 +107,7 @@ function IsIntfControl(AControl: TWinControl): Boolean;
 
 implementation
 
-uses customdrawnint, LCLMessageGlue;
+uses customdrawnint, LCLMessageGlue, customdrawndrawers;
 
 procedure CallbackMouseUp(AWindowHandle: TCDForm; x, y: Integer; Button: TMouseButton; ShiftState: TShiftState = []);
 var
@@ -344,6 +355,83 @@ begin
   FillChar(Msg{%H-}, SizeOf(Msg), 0);
   Msg.Msg := CM_TEXTCHANGED;
   DeliverMessage(LCLControl, Msg);
+end;
+
+{ TCDIntfSpinEdit -- like TCDIntfEdit, push CM_TEXTCHANGED to the LCL
+  control whenever the visible text changes (typing, arrow click). The
+  LCL TCustomFloatSpinEdit.TextChanged sets FValueChanged := True so
+  the next read of LCL.Value re-fetches via WS.GetValue, which returns
+  the injected control's FValue. Without this, the LCL side's cached
+  FValue stays at its initial value (0), and Spin1.Value reports the old value. }
+
+procedure TCDIntfSpinEdit.DoChange;
+var
+  Msg: TLMessage;
+begin
+  inherited DoChange;
+  if LCLControl <> nil then
+  begin
+    FillChar(Msg{%H-}, SizeOf(Msg), 0);
+    Msg.Msg := CM_TEXTCHANGED;
+    DeliverMessage(LCLControl, Msg);
+  end;
+end;
+
+{ TCDIntfPageControl -- forward mouse-click tab changes to the LCL.
+  TCDCustomTabControl.MouseDown sets only the injected control's
+  PageIndex, drawing the new indicator. The LCL TCustomTabControl is
+  unaware, so its FPageIndex is stale, ShowCurrentPage is never
+  called, and every TabSheet's Visible stays True -- meaning every
+  page's contents render at once (overlaid). Sync the LCL side here. }
+
+procedure TCDIntfPageControl.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: integer);
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+  if (LCLControl <> nil) and (LCLControl.PageIndex <> Self.PageIndex) then
+    LCLControl.PageIndex := Self.PageIndex;
+end;
+
+{ Sync csfHasFocus from the user-facing LCL control. TCDControl reads
+  Self.Focused, but Self here is an injected TCDIntf*-control whose
+  parent is the LCL control itself -- the LCL focuses the LCL control,
+  never the injected one, so Self.Focused is always False and the
+  drawer never paints a focus rect. Override to query LCLControl. }
+
+procedure TCDIntfButton.PrepareControlState;
+begin
+  inherited PrepareControlState;
+  if Assigned(LCLControl) and LCLControl.Focused then
+    FState := FState + [csfHasFocus]
+  else
+    FState := FState - [csfHasFocus];
+end;
+
+procedure TCDIntfEdit.PrepareControlState;
+begin
+  inherited PrepareControlState;
+  if Assigned(LCLControl) and LCLControl.Focused then
+    FState := FState + [csfHasFocus]
+  else
+    FState := FState - [csfHasFocus];
+end;
+
+procedure TCDIntfCheckBox.PrepareControlState;
+begin
+  inherited PrepareControlState;
+  if Assigned(LCLControl) and LCLControl.Focused then
+    FState := FState + [csfHasFocus]
+  else
+    FState := FState - [csfHasFocus];
+end;
+
+procedure TCDIntfRadioButton.PrepareControlState;
+begin
+  inherited PrepareControlState;
+  if Assigned(LCLControl) and LCLControl.Focused then
+    FState := FState + [csfHasFocus]
+  else
+    FState := FState - [csfHasFocus];
 end;
 
 end.
