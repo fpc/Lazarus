@@ -153,6 +153,9 @@ type
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+      var PreferredWidth, PreferredHeight: integer;
+      WithThemeSpace: Boolean); override;
 
 {    //class function  CanFocus(const AWincontrol: TWinControl): Boolean; override;
 
@@ -1356,6 +1359,25 @@ begin
   lCDWinControl := TCDWinControl(AWinControl.Handle);
   lCDWinControl.CDControl.Free;
   lCDWinControl.Free;
+end;
+
+class procedure TCDWSCustomEdit.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  if (lCDWinControl = nil) or (lCDWinControl.CDControl = nil) then Exit;
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(AWinControl, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
+  lCDWinControl.CDControl.LCLWSCalculatePreferredSize(
+    PreferredWidth, PreferredHeight, WithThemeSpace, AWinControl.AutoSize, False);
+  { LCL convention for edit-style controls: don't force a width. }
+  PreferredWidth := 0;
 end;
 
 class function TCDWSCustomEdit.GetText(const AWinControl: TWinControl;
