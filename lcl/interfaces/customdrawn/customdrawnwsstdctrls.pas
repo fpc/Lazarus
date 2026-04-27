@@ -1833,6 +1833,12 @@ end;
 
 class procedure TCDWSRadioButton.InjectCDControl(
   const AWinControl: TWinControl; var ACDControlField: TCDControl);
+var
+  lParent: TWinControl;
+  i: Integer;
+  Sibling: TControl;
+  AnyTabbable: Boolean;
+  FirstRadio: TRadioButton;
 begin
   ACDControlField := TCDIntfRadioButton.Create(AWinControl);
   TCDIntfRadioButton(ACDControlField).LCLControl := TCustomCheckBox(AWinControl);
@@ -1840,6 +1846,47 @@ begin
   ACDControlField.Caption := AWinControl.Caption;
   ACDControlField.Align := alClient;
   {$ifdef VerboseCDInjectedControlNames}ACDControlField.Name := 'CustomDrawnInternal_' + AWinControl.Name;{$endif}
+
+  { Sync from the LCL Checked property. TCDRadioButton.Create defaults
+    every fresh radio to "first in group = checked" (against the wrong
+    Parent.Controls list -- see TCDIntfRadioButton.DoButtonUp), so
+    without this every newly-injected radio renders as visually checked
+    regardless of what the LCL says. }
+  TCDIntfRadioButton(ACDControlField).Checked :=
+    TRadioButton(AWinControl).Checked;
+
+  { Win32 LCL relies on BS_AUTORADIOBUTTON to keep the first radio of
+    an all-unchecked group tab-focusable so the user can always reach
+    the group via Tab. Customdrawn has no equivalent: TRadioButton.Create
+    leaves TabStop=False (TCheckBox.Create sets True; TRadioButton does
+    not), and TRadioButton.DoClickOnChange only flips TabStop on actual
+    state change. With no radio in the group ever checked, Tab skipped
+    the entire group. Promote the first TRadioButton in the parent's
+    children to TabStop=True if nobody in the group already holds it.
+    Picked by Controls[] order so the choice is deterministic regardless
+    of ShowHide / injection order (otherwise whichever sibling's handle
+    materialised first won, e.g. RadioD before RadioC). }
+  lParent := AWinControl.Parent;
+  if lParent <> nil then
+  begin
+    AnyTabbable := False;
+    FirstRadio := nil;
+    for i := 0 to lParent.ControlCount - 1 do
+    begin
+      Sibling := lParent.Controls[i];
+      if Sibling is TRadioButton then
+      begin
+        if FirstRadio = nil then FirstRadio := TRadioButton(Sibling);
+        if TRadioButton(Sibling).TabStop then
+        begin
+          AnyTabbable := True;
+          Break;
+        end;
+      end;
+    end;
+    if (not AnyTabbable) and (FirstRadio <> nil) then
+      FirstRadio.TabStop := True;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1938,13 +1985,25 @@ end;
 
   Sets the state of the control
  ------------------------------------------------------------------------------}
-class procedure TCDWSRadioButton.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
+class procedure TCDWSRadioButton.SetState(const ACustomCheckBox: TCustomCheckBox;
+  const NewState: TCheckBoxState);
+var
+  lCDWinControl: TCDWinControl;
+  lInj: TCDIntfRadioButton;
 begin
-  //enclose the call between Begin/EndUpdate to avoid send LM_CHANGE message
-{  QtRadioButton := TQtRadioButton(ACustomCheckBox.Handle);
-  QtRadioButton.BeginUpdate;
-  QtRadioButton.setChecked(NewState = cbChecked);
-  QtRadioButton.EndUpdate;}
+  { Propagate LCL Checked changes to the injected control. Without this,
+    the LCL's TCustomCheckBox.SetChecked -> ApplyChanges -> SetState
+    chain ends here as a no-op and the injected radio's visual state
+    never tracks the LCL property. Combined with TCDRadioButton's
+    constructor default of "first in group = checked" (computed against
+    the wrong Parent.Controls list -- see TCDIntfRadioButton.DoButtonUp),
+    that produced "both radios checked at startup". }
+  if ACustomCheckBox.Handle = 0 then Exit;
+  lCDWinControl := TCDWinControl(ACustomCheckBox.Handle);
+  if not (lCDWinControl.CDControl is TCDIntfRadioButton) then Exit;
+  lInj := TCDIntfRadioButton(lCDWinControl.CDControl);
+  lInj.Checked := (NewState = cbChecked);
+  lInj.Invalidate;
 end;
 
 { TCDWSToggleBox }
