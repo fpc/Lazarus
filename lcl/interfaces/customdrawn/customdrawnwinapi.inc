@@ -527,7 +527,14 @@ begin
  { CLEARTYPE_NATURAL_QUALITY } QFontPreferAntialias
   );*)
 
+  { LogFont.lfHeight in the LCL is "0 means use system default"; we have
+    no system, so resolve 0 to a sensible default here. Without this,
+    SizeInPoints stays 0 and the FreeType font measures every glyph as
+    ~2 px -- breaking AutoSize, GetTextMetrics, and anything else that
+    asks for text dimensions before a paint cycle has run. }
   lFont.Size := Abs(LogFont.lfHeight);
+  if lFont.Size = 0 then
+    lFont.Size := 10;   { LCL convention: default UI font is 10 pt }
   lFont.ftFont.SizeInPoints := lFont.Size;
 
 (*  // Some values at available on Qt documentation at a table
