@@ -146,19 +146,32 @@ begin
   Result := TCDIntfSpinEdit(lCDWinControl.CDControl).Value;
 end;
 
+{ Push the LCL spin's full state (Value, DecimalPlaces, range,
+  Increment) into the injected control. Called by
+  TCustomFloatSpinEdit.SetValue / SetMinValue / SetMaxValue /
+  SetIncrement / SetDecimalPlaces, by RealSetText when the assigned
+  text is a parseable number, and indirectly by Ctrl+V of a numeric
+  string (Paste -> SetSelText -> Text := -> RealSetText -> SetValue).
+  Without this every one of those paths updates the LCL state but
+  leaves the injected control's text and arrow range stale, so
+  Spin1.Value := 5, MinValue := 10, paste, cut etc. all appear to do
+  nothing visible. }
 class procedure TCDWSCustomFloatSpinEdit.UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit);
-{var
-  CurrentSpinWidget: TQtAbstractSpinBox;}
+var
+  lCDWinControl: TCDWinControl;
+  lIntf: TCDIntfSpinEdit;
 begin
-{  if not WSCheckHandleAllocated(ACustomFloatSpinEdit, 'UpdateControl') then
+  if not WSCheckHandleAllocated(ACustomFloatSpinEdit, 'UpdateControl') then
     Exit;
-    
-  CurrentSpinWidget := TQtAbstractSpinBox(ACustomFloatSpinEdit.Handle);
-  if ((ACustomFloatSpinEdit.DecimalPlaces > 0) and (CurrentSpinWidget is TQtSpinBox)) or
-     ((ACustomFloatSpinEdit.DecimalPlaces = 0) and (CurrentSpinWidget is TQtFloatSpinBox)) then
-       RecreateWnd(ACustomFloatSpinEdit)
-  else
-    InternalUpdateControl(CurrentSpinWidget, ACustomFloatSpinEdit);}
+  lCDWinControl := TCDWinControl(ACustomFloatSpinEdit.Handle);
+  if (lCDWinControl = nil) or (lCDWinControl.CDControl = nil) then Exit;
+  lIntf := TCDIntfSpinEdit(lCDWinControl.CDControl);
+  lIntf.DecimalPlaces := ACustomFloatSpinEdit.DecimalPlaces;
+  lIntf.MinValue := ACustomFloatSpinEdit.MinValue;
+  lIntf.MaxValue := ACustomFloatSpinEdit.MaxValue;
+  lIntf.Increment := ACustomFloatSpinEdit.Increment;
+  lIntf.Value := ACustomFloatSpinEdit.Value;  { also refreshes Text via DoUpdateText }
+  lIntf.Invalidate();
 end;
 
 end.
