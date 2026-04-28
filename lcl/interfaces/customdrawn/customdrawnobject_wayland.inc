@@ -208,10 +208,11 @@ procedure TCDWidgetSet.WLHandlePointerAxis(Sender: TWaylandPointer;
 var
   WI: TWaylandWindowInfo;
   Delta: SmallInt;
+  Target: TWinControl;
 begin
   WI := FWlPointerFocus;
   if (WI = nil) or (WI.LCLForm = nil) then Exit;
-  if Axis <> WL_POINTER_AXIS_VERTICAL_SCROLL then Exit;  { FIXME: ignore horizontal }
+  if Axis <> WL_POINTER_AXIS_VERTICAL_SCROLL then Exit;  { TODO: horizontal wheel / touchpad scroll }
   { Wayland axis value is wl_fixed in surface units (roughly pixel rows
     scrolled). Wayland convention: positive = scroll down; LCL/Win
     convention: positive = scroll up; hence the negation. We treat
@@ -219,7 +220,14 @@ begin
   if Value > 0 then Delta := -120
   else if Value < 0 then Delta := 120
   else Exit;
-  LCLSendMouseWheelMsg(WI.LCLForm, FWlPointerX, FWlPointerY, Delta,
+  { Route to the control under the cursor (same pattern CallbackMouseDown
+    uses). Sending to the form leaves wheel bubbling to LCL's default
+    "scroll the focused control" path, which doesn't do the right
+    thing if the cursor is over a non-focused listbox. }
+  Target := FindControlWhichReceivedEvent(WI.LCLForm, WI.Children,
+                                          FWlPointerX, FWlPointerY);
+  if Target = nil then Target := WI.LCLForm;
+  LCLSendMouseWheelMsg(Target, FWlPointerX, FWlPointerY, Delta,
                        WLCurrentShiftState);
 end;
 
