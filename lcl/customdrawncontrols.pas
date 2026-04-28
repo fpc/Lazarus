@@ -627,13 +627,21 @@ type
     FSorted:            Boolean;
     FOnChange:          TNotifyEvent;
     FOnSelectionChange: TNotifyEvent;
+    { Type-ahead state. Letters typed within FSearchTimeoutMs of each
+      other accumulate into a search prefix; we jump to the first
+      item whose Caption starts with that prefix. After timeout the
+      prefix resets so the next letter starts a fresh search. Works
+      with multibyte UTF-8 (kanji etc.) when the IME route delivers
+      commit_string -- see TypeAheadAdvance. }
+    FSearchPrefix:      AnsiString;
+    FSearchExpiry:      TDateTime;
     { Vertical scrollbar -- created lazily on first SetParent so that
       parenting it doesn't cascade into HandleNeeded on us before our
-      own Parent is set. Inheriting from TCDScrollableControl would
-      have given us this for free, but its constructor unconditionally
-      adds the scrollbar as a child, which trips the handle-creation
-      chain when Items.Add fires before the LCL host has hooked us up
-      via InjectCDControl from ShowHide. }
+      own Parent is set. TCDScrollableControl cannot be used here
+      because its constructor unconditionally adds the scrollbar as a
+      child, which trips the handle-creation chain when Items.Add fires
+      before the LCL host has hooked us up via InjectCDControl from
+      ShowHide. }
     FScrollBar:         TCDScrollBar;
     procedure ScrollBarChanged(Sender: TObject);
     function  GetItems: TStrings;
@@ -659,6 +667,7 @@ type
     procedure DoEnter; override;
     procedure DoExit; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     function  DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
     procedure Resize; override;
@@ -668,6 +677,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function ItemAtPos(X, Y: Integer): Integer;
+    procedure TypeAheadAdvance(const AText: AnsiString);
     function ItemRect(Index: Integer): TRect;
     function GetSelected(AIndex: Integer): Boolean;
     procedure SetSelected(AIndex: Integer; ASel: Boolean);
@@ -3760,6 +3770,41 @@ begin
   Lines := WheelDelta div 40;
   if Lines = 0 then Lines := IfThen(WheelDelta > 0, 1, -1);
   SetTopIndex(FTopIndex - Lines);
+end;
+
+procedure TCDListBox.UTF8KeyPress(var UTF8Key: TUTF8Char);
+begin
+  inherited UTF8KeyPress(UTF8Key);
+  { Filter control codes (Tab/Enter/Esc/etc.) -- they're handled by
+    KeyDown. Printable chars feed type-ahead. Same range TCDEdit's
+    UTF8KeyPress filter uses. }
+  if (UTF8Key = '') or (UTF8Key[1] in [#0..#$1F, #$7F]) then Exit;
+  TypeAheadAdvance(UTF8Key);
+end;
+
+procedure TCDListBox.TypeAheadAdvance(const AText: AnsiString);
+const
+  TimeoutSec = 1.0;
+var
+  i: Integer;
+  Item, Prefix: AnsiString;
+begin
+  { Reset the prefix when typing pauses for >1s -- otherwise old
+    characters from the previous search carry into a fresh one.
+    DateTime arithmetic: 1 day = 1.0, so 1/86400 seconds. }
+  if Now > FSearchExpiry then FSearchPrefix := '';
+  FSearchPrefix := FSearchPrefix + AText;
+  FSearchExpiry := Now + TimeoutSec / 86400.0;
+  Prefix := UTF8LowerCase(FSearchPrefix);
+  for i := 0 to FItems.Count - 1 do
+  begin
+    Item := UTF8LowerCase(FItems.Strings[i]);
+    if Pos(Prefix, Item) = 1 then
+    begin
+      ItemIndex := i;     { setter handles selection + EnsureVisible }
+      Exit;
+    end;
+  end;
 end;
 
 procedure TCDListBox.Resize;

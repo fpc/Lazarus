@@ -568,6 +568,8 @@ var
   Edit: TCDEdit;
   Line, Left, Right, Inserted: AnsiString;
   CaretByte, NewCaretByte, BeforeBytes, AfterBytes, LineByteLen: Integer;
+  WSCtrl: TCDWinControl;
+  ListBox: TCDListBox;
 begin
   { Apply pending state atomically per the spec's six-step order.
     All offsets in the protocol are in BYTES; UTF8Copy / Length etc.
@@ -575,8 +577,36 @@ begin
   if FTextInputFocus = nil then Exit;
   LCLForm := FTextInputFocus.LCLForm;
   if (LCLForm = nil) or (LCLForm.ActiveControl = nil) then Exit;
-  if not (LCLForm.ActiveControl is TCustomEdit) then Exit;
   LCLEdit := LCLForm.ActiveControl;
+
+  { Non-Edit branch: TCustomListBox uses commit_string for type-ahead
+    search. Pre-edit isn't drawn (no caret to draw it at), and
+    delete_surrounding_text doesn't apply. Feed the committed text to
+    the listbox's TypeAheadAdvance. Other non-Edit, non-ListBox
+    focus targets ignore IME entirely. }
+  if not (LCLEdit is TCustomEdit) then
+  begin
+    if LCLEdit is TCustomListBox then
+    begin
+      WSCtrl := TCDWinControl(LCLEdit.Handle);
+      if (WSCtrl <> nil) and (WSCtrl.CDControl is TCDListBox) then
+      begin
+        ListBox := TCDListBox(WSCtrl.CDControl);
+        if FTIPendingCommit and (FTIPendingCommitText <> '') then
+        begin
+          ListBox.TypeAheadAdvance(FTIPendingCommitText);
+          FWlLastImeCommit := FTIPendingCommitText;
+        end;
+      end;
+    end;
+    if FTIPendingPreedit then
+      FWlLastImePreedit := FTIPendingPreeditText;
+    FTIPendingPreedit := False; FTIPendingPreeditText := '';
+    FTIPendingCommit  := False; FTIPendingCommitText  := '';
+    FTIPendingDelete  := False;
+    Exit;
+  end;
+
   Edit := CDIntfEditFromLCL(LCLEdit);
   if Edit = nil then Exit;
 
@@ -648,12 +678,15 @@ begin
 end;
 
 procedure TCDWidgetSet.WLEnableTextInputForEdit(LCLEdit: TWinControl);
-var
-  Edit: TCDEdit;
 begin
   if FZwpTextInput = nil then Exit;        { compositor has no v3 (e.g. mutter) }
-  Edit := CDIntfEditFromLCL(LCLEdit);
-  if Edit = nil then Exit;
+  if LCLEdit = nil then Exit;
+  { Accept TCustomEdit (full IME with preedit) and TCustomListBox
+    (commit_string drives type-ahead search). Other control types
+    are skipped -- enabling text-input on, say, a focused button
+    would be wrong (user expects buttons to be activated by Space
+    / Enter, not to consume a candidate window). }
+  if not ((LCLEdit is TCustomEdit) or (LCLEdit is TCustomListBox)) then Exit;
   FZwpTextInput.Enable;
   FZwpTextInput.SetContentType([], tipNormal);
   WLPushTextInputContext(LCLEdit);
@@ -681,30 +714,47 @@ var
   CtlOriginInForm: TPoint;
 begin
   if FZwpTextInput = nil then Exit;
+  if LCLEdit = nil then Exit;
+
+  { Edit-style targets: report surrounding text + caret rectangle. }
   Edit := CDIntfEditFromLCL(LCLEdit);
-  if Edit = nil then Exit;
+  if Edit <> nil then
+  begin
+    Surrounding := Edit.GetCurrentLine;
+    CaretByte := Length(UTF8Copy(Surrounding, 1, Edit.CaretPos.X));
+    FZwpTextInput.SetSurroundingText(Surrounding, CaretByte, CaretByte);
+    FZwpTextInput.SetTextChangeCause(ticOther);
 
-  { Surrounding text: full content of the line that has the caret,
-    with cursor as byte offset. Single-line; fits in 4000 bytes
-    easily. Anchor = cursor (no selection-aware reporting yet). }
-  Surrounding := Edit.GetCurrentLine;
-  CaretByte := Length(UTF8Copy(Surrounding, 1, Edit.CaretPos.X));
-  FZwpTextInput.SetSurroundingText(Surrounding, CaretByte, CaretByte);
-  FZwpTextInput.SetTextChangeCause(ticOther);
+    { Cursor rectangle in surface-local coords. The injected control's
+      pixel rect is in client coords; translate to the form's surface. }
+    R := Edit.GetCaretPixelRect;
+    CtlOriginInForm := Point(0, 0);
+    WI := WLFindFormWindowInfo(LCLEdit);
+    if WI <> nil then
+      CtlOriginInForm := LCLEdit.ClientToParent(Point(0, 0), WI.LCLForm);
+    FZwpTextInput.SetCursorRectangle(
+      CtlOriginInForm.X + R.Left,
+      CtlOriginInForm.Y + R.Top,
+      R.Right - R.Left,
+      R.Bottom - R.Top);
+    Exit;
+  end;
 
-  { Cursor rectangle in surface-local coords. Edit's caret pixel rect
-    is in the injected-control's client area; translate to the form's
-    surface by walking up the parent chain accumulating Left/Top. }
-  R := Edit.GetCaretPixelRect;
-  CtlOriginInForm := Point(0, 0);
-  WI := WLFindFormWindowInfo(LCLEdit);
-  if WI <> nil then
-    CtlOriginInForm := LCLEdit.ClientToParent(Point(0, 0), WI.LCLForm);
-  FZwpTextInput.SetCursorRectangle(
-    CtlOriginInForm.X + R.Left,
-    CtlOriginInForm.Y + R.Top,
-    R.Right - R.Left,
-    R.Bottom - R.Top);
+  { ListBox: no caret, no per-line text. Send the listbox's bounding
+    rect as the cursor rectangle so an OSK / candidate window pops up
+    near it. Surrounding text is empty (no per-row context to report). }
+  if LCLEdit is TCustomListBox then
+  begin
+    FZwpTextInput.SetSurroundingText('', 0, 0);
+    FZwpTextInput.SetTextChangeCause(ticOther);
+    CtlOriginInForm := Point(0, 0);
+    WI := WLFindFormWindowInfo(LCLEdit);
+    if WI <> nil then
+      CtlOriginInForm := LCLEdit.ClientToParent(Point(0, 0), WI.LCLForm);
+    FZwpTextInput.SetCursorRectangle(
+      CtlOriginInForm.X, CtlOriginInForm.Y,
+      LCLEdit.Width, LCLEdit.Height);
+  end;
 end;
 
 function TCDWidgetSet.GetAppHandle: TLCLHandle;
