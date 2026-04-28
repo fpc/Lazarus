@@ -26,6 +26,7 @@ uses
   math,
   // LCL
   Classes, Types, StdCtrls, Controls, Forms, SysUtils, InterfaceBase, LCLType,
+  Clipbrd,
   customdrawncontrols, LCLProc,
   // Widgetset
   WSProc, WSStdCtrls, WSLCLClasses, CustomDrawnWsControls, customdrawnproc,
@@ -86,11 +87,13 @@ type
 //    class function GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
       var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
-{    class function GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
     class function GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
     class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); override;
     class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
-
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+{
     class procedure SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox;
       NewTraverseList: boolean); override;
     class procedure SetDropDownCount(const ACustomComboBox: TCustomComboBox; NewCount: Integer); override;
@@ -166,6 +169,10 @@ type
   class function GetDesignInteractive(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; override;}
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
 //  class function  GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; override;
+
+    class procedure Cut(const ACustomEdit: TCustomEdit); override;
+    class procedure Copy(const ACustomEdit: TCustomEdit); override;
+    class procedure Paste(const ACustomEdit: TCustomEdit); override;
 
 {  class procedure SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign, UseRightToLeftReading, UseRightToLeftScrollBar : Boolean); override;
   class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
@@ -924,6 +931,83 @@ begin
   Result := 25;
 end;
 
+{ Bridge LCL TCustomComboBox.SelStart/SelLength to the injected
+  TCDIntfComboBox's edit-state. Without these the base TWSCustomComboBox
+  returns -1 / 0, which collapses TCustomComboBox.SelText to '' -- so
+  Ctrl+C copies nothing. (TCDComboBox IS-A TCDEdit, so the underlying
+  GetSelStartX / GetSelLength methods come from TCDEdit.) }
+
+class function TCDWSCustomComboBox.GetSelStart(const ACustomComboBox: TCustomComboBox): integer;
+var
+  lCDWinControl: TCDWinControl;
+begin
+  Result := 0;
+  lCDWinControl := TCDWinControl(ACustomComboBox.Handle);
+  if lCDWinControl.CDControl = nil then Exit;
+  Result := TCDIntfComboBox(lCDWinControl.CDControl).GetSelStartX();
+end;
+
+class function TCDWSCustomComboBox.GetSelLength(const ACustomComboBox: TCustomComboBox): integer;
+var
+  lCDWinControl: TCDWinControl;
+begin
+  Result := 0;
+  lCDWinControl := TCDWinControl(ACustomComboBox.Handle);
+  if lCDWinControl.CDControl = nil then Exit;
+  Result := TCDIntfComboBox(lCDWinControl.CDControl).GetSelLength();
+  if Result < 0 then Result := -Result;
+end;
+
+class procedure TCDWSCustomComboBox.SetSelStart(const ACustomComboBox: TCustomComboBox;
+  NewStart: integer);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(ACustomComboBox.Handle);
+  if lCDWinControl.CDControl = nil then Exit;
+  TCDIntfComboBox(lCDWinControl.CDControl).SetSelStartX(NewStart);
+end;
+
+class procedure TCDWSCustomComboBox.SetSelLength(const ACustomComboBox: TCustomComboBox;
+  NewLength: integer);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(ACustomComboBox.Handle);
+  if lCDWinControl.CDControl = nil then Exit;
+  TCDIntfComboBox(lCDWinControl.CDControl).SetSelLength(NewLength);
+end;
+
+{ Bridge LCL TCustomComboBox.Text to the injected TCDIntfComboBox's
+  edit text. Without these, RealSetText -> WSSetText falls to the
+  base TWSWinControl.SetText (FCaption only) and the user never sees
+  the update -- so Ctrl+V ends up assigning to LCL but the injected
+  control's visible text doesn't change. This mirrors
+  TCDWSCustomEdit.GetText / SetText. }
+
+class function TCDWSCustomComboBox.GetText(const AWinControl: TWinControl;
+  var AText: String): Boolean;
+var
+  lCDWinControl: TCDWinControl;
+begin
+  Result := False;
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  if lCDWinControl.CDControl = nil then Exit;
+  AText := TCDIntfComboBox(lCDWinControl.CDControl).Text;
+  Result := True;
+end;
+
+class procedure TCDWSCustomComboBox.SetText(const AWinControl: TWinControl;
+  const AText: String);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  if lCDWinControl.CDControl = nil then Exit;
+  TCDIntfComboBox(lCDWinControl.CDControl).Lines.Text := AText;
+  TCDIntfComboBox(lCDWinControl.CDControl).Invalidate();
+end;
+
 (*{ TCDWSCustomListBox }
 
 {------------------------------------------------------------------------------
@@ -1556,47 +1640,32 @@ begin
   TCDIntfEdit(lCDWinControl.CDControl).SetSelLength(NewLength);
 end;
 
-(*class procedure TCDWSCustomEdit.Cut(const ACustomEdit: TCustomEdit);
-var
-  Widget: TQtWidget;
-  QtEdit: IQtEdit;
+class procedure TCDWSCustomEdit.Copy(const ACustomEdit: TCustomEdit);
 begin
-  Widget := TQtWidget(ACustomEdit.Handle);
-  if Supports(Widget, IQtEdit, QtEdit) then
-    QtEdit.Cut;
+  if ACustomEdit.SelText <> '' then
+    Clipboard.AsText := ACustomEdit.SelText;
 end;
 
-class procedure TCDWSCustomEdit.Copy(const ACustomEdit: TCustomEdit);
-var
-  Widget: TQtWidget;
-  QtEdit: IQtEdit;
+class procedure TCDWSCustomEdit.Cut(const ACustomEdit: TCustomEdit);
 begin
-  Widget := TQtWidget(ACustomEdit.Handle);
-  if Supports(Widget, IQtEdit, QtEdit) then
-    QtEdit.Copy;
+  if ACustomEdit.ReadOnly then Exit;
+  if ACustomEdit.SelText <> '' then
+  begin
+    Clipboard.AsText := ACustomEdit.SelText;
+    ACustomEdit.SelText := '';   { replaces the selection with empty }
+  end;
 end;
 
 class procedure TCDWSCustomEdit.Paste(const ACustomEdit: TCustomEdit);
 var
-  Widget: TQtWidget;
-  QtEdit: IQtEdit;
+  S: string;
 begin
-  Widget := TQtWidget(ACustomEdit.Handle);
-  if Supports(Widget, IQtEdit, QtEdit) then
-    QtEdit.Paste;
+  if ACustomEdit.ReadOnly then Exit;
+  S := Clipboard.AsText;
+  if S <> '' then
+    ACustomEdit.SelText := S;     { replaces selection (or inserts at caret if none) }
 end;
 
-class procedure TCDWSCustomEdit.Undo(const ACustomEdit: TCustomEdit);
-var
-  Widget: TQtWidget;
-  QtEdit: IQtEdit;
-begin
-  if not WSCheckHandleAllocated(ACustomEdit, 'Undo') then
-    Exit;
-  Widget := TQtWidget(ACustomEdit.Handle);
-  if Supports(Widget, IQtEdit, QtEdit) then
-    QtEdit.Undo;
-end;*)
 
 { TCDWSStaticText }
 
