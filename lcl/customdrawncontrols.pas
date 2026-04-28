@@ -3739,7 +3739,14 @@ procedure TCDSpinEdit.DoChange;
 var
   lValue: Double;
 begin
-  if SysUtils.TryStrToFloat(Caption, lValue) then FValue := lValue;
+  { Read Text, not Caption. TCDEdit declares Text as a shadowing
+    property whose getter returns Lines[0] (the actual editor content),
+    but its GetText function is private+non-override, so it does not
+    replace TControl.GetText. Caption (= TControl.GetText -> RealGetText
+    -> FCaption) returns the stale FCaption that was last assigned via
+    the LCL Caption setter, NOT what the user typed -- so TryStrToFloat
+    parses '' and FValue stays at 0. }
+  if SysUtils.TryStrToFloat(Text, lValue) then FValue := lValue;
   DoUpdateUpDown;
   inherited DoChange;
 end;
@@ -3747,6 +3754,14 @@ end;
 constructor TCDSpinEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  { TCDEdit.Create strips csAcceptsControls (TEdit-style controls don't
+    typically host children). TCDSpinEdit DOES host a TUpDown child, so
+    re-enable it; without this, AlignControls is suppressed when our
+    bounds change and the alRight TUpDown sticks at its initial offset
+    (e.g. x=63 from the 80x25 default size) instead of tracking the
+    right edge after the LCL spin's actual bounds (e.g. 100x26) cascade
+    in via alClient. }
+  ControlStyle := ControlStyle + [csAcceptsControls];
 
   FUpDown := TUpDown.Create(Self);
   FUpDown.Align := alRight;
