@@ -224,6 +224,38 @@ type
     procedure WLPaintAllPending;
     procedure WLDrawWindow(WI: TWaylandWindowInfo);
     function  WLFindWindowBySurface(Surface: TWaylandSurface): TWaylandWindowInfo;
+    { Wayland-protocol event handlers. Bound as method pointers on the
+      registry / seat / pointer / keyboard / clipboard objects so they
+      reach widget-set state via Self instead of a global. }
+    procedure WLHandleGlobal(Name: LongWord; const Iface: AnsiString;
+      Version: LongWord);
+    procedure WLHandlePing(Serial: LongWord);
+    procedure WLHandleSeatCaps(Sender: TWaylandSeat; Caps: LongWord);
+    procedure WLHandlePointerEnter(Sender: TWaylandPointer; Serial: LongWord;
+      Surface: TWaylandSurface; X, Y: LongInt);
+    procedure WLHandlePointerLeave(Sender: TWaylandPointer; Serial: LongWord;
+      Surface: TWaylandSurface);
+    procedure WLHandlePointerMotion(Sender: TWaylandPointer; TimeMs: LongWord;
+      X, Y: LongInt);
+    procedure WLHandlePointerButton(Sender: TWaylandPointer;
+      Serial, TimeMs, Button, State: LongWord);
+    procedure WLHandlePointerAxis(Sender: TWaylandPointer;
+      TimeMs, Axis: LongWord; Value: TWlFixed);
+    procedure WLHandleKeymap(Sender: TWaylandKeyboard; Format: LongWord;
+      Fd: cint; Size: LongWord);
+    procedure WLHandleKeyboardEnter(Sender: TWaylandKeyboard; Serial: LongWord;
+      Surface: TWaylandSurface);
+    procedure WLHandleKeyboardLeave(Sender: TWaylandKeyboard; Serial: LongWord;
+      Surface: TWaylandSurface);
+    procedure WLHandleKey(Sender: TWaylandKeyboard;
+      Serial, TimeMs, Key, State: LongWord);
+    procedure WLHandleKeyMods(Sender: TWaylandKeyboard;
+      Serial, ModsDepressed, ModsLatched, ModsLocked, Group: LongWord);
+    procedure WLHandleSurfaceConfigure(Sender: TXdgSurface; Serial: LongWord);
+    procedure WLHandleToplevelConfigure(Sender: TXdgToplevel;
+      W, H: LongInt; const States: array of LongWord);
+    procedure WLHandleToplevelClose(Sender: TXdgToplevel);
+    function  WLCurrentShiftState: TShiftState;
     {$endif}
   // For generic methods added in customdrawn
   // They are used internally in LCL-CustomDrawn, LCL app should not use them
@@ -353,31 +385,6 @@ function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
 {$ifdef CD_X11}
 procedure MyXConnectionWatchProc(display: PDisplay; client_data: TXPointer;
   fd: cint; opening: XLib.TBool; watch_data: PXPointer); cdecl;
-{$endif}
-{$ifdef CD_Wayland}
-procedure WLHandleGlobal(Name: LongWord; const Iface: AnsiString; Version: LongWord);
-procedure WLHandlePing(Serial: LongWord);
-procedure WLHandleSeatCaps(Sender: TWaylandSeat; Caps: LongWord);
-procedure WLHandlePointerEnter(Sender: TWaylandPointer; Serial: LongWord;
-  Surface: TWaylandSurface; X, Y: LongInt);
-procedure WLHandlePointerLeave(Sender: TWaylandPointer; Serial: LongWord;
-  Surface: TWaylandSurface);
-procedure WLHandlePointerMotion(Sender: TWaylandPointer; TimeMs: LongWord;
-  X, Y: LongInt);
-procedure WLHandlePointerButton(Sender: TWaylandPointer;
-  Serial, TimeMs, Button, State: LongWord);
-procedure WLHandlePointerAxis(Sender: TWaylandPointer;
-  TimeMs, Axis: LongWord; Value: TWlFixed);
-procedure WLHandleKeymap(Sender: TWaylandKeyboard; Format: LongWord;
-  Fd: cint; Size: LongWord);
-procedure WLHandleKeyboardEnter(Sender: TWaylandKeyboard; Serial: LongWord;
-  Surface: TWaylandSurface);
-procedure WLHandleKeyboardLeave(Sender: TWaylandKeyboard; Serial: LongWord;
-  Surface: TWaylandSurface);
-procedure WLHandleKey(Sender: TWaylandKeyboard;
-  Serial, TimeMs, Key, State: LongWord);
-procedure WLHandleKeyMods(Sender: TWaylandKeyboard;
-  Serial, ModsDepressed, ModsLatched, ModsLocked, Group: LongWord);
 {$endif}
 {$ifdef CD_Android}
 function Java_com_pascal_lclproject_LCLActivity_LCLOnTouch(env:PJNIEnv;this:jobject; x, y: single; action: jint): jint; cdecl;

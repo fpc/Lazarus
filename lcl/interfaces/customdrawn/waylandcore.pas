@@ -20,6 +20,12 @@ const
   WL_SHM_FORMAT_ARGB8888 = 0;
   WL_SHM_FORMAT_XRGB8888 = 1;
 
+  { Wayland id-range split: client ids run 1..WL_SERVER_ID_BASE-1,
+    server-allocated ids run WL_SERVER_ID_BASE..$FFFFFFFF. Used by
+    TWaylandDisplay.Register / Find / Unregister to pick the right
+    storage list. }
+  WL_SERVER_ID_BASE = LongWord($FF000000);
+
 type
   TWaylandObject       = class;
   TWaylandObjectClass  = class of TWaylandObject;
@@ -36,47 +42,51 @@ type
   TWaylandPointer      = class;
   TWaylandKeyboard     = class;
 
+  { Callback types are method types ('of object') so the host can bind
+    them to instance methods of its widget set / window class without
+    routing through globals. Pure-function callers that don't need a
+    receiver can adapt with a one-line wrapper method. }
   TGlobalProc          = procedure(Name: LongWord;
                                    const Iface: AnsiString;
-                                   Version: LongWord);
-  TGlobalRemoveProc    = procedure(Name: LongWord);
-  TCallbackDoneProc    = procedure(CallbackData: LongWord);
-  TBufferReleaseProc   = procedure(Buffer: TWaylandBuffer);
-  TShmFormatProc       = procedure(Format: LongWord);
+                                   Version: LongWord) of object;
+  TGlobalRemoveProc    = procedure(Name: LongWord) of object;
+  TCallbackDoneProc    = procedure(CallbackData: LongWord) of object;
+  TBufferReleaseProc   = procedure(Buffer: TWaylandBuffer) of object;
+  TShmFormatProc       = procedure(Format: LongWord) of object;
   TDisplayErrorProc    = procedure(ObjectId: TWlObjectId;
                                    Code: LongWord;
-                                   const Message: AnsiString);
+                                   const Message: AnsiString) of object;
 
   { Seat capabilities bitmask. }
-  TSeatCapsProc        = procedure(Sender: TWaylandSeat; Caps: LongWord);
+  TSeatCapsProc        = procedure(Sender: TWaylandSeat; Caps: LongWord) of object;
 
   { Pointer events. Coordinates are wl_fixed (24.8); we deliver them
     pre-converted to integer pixels because LCL only deals in ints. }
   TPointerEnterProc    = procedure(Sender: TWaylandPointer; Serial: LongWord;
-                                   Surface: TWaylandSurface; X, Y: LongInt);
+                                   Surface: TWaylandSurface; X, Y: LongInt) of object;
   TPointerLeaveProc    = procedure(Sender: TWaylandPointer; Serial: LongWord;
-                                   Surface: TWaylandSurface);
+                                   Surface: TWaylandSurface) of object;
   TPointerMotionProc   = procedure(Sender: TWaylandPointer; TimeMs: LongWord;
-                                   X, Y: LongInt);
+                                   X, Y: LongInt) of object;
   TPointerButtonProc   = procedure(Sender: TWaylandPointer; Serial, TimeMs,
-                                   Button, State: LongWord);
+                                   Button, State: LongWord) of object;
   TPointerAxisProc     = procedure(Sender: TWaylandPointer; TimeMs, Axis: LongWord;
-                                   Value: TWlFixed);
+                                   Value: TWlFixed) of object;
 
   { Keyboard events. The keymap event hands us a file descriptor that
     must be mmapped to read the XKB keymap; we expose it raw and let
     the host decide. }
   TKeyboardKeymapProc  = procedure(Sender: TWaylandKeyboard; Format: LongWord;
-                                   Fd: cint; Size: LongWord);
+                                   Fd: cint; Size: LongWord) of object;
   TKeyboardEnterProc   = procedure(Sender: TWaylandKeyboard; Serial: LongWord;
-                                   Surface: TWaylandSurface);
+                                   Surface: TWaylandSurface) of object;
   TKeyboardLeaveProc   = procedure(Sender: TWaylandKeyboard; Serial: LongWord;
-                                   Surface: TWaylandSurface);
+                                   Surface: TWaylandSurface) of object;
   TKeyboardKeyProc     = procedure(Sender: TWaylandKeyboard; Serial, TimeMs,
-                                   Key, State: LongWord);
+                                   Key, State: LongWord) of object;
   TKeyboardModsProc    = procedure(Sender: TWaylandKeyboard; Serial,
                                    ModsDepressed, ModsLatched, ModsLocked,
-                                   Group: LongWord);
+                                   Group: LongWord) of object;
 
   TWaylandObject = class
   protected
@@ -95,10 +105,15 @@ type
 
   TWaylandDisplay = class(TWaylandObject)
   private
-    FConn:        TWlConnection;
-    FObjects:     TFPList;        { sparse, indexed by object id }
-    FNextId:      TWlObjectId;
-    FFatalError:  AnsiString;
+    FConn:           TWlConnection;
+    { Wayland splits the 32-bit object-id range: client allocates
+      1..WL_SERVER_ID_BASE-1, server allocates WL_SERVER_ID_BASE
+      upwards (used when the server delivers a new_id to the client,
+      e.g. via wl_data_device.data_offer). We keep two sparse lists. }
+    FObjects:        TFPList;     { client ids: indexed by id }
+    FServerObjects:  TFPList;     { server ids: indexed by id - WL_SERVER_ID_BASE }
+    FNextId:         TWlObjectId;
+    FFatalError:     AnsiString;
   protected
     procedure Dispatch(Opcode: Word; var Reader: TWlReader); override;
   public
@@ -268,6 +283,7 @@ constructor TWaylandDisplay.Create;
 begin
   FConn := TWlConnection.Create;
   FObjects := TFPList.Create;
+  FServerObjects := TFPList.Create;
   FNextId := 2;
   inherited Create(Self, 1);
   Register(Self);
@@ -277,6 +293,7 @@ destructor TWaylandDisplay.Destroy;
 begin
   FConn.Free;
   FObjects.Free;
+  FServerObjects.Free;
   inherited Destroy;
 end;
 
@@ -287,22 +304,60 @@ begin
 end;
 
 procedure TWaylandDisplay.Register(Obj: TWaylandObject);
+var
+  L: TFPList;
+  Idx: PtrInt;
 begin
-  while FObjects.Count <= Integer(Obj.Id) do
-    FObjects.Add(nil);
-  FObjects[Integer(Obj.Id)] := Obj;
+  if Obj.Id >= WL_SERVER_ID_BASE then
+  begin
+    L := FServerObjects;
+    Idx := PtrInt(Obj.Id - WL_SERVER_ID_BASE);
+  end
+  else
+  begin
+    L := FObjects;
+    Idx := PtrInt(Obj.Id);
+  end;
+  while L.Count <= Idx do L.Add(nil);
+  L[Idx] := Obj;
 end;
 
 procedure TWaylandDisplay.Unregister(Obj: TWaylandObject);
+var
+  L: TFPList;
+  Idx: PtrInt;
 begin
-  if (Obj <> nil) and (Integer(Obj.Id) < FObjects.Count) then
-    FObjects[Integer(Obj.Id)] := nil;
+  if Obj = nil then Exit;
+  if Obj.Id >= WL_SERVER_ID_BASE then
+  begin
+    L := FServerObjects;
+    Idx := PtrInt(Obj.Id - WL_SERVER_ID_BASE);
+  end
+  else
+  begin
+    L := FObjects;
+    Idx := PtrInt(Obj.Id);
+  end;
+  if (Idx >= 0) and (Idx < L.Count) then L[Idx] := nil;
 end;
 
 function TWaylandDisplay.Find(AId: TWlObjectId): TWaylandObject;
+var
+  L: TFPList;
+  Idx: PtrInt;
 begin
-  if Integer(AId) < FObjects.Count then
-    Result := TWaylandObject(FObjects[Integer(AId)])
+  if AId >= WL_SERVER_ID_BASE then
+  begin
+    L := FServerObjects;
+    Idx := PtrInt(AId - WL_SERVER_ID_BASE);
+  end
+  else
+  begin
+    L := FObjects;
+    Idx := PtrInt(AId);
+  end;
+  if (Idx >= 0) and (Idx < L.Count) then
+    Result := TWaylandObject(L[Idx])
   else
     Result := nil;
 end;
@@ -384,10 +439,13 @@ begin
         OnError(ObjId, Code, Msg);
       raise Exception.Create(FFatalError);
     end;
-    1: begin   { delete_id }
+    1: begin   { delete_id -- server has reclaimed an id (always one
+                  the client allocated). Drop the entry so a future
+                  Register at the same id slot re-allocates fresh. }
       DeletedId := Reader.ReadUInt;
-      if Integer(DeletedId) < FObjects.Count then
-        FObjects[Integer(DeletedId)] := nil;
+      if (DeletedId < WL_SERVER_ID_BASE)
+         and (PtrInt(DeletedId) < FObjects.Count) then
+        FObjects[PtrInt(DeletedId)] := nil;
     end;
   end;
 end;

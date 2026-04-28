@@ -15,7 +15,7 @@ type
   TXdgActivationV1     = class;
   TXdgActivationTokenV1 = class;
 
-  TActivationDoneProc = procedure(const Token: AnsiString);
+  TActivationDoneProc = procedure(const Token: AnsiString) of object;
 
   TXdgActivationV1 = class(TWaylandObject)
   public

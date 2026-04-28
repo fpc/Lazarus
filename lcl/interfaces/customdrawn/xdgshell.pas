@@ -15,12 +15,12 @@ type
   TXdgSurface  = class;
   TXdgToplevel = class;
 
-  TXdgPingProc                = procedure(Serial: LongWord);
-  TXdgConfigureProc           = procedure(Sender: TXdgSurface; Serial: LongWord);
+  TXdgPingProc                = procedure(Serial: LongWord) of object;
+  TXdgConfigureProc           = procedure(Sender: TXdgSurface; Serial: LongWord) of object;
   TXdgToplevelConfigureProc   = procedure(Sender: TXdgToplevel;
                                           Width, Height: LongInt;
-                                          const States: array of LongWord);
-  TXdgToplevelCloseProc       = procedure(Sender: TXdgToplevel);
+                                          const States: array of LongWord) of object;
+  TXdgToplevelCloseProc       = procedure(Sender: TXdgToplevel) of object;
 
   TXdgWmBase = class(TWaylandObject)
   protected

@@ -141,85 +141,29 @@ begin
   WI.Surface.Commit;
 end;
 
-{ Per-window callbacks. The xdgshell callbacks pass us the surface or
-  toplevel that fired; we look up the matching WindowInfo from the
-  widgetset's FWlWindowList. }
-
-procedure WLHandleSurfaceConfigure(Sender: TXdgSurface; Serial: LongWord);
-var
-  i: Integer;
-  WI: TWaylandWindowInfo;
-begin
-  Sender.AckConfigure(Serial);
-  for i := 0 to CDWidgetset.FWlWindowList.Count - 1 do
-  begin
-    WI := TWaylandWindowInfo(CDWidgetset.FWlWindowList[i]);
-    if (WI <> nil) and (WI.XdgSurf = Sender) then
-    begin
-      WI.HasConfigure := True;
-      WI.PendingDraw := True;
-      Exit;
-    end;
-  end;
-end;
-
-procedure WLHandleToplevelConfigure(Sender: TXdgToplevel;
-  W, H: LongInt; const States: array of LongWord);
-var
-  i: Integer;
-  WI: TWaylandWindowInfo;
-begin
-  if (W <= 0) or (H <= 0) then Exit;
-  for i := 0 to CDWidgetset.FWlWindowList.Count - 1 do
-  begin
-    WI := TWaylandWindowInfo(CDWidgetset.FWlWindowList[i]);
-    if (WI <> nil) and (WI.Toplevel = Sender) then
-    begin
-      if (WI.LCLForm <> nil) and
-         ((WI.LCLForm.Width <> W) or (WI.LCLForm.Height <> H)) then
-      begin
-        WI.LCLForm.SetBounds(WI.LCLForm.Left, WI.LCLForm.Top, W, H);
-        WI.PendingDraw := True;
-      end;
-      Exit;
-    end;
-  end;
-end;
-
-procedure WLHandleToplevelClose(Sender: TXdgToplevel);
-var
-  i: Integer;
-  WI: TWaylandWindowInfo;
-begin
-  for i := 0 to CDWidgetset.FWlWindowList.Count - 1 do
-  begin
-    WI := TWaylandWindowInfo(CDWidgetset.FWlWindowList[i]);
-    if (WI <> nil) and (WI.Toplevel = Sender) then
-    begin
-      WI.ShouldClose := True;
-      if WI.LCLForm <> nil then
-        LCLSendCloseQueryMsg(WI.LCLForm);
-      Exit;
-    end;
-  end;
-end;
 
 
 class function TCDWSCustomForm.DoCreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLHandle;
 var
   WI: TWaylandWindowInfo;
+  WSet: TCDWidgetSet;
   EnvToken: string;
 begin
+  { LCL class method -- no widget-set Self. Resolve the typed view of
+    the LCL global once and use it through the rest of this method, so
+    callbacks bind as method pointers on a real instance. }
+  WSet := CDWidgetset;
+
   WI := TWaylandWindowInfo.Create;
   WI.LCLForm := TCustomForm(AWinControl);
 
-  WI.Surface  := CDWidgetset.FWlCompositor.CreateSurface;
-  WI.XdgSurf  := CDWidgetset.FXdgWmBase.GetXdgSurface(WI.Surface);
-  WI.XdgSurf.OnConfigure := @WLHandleSurfaceConfigure;
+  WI.Surface  := WSet.FWlCompositor.CreateSurface;
+  WI.XdgSurf  := WSet.FXdgWmBase.GetXdgSurface(WI.Surface);
+  WI.XdgSurf.OnConfigure := @WSet.WLHandleSurfaceConfigure;
   WI.Toplevel := WI.XdgSurf.GetToplevel;
-  WI.Toplevel.OnConfigure := @WLHandleToplevelConfigure;
-  WI.Toplevel.OnClose     := @WLHandleToplevelClose;
+  WI.Toplevel.OnConfigure := @WSet.WLHandleToplevelConfigure;
+  WI.Toplevel.OnClose     := @WSet.WLHandleToplevelClose;
   if AWinControl.Caption <> '' then
     WI.Toplevel.SetTitle(AWinControl.Caption);
   WI.Toplevel.SetAppId('org.lazarus.customdrawn');

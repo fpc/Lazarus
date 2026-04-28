@@ -7,79 +7,78 @@
 
 { TCDWidgetSet }
 
-procedure WLHandleGlobal(Name: LongWord; const Iface: AnsiString; Version: LongWord);
+procedure TCDWidgetSet.WLHandleGlobal(Name: LongWord;
+  const Iface: AnsiString; Version: LongWord);
 var
   V: LongWord;
 begin
   if Iface = 'wl_compositor' then
   begin
     if Version > 4 then V := 4 else V := Version;
-    CDWidgetset.FWlCompositor := TWaylandCompositor(
-      CDWidgetset.FWlRegistry.BindRaw(Name, Iface, V, TWaylandCompositor));
+    FWlCompositor := TWaylandCompositor(
+      FWlRegistry.BindRaw(Name, Iface, V, TWaylandCompositor));
   end
   else if Iface = 'wl_shm' then
   begin
-    CDWidgetset.FWlShm := TWaylandShm(
-      CDWidgetset.FWlRegistry.BindRaw(Name, Iface, 1, TWaylandShm));
+    FWlShm := TWaylandShm(
+      FWlRegistry.BindRaw(Name, Iface, 1, TWaylandShm));
   end
   else if Iface = 'xdg_wm_base' then
   begin
     if Version > 5 then V := 5 else V := Version;
-    CDWidgetset.FXdgWmBase := TXdgWmBase(
-      CDWidgetset.FWlRegistry.BindRaw(Name, Iface, V, TXdgWmBase));
-    CDWidgetset.FXdgWmBase.OnPing := @WLHandlePing;
+    FXdgWmBase := TXdgWmBase(
+      FWlRegistry.BindRaw(Name, Iface, V, TXdgWmBase));
+    FXdgWmBase.OnPing := @WLHandlePing;
   end
   else if Iface = 'xdg_activation_v1' then
   begin
-    CDWidgetset.FXdgActivation := TXdgActivationV1(
-      CDWidgetset.FWlRegistry.BindRaw(Name, Iface, 1, TXdgActivationV1));
+    FXdgActivation := TXdgActivationV1(
+      FWlRegistry.BindRaw(Name, Iface, 1, TXdgActivationV1));
   end
   else if Iface = 'wl_seat' then
   begin
     { v1 is enough for non-frame'd pointer + key + modifiers events.
       v5+ adds frame/axis_source/etc. that we currently ignore. }
-    CDWidgetset.FWlSeat := TWaylandSeat(
-      CDWidgetset.FWlRegistry.BindRaw(Name, Iface, 1, TWaylandSeat));
-    CDWidgetset.FWlSeat.OnCapabilities := @WLHandleSeatCaps;
+    FWlSeat := TWaylandSeat(
+      FWlRegistry.BindRaw(Name, Iface, 1, TWaylandSeat));
+    FWlSeat.OnCapabilities := @WLHandleSeatCaps;
   end
   else if Iface = 'wp_cursor_shape_manager_v1' then
   begin
-    CDWidgetset.FWpCursorShapeMgr := TWpCursorShapeManagerV1(
-      CDWidgetset.FWlRegistry.BindRaw(Name, Iface, 1, TWpCursorShapeManagerV1));
+    FWpCursorShapeMgr := TWpCursorShapeManagerV1(
+      FWlRegistry.BindRaw(Name, Iface, 1, TWpCursorShapeManagerV1));
   end;
 end;
 
-procedure WLHandlePing(Serial: LongWord);
+procedure TCDWidgetSet.WLHandlePing(Serial: LongWord);
 begin
-  if Assigned(CDWidgetset.FXdgWmBase) then
-    CDWidgetset.FXdgWmBase.Pong(Serial);
+  if Assigned(FXdgWmBase) then
+    FXdgWmBase.Pong(Serial);
 end;
 
-procedure WLHandleSeatCaps(Sender: TWaylandSeat; Caps: LongWord);
+procedure TCDWidgetSet.WLHandleSeatCaps(Sender: TWaylandSeat; Caps: LongWord);
 begin
   if ((Caps and WL_SEAT_CAPABILITY_POINTER) <> 0)
-     and (CDWidgetset.FWlPointer = nil) then
+     and (FWlPointer = nil) then
   begin
-    CDWidgetset.FWlPointer := Sender.GetPointer;
-    CDWidgetset.FWlPointer.OnEnter  := @WLHandlePointerEnter;
-    CDWidgetset.FWlPointer.OnLeave  := @WLHandlePointerLeave;
-    CDWidgetset.FWlPointer.OnMotion := @WLHandlePointerMotion;
-    CDWidgetset.FWlPointer.OnButton := @WLHandlePointerButton;
-    CDWidgetset.FWlPointer.OnAxis   := @WLHandlePointerAxis;
-    if (CDWidgetset.FWpCursorShapeMgr <> nil)
-       and (CDWidgetset.FWpCursorShapeDev = nil) then
-      CDWidgetset.FWpCursorShapeDev :=
-        CDWidgetset.FWpCursorShapeMgr.GetPointer(CDWidgetset.FWlPointer);
+    FWlPointer := Sender.GetPointer;
+    FWlPointer.OnEnter  := @WLHandlePointerEnter;
+    FWlPointer.OnLeave  := @WLHandlePointerLeave;
+    FWlPointer.OnMotion := @WLHandlePointerMotion;
+    FWlPointer.OnButton := @WLHandlePointerButton;
+    FWlPointer.OnAxis   := @WLHandlePointerAxis;
+    if (FWpCursorShapeMgr <> nil) and (FWpCursorShapeDev = nil) then
+      FWpCursorShapeDev := FWpCursorShapeMgr.GetPointer(FWlPointer);
   end;
   if ((Caps and WL_SEAT_CAPABILITY_KEYBOARD) <> 0)
-     and (CDWidgetset.FWlKeyboard = nil) then
+     and (FWlKeyboard = nil) then
   begin
-    CDWidgetset.FWlKeyboard := Sender.GetKeyboard;
-    CDWidgetset.FWlKeyboard.OnKeymap    := @WLHandleKeymap;
-    CDWidgetset.FWlKeyboard.OnEnter     := @WLHandleKeyboardEnter;
-    CDWidgetset.FWlKeyboard.OnLeave     := @WLHandleKeyboardLeave;
-    CDWidgetset.FWlKeyboard.OnKey       := @WLHandleKey;
-    CDWidgetset.FWlKeyboard.OnModifiers := @WLHandleKeyMods;
+    FWlKeyboard := Sender.GetKeyboard;
+    FWlKeyboard.OnKeymap    := @WLHandleKeymap;
+    FWlKeyboard.OnEnter     := @WLHandleKeyboardEnter;
+    FWlKeyboard.OnLeave     := @WLHandleKeyboardLeave;
+    FWlKeyboard.OnKey       := @WLHandleKey;
+    FWlKeyboard.OnModifiers := @WLHandleKeyMods;
   end;
 end;
 
@@ -105,16 +104,16 @@ end;
   correct character translation under non-US layouts.
   ------------------------------------------------------------------ }
 
-function WLCurrentShiftState: TShiftState;
+function TCDWidgetSet.WLCurrentShiftState: TShiftState;
 begin
   Result := [];
-  if CDWidgetset.FWlShiftHeld then Include(Result, ssShift);
-  if CDWidgetset.FWlCtrlHeld  then Include(Result, ssCtrl);
-  if CDWidgetset.FWlAltHeld   then Include(Result, ssAlt);
+  if FWlShiftHeld then Include(Result, ssShift);
+  if FWlCtrlHeld  then Include(Result, ssCtrl);
+  if FWlAltHeld   then Include(Result, ssAlt);
 end;
 
-procedure WLHandlePointerEnter(Sender: TWaylandPointer; Serial: LongWord;
-  Surface: TWaylandSurface; X, Y: LongInt);
+procedure TCDWidgetSet.WLHandlePointerEnter(Sender: TWaylandPointer;
+  Serial: LongWord; Surface: TWaylandSurface; X, Y: LongInt);
 begin
   if WaylandTrace then Trace(' input',
     Format('pointer enter surface=%p at (%d,%d)', [Pointer(Surface), X, Y]));
@@ -124,34 +123,34 @@ begin
     our window). Use wp_cursor_shape_v1 if the compositor offers it
     (server provides a themed cursor) -- nothing to fall back to without
     a wl_shm cursor bitmap, and we don't ship one. }
-  if CDWidgetset.FWpCursorShapeDev <> nil then
-    CDWidgetset.FWpCursorShapeDev.SetShape(Serial, WP_CURSOR_SHAPE_DEFAULT);
-  CDWidgetset.FWlPointerFocus := CDWidgetset.WLFindWindowBySurface(Surface);
-  CDWidgetset.FWlPointerX := X;
-  CDWidgetset.FWlPointerY := Y;
-  if CDWidgetset.FWlPointerFocus <> nil then
-    CallbackMouseMove(CDWidgetset.FWlPointerFocus, X, Y, WLCurrentShiftState);
+  if FWpCursorShapeDev <> nil then
+    FWpCursorShapeDev.SetShape(Serial, WP_CURSOR_SHAPE_DEFAULT);
+  FWlPointerFocus := WLFindWindowBySurface(Surface);
+  FWlPointerX := X;
+  FWlPointerY := Y;
+  if FWlPointerFocus <> nil then
+    CallbackMouseMove(FWlPointerFocus, X, Y, WLCurrentShiftState);
 end;
 
-procedure WLHandlePointerLeave(Sender: TWaylandPointer; Serial: LongWord;
-  Surface: TWaylandSurface);
+procedure TCDWidgetSet.WLHandlePointerLeave(Sender: TWaylandPointer;
+  Serial: LongWord; Surface: TWaylandSurface);
 begin
-  CDWidgetset.FWlPointerFocus := nil;
+  FWlPointerFocus := nil;
 end;
 
-procedure WLHandlePointerMotion(Sender: TWaylandPointer; TimeMs: LongWord;
-  X, Y: LongInt);
+procedure TCDWidgetSet.WLHandlePointerMotion(Sender: TWaylandPointer;
+  TimeMs: LongWord; X, Y: LongInt);
 var
   WI: TWaylandWindowInfo;
 begin
-  CDWidgetset.FWlPointerX := X;
-  CDWidgetset.FWlPointerY := Y;
-  WI := CDWidgetset.FWlPointerFocus;
+  FWlPointerX := X;
+  FWlPointerY := Y;
+  WI := FWlPointerFocus;
   if WI <> nil then
     CallbackMouseMove(WI, X, Y, WLCurrentShiftState);
 end;
 
-procedure WLHandlePointerButton(Sender: TWaylandPointer;
+procedure TCDWidgetSet.WLHandlePointerButton(Sender: TWaylandPointer;
   Serial, TimeMs, Button, State: LongWord);
 var
   WI: TWaylandWindowInfo;
@@ -160,9 +159,8 @@ var
 begin
   if WaylandTrace then Trace(' input',
     Format('pointer button=$%x state=%d at (%d,%d) focus=%p',
-      [Button, State, CDWidgetset.FWlPointerX, CDWidgetset.FWlPointerY,
-       Pointer(CDWidgetset.FWlPointerFocus)]));
-  WI := CDWidgetset.FWlPointerFocus;
+      [Button, State, FWlPointerX, FWlPointerY, Pointer(FWlPointerFocus)]));
+  WI := FWlPointerFocus;
   if (WI = nil) or (WI.LCLForm = nil) then Exit;
   Known := True;
   case Button of
@@ -174,20 +172,18 @@ begin
   end;
   if not Known then Exit;
   if State = WL_POINTER_BUTTON_PRESSED then
-    CallbackMouseDown(WI, CDWidgetset.FWlPointerX,
-                      CDWidgetset.FWlPointerY, Btn, WLCurrentShiftState)
+    CallbackMouseDown(WI, FWlPointerX, FWlPointerY, Btn, WLCurrentShiftState)
   else
-    CallbackMouseUp(WI, CDWidgetset.FWlPointerX,
-                    CDWidgetset.FWlPointerY, Btn, WLCurrentShiftState);
+    CallbackMouseUp(WI, FWlPointerX, FWlPointerY, Btn, WLCurrentShiftState);
 end;
 
-procedure WLHandlePointerAxis(Sender: TWaylandPointer;
+procedure TCDWidgetSet.WLHandlePointerAxis(Sender: TWaylandPointer;
   TimeMs, Axis: LongWord; Value: TWlFixed);
 var
   WI: TWaylandWindowInfo;
   Delta: SmallInt;
 begin
-  WI := CDWidgetset.FWlPointerFocus;
+  WI := FWlPointerFocus;
   if (WI = nil) or (WI.LCLForm = nil) then Exit;
   if Axis <> WL_POINTER_AXIS_VERTICAL_SCROLL then Exit;  { FIXME: ignore horizontal }
   { Wayland axis value is wl_fixed in surface units (roughly pixel rows
@@ -197,12 +193,12 @@ begin
   if Value > 0 then Delta := -120
   else if Value < 0 then Delta := 120
   else Exit;
-  LCLSendMouseWheelMsg(WI.LCLForm, CDWidgetset.FWlPointerX,
-                       CDWidgetset.FWlPointerY, Delta, WLCurrentShiftState);
+  LCLSendMouseWheelMsg(WI.LCLForm, FWlPointerX, FWlPointerY, Delta,
+                       WLCurrentShiftState);
 end;
 
-procedure WLHandleKeymap(Sender: TWaylandKeyboard; Format: LongWord;
-  Fd: cint; Size: LongWord);
+procedure TCDWidgetSet.WLHandleKeymap(Sender: TWaylandKeyboard;
+  Format: LongWord; Fd: cint; Size: LongWord);
 begin
   { FIXME: We close the fd without using the keymap. A real
     implementation would mmap it (Format=1 means xkb_v1) and feed
@@ -211,23 +207,23 @@ begin
   if Fd >= 0 then FpClose(Fd);
 end;
 
-procedure WLHandleKeyboardEnter(Sender: TWaylandKeyboard; Serial: LongWord;
-  Surface: TWaylandSurface);
+procedure TCDWidgetSet.WLHandleKeyboardEnter(Sender: TWaylandKeyboard;
+  Serial: LongWord; Surface: TWaylandSurface);
 begin
-  CDWidgetset.FWlKeyboardFocus := CDWidgetset.WLFindWindowBySurface(Surface);
+  FWlKeyboardFocus := WLFindWindowBySurface(Surface);
   if WaylandTrace then Trace(' input',
     Format('keyboard ENTER surface=%p focus=%p',
-      [Pointer(Surface), Pointer(CDWidgetset.FWlKeyboardFocus)]));
+      [Pointer(Surface), Pointer(FWlKeyboardFocus)]));
 end;
 
-procedure WLHandleKeyboardLeave(Sender: TWaylandKeyboard; Serial: LongWord;
-  Surface: TWaylandSurface);
+procedure TCDWidgetSet.WLHandleKeyboardLeave(Sender: TWaylandKeyboard;
+  Serial: LongWord; Surface: TWaylandSurface);
 begin
-  CDWidgetset.FWlKeyboardFocus := nil;
+  FWlKeyboardFocus := nil;
   { Drop any held modifier state so we don't leak into the next focus. }
-  CDWidgetset.FWlShiftHeld := False;
-  CDWidgetset.FWlCtrlHeld  := False;
-  CDWidgetset.FWlAltHeld   := False;
+  FWlShiftHeld := False;
+  FWlCtrlHeld  := False;
+  FWlAltHeld   := False;
 end;
 
 { Linux evdev keycode -> Windows VK_*. Covers the common keys for a
@@ -322,7 +318,7 @@ begin
   else            Result := Lower[Code];
 end;
 
-procedure WLHandleKey(Sender: TWaylandKeyboard;
+procedure TCDWidgetSet.WLHandleKey(Sender: TWaylandKeyboard;
   Serial, TimeMs, Key, State: LongWord);
 var
   WI: TWaylandWindowInfo;
@@ -331,17 +327,9 @@ var
 begin
   if WaylandTrace then Trace(' input',
     Format('keyboard key evdev=%d state=%d focus=%p',
-      [Key, State, Pointer(CDWidgetset.FWlKeyboardFocus)]));
-  WI := CDWidgetset.FWlKeyboardFocus;
+      [Key, State, Pointer(FWlKeyboardFocus)]));
+  WI := FWlKeyboardFocus;
   if (WI = nil) or (WI.LCLForm = nil) then Exit;
-
-  { Track modifier keys ourselves -- easier than carrying every
-    wl_keyboard.modifiers event's xkb mask through to the LCL. }
-  case Key of
-    42, 54: CDWidgetset.FWlShiftHeld := (State = WL_KEYBOARD_KEY_PRESSED);
-    29, 97: CDWidgetset.FWlCtrlHeld  := (State = WL_KEYBOARD_KEY_PRESSED);
-    56,100: CDWidgetset.FWlAltHeld   := (State = WL_KEYBOARD_KEY_PRESSED);
-  end;
 
   VK := WLEvdevToVK(Key);
   if VK = 0 then Exit;
@@ -349,21 +337,41 @@ begin
   if State = WL_KEYBOARD_KEY_PRESSED then
   begin
     CallbackKeyDown(WI, VK);
-    Ch := WLEvdevToChar(Key, CDWidgetset.FWlShiftHeld);
-    if Ch <> #0 then
-      CallbackKeyChar(WI, 0, Ch);
+    { Our hardcoded US-QWERTY keymap is modifier-agnostic: it returns
+      the printable letter even with Ctrl/Alt held, which would land
+      'c' / 'v' / 'x' in the edit on a clipboard chord. Skip the
+      char delivery when Ctrl or Alt is held -- the chord still
+      reaches OnKeyDown via CallbackKeyDown above. }
+    if not (FWlCtrlHeld or FWlAltHeld) then
+    begin
+      Ch := WLEvdevToChar(Key, FWlShiftHeld);
+      if Ch <> #0 then
+        CallbackKeyChar(WI, 0, Ch);
+    end;
   end
   else
     CallbackKeyUp(WI, VK);
 end;
 
-procedure WLHandleKeyMods(Sender: TWaylandKeyboard;
+procedure TCDWidgetSet.WLHandleKeyMods(Sender: TWaylandKeyboard;
   Serial, ModsDepressed, ModsLatched, ModsLocked, Group: LongWord);
+const
+  { Standard XKB modifier-mask bit positions: Shift / Lock / Control /
+    Mod1..Mod5 are the X11 modifier indices that XKB inherits and
+    Wayland forwards verbatim in wl_keyboard.modifiers. }
+  XKB_MOD_SHIFT = 1 shl 0;
+  XKB_MOD_CTRL  = 1 shl 2;
+  XKB_MOD_MOD1  = 1 shl 3;     { almost always Alt }
+var
+  Active: LongWord;
 begin
-  { FIXME: we already track modifiers from key events for correctness
-    without xkb. The compositor's own xkb state in ModsDepressed is
-    ignored here; once we wire xkbcommon in, it should be the
-    authoritative source. }
+  { Active modifiers = depressed (held physically) | latched (one-shot
+    that fires on the next key, e.g. sticky-keys). Locked (caps/num)
+    is handled separately because it shouldn't appear as ssShift. }
+  Active := ModsDepressed or ModsLatched;
+  FWlShiftHeld := (Active and XKB_MOD_SHIFT) <> 0;
+  FWlCtrlHeld  := (Active and XKB_MOD_CTRL)  <> 0;
+  FWlAltHeld   := (Active and XKB_MOD_MOD1)  <> 0;
 end;
 
 function TCDWidgetSet.GetAppHandle: TLCLHandle;
@@ -680,4 +688,68 @@ end;
 procedure TCDWidgetSet.WLDrawWindow(WI: TWaylandWindowInfo);
 begin
   TCDWSCustomForm.WLPaintForm(WI);
+end;
+
+{ Per-window xdg_surface / xdg_toplevel callbacks. These walk
+  FWlWindowList to find the per-form WindowInfo whose xdg_surface or
+  xdg_toplevel matches Sender, then update its state. }
+
+procedure TCDWidgetSet.WLHandleSurfaceConfigure(Sender: TXdgSurface;
+  Serial: LongWord);
+var
+  i: Integer;
+  WI: TWaylandWindowInfo;
+begin
+  Sender.AckConfigure(Serial);
+  for i := 0 to FWlWindowList.Count - 1 do
+  begin
+    WI := TWaylandWindowInfo(FWlWindowList[i]);
+    if (WI <> nil) and (WI.XdgSurf = Sender) then
+    begin
+      WI.HasConfigure := True;
+      WI.PendingDraw := True;
+      Exit;
+    end;
+  end;
+end;
+
+procedure TCDWidgetSet.WLHandleToplevelConfigure(Sender: TXdgToplevel;
+  W, H: LongInt; const States: array of LongWord);
+var
+  i: Integer;
+  WI: TWaylandWindowInfo;
+begin
+  if (W <= 0) or (H <= 0) then Exit;
+  for i := 0 to FWlWindowList.Count - 1 do
+  begin
+    WI := TWaylandWindowInfo(FWlWindowList[i]);
+    if (WI <> nil) and (WI.Toplevel = Sender) then
+    begin
+      if (WI.LCLForm <> nil) and
+         ((WI.LCLForm.Width <> W) or (WI.LCLForm.Height <> H)) then
+      begin
+        WI.LCLForm.SetBounds(WI.LCLForm.Left, WI.LCLForm.Top, W, H);
+        WI.PendingDraw := True;
+      end;
+      Exit;
+    end;
+  end;
+end;
+
+procedure TCDWidgetSet.WLHandleToplevelClose(Sender: TXdgToplevel);
+var
+  i: Integer;
+  WI: TWaylandWindowInfo;
+begin
+  for i := 0 to FWlWindowList.Count - 1 do
+  begin
+    WI := TWaylandWindowInfo(FWlWindowList[i]);
+    if (WI <> nil) and (WI.Toplevel = Sender) then
+    begin
+      WI.ShouldClose := True;
+      if WI.LCLForm <> nil then
+        LCLSendCloseQueryMsg(WI.LCLForm);
+      Exit;
+    end;
+  end;
 end;
