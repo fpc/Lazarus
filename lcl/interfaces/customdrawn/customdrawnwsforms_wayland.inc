@@ -215,6 +215,14 @@ var
 begin
   if AWinControl.Handle = 0 then Exit;
   WI := TWaylandWindowInfo(AWinControl.Handle);
+  { Drop any focus references before we Free the WI. Wayland may not
+    deliver a final keyboard.leave / pointer.leave when we destroy the
+    surface ourselves (the focus loss is implicit), so without this
+    the next key / motion event dereferences a freed pointer. }
+  if CDWidgetset.FWlKeyboardFocus = WI then
+    CDWidgetset.FWlKeyboardFocus := nil;
+  if CDWidgetset.FWlPointerFocus = WI then
+    CDWidgetset.FWlPointerFocus := nil;
   Idx := CDWidgetset.FWlWindowList.IndexOf(WI);
   if Idx >= 0 then CDWidgetset.FWlWindowList.Delete(Idx);
   if WI.PoolData <> nil then FpMUnMap(WI.PoolData, WI.PoolSize);
