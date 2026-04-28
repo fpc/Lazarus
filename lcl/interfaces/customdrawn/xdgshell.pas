@@ -49,6 +49,7 @@ type
   public
     OnConfigure: TXdgToplevelConfigureProc;
     OnClose:     TXdgToplevelCloseProc;
+    procedure SetParent(Parent: TXdgToplevel);
     procedure SetTitle(const ATitle: AnsiString);
     procedure SetAppId(const AAppId: AnsiString);
     procedure SetMinSize(Width, Height: LongInt);
@@ -176,6 +177,18 @@ begin
       if Assigned(OnClose) then OnClose(Self);
     end;
   end;
+end;
+
+procedure TXdgToplevel.SetParent(Parent: TXdgToplevel);
+var
+  W: TWlWriter;
+begin
+  W.Reset;
+  if Parent = nil then
+    W.WriteObject(0)              { detach from any current parent }
+  else
+    W.WriteObject(Parent.Id);
+  SendRequest(1, W);              { xdg_toplevel.set_parent }
 end;
 
 procedure TXdgToplevel.SetTitle(const ATitle: AnsiString);

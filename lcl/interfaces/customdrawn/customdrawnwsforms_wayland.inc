@@ -149,6 +149,7 @@ var
   WI: TWaylandWindowInfo;
   WSet: TCDWidgetSet;
   EnvToken: string;
+  ParentWI: TWaylandWindowInfo;
 begin
   { LCL class method -- no widget-set Self. Resolve the typed view of
     the LCL global once and use it through the rest of this method, so
@@ -167,6 +168,12 @@ begin
   if AWinControl.Caption <> '' then
     WI.Toplevel.SetTitle(AWinControl.Caption);
   WI.Toplevel.SetAppId('org.lazarus.customdrawn');
+  if AParams.WndParent <> 0 then
+  begin
+    ParentWI := TWaylandWindowInfo(AParams.WndParent);
+    if (ParentWI <> nil) and (ParentWI.Toplevel <> nil) then
+      WI.Toplevel.SetParent(ParentWI.Toplevel);
+  end;
 
   WI.PendingDraw := True;
   CDWidgetset.FWlWindowList.Add(WI);
@@ -274,10 +281,48 @@ begin
     xdg-shell client setting. }
 end;
 
-class procedure TCDWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
+class procedure TCDWSCustomForm.SetRealPopupParent(const ACustomForm: TCustomForm;
+  const APopupParent: TCustomForm);
+var
+  WI, ParentWI: TWaylandWindowInfo;
 begin
-  { FIXME: stub. Should call xdg_toplevel.set_parent + run nested
-    event loop until the modal is dismissed. }
+  { Hooked from TCustomForm.SetPopupParent (and the same code path
+    LCL takes when a non-modal child's PopupMode/PopupParent change).
+    Forward to xdg_toplevel.set_parent: passing nil detaches. }
+  if ACustomForm.Handle = 0 then Exit;
+  WI := TWaylandWindowInfo(ACustomForm.Handle);
+  if (WI = nil) or (WI.Toplevel = nil) then Exit;
+  if (APopupParent = nil) or (APopupParent.Handle = 0) then
+  begin
+    WI.Toplevel.SetParent(nil);
+    Exit;
+  end;
+  ParentWI := TWaylandWindowInfo(APopupParent.Handle);
+  if (ParentWI = nil) or (ParentWI.Toplevel = nil) then Exit;
+  WI.Toplevel.SetParent(ParentWI.Toplevel);
+end;
+
+class procedure TCDWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
+var
+  WI, ParentWI: TWaylandWindowInfo;
+  ParentForm: TCustomForm;
+begin
+  { Wayland's analogue of the win32 / gtk "set transient for" hint is
+    xdg_toplevel.set_parent: tells the compositor this toplevel is a
+    child of another, so it stacks above the parent, fades / dims the
+    parent on capable shells, and returns focus to the parent on
+    close. The LCL itself runs the modal loop in TForm.ShowModal; this
+    method only wires the compositor transient-parent hint. }
+  if ACustomForm.Handle = 0 then Exit;
+  WI := TWaylandWindowInfo(ACustomForm.Handle);
+  if (WI = nil) or (WI.Toplevel = nil) then Exit;
+
+  ParentForm := ACustomForm.GetRealPopupParent;
+  if (ParentForm = nil) or (ParentForm.Handle = 0) then Exit;
+  ParentWI := TWaylandWindowInfo(ParentForm.Handle);
+  if (ParentWI = nil) or (ParentWI.Toplevel = nil) then Exit;
+
+  WI.Toplevel.SetParent(ParentWI.Toplevel);
 end;
 
 class procedure TCDWSCustomForm.ShowHide(const AWinControl: TWinControl);
