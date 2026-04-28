@@ -437,10 +437,11 @@ end;
 function TCDWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
 begin
   { Win32 convention: high bit (0x8000) set if the key is currently
-    physically down, low bit set for toggle keys. We only know down
-    state for the modifier keys we track in WLHandleKey -- everything
-    else returns 0. FIXME: caps lock / num lock toggle state would
-    need wl_keyboard.modifiers ModsLocked, ignored for now. }
+    physically down, low bit (0x0001) set when a toggle key is on.
+    We populate these from wl_keyboard.modifiers (ModsDepressed for
+    held, ModsLocked for toggled). Keys we don't track (most
+    non-modifier keys, plus Scroll Lock, which doesn't have a
+    universally-fixed XKB bit) return 0. }
   Result := 0;
   case nVirtKey of
     VK_SHIFT, VK_LSHIFT, VK_RSHIFT:
@@ -449,6 +450,10 @@ begin
       if FWlCtrlHeld  then Result := SmallInt($8000);
     VK_MENU, VK_LMENU, VK_RMENU:           { Alt }
       if FWlAltHeld   then Result := SmallInt($8000);
+    VK_CAPITAL:
+      if FWlCapsLocked then Result := 1;
+    VK_NUMLOCK:
+      if FWlNumLocked  then Result := 1;
   end;
 end;
 

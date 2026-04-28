@@ -219,6 +219,8 @@ type
     FWlShiftHeld:      Boolean;
     FWlCtrlHeld:       Boolean;
     FWlAltHeld:        Boolean;
+    FWlCapsLocked:     Boolean;       { from wl_keyboard.modifiers ModsLocked }
+    FWlNumLocked:      Boolean;
     FWlWindowList:     TFPList;          { TWaylandWindowInfo }
     FWlTimerList:      TFPList;          { TWLTimer }
     FWlOutputs:        TFPList;          { TWaylandOutput, in advertise order }

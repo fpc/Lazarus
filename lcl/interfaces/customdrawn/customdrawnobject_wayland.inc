@@ -388,18 +388,27 @@ const
     Mod1..Mod5 are the X11 modifier indices that XKB inherits and
     Wayland forwards verbatim in wl_keyboard.modifiers. }
   XKB_MOD_SHIFT = 1 shl 0;
+  XKB_MOD_LOCK  = 1 shl 1;     { caps lock (X11 'Lock' index) }
   XKB_MOD_CTRL  = 1 shl 2;
+  { Mod1..Mod5 are virtual indices the keymap re-binds; the names
+    below are the bindings used by typical desktop keymaps (US, GB, DE, FR,
+    dvorak, ...), but a custom xkb_compatibility section
+    could put Num Lock on any of Mod2..Mod5 in principle. }
   XKB_MOD_MOD1  = 1 shl 3;     { almost always Alt }
+  XKB_MOD_MOD2  = 1 shl 4;     { almost always Num Lock }
 var
   Active: LongWord;
 begin
   { Active modifiers = depressed (held physically) | latched (one-shot
-    that fires on the next key, e.g. sticky-keys). Locked (caps/num)
-    is handled separately because it shouldn't appear as ssShift. }
+    that fires on the next key, e.g. sticky-keys). Locked is the
+    sticky toggle state (caps lock / num lock) and lives separately
+    so it doesn't appear as ssShift / ssAlt during typing. }
   Active := ModsDepressed or ModsLatched;
-  FWlShiftHeld := (Active and XKB_MOD_SHIFT) <> 0;
-  FWlCtrlHeld  := (Active and XKB_MOD_CTRL)  <> 0;
-  FWlAltHeld   := (Active and XKB_MOD_MOD1)  <> 0;
+  FWlShiftHeld  := (Active and XKB_MOD_SHIFT) <> 0;
+  FWlCtrlHeld   := (Active and XKB_MOD_CTRL)  <> 0;
+  FWlAltHeld    := (Active and XKB_MOD_MOD1)  <> 0;
+  FWlCapsLocked := (ModsLocked and XKB_MOD_LOCK) <> 0;
+  FWlNumLocked  := (ModsLocked and XKB_MOD_MOD2) <> 0;
 end;
 
 function TCDWidgetSet.GetAppHandle: TLCLHandle;
