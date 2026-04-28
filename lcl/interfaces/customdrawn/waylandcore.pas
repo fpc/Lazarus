@@ -41,6 +41,7 @@ type
   TWaylandSeat         = class;
   TWaylandPointer      = class;
   TWaylandKeyboard     = class;
+  TWaylandOutput       = class;
 
   { Callback types are method types ('of object') so the host can bind
     them to instance methods of its widget set / window class without
@@ -59,6 +60,11 @@ type
 
   { Seat capabilities bitmask. }
   TSeatCapsProc        = procedure(Sender: TWaylandSeat; Caps: LongWord) of object;
+
+  { wl_output property bursts. The compositor sends geometry+mode (and
+    on v2+ scale) one after the other and finishes with done; consumers
+    should treat the snapshot as valid only after done fires. }
+  TOutputDoneProc      = procedure(Sender: TWaylandOutput) of object;
 
   { Pointer events. Coordinates are wl_fixed (24.8); we deliver them
     pre-converted to integer pixels because LCL only deals in ints. }
@@ -238,6 +244,32 @@ type
     OnKey:       TKeyboardKeyProc;
     OnModifiers: TKeyboardModsProc;
     procedure Release;
+  end;
+
+  { wl_output. Snapshot of one monitor as advertised by the compositor.
+    Properties arrive in a burst (geometry, mode, scale on v2+, name &
+    description on v4+) and end with done. The fields below carry the
+    most recent values; OnDone fires after each burst so callers can
+    re-evaluate aggregates (DPI, total desktop bounds). v1 of the
+    protocol omits scale -- in that case ScaleFactor stays 1. }
+  TWaylandOutput = class(TWaylandObject)
+  protected
+    procedure Dispatch(Opcode: Word; var Reader: TWlReader); override;
+  public
+    XPos, YPos:           LongInt;       { compositor-space origin }
+    PhysicalWidthMm:      LongInt;       { 0 if compositor doesn't know }
+    PhysicalHeightMm:     LongInt;
+    Subpixel:             LongInt;
+    Make, Model:          AnsiString;
+    Transform:            LongInt;
+    CurrentWidthPx:       LongInt;       { mode w/h are pixel counts pre-scale }
+    CurrentHeightPx:      LongInt;
+    RefreshMHz:           LongInt;       { hundredths of Hz, e.g. 60000 = 60Hz }
+    ScaleFactor:          LongInt;       { integer; 1 unless explicitly sent }
+    Name:                 AnsiString;    { v4+ }
+    Description:          AnsiString;    { v4+ }
+    OnDone:               TOutputDoneProc;
+    constructor Create(ADisplay: TWaylandDisplay; AId: TWlObjectId); override;
   end;
 
 implementation
@@ -885,6 +917,62 @@ end;
 procedure TWaylandKeyboard.Release;
 begin
   SendRequest(0);  { release, requires version 3+ }
+end;
+
+{ TWaylandOutput }
+
+constructor TWaylandOutput.Create(ADisplay: TWaylandDisplay; AId: TWlObjectId);
+begin
+  inherited Create(ADisplay, AId);
+  { v1 of wl_output never sends a scale event, so consumers expect 1. }
+  ScaleFactor := 1;
+end;
+
+procedure TWaylandOutput.Dispatch(Opcode: Word; var Reader: TWlReader);
+var
+  Flags: LongWord;
+begin
+  case Opcode of
+    0: begin   { geometry(x, y, physical_w_mm, physical_h_mm, subpixel,
+                  make, model, transform) }
+      XPos             := Reader.ReadInt;
+      YPos             := Reader.ReadInt;
+      PhysicalWidthMm  := Reader.ReadInt;
+      PhysicalHeightMm := Reader.ReadInt;
+      Subpixel         := Reader.ReadInt;
+      Make             := Reader.ReadString;
+      Model            := Reader.ReadString;
+      Transform        := Reader.ReadInt;
+    end;
+    1: begin   { mode(flags, width, height, refresh) }
+      Flags := Reader.ReadUInt;
+      { Bit 0 = current. The compositor may advertise alternate non-current
+        modes too; we only care about the active one. }
+      if (Flags and 1) <> 0 then
+      begin
+        CurrentWidthPx  := Reader.ReadInt;
+        CurrentHeightPx := Reader.ReadInt;
+        RefreshMHz      := Reader.ReadInt;
+      end
+      else
+      begin
+        Reader.ReadInt; Reader.ReadInt; Reader.ReadInt;
+      end;
+    end;
+    2: begin   { done -- v2+; signals end of property burst }
+      if Assigned(OnDone) then OnDone(Self);
+    end;
+    3: begin   { scale(factor) -- v2+ }
+      ScaleFactor := Reader.ReadInt;
+      if ScaleFactor < 1 then ScaleFactor := 1;
+    end;
+    4: begin   { name(string) -- v4+ }
+      Name := Reader.ReadString;
+    end;
+    5: begin   { description(string) -- v4+ }
+      Description := Reader.ReadString;
+    end;
+  end;
 end;
 
 end.

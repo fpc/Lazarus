@@ -221,6 +221,7 @@ type
     FWlAltHeld:        Boolean;
     FWlWindowList:     TFPList;          { TWaylandWindowInfo }
     FWlTimerList:      TFPList;          { TWLTimer }
+    FWlOutputs:        TFPList;          { TWaylandOutput, in advertise order }
     { Clipboard plumbing. ddmgr is the bound global; device is per-seat
       and bound when the seat advertises pointer/keyboard caps. Source
       / SourceFormats / SourceCallback hold the most recent
@@ -235,6 +236,7 @@ type
     procedure WLPaintAllPending;
     procedure WLDrawWindow(WI: TWaylandWindowInfo);
     function  WLFindWindowBySurface(Surface: TWaylandSurface): TWaylandWindowInfo;
+    function  WLPrimaryOutput: TWaylandOutput;
     { Wayland-protocol event handlers. Bound as method pointers on the
       registry / seat / pointer / keyboard / clipboard objects so they
       reach widget-set state via Self instead of a global. }

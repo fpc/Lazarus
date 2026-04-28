@@ -387,15 +387,48 @@ begin
   Result := False;
 end;
 
-function TCDWidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
+{ Pick the "primary" output -- there's no Wayland concept of a primary
+  monitor (compositor's job, not ours). First-advertised is the only
+  deterministic proxy available to the client. Returns nil if no
+  output is bound yet (very early startup, or a headless compositor). }
+function TCDWidgetSet.WLPrimaryOutput: TWaylandOutput;
 begin
-  { FIXME: hardcoded device caps. Real implementation should pull from
-    wl_output (size, scale) and wp_fractional_scale_manager_v1. }
+  Result := nil;
+  if (FWlOutputs = nil) or (FWlOutputs.Count = 0) then Exit;
+  Result := TWaylandOutput(FWlOutputs[0]);
+  { mode hasn't arrived yet -- treat as not-ready and let the caller fall
+    back. Happens in the tiny window between bind and the first done event. }
+  if (Result.CurrentWidthPx <= 0) or (Result.CurrentHeightPx <= 0) then
+    Result := nil;
+end;
+
+function TCDWidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
+var
+  Out_: TWaylandOutput;
+begin
+  Out_ := WLPrimaryOutput;
   case Index of
-    HORZRES, VERTRES: Result := 1024;
-    LOGPIXELSX, LOGPIXELSY: Result := 96;
-    BITSPIXEL: Result := 32;
-    PLANES:    Result := 1;
+    HORZRES:
+      if Out_ <> nil then Result := Out_.CurrentWidthPx  else Result := 1024;
+    VERTRES:
+      if Out_ <> nil then Result := Out_.CurrentHeightPx else Result := 1024;
+    HORZSIZE:
+      if (Out_ <> nil) and (Out_.PhysicalWidthMm > 0)
+        then Result := Out_.PhysicalWidthMm else Result := 0;
+    VERTSIZE:
+      if (Out_ <> nil) and (Out_.PhysicalHeightMm > 0)
+        then Result := Out_.PhysicalHeightMm else Result := 0;
+    LOGPIXELSX, LOGPIXELSY:
+      { Wayland output scale is tracked, but this backend does not
+        expose it as LCL DPI yet. Report the LCL baseline DPI until
+        buffer scale, drawing scale and layout scale are wired together. }
+      Result := 96;
+    BITSPIXEL:
+      Result := 32;        { we always render to ARGB32 buffers }
+    PLANES:
+      Result := 1;
+    NUMCOLORS:
+      Result := -1;        { Win32 returns -1 for >256-color displays }
   else
     Result := 0;
   end;
@@ -420,19 +453,51 @@ begin
 end;
 
 function TCDWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
+var
+  Out_: TWaylandOutput;
+  i: Integer;
+  MaxR, MaxB, R, B: LongInt;
 begin
-  { FIXME: hardcoded screen metrics; should query wl_output. Border /
-    caption / menu metrics are zero because Wayland clients draw their
-    own decorations (CSD); plug in real values once decoration is done. }
+  { Border / caption / menu metrics stay zero because Wayland clients
+    draw their own decorations (CSD) and we don't draw any decoration
+    yet -- when SetBorderIcons / decorations land here, plug in real
+    values then. }
+  Result := 0;
   case nIndex of
-    SM_CXSCREEN, SM_CYSCREEN: Result := 1024;
-    SM_CXFULLSCREEN, SM_CYFULLSCREEN: Result := 1024;
-    SM_CXFRAME, SM_CYFRAME: Result := 0;
-    SM_CXBORDER, SM_CYBORDER: Result := 0;
-    SM_CYCAPTION: Result := 0;
-    SM_CYMENU: Result := 0;
-  else
-    Result := 0;
+    SM_CXSCREEN, SM_CXFULLSCREEN:
+      begin
+        Out_ := WLPrimaryOutput;
+        if Out_ <> nil then Result := Out_.CurrentWidthPx else Result := 1024;
+      end;
+    SM_CYSCREEN, SM_CYFULLSCREEN:
+      begin
+        Out_ := WLPrimaryOutput;
+        if Out_ <> nil then Result := Out_.CurrentHeightPx else Result := 1024;
+      end;
+    SM_CXVIRTUALSCREEN, SM_CYVIRTUALSCREEN:
+      begin
+        { Bounding box across every output. Wayland places each output at
+          a compositor-chosen origin (XPos, YPos); the right/bottom edge
+          is XPos + Width / YPos + Height. The virtual screen is the union. }
+        if (FWlOutputs = nil) or (FWlOutputs.Count = 0) then
+        begin
+          Result := 1024;
+          Exit;
+        end;
+        MaxR := 0; MaxB := 0;
+        for i := 0 to FWlOutputs.Count - 1 do
+        begin
+          Out_ := TWaylandOutput(FWlOutputs[i]);
+          if (Out_.CurrentWidthPx <= 0) or (Out_.CurrentHeightPx <= 0) then Continue;
+          R := Out_.XPos + Out_.CurrentWidthPx;
+          B := Out_.YPos + Out_.CurrentHeightPx;
+          if R > MaxR then MaxR := R;
+          if B > MaxB then MaxB := B;
+        end;
+        if nIndex = SM_CXVIRTUALSCREEN then Result := MaxR else Result := MaxB;
+      end;
+    SM_CMONITORS:
+      if FWlOutputs <> nil then Result := FWlOutputs.Count else Result := 1;
   end;
 end;
 

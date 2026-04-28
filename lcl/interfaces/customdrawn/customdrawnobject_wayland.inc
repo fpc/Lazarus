@@ -57,6 +57,18 @@ begin
     if Version > 3 then V := 3 else V := Version;
     FWlDataDeviceManager := TWlDataDeviceManager(
       FWlRegistry.BindRaw(Name, Iface, V, TWlDataDeviceManager));
+  end
+  else if Iface = 'wl_output' then
+  begin
+    { Bind v2 minimum so we get the scale event (HiDPI). v3 adds release;
+      v4 adds name / description (informational). The compositor can
+      advertise more than one wl_output (one per monitor); each shows up
+      as its own global so this branch fires per monitor. }
+    if Version > 4 then V := 4
+    else if Version < 2 then V := Version  { older compositors -- no scale }
+    else V := Version;
+    if FWlOutputs = nil then FWlOutputs := TFPList.Create;
+    FWlOutputs.Add(FWlRegistry.BindRaw(Name, Iface, V, TWaylandOutput));
   end;
 end;
 
