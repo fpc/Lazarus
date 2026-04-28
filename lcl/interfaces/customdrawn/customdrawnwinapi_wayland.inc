@@ -15,20 +15,233 @@ begin
   Result := True;
 end;
 
+{ Read everything from Fd into Stream; close Fd. The compositor writes
+  the offered bytes and closes its end of the pipe; we read until EOF.
+  Used by ClipboardGetData and reusable for any "read until EOF then
+  close" pattern. }
+procedure WLDrainFdIntoStream(Fd: cint; Stream: TStream);
+var
+  Buf: array[0..4095] of Byte;
+  N:   ssize_t;
+begin
+  try
+    repeat
+      N := FpRead(Fd, Buf, SizeOf(Buf));
+      if N > 0 then
+        Stream.Write(Buf, N);
+    until N <= 0;
+  finally
+    FpClose(Fd);
+  end;
+end;
+
+{ Mime synonyms LCL's pcfText ('text/plain') maps to on Wayland/X.
+  When other apps offer the clipboard they typically advertise some
+  combination of these, NOT plain 'text/plain' on its own. Same idea
+  as gtk2winapi.inc:360-381 (CheckAtomFormat list). }
+const
+  WlTextMimes: array[0..4] of string = (
+    'text/plain;charset=utf-8',
+    'UTF8_STRING',
+    'text/plain',
+    'STRING',
+    'TEXT'
+  );
+
+function WLIsTextMime(const M: AnsiString): Boolean;
+var
+  i: Integer;
+begin
+  for i := 0 to High(WlTextMimes) do
+    if M = WlTextMimes[i] then Exit(True);
+  Result := False;
+end;
+
+{ wl_data_source.send fired -- a clipboard receiver picked our Mime
+  type and is waiting for bytes on Fd. Resolve Mime back to a
+  TClipboardFormat, hand it to the user's request callback (which
+  fills a TStream), shovel the stream into the pipe, then close it.
+  The source object survives the send: the same data may be requested
+  multiple times for the same selection (different paste targets). }
+procedure TCDWidgetSet.WLClipSourceSend(Source: TWlDataSource;
+  const MimeType: AnsiString; Fd: cint);
+var
+  i: Integer;
+  Stream: TMemoryStream;
+  FormatID: TClipboardFormat;
+  Buf: PByte;
+  Remaining, Sent: ssize_t;
+begin
+  if not Assigned(FWlClipCallback) then
+  begin
+    FpClose(Fd);
+    Exit;
+  end;
+  { Translate Mime back to a registered TClipboardFormat. We may have
+    offered 'text/plain' to LCL but advertised several text aliases on
+    the wire (UTF8_STRING etc.); any of those should map back to the
+    single registered text format. Non-text formats must match exactly. }
+  FormatID := 0;
+  if WLIsTextMime(MimeType) then
+  begin
+    for i := 0 to High(FWlClipFormats) do
+      if ClipboardFormatToMimeType(FWlClipFormats[i]) = 'text/plain' then
+      begin
+        FormatID := FWlClipFormats[i];
+        Break;
+      end;
+  end
+  else
+    for i := 0 to High(FWlClipFormats) do
+      if ClipboardFormatToMimeType(FWlClipFormats[i]) = MimeType then
+      begin
+        FormatID := FWlClipFormats[i];
+        Break;
+      end;
+  Stream := TMemoryStream.Create;
+  try
+    if FormatID <> 0 then
+      FWlClipCallback(FormatID, Stream);
+    Stream.Position := 0;
+    Buf := PByte(Stream.Memory);
+    Remaining := Stream.Size;
+    while Remaining > 0 do
+    begin
+      Sent := FpWrite(Fd, Buf^, Remaining);
+      if Sent <= 0 then Break;       { receiver closed early or pipe error }
+      Inc(Buf, Sent);
+      Dec(Remaining, Sent);
+    end;
+  finally
+    Stream.Free;
+    FpClose(Fd);
+  end;
+end;
+
+procedure TCDWidgetSet.WLClipSourceCancelled(Source: TWlDataSource);
+var
+  Callback: TClipboardRequestEvent;
+begin
+  { Server replaced our selection (another app called set_selection,
+    or we did). Drop our reference and destroy. If Source is already
+    stale (we set a new selection and destroyed it ourselves), do
+    nothing -- destroying twice triggers wl_display "invalid object". }
+  if FWlClipSource = Source then
+  begin
+    Callback := FWlClipCallback;
+    FWlClipSource := nil;
+    FWlClipCallback := nil;
+    SetLength(FWlClipFormats, 0);
+    if Assigned(Callback) then
+      Callback(0, nil);
+    Source.DestroyRequest;
+  end;
+end;
+
 function TCDWidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat; Stream: TStream): Boolean;
+var
+  Mime: string;
+  Pipe: array[0..1] of cint;
+  i: Integer;
 begin
-  { FIXME: not implemented. Needs wl_data_device_manager (selection) or
-    zwp_primary_selection_device_manager_v1 (primary). }
   Result := False;
+  { Only the system clipboard maps to wl_data_device.selection.
+    Primary selection would need zwp_primary_selection_v1 (separate
+    protocol); we return False for that. ctSecondarySelection has no
+    Wayland equivalent. }
+  if ClipboardType <> ctClipboard then Exit;
+  if (FWlDataDevice = nil) or (FWlDataDevice.CurrentSelection = nil) then Exit;
+
+  Mime := ClipboardFormatToMimeType(FormatID);
+  if Mime = '' then Exit;
+  { Receiver-side mime negotiation. For text/plain, walk our synonym
+    list in priority order (UTF-8 variants first) and use whichever
+    the offer advertises -- other apps rarely advertise bare 'text/plain'.
+    For non-text formats, require exact match. }
+  if Mime = 'text/plain' then
+  begin
+    Mime := '';
+    for i := 0 to High(WlTextMimes) do
+      if FWlDataDevice.CurrentSelection.MimeTypes.IndexOf(WlTextMimes[i]) >= 0 then
+      begin
+        Mime := WlTextMimes[i];
+        Break;
+      end;
+    if Mime = '' then Exit;
+  end
+  else
+    if FWlDataDevice.CurrentSelection.MimeTypes.IndexOf(Mime) < 0 then Exit;
+
+  { Open a pipe; write end goes to the compositor via SCM_RIGHTS, we
+    read from the read end. The compositor writes the bytes and
+    closes its end -- we get EOF when done. }
+  if FpPipe(Pipe) <> 0 then Exit;
+
+  FWlDataDevice.CurrentSelection.Receive(Mime, Pipe[1]);
+  FWlDisplay.Connection.Flush;
+  FpClose(Pipe[1]);  { our copy of the write end -- we don't write }
+  WLDrainFdIntoStream(Pipe[0], Stream);
+  Result := True;
 end;
 
 function TCDWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent; FormatCount: Integer;
   Formats: PClipboardFormat): Boolean;
+var
+  i, j: Integer;
+  Mime: string;
 begin
-  { FIXME: not implemented; see ClipboardGetData. }
   Result := False;
+  if ClipboardType <> ctClipboard then Exit;
+  if (FWlDataDeviceManager = nil) or (FWlDataDevice = nil) then Exit;
+
+  { Replace any previous source. Calling set_selection with a new
+    source automatically cancels the old one; the cancelled event will
+    arrive asynchronously and our handler will tidy up. }
+  if FWlClipSource <> nil then
+  begin
+    FWlClipSource.DestroyRequest;
+    FWlClipSource := nil;
+  end;
+
+  if FormatCount = 0 then
+  begin
+    { OnRequestProc=nil and FormatCount=0 is the LCL "release ownership"
+      idiom. Honour it by clearing the selection. }
+    FWlDataDevice.SetSelection(nil, FWlLastInputSerial);
+    FWlDisplay.Connection.Flush;
+    FWlClipCallback := nil;
+    SetLength(FWlClipFormats, 0);
+    Result := True;
+    Exit;
+  end;
+
+  FWlClipCallback := OnRequestProc;
+  SetLength(FWlClipFormats, FormatCount);
+  for i := 0 to FormatCount - 1 do
+    FWlClipFormats[i] := Formats[i];
+
+  FWlClipSource := FWlDataDeviceManager.CreateDataSource;
+  FWlClipSource.OnSend      := @WLClipSourceSend;
+  FWlClipSource.OnCancelled := @WLClipSourceCancelled;
+  for i := 0 to FormatCount - 1 do
+  begin
+    Mime := ClipboardFormatToMimeType(Formats[i]);
+    { For text, advertise every synonym so other apps (which usually
+      ask for text/plain;charset=utf-8 or UTF8_STRING, not bare
+      text/plain) can paste from us. WLClipSourceSend maps any of
+      these back to our single registered text/plain format. }
+    if Mime = 'text/plain' then
+      for j := 0 to High(WlTextMimes) do
+        FWlClipSource.Offer(WlTextMimes[j])
+    else
+      FWlClipSource.Offer(Mime);
+  end;
+
+  FWlDataDevice.SetSelection(FWlClipSource, FWlLastInputSerial);
+  FWlDisplay.Connection.Flush;
+  Result := True;
 end;
 
 { Run fc-match with a format that prints the matched font file and return

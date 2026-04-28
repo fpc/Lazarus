@@ -47,6 +47,16 @@ begin
   begin
     FWpCursorShapeMgr := TWpCursorShapeManagerV1(
       FWlRegistry.BindRaw(Name, Iface, 1, TWpCursorShapeManagerV1));
+  end
+  else if Iface = 'wl_data_device_manager' then
+  begin
+    { v3 has set_actions / dnd_drop_performed / dnd_finished / action,
+      a destroy request, and source_actions / action on offers. v1 is
+      enough for selection (clipboard); we cap at 3 to take whatever
+      the compositor offers up to that. }
+    if Version > 3 then V := 3 else V := Version;
+    FWlDataDeviceManager := TWlDataDeviceManager(
+      FWlRegistry.BindRaw(Name, Iface, V, TWlDataDeviceManager));
   end;
 end;
 
@@ -157,6 +167,10 @@ var
   Btn: TMouseButton;
   Known: Boolean;
 begin
+  { Stash the serial so wl_data_device.set_selection (clipboard
+    ownership) can use it -- the compositor requires the serial of a
+    recent input event from this seat. }
+  FWlLastInputSerial := Serial;
   if WaylandTrace then Trace(' input',
     Format('pointer button=$%x state=%d at (%d,%d) focus=%p',
       [Button, State, FWlPointerX, FWlPointerY, Pointer(FWlPointerFocus)]));
@@ -325,6 +339,8 @@ var
   VK: Word;
   Ch: Char;
 begin
+  { Stash the serial; see comment in WLHandlePointerButton. }
+  FWlLastInputSerial := Serial;
   if WaylandTrace then Trace(' input',
     Format('keyboard key evdev=%d state=%d focus=%p',
       [Key, State, Pointer(FWlKeyboardFocus)]));
@@ -404,6 +420,13 @@ begin
     raise Exception.Create('Wayland: compositor does not advertise wl_shm');
   if FXdgWmBase = nil then
     raise Exception.Create('Wayland: compositor does not advertise xdg_wm_base');
+
+  { Open the per-seat data device for clipboard ops. Both globals are
+    already bound by the registry roundtrip above; if either is missing
+    the compositor doesn't support the clipboard protocol and we leave
+    FWlDataDevice nil (clipboard ops will return False / no-op). }
+  if (FWlDataDeviceManager <> nil) and (FWlSeat <> nil) then
+    FWlDataDevice := FWlDataDeviceManager.GetDataDevice(FWlSeat);
 
   FWlWindowList := TFPList.Create;
   FWlTimerList  := TFPList.Create;

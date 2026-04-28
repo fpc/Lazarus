@@ -36,7 +36,7 @@ uses
   {$ifdef CD_Android}
   customdrawn_androidproc, jni, bitmap, log, keycodes,
   {$endif}
-  {$ifdef CD_Wayland}BaseUnix, Process, waylandwire, waylandcore, xdgshell, xdgactivation, cursorshape, customdrawn_waylandproc,{$endif}
+  {$ifdef CD_Wayland}BaseUnix, Process, waylandwire, waylandcore, xdgshell, xdgactivation, cursorshape, wldatadevice, customdrawn_waylandproc,{$endif}
   {$ifdef WinCE}aygshell,{$endif}
   // LazUtils
   LazUtilities, LazFileUtils, lazutf8,
@@ -221,6 +221,17 @@ type
     FWlAltHeld:        Boolean;
     FWlWindowList:     TFPList;          { TWaylandWindowInfo }
     FWlTimerList:      TFPList;          { TWLTimer }
+    { Clipboard plumbing. ddmgr is the bound global; device is per-seat
+      and bound when the seat advertises pointer/keyboard caps. Source
+      / SourceFormats / SourceCallback hold the most recent
+      ClipboardGetOwnerShip arguments so the OnSend handler can
+      synthesize bytes for whichever mime type the receiver picked. }
+    FWlDataDeviceManager: TWlDataDeviceManager;
+    FWlDataDevice:        TWlDataDevice;
+    FWlClipSource:        TWlDataSource;
+    FWlClipFormats:       array of TClipboardFormat;
+    FWlClipCallback:      TClipboardRequestEvent;
+    FWlLastInputSerial:   LongWord;       { for set_selection }
     procedure WLPaintAllPending;
     procedure WLDrawWindow(WI: TWaylandWindowInfo);
     function  WLFindWindowBySurface(Surface: TWaylandSurface): TWaylandWindowInfo;
@@ -251,6 +262,9 @@ type
       Serial, TimeMs, Key, State: LongWord);
     procedure WLHandleKeyMods(Sender: TWaylandKeyboard;
       Serial, ModsDepressed, ModsLatched, ModsLocked, Group: LongWord);
+    procedure WLClipSourceSend(Source: TWlDataSource;
+      const MimeType: AnsiString; Fd: cint);
+    procedure WLClipSourceCancelled(Source: TWlDataSource);
     procedure WLHandleSurfaceConfigure(Sender: TXdgSurface; Serial: LongWord);
     procedure WLHandleToplevelConfigure(Sender: TXdgToplevel;
       W, H: LongInt; const States: array of LongWord);
