@@ -266,6 +266,18 @@ type
     procedure SetSelStartX(ANewX: Integer);
     procedure SetSelLength(ANewLength: Integer);
     property CaretPos: TPoint read GetCaretPos write SetCaretPost;
+    // IME pre-edit text. Drawn inline at the caret with an underline
+    // but NOT inserted into Lines until the IME commits. Setter
+    // invalidates and stores in FEditState; the drawer reads the
+    // state and renders.
+    procedure SetPreedit(const AText: AnsiString;
+      ACursorBegin, ACursorEnd: LongInt);
+    function GetPreeditText: AnsiString;
+    // Pixel X of the caret within this control's client area, taking
+    // VisibleTextStart and any current preedit into account. Used by
+    // the Wayland host to send set_cursor_rectangle so the IME's
+    // candidate window pops up next to the caret. Y is line-top.
+    function GetCaretPixelRect: TRect;
   published
     property Align;
     property Anchors;
@@ -2299,6 +2311,51 @@ begin
   end
   else FLines.Strings[FEditState.CaretPos.Y] := AStr;
   DoChange();
+end;
+
+procedure TCDEdit.SetPreedit(const AText: AnsiString;
+  ACursorBegin, ACursorEnd: LongInt);
+begin
+  FEditState.PreeditText := AText;
+  FEditState.PreeditCursorBegin := ACursorBegin;
+  FEditState.PreeditCursorEnd := ACursorEnd;
+  Invalidate;
+end;
+
+function TCDEdit.GetPreeditText: AnsiString;
+begin
+  Result := FEditState.PreeditText;
+end;
+
+function TCDEdit.GetCaretPixelRect: TRect;
+var
+  lLine, lLeft: AnsiString;
+  lLineHeight, lCaretX: Integer;
+begin
+  { Use the same caret-position calculation as TCDDrawerCommon.DrawCaret:
+    take the substring from VisibleTextStart to CaretPos and measure its
+    pixel width. We use a freshly-created bitmap canvas since this
+    method may be called from outside paint, when Self.Canvas isn't
+    valid. The font set on Self propagates to the canvas. }
+  Result := Rect(0, 0, 1, 16);
+  if FEditState = nil then Exit;
+  if (FEditState.Lines = nil) or (FEditState.Lines.Count = 0) then Exit;
+  if (FEditState.CaretPos.Y < 0) or (FEditState.CaretPos.Y >= FEditState.Lines.Count) then Exit;
+
+  lLine := FEditState.Lines.Strings[FEditState.CaretPos.Y];
+  { Measure from VisibleTextStart.X (1-based) to CaretPos.X. }
+  lLeft := UTF8Copy(lLine, FEditState.VisibleTextStart.X,
+                    FEditState.CaretPos.X - FEditState.VisibleTextStart.X + 1);
+  Canvas.Font.Assign(Font);
+  lCaretX := Canvas.TextWidth(lLeft) + FEditState.LeftTextMargin;
+  if FEditState.PreeditText <> '' then
+    Inc(lCaretX, Canvas.TextWidth(FEditState.PreeditText));
+  lLineHeight := Canvas.TextHeight('Wg');
+  if lLineHeight <= 0 then lLineHeight := 16;
+  Result := Rect(lCaretX,
+                 FEditState.CaretPos.Y * lLineHeight,
+                 lCaretX + 1,
+                 (FEditState.CaretPos.Y + 1) * lLineHeight);
 end;
 
 function TCDEdit.GetSelStartX: Integer;

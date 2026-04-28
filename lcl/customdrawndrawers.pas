@@ -170,6 +170,15 @@ type
     LeftTextMargin, RightTextMargin: Integer;
     // For the combo box for example
     ExtraButtonState: TCDControlState;
+    // IME pre-edit (composition) text. Lives between an IME's
+    // keystrokes and its eventual commit_string event. Drawn inline
+    // at CaretPos with a 1px underline; NOT inserted into Lines.
+    // Empty when no IME composition is active. CursorBegin / End are
+    // byte offsets within PreeditText; both -1 means "hide cursor"
+    // per the zwp_text_input_v3 spec.
+    PreeditText: AnsiString;
+    PreeditCursorBegin: LongInt;
+    PreeditCursorEnd: LongInt;
   end;
 
   TCDPanelStateEx = class(TCDControlStateEx)

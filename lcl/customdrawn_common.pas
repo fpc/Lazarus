@@ -963,7 +963,7 @@ procedure TCDDrawerCommon.DrawCaret(ADest: TCanvas; ADestPos: TPoint;
 var
   lTextTopSpacing, lCaptionHeight, lLineHeight, lLineTop: Integer;
   lControlText, lTmpText: string;
-  lTextBottomSpacing, lCaretPixelPos: Integer;
+  lTextBottomSpacing, lCaretPixelPos, lPreeditOffset: Integer;
 begin
   if not AStateEx.CaretIsVisible then Exit;
 
@@ -980,6 +980,19 @@ begin
   lTmpText :=  VisibleText(lTmpText, AStateEx.PasswordChar);
   lCaretPixelPos := ADest.TextWidth(lTmpText) + GetMeasures(TCDEDIT_LEFT_TEXT_SPACING)
     + AStateEx.LeftTextMargin;
+  { When an IME is composing pre-edit text inline at the caret, the
+    visual caret sits inside the preedit at byte offset PreeditCursorBegin.
+    PreeditCursorBegin / End are byte offsets per the zwp_text_input_v3
+    spec; AnsiString Copy is byte-based in FPC, which lines up. }
+  if (AStateEx.PreeditText <> '')
+     and (AStateEx.PreeditCursorBegin >= 0) then
+  begin
+    lPreeditOffset := AStateEx.PreeditCursorBegin;
+    if lPreeditOffset > Length(AStateEx.PreeditText) then
+      lPreeditOffset := Length(AStateEx.PreeditText);
+    lCaretPixelPos := lCaretPixelPos
+      + ADest.TextWidth(Copy(AStateEx.PreeditText, 1, lPreeditOffset));
+  end;
   ADest.Pen.Color := clBlack;
   ADest.Pen.Style := psSolid;
   ADest.Line(lCaretPixelPos, lLineTop, lCaretPixelPos, lLineTop+lCaptionHeight);
@@ -1035,6 +1048,16 @@ begin
   begin
     lControlText := AStateEx.Lines.Strings[AStateEx.VisibleTextStart.Y+i];
     lControlText :=  VisibleText(lControlText, AStateEx.PasswordChar);
+    { Splice IME pre-edit text inline at the caret on the relevant
+      line. The preedit becomes part of the visible string for layout
+      and selection-rendering purposes, but is NOT in Lines so it
+      doesn't affect Length / cursor logic. We re-draw an underline
+      below the spliced range after the line text is painted. }
+    if (AStateEx.PreeditText <> '')
+       and (AStateEx.CaretPos.Y = AStateEx.VisibleTextStart.Y + i) then
+      lControlText := UTF8Copy(lControlText, 1, AStateEx.CaretPos.X)
+                      + AStateEx.PreeditText
+                      + UTF8Copy(lControlText, AStateEx.CaretPos.X + 1, MaxInt);
     lControlTextLen := UTF8Length(lControlText);
     lLineTop := lTextTopSpacing + i * lLineHeight;
 
@@ -1082,6 +1105,34 @@ begin
       ADest.Font.Color := lTextColor;
       lVisibleText := UTF8Copy(lControlText, lSelLeftPos+lSelLength+1, lControlTextLen);
       ADest.TextOut(lSelLeftPixelPos, lLineTop, lVisibleText);
+    end;
+  end;
+
+  { Pre-edit underline. Draw after the line text(s) so it sits below.
+    Compute the left pixel of the preedit (= width of text from
+    VisibleTextStart up to the original CaretPos) and the right edge
+    (left + width(preedit)). Paint a 1px line at lLineTop + lLineHeight
+    - 1. Done outside the per-line loop because the line index that
+    contains the caret is CaretPos.Y - VisibleTextStart.Y. }
+  if AStateEx.PreeditText <> '' then
+  begin
+    i := AStateEx.CaretPos.Y - AStateEx.VisibleTextStart.Y;
+    if (i >= 0) and (i < lVisibleLinesCount) then
+    begin
+      lLineTop := lTextTopSpacing + i * lLineHeight;
+      lControlText := AStateEx.Lines.Strings[AStateEx.CaretPos.Y];
+      lVisibleText := UTF8Copy(lControlText, AStateEx.VisibleTextStart.X,
+                               AStateEx.CaretPos.X - AStateEx.VisibleTextStart.X + 1);
+      lVisibleText := VisibleText(lVisibleText, AStateEx.PasswordChar);
+      lSelLeftPixelPos := ADest.TextWidth(lVisibleText) + lTextLeftSpacing
+                          + AStateEx.LeftTextMargin;
+      lTextWidth := ADest.TextWidth(AStateEx.PreeditText);
+      ADest.Pen.Color := lTextColor;
+      ADest.Pen.Style := psSolid;
+      ADest.Line(lSelLeftPixelPos,
+                 lLineTop + lLineHeight - DPIAdjustment(2),
+                 lSelLeftPixelPos + lTextWidth,
+                 lLineTop + lLineHeight - DPIAdjustment(2));
     end;
   end;
 
