@@ -188,6 +188,23 @@ type
     property Visible;
   end;
 
+  { TCDToggleBox -- a button that latches into the pressed state when
+    checked. Reuses TCDButton's drawing path; setting FHasOnOffStates
+    in the constructor makes TCDButtonControl.DoButtonUp toggle csfOn /
+    csfOff on each click. PrepareControlState then projects csfOn into
+    csfSunken so DrawButton renders the latched state as visually
+    pressed (matching Win32 / GTK / Qt behaviour). }
+  TCDToggleBox = class(TCDButton)
+  protected
+    procedure PrepareControlState; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    property AllowGrayed;
+    property Checked;
+    property State;
+  end;
+
   { TCDEdit }
 
   TCDEdit = class(TCDControl)
@@ -2398,6 +2415,25 @@ destructor TCDButton.Destroy;
 begin
   FGlyph.Free;
   inherited Destroy;
+end;
+
+{ TCDToggleBox }
+
+constructor TCDToggleBox.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FHasOnOffStates := True;   { DoButtonUp now flips csfOn / csfOff each click }
+end;
+
+procedure TCDToggleBox.PrepareControlState;
+begin
+  inherited PrepareControlState;
+  { Latch the visual sunken state to the logical on/off state, so the
+    button stays "pressed-looking" while checked instead of popping
+    back up after each click. The transient mouse-press csfSunken from
+    DoButtonDown is overlaid on top of this and clears on MouseUp. }
+  if csfOn in FState then FState := FState + [csfSunken]
+  else                     FState := FState - [csfSunken];
 end;
 
 { TCDRadioButton }

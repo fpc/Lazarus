@@ -306,14 +306,17 @@ type
   { TCDWSToggleBox }
 
   TCDWSToggleBox = class(TWSToggleBox)
+  public
+    class procedure InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
-{    class function  CreateHandle(const AWinControl: TWinControl;
+    class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLHandle; override;
-
-    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const ShortCutK1, ShortCutK2: TShortCut); override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+      var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
-
-    class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;}
+    class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
   end;
 
   { TCDWSRadioButton }
@@ -2095,65 +2098,94 @@ end;
 
 { TCDWSToggleBox }
 
-(*{------------------------------------------------------------------------------
-  Method: TCDWSToggleBox.RetrieveState
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class function TCDWSToggleBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
+class procedure TCDWSToggleBox.InjectCDControl(
+  const AWinControl: TWinControl; var ACDControlField: TCDControl);
 begin
-  if not WSCheckHandleAllocated(ACustomCheckBox, 'RetrieveState') then
-    Exit;
-  if TQtToggleBox(ACustomCheckBox.Handle).isChecked then
-    Result := cbChecked
-  else
-    Result := cbUnChecked;
+  ACDControlField := TCDIntfToggleBox.Create(AWinControl);
+  TCDIntfToggleBox(ACDControlField).LCLControl := TCustomCheckBox(AWinControl);
+  ACDControlField.Parent := AWinControl;
+  ACDControlField.Caption := AWinControl.Caption;
+  ACDControlField.Align := alClient;
+  { Sync the LCL Checked state up front so a design-time-set State
+    actually shows on first paint. Without this the injected control
+    starts with csfOff regardless of the LCL property. }
+  TCDIntfToggleBox(ACDControlField).State := TCustomCheckBox(AWinControl).State;
+  {$ifdef VerboseCDInjectedControlNames}
+  ACDControlField.Name := 'CustomDrawnInternal_' + AWinControl.Name;
+  {$endif}
 end;
 
-{------------------------------------------------------------------------------
-  Method: TCDWSToggleBox.SetShortCut
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TCDWSToggleBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
-  const ShortCutK1, ShortCutK2: TShortCut);
-begin
-  if not WSCheckHandleAllocated(ACustomCheckBox, 'SetShortCut') then
-    Exit;
-  TQtToggleBox(ACustomCheckBox.Handle).setShortcut(ShortCutK1, ShortCutK2);
-end;
-
-{------------------------------------------------------------------------------
-  Method: TCDWSToggleBox.SetState
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TCDWSToggleBox.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
-begin
-  if not WSCheckHandleAllocated(ACustomCheckBox, 'SetState') then
-    Exit;
-  TQtToggleBox(ACustomCheckBox.Handle).BeginUpdate;
-  TQtToggleBox(ACustomCheckBox.Handle).setChecked(NewState = cbChecked);
-  TQtToggleBox(ACustomCheckBox.Handle).EndUpdate;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TCDWSToggleBox.CreateHandle
-  Params:  None
-  Returns: Nothing
-
-  Allocates memory and resources for the control and shows it
- ------------------------------------------------------------------------------}
-class function TCDWSToggleBox.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
+class function TCDWSToggleBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLHandle;
 var
-  QtToggleBox: TQtToggleBox;
+  lCDWinControl: TCDWinControl;
 begin
-  QtToggleBox := TQtToggleBox.Create(AWinControl, AParams);
-  QtToggleBox.setCheckable(True);
-  QtToggleBox.AttachEvents;
+  Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
+  lCDWinControl := TCDWinControl(Result);
+end;
 
-  Result := TLCLHandle(QtToggleBox);
-end;*)
+class procedure TCDWSToggleBox.DestroyHandle(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  lCDWinControl.CDControl.Free;
+  lCDWinControl.Free;
+end;
+
+class procedure TCDWSToggleBox.ShowHide(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  TCDWSWinControl.ShowHide(AWinControl);
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(AWinControl, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
+end;
+
+class procedure TCDWSToggleBox.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(AWinControl, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
+  lCDWinControl.CDControl.LCLWSCalculatePreferredSize(
+    PreferredWidth, PreferredHeight, WithThemeSpace, AWinControl.AutoSize, False);
+end;
+
+class procedure TCDWSToggleBox.SetState(const ACustomCheckBox: TCustomCheckBox;
+  const NewState: TCheckBoxState);
+var
+  lCDWinControl: TCDWinControl;
+  lInj: TCDIntfToggleBox;
+begin
+  if ACustomCheckBox.Handle = 0 then Exit;
+  lCDWinControl := TCDWinControl(ACustomCheckBox.Handle);
+  if not (lCDWinControl.CDControl is TCDIntfToggleBox) then Exit;
+  lInj := TCDIntfToggleBox(lCDWinControl.CDControl);
+  lInj.State := NewState;
+  lInj.Invalidate;
+end;
+
+class function TCDWSToggleBox.RetrieveState(
+  const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
+var
+  lCDWinControl: TCDWinControl;
+begin
+  Result := cbUnchecked;
+  if ACustomCheckBox.Handle = 0 then Exit;
+  lCDWinControl := TCDWinControl(ACustomCheckBox.Handle);
+  if not (lCDWinControl.CDControl is TCDIntfToggleBox) then Exit;
+  Result := TCDIntfToggleBox(lCDWinControl.CDControl).State;
+end;
 
 { TCDWSCustomListBox }
 

@@ -329,8 +329,8 @@ end;
 
 function RegisterToggleBox: Boolean; alias : 'WSRegisterToggleBox';
 begin
-//  RegisterWSComponent(TToggleBox, TWinCEWSToggleBox);
-  Result := False;
+  RegisterWSComponent(TToggleBox, TCDWSToggleBox);
+  Result := True;
 end;
 
 function RegisterRadioButton: Boolean; alias : 'WSRegisterRadioButton';

@@ -55,6 +55,19 @@ type
     LCLControl: TCustomCheckBox;
   end;
 
+  { TCDIntfToggleBox -- bridges the latching button toggle back to the
+    LCL TCustomCheckBox so OnChange fires whenever the user flips the
+    state via mouse / Space / Enter. Without LCLSendChangedMsg the LCL's
+    cached FState would not see the change and Checked would report the old value. }
+  TCDIntfToggleBox = class(TCDToggleBox)
+  protected
+    procedure DoButtonUp; override;
+    procedure KeyUp(var Key: word; Shift: TShiftState); override;
+    procedure PrepareControlState; override;
+  public
+    LCLControl: TCustomCheckBox;
+  end;
+
   TCDIntfComboBox = class(TCDComboBox)
   public
     LCLControl: TCustomComboBox;
@@ -471,7 +484,8 @@ begin
   if Result then Result :=
     // Standard Tab
     (AControl is TCDIntfButton) or (AControl is TCDIntfEdit) or (AControl is TCDIntfCheckBox) or
-    (AControl is TCDIntfRadioButton) or (AControl is TCDIntfComboBox) or (AControl is TCDIntfScrollBar) or
+    (AControl is TCDIntfRadioButton) or (AControl is TCDIntfToggleBox) or
+    (AControl is TCDIntfComboBox) or (AControl is TCDIntfScrollBar) or
     // Additional Tab
     (AControl is TCDIntfStaticText) or
     // Common Controls Tab
@@ -772,6 +786,40 @@ begin
     if (SiblingHandle.CDControl is TCDIntfRadioButton) then
       TCDIntfRadioButton(SiblingHandle.CDControl).DoUncheckButton;
   end;
+end;
+
+{ TCDIntfToggleBox }
+
+procedure TCDIntfToggleBox.DoButtonUp;
+begin
+  inherited DoButtonUp;   { flips csfOn / csfOff via FHasOnOffStates }
+  { Notify the LCL the state has changed so TCustomCheckBox.DoChange
+    re-fetches via RetrieveState and fires OnChange. WParam is unused
+    by TCustomCheckBox's handler. }
+  if LCLControl <> nil then LCLSendChangedMsg(LCLControl, 0);
+end;
+
+procedure TCDIntfToggleBox.KeyUp(var Key: word; Shift: TShiftState);
+var
+  WasActivator: Boolean;
+begin
+  WasActivator := (Key = VK_SPACE) or (Key = VK_RETURN);
+  inherited KeyUp(Key, Shift);
+  { TCDButtonControl.KeyUp routes Space/Enter through DoButtonUp, which
+    our override has already notified the LCL about. Mirror the LCL
+    OnClick that the mouse path also delivers via CallbackMouseUp's
+    IsIntfControl branch -- the keyboard path has no equivalent. }
+  if WasActivator and Assigned(LCLControl) then
+    LCLSendClickedMsg(LCLControl);
+end;
+
+procedure TCDIntfToggleBox.PrepareControlState;
+begin
+  inherited PrepareControlState;
+  if Assigned(LCLControl) and LCLControl.Focused then
+    FState := FState + [csfHasFocus]
+  else
+    FState := FState - [csfHasFocus];
 end;
 
 end.
