@@ -97,6 +97,16 @@ var
 begin
   Self.Close;
   lSelectedItem := TStaticText(ASender).Tag;
+  { Fire the TMenuItem.Click for the picked entry. Without this, a
+    direct TPopupMenu.PopUp(X, Y) call would visually open and dismiss
+    correctly but never run the user's OnClick handler -- the LCL
+    routes those through TMenuItem.Click. The ShowSelectItemDialog
+    path (combobox dropdown) creates menu items with no OnClick, so
+    Click is a no-op there and the dedicated callback below handles
+    it instead. }
+  if (LCLMenu <> nil)
+     and (lSelectedItem >= 0) and (lSelectedItem < LCLMenu.Items.Count) then
+    LCLMenu.Items[lSelectedItem].Click;
   if LCLIntf.OnShowSelectItemDialogResult <> nil then
     LCLIntf.OnShowSelectItemDialogResult(lSelectedItem);
 end;
@@ -190,6 +200,7 @@ begin
 
   CurCDPopUpMenu := TCDPopUpMenuForm.CreateNew(nil);
   CDPopUpMenus.Add(CurCDPopUpMenu);
+  CurCDPopUpMenu.LCLMenu := APopupMenu;
   CurCDPopUpMenu.Left := X;
   CurCDPopUpMenu.Top := Y;
   ItemHeight := CurCDPopUpMenu.Canvas.TextHeight('Áç') + 5;
