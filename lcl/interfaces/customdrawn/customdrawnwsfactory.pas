@@ -397,12 +397,20 @@ end;
 
 function RegisterCustomRadioGroup: Boolean; alias : 'WSRegisterCustomRadioGroup';
 begin
-  Result := False;
+  { TCustomRadioGroup is a pure-LCL composite: it inherits from
+    TCustomGroupBox and auto-creates TRadioButton children from its
+    Items list (extctrls/radiogroup.inc:178). All three of those --
+    TGroupBox, TRadioButton, and the WS marker class -- are already
+    registered in customdrawn, so this registration is the missing
+    final hook-up. }
+  RegisterWSComponent(TCustomRadioGroup, TCDWSCustomRadioGroup);
+  Result := True;
 end;
 
 function RegisterCustomCheckGroup: Boolean; alias : 'WSRegisterCustomCheckGroup';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomCheckGroup, TCDWSCustomCheckGroup);
+  Result := True;
 end;
 
 function RegisterCustomLabeledEdit: Boolean; alias : 'WSRegisterCustomLabeledEdit';
