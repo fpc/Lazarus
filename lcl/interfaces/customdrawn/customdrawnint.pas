@@ -235,6 +235,7 @@ type
     FWlClipFormats:       array of TClipboardFormat;
     FWlClipCallback:      TClipboardRequestEvent;
     FWlLastInputSerial:   LongWord;       { for set_selection }
+    FWlLastPressSerial:   LongWord;       { for xdg_popup.grab; only press serials are valid grab triggers }
     procedure WLPaintAllPending;
     procedure WLDrawWindow(WI: TWaylandWindowInfo);
     function  WLFindWindowBySurface(Surface: TWaylandSurface): TWaylandWindowInfo;

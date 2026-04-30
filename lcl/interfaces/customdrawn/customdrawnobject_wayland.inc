@@ -175,14 +175,19 @@ end;
 procedure TCDWidgetSet.WLHandlePointerButton(Sender: TWaylandPointer;
   Serial, TimeMs, Button, State: LongWord);
 var
-  WI: TWaylandWindowInfo;
+  WI, PopWI: TWaylandWindowInfo;
   Btn: TMouseButton;
   Known: Boolean;
+  i: Integer;
 begin
   { Stash the serial so wl_data_device.set_selection (clipboard
     ownership) can use it -- the compositor requires the serial of a
-    recent input event from this seat. }
+    recent input event from this seat. Track the press serial
+    separately for xdg_popup.grab, which only accepts a press-flavoured
+    serial as a valid grab trigger. }
   FWlLastInputSerial := Serial;
+  if State = WL_POINTER_BUTTON_PRESSED then
+    FWlLastPressSerial := Serial;
   if WaylandTrace then Trace(' input',
     Format('pointer button=$%x state=%d at (%d,%d) focus=%p',
       [Button, State, FWlPointerX, FWlPointerY, Pointer(FWlPointerFocus)]));
@@ -197,6 +202,32 @@ begin
     Known := False;  { FIXME: side/extra/forward/back buttons not mapped. }
   end;
   if not Known then Exit;
+
+  { wlroots' xdg_popup grab does NOT auto-dismiss on within-app
+    outside-clicks: when the focus moves to a same-client parent
+    surface, xdg_pointer_grab_button delivers the button event
+    normally and keeps the grab active (see wlroots
+    types/xdg_shell/wlr_xdg_popup.c -- xdg_pointer_grab_enter
+    routes same-client surface focus through wlr_seat_pointer_enter,
+    and xdg_pointer_grab_button only ends the grab when send_button
+    returns 0, which only happens after focus has been cleared for
+    a cross-client surface). The compositor only sends popup_done
+    for cross-client outside-clicks. We dismiss any active popup on
+    every press whose target surface isn't the popup itself, matching
+    the GTK / Qt convention of client-side outside-click handling.
+    Iterate backwards because Hide -> ShowHide -> WLTeardownPopup
+    flips state during the loop. }
+  if State = WL_POINTER_BUTTON_PRESSED then
+  begin
+    for i := FWlWindowList.Count - 1 downto 0 do
+    begin
+      PopWI := TWaylandWindowInfo(FWlWindowList[i]);
+      if (PopWI = nil) or (PopWI = WI) then Continue;
+      if (PopWI.Popup <> nil) and (PopWI.LCLForm <> nil) then
+        PopWI.LCLForm.Hide;
+    end;
+  end;
+
   if State = WL_POINTER_BUTTON_PRESSED then
     CallbackMouseDown(WI, FWlPointerX, FWlPointerY, Btn, WLCurrentShiftState)
   else
@@ -899,8 +930,8 @@ begin
     WLHandlePointerButton. Without a recent input serial the popup
     still works -- it just won't auto-dismiss on click-outside, which
     is the right fallback for programmatic / timer-driven popups. }
-  if (FWlSeat <> nil) and (FWlLastInputSerial <> 0) then
-    WI.Popup.Grab(FWlSeat, FWlLastInputSerial);
+  if (FWlSeat <> nil) and (FWlLastPressSerial <> 0) then
+    WI.Popup.Grab(FWlSeat, FWlLastPressSerial);
 
   { Compositor took its own snapshot of the positioner state at
     GetPopup; we don't need our handle anymore. }
