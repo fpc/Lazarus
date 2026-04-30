@@ -573,11 +573,9 @@ end;
 function TCDWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar;
   uType: Cardinal): integer;
 begin
-  { FIXME: no native message box -- logs to stderr and returns OK. Real
-    implementation should pop up a CD-drawn modal toplevel. }
-  if (lpCaption <> nil) and (lpText <> nil) then
-    DebugLn('[WL MessageBox] %s: %s', [lpCaption, lpText]);
-  Result := IDOK;
+  { Use the widgetset-independent LCL message box. It creates an LCL
+    modal dialog instead of relying on a compositor/native toolkit API. }
+  Result := DefaultMessageBox(lpText, lpCaption, uType);
 end;
 
 function TCDWidgetSet.BackendSetFocus(hWnd: HWND): HWND;
