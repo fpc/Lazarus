@@ -270,6 +270,16 @@ begin
     CDWidgetset.FWlKeyboardFocus := nil;
   if CDWidgetset.FWlPointerFocus = WI then
     CDWidgetset.FWlPointerFocus := nil;
+  { TCDWidgetSet.FocusedControl / FocusedIntfControl point at LCL
+    TWinControls. By the time a form's DestroyHandle runs,
+    TWinControl.Destroy has already freed the form's children -- we
+    can't safely walk Parent to test "does this focused control belong
+    to me?". Clear unconditionally: if we don't, the next focus shift
+    LCLSendKillFocusMsg's a dangling pointer. We may discard a
+    legitimate focus belonging to another (still-alive) form, but the
+    next focus event re-establishes it. }
+  CDWidgetset.FocusedControl := nil;
+  CDWidgetset.FocusedIntfControl := nil;
   Idx := CDWidgetset.FWlWindowList.IndexOf(WI);
   if Idx >= 0 then CDWidgetset.FWlWindowList.Delete(Idx);
   if WI.PoolData <> nil then FpMUnMap(WI.PoolData, WI.PoolSize);
