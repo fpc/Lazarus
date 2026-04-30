@@ -488,42 +488,46 @@ end;
 procedure TCDDrawerCommon.DrawFrame3D(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize;
     const FrameWidth : integer; const Style : TBevelCut);
 var
-  i: Integer;
+  i, R, B: Integer;
   ARect: TRect;
 begin
+  { ARect.Right / ARect.Bottom are exclusive per LCL TRect convention,
+    so the rightmost / bottommost drawable pixels are Right-1 / Bottom-1.
+    GTK2 (gtk2winapi.inc Frame3d) and MUI (muiwinapi.inc Frame3d) do the
+    same -1 adjustment; the previous code here used the exclusive values
+    directly and lost the right and bottom edges of the outer iteration
+    to clipping. }
   ARect := Bounds(ADestPos.X, ADestPos.Y, ASize.cx, ASize.cy);
   for i := 0 to FrameWidth-1 do
   begin
+    R := ARect.Right - 1;
+    B := ARect.Bottom - 1;
     case Style of
       bvLowered:
       begin
-        // white lines in the left and top
         ADest.Pen.Style := psSolid;
         ADest.Brush.Style := bsClear;
         ADest.Pen.FPColor := TColorToFPColor(WIN2000_FRAME_GRAY);
-        ADest.MoveTo(ARect.Left,  ARect.Bottom);
-        ADest.LineTo(ARect.Left,  ARect.Top);
-        ADest.LineTo(ARect.Right, ARect.Top);
-        // Dark grey line on the right and bottom
+        ADest.MoveTo(ARect.Left, B);
+        ADest.LineTo(ARect.Left, ARect.Top);
+        ADest.LineTo(R,          ARect.Top);
         ADest.Pen.FPColor := TColorToFPColor(WIN2000_FRAME_WHITE);
-        ADest.MoveTo(ARect.Left,  ARect.Bottom);
-        ADest.LineTo(ARect.Right, ARect.Bottom);
-        ADest.LineTo(ARect.Right, ARect.Top);
+        ADest.MoveTo(ARect.Left, B);
+        ADest.LineTo(R,          B);
+        ADest.LineTo(R,          ARect.Top);
       end;
       bvRaised:
       begin
-        // white lines in the left and top
         ADest.Pen.Style := psSolid;
         ADest.Brush.Style := bsClear;
         ADest.Pen.FPColor := TColorToFPColor(WIN2000_FRAME_WHITE);
-        ADest.MoveTo(ARect.Left,  ARect.Bottom);
-        ADest.LineTo(ARect.Left,  ARect.Top);
-        ADest.LineTo(ARect.Right, ARect.Top);
-        // Dark grey line on the right and bottom
+        ADest.MoveTo(ARect.Left, B);
+        ADest.LineTo(ARect.Left, ARect.Top);
+        ADest.LineTo(R,          ARect.Top);
         ADest.Pen.FPColor := TColorToFPColor(WIN2000_FRAME_GRAY);
-        ADest.MoveTo(ARect.Left,  ARect.Bottom);
-        ADest.LineTo(ARect.Right, ARect.Bottom);
-        ADest.LineTo(ARect.Right, ARect.Top);
+        ADest.MoveTo(ARect.Left, B);
+        ADest.LineTo(R,          B);
+        ADest.LineTo(R,          ARect.Top);
       end;
       bvSpace:
       begin
