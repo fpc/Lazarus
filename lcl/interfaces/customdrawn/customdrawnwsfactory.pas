@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls, Spin,
-  Dialogs, ExtCtrls, Buttons, Forms, Menus,
-  WSLCLClasses, WSDialogs;
+  Dialogs, ExtCtrls, Buttons, Forms, Menus, Grids,
+  WSLCLClasses, WSDialogs, WSGrids;
 
 // imglist
 function RegisterCustomImageListResolution: Boolean;
@@ -515,8 +515,13 @@ end;
 // Grids
 function RegisterCustomGrid: Boolean; alias : 'WSRegisterCustomGrid';
 begin
-//  RegisterWSComponent(TCustomGrid, TWinCEWSCustomGrid);
-  Result := False;
+  { TCustomGrid paints itself (Paint -> DrawAllRows -> DrawCell, all in
+    grids.pas) and only needs the base TWSCustomGrid for editor bounds
+    + char dispatch. No customdrawn-specific subclass required. The
+    scrollbar API (ShowScrollBar / ScrollWindowEx) is handled at the
+    LCLIntf level. }
+  RegisterWSComponent(TCustomGrid, TWSCustomGrid);
+  Result := True;
 end;
 
 // Menus
