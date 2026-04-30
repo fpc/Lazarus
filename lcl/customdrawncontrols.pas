@@ -395,6 +395,11 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    { Which arrow button is currently being held / clicked, or [] for
+      none. Public accessor over the private FButton so an
+      OnChangeByUser handler can tell an arrow gesture apart from a
+      trough click or a thumb drag. }
+    function CurrentButton: TCDControlState;
   published
     property Max: Integer read FMax write SetMax;
     property Min: Integer read FMin write SetMin;
@@ -410,6 +415,7 @@ type
     FKind: TScrollBarKind;
     procedure SetKind(AValue: TScrollBarKind);
   protected
+    procedure KeyDown(var Key: word; Shift: TShiftState); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure GetBorderSizes(out ALeft, ARight: Integer);
@@ -422,6 +428,12 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    { Public accessor for the inherited protected FSmallChange /
+      FLargeChange. Hosts that want the trough click to scroll one
+      page and arrow clicks to step a fraction need to set these
+      explicitly -- the defaults of 1 / 5 are tiny relative to grid
+      content. }
+    procedure SetIncrements(ASmall, ALarge: Integer);
   published
     property DrawStyle;
     property Enabled;
@@ -2535,18 +2547,29 @@ procedure TCDPositionedControl.SetPosition(AValue: Integer);
 var
   EffectiveMax: Integer;
 begin
-  if FPosition=AValue then Exit;
-  FPosition:=AValue;
-
   { When PageSize > 0 (Win32 / scrollbar convention) the highest
     valid Position is Max - PageSize -- Position is the index of the
     first visible item, the page covers Position..Position+PageSize-1.
-    For PageSize=0 (TrackBar etc.) Position can reach Max as before. }
+    For PageSize=0 (TrackBar etc.) Position can reach Max as before.
+
+    Clamp the incoming value first, then bail if the clamped result
+    matches the current Position. The previous order (assign first,
+    clamp after, fire OnChange unconditionally) emitted spurious
+    OnChange / OnChangeByUser notifications when the user kept
+    pressing past the boundary -- callers like DoClickButton check
+    `NewPosition <> Position` *before* assignment, miss the clamp,
+    and still fire OnChangeByUser. Downstream that drove the LCL
+    scrollbar's "+1 follows winapi bug" branch in DoScroll, which
+    pushed LCL.Position to Max-PageSize+1 and then mis-routed
+    subsequent gestures. }
   EffectiveMax := FMax;
   if FPageSize > 0 then EffectiveMax := EffectiveMax - FPageSize;
   if EffectiveMax < FMin then EffectiveMax := FMin;
-  if FPosition > EffectiveMax then FPosition := EffectiveMax;
-  if FPosition < FMin then FPosition := FMin;
+  if AValue > EffectiveMax then AValue := EffectiveMax;
+  if AValue < FMin then AValue := FMin;
+
+  if FPosition = AValue then Exit;
+  FPosition := AValue;
 
   // Don't do OnChange during loading
   if not (csLoading in ComponentState) then
@@ -2558,19 +2581,22 @@ end;
 
 procedure TCDPositionedControl.DoClickButton(AButton: TCDControlState; ALargeChange: Boolean);
 var
-  lChange: Integer;
-  NewPosition: Integer = -1;
+  lChange, OldPosition, NewPosition: Integer;
 begin
   if ALargeChange then lChange := FLargeChange
   else lChange := FSmallChange;
   if csfLeftArrow in AButton then NewPosition := Position - lChange
-  else if csfRightArrow in AButton then NewPosition := Position + lChange;
+  else if csfRightArrow in AButton then NewPosition := Position + lChange
+  else Exit;
 
-  if (NewPosition >= 0) and (NewPosition <> Position) then
-  begin
-    Position := NewPosition;
-    if Assigned(FOnChangeByUser) then FOnChangeByUser(Self);
-  end;
+  { SetPosition clamps to [Min, Max-PageSize], so the requested
+    NewPosition may collapse to the current FPosition at the
+    boundary. Compare FPosition before/after to fire OnChangeByUser
+    only on a real change. }
+  OldPosition := FPosition;
+  Position := NewPosition;
+  if (FPosition <> OldPosition) and Assigned(FOnChangeByUser) then
+    FOnChangeByUser(Self);
 end;
 
 procedure TCDPositionedControl.HandleBtnClickTimer(ASender: TObject);
@@ -2680,7 +2706,7 @@ end;
 
 procedure TCDPositionedControl.KeyDown(var Key: word; Shift: TShiftState);
 var
-  NewPosition: Integer;
+  NewPosition, OldPosition: Integer;
   HandledKey: Boolean;
 begin
   inherited KeyDown(Key, Shift);
@@ -2701,21 +2727,20 @@ begin
 
   if HandledKey then
   begin
-    if NewPosition > FMax then NewPosition := FMax;
-    if NewPosition < FMin then NewPosition := FMin;
-
-    if NewPosition <> Position then
-    begin
-      Position := NewPosition;
-      if Assigned(FOnChangeByUser) then FOnChangeByUser(Self);
-    end;
+    { Don't pre-clamp here -- SetPosition clamps to [Min, Max-PageSize].
+      Compare FPosition before/after the assignment so OnChangeByUser
+      only fires on real movement. }
+    OldPosition := FPosition;
+    Position := NewPosition;
+    if (FPosition <> OldPosition) and Assigned(FOnChangeByUser) then
+      FOnChangeByUser(Self);
   end;
 end;
 
 procedure TCDPositionedControl.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: integer);
 var
-  NewPosition: Integer;
+  NewPosition, OldPosition: Integer;
 begin
   SetFocus;
   if FMoveByDragging then
@@ -2728,10 +2753,12 @@ begin
   begin
     NewPosition := GetPositionFromMousePos(X, Y);
     DragDropStarted := True;
-    if (NewPosition >= 0) and (NewPosition <> Position) then
+    if NewPosition >= 0 then
     begin
+      OldPosition := FPosition;
       Position := NewPosition;
-      if Assigned(FOnChangeByUser) then FOnChangeByUser(Self);
+      if (FPosition <> OldPosition) and Assigned(FOnChangeByUser) then
+        FOnChangeByUser(Self);
     end;
   end;
 
@@ -2749,27 +2776,20 @@ end;
 
 procedure TCDPositionedControl.MouseMove(Shift: TShiftState; X, Y: integer);
 var
-  NewPosition: Integer;
+  NewPosition, OldPosition: Integer;
 begin
   if DragDropStarted then
   begin
     if FMoveByDragging then
-    begin
-      NewPosition := FPositionAtMouseDown + GetPositionDisplacement(FLastMouseDownPos, Point(X, Y));
-      if NewPosition <> Position then
-      begin
-        Position := NewPosition;
-        if Assigned(FOnChangeByUser) then FOnChangeByUser(Self);
-      end;
-    end
+      NewPosition := FPositionAtMouseDown + GetPositionDisplacement(FLastMouseDownPos, Point(X, Y))
     else
-    begin
       NewPosition := GetPositionFromMousePos(X, Y);
-      if (NewPosition >= 0) and (NewPosition <> Position) then
-      begin
-        Position := NewPosition;
-        if Assigned(FOnChangeByUser) then FOnChangeByUser(Self);
-      end;
+    if NewPosition >= 0 then
+    begin
+      OldPosition := FPosition;
+      Position := NewPosition;
+      if (FPosition <> OldPosition) and Assigned(FOnChangeByUser) then
+        FOnChangeByUser(Self);
     end;
   end;
   inherited MouseMove(Shift, X, Y);
@@ -2781,6 +2801,13 @@ begin
   DragDropStarted := False;
   FBtnClickTimer.Enabled := False;
   FState := FState - [csfLeftArrow, csfRightArrow];
+  { Also clear FButton itself -- MouseDown sets it to the clicked
+    arrow and the original code only cleared FState. FButton is what
+    the click-repeat timer (and now CurrentButton) compare against,
+    so leaving it stuck to the last-clicked arrow let
+    OnChangeByUser-handlers misclassify subsequent unrelated trough
+    clicks as arrow gestures. }
+  FButton := [];
   Invalidate;
   inherited MouseUp(Button, Shift, X, Y);
 end;
@@ -2803,6 +2830,11 @@ destructor TCDPositionedControl.Destroy;
 begin
   FBtnClickTimer.Free;
   inherited Destroy;
+end;
+
+function TCDPositionedControl.CurrentButton: TCDControlState;
+begin
+  Result := FButton;
 end;
 
 { TCDScrollBar }
@@ -2894,10 +2926,60 @@ begin
   FMoveByDragging := True;
 end;
 
+procedure TCDScrollBar.KeyDown(var Key: word; Shift: TShiftState);
+var
+  OldPosition, Step: Integer;
+begin
+  { Override TCDPositionedControl.KeyDown rather than chaining: the
+    inherited version maps VK_DOWN -> -FSmallChange (trackbar
+    convention, up = higher value), but a scrollbar must scroll its
+    content in the direction of the arrow key. Don't call inherited
+    here, otherwise we'd run that mapping AND fire OnChangeByUser
+    twice for the same keypress. }
+  Step := 0;
+  case Key of
+    VK_PRIOR: Step := -FLargeChange;
+    VK_NEXT:  Step := +FLargeChange;
+    VK_HOME:
+    begin
+      OldPosition := FPosition;
+      Position := FMin;
+      if (FPosition <> OldPosition) and Assigned(FOnChangeByUser) then
+        FOnChangeByUser(Self);
+      Exit;
+    end;
+    VK_END:
+    begin
+      OldPosition := FPosition;
+      Position := FMax;
+      if (FPosition <> OldPosition) and Assigned(FOnChangeByUser) then
+        FOnChangeByUser(Self);
+      Exit;
+    end;
+  else
+    if FKind = sbHorizontal then
+      case Key of
+        VK_LEFT:  Step := -FSmallChange;
+        VK_RIGHT: Step := +FSmallChange;
+      end
+    else
+      case Key of
+        VK_UP:    Step := -FSmallChange;
+        VK_DOWN:  Step := +FSmallChange;
+      end;
+  end;
+  if Step = 0 then Exit;
+
+  OldPosition := FPosition;
+  Position := FPosition + Step;
+  if (FPosition <> OldPosition) and Assigned(FOnChangeByUser) then
+    FOnChangeByUser(Self);
+end;
+
 procedure TCDScrollBar.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
-  Coord, ButtonW, Trough, Range, PosRange, ThumbSize, ThumbStart, NewPos: Integer;
+  Coord, ButtonW, Trough, Range, PosRange, ThumbSize, ThumbStart, OldPos: Integer;
 begin
   { Defer arrow-button clicks to the inherited handler. }
   if GetButtonFromMousePos(X, Y) <> [] then
@@ -2951,26 +3033,23 @@ begin
   if PosRange <= 0 then ThumbStart := ButtonW
   else ThumbStart := ButtonW + Round(FPosition / PosRange * (Trough - ThumbSize));
 
+  { SetPosition clamps to [Min, Max-PageSize]; comparing FPosition
+    before/after lets OnChangeByUser fire only on real movement, not
+    on a boundary click that gets clamped back. }
   if Coord < ThumbStart then
   begin
-    NewPos := FPosition - FLargeChange;
-    if NewPos < FMin then NewPos := FMin;
-    if NewPos <> FPosition then
-    begin
-      Position := NewPos;
-      if Assigned(FOnChangeByUser) then FOnChangeByUser(Self);
-    end;
+    OldPos := FPosition;
+    Position := FPosition - FLargeChange;
+    if (FPosition <> OldPos) and Assigned(FOnChangeByUser) then
+      FOnChangeByUser(Self);
     Exit;
   end;
   if Coord > ThumbStart + ThumbSize then
   begin
-    NewPos := FPosition + FLargeChange;
-    if NewPos > FMax then NewPos := FMax;
-    if NewPos <> FPosition then
-    begin
-      Position := NewPos;
-      if Assigned(FOnChangeByUser) then FOnChangeByUser(Self);
-    end;
+    OldPos := FPosition;
+    Position := FPosition + FLargeChange;
+    if (FPosition <> OldPos) and Assigned(FOnChangeByUser) then
+      FOnChangeByUser(Self);
     Exit;
   end;
   inherited MouseDown(Button, Shift, X, Y);
@@ -2979,6 +3058,14 @@ end;
 destructor TCDScrollBar.Destroy;
 begin
   inherited Destroy;
+end;
+
+procedure TCDScrollBar.SetIncrements(ASmall, ALarge: Integer);
+begin
+  if ASmall < 1 then ASmall := 1;
+  if ALarge < 1 then ALarge := 1;
+  FSmallChange := ASmall;
+  FLargeChange := ALarge;
 end;
 
 { TCDGroupBox }
