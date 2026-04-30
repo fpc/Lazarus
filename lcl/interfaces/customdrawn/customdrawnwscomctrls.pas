@@ -224,11 +224,16 @@ type
   published
   end;
 
-  { TCDWSToolBar }
+  { TCDWSToolBar registers the toolbar as a customdrawn container,
+    matching what every non-native LCL backend ships (qt / cocoa create
+    a TCustomControl-equivalent here). The bar's TToolButton children
+    are TGraphicControls and paint themselves on the toolbar's canvas;
+    the toolbar hosts them and stripes the background. }
 
   TCDWSToolBar = class(TWSToolBar)
   published
-//    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TCDWSTrackBar }
@@ -277,6 +282,14 @@ implementation
   TCDWSCustomTabControl.AddPage call still drives the per-tab visual
   state independently of where the TabSheet's own children live. }
 class function TCDWSCustomPage.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLHandle;
+begin
+  Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
+end;
+
+{ TCDWSToolBar }
+
+class function TCDWSToolBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLHandle;
 begin
   Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);

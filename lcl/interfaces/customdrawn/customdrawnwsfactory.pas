@@ -199,12 +199,17 @@ end;
 
 function RegisterCustomToolButton: Boolean; alias : 'WSRegisterCustomToolButton';
 begin
+  { TToolButton is a TGraphicControl in the LCL -- it paints itself on
+    its parent's canvas via its own Paint method. There's no per-button
+    handle to create, so the WS class is a no-op and we let the LCL
+    default registration apply. }
   Result := False;
 end;
 
 function RegisterToolBar: Boolean; alias : 'WSRegisterToolBar';
 begin
-  Result := False;
+  RegisterWSComponent(TToolBar, TCDWSToolBar);
+  Result := True;
 end;
 
 function RegisterCustomTrackBar: Boolean; alias : 'WSRegisterCustomTrackBar';
