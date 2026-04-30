@@ -11,7 +11,7 @@ uses
   // LazUtils
   lazutf8,
   // LCL -> Use only TForm, TWinControl, TCanvas and TLazIntfImage
-  Graphics, Controls, LCLType,
+  Graphics, Controls, LCLType, LCLProc,
   // Others only for types
   StdCtrls, ComCtrls, Forms,
   //
@@ -794,6 +794,7 @@ var
   lGlyphExtra: Integer = 0;
   lTextOutPos: TPoint;
   lGlyphCaptionHeight: Integer;
+  AccelPos, AccelXLeft, AccelXRight, AccelYTop: Integer;
 begin
   // background
   ADest.Brush.Style := bsSolid;
@@ -846,6 +847,13 @@ begin
   begin
     ADest.Font.Assign(AStateEx.Font);
     Str := AStateEx.Caption;
+    { LCL convention: '&X' marks X as the accelerator letter -- the &
+      is removed for display, X gets an underline. The button caption
+      arrives here straight from TCustomButton.Caption (e.g. '&Yes'
+      from TBitBtn.Kind=bkYes). DeleteAmpersands strips the & and
+      returns the position of the accelerator in the resulting Str so
+      we can underline it after the TextOut. }
+    AccelPos := DeleteAmpersands(Str);
     lGlyphCaptionHeight := Max(TCanvas(ADest).TextHeight(Str), AStateEx.Glyph.Height);
     lTextOutPos.X := (ASize.cx - TCanvas(ADest).TextWidth(Str) - AStateEx.Glyph.Width) div 2;
     lTextOutPos.Y := (ASize.cy - lGlyphCaptionHeight) div 2;
@@ -886,6 +894,32 @@ begin
       Dec(lTextOutPos.X);
       Dec(lTextOutPos.Y);
       ADest.TextOut(lTextOutPos.X, lTextOutPos.Y, Str);
+    end;
+    { Underline the accelerator letter (the character that originally
+      followed '&'). We don't have per-character TextOut coordinates,
+      so use TextWidth on the prefix and the letter to find the slice
+      of the baseline that needs a 1px line underneath. Pen colour is
+      set explicitly because earlier draws (button bevel, focus rect)
+      leave it at a near-white tint that disappears against the
+      button's face on an unfocused button. }
+    if AccelPos > 0 then
+    begin
+      AccelXLeft  := lTextOutPos.X
+        + TCanvas(ADest).TextWidth(Copy(Str, 1, AccelPos - 1));
+      AccelXRight := lTextOutPos.X
+        + TCanvas(ADest).TextWidth(Copy(Str, 1, AccelPos));
+      { TextHeight returns ascent+descent. The visible letter ends at
+        the baseline (~ ascent), well above the bbox bottom. Drop the
+        underline two pixels below the baseline -- close enough to the
+        letter to read as an underline rather than a stray line near
+        the focus rectangle. }
+      AccelYTop   := lTextOutPos.Y + TCanvas(ADest).TextHeight(Str) - 3;
+      ADest.Pen.Style := psSolid;
+      if csfEnabled in AState then
+        ADest.Pen.FPColor := TColorToFPColor(TCanvas(ADest).Font.Color)
+      else
+        ADest.Pen.FPColor := TColorToFPColor(WIN2000_DISABLED_TEXT);
+      ADest.Line(AccelXLeft, AccelYTop, AccelXRight, AccelYTop);
     end;
   end;
 end;
