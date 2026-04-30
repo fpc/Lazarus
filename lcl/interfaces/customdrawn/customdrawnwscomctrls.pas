@@ -513,20 +513,23 @@ class procedure TCDWSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 var
   Bar: TStatusBar;
-  TextH: Integer;
+  TextH, Pad: Integer;
 begin
   { Width=0 so AutoSize only constrains height; the LCL anchors the bar
     to alBottom and stretches it horizontally. Height tracks the bar's
-    own font -- TextHeight returns a DPI-correct count for the current
-    rendering surface, so this scales with both font size and display
-    DPI. The +6 is the drawer's vertical padding (2 sunken-top edge +
-    2 above text + 2 below), all DPI-adjusted inside the drawer. }
+    own font -- TextHeight returns a count for the current rendering
+    surface (already DPI-aware via the font system), and the padding
+    is also DPI-adjusted to match the drawer's per-DPI vertical
+    spacing (2 sunken-top edge + 2 above text + 2 below). }
   PreferredWidth := 0;
   Bar := TStatusBar(AWinControl);
   Bar.Canvas.Font.Assign(Bar.Font);
   TextH := Bar.Canvas.TextHeight('Wg');
-  if TextH < 1 then TextH := 14;
-  PreferredHeight := TextH + 6;
+  Pad := 0;
+  if Screen.PixelsPerInch <= 125 then Pad := 6
+  else Pad := Round(6 * Screen.PixelsPerInch / 125);
+  if TextH < 1 then TextH := 14 + Pad - 6;
+  PreferredHeight := TextH + Pad;
 end;
 
 class procedure TCDWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar;

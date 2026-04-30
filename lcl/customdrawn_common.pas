@@ -1644,11 +1644,11 @@ begin
   if AStateEx.ItemHeight > 0 then LineHeight := AStateEx.ItemHeight
   else
   begin
-    LineHeight := ADest.TextHeight('Wg') + 2;
-    if LineHeight < 14 then LineHeight := 14;
+    LineHeight := ADest.TextHeight('Wg') + DPIAdjustment(2);
+    if LineHeight < DPIAdjustment(14) then LineHeight := DPIAdjustment(14);
   end;
 
-  ContentH := ASize.cy - 4;     { 2px frame top + bottom }
+  ContentH := ASize.cy - DPIAdjustment(4);  { sunken frame top + bottom }
   VisCount := ContentH div LineHeight;
   if VisCount < 1 then VisCount := 1;
   AStateEx.FullyVisibleCount := VisCount;
@@ -1673,8 +1673,8 @@ begin
   begin
     ItemIdx := AStateEx.TopIndex + i;
     if (ItemIdx < 0) or (ItemIdx >= AStateEx.Items.Count) then Continue;
-    ItemY := 2 + i * LineHeight;
-    if ItemY >= ASize.cy - 2 then Break;
+    ItemY := DPIAdjustment(2) + i * LineHeight;
+    if ItemY >= ASize.cy - DPIAdjustment(2) then Break;
 
     Selected := False;
     if (AStateEx.Selected <> nil) and (ItemIdx < AStateEx.Selected.Size) then
@@ -1685,14 +1685,16 @@ begin
       ADest.Brush.Color := SelBg;
       ADest.Brush.Style := bsSolid;
       ADest.Pen.Style   := psClear;
-      ADest.FillRect(Bounds(2, ItemY, ASize.cx - 4, LineHeight));
+      ADest.FillRect(Bounds(DPIAdjustment(2), ItemY,
+        ASize.cx - DPIAdjustment(4), LineHeight));
       ADest.Brush.Style := bsClear;
       ADest.Font.Color  := SelFg;
     end
     else
       ADest.Font.Color := TextColor;
 
-    ADest.TextOut(4, ItemY + 1, AStateEx.Items.Strings[ItemIdx]);
+    ADest.TextOut(DPIAdjustment(4), ItemY + DPIAdjustment(1),
+                  AStateEx.Items.Strings[ItemIdx]);
 
     { Focus rect on the current item (ItemIndex) when the listbox is
       focused. Subtle dotted-style border so users can see "this is
@@ -1702,7 +1704,8 @@ begin
       ADest.Pen.Color := Palette.WindowText;
       ADest.Pen.Style := psDot;
       ADest.Brush.Style := bsClear;
-      ADest.Rectangle(2, ItemY, ASize.cx - 4, ItemY + LineHeight);
+      ADest.Rectangle(DPIAdjustment(2), ItemY,
+        ASize.cx - DPIAdjustment(4), ItemY + LineHeight);
       ADest.Pen.Style := psSolid;
     end;
   end;
@@ -1716,7 +1719,12 @@ var
   HasFocus, Selected, IsHeader, IsEnabled: Boolean;
   TextColor, BgColor, SelBg, SelFg: TColor;
   ItemState: TCheckBoxState;
+  Pad1, Pad2, Pad4: Integer;
 begin
+  Pad1 := DPIAdjustment(1);
+  Pad2 := DPIAdjustment(2);
+  Pad4 := DPIAdjustment(4);
+
   BgColor := AStateEx.RGBColor;
   if BgColor = clDefault then BgColor := Palette.Window;
   ADest.Brush.Color := BgColor;
@@ -1734,17 +1742,17 @@ begin
   if AStateEx.ItemHeight > 0 then LineHeight := AStateEx.ItemHeight
   else
   begin
-    LineHeight := ADest.TextHeight('Wg') + 2;
-    if LineHeight < 14 then LineHeight := 14;
+    LineHeight := ADest.TextHeight('Wg') + Pad2;
+    if LineHeight < DPIAdjustment(14) then LineHeight := DPIAdjustment(14);
   end;
 
-  ContentH := ASize.cy - 4;
+  ContentH := ASize.cy - 2 * Pad2;
   VisCount := ContentH div LineHeight;
   if VisCount < 1 then VisCount := 1;
   AStateEx.FullyVisibleCount := VisCount;
 
   CheckW := AStateEx.CheckWidth;
-  if CheckW <= 0 then CheckW := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT) + 6;
+  if CheckW <= 0 then CheckW := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT) + DPIAdjustment(6);
   CheckSquareSize := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT);
 
   HasFocus := csfHasFocus in AState;
@@ -1764,8 +1772,8 @@ begin
   begin
     ItemIdx := AStateEx.TopIndex + i;
     if (ItemIdx < 0) or (ItemIdx >= AStateEx.Items.Count) then Continue;
-    ItemY := 2 + i * LineHeight;
-    if ItemY >= ASize.cy - 2 then Break;
+    ItemY := Pad2 + i * LineHeight;
+    if ItemY >= ASize.cy - Pad2 then Break;
 
     Selected := False;
     if (AStateEx.Selected <> nil) and (ItemIdx < AStateEx.Selected.Size) then
@@ -1782,10 +1790,10 @@ begin
       ADest.Brush.Color := AStateEx.HeaderBackgroundColor;
       ADest.Brush.Style := bsSolid;
       ADest.Pen.Style   := psClear;
-      ADest.FillRect(Bounds(2, ItemY, ASize.cx - 4, LineHeight));
+      ADest.FillRect(Bounds(Pad2, ItemY, ASize.cx - 2 * Pad2, LineHeight));
       ADest.Brush.Style := bsClear;
       ADest.Font.Color  := AStateEx.HeaderColor;
-      ADest.TextOut(4, ItemY + 1, AStateEx.Items.Strings[ItemIdx]);
+      ADest.TextOut(Pad4, ItemY + Pad1, AStateEx.Items.Strings[ItemIdx]);
       Continue;
     end;
 
@@ -1794,7 +1802,8 @@ begin
       ADest.Brush.Color := SelBg;
       ADest.Brush.Style := bsSolid;
       ADest.Pen.Style   := psClear;
-      ADest.FillRect(Bounds(2 + CheckW, ItemY, ASize.cx - 4 - CheckW, LineHeight));
+      ADest.FillRect(Bounds(Pad2 + CheckW, ItemY,
+        ASize.cx - 2 * Pad2 - CheckW, LineHeight));
       ADest.Brush.Style := bsClear;
       ADest.Font.Color  := SelFg;
     end
@@ -1806,7 +1815,7 @@ begin
 
     { Checkbox square at left of the row. Centred vertically within the
       row. Same look as TCDCheckBox: sunken frame + tickmark. }
-    CheckSquareX := 4;
+    CheckSquareX := Pad4;
     CheckSquareY := ItemY + (LineHeight - CheckSquareSize) div 2;
 
     ADest.Brush.Style := bsSolid;
@@ -1824,15 +1833,16 @@ begin
         CheckSquareY + DPIAdjustment(3)), AState);
 
     ADest.Brush.Style := bsClear;
-    TextX := 4 + CheckW;
-    ADest.TextOut(TextX, ItemY + 1, AStateEx.Items.Strings[ItemIdx]);
+    TextX := Pad4 + CheckW;
+    ADest.TextOut(TextX, ItemY + Pad1, AStateEx.Items.Strings[ItemIdx]);
 
     if HasFocus and (ItemIdx = AStateEx.ItemIndex) then
     begin
       ADest.Pen.Color := Palette.WindowText;
       ADest.Pen.Style := psDot;
       ADest.Brush.Style := bsClear;
-      ADest.Rectangle(2 + CheckW, ItemY, ASize.cx - 4, ItemY + LineHeight);
+      ADest.Rectangle(Pad2 + CheckW, ItemY, ASize.cx - 2 * Pad2,
+        ItemY + LineHeight);
       ADest.Pen.Style := psSolid;
     end;
   end;
