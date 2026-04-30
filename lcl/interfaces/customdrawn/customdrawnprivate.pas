@@ -167,6 +167,7 @@ var
   lTarget: TWinControl;
   lEventPos: TPoint;
   lEventEndsInsideTheControl: Boolean;
+  Mess: TLMContextMenu;
 begin
   lTarget := AWindowHandle.LastMouseDownControl;
   AWindowHandle.LastMouseDownControl := nil;
@@ -188,6 +189,22 @@ begin
     lTarget := lTarget.Parent;
     LCLSendMouseUpMsg(lTarget, lEventPos.x, lEventPos.y, Button, ShiftState);
     if lEventEndsInsideTheControl then LCLSendClickedMsg(lTarget);
+  end;
+
+  { Synthesize LM_CONTEXTMENU on right-click release. Win32 gets this
+    from the OS; on customdrawn nobody else fires it, so TControl's
+    PopupMenu / OnContextPopup never trigger. The LCL handler at
+    TControl.WMContextMenu reads Pos from the message in screen
+    coords. On Wayland true global coords are unavailable, so use
+    form-local coords consistently with this backend's ClientToScreen
+    compromise for popup placement. }
+  if (Button = mbRight) and lEventEndsInsideTheControl then
+  begin
+    FillChar(Mess, SizeOf(Mess), 0);
+    Mess.Msg := LM_CONTEXTMENU;
+    Mess.XPos := x;
+    Mess.YPos := y;
+    DeliverMessage(lTarget, Mess);
   end;
 
   // Form scrolling
