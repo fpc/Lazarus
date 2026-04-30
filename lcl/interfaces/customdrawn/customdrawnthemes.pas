@@ -282,9 +282,15 @@ begin
     if not IsDisabled(Details) then
       lCDToolbarItem.State := lCDToolbarItem.State + [csfEnabled];
 
+    lCDToolbar.Flat := True;
     lCDToolbar.ToolBarHeight := lSize.CY;
 
-    lDrawer := GetDrawer(dsMacOSX);
+    { Original upstream code asked for dsMacOSX here -- a Carbon-only
+      drawer registered solely by customdrawn_mac.pas, never used
+      outside the Cocoa / Carbon backends. Use the registered default
+      drawer (dsCommon) instead. }
+    lDrawer := GetDefaultDrawer;
+    if lDrawer = nil then Exit;
     lCanvas.Handle := HDC(DC);
     lDrawer.DrawToolBarItem(lCanvas, lSize, lCDToolbarItem, R.Left, R.Top, lCDToolbarItem.State, lCDToolbar);
 
