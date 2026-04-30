@@ -91,6 +91,15 @@ type
     FocusedControl: TWinControl; // The control focused in the form
     FocusedIntfControl: TWinControl; // The intf control focused in the form
     LayoutAutoAdjusted: Boolean; // Indicates if the form layout was already auto-adjusted once
+    { Form-level input gate. Toggled by TCDWidgetSet.EnableWindow. The
+      LCL's TCustomForm.ShowModal calls Screen.DisableForms before the
+      modal pump (when GetLCLCapability(lcModalWindow) = NO), which
+      walks every form and EnableWindow(handle, False)s it. The
+      mouse / keyboard callbacks check this flag and drop events that
+      target a disabled form -- without that, modal dialogs are
+      cosmetic only on customdrawn-Wayland (no compositor-side input
+      blocking exists for same-process windows). }
+    InputDisabled: Boolean;
     // For merging invalidate requests, currently utilized in X11
     InvalidateRequestedInAnyControl: Boolean;
     // painting objects which represent the composed form image, don't confuse with ControlImage/ControlCanvas

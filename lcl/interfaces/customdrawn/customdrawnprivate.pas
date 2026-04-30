@@ -177,6 +177,7 @@ var
   lEventEndsInsideTheControl: Boolean;
   Mess: TLMContextMenu;
 begin
+  if AWindowHandle.InputDisabled then Exit;
   lTarget := AWindowHandle.LastMouseDownControl;
   AWindowHandle.LastMouseDownControl := nil;
   if lTarget = nil then lTarget := FindControlWhichReceivedEvent(
@@ -225,6 +226,7 @@ var
   lIntfTarget: TWinControl = nil;
   lEventPos: TPoint;
 begin
+  if AWindowHandle.InputDisabled then Exit;
 {  // if mouse-click, focus-change, mouse-click, cursor hasn't moved:
   // simulate double click, assume focus change due to first mouse-click
   if (MouseDownFocusStatus = mfFocusChanged) and (MouseDownFocusWindow = Window)
@@ -277,6 +279,7 @@ var
   lEventPos: TPoint;
   lOldScrollY: Integer;
 begin
+  if AWindowHandle.InputDisabled then Exit;
   if AWindowHandle.LastMouseDownControl = nil then
     lTarget := FindControlWhichReceivedEvent(AWindowHandle.LCLForm, AWindowHandle.Children, x, y)
   else
@@ -382,6 +385,7 @@ var
   lTabNextControl: TWinControl;
   i: Integer;
 begin
+  if AWindowHandle.InputDisabled then Exit;
   lTarget := AWindowHandle.GetFocusedControl();
   {$ifdef VerboseCDEvents}
    DebugLn(Format('CallbackKeyDown FocusedControl=%s:%s AKey=%x', [lTarget.Name, lTarget.ClassName, AKey]));
@@ -464,6 +468,7 @@ procedure CallbackKeyUp(AWindowHandle: TCDForm; AKey: Word);
 var
   lTarget: TWinControl;
 begin
+  if AWindowHandle.InputDisabled then Exit;
   lTarget := AWindowHandle.GetFocusedControl();
   if lTarget = nil then Exit;
   {$ifdef VerboseCDEvents}
@@ -485,6 +490,7 @@ var
   lTarget: TWinControl;
   lCharCode: Word;
 begin
+  if AWindowHandle.InputDisabled then Exit;
   lTarget := AWindowHandle.GetFocusedControl();
   {$ifdef VerboseCDEvents}
    DebugLn(Format('CallbackKeyChar FocusedControl=%s:%s', [lTarget.Name, lTarget.ClassName]));

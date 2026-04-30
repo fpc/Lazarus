@@ -1459,6 +1459,24 @@ begin
   Result := True;
 end;
 
+function TCDWidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
+{ TCustomForm.ShowModal -> Screen.DisableForms uses this to silence
+  every other top-level form for the duration of a modal pump. There's
+  no compositor-side equivalent on Wayland for same-process windows,
+  so the customdrawn TCDForm carries an InputDisabled flag that the
+  per-form mouse / key callbacks consult before dispatching to the LCL.
+  Result is the previous enabled state, matching the Win32 contract. }
+var
+  Form: TCDForm;
+begin
+  Result := False;
+  if hWnd = 0 then Exit;
+  if not (TObject(hWnd) is TCDForm) then Exit;
+  Form := TCDForm(hWnd);
+  Result := not Form.InputDisabled;
+  Form.InputDisabled := not bEnable;
+end;
+
 (*function TQtWidgetSet.EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean;
 begin
   {maybe we can put creating of scrollbar here instead of SetScrollInfo() }

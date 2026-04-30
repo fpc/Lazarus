@@ -179,7 +179,14 @@ begin
     {$endif}
     lcReceivesLMClearCutCopyPasteReliably: Result := LCL_CAPABILITY_NO;
     lcAntialiasingEnabledByDefault: Result := LCL_CAPABILITY_NO;
-    lcAllowChildControlsInNativeControls: Result := LCL_CAPABILITY_YES
+    lcAllowChildControlsInNativeControls: Result := LCL_CAPABILITY_YES;
+    { Customdrawn-Wayland's ShowModal only sets the xdg_toplevel parent
+      hint (window-stacking) -- the compositor doesn't block input to
+      the parent surface, and we don't either. Returning NO makes
+      TCustomForm.ShowModal call Screen.DisableForms(Self) before the
+      modal pump, so the parent's controls become inert until the
+      dialog closes. }
+    lcModalWindow: Result := LCL_CAPABILITY_NO
   else
     Result := inherited GetLCLCapability(ACapability);
   end;

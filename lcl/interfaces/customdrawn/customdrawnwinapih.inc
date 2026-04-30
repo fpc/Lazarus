@@ -79,9 +79,9 @@ function DrawFrameControl(DC: HDC; const Rect : TRect; uType, uState : Cardinal)
 //function DrawText(DC: HDC; Str: PChar; Count: Integer; var ARect: TRect; Flags: Cardinal): Integer; override;
 
 function Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean; override;
-(*function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; override;
+//function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; override;
 function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean; override;
-function EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer; override;*)
+//function EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer; override;
 procedure EnterCriticalSection(var CritSection: TCriticalSection); override;
 function EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool; override;
 function EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint; override;
