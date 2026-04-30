@@ -188,7 +188,7 @@ function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; override;
 
 function SaveDC(DC: HDC): Integer; override;
 function ScreenToClient(Handle : HWND; var P : TPoint) : Integer; override;
-//function ScrollWindowEx(HWnd: HWND; DX, DY: Integer; PRcScroll, PRcClip: PRect; HRgnUpdate: HRGN; PRcUpdate: PRect; Flags: UINT): Boolean; override;
+function ScrollWindowEx(HWnd: HWND; DX, DY: Integer; PRcScroll, PRcClip: PRect; HRgnUpdate: HRGN; PRcUpdate: PRect; Flags: UINT): Boolean; override;
 function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; override;
 function SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ; override;
 (*function SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; override;

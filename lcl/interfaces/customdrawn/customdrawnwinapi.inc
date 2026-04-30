@@ -5145,6 +5145,24 @@ begin
   Result := True;
 end;*)
 
+function TCDWidgetSet.ScrollWindowEx(HWnd: HWND; DX, DY: Integer;
+  PRcScroll, PRcClip: PRect; HRgnUpdate: HRGN; PRcUpdate: PRect;
+  Flags: UINT): Boolean;
+{ Customdrawn has no hardware scroll-and-blit. The two callers we
+  care about (TCustomGrid.ScrollBy at grids.pas:3589/3597 and the
+  ScrollWindow shim at lclintf winapi.inc:1600) both pass
+  SW_INVALIDATE -- they only need the affected area marked dirty so
+  the next paint cycle redraws the new contents. We honour that and
+  ignore the actual blit. Slower than a real scroll-and-blit, but
+  correct: the renderer redraws from up-to-date model state. }
+begin
+  Result := False;
+  if HWnd = 0 then Exit;
+  if (Flags and SW_INVALIDATE) <> 0 then
+    InvalidateRect(HWnd, PRcScroll, (Flags and SW_ERASE) <> 0);
+  Result := True;
+end;
+
 {------------------------------------------------------------------------------
   Function: SelectClipRGN
   Params:  DC, RGN
