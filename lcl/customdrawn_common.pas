@@ -2246,6 +2246,16 @@ procedure TCDDrawerCommon.DrawToolbarItemBackground(ADest: TCanvas;
   ACurItem: TCDToolbarItem; AX, AY: Integer; ASize: TSize;
   AState: TCDControlState; AStateEx: TCDToolbarStateEx);
 begin
+  { Always clear the item rectangle first. Without this, going from
+    Pressed / MouseOver back to plain Normal-on-flat-toolbar would
+    leave the previous gradient on screen -- nothing repaints under
+    a TGraphicControl in customdrawn between state transitions, so
+    the drawer is the only place that gets to wipe the area. }
+  ADest.Brush.Color := Palette.BtnFace;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Style   := psClear;
+  ADest.FillRect(Bounds(AX, AY, ASize.CX, ASize.CY));
+
   if ((csfSunken in AState) and (ACurItem.SubPartKind = tiskMain)) or
      ((csfSunkenArrow in AState) and (ACurItem.SubPartKind = tiskArrow)) then
   begin
