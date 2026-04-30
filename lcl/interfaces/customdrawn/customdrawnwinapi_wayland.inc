@@ -519,6 +519,14 @@ begin
       end;
     SM_CMONITORS:
       if FWlOutputs <> nil then Result := FWlOutputs.Count else Result := 1;
+    { Scrollbar thickness -- referenced by TCustomScrollBar's preferred
+      size (CalculatePreferredSize at scrollbar.inc:142) and by TCDScrollBars
+      when sizing the per-control overlay bars. Native backends derive this
+      from the OS theme; pick a Win2k-ish default that matches what
+      TCDDrawerCommon.DrawScrollBar paints. }
+    SM_CXVSCROLL, SM_CYVSCROLL,
+    SM_CXHSCROLL, SM_CYHSCROLL:
+      Result := 16;
   end;
 end;
 
