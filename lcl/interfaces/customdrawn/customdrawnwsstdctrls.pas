@@ -433,8 +433,34 @@ end;
 
 class procedure TCDWSScrollBar.InjectCDControl(const AWinControl: TWinControl;
   var ACDControlField: TCDControl);
+var
+  CDIntf: TCDIntfScrollBar;
+  LCL: TCustomScrollBar;
 begin
-  TCDIntfScrollBar(ACDControlField).LCLControl := TCustomScrollBar(AWinControl);
+  CDIntf := TCDIntfScrollBar(ACDControlField);
+  LCL := TCustomScrollBar(AWinControl);
+  CDIntf.LCLControl := LCL;
+  { Propagate Kind from the LCL TScrollBar -- without this, the drawer
+    paints horizontally regardless of orientation (TCDScrollBar's own
+    FKind defaults to sbHorizontal in its Create). }
+  CDIntf.Kind := LCL.Kind;
+  { Sync range / page / position / increments from the LCL side.
+    Injection runs lazily on first ShowHide, well after the host
+    (TCDScrollBars or LCL property setters) has populated the LCL
+    fields, so the inner state would otherwise stay at TCDScrollBar's
+    construction defaults (Min=0, Max=100, FSmallChange=1,
+    FLargeChange=5). With grid pages of ~150 those defaults turn
+    trough-clicks into 5-px nudges instead of one-page jumps. }
+  CDIntf.Min := LCL.Min;
+  CDIntf.Max := LCL.Max;
+  CDIntf.Position := LCL.Position;
+  CDIntf.PageSize := LCL.PageSize;
+  CDIntf.SetIncrements(LCL.SmallChange, LCL.LargeChange);
+  { Wire user-driven position changes back to the LCL TScrollBar so
+    OnScroll fires and parents see LM_HSCROLL/LM_VSCROLL. The drawer
+    only mutates its own FPosition otherwise; nothing reaches the LCL
+    side. }
+  CDIntf.OnChangeByUser := CDIntf.HandleChangeByUser;
   ACDControlField.Caption := AWinControl.Caption;
   ACDControlField.Parent := AWinControl;
   ACDControlField.Align := alClient;
@@ -462,37 +488,14 @@ end;
 
 class procedure TCDWSScrollBar.SetKind(const AScrollBar: TCustomScrollBar;
   const AIsHorizontal: Boolean);
-{var
-  QtScrollBar: TQtScrollBar;  }
+var
+  CDIntf: TCDIntfScrollBar;
 begin
-  {if not WSCheckHandleAllocated(AScrollBar, 'SetKind') then
-    Exit;
-  QtScrollBar := TQtScrollBar(AScrollBar.Handle);
-  QtScrollBar.BeginUpdate;
-  try
-    case AScrollBar.Kind of
-      sbHorizontal:
-      begin
-        if QtScrollBar.getOrientation <> QtHorizontal then
-          QtScrollBar.SetOrientation(QtHorizontal);
-        if QtScrollBar.getInvertedAppereance then
-          QtScrollBar.setInvertedAppereance(False);
-        if QtScrollbar.getInvertedControls then
-          QtScrollBar.setInvertedControls(False);
-      end;
-      sbVertical:
-      begin
-        if QtScrollBar.getOrientation <> QtVertical then
-          QtScrollBar.SetOrientation(QtVertical);
-        if QtScrollBar.getInvertedAppereance then
-          QtScrollBar.setInvertedAppereance(False);
-        if not QtScrollbar.getInvertedControls then
-          QtScrollBar.setInvertedControls(True);
-      end;
-    end;
-  finally
-    QtScrollbar.EndUpdate;
-  end;}
+  if not WSCheckHandleAllocated(AScrollBar, 'SetKind') then Exit;
+  CDIntf := TCDIntfScrollBar(TCDWinControl(AScrollBar.Handle).CDControl);
+  if CDIntf = nil then Exit;
+  if AIsHorizontal then CDIntf.Kind := sbHorizontal
+                   else CDIntf.Kind := sbVertical;
 end;
 
 class procedure TCDWSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
