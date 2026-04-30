@@ -7,12 +7,28 @@
   fallbacks that the LCL expects per host. }
 
 function TCDWidgetSet.ClientToScreen(Handle: HWND; var P: TPoint): Boolean;
+var
+  CDC: TCDBaseControl;
+  WC: TWinControl;
 begin
-  { FIXME: Wayland forbids the client from knowing its absolute screen
-    position; we leave P unchanged and report success. Anything that
-    relies on real screen coords (popup placement, drag tracking,
-    multi-monitor layout) will be wrong. }
+  { Wayland forbids the client from knowing its absolute screen
+    position, so this returns *parent-form-local* coordinates rather
+    than true screen coords. That's still a meaningful upgrade over
+    leaving P unchanged: it accumulates the (Left, Top) of every
+    TWinControl ancestor up to the form, which is enough for callers within
+    a single window, such as xdg_popup placement and hit-test math.
+    This is not a substitute for true global screen coordinates; Wayland does not expose those to clients. }
   Result := True;
+  if Handle = 0 then Exit;
+  CDC := TCDBaseControl(Handle);
+  if CDC is TCDWinControl then WC := TCDWinControl(CDC).WinControl
+  else                         WC := nil;
+  while (WC <> nil) and (WC.Parent <> nil) do
+  begin
+    Inc(P.X, WC.Left);
+    Inc(P.Y, WC.Top);
+    WC := WC.Parent;
+  end;
 end;
 
 { Read everything from Fd into Stream; close Fd. The compositor writes
