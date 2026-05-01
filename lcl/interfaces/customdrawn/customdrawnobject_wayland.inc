@@ -638,9 +638,19 @@ begin
   Edit := CDIntfEditFromLCL(LCLEdit);
   if Edit = nil then Exit;
 
-  { Step 1: clear old preedit. Replace with a cursor (i.e. just stop
-    drawing the preedit; the caret carries the cursor). }
+  { Step 1: clear old preedit. Replace it with the normal caret. }
   Edit.SetPreedit('', -1, -1);
+
+  { preedit_string and commit_string replace any existing selection
+    before applying new text. Keep delete_surrounding_text on the same
+    path because it also mutates the edit buffer; clearing selection
+    first keeps SelStart / SelLength consistent with the shortened
+    line used by the caret recompute below. }
+  if Edit.IsSomethingSelected and
+     ((FTIPendingPreedit and (FTIPendingPreeditText <> ''))
+      or (FTIPendingCommit and (FTIPendingCommitText <> ''))
+      or FTIPendingDelete) then
+    Edit.DoDeleteSelection;
 
   { Steps 2 + 3 operate on Edit's current line. CaretByte is the byte
     offset of the caret within the line (single-line edits — multi-

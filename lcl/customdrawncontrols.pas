@@ -221,7 +221,6 @@ type
     function GetText: string;
     function GetPasswordChar: Char;
     procedure HandleCaretTimer(Sender: TObject);
-    procedure DoDeleteSelection;
     procedure DoClearSelection;
     procedure DoManageVisibleTextStart;
     procedure SetCaretPost(AValue: TPoint);
@@ -232,7 +231,6 @@ type
     procedure SetText(AValue: string);
     procedure SetPasswordChar(AValue: Char);
     function MousePosToCaretPos(X, Y: Integer): TPoint;
-    function IsSomethingSelected: Boolean;
   protected
     FEditState: TCDEditStateEx; // Points to the same object as FStateEx, so don't Free!
     function GetControlId: TCDControlID; override;
@@ -258,6 +256,11 @@ type
     destructor Destroy; override;
     function GetCurrentLine(): string;
     procedure SetCurrentLine(AStr: string);
+    function IsSomethingSelected: Boolean;
+    { Replace any selected text with empty and clear the selection
+      state. Used before external text edits that must operate on the
+      post-selection buffer. }
+    procedure DoDeleteSelection;
     property LeftTextMargin: Integer read GetLeftTextMargin write SetLeftTextMargin;
     property RightTextMargin: Integer read GetRightTextMargin write SetRightTextMargin;
     // selection info in a format compatible with TEdit
