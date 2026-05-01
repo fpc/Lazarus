@@ -547,7 +547,8 @@ end;
 
 function RegisterMainMenu: Boolean; alias : 'WSRegisterMainMenu';
 begin
-  Result := False;
+  RegisterWSComponent(TMainMenu, TCDWSMainMenu);
+  Result := True;
 end;
 
 function RegisterPopupMenu: Boolean; alias : 'WSRegisterPopupMenu';

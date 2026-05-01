@@ -185,8 +185,11 @@ end;
 
 class function TCDWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
 begin
-  // Fill a dummy value to get a positive result for HandleAllocated
-  Result := $FFFFFF;
+  if AMenu is TMainMenu then
+    Result := HMENU(PtrUInt(AMenu))
+  else
+    // Fill a dummy value to get a positive result for HandleAllocated.
+    Result := $FFFFFF;
 end;
 
 { TCDWSPopupMenu }

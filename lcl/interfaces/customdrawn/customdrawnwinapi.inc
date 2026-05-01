@@ -5678,6 +5678,56 @@ begin
   Result := (hWnd <> 0) and (QtCaret.ShowCaret(TQtWidget(hWnd)));
 end;*)
 
+function TCDWidgetSet.SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean;
+const
+  CDMainMenuBarProp = 'CDMainMenuBar';
+var
+  CDForm: TCDForm;
+  LCLForm: TCustomForm;
+  MenuBar: TToolBar;
+  MainMenu: TMainMenu;
+begin
+  Result := False;
+  if AWindowHandle = 0 then Exit;
+  if not (TObject(AWindowHandle) is TCDForm) then Exit;
+
+  CDForm := TCDForm(AWindowHandle);
+  LCLForm := CDForm.LCLForm;
+  if LCLForm = nil then Exit;
+
+  MenuBar := TToolBar(CDForm.Props[CDMainMenuBarProp]);
+
+  if AMenuHandle = 0 then
+  begin
+    if MenuBar <> nil then
+    begin
+      CDForm.Props[CDMainMenuBarProp] := nil;
+      MenuBar.Menu := nil;
+      MenuBar.Free;
+    end;
+    Exit(True);
+  end;
+
+  MainMenu := TMainMenu(PtrUInt(AMenuHandle));
+
+  if MenuBar = nil then
+  begin
+    MenuBar := TToolBar.Create(LCLForm);
+    CDForm.Props[CDMainMenuBarProp] := MenuBar;
+    MenuBar.Parent := LCLForm;
+    MenuBar.Align := alTop;
+    MenuBar.Top := -1;
+    MenuBar.ShowCaptions := True;
+    MenuBar.ShowHint := True;
+    MenuBar.TabStop := False;
+    MenuBar.EdgeBorders := [];
+  end;
+
+  MenuBar.Menu := MainMenu;
+  MenuBar.Visible := True;
+  Result := True;
+end;
+
 {------------------------------------------------------------------------------
   Method:  SetProp
   Params:  Handle -
