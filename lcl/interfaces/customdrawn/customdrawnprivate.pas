@@ -225,6 +225,7 @@ var
   lTarget: TWinControl;
   lIntfTarget: TWinControl = nil;
   lEventPos: TPoint;
+  lMsg: TLMessage;
 begin
   if AWindowHandle.InputDisabled then Exit;
 {  // if mouse-click, focus-change, mouse-click, cursor hasn't moved:
@@ -262,6 +263,12 @@ begin
     LCLSendMouseDownMsg(lTarget, lEventPos.x, lEventPos.y, Button, ShiftState);
   end;
 
+  { Cancel any in-flight tooltip hint -- LM_BUTTONDOWN goes through
+    NotifyUserInputHandler's `else` branch and hits CancelHint. }
+  FillChar(lMsg, SizeOf(lMsg), 0);
+  lMsg.Msg := LM_LBUTTONDOWN;
+  NotifyApplicationUserInput(lTarget, lMsg);
+
   // If the target is focusable, a mouse down will give it focus
   CDWidgetset.CDSetFocusToControl(lTarget, lIntfTarget);
 
@@ -278,6 +285,7 @@ var
   lTarget: TWinControl;
   lEventPos: TPoint;
   lOldScrollY: Integer;
+  lMsg: TLMessage;
 begin
   if AWindowHandle.InputDisabled then Exit;
   if AWindowHandle.LastMouseDownControl = nil then
@@ -297,6 +305,17 @@ begin
 
     LCLSendMouseMoveMsg(lTarget, lEventPos.x, lEventPos.y, ShiftState);
   end;
+
+  { Drive Application's hint mechanism. Other widgetsets (win32, carbon,
+    fpgui ...) call NotifyApplicationUserInput from their input event paths;
+    TApplication.NotifyUserInputHandler reacts to LM_MOUSEMOVE by
+    starting the hint timer (which ultimately calls ShowHintWindow),
+    and to anything else by cancelling an in-flight hint. Without this
+    hook the entire Application.HintControl / THintWindow path is
+    inactive and TControl.Hint never shows a tooltip. }
+  FillChar(lMsg, SizeOf(lMsg), 0);
+  lMsg.Msg := LM_MOUSEMOVE;
+  NotifyApplicationUserInput(lTarget, lMsg);
 
   // form scrolling
   if AWindowHandle.IsScrolling then

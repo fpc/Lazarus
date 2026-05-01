@@ -229,8 +229,10 @@ function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
 (*function SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer; fWinIni: DWord): LongBool; override;*)
 
 function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; override;
-(*function UpdateWindow(Handle: HWND): Boolean; override;
+{$ifdef CD_Wayland}
 function WindowFromPoint(APoint: TPoint): HWND; override;
+{$endif}
+(*function UpdateWindow(Handle: HWND): Boolean; override;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 

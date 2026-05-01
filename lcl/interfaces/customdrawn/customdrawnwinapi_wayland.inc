@@ -435,10 +435,36 @@ end;
 
 function TCDWidgetSet.GetCursorPos(var lpPoint: TPoint): Boolean;
 begin
-  { FIXME: no cursor tracking -- needs wl_seat / wl_pointer binding. }
-  lpPoint.X := 0;
-  lpPoint.Y := 0;
-  Result := False;
+  { Wayland refuses to expose absolute screen coordinates, so the
+    "cursor pos" we report here matches our ClientToScreen pseudo-
+    convention: surface-local-of-the-pointer-focused window, which for
+    a single-toplevel app collapses to form-local. The LCL hint
+    mechanism (Application.DoOnMouseMove) gates on this returning
+    True -- if we returned False the hint timer never started and
+    TControl.Hint was effectively inactive. FindControlAtPosition,
+    ScreenToClient etc. round-trip through the same pseudo-convention,
+    so the reported position resolves back to the right control. }
+  lpPoint.X := FWlPointerX;
+  lpPoint.Y := FWlPointerY;
+  Result := FWlPointerFocus <> nil;
+end;
+
+function TCDWidgetSet.WindowFromPoint(APoint: TPoint): HWND;
+begin
+  { LCL hint/current-mouse lookup goes through FindLCLWindow ->
+    WindowFromPoint. Wayland does not expose absolute window positions
+    or compositor hit-testing, so this backend cannot answer arbitrary
+    screen points. It can answer the current-pointer case: GetCursorPos
+    reports the cached wl_pointer surface-local position, and
+    wl_pointer.enter/leave tells us which surface owns that position.
+    LCL hint/current-mouse paths use that exact point; return 0 for any
+    other APoint rather than pretending we can hit-test it. }
+  if (FWlPointerFocus <> nil)
+     and (APoint.X = FWlPointerX)
+     and (APoint.Y = FWlPointerY) then
+    Result := HWND(FWlPointerFocus)
+  else
+    Result := 0;
 end;
 
 { Pick the "primary" output -- there's no Wayland concept of a primary
