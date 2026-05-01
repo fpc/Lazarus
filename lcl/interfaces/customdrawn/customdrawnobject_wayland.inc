@@ -575,9 +575,27 @@ begin
     All offsets in the protocol are in BYTES; UTF8Copy / Length etc.
     are byte-based on AnsiString in FPC, which lines up. }
   if FTextInputFocus = nil then Exit;
+  { Modal gating: TCDWidgetSet.EnableWindow flips InputDisabled on a
+    form when Screen.DisableForms walks past it during ShowModal.
+    Mouse / key callbacks already short-circuit on that flag; do the
+    same here so pending text input cannot modify controls on the
+    disabled parent form while a modal dialog is active. Drop pending
+    state too so the next done after re-enabling starts clean. }
+  if FTextInputFocus.InputDisabled then
+  begin
+    FTIPendingPreedit := False;
+    FTIPendingCommit  := False;
+    FTIPendingDelete  := False;
+    Exit;
+  end;
   LCLForm := FTextInputFocus.LCLForm;
   if (LCLForm = nil) or (LCLForm.ActiveControl = nil) then Exit;
   LCLEdit := LCLForm.ActiveControl;
+  { Form.ActiveControl is the injected inner TCDIntfEdit, not the
+    LCL-side TCustomEdit; walk up so the type checks below match.
+    Mirrors WLEnableTextInputForEdit. }
+  if IsIntfControl(LCLEdit) and (LCLEdit.Parent <> nil) then
+    LCLEdit := LCLEdit.Parent;
 
   { Non-Edit branch: TCustomListBox uses commit_string for type-ahead
     search. Pre-edit isn't drawn (no caret to draw it at), and
@@ -654,6 +672,10 @@ begin
     { Convert byte offset back to UTF-8 char index. }
     Edit.CaretPos := Point(UTF8Length(Copy(Line, 1, NewCaretByte)),
                            Edit.CaretPos.Y);
+    { The edit buffer changed; keep the empty selection anchored at
+      the recomputed caret so later selection reads use valid offsets. }
+    Edit.SetSelStartX(Edit.CaretPos.X);
+    Edit.SetSelLength(0);
   end;
 
   { Step 5: set new preedit. Empty preedit clears -- already done
@@ -681,11 +703,15 @@ procedure TCDWidgetSet.WLEnableTextInputForEdit(LCLEdit: TWinControl);
 begin
   if FZwpTextInput = nil then Exit;        { compositor has no v3 (e.g. mutter) }
   if LCLEdit = nil then Exit;
+  { Screen.ActiveControl is the injected inner TCDIntfEdit, not the
+    user-facing TEdit; walk up so the type checks below see the LCL
+    control. Mirrors the walk in WLHandleTextInputDone. }
+  if IsIntfControl(LCLEdit) and (LCLEdit.Parent <> nil) then
+    LCLEdit := LCLEdit.Parent;
   { Accept TCustomEdit (full IME with preedit) and TCustomListBox
     (commit_string drives type-ahead search). Other control types
-    are skipped -- enabling text-input on, say, a focused button
-    would be wrong (user expects buttons to be activated by Space
-    / Enter, not to consume a candidate window). }
+    are skipped; button voice activation is intentionally not part of
+    the upstreamable Wayland backend series. }
   if not ((LCLEdit is TCustomEdit) or (LCLEdit is TCustomListBox)) then Exit;
   FZwpTextInput.Enable;
   FZwpTextInput.SetContentType([], tipNormal);
