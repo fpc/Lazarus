@@ -69,6 +69,16 @@ begin
     else V := Version;
     if FWlOutputs = nil then FWlOutputs := TFPList.Create;
     FWlOutputs.Add(FWlRegistry.BindRaw(Name, Iface, V, TWaylandOutput));
+  end
+  else if Iface = 'zwp_text_input_manager_v3' then
+  begin
+    { Wayland IME path used by ibus / fcitx5 + KDE / sway / hyprland.
+      GNOME (mutter) does NOT advertise this -- their IME goes through
+      a separate GTK bridge protocol, so on GNOME-Wayland this branch
+      never fires and FZwpTextInputMgr stays nil. v1 is the only
+      version of v3. }
+    FZwpTextInputMgr := TZwpTextInputManagerV3(
+      FWlRegistry.BindRaw(Name, Iface, 1, TZwpTextInputManagerV3));
   end;
 end;
 
@@ -450,6 +460,253 @@ begin
   FWlNumLocked  := (ModsLocked and XKB_MOD_MOD2) <> 0;
 end;
 
+{ ------------------------------------------------------------------
+  zwp_text_input_v3 (IME / kanji / virtual keyboard / speech-to-text)
+
+  Enter / leave bracket the surface that has text-input focus. The
+  preedit / commit / delete events are double-buffered per the spec
+  and applied atomically on the next done, in this order:
+    1. clear old preedit
+    2. delete_surrounding_text(before, after)
+    3. insert commit_string at cursor
+    4. (caller re-sends set_surrounding_text)
+    5. set new preedit at cursor
+    6. place cursor inside preedit
+  ------------------------------------------------------------------ }
+
+{ Helper: resolve the LCL TCDEdit (the injected drawer-rendered edit)
+  living behind an LCL TCustomEdit's handle. Returns nil if the LCL
+  control has no handle yet, or if the handle's CDControl isn't a
+  TCDEdit (TCDIntfEdit / TCDIntfSpinEdit / TCDIntfComboBox all derive
+  from TCDEdit so the cast is safe for any of those). }
+function CDIntfEditFromLCL(LCLEdit: TWinControl): TCDEdit;
+var
+  WSCtrl: TCDWinControl;
+begin
+  Result := nil;
+  if (LCLEdit = nil) or (LCLEdit.Handle = 0) then Exit;
+  WSCtrl := TCDWinControl(LCLEdit.Handle);
+  if (WSCtrl = nil) or (WSCtrl.CDControl = nil) then Exit;
+  if WSCtrl.CDControl is TCDEdit then
+    Result := TCDEdit(WSCtrl.CDControl);
+end;
+
+{ Helper: walk parent chain from an LCL control to its TCustomForm
+  and return the form's TWaylandWindowInfo, nil if not on a Wayland-
+  hosted form. Mirrors TWinControl.GetParentForm but stops at the
+  first ancestor whose Handle is a registered WI (which is, for our
+  backend, exactly TCustomForm-class controls). }
+function TCDWidgetSet.WLFindFormWindowInfo(LCLCtrl: TWinControl): TWaylandWindowInfo;
+var
+  P: TWinControl;
+  i: Integer;
+begin
+  Result := nil;
+  P := LCLCtrl;
+  while P <> nil do
+  begin
+    if P.HandleAllocated then
+      for i := 0 to FWlWindowList.Count - 1 do
+        if TWaylandWindowInfo(FWlWindowList[i]).LCLForm = P then
+          Exit(TWaylandWindowInfo(FWlWindowList[i]));
+    P := P.Parent;
+  end;
+end;
+
+procedure TCDWidgetSet.WLHandleTextInputEnter(Sender: TZwpTextInputV3;
+  Surface: TWaylandSurface);
+begin
+  FTextInputFocus := WLFindWindowBySurface(Surface);
+  { Per spec, enter invalidates all prior state. Drop any pending
+    composition we hadn't applied yet. }
+  FTIPendingPreedit := False; FTIPendingPreeditText := '';
+  FTIPendingCommit  := False; FTIPendingCommitText  := '';
+  FTIPendingDelete  := False;
+  FTextInputEnabled := False;
+end;
+
+procedure TCDWidgetSet.WLHandleTextInputLeave(Sender: TZwpTextInputV3;
+  Surface: TWaylandSurface);
+begin
+  if FTextInputFocus = WLFindWindowBySurface(Surface) then
+    FTextInputFocus := nil;
+  FTextInputEnabled := False;
+  FTIPendingPreedit := False;
+  FTIPendingCommit  := False;
+  FTIPendingDelete  := False;
+end;
+
+procedure TCDWidgetSet.WLHandleTextInputPreedit(Sender: TZwpTextInputV3;
+  const Text: AnsiString; CursorBegin, CursorEnd: LongInt);
+begin
+  FTIPendingPreedit := True;
+  FTIPendingPreeditText := Text;
+  FTIPendingPreeditB := CursorBegin;
+  FTIPendingPreeditE := CursorEnd;
+end;
+
+procedure TCDWidgetSet.WLHandleTextInputCommit(Sender: TZwpTextInputV3;
+  const Text: AnsiString);
+begin
+  FTIPendingCommit := True;
+  FTIPendingCommitText := Text;
+end;
+
+procedure TCDWidgetSet.WLHandleTextInputDelete(Sender: TZwpTextInputV3;
+  BeforeLength, AfterLength: LongWord);
+begin
+  FTIPendingDelete := True;
+  FTIPendingDeleteB := BeforeLength;
+  FTIPendingDeleteA := AfterLength;
+end;
+
+procedure TCDWidgetSet.WLHandleTextInputDone(Sender: TZwpTextInputV3;
+  Serial: LongWord);
+var
+  LCLForm: TCustomForm;
+  LCLEdit: TWinControl;
+  Edit: TCDEdit;
+  Line, Left, Right, Inserted: AnsiString;
+  CaretByte, NewCaretByte, BeforeBytes, AfterBytes, LineByteLen: Integer;
+begin
+  { Apply pending state atomically per the spec's six-step order.
+    All offsets in the protocol are in BYTES; UTF8Copy / Length etc.
+    are byte-based on AnsiString in FPC, which lines up. }
+  if FTextInputFocus = nil then Exit;
+  LCLForm := FTextInputFocus.LCLForm;
+  if (LCLForm = nil) or (LCLForm.ActiveControl = nil) then Exit;
+  if not (LCLForm.ActiveControl is TCustomEdit) then Exit;
+  LCLEdit := LCLForm.ActiveControl;
+  Edit := CDIntfEditFromLCL(LCLEdit);
+  if Edit = nil then Exit;
+
+  { Step 1: clear old preedit. Replace with a cursor (i.e. just stop
+    drawing the preedit; the caret carries the cursor). }
+  Edit.SetPreedit('', -1, -1);
+
+  { Steps 2 + 3 operate on Edit's current line. CaretByte is the byte
+    offset of the caret within the line (single-line edits — multi-
+    line preedit is out of scope). For simple ASCII the byte offset
+    equals the UTF-8 char index times 1; for multibyte chars the
+    edit's internal CaretPos is in UTF-8 chars, so we have to convert
+    via UTF8Copy. }
+  Line := Edit.GetCurrentLine;
+  CaretByte := Length(UTF8Copy(Line, 1, Edit.CaretPos.X));
+  NewCaretByte := CaretByte;
+
+  if FTIPendingDelete then
+  begin
+    LineByteLen := Length(Line);
+    BeforeBytes := FTIPendingDeleteB;
+    AfterBytes  := FTIPendingDeleteA;
+    if BeforeBytes > CaretByte then BeforeBytes := CaretByte;
+    if AfterBytes  > LineByteLen - CaretByte then
+      AfterBytes := LineByteLen - CaretByte;
+    Left  := Copy(Line, 1, CaretByte - BeforeBytes);
+    Right := Copy(Line, CaretByte + AfterBytes + 1, MaxInt);
+    Line := Left + Right;
+    NewCaretByte := CaretByte - BeforeBytes;
+  end;
+
+  if FTIPendingCommit and (FTIPendingCommitText <> '') then
+  begin
+    Inserted := FTIPendingCommitText;
+    Left  := Copy(Line, 1, NewCaretByte);
+    Right := Copy(Line, NewCaretByte + 1, MaxInt);
+    Line := Left + Inserted + Right;
+    NewCaretByte := NewCaretByte + Length(Inserted);
+    FWlLastImeCommit := Inserted;
+  end;
+
+  if FTIPendingDelete or (FTIPendingCommit and (FTIPendingCommitText <> '')) then
+  begin
+    Edit.SetCurrentLine(Line);
+    { Convert byte offset back to UTF-8 char index. }
+    Edit.CaretPos := Point(UTF8Length(Copy(Line, 1, NewCaretByte)),
+                           Edit.CaretPos.Y);
+  end;
+
+  { Step 5: set new preedit. Empty preedit clears -- already done
+    in step 1, so only re-set if non-empty. }
+  if FTIPendingPreedit then
+  begin
+    if FTIPendingPreeditText <> '' then
+      Edit.SetPreedit(FTIPendingPreeditText,
+                      FTIPendingPreeditB, FTIPendingPreeditE);
+    FWlLastImePreedit := FTIPendingPreeditText;
+  end;
+
+  { Pending state consumed. }
+  FTIPendingPreedit := False; FTIPendingPreeditText := '';
+  FTIPendingCommit  := False; FTIPendingCommitText  := '';
+  FTIPendingDelete  := False;
+
+  { Re-send surrounding text + cursor rectangle so the IME knows
+    where the field is now. Per spec step 4. }
+  if FTextInputEnabled then
+    WLPushTextInputContext(LCLEdit);
+end;
+
+procedure TCDWidgetSet.WLEnableTextInputForEdit(LCLEdit: TWinControl);
+var
+  Edit: TCDEdit;
+begin
+  if FZwpTextInput = nil then Exit;        { compositor has no v3 (e.g. mutter) }
+  Edit := CDIntfEditFromLCL(LCLEdit);
+  if Edit = nil then Exit;
+  FZwpTextInput.Enable;
+  FZwpTextInput.SetContentType([], tipNormal);
+  WLPushTextInputContext(LCLEdit);
+  FZwpTextInput.Commit;
+  FTextInputEnabled := True;
+  FWlDisplay.Connection.Flush;
+end;
+
+procedure TCDWidgetSet.WLDisableTextInput;
+begin
+  if FZwpTextInput = nil then Exit;
+  FZwpTextInput.Disable;
+  FZwpTextInput.Commit;
+  FWlDisplay.Connection.Flush;
+  FTextInputEnabled := False;
+end;
+
+procedure TCDWidgetSet.WLPushTextInputContext(LCLEdit: TWinControl);
+var
+  Edit: TCDEdit;
+  WI:   TWaylandWindowInfo;
+  Surrounding: AnsiString;
+  CaretByte: Integer;
+  R: TRect;
+  CtlOriginInForm: TPoint;
+begin
+  if FZwpTextInput = nil then Exit;
+  Edit := CDIntfEditFromLCL(LCLEdit);
+  if Edit = nil then Exit;
+
+  { Surrounding text: full content of the line that has the caret,
+    with cursor as byte offset. Single-line; fits in 4000 bytes
+    easily. Anchor = cursor (no selection-aware reporting yet). }
+  Surrounding := Edit.GetCurrentLine;
+  CaretByte := Length(UTF8Copy(Surrounding, 1, Edit.CaretPos.X));
+  FZwpTextInput.SetSurroundingText(Surrounding, CaretByte, CaretByte);
+  FZwpTextInput.SetTextChangeCause(ticOther);
+
+  { Cursor rectangle in surface-local coords. Edit's caret pixel rect
+    is in the injected-control's client area; translate to the form's
+    surface by walking up the parent chain accumulating Left/Top. }
+  R := Edit.GetCaretPixelRect;
+  CtlOriginInForm := Point(0, 0);
+  WI := WLFindFormWindowInfo(LCLEdit);
+  if WI <> nil then
+    CtlOriginInForm := LCLEdit.ClientToParent(Point(0, 0), WI.LCLForm);
+  FZwpTextInput.SetCursorRectangle(
+    CtlOriginInForm.X + R.Left,
+    CtlOriginInForm.Y + R.Top,
+    R.Right - R.Left,
+    R.Bottom - R.Top);
+end;
+
 function TCDWidgetSet.GetAppHandle: TLCLHandle;
 begin
   Result := TLCLHandle(FWlDisplay);
@@ -487,6 +744,22 @@ begin
     FWlDataDevice nil (clipboard ops will return False / no-op). }
   if (FWlDataDeviceManager <> nil) and (FWlSeat <> nil) then
     FWlDataDevice := FWlDataDeviceManager.GetDataDevice(FWlSeat);
+
+  { Open the per-seat zwp_text_input_v3 for IME ops (kanji input via
+    ibus, virtual keyboard, speech-to-text, dead-key composition).
+    As with the data device above, leave FZwpTextInput nil if the
+    compositor doesn't advertise the protocol (most notably
+    GNOME/mutter); Show/HideVirtualKeyboard then becomes a no-op. }
+  if (FZwpTextInputMgr <> nil) and (FWlSeat <> nil) then
+  begin
+    FZwpTextInput := FZwpTextInputMgr.GetTextInput(FWlSeat);
+    FZwpTextInput.OnEnter                 := @WLHandleTextInputEnter;
+    FZwpTextInput.OnLeave                 := @WLHandleTextInputLeave;
+    FZwpTextInput.OnPreeditString         := @WLHandleTextInputPreedit;
+    FZwpTextInput.OnCommitString          := @WLHandleTextInputCommit;
+    FZwpTextInput.OnDeleteSurroundingText := @WLHandleTextInputDelete;
+    FZwpTextInput.OnDone                  := @WLHandleTextInputDone;
+  end;
 
   FWlWindowList := TFPList.Create;
   FWlTimerList  := TFPList.Create;
