@@ -293,8 +293,8 @@ end;
 
 function RegisterCustomListBox: Boolean; alias : 'WSRegisterCustomListBox';
 begin
-//  RegisterWSComponent(TCustomListBox, TWinCEWSCustomListBox);
-  Result := False;
+  RegisterWSComponent(TCustomListBox, TCDWSCustomListBox);
+  Result := True;
 end;
 
 function RegisterCustomEdit: Boolean; alias : 'WSRegisterCustomEdit';

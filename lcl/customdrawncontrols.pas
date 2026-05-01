@@ -392,6 +392,9 @@ type
   private
     FKind: TScrollBarKind;
     procedure SetKind(AValue: TScrollBarKind);
+  protected
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer); override;
     procedure GetBorderSizes(out ALeft, ARight: Integer);
   protected
     function GetPositionFromMousePos(X, Y: Integer): integer; override;
@@ -554,6 +557,96 @@ type
     property Position: integer read FPosition write SetPosition;
     property Smooth: Boolean read FSmooth write SetSmooth;
     property Style: TProgressBarStyle read FStyle write SetStyle;
+  end;
+
+  { TCDListBox -- the customdrawn host for TCustomListBox.
+
+    Owns a TStringList (Items), a TBits (Selected), and inherits a
+    vertical TCDScrollBar from TCDScrollableControl. Mouse + keyboard
+    nav / selection are wired here; the drawer renders the visible
+    rows + the highlight.
+
+    Selection model:
+      MultiSelect=False              => single (clicking sets one item)
+      MultiSelect=True, ExtendedSelect=False
+                                     => each click toggles
+      MultiSelect=True, ExtendedSelect=True
+                                     => Shift-extend, Ctrl-toggle. }
+
+  TCDListBox = class(TCDControl)
+  private
+    FItems:             TStringList;
+    FSelected:          TBits;
+    FItemIndex:         Integer;
+    FAnchor:            Integer;
+    FTopIndex:          Integer;
+    FItemHeight:        Integer;
+    FMultiSelect:       Boolean;
+    FExtendedSelect:    Boolean;
+    FSorted:            Boolean;
+    FOnChange:          TNotifyEvent;
+    FOnSelectionChange: TNotifyEvent;
+    { Vertical scrollbar -- created lazily on first SetParent so that
+      parenting it doesn't cascade into HandleNeeded on us before our
+      own Parent is set. Inheriting from TCDScrollableControl would
+      have given us this for free, but its constructor unconditionally
+      adds the scrollbar as a child, which trips the handle-creation
+      chain when Items.Add fires before the LCL host has hooked us up
+      via InjectCDControl from ShowHide. }
+    FScrollBar:         TCDScrollBar;
+    procedure ItemsChanged(Sender: TObject);
+    procedure ScrollBarChanged(Sender: TObject);
+    function  GetItems: TStrings;
+    procedure SetItems(AValue: TStrings);
+    procedure SetItemIndex(AValue: Integer);
+    procedure SetTopIndex(AValue: Integer);
+    procedure SetMultiSelect(AValue: Boolean);
+    procedure SetExtendedSelect(AValue: Boolean);
+    procedure SetSorted(AValue: Boolean);
+    procedure SetItemHeight(AValue: Integer);
+    function  ComputeItemHeight: Integer;
+    function  GetVisibleCount: Integer;
+    procedure EnsureScrollBar;
+    procedure UpdateScrollBar;
+    procedure UpdateSelectionForClick(Index: Integer; Shift: TShiftState);
+    procedure EnsureVisible(Index: Integer);
+    procedure FireSelectionChange;
+  protected
+    FLBState: TCDListBoxStateEx;
+    function  GetControlId: TCDControlID; override;
+    procedure CreateControlStateEx; override;
+    procedure PrepareControlStateEx; override;
+    procedure DoEnter; override;
+    procedure DoExit; override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    function  DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
+    procedure Resize; override;
+    procedure SetParent(NewParent: TWinControl); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    function ItemAtPos(X, Y: Integer): Integer;
+    function ItemRect(Index: Integer): TRect;
+    function GetSelected(AIndex: Integer): Boolean;
+    procedure SetSelected(AIndex: Integer; ASel: Boolean);
+    procedure SelectRange(ALow, AHigh: Integer; ASel: Boolean);
+    function GetSelCount: Integer;
+    property Selected[Index: Integer]: Boolean read GetSelected write SetSelected;
+  published
+    property Color;
+    property Enabled;
+    property Font;
+    property Items: TStrings read GetItems write SetItems;
+    property ItemHeight: Integer read FItemHeight write SetItemHeight default 0;
+    property ItemIndex: Integer read FItemIndex write SetItemIndex default -1;
+    property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default False;
+    property ExtendedSelect: Boolean read FExtendedSelect write SetExtendedSelect default True;
+    property Sorted: Boolean read FSorted write SetSorted default False;
+    property TabStop default True;
+    property TopIndex: Integer read FTopIndex write SetTopIndex default 0;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
   end;
 
   { TCDListView }
@@ -2318,11 +2411,20 @@ begin
 end;
 
 procedure TCDPositionedControl.SetPosition(AValue: Integer);
+var
+  EffectiveMax: Integer;
 begin
   if FPosition=AValue then Exit;
   FPosition:=AValue;
 
-  if FPosition > FMax then FPosition := FMax;
+  { When PageSize > 0 (Win32 / scrollbar convention) the highest
+    valid Position is Max - PageSize -- Position is the index of the
+    first visible item, the page covers Position..Position+PageSize-1.
+    For PageSize=0 (TrackBar etc.) Position can reach Max as before. }
+  EffectiveMax := FMax;
+  if FPageSize > 0 then EffectiveMax := EffectiveMax - FPageSize;
+  if EffectiveMax < FMin then EffectiveMax := FMin;
+  if FPosition > EffectiveMax then FPosition := EffectiveMax;
   if FPosition < FMin then FPosition := FMin;
 
   // Don't do OnChange during loading
@@ -2431,16 +2533,27 @@ begin
 end;
 
 procedure TCDPositionedControl.PrepareControlStateEx;
+var
+  Range, PosRange: Integer;
 begin
   inherited PrepareControlStateEx;
 
-  if FMin < FMax then FPCState.FloatPos := FPosition / (FMax - FMin)
+  Range := FMax - FMin;
+  { Position can move only across (Range - PageSize) when PageSize > 0
+    (the rest of the trough is covered by the thumb itself). FloatPos
+    must therefore divide by that, not by Range, or the thumb-bottom
+    never reaches the trough-bottom. }
+  PosRange := Range;
+  if FPageSize > 0 then PosRange := Range - FPageSize;
+  if PosRange > 0 then FPCState.FloatPos := FPosition / PosRange
   else FPCState.FloatPos := 0.0;
 
-  FPCState.PosCount := FMax - FMin + 1;
+  FPCState.PosCount := Range + 1;
   FPCState.Position := FPosition - FMin;
 
-  if FMin < FMax then FPCState.FloatPageSize := FPageSize / (FMax - FMin)
+  { FloatPageSize is the thumb size as a fraction of the trough.
+    With PageSize / Range, a 5-of-8-visible listbox gets a 5/8 thumb. }
+  if Range > 0 then FPCState.FloatPageSize := FPageSize / Range
   else FPCState.FloatPageSize := 1.0;
 end;
 
@@ -2660,6 +2773,88 @@ begin
   FMoveByDragging := True;
 end;
 
+procedure TCDScrollBar.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+var
+  Coord, ButtonW, Trough, Range, PosRange, ThumbSize, ThumbStart, NewPos: Integer;
+begin
+  { Defer arrow-button clicks to the inherited handler. }
+  if GetButtonFromMousePos(X, Y) <> [] then
+  begin
+    inherited MouseDown(Button, Shift, X, Y);
+    Exit;
+  end;
+  if FLargeChange <= 0 then
+  begin
+    inherited MouseDown(Button, Shift, X, Y);
+    Exit;
+  end;
+  Range := FMax - FMin;
+  if Range <= 0 then
+  begin
+    inherited MouseDown(Button, Shift, X, Y);
+    Exit;
+  end;
+
+  { Pixel-coordinate hit-test against where the drawer actually draws
+    the thumb. Position-value space hit-tests miss because most of the
+    trough maps to Position-values near FPosition, not to the visible
+    thumb extent. Geometry matches DrawScrollBar in customdrawn_common.pas:
+      ThumbSize  = PageSize / Range * Trough  (clamped to >=5)
+      ThumbStart = ButtonWidth
+                 + Position/(Range-PageSize) * (Trough - ThumbSize) }
+  ButtonW := FDrawer.GetMeasures(TCDSCROLLBAR_BUTTON_WIDTH);
+  if FKind = sbHorizontal then
+  begin
+    Coord  := X;
+    Trough := Width - 2 * ButtonW;
+  end
+  else
+  begin
+    Coord  := Y;
+    Trough := Height - 2 * ButtonW;
+  end;
+  if Trough <= 0 then
+  begin
+    inherited MouseDown(Button, Shift, X, Y);
+    Exit;
+  end;
+
+  if FPageSize > 0 then ThumbSize := Round(FPageSize / Range * Trough)
+  else ThumbSize := 16;
+  if ThumbSize < 5 then ThumbSize := 5;
+  if ThumbSize > Trough then ThumbSize := Trough;
+
+  if FPageSize > 0 then PosRange := Range - FPageSize
+  else PosRange := Range;
+  if PosRange <= 0 then ThumbStart := ButtonW
+  else ThumbStart := ButtonW + Round(FPosition / PosRange * (Trough - ThumbSize));
+
+  if Coord < ThumbStart then
+  begin
+    NewPos := FPosition - FLargeChange;
+    if NewPos < FMin then NewPos := FMin;
+    if NewPos <> FPosition then
+    begin
+      Position := NewPos;
+      if Assigned(FOnChangeByUser) then FOnChangeByUser(Self);
+    end;
+    Exit;
+  end;
+  if Coord > ThumbStart + ThumbSize then
+  begin
+    NewPos := FPosition + FLargeChange;
+    if NewPos > FMax then NewPos := FMax;
+    if NewPos <> FPosition then
+    begin
+      Position := NewPos;
+      if Assigned(FOnChangeByUser) then FOnChangeByUser(Self);
+    end;
+    Exit;
+  end;
+  inherited MouseDown(Button, Shift, X, Y);
+end;
+
 destructor TCDScrollBar.Destroy;
 begin
   inherited Destroy;
@@ -2877,6 +3072,427 @@ end;
 destructor TCDProgressBar.Destroy;
 begin
   inherited Destroy;
+end;
+
+{ TCDListBox }
+
+constructor TCDListBox.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Width := 150;
+  Height := 100;
+  TabStop := True;
+  ControlStyle := ControlStyle + [csAcceptsControls];  { for child scrollbar }
+  FItems := TStringList.Create;
+  FItems.OnChange := @ItemsChanged;
+  FSelected := TBits.Create;
+  FItemIndex := -1;
+  FAnchor    := -1;
+  FTopIndex  := 0;
+  FItemHeight := 0;          { 0 = compute from font }
+  FMultiSelect := False;
+  FExtendedSelect := True;
+  FSorted := False;
+  { FScrollBar is created lazily in EnsureScrollBar -- doing it here
+    would parent it under us before we have a parent of our own,
+    cascading into HandleNeeded on the listbox while it has no
+    parent and tripping "Control has no parent window". }
+end;
+
+procedure TCDListBox.EnsureScrollBar;
+begin
+  if FScrollBar <> nil then Exit;
+  if Parent = nil then Exit;          { still detached; defer }
+  FScrollBar := TCDScrollBar.Create(Self);
+  FScrollBar.Kind := sbVertical;
+  FScrollBar.Align := alRight;
+  FScrollBar.Width := 16;
+  FScrollBar.Visible := False;
+  FScrollBar.Parent := Self;
+  FScrollBar.OnChange := @ScrollBarChanged;
+end;
+
+procedure TCDListBox.SetParent(NewParent: TWinControl);
+begin
+  inherited SetParent(NewParent);
+  if NewParent <> nil then
+  begin
+    EnsureScrollBar;
+    UpdateScrollBar;
+  end;
+end;
+
+destructor TCDListBox.Destroy;
+begin
+  FItems.Free;
+  FSelected.Free;
+  inherited Destroy;
+end;
+
+function TCDListBox.GetControlId: TCDControlID;
+begin
+  Result := cidListBox;
+end;
+
+procedure TCDListBox.CreateControlStateEx;
+begin
+  FLBState := TCDListBoxStateEx.Create;
+  FStateEx := FLBState;
+end;
+
+procedure TCDListBox.PrepareControlStateEx;
+begin
+  inherited PrepareControlStateEx;
+  FLBState.Items     := FItems;
+  FLBState.Selected  := FSelected;
+  FLBState.ItemIndex := FItemIndex;
+  FLBState.TopIndex  := FTopIndex;
+  FLBState.ItemHeight := ComputeItemHeight;
+  FLBState.MultiSelect := FMultiSelect;
+  FLBState.ExtendedSelect := FExtendedSelect;
+end;
+
+function TCDListBox.GetItems: TStrings;
+begin
+  Result := FItems;
+end;
+
+procedure TCDListBox.SetItems(AValue: TStrings);
+begin
+  if AValue = nil then FItems.Clear
+  else FItems.Assign(AValue);
+  { ItemsChanged fires via FItems.OnChange }
+end;
+
+procedure TCDListBox.ItemsChanged(Sender: TObject);
+begin
+  { Reset selection bounds, clamp ItemIndex into range, push the
+    scrollbar to match the new item count. }
+  if FItemIndex >= FItems.Count then FItemIndex := FItems.Count - 1;
+  if (FAnchor    >= FItems.Count) or (FAnchor < 0) then FAnchor := FItemIndex;
+  if FTopIndex   >= FItems.Count then FTopIndex := Max(0, FItems.Count - GetVisibleCount);
+  FSelected.Size := FItems.Count;
+  UpdateScrollBar;
+  if Assigned(FOnChange) then FOnChange(Self);
+  Invalidate;
+end;
+
+procedure TCDListBox.ScrollBarChanged(Sender: TObject);
+begin
+  { Scrollbar position is the row index of the first visible row. }
+  if FScrollBar = nil then Exit;
+  if FTopIndex <> FScrollBar.Position then
+  begin
+    FTopIndex := FScrollBar.Position;
+    Invalidate;
+  end;
+end;
+
+procedure TCDListBox.SetItemIndex(AValue: Integer);
+begin
+  if AValue < -1 then AValue := -1;
+  if AValue >= FItems.Count then AValue := FItems.Count - 1;
+  if FItemIndex = AValue then Exit;
+  FItemIndex := AValue;
+  { Single-select: selection follows ItemIndex. }
+  if not FMultiSelect then
+  begin
+    FSelected.Clearall;
+    if FItemIndex >= 0 then FSelected[FItemIndex] := True;
+  end;
+  EnsureVisible(FItemIndex);
+  Invalidate;
+  FireSelectionChange;
+end;
+
+procedure TCDListBox.SetTopIndex(AValue: Integer);
+var
+  MaxTop: Integer;
+begin
+  MaxTop := Max(0, FItems.Count - GetVisibleCount);
+  if AValue < 0 then AValue := 0;
+  if AValue > MaxTop then AValue := MaxTop;
+  if FTopIndex = AValue then Exit;
+  FTopIndex := AValue;
+  if FScrollBar <> nil then FScrollBar.Position := AValue;
+  Invalidate;
+end;
+
+procedure TCDListBox.SetMultiSelect(AValue: Boolean);
+begin
+  if FMultiSelect = AValue then Exit;
+  FMultiSelect := AValue;
+  if not FMultiSelect then
+  begin
+    { Collapse selection back to single ItemIndex. }
+    FSelected.Clearall;
+    if FItemIndex >= 0 then FSelected[FItemIndex] := True;
+    Invalidate;
+    FireSelectionChange;
+  end;
+end;
+
+procedure TCDListBox.SetExtendedSelect(AValue: Boolean);
+begin
+  FExtendedSelect := AValue;
+end;
+
+procedure TCDListBox.SetSorted(AValue: Boolean);
+begin
+  if FSorted = AValue then Exit;
+  FSorted := AValue;
+  FItems.Sorted := AValue;
+end;
+
+procedure TCDListBox.SetItemHeight(AValue: Integer);
+begin
+  if AValue < 0 then AValue := 0;
+  if FItemHeight = AValue then Exit;
+  FItemHeight := AValue;
+  UpdateScrollBar;
+  Invalidate;
+end;
+
+function TCDListBox.ComputeItemHeight: Integer;
+begin
+  if FItemHeight > 0 then Exit(FItemHeight);
+  Canvas.Font.Assign(Font);
+  Result := Canvas.TextHeight('Wg') + 2;
+  if Result < 14 then Result := 14;
+end;
+
+function TCDListBox.GetVisibleCount: Integer;
+var
+  H: Integer;
+begin
+  H := Height - 4;  { 2px frame top + bottom }
+  Result := H div ComputeItemHeight;
+  if Result < 1 then Result := 1;
+end;
+
+procedure TCDListBox.UpdateScrollBar;
+var
+  Vis: Integer;
+begin
+  if FScrollBar = nil then Exit;
+  Vis := GetVisibleCount;
+  { Win32 / GTK / standard scrollbar convention: Max is the full count
+    and PageSize is the visible-window size. Position ranges
+    [0, Max - PageSize] -- the index of the first visible row.
+    SetPosition clamps for us when PageSize > 0. The drawer reads
+    PageSize / Max for the thumb fraction, so the thumb covers the
+    visible-fraction of the trough. }
+  FScrollBar.Min := 0;
+  FScrollBar.Max := FItems.Count;
+  FScrollBar.PageSize    := Vis;
+  FScrollBar.FLargeChange := Vis;        { matches PageUp/PageDown + trough-click }
+  if FItems.Count > Vis then
+  begin
+    FScrollBar.Visible := True;
+    FScrollBar.Position := FTopIndex;
+  end
+  else
+    FScrollBar.Visible := False;
+end;
+
+procedure TCDListBox.EnsureVisible(Index: Integer);
+var
+  Vis: Integer;
+begin
+  if (Index < 0) or (Index >= FItems.Count) then Exit;
+  Vis := GetVisibleCount;
+  if Index < FTopIndex then SetTopIndex(Index)
+  else if Index >= FTopIndex + Vis then SetTopIndex(Index - Vis + 1);
+end;
+
+procedure TCDListBox.FireSelectionChange;
+begin
+  if Assigned(FOnSelectionChange) then FOnSelectionChange(Self);
+end;
+
+function TCDListBox.GetSelected(AIndex: Integer): Boolean;
+begin
+  Result := False;
+  if (AIndex < 0) or (AIndex >= FItems.Count) then Exit;
+  if AIndex >= FSelected.Size then Exit;
+  Result := FSelected[AIndex];
+end;
+
+procedure TCDListBox.SetSelected(AIndex: Integer; ASel: Boolean);
+begin
+  if (AIndex < 0) or (AIndex >= FItems.Count) then Exit;
+  if FSelected.Size < FItems.Count then FSelected.Size := FItems.Count;
+  FSelected[AIndex] := ASel;
+  Invalidate;
+  FireSelectionChange;
+end;
+
+procedure TCDListBox.SelectRange(ALow, AHigh: Integer; ASel: Boolean);
+var
+  i, lo, hi: Integer;
+begin
+  lo := ALow; hi := AHigh;
+  if lo > hi then begin i := lo; lo := hi; hi := i; end;
+  if lo < 0 then lo := 0;
+  if hi >= FItems.Count then hi := FItems.Count - 1;
+  if FSelected.Size < FItems.Count then FSelected.Size := FItems.Count;
+  for i := lo to hi do FSelected[i] := ASel;
+  Invalidate;
+  FireSelectionChange;
+end;
+
+function TCDListBox.GetSelCount: Integer;
+var
+  i: Integer;
+begin
+  Result := 0;
+  for i := 0 to Min(FSelected.Size, FItems.Count) - 1 do
+    if FSelected[i] then Inc(Result);
+end;
+
+function TCDListBox.ItemAtPos(X, Y: Integer): Integer;
+var
+  Row: Integer;
+begin
+  Result := -1;
+  if Y < 2 then Exit;
+  Row := (Y - 2) div ComputeItemHeight;
+  Result := FTopIndex + Row;
+  if (Result < 0) or (Result >= FItems.Count) then Result := -1;
+end;
+
+function TCDListBox.ItemRect(Index: Integer): TRect;
+var
+  H, T: Integer;
+begin
+  Result := Rect(0, 0, 0, 0);
+  if (Index < FTopIndex) or (Index >= FTopIndex + GetVisibleCount + 1) then Exit;
+  H := ComputeItemHeight;
+  T := 2 + (Index - FTopIndex) * H;
+  Result := Rect(2, T, Width - 2 -
+    IfThen((FScrollBar <> nil) and FScrollBar.Visible, FScrollBar.Width, 0),
+    T + H);
+end;
+
+procedure TCDListBox.UpdateSelectionForClick(Index: Integer; Shift: TShiftState);
+begin
+  if FMultiSelect and FExtendedSelect and (ssShift in Shift) and (FAnchor >= 0) then
+  begin
+    FSelected.Clearall;
+    SelectRange(FAnchor, Index, True);
+    FItemIndex := Index;
+  end
+  else if FMultiSelect and FExtendedSelect and (ssCtrl in Shift) then
+  begin
+    if FSelected.Size < FItems.Count then FSelected.Size := FItems.Count;
+    FSelected[Index] := not FSelected[Index];
+    FItemIndex := Index;
+    FAnchor := Index;
+  end
+  else if FMultiSelect and not FExtendedSelect then
+  begin
+    if FSelected.Size < FItems.Count then FSelected.Size := FItems.Count;
+    FSelected[Index] := not FSelected[Index];
+    FItemIndex := Index;
+    FAnchor := Index;
+  end
+  else
+  begin
+    FSelected.Clearall;
+    if Index >= 0 then FSelected[Index] := True;
+    FItemIndex := Index;
+    FAnchor := Index;
+  end;
+  EnsureVisible(FItemIndex);
+  Invalidate;
+  FireSelectionChange;
+end;
+
+procedure TCDListBox.DoEnter;
+begin
+  inherited DoEnter;
+  Invalidate;
+end;
+
+procedure TCDListBox.DoExit;
+begin
+  inherited DoExit;
+  Invalidate;
+end;
+
+procedure TCDListBox.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  Idx: Integer;
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+  if Button <> mbLeft then Exit;
+  SetFocus;
+  Idx := ItemAtPos(X, Y);
+  if Idx < 0 then Exit;
+  UpdateSelectionForClick(Idx, Shift);
+end;
+
+procedure TCDListBox.KeyDown(var Key: Word; Shift: TShiftState);
+var
+  NewIndex, Vis: Integer;
+  i: Integer;
+begin
+  inherited KeyDown(Key, Shift);
+  if FItems.Count = 0 then Exit;
+  Vis := GetVisibleCount;
+  NewIndex := FItemIndex;
+  case Key of
+    VK_UP:    if NewIndex > 0                  then Dec(NewIndex) else NewIndex := 0;
+    VK_DOWN:  if NewIndex < FItems.Count - 1   then Inc(NewIndex) else NewIndex := FItems.Count - 1;
+    VK_PRIOR: NewIndex := Max(0, NewIndex - Vis);
+    VK_NEXT:  NewIndex := Min(FItems.Count - 1, NewIndex + Vis);
+    VK_HOME:  NewIndex := 0;
+    VK_END:   NewIndex := FItems.Count - 1;
+    VK_A:
+      if (Shift = [ssCtrl]) and FMultiSelect then
+      begin
+        for i := 0 to FItems.Count - 1 do FSelected[i] := True;
+        Invalidate; FireSelectionChange;
+        Key := 0;
+        Exit;
+      end;
+  else
+    Exit;
+  end;
+  if NewIndex < 0 then Exit;
+  Key := 0;
+  if FMultiSelect and FExtendedSelect and (ssShift in Shift) then
+  begin
+    if FAnchor < 0 then FAnchor := FItemIndex;
+    if FAnchor < 0 then FAnchor := NewIndex;
+    FSelected.Clearall;
+    SelectRange(FAnchor, NewIndex, True);
+    FItemIndex := NewIndex;
+    EnsureVisible(NewIndex);
+    Invalidate;
+    FireSelectionChange;
+  end
+  else
+  begin
+    SetItemIndex(NewIndex);   { also clears multi-select to single in non-multi mode }
+    FAnchor := NewIndex;
+  end;
+end;
+
+function TCDListBox.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean;
+var
+  Lines: Integer;
+begin
+  Result := True;
+  Lines := WheelDelta div 40;
+  if Lines = 0 then Lines := IfThen(WheelDelta > 0, 1, -1);
+  SetTopIndex(FTopIndex - Lines);
+end;
+
+procedure TCDListBox.Resize;
+begin
+  inherited Resize;
+  UpdateScrollBar;
 end;
 
 { TCDListView }

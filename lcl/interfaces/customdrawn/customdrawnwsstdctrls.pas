@@ -117,27 +117,34 @@ type
   { TCDWSCustomListBox }
 
   TCDWSCustomListBox = class(TWSCustomListBox)
+  public
+    class procedure InjectCDControl(const AWinControl: TWinControl;
+      var ACDControlField: TCDControl);
   published
-{    class function  CreateHandle(const AWinControl: TWinControl;
-     const AParams: TCreateParams): TLCLHandle; override;
+    // TWSWinControl
+    class function  CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+      var PreferredWidth, PreferredHeight: integer;
+      WithThemeSpace: Boolean); override;
+    // TWSCustomListBox
     class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
-    class function GetScrollWidth(const ACustomListBox: TCustomListBox): Integer; override;
     class function GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
     class function GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
     class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
+    class procedure FreeStrings(var AStrings: TStrings); override;
     class function GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
-
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
-    class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
-    class procedure SetColumnCount(const ACustomListBox: TCustomListBox; ACount: Integer); override;
+    class procedure SelectRange(const ACustomListBox: TCustomListBox; ALow, AHigh: integer; ASelected: boolean); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
-    class procedure SetScrollWidth(const ACustomListBox: TCustomListBox; const AScrollWidth: Integer); override;
-    class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean); override;
+    class procedure SetSelectionMode(const ACustomListBox: TCustomListBox;
+      const AExtendedSelect, AMultiSelect: boolean); override;
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
-    class procedure SetStyle(const ACustomListBox: TCustomListBox); override;
-    class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;}
+    class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
   end;
 
   { TCDWSListBox }
@@ -2144,8 +2151,230 @@ begin
   QtToggleBox := TQtToggleBox.Create(AWinControl, AParams);
   QtToggleBox.setCheckable(True);
   QtToggleBox.AttachEvents;
-  
+
   Result := TLCLHandle(QtToggleBox);
 end;*)
+
+{ TCDWSCustomListBox }
+
+class procedure TCDWSCustomListBox.InjectCDControl(const AWinControl: TWinControl;
+  var ACDControlField: TCDControl);
+var
+  LCLLB: TCustomListBox;
+  Inj:   TCDIntfListBox;
+begin
+  LCLLB := TCustomListBox(AWinControl);
+  Inj := TCDIntfListBox(ACDControlField);
+  Inj.LCLControl := LCLLB;
+  Inj.Parent := AWinControl;
+  Inj.Align := alClient;
+  { TCustomListBox.InitializeWnd does NOT call SetSelectionMode, so
+    user-set MultiSelect / ExtendedSelect / Sorted at design-time
+    never reach the WS class via the normal property-setter path
+    (those setters early-out if HandleAllocated is False). Copy them
+    over here, right after the injected control is created. Also
+    seed Items from the LCL's draft list. }
+  Inj.MultiSelect    := LCLLB.MultiSelect;
+  Inj.ExtendedSelect := LCLLB.ExtendedSelect;
+  Inj.Sorted         := LCLLB.Sorted;
+  if LCLLB.ItemIndex >= 0 then Inj.ItemIndex := LCLLB.ItemIndex;
+  {$ifdef VerboseCDInjectedControlNames}
+  Inj.Name := 'CustomDrawnInternal_' + AWinControl.Name;
+  {$endif}
+end;
+
+class function TCDWSCustomListBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLHandle;
+var
+  lCDWinControl: TCDWinControl;
+begin
+  Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
+  lCDWinControl := TCDWinControl(Result);
+  lCDWinControl.CDControl := TCDIntfListBox.Create(AWinControl);
+end;
+
+class procedure TCDWSCustomListBox.DestroyHandle(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  lCDWinControl.CDControl.Free;
+  lCDWinControl.Free;
+end;
+
+class procedure TCDWSCustomListBox.ShowHide(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  TCDWSWinControl.ShowHide(AWinControl);
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(AWinControl, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
+end;
+
+class procedure TCDWSCustomListBox.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  { Don't autosize the listbox -- otherwise it collapses to a tiny
+    one-row strip. Returning zeros keeps the user's design-time bounds. }
+  PreferredWidth := 0;
+  PreferredHeight := 0;
+end;
+
+{ Helper: pull the injected TCDListBox out of the LCL TCustomListBox.
+  Returns nil pre-handle (e.g. during property defaults loading). }
+function CDListBoxFromLCL(const ACustomListBox: TCustomListBox): TCDListBox;
+var
+  WSCtrl: TCDWinControl;
+begin
+  Result := nil;
+  if (ACustomListBox = nil) or (ACustomListBox.Handle = 0) then Exit;
+  WSCtrl := TCDWinControl(ACustomListBox.Handle);
+  if (WSCtrl = nil) or (WSCtrl.CDControl = nil) then Exit;
+  if WSCtrl.CDControl is TCDListBox then
+    Result := TCDListBox(WSCtrl.CDControl);
+end;
+
+class function TCDWSCustomListBox.GetIndexAtXY(
+  const ACustomListBox: TCustomListBox; X, Y: integer): integer;
+var
+  L: TCDListBox;
+begin
+  Result := -1;
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L <> nil then Result := L.ItemAtPos(X, Y);
+end;
+
+class function TCDWSCustomListBox.GetItemIndex(
+  const ACustomListBox: TCustomListBox): integer;
+var
+  L: TCDListBox;
+begin
+  Result := -1;
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L <> nil then Result := L.ItemIndex;
+end;
+
+class function TCDWSCustomListBox.GetItemRect(
+  const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean;
+var
+  L: TCDListBox;
+begin
+  Result := False;
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L = nil then Exit;
+  ARect := L.ItemRect(Index);
+  Result := (ARect.Right - ARect.Left) > 0;
+end;
+
+class function TCDWSCustomListBox.GetSelCount(
+  const ACustomListBox: TCustomListBox): integer;
+var
+  L: TCDListBox;
+begin
+  Result := 0;
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L <> nil then Result := L.GetSelCount;
+end;
+
+class function TCDWSCustomListBox.GetSelected(
+  const ACustomListBox: TCustomListBox; const AIndex: integer): boolean;
+var
+  L: TCDListBox;
+begin
+  Result := False;
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L <> nil then Result := L.GetSelected(AIndex);
+end;
+
+class function TCDWSCustomListBox.GetStrings(
+  const ACustomListBox: TCustomListBox): TStrings;
+var
+  L: TCDListBox;
+begin
+  { LCL caches the result of this exactly once per handle, then user
+    code modifies it via Items.Add/Insert/Delete/Clear. Our Items
+    TStringList has OnChange wired to Invalidate (see TCDListBox.Create),
+    so the visible list refreshes automatically. }
+  Result := nil;
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L <> nil then Result := L.Items;
+end;
+
+class procedure TCDWSCustomListBox.FreeStrings(var AStrings: TStrings);
+begin
+  { TCDListBox owns its Items; the LCL must NOT free what GetStrings
+    returned. Clear the caller's reference. }
+  AStrings := nil;
+end;
+
+class function TCDWSCustomListBox.GetTopIndex(
+  const ACustomListBox: TCustomListBox): integer;
+var
+  L: TCDListBox;
+begin
+  Result := 0;
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L <> nil then Result := L.TopIndex;
+end;
+
+class procedure TCDWSCustomListBox.SelectItem(
+  const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);
+var
+  L: TCDListBox;
+begin
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L <> nil then L.SetSelected(AIndex, ASelected);
+end;
+
+class procedure TCDWSCustomListBox.SelectRange(
+  const ACustomListBox: TCustomListBox; ALow, AHigh: integer; ASelected: boolean);
+var
+  L: TCDListBox;
+begin
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L <> nil then L.SelectRange(ALow, AHigh, ASelected);
+end;
+
+class procedure TCDWSCustomListBox.SetItemIndex(
+  const ACustomListBox: TCustomListBox; const AIndex: integer);
+var
+  L: TCDListBox;
+begin
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L <> nil then L.ItemIndex := AIndex;
+end;
+
+class procedure TCDWSCustomListBox.SetSelectionMode(
+  const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean);
+var
+  L: TCDListBox;
+begin
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L = nil then Exit;
+  L.MultiSelect := AMultiSelect;
+  L.ExtendedSelect := AExtendedSelect;
+end;
+
+class procedure TCDWSCustomListBox.SetSorted(
+  const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean);
+var
+  L: TCDListBox;
+begin
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L <> nil then L.Sorted := ASorted;
+end;
+
+class procedure TCDWSCustomListBox.SetTopIndex(
+  const ACustomListBox: TCustomListBox; const NewTopIndex: integer);
+var
+  L: TCDListBox;
+begin
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L <> nil then L.TopIndex := NewTopIndex;
+end;
 
 end.
