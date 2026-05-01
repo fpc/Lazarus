@@ -57,6 +57,24 @@ begin
   Result := False;
 end;
 
+function WLClipFormatForMime(const MimeType: AnsiString;
+  const Formats: array of TClipboardFormat): TClipboardFormat;
+var
+  i: Integer;
+begin
+  Result := 0;
+  if WLIsTextMime(MimeType) then
+  begin
+    for i := 0 to High(Formats) do
+      if ClipboardFormatToMimeType(Formats[i]) = 'text/plain' then
+        Exit(Formats[i]);
+  end
+  else
+    for i := 0 to High(Formats) do
+      if ClipboardFormatToMimeType(Formats[i]) = MimeType then
+        Exit(Formats[i]);
+end;
+
 { wl_data_source.send fired -- a clipboard receiver picked our Mime
   type and is waiting for bytes on Fd. Resolve Mime back to a
   TClipboardFormat, hand it to the user's request callback (which
@@ -66,7 +84,6 @@ end;
 procedure TCDWidgetSet.WLClipSourceSend(Source: TWlDataSource;
   const MimeType: AnsiString; Fd: cint);
 var
-  i: Integer;
   Stream: TMemoryStream;
   FormatID: TClipboardFormat;
   Buf: PByte;
@@ -81,23 +98,7 @@ begin
     offered 'text/plain' to LCL but advertised several text aliases on
     the wire (UTF8_STRING etc.); any of those should map back to the
     single registered text format. Non-text formats must match exactly. }
-  FormatID := 0;
-  if WLIsTextMime(MimeType) then
-  begin
-    for i := 0 to High(FWlClipFormats) do
-      if ClipboardFormatToMimeType(FWlClipFormats[i]) = 'text/plain' then
-      begin
-        FormatID := FWlClipFormats[i];
-        Break;
-      end;
-  end
-  else
-    for i := 0 to High(FWlClipFormats) do
-      if ClipboardFormatToMimeType(FWlClipFormats[i]) = MimeType then
-      begin
-        FormatID := FWlClipFormats[i];
-        Break;
-      end;
+  FormatID := WLClipFormatForMime(MimeType, FWlClipFormats);
   Stream := TMemoryStream.Create;
   try
     if FormatID <> 0 then
@@ -144,6 +145,7 @@ var
   Mime: string;
   Pipe: array[0..1] of cint;
   i: Integer;
+  OwnFormatID: TClipboardFormat;
 begin
   Result := False;
   { Only the system clipboard maps to wl_data_device.selection.
@@ -172,6 +174,21 @@ begin
   end
   else
     if FWlDataDevice.CurrentSelection.MimeTypes.IndexOf(Mime) < 0 then Exit;
+
+  { If the selection is ours, serve it directly. Asking the compositor
+    for our own offer can deadlock: receive() queues a wl_data_source.send
+    event on this same connection, but the synchronous pipe read below
+    would block before the event can be dispatched. }
+  if (FWlClipSource <> nil) and Assigned(FWlClipCallback) then
+  begin
+    OwnFormatID := WLClipFormatForMime(Mime, FWlClipFormats);
+    if OwnFormatID <> 0 then
+    begin
+      FWlClipCallback(OwnFormatID, Stream);
+      Result := True;
+      Exit;
+    end;
+  end;
 
   { Open a pipe; write end goes to the compositor via SCM_RIGHTS, we
     read from the read end. The compositor writes the bytes and
