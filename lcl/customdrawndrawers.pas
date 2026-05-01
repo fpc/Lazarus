@@ -313,6 +313,17 @@ type
     FloatIncrement: Double;
   end;
 
+  { State for TCDStatusBar -- a strip of either one full-width SimpleText
+    panel or a list of TStatusPanel from the LCL. The Panels reference
+    is borrowed; the drawer never frees. }
+  TCDStatusBarStateEx = class(TCDControlStateEx)
+  public
+    Panels:      TCollection;   { ref to TStatusPanels; nil-safe }
+    SimpleText:  TCaption;
+    SimplePanel: Boolean;       { True: ignore Panels, render SimpleText }
+    SizeGrip:    Boolean;       { reserved -- size-grip rendering deferred }
+  end;
+
   TCDControlID = (
     cidControl,
     // Standard
@@ -322,6 +333,7 @@ type
     cidStaticText,
     // Common Controls
     cidTrackBar, cidProgressBar, cidListView, cidToolBar, cidCTabControl,
+    cidStatusBar,
     // CheckLst
     cidCheckListBox
     );
@@ -490,6 +502,9 @@ type
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); virtual; abstract;
     procedure DrawTab(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); virtual; abstract;
+    // TCDStatusBar
+    procedure DrawStatusBar(ADest: TCanvas; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDStatusBarStateEx); virtual; abstract;
     // ===================================
     // Misc Tab
     // ===================================
@@ -847,6 +862,7 @@ begin
   cidListView:   DrawListView(ADest, ASize, AState, TCDListViewStateEx(AStateEx));
   cidToolBar:    DrawToolBar(ADest, ASize, AState, TCDToolBarStateEx(AStateEx));
   cidCTabControl:DrawCTabControl(ADest, ASize, AState, TCDCTabControlStateEx(AStateEx));
+  cidStatusBar:  DrawStatusBar(ADest, ASize, AState, TCDStatusBarStateEx(AStateEx));
   end;
 end;
 

@@ -144,6 +144,9 @@ type
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); override;
     procedure DrawTab(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); override;
+    // TCDStatusBar
+    procedure DrawStatusBar(ADest: TCanvas; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDStatusBarStateEx); override;
     // ===================================
     // Misc Tab
     // ===================================
@@ -1832,6 +1835,129 @@ begin
       ADest.Rectangle(2 + CheckW, ItemY, ASize.cx - 4, ItemY + LineHeight);
       ADest.Pen.Style := psSolid;
     end;
+  end;
+end;
+
+procedure TCDDrawerCommon.DrawStatusBar(ADest: TCanvas; ASize: TSize;
+  AState: TCDControlState; AStateEx: TCDStatusBarStateEx);
+var
+  Pad1, Pad2, Pad4, TopBorder: Integer;
+  Panel: TStatusPanel;
+  i, X, RemainingWidth, AutoCount, AutoSlice, PanelW: Integer;
+
+  procedure DrawPanelBevel(BX, BY, BW, BH: Integer; Bevel: TStatusPanelBevel);
+  begin
+    case Bevel of
+      pbLowered:
+        begin
+          ADest.Pen.Style := psSolid;
+          ADest.Pen.Color := Palette.BtnShadow;
+          ADest.Line(BX, BY, BX + BW - 1, BY);
+          ADest.Line(BX, BY, BX, BY + BH - 1);
+          ADest.Pen.Color := Palette.BtnHighlight;
+          ADest.Line(BX + BW - 1, BY, BX + BW - 1, BY + BH);
+          ADest.Line(BX, BY + BH - 1, BX + BW, BY + BH - 1);
+        end;
+      pbRaised:
+        begin
+          ADest.Pen.Style := psSolid;
+          ADest.Pen.Color := Palette.BtnHighlight;
+          ADest.Line(BX, BY, BX + BW - 1, BY);
+          ADest.Line(BX, BY, BX, BY + BH - 1);
+          ADest.Pen.Color := Palette.BtnShadow;
+          ADest.Line(BX + BW - 1, BY, BX + BW - 1, BY + BH);
+          ADest.Line(BX, BY + BH - 1, BX + BW, BY + BH - 1);
+        end;
+    end;
+  end;
+
+  procedure DrawPanelText(TX, TY, TW, TH: Integer;
+    const AText: TCaption; AAlign: TAlignment);
+  var
+    TextX, TextW: Integer;
+  begin
+    if AText = '' then Exit;
+    ADest.Brush.Style := bsClear;
+    ADest.Font.Color := Palette.WindowText;
+    TextW := ADest.TextWidth(AText);
+    case AAlign of
+      taCenter:       TextX := TX + (TW - TextW) div 2;
+      taRightJustify: TextX := TX + TW - TextW - Pad4;
+    else
+      TextX := TX + Pad4;
+    end;
+    ADest.TextRect(Bounds(TX + Pad2, TY + Pad1, TW - 2 * Pad2, TH - 2 * Pad1),
+                   TextX, TY + Pad2, AText);
+  end;
+
+begin
+  { All padding measured in DPIAdjustment units so the bar scales with
+    the DPI -- same pattern as DrawCheckBox / DrawTickmark. }
+  Pad1 := DPIAdjustment(1);
+  Pad2 := DPIAdjustment(2);
+  Pad4 := DPIAdjustment(4);
+
+  { Background. }
+  ADest.Brush.Color := AStateEx.RGBColor;
+  if ADest.Brush.Color = clDefault then ADest.Brush.Color := Palette.BtnFace;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Style   := psClear;
+  ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
+
+  { Sunken top edge so the bar reads as separated from the form above
+    it (matches Win32 / GTK look). One DPI-adjusted line per shadow /
+    highlight side. }
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.Color := Palette.BtnShadow;
+  ADest.Line(0, 0, ASize.cx, 0);
+  ADest.Pen.Color := Palette.BtnHighlight;
+  ADest.Line(0, Pad1, ASize.cx, Pad1);
+
+  ADest.Font.Assign(AStateEx.Font);
+
+  TopBorder := Pad2;
+
+  if AStateEx.SimplePanel or (AStateEx.Panels = nil)
+     or (AStateEx.Panels.Count = 0) then
+  begin
+    DrawPanelText(0, TopBorder, ASize.cx, ASize.cy - TopBorder,
+      AStateEx.SimpleText, taLeftJustify);
+    Exit;
+  end;
+
+  { Distribute width: panels with Width > 0 keep their width, panels
+    with Width = 0 (the LCL default for the last panel) split the
+    remainder evenly. Matches Win32 TStatusBar layout. }
+  RemainingWidth := ASize.cx;
+  AutoCount := 0;
+  for i := 0 to AStateEx.Panels.Count - 1 do
+  begin
+    Panel := TStatusPanel(AStateEx.Panels.Items[i]);
+    if Panel.Width > 0 then Dec(RemainingWidth, Panel.Width)
+    else Inc(AutoCount);
+  end;
+  if AutoCount > 0 then
+  begin
+    if RemainingWidth < AutoCount then RemainingWidth := AutoCount;
+    AutoSlice := RemainingWidth div AutoCount;
+  end
+  else
+    AutoSlice := 0;
+
+  X := 0;
+  for i := 0 to AStateEx.Panels.Count - 1 do
+  begin
+    Panel := TStatusPanel(AStateEx.Panels.Items[i]);
+    if Panel.Width > 0 then PanelW := Panel.Width
+    else                    PanelW := AutoSlice;
+    if i = AStateEx.Panels.Count - 1 then
+      PanelW := ASize.cx - X;       { last panel absorbs rounding }
+    if PanelW < 1 then PanelW := 1;
+
+    DrawPanelBevel(X, TopBorder, PanelW, ASize.cy - TopBorder, Panel.Bevel);
+    DrawPanelText (X, TopBorder, PanelW, ASize.cy - TopBorder,
+                   Panel.Text, Panel.Alignment);
+    Inc(X, PanelW);
   end;
 end;
 

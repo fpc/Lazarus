@@ -769,6 +769,40 @@ type
 
   { TCDToolBar }
 
+  { TCDStatusBar -- the customdrawn host for TStatusBar.
+
+    Holds a borrowed TCollection reference to the LCL TStatusBar's
+    Panels (TStatusPanels needs a TStatusBar to construct, so we can't
+    own one of our own; the injected bridge sets PanelsRef on every
+    PrepareControlState). Plus SimpleText / SimplePanel; the drawer
+    renders a sunken-top strip with per-panel bevels following the
+    LCL's "Width=0 panels share the leftover" layout rule. }
+  TCDStatusBar = class(TCDControl)
+  private
+    FPanelsRef:   TCollection;     { borrowed reference; never freed }
+    FSimpleText:  TCaption;
+    FSimplePanel: Boolean;
+    FSizeGrip:    Boolean;
+    procedure SetSimpleText(const AValue: TCaption);
+    procedure SetSimplePanel(AValue: Boolean);
+  protected
+    FSBState: TCDStatusBarStateEx;
+    function  GetControlId: TCDControlID; override;
+    procedure CreateControlStateEx; override;
+    procedure PrepareControlStateEx; override;
+    class function GetControlClassDefaultSize: TSize; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    property PanelsRef: TCollection read FPanelsRef write FPanelsRef;
+  published
+    property Color;
+    property Font;
+    property Enabled;
+    property SimpleText:  TCaption read FSimpleText write SetSimpleText;
+    property SimplePanel: Boolean  read FSimplePanel write SetSimplePanel default True;
+    property SizeGrip:    Boolean  read FSizeGrip write FSizeGrip default True;
+  end;
+
   TCDToolBar = class(TCDControl)
   private
     // fields
@@ -4073,6 +4107,66 @@ begin
   lSize.CX := AItem.Width;
   Result := (APosInControl.X > AItemX) and (APosInControl.X < AItemX + lSize.CX) and
     (APosInControl.Y > 0) and (APosInControl.Y < lSize.CY);
+end;
+
+{ TCDStatusBar }
+
+constructor TCDStatusBar.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Width := 240;
+  Height := 19;
+  TabStop := False;
+  Align := alBottom;
+  AutoSize := True;
+  FSimplePanel := True;
+  FSizeGrip := True;
+end;
+
+function TCDStatusBar.GetControlId: TCDControlID;
+begin
+  Result := cidStatusBar;
+end;
+
+class function TCDStatusBar.GetControlClassDefaultSize: TSize;
+begin
+  { Return (1, 1) so when this injected control is alClient inside the
+    LCL TStatusBar, the parent's TWinControl.CalculatePreferredSize
+    Max(WS_GetPreferredSize, child_GetDefaultHeight) takes the WS
+    value -- the font-derived height -- not the inherited TControl
+    default of (75, 50) which would inflate the bar. The injected
+    control's actual size always comes from alClient, never this. }
+  Result.cx := 1;
+  Result.cy := 1;
+end;
+
+procedure TCDStatusBar.CreateControlStateEx;
+begin
+  FSBState := TCDStatusBarStateEx.Create;
+  FStateEx := FSBState;
+end;
+
+procedure TCDStatusBar.PrepareControlStateEx;
+begin
+  inherited PrepareControlStateEx;
+  FSBState.Panels      := FPanelsRef;
+  FSBState.SimpleText  := FSimpleText;
+  FSBState.SimplePanel := FSimplePanel;
+  FSBState.SizeGrip    := FSizeGrip;
+end;
+
+procedure TCDStatusBar.SetSimpleText(const AValue: TCaption);
+begin
+  if FSimpleText = AValue then Exit;
+  FSimpleText := AValue;
+  Invalidate;
+end;
+
+procedure TCDStatusBar.SetSimplePanel(AValue: Boolean);
+begin
+  if FSimplePanel = AValue then Exit;
+  FSimplePanel := AValue;
+  Invalidate;
 end;
 
 { TCDTabSheet }

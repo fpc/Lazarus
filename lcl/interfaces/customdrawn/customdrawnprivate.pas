@@ -120,6 +120,13 @@ type
     LCLControl: TCustomProgressBar;
   end;
 
+  TCDIntfStatusBar = class(TCDStatusBar)
+  protected
+    procedure PrepareControlState; override;
+  public
+    LCLControl: TStatusBar;
+  end;
+
   TCDIntfTrackBar = class(TCDTrackBar)
   public
     LCLControl: TCustomTrackBar;
@@ -493,6 +500,7 @@ begin
     (AControl is TCDIntfPageControl) or
     (AControl is TCDIntfListBox) or
     (AControl is TCDIntfCheckListBox) or
+    (AControl is TCDIntfStatusBar) or
     // Misc Tab
     (AControl is TCDIntfSpinEdit)
     ;
@@ -562,6 +570,20 @@ begin
     FState := FState + [csfHasFocus]
   else
     FState := FState - [csfHasFocus];
+end;
+
+{ TCDIntfStatusBar }
+
+procedure TCDIntfStatusBar.PrepareControlState;
+begin
+  inherited PrepareControlState;
+  if LCLControl <> nil then
+  begin
+    PanelsRef    := LCLControl.Panels;
+    SimpleText   := LCLControl.SimpleText;
+    SimplePanel  := LCLControl.SimplePanel;
+    SizeGrip     := LCLControl.SizeGrip;
+  end;
 end;
 
 { TCDIntfCheckListBox }
