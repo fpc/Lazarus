@@ -19,7 +19,7 @@ uses
   IntfGraphics, lazcanvas, lazregions, customdrawndrawers, customdrawncontrols,
   // LCL
   GraphType, Controls, LCLMessageGlue, WSControls, LCLType, LCLProc,
-  StdCtrls, ExtCtrls, Forms, Graphics, ComCtrls,
+  StdCtrls, ExtCtrls, Forms, Graphics, ComCtrls, LMessages,
   InterfaceBase, LCLIntf;
 
 type
@@ -125,6 +125,48 @@ type
     Interval: integer;
     TimerFunc: TWSTimerProc;
   end;
+
+  { TCDScrollBars -- bridges the LCLIntf scrollbar API (ShowScrollBar,
+    SetScrollInfo, GetScrollInfo) for non-windowed clients (TCustomGrid
+    etc.) to a pair of LCL TScrollBar children of the owning control.
+    Customdrawn has no native non-client area, so the scrollbars live
+    as children inside the owner; the owner is expected to track its
+    own client-area shrinkage (TCustomGrid does this via its FGCache).
+
+    Scrollbar children are only materialised when ShowScrollBar(*,True)
+    is first called. Range / page / pos arrive earlier (TCustomGrid
+    calls SetScrollInfo before ShowScrollBar in UpdateScrollBarRange);
+    we cache them here and apply them on first creation. Creating the
+    child in the middle of the owner's CreateWnd would re-enter the
+    grid's own scrollbar bookkeeping, so deferral is the safer order.
+
+    Stored on the owner's TCDBaseControl as Props['cdScrollBars']. }
+  TCDScrollBars = class
+  private
+    FOwner: TWinControl;
+    FHSB: TScrollBar;
+    FVSB: TScrollBar;
+    FHParams, FVParams: TScrollInfo; // pending values when the bar isn't yet created
+    procedure HSBScroll(Sender: TObject; ScrollCode: TScrollCode; var ScrollPos: Integer);
+    procedure VSBScroll(Sender: TObject; ScrollCode: TScrollCode; var ScrollPos: Integer);
+    procedure DispatchScroll(LMMsg: Cardinal; ABar: TScrollBar;
+      ScrollCode: TScrollCode; ScrollPos: Integer);
+    function CreateBar(Kind: TScrollBarKind): TScrollBar;
+    procedure ApplyParams(Bar: TScrollBar; const Info: TScrollInfo);
+  public
+    constructor Create(AOwner: TWinControl);
+    destructor Destroy; override;
+    function GetBar(SBStyle: Integer): TScrollBar;       // SB_HORZ / SB_VERT, may return nil
+    procedure StoreParams(SBStyle: Integer; const Info: TScrollInfo); // updates pending + live
+    procedure ReadParams(SBStyle: Integer; var Info: TScrollInfo);
+    procedure SetVisibility(SBStyle: Integer; bShow: Boolean);  // SB_HORZ / VERT / BOTH
+  end;
+
+// Returns the TCDScrollBars helper attached to AHandle, creating it on first
+// access. AHandle must be a TCDBaseControl whose WinControl is non-nil.
+function GetOrCreateScrollBars(AHandle: HWND): TCDScrollBars;
+// Returns the helper, or nil if none was ever created. Doesn't allocate.
+function FindScrollBars(AHandle: HWND): TCDScrollBars;
 
 // Routines for form managing (both native and non-native)
 
@@ -495,6 +537,13 @@ begin
   {$endif}
 
   if lWinControl.Visible = False then Exit;
+
+  { A zero-sized control would create a zero-dimension TLazIntfImage
+    in UpdateImageAndCanvas, whose FLineStarts table is never built --
+    a subsequent CanvasCopyRect then crashes in GetDataLineStart on
+    the nil positions array. There's nothing meaningful to render
+    here. }
+  if (lWinControl.Width <= 0) or (lWinControl.Height <= 0) then Exit;
 
   // Disable the drawing itself, but keep the window org and region operations
   // or else clicking and other things are broken
@@ -1054,6 +1103,273 @@ begin
   IncInvalidateCount(); // Always starts needing an invalidate
 
   Children := TFPList.Create;
+end;
+
+{ TCDScrollBars }
+
+constructor TCDScrollBars.Create(AOwner: TWinControl);
+begin
+  inherited Create;
+  FOwner := AOwner;
+  FHParams.cbSize := SizeOf(FHParams);
+  FVParams.cbSize := SizeOf(FVParams);
+  FHParams.fMask := SIF_RANGE or SIF_PAGE or SIF_POS;
+  FVParams.fMask := SIF_RANGE or SIF_PAGE or SIF_POS;
+end;
+
+destructor TCDScrollBars.Destroy;
+begin
+  { Bars are LCL children of FOwner; freed by the owner's
+    destruction. Clear these references here. }
+  FHSB := nil;
+  FVSB := nil;
+  inherited Destroy;
+end;
+
+function TCDScrollBars.CreateBar(Kind: TScrollBarKind): TScrollBar;
+var
+  Bar: TScrollBar;
+begin
+  Bar := TScrollBar.Create(FOwner);
+  Bar.Visible := False;        { keep hidden until caller enables -- avoids
+                                 a zero-sized control entering the form's
+                                 paint pipeline before AlignControls runs }
+  Bar.Kind := Kind;
+  if Kind = sbHorizontal then
+  begin
+    Bar.Align := alBottom;
+    Bar.OnScroll := @HSBScroll;
+  end
+  else
+  begin
+    Bar.Align := alRight;
+    Bar.OnScroll := @VSBScroll;
+  end;
+  Bar.Parent := FOwner;          { handle is allocated here; ApplyParams
+                                   then has the inner TCDIntfScrollBar to
+                                   push SmallChange/LargeChange into. }
+  if Kind = sbHorizontal then ApplyParams(Bar, FHParams)
+                         else ApplyParams(Bar, FVParams);
+  Result := Bar;
+end;
+
+procedure TCDScrollBars.ApplyParams(Bar: TScrollBar; const Info: TScrollInfo);
+var
+  PageSz, SmallC, LargeC: Integer;
+  Inner: TCDScrollBar;
+begin
+  if Bar = nil then Exit;
+  if (Info.fMask and SIF_RANGE) <> 0 then
+  begin
+    Bar.Min := Info.nMin;
+    Bar.Max := Info.nMax;
+  end;
+  if (Info.fMask and SIF_PAGE) <> 0 then
+  begin
+    PageSz := Integer(Info.nPage);
+    if PageSz < 1 then PageSz := 1;
+    Bar.PageSize := PageSz;
+    { TCustomGrid (and other clients that don't manage SmallChange /
+      LargeChange explicitly) need a useful trough-click step. Native
+      backends get this from the OS scrollbar; here we derive
+      sensible values from the page size. The actual scroll amounts
+      are determined by the host's WMVScroll handler from the SB_*
+      code (TCDIntfScrollBar.HandleChangeByUser dispatches LINEUP /
+      PAGEUP / etc); FLargeChange has to be distinct from the
+      thumb-drag deltas so detection works. }
+    LargeC := PageSz;
+    SmallC := PageSz div 10;
+    if SmallC < 1 then SmallC := 1;
+    Bar.LargeChange := LargeC;
+    Bar.SmallChange := SmallC;
+  end;
+  if (Info.fMask and SIF_POS) <> 0 then
+    Bar.Position := Info.nPos;
+  { Mirror to the inner customdrawn drawer. TCDWSScrollBar.SetParams is
+    a no-op stub, so the LCL setters above don't reach the drawer; we
+    have to walk to it ourselves. Without this the thumb visualisation
+    and the trough hit-test ignore the host's range. }
+  if Bar.HandleAllocated then
+  begin
+    Inner := TCDScrollBar(TCDWinControl(Bar.Handle).CDControl);
+    if Inner <> nil then
+    begin
+      if (Info.fMask and SIF_RANGE) <> 0 then
+      begin
+        Inner.Min := Bar.Min;
+        Inner.Max := Bar.Max;
+      end;
+      if (Info.fMask and SIF_PAGE) <> 0 then
+      begin
+        Inner.PageSize := Bar.PageSize;
+        Inner.SetIncrements(Bar.SmallChange, Bar.LargeChange);
+      end;
+      if (Info.fMask and SIF_POS) <> 0 then
+        Inner.Position := Bar.Position;
+    end;
+  end;
+end;
+
+function TCDScrollBars.GetBar(SBStyle: Integer): TScrollBar;
+begin
+  case SBStyle of
+    SB_HORZ: Result := FHSB;
+    SB_VERT: Result := FVSB;
+  else
+    Result := nil;
+  end;
+end;
+
+procedure TCDScrollBars.StoreParams(SBStyle: Integer; const Info: TScrollInfo);
+  procedure MergeInto(var Dst: TScrollInfo; const Src: TScrollInfo);
+  begin
+    if (Src.fMask and SIF_RANGE) <> 0 then
+    begin
+      Dst.nMin := Src.nMin;
+      Dst.nMax := Src.nMax;
+      Dst.fMask := Dst.fMask or SIF_RANGE;
+    end;
+    if (Src.fMask and SIF_PAGE) <> 0 then
+    begin
+      Dst.nPage := Src.nPage;
+      Dst.fMask := Dst.fMask or SIF_PAGE;
+    end;
+    if (Src.fMask and SIF_POS) <> 0 then
+    begin
+      Dst.nPos := Src.nPos;
+      Dst.fMask := Dst.fMask or SIF_POS;
+    end;
+  end;
+begin
+  case SBStyle of
+    SB_HORZ:
+    begin
+      MergeInto(FHParams, Info);
+      if FHSB <> nil then ApplyParams(FHSB, Info);
+    end;
+    SB_VERT:
+    begin
+      MergeInto(FVParams, Info);
+      if FVSB <> nil then ApplyParams(FVSB, Info);
+    end;
+  end;
+end;
+
+procedure TCDScrollBars.ReadParams(SBStyle: Integer; var Info: TScrollInfo);
+var
+  Bar: TScrollBar;
+  Src: TScrollInfo;
+begin
+  Bar := GetBar(SBStyle);
+  if Bar <> nil then
+  begin
+    if (Info.fMask and SIF_RANGE) <> 0 then
+    begin
+      Info.nMin := Bar.Min;
+      Info.nMax := Bar.Max;
+    end;
+    if (Info.fMask and SIF_PAGE) <> 0 then
+      Info.nPage := Bar.PageSize;
+    if (Info.fMask and SIF_POS) <> 0 then
+      Info.nPos := Bar.Position;
+    if (Info.fMask and SIF_TRACKPOS) <> 0 then
+      Info.nTrackPos := Bar.Position;
+    Exit;
+  end;
+  case SBStyle of
+    SB_HORZ: Src := FHParams;
+    SB_VERT: Src := FVParams;
+  else
+    Exit;
+  end;
+  if (Info.fMask and SIF_RANGE) <> 0 then
+  begin
+    Info.nMin := Src.nMin;
+    Info.nMax := Src.nMax;
+  end;
+  if (Info.fMask and SIF_PAGE) <> 0 then
+    Info.nPage := Src.nPage;
+  if (Info.fMask and SIF_POS) <> 0 then
+    Info.nPos := Src.nPos;
+end;
+
+procedure TCDScrollBars.SetVisibility(SBStyle: Integer; bShow: Boolean);
+  procedure ApplyOne(Style: Integer);
+  var
+    Existing: TScrollBar;
+  begin
+    Existing := GetBar(Style);
+    if Existing = nil then
+    begin
+      if not bShow then Exit;  // hide-without-bar is a no-op
+      if Style = SB_HORZ then FHSB := CreateBar(sbHorizontal)
+      else FVSB := CreateBar(sbVertical);
+      Existing := GetBar(Style);
+    end;
+    if Existing <> nil then Existing.Visible := bShow;
+  end;
+begin
+  if SBStyle in [SB_HORZ, SB_BOTH] then ApplyOne(SB_HORZ);
+  if SBStyle in [SB_VERT, SB_BOTH] then ApplyOne(SB_VERT);
+end;
+
+procedure TCDScrollBars.DispatchScroll(LMMsg: Cardinal; ABar: TScrollBar;
+  ScrollCode: TScrollCode; ScrollPos: Integer);
+var
+  Msg: TLMScroll;
+begin
+  if FOwner = nil then Exit;
+  FillChar(Msg, SizeOf(Msg), 0);
+  Msg.Msg := LMMsg;
+  Msg.ScrollCode := SmallInt(Ord(ScrollCode));
+  Msg.SmallPos := SmallInt(ScrollPos);
+  Msg.Pos := ScrollPos;
+  if (ABar <> nil) and ABar.HandleAllocated then
+    Msg.ScrollBar := ABar.Handle;
+  FOwner.Dispatch(Msg);
+end;
+
+procedure TCDScrollBars.HSBScroll(Sender: TObject; ScrollCode: TScrollCode;
+  var ScrollPos: Integer);
+begin
+  DispatchScroll(LM_HSCROLL, TScrollBar(Sender), ScrollCode, ScrollPos);
+end;
+
+procedure TCDScrollBars.VSBScroll(Sender: TObject; ScrollCode: TScrollCode;
+  var ScrollPos: Integer);
+begin
+  DispatchScroll(LM_VSCROLL, TScrollBar(Sender), ScrollCode, ScrollPos);
+end;
+
+const
+  CDScrollBarsKey = 'cdScrollBars';
+
+function FindScrollBars(AHandle: HWND): TCDScrollBars;
+var
+  Base: TCDBaseControl;
+begin
+  Result := nil;
+  if AHandle = 0 then Exit;
+  Base := TCDBaseControl(AHandle);
+  Result := TCDScrollBars(Base.Props[CDScrollBarsKey]);
+end;
+
+function GetOrCreateScrollBars(AHandle: HWND): TCDScrollBars;
+var
+  Base: TCDBaseControl;
+  WC: TWinControl;
+begin
+  Result := nil;
+  if AHandle = 0 then Exit;
+  Base := TCDBaseControl(AHandle);
+  Result := TCDScrollBars(Base.Props[CDScrollBarsKey]);
+  if Result <> nil then Exit;
+
+  WC := Base.GetWinControl;
+  if WC = nil then Exit;
+
+  Result := TCDScrollBars.Create(WC);
+  Base.Props[CDScrollBarsKey] := Result;
 end;
 
 destructor TCDBaseControl.Destroy;

@@ -8,7 +8,7 @@ uses
   // rtl+ftl
   Types, Classes, SysUtils,
   // LCL
-  Controls, Graphics, stdctrls, checklst, extctrls, comctrls,
+  Controls, Graphics, Forms, stdctrls, checklst, extctrls, comctrls,
   customdrawnproc, customdrawncontrols, lcltype, lclproc, lclintf,
   lmessages, spin;
 
@@ -104,6 +104,14 @@ type
   TCDIntfScrollBar = class(TCDScrollBar)
   public
     LCLControl: TCustomScrollBar;
+    { Wire-up target for FOnChangeByUser. Pushes the new Position into
+      the LCL TScrollBar and synthesises the LM_HSCROLL / LM_VSCROLL
+      message so any TScrollBar.OnScroll subscriber (and any parent
+      that intercepts via CNHScroll / CNVScroll) sees the change.
+      Without this, the inner customdrawn drawer mutates its own
+      FPosition on click but the LCL side never hears about it -- the
+      bar appears interactive but does not notify the host. }
+    procedure HandleChangeByUser(Sender: TObject);
   end;
 
   // Additional Tab
@@ -560,8 +568,56 @@ end;
 { TCDIntfListBox -- forward selection / item-index changes to the
   LCL TCustomListBox so OnClick / OnSelectionChange / OnChange fire
   exactly when user code expects. The injected control owns the
-  state; the LCL side just gets the message and invokes its event
+  state; the LCL side receives the message and invokes its event
   handlers (and re-fetches via the WS class for property reads). }
+
+{ TCDIntfScrollBar }
+
+procedure TCDIntfScrollBar.HandleChangeByUser(Sender: TObject);
+var
+  Msg: TLMScroll;
+  Delta: Integer;
+  ScrollCode: SmallInt;
+begin
+  if LCLControl = nil then Exit;
+  Delta := Position - LCLControl.Position;
+  { Map the user gesture to an SB_* code so the host (TCustomGrid etc.)
+    can apply its own per-action semantics: arrows step one row, trough
+    one page (excluding fixed header), thumb tracks absolute. Without
+    this every gesture is SB_THUMBPOSITION, which makes trough clicks
+    scroll one row too far (the grid otherwise subtracts the fixed
+    header) and arrow clicks step PageSize/10 instead of one row.
+    CurrentButton tells us when an arrow is pressed; otherwise we look
+    at the delta magnitude. }
+  if csfLeftArrow in CurrentButton then
+    ScrollCode := SB_LINEUP
+  else if csfRightArrow in CurrentButton then
+    ScrollCode := SB_LINEDOWN
+  else if Delta = FLargeChange then
+    ScrollCode := SB_PAGEDOWN
+  else if Delta = -FLargeChange then
+    ScrollCode := SB_PAGEUP
+  else
+    ScrollCode := SB_THUMBPOSITION;
+  { For non-thumb gestures the LCL CNHScroll / CNVScroll handler
+    re-derives NewPos from FPosition + FLargeChange (or - FSmallChange
+    etc.). To prevent it double-counting our pre-applied delta, roll
+    the inner FPosition back to LCLControl.Position before dispatch.
+    The grid will scroll, then push back the new position via
+    SetScrollInfo, which ApplyParams syncs to inner. }
+  if ScrollCode <> SB_THUMBPOSITION then
+    Position := LCLControl.Position
+  else if LCLControl.Position <> Position then
+    LCLControl.Position := Position;
+  FillChar(Msg, SizeOf(Msg), 0);
+  if Kind = sbHorizontal then Msg.Msg := LM_HSCROLL
+                         else Msg.Msg := LM_VSCROLL;
+  Msg.ScrollCode := ScrollCode;
+  Msg.SmallPos := SmallInt(Position);
+  Msg.Pos := Position;
+  if LCLControl.HandleAllocated then Msg.ScrollBar := LCLControl.Handle;
+  LCLControl.Dispatch(Msg);
+end;
 
 constructor TCDIntfListBox.Create(AOwner: TComponent);
 begin
