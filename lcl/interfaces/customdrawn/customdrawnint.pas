@@ -236,6 +236,20 @@ type
     FWlClipCallback:      TClipboardRequestEvent;
     FWlLastInputSerial:   LongWord;       { for set_selection }
     FWlLastPressSerial:   LongWord;       { for xdg_popup.grab; only press serials are valid grab triggers }
+    { Currently-mapped THintWindow popup, or nil. Tooltips are kept at
+      the leaf of the xdg_popup chain by construction:
+       1) before any non-tooltip popup is created, the active tooltip
+          is dismissed (WLCreatePopupForWindow tears it down up front);
+       2) when a popup that's the parent of the active tooltip is torn
+          down, the tooltip is dismissed first (WLTeardownPopup does
+          so before the parent's wl objects go away).
+      Without (1), a tooltip up before a menu opens becomes a sibling
+      of that menu; without (2), the menu's destroy-popup happens with
+      a live child popup -- both are protocol errors that disconnect
+      us. Tooltips are also created without xdg_popup.grab so there's
+      no compositor-driven dismissal racing with our LCL HintWindow
+      auto-hide timer. }
+    FWlActiveTooltip:     TWaylandWindowInfo;
     procedure WLPaintAllPending;
     procedure WLDrawWindow(WI: TWaylandWindowInfo);
     function  WLFindWindowBySurface(Surface: TWaylandSurface): TWaylandWindowInfo;

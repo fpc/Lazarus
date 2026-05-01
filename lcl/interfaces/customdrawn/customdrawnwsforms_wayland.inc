@@ -390,6 +390,22 @@ class procedure TCDWSCustomForm.WLTeardownPopup(WI: TWaylandWindowInfo);
 begin
   if WI = nil then Exit;
   if (WI.Popup = nil) and not WI.PopupPending then Exit;
+
+  { Tooltip-safety invariant (rule (2)): if the popup we're tearing
+    down is the parent of the active tooltip, dismiss the tooltip
+    first. Otherwise our xdg_popup.destroy on WI would land while it
+    still has a live child popup -> "destroy popup with children"
+    protocol error. The .Hide call recurses through ShowHide ->
+    WLTeardownPopup for the tooltip; FWlActiveTooltip is cleared at
+    the bottom of that recursive call. }
+  if (CDWidgetset.FWlActiveTooltip <> nil)
+     and (CDWidgetset.FWlActiveTooltip <> WI)
+     and (CDWidgetset.FWlActiveTooltip.ParentWI = WI) then
+  begin
+    if CDWidgetset.FWlActiveTooltip.LCLForm <> nil then
+      CDWidgetset.FWlActiveTooltip.LCLForm.Hide;
+  end;
+
   if CDWidgetset.FWlPointerFocus  = WI then CDWidgetset.FWlPointerFocus  := nil;
   if CDWidgetset.FWlKeyboardFocus = WI then CDWidgetset.FWlKeyboardFocus := nil;
   if WI.PoolData <> nil then
@@ -407,6 +423,8 @@ begin
   WI.PendingDraw  := False;
   WI.PopupPending := False;
   WI.ParentWI     := nil;
+  if CDWidgetset.FWlActiveTooltip = WI then
+    CDWidgetset.FWlActiveTooltip := nil;
   CDWidgetset.FWlDisplay.Connection.Flush;
 end;
 
@@ -430,6 +448,21 @@ begin
       no-op. }
     WLTeardownPopup(WI);
     Exit;
+  end;
+
+  { Re-show after a previous teardown: WLTeardownPopup destroyed the
+    wl_surface / xdg_surface so the popup could vanish, but the LCL
+    handle survives. THintWindow specifically gets reused across many
+    hover cycles, so we have to recreate the role-less surface stack
+    and mark the popup pending again -- the deferred create block
+    below then attaches a fresh xdg_popup with the new bounds. }
+  if WLIsPopupClass(WI.LCLForm) and AWinControl.Visible
+     and (WI.Surface = nil) then
+  begin
+    WI.Surface := WSet.FWlCompositor.CreateSurface;
+    WI.XdgSurf := WSet.FXdgWmBase.GetXdgSurface(WI.Surface);
+    WI.XdgSurf.OnConfigure := @WSet.WLHandleSurfaceConfigure;
+    WI.PopupPending := True;
   end;
 
   { Deferred xdg_popup creation. By the time TCDWSPopupMenu.Popup

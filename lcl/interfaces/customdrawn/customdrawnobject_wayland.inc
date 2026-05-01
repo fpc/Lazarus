@@ -907,8 +907,26 @@ procedure TCDWidgetSet.WLCreatePopupForWindow(WI, ParentWI: TWaylandWindowInfo;
   const Anchor: TRect);
 var
   Pos: TXdgPositioner;
+  IsTooltip: Boolean;
 begin
   if (WI = nil) or (ParentWI = nil) or (FXdgWmBase = nil) then Exit;
+
+  IsTooltip := (WI.LCLForm <> nil) and (WI.LCLForm is THintWindow);
+
+  { Tooltip-safety invariant (rule (1)): a tooltip is always a leaf in
+    the popup chain. Before opening any non-tooltip popup, dismiss the
+    currently-active tooltip so the new popup never becomes its
+    sibling -- xdg_shell would later return a "destroy popup with
+    children" protocol error if the tooltip outlived its original
+    parent. The .Hide call routes through ShowHide -> WLTeardownPopup
+    which clears FWlActiveTooltip. }
+  if (not IsTooltip) and (FWlActiveTooltip <> nil) then
+  begin
+    if FWlActiveTooltip.LCLForm <> nil then
+      FWlActiveTooltip.LCLForm.Hide;
+    FWlActiveTooltip := nil;
+  end;
+
   Pos := FXdgWmBase.CreatePositioner;
   Pos.SetSize(Max(1, WI.LCLForm.Width), Max(1, WI.LCLForm.Height));
   Pos.SetAnchorRect(Anchor.Left, Anchor.Top,
@@ -928,10 +946,16 @@ begin
     The serial is whichever input event triggered the popup; for a
     combobox click that's the BTN_LEFT release recorded by
     WLHandlePointerButton. Without a recent input serial the popup
-    still works -- it just won't auto-dismiss on click-outside, which
-    is the right fallback for programmatic / timer-driven popups. }
-  if (FWlSeat <> nil) and (FWlLastPressSerial <> 0) then
+    still works, but it won't auto-dismiss on click-outside, which
+    is the right fallback for programmatic / timer-driven popups.
+    Tooltips deliberately skip the grab: there's no input-event serial
+    associated with a hover-triggered hint anyway, and grab semantics
+    would race the LCL HintWindow auto-hide timer. }
+  if (not IsTooltip) and (FWlSeat <> nil) and (FWlLastPressSerial <> 0) then
     WI.Popup.Grab(FWlSeat, FWlLastPressSerial);
+
+  if IsTooltip then
+    FWlActiveTooltip := WI;
 
   { Compositor took its own snapshot of the positioner state at
     GetPopup; we don't need our handle anymore. }
