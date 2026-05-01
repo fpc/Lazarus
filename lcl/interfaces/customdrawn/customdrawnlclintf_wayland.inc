@@ -15,13 +15,24 @@ end;
 
 procedure TCDWidgetSet.HideVirtualKeyboard;
 begin
-  { FIXME: no virtual keyboard. Wayland has zwp_input_method_v2 / IME;
-    the user's compositor does advertise zwp_input_method_manager_v2. }
+  { Called by TCDForm.SetFocusedControl when keyboard focus moves
+    away from a csRequiresKeyboardInput control. Tells the
+    compositor's IME bridge (ibus / fcitx5 via zwp_text_input_v3)
+    to put away any active candidate window / OSK. No-op on
+    compositors that don't speak v3 (notably GNOME mutter). }
+  WLDisableTextInput;
 end;
 
 procedure TCDWidgetSet.ShowVirtualKeyboard;
 begin
-  { FIXME: see HideVirtualKeyboard. }
+  { Called when focus moves TO a csRequiresKeyboardInput control. We
+    enable zwp_text_input_v3 on the seat and push the current
+    surrounding text + cursor rect so an IME can position its
+    candidate window correctly. The focused LCL control is read from
+    Screen.ActiveControl, which is set by the LCL just before this
+    hook fires. }
+  if (Screen <> nil) and (Screen.ActiveControl <> nil) then
+    WLEnableTextInputForEdit(Screen.ActiveControl);
 end;
 
 function TCDWidgetSet.IsMobilePlatform: Boolean;
