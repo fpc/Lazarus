@@ -223,6 +223,19 @@ type
     ShowColumnHeader: Boolean;
   end;
 
+  TCDListBoxStateEx = class(TCDControlStateEx)
+  public
+    Items: TStrings;        // just a reference, never free
+    Selected: TBits;        // just a reference, never free; bit i set => item i selected
+    ItemIndex: Integer;     // -1 if no current item
+    TopIndex: Integer;      // first visible row
+    ItemHeight: Integer;    // pixels per row; 0 = auto from font
+    MultiSelect: Boolean;
+    ExtendedSelect: Boolean;
+    // Filled by the drawer for the control's keyboard / mouse code:
+    FullyVisibleCount: Integer;
+  end;
+
   // ToolBar Start
 
   TCDToolbarItemKind = (tikButton, tikCheckButton, tikDropDownButton,
@@ -401,6 +414,9 @@ type
     // TCDComboBox
     procedure DrawComboBox(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); virtual; abstract;
+    // TCDListBox
+    procedure DrawListBox(ADest: TCanvas; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDListBoxStateEx); virtual; abstract;
     // TCDScrollBar
     procedure DrawScrollBar(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDPositionedCStateEx); virtual; abstract;
@@ -800,6 +816,7 @@ begin
   cidCheckBox:   DrawCheckBox(ADest, ASize, AState, AStateEx);
   cidRadioButton:DrawRadioButton(ADest, ASize, AState, AStateEx);
   cidComboBox:   DrawComboBox(ADest, ASize, AState, TCDEditStateEx(AStateEx));
+  cidListBox:    DrawListBox(ADest, ASize, AState, TCDListBoxStateEx(AStateEx));
   cidScrollBar:  DrawScrollBar(ADest, ASize, AState, TCDPositionedCStateEx(AStateEx));
   cidGroupBox:   DrawGroupBox(ADest, ADestPos, ASize, AState, AStateEx);
   cidPanel:      DrawPanel(ADest, ASize, AState, TCDPanelStateEx(AStateEx));

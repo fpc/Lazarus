@@ -82,6 +82,9 @@ type
     // TCDComboBox
     procedure DrawComboBox(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); override;
+    // TCDListBox
+    procedure DrawListBox(ADest: TCanvas; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDListBoxStateEx); override;
     // TCDScrollBar
     procedure DrawScrollBar(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDPositionedCStateEx); override;
@@ -1603,6 +1606,100 @@ begin
     lProgPos.Y,
     lProgPos.X+lProgWidth*lProgMult.X+lProgSize.cx*Abs(lProgMult.Y),
     lProgPos.Y+lProgWidth*lProgMult.Y+lProgSize.cy*Abs(lProgMult.X));
+end;
+
+procedure TCDDrawerCommon.DrawListBox(ADest: TCanvas; ASize: TSize;
+  AState: TCDControlState; AStateEx: TCDListBoxStateEx);
+var
+  LineHeight, ContentH, VisCount, i, ItemY, ItemIdx: Integer;
+  HasFocus, Selected: Boolean;
+  TextColor, BgColor, SelBg, SelFg: TColor;
+begin
+  { Background. The control's own .Color (if set) takes precedence over
+    the palette window colour, matching how Win2000 list boxes feel. }
+  BgColor := AStateEx.RGBColor;
+  if BgColor = clDefault then BgColor := Palette.Window;
+  ADest.Brush.Color := BgColor;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Style   := psClear;
+  ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
+
+  { Draw the same sunken frame used by TCDEdit. }
+  DrawSunkenFrame(ADest, Point(0, 0), ASize);
+
+  { Text + selection. AStateEx.Items / Selected are nil-safe -- the LCL
+    can call us before TCDListBox.Create has finished if a paint
+    arrives during construction. }
+  if AStateEx.Items = nil then Exit;
+
+  ADest.Font.Assign(AStateEx.Font);
+  ADest.Brush.Style := bsClear;
+
+  if AStateEx.ItemHeight > 0 then LineHeight := AStateEx.ItemHeight
+  else
+  begin
+    LineHeight := ADest.TextHeight('Wg') + 2;
+    if LineHeight < 14 then LineHeight := 14;
+  end;
+
+  ContentH := ASize.cy - 4;     { 2px frame top + bottom }
+  VisCount := ContentH div LineHeight;
+  if VisCount < 1 then VisCount := 1;
+  AStateEx.FullyVisibleCount := VisCount;
+
+  HasFocus := csfHasFocus in AState;
+  TextColor := Palette.WindowText;
+  if HasFocus then
+  begin
+    SelBg := Palette.Highlight;        { typically blue }
+    SelFg := Palette.HighlightText;    { typically white }
+  end
+  else
+  begin
+    { Inactive selection: light-grey band, dark text. Has to stay
+      different from BgColor so the user sees what's selected even
+      when focus is on another control (matches Win32 / Qt behaviour). }
+    SelBg := $C0C0C0;
+    SelFg := Palette.WindowText;
+  end;
+
+  for i := 0 to VisCount do        { +1 to render the partial bottom row }
+  begin
+    ItemIdx := AStateEx.TopIndex + i;
+    if (ItemIdx < 0) or (ItemIdx >= AStateEx.Items.Count) then Continue;
+    ItemY := 2 + i * LineHeight;
+    if ItemY >= ASize.cy - 2 then Break;
+
+    Selected := False;
+    if (AStateEx.Selected <> nil) and (ItemIdx < AStateEx.Selected.Size) then
+      Selected := AStateEx.Selected[ItemIdx];
+
+    if Selected then
+    begin
+      ADest.Brush.Color := SelBg;
+      ADest.Brush.Style := bsSolid;
+      ADest.Pen.Style   := psClear;
+      ADest.FillRect(Bounds(2, ItemY, ASize.cx - 4, LineHeight));
+      ADest.Brush.Style := bsClear;
+      ADest.Font.Color  := SelFg;
+    end
+    else
+      ADest.Font.Color := TextColor;
+
+    ADest.TextOut(4, ItemY + 1, AStateEx.Items.Strings[ItemIdx]);
+
+    { Focus rect on the current item (ItemIndex) when the listbox is
+      focused. Subtle dotted-style border so users can see "this is
+      where keyboard input is going". }
+    if HasFocus and (ItemIdx = AStateEx.ItemIndex) then
+    begin
+      ADest.Pen.Color := Palette.WindowText;
+      ADest.Pen.Style := psDot;
+      ADest.Brush.Style := bsClear;
+      ADest.Rectangle(2, ItemY, ASize.cx - 4, ItemY + LineHeight);
+      ADest.Pen.Style := psSolid;
+    end;
+  end;
 end;
 
 procedure TCDDrawerCommon.DrawListView(ADest: TCanvas;

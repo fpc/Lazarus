@@ -60,6 +60,18 @@ type
     LCLControl: TCustomComboBox;
   end;
 
+  { TCDIntfListBox -- bridges typing / selection on the injected
+    TCDListBox back to the LCL TCustomListBox so the LCL fires
+    OnSelectionChange / LM_SELCHANGE etc. as user code expects. }
+  TCDIntfListBox = class(TCDListBox)
+  protected
+    procedure DoSelectionChange(Sender: TObject);
+    procedure PrepareControlState; override;
+  public
+    LCLControl: TCustomListBox;
+    constructor Create(AOwner: TComponent); override;
+  end;
+
   TCDIntfScrollBar = class(TCDScrollBar)
   public
     LCLControl: TCustomScrollBar;
@@ -449,6 +461,7 @@ begin
     // Common Controls Tab
     (AControl is TCDIntfProgressBar) or (AControl is TCDIntfTrackBar) or
     (AControl is TCDIntfPageControl) or
+    (AControl is TCDIntfListBox) or
     // Misc Tab
     (AControl is TCDIntfSpinEdit)
     ;
@@ -486,6 +499,38 @@ begin
     Msg.Msg := CM_TEXTCHANGED;
     DeliverMessage(LCLControl, Msg);
   end;
+end;
+
+{ TCDIntfListBox -- forward selection / item-index changes to the
+  LCL TCustomListBox so OnClick / OnSelectionChange / OnChange fire
+  exactly when user code expects. The injected control owns the
+  state; the LCL side just gets the message and invokes its event
+  handlers (and re-fetches via the WS class for property reads). }
+
+constructor TCDIntfListBox.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  OnSelectionChange := @DoSelectionChange;
+end;
+
+procedure TCDIntfListBox.DoSelectionChange(Sender: TObject);
+begin
+  if LCLControl = nil then Exit;
+  LCLSendSelectionChangedMsg(LCLControl);
+  LCLSendClickedMsg(LCLControl);
+end;
+
+procedure TCDIntfListBox.PrepareControlState;
+begin
+  inherited PrepareControlState;
+  { The LCL focuses the user-facing TCustomListBox; this injected
+    drawer-rendered child never gets focus per the LCL. Sync
+    csfHasFocus from LCLControl so the drawer shows the right
+    selection-highlight colour and focus rect. }
+  if Assigned(LCLControl) and LCLControl.Focused then
+    FState := FState + [csfHasFocus]
+  else
+    FState := FState - [csfHasFocus];
 end;
 
 { TCDIntfPageControl -- forward mouse-click tab changes to the LCL.
