@@ -2303,7 +2303,15 @@ end;
 
 function TCDEdit.GetSelStartX: Integer;
 begin
+  { LCL's TCustomEdit.SelStart contract is the leftmost edge of the
+    selection, or the caret position when there is no selection.
+    Internally FEditState.SelStart.X is only the selection anchor; it
+    can be stale after normal caret motion. }
+  if FEditState.SelLength = 0 then
+    Exit(FEditState.CaretPos.X);
   Result := FEditState.SelStart.X;
+  if FEditState.SelLength < 0 then
+    Result := Result + FEditState.SelLength;
 end;
 
 function TCDEdit.GetSelLength: Integer;
