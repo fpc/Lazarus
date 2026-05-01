@@ -568,6 +568,15 @@ begin
   FillChar(Msg{%H-}, SizeOf(Msg), 0);
   Msg.Msg := CM_TEXTCHANGED;
   DeliverMessage(LCLControl, Msg);
+
+  { Push fresh surrounding text + cursor rectangle to the IME via
+    zwp_text_input_v3. ibus / fcitx5 use surrounding text for typo
+    correction and word disambiguation; without re-sending after each
+    keystroke they see stale context and suggest candidates for the previous text. }
+  {$ifdef CD_Wayland}
+  if Assigned(LCLControl) then
+    CDWidgetset.WLPushTextInputContext(LCLControl);
+  {$endif}
 end;
 
 { TCDIntfSpinEdit -- like TCDIntfEdit, push CM_TEXTCHANGED to the LCL
