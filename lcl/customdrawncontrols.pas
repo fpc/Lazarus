@@ -745,6 +745,15 @@ type
     function AddPage(S: string): TCDTabSheet; overload;
     procedure AddPage(APage: TCDTabSheet); overload;
     function GetPage(aIndex: integer): TCDTabSheet;
+    { Content rect inside the tab control, excluding the tab-header strip.
+      Used by the customdrawn host's TCDWSCustomTabControl to lay out
+      LCL TTabSheets (Align := alClient by default) inside the content
+      area, the same way Win32's TabControlClientOffset / TCM_AdjustRect
+      does it natively. ASize is the requested size of the host LCL
+      TPageControl -- NOT this injected control's own Width/Height,
+      which would be circular when this control is itself alClient'd
+      to the host's ClientRect. }
+    function GetTabContentRect(ASize: TSize): TRect;
     property PageCount: integer read GetPageCount;
     // Used by the property editor in customdrawnextras
     function FindNextPage(CurPage: TCDTabSheet;
@@ -3629,6 +3638,14 @@ begin
   ATabSheet.BorderSpacing.Right := Width - lClientArea.Right;
   ATabSheet.BorderSpacing.Bottom := Height - lClientArea.Bottom;
   ATabSheet.Align := alClient;
+end;
+
+function TCDPageControl.GetTabContentRect(ASize: TSize): TRect;
+begin
+  PrepareControlState;
+  PrepareControlStateEx;
+  Result := FDrawer.GetClientArea(Canvas, ASize, GetControlId,
+                                  FState, FStateEx);
 end;
 
 function TCDPageControl.GetActivePage: TCDTabSheet;
