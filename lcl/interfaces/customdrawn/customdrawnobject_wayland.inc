@@ -523,6 +523,16 @@ begin
   FTIPendingCommit  := False; FTIPendingCommitText  := '';
   FTIPendingDelete  := False;
   FTextInputEnabled := False;
+  { Now that the surface is focused, send the enable + state +
+    commit the spec wants. We deferred this when the LCL set focus
+    on a control that wants IME because at the time the surface
+    wasn't focused yet (auto-focus on form show fires the LCL focus
+    change before the compositor delivers keyboard focus), and per
+    spec "the focused surface must commit ... enable" -- behaviour
+    when committing on a non-focused surface is unspecified, and in
+    practice sway never activates the IME bridge in that case. }
+  if (FImeDesiredEdit <> nil) and (FZwpTextInput <> nil) then
+    WLPushTextInputEnable;
 end;
 
 procedure TCDWidgetSet.WLHandleTextInputLeave(Sender: TZwpTextInputV3;
@@ -699,6 +709,27 @@ begin
     WLPushTextInputContext(LCLEdit);
 end;
 
+{ Wire-side enable. Sends enable + state + commit on the v3 object
+  for FImeDesiredEdit. Caller must have ensured FImeDesiredEdit is
+  set, FZwpTextInput is bound, and -- critically -- the surface is
+  focused (FTextInputFocus <> nil), since v3 spec says "the focused
+  surface must commit zwp_text_input_v3.enable" and sway refuses to
+  activate the input-method bridge for an enable that
+  arrived before its enter event. }
+procedure TCDWidgetSet.WLPushTextInputEnable;
+begin
+  FZwpTextInput.Enable;
+  FZwpTextInput.SetContentType([], tipNormal);
+  WLPushTextInputContext(FImeDesiredEdit);
+  FZwpTextInput.Commit;
+  FTextInputEnabled := True;
+  FWlDisplay.Connection.Flush;
+end;
+
+{ LCL focus moved TO a keyboard-input control. Stash the intent;
+  only push enable on the wire if the surface is already focused
+  (text_input.enter has fired). Otherwise WLHandleTextInputEnter
+  picks up the deferred enable when focus arrives. }
 procedure TCDWidgetSet.WLEnableTextInputForEdit(LCLEdit: TWinControl);
 begin
   if FZwpTextInput = nil then Exit;        { compositor has no v3 (e.g. mutter) }
@@ -709,21 +740,19 @@ begin
   if IsIntfControl(LCLEdit) and (LCLEdit.Parent <> nil) then
     LCLEdit := LCLEdit.Parent;
   { Accept TCustomEdit (full IME with preedit) and TCustomListBox
-    (commit_string drives type-ahead search). Other control types
-    are skipped; button voice activation is intentionally not part of
-    the upstreamable Wayland backend series. }
+    (commit_string drives type-ahead search). Other control types are
+    skipped because they do not consume text-input commits. }
   if not ((LCLEdit is TCustomEdit) or (LCLEdit is TCustomListBox)) then Exit;
-  FZwpTextInput.Enable;
-  FZwpTextInput.SetContentType([], tipNormal);
-  WLPushTextInputContext(LCLEdit);
-  FZwpTextInput.Commit;
-  FTextInputEnabled := True;
-  FWlDisplay.Connection.Flush;
+  FImeDesiredEdit := LCLEdit;
+  if FTextInputFocus <> nil then
+    WLPushTextInputEnable;
 end;
 
 procedure TCDWidgetSet.WLDisableTextInput;
 begin
+  FImeDesiredEdit := nil;
   if FZwpTextInput = nil then Exit;
+  if not FTextInputEnabled then Exit;        { nothing to disable on the wire }
   FZwpTextInput.Disable;
   FZwpTextInput.Commit;
   FWlDisplay.Connection.Flush;

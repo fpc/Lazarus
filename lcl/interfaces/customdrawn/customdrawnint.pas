@@ -262,6 +262,11 @@ type
     FZwpTextInput:         TZwpTextInputV3;
     FTextInputFocus:       TWaylandWindowInfo;
     FTextInputEnabled:     Boolean;       { our local mirror of the enabled flag }
+    FImeDesiredEdit:       TWinControl;   { LCL control that asked for IME; nil = none.
+                                            Tracks intent independently from
+                                            FTextInputFocus (set on text_input.enter)
+                                            so we never send enable on an unfocused
+                                            surface, which is unspecified per spec. }
     FTIPendingPreedit:     Boolean;       { preedit_string event buffered? }
     FTIPendingPreeditText: AnsiString;
     FTIPendingPreeditB:    LongInt;       { cursor_begin (byte offset) }
@@ -326,6 +331,7 @@ type
       injected TCDEdit lives at TCDWinControl(LCLEdit.Handle).CDControl. }
     procedure WLEnableTextInputForEdit(LCLEdit: TWinControl);
     procedure WLDisableTextInput;
+    procedure WLPushTextInputEnable;
     procedure WLPushTextInputContext(LCLEdit: TWinControl);
     procedure WLHandleSurfaceConfigure(Sender: TXdgSurface; Serial: LongWord);
     procedure WLHandleToplevelConfigure(Sender: TXdgToplevel;
