@@ -246,5 +246,8 @@ end;
 {$ifdef CD_Android}
   {$I customdrawntrayicon_android.inc}
 {$endif}
+{$ifdef CD_Wayland}
+  {$I customdrawntrayicon_wayland.inc}
+{$endif}
 
 end.

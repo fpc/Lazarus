@@ -36,6 +36,7 @@ uses
   {$ifdef CD_Android}
   customdrawn_androidproc, jni, bitmap, log, keycodes,
   {$endif}
+  {$ifdef CD_Wayland}BaseUnix, Process, waylandwire, waylandcore, xdgshell, xdgactivation, cursorshape, customdrawn_waylandproc,{$endif}
   {$ifdef WinCE}aygshell,{$endif}
   // LazUtils
   LazUtilities, LazFileUtils, lazutf8,
@@ -199,6 +200,31 @@ type
     delegate  : TCDAppDelegate;
     ScreenBitmapContext: CGContextRef;
     {$endif}
+    {$ifdef CD_Wayland}
+    FWlDisplay:        TWaylandDisplay;
+    FWlRegistry:       TWaylandRegistry;
+    FWlCompositor:     TWaylandCompositor;
+    FWlShm:            TWaylandShm;
+    FXdgWmBase:        TXdgWmBase;
+    FXdgActivation:    TXdgActivationV1;
+    FWlSeat:           TWaylandSeat;
+    FWlPointer:        TWaylandPointer;
+    FWlKeyboard:       TWaylandKeyboard;
+    FWpCursorShapeMgr: TWpCursorShapeManagerV1;
+    FWpCursorShapeDev: TWpCursorShapeDeviceV1;
+    FWlPointerFocus:   TWaylandWindowInfo;  { window the pointer is currently over }
+    FWlKeyboardFocus:  TWaylandWindowInfo;  { window with keyboard focus }
+    FWlPointerX:       LongInt;
+    FWlPointerY:       LongInt;
+    FWlShiftHeld:      Boolean;
+    FWlCtrlHeld:       Boolean;
+    FWlAltHeld:        Boolean;
+    FWlWindowList:     TFPList;          { TWaylandWindowInfo }
+    FWlTimerList:      TFPList;          { TWLTimer }
+    procedure WLPaintAllPending;
+    procedure WLDrawWindow(WI: TWaylandWindowInfo);
+    function  WLFindWindowBySurface(Surface: TWaylandSurface): TWaylandWindowInfo;
+    {$endif}
   // For generic methods added in customdrawn
   // They are used internally in LCL-CustomDrawn, LCL app should not use them
   public
@@ -327,6 +353,31 @@ function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
 {$ifdef CD_X11}
 procedure MyXConnectionWatchProc(display: PDisplay; client_data: TXPointer;
   fd: cint; opening: XLib.TBool; watch_data: PXPointer); cdecl;
+{$endif}
+{$ifdef CD_Wayland}
+procedure WLHandleGlobal(Name: LongWord; const Iface: AnsiString; Version: LongWord);
+procedure WLHandlePing(Serial: LongWord);
+procedure WLHandleSeatCaps(Sender: TWaylandSeat; Caps: LongWord);
+procedure WLHandlePointerEnter(Sender: TWaylandPointer; Serial: LongWord;
+  Surface: TWaylandSurface; X, Y: LongInt);
+procedure WLHandlePointerLeave(Sender: TWaylandPointer; Serial: LongWord;
+  Surface: TWaylandSurface);
+procedure WLHandlePointerMotion(Sender: TWaylandPointer; TimeMs: LongWord;
+  X, Y: LongInt);
+procedure WLHandlePointerButton(Sender: TWaylandPointer;
+  Serial, TimeMs, Button, State: LongWord);
+procedure WLHandlePointerAxis(Sender: TWaylandPointer;
+  TimeMs, Axis: LongWord; Value: TWlFixed);
+procedure WLHandleKeymap(Sender: TWaylandKeyboard; Format: LongWord;
+  Fd: cint; Size: LongWord);
+procedure WLHandleKeyboardEnter(Sender: TWaylandKeyboard; Serial: LongWord;
+  Surface: TWaylandSurface);
+procedure WLHandleKeyboardLeave(Sender: TWaylandKeyboard; Serial: LongWord;
+  Surface: TWaylandSurface);
+procedure WLHandleKey(Sender: TWaylandKeyboard;
+  Serial, TimeMs, Key, State: LongWord);
+procedure WLHandleKeyMods(Sender: TWaylandKeyboard;
+  Serial, ModsDepressed, ModsLatched, ModsLocked, Group: LongWord);
 {$endif}
 {$ifdef CD_Android}
 function Java_com_pascal_lclproject_LCLActivity_LCLOnTouch(env:PJNIEnv;this:jobject; x, y: single; action: jint): jint; cdecl;
@@ -507,6 +558,11 @@ end;
   {$I customdrawnobject_android.inc}
   {$I customdrawnwinapi_android.inc}
   {$I customdrawnlclintf_android.inc}
+{$endif}
+{$ifdef CD_Wayland}
+  {$I customdrawnobject_wayland.inc}
+  {$I customdrawnwinapi_wayland.inc}
+  {$I customdrawnlclintf_wayland.inc}
 {$endif}
 
 end.

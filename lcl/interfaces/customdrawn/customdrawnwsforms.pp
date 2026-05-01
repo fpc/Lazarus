@@ -31,6 +31,7 @@ uses
   {$ifdef CD_X11}XShm, X, XLib, XUtil, XAtom, customdrawn_x11proc,
     {$ifdef CD_X11_UseATK}atk, {$endif} {unitxft, Xft font support}{$endif}
   {$ifdef CD_Android}customdrawn_androidproc,{$endif}
+  {$ifdef CD_Wayland}BaseUnix, waylandwire, waylandcore, xdgshell, customdrawn_waylandproc,{$endif}
   // LazUtils
   LazSysUtils,
   // LCL
@@ -128,6 +129,10 @@ type
     class function StartComposing(const Event: TXKeyEvent): TKeySym;
     class function X11KeyToLCLKey(AX11Key: TKeySym): Word;
     {$endif}
+    {$ifdef CD_Wayland}
+    class procedure WLEnsurePool(WI: TWaylandWindowInfo; AWidth, AHeight: LongInt);
+    class procedure WLPaintForm(WI: TWaylandWindowInfo);
+    {$endif}
     class function  DoCreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
     class procedure DoShowHide(const AWinControl: TWinControl);
   published
@@ -200,6 +205,9 @@ implementation
 {$endif}
 {$ifdef CD_Android}
   {$include customdrawnwsforms_android.inc}
+{$endif}
+{$ifdef CD_Wayland}
+  {$include customdrawnwsforms_wayland.inc}
 {$endif}
 
 end.
