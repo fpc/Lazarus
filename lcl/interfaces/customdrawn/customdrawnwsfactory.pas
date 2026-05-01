@@ -104,9 +104,10 @@ function RegisterLazDeviceAPIs: Boolean;
 
 implementation
 uses
+ CheckLst,
  CustomDrawnWSButtons,
-{ WinCEWSCalendar,
- WinCEWSCheckLst,}
+{ WinCEWSCalendar,}
+ customdrawnwschecklst,
  CustomDrawnWSComCtrls,
  CustomDrawnWSControls,
 { WinCEWSDialogs,}
@@ -473,8 +474,8 @@ end;
 // CheckLst
 function RegisterCustomCheckListBox: Boolean; alias : 'WSRegisterCustomCheckListBox';
 begin
-//  RegisterWSComponent(TCustomCheckListBox, TWinCEWSCustomCheckListBox);
-  Result := False;
+  RegisterWSComponent(TCustomCheckListBox, TCDWSCustomCheckListBox);
+  Result := True;
 end;
 
 // Forms
