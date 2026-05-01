@@ -594,7 +594,6 @@ type
       chain when Items.Add fires before the LCL host has hooked us up
       via InjectCDControl from ShowHide. }
     FScrollBar:         TCDScrollBar;
-    procedure ItemsChanged(Sender: TObject);
     procedure ScrollBarChanged(Sender: TObject);
     function  GetItems: TStrings;
     procedure SetItems(AValue: TStrings);
@@ -623,6 +622,7 @@ type
     function  DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
     procedure Resize; override;
     procedure SetParent(NewParent: TWinControl); override;
+    procedure ItemsChanged(Sender: TObject); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -647,6 +647,57 @@ type
     property TopIndex: Integer read FTopIndex write SetTopIndex default 0;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
+  end;
+
+  { TCDCheckListBox -- TCDListBox with a per-item checkbox column.
+    Click on the checkbox column toggles the item's State; click on the
+    text column behaves like a normal listbox selection. VK_SPACE on the
+    current item toggles its State. Header rows occupy the full row
+    width with no checkbox and ignore toggle events. }
+
+  TCDCheckListBoxClickEvent = procedure(Sender: TObject; AIndex: Integer) of object;
+
+  TCDCheckListBox = class(TCDListBox)
+  private
+    FStates:        array of TCheckBoxState;
+    FItemEnabled:   array of Boolean;
+    FHeader:        array of Boolean;
+    FAllowGrayed:   Boolean;
+    FHeaderColor:   TColor;
+    FHeaderBgColor: TColor;
+    FOnClickCheck:  TCDCheckListBoxClickEvent;
+    procedure SyncStateArrays;
+    function  HitsCheckColumn(X: Integer): Boolean;
+    procedure ToggleAtClick(AIndex: Integer);
+  protected
+    FCLBState: TCDCheckListBoxStateEx;
+    function  GetControlId: TCDControlID; override;
+    procedure CreateControlStateEx; override;
+    procedure PrepareControlStateEx; override;
+    procedure ItemsChanged(Sender: TObject); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    function GetCheckWidth: Integer;
+    function GetItemState(AIndex: Integer): TCheckBoxState;
+    procedure SetItemState(AIndex: Integer; AValue: TCheckBoxState);
+    function GetItemEnabled(AIndex: Integer): Boolean;
+    procedure SetItemEnabled(AIndex: Integer; AValue: Boolean);
+    function GetItemHeader(AIndex: Integer): Boolean;
+    procedure SetItemHeader(AIndex: Integer; AValue: Boolean);
+    function GetItemChecked(AIndex: Integer): Boolean;
+    procedure SetItemChecked(AIndex: Integer; AValue: Boolean);
+    procedure Toggle(AIndex: Integer);
+    property State[AIndex: Integer]: TCheckBoxState read GetItemState write SetItemState;
+    property ItemEnabled[AIndex: Integer]: Boolean read GetItemEnabled write SetItemEnabled;
+    property Header[AIndex: Integer]: Boolean read GetItemHeader write SetItemHeader;
+    property Checked[AIndex: Integer]: Boolean read GetItemChecked write SetItemChecked;
+  published
+    property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed default False;
+    property HeaderColor: TColor read FHeaderColor write FHeaderColor default clInfoText;
+    property HeaderBackgroundColor: TColor read FHeaderBgColor write FHeaderBgColor default clInfoBk;
+    property OnClickCheck: TCDCheckListBoxClickEvent read FOnClickCheck write FOnClickCheck;
   end;
 
   { TCDListView }
@@ -3493,6 +3544,187 @@ procedure TCDListBox.Resize;
 begin
   inherited Resize;
   UpdateScrollBar;
+end;
+
+{ TCDCheckListBox }
+
+constructor TCDCheckListBox.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FAllowGrayed   := False;
+  FHeaderColor   := clInfoText;
+  FHeaderBgColor := clInfoBk;
+  SyncStateArrays;
+end;
+
+function TCDCheckListBox.GetControlId: TCDControlID;
+begin
+  Result := cidCheckListBox;
+end;
+
+procedure TCDCheckListBox.CreateControlStateEx;
+begin
+  FCLBState := TCDCheckListBoxStateEx.Create;
+  FLBState  := FCLBState;
+  FStateEx  := FCLBState;
+end;
+
+procedure TCDCheckListBox.PrepareControlStateEx;
+begin
+  inherited PrepareControlStateEx;
+  FCLBState.States                := FStates;
+  FCLBState.ItemEnabled           := FItemEnabled;
+  FCLBState.Header                := FHeader;
+  FCLBState.HeaderColor           := ColorToRGB(FHeaderColor);
+  FCLBState.HeaderBackgroundColor := ColorToRGB(FHeaderBgColor);
+  FCLBState.CheckWidth            := GetCheckWidth;
+end;
+
+procedure TCDCheckListBox.SyncStateArrays;
+var
+  OldLen, NewLen, i: Integer;
+begin
+  NewLen := Items.Count;
+  OldLen := Length(FStates);
+  if OldLen = NewLen then Exit;
+  SetLength(FStates,      NewLen);
+  SetLength(FItemEnabled, NewLen);
+  SetLength(FHeader,      NewLen);
+  for i := OldLen to NewLen - 1 do
+  begin
+    FStates[i]      := cbUnchecked;
+    FItemEnabled[i] := True;
+    FHeader[i]      := False;
+  end;
+end;
+
+procedure TCDCheckListBox.ItemsChanged(Sender: TObject);
+begin
+  SyncStateArrays;
+  inherited ItemsChanged(Sender);
+end;
+
+function TCDCheckListBox.GetCheckWidth: Integer;
+begin
+  if FDrawer <> nil then
+    Result := FDrawer.GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT) + 6
+  else
+    Result := 21;  { fallback before the drawer is bound }
+end;
+
+function TCDCheckListBox.HitsCheckColumn(X: Integer): Boolean;
+begin
+  { 4px frame margin + checkbox square. Generous left edge so the user
+    can click anywhere in the small leading band, not just on the glyph. }
+  Result := (X >= 2) and (X < 4 + GetCheckWidth - 2);
+end;
+
+procedure TCDCheckListBox.ToggleAtClick(AIndex: Integer);
+const
+  NextStateMap: array[TCheckBoxState] of array[Boolean] of TCheckBoxState =
+  (
+    {cbUnchecked} (cbChecked,   cbGrayed),
+    {cbChecked  } (cbUnchecked, cbUnchecked),
+    {cbGrayed   } (cbChecked,   cbChecked)
+  );
+begin
+  if (AIndex < 0) or (AIndex >= Length(FStates)) then Exit;
+  if (AIndex < Length(FHeader))      and FHeader[AIndex]            then Exit;
+  if (AIndex < Length(FItemEnabled)) and (not FItemEnabled[AIndex]) then Exit;
+  FStates[AIndex] := NextStateMap[FStates[AIndex]][FAllowGrayed];
+  Invalidate;
+  if Assigned(FOnClickCheck) then FOnClickCheck(Self, AIndex);
+end;
+
+procedure TCDCheckListBox.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  Idx: Integer;
+begin
+  Idx := ItemAtPos(X, Y);
+  if (Button = mbLeft) and (Idx >= 0) and HitsCheckColumn(X)
+     and ((Idx >= Length(FHeader)) or not FHeader[Idx]) then
+  begin
+    SetFocus;
+    ToggleAtClick(Idx);
+    Exit;
+  end;
+  inherited MouseDown(Button, Shift, X, Y);
+end;
+
+procedure TCDCheckListBox.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_SPACE) and (Shift = []) and (ItemIndex >= 0) then
+  begin
+    ToggleAtClick(ItemIndex);
+    Key := 0;
+    Exit;
+  end;
+  inherited KeyDown(Key, Shift);
+end;
+
+procedure TCDCheckListBox.Toggle(AIndex: Integer);
+begin
+  ToggleAtClick(AIndex);
+end;
+
+function TCDCheckListBox.GetItemState(AIndex: Integer): TCheckBoxState;
+begin
+  if (AIndex >= 0) and (AIndex < Length(FStates)) then
+    Result := FStates[AIndex]
+  else
+    Result := cbUnchecked;
+end;
+
+procedure TCDCheckListBox.SetItemState(AIndex: Integer; AValue: TCheckBoxState);
+begin
+  if (AIndex < 0) or (AIndex >= Length(FStates)) then Exit;
+  if FStates[AIndex] = AValue then Exit;
+  FStates[AIndex] := AValue;
+  Invalidate;
+end;
+
+function TCDCheckListBox.GetItemEnabled(AIndex: Integer): Boolean;
+begin
+  if (AIndex >= 0) and (AIndex < Length(FItemEnabled)) then
+    Result := FItemEnabled[AIndex]
+  else
+    Result := True;
+end;
+
+procedure TCDCheckListBox.SetItemEnabled(AIndex: Integer; AValue: Boolean);
+begin
+  if (AIndex < 0) or (AIndex >= Length(FItemEnabled)) then Exit;
+  if FItemEnabled[AIndex] = AValue then Exit;
+  FItemEnabled[AIndex] := AValue;
+  Invalidate;
+end;
+
+function TCDCheckListBox.GetItemHeader(AIndex: Integer): Boolean;
+begin
+  if (AIndex >= 0) and (AIndex < Length(FHeader)) then
+    Result := FHeader[AIndex]
+  else
+    Result := False;
+end;
+
+procedure TCDCheckListBox.SetItemHeader(AIndex: Integer; AValue: Boolean);
+begin
+  if (AIndex < 0) or (AIndex >= Length(FHeader)) then Exit;
+  if FHeader[AIndex] = AValue then Exit;
+  FHeader[AIndex] := AValue;
+  Invalidate;
+end;
+
+function TCDCheckListBox.GetItemChecked(AIndex: Integer): Boolean;
+begin
+  Result := GetItemState(AIndex) <> cbUnchecked;
+end;
+
+procedure TCDCheckListBox.SetItemChecked(AIndex: Integer; AValue: Boolean);
+begin
+  if AValue then SetItemState(AIndex, cbChecked)
+  else           SetItemState(AIndex, cbUnchecked);
 end;
 
 { TCDListView }

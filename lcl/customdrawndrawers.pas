@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Types, fpcanvas, fpimage,
   // LCL for types
-  Controls, Graphics, GraphUtil, ComCtrls, ExtCtrls, LazUTF8;
+  Controls, Graphics, GraphUtil, ComCtrls, ExtCtrls, StdCtrls, LazUTF8;
 
 const
   CDDRAWSTYLE_COUNT = 19;
@@ -236,6 +236,19 @@ type
     FullyVisibleCount: Integer;
   end;
 
+  { Per-row state for TCDCheckListBox. The arrays are references owned
+    by the control; the drawer reads them but never frees. Length always
+    matches Items.Count (the control's ItemsChanged hook resizes). }
+  TCDCheckListBoxStateEx = class(TCDListBoxStateEx)
+  public
+    States:       array of TCheckBoxState;
+    ItemEnabled:  array of Boolean;
+    Header:       array of Boolean;
+    HeaderColor:           TColor;
+    HeaderBackgroundColor: TColor;
+    CheckWidth:   Integer;  // width of the checkbox column in px
+  end;
+
   // ToolBar Start
 
   TCDToolbarItemKind = (tikButton, tikCheckButton, tikDropDownButton,
@@ -308,7 +321,9 @@ type
     // Additional
     cidStaticText,
     // Common Controls
-    cidTrackBar, cidProgressBar, cidListView, cidToolBar, cidCTabControl
+    cidTrackBar, cidProgressBar, cidListView, cidToolBar, cidCTabControl,
+    // CheckLst
+    cidCheckListBox
     );
 
   { TCDColorPalette }
@@ -417,6 +432,9 @@ type
     // TCDListBox
     procedure DrawListBox(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDListBoxStateEx); virtual; abstract;
+    // TCDCheckListBox
+    procedure DrawCheckListBox(ADest: TCanvas; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDCheckListBoxStateEx); virtual; abstract;
     // TCDScrollBar
     procedure DrawScrollBar(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDPositionedCStateEx); virtual; abstract;
@@ -817,6 +835,7 @@ begin
   cidRadioButton:DrawRadioButton(ADest, ASize, AState, AStateEx);
   cidComboBox:   DrawComboBox(ADest, ASize, AState, TCDEditStateEx(AStateEx));
   cidListBox:    DrawListBox(ADest, ASize, AState, TCDListBoxStateEx(AStateEx));
+  cidCheckListBox: DrawCheckListBox(ADest, ASize, AState, TCDCheckListBoxStateEx(AStateEx));
   cidScrollBar:  DrawScrollBar(ADest, ASize, AState, TCDPositionedCStateEx(AStateEx));
   cidGroupBox:   DrawGroupBox(ADest, ADestPos, ASize, AState, AStateEx);
   cidPanel:      DrawPanel(ADest, ASize, AState, TCDPanelStateEx(AStateEx));

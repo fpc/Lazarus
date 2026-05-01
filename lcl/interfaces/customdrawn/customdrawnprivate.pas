@@ -8,7 +8,7 @@ uses
   // rtl+ftl
   Types, Classes, SysUtils,
   // LCL
-  Controls, Graphics, stdctrls, extctrls, comctrls,
+  Controls, Graphics, stdctrls, checklst, extctrls, comctrls,
   customdrawnproc, customdrawncontrols, lcltype, lclproc, lclintf,
   lmessages, spin;
 
@@ -69,6 +69,22 @@ type
     procedure PrepareControlState; override;
   public
     LCLControl: TCustomListBox;
+    constructor Create(AOwner: TComponent); override;
+  end;
+
+  { TCDIntfCheckListBox -- adds the click-check bridge on top of the
+    listbox bridge. When the user toggles a checkbox (via mouse hit
+    on the check column or VK_SPACE), TCDCheckListBox fires
+    OnClickCheck; we translate that into LM_CHANGED with the row index
+    in WParam, which TCustomCheckListBox.DoChange picks up to call its
+    own ClickCheck (and the user's OnClickCheck). }
+  TCDIntfCheckListBox = class(TCDCheckListBox)
+  protected
+    procedure DoSelectionChange(Sender: TObject);
+    procedure DoClickCheck(Sender: TObject; AIndex: Integer);
+    procedure PrepareControlState; override;
+  public
+    LCLControl: TCustomCheckListBox;
     constructor Create(AOwner: TComponent); override;
   end;
 
@@ -462,6 +478,7 @@ begin
     (AControl is TCDIntfProgressBar) or (AControl is TCDIntfTrackBar) or
     (AControl is TCDIntfPageControl) or
     (AControl is TCDIntfListBox) or
+    (AControl is TCDIntfCheckListBox) or
     // Misc Tab
     (AControl is TCDIntfSpinEdit)
     ;
@@ -527,6 +544,39 @@ begin
     drawer-rendered child never gets focus per the LCL. Sync
     csfHasFocus from LCLControl so the drawer shows the right
     selection-highlight colour and focus rect. }
+  if Assigned(LCLControl) and LCLControl.Focused then
+    FState := FState + [csfHasFocus]
+  else
+    FState := FState - [csfHasFocus];
+end;
+
+{ TCDIntfCheckListBox }
+
+constructor TCDIntfCheckListBox.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  OnSelectionChange := @DoSelectionChange;
+  OnClickCheck      := @DoClickCheck;
+end;
+
+procedure TCDIntfCheckListBox.DoSelectionChange(Sender: TObject);
+begin
+  if LCLControl = nil then Exit;
+  LCLSendSelectionChangedMsg(LCLControl);
+  LCLSendClickedMsg(LCLControl);
+end;
+
+procedure TCDIntfCheckListBox.DoClickCheck(Sender: TObject; AIndex: Integer);
+begin
+  if LCLControl = nil then Exit;
+  { TCustomCheckListBox.DoChange handles LM_CHANGED, reads WParam as the
+    row index, and fires the LCL's OnClickCheck handler. }
+  LCLSendChangedMsg(LCLControl, AIndex);
+end;
+
+procedure TCDIntfCheckListBox.PrepareControlState;
+begin
+  inherited PrepareControlState;
   if Assigned(LCLControl) and LCLControl.Focused then
     FState := FState + [csfHasFocus]
   else

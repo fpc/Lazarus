@@ -85,6 +85,9 @@ type
     // TCDListBox
     procedure DrawListBox(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDListBoxStateEx); override;
+    // TCDCheckListBox
+    procedure DrawCheckListBox(ADest: TCanvas; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDCheckListBoxStateEx); override;
     // TCDScrollBar
     procedure DrawScrollBar(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDPositionedCStateEx); override;
@@ -1697,6 +1700,136 @@ begin
       ADest.Pen.Style := psDot;
       ADest.Brush.Style := bsClear;
       ADest.Rectangle(2, ItemY, ASize.cx - 4, ItemY + LineHeight);
+      ADest.Pen.Style := psSolid;
+    end;
+  end;
+end;
+
+procedure TCDDrawerCommon.DrawCheckListBox(ADest: TCanvas; ASize: TSize;
+  AState: TCDControlState; AStateEx: TCDCheckListBoxStateEx);
+var
+  LineHeight, ContentH, VisCount, i, ItemY, ItemIdx, TextX: Integer;
+  CheckW, CheckSquareSize, CheckSquareX, CheckSquareY: Integer;
+  HasFocus, Selected, IsHeader, IsEnabled: Boolean;
+  TextColor, BgColor, SelBg, SelFg: TColor;
+  ItemState: TCheckBoxState;
+begin
+  BgColor := AStateEx.RGBColor;
+  if BgColor = clDefault then BgColor := Palette.Window;
+  ADest.Brush.Color := BgColor;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Style   := psClear;
+  ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
+
+  DrawSunkenFrame(ADest, Point(0, 0), ASize);
+
+  if AStateEx.Items = nil then Exit;
+
+  ADest.Font.Assign(AStateEx.Font);
+  ADest.Brush.Style := bsClear;
+
+  if AStateEx.ItemHeight > 0 then LineHeight := AStateEx.ItemHeight
+  else
+  begin
+    LineHeight := ADest.TextHeight('Wg') + 2;
+    if LineHeight < 14 then LineHeight := 14;
+  end;
+
+  ContentH := ASize.cy - 4;
+  VisCount := ContentH div LineHeight;
+  if VisCount < 1 then VisCount := 1;
+  AStateEx.FullyVisibleCount := VisCount;
+
+  CheckW := AStateEx.CheckWidth;
+  if CheckW <= 0 then CheckW := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT) + 6;
+  CheckSquareSize := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT);
+
+  HasFocus := csfHasFocus in AState;
+  TextColor := Palette.WindowText;
+  if HasFocus then
+  begin
+    SelBg := Palette.Highlight;
+    SelFg := Palette.HighlightText;
+  end
+  else
+  begin
+    SelBg := $C0C0C0;
+    SelFg := Palette.WindowText;
+  end;
+
+  for i := 0 to VisCount do
+  begin
+    ItemIdx := AStateEx.TopIndex + i;
+    if (ItemIdx < 0) or (ItemIdx >= AStateEx.Items.Count) then Continue;
+    ItemY := 2 + i * LineHeight;
+    if ItemY >= ASize.cy - 2 then Break;
+
+    Selected := False;
+    if (AStateEx.Selected <> nil) and (ItemIdx < AStateEx.Selected.Size) then
+      Selected := AStateEx.Selected[ItemIdx];
+
+    IsHeader := (ItemIdx < Length(AStateEx.Header)) and AStateEx.Header[ItemIdx];
+    IsEnabled := (ItemIdx >= Length(AStateEx.ItemEnabled)) or AStateEx.ItemEnabled[ItemIdx];
+    if ItemIdx < Length(AStateEx.States) then ItemState := AStateEx.States[ItemIdx]
+    else ItemState := cbUnchecked;
+
+    if IsHeader then
+    begin
+      { Headers occupy the full row, no checkbox column. }
+      ADest.Brush.Color := AStateEx.HeaderBackgroundColor;
+      ADest.Brush.Style := bsSolid;
+      ADest.Pen.Style   := psClear;
+      ADest.FillRect(Bounds(2, ItemY, ASize.cx - 4, LineHeight));
+      ADest.Brush.Style := bsClear;
+      ADest.Font.Color  := AStateEx.HeaderColor;
+      ADest.TextOut(4, ItemY + 1, AStateEx.Items.Strings[ItemIdx]);
+      Continue;
+    end;
+
+    if Selected then
+    begin
+      ADest.Brush.Color := SelBg;
+      ADest.Brush.Style := bsSolid;
+      ADest.Pen.Style   := psClear;
+      ADest.FillRect(Bounds(2 + CheckW, ItemY, ASize.cx - 4 - CheckW, LineHeight));
+      ADest.Brush.Style := bsClear;
+      ADest.Font.Color  := SelFg;
+    end
+    else
+    begin
+      if IsEnabled then ADest.Font.Color := TextColor
+      else              ADest.Font.Color := Palette.GrayText;
+    end;
+
+    { Checkbox square at left of the row. Centred vertically within the
+      row. Same look as TCDCheckBox: sunken frame + tickmark. }
+    CheckSquareX := 4;
+    CheckSquareY := ItemY + (LineHeight - CheckSquareSize) div 2;
+
+    ADest.Brush.Style := bsSolid;
+    ADest.Pen.Style   := psClear;
+    if ItemState = cbGrayed then ADest.Brush.Color := WIN2000_LIGHTGRAY_BACKGROUND
+    else if not IsEnabled    then ADest.Brush.Color := Palette.BtnFace
+    else                          ADest.Brush.Color := Palette.Window;
+    ADest.Rectangle(Bounds(CheckSquareX, CheckSquareY,
+      CheckSquareSize, CheckSquareSize));
+    DrawSunkenFrame(ADest, Point(CheckSquareX, CheckSquareY),
+      Size(CheckSquareSize, CheckSquareSize));
+
+    if ItemState in [cbChecked, cbGrayed] then
+      DrawTickmark(ADest, Point(CheckSquareX + DPIAdjustment(3),
+        CheckSquareY + DPIAdjustment(3)), AState);
+
+    ADest.Brush.Style := bsClear;
+    TextX := 4 + CheckW;
+    ADest.TextOut(TextX, ItemY + 1, AStateEx.Items.Strings[ItemIdx]);
+
+    if HasFocus and (ItemIdx = AStateEx.ItemIndex) then
+    begin
+      ADest.Pen.Color := Palette.WindowText;
+      ADest.Pen.Style := psDot;
+      ADest.Brush.Style := bsClear;
+      ADest.Rectangle(2 + CheckW, ItemY, ASize.cx - 4, ItemY + LineHeight);
       ADest.Pen.Style := psSolid;
     end;
   end;
