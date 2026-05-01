@@ -5163,6 +5163,54 @@ begin
   Result := True;
 end;
 
+function TCDWidgetSet.ShowScrollBar(Handle: HWND; wBar: Integer;
+  bShow: Boolean): Boolean;
+{ Customdrawn lacks a non-client area, so we host the scrollbars as
+  TScrollBar children (alBottom / alRight) inside the owning control.
+  TCDScrollBars in customdrawnproc.pas wires the children to fire
+  LM_HSCROLL / LM_VSCROLL back to the owner on user interaction --
+  the message shape TCustomGrid (grids.pas WMHScroll/WMVScroll) and
+  any other client expects. }
+var
+  Bars: TCDScrollBars;
+begin
+  Result := False;
+  if Handle = 0 then Exit;
+  Bars := GetOrCreateScrollBars(Handle);
+  if Bars = nil then Exit;
+  Bars.SetVisibility(wBar, bShow);
+  Result := True;
+end;
+
+function TCDWidgetSet.SetScrollInfo(Handle: HWND; SBStyle: Integer;
+  ScrollInfo: TScrollInfo; bRedraw: Boolean): Integer;
+var
+  Bars: TCDScrollBars;
+  Bar: TScrollBar;
+begin
+  Result := 0;
+  if Handle = 0 then Exit;
+  Bars := GetOrCreateScrollBars(Handle);
+  if Bars = nil then Exit;
+  Bars.StoreParams(SBStyle, ScrollInfo);
+  Bar := Bars.GetBar(SBStyle);
+  if Bar <> nil then Result := Bar.Position
+  else if (ScrollInfo.fMask and SIF_POS) <> 0 then Result := ScrollInfo.nPos;
+end;
+
+function TCDWidgetSet.GetScrollInfo(Handle: HWND; BarFlag: Integer;
+  var ScrollInfo: TScrollInfo): Boolean;
+var
+  Bars: TCDScrollBars;
+begin
+  Result := False;
+  if Handle = 0 then Exit;
+  Bars := FindScrollBars(Handle);
+  if Bars = nil then Exit;
+  Bars.ReadParams(BarFlag, ScrollInfo);
+  Result := True;
+end;
+
 {------------------------------------------------------------------------------
   Function: SelectClipRGN
   Params:  DC, RGN

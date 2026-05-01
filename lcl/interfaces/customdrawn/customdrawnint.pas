@@ -50,7 +50,7 @@ uses
   customdrawn_common, customdrawncontrols, customdrawndrawers,
   lazcanvas, lazregions, lazdeviceapis,
   LCLPlatformDef, InterfaceBase, Themes, Dialogs, Buttons,
-  Controls,  Forms, lclproc, IntfGraphics, GraphType,
+  Controls, StdCtrls, Forms, lclproc, IntfGraphics, GraphType,
   LCLType, LMessages, Graphics, LCLStrConsts, Menus, LazLoggerBase;
 
 type

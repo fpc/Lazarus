@@ -126,8 +126,8 @@ function GetProp(Handle : hwnd; Str : PChar): Pointer; override;
 function GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint; override;
 (*function GetROP2(DC: HDC): Integer; override;
 function GetScrollBarSize(Handle: HWND; BarKind: Integer): integer; override;
-function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; override;
-function GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollInfo): Boolean; override;*)
+function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; override;*)
+function GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollInfo): Boolean; override;
 function GetStockObject(Value: Integer): TLCLHandle; override;
 function GetSysColor(nIndex: Integer): DWORD; override;
 //function GetSysColorBrush(nIndex: Integer): HBrush; override;
@@ -208,8 +208,8 @@ function SetMapMode(DC: HDC; fnMapMode : Integer): Integer; override;
 function SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean; override;
 function SetParent(hWndChild: HWND; hWndParent: HWND): HWND; override;*)
 function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
-(*function SetROP2(DC: HDC; Mode: Integer): Integer; override;
-function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;*)
+//function SetROP2(DC: HDC; Mode: Integer): Integer; override;
+function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
 (*function SetViewPortExtEx(DC: HDC; XExtent, YExtent : Integer; OldSize: PSize): Boolean; override;
 function SetViewPortOrgEx(DC: HDC; NewX, NewY: Integer; OldPoint: PPoint): Boolean; override;
@@ -218,9 +218,9 @@ function SetWindowOrgEx(DC : HDC; NewX, NewY : Integer; OldPoint: PPoint) : Bool
 (*function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
        X, Y, cx, cy: Integer; uFlags: UINT): Boolean;  override;
 function SetWindowRgn(hWnd: HWND; hRgn: HRGN; bRedraw: Boolean):longint; override;
-function ShowCaret(hWnd: HWND): Boolean; override;
+function ShowCaret(hWnd: HWND): Boolean; override;*)
 function ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean; override;
-function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean; override;*)
+//function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean; override;
 function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; ROp: Cardinal): Boolean; override;
 function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
