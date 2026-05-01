@@ -72,13 +72,20 @@ type
   { TCDWSStatusBar }
 
   TCDWSStatusBar = class(TWSStatusBar)
+  public
+    class procedure InjectCDControl(const AWinControl: TWinControl;
+      var ACDControlField: TCDControl);
   published
-{    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+      var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetSizeGrip(const AStatusBar: TStatusBar; SizeGrip: Boolean); override;
-    class procedure Update(const AStatusBar: TStatusBar); override;}
+    class procedure Update(const AStatusBar: TStatusBar); override;
   end;
 
   { TCDWSTabSheet }
@@ -434,6 +441,131 @@ class procedure TCDWSCustomTabControl.UpdateProperties(
   const ATabControl: TCustomTabControl);
 begin
   inherited UpdateProperties(ATabControl);
+end;
+
+{ TCDWSStatusBar }
+
+function CDStatusBarFromLCL(const AStatusBar: TStatusBar): TCDStatusBar;
+var
+  WSCtrl: TCDWinControl;
+begin
+  Result := nil;
+  if (AStatusBar = nil) or (AStatusBar.Handle = 0) then Exit;
+  WSCtrl := TCDWinControl(AStatusBar.Handle);
+  if (WSCtrl = nil) or (WSCtrl.CDControl = nil) then Exit;
+  if WSCtrl.CDControl is TCDStatusBar then
+    Result := TCDStatusBar(WSCtrl.CDControl);
+end;
+
+class procedure TCDWSStatusBar.InjectCDControl(const AWinControl: TWinControl;
+  var ACDControlField: TCDControl);
+var
+  LCL: TStatusBar;
+  Inj: TCDIntfStatusBar;
+begin
+  LCL := TStatusBar(AWinControl);
+  Inj := TCDIntfStatusBar(ACDControlField);
+  Inj.LCLControl   := LCL;
+  Inj.Parent       := AWinControl;
+  Inj.Align        := alClient;
+  Inj.PanelsRef    := LCL.Panels;
+  Inj.SimpleText   := LCL.SimpleText;
+  Inj.SimplePanel  := LCL.SimplePanel;
+  Inj.SizeGrip     := LCL.SizeGrip;
+  {$ifdef VerboseCDInjectedControlNames}
+  Inj.Name := 'CustomDrawnInternal_' + AWinControl.Name;
+  {$endif}
+end;
+
+class function TCDWSStatusBar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLHandle;
+var
+  lCDWinControl: TCDWinControl;
+begin
+  Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
+  lCDWinControl := TCDWinControl(Result);
+  lCDWinControl.CDControl := TCDIntfStatusBar.Create(AWinControl);
+end;
+
+class procedure TCDWSStatusBar.DestroyHandle(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  lCDWinControl.CDControl.Free;
+  lCDWinControl.Free;
+end;
+
+class procedure TCDWSStatusBar.ShowHide(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  TCDWSWinControl.ShowHide(AWinControl);
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(AWinControl, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
+end;
+
+class procedure TCDWSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+var
+  Bar: TStatusBar;
+  TextH: Integer;
+begin
+  { Width=0 so AutoSize only constrains height; the LCL anchors the bar
+    to alBottom and stretches it horizontally. Height tracks the bar's
+    own font -- TextHeight returns a DPI-correct count for the current
+    rendering surface, so this scales with both font size and display
+    DPI. The +6 is the drawer's vertical padding (2 sunken-top edge +
+    2 above text + 2 below), all DPI-adjusted inside the drawer. }
+  PreferredWidth := 0;
+  Bar := TStatusBar(AWinControl);
+  Bar.Canvas.Font.Assign(Bar.Font);
+  TextH := Bar.Canvas.TextHeight('Wg');
+  if TextH < 1 then TextH := 14;
+  PreferredHeight := TextH + 6;
+end;
+
+class procedure TCDWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar;
+  PanelIndex: integer);
+var
+  CD: TCDStatusBar;
+begin
+  CD := CDStatusBarFromLCL(AStatusBar);
+  if CD <> nil then CD.Invalidate;
+end;
+
+class procedure TCDWSStatusBar.SetPanelText(const AStatusBar: TStatusBar;
+  PanelIndex: integer);
+var
+  CD: TCDStatusBar;
+begin
+  CD := CDStatusBarFromLCL(AStatusBar);
+  if CD <> nil then CD.Invalidate;
+end;
+
+class procedure TCDWSStatusBar.SetSizeGrip(const AStatusBar: TStatusBar;
+  SizeGrip: Boolean);
+var
+  CD: TCDStatusBar;
+begin
+  CD := CDStatusBarFromLCL(AStatusBar);
+  if CD <> nil then
+  begin
+    CD.SizeGrip := SizeGrip;
+    CD.Invalidate;
+  end;
+end;
+
+class procedure TCDWSStatusBar.Update(const AStatusBar: TStatusBar);
+var
+  CD: TCDStatusBar;
+begin
+  CD := CDStatusBarFromLCL(AStatusBar);
+  if CD <> nil then CD.Invalidate;
 end;
 
 (*{ TCDWSToolBar }

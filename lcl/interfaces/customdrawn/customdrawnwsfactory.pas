@@ -164,8 +164,8 @@ end;
 // comctrls
 function RegisterStatusBar: Boolean; alias : 'WSRegisterStatusBar';
 begin
-//  RegisterWSComponent(TStatusBar, TWinCEWSStatusBar);
-  Result := False;
+  RegisterWSComponent(TStatusBar, TCDWSStatusBar);
+  Result := True;
 end;
 
 function RegisterTabSheet: Boolean; alias : 'WSRegisterTabSheet';
