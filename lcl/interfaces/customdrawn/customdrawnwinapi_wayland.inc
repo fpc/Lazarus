@@ -329,6 +329,7 @@ end;
 var
   CDWLCachedFontPath: string = '';
   CDWLFontPathSearched: Boolean = False;
+  CDWLFamilyCache: TStringList = nil;   { family name -> resolved .ttf path }
 
 procedure TCDWidgetSet.BackendListFontPaths(var AFontPaths: TStringList;
   var AFontList: THashedStringList);
@@ -358,22 +359,59 @@ end;
 
 function TCDWidgetSet.BackendGetFontPath(const LogFont: TLogFont;
   const LongFontName: string): string;
+var
+  Family: string;
+  Idx: Integer;
 begin
-  { FIXME: returns the same arbitrary TTF for every requested font
-    family. Good enough for "the LCL stops crashing" -- bad enough
-    that bold/italic/serif/sans all look identical. A real
-    implementation should consult fontconfig (fc-match) or parse
-    each TTF's NAME table to build a family->path map. }
-  if not CDWLFontPathSearched then
+  { Resolve the requested family name through fc-match so that e.g.
+    "Noto Sans CJK JP" actually picks the CJK .otf rather than
+    falling back to a system sans-serif that may render hiragana /
+    kanji as tofu. Empty / unknown families fall
+    back to whatever fontconfig's "sans-serif" alias resolves to.
+    Results are cached per family to keep the per-redraw cost a
+    string lookup, not a child process. }
+  Family := LongFontName;
+  if Family = '' then
+    Family := LogFont.lfFaceName;
+  if Family = 'default' then
+    Family := '';
+
+  if CDWLFamilyCache = nil then
+    CDWLFamilyCache := TStringList.Create;
+  Idx := CDWLFamilyCache.IndexOfName(Family);
+  if Idx >= 0 then
   begin
-    CDWLCachedFontPath := CDWLFindAnyFont;
-    CDWLFontPathSearched := True;
-    if CDWLCachedFontPath = '' then
-      DebugLn('[WL BackendGetFontPath] no .ttf font found in any standard location')
-    else
-      DebugLn('[WL BackendGetFontPath] using ' + CDWLCachedFontPath);
+    Result := CDWLFamilyCache.ValueFromIndex[Idx];
+    Exit;
   end;
-  Result := CDWLCachedFontPath;
+
+  { FPC's pure-Pascal freetype reader only opens plain .ttf -- it fails
+    on .otf (CFF outlines) and .ttc (font collections), even though
+    fontconfig will happily return either as a "best match". Constrain
+    the query to TrueType so we don't get back a file we can't load. }
+  if Family <> '' then
+  begin
+    Result := CDWLFcMatch(Family + ':fontformat=TrueType');
+    if (Result = '') or (LowerCase(ExtractFileExt(Result)) <> '.ttf') then
+      Result := '';
+  end
+  else
+    Result := '';
+
+  if Result = '' then
+  begin
+    if not CDWLFontPathSearched then
+    begin
+      CDWLCachedFontPath := CDWLFindAnyFont;
+      CDWLFontPathSearched := True;
+      if CDWLCachedFontPath = '' then
+        DebugLn('[WL BackendGetFontPath] no .ttf font found in any standard location')
+      else
+        DebugLn('[WL BackendGetFontPath] fallback ' + CDWLCachedFontPath);
+    end;
+    Result := CDWLCachedFontPath;
+  end;
+  CDWLFamilyCache.Add(Family + '=' + Result);
 end;
 
 function TCDWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
