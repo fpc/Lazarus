@@ -805,3 +805,151 @@ begin
     end;
   end;
 end;
+
+{ ------------------------------------------------------------------
+  xdg_popup support: dropdowns, menus, tooltips. The popup must be
+  parented under another mapped xdg_surface; the compositor handles
+  click-outside / Escape dismiss via xdg_popup.grab + popup_done, and
+  positions the popup relative to an anchor rectangle in parent-
+  surface-local coordinates so it never falls off-screen.
+  ------------------------------------------------------------------ }
+
+function TCDWidgetSet.WLChoosePopupParent(LCLForm: TCustomForm): TWaylandWindowInfo;
+var
+  i: Integer;
+  Cand: TWaylandWindowInfo;
+begin
+  Result := nil;
+  if FWlWindowList = nil then Exit;
+
+  { 1. Honour LCL's PopupParent if the user set one explicitly. }
+  if (LCLForm <> nil) and (LCLForm.PopupParent <> nil)
+     and (LCLForm.PopupParent.Handle <> 0) then
+  begin
+    Cand := TWaylandWindowInfo(LCLForm.PopupParent.Handle);
+    if (Cand <> nil) and (Cand.LCLForm <> LCLForm) then
+      Exit(Cand);
+  end;
+
+  { 2. Pointer focus -- a click-triggered popup almost always wants
+       this as its anchor surface. }
+  if FWlPointerFocus <> nil then
+    Exit(FWlPointerFocus);
+
+  { 3. Keyboard focus -- keyboard-triggered popups (menu key, accel). }
+  if FWlKeyboardFocus <> nil then
+    Exit(FWlKeyboardFocus);
+
+  { 4. Last resort: first non-popup, non-self window in the list. }
+  for i := 0 to FWlWindowList.Count - 1 do
+  begin
+    Cand := TWaylandWindowInfo(FWlWindowList[i]);
+    if (Cand = nil) or (Cand.LCLForm = LCLForm) then Continue;
+    if Cand.Toplevel <> nil then Exit(Cand);
+  end;
+end;
+
+function TCDWidgetSet.WLComputePopupAnchorRect(LCLForm: TCustomForm;
+  ParentWI: TWaylandWindowInfo; out R: TRect): Boolean;
+begin
+  { TCDPopUpMenuForm's Left/Top are set by the LCL to absolute "screen"
+    coordinates derived from a TControl.ClientToScreen call. Customdrawn
+    on Wayland has no global screen origin -- TCDWSCustomForm doesn't
+    receive a position from the compositor (Wayland refuses to expose
+    surface positions to clients). Empirically the LCL's "screen"
+    coordinates inside a single-toplevel app collapse to parent-surface-
+    local for the active toplevel, so subtracting the parent form's
+    (Left, Top) gives the right anchor for the popup. The anchor is a
+    1x1 rect at the desired anchor point; the BOTTOM_LEFT anchor
+    constant + BOTTOM_RIGHT gravity then makes the popup grow from
+    that point downward and to the right. }
+  Result := False;
+  if (LCLForm = nil) or (ParentWI = nil) or (ParentWI.LCLForm = nil) then Exit;
+  R.Left   := LCLForm.Left - ParentWI.LCLForm.Left;
+  R.Top    := LCLForm.Top  - ParentWI.LCLForm.Top;
+  R.Right  := R.Left + 1;
+  R.Bottom := R.Top  + 1;
+  Result := True;
+end;
+
+procedure TCDWidgetSet.WLCreatePopupForWindow(WI, ParentWI: TWaylandWindowInfo;
+  const Anchor: TRect);
+var
+  Pos: TXdgPositioner;
+begin
+  if (WI = nil) or (ParentWI = nil) or (FXdgWmBase = nil) then Exit;
+  Pos := FXdgWmBase.CreatePositioner;
+  Pos.SetSize(Max(1, WI.LCLForm.Width), Max(1, WI.LCLForm.Height));
+  Pos.SetAnchorRect(Anchor.Left, Anchor.Top,
+                    Max(1, Anchor.Right - Anchor.Left),
+                    Max(1, Anchor.Bottom - Anchor.Top));
+  Pos.SetAnchor (XDG_POSITIONER_ANCHOR_BOTTOM_LEFT);
+  Pos.SetGravity(XDG_POSITIONER_GRAVITY_BOTTOM_RIGHT);
+  Pos.SetConstraintAdjustment(
+    XDG_POSITIONER_CONSTRAINT_FLIP_Y or
+    XDG_POSITIONER_CONSTRAINT_SLIDE_X);
+
+  WI.Popup := WI.XdgSurf.GetPopup(ParentWI.XdgSurf, Pos);
+  WI.Popup.OnConfigure := @WLHandlePopupConfigure;
+  WI.Popup.OnDone      := @WLHandlePopupDone;
+
+  { Grab MUST be issued before the surface is committed (xdg-shell spec).
+    The serial is whichever input event triggered the popup; for a
+    combobox click that's the BTN_LEFT release recorded by
+    WLHandlePointerButton. Without a recent input serial the popup
+    still works -- it just won't auto-dismiss on click-outside, which
+    is the right fallback for programmatic / timer-driven popups. }
+  if (FWlSeat <> nil) and (FWlLastInputSerial <> 0) then
+    WI.Popup.Grab(FWlSeat, FWlLastInputSerial);
+
+  { Compositor took its own snapshot of the positioner state at
+    GetPopup; we don't need our handle anymore. }
+  Pos.DestroyRequest;
+end;
+
+procedure TCDWidgetSet.WLHandlePopupConfigure(Sender: TXdgPopup;
+  X, Y, W, H: LongInt);
+var
+  i: Integer;
+  WI: TWaylandWindowInfo;
+begin
+  if FWlWindowList = nil then Exit;
+  for i := 0 to FWlWindowList.Count - 1 do
+  begin
+    WI := TWaylandWindowInfo(FWlWindowList[i]);
+    if (WI <> nil) and (WI.Popup = Sender) then
+    begin
+      { If the compositor chose a different size (shouldn't happen
+        without resize_x|y in our constraint mask, but defensive),
+        push it to the LCL form so the layout follows. }
+      if (W > 0) and (H > 0) and (WI.LCLForm <> nil)
+         and ((WI.LCLForm.Width <> W) or (WI.LCLForm.Height <> H)) then
+        WI.LCLForm.SetBounds(WI.LCLForm.Left, WI.LCLForm.Top, W, H);
+      WI.PendingDraw := True;
+      Exit;
+    end;
+  end;
+end;
+
+procedure TCDWidgetSet.WLHandlePopupDone(Sender: TXdgPopup);
+var
+  i: Integer;
+  WI: TWaylandWindowInfo;
+begin
+  if FWlWindowList = nil then Exit;
+  for i := 0 to FWlWindowList.Count - 1 do
+  begin
+    WI := TWaylandWindowInfo(FWlWindowList[i]);
+    if (WI <> nil) and (WI.Popup = Sender) then
+    begin
+      WI.ShouldClose := True;
+      { Hide rather than LCLSendCloseQueryMsg: CloseQuery only asks "may
+        I close?", it doesn't actually act. Hide flips Visible to False
+        which routes through ShowHide(visible=False) into
+        WLTeardownPopup -- the same path Self.Close from
+        HandleItemClick uses. }
+      if WI.LCLForm <> nil then WI.LCLForm.Hide;
+      Exit;
+    end;
+  end;
+end;

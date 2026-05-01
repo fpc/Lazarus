@@ -273,6 +273,14 @@ type
     procedure WLHandleToplevelConfigure(Sender: TXdgToplevel;
       W, H: LongInt; const States: array of LongWord);
     procedure WLHandleToplevelClose(Sender: TXdgToplevel);
+    procedure WLHandlePopupConfigure(Sender: TXdgPopup;
+      X, Y, W, H: LongInt);
+    procedure WLHandlePopupDone(Sender: TXdgPopup);
+    function  WLChoosePopupParent(LCLForm: TCustomForm): TWaylandWindowInfo;
+    function  WLComputePopupAnchorRect(LCLForm: TCustomForm;
+      ParentWI: TWaylandWindowInfo; out R: TRect): Boolean;
+    procedure WLCreatePopupForWindow(WI, ParentWI: TWaylandWindowInfo;
+      const Anchor: TRect);
     function  WLCurrentShiftState: TShiftState;
     {$endif}
   // For generic methods added in customdrawn

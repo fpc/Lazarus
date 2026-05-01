@@ -132,6 +132,7 @@ type
     {$ifdef CD_Wayland}
     class procedure WLEnsurePool(WI: TWaylandWindowInfo; AWidth, AHeight: LongInt);
     class procedure WLPaintForm(WI: TWaylandWindowInfo);
+    class procedure WLTeardownPopup(WI: TWaylandWindowInfo);
     {$endif}
     class function  DoCreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
     class procedure DoShowHide(const AWinControl: TWinControl);

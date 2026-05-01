@@ -143,6 +143,20 @@ end;
 
 
 
+{ Forms with these classes are mapped as xdg_popup, not xdg_toplevel:
+  short-lived transient surfaces that need the compositor's grab /
+  auto-dismiss / on-screen-positioning. Detection by class-name string
+  is the standard Lazarus widgetset cross-cutting check (the LCL's own
+  Cocoa / Qt glue uses the same idiom) and keeps customdrawnwsmenus.pas
+  free of Wayland-specific imports. THintWindow is forward-looking: a
+  follow-up commit will route hint windows through the same path. }
+function WLIsPopupClass(F: TCustomForm): Boolean;
+begin
+  Result := (F <> nil)
+    and ( (F.ClassName = 'TCDPopUpMenuForm')
+       or (F is THintWindow) );
+end;
+
 class function TCDWSCustomForm.DoCreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLHandle;
 var
@@ -150,6 +164,7 @@ var
   WSet: TCDWidgetSet;
   EnvToken: string;
   ParentWI: TWaylandWindowInfo;
+  Anchor: TRect;
 begin
   { LCL class method -- no widget-set Self. Resolve the typed view of
     the LCL global once and use it through the rest of this method, so
@@ -162,30 +177,48 @@ begin
   WI.Surface  := WSet.FWlCompositor.CreateSurface;
   WI.XdgSurf  := WSet.FXdgWmBase.GetXdgSurface(WI.Surface);
   WI.XdgSurf.OnConfigure := @WSet.WLHandleSurfaceConfigure;
-  WI.Toplevel := WI.XdgSurf.GetToplevel;
-  WI.Toplevel.OnConfigure := @WSet.WLHandleToplevelConfigure;
-  WI.Toplevel.OnClose     := @WSet.WLHandleToplevelClose;
-  if AWinControl.Caption <> '' then
-    WI.Toplevel.SetTitle(AWinControl.Caption);
-  WI.Toplevel.SetAppId('org.lazarus.customdrawn');
-  if AParams.WndParent <> 0 then
+
+  if WLIsPopupClass(WI.LCLForm) then
   begin
-    ParentWI := TWaylandWindowInfo(AParams.WndParent);
-    if (ParentWI <> nil) and (ParentWI.Toplevel <> nil) then
-      WI.Toplevel.SetParent(ParentWI.Toplevel);
+    { Popup branch: defer role assignment + first commit to DoShowHide.
+      The LCL's TCDWSPopupMenu.Popup sets Left/Top before triggering
+      handle creation (via Canvas access for TextHeight) but only sets
+      Width/Height + adds child items afterwards. Calling get_popup
+      with the default 320x240 bounds would lock in a wrong-size
+      surface; we wait for ShowHide(visible=True), by which point all
+      bounds and children are in place. }
+    WI.PopupPending := True;
+  end
+  else
+  begin
+    WI.Toplevel := WI.XdgSurf.GetToplevel;
+    WI.Toplevel.OnConfigure := @WSet.WLHandleToplevelConfigure;
+    WI.Toplevel.OnClose     := @WSet.WLHandleToplevelClose;
+    if AWinControl.Caption <> '' then
+      WI.Toplevel.SetTitle(AWinControl.Caption);
+    WI.Toplevel.SetAppId('org.lazarus.customdrawn');
+    if AParams.WndParent <> 0 then
+    begin
+      ParentWI := TWaylandWindowInfo(AParams.WndParent);
+      if (ParentWI <> nil) and (ParentWI.Toplevel <> nil) then
+        WI.Toplevel.SetParent(ParentWI.Toplevel);
+    end;
   end;
 
   WI.PendingDraw := True;
   CDWidgetset.FWlWindowList.Add(WI);
 
   { Consume any launcher-supplied XDG_ACTIVATION_TOKEN exactly once.
-    This is what tells the compositor "the new window the user just
-    launched has arrived" -- without it many compositors keep showing
+    This tells the compositor that the newly launched window has arrived;
+    without it many compositors keep showing
     the loading/busy cursor until a hard timeout expires. We unset
     the env var afterwards per the xdg-activation spec, so that any
-    process this app spawns later doesn't inherit and re-use it. }
+    process this app spawns later doesn't inherit and re-use it.
+    Toplevel-only: most compositors ignore activation tokens for popup
+    surfaces. }
   if (CDWidgetset.FXdgActivation <> nil)
-     and (CDWidgetset.FWlWindowList.Count = 1) then
+     and (CDWidgetset.FWlWindowList.Count = 1)
+     and (WI.Toplevel <> nil) then
   begin
     EnvToken := GetEnvironmentVariable('XDG_ACTIVATION_TOKEN');
     if EnvToken <> '' then
@@ -195,18 +228,25 @@ begin
     end;
   end;
 
-  { Initial commit asks the compositor for the first xdg_surface.configure. }
-  WI.Surface.Commit;
-  CDWidgetset.FWlDisplay.Connection.Flush;
+  { Initial commit asks the compositor for the first xdg_surface.configure.
+    Skip this for popup-pending WIs: an xdg_surface with no role assigned
+    is a protocol error to commit. The deferred path in DoShowHide
+    commits after attaching the popup role. }
+  if not WI.PopupPending then
+  begin
+    WI.Surface.Commit;
+    CDWidgetset.FWlDisplay.Connection.Flush;
+  end;
 
   Result := TLCLHandle(WI);
 end;
 
 class procedure TCDWSCustomForm.DoShowHide(const AWinControl: TWinControl);
 begin
-  { FIXME: stub. Wayland has no explicit show/hide -- visibility is
-    implied by attaching/detaching a buffer. To actually "hide" we
-    would need to attach nil and commit. Left as no-op for now. }
+  { No-op: the WS layer routes show/hide through ShowHide (override),
+    not this method. Wayland has no explicit hide -- visibility is
+    implied by attaching / detaching a buffer. Real hide-by-detach is
+    a follow-up. }
 end;
 
 class function TCDWSCustomForm.CreateHandle(const AWinControl: TWinControl;
@@ -235,6 +275,9 @@ begin
   if WI.PoolData <> nil then FpMUnMap(WI.PoolData, WI.PoolSize);
   if WI.PoolBuffer <> nil then WI.PoolBuffer.DestroyRequest;
   if WI.Pool <> nil then WI.Pool.DestroyRequest;
+  { xdg-shell teardown order: role object (toplevel / popup) -> xdg_surface
+    -> wl_surface. Toplevel and Popup are mutually exclusive. }
+  if WI.Popup    <> nil then WI.Popup.DestroyRequest;
   if WI.Toplevel <> nil then WI.Toplevel.DestroyRequest;
   if WI.XdgSurf <> nil then WI.XdgSurf.DestroyRequest;
   if WI.Surface <> nil then WI.Surface.DestroyRequest;
@@ -325,12 +368,81 @@ begin
   WI.Toplevel.SetParent(ParentWI.Toplevel);
 end;
 
+{ Tear down the Wayland-side state of a popup form so the surface
+  vanishes from the screen. Used for both LCL Hide (Self.Close ->
+  caHide -> SetVisible(False) -> ShowHide) and grab-dismiss via
+  popup_done. The LCL TCustomForm survives so caching schemes like
+  TCDWSPopupMenu.Popup's CDPopUpMenus list keep working; only the
+  Wayland objects are dropped. The next Show on this same handle
+  would re-allocate them, but customdrawnwsmenus.pas creates a fresh
+  TCDPopUpMenuForm each time so that path doesn't actually exercise. }
+class procedure TCDWSCustomForm.WLTeardownPopup(WI: TWaylandWindowInfo);
+begin
+  if WI = nil then Exit;
+  if (WI.Popup = nil) and not WI.PopupPending then Exit;
+  if CDWidgetset.FWlPointerFocus  = WI then CDWidgetset.FWlPointerFocus  := nil;
+  if CDWidgetset.FWlKeyboardFocus = WI then CDWidgetset.FWlKeyboardFocus := nil;
+  if WI.PoolData <> nil then
+  begin
+    FpMUnMap(WI.PoolData, WI.PoolSize);
+    WI.PoolData := nil;
+    WI.PoolSize := 0;
+  end;
+  if WI.PoolBuffer <> nil then begin WI.PoolBuffer.DestroyRequest; WI.PoolBuffer := nil; end;
+  if WI.Pool      <> nil then begin WI.Pool.DestroyRequest;       WI.Pool := nil; end;
+  if WI.Popup     <> nil then begin WI.Popup.DestroyRequest;      WI.Popup := nil; end;
+  if WI.XdgSurf   <> nil then begin WI.XdgSurf.DestroyRequest;    WI.XdgSurf := nil; end;
+  if WI.Surface   <> nil then begin WI.Surface.DestroyRequest;    WI.Surface := nil; end;
+  WI.HasConfigure := False;
+  WI.PendingDraw  := False;
+  WI.PopupPending := False;
+  WI.ParentWI     := nil;
+  CDWidgetset.FWlDisplay.Connection.Flush;
+end;
+
 class procedure TCDWSCustomForm.ShowHide(const AWinControl: TWinControl);
 var
   WI: TWaylandWindowInfo;
+  WSet: TCDWidgetSet;
+  ParentWI: TWaylandWindowInfo;
+  Anchor: TRect;
 begin
   if AWinControl.Handle = 0 then Exit;
   WI := TWaylandWindowInfo(AWinControl.Handle);
+  WSet := CDWidgetset;
+
+  if WLIsPopupClass(WI.LCLForm) and not AWinControl.Visible then
+  begin
+    { Hide path for popup-class forms: tear down Wayland objects so the
+      surface vanishes immediately. Without this the dropdown stays on
+      screen until the popup role is torn down -- Self.Close from HandleItemClick lands here
+      with Visible=False, but customdrawn's default ShowHide is a
+      no-op. }
+    WLTeardownPopup(WI);
+    Exit;
+  end;
+
+  { Deferred xdg_popup creation. By the time TCDWSPopupMenu.Popup
+    reaches here, the popup form's Left / Top / Width / Height +
+    child items are all settled (DoCreateHandle ran early during
+    Canvas access for TextHeight measurement, when only Left / Top
+    were known). Attach the popup role with the now-correct bounds
+    and issue the first commit so the compositor sends configure. }
+  if WI.PopupPending and AWinControl.Visible then
+  begin
+    ParentWI := WSet.WLChoosePopupParent(WI.LCLForm);
+    if ParentWI <> nil then
+    begin
+      WI.ParentWI := ParentWI;
+      if not WSet.WLComputePopupAnchorRect(WI.LCLForm, ParentWI, Anchor) then
+        Anchor := Bounds(0, 0, 1, 1);
+      WSet.WLCreatePopupForWindow(WI, ParentWI, Anchor);
+      WI.PopupPending := False;
+      WI.Surface.Commit;
+      WSet.FWlDisplay.Connection.Flush;
+    end;
+  end;
+
   WI.PendingDraw := True;
 end;
 

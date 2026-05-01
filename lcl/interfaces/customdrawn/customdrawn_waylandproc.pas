@@ -92,8 +92,11 @@ type
   public
     Surface:        TWaylandSurface;
     XdgSurf:        TXdgSurface;
-    Toplevel:       TXdgToplevel;
+    Toplevel:       TXdgToplevel;       { non-nil iff this WI is a toplevel; mutually exclusive with Popup }
+    Popup:          TXdgPopup;          { non-nil iff this WI is an xdg_popup }
     Title:          String;             { last title set through the widgetset; Wayland cannot query it back }
+    PopupPending:   Boolean;            { popup-class form whose role assignment is deferred to DoShowHide }
+    ParentWI:       TWaylandWindowInfo; { popup's anchor parent, retained for grab + position math }
     Pool:           TWaylandShmPool;
     PoolBuffer:     TWaylandBuffer;
     PoolData:       Pointer;
