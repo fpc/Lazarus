@@ -2109,6 +2109,8 @@ procedure TCDEdit.SetSelStartX(ANewX: Integer);
 begin
   if FEditState.SelStart.X = ANewX then Exit;
   FEditState.SelStart.X := ANewX;
+  if FEditState.SelLength = 0 then
+    FEditState.CaretPos.X := ANewX;
   Invalidate;
 end;
 
@@ -2116,6 +2118,8 @@ procedure TCDEdit.SetSelLength(ANewLength: Integer);
 begin
   if FEditState.SelLength = ANewLength then Exit;
   FEditState.SelLength := ANewLength;
+  if FEditState.SelLength = 0 then
+    FEditState.CaretPos.X := FEditState.SelStart.X;
   Invalidate;
 end;
 
@@ -3781,4 +3785,3 @@ begin
 end;
 
 end.
-

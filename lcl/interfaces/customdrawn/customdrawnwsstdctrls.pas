@@ -26,7 +26,7 @@ uses
   math,
   // LCL
   Classes, Types, StdCtrls, Controls, Forms, SysUtils, InterfaceBase, LCLType,
-  Clipbrd,
+  Clipbrd, LazUTF8,
   customdrawncontrols, LCLProc,
   // Widgetset
   WSProc, WSStdCtrls, WSLCLClasses, CustomDrawnWsControls, customdrawnproc,
@@ -1647,23 +1647,34 @@ begin
 end;
 
 class procedure TCDWSCustomEdit.Cut(const ACustomEdit: TCustomEdit);
+var
+  OldStart: Integer;
 begin
   if ACustomEdit.ReadOnly then Exit;
   if ACustomEdit.SelText <> '' then
   begin
+    OldStart := ACustomEdit.SelStart;
     Clipboard.AsText := ACustomEdit.SelText;
     ACustomEdit.SelText := '';   { replaces the selection with empty }
+    ACustomEdit.SelStart := OldStart;
+    ACustomEdit.SelLength := 0;
   end;
 end;
 
 class procedure TCDWSCustomEdit.Paste(const ACustomEdit: TCustomEdit);
 var
   S: string;
+  NewStart: Integer;
 begin
   if ACustomEdit.ReadOnly then Exit;
   S := Clipboard.AsText;
   if S <> '' then
+  begin
+    NewStart := ACustomEdit.SelStart + UTF8Length(S);
     ACustomEdit.SelText := S;     { replaces selection (or inserts at caret if none) }
+    ACustomEdit.SelStart := NewStart;
+    ACustomEdit.SelLength := 0;
+  end;
 end;
 
 
