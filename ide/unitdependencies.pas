@@ -208,13 +208,13 @@ type
     procedure SelUnitsTreeViewExpanding(Sender: TObject; Node: TTreeNode;
       var AllowExpansion: Boolean);
     procedure Timer1Timer(Sender: TObject);
-    procedure UnitGraphFilterAddToSelection(Sender: TBaseVirtualTree; Node: PVirtualNode);
+    procedure UnitGraphFilterAddToSelection(Sender: TBaseVirtualTree; {%H-}Node: PVirtualNode);
     procedure UnitGraphFilterChecked(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure UnitGraphFilterCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode;
-      Column: TColumnIndex; var Result: Integer);
+      {%H-}Column: TColumnIndex; var Result: Integer);
     procedure UnitGraphFilterFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure UnitGraphFilterGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
-      Column: TColumnIndex; TextType: TVSTTextType; var CellText: String);
+      {%H-}Column: TColumnIndex; {%H-}TextType: TVSTTextType; var CellText: String);
     procedure UnitsLvlGraphMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure UnitsLvlGraphSelectionChanged(Sender: TObject);
@@ -2218,7 +2218,7 @@ var
   UnitGroup, RequiredGroup: TUGGroup;
   AVLNode: TAVLTreeNode;
   GroupUnit: TUDUnit;
-  i, j: Integer;
+  i: Integer;
   HasChanged, ShowRequiredPkg: Boolean;
   Graph: TLvlGraph;
   CurUses: TUDUses;
