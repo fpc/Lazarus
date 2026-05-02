@@ -169,7 +169,7 @@ begin
   centerRect.origin.x:= theRect.origin.x;
   centerRect.origin.y:= (theRect.size.height-cellSize.height)/2;
   centerRect.size.width:= theRect.size.width;
-  centerRect.size.height:= cellSize.width;
+  centerRect.size.height:= cellSize.height;
 
   Result:= inherited drawingRectForBounds(centerRect);
 end;
