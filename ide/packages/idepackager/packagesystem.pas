@@ -560,8 +560,7 @@ function FPCParamNeedsBuildAll(const Param: String): boolean;
 function FPCParamForBuildAllHasChanged(OldParams, NewParams: TStrings): boolean;
 function RemoveFPCVerbosityParams(CompParams: TStrings): TStrings;
 function WriteCompilerCfgFile(CfgFilename: string; CompilerParams: TStrings;
-                              out CmdLineParams: TStrings): TCodeBuffer;
-
+                              out CmdLineParams: TStrings): TCodeBuffer; // Result=nil means read error, caller must call Result.Save
 
 implementation
 

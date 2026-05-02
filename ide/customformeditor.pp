@@ -1782,7 +1782,7 @@ function TCustomFormEditor.ClassDependsOnComponent(AClass: TComponentClass;
   For example:
     Add frame2 to frame1 ( frame1 uses frame2 )
     Add frame3 to frame2 ( frame2 uses frame3 => frame 2 uses frame1)
-    Add frame1 to frame3 => circle
+    Add frame1 to frame3 => cycle
 }
 var
   AnUnitInfo: TUnitInfo;

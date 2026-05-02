@@ -7823,7 +7823,7 @@ begin
   DebugLn(['CloseUnitComponent ',AnUnitInfo.Filename,' ',dbgsName(LookupRoot)]);
   {$ENDIF}
 
-  Project1.LockUnitComponentDependencies; // avoid circles
+  Project1.LockUnitComponentDependencies; // avoid cycles
   try
     // save
     if (cfSaveFirst in Flags) and (AnUnitInfo.OpenEditorInfoCount > 0)

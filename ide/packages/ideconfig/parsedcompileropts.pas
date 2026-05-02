@@ -474,7 +474,7 @@ begin
   end;
   if Values[Option].ParseStamp<>CompilerParseStamp then begin
     if Values[Option].Parsing then begin
-      DebugLn('TParsedCompilerOptions.GetParsedValue Circle in Options: ',EnumToStr(Option),' Unparsed="',Values[Option].UnparsedValue,'"');
+      DebugLn('TParsedCompilerOptions.GetParsedValue Cycle in Options: ',EnumToStr(Option),' Unparsed="',Values[Option].UnparsedValue,'"');
       ParsedError(Option, lisEndlessLoopInMacros);
       exit('');
     end;
@@ -497,7 +497,7 @@ var
 begin
   if ParsedPIStamp[Option]<>CompilerParseStamp then begin
     if ParsingPI[Option] then begin
-      DebugLn('TParsedCompilerOptions.GetParsedPIValue Circle in Options: ',EnumToStr(Option));
+      DebugLn('TParsedCompilerOptions.GetParsedPIValue Cycle in Options: ',EnumToStr(Option));
       exit('');
     end;
     ParsingPI[Option]:=true;

@@ -837,7 +837,7 @@ procedure TExternalTool.AddExecuteBefore(Tool: TAbstractExternalTool);
 begin
   //debugln(['TExternalTool.AddExecuteBefore Self=',Title,' Tool=',Tool.Title]);
   if (Tool=Self) or (Tool.IsExecutedBefore(Self)) then
-    raise Exception.Create('TExternalTool.AddExecuteBefore: that would create a circle');
+    raise Exception.Create('TExternalTool.AddExecuteBefore: that would create a cycle');
   if (fExecuteBefore<>nil) and (fExecuteBefore.IndexOf(Tool)<0) then
     fExecuteBefore.Add(Tool);
   if (TExternalTool(Tool).fExecuteAfter<>nil)

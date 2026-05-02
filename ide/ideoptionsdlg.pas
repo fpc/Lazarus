@@ -402,7 +402,7 @@ begin
     with BuildModeComboBox do
       if FIsProjectOptionsDialog and (Items.Count > 0) then
       begin
-        // next mode (in a circle)
+        // next mode (in a cycle)
         ItemIndex := (ItemIndex + 1) mod Items.Count;
         BuildModeComboBoxSelect(Sender);
       end;

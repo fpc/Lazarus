@@ -777,7 +777,7 @@ begin
   if APackage.Missing then
     PrintErrorAndHalt(ErrorBuildFailed, '"' + APackage.IDAsString + '": lpk file missing');
 
-  // check graph for circles and broken dependencies
+  // check graph for cycles and broken dependencies
   if not (pcfDoNotCompileDependencies in Flags) then begin
     CheckPackageGraphForCompilation(APackage,nil);
   end;
@@ -828,10 +828,10 @@ begin
     if PathList<>nil then
       PrintErrorAndHalt(ErrorLoadPackageFailed,'Broken dependency: '+PathListToString(PathList));
 
-    // check for circle dependencies
+    // check for cycle dependencies
     PathList:=PackageGraph.FindCycleDependencyPath(APackage,FirstDependency);
     if PathList<>nil then
-      PrintErrorAndHalt(ErrorLoadPackageFailed,'Circle dependency: '+PathListToString(PathList));
+      PrintErrorAndHalt(ErrorLoadPackageFailed,'Cycle dependency: '+PathListToString(PathList));
   finally
     PathList.Free;
   end;
