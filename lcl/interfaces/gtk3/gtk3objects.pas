@@ -2123,49 +2123,51 @@ begin
 
   if FBackTarget <> nil then
   begin
+    //x11 type, read from underlying X11 surface via FBackTarget matrix.
     ReadSurface := cairo_get_target(FBackTarget);
     cairo_get_matrix(FBackTarget, @AMatrix);
     ReadOffsetX := -(AMatrix.x0 + ADestRect.Left);
     ReadOffsetY := -(AMatrix.y0 + ADestRect.Top);
     TempDestSurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, CopyW, CopyH);
-
     TempCairo := cairo_create(TempDestSurface);
     cairo_set_source_surface(TempCairo, ReadSurface, ReadOffsetX, ReadOffsetY);
     cairo_set_operator(TempCairo, CAIRO_OPERATOR_SOURCE);
     cairo_paint(TempCairo);
     cairo_destroy(TempCairo);
-
     cairo_surface_flush(TempDestSurface);
-
     DstData := PByte(cairo_image_surface_get_data(TempDestSurface));
     DstStride := cairo_image_surface_get_stride(TempDestSurface);
     DstW := CopyW;
     DstH := CopyH;
   end else
-  if cairo_surface_get_type(DestSurface) = CAIRO_SURFACE_TYPE_IMAGE then
   begin
-    cairo_surface_flush(DestSurface);
-    DstW := cairo_image_surface_get_width(DestSurface);
-    DstH := cairo_image_surface_get_height(DestSurface);
-    DstData := PByte(cairo_image_surface_get_data(DestSurface));
-    DstStride := cairo_image_surface_get_stride(DestSurface);
-  end else
-  begin
-
-    TempDestSurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, CopyW, CopyH);
-    TempCairo := cairo_create(TempDestSurface);
-
-    cairo_set_source_surface(TempCairo, DestSurface, -ADestRect.Left, -ADestRect.Top);
-    cairo_set_operator(TempCairo, CAIRO_OPERATOR_SOURCE);
-    cairo_paint(TempCairo);
-
-    cairo_destroy(TempCairo);
-    cairo_surface_flush(TempDestSurface);
-
-    DstData := PByte(cairo_image_surface_get_data(TempDestSurface));
-    DstStride := cairo_image_surface_get_stride(TempDestSurface);
-    DstW := CopyW;
-    DstH := CopyH;
+    //wayland
+    cairo_get_matrix(FCairo, @AMatrix);
+    if (AMatrix.x0 <> 0) or (AMatrix.y0 <> 0) or
+       (cairo_surface_get_type(DestSurface) <> CAIRO_SURFACE_TYPE_IMAGE) then
+    begin
+      ReadOffsetX := -(AMatrix.x0 + ADestRect.Left);
+      ReadOffsetY := -(AMatrix.y0 + ADestRect.Top);
+      TempDestSurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, CopyW, CopyH);
+      TempCairo := cairo_create(TempDestSurface);
+      cairo_set_source_surface(TempCairo, DestSurface, ReadOffsetX, ReadOffsetY);
+      cairo_set_operator(TempCairo, CAIRO_OPERATOR_SOURCE);
+      cairo_paint(TempCairo);
+      cairo_destroy(TempCairo);
+      cairo_surface_flush(TempDestSurface);
+      DstData := PByte(cairo_image_surface_get_data(TempDestSurface));
+      DstStride := cairo_image_surface_get_stride(TempDestSurface);
+      DstW := CopyW;
+      DstH := CopyH;
+    end else
+    begin
+      //pure image
+      cairo_surface_flush(DestSurface);
+      DstW := cairo_image_surface_get_width(DestSurface);
+      DstH := cairo_image_surface_get_height(DestSurface);
+      DstData := PByte(cairo_image_surface_get_data(DestSurface));
+      DstStride := cairo_image_surface_get_stride(DestSurface);
+    end;
   end;
 
   if DstData = nil then
