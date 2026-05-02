@@ -1275,8 +1275,9 @@ function IndexOfFPCParamValue(ParsedParams: TObjectList { list of TFPCParamValue
   const Name: string): integer;
 function GetFPCParamValue(ParsedParams: TObjectList { list of TFPCParamValue };
   const Name: string): TFPCParamValue;
-function IndexOfFPCParamWithRelativeFile(ParsedParams: TObjectList): integer;
+function IndexOfFPCParamWithRelativeFile(ParsedParams: TObjectList): integer; // search source param with relative filename
 function HasFPCParamsRelativeFilename(const CmdLineParams: string): boolean;
+procedure MakeFPCParamsPathsRelative(CompParams: TStrings; BaseDir: string);
 function dbgs(k: TFPCParamKind): string; overload;
 function dbgs(f: TFPCParamFlag): string; overload;
 function dbgs(const Flags: TFPCParamFlags): string; overload;
@@ -3430,6 +3431,94 @@ begin
     Result:=IndexOfFPCParamWithRelativeFile(ParsedParams)>=0;
   finally
     ParsedParams.Free;
+  end;
+end;
+
+procedure MakeFPCParamsPathsRelative(CompParams: TStrings; BaseDir: string);
+var
+  i, l, BaseLen: Integer;
+  aParam: String;
+
+  function ChangePath(StartP: integer; var EndP: integer; ChangeList: boolean): boolean;
+  var
+    aFilename, NewFilename: String;
+    OldLen, NewLen: Integer;
+  begin
+    Result:=false;
+    OldLen:=EndP-StartP;
+    if OldLen<=0 then exit;
+    aFilename:=ResolveDots(copy(aParam,StartP,OldLen));
+    if not FilenameIsAbsolute(aFilename) then exit;
+    NewFilename:=CreateRelativePath(aFilename,BaseDir,true,true);
+    if NewFilename=aFilename then exit;
+    NewLen:=length(NewFilename);
+    ReplaceSubstring(aParam,StartP,OldLen,NewFilename);
+    l:=l+NewLen-OldLen;
+    EndP:=StartP+NewLen;
+    if ChangeList then
+      CompParams[i]:=aParam;
+    Result:=true;
+  end;
+
+  procedure ChangeSimplePath(StartP: integer);
+  var
+    EndP: Integer;
+  begin
+    EndP:=l+1;
+    ChangePath(StartP,EndP,true);
+  end;
+
+  procedure ChangePathList(StartP: integer);
+  var
+    p: Integer;
+    Changed: Boolean;
+  begin
+    Changed:=false;
+    p:=StartP;
+    repeat
+      while (p<=l) and (aParam[p]<>';') do inc(p);
+      if ChangePath(StartP,p,false) then Changed:=true;
+      while (p<=l) and (aParam[p]=';') do inc(p);
+      StartP:=p;
+    until StartP>l;
+    if Changed then
+      CompParams[i]:=aParam;
+  end;
+
+begin
+  if CompParams=nil then exit;
+  BaseDir:=ChompPathDelim(BaseDir);
+  BaseLen:=length(BaseDir);
+  if (BaseLen<2) or not FilenameIsAbsolute(BaseDir) then exit;
+  for i:=0 to CompParams.Count-1 do
+  begin
+    aParam:=CompParams[i];
+    l:=length(aParam);
+    if (l<=3) then continue;
+    if aParam[1]='-' then
+    begin
+      case aParam[2] of
+      'F':
+        case aParam[3] of
+        'C','e','E','L','r','R','U','W','w':
+          ChangeSimplePath(4);
+        'D','f','i','l','M','o','u':
+          ChangePathList(4);
+        end;
+      'e': ChangeSimplePath(3);
+      'I': ChangePathList(3);
+      'X':
+        case aParam[3] of
+        'r': ChangePathList(3);
+        'R': ChangeSimplePath(3);
+        end;
+      end;
+    end else if aParam[1]='@' then begin
+      ChangeSimplePath(2);
+    end else begin
+      // source filename
+      ChangeSimplePath(1);
+    end;
   end;
 end;
 

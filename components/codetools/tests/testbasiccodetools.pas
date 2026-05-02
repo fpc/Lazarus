@@ -63,6 +63,7 @@ type
     procedure TestFilenameIsMatching;
     procedure TestExtractFileUnitname;
     procedure TestParseFPCParameters;
+    procedure TestMakeFPCParamsPathsRelative;
     // SourceLog
     procedure TestChangeLineEndings;
   end;
@@ -972,6 +973,44 @@ begin
   finally
     Parsed.Free;
   end;
+end;
+
+procedure TTestBasicCodeTools.TestMakeFPCParamsPathsRelative;
+
+  procedure T(BaseDir: string; const InputParams, Expected: array of string);
+  var
+    CompParams: TStringList;
+    i: Integer;
+  begin
+    CompParams:=TStringList.Create;
+    try
+      for i:=0 to length(InputParams)-1 do
+        CompParams.Add(InputParams[i]);
+      MakeFPCParamsPathsRelative(CompParams, BaseDir);
+
+      for i:=0 to length(Expected)-1 do
+      begin
+        if i=CompParams.Count then
+          Fail('missing param '+IntToStr(i)+' "'+Expected[i]+'"');
+        if Expected[i]<>CompParams[i] then
+          Fail('expected param '+IntToStr(i)+' "'+Expected[i]+'", but got "'+CompParams[i]+'"');
+      end;
+      if CompParams.Count>length(Expected) then
+        Fail('unexpected param '+IntToStr(CompParams.Count-1)+' "'+CompParams[CompParams.Count-1]+'"');
+    finally
+      CompParams.Free;
+    end;
+  end;
+
+begin
+  {$IFDEF Unix}
+  T('/foo',['-Fu/foo/bar;/bird','-Fi/foo','bar/main.pas'],
+           ['-Fubar;/bird',     '-Fi.',   'bar/main.pas']);
+  T('/foo',['-Fo/foo/ant;/foo//;/foo/.','/foo/bear/main.pas'],
+           ['-Foant;.;.',               'bear/main.pas']);
+  T('/foo/bar',['-Fu/foo/bar;/foo/;/foo/.','/foo/bear/main.pas'],
+               ['-Fu.;..;..',              '../bear/main.pas']);
+  {$ENDIF}
 end;
 
 procedure TTestBasicCodeTools.TestChangeLineEndings;
