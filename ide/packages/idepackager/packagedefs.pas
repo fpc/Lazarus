@@ -415,6 +415,13 @@ type
     podwNotWritable
     );
 
+  TPkgCompiledStatsKind = (
+    pcskDefault,
+    pcskMakefile,
+    pcskRelease
+    );
+  TPkgCompiledStatsKinds = set of TPkgCompiledStatsKind;
+
   { TPkgLastCompileStats }
 
   TPkgLastCompileStats = class
@@ -422,12 +429,13 @@ type
     StateFileLoaded: boolean;
     StateFileName: string; // the .compiled file
     StateFileDate: int64;
+    Kind: TPkgCompiledStatsKind;
     CompilerFilename: string; // path to used compiler
-    CompilerFileDate: int64;
+    CompilerFileDate: int64;  // only for Kind=pcskDefault
+    CompilerChecksum: string; // only for Kind=pcskRelease
     Params: TStrings;        // compiler parameters
     Complete: boolean;     // compilation was successful
     MainPPUExists: boolean; // main ppu file was there after compile
-    ViaMakefile: boolean;  // compiled via make
     DirectoryWritable: TPkgOutputDirWritable;
     LazarusVersion: string;
     constructor Create;

@@ -24,7 +24,7 @@
     <License Value="GPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="61">
+    <Files Count="62">
       <Item1>
         <Filename Value="Makefile"/>
         <Type Value="Text"/>
@@ -276,6 +276,10 @@
         <Filename Value="codetoolgdbtracer.pas"/>
         <UnitName Value="CodetoolGDBTracer"/>
       </Item61>
+      <Item62>
+        <Filename Value="ctfilechksums.pas"/>
+        <UnitName Value="ctfilechksums"/>
+      </Item62>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="docs"/>

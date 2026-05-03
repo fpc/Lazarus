@@ -41,7 +41,7 @@ type
     );
   TPkgLinkOrigins = set of TPkgLinkOrigin;
 
-  function dbgs(p: TPkgLinkOrigin): string;
+function dbgs(p: TPkgLinkOrigin): string; overload;
 
 const
   AllPkgLinkOrigins = [low(TPkgLinkOrigin)..high(TPkgLinkOrigin)];

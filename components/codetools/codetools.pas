@@ -8,19 +8,16 @@ unit CodeTools;
 interface
 
 uses
-  BasicCodeTools, CacheCodeTools, CCodeParserTool, CodeAtom, CodeBeautifier, 
-  CodeCache, CodeCompletionTool, CodeGraph, CodeIndex, CodeToolManager, 
-  CodeToolMemManager, CodeToolsConfig, CodeToolsStrConsts, CodeToolsStructs, 
-  CodeTree, CustomCodeTool, DefineTemplates, DirectivesTree, DirectoryCacher, 
-  EventCodeTool, ExprEval, ExtractProcTool, FileProcs, FindDeclarationCache, 
-  FindDeclarationTool, FindOverloads, H2PasTool, IdentCompletionTool, 
-  KeywordFuncLists, LFMTrees, LinkScanner, MethodJumpTool, 
-  MultiKeyWordListTool, NonPascalCodeTools, PascalParserTool, 
-  PascalReaderTool, PPUCodeTools, PPUGraph, PPUParser, ResourceCodeTool, 
-  SourceChanger, SourceLog, StdCodeTools, OtherIdentifierTree, 
-  CodeToolsCfgScript, CTXMLFixFragment, CTUnitGraph, ChangeDeclarationTool, 
-  CodeToolsFPCMsgs, UnitDictionary, ctloadlaz, CTUnitGroupGraph, 
-  CodeCompletionTemplater, CodetoolGDBTracer, LazarusPackageIntf;
+  BasicCodeTools, CacheCodeTools, CCodeParserTool, CodeAtom, CodeBeautifier, CodeCache, 
+  CodeCompletionTool, CodeGraph, CodeIndex, CodeToolManager, CodeToolMemManager, CodeToolsConfig, 
+  CodeToolsStrConsts, CodeToolsStructs, CodeTree, CustomCodeTool, DefineTemplates, DirectivesTree, 
+  DirectoryCacher, EventCodeTool, ExprEval, ExtractProcTool, FileProcs, FindDeclarationCache, 
+  FindDeclarationTool, FindOverloads, H2PasTool, IdentCompletionTool, KeywordFuncLists, LFMTrees, 
+  LinkScanner, MethodJumpTool, MultiKeyWordListTool, NonPascalCodeTools, PascalParserTool, 
+  PascalReaderTool, PPUCodeTools, PPUGraph, PPUParser, ResourceCodeTool, SourceChanger, SourceLog, 
+  StdCodeTools, OtherIdentifierTree, CodeToolsCfgScript, CTXMLFixFragment, CTUnitGraph, 
+  ChangeDeclarationTool, CodeToolsFPCMsgs, UnitDictionary, ctloadlaz, CTUnitGroupGraph, 
+  CodeCompletionTemplater, CodetoolGDBTracer, CTFileChksums, LazarusPackageIntf;
 
 implementation
 
