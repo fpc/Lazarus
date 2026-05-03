@@ -48,6 +48,14 @@ else
 IDEVERSION=$(shell ./tools/install/get_lazarus_version.sh)
 endif
 
+LAZBUILDOPTS=--lazarusdir=.
+ifdef LAZBUILDJOBS
+LAZBUILDOPTS+= --max-process-count=$(LAZBUILDJOBS)
+endif
+ifdef LCL_PLATFORM
+LAZBUILDOPTS+= --ws=$(LCL_PLATFORM)
+endif
+
 #-----------------------------------------------------------------------------
 [rules]
 .PHONY: help registration tools lcl basecomponents bigidecomponents lazbuild ide idebig cleanide bigide useride starter lhelp all clean purge distclean install
@@ -155,35 +163,22 @@ revisioninc:
 	$(MAKE) -C ide revisioninc
 
 #-----------------------------------------------------------------------------
-# build lazarus exe with minimum of packages for the LCL_PLATFORM
-# requires basecomponents and tools
+# calls lazbuild to build lazarus exe with minimum of packages for the LCL_PLATFORM
+# requires lazbuild
 ide:
-	$(MAKE) -C ide ide
+	./lazbuild$(SRCEXEEXT) $(LAZBUILDOPTS) --build-ide-minimal --pkg-release
 
 #-----------------------------------------------------------------------------
-# build lazarus exe with bigide packages for the LCL_PLATFORM
-# requires bigidecomponents and tools
+# calls lazbuild to build lazarus exe with bigide packages for the LCL_PLATFORM
+# requires lazbuild
 idebig:
-	$(MAKE) -C ide bigide
+	./lazbuild$(SRCEXEEXT) $(LAZBUILDOPTS) --build-ide-release --pkg-release
 
 #-----------------------------------------------------------------------------
 # calls lazbuild to build lazarus and packages with user's settings
 # requires lazbuild
-# ignores LCL_PLATFORM and OPTS
-useride: 
-ifdef LAZBUILDJOBS
-ifdef LCL_PLATFORM
-	./lazbuild$(SRCEXEEXT) --max-process-count=$(LAZBUILDJOBS) --lazarusdir=. --build-ide= --ws=$(LCL_PLATFORM)
-else
-	./lazbuild$(SRCEXEEXT) --max-process-count=$(LAZBUILDJOBS) --lazarusdir=. --build-ide=
-endif
-else
-ifdef LCL_PLATFORM
-	./lazbuild$(SRCEXEEXT) --lazarusdir=. --build-ide= --ws=$(LCL_PLATFORM)
-else
- 	./lazbuild$(SRCEXEEXT) --lazarusdir=. --build-ide=
-endif
-endif
+useride:
+	./lazbuild$(SRCEXEEXT) $(LAZBUILDOPTS) --build-ide --pkg-release
 
 #-----------------------------------------------------------------------------
 starter:
@@ -198,9 +193,6 @@ lazbuild: registration
 	$(MAKE) -C ide/packages/idepackager
 	$(MAKE) -C ide/packages/ideproject
 	$(MAKE) -C ide lazbuilder
-	$(MAKE) -C components/freetype LCL_PLATFORM=nogui
-	$(MAKE) -C lcl LCL_PLATFORM=nogui
-	$(MAKE) -C tools
 
 #-----------------------------------------------------------------------------
 # build lhelp
@@ -210,11 +202,11 @@ lhelp:
 
 #-----------------------------------------------------------------------------
 # build lazarus,lcl,lazbuild,tools,startlazarus with base packages for the LCL_PLATFORM
-all: lazbuild tools lcl basecomponents ide starter
+all: lazbuild tools ide starter
 
 #-----------------------------------------------------------------------------
 # build lazarus,lcl,lazbuild,tools,startlazarus,lhelp with bigide packages for the LCL_PLATFORM
-bigide: lazbuild tools lcl basecomponents bigidecomponents idebig starter lhelp
+bigide: lazbuild tools idebig starter lhelp
 
 #-----------------------------------------------------------------------------
 cleanide:

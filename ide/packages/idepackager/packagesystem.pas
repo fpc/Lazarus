@@ -3479,7 +3479,6 @@ begin
       Stats.Kind:=pcskRelease;
       Stats.CompilerFilename:=ExtractFileName(Stats.CompilerFilename);
       Err:=GetCompilerChecksum(CompilerFilename,Stats.CompilerChecksum);
-      debugln(['AAA3 TLazPackageGraph.SavePackageCompiledState ',Stats.CompilerChecksum]);
       if Err<>TFileChecksums.TState.Valid then
       begin
         debugln(['Error: (lazarus) TLazPackageGraph.SavePackageCompiledState GetCompilerChecksum(',CompilerFilename,'): ',dbgs(Err)]);
@@ -3493,7 +3492,6 @@ begin
       XMLConfig.SetValue('Compiler/Value',Stats.CompilerFilename);
       XMLConfig.SetValue('Compiler/Date',Stats.CompilerFileDate);
       XMLConfig.SetDeleteValue('Compiler/Checksum',Stats.CompilerChecksum,'');
-      debugln(['AAA4 TLazPackageGraph.SavePackageCompiledState ',Stats.CompilerChecksum]);
       XMLConfig.SetValue('Params/Value',MergeCmdLineParams(Stats.Params));
       XMLConfig.SetDeleteValue('Complete/Value',Stats.Complete,true);
       XMLConfig.SetDeleteValue('Complete/MainPPUExists',Stats.MainPPUExists,true);

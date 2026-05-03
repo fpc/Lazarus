@@ -386,6 +386,13 @@ IDEVERSION=$(shell .\tools\install\get_lazarus_version.bat)
 else
 IDEVERSION=$(shell ./tools/install/get_lazarus_version.sh)
 endif
+LAZBUILDOPTS=--lazarusdir=.
+ifdef LAZBUILDJOBS
+LAZBUILDOPTS+= --max-process-count=$(LAZBUILDJOBS)
+endif
+ifdef LCL_PLATFORM
+LAZBUILDOPTS+= --ws=$(LCL_PLATFORM)
+endif
 ifeq ($(CPU_OS_TARGET),i386-linux)
 override TARGET_PROGRAMS+=lazarus startlazarus lazbuild
 endif
@@ -3190,23 +3197,11 @@ tools:
 revisioninc:
 	$(MAKE) -C ide revisioninc
 ide:
-	$(MAKE) -C ide ide
+	./lazbuild$(SRCEXEEXT) $(LAZBUILDOPTS) --build-ide-minimal --pkg-release
 idebig:
-	$(MAKE) -C ide bigide
-useride: 
-ifdef LAZBUILDJOBS
-ifdef LCL_PLATFORM
-	./lazbuild$(SRCEXEEXT) --max-process-count=$(LAZBUILDJOBS) --lazarusdir=. --build-ide= --ws=$(LCL_PLATFORM)
-else
-	./lazbuild$(SRCEXEEXT) --max-process-count=$(LAZBUILDJOBS) --lazarusdir=. --build-ide=
-endif
-else
-ifdef LCL_PLATFORM
-	./lazbuild$(SRCEXEEXT) --lazarusdir=. --build-ide= --ws=$(LCL_PLATFORM)
-else
-	./lazbuild$(SRCEXEEXT) --lazarusdir=. --build-ide=
-endif
-endif
+	./lazbuild$(SRCEXEEXT) $(LAZBUILDOPTS) --build-ide-release --pkg-release
+useride:
+	./lazbuild$(SRCEXEEXT) $(LAZBUILDOPTS) --build-ide --pkg-release
 starter:
 	$(MAKE) -C ide starter
 lazbuild: registration
@@ -3215,13 +3210,10 @@ lazbuild: registration
 	$(MAKE) -C ide/packages/idepackager
 	$(MAKE) -C ide/packages/ideproject
 	$(MAKE) -C ide lazbuilder
-	$(MAKE) -C components/freetype LCL_PLATFORM=nogui
-	$(MAKE) -C lcl LCL_PLATFORM=nogui
-	$(MAKE) -C tools
 lhelp:
 	$(MAKE) -C components/chmhelp/lhelp
-all: lazbuild tools lcl basecomponents ide starter
-bigide: lazbuild tools lcl basecomponents bigidecomponents idebig starter lhelp
+all: lazbuild tools ide starter
+bigide: lazbuild tools idebig starter lhelp
 cleanide:
 	$(MAKE) -C ide cleanide
 cleanlaz: cleanide
