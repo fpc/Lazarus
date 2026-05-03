@@ -3453,7 +3453,11 @@ begin
     if APackage.CompilerOptions.OutputDirectoryOverride='' then
     begin
       // make all paths relative in state file, so it can be copied to other hosts
+      // Note: a state file in the OutputDirectoryOverride should keep absolute paths,
+      //       as it can be from a different package. For example if the user started a
+      //       lazarus from a readonly usb stick and then from a debian package.
       MakeFPCParamsPathsRelative(Stats.Params,APackage.DirectoryExpanded);
+      Stats.CompilerFilename:=CreateRelativePath(CompilerFilename,APackage.Directory,true,true);
     end;
 
     XMLConfig:=TXMLConfig.CreateClean(StateFile);
@@ -3851,7 +3855,7 @@ begin
     end;
 
     // check if build all (-B) is needed
-    if (Stats.CompilerFilename<>CompilerFilename)
+    if (CompareFilenames(Stats.CompilerFilename,CompilerFilename)<>0)
     or FPCParamForBuildAllHasChanged(Stats.Params,CompilerParams)
     or ((Stats.CompilerFileDate>0)
         and FileExistsCached(CompilerFilename)
@@ -3958,7 +3962,7 @@ begin
 
     // compiler
     if (not Stats.ViaMakefile)
-    and (CompilerFilename<>Stats.CompilerFilename) then begin
+    and (CompareFilenames(CompilerFilename,Stats.CompilerFilename)<>0) then begin
       DebugLn('Hint: (lazarus) Compiler filename changed for ',APackage.IDAsString);
       DebugLn('  Old="',Stats.CompilerFilename,'"');
       DebugLn('  Now="',CompilerFilename,'"');
@@ -4139,7 +4143,11 @@ begin
         Stats.Params.Clear;
         Params:=XMLConfig.GetValue('Params/Value','');
         if (MakefileValue='') then
-          Stats.ViaMakefile:=false
+        begin
+          Stats.ViaMakefile:=false;
+          if (Stats.CompilerFilename>'') and not FilenameIsAbsolute(Stats.CompilerFilename) then
+            Stats.CompilerFilename:=ResolveDots(APackage.DirectoryExpanded+Stats.CompilerFilename);
+        end
         else begin
           Stats.ViaMakefile:=true;
           MakefileVersion:=StrToIntDef(MakefileValue,0);

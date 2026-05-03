@@ -224,7 +224,7 @@ type
     property ChangeStamp: integer read FChangeStamp;
     property CustomOptions: TConfigStorage read FCustomOptions;
     property PackageType: TLazPackageType read FPackageType;
-    property DirectoryExpanded: string read GetDirectoryExpanded;
+    property DirectoryExpanded: string read GetDirectoryExpanded; // with trailing path delim
     property FileCount: integer read GetFileCount;
     property Files[Index: integer]: TLazPackageFile read GetPkgFiles;
     property Installed: TPackageInstallType read FInstalled write FInstalled;
