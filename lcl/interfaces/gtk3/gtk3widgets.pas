@@ -3508,6 +3508,15 @@ begin
     {$ENDIF}
     gtk_widget_set_can_focus(Widget, False);
     gtk_widget_set_can_focus(GetContainerWidget, False);
+  end else
+  if Assigned(LCLObject) and (csNoFocus in LCLObject.ControlStyle) then
+  begin
+    Widget^.set_focus_on_click(False);
+    if not LCLObject.TabStop then
+    begin
+      gtk_widget_set_can_focus(Widget, False);
+      gtk_widget_set_can_focus(GetContainerWidget, False);
+    end;
   end;
 end;
 
@@ -4321,7 +4330,13 @@ begin
   if wtNotebook in AParent.WidgetType then
     // do nothing !
   else
-    FWidget^.set_parent(AParent.GetContainerWidget);
+  if Gtk3IsContainer(AParent.GetContainerWidget) then
+    FWidget^.set_parent(AParent.GetContainerWidget)
+  else
+    raise EInvalidOperation.CreateFmt(
+      '%s cannot host child %s on GTK3 (not a GtkContainer)',
+      [BoolToStr(Assigned(AParent.LCLObject), AParent.LCLObject.ClassName, '<nil>'),
+       BoolToStr(Assigned(LCLObject), LCLObject.ClassName, '<nil>')]);
 end;
 
 procedure TGtk3Widget.Show;
