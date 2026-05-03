@@ -387,11 +387,17 @@ else
 IDEVERSION=$(shell ./tools/install/get_lazarus_version.sh)
 endif
 LAZBUILDOPTS=--lazarusdir=.
-ifdef LAZBUILDJOBS
-LAZBUILDOPTS+= --max-process-count=$(LAZBUILDJOBS)
+ifdef CPU_TARGET
+LAZBUILDOPTS+= --cpu=$(CPU_TARGET)
+endif
+ifdef OS_TARGET
+LAZBUILDOPTS+= --os=$(OS_TARGET)
 endif
 ifdef LCL_PLATFORM
 LAZBUILDOPTS+= --ws=$(LCL_PLATFORM)
+endif
+ifdef LAZBUILDJOBS
+LAZBUILDOPTS+= --max-process-count=$(LAZBUILDJOBS)
 endif
 ifeq ($(CPU_OS_TARGET),i386-linux)
 override TARGET_PROGRAMS+=lazarus startlazarus lazbuild
