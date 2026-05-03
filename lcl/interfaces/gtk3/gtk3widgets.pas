@@ -481,7 +481,7 @@ type
     FPageBox: PGtkBox;
     FImageWidget: PGtkImage;
     FPageLabel: PGtkLabel;
-    FCloseButton: PGtkButton;
+    FCloseButton: PGtkWidget;
     function GetCloseButtonVisible: boolean;
     procedure SetCloseButtonVisible(AValue: boolean);
   strict private
@@ -489,8 +489,12 @@ type
       AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static;
     class procedure CentralWidgetMapped(AWidget: PGtkWidget;
       Data: gpointer); cdecl; static;
-    class procedure TabCloseClicked(aButton: PGtkButton; aData: gPointer);
-      cdecl; static;
+    class function TabCloseClicked(aWidget: PGtkWidget; aEvent: PGdkEvent;
+      aData: gPointer): gboolean; cdecl; static;
+    class function TabCloseEnter(aWidget: PGtkWidget; aEvent: PGdkEventCrossing;
+      aData: gPointer): gboolean; cdecl; static;
+    class function TabCloseLeave(aWidget: PGtkWidget; aEvent: PGdkEventCrossing;
+      aData: gPointer): gboolean; cdecl; static;
   protected
     procedure ConnectSizeAllocateSignal(ToWidget: PGtkWidget); override;
     procedure DoBeforeLCLPaint; override;
@@ -3142,6 +3146,8 @@ begin
     FreeAndNil(FPostMessages);
   end;
 
+  g_idle_remove_by_data(Self);
+
   if HasCaret and IsValidHandle then
     GTK3WidgetSet.DestroyCaret(HWND(Self));
 
@@ -3843,6 +3849,8 @@ begin
     ;
 
     if Widget^.get_visible then
+      Widget^.size_allocate(@ARect)
+    else
       Widget^.set_allocation(@Alloc);
 
     Widget^.get_size_request(@CurW, @CurH);
@@ -3856,6 +3864,11 @@ begin
       Widget^.set_size_request(AWidth, AHeight);
     end;
     Move(ALeft, ATop);
+
+    Widget^.queue_resize;
+    if Gtk3IsWidget(PGObject(Widget^.get_parent)) then
+      Widget^.get_parent^.queue_resize;
+
     if Assigned(LCLObject) and (csDesigning in LCLObject.ComponentState) and
        Widget^.get_realized then
     begin
@@ -6939,10 +6952,31 @@ begin
     ACtl.LCLObject.DoAdjustClientRectChange;
 end;
 
-class procedure TGtk3Page.TabCloseClicked(aButton: PGtkButton; aData: gPointer); cdecl;
+class function TGtk3Page.TabCloseClicked(aWidget: PGtkWidget; aEvent: PGdkEvent;
+  aData: gPointer): gboolean; cdecl;
 begin
-  with TCustomTabControl(TCustomPage(TGtk3Page(aData).LCLObject).Parent) do
-    DoCloseTabClicked(TCustomPage(TGtk3Page(aData).LCLObject));
+  Result := False;
+  if (aEvent <> nil) and (aEvent^.type_ = GDK_BUTTON_PRESS) and
+     (aEvent^.button.button = 1) then
+  begin
+    with TCustomTabControl(TCustomPage(TGtk3Page(aData).LCLObject).Parent) do
+      DoCloseTabClicked(TCustomPage(TGtk3Page(aData).LCLObject));
+    Result := True;
+  end;
+end;
+
+class function TGtk3Page.TabCloseEnter(aWidget: PGtkWidget;
+  aEvent: PGdkEventCrossing; aData: gPointer): gboolean; cdecl;
+begin
+  gtk_widget_set_state_flags(aWidget, [GTK_STATE_FLAG_PRELIGHT], False);
+  Result := False;
+end;
+
+class function TGtk3Page.TabCloseLeave(aWidget: PGtkWidget;
+  aEvent: PGdkEventCrossing; aData: gPointer): gboolean; cdecl;
+begin
+  gtk_widget_unset_state_flags(aWidget, [GTK_STATE_FLAG_PRELIGHT]);
+  Result := False;
 end;
 
 procedure TGtk3Page.ConnectSizeAllocateSignal(ToWidget: PGtkWidget);
@@ -6957,6 +6991,8 @@ var
   AMonitor: PGdkMonitor;
   AScaleFactor: gint;
   AIconSize: TGtkIconSize;
+  ACSSProvider: PGtkCssProvider;
+  AStyleCtx: PGtkStyleContext;
 begin
   FWidgetType := FWidgetType + [wtLayout];
   FPageBox := TGtkBox.new(GTK_ORIENTATION_HORIZONTAL, 4);
@@ -6974,10 +7010,27 @@ begin
   else
     AIconSize := GTK_ICON_SIZE_SMALL_TOOLBAR;
   image := gtk_image_new_from_icon_name('window-close', AIconSize);
-  FCloseButton := gtk_button_new();
-  gtk_button_set_relief(PGtkButton(FCloseButton), GTK_RELIEF_NONE);
+
+  //we use gtkevenbox instead of gtkbutton as tab close button to surpress
+  //gtk-frame-clock gtk layout warnings.
+
+  FCloseButton := PGtkWidget(gtk_event_box_new);
+  gtk_event_box_set_visible_window(PGtkEventBox(FCloseButton), True);
+  gtk_event_box_set_above_child(PGtkEventBox(FCloseButton), True);
   gtk_container_add(PGtkContainer(FCloseButton), image);
-  gtk_widget_set_name(FCloseButton, 'tab-close-button'); // optional styling via css.
+  gtk_widget_set_name(FCloseButton, 'tab-close-button');
+  gtk_widget_add_events(FCloseButton,
+    Ord(GDK_BUTTON_PRESS_MASK) or
+    Ord(GDK_ENTER_NOTIFY_MASK) or
+    Ord(GDK_LEAVE_NOTIFY_MASK));
+
+  ACSSProvider := gtk_css_provider_new;
+  gtk_css_provider_load_from_data(ACSSProvider,
+    '#tab-close-button { background-color: transparent; border-radius: 3px; }' +
+    '#tab-close-button:hover { background-color: alpha(currentColor, 0.15); }', -1, nil);
+  AStyleCtx := FCloseButton^.get_style_context;
+  AStyleCtx^.add_provider(PGtkStyleProvider(ACSSProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
+  g_object_unref(ACSSProvider);
 
   FPageBox^.pack_start(FImageWidget, False, False, 0);
   FPageBox^.pack_start(FPageLabel, False, False, 0);
@@ -7005,7 +7058,9 @@ begin
   g_object_set_data(FImageWidget,'lclwidget', Self);
   g_object_set_data(FCloseButton,'lclwidget', Self);
 
-  g_signal_connect_data(FCloseButton, 'clicked', TGCallback(@TabCloseClicked), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(FCloseButton, 'button-press-event', TGCallback(@TabCloseClicked), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(FCloseButton, 'enter-notify-event', TGCallback(@TabCloseEnter), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(FCloseButton, 'leave-notify-event', TGCallback(@TabCloseLeave), Self, nil, G_CONNECT_DEFAULT);
   //Set label angle to match parent notebook's tab position - vertical for LEFT/RIGHT
   if Assigned(LCLObject.Parent) then
     SetLabelAngle(TCustomTabControl(LCLObject.Parent).TabPosition);
@@ -11546,10 +11601,11 @@ begin
   end;
 end;
 
-class procedure TGtk3ComboBox.EntryChanged(AEntry: PGtkEntry; AData: gpointer); cdecl;
+function GtkComboBoxEntryChangedIdle(AData: gpointer): gboolean; cdecl;
 var
   Msg: TLMessage;
 begin
+  Result := False; //G_SOURCE_REMOVE - one-shot
   if AData = nil then
     Exit;
   if TGtk3Widget(AData).InUpdate then
@@ -11557,6 +11613,16 @@ begin
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
   Msg.Msg := LM_CHANGED;
   TGtk3Widget(AData).DeliverMessage(Msg);
+end;
+
+class procedure TGtk3ComboBox.EntryChanged(AEntry: PGtkEntry; AData: gpointer); cdecl;
+begin
+  if AData = nil then
+    exit;
+  if TGtk3Widget(AData).InUpdate then
+    exit;
+  g_idle_remove_by_data(AData);
+  g_idle_add(@GtkComboBoxEntryChangedIdle, AData);
 end;
 
 
