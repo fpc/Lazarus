@@ -40,7 +40,16 @@ begin
   APango^.get_size(min_width, nat_width);
   APango^.unref;
   min_width^ := PANGO_PIXELS(min_width^) * 2 + 2;
-  nat_width^ := min_width^;
+
+  if AControl.LCLWidth > 0 then
+    nat_width^ := AControl.LCLWidth
+  else
+  if Assigned(AControl.LCLObject) and (AControl.LCLObject.Width > 0) then
+    nat_width^ := AControl.LCLObject.Width
+  else
+    nat_width^ := min_width^;
+  if nat_width^ < min_width^ then
+    nat_width^ := min_width^;
 
   //apply constraints ONLY if we are primary widget, not eg our spin edit implemenation.
   if (AControl.Widget = widget) and Assigned(AControl.LCLObject.Constraints) then
