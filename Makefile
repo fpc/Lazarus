@@ -3126,7 +3126,7 @@ makefiles: fpc_makefiles
 ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
-.PHONY: help registration tools lcl basecomponents bigidecomponents lazbuild ide idebig cleanide bigide useride starter lhelp all clean purge distclean install
+.PHONY: help registration tools lcl basecomponents bigidecomponents lazbuild ide idebig cleanlazbuildpkg cleanide bigide useride starter lhelp all clean purge distclean install
 help:
 	@$(ECHO)
 	@$(ECHO) " Main targets"
@@ -3200,11 +3200,9 @@ basecomponents:
 bigidecomponents:
 	$(MAKE) -C components bigide
 tools:
-	$(MAKE) -C components/freetype LCL_PLATFORM=nogui
+	$(MAKE) -C components/freetype
 	$(MAKE) -C lcl LCL_PLATFORM=nogui
 	$(MAKE) -C tools
-revisioninc:
-	$(MAKE) -C ide revisioninc
 ide:
 	./lazbuild$(SRCEXEEXT) $(LAZBUILDOPTS) --build-ide-minimal --pkg-release
 idebig:
@@ -3214,17 +3212,31 @@ useride:
 starter:
 	$(MAKE) -C ide starter
 lazbuild: registration
-	$(MAKE) -C components lazbuildpackages
+	$(MAKE) -C components/lazutils
+	$(MAKE) -C components/codetools
+	$(MAKE) -C components/buildintf
+	$(MAKE) -C components/lazdebuggers/lazdebuggerintf
+	$(MAKE) -C components/debuggerintf
 	$(MAKE) -C ide/packages/ideconfig
 	$(MAKE) -C ide/packages/idepackager
 	$(MAKE) -C ide/packages/ideproject
 	$(MAKE) -C ide lazbuilder
 lhelp:
 	$(MAKE) -C components/chmhelp/lhelp
-all: lazbuild tools ide starter
-bigide: lazbuild tools idebig starter lhelp
+all: lazbuild tools cleanlazbuildpkg ide starter
+bigide: lazbuild tools cleanlazbuildpkg idebig starter lhelp
 cleanide:
 	$(MAKE) -C ide cleanide
+cleanlazbuildpkg:
+	$(MAKE) -C packager/registration clean
+	$(MAKE) -C components/lazutils clean
+	$(MAKE) -C components/codetools clean
+	$(MAKE) -C components/buildintf clean
+	$(MAKE) -C components/lazdebuggers/lazdebuggerintf clean
+	$(MAKE) -C components/debuggerintf clean
+	$(MAKE) -C ide/packages/ideconfig clean
+	$(MAKE) -C ide/packages/idepackager clean
+	$(MAKE) -C ide/packages/ideproject clean
 cleanlaz: cleanide
 	$(MAKE) -C packager/registration clean
 	$(MAKE) -C lcl cleanall
