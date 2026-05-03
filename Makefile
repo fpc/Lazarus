@@ -387,6 +387,9 @@ else
 IDEVERSION=$(shell ./tools/install/get_lazarus_version.sh)
 endif
 LAZBUILDOPTS=--lazarusdir=.
+ifdef FPC
+LAZBUILDOPTS+= --compiler=$(FPC)
+endif
 ifdef CPU_TARGET
 LAZBUILDOPTS+= --cpu=$(CPU_TARGET)
 endif
