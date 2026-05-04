@@ -2185,6 +2185,17 @@ begin
   end;
 
   DeliverMessage(Msg);
+
+  if Msg.Msg = LM_KILLFOCUS then
+  begin
+    if ([wtEntry, wtSpinEdit] * WidgetType <> []) and
+      Gtk3IsEditable(PGObject(GetContainerWidget)) then
+        PGtkEditable(GetContainerWidget)^.select_region(0, 0)
+    else
+    if (wtComboBox in WidgetType) and (Self is TGtk3ComboBox) and PGtkComboBox(FWidget)^.has_entry and
+       Gtk3IsEditable(PGObject(PGtkComboBox(FWidget)^.get_child)) then
+         PGtkEditable(PGtkComboBox(FWidget)^.get_child)^.select_region(0, 0);
+  end;
 end;
 
 
