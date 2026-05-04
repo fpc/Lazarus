@@ -3203,12 +3203,13 @@ tools:
 	$(MAKE) -C components/freetype
 	$(MAKE) -C lcl LCL_PLATFORM=nogui
 	$(MAKE) -C tools
-ide:
+idemin:
 	./lazbuild$(SRCEXEEXT) $(LAZBUILDOPTS) --build-ide-minimal --pkg-release
 idebig:
 	./lazbuild$(SRCEXEEXT) $(LAZBUILDOPTS) --build-ide-release --pkg-release
 useride:
 	./lazbuild$(SRCEXEEXT) $(LAZBUILDOPTS) --build-ide --pkg-release
+ide: useride
 starter:
 	$(MAKE) -C ide starter
 lazbuild: registration
@@ -3223,7 +3224,7 @@ lazbuild: registration
 	$(MAKE) -C ide lazbuilder
 lhelp:
 	$(MAKE) -C components/chmhelp/lhelp
-all: lazbuild tools cleanlazbuildpkg ide starter
+all: lazbuild tools cleanlazbuildpkg idemin starter
 bigide: lazbuild tools cleanlazbuildpkg idebig starter lhelp
 cleanide:
 	$(MAKE) -C ide cleanide

@@ -168,7 +168,7 @@ tools:
 #-----------------------------------------------------------------------------
 # calls lazbuild to build lazarus exe with minimum of packages for the LCL_PLATFORM
 # requires lazbuild
-ide:
+idemin:
 	./lazbuild$(SRCEXEEXT) $(LAZBUILDOPTS) --build-ide-minimal --pkg-release
 
 #-----------------------------------------------------------------------------
@@ -182,6 +182,10 @@ idebig:
 # requires lazbuild
 useride:
 	./lazbuild$(SRCEXEEXT) $(LAZBUILDOPTS) --build-ide --pkg-release
+
+#-----------------------------------------------------------------------------
+# For legacy IDE, which calls "make ide" to rebuild itself
+ide: useride
 
 #-----------------------------------------------------------------------------
 starter:
@@ -209,7 +213,7 @@ lhelp:
 
 #-----------------------------------------------------------------------------
 # build lazarus,lcl,lazbuild,tools,startlazarus with base packages for the LCL_PLATFORM
-all: lazbuild tools cleanlazbuildpkg ide starter
+all: lazbuild tools cleanlazbuildpkg idemin starter
 
 #-----------------------------------------------------------------------------
 # build lazarus,lcl,lazbuild,tools,startlazarus,lhelp with bigide packages for the LCL_PLATFORM
