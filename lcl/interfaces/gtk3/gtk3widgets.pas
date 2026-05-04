@@ -2950,6 +2950,37 @@ begin
                                    GTK_STYLE_PROVIDER_PRIORITY_USER);
     g_object_unref(Provider);
   end else
+  if Self is TGtk3CheckBox then
+  begin
+    AOldProvider := PGtkCssProvider(g_object_get_data(PGObject(FWidget), 'lclBgColorProv'));
+    if Assigned(AOldProvider) then
+    begin
+      gtk_style_context_remove_provider(gtk_widget_get_style_context(FWidget),
+        PGtkStyleProvider(AOldProvider));
+      g_object_set_data(PGObject(FWidget), 'lclBgColorProv', nil);
+    end;
+    if AValue <> clDefault then
+    begin
+      if Self is TGtk3RadioButton then
+        CSSData := 'radiobutton'
+      else
+        CSSData := 'checkbutton';
+      RGBA := ColorToRGB(AValue);
+
+      CSSData := Format('%s { background-color: #%.2x%.2x%.2x; background-image: none; }',
+        [CSSData, Red(RGBA), Green(RGBA), Blue(RGBA)]);
+
+      ANewProvider := gtk_css_provider_new();
+      gtk_css_provider_load_from_data(ANewProvider, PChar(CSSData), -1, nil);
+
+      gtk_style_context_add_provider(gtk_widget_get_style_context(FWidget),
+        PGtkStyleProvider(ANewProvider),
+        GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+      g_object_set_data_full(PGObject(FWidget), 'lclBgColorProv', ANewProvider,
+        TGDestroyNotify(@g_object_unref));
+    end;
+  end else
   begin
     AColor := TColortoTGdkRGBA(ColorToRgb(AValue));
     if FWidget <> GetContainerWidget then
