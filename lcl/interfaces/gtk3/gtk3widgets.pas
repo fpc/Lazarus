@@ -11468,6 +11468,8 @@ end;
 
 procedure TGtk3ComboBox.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
 var
+  ARect: TGdkRectangle;
+  Alloc: TGtkAllocation;
   CurW, CurH: gint;
   SizeMsg: TLMSize;
 begin
@@ -11476,15 +11478,26 @@ begin
 
   LCLWidth := AWidth;
   LCLHeight := AHeight;
+  ARect.x := ALeft;
+  ARect.y := ATop;
+  ARect.width := AWidth;
+  ARect.height := AHeight;
+  Alloc.x := ALeft;
+  Alloc.y := ATop;
+  Alloc.width := AWidth;
+  Alloc.height := AHeight;
 
   BeginUpdate;
   try
     if not Widget^.get_realized and Gtk3IsGtkWindow(Widget^.get_toplevel) then
       Widget^.realize;
+    if Widget^.get_visible then
+      Widget^.size_allocate(@ARect);
     Widget^.get_size_request(@CurW, @CurH);
     if (CurW <> AWidth) or (CurH <> AHeight) then
       Widget^.set_size_request(AWidth, AHeight);
     Move(ALeft, ATop);
+    Widget^.queue_resize;
     if Assigned(LCLObject) and (csDesigning in LCLObject.ComponentState) and
        Widget^.get_realized then
     begin

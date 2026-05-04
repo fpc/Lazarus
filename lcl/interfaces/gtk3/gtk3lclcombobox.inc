@@ -285,11 +285,13 @@ procedure LCLGtkComboBoxSetShrinkClassRecursive(W: PGtkWidget; AAdd: Boolean);
     begin
       if not gtk_style_context_has_class(Ctx, LCL_COMBO_SHRINK_CLASS) then
         gtk_style_context_add_class(Ctx, LCL_COMBO_SHRINK_CLASS);
+      AW^.set_vexpand(True);
     end
     else
     begin
       if gtk_style_context_has_class(Ctx, LCL_COMBO_SHRINK_CLASS) then
         gtk_style_context_remove_class(Ctx, LCL_COMBO_SHRINK_CLASS);
+      AW^.set_vexpand(False);
     end;
   end;
 
