@@ -1177,7 +1177,7 @@ begin
   if Assigned(win.parentWindow) then
     win.parentWindow.removeChildWindow(win);
   if Assigned(APopupParent) then begin
-     writeln('SetRealPopupParent ',APopupParent.ClassName);
+//    writeln('SetRealPopupParent ',APopupParent.ClassName);
     NSWindow( NSView(APopupParent.Handle).window).addChildWindow_ordered(win, NSWindowAbove);
   end;
 end;

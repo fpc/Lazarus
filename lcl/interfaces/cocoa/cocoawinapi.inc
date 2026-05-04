@@ -2133,7 +2133,9 @@ begin
     NUMRESERVED:
       Result := 0;
   else
+    {$IFDEF VerboseWinAPI}
     DebugLn('TCocoaWidgetSet.GetDeviceCaps TODO Index: ' + DbgS(Index));
+    {$ENDIF}
     Result := 0;
   end;
 end;
@@ -2663,7 +2665,9 @@ begin
     SM_LCLHasFormAlphaBlend:
       Result := 1;
   else
+    {$IFDEF VerboseWinAPI}
     DebugLn('TCocoaWidgetSet.GetSystemMetrics TODO ', DbgS(NIndex));
+    {$ENDIF}
   end;
 
   {$IFDEF VerboseWinAPI}
