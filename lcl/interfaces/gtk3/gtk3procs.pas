@@ -291,6 +291,7 @@ function Gtk3IsContainer(AWidget: PGObject): GBoolean;
 function Gtk3IsEditable(AWidget: PGObject): GBoolean;
 function Gtk3IsEntry(AWidget: PGObject): GBoolean;
 function Gtk3IsTextView(AWidget: PGObject): GBoolean;
+function Gtk3IsArrowKey(AKeyval: guint): Boolean;
 
 function Gtk3IsBox(AWidget: PGObject): GBoolean;
 function Gtk3IsEventBox(AWidget: PGObject): GBoolean;
@@ -751,6 +752,14 @@ end;
 function Gtk3IsTextView(AWidget: PGObject): GBoolean;
 begin
   Result := (AWidget <> nil) and  g_type_check_instance_is_a(PGTypeInstance(AWidget), gtk_text_view_get_type);
+end;
+
+function Gtk3IsArrowKey(AKeyval: guint): Boolean;
+begin
+  Result := (AKeyval = GDK_KEY_Up) or (AKeyval = GDK_KEY_Down) or
+    (AKeyval = GDK_KEY_Left) or (AKeyval = GDK_KEY_Right) or
+    (AKeyval = GDK_KEY_KP_Up) or (AKeyval = GDK_KEY_KP_Down) or
+    (AKeyval = GDK_KEY_KP_Left) or (AKeyval = GDK_KEY_KP_Right);
 end;
 
 function Gtk3IsBox(AWidget: PGObject): GBoolean;

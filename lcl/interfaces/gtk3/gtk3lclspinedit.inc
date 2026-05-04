@@ -17,7 +17,7 @@ const
 procedure LCLSpinEditUpClicked(AButton: PGtkButton; AData: gpointer); cdecl; forward;
 procedure LCLSpinEditDownClicked(AButton: PGtkButton; AData: gpointer); cdecl; forward;
 procedure LCLSpinEditEntryChanged(AEditable: PGtkEditable; AData: gpointer); cdecl; forward;
-function LCLSpinEditEntryKeyPress(AWidget: PGtkWidget; AEvent: PGdkEventKey; AData: gpointer): gboolean; cdecl; forward;
+function LCLSpinEditEntryKeyPress(AWidget: PGtkWidget; AEvent: PGdkEvent; AData: gpointer): gboolean; cdecl; forward;
 function LCLSpinEditEntryScroll(AWidget: PGtkWidget; AEvent: PGdkEventScroll; AData: gpointer): gboolean; cdecl; forward;
 procedure LCLSpinEditAdjValueChanged(AAdjustment: PGtkAdjustment; AData: gpointer); cdecl; forward;
 procedure LCLSpinEditInsertText(AEditable: PGtkEditable; ANewText: PgChar;
@@ -151,13 +151,15 @@ begin
   end;
 end;
 
-function LCLSpinEditEntryKeyPress(AWidget: PGtkWidget; AEvent: PGdkEventKey; AData: gpointer): gboolean; cdecl;
+function LCLSpinEditEntryKeyPress(AWidget: PGtkWidget; AEvent: PGdkEvent; AData: gpointer): gboolean; cdecl;
 var
   Data: PLCLSpinEditData;
 begin
   Result := False;
+  if AEvent^.type_ <> GDK_KEY_PRESS then
+    exit;
   Data := PLCLSpinEditData(AData);
-  case AEvent^.keyval of
+  case PGdkEventKey(AEvent)^.keyval of
     GDK_KEY_Up:
     begin
       LCLSpinEditUpClicked(nil, AData);
@@ -622,7 +624,8 @@ begin
     TGCallback(@LCLSpinEditInsertText), Data, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(PGObject(Entry), 'paste-clipboard',
     TGCallback(@LCLSpinEditPasteClipboard), Data, nil, G_CONNECT_DEFAULT);
-  // key-press-event NOT connected, all key handling goes through WidgetEvent !!!
+  g_signal_connect_data(PGObject(Entry), 'event',
+    TGCallback(@LCLSpinEditEntryKeyPress), Data, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(PGObject(Entry), 'scroll-event',
     TGCallback(@LCLSpinEditEntryScroll), Data, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(PGObject(Adj), 'value-changed',

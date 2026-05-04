@@ -1498,6 +1498,9 @@ begin
     end;
   GDK_KEY_PRESS:
     begin
+      if (wtSpinEdit in TGtk3Widget(Data).WidgetType) and
+         Gtk3IsArrowKey(Event^.key.keyval) then
+        exit(gtk_false);
       if Widget^.has_focus then
         Result := TGtk3Widget(Data).GtkEventKey(Widget, Event, True)
       else if Widget^.is_toplevel then
@@ -2611,6 +2614,26 @@ begin
         if MButton = GTK3_MIDDLE_BUTTON then
         begin
           Msg.Msg := LM_MBUTTONDBLCLK;
+          Msg.Keys := Msg.Keys or MK_MBUTTON;
+        end;
+      end;
+    GDK_3BUTTON_PRESS:
+      begin
+        if MButton = GTK3_LEFT_BUTTON then
+        begin
+          Msg.Msg := LM_LBUTTONDOWN;
+          Msg.Keys := Msg.Keys or MK_LBUTTON;
+        end
+        else
+        if MButton = GTK3_RIGHT_BUTTON then
+        begin
+          Msg.Msg := LM_RBUTTONDOWN;
+          Msg.Keys := Msg.Keys or MK_RBUTTON;
+        end
+        else
+        if MButton = GTK3_MIDDLE_BUTTON then
+        begin
+          Msg.Msg := LM_MBUTTONDOWN;
           Msg.Keys := Msg.Keys or MK_MBUTTON;
         end;
       end;
