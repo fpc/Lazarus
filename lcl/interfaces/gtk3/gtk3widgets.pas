@@ -3891,6 +3891,7 @@ begin
     if Widget^.get_visible then
       Widget^.size_allocate(@ARect)
     else
+    if Widget^.is_toplevel then
       Widget^.set_allocation(@Alloc);
 
     Widget^.get_size_request(@CurW, @CurH);
