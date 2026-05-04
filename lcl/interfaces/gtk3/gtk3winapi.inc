@@ -571,29 +571,69 @@ begin
 end;
 
 function TGtk3WidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
-begin
-  Result := 0;
-  if IsValidGDIObject(IconInfo^.hbmColor) then
+
+  function ApplyMaskAsAlpha(AColor, AMask: PGdkPixbuf): PGdkPixbuf;
+  var
+    W, H: gint;
+    MaskStride, MaskChannels: gint;
+    DstStride: gint;
+    MaskPixels, DstPixels: Pguint8;
+    MSrc, DstRow, DstA: Pguint8;
+    X, Y: gint;
   begin
-    if IconInfo^.fIcon then
+    if AColor^.get_has_alpha then
+      Result := AColor^.copy
+    else
+      Result := gdk_pixbuf_add_alpha(AColor, gtk_false, 0, 0, 0);
+    if AMask = nil then
+      exit;
+    W := AColor^.get_width;
+    H := AColor^.get_height;
+    if (AMask^.get_width <> W) or (AMask^.get_height <> H) then
+      exit;
+    MaskPixels := AMask^.get_pixels;
+    MaskStride := AMask^.get_rowstride;
+    MaskChannels := AMask^.get_n_channels;
+    DstPixels := Result^.get_pixels;
+    DstStride := Result^.get_rowstride;
+    for Y := 0 to H - 1 do
     begin
-      Result := HICON(TGtk3Image.Create(TGtk3Image(IconInfo^.hbmColor).Handle));
-    end else
-    begin
-      Result := HCURSOR(TGtk3Cursor.Create(TGtk3Image(IconInfo^.hbmColor).Handle, IconInfo^.xHotSpot, IconInfo^.yHotSpot));
-        //HCURSOR({%H-}PtrUInt(gdk_cursor_new_from_pixbuf(gdk_display_get_default,
-        // TGtk3Image(IconInfo^.hbmColor).Handle, IconInfo^.xHotSpot, IconInfo^.yHotSpot)));
-      // create cursor from pixbuf
-     { W := gdk_pixbuf_get_width(TGtk3Image(IconInfo^.hbmColor).Handle);
-      H := gdk_pixbuf_get_height(TGtk3Image(IconInfo^.hbmColor).Handle);
-      DebugLn('TGtk3WidgetSet.CreateIconIndirect W=',dbgs(W),' H=',dbgs(H));
-      PixBuf := gdk_pixbuf_new_subpixbuf(TGtk3Image(IconInfo^.hbmColor).Handle, 0, 0, W, H);
-      Result := HCURSOR({%H-}PtrUInt(gdk_cursor_new_from_pixbuf(gdk_display_get_default,
-        pixbuf, IconInfo^.xHotSpot, IconInfo^.yHotSpot)));
-      if pixbuf <> nil then
-        g_object_unref(PixBuf); }
+      MSrc := MaskPixels + Y * MaskStride;
+      DstRow := DstPixels + Y * DstStride;
+      DstA := DstRow + 3;
+      for X := 0 to W - 1 do
+      begin
+        if MSrc^ > 127 then
+          DstA^ := 0
+        else
+          DstA^ := 255;
+        Inc(MSrc, MaskChannels);
+        Inc(DstA, 4);
+      end;
     end;
   end;
+
+var
+  ColorPB, MaskPB, MergedPB: PGdkPixbuf;
+begin
+  Result := 0;
+  if not IsValidGDIObject(IconInfo^.hbmColor) then
+    exit;
+  if IconInfo^.fIcon then
+  begin
+    Result := HICON(TGtk3Image.Create(TGtk3Image(IconInfo^.hbmColor).Handle));
+    exit;
+  end;
+  ColorPB := TGtk3Image(IconInfo^.hbmColor).Handle;
+  if IsValidGDIObject(IconInfo^.hbmMask) then
+    MaskPB := TGtk3Image(IconInfo^.hbmMask).Handle
+  else
+    MaskPB := nil;
+  MergedPB := ApplyMaskAsAlpha(ColorPB, MaskPB);
+  if MergedPB = nil then
+    exit;
+  Result := HCURSOR(TGtk3Cursor.Create(MergedPB, IconInfo^.xHotSpot, IconInfo^.yHotSpot));
+  g_object_unref(MergedPB);
 end;
 
 function TGtk3WidgetSet.CreatePalette(const LogPalette: TLogPalette): HPALETTE;
