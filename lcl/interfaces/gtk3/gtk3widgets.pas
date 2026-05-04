@@ -2895,13 +2895,13 @@ begin
   if wtMemo in WidgetType then
   begin
     ATargetWidget := GetContainerWidget; // FCentralWidget = GtkTextView
-    AColor := TColortoTGdkRGBA(ColorToRgb(AValue));
+    AColor := TColortoTGdkRGBA(AValue);
     ATargetWidget^.get_style_context^.get_background_color([GTK_STATE_FLAG_INSENSITIVE], @ADisabledColor);
     if AValue = clDefault then
       gtk_widget_override_background_color(ATargetWidget, GTK_STATE_FLAG_NORMAL, nil)
     else
       gtk_widget_override_background_color(ATargetWidget, GTK_STATE_FLAG_NORMAL, @AColor);
-    AColor := TColortoTGdkRGBA(ColorToRgb(clHighlight));
+    AColor := TColortoTGdkRGBA(clHighlight);
     gtk_widget_override_background_color(ATargetWidget, [GTK_STATE_FLAG_SELECTED], @AColor);
     gtk_widget_override_background_color(ATargetWidget, [GTK_STATE_FLAG_INSENSITIVE], @ADisabledColor);
 
@@ -3005,7 +3005,7 @@ begin
     end;
   end else
   begin
-    AColor := TColortoTGdkRGBA(ColorToRgb(AValue));
+    AColor := TColortoTGdkRGBA(AValue);
     if FWidget <> GetContainerWidget then
       with FWidget^ do
         for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
@@ -9140,13 +9140,13 @@ begin
     Exit;
   end;
   AContainerWidget := getContainerWidget;
-  BgColor := TColortoTGdkRGBA(ColorToRgb(AValue));
+  BgColor := TColortoTGdkRGBA(AValue);
   AContainerWidget^.get_style_context^.get_background_color([GTK_STATE_FLAG_INSENSITIVE], @ADisabledColor);
   if AValue = clDefault then
     gtk_widget_override_background_color(AContainerWidget, GTK_STATE_FLAG_NORMAL, nil)
   else
     gtk_widget_override_background_color(AContainerWidget, GTK_STATE_FLAG_NORMAL, @BgColor);
-  BgColor := TColortoTGdkRGBA(ColorToRgb(clHighlight));
+  BgColor := TColortoTGdkRGBA(clHighlight);
   gtk_widget_override_background_color(AContainerWidget, [GTK_STATE_FLAG_SELECTED], @BgColor);
   gtk_widget_override_background_color(AContainerWidget, [GTK_STATE_FLAG_INSENSITIVE], @ADisabledColor);
 end;

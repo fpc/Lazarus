@@ -327,8 +327,6 @@ function Gtk3IsPangoFontMetrics(APangoFontMetrics: PGObject): GBoolean;
 function Gtk3TranslateScrollStyle(const SS: TScrollStyle): TGtkScrollStyle;
 function Gtk3ScrollTypeToScrollCode(ScrollType: TGtkScrollType): LongWord;
 
-function TGDKColorToTColor(const value : TGDKColor) : TColor;
-function TColorToTGDKColor(const value : TColor) : TGDKColor;
 function TGdkRGBAToTColor(const value : TGdkRGBA; IgnoreAlpha: Boolean = True) : TColor;
 function TColortoTGdkRGBA(const value : TColor; IgnoreAlpha: Boolean = True) : TGdkRGBA;
 function ColorToCairoRGB(AColor: TColor; out ARed, AGreen, ABlue: Double): Boolean;
@@ -436,7 +434,7 @@ function GtkModifierStateToShiftState(AState: TGdkModifierType;
 function Gtk3IsPointerButtonDown(AWidget: PGtkWidget): Boolean;
 
 implementation
-uses LCLProc, gtk3objects, gtk3widgets, gtk3int, LazLogger;
+uses LCLProc, gtk3objects, gtk3widgets, gtk3int, LazLogger, Math;
 
 function PANGO_PIXELS(d:integer):integer;
 begin
@@ -604,32 +602,33 @@ begin
   result := TPangoStretch(GetFontFamilyDefaultStretch(AFamilyName));
 end;
 
-function TGdkRGBAToTColor(const value: TGdkRGBA; IgnoreAlpha: Boolean): TColor;
+function TGdkRGBAToTColor(const value: TGdkRGBA; {%H-}IgnoreAlpha: Boolean): TColor;
 begin
-  Result := Trunc(value.red * $FF)
-         or (Trunc(value.green * $FF) shl  8)
-         or (Trunc(value.blue * $FF) shl  16);
-  if not IgnoreAlpha then
-    Result := Result or (Trunc(value.alpha * $FF) shl  24);
+  Result := Round(EnsureRange(value.red,   0, 1) * $FF)
+         or (Round(EnsureRange(value.green, 0, 1) * $FF) shl 8)
+         or (Round(EnsureRange(value.blue,  0, 1) * $FF) shl 16);
 end;
 
 function TColortoTGdkRGBA(const value: TColor; IgnoreAlpha: Boolean): TGdkRGBA;
+var
+  RGB: LongInt;
 begin
-  Result.red := (value and $FF) / 255;
-  Result.green := ((value shr 8) and $FF) / 255;
-  Result.blue := ((value shr 16) and $FF) / 255;
-  if not IgnoreAlpha then
-    Result.alpha := ((value shr 24) and $FF) / 255
-  else
-    Result.alpha:=1;
+  RGB := ColorToRGB(Value);
+  Result.red := (RGB and $FF) / 255;
+  Result.green := ((RGB shr 8) and $FF) / 255;
+  Result.blue := ((RGB shr 16) and $FF) / 255;
+  Result.alpha:=1;
 end;
 
 function ColorToCairoRGB(AColor: TColor; out ARed, AGreen, ABlue: Double): Boolean;
+var
+  RGB: LongInt;
 begin
   Result := True;
-  ARed := (AColor and $FF) / 255;
-  AGreen := ((AColor shr 8) and $FF) / 255;
-  ABlue := ((AColor shr 16) and $FF) / 255;
+  RGB := ColorToRGB(AColor);
+  ARed   := (RGB and $FF) / 255;
+  AGreen := ((RGB shr 8) and $FF) / 255;
+  ABlue  := ((RGB shr 16) and $FF) / 255;
 end;
 
 function RectFromGtkAllocation(AGtkAllocation: TGtkAllocation): TRect;
@@ -961,31 +960,6 @@ begin
     GTK_SCROLL_PAGE_RIGHT {13}     : Result := SB_PAGERIGHT;
     GTK_SCROLL_START {14}          : Result := SB_TOP;
     GTK_SCROLL_END {15}            : Result := SB_BOTTOM;
-  end;
-end;
-
-function TGDKColorToTColor(const value : TGDKColor) : TColor;
-begin
-  Result := ((Value.Blue shr 8) shl 16) + ((Value.Green shr 8) shl 8)
-           + (Value.Red shr 8);
-end;
-
-function TColorToTGDKColor(const value : TColor) : TGDKColor;
-begin
-  if Value<0 then
-  begin
-    Result.blue := $FF;
-    Result.red := $FF;
-    Result.green := $FF;
-    Result.pixel := 0;
-    exit;
-  end;
-  with Result do
-  begin
-    pixel := 0;
-    red   := (value and $ff) * 257;
-    green := ((value shr 8) and $ff) * 257;
-    blue  := ((value shr 16) and $ff) * 257;
   end;
 end;
 

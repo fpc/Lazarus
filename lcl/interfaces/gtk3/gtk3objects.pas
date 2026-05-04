@@ -2059,7 +2059,7 @@ begin
       PATCOPY:
       begin
         cairo_set_operator(TargetCairo, CAIRO_OPERATOR_SOURCE);
-        ColorToCairoRGB(ColorToRgb(FCurrentBrush.Color), R, G, B);
+        ColorToCairoRGB(FCurrentBrush.Color, R, G, B);
         cairo_set_source_rgb(TargetCairo, R, G, B);
       end;
     end;
@@ -3054,12 +3054,12 @@ begin
     if ABgFilled then
     begin
       FCurrentFont.Layout^.get_pixel_size(@tw, nil);
-      ColorToCairoRGB(ColorToRgb(TColor(FBgBrush.Color)), R, G, B);
+      ColorToCairoRGB(TColor(FBgBrush.Color), R, G, B);
       cairo_set_source_rgb(pcr, R, G, B);
       cairo_rectangle(pcr, 0, 0, tw, FCurrentFont.FMetricsHeight + FCurrentFont.FInternalLeading);
       cairo_fill(pcr);
     end;
-    ColorToCairoRGB(ColorToRgb(TColor(CurrentTextColor)), R, G, B);
+    ColorToCairoRGB(TColor(CurrentTextColor), R, G, B);
     cairo_set_source_rgb(pcr, R, G, B);
     cairo_move_to(pcr, 0, 0);
     pango_cairo_show_layout(pcr, FCurrentFont.Layout);
@@ -3070,13 +3070,13 @@ begin
     if ABgFilled then
     begin
       FCurrentFont.Layout^.get_pixel_size(@tw, nil);
-      ColorToCairoRGB(ColorToRgb(TColor(FBgBrush.Color)), R, G, B);
+      ColorToCairoRGB(TColor(FBgBrush.Color), R, G, B);
       cairo_set_source_rgb(pcr, R, G, B);
       cairo_rectangle(pcr, LToDX(x), LToDY(y), tw, FCurrentFont.FMetricsHeight + FCurrentFont.FInternalLeading);
       cairo_fill(pcr);
     end;
     cairo_move_to(pcr, LToDX(x), LToDY(y));
-    ColorToCairoRGB(ColorToRgb(TColor(CurrentTextColor)), R, G, B);
+    ColorToCairoRGB(TColor(CurrentTextColor), R, G, B);
     cairo_set_source_rgb(pcr, R, G, B);
     pango_cairo_show_layout(pcr, FCurrentFont.Layout);
   end;

@@ -965,26 +965,26 @@ begin
     BOuter := False;
     if (Edge and BDR_RAISEDINNER) = BDR_RAISEDINNER then
     begin
-      InnerTL := TColorToTGdkRGBA(ColorToRGB(clBtnHighlight));
-      InnerBR := TColorToTGdkRGBA(ColorToRGB(clBtnShadow));
+      InnerTL := TColorToTGdkRGBA(clBtnHighlight);
+      InnerBR := TColorToTGdkRGBA(clBtnShadow);
       BInner := True;
     end;
     if (Edge and BDR_SUNKENINNER) = BDR_SUNKENINNER then
     begin
-      InnerTL := TColorToTGdkRGBA(ColorToRGB(clBtnShadow));
-      InnerBR := TColorToTGdkRGBA(ColorToRGB(clBtnHighlight));
+      InnerTL := TColorToTGdkRGBA(clBtnShadow);
+      InnerBR := TColorToTGdkRGBA(clBtnHighlight);
       BInner := True;
     end;
     if (Edge and BDR_RAISEDOUTER) = BDR_RAISEDOUTER then
     begin
-      OuterTL := TColorToTGdkRGBA(ColorToRGB(clBtnHighlight));
-      OuterBR := TColorToTGdkRGBA(ColorToRGB(cl3DDkShadow));
+      OuterTL := TColorToTGdkRGBA(clBtnHighlight);
+      OuterBR := TColorToTGdkRGBA(cl3DDkShadow);
       BOuter := True;
     end;
     if (Edge and BDR_SUNKENOUTER) = BDR_SUNKENOUTER then
     begin
-      OuterTL := TColorToTGdkRGBA(ColorToRGB(cl3DDkShadow));
-      OuterBR := TColorToTGdkRGBA(ColorToRGB(clBtnHighlight));
+      OuterTL := TColorToTGdkRGBA(cl3DDkShadow);
+      OuterBR := TColorToTGdkRGBA(clBtnHighlight);
       BOuter := True;
     end;
 
@@ -995,7 +995,7 @@ begin
 
     if (grfFlags and BF_MIDDLE) = BF_MIDDLE then
     begin
-      Mid := TColorToTGdkRGBA(ColorToRGB(clBtnFace));
+      Mid := TColorToTGdkRGBA(clBtnFace);
       SetSrc(Mid);
       cairo_rectangle(cr, R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top);
       cairo_fill(cr);
@@ -2094,13 +2094,13 @@ begin
       end;
     bvRaised:
       begin
-        Color1 := TColorToTGdkRGBA(ColorToRGB(NColorLight));
-        Color2 := TColorToTGdkRGBA(ColorToRGB(NColorDark));
+        Color1 := TColorToTGdkRGBA(NColorLight);
+        Color2 := TColorToTGdkRGBA(NColorDark);
       end;
     bvLowered:
       begin
-        Color1 := TColorToTGdkRGBA(ColorToRGB(NColorDark));
-        Color2 := TColorToTGdkRGBA(ColorToRGB(NColorLight));
+        Color1 := TColorToTGdkRGBA(NColorDark);
+        Color2 := TColorToTGdkRGBA(NColorLight);
       end;
   end;
 

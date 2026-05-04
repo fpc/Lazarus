@@ -138,7 +138,7 @@ begin
   if (DX < 1) or (DY < 1) or (R.Right <= R.Left) or (R.Bottom <= R.Top) then
     exit;
 
-  gc := TColortoTGdkRGBA(ColorToRGB(GtkDC.CurrentPen.Color));
+  gc := TColortoTGdkRGBA(GtkDC.CurrentPen.Color);
   DotSize := Max(1, GtkDC.CurrentPen.Width);
 
   GtkDC.Save;
