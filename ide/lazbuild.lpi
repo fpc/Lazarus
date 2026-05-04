@@ -56,19 +56,16 @@
     <RunParams>
       <FormatVersion Value="2"/>
     </RunParams>
-    <RequiredPackages Count="4">
+    <RequiredPackages Count="3">
       <Item1>
-        <PackageName Value="OldSynHl"/>
+        <PackageName Value="IdeProject"/>
       </Item1>
       <Item2>
-        <PackageName Value="IdeProject"/>
+        <PackageName Value="IdePackager"/>
       </Item2>
       <Item3>
-        <PackageName Value="IdePackager"/>
-      </Item3>
-      <Item4>
         <PackageName Value="IdeConfig"/>
-      </Item4>
+      </Item3>
     </RequiredPackages>
     <Units Count="1">
       <Unit0>
