@@ -72,6 +72,42 @@ const
   GTK_RESPONSE_LCL_NOTOALL = TGtkResponseType(-14);
 
 
+function FindTransient: PGtkWindow;
+var
+  Win: PGtkWindow;
+  GWin: PGdkWindow;
+  L: PGList;
+begin
+  Result := nil;
+  if not Assigned(Gtk3WidgetSet.Gtk3Application) then
+    exit;
+  Win := Gtk3WidgetSet.Gtk3Application^.get_active_window;
+  if Assigned(Win) and PGtkWidget(Win)^.get_visible then
+  begin
+    GWin := PGtkWidget(Win)^.get_window;
+    if (GWin = nil) or not (GDK_WINDOW_STATE_ICONIFIED in gdk_window_get_state(GWin)) then
+    begin
+      Result := Win;
+      exit;
+    end;
+  end;
+  L := Gtk3WidgetSet.Gtk3Application^.get_windows;
+  while L <> nil do
+  begin
+    Win := PGtkWindow(L^.data);
+    if Assigned(Win) and PGtkWidget(Win)^.get_visible then
+    begin
+      GWin := PGtkWidget(Win)^.get_window;
+      if (GWin <> nil) and not (GDK_WINDOW_STATE_ICONIFIED in gdk_window_get_state(GWin)) then
+      begin
+        Result := Win;
+        exit;
+      end;
+    end;
+    L := L^.next;
+  end;
+end;
+
 { callbacks }
 function BoxClosed(Widget : PGtkWidget; {%H-}Event : PGdkEvent;
   data: gPointer) : GBoolean; cdecl;
@@ -279,7 +315,7 @@ begin
       DialogResult := Buttons[i].ModalResult;
   end;
 
-  Dialog := gtk_message_dialog_new(nil, [GTK_DIALOG_MODAL], GtkDialogType, Btns, nil , []);
+  Dialog := gtk_message_dialog_new(FindTransient, [GTK_DIALOG_MODAL], GtkDialogType, Btns, nil , []);
 
   set_message_text(DialogMessage);
 
@@ -419,7 +455,7 @@ end;
 
 procedure TGtk3DialogFactory.run;
 var
-  Title:string;
+  Title: string;
 begin
   if not Assigned(Dialog) then exit;
 
@@ -435,8 +471,7 @@ begin
       idDialogConfirm : Title := rsMtConfirmation;
     end;
   end;
-  if Assigned(Gtk3WidgetSet.Gtk3Application) then
-    gtk_window_set_transient_for(PGtkWindow(Dialog), Gtk3WidgetSet.Gtk3Application^.get_active_window);
+  gtk_window_set_keep_above(PGtkWindow(Dialog), True);
   gtk_window_set_title(PGtkWindow(Dialog), PGChar(Title));
   gtk_dialog_run(Dialog);
 end;
@@ -479,7 +514,7 @@ begin
       DefaultID := Buttons[X];
   end;
 
-  Dialog := gtk_message_dialog_new(nil, [GTK_DIALOG_MODAL], GtkDialogType, Btns, nil , []);
+  Dialog := gtk_message_dialog_new(FindTransient, [GTK_DIALOG_MODAL], GtkDialogType, Btns, nil , []);
 
   set_message_text(DialogMessage);
 
