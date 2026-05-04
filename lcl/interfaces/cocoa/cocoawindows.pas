@@ -896,7 +896,7 @@ begin
 end;
 
 // according to the current key handling logic, there is no longer any need
-// to process in TCocoaWindow.keyDown().
+// to process LCL in TCocoaWindow.keyDown().
 //
 // because TCocoaWindowContentDocument was changed to inherit from
 // TCocoaCustomControlWithBaseInputClient in 2024.
@@ -904,12 +904,8 @@ end;
 // is called, and inherited keyDown() is not called.
 // one reason is that calling inherited keyDown() does not actually prevent beeping.
 //
-// although this results in the loss of shortcut conversion via performKeyEquivalent()
+// only shortcut conversion via performKeyEquivalent()
 // when the Command/Control Modifier Key is not held down.
-// but there is practically no noticeable difference from 2024, as the LCL
-// shortcut does not rely on performKeyEquivalent().
-// if really needed, we can add TCocoaWindowContentDocument.keyDown() to
-// achieve this, but it doesn't seem necessary at the moment.
 //
 // regarding the handling of the Space Key in Buttons and CheckBoxes,
 // TCocoaButton.keyDown() has been added, avoiding the need to execute
@@ -919,7 +915,15 @@ end;
 // Cocoa Key handling:
 // https://gitlab.com/freepascal.org/lazarus/lazarus/-/work_items/35449
 procedure TCocoaWindow.keyDown(event: NSEvent);
+var
+  mn : NSMenu;
 begin
+  if performKeyEquivalent(event) then
+    Exit;
+
+  mn := NSApp.MainMenu;
+  if Assigned(mn) then
+    mn.performKeyEquivalent(event);
 end;
 
 // return proper focused responder by kind of class of NSResponder
