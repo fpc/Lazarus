@@ -36,7 +36,7 @@ uses
   SynEdit, SynHighlighterPas, SynEditKeyCmds, SynEditHighlighterFoldBase,
   // IDE
   EditorOptions, LazarusIDEStrConsts, SourceMarks, KeyMapping, SynEditMarkupBracket, SynEditTypes,
-  editor_color_options, editor_general_options, editor_keymapping_options,
+  LazEditFoldHighlighter, editor_color_options, editor_general_options, editor_keymapping_options,
   editor_codefolding_options;
 
 type

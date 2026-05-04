@@ -52,10 +52,8 @@ unit SynHighlighterJScript;
 interface
 
 uses
-  Graphics,
-  SynEditTypes,
-  SynEditHighlighter,  SynEditHighlighterFoldBase,
-  SysUtils, Classes, SynEditStrConst, LazEditTextAttributes, LazEditHighlighter;
+  Graphics, SynEditTypes, SynEditHighlighter, SynEditHighlighterFoldBase, SysUtils, Classes,
+  SynEditStrConst, LazEditTextAttributes, LazEditHighlighter, LazEditFoldHighlighter;
 
 type
   TtkTokenKind = (tkComment, tkIdentifier, tkKey, tkNull, tkNumber, tkSpace,

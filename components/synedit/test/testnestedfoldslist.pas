@@ -6,7 +6,7 @@ interface
 
 uses
   SysUtils, TestBase, testregistry, SynEdit, SynHighlighterPas,
-  SynEditHighlighterFoldBase, LazLoggerBase, TestHighlightPas;
+  SynEditHighlighterFoldBase, LazLoggerBase, LazEditFoldHighlighter, TestHighlightPas;
 
 type
 

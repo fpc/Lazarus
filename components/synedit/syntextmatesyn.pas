@@ -12,6 +12,7 @@ uses
   Laz2_XMLRead, Laz2_DOM, LazStringUtils,
   // LazEdit
   TextMateGrammar, LazEditTextAttributes, LazEditHighlighterUtils, LazEditHighlighter,
+  LazEditFoldHighlighter,
   // SynEdit
   SynEditHighlighter, SynEditHighlighterFoldBase, SynEditTypes, SynEditTextBase;
 

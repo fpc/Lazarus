@@ -14,7 +14,7 @@ uses
   Classes, SysUtils, math, testregistry, TestBase, TestHighlightPas, Forms,
   LazLoggerBase, SynEdit, SynHighlighterPas, SynEditFoldedView,
   SynEditHighlighterFoldBase, SynGutterCodeFolding, SynEditKeyCmds,
-  SynEditTypes, SynEditMiscProcs;
+  SynEditTypes, SynEditMiscProcs, LazEditFoldHighlighter;
 
 type
 

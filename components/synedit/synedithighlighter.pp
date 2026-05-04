@@ -39,7 +39,7 @@ uses
   LazUTF8, LazMethodList,
   // SynEdit
   SynEditTypes, SynEditTextBase, SynEditMiscProcs, LazEditTextAttributes, LazEditHighlighterUtils,
-  LazEditHighlighter;
+  LazEditHighlighter, LazEditFoldHighlighter;
 
 type
   TSynHighlighterRangeList = TLazHighlighterLineRangeList deprecated 'use TLazHighlighterLineRangeList or TLazHighlighterLineRangeShiftList / to be removed in 5.99';
@@ -191,7 +191,7 @@ type
 
   { TSynCustomHighlighterFoldBase }
 
-  TSynCustomHighlighterFoldBase = class(specialize TSynCustomHighlighterCompatibility<TLazEditCustomRangesHighlighter>)
+  TSynCustomHighlighterFoldBase = class(specialize TSynCustomHighlighterCompatibility<TLazEditCustomFoldHighlighter>)
   protected
     function __OLD_FileFilterDefaultMask: string; override; deprecated'to be removed in 5.99';
     function GetWordBreakChars: TCharSet; override;

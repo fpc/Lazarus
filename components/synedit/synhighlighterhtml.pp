@@ -49,7 +49,8 @@ interface
 
 uses
   SysUtils, Classes, Math, Graphics, SynEditTypes, SynEditHighlighter, SynEditHighlighterXMLBase,
-  SynEditHighlighterFoldBase, SynEditStrConst, LazEditTextAttributes, LazEditHighlighter;
+  SynEditHighlighterFoldBase, SynEditStrConst, LazEditTextAttributes, LazEditHighlighter,
+  LazEditFoldHighlighter;
 
 const
   MAX_ESCAPEAMPS = 109;

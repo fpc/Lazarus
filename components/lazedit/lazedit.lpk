@@ -75,6 +75,10 @@ Additional licenses may be granted in each individual file. See the headers in e
         <Filename Value="lazeditasyncrunner.pas"/>
         <UnitName Value="LazEditASyncRunner"/>
       </Item>
+      <Item>
+        <Filename Value="lazeditfoldhighlighter.pas"/>
+        <UnitName Value="lazeditfoldhighlighter"/>
+      </Item>
     </Files>
     <LazDoc Paths="docs"/>
     <RequiredPkgs>

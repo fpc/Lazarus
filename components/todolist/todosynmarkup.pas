@@ -13,7 +13,7 @@ uses
   // IdeIntf
   SrcEditorIntf, EditorSyntaxHighlighterDef,
   // LazEdit
-  LazEditMiscProcs, LazEditTextAttributes, LazEditHighlighter,
+  LazEditMiscProcs, LazEditTextAttributes, LazEditHighlighter, LazEditFoldHighlighter,
   // SynEdit
   SynEditMarkup, SynHighlighterPas, SynEditMiscProcs, SynEdit, SynEditMiscClasses, SynEditTypes,
   SynEditHighlighterFoldBase;

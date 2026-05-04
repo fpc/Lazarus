@@ -54,7 +54,7 @@ interface
 uses
   SysUtils, Classes, LCLIntf, LCLType, Controls, Graphics, SynEditTypes, SynEditHighlighter,
   SynEditStrConst, SynHighlighterHashEntries, SynEditMiscProcs, SynEditHighlighterFoldBase,
-  LazEditTextAttributes, LazEditHighlighter, LazEditHighlighterUtils;
+  LazEditTextAttributes, LazEditHighlighter, LazEditHighlighterUtils, LazEditFoldHighlighter;
 
 type
   TtkTokenKind = (tkComment, tkDatatype, tkDefaultPackage, tkException,         // DJLP 2000-08-11

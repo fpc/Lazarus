@@ -54,7 +54,7 @@ uses
   // SynEdit
   LazSynEditText, SynEditTypes, SynEditMiscClasses, SynEditMiscProcs,
   SynEditPointClasses, SynEditHighlighterFoldBase,
-  SynEditKeyCmds, LazEditTextAttributes, LazEditHighlighter;
+  SynEditKeyCmds, LazEditTextAttributes, LazEditHighlighter, LazEditFoldHighlighter;
 
 type
 

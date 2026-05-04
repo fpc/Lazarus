@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, testregistry, TestBase, Forms, LazLoggerBase,
   TestHighlightFoldBase, SynEdit, SynEditTypes, SynHighlighterPas,
-  SynEditHighlighterFoldBase, LazEditTextAttributes, LazEditHighlighter;
+  SynEditHighlighterFoldBase, LazEditTextAttributes, LazEditHighlighter, LazEditFoldHighlighter;
 
 type
 

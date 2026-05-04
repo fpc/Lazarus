@@ -56,7 +56,7 @@ uses
   SysUtils, Classes, fgl, Registry, Graphics, Generics.Defaults, SynEditHighlighterFoldBase,
   SynEditMiscProcs, SynEditTypes, SynEditHighlighter, SynEditTextBase, SynEditStrConst,
   SynEditMiscClasses, LazLoggerBase, LazEditMiscProcs, LazEditHighlighterUtils,
-  LazEditTextAttributes, LazEditHighlighter;
+  LazEditTextAttributes, LazEditHighlighter, LazEditFoldHighlighter;
 
 type
   TSynPasStringMode = (spsmDefault, spsmStringOnly, spsmNone);

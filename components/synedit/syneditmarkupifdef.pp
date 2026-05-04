@@ -29,9 +29,9 @@ uses
   // LazUtils
   LazUtilities, LazClasses, LazLoggerBase, LazMethodList,
   // SynEdit
-  SynEditMiscClasses, SynHighlighterPas, SynEditMarkupHighAll,
-  SynEditHighlighterFoldBase, SynEditFoldedView, LazSynEditText, SynEditMiscProcs,
-  SynEditMarkup, SynEditPointClasses, LazEditTextAttributes, LazEditHighlighter;
+  SynEditMiscClasses, SynHighlighterPas, SynEditMarkupHighAll, SynEditHighlighterFoldBase,
+  SynEditFoldedView, LazSynEditText, SynEditMiscProcs, SynEditMarkup, SynEditPointClasses,
+  LazEditTextAttributes, LazEditHighlighter, LazEditFoldHighlighter;
 
 type
 

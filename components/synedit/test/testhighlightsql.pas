@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, TestHighlightFoldBase, SynHighlighterSQL, SynEditHighlighterFoldBase,
-  LazEditTextAttributes, testregistry;
+  LazEditTextAttributes, LazEditFoldHighlighter, testregistry;
 
 type
 

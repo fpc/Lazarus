@@ -61,77 +61,20 @@ uses
   // LazUtils
   LazClasses, LazLoggerBase, LazTracer,
   // SynEdit
-  SynEditHighlighter, SynEditTypes, LazSynEditText, LazEditHighlighterUtils;
+  SynEditHighlighter, SynEditTypes, LazSynEditText, LazEditHighlighterUtils,
+  LazEditFoldHighlighter;
 
 const
   NullRange = TSynEditRange(nil);
 
 type
 
-  TSynFoldAction = ( sfaOpen,         // Any Opening node
-                     sfaClose,        // Any Closing node
+  TSynFoldAction  = LazEditFoldHighlighter.TSynFoldAction;
+  TSynFoldActions = LazEditFoldHighlighter.TSynFoldActions;
 
-                     sfaFold,         // Part of a fold- or hide-able block (FoldConf.Enabled = True)           - excludes one=liners for FoldFold, as they can not fold
-                     sfaFoldFold,     // Part of a fold-able block (FoldConf.Enabled = True / smFold in Modes)  - excludes one=liners / only opening node, except ifdef/region (todo: maybe both?)
-                     sfaFoldHide,     // Part of a hide-able block (FoldConf.Enabled = True / smHide in Modes)  - includes one=liners / only opening node, except ifdef/region (todo: maybe both?)
-
-                     sfaMultiLine,    // The closing node is on an other line
-                     sfaSingleLine,   // The closing node is on the same line (though the keyword may be on the next)
-                     // //sfaSingleLineClosedByNext
-                     sfaCloseForNextLine,  // Fold closes this line, but keyword is on the next (e.g. "var" block)
-                     sfaLastLineClose,     // Fold is incomplete, and closed at last line of file
-                     sfaCloseAndOpen,    // This node has the same location/type as the neighbouring opposite node.
-                                         // eg an open node, matche exactly the previous node, which has to be a closing node of the same type and location (and vice versa for a closing node matching the next...)
-
-                     sfaDefaultCollapsed,
-                     sfaMarkup,   // This node can be highlighted, by the matching Word-Pair Markup
-                     sfaOutline,  // This node will be higlighted by nested color replacing the token color
-                     sfaOutlineKeepLevel, // Direct children should not increase color dept. (But grandchild can.)  e.g. "if","then" any "procedure"
-                     sfaOutlineMergeParent,// This node want to decrease current color depth. (But Previous sibling increased) e.g. "except", "finally"
-                     sfaOutlineForceIndent, // Node will temporary ignore sfaOutlineKeep. (Next sibling can.) e.g in NESTED "procedure"
-// TODO: review sfaOutlineNoColor / see issue 0034410
-                     sfaOutlineNoColor,     // Node will not painted by nested-coloring, but may increase color (e.g. any "procedure")
-                     sfaOutlineNoLine,      // Node doesn't want to have vertical line. (e.g. "then")
-                     sfaInvalid,  // Wrong Index
-
-                     // TODO: deprecate
-                     sfaOpenFold,     // At this node a new Fold can start // Actually, includes all,any multiline node too.
-                     sfaCloseFold,    // At this node a fold ends
-                     sfaOneLineOpen,   // Open, but closes on same line; *only* if hide-able has [sfaOpenFold, sfaFold]; always has [sfaFoldFold, sfaFoldHide]
-                     sfaOneLineClose  // Open, but closes on same line;
-                   );
-  TSynFoldActions = set of TSynFoldAction;
-
-  (* TSynFoldBlockFilter
-     used to specify which folds to include for:
-     - FoldOpenCount, FoldCloseCount, FoldNestCount
-     - maybe in future TLazSynFoldNodeInfoList
-       TLazSynFoldNodeInfoList has additional filters
-       TLazSynFoldNodeInfoList always uses the full set (sfbIncludeDisabled)
-
-     A Highlighter is not required to implement this, or can choose to implement
-     a subset only. For any field/value a Highlighter may simple assume default.
-     - Highlighter that have only one "FoldGroup" do not require this.
-     - Highlighter that do not store foldblocks that are unavailable (e.g. off by
-       config) always return the same set
-
-     Using a record, as argument is the virtual methods, allows one to add further
-     fields/values, without breaking inheritance.
-     New fields values are expected to be ignored (handled as default) by existing
-     highlighter.
-
-     Callers of the method can:
-     - use InitFoldBlockFilter to make sure all fields are set to default
-     - use (none virtual) wrapper methods
-  *)
-  TSynFoldBlockFilterFlag = (
-    sfbIncludeDisabled // Foldable by config = off
-  );
-  TSynFoldBlockFilterFlags = set of TSynFoldBlockFilterFlag;
-  TSynFoldBlockFilter = record
-    FoldGroup: integer;
-    Flags: TSynFoldBlockFilterFlags;
-  end;
+  TSynFoldBlockFilterFlag  = LazEditFoldHighlighter.TSynFoldBlockFilterFlag;
+  TSynFoldBlockFilterFlags = LazEditFoldHighlighter.TSynFoldBlockFilterFlags;
+  TSynFoldBlockFilter      = LazEditFoldHighlighter.TSynFoldBlockFilter;
 
 procedure InitFoldBlockFilter(out AFilter: TSynFoldBlockFilter;
                               AFoldGroup: Integer = 0; AFlag: TSynFoldBlockFilterFlags = []);
@@ -305,37 +248,24 @@ type
     property NodeLineEx[Index, PrevCount: Integer]: Integer read GetNodeLineEx; // Index
   end;
 
-  TSynCustomFoldConfigMode = (fmFold, fmHide, fmMarkup, fmOutline);
-  TSynCustomFoldConfigModes = set of TSynCustomFoldConfigMode;
+  TSynCustomFoldConfigMode  = LazEditFoldHighlighter.TSynCustomFoldConfigMode;
+  TSynCustomFoldConfigModes = LazEditFoldHighlighter.TSynCustomFoldConfigModes;
 
   { TSynCustomFoldConfig }
 
-  TSynCustomFoldConfig = class(TPersistent)
+  TSynCustomFoldConfig = class(TLazEditCustomFoldConfig)
   private
-    FEnabled: Boolean;
-    FFoldActions: TSynFoldActions;
     FIsEssential: boolean;
-    FModes: TSynCustomFoldConfigModes;
     FOnChange: TNotifyEvent;
-    FSupportedModes: TSynCustomFoldConfigModes;
-    procedure SetEnabled(const AValue: Boolean);
-    procedure SetModes(AValue: TSynCustomFoldConfigModes);
-    procedure SetSupportedModes(AValue: TSynCustomFoldConfigModes); deprecated 'use create';
   protected
-    procedure DoOnChange;
+    procedure DoOnChange; override;
   public
     constructor Create;
     constructor Create(ASupportedModes: TSynCustomFoldConfigModes; AnIsEssential: Boolean = False);
-    procedure Assign(Src: TSynCustomFoldConfig); reintroduce; virtual; // TODO: do not copy supported modes
+
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property IsEssential: boolean read FIsEssential;   // create node, even if disabled
-    property SupportedModes: TSynCustomFoldConfigModes
-             read FSupportedModes write SetSupportedModes;
-    // Actions representing the modes
-    property FoldActions: TSynFoldActions read FFoldActions;
-  published
-    property Enabled: Boolean read FEnabled write SetEnabled;
-    property Modes: TSynCustomFoldConfigModes read FModes write SetModes default [fmFold];
+    property SupportedModes: TSynCustomFoldConfigModes read FSupportedModes write SetSupportedModes;
   end;
 
   PSynCustomFoldConfig = ^TSynCustomFoldConfig;
@@ -404,9 +334,9 @@ type
   protected
     // Fold Config
     FFoldConfig: Array of TSynCustomFoldConfig;
-    function GetFoldConfig(Index: Integer): TSynCustomFoldConfig; virtual;
-    procedure SetFoldConfig(Index: Integer; const AValue: TSynCustomFoldConfig); virtual;
-    function GetFoldConfigCount: Integer; virtual;
+    function GetFoldConfig(Index: Integer): TSynCustomFoldConfig; reintroduce; virtual;
+    procedure SetFoldConfig(Index: Integer; const AValue: TSynCustomFoldConfig); reintroduce; virtual;
+    function GetFoldConfigCount: Integer; override;
     function GetFoldConfigInternalCount: Integer; virtual;
     function CreateFoldConfigInstance(Index: Integer): TSynCustomFoldConfig; virtual;
     function GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig; virtual;
@@ -467,54 +397,16 @@ type
     function GetRange: Pointer; override;
 
     // Info about Folds
-    function FoldBlockOpeningCount(ALineIndex: TLineIdx;
-                                   const AFilter: TSynFoldBlockFilter): integer; virtual; overload;
-    function FoldBlockClosingCount(ALineIndex: TLineIdx;
-                                   const AFilter: TSynFoldBlockFilter): integer; virtual; overload;
     function FoldBlockEndLevel(ALineIndex: TLineIdx;
-                               const AFilter: TSynFoldBlockFilter): integer; virtual; overload;
+                               const AFilter: TSynFoldBlockFilter): integer; override; overload;
     function FoldBlockMinLevel(ALineIndex: TLineIdx;
-                               const AFilter: TSynFoldBlockFilter): integer; virtual; overload;
-    (* All nested FoldType (cfbtBegin) if available. Similar to TopCodeFoldBlockType
-       - Index=0 is most outer / Index=FoldBlockEndLevel is most inner (TopCodeFoldBlockType 0=inner)
-       - False, if it can not be determined for the filter settings
-    *)
-    function FoldBlockNestedTypes(ALineIndex: TLineIdx; ANestIndex: Integer; out AType: Pointer;
-                                  const AFilter: TSynFoldBlockFilter): boolean; virtual; overload;
-
-    function FoldBlockOpeningCount(ALineIndex: TLineIdx; AFoldGroup: integer = 0;
-                                   AFlags: TSynFoldBlockFilterFlags = []): integer; overload;
-    function FoldBlockClosingCount(ALineIndex: TLineIdx; AFoldGroup: integer = 0;
-                                   AFlags: TSynFoldBlockFilterFlags = []): integer; overload;
-    function FoldBlockEndLevel(ALineIndex: TLineIdx; AFoldGroup: integer = 0;
-                               AFlags: TSynFoldBlockFilterFlags = []): integer; overload;
-    function FoldBlockMinLevel(ALineIndex: TLineIdx; AFoldGroup: integer = 0;
-                               AFlags: TSynFoldBlockFilterFlags = []): integer; overload;
-    function FoldBlockNestedTypes(ALineIndex: TLineIdx; ANestIndex: Integer; out AType: Pointer;
-                                  AFoldGroup: integer = 0;
-                                  AFlags: TSynFoldBlockFilterFlags = []): boolean; virtual; overload;
+                               const AFilter: TSynFoldBlockFilter): integer; override; overload;
 
     function FoldOpenCount(ALineIndex: Integer; AType: Integer = 0): integer;  deprecated;
     function FoldCloseCount(ALineIndex: Integer; AType: Integer = 0): integer; deprecated;
     function FoldNestCount(ALineIndex: Integer; AType: Integer = 0): integer; deprecated;
 
-    function FoldTypeCount: integer; virtual;
-    function FoldTypeAtNodeIndex(ALineIndex, FoldIndex: Integer;
-             UseCloseNodes: boolean = false): integer; virtual; // TODO: could be deprecated ./ only child-classes
-
-    function FindNextLineWithMinFoldLevel(ALineIndex: TLineIdx; ASearchLevel: Integer;
-                               const AFilter: TSynFoldBlockFilter): integer; virtual; overload;
-    function FindNextLineWithMinFoldLevel(ALineIndex: TLineIdx; ASearchLevel: Integer;
-                               AFoldGroup: integer = 0; AFlags: TSynFoldBlockFilterFlags = []): integer; overload;
-
     function FoldEndLine(ALineIndex, FoldIndex: Integer): integer; virtual; overload; // deprecate // fix inherited classes
-    function FoldEndLine(ALineIndex, FoldIndex: Integer;
-                         const AFilter: TSynFoldBlockFilter): integer; virtual; overload;
-    function FoldEndLine(ALineIndex, FoldIndex: Integer;
-                         AFoldGroup: integer; AFlags: TSynFoldBlockFilterFlags): integer; overload;
-//                         AFoldGroup: integer = 0; AFlags: TSynFoldBlockFilterFlags = []): integer; overload;
-
-    function FoldLineLength(ALineIndex, FoldIndex: Integer): integer; virtual;  // only for group 0 // may be one less than FoldEndLine, if end line is a mixed end-begin
 
     // All fold-nodes
     // FoldNodeInfo: Returns a shared object
@@ -529,11 +421,9 @@ type
     procedure DoCurrentLinesChanged; override;
     function DoPrepareLines(AFirstLineIdx: IntIdx; AMinimumRequiredLineIdx: IntIdx = - 1;
       AMaxTime: integer = 0): integer; override;
-  public
-    property FoldConfig[Index: Integer]: TSynCustomFoldConfig
-      read GetFoldConfig write SetFoldConfig;
-    property FoldConfigCount: Integer read GetFoldConfigCount;
 
+  public
+    property FoldConfig[Index: Integer]: TSynCustomFoldConfig read GetFoldConfig write SetFoldConfig;
   end;
 
   { TSynCustomHighlighterRangeTree }
@@ -1729,40 +1619,6 @@ begin
   Result:=fRanges.GetEqual(FCodeFoldRange);
 end;
 
-function TSynCustomFoldHighlighter.FoldBlockOpeningCount(ALineIndex: TLineIdx;
-  const AFilter: TSynFoldBlockFilter): integer;
-{$IFDEF ISSUE_20850}
-var x : integer;
-{$ENDIF}
-begin
-  if (ALineIndex < 0) or (ALineIndex >= CurrentLines.Count) then
-    exit(0);
-  {$IFDEF ISSUE_20850}
-  x      := FoldBlockEndLevel(ALineIndex, AFilter);
-  Result := FoldBlockMinLevel(ALineIndex, AFilter);
-  Result := x - Result;
-  {$ELSE}
-  Result := FoldBlockEndLevel(ALineIndex, AFilter) - FoldBlockMinLevel(ALineIndex, AFilter);
-  {$ENDIF}
-end;
-
-function TSynCustomFoldHighlighter.FoldBlockClosingCount(ALineIndex: TLineIdx;
-  const AFilter: TSynFoldBlockFilter): integer;
-{$IFDEF ISSUE_20850}
-var x : integer;
-{$ENDIF}
-begin
-  if (ALineIndex < 0) or (ALineIndex >= CurrentLines.Count) then
-    exit(0);
-  {$IFDEF ISSUE_20850}
-  x      := FoldBlockEndLevel(ALineIndex - 1, AFilter);
-  Result := FoldBlockMinLevel(ALineIndex, AFilter);
-  Result := x - Result;
-  {$ELSE}
-  Result := FoldBlockEndLevel(ALineIndex - 1, AFilter) - FoldBlockMinLevel(ALineIndex, AFilter);
-  {$ENDIF}
-end;
-
 function TSynCustomFoldHighlighter.FoldBlockEndLevel(ALineIndex: TLineIdx;
   const AFilter: TSynFoldBlockFilter): integer;
 var
@@ -1799,63 +1655,6 @@ begin
   end
   else
     Result:=0;
-end;
-
-function TSynCustomFoldHighlighter.FoldBlockNestedTypes(ALineIndex: TLineIdx;
-  ANestIndex: Integer; out AType: Pointer; const AFilter: TSynFoldBlockFilter): boolean;
-begin
-  Result := False;
-end;
-
-function TSynCustomFoldHighlighter.FoldBlockOpeningCount(ALineIndex: TLineIdx;
-  AFoldGroup: integer; AFlags: TSynFoldBlockFilterFlags): integer;
-var
-  Filter: TSynFoldBlockFilter;
-begin
-  Filter.FoldGroup := AFoldGroup;
-  Filter.Flags := AFlags;
-  Result := FoldBlockOpeningCount(ALineIndex, Filter);
-end;
-
-function TSynCustomFoldHighlighter.FoldBlockClosingCount(ALineIndex: TLineIdx;
-  AFoldGroup: integer; AFlags: TSynFoldBlockFilterFlags): integer;
-var
-  Filter: TSynFoldBlockFilter;
-begin
-  Filter.FoldGroup := AFoldGroup;
-  Filter.Flags := AFlags;
-  Result := FoldBlockClosingCount(ALineIndex, Filter);
-end;
-
-function TSynCustomFoldHighlighter.FoldBlockEndLevel(ALineIndex: TLineIdx;
-  AFoldGroup: integer; AFlags: TSynFoldBlockFilterFlags): integer;
-var
-  Filter: TSynFoldBlockFilter;
-begin
-  Filter.FoldGroup := AFoldGroup;
-  Filter.Flags := AFlags;
-  Result := FoldBlockEndLevel(ALineIndex, Filter);
-end;
-
-function TSynCustomFoldHighlighter.FoldBlockMinLevel(ALineIndex: TLineIdx;
-  AFoldGroup: integer; AFlags: TSynFoldBlockFilterFlags): integer;
-var
-  Filter: TSynFoldBlockFilter;
-begin
-  Filter.FoldGroup := AFoldGroup;
-  Filter.Flags := AFlags;
-  Result := FoldBlockMinLevel(ALineIndex, Filter);
-end;
-
-function TSynCustomFoldHighlighter.FoldBlockNestedTypes(ALineIndex: TLineIdx;
-  ANestIndex: Integer; out AType: Pointer; AFoldGroup: integer;
-  AFlags: TSynFoldBlockFilterFlags): boolean;
-var
-  Filter: TSynFoldBlockFilter;
-begin
-  Filter.FoldGroup := AFoldGroup;
-  Filter.Flags := AFlags;
-  Result := FoldBlockNestedTypes(ALineIndex, ANestIndex, AType, Filter);
 end;
 
 procedure TSynCustomFoldHighlighter.ResetRange;
@@ -1934,76 +1733,9 @@ begin
   Result := FoldBlockEndLevel(ALineIndex, AType);
 end;
 
-function TSynCustomFoldHighlighter.FoldTypeCount: integer;
-begin
-  Result := 1;
-end;
-
-function TSynCustomFoldHighlighter.FoldTypeAtNodeIndex(ALineIndex, FoldIndex: Integer;
-  UseCloseNodes: boolean): integer;
-begin
-  Result := 0;
-end;
-
-function TSynCustomFoldHighlighter.FindNextLineWithMinFoldLevel(
-  ALineIndex: TLineIdx; ASearchLevel: Integer;
-  const AFilter: TSynFoldBlockFilter): integer;
-var
-  cnt: Integer;
-begin
-  cnt := CurrentLines.Count;
-  Result := ALineIndex; // Can return the original line
-  while (Result < cnt) and (FoldBlockMinLevel(Result, AFilter) > ASearchLevel) do inc(Result);
-  if (Result = cnt) then
-    dec(Result);
-end;
-
-function TSynCustomFoldHighlighter.FindNextLineWithMinFoldLevel(
-  ALineIndex: TLineIdx; ASearchLevel: Integer; AFoldGroup: integer;
-  AFlags: TSynFoldBlockFilterFlags): integer;
-var
-  Filter: TSynFoldBlockFilter;
-begin
-  Filter.FoldGroup := AFoldGroup;
-  Filter.Flags := AFlags;
-  Result := FindNextLineWithMinFoldLevel(ALineIndex, ASearchLevel, Filter);
-end;
-
-function TSynCustomFoldHighlighter.FoldLineLength(ALineIndex, FoldIndex: Integer): integer;
-begin
-  Result := FoldEndLine(ALineIndex, FoldIndex);
-  // check if fold last line of block (not mixed "end begin")
-  if (FoldBlockEndLevel(Result) > FoldBlockMinLevel(Result)) then
-    dec(Result);
-  // Amount of lines, that will become invisible (excludes the cfCollapsed line)
-  Result := Result - ALineIndex;
-end;
-
 function TSynCustomFoldHighlighter.FoldEndLine(ALineIndex, FoldIndex: Integer): integer;
 begin
   Result := FoldEndLine(ALineIndex, FoldIndex, 0, []);
-end;
-
-function TSynCustomFoldHighlighter.FoldEndLine(ALineIndex, FoldIndex: Integer;
-  const AFilter: TSynFoldBlockFilter): integer;
-var
-  lvl: Integer;
-  e, m: Integer;
-begin
-  e := FoldBlockEndLevel(ALineIndex, AFilter);
-  m := FoldBlockMinLevel(ALineIndex, AFilter);
-  lvl := Min(m+1+FoldIndex, e);
-  Result := FindNextLineWithMinFoldLevel(ALineIndex+1, lvl-1, AFilter);
-end;
-
-function TSynCustomFoldHighlighter.FoldEndLine(ALineIndex, FoldIndex: Integer;
-  AFoldGroup: integer; AFlags: TSynFoldBlockFilterFlags): integer;
-var
-  Filter: TSynFoldBlockFilter;
-begin
-  Filter.FoldGroup := AFoldGroup;
-  Filter.Flags := AFlags;
-  Result := FoldEndLine(ALineIndex, FoldIndex, Filter);
 end;
 
 function TSynCustomFoldHighlighter.GetFoldConfig(Index: Integer): TSynCustomFoldConfig;
@@ -2485,33 +2217,6 @@ end;
 
 { TSynCustomFoldConfig }
 
-procedure TSynCustomFoldConfig.SetEnabled(const AValue: Boolean);
-begin
-  if FEnabled = AValue then exit;
-  FEnabled := AValue;
-  DoOnChange;
-end;
-
-procedure TSynCustomFoldConfig.SetModes(AValue: TSynCustomFoldConfigModes);
-begin
-  AValue := AValue * FSupportedModes;
-  if FModes = AValue then exit;
-  FModes := AValue;
-  FFoldActions := [];
-  if fmFold   in AValue then FFoldActions := FFoldActions + [sfaFold, sfaFoldFold];
-  if fmHide   in AValue then FFoldActions := FFoldActions + [sfaFold, sfaFoldHide];
-  if fmMarkup in AValue then FFoldActions := FFoldActions + [sfaMarkup];
-  if fmOutline in AValue then FFoldActions := FFoldActions + [sfaOutline];
-  DoOnChange;
-end;
-
-procedure TSynCustomFoldConfig.SetSupportedModes(AValue: TSynCustomFoldConfigModes);
-begin
-  if FSupportedModes = AValue then Exit;
-  FSupportedModes := AValue;
-  Modes := Modes * FSupportedModes;
-end;
-
 procedure TSynCustomFoldConfig.DoOnChange;
 begin
   if assigned(FOnChange) then
@@ -2522,24 +2227,15 @@ constructor TSynCustomFoldConfig.Create;
 begin
   Inherited;
   FIsEssential := True;
-  FSupportedModes := [fmFold];
-  Modes := [fmFold];
 end;
 
-constructor TSynCustomFoldConfig.Create(
-  ASupportedModes: TSynCustomFoldConfigModes; AnIsEssential: Boolean);
+constructor TSynCustomFoldConfig.Create(ASupportedModes: TSynCustomFoldConfigModes; AnIsEssential: Boolean);
 begin
-  Create;
+  inherited Create(ASupportedModes);
   FSupportedModes := ASupportedModes;
   FIsEssential := AnIsEssential;
 end;
 
-procedure TSynCustomFoldConfig.Assign(Src: TSynCustomFoldConfig);
-begin
-  Enabled := Src.Enabled;
-  SupportedModes := Src.SupportedModes;
-  Modes := Src.Modes;
-end;
 
 end.
 

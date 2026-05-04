@@ -5,9 +5,9 @@ unit TestMarkupFoldColoring;
 interface
 
 uses
-  Classes, SysUtils, math, testregistry, TestBase, TestHighlightPas, Forms,
-  LCLType, SynEdit, SynHighlighterPas, SynEditMarkupFoldColoring,
-  SynEditMiscClasses, SynEditMarkup, SynEditHighlighterFoldBase, LazEditTextAttributes;
+  Classes, SysUtils, math, testregistry, TestBase, TestHighlightPas, Forms, LCLType, SynEdit,
+  SynHighlighterPas, SynEditMarkupFoldColoring, SynEditMiscClasses, SynEditMarkup,
+  SynEditHighlighterFoldBase, LazEditTextAttributes, LazEditFoldHighlighter;
 
 type
 

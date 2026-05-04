@@ -60,6 +60,7 @@ uses
   SynEditMarkupSpecialChar,
   // LazEdit
   TextMateGrammar, LazEditTextAttributes, LazEditHighlighter, LazEditHighlighterUtils,
+  LazEditFoldHighlighter,
   // SynEdit Highlighters
   SynEditHighlighterFoldBase, SynHighlighterCPP, SynHighlighterHTML,
   SynHighlighterJava, SynHighlighterLFM, SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP,

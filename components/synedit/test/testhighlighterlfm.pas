@@ -5,7 +5,8 @@ unit TestHighlighterLfm;
 interface
 
 uses
-  SysUtils, testregistry, TestBase, TestHighlightFoldBase, SynHighlighterLFM, SynEditHighlighterFoldBase;
+  SysUtils, testregistry, TestBase, TestHighlightFoldBase, SynHighlighterLFM,
+  SynEditHighlighterFoldBase, LazEditFoldHighlighter;
 
 type
 

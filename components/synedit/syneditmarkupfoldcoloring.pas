@@ -54,6 +54,7 @@ uses
   SynEditHighlighterFoldBase, LazSynEditText, SynEditTextBase, SynEditTypes,
   {$IFDEF WithSynMarkupFoldColorDebugGutter}SynGutterBase, SynTextDrawer,{$ENDIF}
   SynEditMiscProcs, LazEditMiscProcs, LazEditTextAttributes, LazEditHighlighter,
+  LazEditFoldHighlighter,
   {$IFDEF SynEditMarkupFoldColoringDebug}
   SynHighlighterPas,
   strutils,

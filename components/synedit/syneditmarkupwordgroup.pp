@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, SynEditMarkup, SynEditMiscClasses, Controls,
-  SynEditHighlighterFoldBase, LazEditTextAttributes, LazEditHighlighter;
+  SynEditHighlighterFoldBase, LazEditTextAttributes, LazEditHighlighter, LazEditFoldHighlighter;
 
 type
 

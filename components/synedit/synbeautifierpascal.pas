@@ -10,7 +10,7 @@ uses
   xregexpr,
   // SynEdit
   SynBeautifier, SynHighlighterPas, SynEditPointClasses, SynEditKeyCmds, SynEdit,
-  SynEditHighlighterFoldBase, SynEditMiscProcs, LazEditMiscProcs;
+  SynEditHighlighterFoldBase, SynEditMiscProcs, LazEditMiscProcs, LazEditFoldHighlighter;
 
 type
   { TSynBeautifierPascal }

@@ -53,6 +53,7 @@ uses
   LazLoggerBase,
   // LazEdit
   LazEditHighlighterUtils, LazEditTextAttributes, LazEditTextGridPainter, LazEditHighlighter,
+  LazEditFoldHighlighter,
   // synedit
   SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks,
   SynEditTypes, SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks,
