@@ -457,6 +457,43 @@ begin
 end;
 
 procedure TGtk3WidgetSet.AppInit(var ScreenInfo: TScreenInfo);
+
+  procedure StripArrowBindingsFromClass(AClassType: TGType);
+  var
+    AClass: PGTypeClass;
+    ABindingSet: PGtkBindingSet;
+  begin
+    AClass := g_type_class_ref(AClassType);
+    if AClass = nil then
+      exit;
+    ABindingSet := gtk_binding_set_by_class(AClass);
+    if ABindingSet = nil then
+      exit;
+    gtk_binding_entry_remove(ABindingSet, GDK_KEY_Up, []);
+    gtk_binding_entry_remove(ABindingSet, GDK_KEY_Up, [GDK_CONTROL_MASK]);
+    gtk_binding_entry_remove(ABindingSet, GDK_KEY_Down, []);
+    gtk_binding_entry_remove(ABindingSet, GDK_KEY_Down, [GDK_CONTROL_MASK]);
+    gtk_binding_entry_remove(ABindingSet, GDK_KEY_Left, []);
+    gtk_binding_entry_remove(ABindingSet, GDK_KEY_Left, [GDK_CONTROL_MASK]);
+    gtk_binding_entry_remove(ABindingSet, GDK_KEY_Right, []);
+    gtk_binding_entry_remove(ABindingSet, GDK_KEY_Right, [GDK_CONTROL_MASK]);
+    gtk_binding_entry_remove(ABindingSet, GDK_KEY_KP_Up, []);
+    gtk_binding_entry_remove(ABindingSet, GDK_KEY_KP_Up, [GDK_CONTROL_MASK]);
+    gtk_binding_entry_remove(ABindingSet, GDK_KEY_KP_Down, []);
+    gtk_binding_entry_remove(ABindingSet, GDK_KEY_KP_Down, [GDK_CONTROL_MASK]);
+    gtk_binding_entry_remove(ABindingSet, GDK_KEY_KP_Left, []);
+    gtk_binding_entry_remove(ABindingSet, GDK_KEY_KP_Left, [GDK_CONTROL_MASK]);
+    gtk_binding_entry_remove(ABindingSet, GDK_KEY_KP_Right, []);
+    gtk_binding_entry_remove(ABindingSet, GDK_KEY_KP_Right, [GDK_CONTROL_MASK]);
+  end;
+
+  procedure DisableContainerArrowBindings;
+  begin
+    StripArrowBindingsFromClass(gtk_container_get_type);
+    StripArrowBindingsFromClass(gtk_window_get_type);
+    StripArrowBindingsFromClass(gtk_scrolled_window_get_type);
+  end;
+
 var
   ScreenDC: HDC;
   menuBar: PGtkMenuBar;
@@ -469,6 +506,7 @@ var
   box:PGtkBox;
   header:PGtkHeaderBar;
 begin
+  DisableContainerArrowBindings;
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WidgetSet.AppInit');
   {$ENDIF}
@@ -577,6 +615,8 @@ begin
     g_object_get_property(PGObject(ASettings), 'gtk-theme-name', @AValue);
     FThemeName := AValue.get_string;
     AValue.unset;
+    //TODO: gtk-entry-select-on-focus is TRUE by Default, should be false, so LCL only is doing selections.
+    //gtk-label-select-on-focus ? default is true too
 
     ACSSProvider := gtk_css_provider_get_named(PGChar(FThemeName), nil);
   end;
