@@ -274,37 +274,14 @@ end;
 
 function TGTK3ThemeServices.GetDetailSizeForPPI(Details: TThemedElementDetails;
   PPI: Integer): TSize;
-var
-  AValue: TGValue;
-  Context: PGtkStyleContext;
-  min_width, min_height: gint;
 begin
   Result := Size(0, 0);
   if Details.Element = teButton then
   begin
     if (Byte(Details.Part) in [BP_CHECKBOX, BP_RADIOBUTTON]) then
     begin
-      if Byte(Details.Part) = BP_CHECKBOX then
-        Context := GetStyleWidget(lgsCheckBox)^.get_style_context
-      else
-        Context := GetStyleWidget(lgsRadioButton)^.get_style_context;
-
-      gtk_style_context_save(Context);
-
-      if Byte(Details.Part) = BP_CHECKBOX then
-        gtk_style_context_add_class(Context, 'check')
-      else
-        gtk_style_context_add_class(Context, 'radio');
-
-      gtk_style_context_get(Context, gtk_style_context_get_state(Context),
-        ['min-width', @min_width, 'min-height', @min_height, nil]);
-
-      if (min_width <= 0) or (min_height <= 0) then
-        Result := Size(16, 16)
-      else
-        Result := Size(min_width, min_height);
-      gtk_style_context_restore(Context);
-
+      Result.cx := MulDiv(LCLIntf.GetSystemMetrics(SM_CXMENUCHECK), PPI, 96);
+      Result.cy := MulDiv(LCLIntf.GetSystemMetrics(SM_CYMENUCHECK), PPI, 96);
     end else
       Result := inherited;
   end else

@@ -494,6 +494,53 @@ procedure TGtk3WidgetSet.AppInit(var ScreenInfo: TScreenInfo);
     StripArrowBindingsFromClass(gtk_scrolled_window_get_type);
   end;
 
+  procedure QueryIndicatorBoxSize(out W, H: gint);
+  var
+    Context: PGtkStyleContext;
+    Path: PGtkWidgetPath;
+    min_width, min_height: gint;
+    Pad, Bord: TGtkBorder;
+    CtxState: TGtkStateFlags;
+    ChildPos: gint;
+  begin
+    CtxState := GTK_STATE_FLAG_NORMAL;
+
+    Path := gtk_widget_path_new;
+    gtk_widget_path_append_type(Path, gtk_check_button_get_type);
+    gtk_widget_path_iter_set_object_name(Path, 0, 'checkbutton');
+    gtk_widget_path_iter_set_state(Path, 0, CtxState);
+
+    ChildPos := gtk_widget_path_append_type(Path, G_TYPE_NONE);
+    gtk_widget_path_iter_set_object_name(Path, ChildPos, 'check');
+    gtk_widget_path_iter_add_class(Path, ChildPos, 'check');
+    gtk_widget_path_iter_set_state(Path, ChildPos, CtxState);
+
+    Context := gtk_style_context_new;
+    gtk_style_context_set_path(Context, Path);
+    gtk_style_context_set_state(Context, CtxState);
+    gtk_widget_path_unref(Path);
+
+    min_width := 0;
+    min_height := 0;
+
+    gtk_style_context_get(Context, CtxState, ['min-width', @min_width, 'min-height', @min_height, nil]);
+
+    FillChar(Pad{%H-}, SizeOf(Pad), 0);
+    FillChar(Bord{%H-}, SizeOf(Bord), 0);
+
+    gtk_style_context_get_padding(Context, CtxState, @Pad);
+    gtk_style_context_get_border(Context, CtxState, @Bord);
+    g_object_unref(Context);
+
+    if min_width <= 0 then
+      min_width := 16;
+    if min_height <= 0 then
+      min_height := 16;
+
+    W := min_width + Pad.left + Pad.right + Bord.left + Bord.right;
+    H := min_height + Pad.top + Pad.bottom + Bord.top + Bord.bottom;
+  end;
+
 var
   ScreenDC: HDC;
   menuBar: PGtkMenuBar;
@@ -502,6 +549,7 @@ var
   scrollBarV: PGtkScrollbar;
   scrollBarH: PGtkScrollbar;
   MinH,PrefH:gint;
+  IndW, IndH: gint;
   window:PGtkWindow;
   box:PGtkBox;
   header:PGtkHeaderBar;
@@ -564,10 +612,9 @@ begin
   FSystemMetricsList.Items[SM_CXMENUSIZE] := Max(MinH, PrefH);
 
 
-  checkBox^.get_preferred_height(@MinH, @PrefH);
-  FSystemMetricsList.Items[SM_CYMENUCHECK] := Max(MinH, PrefH);
-  checkBox^.get_preferred_width(@MinH, @PrefH);
-  FSystemMetricsList.Items[SM_CXMENUCHECK] := Max(MinH, PrefH);
+  QueryIndicatorBoxSize(IndW, IndH);
+  FSystemMetricsList.Items[SM_CXMENUCHECK] := IndW;
+  FSystemMetricsList.Items[SM_CYMENUCHECK] := IndH;
 
   scrollBarH^.get_preferred_height(@MinH, @PrefH);
   FSystemMetricsList.Items[SM_CYHSCROLL] := Max(MinH, PrefH) + 2;
