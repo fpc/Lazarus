@@ -532,16 +532,12 @@ begin
   FSystemMetricsList.Items[SM_CXMENUCHECK] := Max(MinH, PrefH);
 
   scrollBarH^.get_preferred_height(@MinH, @PrefH);
-  FSystemMetricsList.Items[SM_CXHSCROLL] := Max(MinH, PrefH);
-
-  scrollBarH^.get_preferred_width(@MinH, @PrefH);
-  FSystemMetricsList.Items[SM_CYHSCROLL] := Max(MinH, PrefH);
-
-  scrollBarV^.get_preferred_height(@MinH, @PrefH);
-  FSystemMetricsList.Items[SM_CYVSCROLL] := Max(MinH, PrefH);
+  FSystemMetricsList.Items[SM_CYHSCROLL] := Max(MinH, PrefH) + 2;
+  FSystemMetricsList.Items[SM_CXHSCROLL] := FSystemMetricsList.Items[SM_CYHSCROLL];
 
   scrollBarV^.get_preferred_width(@MinH, @PrefH);
-  FSystemMetricsList.Items[SM_CXVSCROLL] := Max(MinH, PrefH);
+  FSystemMetricsList.Items[SM_CXVSCROLL] := Max(MinH, PrefH) + 2;
+  FSystemMetricsList.Items[SM_CYVSCROLL] := FSystemMetricsList.Items[SM_CXVSCROLL];
 
   //loading distance between scrollbars in corner, since
   //gtk3 does not have corner widget, we set it via css.
