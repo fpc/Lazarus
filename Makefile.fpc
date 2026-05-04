@@ -184,8 +184,9 @@ useride:
 	./lazbuild$(SRCEXEEXT) $(LAZBUILDOPTS) --build-ide --pkg-release
 
 #-----------------------------------------------------------------------------
-# For legacy IDE, which calls "make ide" to rebuild itself
-ide: useride
+# For legacy IDE, which calls "make ide" to rebuild itself (and not packages)
+ide:
+	$(MAKE) -C ide ide
 
 #-----------------------------------------------------------------------------
 starter:

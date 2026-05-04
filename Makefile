@@ -3209,7 +3209,8 @@ idebig:
 	./lazbuild$(SRCEXEEXT) $(LAZBUILDOPTS) --build-ide-release --pkg-release
 useride:
 	./lazbuild$(SRCEXEEXT) $(LAZBUILDOPTS) --build-ide --pkg-release
-ide: useride
+ide:
+	$(MAKE) -C ide ide
 starter:
 	$(MAKE) -C ide starter
 lazbuild: registration
