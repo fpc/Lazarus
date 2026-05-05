@@ -11050,7 +11050,7 @@ begin
   RegisterPropertyToSkip(TSynGutter, 'GutterParts', '', '');
   RegisterPropertyToSkip(TSynGutter, 'OnChange', '', '');
   RegisterPropertyToSkip(TSynEdit, 'CFDividerDrawLevel', '', '');
-  RegisterPropertyToSkip(TLazEditCustomHighlighter, 'Enabled', '', '');
+  RegisterPropertyToSkip(TSynCustomHighlighter, 'Enabled', '', '');
 end;
 
 { TSynHookedKeyTranslationList }
