@@ -117,6 +117,7 @@ begin
     FreeMem(AData^.Formats);
     AData^.FormatCount := 0;
     AData^.Formats := nil;
+    Dispose(AData);
   end;
   AData := nil;
 end;
