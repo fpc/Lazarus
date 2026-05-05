@@ -2928,7 +2928,7 @@ begin
     end;
     if AValue <> clDefault then
     begin
-      ACSS := Format('textview text selection { background-color: #%02x%02x%02x; }',
+      ACSS := Format('textview text selection { background-color: #%.2x%.2x%.2x; }',
         [Round(AColor.red * 255), Round(AColor.green * 255), Round(AColor.blue * 255)]);
       ANewProvider := gtk_css_provider_new;
       gtk_css_provider_load_from_data(ANewProvider, PChar(ACSS), -1, nil);
@@ -7109,8 +7109,8 @@ begin
 
   ACSSProvider := gtk_css_provider_new;
   gtk_css_provider_load_from_data(ACSSProvider,
-    '#tab-close-button { background-color: transparent; border-radius: 3px; }' +
-    '#tab-close-button:hover { background-color: alpha(currentColor, 0.15); }', -1, nil);
+    '#tab-close-button { background-color: rgba(0,0,0,0); border-radius: 3px; }' +
+    '#tab-close-button:hover { background-color: alpha(@theme_fg_color, 0.15); }', -1, nil);
   AStyleCtx := FCloseButton^.get_style_context;
   AStyleCtx^.add_provider(PGtkStyleProvider(ACSSProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
   g_object_unref(ACSSProvider);
