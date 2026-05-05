@@ -2155,6 +2155,9 @@ procedure TGtk3Widget.GtkEventFocus(Sender: PGtkWidget; Event: PGdkEvent);
 var
   Msg: TLMessage;
   ACaret: TGtk3Caret;
+  LContainer, LWidget: PGtkWidget;
+  LWidgetType: TGtk3WidgetTypes;
+  LIsCombo: Boolean;
 begin
   {$IF DEFINED(GTK3DEBUGEVENTS) OR DEFINED(GTK3DEBUGFOCUS)}
   DebugLn('TGtk3Widget.GtkEventFocus ',dbgsName(LCLObject),' FocusIn ',dbgs(Event^.focus_change.in_ <> 0));
@@ -2186,17 +2189,25 @@ begin
     end;
   end;
 
+  LContainer := GetContainerWidget;
+  LWidget := FWidget;
+  LWidgetType := WidgetType;
+  LIsCombo := Self is TGtk3ComboBox;
+
   DeliverMessage(Msg);
 
   if Msg.Msg = LM_KILLFOCUS then
   begin
-    if ([wtEntry, wtSpinEdit] * WidgetType <> []) and
-      Gtk3IsEditable(PGObject(GetContainerWidget)) then
-        PGtkEditable(GetContainerWidget)^.select_region(0, 0)
+    if ([wtEntry, wtSpinEdit] * LWidgetType <> []) and
+       Gtk3IsWidget(LContainer) and
+       Gtk3IsEditable(PGObject(LContainer)) then
+        PGtkEditable(LContainer)^.select_region(0, 0)
     else
-    if (wtComboBox in WidgetType) and (Self is TGtk3ComboBox) and PGtkComboBox(FWidget)^.has_entry and
-       Gtk3IsEditable(PGObject(PGtkComboBox(FWidget)^.get_child)) then
-         PGtkEditable(PGtkComboBox(FWidget)^.get_child)^.select_region(0, 0);
+    if (wtComboBox in LWidgetType) and LIsCombo and
+       Gtk3IsWidget(LWidget) and
+       PGtkComboBox(LWidget)^.has_entry and
+       Gtk3IsEditable(PGObject(PGtkComboBox(LWidget)^.get_child)) then
+         PGtkEditable(PGtkComboBox(LWidget)^.get_child)^.select_region(0, 0);
   end;
 end;
 
