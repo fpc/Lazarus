@@ -25,7 +25,7 @@ located at http://SynEdit.SourceForge.net
 Known Issues:
 -------------------------------------------------------------------------------}
 
-unit SynEditHighlighter;
+unit SynEditHighlighter deprecated 'Use LazEditHighlighter / this unit will be removed in 5.99';
 
 {$I synedit.inc}
 
@@ -39,7 +39,7 @@ uses
   LazUTF8, LazMethodList,
   // SynEdit
   SynEditTypes, SynEditTextBase, SynEditMiscProcs, LazEditTextAttributes, LazEditHighlighterUtils,
-  LazEditHighlighter;
+  LazEditHighlighter, LazEditFoldHighlighter;
 
 type
   TSynHighlighterRangeList = TLazHighlighterLineRangeList deprecated 'use TLazHighlighterLineRangeList or TLazHighlighterLineRangeShiftList / to be removed in 5.99';
@@ -106,7 +106,7 @@ type
 
   { TSynCustomHighlighter }
 
-  TSynCustomHighlighter = class(TLazEditCustomRangesHighlighter)
+  TSynCustomHighlighter = class(TLazEditCustomFoldHighlighter)
   private
     fAttrChangeHooks: TMethodList;
     FCapabilities: TSynHighlighterCapabilities deprecated;
@@ -181,7 +181,7 @@ type
   public
     property Enabled: boolean read fEnabled write SetEnabled default TRUE;      //DDH 2001-10-23
         deprecated 'to be removed in 5.99 / no replacement - was never implemented';
-  end;
+  end deprecated 'Use TLazEditCustomHighlighter / this class will be removed in 5.99';
 
   TSynCustomHighlighterClass = class of TSynCustomHighlighter;
 
