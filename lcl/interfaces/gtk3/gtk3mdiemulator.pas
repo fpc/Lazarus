@@ -104,6 +104,7 @@ type
     class procedure FrameSetFocusChild(container: PGtkContainer; widget: PGtkWidget; data: gpointer); cdecl; static;
     class procedure FrameGtkDestroy(widget: PGtkWidget; data: gpointer); cdecl; static;
     class function DeferCloseChild(data: gpointer): gboolean; cdecl; static;
+    class function DeferFirstPaint(data: gpointer): gboolean; cdecl; static;
   public
     property TitleBarH: gint read FTitleBarH;
     property BtnW: gint read FBtnW;
@@ -488,6 +489,37 @@ begin
     exit;
   PGtkBox(FBox)^.pack_start(AContent, True, True, 0);
   PGtkWidget(AContent)^.show_all;
+  //defer a redraw so TGraphicControls paint after GdkWindows are fully mapped
+  g_idle_add(@TGtk3MDIChildFrame.DeferFirstPaint, Self);
+end;
+
+class function TGtk3MDIChildFrame.DeferFirstPaint(data: gpointer): gboolean; cdecl;
+var
+  AFrame: TGtk3MDIChildFrame absolute data;
+  i: Integer;
+  Sibling: TGtk3MDIChildFrame;
+  WSWindow: PGdkWindow;
+begin
+  if (AFrame <> nil) and (AFrame.FFrame <> nil) then
+  begin
+    gtk_widget_queue_draw(AFrame.FFrame);
+    if AFrame.FWorkspace <> nil then
+    begin
+      for i := 0 to AFrame.FWorkspace.FChildren.Count - 1 do
+      begin
+        Sibling := TGtk3MDIChildFrame(AFrame.FWorkspace.FChildren[i]);
+        if (Sibling <> AFrame) and (Sibling.FFrame <> nil) then
+          gtk_widget_queue_draw(Sibling.FFrame);
+      end;
+      if AFrame.FWorkspace.FContainer <> nil then
+      begin
+        WSWindow := gtk_widget_get_window(AFrame.FWorkspace.FContainer);
+        if WSWindow <> nil then
+          WSWindow^.process_updates(True);
+      end;
+    end;
+  end;
+  Result := false;
 end;
 
 procedure TGtk3MDIChildFrame.RefitMaximized(AViewportW, AViewportH: Integer);
