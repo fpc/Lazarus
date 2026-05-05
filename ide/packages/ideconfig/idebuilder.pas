@@ -335,7 +335,10 @@ var
 var
   IdeBuildMode: TIdeBuildMode;
   s: String;
+  {$IFDEF UseFPCForIDE}
+  {$ELSE}
   DefaultTargetFilename: String;
+  {$ENDIF}
 begin
   // Get target files and directories.
   Result:=mrCancel;
@@ -455,6 +458,8 @@ begin
       AppendExtraOption('-Fuide');
       if blfKeepInstallPkgs in Flags then
         AppendExtraOption('-dKeepInstalledPackages');
+      if (fTargetOS='win32') or (fTargetOS='win64') then
+        AppendExtraOption('-WG');
       AppendExtraOption('ide'+PathDelim+'lazarus.pp');
       AppendExtraOption('-o'+fTargetFilename);
       Cmd:=fExtraOptions;
