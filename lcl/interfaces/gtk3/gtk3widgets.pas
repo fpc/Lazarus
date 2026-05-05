@@ -1054,6 +1054,8 @@ type
   { TGtk3CustomControl }
 
   TGtk3CustomControl = class(TGtk3ScrollableWin)
+    strict private
+      class procedure ScrollbarVisibilityChanged(AWidget: PGtkWidget; Data: gpointer); cdecl; static;
     protected
       procedure ConnectSizeAllocateSignal(ToWidget: PGtkWidget); override;
       function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
@@ -7115,7 +7117,7 @@ begin
 
   FPageBox^.pack_start(FImageWidget, False, False, 0);
   FPageBox^.pack_start(FPageLabel, False, False, 0);
-  FPageBox^.pack_start(FCloseButton, False, False, 0);
+  FPageBox^.pack_end(FCloseButton, False, False, 0);
   FPageBox^.show_all;
 
   FImageWidget^.hide;
@@ -12364,6 +12366,8 @@ begin
 end;
 
 function TGtk3CustomControl.CreateWidget(const Params: TCreateParams): PGtkWidget;
+var
+  HBar, VBar: PGtkWidget;
 begin
   FHasPaint := True;
   FKeysToEat := [];
@@ -12412,6 +12416,32 @@ begin
     gtk_adjustment_new(0, 0, 1, 1, 1, 0));
   PGtkScrollable(FCentralWidget)^.set_vadjustment(
     gtk_adjustment_new(0, 0, 1, 1, 1, 0));
+
+  HBar := PGtkWidget(PGtkScrolledWindow(Result)^.get_hscrollbar);
+  if Assigned(HBar) and Gtk3IsWidget(HBar) then
+  begin
+    g_signal_connect_data(HBar, 'map', TGCallback(@ScrollbarVisibilityChanged), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(HBar, 'unmap', TGCallback(@ScrollbarVisibilityChanged), Self, nil, G_CONNECT_DEFAULT);
+  end;
+  VBar := PGtkWidget(PGtkScrolledWindow(Result)^.get_vscrollbar);
+  if Assigned(VBar) and Gtk3IsWidget(VBar) then
+  begin
+    g_signal_connect_data(VBar, 'map', TGCallback(@ScrollbarVisibilityChanged), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(VBar, 'unmap', TGCallback(@ScrollbarVisibilityChanged), Self, nil, G_CONNECT_DEFAULT);
+  end;
+end;
+
+class procedure TGtk3CustomControl.ScrollbarVisibilityChanged(AWidget: PGtkWidget;
+  Data: gpointer); cdecl;
+var
+  ACtl: TGtk3CustomControl;
+begin
+  if Data = nil then
+    exit;
+  ACtl := TGtk3CustomControl(Data);
+  if not Assigned(ACtl.LCLObject) then
+    exit;
+  ACtl.LCLObject.InvalidateClientRectCache(False);
 end;
 
 function TGtk3CustomControl.EatArrowKeys(const AKey: Word): Boolean;

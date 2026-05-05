@@ -24,10 +24,30 @@ begin
   end;
 end;
 
+function LCLGtkNotebookGetCachedMinW(widget: PGtkWidget;
+  ParentClass: PGtkWidgetClass): gint;
+var
+  nat_w: gint;
+  cached: gpointer;
+begin
+  cached := g_object_get_data(PGObject(widget), 'lcl-nb-min-w');
+  if cached <> nil then
+    Result := gint(PtrInt(cached))
+  else
+  begin
+    nat_w := 0;
+    Result := 0;
+    ParentClass^.get_preferred_width(widget, @Result, @nat_w);
+    if Result > 0 then
+      g_object_set_data(PGObject(widget), 'lcl-nb-min-w', gpointer(PtrInt(Result)));
+  end;
+end;
+
 procedure LCLGtkNotebookGetPreferredWidth(widget: PGtkWidget; min_width, nat_width: Pgint); cdecl;
 var
   AControl: TGtk3Widget;
   ParentClass: PGtkWidgetClass;
+  min_w, parent_min: gint;
 begin
   if not Assigned(min_width) or not Assigned(nat_width) then
   begin
@@ -51,14 +71,22 @@ begin
     Exit;
   end;
 
-  ParentClass^.get_preferred_width(widget, min_width, nat_width);
+  parent_min := 0;
+  ParentClass^.get_preferred_width(widget, @parent_min, nat_width);
+
+  min_w := LCLGtkNotebookGetCachedMinW(widget, ParentClass);
+  min_width^ := min_w;
 
   AControl := TGtk3Widget(HwndFromGtkWidget(widget));
   if not Assigned(AControl) then
+  begin
+    if nat_width^ < min_w then
+      nat_width^ := min_w;
     Exit;
+  end;
 
-  if (min_width^ > 0) and (nat_width^ < min_width^) then
-    nat_width^ := min_width^;
+  if nat_width^ < min_w then
+    nat_width^ := min_w;
 end;
 
 procedure LCLGtkNotebookGetPreferredHeight(widget: PGtkWidget; min_height, nat_height: Pgint); cdecl;
