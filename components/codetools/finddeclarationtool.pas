@@ -7267,8 +7267,6 @@ var
         //here we know if it was a dotted ident and its length, put it in Params and exploit ...
         if not IsDotted then dLen:=0;
 
-        Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,fdfSearchInHelpers,
-                       fdfIgnoreCurContextNode];
         if PredefinedResult then
           Include(Params.Flags, fdfPredefinedResult);
 
@@ -7281,18 +7279,16 @@ var
         // => silently ignore
         try
           if DeclarationNode.Desc=ctnProperty then begin // it needs additional checking
-            Params.Flags:=[fdfSearchInAncestors, fdfExceptionOnNotFound,
-                     fdfSearchInParentNodes, fdfIgnoreCurContextNode,
-                     fdfExceptionOnPredefinedIdent, fdfTopLvlResolving];
+            Params.Flags:=[fdfSearchInAncestors,
+                          fdfExceptionOnNotFound,
+                          fdfSearchInParentNodes,
+                          fdfIgnoreCurContextNode,
+                          fdfExceptionOnPredefinedIdent,
+                          fdfTopLvlResolving];
             if FindDeclarationOfIdentAtParam(Params, ExprType) then begin
-              Found:= ExprType.Context.Node = DeclarationNode;
+              Found := ExprType.Context.Node = DeclarationNode;
               // first ancestor (if property found here) can be not enough
-              // debugln(
-              //  [ExprType.Context.Tool.ExtractProperty(ExprType.Context.Node,[phpWithResultType]),
-              //  '  Has Type = ',
-              //  not ExprType.Context.Tool.PropNodeIsTypeLess(ExprType.Context.Node)]);
-
-              if not Found  then begin
+              if not Found and (ExprType.Context.Node.Desc=ctnProperty) then begin
                 PropName:=ExprType.Context.Tool.GetPropertyNameIdentifier(ExprType.Context.Node);
                 Params.SetIdentifier(ExprType.Context.Tool, PropName,@CheckSrcIdentifier);
                 Params.ContextNode:=ExprType.Context.Node;
@@ -7306,8 +7302,13 @@ var
                   Found:= ExprType.Context.Node = DeclarationNode;
               end;
             end;
-          end else
+          end else begin
+            Params.Flags:=[fdfSearchInParentNodes,
+                           fdfSearchInAncestors,
+                           fdfSearchInHelpers,
+                           fdfIgnoreCurContextNode];
             Found:=FindDeclarationOfIdentAtParam(Params,DefaultResultNode);
+          end;
         except
           on E: ECodeToolError do begin
             if E.Sender<>Self then begin
