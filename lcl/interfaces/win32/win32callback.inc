@@ -2519,9 +2519,19 @@ begin
       if Window = Win32WidgetSet.AppHandle then
       begin
         ThemeServices.UpdateThemes;
-        Graphics.UpdateHandleObjects;
+        // Don't clear brush cache on theme change as it was known to cause crashes in WinXP in the past.
+        // See issue #17647.
+        Graphics.UpdateHandleObjects(False);
         ThemeServices.IntfDoOnThemeChange;
       end;
+    WM_SYSCOLORCHANGE:
+      // System colors changed -- clear the brush handle cache so sys-color
+      // brushes get re-resolved via the current GetSysColorBrush on next
+      // paint, then bump the version so existing TBrush instances refresh
+      // their references.
+      // See https://learn.microsoft.com/en-us/windows/win32/gdi/wm-syscolorchange
+      if Window = Win32WidgetSet.AppHandle then
+        Graphics.UpdateHandleObjects(True);
     WM_UPDATEUISTATE:
       if ThemeServices.ThemesEnabled then
         InvalidateRect(Window, nil, True);

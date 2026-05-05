@@ -1003,7 +1003,7 @@ var
   i: Integer;
 begin
   self.UpdateThemes;
-  Graphics.UpdateHandleObjects;
+  Graphics.UpdateHandleObjects(True);
   self.IntfDoOnThemeChange;
 
   for i:= 0 to _observers.Count-1 do begin

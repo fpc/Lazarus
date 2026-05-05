@@ -2061,7 +2061,7 @@ function ScaleX(const SizeX, FromDPI: Integer): Integer;
 function ScaleY(const SizeY, FromDPI: Integer): Integer;
 
 procedure Register;
-procedure UpdateHandleObjects;
+procedure UpdateHandleObjects(AClearBrushCache: Boolean);
 
 implementation
 
@@ -2072,7 +2072,7 @@ var
   GraphicsUpdateCount: Integer = 0;
   UpdateLock: TCriticalSection;
 
-procedure UpdateHandleObjects;
+procedure UpdateHandleObjects(AClearBrushCache: Boolean);
 begin
   // renew all brushes, pens, fonts, ...
   UpdateLock.Enter;
@@ -2080,9 +2080,12 @@ begin
     if GraphicsUpdateCount=High(GraphicsUpdateCount) then
       GraphicsUpdateCount:=Low(GraphicsUpdateCount);
     inc(GraphicsUpdateCount);
-    // at moment update only brushes, but later maybe we will need to update others
-    // don't clear BrushResourceCache because TBrush instances have references to cache items
-    // BrushResourceCache.Clear;
+    // BrushResourceCache caches sys-color brushes by their TColor key
+    // (the unresolved sys color constant), so a stale cached handle will be
+    // reused even after GraphicsUpdateCount bump. Pass AClearBrushCache=True
+    // from WM_SYSCOLORCHANGE so brushes get re-resolved via GetSysColorBrush.
+    if AClearBrushCache then
+      BrushResourceCache.Clear;
   finally
     UpdateLock.Leave;
   end;
