@@ -106,6 +106,21 @@ begin
   vscroll := PGtkScrolledWindow(widget)^.get_vscrollbar;
   hscroll := PGtkScrolledWindow(widget)^.get_hscrollbar;
 
+  if Assigned(vscroll) and Gtk3IsWidget(vscroll) then
+  begin
+    if (vpolicy = GTK_POLICY_EXTERNAL) and vscroll^.get_visible then
+      vscroll^.hide
+    else if (vpolicy <> GTK_POLICY_EXTERNAL) and not vscroll^.get_visible then
+      vscroll^.show;
+  end;
+  if Assigned(hscroll) and Gtk3IsWidget(hscroll) then
+  begin
+    if (hpolicy = GTK_POLICY_EXTERNAL) and hscroll^.get_visible then
+      hscroll^.hide
+    else if (hpolicy <> GTK_POLICY_EXTERNAL) and not hscroll^.get_visible then
+      hscroll^.show;
+  end;
+
   { MINIMUM THRESHOLDS widget's frame + scrollbars }
 
   threshH := LCLScrolledWinExtentsH;
@@ -148,12 +163,8 @@ begin
     exit;
   end;
 
-  { Non-zero but too small - clamp to prevent scrollbar cascade. }
   if (allocation^.width < threshW) or (allocation^.height < threshH) then
-  begin
-    if allocation^.width < threshW then allocation^.width := threshW;
-    if allocation^.height < threshH then allocation^.height := threshH;
-  end;
+    Exit;
 
   //writeln('LCLGtkScrolledWindowSizeAllocate ',threshW,' ',threshH,' ',allocation^.width,',',allocation^.height);
   ParentClass^.size_allocate(widget, allocation);
@@ -297,6 +308,20 @@ begin
 end;
 
 function LCLGtkScrolledWindowNew: PGtkScrolledWindow;
+var
+  scroll: PGtkWidget;
 begin
   Result := PGtkScrolledWindow(g_object_newv(LCLGtkScrolledWindowGetType, 0, nil));
+  scroll := PGtkWidget(Result^.get_hscrollbar);
+  if Assigned(scroll) and Gtk3IsWidget(scroll) then
+  begin
+    scroll^.set_no_show_all(True);
+    scroll^.hide;
+  end;
+  scroll := PGtkWidget(Result^.get_vscrollbar);
+  if Assigned(scroll) and Gtk3IsWidget(scroll) then
+  begin
+    scroll^.set_no_show_all(True);
+    scroll^.hide;
+  end;
 end;
