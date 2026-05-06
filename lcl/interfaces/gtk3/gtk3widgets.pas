@@ -1502,6 +1502,18 @@ begin
       if (wtSpinEdit in TGtk3Widget(Data).WidgetType) and
          Gtk3IsArrowKey(Event^.key.keyval) then
         exit(gtk_false);
+      if (wtComboBox in TGtk3Widget(Data).WidgetType) and
+         (TGtk3Widget(Data) is TGtk3ComboBox) and
+         not PGtkComboBox(Widget)^.has_entry and
+         not Widget^.has_focus then
+      begin
+        TGtk3Widget(Data).GtkEventKey(Widget, Event, True);
+        if (Event^.key.keyval = GDK_KEY_Return) or
+           (Event^.key.keyval = GDK_KEY_KP_Enter) or
+           (Event^.key.keyval = GDK_KEY_ISO_Enter) then
+          Result := True;
+        exit;
+      end;
       if Widget^.has_focus then
         Result := TGtk3Widget(Data).GtkEventKey(Widget, Event, True)
       else if Widget^.is_toplevel then
@@ -1526,6 +1538,18 @@ begin
     end;
   GDK_KEY_RELEASE:
     begin
+      if (wtComboBox in TGtk3Widget(Data).WidgetType) and
+         (TGtk3Widget(Data) is TGtk3ComboBox) and
+         not PGtkComboBox(Widget)^.has_entry and
+         not Widget^.has_focus then
+      begin
+        TGtk3Widget(Data).GtkEventKey(Widget, Event, False);
+        if (Event^.key.keyval = GDK_KEY_Return) or
+           (Event^.key.keyval = GDK_KEY_KP_Enter) or
+           (Event^.key.keyval = GDK_KEY_ISO_Enter) then
+          Result := True;
+        exit;
+      end;
       if Widget^.has_focus then
       begin
         Result := TGtk3Widget(Data).GtkEventKey(Widget, Event, False);
