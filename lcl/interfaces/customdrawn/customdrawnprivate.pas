@@ -112,7 +112,7 @@ function IsIntfControl(AControl: TWinControl): Boolean;
 
 implementation
 
-uses customdrawnint, LCLMessageGlue, customdrawndrawers;
+uses customdrawnint, LCLMessageGlue, customdrawndrawers, Clipbrd;
 
 procedure CallbackMouseUp(AWindowHandle: TCDForm; x, y: Integer; Button: TMouseButton; ShiftState: TShiftState = []);
 var
@@ -232,9 +232,79 @@ begin
   end;
 end;
 
+function HandleIntfTextShortcut(AControl: TWinControl; AKey: Word): Boolean;
+var
+  LEdit: TCustomEdit;
+  LCombo: TCustomComboBox;
+  S: string;
+begin
+  Result := False;
+  if GetKeyShiftState <> [ssModifier] then Exit;
+
+  LEdit := nil;
+  if AControl is TCDIntfEdit then
+    LEdit := TCDIntfEdit(AControl).LCLControl
+  else if AControl is TCDIntfSpinEdit then
+    LEdit := TCDIntfSpinEdit(AControl).LCLControl;
+
+  if LEdit <> nil then
+  begin
+    case AKey of
+      VK_C:
+        begin
+          LEdit.CopyToClipboard;
+          Result := True;
+        end;
+      VK_V:
+        begin
+          if not LEdit.ReadOnly then
+            LEdit.PasteFromClipboard;
+          Result := True;
+        end;
+      VK_X:
+        begin
+          if not LEdit.ReadOnly then
+            LEdit.CutToClipboard;
+          Result := True;
+        end;
+    end;
+    Exit;
+  end;
+
+  if not (AControl is TCDIntfComboBox) then Exit;
+  LCombo := TCDIntfComboBox(AControl).LCLControl;
+  if (LCombo = nil) or not LCombo.Style.HasEditBox then Exit;
+
+  case AKey of
+    VK_C:
+      begin
+        if LCombo.SelText <> '' then Clipboard.AsText := LCombo.SelText;
+        Result := True;
+      end;
+    VK_V:
+      begin
+        if not LCombo.ReadOnly then
+        begin
+          S := Clipboard.AsText;
+          if S <> '' then LCombo.SelText := S;
+        end;
+        Result := True;
+      end;
+    VK_X:
+      begin
+        if not LCombo.ReadOnly and (LCombo.SelText <> '') then
+        begin
+          Clipboard.AsText := LCombo.SelText;
+          LCombo.SelText := '';
+        end;
+        Result := True;
+      end;
+  end;
+end;
+
 procedure CallbackKeyDown(AWindowHandle: TCDForm; AKey: Word);
 var
-  lTarget, lScope, lBubble: TWinControl;
+  lTarget, lScope, lBubble, lIntfTarget: TWinControl;
   lIsTab, lTabDirForward: Boolean;
   lTabNextControl: TWinControl;
   i: Integer;
@@ -250,11 +320,17 @@ begin
   // If this is a interface control, send the message to the main LCL control too
   if IsIntfControl(lTarget) then
   begin
+    lIntfTarget := lTarget;
     lTarget := lTarget.Parent;
     {$ifdef VerboseCDEvents}
      DebugLn(Format('CallbackKeyDown IsIntfControl, sending msg to Parent=%s:%s', [lTarget.Name, lTarget.ClassName]));
     {$endif}
     LCLSendKeyDownEvent(lTarget, AKey, 0, True, False);
+    { Customdrawn owns the edit surface, so the default clipboard
+      shortcuts must run here. This is after both KeyDown deliveries so
+      application handlers can still consume the key first. }
+    if (AKey <> 0) and HandleIntfTextShortcut(lIntfTarget, AKey) then
+      AKey := 0;
   end;
 
   { Bubble unhandled keys up the parent chain so container controls can
@@ -604,4 +680,3 @@ begin
 end;
 
 end.
-
