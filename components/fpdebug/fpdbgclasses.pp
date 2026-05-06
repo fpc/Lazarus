@@ -1754,7 +1754,7 @@ var
 begin
   for i := 0 to ASize -1 do
     if BreakMap.HasInsertedBreakInstructionAtLocation(AAdress+i) then
-      AdaptOriginalValueAtLocation(AAdress+i, PByte(@AData+i)^);
+      AdaptOriginalValueAtLocation(AAdress+i, P_BRK_STORE(@AData+i)^);
 end;
 
 function TGenericBreakPointTargetHandler.GetOrigValueAtLocation(const ALocation: TDBGPtr

@@ -8,7 +8,7 @@ unit fpdebug;
 interface
 
 uses
-  FpDbgClasses, FpDbgDisasX86, FpDbgDwarf, FpDbgDwarfConst, FpDbgLoader, FpDbgPETypes, FpDbgUtil, 
+  FpDbgDisasX86, FpDbgDwarf, FpDbgDwarfConst, FpDbgLoader, FpDbgPETypes, FpDbgUtil, 
   FpImgReaderWinPE, FpImgReaderElf, FpImgReaderElfTypes, FpImgReaderBase, FpPascalParser, macho, 
   FpImgReaderMachoFile, FpImgReaderMacho, FpPascalBuilder, FpDbgInfo, FpdMemoryTools, 
   FpErrorMessages, FPDbgController, FpDbgDwarfVerbosePrinter, FpDbgDwarfDataClasses, 

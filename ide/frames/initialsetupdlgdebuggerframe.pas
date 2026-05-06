@@ -203,10 +203,10 @@ end;
 function TInitDebuggerFrame.RecommendedClass: TDebuggerIntfClass;
 begin
   Result := TGDBMIDebugger;
-  {$If defined(WINDOWS)}
-  Result := TFpDebugDebugger;
-  {$ElseIf defined(Linux)}
-  Result := TFpDebugDebugger;
+  {$If defined(WINDOWS) or defined(Linux)}
+    {$IF defined(CPU386) or defined(CPUI386) or defined(CPUX86_64) or defined(CPUX64)}
+    Result := TFpDebugDebugger;
+    {$ENDIF}
   {$ElseIf defined(Darwin)}
   Result := TFpLldbDebugger;
   {$ENDIF}

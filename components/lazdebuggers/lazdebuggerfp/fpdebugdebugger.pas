@@ -5157,7 +5157,13 @@ begin
     if DBG_PROCESS_HAS_REDIRECT then
       Result := Result + [dfStdInOutRedirect];
   {$ELSE}
-  Result := [dfNotSuitableForOsArch];
+    {$IF (defined(linux)) and
+         (defined(CPUAARCH64))
+    }
+    result := [];
+    {$ELSE}
+    Result := [dfNotSuitableForOsArch];
+    {$ENDIF}
   {$ENDIF}
 end;
 

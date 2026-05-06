@@ -86,12 +86,14 @@ end;
 {$else} // not declared(Do_SysCall)
 (* **   Use Do_SysCall   ** *)
 
+{$if defined(CPU386) or defined(CPUI386)}
 const
-{$ifdef cpux86_64}
-  syscall_nr_ptrace                            = 101;
-{$else}
   syscall_nr_ptrace                            = 26;
+{$elseif defined(cpux86_64)}
+const
+  syscall_nr_ptrace                            = 101;
 {$endif}
+// defined(CPUAARCH64) // 117 // leave default
 
 function fpPTrace(ptrace_request: cint; pid: TPid; addr: Pointer; data: pointer): PtrInt;
 var

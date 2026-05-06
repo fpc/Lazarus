@@ -15,7 +15,7 @@ uses
   FpDbgClasses, FpDbgCallContextInfo, FpDbgUtil,
   {$ifdef windows}  FpDbgWinClasses,  {$endif}
   {$ifdef darwin}  FpDbgDarwinClasses,  {$endif}
-  {$ifdef linux}  FpDbgLinuxClasses,  {$endif}
+  {$ifdef linux}  FpDbgLinuxClasses, FpDbgLinuxX86Classes, FpDbgLinuxAarch64Classes,  {$endif}
   FpDbgInfo, FpDbgDwarf, FpdMemoryTools, FpErrorMessages,
   FpDbgCommon;
 

@@ -148,6 +148,7 @@ begin
     EM_XTENSA:    result := mtXTENSA;
     EM_RISCV:     result := mtRISCV;
     EM_ALPHA:     result := mtALPHA;
+    EM_AARCH64:   result := mtARM64;
   else
     result := mtNone;
   end;
