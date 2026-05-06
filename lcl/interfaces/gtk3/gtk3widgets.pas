@@ -100,7 +100,6 @@ type
     class function MoveTabFocus(aWidget: PGtkWidget;
       aDirection: TGtkDirectionType; aData: gPointer): gBoolean; cdecl; static;
     class function WidgetEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl; static; {main event filter of widget}
-    class function WidgetFocusIn(AWidget: PGtkWidget; Event: PGdkEventFocus; AData: gpointer): gboolean; cdecl; static;
     class procedure DestroyWidgetEvent({%H-}w: PGtkWidget;{%H-}data:gpointer); cdecl; static;
   strict private
     FCentralWidgetRGBA: array [0{GTK_STATE_NORMAL}..4{GTK_STATE_INSENSITIVE}] of TDefaultRGBA;
@@ -2212,15 +2211,6 @@ begin
 end;
 
 
-class function TGtk3Widget.WidgetFocusIn(AWidget: PGtkWidget;
-  Event: PGdkEventFocus; AData: gpointer): gboolean; cdecl;
-begin
-  Result := False;
-  if AData = nil then
-    Exit;
-  TGtk3Widget(AData).GtkEventFocus(AWidget, PGdkEvent(Event));
-end;
-
 procedure TGtk3Widget.GtkEventDestroy; cdecl;
 var
   Msg: TLMessage;
@@ -3517,9 +3507,6 @@ begin
 
   if FWidgetType * [wtWindow, wtDialog, wtHintWindow] = [] then
   begin
-    g_signal_connect_data(FWidget, 'focus-in-event', TGCallback(@WidgetFocusIn), Self, nil, G_CONNECT_DEFAULT);
-    if FWidget <> GetContainerWidget then
-      g_signal_connect_data(GetContainerWidget, 'focus-in-event', TGCallback(@WidgetFocusIn), Self, nil, G_CONNECT_DEFAULT);
     //keyboard context menu
     g_signal_connect_data(FWidget, 'popup-menu', TGCallback(@Gtk3PopupMenuCB), Self, nil, G_CONNECT_DEFAULT);
     if FWidget <> GetContainerWidget then
@@ -4416,6 +4403,8 @@ begin
       '%s cannot host child %s on GTK3 (not a GtkContainer)',
       [BoolToStr(Assigned(AParent.LCLObject), AParent.LCLObject.ClassName, '<nil>'),
        BoolToStr(Assigned(LCLObject), LCLObject.ClassName, '<nil>')]);
+  if Assigned(LCLObject) and not LCLObject.Visible then
+    FWidget^.set_visible(False);
 end;
 
 procedure TGtk3Widget.Show;
