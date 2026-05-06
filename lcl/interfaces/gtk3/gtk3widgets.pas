@@ -1507,7 +1507,8 @@ begin
         exit(gtk_false);
       if (wtComboBox in TGtk3Widget(Data).WidgetType) and
          (TGtk3Widget(Data) is TGtk3ComboBox) and
-         not PGtkComboBox(Widget)^.has_entry and
+         Gtk3IsComboBox(TGtk3Widget(Data).Widget) and
+         not PGtkComboBox(TGtk3Widget(Data).Widget)^.has_entry and
          not Widget^.has_focus then
       begin
         TGtk3Widget(Data).GtkEventKey(Widget, Event, True);
@@ -1543,7 +1544,8 @@ begin
     begin
       if (wtComboBox in TGtk3Widget(Data).WidgetType) and
          (TGtk3Widget(Data) is TGtk3ComboBox) and
-         not PGtkComboBox(Widget)^.has_entry and
+         Gtk3IsComboBox(TGtk3Widget(Data).Widget) and
+         not PGtkComboBox(TGtk3Widget(Data).Widget)^.has_entry and
          not Widget^.has_focus then
       begin
         TGtk3Widget(Data).GtkEventKey(Widget, Event, False);
