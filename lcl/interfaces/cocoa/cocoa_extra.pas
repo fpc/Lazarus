@@ -570,7 +570,9 @@ type
 type
   NSToolBarItemFix = objccategory external (NSToolBarItem)
     procedure setBordered( newValue: Boolean ); message 'setBordered:'; { available in 10.15 }
+    function isBordered: Boolean; message 'isBordered'; { available in 10.15 }
     procedure setNavigational( newValue: Boolean ); message 'setNavigational:'; { available in 11.0 }
+    function isNavigational: Boolean; message 'isNavigational'; { available in 11.0 }
   end;
 
 type

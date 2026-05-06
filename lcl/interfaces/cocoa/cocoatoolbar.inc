@@ -247,13 +247,30 @@ type
     class function toClass( const itemConfig: TCocoaConfigToolBarItemGroup ):
       TCocoaConfigToolBarItemClassAbstract;
   public
-    class function createItem( const identifier: String;
+    class function createItem(
+      const identifier: String;
       const itemsConfig: TCocoaConfigToolBarItems ): NSToolbarItem;
-    class function createToolBar( const toolBarConfig: TCocoaConfigToolBar ):
-      TCocoaToolBar;
-    class function findItemByIdentifier( const form: TCustomForm;
+    class function createToolBar(
+      const toolBarConfig: TCocoaConfigToolBar ): TCocoaToolBar;
+    class function getToolBar(
+      const form: TCustomForm ): NSToolBar;
+    class function findItemByIdentifier(
+      const form: TCustomForm;
       const identifier: String ): NSToolbarItem;
-    class function getNSView( const cocoaItem: NSToolBarItem ): NSView;
+    class function findItemByIdentifier(
+      const toolBar: NSToolBar;
+      const identifier: String ): NSToolbarItem;
+    class function findItemIndexByIdentifier(
+      const toolBar: NSToolBar;
+      const identifier: String ): Integer;
+    class procedure addItemWithIdentifier(
+      const toolBar: NSToolBar;
+      const identifier: String );
+    class procedure removeItemByIndex(
+      const toolBar: NSToolBar;
+      const index: Integer );
+    class function getNSView(
+      const cocoaItem: NSToolBarItem ): NSView;
   end;
 
   function defaultToolBarItemCreatorImplement( const identifier: String;
@@ -339,16 +356,15 @@ begin
   Result:= toolBar;
 end;
 
-class function TCocoaToolBarUtils.findItemByIdentifier( const form: TCustomForm;
-  const identifier: String ): NSToolbarItem;
+class function TCocoaToolBarUtils.getToolBar( const form: TCustomForm ): NSToolBar;
 var
   content: TCocoaWindowContent;
   win: NSWindow;
-  toolBar: NSToolBar;
-  item: NSToolBarItem;
-  cocoaIdentifier: NSString;
 begin
   Result:= nil;
+  if NOT Assigned(form) then
+    Exit;
+
   content:= TCocoaWindowContent( form.handle );
   if NOT Assigned(content) then
     Exit;
@@ -357,17 +373,74 @@ begin
   win:= content.window;
   if NOT Assigned(win) then
     Exit;
-  toolBar:= win.toolbar;
+
+  Result:= win.toolbar;
+end;
+
+class function TCocoaToolBarUtils.findItemByIdentifier(
+  const form: TCustomForm;
+  const identifier: String ): NSToolbarItem;
+var
+  toolBar: NSToolBar;
+begin
+  toolBar:= TCocoaToolBarUtils.getToolBar( form );
+  Result:= TCocoaToolBarUtils.findItemByIdentifier( toolBar, identifier );
+end;
+
+class function TCocoaToolBarUtils.findItemByIdentifier(
+  const toolBar: NSToolBar;
+  const identifier: String ): NSToolbarItem;
+var
+  index: Integer;
+begin
+  Result:= nil;
+  index:= TCocoaToolBarUtils.findItemIndexByIdentifier( toolBar, identifier );
+  if index < 0 then
+    Exit;
+
+  Result:= NSToolbarItem( toolBar.items.objectAtIndex(index) );
+end;
+
+class function TCocoaToolBarUtils.findItemIndexByIdentifier(
+  const toolBar: NSToolBar;
+  const identifier: String): Integer;
+var
+  cocoaIdentifier: NSString;
+  item: NSToolBarItem;
+  i: Integer;
+begin
+  Result:= -1;
   if NOT Assigned(toolBar) then
     Exit;
 
   cocoaIdentifier:= StrToNSString( identifier );
-  for item in toolBar.items do begin
+  for i:= 0 to toolBar.items.count-1 do begin
+    item:= NSToolBarItem( toolBar.items.objectAtIndex(i) );
     if item.itemIdentifier.isEqualToString(cocoaIdentifier) then begin
-      Result:= item;
+      Result:= i;
       Exit;
     end;
   end;
+end;
+
+class procedure TCocoaToolBarUtils.addItemWithIdentifier(
+  const toolBar: NSToolBar;
+  const identifier: String );
+begin
+  if NOT Assigned(toolBar) then
+    Exit;
+  toolBar.insertItemWithItemIdentifier_atIndex(
+    StrToNSString(identifier),
+    toolBar.items.Count-1 );
+end;
+
+class procedure TCocoaToolBarUtils.removeItemByIndex(
+  const toolBar: NSToolBar;
+  const index: Integer );
+begin
+  if NOT Assigned(toolBar) then
+    Exit;
+  toolBar.removeItemAtIndex( index );
 end;
 
 class function TCocoaToolBarUtils.getNSView(const cocoaItem: NSToolBarItem
