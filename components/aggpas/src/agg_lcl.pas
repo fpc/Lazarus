@@ -11,7 +11,7 @@ uses
  {$IFDEF AGG_WINDOWS}
  Windows ,
  {$ENDIF}
- Classes ,Graphics, LCLProc, types, IntfGraphics, GraphType, FPimage, FPCanvas,
+ Classes, FPImage, FPCanvas, Graphics, LCLProc, types, IntfGraphics, GraphType,
  {$IFDEF LCLGtk2}
  pango, LCLType, Gtk2Proc, Gtk2Def, gtk2,
  {$ENDIF}
