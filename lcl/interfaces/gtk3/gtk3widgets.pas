@@ -183,6 +183,7 @@ type
     procedure RecreateWidget;
     procedure DestroyNotify({%H-}AWidget: PGtkWidget); virtual;
     destructor Destroy; override;
+    procedure Release; override;
 
     function CanFocus: Boolean; virtual;
     function GetFocusableByMouse: Boolean;
@@ -225,7 +226,6 @@ type
 
     function GetContainerWidget: PGtkWidget; virtual;
     function GetPosition(out APoint: TPoint): Boolean; virtual;
-    procedure Release; override;
     procedure Hide; virtual;
     function getParent: TGtk3Widget;
     function GetWindow: PGdkWindow; virtual;
@@ -1349,6 +1349,9 @@ var
   AFocusedWidget: PGtkWidget;
   AFocusedLCL: TGtk3Widget;
 begin
+  Result := gtk_false;
+  if (Data = nil) or (TGtk3Widget(Data).LCLObject = nil) then
+    exit;
   {$IFDEF GTK3DEBUGCOMBOBOX}
   if (Data <> nil) and (wtComboBox in TGtk3Widget(Data).WidgetType) and
     (event^.type_ <> GDK_MOTION_NOTIFY) then
@@ -1502,6 +1505,19 @@ begin
       if (wtSpinEdit in TGtk3Widget(Data).WidgetType) and
          Gtk3IsArrowKey(Event^.key.keyval) then
         exit(gtk_false);
+      if (wtComboBox in TGtk3Widget(Data).WidgetType) and
+         (TGtk3Widget(Data) is TGtk3ComboBox) and
+         Gtk3IsComboBox(TGtk3Widget(Data).Widget) and
+         not PGtkComboBox(TGtk3Widget(Data).Widget)^.has_entry and
+         not Widget^.has_focus then
+      begin
+        TGtk3Widget(Data).GtkEventKey(Widget, Event, True);
+        if (Event^.key.keyval = GDK_KEY_Return) or
+           (Event^.key.keyval = GDK_KEY_KP_Enter) or
+           (Event^.key.keyval = GDK_KEY_ISO_Enter) then
+          Result := True;
+        exit;
+      end;
       if Widget^.has_focus then
         Result := TGtk3Widget(Data).GtkEventKey(Widget, Event, True)
       else if Widget^.is_toplevel then
@@ -1526,6 +1542,19 @@ begin
     end;
   GDK_KEY_RELEASE:
     begin
+      if (wtComboBox in TGtk3Widget(Data).WidgetType) and
+         (TGtk3Widget(Data) is TGtk3ComboBox) and
+         Gtk3IsComboBox(TGtk3Widget(Data).Widget) and
+         not PGtkComboBox(TGtk3Widget(Data).Widget)^.has_entry and
+         not Widget^.has_focus then
+      begin
+        TGtk3Widget(Data).GtkEventKey(Widget, Event, False);
+        if (Event^.key.keyval = GDK_KEY_Return) or
+           (Event^.key.keyval = GDK_KEY_KP_Enter) or
+           (Event^.key.keyval = GDK_KEY_ISO_Enter) then
+          Result := True;
+        exit;
+      end;
       if Widget^.has_focus then
       begin
         Result := TGtk3Widget(Data).GtkEventKey(Widget, Event, False);
@@ -1572,7 +1601,8 @@ begin
         if TGtk3ComboBox(Data).DroppedDown then
           exit;
       end;
-      if not (csNoFocus in TWinControl(TGtk3Widget(Data).LCLObject).ControlStyle) then
+      if Assigned(TGtk3Widget(Data).LCLObject) and
+         not (csNoFocus in TWinControl(TGtk3Widget(Data).LCLObject).ControlStyle) then
         TGtk3Widget(Data).GtkEventFocus(Widget, Event);
     end;
   GDK_CONFIGURE:
@@ -3611,6 +3641,18 @@ begin
   inherited Destroy;
 end;
 
+procedure TGtk3Widget.Release;
+begin
+  {$IFDEF GTK3USEDEFERREDRESIZING}
+  if Assigned(LCLObject) then
+    Gtk3RemoveFromResizeQueue(LCLObject);
+  {$ENDIF}
+  LCLObject := nil;
+  if IsWidgetOk then
+    Hide;
+  inherited Release;
+end;
+
 function TGtk3Widget.CanFocus: Boolean;
 begin
   Result := False;
@@ -4120,12 +4162,6 @@ begin
     //DebugLn(['TGtk3WidgetSet.GetWindowRelativePosition ',GetWidgetDebugReport(aWidget),' Left=',Left,' Top=',Top,' GdkWindow=',GdkWindow<>nil]);
   end;
   //DebugLn(['TGtk3WidgetSet.GetWindowRelativePosition ',GetWidgetDebugReport(aWidget),' Left=',Left,' Top=',Top]);
-end;
-
-procedure TGtk3Widget.Release;
-begin
-  LCLObject := nil;
-  Free;
 end;
 
 procedure TGtk3Widget.Hide;

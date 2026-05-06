@@ -685,13 +685,27 @@ begin
       begin
         SrcByte := SrcRow[X shr 3];
         if (SrcByte and (1 shl (7 - (X and 7)))) <> 0 then
-          DstRow^ := $FF000000
+          DstRow^ := 0
         else
-          DstRow^ := 0;
+          DstRow^ := $FF000000;
         Inc(DstRow);
       end;
     end;
     cairo_surface_mark_dirty(Surface);
+
+    Pattern := cairo_pattern_create_for_surface(Surface);
+    cairo_pattern_set_extend(Pattern, CAIRO_EXTEND_REPEAT);
+    cairo_surface_destroy(Surface);
+
+    Brush := TGtk3Brush.Create;
+    Brush.LogBrush.lbStyle := BS_PATTERN;
+    Brush.LogBrush.lbHatch := ABitmap;
+    Brush.brush_pattern := Pattern;
+    Brush.Style := BS_PATTERN;
+    Brush.MonoPattern := True;
+
+    Result := HBRUSH(Brush);
+    Exit;
   end
   else
   begin

@@ -93,6 +93,7 @@ type
   public
     brush_pattern:pcairo_pattern_t;
     pat_buf:pdword;
+    MonoPattern: Boolean;
     LogBrush: TLogBrush;
     constructor Create; override;
     function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject; override;
@@ -3674,9 +3675,13 @@ begin
 end;
 
 procedure TGtk3DeviceContext.fillRect(x, y, w, h: Integer; ABrush: HBRUSH);
+const
+  cMonoPatternAlpha = 1.0;
 var
   ATempBrush: TGtk3Brush;
   DevX, DevY, DevW, DevH: Integer;
+  PatMatrix: Tcairo_matrix_t;
+  MonoR, MonoG, MonoB: Double;
 begin
   {$ifdef VerboseGtk3DeviceContext}
   //DebugLn('TGtk3DeviceContext.fillRect ',Format('x %d y %d w %d h %d',[x, y, w, h]));
@@ -3700,12 +3705,28 @@ begin
   else
     ATempBrush := FCurrentBrush;
 
-  applyBrush;
-
   DevX := LToDX(x);
   DevY := LToDY(y);
   DevW := LToDX(x + w) - DevX;
   DevH := LToDY(y + h) - DevY;
+
+  if (CurrentBrush.Style = BS_PATTERN) and CurrentBrush.MonoPattern
+     and Assigned(CurrentBrush.brush_pattern) then
+  begin
+    cairo_matrix_init_identity(@PatMatrix);
+    cairo_pattern_set_matrix(CurrentBrush.brush_pattern, @PatMatrix);
+    cairo_save(pcr);
+    TColorToRGB(FCurrentTextColor, MonoR, MonoG, MonoB);
+    cairo_set_source_rgba(pcr, MonoR, MonoG, MonoB, cMonoPatternAlpha);
+    cairo_rectangle(pcr, DevX, DevY, DevW, DevH);
+    cairo_clip(pcr);
+    cairo_mask(pcr, CurrentBrush.brush_pattern);
+    cairo_restore(pcr);
+    CurrentBrush := ATempBrush;
+    Exit;
+  end;
+
+  applyBrush;
 
   if (w = 1) or (h = 1) then // #42049
   begin
