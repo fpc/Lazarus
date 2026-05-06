@@ -961,7 +961,7 @@ type
   EInvalidGraphic = class(EGraphicException);
   EInvalidGraphicOperation = class(EGraphicException);
 
-{$IF FPC_FullVersion >= 30203}
+{$IF FPC_FullVersion >= 30301}
 type
   TGradientDirection = FPCanvas.TFPGradientDirection;
 const
