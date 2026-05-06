@@ -237,9 +237,7 @@ begin
   DebugLn('TGtk3WSWinControl.DestroyHandle ',dbgsName(AWinControl),' handle ',dbgs(AWinControl.HandleAllocated));
   {$ENDIF}
   if AWinControl.HandleAllocated then
-  begin
-    TGtk3Widget(AWinControl.Handle).Free;
-  end;
+    TGtk3Widget(AWinControl.Handle).Release;
 end;
 
 class procedure TGtk3WSWinControl.DefaultWndHandler(const AWinControl: TWinControl; var AMessage);
