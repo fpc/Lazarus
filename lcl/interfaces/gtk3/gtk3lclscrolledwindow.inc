@@ -72,6 +72,7 @@ var
   threshH, threshW, minSize: gint;
   vpolicy, hpolicy: TGtkPolicyType;
   vActive, hActive: Boolean;
+  ClampedAlloc: TGtkAllocation;
   {$IFDEF GTK3DEBUGHEIGHTZERO}
   ADbgCtl: TGtk3Widget;
   {$ENDIF}
@@ -164,9 +165,16 @@ begin
   end;
 
   if (allocation^.width < threshW) or (allocation^.height < threshH) then
+  begin
+    ClampedAlloc := allocation^;
+    if ClampedAlloc.width < threshW then
+      ClampedAlloc.width := threshW;
+    if ClampedAlloc.height < threshH then
+      ClampedAlloc.height := threshH;
+    ParentClass^.size_allocate(widget, @ClampedAlloc);
     Exit;
+  end;
 
-  //writeln('LCLGtkScrolledWindowSizeAllocate ',threshW,' ',threshH,' ',allocation^.width,',',allocation^.height);
   ParentClass^.size_allocate(widget, allocation);
 end;
 
