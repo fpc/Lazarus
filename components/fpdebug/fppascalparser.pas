@@ -62,7 +62,7 @@ type
 
   TFpIntrinsicFunc = (
     ifErrorNotFound,
-    ifChildClass,
+    ifChildClass, ifClassName,
     ifTry, ifTryN,
     ifObj,
     ifFlatten, ifFlattenPlaceholder,
@@ -367,6 +367,7 @@ type
     function DoOrd(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
     function DoLength(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
     function DoChildClass(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+    function DoClassName(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
     function DoFlatten(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
     function DoFlattenPlaceholder(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
     function DoRefCnt(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
@@ -3017,6 +3018,31 @@ begin
   end;
 end;
 
+function TFpPascalExpressionPartIntrinsic.DoClassName(
+  AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+var
+  AClassName: String;
+  NewResult, Arg: TFpValue;
+begin
+  Result := nil;
+  if not CheckArgumentCount(AParams, 1) then
+    exit;
+
+  if not GetArg(AParams, 1, Arg, 'argument required') then
+    exit;
+  if (Arg.Kind <> skClass) or (Arg.AsCardinal = 0)
+  then begin
+    if (Arg.TypeInfo <> nil) and (Arg.TypeInfo.Name <> '') then
+      Result := TFpValueConstString.Create(Arg.TypeInfo.Name);
+    exit;
+  end;
+
+  if not Arg.GetInstanceClassName(AClassName) then
+    exit;
+
+  Result := TFpValueConstString.Create(AClassName);
+end;
+
 function TFpPascalExpressionPartIntrinsic.DoFlatten(
   AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
 var
@@ -4088,6 +4114,7 @@ begin
     ifOrd:        Result := DoOrd(AParams);
     ifLength:     Result := DoLength(AParams);
     ifChildClass: Result := DoChildClass(AParams);
+    ifClassName:  Result := DoClassName(AParams);
     ifRefCount:   Result := DoRefCnt(AParams);
     ifPos:        Result := DoPos(AParams);
     ifFlatten:    Result := DoFlatten(AParams);
@@ -4135,7 +4162,7 @@ end;
 function TFpPascalExpressionPartIntrinsic.ReturnsVariant: boolean;
 begin
   Result := (inherited ReturnsVariant) or
-            (FIntrinsic in [ifChildClass, ifTry, ifTryN]);
+            (FIntrinsic in [ifChildClass, ifClassName, ifTry, ifTryN]);
             // TODO: compare types of each argument for ifTry/N
 end;
 
@@ -5068,6 +5095,7 @@ begin
         't', 'T': if strlicomp(AStart, 'TRUNC', 5) = 0 then Intr := ifTrunc
                   else
                   if strlicomp(AStart, 'TRYNN', 5) = 0 then Intr := ifTryN;
+        'c', 'C': if strlicomp(AStart, 'CNAME', 5) = 0 then Intr := ifClassName;
        end;
     6: case AStart^ of
         'l', 'L': if strlicomp(AStart, 'LENGTH', 6) = 0 then Intr := ifLength;
@@ -5076,6 +5104,9 @@ begin
       end;
     7: case AStart^ of
         'f', 'F': if strlicomp(AStart, 'FLATTEN', 7) = 0 then Intr := ifFlatten;
+      end;
+    9: case AStart^ of
+        'c', 'C': if strlicomp(AStart, 'CLASSNAME', 9) = 0 then Intr := ifClassName;
       end;
   end;
   if Intr <> ifErrorNotFound then begin
