@@ -93,6 +93,7 @@ var
   Mode: QIconMode;
   ASize: TSize;
   AImageRes: TScaledImageListResolution;
+  DPR: Double;
 begin
   if not WSCheckHandleAllocated(ABitBtn, 'SetGlyph') then
     Exit;
@@ -118,6 +119,15 @@ begin
 
     ASize.cx := AImageRes.Width;
     ASize.cy := AImageRes.Height;
+    if QCoreApplication_testAttribute(QtAA_UseHighDpiPixmaps) then
+    begin
+      DPR := ABitBtn.GetCanvasScaleFactor;
+      if DPR > 1.0 then
+      begin
+        ASize.cx := Round(ASize.cx / DPR);
+        ASize.cy := Round(ASize.cy / DPR);
+      end;
+    end;
     TQtBitBtn(ABitBtn.Handle).setIconSize(@ASize);
   end;
 

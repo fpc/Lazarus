@@ -1106,8 +1106,9 @@ begin
   QPixmap_toImage(APixmap, AImage);
   QPixmap_destroy(APixmap);
 
-  // we must respect theme size , qt is buggy somehow, some icons are 22 some 16px.
-  if IconSize > 0 then
+  if (IconSize > 0) and
+     not QCoreApplication_testAttribute(QtAA_EnableHighDpiScaling) and
+     not QCoreApplication_testAttribute(QtAA_UseHighDpiPixmaps) then
   begin
     if (QImage_width(AImage) > IconSize) and (QImage_height(AImage) > IconSize) then
     begin
