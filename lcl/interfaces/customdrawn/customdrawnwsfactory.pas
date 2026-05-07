@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls, Spin,
-  Dialogs, ExtCtrls, Buttons, Forms, Menus,
-  WSLCLClasses, WSDialogs;
+  Dialogs, ExtCtrls, Buttons, Forms, Menus, Grids,
+  WSLCLClasses, WSDialogs, WSGrids;
 
 // imglist
 function RegisterCustomImageListResolution: Boolean;
@@ -104,9 +104,10 @@ function RegisterLazDeviceAPIs: Boolean;
 
 implementation
 uses
+ CheckLst,
  CustomDrawnWSButtons,
-{ WinCEWSCalendar,
- WinCEWSCheckLst,}
+{ WinCEWSCalendar,}
+ customdrawnwschecklst,
  CustomDrawnWSComCtrls,
  CustomDrawnWSControls,
 { WinCEWSDialogs,}
@@ -163,8 +164,8 @@ end;
 // comctrls
 function RegisterStatusBar: Boolean; alias : 'WSRegisterStatusBar';
 begin
-//  RegisterWSComponent(TStatusBar, TWinCEWSStatusBar);
-  Result := False;
+  RegisterWSComponent(TStatusBar, TCDWSStatusBar);
+  Result := True;
 end;
 
 function RegisterTabSheet: Boolean; alias : 'WSRegisterTabSheet';
@@ -198,12 +199,17 @@ end;
 
 function RegisterCustomToolButton: Boolean; alias : 'WSRegisterCustomToolButton';
 begin
+  { TToolButton is a TGraphicControl in the LCL -- it paints itself on
+    its parent's canvas via its own Paint method. There's no per-button
+    handle to create, so the WS class is a no-op and we let the LCL
+    default registration apply. }
   Result := False;
 end;
 
 function RegisterToolBar: Boolean; alias : 'WSRegisterToolBar';
 begin
-  Result := False;
+  RegisterWSComponent(TToolBar, TCDWSToolBar);
+  Result := True;
 end;
 
 function RegisterCustomTrackBar: Boolean; alias : 'WSRegisterCustomTrackBar';
@@ -293,8 +299,8 @@ end;
 
 function RegisterCustomListBox: Boolean; alias : 'WSRegisterCustomListBox';
 begin
-//  RegisterWSComponent(TCustomListBox, TWinCEWSCustomListBox);
-  Result := False;
+  RegisterWSComponent(TCustomListBox, TCDWSCustomListBox);
+  Result := True;
 end;
 
 function RegisterCustomEdit: Boolean; alias : 'WSRegisterCustomEdit';
@@ -328,8 +334,8 @@ end;
 
 function RegisterToggleBox: Boolean; alias : 'WSRegisterToggleBox';
 begin
-//  RegisterWSComponent(TToggleBox, TWinCEWSToggleBox);
-  Result := False;
+  RegisterWSComponent(TToggleBox, TCDWSToggleBox);
+  Result := True;
 end;
 
 function RegisterRadioButton: Boolean; alias : 'WSRegisterRadioButton';
@@ -391,12 +397,20 @@ end;
 
 function RegisterCustomRadioGroup: Boolean; alias : 'WSRegisterCustomRadioGroup';
 begin
-  Result := False;
+  { TCustomRadioGroup is a pure-LCL composite: it inherits from
+    TCustomGroupBox and auto-creates TRadioButton children from its
+    Items list (extctrls/radiogroup.inc:178). All three of those --
+    TGroupBox, TRadioButton, and the WS marker class -- are already
+    registered in customdrawn, so this registration is the missing
+    final hook-up. }
+  RegisterWSComponent(TCustomRadioGroup, TCDWSCustomRadioGroup);
+  Result := True;
 end;
 
 function RegisterCustomCheckGroup: Boolean; alias : 'WSRegisterCustomCheckGroup';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomCheckGroup, TCDWSCustomCheckGroup);
+  Result := True;
 end;
 
 function RegisterCustomLabeledEdit: Boolean; alias : 'WSRegisterCustomLabeledEdit';
@@ -473,8 +487,8 @@ end;
 // CheckLst
 function RegisterCustomCheckListBox: Boolean; alias : 'WSRegisterCustomCheckListBox';
 begin
-//  RegisterWSComponent(TCustomCheckListBox, TWinCEWSCustomCheckListBox);
-  Result := False;
+  RegisterWSComponent(TCustomCheckListBox, TCDWSCustomCheckListBox);
+  Result := True;
 end;
 
 // Forms
@@ -509,8 +523,13 @@ end;
 // Grids
 function RegisterCustomGrid: Boolean; alias : 'WSRegisterCustomGrid';
 begin
-//  RegisterWSComponent(TCustomGrid, TWinCEWSCustomGrid);
-  Result := False;
+  { TCustomGrid paints itself (Paint -> DrawAllRows -> DrawCell, all in
+    grids.pas) and only needs the base TWSCustomGrid for editor bounds
+    + char dispatch. No customdrawn-specific subclass required. The
+    scrollbar API (ShowScrollBar / ScrollWindowEx) is handled at the
+    LCLIntf level. }
+  RegisterWSComponent(TCustomGrid, TWSCustomGrid);
+  Result := True;
 end;
 
 // Menus
@@ -528,7 +547,8 @@ end;
 
 function RegisterMainMenu: Boolean; alias : 'WSRegisterMainMenu';
 begin
-  Result := False;
+  RegisterWSComponent(TMainMenu, TCDWSMainMenu);
+  Result := True;
 end;
 
 function RegisterPopupMenu: Boolean; alias : 'WSRegisterPopupMenu';

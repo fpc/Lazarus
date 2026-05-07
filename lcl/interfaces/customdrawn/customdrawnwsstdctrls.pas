@@ -26,6 +26,7 @@ uses
   math,
   // LCL
   Classes, Types, StdCtrls, Controls, Forms, SysUtils, InterfaceBase, LCLType,
+  Clipbrd, LazUTF8,
   customdrawncontrols, LCLProc,
   // Widgetset
   WSProc, WSStdCtrls, WSLCLClasses, CustomDrawnWsControls, customdrawnproc,
@@ -86,11 +87,13 @@ type
 //    class function GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
       var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
-{    class function GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
     class function GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
     class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); override;
     class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
-
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+{
     class procedure SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox;
       NewTraverseList: boolean); override;
     class procedure SetDropDownCount(const ACustomComboBox: TCustomComboBox; NewCount: Integer); override;
@@ -114,27 +117,34 @@ type
   { TCDWSCustomListBox }
 
   TCDWSCustomListBox = class(TWSCustomListBox)
+  public
+    class procedure InjectCDControl(const AWinControl: TWinControl;
+      var ACDControlField: TCDControl);
   published
-{    class function  CreateHandle(const AWinControl: TWinControl;
-     const AParams: TCreateParams): TLCLHandle; override;
+    // TWSWinControl
+    class function  CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+      var PreferredWidth, PreferredHeight: integer;
+      WithThemeSpace: Boolean); override;
+    // TWSCustomListBox
     class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
-    class function GetScrollWidth(const ACustomListBox: TCustomListBox): Integer; override;
     class function GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
     class function GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
     class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
+    class procedure FreeStrings(var AStrings: TStrings); override;
     class function GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
-
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
-    class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
-    class procedure SetColumnCount(const ACustomListBox: TCustomListBox; ACount: Integer); override;
+    class procedure SelectRange(const ACustomListBox: TCustomListBox; ALow, AHigh: integer; ASelected: boolean); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
-    class procedure SetScrollWidth(const ACustomListBox: TCustomListBox; const AScrollWidth: Integer); override;
-    class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean); override;
+    class procedure SetSelectionMode(const ACustomListBox: TCustomListBox;
+      const AExtendedSelect, AMultiSelect: boolean); override;
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
-    class procedure SetStyle(const ACustomListBox: TCustomListBox); override;
-    class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;}
+    class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
   end;
 
   { TCDWSListBox }
@@ -153,6 +163,9 @@ type
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+      var PreferredWidth, PreferredHeight: integer;
+      WithThemeSpace: Boolean); override;
 
 {    //class function  CanFocus(const AWincontrol: TWinControl): Boolean; override;
 
@@ -163,6 +176,10 @@ type
   class function GetDesignInteractive(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; override;}
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
 //  class function  GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; override;
+
+    class procedure Cut(const ACustomEdit: TCustomEdit); override;
+    class procedure Copy(const ACustomEdit: TCustomEdit); override;
+    class procedure Paste(const ACustomEdit: TCustomEdit); override;
 
 {  class procedure SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign, UseRightToLeftReading, UseRightToLeftScrollBar : Boolean); override;
   class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
@@ -289,14 +306,17 @@ type
   { TCDWSToggleBox }
 
   TCDWSToggleBox = class(TWSToggleBox)
+  public
+    class procedure InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
-{    class function  CreateHandle(const AWinControl: TWinControl;
+    class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLHandle; override;
-
-    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const ShortCutK1, ShortCutK2: TShortCut); override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+      var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
-
-    class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;}
+    class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
   end;
 
   { TCDWSRadioButton }
@@ -413,8 +433,34 @@ end;
 
 class procedure TCDWSScrollBar.InjectCDControl(const AWinControl: TWinControl;
   var ACDControlField: TCDControl);
+var
+  CDIntf: TCDIntfScrollBar;
+  LCL: TCustomScrollBar;
 begin
-  TCDIntfScrollBar(ACDControlField).LCLControl := TCustomScrollBar(AWinControl);
+  CDIntf := TCDIntfScrollBar(ACDControlField);
+  LCL := TCustomScrollBar(AWinControl);
+  CDIntf.LCLControl := LCL;
+  { Propagate Kind from the LCL TScrollBar -- without this, the drawer
+    paints horizontally regardless of orientation (TCDScrollBar's own
+    FKind defaults to sbHorizontal in its Create). }
+  CDIntf.Kind := LCL.Kind;
+  { Sync range / page / position / increments from the LCL side.
+    Injection runs lazily on first ShowHide, well after the host
+    (TCDScrollBars or LCL property setters) has populated the LCL
+    fields, so the inner state would otherwise stay at TCDScrollBar's
+    construction defaults (Min=0, Max=100, FSmallChange=1,
+    FLargeChange=5). With grid pages of ~150 those defaults turn
+    trough-clicks into 5-px nudges instead of one-page jumps. }
+  CDIntf.Min := LCL.Min;
+  CDIntf.Max := LCL.Max;
+  CDIntf.Position := LCL.Position;
+  CDIntf.PageSize := LCL.PageSize;
+  CDIntf.SetIncrements(LCL.SmallChange, LCL.LargeChange);
+  { Wire user-driven position changes back to the LCL TScrollBar so
+    OnScroll fires and parents see LM_HSCROLL/LM_VSCROLL. The drawer
+    only mutates its own FPosition otherwise; nothing reaches the LCL
+    side. }
+  CDIntf.OnChangeByUser := CDIntf.HandleChangeByUser;
   ACDControlField.Caption := AWinControl.Caption;
   ACDControlField.Parent := AWinControl;
   ACDControlField.Align := alClient;
@@ -442,37 +488,14 @@ end;
 
 class procedure TCDWSScrollBar.SetKind(const AScrollBar: TCustomScrollBar;
   const AIsHorizontal: Boolean);
-{var
-  QtScrollBar: TQtScrollBar;  }
+var
+  CDIntf: TCDIntfScrollBar;
 begin
-  {if not WSCheckHandleAllocated(AScrollBar, 'SetKind') then
-    Exit;
-  QtScrollBar := TQtScrollBar(AScrollBar.Handle);
-  QtScrollBar.BeginUpdate;
-  try
-    case AScrollBar.Kind of
-      sbHorizontal:
-      begin
-        if QtScrollBar.getOrientation <> QtHorizontal then
-          QtScrollBar.SetOrientation(QtHorizontal);
-        if QtScrollBar.getInvertedAppereance then
-          QtScrollBar.setInvertedAppereance(False);
-        if QtScrollbar.getInvertedControls then
-          QtScrollBar.setInvertedControls(False);
-      end;
-      sbVertical:
-      begin
-        if QtScrollBar.getOrientation <> QtVertical then
-          QtScrollBar.SetOrientation(QtVertical);
-        if QtScrollBar.getInvertedAppereance then
-          QtScrollBar.setInvertedAppereance(False);
-        if not QtScrollbar.getInvertedControls then
-          QtScrollBar.setInvertedControls(True);
-      end;
-    end;
-  finally
-    QtScrollbar.EndUpdate;
-  end;}
+  if not WSCheckHandleAllocated(AScrollBar, 'SetKind') then Exit;
+  CDIntf := TCDIntfScrollBar(TCDWinControl(AScrollBar.Handle).CDControl);
+  if CDIntf = nil then Exit;
+  if AIsHorizontal then CDIntf.Kind := sbHorizontal
+                   else CDIntf.Kind := sbVertical;
 end;
 
 class procedure TCDWSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
@@ -921,6 +944,83 @@ begin
   Result := 25;
 end;
 
+{ Bridge LCL TCustomComboBox.SelStart/SelLength to the injected
+  TCDIntfComboBox's edit-state. Without these the base TWSCustomComboBox
+  returns -1 / 0, which collapses TCustomComboBox.SelText to '' -- so
+  Ctrl+C copies nothing. (TCDComboBox IS-A TCDEdit, so the underlying
+  GetSelStartX / GetSelLength methods come from TCDEdit.) }
+
+class function TCDWSCustomComboBox.GetSelStart(const ACustomComboBox: TCustomComboBox): integer;
+var
+  lCDWinControl: TCDWinControl;
+begin
+  Result := 0;
+  lCDWinControl := TCDWinControl(ACustomComboBox.Handle);
+  if lCDWinControl.CDControl = nil then Exit;
+  Result := TCDIntfComboBox(lCDWinControl.CDControl).GetSelStartX();
+end;
+
+class function TCDWSCustomComboBox.GetSelLength(const ACustomComboBox: TCustomComboBox): integer;
+var
+  lCDWinControl: TCDWinControl;
+begin
+  Result := 0;
+  lCDWinControl := TCDWinControl(ACustomComboBox.Handle);
+  if lCDWinControl.CDControl = nil then Exit;
+  Result := TCDIntfComboBox(lCDWinControl.CDControl).GetSelLength();
+  if Result < 0 then Result := -Result;
+end;
+
+class procedure TCDWSCustomComboBox.SetSelStart(const ACustomComboBox: TCustomComboBox;
+  NewStart: integer);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(ACustomComboBox.Handle);
+  if lCDWinControl.CDControl = nil then Exit;
+  TCDIntfComboBox(lCDWinControl.CDControl).SetSelStartX(NewStart);
+end;
+
+class procedure TCDWSCustomComboBox.SetSelLength(const ACustomComboBox: TCustomComboBox;
+  NewLength: integer);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(ACustomComboBox.Handle);
+  if lCDWinControl.CDControl = nil then Exit;
+  TCDIntfComboBox(lCDWinControl.CDControl).SetSelLength(NewLength);
+end;
+
+{ Bridge LCL TCustomComboBox.Text to the injected TCDIntfComboBox's
+  edit text. Without these, RealSetText -> WSSetText falls to the
+  base TWSWinControl.SetText (FCaption only) and the user never sees
+  the update -- so Ctrl+V ends up assigning to LCL but the injected
+  control's visible text doesn't change. This mirrors
+  TCDWSCustomEdit.GetText / SetText. }
+
+class function TCDWSCustomComboBox.GetText(const AWinControl: TWinControl;
+  var AText: String): Boolean;
+var
+  lCDWinControl: TCDWinControl;
+begin
+  Result := False;
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  if lCDWinControl.CDControl = nil then Exit;
+  AText := TCDIntfComboBox(lCDWinControl.CDControl).Text;
+  Result := True;
+end;
+
+class procedure TCDWSCustomComboBox.SetText(const AWinControl: TWinControl;
+  const AText: String);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  if lCDWinControl.CDControl = nil then Exit;
+  TCDIntfComboBox(lCDWinControl.CDControl).Lines.Text := AText;
+  TCDIntfComboBox(lCDWinControl.CDControl).Invalidate();
+end;
+
 (*{ TCDWSCustomListBox }
 
 {------------------------------------------------------------------------------
@@ -1358,6 +1458,25 @@ begin
   lCDWinControl.Free;
 end;
 
+class procedure TCDWSCustomEdit.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  if (lCDWinControl = nil) or (lCDWinControl.CDControl = nil) then Exit;
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(AWinControl, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
+  lCDWinControl.CDControl.LCLWSCalculatePreferredSize(
+    PreferredWidth, PreferredHeight, WithThemeSpace, AWinControl.AutoSize, False);
+  { LCL convention for edit-style controls: don't force a width. }
+  PreferredWidth := 0;
+end;
+
 class function TCDWSCustomEdit.GetText(const AWinControl: TWinControl;
   var AText: String): Boolean;
 var
@@ -1534,47 +1653,43 @@ begin
   TCDIntfEdit(lCDWinControl.CDControl).SetSelLength(NewLength);
 end;
 
-(*class procedure TCDWSCustomEdit.Cut(const ACustomEdit: TCustomEdit);
-var
-  Widget: TQtWidget;
-  QtEdit: IQtEdit;
+class procedure TCDWSCustomEdit.Copy(const ACustomEdit: TCustomEdit);
 begin
-  Widget := TQtWidget(ACustomEdit.Handle);
-  if Supports(Widget, IQtEdit, QtEdit) then
-    QtEdit.Cut;
+  if ACustomEdit.SelText <> '' then
+    Clipboard.AsText := ACustomEdit.SelText;
 end;
 
-class procedure TCDWSCustomEdit.Copy(const ACustomEdit: TCustomEdit);
+class procedure TCDWSCustomEdit.Cut(const ACustomEdit: TCustomEdit);
 var
-  Widget: TQtWidget;
-  QtEdit: IQtEdit;
+  OldStart: Integer;
 begin
-  Widget := TQtWidget(ACustomEdit.Handle);
-  if Supports(Widget, IQtEdit, QtEdit) then
-    QtEdit.Copy;
+  if ACustomEdit.ReadOnly then Exit;
+  if ACustomEdit.SelText <> '' then
+  begin
+    OldStart := ACustomEdit.SelStart;
+    Clipboard.AsText := ACustomEdit.SelText;
+    ACustomEdit.SelText := '';   { replaces the selection with empty }
+    ACustomEdit.SelStart := OldStart;
+    ACustomEdit.SelLength := 0;
+  end;
 end;
 
 class procedure TCDWSCustomEdit.Paste(const ACustomEdit: TCustomEdit);
 var
-  Widget: TQtWidget;
-  QtEdit: IQtEdit;
+  S: string;
+  NewStart: Integer;
 begin
-  Widget := TQtWidget(ACustomEdit.Handle);
-  if Supports(Widget, IQtEdit, QtEdit) then
-    QtEdit.Paste;
+  if ACustomEdit.ReadOnly then Exit;
+  S := Clipboard.AsText;
+  if S <> '' then
+  begin
+    NewStart := ACustomEdit.SelStart + UTF8Length(S);
+    ACustomEdit.SelText := S;     { replaces selection (or inserts at caret if none) }
+    ACustomEdit.SelStart := NewStart;
+    ACustomEdit.SelLength := 0;
+  end;
 end;
 
-class procedure TCDWSCustomEdit.Undo(const ACustomEdit: TCustomEdit);
-var
-  Widget: TQtWidget;
-  QtEdit: IQtEdit;
-begin
-  if not WSCheckHandleAllocated(ACustomEdit, 'Undo') then
-    Exit;
-  Widget := TQtWidget(ACustomEdit.Handle);
-  if Supports(Widget, IQtEdit, QtEdit) then
-    QtEdit.Undo;
-end;*)
 
 { TCDWSStaticText }
 
@@ -1811,6 +1926,12 @@ end;
 
 class procedure TCDWSRadioButton.InjectCDControl(
   const AWinControl: TWinControl; var ACDControlField: TCDControl);
+var
+  lParent: TWinControl;
+  i: Integer;
+  Sibling: TControl;
+  AnyTabbable: Boolean;
+  FirstRadio: TRadioButton;
 begin
   ACDControlField := TCDIntfRadioButton.Create(AWinControl);
   TCDIntfRadioButton(ACDControlField).LCLControl := TCustomCheckBox(AWinControl);
@@ -1818,6 +1939,47 @@ begin
   ACDControlField.Caption := AWinControl.Caption;
   ACDControlField.Align := alClient;
   {$ifdef VerboseCDInjectedControlNames}ACDControlField.Name := 'CustomDrawnInternal_' + AWinControl.Name;{$endif}
+
+  { Sync from the LCL Checked property. TCDRadioButton.Create defaults
+    every fresh radio to "first in group = checked" (against the wrong
+    Parent.Controls list -- see TCDIntfRadioButton.DoButtonUp), so
+    without this every newly-injected radio renders as visually checked
+    regardless of what the LCL says. }
+  TCDIntfRadioButton(ACDControlField).Checked :=
+    TRadioButton(AWinControl).Checked;
+
+  { Win32 LCL relies on BS_AUTORADIOBUTTON to keep the first radio of
+    an all-unchecked group tab-focusable so the user can always reach
+    the group via Tab. Customdrawn has no equivalent: TRadioButton.Create
+    leaves TabStop=False (TCheckBox.Create sets True; TRadioButton does
+    not), and TRadioButton.DoClickOnChange only flips TabStop on actual
+    state change. With no radio in the group ever checked, Tab skipped
+    the entire group. Promote the first TRadioButton in the parent's
+    children to TabStop=True if nobody in the group already holds it.
+    Picked by Controls[] order so the choice is deterministic regardless
+    of ShowHide / injection order (otherwise whichever sibling's handle
+    materialised first won, e.g. RadioD before RadioC). }
+  lParent := AWinControl.Parent;
+  if lParent <> nil then
+  begin
+    AnyTabbable := False;
+    FirstRadio := nil;
+    for i := 0 to lParent.ControlCount - 1 do
+    begin
+      Sibling := lParent.Controls[i];
+      if Sibling is TRadioButton then
+      begin
+        if FirstRadio = nil then FirstRadio := TRadioButton(Sibling);
+        if TRadioButton(Sibling).TabStop then
+        begin
+          AnyTabbable := True;
+          Break;
+        end;
+      end;
+    end;
+    if (not AnyTabbable) and (FirstRadio <> nil) then
+      FirstRadio.TabStop := True;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1916,75 +2078,338 @@ end;
 
   Sets the state of the control
  ------------------------------------------------------------------------------}
-class procedure TCDWSRadioButton.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
+class procedure TCDWSRadioButton.SetState(const ACustomCheckBox: TCustomCheckBox;
+  const NewState: TCheckBoxState);
+var
+  lCDWinControl: TCDWinControl;
+  lInj: TCDIntfRadioButton;
 begin
-  //enclose the call between Begin/EndUpdate to avoid send LM_CHANGE message
-{  QtRadioButton := TQtRadioButton(ACustomCheckBox.Handle);
-  QtRadioButton.BeginUpdate;
-  QtRadioButton.setChecked(NewState = cbChecked);
-  QtRadioButton.EndUpdate;}
+  { Propagate LCL Checked changes to the injected control. Without this,
+    the LCL's TCustomCheckBox.SetChecked -> ApplyChanges -> SetState
+    chain ends here as a no-op and the injected radio's visual state
+    never tracks the LCL property. Combined with TCDRadioButton's
+    constructor default of "first in group = checked" (computed against
+    the wrong Parent.Controls list -- see TCDIntfRadioButton.DoButtonUp),
+    that produced "both radios checked at startup". }
+  if ACustomCheckBox.Handle = 0 then Exit;
+  lCDWinControl := TCDWinControl(ACustomCheckBox.Handle);
+  if not (lCDWinControl.CDControl is TCDIntfRadioButton) then Exit;
+  lInj := TCDIntfRadioButton(lCDWinControl.CDControl);
+  lInj.Checked := (NewState = cbChecked);
+  lInj.Invalidate;
 end;
 
 { TCDWSToggleBox }
 
-(*{------------------------------------------------------------------------------
-  Method: TCDWSToggleBox.RetrieveState
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class function TCDWSToggleBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
+class procedure TCDWSToggleBox.InjectCDControl(
+  const AWinControl: TWinControl; var ACDControlField: TCDControl);
 begin
-  if not WSCheckHandleAllocated(ACustomCheckBox, 'RetrieveState') then
-    Exit;
-  if TQtToggleBox(ACustomCheckBox.Handle).isChecked then
-    Result := cbChecked
-  else
-    Result := cbUnChecked;
+  ACDControlField := TCDIntfToggleBox.Create(AWinControl);
+  TCDIntfToggleBox(ACDControlField).LCLControl := TCustomCheckBox(AWinControl);
+  ACDControlField.Parent := AWinControl;
+  ACDControlField.Caption := AWinControl.Caption;
+  ACDControlField.Align := alClient;
+  { Sync the LCL Checked state up front so a design-time-set State
+    actually shows on first paint. Without this the injected control
+    starts with csfOff regardless of the LCL property. }
+  TCDIntfToggleBox(ACDControlField).State := TCustomCheckBox(AWinControl).State;
+  {$ifdef VerboseCDInjectedControlNames}
+  ACDControlField.Name := 'CustomDrawnInternal_' + AWinControl.Name;
+  {$endif}
 end;
 
-{------------------------------------------------------------------------------
-  Method: TCDWSToggleBox.SetShortCut
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TCDWSToggleBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
-  const ShortCutK1, ShortCutK2: TShortCut);
-begin
-  if not WSCheckHandleAllocated(ACustomCheckBox, 'SetShortCut') then
-    Exit;
-  TQtToggleBox(ACustomCheckBox.Handle).setShortcut(ShortCutK1, ShortCutK2);
-end;
-
-{------------------------------------------------------------------------------
-  Method: TCDWSToggleBox.SetState
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TCDWSToggleBox.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
-begin
-  if not WSCheckHandleAllocated(ACustomCheckBox, 'SetState') then
-    Exit;
-  TQtToggleBox(ACustomCheckBox.Handle).BeginUpdate;
-  TQtToggleBox(ACustomCheckBox.Handle).setChecked(NewState = cbChecked);
-  TQtToggleBox(ACustomCheckBox.Handle).EndUpdate;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TCDWSToggleBox.CreateHandle
-  Params:  None
-  Returns: Nothing
-
-  Allocates memory and resources for the control and shows it
- ------------------------------------------------------------------------------}
-class function TCDWSToggleBox.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
+class function TCDWSToggleBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLHandle;
 var
-  QtToggleBox: TQtToggleBox;
+  lCDWinControl: TCDWinControl;
 begin
-  QtToggleBox := TQtToggleBox.Create(AWinControl, AParams);
-  QtToggleBox.setCheckable(True);
-  QtToggleBox.AttachEvents;
-  
-  Result := TLCLHandle(QtToggleBox);
-end;*)
+  Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
+  lCDWinControl := TCDWinControl(Result);
+end;
+
+class procedure TCDWSToggleBox.DestroyHandle(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  lCDWinControl.CDControl.Free;
+  lCDWinControl.Free;
+end;
+
+class procedure TCDWSToggleBox.ShowHide(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  TCDWSWinControl.ShowHide(AWinControl);
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(AWinControl, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
+end;
+
+class procedure TCDWSToggleBox.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(AWinControl, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
+  lCDWinControl.CDControl.LCLWSCalculatePreferredSize(
+    PreferredWidth, PreferredHeight, WithThemeSpace, AWinControl.AutoSize, False);
+end;
+
+class procedure TCDWSToggleBox.SetState(const ACustomCheckBox: TCustomCheckBox;
+  const NewState: TCheckBoxState);
+var
+  lCDWinControl: TCDWinControl;
+  lInj: TCDIntfToggleBox;
+begin
+  if ACustomCheckBox.Handle = 0 then Exit;
+  lCDWinControl := TCDWinControl(ACustomCheckBox.Handle);
+  if not (lCDWinControl.CDControl is TCDIntfToggleBox) then Exit;
+  lInj := TCDIntfToggleBox(lCDWinControl.CDControl);
+  lInj.State := NewState;
+  lInj.Invalidate;
+end;
+
+class function TCDWSToggleBox.RetrieveState(
+  const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
+var
+  lCDWinControl: TCDWinControl;
+begin
+  Result := cbUnchecked;
+  if ACustomCheckBox.Handle = 0 then Exit;
+  lCDWinControl := TCDWinControl(ACustomCheckBox.Handle);
+  if not (lCDWinControl.CDControl is TCDIntfToggleBox) then Exit;
+  Result := TCDIntfToggleBox(lCDWinControl.CDControl).State;
+end;
+
+{ TCDWSCustomListBox }
+
+class procedure TCDWSCustomListBox.InjectCDControl(const AWinControl: TWinControl;
+  var ACDControlField: TCDControl);
+var
+  LCLLB: TCustomListBox;
+  Inj:   TCDIntfListBox;
+begin
+  LCLLB := TCustomListBox(AWinControl);
+  Inj := TCDIntfListBox(ACDControlField);
+  Inj.LCLControl := LCLLB;
+  Inj.Parent := AWinControl;
+  Inj.Align := alClient;
+  { TCustomListBox.InitializeWnd does NOT call SetSelectionMode, so
+    user-set MultiSelect / ExtendedSelect / Sorted at design-time
+    never reach the WS class via the normal property-setter path
+    (those setters early-out if HandleAllocated is False). Copy them
+    over here, right after the injected control is created. Also
+    seed Items from the LCL's draft list. }
+  Inj.MultiSelect    := LCLLB.MultiSelect;
+  Inj.ExtendedSelect := LCLLB.ExtendedSelect;
+  Inj.Sorted         := LCLLB.Sorted;
+  if LCLLB.ItemIndex >= 0 then Inj.ItemIndex := LCLLB.ItemIndex;
+  {$ifdef VerboseCDInjectedControlNames}
+  Inj.Name := 'CustomDrawnInternal_' + AWinControl.Name;
+  {$endif}
+end;
+
+class function TCDWSCustomListBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLHandle;
+var
+  lCDWinControl: TCDWinControl;
+begin
+  Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
+  lCDWinControl := TCDWinControl(Result);
+  lCDWinControl.CDControl := TCDIntfListBox.Create(AWinControl);
+end;
+
+class procedure TCDWSCustomListBox.DestroyHandle(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  lCDWinControl.CDControl.Free;
+  lCDWinControl.Free;
+end;
+
+class procedure TCDWSCustomListBox.ShowHide(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  TCDWSWinControl.ShowHide(AWinControl);
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(AWinControl, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
+end;
+
+class procedure TCDWSCustomListBox.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  { Don't autosize the listbox -- otherwise it collapses to a tiny
+    one-row strip. Returning zeros keeps the user's design-time bounds. }
+  PreferredWidth := 0;
+  PreferredHeight := 0;
+end;
+
+{ Helper: pull the injected TCDListBox out of the LCL TCustomListBox.
+  Returns nil pre-handle (e.g. during property defaults loading). }
+function CDListBoxFromLCL(const ACustomListBox: TCustomListBox): TCDListBox;
+var
+  WSCtrl: TCDWinControl;
+begin
+  Result := nil;
+  if (ACustomListBox = nil) or (ACustomListBox.Handle = 0) then Exit;
+  WSCtrl := TCDWinControl(ACustomListBox.Handle);
+  if (WSCtrl = nil) or (WSCtrl.CDControl = nil) then Exit;
+  if WSCtrl.CDControl is TCDListBox then
+    Result := TCDListBox(WSCtrl.CDControl);
+end;
+
+class function TCDWSCustomListBox.GetIndexAtXY(
+  const ACustomListBox: TCustomListBox; X, Y: integer): integer;
+var
+  L: TCDListBox;
+begin
+  Result := -1;
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L <> nil then Result := L.ItemAtPos(X, Y);
+end;
+
+class function TCDWSCustomListBox.GetItemIndex(
+  const ACustomListBox: TCustomListBox): integer;
+var
+  L: TCDListBox;
+begin
+  Result := -1;
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L <> nil then Result := L.ItemIndex;
+end;
+
+class function TCDWSCustomListBox.GetItemRect(
+  const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean;
+var
+  L: TCDListBox;
+begin
+  Result := False;
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L = nil then Exit;
+  ARect := L.ItemRect(Index);
+  Result := (ARect.Right - ARect.Left) > 0;
+end;
+
+class function TCDWSCustomListBox.GetSelCount(
+  const ACustomListBox: TCustomListBox): integer;
+var
+  L: TCDListBox;
+begin
+  Result := 0;
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L <> nil then Result := L.GetSelCount;
+end;
+
+class function TCDWSCustomListBox.GetSelected(
+  const ACustomListBox: TCustomListBox; const AIndex: integer): boolean;
+var
+  L: TCDListBox;
+begin
+  Result := False;
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L <> nil then Result := L.GetSelected(AIndex);
+end;
+
+class function TCDWSCustomListBox.GetStrings(
+  const ACustomListBox: TCustomListBox): TStrings;
+var
+  L: TCDListBox;
+begin
+  { LCL caches the result of this exactly once per handle, then user
+    code modifies it via Items.Add/Insert/Delete/Clear. Our Items
+    TStringList has OnChange wired to Invalidate (see TCDListBox.Create),
+    so the visible list refreshes automatically. }
+  Result := nil;
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L <> nil then Result := L.Items;
+end;
+
+class procedure TCDWSCustomListBox.FreeStrings(var AStrings: TStrings);
+begin
+  { TCDListBox owns its Items; the LCL must NOT free what GetStrings
+    returned. Clear the caller's reference. }
+  AStrings := nil;
+end;
+
+class function TCDWSCustomListBox.GetTopIndex(
+  const ACustomListBox: TCustomListBox): integer;
+var
+  L: TCDListBox;
+begin
+  Result := 0;
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L <> nil then Result := L.TopIndex;
+end;
+
+class procedure TCDWSCustomListBox.SelectItem(
+  const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);
+var
+  L: TCDListBox;
+begin
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L <> nil then L.SetSelected(AIndex, ASelected);
+end;
+
+class procedure TCDWSCustomListBox.SelectRange(
+  const ACustomListBox: TCustomListBox; ALow, AHigh: integer; ASelected: boolean);
+var
+  L: TCDListBox;
+begin
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L <> nil then L.SelectRange(ALow, AHigh, ASelected);
+end;
+
+class procedure TCDWSCustomListBox.SetItemIndex(
+  const ACustomListBox: TCustomListBox; const AIndex: integer);
+var
+  L: TCDListBox;
+begin
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L <> nil then L.ItemIndex := AIndex;
+end;
+
+class procedure TCDWSCustomListBox.SetSelectionMode(
+  const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean);
+var
+  L: TCDListBox;
+begin
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L = nil then Exit;
+  L.MultiSelect := AMultiSelect;
+  L.ExtendedSelect := AExtendedSelect;
+end;
+
+class procedure TCDWSCustomListBox.SetSorted(
+  const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean);
+var
+  L: TCDListBox;
+begin
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L <> nil then L.Sorted := ASorted;
+end;
+
+class procedure TCDWSCustomListBox.SetTopIndex(
+  const ACustomListBox: TCustomListBox; const NewTopIndex: integer);
+var
+  L: TCDListBox;
+begin
+  L := CDListBoxFromLCL(ACustomListBox);
+  if L <> nil then L.TopIndex := NewTopIndex;
+end;
 
 end.

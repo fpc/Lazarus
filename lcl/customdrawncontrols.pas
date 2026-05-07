@@ -188,6 +188,23 @@ type
     property Visible;
   end;
 
+  { TCDToggleBox -- a button that latches into the pressed state when
+    checked. Reuses TCDButton's drawing path; setting FHasOnOffStates
+    in the constructor makes TCDButtonControl.DoButtonUp toggle csfOn /
+    csfOff on each click. PrepareControlState then projects csfOn into
+    csfSunken so DrawButton renders the latched state as visually
+    pressed (matching Win32 / GTK / Qt behaviour). }
+  TCDToggleBox = class(TCDButton)
+  protected
+    procedure PrepareControlState; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    property AllowGrayed;
+    property Checked;
+    property State;
+  end;
+
   { TCDEdit }
 
   TCDEdit = class(TCDControl)
@@ -204,7 +221,6 @@ type
     function GetText: string;
     function GetPasswordChar: Char;
     procedure HandleCaretTimer(Sender: TObject);
-    procedure DoDeleteSelection;
     procedure DoClearSelection;
     procedure DoManageVisibleTextStart;
     procedure SetCaretPost(AValue: TPoint);
@@ -215,7 +231,6 @@ type
     procedure SetText(AValue: string);
     procedure SetPasswordChar(AValue: Char);
     function MousePosToCaretPos(X, Y: Integer): TPoint;
-    function IsSomethingSelected: Boolean;
   protected
     FEditState: TCDEditStateEx; // Points to the same object as FStateEx, so don't Free!
     function GetControlId: TCDControlID; override;
@@ -241,6 +256,11 @@ type
     destructor Destroy; override;
     function GetCurrentLine(): string;
     procedure SetCurrentLine(AStr: string);
+    function IsSomethingSelected: Boolean;
+    { Replace any selected text with empty and clear the selection
+      state. Used before external text edits that must operate on the
+      post-selection buffer. }
+    procedure DoDeleteSelection;
     property LeftTextMargin: Integer read GetLeftTextMargin write SetLeftTextMargin;
     property RightTextMargin: Integer read GetRightTextMargin write SetRightTextMargin;
     // selection info in a format compatible with TEdit
@@ -249,6 +269,18 @@ type
     procedure SetSelStartX(ANewX: Integer);
     procedure SetSelLength(ANewLength: Integer);
     property CaretPos: TPoint read GetCaretPos write SetCaretPost;
+    // IME pre-edit text. Drawn inline at the caret with an underline
+    // but NOT inserted into Lines until the IME commits. Setter
+    // invalidates and stores in FEditState; the drawer reads the
+    // state and renders.
+    procedure SetPreedit(const AText: AnsiString;
+      ACursorBegin, ACursorEnd: LongInt);
+    function GetPreeditText: AnsiString;
+    // Pixel X of the caret within this control's client area, taking
+    // VisibleTextStart and any current preedit into account. Used by
+    // the Wayland host to send set_cursor_rectangle so the IME's
+    // candidate window pops up next to the caret. Y is line-top.
+    function GetCaretPixelRect: TRect;
   published
     property Align;
     property Anchors;
@@ -378,6 +410,11 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    { Which arrow button is currently being held / clicked, or [] for
+      none. Public accessor over the private FButton so an
+      OnChangeByUser handler can tell an arrow gesture apart from a
+      trough click or a thumb drag. }
+    function CurrentButton: TCDControlState;
   published
     property Max: Integer read FMax write SetMax;
     property Min: Integer read FMin write SetMin;
@@ -392,6 +429,10 @@ type
   private
     FKind: TScrollBarKind;
     procedure SetKind(AValue: TScrollBarKind);
+  protected
+    procedure KeyDown(var Key: word; Shift: TShiftState); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer); override;
     procedure GetBorderSizes(out ALeft, ARight: Integer);
   protected
     function GetPositionFromMousePos(X, Y: Integer): integer; override;
@@ -402,6 +443,12 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    { Public accessor for the inherited protected FSmallChange /
+      FLargeChange. Hosts that want the trough click to scroll one
+      page and arrow clicks to step a fraction need to set these
+      explicitly -- the defaults of 1 / 5 are tiny relative to grid
+      content. }
+    procedure SetIncrements(ASmall, ALarge: Integer);
   published
     property DrawStyle;
     property Enabled;
@@ -556,6 +603,157 @@ type
     property Style: TProgressBarStyle read FStyle write SetStyle;
   end;
 
+  { TCDListBox -- the customdrawn host for TCustomListBox.
+
+    Owns a TStringList (Items), a TBits (Selected), and inherits a
+    vertical TCDScrollBar from TCDScrollableControl. Mouse + keyboard
+    nav / selection are wired here; the drawer renders the visible
+    rows + the highlight.
+
+    Selection model:
+      MultiSelect=False              => single (clicking sets one item)
+      MultiSelect=True, ExtendedSelect=False
+                                     => each click toggles
+      MultiSelect=True, ExtendedSelect=True
+                                     => Shift-extend, Ctrl-toggle. }
+
+  TCDListBox = class(TCDControl)
+  private
+    FItems:             TStringList;
+    FSelected:          TBits;
+    FItemIndex:         Integer;
+    FAnchor:            Integer;
+    FTopIndex:          Integer;
+    FItemHeight:        Integer;
+    FMultiSelect:       Boolean;
+    FExtendedSelect:    Boolean;
+    FSorted:            Boolean;
+    FOnChange:          TNotifyEvent;
+    FOnSelectionChange: TNotifyEvent;
+    { Type-ahead state. Letters typed within FSearchTimeoutMs of each
+      other accumulate into a search prefix; we jump to the first
+      item whose Caption starts with that prefix. After timeout the
+      prefix resets so the next letter starts a fresh search. Works
+      with multibyte UTF-8 (kanji etc.) when the IME route delivers
+      commit_string -- see TypeAheadAdvance. }
+    FSearchPrefix:      AnsiString;
+    FSearchExpiry:      TDateTime;
+    { Vertical scrollbar -- created lazily on first SetParent so that
+      parenting it doesn't cascade into HandleNeeded on us before our
+      own Parent is set. TCDScrollableControl cannot be used here
+      because its constructor unconditionally adds the scrollbar as a
+      child, which trips the handle-creation chain when Items.Add fires
+      before the LCL host has hooked us up via InjectCDControl from
+      ShowHide. }
+    FScrollBar:         TCDScrollBar;
+    procedure ScrollBarChanged(Sender: TObject);
+    function  GetItems: TStrings;
+    procedure SetItems(AValue: TStrings);
+    procedure SetItemIndex(AValue: Integer);
+    procedure SetTopIndex(AValue: Integer);
+    procedure SetMultiSelect(AValue: Boolean);
+    procedure SetExtendedSelect(AValue: Boolean);
+    procedure SetSorted(AValue: Boolean);
+    procedure SetItemHeight(AValue: Integer);
+    function  ComputeItemHeight: Integer;
+    function  GetVisibleCount: Integer;
+    procedure EnsureScrollBar;
+    procedure UpdateScrollBar;
+    procedure UpdateSelectionForClick(Index: Integer; Shift: TShiftState);
+    procedure EnsureVisible(Index: Integer);
+    procedure FireSelectionChange;
+  protected
+    FLBState: TCDListBoxStateEx;
+    function  GetControlId: TCDControlID; override;
+    procedure CreateControlStateEx; override;
+    procedure PrepareControlStateEx; override;
+    procedure DoEnter; override;
+    procedure DoExit; override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    function  DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
+    procedure Resize; override;
+    procedure SetParent(NewParent: TWinControl); override;
+    procedure ItemsChanged(Sender: TObject); virtual;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    function ItemAtPos(X, Y: Integer): Integer;
+    procedure TypeAheadAdvance(const AText: AnsiString);
+    function ItemRect(Index: Integer): TRect;
+    function GetSelected(AIndex: Integer): Boolean;
+    procedure SetSelected(AIndex: Integer; ASel: Boolean);
+    procedure SelectRange(ALow, AHigh: Integer; ASel: Boolean);
+    function GetSelCount: Integer;
+    property Selected[Index: Integer]: Boolean read GetSelected write SetSelected;
+  published
+    property Color;
+    property Enabled;
+    property Font;
+    property Items: TStrings read GetItems write SetItems;
+    property ItemHeight: Integer read FItemHeight write SetItemHeight default 0;
+    property ItemIndex: Integer read FItemIndex write SetItemIndex default -1;
+    property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default False;
+    property ExtendedSelect: Boolean read FExtendedSelect write SetExtendedSelect default True;
+    property Sorted: Boolean read FSorted write SetSorted default False;
+    property TabStop default True;
+    property TopIndex: Integer read FTopIndex write SetTopIndex default 0;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
+  end;
+
+  { TCDCheckListBox -- TCDListBox with a per-item checkbox column.
+    Click on the checkbox column toggles the item's State; click on the
+    text column behaves like a normal listbox selection. VK_SPACE on the
+    current item toggles its State. Header rows occupy the full row
+    width with no checkbox and ignore toggle events. }
+
+  TCDCheckListBoxClickEvent = procedure(Sender: TObject; AIndex: Integer) of object;
+
+  TCDCheckListBox = class(TCDListBox)
+  private
+    FStates:        array of TCheckBoxState;
+    FItemEnabled:   array of Boolean;
+    FHeader:        array of Boolean;
+    FAllowGrayed:   Boolean;
+    FHeaderColor:   TColor;
+    FHeaderBgColor: TColor;
+    FOnClickCheck:  TCDCheckListBoxClickEvent;
+    procedure SyncStateArrays;
+    function  HitsCheckColumn(X: Integer): Boolean;
+    procedure ToggleAtClick(AIndex: Integer);
+  protected
+    FCLBState: TCDCheckListBoxStateEx;
+    function  GetControlId: TCDControlID; override;
+    procedure CreateControlStateEx; override;
+    procedure PrepareControlStateEx; override;
+    procedure ItemsChanged(Sender: TObject); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    function GetCheckWidth: Integer;
+    function GetItemState(AIndex: Integer): TCheckBoxState;
+    procedure SetItemState(AIndex: Integer; AValue: TCheckBoxState);
+    function GetItemEnabled(AIndex: Integer): Boolean;
+    procedure SetItemEnabled(AIndex: Integer; AValue: Boolean);
+    function GetItemHeader(AIndex: Integer): Boolean;
+    procedure SetItemHeader(AIndex: Integer; AValue: Boolean);
+    function GetItemChecked(AIndex: Integer): Boolean;
+    procedure SetItemChecked(AIndex: Integer; AValue: Boolean);
+    procedure Toggle(AIndex: Integer);
+    property State[AIndex: Integer]: TCheckBoxState read GetItemState write SetItemState;
+    property ItemEnabled[AIndex: Integer]: Boolean read GetItemEnabled write SetItemEnabled;
+    property Header[AIndex: Integer]: Boolean read GetItemHeader write SetItemHeader;
+    property Checked[AIndex: Integer]: Boolean read GetItemChecked write SetItemChecked;
+  published
+    property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed default False;
+    property HeaderColor: TColor read FHeaderColor write FHeaderColor default clInfoText;
+    property HeaderBackgroundColor: TColor read FHeaderBgColor write FHeaderBgColor default clInfoBk;
+    property OnClickCheck: TCDCheckListBoxClickEvent read FOnClickCheck write FOnClickCheck;
+  end;
+
   { TCDListView }
 
   TCDListView = class(TCDScrollableControl)
@@ -607,6 +805,40 @@ type
   end;
 
   { TCDToolBar }
+
+  { TCDStatusBar -- the customdrawn host for TStatusBar.
+
+    Holds a borrowed TCollection reference to the LCL TStatusBar's
+    Panels (TStatusPanels needs a TStatusBar to construct, so we can't
+    own one of our own; the injected bridge sets PanelsRef on every
+    PrepareControlState). Plus SimpleText / SimplePanel; the drawer
+    renders a sunken-top strip with per-panel bevels following the
+    LCL's "Width=0 panels share the leftover" layout rule. }
+  TCDStatusBar = class(TCDControl)
+  private
+    FPanelsRef:   TCollection;     { borrowed reference; never freed }
+    FSimpleText:  TCaption;
+    FSimplePanel: Boolean;
+    FSizeGrip:    Boolean;
+    procedure SetSimpleText(const AValue: TCaption);
+    procedure SetSimplePanel(AValue: Boolean);
+  protected
+    FSBState: TCDStatusBarStateEx;
+    function  GetControlId: TCDControlID; override;
+    procedure CreateControlStateEx; override;
+    procedure PrepareControlStateEx; override;
+    class function GetControlClassDefaultSize: TSize; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    property PanelsRef: TCollection read FPanelsRef write FPanelsRef;
+  published
+    property Color;
+    property Font;
+    property Enabled;
+    property SimpleText:  TCaption read FSimpleText write SetSimpleText;
+    property SimplePanel: Boolean  read FSimplePanel write SetSimplePanel default True;
+    property SizeGrip:    Boolean  read FSizeGrip write FSizeGrip default True;
+  end;
 
   TCDToolBar = class(TCDControl)
   private
@@ -745,6 +977,15 @@ type
     function AddPage(S: string): TCDTabSheet; overload;
     procedure AddPage(APage: TCDTabSheet); overload;
     function GetPage(aIndex: integer): TCDTabSheet;
+    { Content rect inside the tab control, excluding the tab-header strip.
+      Used by the customdrawn host's TCDWSCustomTabControl to lay out
+      LCL TTabSheets (Align := alClient by default) inside the content
+      area, the same way Win32's TabControlClientOffset / TCM_AdjustRect
+      does it natively. ASize is the requested size of the host LCL
+      TPageControl -- NOT this injected control's own Width/Height,
+      which would be circular when this control is itself alClient'd
+      to the host's ClientRect. }
+    function GetTabContentRect(ASize: TSize): TRect;
     property PageCount: integer read GetPageCount;
     // Used by the property editor in customdrawnextras
     function FindNextPage(CurPage: TCDTabSheet;
@@ -787,7 +1028,8 @@ type
     procedure SetIncrement(AValue: Double);
     procedure SetMaxValue(AValue: Double);
     procedure SetMinValue(AValue: Double);
-    procedure UpDownChanging(Sender: TObject; var AllowChange: Boolean);
+    procedure UpDownChangingEx(Sender: TObject; var AllowChange: Boolean;
+      NewValue: SmallInt; Direction: TUpDownDirection);
     procedure SetValue(AValue: Double);
     procedure DoUpdateText;
     procedure DoUpdateUpDown;
@@ -947,7 +1189,17 @@ procedure TCDControl.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
-  if CanFocus() then SetFocus(); // Checking CanFocus fixes a crash
+  { Do NOT call SetFocus here. The mouse-event router
+    (CallbackMouseDown -> CDSetFocusToControl) already assigns focus
+    using the host+intf model (parent LCL control = ALCLControl,
+    injected = AIntfControl). Calling SetFocus on the CD control
+    itself goes through WS.SetFocus(self.Handle), which calls
+    CDSetFocusToControl(self, NIL) -- treating the CD control as a
+    top-level focusable. For an injected CD control, that conflicts
+    with the host+intf assignment that fires immediately afterwards:
+    the two CDSetFocusToControl calls thrash FocusedControl /
+    FocusedIntfControl and each fires a CMExit on the injected, which
+    cleared edit-control selections via DoExit's DoClearSelection. }
 end;
 
 constructor TCDControl.Create(AOwner: TComponent);
@@ -2074,9 +2326,62 @@ begin
   DoChange();
 end;
 
+procedure TCDEdit.SetPreedit(const AText: AnsiString;
+  ACursorBegin, ACursorEnd: LongInt);
+begin
+  FEditState.PreeditText := AText;
+  FEditState.PreeditCursorBegin := ACursorBegin;
+  FEditState.PreeditCursorEnd := ACursorEnd;
+  Invalidate;
+end;
+
+function TCDEdit.GetPreeditText: AnsiString;
+begin
+  Result := FEditState.PreeditText;
+end;
+
+function TCDEdit.GetCaretPixelRect: TRect;
+var
+  lLine, lLeft: AnsiString;
+  lLineHeight, lCaretX: Integer;
+begin
+  { Use the same caret-position calculation as TCDDrawerCommon.DrawCaret:
+    take the substring from VisibleTextStart to CaretPos and measure its
+    pixel width. We use a freshly-created bitmap canvas since this
+    method may be called from outside paint, when Self.Canvas isn't
+    valid. The font set on Self propagates to the canvas. }
+  Result := Rect(0, 0, 1, 16);
+  if FEditState = nil then Exit;
+  if (FEditState.Lines = nil) or (FEditState.Lines.Count = 0) then Exit;
+  if (FEditState.CaretPos.Y < 0) or (FEditState.CaretPos.Y >= FEditState.Lines.Count) then Exit;
+
+  lLine := FEditState.Lines.Strings[FEditState.CaretPos.Y];
+  { Measure from VisibleTextStart.X (1-based) to CaretPos.X. }
+  lLeft := UTF8Copy(lLine, FEditState.VisibleTextStart.X,
+                    FEditState.CaretPos.X - FEditState.VisibleTextStart.X + 1);
+  Canvas.Font.Assign(Font);
+  lCaretX := Canvas.TextWidth(lLeft) + FEditState.LeftTextMargin;
+  if FEditState.PreeditText <> '' then
+    Inc(lCaretX, Canvas.TextWidth(FEditState.PreeditText));
+  lLineHeight := Canvas.TextHeight('Wg');
+  if lLineHeight <= 0 then lLineHeight := 16;
+  Result := Rect(lCaretX,
+                 FEditState.CaretPos.Y * lLineHeight,
+                 lCaretX + 1,
+                 (FEditState.CaretPos.Y + 1) * lLineHeight);
+end;
+
 function TCDEdit.GetSelStartX: Integer;
 begin
+  { LCL's TCustomEdit.SelStart contract is the leftmost edge of the
+    selection, or the caret position when there is no selection.
+    Internally FEditState.SelStart.X is only the selection anchor; it
+    can be stale after normal caret motion. }
+  if FEditState.SelLength = 0 then
+    Exit(FEditState.CaretPos.X);
   Result := FEditState.SelStart.X;
+  if FEditState.SelLength < 0 then
+    Result := Result + FEditState.SelLength;
 end;
 
 function TCDEdit.GetSelLength: Integer;
@@ -2087,12 +2392,20 @@ end;
 
 procedure TCDEdit.SetSelStartX(ANewX: Integer);
 begin
+  if FEditState.SelStart.X = ANewX then Exit;
   FEditState.SelStart.X := ANewX;
+  if FEditState.SelLength = 0 then
+    FEditState.CaretPos.X := ANewX;
+  Invalidate;
 end;
 
 procedure TCDEdit.SetSelLength(ANewLength: Integer);
 begin
+  if FEditState.SelLength = ANewLength then Exit;
   FEditState.SelLength := ANewLength;
+  if FEditState.SelLength = 0 then
+    FEditState.CaretPos.X := FEditState.SelStart.X;
+  Invalidate;
 end;
 
 { TCDCheckBox }
@@ -2228,6 +2541,25 @@ begin
   inherited Destroy;
 end;
 
+{ TCDToggleBox }
+
+constructor TCDToggleBox.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FHasOnOffStates := True;   { DoButtonUp now flips csfOn / csfOff each click }
+end;
+
+procedure TCDToggleBox.PrepareControlState;
+begin
+  inherited PrepareControlState;
+  { Latch the visual sunken state to the logical on/off state, so the
+    button stays "pressed-looking" while checked instead of popping
+    back up after each click. The transient mouse-press csfSunken from
+    DoButtonDown is overlaid on top of this and clears on MouseUp. }
+  if csfOn in FState then FState := FState + [csfSunken]
+  else                     FState := FState - [csfSunken];
+end;
+
 { TCDRadioButton }
 
 function TCDRadioButton.GetControlId: TCDControlID;
@@ -2290,12 +2622,32 @@ begin
 end;
 
 procedure TCDPositionedControl.SetPosition(AValue: Integer);
+var
+  EffectiveMax: Integer;
 begin
-  if FPosition=AValue then Exit;
-  FPosition:=AValue;
+  { When PageSize > 0 (Win32 / scrollbar convention) the highest
+    valid Position is Max - PageSize -- Position is the index of the
+    first visible item, the page covers Position..Position+PageSize-1.
+    For PageSize=0 (TrackBar etc.) Position can reach Max as before.
 
-  if FPosition > FMax then FPosition := FMax;
-  if FPosition < FMin then FPosition := FMin;
+    Clamp the incoming value first, then bail if the clamped result
+    matches the current Position. The previous order (assign first,
+    clamp after, fire OnChange unconditionally) emitted spurious
+    OnChange / OnChangeByUser notifications when the user kept
+    pressing past the boundary -- callers like DoClickButton check
+    `NewPosition <> Position` *before* assignment, miss the clamp,
+    and still fire OnChangeByUser. Downstream that drove the LCL
+    scrollbar's "+1 follows winapi bug" branch in DoScroll, which
+    pushed LCL.Position to Max-PageSize+1 and then mis-routed
+    subsequent gestures. }
+  EffectiveMax := FMax;
+  if FPageSize > 0 then EffectiveMax := EffectiveMax - FPageSize;
+  if EffectiveMax < FMin then EffectiveMax := FMin;
+  if AValue > EffectiveMax then AValue := EffectiveMax;
+  if AValue < FMin then AValue := FMin;
+
+  if FPosition = AValue then Exit;
+  FPosition := AValue;
 
   // Don't do OnChange during loading
   if not (csLoading in ComponentState) then
@@ -2307,19 +2659,22 @@ end;
 
 procedure TCDPositionedControl.DoClickButton(AButton: TCDControlState; ALargeChange: Boolean);
 var
-  lChange: Integer;
-  NewPosition: Integer = -1;
+  lChange, OldPosition, NewPosition: Integer;
 begin
   if ALargeChange then lChange := FLargeChange
   else lChange := FSmallChange;
   if csfLeftArrow in AButton then NewPosition := Position - lChange
-  else if csfRightArrow in AButton then NewPosition := Position + lChange;
+  else if csfRightArrow in AButton then NewPosition := Position + lChange
+  else Exit;
 
-  if (NewPosition >= 0) and (NewPosition <> Position) then
-  begin
-    Position := NewPosition;
-    if Assigned(FOnChangeByUser) then FOnChangeByUser(Self);
-  end;
+  { SetPosition clamps to [Min, Max-PageSize], so the requested
+    NewPosition may collapse to the current FPosition at the
+    boundary. Compare FPosition before/after to fire OnChangeByUser
+    only on a real change. }
+  OldPosition := FPosition;
+  Position := NewPosition;
+  if (FPosition <> OldPosition) and Assigned(FOnChangeByUser) then
+    FOnChangeByUser(Self);
 end;
 
 procedure TCDPositionedControl.HandleBtnClickTimer(ASender: TObject);
@@ -2403,53 +2758,67 @@ begin
 end;
 
 procedure TCDPositionedControl.PrepareControlStateEx;
+var
+  Range, PosRange: Integer;
 begin
   inherited PrepareControlStateEx;
 
-  if FMin < FMax then FPCState.FloatPos := FPosition / (FMax - FMin)
+  Range := FMax - FMin;
+  { Position can move only across (Range - PageSize) when PageSize > 0
+    (the rest of the trough is covered by the thumb itself). FloatPos
+    must therefore divide by that, not by Range, or the thumb-bottom
+    never reaches the trough-bottom. }
+  PosRange := Range;
+  if FPageSize > 0 then PosRange := Range - FPageSize;
+  if PosRange > 0 then FPCState.FloatPos := FPosition / PosRange
   else FPCState.FloatPos := 0.0;
 
-  FPCState.PosCount := FMax - FMin + 1;
+  FPCState.PosCount := Range + 1;
   FPCState.Position := FPosition - FMin;
 
-  if FMin < FMax then FPCState.FloatPageSize := FPageSize / (FMax - FMin)
+  { FloatPageSize is the thumb size as a fraction of the trough.
+    With PageSize / Range, a 5-of-8-visible listbox gets a 5/8 thumb. }
+  if Range > 0 then FPCState.FloatPageSize := FPageSize / Range
   else FPCState.FloatPageSize := 1.0;
 end;
 
 procedure TCDPositionedControl.KeyDown(var Key: word; Shift: TShiftState);
 var
-  NewPosition: Integer;
+  NewPosition, OldPosition: Integer;
+  HandledKey: Boolean;
 begin
   inherited KeyDown(Key, Shift);
 
-  NewPosition := 0;
-  if (Key = VK_LEFT) or (Key = VK_DOWN) then
-    NewPosition := FPosition - FSmallChange;
-  if (Key = VK_UP) or (Key = VK_RIGHT) then
-    NewPosition := FPosition + FSmallChange;
-  if (Key = VK_PRIOR) then
-    NewPosition := FPosition - FLargeChange;
-  if (Key = VK_NEXT) then
-    NewPosition := FPosition + FLargeChange;
+  { 0 used to be the "no movement" sentinel, but 0 is a perfectly
+    valid Position. Any unhandled key (Tab, letters, ...) fell into
+    the clamp+assign branch and snapped Position to Max(FMin, 0). }
+  NewPosition := FPosition;
+  HandledKey := True;
+  case Key of
+    VK_LEFT, VK_DOWN:  NewPosition := FPosition - FSmallChange;
+    VK_RIGHT, VK_UP:   NewPosition := FPosition + FSmallChange;
+    VK_PRIOR:          NewPosition := FPosition - FLargeChange;
+    VK_NEXT:           NewPosition := FPosition + FLargeChange;
+  else
+    HandledKey := False;
+  end;
 
-  // sanity check
-  if NewPosition >= 0 then
+  if HandledKey then
   begin
-    if NewPosition > FMax then NewPosition := FMax;
-    if NewPosition < FMin then NewPosition := FMin;
-
-    if (NewPosition <> Position) then
-    begin
-      Position := NewPosition;
-      if Assigned(FOnChangeByUser) then FOnChangeByUser(Self);
-    end;
+    { Don't pre-clamp here -- SetPosition clamps to [Min, Max-PageSize].
+      Compare FPosition before/after the assignment so OnChangeByUser
+      only fires on real movement. }
+    OldPosition := FPosition;
+    Position := NewPosition;
+    if (FPosition <> OldPosition) and Assigned(FOnChangeByUser) then
+      FOnChangeByUser(Self);
   end;
 end;
 
 procedure TCDPositionedControl.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: integer);
 var
-  NewPosition: Integer;
+  NewPosition, OldPosition: Integer;
 begin
   SetFocus;
   if FMoveByDragging then
@@ -2462,10 +2831,12 @@ begin
   begin
     NewPosition := GetPositionFromMousePos(X, Y);
     DragDropStarted := True;
-    if (NewPosition >= 0) and (NewPosition <> Position) then
+    if NewPosition >= 0 then
     begin
+      OldPosition := FPosition;
       Position := NewPosition;
-      if Assigned(FOnChangeByUser) then FOnChangeByUser(Self);
+      if (FPosition <> OldPosition) and Assigned(FOnChangeByUser) then
+        FOnChangeByUser(Self);
     end;
   end;
 
@@ -2483,27 +2854,20 @@ end;
 
 procedure TCDPositionedControl.MouseMove(Shift: TShiftState; X, Y: integer);
 var
-  NewPosition: Integer;
+  NewPosition, OldPosition: Integer;
 begin
   if DragDropStarted then
   begin
     if FMoveByDragging then
-    begin
-      NewPosition := FPositionAtMouseDown + GetPositionDisplacement(FLastMouseDownPos, Point(X, Y));
-      if NewPosition <> Position then
-      begin
-        Position := NewPosition;
-        if Assigned(FOnChangeByUser) then FOnChangeByUser(Self);
-      end;
-    end
+      NewPosition := FPositionAtMouseDown + GetPositionDisplacement(FLastMouseDownPos, Point(X, Y))
     else
-    begin
       NewPosition := GetPositionFromMousePos(X, Y);
-      if (NewPosition >= 0) and (NewPosition <> Position) then
-      begin
-        Position := NewPosition;
-        if Assigned(FOnChangeByUser) then FOnChangeByUser(Self);
-      end;
+    if NewPosition >= 0 then
+    begin
+      OldPosition := FPosition;
+      Position := NewPosition;
+      if (FPosition <> OldPosition) and Assigned(FOnChangeByUser) then
+        FOnChangeByUser(Self);
     end;
   end;
   inherited MouseMove(Shift, X, Y);
@@ -2515,6 +2879,13 @@ begin
   DragDropStarted := False;
   FBtnClickTimer.Enabled := False;
   FState := FState - [csfLeftArrow, csfRightArrow];
+  { Also clear FButton itself -- MouseDown sets it to the clicked
+    arrow and the original code only cleared FState. FButton is what
+    the click-repeat timer (and now CurrentButton) compare against,
+    so leaving it stuck to the last-clicked arrow let
+    OnChangeByUser-handlers misclassify subsequent unrelated trough
+    clicks as arrow gestures. }
+  FButton := [];
   Invalidate;
   inherited MouseUp(Button, Shift, X, Y);
 end;
@@ -2537,6 +2908,11 @@ destructor TCDPositionedControl.Destroy;
 begin
   FBtnClickTimer.Free;
   inherited Destroy;
+end;
+
+function TCDPositionedControl.CurrentButton: TCDControlState;
+begin
+  Result := FButton;
 end;
 
 { TCDScrollBar }
@@ -2628,9 +3004,146 @@ begin
   FMoveByDragging := True;
 end;
 
+procedure TCDScrollBar.KeyDown(var Key: word; Shift: TShiftState);
+var
+  OldPosition, Step: Integer;
+begin
+  { Override TCDPositionedControl.KeyDown rather than chaining: the
+    inherited version maps VK_DOWN -> -FSmallChange (trackbar
+    convention, up = higher value), but a scrollbar must scroll its
+    content in the direction of the arrow key. Don't call inherited
+    here, otherwise we'd run that mapping AND fire OnChangeByUser
+    twice for the same keypress. }
+  Step := 0;
+  case Key of
+    VK_PRIOR: Step := -FLargeChange;
+    VK_NEXT:  Step := +FLargeChange;
+    VK_HOME:
+    begin
+      OldPosition := FPosition;
+      Position := FMin;
+      if (FPosition <> OldPosition) and Assigned(FOnChangeByUser) then
+        FOnChangeByUser(Self);
+      Exit;
+    end;
+    VK_END:
+    begin
+      OldPosition := FPosition;
+      Position := FMax;
+      if (FPosition <> OldPosition) and Assigned(FOnChangeByUser) then
+        FOnChangeByUser(Self);
+      Exit;
+    end;
+  else
+    if FKind = sbHorizontal then
+      case Key of
+        VK_LEFT:  Step := -FSmallChange;
+        VK_RIGHT: Step := +FSmallChange;
+      end
+    else
+      case Key of
+        VK_UP:    Step := -FSmallChange;
+        VK_DOWN:  Step := +FSmallChange;
+      end;
+  end;
+  if Step = 0 then Exit;
+
+  OldPosition := FPosition;
+  Position := FPosition + Step;
+  if (FPosition <> OldPosition) and Assigned(FOnChangeByUser) then
+    FOnChangeByUser(Self);
+end;
+
+procedure TCDScrollBar.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+var
+  Coord, ButtonW, Trough, Range, PosRange, ThumbSize, ThumbStart, OldPos: Integer;
+begin
+  { Defer arrow-button clicks to the inherited handler. }
+  if GetButtonFromMousePos(X, Y) <> [] then
+  begin
+    inherited MouseDown(Button, Shift, X, Y);
+    Exit;
+  end;
+  if FLargeChange <= 0 then
+  begin
+    inherited MouseDown(Button, Shift, X, Y);
+    Exit;
+  end;
+  Range := FMax - FMin;
+  if Range <= 0 then
+  begin
+    inherited MouseDown(Button, Shift, X, Y);
+    Exit;
+  end;
+
+  { Pixel-coordinate hit-test against where the drawer actually draws
+    the thumb. Position-value space hit-tests miss because most of the
+    trough maps to Position-values near FPosition, not to the visible
+    thumb extent. Geometry matches DrawScrollBar in customdrawn_common.pas:
+      ThumbSize  = PageSize / Range * Trough  (clamped to >=5)
+      ThumbStart = ButtonWidth
+                 + Position/(Range-PageSize) * (Trough - ThumbSize) }
+  ButtonW := FDrawer.GetMeasures(TCDSCROLLBAR_BUTTON_WIDTH);
+  if FKind = sbHorizontal then
+  begin
+    Coord  := X;
+    Trough := Width - 2 * ButtonW;
+  end
+  else
+  begin
+    Coord  := Y;
+    Trough := Height - 2 * ButtonW;
+  end;
+  if Trough <= 0 then
+  begin
+    inherited MouseDown(Button, Shift, X, Y);
+    Exit;
+  end;
+
+  if FPageSize > 0 then ThumbSize := Round(FPageSize / Range * Trough)
+  else ThumbSize := 16;
+  if ThumbSize < 5 then ThumbSize := 5;
+  if ThumbSize > Trough then ThumbSize := Trough;
+
+  if FPageSize > 0 then PosRange := Range - FPageSize
+  else PosRange := Range;
+  if PosRange <= 0 then ThumbStart := ButtonW
+  else ThumbStart := ButtonW + Round(FPosition / PosRange * (Trough - ThumbSize));
+
+  { SetPosition clamps to [Min, Max-PageSize]; comparing FPosition
+    before/after lets OnChangeByUser fire only on real movement, not
+    on a boundary click that gets clamped back. }
+  if Coord < ThumbStart then
+  begin
+    OldPos := FPosition;
+    Position := FPosition - FLargeChange;
+    if (FPosition <> OldPos) and Assigned(FOnChangeByUser) then
+      FOnChangeByUser(Self);
+    Exit;
+  end;
+  if Coord > ThumbStart + ThumbSize then
+  begin
+    OldPos := FPosition;
+    Position := FPosition + FLargeChange;
+    if (FPosition <> OldPos) and Assigned(FOnChangeByUser) then
+      FOnChangeByUser(Self);
+    Exit;
+  end;
+  inherited MouseDown(Button, Shift, X, Y);
+end;
+
 destructor TCDScrollBar.Destroy;
 begin
   inherited Destroy;
+end;
+
+procedure TCDScrollBar.SetIncrements(ASmall, ALarge: Integer);
+begin
+  if ASmall < 1 then ASmall := 1;
+  if ALarge < 1 then ALarge := 1;
+  FSmallChange := ASmall;
+  FLargeChange := ALarge;
 end;
 
 { TCDGroupBox }
@@ -2845,6 +3358,643 @@ end;
 destructor TCDProgressBar.Destroy;
 begin
   inherited Destroy;
+end;
+
+{ TCDListBox }
+
+constructor TCDListBox.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Width := 150;
+  Height := 100;
+  TabStop := True;
+  ControlStyle := ControlStyle + [csAcceptsControls];  { for child scrollbar }
+  FItems := TStringList.Create;
+  FItems.OnChange := @ItemsChanged;
+  FSelected := TBits.Create;
+  FItemIndex := -1;
+  FAnchor    := -1;
+  FTopIndex  := 0;
+  FItemHeight := 0;          { 0 = compute from font }
+  FMultiSelect := False;
+  FExtendedSelect := True;
+  FSorted := False;
+  { FScrollBar is created lazily in EnsureScrollBar -- doing it here
+    would parent it under us before we have a parent of our own,
+    cascading into HandleNeeded on the listbox while it has no
+    parent and tripping "Control has no parent window". }
+end;
+
+procedure TCDListBox.EnsureScrollBar;
+begin
+  if FScrollBar <> nil then Exit;
+  if Parent = nil then Exit;          { still detached; defer }
+  FScrollBar := TCDScrollBar.Create(Self);
+  FScrollBar.Kind := sbVertical;
+  FScrollBar.Align := alRight;
+  FScrollBar.Width := 16;
+  FScrollBar.Visible := False;
+  FScrollBar.Parent := Self;
+  FScrollBar.OnChange := @ScrollBarChanged;
+end;
+
+procedure TCDListBox.SetParent(NewParent: TWinControl);
+begin
+  inherited SetParent(NewParent);
+  if NewParent <> nil then
+  begin
+    EnsureScrollBar;
+    UpdateScrollBar;
+  end;
+end;
+
+destructor TCDListBox.Destroy;
+begin
+  FItems.Free;
+  FSelected.Free;
+  inherited Destroy;
+end;
+
+function TCDListBox.GetControlId: TCDControlID;
+begin
+  Result := cidListBox;
+end;
+
+procedure TCDListBox.CreateControlStateEx;
+begin
+  FLBState := TCDListBoxStateEx.Create;
+  FStateEx := FLBState;
+end;
+
+procedure TCDListBox.PrepareControlStateEx;
+begin
+  inherited PrepareControlStateEx;
+  FLBState.Items     := FItems;
+  FLBState.Selected  := FSelected;
+  FLBState.ItemIndex := FItemIndex;
+  FLBState.TopIndex  := FTopIndex;
+  FLBState.ItemHeight := ComputeItemHeight;
+  FLBState.MultiSelect := FMultiSelect;
+  FLBState.ExtendedSelect := FExtendedSelect;
+end;
+
+function TCDListBox.GetItems: TStrings;
+begin
+  Result := FItems;
+end;
+
+procedure TCDListBox.SetItems(AValue: TStrings);
+begin
+  if AValue = nil then FItems.Clear
+  else FItems.Assign(AValue);
+  { ItemsChanged fires via FItems.OnChange }
+end;
+
+procedure TCDListBox.ItemsChanged(Sender: TObject);
+begin
+  { Reset selection bounds, clamp ItemIndex into range, push the
+    scrollbar to match the new item count. }
+  if FItemIndex >= FItems.Count then FItemIndex := FItems.Count - 1;
+  if (FAnchor    >= FItems.Count) or (FAnchor < 0) then FAnchor := FItemIndex;
+  if FTopIndex   >= FItems.Count then FTopIndex := Max(0, FItems.Count - GetVisibleCount);
+  FSelected.Size := FItems.Count;
+  UpdateScrollBar;
+  if Assigned(FOnChange) then FOnChange(Self);
+  Invalidate;
+end;
+
+procedure TCDListBox.ScrollBarChanged(Sender: TObject);
+begin
+  { Scrollbar position is the row index of the first visible row. }
+  if FScrollBar = nil then Exit;
+  if FTopIndex <> FScrollBar.Position then
+  begin
+    FTopIndex := FScrollBar.Position;
+    Invalidate;
+  end;
+end;
+
+procedure TCDListBox.SetItemIndex(AValue: Integer);
+begin
+  if AValue < -1 then AValue := -1;
+  if AValue >= FItems.Count then AValue := FItems.Count - 1;
+  if FItemIndex = AValue then Exit;
+  FItemIndex := AValue;
+  { Single-select: selection follows ItemIndex. }
+  if not FMultiSelect then
+  begin
+    FSelected.Clearall;
+    if FItemIndex >= 0 then FSelected[FItemIndex] := True;
+  end;
+  EnsureVisible(FItemIndex);
+  Invalidate;
+  FireSelectionChange;
+end;
+
+procedure TCDListBox.SetTopIndex(AValue: Integer);
+var
+  MaxTop: Integer;
+begin
+  MaxTop := Max(0, FItems.Count - GetVisibleCount);
+  if AValue < 0 then AValue := 0;
+  if AValue > MaxTop then AValue := MaxTop;
+  if FTopIndex = AValue then Exit;
+  FTopIndex := AValue;
+  if FScrollBar <> nil then FScrollBar.Position := AValue;
+  Invalidate;
+end;
+
+procedure TCDListBox.SetMultiSelect(AValue: Boolean);
+begin
+  if FMultiSelect = AValue then Exit;
+  FMultiSelect := AValue;
+  if not FMultiSelect then
+  begin
+    { Collapse selection back to single ItemIndex. }
+    FSelected.Clearall;
+    if FItemIndex >= 0 then FSelected[FItemIndex] := True;
+    Invalidate;
+    FireSelectionChange;
+  end;
+end;
+
+procedure TCDListBox.SetExtendedSelect(AValue: Boolean);
+begin
+  FExtendedSelect := AValue;
+end;
+
+procedure TCDListBox.SetSorted(AValue: Boolean);
+begin
+  if FSorted = AValue then Exit;
+  FSorted := AValue;
+  FItems.Sorted := AValue;
+end;
+
+procedure TCDListBox.SetItemHeight(AValue: Integer);
+begin
+  if AValue < 0 then AValue := 0;
+  if FItemHeight = AValue then Exit;
+  FItemHeight := AValue;
+  UpdateScrollBar;
+  Invalidate;
+end;
+
+function TCDListBox.ComputeItemHeight: Integer;
+begin
+  if FItemHeight > 0 then Exit(FItemHeight);
+  Canvas.Font.Assign(Font);
+  Result := Canvas.TextHeight('Wg') + 2;
+  if Result < 14 then Result := 14;
+end;
+
+function TCDListBox.GetVisibleCount: Integer;
+var
+  H: Integer;
+begin
+  H := Height - 4;  { 2px frame top + bottom }
+  Result := H div ComputeItemHeight;
+  if Result < 1 then Result := 1;
+end;
+
+procedure TCDListBox.UpdateScrollBar;
+var
+  Vis: Integer;
+begin
+  if FScrollBar = nil then Exit;
+  Vis := GetVisibleCount;
+  { Win32 / GTK / standard scrollbar convention: Max is the full count
+    and PageSize is the visible-window size. Position ranges
+    [0, Max - PageSize] -- the index of the first visible row.
+    SetPosition clamps for us when PageSize > 0. The drawer reads
+    PageSize / Max for the thumb fraction, so the thumb covers the
+    visible-fraction of the trough. }
+  FScrollBar.Min := 0;
+  FScrollBar.Max := FItems.Count;
+  FScrollBar.PageSize    := Vis;
+  FScrollBar.FLargeChange := Vis;        { matches PageUp/PageDown + trough-click }
+  if FItems.Count > Vis then
+  begin
+    FScrollBar.Visible := True;
+    FScrollBar.Position := FTopIndex;
+  end
+  else
+    FScrollBar.Visible := False;
+end;
+
+procedure TCDListBox.EnsureVisible(Index: Integer);
+var
+  Vis: Integer;
+begin
+  if (Index < 0) or (Index >= FItems.Count) then Exit;
+  Vis := GetVisibleCount;
+  if Index < FTopIndex then SetTopIndex(Index)
+  else if Index >= FTopIndex + Vis then SetTopIndex(Index - Vis + 1);
+end;
+
+procedure TCDListBox.FireSelectionChange;
+begin
+  if Assigned(FOnSelectionChange) then FOnSelectionChange(Self);
+end;
+
+function TCDListBox.GetSelected(AIndex: Integer): Boolean;
+begin
+  Result := False;
+  if (AIndex < 0) or (AIndex >= FItems.Count) then Exit;
+  if AIndex >= FSelected.Size then Exit;
+  Result := FSelected[AIndex];
+end;
+
+procedure TCDListBox.SetSelected(AIndex: Integer; ASel: Boolean);
+begin
+  if (AIndex < 0) or (AIndex >= FItems.Count) then Exit;
+  if FSelected.Size < FItems.Count then FSelected.Size := FItems.Count;
+  FSelected[AIndex] := ASel;
+  Invalidate;
+  FireSelectionChange;
+end;
+
+procedure TCDListBox.SelectRange(ALow, AHigh: Integer; ASel: Boolean);
+var
+  i, lo, hi: Integer;
+begin
+  lo := ALow; hi := AHigh;
+  if lo > hi then begin i := lo; lo := hi; hi := i; end;
+  if lo < 0 then lo := 0;
+  if hi >= FItems.Count then hi := FItems.Count - 1;
+  if FSelected.Size < FItems.Count then FSelected.Size := FItems.Count;
+  for i := lo to hi do FSelected[i] := ASel;
+  Invalidate;
+  FireSelectionChange;
+end;
+
+function TCDListBox.GetSelCount: Integer;
+var
+  i: Integer;
+begin
+  Result := 0;
+  for i := 0 to Min(FSelected.Size, FItems.Count) - 1 do
+    if FSelected[i] then Inc(Result);
+end;
+
+function TCDListBox.ItemAtPos(X, Y: Integer): Integer;
+var
+  Row: Integer;
+begin
+  Result := -1;
+  if Y < 2 then Exit;
+  Row := (Y - 2) div ComputeItemHeight;
+  Result := FTopIndex + Row;
+  if (Result < 0) or (Result >= FItems.Count) then Result := -1;
+end;
+
+function TCDListBox.ItemRect(Index: Integer): TRect;
+var
+  H, T: Integer;
+begin
+  Result := Rect(0, 0, 0, 0);
+  if (Index < FTopIndex) or (Index >= FTopIndex + GetVisibleCount + 1) then Exit;
+  H := ComputeItemHeight;
+  T := 2 + (Index - FTopIndex) * H;
+  Result := Rect(2, T, Width - 2 -
+    IfThen((FScrollBar <> nil) and FScrollBar.Visible, FScrollBar.Width, 0),
+    T + H);
+end;
+
+procedure TCDListBox.UpdateSelectionForClick(Index: Integer; Shift: TShiftState);
+begin
+  if FMultiSelect and FExtendedSelect and (ssShift in Shift) and (FAnchor >= 0) then
+  begin
+    FSelected.Clearall;
+    SelectRange(FAnchor, Index, True);
+    FItemIndex := Index;
+  end
+  else if FMultiSelect and FExtendedSelect and (ssCtrl in Shift) then
+  begin
+    if FSelected.Size < FItems.Count then FSelected.Size := FItems.Count;
+    FSelected[Index] := not FSelected[Index];
+    FItemIndex := Index;
+    FAnchor := Index;
+  end
+  else if FMultiSelect and not FExtendedSelect then
+  begin
+    if FSelected.Size < FItems.Count then FSelected.Size := FItems.Count;
+    FSelected[Index] := not FSelected[Index];
+    FItemIndex := Index;
+    FAnchor := Index;
+  end
+  else
+  begin
+    FSelected.Clearall;
+    if Index >= 0 then FSelected[Index] := True;
+    FItemIndex := Index;
+    FAnchor := Index;
+  end;
+  EnsureVisible(FItemIndex);
+  Invalidate;
+  FireSelectionChange;
+end;
+
+procedure TCDListBox.DoEnter;
+begin
+  inherited DoEnter;
+  Invalidate;
+end;
+
+procedure TCDListBox.DoExit;
+begin
+  inherited DoExit;
+  Invalidate;
+end;
+
+procedure TCDListBox.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  Idx: Integer;
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+  if Button <> mbLeft then Exit;
+  SetFocus;
+  Idx := ItemAtPos(X, Y);
+  if Idx < 0 then Exit;
+  UpdateSelectionForClick(Idx, Shift);
+end;
+
+procedure TCDListBox.KeyDown(var Key: Word; Shift: TShiftState);
+var
+  NewIndex, Vis: Integer;
+  i: Integer;
+begin
+  inherited KeyDown(Key, Shift);
+  if FItems.Count = 0 then Exit;
+  Vis := GetVisibleCount;
+  NewIndex := FItemIndex;
+  case Key of
+    VK_UP:    if NewIndex > 0                  then Dec(NewIndex) else NewIndex := 0;
+    VK_DOWN:  if NewIndex < FItems.Count - 1   then Inc(NewIndex) else NewIndex := FItems.Count - 1;
+    VK_PRIOR: NewIndex := Max(0, NewIndex - Vis);
+    VK_NEXT:  NewIndex := Min(FItems.Count - 1, NewIndex + Vis);
+    VK_HOME:  NewIndex := 0;
+    VK_END:   NewIndex := FItems.Count - 1;
+    VK_A:
+      if (Shift = [ssCtrl]) and FMultiSelect then
+      begin
+        for i := 0 to FItems.Count - 1 do FSelected[i] := True;
+        Invalidate; FireSelectionChange;
+        Key := 0;
+        Exit;
+      end;
+  else
+    Exit;
+  end;
+  if NewIndex < 0 then Exit;
+  Key := 0;
+  if FMultiSelect and FExtendedSelect and (ssShift in Shift) then
+  begin
+    if FAnchor < 0 then FAnchor := FItemIndex;
+    if FAnchor < 0 then FAnchor := NewIndex;
+    FSelected.Clearall;
+    SelectRange(FAnchor, NewIndex, True);
+    FItemIndex := NewIndex;
+    EnsureVisible(NewIndex);
+    Invalidate;
+    FireSelectionChange;
+  end
+  else
+  begin
+    SetItemIndex(NewIndex);   { also clears multi-select to single in non-multi mode }
+    FAnchor := NewIndex;
+  end;
+end;
+
+function TCDListBox.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean;
+var
+  Lines: Integer;
+begin
+  Result := True;
+  Lines := WheelDelta div 40;
+  if Lines = 0 then Lines := IfThen(WheelDelta > 0, 1, -1);
+  SetTopIndex(FTopIndex - Lines);
+end;
+
+procedure TCDListBox.UTF8KeyPress(var UTF8Key: TUTF8Char);
+begin
+  inherited UTF8KeyPress(UTF8Key);
+  { Filter control codes (Tab/Enter/Esc/etc.) -- they're handled by
+    KeyDown. Printable chars feed type-ahead. Same range TCDEdit's
+    UTF8KeyPress filter uses. }
+  if (UTF8Key = '') or (UTF8Key[1] in [#0..#$1F, #$7F]) then Exit;
+  TypeAheadAdvance(UTF8Key);
+end;
+
+procedure TCDListBox.TypeAheadAdvance(const AText: AnsiString);
+const
+  TimeoutSec = 1.0;
+var
+  i: Integer;
+  Item, Prefix: AnsiString;
+begin
+  { Reset the prefix when typing pauses for >1s -- otherwise old
+    characters from the previous search carry into a fresh one.
+    DateTime arithmetic: 1 day = 1.0, so 1/86400 seconds. }
+  if Now > FSearchExpiry then FSearchPrefix := '';
+  FSearchPrefix := FSearchPrefix + AText;
+  FSearchExpiry := Now + TimeoutSec / 86400.0;
+  Prefix := UTF8LowerCase(FSearchPrefix);
+  for i := 0 to FItems.Count - 1 do
+  begin
+    Item := UTF8LowerCase(FItems.Strings[i]);
+    if Pos(Prefix, Item) = 1 then
+    begin
+      ItemIndex := i;     { setter handles selection + EnsureVisible }
+      Exit;
+    end;
+  end;
+end;
+
+procedure TCDListBox.Resize;
+begin
+  inherited Resize;
+  UpdateScrollBar;
+end;
+
+{ TCDCheckListBox }
+
+constructor TCDCheckListBox.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FAllowGrayed   := False;
+  FHeaderColor   := clInfoText;
+  FHeaderBgColor := clInfoBk;
+  SyncStateArrays;
+end;
+
+function TCDCheckListBox.GetControlId: TCDControlID;
+begin
+  Result := cidCheckListBox;
+end;
+
+procedure TCDCheckListBox.CreateControlStateEx;
+begin
+  FCLBState := TCDCheckListBoxStateEx.Create;
+  FLBState  := FCLBState;
+  FStateEx  := FCLBState;
+end;
+
+procedure TCDCheckListBox.PrepareControlStateEx;
+begin
+  inherited PrepareControlStateEx;
+  FCLBState.States                := FStates;
+  FCLBState.ItemEnabled           := FItemEnabled;
+  FCLBState.Header                := FHeader;
+  FCLBState.HeaderColor           := ColorToRGB(FHeaderColor);
+  FCLBState.HeaderBackgroundColor := ColorToRGB(FHeaderBgColor);
+  FCLBState.CheckWidth            := GetCheckWidth;
+end;
+
+procedure TCDCheckListBox.SyncStateArrays;
+var
+  OldLen, NewLen, i: Integer;
+begin
+  NewLen := Items.Count;
+  OldLen := Length(FStates);
+  if OldLen = NewLen then Exit;
+  SetLength(FStates,      NewLen);
+  SetLength(FItemEnabled, NewLen);
+  SetLength(FHeader,      NewLen);
+  for i := OldLen to NewLen - 1 do
+  begin
+    FStates[i]      := cbUnchecked;
+    FItemEnabled[i] := True;
+    FHeader[i]      := False;
+  end;
+end;
+
+procedure TCDCheckListBox.ItemsChanged(Sender: TObject);
+begin
+  SyncStateArrays;
+  inherited ItemsChanged(Sender);
+end;
+
+function TCDCheckListBox.GetCheckWidth: Integer;
+begin
+  if FDrawer <> nil then
+    Result := FDrawer.GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT) + 6
+  else
+    Result := 21;  { fallback before the drawer is bound }
+end;
+
+function TCDCheckListBox.HitsCheckColumn(X: Integer): Boolean;
+begin
+  { 4px frame margin + checkbox square. Generous left edge so the user
+    can click anywhere in the small leading band, not just on the glyph. }
+  Result := (X >= 2) and (X < 4 + GetCheckWidth - 2);
+end;
+
+procedure TCDCheckListBox.ToggleAtClick(AIndex: Integer);
+const
+  NextStateMap: array[TCheckBoxState] of array[Boolean] of TCheckBoxState =
+  (
+    {cbUnchecked} (cbChecked,   cbGrayed),
+    {cbChecked  } (cbUnchecked, cbUnchecked),
+    {cbGrayed   } (cbChecked,   cbChecked)
+  );
+begin
+  if (AIndex < 0) or (AIndex >= Length(FStates)) then Exit;
+  if (AIndex < Length(FHeader))      and FHeader[AIndex]            then Exit;
+  if (AIndex < Length(FItemEnabled)) and (not FItemEnabled[AIndex]) then Exit;
+  FStates[AIndex] := NextStateMap[FStates[AIndex]][FAllowGrayed];
+  Invalidate;
+  if Assigned(FOnClickCheck) then FOnClickCheck(Self, AIndex);
+end;
+
+procedure TCDCheckListBox.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  Idx: Integer;
+begin
+  Idx := ItemAtPos(X, Y);
+  if (Button = mbLeft) and (Idx >= 0) and HitsCheckColumn(X)
+     and ((Idx >= Length(FHeader)) or not FHeader[Idx]) then
+  begin
+    SetFocus;
+    ToggleAtClick(Idx);
+    Exit;
+  end;
+  inherited MouseDown(Button, Shift, X, Y);
+end;
+
+procedure TCDCheckListBox.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_SPACE) and (Shift = []) and (ItemIndex >= 0) then
+  begin
+    ToggleAtClick(ItemIndex);
+    Key := 0;
+    Exit;
+  end;
+  inherited KeyDown(Key, Shift);
+end;
+
+procedure TCDCheckListBox.Toggle(AIndex: Integer);
+begin
+  ToggleAtClick(AIndex);
+end;
+
+function TCDCheckListBox.GetItemState(AIndex: Integer): TCheckBoxState;
+begin
+  if (AIndex >= 0) and (AIndex < Length(FStates)) then
+    Result := FStates[AIndex]
+  else
+    Result := cbUnchecked;
+end;
+
+procedure TCDCheckListBox.SetItemState(AIndex: Integer; AValue: TCheckBoxState);
+begin
+  if (AIndex < 0) or (AIndex >= Length(FStates)) then Exit;
+  if FStates[AIndex] = AValue then Exit;
+  FStates[AIndex] := AValue;
+  Invalidate;
+end;
+
+function TCDCheckListBox.GetItemEnabled(AIndex: Integer): Boolean;
+begin
+  if (AIndex >= 0) and (AIndex < Length(FItemEnabled)) then
+    Result := FItemEnabled[AIndex]
+  else
+    Result := True;
+end;
+
+procedure TCDCheckListBox.SetItemEnabled(AIndex: Integer; AValue: Boolean);
+begin
+  if (AIndex < 0) or (AIndex >= Length(FItemEnabled)) then Exit;
+  if FItemEnabled[AIndex] = AValue then Exit;
+  FItemEnabled[AIndex] := AValue;
+  Invalidate;
+end;
+
+function TCDCheckListBox.GetItemHeader(AIndex: Integer): Boolean;
+begin
+  if (AIndex >= 0) and (AIndex < Length(FHeader)) then
+    Result := FHeader[AIndex]
+  else
+    Result := False;
+end;
+
+procedure TCDCheckListBox.SetItemHeader(AIndex: Integer; AValue: Boolean);
+begin
+  if (AIndex < 0) or (AIndex >= Length(FHeader)) then Exit;
+  if FHeader[AIndex] = AValue then Exit;
+  FHeader[AIndex] := AValue;
+  Invalidate;
+end;
+
+function TCDCheckListBox.GetItemChecked(AIndex: Integer): Boolean;
+begin
+  Result := GetItemState(AIndex) <> cbUnchecked;
+end;
+
+procedure TCDCheckListBox.SetItemChecked(AIndex: Integer; AValue: Boolean);
+begin
+  if AValue then SetItemState(AIndex, cbChecked)
+  else           SetItemState(AIndex, cbUnchecked);
 end;
 
 { TCDListView }
@@ -3157,6 +4307,66 @@ begin
   lSize.CX := AItem.Width;
   Result := (APosInControl.X > AItemX) and (APosInControl.X < AItemX + lSize.CX) and
     (APosInControl.Y > 0) and (APosInControl.Y < lSize.CY);
+end;
+
+{ TCDStatusBar }
+
+constructor TCDStatusBar.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Width := 240;
+  Height := 19;
+  TabStop := False;
+  Align := alBottom;
+  AutoSize := True;
+  FSimplePanel := True;
+  FSizeGrip := True;
+end;
+
+function TCDStatusBar.GetControlId: TCDControlID;
+begin
+  Result := cidStatusBar;
+end;
+
+class function TCDStatusBar.GetControlClassDefaultSize: TSize;
+begin
+  { Return (1, 1) so when this injected control is alClient inside the
+    LCL TStatusBar, the parent's TWinControl.CalculatePreferredSize
+    Max(WS_GetPreferredSize, child_GetDefaultHeight) takes the WS
+    value -- the font-derived height -- not the inherited TControl
+    default of (75, 50) which would inflate the bar. The injected
+    control's actual size always comes from alClient, never this. }
+  Result.cx := 1;
+  Result.cy := 1;
+end;
+
+procedure TCDStatusBar.CreateControlStateEx;
+begin
+  FSBState := TCDStatusBarStateEx.Create;
+  FStateEx := FSBState;
+end;
+
+procedure TCDStatusBar.PrepareControlStateEx;
+begin
+  inherited PrepareControlStateEx;
+  FSBState.Panels      := FPanelsRef;
+  FSBState.SimpleText  := FSimpleText;
+  FSBState.SimplePanel := FSimplePanel;
+  FSBState.SizeGrip    := FSizeGrip;
+end;
+
+procedure TCDStatusBar.SetSimpleText(const AValue: TCaption);
+begin
+  if FSimpleText = AValue then Exit;
+  FSimpleText := AValue;
+  Invalidate;
+end;
+
+procedure TCDStatusBar.SetSimplePanel(AValue: Boolean);
+begin
+  if FSimplePanel = AValue then Exit;
+  FSimplePanel := AValue;
+  Invalidate;
 end;
 
 { TCDTabSheet }
@@ -3613,6 +4823,14 @@ begin
   ATabSheet.Align := alClient;
 end;
 
+function TCDPageControl.GetTabContentRect(ASize: TSize): TRect;
+begin
+  PrepareControlState;
+  PrepareControlStateEx;
+  Result := FDrawer.GetClientArea(Canvas, ASize, GetControlId,
+                                  FState, FStateEx);
+end;
+
 function TCDPageControl.GetActivePage: TCDTabSheet;
 begin
   Result := GetPage(FTabIndex);
@@ -3630,9 +4848,18 @@ end;
 
 { TCDSpinEdit }
 
-procedure TCDSpinEdit.UpDownChanging(Sender: TObject; var AllowChange: Boolean);
+procedure TCDSpinEdit.UpDownChangingEx(Sender: TObject;
+  var AllowChange: Boolean; NewValue: SmallInt; Direction: TUpDownDirection);
 begin
-  Value := FUpDown.Position / Power(10, FDecimalPlaces);
+  { Use the NewValue passed in, NOT FUpDown.Position. TCustomUpDown.Click
+    fires OnChanging/OnChangingEx via CanChange BEFORE assigning Position
+    := FCanChangePos, so FUpDown.Position is still the OLD value at this
+    point. Reading it would lag by one click on every click. }
+  Value := NewValue / Power(10, FDecimalPlaces);
+  { SetValue updates the injected FValue and Text but does not fire
+    DoChange, so the host LCL TCustomFloatSpinEdit never receives the
+    CM_TEXTCHANGED that TCDIntfSpinEdit.DoChange dispatches. }
+  DoChange;
 end;
 
 procedure TCDSpinEdit.SetIncrement(AValue: Double);
@@ -3694,7 +4921,14 @@ procedure TCDSpinEdit.DoChange;
 var
   lValue: Double;
 begin
-  if SysUtils.TryStrToFloat(Caption, lValue) then FValue := lValue;
+  { Read Text, not Caption. TCDEdit declares Text as a shadowing
+    property whose getter returns Lines[0] (the actual editor content),
+    but its GetText function is private+non-override, so it does not
+    replace TControl.GetText. Caption (= TControl.GetText -> RealGetText
+    -> FCaption) returns the stale FCaption that was last assigned via
+    the LCL Caption setter, NOT what the user typed -- so TryStrToFloat
+    parses '' and FValue stays at 0. }
+  if SysUtils.TryStrToFloat(Text, lValue) then FValue := lValue;
   DoUpdateUpDown;
   inherited DoChange;
 end;
@@ -3702,11 +4936,19 @@ end;
 constructor TCDSpinEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  { TCDEdit.Create strips csAcceptsControls (TEdit-style controls don't
+    typically host children). TCDSpinEdit DOES host a TUpDown child, so
+    re-enable it; without this, AlignControls is suppressed when our
+    bounds change and the alRight TUpDown sticks at its initial offset
+    (e.g. x=63 from the 80x25 default size) instead of tracking the
+    right edge after the LCL spin's actual bounds (e.g. 100x26) cascade
+    in via alClient. }
+  ControlStyle := ControlStyle + [csAcceptsControls];
 
   FUpDown := TUpDown.Create(Self);
   FUpDown.Align := alRight;
   FUpDown.Parent := Self;
-  FUpDown.OnChanging :=@UpDownChanging;
+  FUpDown.OnChangingEx := @UpDownChangingEx;
 
   FMinValue := 0;
   FMaxValue := 100;
@@ -3721,4 +4963,3 @@ begin
 end;
 
 end.
-

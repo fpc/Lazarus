@@ -81,12 +81,13 @@ implementation
 {$ifndef CD_HasNativeWSMenusINC}
 
 uses
-  StdCtrls, LCLIntf;
+  StdCtrls, ExtCtrls, LCLIntf;
 
 type
   TCDPopUpMenuForm = class(TForm)
   public
     Items: array of TStaticText;
+    Frame: TPanel;
     LCLMenu: TPopUpMenu;
     procedure HandleItemClick(ASender: TObject);
   end;
@@ -97,6 +98,16 @@ var
 begin
   Self.Close;
   lSelectedItem := TStaticText(ASender).Tag;
+  { Fire the TMenuItem.Click for the picked entry. Without this, a
+    direct TPopupMenu.PopUp(X, Y) call would visually open and dismiss
+    correctly but never run the user's OnClick handler -- the LCL
+    routes those through TMenuItem.Click. The ShowSelectItemDialog
+    path (combobox dropdown) creates menu items with no OnClick, so
+    Click is a no-op there and the dedicated callback below handles
+    it instead. }
+  if (LCLMenu <> nil)
+     and (lSelectedItem >= 0) and (lSelectedItem < LCLMenu.Items.Count) then
+    LCLMenu.Items[lSelectedItem].Click;
   if LCLIntf.OnShowSelectItemDialogResult <> nil then
     LCLIntf.OnShowSelectItemDialogResult(lSelectedItem);
 end;
@@ -174,27 +185,45 @@ end;
 
 class function TCDWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
 begin
-  // Fill a dummy value to get a positive result for HandleAllocated
-  Result := $FFFFFF;
+  if AMenu is TMainMenu then
+    Result := HMENU(PtrUInt(AMenu))
+  else
+    // Fill a dummy value to get a positive result for HandleAllocated.
+    Result := $FFFFFF;
 end;
 
 { TCDWSPopupMenu }
 
 class procedure TCDWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
+const
+  BorderPx = 2;
 var
-  i, CurY, MaxWidth, CurWidth, ItemHeight: Integer;
+  i, MaxWidth, CurWidth, ItemHeight: Integer;
   CurItem: TStaticText;
   CurCDPopUpMenu: TCDPopUpMenuForm;
+  ItemCaption: String;
 begin
   if APopUpMenu.Items.Count = 0 then Exit;
 
   CurCDPopUpMenu := TCDPopUpMenuForm.CreateNew(nil);
   CDPopUpMenus.Add(CurCDPopUpMenu);
+  CurCDPopUpMenu.LCLMenu := APopupMenu;
+  { BorderStyle=bsNone tells OS-decorating backends (X11, Win32) not
+    to wrap the popup in a sizeable / titled window frame. The LCL
+    default of bsSizeable is what shipped previously, producing
+    inappropriately-decorated popups on those backends. The visible
+    frame around the popup comes from the TPanel below. }
+  CurCDPopUpMenu.BorderStyle := bsNone;
+  CurCDPopUpMenu.Frame := TPanel.Create(CurCDPopUpMenu);
+  CurCDPopUpMenu.Frame.Parent := CurCDPopUpMenu;
+  CurCDPopUpMenu.Frame.Align := alClient;
+  CurCDPopUpMenu.Frame.BevelOuter := bvRaised;
+  CurCDPopUpMenu.Frame.BevelWidth := BorderPx;
+  CurCDPopUpMenu.Frame.Caption := '';
   CurCDPopUpMenu.Left := X;
   CurCDPopUpMenu.Top := Y;
   ItemHeight := CurCDPopUpMenu.Canvas.TextHeight('Áç') + 5;
-  CurCDPopUpMenu.Height := ItemHeight * APopUpMenu.Items.Count;
-  CurY := 0;
+  CurCDPopUpMenu.Height := ItemHeight * APopUpMenu.Items.Count + 2 * BorderPx;
   MaxWidth := 0;
 
   SetLength(CurCDPopUpMenu.Items, APopUpMenu.Items.Count);
@@ -202,19 +231,26 @@ begin
   begin
     CurItem := TStaticText.Create(CurCDPopUpMenu);
     CurCDPopUpMenu.Items[i] := CurItem;
-    CurItem.Top := CurY;
-    Inc(CurY, ItemHeight);
-    CurItem.Left := 0;
-    CurItem.AutoSize := True;
-    CurItem.Parent := CurCDPopUpMenu;
-    CurItem.Caption := APopUpMenu.Items[i].Caption;
+    { Align=alTop stacks items inside the panel's bevel-adjusted client
+      rect (TCustomPanel.AdjustClientRect insets by BevelWidth). This
+      is the LCL-idiomatic way to keep children inside a TPanel's bevel
+      -- explicit Left/Top are relative to the parent's outer bounds
+      and would overpaint the bevel. AutoSize is off so each item
+      contributes a uniform ItemHeight to the stack. }
+    CurItem.AutoSize := False;
+    CurItem.Height := ItemHeight;
+    CurItem.Align := alTop;
+    CurItem.Parent := CurCDPopUpMenu.Frame;
+    ItemCaption := APopUpMenu.Items[i].Caption;
+    DeleteAmpersands(ItemCaption);
+    CurItem.Caption := ItemCaption;
     CurItem.Tag := i;
     CurItem.OnClick := @CurCDPopUpMenu.HandleItemClick;
     CurWidth := CurCDPopUpMenu.Canvas.TextWidth(CurItem.Caption);
     MaxWidth := Max(MaxWidth, CurWidth);
   end;
 
-  CurCDPopUpMenu.Width := MaxWidth;
+  CurCDPopUpMenu.Width := MaxWidth + 2 * BorderPx;
 
   CurCDPopUpMenu.Show;
 end;

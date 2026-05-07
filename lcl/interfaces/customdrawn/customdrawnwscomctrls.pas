@@ -72,13 +72,20 @@ type
   { TCDWSStatusBar }
 
   TCDWSStatusBar = class(TWSStatusBar)
+  public
+    class procedure InjectCDControl(const AWinControl: TWinControl;
+      var ACDControlField: TCDControl);
   published
-{    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+      var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetSizeGrip(const AStatusBar: TStatusBar; SizeGrip: Boolean); override;
-    class procedure Update(const AStatusBar: TStatusBar); override;}
+    class procedure Update(const AStatusBar: TStatusBar); override;
   end;
 
   { TCDWSTabSheet }
@@ -217,11 +224,16 @@ type
   published
   end;
 
-  { TCDWSToolBar }
+  { TCDWSToolBar registers the toolbar as a customdrawn container,
+    matching what every non-native LCL backend ships (qt / cocoa create
+    a TCustomControl-equivalent here). The bar's TToolButton children
+    are TGraphicControls and paint themselves on the toolbar's canvas;
+    the toolbar hosts them and stripes the background. }
 
   TCDWSToolBar = class(TWSToolBar)
   published
-//    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TCDWSTrackBar }
@@ -255,24 +267,32 @@ implementation
 
 { TCDWSCustomPage }
 
-// Return the handle of the page installed in the TCDPageControl instead of creating a new one
+{ Each LCL TTabSheet gets its own TCDWinControl. The previous design
+  shared the parent TPageControl's handle, which collapsed every
+  tab sheet's children into a single flat children list -- so the
+  per-control Visible check at paint time passed for every kid,
+  hit-testing couldn't tell which tab a child belonged to, and focus
+  traversal saw all kids of all tabs at the same level. With a real
+  per-sheet handle, setting TTabSheet.Visible := False naturally
+  hides that sheet's whole subtree and the rest of the LCL
+  hierarchy / paint / hit-test logic can use the existing control tree.
+  The page-tab visual
+  (the headers and the active-tab indicator) is still owned by the
+  injected TCDIntfPageControl on the TPageControl's handle, so the
+  TCDWSCustomTabControl.AddPage call still drives the per-tab visual
+  state independently of where the TabSheet's own children live. }
 class function TCDWSCustomPage.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLHandle;
-var
-  lPageControlHandle: TCDWinControl;
 begin
-  if AWinControl is TTabSheet then
-  begin
-    lPageControlHandle := TCDWinControl(TTabSheet(AWinControl).PageControl.Handle);
-    if not lPageControlHandle.CDControlInjected then
-    begin
-      TCDWSCustomTabControl.InjectCDControl(AWinControl, lPageControlHandle.CDControl);
-      lPageControlHandle.CDControlInjected := True;
-    end;
-    Result := lPageControlHandle.CDControl.Handle;
-  end
-  else
-    Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
+  Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
+end;
+
+{ TCDWSToolBar }
+
+class function TCDWSToolBar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLHandle;
+begin
+  Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
 end;
 
 { TCDWSCustomTabControl }
@@ -316,6 +336,10 @@ class procedure TCDWSCustomTabControl.AddPage(
   const AIndex: integer);
 var
   lCDWinControl: TCDWinControl;
+  lCDPC: TCDPageControl;
+  R: TRect;
+  i: Integer;
+  lPage: TCustomPage;
 begin
   lCDWinControl := TCDWinControl(ATabControl.Handle);
 
@@ -325,7 +349,29 @@ begin
     lCDWinControl.CDControlInjected := True;
   end;
 
-  TCDPageControl(lCDWinControl.CDControl).InsertPage(AIndex, AChild.Caption);
+  lCDPC := TCDPageControl(lCDWinControl.CDControl);
+  lCDPC.InsertPage(AIndex, AChild.Caption);
+
+  { The injected TCDIntfPageControl (alClient) draws the whole tab
+    control: strip + frame + content background, occupying the page
+    control's full client area. Pages need to land inside the frame
+    (below the strip), so push them in with BorderSpacing. The drawer
+    tells us where the content area lives via GetClientArea -- the
+    same source the injected itself uses to position its own CD-side
+    TCDTabSheets in TCDPageControl.PositionTabSheet -- so the LCL
+    pages are aligned identically to the visual frame the injected
+    paints. (Win32 achieves the same by overriding ClientRect
+    globally; here ClientRect stays the full rect so the injected
+    keeps full bounds, and the offset is applied per-page instead.) }
+  R := lCDPC.GetTabContentRect(Size(ATabControl.Width, ATabControl.Height));
+  for i := 0 to ATabControl.PageCount - 1 do
+  begin
+    lPage := ATabControl.Page[i];
+    lPage.BorderSpacing.Top    := R.Top;
+    lPage.BorderSpacing.Left   := R.Left;
+    lPage.BorderSpacing.Right  := ATabControl.Width  - R.Right;
+    lPage.BorderSpacing.Bottom := ATabControl.Height - R.Bottom;
+  end;
 end;
 
 class procedure TCDWSCustomTabControl.MovePage(
@@ -366,8 +412,23 @@ end;
 
 class procedure TCDWSCustomTabControl.SetPageIndex(
   const ATabControl: TCustomTabControl; const AIndex: integer);
+var
+  lCDWinControl: TCDWinControl;
 begin
   inherited SetPageIndex(ATabControl, AIndex);
+  { Sync the injected TCDPageControl's drawn tab-indicator with the
+    LCL-side PageIndex. Without this, programmatic / keyboard
+    (Ctrl+Tab) changes update FPageIndex and toggle TabSheet.Visible
+    correctly but the injected control's tab header keeps highlighting
+    the old tab. (The mouse-click path syncs in the other direction
+    via TCDIntfPageControl.MouseDown.) }
+  if ATabControl.HandleAllocated then
+  begin
+    lCDWinControl := TCDWinControl(ATabControl.Handle);
+    if (lCDWinControl <> nil) and (lCDWinControl.CDControl is TCDPageControl)
+    then
+      TCDPageControl(lCDWinControl.CDControl).PageIndex := AIndex;
+  end;
 end;
 
 class procedure TCDWSCustomTabControl.SetTabCaption(
@@ -393,6 +454,134 @@ class procedure TCDWSCustomTabControl.UpdateProperties(
   const ATabControl: TCustomTabControl);
 begin
   inherited UpdateProperties(ATabControl);
+end;
+
+{ TCDWSStatusBar }
+
+function CDStatusBarFromLCL(const AStatusBar: TStatusBar): TCDStatusBar;
+var
+  WSCtrl: TCDWinControl;
+begin
+  Result := nil;
+  if (AStatusBar = nil) or (AStatusBar.Handle = 0) then Exit;
+  WSCtrl := TCDWinControl(AStatusBar.Handle);
+  if (WSCtrl = nil) or (WSCtrl.CDControl = nil) then Exit;
+  if WSCtrl.CDControl is TCDStatusBar then
+    Result := TCDStatusBar(WSCtrl.CDControl);
+end;
+
+class procedure TCDWSStatusBar.InjectCDControl(const AWinControl: TWinControl;
+  var ACDControlField: TCDControl);
+var
+  LCL: TStatusBar;
+  Inj: TCDIntfStatusBar;
+begin
+  LCL := TStatusBar(AWinControl);
+  Inj := TCDIntfStatusBar(ACDControlField);
+  Inj.LCLControl   := LCL;
+  Inj.Parent       := AWinControl;
+  Inj.Align        := alClient;
+  Inj.PanelsRef    := LCL.Panels;
+  Inj.SimpleText   := LCL.SimpleText;
+  Inj.SimplePanel  := LCL.SimplePanel;
+  Inj.SizeGrip     := LCL.SizeGrip;
+  {$ifdef VerboseCDInjectedControlNames}
+  Inj.Name := 'CustomDrawnInternal_' + AWinControl.Name;
+  {$endif}
+end;
+
+class function TCDWSStatusBar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLHandle;
+var
+  lCDWinControl: TCDWinControl;
+begin
+  Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
+  lCDWinControl := TCDWinControl(Result);
+  lCDWinControl.CDControl := TCDIntfStatusBar.Create(AWinControl);
+end;
+
+class procedure TCDWSStatusBar.DestroyHandle(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  lCDWinControl.CDControl.Free;
+  lCDWinControl.Free;
+end;
+
+class procedure TCDWSStatusBar.ShowHide(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  TCDWSWinControl.ShowHide(AWinControl);
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(AWinControl, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
+end;
+
+class procedure TCDWSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+var
+  Bar: TStatusBar;
+  TextH, Pad: Integer;
+begin
+  { Width=0 so AutoSize only constrains height; the LCL anchors the bar
+    to alBottom and stretches it horizontally. Height tracks the bar's
+    own font -- TextHeight returns a count for the current rendering
+    surface (already DPI-aware via the font system), and the padding
+    is also DPI-adjusted to match the drawer's per-DPI vertical
+    spacing (2 sunken-top edge + 2 above text + 2 below). }
+  PreferredWidth := 0;
+  Bar := TStatusBar(AWinControl);
+  Bar.Canvas.Font.Assign(Bar.Font);
+  TextH := Bar.Canvas.TextHeight('Wg');
+  Pad := 0;
+  if Screen.PixelsPerInch <= 125 then Pad := 6
+  else Pad := Round(6 * Screen.PixelsPerInch / 125);
+  if TextH < 1 then TextH := 14 + Pad - 6;
+  PreferredHeight := TextH + Pad;
+end;
+
+class procedure TCDWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar;
+  PanelIndex: integer);
+var
+  CD: TCDStatusBar;
+begin
+  CD := CDStatusBarFromLCL(AStatusBar);
+  if CD <> nil then CD.Invalidate;
+end;
+
+class procedure TCDWSStatusBar.SetPanelText(const AStatusBar: TStatusBar;
+  PanelIndex: integer);
+var
+  CD: TCDStatusBar;
+begin
+  CD := CDStatusBarFromLCL(AStatusBar);
+  if CD <> nil then CD.Invalidate;
+end;
+
+class procedure TCDWSStatusBar.SetSizeGrip(const AStatusBar: TStatusBar;
+  SizeGrip: Boolean);
+var
+  CD: TCDStatusBar;
+begin
+  CD := CDStatusBarFromLCL(AStatusBar);
+  if CD <> nil then
+  begin
+    CD.SizeGrip := SizeGrip;
+    CD.Invalidate;
+  end;
+end;
+
+class procedure TCDWSStatusBar.Update(const AStatusBar: TStatusBar);
+var
+  CD: TCDStatusBar;
+begin
+  CD := CDStatusBarFromLCL(AStatusBar);
+  if CD <> nil then CD.Invalidate;
 end;
 
 (*{ TCDWSToolBar }

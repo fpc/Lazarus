@@ -9,6 +9,20 @@
 }
 //---------------------------------------------------------------
 
+{ Returns True for controls that benefit from the OSK / IME path on
+  focus: edits (csRequiresKeyboardInput is set in TCustomEdit.Create)
+  plus listboxes, which consume printable characters for type-ahead
+  search and on Wayland route IME commit_string into the same
+  TypeAheadAdvance entrypoint. Other csRequiresKeyboardInput-bearing
+  classes (e.g. third-party ones the user has added) keep working as
+  before. }
+function CDNeedsKeyboardInput(AControl: TWinControl): Boolean;
+begin
+  Result := (AControl <> nil)
+    and ((csRequiresKeyboardInput in AControl.ControlStyle)
+         or (AControl is TCustomListBox));
+end;
+
 procedure TCDWidgetSet.AccumulatingDebugOut(ASender: TObject; AStr: string; var AHandled: Boolean;
   Target: TLazLoggerWriteTarget; Data: Pointer);
 begin
@@ -51,17 +65,23 @@ begin
     // Verify if the virtual keyboard needs to be shown/hidden
     // Only show if there is no hardware keyboard, but hide always in case
     // the user flopped the keyboard in the mean time
+    //
+    // TCustomListBox doesn't ship with csRequiresKeyboardInput in stock
+    // LCL, but it consumes characters for type-ahead search and benefits
+    // from the IME path (so kanji / emoji / speech-to-text engines'
+    // commit_string events drive TCDListBox.TypeAheadAdvance). Treat it
+    // as keyboard-input here without poking the upstream class.
     if OldFocusedControl <> nil then
     begin
-      if (csRequiresKeyboardInput in OldFocusedControl.ControlStyle)
-       and (not (csRequiresKeyboardInput in ALCLControl.ControlStyle)) then
+      if (CDNeedsKeyboardInput(OldFocusedControl))
+       and (not CDNeedsKeyboardInput(ALCLControl)) then
        HideVirtualKeyboard();
 
-      if (not (csRequiresKeyboardInput in OldFocusedControl.ControlStyle))
-       and (csRequiresKeyboardInput in ALCLControl.ControlStyle) then
+      if (not CDNeedsKeyboardInput(OldFocusedControl))
+       and (CDNeedsKeyboardInput(ALCLControl)) then
        ShowVirtualKeyboard();
     end
-    else if csRequiresKeyboardInput in ALCLControl.ControlStyle then
+    else if CDNeedsKeyboardInput(ALCLControl) then
       ShowVirtualKeyboard();
 
     // Invalidate the entire window to reflect the focus change
@@ -179,7 +199,14 @@ begin
     {$endif}
     lcReceivesLMClearCutCopyPasteReliably: Result := LCL_CAPABILITY_NO;
     lcAntialiasingEnabledByDefault: Result := LCL_CAPABILITY_NO;
-    lcAllowChildControlsInNativeControls: Result := LCL_CAPABILITY_YES
+    lcAllowChildControlsInNativeControls: Result := LCL_CAPABILITY_YES;
+    { Customdrawn-Wayland's ShowModal only sets the xdg_toplevel parent
+      hint (window-stacking) -- the compositor doesn't block input to
+      the parent surface, and we don't either. Returning NO makes
+      TCustomForm.ShowModal call Screen.DisableForms(Self) before the
+      modal pump, so the parent's controls become inert until the
+      dialog closes. }
+    lcModalWindow: Result := LCL_CAPABILITY_NO
   else
     Result := inherited GetLCLCapability(ACapability);
   end;

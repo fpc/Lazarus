@@ -31,6 +31,7 @@ uses
   {$ifdef CD_X11}XShm, X, XLib, XUtil, XAtom, customdrawn_x11proc,
     {$ifdef CD_X11_UseATK}atk, {$endif} {unitxft, Xft font support}{$endif}
   {$ifdef CD_Android}customdrawn_androidproc,{$endif}
+  {$ifdef CD_Wayland}BaseUnix, waylandwire, waylandcore, xdgshell, customdrawn_waylandproc,{$endif}
   // LazUtils
   LazSysUtils,
   // LCL
@@ -128,6 +129,11 @@ type
     class function StartComposing(const Event: TXKeyEvent): TKeySym;
     class function X11KeyToLCLKey(AX11Key: TKeySym): Word;
     {$endif}
+    {$ifdef CD_Wayland}
+    class procedure WLEnsurePool(WI: TWaylandWindowInfo; AWidth, AHeight: LongInt);
+    class procedure WLPaintForm(WI: TWaylandWindowInfo);
+    class procedure WLTeardownPopup(WI: TWaylandWindowInfo);
+    {$endif}
     class function  DoCreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
     class procedure DoShowHide(const AWinControl: TWinControl);
   published
@@ -141,8 +147,10 @@ type
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); override;
 //    class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle, AOldFormStyle: TFormStyle); override;
-//    class procedure SetRealPopupParent(const ACustomForm: TCustomForm;
-//       const APopupParent: TCustomForm); override;
+    {$ifdef CD_Wayland}
+    class procedure SetRealPopupParent(const ACustomForm: TCustomForm;
+       const APopupParent: TCustomForm); override;
+    {$endif}
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
@@ -200,6 +208,9 @@ implementation
 {$endif}
 {$ifdef CD_Android}
   {$include customdrawnwsforms_android.inc}
+{$endif}
+{$ifdef CD_Wayland}
+  {$include customdrawnwsforms_wayland.inc}
 {$endif}
 
 end.

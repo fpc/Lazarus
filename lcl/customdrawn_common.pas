@@ -11,7 +11,7 @@ uses
   // LazUtils
   lazutf8,
   // LCL -> Use only TForm, TWinControl, TCanvas and TLazIntfImage
-  Graphics, Controls, LCLType,
+  Graphics, Controls, LCLType, LCLProc,
   // Others only for types
   StdCtrls, ComCtrls, Forms,
   //
@@ -82,6 +82,12 @@ type
     // TCDComboBox
     procedure DrawComboBox(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); override;
+    // TCDListBox
+    procedure DrawListBox(ADest: TCanvas; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDListBoxStateEx); override;
+    // TCDCheckListBox
+    procedure DrawCheckListBox(ADest: TCanvas; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDCheckListBoxStateEx); override;
     // TCDScrollBar
     procedure DrawScrollBar(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDPositionedCStateEx); override;
@@ -138,6 +144,9 @@ type
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); override;
     procedure DrawTab(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); override;
+    // TCDStatusBar
+    procedure DrawStatusBar(ADest: TCanvas; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDStatusBarStateEx); override;
     // ===================================
     // Misc Tab
     // ===================================
@@ -479,42 +488,46 @@ end;
 procedure TCDDrawerCommon.DrawFrame3D(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize;
     const FrameWidth : integer; const Style : TBevelCut);
 var
-  i: Integer;
+  i, R, B: Integer;
   ARect: TRect;
 begin
+  { ARect.Right / ARect.Bottom are exclusive per LCL TRect convention,
+    so the rightmost / bottommost drawable pixels are Right-1 / Bottom-1.
+    GTK2 (gtk2winapi.inc Frame3d) and MUI (muiwinapi.inc Frame3d) do the
+    same -1 adjustment; the previous code here used the exclusive values
+    directly and lost the right and bottom edges of the outer iteration
+    to clipping. }
   ARect := Bounds(ADestPos.X, ADestPos.Y, ASize.cx, ASize.cy);
   for i := 0 to FrameWidth-1 do
   begin
+    R := ARect.Right - 1;
+    B := ARect.Bottom - 1;
     case Style of
       bvLowered:
       begin
-        // white lines in the left and top
         ADest.Pen.Style := psSolid;
         ADest.Brush.Style := bsClear;
         ADest.Pen.FPColor := TColorToFPColor(WIN2000_FRAME_GRAY);
-        ADest.MoveTo(ARect.Left,  ARect.Bottom);
-        ADest.LineTo(ARect.Left,  ARect.Top);
-        ADest.LineTo(ARect.Right, ARect.Top);
-        // Dark grey line on the right and bottom
+        ADest.MoveTo(ARect.Left, B);
+        ADest.LineTo(ARect.Left, ARect.Top);
+        ADest.LineTo(R,          ARect.Top);
         ADest.Pen.FPColor := TColorToFPColor(WIN2000_FRAME_WHITE);
-        ADest.MoveTo(ARect.Left,  ARect.Bottom);
-        ADest.LineTo(ARect.Right, ARect.Bottom);
-        ADest.LineTo(ARect.Right, ARect.Top);
+        ADest.MoveTo(ARect.Left, B);
+        ADest.LineTo(R,          B);
+        ADest.LineTo(R,          ARect.Top);
       end;
       bvRaised:
       begin
-        // white lines in the left and top
         ADest.Pen.Style := psSolid;
         ADest.Brush.Style := bsClear;
         ADest.Pen.FPColor := TColorToFPColor(WIN2000_FRAME_WHITE);
-        ADest.MoveTo(ARect.Left,  ARect.Bottom);
-        ADest.LineTo(ARect.Left,  ARect.Top);
-        ADest.LineTo(ARect.Right, ARect.Top);
-        // Dark grey line on the right and bottom
+        ADest.MoveTo(ARect.Left, B);
+        ADest.LineTo(ARect.Left, ARect.Top);
+        ADest.LineTo(R,          ARect.Top);
         ADest.Pen.FPColor := TColorToFPColor(WIN2000_FRAME_GRAY);
-        ADest.MoveTo(ARect.Left,  ARect.Bottom);
-        ADest.LineTo(ARect.Right, ARect.Bottom);
-        ADest.LineTo(ARect.Right, ARect.Top);
+        ADest.MoveTo(ARect.Left, B);
+        ADest.LineTo(R,          B);
+        ADest.LineTo(R,          ARect.Top);
       end;
       bvSpace:
       begin
@@ -781,6 +794,7 @@ var
   lGlyphExtra: Integer = 0;
   lTextOutPos: TPoint;
   lGlyphCaptionHeight: Integer;
+  AccelPos, AccelXLeft, AccelXRight, AccelYTop: Integer;
 begin
   // background
   ADest.Brush.Style := bsSolid;
@@ -833,6 +847,13 @@ begin
   begin
     ADest.Font.Assign(AStateEx.Font);
     Str := AStateEx.Caption;
+    { LCL convention: '&X' marks X as the accelerator letter -- the &
+      is removed for display, X gets an underline. The button caption
+      arrives here straight from TCustomButton.Caption (e.g. '&Yes'
+      from TBitBtn.Kind=bkYes). DeleteAmpersands strips the & and
+      returns the position of the accelerator in the resulting Str so
+      we can underline it after the TextOut. }
+    AccelPos := DeleteAmpersands(Str);
     lGlyphCaptionHeight := Max(TCanvas(ADest).TextHeight(Str), AStateEx.Glyph.Height);
     lTextOutPos.X := (ASize.cx - TCanvas(ADest).TextWidth(Str) - AStateEx.Glyph.Width) div 2;
     lTextOutPos.Y := (ASize.cy - lGlyphCaptionHeight) div 2;
@@ -873,6 +894,32 @@ begin
       Dec(lTextOutPos.X);
       Dec(lTextOutPos.Y);
       ADest.TextOut(lTextOutPos.X, lTextOutPos.Y, Str);
+    end;
+    { Underline the accelerator letter (the character that originally
+      followed '&'). We don't have per-character TextOut coordinates,
+      so use TextWidth on the prefix and the letter to find the slice
+      of the baseline that needs a 1px line underneath. Pen colour is
+      set explicitly because earlier draws (button bevel, focus rect)
+      leave it at a near-white tint that disappears against the
+      button's face on an unfocused button. }
+    if AccelPos > 0 then
+    begin
+      AccelXLeft  := lTextOutPos.X
+        + TCanvas(ADest).TextWidth(Copy(Str, 1, AccelPos - 1));
+      AccelXRight := lTextOutPos.X
+        + TCanvas(ADest).TextWidth(Copy(Str, 1, AccelPos));
+      { TextHeight returns ascent+descent. The visible letter ends at
+        the baseline (~ ascent), well above the bbox bottom. Drop the
+        underline two pixels below the baseline -- close enough to the
+        letter to read as an underline rather than a stray line near
+        the focus rectangle. }
+      AccelYTop   := lTextOutPos.Y + TCanvas(ADest).TextHeight(Str) - 3;
+      ADest.Pen.Style := psSolid;
+      if csfEnabled in AState then
+        ADest.Pen.FPColor := TColorToFPColor(TCanvas(ADest).Font.Color)
+      else
+        ADest.Pen.FPColor := TColorToFPColor(WIN2000_DISABLED_TEXT);
+      ADest.Line(AccelXLeft, AccelYTop, AccelXRight, AccelYTop);
     end;
   end;
 end;
@@ -916,7 +963,7 @@ procedure TCDDrawerCommon.DrawCaret(ADest: TCanvas; ADestPos: TPoint;
 var
   lTextTopSpacing, lCaptionHeight, lLineHeight, lLineTop: Integer;
   lControlText, lTmpText: string;
-  lTextBottomSpacing, lCaretPixelPos: Integer;
+  lTextBottomSpacing, lCaretPixelPos, lPreeditOffset: Integer;
 begin
   if not AStateEx.CaretIsVisible then Exit;
 
@@ -933,6 +980,19 @@ begin
   lTmpText :=  VisibleText(lTmpText, AStateEx.PasswordChar);
   lCaretPixelPos := ADest.TextWidth(lTmpText) + GetMeasures(TCDEDIT_LEFT_TEXT_SPACING)
     + AStateEx.LeftTextMargin;
+  { When an IME is composing pre-edit text inline at the caret, the
+    visual caret sits inside the preedit at byte offset PreeditCursorBegin.
+    PreeditCursorBegin / End are byte offsets per the zwp_text_input_v3
+    spec; AnsiString Copy is byte-based in FPC, which lines up. }
+  if (AStateEx.PreeditText <> '')
+     and (AStateEx.PreeditCursorBegin >= 0) then
+  begin
+    lPreeditOffset := AStateEx.PreeditCursorBegin;
+    if lPreeditOffset > Length(AStateEx.PreeditText) then
+      lPreeditOffset := Length(AStateEx.PreeditText);
+    lCaretPixelPos := lCaretPixelPos
+      + ADest.TextWidth(Copy(AStateEx.PreeditText, 1, lPreeditOffset));
+  end;
   ADest.Pen.Color := clBlack;
   ADest.Pen.Style := psSolid;
   ADest.Line(lCaretPixelPos, lLineTop, lCaretPixelPos, lLineTop+lCaptionHeight);
@@ -988,6 +1048,16 @@ begin
   begin
     lControlText := AStateEx.Lines.Strings[AStateEx.VisibleTextStart.Y+i];
     lControlText :=  VisibleText(lControlText, AStateEx.PasswordChar);
+    { Splice IME pre-edit text inline at the caret on the relevant
+      line. The preedit becomes part of the visible string for layout
+      and selection-rendering purposes, but is NOT in Lines so it
+      doesn't affect Length / cursor logic. We re-draw an underline
+      below the spliced range after the line text is painted. }
+    if (AStateEx.PreeditText <> '')
+       and (AStateEx.CaretPos.Y = AStateEx.VisibleTextStart.Y + i) then
+      lControlText := UTF8Copy(lControlText, 1, AStateEx.CaretPos.X)
+                      + AStateEx.PreeditText
+                      + UTF8Copy(lControlText, AStateEx.CaretPos.X + 1, MaxInt);
     lControlTextLen := UTF8Length(lControlText);
     lLineTop := lTextTopSpacing + i * lLineHeight;
 
@@ -1035,6 +1105,34 @@ begin
       ADest.Font.Color := lTextColor;
       lVisibleText := UTF8Copy(lControlText, lSelLeftPos+lSelLength+1, lControlTextLen);
       ADest.TextOut(lSelLeftPixelPos, lLineTop, lVisibleText);
+    end;
+  end;
+
+  { Pre-edit underline. Draw after the line text(s) so it sits below.
+    Compute the left pixel of the preedit (= width of text from
+    VisibleTextStart up to the original CaretPos) and the right edge
+    (left + width(preedit)). Paint a 1px line at lLineTop + lLineHeight
+    - 1. Done outside the per-line loop because the line index that
+    contains the caret is CaretPos.Y - VisibleTextStart.Y. }
+  if AStateEx.PreeditText <> '' then
+  begin
+    i := AStateEx.CaretPos.Y - AStateEx.VisibleTextStart.Y;
+    if (i >= 0) and (i < lVisibleLinesCount) then
+    begin
+      lLineTop := lTextTopSpacing + i * lLineHeight;
+      lControlText := AStateEx.Lines.Strings[AStateEx.CaretPos.Y];
+      lVisibleText := UTF8Copy(lControlText, AStateEx.VisibleTextStart.X,
+                               AStateEx.CaretPos.X - AStateEx.VisibleTextStart.X + 1);
+      lVisibleText := VisibleText(lVisibleText, AStateEx.PasswordChar);
+      lSelLeftPixelPos := ADest.TextWidth(lVisibleText) + lTextLeftSpacing
+                          + AStateEx.LeftTextMargin;
+      lTextWidth := ADest.TextWidth(AStateEx.PreeditText);
+      ADest.Pen.Color := lTextColor;
+      ADest.Pen.Style := psSolid;
+      ADest.Line(lSelLeftPixelPos,
+                 lLineTop + lLineHeight - DPIAdjustment(2),
+                 lSelLeftPixelPos + lTextWidth,
+                 lLineTop + lLineHeight - DPIAdjustment(2));
     end;
   end;
 
@@ -1605,6 +1703,363 @@ begin
     lProgPos.Y+lProgWidth*lProgMult.Y+lProgSize.cy*Abs(lProgMult.X));
 end;
 
+procedure TCDDrawerCommon.DrawListBox(ADest: TCanvas; ASize: TSize;
+  AState: TCDControlState; AStateEx: TCDListBoxStateEx);
+var
+  LineHeight, ContentH, VisCount, i, ItemY, ItemIdx: Integer;
+  HasFocus, Selected: Boolean;
+  TextColor, BgColor, SelBg, SelFg: TColor;
+begin
+  { Background. The control's own .Color (if set) takes precedence over
+    the palette window colour, matching how Win2000 list boxes feel. }
+  BgColor := AStateEx.RGBColor;
+  if BgColor = clDefault then BgColor := Palette.Window;
+  ADest.Brush.Color := BgColor;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Style   := psClear;
+  ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
+
+  { Draw the same sunken frame used by TCDEdit. }
+  DrawSunkenFrame(ADest, Point(0, 0), ASize);
+
+  { Text + selection. AStateEx.Items / Selected are nil-safe -- the LCL
+    can call us before TCDListBox.Create has finished if a paint
+    arrives during construction. }
+  if AStateEx.Items = nil then Exit;
+
+  ADest.Font.Assign(AStateEx.Font);
+  ADest.Brush.Style := bsClear;
+
+  if AStateEx.ItemHeight > 0 then LineHeight := AStateEx.ItemHeight
+  else
+  begin
+    LineHeight := ADest.TextHeight('Wg') + DPIAdjustment(2);
+    if LineHeight < DPIAdjustment(14) then LineHeight := DPIAdjustment(14);
+  end;
+
+  ContentH := ASize.cy - DPIAdjustment(4);  { sunken frame top + bottom }
+  VisCount := ContentH div LineHeight;
+  if VisCount < 1 then VisCount := 1;
+  AStateEx.FullyVisibleCount := VisCount;
+
+  HasFocus := csfHasFocus in AState;
+  TextColor := Palette.WindowText;
+  if HasFocus then
+  begin
+    SelBg := Palette.Highlight;        { typically blue }
+    SelFg := Palette.HighlightText;    { typically white }
+  end
+  else
+  begin
+    { Inactive selection: light-grey band, dark text. Has to stay
+      different from BgColor so the user sees what's selected even
+      when focus is on another control (matches Win32 / Qt behaviour). }
+    SelBg := $C0C0C0;
+    SelFg := Palette.WindowText;
+  end;
+
+  for i := 0 to VisCount do        { +1 to render the partial bottom row }
+  begin
+    ItemIdx := AStateEx.TopIndex + i;
+    if (ItemIdx < 0) or (ItemIdx >= AStateEx.Items.Count) then Continue;
+    ItemY := DPIAdjustment(2) + i * LineHeight;
+    if ItemY >= ASize.cy - DPIAdjustment(2) then Break;
+
+    Selected := False;
+    if (AStateEx.Selected <> nil) and (ItemIdx < AStateEx.Selected.Size) then
+      Selected := AStateEx.Selected[ItemIdx];
+
+    if Selected then
+    begin
+      ADest.Brush.Color := SelBg;
+      ADest.Brush.Style := bsSolid;
+      ADest.Pen.Style   := psClear;
+      ADest.FillRect(Bounds(DPIAdjustment(2), ItemY,
+        ASize.cx - DPIAdjustment(4), LineHeight));
+      ADest.Brush.Style := bsClear;
+      ADest.Font.Color  := SelFg;
+    end
+    else
+      ADest.Font.Color := TextColor;
+
+    ADest.TextOut(DPIAdjustment(4), ItemY + DPIAdjustment(1),
+                  AStateEx.Items.Strings[ItemIdx]);
+
+    { Focus rect on the current item (ItemIndex) when the listbox is
+      focused. Subtle dotted-style border so users can see "this is
+      where keyboard input is going". }
+    if HasFocus and (ItemIdx = AStateEx.ItemIndex) then
+    begin
+      ADest.Pen.Color := Palette.WindowText;
+      ADest.Pen.Style := psDot;
+      ADest.Brush.Style := bsClear;
+      ADest.Rectangle(DPIAdjustment(2), ItemY,
+        ASize.cx - DPIAdjustment(4), ItemY + LineHeight);
+      ADest.Pen.Style := psSolid;
+    end;
+  end;
+end;
+
+procedure TCDDrawerCommon.DrawCheckListBox(ADest: TCanvas; ASize: TSize;
+  AState: TCDControlState; AStateEx: TCDCheckListBoxStateEx);
+var
+  LineHeight, ContentH, VisCount, i, ItemY, ItemIdx, TextX: Integer;
+  CheckW, CheckSquareSize, CheckSquareX, CheckSquareY: Integer;
+  HasFocus, Selected, IsHeader, IsEnabled: Boolean;
+  TextColor, BgColor, SelBg, SelFg: TColor;
+  ItemState: TCheckBoxState;
+  Pad1, Pad2, Pad4: Integer;
+begin
+  Pad1 := DPIAdjustment(1);
+  Pad2 := DPIAdjustment(2);
+  Pad4 := DPIAdjustment(4);
+
+  BgColor := AStateEx.RGBColor;
+  if BgColor = clDefault then BgColor := Palette.Window;
+  ADest.Brush.Color := BgColor;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Style   := psClear;
+  ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
+
+  DrawSunkenFrame(ADest, Point(0, 0), ASize);
+
+  if AStateEx.Items = nil then Exit;
+
+  ADest.Font.Assign(AStateEx.Font);
+  ADest.Brush.Style := bsClear;
+
+  if AStateEx.ItemHeight > 0 then LineHeight := AStateEx.ItemHeight
+  else
+  begin
+    LineHeight := ADest.TextHeight('Wg') + Pad2;
+    if LineHeight < DPIAdjustment(14) then LineHeight := DPIAdjustment(14);
+  end;
+
+  ContentH := ASize.cy - 2 * Pad2;
+  VisCount := ContentH div LineHeight;
+  if VisCount < 1 then VisCount := 1;
+  AStateEx.FullyVisibleCount := VisCount;
+
+  CheckW := AStateEx.CheckWidth;
+  if CheckW <= 0 then CheckW := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT) + DPIAdjustment(6);
+  CheckSquareSize := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT);
+
+  HasFocus := csfHasFocus in AState;
+  TextColor := Palette.WindowText;
+  if HasFocus then
+  begin
+    SelBg := Palette.Highlight;
+    SelFg := Palette.HighlightText;
+  end
+  else
+  begin
+    SelBg := $C0C0C0;
+    SelFg := Palette.WindowText;
+  end;
+
+  for i := 0 to VisCount do
+  begin
+    ItemIdx := AStateEx.TopIndex + i;
+    if (ItemIdx < 0) or (ItemIdx >= AStateEx.Items.Count) then Continue;
+    ItemY := Pad2 + i * LineHeight;
+    if ItemY >= ASize.cy - Pad2 then Break;
+
+    Selected := False;
+    if (AStateEx.Selected <> nil) and (ItemIdx < AStateEx.Selected.Size) then
+      Selected := AStateEx.Selected[ItemIdx];
+
+    IsHeader := (ItemIdx < Length(AStateEx.Header)) and AStateEx.Header[ItemIdx];
+    IsEnabled := (ItemIdx >= Length(AStateEx.ItemEnabled)) or AStateEx.ItemEnabled[ItemIdx];
+    if ItemIdx < Length(AStateEx.States) then ItemState := AStateEx.States[ItemIdx]
+    else ItemState := cbUnchecked;
+
+    if IsHeader then
+    begin
+      { Headers occupy the full row, no checkbox column. }
+      ADest.Brush.Color := AStateEx.HeaderBackgroundColor;
+      ADest.Brush.Style := bsSolid;
+      ADest.Pen.Style   := psClear;
+      ADest.FillRect(Bounds(Pad2, ItemY, ASize.cx - 2 * Pad2, LineHeight));
+      ADest.Brush.Style := bsClear;
+      ADest.Font.Color  := AStateEx.HeaderColor;
+      ADest.TextOut(Pad4, ItemY + Pad1, AStateEx.Items.Strings[ItemIdx]);
+      Continue;
+    end;
+
+    if Selected then
+    begin
+      ADest.Brush.Color := SelBg;
+      ADest.Brush.Style := bsSolid;
+      ADest.Pen.Style   := psClear;
+      ADest.FillRect(Bounds(Pad2 + CheckW, ItemY,
+        ASize.cx - 2 * Pad2 - CheckW, LineHeight));
+      ADest.Brush.Style := bsClear;
+      ADest.Font.Color  := SelFg;
+    end
+    else
+    begin
+      if IsEnabled then ADest.Font.Color := TextColor
+      else              ADest.Font.Color := Palette.GrayText;
+    end;
+
+    { Checkbox square at left of the row. Centred vertically within the
+      row. Same look as TCDCheckBox: sunken frame + tickmark. }
+    CheckSquareX := Pad4;
+    CheckSquareY := ItemY + (LineHeight - CheckSquareSize) div 2;
+
+    ADest.Brush.Style := bsSolid;
+    ADest.Pen.Style   := psClear;
+    if ItemState = cbGrayed then ADest.Brush.Color := WIN2000_LIGHTGRAY_BACKGROUND
+    else if not IsEnabled    then ADest.Brush.Color := Palette.BtnFace
+    else                          ADest.Brush.Color := Palette.Window;
+    ADest.Rectangle(Bounds(CheckSquareX, CheckSquareY,
+      CheckSquareSize, CheckSquareSize));
+    DrawSunkenFrame(ADest, Point(CheckSquareX, CheckSquareY),
+      Size(CheckSquareSize, CheckSquareSize));
+
+    if ItemState in [cbChecked, cbGrayed] then
+      DrawTickmark(ADest, Point(CheckSquareX + DPIAdjustment(3),
+        CheckSquareY + DPIAdjustment(3)), AState);
+
+    ADest.Brush.Style := bsClear;
+    TextX := Pad4 + CheckW;
+    ADest.TextOut(TextX, ItemY + Pad1, AStateEx.Items.Strings[ItemIdx]);
+
+    if HasFocus and (ItemIdx = AStateEx.ItemIndex) then
+    begin
+      ADest.Pen.Color := Palette.WindowText;
+      ADest.Pen.Style := psDot;
+      ADest.Brush.Style := bsClear;
+      ADest.Rectangle(Pad2 + CheckW, ItemY, ASize.cx - 2 * Pad2,
+        ItemY + LineHeight);
+      ADest.Pen.Style := psSolid;
+    end;
+  end;
+end;
+
+procedure TCDDrawerCommon.DrawStatusBar(ADest: TCanvas; ASize: TSize;
+  AState: TCDControlState; AStateEx: TCDStatusBarStateEx);
+var
+  Pad1, Pad2, Pad4, TopBorder: Integer;
+  Panel: TStatusPanel;
+  i, X, RemainingWidth, AutoCount, AutoSlice, PanelW: Integer;
+
+  procedure DrawPanelBevel(BX, BY, BW, BH: Integer; Bevel: TStatusPanelBevel);
+  begin
+    case Bevel of
+      pbLowered:
+        begin
+          ADest.Pen.Style := psSolid;
+          ADest.Pen.Color := Palette.BtnShadow;
+          ADest.Line(BX, BY, BX + BW - 1, BY);
+          ADest.Line(BX, BY, BX, BY + BH - 1);
+          ADest.Pen.Color := Palette.BtnHighlight;
+          ADest.Line(BX + BW - 1, BY, BX + BW - 1, BY + BH);
+          ADest.Line(BX, BY + BH - 1, BX + BW, BY + BH - 1);
+        end;
+      pbRaised:
+        begin
+          ADest.Pen.Style := psSolid;
+          ADest.Pen.Color := Palette.BtnHighlight;
+          ADest.Line(BX, BY, BX + BW - 1, BY);
+          ADest.Line(BX, BY, BX, BY + BH - 1);
+          ADest.Pen.Color := Palette.BtnShadow;
+          ADest.Line(BX + BW - 1, BY, BX + BW - 1, BY + BH);
+          ADest.Line(BX, BY + BH - 1, BX + BW, BY + BH - 1);
+        end;
+    end;
+  end;
+
+  procedure DrawPanelText(TX, TY, TW, TH: Integer;
+    const AText: TCaption; AAlign: TAlignment);
+  var
+    TextX, TextW: Integer;
+  begin
+    if AText = '' then Exit;
+    ADest.Brush.Style := bsClear;
+    ADest.Font.Color := Palette.WindowText;
+    TextW := ADest.TextWidth(AText);
+    case AAlign of
+      taCenter:       TextX := TX + (TW - TextW) div 2;
+      taRightJustify: TextX := TX + TW - TextW - Pad4;
+    else
+      TextX := TX + Pad4;
+    end;
+    ADest.TextRect(Bounds(TX + Pad2, TY + Pad1, TW - 2 * Pad2, TH - 2 * Pad1),
+                   TextX, TY + Pad2, AText);
+  end;
+
+begin
+  { All padding measured in DPIAdjustment units so the bar scales with
+    the DPI -- same pattern as DrawCheckBox / DrawTickmark. }
+  Pad1 := DPIAdjustment(1);
+  Pad2 := DPIAdjustment(2);
+  Pad4 := DPIAdjustment(4);
+
+  { Background. }
+  ADest.Brush.Color := AStateEx.RGBColor;
+  if ADest.Brush.Color = clDefault then ADest.Brush.Color := Palette.BtnFace;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Style   := psClear;
+  ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
+
+  { Sunken top edge so the bar reads as separated from the form above
+    it (matches Win32 / GTK look). One DPI-adjusted line per shadow /
+    highlight side. }
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.Color := Palette.BtnShadow;
+  ADest.Line(0, 0, ASize.cx, 0);
+  ADest.Pen.Color := Palette.BtnHighlight;
+  ADest.Line(0, Pad1, ASize.cx, Pad1);
+
+  ADest.Font.Assign(AStateEx.Font);
+
+  TopBorder := Pad2;
+
+  if AStateEx.SimplePanel or (AStateEx.Panels = nil)
+     or (AStateEx.Panels.Count = 0) then
+  begin
+    DrawPanelText(0, TopBorder, ASize.cx, ASize.cy - TopBorder,
+      AStateEx.SimpleText, taLeftJustify);
+    Exit;
+  end;
+
+  { Distribute width: panels with Width > 0 keep their width, panels
+    with Width = 0 (the LCL default for the last panel) split the
+    remainder evenly. Matches Win32 TStatusBar layout. }
+  RemainingWidth := ASize.cx;
+  AutoCount := 0;
+  for i := 0 to AStateEx.Panels.Count - 1 do
+  begin
+    Panel := TStatusPanel(AStateEx.Panels.Items[i]);
+    if Panel.Width > 0 then Dec(RemainingWidth, Panel.Width)
+    else Inc(AutoCount);
+  end;
+  if AutoCount > 0 then
+  begin
+    if RemainingWidth < AutoCount then RemainingWidth := AutoCount;
+    AutoSlice := RemainingWidth div AutoCount;
+  end
+  else
+    AutoSlice := 0;
+
+  X := 0;
+  for i := 0 to AStateEx.Panels.Count - 1 do
+  begin
+    Panel := TStatusPanel(AStateEx.Panels.Items[i]);
+    if Panel.Width > 0 then PanelW := Panel.Width
+    else                    PanelW := AutoSlice;
+    if i = AStateEx.Panels.Count - 1 then
+      PanelW := ASize.cx - X;       { last panel absorbs rounding }
+    if PanelW < 1 then PanelW := 1;
+
+    DrawPanelBevel(X, TopBorder, PanelW, ASize.cy - TopBorder, Panel.Bevel);
+    DrawPanelText (X, TopBorder, PanelW, ASize.cy - TopBorder,
+                   Panel.Text, Panel.Alignment);
+    Inc(X, PanelW);
+  end;
+end;
+
 procedure TCDDrawerCommon.DrawListView(ADest: TCanvas;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDListViewStateEx);
 begin
@@ -1880,6 +2335,16 @@ procedure TCDDrawerCommon.DrawToolbarItemBackground(ADest: TCanvas;
   ACurItem: TCDToolbarItem; AX, AY: Integer; ASize: TSize;
   AState: TCDControlState; AStateEx: TCDToolbarStateEx);
 begin
+  { Always clear the item rectangle first. Without this, going from
+    Pressed / MouseOver back to plain Normal-on-flat-toolbar would
+    leave the previous gradient on screen -- nothing repaints under
+    a TGraphicControl in customdrawn between state transitions, so
+    the drawer is the only place that gets to wipe the area. }
+  ADest.Brush.Color := Palette.BtnFace;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Style   := psClear;
+  ADest.FillRect(Bounds(AX, AY, ASize.CX, ASize.CY));
+
   if ((csfSunken in AState) and (ACurItem.SubPartKind = tiskMain)) or
      ((csfSunkenArrow in AState) and (ACurItem.SubPartKind = tiskArrow)) then
   begin

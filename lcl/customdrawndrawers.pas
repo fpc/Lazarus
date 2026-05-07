@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Types, fpcanvas, fpimage,
   // LCL for types
-  Controls, Graphics, GraphUtil, ComCtrls, ExtCtrls, LazUTF8;
+  Controls, Graphics, GraphUtil, ComCtrls, ExtCtrls, StdCtrls, LazUTF8;
 
 const
   CDDRAWSTYLE_COUNT = 19;
@@ -170,6 +170,15 @@ type
     LeftTextMargin, RightTextMargin: Integer;
     // For the combo box for example
     ExtraButtonState: TCDControlState;
+    // IME pre-edit (composition) text. Lives between an IME's
+    // keystrokes and its eventual commit_string event. Drawn inline
+    // at CaretPos with a 1px underline; NOT inserted into Lines.
+    // Empty when no IME composition is active. CursorBegin / End are
+    // byte offsets within PreeditText; both -1 means "hide cursor"
+    // per the zwp_text_input_v3 spec.
+    PreeditText: AnsiString;
+    PreeditCursorBegin: LongInt;
+    PreeditCursorEnd: LongInt;
   end;
 
   TCDPanelStateEx = class(TCDControlStateEx)
@@ -221,6 +230,32 @@ type
     FirstVisibleColumn: Integer; // 0-based index
     FirstVisibleLine: Integer; // 0-based index, remember that the header is always visible or always invisible
     ShowColumnHeader: Boolean;
+  end;
+
+  TCDListBoxStateEx = class(TCDControlStateEx)
+  public
+    Items: TStrings;        // just a reference, never free
+    Selected: TBits;        // just a reference, never free; bit i set => item i selected
+    ItemIndex: Integer;     // -1 if no current item
+    TopIndex: Integer;      // first visible row
+    ItemHeight: Integer;    // pixels per row; 0 = auto from font
+    MultiSelect: Boolean;
+    ExtendedSelect: Boolean;
+    // Filled by the drawer for the control's keyboard / mouse code:
+    FullyVisibleCount: Integer;
+  end;
+
+  { Per-row state for TCDCheckListBox. The arrays are references owned
+    by the control; the drawer reads them but never frees. Length always
+    matches Items.Count (the control's ItemsChanged hook resizes). }
+  TCDCheckListBoxStateEx = class(TCDListBoxStateEx)
+  public
+    States:       array of TCheckBoxState;
+    ItemEnabled:  array of Boolean;
+    Header:       array of Boolean;
+    HeaderColor:           TColor;
+    HeaderBackgroundColor: TColor;
+    CheckWidth:   Integer;  // width of the checkbox column in px
   end;
 
   // ToolBar Start
@@ -287,6 +322,17 @@ type
     FloatIncrement: Double;
   end;
 
+  { State for TCDStatusBar -- a strip of either one full-width SimpleText
+    panel or a list of TStatusPanel from the LCL. The Panels reference
+    is borrowed; the drawer never frees. }
+  TCDStatusBarStateEx = class(TCDControlStateEx)
+  public
+    Panels:      TCollection;   { ref to TStatusPanels; nil-safe }
+    SimpleText:  TCaption;
+    SimplePanel: Boolean;       { True: ignore Panels, render SimpleText }
+    SizeGrip:    Boolean;       { reserved -- size-grip rendering deferred }
+  end;
+
   TCDControlID = (
     cidControl,
     // Standard
@@ -295,7 +341,10 @@ type
     // Additional
     cidStaticText,
     // Common Controls
-    cidTrackBar, cidProgressBar, cidListView, cidToolBar, cidCTabControl
+    cidTrackBar, cidProgressBar, cidListView, cidToolBar, cidCTabControl,
+    cidStatusBar,
+    // CheckLst
+    cidCheckListBox
     );
 
   { TCDColorPalette }
@@ -401,6 +450,12 @@ type
     // TCDComboBox
     procedure DrawComboBox(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); virtual; abstract;
+    // TCDListBox
+    procedure DrawListBox(ADest: TCanvas; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDListBoxStateEx); virtual; abstract;
+    // TCDCheckListBox
+    procedure DrawCheckListBox(ADest: TCanvas; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDCheckListBoxStateEx); virtual; abstract;
     // TCDScrollBar
     procedure DrawScrollBar(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDPositionedCStateEx); virtual; abstract;
@@ -456,6 +511,9 @@ type
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); virtual; abstract;
     procedure DrawTab(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); virtual; abstract;
+    // TCDStatusBar
+    procedure DrawStatusBar(ADest: TCanvas; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDStatusBarStateEx); virtual; abstract;
     // ===================================
     // Misc Tab
     // ===================================
@@ -800,6 +858,8 @@ begin
   cidCheckBox:   DrawCheckBox(ADest, ASize, AState, AStateEx);
   cidRadioButton:DrawRadioButton(ADest, ASize, AState, AStateEx);
   cidComboBox:   DrawComboBox(ADest, ASize, AState, TCDEditStateEx(AStateEx));
+  cidListBox:    DrawListBox(ADest, ASize, AState, TCDListBoxStateEx(AStateEx));
+  cidCheckListBox: DrawCheckListBox(ADest, ASize, AState, TCDCheckListBoxStateEx(AStateEx));
   cidScrollBar:  DrawScrollBar(ADest, ASize, AState, TCDPositionedCStateEx(AStateEx));
   cidGroupBox:   DrawGroupBox(ADest, ADestPos, ASize, AState, AStateEx);
   cidPanel:      DrawPanel(ADest, ASize, AState, TCDPanelStateEx(AStateEx));
@@ -811,6 +871,7 @@ begin
   cidListView:   DrawListView(ADest, ASize, AState, TCDListViewStateEx(AStateEx));
   cidToolBar:    DrawToolBar(ADest, ASize, AState, TCDToolBarStateEx(AStateEx));
   cidCTabControl:DrawCTabControl(ADest, ASize, AState, TCDCTabControlStateEx(AStateEx));
+  cidStatusBar:  DrawStatusBar(ADest, ASize, AState, TCDStatusBarStateEx(AStateEx));
   end;
 end;
 

@@ -527,7 +527,14 @@ begin
  { CLEARTYPE_NATURAL_QUALITY } QFontPreferAntialias
   );*)
 
+  { LogFont.lfHeight in the LCL is "0 means use system default"; we have
+    no system, so resolve 0 to a sensible default here. Without this,
+    SizeInPoints stays 0 and the FreeType font measures every glyph as
+    ~2 px -- breaking AutoSize, GetTextMetrics, and anything else that
+    asks for text dimensions before a paint cycle has run. }
   lFont.Size := Abs(LogFont.lfHeight);
+  if lFont.Size = 0 then
+    lFont.Size := 10;   { LCL convention: default UI font is 10 pt }
   lFont.ftFont.SizeInPoints := lFont.Size;
 
 (*  // Some values at available on Qt documentation at a table
@@ -1450,6 +1457,24 @@ begin
 
   LazDC.Ellipse(X1, Y1, X2, Y2);
   Result := True;
+end;
+
+function TCDWidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
+{ TCustomForm.ShowModal -> Screen.DisableForms uses this to silence
+  every other top-level form for the duration of a modal pump. There's
+  no compositor-side equivalent on Wayland for same-process windows,
+  so the customdrawn TCDForm carries an InputDisabled flag that the
+  per-form mouse / key callbacks consult before dispatching to the LCL.
+  Result is the previous enabled state, matching the Win32 contract. }
+var
+  Form: TCDForm;
+begin
+  Result := False;
+  if hWnd = 0 then Exit;
+  if not (TObject(hWnd) is TCDForm) then Exit;
+  Form := TCDForm(hWnd);
+  Result := not Form.InputDisabled;
+  Form.InputDisabled := not bEnable;
 end;
 
 (*function TQtWidgetSet.EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean;
@@ -4224,9 +4249,21 @@ begin
   end
   else if lObject is TCDWinControl then
   begin
+    { Return the WS's idea of the window size (its region bounds),
+      NOT the LCL's WinControl.Width/Height. The LCL relies on this to
+      detect that the WS hasn't caught up with a bounds change yet
+      (TWinControl.GetClientRect compares Width to InterfaceWidth and
+      adjusts the cached client rect by the delta if they differ). If
+      we return WinControl.Width/Height, the LCL sees no mismatch, trusts
+      the stale region, and child-alignment computes against old bounds
+      -- leaving alRight/alBottom children stuck at their pre-resize
+      offsets. }
     lCDWinControl := lObject as TCDWinControl;
-    Width := lCDWinControl.WinControl.Width;
-    Height := lCDWinControl.WinControl.Height;
+    with TCDWinControl(lObject).Region.GetBoundingRect do
+    begin
+      Width := Right - Left;
+      Height := Bottom - Top;
+    end;
     Result := True;
     {$ifdef VerboseCDWinAPI}
       DebugLn(Format(':[WinAPI GetWindowSize] WinControl %s:%s',
@@ -5126,6 +5163,72 @@ begin
   Result := True;
 end;*)
 
+function TCDWidgetSet.ScrollWindowEx(HWnd: HWND; DX, DY: Integer;
+  PRcScroll, PRcClip: PRect; HRgnUpdate: HRGN; PRcUpdate: PRect;
+  Flags: UINT): Boolean;
+{ Customdrawn has no hardware scroll-and-blit. The two callers we
+  care about (TCustomGrid.ScrollBy at grids.pas:3589/3597 and the
+  ScrollWindow shim at lclintf winapi.inc:1600) both pass
+  SW_INVALIDATE -- they only need the affected area marked dirty so
+  the next paint cycle redraws the new contents. We honour that and
+  ignore the actual blit. Slower than a real scroll-and-blit, but
+  correct: the renderer redraws from up-to-date model state. }
+begin
+  Result := False;
+  if HWnd = 0 then Exit;
+  if (Flags and SW_INVALIDATE) <> 0 then
+    InvalidateRect(HWnd, PRcScroll, (Flags and SW_ERASE) <> 0);
+  Result := True;
+end;
+
+function TCDWidgetSet.ShowScrollBar(Handle: HWND; wBar: Integer;
+  bShow: Boolean): Boolean;
+{ Customdrawn lacks a non-client area, so we host the scrollbars as
+  TScrollBar children (alBottom / alRight) inside the owning control.
+  TCDScrollBars in customdrawnproc.pas wires the children to fire
+  LM_HSCROLL / LM_VSCROLL back to the owner on user interaction --
+  the message shape TCustomGrid (grids.pas WMHScroll/WMVScroll) and
+  any other client expects. }
+var
+  Bars: TCDScrollBars;
+begin
+  Result := False;
+  if Handle = 0 then Exit;
+  Bars := GetOrCreateScrollBars(Handle);
+  if Bars = nil then Exit;
+  Bars.SetVisibility(wBar, bShow);
+  Result := True;
+end;
+
+function TCDWidgetSet.SetScrollInfo(Handle: HWND; SBStyle: Integer;
+  ScrollInfo: TScrollInfo; bRedraw: Boolean): Integer;
+var
+  Bars: TCDScrollBars;
+  Bar: TScrollBar;
+begin
+  Result := 0;
+  if Handle = 0 then Exit;
+  Bars := GetOrCreateScrollBars(Handle);
+  if Bars = nil then Exit;
+  Bars.StoreParams(SBStyle, ScrollInfo);
+  Bar := Bars.GetBar(SBStyle);
+  if Bar <> nil then Result := Bar.Position
+  else if (ScrollInfo.fMask and SIF_POS) <> 0 then Result := ScrollInfo.nPos;
+end;
+
+function TCDWidgetSet.GetScrollInfo(Handle: HWND; BarFlag: Integer;
+  var ScrollInfo: TScrollInfo): Boolean;
+var
+  Bars: TCDScrollBars;
+begin
+  Result := False;
+  if Handle = 0 then Exit;
+  Bars := FindScrollBars(Handle);
+  if Bars = nil then Exit;
+  Bars.ReadParams(BarFlag, ScrollInfo);
+  Result := True;
+end;
+
 {------------------------------------------------------------------------------
   Function: SelectClipRGN
   Params:  DC, RGN
@@ -5574,6 +5677,56 @@ function TQtWidgetSet.ShowCaret(hWnd: HWND): Boolean;
 begin
   Result := (hWnd <> 0) and (QtCaret.ShowCaret(TQtWidget(hWnd)));
 end;*)
+
+function TCDWidgetSet.SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean;
+const
+  CDMainMenuBarProp = 'CDMainMenuBar';
+var
+  CDForm: TCDForm;
+  LCLForm: TCustomForm;
+  MenuBar: TToolBar;
+  MainMenu: TMainMenu;
+begin
+  Result := False;
+  if AWindowHandle = 0 then Exit;
+  if not (TObject(AWindowHandle) is TCDForm) then Exit;
+
+  CDForm := TCDForm(AWindowHandle);
+  LCLForm := CDForm.LCLForm;
+  if LCLForm = nil then Exit;
+
+  MenuBar := TToolBar(CDForm.Props[CDMainMenuBarProp]);
+
+  if AMenuHandle = 0 then
+  begin
+    if MenuBar <> nil then
+    begin
+      CDForm.Props[CDMainMenuBarProp] := nil;
+      MenuBar.Menu := nil;
+      MenuBar.Free;
+    end;
+    Exit(True);
+  end;
+
+  MainMenu := TMainMenu(PtrUInt(AMenuHandle));
+
+  if MenuBar = nil then
+  begin
+    MenuBar := TToolBar.Create(LCLForm);
+    CDForm.Props[CDMainMenuBarProp] := MenuBar;
+    MenuBar.Parent := LCLForm;
+    MenuBar.Align := alTop;
+    MenuBar.Top := -1;
+    MenuBar.ShowCaptions := True;
+    MenuBar.ShowHint := True;
+    MenuBar.TabStop := False;
+    MenuBar.EdgeBorders := [];
+  end;
+
+  MenuBar.Menu := MainMenu;
+  MenuBar.Visible := True;
+  Result := True;
+end;
 
 {------------------------------------------------------------------------------
   Method:  SetProp

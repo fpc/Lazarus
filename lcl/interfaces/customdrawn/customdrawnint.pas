@@ -36,6 +36,7 @@ uses
   {$ifdef CD_Android}
   customdrawn_androidproc, jni, bitmap, log, keycodes,
   {$endif}
+  {$ifdef CD_Wayland}BaseUnix, Process, waylandwire, waylandcore, xdgshell, xdgactivation, cursorshape, wldatadevice, textinputv3, customdrawn_waylandproc,{$endif}
   {$ifdef WinCE}aygshell,{$endif}
   // LazUtils
   LazUtilities, LazFileUtils, lazutf8,
@@ -49,7 +50,7 @@ uses
   customdrawn_common, customdrawncontrols, customdrawndrawers,
   lazcanvas, lazregions, lazdeviceapis,
   LCLPlatformDef, InterfaceBase, Themes, Dialogs, Buttons,
-  Controls,  Forms, lclproc, IntfGraphics, GraphType,
+  Controls, StdCtrls, ComCtrls, Forms, lclproc, IntfGraphics, GraphType,
   LCLType, LMessages, Graphics, LCLStrConsts, Menus, LazLoggerBase;
 
 type
@@ -198,6 +199,153 @@ type
     NSApp     : NSApplication;
     delegate  : TCDAppDelegate;
     ScreenBitmapContext: CGContextRef;
+    {$endif}
+    {$ifdef CD_Wayland}
+    FWlDisplay:        TWaylandDisplay;
+    FWlRegistry:       TWaylandRegistry;
+    FWlCompositor:     TWaylandCompositor;
+    FWlShm:            TWaylandShm;
+    FXdgWmBase:        TXdgWmBase;
+    FXdgActivation:    TXdgActivationV1;
+    FWlSeat:           TWaylandSeat;
+    FWlPointer:        TWaylandPointer;
+    FWlKeyboard:       TWaylandKeyboard;
+    FWpCursorShapeMgr: TWpCursorShapeManagerV1;
+    FWpCursorShapeDev: TWpCursorShapeDeviceV1;
+    FWlPointerFocus:   TWaylandWindowInfo;  { window the pointer is currently over }
+    FWlKeyboardFocus:  TWaylandWindowInfo;  { window with keyboard focus }
+    FWlPointerX:       LongInt;
+    FWlPointerY:       LongInt;
+    FWlShiftHeld:      Boolean;
+    FWlCtrlHeld:       Boolean;
+    FWlAltHeld:        Boolean;
+    FWlCapsLocked:     Boolean;       { from wl_keyboard.modifiers ModsLocked }
+    FWlNumLocked:      Boolean;
+    FWlWindowList:     TFPList;          { TWaylandWindowInfo }
+    FWlTimerList:      TFPList;          { TWLTimer }
+    FWlOutputs:        TFPList;          { TWaylandOutput, in advertise order }
+    { Clipboard plumbing. ddmgr is the bound global; device is per-seat
+      and bound when the seat advertises pointer/keyboard caps. Source
+      / SourceFormats / SourceCallback hold the most recent
+      ClipboardGetOwnerShip arguments so the OnSend handler can
+      synthesize bytes for whichever mime type the receiver picked. }
+    FWlDataDeviceManager: TWlDataDeviceManager;
+    FWlDataDevice:        TWlDataDevice;
+    FWlClipSource:        TWlDataSource;
+    FWlClipFormats:       array of TClipboardFormat;
+    FWlClipCallback:      TClipboardRequestEvent;
+    FWlLastInputSerial:   LongWord;       { for set_selection }
+    FWlLastPressSerial:   LongWord;       { for xdg_popup.grab; only press serials are valid grab triggers }
+    { Currently-mapped THintWindow popup, or nil. Tooltips are kept at
+      the leaf of the xdg_popup chain by construction:
+       1) before any non-tooltip popup is created, the active tooltip
+          is dismissed (WLCreatePopupForWindow tears it down up front);
+       2) when a popup that's the parent of the active tooltip is torn
+          down, the tooltip is dismissed first (WLTeardownPopup does
+          so before the parent's wl objects go away).
+      Without (1), a tooltip up before a menu opens becomes a sibling
+      of that menu; without (2), the menu's destroy-popup happens with
+      a live child popup -- both are protocol errors that disconnect
+      us. Tooltips are also created without xdg_popup.grab so there's
+      no compositor-driven dismissal racing with our LCL HintWindow
+      auto-hide timer. }
+    FWlActiveTooltip:     TWaylandWindowInfo;
+    { zwp_text_input_v3 plumbing. ibus / fcitx5 IME path. The mgr is
+      bound at registry time; the per-seat object is created after
+      seat caps. FTextInputFocus is the form-level surface the
+      compositor most recently delivered text-input.enter for; it
+      stays set even between input events because text-input focus
+      tracks keyboard focus and the LCL may not re-send Show on
+      every redraw. The pending* fields buffer the state the spec
+      tells us to apply atomically on the `done` event. }
+    FZwpTextInputMgr:      TZwpTextInputManagerV3;
+    FZwpTextInput:         TZwpTextInputV3;
+    FTextInputFocus:       TWaylandWindowInfo;
+    FTextInputEnabled:     Boolean;       { our local mirror of the enabled flag }
+    FImeDesiredEdit:       TWinControl;   { LCL control that asked for IME; nil = none.
+                                            Tracks intent independently from
+                                            FTextInputFocus (set on text_input.enter)
+                                            so we never send enable on an unfocused
+                                            surface, which is unspecified per spec. }
+    FTIPendingPreedit:     Boolean;       { preedit_string event buffered? }
+    FTIPendingPreeditText: AnsiString;
+    FTIPendingPreeditB:    LongInt;       { cursor_begin (byte offset) }
+    FTIPendingPreeditE:    LongInt;       { cursor_end (byte offset) }
+    FTIPendingCommit:      Boolean;       { commit_string event buffered? }
+    FTIPendingCommitText:  AnsiString;
+    FTIPendingDelete:      Boolean;       { delete_surrounding_text event buffered? }
+    FTIPendingDeleteB:     LongWord;      { before_length (bytes) }
+    FTIPendingDeleteA:     LongWord;      { after_length (bytes) }
+    { Read-only IME state for demo / debug. Last applied commit_string
+      and the live preedit; refreshed on every `done`. }
+    FWlLastImeCommit:      AnsiString;
+    FWlLastImePreedit:     AnsiString;
+    procedure WLPaintAllPending;
+    procedure WLDrawWindow(WI: TWaylandWindowInfo);
+    function  WLFindWindowBySurface(Surface: TWaylandSurface): TWaylandWindowInfo;
+    function  WLFindFormWindowInfo(LCLCtrl: TWinControl): TWaylandWindowInfo;
+    function  WLPrimaryOutput: TWaylandOutput;
+    { Wayland-protocol event handlers. Bound as method pointers on the
+      registry / seat / pointer / keyboard / clipboard objects so they
+      reach widget-set state via Self instead of a global. }
+    procedure WLHandleGlobal(Name: LongWord; const Iface: AnsiString;
+      Version: LongWord);
+    procedure WLHandlePing(Serial: LongWord);
+    procedure WLHandleSeatCaps(Sender: TWaylandSeat; Caps: LongWord);
+    procedure WLHandlePointerEnter(Sender: TWaylandPointer; Serial: LongWord;
+      Surface: TWaylandSurface; X, Y: LongInt);
+    procedure WLHandlePointerLeave(Sender: TWaylandPointer; Serial: LongWord;
+      Surface: TWaylandSurface);
+    procedure WLHandlePointerMotion(Sender: TWaylandPointer; TimeMs: LongWord;
+      X, Y: LongInt);
+    procedure WLHandlePointerButton(Sender: TWaylandPointer;
+      Serial, TimeMs, Button, State: LongWord);
+    procedure WLHandlePointerAxis(Sender: TWaylandPointer;
+      TimeMs, Axis: LongWord; Value: TWlFixed);
+    procedure WLHandleKeymap(Sender: TWaylandKeyboard; Format: LongWord;
+      Fd: cint; Size: LongWord);
+    procedure WLHandleKeyboardEnter(Sender: TWaylandKeyboard; Serial: LongWord;
+      Surface: TWaylandSurface);
+    procedure WLHandleKeyboardLeave(Sender: TWaylandKeyboard; Serial: LongWord;
+      Surface: TWaylandSurface);
+    procedure WLHandleKey(Sender: TWaylandKeyboard;
+      Serial, TimeMs, Key, State: LongWord);
+    procedure WLHandleKeyMods(Sender: TWaylandKeyboard;
+      Serial, ModsDepressed, ModsLatched, ModsLocked, Group: LongWord);
+    procedure WLClipSourceSend(Source: TWlDataSource;
+      const MimeType: AnsiString; Fd: cint);
+    procedure WLClipSourceCancelled(Source: TWlDataSource);
+    procedure WLHandleTextInputEnter(Sender: TZwpTextInputV3;
+      Surface: TWaylandSurface);
+    procedure WLHandleTextInputLeave(Sender: TZwpTextInputV3;
+      Surface: TWaylandSurface);
+    procedure WLHandleTextInputPreedit(Sender: TZwpTextInputV3;
+      const Text: AnsiString; CursorBegin, CursorEnd: LongInt);
+    procedure WLHandleTextInputCommit(Sender: TZwpTextInputV3;
+      const Text: AnsiString);
+    procedure WLHandleTextInputDelete(Sender: TZwpTextInputV3;
+      BeforeLength, AfterLength: LongWord);
+    procedure WLHandleTextInputDone(Sender: TZwpTextInputV3; Serial: LongWord);
+    { LCL-side helpers used by Show/HideVirtualKeyboard and TCDIntfEdit
+      focus / change hooks. LCLEdit is the LCL TCustomEdit; the
+      injected TCDEdit lives at TCDWinControl(LCLEdit.Handle).CDControl. }
+    procedure WLEnableTextInputForEdit(LCLEdit: TWinControl);
+    procedure WLDisableTextInput;
+    procedure WLPushTextInputEnable;
+    procedure WLPushTextInputContext(LCLEdit: TWinControl);
+    procedure WLHandleSurfaceConfigure(Sender: TXdgSurface; Serial: LongWord);
+    procedure WLHandleToplevelConfigure(Sender: TXdgToplevel;
+      W, H: LongInt; const States: array of LongWord);
+    procedure WLHandleToplevelClose(Sender: TXdgToplevel);
+    procedure WLHandlePopupConfigure(Sender: TXdgPopup;
+      X, Y, W, H: LongInt);
+    procedure WLHandlePopupDone(Sender: TXdgPopup);
+    function  WLChoosePopupParent(LCLForm: TCustomForm): TWaylandWindowInfo;
+    function  WLComputePopupAnchorRect(LCLForm: TCustomForm;
+      ParentWI: TWaylandWindowInfo; out R: TRect): Boolean;
+    procedure WLCreatePopupForWindow(WI, ParentWI: TWaylandWindowInfo;
+      const Anchor: TRect);
+    function  WLCurrentShiftState: TShiftState;
     {$endif}
   // For generic methods added in customdrawn
   // They are used internally in LCL-CustomDrawn, LCL app should not use them
@@ -507,6 +655,11 @@ end;
   {$I customdrawnobject_android.inc}
   {$I customdrawnwinapi_android.inc}
   {$I customdrawnlclintf_android.inc}
+{$endif}
+{$ifdef CD_Wayland}
+  {$I customdrawnobject_wayland.inc}
+  {$I customdrawnwinapi_wayland.inc}
+  {$I customdrawnlclintf_wayland.inc}
 {$endif}
 
 end.

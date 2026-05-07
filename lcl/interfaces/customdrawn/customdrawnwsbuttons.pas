@@ -117,7 +117,14 @@ begin
   lCDWinControl := TCDWinControl(ABitBtn.Handle);
   lCDControl := TCDIntfButton(lCDWinControl.CDControl);
 
-  lCDControl.Glyph.Assign(AValue.Glyph);
+  if (ABitBtn.Kind <> bkCustom) and AValue.Glyph.Empty then
+  begin
+    lCDControl.Kind := ABitBtn.Kind;
+    lCDControl.Caption := ABitBtn.Caption;
+    lCDControl.ModalResult := ABitBtn.ModalResult;
+  end
+  else
+    lCDControl.Glyph.Assign(AValue.Glyph);
 end;
 
 class procedure TCDWSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;

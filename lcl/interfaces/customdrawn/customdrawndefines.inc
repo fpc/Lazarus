@@ -12,7 +12,7 @@
 
 
 // Check if a backend which can be utilized in multiple-systems is already defined
-{$if defined(CD_X11) or defined(CD_Android)}
+{$if defined(CD_X11) or defined(CD_Android) or defined(CD_Wayland)}
 {$else}
   // Choosing the default backend
   {$ifdef Windows}

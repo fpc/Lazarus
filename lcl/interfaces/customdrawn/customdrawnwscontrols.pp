@@ -298,11 +298,20 @@ class procedure TCDWSWinControl.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
 var
   lCDWinControl: TCDWinControl;
+  lFormPos: TPoint;
 begin
   //WriteLn(Format('[TCDWSWinControl.SetBounds Control=%s:%s x=%d y=%d w=%d h=%d',
   //  [AWinControl.Name, AWinControl.ClassName, ALeft, ATop, AWidth, AHeight]));
   lCDWinControl := TCDWinControl(AWinControl.Handle);
-  lCDWinControl.Region.SetAsSimpleRectRegion(Bounds(ALeft, ATop, AWidth, AHeight));
+  { Region must be in form-relative coords because that is the space
+    FindControlWhichReceivedEvent / Region.IsPointInRegion use, and the
+    space CreateHandle initialised the region in (via
+    FindControlPositionRelativeToTheForm). ALeft/ATop here are
+    parent-relative; using them directly puts the region in the wrong
+    space and breaks hit-testing for any control whose parent is not
+    the form. }
+  lFormPos := FindControlPositionRelativeToTheForm(AWinControl);
+  lCDWinControl.Region.SetAsSimpleRectRegion(Bounds(lFormPos.X, lFormPos.Y, AWidth, AHeight));
   Invalidate(AWinControl);
 end;
 
@@ -362,8 +371,53 @@ begin
   CDWidgetset.InvalidateRect(AWinControl.Handle, nil, true);
 end;
 
+{ Maintain region-tree consistency on visibility change. The region
+  tree under TCDWinControl is purely geometric (TLazRegionWithChilds in
+  lazregions.pas has no concept of LCL controls or visibility), and the
+  hit-test descends it in geometric Z-order. If a control becomes
+  hidden but its region stays in the parent's region tree, hit-tests
+  on its (now-empty) bounds shadow visible siblings underneath -- so a
+  click on a now-visible control whose bounds overlap with the bounds
+  of a hidden sibling can be routed to the hidden one. So:
+  on show, ensure the region is present in the parent's children list;
+  on hide, take it out.
+
+  The form-parented case is excluded: a form's handle is a TCDForm, not
+  a TCDWinControl (they are sibling classes under TCDBaseControl), so
+  TCDWinControl(form.Handle).Region would type-pun into TCDForm.LCLForm,
+  and Region.Childs would land inside TComponent.FComponents, corrupting
+  the form's owned-components list. CreateHandle already
+  excludes this case by routing form-parented controls through
+  AddCDWinControlToForm rather than parent.Region.Childs.Add. }
 class procedure TCDWSWinControl.ShowHide(const AWinControl: TWinControl);
+var
+  lCDWinControl, lCDParent: TCDWinControl;
+  idx: Integer;
 begin
+  if csDestroyingHandle in AWinControl.ControlState then Exit;
+  if csDestroying in AWinControl.ComponentState then Exit;
+  if not AWinControl.HandleAllocated then Exit;
+  if not (AWinControl.Parent is TWinControl) then Exit;
+  if AWinControl.Parent is TCustomForm then Exit;
+  if csDestroying in AWinControl.Parent.ComponentState then Exit;
+  if not AWinControl.Parent.HandleAllocated then Exit;
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  lCDParent := TCDWinControl(AWinControl.Parent.Handle);
+  if (lCDWinControl = nil) or (lCDParent = nil)
+    or (lCDWinControl.Region = nil) or (lCDParent.Region = nil)
+    or (lCDParent.Region.Childs = nil) then Exit;
+
+  idx := lCDParent.Region.Childs.IndexOf(lCDWinControl.Region);
+  if AWinControl.Visible then
+  begin
+    if idx < 0 then
+      lCDParent.Region.Childs.Add(lCDWinControl.Region);
+  end
+  else
+  begin
+    if idx >= 0 then
+      lCDParent.Region.Childs.Delete(idx);
+  end;
 end;
 
 end.
