@@ -7157,6 +7157,7 @@ begin
   FPageBox^.show_all;
 
   FImageWidget^.hide;
+  FCloseButton^.hide;
 
   Self.FHasPaint:=true;
   // ref it to save it in case TabVisible is set to false
