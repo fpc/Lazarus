@@ -1924,6 +1924,7 @@ begin
   Gtk3Widget := TGtk3Widget(AData);
 
   if (wtWindow in Gtk3Widget.WidgetType) and Gtk3WidgetSet.IsWayland and
+     Gtk3IsGtkWindow(AWidget) and
      (PGtkWindow(AWidget)^.get_window_type = GTK_WINDOW_POPUP) and
      PGtkWindow(AWidget)^.get_accept_focus then
   begin
@@ -14748,7 +14749,7 @@ begin
     FMDIArea.Free;
     FMDIArea := nil;
   end;
-  if IsValidHandle and Gtk3WidgetSet.IsWayland and
+  if IsValidHandle and Gtk3WidgetSet.IsWayland and Gtk3IsGtkWindow(FWidget) and
      (PGtkWindow(FWidget)^.get_window_type = GTK_WINDOW_POPUP) and
      PGtkWindow(FWidget)^.get_accept_focus then
     gtk_device_grab_remove(PGtkWidget(FWidget),
