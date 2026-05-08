@@ -4,6 +4,67 @@ var
   {$note rethink this, so we don't use global variables, besides that what if theme changes.}
   LCLScrolledWinExtentsH: gint = 0; // vscrollbar CSS top+bottom extents, cached
   LCLScrolledWinExtentsW: gint = 0; // hscrollbar CSS left+right extents, cached
+  OrigGtkScrollbarSizeAllocate: procedure(widget: PGtkWidget; allocation: PGtkAllocation); cdecl = nil;
+  GtkScrollbarHijackInstalled: Boolean = False;
+
+procedure LCLGtkScrollbarSizeAllocateHijack(widget: PGtkWidget; allocation: PGtkAllocation); cdecl;
+var
+  min_w, nat_w, min_h, nat_h: gint;
+  klass: PGtkWidgetClass;
+  ClampedAlloc: TGtkAllocation;
+  NeedClamp: Boolean;
+begin
+  if not Assigned(OrigGtkScrollbarSizeAllocate) then
+    exit;
+  klass := PGtkWidgetClass(g_type_class_peek(gtk_scrollbar_get_type()));
+  min_w := 0;
+  nat_w := 0;
+  min_h := 0;
+  nat_h := 0;
+  if Assigned(klass) then
+  begin
+    if Assigned(klass^.get_preferred_width) then
+      klass^.get_preferred_width(widget, @min_w, @nat_w);
+    if Assigned(klass^.get_preferred_height) then
+      klass^.get_preferred_height(widget, @min_h, @nat_h);
+  end;
+
+  NeedClamp := ((min_w > 0) and (allocation^.width < min_w)) or
+    ((min_h > 0) and (allocation^.height < min_h));
+
+  if NeedClamp then
+  begin
+    ClampedAlloc := allocation^;
+    if (min_w > 0) and (ClampedAlloc.width < min_w) then
+      ClampedAlloc.width := min_w;
+    if (min_h > 0) and (ClampedAlloc.height < min_h) then
+      ClampedAlloc.height := min_h;
+    OrigGtkScrollbarSizeAllocate(widget, @ClampedAlloc);
+    exit;
+  end;
+  OrigGtkScrollbarSizeAllocate(widget, allocation);
+end;
+
+procedure InstallGtkScrollbarVFuncHijack;
+var
+  klass: PGtkWidgetClass;
+begin
+  if GtkScrollbarHijackInstalled then
+    exit;
+
+  GtkScrollbarHijackInstalled := True;
+  klass := PGtkWidgetClass(g_type_class_ref(gtk_scrollbar_get_type()));
+
+  if not Assigned(klass) then
+    exit;
+
+  if Assigned(klass^.size_allocate) and
+     (klass^.size_allocate <> @LCLGtkScrollbarSizeAllocateHijack) then
+  begin
+    OrigGtkScrollbarSizeAllocate := klass^.size_allocate;
+    klass^.size_allocate := @LCLGtkScrollbarSizeAllocateHijack;
+  end;
+end;
 
 procedure LCLGtkScrolledWindowComputeExtents(widget: PGtkWidget);
 var
@@ -69,26 +130,18 @@ procedure LCLGtkScrolledWindowSizeAllocate(widget: PGtkWidget;
 var
   ParentClass: PGtkWidgetClass;
   vscroll, hscroll: PGtkWidget;
-  threshH, threshW, minSize: gint;
   vpolicy, hpolicy: TGtkPolicyType;
+  Last1W, Last1H, Last2W, Last2H: PtrInt;
+  threshH, threshW, minSize: gint;
   vActive, hActive: Boolean;
-  ClampedAlloc: TGtkAllocation;
-  {$IFDEF GTK3DEBUGHEIGHTZERO}
+  {$IFDEF GTK3DEBUGSIZE}
   ADbgCtl: TGtk3Widget;
+  ADbgName: string;
   {$ENDIF}
 begin
-  {$IFDEF GTK3DEBUGHEIGHTZERO}
-  ADbgCtl := TGtk3Widget(HwndFromGtkWidget(widget));
-  writeln(Format('LCLGSW.SizeAllocate: widget=%p type=%s alloc={x=%d y=%d w=%d h=%d} realized=%s mapped=%s child_vis=%s has_win=%s lcl=%s',
-    [widget, g_type_name(widget^.g_type_instance.g_class^.g_type),
-     allocation^.x, allocation^.y, allocation^.width, allocation^.height,
-     BoolToStr(widget^.get_realized, True),
-     BoolToStr(widget^.get_mapped, True),
-     BoolToStr(widget^.get_child_visible, True),
-     BoolToStr(widget^.get_has_window, True),
-     IfThen(Assigned(ADbgCtl) and Assigned(ADbgCtl.LCLObject),
-       ADbgCtl.LCLObject.Name + ':' + ADbgCtl.LCLObject.ClassName, 'nil')]));
-  {$ENDIF}
+  if not GtkScrollbarHijackInstalled then
+    InstallGtkScrollbarVFuncHijack;
+
   ParentClass := PGtkWidgetClass(
     g_type_class_peek_parent(widget^.g_type_instance.g_class));
   if not Assigned(ParentClass) or not Assigned(ParentClass^.size_allocate) then
@@ -97,9 +150,6 @@ begin
   vpolicy := GTK_POLICY_NEVER;
   hpolicy := GTK_POLICY_NEVER;
   gtk_scrolled_window_get_policy(PGtkScrolledWindow(widget), @hpolicy, @vpolicy);
-
-  vActive := (vpolicy <> GTK_POLICY_NEVER) and (vpolicy <> GTK_POLICY_EXTERNAL);
-  hActive := (hpolicy <> GTK_POLICY_NEVER) and (hpolicy <> GTK_POLICY_EXTERNAL);
 
   if (LCLScrolledWinExtentsH = 0) or (LCLScrolledWinExtentsW = 0) then
     LCLGtkScrolledWindowComputeExtents(widget);
@@ -122,58 +172,91 @@ begin
       hscroll^.show;
   end;
 
-  { MINIMUM THRESHOLDS widget's frame + scrollbars }
-
+  vActive := (vpolicy <> GTK_POLICY_NEVER) and (vpolicy <> GTK_POLICY_EXTERNAL);
+  hActive := (hpolicy <> GTK_POLICY_NEVER) and (hpolicy <> GTK_POLICY_EXTERNAL);
   threshH := LCLScrolledWinExtentsH;
   threshW := LCLScrolledWinExtentsW;
-  { add vscrollbar's own minimum preferred size }
   if vActive and Assigned(vscroll) and Gtk3IsWidget(vscroll) then
   begin
     minSize := 0;
     gtk_widget_get_preferred_height(vscroll, @minSize, nil);
     if minSize > 0 then
-      inc(threshH,minSize);
+      inc(threshH, minSize);
+    minSize := 0;
     gtk_widget_get_preferred_width(vscroll, @minSize, nil);
     if minSize > 0 then
-      inc(threshW,minSize);
+      inc(threshW, minSize);
   end;
-  { add hscrollbar's own minimum preferred size }
   if hActive and Assigned(hscroll) and Gtk3IsWidget(hscroll) then
   begin
     minSize := 0;
     gtk_widget_get_preferred_height(hscroll, @minSize, nil);
     if minSize > 0 then
-      inc(threshH,minSize);
+      inc(threshH, minSize);
+    minSize := 0;
     gtk_widget_get_preferred_width(hscroll, @minSize, nil);
     if minSize > 0 then
-      inc(threshW,minSize);
+      inc(threshW, minSize);
   end;
+  {$IFDEF GTK3DEBUGSIZE}
+  ADbgCtl := TGtk3Widget(HwndFromGtkWidget(widget));
+  if Assigned(ADbgCtl) and Assigned(ADbgCtl.LCLObject) then
+  begin
+    if Assigned(ADbgCtl.LCLObject.Parent) then
+      ADbgName := dbgsName(ADbgCtl.LCLObject) + ' parent=' + dbgsName(ADbgCtl.LCLObject.Parent)
+    else
+    if Assigned(ADbgCtl.LCLObject.Owner) then
+      ADbgName := dbgsName(ADbgCtl.LCLObject) + ' owner=' + dbgsName(ADbgCtl.LCLObject.Owner)
+    else
+      ADbgName := dbgsName(ADbgCtl.LCLObject) + ' (orphan)';
+  end else
+    ADbgName := 'nil';
+  {$ENDIF}
 
-  { SURGICAL PROTECTION }
-  { Zero/tiny allocation: control is intentionally collapsed (Height:=0, or the
-    1px minimum AlignControls leaves for alBottom controls set to Height=0).
-    Do NOT call ParentClass: for AUTOMATIC vpolicy the scrollbar machinery tries
-    to lay out inside a <=1px area => cascade. Just exit.
-    set_child_visible(False) is handled in TGtk3Widget.SetBounds for h<=1. }
   if (allocation^.width = 0) or (allocation^.height <= 1) then
   begin
-    {$IFDEF GTK3DEBUGHEIGHTZERO}
-    writeln(Format('LCLGSW.SizeAllocate: h=0 EXIT (child_vis=%s mapped=%s)',
-      [BoolToStr(widget^.get_child_visible, True), BoolToStr(widget^.get_mapped, True)]));
+    {$IFDEF GTK3DEBUGSIZE}
+    DebugLn(Format('LCLGSW.SizeAllocate %s alloc=%dx%d SKIP collapse (thresh=%dx%d)',
+      [ADbgName, allocation^.width, allocation^.height, threshW, threshH]));
     {$ENDIF}
+    gtk_widget_set_allocation(widget, allocation);
+    gtk_widget_set_clip(widget, allocation);
     exit;
   end;
 
-  if (allocation^.width < threshW) or (allocation^.height < threshH) then
+  Last1W := PtrInt(g_object_get_data(PGObject(widget), 'lcl-prev-aw'));
+  Last1H := PtrInt(g_object_get_data(PGObject(widget), 'lcl-prev-ah'));
+  Last2W := PtrInt(g_object_get_data(PGObject(widget), 'lcl-prev2-aw'));
+  Last2H := PtrInt(g_object_get_data(PGObject(widget), 'lcl-prev2-ah'));
+  if ((allocation^.width <> Last1W) or (allocation^.height <> Last1H)) and
+     (allocation^.width = Last2W) and (allocation^.height = Last2H) and
+     (Last2W <> 0) and (Last2H <> 0) and
+     ((allocation^.width < threshW) or (allocation^.height < threshH)) then
   begin
-    ClampedAlloc := allocation^;
-    if ClampedAlloc.width < threshW then
-      ClampedAlloc.width := threshW;
-    if ClampedAlloc.height < threshH then
-      ClampedAlloc.height := threshH;
-    ParentClass^.size_allocate(widget, @ClampedAlloc);
-    Exit;
+    {$IFDEF GTK3DEBUGSIZE}
+    DebugLn(Format('LCLGSW.SizeAllocate %s alloc=%dx%d OSCILLATE-BELOW (prev %dx%d / prev2 %dx%d thresh=%dx%d) - SKIP parent',
+      [ADbgName, allocation^.width, allocation^.height, Last1W, Last1H, Last2W, Last2H, threshW, threshH]));
+    {$ENDIF}
+    gtk_widget_set_allocation(widget, allocation);
+    gtk_widget_set_clip(widget, allocation);
+    exit;
   end;
+  if (allocation^.width <> Last1W) or (allocation^.height <> Last1H) then
+  begin
+    g_object_set_data(PGObject(widget), 'lcl-prev2-aw', Pointer(PtrInt(Last1W)));
+    g_object_set_data(PGObject(widget), 'lcl-prev2-ah', Pointer(PtrInt(Last1H)));
+    g_object_set_data(PGObject(widget), 'lcl-prev-aw', Pointer(PtrInt(allocation^.width)));
+    g_object_set_data(PGObject(widget), 'lcl-prev-ah', Pointer(PtrInt(allocation^.height)));
+  end;
+
+  {$IFDEF GTK3DEBUGSIZE}
+  if (allocation^.width < threshW) or (allocation^.height < threshH) then
+    DebugLn(Format('LCLGSW.SizeAllocate %s alloc=%dx%d BELOW thresh=%dx%d (passing through)',
+      [ADbgName, allocation^.width, allocation^.height, threshW, threshH]))
+  else
+    DebugLn(Format('LCLGSW.SizeAllocate %s alloc=%dx%d OK (thresh=%dx%d)',
+      [ADbgName, allocation^.width, allocation^.height, threshW, threshH]));
+  {$ENDIF}
 
   ParentClass^.size_allocate(widget, allocation);
 end;

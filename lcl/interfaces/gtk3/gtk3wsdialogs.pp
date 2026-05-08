@@ -1523,6 +1523,7 @@ end;
 class procedure TGtk3WSCommonDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
   AGtkWindow: PGtkWidget;
+  ATime: guint32;
 begin
   if not ACommonDialog.HandleAllocated then
     exit;
@@ -1537,7 +1538,11 @@ begin
   PGtkDialog(AGtkWindow)^.set_modal(True);
   PGtkDialog(AGtkWindow)^.set_type_hint(GDK_WINDOW_TYPE_HINT_DIALOG);
   PGtkDialog(AGtkWindow)^.show_all;
-  PGtkDialog(AGtkWindow)^.present;
+  ATime := gtk_get_current_event_time;
+  if ATime = 0 then
+    ATime := Gtk3WidgetSet.LastUserEventTime;
+  if ATime <> 0 then
+    PGtkDialog(AGtkWindow)^.present_with_time(ATime);
 end;
 
 class procedure TGtk3WSCommonDialog.DestroyHandle(

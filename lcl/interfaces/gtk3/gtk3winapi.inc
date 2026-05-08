@@ -2329,13 +2329,14 @@ end;
 
 function TGtk3WidgetSet.GetClientRect(handle: HWND; var ARect: TRect): Boolean;
 begin
-  {$IF DEFINED(VerboseGtk3WinAPI) OR DEFINED(GTK3DEBUGSIZE)}
-  DebugLn('[Gtk3WinAPI GetClientRect]');
-  {$ENDIF}
   if Handle = 0 then
     Exit(False);
   ARect := TGtk3Widget(handle).getClientRect;
   Result := TGtk3Widget(Handle).WidgetMapped;
+  {$IF DEFINED(VerboseGtk3WinAPI) OR DEFINED(GTK3DEBUGSIZE)}
+  DebugLn(Format('[Gtk3WinAPI GetClientRect] %s mapped=%s rect=%s',
+    [dbgsName(TGtk3Widget(handle).LCLObject), BoolToStr(Result, True), dbgs(ARect)]));
+  {$ENDIF}
 end;
 
 function TGtk3WidgetSet.GetClipBox(DC: hDC; lpRect: PRect): Longint;
@@ -4378,12 +4379,20 @@ begin
 end;
 
 function TGtk3WidgetSet.SetActiveWindow(Handle: HWND): HWND;
+var
+  ATime: guint32;
 begin
   Result := GetActiveWindow;
   if Handle <> 0 then
   begin
     if wtWindow in TGtk3Widget(Handle).WidgetType then
-      PGtkWindow(TGtk3Window(Handle).Widget)^.present_with_time(LastUserEventTime);
+    begin
+      ATime := gtk_get_current_event_time;
+      if ATime = 0 then
+        ATime := LastUserEventTime;
+      if ATime <> 0 then
+        PGtkWindow(TGtk3Window(Handle).Widget)^.present_with_time(ATime);
+    end;
   end;
 end;
 

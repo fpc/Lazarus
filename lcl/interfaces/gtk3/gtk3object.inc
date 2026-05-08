@@ -797,12 +797,17 @@ begin
 end;
 
 procedure TGtk3WidgetSet.AppBringToFront;
+var
+  ATime: guint32;
 begin
   if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
   begin
     TGtk3Window(Application.MainForm.Handle).raiseWidget;
-    gdk_window_focus(TGtk3Window(Application.MainForm.Handle).Widget^.window,
-                                gtk_get_current_event_time);
+    ATime := gtk_get_current_event_time;
+    if ATime = 0 then
+      ATime := LastUserEventTime;
+    if ATime <> 0 then
+      gdk_window_focus(TGtk3Window(Application.MainForm.Handle).Widget^.window, ATime);
   end;
 end;
 procedure TGtk3WidgetSet.AppSetIcon(const Small, Big: HICON);

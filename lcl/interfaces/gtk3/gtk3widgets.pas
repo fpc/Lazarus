@@ -483,6 +483,8 @@ type
     FCloseButton: PGtkWidget;
     function GetCloseButtonVisible: boolean;
     procedure SetCloseButtonVisible(AValue: boolean);
+    procedure EnsureCloseButton;
+    procedure EnsureImageWidget;
   strict private
     class procedure TabSheetLayoutSizeAllocate(AWidget: PGtkWidget;
       AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static;
@@ -515,7 +517,7 @@ type
   TGtk3NoteBook = class (TGtk3Container)
   private
     FDefaultClientRect:TRect;
-    FRightClickUpPending: Boolean; // guard against double LM_RBUTTONUP delivery
+    FRightClickUpPending: Boolean;
     class function NotebookMouseScroll(AWidget: PGtkWidget;
       AEvent: PGdkEventScroll; AData: gpointer): gboolean; cdecl; static;
   protected
@@ -1055,6 +1057,7 @@ type
   TGtk3CustomControl = class(TGtk3ScrollableWin)
     strict private
       class procedure ScrollbarVisibilityChanged(AWidget: PGtkWidget; Data: gpointer); cdecl; static;
+      class procedure ScrollbarSizeAllocateChanged(AWidget: PGtkWidget; Allocation: PGtkAllocation; Data: gpointer); cdecl; static;
     protected
       procedure ConnectSizeAllocateSignal(ToWidget: PGtkWidget); override;
       function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
@@ -1327,6 +1330,7 @@ type
 
 const
   LISTVIEW_DEFAULT_COLUMN = 1;
+  GTKMINIMUMSIZE = 16;
 
 implementation
 
@@ -1781,6 +1785,7 @@ var
   ACtl: TGtk3Widget;
   AState: TGdkWindowState;
   Alloc: TGtkAllocation;
+  LastW, LastH: PtrInt;
 begin
   if AWidget=nil then ;
 
@@ -1789,19 +1794,25 @@ begin
   //do not send sizes to lcl if widget is unmapped
   if not AWidget^.get_mapped then Exit;
 
+  if Assigned(ACtl.LCLObject) then
+  begin
+    LastW := PtrInt(g_object_get_data(PGObject(AWidget), 'lcl-szalloc-prev-w'));
+    LastH := PtrInt(g_object_get_data(PGObject(AWidget), 'lcl-szalloc-prev-h'));
+
+    if (AGdkRect^.width = LastW) and (AGdkRect^.height = LastH) and (LastW <> 0) and
+       ((Word(AGdkRect^.width) <> Word(ACtl.LCLObject.Width)) or
+        (Word(AGdkRect^.height) <> Word(ACtl.LCLObject.Height))) and
+       ((wtNotebook in ACtl.WidgetType) or
+        (AGdkRect^.width < GTKMINIMUMSIZE) or (AGdkRect^.height < GTKMINIMUMSIZE)) then
+      exit;
+  end;
+
   {$IFDEF GTK3DEBUGSIZE}
   if Assigned(ACtl.LCLObject) then
   begin
     with ACtl.LCLObject do
       writeln(Format('TGtk3Widget.SizeAllocate %s Gdk x %d y %d w %d h %d  LCL l %d t %d w %d h %d applied w %d h %d cliRect %s',[dbgsName(ACtl.LCLObject), AGdkRect^.x, AGdkRect^.y, AGdkRect^.width, AGdkRect^.height, Left, Top, Width, Height, ACtl.LCLWidth, ACtl.LCLHeight, dbgs(ACtl.LCLObject.ClientRect)]));
   end;
-  {$ENDIF}
-  {$IFDEF GTK3DEBUGRESIZE}
-  if Assigned(ACtl.LCLObject) then
-    writeln(Format('SizeAllocate %s gdk w=%d h=%d LCL w=%d h=%d InUpd=%s wt=%d',
-      [dbgsName(ACtl.LCLObject), AGdkRect^.width, AGdkRect^.height,
-       ACtl.LCLObject.Width, ACtl.LCLObject.Height, BoolToStr(ACtl.InUpdate, True),
-       LongInt(ACtl.FWidgetType)]));
   {$ENDIF}
   // return size w/o frame
   NewSize.cx := AGdkRect^.width;
@@ -1888,6 +1899,9 @@ begin
       Msg.Height := ACtl.LCLObject.Height;
     end;
   end;
+
+  g_object_set_data(PGObject(AWidget), 'lcl-szalloc-prev-w', Pointer(PtrInt(AGdkRect^.width)));
+  g_object_set_data(PGObject(AWidget), 'lcl-szalloc-prev-h', Pointer(PtrInt(AGdkRect^.height)));
 
   {$IFDEF GTK3USEDEFERREDRESIZING}
   if Assigned(ACtl.LCLObject) then
@@ -4165,9 +4179,24 @@ begin
 end;
 
 procedure TGtk3Widget.Hide;
+{$IFDEF GTK3DEBUGSIZE}
+var
+  Alloc: TGtkAllocation;
+{$ENDIF}
 begin
   if Assigned(FWidget) then
+  begin
+    {$IFDEF GTK3DEBUGSIZE}
+    if Assigned(LCLObject) then
+    begin
+      FWidget^.get_allocation(@Alloc);
+      DebugLn(Format('TGtk3Widget.Hide %s alloc=%dx%d at (%d,%d) mapped=%s',
+        [dbgsName(LCLObject), Alloc.width, Alloc.height, Alloc.x, Alloc.y,
+         BoolToStr(FWidget^.get_mapped, True)]));
+    end;
+    {$ENDIF}
     FWidget^.hide;
+  end;
 end;
 
 function TGtk3Widget.getParent: TGtk3Widget;
@@ -4444,9 +4473,23 @@ begin
 end;
 
 procedure TGtk3Widget.Show;
+{$IFDEF GTK3DEBUGSIZE}
+var
+  Alloc: TGtkAllocation;
+{$ENDIF}
 begin
   if IsValidHandle then
   begin
+    {$IFDEF GTK3DEBUGSIZE}
+    if Assigned(LCLObject) then
+    begin
+      FWidget^.get_allocation(@Alloc);
+      DebugLn(Format('TGtk3Widget.Show %s alloc=%dx%d at (%d,%d) realized=%s mapped=%s',
+        [dbgsName(LCLObject), Alloc.width, Alloc.height, Alloc.x, Alloc.y,
+         BoolToStr(FWidget^.get_realized, True),
+         BoolToStr(FWidget^.get_mapped, True)]));
+    end;
+    {$ENDIF}
     FWidget^.show;
   end;
 end;
@@ -4810,7 +4853,7 @@ begin
     if Assigned(FSizeGrip) then
       exit;
     FSizeGrip := PGtkWidget(TGtkDrawingArea.new);
-    gtk_widget_set_size_request(FSizeGrip, 16, -1);
+    gtk_widget_set_size_request(FSizeGrip, GTKMINIMUMSIZE, -1);
     FSizeGrip^.set_events([GDK_BUTTON_PRESS_MASK]);
     g_signal_connect_data(PGObject(FSizeGrip), 'draw',
       TGCallback(@SizeGripDraw), Self, nil, G_CONNECT_DEFAULT);
@@ -6581,7 +6624,7 @@ var
 begin
   AScrollBar := TCustomScrollBar(LCLObject);
   FWidgetType := FWidgetType + [wtScrollBar];
-  Result := TGtkScrollbar.new(TGtkOrientation(AScrollBar.Kind), nil);
+  Result := PGtkWidget(gtk_scrollbar_new(TGtkOrientation(AScrollBar.Kind), nil));
   ARange := PGtkRange(Result);
   with AScrollBar do
   begin
@@ -7000,8 +7043,15 @@ end;
 
 procedure TGtk3Page.SetCloseButtonVisible(AValue: boolean);
 begin
-  if Assigned(FCloseButton) then
-    FCloseButton^.set_visible(AValue);
+  if AValue then
+  begin
+    EnsureCloseButton;
+    FCloseButton^.set_visible(True);
+  end else
+  begin
+    if FCloseButton <> nil then
+      FCloseButton^.set_visible(False);
+  end;
 end;
 
 class procedure TGtk3Page.TabSheetLayoutSizeAllocate(
@@ -7104,7 +7154,7 @@ begin
   g_signal_connect_data(FCentralWidget,'map',TGCallback(@CentralWidgetMapped), Self, nil, G_CONNECT_DEFAULT);
 end;
 
-function TGtk3Page.CreateWidget(const Params: TCreateParams): PGtkWidget;
+procedure TGtk3Page.EnsureCloseButton;
 var
   image: PGtkImage;
   AMonitor: PGdkMonitor;
@@ -7113,13 +7163,8 @@ var
   ACSSProvider: PGtkCssProvider;
   AStyleCtx: PGtkStyleContext;
 begin
-  FWidgetType := FWidgetType + [wtLayout];
-  FPageBox := TGtkBox.new(GTK_ORIENTATION_HORIZONTAL, 4);
-
-  FImageWidget := TGtkImage.new;
-
-  FPageLabel:= TGtkLabel.new(PChar(Params.Caption));
-  FPageLabel^.set_use_underline(true);
+  if FCloseButton <> nil then
+    exit;
   AScaleFactor := 1;
   AMonitor := gdk_display_get_primary_monitor(gdk_display_get_default);
   if Assigned(AMonitor) then
@@ -7129,10 +7174,6 @@ begin
   else
     AIconSize := GTK_ICON_SIZE_SMALL_TOOLBAR;
   image := gtk_image_new_from_icon_name('window-close', AIconSize);
-
-  //we use gtkevenbox instead of gtkbutton as tab close button to surpress
-  //gtk-frame-clock gtk layout warnings.
-
   FCloseButton := PGtkWidget(gtk_event_box_new);
   gtk_event_box_set_visible_window(PGtkEventBox(FCloseButton), True);
   gtk_event_box_set_above_child(PGtkEventBox(FCloseButton), True);
@@ -7142,46 +7183,64 @@ begin
     Ord(GDK_BUTTON_PRESS_MASK) or
     Ord(GDK_ENTER_NOTIFY_MASK) or
     Ord(GDK_LEAVE_NOTIFY_MASK));
-
   ACSSProvider := gtk_css_provider_new;
   gtk_css_provider_load_from_data(ACSSProvider,
-    '#tab-close-button { background-color: rgba(0,0,0,0); border-radius: 3px; }' +
-    '#tab-close-button:hover { background-color: alpha(@theme_fg_color, 0.15); }', -1, nil);
+    '#tab-close-button { background-color: rgba(0,0,0,0); border-radius: 3px; transition: none; }' +
+    '#tab-close-button:hover { background-color: alpha(@theme_fg_color, 0.15); transition: none; }', -1, nil);
   AStyleCtx := FCloseButton^.get_style_context;
   AStyleCtx^.add_provider(PGtkStyleProvider(ACSSProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
   g_object_unref(ACSSProvider);
-
-  FPageBox^.pack_start(FImageWidget, False, False, 0);
-  FPageBox^.pack_start(FPageLabel, False, False, 0);
+  g_object_set_data(FCloseButton, 'lclwidget', Self);
+  g_signal_connect_data(FCloseButton, 'button-press-event', TGCallback(@TabCloseClicked), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(FCloseButton, 'enter-notify-event', TGCallback(@TabCloseEnter), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(FCloseButton, 'leave-notify-event', TGCallback(@TabCloseLeave), Self, nil, G_CONNECT_DEFAULT);
   FPageBox^.pack_end(FCloseButton, False, False, 0);
-  FPageBox^.show_all;
+  FCloseButton^.show_all;
+end;
 
-  FImageWidget^.hide;
-  FCloseButton^.hide;
+procedure TGtk3Page.EnsureImageWidget;
+begin
+  if FImageWidget <> nil then
+    exit;
+  FImageWidget := TGtkImage.new;
+  g_object_set_data(FImageWidget, 'lclwidget', Self);
+  FPageBox^.pack_start(FImageWidget, False, False, 0);
+  gtk_box_reorder_child(PGtkBox(FPageBox), PGtkWidget(FImageWidget), 0);
+  FImageWidget^.show;
+end;
 
-  Self.FHasPaint:=true;
-  // ref it to save it in case TabVisible is set to false
+function TGtk3Page.CreateWidget(const Params: TCreateParams): PGtkWidget;
+begin
+  FWidgetType := FWidgetType + [wtLayout];
+  FPageBox := TGtkBox.new(GTK_ORIENTATION_HORIZONTAL, 4);
+  FImageWidget := nil;
+  FCloseButton := nil;
+
+  if Params.Caption <> '' then
+    FPageLabel := TGtkLabel.new(PChar(Params.Caption))
+  else
+    FPageLabel := TGtkLabel.new(' ');
+  FPageLabel^.set_use_underline(True);
+  FPageBox^.pack_start(FPageLabel, False, False, 0);
+  FPageLabel^.show;
+  FPageBox^.show;
+
+  Self.FHasPaint := True;
   FPageBox^.ref;
+
+  g_object_set_data(FPageBox, 'lclwidget', Self);
+  g_object_set_data(FPageLabel, 'lclwidget', Self);
 
   Result := TGtkBox.new(GTK_ORIENTATION_HORIZONTAL, 0);
   Result^.ref;
   FCentralWidget := TGtkLayout.new(nil, nil);
   FCentralWidget^.set_app_paintable(True);
-  PGtkBox(Result)^.pack_start(FCentralWidget, True , True, 0);
+  PGtkBox(Result)^.pack_start(FCentralWidget, True, True, 0);
   FCentralWidget^.set_has_window(True);
   if not (csDesigning in LCLObject.ComponentState) then
     g_object_set(PGObject(FCentralWidget), 'resize-mode', [GTK_RESIZE_QUEUE, nil]);
   gtk_layout_set_size(PGtkLayout(FCentralWidget), 1, 1);
 
-  g_object_set_data(FPageBox,'lclwidget', Self);
-  g_object_set_data(FPageLabel,'lclwidget', Self);
-  g_object_set_data(FImageWidget,'lclwidget', Self);
-  g_object_set_data(FCloseButton,'lclwidget', Self);
-
-  g_signal_connect_data(FCloseButton, 'button-press-event', TGCallback(@TabCloseClicked), Self, nil, G_CONNECT_DEFAULT);
-  g_signal_connect_data(FCloseButton, 'enter-notify-event', TGCallback(@TabCloseEnter), Self, nil, G_CONNECT_DEFAULT);
-  g_signal_connect_data(FCloseButton, 'leave-notify-event', TGCallback(@TabCloseLeave), Self, nil, G_CONNECT_DEFAULT);
-  //Set label angle to match parent notebook's tab position - vertical for LEFT/RIGHT
   if Assigned(LCLObject.Parent) then
     SetLabelAngle(TCustomTabControl(LCLObject.Parent).TabPosition);
 end;
@@ -7305,16 +7364,20 @@ begin
   if Assigned(aBitmap) then
     APixBuf := TGtk3Image(aBitmap.Handle).Handle^.copy
   else
-    aPixBuf := nil;
-  if aPixBuf = nil then
+    APixBuf := nil;
+  if APixBuf = nil then
   begin
-    FImageWidget^.set_from_pixbuf(nil);
-    FImageWidget^.set_visible(False);
+    if FImageWidget <> nil then
+    begin
+      FImageWidget^.set_from_pixbuf(nil);
+      FImageWidget^.set_visible(False);
+    end;
   end else
   begin
-    FImageWidget^.set_from_pixbuf(aPixBuf);
+    EnsureImageWidget;
+    FImageWidget^.set_from_pixbuf(APixBuf);
     FImageWidget^.set_visible(True);
-    aPixbuf^.unref;
+    APixBuf^.unref;
   end;
 end;
 
@@ -7327,6 +7390,20 @@ begin
     tpRight:  FPageLabel^.set_angle(270.0);
   else
     FPageLabel^.set_angle(0.0);
+  end;
+  case ATabPosition of
+    tpLeft, tpRight:
+    begin
+      FPageLabel^.set_margin_start(0);
+      FPageLabel^.set_margin_end(0);
+      FPageLabel^.set_margin_top(4);
+      FPageLabel^.set_margin_bottom(4);
+    end;
+  else
+    FPageLabel^.set_margin_top(0);
+    FPageLabel^.set_margin_bottom(0);
+    FPageLabel^.set_margin_start(4);
+    FPageLabel^.set_margin_end(4);
   end;
 end;
 
@@ -7857,10 +7934,10 @@ end;
 
 function TGtk3NoteBook.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
-  Alloc:TGtkAllocation;
+  Alloc: TGtkAllocation;
 begin
   FWidgetType := FWidgetType + [wtNotebook];
-  Result := LCLGtkNotebookNew;
+  Result := PGtkWidget(LCLGtkNotebookNew());
   FCentralWidget := Result;
 
   if (nboHidePageListPopup in TCustomTabControl(LCLObject).Options) then
@@ -7992,7 +8069,6 @@ end;
 procedure TGtk3NoteBook.InsertPage(ACustomPage: TCustomPage; AIndex: Integer);
 var
   Gtk3Page: TGtk3Page;
-  AMinSize, ANaturalSize: gint;
   Bmp: TBitmap;
   ImageIndex:integer;
   HasIcon: Boolean;
@@ -8038,18 +8114,9 @@ begin
 end;
 
 procedure TGtk3NoteBook.RemovePage(AIndex: Integer);
-var
-  AMinSizeW, AMinSizeH, ANaturalSizeW, ANaturalSizeH: gint;
-  NB: PGtkNotebook;
 begin
   if IsWidgetOK then
-  begin
-    NB:=PGtkNotebook(GetContainerWidget);
-    NB^.remove_page(AIndex);
-    NB^.get_preferred_width(@AMinSizeW, @ANaturalSizeW);
-    NB^.get_preferred_height(@AMinSizeH, @ANaturalSizeH);
-    NB^.resize_children;
-  end;
+    PGtkNotebook(GetContainerWidget)^.remove_page(AIndex);
 end;
 
 procedure TGtk3NoteBook.SetPageIndex(AIndex: Integer);
@@ -8095,7 +8162,6 @@ begin
   if not IsWidgetOK then
     exit;
   PGtkNoteBook(GetContainerWidget)^.set_tab_pos(GtkPositionTypeMap[ATabPosition]);
-  //Update label angle on all existing pages so text is vertical for LEFT/RIGHT tabs
   for i := 0 to TCustomTabControl(LCLObject).PageCount - 1 do
   begin
     APage := TCustomTabControl(LCLObject).Page[i];
@@ -12459,12 +12525,14 @@ begin
   begin
     g_signal_connect_data(HBar, 'map', TGCallback(@ScrollbarVisibilityChanged), Self, nil, G_CONNECT_DEFAULT);
     g_signal_connect_data(HBar, 'unmap', TGCallback(@ScrollbarVisibilityChanged), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(HBar, 'size-allocate', TGCallback(@ScrollbarSizeAllocateChanged), Self, nil, [G_CONNECT_AFTER]);
   end;
   VBar := PGtkWidget(PGtkScrolledWindow(Result)^.get_vscrollbar);
   if Assigned(VBar) and Gtk3IsWidget(VBar) then
   begin
     g_signal_connect_data(VBar, 'map', TGCallback(@ScrollbarVisibilityChanged), Self, nil, G_CONNECT_DEFAULT);
     g_signal_connect_data(VBar, 'unmap', TGCallback(@ScrollbarVisibilityChanged), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(VBar, 'size-allocate', TGCallback(@ScrollbarSizeAllocateChanged), Self, nil, [G_CONNECT_AFTER]);
   end;
 end;
 
@@ -12479,6 +12547,32 @@ begin
   if not Assigned(ACtl.LCLObject) then
     exit;
   ACtl.LCLObject.InvalidateClientRectCache(False);
+end;
+
+class procedure TGtk3CustomControl.ScrollbarSizeAllocateChanged(AWidget: PGtkWidget;
+  Allocation: PGtkAllocation; Data: gpointer); cdecl;
+var
+  ACtl: TGtk3CustomControl;
+  LastW, LastH: PtrInt;
+begin
+  if Data = nil then
+    exit;
+  ACtl := TGtk3CustomControl(Data);
+  if not Assigned(ACtl.LCLObject) then
+    exit;
+
+  LastW := PtrInt(g_object_get_data(PGObject(AWidget), 'lcl-last-aw'));
+  LastH := PtrInt(g_object_get_data(PGObject(AWidget), 'lcl-last-ah'));
+
+  if (LastW = Allocation^.width) and (LastH = Allocation^.height) then
+    exit;
+
+  g_object_set_data(PGObject(AWidget), 'lcl-last-aw', Pointer(PtrInt(Allocation^.width)));
+  g_object_set_data(PGObject(AWidget), 'lcl-last-ah', Pointer(PtrInt(Allocation^.height)));
+
+  //TODO: check if expensive DoAdjustClientRectChange must be called each time
+  ACtl.LCLObject.InvalidateClientRectCache(True);
+  ACtl.LCLObject.DoAdjustClientRectChange;
 end;
 
 function TGtk3CustomControl.EatArrowKeys(const AKey: Word): Boolean;
@@ -12542,6 +12636,14 @@ procedure TGtk3CustomControl.preferredSize(var PreferredWidth,PreferredHeight:
   integer;WithThemeSpace:Boolean);
 begin
   inherited preferredSize(PreferredWidth, PreferredHeight, WithThemeSpace);
+  {$IFDEF GTK3DEBUGSIZE}
+  if Assigned(LCLObject) then
+    DebugLn(Format('TGtk3CustomControl.preferredSize %s pref=%dx%d wt=[%s]',
+      [dbgsName(LCLObject), PreferredWidth, PreferredHeight,
+       BoolToStr(wtCustomControl in WidgetType, 'wtCC ', '') +
+       BoolToStr(wtScrollingWin in WidgetType, 'wtSW ', '') +
+       BoolToStr(wtLayout in WidgetType, 'wtL', '')]));
+  {$ENDIF}
   if [wtCustomControl] * WidgetType <> [] then
   begin
     PreferredWidth := 0;
@@ -12553,6 +12655,12 @@ procedure TGtk3CustomControl.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
 var
   AReqW, AReqH: gint;
 begin
+  {$IFDEF GTK3DEBUGSIZE}
+  if Assigned(LCLObject) then
+    DebugLn(Format('TGtk3CustomControl.SetBounds %s in: l=%d t=%d w=%d h=%d (LCL was l=%d t=%d w=%d h=%d)',
+      [dbgsName(LCLObject), ALeft, ATop, AWidth, AHeight,
+       LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height]));
+  {$ENDIF}
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   if (Widget = nil) then
     Exit;
@@ -14011,10 +14119,23 @@ begin
   AIsWayland := Gtk3WidgetSet.IsWayland;
   try
     Widget^.get_allocation(@Alloc);
-    {$IFDEF GTK3DEBUGFORMS}
+    {$IF DEFINED(GTK3DEBUGFORMS) OR DEFINED(GTK3DEBUGSIZE)}
     with Alloc do
-      DebugLn(Format('TGtk3Window.setBounds(%d, %d, %d, %d) alloc x %d y %d w %d h %d',[ALeft, ATop ,AWidth, AHeight, x, y, width, height]));
+      DebugLn(Format('TGtk3Window.setBounds %s (%d, %d, %d, %d) alloc x %d y %d w %d h %d  realized=%s mapped=%s visible=%s WMap=%s',
+        [dbgsName(LCLObject), ALeft, ATop, AWidth, AHeight, x, y, width, height,
+         BoolToStr(Widget^.get_realized, True),
+         BoolToStr(Widget^.get_mapped, True),
+         BoolToStr(Widget^.get_visible, True),
+         BoolToStr(WidgetMapped, True)]));
     {$ENDIF}
+    if (AWidth <= 1) and (AHeight <= 1) and Gtk3IsGtkWindow(fWidget) and
+       not Widget^.get_visible and not Widget^.get_mapped then
+    begin
+      {$IF DEFINED(GTK3DEBUGFORMS) OR DEFINED(GTK3DEBUGSIZE)}
+      DebugLn(Format('TGtk3Window.setBounds %s degenerate %dx%d on hidden window',
+        [dbgsName(LCLObject), AWidth, AHeight]));
+      {$ENDIF}
+    end;
     if not Gtk3IsGtkWindow(fWidget) then
     begin
       Widget^.set_size_request(AWidth, AHeight);
@@ -14179,7 +14300,7 @@ begin
           [AWidth, AHeight, GetTickCount64,
            FResizeState.ShadowW, FResizeState.ShadowH]));
         {$ENDIF}
-        if (csDesigning in AForm.ComponentState) then
+        if (AWidth > 1) and (AHeight > 1) then
           PGtkWindow(Widget)^.set_default_size(AWidth, AHeight);
         if AIsWayland then
           PGtkWindow(Widget)^.resize(AWidth, AHeight)
@@ -14444,14 +14565,24 @@ begin
 end;
 
 procedure TGtk3Window.Activate;
+var
+  ATime: guint32;
 begin
+  if not Assigned(LCLObject) then
+    exit;
   if Gtk3IsGtkWindow(fWidget) then
   begin
     if Gtk3IsGdkWindow(PGtkWindow(FWidget)^.window) then
     begin
-      PGtkWindow(FWidget)^.window^.raise_;
-      PGtkWindow(FWidget)^.present;
-      PGtkWindow(FWidget)^.activate;
+      ATime := gtk_get_current_event_time;
+      if ATime = 0 then
+        ATime := Gtk3WidgetSet.LastUserEventTime;
+      if ATime <> 0 then
+      begin
+        PGtkWindow(FWidget)^.window^.raise_;
+        PGtkWindow(FWidget)^.present_with_time(ATime);
+      end else
+        PGtkWindow(FWidget)^.activate;
     end;
   end;
 end;

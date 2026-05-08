@@ -1,209 +1,95 @@
 {%MainUnit gtk3widgets.pas}
 
-{Return the CSS-minimum height of the notebook tab bar.
- The first call measures via get_preferred_height and caches the result in
- g_object_data so that subsequent SizeAllocate and Draw calls are free.
- min_h is stable for the widget lifetime under a given CSS theme, a stale
- value only affects the guard thresholds, not visual correctness.}
-function LCLGtkNotebookGetCachedMinH(widget: PGtkWidget;
-  ParentClass: PGtkWidgetClass): gint;
+procedure LCLGtkNotebookGetPreferredHeightForWidth(widget: PGtkWidget;
+  width: gint; minimum_height: Pgint; natural_height: Pgint); cdecl;
 var
-  nat_h: gint;
-  cached: gpointer;
-begin
-  cached := g_object_get_data(PGObject(widget), 'lcl-nb-min-h');
-  if cached <> nil then
-    Result := gint(PtrInt(cached))
-  else
-  begin
-    nat_h := 0;
-    Result := 0;
-    ParentClass^.get_preferred_height(widget, @Result, @nat_h);
-    if Result > 0 then
-      g_object_set_data(PGObject(widget), 'lcl-nb-min-h', gpointer(PtrInt(Result)));
-  end;
-end;
-
-function LCLGtkNotebookGetCachedMinW(widget: PGtkWidget;
-  ParentClass: PGtkWidgetClass): gint;
-var
-  nat_w: gint;
-  cached: gpointer;
-begin
-  cached := g_object_get_data(PGObject(widget), 'lcl-nb-min-w');
-  if cached <> nil then
-    Result := gint(PtrInt(cached))
-  else
-  begin
-    nat_w := 0;
-    Result := 0;
-    ParentClass^.get_preferred_width(widget, @Result, @nat_w);
-    if Result > 0 then
-      g_object_set_data(PGObject(widget), 'lcl-nb-min-w', gpointer(PtrInt(Result)));
-  end;
-end;
-
-procedure LCLGtkNotebookGetPreferredWidth(widget: PGtkWidget; min_width, nat_width: Pgint); cdecl;
-var
-  AControl: TGtk3Widget;
   ParentClass: PGtkWidgetClass;
-  min_w, parent_min: gint;
+  min_w: gint;
+  nat_w: gint;
 begin
-  if not Assigned(min_width) or not Assigned(nat_width) then
-  begin
-    DebugLn('Error: LCLGtkNotebookGetPreferredWidth invalid params.');
-    Exit;
-  end;
-
-  min_width^ := 0;
-  nat_width^ := 0;
-
-  if not Gtk3IsWidget(widget) then
-  begin
-    DebugLn('Error: LCLGtkNotebookGetPreferredWidth widget param is not PGtkWidget.');
-    Exit;
-  end;
-
   ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
   if not Assigned(ParentClass) then
+    Exit;
+  ParentClass^.get_preferred_width(widget, @min_w, @nat_w);
+  if (min_w > 0) and (width < min_w) then
   begin
-    DebugLn('Error: LCLGtkNotebookGetPreferredWidth cannot get ParentClass !');
+    if Assigned(ParentClass^.get_preferred_height) then
+      ParentClass^.get_preferred_height(widget, minimum_height, natural_height);
     Exit;
   end;
-
-  parent_min := 0;
-  ParentClass^.get_preferred_width(widget, @parent_min, nat_width);
-
-  min_w := LCLGtkNotebookGetCachedMinW(widget, ParentClass);
-  min_width^ := min_w;
-
-  AControl := TGtk3Widget(HwndFromGtkWidget(widget));
-  if not Assigned(AControl) then
-  begin
-    if nat_width^ < min_w then
-      nat_width^ := min_w;
-    Exit;
-  end;
-
-  if nat_width^ < min_w then
-    nat_width^ := min_w;
+  if Assigned(ParentClass^.get_preferred_height_for_width) then
+    ParentClass^.get_preferred_height_for_width(widget, width, minimum_height, natural_height);
 end;
 
-procedure LCLGtkNotebookGetPreferredHeight(widget: PGtkWidget; min_height, nat_height: Pgint); cdecl;
+procedure LCLGtkNotebookGetPreferredWidthForHeight(widget: PGtkWidget;
+  height: gint; minimum_width: Pgint; natural_width: Pgint); cdecl;
 var
-  AControl: TGtk3Widget;
   ParentClass: PGtkWidgetClass;
   min_h: gint;
+  nat_h: gint;
 begin
-  if not Assigned(min_height) or not Assigned(nat_height) then
-  begin
-    DebugLn('Error: LCLGtkNotebookGetPreferredHeight invalid params.');
-    Exit;
-  end;
-
-  min_height^ := 0;
-  nat_height^ := 0;
-
-  if not Gtk3IsWidget(widget) then
-  begin
-    DebugLn('Error: LCLGtkNotebookGetPreferredHeight widget param is not PGtkWidget.');
-    Exit;
-  end;
-
   ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
   if not Assigned(ParentClass) then
+    Exit;
+  ParentClass^.get_preferred_height(widget, @min_h, @nat_h);
+  if (min_h > 0) and (height < min_h) then
   begin
-    DebugLn('Error: LCLGtkNotebookGetPreferredHeight cannot get ParentClass !');
+    if Assigned(ParentClass^.get_preferred_width) then
+      ParentClass^.get_preferred_width(widget, minimum_width, natural_width);
     Exit;
   end;
-
-  {Use cached min_h to avoid re-traversing the full widget tree on every
-   layout pass. gtk_layout_allocate_child calls get_preferred_size on every
-   child during each allocation — for a form with a 15-tab notebook this means
-   15-label measurement on every resize frame. After the first measurement the
-   CSS tab-bar minimum is stable; subsequent queries are answered from cache.
-   LCLGtkNotebookGetCachedMinH measures via ParentClass^.get_preferred_height
-   exactly once and stores the result in g_object_data lcl-nb-min-h.}
-  min_h := LCLGtkNotebookGetCachedMinH(widget, ParentClass);
-  min_height^ := min_h;
-
-  AControl := TGtk3Widget(HwndFromGtkWidget(widget));
-  if not Assigned(AControl) then
-  begin
-    nat_height^ := min_h;  // nat must be >= min per GTK contract
-    Exit;
-  end;
-
-  if nat_height^ < min_h then
-    nat_height^ := min_h;
+  if Assigned(ParentClass^.get_preferred_width_for_height) then
+    ParentClass^.get_preferred_width_for_height(widget, height, minimum_width, natural_width);
 end;
 
 procedure LCLGtkNotebookSizeAllocate(widget: PGtkWidget; allocation: PGtkAllocation); cdecl;
 var
   ParentClass: PGtkWidgetClass;
-  min_h: gint;
-  ClampedAlloc: TGtkAllocation;
-  AControl: TGtk3Widget;
+  min_h, min_w: gint;
+  nat_h, nat_w: gint;
+  tooSmall: Boolean;
+  Last1W, Last1H, Last2W, Last2H: PtrInt;
 begin
   ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
   if not Assigned(ParentClass) or not Assigned(ParentClass^.size_allocate) then
     Exit;
-  //Skip tiny placeholder allocations (height < 2) BEFORE clamping.
-  if allocation^.height < 2 then
-    Exit;
-  //Clamp allocation height to the parent-class CSS minimum.
-  //size_allocate bypasses get_preferred_height, so even a correct minimum
-  //returned there won't prevent direct allocations smaller than the tab-bar
-  //height, which drive the CSS gadget distributor negative and produce
-  //size >= 0 assertions in LCLGtkNotebook, GtkScrollbar and GtkScrolledWindow.
-  //Use cached min_h to avoid re-measuring the entire widget tree on every pass.
-  min_h := LCLGtkNotebookGetCachedMinH(widget, ParentClass);
-  ClampedAlloc := allocation^;
-  if ClampedAlloc.height < min_h then
-    ClampedAlloc.height := min_h;
 
-  //Skip.The real allocation arrives once the parent
-  //has real dimensions.
-  if (min_h > 0) and (ClampedAlloc.height <= min_h) then
-    Exit;
+  Last1W := PtrInt(g_object_get_data(PGObject(widget), 'lcl-prev-aw'));
+  Last1H := PtrInt(g_object_get_data(PGObject(widget), 'lcl-prev-ah'));
+  Last2W := PtrInt(g_object_get_data(PGObject(widget), 'lcl-prev2-aw'));
+  Last2H := PtrInt(g_object_get_data(PGObject(widget), 'lcl-prev2-ah'));
 
-  //Guard against GtkLayout stale over-allocation breaking the resize loop.
-  AControl := TGtk3Widget(HwndFromGtkWidget(widget));
-  if Assigned(AControl) and (AControl.LCLHeight > 0) and
-     (ClampedAlloc.height > AControl.LCLHeight) then
-    ClampedAlloc.height := Max(AControl.LCLHeight, min_h);
-
-  {$IFDEF GTK3DEBUGLAYOUT}
-  if Assigned(AControl) and Assigned(AControl.LCLObject) then
-    writeln(Format('LCLGtkNotebookSizeAllocate [%s]  in w=%d h=%d  min_h=%d  clamped h=%d',
-      [dbgsName(AControl.LCLObject), allocation^.width, allocation^.height,
-       min_h, ClampedAlloc.height]));
-  {$ENDIF}
-
-  ParentClass^.size_allocate(widget, @ClampedAlloc);
-end;
-
-function LCLGtkNotebookDraw(widget: PGtkWidget; cr: Pcairo_t): gboolean; cdecl;
-var
-  ParentClass: PGtkWidgetClass;
-  min_h: gint;
-  alloc: TGtkAllocation;
-begin
-  Result := gboolean(False);
-  ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
-  if not Assigned(ParentClass) or not Assigned(ParentClass^.draw) then
+  if ((allocation^.width <> Last1W) or (allocation^.height <> Last1H)) and
+     (allocation^.width = Last2W) and (allocation^.height = Last2H) and
+     (Last2W <> 0) and (Last2H <> 0) then
+  begin
+    gtk_widget_set_allocation(widget, allocation);
+    gtk_widget_set_clip(widget, allocation);
     Exit;
-  widget^.get_allocation(@alloc);
-  //Guard against drawing when the allocated height is insufficient for the
-  //tab-bar header CSS gadget.
-  if alloc.height < 2 then
+  end;
+
+  if (allocation^.width <> Last1W) or (allocation^.height <> Last1H) then
+  begin
+    g_object_set_data(PGObject(widget), 'lcl-prev2-aw', Pointer(PtrInt(Last1W)));
+    g_object_set_data(PGObject(widget), 'lcl-prev2-ah', Pointer(PtrInt(Last1H)));
+    g_object_set_data(PGObject(widget), 'lcl-prev-aw', Pointer(PtrInt(allocation^.width)));
+    g_object_set_data(PGObject(widget), 'lcl-prev-ah', Pointer(PtrInt(allocation^.height)));
+  end;
+
+  min_h := 0; nat_h := 0; min_w := 0; nat_w := 0;
+  ParentClass^.get_preferred_height(widget, @min_h, @nat_h);
+  ParentClass^.get_preferred_width(widget, @min_w, @nat_w);
+
+  tooSmall := ((min_h > 0) and (allocation^.height < min_h)) or
+    ((min_w > 0) and (allocation^.width < min_w));
+
+  if tooSmall then
+  begin
+    gtk_widget_set_allocation(widget, allocation);
+    gtk_widget_set_clip(widget, allocation);
     Exit;
-  //Use cached min_h — get_preferred_height traverses the full widget tree and
-  //is too expensive to call on every draw frame during resize.
-  min_h := LCLGtkNotebookGetCachedMinH(widget, ParentClass);
-  if (min_h > 0) and (alloc.height < min_h) then
-    Exit;
-  Result := ParentClass^.draw(widget, cr);
+  end;
+  ParentClass^.size_allocate(widget, allocation);
 end;
 
 procedure LCLGtkNotebookClassInit(klass: PGTypeClass; {%H-}data: Pointer); cdecl;
@@ -211,15 +97,13 @@ var
   AWidgetClass: PGtkWidgetClass;
 begin
   AWidgetClass := PGtkWidgetClass(klass);
-  AWidgetClass^.get_preferred_width := @LCLGtkNotebookGetPreferredWidth;
-  AWidgetClass^.get_preferred_height := @LCLGtkNotebookGetPreferredHeight;
   AWidgetClass^.size_allocate := @LCLGtkNotebookSizeAllocate;
-  AWidgetClass^.draw := @LCLGtkNotebookDraw;
+  AWidgetClass^.get_preferred_height_for_width := @LCLGtkNotebookGetPreferredHeightForWidth;
+  AWidgetClass^.get_preferred_width_for_height := @LCLGtkNotebookGetPreferredWidthForHeight;
 end;
 
 procedure LCLGtkNotebookInstanceInit({%H-}instance: PGTypeInstance; {%H-}klass: PGTypeClass); cdecl;
 begin
-  //
 end;
 
 var
@@ -247,7 +131,6 @@ begin
 end;
 
 function LCLGtkNotebookNew: PGtkNotebook;
-begin                                                         {in gtk3 this is default}
-  Result := PGtkNotebook(g_object_new(LCLGtkNotebookGetType(),'show-tabs',[gboolean(True), nil]));
+begin
+  Result := PGtkNotebook(g_object_new(LCLGtkNotebookGetType(), 'show-tabs', [gboolean(True), nil]));
 end;
-
