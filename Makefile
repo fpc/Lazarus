@@ -402,6 +402,9 @@ endif
 ifdef LAZBUILDJOBS
 LAZBUILDOPTS+= --max-process-count=$(LAZBUILDJOBS)
 endif
+ifdef OPT
+LAZBUILDOPTS+= --opt="$(OPT)"
+endif
 ifeq ($(CPU_OS_TARGET),i386-linux)
 override TARGET_PROGRAMS+=lazarus startlazarus lazbuild
 endif

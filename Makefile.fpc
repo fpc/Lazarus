@@ -64,6 +64,9 @@ endif
 ifdef LAZBUILDJOBS
 LAZBUILDOPTS+= --max-process-count=$(LAZBUILDJOBS)
 endif
+ifdef OPT
+LAZBUILDOPTS+= --opt="$(OPT)"
+endif
 
 #-----------------------------------------------------------------------------
 [rules]
