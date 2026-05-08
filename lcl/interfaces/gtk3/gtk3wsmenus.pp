@@ -481,6 +481,13 @@ begin
   ARightDown := SmallInt(Gtk3WidgetSet.GetKeyState(VK_RBUTTON)) < 0;
   AMiddleDown := SmallInt(Gtk3WidgetSet.GetKeyState(VK_MBUTTON)) < 0;
 
+  ASource := APopupMenu.PopupComponent;
+  ASourceWin := nil;
+  if ASource is TWinControl then
+    ASourceWin := TWinControl(ASource);
+  if (ASourceWin = nil) or not ASourceWin.HandleAllocated then
+    ASourceWin := FindLCLWindow(Point(X, Y));
+
   {$IFDEF GTK3DEBUGMENUS}
   DebugLn('TGtk3WSPopupMenu.Popup X=',dbgs(X),' Y=',dbgs(Y));
   {$ENDIF}
@@ -507,12 +514,6 @@ begin
   if not (ALeftDown or ARightDown or AMiddleDown) then
     Exit;
 
-  ASource := APopupMenu.PopupComponent;
-  ASourceWin := nil;
-  if ASource is TWinControl then
-    ASourceWin := TWinControl(ASource);
-  if (ASourceWin = nil) or not ASourceWin.HandleAllocated then
-    ASourceWin := FindLCLWindow(Mouse.CursorPos);
   if (ASourceWin <> nil) and ASourceWin.HandleAllocated then
   begin
     if ARightDown then
