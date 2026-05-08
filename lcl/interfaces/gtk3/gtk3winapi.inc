@@ -5449,11 +5449,15 @@ begin
     DebugLn('Trace:> [TGtk3WidgetSet.StretchMaskBlt]');
   {$endif}
 
+  if not IsValidDC(SrcDC) or not IsValidDC(DestDC) then
+    exit;
+
   if Assigned(SrcContext.pcr) and SrcContext.OwnsSurface then
   begin
     Width := Round(Width / SrcContext.CanvasScaleFactor);
     Height := Round(Height / SrcContext.CanvasScaleFactor);
   end;
+
   ATargetRect := Rect(X, Y, Width + X, Height + Y);
   ASrcRect := Rect(XSrc, YSrc, SrcWidth + XSrc, SrcHeight + YSrc);
   AMaskRect := Bounds(XMask, YMask, SrcWidth, SrcHeight);
