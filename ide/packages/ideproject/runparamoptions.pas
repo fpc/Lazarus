@@ -46,7 +46,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, System.UITypes,
   // LazUtils
-  LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg,
+  LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg, FileUtil,
   // BuildIntf
   BaseIDEIntf, ProjectIntf, MacroIntf;
 
@@ -121,8 +121,6 @@ const
 
 function FindTerminalInPath(const ATerm: String = ''): String;
 var
-  List: TStrings;
-  i: Integer;
   s: String;
   Term: String;
 begin
@@ -130,35 +128,24 @@ begin
   Term := ATerm;
   if Term = '' then
     Term := GetEnvironmentVariableUTF8('TERM');
-  List := TStringList.Create;
   {$IFDEF MSWINDOWS}
-  List.Delimiter := ';';
   if Term = '' then
     Term := 'cmd.exe';
   {$ELSE}
-  List.Delimiter := ':';
   if Term = '' then
-    Term := 'xterm';
+    Term := 'gnome-terminal';
   {$ENDIF}
-  List.DelimitedText := GetEnvironmentVariableUTF8('PATH');
-  for i := 0 to List.Count - 1 do
+  S:=FindDefaultExecutablePath(Term);
+  if FileExistsCached(S) and FileIsExecutableCached(S) then
   begin
-    S := List.Strings[i] + PathDelim + Term;
-    if FileExistsCached(S) and FileIsExecutableCached(S) then
-    begin
-      // gnome-terminal is not compatible to xterm params.
-      if Term = 'gnome-terminal' then
-        Result := S + ' -t ' + DefaultLauncherTitle + ' -e ' +
-          '''' + DefaultLauncherApplication + ''''
-      else if SameText(Term,'cmd.exe') then
-        Result := S + ' /C ${TargetCmdLine}'
-      else
-        Result := S + ' -T ' + DefaultLauncherTitle + ' -e ' +
-          DefaultLauncherApplication;
-      break;
-    end;
+    // gnome-terminal is not compatible to xterm params.
+    if Term = 'gnome-terminal' then
+      Result := S + ' -t ' + DefaultLauncherTitle + ' -- ' + DefaultLauncherApplication
+    else if SameText(Term,'cmd.exe') then
+      Result := S + ' /C ${TargetCmdLine}'
+    else
+      Result := S + ' -T ' + DefaultLauncherTitle + ' -e ' + DefaultLauncherApplication;
   end;
-  List.Free;
 end;
 
 var
