@@ -877,23 +877,20 @@ begin
       AStream.Seek(StreamStart + IconDir[n].dwImageOffset, soBeginning);
       
       ImgReader := nil;
-      if (IconDir[n].bWidth = 0) or (IconDir[n].bHeight = 0)
-      then begin
-        // PNG or DIB image
-        // Vista icons are PNG in this case, but there exist also "old style" icons
-        // with DIB image
-        
-        // don't use PNGReader.CheckContents(AStream) since it uses internally
-        // an exception for checking, which is not "nice" when debugging.
-        AStream.Read(PNGSig, SizeOf(PNGSig));
-        AStream.Seek(StreamStart + IconDir[n].dwImageOffset, soBeginning);
+      // Check for PNG image
+      // Modern ICO files can contain PNG-compressed images at any size,
+      // not just 256x256 (where bWidth/bHeight = 0)
+      
+      // don't use PNGReader.CheckContents(AStream) since it uses internally
+      // an exception for checking, which is not "nice" when debugging.
+      AStream.Read(PNGSig, SizeOf(PNGSig));
+      AStream.Seek(StreamStart + IconDir[n].dwImageOffset, soBeginning);
 
-        if QWord(PNGComn.Signature) = QWord(PNGSig)
-        then begin
-          if PNGReader = nil
-          then PNGReader := TLazReaderPNG.Create;
-          ImgReader := PNGReader;
-        end;
+      if QWord(PNGComn.Signature) = QWord(PNGSig)
+      then begin
+        if PNGReader = nil
+        then PNGReader := TLazReaderPNG.Create;
+        ImgReader := PNGReader;
       end;
       
       if ImgReader = nil
