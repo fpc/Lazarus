@@ -1789,13 +1789,15 @@ end;
 procedure SetWindowCursor(AWindow: PGdkWindow; Cursor: PGdkCursor; ASetDefault: Boolean);
 var
   OldCursor: PGdkCursor;
-  Data: gpointer;
+  SavedCursor: PGdkCursor;
 begin
   if ASetDefault then //and ((Cursor <> nil) or ( <> nil)) then
   begin
-    // Override any old default cursor
-    g_object_steal_data(PGObject(AWindow), 'havesavedcursor'); // OK?
-    g_object_steal_data(PGObject(AWindow), 'savedcursor');
+    // Override any old default cursor.
+    SavedCursor := PGdkCursor(g_object_steal_data(PGObject(AWindow), 'savedcursor'));
+    if SavedCursor <> nil then
+      g_object_unref(SavedCursor);
+    g_object_steal_data(PGObject(AWindow), 'havesavedcursor');
     gdk_window_set_cursor(AWindow, Cursor);
     Exit;
   end;
@@ -1804,6 +1806,8 @@ begin
     OldCursor := gdk_window_get_cursor(AWindow);
     if ASetDefault or (g_object_get_data(PGObject(AWindow), 'havesavedcursor') = nil) then
     begin
+      if OldCursor <> nil then
+        g_object_ref(OldCursor);
       g_object_set_data(PGObject(AWindow), 'havesavedcursor', gpointer(1));
       g_object_set_data(PGObject(AWindow), 'savedcursor', gpointer(OldCursor));
     end;
@@ -1812,8 +1816,10 @@ begin
   begin
     if g_object_steal_data(PGObject(AWindow), 'havesavedcursor') <> nil then
     begin
-      Cursor := g_object_steal_data(PGObject(AWindow), 'savedcursor');
-      gdk_window_set_cursor(AWindow, Cursor);
+      SavedCursor := PGdkCursor(g_object_steal_data(PGObject(AWindow), 'savedcursor'));
+      gdk_window_set_cursor(AWindow, SavedCursor);
+      if SavedCursor <> nil then
+        g_object_unref(SavedCursor);
     end;
   end;
 end;
