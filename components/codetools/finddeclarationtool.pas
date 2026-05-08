@@ -7266,10 +7266,6 @@ var
 
         //here we know if it was a dotted ident and its length, put it in Params and exploit ...
         if not IsDotted then dLen:=0;
-
-        if PredefinedResult then
-          Include(Params.Flags, fdfPredefinedResult);
-
         //dLen>0  will force searching from units names first
         Params.ContextNode:=CursorNode;
         //debugln(['ReadIdentifier "',copy(Src,IdentStartPos,200),'"']);
@@ -7307,6 +7303,8 @@ var
                            fdfSearchInAncestors,
                            fdfSearchInHelpers,
                            fdfIgnoreCurContextNode];
+            if PredefinedResult then
+              Include(Params.Flags, fdfPredefinedResult);
             Found:=FindDeclarationOfIdentAtParam(Params,DefaultResultNode);
           end;
         except
