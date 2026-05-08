@@ -1290,10 +1290,10 @@ begin
     Include(Result, ssLeft);
 
   if GDK_BUTTON2_MASK in AState  then
-    Include(Result, ssRight);
+    Include(Result, ssMiddle);
 
   if GDK_BUTTON3_MASK in AState  then
-    Include(Result, ssMiddle);
+    Include(Result, ssRight);
 
   if GDK_BUTTON4_MASK in AState  then
     Include(Result, ssExtra1);

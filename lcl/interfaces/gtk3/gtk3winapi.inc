@@ -2782,10 +2782,10 @@ begin
       if GDK_BUTTON1_MASK in AModifiers  then
         Result := Result or StateDown;
     VK_RBUTTON:
-      if GDK_BUTTON2_MASK in AModifiers  then
+      if GDK_BUTTON3_MASK in AModifiers  then
         Result := Result or StateDown;
     VK_MBUTTON:
-      if GDK_BUTTON3_MASK in AModifiers  then
+      if GDK_BUTTON2_MASK in AModifiers  then
         Result := Result or StateDown;
     VK_XBUTTON1:
       if GDK_BUTTON4_MASK in AModifiers  then
