@@ -2268,7 +2268,17 @@ begin
           SizeMsg.Width  := Word(ACtl.Width);
           SizeMsg.Height := Word(ACtl.Height);
         end;
+        {$IFDEF GTK3DEBUGSIZE}
+        DebugLn(Format('Gtk3DrainResizeQueue %s pre-LM_SIZE Msg=%dx%d LCL=%dx%d',
+          [ACtl.ClassName + ':' + ACtl.Name, SizeMsg.Width, SizeMsg.Height,
+           ACtl.Width, ACtl.Height]));
+        {$ENDIF}
         ACtl.WindowProc(TLMessage(SizeMsg));
+        {$IFDEF GTK3DEBUGSIZE}
+        DebugLn(Format('Gtk3DrainResizeQueue %s post-LM_SIZE Msg=%dx%d LCL=%dx%d',
+          [ACtl.ClassName + ':' + ACtl.Name, SizeMsg.Width, SizeMsg.Height,
+           ACtl.Width, ACtl.Height]));
+        {$ENDIF}
       end;
     end;
 

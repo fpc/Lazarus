@@ -170,6 +170,19 @@ begin
   Result := FIsWayland;
 end;
 
+function TGtk3WidgetSet.IsKDEPlasmaWaylandSession: boolean;
+var
+  s: string;
+begin
+  //NOTE: this is hack for Qt5 KDE Plasma wayland, so might
+  //be unnecessary with KDE Plasma 6.
+  Result := False;
+  if not FIsWayland then
+    exit;
+  s := SysUtils.GetEnvironmentVariable('XDG_CURRENT_DESKTOP');
+  Result := SameText(s, 'KDE') or SameText(s, 'PLASMA') or SameText(s, 'KDE-Plasma');
+end;
+
 {$IFNDEF UNIX}
 procedure TGtk3WidgetSet.DoWakeMainThread(Sender: TObject);
 begin

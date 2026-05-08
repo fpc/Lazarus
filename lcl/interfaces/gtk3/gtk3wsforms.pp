@@ -276,8 +276,7 @@ var
   AForm, OtherForm: TCustomForm;
   AWindow, ATransient: PGtkWindow;
   i: Integer;
-  AGeom: TGdkGeometry;
-  AGeomMask: TGdkWindowHints;
+  SavedH: PtrInt;
   ShouldBeVisible: Boolean;
   AGtk3Widget: TGtk3Widget;
   OtherGtk3Window: TGtk3Window;
@@ -392,28 +391,40 @@ begin
 
   ShouldBeVisible:=AForm.HandleObjectShouldBeVisible;
 
-  if Assigned(AWindow) and (AForm.Parent = nil) and not IsFormDesign(AForm) then
+  if Assigned(AWindow) and (AForm.Parent = nil) and not IsFormDesign(AForm) and
+     (AForm.BorderStyle <> bsNone) then
   begin
-    if ShouldBeVisible and
-       ((AWinControl.Width <= 1) or (AWinControl.Height <= 1)) then
+    if ShouldBeVisible then
     begin
       i := PtrInt(g_object_get_data(PGObject(AGtk3Widget.Widget), 'lcl-form-last-w'));
       if i > 1 then
       begin
+        SavedH := PtrInt(g_object_get_data(PGObject(AGtk3Widget.Widget), 'lcl-form-last-h'));
         {$IF DEFINED(GTK3DEBUGCORE) OR DEFINED(GTK3DEBUGSIZE)}
         DebugLn('TGtk3WSCustomForm.ShowHide ', dbgsName(AWinControl),
-          ' RESTORE bounds from saved (', IntToStr(i), 'x',
-          IntToStr(PtrInt(g_object_get_data(PGObject(AGtk3Widget.Widget), 'lcl-form-last-h'))),
-          ') - LCL was degenerate ', IntToStr(AWinControl.Width), 'x', IntToStr(AWinControl.Height));
+          ' RESTORE bounds from saved (', IntToStr(i), 'x', IntToStr(SavedH),
+          ') - LCL was ', IntToStr(AWinControl.Width), 'x', IntToStr(AWinControl.Height));
         {$ENDIF}
-        AWinControl.SetBounds(AWinControl.Left, AWinControl.Top,
-          i, PtrInt(g_object_get_data(PGObject(AGtk3Widget.Widget), 'lcl-form-last-h')));
+        AWinControl.SetBounds(AWinControl.Left, AWinControl.Top, i, SavedH);
+        //lcl-form-last-w/h is cleared by WindowSizeAllocate on the first WSA
+        //after show. KDE Plasma Wayland needs it kept armed as kwin-override
+        //protect target. We add a 100ms time bound for that.
+        //TODO: heavy test with 50ms timeout.
+        if Gtk3WidgetSet.IsKDEPlasmaWaylandSession then
+          g_object_set_data(PGObject(AGtk3Widget.Widget), 'lcl-kwin-protect-until',
+            Pointer(PtrUInt(GetTickCount64 + 100)));
       end;
     end else
     if (AWinControl.Width > 1) and (AWinControl.Height > 1) then
     begin
       g_object_set_data(PGObject(AGtk3Widget.Widget), 'lcl-form-last-w', Pointer(PtrInt(AWinControl.Width)));
       g_object_set_data(PGObject(AGtk3Widget.Widget), 'lcl-form-last-h', Pointer(PtrInt(AWinControl.Height)));
+      g_object_set_data(PGObject(AGtk3Widget.Widget), 'lcl-kwin-protect-until', nil);
+      {$IF DEFINED(GTK3DEBUGCORE) OR DEFINED(GTK3DEBUGSIZE)}
+      DebugLn('TGtk3WSCustomForm.ShowHide ', dbgsName(AWinControl),
+        ' SAVE bounds (', IntToStr(AWinControl.Width), 'x',
+        IntToStr(AWinControl.Height), ') for next show');
+      {$ENDIF}
     end;
   end;
 

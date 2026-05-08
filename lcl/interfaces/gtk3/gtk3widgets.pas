@@ -3879,9 +3879,9 @@ begin
 
   {$IFDEF GTK3DEBUGSIZE}
   if Assigned(LCLObject) then
-    writeln(Format('SetBounds %s l=%d t=%d w=%d h=%d (LCLObj w=%d h=%d wt=%d)',
+    writeln(Format('SetBounds %s l=%d t=%d w=%d h=%d (LCLObj w=%d h=%d)',
       [dbgsName(LCLObject), ALeft, ATop, AWidth, AHeight,
-       LCLObject.Width, LCLObject.Height, LongInt(FWidgetType)]));
+       LCLObject.Width, LCLObject.Height]));
   {$ENDIF}
 
   LCLWidth := AWidth;
@@ -13272,6 +13272,32 @@ begin
   // DeliverMessage(Msg);
 end;
 
+type
+  PKwinResizeIdleData = ^TKwinResizeIdleData;
+  TKwinResizeIdleData = record
+    Widget: PGtkWidget;
+    W, H: gint;
+  end;
+
+function Gtk3KwinResizeIdleCB(AData: gpointer): gboolean; cdecl;
+var
+  D: PKwinResizeIdleData;
+begin
+  Result := G_SOURCE_REMOVE_;
+  D := PKwinResizeIdleData(AData);
+  if D = nil then Exit;
+  if Gtk3IsGtkWindow(D^.Widget) and (D^.W > 0) and (D^.H > 0) then
+  begin
+    {$IFDEF GTK3DEBUGSIZE}
+    writeln(Format('[%d] Gtk3KwinResizeIdleCB set_default_size(%d, %d) + resize(%d, %d)',
+      [GetTickCount64, D^.W, D^.H, D^.W, D^.H]));
+    {$ENDIF}
+    PGtkWindow(D^.Widget)^.set_default_size(D^.W, D^.H);
+    PGtkWindow(D^.Widget)^.resize(D^.W, D^.H);
+  end;
+  Dispose(D);
+end;
+
 class procedure TGtk3Window.WindowSizeAllocate(AWidget:PGtkWidget;AGdkRect:
   PGdkRectangle;Data:gpointer);cdecl;
 var
@@ -13282,6 +13308,9 @@ var
   Alloc: TGtkAllocation;
   ADefW, ADefH: gint;
   SzW, SzH: gint;
+  KwinProtectW, KwinProtectH: PtrInt;
+  KwinProtectUntil: PtrUInt;
+  KwinResizeData: PKwinResizeIdleData;
 begin
   if AWidget=nil then ;
 
@@ -13298,6 +13327,57 @@ begin
         Types.OffsetRect(FFirstMapRect, -FFirstMapRect.Left, -FFirstMapRect.Top);
       AGdkRect^ := GdkRectFromRect(TGtk3Window(ACtl).FFirstMapRect);
       TGtk3Window(ACtl).FFirstMapRect := Rect(0, 0, 0, 0);
+    end;
+  end;
+
+  //Drop ShowHide save data on first WSA after show. KDE Plasma Wayland uses it
+  //below as kwin-override protect target (cleared after absorb/timeout).On
+  //other compositors it's just stale.
+  if Gtk3IsGtkWindow(AWidget) and
+     not Gtk3WidgetSet.IsKDEPlasmaWaylandSession and
+     (g_object_get_data(PGObject(AWidget), 'lcl-form-last-w') <> nil) then
+  begin
+    g_object_set_data(PGObject(AWidget), 'lcl-form-last-w', nil);
+    g_object_set_data(PGObject(AWidget), 'lcl-form-last-h', nil);
+  end;
+
+  //KDE Plasma Wayland: kwin overrides our resize() with its remembered geometry
+  //on every show after hide.
+  if Gtk3WidgetSet.IsKDEPlasmaWaylandSession and Gtk3IsGtkWindow(AWidget) and
+     Assigned(ACtl.LCLObject) and AWidget^.get_mapped and
+     (g_object_get_data(PGObject(AWidget), 'lcl-form-last-w') <> nil) then
+  begin
+    KwinProtectUntil := PtrUInt(g_object_get_data(PGObject(AWidget), 'lcl-kwin-protect-until'));
+    KwinProtectW := PtrInt(g_object_get_data(PGObject(AWidget), 'lcl-form-last-w'));
+    KwinProtectH := PtrInt(g_object_get_data(PGObject(AWidget), 'lcl-form-last-h'));
+    if GetTickCount64 >= KwinProtectUntil then
+    begin
+      g_object_set_data(PGObject(AWidget), 'lcl-form-last-w', nil);
+      g_object_set_data(PGObject(AWidget), 'lcl-form-last-h', nil);
+      g_object_set_data(PGObject(AWidget), 'lcl-kwin-protect-until', nil);
+      {$IFDEF GTK3DEBUGSIZE}
+      writeln(Format('[%d] WindowSizeAllocate %s KWIN-PROTECT expired (timeout)',
+        [GetTickCount64, dbgsName(ACtl.LCLObject)]));
+      {$ENDIF}
+    end else
+    if (KwinProtectW > 0) and (KwinProtectH > 0) and
+       ((AGdkRect^.width <> KwinProtectW) or (AGdkRect^.height <> KwinProtectH)) then
+    begin
+      {$IFDEF GTK3DEBUGSIZE}
+      writeln(Format('[%d] WindowSizeAllocate %s KWIN-OVERRIDE detected AGdk=%dx%d protect=%dx%d -> rewrite + idle resize + clear',
+        [GetTickCount64, dbgsName(ACtl.LCLObject),
+         AGdkRect^.width, AGdkRect^.height, KwinProtectW, KwinProtectH]));
+      {$ENDIF}
+      AGdkRect^.width  := KwinProtectW;
+      AGdkRect^.height := KwinProtectH;
+      New(KwinResizeData);
+      KwinResizeData^.Widget := AWidget;
+      KwinResizeData^.W := KwinProtectW;
+      KwinResizeData^.H := KwinProtectH;
+      g_idle_add(@Gtk3KwinResizeIdleCB, KwinResizeData);
+      g_object_set_data(PGObject(AWidget), 'lcl-form-last-w', nil);
+      g_object_set_data(PGObject(AWidget), 'lcl-form-last-h', nil);
+      g_object_set_data(PGObject(AWidget), 'lcl-kwin-protect-until', nil);
     end;
   end;
 
@@ -13479,12 +13559,24 @@ begin
     [GetTickCount64, dbgsName(ACtl.LCLObject), Msg.Width, Msg.Height]));
   {$ENDIF}
   {$ELSE}
+  {$IFDEF GTK3DEBUGSIZE}
+  if Assigned(ACtl.LCLObject) then
+    writeln(Format('[%d] WindowSizeAllocate %s pre-DeliverMessage Msg=%dx%d LCL=%dx%d',
+      [GetTickCount64, dbgsName(ACtl.LCLObject), Msg.Width, Msg.Height,
+       ACtl.LCLObject.Width, ACtl.LCLObject.Height]));
+  {$ENDIF}
   TGtk3Window(ACtl).FResizeState.InWindowSizeAllocate := True;
   try
     ACtl.DeliverMessage(Msg);
   finally
     TGtk3Window(ACtl).FResizeState.InWindowSizeAllocate := False;
   end;
+  {$IFDEF GTK3DEBUGSIZE}
+  if Assigned(ACtl.LCLObject) then
+    writeln(Format('[%d] WindowSizeAllocate %s post-DeliverMessage Msg=%dx%d LCL=%dx%d',
+      [GetTickCount64, dbgsName(ACtl.LCLObject), Msg.Width, Msg.Height,
+       ACtl.LCLObject.Width, ACtl.LCLObject.Height]));
+  {$ENDIF}
   {$IFDEF GTK3DEBUGSCROLLEDWIN}
   writeln(Format('[%d] WindowSizeAllocate %s DeliverMessage DONE',
     [GetTickCount64, dbgsName(ACtl.LCLObject)]));
