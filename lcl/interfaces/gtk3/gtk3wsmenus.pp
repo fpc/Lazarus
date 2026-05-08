@@ -71,7 +71,7 @@ type
 
 
 implementation
-uses gtk3widgets, gtk3int;
+uses gtk3widgets, gtk3int, LCLMessageGlue;
 
 var
   MenuWidget: PGtkWidget = nil;
@@ -453,12 +453,33 @@ end;
 
 class procedure TGtk3WSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X,
   Y: integer);
+
+  procedure SynthesizeRelease(ATarget: TWinControl; AMsgId: Cardinal);
+  var
+    Msg: TLMMouse;
+    Pt: TPoint;
+  begin
+    Pt := ATarget.ScreenToClient(Point(X, Y));
+    FillChar(Msg{%H-}, SizeOf(Msg), 0);
+    Msg.Msg := AMsgId;
+    Msg.XPos := SmallInt(Pt.X);
+    Msg.YPos := SmallInt(Pt.Y);
+    LCLMessageGlue.DeliverMessage(ATarget, TLMessage(Msg));
+  end;
+
 var
   AProc: Pointer;
   ThisMenu: PGtkWidget;
+  ALeftDown, ARightDown, AMiddleDown: Boolean;
+  ASource: TComponent;
+  ASourceWin: TWinControl;
 begin
   TGtk3Menu(APopupMenu.Handle).PopupPoint := Point(X, Y);
   AProc := @GtkWS_Popup;
+
+  ALeftDown := SmallInt(Gtk3WidgetSet.GetKeyState(VK_LBUTTON)) < 0;
+  ARightDown := SmallInt(Gtk3WidgetSet.GetKeyState(VK_RBUTTON)) < 0;
+  AMiddleDown := SmallInt(Gtk3WidgetSet.GetKeyState(VK_MBUTTON)) < 0;
 
   {$IFDEF GTK3DEBUGMENUS}
   DebugLn('TGtk3WSPopupMenu.Popup X=',dbgs(X),' Y=',dbgs(Y));
@@ -481,6 +502,25 @@ begin
     if Application.Terminated then break;
     if not ThisMenu^.get_visible then break;
     Application.Idle(False);
+  end;
+
+  if not (ALeftDown or ARightDown or AMiddleDown) then
+    Exit;
+
+  ASource := APopupMenu.PopupComponent;
+  ASourceWin := nil;
+  if ASource is TWinControl then
+    ASourceWin := TWinControl(ASource);
+  if (ASourceWin = nil) or not ASourceWin.HandleAllocated then
+    ASourceWin := FindLCLWindow(Mouse.CursorPos);
+  if (ASourceWin <> nil) and ASourceWin.HandleAllocated then
+  begin
+    if ARightDown then
+      SynthesizeRelease(ASourceWin, LM_RBUTTONUP);
+    if ALeftDown then
+      SynthesizeRelease(ASourceWin, LM_LBUTTONUP);
+    if AMiddleDown then
+      SynthesizeRelease(ASourceWin, LM_MBUTTONUP);
   end;
 end;
 
