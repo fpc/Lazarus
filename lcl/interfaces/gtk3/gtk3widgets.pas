@@ -1114,6 +1114,7 @@ type
     // allocation-space (what LCL tracks) to content-space (what resize() takes).
     ShadowW: gint;
     ShadowH: gint;
+    WaylandChromeApplied: Boolean;
   end;
 
   { TGtk3Window }
@@ -3876,7 +3877,7 @@ begin
     exit;
 
 
-  {$IFDEF GTK3DEBUGRESIZE}
+  {$IFDEF GTK3DEBUGSIZE}
   if Assigned(LCLObject) then
     writeln(Format('SetBounds %s l=%d t=%d w=%d h=%d (LCLObj w=%d h=%d wt=%d)',
       [dbgsName(LCLObject), ALeft, ATop, AWidth, AHeight,
@@ -13359,13 +13360,58 @@ begin
   Msg.Width := Word(NewSize.cx);
   Msg.Height := Word(NewSize.cy);
 
-  if Gtk3WidgetSet.IsWayland and Gtk3IsGtkWindow(AWidget) then
+  if Gtk3WidgetSet.IsWayland and Gtk3IsGtkWindow(AWidget) and AWidget^.get_mapped then
   begin
     SzW := 0;
     SzH := 0;
     PGtkWindow(AWidget)^.get_size(@SzW, @SzH);
+    {$IFDEF GTK3DEBUGSIZE}
+    writeln(Format('[%d] WindowSizeAllocate %s Wayland get_size w=%d h=%d LCL w=%d h=%d AGdk w=%d h=%d',
+      [GetTickCount64, dbgsName(ACtl.LCLObject), SzW, SzH,
+       ACtl.LCLObject.Width, ACtl.LCLObject.Height,
+       AGdkRect^.Width, AGdkRect^.Height]));
+    {$ENDIF}
+
+    if (SzW > 0) and (SzH > 0) and
+       (SzW <= AGdkRect^.Width) and (SzH <= AGdkRect^.Height) and
+       (AGdkRect^.Width - SzW < 250) and (AGdkRect^.Height - SzH < 250) then
+    begin
+      TGtk3Window(ACtl).FResizeState.ShadowW := Max(0, AGdkRect^.Width  - SzW);
+      TGtk3Window(ACtl).FResizeState.ShadowH := Max(0, AGdkRect^.Height - SzH);
+      {$IFDEF GTK3DEBUGSIZE}
+      writeln(Format('[%d] WindowSizeAllocate %s shadow updated to %dx%d (AGdk=%dx%d sz=%dx%d)',
+        [GetTickCount64, dbgsName(ACtl.LCLObject),
+         TGtk3Window(ACtl).FResizeState.ShadowW, TGtk3Window(ACtl).FResizeState.ShadowH,
+         AGdkRect^.Width, AGdkRect^.Height, SzW, SzH]));
+      {$ENDIF}
+    end;
+
+    if not TGtk3Window(ACtl).FResizeState.WaylandChromeApplied and
+       (TGtk3Window(ACtl).FResizeState.ShadowH > 0) and Assigned(ACtl.LCLObject) and
+       (ACtl.LCLObject.Width > 0) and (ACtl.LCLObject.Height > 0) and
+       (SzH < ACtl.LCLObject.Height div 2) and (ACtl.LCLObject is TCustomForm) and
+       (TCustomForm(ACtl.LCLObject).BorderStyle <> bsNone) and
+       ([wtHintWindow, wtMDIChild] * ACtl.WidgetType = []) and
+       not (csDesigning in ACtl.LCLObject.ComponentState) and
+       (AState * [GDK_WINDOW_STATE_ICONIFIED, GDK_WINDOW_STATE_MAXIMIZED, GDK_WINDOW_STATE_FULLSCREEN] = []) then
+    begin
+      TGtk3Window(ACtl).FResizeState.WaylandChromeApplied := True;
+      {$IFDEF GTK3DEBUGSIZE}
+      writeln(Format('[%d] WindowSizeAllocate %s Wayland CHROME-COMPENSATE resize(%d, %d) [LCL=%dx%d shadow=%dx%d content_was=%dx%d]',
+        [GetTickCount64, dbgsName(ACtl.LCLObject),
+         ACtl.LCLObject.Width, ACtl.LCLObject.Height, ACtl.LCLObject.Width, ACtl.LCLObject.Height,
+         TGtk3Window(ACtl).FResizeState.ShadowW, TGtk3Window(ACtl).FResizeState.ShadowH, SzW, SzH]));
+      {$ENDIF}
+      PGtkWindow(AWidget)^.resize(ACtl.LCLObject.Width, ACtl.LCLObject.Height);
+    end;
+
+    if (NewSize.cx = ACtl.LCLObject.Width) and (NewSize.cy = ACtl.LCLObject.Height) then
+      exit;
     if (SzW > 0) and (SzH > 0) and
        (SzW = ACtl.LCLObject.Width) and (SzH = ACtl.LCLObject.Height) then
+      exit;
+    if (SzW > 0) and (SzH > 0) and
+       ((SzH < AGdkRect^.Height div 2) or (SzW < AGdkRect^.Width div 2)) then
       exit;
     NewSize.cx := SzW;
     NewSize.cy := SzH;
@@ -13394,11 +13440,35 @@ begin
   SzW := 0; SzH := 0;
   if Gtk3IsGtkWindow(AWidget) then
     PGtkWindow(AWidget)^.get_size(@SzW, @SzH);
-  if (SzW > 0) and (SzH > 0) then
+  if (SzW > 0) and (SzH > 0) and
+     (SzW <= AGdkRect^.Width) and (SzH <= AGdkRect^.Height) and
+     (AGdkRect^.Width - SzW < 250) and (AGdkRect^.Height - SzH < 250) then
   begin
     TGtk3Window(ACtl).FResizeState.ShadowW := Max(0, AGdkRect^.Width  - SzW);
     TGtk3Window(ACtl).FResizeState.ShadowH := Max(0, AGdkRect^.Height - SzH);
+    {$IFDEF GTK3DEBUGSIZE}
+    DebugLn(Format('[%d] WindowSizeAllocate %s shadow updated to %dx%d (AGdk=%dx%d sz=%dx%d)',
+      [GetTickCount64, dbgsName(ACtl.LCLObject),
+       TGtk3Window(ACtl).FResizeState.ShadowW, TGtk3Window(ACtl).FResizeState.ShadowH,
+       AGdkRect^.Width, AGdkRect^.Height, SzW, SzH]));
+    {$ENDIF}
   end;
+
+  if Gtk3WidgetSet.IsWayland and Gtk3IsGtkWindow(AWidget) and AWidget^.get_mapped and
+     not TGtk3Window(ACtl).FResizeState.WaylandChromeApplied and
+     (TGtk3Window(ACtl).FResizeState.ShadowH > 0) and Assigned(ACtl.LCLObject) and
+     (ACtl.LCLObject.Width > 0) and (ACtl.LCLObject.Height > 0) and
+     (SzH < ACtl.LCLObject.Height) then
+  begin
+    TGtk3Window(ACtl).FResizeState.WaylandChromeApplied := True;
+    {$IFDEF GTK3DEBUGSIZE}
+    writeln(Format('[%d] WindowSizeAllocate %s Wayland CHROME-COMPENSATE resize(%d, %d) [LCL=%dx%d shadow=%dx%d content_was=%dx%d]',
+      [GetTickCount64, dbgsName(ACtl.LCLObject), ACtl.LCLObject.Width, ACtl.LCLObject.Height, ACtl.LCLObject.Width, ACtl.LCLObject.Height,
+       TGtk3Window(ACtl).FResizeState.ShadowW, TGtk3Window(ACtl).FResizeState.ShadowH, SzW, SzH]));
+    {$ENDIF}
+    PGtkWindow(AWidget)^.resize(ACtl.LCLObject.Width, ACtl.LCLObject.Height);
+  end;
+
   TGtk3Window(ACtl).FResizeState.PrevWSATime := TGtk3Window(ACtl).FResizeState.LastWSATime;
   TGtk3Window(ACtl).FResizeState.LastWSATime := GetTickCount64;
   {$IFDEF GTK3USEDEFERREDRESIZING}
@@ -13774,7 +13844,10 @@ begin
     else
       FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtScrollingWinControl];
   end;
-  Text := Params.Caption;
+  if (Params.Caption = '') and (LCLObject is TCustomForm) then
+    Text := TCustomForm(LCLObject).Caption
+  else
+    Text := Params.Caption;
 
   FBox := TGtkVBox.new(GTK_ORIENTATION_VERTICAL, 0);
 
@@ -13794,7 +13867,14 @@ begin
   PGtkContainer(Result)^.add(FBox);
 
   if Gtk3IsGtkWindow(Result) and (LCLObject.Width > 0) and (LCLObject.Height > 0) then
+  begin
+    {$IFDEF GTK3DEBUGSIZE}
+    DebugLn(Format('TGtk3Window.CreateWidget %s set_default_size(%d, %d) IsWayland=%s',
+      [dbgsName(LCLObject), LCLObject.Width, LCLObject.Height,
+       BoolToStr(Gtk3WidgetSet.IsWayland, True)]));
+    {$ENDIF}
     PGtkWindow(Result)^.set_default_size(LCLObject.Width, LCLObject.Height);
+  end;
 
   g_signal_connect_data(Result,'window-state-event', TGCallback(@WindowStateSignal), Self, nil, G_CONNECT_DEFAULT);
 
@@ -13955,6 +14035,20 @@ begin
   AViewPort := PGtkViewPort(FCentralWidget^.get_parent);
   if WidgetMapped and Gtk3IsViewPort(AViewPort) and Gtk3IsGdkWindow(AViewPort^.get_view_window) then
   begin
+    //On Wayland CSD the viewport geometry is shrunk by shadow + titlebar.
+    //We use LCLObject dimensions instead, which reflect what LCL actually requested.
+    if Gtk3WidgetSet.IsWayland and Gtk3IsGtkWindow(FWidget) and
+       not Assigned(LCLObject.Parent) and not (wtHintWindow in FWidgetType) then
+    begin
+      MenuSize := 0;
+      if (LCLObject is TCustomForm) then
+      begin
+        if (TCustomForm(LCLObject).Menu <> nil) or (FMenuBar <> nil) then
+          MenuSize := GetSystemMetrics(SM_CYMENU);
+      end;
+      Result := Rect(0, 0, LCLObject.Width, LCLObject.Height - MenuSize);
+      exit;
+    end;
     AViewPort^.get_view_window^.get_geometry(@x, @y, @w, @h);
     Result := Rect(0, 0, AViewPort^.get_view_window^.get_width, AViewPort^.get_view_window^.get_height);
     exit;
@@ -14020,8 +14114,14 @@ begin
   if GTK3WidgetSet.OverlayScrolling and getVerticalScrollbar^.is_visible then
     Result.Width := Result.Width - getVerticalScrollbar^.get_allocated_width;
 
-  {$IFDEF GTK3DEBUGFORMS}
-  DebugLn('TGtk3Window.GetClientRect ',dbgsName(LCLObject),' Result ',dbgs(Result),' CentralWidget mapped ? ',dbgs(FCentralWidget^.get_mapped),' Realized ? ',dbgs(FCentralWidget^.get_realized));
+  {$IF DEFINED(GTK3DEBUGFORMS) OR DEFINED(GTK3DEBUGSIZE)}
+  DebugLn(Format('TGtk3Window.getClientRect %s Result=%s LCL=%dx%d Alloc=%dx%d shadow=%dx%d CW(real=%s map=%s)',
+    [dbgsName(LCLObject), dbgs(Result),
+     LCLObject.Width, LCLObject.Height,
+     Allocation.width, Allocation.height,
+     FResizeState.ShadowW, FResizeState.ShadowH,
+     BoolToStr(FCentralWidget^.get_realized, True),
+     BoolToStr(FCentralWidget^.get_mapped, True)]));
   {$ENDIF}
 end;
 
