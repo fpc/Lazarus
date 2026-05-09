@@ -91,6 +91,7 @@ type
     identifier: String;
     style: NSWindowToolbarStyle;
     displayMode: NSToolbarDisplayMode;
+    autoHideInFullScreen: Boolean;
     allowsUserCustomization: Boolean;
     autosavesConfiguration: Boolean;
     items: TCocoaConfigToolBarItems;

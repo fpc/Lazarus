@@ -122,6 +122,7 @@ type
     orderOutAfterFS : Boolean;
     fsview: TCocoaWindowContent;
 
+    function window_willUseFullScreenPresentationOptions (window: NSWindow; proposedOptions: NSApplicationPresentationOptions): NSApplicationPresentationOptions;
     function windowShouldClose(sender : id): LongBool; message 'windowShouldClose:';
     procedure windowWillClose(notification: NSNotification); message 'windowWillClose:';
     function windowWillReturnFieldEditor_toObject(sender: NSWindow; client: id): id; message 'windowWillReturnFieldEditor:toObject:';
@@ -138,6 +139,7 @@ type
   public
     callback: IWindowCallback;
     keepWinLevel : NSInteger;
+    autoHideToolBar: Boolean;
     //LCLForm: TCustomForm;
     procedure dealloc; override;
     function makeFirstResponder(aResponder: NSResponder): ObjCBOOL; override;
@@ -1048,6 +1050,15 @@ procedure TCocoaWindow.DoMakeFirstResponder(aResponder: NSResponder);
 begin
   makeFirstResponder( aResponder );
   aResponder.release;
+end;
+
+function TCocoaWindow.window_willUseFullScreenPresentationOptions(
+  window: NSWindow;
+  proposedOptions: NSApplicationPresentationOptions ): NSApplicationPresentationOptions;
+begin
+  Result:= proposedOptions;
+  if self.autoHideToolBar then
+    Result:= Result or NSApplicationPresentationAutoHideToolbar;
 end;
 
 

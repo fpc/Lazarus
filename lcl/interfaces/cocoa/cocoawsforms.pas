@@ -707,6 +707,7 @@ var
     toolbar:= TCocoaToolBarUtils.createToolBar( config );
     win.setToolbarStyle( config.style );
     win.setToolbar( toolbar );
+    win.autoHideToolBar:= config.autoHideInFullScreen;
     // in win.setToolBar(), macOS may incorrectly calculate the window size
     // (ignoring the original TitleBar size) and need to be reset.
     win.contentView.lclSetFrame( AWinControl.BoundsRect );
