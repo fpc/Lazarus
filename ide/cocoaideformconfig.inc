@@ -151,6 +151,7 @@ const
       identifier: 'MainIDE.ToolBar';
       style: NSWindowToolbarStyleUnifiedCompact;
       displayMode: NSToolbarDisplayModeIconOnly;
+      autoHideInFullScreen: True;
 
       allowsUserCustomization: False;
       autosavesConfiguration: False;
