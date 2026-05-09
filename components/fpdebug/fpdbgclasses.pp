@@ -197,6 +197,13 @@ type
     suGuessed      // Got a frame, but may be wrong
   );
 
+  TDbgUnwinderFlag = (
+    ufSkipArtificialFrames  // e.g. in finally $fin_* methods, find the caller of the outer method
+  );
+  TDbgUnwinderFlags = set of TDbgUnwinderFlag;
+
+  { TDbgStackUnwinder }
+
   TDbgStackUnwinder = class
   public
     procedure InitForThread(AThread: TDbgThread); virtual; abstract;
@@ -211,6 +218,7 @@ type
                     ACurrentFrame: TDbgCallstackEntry; // nil for top frame
                     out ANewFrame: TDbgCallstackEntry
                    ): TTDbgStackUnwindResult; virtual; abstract;
+    procedure SetUnwindFlags(AFlags: TDbgUnwinderFlags); virtual; // will be cleared by next InitForThread
   end;
 
   { TDbgStackUnwinderX86Base }
@@ -278,7 +286,6 @@ type
     procedure DoBeforeBreakLocationMapChange; // A new location added / or a location removed => memory will change
     procedure ValidateRemovedBreakPointInfo;
     function GetName: String; virtual;
-    function GetStackUnwinder: TDbgStackUnwinder; virtual; abstract;
 
     (* The "HasBreakpointInfoForAddress" is used if a breakpoint was hit,
        and removed while some DbgThread may still need to know it was there.
@@ -317,6 +324,7 @@ type
     function AllocStackMem(ASize: Integer): TDbgPtr; virtual;
     procedure RestoreStackMem;
 
+    function GetStackUnwinder: TDbgStackUnwinder; virtual; abstract;
     procedure PrepareCallStackEntryList(AFrameRequired: Integer = -1); virtual;
     function  FindCallStackEntryByBasePointer(AFrameBasePointer: TDBGPtr; AMaxFrameToSearch: Integer; AStartFrame: integer = 0): Integer; //virtual;
     function  FindCallStackEntryByInstructionPointer(AInstructionPointer: TDBGPtr; AMaxFrameToSearch: Integer; AStartFrame: integer = 0): Integer; //virtual;
@@ -3726,6 +3734,13 @@ end;
 procedure TDbgStackFrameInfo.FlagAsSteppedOut;
 begin
   FHasSteppedOut := True;
+end;
+
+{ TDbgStackUnwinder }
+
+procedure TDbgStackUnwinder.SetUnwindFlags(AFlags: TDbgUnwinderFlags);
+begin
+  //
 end;
 
 { TDbgStackUnwinderX86Base }

@@ -158,9 +158,9 @@ type
     function GetFpThreadContext(var AStorage: TFpContext; out ACtxPtr: PFpContext; ACtxFlags: TFpWinCtxFlags): Boolean;
     function SetFpThreadContext(ACtxPtr: PFpContext; ACtxFlags: TFpWinCtxFlags = cfSkip): Boolean;
     function GetName: String; override;
-    function GetStackUnwinder: TDbgStackUnwinder; override;
   public
     destructor Destroy; override;
+    function GetStackUnwinder: TDbgStackUnwinder; override;
     procedure Suspend;
     procedure SuspendForStepOverBreakPoint;
     procedure Resume;

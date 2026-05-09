@@ -229,7 +229,7 @@ type
     procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean); override;
     procedure InternalContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
   public
-    procedure SetReturnAdressBreakpoint(AProcess: TDbgProcess; AnOutsideFrame: Boolean);
+    function SetReturnAdressBreakpoint(AProcess: TDbgProcess; AnOutsideFrame: Boolean = False): Boolean;
   end;
 
   { TDbgControllerRunToCmd }
@@ -1312,27 +1312,37 @@ begin
   debugln(FPDBG_COMMANDS and Result, ['TDbgControllerStepOutCmd.IsAtHiddenBreak: At Hidden break = true']);
 end;
 
-procedure TDbgControllerStepOutCmd.SetReturnAdressBreakpoint(
-  AProcess: TDbgProcess; AnOutsideFrame: Boolean);
+function TDbgControllerStepOutCmd.SetReturnAdressBreakpoint(AProcess: TDbgProcess; AnOutsideFrame: Boolean): Boolean;
 var
-  AStackPointerValue, StepOutStackPos, ReturnAddress: TDBGPtr;
+  t: TDbgThread;
+  CodeAddress, AStackPointerValue, AFramePointerValue: TDBGPtr;
+  Unwinder: TDbgStackUnwinder;
+  AnEntry, AnEntry2: TDbgCallstackEntry;
+  Res: TTDbgStackUnwindResult;
 begin
   FWasOutsideFrame := AnOutsideFrame;
-  {$PUSH}{$Q-}{$R-}
-  if AnOutsideFrame then begin
-    StepOutStackPos:=FController.CurrentThread.GetStackPointerRegisterValue;
-  end
-  else begin
-    AStackPointerValue:=FController.CurrentThread.GetStackBasePointerRegisterValue;
-    StepOutStackPos:=AStackPointerValue+DBGPTRSIZE[FController.FCurrentProcess.Mode];
-  end;
-  {$POP}
-    debugln(FPDBG_COMMANDS, ['StepOutCmd.SetReturnAdressBreakpoint NoFrame=',AnOutsideFrame,  ' ^RetIP=',dbghex(StepOutStackPos),' SP=',dbghex(FController.CurrentThread.GetStackPointerRegisterValue),' BP=',dbghex(FController.CurrentThread.GetStackBasePointerRegisterValue)]);
+  Result := False;
+  {$IF (defined(CPUAARCH64))}
+  if AnOutsideFrame then exit;
+  {$ENDIF}
+  t := FController.CurrentThread;
+  Unwinder := t.GetStackUnwinder;
+  Unwinder.InitForThread(t);
 
-  if AProcess.ReadAddress(StepOutStackPos, ReturnAddress) then
-    SetHiddenBreak(ReturnAddress)
+  // TODO: DWARF-4 has incorrect DFI, returning a bad result
+  Unwinder.SetUnwindFlags([ufSkipArtificialFrames]); // prevent using the asm unwinder
+
+  Unwinder.GetTopFrame(CodeAddress, AStackPointerValue, AFramePointerValue, AnEntry);
+  Res := Unwinder.Unwind(1, CodeAddress, AStackPointerValue, AFramePointerValue, AnEntry, AnEntry2);
+  AnEntry.Free;
+  AnEntry2.Free;
+
+  if (Res in [suSuccess, suGuessed]) then begin
+    SetHiddenBreak(CodeAddress);
+    Result := True;
+  end
   else
-    debugln(DBG_WARNINGS or FPDBG_COMMANDS, ['Failed to read return-address from stack', ReturnAddress]);
+    debugln(DBG_WARNINGS or FPDBG_COMMANDS, ['Failed to get return-address ']);
 end;
 
 procedure TDbgControllerStepOutCmd.InternalContinue(AProcess: TDbgProcess;

@@ -227,9 +227,9 @@ type
     procedure ResetPauseStates; override;
     function GetInstructionPointerForHasBreakpointInfoForAddress: TDBGPtr; override;
 
-    function GetStackUnwinder: TDbgStackUnwinder; override;
   public
     destructor Destroy; override;
+    function GetStackUnwinder: TDbgStackUnwinder; override;
 
     procedure BeforeContinue; override;
 
