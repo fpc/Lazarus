@@ -485,12 +485,10 @@ var
   lclControl : TScrollingWinControl;
   lclBar: TControlScrollBar;
 begin
-  if not isCustomRange then begin
-    inherited setFrame(aframe);
-    Exit;
-  end;
-
   inherited setFrame(aframe);
+
+  if NOT isCustomRange then
+    Exit;
 
   if lclGetTarget is TScrollingWinControl then begin
     lclControl:= TScrollingWinControl(lclGetTarget);
