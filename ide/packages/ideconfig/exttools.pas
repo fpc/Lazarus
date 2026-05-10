@@ -1422,17 +1422,14 @@ procedure TExternalTools.TerminateAll;
 var
   i: Integer;
 begin
-  if (Count=0) and (fOldThreads.Count=0) then exit;
   for i:=Count-1 downto 0 do
     Terminate(Items[i] as TExternalTool);
   WaitForAll(500);
-  FreeFinishedThreads;
 end;
 
 procedure TExternalTools.Clear;
 begin
   TerminateAll;
-  WaitForAll(500);
   while Count>0 do
     Items[0].Free;
 end;
