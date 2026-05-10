@@ -41,6 +41,7 @@ type
     function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
       AInfo: PDwarfAddressInfo; AAddress: TDbgPtr; ADbgInfo: TFpDwarfInfo
       ): TDbgDwarfSymbolBase; override;
+    procedure UpdateFpcVersion(ADwarfInfo: TFpDwarfInfo); override;
 
     function GetInstanceClassNameFromPVmt(APVmt: TDbgPtr;
       AContext: TFpDbgLocationContext; ASizeOfAddr: Integer;
@@ -49,6 +50,7 @@ type
       AContext: TFpDbgLocationContext; ASizeOfAddr: Integer;
       out AnInstSize: Int64; out AnError: TFpError;
       AParentClassIndex: integer = 0): boolean;
+    property CompilerVersion: Cardinal read FCompilerVersion;
   end;
 
   { TFpDwarfFreePascalSymbolClassMapDwarf2 }
@@ -659,6 +661,12 @@ function TFpDwarfFreePascalSymbolClassMap.CreateProcSymbol(
   AAddress: TDbgPtr; ADbgInfo: TFpDwarfInfo): TDbgDwarfSymbolBase;
 begin
   Result := TFpSymbolDwarfFreePascalDataProc.Create(ACompilationUnit, AInfo, AAddress, ADbgInfo);
+end;
+
+procedure TFpDwarfFreePascalSymbolClassMap.UpdateFpcVersion(ADwarfInfo: TFpDwarfInfo);
+begin
+  if FCompilerVersion <> 0 then
+    ADwarfInfo.FpcCompilerVersion := FCompilerVersion; // all fpc versions should be the same
 end;
 
 function TFpDwarfFreePascalSymbolClassMap.GetInstanceClassNameFromPVmt(
