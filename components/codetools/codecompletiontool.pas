@@ -1208,6 +1208,19 @@ function TCodeCompletionCodeTool.AddLocalVariable(CleanCursorPos: integer;
       Result := Result.PriorBrother;
   end;
 
+  function ExistingDeclarationHasAbsoluteModifier(VarDeclNode:TCodeTreeNode): boolean;
+  begin
+    Result:=false;
+    if VarDeclNode=nil then exit;
+    if VarDeclNode.Desc<>ctnVarDefinition then exit;
+    MoveCursorToCleanPos(VarDeclNode.EndPos);
+    ReadNextAtom;  // after ";"
+    ReadPriorAtom; // ";"
+    ReadPriorAtom; // var name
+    ReadPriorAtom; // absolute
+    Result:= UpAtomIs('ABSOLUTE');
+  end;
+
 var
   CursorNode, VarSectionNode, VarNode: TCodeTreeNode;
   Indent, InsertPos: integer;
@@ -1310,6 +1323,11 @@ begin
         VarNode := VarNode.PriorBrother;
       end;
     end;
+
+    // exlude a declaration with absolute modifier
+    if ExistingDeclarationHasAbsoluteModifier(VarTypeNode) then
+      VarTypeNode := nil;
+
     if Assigned(VarTypeNode) then
     begin
       // -> append variable to already defined line

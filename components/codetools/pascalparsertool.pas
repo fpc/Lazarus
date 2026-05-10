@@ -3566,10 +3566,20 @@ procedure TPascalParserTool.ReadVariableType;
     procedure c;
     var d:e;
       f:g=h;
+
+    interface/implementation
+
+    var a1: procedure(b:btype; c: ctype) absolute d;
+        a2: function(b:btype; c: ctype): integer absolute d;
+        a3: procedure absolute d;
+        a4: function: integer absolute d;
+
+
 }
 var
   ParentNode: TCodeTreeNode;
   HasSemicolon: Boolean;
+  TypeStart: integer;
 
   function CanExternal: Boolean; inline;
   begin
@@ -3590,6 +3600,7 @@ var
 begin
   ReadNextAtom;
   // type
+  TypeStart:=CurPos.StartPos;
   ParseType(CurPos.StartPos);
 
   ParentNode:=CurNode.Parent;
@@ -3614,15 +3625,38 @@ begin
     ReadHintModifiers(false);
 
   if (ParentNode.Desc=ctnVarSection) then begin
-    // optional: initial value
-    if CurPos.Flag=cafEqual then
-      if ParentNode.Parent.Desc in AllCodeSections+[ctnProcedure] then begin
-        ReadConstExpr; // read constant
-        // optional: hint modifier (fpc allows both places: var w:word platform = 1 platform;)
-        if CurPos.Flag=cafWord then
-          ReadHintModifiers(false);
+    // optional: absolute after proc type
+    if CompareSrcIdentifiers(TypeStart,PChar('procedure')) and
+    ((CurPos.Flag=cafRoundBracketClose) or (CurPos.StartPos=TypeStart)) then begin
+      ReadNextAtom; // skip ")" or parameterless "procedure"
+      if UpAtomIs('ABSOLUTE') then begin
+        if ParentNode.Parent.Desc in AllCodeSections+[ctnProcedure] then begin
+          ReadNextAtom;
+          ReadConstant(true,false,[]);
+        end;
       end;
+    end else
+    if CompareSrcIdentifiers(TypeStart,PChar('function')) then begin
+      if CurPos.Flag=cafWord then begin
+        ReadNextAtom; // skip result type
+        if UpAtomIs('ABSOLUTE') then begin
+          if ParentNode.Parent.Desc in AllCodeSections+[ctnProcedure] then begin
+            ReadNextAtom;
+            ReadConstant(true,false,[]);
+          end;
+        end;
+      end;
+    end;
   end;
+
+  // optional: initial value
+  if CurPos.Flag=cafEqual then
+    if ParentNode.Parent.Desc in AllCodeSections+[ctnProcedure] then begin
+      ReadConstExpr; // read constant
+      // optional: hint modifier (fpc allows both places: var w:word platform = 1 platform;)
+      if CurPos.Flag=cafWord then
+        ReadHintModifiers(false);
+    end;
 
   HasSemicolon:=false;
   if CurPos.Flag=cafSemicolon then begin
