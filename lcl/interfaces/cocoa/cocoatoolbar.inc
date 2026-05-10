@@ -431,7 +431,7 @@ begin
     Exit;
   toolBar.insertItemWithItemIdentifier_atIndex(
     StrToNSString(identifier),
-    toolBar.items.Count-1 );
+    toolBar.items.Count );
 end;
 
 class procedure TCocoaToolBarUtils.removeItemByIndex(
