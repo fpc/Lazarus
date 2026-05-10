@@ -1011,25 +1011,28 @@ var
   function MeasureHorizontalLines(ALines: TStrings; IsRTL: Boolean): TRectArray;
   var
     bmp: TBitmap;
-    y, i: Integer;
+    y, i, h: Integer;
     ts: TTextStyle;
   begin
     Result := nil;
     SetLength(Result, ALines.Count);
     bmp := TBitmap.Create;
     try
-      ts := bmp.Canvas.TextStyle;
-      ts.RightToLeft := IsRTL;
+//      ts := bmp.Canvas.TextStyle;
+//      ts.RightToLeft := IsRTL;
       bmp.Canvas.TextStyle := ts;
       bmp.Canvas.Font.Assign(ACanvas.Font);
       // At least on Windows, the text height is not correct when font is rotated.
       bmp.Canvas.Font.Orientation := 0;
+      h := bmp.Canvas.TextHeight('Tg');
+      bmp.Canvas.Font.Orientation := ACanvas.Font.Orientation;
       y := 0;
       for i := 0 to ALines.Count-1 do
       begin
         Result[i].TopLeft := Point(0, y);
-        Result[i].BottomRight := Result[i].TopLeft + TPoint(bmp.Canvas.TextExtent(ALines[i]));
-        inc(y, Result[i].Height);
+        Result[i].Right := bmp.Canvas.TextWidth(ALines[i]);
+        Result[i].Bottom := y + h;
+        inc(y, h);
       end;
     finally
       bmp.Free;
