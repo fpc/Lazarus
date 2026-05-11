@@ -6257,6 +6257,7 @@ function TDbgStackUnwinderIntelDisAssembler.Unwind(AFrameIndex: integer;
   ): TTDbgStackUnwindResult;
 var
   ARegisterValueList: TDbgRegisterValueList;
+  ACurStackPtr, ACurFramePtr: TDBGPtr;
 begin
   ANewFrame := nil;
   Result := suFailed;
@@ -6264,7 +6265,11 @@ begin
   if (ACurrentFrame <> nil) and (ACurrentFrame.RegisterValueList <> nil) then
     ARegisterValueList.Assign(ACurrentFrame.RegisterValueList);
 
-  if Process.Disassembler.UnwindFrame(CodePointer, StackPointer, FrameBasePointer, False, ARegisterValueList)
+  ACurStackPtr := StackPointer;
+  ACurFramePtr := FrameBasePointer;
+  if Process.Disassembler.UnwindFrame(CodePointer, StackPointer, FrameBasePointer, False, ARegisterValueList) and
+     ((ACurStackPtr <> StackPointer) or (ACurFramePtr <> FrameBasePointer)) and
+     (StackPointer <> 0) and (CodePointer <> 0)
   then begin
     ANewFrame := TDbgCallstackEntry.Create(Thread, AFrameIndex, FrameBasePointer, CodePointer);
     ANewFrame.RegisterValueList.Assign(ARegisterValueList);
