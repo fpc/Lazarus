@@ -86,6 +86,24 @@ msgstr "Ponto de observação para \"%s\" fora do escopo %s"
 msgid "Watchpoint for \"%s\" was triggered %s. Old value \"%s\", New Value \"%s\""
 msgstr "Ponto de observação para \"%s\" foi disparado %s. Valor anterior \"%s\", Novo valor \"%s\""
 
+#: lazarusidestrconsts.dbgwatchcolorautoopenconsolewindowlinu
+msgid "Auto open console Window (Linux):"
+msgstr ""
+
+#: lazarusidestrconsts.dbgwatchcolornever
+#, fuzzy
+msgctxt "lazarusidestrconsts.dbgwatchcolornever"
+msgid "Never"
+msgstr "Nunca"
+
+#: lazarusidestrconsts.dbgwatchcoloronoutputalways
+msgid "On output (always)"
+msgstr ""
+
+#: lazarusidestrconsts.dbgwatchcoloronoutputonceperdebugsessi
+msgid "On output (once per debug session)"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousepredefinedscheme
 msgid "Use predefined scheme"
 msgstr "Usar esquema predefinido"
@@ -8693,7 +8711,9 @@ msgid "Additional search path"
 msgstr "Caminho de busca adicional"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmallowfunctioncalls
-msgid "BETA: Allow function calls in watches (if supported by backend)"
+#, fuzzy
+#| msgid "BETA: Allow function calls in watches (if supported by backend)"
+msgid "Allow function calls in watches (if supported by backend)"
 msgstr "BETA: Permitir chamadas de função nos observadores (se suportado pelo \"backend\")"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmautocloseasm

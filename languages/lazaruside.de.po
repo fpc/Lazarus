@@ -85,6 +85,24 @@ msgstr ""
 msgid "Watchpoint for \"%s\" was triggered %s. Old value \"%s\", New Value \"%s\""
 msgstr ""
 
+#: lazarusidestrconsts.dbgwatchcolorautoopenconsolewindowlinu
+msgid "Auto open console Window (Linux):"
+msgstr ""
+
+#: lazarusidestrconsts.dbgwatchcolornever
+#, fuzzy
+msgctxt "lazarusidestrconsts.dbgwatchcolornever"
+msgid "Never"
+msgstr "Nie"
+
+#: lazarusidestrconsts.dbgwatchcoloronoutputalways
+msgid "On output (always)"
+msgstr ""
+
+#: lazarusidestrconsts.dbgwatchcoloronoutputonceperdebugsessi
+msgid "On output (once per debug session)"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousepredefinedscheme
 msgid "Use predefined scheme"
 msgstr "Benutzerdefiniertes Schema"
@@ -8580,7 +8598,7 @@ msgid "Additional search path"
 msgstr "Zusätzlicher Suchpfad"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmallowfunctioncalls
-msgid "BETA: Allow function calls in watches (if supported by backend)"
+msgid "Allow function calls in watches (if supported by backend)"
 msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmautocloseasm

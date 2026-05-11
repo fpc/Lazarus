@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-04-28 23:20+0300\n"
+"PO-Revision-Date: 2026-05-11 19:12+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -84,6 +84,23 @@ msgstr "Наблюдение для \"%s\" вне области действи�
 #, object-pascal-format
 msgid "Watchpoint for \"%s\" was triggered %s. Old value \"%s\", New Value \"%s\""
 msgstr "Сработало наблюдение для \"%s\" %s. Старое значение - \"%s\", новое значение - \"%s\""
+
+#: lazarusidestrconsts.dbgwatchcolorautoopenconsolewindowlinu
+msgid "Auto open console Window (Linux):"
+msgstr "Автоматически открывать окно консоли (Linux):"
+
+#: lazarusidestrconsts.dbgwatchcolornever
+msgctxt "lazarusidestrconsts.dbgwatchcolornever"
+msgid "Never"
+msgstr "Никогда"
+
+#: lazarusidestrconsts.dbgwatchcoloronoutputalways
+msgid "On output (always)"
+msgstr "При выводе (всегда)"
+
+#: lazarusidestrconsts.dbgwatchcoloronoutputonceperdebugsessi
+msgid "On output (once per debug session)"
+msgstr "При выводе (один раз за сеанс отладки)"
 
 #: lazarusidestrconsts.dlfmousepredefinedscheme
 msgid "Use predefined scheme"
@@ -8564,8 +8581,8 @@ msgid "Additional search path"
 msgstr "Дополнительный путь поиска"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmallowfunctioncalls
-msgid "BETA: Allow function calls in watches (if supported by backend)"
-msgstr "БЕТА: разрешить вызовы функций в наблюдениях (если поддерживает механизм отладки)"
+msgid "Allow function calls in watches (if supported by backend)"
+msgstr "Разрешить вызовы функций в наблюдениях (если поддерживает механизм отладки)"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmautocloseasm
 msgid "Automatically close the assembler window, after source not found"

@@ -85,6 +85,24 @@ msgstr "监视点 \"%s\" 超出范围 %s"
 msgid "Watchpoint for \"%s\" was triggered %s. Old value \"%s\", New Value \"%s\""
 msgstr "监视点 \"%s\" 被触发了 %s 。旧值\"%s\"，新值\"%s\""
 
+#: lazarusidestrconsts.dbgwatchcolorautoopenconsolewindowlinu
+msgid "Auto open console Window (Linux):"
+msgstr ""
+
+#: lazarusidestrconsts.dbgwatchcolornever
+#, fuzzy
+msgctxt "lazarusidestrconsts.dbgwatchcolornever"
+msgid "Never"
+msgstr "从不"
+
+#: lazarusidestrconsts.dbgwatchcoloronoutputalways
+msgid "On output (always)"
+msgstr ""
+
+#: lazarusidestrconsts.dbgwatchcoloronoutputonceperdebugsessi
+msgid "On output (once per debug session)"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousepredefinedscheme
 msgid "Use predefined scheme"
 msgstr "使用预定义方案"
@@ -8592,7 +8610,9 @@ msgid "Additional search path"
 msgstr "附加的搜索路径"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmallowfunctioncalls
-msgid "BETA: Allow function calls in watches (if supported by backend)"
+#, fuzzy
+#| msgid "BETA: Allow function calls in watches (if supported by backend)"
+msgid "Allow function calls in watches (if supported by backend)"
 msgstr "BETA: 允许在监视器中调用函数（如果后端支持）"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmautocloseasm
