@@ -457,12 +457,12 @@ begin
 
     FRegisterValueList.DbgRegisterAutoCreate['eflags'].Setx86EFlagsValue(FUserRegs.regs32[eflags]);
 
-    FRegisterValueList.DbgRegisterAutoCreate['cs'].SetValue(FUserRegs.regs32[xcs], IntToStr(FUserRegs.regs32[xcs]),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['ss'].SetValue(FUserRegs.regs32[xss], IntToStr(FUserRegs.regs32[xss]),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['ds'].SetValue(FUserRegs.regs32[xds], IntToStr(FUserRegs.regs32[xds]),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['es'].SetValue(FUserRegs.regs32[xes], IntToStr(FUserRegs.regs32[xes]),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['fs'].SetValue(FUserRegs.regs32[xfs], IntToStr(FUserRegs.regs32[xfs]),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(FUserRegs.regs32[xgs], IntToStr(FUserRegs.regs32[xgs]),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['cs'].SetValue(FUserRegs.regs32[xcs], IntToStr(FUserRegs.regs32[xcs]),4,51);
+    FRegisterValueList.DbgRegisterAutoCreate['ss'].SetValue(FUserRegs.regs32[xss], IntToStr(FUserRegs.regs32[xss]),4,52);
+    FRegisterValueList.DbgRegisterAutoCreate['ds'].SetValue(FUserRegs.regs32[xds], IntToStr(FUserRegs.regs32[xds]),4,53);
+    FRegisterValueList.DbgRegisterAutoCreate['es'].SetValue(FUserRegs.regs32[xes], IntToStr(FUserRegs.regs32[xes]),4,50);
+    FRegisterValueList.DbgRegisterAutoCreate['fs'].SetValue(FUserRegs.regs32[xfs], IntToStr(FUserRegs.regs32[xfs]),4,54);
+    FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(FUserRegs.regs32[xgs], IntToStr(FUserRegs.regs32[xgs]),4,55);
   end else
     begin
     FRegisterValueList.DbgRegisterAutoCreate['rax'].SetValue(FUserRegs.regs64[rax], IntToStr(FUserRegs.regs64[rax]),8,0);
@@ -492,14 +492,14 @@ begin
 
     if FFpRegsAvail then begin
       DisableFloatExceptions;
-      FRegisterValueList.DbgRegisterAutoCreate['st0'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 0*4])^),10,500);
-      FRegisterValueList.DbgRegisterAutoCreate['st1'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 1*4])^),10,501);
-      FRegisterValueList.DbgRegisterAutoCreate['st2'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 2*4])^),10,502);
-      FRegisterValueList.DbgRegisterAutoCreate['st3'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 3*4])^),10,503);
-      FRegisterValueList.DbgRegisterAutoCreate['st4'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 4*4])^),10,504);
-      FRegisterValueList.DbgRegisterAutoCreate['st5'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 5*4])^),10,505);
-      FRegisterValueList.DbgRegisterAutoCreate['st6'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 6*4])^),10,506);
-      FRegisterValueList.DbgRegisterAutoCreate['st7'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 7*4])^),10,507);
+      FRegisterValueList.DbgRegisterAutoCreate['st0'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 0*4])^),10,33);
+      FRegisterValueList.DbgRegisterAutoCreate['st1'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 1*4])^),10,34);
+      FRegisterValueList.DbgRegisterAutoCreate['st2'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 2*4])^),10,35);
+      FRegisterValueList.DbgRegisterAutoCreate['st3'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 3*4])^),10,36);
+      FRegisterValueList.DbgRegisterAutoCreate['st4'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 4*4])^),10,37);
+      FRegisterValueList.DbgRegisterAutoCreate['st5'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 5*4])^),10,38);
+      FRegisterValueList.DbgRegisterAutoCreate['st6'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 6*4])^),10,39);
+      FRegisterValueList.DbgRegisterAutoCreate['st7'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 7*4])^),10,40);
 
       FRegisterValueList.DbgRegisterAutoCreate['fctrl'].SetValue(FFpRegs.cwd, IntToStr(FFpRegs.cwd),2,510);
       FRegisterValueList.DbgRegisterAutoCreate['fstat'].SetValue(FFpRegs.swd, IntToStr(FFpRegs.swd),2,511);
@@ -510,14 +510,14 @@ begin
       FRegisterValueList.DbgRegisterAutoCreate['foo'].SetValue(FFpRegs.foo, IntToStr(FFpRegs.foo),4,516);
       FRegisterValueList.DbgRegisterAutoCreate['fos'].SetValue(FFpRegs.fos, IntToStr(FFpRegs.fos),4,517);
 
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm0' ].SetValue(@FFpRegs.xmm_space[0*4],16,600, @XmmToFormat);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm1' ].SetValue(@FFpRegs.xmm_space[1*4],16,601, @XmmToFormat);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm2' ].SetValue(@FFpRegs.xmm_space[2*4],16,602, @XmmToFormat);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm3' ].SetValue(@FFpRegs.xmm_space[3*4],16,603, @XmmToFormat);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm4' ].SetValue(@FFpRegs.xmm_space[4*4],16,604, @XmmToFormat);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm5' ].SetValue(@FFpRegs.xmm_space[5*4],16,605, @XmmToFormat);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm6' ].SetValue(@FFpRegs.xmm_space[6*4],16,606, @XmmToFormat);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm7' ].SetValue(@FFpRegs.xmm_space[7*4],16,607, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm0' ].SetValue(@FFpRegs.xmm_space[0*4],16,17, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm1' ].SetValue(@FFpRegs.xmm_space[1*4],16,18, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm2' ].SetValue(@FFpRegs.xmm_space[2*4],16,19, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm3' ].SetValue(@FFpRegs.xmm_space[3*4],16,20, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm4' ].SetValue(@FFpRegs.xmm_space[4*4],16,21, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm5' ].SetValue(@FFpRegs.xmm_space[5*4],16,22, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm6' ].SetValue(@FFpRegs.xmm_space[6*4],16,23, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm7' ].SetValue(@FFpRegs.xmm_space[7*4],16,24, @XmmToFormat);
 
       FRegisterValueList.DbgRegisterAutoCreate['mxcsr'].SetValue(FFpRegs.fos, IntToStr(FFpRegs.mxcsr),4,620);
 

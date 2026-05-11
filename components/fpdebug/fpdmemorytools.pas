@@ -1152,6 +1152,8 @@ procedure TDbgRegisterValue.SetValue(const AData: Pointer; ASize: byte; ADwarfId
 begin
   FStrValue:='';
   FNumValue:=0;
+  // TODO: workaround
+  Move(AData^, FNumValue, min(SizeOf(FNumValue), ASize));
   FSize := ASize;
   FDwarfIdx:=ADwarfIdx;
   FFormatter := AFormatter;

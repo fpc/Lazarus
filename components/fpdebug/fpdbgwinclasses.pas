@@ -1854,21 +1854,21 @@ begin
 
     FRegisterValueList.DbgRegisterAutoCreate['eflags'].Setx86EFlagsValue(EFlags);
 
-    FRegisterValueList.DbgRegisterAutoCreate['cs'].SetValue(SegCs, IntToStr(SegCs),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['ss'].SetValue(SegSs, IntToStr(SegSs),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['ds'].SetValue(SegDs, IntToStr(SegDs),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['es'].SetValue(SegEs, IntToStr(SegEs),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['fs'].SetValue(SegFs, IntToStr(SegFs),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(SegGs, IntToStr(SegGs),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['cs'].SetValue(SegCs, IntToStr(SegCs),4,51);
+    FRegisterValueList.DbgRegisterAutoCreate['ss'].SetValue(SegSs, IntToStr(SegSs),4,52);
+    FRegisterValueList.DbgRegisterAutoCreate['ds'].SetValue(SegDs, IntToStr(SegDs),4,53);
+    FRegisterValueList.DbgRegisterAutoCreate['es'].SetValue(SegEs, IntToStr(SegEs),4,50);
+    FRegisterValueList.DbgRegisterAutoCreate['fs'].SetValue(SegFs, IntToStr(SegFs),4,54);
+    FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(SegGs, IntToStr(SegGs),4,55);
 
-    FRegisterValueList.DbgRegisterAutoCreate['st0'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[ 0])^),10,500);
-    FRegisterValueList.DbgRegisterAutoCreate['st1'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[10])^),10,501);
-    FRegisterValueList.DbgRegisterAutoCreate['st2'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[20])^),10,502);
-    FRegisterValueList.DbgRegisterAutoCreate['st3'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[30])^),10,503);
-    FRegisterValueList.DbgRegisterAutoCreate['st4'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[40])^),10,504);
-    FRegisterValueList.DbgRegisterAutoCreate['st5'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[50])^),10,505);
-    FRegisterValueList.DbgRegisterAutoCreate['st6'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[60])^),10,506);
-    FRegisterValueList.DbgRegisterAutoCreate['st7'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[70])^),10,507);
+    FRegisterValueList.DbgRegisterAutoCreate['st0'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[ 0])^),10,33);
+    FRegisterValueList.DbgRegisterAutoCreate['st1'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[10])^),10,34);
+    FRegisterValueList.DbgRegisterAutoCreate['st2'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[20])^),10,35);
+    FRegisterValueList.DbgRegisterAutoCreate['st3'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[30])^),10,36);
+    FRegisterValueList.DbgRegisterAutoCreate['st4'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[40])^),10,37);
+    FRegisterValueList.DbgRegisterAutoCreate['st5'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[50])^),10,38);
+    FRegisterValueList.DbgRegisterAutoCreate['st6'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[60])^),10,39);
+    FRegisterValueList.DbgRegisterAutoCreate['st7'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[70])^),10,40);
 
     FRegisterValueList.DbgRegisterAutoCreate['fctrl'  ].SetValue(FloatSave.ControlWord,   IntToStr(FloatSave.ControlWord),2,510);
     FRegisterValueList.DbgRegisterAutoCreate['fstat'  ].SetValue(FloatSave.StatusWord,    IntToStr(FloatSave.StatusWord),2,511);
@@ -1881,14 +1881,14 @@ begin
     FRegisterValueList.DbgRegisterAutoCreate['fCr0NpxSt'].SetValue(FloatSave.Cr0NpxState, IntToStr(FloatSave.Cr0NpxState),4,518);
 
     if not FFailed_CONTEXT_EXTENDED_REGISTERS then begin
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm0'].SetValue(@ExtendedRegisters[10*16],16,600, @XmmToFormat);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm1'].SetValue(@ExtendedRegisters[11*16],16,601, @XmmToFormat);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm2'].SetValue(@ExtendedRegisters[12*16],16,602, @XmmToFormat);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm3'].SetValue(@ExtendedRegisters[13*16],16,603, @XmmToFormat);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm4'].SetValue(@ExtendedRegisters[14*16],16,604, @XmmToFormat);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm5'].SetValue(@ExtendedRegisters[15*16],16,605, @XmmToFormat);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm6'].SetValue(@ExtendedRegisters[16*16],16,606, @XmmToFormat);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm7'].SetValue(@ExtendedRegisters[17*16],16,607, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm0'].SetValue(@ExtendedRegisters[10*16],16,17, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm1'].SetValue(@ExtendedRegisters[11*16],16,18, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm2'].SetValue(@ExtendedRegisters[12*16],16,19, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm3'].SetValue(@ExtendedRegisters[13*16],16,20, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm4'].SetValue(@ExtendedRegisters[14*16],16,21, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm5'].SetValue(@ExtendedRegisters[15*16],16,22, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm6'].SetValue(@ExtendedRegisters[16*16],16,23, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm7'].SetValue(@ExtendedRegisters[17*16],16,24, @XmmToFormat);
 
       FRegisterValueList.DbgRegisterAutoCreate['MxCsr'].SetValue(PDWORD(@ExtendedRegisters[24])^,  IntToStr(PDWORD(@ExtendedRegisters[24])^),4,620);
     end;
@@ -1907,25 +1907,25 @@ begin
     FRegisterValueList.DbgRegisterAutoCreate['edi'].SetValue(Edi, IntToStr(Edi),4,7);
     FRegisterValueList.DbgRegisterAutoCreate['eip'].SetValue(Eip, IntToStr(Eip),4,8);
 
-    FRegisterValueList.DbgRegisterAutoCreate['eflags'].Setx86EFlagsValue(EFlags);
+    FRegisterValueList.DbgRegisterAutoCreate['eflags'].Setx86EFlagsValue(EFlags); // dwarf 49
 
-    FRegisterValueList.DbgRegisterAutoCreate['cs'].SetValue(SegCs, IntToStr(SegCs),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['ss'].SetValue(SegSs, IntToStr(SegSs),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['ds'].SetValue(SegDs, IntToStr(SegDs),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['es'].SetValue(SegEs, IntToStr(SegEs),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['fs'].SetValue(SegFs, IntToStr(SegFs),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(SegGs, IntToStr(SegGs),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['cs'].SetValue(SegCs, IntToStr(SegCs),4,51);
+    FRegisterValueList.DbgRegisterAutoCreate['ss'].SetValue(SegSs, IntToStr(SegSs),4,52);
+    FRegisterValueList.DbgRegisterAutoCreate['ds'].SetValue(SegDs, IntToStr(SegDs),4,53);
+    FRegisterValueList.DbgRegisterAutoCreate['es'].SetValue(SegEs, IntToStr(SegEs),4,50);
+    FRegisterValueList.DbgRegisterAutoCreate['fs'].SetValue(SegFs, IntToStr(SegFs),4,54);
+    FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(SegGs, IntToStr(SegGs),4,55);
 
   // TODO: 64bit extended is not 10 byte // currently downgrading to double
     {$IF FPC_Fullversion>30202}
-    FRegisterValueList.DbgRegisterAutoCreate['st0'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[ 0])^),10,500);
-    FRegisterValueList.DbgRegisterAutoCreate['st1'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[10])^),10,501);
-    FRegisterValueList.DbgRegisterAutoCreate['st2'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[20])^),10,502);
-    FRegisterValueList.DbgRegisterAutoCreate['st3'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[30])^),10,503);
-    FRegisterValueList.DbgRegisterAutoCreate['st4'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[40])^),10,504);
-    FRegisterValueList.DbgRegisterAutoCreate['st5'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[50])^),10,505);
-    FRegisterValueList.DbgRegisterAutoCreate['st6'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[60])^),10,506);
-    FRegisterValueList.DbgRegisterAutoCreate['st7'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[70])^),10,507);
+    FRegisterValueList.DbgRegisterAutoCreate['st0'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[ 0])^),10,33);
+    FRegisterValueList.DbgRegisterAutoCreate['st1'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[10])^),10,34);
+    FRegisterValueList.DbgRegisterAutoCreate['st2'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[20])^),10,35);
+    FRegisterValueList.DbgRegisterAutoCreate['st3'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[30])^),10,36);
+    FRegisterValueList.DbgRegisterAutoCreate['st4'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[40])^),10,37);
+    FRegisterValueList.DbgRegisterAutoCreate['st5'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[50])^),10,38);
+    FRegisterValueList.DbgRegisterAutoCreate['st6'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[60])^),10,39);
+    FRegisterValueList.DbgRegisterAutoCreate['st7'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[70])^),10,40);
     {$ENDIF}
 
     FRegisterValueList.DbgRegisterAutoCreate['fctrl'  ].SetValue(FloatSave.ControlWord,   IntToStr(FloatSave.ControlWord),2,510);
@@ -1939,14 +1939,14 @@ begin
     FRegisterValueList.DbgRegisterAutoCreate['fCr0NpxSt'].SetValue(FloatSave.Cr0NpxState, IntToStr(FloatSave.Cr0NpxState),4,518);
 
     if not FFailed_CONTEXT_EXTENDED_REGISTERS then begin
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm0'].SetValue(@ExtendedRegisters[10*16],16,600, @XmmToFormat);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm1'].SetValue(@ExtendedRegisters[11*16],16,601, @XmmToFormat);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm2'].SetValue(@ExtendedRegisters[12*16],16,602, @XmmToFormat);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm3'].SetValue(@ExtendedRegisters[13*16],16,603, @XmmToFormat);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm4'].SetValue(@ExtendedRegisters[14*16],16,604, @XmmToFormat);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm5'].SetValue(@ExtendedRegisters[15*16],16,605, @XmmToFormat);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm6'].SetValue(@ExtendedRegisters[16*16],16,606, @XmmToFormat);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm7'].SetValue(@ExtendedRegisters[17*16],16,607, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm0'].SetValue(@ExtendedRegisters[10*16],16,17, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm1'].SetValue(@ExtendedRegisters[11*16],16,18, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm2'].SetValue(@ExtendedRegisters[12*16],16,19, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm3'].SetValue(@ExtendedRegisters[13*16],16,20, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm4'].SetValue(@ExtendedRegisters[14*16],16,21, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm5'].SetValue(@ExtendedRegisters[15*16],16,22, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm6'].SetValue(@ExtendedRegisters[16*16],16,23, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm7'].SetValue(@ExtendedRegisters[17*16],16,24, @XmmToFormat);
 
       FRegisterValueList.DbgRegisterAutoCreate['MxCsr'].SetValue(PDWORD(@ExtendedRegisters[24])^,  IntToStr(PDWORD(@ExtendedRegisters[24])^),4,620);
     end;
@@ -1975,12 +1975,12 @@ begin
     FRegisterValueList.DbgRegisterAutoCreate['rip'].SetValue(rip, IntToStr(rip),8,16);
     FRegisterValueList.DbgRegisterAutoCreate['eflags'].Setx86EFlagsValue(EFlags);
 
-    FRegisterValueList.DbgRegisterAutoCreate['cs'].SetValue(SegCs, IntToStr(SegCs),8,43);
-    FRegisterValueList.DbgRegisterAutoCreate['ss'].SetValue(SegSs, IntToStr(SegSs),8,44);
-    FRegisterValueList.DbgRegisterAutoCreate['ds'].SetValue(SegDs, IntToStr(SegDs),8,45);
-    FRegisterValueList.DbgRegisterAutoCreate['es'].SetValue(SegEs, IntToStr(SegEs),8,42);
-    FRegisterValueList.DbgRegisterAutoCreate['fs'].SetValue(SegFs, IntToStr(SegFs),8,46);
-    FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(SegGs, IntToStr(SegGs),8,47);
+    FRegisterValueList.DbgRegisterAutoCreate['cs'].SetValue(SegCs, IntToStr(SegCs),8,51);
+    FRegisterValueList.DbgRegisterAutoCreate['ss'].SetValue(SegSs, IntToStr(SegSs),8,52);
+    FRegisterValueList.DbgRegisterAutoCreate['ds'].SetValue(SegDs, IntToStr(SegDs),8,53);
+    FRegisterValueList.DbgRegisterAutoCreate['es'].SetValue(SegEs, IntToStr(SegEs),8,50);
+    FRegisterValueList.DbgRegisterAutoCreate['fs'].SetValue(SegFs, IntToStr(SegFs),8,54);
+    FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(SegGs, IntToStr(SegGs),8,55);
 
   // TODO: 64bit extended is not 10 byte // currently downgrading to double
     {$IF FPC_Fullversion>30202}
@@ -2003,22 +2003,22 @@ begin
     FRegisterValueList.DbgRegisterAutoCreate['fDatOff'].SetValue(FltSave.DataOffset,    IntToStr(FltSave.DataOffset),4,516);
     FRegisterValueList.DbgRegisterAutoCreate['fDatSel'].SetValue(FltSave.DataSelector,  IntToStr(FltSave.DataSelector),2,517);
 
-    FRegisterValueList.DbgRegisterAutoCreate['Xmm0' ].SetValue(@FltSave.XmmRegisters[ 0],16,600, @XmmToFormat);
-    FRegisterValueList.DbgRegisterAutoCreate['Xmm1' ].SetValue(@FltSave.XmmRegisters[ 1],16,601, @XmmToFormat);
-    FRegisterValueList.DbgRegisterAutoCreate['Xmm2' ].SetValue(@FltSave.XmmRegisters[ 2],16,602, @XmmToFormat);
-    FRegisterValueList.DbgRegisterAutoCreate['Xmm3' ].SetValue(@FltSave.XmmRegisters[ 3],16,603, @XmmToFormat);
-    FRegisterValueList.DbgRegisterAutoCreate['Xmm4' ].SetValue(@FltSave.XmmRegisters[ 4],16,604, @XmmToFormat);
-    FRegisterValueList.DbgRegisterAutoCreate['Xmm5' ].SetValue(@FltSave.XmmRegisters[ 5],16,605, @XmmToFormat);
-    FRegisterValueList.DbgRegisterAutoCreate['Xmm6' ].SetValue(@FltSave.XmmRegisters[ 6],16,606, @XmmToFormat);
-    FRegisterValueList.DbgRegisterAutoCreate['Xmm7' ].SetValue(@FltSave.XmmRegisters[ 7],16,607, @XmmToFormat);
-    FRegisterValueList.DbgRegisterAutoCreate['Xmm8' ].SetValue(@FltSave.XmmRegisters[ 8],16,608, @XmmToFormat);
-    FRegisterValueList.DbgRegisterAutoCreate['Xmm9' ].SetValue(@FltSave.XmmRegisters[ 9],16,609, @XmmToFormat);
-    FRegisterValueList.DbgRegisterAutoCreate['Xmm10'].SetValue(@FltSave.XmmRegisters[10],16,610, @XmmToFormat);
-    FRegisterValueList.DbgRegisterAutoCreate['Xmm11'].SetValue(@FltSave.XmmRegisters[11],16,611, @XmmToFormat);
-    FRegisterValueList.DbgRegisterAutoCreate['Xmm12'].SetValue(@FltSave.XmmRegisters[12],16,612, @XmmToFormat);
-    FRegisterValueList.DbgRegisterAutoCreate['Xmm13'].SetValue(@FltSave.XmmRegisters[13],16,613, @XmmToFormat);
-    FRegisterValueList.DbgRegisterAutoCreate['Xmm14'].SetValue(@FltSave.XmmRegisters[14],16,614, @XmmToFormat);
-    FRegisterValueList.DbgRegisterAutoCreate['Xmm15'].SetValue(@FltSave.XmmRegisters[15],16,615, @XmmToFormat);
+    FRegisterValueList.DbgRegisterAutoCreate['Xmm0' ].SetValue(@FltSave.XmmRegisters[ 0],16,17, @XmmToFormat);
+    FRegisterValueList.DbgRegisterAutoCreate['Xmm1' ].SetValue(@FltSave.XmmRegisters[ 1],16,18, @XmmToFormat);
+    FRegisterValueList.DbgRegisterAutoCreate['Xmm2' ].SetValue(@FltSave.XmmRegisters[ 2],16,19, @XmmToFormat);
+    FRegisterValueList.DbgRegisterAutoCreate['Xmm3' ].SetValue(@FltSave.XmmRegisters[ 3],16,20, @XmmToFormat);
+    FRegisterValueList.DbgRegisterAutoCreate['Xmm4' ].SetValue(@FltSave.XmmRegisters[ 4],16,21, @XmmToFormat);
+    FRegisterValueList.DbgRegisterAutoCreate['Xmm5' ].SetValue(@FltSave.XmmRegisters[ 5],16,22, @XmmToFormat);
+    FRegisterValueList.DbgRegisterAutoCreate['Xmm6' ].SetValue(@FltSave.XmmRegisters[ 6],16,23, @XmmToFormat);
+    FRegisterValueList.DbgRegisterAutoCreate['Xmm7' ].SetValue(@FltSave.XmmRegisters[ 7],16,24, @XmmToFormat);
+    FRegisterValueList.DbgRegisterAutoCreate['Xmm8' ].SetValue(@FltSave.XmmRegisters[ 8],16,25, @XmmToFormat);
+    FRegisterValueList.DbgRegisterAutoCreate['Xmm9' ].SetValue(@FltSave.XmmRegisters[ 9],16,26, @XmmToFormat);
+    FRegisterValueList.DbgRegisterAutoCreate['Xmm10'].SetValue(@FltSave.XmmRegisters[10],16,27, @XmmToFormat);
+    FRegisterValueList.DbgRegisterAutoCreate['Xmm11'].SetValue(@FltSave.XmmRegisters[11],16,28, @XmmToFormat);
+    FRegisterValueList.DbgRegisterAutoCreate['Xmm12'].SetValue(@FltSave.XmmRegisters[12],16,29, @XmmToFormat);
+    FRegisterValueList.DbgRegisterAutoCreate['Xmm13'].SetValue(@FltSave.XmmRegisters[13],16,30, @XmmToFormat);
+    FRegisterValueList.DbgRegisterAutoCreate['Xmm14'].SetValue(@FltSave.XmmRegisters[14],16,31, @XmmToFormat);
+    FRegisterValueList.DbgRegisterAutoCreate['Xmm15'].SetValue(@FltSave.XmmRegisters[15],16,31, @XmmToFormat);
 
     FRegisterValueList.DbgRegisterAutoCreate['MxCsr'].SetValue(FltSave.MxCsr,  IntToStr(FltSave.MxCsr),4,620);
     FRegisterValueList.DbgRegisterAutoCreate['MxCsrM'].SetValue(FltSave.MxCsr_Mask,  IntToStr(FltSave.MxCsr_Mask),4,621);
