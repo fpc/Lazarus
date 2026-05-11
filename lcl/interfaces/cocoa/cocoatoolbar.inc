@@ -48,6 +48,7 @@ type
   TCocoaConfigToolBarItemClassWithUI = class( TCocoaConfigToolBarItemClassBase )
   protected
     _iconName: String;
+    _alternateIconName: String;
     _title: String;
     _tips: String;
     _bordered: Boolean;
@@ -56,6 +57,7 @@ type
   public
     procedure setItemAttribs( const item: NSToolBarItem ); override;
     function iconName: NSString; virtual;
+    function alternateIconName: NSString; virtual;
     function title: NSString; virtual;
     function tips: NSString; virtual;
   end;
@@ -131,11 +133,22 @@ type
 
   TCocoaToolBarItem = objcclass( NSToolBarItem )
   private
+    _state: Boolean;  // off/on, up/down
+    _icon: NSImage;
+    _alternateIcon: NSImage;
     _handler: TCocoaToolBarItemActionHandler;
     procedure lclItemAction( const sender: id ); message 'lclItemAction:';
   public
     procedure lclSetHandler( const handler: TCocoaToolBarItemActionHandler );
       message 'lclSetHandler:';
+    procedure lclSetState( const state: Boolean );
+      message 'lclSetState:';
+    function lclGetState: Boolean;
+      message 'lclGetState';
+    procedure lclSetAlternateIcon( const icon: NSImage );
+      message 'lclSetAlternateIcon:';
+  public
+    procedure dealloc; override;
   end;
 
   { TCocoaToolBarItemSharing }
@@ -459,12 +472,48 @@ end;
 
 procedure TCocoaToolBarItem.lclItemAction( const sender: id );
 begin
+  self.lclSetState( NOT _state );
   _handler( sender );
 end;
 
 procedure TCocoaToolBarItem.lclSetHandler( const handler: TCocoaToolBarItemActionHandler );
 begin
   _handler:= handler;
+end;
+
+procedure TCocoaToolBarItem.lclSetState(const state: Boolean);
+var
+  icon: NSImage;
+begin
+  _state:= state;
+  if Assigned(_alternateIcon) then begin
+    if NOT state then
+      icon:= _icon
+    else
+      icon:= _alternateIcon;
+    self.setImage( icon );
+  end;
+end;
+
+function TCocoaToolBarItem.lclGetState: Boolean;
+begin
+  Result:= _state;
+end;
+
+procedure TCocoaToolBarItem.lclSetAlternateIcon(const icon: NSImage);
+begin
+  _icon:= self.image;
+  _icon.retain;
+  _alternateIcon:= icon;
+  _alternateIcon.retain;
+end;
+
+procedure TCocoaToolBarItem.dealloc;
+begin
+  if Assigned(_icon) then
+    _icon.release;
+  if Assigned(_alternateIcon) then
+    _alternateIcon.release;
 end;
 
 { TCocoaToolBarItemSharing }
@@ -692,6 +741,7 @@ procedure TCocoaConfigToolBarItemClassWithUI.toClassConfig(
 begin
   Inherited toClassConfig( pItemConfig );
   _iconName:= pItemConfig^.iconName;
+  _alternateIconName:= pItemConfig^.alternateIconName;
   _title:= pItemConfig^.title;
   _tips:= pItemConfig^.tips;
   _bordered:= pItemConfig^.bordered;
@@ -700,18 +750,29 @@ end;
 procedure TCocoaConfigToolBarItemClassWithUI.setItemAttribs(
   const item: NSToolBarItem );
 var
-  cocoaImageName: NSString;
+  cocoaIconName: NSString;
+  cocoaIcon: NSImage;
   cocoaLabel: NSString;
 begin
   Inherited;
 
-  cocoaImageName:= self.iconName;
-  cocoaLabel:= self.title;
-
-  if cocoaImageName.length > 0 then begin
-    item.setImage( NSImage.imageWithSystemSymbolName_accessibilityDescription(
-      cocoaImageName, nil ) );
+  cocoaIconName:= self.iconName;
+  if cocoaIconName.length > 0 then begin
+    cocoaIcon:= NSImage.imageWithSystemSymbolName_accessibilityDescription(
+                  cocoaIconName, nil );
+    item.setImage( cocoaIcon );
   end;
+
+  if item.respondsToSelector( ObjCSelector('lclSetAlternateIcon:') ) then begin
+    cocoaIconName:= self.alternateIconName;
+    if cocoaIconName.length > 0 then begin
+      cocoaIcon:= NSImage.imageWithSystemSymbolName_accessibilityDescription(
+                    cocoaIconName, nil );
+      item.performSelector_withObject( ObjCSelector('lclSetAlternateIcon:'), cocoaIcon );
+    end;
+  end;
+
+  cocoaLabel:= self.title;
   item.setLabel( cocoaLabel );
   item.setPaletteLabel( cocoaLabel );
   item.setToolTip( self.tips );
@@ -721,6 +782,11 @@ end;
 function TCocoaConfigToolBarItemClassWithUI.iconName: NSString;
 begin
   Result:= StrToNSString( _iconName );
+end;
+
+function TCocoaConfigToolBarItemClassWithUI.alternateIconName: NSString;
+begin
+  Result:= StrToNSString( _alternateIconName );
 end;
 
 function TCocoaConfigToolBarItemClassWithUI.title: NSString;

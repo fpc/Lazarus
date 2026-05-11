@@ -47,6 +47,7 @@ type
     title: String;
     tips: String;
     bordered: Boolean;
+    alternateIconName: String;
   end;
 
   { TCocoaConfigToolBarItemWithAction }
