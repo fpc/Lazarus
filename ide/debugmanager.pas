@@ -158,6 +158,7 @@ type
     FEventLogManager: TDebugEventLogManager;
     FUnitInfoProvider: TDebuggerUnitInfoProvider;
     FDialogs: array[TDebugDialogType] of TDebuggerDlg;
+    FDidShowConsoleForSession: Boolean;
     FInStateChange: Boolean;
     FPrevShownWindow: HWND;
     FStepping, FAsmStepping: Boolean;
@@ -1066,9 +1067,16 @@ end;
 procedure TDebugManager.DebuggerConsoleOutput(Sender: TObject;
   const AText: String);
 begin
-  if not HasConsoleSupport then exit;;
-  if FDialogs[ddtPseudoTerminal] = nil
-  then ViewDebugDialog(ddtPseudoTerminal, False, False);
+  if not HasConsoleSupport then exit;
+  case EnvironmentDebugOpts.AutoOpenConsoleWin of
+    ocOnceOnOutput:   if (FDialogs[ddtPseudoTerminal] = nil) or (not FDidShowConsoleForSession) then
+                        ViewDebugDialog(ddtPseudoTerminal, False, True);
+    ocAlwaysOnOutput: ViewDebugDialog(ddtPseudoTerminal, False, True);
+    else              if FDialogs[ddtPseudoTerminal] = nil then
+                        ViewDebugDialog(ddtPseudoTerminal, False, False);
+  end;
+  FDidShowConsoleForSession := True;
+
   TPseudoConsoleDlg(FDialogs[ddtPseudoTerminal]).AddOutput(AText);
 end;
 
@@ -3179,6 +3187,7 @@ begin
   DebugLn('TDebugManager.StartDebugging A ',DbgS(FDebugger<>nil),' Destroying=',DbgS(Destroying));
   {$endif}
   Result:=mrCancel;
+  FDidShowConsoleForSession := False;
   if Destroying then exit;
   if FManagerStates*[dmsWaitForRun, dmsWaitForAttach] <> [] then exit;
   if (FDebugger <> nil) then

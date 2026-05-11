@@ -45,9 +45,11 @@ type
 
   TDebuggerGeneralOptionsFrame = class(TAbstractIDEOptionsEditor)
     cmdOpenAdditionalPath: TButton;
+    cbAutoOpenConsole: TComboBox;
     gbAdditionalSearchPath: TGroupBox;
     gcbDebuggerGeneralOptions: TCheckGroup;
     gcbDebuggerDialogSettings: TCheckGroup;
+    lbAutoOpenConsole: TLabel;
     txtAdditionalPath: TEdit;
     procedure cmdOpenAdditionalPathClick(Sender: TObject);
   private
@@ -100,6 +102,8 @@ begin
     gcbDebuggerDialogSettings.Checked[3] := ConfirmDeleteAllBreakPoints;
     gcbDebuggerDialogSettings.Checked[4] := ConfirmDeleteFileBreakPoints;
     gcbDebuggerDialogSettings.Checked[5] := ConfirmDeleteAllHistory;
+
+    cbAutoOpenConsole.ItemIndex := ord(AutoOpenConsoleWin);
   end;
   txtAdditionalPath.Text:=EnvironmentOptions.GetParsedDebuggerSearchPath;
 end;
@@ -131,6 +135,11 @@ begin
   gcbDebuggerDialogSettings.Items.Add(lisDebugDialogConfirmDelBreaks);           // Confirm delete breakpoints
   gcbDebuggerDialogSettings.Items.Add(lisDebugDialogConfirmDelBreaksFile);       // Confirm delete breakpoints in same file
   gcbDebuggerDialogSettings.Items.Add(lisDebugDialogConfirmDelHistory);          // Confirm delete history
+
+  lbAutoOpenConsole.Caption := DbgWatchColorAutoOpenConsoleWindowLinu;
+  cbAutoOpenConsole.AddItem(DbgWatchColorNever, nil);
+  cbAutoOpenConsole.AddItem(DbgWatchColorOnOutputOncePerDebugSessi, nil);
+  cbAutoOpenConsole.AddItem(DbgWatchColorOnOutputAlways, nil);
 end;
 
 procedure TDebuggerGeneralOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -161,6 +170,8 @@ begin
     ConfirmDeleteAllBreakPoints      := gcbDebuggerDialogSettings.Checked[3];
     ConfirmDeleteFileBreakPoints     := gcbDebuggerDialogSettings.Checked[4];
     ConfirmDeleteAllHistory          := gcbDebuggerDialogSettings.Checked[5];
+
+    AutoOpenConsoleWin := TDbgAutoOpenConsoleWin(cbAutoOpenConsole.ItemIndex);
   end;
 end;
 

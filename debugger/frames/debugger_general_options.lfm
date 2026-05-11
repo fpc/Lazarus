@@ -5,6 +5,7 @@ object DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
   Width = 519
   ClientHeight = 427
   ClientWidth = 519
+  LCLVersion = '4.99.0.0'
   TabOrder = 0
   Visible = False
   DesignLeft = 812
@@ -105,5 +106,33 @@ object DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
     TabOrder = 2
+  end
+  object lbAutoOpenConsole: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbAutoOpenConsole
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 15
+    Top = 121
+    Width = 108
+    BorderSpacing.Around = 6
+    Caption = 'lbAutoOpenConsole'
+  end
+  object cbAutoOpenConsole: TComboBox
+    AnchorSideLeft.Control = lbAutoOpenConsole
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = gcbDebuggerDialogSettings
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 120
+    Height = 23
+    Top = 117
+    Width = 393
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    ItemHeight = 15
+    Style = csDropDownList
+    TabOrder = 3
   end
 end

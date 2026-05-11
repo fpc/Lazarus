@@ -108,10 +108,13 @@ const
 
 type
 
+  TDbgAutoOpenConsoleWin = (ocNever, ocOnceOnOutput, ocAlwaysOnOutput);
+
   { TEnvDebuggerOptions }
 
   TEnvDebuggerOptions = class(TIDESubOptions)
   private
+    FAutoOpenConsoleWin: TDbgAutoOpenConsoleWin;
     FConfirmDeleteAllBreakPoints: boolean;
     FConfirmDeleteAllHistory: boolean;
     FConfirmDeleteAllWatches: boolean;
@@ -177,6 +180,7 @@ type
     property ConfirmDeleteAllBreakPoints: boolean read FConfirmDeleteAllBreakPoints write FConfirmDeleteAllBreakPoints;
     property ConfirmDeleteFileBreakPoints: boolean read FConfirmDeleteFileBreakPoints write FConfirmDeleteFileBreakPoints;
     property ConfirmDeleteAllHistory: boolean read FConfirmDeleteAllHistory write FConfirmDeleteAllHistory;
+    property AutoOpenConsoleWin: TDbgAutoOpenConsoleWin read FAutoOpenConsoleWin write FAutoOpenConsoleWin default ocOnceOnOutput;
   end;
 
 var
@@ -302,6 +306,7 @@ begin
   FConfirmDeleteFileBreakPoints := True;
   FConfirmDeleteAllHistory := True;
   FConfirmDeleteAllWatches := True;
+  FAutoOpenConsoleWin := ocOnceOnOutput;
 end;
 
 destructor TEnvDebuggerOptions.Destroy;
