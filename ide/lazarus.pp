@@ -37,6 +37,10 @@ program Lazarus;
 
 {off $DEFINE IDE_MEM_CHECK}
 
+{$IFDEF IDEConsole}
+  {$AppType Console}
+{$ENDIF}
+
 uses
   {$IFDEF EnableRedirectStdErr}
   redirect_stderr,
