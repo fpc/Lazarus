@@ -2894,10 +2894,10 @@ property differs from the existing value.
 <short>Sets the value for the Orientation property.</short>
 <descr/>
 <seealso>
-
 <link id="TFont.Orientation"/>
 </seealso>
 </element>
+
 <element name="TFont.SetOrientation.AValue">
 <short>New value for the property.</short>
 </element>
@@ -3108,6 +3108,45 @@ specified Font.
 <short>Font instance to compare to the current class instance.</short>
 </element>
 
+<element name="TFont.IsHorizontal">
+<short>Determines whether the font runs in horizontal direction, either normal or
+upside down.</short>
+<descr>
+<p>
+The boolean function <var>IsHorizontal(AllowReverse:Boolean)</var> queries the 
+<var>Orientation</var> property of the font and returns <var>True</var> if 
+the writing direction is horizontal (0 degrees).
+</p>
+<p>
+In addition, when the optional parameter <var>AllowReverse</var> is 
+<var>True</var>, the function returns <var>True</var> also when the 
+text is upside down, i.e. rotated by 180 degrees.
+</p>
+</descr>
+<seealso>
+<link id="TFont.Orientation"/>
+<link id="TFont.IsVertical"/>
+</seealso>
+</element>
+<element name="TFont.IsHorizontal.AllowReverse">
+<short>Boolean parameter which, if <var>True</var>, makes the function return <var>True</var>
+also when the font is rotated by 180 degrees, i.e. runs upside down from right to left.</short>
+</element>
+
+<element name="TFont.IsVertical">
+<short>Indicates whether the font is rotated by +/-90 degrees</short>
+<descr>
+<p>The boolean function <var>IsVertical</var> queries the <var>Orientation</var>
+property of the font and returns <var>True</var> when it has a vertical 
+direction (+/- 90 degrees).
+</p>
+</descr>
+<seealso>
+<link id="TFont.Orientation"/>
+<link id="TFont.IsHorizontal"/>
+</seealso>
+</element>
+
 <element name="TFont.IsMonoSpace">
 <short>Indicates if the font uses fixed-width characters (monospace).</short>
 <descr>
@@ -3312,9 +3351,14 @@ the Name member in DefFontData.
 <descr>
 <p>
 <var>Orientation</var> is an <var>Integer</var> property which contains the 
-rotation angle used for text in 1/10ths of a degree. The rotation angle is 
-determined by the relationship between the X Axis for the Canvas and the 
-baseline for the font, and uses the following directions:
+rotation angle used for text in 1/10ths of a degree.
+The rotation angle is measured between the x axis of the canvas and the font's
+baseline; at zero angle the text is drawn horizontally from left to right 
+("3 o'clock direction"), and a positive angle corresponds to a rotation in 
+counter-clockwise direction.
+</p>
+<p>
+Here are some examples (of course, intermediate values are allowed as well):
 </p>
 <table>
 <caption>Orientation Values and Directions</caption>
@@ -3331,8 +3375,12 @@ baseline for the font, and uses the following directions:
 <td>Text is drawn upside down from right to left.</td>
 </tr>
 <tr>
-<td>2700</td>
+<td>2700 (or -900)</td>
 <td>Text is drawn vertically from top to bottom.</td>
+</tr>
+<tr>
+<td> 450</td>
+<td>Text is drawn diagonally upward from left/bottom to top/right.</td>
 </tr>
 </table>
 <p>
@@ -3344,6 +3392,10 @@ assigned).
 The default value for the property is <b>0</b> (<b>zero</b>).
 </p>
 </descr>
+<seealso>
+<link id="TFont.IsHorizontal"/>
+<link id="TFont.IsVertical"/>
+</seealso>
 </element>
 
 <element name="TFont.Pitch">
@@ -14077,7 +14129,7 @@ values in the raw image data.
 <var>ADescOnly</var> indicates whether the image descriptor or the 
 complete raw image data is required. When ADescOnly is <b>True</b>, only the 
 <var>TRawImageDescription</var> in the raw image is needed. When set to 
-<var>False</var>, all values in the <var>TRawImage</var> instance are 
+<b>False</b>, all values in the <var>TRawImage</var> instance are 
 required.
 </p>
 <p>
@@ -14168,7 +14220,7 @@ to increment the reference count for the shared image.
 <var>CopyContent</var> indicates whether the existing image data is copied 
 into the new shared image instance. When set to <b>True</b>, the content in 
 the existing shared image is copied and stored in the new shared image 
-instance. When set to <var>False</var>, only the image descriptor in the 
+instance. When set to <b>False</b>, only the image descriptor in the 
 shared image is copied. This gets the metadata for the image.
 </p>
 <p>

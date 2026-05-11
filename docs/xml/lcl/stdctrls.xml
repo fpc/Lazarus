@@ -8277,9 +8277,9 @@ message is handled for the control. The value is set to <b>True</b> in the
 the control.
 </p>
 <p>
-In short, Modified is set to <var>True</var> if the value in Text is changed 
+In short, Modified is set to <b>True</b> if the value in Text is changed 
 by user interaction with the control (keyboard or clipboard). It is set to 
-<var>False</var> if the value in Text was assigned in program code.
+<b>False</b> if the value in Text was assigned in program code.
 </p>
 <p>
 Use event handlers, like OnEditingDone or OnChange, to perform actions needed 
@@ -11098,9 +11098,9 @@ if the control is the active default control for the parent form.
 </p>
 <p>
 The property value is updated in <var>ActiveDefaultControlChanged</var> when 
-the focus for the control has been changed. It is set to <var>True</var> when 
+the focus for the control has been changed. It is set to <b>True</b> when 
 the button gains focus and becomes the <var>ActiveDefaultControl</var> on the 
-parent form. It is set to <var>False</var> when another control is set as the 
+parent form. It is set to <b>False</b> when another control is set as the 
 ActiveDefaultControl on the parent form. It is set to the value in the 
 <var>Default</var> property when the ActiveDefaultControl is set to 
 <b>Nil</b>.
@@ -12575,7 +12575,7 @@ Control used to show static text optionally using multiple lines.
 <descr>
 <p>
 <var>TCustomLabel</var> is a <var>TWinControl</var> descendant which 
-specifies a control to display static text on a form. The value in the 
+displays static text on a form. The value in the 
 control is not editable visually, and can be used to label or describe 
 another control or a container on the form. Since it cannot be edited, it is 
 not allowed to receive the input focus. It can, however, be used to set focus 
@@ -12604,6 +12604,7 @@ in the control.
 <element name="TCustomLabel.FOptimalFill" link="#lcl.stdctrls.TCustomLabel.OptimalFill"/>
 <element name="TCustomLabel.FShowAccelChar" link="#lcl.stdctrls.TCustomLabel.ShowAccelChar"/>
 <element name="TCustomLabel.FWordWrap" link="#lcl.stdctrls.TCustomLabel.WordWrap"/>
+<element name="TCustomLabel.FWordWrapLength" link="lcl.stdctrls.TCustomLabel.WordWrapLength"/>
 <element name="TCustomLabel.FLayout" link="#lcl.stdctrls.TCustomLabel.Layout"/>
 <element name="TCustomLabel.FInternalSetBounds"/>
 
@@ -12649,39 +12650,50 @@ to give focus to the control.
 </element>
 
 <element name="TCustomLabel.DoDrawText">
-<short>Performs actions needed to draw the text for the label.</short>
+<short>Performs actions needed to draw the text of the label or to calculate its size.</short>
 <descr>
 <p>
-<var>DoDrawText</var> performs action needed to draw the text for the label.
+<var>DoDrawText</var> performs action needed to draw the text for the label or to
+calculate the size occupied by it.
 </p>
 <p>
-The <var>GetLabelText</var> method is called to get the text value drawn in 
+When the option bit <var>DT_CALCRECT</var> is set in the <var>Flags</var> parameter, 
+only the size of the rectangle occupied by the text is calculated and returned in
+the <var>Rect</var> parameter; nothing is drawn here.
+</p>
+<p>
+The <var>GetLabelText</var> method is called to get the text handled by 
 the method.
 </p>
 <p>
-The <var>Font</var> color may be temporarily changed when when the 
-<var>Enabled</var> property is <b>False</b>. If themes are enabled, the Font 
-color is set to <var>clGrayText</var>. When themes are not enabled, the Font 
-color is set to <var>clBtnHighlight</var>. The original Font color is 
-restored prior to exiting the method.
-</p>
-<p>
-DoDrawText calls the <var>DrawText</var> routine to draw the text on the 
+DoDrawText calls the <var>DrawText</var> routine to paint the text on the 
 <var>Canvas</var> using the text rectangle and flags passed as arguments. 
-DrawText is called a second time to render the shadow for the label text when 
-themes are not enabled. The shadow text uses the color <var>clBtnShadow</var>.
 </p>
 <p>
-DoDrawText is called from the <var>Paint</var> method.
+When the <var>Enabled</var> property is <b>False</b> <var>DrawText</var> is
+called immediately before the main painting step with a Font color of 
+<var>clGrayText</var> if themes are enabled, or <var>clBtnHighlight</var> otherwise.
+The final drawing step then is done with color <var>clBtnShow</var> to render
+the "shadow" part of the disabled label. These Font changes are reverted prior to
+exiting the method.
+</p>
+<p>
+DrawText is called a second time to render the shadow part for a disabled label 
+when themes are not enabled. The shadow text has the color <var>clBtnShadow</var>.
+</p>
+<p>
+DoDrawText is called from the <var>Paint</var> and <var>CalculateSize</var> 
+methods.
 </p>
 </descr>
-<seealso/>
 </element>
+
 <element name="TCustomLabel.DoDrawText.Rect">
 <short>Text rectangle used to draw the label text.</short>
 </element>
+
 <element name="TCustomLabel.DoDrawText.Flags">
-<short>DrawText flags used to render the text.</short>
+<short>Bit mask of flags used to control how the text is rendered.</short>
 </element>
 
 <element name="TCustomLabel.HasMultiLine">
@@ -12693,7 +12705,7 @@ Checks for CR or LF characters in the label text for the control.
 <var>HasMultiLine</var> is a <var>Boolean</var> function used to determine if 
 <b>CR</b> (Carriage Return, Decimal 13) or <b>LF</b> (LineFeed, Decimal 10) 
 characters are included in the text for the control. HasMultiLine calls 
-GetLabelText to get the text stored in the label.
+<var>GetLabelText</var> to get the text stored in the label.
 </p>
 <p>
 The return value is <b>True</b> when either character occurs in the text for 
@@ -12711,6 +12723,7 @@ for the control.
 <link id="#lcl.lcltype.DT_SINGLELINE">DT_SINGLELINE</link>
 </seealso>
 </element>
+
 <element name="TCustomLabel.HasMultiLine.Result">
 <short>
 <b>True</b> when CR or LF characters are used in the text for the label.
@@ -12719,22 +12732,26 @@ for the control.
 
 <element name="TCustomLabel.CalculatePreferredSize">
 <short>
-Calculates the preferred size for the control using its anchoring and 
-constraints.
+Calculates the preferred size of the control based on size restrictions such as
+anchoring, aligning, constraints and the WordWrapLength parameter.
 </short>
 <descr>
 <p>
-<var>CalculatePreferredSize</var> is an overridden method used to calculated 
-the preferred size for the control. Values stored in the <var>Anchors</var>, 
-<var>Constraints</var>, and <var>WordWrap</var> properties are used to 
-determine the effective width for the control. CalculateSize is called to 
-calculate the text rectangle for the control using the requested dimensions.
+<var>CalculatePreferredSize</var> is an overridden method used to calculate 
+the preferred size for the control. This size is used when the <var>AutoSize</var>
+property of the control is switched to <b>True</b>. Values stored in the <var>Anchors</var>, 
+<var>Align</var>, <var>Constraints</var>, and <var>WordWrapLength</var> properties 
+are evaluated to determine the effective size for the control. Rotated and
+word-wrapped text is handled correctly.
 </p>
 <p>
 CalculatePreferredSize checks the assigned <var>Font</var> for the control to 
 determine whether text rotation is used in its <var>Orientation</var> 
 property. When a value other than <b>0</b> (<b>zero</b>) is used, the text 
-rectangle is rotated by the number of radians needed for the property value. 
+rectangle is calculated on the basis of the rotation angle (given in 1/10 degrees 
+in the <var>Font.Orientation</var> property).
+</p>
+<p>
 The values in <var>PreferredWidth</var> and <var>PreferredHeight</var> are 
 updated for the new text rectangle.
 </p>
@@ -12750,6 +12767,7 @@ method.
 </descr>
 <seealso>
 <link id="#lcl.controls.TControl.CalculatePreferredSize">TControl.CalculatePreferredSize</link>
+<link id="TCustomLabel.WordWrapLength"/>
 </seealso>
 </element>
 <element name="TCustomLabel.CalculatePreferredSize.PreferredWidth">
@@ -12788,6 +12806,7 @@ The following constants are also used in the DrawText flags:
 <li>DT_CALCRECT</li>
 <li>DT_EXPANDTABS</li>
 <li>DT_NOCLIP</li>
+<li>in case of rotated text also DT_LEFT, DT_RIGHT, DT_CENTER, DT_TOP, DT_VCENTER, DT_BOTTOM</li>
 </ul>
 </descr>
 <seealso/>
@@ -12849,7 +12868,7 @@ TextChanged does <b>not</b> call the inherited method.
 calls the inherited method to store the values in ALeft, ATop, AWidth, and 
 AHeight to the corresponding properties in the control. Values in 
 <var>OptimalFill</var>, <var>WordWrap</var>, and <var>Autosize</var> are used 
-to determine if additional actions are needed for the bounds change.
+to determine whether additional actions are needed for the bounds change.
 </p>
 <p>
 When <var>OptimalFill</var> is <b>True</b> and <var>AutoSize</var> is 
@@ -12926,6 +12945,7 @@ used for the height.
 <link id="#lcl.controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
 </seealso>
 </element>
+
 <element name="TCustomLabel.GetControlClassDefaultSize.Result">
 <short>Size used for new instances of the class.</short>
 </element>
@@ -12980,9 +13000,21 @@ and calls the inherited method on entry. Notification ensures that
 
 <element name="TCustomLabel.GetLabelText">
 <short>Returns the string value in the Caption for the control.</short>
-<descr/>
+<descr>
+<p>
+The string function <var>GetLabelText</var> provides the text to be displayed 
+by the label.
+It extracts the string from the <var>Caption</var> property of the control.
+</p>
+<p>When the label is rotated (<var>Font.Orientation &lt;&gt; 0</var>) and 
+the <var>ShowAccelChar</var> property is <b>True</b>, ampersand characters
+('&amp;') are removed from the text because underlining of the acceleration keys
+is not supported for rotated text.
+</p>
+</descr>
 <seealso>
 <link id="#lcl.controls.TControl.Caption">TControl.Caption</link>
+<link id="TCustomLabel.ShowAccelChar"/>
 </seealso>
 </element>
 <element name="TCustomLabel.GetLabelText.Result">
@@ -13055,6 +13087,41 @@ and calls the inherited method on entry. Notification ensures that
 <short>New value for the WordWrap property.</short>
 </element>
 
+<element name="TCustomLabel.SetWordWrapLength">
+<short>Sets the maximum pixel length of a label line before a new line is started when <var>WordWrap</var> is active.</short>
+<descr/>
+<seealso>
+<link id="TCustomLabel.WordWrapLength"/>
+</seealso>
+</element>
+<element name="TCustomLabel.SetWordWrapLength.Value">
+<short>New value for the WordWrapLength property.</short>
+</element>
+
+<element name="TCustomLabel.CalcWordWrapLength">
+<short>Calculates the maximum length of a word-wrapped line.</short>
+<descr>
+<p>Helper function which calculates the maximum length that the label text can 
+have before word-wrapping sets in. The calculation is based on several criteria:</p>
+<ul>
+<li>when the text direction is horizontal (or flipped) and the label width is
+restricted by anchoring or Parent aligning, the maximum line length is determined
+by the control width.</li>
+<li>when the text direction is vertical (or flipped) and the label height is
+restricted by anchoring or Parent aligning, the maximum line length is determined
+by the label's height.</li>
+<li>If the <var>WordWrapLength</var> property has a positive value, 
+the maximum line length is determined by this parameter.</li>
+<li>In all other cases, the maximum line defaults to a very large value 
+(<var>cMaxLabelSize</var> = 10000) so that the label can grow without being 
+wrapped.</li>
+</ul>
+</descr>
+<seealso>
+<link id="TCustomLabel.WordWrapLength"/>
+</seealso>
+</element>
+
 <element name="TCustomLabel.Loaded">
 <short>
 Performs actions when the component has been loaded using LCL component 
@@ -13105,8 +13172,7 @@ and <var>TextChanged</var> methods, and when setting a new value for the
 
 <element name="TCustomLabel.Alignment">
 <short>
-Horizontal text justification in the control (centered, left- or 
-right-justified).
+Horizontal text justification in the control (left- or right-justified, or centered).
 </short>
 <descr>
 <p>
@@ -13165,7 +13231,7 @@ the user presses the accelerator key.
 An accelerator key is marked by an Ampersand '&amp;' in the label caption, 
 immediately preceding the character to be used as the accelerator key. The 
 marked character appears underlined on screen, when ShowAccelChar is set to 
-<b>True</b>.
+<b>True</b> (but only if the label is not rotated).
 </p>
 <p>
 For example: When you have a NameEdit1 control on a form, preceded by a label 
@@ -13184,9 +13250,9 @@ Vertical alignment for control text (at the top, bottom, or center).
 </short>
 <descr>
 <p>
-<var>Layout</var> is a <var>TTextLayout</var> property with the vertical 
-alignment used for the text displayed in the control. The default value for 
-the property is <var>tlTop</var>. Changing the value in Layout causes the 
+<var>Layout</var> is a <var>TTextLayout</var> property for the vertical 
+alignment of the text displayed in the control. The default value for 
+the property is <var>tlTop</var>. Changing the value in <var>Layout</var> causes the 
 <var>Invalidate</var> method to be called to redraw the control.
 </p>
 <p>
@@ -13217,9 +13283,12 @@ When <b>False</b>, an <b>Ampersand (&amp;)</b> character in the label caption
 is displayed as an ordinary character (as used in the Object Inspector).
 </p>
 <p>
-When <b>True</b>, the character following the <b>Ampersand</b> is drawn with 
+When <b>True</b>, the character following the <b>Ampersand</b> ('&amp;') is drawn with 
 an underline. When the user presses the accelerator key, input focus is given 
 to the associated <var>FocusControl</var>.
+</p>
+<p>Note that underlining of the accelerator character is not supported when the
+label is rotated.
 </p>
 </descr>
 <seealso>
@@ -13269,15 +13338,39 @@ changed. Its value is independent of Color.
 
 <element name="TCustomLabel.WordWrap">
 <short>
-Allows the caption to wrap to multiple lines when it is longer than the 
-available Width.
+Allows the caption to wrap to multiple lines when it is wider than a 
+specified length.
 </short>
 <descr>
 <p>
-<var>WordWrap</var> is a <var>Boolean</var> property which indicates if the 
+<var>WordWrap</var> is a <var>Boolean</var> property which indicates that the 
 caption in the control can be wrapped to multiple lines when its length 
-exceeds the value in <var>Width</var>. The default value for the property is 
-<b>False</b>.
+exceeds a maximum value depending on various restrictions:
+</p>
+<ul>
+<li>
+When <var>Align</var> is set to <var>alTop</var> or <var>alBottom</var> the width 
+of the label's <var>Parent</var> controls the maximum text length. Correspondingly,
+when the label is rotated by +/- 90 degrees and <var>Align</var> is <var>alLeft</var>
+or <var>alRight</var> the <var>Parent</var>'s <var>Height</var> determines the
+length.
+</li>
+<li>Wordwrap positions can also be defined by anchoring of the label to other
+controls so that the label's size is restricted.
+</li>
+<li>
+When the <var>Constraints.MaxWidth</var> of the label is set to a positive value
+it immediately defines the maximum text length for wrapping.
+</li>
+<li>
+The <var>WordWrapLength</var>, new in Lazarus v5.0, has the same effect on wrapping
+as <var>Constraints.MaxWidth</var>. It was introduced mainly to control the 
+wordwrap positions when text is rotated (by giving the <var>Font.Orientation</var>
+a non-zero value in 1/10 degrees).
+</li>
+</ul>
+<p>
+The default value for the <var>WordWrap</var> property is <b>False</b>.
 </p>
 <p>
 When a new value is assigned to the property, the <var>Invalidate</var> and 
@@ -13285,17 +13378,52 @@ When a new value is assigned to the property, the <var>Invalidate</var> and
 </p>
 <p>
 When WordWrap is <b>False</b>, the text is truncated at the right boundary 
-when it is too long for the control Width. When WordWrap is <b>True</b> and 
-<var>AutoSize</var> is <b>True</b>, the maximum <var>Width</var> is 
-determined by anchoring the left and right sides for the control to its 
-Parent.
+when it is too long for the control Width. The same happens even when WordWrap is 
+<b>True</b>, but no restriction has been set up for the text length.
+</p>
+<p>
+When both <var>WordWrap</var> and <var>AutoSize</var> are <b>True</b>, the
+word-wrap positions are calculated first, and then the right and bottom sides
+of the label are adjusted so that the text is enclosed tightly.
 </p>
 </descr>
 <seealso>
 <link id="TCustomLabel.AutoSize"/>
 <link id="TCustomLabel.UpdateSize"/>
+<link id="TCustomLabel.WordWrapLength"/>
+<link id="TCustomLabel.Font"/>
 <link id="#lcl.controls.TControl.Width">TControl.Width</link>
 <link id="#lcl.controls.TControl.Invalidate">TControl.Invalidate</link>
+</seealso>
+</element>
+
+<element name="TCustomLabel.WordWrapLength">
+<short>
+Defines the maximum pixel  of the label caption at which the text is wrapped 
+to a new line.
+</short>
+<descr>
+<p>
+<var>WordWrapLength</var> is an <var>Integer</var> property which determines the
+maximum line length (in pixels): When <var>WordWrap</var> is <b>True</b> and the 
+<var>Caption</var> becomes wider than this value, the excess text is wrapped at
+the preceding word boundary to a new line.
+</p>
+<p>
+The default value is <b>0</b> indicating that this property does not introduce
+any word-breaks by itself. Word-wraps then can occur only on the basis of other
+criteria (alignment to parent, anchoring to other controls, or constrained width).
+</p>
+<p>
+This property was introduced to have a well-controlled wrapping parameter when the
+text is rotated. Label rotation can be achieved by giving the <var>Font.Orientation</var>
+property a non-zero value which is interpreted in units of 1/10 degree, positive in
+counter-clockwise orientation and zero pointing horizontally in the 3 o'clock direction.
+</p>
+</descr>
+<seealso>
+<link id="TCustomLabel.WordWrap"/>
+<link id="#lcl.graphics.TFont">TFont</link>
 </seealso>
 </element>
 
@@ -13416,6 +13544,30 @@ MaxHeight.
 <short>Height needed for the text using the calculated font size.</short>
 </element>
 
+<element name="TCustomLabel.DoAutoAdjustLayout">
+<short>
+High-DPI related helper procedure, overridden to adjust the value of 
+<var>WordWrapLength</var> when the monitor's pixels-per-inch value changes.
+</short>
+<descr>
+<p>
+The virtual method <var>DoAutoAdjustLayout</var> is called whenever the
+monitor resolution (pixels per inch) changes. It must be overridden to 
+adjust the value of the <var>WordWrapLength</var> property to the new
+pixel density.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.controls.TControl.DoAutoAdjustLayout">TControl.DoAutoAdjustLayout</link>
+</seealso>
+</element>
+<element name="TCustomLabel.DoAutoAdjustLayout.AXProportion">
+<short>Scaling factor for horizontal dimensions.</short>
+</element>
+<element name="TCustomLabel.DoAutoAdjustLayout.AYProportion">
+<short>Scaling factor for vertical dimensions.</short>
+</element>
+
 <element name="TCustomLabel.AdjustFontForOptimalFill">
 <short>
 Adjusts the font height for the control text to fill the available client 
@@ -13467,15 +13619,13 @@ Text, including:
 <li>AutoSize</li>
 <li>Alignment</li>
 <li>Layout</li>
-<li>WordWrap</li>
+<li>WordWrap, based on Align, Constraints, anchoring and/or WordWrapLength</li>
 <li>Transparent</li>
 <li>Color</li>
 <li>Font</li>
 <li>ShowAccel</li>
 <li>Enabled</li>
-<li>Alignment</li>
-<li>UseRightToLeftAlignment</li>
-<li>UseRightToLeftReading</li>
+<li>UseRightToLeftAlignment, UseRightToLeftReading</li>
 </ul>
 <p>
 DoDrawText is called to render the label text using the DrawText flags needed 
@@ -13493,6 +13643,15 @@ Paint does <b>not</b> call the inherited method in
 <link id="#lcl.controls.TGraphicControl.Canvas">TGraphicControl.Canvas</link>
 <link id="#lcl.controls.TGraphicControl.Paint">TGraphicControl.Paint</link>
 <link id="#lcl.controls.TGraphicControl.OnPaint">TGraphicControl.OnPaint</link>
+</seealso>
+</element>
+
+<element name="TCustomLabel.SetAlign">
+<short>Setter method for the <var>Align</var> property. Is overridden here to
+recalculate word-wrapping if required.</short>
+<descr/>
+<seealso>
+<link id="#lcl.controls.TControl.Align">TControl.Align</link>
 </seealso>
 </element>
 
@@ -13572,6 +13731,13 @@ When WordWrap is enabled, and both the left and right edges are included in
 Anchors, the height for the label control is adjusted during auto-sizing.
 </p>
 <p>
+WordWrapLength is another parameter to control the text width when WordWrap is
+active. It is primarily useful when the label text is rotated (by setting the
+label's <var>Font.Orientation</var> to the 10-fold rotation angle in degrees). 
+In case of rotated text, again the width and height of the autosized label are
+adjusted to tightly enclose the text.
+</p>
+<p>
 Simultaneous use of both AutoSize and OptimalFill can have conflicting 
 results. AutoSize tries to use the existing Font to determine the control width
 /height. OptimalFill adjusts the Font size to fill the control width/height.
@@ -13585,6 +13751,7 @@ called when the property is enabled.
 <link id="TCustomLabel.Alignment"/>
 <link id="TCustomLabel.Layout"/>
 <link id="TCustomLabel.WordWrap"/>
+<link id="TCustomLabel.WordWrapLength"/>
 <link id="TCustomLabel.OptimalFill"/>
 <link id="TCustomLabel.CalculateSize"/>
 <link id="TCustomLabel.CalculatePreferredSize"/>
@@ -13636,7 +13803,8 @@ Setting Color does not automatically change Transparent from <b>True</b> to
 
 <element name="TLabel">
 <short>
-Control used to display static text, possibly in multiple lines.
+Control used to display static text, possibly in multiple lines and rotated by
+an arbitrary angle.
 </short>
 <descr>
 <p>
@@ -13682,7 +13850,8 @@ Caption can be used to display an accelerator (or shortcut) key which allows
 an associated control to be given focus or executed. The shortcut key is 
 identified by placing an Ampersand (&amp;) character in front of the character 
 used as the accelerator key. Use two Ampersand characters to display a single 
-Ampersand which is not a shortcut key.
+Ampersand which is not a shortcut key. Note that the accelerator character is 
+not displayed when the label is rotated.
 </p>
 <p>
 Set ShowAccelChar to <b>False</b> to disable display and use of the 
@@ -13723,7 +13892,7 @@ control to be given focus.
 <link id="TLabel.ShowAccelChar"/>
 <link id="TLabel.FocusControl"/>
 <link id="TLabel.Color"/>
-<link id="TLabel.Font"/>
+<link id="TLabel.Font" link="#lcl.stdctrls.TCustomLabel.Font"/>
 <link id="TLabel.Layout"/>
 <link id="#lcl.controls.TControl.Caption">TControl.Caption</link>
 </seealso>

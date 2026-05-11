@@ -888,6 +888,100 @@ device context.
 Amplitude for changes in horizontal or vertical positions in the wave.
 </short>
 </element>
+
+<element name="WordWrap">
+<short>
+Splits the provided string <var>AText</var> at word boundaries to individual lines 
+so that these lines, in pixels, are not longer than the given <var>AMaxWidth</var>.
+</short>
+<descr>
+<p>
+The procedure <var>WordWrap</var> splits a string at word boundaries so that the
+separated  lines are shorter than the provided <var>AMaxWidth</var> parameter.
+The individual lines are returned in the list <var>ALines</var> of type <var>TStrings</var>.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="WordWrap.AFont">
+<short>Provides the font which will be used for word-wrapping the text.</short>
+</element>
+<element name="WordWrap.AText">
+<short>String which will be wrapped to multiple line when its pixel width is 
+longer than <var>AMaxWidth</var>.
+</short>
+</element>
+<element name="WordWrap.AMaxWidth">
+<short>Integer argument which defines the maximum width that a line is allowed 
+to have after word-wrapping. The value is specified in pixels.</short>
+</element>
+<element name="WordWrap.ALines" >
+<short>This parameter of type <var>TStrings</var> collects the individual lines obtained
+by word-wrapping the input string.</short>
+</element>
+
+<element name="DrawRotatedText">
+<short>Draws the provided text on the given canvas, rotated by an angle as
+specified by the canvas' <var>Font.Orientation</var>. Returns the smallest 
+enclosing rectangle.</short>
+<descr>
+<p>The procedure <var>DrawRotatedText</var> draws the text given in the parameter
+<var>AText</var> on the provided canvas (<var>ACanvas</var>). The text is rotated
+by an angle derived from the canvas'
+<var>Font.Orientation</var> property (which is specified in units of 1/10 degree).</p>
+<p>When the input text contains <var>LineEnding</var> marks the individual lines
+are wrapped and drawn correctly even when rotated. 
+The line endings, however, are ignored when the <var>AFlags</var> parameter 
+contains the bit flag <var>DT_SINGLELINE</var>.</p>
+<p>When the <var>AFlags</var> parameter contains the bit flag <var>DT_WORDBREAK</var> 
+the text is wrapped to separate lines which are not longer than the given 
+<var>AMaxLineLength</var> pixel count.</p>
+<p>The parameter <var>ARect</var> of type <var>TRect</var> identifies the
+rectangle in which the text is to be painted. After painting 
+(or when the <var>AFlags</var> parameter contains the bit flag <var>DT_CALCRECT</var> 
+the width and height of the rectangle are adjusted so that the rectangle encloses 
+the text tightly.
+</p>
+<p>Other bit options provided by the <var>AFlags</var> argument are</p>
+<ul>
+<li><var>DT_LEFT, DT_RIGHT, DT_CENTER</var> -- the individual lines are left-aligned/right-aligned/centered within the drawing rectangle <var>ARect</var>.</li>
+<li><var>DT_TOP, DT_BOTTOM, DT_VCENTER</var> -- the text block is top-aligned/bottom-aligned/vertically centered within the drawing rectangle <var>ARect</var>.</li>
+<li><var>DT_RTLREADING</var> -- the text is drawn from right to left as used in mid-east countries. Left and right alignments are exchanged.</li>
+<li><var>DT_CALCRECT</var> -- Nothing is drawn, only the size of the enclosing rectangle is calculated and returned.</li>
+<li><var>DT_NOPREFIX</var> -- Displays the accelerator character '&amp;'. Not supported by rotated text.</li>
+<li><var>DT_EXPANDTABS</var> -- Expands tab characters (#9). Not supported by rotated text.</li>
+</ul>
+</descr>
+<seealso>
+<link id="WordWrap"/>
+<link id="#lcl.graphics.TFont.Orientation">TFont.Orientation</link>
+</seealso>
+</element>
+<element name="DrawRotatedText.ACanvas">
+<short><var>ACanvas</var> (type <var>TCanvas</var>) identifies the canvas on which
+the text is painted.</short>
+</element>
+<element name="DrawRotatedText.AText">
+<short>String parameter which defines the input text to be painted.</short>
+</element>
+<element name="DrawRotatedText.AFlags">
+<short>Integer parameter containing a bitmask with miscellaneous drawing options</short>
+</element>
+<element name="DrawRotatedText.AMaxLineLength">
+<short>Integer parameter defining the maximum length (in pixels) that a line
+can have before word-wrapping. Only used when the <var>AFlags</var> argument contains 
+the bit mask <var>DT_WORDWRAP</var>.
+</short>
+</element>
+<element name="DrawRotatedText.ALines">
+<short>A parameter of type <var>TStrings</var> into which the individual lines
+of the input text are stored as separate entries.</short>
+</element>
+<element name="DrawRotatedText.ARect">
+<short>Defines the rectangle in which the text is painted. After drawing, its 
+width and height are modified such that the text is tightly enclosed.</short>
+</element>
+
 </module>
 <!-- GraphUtil -->
 </package>
