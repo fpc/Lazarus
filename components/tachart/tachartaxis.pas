@@ -816,9 +816,11 @@ end;
 function TChartAxis.GetIndexOfFirstVisibleMark: Integer;
 var
   coord: Integer;
+  T: TChartAxisTransformations;
 begin
+  T := GetTransform;
   for Result := 0 to High(FMarkValues) do begin
-    coord := FHelper.GraphToImage(FMarkValues[Result].FValue);
+    coord := FHelper.GraphToImage(T.AxisToGraph(FMarkValues[Result].FValue));
     if FHelper.IsInClipRange(coord) then
       exit;
   end;
@@ -828,9 +830,11 @@ end;
 function TChartAxis.GetIndexOfLastVisibleMark: Integer;
 var
   coord: Integer;
+  T: TChartAxisTransformations;
 begin
+  T := GetTransform;
   for Result := High(FMarkValues) downto 0 do begin
-    coord := FHelper.GraphToImage(FMarkValues[Result].FValue);
+    coord := FHelper.GraphToImage(T.AxisToGraph(FMarkValues[Result].FValue));
     if FHelper.IsInClipRange(coord) then
       exit;
   end;
