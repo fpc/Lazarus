@@ -134,6 +134,8 @@ type
     class function copyAndRotateCursor(
       const src: NSCursor;
       const degrees: Double ): NSCursor;
+    class function imageWithSystemSymbolString(
+      const symbolString: NSString ): NSImage;
   end;
 
   { TCocoaThemeUtil }
@@ -1112,6 +1114,41 @@ begin
     NSMakePoint(img.size.height / 2, img.size.width / 2)
   );
   img.release;
+end;
+
+class function TCocoaImageUtil.imageWithSystemSymbolString(
+  const symbolString: NSString ): NSImage;
+var
+  imageName: NSString;
+  config: NSImageSymbolConfiguration;
+begin
+  Result:= nil;
+  if symbolString.length <= 0 then
+    Exit;
+
+  // begin with # -- emphasize
+  if symbolString.hasPrefix( NSSTR('#') ) then begin
+    imageName:= symbolString.substringFromIndex(1);
+    // emphasize by size and weight
+    config:= NSImageSymbolConfiguration.configurationWithPointSize(
+               NSFont.systemFontSize + 2,
+               NSFontWeightHeavy );
+    // emphasize by hint color
+    if NSAppKitVersionNumber >= NSAppKitVersionNumber12_0 then begin
+      config:= config.configurationByApplyingConfiguration(
+                 NSImageSymbolConfiguration.configurationWithHierarchicalColor(
+                   NSColor.colorForControlTint(NSColor.currentControlTint) ) );
+    end;
+  end else begin
+    imageName:= symbolString;
+    config:= nil;
+  end;
+
+  Result:= NSImage.imageWithSystemSymbolName_accessibilityDescription(
+             imageName, nil );
+
+  if Assigned(config) then
+    Result:= Result.imageWithSymbolConfiguration( config );
 end;
 
 { TCocoaThemeUtil }

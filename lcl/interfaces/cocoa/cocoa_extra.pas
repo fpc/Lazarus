@@ -368,6 +368,10 @@ type
 const
   NSFontWeightRegular = 0.0;
 
+var
+  NSFontWeightBold: NSFontWeight; cvar; external;
+  NSFontWeightHeavy: NSFontWeight; cvar; external;
+
 type
   NSFontFix = objccategory external (NSFont)
     // available in 10.15+
@@ -460,10 +464,26 @@ type
     function CGContext: CGContextRef; message 'CGContext';
   end;
 
+  NSImageSymbolConfiguration = objcclass external (NSObject)
+    class function configurationWithPointSize(
+      pointSize: CGFloat;
+      weight: NSFontWeight ): id;
+      message 'configurationWithPointSize:weight:'; { available in 11.0 }
+    class function configurationWithHierarchicalColor(
+      hierarchicalColor: NSColor ): id;
+      message 'configurationWithHierarchicalColor:'; { available in 12.0 }
+    function configurationByApplyingConfiguration(
+      configuration: NSImageSymbolConfiguration ): id;
+      message 'configurationByApplyingConfiguration:'; { available in 12.0 }
+  end;
+
   NSImageFix = objccategory external (NSImage)
     class function imageWithSystemSymbolName_accessibilityDescription(
       aName: NSString; aAccessibilityDescription: NSString ): id;
       message 'imageWithSystemSymbolName:accessibilityDescription:'; { available in 11.0 }
+    function imageWithSymbolConfiguration(
+      configuration: NSImageSymbolConfiguration ): NSImage;
+      message 'imageWithSymbolConfiguration:'; { available in 11.0 }
   end;
 
   NSEventFix = objccategory external (NSEvent)

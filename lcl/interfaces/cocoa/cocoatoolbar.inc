@@ -812,16 +812,14 @@ begin
 
   cocoaIconName:= self.iconName;
   if cocoaIconName.length > 0 then begin
-    cocoaIcon:= NSImage.imageWithSystemSymbolName_accessibilityDescription(
-                  cocoaIconName, nil );
+    cocoaIcon:= TCocoaImageUtil.imageWithSystemSymbolString(cocoaIconName);
     item.setImage( cocoaIcon );
   end;
 
   if item.conformsToProtocol(objcprotocol(TCocoaToolBarItemStateProtocol)) then begin
     cocoaIconName:= self.alternateIconName;
     if cocoaIconName.length > 0 then begin
-      cocoaIcon:= NSImage.imageWithSystemSymbolName_accessibilityDescription(
-                    cocoaIconName, nil );
+      cocoaIcon:= TCocoaImageUtil.imageWithSystemSymbolString(cocoaIconName);
       TCocoaToolBarItemStateProtocol(item).lclSetAlternateIcon( cocoaIcon );
     end;
   end;
@@ -1022,8 +1020,8 @@ var
     images:= NSMutableArray.arrayWithCapacity( count );
     labels:= NSMutableArray.arrayWithCapacity( count );
     for i:=0 to count-1 do begin
-      images.addObject( NSImage.imageWithSystemSymbolName_accessibilityDescription(
-        TCocoaConfigToolBarItemClass(_subitems[i]).iconName, nil) );
+      images.addObject( TCocoaImageUtil.imageWithSystemSymbolString(
+                          TCocoaConfigToolBarItemClass(_subitems[i]).iconName) );
       labels.addObject( TCocoaConfigToolBarItemClass(_subitems[i]).title );
     end;
   end;
