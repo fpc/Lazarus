@@ -129,9 +129,18 @@ type
     function createItem: NSToolBarItem; override;
   end;
 
+  TCocoaToolBarItemStateProtocol = objcprotocol
+    procedure lclSetState( const state: Boolean );
+      message 'lclSetState:';
+    function lclGetState: Boolean;
+      message 'lclGetState';
+    procedure lclSetAlternateIcon( const icon: NSImage );
+      message 'lclSetAlternateIcon:';
+  end;
+
   { TCocoaToolBarItem }
 
-  TCocoaToolBarItem = objcclass( NSToolBarItem )
+  TCocoaToolBarItem = objcclass( NSToolBarItem, TCocoaToolBarItemStateProtocol )
   private
     _state: Boolean;  // off/on, up/down
     _icon: NSImage;
@@ -139,14 +148,13 @@ type
     _handler: TCocoaToolBarItemActionHandler;
     procedure lclItemAction( const sender: id ); message 'lclItemAction:';
   public
+    // TCocoaToolBarItemStateProtocol
+    procedure lclSetState( const state: Boolean );
+    function lclGetState: Boolean;
+    procedure lclSetAlternateIcon( const icon: NSImage );
+
     procedure lclSetHandler( const handler: TCocoaToolBarItemActionHandler );
       message 'lclSetHandler:';
-    procedure lclSetState( const state: Boolean );
-      message 'lclSetState:';
-    function lclGetState: Boolean;
-      message 'lclGetState';
-    procedure lclSetAlternateIcon( const icon: NSImage );
-      message 'lclSetAlternateIcon:';
   public
     procedure dealloc; override;
   end;
@@ -763,12 +771,12 @@ begin
     item.setImage( cocoaIcon );
   end;
 
-  if item.respondsToSelector( ObjCSelector('lclSetAlternateIcon:') ) then begin
+  if item.conformsToProtocol(objcprotocol(TCocoaToolBarItemStateProtocol)) then begin
     cocoaIconName:= self.alternateIconName;
     if cocoaIconName.length > 0 then begin
       cocoaIcon:= NSImage.imageWithSystemSymbolName_accessibilityDescription(
                     cocoaIconName, nil );
-      item.performSelector_withObject( ObjCSelector('lclSetAlternateIcon:'), cocoaIcon );
+      TCocoaToolBarItemStateProtocol(item).lclSetAlternateIcon( cocoaIcon );
     end;
   end;
 
