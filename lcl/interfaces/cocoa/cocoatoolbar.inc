@@ -194,18 +194,29 @@ type
 
   { TCocoaToolBarItemMenu }
 
-  TCocoaToolBarItemMenu = objcclass( NSMenuToolBarItem )
+  TCocoaToolBarItemMenu = objcclass( NSMenuToolBarItem, TCocoaToolBarItemStateProtocol )
   private
+    _state: Boolean;  // off/on, up/down
+    _icon: NSImage;
+    _alternateIcon: NSImage;
+
     _handler: TCocoaToolBarItemActionHandler;
     _dynamic: Boolean;
     _onGetMenu: TCocoaToolBarItemMenuOnGetMenu;
     procedure lclItemAction( sender: id ); message 'lclItemAction:';
   public
+    // TCocoaToolBarItemStateProtocol
+    procedure lclSetState( const state: Boolean );
+    function lclGetState: Boolean;
+    procedure lclSetAlternateIcon( const icon: NSImage );
+
     procedure lclSetHandler( const handler: TCocoaToolBarItemActionHandler );
       message 'lclSetHandler:';
     procedure lclSetDynamic( const dynamic: Boolean ); message 'lclSetDynamic:';
     procedure lclSetOnGetMenu( const onGetMenu: TCocoaToolBarItemMenuOnGetMenu);
       message 'lclSetOnGetMenu:';
+  public
+    procedure dealloc; override;
   end;
 
   { TCocoaToolBarItemGroupWrapper }
@@ -608,6 +619,41 @@ procedure TCocoaToolBarItemMenu.lclSetOnGetMenu(
   const onGetMenu: TCocoaToolBarItemMenuOnGetMenu);
 begin
   _onGetMenu:= onGetMenu;
+end;
+
+procedure TCocoaToolBarItemMenu.lclSetState(const state: Boolean);
+var
+  icon: NSImage;
+begin
+  _state:= state;
+  if Assigned(_alternateIcon) then begin
+    if NOT state then
+      icon:= _icon
+    else
+      icon:= _alternateIcon;
+    self.setImage( icon );
+  end;
+end;
+
+function TCocoaToolBarItemMenu.lclGetState: Boolean;
+begin
+  Result:= _state;
+end;
+
+procedure TCocoaToolBarItemMenu.lclSetAlternateIcon(const icon: NSImage);
+begin
+  _icon:= self.image;
+  _icon.retain;
+  _alternateIcon:= icon;
+  _alternateIcon.retain;
+end;
+
+procedure TCocoaToolBarItemMenu.dealloc;
+begin
+  if Assigned(_icon) then
+    _icon.release;
+  if Assigned(_alternateIcon) then
+    _alternateIcon.release;
 end;
 
 { TCocoaToolBarItemGroupWrapper }
