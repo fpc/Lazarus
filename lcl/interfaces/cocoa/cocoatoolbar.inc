@@ -504,6 +504,9 @@ procedure TCocoaToolBarItem.lclSetState(const state: Boolean);
 var
   icon: NSImage;
 begin
+  if _state = state then
+    Exit;
+
   _state:= state;
   if Assigned(_alternateIcon) then begin
     if NOT state then
@@ -625,6 +628,9 @@ procedure TCocoaToolBarItemMenu.lclSetState(const state: Boolean);
 var
   icon: NSImage;
 begin
+  if _state = state then
+    Exit;
+
   _state:= state;
   if Assigned(_alternateIcon) then begin
     if NOT state then
