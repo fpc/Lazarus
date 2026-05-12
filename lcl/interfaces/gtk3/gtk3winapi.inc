@@ -3666,6 +3666,72 @@ begin
   CritSection:=TCriticalSection(ACritSec);
 end;
 
+function TGtk3WidgetSet.InitStockFont(AFont: TObject; AStockFont: TStockFont): Boolean;
+var
+  Font: TFont absolute AFont;
+  RawName: string;
+  FontDesc: PPangoFontDescription;
+  FamilyPtr: Pgchar;
+  ASize: gint;
+  AWeight: TPangoWeight;
+  AStyle: TPangoStyle;
+  Settings: PGtkSettings;
+  AValue: TGValue;
+begin
+  Result := False;
+  RawName := FDefaultAppFontName;
+  if RawName = '' then
+  begin
+    Settings := gtk_settings_get_default;
+    if Settings <> nil then
+    begin
+      FillByte(AValue{%H-}, SizeOf(AValue), 0);
+      AValue.init(G_TYPE_STRING);
+      g_object_get_property(Settings, 'gtk-font-name', @AValue);
+      RawName := AValue.get_string;
+      AValue.unset;
+    end;
+  end;
+  if RawName = '' then
+    exit;
+
+  FontDesc := pango_font_description_from_string(PgChar(RawName));
+  if FontDesc = nil then
+    exit;
+  try
+    FamilyPtr := pango_font_description_get_family(FontDesc);
+    if FamilyPtr = nil then
+      exit;
+    Font.Name := FamilyPtr;
+
+    ASize := pango_font_description_get_size(FontDesc);
+    if ASize > 0 then
+    begin
+      if pango_font_description_get_size_is_absolute(FontDesc) then
+        Font.Height := -(ASize div PANGO_SCALE)
+      else
+        Font.Size := ASize div PANGO_SCALE;
+    end;
+
+    AWeight := pango_font_description_get_weight(FontDesc);
+    if AWeight >= PANGO_WEIGHT_BOLD then
+      Font.Style := Font.Style + [fsBold];
+
+    AStyle := pango_font_description_get_style(FontDesc);
+    if AStyle > PANGO_STYLE_NORMAL then
+      Font.Style := Font.Style + [fsItalic];
+  finally
+    pango_font_description_free(FontDesc);
+  end;
+
+  case AStockFont of
+    sfHint: Font.Color := clInfoText;
+    sfMenu: Font.Color := clMenuText;
+  end;
+
+  Result := Font.Name <> '';
+end;
+
 function TGtk3WidgetSet.InvalidateRect(aHandle: HWND; Rect: pRect;
   bErase: Boolean): Boolean;
 begin

@@ -155,6 +155,7 @@ function GetWindowRelativePosition(Handle : hwnd; var Left, Top: integer): boole
 function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean; override;
 
 procedure InitializeCriticalSection(var CritSection: TCriticalSection); override;
+function InitStockFont(AFont: TObject; AStockFont: TStockFont): Boolean; override;
 function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
 function InvalidateRgn(Handle: HWND; Rgn: HRGN; Erase: Boolean): Boolean; override;
 function IsIconic(handle: HWND): boolean; override;
