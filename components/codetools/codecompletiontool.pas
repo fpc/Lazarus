@@ -2939,9 +2939,9 @@ begin
 
         // gather overloaded procs
         if not Params.NewCodeTool.CleanPosToCaret(
-          Params.NewNode.FirstChild.StartPos,CodeXYPos) then
-        exit;
-        if not Context.Tool.FindDeclarationAndOverloadNodes(CodeXYPos,FPL,
+            Params.NewNode.FirstChild.StartPos,CodeXYPos) then
+          exit;
+        if not Params.NewCodeTool.FindDeclarationAndOverloadNodes(CodeXYPos,FPL,
             [fdlfWithoutEmptyProperties]) then
           exit;
         if FPL<>nil then
