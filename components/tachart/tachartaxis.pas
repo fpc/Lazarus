@@ -827,17 +827,21 @@ var
   end;
 
 begin
-  Transf := GetTransform;
-  if (FMarkValues[0].FValue > FMarkValues[High(FMarkValues)].FValue) xor NeedFirst then
-    for Result := 0 to High(FMarkValues) do
-    begin
-      if IsVisible(FMarkValues[Result].FValue) then
-        exit;
-    end
-  else
-    for Result := High(FMarkValues) downto 0 do
-      if IsVisible(FMarkValues[Result].FValue) then
-        exit;
+  if Length(FMarkValues) > 0 then
+  begin
+    Transf := GetTransform;
+    if (FMarkValues[0].FValue > FMarkValues[High(FMarkValues)].FValue) xor NeedFirst then
+      for Result := 0 to High(FMarkValues) do
+      begin
+        if (Length(FMarkValues[Result].FPolygon) > 0) and IsVisible(FMarkValues[Result].FValue) then
+          exit;
+      end
+    else
+      for Result := High(FMarkValues) downto 0 do
+        if (Length(FMarkValues[Result].FPolygon) > 0) and IsVisible(FMarkValues[Result].FValue) then
+          exit;
+  end;
+  Result := -1;
 end;
 
 function TChartAxis.GetIndexOfFirstVisibleMark: Integer;
