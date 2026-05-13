@@ -90,6 +90,7 @@ type
     function BackupExe(var aTargetFilename: string; const aTitle: string; Flags: TBuildLazarusFlags; AllowAltTargetFile: boolean): boolean;
     function CreateAppleBundle: TModalResult;
     procedure AppendExtraOption(const aOption: string; AutoQuote: boolean = True);
+    procedure PrependExtraOption(const aOption: string; AutoQuote: boolean = True);
     // This is used by MakeLazarus and SaveIDEMakeOptions
     function PrepareTargetDir(Flags: TBuildLazarusFlags): TModalResult;
   public
@@ -433,6 +434,8 @@ begin
         IdeBuildMode:=bmBuild;
 
       {$IFDEF UseFPCForIDE}
+      if (fTargetOS='win32') or (fTargetOS='win64') then
+        PrependExtraOption('-WG'); // prepend so it can be overriden with -WC
       if IdeBuildMode<>bmBuild then
         AppendExtraOption('-B');
       {$ELSE}
@@ -458,8 +461,6 @@ begin
       AppendExtraOption('-Fuide');
       if blfKeepInstallPkgs in Flags then
         AppendExtraOption('-dKeepInstalledPackages');
-      if (fTargetOS='win32') or (fTargetOS='win64') then
-        AppendExtraOption('-WG');
       AppendExtraOption('ide'+PathDelim+'lazarus.pp');
       AppendExtraOption('-o'+fTargetFilename);
       Cmd:=fExtraOptions;
@@ -943,6 +944,18 @@ begin
   else
     fExtraOptions:=fExtraOptions+aOption;
   //DebugLn(['AppendExtraOption ',fExtraOptions]);
+end;
+
+procedure TLazarusBuilder.PrependExtraOption(const aOption: string; AutoQuote: boolean);
+begin
+  if aOption='' then exit;
+  if fExtraOptions<>'' then
+    fExtraOptions:=' '+fExtraOptions;
+  if AutoQuote and (pos(' ',aOption)>0) then
+    fExtraOptions:=AnsiQuotedStr(aOption,'"')+fExtraOptions
+  else
+    fExtraOptions:=aOption+fExtraOptions;
+  //DebugLn(['PrependExtraOption ',fExtraOptions]);
 end;
 
 function TLazarusBuilder.PrepareTargetDir(Flags: TBuildLazarusFlags): TModalResult;
