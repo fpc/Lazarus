@@ -3415,6 +3415,7 @@ begin
   end
   else
   begin
+    ADesc.Format := ricfRGBA;
     ADesc.Depth := Depth;
     ADesc.BitsPerPixel := 32;
     ADesc.LineEnd := rileDWordBoundary;
