@@ -1476,11 +1476,9 @@ begin
   if not Assigned(self.callback) then Exit;
 
   row := rowForView(sender.superview);
+  self.selectOneItemByIndex(row, True);
+  self.window.makeFirstResponder( self );
   self.callback.SetItemCheckedAt(row, sender.state);
-  if sender.state <> NSOffState then begin
-    self.selectOneItemByIndex(row, True);
-    self.window.makeFirstResponder( self );
-  end;
 end;
 
 { TCocoaWSListView_TableViewHandler }
