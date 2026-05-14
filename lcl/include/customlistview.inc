@@ -1879,7 +1879,8 @@ begin
 
    if (AProp = lvpMultiselect) and ( AIsSet)  then begin
      FreeAndNil(FMultiSelList);
-     if (FSelectedIdx > -1) and (HandleAllocated) then
+     //issue #42289
+     if (FSelectedIdx > -1) and (FSelectedIdx < Items.Count) and HandleAllocated then
        UpdateMultiSelList(Items[FSelectedIdx], true);
    end;
 
