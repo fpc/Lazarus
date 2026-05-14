@@ -1548,11 +1548,9 @@ end;
 class procedure TGtk3WSCommonDialog.DestroyHandle(
   const ACommonDialog: TCommonDialog);
 begin
-  { TODO: cleanup }
-  DebugLn('TGtk3WSCommonDialog.DestroyHandle ');
+  // DebugLn('TGtk3WSCommonDialog.DestroyHandle ');
   if ACommonDialog.HandleAllocated then
     TGtk3Dialog(ACommonDialog.Handle).Free;
-  // TGtk3WidgetSet(WidgetSet).DestroyLCLComponent(ACommonDialog);
 end;
 
 { TGtk3WSColorDialog }
