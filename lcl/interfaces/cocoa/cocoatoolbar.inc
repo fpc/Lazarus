@@ -8,7 +8,7 @@ interface
 
 uses
   Classes, SysUtils,
-  Forms, Menus,
+  Graphics, Forms, Menus,
   CocoaAll, CocoaConfig, CocoaWindows, CocoaMenus, Cocoa_Extra, CocoaUtils;
 
 type
@@ -77,6 +77,18 @@ type
 
   TCocoaConfigToolBarItemClass = class( TCocoaConfigToolBarItemClassWithAction )
     constructor Create( const itemConfig: TCocoaConfigToolBarItem );
+    function createItem: NSToolBarItem; override;
+  end;
+
+  { TCocoaConfigToolBarItemClassColorWell }
+
+  TCocoaConfigToolBarItemClassColorWell = class( TCocoaConfigToolBarItemClassWithAction )
+  protected
+    _wellStyle: NSColorWellStyle;
+    _sizeWithStyle: NSSize;
+    _sizeWithoutStyle: NSSize;
+  public
+    constructor Create( const itemConfig: TCocoaConfigToolBarItemColorWell );
     function createItem: NSToolBarItem; override;
   end;
 
@@ -157,6 +169,21 @@ type
       message 'lclSetHandler:';
   public
     procedure dealloc; override;
+  end;
+
+  { TCocoaToolBarItemColorWell }
+
+  TCocoaToolBarItemColorWell = objcclass( NSToolBarItem )
+  private
+    _handler: TCocoaToolBarItemActionHandler;
+    procedure lclItemAction( const sender: id ); message 'lclItemAction:';
+  public
+    procedure lclSetHandler( const handler: TCocoaToolBarItemActionHandler );
+      message 'lclSetHandler:';
+    function lclGetColor: TColor;
+      message 'lclGetColor';
+    procedure lclSetColor( const AColor: TColor );
+      message 'lclSetColor:';
   end;
 
   { TCocoaToolBarItemSharing }
@@ -270,6 +297,8 @@ type
   public
     class function toClass( const itemConfig: TCocoaConfigToolBarItem ):
       TCocoaConfigToolBarItemClassAbstract;
+    class function toClass( const itemConfig: TCocoaConfigToolBarItemColorWell ):
+      TCocoaConfigToolBarItemClassAbstract;
     class function toClass( const itemConfig: TCocoaConfigToolBarItemSharing ):
       TCocoaConfigToolBarItemClassAbstract;
     class function toClass( const itemConfig: TCocoaConfigToolBarItemSearch ):
@@ -310,10 +339,50 @@ type
 
 implementation
 
+type
+
+  { TCocoaColorWell }
+
+  TCocoaColorWell = objcclass( NSColorWell )
+  public
+    procedure drawRect(dirtyRect: NSRect); override;
+  end;
+
+procedure TCocoaColorWell.drawRect(dirtyRect: NSRect);
+var
+  path: NSBezierPath;
+  toolBarItem: NSToolBarItem;
+begin
+  path:= NSBezierPath.bezierPathWithRoundedRect_xRadius_yRadius(
+    NSInsetRect(self.bounds,1,1), 3, 3 );
+
+  toolBarItem:= NSToolBarItem( self.target );
+  if toolBarItem.isEnabled then begin
+    self.color.set_;
+    path.fill;
+  end;
+
+  if self.isBordered then begin
+    path.setLineWidth( 0.5 );
+    NSColor.textColor.colorWithAlphaComponent(0.5).set_;
+    path.stroke;
+  end;
+end;
+
+
+{ TCocoaToolBarUtils }
+
 class function TCocoaToolBarUtils.toClass( const itemConfig: TCocoaConfigToolBarItem
   ): TCocoaConfigToolBarItemClassAbstract;
 begin
   Result:= TCocoaConfigToolBarItemClass.Create( itemConfig );
+end;
+
+class function TCocoaToolBarUtils.toClass(
+  const itemConfig: TCocoaConfigToolBarItemColorWell
+  ): TCocoaConfigToolBarItemClassAbstract;
+begin
+  Result:= TCocoaConfigToolBarItemClassColorWell.Create( itemConfig );
 end;
 
 class function TCocoaToolBarUtils.toClass( const itemConfig: TCocoaConfigToolBarItemSharing
@@ -536,6 +605,35 @@ begin
     _icon.release;
   if Assigned(_alternateIcon) then
     _alternateIcon.release;
+end;
+
+{ TCocoaToolBarItemColorWell }
+
+procedure TCocoaToolBarItemColorWell.lclItemAction(const sender: id);
+begin
+  _handler( self );
+end;
+
+procedure TCocoaToolBarItemColorWell.lclSetHandler(
+  const handler: TCocoaToolBarItemActionHandler);
+begin
+  _handler:= handler;
+end;
+
+function TCocoaToolBarItemColorWell.lclGetColor: TColor;
+var
+  colorWell: NSColorWell;
+begin
+  colorWell:= NSColorWell( self.view );
+  Result:= TCocoaColorUtil.toColorRefWithAnyColor( colorWell.color );
+end;
+
+procedure TCocoaToolBarItemColorWell.lclSetColor(const AColor: TColor);
+var
+  colorWell: NSColorWell;
+begin
+  colorWell:= NSColorWell( self.view );
+  colorWell.setColor( TCocoaColorUtil.toColor(AColor) );
 end;
 
 { TCocoaToolBarItemSharing }
@@ -890,6 +988,51 @@ var
 begin
   cocoaItem:= TCocoaToolBarItem.alloc.initWithItemIdentifier( self.identifier );
   self.setItemAttribs( cocoaItem );
+  cocoaItem.autorelease;
+  Result:= cocoaItem;
+end;
+
+{ TCocoaConfigToolBarItemClassColorWell }
+
+constructor TCocoaConfigToolBarItemClassColorWell.Create(
+  const itemConfig: TCocoaConfigToolBarItemColorWell);
+begin
+  self.toClassConfig( @itemConfig );
+  _wellStyle:= itemConfig.wellStyle;
+  _sizeWithStyle:= itemConfig.sizeWithStyle;
+  _sizeWithoutStyle:= itemConfig.sizeWithoutStyle;
+end;
+
+function TCocoaConfigToolBarItemClassColorWell.createItem: NSToolBarItem;
+var
+  cocoaItem: TCocoaToolBarItemColorWell;
+  colorWell: NSColorWell;
+
+  function allocColorWell: NSColorWell;
+  var
+    colorWell: NSColorWell;
+    rect: NSRect;
+  begin
+    rect.origin:= NSZeroPoint;
+    if NSAppKitVersionNumber >= NSAppKitVersionNumber13_0 then begin
+      rect.size:= _sizeWithStyle;
+      colorWell:= NSColorWell.alloc.initWithFrame( rect );
+      colorWell.setColorWellStyle( _wellStyle );
+    end else begin
+      rect.size:= _sizeWithoutStyle;
+      colorWell:= TCocoaColorWell.alloc.initWithFrame( rect );
+    end;
+    colorWell.setTarget( cocoaItem );
+    colorWell.setAction( ObjCSelector('lclItemAction:') );
+    Result:= colorWell;
+  end;
+
+begin
+  cocoaItem:= TCocoaToolBarItemColorWell.alloc.initWithItemIdentifier( self.identifier );
+  self.setItemAttribs( cocoaItem );
+  colorWell:= allocColorWell;
+  cocoaItem.setView( colorWell );
+  colorWell.release;
   cocoaItem.autorelease;
   Result:= cocoaItem;
 end;

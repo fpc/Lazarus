@@ -863,6 +863,20 @@ type
        message 'unmountVolumeAtURL:options:completionHandler:';  { available in 10_11 }
   end;
 
+type
+  NSColorWellStyle = NSInteger;
+
+const
+  NSColorWellStyleDefault  = 0;
+  NSColorWellStyleMinimal  = 1;
+  NSColorWellStyleExpanded = 2;
+
+type
+  NSColorWellFix = objccategory external (NSColorWell)
+    procedure setColorWellStyle( newStyle: NSColorWellStyle );
+      message 'setColorWellStyle:';  { available in 13.0 }
+  end;
+
 
 implementation
 
