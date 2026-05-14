@@ -3240,6 +3240,7 @@ procedure TGtk3Widget.DestroyWidget;
 var
   AList: TList;
   ATemp: PGtkWidget;
+  ATopLevel: PGtkWidget;
   I: Integer;
 begin
   {$IFDEF GTK3USEDEFERREDRESIZING}
@@ -3276,6 +3277,15 @@ begin
     {$ENDIF}
     ATemp := FWidget;
     FWidget := nil;
+    if Gtk3IsGtkWindow(ATemp) then
+      PGtkWindow(ATemp)^.set_focus(nil)
+    else
+    begin
+      ATopLevel := PGtkWidget(ATemp)^.get_toplevel;
+      if (ATopLevel <> nil) and Gtk3IsGtkWindow(ATopLevel) and
+         (PGtkWindow(ATopLevel)^.get_focus = PGtkWidget(ATemp)) then
+        PGtkWindow(ATopLevel)^.set_focus(nil);
+    end;
     ATemp^.destroy_;
     {$IFDEF GTK3DEBUGCORE}
     DbgOut(Classname+' destroyed.'+#10);
