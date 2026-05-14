@@ -10115,11 +10115,14 @@ begin
     end;
 
     // find first assignment before current.
-    if TryAssignment(CursorNode, OrigCleanCursorPos, CleanCursorPos) then
-      Exit(true);
+    try
+      if TryAssignment(CursorNode, OrigCleanCursorPos, CleanCursorPos) then
+        Exit(true);
+    except
+      if LastCodeToolsError<>nil then // no assignment found, reraise
+        ClearAndRaise(LastCodeToolsError, LastCodeToolsErrorCleanPos);
+    end;
 
-    if LastCodeToolsError<>nil then // no assignment found, reraise
-      ClearAndRaise(LastCodeToolsError, LastCodeToolsErrorCleanPos);
   finally
     LastCodeToolsError.Free;
   end;
