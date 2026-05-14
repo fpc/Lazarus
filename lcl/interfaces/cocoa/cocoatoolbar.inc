@@ -8,7 +8,7 @@ interface
 
 uses
   Classes, SysUtils,
-  Forms, Menus,
+  Graphics, Forms, Menus,
   CocoaAll, CocoaConfig, CocoaWindows, CocoaMenus, Cocoa_Extra, CocoaUtils;
 
 type
@@ -175,6 +175,10 @@ type
   public
     procedure lclSetHandler( const handler: TCocoaToolBarItemActionHandler );
       message 'lclSetHandler:';
+    function lclGetColor: TColor;
+      message 'lclGetColor';
+    procedure lclSetColor( const AColor: TColor );
+      message 'lclSetColor:';
   end;
 
   { TCocoaToolBarItemSharing }
@@ -571,13 +575,29 @@ end;
 
 procedure TCocoaToolBarItemColorWell.lclItemAction(const sender: id);
 begin
-  _handler( sender );
+  _handler( self );
 end;
 
 procedure TCocoaToolBarItemColorWell.lclSetHandler(
   const handler: TCocoaToolBarItemActionHandler);
 begin
   _handler:= handler;
+end;
+
+function TCocoaToolBarItemColorWell.lclGetColor: TColor;
+var
+  colorWell: NSColorWell;
+begin
+  colorWell:= NSColorWell( self.view );
+  Result:= TCocoaColorUtil.toColorRefWithAnyColor( colorWell.color );
+end;
+
+procedure TCocoaToolBarItemColorWell.lclSetColor(const AColor: TColor);
+var
+  colorWell: NSColorWell;
+begin
+  colorWell:= NSColorWell( self.view );
+  colorWell.setColor( TCocoaColorUtil.toColor(AColor) );
 end;
 
 { TCocoaToolBarItemSharing }
