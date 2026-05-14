@@ -1003,8 +1003,15 @@ var
   function allocColorWell: NSColorWell;
   var
     colorWell: NSColorWell;
+    rect: NSRect;
   begin
-    colorWell:= TCocoaColorWell.alloc.initWithFrame( NSMakeRect(0,0,16,16) );
+    rect:= NSMakeRect(0,0,16,16);
+    if NSAppKitVersionNumber >= NSAppKitVersionNumber13_0 then begin
+      colorWell:= NSColorWell.alloc.initWithFrame( rect );
+      colorWell.setColorWellStyle( NSColorWellStyleMinimal );
+    end else begin
+      colorWell:= TCocoaColorWell.alloc.initWithFrame( rect );
+    end;
     colorWell.setTarget( cocoaItem );
     colorWell.setAction( ObjCSelector('lclItemAction:') );
     Result:= colorWell;
