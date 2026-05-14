@@ -334,6 +334,37 @@ type
 
 implementation
 
+type
+
+  { TCocoaColorWell }
+
+  TCocoaColorWell = objcclass( NSColorWell )
+  public
+    procedure drawRect(dirtyRect: NSRect); override;
+  end;
+
+procedure TCocoaColorWell.drawRect(dirtyRect: NSRect);
+var
+  path: NSBezierPath;
+  toolBarItem: NSToolBarItem;
+begin
+  path:= NSBezierPath.bezierPathWithRoundedRect_xRadius_yRadius(
+    NSInsetRect(self.bounds,1,1), 3, 3 );
+
+  toolBarItem:= NSToolBarItem( self.target );
+  if toolBarItem.isEnabled then begin
+    self.color.set_;
+    path.fill;
+  end;
+
+  if self.isBordered then begin
+    path.setLineWidth( 0.5 );
+    NSColor.textColor.colorWithAlphaComponent(0.5).set_;
+    path.stroke;
+  end;
+end;
+
+
 { TCocoaToolBarUtils }
 
 class function TCocoaToolBarUtils.toClass( const itemConfig: TCocoaConfigToolBarItem
@@ -973,9 +1004,9 @@ var
   var
     colorWell: NSColorWell;
   begin
-    colorWell:= NSColorWell.alloc.initWithFrame( NSMakeRect(0,0,24,24) );
+    colorWell:= TCocoaColorWell.alloc.initWithFrame( NSMakeRect(0,0,16,16) );
     colorWell.setTarget( cocoaItem );
-    colorWell.setAction(  ObjCSelector('lclItemAction:') );
+    colorWell.setAction( ObjCSelector('lclItemAction:') );
     Result:= colorWell;
   end;
 
