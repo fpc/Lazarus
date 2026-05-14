@@ -83,6 +83,11 @@ type
   { TCocoaConfigToolBarItemClassColorWell }
 
   TCocoaConfigToolBarItemClassColorWell = class( TCocoaConfigToolBarItemClassWithAction )
+  protected
+    _wellStyle: NSColorWellStyle;
+    _sizeWithStyle: NSSize;
+    _sizeWithoutStyle: NSSize;
+  public
     constructor Create( const itemConfig: TCocoaConfigToolBarItemColorWell );
     function createItem: NSToolBarItem; override;
   end;
@@ -993,6 +998,9 @@ constructor TCocoaConfigToolBarItemClassColorWell.Create(
   const itemConfig: TCocoaConfigToolBarItemColorWell);
 begin
   self.toClassConfig( @itemConfig );
+  _wellStyle:= itemConfig.wellStyle;
+  _sizeWithStyle:= itemConfig.sizeWithStyle;
+  _sizeWithoutStyle:= itemConfig.sizeWithoutStyle;
 end;
 
 function TCocoaConfigToolBarItemClassColorWell.createItem: NSToolBarItem;
@@ -1005,11 +1013,13 @@ var
     colorWell: NSColorWell;
     rect: NSRect;
   begin
-    rect:= NSMakeRect(0,0,16,16);
+    rect.origin:= NSZeroPoint;
     if NSAppKitVersionNumber >= NSAppKitVersionNumber13_0 then begin
+      rect.size:= _sizeWithStyle;
       colorWell:= NSColorWell.alloc.initWithFrame( rect );
-      colorWell.setColorWellStyle( NSColorWellStyleMinimal );
+      colorWell.setColorWellStyle( _wellStyle );
     end else begin
+      rect.size:= _sizeWithoutStyle;
       colorWell:= TCocoaColorWell.alloc.initWithFrame( rect );
     end;
     colorWell.setTarget( cocoaItem );

@@ -59,6 +59,9 @@ type
   TCocoaConfigToolBarItem = TCocoaConfigToolBarItemWithAction;
 
   TCocoaConfigToolBarItemColorWell = object( TCocoaConfigToolBarItemWithAction )
+    wellStyle: NSColorWellStyle;  // only supported on macOS 13+
+    sizeWithStyle: NSSize;        // size on macOS 13+
+    sizeWithoutStyle: NSSize;     // size on macOS 13-
   end;
 
   TCocoaConfigToolBarItemSharing = object( TCocoaConfigToolBarItemWithUI )
@@ -226,11 +229,6 @@ type
   end;
 
 type
-  TCocoaConfigSize = record
-    width: Double;
-    height: Double;
-  end;
-
   TCocoaConfigTableRow = record
     defaultHeight: Integer;
     imageLineSpacing: Integer;
@@ -260,7 +258,7 @@ type
   end;
 
   TCocoaConfigCollectionItem = record
-    minSize: TCocoaConfigSize;
+    minSize: NSSize;
     controlSpacing: Double;
     textFieldAlignment: NSTextAlignment;
     checkBoxOccupiedWidth: Double;
@@ -273,7 +271,7 @@ type
   end;
 
   TCocoaConfigCollectionIconImageView = record
-    minSize: TCocoaConfigSize;
+    minSize: NSSize;
     padding: Double;
   end;
 
