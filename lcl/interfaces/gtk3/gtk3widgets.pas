@@ -29,7 +29,7 @@ uses
   // LazUtils
   GraphType,
   // GTK3
-  LazGtk3, LazGdk3, LazGObject2, LazGLib2, LazCairo1, LazPango1, LazGdkPixbuf2,
+  LazGtk3, LazGdk3, LazGObject2, LazGLib2, LazCairo1, LazPango1, LazPangoCairo1, LazGdkPixbuf2,
   gtk3objects, gtk3procs, gtk3private, Gtk3CellRenderer, gtk3mdiemulator;
 
 type
@@ -6441,39 +6441,48 @@ end;
 function TGtk3Range.GetPosition: Integer;
 begin
   Result := 0;
-  if IsWidgetOK then
+  if IsWidgetOK and
+     (g_type_check_instance_is_a(PGTypeInstance(Widget), gtk_range_get_type)) then
     Result := Round(PGtkRange(Widget)^.get_value);
 end;
 
 function TGtk3Range.GetRange: TPoint;
 begin
   Result := Point(0, 0);
-  if IsWidgetOK then
+  if IsWidgetOK and
+     (g_type_check_instance_is_a(PGTypeInstance(Widget), gtk_range_get_type)) then
     PGtkRange(Widget)^.get_slider_range(@Result.X, @Result.Y);
 end;
 
 procedure TGtk3Range.SetPosition(AValue: Integer);
 begin
-  if IsWidgetOK then
-    PGtkRange(Widget)^.set_value(gDouble(AValue));
+  if not IsWidgetOK then Exit;
+  if g_type_check_instance_is_a(PGTypeInstance(Widget), gtk_range_get_type) then
+    PGtkRange(Widget)^.set_value(gDouble(AValue))
+  else
+    Widget^.queue_draw;
 end;
 
 procedure TGtk3Range.SetRange(AValue: TPoint);
 var
   dx,dy: gdouble;
 begin
-  if IsWidgetOK then
+  if not IsWidgetOK then
+    exit;
+  if g_type_check_instance_is_a(PGTypeInstance(Widget), gtk_range_get_type) then
   begin
     dx := AValue.X;
     dy := AValue.Y;
     PGtkRange(Widget)^.set_range(dx, dy);
-  end;
+  end else
+    Widget^.queue_draw;
 end;
 
 procedure TGtk3Range.InitializeWidget;
 begin
   inherited InitializeWidget;
-  g_signal_connect_data(GetContainerWidget, 'value-changed', TGCallback(@RangeChanged), Self, nil, G_CONNECT_DEFAULT);
+  if g_type_check_instance_is_a(PGTypeInstance(GetContainerWidget), gtk_range_get_type) then
+    g_signal_connect_data(GetContainerWidget, 'value-changed', TGCallback(@RangeChanged), Self, nil, G_CONNECT_DEFAULT);
   if IsDesigning then
   begin
     g_signal_connect_data(GetContainerWidget, 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, nil, G_CONNECT_DEFAULT);
@@ -6484,8 +6493,661 @@ end;
 
 procedure TGtk3Range.SetStep(AStep: Integer; APageSize: Integer);
 begin
-  if IsWidgetOk then
+  if IsWidgetOk and
+     (g_type_check_instance_is_a(PGTypeInstance(Widget), gtk_range_get_type)) then
     PGtkRange(Widget)^.set_increments(gDouble(AStep), gDouble(APageSize));
+end;
+
+{%region 'Custom imlpementation for TTrackbar'}
+function LCLGtkScaleBuildSubContext(widget: PGtkWidget; AVertical: Boolean; const ANodeName, ASubNodeName: PChar): PGtkStyleContext;
+var
+  APath: PGtkWidgetPath;
+  Pos: gint;
+begin
+  APath := gtk_widget_path_new;
+  Pos := gtk_widget_path_append_type(APath, gtk_scale_get_type);
+  gtk_widget_path_iter_set_object_name(APath, Pos, 'scale');
+  if AVertical then
+    gtk_widget_path_iter_add_class(APath, Pos, 'vertical')
+  else
+    gtk_widget_path_iter_add_class(APath, Pos, 'horizontal');
+  Pos := gtk_widget_path_append_type(APath, G_TYPE_NONE);
+  gtk_widget_path_iter_set_object_name(APath, Pos, ANodeName);
+  if ASubNodeName <> nil then
+  begin
+    Pos := gtk_widget_path_append_type(APath, G_TYPE_NONE);
+    gtk_widget_path_iter_set_object_name(APath, Pos, ASubNodeName);
+  end;
+  Result := gtk_style_context_new;
+  gtk_style_context_set_path(Result, APath);
+  gtk_style_context_set_state(Result, gtk_widget_get_state_flags(widget));
+  gtk_widget_path_unref(APath);
+end;
+
+procedure LCLGtkScaleRender(Ctx: PGtkStyleContext; cr: Pcairo_t; X, Y, W, H: gdouble);
+begin
+  gtk_render_background(Ctx, cr, X, Y, W, H);
+  gtk_render_frame(Ctx, cr, X, Y, W, H);
+end;
+
+function LCLGtkScaleDrawCB(widget: PGtkWidget; cr: Pcairo_t; data: gpointer): gboolean; cdecl;
+var
+  ALCL: TGtk3Widget;
+  ATrack: TCustomTrackBar;
+  AAlloc: TGtkAllocation;
+  TroughCtx, SliderCtx, HighlightCtx, FocusCtx: PGtkStyleContext;
+  FocusFlags: TGtkStateFlags;
+  TroughX, TroughY, TroughW, TroughH: gdouble;
+  KnobX, KnobY, KnobW, KnobH: gdouble;
+  HiX, HiY, HiW, HiH: gdouble;
+  Range, RelPos: gdouble;
+  TroughThick: gint;
+  KnobLong: gint;
+  freq: Integer;
+  aRange: Integer;
+  TickPos: Integer;
+  TickLen, TickThick: gint;
+  TickXY, Frac, DpiScale: gdouble;
+  TickColor: TColor;
+  TopTickArea, BottomTickArea: gint;
+  UsableY, UsableH: gdouble;
+begin
+  Result := gtk_false;
+
+  ALCL := TGtk3Widget(g_object_get_data(PGObject(widget), 'lclwidget'));
+
+  if not Assigned(ALCL) or not Assigned(ALCL.LCLObject) then
+    exit;
+
+  if not (ALCL.LCLObject is TCustomTrackBar) then
+    exit;
+
+  ATrack := TCustomTrackBar(ALCL.LCLObject);
+  widget^.get_allocation(@AAlloc);
+  if (AAlloc.width <= 0) or (AAlloc.height <= 0) then
+    exit;
+
+  if ATrack.Color <> clDefault then
+  begin
+    TickColor := ColorToRGB(ATrack.GetColorResolvingParent);
+    cairo_set_source_rgba(cr,
+      (TickColor and $FF) / 255,
+      ((TickColor shr 8) and $FF) / 255,
+      ((TickColor shr 16) and $FF) / 255,
+      1.0);
+    cairo_rectangle(cr, 0, 0, AAlloc.width, AAlloc.height);
+    cairo_fill(cr);
+  end;
+
+  //Value label drawing is disabled, other widgetsets (qt5/qt6/win32/gtk2)
+  //don't show a value either. ScalePos is gtk1/gtk2-only and ignored here.
+  //Keep entire widget area usable for trough/knob/ticks.
+  (*
+  ValStr := IntToStr(ATrack.Position);
+  ValLayout := pango_cairo_create_layout(cr);
+  if (Screen <> nil) and (Screen.PixelsPerInch >= 96) then
+    pango_cairo_context_set_resolution(pango_layout_get_context(ValLayout),
+      Screen.PixelsPerInch);
+  pango_layout_set_text(ValLayout, PChar(ValStr), Length(ValStr));
+  ValFontDesc := pango_font_description_copy(pango_context_get_font_description(gtk_widget_get_pango_context(widget)));
+  if (ATrack.Font.Name <> '') and not SameText(ATrack.Font.Name, 'default') then
+    pango_font_description_set_family(ValFontDesc, PChar(ATrack.Font.Name));
+  if ATrack.Font.Size > 0 then
+    pango_font_description_set_size(ValFontDesc, ATrack.Font.Size * PANGO_SCALE)
+  else
+  if ATrack.Font.Height <> 0 then
+    pango_font_description_set_size(ValFontDesc, Round(Abs(ATrack.Font.Height) * 72 * PANGO_SCALE / 96));
+  if fsBold in ATrack.Font.Style then
+    pango_font_description_set_weight(ValFontDesc, PANGO_WEIGHT_BOLD);
+  if fsItalic in ATrack.Font.Style then
+    pango_font_description_set_style(ValFontDesc, PANGO_STYLE_ITALIC);
+  pango_layout_set_font_description(ValLayout, ValFontDesc);
+  pango_layout_get_pixel_size(ValLayout, @ValTextW, @ValTextH);
+  if ATrack.Font.Color = clDefault then
+    TickColor := ColorToRGB(clWindowText)
+  else
+    TickColor := ColorToRGB(ATrack.Font.Color);
+  cairo_set_source_rgba(cr, (TickColor and $FF) / 255, ((TickColor shr 8) and $FF) / 255,
+    ((TickColor shr 16) and $FF) / 255, 1.0);
+  cairo_move_to(cr, (AAlloc.width - ValTextW) / 2, 1);
+  pango_cairo_show_layout(cr, ValLayout);
+  pango_font_description_free(ValFontDesc);
+  g_object_unref(ValLayout);
+  *)
+
+  TickLen := 6;
+  DpiScale := gdk_screen_get_resolution(gdk_screen_get_default) / 96.0;
+  if (DpiScale < 1) and (Screen <> nil) and (Screen.PixelsPerInch > 96) then
+    DpiScale := Screen.PixelsPerInch / 96.0;
+  if DpiScale < 1 then
+    DpiScale := 1;
+
+  UsableY := 0;
+  UsableH := AAlloc.height;
+  g_object_set_data(PGObject(widget), 'lcl-scale-usable-y', Pointer(PtrInt(Round(UsableY))));
+  g_object_set_data(PGObject(widget), 'lcl-scale-usable-h', Pointer(PtrInt(Round(UsableH))));
+
+  TroughThick := 6;
+  KnobLong := PtrInt(g_object_get_data(PGObject(widget), 'lcl-scale-knob-size'));
+  if KnobLong < GTKMINIMUMSIZE + 2 then KnobLong := GTKMINIMUMSIZE + 2;
+
+  //Cross-axis layout: [border 1px][tickArea][trough+knob][tickArea][border 1px].
+  //tickArea = TickLen + 2 (gap before tick + tick width itself + gap after).
+  //tickArea is only reserved when TickMarks include that side AND TickStyle <> tsNone.
+  TopTickArea := 0;
+  BottomTickArea := 0;
+  if ATrack.TickStyle <> tsNone then
+  begin
+    if ATrack.TickMarks in [tmTopLeft, tmBoth] then TopTickArea := TickLen + 2;
+    if ATrack.TickMarks in [tmBottomRight, tmBoth] then BottomTickArea := TickLen + 2;
+  end;
+
+  if ATrack.Orientation = trVertical then
+  begin
+    TroughW := TroughThick;
+    TroughH := UsableH;
+    TroughX := TopTickArea + 1 + (AAlloc.width - TopTickArea - BottomTickArea - 2 - TroughW) / 2;
+    TroughY := UsableY;
+  end else
+  begin
+    TroughW := AAlloc.width;
+    TroughH := TroughThick;
+    TroughX := 0;
+    TroughY := UsableY + TopTickArea + 1 + (UsableH - TopTickArea - BottomTickArea - 2 - TroughH) / 2;
+  end;
+
+  TroughCtx := LCLGtkScaleBuildSubContext(widget, ATrack.Orientation = trVertical, 'trough', nil);
+  LCLGtkScaleRender(TroughCtx, cr, TroughX, TroughY, TroughW, TroughH);
+
+  Range := ATrack.Max - ATrack.Min;
+  if Range <= 0 then
+    RelPos := 0
+  else
+    RelPos := (ATrack.Position - ATrack.Min) / Range;
+  if ATrack.Reversed then
+    RelPos := 1 - RelPos;
+  if ATrack.Orientation = trVertical then
+  begin
+    KnobW := AAlloc.width - TopTickArea - BottomTickArea - 2;
+    if KnobW > KnobLong then
+      KnobW := KnobLong;
+    if KnobW < 4 then
+      KnobW := 4;
+    KnobH := KnobLong;
+    KnobX := TroughX + (TroughW - KnobW) / 2;
+    KnobY := UsableY + RelPos * (UsableH - KnobH);
+  end else
+  begin
+    KnobH := UsableH - TopTickArea - BottomTickArea - 2;
+    if KnobH > KnobLong then
+      KnobH := KnobLong;
+    if KnobH < 4 then
+      KnobH := 4;
+    KnobW := KnobLong;
+    KnobX := RelPos * (AAlloc.width - KnobW);
+    KnobY := TroughY + (TroughH - KnobH) / 2;
+  end;
+
+  HighlightCtx := LCLGtkScaleBuildSubContext(widget, ATrack.Orientation = trVertical, 'trough', 'highlight');
+  if ATrack.Orientation = trVertical then
+  begin
+    HiX := TroughX;
+    HiW := TroughW;
+    if ATrack.Reversed then
+    begin
+      HiY := KnobY + KnobH / 2;
+      HiH := TroughY + TroughH - HiY;
+    end else
+    begin
+      HiY := TroughY;
+      HiH := KnobY + KnobH / 2 - TroughY;
+    end;
+  end else
+  begin
+    HiY := TroughY;
+    HiH := TroughH;
+    if ATrack.Reversed then
+    begin
+      HiX := KnobX + KnobW / 2;
+      HiW := TroughX + TroughW - HiX;
+    end else
+    begin
+      HiX := TroughX;
+      HiW := KnobX + KnobW / 2 - TroughX;
+    end;
+  end;
+  if (HiW > 0) and (HiH > 0) then
+    LCLGtkScaleRender(HighlightCtx, cr, HiX, HiY, HiW, HiH);
+  g_object_unref(HighlightCtx);
+
+  if ATrack.TickStyle <> tsNone then
+  begin
+    freq := ATrack.Frequency;
+    if freq <= 0 then
+      freq := 1;
+    aRange := ATrack.Max - ATrack.Min;
+    if aRange > 0 then
+    begin
+      TickThick := 1;
+      TickColor := ColorToRGB(clBtnShadow);
+      cairo_set_source_rgba(cr, (TickColor and $FF) / 255, ((TickColor shr 8) and $FF) / 255, ((TickColor shr 16) and $FF) / 255, 1.0);
+      cairo_save(cr);
+      cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
+      TickPos := ATrack.Min;
+      while True do
+      begin
+        Frac := (TickPos - ATrack.Min) / aRange;
+        if ATrack.Reversed then
+          Frac := 1 - Frac;
+        if ATrack.Orientation = trVertical then
+        begin
+          TickXY := Round(UsableY + Frac * (UsableH - KnobLong) + KnobLong / 2 - TickThick / 2);
+          if ATrack.TickMarks in [tmTopLeft, tmBoth] then
+            cairo_rectangle(cr, Round(TroughX - 1 - TickLen), TickXY, TickLen, TickThick);
+          if ATrack.TickMarks in [tmBottomRight, tmBoth] then
+            cairo_rectangle(cr, Round(TroughX + TroughW + 1), TickXY, TickLen, TickThick);
+        end else
+        begin
+          TickXY := Round(Frac * (AAlloc.width - KnobLong) + KnobLong / 2 - TickThick / 2);
+          if ATrack.TickMarks in [tmTopLeft, tmBoth] then
+            cairo_rectangle(cr, TickXY, Round(TroughY - 1 - TickLen), TickThick, TickLen);
+          if ATrack.TickMarks in [tmBottomRight, tmBoth] then
+            cairo_rectangle(cr, TickXY, Round(TroughY + TroughH + 1), TickThick, TickLen);
+        end;
+        cairo_fill(cr);
+        if TickPos = ATrack.Max then
+          break;
+        Inc(TickPos, freq);
+        if TickPos > ATrack.Max then
+          TickPos := ATrack.Max;
+      end;
+      cairo_restore(cr);
+    end;
+  end;
+
+  g_object_unref(TroughCtx);
+
+  SliderCtx := LCLGtkScaleBuildSubContext(widget, ATrack.Orientation = trVertical, 'trough', 'slider');
+  LCLGtkScaleRender(SliderCtx, cr, KnobX, KnobY, KnobW, KnobH);
+  g_object_unref(SliderCtx);
+
+  if widget^.has_focus then
+  begin
+    FocusCtx := LCLGtkScaleBuildSubContext(widget, ATrack.Orientation = trVertical, 'trough', 'slider');
+    FocusFlags := gtk_widget_get_state_flags(widget) + [GTK_STATE_FLAG_FOCUSED];
+    gtk_style_context_set_state(FocusCtx, FocusFlags);
+    gtk_render_focus(FocusCtx, cr, KnobX - 1, KnobY - 1, KnobW + 2, KnobH + 2);
+    g_object_unref(FocusCtx);
+  end;
+
+  Result := gtk_true;
+end;
+
+function LCLGtkScaleGetTrack(widget: PGtkWidget): TCustomTrackBar;
+var
+  ALCL: TGtk3Widget;
+begin
+  Result := nil;
+  ALCL := TGtk3Widget(g_object_get_data(PGObject(widget), 'lclwidget'));
+  if not Assigned(ALCL) or not Assigned(ALCL.LCLObject) then
+    exit;
+  if ALCL.LCLObject is TCustomTrackBar then
+    Result := TCustomTrackBar(ALCL.LCLObject);
+end;
+
+function LCLGtkScalePosFromCoord(widget: PGtkWidget; ATrack: TCustomTrackBar; x, y: gdouble): Integer;
+var
+  AAlloc: TGtkAllocation;
+  KnobLong: gint;
+  Frac, UsableY, UsableH: gdouble;
+  ARange: Integer;
+begin
+  Result := ATrack.Position;
+  ARange := ATrack.Max - ATrack.Min;
+  if ARange <= 0 then
+    exit;
+  widget^.get_allocation(@AAlloc);
+
+  KnobLong := PtrInt(g_object_get_data(PGObject(widget), 'lcl-scale-knob-size'));
+
+  if KnobLong < GTKMINIMUMSIZE + 2 then
+    KnobLong := GTKMINIMUMSIZE + 2;
+
+  UsableY := PtrInt(g_object_get_data(PGObject(widget), 'lcl-scale-usable-y'));
+  UsableH := PtrInt(g_object_get_data(PGObject(widget), 'lcl-scale-usable-h'));
+
+  if UsableH <= 0 then
+  begin
+    UsableY := 0;
+    UsableH := AAlloc.height;
+  end;
+  if ATrack.Orientation = trVertical then
+  begin
+    if UsableH - KnobLong <= 0 then
+      exit;
+    Frac := (y - UsableY - KnobLong / 2) / (UsableH - KnobLong);
+  end else
+  begin
+    if AAlloc.width - KnobLong <= 0 then
+      exit;
+    Frac := (x - KnobLong / 2) / (AAlloc.width - KnobLong);
+  end;
+  if Frac < 0 then
+    Frac := 0;
+  if Frac > 1 then
+    Frac := 1;
+  if ATrack.Reversed then
+    Frac := 1 - Frac;
+  Result := ATrack.Min + Round(Frac * ARange);
+end;
+
+procedure LCLGtkScaleApplyPosition(widget: PGtkWidget; ATrack: TCustomTrackBar; NewPos: Integer);
+begin
+  if NewPos < ATrack.Min then
+    NewPos := ATrack.Min;
+  if NewPos > ATrack.Max then
+    NewPos := ATrack.Max;
+  if NewPos <> ATrack.Position then
+  begin
+    ATrack.Position := NewPos;
+    widget^.queue_draw;
+  end;
+end;
+
+function LCLGtkScaleButtonPressCB(widget: PGtkWidget; event: PGdkEventButton; data: gpointer): gboolean; cdecl;
+var
+  ATrack: TCustomTrackBar;
+begin
+  Result := gtk_false;
+
+  ATrack := LCLGtkScaleGetTrack(widget);
+
+  if ATrack = nil then
+    exit;
+
+  if csDesigning in ATrack.ComponentState then
+    exit;
+
+  if event^.button <> 1 then
+    exit;
+
+  if widget^.get_can_focus then
+    widget^.grab_focus;
+
+  g_object_set_data(PGObject(widget), 'lcl-scale-dragging', Pointer(PtrUInt(1)));
+
+  LCLGtkScaleApplyPosition(widget, ATrack, LCLGtkScalePosFromCoord(widget, ATrack, event^.x, event^.y));
+
+  Result := gtk_true;
+end;
+
+function LCLGtkScaleButtonReleaseCB(widget: PGtkWidget; event: PGdkEventButton; data: gpointer): gboolean; cdecl;
+var
+  ATrack: TCustomTrackBar;
+begin
+  Result := gtk_false;
+
+  ATrack := LCLGtkScaleGetTrack(widget);
+
+  if (ATrack <> nil) and (csDesigning in ATrack.ComponentState) then
+    exit;
+
+  if event^.button <> 1 then
+    exit;
+
+  g_object_set_data(PGObject(widget), 'lcl-scale-dragging', nil);
+
+  Result := gtk_true;
+end;
+
+function LCLGtkScaleMotionCB(widget: PGtkWidget; event: PGdkEventMotion; data: gpointer): gboolean; cdecl;
+var
+  ATrack: TCustomTrackBar;
+begin
+  Result := gtk_false;
+
+  if g_object_get_data(PGObject(widget), 'lcl-scale-dragging') = nil then
+    exit;
+
+  ATrack := LCLGtkScaleGetTrack(widget);
+
+  if ATrack = nil then
+    exit;
+
+  if csDesigning in ATrack.ComponentState then
+    exit;
+
+  LCLGtkScaleApplyPosition(widget, ATrack, LCLGtkScalePosFromCoord(widget, ATrack, event^.x, event^.y));
+
+  Result := gtk_true;
+end;
+
+function LCLGtkScaleScrollCB(widget: PGtkWidget; event: PGdkEventScroll; data: gpointer): gboolean; cdecl;
+var
+  ATrack: TCustomTrackBar;
+  AStep, NewPos: Integer;
+  Up: Boolean;
+begin
+  Result := gtk_false;
+
+  ATrack := LCLGtkScaleGetTrack(widget);
+
+  if ATrack = nil then
+    exit;
+
+  if csDesigning in ATrack.ComponentState then
+    exit;
+
+  case event^.direction of
+    GDK_SCROLL_UP, GDK_SCROLL_LEFT: Up := True;
+    GDK_SCROLL_DOWN, GDK_SCROLL_RIGHT: Up := False;
+  else
+    exit;
+  end;
+
+  AStep := ATrack.LineSize;
+
+  if AStep <= 0 then AStep := 1;
+  if Up then
+    NewPos := ATrack.Position + AStep
+  else
+    NewPos := ATrack.Position - AStep;
+
+  LCLGtkScaleApplyPosition(widget, ATrack, NewPos);
+
+  Result := gtk_true;
+end;
+
+function LCLGtkScaleKeyPressCB(widget: PGtkWidget; event: PGdkEventKey; data: gpointer): gboolean; cdecl;
+var
+  ATrack: TCustomTrackBar;
+  AStep, NewPos: Integer;
+  Decrease, Increase: Boolean;
+begin
+  Result := gtk_false;
+  ATrack := LCLGtkScaleGetTrack(widget);
+
+  if ATrack = nil then
+    exit;
+
+  if csDesigning in ATrack.ComponentState then
+    exit;
+
+  AStep := ATrack.LineSize;
+  if AStep <= 0 then
+    AStep := 1;
+
+  Decrease := False;
+  Increase := False;
+  case event^.keyval of
+    GDK_KEY_Up:
+      if ATrack.Orientation = trVertical then
+        Decrease := True
+      else
+        exit(gtk_true);
+    GDK_KEY_Down:
+      if ATrack.Orientation = trVertical then
+        Increase := True
+      else
+        exit(gtk_true);
+    GDK_KEY_Left:
+      if ATrack.Orientation = trHorizontal then
+        Decrease := True
+      else
+        exit(gtk_true);
+    GDK_KEY_Right:
+      if ATrack.Orientation = trHorizontal then
+        Increase := True
+      else
+        exit(gtk_true);
+    GDK_KEY_Page_Up:
+      Decrease := True;
+    GDK_KEY_Page_Down:
+      Increase := True;
+    GDK_KEY_Home:
+      begin
+        LCLGtkScaleApplyPosition(widget, ATrack, ATrack.Min);
+        exit(gtk_true);
+      end;
+    GDK_KEY_End:
+      begin
+        LCLGtkScaleApplyPosition(widget, ATrack, ATrack.Max);
+        exit(gtk_true);
+      end;
+  else
+    exit;
+  end;
+
+  if ATrack.Reversed then
+  begin
+    if Decrease then
+      NewPos := ATrack.Position + AStep
+    else
+    if Increase then
+      NewPos := ATrack.Position - AStep
+    else
+      NewPos := ATrack.Position;
+  end else
+  begin
+    if Decrease then
+      NewPos := ATrack.Position - AStep
+    else
+    if Increase then
+      NewPos := ATrack.Position + AStep
+    else
+      NewPos := ATrack.Position;
+  end;
+
+  if (event^.keyval = GDK_KEY_Page_Up) or (event^.keyval = GDK_KEY_Page_Down) then
+    if ATrack.Reversed then
+    begin
+      if event^.keyval = GDK_KEY_Page_Up then
+        NewPos := ATrack.Position + ATrack.PageSize
+      else
+        NewPos := ATrack.Position - ATrack.PageSize;
+    end else
+    begin
+      if event^.keyval = GDK_KEY_Page_Up then
+        NewPos := ATrack.Position - ATrack.PageSize
+      else
+        NewPos := ATrack.Position + ATrack.PageSize;
+    end;
+
+  LCLGtkScaleApplyPosition(widget, ATrack, NewPos);
+  Result := gtk_true;
+end;
+
+function LCLGtkScaleQueryKnobSize(AOrientation: TGtkOrientation): gint;
+var
+  TmpWin: PGtkWidget;
+  TmpScale: PGtkWidget;
+  TmpAdj: PGtkAdjustment;
+  Ctx: PGtkStyleContext;
+  Path: PGtkWidgetPath;
+  Pos: gint;
+  KnobMinW, KnobMinH: gint;
+begin
+  if Gtk3WidgetSet.TrackBarKnobSize > 0 then
+    exit(Gtk3WidgetSet.TrackBarKnobSize);
+
+  TmpAdj := gtk_adjustment_new(0, 0, 100, 1, 10, 0);
+  TmpScale := gtk_scale_new(AOrientation, TmpAdj);
+
+  TmpWin := gtk_offscreen_window_new;
+  gtk_container_add(PGtkContainer(TmpWin), TmpScale);
+  gtk_widget_realize(TmpScale);
+  Path := gtk_widget_path_copy(PGtkWidget(TmpScale)^.get_path);
+  Pos := gtk_widget_path_append_type(Path, G_TYPE_NONE);
+  gtk_widget_path_iter_set_object_name(Path, Pos, 'trough');
+  Pos := gtk_widget_path_append_type(Path, G_TYPE_NONE);
+  gtk_widget_path_iter_set_object_name(Path, Pos, 'slider');
+  Ctx := gtk_style_context_new;
+  gtk_style_context_set_path(Ctx, Path);
+  KnobMinW := 0;
+  KnobMinH := 0;
+  gtk_style_context_get(Ctx, GTK_STATE_FLAG_NORMAL, ['min-width', @KnobMinW, 'min-height', @KnobMinH, nil]);
+  g_object_unref(Ctx);
+  gtk_widget_path_unref(Path);
+  gtk_widget_destroy(TmpWin);
+  Result := Max(KnobMinW, KnobMinH);
+
+  if Result < GTKMINIMUMSIZE + 2 then
+    Result := GTKMINIMUMSIZE + 2;
+
+  Gtk3WidgetSet.TrackBarKnobSize := Result;
+end;
+
+function LCLGtkScaleFocusCB(widget: PGtkWidget; event: PGdkEventFocus; data: gpointer): gboolean; cdecl;
+begin
+  Result := gtk_false;
+  widget^.queue_draw;
+end;
+
+function LCLGtkScaleEventCB(widget: PGtkWidget; event: PGdkEvent; data: gpointer): gboolean; cdecl;
+begin
+  Result := gtk_false;
+
+  if (event = nil) or (event^.type_ <> GDK_KEY_PRESS) then
+    exit;
+
+  case event^.key.keyval of
+    GDK_KEY_Up, GDK_KEY_Down, GDK_KEY_Left, GDK_KEY_Right,
+    GDK_KEY_Page_Up, GDK_KEY_Page_Down, GDK_KEY_Home, GDK_KEY_End:
+      Result := LCLGtkScaleKeyPressCB(widget, @event^.key, nil);
+  end;
+
+end;
+
+function LCLGtkScaleNew(AOrientation: TGtkOrientation; ACanFocus: Boolean): PGtkWidget;
+var
+  KnobSize: gint;
+begin
+  Result := PGtkWidget(TGtkDrawingArea.new);
+  Result^.add_events(1 shl Ord(GDK_BUTTON_PRESS_MASK) or
+    1 shl Ord(GDK_BUTTON_RELEASE_MASK) or 1 shl Ord(GDK_POINTER_MOTION_MASK) or
+    1 shl Ord(GDK_SCROLL_MASK) or 1 shl Ord(GDK_KEY_PRESS_MASK) or
+    1 shl Ord(GDK_FOCUS_CHANGE_MASK) or 1 shl Ord(GDK_ENTER_NOTIFY_MASK) or 1 shl Ord(GDK_LEAVE_NOTIFY_MASK));
+
+  Result^.set_can_focus(ACanFocus);
+  if AOrientation = GTK_ORIENTATION_HORIZONTAL then
+    gtk_style_context_add_class(Result^.get_style_context, 'horizontal')
+  else
+    gtk_style_context_add_class(Result^.get_style_context, 'vertical');
+
+  gtk_style_context_add_class(Result^.get_style_context, 'scale');
+
+  KnobSize := LCLGtkScaleQueryKnobSize(AOrientation);
+  g_object_set_data(PGObject(Result), 'lcl-scale-knob-size', Pointer(PtrInt(KnobSize)));
+
+  g_signal_connect_data(Result, 'event', TGCallback(@LCLGtkScaleEventCB), nil, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(Result, 'draw', TGCallback(@LCLGtkScaleDrawCB), nil, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(Result, 'button-press-event', TGCallback(@LCLGtkScaleButtonPressCB), nil, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(Result, 'button-release-event', TGCallback(@LCLGtkScaleButtonReleaseCB), nil, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(Result, 'motion-notify-event', TGCallback(@LCLGtkScaleMotionCB), nil, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(Result, 'scroll-event', TGCallback(@LCLGtkScaleScrollCB), nil, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(Result, 'key-press-event', TGCallback(@LCLGtkScaleKeyPressCB), nil, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(Result, 'focus-in-event', TGCallback(@LCLGtkScaleFocusCB), nil, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(Result, 'focus-out-event', TGCallback(@LCLGtkScaleFocusCB), nil, nil, G_CONNECT_DEFAULT);
 end;
 
 { TGtk3TrackBar }
@@ -6493,14 +7155,22 @@ end;
 function TGtk3TrackBar.GetReversed: Boolean;
 begin
   Result := False;
-  if IsWidgetOK then
-    Result := PGtkScale(Widget)^.get_inverted;
+  if IsWidgetOK and
+     (g_type_check_instance_is_a(PGTypeInstance(Widget), gtk_scale_get_type)) then
+    Result := PGtkScale(Widget)^.get_inverted
+  else
+  if Assigned(LCLObject) and (LCLObject is TCustomTrackBar) then
+    Result := TCustomTrackBar(LCLObject).Reversed;
 end;
 
 procedure TGtk3TrackBar.SetReversed(AValue: Boolean);
 begin
+  if IsWidgetOK and
+     (g_type_check_instance_is_a(PGTypeInstance(Widget), gtk_scale_get_type)) then
+    PGtkScale(Widget)^.set_inverted(AValue)
+  else
   if IsWidgetOK then
-    PGtkScale(Widget)^.set_inverted(AValue);
+    Widget^.queue_draw;
 end;
 
 function TGtk3TrackBar.CreateWidget(const Params: TCreateParams): PGtkWidget;
@@ -6509,17 +7179,8 @@ var
 begin
   ATrack := TCustomTrackBar(LCLObject);
   FWidgetType := FWidgetType + [wtTrackBar];
-
- { Result := TGtkHBox.new(1,0);
-  fCentralWidget:=PGtkWidget(TGtkScale.new(Ord(ATrack.Orientation), nil));
-  PgtkBox(Result)^.add(fCentralWidget);}
-
-  Result :=PGtkWidget(TGtkScale.new(TGtkOrientation(ATrack.Orientation), nil));
-
   FOrientation := ATrack.Orientation;
-  if ATrack.Reversed then
-    PGtkScale(Result)^.set_inverted(True);
-  PGtkScale(Result)^.set_digits(0);
+  Result := LCLGtkScaleNew(TGtkOrientation(ATrack.Orientation), not (csNoFocus in ATrack.ControlStyle));
 end;
 
 procedure TGtk3TrackBar.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
@@ -6534,14 +7195,22 @@ end;
 
 procedure TGtk3TrackBar.SetScalePos(AValue: TTrackBarScalePos);
 begin
+  if IsWidgetOK and
+     (g_type_check_instance_is_a(PGTypeInstance(Widget), gtk_scale_get_type)) then
+    PGtkScale(Widget)^.set_value_pos(TGtkPositionType(AValue))
+  else
   if IsWidgetOK then
-    PGtkScale(Widget)^.set_value_pos(TGtkPositionType(AValue));
+    Widget^.queue_draw;
 end;
 
 procedure TGtk3TrackBar.SetShowSelRange(AValue: Boolean);
 begin
+  if IsWidgetOK and
+     (g_type_check_instance_is_a(PGTypeInstance(Widget), gtk_scale_get_type)) then
+    PGtkScale(Widget)^.set_has_origin(AValue)
+  else
   if IsWidgetOK then
-    PGtkScale(Widget)^.set_has_origin(AValue);
+    Widget^.queue_draw;
 end;
 
 procedure TGtk3TrackBar.SetTickMarks(AValue: TTickMark; ATickStyle: TTickStyle);
@@ -6564,40 +7233,45 @@ const
   end;
 
 begin
-  if IsWidgetOK then
+  if not IsWidgetOK then
+    Exit;
+  if not g_type_check_instance_is_a(PGTypeInstance(Widget), gtk_scale_get_type) then
   begin
-    PGtkScale(Widget)^.set_draw_value(ATickStyle <> tsNone);
-    PGtkScale(Widget)^.clear_marks;
-    if ATickStyle <> tsNone then
+    Widget^.queue_draw;
+    exit;
+  end;
+  PGtkScale(Widget)^.set_draw_value(ATickStyle <> tsNone);
+  PGtkScale(Widget)^.clear_marks;
+  if ATickStyle <> tsNone then
+  begin
+    Track := TCustomTrackbar(LCLObject);
+    if Track.Frequency > 0 then
+      freq := Track.Frequency
+    else
+      freq := 1;
+    cnt := round(abs(Track.Max - Track.Min) / freq);
+    if Track.Orientation = trHorizontal then
+      fldw := Track.Width
+    else
+      fldw := Track.Height;
+    AddMarks := cnt * freq < fldw;
+    if AddMarks then
     begin
-      Track := TCustomTrackbar(LCLObject);
-      if Track.Frequency > 0 then
-        freq := Track.Frequency
-      else
-        freq := 1;
-      cnt := round(abs(Track.Max - Track.Min) / freq);
-      if Track.Orientation = trHorizontal then
-        fldw := Track.Width
-      else
-        fldw := Track.Height;
-      AddMarks := cnt * freq < fldw;
-      if AddMarks then
+      i := Track.Min;
+      while i <= Track.Max do
       begin
-        i := Track.Min;
-        while i <= Track.Max do
-        begin
-          AddMark(i);
-          Inc(i, freq);
-        end;
-      end
-      else
-      begin
-        AddMark(Track.Min);
-        AddMark(Track.Max);
+        AddMark(i);
+        Inc(i, freq);
       end;
+    end else
+    begin
+      AddMark(Track.Min);
+      AddMark(Track.Max);
     end;
   end;
 end;
+
+{%endregion 'Custom imlpementation for TTrackbar'}
 
 { TGtk3ScrollBar }
 class procedure TGtk3ScrollBar.ScrollBarValueChanged(adjustment:PGtkAdjustment;data:

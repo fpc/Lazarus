@@ -62,6 +62,7 @@ type
   TGtk3WidgetSet = class(TWidgetSet)
   private
     FIsWayland: boolean;
+    FTrackBarKnobSize: Integer;
     FActivityCounter: integer;
     FLastUserEventTime: guint32;
     FAppFocusTimerID: guint;
@@ -204,6 +205,7 @@ type
     property DefaultAppFontName: String read FDefaultAppFontName;
     property Gtk3Application: PGtkApplication read FGtk3Application;
     property LastUserEventTime: guint32 read FLastUserEventTime write FLastUserEventTime;
+    property TrackBarKnobSize: Integer read FTrackBarKnobSize write FTrackBarKnobSize;
     property OverlayScrolling: gboolean read FOverlayScrolling write FOverlayScrolling;
 
     {$i gtk3winapih.inc}

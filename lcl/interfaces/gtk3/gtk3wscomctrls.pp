@@ -227,6 +227,8 @@ type
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); override;
     class procedure SetOrientation(const ATrackBar: TCustomTrackBar; const {%H-}AOrientation: TTrackBarOrientation); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+      var PreferredWidth, PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); override;
   end;
 
   { TGtk3WSCustomTreeView }
@@ -305,6 +307,46 @@ begin
     Exit;
   if TGtk3TrackBar(ATrackBar.Handle).GetTrackBarOrientation <> AOrientation then
     RecreateWnd(ATrackBar);
+end;
+
+class procedure TGtk3WSTrackBar.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+const
+  TrackBarTickLen = 6;
+  TrackBarBorder  = 1;
+  TrackBarLongDef = 100;
+var
+  KnobSize, TickAreas: Integer;
+  ATrack: TCustomTrackBar;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'GetPreferredSize') then
+    exit;
+
+  ATrack := TCustomTrackBar(AWinControl);
+
+  KnobSize := PtrInt(g_object_get_data(
+    PGObject(TGtk3TrackBar(ATrack.Handle).Widget), 'lcl-scale-knob-size'));
+
+  if KnobSize < GTKMINIMUMSIZE + 2 then
+    KnobSize := GTKMINIMUMSIZE + 2;
+
+  TickAreas := 0;
+  if ATrack.TickStyle <> tsNone then
+  begin
+    if ATrack.TickMarks in [tmTopLeft, tmBoth] then
+      Inc(TickAreas, TrackBarTickLen + 2);
+    if ATrack.TickMarks in [tmBottomRight, tmBoth] then
+      Inc(TickAreas, TrackBarTickLen + 2);
+  end;
+  if ATrack.Orientation = trHorizontal then
+  begin
+    PreferredWidth := TrackBarLongDef;
+    PreferredHeight := KnobSize + TickAreas + 2 * TrackBarBorder;
+  end else
+  begin
+    PreferredWidth := KnobSize + TickAreas + 2 * TrackBarBorder;
+    PreferredHeight := TrackBarLongDef;
+  end;
 end;
 
 { TGtk3WSToolBar }
