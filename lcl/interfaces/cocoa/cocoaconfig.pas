@@ -58,6 +58,9 @@ type
 
   TCocoaConfigToolBarItem = TCocoaConfigToolBarItemWithAction;
 
+  TCocoaConfigToolBarItemColorWell = object( TCocoaConfigToolBarItemWithAction )
+  end;
+
   TCocoaConfigToolBarItemSharing = object( TCocoaConfigToolBarItemWithUI )
     onGetItems: TCocoaToolBarItemSharingOnGetItems;
   end;
