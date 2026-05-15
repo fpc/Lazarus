@@ -183,6 +183,47 @@ begin
   Result := SameText(s, 'KDE') or SameText(s, 'PLASMA') or SameText(s, 'KDE-Plasma');
 end;
 
+function TGtk3WidgetSet.GetWMName: string;
+{$IFDEF UNIX}
+var
+  AScreen: PGdkScreen;
+  AName: Pgchar;
+{$ENDIF}
+begin
+  if FWMNameCached then
+  begin
+    Result := FWMName;
+    exit;
+  end;
+  FWMNameCached := True;
+  {$IFDEF UNIX}
+  if FIsWayland then
+  begin
+    FWMName := 'wayland';
+    Result := FWMName;
+    exit;
+  end;
+  AScreen := gdk_screen_get_default;
+  if AScreen <> nil then
+  begin
+    AName := gdk_x11_screen_get_window_manager_name(AScreen);
+    if AName <> nil then
+      FWMName := AName
+    else
+      FWMName := '';
+  end else
+    FWMName := '';
+  {$ELSE}
+  FWMName := '';
+  {$ENDIF}
+  Result := FWMName;
+end;
+
+function TGtk3WidgetSet.IsMarcoWM: boolean;
+begin
+  Result := Pos('marco', LowerCase(GetWMName)) > 0;
+end;
+
 {$IFNDEF UNIX}
 procedure TGtk3WidgetSet.DoWakeMainThread(Sender: TObject);
 begin

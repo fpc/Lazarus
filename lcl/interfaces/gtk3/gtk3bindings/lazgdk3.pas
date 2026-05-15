@@ -4825,6 +4825,9 @@ function gdk_screen_get_type: TGType; cdecl; external LazGdk3_library name 'gdk_
 function gdk_screen_get_window_stack(screen: PGdkScreen): PGList; cdecl; external LazGdk3_library name 'gdk_screen_get_window_stack';
 function gdk_screen_is_composited(screen: PGdkScreen): gboolean; cdecl; external LazGdk3_library name 'gdk_screen_is_composited';
 function gdk_screen_list_visuals(screen: PGdkScreen): PGList; cdecl; external LazGdk3_library name 'gdk_screen_list_visuals';
+{$IFDEF UNIX}
+function gdk_x11_screen_get_window_manager_name(screen: PGdkScreen): Pgchar; cdecl; external LazGdk3_library name 'gdk_x11_screen_get_window_manager_name';
+{$ENDIF}
 function gdk_seat_get_capabilities(seat: PGdkSeat): TGdkSeatCapabilities; cdecl; external LazGdk3_library name 'gdk_seat_get_capabilities';
 function gdk_seat_get_display(seat: PGdkSeat): PGdkDisplay; cdecl; external LazGdk3_library name 'gdk_seat_get_display';
 function gdk_seat_get_keyboard(seat: PGdkSeat): PGdkDevice; cdecl; external LazGdk3_library name 'gdk_seat_get_keyboard';

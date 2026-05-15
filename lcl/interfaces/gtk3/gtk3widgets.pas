@@ -14020,6 +14020,7 @@ begin
   //other compositors it's just stale.
   if Gtk3IsGtkWindow(AWidget) and
      not Gtk3WidgetSet.IsKDEPlasmaWaylandSession and
+     (AGdkRect^.width > 1) and (AGdkRect^.height > 1) and
      (g_object_get_data(PGObject(AWidget), 'lcl-form-last-w') <> nil) then
   begin
     g_object_set_data(PGObject(AWidget), 'lcl-form-last-w', nil);

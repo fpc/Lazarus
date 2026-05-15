@@ -282,6 +282,7 @@ var
   OtherGtk3Window: TGtk3Window;
   LCLCanFocus: boolean;
   ATime: guint32;
+  NeedSizeProtect: boolean;
 
   procedure CheckAndFixGeometry;
   const
@@ -391,8 +392,13 @@ begin
 
   ShouldBeVisible:=AForm.HandleObjectShouldBeVisible;
 
-  if Assigned(AWindow) and (AForm.Parent = nil) and not IsFormDesign(AForm) and
-     (AForm.BorderStyle <> bsNone) then
+  NeedSizeProtect :=
+    Assigned(AWindow) and (AForm.Parent = nil) and not IsFormDesign(AForm) and
+    ((AForm.BorderStyle <> bsNone) or
+     (Gtk3WidgetSet.IsMarcoWM and
+      (AForm.BorderStyle = bsNone) and
+      not (csNoFocus in AForm.ControlStyle)));
+  if NeedSizeProtect then
   begin
     if ShouldBeVisible then
     begin

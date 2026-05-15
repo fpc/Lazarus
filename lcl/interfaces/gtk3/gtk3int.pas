@@ -62,6 +62,8 @@ type
   TGtk3WidgetSet = class(TWidgetSet)
   private
     FIsWayland: boolean;
+    FWMName: string;
+    FWMNameCached: boolean;
     FTrackBarKnobSize: Integer;
     FActivityCounter: integer;
     FLastUserEventTime: guint32;
@@ -132,6 +134,8 @@ type
     FLCLCaptureWidget: PGtkWidget;
     function IsWayland: boolean;
     function IsKDEPlasmaWaylandSession: boolean;
+    function GetWMName: string;
+    function IsMarcoWM: boolean;
     function CreateDCForWidget(AWidget: PGtkWidget; AWindow: PGdkWindow; cr: Pcairo_t): HDC;
     procedure AddWindow(AWindow: PGtkWindow);
     procedure HandlePipeEvent(AData: PtrInt; AFlags: dword);
