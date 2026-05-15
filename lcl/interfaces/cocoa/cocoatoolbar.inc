@@ -87,6 +87,8 @@ type
     _wellStyle: NSColorWellStyle;
     _sizeWithStyle: NSSize;
     _sizeWithoutStyle: NSSize;
+    _supportsAlpha: Boolean;
+    _autoClose: Boolean;
   public
     constructor Create( const itemConfig: TCocoaConfigToolBarItemColorWell );
     function createItem: NSToolBarItem; override;
@@ -176,14 +178,20 @@ type
   TCocoaToolBarItemColorWell = objcclass( NSToolBarItem )
   private
     _handler: TCocoaToolBarItemActionHandler;
+    _supportsAlpha: Boolean;
+    _autoClose: Boolean;
     procedure lclItemAction( const sender: id ); message 'lclItemAction:';
   public
     procedure lclSetHandler( const handler: TCocoaToolBarItemActionHandler );
       message 'lclSetHandler:';
     function lclGetColor: TColor;
       message 'lclGetColor';
+    procedure lclGetColorAlpha( out AColor: TColor; out AAlpha: Byte );
+      message 'lclGetColor:AColor:';
     procedure lclSetColor( const AColor: TColor );
       message 'lclSetColor:';
+    procedure lclSetColorAlpha( const AColor: TColor; const AAlpha: Byte );
+      message 'lclSetColorAlpha:AColor:';
   end;
 
   { TCocoaToolBarItemSharing }
@@ -612,6 +620,11 @@ end;
 procedure TCocoaToolBarItemColorWell.lclItemAction(const sender: id);
 begin
   _handler( self );
+  TCocoaColorUtil.setSystemColorPanelSupportsAlpha( _supportsAlpha );
+  if _autoClose  then begin
+    if NOT _supportsAlpha then
+      NSColorPanel.sharedColorPanel.close;
+  end;
 end;
 
 procedure TCocoaToolBarItemColorWell.lclSetHandler(
@@ -628,12 +641,34 @@ begin
   Result:= TCocoaColorUtil.toColorRefWithAnyColor( colorWell.color );
 end;
 
-procedure TCocoaToolBarItemColorWell.lclSetColor(const AColor: TColor);
+procedure TCocoaToolBarItemColorWell.lclGetColorAlpha(
+  out AColor: TColor;
+  out AAlpha: Byte );
 var
   colorWell: NSColorWell;
 begin
   colorWell:= NSColorWell( self.view );
+  TCocoaColorUtil.toColorAlpha( colorWell.color, AColor, AAlpha );
+end;
+
+procedure TCocoaToolBarItemColorWell.lclSetColor(const AColor: TColor);
+var
+  colorWell: NSColorWell;
+begin
+  TCocoaColorUtil.setSystemColorPanelSupportsAlpha( _supportsAlpha );
+  colorWell:= NSColorWell( self.view );
   colorWell.setColor( TCocoaColorUtil.toColor(AColor) );
+end;
+
+procedure TCocoaToolBarItemColorWell.lclSetColorAlpha(
+  const AColor: TColor;
+  const AAlpha: Byte );
+var
+  colorWell: NSColorWell;
+begin
+  TCocoaColorUtil.setSystemColorPanelSupportsAlpha( _supportsAlpha );
+  colorWell:= NSColorWell( self.view );
+  colorWell.setColor( TCocoaColorUtil.toColor(AColor,AAlpha) );
 end;
 
 { TCocoaToolBarItemSharing }
@@ -1001,12 +1036,15 @@ begin
   _wellStyle:= itemConfig.wellStyle;
   _sizeWithStyle:= itemConfig.sizeWithStyle;
   _sizeWithoutStyle:= itemConfig.sizeWithoutStyle;
+  _supportsAlpha:= itemConfig.supportsAlpha;
+  _autoClose:= itemConfig.autoClose;
 end;
 
 function TCocoaConfigToolBarItemClassColorWell.createItem: NSToolBarItem;
 var
   cocoaItem: TCocoaToolBarItemColorWell;
-  colorWell: NSColorWell;
+  view: NSView;
+  size: NSSize;
 
   function allocColorWell: NSColorWell;
   var
@@ -1024,17 +1062,24 @@ var
     end;
     colorWell.setTarget( cocoaItem );
     colorWell.setAction( ObjCSelector('lclItemAction:') );
+    size:= rect.size;
     Result:= colorWell;
   end;
 
 begin
   cocoaItem:= TCocoaToolBarItemColorWell.alloc.initWithItemIdentifier( self.identifier );
   self.setItemAttribs( cocoaItem );
-  colorWell:= allocColorWell;
-  cocoaItem.setView( colorWell );
-  colorWell.release;
+  view:= allocColorWell;
+  cocoaItem.setView( view );
+  cocoaItem.setMinSize( size );
+  cocoaItem.setMaxSize( size );
+  cocoaItem._supportsAlpha:= _supportsAlpha;
+  cocoaItem._autoClose:= _autoClose;
+  view.release;
   cocoaItem.autorelease;
   Result:= cocoaItem;
+
+  TCocoaColorUtil.setSystemColorPanelSupportsAlpha( _supportsAlpha );
 end;
 
 { TCocoaConfigToolBarItemClassSharing }
