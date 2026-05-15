@@ -267,8 +267,17 @@ begin
 end;
 
 function ModalFilter(xevent: PGdkXEvent; event: PGdkEvent; data: gpointer): TGdkFilterReturn;
+const
+  X11_ButtonPress = 4;
+  X11_ButtonRelease = 5;
+var
+  AXType: Integer;
 begin
-  Result := GDK_FILTER_REMOVE;
+  AXType := PInteger(xevent)^;
+  if (AXType = X11_ButtonPress) or (AXType = X11_ButtonRelease) then
+    Result := GDK_FILTER_REMOVE
+  else
+    Result := GDK_FILTER_CONTINUE;
 end;
 
 class procedure TGtk3WSCustomForm.ShowHide(const AWinControl: TWinControl);
