@@ -62,6 +62,7 @@ type
     wellStyle: NSColorWellStyle;  // only supported on macOS 13+
     sizeWithStyle: NSSize;        // size on macOS 13+
     sizeWithoutStyle: NSSize;     // size on macOS 13-
+    supportsAlpha: Boolean;       // whether the color picker supports alpha values
     autoClose: Boolean;           // automatically close the Color Panel after selecting a color
   end;
 

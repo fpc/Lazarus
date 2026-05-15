@@ -121,6 +121,8 @@ type
     class function toColor(const Color: TColorRef; const Alpha: Byte): NSColor; overload;
     // convert to known NSColor or nil
     class function sysIndexToColor(nIndex: Integer): NSColor;
+
+    class procedure setSystemColorPanelSupportsAlpha(const supportsAlpha: Boolean);
   end;
 
   { TCocoaImageUtil }
@@ -1009,6 +1011,12 @@ begin
   else
     Result := nil;
   end;
+end;
+
+class procedure TCocoaColorUtil.setSystemColorPanelSupportsAlpha(
+  const supportsAlpha: Boolean );
+begin
+  NSColorPanel.sharedColorPanel.setShowsAlpha( supportsAlpha );
 end;
 
 { TCocoaImageUtil }
