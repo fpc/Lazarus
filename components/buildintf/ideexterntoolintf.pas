@@ -621,7 +621,7 @@ type
     FItems: TFPList; // list of TAbstractExternalTool
     function GetItems(Index: integer): TAbstractExternalTool;
     procedure InternalRemove(Tool: TAbstractExternalTool); virtual;
-    procedure InternallAdd(Tool: TAbstractExternalTool); virtual;
+    procedure InternalAdd(Tool: TAbstractExternalTool); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -987,7 +987,7 @@ begin
   Free;
 end;
 
-procedure TExternalToolGroup.InternallAdd(Tool: TAbstractExternalTool);
+procedure TExternalToolGroup.InternalAdd(Tool: TAbstractExternalTool);
 begin
   if FItems.IndexOf(Tool)>=0 then
     raise Exception.Create('already in group');
@@ -1142,7 +1142,7 @@ begin
     Group.InternalRemove(Self);
   FGroup:=AValue;
   if Group<>nil then
-    Group.InternallAdd(Self);
+    Group.InternalAdd(Self);
 end;
 
 procedure TAbstractExternalTool.SetTitle(const AValue: string);
