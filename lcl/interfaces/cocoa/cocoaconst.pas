@@ -42,6 +42,8 @@ function NSSTR_EDIT_MENU_COPY: NSSTRING;
 function NSSTR_EDIT_MENU_PASTE: NSSTRING;
 function NSSTR_EDIT_MENU_SELECTALL: NSSTRING;
 
+function NSSTR_SYSTEM_SYMBOL_EMPHASIZE: NSSTRING;
+
 const
   // Lack of documentation, provisional definition
   LazarusApplicationDefinedSubtypeWakeup = 13579;
@@ -117,6 +119,8 @@ var
   _NSSTR_EDIT_MENU_COPY: NSSTRING;
   _NSSTR_EDIT_MENU_PASTE: NSSTRING;
   _NSSTR_EDIT_MENU_SELECTALL: NSSTRING;
+
+  _NSSTR_SYSTEM_SYMBOL_EMPHASIZE: NSSTRING;
 
 function NSSTR_EMPTY: NSString;
 begin
@@ -246,6 +250,11 @@ begin
   Result:= _NSSTR_EDIT_MENU_SELECTALL;
 end;
 
+function NSSTR_SYSTEM_SYMBOL_EMPHASIZE: NSSTRING;
+begin
+  Result:= _NSSTR_SYSTEM_SYMBOL_EMPHASIZE;
+end;
+
 function StringToNSString( const s:String ): NSString;
 begin
   Result:= NSString.alloc.initWithUTF8String( pchar(s) );
@@ -319,6 +328,8 @@ initialization
   _NSSTR_TABCONTROL_PREV_ARROW:= StringToNSString('◀');
   _NSSTR_TABCONTROL_NEXT_ARROW:= StringToNSString('▶');
 
+  _NSSTR_SYSTEM_SYMBOL_EMPHASIZE:= NSSTR('#');
+
 finalization;
   _NSSTR_LINE_SEPARATOR.release;
   _NSSTR_PARAGRAPH_SEPARATOR.release;
@@ -335,5 +346,7 @@ finalization;
   _NSSTR_EDIT_MENU_COPY.release;
   _NSSTR_EDIT_MENU_PASTE.release;
   _NSSTR_EDIT_MENU_SELECTALL.release;
+
+  _NSSTR_SYSTEM_SYMBOL_EMPHASIZE.release;
 
 end.

@@ -1136,7 +1136,7 @@ var
   begin
     emphasizeLevel:= 0;
     imageName:= symbolString;
-    while imageName.hasPrefix( NSSTR('#') ) do begin
+    while imageName.hasPrefix( NSSTR_SYSTEM_SYMBOL_EMPHASIZE ) do begin
       imageName:= imageName.substringFromIndex( 1 );
       inc( emphasizeLevel );
     end;
