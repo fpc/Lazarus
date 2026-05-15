@@ -1145,7 +1145,7 @@ begin
     if NSAppKitVersionNumber >= NSAppKitVersionNumber12_0 then begin
       config:= config.configurationByApplyingConfiguration(
                  NSImageSymbolConfiguration.configurationWithHierarchicalColor(
-                   NSColor.colorForControlTint(NSColor.currentControlTint) ) );
+                   NSColor.alternateSelectedControlColor ) );
     end;
   end else begin
     imageName:= symbolString;
