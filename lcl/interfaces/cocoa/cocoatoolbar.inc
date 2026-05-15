@@ -87,6 +87,7 @@ type
     _wellStyle: NSColorWellStyle;
     _sizeWithStyle: NSSize;
     _sizeWithoutStyle: NSSize;
+    _autoClose: Boolean;
   public
     constructor Create( const itemConfig: TCocoaConfigToolBarItemColorWell );
     function createItem: NSToolBarItem; override;
@@ -176,6 +177,7 @@ type
   TCocoaToolBarItemColorWell = objcclass( NSToolBarItem )
   private
     _handler: TCocoaToolBarItemActionHandler;
+    _autoClose: Boolean;
     procedure lclItemAction( const sender: id ); message 'lclItemAction:';
   public
     procedure lclSetHandler( const handler: TCocoaToolBarItemActionHandler );
@@ -612,6 +614,8 @@ end;
 procedure TCocoaToolBarItemColorWell.lclItemAction(const sender: id);
 begin
   _handler( self );
+  if _autoClose then
+    NSColorPanel.sharedColorPanel.close;
 end;
 
 procedure TCocoaToolBarItemColorWell.lclSetHandler(
@@ -1001,6 +1005,7 @@ begin
   _wellStyle:= itemConfig.wellStyle;
   _sizeWithStyle:= itemConfig.sizeWithStyle;
   _sizeWithoutStyle:= itemConfig.sizeWithoutStyle;
+  _autoClose:= itemConfig.autoClose;
 end;
 
 function TCocoaConfigToolBarItemClassColorWell.createItem: NSToolBarItem;
@@ -1036,6 +1041,7 @@ begin
   cocoaItem.setView( view );
   cocoaItem.setMinSize( size );
   cocoaItem.setMaxSize( size );
+  cocoaItem._autoClose:= _autoClose;
   view.release;
   cocoaItem.autorelease;
   Result:= cocoaItem;
