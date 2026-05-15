@@ -1129,28 +1129,38 @@ class function TCocoaImageUtil.imageWithSystemSymbolString(
 var
   imageName: NSString;
   config: NSImageSymbolConfiguration;
+
+  procedure parseEmphasize;
+  var
+    emphasizeLevel: Integer;
+  begin
+    emphasizeLevel:= 0;
+    imageName:= symbolString;
+    while imageName.hasPrefix( NSSTR_SYSTEM_SYMBOL_EMPHASIZE ) do begin
+      imageName:= imageName.substringFromIndex( 1 );
+      inc( emphasizeLevel );
+    end;
+
+    if emphasizeLevel > 0 then begin
+      config:= NSImageSymbolConfiguration.configurationWithPointSize(
+                 NSFont.systemFontSize + emphasizeLevel - 1,
+                 NSFontWeightBold );
+      // emphasize by alternateSelected color
+      if NSAppKitVersionNumber >= NSAppKitVersionNumber12_0 then begin
+        config:= config.configurationByApplyingConfiguration(
+                   NSImageSymbolConfiguration.configurationWithHierarchicalColor(
+                     NSColor.alternateSelectedControlColor ) );
+      end;
+    end;
+  end;
+
 begin
   Result:= nil;
   if symbolString.length <= 0 then
     Exit;
 
-  // begin with # -- emphasize
-  if symbolString.hasPrefix( NSSTR('#') ) then begin
-    imageName:= symbolString.substringFromIndex(1);
-    // emphasize by size and weight
-    config:= NSImageSymbolConfiguration.configurationWithPointSize(
-               NSFont.systemFontSize + 2,
-               NSFontWeightHeavy );
-    // emphasize by hint color
-    if NSAppKitVersionNumber >= NSAppKitVersionNumber12_0 then begin
-      config:= config.configurationByApplyingConfiguration(
-                 NSImageSymbolConfiguration.configurationWithHierarchicalColor(
-                   NSColor.colorForControlTint(NSColor.currentControlTint) ) );
-    end;
-  end else begin
-    imageName:= symbolString;
-    config:= nil;
-  end;
+  config:= nil;
+  parseEmphasize;
 
   Result:= NSImage.imageWithSystemSymbolName_accessibilityDescription(
              imageName, nil );
