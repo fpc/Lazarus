@@ -186,8 +186,12 @@ type
       message 'lclSetHandler:';
     function lclGetColor: TColor;
       message 'lclGetColor';
+    procedure lclGetColorAlpha( out AColor: TColor; out AAlpha: Byte );
+      message 'lclGetColor:AColor:';
     procedure lclSetColor( const AColor: TColor );
       message 'lclSetColor:';
+    procedure lclSetColorAlpha( const AColor: TColor; const AAlpha: Byte );
+      message 'lclSetColorAlpha:AColor:';
   end;
 
   { TCocoaToolBarItemSharing }
@@ -637,6 +641,16 @@ begin
   Result:= TCocoaColorUtil.toColorRefWithAnyColor( colorWell.color );
 end;
 
+procedure TCocoaToolBarItemColorWell.lclGetColorAlpha(
+  out AColor: TColor;
+  out AAlpha: Byte );
+var
+  colorWell: NSColorWell;
+begin
+  colorWell:= NSColorWell( self.view );
+  TCocoaColorUtil.toColorAlpha( colorWell.color, AColor, AAlpha );
+end;
+
 procedure TCocoaToolBarItemColorWell.lclSetColor(const AColor: TColor);
 var
   colorWell: NSColorWell;
@@ -644,6 +658,17 @@ begin
   TCocoaColorUtil.setSystemColorPanelSupportsAlpha( _supportsAlpha );
   colorWell:= NSColorWell( self.view );
   colorWell.setColor( TCocoaColorUtil.toColor(AColor) );
+end;
+
+procedure TCocoaToolBarItemColorWell.lclSetColorAlpha(
+  const AColor: TColor;
+  const AAlpha: Byte );
+var
+  colorWell: NSColorWell;
+begin
+  TCocoaColorUtil.setSystemColorPanelSupportsAlpha( _supportsAlpha );
+  colorWell:= NSColorWell( self.view );
+  colorWell.setColor( TCocoaColorUtil.toColor(AColor,AAlpha) );
 end;
 
 { TCocoaToolBarItemSharing }
