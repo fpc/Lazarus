@@ -1006,7 +1006,8 @@ end;
 function TCocoaConfigToolBarItemClassColorWell.createItem: NSToolBarItem;
 var
   cocoaItem: TCocoaToolBarItemColorWell;
-  colorWell: NSColorWell;
+  view: NSView;
+  size: NSSize;
 
   function allocColorWell: NSColorWell;
   var
@@ -1024,15 +1025,18 @@ var
     end;
     colorWell.setTarget( cocoaItem );
     colorWell.setAction( ObjCSelector('lclItemAction:') );
+    size:= rect.size;
     Result:= colorWell;
   end;
 
 begin
   cocoaItem:= TCocoaToolBarItemColorWell.alloc.initWithItemIdentifier( self.identifier );
   self.setItemAttribs( cocoaItem );
-  colorWell:= allocColorWell;
-  cocoaItem.setView( colorWell );
-  colorWell.release;
+  view:= allocColorWell;
+  cocoaItem.setView( view );
+  cocoaItem.setMinSize( size );
+  cocoaItem.setMaxSize( size );
+  view.release;
   cocoaItem.autorelease;
   Result:= cocoaItem;
 end;
