@@ -245,7 +245,6 @@ var
   Src, Dst, SrcRowPtr, DstRowPtr: PByte;
   x, y: Cardinal;
   WithAlpha: boolean;
-  ADivResult, ARemainder: DWord;
 begin
   Result := False;
   ABitmap := 0;
@@ -345,27 +344,39 @@ begin
         begin
           // components are in place
 
-          // gtkPixbuf doesn't like invalid dataSize/MaskSize < 32. issue #8553.
+          // gtkPixbuf doesn't like invalid dataSize/MaskSize. issue #8553.
           if (ARawImage.MaskSize > 0) and (ImgDepth = 32) then
           begin
-            // seem that gdkPixbuf does not like many of our masks
-            ADivResult := 0;
-            ARemainder := 0;
-            DivMod(ARawImage.DataSize, ARawImage.MaskSize, ADivResult, ARemainder);
-            WithAlpha := ARemainder=0;
-            if WithAlpha then
-            begin
-              // A hack testing image size was added for issue #41750.
-              if (ARawImage.Description.Width>=32) or (ARawImage.Description.Height>=32) then
-              begin
-                // IsMasked test was added for issue #41070.
-                // IsMasked may have a bug with the small icon images.(?)
-                WithAlpha := ARawImage.IsMasked(True);
-                //DebugLn(['TGtk2WidgetSet.RawImage_CreateBitmaps: TRawImage.IsMasked(True) returned ', WithAlpha]);
-              end;
-            end
+            if (ARawImage.DataSize mod ARawImage.MaskSize) <> 0 then
+              DebugLn('TGtk2WidgetSet.RawImage_CreateBitmaps: This image has invalid DataSize / MaskSize.');
+            // Determine WithAlpha by scanning the alpha channel rather than
+            // the AND mask. The previous IsMasked(True) heuristic (#41070,
+            // #41750) flipped to False whenever the AND mask was empty,
+            // which corrupted PNG-in-ICO sub-images whose transparency
+            // lives in the alpha channel (#42275). Skip the scan when the
+            // source description has no alpha bits.
+            if Desc.AlphaPrec = 0 then
+              WithAlpha := False
             else
-              DebugLn('TGtk2WidgetSet.RawImage_CreateBitmaps: This image has invalid DataSize / MaskSize.')
+            begin
+              WithAlpha := False;
+              SrcRowPtr := ImgData;
+              for y := 0 to ImgHeight - 1 do
+              begin
+                Src := SrcRowPtr + 3;
+                for x := 0 to ImgWidth - 1 do
+                begin
+                  if Src^ <> 0 then
+                  begin
+                    WithAlpha := True;
+                    Break;
+                  end;
+                  Inc(Src, 4);
+                end;
+                if WithAlpha then Break;
+                Inc(SrcRowPtr, RowStride);
+              end;
+            end;
           end;
           Data := ImgData;
         end;
