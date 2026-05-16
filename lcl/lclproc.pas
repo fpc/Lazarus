@@ -623,6 +623,7 @@ begin
       scShift: if Localized then Result:=SmkcShift else Result:='Shift+';
       scCtrl: if Localized then Result:=SmkcCtrl else Result:='Ctrl+';
       scAlt: if Localized then Result:=SmkcAlt else Result:='Alt+';
+      scAltGr: if Localized then Result:=SmkcFn else Result:='Fn+';
     otherwise
       Result:='';
     end;
@@ -651,6 +652,7 @@ begin
     {$ELSE}
     AddPart(ifsVK_META);
     {$ENDIF}
+  if ssAltGr in ShiftState then AddPart(ifsVK_FN);
   if ssSuper in ShiftState then AddPart(ifsVK_SUPER);
 
   s := KeyCodeToKeyString(Key, true);
@@ -678,6 +680,7 @@ begin
     if ShortCut and scCtrl <> 0 then Result := Result + KeyCodeToKeyString(scCtrl, Localized);
     if ShortCut and scMeta <> 0 then Result := Result + KeyCodeToKeyString(scMeta, Localized);
     if ShortCut and scAlt <> 0 then Result := Result + KeyCodeToKeyString(scAlt, Localized);
+    if ShortCut and scAltGr <> 0 then Result := Result + KeyCodeToKeyString(scAltGr, Localized);
     Result := Result + Name;
   end;
 end;
@@ -725,6 +728,8 @@ begin
       Shift := Shift or scAlt
     else if HasFront(KeyCodeToKeyString(scMeta, Localized)) then
       Shift := Shift or scMeta
+    else if HasFront(KeyCodeToKeyString(scAltGr, Localized)) then
+      Shift := Shift or scAltGr
     else
       Break;
   end;
