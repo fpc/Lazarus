@@ -415,6 +415,15 @@ begin
   submenu.addItem(item);
   item.release;
 
+  // Enter Full Screen
+  item := TCocoaMenuItemUtil.init( TCocoaMenuItem.alloc, 'Enter Full Screen' );
+  item.setTarget( nil );
+  item.setAction( ObjCSelector('toggleFullScreen:') );
+  item.setKeyEquivalent( NSSTR('f') );
+  item.setKeyEquivalentModifierMask( NSFunctionKeyMask );
+  submenu.addItem(item);
+  item.release;
+
   // Separator
   submenu.addItem(NSMenuItem.separatorItem);
 
@@ -745,9 +754,6 @@ class function TCocoaMenuItemUtil.init(
   const atitle: String;
   const VKKey: Word;
   const State: TShiftState ): id;
-var
-  key   : NSString;
-  mask  : NSUInteger;
 begin
   Result := init(item, atitle, ShortCut(VKKey, State));
 end;
