@@ -394,6 +394,7 @@ const
 
 // TShortCut additions:
   scMeta = $1000;
+  scAltGr = $800;            // only for macOS now, for the 'Fn' Key
 
 //-------------
 // Virtual keys
@@ -418,15 +419,18 @@ const
   VK_RETURN     = 13; // The "Enter" key, also used for a keypad center press
   VK_SHIFT      = 16; // See also VK_LSHIFT, VK_RSHIFT
   VK_CONTROL    = 17; // See also VK_LCONTROL, VK_RCONTROL
-  VK_MENU       = 18; // The ALT key. Also called "Option" in Mac OS X. See also VK_LMENU, VK_RMENU
+  VK_MENU       = 18; // The ALT key. Also called "Option" in macOS. See also VK_LMENU, VK_RMENU
   VK_PAUSE      = 19; // Pause/Break key
   VK_CAPITAL    = 20; // CapsLock key
   VK_KANA       = 21;
   VK_HANGUL     = 21;
+  VK_IME_ON     = 22; // only for macOS now, see also VK_FN
+  VK_FN         = 22;
   VK_JUNJA      = 23;
   VK_FINAL      = 24;
   VK_HANJA      = 25;
   VK_KANJI      = 25;
+  VK_IME_OFF    = 26;
   VK_ESCAPE     = 27; // Also used for the hardware Back key in Android
   VK_CONVERT    = 28;
   VK_NONCONVERT = 29;
@@ -486,8 +490,8 @@ const
   VK_Y          = $59;
   VK_Z          = $5A;
 
-  VK_LWIN       = $5B; // In Mac OS X this is the Apple, or Command key. Windows Key in PC keyboards
-  VK_RWIN       = $5C; // In Mac OS X this is the Apple, or Command key. Windows Key in PC keyboards
+  VK_LWIN       = $5B; // In macOS this is the Apple, or Command key. Windows Key in PC keyboards
+  VK_RWIN       = $5C; // In macOS this is the Apple, or Command key. Windows Key in PC keyboards
   VK_APPS       = $5D; // The PopUp key in PC keyboards
   // $5E reserved
   VK_SLEEP      = $5F;
@@ -563,8 +567,8 @@ const
   VK_RSHIFT     = $A1;
   VK_LCONTROL   = $A2;
   VK_RCONTROL   = $A3;
-  VK_LMENU      = $A4; // Left ALT key (also named Option in Mac OS X)
-  VK_RMENU      = $A5; // Right ALT key (also named Option in Mac OS X)
+  VK_LMENU      = $A4; // Left ALT key (also named Option in macOS)
+  VK_RMENU      = $A5; // Right ALT key (also named Option in macOS)
 
   VK_BROWSER_BACK        = $A6;
   VK_BROWSER_FORWARD     = $A7;
@@ -3127,6 +3131,7 @@ begin
   if ssCtrl in Shift then Inc(Result,scCtrl);
   if ssAlt in Shift then Inc(Result,scAlt);
   if ssMeta in Shift then Inc(Result,scMeta);
+  if ssAltGr in Shift then Inc(Result,scAltGr);
 end;
 
 {------------------------------------------------------------------------------

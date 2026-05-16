@@ -58,6 +58,11 @@ msgstr "Ctrl"
 msgid "Cmd"
 msgstr "Commande"
 
+#: lclstrconsts.ifsvk_fn
+msgctxt "lclstrconsts.ifsvk_fn"
+msgid "Fn"
+msgstr ""
+
 #: lclstrconsts.ifsvk_help
 msgctxt "lclstrconsts.ifsvk_help"
 msgid "Help"
@@ -1468,6 +1473,10 @@ msgstr "Entrée"
 #: lclstrconsts.smkcesc
 msgid "Esc"
 msgstr "Échap"
+
+#: lclstrconsts.smkcfn
+msgid "Fn+"
+msgstr ""
 
 #: lclstrconsts.smkchome
 msgctxt "lclstrconsts.smkchome"

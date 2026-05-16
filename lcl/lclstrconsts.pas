@@ -338,6 +338,7 @@ resourceString
   ifsVK_CMD        = 'Cmd';
   ifsVK_SUPER      = 'Super';
   ifsVK_HELP       = 'Help';
+  ifsVK_FN         = 'Fn';
   ifsCtrl          = 'Ctrl';
   ifsAlt           = 'Alt';
 
@@ -370,6 +371,7 @@ resourceString
   SmkcCtrl = 'Ctrl+';
   SmkcAlt = 'Alt+';
   SmkcMeta = 'Meta+';
+  SmkcFn = 'Fn+';
 
   // help
   rsHelpHelpNodeHasNoHelpDatabase = 'Help node "%s" has no Help Database.';

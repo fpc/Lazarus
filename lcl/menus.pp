@@ -851,6 +851,7 @@ begin
   if ShortCut and scAlt <> 0 then Include(Shift,ssAlt);
   if ShortCut and scCtrl <> 0 then Include(Shift,ssCtrl);
   if ShortCut and scMeta <> 0 then Include(Shift,ssMeta);
+  if ShortCut and scAltGr <> 0 then Include(Shift,ssAltGr);
 end;
 
 { TMenuItemEnumerator }
