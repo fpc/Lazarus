@@ -336,16 +336,30 @@ end;
 
 procedure TCocoaReadOnlyComboBoxList.Put(Index: Integer; const S: string);
 var
-  selectedIndex: NSInteger;
+  astr: NSString;
+  mn  : NSMenuItem;
 begin
   inherited Put(Index, S);
-  if ((index >= 0) and (Index < FOwner.numberOfItems)) then
-  begin
-    selectedIndex:= FOwner.indexOfSelectedItem;
-    FOwner.removeItemAtIndex(Index);
-    self.InsertItem(Index,S,nil);
-    FOwner.selectItemAtIndex(selectedIndex);
-  end;
+
+  if (Index < 0) or (Index >= FOwner.numberOfItems) then
+    Exit;
+
+  // ComboBoxEx renders via owner-drawn TCocoaReadOnlyView, and the NSMenuItem
+  // title is a synthetic unique placeholder (see InsertItem). Don't touch it.
+  if FOwner.isComboBoxEx then
+    Exit;
+
+  mn := FOwner.itemAtIndex(Index);
+  if not Assigned(mn) then Exit;
+
+  // Update both title and attributedTitle. attributedTitle is set in InsertItem
+  // (since the colorTitle change in 2024) and wins over title when displayed,
+  // so updating only one of them leaves the dropdown showing stale text -- which
+  // is the original symptom #41800 reported.
+  astr := NSStringUtf8(S);
+  mn.setTitle(astr);
+  mn.setAttributedTitle( FOwner.colorTitle(astr) );
+  astr.release;
 end;
 
 procedure TCocoaReadOnlyComboBoxList.UpdateItemSize;
