@@ -1115,6 +1115,9 @@ type
     ShadowW: gint;
     ShadowH: gint;
     WaylandChromeApplied: Boolean;
+    HaveLastMove: Boolean;
+    LastMoveX: gint;
+    LastMoveY: gint;
   end;
 
   { TGtk3Window }
@@ -14310,12 +14313,25 @@ begin
     begin
       MoveMsg.XPos := SmallInt(AEvent^.x);
       MoveMsg.YPos := SmallInt(AEvent^.y);
-    end
-    else begin // #42039
+    end else
+    begin // #42039
       gtk_window_get_position(aWidget, @X, @Y);
       MoveMsg.XPos := SmallInt(X);
       MoveMsg.YPos := SmallInt(Y);
     end;
+
+    with TGtk3Window(aData).FResizeState do
+    begin
+      if HaveLastMove and (LastMoveX = MoveMsg.XPos) and (LastMoveY = MoveMsg.YPos) then
+      begin
+        Result := gtk_false;
+        exit;
+      end;
+      HaveLastMove := True;
+      LastMoveX := MoveMsg.XPos;
+      LastMoveY := MoveMsg.YPos;
+    end;
+
     Result := TGtk3Window(aData).DeliverMessage(MoveMsg) <> 0;
   end else
     Result := gtk_false;

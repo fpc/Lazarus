@@ -132,6 +132,7 @@ var
   vscroll, hscroll: PGtkWidget;
   vpolicy, hpolicy: TGtkPolicyType;
   Last1W, Last1H, Last2W, Last2H: PtrInt;
+  FreezeW, FreezeH: PtrInt;
   threshH, threshW, minSize: gint;
   vActive, hActive: Boolean;
   {$IFDEF GTK3DEBUGSIZE}
@@ -237,6 +238,11 @@ begin
     DebugLn(Format('LCLGSW.SizeAllocate %s alloc=%dx%d OSCILLATE-BELOW (prev %dx%d / prev2 %dx%d thresh=%dx%d) - SKIP parent',
       [ADbgName, allocation^.width, allocation^.height, Last1W, Last1H, Last2W, Last2H, threshW, threshH]));
     {$ENDIF}
+    if Gtk3WidgetSet.IsWayland then
+    begin
+      g_object_set_data(PGObject(widget), 'lcl-freeze-aw', Pointer(Last1W));
+      g_object_set_data(PGObject(widget), 'lcl-freeze-ah', Pointer(Last1H));
+    end;
     gtk_widget_set_allocation(widget, allocation);
     gtk_widget_set_clip(widget, allocation);
     exit;
@@ -247,6 +253,33 @@ begin
     g_object_set_data(PGObject(widget), 'lcl-prev2-ah', Pointer(PtrInt(Last1H)));
     g_object_set_data(PGObject(widget), 'lcl-prev-aw', Pointer(PtrInt(allocation^.width)));
     g_object_set_data(PGObject(widget), 'lcl-prev-ah', Pointer(PtrInt(allocation^.height)));
+  end;
+
+  if Gtk3WidgetSet.IsWayland then
+  begin
+    FreezeW := PtrInt(g_object_get_data(PGObject(widget), 'lcl-freeze-aw'));
+    FreezeH := PtrInt(g_object_get_data(PGObject(widget), 'lcl-freeze-ah'));
+    if (FreezeW <> 0) or (FreezeH <> 0) then
+    begin
+      if (allocation^.width >= threshW) and (allocation^.height >= threshH) then
+      begin
+        g_object_set_data(PGObject(widget), 'lcl-freeze-aw', nil);
+        g_object_set_data(PGObject(widget), 'lcl-freeze-ah', nil);
+      end else if (allocation^.width = FreezeW) and (allocation^.height = FreezeH) then
+      begin
+        {$IFDEF GTK3DEBUGSIZE}
+        DebugLn(Format('LCLGSW.SizeAllocate %s alloc=%dx%d WAYLAND-FREEZE-SKIP (freeze=%dx%d)',
+          [ADbgName, allocation^.width, allocation^.height, FreezeW, FreezeH]));
+        {$ENDIF}
+        gtk_widget_set_allocation(widget, allocation);
+        gtk_widget_set_clip(widget, allocation);
+        exit;
+      end else
+      begin
+        g_object_set_data(PGObject(widget), 'lcl-freeze-aw', nil);
+        g_object_set_data(PGObject(widget), 'lcl-freeze-ah', nil);
+      end;
+    end;
   end;
 
   {$IFDEF GTK3DEBUGSIZE}
