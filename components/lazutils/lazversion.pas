@@ -104,7 +104,7 @@ function DirNameToLCLPlatform(const ADirName: string): TLCLPlatform;
 begin
   for Result:=Low(TLCLPlatform) to High(TLCLPlatform) do
     if CompareText(ADirName,LCLPlatformDirNames[Result])=0 then exit;
-  Result:=lpGtk2;
+  Result := BuildLCLWidgetType;
 end;
 
 function GetLCLWidgetType: TLCLPlatform;
@@ -112,7 +112,7 @@ begin
   if Assigned(OnLCLWidgetType) then
     Result := OnLCLWidgetType()
   else
-    Result := lpGtk2;
+    Result := BuildLCLWidgetType;
 end;
 
 function GetLCLWidgetTypeName: string;
@@ -120,7 +120,7 @@ begin
   if Assigned(OnLCLWidgetTypeName) then
     Result := OnLCLWidgetTypeName()
   else
-    Result := '';
+    Result := LCLPlatformDirNames[BuildLCLWidgetType];
 end;
 
 function GetBuildLCLWidgetType: TLCLPlatform;
