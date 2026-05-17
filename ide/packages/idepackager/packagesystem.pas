@@ -3454,7 +3454,7 @@ function TLazPackageGraph.SavePackageCompiledState(APackage: TLazPackage;
   MainPPUExists, ShowAbort: boolean): TModalResult;
 var
   XMLConfig: TXMLConfig;
-  StateFile: String;
+  StateFile, StoredCompilerFilename: String;
   CompilerFileDate: Integer;
   o: TPkgOutputDir;
   Stats: TPkgLastCompileStats;
@@ -3468,6 +3468,7 @@ begin
     Stats:=APackage.LastCompile[o];
     Stats.LazarusVersion:=LazarusVersionStr;
     Stats.CompilerFilename:=CompilerFilename;
+    StoredCompilerFilename:=CompilerFilename;
     Stats.CompilerFileDate:=CompilerFileDate;
     Stats.CompilerVersion:='';
     Stats.Params.Assign(CompilerParams);
@@ -3475,20 +3476,20 @@ begin
     Stats.MainPPUExists:=MainPPUExists;
     Stats.Kind:=pcskDefault;
 
-    if APackage.CompilerOptions.OutputDirectoryOverride='' then
+    if o=podDefault then
     begin
       // make all paths relative in state file, so it can be copied to other hosts
-      // Note: a state file in the OutputDirectoryOverride should keep absolute paths,
+      // Note: a state file in the fallback directory should keep absolute paths,
       //       as it can be from a different package. For example if the user started a
       //       lazarus from a readonly usb stick and then from a debian package.
       MakeFPCParamsPathsRelative(Stats.Params,APackage.DirectoryExpanded);
-      Stats.CompilerFilename:=CreateRelativePath(CompilerFilename,APackage.Directory,true,true);
+      StoredCompilerFilename:=CreateRelativePath(CompilerFilename,APackage.Directory,true,true);
     end;
 
     if BuildRelease then
     begin
       Stats.Kind:=pcskRelease;
-      Stats.CompilerFilename:=ExtractFileName(Stats.CompilerFilename);
+      StoredCompilerFilename:=ExtractFileName(Stats.CompilerFilename);
       if not GetCompilerVersion(Stats.CompilerVersion) then
       begin
         debugln('Error: (lazarus) TLazPackageGraph.SavePackageCompiledState no compiler version');
@@ -3499,7 +3500,7 @@ begin
     XMLConfig:=TXMLConfig.CreateClean(StateFile);
     try
       XMLConfig.SetValue('Lazarus/Version',Stats.LazarusVersion);
-      XMLConfig.SetValue('Compiler/Value',Stats.CompilerFilename);
+      XMLConfig.SetValue('Compiler/Value',StoredCompilerFilename);
       XMLConfig.SetValue('Compiler/Date',Stats.CompilerFileDate);
       XMLConfig.SetDeleteValue('Compiler/Version',Stats.CompilerVersion,'');
       XMLConfig.SetValue('Params/Value',MergeCmdLineParams(Stats.Params));
@@ -3858,15 +3859,15 @@ begin
   CompilerFilename:=APackage.GetCompilerFilename;
   CompilerParams:=GetPackageCompilerParams(APackage);
   try
-    // Note: The actual call of fpc needs absolute paths, because some external tools resolve
-    //       symlinked directories and some do not.
-    //       The state file (*.compiled) uses relative paths, so it can be copied to other hosts.
-    if APackage.CompilerOptions.OutputDirectoryOverride='' then
-      MakeFPCParamsPathsRelative(CompilerParams,APackage.Directory);
-
     o:=APackage.GetOutputDirType;
     Stats:=APackage.LastCompile[o];
     //debugln(['TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Last="',ExtractCompilerParamsForBuildAll(APackage.LastCompilerParams),'" Now="',ExtractCompilerParamsForBuildAll(CompilerParams),'"']);
+
+    // Note: The actual call of fpc needs absolute paths, because some external tools resolve
+    //       symlinked directories and some do not.
+    //       The state file (*.compiled) uses relative paths, so it can be copied to other hosts.
+    if o=podDefault then
+      MakeFPCParamsPathsRelative(CompilerParams,APackage.Directory);
 
     // check state file
     StateFilename:=APackage.GetStateFilename;

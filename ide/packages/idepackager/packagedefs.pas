@@ -417,8 +417,17 @@ type
 
   TPkgCompiledStatsKind = (
     pcskDefault,
+      { No CompilerVersion.
+        CompilerFilename and params are relative to package directory, except
+        when using the fallback directory. }
     pcskMakefile,
+      { MakefileVersion>0. Using macros.
+        No CompilerVersion.
+        No file dates. }
     pcskRelease
+      { CompilerVersion is stored.
+        CompilerFilename has no folder and is ignored.
+        CompilerFileDate is stored, but ignored. }
     );
   TPkgCompiledStatsKinds = set of TPkgCompiledStatsKind;
 
