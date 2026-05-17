@@ -803,8 +803,7 @@ begin
     _icon.release;
   if Assigned(_alternateIcon) then
     _alternateIcon.release;
-  if Assigned(_menu) then
-    Application.ReleaseComponent( _menu );
+  FreeAndNil( _menu );
 end;
 
 { TCocoaToolBarItemGroupWrapper }
