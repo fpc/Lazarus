@@ -80,7 +80,6 @@ type
   TCocoaConfigToolBarItemMenu = object( TCocoaConfigToolBarItemWithAction )
     showsIndicator: Boolean;
     dynamic: Boolean;   // dynamically load each time before displaying the menu
-    menu: TMenu;
     onGetMenu: TCocoaToolBarItemMenuOnGetMenu;
   end;
 

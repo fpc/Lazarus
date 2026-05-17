@@ -123,7 +123,6 @@ type
   protected
     _showsIndicator: Boolean;
     _dynamic: Boolean;
-    _menu: TMenu;
     _onGetMenu: TCocoaToolBarItemMenuOnGetMenu;
   public
     constructor Create( const itemConfig: TCocoaConfigToolBarItemMenu );
@@ -234,8 +233,9 @@ type
     _state: Boolean;  // off/on, up/down
     _icon: NSImage;
     _alternateIcon: NSImage;
-
     _handler: TCocoaToolBarItemActionHandler;
+
+    _menu: TMenu;
     _dynamic: Boolean;
     _onGetMenu: TCocoaToolBarItemMenuOnGetMenu;
     procedure lclItemAction( sender: id ); message 'lclItemAction:';
@@ -794,6 +794,8 @@ begin
     _icon.release;
   if Assigned(_alternateIcon) then
     _alternateIcon.release;
+  if Assigned(_menu) then
+    Application.ReleaseComponent( _menu );
 end;
 
 { TCocoaToolBarItemGroupWrapper }
@@ -1146,7 +1148,6 @@ begin
   self.toClassConfig( @itemConfig );
   _showsIndicator:= itemConfig.showsIndicator;
   _dynamic:= itemConfig.dynamic;
-  _menu:= itemConfig.menu;
   _onGetMenu:= itemConfig.onGetMenu;
 end;
 
@@ -1155,19 +1156,17 @@ var
   cocoaItem: TCocoaToolBarItemMenu;
 
   procedure createStaticMenu;
+  var
+    menu: TMenu;
   begin
     if NOT Assigned(_onAction) then
       cocoaItem.setAction( nil );
 
-    if NOT Assigned(_menu) then begin
-      if Assigned(_onGetMenu) then begin
-        _menu:= TMenu.Create( nil );
-        _onGetMenu( _menu );
-      end;
-    end;
-
-    if Assigned(_menu) then begin
-      cocoaItem.setMenu( NSMenu(_menu.Handle) );
+    if Assigned(_onGetMenu) then begin
+      menu:= TMenu.Create( nil );
+      _onGetMenu( menu );
+      cocoaItem._menu:= menu;
+      cocoaItem.setMenu( NSMenu(menu.Handle) );
     end;
   end;
 
