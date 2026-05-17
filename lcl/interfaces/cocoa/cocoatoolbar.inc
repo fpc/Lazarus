@@ -862,7 +862,11 @@ begin
 end;
 
 procedure TCocoaToolBar.dealloc;
+var
+  i: Integer;
 begin
+  for i:= self.items.count-1 downto 0 do
+    self.removeItemAtIndex( i );
   if Assigned(_defaultItemIdentifiers) then
     _defaultItemIdentifiers.release;
   if Assigned(_allowedItemIdentifiers) then
