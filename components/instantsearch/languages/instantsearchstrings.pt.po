@@ -1,0 +1,542 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: instantsearchstrings.lrsabortoperation
+msgid "No, abort operation"
+msgstr "Não, abortar operação"
+
+#: instantsearchstrings.lrsallprojects
+msgid "All projects"
+msgstr "Todos os projectos"
+
+#: instantsearchstrings.lrsalltreesneedindexing
+msgid "All source trees must be indexed."
+msgstr "Todas as árvores-fonte têm de estar indexadas."
+
+#: instantsearchstrings.lrsautomation
+msgid "Automation"
+msgstr "Automatização"
+
+#: instantsearchstrings.lrscancelsearch
+msgid "Cancel search"
+msgstr "Cancelar procura"
+
+#: instantsearchstrings.lrscannotconnecttomanticore
+#, object-pascal-format
+msgid "Error \"%s\" trying to connect to Manticore server: %s"
+msgstr "Erro \"%s\" ao tentar ligar ao servidor Manticore: %s"
+
+#: instantsearchstrings.lrscannotdeleteindexwhileindexing
+msgid "Cannot delete an index while an indexing operation is in progress."
+msgstr "Não é possível eliminar um índice enquanto uma operação de indexação estiver em curso."
+
+#: instantsearchstrings.lrscannotindexindexinprogress
+msgid "Cannot start an index operation while another one is in progress."
+msgstr "Não é possível iniciar uma operação de indexação enquanto outra estiver em curso."
+
+#: instantsearchstrings.lrsconfigneeded
+msgid "Configuration needed"
+msgstr "Configuração necessária"
+
+#: instantsearchstrings.lrsconfigneededreason
+#, object-pascal-format
+msgid ""
+"Instant search is not yet configured:\n"
+"%s"
+msgstr ""
+"A procura instantânea ainda não está configurada:\n"
+"%s"
+
+#: instantsearchstrings.lrsconfigure
+msgid "Configure Instant Search"
+msgstr "Configurar a procura instantânea"
+
+#: instantsearchstrings.lrsconfirm
+msgid "Confirmation"
+msgstr "Confirmação"
+
+#: instantsearchstrings.lrsconfirmdeletetree
+#, object-pascal-format
+msgid ""
+"Delete tree \"%s\", are you sure?\n"
+"This action cannot be undone."
+msgstr ""
+"Deseja realmente eliminar a árvore \"%s\"?\n"
+"Esta acção não pode ser desfeita."
+
+#: instantsearchstrings.lrsconnectiontestfailed
+#, object-pascal-format
+msgid ""
+"Connection test failed, reason:\n"
+"%s"
+msgstr ""
+"O teste de ligação falhou, motivo:\n"
+"%s"
+
+#: instantsearchstrings.lrsconnectiontestok
+msgid "Connection test succeeded!"
+msgstr "Teste de ligação com sucesso!"
+
+#: instantsearchstrings.lrscreateindex
+msgid "Create index table"
+msgstr "Criar tabela de índice"
+
+#: instantsearchstrings.lrscreateindex2
+msgid "Create index"
+msgstr "Criar índice"
+
+#: instantsearchstrings.lrscreateindexbuttonhint
+msgid "Create the index table. You need to test the connection first."
+msgstr "Criar a tabela de índice. É necessário testar a ligação primeiro."
+
+#: instantsearchstrings.lrscreateindexfailed
+#, object-pascal-format
+msgid ""
+"Creation of index %s failed, reason:\n"
+"%s"
+msgstr ""
+"Falha na criação do índice %s, motivo:\n"
+"%s"
+
+#: instantsearchstrings.lrscreateindexwithname
+#, object-pascal-format
+msgid "Create index with name %s?"
+msgstr "Criar índice com o nome %s?"
+
+#: instantsearchstrings.lrscurrentproject
+msgid "Active project"
+msgstr "Projecto activo"
+
+#: instantsearchstrings.lrsdeleteindex
+msgid "Delete index"
+msgstr "Eliminar índice"
+
+#: instantsearchstrings.lrsdeleteindexfailed
+#, object-pascal-format
+msgid ""
+"Deletion of index %s failed, reason:\n"
+"%s"
+msgstr ""
+"Falha na eliminação do índice %s, motivo:\n"
+"%s"
+
+#: instantsearchstrings.lrsdeleteindexhint
+msgid "Prompt for index name and delete the index."
+msgstr "Pedir o nome do índice e eliminá-lo."
+
+#: instantsearchstrings.lrsdonotcreateindex
+msgid "No, do not create the index"
+msgstr "Não, não criar o índice"
+
+#: instantsearchstrings.lrsenterhostnameleaveemptyforlocalhost
+msgid "Enter hostname, leave empty for localhost"
+msgstr "Introduza o nome do anfitrião; deixe em branco para \"localhost\""
+
+#: instantsearchstrings.lrserrnamecannotbeempty
+msgid "Source tree name cannot be empty."
+msgstr "O nome da árvore-fonte não pode estar vazio."
+
+#: instantsearchstrings.lrserrorconnecting
+#, object-pascal-format
+msgid "Error \"%s\" attempting to connect to Manticore server."
+msgstr "Erro \"%s\" ao tentar ligar ao servidor Manticore."
+
+#: instantsearchstrings.lrserrorduplicatename
+#, object-pascal-format
+msgid ""
+"Duplicate tree name: %s.\n"
+"Please choose another name."
+msgstr ""
+"O nome da árvore já existe: %s.\n"
+"Escolha outro nome."
+
+#: instantsearchstrings.lrserrorminlengthis2
+msgid "There should be at least two characters to search."
+msgstr "A procura deve conter, pelo menos, dois caracteres."
+
+#: instantsearchstrings.lrserrorsearching
+#, object-pascal-format
+msgid "Error \"%s\" when searching using Manticore server."
+msgstr "Erro «%s» ao realizar uma procura utilizando o servidor Manticore."
+
+#: instantsearchstrings.lrserrpathdoesnotexist
+#, object-pascal-format
+msgid ""
+"Directory \"%s\" does not exist.\n"
+"Please select an existing directory."
+msgstr ""
+"A pasta \"%s\" não existe.\n"
+"Seleccione uma pasta existente."
+
+#: instantsearchstrings.lrsfinishedindexingproject
+#, object-pascal-format
+msgid "Finished indexing project \"%s\". Processed %d files."
+msgstr "O projecto de indexação \"%s\" foi concluído. Foram processados %d ficheiros."
+
+#: instantsearchstrings.lrsfinishedindexingtree
+#, object-pascal-format
+msgid "Finished indexing tree \"%s\". Processed %d files in %d minutes."
+msgstr "A indexação da árvore «%s» foi concluída. Foram processados %d ficheiros em %d minutos."
+
+#: instantsearchstrings.lrshost
+msgid "Hostname"
+msgstr "Anfitrião"
+
+#: instantsearchstrings.lrsidledisconnecttime
+msgid "Idle disconnect time"
+msgstr "Tempo de desconexão por inactividade"
+
+#: instantsearchstrings.lrsindexalreadyexists
+#, object-pascal-format
+msgid "Index table \"%s\" already exists."
+msgstr "A tabela de índices «%s» já existe."
+
+#: instantsearchstrings.lrsindexdeleted
+#, object-pascal-format
+msgid "Index %s successfully deleted."
+msgstr "O índice %s foi eliminado com sucesso."
+
+#: instantsearchstrings.lrsindexingoperationfinished
+msgid "Finished indexing operation."
+msgstr "A operação de indexação foi concluída."
+
+#: instantsearchstrings.lrsindexingoptions
+msgid "Indexing and searching"
+msgstr "Indexação e pesquisa"
+
+#: instantsearchstrings.lrsindexingprojectterminated
+#, object-pascal-format
+msgid "Indexing project \"%s\" was terminated. Processed %d files."
+msgstr "O projecto de indexação \"%s\" foi encerrado. Foram processados %d ficheiros."
+
+#: instantsearchstrings.lrsindexingtreefilecount
+#, object-pascal-format
+msgid "Tree \"%s\", indexed file count: %d"
+msgstr "Árvore \"%s\", número de ficheiros indexados: %d"
+
+#: instantsearchstrings.lrsindexlater
+msgid "No, do not index now"
+msgstr "Não, não indexar agora"
+
+#: instantsearchstrings.lrsindexname
+msgid "Index name"
+msgstr "Nome do índice"
+
+#: instantsearchstrings.lrsindexneedssave
+msgid ""
+"In order to index a source tree, the settings must be saved.\n"
+"Save settings?"
+msgstr ""
+"Para indexar uma árvore-fonte, é necessário gravar as definições.\n"
+"Deseja fazê-lo?"
+
+#: instantsearchstrings.lrsindexnotfoundcreate
+#, object-pascal-format
+msgid ""
+"Search index table \"%s\" was not found.\n"
+"Create it?"
+msgstr ""
+"A tabela de índice de procura \"%s\" não foi encontrada.\n"
+"Deseja criá-la?"
+
+#: instantsearchstrings.lrsindexnow
+msgid "Would you like to start indexing them now?"
+msgstr "Gostaria de começar a indexá-los agora?"
+
+#: instantsearchstrings.lrsindexoperationfailed
+msgid "Failed to start index operation."
+msgstr "Não foi possível iniciar a operação de indexação."
+
+#: instantsearchstrings.lrsindexproject
+msgid "Index project for Instant Search"
+msgstr "Projecto de indexação para a procura instantânea"
+
+#: instantsearchstrings.lrsindexprojectdelay1
+msgid "in"
+msgstr "em"
+
+#: instantsearchstrings.lrsindexprojectdelay2
+msgid "minutes after open"
+msgstr "minutos apoós abrir"
+
+#: instantsearchstrings.lrsindexprojectmoment
+msgid "Index project when"
+msgstr "Indexar projecto quando"
+
+#: instantsearchstrings.lrsindexprojectstrategy
+msgid "Mark project indexable"
+msgstr "Marcar projecto como indexável"
+
+#: instantsearchstrings.lrsindextodelete
+msgid "Enter the name of the index to delete. This operation cannot be undone."
+msgstr "Insira o nome do índice a eliminar. Esta operação não pode ser desfeita."
+
+#: instantsearchstrings.lrsinstantsearch
+msgctxt "instantsearchstrings.lrsinstantsearch"
+msgid "Instant search"
+msgstr "Procura instantânea"
+
+#: instantsearchstrings.lrsinstantsearchmenu
+msgctxt "instantsearchstrings.lrsinstantsearchmenu"
+msgid "Instant search"
+msgstr "Procura instantânea"
+
+#: instantsearchstrings.lrsmanticoreoptions
+msgid "Manticore server"
+msgstr "Servidor Manticore"
+
+#: instantsearchstrings.lrsmanual
+msgid "Manual only"
+msgstr "Só manual"
+
+#: instantsearchstrings.lrsmarkingindexable
+#, object-pascal-format
+msgid "Marking project \"%s\" as indexable."
+msgstr "A marcar projecto \"%s\" como indexável."
+
+#: instantsearchstrings.lrsmarkprojectindexable
+msgid "Mark project indexable for Instant Search"
+msgstr "Marcar o projecto como indexável para a procura instantânea"
+
+#: instantsearchstrings.lrsmaxclipbrdsearchtermlength
+msgid "Max. clipboard length"
+msgstr "Tamanho máximo da prancheta"
+
+#: instantsearchstrings.lrsminsearchlength
+msgid "Min. searchterm length"
+msgstr "Tamanho mínimo do termo"
+
+#: instantsearchstrings.lrsmysqlversion
+msgid "MySQL client version"
+msgstr "Versão de cliente MySQL"
+
+#: instantsearchstrings.lrsneedindexing
+msgid "Source trees must be indexed"
+msgstr "Árvores-fonte têm de estar indexadas"
+
+#: instantsearchstrings.lrsnewtree
+#, object-pascal-format
+msgid "New source tree %d"
+msgstr "Nova árvore-fonte %d"
+
+#: instantsearchstrings.lrsnoindex
+msgid "Search index table not found"
+msgstr "Tabela de índice de procura não encontrada"
+
+#: instantsearchstrings.lrsnomysqlversion
+msgid "No MySQL Client library version was selected for MySQL transport."
+msgstr "Não seleccionou a versão da biblioteca cliente do MySQL para o transporte do MySQL."
+
+#: instantsearchstrings.lrsnosearchtrees
+msgid "No source trees were defined."
+msgstr "Nenhuma árvore-fonte definida."
+
+#: instantsearchstrings.lrsnoservertrees
+msgid "Source trees were not yet indexed."
+msgstr "As árvores-fonte ainda não foram indexadas."
+
+#: instantsearchstrings.lrsnosuchindex
+#, object-pascal-format
+msgid "No such index exists: %s"
+msgstr "Não existe tal índice: %s"
+
+#: instantsearchstrings.lrsnotconfigured
+msgid "User did not configure anything."
+msgstr "Não configurou nada."
+
+#: instantsearchstrings.lrsnotproperlyconfigured
+#, object-pascal-format
+msgid "Instant search is not properly configured to connect to Manticore server: %s"
+msgstr "A procura instantânea não está configurada correctamente para ligar ao servidor Manticore: %s"
+
+#: instantsearchstrings.lrsnotransport
+msgid "No transport protocol was selected."
+msgstr "Nenhum protocolo de transporte seleccionado."
+
+#: instantsearchstrings.lrsonfirstsave
+msgid "Project is first saved"
+msgstr "O projecto é primeiro gravado"
+
+#: instantsearchstrings.lrsonopen
+msgid "Project is opened"
+msgstr "O projecto está aberto"
+
+#: instantsearchstrings.lrsport
+msgid "Port"
+msgstr "Porta"
+
+#: instantsearchstrings.lrsprotocol
+msgid "Protocol"
+msgstr "Protocolo"
+
+#: instantsearchstrings.lrsresultslimit
+msgid "Max. result count"
+msgstr "N.º máx. de resultados"
+
+#: instantsearchstrings.lrssave
+msgid "Yes, save settings"
+msgstr "Sim, gravar definições"
+
+#: instantsearchstrings.lrssaveandindex
+msgid "Yes, index needed source trees"
+msgstr "Sim, indexar as árvores-fonte necessárias"
+
+#: instantsearchstrings.lrssaveandindexall
+msgid "Yes, index all source trees"
+msgstr "Sim, indexar todas as árvores-fonte"
+
+#: instantsearchstrings.lrssaveneeded
+msgid "Save settings required."
+msgstr "É necessário gravar as definições."
+
+#: instantsearchstrings.lrssearchengine
+msgid "Search engine"
+msgstr "Motor de busca"
+
+#: instantsearchstrings.lrssearchtexthint
+#, object-pascal-format
+msgid "Enter search text, at least %d characters"
+msgstr "Insira o texto a procurar, com pelo menos %d caracteres"
+
+#: instantsearchstrings.lrssourcetreeadd
+msgid "Add"
+msgstr "Adicionar"
+
+#: instantsearchstrings.lrssourcetreeaddhint
+msgid "Add a new source tree definition."
+msgstr "Adicionar nova definição de árvore-fonte."
+
+#: instantsearchstrings.lrssourcetreeclear
+msgid "Clear"
+msgstr "Limpar"
+
+#: instantsearchstrings.lrssourcetreeclearall
+msgid "Clear all"
+msgstr "Limpar tudo"
+
+#: instantsearchstrings.lrssourcetreeclearallhint
+msgid "Remove all words in all source tree definitions."
+msgstr "Remover todas as palavras em todas as definições da árvore-fonte."
+
+#: instantsearchstrings.lrssourcetreeclearhint
+msgid "Remove all words in the highlighted source tree definition."
+msgstr "Remover todas as palavras na definição da árvore-fonte realçada."
+
+#: instantsearchstrings.lrssourcetreedelete
+msgid "Delete"
+msgstr "Eliminar"
+
+#: instantsearchstrings.lrssourcetreedeletehint
+msgid "Delete the highlighted source tree definition."
+msgstr "Eliminar a definição da árvore-fonte realçada."
+
+#: instantsearchstrings.lrssourcetreeedit
+msgid "Edit"
+msgstr "Editar"
+
+#: instantsearchstrings.lrssourcetreeedithint
+msgid "Edit the highlighted source tree definition."
+msgstr "Editar a definição da árvore-fonte realçada."
+
+#: instantsearchstrings.lrssourcetreeindex
+msgid "Index"
+msgstr "Índice"
+
+#: instantsearchstrings.lrssourcetrees
+msgid "Source trees"
+msgstr "Árvores-fonte"
+
+#: instantsearchstrings.lrsstartindexingproject
+#, object-pascal-format
+msgid "Start indexing project \"%s\", directory: \"%s\""
+msgstr "Iniciar a indexação do projecto \"%s\", pasta: \"%s\""
+
+#: instantsearchstrings.lrsstartindexingtree
+#, object-pascal-format
+msgid "Start indexing tree \"%s\", directory: \"%s\""
+msgstr "Iniciar a indexação da árvore \"%s\", pasta: \"%s\""
+
+#: instantsearchstrings.lrstestbuttonhint
+msgid "Test the connection parameters."
+msgstr "Teste os parâmetros de ligação."
+
+#: instantsearchstrings.lrstestconnection
+msgid "Test connection"
+msgstr "Testar ligação"
+
+#: instantsearchstrings.lrsthesetreesneedindexing
+#, object-pascal-format
+msgid ""
+"The following source trees need to be indexed:\n"
+"%s"
+msgstr ""
+"As seguintes árvores-fonte precisam de ser indexadas:\n"
+"%s"
+
+#: instantsearchstrings.lrsthisneedssavingsettings
+msgid "This operation runs in the background, and will cause the settings to be saved now."
+msgstr "Esta operação é executada em segundo plano e fará com que as definições sejam gravadas agora."
+
+#: instantsearchstrings.lrstimed
+msgid "Delayed after project open"
+msgstr "Atrasado após o início do projecto"
+
+#: instantsearchstrings.lrstreeallfiles
+msgid "All files"
+msgstr "Todos os ficheiros"
+
+#: instantsearchstrings.lrstreebasedir
+msgid "Path"
+msgstr "Caminho"
+
+#: instantsearchstrings.lrstreebasedirhint
+msgid "Directory with source files"
+msgstr "Pasta com ficheiros fonte"
+
+#: instantsearchstrings.lrstreeenabled
+msgid "Enabled"
+msgstr "Activado"
+
+#: instantsearchstrings.lrstreeextensions
+msgid "Extensions"
+msgstr "Extensões"
+
+#: instantsearchstrings.lrstreeextensionshint
+msgid "Comma-separated list of extensions of files"
+msgstr "lista separada por vírgulas de extensões de ficheiro"
+
+#: instantsearchstrings.lrstreename
+msgid "Name"
+msgstr "Nome"
+
+#: instantsearchstrings.lrstreenamehint
+msgid "Unique name for this tree"
+msgstr "Nome exclusivo da árvore"
+
+#: instantsearchstrings.lrstreenotfoundresfresh
+#, object-pascal-format
+msgid ""
+"Source tree %s not found.\n"
+"Please refresh search results."
+msgstr ""
+"A árvore-fonte %s não foi encontrada.\n"
+"Actualize os resultados da procura."
+
+#: instantsearchstrings.lrstreerecurse
+msgid "Recurse"
+msgstr "Recurso"
+
+#: instantsearchstrings.lrsyescreateindex
+msgid "Yes, create the index"
+msgstr "Sim, criar o índice"
+

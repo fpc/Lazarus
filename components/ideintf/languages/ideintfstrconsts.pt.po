@@ -1,0 +1,113 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: ideintfstrconsts.lisabort
+msgid "Abort"
+msgstr "Abortar"
+
+#: ideintfstrconsts.lisadd
+msgid "Add"
+msgstr "Adicionar"
+
+#: ideintfstrconsts.lisalways
+msgid "Always"
+msgstr "Sempre"
+
+#: ideintfstrconsts.lisbtnadd
+msgid "&Add"
+msgstr "&Adicionar"
+
+#: ideintfstrconsts.lisbtncontinue
+msgid "&Continue"
+msgstr "&Continuar"
+
+#: ideintfstrconsts.lisbtndelete
+msgid "&Delete"
+msgstr "&Eliminar"
+
+#: ideintfstrconsts.lisbtndlgadd
+msgid "&Add ..."
+msgstr "&Adicionar..."
+
+#: ideintfstrconsts.lisbtnenabled
+msgid "&Enabled"
+msgstr "&Activado"
+
+#: ideintfstrconsts.lisbtnok
+msgid "&OK"
+msgstr "&Aceitar"
+
+#: ideintfstrconsts.liscancel
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: ideintfstrconsts.liscontinue
+msgid "Continue"
+msgstr "Continuar"
+
+#: ideintfstrconsts.liscopy
+msgid "Copy"
+msgstr "Copiar"
+
+#: ideintfstrconsts.liscut
+msgid "Cut"
+msgstr "Cortar"
+
+#: ideintfstrconsts.lisdelete
+msgid "Delete"
+msgstr "Eliminar"
+
+#: ideintfstrconsts.lisdisabled
+msgid "Disabled"
+msgstr "Desactivado"
+
+#: ideintfstrconsts.lisdlgadd
+msgid "Add ..."
+msgstr "Adicionar..."
+
+#: ideintfstrconsts.lisenabled
+msgid "Enabled"
+msgstr "Activado"
+
+#: ideintfstrconsts.lishelp
+msgid "Help"
+msgstr "Ajuda"
+
+#: ideintfstrconsts.lisignore
+msgid "Ignore"
+msgstr "Ignorar"
+
+#: ideintfstrconsts.lislazarus
+msgid "Lazarus"
+msgstr "Lazarus"
+
+#: ideintfstrconsts.lisnever
+msgid "Never"
+msgstr "Nunca"
+
+#: ideintfstrconsts.lisno
+msgid "No"
+msgstr "Não"
+
+#: ideintfstrconsts.lisok
+msgid "OK"
+msgstr "Aceitar"
+
+#: ideintfstrconsts.lispaste
+msgid "Paste"
+msgstr "Colar"
+
+#: ideintfstrconsts.lisyes
+msgid "Yes"
+msgstr "Sim"
+

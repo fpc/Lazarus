@@ -1,0 +1,187 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: iconfinderstrconsts.rsfolders_add
+msgid "Add ..."
+msgstr "Adicionar ..."
+
+#: iconfinderstrconsts.rsfolders_confirmdeletefoldermsg
+msgid "Do you really want to remove this folder from the icon library?"
+msgstr "Deseja realmente remover esta pasta da biblioteca de ícones?"
+
+#: iconfinderstrconsts.rsfolders_delete
+msgid "Delete"
+msgstr "Eliminar"
+
+#: iconfinderstrconsts.rsfolders_iconfinderfolders
+msgid "Icon Folders"
+msgstr "Pastas de ícones"
+
+#: iconfinderstrconsts.rsfolders_movedown
+msgid "Move down"
+msgstr "Mover abaixo"
+
+#: iconfinderstrconsts.rsfolders_moveup
+msgid "Move up"
+msgstr "Mover acima"
+
+#: iconfinderstrconsts.rsfolders_noimages
+#, object-pascal-format
+msgid "Aborted. No supported images in folder \"%s\"."
+msgstr "Interrompido. Não existem imagens compatíveis na pasta \"%s\"."
+
+#: iconfinderstrconsts.rsiconviewer_asksavemetadata
+msgid "Metadata have been changed. Save?"
+msgstr "Os metadados foram alterados. Deseja gravar?"
+
+#: iconfinderstrconsts.rsiconviewer_clearfilterhint
+msgid "Clear the keyword filter"
+msgstr "Limpar o filtro de palavras-chave"
+
+#: iconfinderstrconsts.rsiconviewer_confirmdeleteiconmsg
+msgid "Do you really want to delete the selected icon from the library?"
+msgstr "Deseja realmente remover o ícone seleccionado da biblioteca?"
+
+#: iconfinderstrconsts.rsiconviewer_editkeywordfilterhint
+msgid "Enter/edit a keyword filter"
+msgstr "Inserir/Editar um filtro de palavras-chave"
+
+#: iconfinderstrconsts.rsiconviewer_enterkeywordshere
+msgid "Enter keywords here"
+msgstr "Inserir palavras-chave aqui"
+
+#: iconfinderstrconsts.rsiconviewer_expressiontofilterbykeywordshint
+msgid "Expression to filter by keywords"
+msgstr "Expressão a filtrar por palavras-chave"
+
+#: iconfinderstrconsts.rsiconviewer_filenamelbl
+msgid "File name:"
+msgstr "Nome de ficheiro:"
+
+#: iconfinderstrconsts.rsiconviewer_filterbyiconsizehint
+msgid "Filter by icon size"
+msgstr "Filtrar por tamanho de ícone"
+
+#: iconfinderstrconsts.rsiconviewer_filterbyiconstylehint
+msgid "Filter by icon style"
+msgstr "Filtrar por estilo de ícone"
+
+#: iconfinderstrconsts.rsiconviewer_filterbykeywordshint
+msgid "Filter by keywords"
+msgstr "Filtrar por palavras-chave"
+
+#: iconfinderstrconsts.rsiconviewer_hideall
+msgid "Hide all"
+msgstr "Ocultar tudo"
+
+#: iconfinderstrconsts.rsiconviewer_iconcountinfo
+#, object-pascal-format
+msgid "%0:d icons (out of %1:d)"
+msgstr "%0:d ícones (de %1:d)"
+
+#: iconfinderstrconsts.rsiconviewer_keywordslbl
+msgid "Keywords:"
+msgstr "Palavras-chave:"
+
+#: iconfinderstrconsts.rsiconviewer_showall
+msgid "Show all"
+msgstr "Mostrar tudo"
+
+#: iconfinderstrconsts.rsiconviewer_sizelbl
+msgid "Size:"
+msgstr "Tamanho:"
+
+#: iconfinderstrconsts.rsiconviewer_stylelbl
+msgid "Style:"
+msgstr "Estilo:"
+
+#: iconfinderstrconsts.rskeywordeditor_add
+msgid "Add"
+msgstr "Adicionar"
+
+#: iconfinderstrconsts.rskeywordeditor_caption
+msgid "Keyword Filter Editor"
+msgstr "Editor de filtros de palavras-chave"
+
+#: iconfinderstrconsts.rskeywordeditor_clear
+msgid "Clear"
+msgstr "Limpar"
+
+#: iconfinderstrconsts.rskeywordeditor_columns
+msgid "Columns"
+msgstr "Colunas"
+
+#: iconfinderstrconsts.rskeywordeditor_edit
+msgid "Edit"
+msgstr "Editar"
+
+#: iconfinderstrconsts.rskeywordeditor_filter
+msgid "Filter"
+msgstr "Filtro"
+
+#: iconfinderstrconsts.rskeywordeditor_keyword
+msgid "Keyword"
+msgstr "Palavra-chave"
+
+#: iconfinderstrconsts.rskeywordeditor_keywordexists
+msgid "Keyword already defined."
+msgstr "Palavra-chave já definida."
+
+#: iconfinderstrconsts.rskeywordeditor_keywords
+msgid "Keywords"
+msgstr "Palavras-chave"
+
+#: iconfinderstrconsts.rskeywordeditor_new
+msgid "New"
+msgstr "Novo"
+
+#: iconfinderstrconsts.rskeywordeditor_newkeyword
+msgid "New keyword"
+msgstr "Nova palavra-chave"
+
+#: iconfinderstrconsts.rsmetadata_anysize
+msgid "(any size)"
+msgstr "(qualquer tamanho)"
+
+#: iconfinderstrconsts.rsmetadata_anystyle
+msgid "(any style)"
+msgstr "(qualquer estilo)"
+
+#: iconfinderstrconsts.rsmetadata_caption
+msgid "Icon Metadata Editor"
+msgstr "Editor de metadados de ícones"
+
+#: iconfinderstrconsts.rsmetadata_classicstyle
+msgid "Classic"
+msgstr "Clássico"
+
+#: iconfinderstrconsts.rsmetadata_flatstyle
+msgid "Flat"
+msgstr "Plano"
+
+#: iconfinderstrconsts.rsmetadata_keywords
+msgid "Keywords (one keyword per line)"
+msgstr "Palavras-chave (uma por linha)"
+
+#: iconfinderstrconsts.rsmetadata_outline2style
+msgid "Outline 2-color"
+msgstr "Contorno duas cores"
+
+#: iconfinderstrconsts.rsmetadata_outlinestyle
+msgid "Outline"
+msgstr "Contorno"
+
+#: iconfinderstrconsts.rsmetadata_style
+msgid "Style"
+msgstr "Estilo"
+

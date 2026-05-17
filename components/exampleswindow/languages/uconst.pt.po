@@ -1,0 +1,110 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: uconst.rsdefault
+msgid "Default"
+msgstr "Predefinição"
+
+#: uconst.rsdirwhereexamplesgo
+msgid "Directory where Examples go"
+msgstr "Pasta onde se encontram os exemplos"
+
+#: uconst.rsexamplecategory
+msgid "Category"
+msgstr "Categoria"
+
+#: uconst.rsexampleclose
+msgid "Close"
+msgstr "Fechar"
+
+#: uconst.rsexamplekeywords
+msgid "Keywords"
+msgstr "Palavras-chave"
+
+#: uconst.rsexamplename
+msgid "Name"
+msgstr "Nome"
+
+#: uconst.rsexampleopen
+msgid "Open"
+msgstr "Abrir"
+
+#: uconst.rsexamplepath
+msgid "Path"
+msgstr "Caminho"
+
+#: uconst.rsexampleprojects
+msgid "Example Projects"
+msgstr "Projectos de exemplo"
+
+#: uconst.rsexamplerefresh
+msgid "Refresh"
+msgstr "Actualizar"
+
+#: uconst.rsexampleview
+msgid "View in Browser"
+msgstr "Ver no explorador"
+
+#: uconst.rsexcopyingproject
+msgid "Copying Project ..."
+msgstr "A copiar o projecto..."
+
+#: uconst.rsexdownloadingproject
+msgid "Downloading Project ..."
+msgstr "A transferir o porjecto..."
+
+#: uconst.rsexnetworkerror
+msgid "GitLab Network Error"
+msgstr "Erro de rede GitLab"
+
+#: uconst.rsexnoprojectfile
+msgid "Project file not found."
+msgstr "Ficheiro de projecto não encontrado."
+
+#: uconst.rsexprojectcopiedto
+msgid "Project Copied to"
+msgstr "Projecto copiado para"
+
+#: uconst.rsexprojectdownloadedto
+msgid "Project Downloaded to"
+msgstr "Projecto transferido para"
+
+#: uconst.rsexsearchingforexamples
+msgid "Searching for Examples ..."
+msgstr "A procurar exemplos..."
+
+#: uconst.rsexsearchprompt
+msgid "Search Here"
+msgstr "Procurar aqui"
+
+#: uconst.rsfailedtocopyfilesto
+msgid "Failed to copy files to"
+msgstr "Falha ao copiar para"
+
+#: uconst.rsfoundexampleprojects
+#, object-pascal-format
+msgid "Found %d Example Projects"
+msgstr "Encontrados %d projectos de exemplo"
+
+#: uconst.rsgeneral
+msgid "General"
+msgstr "Geral"
+
+#: uconst.rsgrouphint
+msgid "Double click inverts selection"
+msgstr "Duplo clique inverte a selecção"
+
+#: uconst.rsrefreshexistingexample
+msgid "Refresh Existing Example?"
+msgstr "Actualizar o exemplo existente?"
+

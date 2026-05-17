@@ -1,0 +1,41 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: strminimap.sinitialfontsize
+msgid "Initial font size"
+msgstr "Tamanho inicial da letra"
+
+#: strminimap.smapwidth
+msgid "Minimap width"
+msgstr "Largura do minimapa"
+
+#: strminimap.sminimapconfigtitle
+msgid "Minimap"
+msgstr "Minimapa"
+
+#: strminimap.sputmapleftofeditorre
+msgid "Put minimap left of editor (requires IDE restart for existing tabs)"
+msgstr "Colocar o minimapa à esquerda do editor (requer o reinício do IDE para os separadores existentes)"
+
+#: strminimap.sshowminimap
+msgid "Show minimap"
+msgstr "Mostrar minimapa"
+
+#: strminimap.sviewwindowcolor
+msgid "View window color"
+msgstr "Ver cor da janela"
+
+#: strminimap.sviewwindowtextcolor
+msgid "View window text color"
+msgstr "Ver cor do texto da janela"
+

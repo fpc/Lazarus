@@ -1,0 +1,41 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: syndesignstringconstants.syndsbookmarks
+msgid "Bookmarks"
+msgstr "Marcadores"
+
+#: syndesignstringconstants.syndschangemarker
+msgid "Change Marker"
+msgstr "Mudar marcador"
+
+#: syndesignstringconstants.syndscodefolding
+msgid "Code Folding"
+msgstr "Dobra de código"
+
+#: syndesignstringconstants.syndslinenumbers
+msgid "Line Numbers"
+msgstr "Números de linha"
+
+#: syndesignstringconstants.syndslineoverview
+msgid "Line Overview"
+msgstr "Visão geral da linha"
+
+#: syndesignstringconstants.syndsresetmouseactions
+msgid "Reset mouse actions"
+msgstr "Repor acções do rato"
+
+#: syndesignstringconstants.syndsseparator
+msgid "Separator"
+msgstr "Separador"
+

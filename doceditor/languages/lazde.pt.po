@@ -1,0 +1,756 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: lazdemsg.saboutformcaption
+msgid "About this application"
+msgstr "Acerca da aplicação"
+
+#: lazdemsg.sadd
+msgid "&Add"
+msgstr "&Adicionar"
+
+#: lazdemsg.saddall
+msgid "Add All"
+msgstr "Adicionar tudo"
+
+#: lazdemsg.sadddescriptionfile
+msgid "Select a new description file"
+msgstr "Seleccionar um ficheiro de descrição"
+
+#: lazdemsg.sadditionalparams
+msgid "Additional parameters for fpdoc"
+msgstr "Parâmetros adicionais para fpdoc"
+
+#: lazdemsg.sbuild
+msgctxt "lazdemsg.sbuild"
+msgid "&Build"
+msgstr "C&onstruir"
+
+#: lazdemsg.sbuilddocumentation
+msgid "Build documentation"
+msgstr "Construir documentação"
+
+#: lazdemsg.sbuildok
+msgid "Documentation successfully built."
+msgstr "Documentação construída com sucesso."
+
+#: lazdemsg.sbuildoutput
+msgid "Build output"
+msgstr "Saída da construção"
+
+#: lazdemsg.sclose
+msgctxt "lazdemsg.sclose"
+msgid "&Close"
+msgstr "Fe&char"
+
+#: lazdemsg.scodeexample
+msgid "Example code File"
+msgstr "Ficheiro de exemplo de código"
+
+#: lazdemsg.scopyright1
+msgid "This application is (c) by  Michael Van Canneyt and the Lazarus team"
+msgstr "Esta aplicação tem (c) por Michael Van Canneyt e a equipa do Lazarus"
+
+#: lazdemsg.scopyright2
+msgid "It is released under the terms of the  GENERAL PUBLIC LICENSE:"
+msgstr "É lançada sob os termos da GENERAL PUBLIC LICENSE:"
+
+#: lazdemsg.scpu
+msgid "CPU"
+msgstr "CPU"
+
+#: lazdemsg.screatecontentfile
+msgid "Create cont&ent file"
+msgstr "Criar ficheiro de cont&eúdo"
+
+#: lazdemsg.sdataforelement
+#, object-pascal-format
+msgid "Documentation for element \"%s\":"
+msgstr "Documentação para o elemento \"%s\":"
+
+#: lazdemsg.sdelete
+msgid "&Delete"
+msgstr "&Eliminar"
+
+#: lazdemsg.sdeletemodule
+#, object-pascal-format
+msgid "Are you sure you want to delete module \"%s\" ?"
+msgstr "Deseja realmente eliminar o módulo \"%s\"?"
+
+#: lazdemsg.sdeletepackage
+#, object-pascal-format
+msgid "Are you sure you want to delete package \"%s\" ?"
+msgstr "Deseja realmente eliminar o pacote \"%s\"?"
+
+#: lazdemsg.sdeletetopic
+#, object-pascal-format
+msgid "Are you sure you want to delete topic \"%s\" ?"
+msgstr "Deseja realmente eliminar o tópico \"%s\"?"
+
+#: lazdemsg.sdescription
+msgid "Description"
+msgstr "Descrição"
+
+#: lazdemsg.sedit
+msgid "&Edit"
+msgstr "&Editar"
+
+#: lazdemsg.seditdescriptionfile
+msgid "Change description file"
+msgstr "Alterar o ficheiro de descrição"
+
+#: lazdemsg.serrfpdoc
+#, object-pascal-format
+msgid "Building failed with exit code %d. Please check log."
+msgstr "A construção falhou com código de saída %d. Por favor, veja o diário."
+
+#: lazdemsg.serrnomoduleforelement
+#, object-pascal-format
+msgid "No module found to insert element \"%s\""
+msgstr "Nenhum módulo onde inserir o elemento \"%s\""
+
+#: lazdemsg.serrnonodeformodule
+#, object-pascal-format
+msgid "No node found for module \"%s\""
+msgstr "Nenhum nó encontrado para o módulo \"%s\""
+
+#: lazdemsg.serrnonodeforpackage
+#, object-pascal-format
+msgid "No node found for package \"%s\""
+msgstr "Nenhum nó encontrado para o pacote \"%s\""
+
+#: lazdemsg.serrnonodefortopic
+#, object-pascal-format
+msgid "No parent node found to insert topic \"%s\""
+msgstr "Nenhum nó-mãe encontrado para inserir o tópico \"%s\""
+
+#: lazdemsg.serrnopackageformodule
+#, object-pascal-format
+msgid "No package found to insert module \"%s\""
+msgstr "Nenhum pacote encontrado para inserir o módulo \"%s\""
+
+#: lazdemsg.serrors
+msgid "Errors"
+msgstr "Erros"
+
+#: lazdemsg.serrunknowndomelement
+#, object-pascal-format
+msgid "Unknwon DOM element as parent for selected element: \"%s\""
+msgstr "Elemento DOM desconhecido como mãe do elemento seleccionado: \"%s\""
+
+#: lazdemsg.sfilemodified
+#, object-pascal-format
+msgid "Document \"%s\" was modified, would you like to save it?"
+msgstr "O documento \"%s\" foi alterado, deseja gravá-lo?"
+
+#: lazdemsg.sfilestructure
+msgid "Documentation structure"
+msgstr "Estrutura da documentação"
+
+#: lazdemsg.sfiletemplate
+msgid "template.xml"
+msgstr "modelo.xml"
+
+#: lazdemsg.sforfile
+msgid " in file "
+msgstr " no ficheiro "
+
+#: lazdemsg.sformat
+msgid "&Format"
+msgstr "&Formatar"
+
+#: lazdemsg.sformodule
+msgid " in module "
+msgstr " no módulo "
+
+#: lazdemsg.sforpackage
+msgid " in package "
+msgstr " no pacote "
+
+#: lazdemsg.sfortopic
+msgid " in topic "
+msgstr " no tópico "
+
+#: lazdemsg.shideprotectedmethods
+msgid "&Hide protected methods"
+msgstr "&Ocultar métodos protegidos"
+
+#: lazdemsg.shinteditelementlink
+msgid "Edit element link"
+msgstr "Editar ligação do elemento"
+
+#: lazdemsg.shintfileclose
+msgid "Close current file"
+msgstr "Fechar o ficheiro actual"
+
+#: lazdemsg.shintfileexit
+msgid "Close doc editor"
+msgstr "Fechar o editor de documentação"
+
+#: lazdemsg.shintfilenew
+msgctxt "lazdemsg.shintfilenew"
+msgid "New file"
+msgstr "Novo ficheiro"
+
+#: lazdemsg.shintfileopen
+msgid "Open file"
+msgstr "Abrir ficheiro"
+
+#: lazdemsg.shintfilesave
+msgid "Save file"
+msgstr "Gravar ficheiro"
+
+#: lazdemsg.shintfilesaveas
+msgid "Save file as"
+msgstr "Gravar ficheiro como"
+
+#: lazdemsg.shintformatbold
+msgid "Bold"
+msgstr "Negrito"
+
+#: lazdemsg.shintformatcode
+msgid "Code"
+msgstr "Código"
+
+#: lazdemsg.shintformatfile
+msgid "File"
+msgstr "Ficheiro"
+
+#: lazdemsg.shintformatitalics
+msgid "Italic"
+msgstr "Itálico"
+
+#: lazdemsg.shintformatremark
+msgid "Remark"
+msgstr "Comentário"
+
+#: lazdemsg.shintformatunderline
+msgid "Underline"
+msgstr "Sublinhado"
+
+#: lazdemsg.shintformatvariable
+msgid "Variable"
+msgstr "Variável"
+
+#: lazdemsg.shintinsertbulletedlist
+msgctxt "lazdemsg.shintinsertbulletedlist"
+msgid "Insert bulleted list"
+msgstr "Inserir lista com marcas"
+
+#: lazdemsg.shintinsertelement
+msgctxt "lazdemsg.shintinsertelement"
+msgid "New element"
+msgstr "Novo elemento"
+
+#: lazdemsg.shintinsertlink
+msgctxt "lazdemsg.shintinsertlink"
+msgid "Insert link"
+msgstr "Inserir ligação"
+
+#: lazdemsg.shintinsertmodule
+msgctxt "lazdemsg.shintinsertmodule"
+msgid "New module"
+msgstr "Novo módulo"
+
+#: lazdemsg.shintinsertnumberedlist
+msgctxt "lazdemsg.shintinsertnumberedlist"
+msgid "Insert numbered list"
+msgstr "Inserir lista numerada"
+
+#: lazdemsg.shintinsertpackage
+msgctxt "lazdemsg.shintinsertpackage"
+msgid "New package"
+msgstr "Novo pacote"
+
+#: lazdemsg.shintinsertprintshortlink
+msgid "Insert a short description link"
+msgstr "Insira uma ligação de descrição curta"
+
+#: lazdemsg.shintinserttable
+msgctxt "lazdemsg.shintinserttable"
+msgid "Insert table"
+msgstr "Inserir tabela"
+
+#: lazdemsg.shintinserttopic
+msgctxt "lazdemsg.shintinserttopic"
+msgid "New topic"
+msgstr "Novo tópico"
+
+#: lazdemsg.shintmenunewfromfile
+msgid "New from file ..."
+msgstr "Novo de ficheiro..."
+
+#: lazdemsg.shinttoolbaradd
+msgid "Add"
+msgstr "Adicionar"
+
+#: lazdemsg.shinttoolbardelete
+msgctxt "lazdemsg.shinttoolbardelete"
+msgid "Delete"
+msgstr "Eliminar"
+
+#: lazdemsg.shinttoolbaredit
+msgid "Edit"
+msgstr "Editar"
+
+#: lazdemsg.shmenuextraoptions
+msgid "Show options dialog"
+msgstr "Mostrar diálogo de opções"
+
+#: lazdemsg.shmenuhelpabout
+msgid "About this program"
+msgstr "Acerca do programa"
+
+#: lazdemsg.simportcontentfile
+msgid "Import content file"
+msgstr "Importar ficheiro de conteúdo"
+
+#: lazdemsg.sinsertbulletedlist
+msgctxt "lazdemsg.sinsertbulletedlist"
+msgid "Insert bulleted list"
+msgstr "Inserir lista com marcas"
+
+#: lazdemsg.sinsertexamplecode
+msgid "Insert example code"
+msgstr "Inserir exemplo de código"
+
+#: lazdemsg.sinsertlink
+msgctxt "lazdemsg.sinsertlink"
+msgid "Insert link"
+msgstr "Inserir ligação"
+
+#: lazdemsg.sinsertnumberedlist
+msgctxt "lazdemsg.sinsertnumberedlist"
+msgid "Insert numbered list"
+msgstr "Inserir lista numerada"
+
+#: lazdemsg.sinsertprintshortlink
+msgid "Insert short description link"
+msgstr "Insira ligação de descrição curta"
+
+#: lazdemsg.sinserttable
+msgctxt "lazdemsg.sinserttable"
+msgid "Insert table"
+msgstr "Inserir tabela"
+
+#: lazdemsg.sitemscount
+msgid "Items count"
+msgstr "Total de itens"
+
+#: lazdemsg.slazdoceditor
+msgid "Lazarus Documentation Editor"
+msgstr "Editor de documentação do Lazarus"
+
+#: lazdemsg.slinksto
+msgid " links to "
+msgstr " liga a "
+
+#: lazdemsg.slinktarget
+msgid "Link target"
+msgstr "Alvo da ligação"
+
+#: lazdemsg.slinktext
+msgid "Link text"
+msgstr "Texto da ligação"
+
+#: lazdemsg.sload
+msgid "&Load"
+msgstr "&Carregar"
+
+#: lazdemsg.smakeskelfromsource
+msgid "Make new document from source file"
+msgstr "Fazer novo documento do ficheiro fonte"
+
+#: lazdemsg.smarkselection
+#, object-pascal-format
+msgid "Mark selection %s"
+msgstr "Marcar selecção %s"
+
+#: lazdemsg.smenucollapseall
+msgid "Collapse All"
+msgstr "Colapsar tudo"
+
+#: lazdemsg.smenudelete
+msgctxt "lazdemsg.smenudelete"
+msgid "Delete"
+msgstr "Eliminar"
+
+#: lazdemsg.smenuexpandall
+msgid "Expand All"
+msgstr "Expandir tudo"
+
+#: lazdemsg.smenuextra
+msgid "&Extra"
+msgstr "&Extra"
+
+#: lazdemsg.smenuextrabuild
+msgctxt "lazdemsg.smenuextrabuild"
+msgid "&Build"
+msgstr "C&onstruir"
+
+#: lazdemsg.smenuextraoptions
+msgid "&Options"
+msgstr "&Opções"
+
+#: lazdemsg.smenufile
+msgctxt "lazdemsg.smenufile"
+msgid "&File"
+msgstr "&Ficheiro"
+
+#: lazdemsg.smenufileclose
+msgctxt "lazdemsg.smenufileclose"
+msgid "&Close"
+msgstr "Fe&char"
+
+#: lazdemsg.smenufilenew
+msgid "&New"
+msgstr "&Novo"
+
+#: lazdemsg.smenufilenewfromfile
+msgid "New from fi&le"
+msgstr "Novo de fic&heiro"
+
+#: lazdemsg.smenufileopen
+msgid "&Open"
+msgstr "&Abrir"
+
+#: lazdemsg.smenufilequit
+msgid "&Quit"
+msgstr "Sa&ir"
+
+#: lazdemsg.smenufilerecent
+msgid "&Recent"
+msgstr "&Recente"
+
+#: lazdemsg.smenufilesave
+msgctxt "lazdemsg.smenufilesave"
+msgid "&Save"
+msgstr "&Gravar"
+
+#: lazdemsg.smenufilesaveas
+msgid "Save &as"
+msgstr "Gr&avar como"
+
+#: lazdemsg.smenuformat
+msgid "Format"
+msgstr "Formatar"
+
+#: lazdemsg.smenuformatbold
+msgid "&Bold"
+msgstr "&Negrito"
+
+#: lazdemsg.smenuformatcode
+msgid "&Code"
+msgstr "&Código"
+
+#: lazdemsg.smenuformatfile
+msgctxt "lazdemsg.smenuformatfile"
+msgid "&File"
+msgstr "&Ficheiro"
+
+#: lazdemsg.smenuformatitalics
+msgid "&Italic"
+msgstr "&Itálico"
+
+#: lazdemsg.smenuformatparagraph
+msgid "&Paragraph"
+msgstr "&Parágrafo"
+
+#: lazdemsg.smenuformatremark
+msgid "&Remark"
+msgstr "Comentá&rio"
+
+#: lazdemsg.smenuformatunderline
+msgid "&Underline"
+msgstr "S&ublinhado"
+
+#: lazdemsg.smenuformatvariable
+msgid "&Variable"
+msgstr "&Variável"
+
+#: lazdemsg.smenuhelp
+msgid "&Help"
+msgstr "A&juda"
+
+#: lazdemsg.smenuhelpabout
+msgid "&About ..."
+msgstr "&Acerca..."
+
+#: lazdemsg.smenuinsert
+msgid "&Insert"
+msgstr "&Inserir"
+
+#: lazdemsg.smenuinsertbulletedlist
+msgid "Bulleted list"
+msgstr "Lista com marcas"
+
+#: lazdemsg.smenuinsertelement
+msgid "&Element"
+msgstr "&Elemento"
+
+#: lazdemsg.smenuinsertlink
+msgid "&Link"
+msgstr "&Ligação"
+
+#: lazdemsg.smenuinsertlist
+msgid "List"
+msgstr "Lista"
+
+#: lazdemsg.smenuinsertmodule
+msgid "&Module"
+msgstr "&Módulo"
+
+#: lazdemsg.smenuinsertnumberedlist
+msgid "Numbered list"
+msgstr "Lista numerada"
+
+#: lazdemsg.smenuinsertpackage
+msgctxt "lazdemsg.smenuinsertpackage"
+msgid "&Package"
+msgstr "&Pacote"
+
+#: lazdemsg.smenuinsertprintshort
+msgid "Insert short desc link"
+msgstr "Inserir ligação de descrição curta"
+
+#: lazdemsg.smenuinsertquicklink
+msgid "&Quick Link"
+msgstr "Li&gação rápida"
+
+#: lazdemsg.smenuinsertshortdesclink
+msgid "&Short description link"
+msgstr "Ligação de de&scrição curta"
+
+#: lazdemsg.smenuinserttable
+msgid "&Table"
+msgstr "&Tabela"
+
+#: lazdemsg.smenuinserttopic
+msgid "T&opic"
+msgstr "Tópic&o"
+
+#: lazdemsg.smenurename
+msgid "Rename"
+msgstr "Renomear"
+
+#: lazdemsg.smoduleelements
+msgid "Elements for selected node"
+msgstr "Elementos para o nó seleccionado"
+
+#: lazdemsg.snew
+msgid "New"
+msgstr "Novo"
+
+#: lazdemsg.snewdocument
+msgid "New document"
+msgstr "Novo documento"
+
+#: lazdemsg.snewelement
+msgctxt "lazdemsg.snewelement"
+msgid "New element"
+msgstr "Novo elemento"
+
+#: lazdemsg.snewfile
+msgctxt "lazdemsg.snewfile"
+msgid "New file"
+msgstr "Novo ficheiro"
+
+#: lazdemsg.snewmodule
+msgctxt "lazdemsg.snewmodule"
+msgid "New module"
+msgstr "Novo módulo"
+
+#: lazdemsg.snewpackage
+msgctxt "lazdemsg.snewpackage"
+msgid "New package"
+msgstr "Novo pacote"
+
+#: lazdemsg.snewtopic
+msgctxt "lazdemsg.snewtopic"
+msgid "New topic"
+msgstr "Novo tópico"
+
+#: lazdemsg.snodename
+msgid "Node name"
+msgstr "Nome do nó"
+
+#: lazdemsg.snoelement
+msgid "No element selected"
+msgstr "Nenhum elemento seleccionado"
+
+#: lazdemsg.soptdlgbackupextension
+msgid "Backup extension"
+msgstr "Extensão da salvaguarda"
+
+#: lazdemsg.soptdlgconfirmdeletes
+msgid "C&onfirm deletes"
+msgstr "C&onfirmar eliminações"
+
+#: lazdemsg.soptdlgcreatebackups
+msgid "Create &backups"
+msgstr "Criar sal&vaguardas"
+
+#: lazdemsg.soptdlgdefaultextension
+msgid "Default extension"
+msgstr "Extensão predefinida"
+
+#: lazdemsg.soptdlgdesktop
+msgid "Desktop"
+msgstr "Ambiente"
+
+#: lazdemsg.soptdlgfpdocprogram
+msgid "fpdoc program"
+msgstr "programa fpdoc"
+
+#: lazdemsg.soptdlggeneral
+msgid "General"
+msgstr "Geral"
+
+#: lazdemsg.soptdlgmakeskelprogram
+msgid "makeskel program"
+msgstr "programa makeskel"
+
+#: lazdemsg.soptdlgmaxrecentused
+msgid "Max. recent used"
+msgstr "Máx. usados recentes"
+
+#: lazdemsg.soptdlgoptions
+msgid "Options"
+msgstr "Opções"
+
+#: lazdemsg.soptdlgreopenlastfile
+msgid "Reopen last file on startup"
+msgstr "Reabrir último ficheiro ao iniciar"
+
+#: lazdemsg.soptdlgshowhints
+msgid "Show hints"
+msgstr "Mostrar dicas"
+
+#: lazdemsg.soptdlgskipemptynodes
+msgid "&Skip empty nodes when saving"
+msgstr "&Saltar nós vazios ao gravar"
+
+#: lazdemsg.soptdlgstartmaximized
+msgid "Start maximized"
+msgstr "Iniciar maximizado"
+
+#: lazdemsg.sotheroptions
+msgid "Other options"
+msgstr "Outras opções"
+
+#: lazdemsg.soutput
+msgid "&Output"
+msgstr "&Saída"
+
+#: lazdemsg.spackage
+msgctxt "lazdemsg.spackage"
+msgid "&Package"
+msgstr "&Pacote"
+
+#: lazdemsg.spackages
+msgid "Packages"
+msgstr "Pacotes"
+
+#: lazdemsg.srenameelement
+msgid "Rename element"
+msgstr "Renomear elemento"
+
+#: lazdemsg.srenamemodule
+msgid "Rename module"
+msgstr "Renomear módulo"
+
+#: lazdemsg.srenamepackage
+msgid "Rename package"
+msgstr "Renomear pacote"
+
+#: lazdemsg.srenametopic
+msgid "Rename topic"
+msgstr "Renomear tópico"
+
+#: lazdemsg.ssave
+msgctxt "lazdemsg.ssave"
+msgid "&Save"
+msgstr "&Gravar"
+
+#: lazdemsg.ssavebeforebuildquestion
+#, object-pascal-format
+msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
+msgstr "Tem alterações por gravar em \"%s\".%sDeve gravá-las para serem visíveis na documentação. Deseja gravá-las agora?"
+
+#: lazdemsg.sseealso
+msgid "See Also"
+msgstr "Ver também"
+
+#: lazdemsg.sselectoutputdirectory
+msgid "Select output directory"
+msgstr "Seleccione a pasta de saída"
+
+#: lazdemsg.sselectoutputfile
+msgid "Select output file name"
+msgstr "Seleccione o nome do ficheiro de saída"
+
+#: lazdemsg.sselectsometext
+msgid "Select some text."
+msgstr "Seleccione algum texto."
+
+#: lazdemsg.sshortdescription
+msgid "Short"
+msgstr "Curta"
+
+#: lazdemsg.sshowprivatemethods
+msgid "Show p&rivate methods"
+msgstr "Mostrar métodos p&rivados"
+
+#: lazdemsg.sskelerrorwithfile
+#, object-pascal-format
+msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
+msgstr "makeskel relatou um erro (%d). Deseja carregar o ficheiro mesmo assim?"
+
+#: lazdemsg.sskelerrorwithoutfile
+#, object-pascal-format
+msgid "makeskel reported an error (%d) and produced no file."
+msgstr "makeskel relatou um erro  (%d) e não produziu nenhum ficheiro."
+
+#: lazdemsg.ssourcescapt
+msgid "Sources"
+msgstr "Fontes"
+
+#: lazdemsg.sstartnodenotfound
+#, object-pascal-format
+msgid "Start element \"%s\" could not be found"
+msgstr "Elemento \"%s\" inicial não encontrado"
+
+#: lazdemsg.stablecols
+msgid "Columns"
+msgstr "Colunas"
+
+#: lazdemsg.stableheader
+msgid "Use header row"
+msgstr "Usar linha de cabeçalho"
+
+#: lazdemsg.stablerows
+msgid "Rows"
+msgstr "Linhas"
+
+#: lazdemsg.stargetos
+msgid "Target OS"
+msgstr "SO alvo"
+
+#: lazdemsg.susingcommand
+msgid "Building docs using command: "
+msgstr "Construir documentação com o comando: "
+
+#: lazdemsg.swarnifnodocumentationnodefound
+msgid "Warn if no documentation node found"
+msgstr "Avisar se não houver nós de documentação"
+

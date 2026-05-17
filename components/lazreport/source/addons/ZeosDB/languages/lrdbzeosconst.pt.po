@@ -1,0 +1,33 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: lrdbzeosconst.slreditparamsform_caption
+msgid "Edit query param list"
+msgstr "Editar lista de parâmetros de consulta"
+
+#: lrdbzeosconst.slreditparamsform_paramslist
+msgid "Params list"
+msgstr "Lista de parâmetros"
+
+#: lrdbzeosconst.slreditparamsform_paramtype
+msgid "Param type"
+msgstr "Tipo de parâmetro"
+
+#: lrdbzeosconst.slreditparamsform_paramvalue
+msgid "Param value"
+msgstr "Valor do parâmetro"
+
+#: lrdbzeosconst.slreditparamsform_selectexpresion
+msgid "Select expresion"
+msgstr "Seleccionar expressão"
+

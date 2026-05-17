@@ -1,0 +1,89 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: idescoutstrconsts.isrscolors
+msgid "Colors"
+msgstr "Cores"
+
+#: idescoutstrconsts.isrscommands
+msgid "Commands"
+msgstr "Comandos"
+
+#: idescoutstrconsts.isrscomponents
+msgid "Components"
+msgstr "Componentes"
+
+#: idescoutstrconsts.isrsdefaultheight
+msgid "Default height"
+msgstr "Altura predefinida"
+
+#: idescoutstrconsts.isrsdefaultwidth
+msgid "Default width"
+msgstr "Largura predefinida"
+
+#: idescoutstrconsts.isrsidescout
+msgid "IDE Scout"
+msgstr "IDE Scout"
+
+#: idescoutstrconsts.isrsmatches
+msgid "&Matches"
+msgstr "&Corresponde"
+
+#: idescoutstrconsts.isrsonlyselectoncomponentpalette
+msgid "Only select on component palette"
+msgstr "Seleccionar só na paleta de componentes"
+
+#: idescoutstrconsts.isrsoptions
+msgid "Options"
+msgstr "Opções"
+
+#: idescoutstrconsts.isrsrecentfiles
+msgid "Recent Files"
+msgstr "Ficheiros recentes"
+
+#: idescoutstrconsts.isrsrecentpackages
+msgid "Recent Packages"
+msgstr "Pacotes recentes"
+
+#: idescoutstrconsts.isrsrecentprojects
+msgid "Recent Projects"
+msgstr "Projectos recentes"
+
+#: idescoutstrconsts.isrssearchscope
+msgid "Search scope"
+msgstr "Âmbito da procura"
+
+#: idescoutstrconsts.isrsshortcut
+msgid "&Shortcut"
+msgstr "Atal&ho"
+
+#: idescoutstrconsts.isrsshowcategorywhenavailable
+msgid "Show &Category when available"
+msgstr "Mostrar &categoria quando disponível"
+
+#: idescoutstrconsts.isrsshowidescout
+msgid "Show IDE Scout"
+msgstr "Mostrar o IDE Scout"
+
+#: idescoutstrconsts.isrsshowidescoutmenu
+msgid "Show IDE Scout ..."
+msgstr "Mostrar o IDE Scout..."
+
+#: idescoutstrconsts.isrsshowshortcutwhenavailable
+msgid "Show Sh&ortcut when available"
+msgstr "Mostrar atalh&o quando disponível"
+
+#: idescoutstrconsts.isrstypesearchterms
+msgid "Type search terms"
+msgstr "Escreva os itens de procura"
+

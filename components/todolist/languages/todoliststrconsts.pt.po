@@ -1,0 +1,239 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: todoliststrconsts.attribgroupname
+msgid "ToDo comments"
+msgstr ""
+
+#: todoliststrconsts.attribnamedone
+msgid "Done comment"
+msgstr ""
+
+#: todoliststrconsts.attribnamefixme
+msgid "FixMe comment"
+msgstr ""
+
+#: todoliststrconsts.attribnamenote
+msgid "Note comment"
+msgstr ""
+
+#: todoliststrconsts.attribnametodo
+msgid "ToDo comment"
+msgstr ""
+
+#: todoliststrconsts.dlgfiltercsv
+msgid "CSV files"
+msgstr "Ficheiros CSV"
+
+#: todoliststrconsts.dlgunitdeprefresh
+msgid "Refresh"
+msgstr "Actualizar"
+
+#: todoliststrconsts.errscanfilefailed
+#, object-pascal-format
+msgid ""
+"Finding ToDo items failed in file %0:s.\n"
+"Is it a valid source file?\n"
+"The rest of the file has been skipped."
+msgstr ""
+"Não foi possível encontrar itens da lista de tarefas no ficheiro %0:s.\n"
+"Será que este é um ficheiro-fonte válido?\n"
+"O resto do ficheiro foi ignorado."
+
+#: todoliststrconsts.lisalternatetokens
+msgid "Use Alternate Tokens"
+msgstr "Usar símbolos alternativos"
+
+#: todoliststrconsts.lisalternatetokenshint
+msgid "Standard token is #todo etc. Alternate is without the #"
+msgstr "O símbolo padrão é #todo, etc. A alternativa é sem o #"
+
+#: todoliststrconsts.liscoloroptions
+msgid "Color Options"
+msgstr ""
+
+#: todoliststrconsts.liscolors
+msgid "Colors"
+msgstr ""
+
+#: todoliststrconsts.lisctinsertmacro
+msgid "Insert Macro"
+msgstr "Inserir macro"
+
+#: todoliststrconsts.lisedit
+msgid "Edit"
+msgstr ""
+
+#: todoliststrconsts.lishelp
+msgid "Help"
+msgstr "Ajuda"
+
+#: todoliststrconsts.lispackages
+#, fuzzy
+#| msgid "Packages"
+msgid "Used packages"
+msgstr "Pacotes"
+
+#: todoliststrconsts.lispkgfiletypetext
+msgid "Text"
+msgstr "Texto"
+
+#: todoliststrconsts.lisshowfiles
+msgid "Show Files"
+msgstr ""
+
+#: todoliststrconsts.lisshowfileshint
+msgid "Select which Pascal units and .todo files to list"
+msgstr ""
+
+#: todoliststrconsts.lisshowtypes
+msgid "Show Types"
+msgstr ""
+
+#: todoliststrconsts.lisshowtypeshint
+#, fuzzy
+msgctxt "todoliststrconsts.lisshowtypeshint"
+msgid "Select which ToDo types to list"
+msgstr "Seleccione os tipos de tarefas a listar"
+
+#: todoliststrconsts.lissourceeditor
+#, fuzzy
+#| msgid "Editor"
+msgid "Source editor files"
+msgstr "Editor"
+
+#: todoliststrconsts.listddedittodo
+msgctxt "todoliststrconsts.listddedittodo"
+msgid "Edit the ToDo item"
+msgstr ""
+
+#: todoliststrconsts.listddedittododlgcaption
+msgctxt "todoliststrconsts.listddedittododlgcaption"
+msgid "Edit the ToDo item"
+msgstr ""
+
+#: todoliststrconsts.listddinserttodo
+#, fuzzy
+#| msgid "Insert a ToDo/Done/Note"
+msgctxt "todoliststrconsts.listddinserttodo"
+msgid "Insert a ToDo item"
+msgstr "Inserir Afazer/Feito/Nota"
+
+#: todoliststrconsts.listddinserttododlgcaption
+msgctxt "todoliststrconsts.listddinserttododlgcaption"
+msgid "Insert a ToDo item"
+msgstr ""
+
+#: todoliststrconsts.listodocolorsareattheendofcolorlist
+msgid "ToDo colors are at the end of color list"
+msgstr ""
+
+#: todoliststrconsts.listodoexport
+msgid "Export"
+msgstr "Exportar"
+
+#: todoliststrconsts.listodogoto
+msgid "Goto"
+msgstr "Ir para"
+
+#: todoliststrconsts.listodoitems
+#, object-pascal-format
+msgid "%d items"
+msgstr ""
+
+#: todoliststrconsts.listodoldescription
+msgid "Description"
+msgstr "Descrição"
+
+#: todoliststrconsts.listodolfile
+msgid "Module"
+msgstr "Módulo"
+
+#: todoliststrconsts.listodolissue
+msgid "Issue ID"
+msgstr ""
+
+#: todoliststrconsts.listodolist
+msgid "ToDo List"
+msgstr "Lista de tarefas"
+
+#: todoliststrconsts.listodolisted
+#, fuzzy
+#| msgid "Listed"
+msgid "Listed files"
+msgstr "Listado"
+
+#: todoliststrconsts.listodolistedit
+msgid "Edit selected item"
+msgstr ""
+
+#: todoliststrconsts.listodolistfornewproject
+msgid "ToDo List for new Project"
+msgstr ""
+
+#: todoliststrconsts.listodolistforpackage
+#, object-pascal-format
+msgid "ToDo List for Package \"%s\""
+msgstr ""
+
+#: todoliststrconsts.listodolistforproject
+#, object-pascal-format
+msgid "ToDo List for Project \"%s\""
+msgstr ""
+
+#: todoliststrconsts.listodolistgotoline
+msgid "Goto selected source line"
+msgstr "Ir para a linha-fonte seleccionada"
+
+#: todoliststrconsts.listodolistrefresh
+#, fuzzy
+#| msgid "Refresh todo items"
+msgid "Refresh ToDo items"
+msgstr "Actualizar tarefas"
+
+#: todoliststrconsts.listodolline
+msgid "Line"
+msgstr "Linha"
+
+#: todoliststrconsts.listodolowner
+msgid "Owner"
+msgstr "Dono"
+
+#: todoliststrconsts.listodolpriority
+msgid "Priority"
+msgstr "Prioridade"
+
+#: todoliststrconsts.listodoltype
+msgid "Type"
+msgstr "Tipo"
+
+#: todoliststrconsts.listodotodotype
+msgid "ToDo type"
+msgstr "Tipo de tarefa"
+
+#: todoliststrconsts.listodousedunits
+msgid "Used units"
+msgstr ""
+
+#: todoliststrconsts.listtodolcategory
+msgid "Category"
+msgstr "Categoria"
+
+#: todoliststrconsts.lisviewtodolist
+msgid "View ToDo List"
+msgstr "Ver lista de tarefas"
+
+#: todoliststrconsts.rsexporttodoit
+msgid "Export ToDo items to CSV"
+msgstr "Exportar afazeres para CSV"
+

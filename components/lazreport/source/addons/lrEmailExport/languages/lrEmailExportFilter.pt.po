@@ -1,0 +1,85 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: lremailexportfilter.saccount
+msgid "Account"
+msgstr "Conta"
+
+#: lremailexportfilter.sadress
+msgid "Adress"
+msgstr "Morada"
+
+#: lremailexportfilter.sapplicationname
+msgid "Application name"
+msgstr "Nome da aplicação"
+
+#: lremailexportfilter.sattachment
+msgid "Attachment"
+msgstr "Anexo"
+
+#: lremailexportfilter.sdirectsend
+msgid "Direct send"
+msgstr "Envio directo"
+
+#: lremailexportfilter.semail
+msgid "Email"
+msgstr "Email"
+
+#: lremailexportfilter.sformat
+msgid "Format"
+msgstr "Formatar"
+
+#: lremailexportfilter.sfromadress
+msgid "From adress"
+msgstr "De endereço"
+
+#: lremailexportfilter.sfromname
+msgid "From name"
+msgstr "De nome"
+
+#: lremailexportfilter.shost
+msgid "Host"
+msgstr "Anfitrião"
+
+#: lremailexportfilter.slogin
+msgid "Login"
+msgstr "Sessão"
+
+#: lremailexportfilter.smessage
+msgid "Message"
+msgstr "Mensagem"
+
+#: lremailexportfilter.spassword
+msgid "Password"
+msgstr "Senha"
+
+#: lremailexportfilter.sport
+msgid "Port"
+msgstr "Porta"
+
+#: lremailexportfilter.ssendtoemail
+msgid "Send to email..."
+msgstr "Enviar para correio..."
+
+#: lremailexportfilter.ssubject
+msgid "Subject"
+msgstr "Assunto"
+
+#: lremailexportfilter.stext
+msgid "Text"
+msgstr "Texto"
+
+#: lremailexportfilter.susemailprogram
+msgid "Use mail program"
+msgstr "Usar programa de correio"
+

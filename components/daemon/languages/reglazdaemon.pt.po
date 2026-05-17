@@ -1,0 +1,45 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: reglazdaemon.sdaemonappdescr
+msgid "Daemon (service) application is a non-gui application that runs in the background."
+msgstr "A aplicação Daemon (serviço) é uma aplicação não gráfica que corre em segundo plano."
+
+#: reglazdaemon.sdaemonappname
+msgid "Daemon (service) application"
+msgstr "Aplicação Daemon (serviço)"
+
+#: reglazdaemon.sdaemonapps
+msgid "Daemon (service) applications"
+msgstr "Aplicações Daemon (serviço)"
+
+#: reglazdaemon.sdaemondescr
+msgid "Daemon Module for inclusion in a daemon application"
+msgstr "Módulo Daemon para inclusão numa aplicação Daemon"
+
+#: reglazdaemon.sdaemonmapperdescr
+msgid ""
+"Daemon mapper for inclusion in a daemon application.\n"
+"Only one daemon mapper may exist in a daemon application."
+msgstr ""
+"Mapeador de Daemon para inclusão numa aplicação de Daemon.\n"
+"Só pode existir um mapeador de Daemon numa aplicação de Daemon."
+
+#: reglazdaemon.sdaemonmappername
+msgid "Daemon mapper"
+msgstr "Mapeador Daemon"
+
+#: reglazdaemon.sdaemonname
+msgid "Daemon Module"
+msgstr "Módulo Daemon"
+

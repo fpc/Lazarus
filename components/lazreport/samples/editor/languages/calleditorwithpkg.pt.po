@@ -1,0 +1,209 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: maincalleditor.ceractivereport
+#, object-pascal-format
+msgid "Active report: %s"
+msgstr "Relatório activo: %s"
+
+#: maincalleditor.cerappcaption
+msgctxt "maincalleditor.cerappcaption"
+msgid "LazReport Test Suite"
+msgstr "Conjunto de teste do LazReport"
+
+#: maincalleditor.cercomposite
+msgctxt "maincalleditor.cercomposite"
+msgid "Composite"
+msgstr "Compósito"
+
+#: maincalleditor.cereditreport
+msgctxt "maincalleditor.cereditreport"
+msgid "Edit Report"
+msgstr "Editar relatório"
+
+#: maincalleditor.cerhintcloseapp
+msgid "Close application"
+msgstr "Fechar a aplicação"
+
+#: maincalleditor.cerhintcomposite
+msgid "This Action will Load and Preview a composite Report"
+msgstr "Esta acção vai carregar e mostrar uma antevisão de um relatório composto"
+
+#: maincalleditor.cerhinteditreport
+msgid "Edit active report"
+msgstr "Editar relatório activo"
+
+#: maincalleditor.cerhintnewreport
+msgid "Create and edit a empty report"
+msgstr "Criar e editar um relatório em branco"
+
+#: maincalleditor.cerhintopenreport
+msgid "Open an existing report"
+msgstr "Abrir relatório existente"
+
+#: maincalleditor.cerhintprevgrid
+msgid "Print preview current DbGrid content"
+msgstr "Antever impressão do conteúdo actual da DbGrid"
+
+#: maincalleditor.cerhintprevreport
+msgid "Preview active report"
+msgstr "Antever relatório activo"
+
+#: maincalleditor.cerhintprnreport
+msgid "Print directly the active report (i.e. without preview)"
+msgstr "Imprimir directamente o relatório activo (ou seja, sem antevisão)"
+
+#: maincalleditor.cerhintthumbnails
+msgid "This Action will Load and Preview a thumbnails Report"
+msgstr "Esta acção vai carregar e mostrar uma antevisão de um relatório de miniaturas"
+
+#: maincalleditor.cerindex
+msgctxt "maincalleditor.cerindex"
+msgid "Index"
+msgstr "Índice"
+
+#: maincalleditor.cerindexfields
+#, object-pascal-format
+msgid "Index Fields: %s"
+msgstr "Campos de índice: %s"
+
+#: maincalleditor.cernewreport
+msgid "New report"
+msgstr "Novo relatório"
+
+#: maincalleditor.cernone
+msgid "none"
+msgstr "nenhum"
+
+#: maincalleditor.ceropenreport
+msgid "Open report"
+msgstr "Abrir relatório"
+
+#: maincalleditor.ceropenreportfirst
+msgid "Open report first"
+msgstr "Abrir relatório primeiro"
+
+#: maincalleditor.cerpreparefailed
+msgid "PrepareReport Failed!"
+msgstr "PrepareReport falhou!"
+
+#: maincalleditor.cerpreviewreport
+msgid "Preview report"
+msgstr "Antever relatório"
+
+#: maincalleditor.cerprintgrid
+msgid "Print grid"
+msgstr "Imprimir a grelha"
+
+#: maincalleditor.cerprintreport
+msgid "Print report"
+msgstr "Imprimir o relatório"
+
+#: maincalleditor.certhumbnails
+msgctxt "maincalleditor.certhumbnails"
+msgid "Thumbnails"
+msgstr "Miniaturas"
+
+#: tfrmmain.accclose.caption
+msgid "Close"
+msgstr "Fechar"
+
+#: tfrmmain.acccomposite.caption
+msgctxt "TFRMMAIN.ACCCOMPOSITE.CAPTION"
+msgid "Composite"
+msgstr "Compósito"
+
+#: tfrmmain.acccustompreview.caption
+msgid "Custom Preview"
+msgstr "Antevisão personalizada"
+
+#: tfrmmain.acceditreport.caption
+msgctxt "TFRMMAIN.ACCEDITREPORT.CAPTION"
+msgid "Edit Report"
+msgstr "Editar relatório"
+
+#: tfrmmain.accexporttocsv.caption
+msgid "Export to CSV"
+msgstr "Exportar para CSV"
+
+#: tfrmmain.accexporttodbg.caption
+msgid "Export Debug"
+msgstr "Exportar depuração"
+
+#: tfrmmain.accexporttohtml.caption
+msgid "Export to html"
+msgstr "Exportar para html"
+
+#: tfrmmain.accexporttotext.caption
+msgid "Export to text"
+msgstr "Exportar para texto"
+
+#: tfrmmain.accnewreport.caption
+msgid "New Report"
+msgstr "Novo relatório"
+
+#: tfrmmain.accopenreport.caption
+msgid "Open Report"
+msgstr "Abrir relatório"
+
+#: tfrmmain.accpreviewreport.caption
+msgid "Preview Report"
+msgstr "Antever relatório"
+
+#: tfrmmain.accprintgrid.caption
+msgid "Print Grid"
+msgstr "Imprimir a grelha"
+
+#: tfrmmain.accprintreport.caption
+msgid "Print Report"
+msgstr "Imprimir o relatório"
+
+#: tfrmmain.accthumbnails.caption
+msgctxt "TFRMMAIN.ACCTHUMBNAILS.CAPTION"
+msgid "Thumbnails"
+msgstr "Miniaturas"
+
+#: tfrmmain.btnexportlast.caption
+msgid "Repeat Export"
+msgstr "Repetir exportação"
+
+#: tfrmmain.btnmasterdetail.caption
+msgid "Master-Detail Test"
+msgstr "Teste Mestre-Detalhe"
+
+#: tfrmmain.caption
+msgctxt "TFRMMAIN.CAPTION"
+msgid "LazReport Test Suite"
+msgstr "Conjunto de teste do LazReport"
+
+#: tfrmmain.lblexpr.caption
+msgid "Expression"
+msgstr "Expressão"
+
+#: tfrmmain.lblindex.caption
+msgctxt "TFRMMAIN.LBLINDEX.CAPTION"
+msgid "Index"
+msgstr "Índice"
+
+#: tfrmmain.menuitem1.caption
+msgid "Files"
+msgstr "Ficheiros"
+
+#: tfrmmain.menuitem3.caption
+msgid "Tests"
+msgstr "Testes"
+
+#: tfrmmain.menuitem9.caption
+msgid "Export"
+msgstr "Exportar"
+

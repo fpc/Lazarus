@@ -1,0 +1,244 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: lhelpstrconsts.slhelp_about
+msgid "About"
+msgstr "Acerca"
+
+#: lhelpstrconsts.slhelp_about2
+msgid "&About ..."
+msgstr "&Acerca..."
+
+#: lhelpstrconsts.slhelp_actions
+msgid "&Actions"
+msgstr "&Acções"
+
+#: lhelpstrconsts.slhelp_actionsgoback
+msgid "Go back"
+msgstr "Recuar"
+
+#: lhelpstrconsts.slhelp_actionsgoforward
+msgid "Go forward"
+msgstr "Avançar"
+
+#: lhelpstrconsts.slhelp_actionsgohome
+msgid "Go home"
+msgstr "Início"
+
+#: lhelpstrconsts.slhelp_actionsindex
+msgid "Search by &index"
+msgstr "Procurar por índ&ice"
+
+#: lhelpstrconsts.slhelp_actionssearch
+msgid "&Search by text"
+msgstr "Procurar por te&xto"
+
+#: lhelpstrconsts.slhelp_actionstoc
+#, fuzzy
+#| msgid "&TOC"
+msgid "&Table of contents"
+msgstr "Índ&ice"
+
+#: lhelpstrconsts.slhelp_cannothandlethistypeofcontentforurl
+#, object-pascal-format
+msgid "Cannot handle this type of content. \"%s\" for url:%s%s"
+msgstr "Impossível processar este tipo de conteúdo. \"%s\" para a URL:%s%s"
+
+#: lhelpstrconsts.slhelp_cannothandlethistypeofsubcontentforurl
+#, object-pascal-format
+msgid "Cannot handle this type of subcontent. \"%s\" for url:%s%s"
+msgstr "Impossível processar este tipo de sub-conteúdo. \"%s\" para a URL:%s%s"
+
+#: lhelpstrconsts.slhelp_close
+msgid "&Close"
+msgstr "Fe&char"
+
+#: lhelpstrconsts.slhelp_closeconfirm
+msgid "You can hide Help via Esc key. Do you really want to close LHelp?"
+msgstr "Pode ocultar a ajuda premindo a tecla Esc. Deseja mesmo fechar a ajuda do Lazarus?"
+
+#: lhelpstrconsts.slhelp_contents
+msgid "Contents"
+msgstr "Conteúdo"
+
+#: lhelpstrconsts.slhelp_contextshowthehelpinformationrelatedtothiscontext
+msgid "    --context  :  Show the help information related to this context"
+msgstr "    --context  :  Mostrar as informações de ajuda relacionadas com este contexto"
+
+#: lhelpstrconsts.slhelp_copy
+msgid "Copy"
+msgstr "Copiar"
+
+#: lhelpstrconsts.slhelp_copyhtmlsource
+msgid "Copy HTML source"
+msgstr "Copiar fonte HMTL"
+
+#: lhelpstrconsts.slhelp_exit
+msgid "E&xit"
+msgstr "Sa&ir"
+
+#: lhelpstrconsts.slhelp_file
+msgid "&File"
+msgstr "&Ficheiro"
+
+#: lhelpstrconsts.slhelp_find
+msgid "Find"
+msgstr "Localizar"
+
+#: lhelpstrconsts.slhelp_help
+msgid "&Help"
+msgstr "A&juda"
+
+#: lhelpstrconsts.slhelp_helpfileschmchmallfiles
+msgid "Help files (*.chm)|*.chm|All files (*.*)|*"
+msgstr "Ficheiros de ajuda (*.chm)|*.chm|Todos os ficheiros (*.*)|*"
+
+#: lhelpstrconsts.slhelp_helpshowthisinformation
+msgid "    --help     :  Show this information"
+msgstr "    --help     :  Mostrar esta informação"
+
+#: lhelpstrconsts.slhelp_hide
+msgid "&Hide"
+msgstr "&Ocultar"
+
+#: lhelpstrconsts.slhelp_hidestarthiddenbutacceptcommunicationsviaipc
+msgid "    --hide     :  Start hidden but accept communications via IPC"
+msgstr "    --hide     :  Iniciar em modo oculto, mas aceitar comunicações via IPC"
+
+#: lhelpstrconsts.slhelp_index
+msgid "Index"
+msgstr "Índice"
+
+#: lhelpstrconsts.slhelp_indexloading
+msgid "Index Loading ..."
+msgstr "Índice a carregar..."
+
+#: lhelpstrconsts.slhelp_ipcnamethenameoftheipcservertolistenonforprogramsw
+#, object-pascal-format
+msgid "    --ipcname  :  The name of the IPC server to listen on for%s              programs who wish to control the viewer"
+msgstr "    --ipcname  :  O nome do servidor IPC a ouvir os%s              os programas que pretendem controlar o visualizador"
+
+#: lhelpstrconsts.slhelp_keyword
+msgid "Keyword:"
+msgstr "Palavra-chave:"
+
+#: lhelpstrconsts.slhelp_lhelp
+msgid "LHelp"
+msgstr "LHelp"
+
+#: lhelpstrconsts.slhelp_lhelp2
+#, object-pascal-format
+msgid "LHelp - %s"
+msgstr "LHelp - %s"
+
+#: lhelpstrconsts.slhelp_lhelpchmfileviewerversioncopyrightcandrewhaineslaz
+#, object-pascal-format
+msgid "CHM file viewer%sVersion %s%sCopyright (C) Andrew Haines, %sLazarus contributors"
+msgstr "Visualizador de CHM%sVersão %s%sCopyright (C) Andrew Haines, %sColaboradores do Lazarus"
+
+#: lhelpstrconsts.slhelp_lhelpoptions
+msgid "  LHelp options:"
+msgstr "  Opções do LHelp:"
+
+#: lhelpstrconsts.slhelp_loadedinms
+#, object-pascal-format
+msgid "Loaded: %s in %sms"
+msgstr "Carregado: %s em %sms"
+
+#: lhelpstrconsts.slhelp_loading
+#, object-pascal-format
+msgid "Loading: %s"
+msgstr "A carregar: %s"
+
+#: lhelpstrconsts.slhelp_noresults
+msgid "No Results"
+msgstr "Nenhum resultado"
+
+#: lhelpstrconsts.slhelp_notfound
+#, object-pascal-format
+msgid "%s not found!"
+msgstr "%s não encontrado!"
+
+#: lhelpstrconsts.slhelp_ok
+msgid "OK"
+msgstr "Aceitar"
+
+#: lhelpstrconsts.slhelp_open
+msgid "&Open ..."
+msgstr "&Abrir..."
+
+#: lhelpstrconsts.slhelp_openexistingfile
+msgid "Open existing file"
+msgstr "Abrir ficheiro existente"
+
+#: lhelpstrconsts.slhelp_opennewfileinseparatetab
+msgid "Open new file in separate tab"
+msgstr "Abrir novo ficheiro noutro separador"
+
+#: lhelpstrconsts.slhelp_opennewtabwithstatusbar
+msgid "Open new tab with status bar"
+msgstr "Abrir novo separador com barra de estado"
+
+#: lhelpstrconsts.slhelp_openrecent
+msgid "Open Recent"
+msgstr "Abrir recente"
+
+#: lhelpstrconsts.slhelp_openurl
+msgid "Open &URL ..."
+msgstr "Abrir &URL..."
+
+#: lhelpstrconsts.slhelp_pagecannotbefound
+msgid "Page cannot be found!"
+msgstr "Página não encontrada!"
+
+#: lhelpstrconsts.slhelp_pleaseenteraurl
+msgid "Please enter a URL"
+msgstr "Por favor, insira um URL"
+
+#: lhelpstrconsts.slhelp_search
+msgid "Search"
+msgstr "Procurar"
+
+#: lhelpstrconsts.slhelp_searchresults
+msgid "Search Results:"
+msgstr "Resultados:"
+
+#: lhelpstrconsts.slhelp_showcontents
+msgid "Show contents"
+msgstr "Mostrar conteúdo"
+
+#: lhelpstrconsts.slhelp_supportedurltypes
+#, object-pascal-format
+msgid "Supported URL type(s): [ %s ]"
+msgstr "Tipos de URL suportados: [ %s ]"
+
+#: lhelpstrconsts.slhelp_tableofcontentsloading
+msgid "Table of Contents Loading ..."
+msgstr "Índice a carregar..."
+
+#: lhelpstrconsts.slhelp_tableofcontentsloadingpleasewait
+msgid "Table of Contents Loading. Please Wait ..."
+msgstr "Índice a carregar, por favor aguarde..."
+
+#: lhelpstrconsts.slhelp_untitled
+msgid "untitled"
+msgstr "sem título"
+
+#: lhelpstrconsts.slhelp_usagelhelpfilenamecontextidhideipcnamelhelpmyapp
+msgid "    Usage: lhelp [[filename] [--context id] [--hide] [--ipcname lhelp-myapp]]"
+msgstr "    Uso: lhelp [[nomefich] [--context id] [--hide] [--ipcname lhelp-myapp]]"
+
+#: lhelpstrconsts.slhelp_view
+msgid "&View"
+msgstr "&Ver"
+

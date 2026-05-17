@@ -1,0 +1,235 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: sqldbstrconst.lrsgeneratesqlstatements
+msgid "Edit/Generate SQL Statements"
+msgstr "Editar/Gerar instruções SQL"
+
+#: sqldbstrconst.lrssqldatasetopen
+#, object-pascal-format
+msgid "Dataset not open: %s"
+msgstr "Conjunto de dados não aberto: %s"
+
+#: sqldbstrconst.lrssqlgenselect
+msgid "You must select fields to be updated and key fields."
+msgstr "Deve seleccionar os campos a actualizar e os campos-chave."
+
+#: sqldbstrconst.screatestringconstant
+msgid "Create string constant"
+msgstr "Criar constante de cadeia"
+
+#: sqldbstrconst.seditsql
+msgid "Edit SQL ..."
+msgstr "Editar SQL..."
+
+#: sqldbstrconst.seditupdatesql
+msgid "Edit all SQL statements"
+msgstr "Editar todas as instruções SQL"
+
+#: sqldbstrconst.serrconnectionnotassigned
+msgid "Database not assigned. Assign Database first."
+msgstr "A base de dados não foi atribuída. Atribua primeiro a base de dados."
+
+#: sqldbstrconst.sfirebirddatabases
+msgid "Firebird databases"
+msgstr "Bases de dados Firebird"
+
+#: sqldbstrconst.sgenerateupdatesql
+msgid "Generate update SQL"
+msgstr "Gerar actualização SQL"
+
+#: sqldbstrconst.sinterbasedatabases
+msgid "Interbase databases"
+msgstr "Bases de dados Interbase"
+
+#: sqldbstrconst.slibraries
+msgid "Shared libraries"
+msgstr "Bibliotecas partilhadas"
+
+#: sqldbstrconst.sloadsqlcodehint
+msgid "Load SQL code ..."
+msgstr "Carregar código SQL..."
+
+#: sqldbstrconst.smetacolumns
+msgid "Columns"
+msgstr "Colunas"
+
+#: sqldbstrconst.smetapleasespecifyatableintheobjectfield
+msgid "Please specify a table in the object field."
+msgstr "Por favor, especifique uma tabela no campo objecto."
+
+#: sqldbstrconst.smetaprocedures
+msgid "Procedures"
+msgstr "Procedimentos"
+
+#: sqldbstrconst.smetasystables
+msgid "SysTables"
+msgstr "Tabelas de sistema"
+
+#: sqldbstrconst.smetatabcaption
+msgid "Metadata"
+msgstr "Metadados"
+
+#: sqldbstrconst.smetatables
+msgid "Tables"
+msgstr "Tabelas"
+
+#: sqldbstrconst.sqlsyntaxok
+msgid "No syntax errors in SQL statement found."
+msgstr "Não foram encontrados erros de sintaxe na instrução SQL."
+
+#: sqldbstrconst.squickcheckofsqlsyntaxhint
+msgid "Quick check of SQL syntax"
+msgstr "Verificação rápida de sintaxe SQL"
+
+#: sqldbstrconst.sresulttabcaption
+msgid "Results"
+msgstr "Resultados"
+
+#: sqldbstrconst.srunsqlcodehint
+msgid "Run SQL code"
+msgstr "Executar código SQL"
+
+#: sqldbstrconst.ssavesqlcodehint
+msgid "Save SQL code ..."
+msgstr "Gravar código SQL..."
+
+#: sqldbstrconst.ssqlbrackets
+msgctxt "sqldbstrconst.ssqlbrackets"
+msgid "Brackets"
+msgstr "Parênteses rectos"
+
+#: sqldbstrconst.ssqldelimitersforfieldtablenames
+msgctxt "sqldbstrconst.ssqldelimitersforfieldtablenames"
+msgid "Delimiters for field/table names"
+msgstr "Delimitadores para nomes de campos/tabelas"
+
+#: sqldbstrconst.ssqledit
+msgid "Edit SQL Script ..."
+msgstr "Editar escrito SQL..."
+
+#: sqldbstrconst.ssqlerror
+msgid "Probable SQL error"
+msgstr "Provável erro SQL"
+
+#: sqldbstrconst.ssqlfullyqualifiedfields
+msgctxt "sqldbstrconst.ssqlfullyqualifiedfields"
+msgid "Fully qualified fields"
+msgstr "Campos completamente qualificados"
+
+#: sqldbstrconst.ssqlgenerated
+msgid "SQL statements successfully generated."
+msgstr "As instruções SQL foram geradas com sucesso."
+
+#: sqldbstrconst.ssqlgeneratesql
+msgctxt "sqldbstrconst.ssqlgeneratesql"
+msgid "Generate SQL"
+msgstr "Gerar SQL"
+
+#: sqldbstrconst.ssqlindent
+msgctxt "sqldbstrconst.ssqlindent"
+msgid "Indent"
+msgstr "Avanço"
+
+#: sqldbstrconst.ssqlite3databases
+msgid "SQLite3 databases"
+msgstr "Bases de dados SQLite3"
+
+#: sqldbstrconst.ssqlkeyfields
+msgctxt "sqldbstrconst.ssqlkeyfields"
+msgid "Key fields"
+msgstr "Campos chave"
+
+#: sqldbstrconst.ssqllinelength
+msgctxt "sqldbstrconst.ssqllinelength"
+msgid "Line length"
+msgstr "Comprimento da linha"
+
+#: sqldbstrconst.ssqlnosqlgenerated
+msgctxt "sqldbstrconst.ssqlnosqlgenerated"
+msgid "No SQL statements were generated. Do you really want to close?"
+msgstr "Não foram geradas instruções SQL. Deseja realmente fechar?"
+
+#: sqldbstrconst.ssqlnotable
+msgid "No table is selected for generation of SQL statements."
+msgstr "Não seleccionou nenhuma tabela para gerar instruções SQL."
+
+#: sqldbstrconst.ssqlok
+msgid "Quick SQL check OK"
+msgstr "Verificação rápida de sintaxe SQL correcta"
+
+#: sqldbstrconst.ssqlonefieldperline
+msgctxt "sqldbstrconst.ssqlonefieldperline"
+msgid "One field per line"
+msgstr "Um campo por linha"
+
+#: sqldbstrconst.ssqlquotechar
+msgctxt "sqldbstrconst.ssqlquotechar"
+msgid "Quote character"
+msgstr "Carácter de citação"
+
+#: sqldbstrconst.ssqlscript
+msgid "SQL Script file"
+msgstr "Ficheiro de escrito SQL"
+
+#: sqldbstrconst.ssqlscriptdesc
+msgid "Create a new SQL Script file"
+msgstr "Criar ficheiro de escrito SQL"
+
+#: sqldbstrconst.ssqlselectupdateinsertfields
+msgctxt "sqldbstrconst.ssqlselectupdateinsertfields"
+msgid "\"Select\"/\"Update\"/\"Insert\" fields"
+msgstr "Campos \"Select\"/\"Update\"/\"Insert\""
+
+#: sqldbstrconst.ssqlshowsystemtables
+msgctxt "sqldbstrconst.ssqlshowsystemtables"
+msgid "Show system tables"
+msgstr "Mostrar tabelas de sistema"
+
+#: sqldbstrconst.ssqlsource
+msgid "Insert your SQL statements here"
+msgstr "Insira aqui as instruções SQL"
+
+#: sqldbstrconst.ssqlstringspropertyeditordlgtitle
+#, object-pascal-format
+msgid "Statement Editor (%s)"
+msgstr "Editor de instruções (%s)"
+
+#: sqldbstrconst.ssqlsyntaxerror
+#, object-pascal-format
+msgid ""
+"Probable syntax error in SQL statement:\n"
+"%s"
+msgstr ""
+"Provável erro de sintaxe na instrução SQL:\n"
+"%s"
+
+#: sqldbstrconst.ssqltabcaption
+msgid "SQL Code"
+msgstr "Código SQL"
+
+#: sqldbstrconst.ssqltable
+msgctxt "sqldbstrconst.ssqltable"
+msgid "Table"
+msgstr "Tabela"
+
+#: sqldbstrconst.ssqltablesandfields
+msgctxt "sqldbstrconst.ssqltablesandfields"
+msgid "Tables and Fields"
+msgstr "Tabelas e campos"
+
+#: sqldbstrconst.ssqluppercasekeywords
+msgctxt "sqldbstrconst.ssqluppercasekeywords"
+msgid "Uppercase keywords"
+msgstr "Palavras-chave em maiúsculas"
+

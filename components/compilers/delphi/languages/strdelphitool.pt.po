@@ -1,0 +1,49 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: strdelphitool.sconfigfileextensioncaption
+msgid "Configuration file extension"
+msgstr "Extensão do ficheiro de configuração"
+
+#: strdelphitool.sconvertdostounixcaption
+msgid "Map filenames from Windows to Unix notation"
+msgstr "Mapear nomes de ficheiro de notação Windows para Unix"
+
+#: strdelphitool.sdelphicompilecommand
+msgid "Delphi compile command"
+msgstr "Comando de compilação Delphi"
+
+#: strdelphitool.sdelphicompilerargs
+msgid "Additional compiler options"
+msgstr "Opções adicionais do compilador"
+
+#: strdelphitool.sdelphicompilerconfigfilename
+msgid "Delphi compiler configuration filename for project"
+msgstr "Nome do ficheiro de configuração do compilador Delphi para o projecto"
+
+#: strdelphitool.sdelphicompilerfilenamecaption
+msgid "Delphi compiler executable"
+msgstr "Executável do compilador Delphi"
+
+#: strdelphitool.sdelphilocalizedparsername
+msgid "Delphi Compiler"
+msgstr "Compilador Delphi"
+
+#: strdelphitool.sgenerateconfigfilecaption
+msgid "Generate Delphi config file based on FPC compiler options"
+msgstr "Gerar ficheiro de configuração Delphi baseado nas opções do compilador FPC"
+
+#: strdelphitool.sselectdelphiexecutable
+msgid "Select Delphi compiler executable"
+msgstr "Seleccionar o executável do compilador Delphi"
+

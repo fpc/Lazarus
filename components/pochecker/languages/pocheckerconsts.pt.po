@@ -1,0 +1,500 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: pocheckerconsts.rspochecker
+msgid "Check PO Files ..."
+msgstr "Verificar ficheiros PO..."
+
+#: pocheckerconsts.rs_lang_af_za
+msgid "Afrikaans"
+msgstr "Afrikaans"
+
+#: pocheckerconsts.rs_lang_all
+msgid "All languages"
+msgstr "Todos os idiomas"
+
+#: pocheckerconsts.rs_lang_ar
+msgid "Arabic"
+msgstr "Árabe"
+
+#: pocheckerconsts.rs_lang_ca
+msgid "Catalan"
+msgstr "Catalão"
+
+#: pocheckerconsts.rs_lang_co
+msgid "Corsican"
+msgstr "Córsego"
+
+#: pocheckerconsts.rs_lang_cs
+msgid "Czech"
+msgstr "Checo"
+
+#: pocheckerconsts.rs_lang_de
+msgid "German"
+msgstr "Alemão"
+
+#: pocheckerconsts.rs_lang_en
+msgid "English"
+msgstr "Inglês"
+
+#: pocheckerconsts.rs_lang_es
+msgid "Spanish"
+msgstr "Espanhol"
+
+#: pocheckerconsts.rs_lang_fi
+msgid "Finnish"
+msgstr "Finlandês"
+
+#: pocheckerconsts.rs_lang_fr
+msgid "French"
+msgstr "Francês"
+
+#: pocheckerconsts.rs_lang_he
+msgid "Hebrew"
+msgstr "Hebraico"
+
+#: pocheckerconsts.rs_lang_hu
+msgid "Hungarian"
+msgstr "Húngaro"
+
+#: pocheckerconsts.rs_lang_id
+msgid "Indonesian"
+msgstr "Indonésio"
+
+#: pocheckerconsts.rs_lang_it
+msgid "Italian"
+msgstr "Italiano"
+
+#: pocheckerconsts.rs_lang_ja
+msgid "Japanese"
+msgstr "Japonês"
+
+#: pocheckerconsts.rs_lang_ko
+msgid "Korean"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_lo
+msgid "Lao"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_lt
+msgid "Lithuanian"
+msgstr "Lituano"
+
+#: pocheckerconsts.rs_lang_nl
+msgid "Dutch"
+msgstr "Holandês"
+
+#: pocheckerconsts.rs_lang_pl
+msgid "Polish"
+msgstr "Polaco"
+
+#: pocheckerconsts.rs_lang_pt
+msgid "Portuguese"
+msgstr "Português"
+
+#: pocheckerconsts.rs_lang_pt_br
+msgid "Brazilian Portuguese"
+msgstr "Brasileiro"
+
+#: pocheckerconsts.rs_lang_ru
+msgid "Russian"
+msgstr "Russo"
+
+#: pocheckerconsts.rs_lang_si
+msgid "Sinhala"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_sk
+msgid "Slovak"
+msgstr "Eslovaco"
+
+#: pocheckerconsts.rs_lang_tr
+msgid "Turkish"
+msgstr "Turco"
+
+#: pocheckerconsts.rs_lang_uk
+msgid "Ukrainian"
+msgstr "Ucraniano"
+
+#: pocheckerconsts.rs_lang_zh_cn
+msgid "Chinese, simplified"
+msgstr "Chinês simplificado"
+
+#: pocheckerconsts.salllanguages
+msgid "All Languages"
+msgstr "Todos os idiomas"
+
+#: pocheckerconsts.scannotwritefileyoucanpressretrytorefreshthistransl
+#, object-pascal-format
+msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translation family again and continue."
+msgstr "Impossível escrever o ficheiro%s%s%s%sPode clicar em \"Tentar de novo\" para actualizar esta família de traduções e continuar."
+
+#: pocheckerconsts.scheckforincompatibleformatarguments
+msgid "Check for incompatible format arguments"
+msgstr "Verificar se há argumentos de formato incompatíveis"
+
+#: pocheckerconsts.scheckformismatchesinuntranslatedstrings
+msgid "Check for mismatches of originals"
+msgstr "Verificar se há discrepâncias em relação aos originais"
+
+#: pocheckerconsts.scheckmissingidentifiers
+msgid "Check missing identifiers"
+msgstr "Verificar se há identificadores em falta"
+
+#: pocheckerconsts.schecknumberofitems
+msgid "Check number of items"
+msgstr "Verificar o número de itens"
+
+#: pocheckerconsts.sclearlistbox
+msgid "Clear"
+msgstr "Limpar"
+
+#: pocheckerconsts.scopy
+msgid "&Copy"
+msgstr "&Copiar"
+
+#: pocheckerconsts.screatingiconxofy
+#, object-pascal-format
+msgid "Creating icon nr. %d of %d"
+msgstr "A criar ícone n.º %d de %d"
+
+#: pocheckerconsts.scurrenttest
+#, object-pascal-format
+msgid "Test: %s on %s"
+msgstr "Teste: %s em %s"
+
+#: pocheckerconsts.sduplicatelinenrwithvalue
+#, object-pascal-format
+msgid "[Line %d] %s"
+msgstr "[Linha %d] %s"
+
+#: pocheckerconsts.sduplicateoriginals
+#, object-pascal-format
+msgid "Original value \"%s\" is used for more than 1 entry:"
+msgstr "O valor original \"%s\" é utilizado em mais de uma entrada:"
+
+#: pocheckerconsts.sduplicateoriginalstab
+msgid "Duplicate Originals"
+msgstr "Originais duplicados"
+
+#: pocheckerconsts.serrorsbytest
+#, object-pascal-format
+msgid "Errors / warnings reported by %s for:"
+msgstr "Erros/avisos comunicados por %s para:"
+
+#: pocheckerconsts.sfile
+#, object-pascal-format
+msgid "File %s"
+msgstr "Ficheiro %s"
+
+#: pocheckerconsts.sfilesnotfoundandremoved
+#, object-pascal-format
+msgid ""
+"The following non-existent files were removed from the list:\n"
+"%s"
+msgstr ""
+"Os seguintes ficheiros inexistentes foram removidos da lista:\n"
+"%s"
+
+#: pocheckerconsts.sfuzzystrings
+msgid "Fuzzy strings"
+msgstr "Cadeias confusas"
+
+#: pocheckerconsts.sfuzzystringstotal
+#, object-pascal-format
+msgid "Fuzzy strings (total: %s)"
+msgstr "Cadeias confusas (total: %s)"
+
+#: pocheckerconsts.sgeneralinfo
+msgid "General Info"
+msgstr "Informação geral"
+
+#: pocheckerconsts.sgrapstatformcaption
+msgid "Graphical summary"
+msgstr "Resumo gráfico"
+
+#: pocheckerconsts.sguipofilecheckingtool
+msgid "GUI Po-file checking tool"
+msgstr "Ferramenta de verificação de ficheiros Po com interface gráfica"
+
+#: pocheckerconsts.sidentifiernotfoundin
+#, object-pascal-format
+msgid "Identifier [%s] not found in %s"
+msgstr "Identificador [%s] não encontrado em %s"
+
+#: pocheckerconsts.sincompatibleformatargs
+#, object-pascal-format
+msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
+msgstr "[Linha: %d] Argumentos de format() incompatíveis e/ou inválidos para:"
+
+#: pocheckerconsts.slanguage
+msgid "Language:"
+msgstr "Idioma:"
+
+#: pocheckerconsts.slastsearchpath
+msgid "Last search path:"
+msgstr "Último caminho de procura:"
+
+#: pocheckerconsts.slineinfilename
+#, object-pascal-format
+msgid "[Line %d] in %s:"
+msgstr "[Linha %d] em %s:"
+
+#: pocheckerconsts.slinenr
+#, object-pascal-format
+msgid "[Line: %d]"
+msgstr "[Linha: %d]"
+
+#: pocheckerconsts.smissingmasteridentifier
+#, object-pascal-format
+msgid "Identifier [%s] found in %s, but it does not exist in %s"
+msgstr "Identificador [%s] encontrado em %s, mas não existe em %s"
+
+#: pocheckerconsts.snotestselected
+msgid "There are no tests selected."
+msgstr "Não há testes seleccionados."
+
+#: pocheckerconsts.snotetranslationisfuzzy
+msgid "Note: translation is fuzzy"
+msgstr "Nota: a tradução está confusa"
+
+#: pocheckerconsts.snrerrorsfound
+#, object-pascal-format
+msgid "Found %d errors."
+msgstr "Encontrados %d erros."
+
+#: pocheckerconsts.snrofitemsmismatch
+msgid "Mismatch in number of items for master and child"
+msgstr "Discrepância no número de itens entre mestre e filho"
+
+#: pocheckerconsts.snrofitemsmismatchd
+#, object-pascal-format
+msgid "%s: %d items"
+msgstr "%s: %d itens"
+
+#: pocheckerconsts.snrwarningsfound
+#, object-pascal-format
+msgid "Found %d warnings."
+msgstr "Encontrados %d avisos."
+
+#: pocheckerconsts.sopenfail
+#, object-pascal-format
+msgid ""
+"Unable to open file:\n"
+"\"%s\""
+msgstr ""
+"Impossível abrir o ficheiro:\n"
+"\"%s\""
+
+#: pocheckerconsts.sopenfailexternal
+#, object-pascal-format
+msgid ""
+"Unable to open file\n"
+"\"%s\"\n"
+"in external editor\n"
+"\"%s\""
+msgstr ""
+"Impossível abrir o ficheiro:\n"
+"\"%s\"\n"
+"no editor externo\n"
+"\"%s\""
+
+#: pocheckerconsts.sopenfileinexternaleditor
+msgid "Open file in external editor"
+msgstr "Abrir ficheiro no editor externo"
+
+#: pocheckerconsts.sopenfileinideeditor
+msgid "Open file in IDE editor"
+msgstr "Abrir ficheiro no editor do IDE"
+
+#: pocheckerconsts.sopenfileinsystempoeditor
+msgid "Open file in system PO editor"
+msgstr "Abrir ficheiro no editor PO do sistema"
+
+#: pocheckerconsts.soriginal
+msgid "Original"
+msgstr "Original"
+
+#: pocheckerconsts.spercfuzzy
+#, object-pascal-format
+msgid "%s: %5.1f%% fuzzy strings."
+msgstr "%s: %5.1f%% cadeias confusas."
+
+#: pocheckerconsts.sperctranslated
+#, object-pascal-format
+msgid "%s: %5.1f%% translated strings."
+msgstr "%s: %5.1f%% cadeias traduzidas."
+
+#: pocheckerconsts.spercuntranslated
+#, object-pascal-format
+msgid "%s: %5.1f%% untranslated strings."
+msgstr "%s: %5.1f%% cadeias por traduzir."
+
+#: pocheckerconsts.sprocessingtranslationfamily
+msgid "Processing translation family..."
+msgstr "A processar família de traduções..."
+
+#: pocheckerconsts.sprocessingtranslationfamilyof
+#, object-pascal-format
+msgid "Processing translation family %s of %s"
+msgstr "A processar família de traduções %s de %s"
+
+#: pocheckerconsts.srefreshalltranslationfamilies
+msgid "Refresh all translation families"
+msgstr "Actualizar todas as famílias de traduções"
+
+#: pocheckerconsts.srefreshcurrenttranslationfamily
+msgid "Refresh current translation family"
+msgstr "Actualizar a família de traduções actual"
+
+#: pocheckerconsts.sresults
+msgid "Results"
+msgstr "Resultados"
+
+#: pocheckerconsts.srunselectedtests
+msgid "&Run Selected Tests"
+msgstr "Executa&r testes seleccionados"
+
+#: pocheckerconsts.ssaveas
+msgid "Save &As ..."
+msgstr "Gr&avar como..."
+
+#: pocheckerconsts.ssaveerror
+#, object-pascal-format
+msgid ""
+"Error saving file:\n"
+"%s"
+msgstr ""
+"Erro ao gravar o ficheiro:\n"
+"%s"
+
+#: pocheckerconsts.sscandir
+msgid "Scan a folder"
+msgstr "Analisar uma pasta"
+
+#: pocheckerconsts.sscanninginprogress
+msgid "Scanning in progress, please wait ..."
+msgstr "Análise em curso. Por favor aguarde..."
+
+#: pocheckerconsts.sselectalllistbox
+msgid "Select all files"
+msgstr "Seleccionar todos os ficheiros"
+
+#: pocheckerconsts.sselectalltests
+msgid "Select &All"
+msgstr "Seleccion&ar tudo"
+
+#: pocheckerconsts.sselectedtranslationsarenotavailable
+msgid "Selected translations are not available."
+msgstr "As traduções seleccionadas não estão disponíveis"
+
+#: pocheckerconsts.sselecttesttypes
+msgid "Select test types"
+msgstr "Seleccione os tipos de teste"
+
+#: pocheckerconsts.sshowstatgraph
+msgid "Show statistics graph"
+msgstr "Mostar gráfico de estatísticas"
+
+#: pocheckerconsts.sstathint
+#, object-pascal-format
+msgid ""
+"Translated: %d (%.1f%%)\n"
+"Untranslated: %d (%.1f%%)\n"
+"Fuzzy: %d (%.1f%%)\n"
+"Errors in selected tests: %d"
+msgstr ""
+"Traduzidas: %d (%.1f%%)\n"
+"Por traduzir: %d (%.1f%%)\n"
+"Confusas: %d (%.1f%%)\n"
+"Erros nos testes seleccionados: %d"
+
+#: pocheckerconsts.sthefollowingmissingmasterpofileswereremoved
+#, object-pascal-format
+msgid "The following %s missing master .po file(s) were removed from the list:"
+msgstr "Os seguintes %s ficheiros mestre .po em falta foram removidos da lista:"
+
+#: pocheckerconsts.sthefollowingorphanedpofilesfound
+#, object-pascal-format
+msgid "The following %s orphaned .po file(s) found:"
+msgstr "Foram encontrados os seguintes %s ficheiros .po órfãos:"
+
+#: pocheckerconsts.stotalerrors
+#, object-pascal-format
+msgid "Total errors: %d"
+msgstr "Total de erros: %d"
+
+#: pocheckerconsts.stotalerrorsnonfuzzy
+#, object-pascal-format
+msgid "Total errors: %d (formatting errors in non-fuzzy strings: %d)"
+msgstr "Total de erros: %d (erros de formato em cadeias não-confusas: %d)"
+
+#: pocheckerconsts.stotalfuzzystrings
+#, object-pascal-format
+msgid "Total fuzzy strings: %s"
+msgstr "Total de cadeias confusas: %s"
+
+#: pocheckerconsts.stotaltranslatedstrings
+#, object-pascal-format
+msgid "Total translated strings: %s (%.1f%%)"
+msgstr "Total de cadeias traduzidas: %s (%.1f%%)"
+
+#: pocheckerconsts.stotaluntranslatedstrings
+#, object-pascal-format
+msgid "Total untranslated strings: %s"
+msgstr "Total de cadeias por traduzir: %s"
+
+#: pocheckerconsts.stotalwarnings
+#, object-pascal-format
+msgid "Total warnings: %d"
+msgstr "Total de avisos: %d"
+
+#: pocheckerconsts.stranslatedstrings
+msgid "Translated strings"
+msgstr "Cadeias traduzidas"
+
+#: pocheckerconsts.stranslatedstringstotal
+#, object-pascal-format
+msgid "Translated strings (total: %s [%.1f%%])"
+msgstr "Cadeias traduzidas (total: %s [%.1f%%])"
+
+#: pocheckerconsts.stranslation
+msgid "Translation"
+msgstr "Tradução"
+
+#: pocheckerconsts.stranslationstatistics
+msgid "Translation Statistics"
+msgstr "Estatísticas de tradução"
+
+#: pocheckerconsts.stroublesomefiles
+msgid "Troublesome files"
+msgstr "Ficheiros preocupantes"
+
+#: pocheckerconsts.sunselectalltests
+msgid "&Unselect All"
+msgstr "Remo&ver todas as selecções"
+
+#: pocheckerconsts.sunselectlistbox
+msgid "Unselect all files"
+msgstr "Remover todas as selecções"
+
+#: pocheckerconsts.suntranslatedstrings
+msgid "Untranslated strings"
+msgstr "Cadeias por traduzir."
+
+#: pocheckerconsts.suntranslatedstringstotal
+#, object-pascal-format
+msgid "Untranslated strings (total: %s)"
+msgstr "Cadeias por traduzir (total: %s)"
+

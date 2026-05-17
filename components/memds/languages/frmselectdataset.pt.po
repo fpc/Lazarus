@@ -1,0 +1,50 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: frmselectdataset.scancelbtn
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: frmselectdataset.scaption
+msgid "Select dataset to copy from"
+msgstr "Seleccionar conjunto de dados de onde copiar"
+
+#: frmselectdataset.scopymeta
+msgid "Copy only metadata"
+msgstr "Copiar só metadados"
+
+#: frmselectdataset.sdataset
+msgid "&Dataset to copy from:"
+msgstr "Conjunto de &dados de onde copiar:"
+
+#: frmselectdataset.serrcomponentnotfound
+#, object-pascal-format
+msgid "Error: Component \"%s\" not found"
+msgstr "Erro: componente \"%s\" não encontrado"
+
+#: frmselectdataset.serrselectdataset
+msgid "Please select a dataset first"
+msgstr "Por favor, seleccione um conjunto de dados primeiro"
+
+#: frmselectdataset.smenucopydataset
+msgid "Copy data from Dataset"
+msgstr "Copiar dados do conjunto de dados"
+
+#: frmselectdataset.smenucreatedataset
+msgid "Create dataset"
+msgstr "Criar conjunto de dados"
+
+#: frmselectdataset.sokbtn
+msgid "OK"
+msgstr "Aceitar"
+

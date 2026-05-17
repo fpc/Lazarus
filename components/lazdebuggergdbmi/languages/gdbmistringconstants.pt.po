@@ -1,0 +1,215 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: gdbmistringconstants.dlggroupdebugger
+msgid "Debugger"
+msgstr "Depurador"
+
+#: gdbmistringconstants.gdbmibreakpointerroronruncommand
+#, object-pascal-format
+msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
+msgstr "O depurador encontrou um erro ao tentar executar/avançar passo a passo a aplicação:%0:s%0:s%1:s%0:s%0:sClique erm Aceitar para remover os pontos de interrupção e continuar a depuração (em pausa), corrigir o problema ou seleccionar um comando de execução alternativo.%0:sClique em Parar para terminar a sessão de depuração."
+
+#: gdbmistringconstants.gdbmicommandstartapplicationerror
+#, object-pascal-format
+msgid "The application could not be started:%0:s%1s"
+msgstr "Não foi possível iniciar a aplicação:%0:s%1s"
+
+#: gdbmistringconstants.gdbmicommandstartmainbreakerror
+#, object-pascal-format
+msgid "The debugger could not set a breakpoint on the application's entry point.%0:sThis may be caused by missing debug info."
+msgstr "O depurador não conseguiu definir um ponto de interrupção no ponto de entrada da aplicação.%0:sIsto pode dever-se à falta de informações de depuração."
+
+#: gdbmistringconstants.gdbmicommandstartmainrunerror
+#, object-pascal-format
+msgid "The debugger could not run the application.%0:sThis may be caused by missing debug info."
+msgstr "O depurador não conseguiu executar a aplicação.%0:sIsto pode dever-se à falta de informações de depuração."
+
+#: gdbmistringconstants.gdbmicommandstartmainrunnopiderror
+#, object-pascal-format
+msgid "The debugger failed to get the application's PID.%0:sThis may be caused by missing debug info."
+msgstr "O depurador não conseguiu obter o PID da aplicação.%0:sIsto pode dever-se à falta de informações de depuração."
+
+#: gdbmistringconstants.gdbmicommandstartmainruntostoperror
+#, object-pascal-format
+msgid "The debugger was unable to initialize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
+msgstr "O depurador não conseguiu inicializar-se.%0:sA aplicação foi executada (e encerrada) antes de o depurador ter conseguido definir quaisquer pontos de interrupção. %0:sIsto pode dever-se à falta de informações de depuração."
+
+#: gdbmistringconstants.gdbmierroronruncommand
+#, object-pascal-format
+msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
+msgstr "O depurador encontrou um erro ao tentar executar/avançar passo a passo a aplicação:%0:s%0:s%1:s%0:s%0:sClique em Aceitar para continuar a depuração (em pausa) e corrigir o problema, ou escolha um comando de execução alternativo.%0:sClique em Parar para terminar a sessão de depuração."
+
+#: gdbmistringconstants.gdbmierroronruncommandwithwarning
+#, object-pascal-format
+msgid "%0:s%0:sIn addition to the error the following warning was encountered:%0:s%0:s%1:s"
+msgstr "%0:s%0:sPara além do erro, foi detectado o seguinte aviso:%0:s%0:s%1:s"
+
+#: gdbmistringconstants.gdbmierrorstategenericinfo
+#, object-pascal-format
+msgid "Error in: %1:s %0:s"
+msgstr "Erro em: %1:s %0:s"
+
+#: gdbmistringconstants.gdbmierrorstateinfocommanderror
+#, object-pascal-format
+msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sreturned the error:%0:s\"%2:s\"%0:s"
+msgstr "%0:sO comando GDB:%0:s\"%1:s\"%0:sdevolveu o erro:%0:s\"%2:s\"%0:s"
+
+#: gdbmistringconstants.gdbmierrorstateinfocommandnoresult
+#, object-pascal-format
+msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sdid not return any result.%0:s"
+msgstr "%0:sO comando GDB:%0:s\"%1:s\"%0:snão devolveu resultados.%0:s"
+
+#: gdbmistringconstants.gdbmierrorstateinfofailedread
+#, object-pascal-format
+msgid "%0:sCould not read output from GDB.%0:s"
+msgstr "%0:sImpossível ler a saída do GDB.%0:s"
+
+#: gdbmistringconstants.gdbmierrorstateinfofailedwrite
+#, object-pascal-format
+msgid "%0:sCould not send a command to GDB.%0:s"
+msgstr "%0:sImpossível enviar um comando ao GDB.%0:s"
+
+#: gdbmistringconstants.gdbmierrorstateinfogdbgone
+#, object-pascal-format
+msgid "%0:sThe GDB process is no longer running.%0:s"
+msgstr "%0:sO porcesso GDB já não está em execução.%0:s"
+
+#: gdbmistringconstants.gdbmieventlogdebugoutput
+#, object-pascal-format
+msgid "Debug Output: %s"
+msgstr "Saída da depuração: %s"
+
+#: gdbmistringconstants.gdbmieventloggdbinternalerror
+#, object-pascal-format
+msgid "GDB has encountered an internal error: %s"
+msgstr "O GDB encontrou um erro interno: %s"
+
+#: gdbmistringconstants.gdbmieventlognosymbols
+#, object-pascal-format
+msgid "File '%s' has no debug symbols"
+msgstr "O ficheiro \"%s\" não tem símbolos de depuração"
+
+#: gdbmistringconstants.gdbmieventlogprocessexitcode
+#, object-pascal-format
+msgid "Process Exit: %s"
+msgstr "Saída do processo: %s"
+
+#: gdbmistringconstants.gdbmieventlogprocessexitnormally
+msgid "Process Exit: normally"
+msgstr "Saída do processo: normalmente"
+
+#: gdbmistringconstants.gdbmieventlogprocessstart
+#, object-pascal-format
+msgid "Process Start: %s"
+msgstr "Início do processo: %s"
+
+#: gdbmistringconstants.gdbmifailedtolaunchexternaldbg
+msgid "Failed to create process for GDB"
+msgstr "Falha ao criar processo para o GDB"
+
+#: gdbmistringconstants.gdbmifailedtoterminategdb
+#, object-pascal-format
+msgid "The IDE was unable to terminate the GDB process. This process may be left running outside the control of IDE.%0:sTo ensure the process is not affecting your System, you should locate and terminate it yourself."
+msgstr "O IDE não conseguiu encerrar o processo do GDB. Este processo poderá continuar em execução fora do controlo do IDE.%0:sPara garantir que o processo não está a afectar o seu sistema, deve localizá-lo e encerrá-lo manualmente."
+
+#: gdbmistringconstants.gdbmifailedtoterminategdbtitle
+msgid "GDB did not terminate"
+msgstr "O GDB não terminou"
+
+#: gdbmistringconstants.gdbmifatalerroroccurred
+#, object-pascal-format
+msgid "Unrecoverable error: \"%s\""
+msgstr "Erro irrecuperável: \"%s\""
+
+#: gdbmistringconstants.gdbmigdbinternalerror
+#, object-pascal-format
+msgid "GDB has encountered an internal error: %0:sPress \"Ok\" to continue debugging. This may NOT be safe.%0:sPress \"Stop\" to end the debug session."
+msgstr "O GDB encontrou um erro interno: %0:sClique em Aceitar para continuar a depuração. Isto pode NÃO ser seguro. %0:sClique em Parar para terminar a sessão de depuração."
+
+#: gdbmistringconstants.gdbmigdbinternalerrorinfo
+#, object-pascal-format
+msgid "While executing the command: %0:s\"%2:s\"%0:sgdb reported:%0:s\"%1:s\"%0:s"
+msgstr "Ao executar o comando: %0:s\"%2:s\"%0:so gdb relatou:%0:s\"%1:s\"%0:s"
+
+#: gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
+#, object-pascal-format
+msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
+msgstr "Clique em Ignorar para continuar a depuração. Isto pode NÃO ser seguro. Clique em Abortar para parar o depurador.%0:sExcepção: %1:s com a mensagem «%2:s»%0:sContexto: %4:s. Estado: %5:s %0:s%0:s%3:s"
+
+#: gdbmistringconstants.gdbmisfailedinitproc
+msgid "Failed to execute the initialization process"
+msgstr "Não foi possível executar o processo de inicialização"
+
+#: gdbmistringconstants.gdbmisfailedinitprocwaitonexit
+#, object-pascal-format
+msgid "Failed on wait on exit. Status: %d Code: %d"
+msgstr "Falha na espera na saída. Estado: %d Código: %d"
+
+#: gdbmistringconstants.gdbmisnoasyncmode
+msgid "GDB does not support async mode"
+msgstr "O GDB não suporta modo assíncrono"
+
+#: gdbmistringconstants.gdbmithedebuggerexperiencedanunknowncondition
+msgid "The debugger experienced an unknown condition"
+msgstr "O depurador encontrou uma condição desconhecida"
+
+#: gdbmistringconstants.gdbmitimeoutforcmd
+#, object-pascal-format
+msgid "Time-out for command: \"%s\""
+msgstr "O comando expirou: \"%s\""
+
+#: gdbmistringconstants.gdbmiwarningunknowbreakpoint
+#, object-pascal-format
+msgid "The debugger reached an unexpected %1:s%0:s%0:sPress \"Ok\" to continue debugging (paused).%0:sPress \"Stop\" to end the debug session."
+msgstr "O depurador encontrou um inesperado %1:s%0:s%0:s. Clique em Aceitar para continuar a depuração (em pausa).%0:sClique em Parar para terminar a sessão de depuração."
+
+#: gdbmistringconstants.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
+msgid "The GNU debugger through SSH allows to remote debug via a SSH connection. See docs/RemoteDebugging.txt for details. The path must contain the SSH client. Use SSH_Startup_Options for the hostname and optional username. Use Remote_GDB_Exe for the filename of GDB on the remote computer."
+msgstr "O depurador GNU através de SSH permite a depuração remota através de uma ligação SSH. Consulte docs/RemoteDebugging.txt para obter mais detalhes. O caminho deve conter o cliente SSH. Utilize SSH_Startup_Options para o nome do anfitrião e, opcionalmente, o nome de utilizador. Utilize Remote_GDB_Exe para o nome do ficheiro do GDB no computador remoto."
+
+#: gdbmistringconstants.lisresponsecontinue
+#, object-pascal-format
+msgid "Response: %sContinue?"
+msgstr "Resposta: %sContinuar?"
+
+#: gdbmistringconstants.lissshdebuggertimeout
+msgid "Timeout has occurred:"
+msgstr "Ocorreu um tempo limite:"
+
+#: gdbmistringconstants.lisunexpectedresultthedebuggerwillterminate
+#, object-pascal-format
+msgid "Unexpected result:%sThe debugger will terminate."
+msgstr "Resultado inesperado: %s O depurador será encerrado."
+
+#: gdbmistringconstants.synffailedtodownloadapplicationexecutable
+msgid "Failed to download application executable"
+msgstr "Não foi possível transferir o ficheiro executável da aplicação"
+
+#: gdbmistringconstants.synffailedtoinitializedebugger
+msgid "Failed to initialize debugger"
+msgstr "Falha ao inicializar o depurador"
+
+#: gdbmistringconstants.synffailedtoinitializethedebuggersetpascalfailed
+msgid "Failed to initialize the debugger (set pascal failed)"
+msgstr "Não foi possível inicializar o depurador (falha na configuração do Pascal)"
+
+#: gdbmistringconstants.synffailedtoloadapplicationexecutable
+msgid "Failed to load application executable"
+msgstr "Falha ao carregar o executável da aplicação"
+
+#: gdbmistringconstants.synfthedebuggerwasunabletosetallbreakpointsduringiniti
+#, object-pascal-format
+msgid "The debugger was unable to set all breakpoints during initialization.%0:sYou may wish to check if all sources were compiled with debug-info.%0:sPress OK to ignore this and continue."
+msgstr "O depurador não conseguiu definir todos os pontos de interrupção durante a inicialização.%0:sPode ser aconselhável verificar se todos os ficheiros-fonte foram compilados com informações de depuração.%0:sClique em Aceitarpara ignorar isto e continuar."
+

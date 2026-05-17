@@ -1,0 +1,89 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: sdb_consts.scancelrecordsexported
+#, object-pascal-format
+msgid "Exported %d before user canceled."
+msgstr "Exportados %d antes do utilizador cancelar."
+
+#: sdb_consts.sdb_availableexportformats
+msgid "Available export formats:"
+msgstr "Formatos de exportação disponíveis:"
+
+#: sdb_consts.sdb_cancel
+msgid "&Cancel"
+msgstr "&Cancelar"
+
+#: sdb_consts.sdb_configuredataexport
+msgid "Configure data export"
+msgstr "Configurar exportação de dados"
+
+#: sdb_consts.sdb_exportprogress
+msgid "Export progress"
+msgstr "Progresso da exportação"
+
+#: sdb_consts.sdb_fields
+msgid "Fields"
+msgstr "Campos"
+
+#: sdb_consts.sdb_filename
+msgid "Filename:"
+msgstr "Nome de ficheiro:"
+
+#: sdb_consts.sdb_formatting
+msgid "Formatting"
+msgstr "A formatar"
+
+#: sdb_consts.sdb_moveselectedfielddown
+msgid "Move selected field down"
+msgstr "Mover campo seleccionado abaixo"
+
+#: sdb_consts.sdb_moveselectedfieldup
+msgid "Move selected field up"
+msgstr "Mover campo seleccionado acima"
+
+#: sdb_consts.sdb_propertiesforselectedfield
+msgid "Properties for selected field:"
+msgstr "Propriedades para o campo seleccionado:"
+
+#: sdb_consts.sdb_selectdataexportformat
+msgid "Select data export Format"
+msgstr "Seleccionar formato de exportação dos dados"
+
+#: sdb_consts.sdb_selectfieldstoexport
+msgid "Select fi&elds to export"
+msgstr "Seleccionar campos a &exportar"
+
+#: sdb_consts.serrnodatasetassigned
+msgid "DataExporter has no Dataset assigned."
+msgstr "O DataExporter não tem Dataset atribuído."
+
+#: sdb_consts.serropeningdataset
+#, object-pascal-format
+msgid "Could not open dataset for exporting: %s"
+msgstr "Impossível abrir dataset para exportação: %s"
+
+#: sdb_consts.sexecute
+msgid "Execute ..."
+msgstr "Executar..."
+
+#: sdb_consts.snrecordsexported
+#, object-pascal-format
+msgid "Successfully exported %d records."
+msgstr "Exportados %d registos com sucesso."
+
+#: sdb_consts.sprogress
+#, object-pascal-format
+msgid "Exporting %d records"
+msgstr "A exportar %d registos"
+

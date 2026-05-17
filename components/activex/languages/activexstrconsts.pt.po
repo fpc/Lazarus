@@ -1,0 +1,46 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: activexstrconsts.axconvertdependanttypelibs
+msgid "Convert dependant typelibs"
+msgstr "Converter typelibs dependentes"
+
+#: activexstrconsts.axcreatepackage
+msgid "Create package"
+msgstr "Criar pacote"
+
+#: activexstrconsts.axcreatevisualcomponenttactivexcontainerdescendant
+msgid "Create visual component (TActiveXContainer descendant)"
+msgstr "Criar componente visual (descendente de TActiveXContainer)"
+
+#: activexstrconsts.axfilecontainingtypelibrary
+msgid "File containing type library:"
+msgstr "Ficheiro que contém a biblioteca de tipos:"
+
+#: activexstrconsts.aximporttypelibrary
+msgid "Import Type Library"
+msgstr "Importar biblioteca de tipos"
+
+#: activexstrconsts.aximporttypelibrarymenu
+msgid "Import Type Library ..."
+msgstr "Importar biblioteca de tipos..."
+
+#: activexstrconsts.axselectdirectorytostorepackageplpk
+#, object-pascal-format
+msgid "Select directory to store package %sP.lpk"
+msgstr "Seleccione a pasta onde deseja gravar o pacote %sP.lpk"
+
+#: activexstrconsts.axtypelibraryfilestlbdllexeocxolbtlbdllexeocxolballf
+msgid "Type library files (*.tlb;*.dll;*.exe;*.ocx;*.olb)|*.tlb;*.dll;*.exe;*.ocx;*.olb|All Files (*.*)|*.*"
+msgstr "Ficheiros da biblioteca de tipos (*.tlb;*.dll;*.exe;*.ocx;*.olb)|*.tlb;*.dll;*.exe;*.ocx;*.olb|Todos os ficheiros (*.*)|*.*"
+

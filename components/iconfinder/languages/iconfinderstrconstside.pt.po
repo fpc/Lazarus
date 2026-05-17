@@ -1,0 +1,66 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: iconfinderstrconstside.rsgraphpropeditor_iconfinder
+msgid "Icon Finder ..."
+msgstr "Localizador de ícones..."
+
+#: iconfinderstrconstside.rsiconfinderide_caption
+#, object-pascal-format
+msgid "Icon Finder (%d out of %d icons)"
+msgstr "Localizador de ícones (%d de %d ícones)"
+
+#: iconfinderstrconstside.rsiconfinderide_folderhint
+msgid "Icon folder management"
+msgstr "Gestão de pastas com ícones"
+
+#: iconfinderstrconstside.rsiconfinderide_folders
+msgid "Folders ..."
+msgstr "Pastas..."
+
+#: iconfinderstrconstside.rsiconfinderide_general
+msgid "General"
+msgstr "Geral"
+
+#: iconfinderstrconstside.rsiconfinderide_iconlibrary
+msgid "Icon Finder"
+msgstr "Localizador de ícones"
+
+#: iconfinderstrconstside.rsiconfinderide_metadata
+msgid "Metadata ..."
+msgstr "Metadados..."
+
+#: iconfinderstrconstside.rsiconfinderide_metadatahint
+msgid "Edit icon metadata"
+msgstr "Editar metadados do ícone"
+
+#: iconfinderstrconstside.rsiconfinderide_savemetadata
+msgid "Save metadata"
+msgstr "Gravar metadados"
+
+#: iconfinderstrconstside.rsiconfinderide_savemetadatahint
+msgid "Save icon metadata files"
+msgstr "Guardar ficheiros de metadados de ícones"
+
+#: iconfinderstrconstside.rsiconfinderide_select
+msgid "Select"
+msgstr "Seleccionar"
+
+#: iconfinderstrconstside.rsimglisteditor_addfromiconfinder
+msgid "Add from Icon Finder ..."
+msgstr "Adicionar do localizador de ícones..."
+
+#: iconfinderstrconstside.rsimglisteditor_replacefromiconfinder
+msgid "Replace by Icon Finder ..."
+msgstr "Substituir pelo localizador de ícones..."
+

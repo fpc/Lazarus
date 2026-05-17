@@ -1,0 +1,49 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: charactermapfrm.lisbmponly
+msgid "BMP Only"
+msgstr ""
+
+#: charactermapfrm.lisbmponlyhint
+msgid "Basic Multilingual Plane Only"
+msgstr ""
+
+#: charactermapfrm.lischaractermap
+msgid "Character Map"
+msgstr "Mapa de caracteres"
+
+#: charactermapfrm.lischarsize
+msgid "Character Size"
+msgstr "Tamanho do carácter"
+
+#: charactermapfrm.liscodepage
+msgid "Code Page"
+msgstr "Página de código"
+
+#: charactermapfrm.lisinsertcharacter
+msgid "Insert from Character Map..."
+msgstr "Inserir do mapa de caracteres..."
+
+#: charactermapfrm.lisrange
+msgid "Range"
+msgstr "Intervalo"
+
+#: charactermapfrm.lisscript
+msgid "Script"
+msgstr ""
+
+#: charactermapfrm.lissortunicoderangelistalphabetically
+msgid "Sort Unicode range list alphabetically"
+msgstr "Ordenar a lista de intervalos Unicode por ordem alfabética"
+

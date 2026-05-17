@@ -1,0 +1,267 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: strtestcaseopts.rsalltests
+msgid "All Tests"
+msgstr "Todos os testes"
+
+#: strtestcaseopts.rsautomaticallyfetchtestlistonopen
+msgid "Automatically fetch test list on open"
+msgstr "Obter automaticamente a lista de testes ao abrir"
+
+#: strtestcaseopts.rscouldnotdete
+#, object-pascal-format
+msgid "Could not determine class and method from test path \"%s\""
+msgstr "Não foi possível determinar a classe e o método a partir do caminho do teste \"%s\""
+
+#: strtestcaseopts.rserrors
+#, object-pascal-format
+msgid "%s    Errors: %s"
+msgstr "%s    Erros: %s"
+
+#: strtestcaseopts.rsexception
+#, object-pascal-format
+msgid "Exception: %s"
+msgstr "Excepção: %s"
+
+#: strtestcaseopts.rsexceptioncla
+#, object-pascal-format
+msgid "Exception class: %s"
+msgstr "Classe da excepção: %s"
+
+#: strtestcaseopts.rsexceptionmes
+#, object-pascal-format
+msgid "Exception message: %s"
+msgstr "Mensagem da excepção: %s"
+
+#: strtestcaseopts.rsfailures
+#, object-pascal-format
+msgid "%s     Failures: %s"
+msgstr "%s     Falhas: %s"
+
+#: strtestcaseopts.rsmessage
+#, object-pascal-format
+msgid "Message: %s"
+msgstr "Mensagem: %s"
+
+#: strtestcaseopts.rsnexterror
+msgid "Next error"
+msgstr "Erro seguinte"
+
+#: strtestcaseopts.rspreviouserror
+msgid "Previous error"
+msgstr "Erro anterior"
+
+#: strtestcaseopts.rsruns
+#, object-pascal-format
+msgid "Runs: %s/%s"
+msgstr "Execuções: %s/%s"
+
+#: strtestcaseopts.rsserverpath
+msgid "Server path"
+msgstr "Caminho do servidor"
+
+#: strtestcaseopts.rsserverport
+msgid "Server port"
+msgstr "Porta do servidor"
+
+#: strtestcaseopts.rstestinsighttitle
+msgid "Test Insight"
+msgstr "Test Insight"
+
+#: strtestcaseopts.sactcheckall
+msgid "Select all tests"
+msgstr "Seleccionar todos os testes"
+
+#: strtestcaseopts.sactcheckcurrentsuite
+msgid "Select current suite"
+msgstr "Seleccionar o conjunto actual"
+
+#: strtestcaseopts.sactcloseform
+msgid "Quit"
+msgstr "Sair"
+
+#: strtestcaseopts.sactcloseformh
+msgid "Quit testing"
+msgstr "Parar de testar"
+
+#: strtestcaseopts.sactcopyalltoclipboard
+msgid "Copy text to clipboard"
+msgstr "Copiar texto para a prancheta"
+
+#: strtestcaseopts.sactcopyalltoclipboardh
+msgid "Copy the entire text to clipboard"
+msgstr "Copiar todo o texto para a prancheta"
+
+#: strtestcaseopts.sactcopymessagetoclipboard
+msgctxt "strtestcaseopts.sactcopymessagetoclipboard"
+msgid "Copy message to clipboard"
+msgstr "Copiar mensagem para a prancheta"
+
+#: strtestcaseopts.sactrunaction
+msgid "&Run all"
+msgstr "Executa&r todos"
+
+#: strtestcaseopts.sactrunactionh
+msgid "Run all checked tests"
+msgstr "Executar todos os testes marcados"
+
+#: strtestcaseopts.sactrunhighlightedtest
+msgid "Run selected"
+msgstr "Executar seleccionado"
+
+#: strtestcaseopts.sactrunhighlightedtesth
+msgid "Run selected test"
+msgstr "Executar o teste seleccionado"
+
+#: strtestcaseopts.sactuncheckall
+msgid "Deselect all tests"
+msgstr "Desmarcar todos os textos"
+
+#: strtestcaseopts.sactuncheckcurrentsuite
+msgid "Deselect current suite"
+msgstr "Desmarcar o conjunto actual"
+
+#: strtestcaseopts.sbtncreate
+msgid "Create unit"
+msgstr "Criar unidade"
+
+#: strtestcaseopts.schksetup
+msgid "Create Setup Method"
+msgstr "Criar método de configuração"
+
+#: strtestcaseopts.schktear
+msgid "Create TearDown method"
+msgstr "Criar método TearDown"
+
+#: strtestcaseopts.screatefirsttestcase
+msgid "&Create first test case"
+msgstr "&Criar primeiro caso a testar"
+
+#: strtestcaseopts.sdefault
+msgid "Default"
+msgstr "Predefinição"
+
+#: strtestcaseopts.sdefaultoutputformat
+msgid "Default output &format"
+msgstr "&Formato de saída predefinido"
+
+#: strtestcaseopts.sfpcunconsoletestapp
+msgid "FPCUnit Console Test Application"
+msgstr "Aplicação de teste da consola FPCUnit"
+
+#: strtestcaseopts.sfpcunconsoletestdesc
+msgid "An application to run FPCUnit test cases in console mode."
+msgstr "Uma aplicação para executar casos de teste do FPCUnit no modo de consola."
+
+#: strtestcaseopts.sfpcuntestapp
+msgid "FPCUnit Test Application"
+msgstr "Aplicação de teste da unidade FPCUnit"
+
+#: strtestcaseopts.sfpcuntestappdesc
+msgid "An application to run FPCUnit test cases."
+msgstr "Uma aplicação para executar casos de teste do FPCUnit."
+
+#: strtestcaseopts.sfpcuntestcase
+msgid "FPCUnit Test Case"
+msgstr "Caso de teste FPCUnit"
+
+#: strtestcaseopts.sfpcuntestcasedesc
+msgid "A unit containing a FPCUnit Test Case."
+msgstr "Uma unidade que contém um caso de teste FPCUnit."
+
+#: strtestcaseopts.sfrmguitest
+msgid "FPCUnit - run unit test"
+msgstr "FPCUnit - executar teste da unidade"
+
+#: strtestcaseopts.sfrmtest
+msgid "TestCase Options"
+msgstr "Opções dos casos de teste"
+
+#: strtestcaseopts.sgrpfixture
+msgid "Fixture"
+msgstr "Calendário"
+
+#: strtestcaseopts.sgrpnames
+msgid "Names"
+msgstr "Nomes"
+
+#: strtestcaseopts.slatex
+msgid "LaTeX"
+msgstr "LaTeX"
+
+#: strtestcaseopts.slbldefault
+msgid "Default Test Name"
+msgstr "Nome predefinido do teste"
+
+#: strtestcaseopts.smiactions
+msgid "Actions"
+msgstr "Acções"
+
+#: strtestcaseopts.smicollapsenodes
+msgid "Collapse Nodes"
+msgstr "Colapsar nós"
+
+#: strtestcaseopts.smiedit
+msgid "Edit"
+msgstr "Editar"
+
+#: strtestcaseopts.smiexpandnodes
+msgid "Expand Nodes"
+msgstr "Expandir nós"
+
+#: strtestcaseopts.smitesttree
+msgid "Test tree"
+msgstr "Árvore de testes"
+
+#: strtestcaseopts.snavigationnotavailable
+msgid "Source navigation not available."
+msgstr "Navegação do código indisponível."
+
+#: strtestcaseopts.snewfpcunitprogramtor
+msgid "New FPCUnit console testrunner program"
+msgstr "Novo programa de execução de testes da consola FPCUnit"
+
+#: strtestcaseopts.snoexecutableavailable
+#, object-pascal-format
+msgid "Test executable is not available: \"%s\""
+msgstr "O executável de teste não está disponível: \"%s\""
+
+#: strtestcaseopts.snotestprojectconfigured
+msgid "No test project configured."
+msgstr "Nenhum projecto de testes configurado."
+
+#: strtestcaseopts.splaintext
+msgid "Plain text"
+msgstr "Texto simples"
+
+#: strtestcaseopts.splaintextwithouttimi
+msgid "Plain text without timings"
+msgstr "Texto simples sem indicação de duração"
+
+#: strtestcaseopts.srunalltests
+msgid "&Run all tests by default"
+msgstr "Executa&r todos por padrão"
+
+#: strtestcaseopts.susetextinsight
+msgid "Use &Test Insight to communicate results to the IDE"
+msgstr "Utilize o &Test Insight para comunicar os resultados ao IDE"
+
+#: strtestcaseopts.swriteyourowntest
+msgid "Write your own test"
+msgstr "Escreva o seu próprio teste"
+
+#: strtestcaseopts.sxml
+msgid "XML"
+msgstr "XML"
+

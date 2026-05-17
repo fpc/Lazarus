@@ -1,0 +1,224 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: dockedstrconsts.sallowsizingcaption
+msgid "Allow size changing"
+msgstr "Permitir alteração do tamanho"
+
+#: dockedstrconsts.sallowsizinghint
+msgid "Grips can change size in Anchor Editor"
+msgstr "Os puxadores podem mudar de tamanho no editor de âncoras"
+
+#: dockedstrconsts.sanchorbottomcolorcaption
+msgid "Bottom Anchor"
+msgstr "Âncora inferior"
+
+#: dockedstrconsts.sanchorcontrolbordercaption
+msgid "Border Around Control"
+msgstr "Contorno do controlo"
+
+#: dockedstrconsts.sanchorcontrolcolorcaption
+msgid "Control Background"
+msgstr "Fundo do controlo"
+
+#: dockedstrconsts.sanchorleftcolorcaption
+msgid "Left Anchor"
+msgstr "Âncora esquerda"
+
+#: dockedstrconsts.sanchorrightcolorcaption
+msgid "Right Anchor"
+msgstr "Âncora direita"
+
+#: dockedstrconsts.sanchors
+msgid "Anchors"
+msgstr "Âncoras"
+
+#: dockedstrconsts.sanchortabvisiblecaption
+msgid "Show Anchors Tab"
+msgstr "Mostrar separador de âncoras"
+
+#: dockedstrconsts.sanchortabvisiblehint
+msgid "Show Anchor Editor"
+msgstr "Mostrar editor de âncoras"
+
+#: dockedstrconsts.sanchortargetcolorcaption
+msgid "Anchor Target"
+msgstr "Alvo da âncora"
+
+#: dockedstrconsts.sanchortopcolorcaption
+msgid "Top Anchor"
+msgstr "Âncora superior"
+
+#: dockedstrconsts.sargumentoutofrange
+msgctxt "dockedstrconsts.sargumentoutofrange"
+msgid "Argument out of range."
+msgstr "Argumento fora do intervalo."
+
+#: dockedstrconsts.sattachcontrol
+msgid "Attach Control"
+msgstr "Anexar controlo"
+
+#: dockedstrconsts.sattachpoint
+msgid "Attach Control Sides"
+msgstr "Anexar lados do controlo"
+
+#: dockedstrconsts.sattachside
+msgid "Attach Control Side"
+msgstr "Anexar lado do controlo"
+
+#: dockedstrconsts.scaptiondockedformeditor
+msgid "Docked Form Editor"
+msgstr "Editor de formulários ancorado"
+
+#: dockedstrconsts.scapturedistancecaption
+msgid "Capture Distance"
+msgstr "Distância de captura"
+
+#: dockedstrconsts.scapturedistancehint
+msgid "Minimal distance to capture a control with mouse"
+msgstr "Distância mínima para capturar um controlo com o rato"
+
+#: dockedstrconsts.scirculardependency
+msgid "This will create a circular dependency."
+msgstr "Isto criará uma dependência circular."
+
+#: dockedstrconsts.scode
+msgctxt "dockedstrconsts.scode"
+msgid "Code"
+msgstr "Código"
+
+#: dockedstrconsts.scolorscaption
+msgid "Colors"
+msgstr "Cores"
+
+#: dockedstrconsts.sdesigner
+msgctxt "dockedstrconsts.sdesigner"
+msgid "Form"
+msgstr "Formulário"
+
+#: dockedstrconsts.sdetachcontrol
+msgid "Detach Control"
+msgstr "Desanexar controlo"
+
+#: dockedstrconsts.sdetachpoint
+msgid "Detach Control Sides"
+msgstr "Desanexar lados do controlo"
+
+#: dockedstrconsts.sdetachside
+msgid "Detach Control Side"
+msgstr "Desanexar lado do controlo"
+
+#: dockedstrconsts.senabledockeddsgner
+msgid "Show the form-editor as (docked) tab in the editor window (Requires IDE restart)"
+msgstr "Mostrar o editor de formulários como um separador (ancorado) na janela do editor (requer reinício do IDE)"
+
+#: dockedstrconsts.setupdesignerclassic
+msgid "Classic Form Editor (floating):"
+msgstr "Editor de formulários clássico (flutuante):"
+
+#: dockedstrconsts.setupdesignerdocked
+msgid "The form editor is part of the IDE's source editor (tabbed interface)."
+msgstr "O editor de formulários faz parte do editor de código do IDE (interface com separadores)."
+
+#: dockedstrconsts.setupdesignerfloat
+msgid "The form editor shows the edited form as a normal window."
+msgstr "O editor de formulários apresenta o formulário editado numa janela normal."
+
+#: dockedstrconsts.setupdesignerinfo
+msgid "The \"classic\" designer can be positioned on your screen independent of other parts of the IDE. The \"modern\" docked designer will be embedded into the source-edit window, and you will have a tab to toggle between source and form. You can open a 2nd source-edit window to see both at the same time."
+msgstr "O desenhador «clássico» pode ser posicionado no ecrã independentemente de outras partes do IDE. O desenhador «moderno» ancorado ficará integrado na janela de edição de código-fonte, e terá um separador para alternar entre o código-fonte e o formulário. Pode abrir uma segunda janela de edição de código-fonte para ver ambos ao mesmo tempo."
+
+#: dockedstrconsts.setupdesignermodern
+msgid "Modern Form Editor (docked/tabbed):"
+msgstr "Editor de formulários moderno (ancorado):"
+
+#: dockedstrconsts.setupmultiwindowideoption
+msgid "You can change this in the IDE options under: \"Docked Form Editor\""
+msgstr "Pode alterar esta configuração nas opções do IDE, em: \"Editor de formulários ancorado\""
+
+#: dockedstrconsts.sforcerefreshingcaption
+msgid "Force Refreshing At Sizing"
+msgstr "Forçar actualizção ao redimensionar"
+
+#: dockedstrconsts.sforcerefreshinghint
+msgid "Force refreshing form when user is sizing it"
+msgstr "Forçar a actualização do formulário quando o utilizador o redimensionar"
+
+#: dockedstrconsts.sformeditor
+msgid "Form editor / Designer"
+msgstr "Editor/Desenhador de formulário"
+
+#: dockedstrconsts.sidelayout
+msgid "IDE Layout"
+msgstr "Disposição do IDE"
+
+#: dockedstrconsts.smouseborderfactorcaption
+msgid "Mouse cursor factor for BorderSpacing property"
+msgstr "Factor do cursor do rato para a propriedade BorderSpacing"
+
+#: dockedstrconsts.smouseborderfactorhint
+msgid "Mouse cursor factor is used to set small values of BorderSpacing property more precisely"
+msgstr "O factor do cursor do rato é utilizado para definir valores pequenos da propriedade BorderSpacing com maior precisão"
+
+#: dockedstrconsts.sresizercolorcaption
+msgid "Resizer Color"
+msgstr "Cor do redimensionamento"
+
+#: dockedstrconsts.sresizercolorhint
+msgid "Color of resizer bars"
+msgstr "Cor das barras de redimensionamento"
+
+#: dockedstrconsts.stabpositionbottom
+msgid "Bottom"
+msgstr "Fundo"
+
+#: dockedstrconsts.stabpositioncaption
+msgid "Tab Position"
+msgstr "Posição do separador"
+
+#: dockedstrconsts.stabpositionhint
+msgid "Position of Code, Form, Anchors tabs"
+msgstr "Posição dos separadores «Código», «Formulário» e «Âncoras»"
+
+#: dockedstrconsts.stabpositionleft
+msgid "Left"
+msgstr "Esquerda"
+
+#: dockedstrconsts.stabpositionright
+msgid "Right"
+msgstr "Direita"
+
+#: dockedstrconsts.stabpositiontop
+msgid "Top"
+msgstr "Cimo"
+
+#: dockedstrconsts.streataligncaption
+msgid "Automatically treat Align properties"
+msgstr "Tratar automaticamente propriedades de alinhamento"
+
+#: dockedstrconsts.streatalignhint
+msgid "Automatically replace Align properties with appropriate Anchors"
+msgstr "Substituir automaticamente as propriedades de alinhamento pelas âncoras adequadas"
+
+#: dockedstrconsts.streatbordercaption
+msgid "Automatically treat BorderSpacing properties"
+msgstr "Tratar automaticamente as propriedades BorderSpacing"
+
+#: dockedstrconsts.streatborderhint
+msgid "Automatically replace BorderSpacing.Around properties of controls and adapt BorderSpacing.Left/Right/Top/Bottom if needed"
+msgstr "Substituir automaticamente as propriedades BorderSpacing.Around dos controlos e ajustar as propriedades BorderSpacing.Left/Right/Top/Bottom, se necessário"
+
+#: dockedstrconsts.swarningcaption
+msgid "Warning"
+msgstr "Aviso"
+

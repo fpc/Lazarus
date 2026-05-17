@@ -1,0 +1,78 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: ptstrconst.screateindir
+msgid "Create in &directory:"
+msgstr "Criar na &pasta:"
+
+#: ptstrconst.sdescription
+msgid "Description"
+msgstr "Descrição"
+
+#: ptstrconst.sdirect
+msgid "&Directory with templates:"
+msgstr "&Pasta com modelos:"
+
+#: ptstrconst.serrcouldnotcreatedir
+#, object-pascal-format
+msgid "Could not create directory \"%s\""
+msgstr "Impossível criar a pasta \"%s\""
+
+#: ptstrconst.serrfailedtocopyfile
+#, object-pascal-format
+msgid "Failed to copy file \"%s\" to \"%s\""
+msgstr "Falha ao copiar o ficheiro \"%s\" para \"%s\""
+
+#: ptstrconst.serrnosuchtemplate
+#, object-pascal-format
+msgid "\"%s\": No such template."
+msgstr "\"%s\": Não existe tal modelo."
+
+#: ptstrconst.snameforproject
+msgid "&Name for new project:"
+msgstr "&Nome do novo projetco:"
+
+#: ptstrconst.snewfromtemplate
+msgctxt "ptstrconst.snewfromtemplate"
+msgid "New project from template"
+msgstr "Novo projecto a partir de modelo"
+
+#: ptstrconst.snoadditionalvars
+msgid "This project has no additional variables."
+msgstr "Este projecto não tem variáveis adicionais."
+
+#: ptstrconst.sprojecttemplatesettings
+msgid "Project templates options ..."
+msgstr "Opções dos modelos de projecto..."
+
+#: ptstrconst.stemplatecategory
+msgid "Template projects"
+msgstr "Projectos modelo"
+
+#: ptstrconst.sthisproject
+msgid "This project contains some additional variables. Please provide values for these variables."
+msgstr "Este projecto contém algumas variáveis adicionais. Por favor, forneça valores para essas variáveis."
+
+#: ptstrconst.stitle
+msgctxt "ptstrconst.stitle"
+msgid "Project templates settings"
+msgstr "Definições dos modelos de projecto"
+
+#: ptstrconst.svalue
+msgid "Value"
+msgstr "Valor"
+
+#: ptstrconst.svariable
+msgid "Variable"
+msgstr "Variável"
+

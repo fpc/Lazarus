@@ -1,0 +1,129 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: reconstsunit.sabout
+msgid "About ..."
+msgstr "Acerca..."
+
+#: reconstsunit.sallfilesexcutablefilesexeexedlldlldll
+msgid "All files (*.*)|*.*|Excutable files (*.exe)|*.exe|DLL (*.dll)|*.dll"
+msgstr "Todos os ficheiros (*.*)|*.*|Ficheiros executáveis (*.exe)|*.exe|DLL (*.dll)|*.dll"
+
+#: reconstsunit.sallfilessharedlibsoso
+msgid "All files (*)|*|Shared libraries (*.so)|*.so"
+msgstr "Todos os ficheiros (*)|*|Bibliotecas partilhadas (*.so)|*.so"
+
+#: reconstsunit.sbinary
+msgid "Binary view"
+msgstr ""
+
+#: reconstsunit.sbuilddate
+msgid "Build date: "
+msgstr "Data de construção: "
+
+#: reconstsunit.sexit
+msgid "Exit"
+msgstr "Sair"
+
+#: reconstsunit.sfile
+msgid "File"
+msgstr "Ficheiro"
+
+#: reconstsunit.sfpcversion
+msgid "FPC version: "
+msgstr "Versão FPC: "
+
+#: reconstsunit.sheight
+msgid "Height:"
+msgstr ""
+
+#: reconstsunit.shelp
+msgid "Help"
+msgstr "Ajuda"
+
+#: reconstsunit.simage
+msgid "Image"
+msgstr "Imagem"
+
+#: reconstsunit.simageindex
+msgid "Image index:"
+msgstr ""
+
+#: reconstsunit.sindexofcount
+#, object-pascal-format
+msgid "%d of %d"
+msgstr ""
+
+#: reconstsunit.slclversion
+msgid "LCL Version: "
+msgstr "Versão LCL: "
+
+#: reconstsunit.slicense
+msgid "This program is free software under GNU GPL 2 license, see COPYING file"
+msgstr "Este programa é livre sob a GNU GPL 2 license, veja COPIAR o ficheiro"
+
+#: reconstsunit.snextimage
+msgid "Next image"
+msgstr ""
+
+#: reconstsunit.sopen
+msgid "Open ..."
+msgstr "Abrir..."
+
+#: reconstsunit.sotherguiwidgetset
+#, fuzzy
+#| msgid "Other gui"
+msgid "Other GUI"
+msgstr "Outro GUI"
+
+#: reconstsunit.spixelformat
+msgid "Pixel format:"
+msgstr ""
+
+#: reconstsunit.sprevimage
+msgid "Previous image"
+msgstr ""
+
+#: reconstsunit.sresourceexplorer
+msgid "Resource explorer"
+msgstr "Explorador de recursos"
+
+#: reconstsunit.sresources
+msgid "Resources"
+msgstr "Recursos"
+
+#: reconstsunit.ssaveresource
+msgid "Save resource ..."
+msgstr "Gravar recurso..."
+
+#: reconstsunit.sstrings
+msgid "Strings"
+msgstr "Cadeias"
+
+#: reconstsunit.stargetcpu
+msgid "Target CPU: "
+msgstr "CPU alvo: "
+
+#: reconstsunit.stargetos
+msgid "Target OS: "
+msgstr "SO alvo: "
+
+#: reconstsunit.swidgetset
+#, object-pascal-format
+msgid "%s widget set"
+msgstr ""
+
+#: reconstsunit.swidth
+msgid "Width:"
+msgstr ""
+

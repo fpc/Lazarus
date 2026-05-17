@@ -1,0 +1,231 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
+#, object-pascal-format
+msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
+msgid "a directory component in %s does not exist or is a dangling symlink"
+msgstr "Um componente de pasta em %s não existe ou é uma ligação simbólica sem destino"
+
+#: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2
+#, object-pascal-format
+msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2"
+msgid "a directory component in %s does not exist or is a dangling symlink"
+msgstr "Um componente de pasta em %s não existe ou é uma ligação simbólica sem destino"
+
+#: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory
+#, object-pascal-format
+msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory"
+msgid "a directory component in %s is not a directory"
+msgstr "Um componente de pasta em %s não é uma pasta"
+
+#: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2
+#, object-pascal-format
+msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2"
+msgid "a directory component in %s is not a directory"
+msgstr "Um componente de pasta em %s não é uma pasta"
+
+#: lazutilsstrconsts.lrsboolean
+msgid "boolean"
+msgstr "booleano"
+
+#: lazutilsstrconsts.lrscannotexecute
+#, object-pascal-format
+msgid "can not execute %s"
+msgstr "impossível executar %s"
+
+#: lazutilsstrconsts.lrscreatinggdbcatchableerror
+msgid "Creating gdb catchable error:"
+msgstr "A criar erro detectável pelo GDB:"
+
+#: lazutilsstrconsts.lrserrorincode
+msgid "ERROR in code: "
+msgstr "ERRO no código: "
+
+#: lazutilsstrconsts.lrsevalinvalidargcount
+msgid "Invalid number of function arguments"
+msgstr "Número inválido de argumentos da função"
+
+#: lazutilsstrconsts.lrsevalunknownfunction
+#, object-pascal-format
+msgid "Unknown function: \"%s\""
+msgstr "Função desconhecida: \"%s\""
+
+#: lazutilsstrconsts.lrsevalunknownvariable
+#, object-pascal-format
+msgid "Unknown variable: \"%s\""
+msgstr "Variável desconhecida: \"%s\""
+
+#: lazutilsstrconsts.lrsfiledoesnotexist
+#, object-pascal-format
+msgid "file \"%s\" does not exist"
+msgstr "o ficheiro \"%s\" não existe"
+
+#: lazutilsstrconsts.lrsfileisadirectoryandnotanexecutable
+#, object-pascal-format
+msgid "file \"%s\" is a directory and not an executable"
+msgstr "o ficheiro \"%s\" é uma pasta e não um executável"
+
+#: lazutilsstrconsts.lrshasacircularsymboliclink
+#, object-pascal-format
+msgid "%s has a circular symbolic link"
+msgstr "%s tem uma ligação simbólica circular"
+
+#: lazutilsstrconsts.lrsinsufficientmemory
+msgid "insufficient memory"
+msgstr "memória insuficiente"
+
+#: lazutilsstrconsts.lrsisnotasymboliclink
+#, object-pascal-format
+msgid "%s is not a symbolic link"
+msgstr "%s não é uma ligação simbólica"
+
+#: lazutilsstrconsts.lrsisnotexecutable
+#, object-pascal-format
+msgid "%s is not executable"
+msgstr "%s não é executável"
+
+#: lazutilsstrconsts.lrslistindexexceedsbounds
+#, object-pascal-format
+msgctxt "lazutilsstrconsts.lrslistindexexceedsbounds"
+msgid "List index exceeds bounds (%d)"
+msgstr "O índice da lista excede os limites (%d)"
+
+#: lazutilsstrconsts.lrslistmustbeempty
+msgctxt "lazutilsstrconsts.lrslistmustbeempty"
+msgid "List must be empty"
+msgstr "A lista não pode estar vazia"
+
+#: lazutilsstrconsts.lrsmodified
+msgctxt "lazutilsstrconsts.lrsmodified"
+msgid "  modified "
+msgstr "  modificado "
+
+#: lazutilsstrconsts.lrsnodeset
+msgid "node set"
+msgstr "conjunto de nós"
+
+#: lazutilsstrconsts.lrsnumber
+msgid "number"
+msgstr "número"
+
+#: lazutilsstrconsts.lrsparserbadaxisname
+msgid "Invalid axis name"
+msgstr "Nome de eixo inválido"
+
+#: lazutilsstrconsts.lrsparserbadnodetype
+msgid "Invalid node type"
+msgstr "Tipo de nó inválido"
+
+#: lazutilsstrconsts.lrsparserexpectedleftbracket
+msgid "Expected \"(\""
+msgstr "Esperado \"(\""
+
+#: lazutilsstrconsts.lrsparserexpectedrightbracket
+msgid "Expected \")\""
+msgstr "Esperado \")\""
+
+#: lazutilsstrconsts.lrsparserexpectedrightsquarebracket
+msgid "Expected \"]\" after predicate"
+msgstr "Esperado \"]\" após o predicado"
+
+#: lazutilsstrconsts.lrsparsergarbageafterexpression
+msgid "Unrecognized input after expression"
+msgstr "Entrada não reconhecida após a expressão"
+
+#: lazutilsstrconsts.lrsparserinvalidnodetest
+msgid "Invalid node test (syntax error)"
+msgstr "Teste de nó inválido (erro de sintaxe)"
+
+#: lazutilsstrconsts.lrsparserinvalidprimexpr
+msgid "Invalid primary expression"
+msgstr "Expressão primária inválida"
+
+#: lazutilsstrconsts.lrsprogramfilenotfound
+#, object-pascal-format
+msgid "program file not found %s"
+msgstr "ficheiro de programa %s não encontrado"
+
+#: lazutilsstrconsts.lrsreadaccessdeniedfor
+#, object-pascal-format
+msgid "read access denied for %s"
+msgstr "acesso de leitura negado para %s"
+
+#: lazutilsstrconsts.lrsscannerexpectedvarname
+msgid "Expected variable name after \"$\""
+msgstr "Esperado nome de variável após \"$\""
+
+#: lazutilsstrconsts.lrsscannerinvalidchar
+msgid "Invalid character"
+msgstr "Carácter inválido"
+
+#: lazutilsstrconsts.lrsscannermalformedqname
+msgid "Expected \"*\" or local part after colon"
+msgstr "Esperado \"*\" ou parte local após dois pontos"
+
+#: lazutilsstrconsts.lrsscannerunclosedstring
+msgid "String literal was not closed"
+msgstr "Literal de cadeia não foi fechado"
+
+#: lazutilsstrconsts.lrssize
+msgctxt "lazutilsstrconsts.lrssize"
+msgid "  size "
+msgstr "  tamanho "
+
+#: lazutilsstrconsts.lrsstring
+msgid "string"
+msgstr "cadeia"
+
+#: lazutilsstrconsts.lrsunabletocreateconfigdirectorys
+#, object-pascal-format
+msgid "Unable to create config directory \"%s\""
+msgstr "Não foi possível criar a pasta de configuração \"%s\""
+
+#: lazutilsstrconsts.lrsvarnoconversion
+#, object-pascal-format
+msgid "Conversion from %s to %s not possible"
+msgstr "Não é possível converter de %s para %s"
+
+#: lazutilsstrconsts.rsincompletemask
+msgid "Reached end of mask, but missing close/escape sequence."
+msgstr "Fim da máscara alcançado, mas falta a sequência de encerramento/escape."
+
+#: lazutilsstrconsts.rsinternalerror
+#, object-pascal-format
+msgid "Internal error in %s."
+msgstr "Erro interno em %s."
+
+#: lazutilsstrconsts.rsinvalidcharmask
+#, object-pascal-format
+msgid "Invalid character \"%s\" in mask."
+msgstr "Carácter \"%s\" inválido na máscara."
+
+#: lazutilsstrconsts.rsinvalidcharmaskat
+#, object-pascal-format
+msgid "Invalid character \"%s\" in mask (offset %d)."
+msgstr "Carácter \"%s\" inválido na máscara (desvio %d)."
+
+#: lazutilsstrconsts.rsinvalidescapechar
+msgid "Escape character must be ASCII <= 127."
+msgstr "O carácter de escape deve ser ASCII <= 127."
+
+#: lazutilsstrconsts.rsmissingclosecharmask
+#, object-pascal-format
+msgid "Missing closing character \"%s\" in mask."
+msgstr "Falta o carácter de fecho \"%s\" na máscara."
+
+#: lazutilsstrconsts.rsmissingclosecharmaskat
+#, object-pascal-format
+msgid "Missing closing character \"%s\" in mask (offset %d)."
+msgstr "Falta o carácter de fecho \"%s\" na máscara (desvio %d)."
+
