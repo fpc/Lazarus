@@ -278,8 +278,6 @@ begin
   if ErrorMessage<>'' then
     DebuglnThreadLog(['TExternalTool.ThreadStopped ',Title,' ErrorMessage=',ErrorMessage]);
   {$ENDIF}
-  if Thread<>nil then
-    Thread.Tool:=nil;
   EnterCriticalSection;
   try
     if (not Terminated) and (ErrorMessage='') then
