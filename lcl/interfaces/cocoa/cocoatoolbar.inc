@@ -435,9 +435,16 @@ begin
   end;
 end;
 
+// this ensures that the identifier of the Toolbar is unique for each Form.
+// this way, the toolbars in each form won't interfere with each other,
+// even if multiple identical Forms are opened simultaneously.
+var
+  toolBarID: Integer;
+
 class function TCocoaToolBarUtils.createToolBar(
   const toolBarConfig: TCocoaConfigToolBar ): TCocoaToolBar;
 var
+  identifier: String;
   toolBar: TCocoaToolBar;
   defaultArray: NSArray;
   allowedArray: NSArray;
@@ -446,8 +453,10 @@ begin
   if toolBarConfig.identifier.IsEmpty then
     Exit;
 
+  inc( toolBarID );
+  identifier:= toolBarConfig.identifier + '#' + toolBarID.ToString;
   toolBar:= TCocoaToolBar.alloc.initWithIdentifier(
-    StrToNSString(toolBarConfig.identifier) );
+    StrToNSString(identifier) );
   toolBar.autorelease;
   toolBar.lclSetConfig( @toolBarConfig );
 
