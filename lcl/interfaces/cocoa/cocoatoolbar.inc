@@ -448,6 +448,7 @@ begin
 
   toolBar:= TCocoaToolBar.alloc.initWithIdentifier(
     StrToNSString(toolBarConfig.identifier) );
+  toolBar.autorelease;
   toolBar.lclSetConfig( @toolBarConfig );
 
   defaultArray:= TCocoaCollectionUtil.stringArrayToNSArray( toolBarConfig.defaultItemsIdentifiers );
