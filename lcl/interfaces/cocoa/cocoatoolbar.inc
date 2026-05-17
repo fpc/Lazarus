@@ -250,6 +250,8 @@ type
     procedure lclSetDynamic( const dynamic: Boolean ); message 'lclSetDynamic:';
     procedure lclSetOnGetMenu( const onGetMenu: TCocoaToolBarItemMenuOnGetMenu);
       message 'lclSetOnGetMenu:';
+
+    function lclGetMenu: TMenu; message 'lclGetMenu';
   public
     procedure dealloc; override;
   end;
@@ -765,6 +767,11 @@ procedure TCocoaToolBarItemMenu.lclSetOnGetMenu(
   const onGetMenu: TCocoaToolBarItemMenuOnGetMenu);
 begin
   _onGetMenu:= onGetMenu;
+end;
+
+function TCocoaToolBarItemMenu.lclGetMenu: TMenu;
+begin
+  Result:= _menu;
 end;
 
 procedure TCocoaToolBarItemMenu.lclSetState(const state: Boolean);
