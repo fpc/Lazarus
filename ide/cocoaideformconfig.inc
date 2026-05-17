@@ -131,7 +131,6 @@ const
     onAction: nil;
 
     showsIndicator: False;
-    menu: nil;
     onGetMenu: @onGetCommandMenu;
   );
 
