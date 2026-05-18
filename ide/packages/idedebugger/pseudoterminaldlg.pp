@@ -218,7 +218,19 @@ constructor TPseudoConsoleDlg.Create(TheOwner: TComponent);
 
 begin
   inherited Create(TheOwner);
-  Caption:= lisDbgTerminal;
+
+  Caption := lisDbgTerminal;
+  CheckGroupRight.Caption := lisDecorations;
+  CheckGroupRight.Items[0] := lisLineNumbers;
+  CheckGroupRight.Items[1] := lisC1AsC0Underbar;
+  RadioGroupRight.Caption := lisOutputStyle;
+  RadioGroupRight.Items[0] := lisUnformatted;
+  RadioGroupRight.Items[1] := lisC0AsControlPictures;
+  RadioGroupRight.Items[2] := lisC0AsISO2047;
+  RadioGroupRight.Items[3] := lisHexASCII;
+  GroupBoxRight.Caption := lisLineLimit;
+  TabSheetRaw.Caption := lisRawOutput;
+
   ttyHandle := handleUnopened;
   fRowsPerScreen := -1;
   fColsPerRow := -1;
