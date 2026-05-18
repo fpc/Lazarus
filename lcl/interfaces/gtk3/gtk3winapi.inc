@@ -1805,7 +1805,7 @@ begin
     GtkDC.LToDX(Right) - GtkDC.LToDX(Left),
     GtkDC.LToDY(Bottom) - GtkDC.LToDY(Top));
   cairo_clip(GtkDC.pcr);
-  Result := SimpleRegion;
+  Result := GetClipBox(dc, nil);
 end;
 
 
@@ -1830,7 +1830,7 @@ begin
     GtkDC.LToDY(Bottom) - GtkDC.LToDY(Top));
   cairo_clip(GtkDC.pcr);
   cairo_set_fill_rule(GtkDC.pcr, SavedRule);
-  Result := SimpleRegion;
+  Result := GetClipBox(dc, nil);
 end;
 
 function TGtk3WidgetSet.ExtCreatePen(dwPenStyle, dwWidth: DWord;
@@ -2342,12 +2342,12 @@ end;
 function TGtk3WidgetSet.GetClipBox(DC: hDC; lpRect: PRect): Longint;
 var
   GtkDC: TGtk3DeviceContext absolute DC;
-  ARect: TGdkRectangle;
-  CRRect: Tcairo_rectangle_int_t;
+  AList: Pcairo_rectangle_list_t;
+  x1, y1, x2, y2: Double;
 begin
   Result := NULLREGION;
   if lpRect <> nil then
-    lpRect^ := Rect(0,0,0,0);
+    lpRect^ := Rect(0, 0, 0, 0);
 
   if not IsValidDC(DC) then
   begin
@@ -2355,28 +2355,31 @@ begin
     exit;
   end;
 
-  //We prefer FClipRegion, which is actually exact accumulated region
-  //from SetClipRegion/ExcludeClipRect over gdk_cairo_get_clip_rectangle
-  //which returns only the bounding box.
-  if GtkDC.ClipRegion <> nil then
+  if not Assigned(GtkDC.pcr) then
+    exit;
+
+  cairo_clip_extents(GtkDC.pcr, @x1, @y1, @x2, @y2);
+  if lpRect <> nil then
+    lpRect^ := Rect(Floor(x1), Floor(y1), Ceil(x2), Ceil(y2));
+
+  AList := cairo_copy_clip_rectangle_list(GtkDC.pcr);
+  if AList <> nil then
   begin
-    cairo_region_get_extents(GtkDC.ClipRegion, @CRRect);
-    if (CRRect.width > 0) and (CRRect.height > 0) then
+    if AList^.status = CAIRO_STATUS_SUCCESS then
     begin
-      lpRect^ := Rect(CRRect.x, CRRect.y, CRRect.x + CRRect.width, CRRect.y + CRRect.height);
-      if cairo_region_num_rectangles(GtkDC.ClipRegion) = 1 then
+      if AList^.num_rectangles <= 0 then
+        Result := NullRegion
+      else
+      if AList^.num_rectangles = 1 then
         Result := SimpleRegion
       else
         Result := ComplexRegion;
-    end;
-  end
-  else
-  begin
-    if gdk_cairo_get_clip_rectangle(GtkDC.pcr, @ARect) then
-    begin
-      lpRect^ := RectFromGdkRect(ARect);
-      Result := SimpleRegion;
-    end;
+    end else
+    if AList^.status = CAIRO_STATUS_CLIP_NOT_REPRESENTABLE then
+      Result := ComplexRegion
+    else
+      Result := ERROR;
+    cairo_rectangle_list_destroy(AList);
   end;
 end;
 

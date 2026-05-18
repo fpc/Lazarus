@@ -4185,7 +4185,7 @@ end;
 
 function TGtk3DeviceContext.SetClipRegion(ARgn: TGtk3Region): Integer;
 begin
-  Result := SimpleRegion;
+  Result := NullRegion;
   if Assigned(pcr) then
   begin
     cairo_reset_clip(pcr);
@@ -4194,6 +4194,13 @@ begin
     if FClipRegion <> nil then
       cairo_region_destroy(FClipRegion);
     FClipRegion := cairo_region_copy(ARgn.FHandle);
+    if (FClipRegion = nil) or cairo_region_is_empty(FClipRegion) then
+      Result := NullRegion
+    else
+    if cairo_region_num_rectangles(FClipRegion) > 1 then
+      Result := ComplexRegion
+    else
+      Result := SimpleRegion;
   end;
 end;
 
