@@ -1168,6 +1168,18 @@ msgctxt "idedebuggerstringconstants.lisbrkpointstate"
 msgid "State"
 msgstr "מצב"
 
+#: idedebuggerstringconstants.lisc0ascontrolpictures
+msgid "C0 as Control Pictures"
+msgstr ""
+
+#: idedebuggerstringconstants.lisc0asiso2047
+msgid "C0 as ISO 2047"
+msgstr ""
+
+#: idedebuggerstringconstants.lisc1asc0underbar
+msgid "C1 as C0 + Underbar"
+msgstr ""
+
 #: idedebuggerstringconstants.liscallstacknotevaluated
 msgid "Stack not evaluated"
 msgstr ""
@@ -1370,6 +1382,10 @@ msgstr "המשך במטופל"
 #: idedebuggerstringconstants.lisdebugoptionsfrmresumeunhandled
 msgid "Resume Unhandled"
 msgstr "המשך בלא מטופל"
+
+#: idedebuggerstringconstants.lisdecorations
+msgid "Decorations"
+msgstr ""
 
 #: idedebuggerstringconstants.lisdeleteall
 msgid "&Delete All"
@@ -1583,6 +1599,10 @@ msgstr ""
 msgid "Clear group(s)"
 msgstr ""
 
+#: idedebuggerstringconstants.lishexascii
+msgid "Hex + ASCII"
+msgstr ""
+
 #: idedebuggerstringconstants.lishitcount
 msgid "Hitcount"
 msgstr "ספירת טיפים"
@@ -1690,6 +1710,14 @@ msgstr "שורה:"
 #: idedebuggerstringconstants.lislinelength
 msgid "Line/Length"
 msgstr "שורה/אורך"
+
+#: idedebuggerstringconstants.lislinelimit
+msgid "Line limit"
+msgstr ""
+
+#: idedebuggerstringconstants.lislinenumbers
+msgid "Line numbers"
+msgstr ""
 
 #: idedebuggerstringconstants.lislocals
 #, fuzzy
@@ -1882,6 +1910,10 @@ msgstr "? (כבוי)"
 msgid "? (On)"
 msgstr "? (דלוק)"
 
+#: idedebuggerstringconstants.lisoutputstyle
+msgid "Output Style"
+msgstr ""
+
 #: idedebuggerstringconstants.lispasscount
 msgid "Pass Count"
 msgstr "ספירת מעברים"
@@ -1892,6 +1924,10 @@ msgstr "שם קובץ:"
 
 #: idedebuggerstringconstants.lispendingon
 msgid "Pending (On)"
+msgstr ""
+
+#: idedebuggerstringconstants.lisrawoutput
+msgid "Raw Output"
 msgstr ""
 
 #: idedebuggerstringconstants.lisregisters
@@ -1981,6 +2017,10 @@ msgstr "מקור"
 msgctxt "lazarusidestrconsts.listhreadsstate"
 msgid "State"
 msgstr "מצב"
+
+#: idedebuggerstringconstants.lisunformatted
+msgid "Unformatted"
+msgstr ""
 
 #: idedebuggerstringconstants.lisvalue
 #, fuzzy

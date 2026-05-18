@@ -1152,6 +1152,18 @@ msgctxt "idedebuggerstringconstants.lisbrkpointstate"
 msgid "State"
 msgstr ""
 
+#: idedebuggerstringconstants.lisc0ascontrolpictures
+msgid "C0 as Control Pictures"
+msgstr ""
+
+#: idedebuggerstringconstants.lisc0asiso2047
+msgid "C0 as ISO 2047"
+msgstr ""
+
+#: idedebuggerstringconstants.lisc1asc0underbar
+msgid "C1 as C0 + Underbar"
+msgstr ""
+
 #: idedebuggerstringconstants.liscallstacknotevaluated
 msgid "Stack not evaluated"
 msgstr ""
@@ -1348,6 +1360,10 @@ msgstr ""
 
 #: idedebuggerstringconstants.lisdebugoptionsfrmresumeunhandled
 msgid "Resume Unhandled"
+msgstr ""
+
+#: idedebuggerstringconstants.lisdecorations
+msgid "Decorations"
 msgstr ""
 
 #: idedebuggerstringconstants.lisdeleteall
@@ -1550,6 +1566,10 @@ msgstr ""
 msgid "Clear group(s)"
 msgstr ""
 
+#: idedebuggerstringconstants.lishexascii
+msgid "Hex + ASCII"
+msgstr ""
+
 #: idedebuggerstringconstants.lishitcount
 msgid "Hitcount"
 msgstr ""
@@ -1657,6 +1677,14 @@ msgstr ""
 
 #: idedebuggerstringconstants.lislinelength
 msgid "Line/Length"
+msgstr ""
+
+#: idedebuggerstringconstants.lislinelimit
+msgid "Line limit"
+msgstr ""
+
+#: idedebuggerstringconstants.lislinenumbers
+msgid "Line numbers"
 msgstr ""
 
 #: idedebuggerstringconstants.lislocals
@@ -1826,6 +1854,10 @@ msgstr ""
 msgid "? (On)"
 msgstr ""
 
+#: idedebuggerstringconstants.lisoutputstyle
+msgid "Output Style"
+msgstr ""
+
 #: idedebuggerstringconstants.lispasscount
 msgid "Pass Count"
 msgstr ""
@@ -1836,6 +1868,10 @@ msgstr ""
 
 #: idedebuggerstringconstants.lispendingon
 msgid "Pending (On)"
+msgstr ""
+
+#: idedebuggerstringconstants.lisrawoutput
+msgid "Raw Output"
 msgstr ""
 
 #: idedebuggerstringconstants.lisregisters
@@ -1921,6 +1957,10 @@ msgstr ""
 #: idedebuggerstringconstants.listhreadsstate
 msgctxt "lazarusidestrconsts.listhreadsstate"
 msgid "State"
+msgstr ""
+
+#: idedebuggerstringconstants.lisunformatted
+msgid "Unformatted"
 msgstr ""
 
 #: idedebuggerstringconstants.lisvalue

@@ -1174,6 +1174,18 @@ msgctxt "idedebuggerstringconstants.lisbrkpointstate"
 msgid "State"
 msgstr "Stav"
 
+#: idedebuggerstringconstants.lisc0ascontrolpictures
+msgid "C0 as Control Pictures"
+msgstr ""
+
+#: idedebuggerstringconstants.lisc0asiso2047
+msgid "C0 as ISO 2047"
+msgstr ""
+
+#: idedebuggerstringconstants.lisc1asc0underbar
+msgid "C1 as C0 + Underbar"
+msgstr ""
+
 #: idedebuggerstringconstants.liscallstacknotevaluated
 msgid "Stack not evaluated"
 msgstr ""
@@ -1372,6 +1384,10 @@ msgstr "Pokračovať obslúžené"
 #: idedebuggerstringconstants.lisdebugoptionsfrmresumeunhandled
 msgid "Resume Unhandled"
 msgstr "Pokračovať neobslúžené"
+
+#: idedebuggerstringconstants.lisdecorations
+msgid "Decorations"
+msgstr ""
 
 #: idedebuggerstringconstants.lisdeleteall
 msgid "&Delete All"
@@ -1575,6 +1591,10 @@ msgstr ""
 msgid "Clear group(s)"
 msgstr ""
 
+#: idedebuggerstringconstants.lishexascii
+msgid "Hex + ASCII"
+msgstr ""
+
 #: idedebuggerstringconstants.lishitcount
 msgid "Hitcount"
 msgstr "Počítadlo"
@@ -1681,6 +1701,14 @@ msgstr "Riadok:"
 #: idedebuggerstringconstants.lislinelength
 msgid "Line/Length"
 msgstr "Dĺžka riadka"
+
+#: idedebuggerstringconstants.lislinelimit
+msgid "Line limit"
+msgstr ""
+
+#: idedebuggerstringconstants.lislinenumbers
+msgid "Line numbers"
+msgstr ""
 
 #: idedebuggerstringconstants.lislocals
 msgctxt "lazarusidestrconsts.lislocals"
@@ -1849,6 +1877,10 @@ msgstr "? (Vypnúť)"
 msgid "? (On)"
 msgstr "? (Zapnúť)"
 
+#: idedebuggerstringconstants.lisoutputstyle
+msgid "Output Style"
+msgstr ""
+
 #: idedebuggerstringconstants.lispasscount
 msgid "Pass Count"
 msgstr "Počet priechodov"
@@ -1859,6 +1891,10 @@ msgstr "Meno súboru:"
 
 #: idedebuggerstringconstants.lispendingon
 msgid "Pending (On)"
+msgstr ""
+
+#: idedebuggerstringconstants.lisrawoutput
+msgid "Raw Output"
 msgstr ""
 
 #: idedebuggerstringconstants.lisregisters
@@ -1945,6 +1981,10 @@ msgstr "Zdrojový kód"
 msgctxt "lazarusidestrconsts.listhreadsstate"
 msgid "State"
 msgstr "Stav"
+
+#: idedebuggerstringconstants.lisunformatted
+msgid "Unformatted"
+msgstr ""
 
 #: idedebuggerstringconstants.lisvalue
 msgctxt "idedebuggerstringconstants.lisvalue"

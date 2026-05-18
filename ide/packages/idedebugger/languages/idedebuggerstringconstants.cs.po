@@ -1173,6 +1173,18 @@ msgctxt "idedebuggerstringconstants.lisbrkpointstate"
 msgid "State"
 msgstr "Stav"
 
+#: idedebuggerstringconstants.lisc0ascontrolpictures
+msgid "C0 as Control Pictures"
+msgstr ""
+
+#: idedebuggerstringconstants.lisc0asiso2047
+msgid "C0 as ISO 2047"
+msgstr ""
+
+#: idedebuggerstringconstants.lisc1asc0underbar
+msgid "C1 as C0 + Underbar"
+msgstr ""
+
 #: idedebuggerstringconstants.liscallstacknotevaluated
 msgid "Stack not evaluated"
 msgstr "Zásobník není vyhodnocen"
@@ -1375,6 +1387,10 @@ msgstr "Obnovit jako obsloužené"
 msgid "Resume Unhandled"
 msgstr "Obnovit jako neobsloužené"
 
+#: idedebuggerstringconstants.lisdecorations
+msgid "Decorations"
+msgstr ""
+
 #: idedebuggerstringconstants.lisdeleteall
 msgid "&Delete All"
 msgstr "Smazat vše"
@@ -1576,6 +1592,10 @@ msgstr "Nastavit novou skupinu ..."
 msgid "Clear group(s)"
 msgstr "Vyčistit skupiny"
 
+#: idedebuggerstringconstants.lishexascii
+msgid "Hex + ASCII"
+msgstr ""
+
 #: idedebuggerstringconstants.lishitcount
 msgid "Hitcount"
 msgstr "Čítač"
@@ -1685,6 +1705,14 @@ msgstr "Řádek:"
 #: idedebuggerstringconstants.lislinelength
 msgid "Line/Length"
 msgstr "Řádek/Délka"
+
+#: idedebuggerstringconstants.lislinelimit
+msgid "Line limit"
+msgstr ""
+
+#: idedebuggerstringconstants.lislinenumbers
+msgid "Line numbers"
+msgstr ""
 
 #: idedebuggerstringconstants.lislocals
 msgctxt "lazarusidestrconsts.lislocals"
@@ -1857,6 +1885,10 @@ msgstr "? (Vypnuto)"
 msgid "? (On)"
 msgstr "? (Zapnuto)"
 
+#: idedebuggerstringconstants.lisoutputstyle
+msgid "Output Style"
+msgstr ""
+
 #: idedebuggerstringconstants.lispasscount
 msgid "Pass Count"
 msgstr "Počet průchodů"
@@ -1868,6 +1900,10 @@ msgstr "Jméno souboru:"
 #: idedebuggerstringconstants.lispendingon
 msgid "Pending (On)"
 msgstr "Čekající (On)"
+
+#: idedebuggerstringconstants.lisrawoutput
+msgid "Raw Output"
+msgstr ""
 
 #: idedebuggerstringconstants.lisregisters
 msgctxt "lazarusidestrconsts.lisregisters"
@@ -1955,6 +1991,10 @@ msgstr "Zdroj"
 msgctxt "lazarusidestrconsts.listhreadsstate"
 msgid "State"
 msgstr "Stav"
+
+#: idedebuggerstringconstants.lisunformatted
+msgid "Unformatted"
+msgstr ""
 
 #: idedebuggerstringconstants.lisvalue
 #, fuzzy

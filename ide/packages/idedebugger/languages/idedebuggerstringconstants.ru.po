@@ -1164,6 +1164,18 @@ msgctxt "idedebuggerstringconstants.lisbrkpointstate"
 msgid "State"
 msgstr "Состояние"
 
+#: idedebuggerstringconstants.lisc0ascontrolpictures
+msgid "C0 as Control Pictures"
+msgstr "C0 в виде пиктограмм"
+
+#: idedebuggerstringconstants.lisc0asiso2047
+msgid "C0 as ISO 2047"
+msgstr "C0 в виде ISO 2047"
+
+#: idedebuggerstringconstants.lisc1asc0underbar
+msgid "C1 as C0 + Underbar"
+msgstr "C1 в виде C0 с подчёркиванием"
+
 #: idedebuggerstringconstants.liscallstacknotevaluated
 msgid "Stack not evaluated"
 msgstr "Стек не определён"
@@ -1361,6 +1373,10 @@ msgstr "Продолжить при обработанных"
 #: idedebuggerstringconstants.lisdebugoptionsfrmresumeunhandled
 msgid "Resume Unhandled"
 msgstr "Продолжить при необработанных"
+
+#: idedebuggerstringconstants.lisdecorations
+msgid "Decorations"
+msgstr "Оформление"
 
 #: idedebuggerstringconstants.lisdeleteall
 msgid "&Delete All"
@@ -1562,6 +1578,10 @@ msgstr "Назначить группу ..."
 msgid "Clear group(s)"
 msgstr "Убрать привязку к группе"
 
+#: idedebuggerstringconstants.lishexascii
+msgid "Hex + ASCII"
+msgstr "Шестнадцатеричный + ASCII"
+
 #: idedebuggerstringconstants.lishitcount
 msgid "Hitcount"
 msgstr "Число срабатываний"
@@ -1670,6 +1690,14 @@ msgstr "Строка:"
 #: idedebuggerstringconstants.lislinelength
 msgid "Line/Length"
 msgstr "Строка/Длина"
+
+#: idedebuggerstringconstants.lislinelimit
+msgid "Line limit"
+msgstr "Максимум строк"
+
+#: idedebuggerstringconstants.lislinenumbers
+msgid "Line numbers"
+msgstr "Номера строк"
 
 #: idedebuggerstringconstants.lislocals
 msgctxt "lazarusidestrconsts.lislocals"
@@ -1838,6 +1866,10 @@ msgstr "? (Выкл.)"
 msgid "? (On)"
 msgstr "? (Вкл.)"
 
+#: idedebuggerstringconstants.lisoutputstyle
+msgid "Output Style"
+msgstr "Стиль вывода"
+
 #: idedebuggerstringconstants.lispasscount
 msgid "Pass Count"
 msgstr "Число проходов"
@@ -1849,6 +1881,10 @@ msgstr "Имя файла:"
 #: idedebuggerstringconstants.lispendingon
 msgid "Pending (On)"
 msgstr "Отложенная (Вкл.)"
+
+#: idedebuggerstringconstants.lisrawoutput
+msgid "Raw Output"
+msgstr "Необработанный вывод"
 
 #: idedebuggerstringconstants.lisregisters
 msgctxt "lazarusidestrconsts.lisregisters"
@@ -1935,6 +1971,10 @@ msgstr "Файл исходного кода"
 msgctxt "lazarusidestrconsts.listhreadsstate"
 msgid "State"
 msgstr "Состояние"
+
+#: idedebuggerstringconstants.lisunformatted
+msgid "Unformatted"
+msgstr "Неформатированный"
 
 #: idedebuggerstringconstants.lisvalue
 msgctxt "idedebuggerstringconstants.lisvalue"

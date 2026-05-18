@@ -1164,6 +1164,18 @@ msgctxt "idedebuggerstringconstants.lisbrkpointstate"
 msgid "State"
 msgstr "Estado"
 
+#: idedebuggerstringconstants.lisc0ascontrolpictures
+msgid "C0 as Control Pictures"
+msgstr ""
+
+#: idedebuggerstringconstants.lisc0asiso2047
+msgid "C0 as ISO 2047"
+msgstr ""
+
+#: idedebuggerstringconstants.lisc1asc0underbar
+msgid "C1 as C0 + Underbar"
+msgstr ""
+
 #: idedebuggerstringconstants.liscallstacknotevaluated
 msgid "Stack not evaluated"
 msgstr "Torre não avaliada"
@@ -1363,6 +1375,10 @@ msgstr "Retomar gerido"
 #: idedebuggerstringconstants.lisdebugoptionsfrmresumeunhandled
 msgid "Resume Unhandled"
 msgstr "Retomar não gerido"
+
+#: idedebuggerstringconstants.lisdecorations
+msgid "Decorations"
+msgstr ""
 
 #: idedebuggerstringconstants.lisdeleteall
 msgid "&Delete All"
@@ -1564,6 +1580,10 @@ msgstr "Definir novo grupo..."
 msgid "Clear group(s)"
 msgstr "Limpar grupo(s)"
 
+#: idedebuggerstringconstants.lishexascii
+msgid "Hex + ASCII"
+msgstr ""
+
 #: idedebuggerstringconstants.lishitcount
 msgid "Hitcount"
 msgstr "N.º de resultados"
@@ -1672,6 +1692,14 @@ msgstr "Linha:"
 #: idedebuggerstringconstants.lislinelength
 msgid "Line/Length"
 msgstr "Linha/Tamanho"
+
+#: idedebuggerstringconstants.lislinelimit
+msgid "Line limit"
+msgstr ""
+
+#: idedebuggerstringconstants.lislinenumbers
+msgid "Line numbers"
+msgstr ""
 
 #: idedebuggerstringconstants.lislocals
 msgctxt "lazarusidestrconsts.lislocals"
@@ -1842,6 +1870,10 @@ msgstr "? (desligado)"
 msgid "? (On)"
 msgstr "? (ligado)"
 
+#: idedebuggerstringconstants.lisoutputstyle
+msgid "Output Style"
+msgstr ""
+
 #: idedebuggerstringconstants.lispasscount
 msgid "Pass Count"
 msgstr "Contagem de passes"
@@ -1853,6 +1885,10 @@ msgstr "Nome de ficheiro:"
 #: idedebuggerstringconstants.lispendingon
 msgid "Pending (On)"
 msgstr "Pendente (ligado)"
+
+#: idedebuggerstringconstants.lisrawoutput
+msgid "Raw Output"
+msgstr ""
 
 #: idedebuggerstringconstants.lisregisters
 msgctxt "lazarusidestrconsts.lisregisters"
@@ -1938,6 +1974,10 @@ msgstr "Fonte"
 msgctxt "lazarusidestrconsts.listhreadsstate"
 msgid "State"
 msgstr "Estado"
+
+#: idedebuggerstringconstants.lisunformatted
+msgid "Unformatted"
+msgstr ""
 
 #: idedebuggerstringconstants.lisvalue
 msgctxt "idedebuggerstringconstants.lisvalue"
