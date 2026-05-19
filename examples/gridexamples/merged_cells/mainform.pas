@@ -17,7 +17,7 @@ type
   private
     Grid: TMCStringGrid;
     procedure DrawCellTextHandler(Sender: TObject; ACol, ARow: Integer;
-      ARect: TRect; AState: TGridDrawState; AText: String; var Handled: Boolean);
+      ARect: TRect; {%H-}AState: TGridDrawState; AText: String; var Handled: Boolean);
     procedure MergeCellsHandler(Sender: TObject; ACol, ARow: Integer;
       var ALeft, ATop, ARight, ABottom: Integer);
 
@@ -42,19 +42,19 @@ begin
   Grid.Align := alClient;
   Grid.RowCount := 20;
   Grid.ColCount := 10;
-  Grid.Cells[1, 0] := 'Merged';
+  Grid.Cells[5, 0] := 'Merged header';
   Grid.Cells[3, 0] := 'Single';
   Grid.Cells[1, 1] := 'combined';
   Grid.Cells[3, 1] := 'abc';
   Grid.Cells[4, 1] := 'bold';
   Grid.Cells[5, 1] := 'Image';
-  Grid.Cells[2, 7] := 'Image';
+  Grid.Cells[2, 7] := 'Three centered cells';
   Grid.Cells[2, 3] := 'This is a long text' + LineEnding + 'with line break.';
   Grid.Cells[0, 2] := 'Vertical text';
-  Grid.Cells[0, 6] := 'Centered';
+  Grid.Cells[0, 7] := 'Centered';
   Grid.OnDrawCellText := @DrawCellTextHandler;
   Grid.OnMergeCells := @MergeCellsHandler;
-  Grid.Options := Grid.Options + [goColSpanning, goEditing, goDrawFocusSelected];
+  Grid.Options := Grid.Options + [goColSpanning, goEditing, goDrawFocusSelected, goThumbTracking];
   if Grid.DefaultRowHeight < ImageList1.Height + 4 then
     Grid.DefaultRowHeight := ImageList1.Height + 4
 end;
@@ -89,7 +89,7 @@ begin
     Grid.Canvas.TextOut(x, y, AText);
     Grid.Canvas.Font.Orientation := 0;
   end else
-  if (ACol = 0) and (ARow = 6) then
+  if ((ACol = 0) and (ARow = 7)) or ((ACol = 2) and (ARow = 7)) then
   begin
     // Centered text
     ts := Grid.Canvas.TextStyle;
@@ -142,23 +142,26 @@ begin
     ABottom := 5;
   end;
   // Define a merged block in the column headers
-  if (ACol in [1..2]) and (ARow = 0) then begin
-    ALeft := 1;
-    ARight := 2;
+  if (ACol in [5..7]) and (ARow = 0) then begin
+    ALeft := 5;
+    ARight := 7;
   end else
   // Define a merged block in the row headers (for the vertical text)
   if (ACol = 0) and (ARow in [2..5]) then begin
     ATop := 2;
     ABottom := 5;
   end else
-  // Merge the next two cells adjacent to cell with text 'Image'
-  if (ACol > 1) and (Grid.Cells[ACol-1, ARow] = 'Image') then begin
-    ALeft := ACol;
-    ARight := ALeft + 1;
+  // Merge the cell with icon and the next two cells
+  if (ACol in [5..7]) and (ARow = 1) then
+  begin
+    ALeft := 5;
+    ARight := 7;
   end else
-  if (ACol > 2) and (Grid.Cells[ACol-2, ARow] = 'Image') then begin
-    ALeft := ACol - 1;
-    ARight := ALeft + 1;
+  // Merge three cells "centered text"
+  if (ACol in [2..4]) and (ARow = 7) then
+  begin
+    ALeft := 2;
+    ARight := 4;
   end;
 end;
 
