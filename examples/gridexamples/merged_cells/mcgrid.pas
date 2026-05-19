@@ -35,6 +35,7 @@ type
       out ALeft, ATop, ARight, ABottom: Integer): Boolean; overload;
     procedure MoveSelection; override;
     procedure PrepareCanvas(aCol, aRow: Integer; AState: TGridDrawState); override;
+    procedure {%H-}ScrollBy(DeltaX, DeltaY: Integer); override;
     procedure SetEditText(ACol, ARow: LongInt; const Value: String); override;
     function  MoveNextSelectable(Relative: Boolean; DCol, DRow: Integer): Boolean; override;
   published
@@ -60,7 +61,7 @@ begin
     inherited;
 end;
 
-{ Make sure that the cell editor of a merged block is the same size as the
+{ Make sure that the cell editor of a merged block has the same size as the
   merged block }
 procedure TMCStringGrid.DoEditorShow;
 var
@@ -79,10 +80,9 @@ procedure TMCStringGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
 var
   L, T, R, B: Integer;
 begin
-  if IsMerged(aCol, aRow, L, T, R, B) and ((aCol<>L) or (aRow<>T)) then
-    // nothing to draw
-  else
-    inherited DrawCell(aCol, aRow, aRect, aState);
+  if IsMerged(aCol, aRow, L, T, R, B) then
+    CalcCellExtent(L, T, aRect);
+  inherited DrawCell(aCol, aRow, aRect, aState);
 end;
 
 { Draws the cell text. Allows to hook in an external painting routine which
@@ -111,7 +111,7 @@ begin
     Result := inherited GetCells(ACol, ARow);
 end;
 
-{ Make sure to use only the topleft cell of a merged block for editing }
+{ Make sure to use only the top-left cell of a merged block for editing }
 function TMCStringGrid.GetEditText(ACol, ARow: Integer): String;
 begin
   Result := GetCells(ACol, ARow);
@@ -127,7 +127,7 @@ begin
 end;
 
 { Checks whether the specified cell belongs to a merged block and returns the
-  cell coordinate of the block extent }
+  cell coordinate of the block rectangle }
 function TMCStringGrid.IsMerged(ACol,ARow: Integer;
   out ALeft, ATop, ARight, ABottom: Integer): Boolean;
 var
@@ -182,6 +182,14 @@ begin
   inherited;
 end;
 
+{ Prevent drawing artefacts in merged cells in case of smooth scrolling }
+procedure TMCStringGrid.ScrollBy(DeltaX, DeltaY: Integer);
+begin
+  if (goSmoothScroll in Options) then
+    Invalidate;
+  inherited;
+end;
+
 { Writes the edited text back into the grid. Makes sure that, in case of a
   merged block, the edited text is assigned to the top/left cell }
 procedure TMCStringGrid.SetEditText(ACol, ARow: LongInt; const Value: String);
@@ -194,13 +202,14 @@ begin
     inherited SetEditText(ACol, ARow, Value);
 end;
 
-function TMCStringGrid.MoveNextSelectable(Relative: Boolean; DCol, DRow: Integer
-  ): Boolean;
+function TMCStringGrid.MoveNextSelectable(Relative: Boolean;
+  DCol, DRow: Integer): Boolean;
 var
   L, T, R, B: Integer;
 begin
-  if Relative and IsMerged(Col, Row, L, T, R, B) then begin
-    // we are only interested on relative movement (basically by keyboard)
+  if Relative and IsMerged(Col, Row, L, T, R, B) then
+  begin
+    // we are only interested in relative movement (basically by keyboard)
     if DCol>0 then DCol := R - Col + 1 else
     if DCol<0 then DCol := L - Col - 1 else
     if DRow>0 then DRow := B - Row + 1 else
