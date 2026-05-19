@@ -271,7 +271,6 @@ procedure TResizeControl.ResizeBarPaint(Sender: TObject);
 var
   LPanel: TPanel;
 begin
-  if FResizing then Exit;
   if not (Sender is TPanel) then Exit;
   LPanel := TPanel(Sender);
   LPanel.Canvas.Brush.Style := bsImage;
