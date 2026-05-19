@@ -288,6 +288,10 @@ var
   W: TGtk3Widget;
 begin
   Result := 1;
+
+  if GTK3WidgetSet.IsWayland then
+    exit;
+
   if TWinControl(AControl).HandleAllocated then
   begin
     W := TGtk3Widget(TWinControl(AControl).Handle);
