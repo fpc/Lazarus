@@ -11,17 +11,17 @@ uses
   // Codetools
   DefineTemplates, CodeToolManager,
   // BuildIntf
-  ProjectIntf, PackageIntf,
+  ProjPackIntf, ProjectIntf, PackageIntf,
   // IdeConfig
   EnvironmentOpts;
 
 
-function FindProjPackUnitFile(const AFilename: string; TheOwner: TObject;
+function FindProjPackUnitFile(const AFilename: string; TheOwner: TIDEProjPackBase;
   IgnoreUninstallPkgs: boolean = false): string;
 
 implementation
 
-function FindProjPackUnitFile(const AFilename: string; TheOwner: TObject;
+function FindProjPackUnitFile(const AFilename: string; TheOwner: TIDEProjPackBase;
   IgnoreUninstallPkgs: boolean): string;
 // If TheOwner=nil, search in base IDE + installed packages.
 

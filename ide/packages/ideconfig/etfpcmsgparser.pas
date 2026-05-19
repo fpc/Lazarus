@@ -41,7 +41,7 @@ uses
   LConvEncoding, LazUTF8, FileUtil, LazFileUtils, LazFileCache,
   LazStringUtils, LazUtilities, AvgLvlTree,
   // BuildIntf
-  IDEExternToolIntf, PackageIntf, ProjectIntf, MacroIntf, LazMsgWorker,
+  IDEExternToolIntf, ProjPackIntf, PackageIntf, ProjectIntf, MacroIntf, LazMsgWorker,
   // IdeConfig
   EnvironmentOpts, LazConf, SearchPathProcs, etMakeMsgParser, etFPCMsgFilePool,
   FindProjPackUnit, IdeConfStrConsts;
@@ -479,7 +479,7 @@ begin
        or FileIsInPath(Filename,LazDir+'designer');
 end;
 
-function LocalGetIDEObject(ToolData: TIDEExternalToolData): TObject;
+function LocalGetIDEObject(ToolData: TIDEExternalToolData): TIDEProjPackBase;
 // Modified from TExternalToolsIDE.GetIDEObject
 begin
   Result:=nil;
@@ -1763,7 +1763,7 @@ var
   PPUFiles: TStringList; // Strings:PPUFilename, Objects:TIDEPackage
   i: Integer;
   DepOwner: TObject;
-  TheOwner: TObject;
+  TheOwner: TIDEProjPackBase;
   MissingPkg: TIDEPackage;
   MissingPkgName: String;
   MissingPkgFile: TLazPackageFile;

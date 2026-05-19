@@ -244,7 +244,7 @@ function MaybeOpenEditorFiles(AFiles: TStrings; WindowIndex: integer): Boolean;
 function SomethingOfProjectIsModified(Verbose: boolean = false): boolean;
 function NewFile(NewFileDescriptor: TProjectFileDescriptor;
   var NewFilename: string; NewSource: string;
-  NewFlags: TNewFlags; NewOwner: TObject): TModalResult;
+  NewFlags: TNewFlags; NewOwner: TIDEProjPackBase): TModalResult;
 function NewOther: TModalResult;
 function NewUnitOrForm(Template: TNewIDEItemTemplate;
   DefaultDesc: TProjectFileDescriptor): TModalResult;
@@ -266,7 +266,7 @@ function FindSourceFileImpl(const AFilename, BaseDirectory: string;
                             Flags: TFindSourceFlags): string;
 function FindSourceFileLeftPathWrong(AFilename, BaseDirectory: string;
                             Flags: TFindSourceFlags): string;
-function FindUnitsOfOwnerImpl(TheOwner: TObject; Flags: TFindUnitsOfOwnerFlags): TStrings;
+function FindUnitsOfOwnerImpl(TheOwner: TIDEProjPackBase; Flags: TFindUnitsOfOwnerFlags): TStrings;
 // project
 function AddActiveUnitToProject: TModalResult;
 procedure AddDefaultRecentProjects; // if recent project list is empty add some examples
@@ -321,7 +321,7 @@ function GetDsgnComponentBaseClassname(aCompClass: TClass): string;
 //    SearchFlags: TProjectFileSearchFlags): boolean;
 //new unit
   function CreateNewCodeBuffer(Descriptor: TProjectFileDescriptor;
-      NewOwner: TObject; NewFilename: string; var NewCodeBuffer: TCodeBuffer;
+      NewOwner: TIDEProjPackBase; NewFilename: string; var NewCodeBuffer: TCodeBuffer;
       var NewUnitName: string): TModalResult;
   function CreateNewForm(NewUnitInfo: TUnitInfo;
       AncestorType: TPersistentClass; ResourceCode: TCodeBuffer;
@@ -2310,7 +2310,7 @@ end;
 
 function NewFile(NewFileDescriptor: TProjectFileDescriptor;
   var NewFilename: string; NewSource: string;
-  NewFlags: TNewFlags; NewOwner: TObject): TModalResult;
+  NewFlags: TNewFlags; NewOwner: TIDEProjPackBase): TModalResult;
 var
   NewUnitInfo: TEditableUnitInfo;
   NewSrcEdit: TSourceEditor;
@@ -3494,7 +3494,7 @@ begin
   end;
 end;
 
-function FindUnitsOfOwnerImpl(TheOwner: TObject; Flags: TFindUnitsOfOwnerFlags): TStrings;
+function FindUnitsOfOwnerImpl(TheOwner: TIDEProjPackBase; Flags: TFindUnitsOfOwnerFlags): TStrings;
 var
   Files: TFilenameToStringTree;
   UnitPath: string; // only if not AddPackages:
@@ -4743,7 +4743,7 @@ begin
 end;
 
 function CreateNewCodeBuffer(Descriptor: TProjectFileDescriptor;
-  NewOwner: TObject; NewFilename: string;
+  NewOwner: TIDEProjPackBase; NewFilename: string;
   var NewCodeBuffer: TCodeBuffer; var NewUnitName: string): TModalResult;
 var
   NewShortFilename: String;
