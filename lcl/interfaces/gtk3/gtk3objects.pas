@@ -951,7 +951,7 @@ begin
     width := ARect.Right - ARect.Left;
     height := ARect.Bottom - ARect.Top;
   end;
-  Result := cairo_region_contains_rectangle(FHandle, @ACairoRect) <> CAIRO_REGION_OVERLAP_IN;
+  Result := cairo_region_contains_rectangle(FHandle, @ACairoRect) <> CAIRO_REGION_OVERLAP_OUT;
 end;
 
 function TGtk3Region.ContainsPoint(APoint: TPoint): Boolean;
