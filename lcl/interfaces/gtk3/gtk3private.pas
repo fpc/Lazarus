@@ -875,34 +875,20 @@ end;
 
 procedure TGtk3MemoStrings.Insert(Index: integer; const S: string);
 var
-  StartIter,
-  CursorIter: TGtkTextIter;
+  StartIter: TGtkTextIter;
   NewLine: String;
-  TextMark: PGtkTextMark;
 begin
   if Index < gtk_text_buffer_get_line_count(FGtkBuf) then begin
-    //insert with LineEnding
     NewLine := S+LineEnding;
     gtk_text_buffer_get_iter_at_line(FGtkBuf, @StartIter, Index);
   end
   else begin
-    //append with a preceding LineEnding
     gtk_text_buffer_get_end_iter(FGtkBuf, @StartIter);
     if gtk_text_buffer_get_line_count(FGtkBuf) = Count then
       NewLine := LineEnding+S+LineEnding
     else
       NewLine := S+LineEnding;
   end;
-
-  if FQueueCursorMove = 0 then
-  begin
-    TextMark := gtk_text_buffer_get_insert(FGtkBuf);
-    gtk_text_buffer_get_iter_at_mark(FGtkBuf, @CursorIter, TextMark);
-    if gtk_text_iter_equal(@StartIter, @CursorIter) then
-      QueueCursorMove(-1);
-  end;
-
-  // and finally insert the new text
   gtk_text_buffer_insert(FGtkBuf, @StartIter, PChar(NewLine) ,-1);
 end;
 

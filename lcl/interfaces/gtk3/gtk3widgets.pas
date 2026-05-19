@@ -10349,12 +10349,15 @@ procedure TGtk3Memo.setSelStart(AValue: Integer);
 var
   AIter: TGtkTextIter;
   ATextView: PGtkTextView;
+  ATextMark: PGtkTextMark;
 begin
   if not IsWidgetOk then
     exit;
   ATextView := PGtkTextView(GetContainerWidget);
   gtk_text_buffer_get_iter_at_offset(ATextView^.get_buffer, @AIter, AValue);
   gtk_text_buffer_place_cursor(ATextView^.get_buffer, @AIter);
+  ATextMark := gtk_text_buffer_get_insert(ATextView^.get_buffer);
+  gtk_text_view_scroll_to_mark(ATextView, ATextMark, 0, True, 0, 1);
 end;
 
 procedure TGtk3Memo.setSelLength(AValue: Integer);
