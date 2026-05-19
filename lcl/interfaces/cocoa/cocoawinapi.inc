@@ -562,7 +562,7 @@ begin
 
     p:=ctx.ROP2;
     opn:=ctx.Pen;
-    pn:=TCocoaPen.Create(clDkGray, psSolid, true, 2, pmCopy, pecFlat, pjsRound, false );
+    pn:=TCocoaPen.Create(clDkGray, psDot, true, 2, pmCopy, pecFlat, pjsRound, false );
     try
       ctx.Pen:=pn;
       ctx.ROP2:=R2_NOTXORPEN;
