@@ -2360,7 +2360,10 @@ begin
 
   cairo_clip_extents(GtkDC.pcr, @x1, @y1, @x2, @y2);
   if lpRect <> nil then
+  begin
     lpRect^ := Rect(Floor(x1), Floor(y1), Ceil(x2), Ceil(y2));
+    lpRect^.Offset(GtkDC.WindowOrg);
+  end;
 
   AList := cairo_copy_clip_rectangle_list(GtkDC.pcr);
   if AList <> nil then
