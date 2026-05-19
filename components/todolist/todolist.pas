@@ -72,7 +72,7 @@ uses
   // Codetools
   CodeToolManager, FileProcs,
   // BuildIntf
-  PackageIntf, ProjectIntf,
+  ProjPackIntf, PackageIntf, ProjectIntf,
   // IDEIntf
   LazIDEIntf, IDEImagesIntf, MenuIntf, SrcEditorIntf, EditorOptionsIntf, IDEOptEditorIntf,
   // ToDoList
@@ -146,16 +146,15 @@ type
     procedure XMLPropStorageRestoreProperties(Sender: TObject);
     procedure XMLPropStorageRestoringProperties(Sender: TObject);
   private
-    FBaseDirectory: string;
     FUpdating, FUpdateNeeded: Boolean;
     FIdleConnected: boolean;
     FLoadingOptions: boolean;
-    FProjPack: TObject;   // Project or package from where to collect ToDo items.
-    FScannedFiles: TAvlTree; // tree of TTLScannedFile
+    FProjPack: TIDEProjPackBase; // Project or package from where to collect ToDo items.
+    FScannedFiles: TAvlTree;     // tree of TTLScannedFile
     FScannedIncFiles: TStringMap;
     FOnEditItem: TOnEditToDo;
     procedure GotoTodo(aTodoItem: TTodoItem);
-    procedure SetProjPack(AValue: TObject);
+    procedure SetProjPack(AValue: TIDEProjPackBase);
     procedure SetIdleConnected(const AValue: boolean);
     function ProjectOpened(Sender: TObject; AProject: TLazProject): TModalResult;
     procedure AddListItem(aTodoItem: TTodoItem);
@@ -166,8 +165,7 @@ type
     destructor Destroy; override;
     procedure UpdateTodos(Immediately: boolean = false);
 
-    property ProjPack: TObject read FProjPack write SetProjPack;
-    property BaseDirectory: string read FBaseDirectory;
+    property ProjPack: TIDEProjPackBase read FProjPack write SetProjPack;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
     property OnEditItem: TOnEditToDo read FOnEditItem write FOnEditItem;
   end;
@@ -504,7 +502,7 @@ begin
     Application.RemoveOnIdleHandler(@OnIdle);
 end;
 
-procedure TIDETodoWindow.SetProjPack(AValue: TObject);
+procedure TIDETodoWindow.SetProjPack(AValue: TIDEProjPackBase);
 begin
   //if FProjPack=AValue then Exit; // No check, trigger update in any case.
   FProjPack:=AValue;
@@ -596,8 +594,9 @@ begin
     aListitem.SubItems.Add(TextToSingleLine(aTodoItem.Text)); // Join lines if there are many.
     aListitem.SubItems.Add(IntToStr(aTodoItem.Priority));
     aFilename:=aTodoItem.Filename;
-    if (BaseDirectory<>'') and FilenameIsAbsolute(aFilename) then
-      aFilename:=CreateRelativePath(aFilename,BaseDirectory);
+    Assert(FilenameIsAbsolute(aFilename), 'TIDETodoWindow.AddListItem: aFilename not absolute');
+    Assert(ProjPack.Directory<>'', 'TIDETodoWindow.AddListItem: ProjPack.Directory is empty');
+    aFilename := CreateRelativePath(aFilename, ProjPack.Directory);
     aListitem.SubItems.Add(aFilename);
     aListitem.SubItems.Add(IntToStr(aTodoItem.StartPos.Y));
     aListitem.SubItems.Add(aTodoItem.Owner);
