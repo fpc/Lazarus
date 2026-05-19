@@ -627,49 +627,9 @@ end;
 
 class procedure TGtk3WSWinControl.ScrollBy(const AWinControl: TWinControl;
   DeltaX, DeltaY: integer);
-var
-  Scrolled: PGtkScrolledWindow;
-  Adjustment: PGtkAdjustment;
-  h, v: Double;
-  NewPos: Double;
 begin
-  {.$IFDEF GTK3DEBUGCORE}
-  // DebugLn('TGtk3WSWinControl.ScrollBy not implemented ');
-  {.$ENDIF}
-  if not AWinControl.HandleAllocated then exit;
-  Scrolled := TGtk3ScrollingWinControl(AWinControl.Handle).GetScrolledWindow;
-  if not Gtk3IsScrolledWindow(Scrolled) then
+  if not AWinControl.HandleAllocated then
     exit;
-  {$note below is old gtk2 implementation}
-  //TGtk3ScrollingWinControl(AWinControl.Handle).ScrollX := TGtk3ScrollingWinControl(AWinControl.Handle).ScrollX + DeltaX;
-  //TGtk3ScrollingWinControl(AWinControl.Handle).ScrollY := TGtk3ScrollingWinControl(AWinControl.Handle).ScrollY + DeltaY;
-  //TODO: change this part like in Qt using ScrollX and ScrollY variables
-  //GtkAdjustment calculation isn't good here (can go below 0 or over max)
-  // DebugLn('TGtk3WSWinControl.ScrollBy DeltaX=',dbgs(DeltaX),' DeltaY=',dbgs(DeltaY));
-  exit;
-  Adjustment := gtk_scrolled_window_get_hadjustment(Scrolled);
-  if Adjustment <> nil then
-  begin
-    h := gtk_adjustment_get_value(Adjustment);
-    NewPos := Adjustment^.upper - Adjustment^.page_size;
-    if h - DeltaX <= NewPos then
-      NewPos := h - DeltaX;
-    if NewPos < 0 then
-      NewPos := 0;
-    gtk_adjustment_set_value(Adjustment, NewPos);
-  end;
-  Adjustment := gtk_scrolled_window_get_vadjustment(Scrolled);
-  if Adjustment <> nil then
-  begin
-    v := gtk_adjustment_get_value(Adjustment);
-    NewPos := Adjustment^.upper - Adjustment^.page_size;
-    if v - DeltaY <= NewPos then
-      NewPos := v - DeltaY;
-    if NewPos < 0 then
-      NewPos := 0;
-    //DebugLn('OldValue ',dbgs(V),' NewValue ',dbgs(NewPos),' upper=',dbgs(Adjustment^.upper - Adjustment^.page_size));
-    gtk_adjustment_set_value(Adjustment, NewPos);
-  end;
   AWinControl.Invalidate;
 end;
 

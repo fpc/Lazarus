@@ -55,6 +55,7 @@ type
   published
     class function CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLHandle; override;
+    class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); override;
   end;
 
   { TWSScrollBox }
@@ -87,6 +88,8 @@ type
       const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect): boolean; override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
+
+    class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); override;
 
     class procedure CloseModal(const ACustomForm: TCustomForm); override;
     class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
@@ -159,7 +162,101 @@ begin
   Result := TLCLHandle(TGtk3ScrollingWinControl.Create(AWinControl, AParams));
 end;
 
+class procedure TGtk3WSScrollingWinControl.ScrollBy(const AWinControl: TWinControl;
+  DeltaX, DeltaY: integer);
+var
+  ACtl: TGtk3ScrollingWinControl;
+  Scrolled: PGtkScrolledWindow;
+  HAdj, VAdj: PGtkAdjustment;
+  NewH, NewV, MaxH, MaxV: Double;
+  ASBAlloc: TGtkAllocation;
+  ASBar: PGtkWidget;
+begin
+  if not AWinControl.HandleAllocated then
+    exit;
+  ACtl := TGtk3ScrollingWinControl(AWinControl.Handle);
+  Scrolled := ACtl.GetScrolledWindow;
+
+  if not Gtk3IsScrolledWindow(Scrolled) then
+    exit;
+
+  if ACtl.InUpdate then
+    exit;
+
+  HAdj := gtk_scrolled_window_get_hadjustment(Scrolled);
+  VAdj := gtk_scrolled_window_get_vadjustment(Scrolled);
+
+  ACtl.BeginUpdate;
+  try
+
+    if (DeltaX <> 0) and (HAdj <> nil) then
+    begin
+      MaxH := HAdj^.upper - HAdj^.page_size;
+      if MaxH < HAdj^.lower then
+        MaxH := HAdj^.lower;
+      NewH := HAdj^.value - DeltaX;
+      if NewH < HAdj^.lower then
+        NewH := HAdj^.lower;
+      if NewH > MaxH then
+        NewH := MaxH;
+      gtk_adjustment_set_value(HAdj, NewH);
+    end;
+
+    if (DeltaY <> 0) and (VAdj <> nil) then
+    begin
+      MaxV := VAdj^.upper - VAdj^.page_size;
+      if MaxV < VAdj^.lower then
+        MaxV := VAdj^.lower;
+      NewV := VAdj^.value - DeltaY;
+      if NewV < VAdj^.lower then
+        NewV := VAdj^.lower;
+      if NewV > MaxV then
+        NewV := MaxV;
+      gtk_adjustment_set_value(VAdj, NewV);
+    end;
+
+  finally
+    ACtl.EndUpdate;
+  end;
+
+
+  if (wtWindow in ACtl.WidgetType) and
+     Assigned(ACtl.LCLObject) and
+     (ACtl.LCLObject is TCustomForm) and
+     TCustomForm(ACtl.LCLObject).AutoScroll then
+  begin
+
+    if (DeltaX <> 0) and (HAdj <> nil) then
+    begin
+      ASBar := PGtkWidget(Scrolled^.get_hscrollbar);
+      if ASBar^.get_realized and ASBar^.get_mapped then
+      begin
+        ASBar^.get_allocation(@ASBAlloc);
+        ASBar^.size_allocate(@ASBAlloc);
+      end;
+    end;
+
+    if (DeltaY <> 0) and (VAdj <> nil) then
+    begin
+      ASBar := PGtkWidget(Scrolled^.get_vscrollbar);
+      if ASBar^.get_realized and ASBar^.get_mapped then
+      begin
+        ASBar^.get_allocation(@ASBAlloc);
+        ASBar^.size_allocate(@ASBAlloc);
+      end;
+    end;
+
+  end;
+
+end;
+
 { TGtk3WSCustomForm }
+
+class procedure TGtk3WSCustomForm.ScrollBy(const AWinControl: TWinControl;
+  DeltaX, DeltaY: integer);
+begin
+  TGtk3WSScrollingWinControl.ScrollBy(AWinControl, DeltaX, DeltaY);
+end;
 
 class function TGtk3WSCustomForm.GetDefaultClientRect(
   const AWinControl: TWinControl; const aLeft, aTop, aWidth, aHeight: integer;
