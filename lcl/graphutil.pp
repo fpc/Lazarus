@@ -33,6 +33,9 @@ procedure RGBtoHLS(const R, G, B: Byte; out H, L, S: Byte);
 function HLStoColor(const H, L, S: Byte): TColor;
 procedure HLStoRGB(const H, L, S: Byte; out R, G, B: Byte);
 
+function ColorIsDark(const AColor: TColor): Boolean;
+function ContrastColor(const AColor: TColor): TColor;
+
 // HSV functions are copied from mbColorLib without changes
 procedure ColorToHSV(c: TColor; out H, S, V: Double);
 function HSVToColor(H, S, V: Double): TColor;
@@ -210,6 +213,22 @@ begin
     end;
 end;
 
+
+{ Returns true when the color is darker than clGray }
+function ColorIsDark(const AColor: TColor): Boolean;
+begin
+  Result := ColorToGray(AColor) <= ColorToGray(clGray);
+end;
+
+{ Returns white when the color is darker than clGray, otherwise black.
+  Useful for highly visible text on background of any color. }
+function ContrastColor(const AColor: TColor): TColor;
+begin
+  if ColorIsDark(AColor) then
+    Result := clWhite
+  else
+    Result := clBlack;
+end;
 
 
 
