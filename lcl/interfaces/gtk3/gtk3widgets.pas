@@ -1000,6 +1000,7 @@ type
     class function ButtonMouseEvent(aWidget: PGtkWidget; aEvent: PGdkEvent;
       aData: gpointer): gboolean; cdecl; static;
   protected
+    function GetDefaultTextJustification: TGtkJustification; virtual;
     procedure SetImage(AImage:TBitmap);
     function getText: String; override;
     procedure setText(const AValue: String); override;
@@ -1036,6 +1037,7 @@ type
     function GetState: TCheckBoxState;
     procedure SetState(AValue: TCheckBoxState);
   protected
+    function GetDefaultTextJustification: TGtkJustification; override;
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
   public
     procedure SetBounds(ALeft,ATop,AWidth,AHeight:integer); override;
@@ -12896,8 +12898,10 @@ procedure TGtk3Button.setText(const AValue: String);
   begin
     if not Gtk3IsWidget(AWidget) then
       Exit;
+
     if Gtk3WidgetIsA(AWidget, gtk_label_get_type) then
-      PGtkLabel(AWidget)^.set_justify(GTK_JUSTIFY_CENTER);
+      PGtkLabel(AWidget)^.set_justify(GetDefaultTextJustification);
+
     if Gtk3WidgetIsA(AWidget, gtk_container_get_type) then
     begin
       AChildList := PGtkContainer(AWidget)^.get_children;
@@ -12950,6 +12954,11 @@ end;
 class function TGtk3Button.ButtonMouseEvent(aWidget: PGtkWidget; aEvent: PGdkEvent; aData: gpointer): gboolean; cdecl;
 begin
   Result := TGtk3Widget(aData).GtkEventMouse(aWidget, aEvent);
+end;
+
+function TGtk3Button.GetDefaultTextJustification: TGtkJustification;
+begin
+  Result := GTK_JUSTIFY_CENTER;
 end;
 
 function ButtonMotionNotifyEvent(widget: PGtkWidget; event: PGdkEvent; user_data: gpointer): gboolean; cdecl;
@@ -13105,6 +13114,11 @@ begin
       EndUpdate;
     end;
   end;
+end;
+
+function TGtk3CheckBox.GetDefaultTextJustification: TGtkJustification;
+begin
+  Result := GTK_JUSTIFY_LEFT;
 end;
 
 function TGtk3CheckBox.CreateWidget(const Params: TCreateParams): PGtkWidget;
