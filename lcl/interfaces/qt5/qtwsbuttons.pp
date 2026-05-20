@@ -86,7 +86,7 @@ const
 
 var
   AIcon: QIconH;
-  APixmap: QPixmapH;
+  APixmap, AScaledPixmap: QPixmapH;
   AGlyph: TBitmap;
   AIndex: Integer;
   AEffect: TGraphicsDrawEffect;
@@ -98,6 +98,8 @@ begin
   if not WSCheckHandleAllocated(ABitBtn, 'SetGlyph') then
     Exit;
 
+  DPR := ABitBtn.GetCanvasScaleFactor;
+
   TQtBitBtn(ABitBtn.Handle).GlyphLayout := Ord(ABitBtn.Layout);
   AIcon := QIcon_create();
   if ABitBtn.CanShowGlyph(True) then
@@ -108,10 +110,24 @@ begin
     for Mode := QIconNormal to QIconSelected do
     begin
       AValue.GetImageIndexAndEffect(IconModeToButtonState[Mode],
-        ABitBtn.Font.PixelsPerInch, ABitBtn.GetCanvasScaleFactor,
+        ABitBtn.Font.PixelsPerInch, 1.0 {we must rescale and apply DPR !},
         AImageRes, AIndex, AEffect);
       AImageRes.GetBitmap(AIndex, AGlyph, AEffect);
       QPixmap_fromImage(APixmap, TQtImage(AGlyph.Handle).Handle);
+
+      if DPR > 1.0 then
+      begin
+        if QPixmap_devicePixelRatio(APixmap) <> DPR then
+        begin
+          AScaledPixmap := QPixmap_Create;
+          QPixmap_scaled(APixmap, AScaledPixmap, Round(QPixmap_width(APixmap) * DPR), Round(QPixmap_height(APixmap) * DPR), QtIgnoreAspectRatio, QtSmoothTransformation);
+          QPixmap_setDevicePixelRatio(AScaledPixmap, DPR);
+          QPixmap_destroy(APixmap);
+          APixmap := QPixmap_Create(AScaledPixmap);
+          QPixmap_destroy(AScaledPixmap);
+        end;
+      end;
+
       QIcon_addPixmap(AIcon, APixmap, Mode, QIconOn);
     end;
     QPixmap_destroy(APixmap);
@@ -119,15 +135,6 @@ begin
 
     ASize.cx := AImageRes.Width;
     ASize.cy := AImageRes.Height;
-    if QCoreApplication_testAttribute(QtAA_UseHighDpiPixmaps) then
-    begin
-      DPR := ABitBtn.GetCanvasScaleFactor;
-      if DPR > 1.0 then
-      begin
-        ASize.cx := Round(ASize.cx / DPR);
-        ASize.cy := Round(ASize.cy / DPR);
-      end;
-    end;
     TQtBitBtn(ABitBtn.Handle).setIconSize(@ASize);
   end;
 
