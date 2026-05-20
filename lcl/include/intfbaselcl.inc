@@ -188,26 +188,41 @@ end;
 
 procedure TWidgetSet.DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer);
 var
+  alignedRect: TRect;
   X, Y: Integer;
   W, H: Integer;
   SavedDC: Integer;
 begin
   SavedDC := SaveDC(DC);
   try
-    W := (R.Right - R.Left - 1) div DX;
-    H := (R.Bottom - R.Top - 1) div DY;
+    // align LEFT to DX, align TOP to DY
+    // for example, when designing a form in Lazarus IDE, the selected area
+    // will be continuously invalidated when dragging the mouse to expand
+    // the selection area. if the LEFT-TOP of selected area is not exactly
+    // aligned with the grid size, the grid will be disordered during redrawing.
+    alignedRect:= R;
+    alignedRect.NormalizeRect;
+    alignedRect.Left:= alignedRect.Left div DX * DX;
+    alignedRect.Top:= alignedRect.Top div DY * DY;
+
+    W := (alignedRect.Right - alignedRect.Left - 1) div DX;
+    H := (alignedRect.Bottom - alignedRect.Top - 1) div DY;
     
     // remove rows from clip rect
     for Y := 0 to H do
     begin
-      ExcludeClipRect(DC, R.Left, R.Top + Y * DY + 1, R.Right + 1, R.Top + (Y + 1) * DY);
+      ExcludeClipRect( DC,
+        alignedRect.Left,
+        alignedRect.Top + Y * DY + 1,
+        alignedRect.Right + 1,
+        alignedRect.Top + (Y + 1) * DY );
     end;
 
     // draw vertical lines cross excluded rows -> only grid cross points painted 
     for X := 0 to W do
     begin
-      if MoveToEx(DC, R.Left + X * DX, R.Top, nil) then
-        LineTo(DC, R.Left + X * DX, R.Bottom + 1);
+      if MoveToEx(DC, alignedRect.Left + X * DX, alignedRect.Top, nil) then
+        LineTo(DC, alignedRect.Left + X * DX, alignedRect.Bottom + 1);
     end;
   finally
     RestoreDC(DC, SavedDC);
