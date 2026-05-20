@@ -720,6 +720,9 @@ begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WSCustomForm.SetAllowDropFiles');
   {$ENDIF}
+  if not WSCheckHandleAllocated(AForm, 'SetAllowDropFiles') then
+    Exit;
+
   if AValue then
     gtk_drag_dest_set(TGtk3Widget(AForm.Handle).Widget, GTK_DEST_DEFAULT_ALL,
       @FileDragTarget, 3, [GDK_ACTION_COPY, GDK_ACTION_MOVE])
