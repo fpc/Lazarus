@@ -180,7 +180,7 @@ var
 begin
   if (field.respondsToSelector(ObjCSelector('cell'))) and Assigned(field.cell) then
   begin
-    if CocoaConfigEdit.vertAlignCenter then begin
+    if edit.VerticalAlignment = taVerticalCenter then begin
       cell:= TCocoaVertCenterTextFieldCell.new;
       field.setCell( cell );
       cell.release;
@@ -194,7 +194,7 @@ begin
   if field.isKindOfClass(TCocoaTextField) and TCocoaTextField(field).fixedInitSetting then
     Exit;
 
-  TCocoaTextControlUtil.setBorderStyle(field, edit.BorderStyle);
+  TCocoaTextControlUtil.setBorderStyle(field, edit );
   TCocoaTextControlUtil.setAllignment(field, edit.Alignment);
   TCocoaViewUtil.updateFocusRing( field, edit );
 end;
@@ -277,14 +277,9 @@ var
   field: NSTextField;
 begin
   field:= GetTextField(AWinControl);
-  if not Assigned(field) then Exit;
-  {$ifdef BOOLFIX}
-  field.setBordered_( ObjCBool(ABorderStyle <> bsNone) );
-  field.setBezeled_( ObjCBool(ABorderStyle <> bsNone) );
-  {$else}
-  field.setBordered( ABorderStyle <> bsNone );
-  field.setBezeled( ABorderStyle <> bsNone );
-  {$endif}
+  if not Assigned(field) then
+    Exit;
+  TCocoaTextControlUtil.setBorderStyle( field, TCustomEdit(AWinControl) );
   TCocoaViewUtil.updateFocusRing( field, AWinControl );
 end;
 

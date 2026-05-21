@@ -28,7 +28,7 @@ interface
 uses
   Types, Classes, SysUtils,
   Math, // needed for MinDouble, MaxDouble
-  LCLType, Graphics, Controls,
+  LCLType, Graphics, Controls, StdCtrls,
   MacOSAll, CocoaAll, CocoaConfig, CocoaUtils, CocoaGDIObjects,
   CocoaPrivate;
 
@@ -198,7 +198,7 @@ type
       const align: TAlignment );
     class procedure setBorderStyle(
       const textField: NSTextField;
-      const borderStyle: TBorderStyle );
+      const lclEdit: TCustomEdit );
     class procedure setTextHint(
       const textField: NSTextField;
       const str: String ); overload;
@@ -698,15 +698,21 @@ end;
 
 class procedure TCocoaTextControlUtil.setBorderStyle(
   const textField: NSTextField;
-  const borderStyle: TBorderStyle );
+  const lclEdit: TCustomEdit );
+var
+  bordered: Boolean;
 begin
   if not Assigned(textField) then
     Exit;
   {$ifdef BOOLFIX}
-  textField.setBezeled_(Ord(borderStyle <> bsNone));
+  bezeled:= Ord(edit.borderStyle <> bsNone));
   {$else}
-  textField.setBezeled(borderStyle <> bsNone);
+  bordered:= lclEdit.borderStyle <> bsNone;
   {$endif}
+  if lclEdit.VerticalAlignment = taVerticalCenter then
+    bordered:= True;
+  textField.setBordered( bordered );
+  textField.setBezeled( bordered );
 end;
 
 class procedure TCocoaTextControlUtil.setTextHint(
