@@ -10109,6 +10109,9 @@ begin
   FStringEditor.Visible:=False;
   FStringEditor.Align:=alNone;
   FStringEditor.BorderStyle := bsNone;
+  {$ifdef DARWIN}
+  FStringEditor.VerticalAlignment:= taVerticalCenter;
+  {$endif}
 
   FPicklistEditor := TPickListCellEditor.Create(nil);
   FPickListEditor.Name := 'PickListEditor';
