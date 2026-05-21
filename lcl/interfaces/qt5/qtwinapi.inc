@@ -6847,21 +6847,52 @@ var
     AMaskPix, AScaledPix: QPixmapH;
     ARenderHints: QPainterRenderHints;
     ARenderHint: Boolean;
+    WasSmooth, NeedSmooth: Boolean;
+    DPR: Double;
+    PhysWidth, PhysHeight: Integer;
+    IsPreScaled: Boolean;
+    APaintEngine: QPaintEngineH;
   begin
     ATempPixmap := QPixmap_create();
 
+    DPR := 1.0;
+    APaintEngine := QPainter_paintEngine(DstQDC.Widget);
+    if APaintEngine <> nil then
+      DPR := QPaintDevice_devicePixelRatioF(QPaintEngine_paintDevice(APaintEngine));
+    if DPR < 1.0 then
+      DPR := 1.0;
+
+    IsPreScaled := (DPR > 1.0) and (
+      SameValue(QPixmap_devicePixelRatio(APixmap), DPR, 0.01) or
+      (QPixmap_width(APixmap) >= Round(Width * DPR)) );
+
     ARenderHints := QPainter_renderHints(DstQDC.Widget);
+    WasSmooth := (ARenderHints and QPainterSmoothPixmapTransform) <> 0;
     ARenderHint := (AHighQuality and not EqualRect(DstRect, SrcRect)) and
-      ((ARenderHints and QPainterAntialiasing <> 0) or (ARenderHints and QPainterSmoothPixmapTransform <> 0) or
+      ((ARenderHints and QPainterAntialiasing <> 0) or
+       (ARenderHints and QPainterSmoothPixmapTransform <> 0) or
        (ARenderHints and QPainterHighQualityAntialiasing <> 0));
 
-    if ARenderHint and (ARenderHints and QPainterSmoothPixmapTransform <> 0) then
-      ARenderHint := False; // do not touch render hints
+    NeedSmooth := (ARenderHint or (DPR > 1.0)) and not WasSmooth;
 
-    if NeedScaling(DstRect, SrcRect) then
-      QPixmap_scaled(APixmap, ATempPixmap, Width, Height)
-    else
+    if IsPreScaled then
+    begin
       QPixmap_copy(APixmap, ATempPixmap, 0, 0, QPixmap_width(APixmap), QPixmap_height(APixmap));
+      QPixmap_setDevicePixelRatio(ATempPixmap, DPR);
+    end else
+    if DPR > 1.0 then
+    begin
+      PhysWidth := Round(Width * DPR);
+      PhysHeight := Round(Height * DPR);
+      QPixmap_scaled(APixmap, ATempPixmap, PhysWidth, PhysHeight, QtIgnoreAspectRatio, QtSmoothTransformation);
+      QPixmap_setDevicePixelRatio(ATempPixmap, DPR);
+    end else
+    begin
+      if NeedScaling(DstRect, SrcRect) then
+        QPixmap_scaled(APixmap, ATempPixmap, Width, Height)
+      else
+        QPixmap_copy(APixmap, ATempPixmap, 0, 0, QPixmap_width(APixmap), QPixmap_height(APixmap));
+    end;
 
     if (AMaskImg = nil) and QPixmap_isNull(ATempPixmap) then
     begin
@@ -6876,41 +6907,52 @@ var
       AMaskPix := QPixmap_create();
       QPixmap_fromImage(AMaskPix, AMaskImg);
       try
-
-        if IsRectEmpty(MaskRect) or (MaskRect.Size <> DstRect.Size) then
+        if DPR > 1.0 then
         begin
-          if not QPixmap_isNull(ATempPixmap) and ((QPixmap_width(ATempPixmap) < (DstRect.Right - DstRect.Left)) or
-            (QPixmap_Height(ATempPixmap) < (DstRect.Bottom - DstRect.Top))) then
-            QPixmap_scaled(AMaskPix, AScaledPix, QPixmap_width(ATempPixmap), QPixmap_height(ATempPixmap))
-          else
-            QPixmap_scaled(AMaskPix, AScaledPix, Width, Height);
+          // mask physical size must match ATempPixmap physical size
+          QPixmap_scaled(AMaskPix, AScaledPix,
+            QPixmap_width(ATempPixmap), QPixmap_height(ATempPixmap),
+            QtIgnoreAspectRatio, QtSmoothTransformation);
+          QPixmap_setDevicePixelRatio(AScaledPix, DPR);
         end else
-          QPixmap_copy(AMaskPix, AScaledPix, MaskRect.Left, MaskRect.Top,
-            MaskRect.Right - MaskRect.Left, MaskRect.Bottom - MaskRect.Top);
+        begin
+          if IsRectEmpty(MaskRect) or (MaskRect.Size <> DstRect.Size) then
+          begin
+            if not QPixmap_isNull(ATempPixmap) and ((QPixmap_width(ATempPixmap) < (DstRect.Right - DstRect.Left)) or
+              (QPixmap_Height(ATempPixmap) < (DstRect.Bottom - DstRect.Top))) then
+              QPixmap_scaled(AMaskPix, AScaledPix, QPixmap_width(ATempPixmap), QPixmap_height(ATempPixmap))
+            else
+              QPixmap_scaled(AMaskPix, AScaledPix, Width, Height);
+          end else
+            QPixmap_copy(AMaskPix, AScaledPix, MaskRect.Left, MaskRect.Top,
+              MaskRect.Right - MaskRect.Left, MaskRect.Bottom - MaskRect.Top);
+        end;
 
         ABitmap := QBitmap_Create(AScaledPix);
-
-        QPixmap_setMask(ATempPixmap, ABitmap);
-        QBitmap_Destroy(ABitmap);
-        QPixmap_destroy(AScaledPix);
+        try
+          QPixmap_setMask(ATempPixmap, ABitmap);
+        finally
+          QBitmap_Destroy(ABitmap);
+        end;
       finally
+        QPixmap_destroy(AScaledPix);
         QPixmap_destroy(AMaskPix);
       end;
     end;
 
     if not QPixmap_isNull(ATempPixmap) then
     begin
-      if ARenderHint then
+      if NeedSmooth then
         QPainter_setRenderHint(DstQDC.Widget, QPainterSmoothPixmapTransform, True);
-
-      if (QPixmap_width(ATempPixmap) = Width) and (QPixmap_height(ATempPixmap) = Height) and (Rop = SRCCOPY) then
-      begin
-        QPainter_drawPixmap(DstQDC.Widget, X, Y, ATempPixmap);
-      end else
-        QPainter_drawPixmap(DstQDC.Widget, X, Y, Width, Height, ATempPixmap);
-
-      if ARenderHint then
-        QPainter_setRenderHint(DstQDC.Widget, QPainterSmoothPixmapTransform, not ARenderHint);
+      try
+        if (QPixmap_width(ATempPixmap) = Width) and (QPixmap_height(ATempPixmap) = Height) and (Rop = SRCCOPY) then
+          QPainter_drawPixmap(DstQDC.Widget, X, Y, ATempPixmap)
+        else
+          QPainter_drawPixmap(DstQDC.Widget, X, Y, Width, Height, ATempPixmap);
+      finally
+        if NeedSmooth then
+          QPainter_setRenderHint(DstQDC.Widget, QPainterSmoothPixmapTransform, False);
+      end;
     end;
 
     QPixmap_destroy(ATempPixmap);
