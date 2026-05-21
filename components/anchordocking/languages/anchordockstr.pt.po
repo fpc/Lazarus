@@ -27,12 +27,12 @@ msgstr "Distância em pixels que o rato tem de percorrer antes de arrastar"
 #: anchordockstr.adrsanchordockbackuprecovery
 msgctxt "anchordockstr.adrsanchordockbackuprecovery"
 msgid "Backup/Restore Anchordocking Layout"
-msgstr ""
+msgstr "Gravar/Restaurar a disposição do Anchordocking"
 
 #: anchordockstr.adrsanchordockbackuprecoverycaption
 msgctxt "anchordockstr.adrsanchordockbackuprecoverycaption"
 msgid "Backup/Restore Anchordocking Layout"
-msgstr ""
+msgstr "Gravar/Restaurar a disposição do Anchordocking"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
 #, object-pascal-format
@@ -56,11 +56,11 @@ msgstr "Uma página não deve ter uma âncora: Nó=\"%s\" Mãe=%s Tipo de mãe=%
 
 #: anchordockstr.adrsareyousuretodelete
 msgid "Are you sure you want to delete the backup file?"
-msgstr ""
+msgstr "Tem a certeza de que deseja eliminar a salvaguarda?"
 
 #: anchordockstr.adrsareyousuretorestore
 msgid "Are you sure you want to restore the window layout? This will overwrite the current layout settings."
-msgstr ""
+msgstr "Are you sure you want to restore the window layout? This will overwrite the current layout settings."
 
 #: anchordockstr.adrsautomatically
 msgid "Automatically"
@@ -68,16 +68,16 @@ msgstr "Automaticamente"
 
 #: anchordockstr.adrsbackupcurrentlayout
 msgid "Backup current layout"
-msgstr ""
+msgstr "Gravar a disposição actual"
 
 #: anchordockstr.adrsbackupfailed
 msgid "Backup failed"
-msgstr ""
+msgstr "Falha ao salvaguardar"
 
 #: anchordockstr.adrsbackupsuccessful
 #, object-pascal-format
 msgid "Backup successful: %s"
-msgstr ""
+msgstr "Salvaguarda com sucesso: %s"
 
 #: anchordockstr.adrsbottom
 msgid "bottom"
@@ -89,7 +89,7 @@ msgstr "Fechar"
 
 #: anchordockstr.adrsconfirm
 msgid "Confirm"
-msgstr ""
+msgstr "Confirmar"
 
 #: anchordockstr.adrscontrolisalreadyadocksite
 msgid "control is already a docksite"
@@ -102,7 +102,7 @@ msgstr "O local de doca personalizado \"%s\" só pode ter um local."
 
 #: anchordockstr.adrsdeleteselectedlayout
 msgid "Delete selected layout"
-msgstr ""
+msgstr "Eliminar a disposição seleccionada"
 
 #: anchordockstr.adrsdockinganchordocking
 msgid "Docking / Anchordocking"
@@ -212,7 +212,7 @@ msgstr "Realçar o cabeçalho do controlo ancorado focado"
 
 #: anchordockstr.adrslayoutrestoredsuccessfully
 msgid "Layout restored successfully"
-msgstr ""
+msgstr "Disposição restaurada com sucesso"
 
 #: anchordockstr.adrsleft
 msgid "left"
@@ -291,7 +291,7 @@ msgstr "Sair de %s"
 
 #: anchordockstr.adrsready
 msgid "Ready"
-msgstr ""
+msgstr "Pronto"
 
 #: anchordockstr.adrsrequestedbutcreated
 #, object-pascal-format
@@ -300,11 +300,11 @@ msgstr "%s pedido, mas %s criado"
 
 #: anchordockstr.adrsrestoredefaultlayout
 msgid "Restore default layout"
-msgstr ""
+msgstr "Restaurar a disposição predefinida"
 
 #: anchordockstr.adrsrestoreselectedlayout
 msgid "Restore selected layout"
-msgstr ""
+msgstr "Restaurar a disposição seleccionada"
 
 #: anchordockstr.adrsright
 msgid "right"
@@ -332,7 +332,7 @@ msgstr "Mostrar cabeçalhos"
 
 #: anchordockstr.adrssplitterresizestyle
 msgid "Splitter resize style:"
-msgstr ""
+msgstr "Estilo de redimensionamento do divisor"
 
 #: anchordockstr.adrssplitterthickness
 msgid "Splitter thickness"
@@ -362,12 +362,12 @@ msgstr "Para utilizar o anchordocking, deve primeiro desinstalar o %s"
 
 #: anchordockstr.adrsunabletodeletefile
 msgid "Unable to delete the file"
-msgstr ""
+msgstr "Impossível eliminar o ficheiro"
 
 #: anchordockstr.adrsunabletoreadfile
 #, object-pascal-format
 msgid "Unable to read the file: %s"
-msgstr ""
+msgstr "Impossível ler o ficheiro: %s"
 
 #: anchordockstr.adrsundock
 msgid "Undock"

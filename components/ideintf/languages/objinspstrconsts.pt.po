@@ -679,7 +679,7 @@ msgstr "\"%s\" não é um nome de método válido."
 #: objinspstrconsts.oisitems
 #, object-pascal-format
 msgid "items: %s"
-msgstr ""
+msgstr "itens: %s"
 
 #: objinspstrconsts.oisitemsselected
 #, object-pascal-format
@@ -766,7 +766,7 @@ msgstr "Aceitar"
 
 #: objinspstrconsts.oisonlyonefile
 msgid "Only one file can be opened."
-msgstr ""
+msgstr "Só se pode abrir um ficheiro."
 
 #: objinspstrconsts.oisoptions
 msgid "Options"
@@ -1517,7 +1517,7 @@ msgstr "Nenhuma"
 #: objinspstrconsts.sccsiledtnovalidimagewidth
 #, object-pascal-format
 msgid "\"%s\" is not a valid image width."
-msgstr ""
+msgstr "\"%s\" não é uma largura de imagem válida."
 
 #: objinspstrconsts.sccsiledtopendialog
 msgid "Add Images"
@@ -1767,11 +1767,9 @@ msgid "TreeView Items Editor"
 msgstr "Editor de items de TreeView"
 
 #: objinspstrconsts.sccstredtconfirmationimagesloss
-#, fuzzy
-#| msgid "Information about node images cannot be stored in the file. Continue anyway?"
 msgctxt "objinspstrconsts.sccstredtconfirmationimagesloss"
 msgid "Information about node images can only be stored in XML file format. Continue anyway?"
-msgstr "Impossível gravar informações sobre imagens de nós neste ficheiro. Deseja continuar na mesma?"
+msgstr "Informação sobre imagens de nós só pode ser armazenada em formato XML. Deseja continuar?"
 
 #: objinspstrconsts.sccstredtconfirmationtreereplace
 msgid "The current tree will be overwritten, continue?"
@@ -1839,11 +1837,11 @@ msgstr "Abrir"
 
 #: objinspstrconsts.sccstredtopensavedlgfiltertextfiles
 msgid "Text files (Node captions only)"
-msgstr ""
+msgstr "Ficheiros de texto (só legendas de nós)"
 
 #: objinspstrconsts.sccstredtopensavedlgfilterxmlfiles
 msgid "XML files (Node captions and properties)"
-msgstr ""
+msgstr "Ficheiros XML (legendas de nós e propriedades)"
 
 #: objinspstrconsts.sccstredtrename
 msgctxt "objinspstrconsts.sccstredtrename"

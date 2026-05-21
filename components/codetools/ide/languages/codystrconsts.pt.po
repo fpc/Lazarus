@@ -195,7 +195,7 @@ msgstr "Dicionário de identificadores"
 
 #: codystrconsts.crscodyoptionstitle
 msgid "Cody"
-msgstr ""
+msgstr "Cody"
 
 #: codystrconsts.crscogeneral
 msgctxt "codystrconsts.crscogeneral"
@@ -221,22 +221,22 @@ msgstr "Contém"
 #: codystrconsts.crscontextdeletepackage
 #, object-pascal-format
 msgid "Delete package \"%s\""
-msgstr ""
+msgstr "Eliminar pacote \"%s\""
 
 #: codystrconsts.crscontextdeleteunit
 #, object-pascal-format
 msgid "Delete unit \"%s\""
-msgstr ""
+msgstr "Eliminar unidade \"%s\""
 
 #: codystrconsts.crscontextjumpto
 #, object-pascal-format
 msgid "Jump to \"%s\""
-msgstr ""
+msgstr "Ir para \"%s\""
 
 #: codystrconsts.crscontextuseidentifier
 #, object-pascal-format
 msgid "Use \"%s\""
-msgstr ""
+msgstr "Usar \"%s\""
 
 #: codystrconsts.crscontinue
 msgid "Continue"
@@ -320,7 +320,7 @@ msgstr "Eliminar unidade?"
 
 #: codystrconsts.crsdictionarymaxlistitems
 msgid "Maximum displayed items in the list"
-msgstr ""
+msgstr "Número máximo de itens mostrados na lista"
 
 #: codystrconsts.crsdistance
 msgid "Distance"
@@ -770,7 +770,7 @@ msgstr "Mostrar dicionário Cody para \"%s\""
 #: codystrconsts.crsshowmoreidentifiers
 #, object-pascal-format
 msgid "... click to show %d more (up to %d left)"
-msgstr ""
+msgstr "... clique para ver %d mais (restam %d)"
 
 #: codystrconsts.crsshowonlyidentifierscontainingfiltertext
 msgid "Show only identifiers containing filter text"
@@ -783,7 +783,7 @@ msgstr "Mostrar só identificadores que começam com o texto do filtro"
 #: codystrconsts.crsshowremainingidentifiers
 #, object-pascal-format
 msgid "... click to show remaining (up to %d left)"
-msgstr ""
+msgstr "... clique para ver o restante (restam %d)"
 
 #: codystrconsts.crsshowunitidentifierdictionary
 msgid "Show Unit / Identifier Dictionary ..."

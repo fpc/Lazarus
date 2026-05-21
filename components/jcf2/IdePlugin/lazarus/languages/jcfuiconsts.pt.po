@@ -45,7 +45,7 @@ msgstr "Definições globais..."
 
 #: jcfuiconsts.format_remove_comments
 msgid "Remove comments in current editor window"
-msgstr ""
+msgstr "Remover comentários na janela actual do editor"
 
 #: jcfuiconsts.format_settings_menu
 msgid "&Format Settings ..."
@@ -267,11 +267,11 @@ msgstr "Activar reparação de maiúsculas"
 
 #: jcfuiconsts.liscapsfloatingpointnumbers
 msgid "Floating point numbers"
-msgstr ""
+msgstr "Números de vírgula flutuante"
 
 #: jcfuiconsts.liscapshexadecimalnumbers
 msgid "Hexadecimal numbers"
-msgstr ""
+msgstr "Números hexadecimais"
 
 #: jcfuiconsts.liscapsidentifiersidentifiers
 msgid "Identifiers"
@@ -599,15 +599,15 @@ msgstr "Descrição:"
 
 #: jcfuiconsts.lisfrfilesdlgfilterall
 msgid "All files"
-msgstr ""
+msgstr "Todos os ficheiros"
 
 #: jcfuiconsts.lisfrfilesexport
 msgid "Export"
-msgstr ""
+msgstr "Exportar"
 
 #: jcfuiconsts.lisfrfilesexportdlgtitle
 msgid "Export JCF format settings"
-msgstr ""
+msgstr "Exportar definições do JCF"
 
 #: jcfuiconsts.lisfrfilesfileisreadonly
 msgid "File is read only"
@@ -623,11 +623,11 @@ msgstr "Ficheiro não encontrado"
 
 #: jcfuiconsts.lisfrfilesimport
 msgid "Import"
-msgstr ""
+msgstr "Importar"
 
 #: jcfuiconsts.lisfrfilesimportdlgtitle
 msgid "Import JCF format settings"
-msgstr ""
+msgstr "Importar definições do JCF"
 
 #: jcfuiconsts.lisfrfilesopenfolder
 msgid "Open folder"
@@ -656,7 +656,7 @@ msgstr "Acção de comentário desequilibrada"
 
 #: jcfuiconsts.lisindentbeginendblocks
 msgid "Indent Begin...End blocks (GNU style)"
-msgstr ""
+msgstr "Avançar blocos Begin...End (estilo GNU)"
 
 #: jcfuiconsts.lisindentblockindentationspaces
 msgid "Block indentation spaces"
@@ -668,7 +668,7 @@ msgstr "Indentação diferente para o primeiro nível"
 
 #: jcfuiconsts.lisindentendtryblockascode
 msgid "Indent end try block as code"
-msgstr ""
+msgstr "Avançar bloco end try como código"
 
 #: jcfuiconsts.lisindentextraindentforbeginend
 msgid "Extra indent for begin/end inside procedures"
@@ -692,7 +692,7 @@ msgstr "Avanço extra para ambiente GUID"
 
 #: jcfuiconsts.lisindentextraorphantryblocks
 msgid "Extra Indent for orphan try blocks"
-msgstr ""
+msgstr "Avanço extra para blocos try órfãos"
 
 #: jcfuiconsts.lisindentindentation
 msgid "Indentation"
@@ -732,27 +732,27 @@ msgstr "Manter comentários de linha única com código nos procedimentos"
 
 #: jcfuiconsts.lisindentlabels
 msgid "Indent labels"
-msgstr ""
+msgstr "Avançar rótulos"
 
 #: jcfuiconsts.lisindentlabelsdontindent
 msgid "Don't indent"
-msgstr ""
+msgstr "Não avançar"
 
 #: jcfuiconsts.lisindentlabelsindentprevlevel
 msgid "Indent to prior level"
-msgstr ""
+msgstr "Avançar para o nível anterior"
 
 #: jcfuiconsts.lisindentlabelsindentx0
 msgid "Indent to first column position"
-msgstr ""
+msgstr "Avançar para a 1.ª posição da coluna"
 
 #: jcfuiconsts.lisindentlabelslindenttoprocedure
 msgid "Indent to procedure level"
-msgstr ""
+msgstr "Avançar para o nível do procedimento"
 
 #: jcfuiconsts.lisindentlabelsstatement
 msgid "Indent statement"
-msgstr ""
+msgstr "Avançar instrução"
 
 #: jcfuiconsts.lisindentoptions
 msgid "Options"
@@ -760,7 +760,7 @@ msgstr "Opções"
 
 #: jcfuiconsts.lisindenttryfinallyexcept
 msgid "Indent try/finally/except"
-msgstr ""
+msgstr "Avançar try/finally/except"
 
 #: jcfuiconsts.lisjcfformatsettings
 msgid "JCF Format Settings"
@@ -867,7 +867,7 @@ msgstr "Símbolos definidos para compilação condicional:"
 
 #: jcfuiconsts.lisreplacecstyleoperators
 msgid "Replace C-style operators (+=, -=, *=, and /=), for example transform x+=y; to x:=x+y;"
-msgstr ""
+msgstr "Substituir operadores de estilo C (+=, -=, *=, e /=), para, por exemplo, transformar x+=y; to x:=x+y;"
 
 #: jcfuiconsts.lisreturnsafteruses
 msgid "After uses"
@@ -1027,19 +1027,19 @@ msgstr "Espaços"
 
 #: jcfuiconsts.lisspacesspacesafterassign
 msgid "Spaces after assign"
-msgstr ""
+msgstr "Espaços após atribuir"
 
 #: jcfuiconsts.lisspacesspacesaftercolon
 msgid "Spaces after colon"
-msgstr ""
+msgstr "Espaços após dois pontos"
 
 #: jcfuiconsts.lisspacesspacesaftercomma
 msgid "Spaces after comma"
-msgstr ""
+msgstr "Espaços após vírgula"
 
 #: jcfuiconsts.lisspacesspacesaftersemicolon
 msgid "Spaces after semicolon"
-msgstr ""
+msgstr "Espaços após ponto e vírgula"
 
 #: jcfuiconsts.lisspacesspacesaroundoperators
 msgid "Spaces around &operators"
@@ -1047,11 +1047,11 @@ msgstr "Espaços à volta de &operadores"
 
 #: jcfuiconsts.lisspacesspacesbeforeassign
 msgid "Spaces before &assign"
-msgstr ""
+msgstr "Espaços antes de atribuir"
 
 #: jcfuiconsts.lisspacesspacesbeforecolon
 msgid "Spaces before colon"
-msgstr ""
+msgstr "Espaços antes de dois pontos"
 
 #: jcfuiconsts.lisspacesspacesbeforecolonin
 msgid "Spaces &before colon in"
@@ -1059,11 +1059,11 @@ msgstr "&Espaços antes de dois pontos em"
 
 #: jcfuiconsts.lisspacesspacesbeforecomma
 msgid "Spaces before comma"
-msgstr ""
+msgstr "Espaços antes de vírgula"
 
 #: jcfuiconsts.lisspacesspacesbeforesemicolon
 msgid "Spaces before semicolon"
-msgstr ""
+msgstr "Espaços antes de ponto e vírgula"
 
 #: jcfuiconsts.lisspacesspacesfortab
 msgid "Spaces for tab"

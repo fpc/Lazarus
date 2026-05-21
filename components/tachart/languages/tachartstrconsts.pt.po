@@ -502,7 +502,7 @@ msgstr "Estrela (linhas)"
 
 #: tachartstrconsts.rsstateseries
 msgid "State series"
-msgstr ""
+msgstr "Série de estado"
 
 #: tachartstrconsts.rstop
 msgid "Top"

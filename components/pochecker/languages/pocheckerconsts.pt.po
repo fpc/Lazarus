@@ -81,11 +81,11 @@ msgstr "Japonês"
 
 #: pocheckerconsts.rs_lang_ko
 msgid "Korean"
-msgstr ""
+msgstr "Coreano"
 
 #: pocheckerconsts.rs_lang_lo
 msgid "Lao"
-msgstr ""
+msgstr "Lao"
 
 #: pocheckerconsts.rs_lang_lt
 msgid "Lithuanian"
@@ -113,7 +113,7 @@ msgstr "Russo"
 
 #: pocheckerconsts.rs_lang_si
 msgid "Sinhala"
-msgstr ""
+msgstr "Sinhala"
 
 #: pocheckerconsts.rs_lang_sk
 msgid "Slovak"
@@ -397,7 +397,7 @@ msgstr "Seleccion&ar tudo"
 
 #: pocheckerconsts.sselectedtranslationsarenotavailable
 msgid "Selected translations are not available."
-msgstr "As traduções seleccionadas não estão disponíveis"
+msgstr "As traduções seleccionadas não estão disponíveis."
 
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"
@@ -491,7 +491,7 @@ msgstr "Remover todas as selecções"
 
 #: pocheckerconsts.suntranslatedstrings
 msgid "Untranslated strings"
-msgstr "Cadeias por traduzir."
+msgstr "Cadeias por traduzir"
 
 #: pocheckerconsts.suntranslatedstringstotal
 #, object-pascal-format

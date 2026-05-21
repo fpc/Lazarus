@@ -56,11 +56,11 @@ msgstr "Ficheiro \"%s\" não encontrado."
 
 #: ideprojectstrconsts.lishowtoproceed
 msgid "How to proceed?"
-msgstr ""
+msgstr "Como continuar?"
 
 #: ideprojectstrconsts.lismultipleimagesinfo
 msgid "An icon can contain images at several sizes, but the selected file format allows only a single image per file."
-msgstr ""
+msgstr "Um ícone pode conter imagens de vários tamanhos, mas o formato de ficheiro seleccionado só permite uma imagem pro ficheiro."
 
 #: ideprojectstrconsts.lispkgdefsnamespaces
 msgid "Namespaces"
@@ -82,15 +82,15 @@ msgstr "Marca da pasta de fonte do projecto"
 
 #: ideprojectstrconsts.lissaveallimagesizestoindividualfiles
 msgid "Save all image sizes to individual files"
-msgstr ""
+msgstr "Gravar todos os tamanhos de imagens em ficheiros individuais"
 
 #: ideprojectstrconsts.lissaveicontofile
 msgid "Save icon to file"
-msgstr ""
+msgstr "Gravar ícone em ficheiro"
 
 #: ideprojectstrconsts.lissaveonlycurrentimagesize
 msgid "Save only current image size"
-msgstr ""
+msgstr "Gravar só o tamanho de imagem actual"
 
 #: ideprojectstrconsts.lisstrangelpifile
 msgid "Strange lpi file"

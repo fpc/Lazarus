@@ -25,7 +25,7 @@ msgstr "Todos os ficheiros (*)|*|Bibliotecas partilhadas (*.so)|*.so"
 
 #: reconstsunit.sbinary
 msgid "Binary view"
-msgstr ""
+msgstr "Vista binária"
 
 #: reconstsunit.sbuilddate
 msgid "Build date: "
@@ -45,7 +45,7 @@ msgstr "Versão FPC: "
 
 #: reconstsunit.sheight
 msgid "Height:"
-msgstr ""
+msgstr "Altura:"
 
 #: reconstsunit.shelp
 msgid "Help"
@@ -57,12 +57,12 @@ msgstr "Imagem"
 
 #: reconstsunit.simageindex
 msgid "Image index:"
-msgstr ""
+msgstr "Índice da imagem:"
 
 #: reconstsunit.sindexofcount
 #, object-pascal-format
 msgid "%d of %d"
-msgstr ""
+msgstr "%d de %d"
 
 #: reconstsunit.slclversion
 msgid "LCL Version: "
@@ -74,25 +74,23 @@ msgstr "Este programa é livre sob a GNU GPL 2 license, veja COPIAR o ficheiro"
 
 #: reconstsunit.snextimage
 msgid "Next image"
-msgstr ""
+msgstr "Imagem seguinte"
 
 #: reconstsunit.sopen
 msgid "Open ..."
 msgstr "Abrir..."
 
 #: reconstsunit.sotherguiwidgetset
-#, fuzzy
-#| msgid "Other gui"
 msgid "Other GUI"
 msgstr "Outro GUI"
 
 #: reconstsunit.spixelformat
 msgid "Pixel format:"
-msgstr ""
+msgstr "Formato do pixel:"
 
 #: reconstsunit.sprevimage
 msgid "Previous image"
-msgstr ""
+msgstr "Imagem anterior"
 
 #: reconstsunit.sresourceexplorer
 msgid "Resource explorer"
@@ -121,9 +119,9 @@ msgstr "SO alvo: "
 #: reconstsunit.swidgetset
 #, object-pascal-format
 msgid "%s widget set"
-msgstr ""
+msgstr "Conjunto de widgets %s"
 
 #: reconstsunit.swidth
 msgid "Width:"
-msgstr ""
+msgstr "Largura:"
 

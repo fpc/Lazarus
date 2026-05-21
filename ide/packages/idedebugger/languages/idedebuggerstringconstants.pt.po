@@ -30,15 +30,15 @@ msgstr "Sem grupos"
 
 #: idedebuggerstringconstants.dbgasmwindowlinktarget
 msgid "Link target line"
-msgstr ""
+msgstr "Linha de destino da ligação"
 
 #: idedebuggerstringconstants.dbgasmwindowsourcefunc
 msgid "Function name"
-msgstr ""
+msgstr "Nome da função"
 
 #: idedebuggerstringconstants.dbgasmwindowsourceline
 msgid "Source line"
-msgstr ""
+msgstr "Linha fonte"
 
 #: idedebuggerstringconstants.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
@@ -68,107 +68,105 @@ msgstr "Não perguntar outra vez"
 
 #: idedebuggerstringconstants.dbgoptexclrtfilenameequals
 msgid "Filename (equals)"
-msgstr ""
+msgstr "Nome do ficheiros (igual a)"
 
 #: idedebuggerstringconstants.dbgoptexclrtfunctionequals
 msgid "Function (equals)"
-msgstr ""
+msgstr "Função (igual a)"
 
 #: idedebuggerstringconstants.dbgoptexclrtfunctionregex
 msgid "Function (regex)"
-msgstr ""
+msgstr "Função (regex)"
 
 #: idedebuggerstringconstants.dbgoptexclrtmatchfunctionname
 msgid "Match function name:"
-msgstr ""
+msgstr "Comparar nome da função:"
 
 #: idedebuggerstringconstants.dbgoptexclrtmatchpathorfile
 msgid "Match path or file:"
-msgstr ""
+msgstr "Comparar caminho ou ficheiro:"
 
 #: idedebuggerstringconstants.dbgoptexclrtnewsteppingexclusion
 msgid "New stepping exclusion"
-msgstr ""
+msgstr "Nova exclusão por etapas"
 
 #: idedebuggerstringconstants.dbgoptexclrtpathfileregex
 msgid "Path/File (regex)"
-msgstr ""
+msgstr "Caminho/Ficheiro (regex)"
 
 #: idedebuggerstringconstants.dbgoptexclrtsomebackendsmaycomparecas
 msgid "Some backends may compare case-sensitive. Regex may be limited, if supported."
-msgstr ""
+msgstr "Alguns motores podem fazer a comparação entre maiúsculas. A expressão regular pode estar limitada, caso seja suportada."
 
 #: idedebuggerstringconstants.dbgoptexclrtsomebackendsmayonlysuppor
 msgid "Some backends may only support function name (equal) checks."
-msgstr ""
+msgstr "Alguns motores podem só suportar verificações de nomes de funções (igual)."
 
 #: idedebuggerstringconstants.dbgoptexclrtsteppingexclusions
 msgid "Stepping exclusions"
-msgstr ""
+msgstr "Exclusões por etapas"
 
 #: idedebuggerstringconstants.dbgoptexclrtstorestepexclusionsinsess
 msgid "Store step-exclusions in session"
-msgstr ""
+msgstr "Armazenar exclusões por etapas na sessão"
 
 #: idedebuggerstringconstants.dbgoptexclrtthisonlyaffectsthelistofe
 msgid "This only affects the list of exclusions below. The settings which list to use are always stored in the session."
-msgstr ""
+msgstr "Isto só afecta a lista de exclusões abaixo. As definições da lista a usar são sempre gravadas na sessão."
 
 #: idedebuggerstringconstants.dbgoptexclrtusetheidegloballistofexcl
 msgid "Use the IDE global list of exclusions"
-msgstr ""
+msgstr "Usar a lista global de exclusões do IDE"
 
 #: idedebuggerstringconstants.dbgoptexclrtusetheprojectlistofexclus
 msgid "Use the project list of exclusions"
-msgstr ""
+msgstr "Usar a lista de exclusões do projecto"
 
 #: idedebuggerstringconstants.dbgoptfrmchooseformatter
 msgid "Choose formatter"
-msgstr ""
+msgstr "Escolher formatador"
 
 #: idedebuggerstringconstants.dbgoptfrmformatterclass
 msgid "Formatter class:"
-msgstr ""
+msgstr "Classe do formatador:"
 
 #: idedebuggerstringconstants.dbgoptfrmname
 msgid "Name:"
-msgstr ""
+msgstr "Nome:"
 
 #: idedebuggerstringconstants.dbgoptfrmpleasechoosetheformattert
 msgid "Please choose the formatter to add."
-msgstr ""
+msgstr "Por favor, escolha o formatador a adicionar."
 
 #: idedebuggerstringconstants.dbgwatchcolordisabled
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgwatchcolordisabled"
 msgid "Disabled"
 msgstr "Desactivado"
 
 #: idedebuggerstringconstants.dbgwatchcolorellipsis
 msgid "Ellipsis"
-msgstr ""
+msgstr "Reticências"
 
 #: idedebuggerstringconstants.dbgwatchcolorerror
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgwatchcolorerror"
 msgid "Error"
 msgstr "Erro"
 
 #: idedebuggerstringconstants.dbgwatchcolorevaluating
 msgid "Evaluating"
-msgstr ""
+msgstr "A avaliar"
 
 #: idedebuggerstringconstants.dbgwatchcolors
 msgid "Watches/Locals"
-msgstr ""
+msgstr "Vigias/Locais"
 
 #: idedebuggerstringconstants.dbgwatchcolorunknown
 msgid "Unknown"
-msgstr ""
+msgstr "Desconhecido"
 
 #: idedebuggerstringconstants.dbgwatchfoundstackframe
 msgid "Stack frame (found)"
-msgstr ""
+msgstr "Moldura da torre (encontrada)"
 
 #: idedebuggerstringconstants.dispformatarrayhidelenifless
 msgctxt "idedebuggerstringconstants.dispformatarrayhidelenifless"
@@ -691,19 +689,19 @@ msgstr "Vigias"
 
 #: idedebuggerstringconstants.dlgaddhiattrdefault
 msgid "Default Text"
-msgstr ""
+msgstr "Texto predefinido"
 
 #: idedebuggerstringconstants.dlgaddhiattrlinehighlight
 msgid "Current line highlight"
-msgstr ""
+msgstr "Realce da linha actual"
 
 #: idedebuggerstringconstants.dlgaddhiattrmouselink
 msgid "Mouse link"
-msgstr ""
+msgstr "Ligação do rato"
 
 #: idedebuggerstringconstants.dlgaddhiattrtextblock
 msgid "Selected text"
-msgstr ""
+msgstr "Texto seleccionado"
 
 #: idedebuggerstringconstants.dlgbackconvoptaction
 msgctxt "idedebuggerstringconstants.dlgbackconvoptaction"
@@ -1166,15 +1164,15 @@ msgstr "Estado"
 
 #: idedebuggerstringconstants.lisc0ascontrolpictures
 msgid "C0 as Control Pictures"
-msgstr ""
+msgstr "C0 como imagens de controlo"
 
 #: idedebuggerstringconstants.lisc0asiso2047
 msgid "C0 as ISO 2047"
-msgstr ""
+msgstr "C0 como ISO 2047"
 
 #: idedebuggerstringconstants.lisc1asc0underbar
 msgid "C1 as C0 + Underbar"
-msgstr ""
+msgstr "C1 como C0 + Barra inferior"
 
 #: idedebuggerstringconstants.liscallstacknotevaluated
 msgid "Stack not evaluated"
@@ -1244,11 +1242,9 @@ msgid "Page up"
 msgstr "Página acima"
 
 #: idedebuggerstringconstants.liscurrent
-#, fuzzy
-#| msgid "Current"
 msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Select as context"
-msgstr "Actual"
+msgstr "Selecionar como contexto"
 
 #: idedebuggerstringconstants.lisdadattach
 msgid "Attach"
@@ -1306,7 +1302,7 @@ msgstr "Copiar para a prancheta"
 
 #: idedebuggerstringconstants.lisdbgbreakpointgroupshint
 msgid "Show breakpoints by group"
-msgstr ""
+msgstr "Mostrar pontos de interrupção por grupo"
 
 #: idedebuggerstringconstants.lisdbgbreakpointpropertieshint
 msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
@@ -1378,7 +1374,7 @@ msgstr "Retomar não gerido"
 
 #: idedebuggerstringconstants.lisdecorations
 msgid "Decorations"
-msgstr ""
+msgstr "Decorações"
 
 #: idedebuggerstringconstants.lisdeleteall
 msgid "&Delete All"
@@ -1582,7 +1578,7 @@ msgstr "Limpar grupo(s)"
 
 #: idedebuggerstringconstants.lishexascii
 msgid "Hex + ASCII"
-msgstr ""
+msgstr "Hex + ASCII"
 
 #: idedebuggerstringconstants.lishitcount
 msgid "Hitcount"
@@ -1695,11 +1691,11 @@ msgstr "Linha/Tamanho"
 
 #: idedebuggerstringconstants.lislinelimit
 msgid "Line limit"
-msgstr ""
+msgstr "Limite da linha"
 
 #: idedebuggerstringconstants.lislinenumbers
 msgid "Line numbers"
-msgstr ""
+msgstr "Números de linha"
 
 #: idedebuggerstringconstants.lislocals
 msgctxt "lazarusidestrconsts.lislocals"
@@ -1766,7 +1762,7 @@ msgstr "Que&brar"
 
 #: idedebuggerstringconstants.lismenucontinuelaststep
 msgid "Continue last Step"
-msgstr ""
+msgstr "Continuar o último passo"
 
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
@@ -1839,10 +1835,8 @@ msgid "Debug Output"
 msgstr "Saída da depuração"
 
 #: idedebuggerstringconstants.lismenuviewmemviewer
-#, fuzzy
-#| msgid "Mem viewer"
 msgid "Memory Viewer"
-msgstr "Ver memória"
+msgstr "Visualizador de memória"
 
 #: idedebuggerstringconstants.lismore
 msgctxt "lazarusidestrconsts.lismore"
@@ -1872,7 +1866,7 @@ msgstr "? (ligado)"
 
 #: idedebuggerstringconstants.lisoutputstyle
 msgid "Output Style"
-msgstr ""
+msgstr "Estilo da saída"
 
 #: idedebuggerstringconstants.lispasscount
 msgid "Pass Count"
@@ -1888,7 +1882,7 @@ msgstr "Pendente (ligado)"
 
 #: idedebuggerstringconstants.lisrawoutput
 msgid "Raw Output"
-msgstr ""
+msgstr "Saída em bruto"
 
 #: idedebuggerstringconstants.lisregisters
 msgctxt "lazarusidestrconsts.lisregisters"
@@ -1901,15 +1895,15 @@ msgstr "Total de repetições:"
 
 #: idedebuggerstringconstants.lissearchparent
 msgid "Search Stack:"
-msgstr ""
+msgstr "Procurar na torre:"
 
 #: idedebuggerstringconstants.lissearchparenterr
 msgid "Invalid limit for \"Search Stack\"."
-msgstr ""
+msgstr "Limite inválido para \"Procurar na torre\"."
 
 #: idedebuggerstringconstants.lissearchparenthint
 msgid "MaxCount:NamePattern"
-msgstr ""
+msgstr "MaxCount:NamePattern"
 
 #: idedebuggerstringconstants.lissourcebreakpoint
 msgid "&Source Breakpoint ..."
@@ -1977,7 +1971,7 @@ msgstr "Estado"
 
 #: idedebuggerstringconstants.lisunformatted
 msgid "Unformatted"
-msgstr ""
+msgstr "Não formatado"
 
 #: idedebuggerstringconstants.lisvalue
 msgctxt "idedebuggerstringconstants.lisvalue"
@@ -2024,7 +2018,7 @@ msgstr "Escrever"
 
 #: idedebuggerstringconstants.liswatchkindwritechanged
 msgid "Change (Write)"
-msgstr ""
+msgstr "Alterar (escrever)"
 
 #: idedebuggerstringconstants.liswatchpoint
 msgid "&Data/Watch Breakpoint ..."

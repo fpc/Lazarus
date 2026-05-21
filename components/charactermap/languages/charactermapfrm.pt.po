@@ -13,11 +13,11 @@ msgstr ""
 
 #: charactermapfrm.lisbmponly
 msgid "BMP Only"
-msgstr ""
+msgstr "Só BMP"
 
 #: charactermapfrm.lisbmponlyhint
 msgid "Basic Multilingual Plane Only"
-msgstr ""
+msgstr "Só o plano multilíngue básico"
 
 #: charactermapfrm.lischaractermap
 msgid "Character Map"
@@ -41,7 +41,7 @@ msgstr "Intervalo"
 
 #: charactermapfrm.lisscript
 msgid "Script"
-msgstr ""
+msgstr "Escrito"
 
 #: charactermapfrm.lissortunicoderangelistalphabetically
 msgid "Sort Unicode range list alphabetically"

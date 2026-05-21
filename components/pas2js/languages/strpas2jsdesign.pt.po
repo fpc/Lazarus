@@ -111,7 +111,7 @@ msgstr "Erro: %s"
 
 #: strpas2jsdesign.pjsdfilenamedoesnotstartwithpas2js
 msgid "filename does not start with \"pas2js\""
-msgstr "O nome do ficheiro não começa com \"Pas2JS\""
+msgstr "o nome do ficheiro não começa com \"Pas2JS\""
 
 #: strpas2jsdesign.pjsdfilenotexecutable
 #, object-pascal-format
@@ -130,7 +130,7 @@ msgstr "Encotrado %s"
 
 #: strpas2jsdesign.pjsdfpcexecutable
 msgid "FPC executable:"
-msgstr "Executável FPC"
+msgstr "Executável FPC:"
 
 #: strpas2jsdesign.pjsdfpcsourcedirectory
 msgid "FPC source directory:"
@@ -453,10 +453,8 @@ msgid "Warning"
 msgstr "Aviso"
 
 #: strpas2jsdesign.pjsdwebappdescription
-#, fuzzy
-#| msgid "A pas2js program running in the browser."
 msgid "A pas2js program running in the browser, with optional support for running a WebAssembly program and threading."
-msgstr "Um programa pas2js a correr no navegador."
+msgstr "Um programa pas2js executado no navegador, com suporte opcional para a execução de programas WebAssembly e múltiplos fios."
 
 #: strpas2jsdesign.pjsdwebapplication
 msgid "Web Browser Application"
@@ -493,7 +491,7 @@ msgstr "Actualizar classe a partir de fonte HTML"
 
 #: strpas2jsdesign.pjswasienablethreading
 msgid "Enable WebAssembly threading"
-msgstr ""
+msgstr "Activar fios WebAssembly"
 
 #: strpas2jsdesign.pjswasiprogramfiletexthint
 msgid "Name of your WebAssembly file"

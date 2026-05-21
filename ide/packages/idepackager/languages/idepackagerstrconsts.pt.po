@@ -32,7 +32,7 @@ msgstr "Falha ao eliminar o ficheiro \"%s\"."
 #: idepackagerstrconsts.lisduplicateunitin
 #, object-pascal-format
 msgid "Duplicate unit \"%s\" in \"%s\""
-msgstr ""
+msgstr "Unidade\"%s\" duplicada em \"%s\""
 
 #: idepackagerstrconsts.lisexecutingcommandafter
 msgid "Executing command after"
@@ -71,7 +71,6 @@ msgid "Creating Makefile for package %s"
 msgstr "A criar MakeFile para o pacote %s"
 
 #: idepackagerstrconsts.lisignoreall
-#, fuzzy
 msgctxt "idepackagerstrconsts.lisignoreall"
 msgid "Ignore all"
 msgstr "Ignorar tudo"

@@ -44,8 +44,6 @@ msgid "&Search by text"
 msgstr "Procurar por te&xto"
 
 #: lhelpstrconsts.slhelp_actionstoc
-#, fuzzy
-#| msgid "&TOC"
 msgid "&Table of contents"
 msgstr "Índ&ice"
 

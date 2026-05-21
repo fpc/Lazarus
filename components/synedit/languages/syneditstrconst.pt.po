@@ -73,7 +73,7 @@ msgstr "Carácter"
 
 #: syneditstrconst.syns_attrcharset
 msgid "Charset"
-msgstr ""
+msgstr "Conjunto de caracteres"
 
 #: syneditstrconst.syns_attrchunkmarker
 msgid "Diff Chunk Marker"
@@ -97,11 +97,11 @@ msgstr "Classe"
 
 #: syneditstrconst.syns_attrclientkeyword
 msgid "Keyword (Client)"
-msgstr ""
+msgstr "Palavra-chave (cliente)"
 
 #: syneditstrconst.syns_attrcollation
 msgid "Collation"
-msgstr ""
+msgstr "Colecção"
 
 #: syneditstrconst.syns_attrcomment
 msgid "Comment"
@@ -109,19 +109,19 @@ msgstr "Comentário"
 
 #: syneditstrconst.syns_attrcommentansi
 msgid "ANSI Comment"
-msgstr ""
+msgstr "Comentário ANSI"
 
 #: syneditstrconst.syns_attrcommentcurly
 msgid "Curly Comment"
-msgstr ""
+msgstr "Comentáriocom chavetas"
 
 #: syneditstrconst.syns_attrcommentslash
 msgid "Slash Comment"
-msgstr ""
+msgstr "Comentário com barras"
 
 #: syneditstrconst.syns_attrcommentsym
 msgid "Comment Symbol"
-msgstr ""
+msgstr "Símbolo de comentário"
 
 #: syneditstrconst.syns_attrcondition
 msgid "Condition"
@@ -133,19 +133,19 @@ msgstr "Tipo de dados"
 
 #: syneditstrconst.syns_attrdeclarationtype
 msgid "Declaration block type"
-msgstr ""
+msgstr "Tipo de bloco de declaração"
 
 #: syneditstrconst.syns_attrdeclarationtypename
 msgid "Declaration block (Type) name"
-msgstr ""
+msgstr "Nome de (tipo) de bloco de declaração"
 
 #: syneditstrconst.syns_attrdeclarationvalue
 msgid "Declaration block value"
-msgstr ""
+msgstr "Valor do bloco de declaração"
 
 #: syneditstrconst.syns_attrdeclarationvarconstname
 msgid "Declaration block (Var, Const) name"
-msgstr ""
+msgstr "Nome de (Var, Const) de bloco de declaração"
 
 #: syneditstrconst.syns_attrdefaultpackage
 msgid "Default packages"
@@ -217,15 +217,15 @@ msgstr "Função"
 
 #: syneditstrconst.syns_attrgenericconstraint
 msgid "Generic param constraint"
-msgstr ""
+msgstr "Restrição de parâmetro genérica"
 
 #: syneditstrconst.syns_attrgenericparam
 msgid "Generic param name"
-msgstr ""
+msgstr "Nome de parâmetro genérico"
 
 #: syneditstrconst.syns_attrgotolabel
 msgid "Goto Label"
-msgstr ""
+msgstr "Ir para rótulo"
 
 #: syneditstrconst.syns_attrhexadecimal
 msgid "Hexadecimal"
@@ -325,15 +325,15 @@ msgstr "Espaço de nomes Valor do atributo"
 
 #: syneditstrconst.syns_attrnamespacecolon
 msgid "Namespace Colon"
-msgstr ""
+msgstr "Espaço de nome dois pontos"
 
 #: syneditstrconst.syns_attrnamespaceidentdef
 msgid "Namespace Identifier Definition"
-msgstr ""
+msgstr "Definição de identificador de espaço de nome"
 
 #: syneditstrconst.syns_attrnamespaceidentprefix
 msgid "Namespace Identifier Prefix"
-msgstr ""
+msgstr "Prefixo de identificador de espaço de nome"
 
 #: syneditstrconst.syns_attrnewfile
 msgid "Diff New File"
@@ -397,19 +397,19 @@ msgstr "Nome do cabeçalho do procedimento"
 
 #: syneditstrconst.syns_attrprocedureheaderparam
 msgid "Procedure header param name"
-msgstr ""
+msgstr "Nome de parâmetro do cabeçalho de procedimento"
 
 #: syneditstrconst.syns_attrprocedureheaderresult
 msgid "Procedure header result"
-msgstr ""
+msgstr "Resultado do cabeçalho de procedimento"
 
 #: syneditstrconst.syns_attrprocedureheadertype
 msgid "Procedure header type"
-msgstr ""
+msgstr "Tipo do cabeçalho de procedimento"
 
 #: syneditstrconst.syns_attrprocedureheadervalue
 msgid "Procedure header value"
-msgstr ""
+msgstr "Valor do cabeçalho de procedimento"
 
 #: syneditstrconst.syns_attrprocessinginstr
 msgid "Processing Instruction"
@@ -417,11 +417,11 @@ msgstr "A processar a instrução"
 
 #: syneditstrconst.syns_attrprocessinginstrsym
 msgid "Processing Instruction Symbol"
-msgstr ""
+msgstr "A processar símbolo da instrução"
 
 #: syneditstrconst.syns_attrpropertyname
 msgid "Property name"
-msgstr ""
+msgstr "Nome da propriedade"
 
 #: syneditstrconst.syns_attrqualifier
 msgid "Qualifier"
@@ -481,7 +481,7 @@ msgstr "Espaço"
 
 #: syneditstrconst.syns_attrspecializeparam
 msgid "Specialize param"
-msgstr ""
+msgstr "Parâmetro especializado"
 
 #: syneditstrconst.syns_attrspecialvariable
 msgid "Special variable"
@@ -505,23 +505,23 @@ msgstr "Cadeia"
 
 #: syneditstrconst.syns_attrstringbacktick
 msgid "Backtick String"
-msgstr ""
+msgstr "Cadeia de acento grave"
 
 #: syneditstrconst.syns_attrstringcaret
 msgid "Ctrl Char (Caret)"
-msgstr ""
+msgstr "Carácter Ctrl (cursor)"
 
 #: syneditstrconst.syns_attrstringhash
 msgid "Ordinal Char (Hash)"
-msgstr ""
+msgstr "Carácter ordinal (hash)"
 
 #: syneditstrconst.syns_attrstringsingle
 msgid "Single quoted String"
-msgstr ""
+msgstr "Cadeia entre plicas"
 
 #: syneditstrconst.syns_attrstructmember
 msgid "Structure member"
-msgstr ""
+msgstr "Membro da estrutura"
 
 #: syneditstrconst.syns_attrsymbol
 msgid "Symbol"
@@ -662,15 +662,15 @@ msgstr "Colar rápido de selecção"
 
 #: syneditstrconst.syns_emcpluginextlinkcopyexternallink
 msgid "Copy external link"
-msgstr ""
+msgstr "Copiar ligação externa"
 
 #: syneditstrconst.syns_emcpluginextlinkopenexternallink
 msgid "Open external link"
-msgstr ""
+msgstr "Abrir ligação externa"
 
 #: syneditstrconst.syns_emcpluginextlinkselectexternallink
 msgid "Select external link"
-msgstr ""
+msgstr "Seleccionar ligação externa"
 
 #: syneditstrconst.syns_emcpluginmulticaretselectiontocarets
 msgid "Set carets at EOL in selected lines"

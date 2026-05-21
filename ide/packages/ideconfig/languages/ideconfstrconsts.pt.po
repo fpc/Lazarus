@@ -13,132 +13,132 @@ msgstr ""
 
 #: ideconfstrconsts.dlgfilterfpcmessagefile
 msgid "FPC message file"
-msgstr ""
+msgstr "Ficheiro de mensagens FPC"
 
 #: ideconfstrconsts.dlggroupenvironment
 msgid "Environment"
-msgstr ""
+msgstr "Ambiente"
 
 #: ideconfstrconsts.lisaborted
 msgid "Aborted"
-msgstr ""
+msgstr "Abortado"
 
 #: ideconfstrconsts.lisafilealreadyexistsreplaceit
 #, object-pascal-format
 msgid "A file \"%s\" already exists.%sReplace it?"
-msgstr ""
+msgstr "Já existe um ficheiro \"%s\".%sSubstituir?"
 
 #: ideconfstrconsts.lisambiguousfilefound
 msgid "Ambiguous file found"
-msgstr ""
+msgstr "Foi encontrado um ficheiro ambíguo"
 
 #: ideconfstrconsts.lisambiguousfilefoundthisfilecanbemistakenwithdelete
 #, object-pascal-format
 msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
-msgstr ""
+msgstr "Foi encontrado um ficheiro ambíguo: \"%s\"%sEste ficheiro pode ser confundido com \"%s\"%sDeseja eliminar o ficheiro ambíguo?"
 
 #: ideconfstrconsts.lisbackupfilefailed
 msgid "Backup file failed"
-msgstr ""
+msgstr "Falha na salvaguarda"
 
 #: ideconfstrconsts.lisbuildide
 msgid "Build IDE"
-msgstr ""
+msgstr "Construir o IDE"
 
 #: ideconfstrconsts.lisbuildinglazarusfailed
 msgid "Building Lazarus failed"
-msgstr ""
+msgstr "Falha ao construir o Lazarus"
 
 #: ideconfstrconsts.liscannotexecute
 #, object-pascal-format
 msgid "cannot execute \"%s\""
-msgstr ""
+msgstr "impossível executar \"%s\""
 
 #: ideconfstrconsts.liscannotfind
 #, object-pascal-format
 msgid "Cannot find %s"
-msgstr ""
+msgstr "Impossível encontrar %s"
 
 #: ideconfstrconsts.liscannotfindexecutable
 #, object-pascal-format
 msgid "cannot find executable \"%s\""
-msgstr ""
+msgstr "impossível encontrar o executável \"%s\""
 
 #: ideconfstrconsts.liscantfindavalidppu
 #, object-pascal-format
 msgid "Can't find a valid %s.ppu"
-msgstr ""
+msgstr "Impossível encontrar um %s.ppu válido"
 
 #: ideconfstrconsts.liscaptionofactivebuildmode
 msgid "Caption of active build mode"
-msgstr ""
+msgstr "Legenda do modo de construção activo"
 
 #: ideconfstrconsts.lisccoerrorcaption
 msgid "Error"
-msgstr ""
+msgstr "Erro"
 
 #: ideconfstrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
 #, object-pascal-format
 msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and check that no two packages have access to the unit source."
-msgstr ""
+msgstr ". Verifique se o pacote %s cria o ficheiro %s.ppu, certifique-se de que nada elimina esse ficheiro e verifique se não há dois pacotes com acesso à fonte da unidade."
 
 #: ideconfstrconsts.lischeckifpackageisinthedependencies
 #, object-pascal-format
 msgid ". Check if package %s is in the dependencies"
-msgstr ""
+msgstr ". Verifique se o pacote %s está nas dependências"
 
 #: ideconfstrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
 #, object-pascal-format
 msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
-msgstr ""
+msgstr ". Verifique o caminho de pesquisa do pacote %s, tente uma reconstrução completa e verifique se a implementação utiliza secções."
 
 #: ideconfstrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
-msgstr ""
+msgstr "Limpar fonte do Lazarus"
 
 #: ideconfstrconsts.liscleanuppackage
 #, object-pascal-format
 msgid "Clean up package \"%s\"."
-msgstr ""
+msgstr "Limpar o pacote \"%s\"."
 
 #: ideconfstrconsts.liscodetoolsdefswriteerror
 msgid "Write error"
-msgstr ""
+msgstr "Erro de escrita"
 
 #: ideconfstrconsts.liscommandlineparamsofprogram
 msgid "Command line parameters of program"
-msgstr ""
+msgstr "Parâmetros de linha de comando do programa"
 
 #: ideconfstrconsts.liscompileproject
 msgid "Compile Project"
-msgstr ""
+msgstr "Compilar projecto"
 
 #: ideconfstrconsts.liscompilercfgismissing
 #, object-pascal-format
 msgid "%s is missing."
-msgstr ""
+msgstr "%s em falta."
 
 #: ideconfstrconsts.liscompilerdoesnotsupporttarget
 #, object-pascal-format
 msgid "Compiler \"%s\" does not support target %s-%s"
-msgstr ""
+msgstr "O compilador \"%s\" não suporta o alvo %s-%s"
 
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
-msgstr ""
+msgstr "Erro: compilador inválido: %s"
 
 #: ideconfstrconsts.liscompilerfilename
 msgid "Compiler filename"
-msgstr ""
+msgstr "Nome do ficheiros do compilador"
 
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
 msgid "Hint: you can set the compiler executable in Tools -> Options-> Files -> Compiler executable"
-msgstr ""
+msgstr "Dica: pode definir o executável do compilador em Ferramentas -> Opções -> Ficheiros -> Executável do compilador"
 
 #: ideconfstrconsts.liscompilewithvdformoredetailscheckforduplicates
 msgid "Compile with -vd for more details. Check for duplicates."
-msgstr ""
+msgstr "Compile com -vd para mais detalhes. Verifique se existem duplicados."
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format
@@ -152,29 +152,29 @@ msgstr "O nome do componente \"%s\" não é um identificador válido"
 
 #: ideconfstrconsts.lisconfigdirectory
 msgid "Lazarus config directory"
-msgstr ""
+msgstr "Pasta de configuração do Lazarus"
 
 #: ideconfstrconsts.liscpu
 #, object-pascal-format
 msgid ", CPU: %s"
-msgstr ""
+msgstr ", CPU: %s"
 
 #: ideconfstrconsts.lisdeleteambiguousfile
 msgid "Delete ambiguous file?"
-msgstr ""
+msgstr "Eliminar o ficheiro ambíguo?"
 
 #: ideconfstrconsts.lisdeletefilefailed
 msgid "Delete file failed"
-msgstr ""
+msgstr "Falha ao eliminar"
 
 #: ideconfstrconsts.lisdirectorynotfound2
 #, object-pascal-format
 msgid "directory %s not found"
-msgstr ""
+msgstr "pasta %s não encontrada"
 
 #: ideconfstrconsts.lisdirectorynotwritable
 msgid "Directory not writable"
-msgstr ""
+msgstr "Pasta não gravável"
 
 #: ideconfstrconsts.lisedtdefallpackages
 msgid "All packages"
@@ -223,7 +223,7 @@ msgstr "usar unidade LineInfo"
 #: ideconfstrconsts.lisenableflaguseunitofunitinpackage
 #, object-pascal-format
 msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
-msgstr ""
+msgstr ". Activar a opção \"Usar unidade\" da unidade %s no pacote %s"
 
 #: ideconfstrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
@@ -231,103 +231,103 @@ msgstr "Ciclo infinito em macros"
 
 #: ideconfstrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
-msgstr ""
+msgstr "Variável de ambiente, nome como parâmetro"
 
 #: ideconfstrconsts.lisenvoptdlgdirectorynotfound
 msgid "Directory not found"
-msgstr ""
+msgstr "Pasta não encontrada"
 
 #: ideconfstrconsts.liserrordeletingfile
 msgid "Error deleting file"
-msgstr ""
+msgstr "Erro ao eliminar o ficheiro"
 
 #: ideconfstrconsts.liserrorloadingfrom
 #, object-pascal-format
 msgid "Error loading %s from%s%s%s%s"
-msgstr ""
+msgstr "Erro ao carregar %s de%s%s%s%s"
 
 #: ideconfstrconsts.liserrorrenamingfile
 msgid "Error renaming file"
-msgstr ""
+msgstr "Erro ao renomear o ficheiro"
 
 #: ideconfstrconsts.liserrorsavingto
 #, object-pascal-format
 msgid "Error saving %s to%s%s%s%s"
-msgstr ""
+msgstr "Erro ao gravar %s em%s%s%s%s"
 
 #: ideconfstrconsts.lisexecutableisadirectory
 #, object-pascal-format
 msgid "executable \"%s\" is a directory"
-msgstr ""
+msgstr "o executável \"%s\" é uma pasta"
 
 #: ideconfstrconsts.lisexecutablelacksthepermissiontorun
 #, object-pascal-format
 msgid "executable \"%s\" lacks the permission to run"
-msgstr ""
+msgstr "o executável \"%s\" não tem permissão para correr"
 
 #: ideconfstrconsts.lisexitcode
 #, object-pascal-format
 msgid "Exit code %s"
-msgstr ""
+msgstr "Código de saída %s"
 
 #: ideconfstrconsts.lisfailedtoresolvemacros
 msgid "failed to resolve macros"
-msgstr ""
+msgstr "falha ao resolver macros"
 
 #: ideconfstrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 #, object-pascal-format
 msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
-msgstr ""
+msgstr "O ficheiro \"%s\"%snão parece ser ficheiro de texto.%sAbrir mesmo assim?"
 
 #: ideconfstrconsts.lisfileextensionofprograms
 msgid "File extension of programs"
-msgstr ""
+msgstr "Extensão de ficheiros de programa"
 
 #: ideconfstrconsts.lisfileisdirectory
 msgid "File is directory"
-msgstr ""
+msgstr "O ficheiro é uma pasta"
 
 #: ideconfstrconsts.lisfileisnotanexecutable
 msgid "File is not an executable"
-msgstr ""
+msgstr "O ficheiro não é um executável"
 
 #: ideconfstrconsts.lisfileisnotwritable
 msgid "File is not writable"
-msgstr ""
+msgstr "O ficheiro não é gravável"
 
 #: ideconfstrconsts.lisfileissymlink
 msgid "File is symlink"
-msgstr ""
+msgstr "O ficheiro é uma ligação simbólica"
 
 #: ideconfstrconsts.lisfilenotfound
 msgid "File not found"
-msgstr ""
+msgstr "Ficheiro não encontrado"
 
 #: ideconfstrconsts.lisfilenotfound3
 #, object-pascal-format
 msgid "file %s not found"
-msgstr ""
+msgstr "ficheiro %s não encontrado"
 
 #: ideconfstrconsts.lisfilenotfound4
 msgid "file not found"
-msgstr ""
+msgstr "ficheiro não encontrado"
 
 #: ideconfstrconsts.lisfilenottext
 msgid "File not text"
-msgstr ""
+msgstr "Ficheiro não texto"
 
 #: ideconfstrconsts.lisfoundversionexpected
 #, object-pascal-format
 msgid "Found version %s, expected %s"
-msgstr ""
+msgstr "Encontrada a versão %s, esperada a %s"
 
 #: ideconfstrconsts.lisfpcfullversioneg20701
 msgid "FPC version as one number (e.g. 20701)"
-msgstr ""
+msgstr "Versão FPC como um único número (e.g. 20701)"
 
 #: ideconfstrconsts.lisfpcversioneg222
 msgid "FPC Version (e.g. 2.2.2)"
-msgstr ""
+msgstr "Versão FPC (e.g. 2.2.2)"
 
 #: ideconfstrconsts.lisfppkgcompilernotexecutable
 #, object-pascal-format
@@ -351,387 +351,387 @@ msgstr "O Fppkg indica que o RTL não está instalado."
 #: ideconfstrconsts.lisfreeingbufferlines
 #, object-pascal-format
 msgid "freeing buffer lines: %s"
-msgstr ""
+msgstr "a libertar linhas do buffer: %s"
 
 #: ideconfstrconsts.lisfreepascalsourcedirectory
 msgid "Free Pascal source directory"
-msgstr ""
+msgstr "Pasta-fonte do Free Pascal"
 
 #: ideconfstrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
-msgstr ""
+msgstr "Dica: verifique se dois pacotes contêm uma unidade com o mesmo nome."
 
 #: ideconfstrconsts.lisidebuildoptions
 msgid "IDE build options"
-msgstr ""
+msgstr "Opções de construção do IDE"
 
 #: ideconfstrconsts.lisignoreandcontinue
 msgid "Ignore and continue"
-msgstr ""
+msgstr "Ignorar e continuar"
 
 #: ideconfstrconsts.lisincompatibleppu
 #, object-pascal-format
 msgid ", incompatible ppu=%s"
-msgstr ""
+msgstr ", ppu=%s incompatível"
 
 #: ideconfstrconsts.lisinvalidmacrosin
 #, object-pascal-format
 msgid "Invalid macros in \"%s\""
-msgstr ""
+msgstr "Macros inválidas em \"%s\""
 
 #: ideconfstrconsts.lisinvalidmacrosinexternaltool
 #, object-pascal-format
 msgid "Invalid macros \"%s\" in external tool \"%s\""
-msgstr ""
+msgstr "Macros inválidas \"%s\" na ferramenta externa \"%s\""
 
 #: ideconfstrconsts.lisinvalidversionin
 #, object-pascal-format
 msgid "invalid version in %s"
-msgstr ""
+msgstr "versão inválida em %s"
 
 #: ideconfstrconsts.lisisddirectorynotfound
 msgid "directory not found"
-msgstr ""
+msgstr "pasta não encontrada"
 
 #: ideconfstrconsts.lislaunchingcmdline
 msgid "Launching target command line"
-msgstr ""
+msgstr "A executar a linha de comando de destino"
 
 #: ideconfstrconsts.lislazarusdirectory
 msgid "Lazarus directory"
-msgstr ""
+msgstr "Pasta do Lazarus"
 
 #: ideconfstrconsts.lislazaruslanguageid
 msgid "Lazarus language ID (e.g. en, de, br, fi)"
-msgstr ""
+msgstr "ID do idioma do Lazarus (e.g. en, de, br, fi)"
 
 #: ideconfstrconsts.lislazaruslanguagename
 msgid "Lazarus language name (e.g. english, deutsch)"
-msgstr ""
+msgstr "Nome do idioma do Lazarus (e.g. english, deutsch)"
 
 #: ideconfstrconsts.lislazbuilddebugide
 msgid "Debug IDE"
-msgstr ""
+msgstr "Depurar o IDE"
 
 #: ideconfstrconsts.lislazbuilderrorwritingfile
 msgid "Error writing file"
-msgstr ""
+msgstr "Erro ao escrever o ficheiro"
 
 #: ideconfstrconsts.lislazbuildnormalide
 msgid "Normal IDE"
-msgstr ""
+msgstr "IDE normal"
 
 #: ideconfstrconsts.lislazbuildoptimizedide
 msgid "Optimized IDE"
-msgstr ""
+msgstr "IDE optimizado"
 
 #: ideconfstrconsts.lislazbuildunabletowritefile
 #, object-pascal-format
 msgid "Unable to write file \"%s\":%s"
-msgstr ""
+msgstr "Impossível escrever no ficheiro \"%s\":%s"
 
 #: ideconfstrconsts.lislazcleanupbuildall
 msgid "Clean Up + Build all"
-msgstr ""
+msgstr "Limpar + Construir tudo"
 
 #: ideconfstrconsts.lislazver
 msgid "Lazarus Version (e.g. 1.2.4)"
-msgstr ""
+msgstr "Versão do Lazarus (e.g. 1.2.4)"
 
 #: ideconfstrconsts.lislclwidgettype
 msgid "LCL &widget type"
-msgstr ""
+msgstr "Tipo de &widget do LCL"
 
 #: ideconfstrconsts.lismakeexe
 msgid "Make Executable"
-msgstr ""
+msgstr "Executável make"
 
 #: ideconfstrconsts.lismakenotfound
 msgid "Make not found"
-msgstr ""
+msgstr "Make não encontrado"
 
 #: ideconfstrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
 msgid "Make sure all ppu files of a package are in its output directory."
-msgstr ""
+msgstr "Certifique-se de que todos os ficheiros ppu de um pacote se encontram na sua pasta de saída."
 
 #: ideconfstrconsts.lismissingdirectory
 #, object-pascal-format
 msgid "missing directory \"%s\""
-msgstr ""
+msgstr "pasta \"%s em falta"
 
 #: ideconfstrconsts.lismissingexecutable
 #, object-pascal-format
 msgid "missing executable \"%s\""
-msgstr ""
+msgstr "executável \"%s\" em falta"
 
 #: ideconfstrconsts.lismode
 #, object-pascal-format
 msgid ", Mode: %s"
-msgstr ""
+msgstr ", modo: %s"
 
 #: ideconfstrconsts.lismultiplepack
 msgid ", multiple packages: "
-msgstr ""
+msgstr ", múltiplos pacotes: "
 
 #: ideconfstrconsts.lisnameofactivebuildmode
 msgid "Name of active build mode"
-msgstr ""
+msgstr "Nome do modo de construção activo"
 
 #: ideconfstrconsts.lisnewproject
 msgid "(new project)"
-msgstr ""
+msgstr "(novo projecto)"
 
 #: ideconfstrconsts.lisnotecouldnotcreatedefinetemplateforfreepascal
 msgid "NOTE: Could not create Define Template for Free Pascal Sources"
-msgstr ""
+msgstr "NOTA: não foi possível criar o modelo Define para as fontes do Free Pascal"
 
 #: ideconfstrconsts.lisnotecouldnotcreatedefinetemplateforlazarussources
 msgid "NOTE: Could not create Define Template for Lazarus Sources"
-msgstr ""
+msgstr "NOTA: não foi possível criar o modelo Define para as fontes do Lazarus"
 
 #: ideconfstrconsts.lisnotimplemented
 msgid "Not implemented"
-msgstr ""
+msgstr "Não implementado"
 
 #: ideconfstrconsts.lisnotimplementedyet
 #, object-pascal-format
 msgid "Not implemented yet:%s%s"
-msgstr ""
+msgstr "Ainda não implementado: %s%s"
 
 #: ideconfstrconsts.lisofpackage
 #, object-pascal-format
 msgid " of package %s"
-msgstr ""
+msgstr " do pacote %s"
 
 #: ideconfstrconsts.lisoftheprojectinspector
 msgid " of the Project Inspector"
-msgstr ""
+msgstr " do inspector de projectos"
 
 #: ideconfstrconsts.lisok
 msgid "OK"
-msgstr ""
+msgstr "Aceitar"
 
 #: ideconfstrconsts.lisopensymlink
 msgid "Open symlink"
-msgstr ""
+msgstr "Abrir ligação simbólica"
 
 #: ideconfstrconsts.lisopentarget
 msgid "Open target"
-msgstr ""
+msgstr "Abrir alvo"
 
 #: ideconfstrconsts.lisos
 #, object-pascal-format
 msgid ", OS: %s"
-msgstr ""
+msgstr ", SO: %s"
 
 #: ideconfstrconsts.lisoutputfilenameofproject
 msgid "Output filename of project"
-msgstr ""
+msgstr "Nome do ficheiro de saída do projecto"
 
 #: ideconfstrconsts.lisoverwritefile
 msgid "Overwrite file?"
-msgstr ""
+msgstr "Sobrescrever o ficheiro?"
 
 #: ideconfstrconsts.lisoverwritefileondisk
 msgid "Overwrite file on disk"
-msgstr ""
+msgstr "Sobrescrever o ficheiro no disco"
 
 #: ideconfstrconsts.lispackage3
 #, object-pascal-format
 msgid ", package %s"
-msgstr ""
+msgstr ", pacote %s"
 
 #: ideconfstrconsts.lispackageneedsanoutputdirectory
 msgid "Package needs an output directory."
-msgstr ""
+msgstr "O pacote necessita de uma pasta de saída."
 
 #: ideconfstrconsts.lisparser
 #, object-pascal-format
 msgid "parser \"%s\": %s"
-msgstr ""
+msgstr "analisador \"%s\": %s"
 
 #: ideconfstrconsts.lispathoftheinstantfpccache
 msgid "path of the instantfpc cache"
-msgstr ""
+msgstr "caminho da cache instantfpc"
 
 #: ideconfstrconsts.lispathofthemakeutility
 msgid "Path of the make utility"
-msgstr ""
+msgstr "Caminho do utilitário make"
 
 #: ideconfstrconsts.lispkgmangunabletocreatedirectory
 msgid "Unable to create directory"
-msgstr ""
+msgstr "Impossível criar a pasta"
 
 #: ideconfstrconsts.lispkgmangunabletodeletefile
 #, object-pascal-format
 msgid "Unable to delete file \"%s\"."
-msgstr ""
+msgstr "Impossível eliminar o ficheiro \"%s\"."
 
 #: ideconfstrconsts.lisppuinwrongdirectory
 #, object-pascal-format
 msgid "ppu in wrong directory=%s."
-msgstr ""
+msgstr "ppu na pasta errada=%s."
 
 #: ideconfstrconsts.lisppunotfoundcheckyourfpccfg
 #, object-pascal-format
 msgid "%s.ppu not found. Check your fpc.cfg."
-msgstr ""
+msgstr "%s.ppu não encontrado. Verifique o fpc.cfg."
 
 #: ideconfstrconsts.lisprimaryconfigpath
 msgid "Primary config path"
-msgstr ""
+msgstr "Caminho de configuração primário"
 
 #: ideconfstrconsts.lisprojectdirectory
 msgid "Project directory"
-msgstr ""
+msgstr "Pasta do projecto"
 
 #: ideconfstrconsts.lisprojectfilename
 msgid "Project filename"
-msgstr ""
+msgstr "Nome do ficheiros do projecto"
 
 #: ideconfstrconsts.lisprojectincpath
 msgid "Project Include Path"
-msgstr ""
+msgstr "Caminho de inclusão do projecto"
 
 #: ideconfstrconsts.lisprojectmacroproperties
 msgid "Project macro properties"
-msgstr ""
+msgstr "Propriedades de macros do projecto"
 
 #: ideconfstrconsts.lisprojectnamespaces
 msgid "Project Namespaces"
-msgstr ""
+msgstr "Espaços de nome do projecto"
 
 #: ideconfstrconsts.lisprojectoutdir
 msgid "Project Output directory (e.g. the ppu directory)"
-msgstr ""
+msgstr "Pasta de saída do projecto (e.g. pasta dos ppu)"
 
 #: ideconfstrconsts.lisprojectsrcpath
 msgid "Project Src Path"
-msgstr ""
+msgstr "Caminho das fontes do projecto"
 
 #: ideconfstrconsts.lisprojectunitpath
 msgid "Project Unit Path"
-msgstr ""
+msgstr "Caminho das unidades do projecto"
 
 #: ideconfstrconsts.lisprojectver
 msgid "Project version"
-msgstr ""
+msgstr "Versão do projecto"
 
 #: ideconfstrconsts.lispublishprojdir
 msgid "Publish project directory"
-msgstr ""
+msgstr "Pasta de publicação do projecto"
 
 #: ideconfstrconsts.lisreaderror
 msgid "Read Error"
-msgstr ""
+msgstr "Erro de leitura"
 
 #: ideconfstrconsts.lisrenamefilefailed
 msgid "Rename file failed"
-msgstr ""
+msgstr "Falha ao renomear"
 
 #: ideconfstrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
-msgstr ""
+msgstr "Caminho de configuração secundário"
 
 #: ideconfstrconsts.lisshortformoftargetcpuparamtargetosparamsubtargetpar
 msgid "Short form of $TargetCPU(Param)-$TargetOS(Param)-$SubTarget(Param). Subtarget is omitted if empty."
-msgstr ""
+msgstr "Forma curta de $TargetCPU(Param)-$TargetOS(Param)-$SubTarget(Param). Subtarget é omitido se vazio."
 
 #: ideconfstrconsts.lissourceanddestinationarethesame
 #, object-pascal-format
 msgid "Source and Destination are the same:%s%s"
-msgstr ""
+msgstr "A origem e o destino são os mesmos:%s%s"
 
 #: ideconfstrconsts.lissrcos
 msgid "Src OS"
-msgstr ""
+msgstr "SO fonte"
 
 #: ideconfstrconsts.lissubtarget
 msgid "Subtarget"
-msgstr ""
+msgstr "Subalvo"
 
 #: ideconfstrconsts.lissuccess
 msgid "Success"
-msgstr ""
+msgstr "Sucesso"
 
 #: ideconfstrconsts.lissystemppunotfoundcheckyourfpccfg
 msgid "system.ppu not found. Check your fpc.cfg."
-msgstr ""
+msgstr "system.ppu não encontrado. Verifique o fpc.cfg."
 
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
-msgstr ""
+msgstr ", alvo: %s"
 
 #: ideconfstrconsts.listargetcpu
 msgid "Target CPU"
-msgstr ""
+msgstr "CPU alvo"
 
 #: ideconfstrconsts.listargetfilenameofproject
 msgid "Target filename of project"
-msgstr ""
+msgstr "Nome do ficheiro alvo do projecto"
 
 #: ideconfstrconsts.listargetfilenameplusparams
 msgid "Target filename + params"
-msgstr ""
+msgstr "Nome do ficheiro de destino + parâmetros"
 
 #: ideconfstrconsts.listargetos
 msgid "Target OS"
-msgstr ""
+msgstr "SO alvo"
 
 #: ideconfstrconsts.listestdirectory
 msgid "Test directory"
-msgstr ""
+msgstr "Pasta de teste"
 
 #: ideconfstrconsts.listhecodetoolsfoundanerror
 #, object-pascal-format
 msgid "The Codetools found an error:%s%s"
-msgstr ""
+msgstr "O Codetools encontrou um erro:%s%s"
 
 #: ideconfstrconsts.listhedirectoryisnotwritable
 #, object-pascal-format
 msgid "The directory \"%s\" is not writable."
-msgstr ""
+msgstr "A pasta \"%s\" não é gravável."
 
 #: ideconfstrconsts.listhefileisasymlinkopeninstead
 #, object-pascal-format
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
-msgstr ""
+msgstr "O ficheiro \"%s\" é uma ligação simbólica.%sAbrir antes \"%s\"?"
 
 #: ideconfstrconsts.listheprogrammakewasnotfound
 #, object-pascal-format
 msgid "The program \"make\" was not found.%sIt is needed to build Lazarus."
-msgstr ""
+msgstr "O programa «make» não foi encontrado.%sÉ necessário para construir o Lazarus."
 
 #: ideconfstrconsts.listheprojectusestargetosandcputhesystemppuforthistar
 #, object-pascal-format
 msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
-msgstr ""
+msgstr "O projecto usa o SO alvo=%s e a CPU=%s.%sO system.ppu para este alvo não foi encontrado nas pastas de binários do FPC.%sCertifique-se de que o FPC está bem instalado para este alvo e de que o fpc.cfg contém as pastas correctas."
 
 #: ideconfstrconsts.listhereisafilewiththesamenameandasimilarextension
 #, object-pascal-format
 msgid "There is a file with the same name and a similar extension on disk%sFile: %s%sAmbiguous File: %s%sDelete ambiguous file?"
-msgstr ""
+msgstr "Há um ficheiro com o mesmo nome e uma extensão semelhante no disco%sFicheiro: %s%sFicheiro ambíguo: %s%sDeseja eliminar o ficheiro ambíguo?"
 
 #: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
 #, object-pascal-format
 msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
-msgstr ""
+msgstr "Não existe nenhum fpc.exe na pasta %s. Normalmente, o executável make é instalado juntamente com o compilador FPC."
 
 #: ideconfstrconsts.listhereisnofreepascalcompileregfpcorppccpuconfigured
 #, object-pascal-format
 msgid "There is no Free Pascal Compiler (e. g. fpc%0:s or ppc<cpu>%0:s) configured in the project options. CodeTools will not work properly.%1:s%1:sError message:%1:s%2:s"
-msgstr ""
+msgstr "Não há nenhum compilador Free Pascal (e.g., fpc%0:s ou ppc<cpu>%0:s) configurado nas opções do projecto. O CodeTools não funcionará correctamente.%1:s%1:sMensagem de erro:%1:s%2:s"
 
 #: ideconfstrconsts.listheunitexiststwiceintheunitpathofthe
 #, object-pascal-format
 msgid "The unit %s exists twice in the unit path of the %s:"
-msgstr ""
+msgstr "A unidade %s aparece duas vezes no caminho de %s:"
 
 #: ideconfstrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
 #, object-pascal-format
 msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
-msgstr ""
+msgstr "Este conjunto de opções para compilar o Lazarus não é suportado por esta instalação.%sO diretório \"%s\" não é gravável.%sConsulte o site do Lazarus para conhecer outras formas de instalar o Lazarus."
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -769,285 +769,285 @@ msgstr "(macro desconhecida: %s)"
 #: ideconfstrconsts.listoolhasnoexecutable
 #, object-pascal-format
 msgid "tool \"%s\" has no executable"
-msgstr ""
+msgstr "a ferramenta \"%s\" não tem executável"
 
 #: ideconfstrconsts.lisunabletobackupfileto
 #, object-pascal-format
 msgid "Unable to backup file \"%s\" to \"%s\"!"
-msgstr ""
+msgstr "Impossível fazer a salvaguarda do ficheiro \"%s\" para \"%s\"!"
 
 #: ideconfstrconsts.lisunabletocopyfile
 msgid "Unable to copy file"
-msgstr ""
+msgstr "Impossível copiar o ficheiro"
 
 #: ideconfstrconsts.lisunabletocopyfileto
 #, object-pascal-format
 msgid "Unable to copy file \"%s\"%sto \"%s\""
-msgstr ""
+msgstr "Impossível copiar o ficheiro \"%s\"%spara \"%s\""
 
 #: ideconfstrconsts.lisunabletocreatedirectory
 #, object-pascal-format
 msgid "Unable to create directory \"%s\"."
-msgstr ""
+msgstr "Impossível criar a pasta \"%s\"."
 
 #: ideconfstrconsts.lisunabletocreatefile
 msgid "Unable to create file"
-msgstr ""
+msgstr "Impossível criar o ficheiro"
 
 #: ideconfstrconsts.lisunabletocreatefile2
 #, object-pascal-format
 msgid "Unable to create file \"%s\""
-msgstr ""
+msgstr "Impossível criar o ficheiro \"%s\""
 
 #: ideconfstrconsts.lisunabletocreatefile3
 #, object-pascal-format
 msgid "Unable to create file%s\"%s\""
-msgstr ""
+msgstr "Impossível criar o ficheiro%s\"%s\""
 
 #: ideconfstrconsts.lisunabletocreatelinkwithtarget
 #, object-pascal-format
 msgid "Unable to create link \"%s\" with target \"%s\""
-msgstr ""
+msgstr "Impossível criar o link \"%s\" com o destino \"%s\""
 
 #: ideconfstrconsts.lisunabletodeleteambiguousfile
 #, object-pascal-format
 msgid "Unable to delete ambiguous file \"%s\""
-msgstr ""
+msgstr "Impossível eliminar o ficheiro ambíguo \"%s\"."
 
 #: ideconfstrconsts.lisunabletoexecute
 #, object-pascal-format
 msgid "unable to execute: %s"
-msgstr ""
+msgstr "impossível executar: \"%s\""
 
 #: ideconfstrconsts.lisunabletoloadfile2
 #, object-pascal-format
 msgid "unable to load file %s: %s"
-msgstr ""
+msgstr "impossível carregar o ficheiro %s: %s"
 
 #: ideconfstrconsts.lisunabletoreadfile
 msgid "Unable to read file"
-msgstr ""
+msgstr "Impossível ler o ficheiro"
 
 #: ideconfstrconsts.lisunabletoreadfile2
 #, object-pascal-format
 msgid "Unable to read file \"%s\"."
-msgstr ""
+msgstr "Impossível ler o ficheiro \"%s\"."
 
 #: ideconfstrconsts.lisunabletoreadfileerror
 #, object-pascal-format
 msgid "Unable to read file \"%s\"%sError: %s"
-msgstr ""
+msgstr "Impossível ler o ficheiro \"%s\"%sErro: %s"
 
 #: ideconfstrconsts.lisunabletoreadprocessexitstatus
 msgid "unable to read process ExitStatus"
-msgstr ""
+msgstr "impossível ler o ExitStatus do processo"
 
 #: ideconfstrconsts.lisunabletoremoveoldbackupfile
 #, object-pascal-format
 msgid "Unable to remove old backup file \"%s\"!"
-msgstr ""
+msgstr "Impossível remover a salvaguarda antiga \"%s\"!"
 
 #: ideconfstrconsts.lisunabletorenameambiguousfileto
 #, object-pascal-format
 msgid "Unable to rename ambiguous file \"%s\"%sto \"%s\""
-msgstr ""
+msgstr "Impossível renomear o ficheiro ambíguo \"%s\"%spara \"%s\""
 
 #: ideconfstrconsts.lisunabletorenamefile
 msgid "Unable to rename file"
-msgstr ""
+msgstr "Impossível renomear o ficheiro"
 
 #: ideconfstrconsts.lisunabletorenamefileto
 #, object-pascal-format
 msgid "Unable to rename file \"%s\" to \"%s\"!"
-msgstr ""
+msgstr "Impossível renomear o ficheiro \"%s\" para \"%s\"!"
 
 #: ideconfstrconsts.lisunabletorenamefileto2
 #, object-pascal-format
 msgid "Unable to rename file \"%s\"%sto \"%s\"."
-msgstr ""
+msgstr "Impossível renomear o ficheiro \"%s\"%spara \"%s\"."
 
 #: ideconfstrconsts.lisunabletowrite2
 #, object-pascal-format
 msgid "Unable to write \"%s\""
-msgstr ""
+msgstr "Impossível escrever \"%s\""
 
 #: ideconfstrconsts.lisunabletowritefile
 msgid "Unable to write file"
-msgstr ""
+msgstr "Impossível escrever o ficheiro"
 
 #: ideconfstrconsts.lisunabletowritefile2
 #, object-pascal-format
 msgid "Unable to write file \"%s\"."
-msgstr ""
+msgstr "Impossível escrever o ficheiro \"%s\"."
 
 #: ideconfstrconsts.lisunabletowritefileerror
 #, object-pascal-format
 msgid "Unable to write file \"%s\"%sError: %s"
-msgstr ""
+msgstr "Impossível escrever o ficheiro \"%s\"%sErro: %s"
 
 #: ideconfstrconsts.lisunabletowritetofile2
 #, object-pascal-format
 msgid "Unable to write to file \"%s\"."
-msgstr ""
+msgstr "Impossível escrever no ficheiro \"%s\"."
 
 #: ideconfstrconsts.lisunabletowritexmlstreamtoerror
 #, object-pascal-format
 msgid "Unable to write xml stream to %s%sError: %s"
-msgstr ""
+msgstr "Impossível escrever o fluxo XML em %s%sErro: %s"
 
 #: ideconfstrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
 msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
-msgstr ""
+msgstr "Nome invulgar do ficheiro do compilador. Normalmente, começa por fpc, ppc ou ppcross."
 
 #: ideconfstrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
 msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
-msgstr ""
+msgstr "Nome invulgar do ficheiro do compilador pas2js. Normalmente, começa por pas2js."
 
 #: ideconfstrconsts.lisusedby
 #, object-pascal-format
 msgid " used by %s"
-msgstr ""
+msgstr " usado por %s"
 
 #: ideconfstrconsts.lisusershomedirectory
 msgid "User's home directory"
-msgstr ""
+msgstr "Pasta home do utilizador"
 
 #: ideconfstrconsts.liswriteerror
 msgid "Write Error"
-msgstr ""
+msgstr "Erro de escrita"
 
 #: ideconfstrconsts.liswriteerrorfile
 #, object-pascal-format
 msgid "Write error: %s%sFile: %s%s%s"
-msgstr ""
+msgstr "Erro de escrita: %s%sFicheiro: %s%s%s"
 
 #: ideconfstrconsts.liswrongversionin
 #, object-pascal-format
 msgid "wrong version in %s: %s"
-msgstr ""
+msgstr "versão errada em %s: %s"
 
 #: ideconfstrconsts.lisxmlerror
 msgid "XML Error"
-msgstr ""
+msgstr "Erro XML"
 
 #: ideconfstrconsts.lisxmlparsererrorinfileerror
 #, object-pascal-format
 msgid "XML parser error in file %s%sError: %s"
-msgstr ""
+msgstr "Erro do analisador XML no ficheiro %s%sErro: %s"
 
 #: ideconfstrconsts.rslanguageafrikaans
 msgid "Afrikaans"
-msgstr ""
+msgstr "africâner"
 
 #: ideconfstrconsts.rslanguagearabic
 msgid "Arabic"
-msgstr ""
+msgstr "Árabe"
 
 #: ideconfstrconsts.rslanguageautomatic
 msgid "Automatic (or English)"
-msgstr ""
+msgstr "Automático (ou inglês)"
 
 #: ideconfstrconsts.rslanguagecatalan
 msgid "Catalan"
-msgstr ""
+msgstr "Catalão"
 
 #: ideconfstrconsts.rslanguagechinese
 msgid "Chinese"
-msgstr ""
+msgstr "Chinês"
 
 #: ideconfstrconsts.rslanguagecorsican
 msgid "Corsican"
-msgstr ""
+msgstr "Córsego"
 
 #: ideconfstrconsts.rslanguageczech
 msgid "Czech"
-msgstr ""
+msgstr "Checo"
 
 #: ideconfstrconsts.rslanguagedutch
 msgid "Dutch"
-msgstr ""
+msgstr "Holandês"
 
 #: ideconfstrconsts.rslanguageenglish
 msgid "English"
-msgstr ""
+msgstr "Inglês"
 
 #: ideconfstrconsts.rslanguagefinnish
 msgid "Finnish"
-msgstr ""
+msgstr "Finlandês"
 
 #: ideconfstrconsts.rslanguagefrench
 msgid "French"
-msgstr ""
+msgstr "Francês"
 
 #: ideconfstrconsts.rslanguagegerman
 msgid "German"
-msgstr ""
+msgstr "Alemão"
 
 #: ideconfstrconsts.rslanguagehebrew
 msgid "Hebrew"
-msgstr ""
+msgstr "Hebraico"
 
 #: ideconfstrconsts.rslanguagehungarian
 msgid "Hungarian"
-msgstr ""
+msgstr "Húngaro"
 
 #: ideconfstrconsts.rslanguageindonesian
 msgid "Indonesian"
-msgstr ""
+msgstr "Indonésio"
 
 #: ideconfstrconsts.rslanguageitalian
 msgid "Italian"
-msgstr ""
+msgstr "Italiano"
 
 #: ideconfstrconsts.rslanguagejapanese
 msgid "Japanese"
-msgstr ""
+msgstr "Japonês"
 
 #: ideconfstrconsts.rslanguagekorean
 msgid "Korean"
-msgstr ""
+msgstr "Coreano"
 
 #: ideconfstrconsts.rslanguagelao
 msgid "Lao"
-msgstr ""
+msgstr "Lao"
 
 #: ideconfstrconsts.rslanguagelithuanian
 msgid "Lithuanian"
-msgstr ""
+msgstr "Lituano"
 
 #: ideconfstrconsts.rslanguagepolish
 msgid "Polish"
-msgstr ""
+msgstr "Polaco"
 
 #: ideconfstrconsts.rslanguageportuguese
 msgid "Portuguese"
-msgstr ""
+msgstr "Português"
 
 #: ideconfstrconsts.rslanguageportuguesebr
 msgid "Brazilian Portuguese"
-msgstr ""
+msgstr "Brasileiro"
 
 #: ideconfstrconsts.rslanguagerussian
 msgid "Russian"
-msgstr ""
+msgstr "Russo"
 
 #: ideconfstrconsts.rslanguagesinhala
 msgid "Sinhala"
-msgstr ""
+msgstr "Sinhala"
 
 #: ideconfstrconsts.rslanguageslovak
 msgid "Slovak"
-msgstr ""
+msgstr "Eslovaco"
 
 #: ideconfstrconsts.rslanguagespanish
 msgid "Spanish"
-msgstr ""
+msgstr "Espanhol"
 
 #: ideconfstrconsts.rslanguageturkish
 msgid "Turkish"
-msgstr ""
+msgstr "Turco"
 
 #: ideconfstrconsts.rslanguageukrainian
 msgid "Ukrainian"
-msgstr ""
+msgstr "Ucraniano"
 
