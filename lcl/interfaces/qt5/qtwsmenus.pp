@@ -75,6 +75,7 @@ type
 
 
 implementation
+uses math;
 
 { TQtWSMenuItem }
 
@@ -105,6 +106,16 @@ var
   AImage: TQtImage;
   Bmp: TBitmap;
   AImgList: TImageList;
+  ADesktop: QDesktopWidgetH;
+  ANumScreens, i, j: Integer;
+  AScreen: QWidgetH;
+  AWindow: QWindowH;
+  DPR: QReal;
+  AIcon: QIconH;
+  APixmap, AScaledPixmap: QPixmapH;
+  TargetPhysW, TargetPhysH: Int64;
+  ADPIProcessed: array of double;
+  AlreadyProcessed: Boolean;
 begin
   Result := TQtMenu.Create(AMenuItem);
   Result.FDeleteLater := False;
@@ -127,13 +138,64 @@ begin
       if (ImgList <> nil) and (AMenuItem.ImageIndex >= 0) and
         (AMenuItem.ImageIndex < ImgList.Count) then
       begin
+        ADPIProcessed := [];
+        AIcon := QIcon_Create();
         Bmp := TBitmap.Create;
         try
-          ImgList.ResolutionForPPI[16, ScreenInfo.PixelsPerInchX, 1].GetBitmap(AMenuItem.ImageIndex, Bmp); // Qt bindings support only 16px icons for menu items
-          Result.setImage(TQtImage(Bmp.Handle));
+          ImgList.ResolutionForPPI[16, ScreenInfo.PixelsPerInchX, 1.00].GetBitmap(AMenuItem.ImageIndex, Bmp); // Qt bindings support only 16px icons for menu items
+          APixmap := TQtImage(Bmp.Handle).AsPixmap();
+          QIcon_addPixmap(AIcon, APixmap, QIconNormal, QIconOn);
+          QPixmap_destroy(APixmap);
+          SetLength(ADPIProcessed, 1);
+          ADPIProcessed[0] := 1.00;
         finally
           Bmp.Free;
         end;
+        ADesktop := QApplication_desktop();
+        ANumScreens := QDesktopWidget_screenCount(ADesktop);
+        for i := 0 to ANumScreens - 1 do
+        begin
+          AScreen := QDesktopWidget_screen(ADesktop, i);
+          AWindow := QWidget_windowHandle(AScreen);
+
+          if AWindow = nil then
+            continue;
+
+          AlreadyProcessed := False;
+          DPR := QWindow_devicePixelRatio(AWindow);
+          for j := 0 to High(ADPIProcessed) do
+          begin
+            if SameValue(ADPIProcessed[j], DPR, 0.01) then
+            begin
+              AlreadyProcessed := True;
+              break;
+            end;
+          end;
+          if not AlreadyProcessed and (DPR > 1.0) and not SameValue(DPR, 1.00, 0.01) then
+          begin
+            SetLength(ADPIProcessed,length(ADPIProcessed) + 1);
+            ADPIProcessed[High(ADPIProcessed)] := DPR;
+            Bmp := TBitmap.Create;
+            ImgList.ResolutionForPPI[16, 96, 1.0].GetBitmap(AMenuItem.ImageIndex, Bmp);
+
+            APixmap := TQtImage(Bmp.Handle).AsPixmap();
+
+            TargetPhysW := Round(QPixmap_width(APixmap) * DPR);
+            TargetPhysH := Round(QPixmap_height(APixmap) * DPR);
+
+            AScaledPixmap := QPixmap_create();
+            QPixmap_scaled(APixmap, AScaledPixmap, TargetPhysW, TargetPhysH, QtIgnoreAspectRatio, QtSmoothTransformation);
+            QPixmap_setDevicePixelRatio(AScaledPixmap, DPR);
+            QIcon_addPixmap(AIcon, AScaledPixmap, QIconNormal, QIconOn);
+
+            QPixmap_destroy(AScaledPixmap);
+            QPixmap_destroy(APixmap);
+            Bmp.Free;
+          end;
+        end;
+        if not QIcon_isNull(AIcon) then
+          Result.setIcon(AIcon);
+        QIcon_destroy(AIcon);
       end else
       if Assigned(AMenuItem.Bitmap) then
       begin
