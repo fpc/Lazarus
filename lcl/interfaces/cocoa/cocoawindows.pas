@@ -266,18 +266,18 @@ begin
 end;
 
 procedure TCocoaWindowContentDocument.didAddSubview(aview: NSView);
-const
-  mustHaveSizing = (NSViewWidthSizable or NSViewHeightSizable);
+var
+  mask: NSAutoresizingMaskOptions;
 begin
   if Assigned(aview) and Assigned(overlay) and (overlay<>aview) then
   begin
+    mask:= overlay.autoresizingMask;
     overlay.retain;
     overlay.removeFromSuperview;
     addSubview_positioned_relativeTo(overlay, NSWindowAbove, nil);
     overlay.release;
     overlay.setFrame(frame);
-    if (overlay.autoresizingMask and mustHaveSizing) <> mustHaveSizing then
-      overlay.setAutoresizingMask(overlay.autoresizingMask or mustHaveSizing);
+    overlay.setAutoresizingMask(mask);
   end;
   inherited didAddSubview(aview);
 end;
