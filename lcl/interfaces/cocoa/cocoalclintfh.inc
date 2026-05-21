@@ -30,6 +30,7 @@ function GetControlConstraints(Constraints: TObject): boolean; override;
 function GetDesignerDC(WindowHandle: HWND): HDC; override;
 function GetLCLOwnerObject(Handle: HWnd): TObject; override;
 }
+function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean; BorderWidth: integer) : Boolean; override;
 function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean; override;
 {
 function PromptUser(const DialogCaption : string;

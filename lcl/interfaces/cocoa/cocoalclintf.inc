@@ -136,6 +136,17 @@ begin
   {$ENDIF}
 end;
 *)
+
+function TCocoaWidgetSet.InvalidateFrame(aHandle: HWND; ARect: pRect;
+  bErase: Boolean; BorderWidth: integer): Boolean;
+begin
+  // on Cocoa, it is more efficient to directly invalidate the entire rect.
+  // because Cocoa merges dirty Rects within the same redraw cycle,
+  // splitting ARect into four frames for invalidation actually
+  // increases the workload.
+  Result:= self.InvalidateRect(aHandle, ARect, bErase );
+end;
+
 {------------------------------------------------------------------------------
   Method:  IsDesignerDC
   Params:  WindowHandle - Handle of window
