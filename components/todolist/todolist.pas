@@ -593,10 +593,11 @@ begin
     aListItem.Caption := LIST_INDICATORS[aTodoItem.ToDoType];
     aListitem.SubItems.Add(TextToSingleLine(aTodoItem.Text)); // Join lines if there are many.
     aListitem.SubItems.Add(IntToStr(aTodoItem.Priority));
-    aFilename:=aTodoItem.Filename;
-    Assert(FilenameIsAbsolute(aFilename), 'TIDETodoWindow.AddListItem: aFilename not absolute');
-    Assert(ProjPack.Directory<>'', 'TIDETodoWindow.AddListItem: ProjPack.Directory is empty');
-    aFilename := CreateRelativePath(aFilename, ProjPack.Directory);
+    aFilename := aTodoItem.Filename;
+    if ProjPack.Directory<>'' then begin
+      Assert(FilenameIsAbsolute(aFilename), 'TIDETodoWindow.AddListItem: aFilename not absolute');
+      aFilename := CreateRelativePath(aFilename, ProjPack.Directory);
+    end;
     aListitem.SubItems.Add(aFilename);
     aListitem.SubItems.Add(IntToStr(aTodoItem.StartPos.Y));
     aListitem.SubItems.Add(aTodoItem.Owner);
