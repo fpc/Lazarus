@@ -6562,15 +6562,13 @@ function TQtBitBtn.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
     BMargin, HMargin, VMargin, SHorz, SVert: Integer;
     IconMode: QIconMode;
     IconAlign: QtAlignment;
-    CenterOffset, W {, H}: Integer;
+    CenterOffset, W: Integer;
     AFontMetrics: QFontMetricsH;
     AText: WideString;
     DTFLAGS: DWord;
     ContentSize: TSize;
     IconDistance: Integer;
     IconMargin: Integer;
-    F: Double;
-    NewW, NewH: Integer;
   begin
     Result := False;
     if (FIcon = nil) then
@@ -6619,7 +6617,6 @@ function TQtBitBtn.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
       dec(R.Bottom, VMargin + SVert);
 
       W := R.Right - R.Left;
-      // H := R.Bottom - R.Top;
 
       ContentSize.CX := 0;
       ContentSize.CY := 0;
@@ -6705,28 +6702,34 @@ function TQtBitBtn.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
           if FGlyphLayout = 3 then
             dec(R.Bottom, CenterOffset);
         end;
-        {QIcon.paint scales the icon to fit the passed rect even at
-         devicePixelRatio > 1 (logical coords not respected for icon sizing),
-         so the glyph is drawn oversized. Qt6 handles this correctly.
-         Shrink R to logical size (R / DPR) while keeping the icon anchored
-         to the side IconAlign would place it on.}
-        F := QPaintDevice_devicePixelRatioF(QPaintEngine_paintDevice(QPainter_paintEngine(APainter)));
+
         R4 := R;
-        if F > 1.0 then
+
+        R4.Right := R4.Left + FIconSize.cx;
+        R4.Bottom := R4.Top + FIconSize.cy;
+
+        if (IconAlign and QtAlignRight) <> 0 then
         begin
-          NewW := Round((R.Right - R.Left) / F);
-          NewH := Round((R.Bottom - R.Top) / F);
-          if (IconAlign and QtAlignRight) <> 0 then
-            R4.Left := R.Right - NewW
-          else if (IconAlign and QtAlignHCenter) <> 0 then
-            R4.Left := R.Left + ((R.Right - R.Left) - NewW) div 2;
-          R4.Right := R4.Left + NewW;
-          if (IconAlign and QtAlignBottom) <> 0 then
-            R4.Top := R.Bottom - NewH
-          else if (IconAlign and QtAlignVCenter) <> 0 then
-            R4.Top := R.Top + ((R.Bottom - R.Top) - NewH) div 2;
-          R4.Bottom := R4.Top + NewH;
+          R4.Left := R.Right - FIconSize.cx;
+          R4.Right := R.Right;
+        end
+        else if (IconAlign and QtAlignHCenter) <> 0 then
+        begin
+          R4.Left := R.Left + ((R.Right - R.Left) - FIconSize.cx) div 2;
+          R4.Right := R4.Left + FIconSize.cx;
         end;
+
+        if (IconAlign and QtAlignBottom) <> 0 then
+        begin
+          R4.Top := R.Bottom - FIconSize.cy;
+          R4.Bottom := R.Bottom;
+        end else
+        if (IconAlign and QtAlignVCenter) <> 0 then
+        begin
+          R4.Top := R.Top + ((R.Bottom - R.Top) - FIconSize.cy) div 2;
+          R4.Bottom := R4.Top + FIconSize.cy;
+        end;
+
         QIcon_paint(FIcon, APainter, @R4, IconAlign, IconMode);
 
         R := R2;
@@ -6753,6 +6756,7 @@ function TQtBitBtn.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
       QPainter_destroy(APainter);
     end;
   end;
+
 begin
   Result := False;
   if (LCLObject <> nil) and (QEvent_type(Event) = QEventPaint) and (FContext = 0) then
