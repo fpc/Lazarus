@@ -1212,7 +1212,7 @@ begin
               {$IFDEF DARWIN}
               Result.Features := QStyleOptionToolButtonHasMenu;
               {$ELSE}
-              Result.Features := QStyleOptionToolButtonMenuButtonPopup;
+              Result.Features := QStyleOptionToolButtonHasMenu or QStyleOptionToolButtonMenuButtonPopup;
               {$ENDIF}
             end;
           TP_SEPARATOR,
