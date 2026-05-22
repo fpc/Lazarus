@@ -705,7 +705,7 @@ begin
   if not Assigned(textField) then
     Exit;
   {$ifdef BOOLFIX}
-  bezeled:= Ord(edit.borderStyle <> bsNone));
+  bezeled:= Ord(lclEdit.borderStyle <> bsNone));
   {$else}
   bordered:= lclEdit.borderStyle <> bsNone;
   {$endif}
