@@ -739,5 +739,14 @@ begin
     TWSCustomEditClass(WidgetSetClass).SetAlignment(Self, FAlignment);
 end;
 
+procedure TCustomEdit.SetVerticalAlignment(const AValue: TVerticalAlignment);
+begin
+  if FVerticalAlignment = AValue then
+    exit;
+  FVerticalAlignment := AValue;
+  if HandleAllocated then
+    TWSCustomEditClass(WidgetSetClass).SetVerticalAlignment(Self, FVerticalAlignment);
+end;
+
 
 // included by stdctrls.pp
