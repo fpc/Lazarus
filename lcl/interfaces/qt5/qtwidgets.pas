@@ -8821,7 +8821,8 @@ begin
   if LCLObject <> nil then
     LCLObject.InvalidateClientRectCache(True);
 
-  if (LCLObject <> nil) and testAttribute(QtWA_Mapped) then
+  if (LCLObject <> nil) and
+    not (caspComputingBounds in LCLObject.AutoSizePhases) then
   begin
     {$IFDEF VerboseQtResize}
     DebugLn('TQtGroupBox.setLayoutThemeMargins: ',dbgsName(LCLObject),' casp: ',dbgs(caspComputingBounds in LCLObject.AutoSizePhases),' mapped ',dbgs(testAttribute(QtWA_Mapped)));
