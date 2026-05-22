@@ -294,10 +294,39 @@ var
   CodePointer2, FrameBasePointer2, StackPointer2: TDBGPtr;
   ANewFrame2: TDbgCallstackEntry;
   ResAsm: TTDbgStackUnwindResult;
+  AsmInstr: TX86AsmInstruction;
 begin
   OrigCodePointer      := CodePointer;
   OrigFrameBasePointer := FrameBasePointer;
   OrigStackPointer     := StackPointer;
+
+
+  (* CFI may be incorrect on the last "ret" statement *)
+  AsmInstr := TX86AsmInstruction.Create(Process);
+  AsmInstr.SetAddress(CodePointer);
+  // TODO: several nop, and follow unconditional jump (pad)
+  // TODO: compare with CFI, to check if CFI is indeed incorrect
+  // TODO: find better fix try/finally
+  if AsmInstr.X86OpCode = OPnop then
+    {$PUSH}{$R-}{$Q-}
+    AsmInstr.SetAddress(CodePointer + AsmInstr.InstructionLength);
+    {$POP}
+  if AsmInstr.IsReturnInstruction then begin
+    if Process.ReadData(StackPointer, AddressSize, CodePointer2) and (CodePointer2 <> 0) then begin
+      CodePointer := CodePointer2;
+      {$PUSH}{$R-}{$Q-}
+      StackPointer := StackPointer + AddressSize;
+      {$POP}
+      ANewFrame := TDbgCallstackEntry.create(Thread, AFrameIndex, FrameBasePointer, CodePointer);
+      ANewFrame.RegisterValueList.DbgRegisterAutoCreate[FNameIP].SetValue(CodePointer, IntToStr(CodePointer),AddressSize, FDwarfNumIP);
+      ANewFrame.RegisterValueList.DbgRegisterAutoCreate[FNameBP].SetValue(FrameBasePointer, IntToStr(FrameBasePointer),AddressSize, FDwarfNumBP);
+      ANewFrame.RegisterValueList.DbgRegisterAutoCreate[FNameSP].SetValue(StackPointer, IntToStr(StackPointer),AddressSize, FDwarfNumSP);
+      Result := suSuccess;
+      AsmInstr.ReleaseReference;
+      exit;
+    end;
+  end;
+  AsmInstr.ReleaseReference;
 
   Result := FDwarfUnwinder.Unwind(AFrameIndex,
     CodePointer, StackPointer, FrameBasePointer, ACurrentFrame, ANewFrame);
