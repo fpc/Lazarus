@@ -53,6 +53,8 @@ type
     class procedure Invalidate(sender: TCustomGrid); virtual; reintroduce;
     class function GetEditorBoundsFromCellRect(ACanvas: TCanvas;
       const ACellRect: TRect; const AColumnLayout: TTextLayout): TRect; virtual;
+    class function GetPickListEditorBoundsFromCellRect(ACanvas: TCanvas;
+      var ACellRect: TRect; const AColumnLayout: TTextLayout): Boolean; virtual;
   end;
   TWSCustomGridClass = class of TWSCustomgrid;
 
@@ -115,6 +117,13 @@ begin
   Result := ACellRect;
   Dec(Result.Right);
   Dec(Result.Bottom);
+end;
+
+class function TWSCustomGrid.GetPickListEditorBoundsFromCellRect(
+  ACanvas: TCanvas; var ACellRect: TRect; const AColumnLayout: TTextLayout
+  ): Boolean;
+begin
+  Result:= False;
 end;
 
 class function TWSCustomGrid.InvalidateStartY(const FixedHeight,

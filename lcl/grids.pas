@@ -8819,11 +8819,19 @@ var
   PosValid: Boolean;
 
   procedure CalcEditorBounds(aEditor: TWinControl; var refRect: TRect);
+  var
+    handled: Boolean = False;
   begin
-    if (aEditor = FStringEditor) and (EditorBorderStyle = bsNone) then
+    if (aEditor = FStringEditor) and (EditorBorderStyle = bsNone) then begin
       refRect := TWSCustomGridClass(WidgetSetClass).
-        GetEditorBoundsFromCellRect(Canvas, refRect, GetColumnLayout(FCol, False))
-    else
+        GetEditorBoundsFromCellRect(Canvas, refRect, GetColumnLayout(FCol, False));
+      handled := True;
+    end else if (aEditor = FPickListEditor) then begin
+      handled := TWSCustomGridClass(WidgetSetClass).
+        GetPickListEditorBoundsFromCellRect(Canvas, refRect, GetColumnLayout(FCol, False));
+    end;
+
+    if NOT handled then
       AdjustInnerCellRect(refRect);
   end;
 
