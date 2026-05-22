@@ -1,0 +1,420 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: chmstrconsts.rsabout
+msgid "About..."
+msgstr "Acerca…"
+
+#: chmstrconsts.rsaboutcaption
+msgctxt "chmstrconsts.rsaboutcaption"
+msgid "About CHMMaker"
+msgstr "Sobre o CHMMaker"
+
+#: chmstrconsts.rsabout_hint
+msgctxt "chmstrconsts.rsabout_hint"
+msgid "Information about this application"
+msgstr "Informações sobre esta aplicação"
+
+#: chmstrconsts.rsadditem
+msgid "Add item"
+msgstr "Adicionar item"
+
+#: chmstrconsts.rsafter
+msgctxt "chmstrconsts.rsafter"
+msgid "After"
+msgstr "Depois"
+
+#: chmstrconsts.rsallfiles
+msgid "All files"
+msgstr "Todos os ficheiros"
+
+#: chmstrconsts.rsand
+msgctxt "chmstrconsts.rsand"
+msgid " and "
+msgstr " e "
+
+#: chmstrconsts.rsbackgroundcolor
+msgid "Background color"
+msgstr "Cor de fundo"
+
+#: chmstrconsts.rsbefore
+msgctxt "chmstrconsts.rsbefore"
+msgid "Before"
+msgstr "Antes"
+
+#: chmstrconsts.rsbuildinglhelp
+msgid "Building LHelp..."
+msgstr "A construir o LHelp..."
+
+#: chmstrconsts.rscancel
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: chmstrconsts.rschmmakercaption
+msgctxt "chmstrconsts.rschmmakercaption"
+msgid "CHM Help File Maker"
+msgstr "Fazedor de ficheiros de ajuda CHM"
+
+#: chmstrconsts.rsclose
+msgctxt "chmstrconsts.rsclose"
+msgid "Close"
+msgstr "Fechar"
+
+#: chmstrconsts.rsclose_hint
+msgctxt "chmstrconsts.rsclose_hint"
+msgid "Close project"
+msgstr "Fechar projecto"
+
+#: chmstrconsts.rscompile
+msgctxt "chmstrconsts.rscompile"
+msgid "Compile"
+msgstr "Compilar"
+
+#: chmstrconsts.rscompileandview
+msgctxt "chmstrconsts.rscompileandview"
+msgid "Compile and view"
+msgstr "Compilar e ver"
+
+#: chmstrconsts.rscompileandview_hint
+msgctxt "chmstrconsts.rscompileandview_hint"
+msgid "Compile project and view generated CHM file"
+msgstr "Compilar o projecto e ver o ficheiro CHM gerado"
+
+#: chmstrconsts.rscompile_hint
+msgctxt "chmstrconsts.rscompile_hint"
+msgid "Compile project"
+msgstr "Compilar projecto"
+
+#: chmstrconsts.rscompressedhtmlhelpfiles
+msgid "Compressed HTML Help files"
+msgstr "Ficheiros de ajuda HTML comprimidos"
+
+#: chmstrconsts.rscreatedwith
+msgid "Created with "
+msgstr "Criado com "
+
+#: chmstrconsts.rscreatesearchablehtml_hint
+msgid "Only files added to the project manually are indexed, files added automatically are not indexed."
+msgstr "Só os ficheiros adicionados manualmente ao projeto são indexados; os ficheiros adicionados automaticamente não são indexados."
+
+#: chmstrconsts.rsdelete
+msgctxt "chmstrconsts.rsdelete"
+msgid "Delete"
+msgstr "Eliminar"
+
+#: chmstrconsts.rsdescription
+msgctxt "chmstrconsts.rsdescription"
+msgid "Description"
+msgstr "Descrição"
+
+#: chmstrconsts.rsdoyouwanttocontinue
+msgctxt "chmstrconsts.rsdoyouwanttocontinue"
+msgid "Do you want to continue?"
+msgstr "Deseja continuar?"
+
+#: chmstrconsts.rsedit
+msgctxt "chmstrconsts.rsedit"
+msgid "Edit..."
+msgstr "Editar..."
+
+#: chmstrconsts.rsfilealreadyexists_overwrite
+#, object-pascal-format
+msgctxt "chmstrconsts.rsfilealreadyexists_overwrite"
+msgid "File \"%s\" already exists. Overwrite?"
+msgstr "O ficheiro \"%s\" já existe. Sobrescrever?"
+
+#: chmstrconsts.rsfilecreated
+#, object-pascal-format
+msgctxt "chmstrconsts.rsfilecreated"
+msgid "CHM file \"%s\" was created successfully."
+msgstr "Ficheiro CHM \"%s\" criado com sucesso."
+
+#: chmstrconsts.rsfilenameneeded
+msgctxt "chmstrconsts.rsfilenameneeded"
+msgid "You must set a filename for the output CHM file."
+msgstr "Deve definir um nome para o ficheiro CHM de saída."
+
+#: chmstrconsts.rsfilenotfound
+#, object-pascal-format
+msgid "File \"%s\" not found."
+msgstr "Ficheiro %s não encontrado."
+
+#: chmstrconsts.rsfiles
+msgctxt "chmstrconsts.rsfiles"
+msgid "Files"
+msgstr "Ficheiros"
+
+#: chmstrconsts.rsfont
+msgctxt "chmstrconsts.rsfont"
+msgid "Font"
+msgstr "Letra"
+
+#: chmstrconsts.rsforegroundcolor
+msgid "Foreground color"
+msgstr "Cor de 1º plano"
+
+#: chmstrconsts.rsfromtitle
+msgid "From title"
+msgstr "Do título"
+
+#: chmstrconsts.rsglobalproperties
+msgid "Global properties"
+msgstr "Propriedades globais"
+
+#: chmstrconsts.rshelpfileprojecthfp
+msgid "Help File Project (*.hfp)"
+msgstr "Projecto de ficheiro de ajuda"
+
+#: chmstrconsts.rshelpprojectfiles
+msgid "Help Project Files (*.hfp; *.hhp)"
+msgstr "Ficheiros do projecto de ajuda (*.hfp; *.hhp)"
+
+#: chmstrconsts.rshelpworkshopprojecthhp
+msgid "Help Workshop Project (*.hhp)"
+msgstr "Projecto Help Workshop (*.hhp)"
+
+#: chmstrconsts.rsindexfiles
+msgid "Index files (*.hhk)"
+msgstr "Ficheiros de índice (*.hhk)"
+
+#: chmstrconsts.rslazbuildcouldnotbefound
+msgctxt "chmstrconsts.rslazbuildcouldnotbefound"
+msgid "Lazbuild could not be found."
+msgstr "Impossível encontrar o Lazbuild"
+
+#: chmstrconsts.rslhelpcouldnotbelocatedat
+#, object-pascal-format
+msgctxt "chmstrconsts.rslhelpcouldnotbelocatedat"
+msgid "LHelp could not be located at \"%s\"."
+msgstr "Impossível encontrar o LHelp em \"%s\"."
+
+#: chmstrconsts.rslhelpfailedtobuild
+msgctxt "chmstrconsts.rslhelpfailedtobuild"
+msgid "LHelp failed to build."
+msgstr "Falha ao construir o LHelp."
+
+#: chmstrconsts.rslocallink
+msgctxt "chmstrconsts.rslocallink"
+msgid "Local link (in CHM)"
+msgstr "Ligação local (em CHM)"
+
+#: chmstrconsts.rsnew
+msgid "New project..."
+msgstr "Novo projecto..."
+
+#: chmstrconsts.rsnew_hint
+msgctxt "chmstrconsts.rsnew_hint"
+msgid "New project"
+msgstr "Novo projecto"
+
+#: chmstrconsts.rsnoname
+msgid "[no name]"
+msgstr "{sem nome]"
+
+#: chmstrconsts.rsopen
+msgid "Open project..."
+msgstr "Abrir projecto..."
+
+#: chmstrconsts.rsopen_hint
+msgctxt "chmstrconsts.rsopen_hint"
+msgid "Open project file"
+msgstr "Abrir ficheiro de projecto"
+
+#: chmstrconsts.rsoperatingsystem
+msgctxt "chmstrconsts.rsoperatingsystem"
+msgid "Operating system:"
+msgstr "Sistema operativo:"
+
+#: chmstrconsts.rsprojecthasbeenmodified
+msgctxt "chmstrconsts.rsprojecthasbeenmodified"
+msgid "Project has been modified."
+msgstr "O projecto foi modificado."
+
+#: chmstrconsts.rsquit
+msgctxt "chmstrconsts.rsquit"
+msgid "Quit"
+msgstr "Sair"
+
+#: chmstrconsts.rsquit_hint
+msgctxt "chmstrconsts.rsquit_hint"
+msgid "Quit program"
+msgstr "Sair do programa"
+
+#: chmstrconsts.rssave
+msgctxt "chmstrconsts.rssave"
+msgid "Save"
+msgstr "Gravar"
+
+#: chmstrconsts.rssaveas
+msgctxt "chmstrconsts.rssaveas"
+msgid "Save as..."
+msgstr "Gravar como..."
+
+#: chmstrconsts.rssaveas_hint
+msgctxt "chmstrconsts.rssaveas_hint"
+msgid "Save project under a new name"
+msgstr "Gravar o projecto com novo nome"
+
+#: chmstrconsts.rssavechanges
+msgctxt "chmstrconsts.rssavechanges"
+msgid "Save changes?"
+msgstr "Gravar alterações?"
+
+#: chmstrconsts.rssave_hint
+msgctxt "chmstrconsts.rssave_hint"
+msgid "Save project"
+msgstr "Gravar projecto"
+
+#: chmstrconsts.rsselectlocalfile
+msgid "You must select a local file first."
+msgstr "Deve seleccionar primeiro um ficheiro local."
+
+#: chmstrconsts.rssitemap
+msgid "Sitemap (Tree/List)"
+msgstr "Mapa do sítio (árvore/lista)"
+
+#: chmstrconsts.rssitemapeditor
+msgctxt "chmstrconsts.rssitemapeditor"
+msgid "Sitemap Editor"
+msgstr "Editor de mapas de sítios"
+
+#: chmstrconsts.rssubitem
+msgctxt "chmstrconsts.rssubitem"
+msgid "Subitem"
+msgstr "Subitem"
+
+#: chmstrconsts.rstableofcontentsfilenameneeded
+msgid "The name of the table-of-contents-file (.hhc) is not specified."
+msgstr "Não especificou o nome do ficheiro de índice (.hhc)."
+
+#: chmstrconsts.rstargetcpu
+msgctxt "chmstrconsts.rstargetcpu"
+msgid "Target CPU:"
+msgstr "CPU alvo:"
+
+#: chmstrconsts.rstargetos
+msgctxt "chmstrconsts.rstargetos"
+msgid "Target OS:"
+msgstr "SO alvo:"
+
+#: chmstrconsts.rstargetplatform
+msgid "Target platform:"
+msgstr "Plataforma alvo:"
+
+#: chmstrconsts.rsthiswilladdallfiles
+msgctxt "chmstrconsts.rsthiswilladdallfiles"
+msgid "This will add all files in the project directory recursively."
+msgstr "Isto vai adicionar todos os ficheiros na pasta do projecto de forma recursiva."
+
+#: chmstrconsts.rstocfiles
+msgid "Table of Contents files (*.hhc)"
+msgstr "Ficheiros de índice (*.hhc)"
+
+#: chmstrconsts.rstrytobuildusinglazbuild
+msgctxt "chmstrconsts.rstrytobuildusinglazbuild"
+msgid "Try to build using Lazbuild?"
+msgstr "Tentar construir com o Lazarus?"
+
+#: chmstrconsts.rsuntitled
+msgid "Untitled"
+msgstr "Sem título"
+
+#: chmstrconsts.rsurl
+msgctxt "chmstrconsts.rsurl"
+msgid "URL (HTTP)"
+msgstr "URL (HTTP)"
+
+#: chmstrconsts.rsusefoldericons
+msgid "Use folder icons"
+msgstr "Usar ícones de pasta"
+
+#: chmstrconsts.rsversion
+msgctxt "chmstrconsts.rsversion"
+msgid "Version:"
+msgstr "Versão:"
+
+#: taboutform.lbltitle.caption
+msgid "CHMMaker"
+msgstr "CHMMaker"
+
+#: tchmform.addallbtn.caption
+msgid "Add all files in project directory"
+msgstr "Adicionar todos os ficheiros na pasta do projecto"
+
+#: tchmform.addfilesbtn.caption
+msgid "Add files"
+msgstr "Adicionar ficheiros"
+
+#: tchmform.autoaddlinksbtn.caption
+msgid "Auto add HREF files"
+msgstr "Auto-adicionar ficheiros HREF"
+
+#: tchmform.chmfilenamelabel.caption
+msgid "CHM filename"
+msgstr "Nome do ficheiro CHM"
+
+#: tchmform.chmtitlelabel.caption
+msgid "CHM Title"
+msgstr "Título CHM"
+
+#: tchmform.compileitem.caption
+msgctxt "tchmform.compileitem.caption"
+msgid "Compile"
+msgstr "Compilar"
+
+#: tchmform.compiletimeoptionsgroupbox.caption
+msgid "Compile-time options:"
+msgstr "Opções de compilação:"
+
+#: tchmform.createsearchablechmcheck.caption
+msgid "Create a searchable CHM file"
+msgstr "Criar um ficheiro CHM pesquisável"
+
+#: tchmform.defaultpagelabel.caption
+msgid "Default page"
+msgstr "Página predefinida"
+
+#: tchmform.filesnotelabel.caption
+msgid "All files must be in the project file directory or a subdirectory."
+msgstr "Todos os ficheiros devem estar na pasta do projecto ou numa subpasta."
+
+#: tchmform.indexlabel.caption
+msgid "Index (*.hhk)"
+msgstr "Índice (*.hhk)"
+
+#: tchmform.menuitem1.caption
+msgctxt "tchmform.menuitem1.caption"
+msgid "Project"
+msgstr "Projecto"
+
+#: tchmform.menuitem3.caption
+msgctxt "tchmform.menuitem3.caption"
+msgid "Help"
+msgstr "Ajuda"
+
+#: tchmform.removefilesbtn.caption
+msgid "Remove selected"
+msgstr "Remover seleccionados"
+
+#: tchmform.scanhtmlcheck.caption
+msgid ""
+"Parse *.htm* files to include \n"
+"linked pages and images"
+msgstr ""
+"Analisar ficheiros *.htm* para incluir\n"
+"páginas e imagens ligadas"
+
+#: tchmform.tableofcontentslabel.caption
+msgid "Table of Contents (*.hhc)"
+msgstr "Índice (*.hhc)"
+

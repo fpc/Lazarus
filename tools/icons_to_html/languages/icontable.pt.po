@@ -1,0 +1,165 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazarus IDE\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language-Team: Pedro Albuquerque <pmra@protonmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: main.rserror
+msgid "Error"
+msgstr "Erro"
+
+#: main.rsfreelyavailable
+msgid "(freely available, no restrictions in usage)"
+msgstr "(disponível gratuitamente, sem restrições de utilização)"
+
+#: main.rsimageswereprovidedby
+#, object-pascal-format
+msgid "The images were kindly provided by Roland Hahn (%s)."
+msgstr "As imagens foram gentilmente cedidas por Roland Hahn (%s)."
+
+#: main.rsinformation
+msgid "Information"
+msgstr "Informação"
+
+#: main.rsinfotext1
+msgid "The images in this folder can be used in Lazarus applications as toolbar or button icons."
+msgstr "As imagens contidas nesta pasta podem ser utilizadas em aplicações Lazarus como ícones de barras de ferramentas ou botões."
+
+#: main.rsinfotext2
+msgid "The different sizes as required by LCL scaling for Hi-DPI screens can be used like this, for example:"
+msgstr "Os diferentes tamanhos exigidos pela escala LCL para ecrãs Hi-DPI podem ser utilizados desta forma, por exemplo:"
+
+#: main.rslicense
+#, object-pascal-format
+msgid ""
+"License:\n"
+"%s"
+msgstr ""
+"Licença:\n"
+"%s"
+
+#: main.rsname
+msgid "Name"
+msgstr "Nome"
+
+#: main.rsnomatchingpngimagefilesfoundin
+#, object-pascal-format
+msgid "No matching PNG image files found in %s"
+msgstr "Não foram encontrados ficheiros de imagem PNG correspondentes em %s"
+
+#: main.rsnopngimagefilesfoundin
+#, object-pascal-format
+msgid "No PNG image files found in %s"
+msgstr "Não foram encontrados ficheiros de imagem PNG em %s"
+
+#: main.rssavedas
+#, object-pascal-format
+msgid "Saved as: %s"
+msgstr "Gravado como: %s"
+
+#: main.rssize
+msgid "Size"
+msgstr "Tamanho"
+
+#: main.rssizeinfolarge
+msgid "32x32, 48x48 and 64x64 pixels for \"large\" images."
+msgstr "32x32, 48x48 e 64x64 pixels para imagens \"grandes\"."
+
+#: main.rssizeinfomedium
+msgid "24x24, 36x36 and 48x48 pixels for \"medium\" sized images,"
+msgstr "24x24, 36x36 e 48x48 pixels para imagens \"médias\","
+
+#: main.rssizeinfosmall
+msgid "16x16, 24x24 and 32x32 pixels for \"small\" images,"
+msgstr "16x16, 24x24 e 32x32 pixels para imagens \"pequenas\","
+
+#: main.rstheconfigurationcouldnotbesaved
+msgid "Configuration file could not be saved."
+msgstr "Impossível gravar o ficheiro de configuração."
+
+#: main.rsthefilecouldnotbesavedas
+#, object-pascal-format
+msgid "The file could not be saved as: %s"
+msgstr "Impossível gravar o ficheiro como %s"
+
+#: main.rsthefolderdoesnotexist
+#, object-pascal-format
+msgid ""
+"Folder \"%s\" does not exist or is currently not available.\n"
+"\n"
+"Should it be removed from the list?"
+msgstr ""
+"A pasta \"%s\" não existe ou não está disponível neste momento.\n"
+"\n"
+"Deseja removê-la da lista?"
+
+#: main.rsthetempfilecouldnotbedeleted
+msgid "Temporary file could not be deleted."
+msgstr "Impossível eliminar o ficheiro temporário."
+
+#: main.rsthisfoldercontains
+#, object-pascal-format
+msgid "This folder contains %0:d icons in %1:d icon groups with %2:d icon sizes."
+msgstr "Esta pasta contém %0:d ícones em %1:d grupos de ícones com %2:d tamanhos de ícones."
+
+#: tmainform.bbtnclose.caption
+msgid "Close"
+msgstr "Fechar"
+
+#: tmainform.bbtnclose.hint
+msgid "Close application"
+msgstr "Fechar a aplicação"
+
+#: tmainform.bbtncreatehtml.caption
+msgid "Create HTML"
+msgstr "Criar HTML"
+
+#: tmainform.bbtncreatehtml.hint
+msgid "Create HTML page for images found in the selected directory"
+msgstr "Criar uma página HTML com as imagens encontradas na pasta seleccionada"
+
+#: tmainform.bbtnpreview.caption
+msgid "Preview"
+msgstr "Antevisão"
+
+#: tmainform.bbtnsave.caption
+msgid "Save"
+msgstr "Gravar"
+
+#: tmainform.bbtnsave.hint
+msgid "Save created HTML page as \"IconTable.html\" file in the specified folder"
+msgstr "Grava a página HTML criada como ficheiro «IconTable.html» na pasta especificada"
+
+#: tmainform.caption
+msgid "IconTable"
+msgstr "Tabela de ícones"
+
+#: tmainform.directoryedit.hint
+msgid "Folder with images for which the HTML preview should be created"
+msgstr "Pasta com imagens para as quais criar uma antevisão em HTML"
+
+#: tmainform.menudarkhtmlpage.caption
+msgid "Dark HTML page"
+msgstr "Página HTML escura"
+
+#: tmainform.menuhtmlpageenglish.caption
+msgid "HTML page in English"
+msgstr "Página HTML em inglês"
+
+#: tmainform.tblastdirs.hint
+msgctxt "tmainform.tblastdirs.hint"
+msgid "Last used"
+msgstr "Último usado"
+
+#: tmainform.tbmenu.hint
+msgctxt "tmainform.tbmenu.hint"
+msgid "Options"
+msgstr "Opções"
+
