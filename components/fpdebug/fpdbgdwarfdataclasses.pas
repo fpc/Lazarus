@@ -635,7 +635,6 @@ type
                                     AInfo: PDwarfAddressInfo; AAddress: TDbgPtr; ADbgInfo: TFpDwarfInfo): TDbgDwarfSymbolBase; virtual; abstract;
     function CreateUnitSymbol(ACompilationUnit: TDwarfCompilationUnit;
                                     AInfoEntry: TDwarfInformationEntry; ADbgInfo: TFpDwarfInfo): TDbgDwarfSymbolBase; virtual; abstract;
-    procedure UpdateFpcVersion(ADwarfInfo: TFpDwarfInfo); virtual;
   end;
   TFpSymbolDwarfClassMapClass = class of TFpSymbolDwarfClassMap;
 
@@ -876,7 +875,6 @@ type
     FLineNumberMapDone: Boolean;
     FImageBase: QWord;
     FRelocationOffset: QWord;
-    FFpcCompilerVersion: Cardinal;
     function GetCompilationUnit(AIndex: Integer): TDwarfCompilationUnit; inline;
   protected
     function GetCompilationUnitClass: TDwarfCompilationUnitClass; virtual;
@@ -907,7 +905,6 @@ type
     property ImageBase: QWord read FImageBase;
     property RelocationOffset: QWord read FRelocationOffset;
     property WorkQueue: TFpGlobalThreadWorkerQueue read FWorkQueue;
-    property FpcCompilerVersion: Cardinal read FFpcCompilerVersion write FFpcCompilerVersion;
   end;
 
   TDwarfLocationExpression = class;
@@ -1192,11 +1189,6 @@ end;
 function TFpSymbolDwarfClassMap.IgnoreCfiStackEnd: boolean;
 begin
   Result := False;
-end;
-
-procedure TFpSymbolDwarfClassMap.UpdateFpcVersion(ADwarfInfo: TFpDwarfInfo);
-begin
-  //
 end;
 
 constructor TFpSymbolDwarfClassMap.Create(ACU: TDwarfCompilationUnit;
@@ -4584,7 +4576,6 @@ var
   var
     p: Pointer;
     Instructions: TDwarfCallFrameInformationInstructions;
-    BadFpcVersion: Boolean;
   begin
     if Version > 5 then
       DebugLn(FPDBG_DWARF_WARNINGS, ['Unsupported DWARF CFI version (' +IntToStr(Version)+ '). Only versions 1-5 are supported.']);
@@ -4592,9 +4583,7 @@ var
     Result := TDwarfCIE.Create(Version, String(Augmentation));
     p := Augmentation;
     Inc(p, Length(Result.Augmentation)+1);
-    BadFpcVersion := (FpcCompilerVersion <> 0) and
-      (PByte(p)[0] = 1) and (PByte(p)[1] = 124);  // fpc writes ULeb(1) / SLeb(-4)
-    if (Version > 3) and (not BadFpcVersion) then
+    if Version > 3 then
       begin
       Result.AddressSize := PByte(p)^;
       Inc(p);
@@ -4613,7 +4602,7 @@ var
       end;
     Result.CodeAlignmentFactor := ULEB128toOrdinal(p);
     Result.DataAlignmentFactor := SLEB128toOrdinal(p);
-    if (Version < 3) or BadFpcVersion then
+    if Version < 3 then
       begin
       Result.ReturnAddressRegister := PByte(p)^;
       Inc(p);
@@ -6012,7 +6001,6 @@ begin
 
   if not FAbbrevList.Valid then begin
     FDwarfSymbolClassMap := DwarfSymbolClassMapList.FDefaultMap.GetInstanceForCompUnit(Self);
-    FDwarfSymbolClassMap.UpdateFpcVersion(FOwner);
     exit;
   end;
 
@@ -6025,7 +6013,6 @@ begin
   if not Scope.IsValid then begin
     DebugLn(FPDBG_DWARF_WARNINGS, ['WARNING compilation unit has no compile_unit tag']);
     FDwarfSymbolClassMap := DwarfSymbolClassMapList.FDefaultMap.GetInstanceForCompUnit(Self);
-    FDwarfSymbolClassMap.UpdateFpcVersion(FOwner);
     Exit;
   end;
   FValid := True;
