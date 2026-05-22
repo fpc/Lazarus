@@ -709,7 +709,7 @@ begin
   {$else}
   bordered:= lclEdit.borderStyle <> bsNone;
   {$endif}
-  if lclEdit.VerticalAlignment = taVerticalCenter then
+  if lclEdit.VerticalAlignment <> taAlignTop then
     bordered:= True;
   textField.setBordered( bordered );
   textField.setBezeled( bordered );

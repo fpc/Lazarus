@@ -158,35 +158,49 @@ end;
 
 
 type
-  TCocoaVertCenterTextFieldCell = objcclass( NSTextFieldCell )
+
+  TCocoaVertAlignTextFieldCell = objcclass( NSTextFieldCell )
+  private
+    _vertAlignment: TVerticalAlignment;
+  public
     function drawingRectForBounds(theRect: NSRect): NSRect; override;
   end;
 
-function TCocoaVertCenterTextFieldCell.drawingRectForBounds(theRect: NSRect): NSRect;
+function TCocoaVertAlignTextFieldCell.drawingRectForBounds(theRect: NSRect): NSRect;
 var
-  centerRect: NSRect;
-begin
-  centerRect.origin.x:= theRect.origin.x;
-  centerRect.origin.y:= (theRect.size.height-cellSize.height)/2;
-  centerRect.size.width:= theRect.size.width;
-  centerRect.size.height:= cellSize.height;
+  newRect: NSRect;
 
-  Result:= inherited drawingRectForBounds(centerRect);
+  procedure toCenter; inline;
+  begin
+    newRect.origin.y:= (theRect.size.height-cellSize.height)/2;
+    newRect.size.height:= cellSize.height;
+  end;
+
+  procedure toBottom; inline;
+  begin
+    newRect.origin.y:= theRect.size.height-cellSize.height;
+    newRect.size.height:= cellSize.height;
+  end;
+
+begin
+  newRect:= theRect;
+  case _vertAlignment of
+    taVerticalCenter: toCenter;
+    taAlignBottom: toBottom;
+  end;
+  Result:= inherited drawingRectForBounds( newRect );
 end;
 
 procedure SetTextFieldCell( const edit: TCustomEdit ; const field: NSTextField );
 var
-  cell: NSTextFieldCell;
+  cell: TCocoaVertAlignTextFieldCell;
 begin
   if (field.respondsToSelector(ObjCSelector('cell'))) and Assigned(field.cell) then
   begin
-    if edit.VerticalAlignment = taVerticalCenter then begin
-      cell:= TCocoaVertCenterTextFieldCell.new;
-      field.setCell( cell );
-      cell.release;
-    end else begin
-      cell:= NSTextFieldCell(field.cell);
-    end;
+    cell:= TCocoaVertAlignTextFieldCell.new;
+    cell._vertAlignment:= edit.VerticalAlignment;
+    field.setCell( cell );
+    cell.release;
     cell.setWraps(false);
     cell.setScrollable(true);
   end;
