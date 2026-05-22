@@ -6873,14 +6873,14 @@ var
        (ARenderHints and QPainterSmoothPixmapTransform <> 0) or
        (ARenderHints and QPainterHighQualityAntialiasing <> 0));
 
-    NeedSmooth := (ARenderHint or (DPR > 1.0)) and not WasSmooth;
+    NeedSmooth := (ARenderHint or ((DPR > 1.0) and (AMaskImg = nil))) and not WasSmooth;
 
     if IsPreScaled then
     begin
       QPixmap_copy(APixmap, ATempPixmap, 0, 0, QPixmap_width(APixmap), QPixmap_height(APixmap));
       QPixmap_setDevicePixelRatio(ATempPixmap, DPR);
     end else
-    if DPR > 1.0 then
+    if (DPR > 1.0) and (AMaskImg = nil) then
     begin
       PhysWidth := Round(Width * DPR);
       PhysHeight := Round(Height * DPR);
@@ -6907,26 +6907,16 @@ var
       AMaskPix := QPixmap_create();
       QPixmap_fromImage(AMaskPix, AMaskImg);
       try
-        if DPR > 1.0 then
+        if IsRectEmpty(MaskRect) or (MaskRect.Size <> DstRect.Size) then
         begin
-          // mask physical size must match ATempPixmap physical size
-          QPixmap_scaled(AMaskPix, AScaledPix,
-            QPixmap_width(ATempPixmap), QPixmap_height(ATempPixmap),
-            QtIgnoreAspectRatio, QtSmoothTransformation);
-          QPixmap_setDevicePixelRatio(AScaledPix, DPR);
+          if not QPixmap_isNull(ATempPixmap) and ((QPixmap_width(ATempPixmap) < (DstRect.Right - DstRect.Left)) or
+            (QPixmap_Height(ATempPixmap) < (DstRect.Bottom - DstRect.Top))) then
+            QPixmap_scaled(AMaskPix, AScaledPix, QPixmap_width(ATempPixmap), QPixmap_height(ATempPixmap))
+          else
+            QPixmap_scaled(AMaskPix, AScaledPix, Width, Height);
         end else
-        begin
-          if IsRectEmpty(MaskRect) or (MaskRect.Size <> DstRect.Size) then
-          begin
-            if not QPixmap_isNull(ATempPixmap) and ((QPixmap_width(ATempPixmap) < (DstRect.Right - DstRect.Left)) or
-              (QPixmap_Height(ATempPixmap) < (DstRect.Bottom - DstRect.Top))) then
-              QPixmap_scaled(AMaskPix, AScaledPix, QPixmap_width(ATempPixmap), QPixmap_height(ATempPixmap))
-            else
-              QPixmap_scaled(AMaskPix, AScaledPix, Width, Height);
-          end else
-            QPixmap_copy(AMaskPix, AScaledPix, MaskRect.Left, MaskRect.Top,
-              MaskRect.Right - MaskRect.Left, MaskRect.Bottom - MaskRect.Top);
-        end;
+          QPixmap_copy(AMaskPix, AScaledPix, MaskRect.Left, MaskRect.Top,
+            MaskRect.Right - MaskRect.Left, MaskRect.Bottom - MaskRect.Top);
 
         ABitmap := QBitmap_Create(AScaledPix);
         try
