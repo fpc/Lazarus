@@ -239,6 +239,8 @@ type
   private
     FGrid: TCustomGrid;
     FCol,FRow:Integer;
+  private
+    function layoutToVertAlign(const layout: TTextLayout): TVerticalAlignment;
   protected
     procedure WndProc(var TheMessage : TLMessage); override;
     procedure Change; override;
@@ -10117,9 +10119,6 @@ begin
   FStringEditor.Visible:=False;
   FStringEditor.Align:=alNone;
   FStringEditor.BorderStyle := bsNone;
-  {$ifdef DARWIN}
-  FStringEditor.VerticalAlignment:= taVerticalCenter;
-  {$endif}
 
   FPicklistEditor := TPickListCellEditor.Create(nil);
   FPickListEditor.Name := 'PickListEditor';
@@ -10646,6 +10645,21 @@ begin
   end;
 end;
 
+{ TStringCellEditor }
+
+function TStringCellEditor.layoutToVertAlign(
+  const layout: TTextLayout ): TVerticalAlignment;
+begin
+  case layout of
+    tlCenter:
+      Result := taVerticalCenter;
+    tlBottom:
+      Result := taAlignBottom;
+    else
+      Result:= taAlignTop;
+  end;
+end;
+
 procedure TStringCellEditor.WndProc(var TheMessage: TLMessage);
 begin
 	{$IfDef GridTraceMsg}
@@ -10663,8 +10677,6 @@ begin
     end;
   inherited WndProc(TheMessage);
 end;
-
-{ TStringCellEditor }
 
 procedure TStringCellEditor.Change;
 begin
@@ -10808,9 +10820,14 @@ begin
 end;
 
 procedure TStringCellEditor.msg_SetPos(var Msg: TGridMessage);
+var
+  vertAlign: TVerticalAlignment;
+  layout: TTextLayout;
 begin
   FCol := Msg.Col;
   FRow := Msg.Row;
+  layout := FGrid.GetColumnLayout(FCol, False);
+  self.VerticalAlignment := self.layoutToVertAlign(layout);
 end;
 
 procedure TStringCellEditor.msg_GetGrid(var Msg: TGridMessage);
