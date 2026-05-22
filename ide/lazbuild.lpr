@@ -1374,6 +1374,7 @@ var
   StoreLazDir: Boolean;
   StoreCompPath: Boolean;
   Cfg: TXMLConfig;
+  Path: String;
 begin
   StoreLazDir:=(fLazarusDirInCfg='') and (EnvironmentOptions.LazarusDirectory<>'');
   StoreCompPath:=(fCompilerInCfg='') and (EnvironmentOptions.CompilerFilename<>'');
@@ -1386,14 +1387,17 @@ begin
     if StoreCompPath then
       PrintInfo('  Compiler path: "' + EnvironmentOptions.CompilerFilename + '"');
 
+    Path:='EnvironmentOptions/';
     Cfg:=TXMLConfig.Create(EnvironmentOptions.Filename);
     try
       if StoreLazDir then
-        Cfg.SetValue('EnvironmentOptions/LazarusDirectory/Value',
+        Cfg.SetValue(Path+'LazarusDirectory/Value',
                      EnvironmentOptions.LazarusDirectory);
       if StoreCompPath then
-        Cfg.SetValue('EnvironmentOptions/CompilerFilename/Value',
+        Cfg.SetValue(Path+'CompilerFilename/Value',
                      EnvironmentOptions.CompilerFilename);
+      Cfg.SetValue(Path+'Version/Value',EnvOptsVersion);
+      Cfg.SetValue(Path+'Version/Lazarus',LazarusVersionStr);
       Cfg.Flush;
     finally
       Cfg.Free;
