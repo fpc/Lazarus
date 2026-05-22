@@ -740,7 +740,7 @@ begin
         QtListWidget.setWrapping(IconOptions.AutoArrange);
         QtListWidget.setViewFlow(IconArngToQListFlow[IconOptions.Arrangement]);
         QtListWidget.setWordWrap(IconOptions.WrapText);
-        QtListWidget.setUniformItemSizes(IconOptions.WrapText);
+        QtListWidget.setUniformItemSizes(True);
       end;
 
       if ALV.ViewStyle = vsIcon then
