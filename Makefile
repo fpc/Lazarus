@@ -383,7 +383,7 @@ INSTALL_MAN_DIR=$(INSTALL_PREFIX)/share/man
 endif
 ifneq ($(findstring $(OS_TARGET),win32 win64),)
 IDEVERSION=$(shell .\tools\install\get_lazarus_version.bat)
-LAZBUILDEXE=lazbuild$(SRCEXEEXT)
+LAZBUILDEXE=lazbuild.exe
 else
 IDEVERSION=$(shell ./tools/install/get_lazarus_version.sh)
 LAZBUILDEXE=./lazbuild$(SRCEXEEXT)
