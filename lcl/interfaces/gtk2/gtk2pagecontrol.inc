@@ -32,11 +32,33 @@ var
 function GtkNotebookMapAfterCB(widget: PGtkWidget; {%H-}data: gPointer): GBoolean; cdecl;
 var
   EventWin: PGdkWindow;
+  i: Integer;
+  PageWidget, TabWidget, BtnWidget: PGtkWidget;
 begin
   Result := False;
   EventWin := PGtkNotebook(widget)^.event_window;
-  if EventWin <> nil then
-    gdk_window_raise(EventWin);
+  if EventWin = nil then
+    exit;
+  gdk_window_raise(EventWin);
+
+  //issue #42301
+  for i := 0 to gtk_notebook_get_n_pages(PGtkNotebook(widget)) - 1 do
+  begin
+
+    PageWidget := gtk_notebook_get_nth_page(PGtkNotebook(widget), i);
+    if PageWidget = nil then
+      continue;
+
+    TabWidget := gtk_notebook_get_tab_label(PGtkNotebook(widget), PageWidget);
+    if TabWidget = nil then
+      continue;
+
+    BtnWidget := g_object_get_data(PGObject(TabWidget), 'TabCloseBtn');
+    if (BtnWidget <> nil) and GTK_WIDGET_MAPPED(BtnWidget) and
+       (PGtkButton(BtnWidget)^.event_window <> nil) then
+      gdk_window_raise(PGtkButton(BtnWidget)^.event_window);
+
+  end;
 end;
 
 // this was created as a workaround of a tnotebook eating rightclick of custom controls
