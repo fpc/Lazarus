@@ -37,6 +37,7 @@ type
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class procedure SetAlignment(const ACustomEdit: TCustomEdit; const NewAlignment: TAlignment); override;
+    class procedure SetVerticalAlignment(const ACustomEdit: TCustomEdit; const AVerticalAlignment: TVerticalAlignment); override;
 
     {class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;}
@@ -336,6 +337,26 @@ begin
   if field.isKindOfClass(TCocoaTextField) and TCocoaTextField(field).fixedInitSetting then
     Exit;
   TCocoaTextControlUtil.setAllignment(field, NewAlignment);
+end;
+
+class procedure TCocoaWSCustomEdit.SetVerticalAlignment(
+  const ACustomEdit: TCustomEdit;
+  const AVerticalAlignment: TVerticalAlignment);
+var
+  field: NSTextField;
+  cell: NSCell;
+begin
+  field:= self.GetTextField( ACustomEdit );
+  if NOT Assigned(field) then
+    Exit;
+  cell:= field.cell;
+  if NOT cell.isKindOfClass(TCocoaVertAlignTextFieldCell) then
+    Exit;
+  TCocoaVertAlignTextFieldCell(cell)._vertAlignment:= AVerticalAlignment;
+
+  // force cell.drawingRectForBounds() be called
+  field.setHidden( NOT field.isHidden );
+  field.setHidden( NOT field.isHidden );
 end;
 
 class procedure TCocoaWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit;
