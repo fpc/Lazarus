@@ -271,7 +271,7 @@ type
 
 
 implementation
-uses qtint, LCLProc;
+uses qtint, LCLProc, LazUTF8;
 
 const
   QtMaxEditLength = 32767;
@@ -1388,23 +1388,75 @@ class function TQtWSCustomGroupBox.GetDefaultClientRect(
   const AWinControl: TWinControl; const aLeft, aTop, aWidth, aHeight: integer;
   var aClientRect: TRect): boolean;
 var
-  dx, dy: integer;
+  AOption: QStyleOptionGroupBoxH;
+  AWidgetRect, AContentsRect, ALabelRect: TRect;
+  ATitle: WideString;
+  ADummy: QGroupBoxH;
+  LeftMargin, TopMargin, RightMargin, BottomMargin: Integer;
 begin
-  Result:=false;
+  Result := False;
   if AWinControl.HandleAllocated then
-  begin
-  end else
-  begin
-    dx := GetPixelMetric(QStylePM_LayoutLeftMargin, nil, nil) +
-          GetPixelMetric(QStylePM_LayoutRightMargin, nil, nil);
-    dy := GetPixelMetric(QStylePM_LayoutTopMargin, nil, nil) +
-          GetPixelMetric(QStylePM_LayoutBottomMargin, nil, nil);
+    exit;
 
-    aClientRect:=Rect(0,0,
-                 Max(0, aWidth - dx),
-                 Max(0, aHeight - dy));
-    Result:=true;
+  ATitle := UTF8ToUTF16(TCustomGroupBox(AWinControl).Caption);
+
+  LeftMargin := 0;
+  TopMargin := 0;
+  RightMargin := 0;
+  BottomMargin := 0;
+  //we must measure from dummy QGroupBox since theme measurement does not return correct result.
+  ADummy := QGroupBox_Create(QWidgetH(nil));
+  try
+    QWidget_resize(ADummy, aWidth, aHeight);
+    QGroupBox_setTitle(ADummy, @ATitle);
+    QWidget_getContentsMargins(ADummy, @LeftMargin, @TopMargin, @RightMargin, @BottomMargin);
+    if ATitle = '' then
+      TopMargin := BottomMargin
+    else
+    begin
+      AOption := QStyleOptionGroupBox_create();
+      try
+        QStyleOption_initFrom(AOption, ADummy);
+        QStyleOptionGroupBox_setText(AOption, @ATitle);
+        QWidget_rect(ADummy, @AWidgetRect);
+        AContentsRect := AWidgetRect;
+        ALabelRect := AWidgetRect;
+
+        QStyle_subControlRect(QApplication_style(), @AContentsRect,
+          QStyleCC_GroupBox, AOption, QStyleSC_GroupBoxContents, ADummy);
+
+        QStyle_subControlRect(QApplication_style(), @ALabelRect,
+          QStyleCC_GroupBox, AOption, QStyleSC_GroupBoxLabel, ADummy);
+
+        if (ALabelRect.Bottom > 0) and (ALabelRect.Bottom < TopMargin) then
+          TopMargin := ALabelRect.Bottom;
+
+        if AContentsRect.Left > 0 then
+          LeftMargin := AContentsRect.Left;
+
+        if AWidgetRect.Right - AContentsRect.Right > 0 then
+          RightMargin := AWidgetRect.Right - AContentsRect.Right;
+
+        BottomMargin := AWidgetRect.Bottom - AContentsRect.Bottom;
+        if BottomMargin < 0 then
+          BottomMargin := 0;
+
+        if SameText(QtWidgetSet.StyleName, 'fusion') then
+        begin
+          BottomMargin := 0;
+          Inc(TopMargin, 2);
+        end;
+      finally
+        QStyleOptionGroupBox_destroy(AOption);
+      end;
+    end;
+  finally
+    QWidget_Destroy(ADummy);
   end;
+
+  aClientRect := Rect(0, 0, Max(0, aWidth - LeftMargin - RightMargin), Max(0, aHeight - TopMargin - BottomMargin));
+
+  Result := True;
 end;
 
 class procedure TQtWSCustomGroupBox.GetPreferredSize(
