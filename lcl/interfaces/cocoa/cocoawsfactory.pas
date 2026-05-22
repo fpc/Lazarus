@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, Controls, ComCtrls, StdCtrls, Spin,
-  Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus, Calendar,
+  Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus, Calendar, Grids,
   WSLCLClasses, WSDialogs,
   CocoaWSPrivate,
   CocoaWSButtons,
@@ -24,6 +24,7 @@ uses
   CocoaWSCheckLst,
   CocoaWSDatePicker,
   CocoaWSListView,
+  CocoaWSGrids,
   CocoaWSDragImage,
   CocoaWSCustomControl;
 
@@ -515,7 +516,8 @@ end;
 // Grids
 function RegisterCustomGrid: Boolean; alias : 'WSRegisterCustomGrid';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomGrid, TCocoaWSCustomGrid);
+  Result := True;
 end;
 
 // Menus

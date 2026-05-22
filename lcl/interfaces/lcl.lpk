@@ -2906,6 +2906,11 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WinExt"/>
       </Item>
+      <Item>
+        <Filename Value="cocoa/cocoawsgrids.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaWSGrids"/>
+      </Item>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>
