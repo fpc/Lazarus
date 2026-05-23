@@ -40,6 +40,15 @@ type
     procedure lclSetMaxLength(amax: integer); message 'lclSetMaxLength:';
   end;
 
+  { TCocoaVertAlignTextFieldCell }
+
+  TCocoaVertAlignTextFieldCell = objcclass( NSTextFieldCell )
+  public
+    vertAlignment: TTextLayout;
+  public
+    function drawingRectForBounds(theRect: NSRect): NSRect; override;
+  end;
+
   { TCocoaTextField }
 
   TCocoaTextField = objcclass(NSTextField, NSTextField_LCLExt)
@@ -738,6 +747,33 @@ begin
   if not Assigned(obj) or not obj.isKindOfClass(NSTextField) then
     Exit;
   TCocoaTextControlUtil.setTextHint( NSTextField(obj), str );
+end;
+
+{ TCocoaVertAlignTextFieldCell }
+
+function TCocoaVertAlignTextFieldCell.drawingRectForBounds(theRect: NSRect): NSRect;
+var
+  newRect: NSRect;
+
+  procedure toCenter; inline;
+  begin
+    newRect.origin.y:= (theRect.size.height-cellSize.height)/2;
+    newRect.size.height:= cellSize.height;
+  end;
+
+  procedure toBottom; inline;
+  begin
+    newRect.origin.y:= theRect.size.height-cellSize.height;
+    newRect.size.height:= cellSize.height;
+  end;
+
+begin
+  newRect:= theRect;
+  case vertAlignment of
+    tlCenter: toCenter;
+    tlBottom: toBottom;
+  end;
+  Result:= inherited drawingRectForBounds( newRect );
 end;
 
 { TCocoaTextField }

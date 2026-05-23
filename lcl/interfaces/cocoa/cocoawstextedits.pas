@@ -158,41 +158,6 @@ begin
 end;
 
 
-type
-
-  TCocoaVertAlignTextFieldCell = objcclass( NSTextFieldCell )
-  private
-    _vertAlignment: TTextLayout;
-  public
-    function drawingRectForBounds(theRect: NSRect): NSRect; override;
-  end;
-
-function TCocoaVertAlignTextFieldCell.drawingRectForBounds(theRect: NSRect): NSRect;
-var
-  newRect: NSRect;
-
-  procedure toCenter; inline;
-  begin
-    newRect.origin.y:= (theRect.size.height-cellSize.height)/2;
-    newRect.size.height:= cellSize.height;
-  end;
-
-  procedure toBottom; inline;
-  begin
-    newRect.origin.y:= theRect.size.height-cellSize.height;
-    newRect.size.height:= cellSize.height;
-  end;
-
-begin
-  Writeln( '>> ', theRect.size.height );
-  newRect:= theRect;
-  case _vertAlignment of
-    tlCenter: toCenter;
-    tlBottom: toBottom;
-  end;
-  Result:= inherited drawingRectForBounds( newRect );
-end;
-
 procedure SetTextFieldCell( const edit: TCustomEdit ; const field: NSTextField );
 var
   cell: TCocoaVertAlignTextFieldCell;
@@ -200,7 +165,7 @@ begin
   if (field.respondsToSelector(ObjCSelector('cell'))) and Assigned(field.cell) then
   begin
     cell:= TCocoaVertAlignTextFieldCell.new;
-    cell._vertAlignment:= edit.VerticalAlignment;
+    cell.vertAlignment:= edit.VerticalAlignment;
     field.setCell( cell );
     cell.release;
     cell.setWraps(false);
@@ -353,7 +318,7 @@ begin
   cell:= field.cell;
   if NOT cell.isKindOfClass(TCocoaVertAlignTextFieldCell) then
     Exit;
-  TCocoaVertAlignTextFieldCell(cell)._vertAlignment:= AVerticalAlignment;
+  TCocoaVertAlignTextFieldCell(cell).vertAlignment:= AVerticalAlignment;
   TCocoaTextControlUtil.setBorderStyle( field, ACustomEdit );
 
   // force cell.drawingRectForBounds() be called
