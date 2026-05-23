@@ -28,12 +28,28 @@ implementation
 
 class function TCocoaWSCustomGrid.GetEditorBoundsFromCellRect(ACanvas: TCanvas;
   const ACellRect: TRect; const AColumnLayout: TTextLayout): TRect;
+const
+  MIN_HEIGHT = 18;
 begin
   Result:= ACellRect;
   Dec( Result.Left );
   case AColumnLayout of
-    tlCenter: Dec( Result.Top );
-    tlBottom: Dec( Result.Bottom );
+    tlTop: begin
+      if Result.Height < MIN_HEIGHT then
+        Result.Height:= MIN_HEIGHT;
+    end;
+    tlCenter: begin
+      Dec( Result.Top );
+      if Result.Height < MIN_HEIGHT then begin
+        Dec( Result.Top, (MIN_HEIGHT-Result.Height) div 2 );
+        Result.Height:= MIN_HEIGHT;
+      end;
+    end;
+    tlBottom: begin
+      Dec( Result.Bottom );
+      if Result.Height < MIN_HEIGHT then
+        Result.Top:= Result.Bottom - MIN_HEIGHT;
+    end;
   end;
 end;
 
@@ -42,8 +58,6 @@ class function TCocoaWSCustomGrid.GetPickListEditorBoundsFromCellRect(
   ): Boolean;
 const
   EDITOR_HEIGHT = 20;
-var
-  offset: Integer;
 begin
   Dec( ACellRect.Left );
   Dec( ACellRect.Right );
@@ -52,7 +66,7 @@ begin
     tlCenter: Inc( ACellRect.Top, (ACellRect.Height-EDITOR_HEIGHT) div 2 );
     tlBottom: ACellRect.Top:= ACellRect.Bottom - EDITOR_HEIGHT - 1;
   end;
-  ACellRect.Bottom:= ACellRect.Top + EDITOR_HEIGHT;
+  ACellRect.Height:= EDITOR_HEIGHT;
   Result:= True;
 end;
 
