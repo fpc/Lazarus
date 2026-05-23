@@ -453,3 +453,67 @@ begin
     scroll^.hide;
   end;
 end;
+
+procedure LCLGtkLayoutMapChild(child: PGtkWidget; {%H-}data: gpointer); cdecl;
+begin
+  if child^.get_visible and child^.get_child_visible then
+    if not child^.get_mapped then
+      gtk_widget_map(child);
+end;
+
+procedure LCLGtkLayoutMap(widget: PGtkWidget); cdecl;
+var
+  BinWin: PGdkWindow;
+  WinWin: PGdkWindow;
+begin
+  gtk_widget_set_mapped(widget, True);
+  gtk_container_foreach(PGtkContainer(widget), @LCLGtkLayoutMapChild, nil);
+  BinWin := gtk_layout_get_bin_window(PGtkLayout(widget));
+  if Assigned(BinWin) then
+    BinWin^.show;
+  WinWin := gtk_widget_get_window(widget);
+  if Assigned(WinWin) then
+    WinWin^.show;
+end;
+
+procedure LCLGtkLayoutClassInit(klass: PGTypeClass; {%H-}data: Pointer); cdecl;
+var
+  W: PGtkWidgetClass;
+begin
+  W := PGtkWidgetClass(klass);
+  W^.map := @LCLGtkLayoutMap;
+end;
+
+procedure LCLGtkLayoutInstanceInit({%H-}instance: PGTypeInstance;
+  {%H-}klass: PGTypeClass); cdecl;
+begin
+end;
+
+var
+  LCLGtkLayoutType: TGType = 0;
+
+function LCLGtkLayoutGetType: TGType;
+var
+  Query: TGTypeQuery;
+  Info: TGTypeInfo;
+  ParentType: TGType;
+begin
+  if LCLGtkLayoutType = 0 then
+  begin
+    ParentType := gtk_layout_get_type;
+    g_type_query(ParentType, @Query);
+    FillChar(Info{%H-}, SizeOf(Info), 0);
+    Info.class_size := guint16(Query.class_size);
+    Info.class_init := @LCLGtkLayoutClassInit;
+    Info.instance_size := guint16(Query.instance_size);
+    Info.instance_init := @LCLGtkLayoutInstanceInit;
+    LCLGtkLayoutType := g_type_register_static(ParentType,
+      'LCLGtkLayout', @Info, G_TYPE_FLAG_NONE);
+  end;
+  Result := LCLGtkLayoutType;
+end;
+
+function LCLGtkLayoutNew: PGtkLayout;
+begin
+  Result := PGtkLayout(g_object_newv(LCLGtkLayoutGetType, 0, nil));
+end;
