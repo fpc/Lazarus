@@ -357,6 +357,7 @@ begin
   // force cell.drawingRectForBounds() be called
   field.setHidden( NOT field.isHidden );
   field.setHidden( NOT field.isHidden );
+  field.lclInvalidate;
 end;
 
 class procedure TCocoaWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit;
