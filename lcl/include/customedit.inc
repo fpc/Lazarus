@@ -78,6 +78,7 @@ begin
     SetInitialBounds(0, 0, CX, CY);
   FEchoMode := emNormal;
   BorderStyle := bsSingle;
+  FVerticalAlignment := tlDefault;
   FAutoSelect := True;
   FAutoSelected := False;
   FTextChangedByRealSetText := False;
@@ -739,7 +740,7 @@ begin
     TWSCustomEditClass(WidgetSetClass).SetAlignment(Self, FAlignment);
 end;
 
-procedure TCustomEdit.SetVerticalAlignment(const AValue: TVerticalAlignment);
+procedure TCustomEdit.SetVerticalAlignment(const AValue: TTextLayout);
 begin
   if FVerticalAlignment = AValue then
     exit;
