@@ -1201,6 +1201,8 @@ begin
   fContext:=ACtx;
   if not Assigned(fContext) then exit(nil);
   Result := fContext.CurrentFont;
+  if (Result <> nil) and (Result <> Self) then
+    Result.fContext := nil;
   fContext.CurrentFont:= Self;
 end;
 
@@ -1395,6 +1397,11 @@ begin
   fContext:=ACtx;
   if not Assigned(ACtx) then exit(nil);
   Result := fContext.CurrentImage;
+  if (Result <> nil) and (Result <> Self) then
+  begin
+    TGtk3Image(Result).UpdatePixbufFromSurface;
+    TGtk3Image(Result).fContext := nil;
+  end;
   fContext.SetImage(Self);
 end;
 
@@ -1535,6 +1542,8 @@ begin
   fContext:=ACtx;
   if not Assigned(fContext) then exit(nil);
   Result := FContext.CurrentPen;
+  if (Result <> nil) and (Result <> Self) then
+    Result.fContext := nil;
   fContext.CurrentPen := Self;
   Self.SetColor(fColor); // update Cairo
 end;
@@ -1615,6 +1624,8 @@ begin
   fContext:=ACtx;
   if not Assigned(fContext) then exit(nil);
   Result := fContext.CurrentBrush;
+  if (Result <> nil) and (Result <> Self) then
+    Result.fContext := nil;
   Self.UpdatePattern(ColorToRGB(FColor));
   fContext.CurrentBrush := Self;
 end;
