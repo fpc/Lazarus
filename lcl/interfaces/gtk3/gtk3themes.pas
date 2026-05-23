@@ -508,6 +508,10 @@ begin
   '  color: @theme_fg_color; ' +
   '} ' +
 
+  '%0:s:hover { ' +
+  '  border-color: @theme_button_decoration_hover_breeze; ' +
+  '} ' +
+
   '%0:s:focus:not(:checked) { ' +
   '  border-color: alpha(@theme_selected_bg_color, 0.8); ' +
   '  background-color: transparent; ' +
@@ -595,14 +599,6 @@ begin
      (Details.Part = BP_CHECKBOX) and
      IsMixed(Details) then
     Include(Result, GTK_STATE_FLAG_INCONSISTENT);
-
-  // For checkbox/radio indicators the LCL "Hot" state covers both mouse-hover
-  // and keyboard focus. Map it to PRELIGHT + FOCUSED so Adwaita renders both
-  // the hover highlight and the focus ring correctly.
-  if (Details.Element = teButton) and
-     (Details.Part in [BP_CHECKBOX, BP_RADIOBUTTON]) and
-     IsHot(Details) then
-    Include(Result, GTK_STATE_FLAG_FOCUSED);
 
   // define orientations
   if ((Details.Element = teRebar) and (Details.Part = RP_GRIPPER)) or
