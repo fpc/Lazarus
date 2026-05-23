@@ -128,7 +128,7 @@ const
 type
   { Reflects text style when drawn in a rectangle }
 
-  TTextLayout = (tlTop, tlCenter, tlBottom);
+  TTextLayout = (tlTop, tlCenter, tlBottom, tlDefault);
   TTextStyle = packed record
     Alignment : TAlignment;  // TextRect Only: horizontal alignment
 
