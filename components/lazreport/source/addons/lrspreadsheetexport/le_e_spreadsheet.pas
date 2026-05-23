@@ -111,7 +111,7 @@ implementation
 
 const
   ssAligns : array [TAlignment] of TsHorAlignment = (haLeft, haRight, haCenter);
-  ssLayout : array [TTextLayout] of TsVertAlignment = (vaTop, vaCenter, vaBottom);
+  ssLayout : array [TTextLayout] of TsVertAlignment = (vaTop, vaCenter, vaBottom, vaTop);
 
   { TlrSpreadSheetExportFilter }
 
