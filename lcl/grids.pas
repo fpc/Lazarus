@@ -239,8 +239,6 @@ type
   private
     FGrid: TCustomGrid;
     FCol,FRow:Integer;
-  private
-    function layoutToVertAlign(const layout: TTextLayout): TVerticalAlignment;
   protected
     procedure WndProc(var TheMessage : TLMessage); override;
     procedure Change; override;
@@ -10647,19 +10645,6 @@ end;
 
 { TStringCellEditor }
 
-function TStringCellEditor.layoutToVertAlign(
-  const layout: TTextLayout ): TVerticalAlignment;
-begin
-  case layout of
-    tlCenter:
-      Result := taVerticalCenter;
-    tlBottom:
-      Result := taAlignBottom;
-    else
-      Result:= taAlignTop;
-  end;
-end;
-
 procedure TStringCellEditor.WndProc(var TheMessage: TLMessage);
 begin
 	{$IfDef GridTraceMsg}
@@ -10827,7 +10812,7 @@ begin
   FCol := Msg.Col;
   FRow := Msg.Row;
   layout := FGrid.GetColumnLayout(FCol, False);
-  self.VerticalAlignment := self.layoutToVertAlign(layout);
+  self.VerticalAlignment := layout;
 end;
 
 procedure TStringCellEditor.msg_GetGrid(var Msg: TGridMessage);
