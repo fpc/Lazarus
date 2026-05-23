@@ -536,7 +536,14 @@ begin
           {$endif}
           GetQtBorderIcons(ACustomForm.BorderStyle,
             ACustomForm.BorderIcons));
-      end;
+      end
+      {$IFDEF HASX11}
+      else
+      begin
+        Widget.setWindowFlags(Widget.windowFlags or QtDialog);
+      end
+      {$ENDIF}
+      ;
 
       Widget.setWindowModality(QtApplicationModal);
     end;

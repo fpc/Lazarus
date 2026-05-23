@@ -556,7 +556,15 @@ begin
           {$ifdef darwin}Flags or {$endif}
           GetQtBorderIcons(TCustomForm(AWinControl).BorderStyle,
             TCustomForm(AWinControl).BorderIcons));
-      end;
+      end
+      {$IFDEF HASX11}
+      else
+      if not IsWayland then
+      begin
+        Widget.setWindowFlags(Widget.windowFlags or QtDialog);
+      end
+      {$ENDIF}
+      ;
 
       Widget.setWindowModality(QtApplicationModal);
     end;
