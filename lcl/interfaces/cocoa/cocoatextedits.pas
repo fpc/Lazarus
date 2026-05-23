@@ -705,11 +705,11 @@ begin
   if not Assigned(textField) then
     Exit;
   {$ifdef BOOLFIX}
-  bezeled:= Ord(lclEdit.borderStyle <> bsNone));
+  bordered:= Ord(lclEdit.borderStyle <> bsNone));
   {$else}
   bordered:= lclEdit.borderStyle <> bsNone;
   {$endif}
-  if lclEdit.VerticalAlignment <> taAlignTop then
+  if lclEdit.VerticalAlignment <> tlDefault then
     bordered:= True;
   textField.setBordered( bordered );
   textField.setBezeled( bordered );
