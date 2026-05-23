@@ -2214,7 +2214,16 @@ begin
   {$ENDIF}
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
   if Event^.focus_change.in_ <> 0 then
-    Msg.Msg := LM_SETFOCUS
+  begin
+    Msg.Msg := LM_SETFOCUS;
+    if (Gtk3WidgetSet.IMContext <> nil) and
+       not Gtk3IsEntry(PGObject(Sender)) and
+       not Gtk3IsTextView(PGObject(Sender)) then
+    begin
+      gtk_im_context_set_client_window(Gtk3WidgetSet.IMContext, Sender^.get_window);
+      gtk_im_context_focus_in(Gtk3WidgetSet.IMContext);
+    end;
+  end
   else
   begin
     if Sender^.get_toplevel^.is_toplevel then
@@ -2225,6 +2234,13 @@ begin
         Exit;
     end;
     Msg.Msg := LM_KILLFOCUS;
+    if (Gtk3WidgetSet.IMContext <> nil) and
+       not Gtk3IsEntry(PGObject(Sender)) and
+       not Gtk3IsTextView(PGObject(Sender)) then
+    begin
+      gtk_im_context_focus_out(Gtk3WidgetSet.IMContext);
+      gtk_im_context_set_client_window(Gtk3WidgetSet.IMContext, nil);
+    end;
   end;
 
   if HasCaret then
@@ -2369,6 +2385,15 @@ begin
   AEvent := Event^.key;
   FillChar(Msg{%H-}, SizeOf(Msg), 0);
   AEventString := AEvent.string_;
+  if AKeyPress and (Gtk3WidgetSet.IMContext <> nil) and
+     not Gtk3IsEntry(PGObject(Sender)) and
+     not Gtk3IsTextView(PGObject(Sender)) then
+  begin
+    Gtk3WidgetSet.IMCommitStr := '';
+    gtk_im_context_filter_keypress(Gtk3WidgetSet.IMContext, PGdkEventKey(Event));
+    if Gtk3WidgetSet.IMCommitStr <> '' then
+      AEventString := Gtk3WidgetSet.IMCommitStr;
+  end;
 
   TempWidget := HwndFromGtkWidget(Sender);
   {$IFDEF GTK3DEBUGKEYPRESS}

@@ -433,8 +433,16 @@ function GtkModifierStateToShiftState(AState: TGdkModifierType;
  pass nil to query against the default root window.}
 function Gtk3IsPointerButtonDown(AWidget: PGtkWidget): Boolean;
 
+procedure Gtk3IMCommitCB({%H-}context: PGtkIMContext; str: Pgchar; data: gpointer); cdecl;
+
 implementation
 uses LCLProc, gtk3objects, gtk3widgets, gtk3int, LazLogger, Math;
+
+procedure Gtk3IMCommitCB({%H-}context: PGtkIMContext; str: Pgchar; data: gpointer); cdecl;
+begin
+  if data <> nil then
+    TGtk3WidgetSet(data).IMCommitStr := str;
+end;
 
 function PANGO_PIXELS(d:integer):integer;
 begin

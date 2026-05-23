@@ -96,10 +96,18 @@ begin
   {$ELSE}
   FIsWayland := False;
   {$ENDIF}
+  FIMContext := PGtkIMContext(gtk_im_multicontext_new);
+  g_signal_connect_data(PGObject(FIMContext), 'commit',
+    TGCallback(@Gtk3IMCommitCB), Self, nil, G_CONNECT_DEFAULT);
 end;
 
 procedure TGtk3WidgetSet.Gtk3Destroy;
 begin
+  if FIMContext <> nil then
+  begin
+    g_object_unref(PGObject(FIMContext));
+    FIMContext := nil;
+  end;
   Gtk3MPF := nil;
   GTK3WidgetSet := nil;
   WakeMainThread := nil;
