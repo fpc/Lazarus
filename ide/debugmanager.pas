@@ -1071,7 +1071,7 @@ begin
   case EnvironmentDebugOpts.AutoOpenConsoleWin of
     ocOnceOnOutput:   if (FDialogs[ddtPseudoTerminal] = nil) or (not FDidShowConsoleForSession) then
                         ViewDebugDialog(ddtPseudoTerminal, False, True);
-    ocAlwaysOnOutput: ViewDebugDialog(ddtPseudoTerminal, False, True);
+    ocAlwaysOnOutput:               ViewDebugDialog(ddtPseudoTerminal, False, True);
     else              if FDialogs[ddtPseudoTerminal] = nil then
                         ViewDebugDialog(ddtPseudoTerminal, False, False);
   end;
@@ -1866,6 +1866,7 @@ const
 var
   CurDialog: TDebuggerDlg;
   AW: HWND;
+  ForceFront: Boolean;
 begin
   if Destroying then exit;
   if (ADialogType = ddtPseudoTerminal) and not HasConsoleSupport
@@ -1935,8 +1936,9 @@ begin
   begin
     CurDialog.BeginUpdate;
     AW := GetActiveWindow;
-    IDEWindowCreators.ShowForm(CurDialog,BringToFront or DebuggerOptions.AlwaysBringDbgDialogsToFront,vmOnlyMoveOffScreenToVisible);
-    if (not BringToFront) and DebuggerOptions.AlwaysBringDbgDialogsToFront then
+    ForceFront := (not BringToFront) and (DebuggerOptions.AlwaysBringDbgDialogsToFront and Application.Active);
+    IDEWindowCreators.ShowForm(CurDialog, BringToFront or ForceFront, vmOnlyMoveOffScreenToVisible);
+    if (AW <> 0) and ForceFront then
       SetActiveWindow(AW);
     CurDialog.EndUpdate;
   end;
