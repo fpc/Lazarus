@@ -1866,6 +1866,7 @@ begin
   CurrentListBox.Items.Add(s);
   LoadCodeBuffer(ACodeBuffer,IdentifierFileName,[lbfCheckIfText],false);
   IsPrivate:=false;
+  ScopeRadioGroup.Items[0]:=lisFRIinCurrentUnit;
   if ACodeBuffer=nil then begin
     CurrentGroupBox.Caption:='?file not found?';
     exit;
@@ -1894,6 +1895,12 @@ begin
         IsPrivate:=true;
     end;
   end;
+
+  if FTool.TrueSelf then
+    ScopeRadioGroup.Items[0]:=lisFRIinCurrentMethod else
+  if FTool.TruePredefinedResult then
+    ScopeRadioGroup.Items[0]:=lisFRIinLocalFunction;
+
   ScopeOverridesCheckBox.Visible:=(Node<>nil) and (Node.Desc=ctnProcedureHead)
       and (FTool.ProcNodeHasSpecifier(Node,psVirtual) or FTool.ProcNodeHasSpecifier(Node,psOverride));
 
