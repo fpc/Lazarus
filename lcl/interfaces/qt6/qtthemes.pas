@@ -142,6 +142,7 @@ var
   W: WideString;
   ABgColor: TQColor;
   Alpha: Word;
+  optHover: QStyleOptionH;
 
   procedure DrawSplitterInternal;
   var
@@ -568,6 +569,16 @@ begin
         end;
         qdvStandardPixmap:
         begin
+          if (Details.Element = teWindow) and
+            (StyleState and (QStyleState_MouseOver or QStyleState_Sunken) <> 0) then
+          begin
+            optHover := QStyleOption_create(Ord(QStyleOptionVersion), Ord(QStyleOptionSO_Default));
+            QStyleOption_setState(optHover, StyleState or QStyleState_AutoRaise);
+            QStyleOption_setRect(optHover, @ARect);
+            QStyle_drawPrimitive(Style, QStylePE_PanelButtonTool, optHover, Context.Widget,
+              Context.Parent);
+            QStyleOption_Destroy(optHover);
+          end;
           AIcon := QIcon_create();
           if Element.StandardPixmap = QStyleSP_TitleBarCloseButton then
           begin
@@ -1020,6 +1031,21 @@ begin
         Result.cx := QStyle_pixelMetric(Style, QStylePM_MenuButtonIndicator, nil, nil);
         if (Result.cx>0) then
           Result.cx := MulDiv(Result.cx, PPI, ScreenInfo.PixelsPerInchX);
+      end else
+        Result := inherited;
+    teWindow:
+      if Details.Part in [WP_CLOSEBUTTON, WP_SMALLCLOSEBUTTON, WP_MDICLOSEBUTTON,
+        WP_MINBUTTON, WP_MDIMINBUTTON, WP_MAXBUTTON,
+        WP_RESTOREBUTTON, WP_MDIRESTOREBUTTON,
+        WP_HELPBUTTON, WP_MDIHELPBUTTON,
+        WP_SYSBUTTON, WP_MDISYSBUTTON] then
+      begin
+        Result.cx := QStyle_pixelMetric(Style, QStylePM_SmallIconSize, nil, nil);
+        Result.cy := Result.cx;
+        if (Result.cx>0) then
+          Result.cx := MulDiv(Result.cx, PPI, ScreenInfo.PixelsPerInchX);
+        if (Result.cy>0) then
+          Result.cy := MulDiv(Result.cy, PPI, ScreenInfo.PixelsPerInchY);
       end else
         Result := inherited;
     else
