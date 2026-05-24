@@ -10465,9 +10465,17 @@ msgstr "Identifikátor: %s"
 msgid "in all open packages and projects"
 msgstr "ve všech otevřených balíčcích a projektech"
 
+#: lazarusidestrconsts.lisfriincurrentmethod
+msgid "in current method"
+msgstr ""
+
 #: lazarusidestrconsts.lisfriincurrentunit
 msgid "in current unit"
 msgstr "v aktuální jednotce"
+
+#: lazarusidestrconsts.lisfriinlocalfunction
+msgid "in local function"
+msgstr ""
 
 #: lazarusidestrconsts.lisfriinmainproject
 msgid "in main project"
@@ -10476,10 +10484,6 @@ msgstr "v hlavním projektu"
 #: lazarusidestrconsts.lisfriinprojectpackageowningcurrentunit
 msgid "in project/package owning current unit"
 msgstr "v projektu/balíčku vlastnícím aktuální jednotku"
-
-#: lazarusidestrconsts.lisfriinvalididentifier
-msgid "Invalid Identifier"
-msgstr "Neplatný identifikátor"
 
 #: lazarusidestrconsts.lisfrirenameallreferences
 msgid "Rename all References"

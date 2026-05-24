@@ -10395,9 +10395,17 @@ msgstr "Ідентифікатор: %s"
 msgid "in all open packages and projects"
 msgstr "у всіх відкритих пакунках і проєктах"
 
+#: lazarusidestrconsts.lisfriincurrentmethod
+msgid "in current method"
+msgstr ""
+
 #: lazarusidestrconsts.lisfriincurrentunit
 msgid "in current unit"
 msgstr "в поточному модулі"
+
+#: lazarusidestrconsts.lisfriinlocalfunction
+msgid "in local function"
+msgstr ""
 
 #: lazarusidestrconsts.lisfriinmainproject
 msgid "in main project"
@@ -10406,10 +10414,6 @@ msgstr "в головному проєкті"
 #: lazarusidestrconsts.lisfriinprojectpackageowningcurrentunit
 msgid "in project/package owning current unit"
 msgstr "у проєкті/пакунку, що містить цей модуль"
-
-#: lazarusidestrconsts.lisfriinvalididentifier
-msgid "Invalid Identifier"
-msgstr "Некоректний ідентифікатор"
 
 #: lazarusidestrconsts.lisfrirenameallreferences
 msgid "Rename all References"

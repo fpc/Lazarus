@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-05-11 19:12+0300\n"
+"PO-Revision-Date: 2026-05-24 22:12+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -10279,9 +10279,17 @@ msgstr "Идентификатор: %s"
 msgid "in all open packages and projects"
 msgstr "во всех открытых пакетах и проектах"
 
+#: lazarusidestrconsts.lisfriincurrentmethod
+msgid "in current method"
+msgstr "в текущем методе"
+
 #: lazarusidestrconsts.lisfriincurrentunit
 msgid "in current unit"
 msgstr "в текущем модуле"
+
+#: lazarusidestrconsts.lisfriinlocalfunction
+msgid "in local function"
+msgstr "в локальной функции"
 
 #: lazarusidestrconsts.lisfriinmainproject
 msgid "in main project"
@@ -10290,10 +10298,6 @@ msgstr "в главном проекте"
 #: lazarusidestrconsts.lisfriinprojectpackageowningcurrentunit
 msgid "in project/package owning current unit"
 msgstr "в проекте/пакете, содержащем этот модуль"
-
-#: lazarusidestrconsts.lisfriinvalididentifier
-msgid "Invalid Identifier"
-msgstr "Некорректный идентификатор"
 
 #: lazarusidestrconsts.lisfrirenameallreferences
 msgid "Rename all References"

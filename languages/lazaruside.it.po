@@ -10551,9 +10551,17 @@ msgstr "Identificatore: %s"
 msgid "in all open packages and projects"
 msgstr "in tutti i pacchetti e i progetti aperti"
 
+#: lazarusidestrconsts.lisfriincurrentmethod
+msgid "in current method"
+msgstr ""
+
 #: lazarusidestrconsts.lisfriincurrentunit
 msgid "in current unit"
 msgstr "nella unit corrente"
+
+#: lazarusidestrconsts.lisfriinlocalfunction
+msgid "in local function"
+msgstr ""
 
 #: lazarusidestrconsts.lisfriinmainproject
 msgid "in main project"
@@ -10562,10 +10570,6 @@ msgstr "nel progetto principale"
 #: lazarusidestrconsts.lisfriinprojectpackageowningcurrentunit
 msgid "in project/package owning current unit"
 msgstr "nel progetto/pacchetto a cui appartiene la unit corrente"
-
-#: lazarusidestrconsts.lisfriinvalididentifier
-msgid "Invalid Identifier"
-msgstr "Identificatore non valido"
 
 #: lazarusidestrconsts.lisfrirenameallreferences
 msgid "Rename all References"

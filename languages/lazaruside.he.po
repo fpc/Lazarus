@@ -10766,9 +10766,17 @@ msgstr "מזהה: %s"
 msgid "in all open packages and projects"
 msgstr "בכל החבילות והפרוייקטים הפתוחים"
 
+#: lazarusidestrconsts.lisfriincurrentmethod
+msgid "in current method"
+msgstr ""
+
 #: lazarusidestrconsts.lisfriincurrentunit
 msgid "in current unit"
 msgstr "ביחידה הנוכחית"
+
+#: lazarusidestrconsts.lisfriinlocalfunction
+msgid "in local function"
+msgstr ""
 
 #: lazarusidestrconsts.lisfriinmainproject
 msgid "in main project"
@@ -10777,10 +10785,6 @@ msgstr "בפרויקט הראשי"
 #: lazarusidestrconsts.lisfriinprojectpackageowningcurrentunit
 msgid "in project/package owning current unit"
 msgstr "בפרוייקט/חבילה להם שייכת היחידה"
-
-#: lazarusidestrconsts.lisfriinvalididentifier
-msgid "Invalid Identifier"
-msgstr "מזהה לא חוקי"
 
 #: lazarusidestrconsts.lisfrirenameallreferences
 msgid "Rename all References"

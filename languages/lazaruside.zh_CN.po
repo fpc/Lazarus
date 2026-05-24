@@ -10309,9 +10309,17 @@ msgstr "标识符:%s"
 msgid "in all open packages and projects"
 msgstr "在所有打开的软件包和项目"
 
+#: lazarusidestrconsts.lisfriincurrentmethod
+msgid "in current method"
+msgstr ""
+
 #: lazarusidestrconsts.lisfriincurrentunit
 msgid "in current unit"
 msgstr "在当前单元"
+
+#: lazarusidestrconsts.lisfriinlocalfunction
+msgid "in local function"
+msgstr ""
 
 #: lazarusidestrconsts.lisfriinmainproject
 msgid "in main project"
@@ -10320,10 +10328,6 @@ msgstr "在主项目"
 #: lazarusidestrconsts.lisfriinprojectpackageowningcurrentunit
 msgid "in project/package owning current unit"
 msgstr "在项目/软件包拥有的当前单元"
-
-#: lazarusidestrconsts.lisfriinvalididentifier
-msgid "Invalid Identifier"
-msgstr "无效的标识符"
 
 #: lazarusidestrconsts.lisfrirenameallreferences
 msgid "Rename all References"

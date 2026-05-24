@@ -10533,9 +10533,17 @@ msgstr "識別子: %s"
 msgid "in all open packages and projects"
 msgstr "全ての開いているパッケージとプロジェクトの中"
 
+#: lazarusidestrconsts.lisfriincurrentmethod
+msgid "in current method"
+msgstr ""
+
 #: lazarusidestrconsts.lisfriincurrentunit
 msgid "in current unit"
 msgstr "現在のユニット内"
+
+#: lazarusidestrconsts.lisfriinlocalfunction
+msgid "in local function"
+msgstr ""
 
 #: lazarusidestrconsts.lisfriinmainproject
 msgid "in main project"
@@ -10544,10 +10552,6 @@ msgstr "メインプロジェクト内"
 #: lazarusidestrconsts.lisfriinprojectpackageowningcurrentunit
 msgid "in project/package owning current unit"
 msgstr "現在のユニットを所有しているパッケージ/プロジェクトの中"
-
-#: lazarusidestrconsts.lisfriinvalididentifier
-msgid "Invalid Identifier"
-msgstr "無効な識別子"
 
 #: lazarusidestrconsts.lisfrirenameallreferences
 msgid "Rename all References"

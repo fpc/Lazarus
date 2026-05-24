@@ -10423,9 +10423,17 @@ msgstr "Azonosító: %s"
 msgid "in all open packages and projects"
 msgstr "minden megnyitott csomagban és projektben"
 
+#: lazarusidestrconsts.lisfriincurrentmethod
+msgid "in current method"
+msgstr ""
+
 #: lazarusidestrconsts.lisfriincurrentunit
 msgid "in current unit"
 msgstr "az aktuális unit-ban"
+
+#: lazarusidestrconsts.lisfriinlocalfunction
+msgid "in local function"
+msgstr ""
 
 #: lazarusidestrconsts.lisfriinmainproject
 msgid "in main project"
@@ -10434,10 +10442,6 @@ msgstr "fő projektben"
 #: lazarusidestrconsts.lisfriinprojectpackageowningcurrentunit
 msgid "in project/package owning current unit"
 msgstr "az aktuális unit-ot birtokló csomagban/projektben"
-
-#: lazarusidestrconsts.lisfriinvalididentifier
-msgid "Invalid Identifier"
-msgstr "Érvénytelen azonosító"
 
 #: lazarusidestrconsts.lisfrirenameallreferences
 msgid "Rename all References"

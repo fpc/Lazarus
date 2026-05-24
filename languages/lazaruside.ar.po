@@ -10309,8 +10309,16 @@ msgstr ""
 msgid "in all open packages and projects"
 msgstr ""
 
+#: lazarusidestrconsts.lisfriincurrentmethod
+msgid "in current method"
+msgstr ""
+
 #: lazarusidestrconsts.lisfriincurrentunit
 msgid "in current unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisfriinlocalfunction
+msgid "in local function"
 msgstr ""
 
 #: lazarusidestrconsts.lisfriinmainproject
@@ -10319,10 +10327,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfriinprojectpackageowningcurrentunit
 msgid "in project/package owning current unit"
-msgstr ""
-
-#: lazarusidestrconsts.lisfriinvalididentifier
-msgid "Invalid Identifier"
 msgstr ""
 
 #: lazarusidestrconsts.lisfrirenameallreferences

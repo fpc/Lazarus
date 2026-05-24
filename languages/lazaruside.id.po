@@ -10580,9 +10580,17 @@ msgstr "Pengenal: %s"
 msgid "in all open packages and projects"
 msgstr "dalam semua paket dan proyek terbuka"
 
+#: lazarusidestrconsts.lisfriincurrentmethod
+msgid "in current method"
+msgstr ""
+
 #: lazarusidestrconsts.lisfriincurrentunit
 msgid "in current unit"
 msgstr "dalam unit saat ini"
+
+#: lazarusidestrconsts.lisfriinlocalfunction
+msgid "in local function"
+msgstr ""
 
 #: lazarusidestrconsts.lisfriinmainproject
 msgid "in main project"
@@ -10591,10 +10599,6 @@ msgstr "dalam proyek utama"
 #: lazarusidestrconsts.lisfriinprojectpackageowningcurrentunit
 msgid "in project/package owning current unit"
 msgstr "dalam proyek/paket pemilik unit saat ini"
-
-#: lazarusidestrconsts.lisfriinvalididentifier
-msgid "Invalid Identifier"
-msgstr "Pengenal tidak benar"
 
 #: lazarusidestrconsts.lisfrirenameallreferences
 msgid "Rename all References"

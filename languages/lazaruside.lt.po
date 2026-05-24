@@ -10538,9 +10538,17 @@ msgstr "Identifikatorius: %s"
 msgid "in all open packages and projects"
 msgstr "visuose atvertuose paketuose ir projektuose"
 
+#: lazarusidestrconsts.lisfriincurrentmethod
+msgid "in current method"
+msgstr ""
+
 #: lazarusidestrconsts.lisfriincurrentunit
 msgid "in current unit"
 msgstr "šiame modulyje"
+
+#: lazarusidestrconsts.lisfriinlocalfunction
+msgid "in local function"
+msgstr ""
 
 #: lazarusidestrconsts.lisfriinmainproject
 msgid "in main project"
@@ -10549,10 +10557,6 @@ msgstr "pagrindiniame projekte"
 #: lazarusidestrconsts.lisfriinprojectpackageowningcurrentunit
 msgid "in project/package owning current unit"
 msgstr "projekte/pakete, kuriam priklauso šis modulis"
-
-#: lazarusidestrconsts.lisfriinvalididentifier
-msgid "Invalid Identifier"
-msgstr "Klaidingas identifikatorius"
 
 #: lazarusidestrconsts.lisfrirenameallreferences
 msgid "Rename all References"

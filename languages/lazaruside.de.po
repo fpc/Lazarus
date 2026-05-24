@@ -10291,9 +10291,17 @@ msgstr "Bezeichner: %s"
 msgid "in all open packages and projects"
 msgstr "in allen offenen Packages und Projekten"
 
+#: lazarusidestrconsts.lisfriincurrentmethod
+msgid "in current method"
+msgstr ""
+
 #: lazarusidestrconsts.lisfriincurrentunit
 msgid "in current unit"
 msgstr "in aktueller Unit"
+
+#: lazarusidestrconsts.lisfriinlocalfunction
+msgid "in local function"
+msgstr ""
 
 #: lazarusidestrconsts.lisfriinmainproject
 msgid "in main project"
@@ -10302,10 +10310,6 @@ msgstr "Im Hauptprojekt"
 #: lazarusidestrconsts.lisfriinprojectpackageowningcurrentunit
 msgid "in project/package owning current unit"
 msgstr "im Projekt/Package, dem die aktuelle Unit gehört"
-
-#: lazarusidestrconsts.lisfriinvalididentifier
-msgid "Invalid Identifier"
-msgstr "Ungültiger Bezeichner"
 
 #: lazarusidestrconsts.lisfrirenameallreferences
 msgid "Rename all References"

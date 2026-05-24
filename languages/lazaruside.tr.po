@@ -10314,9 +10314,17 @@ msgstr "Tanımlayıcı: %s"
 msgid "in all open packages and projects"
 msgstr "açık paket ve projelerde"
 
+#: lazarusidestrconsts.lisfriincurrentmethod
+msgid "in current method"
+msgstr ""
+
 #: lazarusidestrconsts.lisfriincurrentunit
 msgid "in current unit"
 msgstr "geçerli birimde"
+
+#: lazarusidestrconsts.lisfriinlocalfunction
+msgid "in local function"
+msgstr ""
 
 #: lazarusidestrconsts.lisfriinmainproject
 msgid "in main project"
@@ -10325,10 +10333,6 @@ msgstr "ana projede"
 #: lazarusidestrconsts.lisfriinprojectpackageowningcurrentunit
 msgid "in project/package owning current unit"
 msgstr "projede/pakette mevcut birimde"
-
-#: lazarusidestrconsts.lisfriinvalididentifier
-msgid "Invalid Identifier"
-msgstr "Geçersiz Tanımlayıcı"
 
 #: lazarusidestrconsts.lisfrirenameallreferences
 msgid "Rename all References"

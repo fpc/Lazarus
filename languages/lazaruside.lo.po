@@ -10292,9 +10292,17 @@ msgstr "Identifier: %s"
 msgid "in all open packages and projects"
 msgstr "ໃນແພັກເກັດ ແລະ ໂປຣເຈັກທີ່ເປີດທັງໝົດ"
 
+#: lazarusidestrconsts.lisfriincurrentmethod
+msgid "in current method"
+msgstr ""
+
 #: lazarusidestrconsts.lisfriincurrentunit
 msgid "in current unit"
 msgstr "ໃນ unit ປັດຈຸບັນ"
+
+#: lazarusidestrconsts.lisfriinlocalfunction
+msgid "in local function"
+msgstr ""
 
 #: lazarusidestrconsts.lisfriinmainproject
 msgid "in main project"
@@ -10303,10 +10311,6 @@ msgstr "ໃນໂປຣເຈັກຫຼັກ"
 #: lazarusidestrconsts.lisfriinprojectpackageowningcurrentunit
 msgid "in project/package owning current unit"
 msgstr "ໃນໂປຣເຈັກ/ແພັກເກັດ ທີ່ເປັນເຈົ້າຂອງ unit ປັດຈຸບັນ"
-
-#: lazarusidestrconsts.lisfriinvalididentifier
-msgid "Invalid Identifier"
-msgstr "Identifier ບໍ່ຖືກຕ້ອງ"
 
 #: lazarusidestrconsts.lisfrirenameallreferences
 msgid "Rename all References"
