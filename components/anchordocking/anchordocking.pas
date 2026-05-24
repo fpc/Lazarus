@@ -7290,6 +7290,33 @@ begin
   SizeCorrector(h,PreferredButtonHeight);
 end;
 
+procedure CapButtonToHeaderHeight(AControl: TControl; var w,h: integer);
+var
+  Hdr: TAnchorDockHeader;
+  DC: HDC;
+  R: TRect;
+  OldFont: HGDIOBJ;
+  CapH: Integer;
+begin
+  if (AControl=nil) or not (AControl.Parent is TAnchorDockHeader) then exit;
+  Hdr:=TAnchorDockHeader(AControl.Parent);
+  if not Hdr.HandleAllocated then exit;
+  DC:=GetDC(Hdr.Handle);
+  try
+    R:=Rect(0,0,10000,10000);
+    OldFont:=SelectObject(DC,HGDIOBJ(Hdr.Font.Reference.Handle));
+    DrawText(DC,PChar(TestTxt),Length(TestTxt),R,
+      DT_CALCRECT or DT_EXPANDTABS or DT_SINGLELINE or DT_NOPREFIX);
+    SelectObject(DC,OldFont);
+    CapH:=(R.Bottom-R.Top)+Hdr.BevelWidth*2-2*ButtonBorderSpacingAround;
+  finally
+    ReleaseDC(Hdr.Handle,DC);
+  end;
+  if CapH<1 then exit;
+  if h>CapH then h:=CapH;
+  if w>CapH then w:=CapH;
+end;
+
 procedure TAnchorDockCloseButton.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
@@ -7305,6 +7332,7 @@ begin
       inc(PreferredWidth,2);
       inc(PreferredHeight,2);
       {$ENDIF}
+      CapButtonToHeaderHeight(Self,PreferredWidth,PreferredHeight);
     end
   else
     CalculatePreferredFlatButtonSize(Parent.Handle, PreferredWidth,PreferredHeight);
@@ -7352,6 +7380,7 @@ begin
       inc(PreferredWidth,2);
       inc(PreferredHeight,2);
       {$ENDIF}
+      CapButtonToHeaderHeight(Self,PreferredWidth,PreferredHeight);
     end
   else
     CalculatePreferredFlatButtonSize(Parent.Handle, PreferredWidth,PreferredHeight);
