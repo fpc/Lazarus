@@ -10109,6 +10109,7 @@ begin
   FButtonEditor.Caption:='...';
   FButtonEditor.Visible:=False;
   FButtonEditor.Width:=25;
+  FButtonEditor.ParentFont := False;
   FButtonEditor.OnClick := @EditButtonClicked;
 
   FStringEditor := TStringCellEditor.Create(nil);
@@ -10117,15 +10118,18 @@ begin
   FStringEditor.Visible:=False;
   FStringEditor.Align:=alNone;
   FStringEditor.BorderStyle := bsNone;
+  FStringEditor.ParentFont := False;
 
   FPicklistEditor := TPickListCellEditor.Create(nil);
   FPickListEditor.Name := 'PickListEditor';
   FPickListEditor.Visible := False;
-  FPickListEditor.AutoSize := false;
+  FPickListEditor.AutoSize := False;
+  FPickListEditor.ParentFont := False;
 
   FButtonStringEditor := TCompositeCellEditor.Create(nil);
   FButtonStringEditor.Name:='ButtonTextEditor';
   FButtonStringEditor.Visible:=False;
+  FButtonStringEditor.ParentFont := False;
   FButtonStringEditor.AddEditor(FStringEditor, alCustom, true);
   FButtonStringEditor.AddEditor(FButtonEditor, alRight, false);
 
