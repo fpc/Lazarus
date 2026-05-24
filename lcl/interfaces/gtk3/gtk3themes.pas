@@ -274,6 +274,10 @@ end;
 
 function TGTK3ThemeServices.GetDetailSizeForPPI(Details: TThemedElementDetails;
   PPI: Integer): TSize;
+var
+  Context: PGtkStyleContext;
+  min_width, min_height: gint;
+  Pad, Bord: TGtkBorder;
 begin
   Result := Size(0, 0);
   if Details.Element = teButton then
@@ -293,6 +297,32 @@ begin
       inc(Result.cx);
       inc(Result.cy);
     end;
+  end else
+  if (Details.Element = teWindow) and (Details.Part in
+       [WP_CLOSEBUTTON, WP_SMALLCLOSEBUTTON, WP_MDICLOSEBUTTON,
+        WP_MINBUTTON, WP_MDIMINBUTTON, WP_MAXBUTTON,
+        WP_RESTOREBUTTON, WP_MDIRESTOREBUTTON,
+        WP_HELPBUTTON, WP_MDIHELPBUTTON,
+        WP_SYSBUTTON, WP_MDISYSBUTTON]) then
+  begin
+    min_width := 0;
+    min_height := 0;
+    Context := MakeCtx2(gtk_header_bar_get_type, 'headerbar', 'titlebar',
+      gtk_button_get_type, 'button', 'titlebutton',
+      GTK_STATE_FLAG_NORMAL, gdk_screen_get_default);
+    gtk_style_context_get(Context, GTK_STATE_FLAG_NORMAL,
+      ['min-width', @min_width, 'min-height', @min_height, nil]);
+    FillChar(Pad{%H-}, SizeOf(Pad), 0);
+    FillChar(Bord{%H-}, SizeOf(Bord), 0);
+    gtk_style_context_get_padding(Context, GTK_STATE_FLAG_NORMAL, @Pad);
+    gtk_style_context_get_border(Context, GTK_STATE_FLAG_NORMAL, @Bord);
+    g_object_unref(Context);
+    if min_width <= 0 then
+      min_width := 16;
+    if min_height <= 0 then
+      min_height := 16;
+    Result.cx := MulDiv(min_width + Pad.left + Pad.right + Bord.left + Bord.right, PPI, 96);
+    Result.cy := MulDiv(min_height + Pad.top + Pad.bottom + Bord.top + Bord.bottom, PPI, 96);
   end else
   (* NOT YET READY
   if Details.Element = teToolBar then
@@ -1210,11 +1240,6 @@ begin
             // headerbar.titlebar > button.titlebutton[.close/.minimize/.maximize]
             Context := MakeCtx2(gtk_header_bar_get_type, 'headerbar', 'titlebar',
               gtk_button_get_type, 'button', 'titlebutton', State, AScreen);
-            if BtnClass <> '' then
-              gtk_style_context_add_class(Context, BtnClass);
-            // Clip background/frame to button rect, the theme CSS for hover/pressed
-            // renders the icon via -gtk-icon-source at a fixed native size that
-            // overflows our rect. Clipping prevents that overflow.
             cairo_save(Cr);
             cairo_rectangle(Cr, X, Y, Width, Height);
             cairo_clip(Cr);
@@ -1224,6 +1249,8 @@ begin
 
             if BtnIconName <> '' then
             begin
+              if BtnClass <> '' then
+                gtk_style_context_add_class(Context, BtnClass);
               ArrowSz := Min(Width, Height) * 2 div 3;
               ArrowX := X + (Width  - ArrowSz) div 2;
               ArrowY := Y + (Height - ArrowSz) div 2;
@@ -1245,9 +1272,6 @@ begin
           end;
         end;
       end;
-
-      else
-        DebugLn(Format('WARNING: TGtk3ThemeServices.DrawElement: Drawing for element %d not implemented.',[Ord(Details.Element)]));
     end;
   finally
     cairo_set_operator(Cr, AOldOperator);
