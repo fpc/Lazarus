@@ -13742,6 +13742,9 @@ procedure TPickListCellEditor.msg_SetPos(var Msg: TGridMessage);
 begin
   FCol := Msg.Col;
   FRow := Msg.Row;
+  self.Font:= FGrid.Canvas.Font;
+  if self.Font.Size <> 0 then
+    self.Font.Size:= 0;
 end;
 
 procedure TPickListCellEditor.msg_GetGrid(var Msg: TGridMessage);
