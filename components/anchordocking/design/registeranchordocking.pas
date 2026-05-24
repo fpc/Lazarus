@@ -324,7 +324,7 @@ begin
   Site.BoundSplitter.Enabled := not AAdjustHeight;
   Site.BoundSplitter.CustomWidth := not Site.BoundSplitter.Enabled;
   if Site.BoundSplitter.Enabled then
-    Site.BoundSplitter.Height := DockMaster.SplitterWidth
+    Site.BoundSplitter.Height := DockMaster.ScaledSplitterWidth
   else
   begin
     Site.BoundSplitter.Constraints.MinHeight := 2;
