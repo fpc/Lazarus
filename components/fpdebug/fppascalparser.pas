@@ -6347,8 +6347,13 @@ function TFpPascalExpressionPartOperatorPlusMinus.DoGetResultValue: TFpValue;
     Result := nil;
     case AOtherVal.Kind of
       skPointer: if ADoSubtract then begin
-          if ( (APointerVal.TypeInfo = nil) or (APointerVal.TypeInfo.TypeInfo = nil) ) and
-             ( (AOtherVal.TypeInfo = nil)   or (AOtherVal.TypeInfo.TypeInfo = nil) )
+          if ( (APointerVal.TypeInfo = nil) or (APointerVal.TypeInfo.TypeInfo = nil) or
+               ( (APointerVal.TypeInfo.TypeInfo.ReadSize(nil, s1)) and (SizeToFullBytes(s1) = 1) )
+             )
+             and
+             ( (AOtherVal.TypeInfo = nil)   or (AOtherVal.TypeInfo.TypeInfo = nil) or
+               ( (AOtherVal.TypeInfo.TypeInfo.ReadSize(nil, s2)) and (SizeToFullBytes(s2) = 1) )
+             )
           then begin
             Idx := APointerVal.AsCardinal - AOtherVal.AsCardinal;
             Result := TFpValueConstNumber.Create(Idx, True);

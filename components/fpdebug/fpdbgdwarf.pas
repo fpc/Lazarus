@@ -7669,13 +7669,42 @@ end;
 function TFpSymbolDwarfTypeString.DoReadSize(const AValueObj: TFpValue; out ASize: TFpDbgValueSize
   ): Boolean;
 begin
-  Result := False;
+  if CompilationUnit.Version >= 5 then
+    Result := inherited
+  else
+    Result := False;
 end;
 
 function TFpSymbolDwarfTypeString.DoReadLenSize(const AValueObj: TFpValue; out
   ASize: TFpDbgValueSize): Boolean;
+var
+  AttrData: TDwarfAttribData;
+  Bits: Int64;
 begin
-  Result := inherited DoReadSize(AValueObj, ASize);
+  if CompilationUnit.Version >= 5 then begin
+    ASize := SizeVal(CompilationUnit.AddressSize);
+    Result := True;
+
+    if InformationEntry.GetAttribData(DW_AT_string_length_bit_size, AttrData) then begin
+      Result := ConstRefOrExprFromAttrData(AttrData, AValueObj as TFpValueDwarf, Bits);
+      if not Result then
+        exit;
+      ASize := SizeFromBits(Bits);
+      exit;
+    end;
+
+    if InformationEntry.GetAttribData(DW_AT_string_length_byte_size, AttrData) then begin
+      Result := ConstRefOrExprFromAttrData(AttrData, AValueObj as TFpValueDwarf, ASize.Size);
+      if not Result then
+        exit;
+    end;
+  end
+  else begin
+    Result := inherited DoReadSize(AValueObj, ASize);
+    if not Result then
+      ASize := SizeVal(CompilationUnit.AddressSize);
+    Result := True;
+  end;
 end;
 
 function TFpSymbolDwarfTypeString.DoReadLengthLocation(
