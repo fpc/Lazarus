@@ -10809,14 +10809,11 @@ begin
 end;
 
 procedure TStringCellEditor.msg_SetPos(var Msg: TGridMessage);
-var
-  vertAlign: TVerticalAlignment;
-  layout: TTextLayout;
 begin
   FCol := Msg.Col;
   FRow := Msg.Row;
-  layout := FGrid.GetColumnLayout(FCol, False);
-  self.VerticalAlignment := layout;
+  self.VerticalAlignment := FGrid.GetColumnLayout(FCol, False);
+  self.Font:= FGrid.Canvas.Font;
 end;
 
 procedure TStringCellEditor.msg_GetGrid(var Msg: TGridMessage);
