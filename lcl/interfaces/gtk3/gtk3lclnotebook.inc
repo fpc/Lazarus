@@ -49,6 +49,7 @@ var
   nat_h, nat_w: gint;
   tooSmall: Boolean;
   Last1W, Last1H, Last2W, Last2H: PtrInt;
+  PingCount: PtrInt;
 begin
   ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
   if not Assigned(ParentClass) or not Assigned(ParentClass^.size_allocate) then
@@ -58,15 +59,31 @@ begin
   Last1H := PtrInt(g_object_get_data(PGObject(widget), 'lcl-prev-ah'));
   Last2W := PtrInt(g_object_get_data(PGObject(widget), 'lcl-prev2-aw'));
   Last2H := PtrInt(g_object_get_data(PGObject(widget), 'lcl-prev2-ah'));
+  PingCount := PtrInt(g_object_get_data(PGObject(widget), 'lcl-pingpong-cnt'));
 
   if ((allocation^.width <> Last1W) or (allocation^.height <> Last1H)) and
      (allocation^.width = Last2W) and (allocation^.height = Last2H) and
      (Last2W <> 0) and (Last2H <> 0) then
   begin
-    gtk_widget_set_allocation(widget, allocation);
-    gtk_widget_set_clip(widget, allocation);
-    Exit;
-  end;
+    Inc(PingCount);
+    g_object_set_data(PGObject(widget), 'lcl-pingpong-cnt', Pointer(PtrInt(PingCount)));
+    if PingCount > 1 then
+    begin
+      {$IFDEF GTK3DEBUGSIZE}
+      writeln(Format('LCLGtkNotebookSizeAllocate PINGPONG-SKIP alloc x %d y %d w %d h %d Last1 %dx%d Last2 %dx%d cnt %d',[allocation^.x, allocation^.y, allocation^.width, allocation^.height, Last1W, Last1H, Last2W, Last2H, PingCount]));
+      {$ENDIF}
+      gtk_widget_set_allocation(widget, allocation);
+      gtk_widget_set_clip(widget, allocation);
+      Exit;
+    end;
+    {$IFDEF GTK3DEBUGSIZE}
+    writeln(Format('LCLGtkNotebookSizeAllocate PINGPONG-ALLOW alloc x %d y %d w %d h %d Last1 %dx%d Last2 %dx%d cnt %d',[allocation^.x, allocation^.y, allocation^.width, allocation^.height, Last1W, Last1H, Last2W, Last2H, PingCount]));
+    {$ENDIF}
+  end
+  else
+    if ((allocation^.width <> Last1W) or (allocation^.height <> Last1H)) and
+       ((allocation^.width <> Last2W) or (allocation^.height <> Last2H)) then
+      g_object_set_data(PGObject(widget), 'lcl-pingpong-cnt', nil);
 
   if (allocation^.width <> Last1W) or (allocation^.height <> Last1H) then
   begin
@@ -85,10 +102,16 @@ begin
 
   if tooSmall then
   begin
+    {$IFDEF GTK3DEBUGSIZE}
+    writeln(Format('LCLGtkNotebookSizeAllocate tooSmall-SKIP alloc x %d y %d w %d h %d min %dx%d',[allocation^.x, allocation^.y, allocation^.width, allocation^.height, min_w, min_h]));
+    {$ENDIF}
     gtk_widget_set_allocation(widget, allocation);
     gtk_widget_set_clip(widget, allocation);
     Exit;
   end;
+  {$IFDEF GTK3DEBUGSIZE}
+  writeln(Format('LCLGtkNotebookSizeAllocate FULL alloc x %d y %d w %d h %d Last1 %dx%d Last2 %dx%d',[allocation^.x, allocation^.y, allocation^.width, allocation^.height, Last1W, Last1H, Last2W, Last2H]));
+  {$ENDIF}
   ParentClass^.size_allocate(widget, allocation);
 end;
 

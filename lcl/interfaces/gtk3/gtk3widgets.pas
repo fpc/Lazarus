@@ -8769,6 +8769,9 @@ begin
       Result := RectFromGtkAllocation(AAlloc);
       Types.OffsetRect(Result, -Result.Left, -Result.Top);
       Self.DefaultClientRect := Result;
+      {$IFDEF GTK3DEBUGSIZE}
+      writeln(Format('TGtk3Notebook.getClientRect page=%d/%d pageAllocWxH %dx%d -> ClientRect %s',[ACurrentPage, PGtkNoteBook(GetContainerWidget)^.get_n_pages, AAlloc.width, AAlloc.height, dbgs(Result)]));
+      {$ENDIF}
       {$IFDEF GTK3DEBUGLAYOUT}
       writeln('TGtk3Notebook.GetClientRect(3): Result=',dbgs(Result));
       {$ENDIF}
