@@ -3536,7 +3536,6 @@ resourcestring
   lisFRIAdditionalFilesToSearchEGPathPasPath2Pp = 'Additional files to '
     +'search (e.g. /path/*.pas;/path2/*.pp)';
   lisFRIFindReferences = 'Find References';
-  lisFRIInvalidIdentifier = 'Invalid Identifier';
   lisFRIRenaming = 'Renaming';
   lisFRISearchInCommentsToo = 'Search in comments too';
   lisFRISearch = 'Search';
