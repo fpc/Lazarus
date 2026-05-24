@@ -1074,6 +1074,7 @@ begin
    so it won't trigger selection changes etc.}
   g_object_set_data(PGObject(TGtk3Widget(ALV.Handle).Widget), 'lcl_gtkwidget_in_update', ALV);
   g_object_freeze_notify(TGtk3Widget(ALV.Handle).Widget);
+  g_object_set_data(PGObject(TGtk3Widget(ALV.Handle).Widget), 'lcl_lv_notify_frozen', ALV);
 end;
 
 class procedure TGtk3WSCustomListView.EndUpdate(const ALV: TCustomListView);
@@ -1081,7 +1082,11 @@ begin
   if not WSCheckHandleAllocated(ALV, 'EndUpdate') then
     Exit;
   g_object_set_data(PGObject(TGtk3Widget(ALV.Handle).Widget), 'lcl_gtkwidget_in_update', nil);
-  g_object_thaw_notify(TGtk3Widget(ALV.Handle).Widget);
+  if g_object_get_data(PGObject(TGtk3Widget(ALV.Handle).Widget), 'lcl_lv_notify_frozen') <> nil then
+  begin
+    g_object_thaw_notify(TGtk3Widget(ALV.Handle).Widget);
+    g_object_set_data(PGObject(TGtk3Widget(ALV.Handle).Widget), 'lcl_lv_notify_frozen', nil);
+  end;
   gtk_widget_queue_draw(TGtk3ListView(ALV.Handle).GetContainerWidget);
 end;
 
