@@ -39,14 +39,12 @@ begin
         Result.Height:= MIN_HEIGHT;
     end;
     tlCenter: begin
-      Dec( Result.Top );
       if Result.Height < MIN_HEIGHT then begin
         Dec( Result.Top, (MIN_HEIGHT-Result.Height) div 2 );
         Result.Height:= MIN_HEIGHT;
       end;
     end;
     tlBottom: begin
-      Dec( Result.Bottom );
       if Result.Height < MIN_HEIGHT then
         Result.Top:= Result.Bottom - MIN_HEIGHT;
     end;
