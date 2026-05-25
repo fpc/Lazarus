@@ -880,7 +880,7 @@ msgstr "Összes megjelenítése"
 
 #: lclstrconsts.rsmacosmenutogglefullscreen
 msgid "Toggle Full Screen"
-msgstr ""
+msgstr "Teljes képernyős nézet be-/kikapcsolása"
 
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"

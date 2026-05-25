@@ -829,7 +829,7 @@ msgstr "Προβολή όλων"
 
 #: lclstrconsts.rsmacosmenutogglefullscreen
 msgid "Toggle Full Screen"
-msgstr ""
+msgstr "Εναλλαγή πλήρους οθόνης"
 
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"

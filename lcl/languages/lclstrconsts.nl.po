@@ -886,7 +886,7 @@ msgstr "Toon alle"
 
 #: lclstrconsts.rsmacosmenutogglefullscreen
 msgid "Toggle Full Screen"
-msgstr ""
+msgstr "Volledig scherm in-/uitschakelen"
 
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"

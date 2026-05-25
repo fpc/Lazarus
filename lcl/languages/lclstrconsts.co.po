@@ -836,7 +836,7 @@ msgstr "Tuttu affissà"
 
 #: lclstrconsts.rsmacosmenutogglefullscreen
 msgid "Toggle Full Screen"
-msgstr ""
+msgstr "Attivà/disattivà u schermu pienu"
 
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"

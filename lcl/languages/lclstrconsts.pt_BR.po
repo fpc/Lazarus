@@ -868,7 +868,7 @@ msgstr "Exibir tudo"
 
 #: lclstrconsts.rsmacosmenutogglefullscreen
 msgid "Toggle Full Screen"
-msgstr ""
+msgstr "Alternar tela cheia"
 
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"

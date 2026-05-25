@@ -871,7 +871,7 @@ msgstr "Показати все"
 
 #: lclstrconsts.rsmacosmenutogglefullscreen
 msgid "Toggle Full Screen"
-msgstr ""
+msgstr "перемикання на весь екран"
 
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"

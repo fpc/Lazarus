@@ -868,7 +868,7 @@ msgstr "Tümünü göster"
 
 #: lclstrconsts.rsmacosmenutogglefullscreen
 msgid "Toggle Full Screen"
-msgstr ""
+msgstr "Tam ekranı aç/kapat"
 
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"

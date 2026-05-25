@@ -882,7 +882,7 @@ msgstr "Ukázat vše"
 
 #: lclstrconsts.rsmacosmenutogglefullscreen
 msgid "Toggle Full Screen"
-msgstr ""
+msgstr "Přepnout na celou obrazovku"
 
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"

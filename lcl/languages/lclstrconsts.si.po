@@ -845,7 +845,7 @@ msgstr "සියල්ල පෙන්වන්න"
 
 #: lclstrconsts.rsmacosmenutogglefullscreen
 msgid "Toggle Full Screen"
-msgstr ""
+msgstr "සම්පූර්ණ තිරය ටොගල කරන්න"
 
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
