@@ -440,8 +440,16 @@ uses LCLProc, gtk3objects, gtk3widgets, gtk3int, LazLogger, Math;
 
 procedure Gtk3IMCommitCB({%H-}context: PGtkIMContext; str: Pgchar; data: gpointer); cdecl;
 begin
-  if data <> nil then
-    TGtk3WidgetSet(data).IMCommitStr := str;
+  {$IFDEF GTK3DEBUGKEYPRESS}
+  writeln('Gtk3IMCommitCB FIRED str="', str, '" data=', PtrUInt(data));
+  {$ENDIF}
+  if data = nil then
+    Exit;
+  TGtk3WidgetSet(data).IMCommitStr := str;
+  if TGtk3WidgetSet(data).IsWayland and
+     not TGtk3WidgetSet(data).IMInFilter and
+     (TGtk3WidgetSet(data).IMTarget <> nil) then
+    TGtk3Widget(TGtk3WidgetSet(data).IMTarget).DeliverIMCommit(TGtk3WidgetSet(data).IMCommitStr);
 end;
 
 function PANGO_PIXELS(d:integer):integer;

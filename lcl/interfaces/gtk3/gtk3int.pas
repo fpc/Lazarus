@@ -78,6 +78,8 @@ type
     FDefaultAppFontName: String;
     FIMContext: PGtkIMContext;
     FIMCommitStr: string;
+    FIMInFilter: Boolean;
+    FIMTarget: TObject;
     FWaitHandles: PWaitHandleEventHandler;
     {$IFDEF UNIX}
     FChildSignalHandlers: PChildSignalEventHandler;
@@ -215,6 +217,8 @@ type
     property OverlayScrolling: gboolean read FOverlayScrolling write FOverlayScrolling;
     property IMContext: PGtkIMContext read FIMContext;
     property IMCommitStr: string read FIMCommitStr write FIMCommitStr;
+    property IMInFilter: Boolean read FIMInFilter write FIMInFilter;
+    property IMTarget: TObject read FIMTarget write FIMTarget;
 
     {$i gtk3winapih.inc}
     {$i gtk3lclintfh.inc}

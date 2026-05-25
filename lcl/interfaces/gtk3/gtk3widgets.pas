@@ -197,6 +197,7 @@ type
 
     function DeliverMessage(var Msg; const AIsInputEvent: Boolean = False): LRESULT; virtual;
     function GtkEventKey(Sender: PGtkWidget; Event: PGdkEvent; AKeyPress: Boolean): Boolean; virtual; cdecl;
+    procedure DeliverIMCommit(const AStr: string);
     function GtkEventMouse(Sender: PGtkWidget; Event: PGdkEvent): Boolean; virtual; cdecl;
     function GtkEventMouseMove(Sender: PGtkWidget; Event: PGdkEvent): Boolean; virtual; cdecl;
     function GtkEventPaint(Sender: PGtkWidget; AContext: Pcairo_t): Boolean; virtual; cdecl;
@@ -2220,8 +2221,12 @@ begin
        not Gtk3IsEntry(PGObject(Sender)) and
        not Gtk3IsTextView(PGObject(Sender)) then
     begin
+      {$IFDEF GTK3DEBUGKEYPRESS}
+      writeln('GtkEventFocus IN ', dbgsName(LCLObject), ' clientWindow=', PtrUInt(Sender^.get_window), ' toplevelWindow=', PtrUInt(Sender^.get_toplevel^.get_window));
+      {$ENDIF}
       gtk_im_context_set_client_window(Gtk3WidgetSet.IMContext, Sender^.get_window);
       gtk_im_context_focus_in(Gtk3WidgetSet.IMContext);
+      Gtk3WidgetSet.IMTarget := Self;
     end;
   end
   else
@@ -2240,6 +2245,8 @@ begin
     begin
       gtk_im_context_focus_out(Gtk3WidgetSet.IMContext);
       gtk_im_context_set_client_window(Gtk3WidgetSet.IMContext, nil);
+      if Gtk3WidgetSet.IMTarget = Self then
+        Gtk3WidgetSet.IMTarget := nil;
     end;
   end;
 
@@ -2353,6 +2360,35 @@ begin
   Gtk3WidgetSet.FLCLCaptureWidget := GetContainerWidget;
 end;
 
+procedure TGtk3Widget.DeliverIMCommit(const AStr: string);
+var
+  UTF8Char: TUTF8Char;
+  CharMsg: TLMChar;
+begin
+  if (AStr = '') or not Assigned(LCLObject) then
+    exit;
+
+  {$IFDEF GTK3DEBUGKEYPRESS}
+  writeln('TGtk3Widget.DeliverIMCommit ', dbgsName(LCLObject), ' str="', AStr, '"');
+  {$ENDIF}
+
+  UTF8Char := AStr;
+  if LCLObject.IntfUTF8KeyPress(UTF8Char, 1, False) then
+    exit;
+
+  FillChar(CharMsg{%H-}, SizeOf(CharMsg), 0);
+  CharMsg.Msg := CN_CHAR;
+  CharMsg.CharCode := Word(AStr[1]);
+  NotifyApplicationUserInput(LCLObject, PLMessage(@CharMsg)^);
+
+  if DeliverMessage(CharMsg, True) <> 0 then
+    exit;
+
+  CharMsg.Msg := LM_CHAR;
+  NotifyApplicationUserInput(LCLObject, PLMessage(@CharMsg)^);
+  DeliverMessage(CharMsg, True);
+end;
+
 function TGtk3Widget.GtkEventKey(Sender: PGtkWidget; Event: PGdkEvent; AKeyPress: Boolean): Boolean;
   cdecl;
 const
@@ -2378,6 +2414,7 @@ var
   TempWidget: HWND;
   {$IFDEF GTK3DEBUGKEYPRESS}
   Info: PTypeInfo;
+  AFiltered: gboolean;
   {$ENDIF}
 begin
   //TODO: finish LCL messaging
@@ -2390,7 +2427,14 @@ begin
      not Gtk3IsTextView(PGObject(Sender)) then
   begin
     Gtk3WidgetSet.IMCommitStr := '';
+    Gtk3WidgetSet.IMInFilter := True;
+    {$IFDEF GTK3DEBUGKEYPRESS}
+    AFiltered := gtk_im_context_filter_keypress(Gtk3WidgetSet.IMContext, PGdkEventKey(Event));
+    writeln('GtkEventKey: filter_keypress=', Ord(AFiltered), ' commitStr="', Gtk3WidgetSet.IMCommitStr, '" keyval=', AEvent.keyval, ' widget=', dbgsName(LCLObject));
+    {$ELSE}
     gtk_im_context_filter_keypress(Gtk3WidgetSet.IMContext, PGdkEventKey(Event));
+    {$ENDIF}
+    Gtk3WidgetSet.IMInFilter := False;
     if Gtk3WidgetSet.IMCommitStr <> '' then
       AEventString := Gtk3WidgetSet.IMCommitStr;
   end;
