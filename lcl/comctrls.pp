@@ -813,6 +813,7 @@ type
     FTabControlCreating: Boolean;
     FTabs: TStrings;// this is a TTabControlNoteBookStrings
     FCanvas: TCanvas;
+    FLoadedTabIndex: Integer;
     procedure AdjustDisplayRect(var ARect: TRect);
     function GetDisplayRect: TRect;
     function GetHotTrack: Boolean;

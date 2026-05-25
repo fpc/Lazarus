@@ -625,6 +625,11 @@ begin
   BeginUpdate;
   inherited CreateWnd;
   EndUpdate;
+  if (FLoadedTabIndex >= 0) and (Tabs.Count > 0) then
+  begin
+    TabIndex := Min(FLoadedTabIndex, Tabs.Count - 1);
+    FLoadedTabIndex := -1;
+  end;
 end;
 
 procedure TTabControl.DestroyHandle;
@@ -657,7 +662,11 @@ end;
 
 procedure TTabControl.SetTabIndex(Value: Integer);
 begin
-  TTabControlStrings(FTabs).TabIndex:=Value;
+  if csLoading in ComponentState then
+    FLoadedTabIndex := Max(0, Value)
+  else
+  if Value >= 0 then
+    TTabControlStrings(FTabs).TabIndex:=Value;
 end;
 
 procedure TTabControl.UpdateTabImages;
@@ -784,6 +793,7 @@ end;
 constructor TTabControl.Create(TheOwner: TComponent);
 begin
   FTabControlCreating:=true;
+  FLoadedTabIndex := -1;
   inherited Create(TheOwner);
   ControlStyle:=ControlStyle+[csAcceptsControls];
   FStyle:=tsTabs;
