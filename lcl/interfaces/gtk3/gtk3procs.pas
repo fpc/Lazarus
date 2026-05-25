@@ -2245,8 +2245,10 @@ var
   I: Integer;
   ACtl: TWinControl;
   SizeMsg: TLMSize;
+  State: TGdkWindowState;
   MainList, FixList: TFPList;
   PW, PH: Integer;
+  Widget: TGtk3Widget;
 begin
   if Gtk3DrainInProgress then Exit;
   if (FWidgetsResized.Count = 0) and (FFixWidgetsResized.Count = 0) then Exit;
@@ -2285,10 +2287,22 @@ begin
       ACtl := TWinControl(MainList[I]);
       if Assigned(ACtl) and ACtl.HandleAllocated then
       begin
-        if TGtk3Widget(ACtl.Handle).InUpdate then Continue;
+        Widget := TGtk3Widget(ACtl.Handle);
+        if Widget.InUpdate then Continue;
         FillChar(SizeMsg{%H-}, SizeOf(SizeMsg), 0);
         SizeMsg.Msg      := LM_SIZE;
-        SizeMsg.SizeType := SIZE_RESTORED or Size_SourceIsInterface;
+        SizeMsg.SizeType := SIZE_RESTORED;
+        if Widget is TGtk3Window then
+        begin
+          State := TGtk3Window(Widget).getWindowState;
+          if GDK_WINDOW_STATE_ICONIFIED in State then
+            SizeMsg.SizeType := SIZE_MINIMIZED
+          else if GDK_WINDOW_STATE_MAXIMIZED in State then
+            SizeMsg.SizeType := SIZE_MAXIMIZED
+          else if GDK_WINDOW_STATE_FULLSCREEN in State then
+            SizeMsg.SizeType := SIZE_FULLSCREEN;
+        end;
+        SizeMsg.SizeType := SizeMsg.SizeType or Size_SourceIsInterface;
         if Gtk3TakePendingOuterSize(ACtl, PW, PH) then
         begin
           SizeMsg.Width  := Word(PW);
