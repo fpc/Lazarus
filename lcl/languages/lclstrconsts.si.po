@@ -843,6 +843,10 @@ msgstr "සේවා"
 msgid "Show All"
 msgstr "සියල්ල පෙන්වන්න"
 
+#: lclstrconsts.rsmacosmenutogglefullscreen
+msgid "Toggle Full Screen"
+msgstr ""
+
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
 msgstr "මෙරූන්"

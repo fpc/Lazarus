@@ -884,6 +884,10 @@ msgstr "Voorzieningen"
 msgid "Show All"
 msgstr "Toon alle"
 
+#: lclstrconsts.rsmacosmenutogglefullscreen
+msgid "Toggle Full Screen"
+msgstr ""
+
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
 msgstr "Kastanje"

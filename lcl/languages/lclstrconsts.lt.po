@@ -881,6 +881,10 @@ msgstr ""
 msgid "Show All"
 msgstr ""
 
+#: lclstrconsts.rsmacosmenutogglefullscreen
+msgid "Toggle Full Screen"
+msgstr ""
+
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
 msgstr "Kaštoninė"

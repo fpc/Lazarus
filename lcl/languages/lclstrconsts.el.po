@@ -827,6 +827,10 @@ msgstr "Υπηρεσίες"
 msgid "Show All"
 msgstr "Προβολή όλων"
 
+#: lclstrconsts.rsmacosmenutogglefullscreen
+msgid "Toggle Full Screen"
+msgstr ""
+
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
 msgstr ""

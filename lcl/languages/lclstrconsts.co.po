@@ -834,6 +834,10 @@ msgstr "Servizii"
 msgid "Show All"
 msgstr "Tuttu affissà"
 
+#: lclstrconsts.rsmacosmenutogglefullscreen
+msgid "Toggle Full Screen"
+msgstr ""
+
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
 msgstr "Cerriu"

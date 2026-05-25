@@ -866,6 +866,10 @@ msgstr "Servisler"
 msgid "Show All"
 msgstr "Tümünü göster"
 
+#: lclstrconsts.rsmacosmenutogglefullscreen
+msgid "Toggle Full Screen"
+msgstr ""
+
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
 msgstr "Kestane Rengi"

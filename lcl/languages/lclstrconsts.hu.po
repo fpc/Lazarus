@@ -878,6 +878,10 @@ msgstr "Szolgáltatások"
 msgid "Show All"
 msgstr "Összes megjelenítése"
 
+#: lclstrconsts.rsmacosmenutogglefullscreen
+msgid "Toggle Full Screen"
+msgstr ""
+
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
 msgstr "Gesztenyebarna"

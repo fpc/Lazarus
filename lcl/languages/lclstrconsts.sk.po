@@ -833,6 +833,10 @@ msgstr "Služby"
 msgid "Show All"
 msgstr "Zobraziť všetko"
 
+#: lclstrconsts.rsmacosmenutogglefullscreen
+msgid "Toggle Full Screen"
+msgstr ""
+
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
 msgstr "Gaštanová"

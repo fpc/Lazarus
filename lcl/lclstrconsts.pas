@@ -102,6 +102,7 @@ resourceString
   rsMacOSMenuQuit = 'Quit %s';
   rsMacOSMenuServices = 'Services';
   rsMacOSMenuShowAll = 'Show All';
+  rsMacOSMenuToggleFullScreen = 'Toggle Full Screen';
 
   rsMacOSEditMenu = 'Edit';
   rsMacOSEditMenuUndo = 'Undo';

@@ -894,6 +894,10 @@ msgstr "Serveis"
 msgid "Show All"
 msgstr "Mostrar tots"
 
+#: lclstrconsts.rsmacosmenutogglefullscreen
+msgid "Toggle Full Screen"
+msgstr ""
+
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
 msgstr ""
