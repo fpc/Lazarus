@@ -53,7 +53,6 @@ type
       message 'ensureDocumentViewSizeChanged:newSize:ensureWidth:';
     procedure resetScrollData; message 'resetScrollData';
 
-    procedure lclUpdate; override;
     procedure lclInvalidateRect(const r: TRect); override;
     procedure lclInvalidate; override;
 
@@ -242,7 +241,6 @@ type
     function lclContentView: NSView; override;
     function lclClientFrame: TRect; override;
     function lclIsMouseInAuxArea(event: NSEvent): Boolean; override;
-    procedure lclUpdate; override;
     procedure lclInvalidateRect(const r: TRect); override;
     procedure lclInvalidate; override;
 
@@ -398,11 +396,6 @@ begin
 
   _lastScrollX:= currentX;
   _lastScrollY:= currentY;
-end;
-
-procedure TCocoaScrollView.lclUpdate;
-begin
-  documentView.lclUpdate;
 end;
 
 procedure TCocoaScrollView.lclInvalidateRect(const r: TRect);
@@ -1127,11 +1120,6 @@ end;
 function TCocoaManualScrollView.lclIsMouseInAuxArea(event: NSEvent): Boolean;
 begin
   Result := TCocoaScrollingUtil.isMouseEventInScrollBar(Self, event);
-end;
-
-procedure TCocoaManualScrollView.lclUpdate;
-begin
-  documentView.lclUpdate;
 end;
 
 procedure TCocoaManualScrollView.lclInvalidateRect(const r: TRect);

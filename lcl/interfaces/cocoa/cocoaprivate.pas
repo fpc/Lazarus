@@ -99,6 +99,7 @@ type
     class function canLCLFocus(v: NSView): Boolean;
     class function getSuperViewHeight(const view: NSView): CGFloat;
     class procedure hideAllSubviews( const parent: NSView );
+    class procedure invalidateAllSubviews( const view: NSView );
     class procedure addLayoutDelta(const layout: TRect; var frame: TRect);
     class procedure subLayoutDelta(const layout: TRect; var frame: TRect);
     class procedure setDefaultMargin(const AView: NSView);
@@ -358,6 +359,15 @@ var
 begin
   for view in parent.subviews do
     view.setHidden( True );
+end;
+
+class procedure TCocoaViewUtil.invalidateAllSubviews(const view: NSView);
+var
+  subView: NSView;
+begin
+  view.setNeedsDisplay_( True );
+  for subView in view.subviews do
+    invalidateAllSubviews( subView );
 end;
 
 class procedure TCocoaViewUtil.addLayoutDelta(const layout: TRect; var frame: TRect);
@@ -948,12 +958,7 @@ end;
 
 procedure LCLViewExtension.lclUpdate;
 begin
-  {$ifdef BOOLFIX}
-  setNeedsDisplay__(Ord(True));
-  {$else}
-  setNeedsDisplay_(True);
-  {$endif}
-  //display;
+  TCocoaViewUtil.invalidateAllSubviews( self );
 end;
 
 procedure LCLViewExtension.lclLocalToScreen(var X, Y:Integer);
