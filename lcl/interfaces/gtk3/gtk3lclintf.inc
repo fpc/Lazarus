@@ -229,9 +229,8 @@ var
   x,y:integer;
   src,dst,SrcRowPtr,DstRowPtr:pbyte;
   ridx,gidx,bidx,aidx:byte;
-  Src1BitStride, MaskStride: PtrUInt;
-  MaskPtr: PByte;
-  ColorBit, MaskBit: Boolean;
+  Src1BitStride: PtrUInt;
+  ColorBit: Boolean;
 begin
   Result := False;
   ABitmap := 0;
@@ -269,9 +268,6 @@ begin
       ARowStride := PtrUInt(Desc.Width) * 4;
       FreeMem(NewData);
       NewData := AllocMem(ARowStride * Desc.Height);
-      MaskStride := 0;
-      if (ARawImage.Mask <> nil) and (ARawImage.MaskSize > 0) then
-        MaskStride := GetBytesPerLine(Desc.Width, 1, Desc.MaskLineEnd);
       SrcRowPtr := ARawImage.Data;
       DstRowPtr := NewData;
       for y := 0 to Integer(Desc.Height) - 1 do
@@ -284,19 +280,7 @@ begin
             ColorBit := (Src[x shr 3] and ($80 shr (x and 7))) <> 0
           else
             ColorBit := (Src[x shr 3] and (1 shl (x and 7))) <> 0;
-          MaskBit := False;
-          if MaskStride > 0 then
-          begin
-            MaskPtr := PByte(ARawImage.Mask) + PtrUInt(y) * MaskStride;
-            if Desc.MaskBitOrder = riboReversedBits then
-              MaskBit := (MaskPtr[x shr 3] and ($80 shr (x and 7))) <> 0
-            else
-              MaskBit := (MaskPtr[x shr 3] and (1 shl (x and 7))) <> 0;
-          end;
-          if MaskBit then
-          begin
-            Dst[0] := 0; Dst[1] := 0; Dst[2] := 0; Dst[3] := 0;
-          end else if ColorBit then
+          if ColorBit then
           begin
             Dst[0] := 255; Dst[1] := 255; Dst[2] := 255; Dst[3] := 255;
           end else
