@@ -295,6 +295,8 @@ begin
   {$ENDIF}
   GetCursorPos(FOldMousePos);
   FOldBounds := FResizeContainer.BoundsRect;
+
+  self.DesignerSetFocus;
 end;
 
 procedure TResizeControl.SizerMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
