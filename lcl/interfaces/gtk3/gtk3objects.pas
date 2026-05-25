@@ -271,6 +271,7 @@ type
     FXorMode: boolean;
     FXorROP: Integer;
     FXorSnapshot: Pcairo_surface_t;
+    FXorRect: TGdkRectangle;
     //Accumulated clip region, mirrors what we set via SetClipRegion/ResetClip.
     //Needed because gdk_cairo_get_clip_rectangle returns only the bounding box,
     //causing ExcludeClipRect accumulation to lose intermediate holes.
@@ -1907,6 +1908,7 @@ begin
   end;
 
   gdk_cairo_get_clip_rectangle(FCairo, @R);
+  FXorRect := R;
 
   asx := 1;
   asy := 1;
@@ -1938,7 +1940,7 @@ var
   asx, asy: Double;
 begin
   cairo_surface_flush(xorSurface);
-  gdk_cairo_get_clip_rectangle(FCairo, @R);
+  R := FXorRect;
 
   SrcW := cairo_image_surface_get_width(xorSurface);
   SrcH := cairo_image_surface_get_height(xorSurface);
