@@ -446,8 +446,7 @@ begin
   if data = nil then
     Exit;
   TGtk3WidgetSet(data).IMCommitStr := str;
-  if TGtk3WidgetSet(data).IsWayland and
-     not TGtk3WidgetSet(data).IMInFilter and
+  if not TGtk3WidgetSet(data).IMInFilter and
      (TGtk3WidgetSet(data).IMTarget <> nil) then
     TGtk3Widget(TGtk3WidgetSet(data).IMTarget).DeliverIMCommit(TGtk3WidgetSet(data).IMCommitStr);
 end;
