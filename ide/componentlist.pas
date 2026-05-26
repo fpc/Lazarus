@@ -674,8 +674,12 @@ end;
 procedure TComponentListForm.tmDeselectTimer(Sender: TObject);
 begin
   tmDeselect.Enabled := False;
-  FActiveTree.Selected := nil;
-  SelectionWasChanged;
+  if Assigned(FActiveTree.Selected) then begin
+    FActiveTree.Selected := nil;
+    SelectionWasChanged;
+  end else begin
+    FInitialized:= True;
+  end;
   FActiveTree.EndUpdate;
   FPageControlChange := False;
 end;
