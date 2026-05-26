@@ -2167,7 +2167,7 @@ begin
   cg := CGContext;
   if not Assigned(cg) then Exit;
 
-  fillbrush:=TCocoaBrush.Create(TCocoaColorUtil.toColor(ColorRef(AColor)));
+  fillbrush:=TCocoaBrush.Create(TCocoaColorUtil.toColor(AColor));
   fillbrush.Apply(self);
 
   r.origin.x:=x;
@@ -2492,7 +2492,7 @@ begin
 
       lForegroundColor := TCocoaColorUtil.sysIndexToColor(SysColorToSysColorIndex(FForegroundColor));
       if lForegroundColor = nil then
-        lForegroundColor := TCocoaColorUtil.toColor(ColorToRGB(FForegroundColor));
+        lForegroundColor := TCocoaColorUtil.toColor(FForegroundColor);
 
       Dict := NSMutableDictionary.dictionaryWithObjectsAndKeys(
             Font.Font, kCTFontAttributeName,
