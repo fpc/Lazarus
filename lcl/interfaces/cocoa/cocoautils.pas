@@ -898,11 +898,14 @@ end;
 
 class procedure TCocoaColorUtil.toColorAlpha(const Color: NSColor; var lclColor: TColor;
   var Alpha: Byte);
+var
+  RGBColor: NSColor;
 begin
-  lclColor:= ((Round(Color.blueComponent*$FF)) shl 16) +
-             ((Round(Color.greenComponent*$FF)) shl 8) +
-             Round(Color.redComponent*$FF);
-  alpha:= Round(Color.alphaComponent*$FF);
+  RGBColor := Color.colorUsingColorSpaceName(NSDeviceRGBColorSpace);
+  lclColor:= ((Round(RGBColor.blueComponent*$FF)) shl 16) +
+             ((Round(RGBColor.greenComponent*$FF)) shl 8) +
+             Round(RGBColor.redComponent*$FF);
+  alpha:= Round(RGBColor.alphaComponent*$FF);
 end;
 
 class function TCocoaColorUtil.toColor(const Color: TColor): NSColor;
