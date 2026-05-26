@@ -290,7 +290,8 @@ procedure TSourcePageControl.RefreshResizer;
 begin
   if not Assigned(FResizer) then Exit;
   {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TSourcePageControls.RefreshResizer'); {$ENDIF}
-  FreeAndNil(FResizer);
+  Application.ReleaseComponent( FResizer );
+  FResizer:= nil;
   CreateResizer;
 end;
 
