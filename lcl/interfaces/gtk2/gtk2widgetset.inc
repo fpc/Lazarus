@@ -6042,7 +6042,7 @@ begin
           {$IFDEF DebugGDKTraps}
           BeginGDKErrorTrap;
           {$ENDIF}
-          If PaletteVisual <> nil then
+          If (PaletteVisual <> nil) and (not SystemPalette) then
             gdk_visual_unref(PaletteVisual);
           If PaletteColormap <> nil then
             gdk_colormap_unref(PaletteColormap);

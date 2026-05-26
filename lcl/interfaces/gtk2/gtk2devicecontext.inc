@@ -1034,7 +1034,7 @@ begin
           GDIBitmapType := gbPixmap;
           GDIPixmapObject.Image := NewDrawable;
           GDIPixmapObject.Mask := Mask;
-          if Visual <> nil then
+          if (Visual <> nil) and (not SystemVisual) then
             gdk_visual_unref(Visual);
           Visual := gdk_window_get_visual(NewDrawable);
           gdk_visual_ref(Visual);

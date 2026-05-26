@@ -1660,8 +1660,8 @@ begin
   if GObject^.PaletteVisual = nil
   then begin
     GObject^.PaletteVisual := GDK_Visual_Get_System;
-    GDK_Visual_Ref(GObject^.PaletteVisual);
   end;
+  GObject^.SystemPalette := True; { This visual should not be referenced }
   GObject^.PaletteColormap := GDK_Colormap_new(GObject^.PaletteVisual, GdkTrue);
 
   {$IFDEF DebugGDKTraps}
