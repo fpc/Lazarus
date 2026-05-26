@@ -34,14 +34,15 @@ begin
     Exit;
   end;
 
-  if AControl.LCLWidth = 0 then
+  if AControl.LCLWidth > 0 then
   begin
-    min_width^ := Max(min_width^ div 2, AControl.LCLObject.Width);
-    nat_width^ := Max(min_width^, AControl.LCLObject.Width);
+    min_width^ := AControl.LCLWidth;
+    nat_width^ := AControl.LCLWidth;
   end else
+  if AControl.LCLObject.Width > 0 then
   begin
-    min_width^ := Max(min_width^ div 2, AControl.LCLWidth);
-    nat_width^ := Max(min_width^, AControl.LCLWidth);
+    min_width^ := AControl.LCLObject.Width;
+    nat_width^ := AControl.LCLObject.Width;
   end;
 end;
 
@@ -79,14 +80,15 @@ begin
     Exit;
   end;
 
-  if AControl.LCLHeight = 0 then
+  if AControl.LCLHeight > 0 then
   begin
-    min_height^ := Max(min_height^ div 2, AControl.LCLObject.Height);
-    nat_height^ := Max(min_height^, AControl.LCLObject.Height);
+    min_height^ := AControl.LCLHeight;
+    nat_height^ := AControl.LCLHeight;
   end else
+  if AControl.LCLObject.Height > 0 then
   begin
-    min_height^ := Max(min_height^ div 2, AControl.LCLHeight);
-    nat_height^ := Max(min_height^, AControl.LCLHeight);
+    min_height^ := AControl.LCLObject.Height;
+    nat_height^ := AControl.LCLObject.Height;
   end;
 end;
 
@@ -94,26 +96,60 @@ procedure LCLGtkFrameSizeAllocate(widget: PGtkWidget; allocation: PGtkAllocation
 var
   ParentClass: PGtkWidgetClass;
   labelWidget: PGtkWidget;
-  labelMinH: gint;
+  ctx: PGtkStyleContext;
+  border, padding, margin: TGtkBorder;
+  labelMinH, decorH, decorW: gint;
+  ClampedAlloc: TGtkAllocation;
+  NeedClamp: Boolean;
 begin
-  //Guard: skip tiny allocations that would cause GTK cascade loops.
-  //We only use the label widget's minimum height - no CSS context calls,
-  //which can assert/crash when the style context is not yet initialized.
-  if allocation^.height < 2 then
+  ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
+  if not Assigned(ParentClass) or not Assigned(ParentClass^.size_allocate) then
     Exit;
 
+  decorW := 2;
+  decorH := 2;
   labelWidget := PGtkFrame(widget)^.get_label_widget;
   if Assigned(labelWidget) and Gtk3IsWidget(labelWidget) and labelWidget^.get_visible then
   begin
     labelMinH := 0;
     gtk_widget_get_preferred_height(labelWidget, @labelMinH, nil);
-    if (labelMinH > 0) and (allocation^.height < labelMinH) then
-      Exit;
+    if labelMinH > 0 then
+      inc(decorH, labelMinH);
+  end;
+  ctx := widget^.get_style_context;
+  if Assigned(ctx) then
+  begin
+    FillChar(border{%H-}, SizeOf(border), 0);
+    FillChar(padding{%H-}, SizeOf(padding), 0);
+    FillChar(margin{%H-}, SizeOf(margin), 0);
+    ctx^.get_border(GTK_STATE_FLAG_NORMAL, @border);
+    ctx^.get_padding(GTK_STATE_FLAG_NORMAL, @padding);
+    ctx^.get_margin(GTK_STATE_FLAG_NORMAL, @margin);
+    inc(decorH, gint(border.top) + gint(border.bottom) + gint(padding.top) + gint(padding.bottom)
+              + gint(margin.top) + gint(margin.bottom));
+    inc(decorW, gint(border.left) + gint(border.right) + gint(padding.left) + gint(padding.right)
+              + gint(margin.left) + gint(margin.right));
   end;
 
-  ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
-  if not Assigned(ParentClass) or not Assigned(ParentClass^.size_allocate) then
-    Exit;
+  NeedClamp := (allocation^.width < decorW) or (allocation^.height < decorH);
+  if NeedClamp then
+  begin
+    ClampedAlloc := allocation^;
+
+    if ClampedAlloc.width < decorW then
+      ClampedAlloc.width := decorW;
+
+    if ClampedAlloc.height < decorH then
+      ClampedAlloc.height := decorH;
+
+    ParentClass^.size_allocate(widget, @ClampedAlloc);
+    gtk_widget_set_allocation(widget, allocation);
+    gtk_widget_set_clip(widget, allocation);
+
+    exit;
+
+  end;
+
   ParentClass^.size_allocate(widget, allocation);
 end;
 
@@ -122,7 +158,7 @@ var
   AWidgetClass: PGtkWidgetClass;
 begin
   AWidgetClass := PGtkWidgetClass(klass);
-  //AWidgetClass^.size_allocate := @LCLGtkFrameSizeAllocate;
+  AWidgetClass^.size_allocate := @LCLGtkFrameSizeAllocate;
   AWidgetClass^.get_preferred_width := @LCLGtkFrameGetPreferredWidth;
   AWidgetClass^.get_preferred_height := @LCLGtkFrameGetPreferredHeight;
 end;
