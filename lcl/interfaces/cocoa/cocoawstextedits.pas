@@ -233,7 +233,7 @@ begin
   if (AWinControl.Color = clDefault) or (AWinControl.Color = clWindow) or (AWinControl.Color = clBackground)  then
     field.setBackgroundColor( NSColor.textBackgroundColor )
   else
-    field.setBackgroundColor( TCocoaColorUtil.toColor(ColorToRGB(AWinControl.Color)));
+    field.setBackgroundColor( TCocoaColorUtil.toColor(AWinControl.Color));
 
   ensureBackcolorApply;
 end;
@@ -782,7 +782,7 @@ begin
   if (AWinControl.Color = clDefault) or (AWinControl.Color = clWindow) or (AWinControl.Color = clBackground) then
     txt.setBackgroundColor( NSColor.textBackgroundColor )
   else
-    txt.setBackgroundColor( TCocoaColorUtil.toColor(ColorToRGB(AWinControl.Color)));
+    txt.setBackgroundColor( TCocoaColorUtil.toColor(AWinControl.Color));
 end;
 
 class procedure TCocoaWSCustomMemo.SetSelStart(const ACustomEdit: TCustomEdit;

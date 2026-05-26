@@ -117,8 +117,10 @@ type
     // extract ColorRef from any NSColor
     class function toColorRefWithAnyColor(const Color: NSColor): TColorRef;
     class procedure toColorAlpha(const Color: NSColor;var lclColor: TColor;var Alpha: Byte);
+    class function toColor(const Color: TColor): NSColor; inline; overload;
     class function toColor(const Color: TColorRef): NSColor; inline; overload;
-    class function toColor(const Color: TColorRef; const Alpha: Byte): NSColor; overload;
+    class function toColor(const Color: TColor; const Alpha: Byte): NSColor; inline; overload;
+    class function toColor(const Color: TColorRef; const Alpha: Byte): NSColor; inline; overload;
     // convert to known NSColor or nil
     class function sysIndexToColor(nIndex: Integer): NSColor;
 
@@ -903,12 +905,22 @@ begin
   alpha:= Round(Color.alphaComponent*$FF);
 end;
 
+class function TCocoaColorUtil.toColor(const Color: TColor): NSColor;
+begin
+  Result:= TCocoaColorUtil.toColor( TColorRef(ColorToRGB(Color)) );
+end;
+
 class function TCocoaColorUtil.toColor(const Color: TColorRef): NSColor; inline;
 begin
   Result := NSColor.colorWithDeviceRed_green_blue_alpha(
     (Color and $FF) / $FF,
     ((Color shr 8) and $FF) / $FF,
     ((Color shr 16) and $FF) / $FF, 1);
+end;
+
+class function TCocoaColorUtil.toColor(const Color: TColor; const Alpha: Byte): NSColor;
+begin
+  Result:= TCocoaColorUtil.toColor( TColorRef(ColorToRGB(Color)), Alpha );
 end;
 
 class function TCocoaColorUtil.toColor(const Color: TColorRef; const Alpha: Byte): NSColor;

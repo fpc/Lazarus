@@ -352,7 +352,7 @@ begin
     if AFont.Color = clDefault then
       Obj.setTextColor(NSColor.controlTextColor)
     else
-      Obj.setTextColor(TCocoaColorUtil.toColor(ColorToRGB(AFont.Color)));
+      Obj.setTextColor(TCocoaColorUtil.toColor(AFont.Color));
   end;
 end;
 

@@ -638,7 +638,7 @@ begin
   end;
 
   if lclFont.Color <> clDefault then begin
-    cocoaColor:= TCocoaColorUtil.toColor(ColorToRGB(lclFont.Color));
+    cocoaColor:= TCocoaColorUtil.toColor(lclFont.Color);
     textField.setTextColor( cocoaColor );
   end;
 end;
