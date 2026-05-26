@@ -163,7 +163,7 @@ procedure TCocoaCustomControl.drawRect(dirtyRect: NSRect);
 
     if (target.Color <> clDefault) and (target.Color <> clBtnFace) and (target.Color <> clNone) then
     begin
-      TCocoaColorUtil.toColor(ColorToRGB(target.Color)).set_();
+      TCocoaColorUtil.toColor(target.Color).set_();
       NSRectFill(dirtyRect);
     end;
   end;
