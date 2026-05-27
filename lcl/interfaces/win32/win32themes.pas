@@ -45,6 +45,8 @@ type
   public
     destructor Destroy; override;
 
+    function IsDarkTheme: boolean; override;
+
     function GetDetailSizeForWindow(Details: TThemedElementDetails; const AWindow: HWND): TSize; override;
     function GetDetailSizeForPPI(Details: TThemedElementDetails; PPI: Integer): TSize; override;
     function GetDetailRegion(DC: HDC; Details: TThemedElementDetails; const R: TRect): HRGN; override;
@@ -78,7 +80,7 @@ type
 implementation
 
 uses
-  TmSchema;
+  TmSchema, Registry;
 
 const
   ThemeDataNames: array[TThemedElement] of PWideChar = (
@@ -183,6 +185,22 @@ destructor TWin32ThemeServices.Destroy;
 begin
   inherited Destroy;
   FreeThemeLibrary;
+end;
+
+function TWin32ThemeServices.IsDarkTheme: boolean;
+var
+  Reg: TRegistry;
+begin
+  Result := False;
+  Reg := TRegistry.Create;
+  Reg.RootKey := HKEY_CURRENT_USER;
+  Reg.Access := KEY_READ;
+  try
+    if Reg.OpenKey('Software\Microsoft\Windows\CurrentVersion\Themes\Personalize', False) then
+      Result := reg.ReadInteger('AppsUseLightTheme') = 0
+  finally
+    Reg.Free;
+  end;
 end;
 
 function TWin32ThemeServices.GetDetailSizeForPPI(Details: TThemedElementDetails; PPI: Integer): TSize;
