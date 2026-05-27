@@ -71,10 +71,12 @@ function FindSourceEditorForDesigner(ADesigner: TIDesigner): TSourceEditorInterf
 var
   i: Integer;
 begin
+  Result := nil;
+  if NOT Assigned(ADesigner) then
+    Exit;
   for i := 0 to SourceEditorManagerIntf.SourceEditorCount - 1 do
     if SourceEditorManagerIntf.SourceEditors[i].GetDesigner(False) = ADesigner then
       Exit(SourceEditorManagerIntf.SourceEditors[i]);
-  Result := nil;
 end;
 
 procedure IDEMessage(AString: String);
