@@ -409,7 +409,7 @@ const
     ttOverload, ttReintroduce,
     ttDeprecated, ttLibrary, ttPlatform, ttExperimental, ttUnimplemented,
     ttStatic, ttFinal, ttVarArgs, ttUnsafe, ttEnumerator, ttNostackframe, ttInterrupt,
-    ttPublic, ttVectorcall, ttHuge, ttNoreturn, ttAsync];
+    ttPublic, ttVectorcall, ttHuge, ttNoreturn, ttAsync, ttCVar];
 
   ClassDirectives: TTokenTypeSet =
     [ttPrivate, ttProtected, ttPublic, ttPublished, ttAutomated, ttStrict];
