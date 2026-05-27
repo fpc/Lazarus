@@ -283,7 +283,7 @@ begin
     end;
   end
   else begin          // Header item
-    Done:=False;
+    Done:=True;
     Result:=False;
   end;
 end;
@@ -320,8 +320,7 @@ begin
   ConflictsTreeView.Update;
 end;
 
-procedure TEditorKeymappingOptionsFrame.OnIdle(Sender: TObject;
-  var Done: Boolean);
+procedure TEditorKeymappingOptionsFrame.OnIdle(Sender: TObject; var Done: Boolean);
 begin
   IdleConnected:=false;
   UpdateConflictTree;
