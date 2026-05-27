@@ -12445,7 +12445,13 @@ begin
     with PGtkComboBox(Widget)^ do
     begin
       if has_entry then begin
-        {%H-}PGtkEntry(get_child)^.Text := Pgchar(AValue);
+        BeginUpdate;
+        try
+          {%H-}PGtkEntry(get_child)^.Text := Pgchar(AValue);
+          g_idle_remove_by_data(Self);
+        finally
+          EndUpdate;
+        end;
       end else begin
         //active_id := Pgchar(AValue); TODO: Wait until property becomes writeble
       end;
