@@ -5883,6 +5883,43 @@ begin
   PrivateSelection := -1;
 end;
 
+procedure Gtk3ClampEntryPadding(AEntryWidget: PGtkWidget);
+const
+  cMaxPad = 4;
+var
+  Provider: PGtkCssProvider;
+  Ctx: PGtkStyleContext;
+  Padding: TGtkBorder;
+  NewL, NewR: Integer;
+  CSS: AnsiString;
+begin
+  if AEntryWidget = nil then
+    exit;
+  Ctx := gtk_widget_get_style_context(AEntryWidget);
+  gtk_style_context_get_padding(Ctx, GTK_STATE_FLAG_NORMAL, @Padding);
+
+  if (Padding.left <= cMaxPad) and (Padding.right <= cMaxPad) then
+    exit;
+
+  if Padding.left > cMaxPad then
+    NewL := cMaxPad
+  else
+    NewL := Padding.left;
+
+  if Padding.right > cMaxPad then
+    NewR := cMaxPad
+  else
+    NewR := Padding.right;
+
+  CSS := Format('entry { padding-left:%dpx; padding-right:%dpx; }', [NewL, NewR]);
+
+  Provider := gtk_css_provider_new();
+  gtk_css_provider_load_from_data(Provider, PChar(CSS), -1, nil);
+  gtk_style_context_add_provider(Ctx,
+    PGtkStyleProvider(Provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+  g_object_unref(Provider);
+end;
+
 procedure TGtk3Entry.InitializeWidget;
 begin
   inherited InitializeWidget;
@@ -5898,6 +5935,8 @@ begin
 
   Self.SetTextHint(TCustomEdit(Self.LCLObject).TextHint);
   Self.SetNumbersOnly(TCustomEdit(Self.LCLObject).NumbersOnly);
+
+  Gtk3ClampEntryPadding(Widget);
 
   g_signal_connect_data(Widget, 'changed', TGCallback(@EntryChanged), Self, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(Widget, 'insert-text', TGCallback(@InsertText), Self, nil, G_CONNECT_DEFAULT);
@@ -6253,6 +6292,8 @@ begin
       TGCallback(@LCLSpinEditChildEnterLeave), Self, nil, G_CONNECT_DEFAULT);
     g_signal_connect_data(PGObject(Data^.Entry), 'leave-notify-event',
       TGCallback(@LCLSpinEditChildEnterLeave), Self, nil, G_CONNECT_DEFAULT);
+
+    Gtk3ClampEntryPadding(PGtkWidget(Data^.Entry));
   end;
 
   Widget^.set_size_request(fParams.Width, fParams.Height);
@@ -12718,6 +12759,8 @@ begin
     // not active, which clears the entry text via gtk_entry_set_text().
     g_signal_handlers_disconnect_matched(PGObject(PGtkComboBox(FWidget)^.get_child),
       [G_SIGNAL_MATCH_DATA], 0, 0, nil, nil, FWidget);
+
+    Gtk3ClampEntryPadding(PGtkComboBox(FWidget)^.get_child);
   end;
   if GetCellView <> nil then
   begin
