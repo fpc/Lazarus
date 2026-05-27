@@ -445,6 +445,11 @@ type
     destructor Destroy; override;
     procedure IntfDoOnThemeChange; virtual;
 
+    //Base implementation returns if average theme brightness is <= 90, overrides
+    //per WS should return correct value (win32 registry, gtk3, cocoa). Qt, Qt5 and Qt6
+    //does not have such method, so we calc average brightness from important colors.
+    function IsDarkTheme: boolean; virtual;
+
     // state helpers
     function IsDisabled(Details: TThemedElementDetails): Boolean;
     function IsPushed(Details: TThemedElementDetails): Boolean;
@@ -595,6 +600,34 @@ procedure TThemeServices.IntfDoOnThemeChange;
 begin
   if Assigned(FOnThemeChange) then
     FOnThemeChange(Self);
+end;
+
+function ColorBrightness(AColor: TColor): Integer;
+var
+  C: LongInt;
+  R, G, B: Integer;
+begin
+  C := ColorToRGB(AColor);
+
+  R := Red(C);
+  G := Green(C);
+  B := Blue(C);
+
+  //Perceived luminance, https://en.wikipedia.org/wiki/Rec._601
+  Result := (R * 299 + G * 587 + B * 114) div 1000;
+end;
+
+function TThemeServices.IsDarkTheme: boolean;
+var
+  AvgBrightness: Integer;
+begin
+  //color importance order
+  AvgBrightness := (ColorBrightness(clWindow) * 4 + ColorBrightness(clForm) * 3 +
+      ColorBrightness(clBtnFace) * 2 + ColorBrightness(clMenu) * 1 +
+      ColorBrightness(clBackground) * 1) div 11;
+
+  //above 90 are grayish, non dark themes
+  Result := AvgBrightness <= 90;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
