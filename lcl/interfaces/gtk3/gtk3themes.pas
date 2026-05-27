@@ -44,7 +44,7 @@ type
     procedure DrawElement(Cr: Pcairo_t; Details: TThemedElementDetails; X, Y, Width, Height: Integer; AScreen: PGdkScreen = nil);
     procedure DrawText(DC: HDC; Details: TThemedElementDetails; const S: String; X, Y, Width, Height: Integer; Flags: Cardinal);
   public
-
+    function IsDarkTheme: boolean; override;
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); override;
     procedure DrawEdge(DC: HDC; Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal; AContentRect: PRect); override;
     procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST; Index: Integer); override;
@@ -58,7 +58,7 @@ type
   end;
 
 implementation
-uses LazGdkPixbuf2, Graphics, LazLogger, Math, gtk3procs, gtk3objects, gtk3int, LCLIntf;
+uses LazGdkPixbuf2, LazGio2, Graphics, LazLogger, Math, gtk3procs, gtk3objects, gtk3int, LCLIntf;
 
 function RgbaToCSS(const C: TGdkRGBA): string;
 begin
@@ -1307,6 +1307,20 @@ begin
   pango_cairo_show_layout(GtkDc.pcr, Layout);
   g_object_unref(Context);
   g_object_unref(Layout);
+end;
+
+function TGTK3ThemeServices.IsDarkTheme: boolean;
+var
+ sett: PGSettings;
+ bs: string;
+begin
+  sett := g_settings_new('org.gnome.desktop.interface');
+  bs := sett^.get_string('color-scheme');
+  sett^.unref;
+  if bs <> '' then
+    Result := Pos('prefer-dark', bs) > 0
+  else
+    Result := inherited IsDarkTheme;
 end;
 
 end.
