@@ -90,6 +90,7 @@ type
     class procedure removeObserver( const observer: ICocoaThemeObserver );
     class procedure darwinThemeChangedNotify;
     class function isDark: Boolean;
+    function IsDarkTheme: boolean; override;
   end;
 
 implementation
@@ -1017,6 +1018,11 @@ begin
 end;
 
 class function TCocoaThemeServices.isDark: Boolean;
+begin
+  Result:= TCocoaThemeUtil.isDark;
+end;
+
+function TCocoaThemeServices.IsDarkTheme: boolean;
 begin
   Result:= TCocoaThemeUtil.isDark;
 end;
