@@ -192,6 +192,7 @@ var
   Reg: TRegistry;
 begin
   Result := False;
+  if WindowsVersion < wv10 then Exit;
   Reg := TRegistry.Create;
   Reg.RootKey := HKEY_CURRENT_USER;
   Reg.Access := KEY_READ;
