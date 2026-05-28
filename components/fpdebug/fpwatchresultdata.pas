@@ -1040,6 +1040,7 @@ var
   MemSize: Integer;
   ValSize: TFpDbgValueSize;
   MemDest: RawByteString;
+  i: QWord;
 begin
   Result := True;
 
@@ -1072,10 +1073,18 @@ begin
     exit;
   end;
 
-  if not FContext.ReadMemory(MemAddr, SizeVal(MemSize), @MemDest[1]) then begin
+  if not FContext.ReadMemory(MemAddr, SizeVal(MemSize), @MemDest[1], [mmfPartialRead]) then begin
     AnResData.CreateError(ErrorHandler.ErrorAsString(Context.MemManager.LastError));
     exit;
   end;
+
+  i := FContext.PartialReadResultLenght;
+  if i <= 0 then begin
+    AnResData.CreateError('internal error');
+    exit;
+  end;
+  if i < MemSize then
+    SetLength(MemDest, i);
 
   AnResData.CreateMemDump(MemDest);
   AnResData.SetDataAddress(MemAddr.Address);
