@@ -140,7 +140,7 @@ msgstr "Выберите средство форматирования для д
 
 #: idedebuggerstringconstants.dbgwatchcolorautoopenconsolewindowlinu
 msgid "Auto open console Window (Linux):"
-msgstr ""
+msgstr "Автооткрытие окна консоли (Linux):"
 
 #: idedebuggerstringconstants.dbgwatchcolordisabled
 msgctxt "idedebuggerstringconstants.dbgwatchcolordisabled"
@@ -161,18 +161,17 @@ msgid "Evaluating"
 msgstr "Вычисляющиеся"
 
 #: idedebuggerstringconstants.dbgwatchcolornever
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgwatchcolornever"
 msgid "Never"
 msgstr "Никогда"
 
 #: idedebuggerstringconstants.dbgwatchcoloronoutputalways
 msgid "On output (always)"
-msgstr ""
+msgstr "При выводе (всегда)"
 
 #: idedebuggerstringconstants.dbgwatchcoloronoutputonceperdebugsessi
 msgid "On output (once per debug session)"
-msgstr ""
+msgstr "При выводе (один раз за сеанс отладки)"
 
 #: idedebuggerstringconstants.dbgwatchcolors
 msgid "Watches/Locals"
