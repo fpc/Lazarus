@@ -88,24 +88,6 @@ msgstr "Sledovací bod pro \"%s\" mimo rozsah %s"
 msgid "Watchpoint for \"%s\" was triggered %s. Old value \"%s\", New Value \"%s\""
 msgstr "Sledovací bod pro \"%s\" byl vyvolán %s. Stará hodnota \"%s\", Nová hodnota \"%s\""
 
-#: lazarusidestrconsts.dbgwatchcolorautoopenconsolewindowlinu
-msgid "Auto open console Window (Linux):"
-msgstr ""
-
-#: lazarusidestrconsts.dbgwatchcolornever
-#, fuzzy
-msgctxt "lazarusidestrconsts.dbgwatchcolornever"
-msgid "Never"
-msgstr "Nikdy"
-
-#: lazarusidestrconsts.dbgwatchcoloronoutputalways
-msgid "On output (always)"
-msgstr ""
-
-#: lazarusidestrconsts.dbgwatchcoloronoutputonceperdebugsessi
-msgid "On output (once per debug session)"
-msgstr ""
-
 #: lazarusidestrconsts.dlfmousepredefinedscheme
 msgid "Use predefined scheme"
 msgstr "Použít přednastavené schéma"
@@ -1463,8 +1445,16 @@ msgstr "Dwarf s množinami"
 #: lazarusidestrconsts.dlgcosymboltypedwarf3
 #, fuzzy
 #| msgid "Dwarf3 (beta)"
-msgid "Dwarf 3 (beta)"
+msgid "Dwarf 3"
 msgstr "Dwarf3 (beta)"
+
+#: lazarusidestrconsts.dlgcosymboltypedwarf4
+msgid "Dwarf 4"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcosymboltypedwarf5
+msgid "Dwarf 5 (FPC 3.3.1)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcosymboltypestabs
 msgid "Stabs"
@@ -9582,6 +9572,14 @@ msgstr "Povolit Dwarf 2 s množinami"
 #: lazarusidestrconsts.lisenableoptiondwarf3
 msgid "Enable Dwarf 3 (-gw3)"
 msgstr "Povolit Dwarf 3 (-gw)"
+
+#: lazarusidestrconsts.lisenableoptiondwarf4
+msgid "Enable Dwarf 4 (-gw4)"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptiondwarf5
+msgid "Enable Dwarf 5 [FPC 3.3.1] (-gw5)"
+msgstr ""
 
 #: lazarusidestrconsts.lisenableoptionxg
 msgid "Enable Option -Xg?"

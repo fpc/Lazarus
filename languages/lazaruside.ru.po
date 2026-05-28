@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-05-24 22:12+0300\n"
+"PO-Revision-Date: 2026-05-28 23:36+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -84,23 +84,6 @@ msgstr "Наблюдение для \"%s\" вне области действи�
 #, object-pascal-format
 msgid "Watchpoint for \"%s\" was triggered %s. Old value \"%s\", New Value \"%s\""
 msgstr "Сработало наблюдение для \"%s\" %s. Старое значение - \"%s\", новое значение - \"%s\""
-
-#: lazarusidestrconsts.dbgwatchcolorautoopenconsolewindowlinu
-msgid "Auto open console Window (Linux):"
-msgstr "Автоматически открывать окно консоли (Linux):"
-
-#: lazarusidestrconsts.dbgwatchcolornever
-msgctxt "lazarusidestrconsts.dbgwatchcolornever"
-msgid "Never"
-msgstr "Никогда"
-
-#: lazarusidestrconsts.dbgwatchcoloronoutputalways
-msgid "On output (always)"
-msgstr "При выводе (всегда)"
-
-#: lazarusidestrconsts.dbgwatchcoloronoutputonceperdebugsessi
-msgid "On output (once per debug session)"
-msgstr "При выводе (один раз за сеанс отладки)"
 
 #: lazarusidestrconsts.dlfmousepredefinedscheme
 msgid "Use predefined scheme"
@@ -1427,8 +1410,16 @@ msgid "Dwarf 2 with sets"
 msgstr "Dwarf 2 с поддержкой множеств"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf3
-msgid "Dwarf 3 (beta)"
-msgstr "Dwarf 3 (бета)"
+msgid "Dwarf 3"
+msgstr "Dwarf 3"
+
+#: lazarusidestrconsts.dlgcosymboltypedwarf4
+msgid "Dwarf 4"
+msgstr "Dwarf 4"
+
+#: lazarusidestrconsts.dlgcosymboltypedwarf5
+msgid "Dwarf 5 (FPC 3.3.1)"
+msgstr "Dwarf 5 (FPC 3.3.1)"
 
 #: lazarusidestrconsts.dlgcosymboltypestabs
 msgid "Stabs"
@@ -9414,6 +9405,14 @@ msgstr "Включить Dwarf 2 с поддержкой множеств"
 #: lazarusidestrconsts.lisenableoptiondwarf3
 msgid "Enable Dwarf 3 (-gw3)"
 msgstr "Включить Dwarf 3 (-gw3)"
+
+#: lazarusidestrconsts.lisenableoptiondwarf4
+msgid "Enable Dwarf 4 (-gw4)"
+msgstr "Включить Dwarf 4 (-gw4)"
+
+#: lazarusidestrconsts.lisenableoptiondwarf5
+msgid "Enable Dwarf 5 [FPC 3.3.1] (-gw5)"
+msgstr "Включить Dwarf 5 [FPC 3.3.1] (-gw5)"
 
 #: lazarusidestrconsts.lisenableoptionxg
 msgid "Enable Option -Xg?"
