@@ -620,6 +620,11 @@ resourcestring
   DbgOptExclRtUseTheIDEGlobalListOfExcl = 'Use the IDE global list of exclusions';
   DbgOptExclRtUseTheProjectListOfExclus = 'Use the project list of exclusions';
 
+  DbgWatchColorAutoOpenConsoleWindowLinu = 'Auto open console Window (Linux):';
+  DbgWatchColorNever = 'Never';
+  DbgWatchColorOnOutputOncePerDebugSessi = 'On output (once per debug session)';
+  DbgWatchColorOnOutputAlways = 'On output (always)';
+
 implementation
 
 end.

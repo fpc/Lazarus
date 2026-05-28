@@ -42,15 +42,17 @@ uses
   // IdeIntf
   IDEWindowIntf,
   // IDE
-  DebuggerDlg, BaseDebugManager, IdeDebuggerStringConstants;
+  DebuggerDlg, BaseDebugManager, IdeDebuggerStringConstants, EnvDebuggerOptions, EnvironmentOpts;
 
 type
 
   { TPseudoConsoleDlg }
 
   TPseudoConsoleDlg = class(TDebuggerDlg)
+    cbAutoOpenConsole: TComboBox;
     CheckGroupRight: TCheckGroup;
     GroupBoxRight: TGroupBox;
+    lbAutoOpenConsole: TLabel;
     MaskEdit1: TMaskEdit;
     Memo1: TMemo;
     PageControl1: TPageControl;
@@ -60,7 +62,9 @@ type
     Splitter1: TSplitter;
     StatusBar1: TStatusBar;
     TabSheetRaw: TTabSheet;
+    procedure cbAutoOpenConsoleChange(Sender: TObject);
     procedure FormResize(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure Memo1UTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
     procedure PairSplitterRawRightResize(Sender: TObject);
     procedure RadioGroupRightSelectionChanged(Sender: TObject);
@@ -197,6 +201,19 @@ begin
   StatusBar1.Panels[3].Text := 'Window resized'
 end { TPseudoConsoleDlg.FormResize } ;
 
+procedure TPseudoConsoleDlg.FormShow(Sender: TObject);
+begin
+  cbAutoOpenConsole.ItemIndex := ord(EnvironmentDebugOpts.AutoOpenConsoleWin);
+end;
+
+procedure TPseudoConsoleDlg.cbAutoOpenConsoleChange(Sender: TObject);
+begin
+  if EnvironmentDebugOpts.AutoOpenConsoleWin = TDbgAutoOpenConsoleWin(cbAutoOpenConsole.ItemIndex) then
+    exit;
+  EnvironmentDebugOpts.AutoOpenConsoleWin := TDbgAutoOpenConsoleWin(cbAutoOpenConsole.ItemIndex);
+  EnvironmentOptions.Save(False);
+end;
+
 
 procedure TPseudoConsoleDlg.DoClose(var CloseAction: TCloseAction);
 
@@ -228,6 +245,11 @@ begin
   RadioGroupRight.Items[3] := lisHexASCII;
   GroupBoxRight.Caption := lisLineLimit;
   TabSheetRaw.Caption := lisRawOutput;
+
+  lbAutoOpenConsole.Caption := DbgWatchColorAutoOpenConsoleWindowLinu;
+  cbAutoOpenConsole.AddItem(DbgWatchColorNever, nil);
+  cbAutoOpenConsole.AddItem(DbgWatchColorOnOutputOncePerDebugSessi, nil);
+  cbAutoOpenConsole.AddItem(DbgWatchColorOnOutputAlways, nil);
 
   ttyHandle := handleUnopened;
   fRowsPerScreen := -1;

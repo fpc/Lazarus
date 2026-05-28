@@ -138,6 +138,10 @@ msgstr "Имя:"
 msgid "Please choose the formatter to add."
 msgstr "Выберите средство форматирования для добавления."
 
+#: idedebuggerstringconstants.dbgwatchcolorautoopenconsolewindowlinu
+msgid "Auto open console Window (Linux):"
+msgstr ""
+
 #: idedebuggerstringconstants.dbgwatchcolordisabled
 msgctxt "idedebuggerstringconstants.dbgwatchcolordisabled"
 msgid "Disabled"
@@ -155,6 +159,20 @@ msgstr "Ошибки"
 #: idedebuggerstringconstants.dbgwatchcolorevaluating
 msgid "Evaluating"
 msgstr "Вычисляющиеся"
+
+#: idedebuggerstringconstants.dbgwatchcolornever
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dbgwatchcolornever"
+msgid "Never"
+msgstr "Никогда"
+
+#: idedebuggerstringconstants.dbgwatchcoloronoutputalways
+msgid "On output (always)"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgwatchcoloronoutputonceperdebugsessi
+msgid "On output (once per debug session)"
+msgstr ""
 
 #: idedebuggerstringconstants.dbgwatchcolors
 msgid "Watches/Locals"
@@ -279,6 +297,7 @@ msgid "Dynamic"
 msgstr "Для динамических"
 
 #: idedebuggerstringconstants.dispformatdlgarraycombinenone
+msgctxt "idedebuggerstringconstants.dispformatdlgarraycombinenone"
 msgid "Never"
 msgstr "Никогда"
 

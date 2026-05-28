@@ -6228,10 +6228,6 @@ resourcestring
   lisWhenOpeningASymlinkFileOpenTheTargetFileTheSymlink = 'When opening a symlink file, open the '
     +'target file, the symlink file, or ask';
   lisWhenOpeningSymlink = 'When opening a Symlink';
-  DbgWatchColorAutoOpenConsoleWindowLinu = 'Auto open console Window (Linux):';
-  DbgWatchColorNever = 'Never';
-  DbgWatchColorOnOutputOncePerDebugSessi = 'On output (once per debug session)';
-  DbgWatchColorOnOutputAlways = 'On output (always)';
 
 implementation
 

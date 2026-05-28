@@ -139,6 +139,10 @@ msgstr ""
 msgid "Please choose the formatter to add."
 msgstr ""
 
+#: idedebuggerstringconstants.dbgwatchcolorautoopenconsolewindowlinu
+msgid "Auto open console Window (Linux):"
+msgstr ""
+
 #: idedebuggerstringconstants.dbgwatchcolordisabled
 #, fuzzy
 msgctxt "idedebuggerstringconstants.dbgwatchcolordisabled"
@@ -157,6 +161,20 @@ msgstr "错误"
 
 #: idedebuggerstringconstants.dbgwatchcolorevaluating
 msgid "Evaluating"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgwatchcolornever
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dbgwatchcolornever"
+msgid "Never"
+msgstr "从不"
+
+#: idedebuggerstringconstants.dbgwatchcoloronoutputalways
+msgid "On output (always)"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgwatchcoloronoutputonceperdebugsessi
+msgid "On output (once per debug session)"
 msgstr ""
 
 #: idedebuggerstringconstants.dbgwatchcolors
@@ -282,6 +300,7 @@ msgid "Dynamic"
 msgstr "动态"
 
 #: idedebuggerstringconstants.dispformatdlgarraycombinenone
+msgctxt "idedebuggerstringconstants.dispformatdlgarraycombinenone"
 msgid "Never"
 msgstr "从不"
 

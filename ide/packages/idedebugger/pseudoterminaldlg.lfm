@@ -9,6 +9,7 @@ object PseudoConsoleDlg: TPseudoConsoleDlg
   DockSite = True
   LCLVersion = '4.99.0.0'
   OnResize = FormResize
+  OnShow = FormShow
   object PageControl1: TPageControl
     Left = 0
     Height = 457
@@ -128,6 +129,39 @@ object PseudoConsoleDlg: TPseudoConsoleDlg
               Text = '5000   '
               SpaceChar = '_'
             end
+          end
+          object lbAutoOpenConsole: TLabel
+            AnchorSideLeft.Control = PanelRightBelowCG
+            AnchorSideTop.Control = cbAutoOpenConsole
+            AnchorSideTop.Side = asrCenter
+            AnchorSideRight.Control = PanelRightBelowCG
+            AnchorSideRight.Side = asrBottom
+            AnchorSideBottom.Control = cbAutoOpenConsole
+            Left = 6
+            Height = 15
+            Top = 221
+            Width = 249
+            Anchors = [akLeft, akRight, akBottom]
+            BorderSpacing.Around = 6
+            Caption = 'lbAutoOpenConsole'
+          end
+          object cbAutoOpenConsole: TComboBox
+            AnchorSideLeft.Control = PanelRightBelowCG
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = PanelRightBelowCG
+            AnchorSideRight.Side = asrBottom
+            AnchorSideBottom.Control = PanelRightBelowCG
+            AnchorSideBottom.Side = asrBottom
+            Left = 6
+            Height = 23
+            Top = 242
+            Width = 249
+            Anchors = [akLeft, akRight, akBottom]
+            BorderSpacing.Around = 6
+            ItemHeight = 15
+            Style = csDropDownList
+            TabOrder = 1
+            OnChange = cbAutoOpenConsoleChange
           end
         end
       end

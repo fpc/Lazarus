@@ -35,7 +35,7 @@ uses
   // IdeConfig
   SearchPathProcs, EnvironmentOpts, IDEProcs,
   // IdeDebugger
-  BaseDebugManager, IdeDebuggerOpts, EnvDebuggerOptions,
+  BaseDebugManager, IdeDebuggerOpts, EnvDebuggerOptions, IdeDebuggerStringConstants,
   // IDE
   LazarusIDEStrConsts, PathEditorDlg;
 
