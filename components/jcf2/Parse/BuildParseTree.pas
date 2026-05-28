@@ -4581,7 +4581,7 @@ begin
     begin
       if fcTokenList.SolidTokenType(liIndex + 1) = ttSemicolon then
         Inc(liIndex);
-      if (fcTokenList.SolidTokenType(liIndex + 1) = ttEquals) and (TopNode.NodeType = nTypeDecl) then
+      if (fcTokenList.SolidTokenType(liIndex + 1) = ttEquals) and TopNode.HasParentNode([nTypeDecl]) then
         liIndex := 0
       else
       if fcTokenList.SolidTokenType(liIndex + 1) in [ttComma, ttColon] then
