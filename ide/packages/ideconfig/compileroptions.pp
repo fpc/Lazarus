@@ -2521,6 +2521,8 @@ begin
       dsDwarf2:    Result.Add('-gw2');
       dsDwarf2Set: begin Result.Add('-gw2'); Result.Add('-godwarfsets'); end;
       dsDwarf3:    Result.Add('-gw3');
+      dsDwarf4:    Result.Add('-gw4');
+      dsDwarf5:    Result.Add('-gw5');
     end;
 
     { Line Numbers in Run-time Error Backtraces - Use LineInfo Unit }

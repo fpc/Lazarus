@@ -62,6 +62,8 @@ const
   ST_DWARF2_IDX    = 2;
   ST_DWARF2SET_IDX = 1;
   ST_DWARF3_IDX    = 4;
+  ST_DWARF4_IDX    = 5;
+  ST_DWARF5_IDX    = 6;
 
 function SymbolToIndex(SymbolType: TCompilerDbgSymbolType): Integer;
 begin
@@ -71,6 +73,8 @@ begin
     dsDwarf2:    Result := ST_DWARF2_IDX;
     dsDwarf2Set: Result := ST_DWARF2SET_IDX;
     dsDwarf3:    Result := ST_DWARF3_IDX;
+    dsDwarf4:    Result := ST_DWARF4_IDX;
+    dsDwarf5:    Result := ST_DWARF5_IDX;
   end;
 end;
 
@@ -82,6 +86,8 @@ begin
     ST_DWARF2_IDX:    Result := dsDwarf2;
     ST_DWARF2SET_IDX: Result := dsDwarf2Set;
     ST_DWARF3_IDX:    Result := dsDwarf3;
+    ST_DWARF4_IDX:    Result := dsDwarf4;
+    ST_DWARF5_IDX:    Result := dsDwarf5;
   end;
 end;
 
@@ -120,6 +126,10 @@ begin
   dropDbgSymbolType.Items.Add(dlgCOSymbolTypeDwarf2+ ' (-gw2)');                 // 2: dwarf2
   dropDbgSymbolType.Items.Add(dlgCOSymbolTypeStabs+ ' (-gs)');                   // 3: stabs
   dropDbgSymbolType.Items.Add(dlgCOSymbolTypeDwarf3+ ' (-gw3)');
+  dropDbgSymbolType.Items.Add(dlgCOSymbolTypeDwarf4+ ' (-gw4)');
+  {$IFDEF IDE_WITH_DWARF5}
+  dropDbgSymbolType.Items.Add(dlgCOSymbolTypeDwarf5+ ' (-gw5)');
+  {$ENDIF}
   chkUseLineInfoUnit.Caption := dlgLNumsBct + ' (-gl)';
   chkUseValgrind.Caption := dlgCOValgrind + ' (-gv)';
   chkUseExternalDbgSyms.Caption := dlgExtSymb + ' (-Xg)';

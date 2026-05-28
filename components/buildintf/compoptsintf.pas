@@ -86,7 +86,7 @@ type
     );
   TCompileReasons = set of TCompileReason;
 
-  TCompilerDbgSymbolType = (dsAuto, dsStabs, dsDwarf2, dsDwarf2Set, dsDwarf3);
+  TCompilerDbgSymbolType = (dsAuto, dsStabs, dsDwarf2, dsDwarf2Set, dsDwarf3, dsDwarf4, dsDwarf5);
 
   TCompilerOptionsParseType = (
     coptUnparsed,  // no macros resolved

@@ -7455,6 +7455,16 @@ begin
           ModalResult := 13;
           Caption := lisEnableOptionDwarf3;
         end;
+        with ChangeDebugInfoFormatDialog.RadioButtons.Add do begin
+          ModalResult := 14;
+          Caption := lisEnableOptionDwarf4;
+        end;
+        {$IFDEF IDE_WITH_DWARF5}
+        with ChangeDebugInfoFormatDialog.RadioButtons.Add do begin
+          ModalResult := 15;
+          Caption := lisEnableOptionDwarf5;
+        end;
+        {$ENDIF}
 
         with ChangeDebugInfoFormatDialog.Buttons.Add do begin
           ModalResult := 500;
@@ -7482,6 +7492,8 @@ begin
           1:  Project1.CompilerOptions.DebugInfoType := dsDwarf2Set;
           12: Project1.CompilerOptions.DebugInfoType := dsDwarf2;
           13: Project1.CompilerOptions.DebugInfoType := dsDwarf3;
+          14: Project1.CompilerOptions.DebugInfoType := dsDwarf4;
+          15: Project1.CompilerOptions.DebugInfoType := dsDwarf5;
           400: SkipDebuggerThisTime := True;
           else
             exit;
