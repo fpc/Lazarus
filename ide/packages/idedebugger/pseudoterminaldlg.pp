@@ -54,13 +54,11 @@ type
     MaskEdit1: TMaskEdit;
     Memo1: TMemo;
     PageControl1: TPageControl;
-    Panel1: TPanel;
     PanelRawOptions: TPanel;
     PanelRightBelowCG: TPanel;
     RadioGroupRight: TRadioGroup;
     Splitter1: TSplitter;
     StatusBar1: TStatusBar;
-    TabSheet1: TTabSheet;
     TabSheetRaw: TTabSheet;
     procedure FormResize(Sender: TObject);
     procedure Memo1UTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
