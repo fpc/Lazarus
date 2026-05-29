@@ -78,7 +78,10 @@ begin
   EndFormUpdate; // the BeginFormUpdate is in CreateNew
   inherited AfterConstruction;
 
-  MonPPI := Monitor.PixelsPerInch;
+  if Monitor <> nil then
+    MonPPI := Monitor.PixelsPerInch
+  else
+    MonPPI := Screen.PixelsPerInch;
   if Application.Scaled and Scaled and (MonPPI > 0) and (MonPPI <> PixelsPerInch)
   and not (csDesigning in ComponentState) then
     AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, MonPPI,
@@ -441,7 +444,10 @@ begin
     Scaled := True; // will execute AutoScale
     Exit;
   end;
-  MonPPI := Monitor.PixelsPerInch;
+  if Monitor <> nil then
+    MonPPI := Monitor.PixelsPerInch
+  else
+    MonPPI := Screen.PixelsPerInch;
   if Application.Scaled and (MonPPI > 0) and (MonPPI <> PixelsPerInch) then
     AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, MonPPI,
                      MulDiv(Width, MonPPI, PixelsPerInch),
@@ -2298,7 +2304,10 @@ procedure TCustomForm.Show;
 var
   MonPPI: Integer;
 begin
-  MonPPI := Monitor.PixelsPerInch;
+  if Monitor <> nil then
+    MonPPI := Monitor.PixelsPerInch
+  else
+    MonPPI := Screen.PixelsPerInch;
   if Application.Scaled and Scaled and (MonPPI > 0) and (MonPPI <> PixelsPerInch) then
     AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, MonPPI,
                      Width, MulDiv(Width, MonPPI, PixelsPerInch));
