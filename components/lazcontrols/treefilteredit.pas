@@ -811,9 +811,7 @@ begin
       Node.Visible := ChildPass or PassCapt or PassEvent;
       if Node.Visible then begin
         if fExpandAllInitially and fIsFirstUpdate then
-          Node.Expanded := True
-        else
-          Node.Expanded := ChildPass and (Filter<>'');
+          Node.Expanded := True;
         Result := True;
       end;
     end;
