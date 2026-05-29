@@ -223,10 +223,26 @@ type
   TSynVisibleSpecialChar = (vscSpace, vscTabAtFirst, vscTabAtLast);
   TSynVisibleSpecialChars = set of TSynVisibleSpecialChar;
 
-  TSynLineStyle      = TLazTextAttrLineStyle;
-  TSynFrameEdges     = TLazTextAttrFrameEdges;
-  TLazSynBorderSide  = TLazTextAttrBorderSide;
-  TLazSynBorderSides = TLazTextAttrBorderSides;
+  TSynLineStyle      = TLazTextAttrLineStyle   deprecated 'use LazEditTextAttributes.TLazTextAttrLineStyle / To be removed in 5.99';
+  TSynFrameEdges     = TLazTextAttrFrameEdges  deprecated 'use LazEditTextAttributes.TLazTextAttrFrameEdges / To be removed in 5.99';
+  TLazSynBorderSide  = TLazTextAttrBorderSide  deprecated 'use LazEditTextAttributes.TLazTextAttrBorderSide / To be removed in 5.99';
+  TLazSynBorderSides = TLazTextAttrBorderSides deprecated 'use LazEditTextAttributes.TLazTextAttrBorderSides / To be removed in 5.99';
+
+const
+  slsSolid  = TLazTextAttrLineStyle.slsSolid deprecated 'use enum from LazEditTextAttributes / To be removed in 5.99';  // PS_SOLID pen
+  slsDashed = TLazTextAttrLineStyle.slsDashed deprecated 'use enum from LazEditTextAttributes / To be removed in 5.99'; // PS_DASH pen
+  slsDotted = TLazTextAttrLineStyle.slsDotted deprecated 'use enum from LazEditTextAttributes / To be removed in 5.99'; // PS_DOT
+  slsWaved  = TLazTextAttrLineStyle.slsWaved deprecated 'use enum from LazEditTextAttributes / To be removed in 5.99';  // solid wave
+  sfeNone   = TLazTextAttrFrameEdges.sfeNone deprecated 'use enum from LazEditTextAttributes / To be removed in 5.99';
+  sfeAround = TLazTextAttrFrameEdges.sfeAround deprecated 'use enum from LazEditTextAttributes / To be removed in 5.99';       // frame around
+  sfeBottom = TLazTextAttrFrameEdges.sfeBottom deprecated 'use enum from LazEditTextAttributes / To be removed in 5.99';       // bottom part of the frame
+  sfeLeft   = TLazTextAttrFrameEdges.sfeLeft deprecated 'use enum from LazEditTextAttributes / To be removed in 5.99';         // left part of the frame
+  bsLeft   = TLazTextAttrBorderSide.bsLeft deprecated 'use enum from LazEditTextAttributes / To be removed in 5.99';
+  bsTop    = TLazTextAttrBorderSide.bsTop deprecated 'use enum from LazEditTextAttributes / To be removed in 5.99';
+  bsRight  = TLazTextAttrBorderSide.bsRight deprecated 'use enum from LazEditTextAttributes / To be removed in 5.99';
+  bsBottom = TLazTextAttrBorderSide.bsBottom deprecated 'use enum from LazEditTextAttributes / To be removed in 5.99';
+
+type
 
   THookedCommandEvent = procedure(Sender: TObject; AfterProcessing: boolean;
     var Handled: boolean; var Command: TSynEditorCommand;
