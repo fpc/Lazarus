@@ -173,8 +173,9 @@ begin
   if Pkg<>nil then
     IDETodoWindow.ProjPack:=Pkg
   else begin
-    if ((Sender as TIDEMenuCommand).Name <> 'ViewToDoList')
-    or (IDETodoWindow.ProjPack = nil) then
+    if (not (Sender is TIDEMenuCommand)
+           or (TIDEMenuCommand(Sender).Name <> 'ViewToDoList')
+           or (IDETodoWindow.ProjPack = nil)) then
       // Coming from Project menu, or the list was empty. 'ViewToDoList' is View menu.
       IDETodoWindow.ProjPack:=LazarusIDE.ActiveProject;
   end;
