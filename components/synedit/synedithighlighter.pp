@@ -50,6 +50,9 @@ type
   TSynHighlighterAttributes_Eol = TLazEditHighlighterAttributes_Eol deprecated 'use TLazEditTextAttribute // to be removed in 5.99';
   TSynHighlighterAttributesModifier_Eol = TLazEditHighlighterAttributesModifier_Eol deprecated 'use TLazEditTextAttribute // to be removed in 5.99';
 
+  TLazEditCustomHighlighter = LazEditHighlighter.TLazEditCustomHighlighter deprecated 'Use LazEditHighlighter';
+  TLazEditCustomRangesHighlighter = LazEditHighlighter.TLazEditCustomRangesHighlighter deprecated 'Use LazEditHighlighter';
+
   { TSynHighlighterAttributesHelper }
 
   TSynHighlighterAttributesHelper = class helper for TLazEditTextAttribute
