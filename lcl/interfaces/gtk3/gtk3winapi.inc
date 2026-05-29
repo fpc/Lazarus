@@ -2632,23 +2632,78 @@ end;
 function TGtk3WidgetSet.GetDpiForMonitor(hmonitor: HMONITOR;
   dpiType: TMonitorDpiType; out dpiX: UINT; out dpiY: UINT): HRESULT;
 var
-  w,w_mm,h,h_mm:gint;
-  rr:double;
-  pscr:PGdkScreen;
-  aMonitorRect: TGdkRectangle;
+  ADisplay: PGdkDisplay;
   AMonitor: PGdkMonitor;
+  AMonitorRect: TGdkRectangle;
+  AWmm, AHmm, AScale, AMonitorIdx, ANMon: gint;
+  AScreenDpi: gdouble;
+  AFallback: UINT;
 begin
-  (*  MONITOR_DPI_TYPE = (
-    MDT_EFFECTIVE_DPI = 0,
-    MDT_ANGULAR_DPI = 1,
-    MDT_RAW_DPI = 2,
-    MDT_DEFAULT = MDT_EFFECTIVE_DPI);
-  TMonitorDpiType = MONITOR_DPI_TYPE;
-  *)
-  // MDT_EFFECTIVE_DPI
-  dpiX := Round(gdk_screen_get_resolution(gdk_screen_get_default));
-  dpiY := dpiX;
-  Result := 0;
+  Result := S_OK;
+  AScreenDpi := gdk_screen_get_resolution(gdk_screen_get_default);
+
+  if AScreenDpi > 0 then
+    AFallback := Round(AScreenDpi)
+  else
+    AFallback := 96;
+
+  dpiX := AFallback;
+  dpiY := AFallback;
+
+  if hmonitor = 0 then
+    exit;
+
+  AMonitorIdx := Integer(hmonitor) - 1;
+  ADisplay := gdk_display_get_default;
+
+  if ADisplay = nil then
+    exit;
+
+  ANMon := gdk_display_get_n_monitors(ADisplay);
+  if (AMonitorIdx < 0) or (AMonitorIdx >= ANMon) then
+  begin
+    Result := S_FALSE;
+    exit;
+  end;
+
+  AMonitor := gdk_display_get_monitor(ADisplay, AMonitorIdx);
+  if AMonitor = nil then
+  begin
+    Result := S_FALSE;
+    exit;
+  end;
+
+  AScale := gdk_monitor_get_scale_factor(AMonitor);
+  if AScale < 1 then
+    AScale := 1;
+
+  case dpiType of
+    MDT_RAW_DPI:
+    begin
+      gdk_monitor_get_geometry(AMonitor, @AMonitorRect);
+      AWmm := gdk_monitor_get_width_mm(AMonitor);
+      AHmm := gdk_monitor_get_height_mm(AMonitor);
+      if AWmm > 0 then
+        dpiX := Round(AMonitorRect.width * AScale * 25.4 / AWmm)
+      else
+        dpiX := 96 * AScale;
+      if AHmm > 0 then
+        dpiY := Round(AMonitorRect.height * AScale * 25.4 / AHmm)
+      else
+        dpiY := 96 * AScale;
+    end;
+    else
+    begin
+
+      if AScale > 1 then
+      begin
+        dpiX := 96 * AScale;
+        dpiY := dpiX;
+      end;
+
+    end;
+  end;
+
 end;
 
 function TGtk3WidgetSet.GetFocus: HWND;
