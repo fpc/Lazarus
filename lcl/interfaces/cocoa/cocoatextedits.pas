@@ -722,6 +722,7 @@ begin
     bordered:= True;
   textField.setBordered( bordered );
   textField.setBezeled( bordered );
+  textField.setDrawsBackground( lclEdit.Color <> clNone );
 end;
 
 class procedure TCocoaTextControlUtil.setTextHint(
