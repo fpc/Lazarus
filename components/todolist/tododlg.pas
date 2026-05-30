@@ -78,6 +78,7 @@ type
 var
   InsertToDoCmd: TIDECommand;
   ViewToDoListCmd: TIDECommand;
+  ProjectToDoListCmd: TIDECommand;
   SrcEditMenuCmd: TIDEMenuCommand;     // MenuItem in Source editor popup menu.
   IdeSourceMenuCmd: TIDEMenuCommand;   // MenuItem in IDE's Source menu.
   IdeViewMenuCmd: TIDEMenuCommand;     // MenuItem in IDE's View menu.
@@ -85,6 +86,7 @@ var
   IdePackageMenuCmd: TIDEMenuCommand;  // MenuItem in Package Editor menu.
   InsertToDoBtnCmd: TIDEButtonCommand; // Toolbar button for insert to-do.
   ViewToDoBtnCmd: TIDEButtonCommand;   // Toolbar button for view to-do.
+  ProjectToDoBtnCmd: TIDEButtonCommand;// Toolbar button for view project to-do.
 
 procedure Register;
 // ToDo List
@@ -144,6 +146,9 @@ begin
   Cat := IDECommandList.FindCategoryByName(CommandCategoryViewName);
   ViewToDoListCmd := RegisterIDECommand(Cat, 'View ToDo list', lisViewToDoList,
     CleanIDEShortCut, nil, @ViewToDoList);
+  Cat := IDECommandList.FindCategoryByName('ProjectMenu');
+  ProjectToDoListCmd := RegisterIDECommand(Cat, 'View ToDo list of Project', lisToDoListOfProject,
+    CleanIDEShortCut, nil, @ViewToDoList);
 
   // add a menu item in the View menu
   IdeViewMenuCmd := RegisterIDEMenuCommand(itmViewMainWindows, 'ViewToDoList',
@@ -154,6 +159,8 @@ begin
   // add a menu item in the Project menu
   IdeProjectMenuCmd := RegisterIDEMenuCommand(itmProjectAddRemoveSection, 'ViewProjectToDoList',
     lisToDoList, nil, nil, ViewToDoListCmd, 'menu_view_todo');
+  ProjectToDoBtnCmd := RegisterIDEButtonCommand(ProjectToDoListCmd);    // toolbutton
+  ProjectToDoBtnCmd.ImageIndex := IdeProjectMenuCmd.ImageIndex;
 
   // add a menu item in the Package Editor
   IdePackageMenuCmd := RegisterIDEMenuCommand(PkgEditMenuSectionMisc, 'ViewPkgToDoList',
@@ -173,10 +180,11 @@ begin
   if Pkg<>nil then
     IDETodoWindow.ProjPack:=Pkg
   else begin
-    if (not (Sender is TIDEMenuCommand)
-           or (Sender <> IdeViewMenuCmd)
-           or (IDETodoWindow.ProjPack = nil)) then
-      // Coming from Project menu, or the list was empty. 'ViewToDoList' is View menu.
+    if (IDETodoWindow.ProjPack=nil)
+      or (Sender=IdeProjectMenuCmd)  // menu item
+      or (Sender=ProjectToDoListCmd) // IDE command
+      or (Sender=ProjectToDoBtnCmd)  // toolbar button
+    then
       IDETodoWindow.ProjPack:=LazarusIDE.ActiveProject;
   end;
 end;

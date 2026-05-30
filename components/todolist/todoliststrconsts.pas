@@ -66,6 +66,7 @@ resourcestring
   lisTDDEditToDoDlgCaption = 'Edit the ToDo item';
   lisViewToDoList = 'View ToDo List';
   lisToDoList = 'ToDo List';
+  lisToDoListOfProject = 'ToDo List of Project';
   lisToDoListforNewProject = 'ToDo List for new Project';
   lisToDoListforProject = 'ToDo List for Project "%s"';
   lisToDoListForPackage = 'ToDo List for Package "%s"';
