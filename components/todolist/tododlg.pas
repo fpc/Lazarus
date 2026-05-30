@@ -111,7 +111,6 @@ var
 
 procedure Register;
 var
-  Key: TIDEShortCut;
   Cat: TIDECommandCategory;
   MenuCmd: TIDEMenuCommand;
   ButtonCmd: TIDEButtonCommand;
@@ -123,10 +122,9 @@ begin
   ToDoManager := TToDoManager.Create;
 
   // register shortcut for insert todo
-  Key := IDEShortCut(VK_T,[ssCtrl,ssShift],VK_UNKNOWN,[]);
   Cat := IDECommandList.FindCategoryByName(CommandCategoryTextEditingName);
-  InsertToDoCmd := RegisterIDECommand(Cat, 'InsertToDo', lisTDDInsertToDo,Key,
-    nil,@InsertOrEditToDo);
+  InsertToDoCmd := RegisterIDECommand(Cat, 'InsertToDo', lisTDDInsertToDo,
+    IDEShortCut(VK_T, [ssCtrl, ssShift], VK_UNKNOWN, []), nil, @InsertOrEditToDo);
 
   // add a menu item in the Source Editor
   SrcEditMenuCmd := RegisterIDEMenuCommand(SrcEditMenuSectionFirstStatic, 'InsertToDo',
@@ -140,10 +138,9 @@ begin
   IdeSourceMenuCmd.OnRequestCaptionHint := @ToDoManager.DecideMenuCaption;
 
   // register shortcut for view todo list
-  Key := IDEShortCut(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Cat := IDECommandList.FindCategoryByName(CommandCategoryViewName);
-  ViewToDoListCmd:=RegisterIDECommand(Cat, 'View ToDo list', lisViewToDoList,
-    Key,nil,@ViewToDoList);
+  ViewToDoListCmd := RegisterIDECommand(Cat, 'View ToDo list', lisViewToDoList,
+    CleanIDEShortCut, nil, @ViewToDoList);
 
   // add a menu item in the View menu
   MenuCmd := RegisterIDEMenuCommand(itmViewMainWindows, 'ViewToDoList',
