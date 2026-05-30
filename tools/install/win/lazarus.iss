@@ -193,10 +193,10 @@ Filename: {app}\Lazarus Wiki Help.url; Section: InternetShortcut; Key: URL; Stri
 [Icons]
 Name: {group}\{#AppName}; Filename: {app}\lazarus.exe; IconFilename: {app}\images\mainicon.ico; Comment: Open Source IDE for Free Pascal
 Name: {group}\{cm:ProgramOnTheWeb,Lazarus}; Filename: {app}\Lazarus Home Page.url; IconFilename: {app}\images\mainiconproject.ico
-Name: {group}\Lazarus Forums; Filename: {app}\Lazarus Forums.url; IconFilename: {app}\images\mainiconproject.ico
-Name: {group}\Lazarus Wiki Help; Filename: {app}\Lazarus Wiki Help.url; IconFilename: {app}\images\mainiconproject.ico
+Name: {group}\{cm:ForumLinkName,Lazarus}; Filename: {app}\Lazarus Forums.url; IconFilename: {app}\images\mainiconproject.ico
+Name: {group}\{cm:WikiLinkName,Lazarus}; Filename: {app}\Lazarus Wiki Help.url; IconFilename: {app}\images\mainiconproject.ico
 Name: {group}\{cm:UninstallProgram,Lazarus}; Filename: {uninstallexe}
-Name: {userdesktop}\Lazarus; Filename: {app}\lazarus.exe; Tasks: desktopicon; IconFilename: {app}\images\mainicon.ico; Comment: Open Source IDE for Free Pascal
+Name: {userdesktop}\Lazarus; Filename: {app}\lazarus.exe; Tasks: desktopicon; IconFilename: {app}\images\mainicon.ico; Comment: {cm:LazShortcutComment}
 Name: {group}\{#AppName} (debug); Filename: {app}\startlazarus.exe; Parameters: --debug; WorkingDir: {app}; IconFilename: {app}\images\mainicon.ico; Comment: Lazarus --debug
 
 [Run]

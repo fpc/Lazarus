@@ -78,3 +78,7 @@ SecondTaskCreate=Creating secondary installation with configuration in folder:%0
 DuringInstall=    After the installation:%0:s- If you are updating and have any packages installed please rebuild your IDE to make your packages available again.%0:s- Sometimes updating requires to uninstall the old version first. If you get errors during the IDE rebuild, this may be the case.%0:s%0:s    Licensing:%0:s- The LCL is licensed LGPL with linking exception. This allows you to create apps with any license you want, including proprietary.%0:s- The IDE is licensed GPL. If you distribute a modified IDE you must follow the GPL.%0:s- Other packages and components have various licenses. See the readme of each package.%0:s%0:s    Debugging:%0:s- You may be asked to choose a debug info. With the default debug settings ("FpDebug"), you can choose "DWARF-3", otherwise "DWARF-2 (with sets)". The wiki has more details under "DWARF" and "Debugger Setup".%0:s%0:s    More Components and Packages:%0:s- Additional packages are available via the OPM (Online Package Manager) in the package menu.%0:s%0:s    You can find our FAQ at http://wiki.lazarus.freepascal.org/Lazarus_Faq  %0:s
 
 UninstVerbose=About to uninstall %1:s from folder %0:s. Continue?
+
+ForumLinkName=%1 Forums
+WikiLinkName=%1 Wiki Help
+LazShortcutComment=Open Source IDE for Free Pascal
