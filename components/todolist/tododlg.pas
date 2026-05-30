@@ -80,6 +80,11 @@ var
   ViewToDoListCmd: TIDECommand;
   SrcEditMenuCmd: TIDEMenuCommand;     // MenuItem in Source editor popup menu.
   IdeSourceMenuCmd: TIDEMenuCommand;   // MenuItem in IDE's Source menu.
+  IdeViewMenuCmd: TIDEMenuCommand;     // MenuItem in IDE's View menu.
+  IdeProjectMenuCmd: TIDEMenuCommand;  // MenuItem in IDE's Project menu.
+  IdePackageMenuCmd: TIDEMenuCommand;  // MenuItem in Package Editor menu.
+  InsertToDoBtnCmd: TIDEButtonCommand; // Toolbar button for insert to-do.
+  ViewToDoBtnCmd: TIDEButtonCommand;   // Toolbar button for view to-do.
 
 procedure Register;
 // ToDo List
@@ -112,8 +117,6 @@ var
 procedure Register;
 var
   Cat: TIDECommandCategory;
-  MenuCmd: TIDEMenuCommand;
-  ButtonCmd: TIDEButtonCommand;
 begin
   // mattias: move icon resource item_todo to package
   // mattias: add menu item to package editor
@@ -132,8 +135,8 @@ begin
   // add a menu item in the Edit / Insert Text section
   IdeSourceMenuCmd := RegisterIDEMenuCommand(itmSourceInsertions,'itmSourceInsertTodo',
     lisTDDInsertToDo,nil,nil,InsertToDoCmd,'item_todo');
-  ButtonCmd := RegisterIDEButtonCommand(InsertToDoCmd);    // toolbutton
-  ButtonCmd.ImageIndex := IdeSourceMenuCmd.ImageIndex;
+  InsertToDoBtnCmd := RegisterIDEButtonCommand(InsertToDoCmd);    // toolbutton
+  InsertToDoBtnCmd.ImageIndex := IdeSourceMenuCmd.ImageIndex;
   SrcEditMenuCmd.OnRequestCaptionHint := @ToDoManager.DecideMenuCaption;
   IdeSourceMenuCmd.OnRequestCaptionHint := @ToDoManager.DecideMenuCaption;
 
@@ -143,17 +146,17 @@ begin
     CleanIDEShortCut, nil, @ViewToDoList);
 
   // add a menu item in the View menu
-  MenuCmd := RegisterIDEMenuCommand(itmViewMainWindows, 'ViewToDoList',
+  IdeViewMenuCmd := RegisterIDEMenuCommand(itmViewMainWindows, 'ViewToDoList',
     lisToDoList, nil, nil, ViewToDoListCmd, 'menu_view_todo');
-  ButtonCmd := RegisterIDEButtonCommand(ViewToDoListCmd);    // toolbutton
-  ButtonCmd.ImageIndex := MenuCmd.ImageIndex;
+  ViewToDoBtnCmd := RegisterIDEButtonCommand(ViewToDoListCmd);    // toolbutton
+  ViewToDoBtnCmd.ImageIndex := IdeViewMenuCmd.ImageIndex;
 
   // add a menu item in the Project menu
-  RegisterIDEMenuCommand(itmProjectAddRemoveSection, 'ViewProjectToDoList',
+  IdeProjectMenuCmd := RegisterIDEMenuCommand(itmProjectAddRemoveSection, 'ViewProjectToDoList',
     lisToDoList, nil, nil, ViewToDoListCmd, 'menu_view_todo');
 
   // add a menu item in the Package Editor
-  RegisterIDEMenuCommand(PkgEditMenuSectionMisc, 'ViewPkgToDoList',
+  IdePackageMenuCmd := RegisterIDEMenuCommand(PkgEditMenuSectionMisc, 'ViewPkgToDoList',
     lisToDoList, nil, nil, ViewToDoListCmd, 'menu_view_todo');
 
   // register window creator
@@ -171,7 +174,7 @@ begin
     IDETodoWindow.ProjPack:=Pkg
   else begin
     if (not (Sender is TIDEMenuCommand)
-           or (TIDEMenuCommand(Sender).Name <> 'ViewToDoList')
+           or (Sender <> IdeViewMenuCmd)
            or (IDETodoWindow.ProjPack = nil)) then
       // Coming from Project menu, or the list was empty. 'ViewToDoList' is View menu.
       IDETodoWindow.ProjPack:=LazarusIDE.ActiveProject;
