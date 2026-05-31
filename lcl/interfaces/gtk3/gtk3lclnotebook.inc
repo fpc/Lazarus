@@ -50,6 +50,9 @@ var
   tooSmall: Boolean;
   Last1W, Last1H, Last2W, Last2H: PtrInt;
   PingCount: PtrInt;
+  StoredGen: PtrUInt;
+  TopLevel: PGtkWidget;
+  WinGen: PtrUInt;
 begin
   ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
   if not Assigned(ParentClass) or not Assigned(ParentClass^.size_allocate) then
@@ -60,6 +63,28 @@ begin
   Last2W := PtrInt(g_object_get_data(PGObject(widget), 'lcl-prev2-aw'));
   Last2H := PtrInt(g_object_get_data(PGObject(widget), 'lcl-prev2-ah'));
   PingCount := PtrInt(g_object_get_data(PGObject(widget), 'lcl-pingpong-cnt'));
+  StoredGen := PtrUInt(g_object_get_data(PGObject(widget), 'lcl-layout-gen'));
+
+  TopLevel := gtk_widget_get_toplevel(widget);
+  if gtk_widget_is_toplevel(TopLevel) then
+    WinGen := PtrUInt(g_object_get_data(PGObject(TopLevel), 'lcl-win-layout-gen'))
+  else
+    WinGen := 0;
+
+  if WinGen <> StoredGen then
+  begin
+    PingCount := 0;
+    Last1W := 0;
+    Last1H := 0;
+    Last2W := 0;
+    Last2H := 0;
+    g_object_set_data(PGObject(widget), 'lcl-pingpong-cnt', nil);
+    g_object_set_data(PGObject(widget), 'lcl-prev-aw',  nil);
+    g_object_set_data(PGObject(widget), 'lcl-prev-ah',  nil);
+    g_object_set_data(PGObject(widget), 'lcl-prev2-aw', nil);
+    g_object_set_data(PGObject(widget), 'lcl-prev2-ah', nil);
+    g_object_set_data(PGObject(widget), 'lcl-layout-gen', Pointer(PtrUInt(WinGen)));
+  end;
 
   if ((allocation^.width <> Last1W) or (allocation^.height <> Last1H)) and
      (allocation^.width = Last2W) and (allocation^.height = Last2H) and

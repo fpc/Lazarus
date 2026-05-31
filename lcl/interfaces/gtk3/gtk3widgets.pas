@@ -14187,8 +14187,12 @@ var
   KwinProtectW, KwinProtectH: PtrInt;
   KwinProtectUntil: PtrUInt;
   KwinResizeData: PKwinResizeIdleData;
+  WinGen: PtrUInt;
 begin
   if AWidget=nil then ;
+
+  WinGen := PtrUInt(g_object_get_data(PGObject(AWidget), 'lcl-win-layout-gen')) + 1;
+  g_object_set_data(PGObject(AWidget), 'lcl-win-layout-gen', Pointer(WinGen));
 
   ACtl := TGtk3Window(Data);
 
