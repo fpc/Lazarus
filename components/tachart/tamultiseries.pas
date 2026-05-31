@@ -1888,15 +1888,13 @@ procedure TOpenHighLowCloseSeries.Draw(ADrawer: IChartDrawer);
     end;
   end;
 
-  procedure DoRect(AX1, AY1, AX2, AY2: Double);
-  var
-    r: TRect;
+  procedure DoEndCap(APen: TPen; AEndCap: TPenEndCap);
   begin
-    r.TopLeft := MaybeRotate(AX1, AY1);
-    r.BottomRight := MaybeRotate(AX2, AY2);
-    NoZeroRect(r);
-    ADrawer.FillRect(r.Left, r.Top, r.Right, r.Bottom);
-    ADrawer.Rectangle(r);
+    // Unfortunately the drawer does not expose the pen's EndCap --> we must
+    // modify the pen directly. Avoid infinite drawing loop here!
+    ParentChart.DisableRedrawing;
+    APen.EndCap := AEndCap;
+    ParentChart.EnableRedrawing;
   end;
 
   procedure DrawOHLC(x, yopen, yhigh, ylow, yclose, tw: Double);
@@ -1907,16 +1905,73 @@ procedure TOpenHighLowCloseSeries.Draw(ADrawer: IChartDrawer);
       DoLine(x - tw, yopen, x, yopen);
   end;
 
-  procedure DrawCandleStick(x, yopen, yhigh, ylow, yclose, tw: Double; APenIdx: Integer);
+  procedure DrawCandleStick(x, yopen, yhigh, ylow, yclose, tw: Double; ABrushIdx: Integer);
+  var
+    ptHigh, ptLow, ptOpen, ptClose, ptOpenBase, ptCloseBase: TPoint;
+    linePos, boxWidth: Integer;
+    linePenIdx: Integer;
+    savedBorderColor: TChartColor;
+    savedEndCap: TPenEndCap;
+    r: TRect;
   begin
+    savedBorderColor := ADrawer.GetPenColor;
+    ptOpen := MaybeRotate(x - tw, yopen);
+    ptClose := MaybeRotate(x + tw, yclose);
+    ptHigh := MaybeRotate(x, yhigh);
+    ptLow := MaybeRotate(x, ylow);
+    ptOpenBase := ptOpen;
+    ptCloseBase := ptClose;
+    if IsRotated then
+    begin
+      linePos := ptHigh.Y;
+      boxWidth := abs(ptClose.Y - ptOpen.Y) div 2;
+      r := Rect(ptClose.X, linePos-boxWidth, ptOpen.X, linePos+boxWidth);
+      ptOpenBase.Y := linePos;
+      ptCloseBase.Y := linePos;
+    end else
+    begin
+      linePos := ptHigh.X;
+      boxWidth := abs(ptClose.X - ptOpen.X) div 2;
+      r := Rect(linePos-boxWidth, ptClose.Y, linePos+boxWidth, ptOpen.Y);
+      ptOpenBase.X := linePos;
+      ptCloseBase.X := linePos;
+    end;
+    NormalizeRect(r);
+    NoZeroRect(r);
+
     if CandleStickLinePen.Color = clDefault then
-      // use linepen and linedown pen for range line
-      ADrawer.Pen := FPen[TOHLCPenKind(APenIdx + 3)]
+      // use line pen and linedown pen for range line
+      linePenIdx := ABrushIdx + 3
     else
-      ADrawer.Pen := CandleStickLinePen;
-    DoLine(x, yhigh, x, ylow);
-    ADrawer.Pen := FPen[TOHLCPenKind(APenIdx)];
-    DoRect(x - tw, yopen, x + tw, yclose);
+      // ... otherwise dedicated pen
+      linePenIdx := 2;
+    savedEndCap := FPen[TOHLCPenKind(linePenIdx)].EndCap;
+    if FBrush[TOHLCBrushKind(ABrushIdx)].Style <> bsSolid then
+      // Avoid range line's endcap protruding into non-solid-filled box
+      DoEndCap(FPen[TOHLCPenKind(linePenIdx)], pecFlat);
+    ADrawer.Pen := FPen[TOHLCPenKind(linePenIdx)];
+    if yOpen > yClose then
+    begin
+      if yopen <> yhigh then
+        ADrawer.Line(ptOpenBase, ptHigh);
+      if yclose <> ylow then
+        ADrawer.Line(ptCloseBase, ptLow);
+    end else
+    begin
+      if yclose <> yhigh then
+        ADrawer.Line(ptCloseBase, ptHigh);
+      if yopen <> ylow then
+        ADrawer.Line(ptOpenBase, ptLow);
+    end;
+    DoEndCap(FPen[TOHLCPenKind(linePenIdx)], savedEndCap);
+
+    // Adjust bar width so that range line is centered independent of pen width
+    if odd(ADrawer.GetPenWidth) then
+      if IsRotated then inc(r.Bottom) else inc(r.Right);
+
+    ADrawer.Pen := FPen[TOHLCPenKind(ABrushIdx)];
+    ADrawer.SetPenColor(savedBorderColor);
+    ADrawer.Rectangle(r);
   end;
 
 const
@@ -1966,14 +2021,18 @@ begin
       idx := UP_INDEX
     else
       idx := DOWN_INDEX;
+
     ADrawer.Brush := FBrush[TOHLCBrushKind(idx)];
     case FMode of
-      mOHLC: ADrawer.Pen := FPen[TOHLCPenKind(idx + 3)];
-      mCandlestick: ADrawer.Pen := FPen[TOHLCPenKind(idx)];
+      mOHLC:
+        ADrawer.Pen := FPen[TOHLCPenKind(idx + 3)];
+      mCandlestick:
+        ADrawer.Pen := FPen[TOHLCPenKind(idx)];
     end;
     if Source[i]^.Color <> clTAColor then
     begin
-      ADrawer.SetPenParams(FPen[TOHLCPenKind(idx)].Style, Source[i]^.Color, FPen[TOHLCPenKind(idx)].Width);
+      if (FMode = mOHLC) or (ADrawer.GetPenColor = clDefault) then
+        ADrawer.SetPenParams(FPen[TOHLCPenKind(idx)].Style, Source[i]^.Color, FPen[TOHLCPenKind(idx)].Width);
       ADrawer.SetBrushParams(FBrush[TOHLCBrushKind(idx)].Style, Source[i]^.Color);
     end;
 
