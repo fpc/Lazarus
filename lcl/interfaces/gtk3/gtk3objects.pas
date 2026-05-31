@@ -1125,6 +1125,8 @@ var
   Weight: TPangoWeight;
   inkRect: TPangoRectangle;
   APangoMetrics: PPangoFontMetrics;
+  ADefDesc: PPangoFontDescription;
+  AOwnsDesc: Boolean;
 begin
   inherited Create;
   FLogFont := ALogFont;
@@ -1147,7 +1149,27 @@ begin
   end;
   FFontName := FHandle^.get_family;
   if ALogFont.lfHeight <> 0 then
-    FHandle^.set_absolute_size(Abs(ALogFont.lfHeight) * PANGO_SCALE);
+    FHandle^.set_absolute_size(Abs(ALogFont.lfHeight) * PANGO_SCALE)
+  else
+  if FHandle^.get_size = 0 then
+  begin
+    AOwnsDesc := False;
+    if Gtk3WidgetSet.DefaultAppFontName <> '' then
+    begin
+      ADefDesc := pango_font_description_from_string(PgChar(Gtk3WidgetSet.DefaultAppFontName));
+      AOwnsDesc := True;
+    end else
+      ADefDesc := pango_context_get_font_description(AContext);
+    if (ADefDesc <> nil) and (ADefDesc^.get_size > 0) then
+    begin
+      if ADefDesc^.get_size_is_absolute then
+        FHandle^.set_absolute_size(ADefDesc^.get_size)
+      else
+        FHandle^.set_size(ADefDesc^.get_size);
+    end;
+    if AOwnsDesc and (ADefDesc <> nil) then
+      ADefDesc^.free;
+  end;
   if ALogFont.lfItalic > 0 then
     FHandle^.set_style(PANGO_STYLE_ITALIC);
   if Stretch <> PANGO_STRETCH_NORMAL then
