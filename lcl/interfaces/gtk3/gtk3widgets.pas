@@ -5095,10 +5095,9 @@ begin
   ACtl := TGtk3Widget(Data);
   {$IFDEF GTK3DEBUGRESIZE}
   if Assigned(ACtl.LCLObject) then
-    writeln(Format('PanelLayoutSizeAllocate %s gdk w=%d h=%d LCL w=%d h=%d InUpd=%s wt=%d',
+    writeln(Format('PanelLayoutSizeAllocate %s gdk w=%d h=%d LCL w=%d h=%d InUpd=%s',
       [dbgsName(ACtl.LCLObject), AGdkRect^.width, AGdkRect^.height,
-       ACtl.LCLObject.Width, ACtl.LCLObject.Height, BoolToStr(ACtl.InUpdate, True),
-       LongInt(ACtl.FWidgetType)]));
+       ACtl.LCLObject.Width, ACtl.LCLObject.Height, BoolToStr(ACtl.InUpdate, True)]));
   {$ENDIF}
   {$IFDEF GTK3DEBUGLAYOUT}
   if Assigned(ACtl.LCLObject) and (ACtl is TGtk3StatusBar) then
@@ -5247,10 +5246,9 @@ begin
   aCtl := TGtk3Widget(Data);
   {$IFDEF GTK3DEBUGRESIZE}
   if Assigned(ACtl.LCLObject) then
-    writeln(Format('GroupBoxLayoutSizeAllocate %s gdk w=%d h=%d LCL w=%d h=%d InUpd=%s wt=%d',
+    writeln(Format('GroupBoxLayoutSizeAllocate %s gdk w=%d h=%d LCL w=%d h=%d InUpd=%s',
       [dbgsName(ACtl.LCLObject), AGdkRect^.width, AGdkRect^.height,
-       ACtl.LCLObject.Width, ACtl.LCLObject.Height, BoolToStr(ACtl.InUpdate, True),
-       LongInt(ACtl.FWidgetType)]));
+       ACtl.LCLObject.Width, ACtl.LCLObject.Height, BoolToStr(ACtl.InUpdate, True)]));
   {$ENDIF}
 
   if (uWidth <> HSize) or (uHeight <> VSize) then
@@ -9732,10 +9730,10 @@ begin
 
   {$IFDEF GTK3DEBUGRESIZE}
   if Assigned(ACtl.LCLObject) then
-    writeln(Format('[%d] ScrolledLayoutSizeAllocate %s gdk w=%d h=%d LCL w=%d h=%d InUpd=%s wt=%d VPChg=%s',
+    writeln(Format('[%d] ScrolledLayoutSizeAllocate %s gdk w=%d h=%d LCL w=%d h=%d InUpd=%s VPChg=%s',
       [GetTickCount64, dbgsName(ACtl.LCLObject), AGdkRect^.width, AGdkRect^.height,
        ACtl.LCLObject.Width, ACtl.LCLObject.Height, BoolToStr(ACtl.InUpdate, True),
-       LongInt(ACtl.FWidgetType), BoolToStr(ViewportChanged, True)]));
+       BoolToStr(ViewportChanged, True)]));
   {$ENDIF}
   {$IFDEF GTK3DEBUGSCROLLEDWIN}
   if Assigned(ACtl.LCLObject) and (wtScrollingWinControl in ACtl.FWidgetType) then
@@ -12840,10 +12838,9 @@ begin
 
   {$IFDEF GTK3DEBUGRESIZE}
   if Assigned(ACtl.LCLObject) then
-    writeln(Format('ComboSizeAllocate %s gdk w=%d h=%d LCL w=%d h=%d InUpd=%s wt=%d',
+    writeln(Format('ComboSizeAllocate %s gdk w=%d h=%d LCL w=%d h=%d InUpd=%s',
       [dbgsName(ACtl.LCLObject), AGdkRect^.width, AGdkRect^.height,
-       ACtl.LCLObject.Width, ACtl.LCLObject.Height, BoolToStr(ACtl.InUpdate, True),
-       LongInt(ACtl.FWidgetType)]));
+       ACtl.LCLObject.Width, ACtl.LCLObject.Height, BoolToStr(ACtl.InUpdate, True)]));
   {$ENDIF}
 
 
@@ -15080,6 +15077,23 @@ begin
         MenuSize := 0;
         if (TCustomForm(LCLObject).Menu <> nil) or (FMenuBar <> nil) then
           MenuSize := GetSystemMetrics(SM_CYMENU);
+        Allocation.width := LCLObject.Width;
+        Allocation.Height := LCLObject.Height - MenuSize;
+      end else
+      if Gtk3WidgetSet.IsWayland and Gtk3IsGtkWindow(FWidget) and
+         not Assigned(LCLObject.Parent) and not (wtHintWindow in FWidgetType) and
+         (FResizeState.ShadowH > 0) and
+         (Allocation.Height < FResizeState.ShadowH) and
+         (LCLObject.Width > 0) and (LCLObject.Height > 0) then
+      begin
+        MenuSize := 0;
+        if (LCLObject is TCustomForm) then
+        begin
+          if (TCustomForm(LCLObject).Menu <> nil) or (FMenuBar <> nil) then
+            MenuSize := GetSystemMetrics(SM_CYMENU);
+        end;
+        Allocation.x := 0;
+        Allocation.y := 0;
         Allocation.width := LCLObject.Width;
         Allocation.Height := LCLObject.Height - MenuSize;
       end;
