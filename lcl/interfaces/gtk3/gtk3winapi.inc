@@ -2686,24 +2686,25 @@ begin
       if AWmm > 0 then
         dpiX := Round(AMonitorRect.width * AScale * 25.4 / AWmm)
       else
-        dpiX := 96 * AScale;
+        dpiX := 96;
       if AHmm > 0 then
         dpiY := Round(AMonitorRect.height * AScale * 25.4 / AHmm)
       else
-        dpiY := 96 * AScale;
+        dpiY := 96;
     end;
-    else
+    MDT_EFFECTIVE_DPI, MDT_ANGULAR_DPI:
     begin
-
-      if AScale > 1 then
+      if AScreenDpi > 0 then
+      begin
+        dpiX := Round(AScreenDpi);
+        dpiY := dpiX;
+      end else
       begin
         dpiX := 96 * AScale;
         dpiY := dpiX;
       end;
-
     end;
   end;
-
 end;
 
 function TGtk3WidgetSet.GetFocus: HWND;
