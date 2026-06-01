@@ -9086,13 +9086,16 @@ function TGtk3MenuItem.GetCaption: string;
 begin
   Result := '';
   if IsWidgetOK then
-    Result := PGtkMenuItem(FWidget)^.get_label;
+    Result := {%H-}ReplaceUnderscoresWithAmpersands(PGtkMenuItem(FWidget)^.get_label);
 end;
 
 procedure TGtk3MenuItem.SetCaption(const AValue: string);
 begin
   if IsWidgetOK then
-    PGtkMenuItem(FWidget)^.set_label(PgChar(AValue));
+  begin
+    PGtkMenuItem(FWidget)^.use_underline := True;
+    PGtkMenuItem(FWidget)^.set_label(PgChar({%H-}ReplaceAmpersandsWithUnderscores(AValue)));
+  end;
 end;
 
 function TGtk3MenuItem.CreateWidget(const Params: TCreateParams): PGtkWidget;
