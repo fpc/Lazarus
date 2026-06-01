@@ -78,3 +78,8 @@ SecondTaskCreate=Creazione installazione secondaria con configurazione nella car
 DuringInstall=Dopo l'installazione:%0:s- Se stai aggiornando e hai dei pacchetti installati, ricostruisci l'IDE per rendere nuovamente disponibili i pacchetti.%0:s- A volte l'aggiornamento richiede prima di disinstallare la vecchia versione. Se ricevi errori durante la ricostruzione dell'IDE, potrebbe essere questo il caso.%0:s%0:s    Licenza:%0:s- LCL è concesso in licenza LGPL con eccezione di collegamento. Ciò ti consente di creare app con qualsiasi licenza desideri, inclusa quella proprietaria.%0:s- L'IDE è concesso in licenza GPL. Se distribuisci un IDE modificato devi seguire la GPL.%0:s- Altri pacchetti e componenti hanno varie licenze. Vedi il file readme di ogni pacchetto.%0:s%0:s    Debug:%0:s- Potrebbe esserti chiesto di scegliere informazioni di debug. Con le impostazioni di debug predefinite ("FpDebug"), puoi scegliere "DWARF-3", altrimenti "DWARF-2 (con set)". Il wiki fornisce maggiori dettagli in "DWARF" e "Debugger Setup".%0:s%0:s    Più componenti e pacchetti:%0:s- Pacchetti aggiuntivi sono disponibili tramite OPM (Online Package Manager) nel menu pacchetti.%0:s%0:s    Puoi trovare le nostre FAQ in http://wiki.lazarus.freepascal.org/Lazarus_Faq  %0:s
 
 UninstVerbose=Disinstallazione di %1:s dalla cartella %0:s. Vuoi continue?
+
+ForumLinkName=Forum %1
+WikiLinkName=Wiki aiuto %1
+LazShortcutComment=IDE open source per Free Pascal
+
