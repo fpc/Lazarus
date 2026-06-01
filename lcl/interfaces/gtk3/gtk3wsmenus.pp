@@ -76,6 +76,79 @@ uses gtk3widgets, gtk3int, LCLMessageGlue;
 var
   MenuWidget: PGtkWidget = nil;
 
+function Gtk3MenuPopupRepositionIdle(data: gpointer): gboolean; cdecl;
+var
+  TopLevel: PGtkWidget;
+  GdkWin: PGdkWindow;
+  Display: PGdkDisplay;
+  Monitor: PGdkMonitor;
+  WorkArea: TGdkRectangle;
+  tlMinW, tlNatW, tlMinH, tlNatH: gint;
+begin
+  Result := False;
+
+  if (data = nil) or not PGtkWidget(data)^.get_mapped then
+    exit;
+
+  TopLevel := PGtkWidget(data)^.get_toplevel;
+  if not Gtk3IsGtkWindow(TopLevel) then
+    exit;
+
+  GdkWin := TopLevel^.get_window;
+
+  if GdkWin = nil then
+    exit;
+
+  TopLevel^.get_preferred_width(@tlMinW, @tlNatW);
+  TopLevel^.get_preferred_height(@tlMinH, @tlNatH);
+
+  Display := GdkWin^.get_display;
+  if Display <> nil then
+  begin
+    Monitor := Display^.get_monitor_at_window(GdkWin);
+    if Monitor <> nil then
+    begin
+      //fit to monitor if natural size is bigger than workarea
+      Monitor^.get_workarea(@WorkArea);
+      if (WorkArea.width > 0) and (tlNatW > WorkArea.width) then
+        tlNatW := WorkArea.width;
+      if (WorkArea.height > 0) and (tlNatH > WorkArea.height) then
+        tlNatH := WorkArea.height;
+    end;
+  end;
+
+  PGtkWindow(TopLevel)^.resize(tlNatW, tlNatH);
+  GdkWin^.resize(tlNatW, tlNatH);
+
+end;
+
+procedure Gtk3MenuPopupSizeFix(widget: PGtkWidget;
+  alloc: PGtkAllocation; {%H-}data: gpointer); cdecl;
+var
+  MinW, NatW, MinH, NatH: gint;
+begin
+  if g_object_get_data(PGObject(widget), 'lcl-popup-szfixed') <> nil then
+    exit;
+  if not widget^.get_mapped then
+    exit;
+
+  widget^.get_preferred_width(@MinW, @NatW);
+  widget^.get_preferred_height(@MinH, @NatH);
+
+  //issue #42237, intercept allocation < natural width for dynamic menus
+  if (NatH > 0) and (NatW > 0) and
+     ((alloc^.height < NatH) or (alloc^.width < NatW)) then
+  begin
+    g_object_set_data(PGObject(widget), 'lcl-popup-szfixed', widget);
+    g_idle_add(@Gtk3MenuPopupRepositionIdle, widget);
+  end;
+end;
+
+procedure Gtk3MenuPopupHide(widget: PGtkWidget; {%H-}data: gpointer); cdecl;
+begin
+  g_object_set_data(PGObject(widget), 'lcl-popup-szfixed', nil);
+end;
+
 { TGtk3WSMenuItem }
 
 class procedure TGtk3WSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
@@ -154,6 +227,13 @@ begin
         g_object_set_data(ParentMenuWidget, 'ContainerMenu',
                             ContainerMenu);
         PGTKMenuItem(ParentMenuWidget)^.set_submenu(PGtkMenu(ContainerMenu));
+
+        //issue #42237
+        g_signal_connect_data(PGObject(ContainerMenu), 'size-allocate',
+          TGCallback(@Gtk3MenuPopupSizeFix), nil, nil, [G_CONNECT_AFTER]);
+
+        g_signal_connect_data(PGObject(ContainerMenu), 'hide',
+          TGCallback(@Gtk3MenuPopupHide), nil, nil, G_CONNECT_DEFAULT);
       end;
     end;
     PGtkMenu(ContainerMenu)^.insert(MenuItem.Widget, AMenuItem.MenuVisibleIndex);
