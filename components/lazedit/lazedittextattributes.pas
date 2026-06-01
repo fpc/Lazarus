@@ -227,6 +227,7 @@ type
     FDefaultStylePriority: array[TFontStyle] of Integer;
     FDefaultFeatures: TLazTextAttributeFeatures;
 
+    function GetName: String;
   protected
     function GetPriority(AnIndex: TLazTextAttributeColor): integer; override;
     function GetFrameSidePriority(Side: TLazTextAttrBorderSide): integer; override;
@@ -265,6 +266,7 @@ type
     procedure RemoveChangeHandler(AnHandler: TNotifyEvent);
 
     property Caption: PString read FCaption;                        // will never be nil
+    property Name: String read GetName;
     property StoredName: string read FStoredName write FStoredName; // name for storage (e.g. xml)
 
   public
@@ -794,6 +796,12 @@ begin
 end;
 
 { TLazEditTextAttribute }
+
+function TLazEditTextAttribute.GetName: String;
+begin
+  if FCaption = nil then exit('');
+  Result := FCaption^;
+end;
 
 function TLazEditTextAttribute.GetPriority(AnIndex: TLazTextAttributeColor): integer;
 begin
