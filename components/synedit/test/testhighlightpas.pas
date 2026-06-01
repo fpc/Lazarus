@@ -107,6 +107,7 @@ const
   TK_Assign  = tkSymbol;  _ceq     = tkSymbol;
   TK_Bracket = tkSymbol;  _Open    = tkSymbol; _Close = tkSymbol;
   TK_Angle   = tkSymbol;  _Gt      = tkSymbol; _Lt    = tkSymbol;
+  TK_String  = tkString;  _Str     = tkString;
   _          = tkSpace;
   _K         = tkKey;
   _I         = tkIdentifier;
@@ -798,35 +799,68 @@ begin
          'function Stdcall(Stdcall:Stdcall):Stdcall;Stdcall;deprecated;',    // 5
          'property cdecl:cdecl read cdecl;',
          'end;',
+
+
+         '',
+         'TProc1 = procedure(deprecated: deprecated); experimental deprecated;',  // 9
+         'deprecated = deprecated;',
+         'TProc1 = procedure(deprecated: deprecated); deprecated '''' experimental;',
+         'deprecated = deprecated;',
+         'TProc2 = procedure(deprecated: deprecated)  experimental deprecated;',
+         'platform;', // after the FIRST semicolon => still modifier
+         'TProc4 = procedure(deprecated: deprecated); cdecl; experimental deprecated;',  // 15
+         'deprecated = deprecated;',
+         'TProc3 = procedure(deprecated: deprecated)  cdecl; experimental deprecated ''oue'' platform;',
+         'deprecated = deprecated;',
+         'TProc5 = procedure(deprecated: deprecated) of object; stdcall; experimental deprecated;',
+         'deprecated = deprecated;', // 20
+         '',
+         '',
+         'deprecated = class(deprecated)', // 23
+           'TProc1 = procedure(deprecated: deprecated); experimental deprecated;',
+           'deprecated = deprecated;',
+           'TProc1 = procedure(deprecated: deprecated); deprecated '''' experimental;', // 26
+           'deprecated = deprecated;',
+           'TProc2 = procedure(deprecated: deprecated)  experimental deprecated;',
+           'deprecated = deprecated;',
+           'TProc4 = procedure(deprecated: deprecated); cdecl; experimental deprecated;', // 30
+           'deprecated = deprecated;',
+           'TProc3 = procedure(deprecated: deprecated)  cdecl; experimental deprecated ''oue'' platform;',
+           'deprecated = deprecated;',
+           'TProc5 = procedure(deprecated: deprecated) of object; stdcall; experimental deprecated;', // 34
+           'deprecated = deprecated;',
+         'end deprecated ''ee'' experimental;',
+         '',
+
          '',
          'cdecl=record',
-         'function cdecl(cdecl:cdecl):cdecl;cdecl;deprecated;',    // 10
+         'function cdecl(cdecl:cdecl):cdecl;cdecl;deprecated;',    // 40
          'end;',
          '',
          'var',
          'Stdcall:function(cdecl:cdecl):cdecl;cdecl;',
-         'var',                                // 15
+         'var',                                // 45
          'cdecl:cdecl;',
          '',
          'function Stdcall(cdecl:cdecl):cdecl;cdecl;',
          'var',
-         'cdecl:cdecl deprecated;',            // 20
+         'cdecl:cdecl deprecated;',            // 50
          'function Stdcall(cdecl:cdecl):cdecl;cdecl;deprecated;',
          '',
          // in []
-         'function Stdcall:cdecl;[cdecl];', // 23
+         'function Stdcall:cdecl;[cdecl];', // 53
          'procedure Stdcall; [cdecl];',
          '',
 
          // no semicolon
-         'function Stdcall:cdecl cdecl;',   // 26
+         'function Stdcall:cdecl cdecl;',   // 56
          'function Stdcall():cdecl cdecl;',
          'procedure Stdcall cdecl;',
          'procedure Stdcall() cdecl;',
          'function Stdcall:cdecl [cdecl];',  // not a modifire / not currently
          '',
          // anonym
-         'implementation', // 32
+         'implementation', // 62
          'procedure foo cdecl;',
          'begin',
          '  procedure() cdecl begin end();',
@@ -857,39 +891,85 @@ begin
     CheckTokensForLine('property',  6,
       [ tkKey, tkSpace, tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkKey, tkSpace, tkIdentifier, TK_Semi ]);
 
-    CheckTokensForLine('StdCall=record',  9,
+
+
+    CheckTokensForLine('TProc1 = procedure(deprecated: deprecated); experimental deprecated;', 9,
+      [ _I,_,_Eq,_, _K,_Open,_I,_Col,_,_I,_Close,   _Semi,   _, _M, _, _M, _Semi    ]);
+    CheckTokensForLine('deprecated = deprecated;', 10, [tkIdentifier, _, TK_Equal, _, tkIdentifier, TK_Semi ]);
+    CheckTokensForLine('TProc1 = procedure(deprecated: deprecated); deprecated '''' experimental;', 11,
+      [ _I,_,_Eq,_, _K,_Open,_I,_Col,_,_I,_Close,   _Semi,   _, _M, _, _Str, _, _M, _Semi    ]);
+    CheckTokensForLine('deprecated = deprecated;', 12, [tkIdentifier, _, TK_Equal, _, tkIdentifier, TK_Semi ]);
+    CheckTokensForLine('TProc2 = procedure(deprecated: deprecated)  experimental deprecated;', 13,
+      [ _I,_,_Eq,_, _K,_Open,_I,_Col,_,_I,_Close,            _, _M, _, _M, _Semi    ]);
+    CheckTokensForLine('platform;', 14, [tkModifier, TK_Semi ]);
+    CheckTokensForLine('TProc4 = procedure(deprecated: deprecated); cdecl; experimental deprecated;', 15,
+      [ _I,_,_Eq,_, _K,_Open,_I,_Col,_,_I,_Close,   _Semi, _,   _M,_Semi,  _, _M, _, _M, _Semi    ]);
+    CheckTokensForLine('deprecated = deprecated;', 16, [tkIdentifier, _, TK_Equal, _, tkIdentifier, TK_Semi ]);
+    CheckTokensForLine('TProc3 = procedure(deprecated: deprecated)  cdecl; experimental deprecated ''oue'' platform;', 17,
+      [ _I,_,_Eq,_, _K,_Open,_I,_Col,_,_I,_Close,          _,   _M,_Semi,  _, _M, _, _M, _, _Str, _, _M, _Semi    ]);
+    CheckTokensForLine('deprecated = deprecated;', 18, [tkIdentifier, _, TK_Equal, _, tkIdentifier, TK_Semi ]);
+    CheckTokensForLine('TProc5 = procedure(deprecated: deprecated) of object; stdcall; experimental deprecated;', 19,
+      [ _I,_,_Eq,_, _K,_Open,_I,_Col,_,_I,_Close,_,_K,_,_K,   _Semi, _,   _M,_Semi,   _, _M, _, _M, _Semi    ]);
+    CheckTokensForLine('deprecated = deprecated;', 20, [tkIdentifier, _, TK_Equal, _, tkIdentifier, TK_Semi ]);
+
+    CheckTokensForLine('deprecated = class(deprecated)', 23,
+      [_I,_,_Eq,_,_K,_Open,_I,_Close]);
+    CheckTokensForLine('TProc1 = procedure(deprecated: deprecated); experimental deprecated;', 9,
+      [ _I,_,_Eq,_, _K,_Open,_I,_Col,_,_I,_Close,   _Semi,   _, _M, _, _M, _Semi    ]);
+    CheckTokensForLine('deprecated = deprecated;', 10, [tkIdentifier, _, TK_Equal, _, tkIdentifier, TK_Semi ]);
+    CheckTokensForLine('TProc1 = procedure(deprecated: deprecated); deprecated '''' experimental;', 11,
+      [ _I,_,_Eq,_, _K,_Open,_I,_Col,_,_I,_Close,   _Semi,   _, _M, _, _Str, _, _M, _Semi    ]);
+    CheckTokensForLine('deprecated = deprecated;', 12, [tkIdentifier, _, TK_Equal, _, tkIdentifier, TK_Semi ]);
+    CheckTokensForLine('TProc2 = procedure(deprecated: deprecated)  experimental deprecated;', 13,
+      [ _I,_,_Eq,_, _K,_Open,_I,_Col,_,_I,_Close,            _, _M, _, _M, _Semi    ]);
+    CheckTokensForLine('platform;', 14, [tkModifier, TK_Semi ]);
+    CheckTokensForLine('TProc4 = procedure(deprecated: deprecated); cdecl; experimental deprecated;', 15,
+      [ _I,_,_Eq,_, _K,_Open,_I,_Col,_,_I,_Close,   _Semi, _,   _M,_Semi,  _, _M, _, _M, _Semi    ]);
+    CheckTokensForLine('deprecated = deprecated;', 16, [tkIdentifier, _, TK_Equal, _, tkIdentifier, TK_Semi ]);
+    CheckTokensForLine('TProc3 = procedure(deprecated: deprecated)  cdecl; experimental deprecated ''oue'' platform;', 17,
+      [ _I,_,_Eq,_, _K,_Open,_I,_Col,_,_I,_Close,          _,   _M,_Semi,  _, _M, _, _M, _, _Str, _, _M, _Semi    ]);
+    CheckTokensForLine('deprecated = deprecated;', 18, [tkIdentifier, _, TK_Equal, _, tkIdentifier, TK_Semi ]);
+    CheckTokensForLine('TProc5 = procedure(deprecated: deprecated) of object; stdcall; experimental deprecated;', 19,
+      [ _I,_,_Eq,_, _K,_Open,_I,_Col,_,_I,_Close,_,_K,_,_K,   _Semi, _,   _M,_Semi,   _, _M, _, _M, _Semi    ]);
+    CheckTokensForLine('deprecated = deprecated;', 20, [tkIdentifier, _, TK_Equal, _, tkIdentifier, TK_Semi ]);
+    CheckTokensForLine('end deprecated ''ee'' experimental;', 36,
+      [_K,_,_M,_,_Str,_,_M,_Semi]);
+
+
+
+    CheckTokensForLine('StdCall=record',  39,
       [ tkIdentifier, TK_Equal, tkKey  // Stdcall=record
       ]);
 
-    CheckTokensForLine('funciton in record',  10,
+    CheckTokensForLine('funciton in record',  40,
       [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  // function cdecl
         TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
         TK_Colon, tkIdentifier, TK_Semi, tkModifier, TK_Semi, // :cdecl;cdecl;
         tkModifier, TK_Semi //deprecated;
       ]);
 
-    CheckTokensForLine('var cdecl function',  14,
+    CheckTokensForLine('var cdecl function',  44,
       [ tkIdentifier, TK_Equal, tkKey,  // Stdcall:function
         TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
         TK_Colon, tkIdentifier, TK_Semi, tkModifier, TK_Semi // :cdecl;cdecl;
       ]);
 
-    CheckTokensForLine('var cdecl:cdecl',  16,
+    CheckTokensForLine('var cdecl:cdecl',  46,
       [ tkIdentifier, TK_Colon, tkIdentifier, TK_Semi  //cdecl:cdecl;
       ]);
 
-    CheckTokensForLine('function',  18,
+    CheckTokensForLine('function',  48,
       [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  // function StdCall
         TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
         TK_Colon, tkIdentifier, TK_Semi, tkModifier, TK_Semi // :cdecl;cdecl;
       ]);
 
-    CheckTokensForLine('var cdecl deprecated:cdecl',  20,
+    CheckTokensForLine('var cdecl deprecated:cdecl',  50,
       [ tkIdentifier, TK_Colon, tkIdentifier,   //cdecl:cdecl
         tkSpace, tkModifier, TK_Semi //deprecated;
       ]);
 
-    CheckTokensForLine('function deprecated',  21,
+    CheckTokensForLine('function deprecated',  51,
       [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  // function StdCall
         TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
         TK_Colon, tkIdentifier,TK_Semi, // :cdecl;
@@ -898,48 +978,48 @@ begin
       ]);
 
 
-     CheckTokensForLine('function Stdcall:cdecl;[cdecl];', 23,
+     CheckTokensForLine('function Stdcall:cdecl;[cdecl];', 53,
       [ tkKey, tkSpace, tkIdentifier + FAttrProcName, TK_Colon, tkIdentifier, TK_Semi,
         TK_Bracket, tkModifier, TK_Bracket, TK_Semi
       ]);
-     CheckTokensForLine('procedure Stdcall; [cdecl];', 24,
+     CheckTokensForLine('procedure Stdcall; [cdecl];', 54,
       [ tkKey, tkSpace, tkIdentifier + FAttrProcName, TK_Colon, tkSpace,
         TK_Bracket, tkModifier, TK_Bracket, TK_Semi
       ]);
 
-     CheckTokensForLine('function Stdcall:cdecl cdecl;', 26,
+     CheckTokensForLine('function Stdcall:cdecl cdecl;', 56,
       [ tkKey, tkSpace, tkIdentifier + FAttrProcName, TK_Colon, tkIdentifier, tkSpace,
         tkModifier, TK_Semi
       ]);
-     CheckTokensForLine('function Stdcall():cdecl cdecl;', 27,
+     CheckTokensForLine('function Stdcall():cdecl cdecl;', 57,
       [ tkKey, tkSpace, tkIdentifier + FAttrProcName, TK_Bracket, TK_Bracket, TK_Colon,
         tkIdentifier, tkSpace,
         tkModifier, TK_Semi
       ]);
-     CheckTokensForLine('procedure Stdcall cdecl;', 28,
+     CheckTokensForLine('procedure Stdcall cdecl;', 58,
       [ tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSpace,
         tkModifier, TK_Semi
       ]);
-     CheckTokensForLine('procedure Stdcall() cdecl;', 29,
+     CheckTokensForLine('procedure Stdcall() cdecl;', 59,
       [ tkKey, tkSpace, tkIdentifier + FAttrProcName, TK_Bracket, TK_Bracket, tkSpace,
         tkModifier, TK_Semi
       ]);
-     CheckTokensForLine('function Stdcall:cdecl [cdecl];', 30,  // not a modifire / not currently
+     CheckTokensForLine('function Stdcall:cdecl [cdecl];', 60,  // not a modifire / not currently
       [ tkKey, tkSpace, tkIdentifier + FAttrProcName, TK_Colon, tkIdentifier, tkSpace,
         TK_Bracket, tkIdentifier {maybe modifier in future fpc version?}, TK_Bracket, TK_Semi
       ]);
-     CheckTokensForLine('procedure foo cdecl;', 33,
+     CheckTokensForLine('procedure foo cdecl;', 63,
       [ tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSpace,
         tkModifier, TK_Semi
       ]);
 
-     CheckTokensForLine('  procedure() cdecl begin end();', 35,
+     CheckTokensForLine('  procedure() cdecl begin end();', 65,
       [ tkSpace, tkKey, TK_Bracket, TK_Bracket, tkSpace,
         tkModifier,
         tkSpace, tkKey, tkSpace, tkKey,
         TK_Bracket, TK_Bracket, TK_Semi
       ]);
-     CheckTokensForLine('  procedure() [cdecl] begin end();', 36,
+     CheckTokensForLine('  procedure() [cdecl] begin end();', 66,
       [ tkSpace, tkKey, TK_Bracket, TK_Bracket, tkSpace,
         TK_Bracket, tkModifier, TK_Bracket,
         tkSpace, tkKey, tkSpace, tkKey,

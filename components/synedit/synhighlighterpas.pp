@@ -160,6 +160,7 @@ type
                           //    >>> Also SET BY "var"/"type"/"const" => to prevent next token from being mistaken
     tsAfterCvar,          // cvar;
                           //    >>> KEPT until ONE AFTER the ";" => to prevent next token from being mistaken
+    tsAfterDeprecated,    // may have deprecated 'hint message'
     tsAfterTypedConst,    // const foo: ___=___; public;
                           //    >>> typed const can have modifiers
                           //        Set AFTER ";"
@@ -3068,8 +3069,10 @@ begin
     FNextTokenState := tsAtBeginOfStatement;
     Result := tkKey
   end
-  else if IsHintModifier('DEPRECATED') then
-    Result := DoHintModifier
+  else if IsHintModifier('DEPRECATED') then begin
+    Result := DoHintModifier;
+    FNextTokenState := tsAfterDeprecated;
+  end
   else
     Result := tkIdentifier;
 end;
@@ -3986,7 +3989,6 @@ begin
             (PasCodeFoldRange.BracketNestLevel = 0);
   if not Result then
     exit;
-  tfb := TopPascalCodeFoldBlockType;
   case tfb of
     //cfbtVarConstType:
     cfbtVarBlock, cfbtLocalVarBlock,
@@ -4001,7 +4003,7 @@ begin
          (FTokenState <> tsAfterAbsolute) and
          ( (fRange * [rsInTypeSpecification, rsAfterEqualOrColon] = [rsInTypeSpecification]) or
            ( (rsWasInProcHeader in fRange) and
-             (FTokenState in [tsAtBeginOfStatement])
+             (FTokenState in [tsAtBeginOfStatement, tsAfterDeprecated])
            )
          );
     cfbtClass, cfbtClassSection,
@@ -4017,7 +4019,7 @@ begin
          ( (fRange * [rsAfterClassMembers, rsInProcHeader] = [rsAfterClassMembers]) or
            (fRange * [rsAfterClassMembers, rsAfterEqualOrColon, rsInTypeSpecification] = [rsInTypeSpecification]) or
            ( (rsWasInProcHeader in fRange) and
-             (FTokenState in [tsAtBeginOfStatement])
+             (FTokenState in [tsAtBeginOfStatement, tsAfterDeprecated])
            )
          );
     cfbtUnitSection, cfbtProgram, cfbtProcedure:
@@ -4043,11 +4045,18 @@ end;
 function TSynPasSyn.DoHintModifier: TtkTokenKind;
 begin
   Result := tkModifier;
-  if (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader, rsAfterClassMembers] = [rsWasInProcHeader, rsAfterClassMembers]) and
-     (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) and
-     (FRangeCompilerMode in [pcmDelphi, pcmDelphiUnicode])
-  then
-    FRange := FRange + [rsInProcHeader]; // virtual reintroduce overload can be after virtual
+  case TopPascalCodeFoldBlockType of
+    cfbtClass, cfbtClassSection:
+      if (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader, rsAfterClassMembers] = [rsWasInProcHeader, rsAfterClassMembers]) and
+         (FRangeCompilerMode in [pcmDelphi, pcmDelphiUnicode])
+      then
+        FRange := FRange + [rsInProcHeader]; // virtual reintroduce overload can be after virtual
+    cfbtTypeBlock, cfbtLocalTypeBlock, cfbtClassTypeBlock:
+      if (rsWasInProcHeader in fRange) then begin
+        FOldRange := FOldRange - [rsWasInProcHeader]; // there can be several hints, without semicolon between them
+        FNextTokenState := tsAtBeginOfStatement;
+      end;
+  end;
 end;
 
 function TSynPasSyn.CouldBeAtStartOfTypeDef: Boolean;
@@ -5751,105 +5760,116 @@ end;
 
 procedure TSynPasSyn.StringProc;
 var
-  IsInWord, WasInWord, ct: Boolean;
+  IsInWord, WasInWord, ct, WasInString: Boolean;
+  tfb: TPascalCodeFoldBlockType;
 begin
   fTokenID := tkString;
   if reStringSingle in FRequiredStates then
     FCustomCommentTokenMarkup := FPasAttributesMod[attribStringSingle];
 
-  if FInString then begin
-    if not (IsInNextToEOL or IsScanning) then begin
-      if (LinePtr[Run] = '''') and (LinePtr[Run+1] = '''') and
-         GetCustomSymbolToken(tkString, 2, FCustomTokenMarkup)
-      then begin
-        inc(Run, 2);
-        if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
-          Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
-        exit;
-      end;
-
-      if (IsLetterChar[LinePtr[Run]]) and
-         ( (Run = 0) or
-           not((IsLetterChar[LinePtr[Run-1]] or IsUnderScoreOrNumberChar[LinePtr[Run-1]]))
-         )
-      then begin
-        if GetCustomTokenAndNext(tkString, FCustomTokenMarkup) then begin
+  WasInString := FInString;
+  try
+    if FInString then begin
+      if not (IsInNextToEOL or IsScanning) then begin
+        if (LinePtr[Run] = '''') and (LinePtr[Run+1] = '''') and
+           GetCustomSymbolToken(tkString, 2, FCustomTokenMarkup)
+        then begin
+          inc(Run, 2);
           if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
             Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
           exit;
         end;
-      end;
-    end;
-  end
-  else begin
-    FInString := True;
-    if not (IsInNextToEOL or IsScanning) and
-      GetCustomSymbolToken(tkString, 1, FCustomTokenMarkup)
-    then begin
-      Inc(Run);
-      if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
-        Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
-      exit;
-    end;
-    Inc(Run);
-  end;
 
-  IsInWord := False;
-  WasInWord := (IsInNextToEOL or IsScanning); // don't run checks
-  while (not (LinePtr[Run] in [#0, #10, #13])) do begin
-    if LinePtr[Run] = '''' then begin
-      if (LinePtr[Run+1] = '''') then begin
-        // escaped
-        if (not (IsInNextToEOL or IsScanning)) and
-           GetCustomSymbolToken(tkString, 2, FCustomTokenMarkup, Run <> fTokenPos)
+        if (IsLetterChar[LinePtr[Run]]) and
+           ( (Run = 0) or
+             not((IsLetterChar[LinePtr[Run-1]] or IsUnderScoreOrNumberChar[LinePtr[Run-1]]))
+           )
         then begin
-          if (Run = fTokenPos) then
-            inc(Run, 2);
-          if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
-            Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
-          exit
-        end;
-        Inc(Run);
-      end
-      else begin
-        // string end
-        if not (IsInNextToEOL or IsScanning) then begin
-          ct := GetCustomSymbolToken(tkString, 1, FCustomTokenMarkup, Run <> fTokenPos);
-          if ct and (Run <> fTokenPos) then begin
+          if GetCustomTokenAndNext(tkString, FCustomTokenMarkup) then begin
             if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
               Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
             exit;
           end;
         end;
-        Inc(Run);
-        break;
       end;
     end
-    else
-    if (not WasInWord) and IsLetterChar[LinePtr[Run]] then begin
-      if GetCustomTokenAndNext(tkString, FCustomTokenMarkup, True) then begin
+    else begin
+      FInString := True;
+      if not (IsInNextToEOL or IsScanning) and
+        GetCustomSymbolToken(tkString, 1, FCustomTokenMarkup)
+      then begin
+        Inc(Run);
         if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
           Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
         exit;
       end;
+      Inc(Run);
     end;
 
-    Inc(Run);
+    IsInWord := False;
+    WasInWord := (IsInNextToEOL or IsScanning); // don't run checks
+    while (not (LinePtr[Run] in [#0, #10, #13])) do begin
+      if LinePtr[Run] = '''' then begin
+        if (LinePtr[Run+1] = '''') then begin
+          // escaped
+          if (not (IsInNextToEOL or IsScanning)) and
+             GetCustomSymbolToken(tkString, 2, FCustomTokenMarkup, Run <> fTokenPos)
+          then begin
+            if (Run = fTokenPos) then
+              inc(Run, 2);
+            if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
+              Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
+            exit
+          end;
+          Inc(Run);
+        end
+        else begin
+          // string end
+          if not (IsInNextToEOL or IsScanning) then begin
+            ct := GetCustomSymbolToken(tkString, 1, FCustomTokenMarkup, Run <> fTokenPos);
+            if ct and (Run <> fTokenPos) then begin
+              if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
+                Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
+              exit;
+            end;
+          end;
+          Inc(Run);
+          break;
+        end;
+      end
+      else
+      if (not WasInWord) and IsLetterChar[LinePtr[Run]] then begin
+        if GetCustomTokenAndNext(tkString, FCustomTokenMarkup, True) then begin
+          if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
+            Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
+          exit;
+        end;
+      end;
 
-    if not (IsInNextToEOL or IsScanning) then begin
-      WasInWord := IsInWord;
-      IsInWord := (IsLetterChar[LinePtr[Run]] or IsUnderScoreOrNumberChar[LinePtr[Run]]);
+      Inc(Run);
+
+      if not (IsInNextToEOL or IsScanning) then begin
+        WasInWord := IsInWord;
+        IsInWord := (IsLetterChar[LinePtr[Run]] or IsUnderScoreOrNumberChar[LinePtr[Run]]);
+      end;
     end;
-  end;
-  FInString := False;
+    FInString := False;
 
-  // modifiers like "alias" take a string as argument
-  if (PasCodeFoldRange.BracketNestLevel = 0) then begin
-    if (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsInProcHeader]) and
-       (TopPascalCodeFoldBlockType in ProcModifierAllowed)
-    then
-      FRange := FRange + [rsInProcHeader];
-    FOldRange := FOldRange - [rsInObjcProtocol];
+  finally
+    // modifiers like "alias" take a string as argument
+    if (not WasInString) and (PasCodeFoldRange.BracketNestLevel = 0) then begin
+      tfb := TopPascalCodeFoldBlockType;
+      if (tfb in ProcModifierAllowed) then begin
+        if (tfb in cfbtAnyTypeBlock) and (FTokenState = tsAfterDeprecated) then begin
+          FOldRange := FOldRange - [rsWasInProcHeader]; // there can more hints after "deprecated 'foo'", without semicolon between them
+          FNextTokenState := tsAtBeginOfStatement;
+        end
+        else
+        if (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsInProcHeader]) then
+          FRange := FRange + [rsInProcHeader];
+      end;
+      FOldRange := FOldRange - [rsInObjcProtocol];
+    end;
   end;
 end;
 
