@@ -186,6 +186,10 @@ msgstr "Lista de afazeres do projecto \"%s\""
 msgid "Goto selected source line"
 msgstr "Ir para a linha-fonte seleccionada"
 
+#: todoliststrconsts.listodolistofproject
+msgid "ToDo List of Project"
+msgstr ""
+
 #: todoliststrconsts.listodolistrefresh
 msgid "Refresh ToDo items"
 msgstr "Actualizar afazeres"

@@ -196,6 +196,10 @@ msgstr ""
 msgid "Goto selected source line"
 msgstr "转到选择的代码行"
 
+#: todoliststrconsts.listodolistofproject
+msgid "ToDo List of Project"
+msgstr ""
+
 #: todoliststrconsts.listodolistrefresh
 #, fuzzy
 #| msgid "Refresh todo items"

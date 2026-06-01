@@ -170,21 +170,25 @@ msgstr "Редактировать выбранный элемент"
 
 #: todoliststrconsts.listodolistfornewproject
 msgid "ToDo List for new Project"
-msgstr "Список ToDo для нового проекта"
+msgstr "Список ToDo нового проекта"
 
 #: todoliststrconsts.listodolistforpackage
 #, object-pascal-format
 msgid "ToDo List for Package \"%s\""
-msgstr "Список ToDo для пакета \"%s\""
+msgstr "Список ToDo пакета \"%s\""
 
 #: todoliststrconsts.listodolistforproject
 #, object-pascal-format
 msgid "ToDo List for Project \"%s\""
-msgstr "Список ToDo для проекта \"%s\""
+msgstr "Список ToDo проекта \"%s\""
 
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
 msgstr "Перейти к выделенной строке исходного кода"
+
+#: todoliststrconsts.listodolistofproject
+msgid "ToDo List of Project"
+msgstr "Список ToDo проекта"
 
 #: todoliststrconsts.listodolistrefresh
 msgid "Refresh ToDo items"

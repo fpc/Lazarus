@@ -195,6 +195,10 @@ msgstr ""
 msgid "Goto selected source line"
 msgstr "Aller à la ligne du code source sélectionné"
 
+#: todoliststrconsts.listodolistofproject
+msgid "ToDo List of Project"
+msgstr ""
+
 #: todoliststrconsts.listodolistrefresh
 #, fuzzy
 #| msgid "Refresh todo items"
