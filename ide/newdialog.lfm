@@ -103,7 +103,7 @@ object NewOtherDialog: TNewOtherDialog
       end
     end
     object Splitter1: TSplitter
-      Left = 295
+      Left = 293
       Height = 390
       Top = 0
       Width = 5
@@ -141,7 +141,6 @@ object NewOtherDialog: TNewOtherDialog
         Top = 29
         Width = 291
         Align = alClient
-        ExpandSignSize = 10
         HideSelection = False
         ReadOnly = True
         ScrollBars = ssAutoBoth
