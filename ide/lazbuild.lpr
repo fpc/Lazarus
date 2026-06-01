@@ -1125,6 +1125,7 @@ begin
 
   Result.BeginUpdate(true);
   try
+    Result.BuildRelease:=true;
     // read project info file
     if Result.ReadProject(AFilename,EnvironmentOptions.BuildMatrixOptions)<>mrOk then
       PrintErrorAndHalt(ErrorLoadProjectFailed,'Project '+AFilename);

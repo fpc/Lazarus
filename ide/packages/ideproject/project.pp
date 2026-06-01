@@ -541,6 +541,7 @@ type
     FBuildModes: TProjectBuildModes;
     FBuildModesBackup: TProjectBuildModes;
     FAutoCreateForms: boolean;
+    FBuildRelease: boolean;
     FChangeStampSaved: integer;
     FEnableI18NForLFM: boolean;
     FLastCompileComplete: boolean;
@@ -868,6 +869,7 @@ type
     property AutoOpenDesignerFormsDisabled: boolean read FAutoOpenDesignerFormsDisabled
                                                     write SetAutoOpenDesignerFormsDisabled;
     property BuildModes: TProjectBuildModes read FBuildModes;
+    property BuildRelease: boolean read FBuildRelease write FBuildRelease; // used by lazbuild, true=skip loading session
     property CompilerOptions: TProjectCompilerOptions read GetCompilerOptions;
     property DebuggerLink: TProjectDebugLinkBase read FDebuggerLink write FDebuggerLink;
     property DefineTemplates: TProjectDefineTemplates read FDefineTemplates;
@@ -2458,6 +2460,7 @@ const
 var
   pds: TPathDelimSwitch;
 begin
+  if BuildRelease then exit;
   pds:=CheckPathDelim(FXMLConfig.GetValue(Path+'PathDelim/Value', '/'),
                       fPathDelimChanged);
   SessionStorePathDelim:=pds;
