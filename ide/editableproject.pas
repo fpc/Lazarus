@@ -184,14 +184,13 @@ type
     procedure EditorInfoAdd(EdInfo: TUnitEditorInfo);
     procedure EditorInfoRemove(EdInfo: TUnitEditorInfo);
     function JumpHistoryCheckPosition(APosition:TProjectJumpHistoryPosition): boolean;
-    procedure LoadDefaultSession;
   protected
     procedure SortEditors; override;
     procedure UpdateVisibleEditor(PgIndex: integer);
     // Session
     procedure LoadSessionInfo(const Path: string); override;
     procedure LoadFromSession; override;
-    function DoLoadSession(Filename: String): TModalResult; override;
+    procedure LoadDefaultSession; override;
     procedure SaveSessionInfo(const Path: string); override;
     procedure SaveToSession; override;
   public
@@ -941,21 +940,9 @@ end;
 procedure TEditableProject.LoadFromSession;
 const
   Path = 'ProjectSession/';
-var
-  pds: TPathDelimSwitch;
 begin
-  pds:=CheckPathDelim(FXMLConfig.GetValue(Path+'PathDelim/Value', '/'),
-                      fPathDelimChanged);
-  SessionStorePathDelim:=pds;
-  fCurStorePathDelim:=pds;
+  inherited;
 
-  FFileVersion:=FXMLConfig.GetValue(Path+'Version/Value',0);
-
-  // load MacroValues and compiler options
-  BuildModes.LoadSessionFromXMLConfig(FXMLConfig, Path, FLoadAllOptions);
-
-  // load defines used for custom options
-  LoadOtherDefines(Path);
   // load unit and session info
   LoadUnits(Path,true);
   LoadSessionInfo(Path);
@@ -971,36 +958,6 @@ begin
   // call hooks to read their info (e.g. DebugBoss)
   if Assigned(OnLoadProjectInfo) then
     OnLoadProjectInfo(Self,FXMLConfig,true);
-end;
-
-function TEditableProject.DoLoadSession(Filename: String): TModalResult;
-begin
-  Result:=mrOK;
-  if FileExistsUTF8(Filename) then
-  begin
-    //DebugLn('TProject.ReadProject loading Session Filename=',Filename);
-    try
-      FXMLConfig := TCodeBufXMLConfig.CreateWithCache(Filename);
-      LoadFromSession;
-    except
-      LazMessageWorker(lisCCOErrorCaption,
-        Format(lisUnableToReadTheProjectInfoFile, [LineEnding,Filename]),
-        mtError,[mbOk]);
-      Result:=mrCancel;
-      exit;
-    end;
-
-    fPathDelimChanged:=false;
-    try
-      FXMLConfig.Modified:=false;
-      FXMLConfig.Free;
-    except
-    end;
-    fCurStorePathDelim:=StorePathDelim;
-    FXMLConfig:=nil;
-  end else
-    // there is no .lps file -> create some defaults
-    LoadDefaultSession;
 end;
 
 procedure TEditableProject.SaveSessionInfo(const Path: string);

@@ -699,6 +699,7 @@ type
     // Session
     procedure LoadSessionInfo(const {%H-}Path: string); virtual;
     procedure LoadFromSession; virtual;
+    procedure LoadDefaultSession; virtual;
     function DoLoadSession({%H-}Filename: String): TModalResult; virtual;
     procedure LoadOtherDefines(const Path: string);
     procedure SaveSessionInfo(const Path: string); virtual;
@@ -2452,8 +2453,28 @@ begin
 end;
 
 procedure TProject.LoadFromSession;
+const
+  Path = 'ProjectSession/';
+var
+  pds: TPathDelimSwitch;
 begin
-  ; // Do nothing
+  pds:=CheckPathDelim(FXMLConfig.GetValue(Path+'PathDelim/Value', '/'),
+                      fPathDelimChanged);
+  SessionStorePathDelim:=pds;
+  fCurStorePathDelim:=pds;
+
+  FFileVersion:=FXMLConfig.GetValue(Path+'Version/Value',0);
+
+  // load MacroValues and compiler options
+  BuildModes.LoadSessionFromXMLConfig(FXMLConfig, Path, FLoadAllOptions);
+
+  // load defines used for custom options
+  LoadOtherDefines(Path);
+end;
+
+procedure TProject.LoadDefaultSession;
+begin
+
 end;
 
 function TProject.DoLoadLPI(Filename: String): TModalResult;
@@ -2542,6 +2563,31 @@ end;
 function TProject.DoLoadSession(Filename: String): TModalResult;
 begin
   Result:=mrOK;
+  if FileExistsUTF8(Filename) then
+  begin
+    //DebugLn('TProject.DoLoadSession loading Session Filename=',Filename);
+    try
+      FXMLConfig := TCodeBufXMLConfig.CreateWithCache(Filename);
+      LoadFromSession;
+    except
+      LazMessageWorker(lisCCOErrorCaption,
+        Format(lisUnableToReadTheProjectInfoFile, [LineEnding,Filename]),
+        mtError,[mbOk]);
+      Result:=mrCancel;
+      exit;
+    end;
+
+    fPathDelimChanged:=false;
+    try
+      FXMLConfig.Modified:=false;
+      FXMLConfig.Free;
+    except
+    end;
+    fCurStorePathDelim:=StorePathDelim;
+    FXMLConfig:=nil;
+  end else
+    // there is no .lps file -> create some defaults
+    LoadDefaultSession;
 end;
 
 function TProject.DoLoadLPR(Revert: boolean): TModalResult;
