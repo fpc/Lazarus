@@ -7,8 +7,8 @@ object SynSpellOptionsFrame: TSynSpellOptionsFrame
   ClientWidth = 1093
   LCLVersion = '4.99.0.0'
   TabOrder = 0
-  DesignLeft = 5
-  DesignTop = 1
+  DesignLeft = 471
+  DesignTop = 112
   object bvDictionary: TDividerBevel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -137,7 +137,7 @@ object SynSpellOptionsFrame: TSynSpellOptionsFrame
       Anchors = [akTop, akLeft, akRight]
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 1
+      TabOrder = 2
       Text = 'edLang'
       OnEditingDone = EdASpellOptsEditingDone
     end
@@ -158,7 +158,7 @@ object SynSpellOptionsFrame: TSynSpellOptionsFrame
       MaxLength = 0
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 2
+      TabOrder = 1
       OnEditingDone = EdASpellOptsEditingDone
     end
     object lbUserDictPath: TLabel

@@ -23,7 +23,7 @@ unit SynSpellDictionary;
 interface
 
 uses
-  SynASpellDef, LazClasses, LCLProc, SysUtils, Classes;
+  SynASpellDef, LazClasses, LazFileUtils, LCLProc, SysUtils, Classes;
 
 type
   TStringArray = array of String;
@@ -233,6 +233,7 @@ end;
 
 procedure TSynSpellDictionaryASpell.SetDictionaryDir(AValue: string);
 begin
+  AValue := AppendPathDelim(AValue);
   if FDictionaryDir = AValue then Exit;
   FDictionaryDir := AValue;
   if not IsLoaded then ;
