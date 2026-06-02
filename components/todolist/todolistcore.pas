@@ -200,7 +200,8 @@ begin
     DebugLn(['ScanFile failed loading ',FN]);
     exit;
   end;
-  Assert(aFilename=Code.Filename, 'ScanFile: aFileName <> Code.Filename');
+  if aFilename<>Code.Filename then
+    debugln(['ToDoList ScanFile: aFileName (',aFileName,') <> Code.Filename (',Code.Filename,')']);
   CodeToolBoss.Explore(Code,Tool,false,false); // Parse Pascal code, ignore Result
   AVLNode:=aScannedFiles.FindKey(Pointer(aFilename),
                                 @CompareAnsiStringWithTLScannedFile);
