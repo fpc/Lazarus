@@ -2326,15 +2326,146 @@ begin
 end;
 
 procedure TGtk3Widget.lowerWidget;
+var
+  ALayout: PGtkLayout;
+  ABin: PGdkWindow;
+  AList, N, M: PGList;
+  AChild: PGtkWidget;
+  H, MH: HWND;
+  ADummy, ARect: TRect;
+  AOverlapped: Boolean;
 begin
-  if Gtk3IsGdkWindow(FWidget^.window) then
+  if not Gtk3IsGdkWindow(FWidget^.window) then
+    exit;
+  if not Gtk3IsLayout(FWidget^.get_parent) then
+  begin
     FWidget^.window^.lower;
+    exit;
+  end;
+
+  ALayout := PGtkLayout(FWidget^.get_parent);
+  AList := gtk_container_get_children(PGtkContainer(ALayout));
+  N := AList;
+  while N <> nil do
+  begin
+    AChild := PGtkWidget(N^.data);
+    if AChild <> FWidget then
+    begin
+      H := HwndFromGtkWidget(AChild);
+      if H <> 0 then
+      begin
+        AChild^.ref;
+        try
+          gtk_container_remove(PGtkContainer(ALayout), AChild);
+          gtk_layout_put(ALayout, AChild, TGtk3Widget(H).LCLObject.Left,
+            TGtk3Widget(H).LCLObject.Top);
+        finally
+          AChild^.unref;
+        end;
+      end;
+    end;
+    N := N^.next;
+  end;
+
+  if AList <> nil then
+    g_list_free(AList);
+
+  ABin := PGtkLayout(ALayout)^.get_bin_window;
+  AList := gtk_container_get_children(PGtkContainer(ALayout));
+  N := AList;
+  while N <> nil do
+  begin
+    AChild := PGtkWidget(N^.data);
+    if Gtk3IsGdkWindow(AChild^.window) and (AChild^.window <> ABin) then
+    begin
+      H := HwndFromGtkWidget(AChild);
+      if H <> 0 then
+      begin
+        ARect := TGtk3Widget(H).LCLObject.BoundsRect;
+        AOverlapped := False;
+        M := N^.next;
+        while M <> nil do
+        begin
+          MH := HwndFromGtkWidget(PGtkWidget(M^.data));
+          if (MH <> 0) and IntersectRect(ADummy, ARect,
+             TGtk3Widget(MH).LCLObject.BoundsRect) then
+          begin
+            AOverlapped := True;
+            break;
+          end;
+          M := M^.next;
+        end;
+        if not AOverlapped then
+          AChild^.window^.raise_;
+      end;
+    end;
+    N := N^.next;
+  end;
+  if AList <> nil then
+    g_list_free(AList);
 end;
 
 procedure TGtk3Widget.raiseWidget;
+var
+  ALayout: PGtkLayout;
+  ABin: PGdkWindow;
+  AList, N, M: PGList;
+  AChild: PGtkWidget;
+  H, MH: HWND;
+  ADummy, ARect: TRect;
+  AOverlapped: Boolean;
 begin
-  if Gtk3IsGdkWindow(FWidget^.window) then
+  if not Gtk3IsGdkWindow(FWidget^.window) then
+    exit;
+  if not Gtk3IsLayout(FWidget^.get_parent) then
+  begin
     FWidget^.window^.raise_;
+    exit;
+  end;
+
+  ALayout := PGtkLayout(FWidget^.get_parent);
+  FWidget^.ref;
+  try
+    gtk_container_remove(PGtkContainer(ALayout), FWidget);
+    gtk_layout_put(ALayout, FWidget, LCLObject.Left, LCLObject.Top);
+  finally
+    FWidget^.unref;
+  end;
+
+  ABin := PGtkLayout(ALayout)^.get_bin_window;
+  AList := gtk_container_get_children(PGtkContainer(ALayout));
+
+  N := AList;
+  while N <> nil do
+  begin
+    AChild := PGtkWidget(N^.data);
+    if Gtk3IsGdkWindow(AChild^.window) and (AChild^.window <> ABin) then
+    begin
+      H := HwndFromGtkWidget(AChild);
+      if H <> 0 then
+      begin
+        ARect := TGtk3Widget(H).LCLObject.BoundsRect;
+        AOverlapped := False;
+        M := N^.next;
+        while M <> nil do
+        begin
+          MH := HwndFromGtkWidget(PGtkWidget(M^.data));
+          if (MH <> 0) and IntersectRect(ADummy, ARect,
+             TGtk3Widget(MH).LCLObject.BoundsRect) then
+          begin
+            AOverlapped := True;
+            break;
+          end;
+          M := M^.next;
+        end;
+        if not AOverlapped then
+          AChild^.window^.raise_;
+      end;
+    end;
+    N := N^.next;
+  end;
+  if AList <> nil then
+    g_list_free(AList);
 end;
 
 procedure TGtk3Widget.stackUnder(AWidget: PGtkWidget);
