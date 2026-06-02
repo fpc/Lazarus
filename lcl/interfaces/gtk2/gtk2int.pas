@@ -270,9 +270,9 @@ type
   private
     {$IFDEF HASX}
     FDesktopWidget: PGtkWidget;
-    FMenuWidget: PGtkWidget;
     FWSFrameRect: TRect;
     {$ENDIF}
+    FMenuWidget: PGtkWidget;
     procedure Gtk2Create;
     procedure Gtk2Destroy;
     procedure SetMenuWidget(const AValue: PGtkWidget);
