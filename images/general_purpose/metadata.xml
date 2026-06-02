@@ -32050,5 +32050,77 @@
         <keyword>search</keyword>
       </keywords>
     </icon>
+    <icon filename="Mail_12_16.png" width="16" height="16" style="outline">
+      <keywords>
+        <keyword>envelope</keyword>
+        <keyword>mail</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Mail_12_24.png" width="24" height="24" style="outline">
+      <keywords>
+        <keyword>envelope</keyword>
+        <keyword>mail</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Mail_12_32.png" width="32" height="32" style="outline">
+      <keywords>
+        <keyword>envelope</keyword>
+        <keyword>mail</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Mail_12_36.png" width="36" height="36" style="outline">
+      <keywords>
+        <keyword>envelope</keyword>
+        <keyword>mail</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Mail_12_48.png" width="48" height="48" style="outline">
+      <keywords>
+        <keyword>envelope</keyword>
+        <keyword>mail</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Mail_12_64.png" width="64" height="64" style="outline">
+      <keywords>
+        <keyword>envelope</keyword>
+        <keyword>mail</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Mail_13_16.png" width="16" height="16" style="outline">
+      <keywords>
+        <keyword>envelope</keyword>
+        <keyword>mail</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Mail_13_24.png" width="24" height="24" style="outline">
+      <keywords>
+        <keyword>envelope</keyword>
+        <keyword>mail</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Mail_13_32.png" width="32" height="32" style="outline">
+      <keywords>
+        <keyword>envelope</keyword>
+        <keyword>mail</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Mail_13_36.png" width="36" height="36" style="outline">
+      <keywords>
+        <keyword>envelope</keyword>
+        <keyword>mail</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Mail_13_48.png" width="48" height="48" style="outline">
+      <keywords>
+        <keyword>envelope</keyword>
+        <keyword>mail</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Mail_13_64.png" width="64" height="64" style="outline">
+      <keywords>
+        <keyword>envelope</keyword>
+        <keyword>mail</keyword>
+      </keywords>
+    </icon>
   </icons>
 </metadata>
