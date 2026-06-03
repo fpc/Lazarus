@@ -3303,6 +3303,9 @@ procedure TGtk3DeviceContext.drawImage1(targetRect: PRect; image: PGdkPixBuf;
 var
   M: Tcairo_matrix_t;
   MaskSurface: Pcairo_surface_t;
+  MaskPattern: Pcairo_pattern_t;
+  DstW, DstH: Double;
+  SrcW, SrcH: Double;
 
   function BuildMaskA8: Pcairo_surface_t;
   var
@@ -3371,31 +3374,32 @@ begin
   with targetRect^ do
     cairo_rectangle(pcr, LToDX(Left), LToDY(Top), LToDX(Right) - LToDX(Left), LToDY(Bottom) - LToDY(Top));
 
+  DstW := LToDX(targetRect^.Right) - LToDX(targetRect^.Left);
+  DstH := LToDY(targetRect^.Bottom) - LToDY(targetRect^.Top);
+  SrcW := sourceRect^.Right - sourceRect^.Left;
+  SrcH := sourceRect^.Bottom - sourceRect^.Top;
+
   cairo_matrix_init_identity(@M);
   cairo_matrix_translate(@M, SourceRect^.Left, SourceRect^.Top);
-  cairo_matrix_scale(@M,
-    (sourceRect^.Right - sourceRect^.Left) / (LToDX(targetRect^.Right) - LToDX(targetRect^.Left)),
-    (sourceRect^.Bottom - sourceRect^.Top) / (LToDY(targetRect^.Bottom) - LToDY(targetRect^.Top))
-  );
+  cairo_matrix_scale(@M, SrcW / DstW, SrcH / DstH);
   cairo_matrix_translate(@M, -LToDX(targetRect^.Left), -LToDY(targetRect^.Top));
 
   cairo_pattern_set_matrix(cairo_get_source(pcr), @M);
 
   //Use NEAREST filter for 1:1 scale to prevent bilinear blur
-  if ((sourceRect^.Right - sourceRect^.Left) = (targetRect^.Right - targetRect^.Left)) and
-     ((sourceRect^.Bottom - sourceRect^.Top) = (targetRect^.Bottom - targetRect^.Top)) then
+  if (SrcW = DstW) and (SrcH = DstH) then
     cairo_pattern_set_filter(cairo_get_source(pcr), CAIRO_FILTER_NEAREST);
 
   cairo_clip(pcr);
   if Assigned(mask) then
   begin
-    //we must build cairo compatible mask, issue #42260 contains
-    //bitmaps examples.
     MaskSurface := BuildMaskA8;
     if MaskSurface <> nil then
     begin
-      cairo_mask_surface(pcr, MaskSurface,
-        LToDX(targetRect^.Left), LToDY(targetRect^.Top));
+      MaskPattern := cairo_pattern_create_for_surface(MaskSurface);
+      cairo_pattern_set_matrix(MaskPattern, @M);
+      cairo_mask(pcr, MaskPattern);
+      cairo_pattern_destroy(MaskPattern);
       cairo_surface_destroy(MaskSurface);
     end else
       cairo_paint(pcr);
