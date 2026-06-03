@@ -565,16 +565,6 @@ begin
       DbgS(ABitmap) + '!');
 end;
 
-procedure TColorToRGB(AColor: TColor; out R, G, B: double);
-var
-  ARGB: TColorRef;
-begin
-  ARGB := ColorToRGB(AColor);
-  R := (ARGB and $FF) / 255;
-  G := ((ARGB shr 8) and $FF) / 255;
-  B := ((ARGB shr 16) and $FF) / 255;
-end;
-
 {Map winapi ROP to Tcairo_operator_t}
 function MapRasterOpToCairo(AValue: Integer): Tcairo_operator_t;
 begin
@@ -1758,7 +1748,7 @@ function DebugColor(AColor: TColor): string;
 var
   R, G, B: double;
 begin
-  TColorToRGB(AColor, R, G, B);
+  ColorToCairoRGB(AColor, R, G, B);
   Result := Format('DebugColor: R %2.2n G %2.2n B %2.2n',[R, G, B]);
 end;
 
@@ -4263,7 +4253,7 @@ procedure TGtk3DeviceContext.SetSourceColor(AColor: TColor);
 var
   R, G, B: double;
 begin
-  TColorToRGB(AColor, R, G, B);
+  ColorToCairoRGB(AColor, R, G, B);
   cairo_set_source_rgb(pcr, R, G, B);
 end;
 
