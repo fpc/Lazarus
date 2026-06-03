@@ -81,7 +81,9 @@ begin
   inherited Create;
   FTrayIcon := TrayIcon;
   FName := 'app-' + IntToHex(IntPtr(Application), SizeOf(IntPtr) * 2);
-  NewIcon := {%H-}Pointer(TGtk3Image(FTrayIcon.Icon.Handle).handle);
+  NewIcon := nil;
+  if Assigned(FTrayIcon.Icon) and FTrayIcon.Icon.HandleAllocated then
+    NewIcon := {%H-}Pointer(TGtk3Image(FTrayIcon.Icon.Handle).handle);
   if NewIcon = nil then
     NewIcon := {%H-}Pointer(Application.Icon.Handle);
   if NewIcon <> GlobalIcon then
@@ -125,7 +127,9 @@ procedure TAppIndTrayIconHandle.Update;
 var
   NewIcon: Pointer;
 begin
-  NewIcon := {%H-}Pointer(TGTK3Image(FTrayIcon.Icon.Handle).Handle);
+  NewIcon := nil;
+  if Assigned(FTrayIcon.Icon) and FTrayIcon.Icon.HandleAllocated then
+    NewIcon := {%H-}Pointer(TGTK3Image(FTrayIcon.Icon.Handle).Handle);
   if NewIcon = nil then
     NewIcon := {%H-}Pointer(Application.Icon.Handle);
   if NewIcon <> GlobalIcon then
