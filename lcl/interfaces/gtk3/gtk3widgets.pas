@@ -1427,7 +1427,9 @@ begin
     end;
   GDK_EXPOSE:
     begin
+      {$IFDEF GTK3DEBUGCORE}
       DebugLn('****** GDK_EXPOSE FOR ' + dbgsName(TGtk3Widget(Data).LCLObject));
+      {$ENDIF}
       // Gtk3DrawWidget is attached to 'draw' signal, Expose event doesn't trigger
       // under gtk3.
        // we use 'draw' signal Gtk3DrawEvent()
@@ -1653,7 +1655,9 @@ begin
     end;
   GDK_GRAB_BROKEN:  //could be broken eg. because of popupmenu
     begin
+      {$IFDEF GTK3DEBUGCORE}
       DebugLn('****** GDK_GRAB_BROKEN (no problem if popupmenu or hint is activated) ' + dbgsName(TGtk3Widget(Data).LCLObject));
+      {$ENDIF}
     end;
   otherwise
     DebugLn('****** GDK unhandled event type ' + dbgsName(TGtk3Widget(Data).LCLObject));
