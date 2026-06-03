@@ -33,10 +33,14 @@ type
   { TSynSpellOptionsFrame }
 
   TSynSpellOptionsFrame = class(TAbstractIDEOptionsEditor)
+    anchCtxC2: TLabel;
     anchTIC3: TLabel;
     anchTIC4: TLabel;
     anchTIC5: TLabel;
     anchTIC6: TLabel;
+    anchCtxS1: TLabel;
+    anchCtxS2: TLabel;
+    anchCtxC1: TLabel;
     anchUpChars1: TLabel;
     anchWMT3: TLabel;
     anchWMT4: TLabel;
@@ -61,6 +65,7 @@ type
     bvPrefix: TDividerBevel;
     bvRules: TDividerBevel;
     bvToken: TDividerBevel;
+    bvContext: TDividerBevel;
     cbIgnoreUpPrefixCase: TCheckBox;
     cbIgnoreLowPrefixCase: TCheckBox;
     cbMouseSuggest: TCheckBox;
@@ -69,12 +74,18 @@ type
     cbWordMultiToken: TCheckBox;
     cbIgnoreUpArticle: TCheckBox;
     cbIgnoreLowArticle: TCheckBox;
+    cbContextString: TCheckBox;
+    cbContextComment: TCheckBox;
     cbWordXCaps: TCheckBox;
     cbWordIgnoreXCaps: TCheckBox;
     cbIgnoreUpArticleCase: TCheckBox;
     cbIgnoreLowArticleCase: TCheckBox;
     dropMouseSuggest: TComboBox;
     EdDictPath: TDirectoryEdit;
+    lbHeadContextL: TLabel;
+    lbHeadContextL1: TLabel;
+    lbHeadContextR: TLabel;
+    lbHeadContextR1: TLabel;
     lbLowTokenIgnoreLen: TLabel;
     edUpChars: TEdit;
     edLowChars: TEdit;
@@ -243,6 +254,10 @@ begin
   dropMouseSuggest.Items.Add(SynSpellOptMiddle);
 
   bvRules.Caption := SynSpellOptSyntaxRules;
+  bvContext.Caption := SynSpellOptHlContextLimit;
+  cbContextString.Caption := SynSpellOptOnlyCheckInStrings;
+  cbContextComment.Caption := SynSpellOptOnlyCheckInComments;
+
   bvToken.Caption := SynSpellOptWordsAndWordPartsSplitAtC;
 
   lbUpChars.Caption := SynSpellOptUnicodeUpperChars;
@@ -315,6 +330,9 @@ begin
 
   co := SynSpellOptions.CheckerOpts;
 
+  cbContextString.Checked        := co.LimitToStringContext;
+  cbContextComment.Checked       := co.LimitToCommentContext;
+
   edUpChars.Text                 := co.SpecialUpperLetters;
   edLowChars.Text                := co.SpecialLowerLetters;
   cbWordMultiToken.Checked       := coAllowMultiTokenWord in co.Options;
@@ -366,6 +384,9 @@ begin
   SynSpellOptions.ASpellOpts.Assign(FASpellOpts);
 
   co := SynSpellOptions.CheckerOpts;
+
+  co.LimitToStringContext  := cbContextString.Checked;
+  co.LimitToCommentContext := cbContextComment.Checked;
 
   co.SpecialUpperLetters := edUpChars.Text;
   co.SpecialLowerLetters := edLowChars.Text;

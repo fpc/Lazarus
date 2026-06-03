@@ -262,6 +262,8 @@ type
   private
     FIgnoreShortWord, FIgnoreShortToken, FIgnoreLowerStart: integer;
     FLeadConstr: TSynSpellWCheckerSrcPartConstraints;
+    FLimitToCommentContext: boolean;
+    FLimitToStringContext: boolean;
     FMixedConstr: TSynSpellWCheckerSrcPartConstraints2;
     FUpperConstr: TSynSpellWCheckerSrcPartConstraints;
     FLowerConstr: TSynSpellWCheckerSrcPartConstraints2;
@@ -281,6 +283,8 @@ type
     procedure SetIgnoreLowerStart(AValue: integer);
     procedure SetIgnoreShortToken(AValue: integer);
     procedure SetIgnoreShortWord(AValue: integer);
+    procedure SetLimitToCommentContext(AValue: boolean);
+    procedure SetLimitToStringContext(AValue: boolean);
     procedure SetOptions(AValue: TSynSpellWordCheckerSourceCodeOptions);
     procedure SetPartLeadConstraints(AValue: TSynSpellWCheckerSrcPartConstraints);
     procedure SetPartMixedConstraints(AValue: TSynSpellWCheckerSrcPartConstraints2);
@@ -315,6 +319,9 @@ type
   published
     property SpecialUpperLetters: String read FSpecialUpperLetters write SetSpecialUpperLetters;
     property SpecialLowerLetters: String read FSpecialLowerLetters write SetSpecialLowerLetters;
+
+    property LimitToStringContext: boolean read FLimitToStringContext  write SetLimitToStringContext  default False;
+    property LimitToCommentContext: boolean read FLimitToCommentContext  write SetLimitToCommentContext  default False;
 
     property IgnoreShortWord: integer  read FIgnoreShortWord  write SetIgnoreShortWord  default 3;
     property IgnoreShortToken: integer read FIgnoreShortToken write SetIgnoreShortToken default 3;
@@ -829,6 +836,20 @@ begin
   DoChanged;
 end;
 
+procedure TSynSpellWordCheckerSourceCode.SetLimitToCommentContext(AValue: boolean);
+begin
+  if FLimitToCommentContext = AValue then Exit;
+  FLimitToCommentContext := AValue;
+  DoChanged;
+end;
+
+procedure TSynSpellWordCheckerSourceCode.SetLimitToStringContext(AValue: boolean);
+begin
+  if FLimitToStringContext = AValue then Exit;
+  FLimitToStringContext := AValue;
+  DoChanged;
+end;
+
 procedure TSynSpellWordCheckerSourceCode.SetOptions(AValue: TSynSpellWordCheckerSourceCodeOptions);
 begin
   if FOptions = AValue then Exit;
@@ -1293,6 +1314,8 @@ begin
 
   FOptions := TheOther.FOptions;
 
+  FLimitToCommentContext := TheOther.FLimitToCommentContext;
+  FLimitToStringContext := TheOther.FLimitToStringContext;
   FSpecialLowerLetters := TheOther.FSpecialLowerLetters;
   FSpecialUpperLetters := TheOther.FSpecialUpperLetters;
 

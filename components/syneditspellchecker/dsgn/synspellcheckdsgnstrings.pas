@@ -42,6 +42,9 @@ resourcestring
   SynSpellOptMiddle = 'Middle';
   SynSpellOptRight = 'Right';
   SynSpellOptSyntaxRules = 'Syntax rules';
+  SynSpellOptHlContextLimit = 'Limit to context (Highlighter)';
+  SynSpellOptOnlyCheckInStrings = 'Only check in Strings';
+  SynSpellOptOnlyCheckInComments = 'Only check in Comments';
   SynSpellOptWordsAndWordPartsSplitAtC = 'Words and word-parts (split at CamelCase, change to '
     +'uppercase';
   SynSpellOptUnicodeUpperChars = 'Unicode upper chars';
