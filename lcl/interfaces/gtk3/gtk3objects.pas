@@ -3771,7 +3771,7 @@ begin
     cairo_matrix_init_identity(@PatMatrix);
     cairo_pattern_set_matrix(CurrentBrush.brush_pattern, @PatMatrix);
     cairo_save(pcr);
-    TColorToRGB(FCurrentTextColor, MonoR, MonoG, MonoB);
+    ColorToCairoRGB(TColor(FCurrentTextColor), MonoR, MonoG, MonoB);
     cairo_set_source_rgba(pcr, MonoR, MonoG, MonoB, cMonoPatternAlpha);
     cairo_rectangle(pcr, DevX, DevY, DevW, DevH);
     cairo_clip(pcr);
