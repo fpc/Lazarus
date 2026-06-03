@@ -922,7 +922,7 @@ begin
   if ARawImage.DataSize > 0 then
     Move(WorkImage.bits^, ARawImage.Data^, ARawImage.DataSize);
 
-  if WorkMask <> nil then
+  if (WorkMask <> nil) and (Desc.AlphaPrec = 0) then
   begin
     Desc.MaskLineEnd := rileDWordBoundary;
     Desc.MaskBitOrder := riboReversedBits;
