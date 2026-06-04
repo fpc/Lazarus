@@ -1421,7 +1421,8 @@ begin
   Result:=False;
   fs:=TFileStream.Create(aFileName, fmCreate);
   try
-    fs.Write(aString[1], length(aString));
+    if aString <> '' then
+      fs.Write(aString[1], length(aString));
     Result:=True;
   finally
     fs.Free;
