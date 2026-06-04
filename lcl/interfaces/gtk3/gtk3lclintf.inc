@@ -871,8 +871,11 @@ var
   AHasAlpha: Boolean;
   AAlphaPtr: PByte;
   APos, ANumBytes: PtrUInt;
-  //InvertPixels: Boolean;
-  //Px: Cardinal;
+  AMaskRowStride: PtrUInt;
+  AMaskData: PByte;
+  AMaskSrc: PByte;
+  x, y: Integer;
+  AByte: Byte;
 begin
   Result := false;
 
@@ -918,7 +921,6 @@ begin
   Desc.Height := WorkImage.height;
 
   Image.UpdatePixbufFromSurface;
-  // copy data
   ARawImage.DataSize := WorkImage.numBytes;
   ReAllocMem(ARawImage.Data, ARawImage.DataSize);
 
@@ -955,12 +957,35 @@ begin
     Desc.MaskBitOrder := riboReversedBits;
     Desc.MaskBitsPerPixel := 1;
 
-    ARawImage.MaskSize := WorkMask.numBytes;
-    ReAllocMem(ARawImage.Mask, ARawImage.MaskSize);
-
-    if ARawImage.MaskSize > 0 then
+    if WorkMask.width > 1 then
     begin
-      if (WorkMask.bits<>nil) and (ARawImage.Mask<>nil) then
+      AMaskRowStride := GetBytesPerLine(Width, 1, rileDWordBoundary);
+      ARawImage.MaskSize := AMaskRowStride * PtrUInt(Height);
+      ReAllocMem(ARawImage.Mask, ARawImage.MaskSize);
+      if (ARawImage.Mask <> nil) and (WorkMask.bits <> nil) then
+      begin
+        FillChar(ARawImage.Mask^, ARawImage.MaskSize, 0);
+        AMaskData := ARawImage.Mask;
+        for y := 0 to Height - 1 do
+        begin
+          AMaskSrc := WorkMask.bits;
+          Inc(AMaskSrc, PtrUInt(y) * PtrUInt(WorkMask.bytesPerLine));
+          for x := 0 to Width - 1 do
+          begin
+            if AMaskSrc[x * 4] <> 0 then
+            begin
+              AByte := $80 shr (x and 7);
+              AMaskData[PtrUInt(y) * AMaskRowStride + PtrUInt(x shr 3)] :=
+                AMaskData[PtrUInt(y) * AMaskRowStride + PtrUInt(x shr 3)] or AByte;
+            end;
+          end;
+        end;
+      end;
+    end else
+    begin
+      ARawImage.MaskSize := WorkMask.numBytes;
+      ReAllocMem(ARawImage.Mask, ARawImage.MaskSize);
+      if (ARawImage.MaskSize > 0) and (WorkMask.bits <> nil) and (ARawImage.Mask <> nil) then
         Move(WorkMask.bits^, ARawImage.Mask^, ARawImage.MaskSize);
     end;
 
