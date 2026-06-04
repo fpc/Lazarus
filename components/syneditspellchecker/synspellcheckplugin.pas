@@ -346,12 +346,11 @@ begin
 
     WordBreaker.SetLine(LineTxt);
     while WordBreaker.NextWord(WordStart, WordLen) do begin
-      if FHighlighter <> nil then begin
-        tc := tcUnknown;
-        if FHighlighterOpts <> [] then
-          tc := FHighlighter.GetTokenClass;
+      if (FHighlighter <> nil) and (FHighlighterOpts <> []) then begin
         FHighlighter.NextToLogX(ToIdx(WordStart)+1);
+        tc := FHighlighter.GetTokenClass;
         hx := ToPos(FHighlighter.GetTokenPos);
+
         if (hx <= WordStart) and (hx + FHighlighter.GetTokenLen >= WordStart + WordLen) then begin
           if (hoNoNumbers in FHighlighterOpts) and
              (tc in [tcNumber])
@@ -362,6 +361,7 @@ begin
           then
             continue;
         end;
+
         if FHighlighterOpts * [hoLimitToStrings, hoLimitToComments] <> [] then begin
           if not(
             ( (hoLimitToComments in FHighlighterOpts) and (tc = tcComment) ) or
