@@ -868,6 +868,9 @@ var
   WorkImage, WorkMask: TGtk3Image;
   R: TRect;
   Width, Height: Integer;
+  AHasAlpha: Boolean;
+  AAlphaPtr: PByte;
+  APos, ANumBytes: PtrUInt;
   //InvertPixels: Boolean;
   //Px: Cardinal;
 begin
@@ -922,21 +925,47 @@ begin
   if ARawImage.DataSize > 0 then
     Move(WorkImage.bits^, ARawImage.Data^, ARawImage.DataSize);
 
-  if (WorkMask <> nil) and (Desc.AlphaPrec = 0) then
+  AHasAlpha := False;
+  if (WorkMask <> nil) and (Desc.AlphaPrec > 0) and
+    (Desc.BitsPerPixel = 32) and (WorkImage.bits <> nil) then
+  begin
+
+    ANumBytes := WorkImage.numBytes;
+    AAlphaPtr := WorkImage.bits;
+
+    Inc(AAlphaPtr, 3);
+    APos := 3;
+
+    while APos < ANumBytes do
+    begin
+      if AAlphaPtr^ <> 255 then
+      begin
+        AHasAlpha := True;
+        break;
+      end;
+      Inc(AAlphaPtr, 4);
+      Inc(APos, 4);
+    end;
+
+  end;
+
+  if (WorkMask <> nil) and not AHasAlpha then
   begin
     Desc.MaskLineEnd := rileDWordBoundary;
     Desc.MaskBitOrder := riboReversedBits;
     Desc.MaskBitsPerPixel := 1;
+
     ARawImage.MaskSize := WorkMask.numBytes;
     ReAllocMem(ARawImage.Mask, ARawImage.MaskSize);
+
     if ARawImage.MaskSize > 0 then
     begin
       if (WorkMask.bits<>nil) and (ARawImage.Mask<>nil) then
-      Move(WorkMask.bits^, ARawImage.Mask^, ARawImage.MaskSize);
-      // if InvertPixels then
-      //  WorkMask.invertPixels(QImageInvertRGB);
+        Move(WorkMask.bits^, ARawImage.Mask^, ARawImage.MaskSize);
     end;
-  end;
+
+  end else
+    Desc.MaskBitsPerPixel := 0;
 
   if WorkImage <> Image then
     WorkImage.Free;
