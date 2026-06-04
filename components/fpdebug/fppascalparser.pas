@@ -2092,11 +2092,12 @@ begin
           end;
 
           ti := TmpVal.TypeInfo;
-          if (ti <> nil) then ti := ti.TypeInfo;
-          IsPChar := (ti <> nil) and (ti.Kind in [skChar]) and (Offs > 0) and
-                     (not(TmpVal is TFpPasParserValueAddressOf)) and
-                     (not(TmpVal is TFpPasParserValueCastToPointer)) and
-                     (not(TmpVal is TFpPasParserValueMakeReftype));
+          // If Offs = 0 then it must be pchar, since this is not allowed for string
+          // If this is azero-based string, then it does not matter if it is.
+          IsPChar := (Offs > 0) and (sfMaybeString in ti.Flags);
+                     //(not(TmpVal is TFpPasParserValueAddressOf)) and
+                     //(not(TmpVal is TFpPasParserValueCastToPointer)) and
+                     //(not(TmpVal is TFpPasParserValueMakeReftype));
           if IsPChar then ExpressionData.FHasPCharIndexAccess := True;
           if IsPChar and ExpressionData.FixPCharIndexAccess then begin
             // fix for string in dwarf 2

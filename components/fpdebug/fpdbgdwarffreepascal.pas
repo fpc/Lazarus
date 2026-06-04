@@ -155,6 +155,8 @@ type
   protected
     function GetInternalTypeInfo: TFpSymbol; override;
     procedure TypeInfoNeeded; override;
+    function  IsMaybeString: boolean; virtual;
+    function  GetFlags: TDbgSymbolFlags; override;
     procedure KindNeeded; override;
     function DoReadStride(AValueObj: TFpValueDwarf; out AStride: TFpDbgValueSize): Boolean; override;
     procedure ForwardToSymbolNeeded; override;
@@ -165,6 +167,13 @@ type
   public
     function GetTypedValueObject(ATypeCast: Boolean; AnOuterType: TFpSymbolDwarfType = nil): TFpValueDwarf; override;
     property IsInternalPointer: Boolean read GetIsInternalPointer write FIsInternalPointer; // Class (also DynArray, but DynArray is handled without this)
+  end;
+
+  { TFpSymbolDwarfV3FreePascalTypePointer }
+
+  TFpSymbolDwarfV3FreePascalTypePointer = class(TFpSymbolDwarfFreePascalTypePointer)
+  protected
+    function IsMaybeString: boolean; override;
   end;
 
   { TFpSymbolDwarfFreePascalTypeStructure }
@@ -733,6 +742,8 @@ function TFpDwarfFreePascalSymbolClassMapDwarf3.GetDwarfSymbolClass(
   ATag: Cardinal): TDbgDwarfSymbolBaseClass;
 begin
   case ATag of
+    DW_TAG_pointer_type:
+      Result := TFpSymbolDwarfV3FreePascalTypePointer;
     DW_TAG_array_type:
       Result := TFpSymbolDwarfV3FreePascalSymbolTypeArray;
   //  DW_TAG_structure_type:
@@ -1154,6 +1165,28 @@ begin
   SetTypeInfo(p);
 end;
 
+function TFpSymbolDwarfFreePascalTypePointer.IsMaybeString: boolean;
+var
+  t: TFpSymbolDwarfType;
+begin
+  (* *** DWARF 2 ***
+     All FPC versions:
+     - All strings are DW_TAG_TYPE_DEF -> DW_TAG_POINTER_type -> DW_TAG_TYPE_DEF -> TAG_BASE_type(char)
+  *)
+  Result := not IsInternalPointer;
+  if not Result then
+    exit;
+  t := NestedTypeInfo;
+  Result := (t <> nil) and (t.Kind = skChar);
+end;
+
+function TFpSymbolDwarfFreePascalTypePointer.GetFlags: TDbgSymbolFlags;
+begin
+  Result := inherited GetFlags;
+  if IsMaybeString then
+    Result := Result + [sfMaybeString];
+end;
+
 procedure TFpSymbolDwarfFreePascalTypePointer.KindNeeded;
 var
   k: TDbgSymbolKind;
@@ -1239,6 +1272,31 @@ begin
   end
   else
     Result := inherited DoReadDataSize(AValueObj, ADataSize);
+end;
+
+{ TFpSymbolDwarfV3FreePascalTypePointer }
+
+function TFpSymbolDwarfV3FreePascalTypePointer.IsMaybeString: boolean;
+var
+  t: TFpSymbolDwarfType;
+  s: TFpDbgValueSize;
+begin
+  (* *** DWARF 3 AND up ***
+     WIDESTRING:
+     - DW_TAG_TYPE_DEF -> DW_TAG_POINTER_type -> DW_TAG_TYPE_DEF -> TAG_BASE_type(char)
+     Other Strings (include unicodestring)
+     - DW_TAG_typedef -> DW_TAG_array_type -> DW_TAG_typedef -> DW_TAG_base_type
+  *)
+  Result := not IsInternalPointer;
+  if not Result then
+    exit;
+  t := NestedTypeInfo;
+  Result := (t <> nil) and (t.Kind = skChar);
+  if Result then begin
+    Result := t.ReadSize(nil, s);
+    if Result then
+      Result := SizeToFullBytes(s) = 2;
+  end;
 end;
 
 { TFpSymbolDwarfFreePascalTypeStructure }

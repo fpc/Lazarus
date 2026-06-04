@@ -77,7 +77,8 @@ type
     sfPropSet,
     sfPropStored,
     sfHasLine,
-    sfHasLineAddrRng
+    sfHasLineAddrRng,
+    sfMaybeString
   );
   TDbgSymbolFlags = set of TDbgSymbolFlag;
 

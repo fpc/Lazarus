@@ -155,6 +155,17 @@ type
     st: array [1..5] of char;
   end;
 
+  {$if FPC_FULLVERSION >= 30000}
+  TMyDefinedString = type AnsiString(3042); // A new unique string type / so the debug info will NOT be in any other unit (e.g. diff dwarf version in RTL)
+  TMyDefinedChar = type char;
+  _TMyDefinedPChar = ^char;
+  TMyDefinedPChar = type _TMyDefinedPChar;
+  {$ELSE}
+  TMyDefinedString = AnsiString;
+  TMyDefinedPChar = PChar;
+  RawByteString = AnsiString;
+  {$ENDIF}
+
   TCharStatArray     = array [1..5] of char;
   TWCharStatArray    = array [1..5] of char;
   TIntStatArray      = array [1..5] of Integer;
@@ -1173,6 +1184,8 @@ type
   TRecWithStringArray = array of TRecWithString;
 var
   RecWithStringArray: TRecWithStringArray;
+  MyDefinedString: TMyDefinedString;
+  MyDefinedPChar: TMyDefinedPChar;
   i: integer;
 
 begin
@@ -1185,6 +1198,9 @@ begin
   RecWithStringArray[2].str := '';
   RecWithStringArray[3].data := 1;
   RecWithStringArray[3].str := 'ABCD';
+
+  RawByteString(MyDefinedString) := copy('defstring'+char(65+random(2)), 1, 9);
+  MyDefinedPChar := pchar(RawByteString(MyDefinedString));
 
   U8Data1 := #$2267; //#$E2#$89#$A7;
   U8Data2 := #$2267'X';

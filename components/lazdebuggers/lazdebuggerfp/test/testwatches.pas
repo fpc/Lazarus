@@ -1566,6 +1566,20 @@ begin
       ], 4, 'TRecWithStringArray'
     ));
 
+    t.Add('MyDefinedString', 'MyDefinedString', weAnsiStr('defstring')).IgnTypeName;
+    t.Add('MyDefinedPChar',  'MyDefinedPChar',  wePointer(weAnsiStr('defstring').IgnTypeName).IgnTypeName).IgnTypeName;
+    c := t.Count;
+    t.Add('MyDefinedString[1]', 'MyDefinedString[1]', weChar('d')).IgnTypeName
+    .AddFlag([ehChrIdxExpString], stDwarf2);
+    t.Add('MyDefinedPChar[1]',  'MyDefinedPChar[1]',  weChar('e')).IgnTypeName
+    .AddFlag([ehChrIdxExpPChar], stDwarf2);
+    t.Add('MyDefinedString[2]', 'MyDefinedString[2]', weChar('e')).IgnTypeName
+    .AddFlag([ehChrIdxExpString], stDwarf2);
+    t.Add('MyDefinedPChar[2]',  'MyDefinedPChar[2]',  weChar('f')).IgnTypeName
+    .AddFlag([ehChrIdxExpPChar], stDwarf2);
+    if Compiler.Version < 030000 then
+      for i := c to t.Count-1 do
+        t.Tests[i].CharFromIndex;
 
     AddWatches(t, 'glob const', 'gc', 000, 'A', tlConst);
     AddWatches(t, 'glob var',   'gv', 001, 'B');
