@@ -1621,8 +1621,8 @@ begin
     if ASubIndex >0 Then exit;
     QtListWidget := TQtListWidget(ALV.Handle);
 
-    if not QtListWidget.Checkable and (TCustomListViewHack(ALV).ViewStyle = vsIcon) then
-      AAlignment := QtAlignHCenter or QtAlignBottom
+    if not QtListWidget.Checkable and (TCustomListViewHack(ALV).ViewStyle in [vsIcon, vsSmallIcon]) then
+      AAlignment := QtAlignHCenter or QtAlignTop
     else
     if (TCustomListViewHack(ALV).Columns.Count > 0) and (ASubIndex < TCustomListViewHack(ALV).Columns.Count)  then
       AAlignment := AlignmentToQtAlignmentMap[ALV.Column[ASubIndex].Alignment]
