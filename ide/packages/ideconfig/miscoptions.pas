@@ -200,7 +200,7 @@ type
     FMakeResourceStringInsertPolicy: TResourcestringInsertPolicy;
     FShowCompOptFullFilenames: boolean;
     FShowCompOptMultiLine: boolean;
-    FSortSelDirection: TSortDirection;
+    FSortSelDirection: TTextSortDirection;
     FSortSelDomain: TSortDomain;
     fSavedStamp: integer;
     function GetBuildLazOpts: TBuildLazarusProfile;
@@ -212,7 +212,7 @@ type
     procedure SetModified(AValue: boolean);
     procedure SetShowCompOptFullFilenames(AValue: boolean);
     procedure SetShowCompOptMultiLine(const AValue: boolean);
-    procedure SetSortSelDirection(AValue: TSortDirection);
+    procedure SetSortSelDirection(AValue: TTextSortDirection);
   public
     constructor Create;
     destructor Destroy; override;
@@ -227,7 +227,7 @@ type
     property BuildLazProfiles: TBuildLazarusProfiles read fBuildLazProfiles;
     property BuildLazOpts: TBuildLazarusProfile read GetBuildLazOpts;
     property ExtractProcName: string read FExtractProcName write SetExtractProcName;
-    property SortSelDirection: TSortDirection read FSortSelDirection
+    property SortSelDirection: TTextSortDirection read FSortSelDirection
                                               write SetSortSelDirection;
     property SortSelDomain: TSortDomain read FSortSelDomain write FSortSelDomain;
     property MakeResourceStringInsertPolicy: TResourcestringInsertPolicy
@@ -242,7 +242,7 @@ type
   end;
 
 const
-  SortDirectionNames: array[TSortDirection] of string = (
+  SortDirectionNames: array[TTextSortDirection] of string = (
     'Ascending', 'Descending');
   SortDomainNames: array[TSortDomain] of string = (
     'Words', 'Lines', 'Paragraphs');
@@ -255,7 +255,7 @@ const
 
 var MiscellaneousOptions: TMiscellaneousOptions = nil;
 
-//function SortDirectionNameToType(const s: string): TSortDirection;
+//function SortDirectionNameToType(const s: string): TTextSortDirection;
 //function SortDomainNameToType(const s: string): TSortDomain;
 //function ResourcestringInsertPolicyNameToType(const s: string): TResourcestringInsertPolicy;
 //function FindRenameScopeNameToScope(const s: string): TFindRenameScope;
@@ -296,11 +296,11 @@ begin
     Result:=bmCleanAllBuild;
 end;
 
-function SortDirectionNameToType(const s: string): TSortDirection;
+function SortDirectionNameToType(const s: string): TTextSortDirection;
 begin
-  for Result:=Low(TSortDirection) to High(TSortDirection) do
+  for Result:=Low(TTextSortDirection) to High(TTextSortDirection) do
     if CompareText(SortDirectionNames[Result],s)=0 then exit;
-  Result:=sdAscending;
+  Result:=tsdAscending;
 end;
 
 function SortDomainNameToType(const s: string): TSortDomain;
@@ -685,7 +685,7 @@ begin
   fSavedStamp:=LUInvalidChangeStamp;
   fBuildLazProfiles:=TBuildLazarusProfiles.Create;
   FExtractProcName:='NewProc';
-  fSortSelDirection:=sdAscending;
+  fSortSelDirection:=tsdAscending;
   fSortSelDomain:=sdLines;
   fMakeResourceStringInsertPolicy:=rsipAppend;
   FFindRenameIdentifierOptions:=TFindRenameIdentifierOptions.Create;
@@ -762,7 +762,7 @@ begin
   IncreaseChangeStamp;
 end;
 
-procedure TMiscellaneousOptions.SetSortSelDirection(AValue: TSortDirection);
+procedure TMiscellaneousOptions.SetSortSelDirection(AValue: TTextSortDirection);
 begin
   if FSortSelDirection=AValue then Exit;
   FSortSelDirection:=AValue;
@@ -791,7 +791,7 @@ begin
       FileVersion:=XMLConfig.GetValue(Path+'Version/Value',0);
       BuildLazProfiles.Load(XMLConfig,Path+'BuildLazarusOptions/',FileVersion);
       SortSelDirection:=SortDirectionNameToType(XMLConfig.GetValue(
-           Path+'SortSelection/Direction',SortDirectionNames[sdAscending]));
+           Path+'SortSelection/Direction',SortDirectionNames[tsdAscending]));
       SortSelDomain:=SortDomainNameToType(XMLConfig.GetValue(
            Path+'SortSelection/Domain',SortDomainNames[sdLines]));
       MakeResourceStringInsertPolicy:=ResourcestringInsertPolicyNameToType(
@@ -836,7 +836,7 @@ begin
       BuildLazProfiles.Save(XMLConfig,Path+'BuildLazarusOptions/');
       XMLConfig.SetDeleteValue(Path+'SortSelection/Direction',
            SortDirectionNames[SortSelDirection],
-           SortDirectionNames[sdAscending]);
+           SortDirectionNames[tsdAscending]);
       XMLConfig.SetDeleteValue(Path+'SortSelection/Domain',
            SortDomainNames[SortSelDomain],SortDomainNames[sdLines]);
       XMLConfig.SetDeleteValue(Path+'MakeResourcestringInsertPolicy/Value',

@@ -22,7 +22,7 @@ uses
 
 type
   // Moved and deprecated in Lazarus 4.99 in April 2026.
-  TSortDirection = LazStringUtils.TSortDirection
+  TSortDirection = LazStringUtils.TTextSortDirection
                     deprecated 'Use definition from unit LazStringUtils instead';
   TSortDomain = LazStringUtils.TSortDomain
                     deprecated 'Use definition from unit LazStringUtils instead';

@@ -78,7 +78,7 @@ type
     procedure OptionsCheckGroupItemClick(Sender: TObject; Index: integer);
   private
     FCaseSensitive: boolean;
-    FDirection: TSortDirection;
+    FDirection: TTextSortDirection;
     FDomain: TSortDomain;
     FIgnoreSpace: boolean;
     FStates: TSortSelDlgStates;
@@ -87,7 +87,7 @@ type
     FSortedText: string;
     function GetSortedText: string;
     procedure SetCaseSensitive(const AValue: boolean);
-    procedure SetDirection(const AValue: TSortDirection);
+    procedure SetDirection(const AValue: TTextSortDirection);
     procedure SetDomain(const AValue: TSortDomain);
     procedure SetIgnoreSpace(const AValue: boolean);
     procedure SetTheText(const AValue: string);
@@ -97,7 +97,7 @@ type
     procedure UpdatePreview;
   public
     property CaseSensitive: boolean read FCaseSensitive write SetCaseSensitive;
-    property Direction: TSortDirection read FDirection write SetDirection;
+    property Direction: TTextSortDirection read FDirection write SetDirection;
     property Domain: TSortDomain read FDomain write SetDomain;
     property IgnoreSpace: boolean read FIgnoreSpace write SetIgnoreSpace;
     property TheText: string read FTheText write SetTheText;
@@ -107,7 +107,7 @@ type
 function ShowSortSelectionDialog(const TheText: string;
   Highlighter: TLazEditCustomHighlighter;
   out SortedText: string): TModalResult;
-function SortText(const TheText: string; Direction: TSortDirection;
+function SortText(const TheText: string; Direction: TTextSortDirection;
   Domain: TSortDomain; CaseSensitive, IgnoreSpace: boolean): string;
 
 implementation
@@ -187,7 +187,7 @@ begin
     Result:=-Result;
 end;
 
-function SortText(const TheText: string; Direction: TSortDirection;
+function SortText(const TheText: string; Direction: TTextSortDirection;
   Domain: TSortDomain; CaseSensitive, IgnoreSpace: boolean): string;
 const
   IdentChars = ['_','a'..'z','A'..'Z'];
@@ -214,7 +214,7 @@ begin
   Settings:=TTextBlockCompareSettings.Create;
   Settings.CaseSensitive:=CaseSensitive;
   Settings.IgnoreSpace:=IgnoreSpace;
-  Settings.Ascending:=(Direction=sdAscending);
+  Settings.Ascending:=(Direction=tsdAscending);
   // create AVL tree
   Tree:=TAVLTree.Create(@CompareTextBlock);
   
@@ -344,9 +344,9 @@ end;
 procedure TSortSelectionDialog.DirectionRadioGroupClick(Sender: TObject);
 begin
   if DirectionRadioGroup.ItemIndex=0 then
-    Direction:=sdAscending
+    Direction:=tsdAscending
   else
-    Direction:=sdDescending;
+    Direction:=tsdDescending;
 end;
 
 procedure TSortSelectionDialog.DomainRadioGroupClick(Sender: TObject);
@@ -389,8 +389,8 @@ begin
       Add(lisSortSelAscending);
       Add(lisSortSelDescending);
       case FDirection of
-      sdAscending: ItemIndex:=0;
-      else         ItemIndex:=1;
+      tsdAscending: ItemIndex:=0;
+      else          ItemIndex:=1;
       end;
       EndUpdate;
     end;
@@ -438,7 +438,7 @@ begin
   end;
 end;
 
-procedure TSortSelectionDialog.SetDirection(const AValue: TSortDirection);
+procedure TSortSelectionDialog.SetDirection(const AValue: TTextSortDirection);
 begin
   if FDirection=AValue then exit;
   FDirection:=AValue;

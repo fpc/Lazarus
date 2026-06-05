@@ -37,12 +37,12 @@ type
   // Comparing
   TCmpStrType = (cstCaseSensitive, cstCaseInsensitive, cstFilename);
   // Sorting
-  TSortDirection = (sdAscending, sdDescending);
+  TTextSortDirection = (tsdAscending, tsdDescending);
   TSortDomain = (sdWords, sdLines, sdParagraphs);
 
   TShowSortSelectionDialogFunc = function(const TheText: string;
     Highlighter: TObject; var SortedText: string): TModalResult;
-  TSortTextFunc = function(const TheText: string; Direction: TSortDirection;
+  TSortTextFunc = function(const TheText: string; Direction: TTextSortDirection;
     Domain: TSortDomain; CaseSensitive, IgnoreSpace: boolean): string;
 
 var

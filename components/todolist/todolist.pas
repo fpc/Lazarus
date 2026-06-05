@@ -64,11 +64,10 @@ uses
   // FCL, RTL
   Classes, SysUtils, Math, AVL_Tree,
   // LCL
-  LazStringUtils,
   LCLType, LclIntf, Forms, Controls, StdCtrls, Dialogs, ComCtrls,
   ActnList, XMLPropStorage, ExtCtrls, Menus,
   // LazUtils
-  LazFileUtils, LazFileCache, LazLoggerBase, LazTracer, AvgLvlTree,
+  LazFileUtils, LazStringUtils, LazFileCache, LazLoggerBase, LazTracer, AvgLvlTree,
   // Codetools
   CodeToolManager, FileProcs,
   // BuildIntf

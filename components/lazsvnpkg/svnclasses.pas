@@ -93,8 +93,6 @@ const
    SVN_ACTIVE = 'SVN active';
 
 type
-  TSortDirection  = (sdAscending, sdDescending);
-
   TStatusItemName = (siChecked, siPath, siExtension, siPropStatus, siItemStatus,
                      siRevision, siCommitRevision, siAuthor, siDate);
 
