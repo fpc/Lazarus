@@ -56,6 +56,7 @@ object AboutForm: TAboutForm
         BorderSpacing.Around = 6
         Caption = 'Version #:'
         Font.Color = clSilver
+        Font.Height = -12
         Font.Style = [fsBold]
         ParentColor = False
         ParentFont = False
@@ -73,6 +74,7 @@ object AboutForm: TAboutForm
         BorderSpacing.Around = 6
         Caption = 'Date:'
         Font.Color = clSilver
+        Font.Height = -12
         ParentColor = False
         ParentFont = False
       end
@@ -88,6 +90,7 @@ object AboutForm: TAboutForm
         BorderSpacing.Around = 6
         Caption = 'RevisionLabel'
         Font.Color = clSilver
+        Font.Height = -12
         ParentColor = False
         ParentFont = False
       end
@@ -103,6 +106,7 @@ object AboutForm: TAboutForm
         BorderSpacing.Around = 6
         Caption = 'PlatformLabel'
         Font.Color = clSilver
+        Font.Height = -12
         ParentColor = False
         ParentFont = False
       end
@@ -118,6 +122,7 @@ object AboutForm: TAboutForm
         BorderSpacing.Around = 6
         Caption = 'FPCVersionLabel'
         Font.Color = clSilver
+        Font.Height = -12
         ParentColor = False
         ParentFont = False
       end
