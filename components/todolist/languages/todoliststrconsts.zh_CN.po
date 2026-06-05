@@ -152,6 +152,12 @@ msgstr "转到"
 msgid "%d items"
 msgstr ""
 
+#: todoliststrconsts.listodolcategory
+#, fuzzy
+msgctxt "todoliststrconsts.listodolcategory"
+msgid "Category"
+msgstr "分类"
+
 #: todoliststrconsts.listodoldescription
 msgid "Description"
 msgstr "描述"
@@ -159,6 +165,10 @@ msgstr "描述"
 #: todoliststrconsts.listodolfile
 msgid "Module"
 msgstr "模块"
+
+#: todoliststrconsts.listodolfilepath
+msgid "Path"
+msgstr ""
 
 #: todoliststrconsts.listodolissue
 msgid "Issue ID"
@@ -214,9 +224,19 @@ msgstr "行"
 msgid "Owner"
 msgstr "拥有者"
 
+#: todoliststrconsts.listodolpackage
+msgctxt "todoliststrconsts.listodolpackage"
+msgid "(Package)"
+msgstr ""
+
 #: todoliststrconsts.listodolpriority
 msgid "Priority"
 msgstr "优先级"
+
+#: todoliststrconsts.listodolproject
+msgctxt "todoliststrconsts.listodolproject"
+msgid "(Project)"
+msgstr ""
 
 #: todoliststrconsts.listodoltype
 msgid "Type"
@@ -229,10 +249,6 @@ msgstr "待办事项类型"
 #: todoliststrconsts.listodousedunits
 msgid "Used units"
 msgstr ""
-
-#: todoliststrconsts.listtodolcategory
-msgid "Category"
-msgstr "分类"
 
 #: todoliststrconsts.lisviewtodolist
 msgid "View ToDo List"

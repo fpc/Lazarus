@@ -148,6 +148,12 @@ msgstr "Idź do"
 msgid "%d items"
 msgstr ""
 
+#: todoliststrconsts.listodolcategory
+#, fuzzy
+msgctxt "todoliststrconsts.listodolcategory"
+msgid "Category"
+msgstr "Kategoria"
+
 #: todoliststrconsts.listodoldescription
 msgid "Description"
 msgstr "Opis"
@@ -155,6 +161,10 @@ msgstr "Opis"
 #: todoliststrconsts.listodolfile
 msgid "Module"
 msgstr "Moduł"
+
+#: todoliststrconsts.listodolfilepath
+msgid "Path"
+msgstr ""
 
 #: todoliststrconsts.listodolissue
 msgid "Issue ID"
@@ -208,9 +218,19 @@ msgstr "Wiersz"
 msgid "Owner"
 msgstr "Właściciel"
 
+#: todoliststrconsts.listodolpackage
+msgctxt "todoliststrconsts.listodolpackage"
+msgid "(Package)"
+msgstr ""
+
 #: todoliststrconsts.listodolpriority
 msgid "Priority"
 msgstr "Priorytet"
+
+#: todoliststrconsts.listodolproject
+msgctxt "todoliststrconsts.listodolproject"
+msgid "(Project)"
+msgstr ""
 
 #: todoliststrconsts.listodoltype
 msgid "Type"
@@ -223,10 +243,6 @@ msgstr ""
 #: todoliststrconsts.listodousedunits
 msgid "Used units"
 msgstr ""
-
-#: todoliststrconsts.listtodolcategory
-msgid "Category"
-msgstr "Kategoria"
 
 #: todoliststrconsts.lisviewtodolist
 msgid "View ToDo List"

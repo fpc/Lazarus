@@ -148,6 +148,12 @@ msgstr "Rodyk kur"
 msgid "%d items"
 msgstr ""
 
+#: todoliststrconsts.listodolcategory
+#, fuzzy
+msgctxt "todoliststrconsts.listodolcategory"
+msgid "Category"
+msgstr "Kategorija"
+
 #: todoliststrconsts.listodoldescription
 msgid "Description"
 msgstr "Aprašymas"
@@ -155,6 +161,10 @@ msgstr "Aprašymas"
 #: todoliststrconsts.listodolfile
 msgid "Module"
 msgstr "Modulis"
+
+#: todoliststrconsts.listodolfilepath
+msgid "Path"
+msgstr ""
 
 #: todoliststrconsts.listodolissue
 msgid "Issue ID"
@@ -210,9 +220,19 @@ msgstr "Eilutė"
 msgid "Owner"
 msgstr "Savininkas"
 
+#: todoliststrconsts.listodolpackage
+msgctxt "todoliststrconsts.listodolpackage"
+msgid "(Package)"
+msgstr ""
+
 #: todoliststrconsts.listodolpriority
 msgid "Priority"
 msgstr "Prioritetas"
+
+#: todoliststrconsts.listodolproject
+msgctxt "todoliststrconsts.listodolproject"
+msgid "(Project)"
+msgstr ""
 
 #: todoliststrconsts.listodoltype
 msgid "Type"
@@ -225,10 +245,6 @@ msgstr ""
 #: todoliststrconsts.listodousedunits
 msgid "Used units"
 msgstr ""
-
-#: todoliststrconsts.listtodolcategory
-msgid "Category"
-msgstr "Kategorija"
 
 #: todoliststrconsts.lisviewtodolist
 msgid "View ToDo List"

@@ -147,6 +147,12 @@ msgstr "Ugrás"
 msgid "%d items"
 msgstr ""
 
+#: todoliststrconsts.listodolcategory
+#, fuzzy
+msgctxt "todoliststrconsts.listodolcategory"
+msgid "Category"
+msgstr "Kategória"
+
 #: todoliststrconsts.listodoldescription
 msgid "Description"
 msgstr "Leírás"
@@ -154,6 +160,10 @@ msgstr "Leírás"
 #: todoliststrconsts.listodolfile
 msgid "Module"
 msgstr "Modul"
+
+#: todoliststrconsts.listodolfilepath
+msgid "Path"
+msgstr ""
 
 #: todoliststrconsts.listodolissue
 msgid "Issue ID"
@@ -209,9 +219,19 @@ msgstr "Sor"
 msgid "Owner"
 msgstr "Tulajdonos"
 
+#: todoliststrconsts.listodolpackage
+msgctxt "todoliststrconsts.listodolpackage"
+msgid "(Package)"
+msgstr ""
+
 #: todoliststrconsts.listodolpriority
 msgid "Priority"
 msgstr "Prioritás"
+
+#: todoliststrconsts.listodolproject
+msgctxt "todoliststrconsts.listodolproject"
+msgid "(Project)"
+msgstr ""
 
 #: todoliststrconsts.listodoltype
 msgid "Type"
@@ -224,10 +244,6 @@ msgstr ""
 #: todoliststrconsts.listodousedunits
 msgid "Used units"
 msgstr ""
-
-#: todoliststrconsts.listtodolcategory
-msgid "Category"
-msgstr "Kategória"
 
 #: todoliststrconsts.lisviewtodolist
 msgid "View ToDo List"
