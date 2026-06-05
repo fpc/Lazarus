@@ -46,9 +46,9 @@ resourcestring
   lisToDoLLine  = 'Line';
   lisToDoLOwner = 'Owner';
   lisToDoLIssue = 'Issue ID';
-  listToDoLCategory = 'Category';
-  listToDoLProject = '(Project)';
-  listToDoLPackage = '(Package)';
+  lisToDoLCategory = 'Category';
+  lisToDoLProject = '(Project)';
+  lisToDoLPackage = '(Package)';
   lisEdit = 'Edit';
   lisToDoGoto = 'Goto';
   lisToDoExport = 'Export';

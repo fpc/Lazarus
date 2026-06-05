@@ -261,7 +261,7 @@ begin
     Column[5].Caption := lisToDoLLine;
     Column[6].Caption := lisToDoLOwner;
     Column[7].Caption := lisToDoLIssue;
-    Column[8].Caption := listToDoLCategory;
+    Column[8].Caption := lisToDoLCategory;
   end;
 
   XMLPropStorage.FileName := Concat(AppendPathDelim(LazarusIDE.GetPrimaryConfigPath),
@@ -597,9 +597,9 @@ begin
     aListitem.SubItems.Add(IntToStr(aTodoItem.Priority));
 
     if FProjPack is TLazProject then
-      aDirType := listToDoLProject
+      aDirType := lisToDoLProject
     else if FProjPack is TIDEPackage then
-      aDirType := listToDoLPackage
+      aDirType := lisToDoLPackage
     else
       Exception.Create('FProjPack is neither TLazProject nor TIDEPackage');
 
