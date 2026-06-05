@@ -42,10 +42,13 @@ resourcestring
   lisToDoLDescription = 'Description';
   lisToDoLPriority = 'Priority';
   lisToDoLFile  = 'Module';
+  lisToDoLFilePath  = 'Path';
   lisToDoLLine  = 'Line';
   lisToDoLOwner = 'Owner';
   lisToDoLIssue = 'Issue ID';
   listToDoLCategory = 'Category';
+  listToDoLProject = '(Project)';
+  listToDoLPackage = '(Package)';
   lisEdit = 'Edit';
   lisToDoGoto = 'Goto';
   lisToDoExport = 'Export';

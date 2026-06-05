@@ -140,7 +140,7 @@ type
       {%H-}Data : Integer; var Compare : Integer);
     procedure lvTodoEnter(Sender: TObject);
     procedure lvTodoKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure lvTodoSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
+    procedure lvTodoSelectItem(Sender: TObject; {%H-}Item: TListItem; {%H-}Selected: Boolean);
     procedure SaveDialogShow(Sender: TObject);
     procedure ShowSomethingMenuItemClick(Sender: TObject);
     procedure XMLPropStorageRestoreProperties(Sender: TObject);
@@ -258,10 +258,11 @@ begin
     Column[1].Width   := 700;
     Column[2].Caption := lisToDoLPriority;
     Column[3].Caption := lisToDoLFile;
-    Column[4].Caption := lisToDoLLine;
-    Column[5].Caption := lisToDoLOwner;
-    Column[6].Caption := lisToDoLIssue;
-    Column[7].Caption := listToDoLCategory;
+    Column[4].Caption := lisToDoLFilePath;
+    Column[5].Caption := lisToDoLLine;
+    Column[6].Caption := lisToDoLOwner;
+    Column[7].Caption := lisToDoLIssue;
+    Column[8].Caption := listToDoLCategory;
   end;
 
   XMLPropStorage.FileName := Concat(AppendPathDelim(LazarusIDE.GetPrimaryConfigPath),
@@ -405,7 +406,7 @@ var
   Str1, Str2: String;
 begin
   Case lvTodo.SortColumn of
-    0, 1, 3, 5, 6, 7 :
+    0, 1, 3, 4, 6, 7, 8 :
       begin
         if lvTodo.SortColumn = 0 then
         begin
@@ -430,7 +431,7 @@ begin
         if (Compare = 0) and (lvTodo.SortColumn = 3) then
           Compare := CmpNumeric(4);
       end;
-    2, 4 : Compare := CmpNumeric(lvTodo.SortColumn);
+    2, 5 : Compare := CmpNumeric(lvTodo.SortColumn);
     else Compare := 0;
   end;
 
@@ -582,9 +583,11 @@ procedure TIDETodoWindow.AddListItem(aTodoItem: TTodoItem);
 
 var
    aListItem: TListItem;
-   aFilename: String;
+   aFilename, aDirectory, aDirType: String;
+   isProjectDir: boolean;
 begin
   Assert(Assigned(aTodoItem), 'TIDETodoWindow.AddListItem: aTodoItem=Nil');
+  Assert(Assigned(FProjPack), 'TIDETodoWindow.AddListItem: FProjPack=Nil');
   if ShowThisToDoItem then
   begin
     //DebugLn(['TIDETodoWindow.AddListItem ',aTodoItem.Filename,' ',aTodoItem.LineNumber]);
@@ -593,16 +596,35 @@ begin
     aListItem.Caption := LIST_INDICATORS[aTodoItem.ToDoType];
     aListitem.SubItems.Add(TextToSingleLine(aTodoItem.Text)); // Join lines if there are many.
     aListitem.SubItems.Add(IntToStr(aTodoItem.Priority));
+
+    if FProjPack is TLazProject then
+      aDirType := listToDoLProject
+    else if FProjPack is TIDEPackage then
+      aDirType := listToDoLPackage
+    else
+      Exception.Create('FProjPack is neither TLazProject nor TIDEPackage');
+
     aFilename := aTodoItem.Filename;
-    if ProjPack.Directory<>'' then begin
-      Assert(FilenameIsAbsolute(aFilename), 'TIDETodoWindow.AddListItem: aFilename not absolute');
-      aFilename := CreateRelativePath(aFilename, ProjPack.Directory);
-    end;
-    aListitem.SubItems.Add(aFilename);
+    aListitem.SubItems.Add(ExtractFileName(aFilename));
+    isProjectDir := FileIsInPath(aFilename, FProjPack.Directory);
+    aDirectory := CreateRelativePath(ExtractFilePath(aFilename), FProjPack.Directory);
+    if isProjectDir then
+      aDirectory := MergeWithDelimiter(aDirType+' ',aDirectory,PathDelim);
+
+    aListitem.SubItems.Add(aDirectory);
     aListitem.SubItems.Add(IntToStr(aTodoItem.StartPos.Y));
     aListitem.SubItems.Add(aTodoItem.Owner);
     aListitem.SubItems.Add(aTodoItem.IssueID);
     aListitem.SubItems.Add(aTodoItem.Category);
+
+    // NOTE: Temporary fix to make sure the Module column show the entire filename,
+    //       as the ListView AutoSize does not seem to work correctly
+    lvTodo.Columns[3].Width :=
+      Max(lvTodo.Columns[3].Width, lvTodo.Canvas.GetTextWidth(ExtractFileName(aFilename+'W')));
+    // NOTE: Makes sure the Path column shows complete Project or Package paths with sub directories (short)
+    if isProjectDir then
+      lvTodo.Columns[4].Width :=
+        Max(lvTodo.Columns[4].Width, lvTodo.Canvas.GetTextWidth(aDirectory+'W'));
   end;
 end;
 

@@ -1,12 +1,12 @@
 object IDETodoWindow: TIDETodoWindow
-  Left = 379
+  Left = 787
   Height = 230
-  Top = 239
-  Width = 1014
+  Top = 253
+  Width = 1133
   ActiveControl = lvTodo
   Caption = 'IDETodoWindow'
   ClientHeight = 230
-  ClientWidth = 1014
+  ClientWidth = 1133
   KeyPreview = True
   SessionProperties = 'ToDoMenuItem.Checked;FixmeMenuItem.Checked;DoneMenuItem.Checked;NoteMenuItem.Checked;ListedFilesMenuItem.Checked;UsedUnitsMenuItem.Checked;EditorFilesMenuItem.Checked;DepPackagesMenuItem.Checked'
   LCLVersion = '4.99.0.0'
@@ -18,57 +18,56 @@ object IDETodoWindow: TIDETodoWindow
     Left = 6
     Height = 176
     Top = 48
-    Width = 1002
+    Width = 1121
     Align = alClient
     AutoSortIndicator = True
+    AutoWidthLastColumn = True
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
     Columns = <    
       item
-        AutoSize = True
         Caption = 'Type'
-        Width = 100
+        Width = 70
       end    
       item
         Caption = 'Description'
         Width = 300
       end    
       item
-        AutoSize = True
         Caption = 'Priority'
         Width = 100
       end    
       item
-        AutoSize = True
         Caption = 'Module'
+        MinWidth = 50
         Width = 100
       end    
       item
-        AutoSize = True
+        Caption = 'Path'
+        Width = 100
+      end    
+      item
         Caption = 'Line'
         Width = 100
       end    
       item
-        AutoSize = True
         Caption = 'Owner'
         Width = 100
       end    
       item
-        AutoSize = True
         Caption = 'Issue ID'
-        Width = 100
+        Width = 0
       end    
       item
-        AutoSize = True
         Caption = 'Category'
-        Width = 100
+        Width = 251
       end>
     PopupMenu = mnuList
     ReadOnly = True
     RowSelect = True
     ScrollBars = ssAutoBoth
-    SortColumn = 6
+    SortColumn = 7
     SortType = stData
     TabOrder = 1
     ViewStyle = vsReport
@@ -82,7 +81,7 @@ object IDETodoWindow: TIDETodoWindow
     Left = 0
     Height = 48
     Top = 0
-    Width = 1014
+    Width = 1133
     AutoSize = True
     ButtonHeight = 46
     ButtonWidth = 47
