@@ -152,13 +152,10 @@ begin
 end;
 
 function LCLSpinEditEntryKeyPress(AWidget: PGtkWidget; AEvent: PGdkEvent; AData: gpointer): gboolean; cdecl;
-var
-  Data: PLCLSpinEditData;
 begin
   Result := False;
   if AEvent^.type_ <> GDK_KEY_PRESS then
     exit;
-  Data := PLCLSpinEditData(AData);
   case PGdkEventKey(AEvent)^.keyval of
     GDK_KEY_Up:
     begin

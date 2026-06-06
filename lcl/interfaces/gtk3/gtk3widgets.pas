@@ -2551,8 +2551,8 @@ var
   IsArrowKey: Boolean;
   IsEditableWidget: Boolean;
   TextBeforeKey: String;
-  TempWidget: HWND;
   {$IFDEF GTK3DEBUGKEYPRESS}
+  TempWidget: HWND;
   Info: PTypeInfo;
   AFiltered: gboolean;
   {$ENDIF}
@@ -2579,8 +2579,8 @@ begin
       AEventString := Gtk3WidgetSet.IMCommitStr;
   end;
 
-  TempWidget := HwndFromGtkWidget(Sender);
   {$IFDEF GTK3DEBUGKEYPRESS}
+  TempWidget := HwndFromGtkWidget(Sender);
   if TempWidget = 0 then
     writeln('***** warning: no gtk3widget ! *****')
   else
@@ -5370,7 +5370,9 @@ class procedure TGtk3GroupBox.GroupBoxLayoutSizeAllocate(
 var
   HSize,VSize: integer;
   uWidth, uHeight: guint;
+  {$IFDEF GTK3DEBUGRESIZE}
   aCtl: TGtk3Widget;
+  {$ENDIF}
 begin
   if not AWidget^.get_mapped and
      ((AGdkRect^.width <= 1) or (AGdkRect^.height <= 1)) then
@@ -5381,8 +5383,8 @@ begin
 
   PGtkLayout(aWidget)^.get_size(@uWidth, @uHeight);
 
-  aCtl := TGtk3Widget(Data);
   {$IFDEF GTK3DEBUGRESIZE}
+  aCtl := TGtk3Widget(Data);
   if Assigned(ACtl.LCLObject) then
     writeln(Format('GroupBoxLayoutSizeAllocate %s gdk w=%d h=%d LCL w=%d h=%d InUpd=%s',
       [dbgsName(ACtl.LCLObject), AGdkRect^.width, AGdkRect^.height,
@@ -8250,7 +8252,6 @@ var
   OuterNotebook: PGtkWidget;
   Alloc: TGtkAllocation;
   vX, vY: integer;
-  ATranslated: boolean;
 begin
   Alloc := Default(TGtkAllocation);
   Notebook := nil;
@@ -8259,7 +8260,7 @@ begin
   AParentObject := nil;
   vX := 0;
   vY := 0;
-  ATranslated := False;
+
   Result := Rect(0, 0, 0, 0);
 
   //20260307 - finally fixed discrepancy, let always parent notebook
@@ -8307,7 +8308,6 @@ begin
   if Assigned(Notebook) and Assigned(OuterNotebook) and
       gtk_widget_translate_coordinates(FCentralWidget, Notebook, 0, 0, @vX, @vY) then
   begin
-    ATranslated := True;
     Result := Rect(0, 0, Alloc.width - vX, Alloc.height - vY);
   end else
     Result := Rect(0, 0, Alloc.width, Alloc.height);
@@ -11648,7 +11648,7 @@ var
   gv:TGValue;
   pb:PgdkPixbuf;
 begin
-  fillchar(gv,sizeof(gv),0);
+  fillchar(gv{%H-},sizeof(gv),0);
   gv.init(G_TYPE_OBJECT);
   gv.set_instance(nil);
   PGtkCellRendererPixbuf(cell)^.set_property('pixbuf',@gv);
@@ -12062,7 +12062,7 @@ begin
   if not IsWidgetOK then
     exit;
 
-  FillChar(ItemRect, SizeOf(ItemRect), 0);
+  FillChar(ItemRect{%H-}, SizeOf(ItemRect), 0);
   if IsTreeView then
   begin
     Path := gtk_tree_path_new_from_indices(AIndex, [-1]);
@@ -12090,7 +12090,7 @@ begin
   if not IsWidgetOK then
     exit;
 
-  FillChar(ItemRect, SizeOf(ItemRect), 0);
+  FillChar(ItemRect{%H-}, SizeOf(ItemRect), 0);
   if IsTreeView then
   begin
     Path := gtk_tree_path_new_from_indices(AIndex, [-1]);
@@ -12657,7 +12657,6 @@ end;
 procedure TGtk3ComboBox.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
 var
   ARect: TGdkRectangle;
-  Alloc: TGtkAllocation;
   CurW, CurH: gint;
   SizeMsg: TLMSize;
 begin
@@ -12670,10 +12669,6 @@ begin
   ARect.y := ATop;
   ARect.width := AWidth;
   ARect.height := AHeight;
-  Alloc.x := ALeft;
-  Alloc.y := ATop;
-  Alloc.width := AWidth;
-  Alloc.height := AHeight;
 
   BeginUpdate;
   try
@@ -13325,8 +13320,6 @@ begin
           else
             NextState := cbUnchecked;
         cbGrayed: NextState := cbUnchecked;
-      else
-        NextState := cbUnchecked;
       end;
       //Correct GTK state if it differs from intended next state
       if NextState <> ChkBox.GetState then
@@ -14007,7 +14000,7 @@ begin
   ChildWin := TGtk3Window(AFrame.UserData);
   if (ChildWin = nil) or (ChildWin.LCLObject = nil) then
     exit;
-  FillChar(Msg, SizeOf(Msg), 0);
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
   Msg.Msg := LM_ACTIVATE;
   Msg.WParam := WA_ACTIVE;
   ChildWin.DeliverMessage(Msg);
@@ -14023,7 +14016,7 @@ begin
   ChildWin := TGtk3Window(AFrame.UserData);
   if (ChildWin = nil) or (ChildWin.LCLObject = nil) then
     exit;
-  FillChar(Msg, SizeOf(Msg), 0);
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
   Msg.Msg := LM_ACTIVATE;
   Msg.WParam := WA_INACTIVE;
   ChildWin.DeliverMessage(Msg);
@@ -14040,7 +14033,7 @@ begin
   ChildWin := TGtk3Window(AFrame.UserData);
   if (ChildWin = nil) or (ChildWin.LCLObject = nil) then
     exit;
-  FillChar(Msg, SizeOf(Msg), 0);
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
   Msg.Msg := LM_CLOSEQUERY;
   ChildWin.DeliverMessage(Msg);
 end;
@@ -14058,7 +14051,7 @@ begin
   if (ChildWin = nil) or (ChildWin.LCLObject = nil) then
     exit;
 
-  FillChar(Msg, SizeOf(Msg), 0);
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
   Msg.Msg := LM_SIZE;
   case AFrame.State of
     mwsMinimized: Msg.SizeType := SIZE_MINIMIZED;
@@ -14079,7 +14072,7 @@ var
 begin
   if LCLObject = nil then
     exit;
-  FillChar(Msg, SizeOf(Msg), 0);
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
   Msg.Msg := LM_ACTIVATE;
   Msg.WParam := WA_ACTIVE;
   DeliverMessage(Msg);
