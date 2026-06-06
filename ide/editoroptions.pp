@@ -386,6 +386,7 @@ type
     property MarkupFoldLineAlpha: Byte read FMarkupFoldLineAlpha write SetMarkupFoldLineAlpha default 0;
     // For overview gutter (MarkupHighlightAll)
     property MarkupAllOverviewColor: TColor read FMarkupAllOverviewColor write SetMarkupAllOverviewColor default clNone;
+    property Features;
   end;
 
   { TColorSchemeLanguage }
