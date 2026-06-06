@@ -372,10 +372,13 @@ begin
   AControl := TGtk3Widget(HwndFromGtkWidget(widget));
   if not Assigned(AControl) then Exit;
 
-  if AControl.LCLWidth > 0 then
-    nat_width^ := AControl.LCLWidth
-  else if AControl.LCLObject.Width > 0 then
-    nat_width^ := AControl.LCLObject.Width;
+  if not AControl.LCLObject.AutoSize then
+  begin
+    if AControl.LCLWidth > 0 then
+      nat_width^ := AControl.LCLWidth
+    else if AControl.LCLObject.Width > 0 then
+      nat_width^ := AControl.LCLObject.Width;
+  end;
 
   if Assigned(AControl.LCLObject.Constraints) then
     with AControl.LCLObject.Constraints do
@@ -454,7 +457,11 @@ begin
   if Assigned(Data) and Assigned(Data^.BtnBox) then
   begin
     BtnW := Max(16, allocation^.height div 4);
-    PGtkWidget(Data^.BtnBox)^.set_size_request(BtnW, -1);
+    if BtnW <> Data^.LastBtnW then
+    begin
+      Data^.LastBtnW := BtnW;
+      PGtkWidget(Data^.BtnBox)^.set_size_request(BtnW, -1);
+    end;
   end;
 
   ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
@@ -611,6 +618,7 @@ begin
   Data^.IsReadOnly := False;
   Data^.EditorEnabled := True;
   Data^.MouseInside := False;
+  Data^.LastBtnW := -1;
 
   g_object_set_data(PGObject(HBox), LCL_SPIN_DATA_KEY, Data);
 

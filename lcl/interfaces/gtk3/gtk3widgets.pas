@@ -85,6 +85,7 @@ type
     IsReadOnly: Boolean;     //ReadOnly=True, no changes at all
     EditorEnabled: Boolean;  //EditorEnabled=False, no typing, updown/scroll still works
     MouseInside: Boolean;    //Tracks mouse inside whole composite widget.
+    LastBtnW: gint; //last set_size_request width for BtnBox. -1 = not set
   end;
 
   { TGtk3Widget }
@@ -4107,7 +4108,6 @@ begin
       [dbgsName(LCLObject), ALeft, ATop, AWidth, AHeight,
        LCLObject.Width, LCLObject.Height]));
   {$ENDIF}
-
   LCLWidth := AWidth;
   LCLHeight := AHeight;
   ARect.x := ALeft;
@@ -4441,7 +4441,6 @@ var
   aWindow: PGdkWindow;
   GtkLeft, GtkTop: integer;
 begin
-  //Skip gtk_layout_move / gtk_fixed_move when position is unchanged.
   AParent := getParent;
   if (AParent <> nil) then
   begin
