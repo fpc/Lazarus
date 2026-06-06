@@ -392,7 +392,7 @@ begin
         if Data <> ImgData
         then FreeMem(Data);
         GdiObject^.visual := gdk_visual_get_system();
-        gdk_visual_ref(GdiObject^.visual);
+        GdiObject^.SystemVisual := True;
         //DbgDumpPixbuf(Pixbuf, 'CreateBitmaps (32)');
       end
       else begin

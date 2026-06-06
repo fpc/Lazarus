@@ -1647,8 +1647,7 @@ begin
   //DebugLn('trace:[TGtk2WidgetSet.CreatePalette]');
 
   GObject := NewGDIObject(gdiPalette);
-  GObject^.SystemPalette := False;
-  GObject^.PaletteRealized := False;
+  GObject^.SystemPaletteVisual := False;
   GObject^.VisualType := GDK_VISUAL_PSEUDO_COLOR;
   GObject^.PaletteVisual := nil;
 
@@ -1660,8 +1659,8 @@ begin
   if GObject^.PaletteVisual = nil
   then begin
     GObject^.PaletteVisual := GDK_Visual_Get_System;
-    GDK_Visual_Ref(GObject^.PaletteVisual);
   end;
+  GObject^.SystemPaletteVisual := True; { This visual should not be referenced }
   GObject^.PaletteColormap := GDK_Colormap_new(GObject^.PaletteVisual, GdkTrue);
 
   {$IFDEF DebugGDKTraps}

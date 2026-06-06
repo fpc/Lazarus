@@ -670,9 +670,9 @@ begin
   begin
     GDIBitmapType := gbPixbuf;
     visual := gdk_visual_get_system();
-    gdk_visual_ref(visual);
+    SystemVisual := True;
     colormap := gdk_colormap_get_system();
-    gdk_colormap_ref(colormap);
+    SystemColormap := True;
     GDIPixbufObject := Pixbuf;
   end;
 
