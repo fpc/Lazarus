@@ -1138,6 +1138,8 @@ type
      WindowSizeAllocate delivery, resize() is deferred to a g_idle_add callback
      that fires once the GDK event queue is empty  - no echo loop. }
     FResizeState: TGtk3WindowResizeState;
+    function GetCSDShadowW: gint;
+    function GetCSDShadowH: gint;
     function GetSkipTaskBarHint: Boolean;
     function GetTitle: String;
     procedure SetIcon(AValue: PGdkPixBuf);
@@ -1194,6 +1196,8 @@ type
     property Icon: PGdkPixBuf read FIcon write SetIcon;
     property SkipTaskBarHint: Boolean read GetSkipTaskBarHint write SetSkipTaskBarHint;
     property Title: String read GetTitle write SetTitle;
+    property CSDShadowW: gint read GetCSDShadowW;
+    property CSDShadowH: gint read GetCSDShadowH;
 
     // MDI support
     function IsMdiForm: Boolean;
@@ -8020,6 +8024,12 @@ var
   FWAlloc: TGtkAllocation;
   {$ENDIF}
 begin
+  {$IFDEF GTK3DEBUGSIZE}
+  if Assigned(TGtk3Widget(Data).LCLObject) then
+    writeln(Format('TabSheetLayoutSizeAllocate %s alloc=%dx%d mapped=%s',
+      [dbgsName(TGtk3Widget(Data).LCLObject), AGdkRect^.width, AGdkRect^.height,
+       BoolToStr(AWidget^.get_mapped, True)]));
+  {$ENDIF}
   if not AWidget^.get_mapped then
     exit;
 
@@ -9827,6 +9837,12 @@ var
   ASW: PGtkScrolledWindow;
   HPolicy, VPolicy: TGtkPolicyType;
 begin
+  {$IFDEF GTK3DEBUGSIZE}
+  if Assigned(TGtk3Widget(Data).LCLObject) then
+    writeln(Format('ScrolledLayoutSizeAllocate %s alloc=%dx%d mapped=%s',
+      [dbgsName(TGtk3Widget(Data).LCLObject), AGdkRect^.width, AGdkRect^.height,
+       BoolToStr(AWidget^.get_mapped, True)]));
+  {$ENDIF}
 
   if not AWidget^.get_mapped then Exit;
 
@@ -9885,6 +9901,9 @@ begin
   ClientRectMismatch := (AGdkRect^.width > 1) and (AGdkRect^.height > 1) and
     ((aCtl.LCLObject.ClientWidth <> AGdkRect^.width) or
      (aCtl.LCLObject.ClientHeight <> AGdkRect^.height));
+
+  if Gtk3IsScrolledWindow(ASW) and (g_object_get_data(PGObject(ASW), 'lcl-gsw-clamping') <> nil) then
+    exit;
 
   if not aCtl.InUpdate and (ViewportChanged or ClientRectMismatch) then
   begin
@@ -13703,6 +13722,7 @@ var
   Allocation: TGtkAllocation;
   R: TRect;
   w, h, x, y, VOffset, HOffset: gint;
+  ContW, ContH: gint;
   AViewPort: PGtkViewport;
   Bar:PGtkScrollbar;
   AHorzPolicy, AVertPolicy: TGtkPolicyType;
@@ -13725,9 +13745,19 @@ begin
       if (Bar <> nil) and Gtk3IsWidget(Bar) and Bar^.get_visible and GTK3WidgetSet.OverlayScrolling then
         VOffset := Bar^.get_allocated_width;
     end;
-    Result := Rect(0, 0,
-      GetContainerWidget^.get_allocated_width  - VOffset,
-      GetContainerWidget^.get_allocated_height - HOffset);
+
+    ContW := Min(GetContainerWidget^.get_allocated_width, Widget^.get_allocated_width);
+    ContH := Min(GetContainerWidget^.get_allocated_height, Widget^.get_allocated_height);
+    Result := Rect(0, 0, ContW - VOffset, ContH - HOffset);
+
+    {$IFDEF GTK3DEBUGSIZE}
+    if wtScrollingWinControl in FWidgetType then
+      DebugLn(Format('getClientRect(wtLayout) %s CW_w=%d CW_h=%d W_w=%d W_h=%d ContW=%d ContH=%d VOffset=%d HOffset=%d Result=%s',
+        [dbgsName(LCLObject), GetContainerWidget^.get_allocated_width,
+         GetContainerWidget^.get_allocated_height,
+         Widget^.get_allocated_width, Widget^.get_allocated_height,
+         ContW, ContH, VOffset, HOffset, dbgs(Result)]));
+    {$ENDIF}
     {$IFDEF GTK3DEBUGSCROLLEDWIN}
     if wtScrollingWinControl in FWidgetType then
       writeln(Format('getClientRect %s CW_w=%d CW_h=%d Widget_w=%d Widget_h=%d VOffset=%d HOffset=%d policy_h=%d policy_v=%d Result=%s',
@@ -14059,6 +14089,16 @@ begin
 end;
 
 { TGtk3Window }
+
+function TGtk3Window.GetCSDShadowW: gint;
+begin
+  Result := FResizeState.ShadowW;
+end;
+
+function TGtk3Window.GetCSDShadowH: gint;
+begin
+  Result := FResizeState.ShadowH;
+end;
 
 function TGtk3Window.GetTitle: String;
 begin
@@ -15399,25 +15439,25 @@ begin
       with Geometry do
       begin
         if not AFixedWidthHeight and (AForm.Constraints.MinWidth > 0) then
-          min_width := AForm.Constraints.MinWidth
+          min_width := AForm.Constraints.MinWidth + FResizeState.ShadowW
         else if AFixedWidthHeight then
           min_width := AForm.Width
         else
           min_width := 1;
         if not AFixedWidthHeight and (AForm.Constraints.MaxWidth > 0) then
-          max_width := AForm.Constraints.MaxWidth
+          max_width := AForm.Constraints.MaxWidth + FResizeState.ShadowW
         else if AFixedWidthHeight then
           max_width := AForm.Width
         else
           max_width := 32767;
         if not AFixedWidthHeight and (AForm.Constraints.MinHeight > 0) then
-          min_height := AForm.Constraints.MinHeight
+          min_height := AForm.Constraints.MinHeight + FResizeState.ShadowH
         else if AFixedWidthHeight then
           min_height := AForm.Height
         else
           min_height := 1;
         if not AFixedWidthHeight and (AForm.Constraints.MaxHeight > 0) then
-          max_height := AForm.Constraints.MaxHeight
+          max_height := AForm.Constraints.MaxHeight + FResizeState.ShadowH
         else if AFixedWidthHeight then
           max_height := AForm.Height
         else
@@ -15440,7 +15480,7 @@ begin
       begin
         if AForm.BorderStyle <> bsNone then
         begin
-          AHints := [GDK_HINT_POS, GDK_HINT_BASE_SIZE];
+          AHints := [GDK_HINT_POS];
           if (AForm.Constraints.MinHeight > 0) or (AForm.Constraints.MinWidth > 0) then
             Include(AHints, GDK_HINT_MIN_SIZE);
           if (AForm.Constraints.MaxHeight > 0) or (AForm.Constraints.MaxWidth > 0) then
@@ -15480,6 +15520,10 @@ begin
         Geometry.min_width := 1;
         Geometry.min_height := 1;
         PGtkWindow(Widget)^.set_geometry_hints(nil, @Geometry, [GDK_HINT_MIN_SIZE]);
+        {$IFDEF GTK3DEBUGSIZE}
+        writeln(Format('SetBounds geom-hints min 1x1 for %s (no constraints)',
+          [dbgsName(LCLObject)]));
+        {$ENDIF}
       end;
       {$IF DEFINED(GTK3DEBUGCORE) OR DEFINED(GTK3DEBUGSIZE)}
       writeln('Window ',dbgsName(LCLObject),' move/size ',dbgs(Bounds(ALeft, ATop, AWidth, AHeight)));
@@ -15869,10 +15913,10 @@ begin
   if not Assigned(FMenuBar) then
   begin
     FMenuBar := TGtkMenuBar.new; // our menubar (needed for main menu)
-    // MenuBar
-    //  -> Menu    Menu2
-    //    Item 1   Item 3
-    //    Item 2
+
+    //min width 1 so GTK does not report full menu-item sum as WM min_width
+    PGtkWidget(FMenuBar)^.set_size_request(1, -1);
+
     g_object_set_data(Widget,'lclmenubar',GPointer(1));
     ABox := PGtkBox(PGtkWindow(Widget)^.get_child);
     ABox^.pack_start(FMenuBar, False, False, 0);

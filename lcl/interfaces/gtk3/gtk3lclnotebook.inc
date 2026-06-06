@@ -140,12 +140,36 @@ begin
   ParentClass^.size_allocate(widget, allocation);
 end;
 
+procedure LCLGtkNotebookGetPreferredWidth(widget: PGtkWidget; min_width, nat_width: Pgint); cdecl;
+var
+  ParentClass: PGtkWidgetClass;
+  base_min, base_nat: gint;
+  {$IFDEF GTK3DEBUGSIZE}
+  ADbgWidget: TGtk3Widget;
+  {$ENDIF}
+begin
+  ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
+  base_min := 0;
+  base_nat := 0;
+  if Assigned(ParentClass) and Assigned(ParentClass^.get_preferred_width) then
+    ParentClass^.get_preferred_width(widget, @base_min, @base_nat);
+  {$IFDEF GTK3DEBUGSIZE}
+  ADbgWidget := TGtk3Widget(HwndFromGtkWidget(widget));
+  if Assigned(ADbgWidget) and Assigned(ADbgWidget.LCLObject) then
+    DebugLn(Format('LCLGtkNotebook.GetPreferredWidth %s base_min=%d base_nat=%d -> min=1 nat=%d',
+      [dbgsName(ADbgWidget.LCLObject), base_min, base_nat, base_nat]));
+  {$ENDIF}
+  min_width^ := 1;
+  nat_width^ := Max(base_nat, 1);
+end;
+
 procedure LCLGtkNotebookClassInit(klass: PGTypeClass; {%H-}data: Pointer); cdecl;
 var
   AWidgetClass: PGtkWidgetClass;
 begin
   AWidgetClass := PGtkWidgetClass(klass);
   AWidgetClass^.size_allocate := @LCLGtkNotebookSizeAllocate;
+  AWidgetClass^.get_preferred_width := @LCLGtkNotebookGetPreferredWidth;
   AWidgetClass^.get_preferred_height_for_width := @LCLGtkNotebookGetPreferredHeightForWidth;
   AWidgetClass^.get_preferred_width_for_height := @LCLGtkNotebookGetPreferredWidthForHeight;
 end;

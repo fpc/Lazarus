@@ -146,6 +146,7 @@ var
   AHints: TGdkWindowHints;
   AFixedWidthHeight: Boolean;
   AForm: TCustomForm;
+  AShadowW, AShadowH: Integer;
 begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WSWinControl.ConstraintsChange');
@@ -159,23 +160,31 @@ begin
 
   AFixedWidthHeight := AForm.BorderStyle in [bsDialog, bsSingle, bsToolWindow];
 
+  AShadowW := 0;
+  AShadowH := 0;
+  if Gtk3WidgetSet.IsWayland then
+  begin
+    AShadowW := TGtk3Window(AWidget).CSDShadowW;
+    AShadowH := TGtk3Window(AWidget).CSDShadowH;
+  end;
+
   FillChar(Geometry, SizeOf(Geometry), 0);
   with Geometry do
   begin
     if not AFixedWidthHeight and (AForm.Constraints.MinWidth > 0) then
-      min_width := AForm.Constraints.MinWidth
+      min_width := AForm.Constraints.MinWidth + AShadowW
     else
       min_width := AForm.Width;
     if not AFixedWidthHeight and (AForm.Constraints.MaxWidth > 0) then
-      max_width := AForm.Constraints.MaxWidth
+      max_width := AForm.Constraints.MaxWidth + AShadowW
     else
       max_width := AForm.Width;
     if not AFixedWidthHeight and (AForm.Constraints.MinHeight > 0) then
-      min_height := AForm.Constraints.MinHeight
+      min_height := AForm.Constraints.MinHeight + AShadowH
     else
       min_height := AForm.Height;
     if not AFixedWidthHeight and (AForm.Constraints.MaxHeight > 0) then
-      max_height := AForm.Constraints.MaxHeight
+      max_height := AForm.Constraints.MaxHeight + AShadowH
     else
       max_height := AForm.Height;
     base_width  := AForm.Width;
@@ -199,8 +208,6 @@ begin
         Geometry.max_height := Geometry.min_height;
         Geometry.base_width := Geometry.min_width;
         Geometry.base_height := Geometry.min_height;
-
-
       end;
       PGtkWindow(AWidget.Widget)^.set_geometry_hints(nil, @Geometry,
         [GDK_HINT_POS, GDK_HINT_MIN_SIZE, GDK_HINT_MAX_SIZE]);
@@ -209,7 +216,7 @@ begin
   begin
     if AForm.BorderStyle <> bsNone then
     begin
-      AHints := [GDK_HINT_POS, GDK_HINT_BASE_SIZE];
+      AHints := [GDK_HINT_POS];
       if (AForm.Constraints.MinWidth > 0) or (AForm.Constraints.MinHeight > 0) then
         Include(AHints, GDK_HINT_MIN_SIZE);
       if (AForm.Constraints.MaxWidth > 0) or (AForm.Constraints.MaxHeight > 0) then

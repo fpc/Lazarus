@@ -135,7 +135,13 @@ var
   FreezeW, FreezeH: PtrInt;
   threshH, threshW, minSize: gint;
   negH, negW: gint;
+  vScrollMin: gint;
   vActive, hActive: Boolean;
+  BinChild: PGtkWidget;
+  ChildAlloc: TGtkAllocation;
+  LayoutW, LayoutH: guint;
+  ClampedAlloc: TGtkAllocation;
+  ChildPrefH: gint;
   {$IFDEF GTK3DEBUGSIZE}
   ADbgCtl: TGtk3Widget;
   ADbgName: string;
@@ -178,12 +184,16 @@ begin
   hActive := (hpolicy <> GTK_POLICY_NEVER) and (hpolicy <> GTK_POLICY_EXTERNAL);
   threshH := LCLScrolledWinExtentsH;
   threshW := LCLScrolledWinExtentsW;
+  vScrollMin := 0;
   if vActive and Assigned(vscroll) and Gtk3IsWidget(vscroll) then
   begin
     minSize := 0;
     gtk_widget_get_preferred_height(vscroll, @minSize, nil);
     if minSize > 0 then
+    begin
+      vScrollMin := minSize;
       inc(threshH, minSize);
+    end;
     minSize := 0;
     gtk_widget_get_preferred_width(vscroll, @minSize, nil);
     if minSize > 0 then
@@ -220,13 +230,75 @@ begin
     ADbgName := 'nil';
   {$ENDIF}
 
-  if (allocation^.width = 0) or (allocation^.height <= 1) or
-     (allocation^.height < negH) or (allocation^.width < negW) then
+  if (allocation^.width = 0) or (allocation^.height <= 1) then
   begin
     {$IFDEF GTK3DEBUGSIZE}
-    DebugLn(Format('LCLGSW.SizeAllocate %s alloc=%dx%d SKIP collapse (thresh=%dx%d neg=%dx%d)',
+    DebugLn(Format('LCLGSW.SizeAllocate %s alloc=%dx%d SKIP collapse-zero (thresh=%dx%d neg=%dx%d)',
       [ADbgName, allocation^.width, allocation^.height, threshW, threshH, negW, negH]));
     {$ENDIF}
+    gtk_widget_set_allocation(widget, allocation);
+    gtk_widget_set_clip(widget, allocation);
+    exit;
+  end;
+
+  if (allocation^.height < negH) or (allocation^.width < negW) then
+  begin
+    BinChild := gtk_bin_get_child(PGtkBin(widget));
+    ChildPrefH := 0;
+    if vActive and (allocation^.height >= 2) and
+       Assigned(BinChild) and Gtk3IsWidget(BinChild) then
+      gtk_widget_get_preferred_height(BinChild, nil, @ChildPrefH);
+    LayoutW := 0;
+    LayoutH := 0;
+    if vActive and Assigned(BinChild) and Gtk3IsWidget(BinChild) and
+       g_type_check_instance_is_a(PGTypeInstance(BinChild), gtk_layout_get_type) then
+      gtk_layout_get_size(PGtkLayout(BinChild), @LayoutW, @LayoutH);
+    {$IFDEF GTK3DEBUGSIZE}
+    DebugLn(Format('LCLGSW.SizeAllocate %s alloc=%dx%d BELOW-NEG negH=%d vScrollMin=%d cprefH=%d LayoutH=%d allocH-vs-(negH-vMin)=%d',
+      [ADbgName, allocation^.width, allocation^.height, negH, vScrollMin,
+       ChildPrefH, LayoutH, allocation^.height - (negH - vScrollMin)]));
+    {$ENDIF}
+    if vActive and (LayoutH > 0) and (gint(LayoutH) <= negH) then
+    begin
+      {$IFDEF GTK3DEBUGSIZE}
+      DebugLn(Format('LCLGSW.SizeAllocate %s alloc=%dx%d BELOW-NEG content-fits LayoutH=%d -> NEVER policy parent call',
+        [ADbgName, allocation^.width, allocation^.height, LayoutH]));
+      {$ENDIF}
+      gtk_scrolled_window_set_policy(PGtkScrolledWindow(widget), hpolicy, GTK_POLICY_NEVER);
+      ParentClass^.size_allocate(widget, allocation);
+      ChildAlloc.x := 0;
+      ChildAlloc.y := 0;
+      ChildAlloc.width := allocation^.width;
+      ChildAlloc.height := allocation^.height;
+      if Assigned(BinChild) and Gtk3IsWidget(BinChild) then
+        gtk_widget_size_allocate(BinChild, @ChildAlloc);
+      gtk_widget_set_allocation(widget, allocation);
+      gtk_widget_set_clip(widget, allocation);
+      exit;
+    end;
+    {$IFDEF GTK3DEBUGSIZE}
+    DebugLn(Format('LCLGSW.SizeAllocate %s alloc=%dx%d BELOW-NEG thresh=%dx%d neg=%dx%d -> clamped parent call',
+      [ADbgName, allocation^.width, allocation^.height, threshW, threshH, negW, negH]));
+    {$ENDIF}
+    ClampedAlloc.x := allocation^.x;
+    ClampedAlloc.y := allocation^.y;
+    ClampedAlloc.width := Max(allocation^.width, negW);
+    ClampedAlloc.height := Max(allocation^.height, negH);
+    g_object_set_data(PGObject(widget), 'lcl-gsw-clamping', widget);
+    ParentClass^.size_allocate(widget, @ClampedAlloc);
+    g_object_set_data(PGObject(widget), 'lcl-gsw-clamping', nil);
+    if Assigned(BinChild) and Gtk3IsWidget(BinChild) then
+    begin
+      ChildAlloc.x := 0;
+      ChildAlloc.y := 0;
+      ChildAlloc.width := allocation^.width;
+      ChildAlloc.height := allocation^.height;
+      {$IFDEF GTK3DEBUGSIZE}
+      DebugLn(Format('LCLGSW.SizeAllocate %s -> child override alloc=%dx%d',
+        [ADbgName, ChildAlloc.width, ChildAlloc.height]));
+      {$ENDIF}
+      gtk_widget_size_allocate(BinChild, @ChildAlloc);
+    end;
     gtk_widget_set_allocation(widget, allocation);
     gtk_widget_set_clip(widget, allocation);
     exit;
@@ -291,11 +363,11 @@ begin
 
   {$IFDEF GTK3DEBUGSIZE}
   if (allocation^.width < threshW) or (allocation^.height < threshH) then
-    DebugLn(Format('LCLGSW.SizeAllocate %s alloc=%dx%d BELOW thresh=%dx%d (passing through)',
-      [ADbgName, allocation^.width, allocation^.height, threshW, threshH]))
+    DebugLn(Format('LCLGSW.SizeAllocate %s alloc=%dx%d BELOW thresh=%dx%d neg=%dx%d (passing through)',
+      [ADbgName, allocation^.width, allocation^.height, threshW, threshH, negW, negH]))
   else
-    DebugLn(Format('LCLGSW.SizeAllocate %s alloc=%dx%d OK (thresh=%dx%d)',
-      [ADbgName, allocation^.width, allocation^.height, threshW, threshH]));
+    DebugLn(Format('LCLGSW.SizeAllocate %s alloc=%dx%d OK thresh=%dx%d neg=%dx%d',
+      [ADbgName, allocation^.width, allocation^.height, threshW, threshH, negW, negH]));
   {$ENDIF}
 
   ParentClass^.size_allocate(widget, allocation);
@@ -334,6 +406,12 @@ begin
         nat_width^ := ALCLWidget.LCLObject.Width;
     end;
   end;
+  {$IFDEF GTK3DEBUGSIZE}
+  ALCLWidget := TGtk3Widget(HwndFromGtkWidget(widget));
+  if Assigned(ALCLWidget) and Assigned(ALCLWidget.LCLObject) then
+    DebugLn(Format('LCLGSW.GetPreferredWidth %s min=%d nat=%d',
+      [dbgsName(ALCLWidget.LCLObject), min_width^, nat_width^]));
+  {$ENDIF}
 end;
 
 procedure LCLGtkScrolledWindowGetPreferredHeight(widget: PGtkWidget; min_height, nat_height: Pgint); cdecl;
@@ -389,8 +467,14 @@ begin
   nat_height^ := Max(nat_height^, LCLIntendedH);
   nat_height^ := Max(nat_height^, min_height^);
   {$IFDEF GTK3DEBUGHEIGHTZERO}
-  writeln(Format('LCLGSW.GetPrefH: positive → min=%d nat=%d (LCLIntendedH=%d)',
+  writeln(Format('LCLGSW.GetPrefH: positive -> min=%d nat=%d (LCLIntendedH=%d)',
     [min_height^, nat_height^, LCLIntendedH]));
+  {$ENDIF}
+  {$IFDEF GTK3DEBUGSIZE}
+  if Assigned(AControl) and Assigned(AControl.LCLObject) then
+    DebugLn(Format('LCLGSW.GetPrefH %s min=%d nat=%d LCLIntH=%d LCLHeight=%d LCLObj.H=%d',
+      [dbgsName(AControl.LCLObject), min_height^, nat_height^, LCLIntendedH,
+       AControl.LCLHeight, AControl.LCLObject.Height]));
   {$ENDIF}
 end;
 
