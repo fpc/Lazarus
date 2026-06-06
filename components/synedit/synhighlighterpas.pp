@@ -4843,20 +4843,21 @@ begin
 
       if reCommentCurly in FRequiredStates then
         FCustomCommentTokenMarkup := FPasAttributesMod[attribCommentCurly];
-      if not (IsInNextToEOL or IsScanning) then
+
+      Include(FTokenExtraAttribs, eaPartTokenNotAtEnd); // BorProc will clear this, if it reaches the end
+      if not (IsInNextToEOL or IsScanning) then begin
         GetCustomSymbolToken(tkBorComment, 1, FCustomTokenMarkup);
 
-      inc(Run);
-      if FCustomTokenMarkup <> nil then begin
-        if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
-          Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
-        exit;
-      end;
-    end;
-    if FUsePasDoc and (LinePtr[Run] = '@') and CheckPasDoc(True) then begin
-      if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
-        Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
-      exit;
+        inc(Run);
+        if (FCustomTokenMarkup <> nil) or (reCommentSubTokens in FRequiredStates) then
+          exit;
+        if FUsePasDoc and (LinePtr[Run] = '@') and CheckPasDoc(True) then
+          exit;
+        if (IsLetterChar[LinePtr[Run]]) and GetCustomTokenAndNext(tkBorComment, FCustomTokenMarkup, True) then
+          exit;
+      end
+      else
+        inc(Run);
     end;
     if (reCommentSubTokens in FRequiredStates) then
       exit;
@@ -5394,25 +5395,25 @@ begin
 
         if reCommentAnsi in FRequiredStates then
           FCustomCommentTokenMarkup := FPasAttributesMod[attribCommentAnsi];
-        if not (IsInNextToEOL or IsScanning) then
+
+        Include(FTokenExtraAttribs, eaPartTokenNotAtEnd); // AnsiProc will clear this, if it reaches the end
+        if not (IsInNextToEOL or IsScanning) then begin
           GetCustomSymbolToken(tkAnsiComment, 2, FCustomTokenMarkup);
 
-        Inc(Run, 2);
-        if FCustomTokenMarkup <> nil then begin
-          if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
-            Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
-          exit;
-        end;
-        if reCommentSubTokens in FRequiredStates then
-          exit;
-        if not (LinePtr[Run] in [#0, #10, #13]) then begin
-          if FUsePasDoc and (LinePtr[Run] = '@') and CheckPasDoc(True) then begin
-            if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
-              Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
+          Inc(Run, 2);
+          if (FCustomTokenMarkup <> nil) or (reCommentSubTokens in FRequiredStates) then
             exit;
-          end;
-          AnsiProc;
+          if FUsePasDoc and (LinePtr[Run] = '@') and CheckPasDoc(True) then
+            exit;
+          if (IsLetterChar[LinePtr[Run]]) and GetCustomTokenAndNext(tkAnsiComment, FCustomTokenMarkup, True) then
+            exit;
+        end
+        else begin
+          Inc(Run, 2);
+          if reCommentSubTokens in FRequiredStates then
+            exit;
         end;
+        AnsiProc;
       end;
     '.':
       begin
