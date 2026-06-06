@@ -559,18 +559,12 @@ function GetCodePoint(const S: String; const Index: PtrInt): TUTF8Char;
 var
   p: PChar;
   PLen: PtrInt;
-  Res: AnsiString; //intermediate needed for PChar -> String -> ShortString assignement
 begin
-  Result := '';
   p := UTF8CodepointStart(PChar(S), Length(S), Index - 1); //zero-based call
-  //determine the length in bytes of this UTF-8 character
-  PLen := UTF8CodepointSize(p);
-  Res := p;
-  //Set correct length for Result (otherwise it returns all chars up to the end of the original string)
-  SetLength(Res,PLen);
-  Result := Res;
+  PLen := UTF8CodepointSize(p); // Length in bytes of this UTF-8 character
+  SetLength(Result, PLen);    // Add length, a trailing #0
+  Move(p^, Result[1], PLen);  // and data.
 end;
-
 
 procedure SetCodePoint(var S: String; const Index: PtrInt; CodePoint: TUTF8Char);
 //equivalent for S[Index] := CodePoint, but for Utf8 encoded strings
@@ -584,8 +578,6 @@ begin
   Utf8Delete(S, Index, 1);
   Utf8Insert(CodePoint, S, Index);
 end;
-
-
 
 function FormatMaskText(const AEditMask: string; const Value: string; EnableSets: Boolean): string;
 var
