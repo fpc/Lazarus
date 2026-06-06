@@ -4528,6 +4528,7 @@ begin
       end else begin
           fRange := fRange - [rsBor, rsIDEDirective];
           Inc(p);
+          Exclude(FTokenExtraAttribs, eaPartTokenNotAtEnd);
           if TopPascalCodeFoldBlockType=cfbtBorCommand then
             EndPascalCodeFoldBlock;
           break;
@@ -4579,7 +4580,6 @@ begin
     end;
   until (p>=fLineLen);
   Run:=p;
-  Exclude(FTokenExtraAttribs, eaPartTokenNotAtEnd);
 end;
 
 procedure TSynPasSyn.DirectiveProc;
@@ -4595,6 +4595,8 @@ procedure TSynPasSyn.DirectiveProc;
   end;
 begin
   fTokenID := tkDirective;
+  Include(FTokenExtraAttribs, eaPartTokenNotAtEnd); // BorProc will clear this, if it reaches the end
+
   if TextComp('modeswitch') then begin
     // modeswitch directive
     inc(Run,10);
@@ -4683,6 +4685,7 @@ begin
       else begin
         if (reCommentSubTokens in FRequiredStates) and (fTokenPos <> Run) then
           exit;
+        Exclude(FTokenExtraAttribs, eaPartTokenNotAtEnd);
         fRange := fRange - [rsDirective];
         Inc(Run);
         FTokenExtraKind := tkeDirectiveCommentClose;
@@ -4768,6 +4771,7 @@ procedure TSynPasSyn.BraceOpenProc;
 var
   nd: PSynFoldNodeInfo;
 begin
+  Include(FTokenExtraAttribs, eaPartTokenNotAtEnd); // BorProc/DirectiveProc; will clear this, if it reaches the end
   if (Run < fLineLen-1) and (LinePtr[Run+1] = '$') then begin
     // compiler directive
     fRange := fRange + [rsDirective];
@@ -4844,7 +4848,6 @@ begin
       if reCommentCurly in FRequiredStates then
         FCustomCommentTokenMarkup := FPasAttributesMod[attribCommentCurly];
 
-      Include(FTokenExtraAttribs, eaPartTokenNotAtEnd); // BorProc will clear this, if it reaches the end
       if not (IsInNextToEOL or IsScanning) then begin
         GetCustomSymbolToken(tkBorComment, 1, FCustomTokenMarkup);
 
@@ -5286,6 +5289,7 @@ begin
           exit;
       end else begin
         fRange := fRange - [rsAnsi];
+        Exclude(FTokenExtraAttribs, eaPartTokenNotAtEnd);
         if TopPascalCodeFoldBlockType=cfbtAnsiComment then
           EndPascalCodeFoldBlock;
         break;
@@ -5332,7 +5336,6 @@ begin
       IsInWord := (IsLetterChar[LinePtr[Run]] or IsUnderScoreOrNumberChar[LinePtr[Run]]);
     end;
   until (Run>=fLineLen) or (LinePtr[Run] in [#0, #10, #13]);
-  Exclude(FTokenExtraAttribs, eaPartTokenNotAtEnd);
 end;
 
 procedure TSynPasSyn.RoundOpenProc;
@@ -6439,6 +6442,7 @@ end;
 function TSynPasSyn.GetTokenAttribute: TLazEditTextAttribute;
 var
   x1, x2: Integer;
+  ExtEol, AtEol: Boolean;
 begin
   case GetTokenID of
     tkAsm: Result := FPasAttributes[attribAsm];
@@ -6473,20 +6477,14 @@ begin
   if Result <> nil then begin
     x1 := ToPos(fTokenPos);
     x2 := ToPos(Run);
-    if eaPartTokenNotAtStart in FTokenExtraAttribs then x1 := MaxInt;
-    if eaPartTokenNotAtEnd   in FTokenExtraAttribs then x2 := MaxInt;
+    ExtEol := lafPastEOL in Result.Features;
+    AtEol  := (Run >= fLineLen) or (LinePtr[Run] in [#0,#10,#13]);
+    if (ExtEol or (fTokenPos>0)) and (eaPartTokenNotAtStart in FTokenExtraAttribs) then x1 := MaxInt; // Note: Maybe := 1; ? Force border at line start?
+    if (ExtEol or (not AtEol))   and (eaPartTokenNotAtEnd   in FTokenExtraAttribs) then x2 := MaxInt;
     if (Run >= fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then begin
-      x2 := ToPos(Run);
-      if (Result = CommentAttri) and
-         ((fRange * [rsIDEDirective, rsAnsi, rsBor] <> []) or
-          ((rsSlash in fRange) and
-           (FHadSlashLastLine or (LastLinePasFoldLevelFix(LineIndex+1, FOLDGROUP_PASCAL, True) = 0))
-          )
-         ) and
+      if (Result = CommentAttri) and (rsSlash in fRange) and
+         (FHadSlashLastLine or (LastLinePasFoldLevelFix(LineIndex+1, FOLDGROUP_PASCAL, True) = 0)) and
          (lafPastEOL in FPasAttributes[attribComment].Features)
-      then
-        x2 := MaxInt;
-      if (Result = FPasAttributes[attribDirective]) and (lafPastEOL in FPasAttributes[attribDirective].Features)
       then
         x2 := MaxInt;
       if (Result = FPasAttributes[attribString]) and (rsAnsiMultiDQ in fRange) and
@@ -6504,6 +6502,7 @@ var
   tid: TtkTokenKind;
   i, x1, x2, x1b, x2b: Integer;
   attr: TLazEditTextAttributeModifier;
+  ExtEol, AtEol: Boolean;
 begin
   Result := GetTokenAttribute;
   if Result = nil then
@@ -6513,14 +6512,12 @@ begin
 
   x1 := ToPos(fTokenPos);
   x2 := ToPos(Run);
+  AtEol  := (Run >= fLineLen) or (LinePtr[Run] in [#0,#10,#13]);
 
   if tid = tkIDEDirective then begin
-    x1b := x1;  if eaPartTokenNotAtStart in FTokenExtraAttribs then x1b := 1;
-    x2b := x2;  if eaPartTokenNotAtEnd   in FTokenExtraAttribs then x2b := fLineLen;
-    if (Run >= fLineLen) or (LinePtr[Run] in [#0,#10,#13]) and
-       (lafPastEOL in FPasAttributesMod[attribIDEDirective].Features)
-      then
-        x2b := MaxInt;
+    ExtEol := lafPastEOL in FPasAttributesMod[attribIDEDirective].Features;
+    x1b := x1;  if (ExtEol or (fTokenPos>0)) and (eaPartTokenNotAtStart in FTokenExtraAttribs) then x1b := MaxInt; // Note: Maybe := 1; ? Force border at line start?
+    x2b := x2;  if (ExtEol or (not AtEol))   and (eaPartTokenNotAtEnd   in FTokenExtraAttribs) then x2b := MaxInt;
     MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribIDEDirective], x1b, x2b);
   end;
 
@@ -6609,18 +6606,17 @@ begin
   end;
 
   if FCustomCommentTokenMarkup <> nil then begin
-    x2b := x2;
+    ExtEol := lafPastEOL in FCustomCommentTokenMarkup.Features;
+    x1b := x1;  if (ExtEol or (fTokenPos>0)) and (eaPartTokenNotAtStart in FTokenExtraAttribs) then x1b := MaxInt; // Note: Maybe := 1; ? Force border at line start?
+    x2b := x2;  if (ExtEol or (not AtEol))   and (eaPartTokenNotAtEnd   in FTokenExtraAttribs) then x2b := MaxInt;
     if (Run >= fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then begin
-      if ((not ((rsSlash in fRange))) or
-          ((rsSlash in fRange) and
-           (FHadSlashLastLine or (LastLinePasFoldLevelFix(LineIndex+1, FOLDGROUP_PASCAL, True) = 0))
-          )
-         ) and
+      if (rsSlash in fRange) and
+         (FHadSlashLastLine or (LastLinePasFoldLevelFix(LineIndex+1, FOLDGROUP_PASCAL, True) = 0)) and
          (lafPastEOL in FCustomCommentTokenMarkup.Features)
       then
         x2b := MaxInt;
     end;
-    MergeModifierToTokenAttribute(Result, FCustomCommentTokenMarkup, x1, x2b);
+    MergeModifierToTokenAttribute(Result, FCustomCommentTokenMarkup, x1b, x2b);
   end;
   if FCustomTokenMarkup <> nil then begin
     MergeModifierToTokenAttribute(Result, FCustomTokenMarkup, x1, x2);
@@ -6765,8 +6761,11 @@ function TSynPasSyn.GetEndOfLineAttributeEx: TLazCustomEditTextAttribute;
   ): TLazCustomEditTextAttribute;
   begin
     Result := nil;
-    if lafPastEOL in Base.Features then
+
+    if lafPastEOL in Base.Features then begin
       Result := Base;
+      Result.SetFrameBoundsLog(MaxInt, MaxInt);
+    end;
 
     if not (lafPastEOL in Modifier.Features) then
       exit;

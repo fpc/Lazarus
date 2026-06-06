@@ -5,8 +5,8 @@ unit TestHighlightFoldBase;
 interface
 
 uses
-  SysUtils, TestBase, SynEdit, SynEditHighlighterFoldBase,
-  SynEditMiscClasses, LazLoggerBase, LazEditTextAttributes, LazEditHighlighter;
+  SysUtils, TestBase, SynEdit, SynEditHighlighterFoldBase, SynEditMiscClasses, LazLoggerBase,
+  LazEditTextAttributes, LazEditHighlighter, LazEditMiscProcs, Graphics;
 
 type
 
@@ -33,6 +33,18 @@ operator := (a: Integer) : TExpTokenInfo;
 operator := (a: TLazEditTextAttribute) : TExpTokenInfo;
 operator + (a: Integer; b: TLazEditTextAttribute) : TExpTokenInfo;
 
+const
+  clNoTest = clDefault + 100;
+type
+  TTokenFrameExp = record
+    Len: Integer;
+    l,r, b: TColor;
+  end;
+
+function tfe(ALen: Integer): TTokenFrameExp;
+function tfe(ALen: Integer; a: TColor): TTokenFrameExp;
+function tfe(ALen: Integer; l,r: TColor; b: TColor = clNoTest): TTokenFrameExp;
+
 type
 
   { TTestBaseHighlighterFoldBase }
@@ -41,7 +53,7 @@ type
   protected
     FTheHighLighter: TSynCustomFoldHighlighter;
     function CreateTheHighLighter: TSynCustomFoldHighlighter; virtual; abstract;
-    procedure InitTighLighterAttr; virtual;
+    procedure InitHighLighterAttr; virtual;
     procedure SetUp; override;
     procedure TearDown; override;
     procedure ReCreateEdit; reintroduce; virtual;
@@ -54,6 +66,7 @@ type
     procedure CheckFoldInfoCounts(Name: String; Filter: TSynFoldActions; const Group: Integer; const Expected: Array of Integer);
 
     procedure CheckTokensForLine(Name: String; LineIdx: Integer; const ExpTokens: Array of TExpTokenInfo);
+    procedure CheckTokenFrameColors(ALineIdx: integer; AnExp: array of TTokenFrameExp; ACheckPastEol: boolean = False);
 
     function FoldActionsToString(AFoldActions: TSynFoldActions): String;
   end;
@@ -83,6 +96,30 @@ begin
   result.Flags := [etiKind, etiAttr];
 end;
 
+function tfe(ALen: Integer): TTokenFrameExp;
+begin
+  result.Len  := ALen;
+  result.l  := clNone;
+  result.r  := clNone;
+  result.b  := clNone;
+end;
+
+function tfe(ALen: Integer; a: TColor): TTokenFrameExp;
+begin
+  result.Len  := ALen;
+  result.l  := a;
+  result.r  := a;
+  result.b  := a;
+end;
+
+function tfe(ALen: Integer; l, r: TColor; b: TColor): TTokenFrameExp;
+begin
+  result.Len  := ALen;
+  result.l  := l;
+  result.r  := r;
+  result.b  := b;
+end;
+
 function ExpVLine(ALine: Integer; const AExp: array of integer): TTestExpValuesForLine;
 var
   i: Integer;
@@ -95,7 +132,7 @@ end;
 
 { TTestBaseHighlighterFoldBase }
 
-procedure TTestBaseHighlighterFoldBase.InitTighLighterAttr;
+procedure TTestBaseHighlighterFoldBase.InitHighLighterAttr;
 var
   i: Integer;
 begin
@@ -131,7 +168,7 @@ begin
   FreeAndNil(FTheHighLighter);
   inherited ReCreateEdit;
   FTheHighLighter := CreateTheHighLighter;
-  InitTighLighterAttr;
+  InitHighLighterAttr;
   SynEdit.Highlighter := FTheHighLighter;
 end;
 
@@ -244,6 +281,84 @@ begin
       break;
   end;
   AssertEquals('%s TokenId Line=%d  amount of tokens', [Name, LineIdx], length(ExpTokens), c );
+end;
+
+procedure TTestBaseHighlighterFoldBase.CheckTokenFrameColors(ALineIdx: integer;
+  AnExp: array of TTokenFrameExp; ACheckPastEol: boolean);
+
+  function GetColor(AnAttr: TLazCustomEditTextAttribute; ASide: TLazTextAttrBorderSide; ACol: integer): TColor;
+  begin
+    if AnAttr = nil then exit(clNone);
+    Result := AnAttr.FrameSideColors[ASide];
+    case ASide of
+      bsLeft:
+        if (ACol >= 0) and (AnAttr.StartX.Logical >= 0) and (AnAttr.StartX.Logical <> ACol) then
+          Result := clNone;
+      bsRight:
+        if (ACol >= 0) and (AnAttr.EndX.Logical >= 0) and (AnAttr.EndX.Logical <> ACol) then
+          Result := clNone;
+    end;
+  end;
+var
+  c, x: Integer;
+  e: TTokenFrameExp;
+  a: TLazCustomEditTextAttribute;
+begin
+  //  FTokenBreaker := TLazSynPaintTokenBreaker.Create;
+  //  FTokenBreaker.Prepare(DisplayView, FTheLinesView, FMarkupManager, FirstCol, LastCol);
+  //  FTokenBreaker.SetHighlighterTokensLine(TV + CurLine, CurTextIndex);
+  //  while FTokenBreaker.GetNextHighlighterTokenEx(TokenInfoEx) do begin
+  FTheHighLighter.StartAtLineIndex(ALineIdx);
+  c := 0;
+  x := 0;
+  while not FTheHighLighter.GetEol do begin
+    e := AnExp[c];
+    AssertEquals('Line %d Token #%d start X', [ALineIdx, c], x, FTheHighLighter.GetTokenPos);
+    AssertEquals('Line %d Token #%d end X',   [ALineIdx, c], e.Len,  FTheHighLighter.GetTokenLen);
+
+    a := FTheHighLighter.GetTokenAttributeEx;
+    if a is TLazEditTextAttributeMergeResult then begin
+      TLazEditTextAttributeMergeResult(a).FinishMerge;
+      a.SetFrameBoundsLog(ToPos(x), ToPos(x) + e.Len);
+    end;
+
+    if e.l <> clNoTest then
+      AssertEquals('Line %d Token #%d: left frame ', [ALineIdx, c], e.l, GetColor(a, bsLeft, ToPos(x)));
+    if e.r <> clNoTest then
+      AssertEquals('Line %d Token #%d: right frame ', [ALineIdx, c], e.r, GetColor(a, bsRight, ToPos(x+e.Len)));
+    if e.b <> clNoTest then
+      AssertEquals('Line %d Token #%d: bottom frame ', [ALineIdx, c], e.b, GetColor(a, bsBottom, -1));
+
+    inc(c);
+    inc(x, e.Len);
+    FTheHighLighter.Next;
+  end;
+
+  if ACheckPastEol then begin
+    e := AnExp[c];
+    a := FTheHighLighter.GetEndOfLineAttributeEx;
+    //if a = nil then begin
+    //  AssertEquals('Line %d Token #%d: left frame ', [ALineIdx, c], e.l, clNone);
+    //  AssertEquals('Line %d Token #%d: right frame ', [ALineIdx, c], e.r, clNone);
+    //  AssertEquals('Line %d Token #%d: bottom frame ', [ALineIdx, c], e.b, clNone);
+    //end
+    //else begin
+      if a is TLazEditTextAttributeMergeResult then begin
+        TLazEditTextAttributeMergeResult(a).FinishMerge;
+        a.SetFrameBoundsLog(ToPos(x), ToPos(x) + 1);
+      end;
+      if e.l <> clNoTest then
+        AssertEquals('Line %d Token #%d: left frame ', [ALineIdx, c], e.l, GetColor(a, bsLeft, ToPos(x)));
+      if e.r <> clNoTest then
+        AssertEquals('Line %d Token #%d: right frame ', [ALineIdx, c], e.r, GetColor(a, bsRight, ToPos(x)+1));
+      if e.b <> clNoTest then
+        AssertEquals('Line %d Token #%d: bottom frame ', [ALineIdx, c], e.b, GetColor(a, bsBottom, -1));
+    //end;
+
+    inc(c);
+  end;
+
+  AssertEquals('TokenId Line=%d  amount of tokens', [ALineIdx], length(AnExp), c );
 end;
 
 function TTestBaseHighlighterFoldBase.FoldActionsToString(AFoldActions: TSynFoldActions): String;

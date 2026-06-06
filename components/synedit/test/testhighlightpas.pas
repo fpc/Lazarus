@@ -5,7 +5,7 @@ unit TestHighlightPas;
 interface
 
 uses
-  Classes, SysUtils, testregistry, TestBase, Forms, LazLoggerBase,
+  Classes, SysUtils, testregistry, TestBase, Forms, Graphics, LazLoggerBase,
   TestHighlightFoldBase, SynEdit, SynEditTypes, SynHighlighterPas,
   SynEditHighlighterFoldBase, LazEditTextAttributes, LazEditHighlighter, LazEditFoldHighlighter;
 
@@ -21,8 +21,8 @@ type
     FKeepGenericModifierAttribs: boolean;
     function PasHighLighter: TSynPasSyn;
     function CreateTheHighLighter: TSynCustomFoldHighlighter; override;
-    procedure InitTighLighterAttr; override;
-    procedure EnableFolds(AEnbledTypes: TPascalCodeFoldBlockTypes;
+    procedure InitHighLighterAttr; override;
+    procedure EnableFolds(AnEnabledTypes: TPascalCodeFoldBlockTypes;
                           AHideTypes: TPascalCodeFoldBlockTypes = [];
                           ANoFoldTypes: TPascalCodeFoldBlockTypes = []
                          );
@@ -92,6 +92,7 @@ type
     procedure TestModifierAttributesForGenericObjFpc;
     procedure TestModifierAttributesForGenericDelphi;
     procedure TestCaretAsString;
+    procedure TestFrameColorComments;
     procedure TestFoldNodeInfo;
     procedure TestIsComment;
   end;
@@ -143,9 +144,9 @@ begin
   Result := TSynPasSyn.Create(nil);
 end;
 
-procedure TTestBaseHighlighterPas.InitTighLighterAttr;
+procedure TTestBaseHighlighterPas.InitHighLighterAttr;
 begin
-  inherited InitTighLighterAttr;
+  inherited InitHighLighterAttr;
 
   PasHighLighter.CommentAnsiAttri.Clear;
   PasHighLighter.CommentCurlyAttri.Clear;
@@ -176,14 +177,14 @@ begin
   PasHighLighter.StringHashAttri.Clear;
 end;
 
-procedure TTestBaseHighlighterPas.EnableFolds(AEnbledTypes: TPascalCodeFoldBlockTypes;
+procedure TTestBaseHighlighterPas.EnableFolds(AnEnabledTypes: TPascalCodeFoldBlockTypes;
   AHideTypes: TPascalCodeFoldBlockTypes; ANoFoldTypes: TPascalCodeFoldBlockTypes);
 var
   i: TPascalCodeFoldBlockType;
 begin
   PasHighLighter.BeginUpdate;
   for i := low(TPascalCodeFoldBlockType) to high(TPascalCodeFoldBlockType) do begin
-    PasHighLighter.FoldConfig[ord(i)].Enabled := i in AEnbledTypes;
+    PasHighLighter.FoldConfig[ord(i)].Enabled := i in AnEnabledTypes;
     if (i in ANoFoldTypes) then
       PasHighLighter.FoldConfig[ord(i)].Modes := []
     else
@@ -2166,7 +2167,7 @@ end;
 
 procedure TTestHighlighterPas.TestContextForDeprecated;
   procedure SubTest(s: String;
-    AEnbledTypes: TPascalCodeFoldBlockTypes;
+    AnEnabledTypes: TPascalCodeFoldBlockTypes;
     AHideTypes: TPascalCodeFoldBlockTypes = [];
     ANoFoldTypes: TPascalCodeFoldBlockTypes = []);
 
@@ -2375,7 +2376,7 @@ procedure TTestHighlighterPas.TestContextForDeprecated;
   begin
     PushBaseName('test for '+s);
     ReCreateEdit;
-    EnableFolds(AEnbledTypes, AHideTypes, ANoFoldTypes);
+    EnableFolds(AnEnabledTypes, AHideTypes, ANoFoldTypes);
     SetLines
       ([  'Unit A; interface',
           'var',
@@ -5016,6 +5017,140 @@ begin
                       tkKey, tkSymbol, tkString, tkString, tkSymbol, tkIdentifier,  // and(^a^a=z
                       tkSymbol, tkSymbol                                            // );'
                      ]);
+
+end;
+
+procedure TTestHighlighterPas.TestFrameColorComments;
+  procedure InitAttrib(AnAttr: TLazCustomEditTextAttribute; AColor: TColor; AFeatures: TLazTextAttributeFeatures);
+  begin
+    AnAttr.FrameColor := AColor;
+    AnAttr.Features := AnAttr.Features - [lafPastEOL] + AFeatures;
+  end;
+  procedure ClearCustomWord;
+  begin
+    PasHighLighter.CustomTokenCount := 0;
+  end;
+  procedure InitCustomWordAttrib(ACount, AnIndex: integer; AColor: TColor; AText: String);
+  var
+    t: TSynPasSynCustomToken;
+  begin
+    PasHighLighter.CustomTokenCount := ACount;
+    t := PasHighLighter.CustomTokens[AnIndex];
+    t.MatchTokenKinds := [tkComment];
+    t.Tokens.Text := AText;
+    t.Markup.FrameColor := AColor;
+    t.Markup.FramePriority := 19999;
+  end;
+var
+  i: Integer;
+begin
+  ReCreateEdit;
+  SetLines
+    ([ 'Unit A; {$Mode objfpc} interface',  // 0
+       '  {abc',
+       '   def',
+       '{d}-',
+       '   foo}',
+       ''
+    ]);
+
+  for i := 0 to 5 do begin
+    case i of
+      0: begin InitAttrib(PasHighLighter.CommentAttri,      clRed, []);
+               InitAttrib(PasHighLighter.CommentCurlyAttri, clNone, []);
+         end;
+      1: begin InitAttrib(PasHighLighter.CommentAttri,      clRed, []);
+               InitAttrib(PasHighLighter.CommentCurlyAttri, clNone, [lafPastEOL]);
+         end;
+      2: begin InitAttrib(PasHighLighter.CommentAttri,      clNone, []);
+               InitAttrib(PasHighLighter.CommentCurlyAttri, clRed, []);
+         end;
+      3: begin InitAttrib(PasHighLighter.CommentAttri,      clNone, [lafPastEOL]);
+               InitAttrib(PasHighLighter.CommentCurlyAttri, clRed, []);
+         end;
+      4: begin InitAttrib(PasHighLighter.CommentAttri,      clRed, []);
+               InitAttrib(PasHighLighter.CommentCurlyAttri, clRed, []);
+         end;
+      5: begin InitAttrib(PasHighLighter.CommentAttri,      clBlue, []);
+               InitAttrib(PasHighLighter.CommentCurlyAttri, clRed, []);
+         end;
+    end;
+
+    CheckTokenFrameColors(1, [tfe(2), tfe(4, clRed, clRed, clRed), {}tfe(0) ], True);
+    CheckTokenFrameColors(2, [        tfe(6, clRed, clRed, clRed), {}tfe(0) ], True);
+    CheckTokenFrameColors(3, [        tfe(4, clRed, clRed, clRed), {}tfe(0) ], True);
+    CheckTokenFrameColors(4, [        tfe(7, clRed, clRed, clRed), {}tfe(0) ], True);
+
+
+    InitCustomWordAttrib(1,0, clGreen, '{');
+    CheckTokenFrameColors(1, [tfe(2), tfe(1, clGreen, clGreen, clGreen), tfe(3, clNone, clRed, clRed), {}tfe(0) ], True);
+    CheckTokenFrameColors(2, [        tfe(6, clRed, clRed, clRed), {}tfe(0) ], True);
+    CheckTokenFrameColors(3, [        tfe(1, clGreen, clGreen, clGreen), tfe(3, clNone, clRed, clRed), {}tfe(0) ], True);
+    CheckTokenFrameColors(4, [        tfe(7, clRed, clRed, clRed), {}tfe(0) ], True);
+
+    InitCustomWordAttrib(1,0, clGreen, 'abc');
+    CheckTokenFrameColors(1, [tfe(2), tfe(1, clRed, clNone, clRed), tfe(3, clGreen, clGreen, clGreen), {}tfe(0) ], True);
+    CheckTokenFrameColors(2, [        tfe(6, clRed, clRed, clRed), {}tfe(0) ], True);
+    CheckTokenFrameColors(3, [        tfe(4, clRed, clRed, clRed), {}tfe(0) ], True);
+    CheckTokenFrameColors(4, [        tfe(7, clRed, clRed, clRed), {}tfe(0) ], True);
+
+    ClearCustomWord;
+  end;
+
+  for i := 0 to 5 do begin
+    case i of
+      0: begin InitAttrib(PasHighLighter.CommentAttri,      clRed, [lafPastEOL]);
+               InitAttrib(PasHighLighter.CommentCurlyAttri, clNone, []);
+         end;
+      1: begin InitAttrib(PasHighLighter.CommentAttri,      clRed, [lafPastEOL]);
+               InitAttrib(PasHighLighter.CommentCurlyAttri, clNone, [lafPastEOL]);
+         end;
+      2: begin InitAttrib(PasHighLighter.CommentAttri,      clNone, []);
+               InitAttrib(PasHighLighter.CommentCurlyAttri, clRed, [lafPastEOL]);
+         end;
+      3: begin InitAttrib(PasHighLighter.CommentAttri,      clNone, [lafPastEOL]);
+               InitAttrib(PasHighLighter.CommentCurlyAttri, clRed, [lafPastEOL]);
+         end;
+      4: begin InitAttrib(PasHighLighter.CommentAttri,      clRed, [lafPastEOL]);
+               InitAttrib(PasHighLighter.CommentCurlyAttri, clRed, [lafPastEOL]);
+         end;
+      5: begin InitAttrib(PasHighLighter.CommentAttri,      clBlue, [lafPastEOL]);
+               InitAttrib(PasHighLighter.CommentCurlyAttri, clRed, [lafPastEOL]);
+         end;
+    end;
+
+    // Note: frame at col=1 may be changed to red
+    CheckTokenFrameColors(1, [tfe(2), tfe(4, clRed, clNone, clRed),  {}tfe(0, clNone, clNone, clRed) ], True);
+    CheckTokenFrameColors(2, [        tfe(6, clNone, clNone, clRed), {}tfe(0, clNone, clNone, clRed) ], True);
+    CheckTokenFrameColors(3, [        tfe(4, clNone, clNone, clRed), {}tfe(0, clNone, clNone, clRed) ], True);
+    CheckTokenFrameColors(4, [        tfe(7, clNone, clRed, clRed),  {}tfe(0, clNone) ], True);
+
+    InitCustomWordAttrib(1,0, clGreen, 'abc');
+    CheckTokenFrameColors(1, [tfe(2), tfe(1, clRed, clNone, clRed),  tfe(3, clGreen, clGreen, clGreen), {}tfe(0, clNone, clNone, clRed) ], True);
+    CheckTokenFrameColors(2, [        tfe(6, clNone, clNone, clRed), {}tfe(0, clNone, clNone, clRed) ], True);
+    CheckTokenFrameColors(3, [        tfe(4, clNone, clNone, clRed), {}tfe(0, clNone, clNone, clRed) ], True);
+    CheckTokenFrameColors(4, [        tfe(7, clNone, clRed, clRed),  {}tfe(0, clNone) ], True);
+
+    ClearCustomWord;
+  end;
+
+
+  InitAttrib(PasHighLighter.CommentAttri,      clRed, [lafPastEOL]);
+  InitAttrib(PasHighLighter.CommentCurlyAttri, clBlue, []);
+  CheckTokenFrameColors(1, [tfe(2), tfe(4, clBlue, clBlue, clBlue), {}tfe(0, clNone, clNone, clRed) ], True);
+  CheckTokenFrameColors(2, [        tfe(6, clBlue, clBlue, clBlue), {}tfe(0, clNone, clNone, clRed) ], True);
+  CheckTokenFrameColors(3, [        tfe(4, clBlue, clBlue, clBlue), {}tfe(0, clNone, clNone, clRed) ], True);
+  CheckTokenFrameColors(4, [        tfe(7, clBlue, clBlue, clBlue),  {}tfe(0, clNone) ], True);
+
+
+  InitAttrib(PasHighLighter.CommentAttri,      clBlue, []);
+  InitAttrib(PasHighLighter.CommentCurlyAttri, clRed, [lafPastEOL]);
+  CheckTokenFrameColors(1, [tfe(2), tfe(4, clRed,  clBlue, clRed), {}tfe(0, clNone, clNone, clRed) ], True);
+  CheckTokenFrameColors(2, [        tfe(6, clBlue, clBlue, clRed), {}tfe(0, clNone, clNone, clRed) ], True);
+  CheckTokenFrameColors(3, [        tfe(4, clBlue, clBlue, clRed), {}tfe(0, clNone, clNone, clRed) ], True);
+  CheckTokenFrameColors(4, [        tfe(7, clBlue, clRed,  clRed),  {}tfe(0, clNone) ], True);
+
+
 
 end;
 

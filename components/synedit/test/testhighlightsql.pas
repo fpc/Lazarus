@@ -18,7 +18,7 @@ type
     FKeepGenericModifierAttribs: boolean;
     function SqlHighLighter: TSynSQLSyn;
     function CreateTheHighLighter: TSynCustomFoldHighlighter; override;
-    procedure InitTighLighterAttr; override;
+    procedure InitHighLighterAttr; override;
     procedure EnableFolds(AEnbledTypes: TSqlCodeFoldBlockTypes;
                           AHideTypes: TSqlCodeFoldBlockTypes = [];
                           ANoFoldTypes: TSqlCodeFoldBlockTypes = []
@@ -73,9 +73,9 @@ begin
   Result := TSynSQLSyn.Create(nil);
 end;
 
-procedure TTestBaseHighlighterSql.InitTighLighterAttr;
+procedure TTestBaseHighlighterSql.InitHighLighterAttr;
 begin
-  inherited InitTighLighterAttr;
+  inherited InitHighLighterAttr;
 
   SqlHighLighter.ClientKeywordAttri.Clear;
   SqlHighLighter.CharSetAttri.Clear;
