@@ -203,11 +203,8 @@ type
           }
       );
       gdiPalette: (
-        //Is this the system palette?
-        SystemPalette : Boolean;
-
-        //or, Has it been added to the system palette?
-        PaletteRealized: Boolean;
+        //Is this the system palette visual?
+        SystemPaletteVisual: Boolean;
 
         //Type of visual expected
         VisualType: TGdkVisualType;
