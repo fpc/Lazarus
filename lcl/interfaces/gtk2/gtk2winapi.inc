@@ -5208,7 +5208,7 @@ function TGtk2WidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointe
           Visual := gdk_visual_get_system;
         SystemVisual := True; { This visual should not be referenced }
 
-        if Colormap <> nil then
+        if (Colormap <> nil) and (not SystemColormap) then
           gdk_colormap_unref(Colormap);
         ColorMap := gdk_colormap_new(Visual, GdkTrue);
       end
