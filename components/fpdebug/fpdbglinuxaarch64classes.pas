@@ -63,6 +63,7 @@ type
     function DbgThreadClass: TDbgThreadClass; override;
   public
     class function isSupported(ATargetInfo: TTargetDescriptor): boolean; override;
+    function CallParamDefaultLocation(AParamIdx: Integer): TFpDbgMemLocation; override;
   end;
 
 
@@ -354,6 +355,16 @@ class function TDbgLinuxAarch64Process.isSupported(ATargetInfo: TTargetDescripto
 begin
   result := (ATargetInfo.OS = osLinux) and
             (ATargetInfo.machineType in [mtARM64]);
+end;
+
+function TDbgLinuxAarch64Process.CallParamDefaultLocation(AParamIdx: Integer): TFpDbgMemLocation;
+begin
+  Result := InvalidLoc;
+  if (AParamIdx >= 0) and (AParamIdx <= 28) then
+  begin
+    Result.MType := mlfTargetRegister;
+    Result.Address := AParamIdx;
+  end;
 end;
 
 { TDbgAarch64StackUnwinder }
