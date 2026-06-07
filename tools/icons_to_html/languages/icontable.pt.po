@@ -52,12 +52,12 @@ msgstr "Nome"
 #: main.rsnomatchingpngimagefilesfoundin
 #, object-pascal-format
 msgid "No matching PNG image files found in %s"
-msgstr "Não foram encontrados ficheiros de imagem PNG correspondentes em %s"
+msgstr "Não há ficheiros de imagem PNG correspondentes em %s"
 
 #: main.rsnopngimagefilesfoundin
 #, object-pascal-format
 msgid "No PNG image files found in %s"
-msgstr "Não foram encontrados ficheiros de imagem PNG em %s"
+msgstr "Não há ficheiros de imagem PNG em %s"
 
 #: main.rssavedas
 #, object-pascal-format

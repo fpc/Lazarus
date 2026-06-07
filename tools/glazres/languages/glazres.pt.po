@@ -144,7 +144,7 @@ msgstr "Eliminar seleccionados"
 
 #: tglazresform.deletebtn.hint
 msgid "Delete selected files from the list"
-msgstr "Apagar os ficheiros selecionados da lista"
+msgstr "Apagar os ficheiros seleccionados da lista"
 
 #: tglazresform.fileslabel.caption
 msgid "Files to include"

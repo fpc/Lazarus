@@ -17,7 +17,7 @@ msgstr "Abortar"
 
 #: projectgroupstrconst.lisabortloadingprojectgroup
 msgid "Abort loading project group"
-msgstr "Abortar carregamento do grupo de projecto"
+msgstr "Abortar carregamento do grupo de projectos"
 
 #: projectgroupstrconst.lisactivetarget
 #, object-pascal-format
@@ -113,7 +113,7 @@ msgstr "O alvo não existe. Remover?"
 
 #: projectgroupstrconst.lisidecommandscompileandbuildinvokecompilebuildselect
 msgid "IDE commands \"Compile\" and \"Build\" invoke compile/build selected target in project group editor"
-msgstr "Os comandos «Compilar» e «Construir» do IDE iniciam a compilação/construção do alvo seleccionado no editor de grupos de projectos"
+msgstr "Os comandos \"Compilar\" e \"Construir\" do IDE iniciam a compilação/construção do alvo seleccionado no editor de grupos de projectos"
 
 #: projectgroupstrconst.lisinfo
 msgctxt "projectgroupstrconst.lisinfo"
@@ -139,7 +139,7 @@ msgstr "Pacotes Lazarus (.lpk)"
 
 #: projectgroupstrconst.lislazarusprojectgroupslpg
 msgid "Lazarus project groups (*.lpg)"
-msgstr "Grupos de projecto Lazarus (.lpg)"
+msgstr "Grupos de projectos Lazarus (.lpg)"
 
 #: projectgroupstrconst.lislazarusprojectslpi
 msgid "Lazarus projects (*.lpi)"
@@ -160,11 +160,11 @@ msgstr "Mais"
 #: projectgroupstrconst.lisnewprojectgroup
 msgctxt "projectgroupstrconst.lisnewprojectgroup"
 msgid "New project group"
-msgstr "Novo grupo de projecto"
+msgstr "Novo grupo de projectos"
 
 #: projectgroupstrconst.lisnewprojectgroupmenuc
 msgid "New Project group ..."
-msgstr "Novo grupo de projecto..."
+msgstr "Novo grupo de projectos..."
 
 #: projectgroupstrconst.lisnodebuildmodes
 msgid "Build Modes"
@@ -204,7 +204,7 @@ msgstr "Abrir último grupo ao iniciar"
 
 #: projectgroupstrconst.lisopenprojectgroup
 msgid "Open Project Group ..."
-msgstr "Abrir grupo de projecto..."
+msgstr "Abrir grupo de projectos..."
 
 #: projectgroupstrconst.lisopenrecentprojectgroup
 msgid "Open Recent Project Group"
@@ -243,7 +243,7 @@ msgstr "Grupo de projectos %s"
 #: projectgroupstrconst.lisprojectgroup2
 #, object-pascal-format
 msgid "Project Group: %s"
-msgstr "Grupo de projecto: %s"
+msgstr "Grupo de projectos: %s"
 
 #: projectgroupstrconst.lisprojectgroupaddcaption
 msgctxt "projectgroupstrconst.lisprojectgroupaddcaption"
@@ -309,7 +309,7 @@ msgstr "Novo"
 #: projectgroupstrconst.lisprojectgroupnewhint
 msgctxt "projectgroupstrconst.lisprojectgroupnewhint"
 msgid "New project group"
-msgstr "Novo grupo de projecto"
+msgstr "Novo grupo de projectos"
 
 #: projectgroupstrconst.lisprojectgroupopencaption
 msgctxt "projectgroupstrconst.lisprojectgroupopencaption"

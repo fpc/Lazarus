@@ -166,7 +166,7 @@ msgstr "Ficheiro"
 
 #: tcreatecodeform.lparentname.caption
 msgid "Object Parent class"
-msgstr "Classe-mãe do objeto"
+msgstr "Classe-mãe do objecto"
 
 #: tcreatecodeform.lseindent.caption
 msgid "Indent"

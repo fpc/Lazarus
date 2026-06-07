@@ -61,7 +61,7 @@ msgstr "A copiar o projecto..."
 
 #: uconst.rsexdownloadingproject
 msgid "Downloading Project ..."
-msgstr "A transferir o porjecto..."
+msgstr "A transferir o projecto..."
 
 #: uconst.rsexnetworkerror
 msgid "GitLab Network Error"

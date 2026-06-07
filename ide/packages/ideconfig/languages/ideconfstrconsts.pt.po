@@ -701,7 +701,7 @@ msgstr "O ficheiro \"%s\" é uma ligação simbólica.%sAbrir antes \"%s\"?"
 #: ideconfstrconsts.listheprogrammakewasnotfound
 #, object-pascal-format
 msgid "The program \"make\" was not found.%sIt is needed to build Lazarus."
-msgstr "O programa «make» não foi encontrado.%sÉ necessário para construir o Lazarus."
+msgstr "O programa \"make\" não foi encontrado.%sÉ necessário para construir o Lazarus."
 
 #: ideconfstrconsts.listheprojectusestargetosandcputhesystemppuforthistar
 #, object-pascal-format
@@ -731,7 +731,7 @@ msgstr "A unidade %s aparece duas vezes no caminho de %s:"
 #: ideconfstrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
 #, object-pascal-format
 msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
-msgstr "Este conjunto de opções para compilar o Lazarus não é suportado por esta instalação.%sO diretório \"%s\" não é gravável.%sConsulte o site do Lazarus para conhecer outras formas de instalar o Lazarus."
+msgstr "Este conjunto de opções para compilar o Lazarus não é suportado por esta instalação.%sA pasta \"%s\" não é gravável.%sConsulte o sítio do Lazarus para conhecer outras formas de instalar o Lazarus."
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -937,7 +937,7 @@ msgstr "Erro do analisador XML no ficheiro %s%sErro: %s"
 
 #: ideconfstrconsts.rslanguageafrikaans
 msgid "Afrikaans"
-msgstr "africâner"
+msgstr "Africâner"
 
 #: ideconfstrconsts.rslanguagearabic
 msgid "Arabic"

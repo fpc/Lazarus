@@ -60,7 +60,7 @@ msgstr "Tem a certeza de que deseja eliminar a salvaguarda?"
 
 #: anchordockstr.adrsareyousuretorestore
 msgid "Are you sure you want to restore the window layout? This will overwrite the current layout settings."
-msgstr "Are you sure you want to restore the window layout? This will overwrite the current layout settings."
+msgstr "Deseja realmente restaurar a disposição da janela? Isto vai sobrescrever a disposição actual."
 
 #: anchordockstr.adrsautomatically
 msgid "Automatically"
@@ -139,7 +139,7 @@ msgstr "Activar a ancoragem de janelas do IDE (requer reinício do IDE)"
 
 #: anchordockstr.adrsenableanchordockhint
 msgid "This option allows to organize groups of windows (or all windows) into a single window. For a \"classic\" IDE with only floating windows turn the option off."
-msgstr "Esta opção permite organizar grupos de janelas (ou todas as janelas) numa única janela. Para um IDE «clássico» com apenas janelas flutuantes, desactive esta opção."
+msgstr "Esta opção permite organizar grupos de janelas (ou todas as janelas) numa única janela. Para um IDE \"clássico\" com apenas janelas flutuantes, desactive esta opção."
 
 #: anchordockstr.adrsenlargeside
 #, object-pascal-format
@@ -332,7 +332,7 @@ msgstr "Mostrar cabeçalhos"
 
 #: anchordockstr.adrssplitterresizestyle
 msgid "Splitter resize style:"
-msgstr "Estilo de redimensionamento do divisor"
+msgstr "Estilo de redimensionamento do divisor:"
 
 #: anchordockstr.adrssplitterthickness
 msgid "Splitter thickness"
@@ -379,7 +379,7 @@ msgstr "IDE clássico (múltiplas janelas):"
 
 #: anchordockstr.setupmultiwindowideinfo
 msgid "The \"modern\" single Window mode still allows you to undock individual Windows and have several groups of Windows. The IDE will show additional \"Dock-Handles\" in each Window, which will allow you to change layout, but also require additional space."
-msgstr "O modo de janela única «moderno» continua a permitir-lhe desancorar janelas individuais e ter vários grupos de janelas. O IDE mostra «pegas de ancoragem» adicionais em cada janela, o que lhe permitirá alterar a disposição, mas também exigirá espaço adicional."
+msgstr "O modo de janela única \"moderno\" continua a permitir-lhe desancorar janelas individuais e ter vários grupos de janelas. O IDE mostra \"pegas de ancoragem\" adicionais em cada janela, o que lhe permitirá alterar a disposição, mas também exigirá espaço adicional."
 
 #: anchordockstr.setupmultiwindowidemodern
 msgid "Modern IDE (Single-Window):"
@@ -387,7 +387,7 @@ msgstr "IDE moderno (janela única):"
 
 #: anchordockstr.setupmultiwindowideoption
 msgid "You can change this in the IDE options under: \"Anchordocking\""
-msgstr "Pode alterar esta configuração nas opções do IDE, em: «Anchordocking»"
+msgstr "Pode alterar esta configuração nas opções do IDE, em: \"Anchordocking\""
 
 #: anchordockstr.setupmultiwindowideseperatewindows
 msgid "There are separate windows for each part of the IDE (Editor, Components, Debug,...). They can all be individually moved around on the screen."

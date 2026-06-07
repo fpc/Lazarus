@@ -105,7 +105,7 @@ msgstr "Criado com "
 
 #: chmstrconsts.rscreatesearchablehtml_hint
 msgid "Only files added to the project manually are indexed, files added automatically are not indexed."
-msgstr "Só os ficheiros adicionados manualmente ao projeto são indexados; os ficheiros adicionados automaticamente não são indexados."
+msgstr "Só os ficheiros adicionados manualmente ao projecto são indexados; os ficheiros adicionados automaticamente não são indexados."
 
 #: chmstrconsts.rsdelete
 msgctxt "chmstrconsts.rsdelete"

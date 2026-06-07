@@ -136,7 +136,7 @@ msgstr "O editor de formulários apresenta o formulário editado numa janela nor
 
 #: dockedstrconsts.setupdesignerinfo
 msgid "The \"classic\" designer can be positioned on your screen independent of other parts of the IDE. The \"modern\" docked designer will be embedded into the source-edit window, and you will have a tab to toggle between source and form. You can open a 2nd source-edit window to see both at the same time."
-msgstr "O desenhador «clássico» pode ser posicionado no ecrã independentemente de outras partes do IDE. O desenhador «moderno» ancorado ficará integrado na janela de edição de código-fonte, e terá um separador para alternar entre o código-fonte e o formulário. Pode abrir uma segunda janela de edição de código-fonte para ver ambos ao mesmo tempo."
+msgstr "O desenhador \"clássico\" pode ser posicionado no ecrã independentemente de outras partes do IDE. O desenhador \"moderno\" ancorado ficará integrado na janela de edição de código-fonte, e terá um separador para alternar entre o código-fonte e o formulário. Pode abrir uma segunda janela de edição de código-fonte para ver ambos ao mesmo tempo."
 
 #: dockedstrconsts.setupdesignermodern
 msgid "Modern Form Editor (docked/tabbed):"
@@ -188,7 +188,7 @@ msgstr "Posição do separador"
 
 #: dockedstrconsts.stabpositionhint
 msgid "Position of Code, Form, Anchors tabs"
-msgstr "Posição dos separadores «Código», «Formulário» e «Âncoras»"
+msgstr "Posição dos separadores \"Código\", \"Formulário\" e \"Âncoras\""
 
 #: dockedstrconsts.stabpositionleft
 msgid "Left"

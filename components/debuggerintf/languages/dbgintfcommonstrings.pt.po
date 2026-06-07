@@ -81,7 +81,7 @@ msgstr "A unidade não está pronta"
 
 #: dbgintfcommonstrings.rsrunerrorexceptionstackcorrupted
 msgid "Exception stack corrupted"
-msgstr "Axcepção de torre corrompida"
+msgstr "Excepção de torre corrompida"
 
 #: dbgintfcommonstrings.rsrunerrorfileaccessdenied
 msgid "File access denied"
@@ -97,7 +97,7 @@ msgstr "Ficheiro não encontrado"
 
 #: dbgintfcommonstrings.rsrunerrorfilenotopen
 msgid "File not open"
-msgstr "Fincheiro não aberto"
+msgstr "Ficheiro não aberto"
 
 #: dbgintfcommonstrings.rsrunerrorfilenotopenforinput
 msgid "File not open for input"

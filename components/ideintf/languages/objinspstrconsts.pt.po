@@ -1273,7 +1273,7 @@ msgstr "Entrada de teste"
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
 #, object-pascal-format
 msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "O identificador «%s» não é um método.%sClique em Cancelar para desfazer,%sclique em Ignorar para forçar."
+msgstr "O identificador \"%s\" não é um método.%sClique em Cancelar para desfazer,%sclique em Ignorar para forçar."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
 #, object-pascal-format
@@ -1283,12 +1283,12 @@ msgstr "O método \"%s\" é incompatível com este evento (%s).%sClique em Cance
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
 #, object-pascal-format
 msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "O método «%s» não está publicado.%sClique em Cancelar para desfazer,%sclique em Ignorar para forçar."
+msgstr "O método \"%s\" não está publicado.%sClique em Cancelar para desfazer,%sclique em Ignorar para forçar."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
 #, object-pascal-format
 msgid "Unable to change parent of control \"%s\" to new parent \"%s\".%s%s"
-msgstr "Não foi possível alterar a mãe do controlo «%s» para a nova mãe \"%s\".%s%s"
+msgstr "Não foi possível alterar a mãe do controlo \"%s\" para a nova mãe \"%s\".%s%s"
 
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"

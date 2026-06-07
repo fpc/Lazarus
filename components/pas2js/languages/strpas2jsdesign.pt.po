@@ -499,7 +499,7 @@ msgstr "Nome do ficheiro WebAssembly"
 
 #: strpas2jsdesign.rscreateclassfromhtmldescription
 msgid "Create a Pas2JS \"form\" class definition from HTML file using ID attributes in the HTML file."
-msgstr "Criar definição da classe «form» do Pas2JS a partir de um ficheiro HTML, com os atributos ID nesse ficheiro."
+msgstr "Criar definição da classe \"form\" do Pas2JS a partir de um ficheiro HTML, com os atributos ID nesse ficheiro."
 
 #: strpas2jsdesign.rscreateclassfromhtmlname
 msgid "Pas2JS class definition from HTML file"

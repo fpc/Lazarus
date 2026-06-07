@@ -145,7 +145,7 @@ msgstr "Ao executar o comando: %0:s\"%2:s\"%0:so gdb relatou:%0:s\"%1:s\"%0:s"
 #: gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
 #, object-pascal-format
 msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
-msgstr "Clique em Ignorar para continuar a depuração. Isto pode NÃO ser seguro. Clique em Abortar para parar o depurador.%0:sExcepção: %1:s com a mensagem «%2:s»%0:sContexto: %4:s. Estado: %5:s %0:s%0:s%3:s"
+msgstr "Clique em Ignorar para continuar a depuração. Isto pode NÃO ser seguro. Clique em Abortar para parar o depurador.%0:sExcepção: %1:s com a mensagem \"%2:s\"%0:sContexto: %4:s. Estado: %5:s %0:s%0:s%3:s"
 
 #: gdbmistringconstants.gdbmisfailedinitproc
 msgid "Failed to execute the initialization process"

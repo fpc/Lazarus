@@ -29,7 +29,7 @@ msgstr "COMPARESTR(<cadeia1>,<cadeia2>)/Compara duas cadeias. Devolve a posiçã
 
 #: lr_add_function_const.sdescriptioncreatedate
 msgid "CREATEDATE(<String>)/Converts <String> string to string that contains date to use it in SQL clause. To use this function put the string with desired date format to TfrAddFunctionLibrary.FormatDate property."
-msgstr "CREATEDATE(<cadeia>)/Converte uma cadeia do tipo « <cadeia> » numa cadeia que contenha a data, para ser utilizada numa cláusula SQL. Para utilizar esta função, atribua a cadeia com o formato de data pretendido à propriedade TfrAddFunctionLibrary.FormatDate."
+msgstr "CREATEDATE(<cadeia>)/Converte uma cadeia do tipo <cadeia> numa cadeia que contenha a data, para ser utilizada numa cláusula SQL. Para utilizar esta função, atribua a cadeia com o formato de data pretendido à propriedade TfrAddFunctionLibrary.FormatDate."
 
 #: lr_add_function_const.sdescriptioncreatenum
 msgid "CREATENUM(<String>)/Converts <String> string to string that contains numeric value to use it in SQL clause."
@@ -73,7 +73,7 @@ msgstr "FIRSTDAYOFPREVMONTH(<Data>)/Devolve a data do primeiro dia do mês anter
 
 #: lr_add_function_const.sdescriptionincdate
 msgid "INCDATE(<Date>,<String>)/Increments the date <Date> by given number of days, months and years passed in the <String> parameter in format \"days;months;years\". Returns the result date."
-msgstr "INCDATE(<Data>,<cadeia>)/Aumenta a data <Data> pelo número de dias, meses e anos especificado no parâmetro <cadeia>, no formato «dias;meses;anos». Devolve a data resultante."
+msgstr "INCDATE(<Data>,<cadeia>)/Aumenta a data <Data> pelo número de dias, meses e anos especificado no parâmetro <cadeia>, no formato \"dias;meses;anos\". Devolve a data resultante."
 
 #: lr_add_function_const.sdescriptionincday
 msgid "INCDAY(<Date>,<Number>)/Increments the date <Date> by given number of days <Number> and returns the result date."
@@ -85,7 +85,7 @@ msgstr "INCMONTH(<Data>,<Número>)/Aumenta a data <Data> pelo número de meses <
 
 #: lr_add_function_const.sdescriptioninctime
 msgid "INCTIME(<Time>,<String>)/Increments the time <Time> by given number of hours, minutes, seconds and milliseconds passed in the <String> parameter in format \"h;min;sec;msec\". Returns the result time."
-msgstr "INCTIME(<hora>,<cadeia>)/Aumenta o tempo <hora> pelo número de horas, minutos, segundos e milissegundos indicado no parâmetro <cadeia>, no formato «h;min;sec;msec». Devolve o tempo resultante."
+msgstr "INCTIME(<hora>,<cadeia>)/Aumenta o tempo <hora> pelo número de horas, minutos, segundos e milissegundos indicado no parâmetro <cadeia>, no formato \"h;min;sec;msec\". Devolve o tempo resultante."
 
 #: lr_add_function_const.sdescriptionincyear
 msgid "INCYEAR(<Date>,<Number>)/Increments the date <Date> by given number of years <Number> and returns the result date."

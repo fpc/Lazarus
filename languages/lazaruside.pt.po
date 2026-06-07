@@ -2228,11 +2228,11 @@ msgstr "Primeiro plano"
 
 #: lazarusidestrconsts.dlgformtitlebarchangesobjectinspector
 msgid "Change Object Inspector contents on clicking form title bar"
-msgstr "Alterar o conteúdo do inspector de objetos ao clicar na barra de título do formulário"
+msgstr "Alterar o conteúdo do inspector de objectos ao clicar na barra de título do formulário"
 
 #: lazarusidestrconsts.dlgformtitlebarchangesobjectinspectorhint
 msgid "Show a form's properties in Object Inspector by clicking on its title bar."
-msgstr "Para ver as propriedades de um formulário no inspector de objetos, clique na barra de título do mesmo."
+msgstr "Para ver as propriedades de um formulário no inspector de objectos, clique na barra de título do mesmo."
 
 #: lazarusidestrconsts.dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
@@ -2661,7 +2661,7 @@ msgstr "Posição vertical para um salto de linha única em % (0 = topo, 100 = f
 
 #: lazarusidestrconsts.dlgjumptomethodbody
 msgid "Jump directly to method body"
-msgstr "Ir diretamente para o corpo do método"
+msgstr "Ir directamente para o corpo do método"
 
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep caret X position when navigating up/down"
@@ -2781,7 +2781,7 @@ msgstr "Visão geral da canaleta"
 #: lazarusidestrconsts.dlgmarkupcurrentworddelayinsec
 #, object-pascal-format
 msgid "(%s sec delay after caret move)"
-msgstr "(%s seg de atraso após mover o cursor)"
+msgstr "(%s seg depois de mover o cursor)"
 
 #: lazarusidestrconsts.dlgmarkupfoldcolor
 msgid "Vertical mark"
@@ -2918,7 +2918,7 @@ msgstr "Parênteses de palavras-chave no cursor (global)"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
 msgid "Match whole words, if length is less or equal to:"
-msgstr "Procurar palavras completas, se tamanho for igual ou inferior a:"
+msgstr "Comparar palavras completas, se tamanho ≤ a:"
 
 #: lazarusidestrconsts.dlgmarkupwordkeycombo
 #, object-pascal-format
@@ -5659,7 +5659,7 @@ msgstr "Conclusão automática: ligada"
 
 #: lazarusidestrconsts.lisautomarkup
 msgid "Pairs/Matches and Structure"
-msgstr "Pares/Correspondências e estrutura"
+msgstr "Correspondências e estrutura"
 
 #: lazarusidestrconsts.lisautomatic
 msgctxt "lazarusidestrconsts.lisautomatic"
@@ -6353,7 +6353,7 @@ msgstr "Visibilidade desordenada"
 #: lazarusidestrconsts.lisceuses
 msgctxt "lazarusidestrconsts.lisceuses"
 msgid "Uses"
-msgstr "Uses"
+msgstr "Unidades usadas"
 
 #: lazarusidestrconsts.liscevariables
 msgid "Variables"
@@ -10033,7 +10033,7 @@ msgstr "&pastas"
 
 #: lazarusidestrconsts.lisfindfilessearchinprojectgroup
 msgid "project &group"
-msgstr "&grupo de projecto"
+msgstr "&grupo de projectos"
 
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Search location"
@@ -11364,7 +11364,7 @@ msgstr "Novo projecto"
 
 #: lazarusidestrconsts.liskmnewprojectfromfile
 msgid "New project from file"
-msgstr "Novo porjecto de ficheiro"
+msgstr "Novo projecto de ficheiro"
 
 #: lazarusidestrconsts.liskmnewunit
 msgctxt "lazarusidestrconsts.liskmnewunit"
@@ -13009,7 +13009,7 @@ msgstr "Novo projecto..."
 
 #: lazarusidestrconsts.lismenunewprojectfromfile
 msgid "New Project from File ..."
-msgstr "Novo porjecto de ficheiro..."
+msgstr "Novo projecto de ficheiro..."
 
 #: lazarusidestrconsts.lismenunewunit
 msgctxt "lazarusidestrconsts.lismenunewunit"
@@ -13550,7 +13550,7 @@ msgstr "Aplicar a todos os pacotes com nome \"%s\""
 
 #: lazarusidestrconsts.lismmapplytoproject
 msgid "Apply to project."
-msgstr "Aplicar ao porjecto."
+msgstr "Aplicar ao projecto."
 
 #: lazarusidestrconsts.lismmcreateanewgroupofoptions
 msgid "Create a new group of options"
@@ -14425,7 +14425,7 @@ msgstr "Substituir o subobjectivo do projecto."
 #: lazarusidestrconsts.lisoverridetheprojectwidgetsetegdefault
 #, object-pascal-format
 msgid "Override the project widgetset. For example: %s. Default: %s."
-msgstr "Substituir o conjunto de widgets do projeto. Por exemplo: %s. Padrão: %s."
+msgstr "Substituir o conjunto de widgets do projecto. Por exemplo: %s. Padrão: %s."
 
 #: lazarusidestrconsts.lisownerisalreadyusedbytreadertwriterpleasechooseanot
 msgid "'Owner' is already used by TReader/TWriter. Please choose another name."
@@ -17011,7 +17011,7 @@ msgstr "Saltar ficheiro e continuar a carregar"
 
 #: lazarusidestrconsts.lisskiploadinglastproject
 msgid "Skip loading last project."
-msgstr "Saltar o carregamento do último porjecto."
+msgstr "Saltar o carregamento do último projecto."
 
 #: lazarusidestrconsts.lisskipstartupchecks
 msgid "Skip selected checks at startup. Valid options are:"
@@ -17802,7 +17802,7 @@ msgstr "Já existe uma unidade com o nome \"%s\". Os identificadores Pascal têm
 #: lazarusidestrconsts.listhereisaunitwiththenameintheprojectpleasechoose
 #, object-pascal-format
 msgid "There is a unit with the name \"%s\" in the project.%sPlease choose a different name"
-msgstr "Já existe uma unidade com o nome \"%s\" no porjecto.%sPor favor, escolha um nome diferente"
+msgstr "Já existe uma unidade com o nome \"%s\" no projecto.%sPor favor, escolha um nome diferente"
 
 #: lazarusidestrconsts.listheremustbeatleastonebuildmode
 msgid "There must be at least one build mode."
@@ -17885,7 +17885,7 @@ msgstr "A unidade tem este nome"
 #: lazarusidestrconsts.listheunitisnotlowercasethefreepascalcompiler
 #, object-pascal-format
 msgid "The unit filename \"%s\" is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%sRename file lowercase?"
-msgstr "O nome do ficheiro da unidade «%s» não está em minúsculas.%sO compilador Free Pascal não distingue maiúsculas de minúsculas. Recomenda-se a utilização de nomes de ficheiros em minúsculas.%sRenomear o ficheiro para minúsculas?"
+msgstr "O nome do ficheiro da unidade \"%s\" não está em minúsculas.%sO compilador Free Pascal não distingue maiúsculas de minúsculas. Recomenda-se a utilização de nomes de ficheiros em minúsculas.%sRenomear o ficheiro para minúsculas?"
 
 #: lazarusidestrconsts.listheunitispartofthefpcsourcesbutthecorrespondingfpd
 #, object-pascal-format
@@ -17900,12 +17900,12 @@ msgstr "A unidade %s está a ser utilizada por outros ficheiros.%sActualizar as 
 #: lazarusidestrconsts.listheunititselfhasalreadythenamepascalidentifiersmus
 #, object-pascal-format
 msgid "The unit itself has already the name \"%s\". Pascal identifiers must be unique."
-msgstr "A própria unidade já tem o nome «%s». Os identificadores em Pascal têm de ser únicos."
+msgstr "A própria unidade já tem o nome \"%s\". Os identificadores em Pascal têm de ser únicos."
 
 #: lazarusidestrconsts.listheunitsearchpathofcontainsthesourcedirectoryofpac
 #, object-pascal-format
 msgid "The unit search path of \"%s\" contains the source directory \"%s\" of package %s"
-msgstr "O caminho de procura da unidade «%s» contém a pasta de origem «%s» do pacote %s"
+msgstr "O caminho de procura da unidade \"%s\" contém a pasta de origem \"%s\" do pacote %s"
 
 #: lazarusidestrconsts.listheworkingdirectorydoesnotexistpleasechecktheworki
 #, object-pascal-format
@@ -18153,7 +18153,7 @@ msgstr "Mostrar nós para pastas"
 
 #: lazarusidestrconsts.lisudshownodesforprojectandpackages
 msgid "Show nodes for project and packages"
-msgstr "Mostrar nós do projeto e dos pacotes"
+msgstr "Mostrar nós do projecto e dos pacotes"
 
 #: lazarusidestrconsts.lisudunits
 msgid "Units"
@@ -18229,7 +18229,7 @@ msgstr "Quer continuar a procurar a partir do final?"
 #: lazarusidestrconsts.lisuesearchstringnotfound
 #, object-pascal-format
 msgid "Search string '%s' not found!"
-msgstr "A cadeia de procura «%s» não foi encontrada!"
+msgstr "A cadeia de procura \"%s\" não foi encontrada!"
 
 #: lazarusidestrconsts.lisuethecurre
 #, object-pascal-format
@@ -18555,7 +18555,7 @@ msgstr "%s unidade %s no pacote %s"
 #: lazarusidestrconsts.lisunitmustsavebeforeinherit
 #, object-pascal-format
 msgid "Unit \"%s\" must be saved before it can be inherited from. Save now?"
-msgstr "A unidade «%s» tem de ser gravada antes de poder ser herdada. Gravar agora?"
+msgstr "A unidade \"%s\" tem de ser gravada antes de poder ser herdada. Gravar agora?"
 
 #: lazarusidestrconsts.lisunitnamealreadyexistscap
 msgid "Unitname already in project"
@@ -18911,7 +18911,7 @@ msgstr "Sem uma pasta Lazarus adequada, receberá muitos avisos."
 
 #: lazarusidestrconsts.liswithoutapropermakeexecutablethecompilingoftheideis
 msgid "Without a proper \"make\" executable the compiling of the IDE is not possible."
-msgstr "Sem um executável «make» adequado, não é possível compilar o IDE."
+msgstr "Sem um executável \"make\" adequado, não é possível compilar o IDE."
 
 #: lazarusidestrconsts.liswithouttheproperfpcsourcescodebrowsingandcompletio
 msgid "Without the proper FPC sources code browsing and completion will be very limited."

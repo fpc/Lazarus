@@ -57,7 +57,7 @@ msgstr "Adicionar nova ferramenta"
 
 #: h2passtrconsts.h2paddsearchandreplacetoolbeforeh2pas
 msgid "Add \"search and replace\" tool before H2Pas"
-msgstr "Adicionar a ferramenta «procurar e substituir» antes do H2Pas"
+msgstr "Adicionar a ferramenta \"procurar e substituir\" antes do H2Pas"
 
 #: h2passtrconsts.h2paddthesehfilestoh2pasproject
 #, object-pascal-format

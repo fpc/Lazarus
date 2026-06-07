@@ -1376,7 +1376,7 @@ msgstr "Enviar para &trás"
 
 #: lr_const.sfrdesignerform_beforeprintscript
 msgid "&Before print script ..."
-msgstr "Antes do escrito de im&pressão"
+msgstr "Antes do escrito de impressão..."
 
 #: lr_const.sfrdesignerform_bring
 msgid "Bring to &front"
@@ -1462,7 +1462,7 @@ msgstr "Co&lar"
 
 #: lr_const.sfrdesignerform_pgopt
 msgid "&Page options ..."
-msgstr "Opções da &página"
+msgstr "Opções da &página..."
 
 #: lr_const.sfrdesignerform_preview
 msgid "Pre&view"
@@ -1641,7 +1641,7 @@ msgstr "Polegadas"
 
 #: lr_const.sinsbarcode
 msgid "Insert Barcode object"
-msgstr "inserir objecto de código de barras"
+msgstr "Inserir objecto de código de barras"
 
 #: lr_const.sinschart
 msgid "Insert Chart object"
@@ -1809,7 +1809,7 @@ msgstr "A processar página:"
 
 #: lr_const.spageprinting
 msgid "Printing page:"
-msgstr "A imprimir página"
+msgstr "A imprimir página:"
 
 #: lr_const.spaper1
 msgid "Letter, 8 1/2 x 11\""

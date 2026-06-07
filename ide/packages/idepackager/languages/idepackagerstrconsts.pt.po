@@ -148,27 +148,27 @@ msgstr "Unidade virtual"
 
 #: idepackagerstrconsts.lispkgmacropackagedirectoryparameterispackageid
 msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Pasta do pacote. O parâmetro é o ID do pacote, e.g., «Nome» ou «Nome 1.0»"
+msgstr "Pasta do pacote. O parâmetro é o ID do pacote, e.g., \"Nome\" ou \"Nome 1.0\""
 
 #: idepackagerstrconsts.lispkgmacropackageincludefilessearchpathparameterispackageid
 msgid "Package include files search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Caminho de procura de ficheiros do pacote. O parâmetro é o ID do pacote, e.g., «Nome» ou «Nome 1.0»"
+msgstr "Caminho de procura de ficheiros do pacote. O parâmetro é o ID do pacote, e.g., \"Nome\" ou \"Nome 1.0\""
 
 #: idepackagerstrconsts.lispkgmacropackagenameparameterispackageid
 msgid "Package name. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Nome do pacote. O parâmetro é o ID do pacote, e.g., «Nome» ou «Nome 1.0»"
+msgstr "Nome do pacote. O parâmetro é o ID do pacote, e.g., \"Nome\" ou \"Nome 1.0\""
 
 #: idepackagerstrconsts.lispkgmacropackageoutputdirectoryparameterispackageid
 msgid "Package output directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Pasta de saída do pacote. O parâmetro é o ID do pacote, e.g., «Nome» ou «Nome 1.0»"
+msgstr "Pasta de saída do pacote. O parâmetro é o ID do pacote, e.g., \"Nome\" ou \"Nome 1.0\""
 
 #: idepackagerstrconsts.lispkgmacropackagesourcesearchpathparameterispackageid
 msgid "Package source search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Caminho de procura de fonte do pacote. O parâmetro é o ID do pacote, e.g., «Nome» ou «Nome 1.0»"
+msgstr "Caminho de procura de fonte do pacote. O parâmetro é o ID do pacote, e.g., \"Nome\" ou \"Nome 1.0\""
 
 #: idepackagerstrconsts.lispkgmacropackageunitsearchpathparameterispackageid
 msgid "Package unit search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Caminho de procura da unidade do pacote. O parâmetro é o ID do pacote, e.g., «Nome» ou «Nome 1.0»"
+msgstr "Caminho de procura da unidade do pacote. O parâmetro é o ID do pacote, e.g., \"Nome\" ou \"Nome 1.0\""
 
 #: idepackagerstrconsts.lispkgmangcompilepackage
 #, object-pascal-format
@@ -308,7 +308,7 @@ msgstr "%s%sNome da unidade: \"%s\""
 #: idepackagerstrconsts.lispkgsysunitwasnotfoundinthelpkfileprobablythislpkfilewasn
 #, object-pascal-format
 msgid "Unit \"%s\" was not found in the lpk file.%sProbably this lpk file was not used for building this IDE. Or the package misuses the procedure RegisterUnit."
-msgstr "A unidade «%s» não foi encontrada no ficheiro lpk.%sProvavelmente, este ficheiro lpk não foi utilizado para compilar este IDE. Ou o pacote utiliza incorrectamente o procedimento RegisterUnit."
+msgstr "A unidade \"%s\" não foi encontrada no ficheiro lpk.%sProvavelmente, este ficheiro lpk não foi utilizado para compilar este IDE. Ou o pacote utiliza incorrectamente o procedimento RegisterUnit."
 
 #: idepackagerstrconsts.lispkgsysunitwasremovedfrompackagelpk
 #, object-pascal-format

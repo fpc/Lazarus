@@ -167,7 +167,7 @@ msgstr "A procura deve conter, pelo menos, dois caracteres."
 #: instantsearchstrings.lrserrorsearching
 #, object-pascal-format
 msgid "Error \"%s\" when searching using Manticore server."
-msgstr "Erro «%s» ao realizar uma procura utilizando o servidor Manticore."
+msgstr "Erro \"%s\" ao realizar uma procura utilizando o servidor Manticore."
 
 #: instantsearchstrings.lrserrpathdoesnotexist
 #, object-pascal-format
@@ -186,7 +186,7 @@ msgstr "O projecto de indexação \"%s\" foi concluído. Foram processados %d fi
 #: instantsearchstrings.lrsfinishedindexingtree
 #, object-pascal-format
 msgid "Finished indexing tree \"%s\". Processed %d files in %d minutes."
-msgstr "A indexação da árvore «%s» foi concluída. Foram processados %d ficheiros em %d minutos."
+msgstr "A indexação da árvore \"%s\" foi concluída. Foram processados %d ficheiros em %d minutos."
 
 #: instantsearchstrings.lrshost
 msgid "Hostname"
@@ -199,7 +199,7 @@ msgstr "Tempo de desconexão por inactividade"
 #: instantsearchstrings.lrsindexalreadyexists
 #, object-pascal-format
 msgid "Index table \"%s\" already exists."
-msgstr "A tabela de índices «%s» já existe."
+msgstr "A tabela de índices \"%s\" já existe."
 
 #: instantsearchstrings.lrsindexdeleted
 #, object-pascal-format

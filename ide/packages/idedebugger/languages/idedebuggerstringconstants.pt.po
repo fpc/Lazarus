@@ -207,7 +207,7 @@ msgstr "Tamanho máximo de texto"
 
 #: idedebuggerstringconstants.dispformatarrayhidelentoggle
 msgid "Hide \"Len\", if ..."
-msgstr "Ocultar «Len», se..."
+msgstr "Ocultar \"Len\", se..."
 
 #: idedebuggerstringconstants.dispformatarraynavautohide
 msgid "Auto-hide"
@@ -1073,12 +1073,12 @@ msgstr "Instance"
 #: idedebuggerstringconstants.drsuseinstanceclasshint
 msgctxt "idedebuggerstringconstants.drsuseinstanceclasshint"
 msgid "Use Instance class type"
-msgstr "Utilizar o tipo de classe «Instance»"
+msgstr "Utilizar o tipo de classe \"Instance\""
 
 #: idedebuggerstringconstants.drsuseinstanceclasstype
 msgctxt "idedebuggerstringconstants.drsuseinstanceclasstype"
 msgid "Use Instance class type"
-msgstr "Utilizar o tipo de classe «Instance»"
+msgstr "Utilizar o tipo de classe \"Instance\""
 
 #: idedebuggerstringconstants.drswatchsplitterinspect
 msgctxt "idedebuggerstringconstants.drswatchsplitterinspect"
@@ -1263,7 +1263,7 @@ msgstr "Página acima"
 #: idedebuggerstringconstants.liscurrent
 msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Select as context"
-msgstr "Selecionar como contexto"
+msgstr "Seleccionar como contexto"
 
 #: idedebuggerstringconstants.lisdadattach
 msgid "Attach"
