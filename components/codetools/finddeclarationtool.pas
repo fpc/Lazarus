@@ -965,7 +965,8 @@ type
       out ParameterIndex: integer): boolean;
     procedure OnFindUsedUnitIdentifier(Sender: TPascalParserTool;
       IdentifierCleanPos: integer; Range: TEPRIRange;
-      Node: TCodeTreeNode; Data: Pointer; var {%H-}Abort: boolean);
+      Node: TCodeTreeNode; Data: Pointer; var {%H-}Abort: boolean;
+      RefsStart: integer);
   public
     constructor Create;
     destructor Destroy; override;
@@ -1117,7 +1118,8 @@ type
       out ListOfPCodeXYPosition: TFPList); // searches all references of unit in uses clause
     procedure FindUsedUnitReferences(TargetTool: TFindDeclarationTool;
       SkipComments: boolean;
-      out ListOfPCodeXYPosition: TFPList); // searches all references of TargetTool
+      out ListOfPCodeXYPosition: TFPList;
+      RefsStart: integer); // searches all references of TargetTool
     function CleanPosIsDeclarationIdentifier(CleanPos: integer;
                                              Node: TCodeTreeNode): boolean;
     procedure FindHelpersInContext(Params: TFindDeclarationParams);
@@ -8504,7 +8506,7 @@ procedure TFindDeclarationTool.FindUsedUnitReferences(
   const CursorPos: TCodeXYPosition; SkipComments: boolean; out
   UsedUnitFilename: string; out ListOfPCodeXYPosition: TFPList);
 var
-  CleanPos: integer;
+  CleanPos, RefsStart: integer;
   Node: TCodeTreeNode;
   UnitInFilename: string;
   AnUnitName: String;
@@ -8527,15 +8529,16 @@ begin
   //debugln(['TFindDeclarationTool.FindUsedUnitReferences Used Unit=',AnUnitName,' in "',UnitInFilename,'"']);
   TargetCode:=FindUnitSource(AnUnitName,UnitInFilename,true,Node.StartPos);
   if TargetCode=nil then exit;
+  RefsStart:= Node.Parent.EndPos; // end of uses section
   UsedUnitFilename:=TargetCode.Filename;
   //debugln(['TFindDeclarationTool.FindUsedUnitReferences TargetCode=',TargetCode.Filename]);
   TargetTool:=FOnGetCodeToolForBuffer(Self,TargetCode,false);
-  FindUsedUnitReferences(TargetTool,SkipComments,ListOfPCodeXYPosition);
+  FindUsedUnitReferences(TargetTool,SkipComments,ListOfPCodeXYPosition,RefsStart);
 end;
 
 procedure TFindDeclarationTool.FindUsedUnitReferences(
   TargetTool: TFindDeclarationTool; SkipComments: boolean; out
-  ListOfPCodeXYPosition: TFPList);
+  ListOfPCodeXYPosition: TFPList; RefsStart: integer);
 var
   refs: TFindUsedUnitReferences;
 begin
@@ -8548,7 +8551,7 @@ begin
     refs.TargetTool:=TargetTool;
     refs.TargetUnitName:=TargetTool.GetSourceName(false);
     refs.ListOfPCodeXYPosition:=ListOfPCodeXYPosition;
-    ForEachIdentifier(SkipComments,@OnFindUsedUnitIdentifier,refs);
+    ForEachIdentifier(SkipComments,@OnFindUsedUnitIdentifier,refs,RefsStart);
   finally
     refs.Free;
   end;
@@ -14213,57 +14216,36 @@ end;
 
 procedure TFindDeclarationTool.OnFindUsedUnitIdentifier(
   Sender: TPascalParserTool; IdentifierCleanPos: integer; Range: TEPRIRange;
-  Node: TCodeTreeNode; Data: Pointer; var Abort: boolean);
+  Node: TCodeTreeNode; Data: Pointer; var Abort: boolean; RefsStart: integer);
 var
-  Identifier: PChar;
-  CacheEntry: PInterfaceIdentCacheEntry;
   Refs: TFindUsedUnitReferences;
-  Found: Boolean;
-  ReferencePos: TCodeXYPosition;
+  ReferencePos, NewPos: TCodeXYPosition;
+  NewTop: integer;
+  SearchFlags: TFindSmartFlags = [fsfFindMainDeclaration];
+  NewTool: TFindDeclarationTool;
+  NewNode: TCodeTreeNode;
 begin
   if Range=epriInDirective then exit;
   if not (Node.Desc in (AllPascalTypeParts+AllPascalStatements)) then exit;
-  Identifier:=@Src[IdentifierCleanPos];
   Refs:=TFindUsedUnitReferences(Data);
-  CacheEntry:=Refs.TargetTool.FInterfaceIdentifierCache.FindIdentifier(Identifier);
-  //debugln(['TFindUsedUnitReferences.OnIdentifier Identifier=',GetIdentifier(Identifier),' Found=',CacheEntry<>nil]);
-  if (CacheEntry=nil)
-  and (CompareIdentifiers(Identifier,PChar(Refs.TargetUnitName))<>0) then
-    exit;
-  Sender.MoveCursorToCleanPos(IdentifierCleanPos);
-  Sender.ReadPriorAtom;
-  if (Sender.CurPos.Flag=cafPoint) or (Sender.UpAtomIs('inherited')) then exit;
-  //debugln(['TFindUsedUnitReferences.OnIdentifier Identifier=',GetIdentifier(Identifier),' at begin of term']);
-  // find declaration
-  Refs.Params.Clear;
-  Refs.Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
-                 fdfIgnoreCurContextNode];
-  Refs.Params.ContextNode:=Node;
-  //debugln(copy(Src,Params.ContextNode.StartPos,200));
-  Refs.Params.SetIdentifier(Self,Identifier,@CheckSrcIdentifier);
 
-  if Range=epriInCode then begin
-    // search identifier in code
-    Found:=FindDeclarationOfIdentAtParam(Refs.Params);
-  end else begin
-    // search identifier in comment -> if not found, this is no problem
-    // => silently ignore
+  // skip identifiers which have declarations not in Refs.TargetTool,
+  // save those which are declared in Refs.TargetTool (unit which was chosen
+  // in "Find References Of Used Unit" option)
+  if IdentifierCleanPos < RefsStart then exit; // skip idents before end of uses
+  if CleanPosToCaret(IdentifierCleanPos,ReferencePos) then begin
     try
-      Found:=FindDeclarationOfIdentAtParam(Refs.Params);
-    except
-      on E: ECodeToolError do begin
-        // continue
+      if FindDeclaration(ReferencePos,SearchFlags,NewTool,NewNode,NewPos,NewTop) then
+      begin
+        if CompareDottedIdentifiers(PChar(Refs.TargetTool.ExtractSourceName),
+                                    PChar(NewTool.ExtractSourceName))=0 then
+          AddCodePosition(Refs.ListOfPCodeXYPosition,ReferencePos);
       end;
-      on E: Exception do
-        raise;
+    except
+      on ELinkScannerError do ;
+      on ECodeToolError do ;
     end;
   end;
-  //debugln(['TFindUsedUnitReferences.OnIdentifier Identifier=',GetIdentifier(Identifier),' found=',Found]);
-
-  if not Found then exit;
-
-  if CleanPosToCaret(IdentifierCleanPos,ReferencePos) then
-    AddCodePosition(Refs.ListOfPCodeXYPosition,ReferencePos);
 end;
 
 function TFindDeclarationTool.FindNthParameterNode(Node: TCodeTreeNode;
