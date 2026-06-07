@@ -505,7 +505,7 @@
         <UnitName Value="JcfUiToolsGUI"/>
       </Unit96>
       <Unit97>
-        <Filename Value="..\Process\Transform\replacecoperators.pas"/>
+        <Filename Value="..\Process\Transform\ReplaceCOperators.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ReplaceCOperators"/>
       </Unit97>
