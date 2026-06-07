@@ -5260,14 +5260,35 @@ end;
 
 function TGtk3WidgetSet.SetSysColors(cElements: Integer; const lpaElements;
   const lpaRgbValues): Boolean;
+var
+  n: Integer;
+  Element: LongInt;
 begin
-  Result:=inherited SetSysColors(cElements, lpaElements, lpaRgbValues);
-end;
+  Result := False;
 
-function TGtk3WidgetSet.SetTextCharacterExtra(DC: hdc; nCharExtra: Integer
-  ): Integer;
-begin
-  Result:=inherited SetTextCharacterExtra(DC, nCharExtra);
+  if cElements > MAX_SYS_COLORS then
+    exit;
+
+  for n := 0 to cElements - 1 do
+  begin
+    Element := PInteger(@lpaElements)[n];
+    if (Element > MAX_SYS_COLORS) or (Element < 0) then
+      exit;
+    SysColorMap[Element] := PDword(@lpaRgbValues)[n];
+  end;
+
+  Graphics.UpdateHandleObjects(True);
+
+  FreeSysColorBrushes;
+  for n := Low(FSysColorBrushes) to High(FSysColorBrushes) do
+    FSysColorBrushes[n] := HBRUSH(-1);
+
+  for n := 0 to Screen.CustomFormCount - 1 do
+    if Screen.CustomForms[n].HandleAllocated then
+      Screen.CustomForms[n].Invalidate;
+
+  //TODO: send WM_SYSCOLORCHANGE
+  Result := True;
 end;
 
 function TGtk3WidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
