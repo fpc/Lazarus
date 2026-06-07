@@ -1117,6 +1117,8 @@ var
   APangoMetrics: PPangoFontMetrics;
   ADefDesc: PPangoFontDescription;
   AOwnsDesc: Boolean;
+  ADpi: gdouble;
+  APx: Integer;
 begin
   inherited Create;
   FLogFont := ALogFont;
@@ -1159,6 +1161,15 @@ begin
     end;
     if AOwnsDesc and (ADefDesc <> nil) then
       ADefDesc^.free;
+  end;
+  if (ALogFont.lfHeight = 0) and (FHandle^.get_size > 0) and
+     (not FHandle^.get_size_is_absolute) then
+  begin
+    ADpi := gdk_screen_get_resolution(gdk_screen_get_default);
+    if ADpi <= 0 then
+      ADpi := 96;
+    APx := Round((FHandle^.get_size / PANGO_SCALE) * ADpi / 72.0);
+    FHandle^.set_absolute_size(APx * PANGO_SCALE);
   end;
   if ALogFont.lfItalic > 0 then
     FHandle^.set_style(PANGO_STYLE_ITALIC);
