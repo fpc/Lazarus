@@ -1,0 +1,13 @@
+{
+  "Merged_Cells" : {
+    "Category" : "General",
+    "Keywords" : [
+      "Grid",
+      "Cell attributes",
+      "Formatting",
+      "Color",
+      "Font"
+    ],
+    "Description" : "In this sample project you'll find a derived stringgrid which allows to set cell attributes (background color, font (name, size, color, style), horizontal and vertical text alignment, word-wrap) by simple properties without having to write code for the OnPrepareCanvas event.\n\nSee the included readme.txt for details on how to use it.\n\n\n"
+  }
+}

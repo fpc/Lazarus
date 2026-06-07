@@ -102,6 +102,7 @@
 ./examples/ReSizeImageDemo/ReSizeImageDemo.ex-meta
 ./examples/imagelist/imagelist.ex-meta
 ./examples/notebook/notebook.ex-meta
+./examples/gridexamples/attribute_grid/attribute_grid.ex-meta
 ./examples/gridexamples/cell_overflow/cell_overflow.ex-meta
 ./examples/gridexamples/merged_cells/merged_cells.ex-meta
 ./examples/gridexamples/gridcelleditor/gridcelleditor.ex-meta
