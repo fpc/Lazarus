@@ -278,8 +278,8 @@ type
   *)
   TDwarfScopeInfoRec = record
     Link: Integer;
-    Entry: Pointer;
     NameHash: Word;
+    Entry: Pointer;
   end;
   PDwarfScopeInfoRec = ^TDwarfScopeInfoRec;
   TDwarfScopeArray = Array of TDwarfScopeInfoRec;
