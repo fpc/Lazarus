@@ -10014,8 +10014,6 @@ begin
 
   if gtk_widget_translate_coordinates(GetContainerWidget, Viewport, LocalX, LocalY, @ClientX, @ClientY) then
   begin
-    // writeln(Format('Mouse clicked at: Global=(%.2f, %.2f), Local=(%d, %d), Client=(%d, %d)',
-    //  [aGlobalX, aGlobalY, LocalX, LocalY, ClientX, ClientY]));
     aPoint^.X := ClientX;
     aPoint^.Y := ClientY;
   end;
@@ -12505,6 +12503,7 @@ begin
       PGtkEntry(PGtkComboBox(Result)^.get_child)^.set_can_focus(False);
     end else
       PGtkEntry(PGtkComboBox(Result)^.get_child)^.set_events(GDK_DEFAULT_EVENTS_MASK);
+    PGtkEntry(PGtkComboBox(Result)^.get_child)^.set_width_chars(1);
   end else
   begin
     // FCentralWidget := PGtkWidget(TGtkComboBox.new_with_model(PGtkTreeModel(ListStore)));
