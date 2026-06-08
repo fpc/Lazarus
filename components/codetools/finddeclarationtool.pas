@@ -11431,6 +11431,8 @@ var
         ExprType.Desc:=xtNone;
         // first search backwards
         if Context.Tool.FindIdentifierInContext(Params,DefaultResultNode) then begin
+          if (DefaultResultNode<>nil) and (Params.ExtractedOperand='') then
+            Params.AddOperandPart(GetIdentifier(Params.Identifier));
           ExprType.Desc:=xtContext;
           if SpecializeNode <> nil then begin
             if Params.NewNode.Desc <> ctnGenericType then
