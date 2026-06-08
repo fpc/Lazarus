@@ -2715,6 +2715,10 @@ var
   AHandle: TGtk3Window;
   AWindow: PGtkWindow;
   AActiveWindow: HWND;
+  AMDIWidget: PGtkWidget;
+  AMDIHandle: HWND;
+  AMDIControl: TWinControl;
+  AFocusedForm: TCustomForm;
 begin
   AWidget := nil;
 
@@ -2741,6 +2745,39 @@ begin
           AWidget := PGtkWindow(g_list_nth(AList, i)^.data)^.get_focus;
           if AWidget <> nil then
             break;
+        end;
+      end;
+    end;
+    g_list_free(AList);
+  end;
+
+  if (AWidget = nil) and IsWayland and Assigned(Screen.FocusedForm) and
+     (Screen.FocusedForm.FormStyle = fsMDIChild) then
+  begin
+    AFocusedForm := Screen.FocusedForm;
+    AList := gtk_window_list_toplevels;
+    for i := 0 to g_list_length(AList) - 1 do
+    begin
+      if Gtk3IsGtkWindow(PGObject(g_list_nth(AList, i)^.data)) then
+      begin
+        AWindow := PGtkWindow(g_list_nth(AList, i)^.data);
+        if AWindow^.is_active then
+        begin
+          AMDIWidget := AWindow^.get_focus;
+          if AMDIWidget <> nil then
+          begin
+            AMDIHandle := HwndFromGtkWidget(AMDIWidget);
+            if AMDIHandle <> 0 then
+            begin
+              AMDIControl := TWinControl(TGtk3Widget(AMDIHandle).LCLObject);
+              if Assigned(AMDIControl) and
+                 (GetParentForm(AMDIControl) = AFocusedForm) then
+              begin
+                AWidget := AMDIWidget;
+                break;
+              end;
+            end;
+          end;
         end;
       end;
     end;
