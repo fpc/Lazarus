@@ -502,7 +502,8 @@ begin
     exit;
 
   FLastInstr.FIsReturnInstruction := CodeBin = $D65F03C0;
-  FLastInstr.FIsCallInstruction   := (CodeBin and $FC000000) = $94000000;
+  FLastInstr.FIsCallInstruction   := ((CodeBin and $FC000000) = $94000000)   // BL
+                                  or ((CodeBin and $FFFFFC1F) = $D63F0000);  // BLR
 end;
 
 function TAarch64AsmDecoder.GetFunctionFrameInfo(AnAddress: TDBGPtr; out AnIsOutsideFrame: Boolean
