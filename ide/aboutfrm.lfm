@@ -44,16 +44,15 @@ object AboutForm: TAboutForm
         Stretch = True
       end
       object VersionLabel: TLabel
-        AnchorSideLeft.Control = LogoImage
-        AnchorSideLeft.Side = asrCenter
-        AnchorSideTop.Control = LogoImage
-        Left = 204
+        AnchorSideLeft.Control = VersionPage
+        AnchorSideRight.Side = asrBottom
+        Left = 60
         Height = 15
-        Top = 127
+        Top = 100
         Width = 54
-        Alignment = taCenter
-        BorderSpacing.Top = 115
-        BorderSpacing.Around = 6
+        BorderSpacing.Left = 60
+        BorderSpacing.Right = 145
+        BorderSpacing.Bottom = 12
         Caption = 'Version #:'
         Font.Color = clSilver
         Font.Height = -12
@@ -62,32 +61,50 @@ object AboutForm: TAboutForm
         ParentFont = False
       end
       object BuildDateLabel: TLabel
-        AnchorSideLeft.Control = LogoImage
-        AnchorSideLeft.Side = asrCenter
+        AnchorSideLeft.Control = VersionLabel
         AnchorSideTop.Control = VersionLabel
         AnchorSideTop.Side = asrBottom
-        Left = 218
+        AnchorSideRight.Side = asrBottom
+        Left = 60
         Height = 15
-        Top = 148
+        Top = 127
         Width = 27
-        Alignment = taCenter
-        BorderSpacing.Around = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Bottom = 6
         Caption = 'Date:'
         Font.Color = clSilver
         Font.Height = -12
         ParentColor = False
         ParentFont = False
       end
+      object FPCVersionLabel: TLabel
+        AnchorSideLeft.Control = VersionLabel
+        AnchorSideTop.Control = BuildDateLabel
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Side = asrBottom
+        Left = 60
+        Height = 15
+        Top = 148
+        Width = 87
+        BorderSpacing.Top = 6
+        BorderSpacing.Bottom = 6
+        Caption = 'FPCVersionLabel'
+        Font.Color = clSilver
+        Font.Height = -12
+        ParentColor = False
+        ParentFont = False
+      end
       object RevisionLabel: TLabel
-        AnchorSideLeft.Control = LogoImage
-        AnchorSideLeft.Side = asrCenter
+        AnchorSideLeft.Control = VersionLabel
         AnchorSideTop.Control = FPCVersionLabel
         AnchorSideTop.Side = asrBottom
-        Left = 195
+        AnchorSideRight.Side = asrBottom
+        Left = 60
         Height = 15
-        Top = 190
+        Top = 169
         Width = 72
-        BorderSpacing.Around = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Bottom = 6
         Caption = 'RevisionLabel'
         Font.Color = clSilver
         Font.Height = -12
@@ -95,32 +112,17 @@ object AboutForm: TAboutForm
         ParentFont = False
       end
       object PlatformLabel: TLabel
-        AnchorSideLeft.Control = LogoImage
-        AnchorSideLeft.Side = asrCenter
+        AnchorSideLeft.Control = VersionLabel
         AnchorSideTop.Control = RevisionLabel
         AnchorSideTop.Side = asrBottom
-        Left = 194
+        AnchorSideRight.Side = asrBottom
+        Left = 60
         Height = 15
-        Top = 211
+        Top = 190
         Width = 74
-        BorderSpacing.Around = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Bottom = 6
         Caption = 'PlatformLabel'
-        Font.Color = clSilver
-        Font.Height = -12
-        ParentColor = False
-        ParentFont = False
-      end
-      object FPCVersionLabel: TLabel
-        AnchorSideLeft.Control = LogoImage
-        AnchorSideLeft.Side = asrCenter
-        AnchorSideTop.Control = BuildDateLabel
-        AnchorSideTop.Side = asrBottom
-        Left = 188
-        Height = 15
-        Top = 169
-        Width = 87
-        BorderSpacing.Around = 6
-        Caption = 'FPCVersionLabel'
         Font.Color = clSilver
         Font.Height = -12
         ParentColor = False
