@@ -174,14 +174,14 @@ type
   TDbgStackFrameInfo = class
   private
     FThread: TDbgThread;
-    FStoredStackFrame, FStoredStackPointer: TDBGPtr;
     FHasSteppedOut: Boolean;
-    FProcessAfterRun: Boolean;
-    FLeaveState: (lsNone, lsWasAtLeave1, lsWasAtLeave2, lsLeaveDone);
-    Procedure DoAfterRun;
   protected
+    FStoredStackFrame, FStoredStackPointer: TDBGPtr;
+
     procedure DoCheckNextInstruction(ANextInstruction: TDbgAsmInstruction; NextIsSingleStep: Boolean); virtual;
     function  CalculateHasSteppedOut: Boolean;  virtual;
+
+    property Thread: TDbgThread read FThread;
   public
     constructor Create(AThread: TDbgThread);
     procedure CheckNextInstruction(ANextInstruction: TDbgAsmInstruction; NextIsSingleStep: Boolean); inline;
@@ -318,7 +318,7 @@ type
     function GetStackPointerRegisterValue: TDbgPtr; virtual; abstract;
     procedure SetStackPointerRegisterValue(AValue: TDbgPtr); virtual; abstract;
     procedure SetInstructionPointerRegisterValue(AValue: TDbgPtr); virtual; abstract;
-    function GetCurrentStackFrameInfo: TDbgStackFrameInfo;
+    function GetCurrentStackFrameInfo: TDbgStackFrameInfo; virtual;
     function GetSymbolAtCurrentInstructionPtr: TFpSymbol;
 
     function AllocStackMem(ASize: Integer): TDbgPtr; virtual;
@@ -3639,60 +3639,20 @@ end;
 
 { TDbgStackFrameInfo }
 
-procedure TDbgStackFrameInfo.DoAfterRun;
-var
-  CurStackFrame: TDBGPtr;
-begin
-  FProcessAfterRun := False;
-  case FLeaveState of
-    lsWasAtLeave1: begin
-        CurStackFrame   := FThread.GetStackBasePointerRegisterValue;
-        FStoredStackPointer := FThread.GetStackPointerRegisterValue;
-        if CurStackFrame <> FStoredStackFrame then
-          FLeaveState := lsLeaveDone // real leave
-        else
-          FLeaveState := lsWasAtLeave2; // lea rsp,[rbp+$00] / pop ebp // epb in next command
-      end;
-    lsWasAtLeave2: begin
-        // TODO: maybe check, if stackpointer only goes down by sizeof(pointer) "Pop bp"
-        FStoredStackFrame   := FThread.GetStackBasePointerRegisterValue;
-        FStoredStackPointer := FThread.GetStackPointerRegisterValue;
-        FLeaveState := lsLeaveDone;
-      end;
-  end;
-end;
-
 procedure TDbgStackFrameInfo.DoCheckNextInstruction(
   ANextInstruction: TDbgAsmInstruction; NextIsSingleStep: Boolean);
 begin
-  if FProcessAfterRun then
-    DoAfterRun;
-
-  if not NextIsSingleStep then begin
-    if FLeaveState = lsWasAtLeave2 then
-      FLeaveState := lsLeaveDone;
+  if not NextIsSingleStep then
     exit;
-  end;
 
-  if ANextInstruction.IsReturnInstruction then begin
+  if ANextInstruction.IsReturnInstruction then
     FHasSteppedOut := True;
-    FLeaveState := lsLeaveDone;
-  end
-  else if FLeaveState = lsNone then begin
-    if ANextInstruction.IsLeaveStackFrame then
-      FLeaveState := lsWasAtLeave1;
-  end;
-
-  FProcessAfterRun := FLeaveState in [lsWasAtLeave1, lsWasAtLeave2];
 end;
 
 function TDbgStackFrameInfo.CalculateHasSteppedOut: Boolean;
 var
   CurBp, CurSp: TDBGPtr;
 begin
-  if FProcessAfterRun then
-    DoAfterRun;
-
   Result := False;
   CurBp := FThread.GetStackBasePointerRegisterValue;
   if FStoredStackFrame < CurBp then begin

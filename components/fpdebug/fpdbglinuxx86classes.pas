@@ -226,7 +226,7 @@ type
   protected
     procedure ResetPauseStates; override;
     function GetInstructionPointerForHasBreakpointInfoForAddress: TDBGPtr; override;
-
+    function GetCurrentStackFrameInfo: TDbgStackFrameInfo; override;
   public
     destructor Destroy; override;
     function GetStackUnwinder: TDbgStackUnwinder; override;
@@ -353,6 +353,11 @@ begin
   Result := GetInstructionPointerRegisterValue;
   if (Result <> 0) and not FHasResetInstructionPointerAfterBreakpoint then
     Result := Result - 1;
+end;
+
+function TDbgX86LinuxThread.GetCurrentStackFrameInfo: TDbgStackFrameInfo;
+begin
+  Result := TDbgStackFrameSteppingInfoX86.Create(Self);
 end;
 
 function TDbgX86LinuxThread.GetStackUnwinder: TDbgStackUnwinder;

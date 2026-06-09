@@ -916,12 +916,26 @@ begin
 end;
 
 function TDbgControllerHiddenBreakStepBaseCmd.IsAtOrOutOfHiddenBreakFrame: Boolean;
+{$IF (defined(CPUAARCH64))}
+var
+  R: TDbgRegisterValue;
+{$ENDIF}
 begin
   Result := HasHiddenBreak;
   if not Result then
     exit;
   (* This is to check, if we have returned from a "call" instruction. Back to the original frame.  *)
   Result := (FHiddenBreakStackPtrAddr <= FThread.GetStackPointerRegisterValue);
+  {$IF (defined(CPUAARCH64))}
+  // TODO: we need to know when a thread was forced to single step over a breakpoint (or for any other reason)
+  if (FHiddenBreakStackPtrAddr = FThread.GetStackPointerRegisterValue) and
+     (FHiddenBreakAddr <> FThread.GetInstructionPointerRegisterValue)
+  then begin
+    R := Thread.RegisterValueList.FindRegisterByDwarfIndex(30); // link
+    if (R<>nil) and (r.NumValue = FHiddenBreakAddr) then
+      Result := False;
+  end;
+  {$ENDIF}
 
   debugln(FPDBG_COMMANDS and Result and (FHiddenBreakpoint <> nil), ['BreakStepBaseCmd.IsAtOrOutOfHiddenBreakFrame: Gone past hidden break = true']);
 end;
@@ -1307,7 +1321,12 @@ function TDbgControllerStepOutCmd.IsAtHiddenBreak: Boolean;
 begin
   Result := (FHiddenBreakpoint <> nil) and
             (FThread.GetInstructionPointerRegisterValue = FHiddenBreakAddr) and // FHiddenBreakpoint.HasLocation()
+            {$IF (defined(CPUAARCH64))}
+            // We may have been outside the frame. "ret" uses the link register, so stack would not change.
+            (FThread.GetStackPointerRegisterValue >= FHiddenBreakStackPtrAddr);
+            {$ELSE}
             (FThread.GetStackPointerRegisterValue > FHiddenBreakStackPtrAddr);
+            {$ENDIF}
             // if SP > FStackPtrRegVal >> then the brk was hit stepped out (should not happen)
   debugln(FPDBG_COMMANDS and Result, ['TDbgControllerStepOutCmd.IsAtHiddenBreak: At Hidden break = true']);
 end;
@@ -1322,9 +1341,6 @@ var
 begin
   FWasOutsideFrame := AnOutsideFrame;
   Result := False;
-  {$IF (defined(CPUAARCH64))}
-  if AnOutsideFrame then exit;
-  {$ENDIF}
   t := FController.CurrentThread;
   Unwinder := t.GetStackUnwinder;
   Unwinder.InitForThread(t);
@@ -1399,14 +1415,16 @@ begin
 
   // If we stepped out, without a frame, then IsSteppedOut will not detect it
   // The Stack will be popped for the return address.
-  if FWasOutsideFrame and (not IsSteppedOut) and
+  if FWasOutsideFrame and (not IsSteppedOut) and HasHiddenBreak and
      (FHiddenBreakStackPtrAddr < FThread.GetStackPointerRegisterValue)
   then
     FStackFrameInfo.FlagAsSteppedOut;
 
   if IsSteppedOut or IsAtHiddenBreak then begin
+    FStackFrameInfo.FlagAsSteppedOut;
     UpdateThreadStepInfoAfterStepOut(FController.NextOnlyStopOnStartLine);
     RemoveHiddenBreak;
+    // TODO: when stepping out of FPC_POPADDRSTACK then its always finished?
     Finished := HasReachedEndLineOrSteppedOut(FController.NextOnlyStopOnStartLine);
   end;
 

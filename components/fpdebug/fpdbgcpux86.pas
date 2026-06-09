@@ -18,6 +18,7 @@ type
     FHasResetInstructionPointerAfterBreakpoint: boolean;
 
     function GetInstructionPointerForHasBreakpointInfoForAddress: TDBGPtr; override;
+    function GetCurrentStackFrameInfo: TDbgStackFrameInfo; override;
   end;
 
   TBreakInfoX86 = object
@@ -32,6 +33,19 @@ type
   TDbgx86Process = class(TDbgProcess)
   protected
     function CreateBreakPointTargetHandler: TFpBreakPointTargetHandler; override;
+  end;
+
+  { TDbgStackFrameSteppingInfoX86 }
+
+  TDbgStackFrameSteppingInfoX86 = class(TDbgStackFrameInfo)
+  private
+    FProcessAfterRun: Boolean;
+    FLeaveState: (lsNone, lsWasAtLeave1, lsWasAtLeave2, lsLeaveDone);
+    Procedure DoAfterRun;
+  protected
+    procedure DoCheckNextInstruction(ANextInstruction: TDbgAsmInstruction;
+      NextIsSingleStep: Boolean); override;
+    function CalculateHasSteppedOut: Boolean; override;
   end;
 
   { TDbgStackUnwinderX86FramePointer }
@@ -89,11 +103,76 @@ begin
     Result := Result - 1;
 end;
 
+function TDbgx86Thread.GetCurrentStackFrameInfo: TDbgStackFrameInfo;
+begin
+  Result := TDbgStackFrameSteppingInfoX86.Create(Self);
+end;
+
 { TDbgx86Process }
 
 function TDbgx86Process.CreateBreakPointTargetHandler: TFpBreakPointTargetHandler;
 begin
   Result := TBreakPointx86Handler.Create(Self);
+end;
+
+{ TDbgStackFrameSteppingInfoX86 }
+
+procedure TDbgStackFrameSteppingInfoX86.DoAfterRun;
+var
+  CurStackFrame: TDBGPtr;
+begin
+  FProcessAfterRun := False;
+  case FLeaveState of
+    lsWasAtLeave1: begin
+        CurStackFrame   := Thread.GetStackBasePointerRegisterValue;
+        FStoredStackPointer := Thread.GetStackPointerRegisterValue;
+        if CurStackFrame <> FStoredStackFrame then
+          FLeaveState := lsLeaveDone // real leave
+        else
+          FLeaveState := lsWasAtLeave2; // lea rsp,[rbp+$00] / pop ebp // epb in next command
+      end;
+    lsWasAtLeave2: begin
+        // TODO: maybe check, if stackpointer only goes down by sizeof(pointer) "Pop bp"
+        FStoredStackFrame   := Thread.GetStackBasePointerRegisterValue;
+        FStoredStackPointer := Thread.GetStackPointerRegisterValue;
+        FLeaveState := lsLeaveDone;
+      end;
+  end;
+end;
+
+procedure TDbgStackFrameSteppingInfoX86.DoCheckNextInstruction(
+  ANextInstruction: TDbgAsmInstruction; NextIsSingleStep: Boolean);
+begin
+  if FProcessAfterRun then
+    DoAfterRun;
+
+  inherited DoCheckNextInstruction(ANextInstruction, NextIsSingleStep);
+
+  if not NextIsSingleStep then begin
+    if FLeaveState = lsWasAtLeave2 then
+      FLeaveState := lsLeaveDone;
+    exit;
+  end;
+
+  if ANextInstruction.IsReturnInstruction then begin
+    FLeaveState := lsLeaveDone;
+  end
+  else if FLeaveState = lsNone then begin
+    if ANextInstruction.IsLeaveStackFrame then
+      FLeaveState := lsWasAtLeave1;
+  end;
+
+  FProcessAfterRun := FLeaveState in [lsWasAtLeave1, lsWasAtLeave2];
+end;
+
+function TDbgStackFrameSteppingInfoX86.CalculateHasSteppedOut: Boolean;
+var
+  CurBp, CurSp: TDBGPtr;
+begin
+  if FProcessAfterRun then
+    DoAfterRun;
+
+  Result := inherited CalculateHasSteppedOut;
 end;
 
 { TDbgStackUnwinderX86FramePointer }
