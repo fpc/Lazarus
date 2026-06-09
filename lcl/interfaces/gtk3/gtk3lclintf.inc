@@ -452,6 +452,9 @@ const
 //============================
 var
   Image: TGtk3Image absolute ABitmap;
+  AAlphaPtr: PByte;
+  APos, ANumBytes: PtrUInt;
+  AAllOpaque: Boolean;
 
 begin
   Result := False;
@@ -506,11 +509,33 @@ begin
       end;
     32:
       begin
-        ADesc.AlphaPrec := 8;
+        Image.UpdatePixbufFromSurface;
+        AAllOpaque := False;
+        if (Image.bits <> nil) and (Image.numBytes > 0) then
+        begin
+          AAllOpaque := True;
+          ANumBytes := Image.numBytes;
+          AAlphaPtr := Image.bits;
+          Inc(AAlphaPtr, 3);
+          APos := 3;
+          while APos < ANumBytes do
+          begin
+            if AAlphaPtr^ <> 255 then
+            begin
+              AAllOpaque := False;
+              break;
+            end;
+            Inc(AAlphaPtr, 4);
+            Inc(APos, 4);
+          end;
+        end;
+        if AAllOpaque then
+          ADesc.Depth := 24
+        else
+          ADesc.AlphaPrec := 8;
         ADesc.RedPrec := 8;
         ADesc.GreenPrec := 8;
         ADesc.BluePrec := 8;
-
         ADesc.AlphaShift := 24;
         ADesc.RedShift := 0;
         ADesc.GreenShift := 8;
