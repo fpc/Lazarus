@@ -511,6 +511,16 @@ begin
   {$ENDIF}
 end;
 
+function dbghex(i: integer): string;
+begin
+  Result := dbghex(int64(i));
+end;
+
+function dbghex(i: cardinal): string;
+begin
+  Result := dbghex(QWord(i));
+end;
+
 function DbgSTime(): string;
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
