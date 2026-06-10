@@ -300,31 +300,30 @@ begin
     else if desc.BitsPerPixel = 16 then
     begin
       DbgS('Bit depth not implemented '+inttostr(desc.BitsPerPixel));
-    end
-    else if (desc.BitsPerPixel = 24) and ((Ridx <> 0) or (Gidx <> 1) or (Bidx <> 2) or (AIdx <> 3)) then
+    end else
+    if desc.BitsPerPixel = 24 then
     begin
-      // put components in right order
+      Src1BitStride := GetBytesPerLine(Desc.Width, 24, Desc.LineEnd);
+      ARowStride := PtrUInt(Desc.Width) * 4;
+      FreeMem(NewData);
+      NewData := AllocMem(ARowStride * Desc.Height);
+      SrcRowPtr := ARawImage.Data;
       DstRowPtr := NewData;
-      SrcRowPtr := ArawImage.Data;
-      y := Desc.Height;
-      while y > 0 do
+      for y := 0 to Integer(Desc.Height) - 1 do
       begin
         Src := SrcRowPtr;
         Dst := DstRowPtr;
-        x := Desc.Width;
-        while x > 0 do
+        for x := 0 to Integer(Desc.Width) - 1 do
         begin
-          Dst[0] := Src[Ridx];
-          Dst[1] := Src[Gidx];
-          Dst[2] := Src[Bidx];
-
+          Dst[Ridx] := Src[0];
+          Dst[Gidx] := Src[1];
+          Dst[Bidx] := Src[2];
+          Dst[3] := $FF;
           Inc(Src, 3);
-          Inc(Dst, 3);
-          Dec(x);
+          Inc(Dst, 4);
         end;
-        Inc(SrcRowPtr, ARowstride);
-        Inc(DstRowPtr, ARowstride);
-        Dec(y);
+        Inc(SrcRowPtr, Src1BitStride);
+        Inc(DstRowPtr, ARowStride);
       end;
     end else
     if (Ridx <> 0) or (Gidx <> 1) or (Bidx <> 2) or (AIdx <> 3) then
@@ -389,7 +388,7 @@ begin
   case Desc.BitsPerPixel of
     1: ImageFormat := CAIRO_FORMAT_ARGB32;
     8: ImageFormat := CAIRO_FORMAT_A8;
-    24: ImageFormat := CAIRO_FORMAT_RGB24;
+    24: ImageFormat := CAIRO_FORMAT_ARGB32;
     32: ImageFormat := CAIRO_FORMAT_ARGB32;
   else
     Exit(False);
@@ -407,14 +406,13 @@ begin
 
   if (ARawImage.Mask <> nil) and (ARawImage.MaskSize > 0) then
   begin
-    //Compute correct 1-bit mask row stride matching the description
     ARowStride := GetBytesPerLine(Desc.Width, 1, Desc.MaskLineEnd);
-    //Allocate and copy only the actual 1-bit mask data
-    NewData := GetMem(ARowStride * Desc.Height);
-    if ARowStride * PtrUInt(Desc.Height) <= ARawImage.MaskSize then
+    NewData := AllocMem(ARowStride * Desc.Height);
+    if ARawImage.MaskSize >= ARowStride * PtrUInt(Desc.Height) then
       Move(ARawImage.Mask^, NewData^, ARowStride * Desc.Height)
     else
-      FillChar(NewData^, ARowStride * Desc.Height, $00);
+    if ARawImage.MaskSize > 0 then
+      Move(ARawImage.Mask^, NewData^, ARawImage.MaskSize);
     //Store as width=1, height=H, rowstride=MaskRowStride RGBA pixbuf.
     //numBytes = ARowStride * H = exact 1-bit data size, so RawImage_FromBitmap
     //copies the right amount and GetMask_Generic reads correct bit values.

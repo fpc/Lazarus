@@ -3310,10 +3310,10 @@ var
 
   function BuildMaskA8: Pcairo_surface_t;
   var
-    MaskW, MaskH, MaskInStride, MaskOutStride: gint;
+    MaskW, MaskH, MaskInStride, MaskOutStride, MaskCols: gint;
     MaskInPixels, MaskOutPixels: PByte;
     InRow, OutRow: PByte;
-    X, Y, ByteIdx, BitIdx: Integer;
+    X, Y, ByteIdx, BitIdx, BytesPerPix: Integer;
     Bit: Byte;
   begin
     Result := nil;
@@ -3323,7 +3323,17 @@ var
     MaskInStride := mask^.get_rowstride;
     MaskInPixels := PByte(mask^.get_pixels);
     MaskH := mask^.get_height;
-    MaskW := MaskInStride * 8;
+    MaskCols := mask^.get_width;
+
+    if (MaskCols > 1) and (MaskInStride div MaskCols >= 1) then
+    begin
+      BytesPerPix := MaskInStride div MaskCols;
+      MaskW := MaskCols;
+    end else
+    begin
+      BytesPerPix := 0;
+      MaskW := MaskInStride * 8;
+    end;
 
     if MaskW > Image^.get_width then
       MaskW := Image^.get_width;
@@ -3347,17 +3357,28 @@ var
     begin
       InRow := MaskInPixels + Y * MaskInStride;
       OutRow := MaskOutPixels + Y * MaskOutStride;
-      for X := 0 to MaskW - 1 do
+      if BytesPerPix > 0 then
       begin
-        ByteIdx := X shr 3;
-        BitIdx := 7 - (X and 7);
-        Bit := (InRow[ByteIdx] shr BitIdx) and 1;
-        if Bit = 0 then
-          OutRow[X] := $FF
-        else
-          OutRow[X] := $00;
+        for X := 0 to MaskW - 1 do
+          if InRow[X * BytesPerPix] >= 128 then
+            OutRow[X] := $00
+          else
+            OutRow[X] := $FF;
+      end else
+      begin
+        for X := 0 to MaskW - 1 do
+        begin
+          ByteIdx := X shr 3;
+          BitIdx := 7 - (X and 7);
+          Bit := (InRow[ByteIdx] shr BitIdx) and 1;
+          if Bit = 0 then
+            OutRow[X] := $FF
+          else
+            OutRow[X] := $00;
+        end;
       end;
     end;
+
     cairo_surface_mark_dirty(Result);
   end;
 
