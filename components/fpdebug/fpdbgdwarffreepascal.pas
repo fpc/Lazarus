@@ -866,10 +866,17 @@ function TFpDwarfFreePascalSymbolScope.FindLocalSymbol(const AName: String;
 const
   selfname = 'self';
   // TODO: get reg num via memreader name-to-num
+  {$IF (defined(CPUAARCH64))}
+  RegFp64 = 29;
+  RegPc64 = 32;
+  RegFp32 = 0;
+  RegPc32 = 0;
+  {$ELSE}
   RegFp64 = 6;
   RegPc64 = 16;
   RegFp32 = 5;
   RegPc32 = 8;
+  {$ENDIF}
 var
   StartScopeIdx, RegFp, RegPc: Integer;
   ParentFpVal: TFpValue;
