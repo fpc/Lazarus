@@ -2218,6 +2218,7 @@ var
   LContainer, LWidget: PGtkWidget;
   LWidgetType: TGtk3WidgetTypes;
   LIsCombo: Boolean;
+  LClientWindow: PGdkWindow;
 begin
   {$IF DEFINED(GTK3DEBUGEVENTS) OR DEFINED(GTK3DEBUGFOCUS)}
   DebugLn('TGtk3Widget.GtkEventFocus ',dbgsName(LCLObject),' FocusIn ',dbgs(Event^.focus_change.in_ <> 0));
@@ -2230,12 +2231,19 @@ begin
        not Gtk3IsEntry(PGObject(Sender)) and
        not Gtk3IsTextView(PGObject(Sender)) then
     begin
-      {$IFDEF GTK3DEBUGKEYPRESS}
-      writeln('GtkEventFocus IN ', dbgsName(LCLObject), ' clientWindow=', PtrUInt(Sender^.get_window), ' toplevelWindow=', PtrUInt(Sender^.get_toplevel^.get_window));
-      {$ENDIF}
-      gtk_im_context_set_client_window(Gtk3WidgetSet.IMContext, Sender^.get_window);
-      gtk_im_context_focus_in(Gtk3WidgetSet.IMContext);
-      Gtk3WidgetSet.IMTarget := Self;
+      if gtk_widget_get_realized(Sender) then
+        LClientWindow := Sender^.get_window
+      else
+        LClientWindow := nil;
+      if LClientWindow <> nil then
+      begin
+        {$IFDEF GTK3DEBUGKEYPRESS}
+        writeln('GtkEventFocus IN ', dbgsName(LCLObject), ' clientWindow=', PtrUInt(LClientWindow), ' toplevelWindow=', PtrUInt(Sender^.get_toplevel^.get_window));
+        {$ENDIF}
+        gtk_im_context_set_client_window(Gtk3WidgetSet.IMContext, LClientWindow);
+        gtk_im_context_focus_in(Gtk3WidgetSet.IMContext);
+        Gtk3WidgetSet.IMTarget := Self;
+      end;
     end;
   end
   else
