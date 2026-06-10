@@ -1909,7 +1909,9 @@ begin
   Process.BeforeChangingInstructionCode(ALocation, SizeOf(_BRK_STORE));
 
   Result := Process.WriteData(ALocation, SizeOf(_BRK_STORE), _BREAK._CODE);
+  {$IF FPC_FULLVERSION > 030201}
   DebugLn(DBG__VERBOSE or DBG__BREAKPOINTS, ['Breakpoint set to '+Process.FormatAddress(ALocation), ' Result:',Result, ' OVal:', dbghex(OrigValue)]);
+  {$ENDIF}
   if not Result then
     DebugLn(DBG__WARNINGS or DBG__BREAKPOINTS, 'Unable to set breakpoint at '+FormatAddress(ALocation));
 
@@ -1926,7 +1928,9 @@ begin
   Process.BeforeChangingInstructionCode(ALocation, SizeOf(_BRK_STORE));
 
   Result := Process.WriteData(ALocation, SizeOf(_BRK_STORE), OrigValue);
+  {$IF FPC_FULLVERSION > 030201}
   DebugLn(DBG__VERBOSE or DBG__BREAKPOINTS, ['Breakpoint removed from '+FormatAddress(ALocation), ' Result:',Result, ' OVal:', dbghex(OrigValue)]);
+  {$ENDIF}
   DebugLn((not Result) and (not Process.GotExitProcess) and (DBG__WARNINGS or DBG__BREAKPOINTS), 'Unable to reset breakpoint at %s', [FormatAddress(ALocation)]);
 
   if Result then
