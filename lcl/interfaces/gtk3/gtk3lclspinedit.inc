@@ -357,6 +357,7 @@ procedure LCLSpinEditGetPreferredWidth(widget: PGtkWidget; min_width, nat_width:
 var
   AControl: TGtk3Widget;
   ParentClass: PGtkWidgetClass;
+  LDesiredWidth: gint;
 begin
   if not Assigned(min_width) or not Assigned(nat_width) then Exit;
   if not Gtk3IsWidget(widget) then Exit;
@@ -369,12 +370,14 @@ begin
   AControl := TGtk3Widget(HwndFromGtkWidget(widget));
   if not Assigned(AControl) then Exit;
 
-  if not AControl.LCLObject.AutoSize then
+  LDesiredWidth := AControl.LCLWidth;
+  if LDesiredWidth <= 0 then
+    LDesiredWidth := AControl.LCLObject.Width;
+  if LDesiredWidth > 0 then
   begin
-    if AControl.LCLWidth > 0 then
-      nat_width^ := AControl.LCLWidth
-    else if AControl.LCLObject.Width > 0 then
-      nat_width^ := AControl.LCLObject.Width;
+    nat_width^ := LDesiredWidth;
+    if min_width^ > LDesiredWidth then
+      min_width^ := LDesiredWidth;
   end;
 
   if Assigned(AControl.LCLObject.Constraints) then
