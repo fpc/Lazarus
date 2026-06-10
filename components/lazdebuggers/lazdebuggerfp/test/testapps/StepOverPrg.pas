@@ -1,5 +1,4 @@
 program StepOverPrg;
-{$asmMode intel}
 uses
   {$IFDEF UNIX}
   cthreads,
