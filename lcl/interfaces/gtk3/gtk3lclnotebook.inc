@@ -7,6 +7,8 @@ var
   min_w: gint;
   nat_w: gint;
 begin
+  minimum_height^ := 1;
+  natural_height^ := 1;
   ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
   if not Assigned(ParentClass) then
     Exit;
@@ -15,10 +17,12 @@ begin
   begin
     if Assigned(ParentClass^.get_preferred_height) then
       ParentClass^.get_preferred_height(widget, minimum_height, natural_height);
-    Exit;
-  end;
+  end else
   if Assigned(ParentClass^.get_preferred_height_for_width) then
     ParentClass^.get_preferred_height_for_width(widget, width, minimum_height, natural_height);
+  minimum_height^ := 1;
+  if natural_height^ < minimum_height^ then
+    natural_height^ := minimum_height^;
 end;
 
 procedure LCLGtkNotebookGetPreferredWidthForHeight(widget: PGtkWidget;
@@ -28,6 +32,8 @@ var
   min_h: gint;
   nat_h: gint;
 begin
+  minimum_width^ := 1;
+  natural_width^ := 1;
   ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
   if not Assigned(ParentClass) then
     Exit;
@@ -36,10 +42,12 @@ begin
   begin
     if Assigned(ParentClass^.get_preferred_width) then
       ParentClass^.get_preferred_width(widget, minimum_width, natural_width);
-    Exit;
-  end;
+  end else
   if Assigned(ParentClass^.get_preferred_width_for_height) then
     ParentClass^.get_preferred_width_for_height(widget, height, minimum_width, natural_width);
+  minimum_width^ := 1;
+  if natural_width^ < minimum_width^ then
+    natural_width^ := minimum_width^;
 end;
 
 procedure LCLGtkNotebookSizeAllocate(widget: PGtkWidget; allocation: PGtkAllocation); cdecl;
@@ -53,6 +61,7 @@ var
   StoredGen: PtrUInt;
   TopLevel: PGtkWidget;
   WinGen: PtrUInt;
+  AdjAlloc: TGtkAllocation;
 begin
   ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
   if not Assigned(ParentClass) or not Assigned(ParentClass^.size_allocate) then
@@ -128,8 +137,14 @@ begin
   if tooSmall then
   begin
     {$IFDEF GTK3DEBUGSIZE}
-    writeln(Format('LCLGtkNotebookSizeAllocate tooSmall-SKIP alloc x %d y %d w %d h %d min %dx%d',[allocation^.x, allocation^.y, allocation^.width, allocation^.height, min_w, min_h]));
+    writeln(Format('LCLGtkNotebookSizeAllocate tooSmall-CLAMPUP alloc x %d y %d w %d h %d min %dx%d',[allocation^.x, allocation^.y, allocation^.width, allocation^.height, min_w, min_h]));
     {$ENDIF}
+    AdjAlloc := allocation^;
+    if (min_w > 0) and (AdjAlloc.width < min_w) then
+      AdjAlloc.width := min_w;
+    if (min_h > 0) and (AdjAlloc.height < min_h) then
+      AdjAlloc.height := min_h;
+    ParentClass^.size_allocate(widget, @AdjAlloc);
     gtk_widget_set_allocation(widget, allocation);
     gtk_widget_set_clip(widget, allocation);
     Exit;
@@ -163,6 +178,29 @@ begin
   nat_width^ := Max(base_nat, 1);
 end;
 
+procedure LCLGtkNotebookGetPreferredHeight(widget: PGtkWidget; min_height, nat_height: Pgint); cdecl;
+var
+  ParentClass: PGtkWidgetClass;
+  base_min, base_nat: gint;
+  {$IFDEF GTK3DEBUGSIZE}
+  ADbgWidget: TGtk3Widget;
+  {$ENDIF}
+begin
+  ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
+  base_min := 0;
+  base_nat := 0;
+  if Assigned(ParentClass) and Assigned(ParentClass^.get_preferred_height) then
+    ParentClass^.get_preferred_height(widget, @base_min, @base_nat);
+  {$IFDEF GTK3DEBUGSIZE}
+  ADbgWidget := TGtk3Widget(HwndFromGtkWidget(widget));
+  if Assigned(ADbgWidget) and Assigned(ADbgWidget.LCLObject) then
+    DebugLn(Format('LCLGtkNotebook.GetPreferredHeight %s base_min=%d base_nat=%d -> min=1 nat=%d',
+      [dbgsName(ADbgWidget.LCLObject), base_min, base_nat, base_nat]));
+  {$ENDIF}
+  min_height^ := 1;
+  nat_height^ := Max(base_nat, 1);
+end;
+
 procedure LCLGtkNotebookClassInit(klass: PGTypeClass; {%H-}data: Pointer); cdecl;
 var
   AWidgetClass: PGtkWidgetClass;
@@ -170,6 +208,7 @@ begin
   AWidgetClass := PGtkWidgetClass(klass);
   AWidgetClass^.size_allocate := @LCLGtkNotebookSizeAllocate;
   AWidgetClass^.get_preferred_width := @LCLGtkNotebookGetPreferredWidth;
+  AWidgetClass^.get_preferred_height := @LCLGtkNotebookGetPreferredHeight;
   AWidgetClass^.get_preferred_height_for_width := @LCLGtkNotebookGetPreferredHeightForWidth;
   AWidgetClass^.get_preferred_width_for_height := @LCLGtkNotebookGetPreferredWidthForHeight;
 end;

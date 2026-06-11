@@ -125,6 +125,7 @@ type
     procedure SetStyleContext({%H-}AValue: PGtkStyleContext);
     class function DrawWidget(AWidget: PGtkWidget; AContext: Pcairo_t; Data: gpointer): gboolean; cdecl; static;
     class procedure MapWidget(AWidget: PGtkWidget; Data: gPointer); cdecl; static; {GtkWindow never sends this signal !}
+    class procedure UnMapWidget(AWidget: PGtkWidget; Data: gPointer); cdecl; static;
     class function MouseEnterNotify(aWidget: PGtkWidget; aEvent: PGdkEventCrossing; aData: gpointer): gboolean; cdecl; static;
     class function MouseLeaveNotify(aWidget: PGtkWidget; aEvent: PGdkEventCrossing; aData: gpointer): gboolean; cdecl; static;
     class function Gtk3PopupMenuCB(AWidget: PGtkWidget; AData: gpointer): gboolean; cdecl; static;
@@ -1154,6 +1155,7 @@ type
     class procedure MDILayoutSizeAllocate(AWidget: PGtkWidget; AAlloc: PGdkRectangle; AData: gpointer); cdecl; static;
   strict private
     class function WindowMapEvent(awidget:PGtkWindow;AEvent: PGdkEventAny; adata: gpointer): gboolean; cdecl; static; //uses lcl-window-first-map data.
+    class function WindowUnMapEvent(awidget:PGtkWindow;AEvent: PGdkEventAny; adata: gpointer): gboolean; cdecl; static;
     class function WindowMoveEvent(awidget: PGtkWindow; AEvent: PGdkEventConfigure; adata: gpointer): gboolean; cdecl; static;
     class procedure WindowSizeAllocate(AWidget: PGtkWidget; AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static;
     {$IFDEF GTK3USEDEFERREDRESIZING}
@@ -1343,6 +1345,10 @@ type
 const
   LISTVIEW_DEFAULT_COLUMN = 1;
   GTKMINIMUMSIZE = 16;
+
+//gdb callable debug resolver. PGtkWidget -> LCL name/bounds/parent.
+// Usage in gdb:  call eg (void) Gtk3DbgWidget((void*)0xfbe920)
+procedure Gtk3DbgWidget(AWidget: PGtkWidget); cdecl;
 
 implementation
 
@@ -1708,6 +1714,38 @@ begin
     g_object_set_data(AWindow,'lclwidget', TGtk3Widget(Data));
   if (AWindow <> nil) and AWidget^.get_has_window then
     gdk_window_set_events(AWindow, GDK_DEFAULT_EVENTS_MASK);
+end;
+
+class procedure TGtk3Widget.UnMapWidget(AWidget: PGtkWidget; Data: gPointer); cdecl;
+begin
+  TGtk3Widget(Data).WidgetMapped := False;
+end;
+
+procedure Gtk3DbgWidget(AWidget: PGtkWidget); cdecl;
+var
+  W: TGtk3Widget;
+  S: string;
+begin
+  if AWidget = nil then
+  begin
+    DebugLn('Gtk3DbgWidget: AWidget=nil');
+    exit;
+  end;
+  S := 'Gtk3DbgWidget ' + dbgs(Pointer(AWidget)) + ' gtk=' + Get3WidgetClassName(AWidget);
+  W := TGtk3Widget(HwndFromGtkWidget(AWidget));
+  if W = nil then
+    DebugLn(S + ' lcl=<no TGtk3Widget>')
+  else
+  if W.LCLObject = nil then
+    DebugLn(S + ' wrap=' + W.ClassName + ' lcl=<TGtk3Widget without LCLObject>')
+  else
+  begin
+    S := S + ' wrap=' + W.ClassName + ' lcl=' + dbgsName(W.LCLObject) +
+      ' bounds=' + dbgs(W.LCLObject.BoundsRect);
+    if Assigned(W.LCLObject.Parent) then
+      S := S + ' parent=' + dbgsName(W.LCLObject.Parent);
+    DebugLn(S);
+  end;
 end;
 
 function SubtractScroll(AWidget: PGtkWidget; APosition: TPoint): TPoint;
@@ -3843,6 +3881,7 @@ begin
   g_signal_connect_data(FWidget,'hide', TGCallback(@WidgetHide), Self, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(FWidget,'show', TGCallback(@WidgetShow), Self, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(FWidget,'map', TGCallback(@MapWidget), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(FWidget,'unmap', TGCallback(@UnMapWidget), Self, nil, G_CONNECT_DEFAULT);
   ConnectSizeAllocateSignal(FWidget);
   if IsDesigning then
   begin
@@ -4105,6 +4144,8 @@ var
   Alloc: TGtkAllocation;
   CurW, CurH: gint;
   SizeMsg: TLMSize;
+  AllocRect: TGdkRectangle;
+  PrefMinW, PrefMinH, PrefNat: gint;
 begin
   if (Widget=nil) then
     exit;
@@ -4212,7 +4253,23 @@ begin
     ;
 
     if Widget^.get_visible then
-      Widget^.size_allocate(@ARect)
+    begin
+      AllocRect := ARect;
+      if (AllocRect.width > 0) and (AllocRect.height > 0) and
+         ((AllocRect.width < 32) or (AllocRect.height < 32)) then
+      begin
+        PrefMinW := 0;
+        PrefMinH := 0;
+        PrefNat := 0;
+        Widget^.get_preferred_width(@PrefMinW, @PrefNat);
+        Widget^.get_preferred_height(@PrefMinH, @PrefNat);
+        if PrefMinW > AllocRect.width then
+          AllocRect.width := PrefMinW;
+        if PrefMinH > AllocRect.height then
+          AllocRect.height := PrefMinH;
+      end;
+      Widget^.size_allocate(@AllocRect);
+    end
     else
     if Widget^.is_toplevel or (wtNotebook in WidgetType) then
       Widget^.set_allocation(@Alloc);
@@ -9818,7 +9875,8 @@ begin
   if not Gtk3IsScrolledWindow(AScrollWin) or IsDesigning then
     exit;
   AScrollWin^.get_policy(@APolicyH, @APolicyV);
-  AScrollWin^.set_policy(AValue, APolicyV);
+  if APolicyH <> AValue then
+    AScrollWin^.set_policy(AValue, APolicyV);
 end;
 
 procedure TGtk3ScrollableWin.SetVScrollBarPolicy(AValue: TGtkPolicyType);
@@ -9830,7 +9888,8 @@ begin
   if not Gtk3IsScrolledWindow(AScrollWin) or IsDesigning then
     exit;
   AScrollWin^.get_policy(@APolicyH, @APolicyV);
-  AScrollWin^.set_policy(APolicyH, AValue);
+  if APolicyV <> AValue then
+    AScrollWin^.set_policy(APolicyH, AValue);
 end;
 
 class procedure TGtk3ScrollableWin.ScrolledLayoutSizeAllocate(
@@ -14665,6 +14724,12 @@ begin
   Result := gtk_false;
 end;
 
+class function TGtk3Window.WindowUnMapEvent(awidget: PGtkWindow; AEvent: PGdkEventAny; adata: gpointer): gboolean; cdecl;
+begin
+  TGtk3Widget(AData).WidgetMapped := False;
+  Result := gtk_false;
+end;
+
 class function TGtk3Window.WindowMoveEvent(awidget: PGtkWindow; AEvent: PGdkEventConfigure; adata: gpointer): gboolean; cdecl;
 var
   MoveMsg: TLMMove;
@@ -14706,12 +14771,32 @@ end;
 {$IFDEF GTK3USEDEFERREDRESIZING}
 class procedure TGtk3Window.WindowSizeAllocateAfter(AWidget: PGtkWidget;
   AGdkRect: PGdkRectangle; Data: gpointer); cdecl;
+var
+  Clock: PGdkFrameClock;
+  Counter, LastCounter, RetryCnt: PtrInt;
 begin
-  //match gtk2 size queue
-  if AWidget = nil then ;
-  if AGdkRect = nil then ;
   if Data = nil then ;
-  Gtk3DrainResizeQueue;
+  if AWidget = nil then
+    Exit;
+  if AGdkRect = nil then ;
+  Clock := gtk_widget_get_frame_clock(AWidget);
+  if Assigned(Clock) then
+    Counter := PtrInt(gdk_frame_clock_get_frame_counter(Clock))
+  else
+    Counter := 0;
+  LastCounter := PtrInt(g_object_get_data(PGObject(AWidget), 'lcl-wsaa-frame'));
+  RetryCnt := PtrInt(g_object_get_data(PGObject(AWidget), 'lcl-wsaa-retry'));
+  if Counter <> LastCounter then
+  begin
+    RetryCnt := 0;
+    g_object_set_data(PGObject(AWidget), 'lcl-wsaa-frame', Pointer(Counter));
+  end;
+  Inc(RetryCnt);
+  g_object_set_data(PGObject(AWidget), 'lcl-wsaa-retry', Pointer(RetryCnt));
+  if RetryCnt <= 2 then
+    Gtk3DrainResizeQueue
+  else
+    Gtk3ScheduleDrainResizeQueue;
 end;
 {$ENDIF}
 
@@ -14719,6 +14804,7 @@ procedure TGtk3Window.ConnectSizeAllocateSignal(ToWidget:PGtkWidget);
 begin
   g_signal_connect_data(ToWidget,'size-allocate',TGCallback(@WindowSizeAllocate), Self, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(ToWidget,'map-event',TGCallback(@WindowMapEvent), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(ToWidget,'unmap-event',TGCallback(@WindowUnMapEvent), Self, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(ToWidget,'configure-event',TGCallback(@WindowMoveEvent), Self, nil, G_CONNECT_DEFAULT);
   if Assigned(FCentralWidget) then
     g_signal_connect_data(FCentralWidget,'size-allocate',TGCallback(@ScrolledLayoutSizeAllocate), Self, nil, G_CONNECT_DEFAULT);
@@ -14997,12 +15083,16 @@ begin
       FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtScrollingWinControl, wtWindow];
   end else
   begin
-    Result := PGtkScrolledWindow(LCLGtkScrolledWindowNew); // PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
-    PGtkScrolledWindow(Result)^.set_policy(GTK_POLICY_NEVER, GTK_POLICY_NEVER);
     if wtMDIChild in FWidgetType then
-      FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtScrollingWinControl, wtMDIChild]
-    else
+    begin
+      Result := PGtkScrolledWindow(LCLGtkScrolledWindowNew); // PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
+      PGtkScrolledWindow(Result)^.set_policy(GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+      FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtScrollingWinControl, wtMDIChild];
+    end else
+    begin
+      Result := TGtkEventBox.new;
       FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtScrollingWinControl];
+    end;
   end;
   if (Params.Caption = '') and (LCLObject is TCustomForm) then
     Text := TCustomForm(LCLObject).Caption
@@ -16645,7 +16735,7 @@ function TGtk3DesignWidget.CreateWidget(const Params: TCreateParams
   ): PGtkWidget;
 begin
   Result := inherited CreateWidget(Params);
-  gtk_widget_set_has_window(Widget, True);
+  gtk_widget_set_has_window(Result, True);
   gtk_widget_set_has_window(GetContainerWidget, True);
 end;
 

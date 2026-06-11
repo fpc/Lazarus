@@ -167,16 +167,18 @@ begin
 
   if Assigned(vscroll) and Gtk3IsWidget(vscroll) then
   begin
-    if (vpolicy = GTK_POLICY_EXTERNAL) and vscroll^.get_visible then
+    if ((vpolicy = GTK_POLICY_EXTERNAL) or (vpolicy = GTK_POLICY_NEVER)) and vscroll^.get_visible then
       vscroll^.hide
-    else if (vpolicy <> GTK_POLICY_EXTERNAL) and not vscroll^.get_visible then
+    else
+    if (vpolicy <> GTK_POLICY_EXTERNAL) and (vpolicy <> GTK_POLICY_NEVER) and not vscroll^.get_visible then
       vscroll^.show;
   end;
   if Assigned(hscroll) and Gtk3IsWidget(hscroll) then
   begin
-    if (hpolicy = GTK_POLICY_EXTERNAL) and hscroll^.get_visible then
+    if ((hpolicy = GTK_POLICY_EXTERNAL) or (hpolicy = GTK_POLICY_NEVER)) and hscroll^.get_visible then
       hscroll^.hide
-    else if (hpolicy <> GTK_POLICY_EXTERNAL) and not hscroll^.get_visible then
+    else
+    if (hpolicy <> GTK_POLICY_EXTERNAL) and (hpolicy <> GTK_POLICY_NEVER) and not hscroll^.get_visible then
       hscroll^.show;
   end;
 
@@ -230,7 +232,7 @@ begin
     ADbgName := 'nil';
   {$ENDIF}
 
-  if (allocation^.width = 0) or (allocation^.height <= 1) then
+  if (allocation^.width <= 1) or (allocation^.height <= 1) then
   begin
     {$IFDEF GTK3DEBUGSIZE}
     DebugLn(Format('LCLGSW.SizeAllocate %s alloc=%dx%d SKIP collapse-zero (thresh=%dx%d neg=%dx%d)',
@@ -392,7 +394,7 @@ var
   AParent, AGrandParent: PGtkWidget;
   ALCLWidget: TGtk3Widget;
 begin
-  min_width^ := 10;
+  min_width^ := 1;
   nat_width^ := 10;
   AParent := widget^.get_parent;
   if AParent <> nil then
@@ -463,7 +465,7 @@ begin
   ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
   ParentClass^.get_preferred_height(widget, min_height, nat_height);
 
-  min_height^ := Max(10, Min(min_height^, LCLIntendedH));
+  min_height^ := 1;
   nat_height^ := Max(nat_height^, LCLIntendedH);
   nat_height^ := Max(nat_height^, min_height^);
   {$IFDEF GTK3DEBUGHEIGHTZERO}
