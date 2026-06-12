@@ -3282,7 +3282,8 @@ begin
       R.BottomRight := R.BottomRight + Point(GridSizeX, GridSizeY);
       Types.OffsetRect(R, RoundToMultiple(P.X, GridSizeX), RoundToMultiple(P.Y, GridSizeY));
       //Clamp to dirty area, reduces dot count from O(form) to O(dirty rect).
-      if not Types.IntersectRect(R, R, ClipBox) then exit;
+      if WidgetSet.GetLCLCapability(lcCanDrawOutsideOnPaint) = LCL_CAPABILITY_NO then
+        if not Types.IntersectRect(R, R, ClipBox) then exit;
       DrawGrid(ADDC.Canvas.Handle, R, GridSizeX, GridSizeY);
     end;
     
