@@ -417,7 +417,7 @@ begin
         Pen.Color := FMonochromeColor;
     end;
     if scalePen in FScaleItems then
-      Pen.Width := Scale(Pen.Width);
+      Pen.Width := Self.Scale(Pen.Width);
   end;
 end;
 
