@@ -961,7 +961,7 @@ type
   EInvalidGraphic = class(EGraphicException);
   EInvalidGraphicOperation = class(EGraphicException);
 
-{$IF (FPC_FullVersion = 30203) or (FPC_FullVersion >=30300)}
+{$if declared(TFPGradientDirection)} // introduced in 3.2.3 and 3.2.4-after-RC1
 type
   TGradientDirection = FPCanvas.TFPGradientDirection;
 const
