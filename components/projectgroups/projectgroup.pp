@@ -1535,6 +1535,11 @@ begin
   IDEMacros.SubstituteMacros(WorkingDir);
 
   Params:=TStringList.Create;
+
+  // make sure lazbuild uses this IDE's settings:
+  Params.Add('--pcp='+LazarusIDE.GetPrimaryConfigPath);
+  Params.Add('--lazarus-dir='+WorkingDir);
+
   if AAction in [taCompileClean,taCompileCleanFromHere] then
     Params.Add('-B');
   if aBuildMode<>'' then
