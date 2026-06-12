@@ -121,6 +121,7 @@ type
                    var ComponentClass: TComponentClass);
 
     function GetDesignerBaseClasses(Index: integer): TComponentClass; override;
+    function GetAutoCreateFormsOnOpen: Boolean; override;
     function GetStandardDesignerBaseClasses(Index: integer): TComponentClass; override;
     procedure SetStandardDesignerBaseClasses(Index: integer; AValue: TComponentClass); override;
     procedure DesignerMenuItemClick(Sender: TObject); virtual;
@@ -2428,6 +2429,11 @@ end;
 function TCustomFormEditor.GetDesignerBaseClasses(Index: integer): TComponentClass;
 begin
   Result:=TComponentClass(FDesignerBaseClasses[Index]);
+end;
+
+function TCustomFormEditor.GetAutoCreateFormsOnOpen: Boolean;
+begin
+  Result := EnvironmentGuiOpts.AutoCreateFormsOnOpen;
 end;
 
 function TCustomFormEditor.GetStandardDesignerBaseClasses(Index: integer): TComponentClass;

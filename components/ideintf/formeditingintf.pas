@@ -197,6 +197,7 @@ type
     function GetDesignerBaseClasses(Index: integer): TComponentClass; virtual; abstract;
     function GetDesignerMediators(Index: integer): TDesignerMediatorClass; virtual; abstract;
     function GetNonFormProxyDesignerForm(Index: Integer): TNonFormProxyDesignerFormClass; virtual;
+    function GetAutoCreateFormsOnOpen: Boolean; virtual;
     function GetStandardDesignerBaseClasses(Index: integer): TComponentClass; virtual; abstract;
     procedure SetNonFormProxyDesignerForm(Index: Integer; AValue: TNonFormProxyDesignerFormClass); virtual;
     procedure SetStandardDesignerBaseClasses(Index: integer; AValue: TComponentClass); virtual; abstract;
@@ -259,6 +260,10 @@ type
     property Designer[Index: integer]: TIDesigner read GetDesigner; // can be nil!
     function GetCurrentDesigner: TIDesigner; virtual; abstract;
     function GetDesignerForm(APersistent: TPersistent): TCustomForm; virtual; abstract;
+    // IDE option "Open designer on open unit" (EnvironmentGuiOpts.AutoCreateFormsOnOpen).
+    // When False, a designer form should only be created on demand (e.g. when the
+    // user switches to the designer page), not automatically when a unit is opened.
+    property AutoCreateFormsOnOpen: Boolean read GetAutoCreateFormsOnOpen;
     function GetDesignerByComponent(AComponent: TComponent): TIDesigner; virtual; abstract;
     function NonFormProxyDesignerFormCount: integer; virtual;
     property NonFormProxyDesignerForm[Index: integer]: TNonFormProxyDesignerFormClass read GetNonFormProxyDesignerForm
@@ -434,6 +439,13 @@ procedure TAbstractFormEditor.SetNonFormProxyDesignerForm(Index: Integer;
   AValue: TNonFormProxyDesignerFormClass);
 begin
   FNonFormProxyDesignerFormClass[Index] := AValue;
+end;
+
+function TAbstractFormEditor.GetAutoCreateFormsOnOpen: Boolean;
+begin
+  // default: keep historic behavior (open designer on open unit).
+  // The IDE overrides this to return EnvironmentGuiOpts.AutoCreateFormsOnOpen.
+  Result := True;
 end;
 
 constructor TAbstractFormEditor.Create;

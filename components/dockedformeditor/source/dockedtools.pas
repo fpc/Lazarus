@@ -21,7 +21,7 @@ uses
   // LCL
   LCLProc, Forms, Controls,
   //LazUtils
-  LazLoggerBase,
+  LazLoggerBase, LazFileCache,
   // IDEIntf
   IDEMsgIntf, SrcEditorIntf, IDEExternToolIntf,
   // DockedFormEditor
@@ -37,6 +37,7 @@ function  EnumerationString(Str1, Str2: String): String;
 function  FindSourceEditorForDesigner(ADesigner: TIDesigner): TSourceEditorInterface;
 procedure IDEMessage(AString: String);
 function  LinedString(Str1, Str2: String): String;
+function  SourceEditorHasLFM(ASourceEditor: TSourceEditorInterface): Boolean;
 function  SourceWindowCaption(ASourceEditor: TSourceEditorInterface): String;
 function  SourceWindowGet(ASourceEditor: TSourceEditorInterface): TSourceEditorWindowInterface;
 
@@ -92,6 +93,20 @@ begin
     Result := Str2
   else
     Result := Str1 + LineEnding + Str2;
+end;
+
+function SourceEditorHasLFM(ASourceEditor: TSourceEditorInterface): Boolean;
+var
+  LFilename: String;
+begin
+  // True if the unit has a form resource (.lfm) on disk, without loading it.
+  // Used to decide whether to show an (empty) designer page as placeholder when
+  // the IDE option "Open designer on open unit" is disabled.
+  Result := False;
+  if not Assigned(ASourceEditor) then Exit;
+  LFilename := ASourceEditor.FileName;
+  if LFilename = '' then Exit;
+  Result := FileExistsCached(ChangeFileExt(LFilename, '.lfm'));
 end;
 
 function SourceWindowCaption(ASourceEditor: TSourceEditorInterface): String;

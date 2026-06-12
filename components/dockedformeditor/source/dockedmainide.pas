@@ -443,14 +443,27 @@ begin
         EditorDestroyed(nil);
       EditorCreate(Sender);
     end;
-    LDesigner := LSourceEditor.GetDesigner(True);
     // should be performed during EditorCreate (parent of parent is SourcePageControl)
     LPageCtrl := TSourcePageControl(LSourceEditor.EditorControl.Parent.Parent);
     if LPageCtrl = nil then Exit;
 
+    // Respect IDE option "Open designer on open unit" (AutoCreateFormsOnOpen).
+    // When disabled, never force the form to load on open/activate. The designer
+    // form is created on demand when the user switches to the designer page (see
+    // TabChange), not here.
+    LDesigner := LSourceEditor.GetDesigner(FormEditingHook.AutoCreateFormsOnOpen);
+
     LDesignForm := SourceWindows.FindDesignForm(LPageCtrl);
     if LDesigner = nil then
-      LPageCtrl.RemoveDesignPages
+    begin
+      if (not FormEditingHook.AutoCreateFormsOnOpen)
+      and SourceEditorHasLFM(LSourceEditor) then
+        // The unit has a form, but the option is off: show an empty designer page
+        // as placeholder. The form is loaded on demand when the user switches to it.
+        LPageCtrl.CreateTabSheetDesigner
+      else
+        LPageCtrl.RemoveDesignPages;
+    end
     else begin
       if not Assigned(LPageCtrl.Resizer) then
         LPageCtrl.CreateResizer;
@@ -482,7 +495,7 @@ begin
           SourceWindows.SourceWindow[LSourceWindowIntf].ActiveDesignForm := nil;
     end;
 
-    if LPageCtrl.DesignerPageActive then
+    if LPageCtrl.DesignerPageActive and (LDesignForm <> nil) then
     begin
       if not LDesignForm.Hiding then
       begin
@@ -598,6 +611,13 @@ begin
     LPageCtrl.InitPage;
     LSourceWindowIntf.ActiveEditor.EditorControl.SetFocus;
   end else begin
+    // The form may have just been loaded on demand (option "Open designer on open
+    // unit" disabled, placeholder page): build the resizer now and lay out the page.
+    if not Assigned(LPageCtrl.Resizer) then
+    begin
+      LPageCtrl.CreateResizer;
+      LPageCtrl.InitPage;
+    end;
     LSourceWindow.ActiveDesignForm := LDesignForm;
     // enable autosizing after creating a new form
     DockedTabMaster.EnableAutoSizing(LDesignForm.Form);

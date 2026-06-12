@@ -266,6 +266,9 @@ procedure TSourcePageControl.InitPage;
 begin
   ShowTabs := PageCount > 1;
   {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TSourcePageControls.InitPage: ShowTabs[' + ShowTabs.ToString(TUseBoolStrs.True) + ']'); {$ENDIF}
+  // The designer page can exist as an empty placeholder (option "Open designer on
+  // open unit" disabled) before the form is loaded and a resizer is created.
+  if not Assigned(FResizer) then Exit;
   if ActivePage = FTabSheetDesigner then
   begin
     Resizer.Parent := FTabSheetDesigner;
