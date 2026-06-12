@@ -41,6 +41,7 @@ var
   FileLst: TStringList;
   frec: TRawByteSearchRec;
   PkgXml: TXMLConfig;
+  cols: TAnsiStringArray;
 
 begin
   MainDir := AppendPathDelim(argv[1]);
@@ -51,11 +52,14 @@ begin
 
   for i := 2 to argc - 1 do begin
     s := argv[i];
-    RunCommand('git.exe', ['diff', '--name-only', '--diff-filter', 'D', s], GitDiff);
-    for s in GitDiff.Split([#10,#13], TStringSplitOptions([TStringSplitOptions.ExcludeLastEmpty])) do
-      case ExtractFileExt(s) of
-        '.pas', '.pp', '.inc', '.lfm': FileLst.Add(s);
-      end;
+    RunCommand('git.exe', ['diff', '--name-status', '--diff-filter', 'RD', s], GitDiff);
+    for s in GitDiff.Split([#10,#13], TStringSplitOptions([TStringSplitOptions.ExcludeLastEmpty])) do begin
+      cols := s.Split([#32,#9], TStringSplitOptions([TStringSplitOptions.ExcludeLastEmpty]));
+      if Length(cols) >=  2 then
+        case ExtractFileExt(cols[1]) of
+          '.pas', '.pp', '.inc', '.lfm': FileLst.Add(cols[1]);
+        end;
+    end;
   end;
 
 
