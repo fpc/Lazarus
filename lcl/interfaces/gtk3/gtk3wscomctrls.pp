@@ -645,6 +645,9 @@ const
     GTK_SELECTION_SINGLE {1} ,
     GTK_SELECTION_MULTIPLE {3}
   );
+var
+  AW: PGtkWidget;
+  AAlloc: TGtkAllocation;
 begin
   case AProp of
     lvpAutoArrange:
@@ -720,8 +723,17 @@ begin
       if TGtk3ListView(ALV.Handle).IsTreeView then
       begin
         //Delphi docs: To use columns in a list view, the ViewStyle property must be set to vsReport.
-        PGtkTreeView(TGtk3ListView(ALV.Handle).GetContainerWidget)^.set_headers_visible(AIsSet and (TLVHack(ALV).ViewStyle = vsReport));
-        PGtkTreeView(TGtk3ListView(ALV.Handle).GetContainerWidget)^.resize_children;
+        AW := PGtkWidget(TGtk3ListView(ALV.Handle).GetContainerWidget);
+        PGtkTreeView(AW)^.set_headers_visible(AIsSet and (TLVHack(ALV).ViewStyle = vsReport));
+        if (gtk_widget_get_allocated_height(AW) <= 1) and (ALV.Height > 1) then
+        begin
+          AAlloc.x := 0;
+          AAlloc.y := 0;
+          AAlloc.width := ALV.Width;
+          AAlloc.height := ALV.Height;
+          gtk_widget_size_allocate(AW, @AAlloc);
+        end;
+        PGtkTreeView(AW)^.resize_children;
       end;
     end;
     lvpShowWorkAreas:
