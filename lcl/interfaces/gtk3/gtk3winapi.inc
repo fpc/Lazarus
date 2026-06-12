@@ -4396,6 +4396,12 @@ var
   CairoRect: Tcairo_rectangle_int_t;
   MoveRegion: Pcairo_region_t;
   W, H: Integer;
+  ChildList, ChildNode: PGList;
+  ChildWin: PGdkWindow;
+  ChildX, ChildY: Integer;
+  ChildWidget: PGtkWidget;
+  ALayout: PGtkLayout;
+  ChildW3: TGtk3Widget;
 begin
   Result := False;
 
@@ -4445,6 +4451,38 @@ begin
     MoveRegion := cairo_region_create_rectangle(@CairoRect);
     GdkWindow^.move_region(MoveRegion, dx, dy);
     cairo_region_destroy(MoveRegion);
+
+    if (Flags and SW_SCROLLCHILDREN) <> 0 then
+    begin
+      if [wtLayout] * Widget.WidgetType <> [] then
+        ALayout := PGtkLayout(TGtk3CustomControl(hWnd).GetContainerWidget)
+      else
+        ALayout := nil;
+      ChildList := gdk_window_get_children(GdkWindow);
+      ChildNode := ChildList;
+      while ChildNode <> nil do
+      begin
+        ChildWin := PGdkWindow(ChildNode^.data);
+        ChildWidget := nil;
+        if ALayout <> nil then
+          ChildWin^.get_user_data(@ChildWidget);
+        ChildW3 := nil;
+        if ChildWidget <> nil then
+          ChildW3 := TGtk3Widget(HwndFromGtkWidget(ChildWidget));
+        if (ALayout <> nil) and (ChildWidget <> nil) and (ChildW3 <> nil) then
+        begin
+          ChildW3.LCLLeft := ChildW3.LCLLeft + dx;
+          ChildW3.LCLTop := ChildW3.LCLTop + dy;
+          ALayout^.move(ChildWidget, ChildW3.LCLLeft, ChildW3.LCLTop);
+        end else
+        begin
+          ChildWin^.get_position(@ChildX, @ChildY);
+          ChildWin^.move(ChildX + dx, ChildY + dy);
+        end;
+        ChildNode := ChildNode^.next;
+      end;
+      g_list_free(ChildList);
+    end;
   end;
 
   ExposedX := Rect(0, 0, 0, 0);
