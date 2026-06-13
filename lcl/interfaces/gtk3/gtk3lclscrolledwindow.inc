@@ -142,6 +142,7 @@ var
   LayoutW, LayoutH: guint;
   ClampedAlloc: TGtkAllocation;
   ChildPrefH: gint;
+  wOscBelow, hOscBelow: Boolean;
   {$IFDEF GTK3DEBUGSIZE}
   ADbgCtl: TGtk3Widget;
   ADbgName: string;
@@ -312,10 +313,12 @@ begin
   Last1H := PtrInt(g_object_get_data(PGObject(widget), 'lcl-prev-ah'));
   Last2W := PtrInt(g_object_get_data(PGObject(widget), 'lcl-prev2-aw'));
   Last2H := PtrInt(g_object_get_data(PGObject(widget), 'lcl-prev2-ah'));
+  wOscBelow := (allocation^.width <> Last1W) and (allocation^.width < threshW);
+  hOscBelow := (allocation^.height <> Last1H) and (allocation^.height < threshH);
   if ((allocation^.width <> Last1W) or (allocation^.height <> Last1H)) and
      (allocation^.width = Last2W) and (allocation^.height = Last2H) and
      (Last2W <> 0) and (Last2H <> 0) and
-     ((allocation^.width < threshW) or (allocation^.height < threshH)) then
+     (wOscBelow or hOscBelow) then
   begin
     {$IFDEF GTK3DEBUGSIZE}
     DebugLn(Format('LCLGSW.SizeAllocate %s alloc=%dx%d OSCILLATE-BELOW (prev %dx%d / prev2 %dx%d thresh=%dx%d) - SKIP parent',
