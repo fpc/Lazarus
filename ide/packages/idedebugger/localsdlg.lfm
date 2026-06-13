@@ -151,11 +151,11 @@ object LocalsDlg: TLocalsDlg
   object PopupMenu1: TPopupMenu
     Left = 38
     Top = 75
-    object MenuItem1: TMenuItem
-      Action = actInspect
-    end
     object MenuItem2: TMenuItem
       Action = actWatch
+    end
+    object MenuItem1: TMenuItem
+      Action = actInspect
     end
     object MenuItem3: TMenuItem
       Action = actEvaluate

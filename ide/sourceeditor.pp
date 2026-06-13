@@ -1884,7 +1884,7 @@ begin
 
       // register the Debug submenu items
       SrcEditMenuToggleBreakpoint:=RegisterIDEMenuCommand(AParent,
-          'Toggle Breakpoint', uemToggleBreakpoint, nil, @ExecuteIdeMenuClick);
+          'Toggle Breakpoint', uemToggleBreakpoint, nil, @ExecuteIdeMenuClick, nil, 'ActiveBreakPoint');
       SrcEditMenuEvaluateModify:=RegisterIDEMenuCommand(AParent,
           'Evaluate/Modify...', uemEvaluateModify, nil, nil, nil, 'debugger_modify');
       SrcEditMenuEvaluateModify.Enabled:=False;

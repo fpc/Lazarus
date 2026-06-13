@@ -357,15 +357,21 @@ begin
 
   ToolBar1.Images := IDEImages.Images_16;
   vtLocals.LazImages := IDEImages.Images_16;
+  ActionList1.Images := IDEImages.Images_16;
+  PopupMenu1.Images := IDEImages.Images_16;
 
   Caption:= lisLocals;
   vtLocals.Header.Columns[0].Text:= lisName;
   vtLocals.Header.Columns[1].Text:= lisValue;
   vtLocals.Header.Columns[2].Text := dlgValueDataAddr;
-  actInspect.Caption := lisInspect;
-  actMemView.Caption := lisMenuViewMemViewer;
   actWatch.Caption := lisWatch;
+  actWatch.ImageIndex := IDEImages.LoadImage('debugger_watches');
+  actInspect.Caption := lisInspect;
+  actInspect.ImageIndex := IDEImages.LoadImage('debugger_inspect');
+  actMemView.Caption := lisMenuViewMemViewer;
+  actMemView.ImageIndex := IDEImages.LoadImage('debugger_mem_viewer');
   actEvaluate.Caption     := lisEvaluateModify;
+  actEvaluate.ImageIndex := IDEImages.LoadImage('debugger_evaluate');
   actCopyName.Caption     := lisLocalsDlgCopyName;
   actCopyValue.Caption    := lisLocalsDlgCopyValue;
   actCopyRAWValue.Caption := lisLocalsDlgCopyRAWValue;
