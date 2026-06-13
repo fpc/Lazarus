@@ -34,6 +34,9 @@ uses
   // LazUtils
   GraphType, LazLoggerBase, LazTracer, LazUtilities, ProjResProc;
 
+const
+  DefaultSplitterWidth = 5;
+
 type
 
   { TPage }

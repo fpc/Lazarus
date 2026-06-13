@@ -947,7 +947,7 @@ begin
   FResizeAnchor := akLeft;
 
   Align := alLeft;
-  Width := 5;
+  Width := DefaultSplitterWidth;
   // Accessibility
   AccessibleRole := larResizeGrip;
   AccessibleDescription := rsTSplitterAccessibilityDescription;

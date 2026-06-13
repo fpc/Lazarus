@@ -860,7 +860,7 @@ type
     property DockSitesCanBeMinimized: boolean read FDockSitesCanBeMinimized write SetDockSitesCanBeMinimized default false;
     property FlatHeadersButtons: boolean read FFlatHeadersButtons write SetFlatHeadersButtons default false;
 
-    property SplitterWidth: integer read FSplitterWidth write SetSplitterWidth default 4;
+    property SplitterWidth: integer read FSplitterWidth write SetSplitterWidth default DefaultSplitterWidth;
     property SplitterResizeStyle: TResizeStyle read FSplitterResizeStyle write SetSplitterResizeStyle default rsUpdate;
     property ScaleOnResize: boolean read FScaleOnResize write SetScaleOnResize default true; // scale children when resizing a site
     property AllowDragging: boolean read FAllowDragging write SetAllowDragging default true;
@@ -1635,7 +1635,7 @@ begin
   ScaleOnResize                    := Config.GetValue('ScaleOnResize',true);
   ShowHeader                       := Config.GetValue('ShowHeader',true);
   ShowHeaderCaption                := Config.GetValue('ShowHeaderCaption',true);
-  SplitterWidth                    := Config.GetValue('SplitterWidth',4);
+  SplitterWidth                    := Config.GetValue('SplitterWidth',DefaultSplitterWidth);
   SplitterResizeStyle              := Str2ResizeStyle(Config.GetValue('SplitterResizeStyle',crsUpdate));
   Config.UndoAppendBasePath;
 end;
@@ -1663,7 +1663,7 @@ begin
   Config.SetDeleteValue(Path+'ScaleOnResize',ScaleOnResize,true);
   Config.SetDeleteValue(Path+'ShowHeader',ShowHeader,true);
   Config.SetDeleteValue(Path+'ShowHeaderCaption',ShowHeaderCaption,true);
-  Config.SetDeleteValue(Path+'SplitterWidth',SplitterWidth,4);
+  Config.SetDeleteValue(Path+'SplitterWidth',SplitterWidth,DefaultSplitterWidth);
   Config.SetDeleteValue(Path+'SplitterResizeStyle',ResizeStyle2Str[SplitterResizeStyle],crsUpdate);
 end;
 
@@ -1691,7 +1691,7 @@ begin
   Config.SetDeleteValue('ScaleOnResize',ScaleOnResize,true);
   Config.SetDeleteValue('ShowHeader',ShowHeader,true);
   Config.SetDeleteValue('ShowHeaderCaption',ShowHeaderCaption,true);
-  Config.SetDeleteValue('SplitterWidth',SplitterWidth,4);
+  Config.SetDeleteValue('SplitterWidth',SplitterWidth,DefaultSplitterWidth);
   Config.SetDeleteValue('SplitterResizeStyle',ResizeStyle2Str[SplitterResizeStyle],crsUpdate);
   Config.UndoAppendBasePath;
 end;
@@ -1749,7 +1749,7 @@ begin
   ScaleOnResize                    := Config.GetValue(Path+'ScaleOnResize',true);
   ShowHeader                       := Config.GetValue(Path+'ShowHeader',true);
   ShowHeaderCaption                := Config.GetValue(Path+'ShowHeaderCaption',true);
-  SplitterWidth                    := Config.GetValue(Path+'SplitterWidth',4);
+  SplitterWidth                    := Config.GetValue(Path+'SplitterWidth',DefaultSplitterWidth);
   SplitterResizeStyle              := Str2ResizeStyle(Config.GetValue(Path+'SplitterResizeStyle',crsUpdate));
 end;
 
@@ -3298,7 +3298,7 @@ begin
   FShowHeaderCaption:=true;
   FHideHeaderCaptionFloatingControl:=true;
   FSplitterResizeStyle:=rsUpdate;
-  FSplitterWidth:=4;
+  FSplitterWidth:=DefaultSplitterWidth;
   FScaleOnResize:=true;
   FMapMinimizedControls:=TMapMinimizedControls.Create;
   fNeedSimplify:=TFPList.Create;
