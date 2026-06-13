@@ -441,7 +441,11 @@ begin
         IDEDockMaster.AdjustMainIDEWindowHeight(Self, True, ANewHeight)
       end
       else
-        IDEDockMaster.AdjustMainIDEWindowHeight(Self, False, 0);
+      begin
+        if ANewHeight <= 0 then
+          ANewHeight := CalcMainIDEHeight;
+        IDEDockMaster.AdjustMainIDEWindowHeight(Self, False, ANewHeight);
+      end;
     end else
     begin
       if (AIDEIsMaximized or EnvironmentGuiOpts.Desktop.AutoAdjustIDEHeight) then

@@ -318,20 +318,26 @@ begin
         Site := nil;
     end;
 
-  if (Site=nil) or (Site.BoundSplitter=nil) then
+  if Site=nil then
     Exit;
 
-  Site.BoundSplitter.Enabled := not AAdjustHeight;
-  Site.BoundSplitter.CustomWidth := not Site.BoundSplitter.Enabled;
-  if Site.BoundSplitter.Enabled then
-    Site.BoundSplitter.Height := DockMaster.ScaledSplitterWidth
-  else
+  if Site.BoundSplitter<>nil then
   begin
-    Site.BoundSplitter.Constraints.MinHeight := 2;
-    Site.BoundSplitter.Height := Site.BoundSplitter.Constraints.MinHeight;
-  end;
-  SiteNewHeight := Site.Parent.ClientHeight - ANewHeight - Site.BoundSplitter.Height;
-  if AAdjustHeight and (Site.Height <> SiteNewHeight) then
+    Site.BoundSplitter.Enabled := not AAdjustHeight;
+    Site.BoundSplitter.CustomWidth := not Site.BoundSplitter.Enabled;
+    if Site.BoundSplitter.Enabled then
+      Site.BoundSplitter.Height := DockMaster.ScaledSplitterWidth
+    else
+    begin
+      Site.BoundSplitter.Constraints.MinHeight := 2;
+      Site.BoundSplitter.Height := Site.BoundSplitter.Constraints.MinHeight;
+    end;
+    SiteNewHeight := Site.Parent.ClientHeight - ANewHeight - Site.BoundSplitter.Height;
+  end
+  else
+    SiteNewHeight := Site.Parent.ClientHeight - ANewHeight - DockMaster.ScaledSplitterWidth;
+
+  if Site.Height <> SiteNewHeight then
     Site.Height := SiteNewHeight;
 end;
 
