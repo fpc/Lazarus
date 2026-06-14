@@ -70,7 +70,7 @@ msgstr "Hilfe"
 
 #: lclstrconsts.ifsvk_meta
 msgid "Meta"
-msgstr ""
+msgstr "Option"
 
 #: lclstrconsts.ifsvk_shift
 msgid "Shift"
@@ -100,7 +100,7 @@ msgstr "3D-Licht"
 
 #: lclstrconsts.rsacontrolcannothaveitselfasparent
 msgid "A control can't have itself as a parent"
-msgstr "Ein Control kann nicht sein eigener Vorfahr sein"
+msgstr "Ein Steuerelement kann nicht sein eigener Vorfahr sein"
 
 #: lclstrconsts.rsactivebordercolorcaption
 msgid "Active Border"
@@ -130,7 +130,7 @@ msgstr "Klasse %s kann %s nicht als Vorfahren haben."
 
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
-msgstr "Desktop"
+msgstr "Schreibtisch"
 
 #: lclstrconsts.rsbackward
 msgid "Backward"
@@ -201,7 +201,7 @@ msgstr "Ein Steuerelement der Klasse %s kann nicht ein Steuerelement der Klasse 
 #: lclstrconsts.rscontrolhasnoparentformorframe
 #, object-pascal-format
 msgid "Control '%s' has no parent form or frame"
-msgstr ""
+msgstr "Steuerelement '%s' hat kein Vorfahren-Formular oder -Rahmen"
 
 #: lclstrconsts.rscontrolisnotaparent
 #, object-pascal-format
@@ -303,7 +303,7 @@ msgstr "Exception"
 
 #: lclstrconsts.rsfddirectorymustexist
 msgid "Directory must exist"
-msgstr "Verzeichnis muß vorhanden sein"
+msgstr "Verzeichnis muss vorhanden sein"
 
 #: lclstrconsts.rsfddirectorynotexist
 #, object-pascal-format
@@ -317,7 +317,7 @@ msgstr "Die Datei \"%s\" ist bereits vorhanden. Überschreiben?"
 
 #: lclstrconsts.rsfdfilemustexist
 msgid "File must exist"
-msgstr "Datei muß vorhanden sein"
+msgstr "Datei muss vorhanden sein"
 
 #: lclstrconsts.rsfdfilenotexist
 #, object-pascal-format
@@ -347,7 +347,7 @@ msgstr "Datei überschreiben?"
 
 #: lclstrconsts.rsfdpathmustexist
 msgid "Path must exist"
-msgstr "Pfad muß angelegt sein"
+msgstr "Pfad muss angelegt sein"
 
 #: lclstrconsts.rsfdpathnoexist
 #, object-pascal-format
@@ -370,7 +370,7 @@ msgstr "Dateiinformation"
 #: lclstrconsts.rsfilter
 msgctxt "lclstrconsts.rsfilter"
 msgid "(filter)"
-msgstr "(filter)"
+msgstr "(Filter)"
 
 #: lclstrconsts.rsfind
 msgid "Find"
@@ -386,15 +386,15 @@ msgstr "Erster"
 
 #: lclstrconsts.rsfixedcolstoobig
 msgid "FixedCols can't be > ColCount"
-msgstr "FixedCols kann nicht größer ColCount sein"
+msgstr "FixedCols kann nicht größer als ColCount sein"
 
 #: lclstrconsts.rsfixedrowstoobig
 msgid "FixedRows can't be > RowCount"
-msgstr "FixedRows kann nicht größer RowCount sein"
+msgstr "FixedRows kann nicht größer als RowCount sein"
 
 #: lclstrconsts.rsformcolorcaption
 msgid "Form"
-msgstr "Form"
+msgstr "Formular"
 
 #: lclstrconsts.rsformresourcesnotfoundforresourcelessformscreatenew
 #, object-pascal-format
@@ -404,7 +404,7 @@ msgstr "Die Formular-Ressource %s wurde nicht gefunden. Für Formulare ohne Ress
 #: lclstrconsts.rsformstreamingerror
 #, object-pascal-format
 msgid "Form streaming \"%s\" error: %s"
-msgstr "Form-Streaming \"%s\" Fehler: %s"
+msgstr "Formular-Streaming \"%s\" Fehler: %s"
 
 #: lclstrconsts.rsforward
 msgid "Forward"
@@ -430,7 +430,7 @@ msgstr "--gdk-no-debug flags  Besondere GDK-Trace/Debug-Meldungen abschalten."
 #, fuzzy
 #| msgid "Graphics Interchange Format"
 msgid "Graphics Interchange Format Files"
-msgstr "Graphics Interchange Format"
+msgstr "Graphics Interchange Format-Dateien"
 
 #: lclstrconsts.rsgoptionfatalwarnings
 #, fuzzy
@@ -464,11 +464,11 @@ msgstr "Grün"
 
 #: lclstrconsts.rsgridfiledoesnotexist
 msgid "Grid file doesn't exist"
-msgstr ""
+msgstr "Gitter-Datei existiert nicht"
 
 #: lclstrconsts.rsgridhasnocols
 msgid "Cannot insert rows into a grid when it has no columns"
-msgstr "Kann keine Zeilen in ein Grid einfügen, wenn es keine Spalten hat"
+msgstr "Kann keine Zeilen in ein Gitter einfügen, wenn es keine Spalten hat"
 
 #: lclstrconsts.rsgridhasnorows
 msgid "Cannot insert columns into a grid when it has no rows"
@@ -672,7 +672,7 @@ msgstr "Icon-Bild darf nicht leer sein"
 
 #: lclstrconsts.rsiconimageformat
 msgid "Icon image must have the same format"
-msgstr "Icon-Bild muß das gleiche Format haben"
+msgstr "Icon-Bild muss das gleiche Format haben"
 
 #: lclstrconsts.rsiconimageformatchange
 msgid "Cannot change format of icon image"
@@ -680,11 +680,11 @@ msgstr "Kann Format des Icon-Bilds nicht ändern"
 
 #: lclstrconsts.rsiconimagesize
 msgid "Icon image must have the same size"
-msgstr "Icon-Bild muß die gleiche Größe haben"
+msgstr "Icon-Bild muss die gleiche Größe haben"
 
 #: lclstrconsts.rsiconimagesizechange
 msgid "Cannot change size of icon image"
-msgstr "Kann Größe des Icon-Bilds nicht ädnern"
+msgstr "Kann Größe des Icon-Bilds nicht ändern"
 
 #: lclstrconsts.rsiconnocurrent
 msgid "Icon has no current image"
@@ -740,11 +740,11 @@ msgstr "Ungültiges Datum: %s"
 #: lclstrconsts.rsinvaliddaterangehint
 #, object-pascal-format
 msgid "Invalid Date: %s. Must be between %s and %s"
-msgstr "Ungültiges Datum: %s. Es muß zwischen %s und %s sein"
+msgstr "Ungültiges Datum: %s. Es muss zwischen %s und %s liegen"
 
 #: lclstrconsts.rsinvalidformobjectstream
 msgid "invalid Form object stream"
-msgstr "ungültiger Formularobjekt-Stream"
+msgstr "Ungültiger Formularobjekt-Stream"
 
 #: lclstrconsts.rsinvalidpropertyvalue
 msgid "Invalid property value"
@@ -761,7 +761,7 @@ msgstr "%s ist bereits mit %s verbunden"
 
 #: lclstrconsts.rsjpeg
 msgid "JPEG Files"
-msgstr "Joint Picture Expert Group"
+msgstr "Joint Picture Expert Group-Dateien"
 
 #: lclstrconsts.rslastrecordhint
 msgid "Last"
@@ -805,7 +805,7 @@ msgstr "Wiederholen"
 
 #: lclstrconsts.rsmacoseditmenuselectall
 msgid "Select All"
-msgstr "Alle wählen"
+msgstr "Alles auswählen"
 
 #: lclstrconsts.rsmacoseditmenuundo
 msgid "Undo"
@@ -825,7 +825,7 @@ msgstr "Dateiformat:"
 
 #: lclstrconsts.rsmacosfontdialogmbselect
 msgid "Select"
-msgstr "Auswhählen"
+msgstr "Auswählen"
 
 #: lclstrconsts.rsmacosmenuabout
 #, object-pascal-format
@@ -848,7 +848,7 @@ msgstr "Einstellungen..."
 #: lclstrconsts.rsmacosmenuquit
 #, object-pascal-format
 msgid "Quit %s"
-msgstr "%s beended"
+msgstr "%s beenden"
 
 #: lclstrconsts.rsmacosmenuservices
 msgid "Services"
@@ -856,7 +856,7 @@ msgstr "Dienste"
 
 #: lclstrconsts.rsmacosmenushowall
 msgid "Show All"
-msgstr "Alle anzeigen"
+msgstr "Alle einblenden"
 
 #: lclstrconsts.rsmacosmenutogglefullscreen
 msgid "Toggle Full Screen"
@@ -992,7 +992,7 @@ msgstr "Keine"
 
 #: lclstrconsts.rsnotavalidgridfile
 msgid "Not a valid grid file"
-msgstr "Keine gültige Grid-Datei"
+msgstr "Keine gültige Gitter-Datei"
 
 #: lclstrconsts.rsnowidgetset
 msgid "No widgetset object. Please check if the unit \"interfaces\" was added to the programs uses clause."
@@ -1151,7 +1151,7 @@ msgstr ""
 
 #: lclstrconsts.rsrasterimageendupdate
 msgid "Endupdate while no update in progress"
-msgstr "Endupdate wenn kein Update läuft"
+msgstr "Endupdate, wenn kein Update läuft"
 
 #: lclstrconsts.rsrasterimagesaveinupdate
 msgid "Cannot save image while update in progress"
@@ -1159,7 +1159,7 @@ msgstr "Kann Bild während des Updates nicht sichern"
 
 #: lclstrconsts.rsrasterimageupdateall
 msgid "Cannot begin update all when canvas only update in progress"
-msgstr "Kann nicht mit dem kompletten Aktualisieren beginnen wenn ein Canvas-Update durchgeführt wird"
+msgstr "Kann nicht mit dem kompletten Aktualisieren beginnen, so lange ein Canvas-Update durchgeführt wird"
 
 #: lclstrconsts.rsredcolorcaption
 msgid "Red"
@@ -1235,7 +1235,7 @@ msgstr "Die eingebaute URL ist schreibgeschützt. Bitte stattdessen die Basis-UR
 #, fuzzy
 #| msgid "Tagged Image File Format"
 msgid "Tagged Image File Format Files"
-msgstr "Tagged Image File Format"
+msgstr "Tagged Image File Format-Dateien"
 
 #: lclstrconsts.rstpanelaccessibilitydescription
 msgctxt "lclstrconsts.rstpanelaccessibilitydescription"
@@ -1258,7 +1258,7 @@ msgstr "Kann Default-Schriftart nicht laden"
 
 #: lclstrconsts.rsunknownerrorpleasereportthisbug
 msgid "Unknown Error, please report this bug"
-msgstr "Unbekannter Fehler, bitte melden Sie diesen Bug"
+msgstr "Unbekannter Fehler; bitte melden Sie diesen Bug"
 
 #: lclstrconsts.rsunknownpictureextension
 msgid "Unknown picture extension"
@@ -1349,7 +1349,7 @@ msgstr "Ungültige Action-Erzeugung"
 
 #: lclstrconsts.sinvalidactionenumeration
 msgid "Invalid action enumeration"
-msgstr "Ungültige Action-Numerierung"
+msgstr "Ungültige Action-Nummerierung"
 
 #: lclstrconsts.sinvalidactionregistration
 msgid "Invalid action registration"

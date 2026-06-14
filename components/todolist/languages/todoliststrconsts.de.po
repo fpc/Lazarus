@@ -13,23 +13,23 @@ msgstr ""
 
 #: todoliststrconsts.attribgroupname
 msgid "ToDo comments"
-msgstr ""
+msgstr "ToDo Kommentare"
 
 #: todoliststrconsts.attribnamedone
 msgid "Done comment"
-msgstr ""
+msgstr "Done Kommentar"
 
 #: todoliststrconsts.attribnamefixme
 msgid "FixMe comment"
-msgstr ""
+msgstr "FixMe Kommentar"
 
 #: todoliststrconsts.attribnamenote
 msgid "Note comment"
-msgstr ""
+msgstr "Note Kommentar"
 
 #: todoliststrconsts.attribnametodo
 msgid "ToDo comment"
-msgstr ""
+msgstr "ToDo Kommentar"
 
 #: todoliststrconsts.dlgfiltercsv
 msgid "CSV files"
@@ -46,22 +46,25 @@ msgid ""
 "Is it a valid source file?\n"
 "The rest of the file has been skipped."
 msgstr ""
+"Die Suche nach ToDo-Objekten in Datei %0:s misslang.\n"
+"Ist sie eine valide Quelldatei?\n"
+"Der Rest der Datei wurde übersprungen."
 
 #: todoliststrconsts.lisalternatetokens
 msgid "Use Alternate Tokens"
-msgstr ""
+msgstr "Alternative Token benutzen"
 
 #: todoliststrconsts.lisalternatetokenshint
 msgid "Standard token is #todo etc. Alternate is without the #"
-msgstr ""
+msgstr "Das Standard-Token ist #todo etc. Alternativen sind ohne #"
 
 #: todoliststrconsts.liscoloroptions
 msgid "Color Options"
-msgstr ""
+msgstr "Farb-Optionen"
 
 #: todoliststrconsts.liscolors
 msgid "Colors"
-msgstr ""
+msgstr "Farben"
 
 #: todoliststrconsts.lisctinsertmacro
 msgid "Insert Macro"
@@ -69,17 +72,17 @@ msgstr "Makro einfügen"
 
 #: todoliststrconsts.lisedit
 msgid "Edit"
-msgstr ""
+msgstr "Bearbeiten"
 
 #: todoliststrconsts.lishelp
 msgid "Help"
-msgstr ""
+msgstr "Hilfe"
 
 #: todoliststrconsts.lispackages
 #, fuzzy
 #| msgid "Packages"
 msgid "Used packages"
-msgstr "Packages"
+msgstr "Benutzte Packages"
 
 #: todoliststrconsts.lispkgfiletypetext
 msgid "Text"
@@ -87,20 +90,20 @@ msgstr "Text"
 
 #: todoliststrconsts.lisshowfiles
 msgid "Show Files"
-msgstr ""
+msgstr "Dateien anzeigen"
 
 #: todoliststrconsts.lisshowfileshint
 msgid "Select which Pascal units and .todo files to list"
-msgstr ""
+msgstr "Pascal-Units und .todo-Dateien für die Auflistung auswählen"
 
 #: todoliststrconsts.lisshowtypes
 msgid "Show Types"
-msgstr ""
+msgstr "Typen anzeigen"
 
 #: todoliststrconsts.lisshowtypeshint
 msgctxt "todoliststrconsts.lisshowtypeshint"
 msgid "Select which ToDo types to list"
-msgstr ""
+msgstr "ToDo-Typen für die Auflistung auswählen"
 
 #: todoliststrconsts.lissourceeditor
 #, fuzzy
@@ -111,28 +114,28 @@ msgstr "Editor"
 #: todoliststrconsts.listddedittodo
 msgctxt "todoliststrconsts.listddedittodo"
 msgid "Edit the ToDo item"
-msgstr ""
+msgstr "ToDo-Objekt bearbeiten"
 
 #: todoliststrconsts.listddedittododlgcaption
 msgctxt "todoliststrconsts.listddedittododlgcaption"
 msgid "Edit the ToDo item"
-msgstr ""
+msgstr "ToDo-Objekt bearbeiten"
 
 #: todoliststrconsts.listddinserttodo
 #, fuzzy
 #| msgid "Insert ToDo"
 msgctxt "todoliststrconsts.listddinserttodo"
 msgid "Insert a ToDo item"
-msgstr "ToDo einfügen"
+msgstr "ToDo-Objekt einfügen"
 
 #: todoliststrconsts.listddinserttododlgcaption
 msgctxt "todoliststrconsts.listddinserttododlgcaption"
 msgid "Insert a ToDo item"
-msgstr ""
+msgstr "ToDo-Objekt einfügen"
 
 #: todoliststrconsts.listodocolorsareattheendofcolorlist
 msgid "ToDo colors are at the end of color list"
-msgstr ""
+msgstr "ToDo-Farben sind am Ende der Farbenliste"
 
 #: todoliststrconsts.listodoexport
 msgid "Export"
@@ -145,7 +148,7 @@ msgstr "Gehe zu"
 #: todoliststrconsts.listodoitems
 #, object-pascal-format
 msgid "%d items"
-msgstr ""
+msgstr "%d Objekte"
 
 #: todoliststrconsts.listodolcategory
 #, fuzzy
@@ -163,7 +166,7 @@ msgstr "Modul"
 
 #: todoliststrconsts.listodolfilepath
 msgid "Path"
-msgstr ""
+msgstr "Pfad"
 
 #: todoliststrconsts.listodolissue
 msgid "Issue ID"
@@ -181,21 +184,21 @@ msgstr "Gelistet"
 
 #: todoliststrconsts.listodolistedit
 msgid "Edit selected item"
-msgstr ""
+msgstr "Ausgewähltes Objekt bearbeiten"
 
 #: todoliststrconsts.listodolistfornewproject
 msgid "ToDo List for new Project"
-msgstr ""
+msgstr "ToDo-Liste für ein neues Projekt"
 
 #: todoliststrconsts.listodolistforpackage
 #, object-pascal-format
 msgid "ToDo List for Package \"%s\""
-msgstr ""
+msgstr "ToDo-Liste für das Package \"%s\""
 
 #: todoliststrconsts.listodolistforproject
 #, object-pascal-format
 msgid "ToDo List for Project \"%s\""
-msgstr ""
+msgstr "ToDo-Liste für das Projekt \"%s\""
 
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
@@ -203,13 +206,13 @@ msgstr "Zur gewählten Quelltextzeile springen"
 
 #: todoliststrconsts.listodolistofproject
 msgid "ToDo List of Project"
-msgstr ""
+msgstr "ToDo-Liste des Projekts"
 
 #: todoliststrconsts.listodolistrefresh
 #, fuzzy
 #| msgid "Refresh todo items"
 msgid "Refresh ToDo items"
-msgstr "Aktualisiert die ToDo-Elemente"
+msgstr "ToDo-Objekte aktualisieren"
 
 #: todoliststrconsts.listodolline
 msgid "Line"
@@ -231,19 +234,19 @@ msgstr "Priorität"
 #: todoliststrconsts.listodolproject
 msgctxt "todoliststrconsts.listodolproject"
 msgid "(Project)"
-msgstr ""
+msgstr "(Projekt)"
 
 #: todoliststrconsts.listodoltype
 msgid "Type"
-msgstr ""
+msgstr "Typ"
 
 #: todoliststrconsts.listodotodotype
 msgid "ToDo type"
-msgstr ""
+msgstr "ToDo-Typ"
 
 #: todoliststrconsts.listodousedunits
 msgid "Used units"
-msgstr ""
+msgstr "Benutzte Units"
 
 #: todoliststrconsts.lisviewtodolist
 msgid "View ToDo List"
@@ -251,5 +254,5 @@ msgstr "ToDo-Liste anzeigen"
 
 #: todoliststrconsts.rsexporttodoit
 msgid "Export ToDo items to CSV"
-msgstr ""
+msgstr "ToDo-Objekte nach CSV exportieren"
 
