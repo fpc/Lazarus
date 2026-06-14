@@ -143,6 +143,8 @@ var
   ClampedAlloc: TGtkAllocation;
   ChildPrefH: gint;
   wOscBelow, hOscBelow: Boolean;
+  AControl: TGtk3Widget;
+  WaylandAutoSizeForm: Boolean;
   {$IFDEF GTK3DEBUGSIZE}
   ADbgCtl: TGtk3Widget;
   ADbgName: string;
@@ -166,21 +168,44 @@ begin
   vscroll := PGtkScrolledWindow(widget)^.get_vscrollbar;
   hscroll := PGtkScrolledWindow(widget)^.get_hscrollbar;
 
+  AControl := TGtk3Widget(HwndFromGtkWidget(widget));
+  WaylandAutoSizeForm := Gtk3WidgetSet.IsWayland and Assigned(AControl) and
+    Assigned(AControl.LCLObject) and (AControl.LCLObject is TCustomForm) and
+    TCustomForm(AControl.LCLObject).AutoSize;
+
   if Assigned(vscroll) and Gtk3IsWidget(vscroll) then
   begin
-    if ((vpolicy = GTK_POLICY_EXTERNAL) or (vpolicy = GTK_POLICY_NEVER)) and vscroll^.get_visible then
-      vscroll^.hide
+    if WaylandAutoSizeForm then
+    begin
+      if (vpolicy = GTK_POLICY_EXTERNAL) and vscroll^.get_visible then
+        vscroll^.hide
+      else if (vpolicy <> GTK_POLICY_EXTERNAL) and not vscroll^.get_visible then
+        vscroll^.show;
+    end
     else
-    if (vpolicy <> GTK_POLICY_EXTERNAL) and (vpolicy <> GTK_POLICY_NEVER) and not vscroll^.get_visible then
-      vscroll^.show;
+    begin
+      if ((vpolicy = GTK_POLICY_EXTERNAL) or (vpolicy = GTK_POLICY_NEVER)) and vscroll^.get_visible then
+        vscroll^.hide
+      else if (vpolicy <> GTK_POLICY_EXTERNAL) and (vpolicy <> GTK_POLICY_NEVER) and not vscroll^.get_visible then
+        vscroll^.show;
+    end;
   end;
   if Assigned(hscroll) and Gtk3IsWidget(hscroll) then
   begin
-    if ((hpolicy = GTK_POLICY_EXTERNAL) or (hpolicy = GTK_POLICY_NEVER)) and hscroll^.get_visible then
-      hscroll^.hide
+    if WaylandAutoSizeForm then
+    begin
+      if (hpolicy = GTK_POLICY_EXTERNAL) and hscroll^.get_visible then
+        hscroll^.hide
+      else if (hpolicy <> GTK_POLICY_EXTERNAL) and not hscroll^.get_visible then
+        hscroll^.show;
+    end
     else
-    if (hpolicy <> GTK_POLICY_EXTERNAL) and (hpolicy <> GTK_POLICY_NEVER) and not hscroll^.get_visible then
-      hscroll^.show;
+    begin
+      if ((hpolicy = GTK_POLICY_EXTERNAL) or (hpolicy = GTK_POLICY_NEVER)) and hscroll^.get_visible then
+        hscroll^.hide
+      else if (hpolicy <> GTK_POLICY_EXTERNAL) and (hpolicy <> GTK_POLICY_NEVER) and not hscroll^.get_visible then
+        hscroll^.show;
+    end;
   end;
 
   vActive := (vpolicy <> GTK_POLICY_NEVER) and (vpolicy <> GTK_POLICY_EXTERNAL);
