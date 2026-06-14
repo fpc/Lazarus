@@ -358,30 +358,63 @@ end;
 procedure Gtk2_IconViewSelectionChanged(AIconView: PGtkIconView; WidgetInfo: PWidgetInfo); cdecl;
 var
   Widgets: PTVWidgets;
-  AIndex: String;
   i: Integer;
-  List: PGList;
+  List, TmpList: PGList;
   Path: PGtkTreePath;
-  pstr: PChar;
-  Indices: integer;
+  Indices: Integer;
+  ItemCount: Integer;
+  N: Integer;
+  NewSel: TTVItemStateDynArray;
+  WasSel, IsSel: Boolean;
 begin
   Widgets := PTVWidgets(WidgetInfo^.UserData);
-
-  List := gtk_icon_view_get_selected_items(AIconView);
-  if (List <> nil) then
-  begin
-    Path := PGtkTreePath(g_list_first(List)^.data);
-    Indices := gtk_tree_path_get_indices(path)^;
-    ChangeItemCache(Widgets, Indices, tvisUnselected);
-    g_list_free(List);
-  end else
+  if Widgets = nil then
     exit;
-
-  // LCL already sent selection !
   if wwiInvalidEvent in Widgets^.WidgetInfo^.Flags then
     exit;
 
-  BroadcastItemCache(Widgets,WidgetInfo);
+  ItemCount := TCustomListView(WidgetInfo^.LCLObject).Items.Count;
+  SetLength(NewSel, ItemCount);
+  for i := 0 to ItemCount - 1 do
+    NewSel[i] := tvisUndefined;
+
+  List := gtk_icon_view_get_selected_items(AIconView);
+  TmpList := List;
+  while TmpList <> nil do
+  begin
+    Path := PGtkTreePath(TmpList^.data);
+    if Path <> nil then
+    begin
+      Indices := gtk_tree_path_get_indices(Path)^;
+      if (Indices >= 0) and (Indices < ItemCount) then
+        NewSel[Indices] := tvisSelected;
+      gtk_tree_path_free(Path);
+    end;
+    TmpList := TmpList^.next;
+  end;
+  if List <> nil then
+    g_list_free(List);
+
+  N := ItemCount;
+  if Length(Widgets^.IconViewSelOld) > N then
+    N := Length(Widgets^.IconViewSelOld);
+
+  for i := 0 to N - 1 do
+  begin
+    WasSel := (i < Length(Widgets^.IconViewSelOld)) and (Widgets^.IconViewSelOld[i] = tvisSelected);
+    IsSel := (i < Length(NewSel)) and (NewSel[i] = tvisSelected);
+    if WasSel <> IsSel then
+    begin
+      if IsSel then
+        ChangeItemCache(Widgets, i, tvisUnselected)
+      else
+        ChangeItemCache(Widgets, i, tvisSelected);
+    end;
+  end;
+
+  Widgets^.IconViewSelOld := Copy(NewSel, 0, Length(NewSel));
+
+  BroadcastItemCache(Widgets, WidgetInfo);
 end;
 
 function Gtk2WSLV_ItemSelected({%H-}selection: PGtkTreeSelection; {%H-}model: PGtkTreeModel;
@@ -1827,6 +1860,7 @@ var
   i: Integer;
 begin
   GetCommonTreeViewWidgets({%H-}PGtkWidget(AWinControl.Handle), Widgets);
+  Include(Widgets^.WidgetInfo^.Flags, wwiInvalidEvent);
   // on widget destroy we have no ItemDeleted notification and we must destroy ItemCache ourself
   // if things will change please remove this destroy
   Widgets^.ItemCacheCount := 0;

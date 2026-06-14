@@ -58,6 +58,7 @@ type
     ItemCache: TTVItemStateDynArray;
     ItemCacheCount: Integer;
     OldTreeSelection: PGList; // needed only by gtk < 2.10 ! issue #19820
+    IconViewSelOld: TTVItemStateDynArray;
     Images: TList;
   end;
 

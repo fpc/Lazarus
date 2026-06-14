@@ -772,6 +772,7 @@ type
       AData: GPointer); cdecl; static;
   private
     FPreselectedIndices: TFPList;
+    FIconViewSelOld: array of Boolean;
     FImages: TFPList;
     FIsTreeView: Boolean;
     FViewStyle: TViewStyle;
@@ -11577,51 +11578,66 @@ class function TGtk3ListView.selection_changed(AIconView: PGtkIconView;
   aData: gPointer): gboolean; cdecl;
 var
   pl, tmp: PGList;
-  pndx: PGint;
-  i, cnt: gint;
+  i, ItemCount, N, Indices: Integer;
   Msg: TLMNotify;
   NM: TNMListView;
   ctl: TGtk3ListView;
+  NewSel, OldSel: array of Boolean;
+  WasSel, IsSel: Boolean;
 begin
   Result := gtk_false;
   ctl := TGtk3ListView(aData);
-  pl := PGtkIconView(ctl.GetContainerWidget)^.get_selected_items();
+  if (ctl = nil) or ctl.InUpdate or (ctl.LCLObject = nil) then
+    exit;
 
-  if Assigned(pl) then
+  ItemCount := TCustomListView(ctl.LCLObject).Items.Count;
+  SetLength(NewSel, ItemCount);
+
+  pl := PGtkIconView(AIconView)^.get_selected_items();
+  tmp := pl;
+  while Assigned(tmp) do
   begin
-    try
-      tmp := pl;
-      while Assigned(tmp) do
-      begin
-        pndx := PGtkTreePath(tmp^.data)^.get_indices_with_depth(@cnt);
-        // lv := TListView(ctl.LCLObject);
-        ctl.BeginUpdate;
-        try
-          for i := 0 to cnt - 1 do
-          begin
-            FillChar(Msg{%H-}, SizeOf(Msg), 0);
-            Msg.Msg := CN_NOTIFY;
-            FillChar(NM{%H-}, SizeOf(NM), 0);
-            NM.hdr.hwndfrom := HWND(ctl);
-            NM.hdr.code := LVN_ITEMCHANGED;
-            NM.iItem := {%H-}PtrInt(pndx^);
-            NM.iSubItem := 0;
-            NM.uNewState := LVIS_SELECTED;
-            NM.uChanged := LVIF_STATE;
-            Msg.NMHdr := @NM.hdr;
-            ctl.DeliverMessage(Msg);
-            inc(pndx);
-          end;
-        finally
-          ctl.EndUpdate;
-        end;
-        gtk_tree_path_free(PGtkTreePath(tmp^.data));
+    Indices := gtk_tree_path_get_indices(PGtkTreePath(tmp^.data))^;
+    if (Indices >= 0) and (Indices < ItemCount) then
+      NewSel[Indices] := True;
+    gtk_tree_path_free(PGtkTreePath(tmp^.data));
+    tmp := tmp^.next;
+  end;
+  if Assigned(pl) then
+    g_list_free(pl);
 
-        tmp := tmp^.next;
-      end;
-    finally
-      g_list_free(pl);
+  OldSel := ctl.FIconViewSelOld;
+  N := ItemCount;
+  if Length(OldSel) > N then
+    N := Length(OldSel);
+
+  ctl.FIconViewSelOld := Copy(NewSel, 0, Length(NewSel));
+
+  ctl.BeginUpdate;
+  try
+    for i := 0 to N - 1 do
+    begin
+      WasSel := (i < Length(OldSel)) and OldSel[i];
+      IsSel := (i < Length(NewSel)) and NewSel[i];
+      if WasSel = IsSel then
+        continue;
+      FillChar(Msg{%H-}, SizeOf(Msg), 0);
+      Msg.Msg := CN_NOTIFY;
+      FillChar(NM{%H-}, SizeOf(NM), 0);
+      NM.hdr.hwndfrom := HWND(ctl);
+      NM.hdr.code := LVN_ITEMCHANGED;
+      NM.iItem := i;
+      NM.iSubItem := 0;
+      if IsSel then
+        NM.uNewState := LVIS_SELECTED
+      else
+        NM.uOldState := LVIS_SELECTED;
+      NM.uChanged := LVIF_STATE;
+      Msg.NMHdr := @NM.hdr;
+      ctl.DeliverMessage(Msg);
     end;
+  finally
+    ctl.EndUpdate;
   end;
 end;
 
