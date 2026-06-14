@@ -1959,14 +1959,19 @@ begin
         AY := 0;
         ARootWin := gdk_get_default_root_window;
         ADeepestWin := ARootWin;
-        AChild := gdk_window_get_device_position(ADeepestWin, APointer, @AX, @AY, nil);
-        while Assigned(AChild) do
-        begin
-          ADeepestWin := AChild;
+        gdk_error_trap_push;
+        try
           AChild := gdk_window_get_device_position(ADeepestWin, APointer, @AX, @AY, nil);
+          while Assigned(AChild) do
+          begin
+            ADeepestWin := AChild;
+            AChild := gdk_window_get_device_position(ADeepestWin, APointer, @AX, @AY, nil);
+          end;
+          if ADeepestWin <> ARootWin then
+            gdk_window_set_cursor(ADeepestWin, AGdkCursor);
+        finally
+          gdk_error_trap_pop_ignored;
         end;
-        if ADeepestWin <> ARootWin then
-          gdk_window_set_cursor(ADeepestWin, AGdkCursor);
       end;
     end;
   end;
