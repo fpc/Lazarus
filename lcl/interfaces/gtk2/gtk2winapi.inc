@@ -2536,7 +2536,10 @@ var
           begin
             TextExtentPoint(Lines[J], StrLen(Lines[J]), AP);
             LineWidth := Max(LineWidth, AP.cX);
-            Inc(ActualHeight, AP.cY);
+            if StrLen(Lines[J]) = 0 then
+              Inc(ActualHeight, TM.tmHeight)
+            else
+              Inc(ActualHeight, AP.cY);
           end;
         end;
         LineWidth := Min(MaxWidth, LineWidth);
@@ -2809,8 +2812,13 @@ begin
         l:=StrLen(Lines[i]);
         DrawLine(Lines[i], l, theRect.Top);
         dec(pIndex,l+length(LineEnding));
-        GetTextExtentPoint(DC, Lines[i], l, Size{%H-});
-        LineHeight := Size.cY;
+        if l = 0 then
+          LineHeight := TM.tmHeight
+        else
+        begin
+          GetTextExtentPoint(DC, Lines[i], l, Size{%H-});
+          LineHeight := Size.cY;
+        end;
       end
       else
         LineHeight := TM.tmHeight;
