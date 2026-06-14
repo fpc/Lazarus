@@ -4479,9 +4479,12 @@ begin
           ChildW3 := TGtk3Widget(HwndFromGtkWidget(ChildWidget));
         if (ALayout <> nil) and (ChildWidget <> nil) and (ChildW3 <> nil) then
         begin
-          ChildW3.LCLLeft := ChildW3.LCLLeft + dx;
-          ChildW3.LCLTop := ChildW3.LCLTop + dy;
-          ALayout^.move(ChildWidget, ChildW3.LCLLeft, ChildW3.LCLTop);
+          if gtk_widget_get_parent(ChildWidget) = PGtkWidget(ALayout) then
+          begin
+            ChildW3.LCLLeft := ChildW3.LCLLeft + dx;
+            ChildW3.LCLTop := ChildW3.LCLTop + dy;
+            ALayout^.move(ChildWidget, ChildW3.LCLLeft, ChildW3.LCLTop);
+          end;
         end else
         begin
           ChildWin^.get_position(@ChildX, @ChildY);
