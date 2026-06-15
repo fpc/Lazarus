@@ -2004,7 +2004,7 @@ begin
   if (Options and ETO_CLIPPED = ETO_CLIPPED) or (Dx <> nil) then
   begin
     GtkDC.Save;
-    if Options and ETO_CLIPPED = ETO_CLIPPED then
+    if (Options and ETO_CLIPPED = ETO_CLIPPED) and (Rect <> nil) then
     begin
       ClipL := GtkDC.LToDX(Rect^.Left);
       ClipT := GtkDC.LToDY(Rect^.Top);
@@ -2028,7 +2028,7 @@ begin
       cairo_rectangle(GtkDc.pcr, ClipL, ClipT, ClipR - ClipL, ClipB - ClipT);
       cairo_clip(GtkDc.pcr);
     end;
-    if Options and ETO_OPAQUE = ETO_OPAQUE then
+    if (Rect <> nil) and (Options and ETO_OPAQUE = ETO_OPAQUE) then
       GtkDC.fillRect(Rect, HBRUSH(GtkDC.BgBrush));
     if Dx <> nil then
     begin
@@ -2056,7 +2056,7 @@ begin
     GtkDC.Restore;
   end else
   begin
-    if Options and ETO_OPAQUE = ETO_OPAQUE then
+    if (Rect <> nil) and (Options and ETO_OPAQUE = ETO_OPAQUE) then
       GtkDC.fillRect(Rect, HBRUSH(GtkDC.BgBrush));
     GtkDC.drawText(X,Y,Str,Count, (GtkDC.BkMode=OPAQUE) and Assigned(GtkDC.BgBrush));
   end;
