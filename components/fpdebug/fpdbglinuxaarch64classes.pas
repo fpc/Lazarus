@@ -69,17 +69,8 @@ type
 
   { TDbgAarch64StackUnwinder }
 
-  TDbgAarch64StackUnwinder = class(TDbgStackUnwinder)
-  private
-    FThread: TDbgThread;
-    FProcess: TDbgProcess;
-    //FAddressSize: Integer;
+  TDbgAarch64StackUnwinder = class(TDbgStackUnwinderEx)
   public
-    constructor Create(AProcess: TDbgProcess);
-    procedure InitForThread(AThread: TDbgThread); override;
-    // FrameBasePointer is optional
-    procedure GetTopFrame(out CodePointer, StackPointer, FrameBasePointer: TDBGPtr;
-                          out ANewFrame: TDbgCallstackEntry); override;
     procedure InitForFrame(ACurrentFrame: TDbgCallstackEntry;
                            out CodePointer, StackPointer, FrameBasePointer: TDBGPtr); override;
     // AFrameIndex: The frame-index to be read. Starts at 1 (since 0 is top-lever, and handled by GetTopFrame)
@@ -369,27 +360,6 @@ end;
 
 { TDbgAarch64StackUnwinder }
 
-constructor TDbgAarch64StackUnwinder.Create(AProcess: TDbgProcess);
-begin
-  FProcess := AProcess;
-  inherited Create;
-end;
-
-procedure TDbgAarch64StackUnwinder.InitForThread(AThread: TDbgThread);
-begin
-  FThread := AThread;
-end;
-
-procedure TDbgAarch64StackUnwinder.GetTopFrame(out CodePointer, StackPointer,
-  FrameBasePointer: TDBGPtr; out ANewFrame: TDbgCallstackEntry);
-begin
-  CodePointer      := FThread.GetInstructionPointerRegisterValue;
-  StackPointer     := FThread.GetStackPointerRegisterValue;
-  FrameBasePointer := FThread.GetStackBasePointerRegisterValue;
-  ANewFrame        := TDbgCallstackEntry.create(FThread, 0, FrameBasePointer, CodePointer);
-  ANewFrame.AutoFillRegisters := True;
-end;
-
 procedure TDbgAarch64StackUnwinder.InitForFrame(ACurrentFrame: TDbgCallstackEntry; out
   CodePointer, StackPointer, FrameBasePointer: TDBGPtr);
 var
@@ -419,14 +389,14 @@ begin
     exit;
 
 
-  if FProcess.Disassembler.GetFunctionFrameInfo(CodePointer, OutSideFrame) and OutSideFrame then begin
+  if Process.Disassembler.GetFunctionFrameInfo(CodePointer, OutSideFrame) and OutSideFrame then begin
     // TODO, if we are half in...
     X30 := ACurrentFrame.RegisterValueList.FindRegisterByDwarfIndex(30);
     if X30 = nil then
       exit;
     CodePointer := X30.NumValue;
 
-    ANewFrame := TDbgCallstackEntry.Create(FThread, AFrameIndex, FrameBasePointer, CodePointer);
+    ANewFrame := TDbgCallstackEntry.Create(Thread, AFrameIndex, FrameBasePointer, CodePointer);
     ANewFrame.RegisterValueList.Assign(ACurrentFrame.RegisterValueList);
     ANewFrame.RegisterValueList.DbgRegisterAutoCreate['PC'].SetValue(CodePointer, IntToStr(CodePointer),8, 32);
 
@@ -434,9 +404,9 @@ begin
     exit;
   end;
 
-  if not FProcess.ReadData(FrameBasePointer + 8, 8, NewLink) then
+  if not Process.ReadData(FrameBasePointer + 8, 8, NewLink) then
     exit;
-  if not FProcess.ReadData(FrameBasePointer, 8, NewFrameBase) then
+  if not Process.ReadData(FrameBasePointer, 8, NewFrameBase) then
     exit;
   if NewFrameBase <= FrameBasePointer then
     exit;
@@ -448,7 +418,7 @@ begin
   FrameBasePointer := NewFrameBase;
   CodePointer := NewLink;
 
-  ANewFrame := TDbgCallstackEntry.Create(FThread, AFrameIndex, NewFrameBase, CodePointer);
+  ANewFrame := TDbgCallstackEntry.Create(Thread, AFrameIndex, NewFrameBase, CodePointer);
   ANewFrame.RegisterValueList.DbgRegisterAutoCreate['X29'].SetValue(NewFrameBase, IntToStr(NewFrameBase),8, 29);
   ANewFrame.RegisterValueList.DbgRegisterAutoCreate['X30'].SetValue(NewLink, IntToStr(NewLink),8, 30);
   ANewFrame.RegisterValueList.DbgRegisterAutoCreate['SP'].SetValue(StackPointer, IntToStr(StackPointer),8, 31);
