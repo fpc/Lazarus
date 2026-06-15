@@ -1725,7 +1725,10 @@ begin
 
   ANoteBook^.show_all;
   ANoteBook^.set_allocation(@Alloc);
-  ANoteBook^.set_show_tabs(True);
+  if (AWinControl is TCustomTabControl) and not TCustomTabControl(AWinControl).ShowTabs then
+    ANoteBook^.set_show_tabs(False)
+  else
+    ANoteBook^.set_show_tabs(True);
   AWindow^.realize;
   AWindow^.show_all;
   APage^.get_allocation(@Alloc);
