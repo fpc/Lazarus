@@ -12,6 +12,8 @@ type
     function DeliverMessage(var Msg; const AIsInputEvent: Boolean=False): LRESULT; override;
   end;
 
+  TApplicationAccess = class(TApplication);
+
   constructor TGtk3ToolWnd.Create(AWndMethod: TWndMethod);
   begin
     CreateFrom(nil, nil);
@@ -783,7 +785,11 @@ begin
   DebugLn('TGtk3WidgetSet.AppProcessMessages');
   {$ENDIF}
   while g_main_context_pending(nil) do
+  begin
     g_main_context_iteration(nil, False);
+    if TApplicationAccess(Application).HasAsyncCallQueued then
+      Break;
+  end;
   {$IFDEF GTK3USEDEFERREDRESIZING}
   Gtk3DrainResizeQueue;
   {$ENDIF GTK3USEDEFERREDRESIZING}
