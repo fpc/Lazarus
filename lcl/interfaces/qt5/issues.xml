@@ -22,6 +22,9 @@
 		<issue name="TMenuItem.Default">
 			<short>Default property is not supported</short>
 		</issue>
+		<issue name="TMenuItem.Bitmap">
+			<short>Bitmap hides the Caption on top-level TMainMenu (menubar) items (Qt design)</short>
+		</issue>
 		<issue name="TPageControl.MultiLine">
 			<short>not supported</short>
 		</issue>
