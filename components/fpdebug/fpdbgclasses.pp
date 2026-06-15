@@ -934,6 +934,20 @@ type
     InstrTargetOffs: Int64; // offset from the START address of instruction
   end;
 
+  TDbgFrameBoundaryKind = (
+    bkUnknown,
+    bkBeforePrologue, bkInPrologue, bkMaybeInPrologue,
+    bkInEpilogue, bkMaybeInEpilogue, bkAfterEpiloge,
+    bkInBody
+  );
+
+  TDbgFrameBoundaryInfo = record
+    // mlfConstantDeref: can be used for the register itself, plus/minus an offset
+    ReturnAddressLocation: TFpDbgMemLocation;
+    StackPointerValue: TFpDbgMemLocation;
+    BasePointerValue: TFpDbgMemLocation;
+  end;
+
   { TDbgAsmDecoder }
 
   TDbgAsmDecoder = class
@@ -950,7 +964,8 @@ type
     procedure ReverseDisassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String); virtual;
 
     function GetInstructionInfo(AnAddress: TDBGPtr): TDbgAsmInstruction; virtual; abstract;
-    function GetFunctionFrameInfo(AnAddress: TDBGPtr; out AnIsOutsideFrame: Boolean): Boolean; virtual;
+    function GetFrameBoundaryInfo(AnAddress: TDBGPtr; out AFrameBoundaryInfo: TDbgFrameBoundaryInfo; ARoutineStartAddr: TDBGPtr = 0): TDbgFrameBoundaryKind; virtual;
+    function GetFunctionFrameInfo(AnAddress: TDBGPtr; out AnIsOutsideFrame: Boolean): Boolean; virtual; deprecated;
     function IsAfterCallInstruction(AnAddress: TDBGPtr): boolean; virtual;
     function UnwindFrame(var AnAddress, AStackPtr, AFramePtr: TDBGPtr; AQuick: boolean; ARegisterValueList: TDbgRegisterValueList): boolean; virtual;
 
@@ -2418,6 +2433,13 @@ begin
   // After disassemble tmpAddress points to the starting address of next instruction
   // Decrement with the instruction length to point to the start of this instruction
   AAddress := AAddress - instrLen;
+end;
+
+function TDbgAsmDecoder.GetFrameBoundaryInfo(AnAddress: TDBGPtr; out
+  AFrameBoundaryInfo: TDbgFrameBoundaryInfo; ARoutineStartAddr: TDBGPtr): TDbgFrameBoundaryKind;
+begin
+  Result := bkUnknown;
+  AFrameBoundaryInfo := Default(TDbgFrameBoundaryInfo);
 end;
 
 function TDbgAsmDecoder.GetFunctionFrameInfo(AnAddress: TDBGPtr; out

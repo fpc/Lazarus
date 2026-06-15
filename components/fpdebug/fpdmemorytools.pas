@@ -47,7 +47,7 @@ type
     // the below will be mapped (and extended) according to endianess
     mlfTargetRegister,       // reads from the register
     mlfConstant,             // an (up to) SizeOf(TDbgPtr) (=8) Bytes Value (endian in format of debug process)
-    mlfConstantDeref // A constant that can be used instead of an address (location parser),
+    mlfConstantDeref,// A constant that can be used instead of an address (location parser),
                      // If a value (e.g. literal numeric constant 0x1234) has no address,
                      //   then this is treated as its virtual address.
                      // If (and only if) the value is attempted to be derefed, then
@@ -55,6 +55,8 @@ type
                      // It can also be tested for nil. The virtual address is never nil.
                      // Any other access must result in an error.
                      // Used for PFoo(1234)^ or TObject(1234).Foo
+    // Only supported in certain functions:
+    mlfStackOffset  // An offset to the stack-pointer giving the address of the data
   );
 
   TFpDbgValueSize = packed record

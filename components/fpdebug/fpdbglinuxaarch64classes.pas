@@ -111,6 +111,9 @@ type
     destructor Destroy; override;
 
     function GetInstructionInfo(AnAddress: TDBGPtr): TDbgAsmInstruction; override;
+    function GetFrameBoundaryInfo(AnAddress: TDBGPtr; out
+      AFrameBoundaryInfo: TDbgFrameBoundaryInfo; ARoutineStartAddr: TDBGPtr = 0
+      ): TDbgFrameBoundaryKind; override;
     function GetFunctionFrameInfo(AnAddress: TDBGPtr; out AnIsOutsideFrame: Boolean): Boolean; override;
     function IsAfterCallInstruction(AnAddress: TDBGPtr): boolean; override;
     procedure Disassemble(var AnAddress: Pointer; out ACodeBytes: String; out ACode: String); override; overload;
@@ -492,6 +495,51 @@ begin
   FLastInstr.FIsReturnInstruction := CodeBin = $D65F03C0;
   FLastInstr.FIsCallInstruction   := ((CodeBin and $FC000000) = $94000000)   // BL
                                   or ((CodeBin and $FFFFFC1F) = $D63F0000);  // BLR
+end;
+
+function TAarch64AsmDecoder.GetFrameBoundaryInfo(AnAddress: TDBGPtr; out
+  AFrameBoundaryInfo: TDbgFrameBoundaryInfo; ARoutineStartAddr: TDBGPtr): TDbgFrameBoundaryKind;
+var
+  CodeBin: Cardinal;
+begin
+  Result := inherited GetFrameBoundaryInfo(AnAddress, AFrameBoundaryInfo, ARoutineStartAddr);
+
+  if not FProcess.ReadData(AnAddress, 4, CodeBin) then
+    exit;
+
+(*
++ fd7b bfa9                 stp             x29, x30, [sp, #-16]!
++ fd03 0091                 mov             x29, sp
+- f34f bfa9                 stp             x19, x19, [sp, #-16]!
+- ffc3 0cd1                 sub             sp, sp, #0x330
+*)
+
+(*
+- ffc3 0c91                 add             sp, sp, #0x330
+- f307 41f8                 ldr             x19, [sp], #16
+- fd7b c1a8                 ldp             x29, x30, [sp], #16
++ c003 5fd6                 ret
+*)
+
+  Result := bkInBody;
+
+  if (CodeBin = $a9bf7bfd  ) then    //            stp             x29, x30, [sp, #-16]!
+    Result := bkBeforePrologue;
+  if (CodeBin = $910003fd  ) then    //            mov             x29, sp
+    Result := bkInPrologue;
+  if (CodeBin = $a9bf4ff3  ) then    //            stp             x19, x19, [sp, #-16]!
+    Result := bkInPrologue;
+  if (CodeBin = $d10cc3ff  ) then    //            sub             sp, sp, #0x330
+    Result := bkInPrologue;
+
+  if (CodeBin = $910cc3ff  ) then    //            add             sp, sp, #0x330
+    Result := bkInEpilogue;
+  if (CodeBin = $f84107f3  ) then    //            ldr             x19, [sp], #16
+    Result := bkInEpilogue;
+  if (CodeBin = $a8c17bfd  ) then    //            ldp             x29, x30, [sp], #16
+    Result := bkInEpilogue;
+  if (CodeBin = $d65f03c0  ) then    //            ret
+    Result := bkAfterEpiloge;
 end;
 
 function TAarch64AsmDecoder.GetFunctionFrameInfo(AnAddress: TDBGPtr; out AnIsOutsideFrame: Boolean

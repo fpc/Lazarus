@@ -573,6 +573,9 @@ type
     procedure Disassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String); override;
     function GetInstructionInfo(AnAddress: TDBGPtr): TDbgAsmInstruction; override;
 
+    function GetFrameBoundaryInfo(AnAddress: TDBGPtr; out
+      AFrameBoundaryInfo: TDbgFrameBoundaryInfo; ARoutineStartAddr: TDBGPtr = 0
+      ): TDbgFrameBoundaryKind; override;
     function GetFunctionFrameInfo(AnAddress: TDBGPtr; out
       AnIsOutsideFrame: Boolean): Boolean; override;
     function IsAfterCallInstruction(AnAddress: TDBGPtr): boolean; override;
@@ -5203,6 +5206,350 @@ begin
   Result := FLastInstr;
 end;
 
+function TX86AsmDecoder.GetFrameBoundaryInfo(AnAddress: TDBGPtr; out
+  AFrameBoundaryInfo: TDbgFrameBoundaryInfo; ARoutineStartAddr: TDBGPtr): TDbgFrameBoundaryKind;
+var
+  ADataLen: Cardinal;
+  AData: PByte;
+  AEof: Boolean;
+
+  procedure ReadData(a: TDBGPtr);
+  begin
+    ADataLen := 0;
+    if AEof then exit;
+    ADataLen := MAX_CODEBIN_LEN;
+    if not ReadCodeAt(AnAddress, ADataLen) then // TODO: partial read
+      exit;
+    AData := @FCodeBin[0];
+    AEof := ADataLen < MAX_CODEBIN_LEN;
+  end;
+
+  function MatchData(const d: array of byte): boolean;
+  var
+    i: Integer;
+  begin
+    Result := False;
+    if ADataLen < length(d) then begin
+      AnAddress := AnAddress + AData - @FCodeBin[0];
+      ReadData(AnAddress);
+      if ADataLen < length(d) then
+        exit;
+    end;
+
+    if AData^ <> d[0] then exit;
+    for i := 1 to length(d)-1 do
+      if AData[i] <> d[i] then exit;
+    Result := True;
+  end;
+
+  var
+    bin: array[0..20] of byte;
+  function MatchBefore(const d: array of byte; AnExtra: Integer = 0): boolean;
+  var
+    rLen: Cardinal;
+    i: Integer;
+  begin
+    Result := False;
+    if not FProcess.ReadData(AnAddress + AData - @FCodeBin[0] - Length(d) - AnExtra, Length(d), bin[0], rLen) then
+      exit;
+    if rLen < length(d) then
+      exit;
+
+    if bin[0] <> d[0] then exit;
+    for i := 1 to length(d)-1 do
+      if bin[i] <> d[i] then exit;
+    Result := True;
+  end;
+
+var
+  PushCnt: integer;
+
+begin
+  Result := inherited GetFrameBoundaryInfo(AnAddress, AFrameBoundaryInfo, ARoutineStartAddr);
+
+  AEof := False;
+  ReadData(AnAddress);
+
+  // TODO: jump pad at start
+
+  // skip NOP
+  while (ADataLen > 0) and (AData^ = $90) do begin // nop
+    inc(AData);
+    dec(ADataLen);
+  end;
+  if ADataLen < 1 then
+    exit;
+
+
+  Result := bkInBody;
+
+(*
+ *** 64 bit Prologue
+55                       push rbp
+4889E5                   mov rbp,rsp
+488D6424B0               lea rsp,[rsp-$50]
+48895DD8                 mov [rbp-$28],rbx
+48897DE0                 mov [rbp-$20],rdi
+
+
+48895C2420               mov [rsp+$20],rbx
+4C89442418               mov [rsp+$18],r8
+55                       push rbp
+56                       push rsi
+4154                     push r12
+488BEC                   mov rbp,rsp
+4883EC60                 sub rsp,$60
+
+ *** 32 bit Prologue
+
+55                       push ebp
+89E5                     mov ebp,esp
+8D6424F4                 lea esp,[esp-$0C]  // 83 EC 20 or sub esp, N
+8945F4                   mov [ebp-$0C],eax
+8955FC                   mov [ebp-$04],edx
+
+8BFF                     mov edi,edi
+55                       push ebp
+8BEC                     mov ebp,esp
+51                       push ecx
+
+55                       push ebp
+8BEC                     mov ebp,esp
+56                       push esi  // TODO: push after move ebp
+57                       push edi
+53                       push ebx
+8BF4                     mov esi,esp
+*)
+
+  // TODO: skip 48895C2420               mov [rsp+$20],rbx
+
+  // 55                       push rbp
+  // 55                       push ebp
+  if AData^ = $55 then begin
+    Result := bkBeforePrologue; // all values should be "caller valid"
+    //AFrameBoundaryInfo.ReturnAddressLocation.MType := mlfStackOffset;
+    //AFrameBoundaryInfo.ReturnAddressLocation.MType := 0;
+    exit;
+  end;
+
+  PushCnt := 0;
+
+  if (FProcess.Mode = dm64) then begin
+    while ( (ADataLen > 1) and (AData^ in [$50..$54, $56..$57]) ) or
+          ( (ADataLen > 2) and (AData^ = $41) and (AData^ in [$50..$57]) )
+    do begin
+      if (ADataLen > 2) and (AData^ = $41) then
+        inc(AData);
+      inc(AData);
+      dec(ADataLen);
+      inc(PushCnt);
+    end;
+
+    // 4889E5                   mov rbp,rsp
+    if MatchData([$48, $89, $E5]) then begin
+      if (PushCnt > 0) or ((AData = @FCodeBin[0]) and MatchBefore([$55])) then begin
+        Result := bkInPrologue;
+        AFrameBoundaryInfo.ReturnAddressLocation.MType := mlfStackOffset;
+        AFrameBoundaryInfo.ReturnAddressLocation.Address := 8 + 8*PushCnt;
+        AFrameBoundaryInfo.BasePointerValue  := ConstDerefLoc(0 + 8*PushCnt);
+        AFrameBoundaryInfo.StackPointerValue := ConstDerefLoc(8 + 8*PushCnt);
+      end
+      else
+        Result := bkMaybeInPrologue;
+      exit;
+    end;
+
+    //488D6424B0               lea rsp,[rsp-$50]
+    //48 8D A4 24 50FBFFFF         lea rsp,[rsp-$000004B0]
+    //but NOT  48 8D A4 24 B040000         lea rsp,[rsp+$000004B0]
+    //4883EC60                 sub rsp,$60
+    // TODO: decode in case of other byte sequences
+    if ( MatchData([$48, $8D, $64, $24 {, $B0}]) and ((AData[4] and $80) <> 0) ) or
+       ( MatchData([$48, $8D, $A4, $24 {, $B0}]) and ((AData[7] and $80) <> 0) ) or
+       MatchData([$48, $83, $EC {, $60}])
+
+    then begin
+      if (PushCnt > 0) or ((AData = @FCodeBin[0]) and MatchBefore([$55, $48, $89, $E5])) then begin
+        Result := bkInPrologue;
+        AFrameBoundaryInfo.ReturnAddressLocation.MType := mlfStackOffset;
+        AFrameBoundaryInfo.ReturnAddressLocation.Address := 8 + 8*PushCnt;
+        AFrameBoundaryInfo.BasePointerValue.MType := mlfStackOffset;
+        AFrameBoundaryInfo.BasePointerValue.Address := 0 + 8*PushCnt;
+        AFrameBoundaryInfo.StackPointerValue := ConstDerefLoc(8 + 8*PushCnt);
+      end
+      else
+        Result := bkMaybeInPrologue;
+      exit;
+    end;
+  end;
+
+  if (FProcess.Mode = dm32) then begin
+    while (ADataLen > 1) and (AData^ in [$50..$54, $56..$57]) do begin
+      inc(AData);
+      dec(ADataLen);
+      inc(PushCnt);
+    end;
+
+    //89E5                     mov ebp,esp
+    if MatchData([$48, $89, $E5]) then begin
+      if (PushCnt > 0) or ((AData = @FCodeBin[0]) and MatchBefore([$55])) then begin
+        Result := bkInPrologue;
+        AFrameBoundaryInfo.ReturnAddressLocation.MType := mlfStackOffset;
+        AFrameBoundaryInfo.ReturnAddressLocation.Address := 4 + 4*PushCnt;
+        AFrameBoundaryInfo.BasePointerValue  := ConstDerefLoc(0 + 4*PushCnt);
+        AFrameBoundaryInfo.StackPointerValue := ConstDerefLoc(4 + 4*PushCnt);
+      end
+      else
+        Result := bkMaybeInPrologue;
+      exit;
+    end;
+
+    //8D6424F4                 lea esp,[esp-$0C]  // 83 EC 20 or sub esp, N
+    //83EC20 or sub esp, N
+    if ( MatchData([$8D, $64, $24 {, $F4}]) and ((AData[3] and $80) <>0) ) or
+       MatchData([$83, $EC {, $20}])
+    then begin
+      if (PushCnt > 0) or ((AData = @FCodeBin[0]) and MatchBefore([$55, $48, $89, $E5])) then begin
+        Result := bkInPrologue;
+        AFrameBoundaryInfo.ReturnAddressLocation.MType := mlfStackOffset;
+        AFrameBoundaryInfo.ReturnAddressLocation.Address := 4 + 4*PushCnt;
+        AFrameBoundaryInfo.BasePointerValue.MType := mlfStackOffset;
+        AFrameBoundaryInfo.BasePointerValue.Address := 0 + 4*PushCnt;
+        AFrameBoundaryInfo.StackPointerValue := ConstDerefLoc(4 + 4*PushCnt);
+      end
+      else
+        Result := bkMaybeInPrologue;
+      exit;
+    end;
+
+    // TODO: more push?
+  end;
+
+
+
+(*
+*** 64 bit Epilogue
+90                       nop
+488D6500                 lea rsp,[rbp+$00]
+5D                       pop rbp
+C3                       ret
+
+4883C460                 add rsp,$60
+415C                     pop r12
+5F                       pop rdi
+5E                       pop rsi
+5D                       pop rbp
+C3                       ret
+
+488B5C2430               mov rbx,[rsp+$30]
+488B6C2438               mov rbp,[rsp+$38]
+4883C420                 add rsp,$20
+415E                     pop r14
+C3                       ret
+
+90                       nop
+4883C428                 add rsp,$28
+C3                       ret
+
+48 89 EC       mov rsp, rbp
+5D             pop rbp
+C3             ret
+
+ *** 32 bit Epilogue
+89EC                     mov esp,ebp
+5D                       pop ebp
+C3                       ret
+
+83C410                   add esp,$10
+83C408                   add esp,$08
+5B                       pop ebx
+5F                       pop edi
+5E                       pop esi
+5D                       pop ebp
+C21400                   ret $0014  // add $20 to stack, AFTER doing ret
+
+8BE6                     mov esp,esi
+5B                       pop ebx
+5F                       pop edi
+5E                       pop esi
+5D                       pop ebp
+C22400                   ret $0024
+
+*)
+
+
+  if (FProcess.Mode = dm64) then begin
+    if AData^ in [$C2, $C3] then begin // ret
+      if MatchBefore([$48, $8D, $65], 1) or
+         MatchBefore([$48, $83, $C4], 1) or
+         MatchBefore([$48]) or
+         (bin[0] in [$58..$5F])
+      then
+        Result := bkAfterEpiloge
+      else
+        Result := bkInBody;
+      exit;
+    end;
+
+//    // 488D6500                 lea rsp,[rbp+$00]
+//    // 4883C460                 add rsp,$60
+//    if MatchData([$48, $8D, $65]) or
+//       MatchData([$48, $83, $C4])
+//    then
+//      inc(AData, 4);
+
+    while ( (ADataLen > 1) and (AData^ in [$58..$5C, $5E..$5F]) ) or
+          ( (ADataLen > 2) and (AData^ = $41) and (AData^ in [$58..$5F]) )
+    do begin
+      if (ADataLen > 2) and (AData^ = $41) then
+        inc(AData);
+      inc(AData);
+      dec(ADataLen);
+      //inc(PushCnt);
+    end;
+
+    if (ADataLen > 1) and (AData^ in [$5D, $c2, $C3]) then
+      Result := bkInEpilogue
+
+  end;
+
+  if (FProcess.Mode = dm32) then begin
+    if AData^ in [$C2, $C3] then begin // ret
+      if MatchBefore([$89, $EC], 1) or
+         MatchBefore([$8B, $E6], 1) or
+         MatchBefore([$48]) or
+         (bin[0] in [$58..$5F])
+      then
+        Result := bkAfterEpiloge
+      else
+        Result := bkInBody;
+      exit;
+    end;
+
+    //89EC                     mov esp,ebp
+    //8BE6                     mov esp,esi
+    //83C408                   add esp,$08
+
+//    if MatchData([$89, $EC]) or
+//       MatchData([$8B, $E6])
+//    then
+//      inc(AData, 2)
+//    else
+//    if MatchData([$83, $C4 {, $65}]) then
+//      inc(AData, 3);
+
+    while ( (ADataLen > 1) and (AData^ in [$58..$5C, $5E..$5F]) )
+    do begin
+      inc(AData);
+      dec(ADataLen);
+      //inc(PushCnt);
+    end;
+
+    if (ADataLen > 1) and (AData^ in [$5D, $c2, $C3]) then
+      Result := bkInEpilogue
+  end;
+end;
+
 { TX86AsmDecoder }
 
 function TX86AsmDecoder.GetLastErrorWasMemReadErr: Boolean;
@@ -5901,7 +6248,7 @@ begin
             RSize := RegisterSize(instr.X86Instruction.Operand[1].Value);
             if FProcess.ReadData(NewStack, RSize, Tmp, RSize) then begin
               FullName := LowerCase(FullRegisterName(instr.X86Instruction.Operand[1].Value));
-              ARegisterValueList.DbgRegisterAutoCreate[FullName].SetValue(Tmp, IntToStr(Tmp), RSize, 0);
+              ARegisterValueList.DbgRegisterAutoCreate[FullName].SetValue(Tmp, IntToStr(Tmp), RSize, 0); // TODO: need dwarf number
             end;
           end;
           if NewStack >= PushedNewFrameAddr then
