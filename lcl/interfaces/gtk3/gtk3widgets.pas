@@ -8126,13 +8126,10 @@ begin
     // .DoAdjustClientRectChange instead, because GtkLayout size IS actually changed.
     if not ACtl.InUpdate and Assigned(ACtl.LCLObject.Parent) then
     begin
+      ACtl.LCLObject.InvalidateClientRectCache(True);
       {$IFDEF GTK3USEDEFERREDRESIZING}
-      if Gtk3WidgetSet.IsWayland then
-        ACtl.LCLObject.InvalidateClientRectCache(True);
       Gtk3SaveClientSizeNotification(ACtl.LCLObject.Parent);
       {$ELSE}
-      if Gtk3WidgetSet.IsWayland then
-        ACtl.LCLObject.InvalidateClientRectCache(True);
       ACtl.LCLObject.Parent.DoAdjustClientRectChange(True);
       {$ENDIF GTK3USEDEFERREDRESIZING}
     end;
