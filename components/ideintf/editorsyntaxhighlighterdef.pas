@@ -36,7 +36,21 @@ type
     procedure Init;
   end;
 
-  TNonSrcIDEHighlighter = class(TLazEditCustomHighlighter); // Hold colors, not related to SourceEditor
+  { TNonSrcIDEHighlighter }
+
+  TNonSrcIDEHighlighter = class(TLazEditCustomHighlighter)
+  private
+    FPos: integer;
+  protected
+    procedure InitForScanningLine; override;
+    function GetEol: Boolean; override;
+    function GetToken: String; override;
+    procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
+    function GetTokenAttribute: TLazEditTextAttribute; override;
+    function GetTokenPos: Integer; override;
+    function GetTokenLen: Integer; override;
+    procedure Next; override;
+  end; // Hold colors, not related to SourceEditor
 
   { TIdeSyntaxHighlighterList }
 
@@ -214,6 +228,50 @@ begin
   DefaultCommentType    := comtNone;
   MappedAttributes      := nil;
   CaretXY               := Point(1,1);
+end;
+
+{ TNonSrcIDEHighlighter }
+
+procedure TNonSrcIDEHighlighter.InitForScanningLine;
+begin
+  inherited InitForScanningLine;
+  FPos := 0;
+end;
+
+function TNonSrcIDEHighlighter.GetEol: Boolean;
+begin
+  Result := FPos > 0;
+end;
+
+function TNonSrcIDEHighlighter.GetToken: String;
+begin
+  Result := CurrentLineText;
+end;
+
+procedure TNonSrcIDEHighlighter.GetTokenEx(out TokenStart: PChar; out TokenLength: integer);
+begin
+  TokenStart := PChar(CurrentLineText);
+  TokenLength := Length(CurrentLineText);
+end;
+
+function TNonSrcIDEHighlighter.GetTokenAttribute: TLazEditTextAttribute;
+begin
+  Result := nil;
+end;
+
+function TNonSrcIDEHighlighter.GetTokenPos: Integer;
+begin
+  Result := 0;
+end;
+
+function TNonSrcIDEHighlighter.GetTokenLen: Integer;
+begin
+  Result := Length(CurrentLineText);
+end;
+
+procedure TNonSrcIDEHighlighter.Next;
+begin
+  inc(FPos);
 end;
 
 finalization
