@@ -16020,10 +16020,14 @@ begin
     PGtkWidget(FMenuBar)^.set_size_request(1, -1);
 
     g_object_set_data(Widget,'lclmenubar',GPointer(1));
-    ABox := PGtkBox(PGtkWindow(Widget)^.get_child);
-    ABox^.pack_start(FMenuBar, False, False, 0);
-    g_signal_connect_data(PGObject(FMenuBar), 'enter-notify-event',
-      TGCallback(@MenuBarEnterNotify), Self, nil, G_CONNECT_DEFAULT);
+    if not (Assigned(LCLObject) and (csDesigning in LCLObject.ComponentState)
+      and Assigned(LCLObject.Parent)) then
+    begin
+      ABox := PGtkBox(PGtkWindow(Widget)^.get_child);
+      ABox^.pack_start(FMenuBar, False, False, 0);
+      g_signal_connect_data(PGObject(FMenuBar), 'enter-notify-event',
+        TGCallback(@MenuBarEnterNotify), Self, nil, G_CONNECT_DEFAULT);
+    end;
   end;
   Result := FMenuBar;
 end;
