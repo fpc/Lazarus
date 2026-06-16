@@ -6933,8 +6933,16 @@ var
     AMaskPix, AScaledPix: QPixmapH;
     ARenderHints: QPainterRenderHints;
     ARenderHint: Boolean;
+    DPR: Double;
+    IsPreScaled: Boolean;
   begin
     ATempPixmap := QPixmap_create();
+
+    DPR := QPaintDevice_devicePixelRatioF(QPaintEngine_paintDevice(QPainter_paintEngine(DstQDC.Widget)));
+    if DPR < 1.0 then
+      DPR := 1.0;
+    IsPreScaled := (DPR > 1.0) and (AMaskImg = nil) and
+      (QPixmap_width(APixmap) >= Round(Width * DPR));
 
     ARenderHints := QPainter_renderHints(DstQDC.Widget);
     ARenderHint := (AHighQuality and not EqualRect(DstRect, SrcRect)) and
@@ -6944,6 +6952,11 @@ var
     if ARenderHint and (ARenderHints and QPainterSmoothPixmapTransform <> 0) then
       ARenderHint := False; // do not touch render hints
 
+    if IsPreScaled then
+    begin
+      QPixmap_copy(APixmap, ATempPixmap, 0, 0, QPixmap_width(APixmap), QPixmap_height(APixmap));
+      QPixmap_setDevicePixelRatio(ATempPixmap, DPR);
+    end else
     if NeedScaling(DstRect, SrcRect) then
       QPixmap_scaled(APixmap, ATempPixmap, Width, Height)
     else
