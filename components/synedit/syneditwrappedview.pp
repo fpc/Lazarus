@@ -124,10 +124,10 @@ type
 
 
     function CalculateIndentFor(ALine: PChar; AMaxWidth: Integer; const PhysCharWidths: TPhysicalCharWidths): Integer;
-    function CalculateNextBreak(ALine: PChar; ALogStartFrom: IntIdx; AMaxWidth: Integer;
+    function CalculateNextBreak(const ALine: String; ALogStartFrom: IntIdx; AMaxWidth: Integer;
       const PhysCharWidths: TPhysicalCharWidths; out APhysWidth: Integer): IntIdx;
-    function  GetSublineCount (ALine: String; AMaxWidth: Integer; const APhysCharWidths: TPhysicalCharWidths): Integer; inline;
-    procedure GetSublineBounds(ALine: String; AMaxWidth, AWrapIndent: Integer;
+    function  GetSublineCount (const ALine: String; AMaxWidth: Integer; const APhysCharWidths: TPhysicalCharWidths): Integer; inline;
+    procedure GetSublineBounds(const ALine: String; AMaxWidth, AWrapIndent: Integer;
       const APhysCharWidths: TPhysicalCharWidths; ASubLine: Integer; out ALogStartX,
       ANextLogStartX, APhysStart: IntIdx; out APhysWidth: integer); // APhysStart is based on LTR only
     procedure GetSublineBounds(ALine: String; AMaxWidth, AWrapIndent: Integer; const APhysCharWidths: TPhysicalCharWidths;
@@ -235,7 +235,7 @@ begin
   if IsNext and (FCurrentWrapSubline = PrevSub + 1) then begin
     FCurSubLineLogStartIdx := FCurSubLineNextLogStartIdx;
     // 2nd or lower line / deduct CurLineWrapInd
-    FCurSubLineNextLogStartIdx := FWrapPlugin.CalculateNextBreak(PChar(LineTxt), FCurSubLineNextLogStartIdx,
+    FCurSubLineNextLogStartIdx := FWrapPlugin.CalculateNextBreak(LineTxt, FCurSubLineNextLogStartIdx,
       MaxW-CurLineWrapInd, PWidth, PhysWidth);
     FCurSubLinePhysStartIdx := FCurSubLinePhysStartIdx + FPrevSubLinePhysWidth;
     FPrevSubLinePhysWidth := PhysWidth;
@@ -610,57 +610,57 @@ begin
     Result := Max(0, AMaxWidth-1);
 end;
 
-function TLazSynEditLineWrapPlugin.CalculateNextBreak(ALine: PChar;
-  ALogStartFrom: IntIdx; AMaxWidth: Integer;
-  const PhysCharWidths: TPhysicalCharWidths; out APhysWidth: Integer): IntIdx;
+function TLazSynEditLineWrapPlugin.CalculateNextBreak(const ALine: String; ALogStartFrom: IntIdx;
+  AMaxWidth: Integer; const PhysCharWidths: TPhysicalCharWidths; out APhysWidth: Integer): IntIdx;
 const
   // todo, other break chars // utf8
   BREAKCHARS = [#9, #32, '.', ',', ':', ';', '=', '-', '+', '*', '/', '(', ')', '{', '}', '[', ']', '!', '<', '>'];
 var
   PhysWidthPtr: PByte;
   CurCharPhysWidth: Cardinal;
-  LastGoodPos: PChar;
+  pLine, eLine, LastGoodPos: PChar;
 begin
-  if (ALine = nil) or (ALine^ = #0) then
+  if (ALine = '') then
     exit(0);
 
   PhysWidthPtr := @PhysCharWidths[ALogStartFrom];
   APhysWidth := AMaxWidth;
   Result := ALogStartFrom;
-  ALine := ALine + ALogStartFrom;
-  LastGoodPos := ALine;
+  pLine := PChar(ALine) + ALogStartFrom;
+  eLine := PChar(ALine) + Length(ALine);
+  LastGoodPos := pLine;
 
-  while ALine <> nil do begin
-    if ALine^ in BREAKCHARS then
-      while ALine^ in BREAKCHARS do begin
+  while (pLine <> nil) and (pLine < eLine) do begin
+    if pLine^ in BREAKCHARS then
+      while pLine^ in BREAKCHARS do begin
         CurCharPhysWidth := PhysWidthPtr^ and PCWMask;
         if CurCharPhysWidth <= AMaxWidth then begin
-          inc(ALine);
+          inc(pLine);
           inc(PhysWidthPtr);
           inc(Result);
           dec(AMaxWidth, CurCharPhysWidth);
         end
         else begin
-          ALine := nil; // break outer loop
+          pLine := nil; // break outer loop
           break;
         end;
       end
 
     else begin
       CurCharPhysWidth := 0;
-      LastGoodPos := ALine;
-      while (ALine^ <> #0) and not (ALine^ in BREAKCHARS) do begin
+      LastGoodPos := pLine;
+      while (pLine < eLine) and not (pLine^ in BREAKCHARS) do begin
         CurCharPhysWidth := CurCharPhysWidth + PhysWidthPtr^ and PCWMask;
-        inc(ALine);
+        inc(pLine);
         inc(PhysWidthPtr);
       end;
 
       if (CurCharPhysWidth > 0) and (CurCharPhysWidth <= AMaxWidth) then begin
-        inc(Result, ALine-LastGoodPos);
+        inc(Result, pLine-LastGoodPos);
         dec(AMaxWidth, CurCharPhysWidth);
       end
       else begin
-        ALine := nil; // break outer loop
+        pLine := nil; // break outer loop
         break;
       end;
     end;
@@ -668,11 +668,11 @@ begin
 
   if Result = ALogStartFrom then begin
     PhysWidthPtr := @PhysCharWidths[0];
-    ALine := LastGoodPos;
-    while ALine^ <> #0 do begin
+    pLine := LastGoodPos;
+    while pLine  < eLine do begin
       CurCharPhysWidth := PhysWidthPtr^ and PCWMask;
       if (CurCharPhysWidth <= AMaxWidth) or (Result = ALogStartFrom) then begin
-        inc(ALine);
+        inc(pLine);
         inc(PhysWidthPtr);
         inc(Result);
         dec(AMaxWidth, CurCharPhysWidth);
@@ -684,20 +684,20 @@ begin
   APhysWidth := APhysWidth - AMaxWidth;
 end;
 
-function TLazSynEditLineWrapPlugin.GetSublineCount(ALine: String;
-  AMaxWidth: Integer; const APhysCharWidths: TPhysicalCharWidths): Integer;
+function TLazSynEditLineWrapPlugin.GetSublineCount(const ALine: String; AMaxWidth: Integer;
+  const APhysCharWidths: TPhysicalCharWidths): Integer;
 var
   x, dummy: Integer;
 begin
   Result := 1;
   if Length(ALine) = 0 then
     exit;
-  x := CalculateNextBreak(PChar(ALine), 0, AMaxWidth, APhysCharWidths, dummy);
+  x := CalculateNextBreak(ALine, 0, AMaxWidth, APhysCharWidths, dummy);
   AMaxWidth := AMaxWidth - CalculateIndentFor(PChar(ALine), AMaxWidth, APhysCharWidths);
   assert(AMaxWidth>0, 'TLazSynEditLineWrapPlugin.GetSublineCount: AMaxWidth>0');
   while (x < Length(ALine)) do begin
     inc(Result);
-    x := CalculateNextBreak(PChar(ALine), x, AMaxWidth, APhysCharWidths, dummy);
+    x := CalculateNextBreak(ALine, x, AMaxWidth, APhysCharWidths, dummy);
   end;
 end;
 
@@ -730,7 +730,7 @@ begin
 end;
 
 
-procedure TLazSynEditLineWrapPlugin.GetSublineBounds(ALine: String; AMaxWidth,
+procedure TLazSynEditLineWrapPlugin.GetSublineBounds(const ALine: String; AMaxWidth,
   AWrapIndent: Integer; const APhysCharWidths: TPhysicalCharWidths; ASubLine: Integer; out
   ALogStartX, ANextLogStartX, APhysStart: IntIdx; out APhysWidth: integer);
 begin
@@ -739,14 +739,14 @@ begin
   APhysStart := 0;
   if Length(ALine) = 0 then
     exit;
-  ANextLogStartX := CalculateNextBreak(PChar(ALine), ALogStartX, AMaxWidth, APhysCharWidths, APhysWidth);
+  ANextLogStartX := CalculateNextBreak(ALine, ALogStartX, AMaxWidth, APhysCharWidths, APhysWidth);
 
   AMaxWidth := AMaxWidth - AWrapIndent;
   assert(AMaxWidth>0, 'TLazSynEditLineWrapPlugin.GetSublineBounds: AMaxWidth>0');
   while ASubLine > 0 do begin
     ALogStartX := ANextLogStartX;
     APhysStart := APhysStart + APhysWidth;
-    ANextLogStartX := CalculateNextBreak(PChar(ALine), ALogStartX, AMaxWidth, APhysCharWidths, APhysWidth);
+    ANextLogStartX := CalculateNextBreak(ALine, ALogStartX, AMaxWidth, APhysCharWidths, APhysWidth);
     dec(ASubLine);
   end;
 end;
@@ -864,7 +864,7 @@ begin
   APhysToViewedXPos := ToIdx(APhysToViewedXPos);
   while (x < Length(ALine)) do begin
     inc(Result);
-    x := CalculateNextBreak(PChar(ALine), x, AMaxWidth, APhysCharWidths, PhysWidth);
+    x := CalculateNextBreak(ALine, x, AMaxWidth, APhysCharWidths, PhysWidth);
     AMaxWidth := AMaxWidth2;
     if (x >= Length(ALine)) and (PhysToViewedInRTLOffs = 0) then
       break;

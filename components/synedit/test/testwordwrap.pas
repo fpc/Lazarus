@@ -162,6 +162,7 @@ type
   TTestWordWrapPlugin = class(TTestWordWrapPluginBase)
   published
     procedure TestEditorWrap;
+    procedure TestEditorWrap2;
     procedure TestWrapSplitJoin;
     procedure TestEditorEdit;
   end;
@@ -1772,13 +1773,13 @@ var
   gotStartPos, GotLineLen, gotStartPhys, gotSubLineIdx: Integer;
   gotTokenOk: Boolean;
   gotToken: TLazSynDisplayTokenInfo;
-  gotText: PChar;
+  gotText: String;
   s: String;
 begin
   dsp.SetHighlighterTokensLine(ALine, gotRealLine, gotSubLineIdx, gotStartPos, gotStartPhys, GotLineLen);
   gotTokenOk := dsp.GetNextHighlighterToken(gotToken);
   if gotTokenOk then
-    gotText := gotToken.TokenStart
+    SetString(gotText, gotToken.TokenStart, gotToken.TokenLength)
   else
     gotText := '';
 
@@ -2418,6 +2419,38 @@ begin
   CheckLine('', 2, 'A_1_0');
 
 // '		'
+
+end;
+
+procedure TTestWordWrapPlugin.TestEditorWrap2;
+begin
+  SynEdit.Options := [];
+  SynEdit.TabWidth := 4;
+  SetSynEditWidth(10);
+
+  // #0 currently has width = 1
+  SetLines([
+    // 0
+    'ab ' + #0 + ' XY',
+    #0 + 'ab',
+    'abc def ABCG DEF ' + #0 + ' XX',
+    'abc1234 def ' + #0#0#0 + ' ABC DEFG XYZ',
+    ''
+  ]);
+
+  CheckLines('', 0, [
+    // 0 // Virt = 0
+    'ab ' + #0 + ' XY',
+    // 1
+    #0 + 'ab',
+    // 2
+    'abc def ', 'ABCG DEF ' + #0, ' XX',
+    // 5
+    'abc1234 ', 'def ' + #0#0#0 + ' ', 'ABC DEFG ', 'XYZ'
+
+    //''
+
+  ], True);
 
 end;
 
