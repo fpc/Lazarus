@@ -260,6 +260,10 @@ File(s) with other licenses (see also header in file(s):
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpDbgLinuxX86Classes"/>
       </Item>
+      <Item>
+        <Filename Value="fpdbgwinseh64.pas"/>
+        <UnitName Value="FpDbgWinSeh64"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

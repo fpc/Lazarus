@@ -867,6 +867,7 @@ type
     function FindProcSymbol(AAdress: TDbgPtr): TFpSymbol; overload;
   protected
     FDbgInfo: TDbgInfo;
+    function GetImageBase: QWord; virtual;
     procedure InitializeLoaders; virtual;
     procedure SetFileName(const AValue: String);
     procedure SetMode(AMode: TFPDMode); experimental; // for testcase
@@ -898,6 +899,7 @@ type
     property MemManager: TFpDbgMemManager read FMemManager;
     property MemModel: TFpDbgMemModel read FMemModel;
     property LoaderList: TDbgImageLoaderList read FLoaderList;
+    property ImageBase: QWord read GetImageBase;
   end;
 
   { TDbgLibrary }
@@ -1091,6 +1093,7 @@ type
     function  FindProcStartEndPC(const AAdress: TDbgPtr; out AStartPC, AEndPC: TDBGPtr): boolean;
     function FindCallFrameInfo(AnAddress: TDBGPtr; out CIE: TDwarfCIE; out Row: TDwarfCallFrameInformationRow): Boolean; reintroduce;
 
+    function  GetInstanceForAddress(AnAddress: TDBGPtr): TDbgInstance;
     function  GetLineAddresses(AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray; ASymInstance: TDbgInstance = nil;
       AFindSibling: TGetLineAddrFindSibling = fsNone; AMaxSiblingDistance: integer = 0): Boolean;
     //function  ContextFromProc(AThreadId, AStackFrame: Integer; AProcSym: TFpSymbol): TFpDbgLocationContext; inline; deprecated 'use TFpDbgSimpleLocationContext.Create';
@@ -2590,6 +2593,13 @@ begin
   Result := FProcess.OSDbgClasses;
 end;
 
+function TDbgInstance.GetImageBase: QWord;
+begin
+  Result := 0;
+  if LoaderList <> nil then
+    Result := LoaderList.ImageBase;
+end;
+
 procedure TDbgInstance.InitializeLoaders;
 begin
   // Do nothing;
@@ -2960,6 +2970,16 @@ begin
     if Result then
       exit;
   end;
+end;
+
+function TDbgProcess.GetInstanceForAddress(AnAddress: TDBGPtr): TDbgInstance;
+var
+  Lib: TDbgLibrary;
+begin
+  if EnclosesAddress(AnAddress) then exit(Self);
+  for Lib in FLibMap do
+    if Lib.EnclosesAddress(AnAddress) then exit(Lib);
+  Result := nil;
 end;
 
 function TDbgProcess.GetLineAddresses(AFileName: String; ALine: Cardinal;

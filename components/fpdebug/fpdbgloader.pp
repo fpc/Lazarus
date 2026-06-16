@@ -123,6 +123,7 @@ type
     procedure SetItem(Index: Integer; AValue: TDbgImageLoader);
   public
     function EnclosesAddressRange(AStartAddress, AnEndAddress: TDBGPtr): Boolean;
+    function GetImageLoaderForAddress(AnAddress: TDBGPtr): TDbgImageLoader;
 
     property Items[Index: Integer]: TDbgImageLoader read GetItem write SetItem; default;
     property ImageBase: QWord read GetImageBase;
@@ -176,6 +177,18 @@ begin
     if Items[0].EnclosesAddressRange(AStartAddress, AnEndAddress) then
       Exit(True);
   Result := False;
+end;
+
+function TDbgImageLoaderList.GetImageLoaderForAddress(AnAddress: TDBGPtr): TDbgImageLoader;
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do begin
+    Result := Items[i];
+    if Result.EnclosesAddressRange(AnAddress, AnAddress) then
+      exit;
+  end;
+  Result := nil;
 end;
 
 { TDbgImageLoaderLibrary }

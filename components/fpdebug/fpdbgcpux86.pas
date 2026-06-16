@@ -5,8 +5,8 @@ unit FpDbgCpuX86;
 interface
 
 uses
-  Classes, SysUtils, DbgIntfBaseTypes, FpDbgClasses, FpdMemoryTools,
-  FpDbgDwarfCFI, FpDbgDwarfDataClasses, FpDbgDisasX86,
+  Classes, SysUtils, DbgIntfBaseTypes, FpDbgClasses, FpdMemoryTools, FpDbgDwarfCFI,
+  FpDbgDwarfDataClasses, FpDbgDisasX86, FpDbgLoader, FpImgReaderBase, FpDbgUtil, FpDbgWinSeh64,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif};
 
 type
@@ -79,6 +79,7 @@ type
   // Base is for GetTopFrame // Alternatively forward to any of the sub-unwinder
   private
     FDwarfUnwinder: TDbgStackUnwinderX86DwarfCfi;
+    FSehUnwinder: TDbgStackUnwinder;
     FFrameUnwinder: TDbgStackUnwinderX86FramePointer;
     FAsmUnwinder: TDbgStackUnwinderIntelDisAssembler;
     FFlags: TDbgUnwinderFlags;
@@ -342,6 +343,8 @@ end;
 constructor TDbgStackUnwinderX86MultiMethod.Create(AProcess: TDbgProcess);
 begin
   FDwarfUnwinder := TDbgStackUnwinderX86DwarfCfi.Create(AProcess);
+  if AProcess.Mode = dm64 then
+    FSehUnwinder := TDbgStackUnwinderWindowsSeh64.Create(AProcess);
   FFrameUnwinder := TDbgStackUnwinderX86FramePointer.Create(AProcess);
   FAsmUnwinder   := TDbgStackUnwinderIntelDisAssembler.Create(AProcess);
   inherited Create(AProcess);
@@ -351,6 +354,7 @@ destructor TDbgStackUnwinderX86MultiMethod.Destroy;
 begin
   inherited Destroy;
   FDwarfUnwinder.Free;
+  FSehUnwinder.Free;
   FFrameUnwinder.Free;
   FAsmUnwinder.Free;
 end;
@@ -359,6 +363,7 @@ procedure TDbgStackUnwinderX86MultiMethod.InitForThread(AThread: TDbgThread);
 begin
   inherited InitForThread(AThread);
   FDwarfUnwinder.InitForThread(AThread);
+  if FSehUnwinder <> nil then FSehUnwinder.InitForThread(AThread);
   FFrameUnwinder.InitForThread(AThread);
   FAsmUnwinder.InitForThread(AThread);
   FFlags := [];
@@ -372,11 +377,32 @@ var
   OrigCodePointer, OrigFrameBasePointer, OrigStackPointer: TDBGPtr;
   CodePointer2, FrameBasePointer2, StackPointer2: TDBGPtr;
   ANewFrame2: TDbgCallstackEntry;
-  ResAsm: TTDbgStackUnwindResult;
+  ResSeh, ResAsm: TTDbgStackUnwindResult;
+  NextInstruction: TDbgAsmInstruction;
+
+  procedure InitPtr2;
+  begin
+    CodePointer2      := OrigCodePointer;
+    FrameBasePointer2 := OrigFrameBasePointer;
+    StackPointer2     := OrigStackPointer;
+  end;
+  procedure UsePtr2;
+  begin
+    CodePointer      := CodePointer2;
+    FrameBasePointer := FrameBasePointer2;
+    StackPointer     := StackPointer2;
+  end;
+  procedure UseFrame2;
+  begin
+    ANewFrame.Free;
+    ANewFrame        := ANewFrame2;
+  end;
 begin
   OrigCodePointer      := CodePointer;
   OrigFrameBasePointer := FrameBasePointer;
   OrigStackPointer     := StackPointer;
+
+  (* *** DWARF CFI *** *)
 
   Result := FDwarfUnwinder.Unwind(AFrameIndex,
     CodePointer, StackPointer, FrameBasePointer, ACurrentFrame, ANewFrame);
@@ -389,24 +415,53 @@ begin
   if Result = suFailedAtEOS then
     exit;
 
+  (* *** SEH *** *)
+
+  if FSehUnwinder <> nil then begin
+    InitPtr2;
+    ResSeh := FSehUnwinder.Unwind(AFrameIndex, CodePointer2, StackPointer2, FrameBasePointer2, ACurrentFrame, ANewFrame2);
+    case ResSeh of
+      suSuccess: begin
+        UsePtr2;
+        UseFrame2;
+        Result := suSuccess;
+        exit;
+      end;
+      suGuessed: begin
+        if (Result in [suGuessed, suSuccess]) and // CFI guessed too
+           (StackPointer = StackPointer2) and (CodePointer = CodePointer2)
+        then begin
+          // use CFI res
+          FreeAndNil(ANewFrame2);
+          Result := suSuccess;
+          exit;
+        end;
+        if Result = suFailed then begin
+          // use the SEH as fallback
+          Result := suGuessed;
+          UseFrame2;
+          UsePtr2;
+          ANewFrame2 := nil;
+        end;
+      end;
+    end;
+    FreeAndNil(ANewFrame2);
+  end;
+
+  (* *** ASM *** *)
+
   ResAsm := suFailed;
   if not (ufSkipArtificialFrames in FFlags) then begin
     // Get Asm unwind
-    CodePointer2      := OrigCodePointer;
-    FrameBasePointer2 := OrigFrameBasePointer;
-    StackPointer2     := OrigStackPointer;
-    ResAsm := FAsmUnwinder.Unwind(AFrameIndex,
-        CodePointer2, StackPointer2, FrameBasePointer2, ACurrentFrame, ANewFrame2);
+    InitPtr2;
+    ResAsm := FAsmUnwinder.Unwind(AFrameIndex, CodePointer2, StackPointer2, FrameBasePointer2, ACurrentFrame, ANewFrame2);
 
     if (ResAsm = suSuccess) then begin
       // prefer Asm result over DwarfCfi
       FFrameUnwinder.FLastFrameBaseIncreased := True;
       if Process.Disassembler.IsAfterCallInstruction(CodePointer2) then begin
-        ANewFrame.Free;
-        CodePointer      := CodePointer2;
-        FrameBasePointer := FrameBasePointer2;
-        StackPointer     := StackPointer2;
-        ANewFrame        := ANewFrame2;
+        UsePtr2;
+        UseFrame2;
         Result := suSuccess;
         exit;
       end;
@@ -425,6 +480,7 @@ begin
     end;
   end;
 
+  (* *** FramePointer *** *)
 
   ANewFrame.Free;
   // get frame-unwind

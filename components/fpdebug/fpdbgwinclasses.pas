@@ -222,6 +222,7 @@ type
     function GetProcFilename(AProcess: TDbgProcess; lpImageName: LPVOID; fUnicode: word; hFile: handle): string;
     procedure LogLastError(AMsg: String = '');
   protected
+    function GetImageBase: QWord; override;
     procedure AfterChangingInstructionCode(const ALocation: TDBGPtr; ACount: Integer); override;
     function GetHandle: THandle; override;
     function GetLastEventProcessIdentifier: THandle; override;
@@ -272,6 +273,7 @@ type
     FInfo: TLoadDLLDebugInfo;
   protected
     procedure InitializeLoaders; override;
+    function GetImageBase: QWord; override;
   public
     constructor Create(const AProcess: TDbgProcess; const ADefaultName: String;
       const AModuleHandle: THandle; AInfo: TLoadDLLDebugInfo);
@@ -546,6 +548,14 @@ begin
     DebugLn(DBG_WARNINGS, 'FpDbg-ERROR: %s -> %s', [AMsg, GetLastErrorText]);
 end;
 
+function TDbgWinProcess.GetImageBase: QWord;
+begin
+  if ThreadID <> 0 then
+    Result := QWord(FInfo.lpBaseOfImage)
+  else
+    Result := inherited GetImageBase;
+end;
+
 procedure TDbgWinProcess.AfterChangingInstructionCode(const ALocation: TDBGPtr;
   ACount: Integer);
 begin
@@ -658,6 +668,11 @@ begin
     Loader.AddToLoaderList(LoaderList)
   else
     Loader.Free;
+end;
+
+function tDbgWinLibrary.GetImageBase: QWord;
+begin
+  Result := QWord(FInfo.lpBaseOfDll);
 end;
 
 constructor tDbgWinLibrary.Create(const AProcess: TDbgProcess;

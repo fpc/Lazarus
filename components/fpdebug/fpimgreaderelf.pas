@@ -512,6 +512,7 @@ var
   SymbolName: AnsiString;
   SectIdx: Word;
   Sect: PElfSection;
+  sn: PChar;
 begin
   AfpSymbolInfo.SetAddressBounds(1, High(AFpSymbolInfo.HighAddr)); // always search / TODO: iterate all sections for bounds
   p := Section[_symbol];
@@ -542,7 +543,9 @@ begin
             if (Sect^.Flags and SHF_ALLOC) = 0 then
               continue; // not loaded, symbol not in memory
 
-            SymbolName:=pchar(SymbolStr+SymbolArr64^[i].st_name);
+            sn := pchar(SymbolStr+SymbolArr64^[i].st_name);
+            SetString(SymbolName, sn, IndexByte(sn^, -1, 0));
+//            SymbolName:=pchar(SymbolStr+SymbolArr64^[i].st_name);
             {$Q-}
             AfpSymbolInfo.Add(SymbolName, TDbgPtr(SymbolArr64^[i].st_value+RelocationOffset),
               Sect^.Address + Sect^.Size + RelocationOffset);
@@ -569,7 +572,9 @@ begin
             if (Sect^.Flags and SHF_ALLOC) = 0 then
               continue; // not loaded, symbol not in memory
 
-            SymbolName:=pchar(SymbolStr+SymbolArr32^[i].st_name);
+            sn := pchar(SymbolStr+SymbolArr32^[i].st_name);
+            SetString(SymbolName, sn, IndexByte(sn^, -1, 0));
+            //SymbolName:=pchar(SymbolStr+SymbolArr32^[i].st_name);
           {$Q-}{$R-}
             AfpSymbolInfo.Add(SymbolName, DWord(SymbolArr32^[i].st_value+RelocationOffset),
               DWORD(Sect^.Address + Sect^.Size+RelocationOffset));
