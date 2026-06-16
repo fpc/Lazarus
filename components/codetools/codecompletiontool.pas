@@ -9927,7 +9927,8 @@ function TCodeCompletionCodeTool.CompleteCode(CursorPos: TCodeXYPosition;
       if (ProcNode=nil) and (CursorNode.Desc=ctnProcedure) then
         ProcNode:=CursorNode;
       if (ProcNode<>nil) and (ProcNode.Desc=ctnProcedure)
-      and ((ProcNode.SubDesc and ctnsForwardDeclaration)>0) then begin
+      and ((ProcNode.SubDesc and ctnsForwardDeclaration)>0)
+      and ((ProcNode.SubDesc and ctnsIsExternal)=0) then begin
         // Node is forward Proc
         Result:=CompleteForwardProcs(CursorPos,ProcNode,CursorNode,NewPos,NewTopLine,
                              BlockTopLine, BlockBottomLine, SourceChangeCache);

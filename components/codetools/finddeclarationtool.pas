@@ -8758,6 +8758,13 @@ begin
       Result:=true;
       exit;
     end;
+  end else
+  if TypeNode.Desc in [ctnProcedure, ctnProcedureHead] then begin
+    if ((TypeNode.SubDesc and ctnsForwardDeclaration)>0) and
+        ((TypeNode.SubDesc and ctnsIsExternal)=0) then begin
+      Result:=true;
+      exit;
+    end;
   end;
 end;
 
@@ -11468,6 +11475,8 @@ var
           if Params.NewCodeTool.NodeIsConstructor(Params.NewNode) then begin
             // identifier is a constructor
             if (Context.Node.Desc in AllClassObjects) then begin
+              if NextAtomType = vatPoint  then
+                Exclude(StartFlags,fdfFindVariable);
               if (not IsEnd) or (not (fdfFindVariable in StartFlags)) then begin
                 // examples:
                 //   TMyClass.Create.
@@ -12284,6 +12293,17 @@ begin
       Result:=Tool.ReadOperandTypeAtCursor(Params,Node.EndPos,CurAliasType);
       Params.Load(OldInput,true);
     end;
+  ctnProcedureType:
+    begin
+      // atype = procedure abc();   nil is compatible
+      Result.Desc:=xtContext;
+      Result.SubDesc:=xtNone;
+      Result.Context.Node:=Node;
+      Result.Context.Tool:=Tool;
+    end;
+  //else
+    //debugln(['TFindDeclarationTool.ConvertNodeToExpressionType, not handled type ',
+    //  Node.DescAsString]); // mainly classes caught at codetools tests
   end;
 
   {$IFDEF ShowExprEval}
@@ -13945,7 +13965,7 @@ begin
       Result:=tcCompatible
     else if (TargetType.Desc=xtContext) then begin
       TargetNode:=TargetType.Context.Node;
-      if (TargetNode.Desc in (AllClasses+[ctnProcedure]))
+      if (TargetNode.Desc in (AllClasses+[ctnProcedure]+[ctnProcedureType]))
           and (ExpressionType.Desc=xtNil)
       then
         Result:=tcCompatible

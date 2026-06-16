@@ -621,7 +621,8 @@ begin
   case Desc of
   ctnProcedure:
     begin
-      if (SubDesc and ctnsForwardDeclaration)>0 then Result:=ctsForward;
+      if ((SubDesc and ctnsForwardDeclaration)>0) and
+         ((SubDesc and ctnsIsExternal)=0) then Result:=ctsForward;
     end;
   ctnClass,ctnObject,ctnRecordType,ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,
   ctnCPPClass,ctnClassInterface,ctnDispinterface,
