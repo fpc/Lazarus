@@ -7362,19 +7362,50 @@ end;
 function TAnchorDockMinimizeButton.GetDrawDetails: TThemedElementDetails;
 
 function WindowPart: TThemedWindow;
+  var
+    AHeaderParent: TWinControl;
+    ASite: TAnchorDockHostSite;
+    AMinimized: Boolean;
   begin
-    // no check states available
-    Result := twMinButtonNormal;
-    if not IsEnabled then
-      Result := {$IFDEF LCLGtk2}twMDIRestoreButtonDisabled{$ELSE}twMinButtonDisabled{$ENDIF}
+    AMinimized := False;
+    ASite := nil;
+    if Assigned(Parent) then
+    begin
+      AHeaderParent := Parent.Parent;
+      if (DockMaster.FOverlappingForm <> nil)
+      and (AHeaderParent = TWinControl(DockMaster.FOverlappingForm)) then
+        ASite := DockMaster.FOverlappingForm.AnchorDockHostSite
+      else
+      if AHeaderParent is TAnchorDockHostSite then
+        ASite := TAnchorDockHostSite(AHeaderParent);
+    end;
+    if Assigned(ASite) then
+      AMinimized := ASite.Minimized;
+
+    if AMinimized then
+    begin
+      Result := twRestoreButtonNormal;
+      if not IsEnabled then
+        Result := twRestoreButtonDisabled
+      else
+      if FState in [bsDown, bsExclusive] then
+        Result := twRestoreButtonPushed
+      else
+      if FState = bsHot then
+        Result := twRestoreButtonHot;
+    end
     else
-    if FState in [bsDown, bsExclusive] then
-      Result := {$IFDEF LCLGtk2}twMDIRestoreButtonPushed{$ELSE}twMinButtonPushed{$ENDIF}
-    else
-    if FState = bsHot then
-      Result := {$IFDEF LCLGtk2}twMDIRestoreButtonHot{$ELSE}twMinButtonHot{$ENDIF}
-    else
-      Result := {$IFDEF LCLGtk2}twMDIRestoreButtonNormal{$ELSE}twMinButtonNormal{$ENDIF};
+    begin
+      Result := twMinButtonNormal;
+      if not IsEnabled then
+        Result := twMinButtonDisabled
+      else
+      if FState in [bsDown, bsExclusive] then
+        Result := twMinButtonPushed
+      else
+      if FState = bsHot then
+        Result := twMinButtonHot;
+    end;
   end;
 
 begin
