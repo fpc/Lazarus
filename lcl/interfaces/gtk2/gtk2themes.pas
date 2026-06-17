@@ -447,13 +447,17 @@ begin
       end;
     teWindow:
       begin
-        if Details.Part in [WP_SMALLCLOSEBUTTON, WP_MDIMINBUTTON, WP_MDIRESTOREBUTTON, WP_MDICLOSEBUTTON] then
+        if Details.Part in [WP_SMALLCLOSEBUTTON, WP_MDIMINBUTTON, WP_MDIRESTOREBUTTON, WP_MDICLOSEBUTTON,
+          WP_MINBUTTON, WP_RESTOREBUTTON, WP_CLOSEBUTTON] then
         begin
           Result.State := GtkTitleButtonMap[Details.State];
           Result.Shadow := GTK_SHADOW_NONE;
           case Details.Part of
+            WP_MINBUTTON,
             WP_MDIMINBUTTON: Result.Detail := #1;
+            WP_RESTOREBUTTON,
             WP_MDIRESTOREBUTTON: Result.Detail := #2;
+            WP_CLOSEBUTTON,
             WP_SMALLCLOSEBUTTON,
             WP_MDICLOSEBUTTON: Result.Detail := #3;
           end;
