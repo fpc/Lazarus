@@ -392,7 +392,7 @@ var
   Bytes: TBytes;
   InStream: TFileStream;
   {$IF FPC_FULLVERSION<=30300}
-  i: Int64
+  i: Int64;
   {$ENDIF}
   len: Int64;
 begin
