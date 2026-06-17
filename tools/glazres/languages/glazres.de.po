@@ -163,9 +163,9 @@ msgstr "Meldungen"
 #: tglazresform.startbtn.caption
 msgctxt "tglazresform.startbtn.caption"
 msgid "Create"
-msgstr "Erstellen"
+msgstr "Erzeugen"
 
 #: tglazresform.startbtn.hint
 msgid "Create the output LRS file"
-msgstr "Die Ausgabe-Ressourcendatei erstellen"
+msgstr "Die Ausgabe-Ressourcendatei erzeugen"
 

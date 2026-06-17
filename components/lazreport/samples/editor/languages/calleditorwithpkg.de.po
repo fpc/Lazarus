@@ -46,7 +46,7 @@ msgstr "Aktiven Report bearbeiten"
 
 #: maincalleditor.cerhintnewreport
 msgid "Create and edit a empty report"
-msgstr "Neuen Report anlegen und bearbeiten"
+msgstr "Neuen Report erzeugen und bearbeiten"
 
 #: maincalleditor.cerhintopenreport
 msgid "Open an existing report"
@@ -92,7 +92,7 @@ msgstr "Report öffnen"
 
 #: maincalleditor.ceropenreportfirst
 msgid "Open report first"
-msgstr "Report muß zuerst geöffnet werden"
+msgstr "Report muss zuerst geöffnet werden"
 
 #: maincalleditor.cerpreparefailed
 msgid "PrepareReport Failed!"

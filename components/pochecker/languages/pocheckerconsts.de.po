@@ -422,7 +422,7 @@ msgstr "Test-Typen"
 
 #: pocheckerconsts.sshowstatgraph
 msgid "Show statistics graph"
-msgstr "Zeige Statistik-Graphik"
+msgstr "Statistik-Graphik anzeigen"
 
 #: pocheckerconsts.sstathint
 #, object-pascal-format, fuzzy

@@ -547,7 +547,7 @@ msgstr "Tabellenname"
 
 #: syneditstrconst.syns_attrterminator
 msgid "Terminator"
-msgstr "Abschluß"
+msgstr "Abschluss"
 
 #: syneditstrconst.syns_attrtexcommand
 msgid "TeX Command"

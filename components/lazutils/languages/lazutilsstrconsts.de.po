@@ -188,7 +188,7 @@ msgstr ""
 #: lazutilsstrconsts.lrsunabletocreateconfigdirectorys
 #, object-pascal-format
 msgid "Unable to create config directory \"%s\""
-msgstr "Kann Konfigurationsverzeichnis \"%s\" nicht anlegen"
+msgstr "Kann Konfigurationsverzeichnis \"%s\" nicht erzeugen"
 
 #: lazutilsstrconsts.lrsvarnoconversion
 #, object-pascal-format

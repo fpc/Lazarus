@@ -1597,7 +1597,7 @@ msgstr "Gruppenname:"
 
 #: idedebuggerstringconstants.lisgroupnameinvalid
 msgid "BreakpointGroup name must be a valid Pascal identifier name."
-msgstr "Der Haltepunkt-Gruppenname muß ein gültiger Pascal-Bezeichner sein."
+msgstr "Der Haltepunkt-Gruppenname muss ein gültiger Pascal-Bezeichner sein."
 
 #: idedebuggerstringconstants.lisgroupsetnew
 msgid "Set new group ..."
@@ -2084,7 +2084,7 @@ msgstr "Deklaration"
 
 #: idedebuggerstringconstants.liswatchtowatchpoint
 msgid "Create &Data/Watch Breakpoint ..."
-msgstr "&Datenhaltepunkt erstellen ..."
+msgstr "&Datenhaltepunkt erzeugen ..."
 
 #: idedebuggerstringconstants.liswldeleteall
 msgid "De&lete All"

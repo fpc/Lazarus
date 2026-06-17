@@ -131,7 +131,7 @@ msgstr ""
 
 #: eduoptions.ersrdbtnfull
 msgid "Show All"
-msgstr "Alle zeigen"
+msgstr "Alle anzeigen"
 
 #: eduoptions.ersrdgrpeventscaption
 msgid "Events"
@@ -151,7 +151,7 @@ msgstr ""
 
 #: eduoptions.ersshowall
 msgid "Show all"
-msgstr "Alle zeigen"
+msgstr "Alle anzeigen"
 
 #: eduoptions.ersshowallchilds
 msgid "Show all children"
@@ -167,11 +167,11 @@ msgstr ""
 
 #: eduoptions.ersshowoipages
 msgid "Show Object Inspector Pages"
-msgstr "Zeige Objektinspektor-Seiten"
+msgstr "Objektinspektor-Seiten anzeigen"
 
 #: eduoptions.ersshowselection
 msgid "Show Selection"
-msgstr "Auswahl zeigen"
+msgstr "Auswahl anzeigen"
 
 #: eduoptions.erssinglefileprogram
 msgid "Single file program"

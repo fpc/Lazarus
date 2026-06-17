@@ -114,7 +114,7 @@ msgstr "Suchbegriffe:"
 #: iconfinderstrconsts.rsiconviewer_showall
 msgctxt "iconfinderstrconsts.rsiconviewer_showall"
 msgid "Show all"
-msgstr "Alle zeigen"
+msgstr "Alle anzeigen"
 
 #: iconfinderstrconsts.rsiconviewer_sizelbl
 msgctxt "iconfinderstrconsts.rsiconviewer_sizelbl"

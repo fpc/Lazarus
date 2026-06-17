@@ -304,7 +304,7 @@ msgstr "Bearbeiten"
 
 #: lazdemsg.shmenuextraoptions
 msgid "Show options dialog"
-msgstr "Zeige Einstellungen-Dialog"
+msgstr "Einstellungen-Dialog anzeigen"
 
 #: lazdemsg.shmenuhelpabout
 msgid "About this program"
@@ -597,7 +597,7 @@ msgstr "Löschen bestätigen"
 
 #: lazdemsg.soptdlgcreatebackups
 msgid "Create &backups"
-msgstr "&Backups anlegen"
+msgstr "&Backups erzeugen"
 
 #: lazdemsg.soptdlgdefaultextension
 msgid "Default extension"
@@ -633,7 +633,7 @@ msgstr "Letzte Datei beim Start öffnen"
 
 #: lazdemsg.soptdlgshowhints
 msgid "Show hints"
-msgstr "Zeige Hinweise"
+msgstr "Hinweise anzeigen"
 
 #: lazdemsg.soptdlgskipemptynodes
 msgid "&Skip empty nodes when saving"

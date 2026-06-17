@@ -16,7 +16,7 @@ msgstr "CHM-Hilfe"
 
 #: lazchmhelp.help_current_idecmd
 msgid "Show help"
-msgstr "Zeige Hilfe"
+msgstr "Hilfe anzeigen"
 
 #: lazchmhelp.help_current_menu
 msgid "&Help"

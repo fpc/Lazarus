@@ -181,7 +181,7 @@ msgstr "Repository-Pfad"
 
 #: svnclasses.rsrevert
 msgid "Revert"
-msgstr "Änderungen zurücknemen"
+msgstr "Änderungen zurücknehmen"
 
 #: svnclasses.rsrevision
 msgid "Revision"
@@ -197,27 +197,27 @@ msgstr "Einstellungen"
 
 #: svnclasses.rsshowdiff
 msgid "Show diff"
-msgstr "Zeige Vergleich"
+msgstr "Vergleich anzeigen"
 
 #: svnclasses.rsshowdiffbase
 msgid "Show Diff of Local Changes"
-msgstr "Zeige Vergleich der lokalen Änderungen"
+msgstr "Vergleich der lokalen Änderungen anzeigen"
 
 #: svnclasses.rsshowdiffcountrev
 msgid "Show Last X Commits"
-msgstr "Zeige letzte x Übertragungen"
+msgstr "Letzte x Übertragungen anzeigen"
 
 #: svnclasses.rsshowdiffhead
 msgid "Show Diff Against HEAD"
-msgstr "Zeige Vergleich mit HEAD"
+msgstr "Vergleich mit HEAD anzeigen"
 
 #: svnclasses.rsshowdiffprev
 msgid "Show Diff Against Previous Version"
-msgstr "Zeige Vergleich mit vorheriger Version"
+msgstr "Vergleich mit vorheriger Version anzeigen"
 
 #: svnclasses.rsshowlog
 msgid "Show log"
-msgstr "Zeige Protokoll"
+msgstr "Protokoll anzeigen"
 
 #: svnclasses.rssourcefiledoesnotbelongtotheprojectpleaseaddfirst
 msgid "Source file does not belong to the project. Please add first."

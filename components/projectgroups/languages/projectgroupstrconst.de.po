@@ -531,7 +531,7 @@ msgstr "Eigenschaften"
 
 #: projectgroupstrconst.listargetpropertieshint
 msgid "Show property dialog for selected target"
-msgstr "Zeige Eigenschaften-Dialog für gewähltes Ziel"
+msgstr "Eigenschaften-Dialog für gewähltes Ziel anzeigen"
 
 #: projectgroupstrconst.listargetremove
 msgctxt "projectgroupstrconst.listargetremove"

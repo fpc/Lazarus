@@ -183,7 +183,7 @@ msgstr "Unbekanntes Dateiformat"
 
 #: ipconst.sbadimagelibstream
 msgid "ImageLib must use TMemoryStreams"
-msgstr "ImageLib muß TMemoryStream verwenden"
+msgstr "ImageLib muss TMemoryStream verwenden"
 
 #: ipconst.sbadlinelength
 msgid "Invalid line length"
@@ -1023,7 +1023,7 @@ msgstr " (ssVerify)"
 
 #: ipconst.smemmapfilenamerequired
 msgid "You must specify a file name for TIpMemMapStream"
-msgstr "Für TIpMemMapStream muß ein Dateiname angegeben werden"
+msgstr "Für TIpMemMapStream muss ein Dateiname angegeben werden"
 
 #: ipconst.smemmapmustbeclosed
 #, object-pascal-format
@@ -1186,7 +1186,7 @@ msgstr "Lese Artikel"
 
 #: ipconst.snsauthpass
 msgid "Authorizing password"
-msgstr "Prüfe Paßwort"
+msgstr "Prüfe Passwort"
 
 #: ipconst.snsauthuser
 msgid "Authorizing user"
@@ -1325,11 +1325,11 @@ msgstr "Wähle Gruppe"
 
 #: ipconst.soriginfrombegin
 msgid "When origin is soFromBeginning, Offset must be >= 0"
-msgstr "Bei einem Ursprung von soFromBeginning muß der Offset >= 0 sein"
+msgstr "Bei einem Ursprung von soFromBeginning muss der Offset >= 0 sein"
 
 #: ipconst.soriginfromend
 msgid "When origin is soFromEnd, Offset must be <= 0"
-msgstr "Bei einem Ursprung von soFromEnd muß der Offset <= 0 sein"
+msgstr "Bei einem Ursprung von soFromEnd muss der Offset <= 0 sein"
 
 #: ipconst.spngbadbitdepth
 #, object-pascal-format
@@ -1588,7 +1588,7 @@ msgstr "+OK"
 #: ipconst.sposreqd
 #, object-pascal-format
 msgid "%s: count must be positive"
-msgstr "%s: Zählung muß positiv sein"
+msgstr "%s: Anzahl muss positiv sein"
 
 #: ipconst.spsapop
 msgid "Logging on with APOP"
@@ -1614,7 +1614,7 @@ msgstr "Keine Ausführung"
 
 #: ipconst.spspass
 msgid "Logging on with Password"
-msgstr "Logge ein mit Paßwort"
+msgstr "Logge ein mit Passwort"
 
 #: ipconst.spsquit
 msgctxt "ipconst.spsquit"
@@ -1696,7 +1696,7 @@ msgstr "Prüfe Rückruf"
 
 #: ipconst.srasauthchangepassword
 msgid "Authenticate change password"
-msgstr "Prüfe Paßwortänderung"
+msgstr "Prüfe Passwortänderung"
 
 #: ipconst.srasauthenticate
 msgid "Authenticate"
@@ -1766,7 +1766,7 @@ msgstr "Offener Port"
 
 #: ipconst.sraspasswordexpired
 msgid "Password expired"
-msgstr "Paßwort abgelaufen"
+msgstr "Passwort abgelaufen"
 
 #: ipconst.sraspaused
 msgid "Paused"
@@ -1857,7 +1857,7 @@ msgstr "Persistent,"
 
 #: ipconst.ssmtpresponse10
 msgid "Other address status"
-msgstr "Anderer Adreßstatus"
+msgstr "Anderer Adressstatus"
 
 #: ipconst.ssmtpresponse11
 msgid "Bad destination mailbox address"
@@ -1885,7 +1885,7 @@ msgstr "Postfach wurde verschoben"
 
 #: ipconst.ssmtpresponse17
 msgid "Bad sender's mailbox address syntax"
-msgstr "Fehlerhafte Postfachadreß-Syntax des Senders"
+msgstr "Fehlerhafte Postfachadress-Syntax des Senders"
 
 #: ipconst.ssmtpresponse18
 msgid "Bad sender's system address"
@@ -2001,7 +2001,7 @@ msgstr "Umwandlung erforderlich und verboten"
 
 #: ipconst.ssmtpresponse63
 msgid "Conversion required but not supported"
-msgstr "Umwandlung erforderlich aber nicht unterstützt"
+msgstr "Umwandlung erforderlich, aber nicht unterstützt"
 
 #: ipconst.ssmtpresponse64
 msgid "Conversion with loss performed"
@@ -2025,7 +2025,7 @@ msgstr "Erweitern der Mailingliste verboten"
 
 #: ipconst.ssmtpresponse73
 msgid "Security conversion required but not possible"
-msgstr "Sicherheit-Konvertierung erforderlich aber nicht möglich"
+msgstr "Sicherheits-Konvertierung erforderlich, aber nicht möglich"
 
 #: ipconst.ssmtpresponse74
 msgid "Security features not supported"
@@ -2062,7 +2062,7 @@ msgstr "Fordere Authentifizierung ab"
 
 #: ipconst.sssauthpass
 msgid "Authenticating password"
-msgstr "Paßwortüberprüfung"
+msgstr "Passwortüberprüfung"
 
 #: ipconst.sssauthuser
 msgid "Authenticating username"
@@ -2107,15 +2107,15 @@ msgstr "Kompressionswert ist falsch."
 
 #: ipconst.ssslbadkeyexchangetype
 msgid "Key exchange message expected but not received"
-msgstr "Nachricht zum Schlüsselaustausch erwartet aber nicht erhalten"
+msgstr "Nachricht zum Schlüsselaustausch erwartet, aber nicht erhalten"
 
 #: ipconst.ssslbadmac
 msgid "MAC did not match."
-msgstr "MAC hat nicht gepaßt."
+msgstr "MAC hat nicht gepasst."
 
 #: ipconst.ssslbadmd5hash
 msgid "MD5 hash did not match."
-msgstr "MD5-Hash hat nicht gepaßt."
+msgstr "MD5-Hash hat nicht gepasst."
 
 #: ipconst.ssslbadpublicencoding
 msgid "Bad public encoding type."
@@ -2127,7 +2127,7 @@ msgstr "Server erhielt eine ungültige MAC-Adresse"
 
 #: ipconst.ssslbadsha1hash
 msgid "SHA1 hash did not match."
-msgstr "SHA1-Hash hat nicht gepaßt."
+msgstr "SHA1-Hash hat nicht gepasst."
 
 #: ipconst.ssslblocksizeerror
 msgid "Block size error"

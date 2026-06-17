@@ -45,7 +45,7 @@ msgid ""
 "The JSON data in \"%s\" was changed but not saved.\n"
 "What do want to do ?"
 msgstr ""
-"Die JSON-Daten wurden geändert aber nicht gespeichert.\n"
+"Die JSON-Daten wurden geändert, aber nicht gespeichert.\n"
 "Was wollen Sie tun ?\n"
 
 #: msgjsonviewer.sduplicatemembername
@@ -69,7 +69,7 @@ msgstr "Leeres Dokument"
 #: msgjsonviewer.serrcreatingconfigdir
 #, object-pascal-format
 msgid "Could not create the configuration files directory \"%s\""
-msgstr "Kann das Konfigurationsdateien-Verzeichnis \"%s\" nicht erstellen"
+msgstr "Kann das Konfigurationsdateien-Verzeichnis \"%s\" nicht erzeugen"
 
 #: msgjsonviewer.serrinvalidvalue
 #, object-pascal-format
@@ -131,7 +131,7 @@ msgstr ""
 #: tcreatecodeform.caption
 msgctxt "tcreatecodeform.caption"
 msgid "Create pascal code"
-msgstr "Pascal Code erstellen"
+msgstr "Pascal Code erzeugen"
 
 #: tcreatecodeform.cgoptions.caption
 msgid "Other options"
@@ -224,12 +224,12 @@ msgstr ""
 #| msgid "Create pascal code"
 msgctxt "tmainform.acreatecode.caption"
 msgid "Create Pascal code"
-msgstr "Pascal Code erstellen"
+msgstr "Pascal Code erzeugen"
 
 #: tmainform.acreatecode.hint
 msgctxt "tmainform.acreatecode.hint"
 msgid "Create Pascal code"
-msgstr ""
+msgstr "Pascal Code erzeugen"
 
 #: tmainform.acut.caption
 msgid "C&ut"
@@ -269,7 +269,7 @@ msgstr "Suchen"
 
 #: tmainform.afind.hint
 msgid "Find"
-msgstr ""
+msgstr "Suchen"
 
 #: tmainform.afindnext.caption
 msgid "Find &next occurrence"
@@ -285,7 +285,7 @@ msgstr "&Neu"
 
 #: tmainform.anew.hint
 msgid "Create new JSON document"
-msgstr "Erzeugt ein neues JSON-Dokument"
+msgstr "Ein neues JSON-Dokument erzeugen"
 
 #: tmainform.anewarray.caption
 msgid "New &Array"

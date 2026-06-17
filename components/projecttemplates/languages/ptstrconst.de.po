@@ -24,7 +24,7 @@ msgstr "Verzeichnis mit den Vorlagen:"
 #: ptstrconst.serrcouldnotcreatedir
 #, object-pascal-format
 msgid "Could not create directory \"%s\""
-msgstr "Verzeichnis %s konnte nicht angelegt werden"
+msgstr "Verzeichnis %s konnte nicht erzeugt werden"
 
 #: ptstrconst.serrfailedtocopyfile
 #, object-pascal-format

@@ -764,7 +764,7 @@ msgstr ""
 #: codystrconsts.crsshowcodydict
 #, object-pascal-format
 msgid "Show Cody Dictionary for \"%s\""
-msgstr "Zeige Cody-Verzeichnis für \"%s\""
+msgstr "Cody-Verzeichnis für \"%s\" anzeigen"
 
 #: codystrconsts.crsshowmoreidentifiers
 #, object-pascal-format
@@ -786,11 +786,11 @@ msgstr ""
 
 #: codystrconsts.crsshowunitidentifierdictionary
 msgid "Show Unit / Identifier Dictionary ..."
-msgstr "Zeige Unit- / Bezeichnerwörterbuch ..."
+msgstr "Unit- / Bezeichnerwörterbuch anzeigen ..."
 
 #: codystrconsts.crsshowusedppufiles
 msgid "Show Used .ppu Files ..."
-msgstr "Zeige verwendete .ppu-Dateien ..."
+msgstr "Verwendete .ppu-Dateien anzeigen ..."
 
 #: codystrconsts.crssizeofofile
 msgid "Size of .o file"

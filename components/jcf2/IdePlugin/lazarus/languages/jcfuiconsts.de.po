@@ -22,7 +22,7 @@ msgstr "JEDI-Codeformatierer"
 
 #: jcfuiconsts.format_current_idecmd
 msgid "Format code in current editor window"
-msgstr "Formatiere Code im aktuellen Editorfenster"
+msgstr "Code im aktuellen Editorfenster formatieren"
 
 #: jcfuiconsts.format_current_menu
 msgctxt "jcfideregister.format_current_menu"
@@ -271,11 +271,11 @@ msgstr "Schreibweisen korrigieren"
 
 #: jcfuiconsts.liscapsfloatingpointnumbers
 msgid "Floating point numbers"
-msgstr ""
+msgstr "Gleitkommazahlen"
 
 #: jcfuiconsts.liscapshexadecimalnumbers
 msgid "Hexadecimal numbers"
-msgstr ""
+msgstr "Hexadezimalzahlen"
 
 #: jcfuiconsts.liscapsidentifiersidentifiers
 msgid "Identifiers"
@@ -295,7 +295,7 @@ msgstr "Nur einzigen Namensraum verwenden"
 
 #: jcfuiconsts.liscapsnotidentifiersnotidentifiers
 msgid "Non-identifiers"
-msgstr "Nicht-Bezeicher"
+msgstr "Nicht-Bezeichner"
 
 #: jcfuiconsts.liscapsnotidentifierssetcapitalisationonthesenonidentifiers
 msgid "Set capitalisation on these non-identifiers:"
@@ -511,7 +511,7 @@ msgstr ""
 
 #: jcfuiconsts.liscnflogviewlog
 msgid "View log after each run"
-msgstr "Log-Datei nach jedem Start zeigen"
+msgstr "Log-Datei nach jedem Start anzeigen"
 
 #: jcfuiconsts.liscnflogviewlognow
 msgid "View Log now"

@@ -26,11 +26,11 @@ msgstr "Zu aktualisierende Felder und Schlüsselfelder müssen ausgewählt werde
 
 #: sqldbstrconst.screatestringconstant
 msgid "Create string constant"
-msgstr ""
+msgstr "Konstante Zeichenkette erzeugen"
 
 #: sqldbstrconst.seditsql
 msgid "Edit SQL ..."
-msgstr "SQL bearbeiten..."
+msgstr "SQL bearbeiten ..."
 
 #: sqldbstrconst.seditupdatesql
 msgid "Edit all SQL statements"
@@ -58,7 +58,7 @@ msgstr "Gemeinsame Bibliotheken"
 
 #: sqldbstrconst.sloadsqlcodehint
 msgid "Load SQL code ..."
-msgstr "SQL-Code laden..."
+msgstr "SQL-Code laden ..."
 
 #: sqldbstrconst.smetacolumns
 msgid "Columns"
@@ -102,7 +102,7 @@ msgstr "SQL-Code starten"
 
 #: sqldbstrconst.ssavesqlcodehint
 msgid "Save SQL code ..."
-msgstr "SQL-Code speichern..."
+msgstr "SQL-Code speichern ..."
 
 #: sqldbstrconst.ssqlbrackets
 msgctxt "sqldbstrconst.ssqlbrackets"
@@ -116,7 +116,7 @@ msgstr "Begrenzer für Feld-/Tabellennamen"
 
 #: sqldbstrconst.ssqledit
 msgid "Edit SQL Script ..."
-msgstr ""
+msgstr "SQL Script bearbeiten ..."
 
 #: sqldbstrconst.ssqlerror
 msgid "Probable SQL error"
@@ -184,7 +184,7 @@ msgstr "SQL-Skript-Datei"
 
 #: sqldbstrconst.ssqlscriptdesc
 msgid "Create a new SQL Script file"
-msgstr "Erzeuge neue SQL-Skript-Datei"
+msgstr "Neue SQL-Skript-Datei erzeugen"
 
 #: sqldbstrconst.ssqlselectupdateinsertfields
 msgctxt "sqldbstrconst.ssqlselectupdateinsertfields"
@@ -194,11 +194,11 @@ msgstr "\"Select\"/\"Update\"/\"Insert\"-Felder"
 #: sqldbstrconst.ssqlshowsystemtables
 msgctxt "sqldbstrconst.ssqlshowsystemtables"
 msgid "Show system tables"
-msgstr "Systemtabellen zeigen"
+msgstr "Systemtabellen anzeigen"
 
 #: sqldbstrconst.ssqlsource
 msgid "Insert your SQL statements here"
-msgstr "Geben sie ihre SQL-Anweisungen hier ein"
+msgstr "SQL-Anweisungen hier eingeben"
 
 #: sqldbstrconst.ssqlstringspropertyeditordlgtitle
 #, object-pascal-format, fuzzy

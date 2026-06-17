@@ -276,7 +276,7 @@ msgstr "Registerprozedur ist NIL"
 #, fuzzy
 #| msgid "RegisterUnit was called, but no package is registering."
 msgid "RegisterUnit was called but no package is registering."
-msgstr "RegisterUnit wurde aufgerufen aber es wurde kein Package registriert."
+msgstr "RegisterUnit wurde aufgerufen, aber es wurde kein Package registriert."
 
 #: idepackagerstrconsts.lispkgsysthelpkfilewasnotfound
 #, object-pascal-format

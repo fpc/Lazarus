@@ -135,7 +135,7 @@ msgstr "Speichern"
 
 #: tmainform.bbtnsave.hint
 msgid "Save created HTML page as \"IconTable.html\" file in the specified folder"
-msgstr "Speichert den generierten HTML-Code in der Datei \"IconTable.html\" im angegebenen Ordner"
+msgstr "Speichert den erzeugten HTML-Code in der Datei \"IconTable.html\" im angegebenen Ordner"
 
 #: tmainform.caption
 msgid "IconTable"

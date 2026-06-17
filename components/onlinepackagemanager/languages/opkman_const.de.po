@@ -646,7 +646,7 @@ msgstr "Privates Repository erzeugen"
 #: opkman_const.rsmainfrm_micreaterepositorypackage
 msgctxt "opkman_const.rsmainfrm_micreaterepositorypackage"
 msgid "Create repository package"
-msgstr "Erzeuge Repository-Package"
+msgstr "Repository-Package erzeugen"
 
 #: opkman_const.rsmainfrm_midescendent
 msgid "Descendent"
@@ -666,7 +666,7 @@ msgstr "JSON verbergen"
 
 #: opkman_const.rsmainfrm_mijsonshow
 msgid "Show JSON"
-msgstr "JSON zeigen"
+msgstr "JSON anzeigen"
 
 #: opkman_const.rsmainfrm_mijsonsort
 msgid "Sort"
@@ -707,7 +707,7 @@ msgstr "Die folgenden Packages sind bereits installiert. Mit der Installation fo
 
 #: opkman_const.rsmainfrm_packageincompatible
 msgid "The following packages are not tested and the install might fail. Continue anyway?"
-msgstr "Die folgenden Packages sind nicht getestet, und ihre Installation könnte fehlschlagen. Trotzdem weitermachen?"
+msgstr "Die folgenden Packages sind nicht getestet und ihre Installation könnte fehlschlagen. Trotzdem weitermachen?"
 
 #: opkman_const.rsmainfrm_packagenamealreadyexists
 msgid "A package with the same name already exists!"
@@ -776,11 +776,12 @@ msgstr "Keine Packages zum Anzeigen."
 msgid ""
 "Remote package repository not configured.\n"
 "Do you wish to configure it now?"
-msgstr "Das externe Package-Repository ist noch nicht konfiguriert. Wollen Sie es jetzt konfigurieren?"
+msgstr "Das externe Package-Repository ist noch nicht konfiguriert.\n"
+"Wollen Sie es jetzt konfigurieren?"
 
 #: opkman_const.rsmainfrm_rsmessagenothingchacked
 msgid "Please check at least one package!"
-msgstr "Bitte wählen Sie mindestens ein Package!"
+msgstr "Bitte wählen Sie mindestens ein Package aus!"
 
 #: opkman_const.rsmainfrm_rsmessagenothinginstalled
 msgid "No packages are installed. Please install at least one package first."
@@ -1350,7 +1351,7 @@ msgstr "OpenSSL-Bibliotheken herunterladen"
 
 #: opkman_const.rsopensslfrm_chpermanent_caption
 msgid "Do not ask this question again"
-msgstr "Diese Frage nicht nochmal stellen"
+msgstr "Diese Frage nicht noch einmal stellen"
 
 #: opkman_const.rsopensslfrm_lbmessage1_caption
 msgid "In order to work properly, OPM needs the OpenSSL libraries."
@@ -1460,7 +1461,7 @@ msgstr "Proxy verwenden"
 
 #: opkman_const.rsoptions_cbregular_caption
 msgid "Show regular icon for newly added packages after install"
-msgstr "Zeige reguläres Icon für neue Packages nach Installation"
+msgstr Reguläres Icon für neue Packages nach Installation anzeigen"
 
 #: opkman_const.rsoptions_cbselectprofile_hint
 msgid "Choose a profile that best fits you"
@@ -1529,11 +1530,11 @@ msgstr "Dateierweiterung eintippen:"
 
 #: opkman_const.rsoptions_inputbox_text1
 msgid "Type the folder name:"
-msgstr "Ordnernamen eintrippen:"
+msgstr "Ordnernamen eintippen:"
 
 #: opkman_const.rsoptions_invaliddirectory_info
 msgid "Please enter a valid directory!"
-msgstr "Bitte geben Sie ein gültiges Verzeichnis ein!"
+msgstr "Bitte ein gültiges Verzeichnis eingeben!"
 
 #: opkman_const.rsoptions_lastupdate_never
 msgctxt "opkman_const.rsoptions_lastupdate_never"
@@ -1554,7 +1555,7 @@ msgstr "Die Anzahl von Sekunden, nach denen der Package-Manager die Verbindung e
 
 #: opkman_const.rsoptions_lbdaystoshownewpackages_caption
 msgid "Show different icon for newly added packages for (days):"
-msgstr "Zeige anderes Icon für neue Packages für (Tage):"
+msgstr "Anderes Icon für neue Packages für (Tage) anzeigen:"
 
 #: opkman_const.rsoptions_lbexcludefiles_hint
 msgctxt "opkman_const.rsoptions_lbexcludefiles_hint"

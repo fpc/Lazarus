@@ -92,7 +92,7 @@ msgstr "Ressource %s nicht gefunden"
 
 #: lclstrconsts.rs3ddkshadowcolorcaption
 msgid "3D Dark Shadow"
-msgstr "Dunkl. 3D-Schatten"
+msgstr "Dunkle 3D-Schatten"
 
 #: lclstrconsts.rs3dlightcolorcaption
 msgid "3D Light"
@@ -100,7 +100,7 @@ msgstr "3D-Licht"
 
 #: lclstrconsts.rsacontrolcannothaveitselfasparent
 msgid "A control can't have itself as a parent"
-msgstr "Ein Steuerelement kann nicht sein eigener Vorfahr sein"
+msgstr "Ein Steuerelement kann nicht sein eigener Parent sein"
 
 #: lclstrconsts.rsactivebordercolorcaption
 msgid "Active Border"
@@ -126,7 +126,7 @@ msgstr "Aquamarin"
 #: lclstrconsts.rsascannothaveasparent
 #, object-pascal-format
 msgid "Class %s cannot have %s as parent."
-msgstr "Klasse %s kann %s nicht als Vorfahren haben."
+msgstr "Klasse %s kann %s nicht als Parent haben."
 
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
@@ -196,17 +196,17 @@ msgstr "Schreibweisenabhängig"
 #: lclstrconsts.rscontrolclasscantcontainchildclass
 #, object-pascal-format
 msgid "Control of class '%s' can't have control of class '%s' as a child"
-msgstr "Ein Steuerelement der Klasse %s kann nicht ein Steuerelement der Klasse %s als Nachfahren haben."
+msgstr "Ein Steuerelement der Klasse %s kann kein Steuerelement der Klasse %s als Child haben."
 
 #: lclstrconsts.rscontrolhasnoparentformorframe
 #, object-pascal-format
 msgid "Control '%s' has no parent form or frame"
-msgstr "Steuerelement '%s' hat kein Vorfahren-Formular oder -Rahmen"
+msgstr "Steuerelement '%s' hat kein übergeordnetes Formular oder Frame (Parent)"
 
 #: lclstrconsts.rscontrolisnotaparent
 #, object-pascal-format
 msgid "'%s' is not a parent of '%s'"
-msgstr "'%s' ist kein Vorfahre von '%s'"
+msgstr "'%s' ist kein Parent von '%s'"
 
 #: lclstrconsts.rscreamcolorcaption
 msgid "Cream"
@@ -464,11 +464,11 @@ msgstr "Grün"
 
 #: lclstrconsts.rsgridfiledoesnotexist
 msgid "Grid file doesn't exist"
-msgstr "Gitter-Datei existiert nicht"
+msgstr "Grid-Datei existiert nicht"
 
 #: lclstrconsts.rsgridhasnocols
 msgid "Cannot insert rows into a grid when it has no columns"
-msgstr "Kann keine Zeilen in ein Gitter einfügen, wenn es keine Spalten hat"
+msgstr "Kann keine Zeilen in ein Grid einfügen, wenn es keine Spalten hat"
 
 #: lclstrconsts.rsgridhasnorows
 msgid "Cannot insert columns into a grid when it has no rows"
@@ -476,7 +476,7 @@ msgstr "Kann keine Spalten in ein Grid einfügen, wenn es keine Zeilen hat"
 
 #: lclstrconsts.rsgridindexoutofrange
 msgid "Grid index out of range."
-msgstr "Gitterindex außerhalb des Bereichs."
+msgstr "Grid-Index außerhalb des zulässigen Bereichs."
 
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
@@ -992,7 +992,7 @@ msgstr "Keine"
 
 #: lclstrconsts.rsnotavalidgridfile
 msgid "Not a valid grid file"
-msgstr "Keine gültige Gitter-Datei"
+msgstr "Keine gültige Grid-Datei"
 
 #: lclstrconsts.rsnowidgetset
 msgid "No widgetset object. Please check if the unit \"interfaces\" was added to the programs uses clause."

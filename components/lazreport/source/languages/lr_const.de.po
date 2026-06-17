@@ -671,11 +671,11 @@ msgstr "&Pixel"
 
 #: lr_const.sdesoptionsformshape
 msgid "S&hape"
-msgstr "&Umriß"
+msgstr "&Umriss"
 
 #: lr_const.sdesoptionsformshowband
 msgid "Show band &titles"
-msgstr "Zeige Band&titel"
+msgstr "Band&titel anzeigen"
 
 #: lr_const.sdesoptionsformshowgrd
 msgid "&Show grid"
@@ -1350,7 +1350,7 @@ msgstr "Obere Rahmenlinie"
 
 #: lr_const.sfrdesignerformunabletocreatetemplatedir
 msgid "Unable to create template directory"
-msgstr "Kann Vorlagenverzeichnis nicht anlegen"
+msgstr "Kann Vorlagenverzeichnis nicht erzeugen"
 
 #: lr_const.sfrdesignerformunderline
 msgid "Underline"
@@ -1715,7 +1715,7 @@ msgstr "Schattierten RoundRect einfügen"
 
 #: lr_const.sinsshape
 msgid "Insert Shape object"
-msgstr "Umrißobjekt einfügen"
+msgstr "Umrissobjekt einfügen"
 
 #: lr_const.sinterpretator
 msgid "Interpretator"
@@ -2470,7 +2470,7 @@ msgstr "&Ganze &Seite"
 
 #: lr_const.sprintchildifnotvisible
 msgid "Print child if not visible"
-msgstr "Nachfolger drucken wenn nicht sichtbar"
+msgstr "Nachfolger drucken, wenn nicht sichtbar"
 
 #: lr_const.sprintererror
 msgid "Selected printer is not valid"
@@ -2659,11 +2659,11 @@ msgstr "Diagonal2"
 
 #: lr_const.sshapeformcaption
 msgid "Shape"
-msgstr "Umriß"
+msgstr "Umriss"
 
 #: lr_const.sshapeformkind
 msgid "Shape kind"
-msgstr "Umrißart"
+msgstr "Umrissart"
 
 #: lr_const.sspecval
 msgctxt "lr_const.sspecval"

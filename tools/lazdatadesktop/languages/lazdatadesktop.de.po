@@ -13,7 +13,7 @@ msgstr ""
 
 #: lazdatadeskstr.eoaddterminator
 msgid "Add terminator"
-msgstr "Abschluß hinzufügen"
+msgstr "Abschluss hinzufügen"
 
 #: lazdatadeskstr.eoandtermsinbrackets
 msgid "Put brackets around AND Terms"
@@ -109,7 +109,7 @@ msgstr "Code erzeugen"
 
 #: lazdatadeskstr.screateconnection
 msgid "Would you like to create a new connection for this database ?"
-msgstr "Wollen Sie eine neue Verbindung für diese Datenbank erstellen?"
+msgstr "Wollen Sie eine neue Verbindung für diese Datenbank erzeugen?"
 
 #: lazdatadeskstr.sddmodified
 #, object-pascal-format
@@ -315,7 +315,7 @@ msgstr "Kopieren"
 
 #: lazdatadeskstr.sld_actioncreatecode
 msgid "Create &code"
-msgstr "Quelltext generieren"
+msgstr "Quelltext erzeugen"
 
 #: lazdatadeskstr.sld_actioncreatecodeh
 msgid "Create code from definition or data"
@@ -380,7 +380,7 @@ msgstr "Ein neues Feld in der aktuellen Tabelle erzeugen"
 
 #: lazdatadeskstr.sld_actionnewh
 msgid "Create a new Data Dictionary"
-msgstr "Neues Datenwörterbuch anlegen"
+msgstr "Neues Datenwörterbuch erzeugen"
 
 #: lazdatadeskstr.sld_actionnewindex
 msgctxt "lazdatadeskstr.sld_actionnewindex"
@@ -713,7 +713,7 @@ msgstr "Neues Datenwörterbuch"
 
 #: lazdatadeskstr.snewdomain
 msgid "Create new domain"
-msgstr "Neue Domäne anlegen"
+msgstr "Neue Domäne erzeugen"
 
 #: lazdatadeskstr.snewdomainde
 msgctxt "lazdatadeskstr.snewdomainde"
@@ -753,7 +753,7 @@ msgstr "Name des neuen Fremdschlüssels eingeben:"
 #: lazdatadeskstr.snewindex
 #, object-pascal-format
 msgid "Create new index on table %s"
-msgstr "Neuen Index für Tabelle %s anlegen"
+msgstr "Neuen Index für Tabelle %s erzeugen"
 
 #: lazdatadeskstr.snewindexde
 msgctxt "lazdatadeskstr.snewindexde"
@@ -767,11 +767,11 @@ msgstr "Einen Namen für den neuen Index eingeben:"
 #: lazdatadeskstr.snewobject
 #, object-pascal-format
 msgid "Create new %s"
-msgstr "Neuen %s anlegen"
+msgstr "Neuen %s erzeugen"
 
 #: lazdatadeskstr.snewsequence
 msgid "Create new sequence"
-msgstr "Neue Sequenz anlegen"
+msgstr "Neue Sequenz erzeugen"
 
 #: lazdatadeskstr.snewsequencede
 msgctxt "lazdatadeskstr.snewsequencede"

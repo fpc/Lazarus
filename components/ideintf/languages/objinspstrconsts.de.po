@@ -937,7 +937,7 @@ msgstr "Eigenschaftswert auf Vorgabe setzen"
 
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
-msgstr "Zeige Klassen"
+msgstr "Klassen anzeigen"
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"

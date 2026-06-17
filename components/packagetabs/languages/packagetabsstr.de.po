@@ -30,7 +30,7 @@ msgstr "Dateipfad in Zwischenablage kopieren"
 
 #: packagetabsstr.sfindinotherwindow
 msgid "Find In Other Window"
-msgstr "In anderem Fenster finden"
+msgstr "In anderem Fenster suchen"
 
 #: packagetabsstr.smoveto
 msgid "Move To"
