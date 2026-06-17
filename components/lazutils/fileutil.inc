@@ -391,7 +391,10 @@ function ReadFileToBytes(const Filename: string): TBytes;
 var
   Bytes: TBytes;
   InStream: TFileStream;
-  i, len: Int64;
+  {$IF FPC_FULLVERSION<=30300}
+  i: Int64
+  {$ENDIF}
+  len: Int64;
 begin
   Result := [];
   try
@@ -436,7 +439,10 @@ function ReadFileToString(const Filename: string): string;
 var
   s: String;
   InStream: TFileStream;
-  i, len: Int64;
+  {$IF FPC_FULLVERSION<=30300}
+  i: Int64;
+  {$ENDIF}
+  len: Int64;
 begin
   Result := '';
   try
