@@ -17200,7 +17200,7 @@ end;
 
 function TQtMenuBar.ShouldShowMenuBar: Boolean;
 begin
-  Result := GetDesignState() <> 2;
+  Result := GetDesignState() = 0;
 end;
 
 function TQtMenuBar.GetDesignState: Integer;
