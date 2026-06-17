@@ -1628,6 +1628,9 @@ begin
     else
       AAlignment := QtAlignLeft;
 
+    if TCustomListViewHack(ALV).ViewStyle = vsList then
+      AAlignment := AAlignment or QtAlignVCenter;
+
     QtListWidget.setItemText(AIndex, AText, AAlignment);
   end else
   begin
