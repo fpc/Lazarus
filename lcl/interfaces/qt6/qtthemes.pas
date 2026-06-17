@@ -1300,17 +1300,30 @@ begin
             Result.StandardPixmap := QStyleSP_TitleBarCloseButton;
             exit;
           end;
+          WP_MINBUTTON, WP_MDIMINBUTTON:
+          begin
+            Result.DrawVariant := qdvStandardPixmap;
+            Result.StandardPixmap := QStyleSP_TitleBarMinButton;
+            exit;
+          end;
+          WP_MAXBUTTON:
+          begin
+            Result.DrawVariant := qdvStandardPixmap;
+            Result.StandardPixmap := QStyleSP_TitleBarMaxButton;
+            exit;
+          end;
+          WP_RESTOREBUTTON, WP_MDIRESTOREBUTTON:
+          begin
+            Result.DrawVariant := qdvStandardPixmap;
+            Result.StandardPixmap := QStyleSP_TitleBarNormalButton;
+            exit;
+          end;
           WP_SMALLCAPTION: Result.SubControls := QStyleSC_TitleBarLabel;
           WP_SYSBUTTON: Result.SubControls := QStyleSC_TitleBarSysMenu;
-          WP_MINBUTTON: Result.SubControls := QStyleSC_TitleBarMinButton;
-          WP_MAXBUTTON: Result.SubControls := QStyleSC_TitleBarMaxButton;
           WP_CLOSEBUTTON: Result.SubControls := QStyleSC_TitleBarCloseButton;
-          WP_RESTOREBUTTON: Result.SubControls := QStyleSC_TitleBarNormalButton;
           WP_HELPBUTTON: Result.SubControls := QStyleSC_TitleBarContextHelpButton;
           WP_MDIHELPBUTTON: Result.SubControls := QStyleSC_TitleBarContextHelpButton;
-          WP_MDIMINBUTTON: Result.SubControls := QStyleSC_MdiMinButton;
           WP_MDICLOSEBUTTON: Result.SubControls := QStyleSC_MdiCloseButton;
-          WP_MDIRESTOREBUTTON: Result.SubControls := QStyleSC_MdiNormalButton;
         else
           Result.SubControls := QStyleSC_None;
         end;
