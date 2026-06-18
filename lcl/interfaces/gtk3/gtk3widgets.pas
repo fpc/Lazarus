@@ -3502,6 +3502,7 @@ var
   AList: TList;
   ATemp: PGtkWidget;
   ATopLevel: PGtkWidget;
+  AFocus: PGtkWidget;
   I: Integer;
 begin
   {$IFDEF GTK3USEDEFERREDRESIZING}
@@ -3543,9 +3544,13 @@ begin
     else
     begin
       ATopLevel := PGtkWidget(ATemp)^.get_toplevel;
-      if (ATopLevel <> nil) and Gtk3IsGtkWindow(ATopLevel) and
-         (PGtkWindow(ATopLevel)^.get_focus = PGtkWidget(ATemp)) then
-        PGtkWindow(ATopLevel)^.set_focus(nil);
+      if (ATopLevel <> nil) and Gtk3IsGtkWindow(ATopLevel) then
+      begin
+        AFocus := PGtkWindow(ATopLevel)^.get_focus;
+        if (AFocus = PGtkWidget(ATemp)) or
+           ((AFocus <> nil) and PGtkWidget(AFocus)^.is_ancestor(PGtkWidget(ATemp))) then
+          PGtkWindow(ATopLevel)^.set_focus(nil);
+      end;
     end;
     ATemp^.destroy_;
     {$IFDEF GTK3DEBUGCORE}
