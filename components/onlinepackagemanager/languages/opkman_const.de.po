@@ -776,7 +776,8 @@ msgstr "Keine Packages zum Anzeigen."
 msgid ""
 "Remote package repository not configured.\n"
 "Do you wish to configure it now?"
-msgstr "Das externe Package-Repository ist noch nicht konfiguriert.\n"
+msgstr ""
+"Das externe Package-Repository ist noch nicht konfiguriert.\n"
 "Wollen Sie es jetzt konfigurieren?"
 
 #: opkman_const.rsmainfrm_rsmessagenothingchacked
@@ -1461,7 +1462,7 @@ msgstr "Proxy verwenden"
 
 #: opkman_const.rsoptions_cbregular_caption
 msgid "Show regular icon for newly added packages after install"
-msgstr Reguläres Icon für neue Packages nach Installation anzeigen"
+msgstr "Reguläres Icon für neue Packages nach Installation anzeigen"
 
 #: opkman_const.rsoptions_cbselectprofile_hint
 msgid "Choose a profile that best fits you"

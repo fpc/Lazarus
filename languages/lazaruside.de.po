@@ -18114,7 +18114,7 @@ msgstr "Ausgewählte Units"
 
 #: lazarusidestrconsts.lisudshownodesfordirectories
 msgid "Show nodes for directories"
-msgstr "Knoten für Verzeichnisse anzeigen""
+msgstr "Knoten für Verzeichnisse anzeigen"
 
 #: lazarusidestrconsts.lisudshownodesforprojectandpackages
 msgid "Show nodes for project and packages"
