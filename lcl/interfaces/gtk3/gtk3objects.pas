@@ -270,6 +270,7 @@ type
     FCanvasScaleFactor: double;
     FXorMode: boolean;
     FXorROP: Integer;
+    FRop2: Integer;
     FXorSnapshot: Pcairo_surface_t;
     FXorRect: TGdkRectangle;
     //Accumulated clip region, mirrors what we set via SetClipRegion/ResetClip.
@@ -1836,6 +1837,7 @@ procedure TGtk3DeviceContext.SetRasterOp(AValue: integer);
 var
   AMap: Tcairo_operator_t;
 begin
+  FRop2 := AValue;
   if (not FXorMode) and (MapCairoRasterOpToRasterOp(cairo_get_operator(pcr)) = AValue) then
     exit;
   if FXorMode and ((AValue <> R2_XORPEN) and (AValue <> R2_NOTXORPEN)) then
@@ -2532,6 +2534,17 @@ begin
       if not FXorMode then
         cairo_set_operator(pcr, CAIRO_OPERATOR_DIFFERENCE);
   end;
+
+  if not FXorMode then
+    case FRop2 of
+      R2_BLACK: SetSourceColor(clBlack);
+      R2_WHITE: SetSourceColor(clWhite);
+      R2_NOT:
+        begin
+          SetSourceColor(clWhite);
+          cairo_set_operator(pcr, CAIRO_OPERATOR_DIFFERENCE);
+        end;
+    end;
 
   if FCurrentPen.Cosmetic then
     cairo_set_line_width(pcr, 1.0)
