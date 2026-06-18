@@ -678,6 +678,12 @@ begin
     begin
       if AWindow <> nil then
       begin
+        if (fsModal in AForm.FormState) then
+        begin
+          AWindow^.set_modal(False);
+          if Gtk3IsGdkWindow(AWindow^.window) then
+            AWindow^.window^.set_modal_hint(False);
+        end;
         //wayland, remove grab
         if Gtk3WidgetSet.IsWayland and (AWindow^.get_window_type = GTK_WINDOW_POPUP) and AWindow^.get_accept_focus
           and not AWindow^.window^.get_pass_through and LCLCanFocus then
@@ -708,10 +714,20 @@ begin
 end;
 
 class procedure TGtk3WSCustomForm.CloseModal(const ACustomForm: TCustomForm);
+var
+  AWindow: PGtkWindow;
 begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WSCustomForm.CloseModal');
   {$ENDIF}
+  if not WSCheckHandleAllocated(ACustomForm, 'CloseModal') then
+    Exit;
+  if not Gtk3IsGtkWindow(TGtk3Window(ACustomForm.Handle).Widget) then
+    Exit;
+  AWindow := PGtkWindow(TGtk3Window(ACustomForm.Handle).Widget);
+  AWindow^.set_modal(False);
+  if Gtk3IsGdkWindow(AWindow^.window) then
+    AWindow^.window^.set_modal_hint(False);
 end;
 
 class procedure TGtk3WSCustomForm.SetAllowDropFiles(const AForm: TCustomForm;
