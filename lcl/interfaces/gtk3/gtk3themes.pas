@@ -254,22 +254,15 @@ procedure TGTK3ThemeServices.DrawText(ACanvas: TPersistent;
   Details: TThemedElementDetails; const S: String; R: TRect; Flags,
   Flags2: Cardinal);
 begin
-  (*DOES NOT WORK YET !
-  writeln('TGTK3ThemeServices.DrawText: ACanvas ',dbgsName(ACanvas),' IsCanva=',(ACanvas is TCanvas));
-  if (ACanvas is TCanvas) then
-  begin
-    inherited DrawText(TCanvas(ACanvas).Handle, Details, S, R, Flags, Flags2);
-  end else
-  *)
   inherited DrawText(ACanvas, Details, S, R, Flags, Flags2);
-  //DrawText(DC, Details, S, R.Left, R.Top, R.Width, R.Height, Flags);
 end;
 
 procedure TGTK3ThemeServices.DrawText(DC: HDC; Details: TThemedElementDetails;
   const S: String; R: TRect; Flags, Flags2: Cardinal);
 begin
-  inherited DrawText(DC, Details, S, R, Flags, Flags2);
-  // DrawText(DC, Details, S, R.Left, R.Top, R.Width, R.Height, Flags);
+  if not GTK3WidgetSet.IsValidDC(DC) then
+    exit;
+  LCLIntf.DrawText(DC, PChar(S), Length(S), R, Flags);
 end;
 
 function TGTK3ThemeServices.GetDetailSizeForPPI(Details: TThemedElementDetails;
