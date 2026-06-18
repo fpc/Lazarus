@@ -4220,8 +4220,8 @@ begin
   Size.cy := 0;
   if (Count <= 0) or (Str = nil) or (StrPas(Str) = '') then
     exit;
-  WideStr := Str;
-  Size.cx := QtDC.Metrics.width(@WideStr, UTF8Length(Str, Count));
+  WideStr := UTF8ToUTF16({%H-}Copy(Str, 1, Count));
+  Size.cx := QtDC.Metrics.width(@WideStr, Length(WideStr));
   Size.cy := QtDC.Metrics.height;
 
   Result := True;
