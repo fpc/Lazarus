@@ -8,13 +8,13 @@ For example Finnish translation:
 3. If POT file belongs to some package, make sure that this package is installed in IDE.
 4. Rebuild Lazarus clean. This will update translations for most packages.
 5. Run `sh localize.sh` (Linux) or `localize.bat` (Windows) to update all remaining translations.
-6. Edit PO files (*.fi.po) with programs like poEdit (www.poedit.net) or Lokalize. Do NOT edit them manually, because this WILL lead to breakage.
+6. Edit PO files (*.fi.po) with programs like Poedit (www.poedit.net) or Lokalize. Do NOT edit them manually because this WILL lead to breakage.
    If .fi.po file is missing for particular component, use template (POT file) to create it.
 7. Check your translated PO files with PoChecker tool and fix all
    reported errors (you need to run all tests, there should be no errors shown in
    General Info tab of Results window).
-8. Post updated xxx.fi.po files to the Lazarus issue tracker.
-   Do NOT post diffs for PO files.
+8. Create a merge request (preferred) or post updated xxx.fi.po files to the Lazarus issue tracker.  
+   Do NOT post diffs for PO files. Due to their nature, PO files are prone to conflicts and therefore diffs can rather quickly get very hard or plain impossible to apply.
 
 Some notes:
 
@@ -40,8 +40,20 @@ Example for the IDE translation family:
 | French       | lazaruside.fr.po |
 | Italian      | lazaruside.it.po |
 
-If you KNOW what you are doing, you can use PoChecker tool to refresh (regenerate) translation families (i.e. synchronize
+If you know what you are doing, you can use PoChecker tool to refresh (regenerate) translation families (i.e. synchronize
 actual translations with template files). In order to get an access to this function, you should
 run tests on your translation, open Graphical Summary window (via 'Show statistics graph' button)
 and click on any translation family with right mouse button while pressing SHIFT key.
 Note that refresh function REQUIRES translation files to be accessible for WRITING.
+
+While you work on your translations, it may happen that the files you modified have received updates in upstream repository.
+In this case trying to update your working copy can likely lead to conflicts (as already was mentioned earlier, due to their nature, PO files are prone to conflicts).
+Do NOT try to resolve these conflicts interactively because this WILL lead to breakage. The safe method of updating is the following:
+1. Save your translations and backup them.
+2. Revert all your changes in working copy.
+3. Update your working copy.
+4. Replace relevant translation files in updated working copy with the ones from your backup.
+5. Rebuild Lazarus as described above.
+6. Refresh (regenerate) translation files using PoChecker.
+7. Scan your translation files with PoChecker one more time and review the results.
+8. Edit as usual.
