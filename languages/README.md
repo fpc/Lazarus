@@ -8,7 +8,7 @@ For example Finnish translation:
 3. If POT file belongs to some package, make sure that this package is installed in IDE.
 4. Rebuild Lazarus clean. This will update translations for most packages.
 5. Run `sh localize.sh` (Linux) or `localize.bat` (Windows) to update all remaining translations.
-6. Edit PO files (*.fi.po) with programs like poEdit (www.poedit.net) or Lokalize. Do not edit them manually.
+6. Edit PO files (*.fi.po) with programs like poEdit (www.poedit.net) or Lokalize. Do NOT edit them manually, because this WILL lead to breakage.
    If .fi.po file is missing for particular component, use template (POT file) to create it.
 7. Check your translated PO files with PoChecker tool and fix all
    reported errors (you need to run all tests, there should be no errors shown in
@@ -40,7 +40,7 @@ Example for the IDE translation family:
 | French       | lazaruside.fr.po |
 | Italian      | lazaruside.it.po |
 
-If you KNOW what you are DOING, you can use PoChecker tool to refresh translation families (i.e. synchronize
+If you KNOW what you are doing, you can use PoChecker tool to refresh (regenerate) translation families (i.e. synchronize
 actual translations with template files). In order to get an access to this function, you should
 run tests on your translation, open Graphical Summary window (via 'Show statistics graph' button)
 and click on any translation family with right mouse button while pressing SHIFT key.
