@@ -188,12 +188,17 @@ var
 
   procedure AlignLayout(const BStartControl, BEndControl, BTopLeft, BSize: Integer);
   var
-    I: Integer;
+    I, BNear: Integer;
     xControl: TControl;
     xConBS: TControlBorderSpacing;
   begin
     if FFlowLayout = tlTop then
       Exit;
+
+    if FFlowStyle in [fsLeftRightBottomTop, fsRightLeftBottomTop, fsTopBottomRightLeft, fsBottomTopRightLeft] then
+      BNear := BTopLeft - BSize
+    else
+      BNear := BTopLeft;
 
     for I := BStartControl to BEndControl do
     begin
@@ -207,14 +212,14 @@ var
       if FFlowStyle in [fsLeftRightTopBottom, fsLeftRightBottomTop, fsRightLeftTopBottom, fsRightLeftBottomTop] then
       begin
         case FFlowLayout of
-          tlCenter: xNewBounds[I].Top := BTopLeft + (BSize - xConBS.ControlHeight) div 2 + xConBS.Top + xConBS.Around;
-          tlBottom: xNewBounds[I].Top := BTopLeft + BSize - xControl.Height - xConBS.Bottom - xConBS.Around;
+          tlCenter: xNewBounds[I].Top := BNear + (BSize - xConBS.ControlHeight) div 2 + xConBS.Top + xConBS.Around;
+          tlBottom: xNewBounds[I].Top := BNear + BSize - xControl.Height - xConBS.Bottom - xConBS.Around;
         end;
       end else
       begin
         case FFlowLayout of
-          tlCenter: xNewBounds[I].Left := BTopLeft + (BSize - xConBS.ControlWidth) div 2 + xConBS.Left + xConBS.Around;
-          tlBottom: xNewBounds[I].Left := BTopLeft + BSize - xControl.Width - xConBS.Right - xConBS.Around;
+          tlCenter: xNewBounds[I].Left := BNear + (BSize - xConBS.ControlWidth) div 2 + xConBS.Left + xConBS.Around;
+          tlBottom: xNewBounds[I].Left := BNear + BSize - xControl.Width - xConBS.Right - xConBS.Around;
         end;
       end;
     end;
@@ -385,7 +390,8 @@ procedure TCustomFlowPanel.CalculatePreferredSize(var PreferredWidth,
 var
   xControl: TControl;
   xTestRect, xClientRect: TRect;
-  I: Integer;
+  I, xNear, xFar, xMinNear, xMaxFar: Integer;
+  xVertical, xHasControl: Boolean;
 begin
   inherited CalculatePreferredSize(PreferredWidth, PreferredHeight,
     WithThemeSpace);
@@ -395,28 +401,45 @@ begin
     xTestRect := Rect(0, 0, 100, 100);
     xClientRect := xTestRect;
     AdjustClientRect(xClientRect);
+    xVertical := FFlowStyle in [fsTopBottomLeftRight, fsBottomTopLeftRight,
+      fsTopBottomRightLeft, fsBottomTopRightLeft];
+
+    xMinNear := High(Integer);
+    xMaxFar := Low(Integer);
+    xHasControl := False;
+
     for I := 0 to ControlCount-1 do
     begin
       xControl := FControlList.Items[I].Control;
-      if not xControl.Visible then
+      if (xControl = nil) or not xControl.Visible then
         Continue;
-      if FFlowStyle in [fsLeftRightTopBottom, fsRightLeftTopBottom, fsLeftRightBottomTop, fsRightLeftBottomTop] then
+      xHasControl := True;
+      if xVertical then
       begin
+        xNear := xControl.BoundsRect.Left  - xControl.BorderSpacing.AroundLeft;
+        xFar := xControl.BoundsRect.Right + xControl.BorderSpacing.AroundRight;
         PreferredHeight := Max(PreferredHeight,
-          xControl.BoundsRect.Bottom+xControl.BorderSpacing.Around+xControl.BorderSpacing.Bottom +
-          xTestRect.Bottom-xClientRect.Bottom-xTestRect.Top+xClientRect.Top);
-        PreferredWidth := Max(PreferredWidth,
-          xControl.Width + xControl.BorderSpacing.AroundLeft + xControl.BorderSpacing.AroundRight
-        );
+          xControl.Height + xControl.BorderSpacing.AroundTop + xControl.BorderSpacing.AroundBottom);
       end else
       begin
+        xNear := xControl.BoundsRect.Top    - xControl.BorderSpacing.AroundTop;
+        xFar := xControl.BoundsRect.Bottom + xControl.BorderSpacing.AroundBottom;
         PreferredWidth := Max(PreferredWidth,
-          xControl.BoundsRect.Right+xControl.BorderSpacing.Around+xControl.BorderSpacing.Right +
-          xTestRect.Right-xClientRect.Right-xTestRect.Left+xClientRect.Left);
-        PreferredHeight := Max(PreferredHeight,
-          xControl.Height + xControl.BorderSpacing.AroundTop + xControl.BorderSpacing.AroundBottom
-        );
+          xControl.Width + xControl.BorderSpacing.AroundLeft + xControl.BorderSpacing.AroundRight);
       end;
+      if xNear < xMinNear then
+        xMinNear := xNear;
+      if xFar  > xMaxFar then
+        xMaxFar := xFar;
+    end;
+    if xHasControl then
+    begin
+      if xVertical then
+        PreferredWidth := Max(PreferredWidth,
+          (xMaxFar - xMinNear) + (xTestRect.Right - xClientRect.Right - xTestRect.Left + xClientRect.Left))
+      else
+        PreferredHeight := Max(PreferredHeight,
+          (xMaxFar - xMinNear) + (xTestRect.Bottom - xClientRect.Bottom - xTestRect.Top + xClientRect.Top));
     end;
   end;
 end;
