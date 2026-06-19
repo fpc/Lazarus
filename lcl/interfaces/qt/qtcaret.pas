@@ -465,6 +465,8 @@ begin
         FTimer.Enabled := True;
     end;
   end;
+  if FVisible and not FCaretDirty and (FWidget.Context = 0) and not FTimer.Enabled then
+    FTimer.Enabled := True;
 end;
 
 procedure TEmulatedCaret.DoTimer(Sender: TObject);
