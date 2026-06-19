@@ -12,15 +12,11 @@ that runs on more than 20 platforms (Linux, Windows, BSD, OS/2, DOS, PowerPC,
 and many more).
 
 The LCL currently supports:
-* Linux/FreeBSD (GTK2, Qt4, Qt5 and Qt6)
+* Linux/FreeBSD (Gtk2, Gtk3, Qt4, Qt5, Qt6)
 * all flavors of Windows (even WinCE)
-* macOS (Cocoa, Carbon, GTK2, Qt4, Qt5, Qt6)
+* macOS (Cocoa, Carbon, Gtk2, Qt4, Qt5, Qt6)
 
-There is an experimental support for:
-* GTK3
-* Solaris 
-
-The LCL still contains code for GTK1, although this target is obsolete.
+The LCL still contains code for Gtk1 (although this target is obsolete).
 
 ### Compilation
 
@@ -53,13 +49,17 @@ https://wiki.freepascal.org/Lazarus_Documentation.
 Examples on how to use the LCL can be found in the [examples](examples) directory.
 Help, documents and files about Free Pascal are at www.freepascal.org.
 
-### Mailing list
+### Mailing list and Forum
 
-There is a very active and helpful mailing list for Lazarus, where the
+There are very active and helpful forum and mailing list for Lazarus, where the
 developers interact, share ideas, discuss problems, and of course answer
 questions.
-You can subscribe at
+
+You can subscribe to mailing list at
 http://lists.lazarus.freepascal.org/mailman/listinfo/lazarus.
+
+Forum is available at
+https://forum.lazarus.freepascal.org/.
 
 ### How to help Lazarus
 
