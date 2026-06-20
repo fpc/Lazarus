@@ -425,6 +425,22 @@ type
     procedure DetachFromLines(ALines: TLazEditStringsBase); override; final;
   end;
 
+  { TLazEditEmptyHighlighter - A base-class that returns each line "as is" without any Token/Attributes }
+
+  TLazEditEmptyHighlighter = class(TLazEditCustomHighlighter)
+  private
+    FPos: integer;
+  protected
+    procedure InitForScanningLine; override;
+    procedure Next; override;
+    function GetEol: Boolean; override;
+    function GetToken: String; override;
+    function GetTokenPos: Integer; override;
+    function GetTokenKind: integer; override;
+    procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
+    function GetTokenAttribute: TLazEditTextAttribute; override;
+  end;
+
 var
   UnknownLanguageName: String = 'no name'; // User app can set their default here
 
@@ -1145,6 +1161,50 @@ begin
     AttachedLines.Remove(ALines);
     ALines.RemoveFreeNotification(@DoAttachedLinesFreed);
   end;
+end;
+
+{ TLazEditEmptyHighlighter }
+
+procedure TLazEditEmptyHighlighter.InitForScanningLine;
+begin
+  inherited InitForScanningLine;
+  FPos := 0;
+end;
+
+procedure TLazEditEmptyHighlighter.Next;
+begin
+  FPos := Length(CurrentLineText);
+end;
+
+function TLazEditEmptyHighlighter.GetEol: Boolean;
+begin
+  Result := FPos <> 0;
+end;
+
+function TLazEditEmptyHighlighter.GetToken: String;
+begin
+  Result := CurrentLineText;
+end;
+
+function TLazEditEmptyHighlighter.GetTokenPos: Integer;
+begin
+  Result := FPos;
+end;
+
+function TLazEditEmptyHighlighter.GetTokenKind: integer;
+begin
+  Result := 0;
+end;
+
+procedure TLazEditEmptyHighlighter.GetTokenEx(out TokenStart: PChar; out TokenLength: integer);
+begin
+  TokenStart := PChar(CurrentLineText);
+  TokenLength := Length(CurrentLineText);
+end;
+
+function TLazEditEmptyHighlighter.GetTokenAttribute: TLazEditTextAttribute;
+begin
+  Result := nil;
 end;
 
 end.
