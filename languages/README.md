@@ -6,7 +6,7 @@ Quick Start for translators
 Finnish translation is used as an example:
 
 1. Make sure that you have up-to-date Lazarus from Git (main branch).
-2. Search for all *.pot files ([PoChecker](components/pochecker) tool in `<lazarusdir>/components/pochecker` directory can help you with this).
+2. Search for all *.pot files ([PoChecker](../components/pochecker) tool in `<lazarusdir>/components/pochecker` directory can help you with this).
 3. If POT file belongs to some package, make sure that this package is installed in IDE.
 4. Rebuild Lazarus clean. This will update translations for all installed packages.
 5. Run `sh localize.sh` (Linux) or `localize.bat` (Windows) to update IDE translations.
@@ -55,7 +55,7 @@ and click on any translation family with right mouse button while pressing SHIFT
 
 Note that refresh function REQUIRES translation files to be accessible for WRITING. 
 
-It is IMPORTANT to use only [PoChecker](components/pochecker) or up-to-date [updatepofiles](tools/updatepofiles.lpi) for refresing of translation families. Using other tools like built-in into your PO editor can lead to breakage.
+It is IMPORTANT to use only [PoChecker](../components/pochecker) or up-to-date [updatepofiles](../tools/updatepofiles.lpi) for refresing of translation families. Using other tools like built-in into your PO editor can lead to breakage.
 
 Make sure to rebuild first all packages whose translations will be refreshed (follow the steps from basic workflow described above). This is needed to make sure that all POT files are up-to-date.
 
