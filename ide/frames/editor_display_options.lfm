@@ -5,58 +5,107 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
   Width = 662
   ClientHeight = 512
   ClientWidth = 662
+  LCLVersion = '4.99.0.0'
   ParentFont = False
   TabOrder = 0
   Visible = False
-  DesignLeft = 424
-  DesignTop = 163
-  object MarginAndGutterGroupBox: TGroupBox
+  DesignLeft = 432
+  DesignTop = 161
+  object divGeneral: TDividerBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 309
+    Height = 15
     Top = 0
     Width = 662
-    Align = alTop
-    AutoSize = True
-    Caption = 'MarginAndGutterGroupBox'
-    ClientHeight = 290
-    ClientWidth = 660
-    TabOrder = 0
+    Caption = 'divGeneral'
+    Anchors = [akTop, akLeft, akRight]
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object pnlMargin: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = divGeneral
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 50
+    Top = 15
+    Width = 662
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Bottom = 7
+    BevelOuter = bvNone
+    ChildSizing.HorizontalSpacing = 15
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    ClientHeight = 50
+    ClientWidth = 662
+    TabOrder = 1
+    object VisibleRightMarginCheckBox: TCheckBox
+      Left = 7
+      Height = 19
+      Top = 7
+      Width = 171
+      BorderSpacing.Around = 7
+      Caption = 'VisibleRightMarginCheckBox'
+      TabOrder = 0
+      OnChange = GeneralCheckBoxOnChange
+    end
+    object l1: TLabel
+      Left = 193
+      Height = 19
+      Top = 7
+      Width = 1
+    end
+    object RightMarginComboBox: TComboBox
+      AnchorSideLeft.Control = l1
+      AnchorSideTop.Control = l1
+      AnchorSideTop.Side = asrCenter
+      Left = 234
+      Height = 23
+      Top = 5
+      Width = 100
+      BorderSpacing.Left = 34
+      BorderSpacing.Around = 7
+      Constraints.MaxWidth = 100
+      Constraints.MinWidth = 50
+      ItemHeight = 15
+      Items.Strings = (
+        '80'
+        '78'
+        '76'
+      )
+      TabOrder = 1
+      OnChange = ComboboxOnChange
+      OnExit = ComboboxOnExit
+      OnKeyDown = ComboBoxOnKeyDown
+    end
     object RightMarginLabel: TLabel
       AnchorSideLeft.Control = RightMarginComboBox
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = RightMarginComboBox
+      AnchorSideTop.Control = l1
       AnchorSideTop.Side = asrCenter
-      Left = 411
-      Height = 18
-      Top = 15
-      Width = 119
+      AnchorSideRight.Side = asrBottom
+      Left = 349
+      Height = 15
+      Top = 9
+      Width = 94
       BorderSpacing.Left = 7
       Caption = 'RightMarginLabel'
-    end
-    object ShowOnlyLineNumbersMultiplesOfLabel: TLabel
-      AnchorSideLeft.Control = ShowOnlyLineNumbersMultiplesOfSpinEdit
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = ShowOnlyLineNumbersMultiplesOfSpinEdit
-      AnchorSideTop.Side = asrCenter
-      Left = 393
-      Height = 18
-      Top = 256
-      Width = 155
-      BorderSpacing.Left = 7
-      BorderSpacing.Top = 7
-      Caption = 'Every n-th line number'
     end
     object RightMarginColorLink: TLabel
       AnchorSideLeft.Control = RightMarginLabel
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = RightMarginLabel
+      AnchorSideTop.Control = l1
       AnchorSideTop.Side = asrCenter
       Cursor = crHandPoint
-      Left = 537
-      Height = 18
-      Top = 15
-      Width = 147
+      Left = 458
+      Height = 15
+      Top = 9
+      Width = 117
       BorderSpacing.Left = 7
       Caption = 'RightMarginColorLink'
       Font.Color = clBlue
@@ -65,93 +114,124 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       OnMouseEnter = LinkLabelMouseEnter
       OnMouseLeave = LinkLabelMouseLeave
     end
-    object VisibleRightMarginCheckBox: TCheckBox
-      AnchorSideLeft.Control = MarginAndGutterGroupBox
-      AnchorSideTop.Control = MarginAndGutterGroupBox
-      Left = 7
-      Height = 23
-      Top = 7
-      Width = 219
-      BorderSpacing.Around = 7
-      Caption = 'VisibleRightMarginCheckBox'
-      TabOrder = 0
-      OnChange = GeneralCheckBoxOnChange
+    object RightMarginMaxLengthLink: TLabel
+      AnchorSideLeft.Control = RightMarginColorLink
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = l1
+      AnchorSideTop.Side = asrCenter
+      Cursor = crHandPoint
+      Left = 590
+      Height = 15
+      Top = 9
+      Width = 148
+      BorderSpacing.Left = 7
+      Caption = 'RightMarginMaxLengthLink'
+      Font.Color = clBlue
+      ParentFont = False
+      OnClick = RightMarginMaxLengthLinkClick
+      OnMouseEnter = LinkLabelMouseEnter
+      OnMouseLeave = LinkLabelMouseLeave
     end
-    object VisibleGutterCheckBox: TCheckBox
-      AnchorSideLeft.Control = MarginAndGutterGroupBox
-      AnchorSideTop.Control = VisibleRightMarginCheckBox
+    object chkTopInfoView: TCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 7
-      Height = 23
-      Top = 37
-      Width = 179
+      Height = 19
+      Top = 33
+      Width = 171
+      BorderSpacing.Around = 7
+      Caption = 'chkTopInfoView'
+      TabOrder = 2
+    end
+  end
+  object divGutter: TDividerBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = pnlMargin
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 15
+    Top = 72
+    Width = 662
+    Caption = 'divGutter'
+    Anchors = [akTop, akLeft, akRight]
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object pnlGutter: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = divGutter
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 211
+    Top = 87
+    Width = 662
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Bottom = 7
+    BevelOuter = bvNone
+    ClientHeight = 211
+    ClientWidth = 662
+    TabOrder = 2
+    object VisibleGutterCheckBox: TCheckBox
+      AnchorSideLeft.Control = pnlGutter
+      AnchorSideTop.Control = pnlGutter
+      Left = 7
+      Height = 19
+      Top = 7
+      Width = 138
       BorderSpacing.Left = 7
       BorderSpacing.Top = 7
       BorderSpacing.Right = 7
       Caption = 'VisibleGutterCheckBox'
-      TabOrder = 1
+      TabOrder = 0
       OnChange = GeneralCheckBoxOnChange
     end
-    object RightMarginComboBox: TComboBox
-      AnchorSideLeft.Control = btnGutterUp
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = MarginAndGutterGroupBox
-      Left = 325
-      Height = 35
-      Top = 7
-      Width = 79
-      BorderSpacing.Left = 34
-      BorderSpacing.Around = 7
-      ItemHeight = 0
+    object rgGutterSite: TRadioGroup
+      AnchorSideLeft.Control = lbGutterParts
+      AnchorSideTop.Control = VisibleGutterCheckBox
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = lbGutterParts
+      AnchorSideRight.Side = asrBottom
+      Left = 7
+      Height = 39
+      Top = 26
+      Width = 218
+      Anchors = [akTop, akLeft, akRight]
+      AutoFill = True
+      AutoSize = True
+      ChildSizing.LeftRightSpacing = 6
+      ChildSizing.HorizontalSpacing = 6
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 2
+      ClientHeight = 19
+      ClientWidth = 214
+      Columns = 2
       Items.Strings = (
-        '80'
-        '78'
-        '76'
+        'Left'
+        'Right'
       )
-      TabOrder = 2
-      OnChange = ComboboxOnChange
-      OnExit = ComboboxOnExit
-      OnKeyDown = ComboBoxOnKeyDown
-    end
-    object ShowOnlyLineNumbersMultiplesOfSpinEdit: TSpinEdit
-      AnchorSideLeft.Control = RightMarginComboBox
-      AnchorSideTop.Control = cbCurLineMarkup
-      AnchorSideTop.Side = asrBottom
-      Left = 325
-      Height = 35
-      Top = 248
-      Width = 61
-      BorderSpacing.Top = 7
-      BorderSpacing.Bottom = 7
-      MaxValue = 65536
-      MinValue = 1
-      TabOrder = 3
-      Value = 1
-      OnChange = GeneralCheckBoxOnChange
-    end
-    object chkTopInfoView: TCheckBox
-      AnchorSideLeft.Control = RightMarginComboBox
-      AnchorSideTop.Control = RightMarginComboBox
-      AnchorSideTop.Side = asrBottom
-      Left = 325
-      Height = 23
-      Top = 49
-      Width = 134
-      Caption = 'chkTopInfoView'
-      TabOrder = 4
+      TabOrder = 7
+      OnClick = rgGutterSiteClick
     end
     object lbGutterParts: TListBox
-      AnchorSideLeft.Control = MarginAndGutterGroupBox
+      AnchorSideLeft.Control = pnlGutter
       AnchorSideTop.Control = rgGutterSite
       AnchorSideTop.Side = asrBottom
       Left = 7
       Height = 144
-      Top = 92
+      Top = 65
       Width = 218
-      BorderSpacing.Around = 7
+      BorderSpacing.Left = 7
+      BorderSpacing.Right = 7
       ItemHeight = 0
-      TabOrder = 5
-      TopIndex = -1
+      TabOrder = 2
       OnClick = lbGutterPartsClick
     end
     object btnGutterUp: TSpeedButton
@@ -160,7 +240,7 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideTop.Control = lbGutterParts
       Left = 232
       Height = 25
-      Top = 99
+      Top = 72
       Width = 26
       BorderSpacing.Around = 7
       OnClick = btnGutterUpClick
@@ -172,19 +252,46 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideTop.Side = asrBottom
       Left = 232
       Height = 25
-      Top = 131
+      Top = 104
       Width = 26
       BorderSpacing.Around = 7
       OnClick = btnGutterDownClick
     end
     object GutterPartVisible: TCheckBox
-      AnchorSideLeft.Control = RightMarginComboBox
+      AnchorSideLeft.Control = btnGutterUp
+      AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = lbGutterParts
-      Left = 325
-      Height = 23
-      Top = 92
-      Width = 142
+      Left = 288
+      Height = 19
+      Top = 65
+      Width = 106
+      BorderSpacing.Left = 30
       Caption = 'GutterPartVisible'
+      TabOrder = 3
+      OnChange = spinGutterPartWidthChange
+    end
+    object lblGutterPartWidth: TLabel
+      AnchorSideLeft.Control = GutterPartVisible
+      AnchorSideTop.Control = spinGutterPartWidth
+      AnchorSideTop.Side = asrCenter
+      Left = 288
+      Height = 15
+      Top = 95
+      Width = 99
+      BorderSpacing.Right = 7
+      Caption = 'lblGutterPartWidth'
+    end
+    object spinGutterPartWidth: TSpinEdit
+      AnchorSideLeft.Control = spinGutterPartLeftOffs
+      AnchorSideTop.Control = GutterPartVisible
+      AnchorSideTop.Side = asrBottom
+      Left = 420
+      Height = 23
+      Top = 91
+      Width = 56
+      BorderSpacing.Top = 7
+      BorderSpacing.Bottom = 7
+      MaxValue = 99
       TabOrder = 6
       OnChange = spinGutterPartWidthChange
     end
@@ -192,10 +299,10 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideLeft.Control = GutterPartVisible
       AnchorSideTop.Control = spinGutterPartLeftOffs
       AnchorSideTop.Side = asrCenter
-      Left = 325
-      Height = 18
-      Top = 172
-      Width = 136
+      Left = 288
+      Height = 15
+      Top = 125
+      Width = 105
       Caption = 'lblGutterPartMargin'
     end
     object spinGutterPartLeftOffs: TSpinEdit
@@ -203,141 +310,114 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = spinGutterPartWidth
       AnchorSideTop.Side = asrBottom
-      Left = 482
-      Height = 35
-      Top = 164
+      Left = 420
+      Height = 23
+      Top = 121
       Width = 56
-      BorderSpacing.Left = 14
+      BorderSpacing.Left = 20
       BorderSpacing.Around = 7
       MaxValue = 10
-      TabOrder = 8
+      TabOrder = 4
       OnChange = spinGutterPartWidthChange
     end
     object spinGutterPartRightOffs: TSpinEdit
       AnchorSideLeft.Control = spinGutterPartLeftOffs
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = spinGutterPartLeftOffs
-      Left = 545
-      Height = 35
-      Top = 164
+      Left = 483
+      Height = 23
+      Top = 121
       Width = 56
       BorderSpacing.Left = 7
       MaxValue = 25
-      TabOrder = 10
+      TabOrder = 5
       OnChange = spinGutterPartWidthChange
-    end
-    object spinGutterPartWidth: TSpinEdit
-      AnchorSideLeft.Control = spinGutterPartLeftOffs
-      AnchorSideTop.Control = GutterPartVisible
-      AnchorSideTop.Side = asrBottom
-      Left = 482
-      Height = 35
-      Top = 122
-      Width = 56
-      BorderSpacing.Top = 7
-      BorderSpacing.Bottom = 7
-      MaxValue = 99
-      TabOrder = 7
-      OnChange = spinGutterPartWidthChange
-    end
-    object lblGutterPartWidth: TLabel
-      AnchorSideLeft.Control = GutterPartVisible
-      AnchorSideTop.Control = spinGutterPartWidth
-      AnchorSideTop.Side = asrCenter
-      Left = 325
-      Height = 18
-      Top = 130
-      Width = 128
-      Caption = 'lblGutterPartWidth'
-    end
-    object rgGutterSite: TRadioGroup
-      AnchorSideLeft.Control = MarginAndGutterGroupBox
-      AnchorSideTop.Control = VisibleGutterCheckBox
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = MarginAndGutterGroupBox
-      AnchorSideRight.Side = asrBottom
-      Left = 7
-      Height = 25
-      Top = 60
-      Width = 132
-      AutoFill = True
-      AutoSize = True
-      BorderSpacing.Left = 7
-      BorderSpacing.Right = 7
-      ChildSizing.LeftRightSpacing = 6
-      ChildSizing.HorizontalSpacing = 6
-      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-      ChildSizing.EnlargeVertical = crsHomogenousChildResize
-      ChildSizing.ShrinkHorizontal = crsScaleChilds
-      ChildSizing.ShrinkVertical = crsScaleChilds
-      ChildSizing.Layout = cclLeftToRightThenTopToBottom
-      ChildSizing.ControlsPerLine = 2
-      ClientHeight = 23
-      ClientWidth = 130
-      Columns = 2
-      Items.Strings = (
-        'Left'
-        'Right'
-      )
-      TabOrder = 9
-      OnClick = rgGutterSiteClick
     end
     object cbCurLineMarkup: TComboBox
-      AnchorSideLeft.Control = RightMarginComboBox
+      AnchorSideLeft.Control = GutterPartVisible
       AnchorSideTop.Control = spinGutterPartLeftOffs
       AnchorSideTop.Side = asrBottom
-      Left = 325
-      Height = 35
-      Top = 206
+      Left = 288
+      Height = 23
+      Top = 151
       Width = 325
       BorderSpacing.Top = 7
       BorderSpacing.Bottom = 7
-      ItemHeight = 0
-      TabOrder = 11
+      ItemHeight = 15
+      TabOrder = 8
       Text = 'cbCurLineMarkup'
       OnChange = spinGutterPartWidthChange
     end
-    object RightMarginMaxLengthLink: TLabel
-      AnchorSideLeft.Control = RightMarginColorLink
+    object ShowOnlyLineNumbersMultiplesOfSpinEdit: TSpinEdit
+      AnchorSideLeft.Control = GutterPartVisible
+      AnchorSideTop.Control = cbCurLineMarkup
+      AnchorSideTop.Side = asrBottom
+      Left = 288
+      Height = 23
+      Top = 181
+      Width = 61
+      BorderSpacing.Top = 7
+      BorderSpacing.Bottom = 7
+      MaxValue = 65536
+      MinValue = 1
+      TabOrder = 1
+      Value = 1
+      OnChange = GeneralCheckBoxOnChange
+    end
+    object ShowOnlyLineNumbersMultiplesOfLabel: TLabel
+      AnchorSideLeft.Control = ShowOnlyLineNumbersMultiplesOfSpinEdit
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = RightMarginLabel
+      AnchorSideTop.Control = ShowOnlyLineNumbersMultiplesOfSpinEdit
       AnchorSideTop.Side = asrCenter
-      Cursor = crHandPoint
-      Left = 691
-      Height = 18
-      Top = 15
-      Width = 185
+      Left = 356
+      Height = 15
+      Top = 185
+      Width = 121
       BorderSpacing.Left = 7
-      Caption = 'RightMarginMaxLengthLink'
-      Font.Color = clBlue
-      ParentFont = False
-      OnClick = RightMarginMaxLengthLinkClick
-      OnMouseEnter = LinkLabelMouseEnter
-      OnMouseLeave = LinkLabelMouseLeave
+      BorderSpacing.Top = 7
+      Caption = 'Every n-th line number'
     end
   end
-  object EditorFontGroupBox: TGroupBox
+  object divFont: TDividerBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = pnlGutter
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 152
-    Top = 316
+    Height = 15
+    Top = 305
     Width = 662
-    Align = alTop
+    Anchors = [akTop, akLeft, akRight]
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object EditorFontPnl: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = divFont
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 97
+    Top = 327
+    Width = 662
+    Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 7
-    Caption = 'EditorFontGroupBox'
-    ClientHeight = 133
-    ClientWidth = 660
-    TabOrder = 1
+    BevelOuter = bvNone
+    ClientHeight = 97
+    ClientWidth = 662
+    TabOrder = 3
     object EditorFontSizeLabel: TLabel
       AnchorSideLeft.Control = EditorFontSizeSpinEdit
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = EditorFontSizeSpinEdit
       AnchorSideTop.Side = asrCenter
       Left = 70
-      Height = 18
-      Top = 57
-      Width = 134
+      Height = 15
+      Top = 41
+      Width = 103
       BorderSpacing.Around = 7
       Caption = 'EditorFontSizeLabel'
     end
@@ -346,10 +426,10 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ExtraLineSpacingComboBox
       AnchorSideTop.Side = asrCenter
-      Left = 352
-      Height = 18
-      Top = 57
-      Width = 152
+      Left = 321
+      Height = 15
+      Top = 41
+      Width = 118
       BorderSpacing.Around = 7
       Caption = 'ExtraLineSpacingLabel'
     end
@@ -358,37 +438,37 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ExtraCharSpacingComboBox
       AnchorSideTop.Side = asrCenter
-      Left = 352
-      Height = 18
-      Top = 99
-      Width = 156
+      Left = 321
+      Height = 15
+      Top = 71
+      Width = 121
       BorderSpacing.Around = 7
       Caption = 'ExtraCharSpacingLabel'
     end
     object EditorFontComboBox: TComboBox
-      AnchorSideLeft.Control = EditorFontGroupBox
-      AnchorSideTop.Control = EditorFontGroupBox
+      AnchorSideLeft.Control = EditorFontPnl
+      AnchorSideTop.Control = EditorFontPnl
       AnchorSideRight.Control = EditorFontButton
       Left = 7
-      Height = 35
+      Height = 23
       Top = 7
-      Width = 620
+      Width = 622
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 7
       BorderSpacing.Top = 7
-      ItemHeight = 0
+      ItemHeight = 15
       TabOrder = 0
       Text = 'EditorFontComboBox'
       OnEditingDone = EditorFontComboBoxEditingDone
     end
     object EditorFontButton: TButton
       AnchorSideTop.Control = EditorFontComboBox
-      AnchorSideRight.Control = EditorFontGroupBox
+      AnchorSideRight.Control = EditorFontPnl
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = EditorFontComboBox
       AnchorSideBottom.Side = asrBottom
-      Left = 627
-      Height = 35
+      Left = 629
+      Height = 23
       Top = 7
       Width = 26
       Anchors = [akTop, akRight, akBottom]
@@ -398,12 +478,12 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       OnClick = EditorFontButtonClick
     end
     object EditorFontSizeSpinEdit: TSpinEdit
-      AnchorSideLeft.Control = EditorFontGroupBox
+      AnchorSideLeft.Control = EditorFontPnl
       AnchorSideTop.Control = EditorFontComboBox
       AnchorSideTop.Side = asrBottom
       Left = 7
-      Height = 35
-      Top = 49
+      Height = 23
+      Top = 37
       Width = 56
       BorderSpacing.Around = 7
       MinValue = -100
@@ -415,13 +495,13 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = EditorFontComboBox
       AnchorSideTop.Side = asrBottom
-      Left = 233
-      Height = 35
-      Top = 49
+      Left = 202
+      Height = 23
+      Top = 37
       Width = 112
       BorderSpacing.Left = 22
       BorderSpacing.Around = 7
-      ItemHeight = 0
+      ItemHeight = 15
       Items.Strings = (
         '0'
         '1'
@@ -436,12 +516,12 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideLeft.Control = ExtraLineSpacingComboBox
       AnchorSideTop.Control = ExtraLineSpacingComboBox
       AnchorSideTop.Side = asrBottom
-      Left = 233
-      Height = 35
-      Top = 91
+      Left = 202
+      Height = 23
+      Top = 67
       Width = 112
       BorderSpacing.Bottom = 7
-      ItemHeight = 0
+      ItemHeight = 15
       Items.Strings = (
         '0'
         '1'
@@ -453,13 +533,13 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       OnKeyDown = ComboBoxOnKeyDown
     end
     object DisableAntialiasingCheckBox: TCheckBox
-      AnchorSideLeft.Control = EditorFontGroupBox
+      AnchorSideLeft.Control = EditorFontPnl
       AnchorSideTop.Control = EditorFontSizeSpinEdit
       AnchorSideTop.Side = asrBottom
       Left = 7
-      Height = 23
-      Top = 91
-      Width = 220
+      Height = 19
+      Top = 67
+      Width = 171
       BorderSpacing.Around = 7
       Caption = 'DisableAntialiasingCheckBox'
       TabOrder = 5
@@ -467,23 +547,29 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
     end
   end
   inline DisplayPreview: TSynEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = EditorFontPnl
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 37
-    Top = 475
+    Height = 81
+    Top = 431
     Width = 662
-    Align = alClient
     BorderSpacing.Top = 7
+    Anchors = [akTop, akLeft, akRight, akBottom]
     Font.Height = -16
     Font.Name = 'courier'
     Font.Pitch = fpFixed
     Font.Quality = fqNonAntialiased
+    Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
-    TabOrder = 2
+    TabOrder = 0
     BookMarkOptions.Xoffset = 30
-    Gutter.Width = 66
+    Gutter.Width = 59
     Gutter.MouseActions = <    
       item
         ClickCount = ccAny
@@ -891,55 +977,66 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
     )
     VisibleSpecialChars = [vscSpace, vscTabAtLast]
     ReadOnly = True
-    SelectedColor.BackPriority = 50
     SelectedColor.ForePriority = 50
+    SelectedColor.BackPriority = 50
     SelectedColor.FramePriority = 50
     SelectedColor.BoldPriority = 50
     SelectedColor.ItalicPriority = 50
     SelectedColor.UnderlinePriority = 50
     SelectedColor.StrikeOutPriority = 50
+    SelectedColor.ExtendPastEol = True
+    IncrementColor.ExtendPastEol = False
     BracketHighlightStyle = sbhsBoth
-    BracketMatchColor.Background = clNone
     BracketMatchColor.Foreground = clNone
+    BracketMatchColor.Background = clNone
     BracketMatchColor.Style = [fsBold]
-    FoldedCodeColor.Background = clNone
     FoldedCodeColor.Foreground = clGray
+    FoldedCodeColor.Background = clNone
     FoldedCodeColor.FrameColor = clGray
-    MouseLinkColor.Background = clNone
     MouseLinkColor.Foreground = clBlue
-    LineHighlightColor.Background = clNone
+    MouseLinkColor.Background = clNone
     LineHighlightColor.Foreground = clNone
+    LineHighlightColor.Background = clNone
     inline TSynGutterPartList
       object TSynGutterMarks
-        Width = 27
+        Width = 24
         MouseActions = <>
         MaxExtraMarksColums = 0
         Options = [sgmoDeDuplicateMarksOnOverflow]
+        MarkupInfo.Background = clBtnFace
+        MarkupInfoCurrentLine.Foreground = clNone
+        MarkupInfoCurrentLine.Background = clNone
       end
       object TSynGutterLineNumber
-        Width = 21
+        Width = 19
         MouseActions = <>
         MarkupInfo.Background = clBtnFace
-        MarkupInfo.Foreground = clNone
+        MarkupInfoCurrentLine.Foreground = clNone
+        MarkupInfoCurrentLine.Background = clNone
         DigitCount = 2
         ShowOnlyLineNumbersMultiplesOf = 1
         ZeroStart = False
         LeadingZeros = False
       end
       object TSynGutterChanges
-        Width = 5
+        Width = 4
         MouseActions = <>
         ModifiedColor = 59900
         SavedColor = clGreen
+        MarkupInfo.Foreground = clGreen
+        MarkupInfo.FrameColor = 59900
+        MarkupInfoCurrentLine.Foreground = clNone
+        MarkupInfoCurrentLine.Background = clNone
       end
       object TSynGutterSeparator
         Width = 2
         MouseActions = <>
-        MarkupInfo.Background = clWhite
         MarkupInfo.Foreground = clGray
+        MarkupInfo.Background = clWhite
+        MarkupInfoCurrentLine.Foreground = clNone
+        MarkupInfoCurrentLine.Background = clNone
       end
       object TSynGutterCodeFolding
-        Width = 11
         MouseActions = <        
           item
             Button = mbRight
@@ -966,8 +1063,9 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
             ClickDir = cdDown
             Command = emcNone
           end>
-        MarkupInfo.Background = clNone
         MarkupInfo.Foreground = clGray
+        MarkupInfoCurrentLine.Foreground = clNone
+        MarkupInfoCurrentLine.Background = clNone
         MouseActionsExpanded = <        
           item
             ClickCount = ccAny

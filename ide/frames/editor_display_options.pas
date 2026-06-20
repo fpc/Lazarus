@@ -35,7 +35,7 @@ uses
   SynGutter, SynEditTypes, SynGutterBase, SynGutterMarks, SynGutterChanges,
   SynGutterCodeFolding,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, IDEIntfUtils, IDEImagesIntf,
+  IDEOptionsIntf, IDEOptEditorIntf, IDEIntfUtils, IDEImagesIntf, DividerBevel,
   // IDE
   EditorOptions, LazarusIDEStrConsts, editor_general_options,
   editor_color_options, codetools_linesplitting_options, SourceSynEditor,
@@ -46,23 +46,28 @@ type
 
   TEditorDisplayOptionsFrame = class(TAbstractIDEOptionsEditor)
     cbCurLineMarkup: TComboBox;
-    GutterPartVisible: TCheckBox;
-    chkTopInfoView: TCheckBox;
     DisableAntialiasingCheckBox: TCheckBox;
-    DisplayPreview: TSynEdit;
+    divGeneral: TDividerBevel;
+    divGutter: TDividerBevel;
+    divFont: TDividerBevel;
     EditorFontButton: TButton;
     EditorFontComboBox: TComboBox;
-    EditorFontGroupBox: TGroupBox;
-    EditorFontSizeSpinEdit: TSpinEdit;
+    EditorFontPnl: TPanel;
     EditorFontSizeLabel: TLabel;
+    EditorFontSizeSpinEdit: TSpinEdit;
     ExtraCharSpacingComboBox: TComboBox;
     ExtraCharSpacingLabel: TLabel;
     ExtraLineSpacingComboBox: TComboBox;
     ExtraLineSpacingLabel: TLabel;
+    GutterPartVisible: TCheckBox;
+    chkTopInfoView: TCheckBox;
+    DisplayPreview: TSynEdit;
+    l1: TLabel;
     lblGutterPartWidth: TLabel;
     lblGutterPartMargin: TLabel;
     lbGutterParts: TListBox;
-    MarginAndGutterGroupBox: TGroupBox;
+    pnlMargin: TPanel;
+    pnlGutter: TPanel;
     rgGutterSite: TRadioGroup;
     RightMarginColorLink: TLabel;
     RightMarginMaxLengthLink: TLabel;
@@ -547,12 +552,13 @@ begin
   FDialog := ADialog;
   FUpdatingFontSizeRange := False;
 
-  MarginAndGutterGroupBox.Caption := dlgMarginGutter;
+  divGeneral.Caption := dlgGeneral;
+  divGutter.Caption := dlgGutter;
+  divFont.Caption := dlgDefaultEditorFont;
   VisibleRightMarginCheckBox.Caption := dlgVisibleRightMargin;
   VisibleGutterCheckBox.Caption := dlgVisibleGutter;
   ShowOnlyLineNumbersMultiplesOfLabel.Caption := lisEveryNThLineNumber;
   RightMarginLabel.Caption := dlgRightMargin;
-  EditorFontGroupBox.Caption := dlgDefaultEditorFont;
   EditorFontSizeLabel.Caption := dlgEditorFontSize;
   ExtraCharSpacingLabel.Caption := dlgExtraCharSpacing;
   ExtraLineSpacingLabel.Caption := dlgExtraLineSpacing;
@@ -565,7 +571,7 @@ begin
   btnGutterDown.Images := IDEImages.Images_16;
   btnGutterUp.ImageIndex := IDEImages.LoadImage('arrow_up', 16);
   btnGutterDown.ImageIndex := IDEImages.LoadImage('arrow_down', 16);
-  rgGutterSite.Caption := dlfMouseSimpleGutterSect;
+  rgGutterSite.Caption := '';
   rgGutterSite.Items[0] := lisLeftGutter;
   rgGutterSite.Items[1] := lisRightGutter;
   GutterPartVisible.Caption := lisGutterPartVisible;

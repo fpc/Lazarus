@@ -1817,14 +1817,14 @@ resourcestring
   dlgEditExportBackColor = 'Use Background color in HTML export';
   dlgBookmarkSetScroll = 'Restore scroll position for bookmarks';
   dlgUndoLimit = 'Undo limit';
-  dlgMarginGutter = 'Margin and gutter';
+  dlgGeneral = 'General';
+  dlgGutter = 'Gutter';
   dlgVisibleRightMargin = 'Visible right margin';
   dlgVisibleGutter = 'Visible gutter';
   dlgGutterSeparatorIndex = 'Gutter separator index';
   dlgShowLineNumbers = 'Show line numbers';
   dlgShowCompilingLineNumbers = 'Show line numbers';
   dlgRightMargin = 'Right margin';
-  dlgGutter = 'Gutter';
   dlgGutterColor = 'Gutter Color';
   dlgDefaultEditorFont='Default editor font';
   dlgEditorFontSize = 'Editor font size';
