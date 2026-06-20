@@ -2584,7 +2584,6 @@ begin
   FPaintArea.DisplayView := FTheLinesView.DisplayView;
 
   Color := clWhite;
-  Font.OnChange := @FontChanged; // already set by inherited
   Font.Assign(fFontDummy);
   ParentFont := False;
   ParentColor := False;

@@ -354,6 +354,20 @@ begin
   Result:=TLazAccessibleObjectEnumerator.Create(FChildrenSortedForDataObject);
 end;
 
+{ TControlFont }
+
+procedure TControlFont.Changed;
+begin
+  inherited Changed;
+  FOwner.FontChanged(Self);
+end;
+
+constructor TControlFont.Create(AnOwner: TControl);
+begin
+  FOwner := AnOwner;
+  Create;
+end;
+
 {------------------------------------------------------------------------------
   TControl.AdjustSize
 
@@ -5301,8 +5315,7 @@ begin
     FParentShowHint := True;
     FWindowProc := @WndProc;
     FCursor := crDefault;
-    FFont := TFont.Create;
-    FFont.OnChange := @FontChanged;
+    FFont := TControlFont.Create(Self);
     FIsControl := False;
     FEnabled := True;
     FHelpType := htContext;

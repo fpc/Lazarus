@@ -1165,6 +1165,17 @@ type
     function GetEnumerator: TLazAccessibleObjectEnumerator;
   end;
 
+  { TControlFont }
+
+  TControlFont = class(TFont)
+  private
+    FOwner: TControl;
+  protected
+    procedure Changed; override;
+  public
+    constructor Create(AnOwner: TControl); overload;
+  end;
+
 {* Note on TControl.Caption
  * The VCL implementation relies on the virtual Get/SetTextBuf to
  * exchange text between widgets and VCL. This means a lot of
