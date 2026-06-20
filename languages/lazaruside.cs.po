@@ -2313,6 +2313,12 @@ msgstr "Od začátku"
 msgid "From c&ursor"
 msgstr "&Od kurzoru"
 
+#: lazarusidestrconsts.dlggeneral
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlggeneral"
+msgid "General"
+msgstr "Obecné"
+
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "&Celkový"
@@ -2826,10 +2832,6 @@ msgstr "spustitelné pomocí \"Make\""
 #: lazarusidestrconsts.dlgmanagedesktops
 msgid "Manage desktops"
 msgstr "Spravovat plochy"
-
-#: lazarusidestrconsts.dlgmargingutter
-msgid "Margin and gutter"
-msgstr "Okraj a žlábek"
 
 #: lazarusidestrconsts.dlgmarkercolor
 msgid "Marker color"

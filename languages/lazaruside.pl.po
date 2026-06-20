@@ -2346,6 +2346,12 @@ msgstr "Od &początku"
 msgid "From c&ursor"
 msgstr "&Od kursora"
 
+#: lazarusidestrconsts.dlggeneral
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlggeneral"
+msgid "General"
+msgstr "Ogólne"
+
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "&Globalnie"
@@ -2866,10 +2872,6 @@ msgstr "Plik wykonywalny \"make\""
 #: lazarusidestrconsts.dlgmanagedesktops
 msgid "Manage desktops"
 msgstr "Zarządzaj pulpitami"
-
-#: lazarusidestrconsts.dlgmargingutter
-msgid "Margin and gutter"
-msgstr "Margines i pasek ikon"
 
 #: lazarusidestrconsts.dlgmarkercolor
 msgid "Marker color"

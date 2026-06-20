@@ -2278,6 +2278,12 @@ msgstr "从开始部分(&E)"
 msgid "From c&ursor"
 msgstr "从光标(&U)"
 
+#: lazarusidestrconsts.dlggeneral
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlggeneral"
+msgid "General"
+msgstr "常规"
+
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "全局(&G)"
@@ -2772,10 +2778,6 @@ msgstr "\"Make\" 可执行程序"
 #: lazarusidestrconsts.dlgmanagedesktops
 msgid "Manage desktops"
 msgstr "管理桌面"
-
-#: lazarusidestrconsts.dlgmargingutter
-msgid "Margin and gutter"
-msgstr "边界和边栏"
 
 #: lazarusidestrconsts.dlgmarkercolor
 msgid "Marker color"

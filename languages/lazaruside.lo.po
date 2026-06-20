@@ -2274,6 +2274,12 @@ msgstr "ຈາກ&ເລີ່ມຕົ້ນ"
 msgid "From c&ursor"
 msgstr "ຈາກ&ເຄີເຊີ"
 
+#: lazarusidestrconsts.dlggeneral
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlggeneral"
+msgid "General"
+msgstr "ທົ່ວໄປ"
+
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "&ທົ່ວໄປ"
@@ -2768,10 +2774,6 @@ msgstr "\"Make\" executable"
 #: lazarusidestrconsts.dlgmanagedesktops
 msgid "Manage desktops"
 msgstr "ຈັດການເດັສທັອບ"
-
-#: lazarusidestrconsts.dlgmargingutter
-msgid "Margin and gutter"
-msgstr "ຂອບ ແລະ ຂອບແຖວ"
 
 #: lazarusidestrconsts.dlgmarkercolor
 msgid "Marker color"

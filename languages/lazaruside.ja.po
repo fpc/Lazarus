@@ -2344,6 +2344,12 @@ msgstr "フォームの冒頭(&E)"
 msgid "From c&ursor"
 msgstr "カーソルから(&F)"
 
+#: lazarusidestrconsts.dlggeneral
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlggeneral"
+msgid "General"
+msgstr "一般"
+
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "グローバル(&G)"
@@ -2863,10 +2869,6 @@ msgstr " 実行ファイルを\"Make\""
 #: lazarusidestrconsts.dlgmanagedesktops
 msgid "Manage desktops"
 msgstr "デスクトップを管理"
-
-#: lazarusidestrconsts.dlgmargingutter
-msgid "Margin and gutter"
-msgstr "マージンとガター"
 
 #: lazarusidestrconsts.dlgmarkercolor
 msgid "Marker color"

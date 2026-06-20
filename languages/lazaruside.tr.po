@@ -2266,6 +2266,12 @@ msgstr "Başlangıçta&n itibaren"
 msgid "From c&ursor"
 msgstr "İ&mleçten"
 
+#: lazarusidestrconsts.dlggeneral
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlggeneral"
+msgid "General"
+msgstr "Genel"
+
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "&Küresel"
@@ -2769,10 +2775,6 @@ msgstr "Yürütülebilir \"yap\""
 #: lazarusidestrconsts.dlgmanagedesktops
 msgid "Manage desktops"
 msgstr "Masaüstlerini yönet"
-
-#: lazarusidestrconsts.dlgmargingutter
-msgid "Margin and gutter"
-msgstr "Kenar boşluğu ve oluk"
 
 #: lazarusidestrconsts.dlgmarkercolor
 msgid "Marker color"

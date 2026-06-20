@@ -2299,6 +2299,12 @@ msgstr "&Elejétől"
 msgid "From c&ursor"
 msgstr "Beszúrási jeltől"
 
+#: lazarusidestrconsts.dlggeneral
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlggeneral"
+msgid "General"
+msgstr "Általános"
+
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "&Globális"
@@ -2804,10 +2810,6 @@ msgstr "\"Make\" program"
 #: lazarusidestrconsts.dlgmanagedesktops
 msgid "Manage desktops"
 msgstr "Felületek kezelése"
-
-#: lazarusidestrconsts.dlgmargingutter
-msgid "Margin and gutter"
-msgstr "Margó és hasábköz"
 
 #: lazarusidestrconsts.dlgmarkercolor
 msgid "Marker color"

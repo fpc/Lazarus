@@ -2389,6 +2389,12 @@ msgstr ""
 msgid "From c&ursor"
 msgstr "סמן טפסים"
 
+#: lazarusidestrconsts.dlggeneral
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlggeneral"
+msgid "General"
+msgstr "כללי"
+
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "גלובלי"
@@ -2926,10 +2932,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgmanagedesktops
 msgid "Manage desktops"
 msgstr ""
-
-#: lazarusidestrconsts.dlgmargingutter
-msgid "Margin and gutter"
-msgstr "שוליים וקווי עזר"
 
 #: lazarusidestrconsts.dlgmarkercolor
 msgid "Marker color"

@@ -2347,6 +2347,12 @@ msgstr "Iš p&radžių"
 msgid "From c&ursor"
 msgstr "Nuo žy&meklio"
 
+#: lazarusidestrconsts.dlggeneral
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlggeneral"
+msgid "General"
+msgstr "Pagrindinis"
+
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "&Globaliai"
@@ -2866,10 +2872,6 @@ msgstr "„make“ vykdomasis failas"
 #: lazarusidestrconsts.dlgmanagedesktops
 msgid "Manage desktops"
 msgstr "Tvarkyti darbalaukius"
-
-#: lazarusidestrconsts.dlgmargingutter
-msgid "Margin and gutter"
-msgstr "Paraštės"
 
 #: lazarusidestrconsts.dlgmarkercolor
 msgid "Marker color"

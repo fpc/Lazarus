@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-05-28 23:36+0300\n"
+"PO-Revision-Date: 2026-06-20 21:47+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -2271,6 +2271,11 @@ msgstr "С на&чала"
 msgid "From c&ursor"
 msgstr "От &курсора"
 
+#: lazarusidestrconsts.dlggeneral
+msgctxt "lazarusidestrconsts.dlggeneral"
+msgid "General"
+msgstr "Общие"
+
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "Во всём т&ексте"
@@ -2765,10 +2770,6 @@ msgstr "Исполнимый файл \"Make\""
 #: lazarusidestrconsts.dlgmanagedesktops
 msgid "Manage desktops"
 msgstr "Управление рабочими столами"
-
-#: lazarusidestrconsts.dlgmargingutter
-msgid "Margin and gutter"
-msgstr "Границы"
 
 #: lazarusidestrconsts.dlgmarkercolor
 msgid "Marker color"

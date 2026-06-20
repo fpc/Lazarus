@@ -2288,6 +2288,12 @@ msgstr "З по&чатку"
 msgid "From c&ursor"
 msgstr "&Від курсора"
 
+#: lazarusidestrconsts.dlggeneral
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlggeneral"
+msgid "General"
+msgstr "Загальне"
+
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "&Глобально"
@@ -2793,10 +2799,6 @@ msgstr "Виконуваний файл \"Make\""
 #: lazarusidestrconsts.dlgmanagedesktops
 msgid "Manage desktops"
 msgstr "Керування стільницями"
-
-#: lazarusidestrconsts.dlgmargingutter
-msgid "Margin and gutter"
-msgstr "Межі і смужка"
 
 #: lazarusidestrconsts.dlgmarkercolor
 msgid "Marker color"

@@ -2328,6 +2328,12 @@ msgstr ""
 msgid "From c&ursor"
 msgstr ""
 
+#: lazarusidestrconsts.dlggeneral
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlggeneral"
+msgid "General"
+msgstr "General"
+
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr ""
@@ -2849,10 +2855,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgmanagedesktops
 msgid "Manage desktops"
 msgstr ""
-
-#: lazarusidestrconsts.dlgmargingutter
-msgid "Margin and gutter"
-msgstr "Marge i canal"
 
 #: lazarusidestrconsts.dlgmarkercolor
 msgid "Marker color"

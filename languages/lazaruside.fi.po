@@ -2271,6 +2271,12 @@ msgstr "&Alusta"
 msgid "From c&ursor"
 msgstr "&Kursorin kohdasta"
 
+#: lazarusidestrconsts.dlggeneral
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlggeneral"
+msgid "General"
+msgstr "Yleistä"
+
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "&Julkinen"
@@ -2782,10 +2788,6 @@ msgstr "\"Make\" ohjelma"
 #: lazarusidestrconsts.dlgmanagedesktops
 msgid "Manage desktops"
 msgstr "Hallinnoi työpöytiä"
-
-#: lazarusidestrconsts.dlgmargingutter
-msgid "Margin and gutter"
-msgstr "Marginaali ja reunapalkki"
 
 #: lazarusidestrconsts.dlgmarkercolor
 msgid "Marker color"

@@ -2271,6 +2271,12 @@ msgstr "Desde o i&nício"
 msgid "From c&ursor"
 msgstr "&Desde o cursor"
 
+#: lazarusidestrconsts.dlggeneral
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlggeneral"
+msgid "General"
+msgstr "Geral"
+
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "Gl&obal"
@@ -2765,10 +2771,6 @@ msgstr "\"Make\" executável"
 #: lazarusidestrconsts.dlgmanagedesktops
 msgid "Manage desktops"
 msgstr "Gerir ambientes"
-
-#: lazarusidestrconsts.dlgmargingutter
-msgid "Margin and gutter"
-msgstr "Margem e canaleta"
 
 #: lazarusidestrconsts.dlgmarkercolor
 msgid "Marker color"
