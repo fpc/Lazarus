@@ -6,9 +6,9 @@ Quick Start for translators
 Finnish translation is used as an example:
 
 1. Make sure that you have up-to-date Lazarus from Git (main branch).
-2. Search for all *.pot files ([PoChecker](../components/pochecker) tool in `<lazarusdir>/components/pochecker` directory can help you with this).
+2. Search for all *.pot files ([PoChecker](../components/pochecker) addon in `<lazarusdir>/components/pochecker` directory can help you with this).
 3. If POT file belongs to some package, make sure that this package is installed in IDE.
-4. Rebuild Lazarus clean. This will update translations for all installed packages.
+4. Rebuild Lazarus clean. This will ensure that POT files for all installed packages are up-to-date.
 5. Run `sh localize.sh` (Linux) or `localize.bat` (Windows) to update IDE translations.
 6. Edit PO files (*.fi.po) with programs like Poedit (www.poedit.net) or Lokalize. Do NOT edit them manually because this WILL lead to breakage.
    If .fi.po file is missing for particular component, use template (POT file) to create it.
@@ -16,7 +16,7 @@ Finnish translation is used as an example:
    reported errors (you need to run all tests, there should be no errors shown in
    General Info tab of Results window).
 8. Inspect visually resulting file differences, refresh translation files if needed manually as described below.
-9. If refreshing has been performed, check your translated PO files with PoChecker tool one more time to ensure that there are no new untranslated strings (which may have appeared after refresing). Edit you translations if needed and then perform the previous and this step again.
+9. If refreshing has been performed, check your translated PO files with PoChecker tool one more time to ensure that there are no new untranslated strings (which may have appeared after refresing). Edit your translations if needed and then perform the previous and this step again.
 10. Create a merge request (preferred) or post updated xxx.fi.po files to the Lazarus issue tracker.  
    Do NOT post diffs for PO files. Due to their nature, PO files are prone to conflicts and therefore diffs can rather quickly get very hard or plain impossible to apply.
 
@@ -27,7 +27,8 @@ Translation files are organized into families.
 Each translation family consists of template and actual translations into various languages (in UTF-8 encoding).
 Template has .pot extension, translations have .po extensions and include ISO language code in their file names.
 
-Template is used as a base for updating actual translation files and starting translation into new languages.
+Template is used as a base for updating actual translation files and starting translation into new languages.  
+Note that if POT files of packages are updated, all translations will be updated too. If POT files have already been up-to-date, translations won't be touched. In this case you may need to refresh (regenerate) them manually as described below.
 
 Example for the Lazarus IDE translation family:
 
@@ -50,12 +51,12 @@ missing ones) for a given language.
 
 If you know what you are doing, you can use PoChecker tool to refresh (regenerate) translation families (i.e. synchronize
 actual translations to template files). In order to get an access to this function, you should
-run tests on your translation, open Graphical Summary window (via 'Show statistics graph' button)
+run tests for your translation language, open Graphical Summary window (via 'Show statistics graph' button)
 and click on any translation family with right mouse button while pressing SHIFT key.
 
 Note that refresh function REQUIRES translation files to be accessible for WRITING. 
 
-It is IMPORTANT to use only [PoChecker](../components/pochecker) or up-to-date [updatepofiles](../tools/updatepofiles.lpi) for refresing of translation families. Using other tools like built-in into your PO editor can lead to breakage.
+It is IMPORTANT to use only [PoChecker](../components/pochecker) or up-to-date [updatepofiles](../tools/updatepofiles.lpi) tool for refresing translation families. Using other tools like built-in into your PO editor can lead to breakage.
 
 Make sure to rebuild first all packages whose translations will be refreshed (follow the steps from basic workflow described above). This is needed to make sure that all POT files are up-to-date.
 
