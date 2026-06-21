@@ -359,7 +359,8 @@ end;
 procedure TControlFont.Changed;
 begin
   inherited Changed;
-  FOwner.FontChanged(Self);
+  if Assigned(FOwner) then
+    FOwner.FontChanged(Self);
 end;
 
 constructor TControlFont.Create(AnOwner: TControl);
