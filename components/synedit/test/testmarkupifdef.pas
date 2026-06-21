@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, testregistry, TestBase, TestHighlightFoldBase, LazLoggerBase,
   SynEdit, SynEditMarkupIfDef, SynHighlighterPas, SynEditHighlighterFoldBase,
-  SynEditMiscClasses, SynEditFoldedView;
+  SynEditMiscClasses, SynEditFoldedView, LazEditFoldHighlighter;
 
 type
 
@@ -41,7 +41,7 @@ type
   private
     FTestTree: TSynMarkupHighIfDefLinesTree;
     FNodeStateResponses, FNodeStateRequests: TStringList;
-    FOpenings: TLazSynEditNestedFoldsList;
+    FOpenings: TLazEditNestedFoldsList;
     FUseNestedComments: Boolean;
     function TestTextEmpty: TStringArray;
     function TestTextNoIfDef: TStringArray;

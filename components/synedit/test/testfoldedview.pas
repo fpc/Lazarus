@@ -89,9 +89,9 @@ type
     procedure CheckFoldTypes(AName: String; AStartLine: Integer;
       const AnExpIncluded: Array of TSynEditFoldLineCapabilities;
       const AnExpExcluded: Array of TSynEditFoldLineCapabilities);
-    Procedure CheckNodeLines(AList: TLazSynEditNestedFoldsList; const ALines: array of integer);
-    Procedure CheckNodeEndLines(AList: TLazSynEditNestedFoldsList; const ALines: array of integer);
-    procedure InitList(const AName: String; AList: TLazSynEditNestedFoldsList;
+    Procedure CheckNodeLines(AList: TLazEditNestedFoldsList; const ALines: array of integer);
+    Procedure CheckNodeEndLines(AList: TLazEditNestedFoldsList; const ALines: array of integer);
+    procedure InitList(const AName: String; AList: TLazEditNestedFoldsList;
       ALine, AGroup: Integer; AFlags: TSynFoldBlockFilterFlags;
       AInclOpening: Boolean; AClear: Boolean = True);
   published
@@ -2105,7 +2105,7 @@ begin
   end;
 end;
 
-procedure TTestFoldedView.CheckNodeLines(AList: TLazSynEditNestedFoldsList;
+procedure TTestFoldedView.CheckNodeLines(AList: TLazEditNestedFoldsList;
   const ALines: array of integer);
 var
   i: Integer;
@@ -2114,7 +2114,7 @@ begin
     AssertEquals(BaseTestName+ ' Node line=' + IntToStr(i), ALines[i], AList.NodeLine[i]);
 end;
 
-procedure TTestFoldedView.CheckNodeEndLines(AList: TLazSynEditNestedFoldsList;
+procedure TTestFoldedView.CheckNodeEndLines(AList: TLazEditNestedFoldsList;
   const ALines: array of integer);
 var
   i: Integer;
@@ -2123,7 +2123,7 @@ begin
     AssertEquals(BaseTestName+ ' Node end line=' + IntToStr(i), ALines[i], AList.NodeEndLine[i]);
 end;
 
-procedure TTestFoldedView.InitList(const AName: String; AList: TLazSynEditNestedFoldsList;
+procedure TTestFoldedView.InitList(const AName: String; AList: TLazEditNestedFoldsList;
   ALine, AGroup: Integer; AFlags: TSynFoldBlockFilterFlags;
   AInclOpening: Boolean; AClear: Boolean = True);
 var
@@ -2144,7 +2144,7 @@ end;
 
 procedure TTestFoldedView.TestNestedFoldsList;
 var
-  TheList: TLazSynEditNestedFoldsList;
+  TheList: TLazEditNestedFoldsList;
   i1, i2, i3, i, pl, pm: Integer;
 begin
 // L= *(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?A=(.*)
@@ -2694,7 +2694,7 @@ end;
 
 procedure TTestFoldedView.TestNestedFoldsListCache;
 var
-  TheList: TLazSynEditNestedFoldsList;
+  TheList: TLazEditNestedFoldsList;
 begin
   PushBaseName('cache');
   TstSetText('TestText1', TestText1);

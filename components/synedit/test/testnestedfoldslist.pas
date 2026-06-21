@@ -14,7 +14,7 @@ type
 
   TTestNestedFoldsList = class(TTestBaseHighlighterPas)
   private
-    FNestList: TLazSynEditNestedFoldsList;
+    FNestList: TLazEditNestedFoldsList;
   protected
     procedure TearDown; override;
     procedure ReCreateEdit; reintroduce;
@@ -45,7 +45,7 @@ end;
 procedure TTestNestedFoldsList.ReCreateList;
 begin
   FreeAndNil(FNestList);
-  FNestList := TLazSynEditNestedFoldsList.Create(SynEdit.TextBuffer, PasHighLighter);
+  FNestList := TLazEditNestedFoldsList.Create(SynEdit.TextBuffer, PasHighLighter);
   FNestList.ResetFilter;
   FNestList.FoldGroup := 0;
   FNestList.FoldFlags := [sfbIncludeDisabled];

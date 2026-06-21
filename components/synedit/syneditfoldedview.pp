@@ -307,12 +307,12 @@ type
     FHighlighter: TSynCustomFoldHighlighter;
     FLines : TSynEditStrings;
     FEdit: TSynEditBase;
-    FNestedFoldsList: TLazSynEditNestedFoldsList;
+    FNestedFoldsList: TLazEditNestedFoldsList;
     function GetFoldsAvailable: Boolean;
     function GetHighLighterWithLines: TSynCustomFoldHighlighter;
     function GetLineCapabilities(ALineIdx: Integer): TSynEditFoldLineCapabilities;
     function GetLineClassification(ALineIdx: Integer): TFoldNodeClassifications;
-    function GetNestedFoldsList: TLazSynEditNestedFoldsList;
+    function GetNestedFoldsList: TLazEditNestedFoldsList;
     procedure SetHighLighter(const AValue: TSynCustomFoldHighlighter);
     procedure SetLines(AValue: TSynEditStrings);
   protected
@@ -339,7 +339,7 @@ type
     property Lines: TSynEditStrings read FLines write SetLines;
     property HighLighter: TSynCustomFoldHighlighter read FHighlighter write SetHighLighter;
     property FoldsAvailable: Boolean read GetFoldsAvailable;
-    property NestedFoldsList: TLazSynEditNestedFoldsList read GetNestedFoldsList;
+    property NestedFoldsList: TLazEditNestedFoldsList read GetNestedFoldsList;
     property Enabled: boolean read FEnabled write FEnabled;
   end;
 
@@ -2883,10 +2883,10 @@ begin
     Result := [fncBlockSelection];
 end;
 
-function TSynEditFoldProvider.GetNestedFoldsList: TLazSynEditNestedFoldsList;
+function TSynEditFoldProvider.GetNestedFoldsList: TLazEditNestedFoldsList;
 begin
   if FNestedFoldsList = nil then
-    FNestedFoldsList := TLazSynEditNestedFoldsList.Create(FLines, FHighlighter);
+    FNestedFoldsList := TLazEditNestedFoldsList.Create(FLines, FHighlighter);
   Result := FNestedFoldsList;
 end;
 

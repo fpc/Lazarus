@@ -270,7 +270,7 @@ type
     FShowTopInfo: boolean;
     FFoldView: TSynEditFoldedView;
     FWrapView: TLazSynEditLineWrapPlugin;
-    FTopInfoNestList: TLazSynEditNestedFoldsList;
+    FTopInfoNestList: TLazEditNestedFoldsList;
     FSyncroEdit: TSynPluginSyncroEdit;
     FTemplateEdit: TSynPluginTemplateEdit;
     FMultiCaret: TSynPluginMultiCaret;
@@ -2122,7 +2122,7 @@ begin
   TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.DisplayView := FTopInfoDisplay;
   RegisterMouseActionSearchHandler(@CatchMouseForTopInforLine);
 
-  FTopInfoNestList := TLazSynEditNestedFoldsList.Create(TextBuffer);
+  FTopInfoNestList := TLazEditNestedFoldsList.Create(TextBuffer);
   FTopInfoNestList.ResetFilter;
   FTopInfoNestList.FoldGroup := FOLDGROUP_PASCAL;
   FTopInfoNestList.FoldFlags := [sfbIncludeDisabled];

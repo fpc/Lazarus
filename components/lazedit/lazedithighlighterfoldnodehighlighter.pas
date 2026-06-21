@@ -24,7 +24,7 @@ unit LazEditHighlighterFoldNodeHighlighter;
 interface
 
 uses
-  Math,
+  Math, SysUtils,
   // LazUtils
   LazClasses,
   // LazEdit
@@ -35,8 +35,21 @@ type
 
   //TLazEditCustomFoldNodeHighlighter = class(TLazEditCustomHighlighter)
   TLazEditCustomFoldNodeHighlighter = class(TLazEditCustomRangesHighlighter)
+  private
+    FFoldNodeInfoList: TLazEditFoldNodeInfoList;
   protected
+    function GetFoldNodeInfo(Line: TLineIdx): TLazEditFoldNodeInfoList;
+    function CreateFoldNodeInfoList: TLazEditFoldNodeInfoList; virtual;
+    procedure ClearFoldNodeList;
     procedure InitFoldNodeInfo(AList: TLazEditFoldNodeInfoList; Line: TLineIdx); virtual;
+  public
+    destructor Destroy; override;
+    // All fold-nodes
+    // FoldNodeInfo: Returns a shared object
+    // Adding RefCount, will prevent others from getting further copies, but not from using copies they already have.
+    // If not adding refcount, the object should not be stored/re-used
+    // Not adding ref-count, should only be done for CountEx, NodeInfoEx
+    property FoldNodeInfo[Line: TLineIdx]: TLazEditFoldNodeInfoList read GetFoldNodeInfo;
   end;
 
   TSynFoldAction = ( sfaOpen,         // Any Opening node
@@ -145,14 +158,90 @@ type
   end;
 
 
+
+function dbgs(AFoldActions: TSynFoldActions): String; overload;
+function dbgs(ANode: TLazEditFoldNodeInfo):string; overload;
+
 implementation
 
+function dbgs(AFoldActions: TSynFoldActions): String;
+var
+  i: TSynFoldAction;
+  s: string;
+begin
+  Result:='';
+  for i := low(TSynFoldAction) to high(TSynFoldAction) do
+    if i in AFoldActions then begin
+      WriteStr(s{%H-}, i);
+      Result := Result + s + ',';
+    end;
+  if Result <> '' then Result := '[' + copy(Result, 1, Length(Result)-1) + ']';
+end;
+
+function dbgs(ANode: TLazEditFoldNodeInfo): string;
+begin
+  with ANode do
+    if sfaInvalid in FoldAction then
+      Result := Format('L=%3d I=%d  X=%2d-%2d  Fld=%d-%d Nst=%d-%d  FT=%2d FTC=%2d  Grp=%d  A=%s',
+                       [LineIndex, NodeIndex, 0, 0, 0, 0, 0, 0, 0, 0, 0, dbgs(FoldAction)])
+    else
+      Result := Format('L=%3d I=%d  X=%2d-%2d  Fld=%d-%d Nst=%d-%d  FT=%2d FTC=%2d  Grp=%d  A=%s',
+                       [LineIndex, NodeIndex, LogXStart, LogXEnd,
+                        FoldLvlStart, FoldLvlEnd, NestLvlStart, NestLvlEnd,
+                        PtrUInt(FoldType), PtrUInt(FoldTypeCompatible), FoldGroup,
+                        dbgs(FoldAction)]);
+end;
+
 { TLazEditCustomFoldNodeHighlighter }
+
+procedure TLazEditCustomFoldNodeHighlighter.ClearFoldNodeList;
+begin
+  if FFoldNodeInfoList <> nil then begin
+    if (FFoldNodeInfoList.RefCount > 1) then
+      ReleaseRefAndNil(FFoldNodeInfoList)
+    else
+      FFoldNodeInfoList.Clear;
+  end;
+end;
+
+function TLazEditCustomFoldNodeHighlighter.GetFoldNodeInfo(Line: TLineIdx
+  ): TLazEditFoldNodeInfoList;
+begin
+  if (FFoldNodeInfoList <> nil) and (FFoldNodeInfoList.RefCount > 1) then
+    ReleaseRefAndNil(FFoldNodeInfoList);
+
+  if FFoldNodeInfoList = nil then begin
+    FFoldNodeInfoList := CreateFoldNodeInfoList;
+    FFoldNodeInfoList.AddReference;
+  end
+  else
+  if (CurrentRanges <> nil) and (CurrentRanges.FirstInvalidLine >= 0) then
+    ClearFoldNodeList;
+
+
+  Result := FFoldNodeInfoList;
+  if (Line >= 0) and
+     ((Result.Line <> Line) or (not Result.valid))
+  then
+    Result.ClearFilter;
+  Result.Line := Line;
+end;
+
+function TLazEditCustomFoldNodeHighlighter.CreateFoldNodeInfoList: TLazEditFoldNodeInfoList;
+begin
+  Result := TLazEditFoldNodeInfoList.Create(Self);
+end;
 
 procedure TLazEditCustomFoldNodeHighlighter.InitFoldNodeInfo(AList: TLazEditFoldNodeInfoList;
   Line: TLineIdx);
 begin
   //
+end;
+
+destructor TLazEditCustomFoldNodeHighlighter.Destroy;
+begin
+  inherited Destroy;
+  ReleaseRefAndNil(FFoldNodeInfoList);
 end;
 
 { TLazEditFoldNodeInfoList }

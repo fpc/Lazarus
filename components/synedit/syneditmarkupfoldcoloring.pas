@@ -150,7 +150,7 @@ type
     fHighlighter: TSynCustomFoldHighlighter;
     fMarkupColors: array of TLazEditHighlighterAttributesModifier;
     fLineColors : array of TMarkupFoldColorsLineColor;
-    fNestList, fNestList2: TLazSynEditNestedFoldsList;
+    fNestList, fNestList2: TLazEditNestedFoldsList;
 
     // cache
     FColumnCache: TSynEditMarkupFoldColorsColumnCache;
@@ -399,14 +399,14 @@ begin
   SetLength(fFoldColorInfos, 50);
   fFoldColorInfosCapacity := 50;
 
-  fNestList := TLazSynEditNestedFoldsList.Create(Lines, fHighlighter);
+  fNestList := TLazEditNestedFoldsList.Create(Lines, fHighlighter);
   fNestList.ResetFilter;
   fNestList.FoldGroup := fDefaultGroup;
   fNestList.FoldFlags := [sfbIncludeDisabled];
   fNestList.IncludeOpeningOnLine := True;
 
   // for scanning the "if" of a "then" to find the indent
-  fNestList2 := TLazSynEditNestedFoldsList.Create(Lines, fHighlighter);
+  fNestList2 := TLazEditNestedFoldsList.Create(Lines, fHighlighter);
   fNestList2.ResetFilter;
   fNestList2.FoldGroup := fDefaultGroup;
   fNestList2.FoldFlags := [sfbIncludeDisabled];
