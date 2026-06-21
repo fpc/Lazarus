@@ -77,7 +77,11 @@ Additional licenses may be granted in each individual file. See the headers in e
       </Item>
       <Item>
         <Filename Value="lazeditfoldhighlighter.pas"/>
-        <UnitName Value="lazeditfoldhighlighter"/>
+        <UnitName Value="LazEditFoldHighlighter"/>
+      </Item>
+      <Item>
+        <Filename Value="lazedithighlighterfoldnodehighlighter.pas"/>
+        <UnitName Value="lazedithighlighterfoldnodehighlighter"/>
       </Item>
     </Files>
     <LazDoc Paths="docs"/>

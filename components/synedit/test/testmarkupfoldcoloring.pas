@@ -666,7 +666,7 @@ procedure TTestMarkupFoldColoring.TestCaseLabelIndent;
 begin
   ReCreateEdit(TestText2);
   EnableFolds([cfbtBeginEnd.. cfbtNone], [cfbtSlashComment]);
-  EnableOutlines([cfbtBeginEnd.. cfbtNone]);
+  EnableOutlines([cfbtBeginEnd.. cfbtNone]-[cfbtProcedure]);
   PushBaseName('case label indent');
 
   TestBeginMarkup('');
@@ -698,7 +698,7 @@ procedure TTestMarkupFoldColoring.TestMultiLineIfIndent;
 begin
   ReCreateEdit(TestTextMultiLineIfIndent);
   EnableFolds([cfbtBeginEnd.. cfbtNone], [cfbtSlashComment]);
-  EnableOutlines([cfbtBeginEnd.. cfbtNone]);
+  EnableOutlines([cfbtBeginEnd.. cfbtNone]-[cfbtProcedure]);
   PushBaseName('if indent');
 
   TestBeginMarkup('');
@@ -886,7 +886,7 @@ begin
 
     ReCreateEdit(TestTextScroll1, 35, 90);
     EnableFolds([cfbtBeginEnd.. cfbtNone], [cfbtSlashComment]);
-    EnableOutlines([cfbtBeginEnd.. cfbtNone]);
+    EnableOutlines([cfbtBeginEnd.. cfbtNone]-[cfbtProcedure]);
 
     PushBaseName('before scroll');
     SubTestScroll1;
@@ -912,7 +912,7 @@ begin
   Lines := TestTextCaseScroll1(ExpLines);
   ReCreateEdit(Lines, 30, 43);
   EnableFolds([cfbtBeginEnd.. cfbtNone], [cfbtSlashComment]);
-  EnableOutlines([cfbtBeginEnd.. cfbtNone]);
+  EnableOutlines([cfbtBeginEnd.. cfbtNone]-[cfbtProcedure]);
 
   FOnlyTestVisibleRows := True;
 

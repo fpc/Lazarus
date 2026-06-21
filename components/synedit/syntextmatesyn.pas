@@ -12,7 +12,7 @@ uses
   Laz2_XMLRead, Laz2_DOM, LazStringUtils,
   // LazEdit
   TextMateGrammar, LazEditTextAttributes, LazEditHighlighterUtils, LazEditHighlighter,
-  LazEditFoldHighlighter,
+  LazEditFoldHighlighter, LazEditHighlighterFoldNodeHighlighter,
   // SynEdit
   SynEditHighlighter, SynEditHighlighterFoldBase, SynEditTypes, SynEditTextBase;
 
@@ -250,7 +250,7 @@ end;
 
 procedure TSynTextMateSyn.InitForScanningLine;
 var
-  nd: TSynFoldNodeInfo;
+  nd: TLazEditFoldNodeInfo;
 begin
   inherited InitForScanningLine;
 
@@ -265,7 +265,7 @@ begin
     if not FTextMateGrammar.IsFoldEnd then begin
       inc(FRangeInfo.FoldLevel);
       if IsCollectingNodeInfo then begin
-        nd := Default(TSynFoldNodeInfo);
+        nd := Default(TLazEditFoldNodeInfo);
         nd.LineIndex := LineIndex;
         nd.FoldGroup := 1;
         nd.FoldLvlStart := FRangeInfo.FoldLevel - 1;
@@ -281,7 +281,7 @@ begin
   if FTextMateGrammar.IsFoldEnd and (FRangeInfo.FoldLevel > 0) then begin
     dec(FRangeInfo.FoldLevel);
     if IsCollectingNodeInfo then begin
-      nd := Default(TSynFoldNodeInfo);
+      nd := Default(TLazEditFoldNodeInfo);
       nd.LineIndex := LineIndex;
       nd.FoldGroup := 1;
       nd.FoldLvlStart := FRangeInfo.FoldLevel + 1;

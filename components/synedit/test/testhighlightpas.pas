@@ -5,9 +5,9 @@ unit TestHighlightPas;
 interface
 
 uses
-  Classes, SysUtils, testregistry, TestBase, Forms, Graphics, LazLoggerBase,
-  TestHighlightFoldBase, SynEdit, SynEditTypes, SynHighlighterPas,
-  SynEditHighlighterFoldBase, LazEditTextAttributes, LazEditHighlighter, LazEditFoldHighlighter;
+  Classes, SysUtils, testregistry, TestBase, Forms, Graphics, LazLoggerBase, TestHighlightFoldBase,
+  SynEdit, SynEditTypes, SynHighlighterPas, SynEditHighlighterFoldBase, LazEditTextAttributes,
+  LazEditHighlighter, LazEditFoldHighlighter, LazEditHighlighterFoldNodeHighlighter;
 
 type
 
@@ -29,12 +29,12 @@ type
     procedure DebugFoldInfo(ALineIdx: Integer; AFilter: TSynFoldActions; Group: Integer=0);
     procedure DebugFoldInfo(AFilter: TSynFoldActions; Group: Integer=0);
     function FoldActionsToString(AFoldActions: TSynFoldActions): String;
-    Procedure CheckPasFoldNodeInfo(AName: String; nd: TSynFoldNodeInfo;
+    Procedure CheckPasFoldNodeInfo(AName: String; nd: TLazEditFoldNodeInfo;
       ALine: TLineIdx; AColumn, AAllColIndex: integer; LogXStart, LogXEnd,
       FoldLvlStart, FoldLvlEnd,  NestLvlStart, NestLvlEnd: Integer;
       FoldType, FoldTypeCompatible: TPascalCodeFoldBlockType; FoldGroup: Integer;
       FoldAction: TSynFoldActions);
-    Procedure CheckPasFoldNodeInfo(AName: String; nd: TSynFoldNodeInfo;
+    Procedure CheckPasFoldNodeInfo(AName: String; nd: TLazEditFoldNodeInfo;
       ALine: TLineIdx; AColumn: integer; LogXStart, LogXEnd,
       FoldLvlStart, FoldLvlEnd,  NestLvlStart, NestLvlEnd: Integer;
       FoldType, FoldTypeCompatible: TPascalCodeFoldBlockType; FoldGroup: Integer;
@@ -202,8 +202,8 @@ procedure TTestBaseHighlighterPas.DebugFoldInfo(ALineIdx: Integer;
   AFilter: TSynFoldActions; Group: Integer=0);
 var
   i, c: LongInt;
-  n: TSynFoldNodeInfo;
-  l: TLazSynFoldNodeInfoList;
+  n: TLazEditFoldNodeInfo;
+  l: TLazEditFoldNodeInfoList;
 begin
   l := PasHighLighter.FoldNodeInfo[ALineIdx];
   c := PasHighLighter.FoldNodeInfo[ALineIdx].CountEx(AFilter, Group);
@@ -257,7 +257,7 @@ begin
   if Result <> '' then SetLength(Result, Length(Result)-1);
 end;
 
-procedure TTestBaseHighlighterPas.CheckPasFoldNodeInfo(AName: String; nd: TSynFoldNodeInfo;
+procedure TTestBaseHighlighterPas.CheckPasFoldNodeInfo(AName: String; nd: TLazEditFoldNodeInfo;
   ALine: TLineIdx; AColumn, AAllColIndex: integer; LogXStart, LogXEnd, FoldLvlStart,
   FoldLvlEnd, NestLvlStart, NestLvlEnd: Integer; FoldType,
   FoldTypeCompatible: TPascalCodeFoldBlockType; FoldGroup: Integer;
@@ -284,10 +284,10 @@ begin
   end;
   AssertEquals('%s (%d/%d) FoldAction',   [AName, ALine, AColumn],
     FoldActionsToString(FoldAction),
-    FoldActionsToString(nd.FoldAction - [sfaOutline..sfaOutlineNoLine]));
+    FoldActionsToString(nd.FoldAction - [sfaOutline..sfaOutlineForceIndent]));
 end;
 
-procedure TTestBaseHighlighterPas.CheckPasFoldNodeInfo(AName: String; nd: TSynFoldNodeInfo;
+procedure TTestBaseHighlighterPas.CheckPasFoldNodeInfo(AName: String; nd: TLazEditFoldNodeInfo;
   ALine: TLineIdx; AColumn: integer; LogXStart, LogXEnd, FoldLvlStart, FoldLvlEnd,
   NestLvlStart, NestLvlEnd: Integer; FoldType, FoldTypeCompatible: TPascalCodeFoldBlockType;
   FoldGroup: Integer; FoldAction: TSynFoldActions);
@@ -5161,8 +5161,8 @@ procedure TTestHighlighterPas.TestFoldNodeInfo;
     FoldType, FoldTypeCompatible: TPascalCodeFoldBlockType; FoldGroup: Integer;
     FoldAction: TSynFoldActions);
   var
-    nd: TSynFoldNodeInfo;
-    l: TLazSynFoldNodeInfoList;
+    nd: TLazEditFoldNodeInfo;
+    l: TLazEditFoldNodeInfoList;
   begin
     l := PasHighLighter.FoldNodeInfo[ALine];
 

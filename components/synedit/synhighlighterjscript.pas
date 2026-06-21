@@ -53,7 +53,8 @@ interface
 
 uses
   Graphics, SynEditTypes, SynEditHighlighter, SynEditHighlighterFoldBase, SysUtils, Classes,
-  SynEditStrConst, LazEditTextAttributes, LazEditHighlighter, LazEditFoldHighlighter;
+  SynEditStrConst, LazEditTextAttributes, LazEditHighlighter, LazEditFoldHighlighter,
+  LazEditHighlighterFoldNodeHighlighter;
 
 type
   TtkTokenKind = (tkComment, tkIdentifier, tkKey, tkNull, tkNumber, tkSpace,
@@ -278,7 +279,7 @@ type
              (ABlockType: TJScriptFoldBlockType;
               OnlyEnabled: Boolean = False): Boolean;
     procedure FinishJScriptCodeFoldBlock();
-    procedure DoInitNode(var Node: TSynFoldNodeInfo;
+    procedure DoInitNode(var Node: TLazEditFoldNodeInfo;
                    FinishingABlock: Boolean;
                    ABlockType: Pointer; aActions: TSynFoldActions;
                    AIsFold: Boolean); override;
@@ -1920,7 +1921,7 @@ begin
   EndCodeFoldBlock(True);
 end;
 
-procedure TSynJScriptSyn.DoInitNode(var Node: TSynFoldNodeInfo;
+procedure TSynJScriptSyn.DoInitNode(var Node: TLazEditFoldNodeInfo;
   FinishingABlock: Boolean; ABlockType: Pointer; aActions: TSynFoldActions;
   AIsFold: Boolean);
 begin

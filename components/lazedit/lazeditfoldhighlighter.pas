@@ -25,16 +25,16 @@ interface
 uses
   Classes, SysUtils, Math,
   // LazEdit
-  LazEditHighlighter, LazEditTypes;
+  LazEditHighlighter, LazEditHighlighterFoldNodeHighlighter, LazEditTypes;
 
 type
 
   (* TSynFoldBlockFilter
      used to specify which folds to include for:
      - FoldOpenCount, FoldCloseCount, FoldNestCount
-     - maybe in future TLazSynFoldNodeInfoList
-       TLazSynFoldNodeInfoList has additional filters
-       TLazSynFoldNodeInfoList always uses the full set (sfbIncludeDisabled)
+     - maybe in future TLazEditFoldNodeInfoList
+       TLazEditFoldNodeInfoList has additional filters
+       TLazEditFoldNodeInfoList always uses the full set (sfbIncludeDisabled)
 
      A Highlighter is not required to implement this, or can choose to implement
      a subset only. For any field/value a Highlighter may simple assume default.
@@ -60,39 +60,8 @@ type
     Flags: TSynFoldBlockFilterFlags;
   end;
 
-  TSynFoldAction = ( sfaOpen,         // Any Opening node
-                     sfaClose,        // Any Closing node
-
-                     sfaFold,         // Part of a fold- or hide-able block (FoldConf.Enabled = True)           - excludes one=liners for FoldFold, as they can not fold
-                     sfaFoldFold,     // Part of a fold-able block (FoldConf.Enabled = True / smFold in Modes)  - excludes one=liners / only opening node, except ifdef/region (todo: maybe both?)
-                     sfaFoldHide,     // Part of a hide-able block (FoldConf.Enabled = True / smHide in Modes)  - includes one=liners / only opening node, except ifdef/region (todo: maybe both?)
-
-                     sfaMultiLine,    // The closing node is on an other line
-                     sfaSingleLine,   // The closing node is on the same line (though the keyword may be on the next)
-                     // //sfaSingleLineClosedByNext
-                     sfaCloseForNextLine,  // Fold closes this line, but keyword is on the next (e.g. "var" block)
-                     sfaLastLineClose,     // Fold is incomplete, and closed at last line of file
-                     sfaCloseAndOpen,    // This node has the same location/type as the neighbouring opposite node.
-                                         // eg an open node, matche exactly the previous node, which has to be a closing node of the same type and location (and vice versa for a closing node matching the next...)
-
-                     sfaDefaultCollapsed,
-                     sfaMarkup,   // This node can be highlighted, by the matching Word-Pair Markup
-                     sfaOutline,  // This node will be higlighted by nested color replacing the token color
-                     sfaOutlineKeepLevel, // Direct children should not increase color dept. (But grandchild can.)  e.g. "if","then" any "procedure"
-                     sfaOutlineMergeParent,// This node want to decrease current color depth. (But Previous sibling increased) e.g. "except", "finally"
-                     sfaOutlineForceIndent, // Node will temporary ignore sfaOutlineKeep. (Next sibling can.) e.g in NESTED "procedure"
-// TODO: review sfaOutlineNoColor / see issue 0034410
-                     sfaOutlineNoColor,     // Node will not painted by nested-coloring, but may increase color (e.g. any "procedure")
-                     sfaOutlineNoLine,      // Node doesn't want to have vertical line. (e.g. "then")
-                     sfaInvalid,  // Wrong Index
-
-                     // TODO: deprecate
-                     sfaOpenFold,     // At this node a new Fold can start // Actually, includes all,any multiline node too.
-                     sfaCloseFold,    // At this node a fold ends
-                     sfaOneLineOpen,   // Open, but closes on same line; *only* if hide-able has [sfaOpenFold, sfaFold]; always has [sfaFoldFold, sfaFoldHide]
-                     sfaOneLineClose  // Open, but closes on same line;
-                   );
-  TSynFoldActions = set of TSynFoldAction;
+  TSynFoldAction  = LazEditHighlighterFoldNodeHighlighter.TSynFoldAction;
+  TSynFoldActions = LazEditHighlighterFoldNodeHighlighter.TSynFoldActions;
 
   TSynCustomFoldConfigMode = (fmFold, fmHide, fmMarkup, fmOutline);
   TSynCustomFoldConfigModes = set of TSynCustomFoldConfigMode;
@@ -134,8 +103,7 @@ type
     property Modes: TSynCustomFoldConfigModes read FModes write SetModes default [fmFold];
   end;
 
-  //TLazEditCustomFoldHighlighter = class(TLazEditCustomHighlighter)
-  TLazEditCustomFoldHighlighter = class(TLazEditCustomRangesHighlighter)
+  TLazEditCustomFoldHighlighter = class(TLazEditCustomFoldNodeHighlighter)
   protected
     // Fold Config
     function GetFoldConfig(Index: Integer): TLazEditCustomFoldConfig; virtual;

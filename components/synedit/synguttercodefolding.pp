@@ -29,7 +29,8 @@ interface
 uses
   SysUtils, Classes, Controls, Graphics, Menus, LCLIntf, SynGutterBase, SynEditMiscProcs,
   SynEditFoldedView, SynEditMouseCmds, SynEditHighlighterFoldBase, SynEditMiscClasses,
-  LazSynEditText, LazEditTextAttributes, LazEditFoldHighlighter, LCLType, ImgList, Forms;
+  LazSynEditText, LazEditTextAttributes, LazEditFoldHighlighter,
+  LazEditHighlighterFoldNodeHighlighter, LCLType, ImgList, Forms;
 
 type
 
@@ -727,8 +728,8 @@ procedure TSynGutterCodeFolding.UpdateInnerFoldRange;
 var
   hl: TSynCustomFoldHighlighter;
   y, x, lvl, s, e, ndMin, ndCur, y2, i, c, mlvl: Integer;
-  ndList: TLazSynFoldNodeInfoList;
-  nd: TSynFoldNodeInfo;
+  ndList: TLazEditFoldNodeInfoList;
+  nd: TLazEditFoldNodeInfo;
   act: TSynFoldActions;
   HasBefore, HasAfter: Boolean;
 begin

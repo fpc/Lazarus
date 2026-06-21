@@ -54,7 +54,7 @@ uses
   SynEditHighlighterFoldBase, LazSynEditText, SynEditTextBase, SynEditTypes,
   {$IFDEF WithSynMarkupFoldColorDebugGutter}SynGutterBase, SynTextDrawer,{$ENDIF}
   SynEditMiscProcs, LazEditMiscProcs, LazEditTextAttributes, LazEditHighlighter,
-  LazEditFoldHighlighter,
+  LazEditFoldHighlighter, LazEditHighlighterFoldNodeHighlighter,
   {$IFDEF SynEditMarkupFoldColoringDebug}
   SynHighlighterPas,
   strutils,
@@ -84,12 +84,12 @@ type
     ColorIdx: Integer;
     Border  : Boolean;
     Ignore  : Boolean; //no color no line
-    SrcNode : TSynFoldNodeInfo;
+    SrcNode : TLazEditFoldNodeInfo;
     Level, LevelAfter : integer; //needed by non nest nodes
   end;
 
   TMarkupFoldColorInfos = array of TMarkupFoldColorInfo;
-  TSynFoldNodeInfos     = array of TSynFoldNodeInfo; //for quick compare detection
+  TSynFoldNodeInfos     = array of TLazEditFoldNodeInfo; //for quick compare detection
 
   TColumnCacheEntry = Integer;
   PColumnCacheEntry = ^TColumnCacheEntry;
@@ -161,7 +161,7 @@ type
     fFoldColorInfos: TMarkupFoldColorInfos;
 
     fPreparedRow: integer;
-    fLastOpenNode: TSynFoldNodeInfo;
+    fLastOpenNode: TLazEditFoldNodeInfo;
     fLastIndex,
     fLastOpenIndex: Integer;
     fLastEnabled: Boolean;
@@ -572,7 +572,7 @@ procedure TSynEditMarkupFoldColors.DoMarkupParentFoldAtRow(pRow: Integer);
 var
   lNodeCol: TColumnCacheEntry;
   i, lLvl, lLineIdx, lCurIndex: Integer;
-  lCurNode: TSynFoldNodeInfo;
+  lCurNode: TLazEditFoldNodeInfo;
 
   procedure AddVerticalLine;
   begin
@@ -582,9 +582,7 @@ var
       PhysX := lNodeCol;
       PhysX2 := PhysX + 1;
       Border := PhysX < GetFirstCharacterColumn(lLineIdx); // use real one here not cache
-      Ignore :=
-        (Border and (sfaOutlineNoLine in lCurNode.FoldAction))
-        or (not Border);
+      Ignore := not Border;
       Level := lLvl;
       ColorIdx := Max(0, lLvl) mod FColorCount;
       {$IFDEF SynEditMarkupFoldColoringDebug}
@@ -595,7 +593,7 @@ var
 
   procedure InitColumnForKeepLvl(LineIdx, FoldGroup: Integer);
   var
-    LevelOpenNode: TSynFoldNodeInfo;
+    LevelOpenNode: TLazEditFoldNodeInfo;
     i, ONodeFirstCol: integer;
   begin
     ONodeFirstCol := FirstCharacterColumn[LineIdx];
@@ -625,7 +623,7 @@ var
 
 var
   lKeepLevel: Boolean;
-  LastNode: TSynFoldNodeInfo;
+  LastNode: TLazEditFoldNodeInfo;
   cnf: TSynCustomFoldConfig;
   cnfCnt, fType: Integer;
 begin
@@ -749,7 +747,7 @@ end;
 procedure TSynEditMarkupFoldColors.DoMarkupParentCloseFoldAtRow(pRow: Integer);
 var
   lMaxLevel, lvl, lCurIndex: Integer;
-  lCurNode: TSynFoldNodeInfo;
+  lCurNode: TLazEditFoldNodeInfo;
   lKeepLevel: Boolean;
   lNodeCol: TColumnCacheEntry;
 
@@ -794,10 +792,7 @@ var
         PhysX2 := lPhysX2;
         Level := lvl;
         lMaxLevel := Max(lMaxLevel, lvl);
-        if not (sfaOutlineNoColor in lCurNode.FoldAction) then
-           ColorIdx := Max(0, lvl) mod FColorCount
-        else
-           ColorIdx := -1;
+        ColorIdx := Max(0, lvl) mod FColorCount;
 
         {$IFDEF SynEditMarkupFoldColoringDebug}
         //DebugLn('  %.5d %.2d %.2d-%.2d: %d - %s %.5d:%s - %s', [Row, PhysCol, PhysX, PhysX2, Level, IfThen(sfaClose in SrcNode.FoldAction, 'C ', IfThen(sfaOpen in SrcNode.FoldAction, 'O ', '??')),ToPos(SrcNode.LineIndex),FoldTypeToStr(SrcNode.FoldType), IfThen(lKeepLevel, 'Keep', '')]);
@@ -808,7 +803,7 @@ var
 
 var
   lLineIdx,i,j,lvlA , k: integer;
-  lNodeList: TLazSynFoldNodeInfoList;
+  lNodeList: TLazEditFoldNodeInfoList;
 
 begin
   lLineIdx := ToIdx(pRow);
@@ -1054,7 +1049,7 @@ end;
 
 procedure TSynEditMarkupFoldColors.DoTextChanged(pStartLine, pEndLine, pCountDiff: Integer);
 var
-  lNode: TSynFoldNodeInfo;
+  lNode: TLazEditFoldNodeInfo;
   lNodeIdx, lEndLine, lLineIdx, lBottomLine, lDecreaseCount, lOuterNodeIdx: Integer;
   nl: LongInt;
   x: TColumnCacheEntry;

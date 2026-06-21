@@ -31,7 +31,8 @@ uses
   // SynEdit
   SynEditMiscClasses, SynHighlighterPas, SynEditMarkupHighAll, SynEditHighlighterFoldBase,
   SynEditFoldedView, LazSynEditText, SynEditMiscProcs, SynEditMarkup, SynEditPointClasses,
-  LazEditTextAttributes, LazEditHighlighter, LazEditFoldHighlighter;
+  LazEditTextAttributes, LazEditHighlighter, LazEditFoldHighlighter,
+  LazEditHighlighterFoldNodeHighlighter;
 
 type
 
@@ -2489,7 +2490,7 @@ end;
 procedure TSynMarkupHighIfDefLinesTree.ScanLine(ALine: Integer;
   var ANodeForLine: TSynMarkupHighIfDefLinesNode; ACheckOverlapOnCreateLine: Boolean);
 var
-  FoldNodeInfoList: TLazSynFoldNodeInfoList;
+  FoldNodeInfoList: TLazEditFoldNodeInfoList;
   LineTextLower: String;
   LineLen, NodesAddedCnt: Integer;
   LineNeedsReq, LineChanged, HasUncommentedNodes: Boolean;
@@ -2667,7 +2668,7 @@ var
   end;
 
 var
-  fn, fn2: TSynFoldNodeInfo;
+  fn, fn2: TLazEditFoldNodeInfo;
   LogStartX, LogEndX, LineOffs: Integer;
   Entry: TSynMarkupHighIfDefEntry;
   i, c: Integer;

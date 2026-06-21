@@ -6,7 +6,8 @@ interface
 
 uses
   SysUtils, TestBase, SynEdit, SynEditHighlighterFoldBase, SynEditMiscClasses, LazLoggerBase,
-  LazEditTextAttributes, LazEditHighlighter, LazEditMiscProcs, Graphics;
+  LazEditTextAttributes, LazEditHighlighter, LazEditMiscProcs,
+  LazEditHighlighterFoldNodeHighlighter, Graphics;
 
 type
 
@@ -216,7 +217,7 @@ procedure TTestBaseHighlighterFoldBase.CheckFoldInfoCounts(Name: String; Filter:
   const Group: Integer; const Expected: array of Integer);
 var
   i: Integer;
-  l: TLazSynFoldNodeInfoList;
+  l: TLazEditFoldNodeInfoList;
 begin
   for i := 0 to high(Expected) do begin
     l := FTheHighLighter.FoldNodeInfo[i];

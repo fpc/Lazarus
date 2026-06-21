@@ -60,9 +60,10 @@ uses
   SysUtils, Classes, Math, AVL_Tree,
   // LazUtils
   LazClasses, LazLoggerBase, LazTracer,
+  // LazEdit
+  LazEditHighlighterFoldNodeHighlighter, LazEditHighlighterUtils, LazEditFoldHighlighter,
   // SynEdit
-  SynEditHighlighter, SynEditTypes, LazSynEditText, LazEditHighlighterUtils,
-  LazEditFoldHighlighter;
+  SynEditHighlighter, SynEditTypes, LazSynEditText;
 
 const
   NullRange = TSynEditRange(nil);
@@ -80,77 +81,35 @@ procedure InitFoldBlockFilter(out AFilter: TSynFoldBlockFilter;
                               AFoldGroup: Integer = 0; AFlag: TSynFoldBlockFilterFlags = []);
 
 type
+  TSynFoldNodeInfo = LazEditHighlighterFoldNodeHighlighter.TLazEditFoldNodeInfo deprecated 'use TLazEditFoldNodeInfo // will be removed in 5.99';
+  PSynFoldNodeInfo = LazEditHighlighterFoldNodeHighlighter.PLazEditFoldNodeInfo deprecated 'use PLazEditFoldNodeInfo // will be removed in 5.99';
+  TLazSynFoldNodeInfoList = LazEditHighlighterFoldNodeHighlighter.TLazEditFoldNodeInfoList deprecated 'use TLazEditFoldNodeInfoList // will be removed in 5.99';
+
+const
+  sfaOpen               = LazEditFoldHighlighter.TSynFoldAction.sfaOpen               deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaOpen // will be removed in 5.99';
+  sfaClose              = LazEditFoldHighlighter.TSynFoldAction.sfaClose              deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaClose // will be removed in 5.99';
+  sfaFold               = LazEditFoldHighlighter.TSynFoldAction.sfaFold               deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaFold // will be removed in 5.99';
+  sfaFoldFold           = LazEditFoldHighlighter.TSynFoldAction.sfaFoldFold           deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaFoldFold // will be removed in 5.99';
+  sfaFoldHide           = LazEditFoldHighlighter.TSynFoldAction.sfaFoldHide           deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaFoldHide // will be removed in 5.99';
+  sfaMultiLine          = LazEditFoldHighlighter.TSynFoldAction.sfaMultiLine          deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaMultiLine // will be removed in 5.99';
+  sfaSingleLine         = LazEditFoldHighlighter.TSynFoldAction.sfaSingleLine         deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaSingleLine // will be removed in 5.99';
+  sfaCloseForNextLine   = LazEditFoldHighlighter.TSynFoldAction.sfaCloseForNextLine   deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaCloseForNextLine // will be removed in 5.99';
+  sfaLastLineClose      = LazEditFoldHighlighter.TSynFoldAction.sfaLastLineClose      deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaLastLineClose // will be removed in 5.99';
+  sfaCloseAndOpen       = LazEditFoldHighlighter.TSynFoldAction.sfaCloseAndOpen       deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaCloseAndOpen // will be removed in 5.99';
+  sfaDefaultCollapsed   = LazEditFoldHighlighter.TSynFoldAction.sfaDefaultCollapsed   deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaDefaultCollapsed // will be removed in 5.99';
+  sfaMarkup             = LazEditFoldHighlighter.TSynFoldAction.sfaMarkup             deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaMarkup // will be removed in 5.99';
+  sfaOutline            = LazEditFoldHighlighter.TSynFoldAction.sfaOutline            deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaOutline // will be removed in 5.99';
+  sfaOutlineKeepLevel   = LazEditFoldHighlighter.TSynFoldAction.sfaOutlineKeepLevel   deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaOutlineKeepLevel // will be removed in 5.99';
+  sfaOutlineMergeParent = LazEditFoldHighlighter.TSynFoldAction.sfaOutlineMergeParent deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaOutlineMergeParent // will be removed in 5.99';
+  sfaOutlineForceIndent = LazEditFoldHighlighter.TSynFoldAction.sfaOutlineForceIndent deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaOutlineForceIndent // will be removed in 5.99';
+  sfaInvalid            = LazEditFoldHighlighter.TSynFoldAction.sfaInvalid            deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaInvalid // will be removed in 5.99';
+  sfaOpenFold           = LazEditFoldHighlighter.TSynFoldAction.sfaOpenFold           deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaOpenFold // will be removed in 5.99';
+  sfaCloseFold          = LazEditFoldHighlighter.TSynFoldAction.sfaCloseFold          deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaCloseFold // will be removed in 5.99';
+  sfaOneLineOpen        = LazEditFoldHighlighter.TSynFoldAction.sfaOneLineOpen        deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaOneLineOpen // will be removed in 5.99';
+  sfaOneLineClose       = LazEditFoldHighlighter.TSynFoldAction.sfaOneLineClose       deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaOneLineClose // will be removed in 5.99';
+
+type
   TSynCustomFoldHighlighter = class;
-
-  TSynFoldNodeInfo = record
-    LineIndex: Integer;
-    NodeIndex: Integer;          // Indicates the position within the list of info nodes (depends on search-Filter)
-    AllNodeIndex: Integer;       // Indicates the position within the unfiltered list of info nodes
-    LogXStart, LogXEnd: Integer; // -1 previous line ( 0-based)
-    FoldLvlStart, FoldLvlEnd: Integer; // FoldLvl within each FoldGroup
-    NestLvlStart, NestLvlEnd: Integer; // include disabled nodes, e.g markup (within each FoldGroup)
-    FoldAction: TSynFoldActions;
-    FoldType: Pointer;           // e.g.cfbtBeginEnd, cfbtProcedure ...
-    FoldTypeCompatible: Pointer; // map outer and inner begin, and other exchangeable types
-    FoldGroup: Integer;          // independend/overlapping folds, e.g begin/end; ifdef, region
-  end;
-  PSynFoldNodeInfo = ^TSynFoldNodeInfo;
-
-  { TLazSynFoldNodeInfoList }
-
-  TLazSynFoldNodeInfoList = class(TRefCountedObject)
-  private
-    FHighLighter: TSynCustomFoldHighlighter;
-    FValid: Boolean;
-    FActionFilter: TSynFoldActions;
-    FGroupFilter: Integer;
-    FLine: TLineIdx;
-    FNodeCount: Integer;
-    FFilteredCount, FFilteredProgress: Integer;
-    FNodeInfoList: Array of TSynFoldNodeInfo;
-    FFilteredList: Array of TSynFoldNodeInfo;
-    function  GetItem(Index: Integer): TSynFoldNodeInfo;
-    procedure SetActionFilter(AValue: TSynFoldActions);
-    procedure SetGroupFilter(AValue: Integer);
-    function  GetItemPointer(AnIndex: Integer): PSynFoldNodeInfo;
-    function  GetLastItemPointer: PSynFoldNodeInfo;
-  protected
-    procedure Invalidate;
-    procedure Clear;
-    procedure ClearData;
-    procedure ClearFilteredList;
-    procedure DoFilter(MinIndex: Integer = -1);
-    procedure SetLine(ALine: TLineIdx); // Does not clear anything, if line has not changed.
-    procedure SetLineClean(ALine: TLineIdx); // Does not clear anything, if line has not changed.
-    property  HighLighter: TSynCustomFoldHighlighter read FHighLighter write FHighLighter;
-  public
-    // used by HighLighters to add data
-    procedure Add(const AnInfo: TSynFoldNodeInfo);
-    procedure Delete(AnIndex: Integer = -1);
-    function  CountAll: Integer;
-    property  ItemPointer[AnIndex: Integer]: PSynFoldNodeInfo read GetItemPointer;
-    property  LastItemPointer: PSynFoldNodeInfo read GetLastItemPointer;
-  protected
-    function  DefaultGroup: Integer; virtual;
-    function  MinCapacity: Integer; virtual;
-    procedure InvalidateNode(out AnInfo: TSynFoldNodeInfo);
-    function  Match(const AnInfo: TSynFoldNodeInfo;
-                    AnActionFilter: TSynFoldActions; AGroupFilter: Integer = 0): Boolean; virtual;
-  public
-    // filtered items
-    procedure ClearFilter;
-    function Count: Integer;
-    property Item[Index: Integer]: TSynFoldNodeInfo read GetItem; default;
-    property ActionFilter: TSynFoldActions read FActionFilter write SetActionFilter;
-    property GroupFilter: Integer read FGroupFilter write SetGroupFilter;
-  public
-    // all items / filtered on the fly
-    function CountEx   (AnActionFilter: TSynFoldActions; AGroupFilter: Integer = 0): Integer;
-    function NodeInfoEx(Index: Integer; AnActionFilter: TSynFoldActions; AGroupFilter: Integer = 0): TSynFoldNodeInfo; virtual;
-  public
-    // Only allowed to be set, if highlighter has CurrentLines (and is scanned)
-    property Line: TLineIdx read FLine write SetLine;
-  end;
 
   (* TLazSynEditNestedFoldsList
      Provides Info on all foldable-blocks containing a given line (0 based index).
@@ -199,7 +158,7 @@ type
     FPreviousLine, FPreviousEvaluationIndex, FPreviousCount: Integer;
     FPreviousMergeLine: Integer;
 
-    FFoldNodeInfoList: TLazSynFoldNodeInfoList;
+    FFoldNodeInfoList: TLazEditFoldNodeInfoList;
     FFoldNodeInfoListHoldCnt: integer;
 
     function GetHLNode(Index: Integer): TSynFoldNodeInfo;
@@ -351,8 +310,8 @@ type
     FRanges: TLazHighlighterRangesDictionary;
     FFoldBlockRanges: TLazHighlighterRangesDictionary;
     FRootCodeFoldBlock, FTepmCodeFoldBlock: TSynCustomCodeFoldBlock;
-    FFoldNodeInfoList: TLazSynFoldNodeInfoList;
-    FCollectingNodeInfoList: TLazSynFoldNodeInfoList;
+    FFoldNodeInfoList: TLazEditFoldNodeInfoList;
+    FCollectingNodeInfoList: TLazEditFoldNodeInfoList;
     procedure ClearFoldNodeList;
     procedure CommitUncommittedFolds; inline;
   protected
@@ -378,10 +337,10 @@ type
     procedure GetTokenBounds(out LogX1,LogX2: Integer); virtual;
 
     // Info about Folds
-    function CreateFoldNodeInfoList: TLazSynFoldNodeInfoList; virtual;
-    function GetFoldNodeInfo(Line: TLineIdx): TLazSynFoldNodeInfoList;
+    function CreateFoldNodeInfoList: TLazEditFoldNodeInfoList; virtual;
+    function GetFoldNodeInfo(Line: TLineIdx): TLazEditFoldNodeInfoList;
     procedure ScanFoldNodeInfo(); virtual;
-    procedure InitFoldNodeInfo(AList: TLazSynFoldNodeInfoList; Line: TLineIdx);
+    procedure InitFoldNodeInfo(AList: TLazEditFoldNodeInfoList; Line: TLineIdx); override;
 
     // Info about Folds, on currently set line/range (simply forwarding to range
     function MinimumCodeFoldBlockLevel: integer; inline;
@@ -389,7 +348,7 @@ type
     function CurrentCodeNestBlockLevel: integer; inline;
 
     property IsCollectingNodeInfo : boolean read FIsCollectingNodeInfo;
-    property CollectingNodeInfoList : TLazSynFoldNodeInfoList read FCollectingNodeInfoList;
+    property CollectingNodeInfoList : TLazEditFoldNodeInfoList read FCollectingNodeInfoList;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -413,7 +372,7 @@ type
     // Adding RefCount, will prevent others from getting further copies, but not from using copies they already have.
     // If not adding refcount, the object should not be stored/re-used
     // Not adding ref-count, should only be done for CountEx, NodeInfoEx
-    property FoldNodeInfo[Line: TLineIdx]: TLazSynFoldNodeInfoList read GetFoldNodeInfo;
+    property FoldNodeInfo[Line: TLineIdx]: TLazEditFoldNodeInfoList read GetFoldNodeInfo;
 
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
@@ -555,262 +514,6 @@ begin
   for i := 0  to high(ANestInfo.FGroupMinLevels) do
     Result := Result+inttostr(ANestInfo.FGroupMinLevels[i])+',';
   Result := Result+']';
-end;
-
-{ TLazSynFoldNodeInfoList }
-
-function TLazSynFoldNodeInfoList.GetItem(Index: Integer): TSynFoldNodeInfo;
-begin
-  DoFilter(Index);
-  if (Index >= FFilteredCount) or (Index < 0) or (not FValid) then
-    InvalidateNode(Result)
-  else begin
-    Result := FFilteredList[Index];
-    Result.NodeIndex := Index; // only set copy on result
-  end;
-end;
-
-procedure TLazSynFoldNodeInfoList.SetActionFilter(AValue: TSynFoldActions);
-begin
-  if FActionFilter=AValue then Exit;
-  FActionFilter:=AValue;
-  ClearFilteredList;
-end;
-
-procedure TLazSynFoldNodeInfoList.SetGroupFilter(AValue: Integer);
-begin
-  if FGroupFilter=AValue then Exit;
-  FGroupFilter:=AValue;
-  ClearFilteredList;
-end;
-
-procedure TLazSynFoldNodeInfoList.Clear;
-begin
-  ClearFilter;
-  ClearData;
-end;
-
-procedure TLazSynFoldNodeInfoList.ClearData;
-var
-  c: Integer;
-begin
-  FValid := True;
-  ClearFilteredList;
-  FLine := -1;
-  c := MinCapacity;
-  FNodeCount := 0;
-  if Length(FNodeInfoList) > c then
-    SetLength(FNodeInfoList, c);
-end;
-
-procedure TLazSynFoldNodeInfoList.ClearFilteredList;
-begin
-  SetLength(FFilteredList, 0);
-  FFilteredCount := 0;
-  FFilteredProgress := 0; // next to be filtered
-end;
-
-procedure TLazSynFoldNodeInfoList.ClearFilter;
-begin
-  ClearFilteredList;
-  FGroupFilter := 0;
-  FActionFilter := [];
-end;
-
-procedure TLazSynFoldNodeInfoList.DoFilter(MinIndex: Integer = -1);
-begin
-  if FFilteredProgress = FNodeCount then exit;
-  if (MinIndex >= 0) and (FFilteredCount > MinIndex) or (not FValid) then exit;
-
-  if (FActionFilter = []) and (FGroupFilter = DefaultGroup) then begin
-    FFilteredList := FNodeInfoList;
-    FFilteredCount := FNodeCount;
-    FFilteredProgress := FNodeCount;
-    exit;
-  end;
-
-  if Length(FFilteredList) < Length(FNodeInfoList) then
-    SetLength(FFilteredList, Length(FNodeInfoList));
-
-  while FFilteredProgress < FNodeCount do begin
-    if Match(FNodeInfoList[FFilteredProgress], FActionFilter, FGroupFilter)
-    then begin
-      FFilteredList[FFilteredCount] := FNodeInfoList[FFilteredProgress];
-      inc(FFilteredCount);
-    end;
-    inc(FFilteredProgress);
-    if (MinIndex >= 0) and (FFilteredCount > MinIndex) then break;
-  end;
-end;
-
-procedure TLazSynFoldNodeInfoList.SetLine(ALine: TLineIdx);
-begin
-  if (FValid and (FLine = ALine)) or
-     (ALine < 0)
-  then
-    exit;
-  ClearData;
-  FLine := ALine;
-  FHighLighter.InitFoldNodeInfo(Self, FLine);
-end;
-
-procedure TLazSynFoldNodeInfoList.SetLineClean(ALine: TLineIdx);
-begin
-  if (FValid and (FLine = ALine)) or (ALine < 0) then exit;
-  Clear;
-  FLine := ALine;
-  FHighLighter.InitFoldNodeInfo(Self, FLine);
-end;
-
-function TLazSynFoldNodeInfoList.MinCapacity: Integer;
-begin
-  Result := 8;
-end;
-
-procedure TLazSynFoldNodeInfoList.InvalidateNode(out AnInfo: TSynFoldNodeInfo);
-begin
-  AnInfo.FoldAction := [sfaInvalid];
-  AnInfo.LineIndex := Line;
-  AnInfo.NodeIndex := -1;
-end;
-
-procedure TLazSynFoldNodeInfoList.Add(const AnInfo: TSynFoldNodeInfo);
-var
-  c: Integer;
-begin
-  if FNodeCount >= Length(FNodeInfoList) - 1 then begin
-    c := MinCapacity;
-    if c <= 0 then c := 8;
-    SetLength(FNodeInfoList, Max(Length(FNodeInfoList) * 2, c));
-  end;
-  FNodeInfoList[FNodeCount] := AnInfo;
-  FNodeInfoList[FNodeCount].AllNodeIndex := FNodeCount;
-  If (FNodeCount > 0) and (sfaOpen in AnInfo.FoldAction) then begin
-    c := FNodeCount-1;
-    if (sfaClose in FNodeInfoList[c].FoldAction) and
-       //(AnInfo.FoldType = FNodeInfoList[c].FoldType) and  // cfbtIfDef <> cfbtIfElse
-       (AnInfo.LogXStart = FNodeInfoList[c].LogXStart) and
-       (AnInfo.LogXEnd = FNodeInfoList[c].LogXEnd)
-    then begin
-      include(FNodeInfoList[FNodeCount].FoldAction, sfaCloseAndOpen);
-      include(FNodeInfoList[c].FoldAction, sfaCloseAndOpen);
-    end;
-  end;
-  inc(FNodeCount);
-end;
-
-procedure TLazSynFoldNodeInfoList.Delete(AnIndex: Integer = -1);
-begin
-  if AnIndex > 0 then begin
-    while (AnIndex < FNodeCount) do begin
-      FNodeInfoList[AnIndex] := FNodeInfoList[AnIndex + 1];
-      FNodeInfoList[AnIndex].AllNodeIndex := AnIndex;
-    inc(AnIndex);
-    end;
-  end;
-  if FNodeCount > 0 then
-    dec(FNodeCount);
-end;
-
-function TLazSynFoldNodeInfoList.CountAll: Integer;
-begin
-  if FValid then
-    Result := FNodeCount
-  else
-    Result := -1;
-end;
-
-function TLazSynFoldNodeInfoList.GetItemPointer(AnIndex: Integer
-  ): PSynFoldNodeInfo;
-begin
-  if (AnIndex >= FNodeCount) or (AnIndex < 0) then
-    Result := nil
-  else
-    Result := @FNodeInfoList[AnIndex];
-end;
-
-function TLazSynFoldNodeInfoList.GetLastItemPointer: PSynFoldNodeInfo;
-begin
-  if FNodeCount < 0 then
-    Result := nil
-  else
-    Result := @FNodeInfoList[FNodeCount-1];
-end;
-
-procedure TLazSynFoldNodeInfoList.Invalidate;
-begin
-  Clear;
-  FValid := False;
-end;
-
-function TLazSynFoldNodeInfoList.Match(const AnInfo: TSynFoldNodeInfo;
-  AnActionFilter: TSynFoldActions; AGroupFilter: Integer): Boolean;
-begin
-  Result := (AnInfo.FoldAction * AnActionFilter = AnActionFilter) and
-            ( (AGroupFilter = 0) or (AnInfo.FoldGroup = AGroupFilter) );
-end;
-
-function TLazSynFoldNodeInfoList.DefaultGroup: Integer;
-begin
-  Result := 0;
-end;
-
-function TLazSynFoldNodeInfoList.Count: Integer;
-begin
-  if not FValid then exit(-1);
-
-  DoFilter(-1);
-  Result := FFilteredCount;
-end;
-
-function TLazSynFoldNodeInfoList.CountEx(AnActionFilter: TSynFoldActions;
-  AGroupFilter: Integer): Integer;
-var
-  i: Integer;
-begin
-  if not FValid then exit(-1);
-  if (AnActionFilter = []) and (AGroupFilter = DefaultGroup) then begin
-    Result := FNodeCount;
-    exit;
-  end;
-
-  Result := 0;
-  for i := 0 to FNodeCount - 1 do
-    if Match(FNodeInfoList[i], AnActionFilter, AGroupFilter) then inc(Result);
-end;
-
-function TLazSynFoldNodeInfoList.NodeInfoEx(Index: Integer;
-  AnActionFilter: TSynFoldActions; AGroupFilter: Integer): TSynFoldNodeInfo;
-var
-  i, j: Integer;
-begin
-  if (Index < 0) or (not FValid) then begin
-    InvalidateNode(Result);
-    exit;
-  end;
-
-  if (AnActionFilter = []) and (AGroupFilter = DefaultGroup) then begin
-    if (Index >= FNodeCount) then
-      InvalidateNode(Result)
-    else
-      Result := FNodeInfoList[Index];
-    Result.NodeIndex := Index; // only set copy on result
-    exit;
-  end;
-
-  i := 0;
-  j := Index;
-  while i < FNodeCount do begin
-    if Match(FNodeInfoList[i], AnActionFilter, AGroupFilter) then dec(j);
-    if j < 0 then begin;
-      Result := FNodeInfoList[i];
-      Result.NodeIndex := Index; // only set copy on result
-      exit;
-    end;
-    inc(i);
-  end;
-
-  InvalidateNode(Result);
 end;
 
 { TLazSynEditNestedFoldsList }
@@ -1824,7 +1527,7 @@ begin
 end;
 
 function TSynCustomFoldHighlighter.GetFoldNodeInfo(Line: TLineIdx
-  ): TLazSynFoldNodeInfoList;
+  ): TLazEditFoldNodeInfoList;
 begin
   if (FFoldNodeInfoList <> nil) and (FFoldNodeInfoList.RefCount > 1) then
     ReleaseRefAndNil(FFoldNodeInfoList);
@@ -1832,7 +1535,6 @@ begin
   if FFoldNodeInfoList = nil then begin
     FFoldNodeInfoList := CreateFoldNodeInfoList;
     FFoldNodeInfoList.AddReference;
-    FFoldNodeInfoList.HighLighter := Self;
   end
   else
   if (CurrentRanges <> nil) and (CurrentRanges.FirstInvalidLine >= 0) then
@@ -1840,7 +1542,11 @@ begin
 
 
   Result := FFoldNodeInfoList;
-  Result.SetLineClean(Line);
+  if (Line >= 0) and
+     ((Result.Line <> Line) or (not Result.valid))
+  then
+    Result.ClearFilter;
+  Result.Line := Line;
 end;
 
 procedure TSynCustomFoldHighlighter.ScanFoldNodeInfo;
@@ -1848,7 +1554,7 @@ begin
   NextToEol;
 end;
 
-procedure TSynCustomFoldHighlighter.InitFoldNodeInfo(AList: TLazSynFoldNodeInfoList; Line: TLineIdx);
+procedure TSynCustomFoldHighlighter.InitFoldNodeInfo(AList: TLazEditFoldNodeInfoList; Line: TLineIdx);
 begin
   FIsCollectingNodeInfo := True;
   try
@@ -1862,9 +1568,9 @@ begin
   end;
 end;
 
-function TSynCustomFoldHighlighter.CreateFoldNodeInfoList: TLazSynFoldNodeInfoList;
+function TSynCustomFoldHighlighter.CreateFoldNodeInfoList: TLazEditFoldNodeInfoList;
 begin
-  Result := TLazSynFoldNodeInfoList.Create;
+  Result := TLazEditFoldNodeInfoList.Create(Self);
 end;
 
 function TSynCustomFoldHighlighter.GetRangeClass: TLazHighlighterRangeClass;
@@ -2023,7 +1729,7 @@ end;
 
 procedure TSynCustomFoldHighlighter.RepairSingleLineNode(var Node: TSynFoldNodeInfo);
 var
-  nd: PSynFoldNodeInfo;
+  nd: PLazEditFoldNodeInfo;
   i : integer;
 begin
     i := FCollectingNodeInfoList.CountAll - 1;

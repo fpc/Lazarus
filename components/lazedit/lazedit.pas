@@ -11,7 +11,7 @@ uses
   TextMateGrammar, xHyperLinksDecorator, xregexpr, xregexpr_unicodedata, LazEditMiscProcs, 
   LazEditHighlighterUtils, LazEditTextGridPainter, LazEditTextAttributes, LazEditLineItemLists, 
   LazEditHighlighter, LazEditTypes, LazEditMatchingBracketUtils, LazEditASyncRunner, 
-  LazEditFoldHighlighter;
+  LazEditFoldHighlighter, LazEditHighlighterFoldNodeHighlighter;
 
 implementation
 

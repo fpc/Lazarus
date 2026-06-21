@@ -14,7 +14,7 @@ uses
   Classes, SysUtils, math, testregistry, TestBase, TestHighlightPas, Forms,
   LazLoggerBase, SynEdit, SynHighlighterPas, SynEditFoldedView,
   SynEditHighlighterFoldBase, SynGutterCodeFolding, SynEditKeyCmds,
-  SynEditTypes, SynEditMiscProcs, LazEditFoldHighlighter;
+  SynEditTypes, SynEditMiscProcs, LazEditFoldHighlighter, LazEditHighlighterFoldNodeHighlighter;
 
 type
 
@@ -82,7 +82,7 @@ type
     procedure TstScreenLineToTextIndex(AName: String; const AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
 
     // fold nest list
-    Procedure CheckNode(nd: TSynFoldNodeInfo; ALine: TLineIdx; AColumn: integer;
+    Procedure CheckNode(nd: TLazEditFoldNodeInfo; ALine: TLineIdx; AColumn: integer;
       LogXStart, LogXEnd,  FoldLvlStart, FoldLvlEnd,  NestLvlStart, NestLvlEnd: Integer;
       FoldType: integer;  FoldTypeCompatible: integer; FoldGroup: Integer;
       FoldAction: TSynFoldActions);
@@ -2069,7 +2069,7 @@ begin
 
 end;
 
-procedure TTestFoldedView.CheckNode(nd: TSynFoldNodeInfo; ALine: TLineIdx;
+procedure TTestFoldedView.CheckNode(nd: TLazEditFoldNodeInfo; ALine: TLineIdx;
   AColumn: integer; LogXStart, LogXEnd, FoldLvlStart, FoldLvlEnd, NestLvlStart,
   NestLvlEnd: Integer; FoldType: integer; FoldTypeCompatible: integer;
   FoldGroup: Integer; FoldAction: TSynFoldActions);

@@ -54,7 +54,8 @@ uses
   // SynEdit
   LazSynEditText, SynEditTypes, SynEditMiscClasses, SynEditMiscProcs,
   SynEditPointClasses, SynEditHighlighterFoldBase,
-  SynEditKeyCmds, LazEditTextAttributes, LazEditHighlighter, LazEditFoldHighlighter;
+  SynEditKeyCmds, LazEditTextAttributes, LazEditHighlighter,
+  LazEditFoldHighlighter, LazEditHighlighterFoldNodeHighlighter;
 
 type
 
@@ -223,7 +224,7 @@ type
   { TSynFoldNodeInfoHelper }
 
   TSynFoldNodeInfoHelper = class
-    FCurInfo: TSynFoldNodeInfo;
+    FCurInfo: TLazEditFoldNodeInfo;
     FActions: TSynFoldActions;
     FHighlighter: TSynCustomFoldHighlighter;
   protected
@@ -231,20 +232,20 @@ type
   public
     constructor Create(AHighlighter: TSynCustomFoldHighlighter);
 
-    function FirstOpen: TSynFoldNodeInfo;
-    function Next: TSynFoldNodeInfo;
-    function Prev: TSynFoldNodeInfo;
-    function FindClose: TSynFoldNodeInfo;
-    function GotoOpenPos(aLineIdx, aNodeIdx: integer): TSynFoldNodeInfo;
-    function GotoOpenAtChar(aLineIdx, aXPos: integer): TSynFoldNodeInfo;
-    function GotoNodeOpenPos(ANode : TSynTextFoldAVLNode): TSynFoldNodeInfo;
-    function GotoNodeClosePos(ANode : TSynTextFoldAVLNode): TSynFoldNodeInfo;
+    function FirstOpen: TLazEditFoldNodeInfo;
+    function Next: TLazEditFoldNodeInfo;
+    function Prev: TLazEditFoldNodeInfo;
+    function FindClose: TLazEditFoldNodeInfo;
+    function GotoOpenPos(aLineIdx, aNodeIdx: integer): TLazEditFoldNodeInfo;
+    function GotoOpenAtChar(aLineIdx, aXPos: integer): TLazEditFoldNodeInfo;
+    function GotoNodeOpenPos(ANode : TSynTextFoldAVLNode): TLazEditFoldNodeInfo;
+    function GotoNodeClosePos(ANode : TSynTextFoldAVLNode): TLazEditFoldNodeInfo;
     function IsAtNodeOpenPos(ANode : TSynTextFoldAVLNode): Boolean;
     function IsValid: Boolean;
-    function Equals(AnInfo: TSynFoldNodeInfo): Boolean;
+    function Equals(AnInfo: TLazEditFoldNodeInfo): Boolean;
     function Equals(AHelper: TSynFoldNodeInfoHelper): Boolean;
 
-    property Info: TSynFoldNodeInfo read FCurInfo write FCurInfo;
+    property Info: TLazEditFoldNodeInfo read FCurInfo write FCurInfo;
     property Actions: TSynFoldActions read FActions write FActions;
   end;
 
@@ -252,7 +253,7 @@ type
   TInvalidateLineProc = procedure(FirstLine, LastLine: integer) of object;
 
   TFoldViewNodeInfo = record
-    HNode: TSynFoldNodeInfo;    // Highlighter Node
+    HNode: TLazEditFoldNodeInfo;    // Highlighter Node
     IsFold, IsHide: Boolean;
     Text, Keyword: String;
     LineNum, ColIndex: Integer;
@@ -322,7 +323,7 @@ type
 
     // Info about Folds opening on ALineIdx
     function  FoldOpenCount(ALineIdx: Integer; AType: Integer = 0): Integer;
-    function  FoldOpenInfo(ALineIdx, AFoldIdx: Integer; AType: Integer = 0): TSynFoldNodeInfo;
+    function  FoldOpenInfo(ALineIdx, AFoldIdx: Integer; AType: Integer = 0): TLazEditFoldNodeInfo;
     //property FoldOpenInfo[ALineIdx, AColumnIdx: Integer]: Integer read GetFoldOpenInfo;
 
     function  FoldLineLength(ALine, AFoldIndex: Integer): integer;
@@ -2011,7 +2012,7 @@ begin
   Invalidate;
 end;
 
-function TSynFoldNodeInfoHelper.FirstOpen: TSynFoldNodeInfo;
+function TSynFoldNodeInfoHelper.FirstOpen: TLazEditFoldNodeInfo;
 begin
   FActions := [sfaOpen, sfaFold];
   FCurInfo.NodeIndex := -1;
@@ -2024,7 +2025,7 @@ begin
   FCurInfo.FoldAction := [sfaInvalid];
 end;
 
-function TSynFoldNodeInfoHelper.Next: TSynFoldNodeInfo;
+function TSynFoldNodeInfoHelper.Next: TLazEditFoldNodeInfo;
 var
   Cnt, Line, Idx: LongInt;
 begin
@@ -2046,7 +2047,7 @@ begin
   Result := FCurInfo;
 end;
 
-function TSynFoldNodeInfoHelper.Prev: TSynFoldNodeInfo;
+function TSynFoldNodeInfoHelper.Prev: TLazEditFoldNodeInfo;
 var
   Line, Idx: LongInt;
 begin
@@ -2067,10 +2068,10 @@ begin
   Result := FCurInfo;
 end;
 
-function TSynFoldNodeInfoHelper.FindClose: TSynFoldNodeInfo;
+function TSynFoldNodeInfoHelper.FindClose: TLazEditFoldNodeInfo;
 var
   Line, EndLine, Cnt: Integer;
-  NdInfo: TSynFoldNodeInfo;
+  NdInfo: TLazEditFoldNodeInfo;
 begin
   Line := FCurInfo.LineIndex;
   EndLine := FHighlighter.FoldEndLine(Line, FCurInfo.NodeIndex);
@@ -2091,14 +2092,14 @@ begin
   Result := FCurInfo;
 end;
 
-function TSynFoldNodeInfoHelper.GotoOpenPos(aLineIdx, aNodeIdx: integer): TSynFoldNodeInfo;
+function TSynFoldNodeInfoHelper.GotoOpenPos(aLineIdx, aNodeIdx: integer): TLazEditFoldNodeInfo;
 begin
   FActions := [sfaOpen, sfaFold];
   FCurInfo := FHighlighter.FoldNodeInfo[aLineIdx].NodeInfoEx(aNodeIdx, FActions);
   Result := FCurInfo;
 end;
 
-function TSynFoldNodeInfoHelper.GotoOpenAtChar(aLineIdx, aXPos: integer): TSynFoldNodeInfo;
+function TSynFoldNodeInfoHelper.GotoOpenAtChar(aLineIdx, aXPos: integer): TLazEditFoldNodeInfo;
 var
   Cnt: Integer;
 begin
@@ -2114,7 +2115,7 @@ begin
   Result := FCurInfo;
 end;
 
-function TSynFoldNodeInfoHelper.GotoNodeOpenPos(ANode: TSynTextFoldAVLNode): TSynFoldNodeInfo;
+function TSynFoldNodeInfoHelper.GotoNodeOpenPos(ANode: TSynTextFoldAVLNode): TLazEditFoldNodeInfo;
 begin
   FActions := [sfaOpen, sfaFold];
   FCurInfo := FHighlighter.FoldNodeInfo[ANode.StartLine - ANode.SourceLineOffset - 1]
@@ -2122,9 +2123,9 @@ begin
   Result := FCurInfo;
 end;
 
-function TSynFoldNodeInfoHelper.GotoNodeClosePos(ANode: TSynTextFoldAVLNode): TSynFoldNodeInfo;
+function TSynFoldNodeInfoHelper.GotoNodeClosePos(ANode: TSynTextFoldAVLNode): TLazEditFoldNodeInfo;
 var
-  NdInfo, NdInfo2: TSynFoldNodeInfo;
+  NdInfo, NdInfo2: TLazEditFoldNodeInfo;
   Cnt, EndCol, EndLineIdx: Integer;
 begin
   FActions := [sfaClose, sfaFold];
@@ -2165,7 +2166,7 @@ begin
   Result := (not (sfaInvalid in FCurInfo.FoldAction));
 end;
 
-function TSynFoldNodeInfoHelper.Equals(AnInfo: TSynFoldNodeInfo): Boolean;
+function TSynFoldNodeInfoHelper.Equals(AnInfo: TLazEditFoldNodeInfo): Boolean;
 begin
   Result := (FCurInfo.LineIndex = AnInfo.LineIndex) and
             (FCurInfo.NodeIndex = AnInfo.NodeIndex) and
@@ -2954,9 +2955,9 @@ begin
 end;
 
 function TSynEditFoldProvider.FoldOpenInfo(ALineIdx, AFoldIdx: Integer;
-  AType: Integer = 0): TSynFoldNodeInfo;
+  AType: Integer = 0): TLazEditFoldNodeInfo;
 
-  function BlockSelInfo(NIdx: Integer): TSynFoldNodeInfo;
+  function BlockSelInfo(NIdx: Integer): TLazEditFoldNodeInfo;
   begin
     Result.LineIndex    := ALineIdx;
     Result.NodeIndex    := NIdx;
@@ -3004,7 +3005,7 @@ end;
 function TSynEditFoldProvider.InfoForFoldAtTextIndex(ALine, AFoldIndex: Integer;
   HideLen: Boolean; NeedLen: Boolean = True): TSynEditFoldProviderNodeInfo;
 var
-  nd: TSynFoldNodeInfo;
+  nd: TLazEditFoldNodeInfo;
 begin
   Result.LineCount := 0;
   Result.Column := 0;
@@ -3720,7 +3721,7 @@ function TSynEditFoldedView.LogicalPosToNodeIndex(AStartIndex: Integer; LogX: In
 var
   hl: TSynCustomFoldHighlighter;
   c, i: Integer;
-  nd: TSynFoldNodeInfo;
+  nd: TLazEditFoldNodeInfo;
 begin
   hl := TSynCustomFoldHighlighter(HighLighter);
   if not assigned(hl) then
@@ -3808,7 +3809,7 @@ var
   NodeIterator: TSynTextFoldAVLNodeNestedIterator;
   NdiHelper1: TSynFoldNodeInfoHelper;
   Node: TSynTextFoldAVLNode;
-  NdInfo, NdInfo2: TSynFoldNodeInfo;
+  NdInfo, NdInfo2: TLazEditFoldNodeInfo;
   entry: TFoldExportEntry;
   i: Integer;
   NodeFoldType: TSynEditFoldType;
@@ -3969,7 +3970,7 @@ var
   hl: TSynCustomFoldHighlighter;
   FoldHelper: TSynEditFoldExportStream;
   NdiHelper1: TSynFoldNodeInfoHelper;
-  NdInfo, ndinfo2: TSynFoldNodeInfo;
+  NdInfo, ndinfo2: TLazEditFoldNodeInfo;
   i: Integer;
   Line, FL: Integer;
   entry: TFoldExportEntry;
@@ -4521,7 +4522,7 @@ var
   TypeCnt, Lvl: Integer;
   EndLvl, CurLvl: Array of integer;
   i, c, t, n, o: Integer;
-  nd: TSynFoldNodeInfo;
+  nd: TLazEditFoldNodeInfo;
   FN: TSynTextFoldAVLNode;
 
   procedure GetEndLvl(l: Integer);

@@ -10,7 +10,8 @@ uses
   xregexpr,
   // SynEdit
   SynBeautifier, SynHighlighterPas, SynEditPointClasses, SynEditKeyCmds, SynEdit,
-  SynEditHighlighterFoldBase, SynEditMiscProcs, LazEditMiscProcs, LazEditFoldHighlighter;
+  SynEditHighlighterFoldBase, SynEditMiscProcs, LazEditMiscProcs, LazEditFoldHighlighter,
+  LazEditHighlighterFoldNodeHighlighter;
 
 type
   { TSynBeautifierPascal }
@@ -420,7 +421,7 @@ end;
 
 function TSynBeautifierPascal.GetCommentStartColForIdx(AIndex: Integer): Integer;
 var
-  nl: TLazSynFoldNodeInfoList;
+  nl: TLazEditFoldNodeInfoList;
   i: Integer;
   FoldCommentLvl: Integer;
 begin

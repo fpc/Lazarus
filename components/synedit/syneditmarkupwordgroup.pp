@@ -27,7 +27,8 @@ interface
 
 uses
   Classes, SysUtils, Graphics, SynEditMarkup, SynEditMiscClasses, Controls,
-  SynEditHighlighterFoldBase, LazEditTextAttributes, LazEditHighlighter, LazEditFoldHighlighter;
+  SynEditHighlighterFoldBase, LazEditTextAttributes, LazEditHighlighter, LazEditFoldHighlighter,
+  LazEditHighlighterFoldNodeHighlighter;
 
 type
 
@@ -126,11 +127,11 @@ procedure TSynEditMarkupWordGroup.FindMatchingWords(LogCaret: TPoint;
 var
   LCnt: Integer;
   HL: TSynCustomFoldHighlighter;
-  NodeList: TLazSynFoldNodeInfoList;
+  NodeList: TLazEditFoldNodeInfoList;
 
-  function FindEndNode(StartNode: TSynFoldNodeInfo;
-                       var YIndex, NIndex: Integer): TSynFoldNodeInfo;
-    function SearchLine(ALineIdx: Integer; var ANodeIdx: Integer): TSynFoldNodeInfo;
+  function FindEndNode(StartNode: TLazEditFoldNodeInfo;
+                       var YIndex, NIndex: Integer): TLazEditFoldNodeInfo;
+    function SearchLine(ALineIdx: Integer; var ANodeIdx: Integer): TLazEditFoldNodeInfo;
     begin
       NodeList.Line := ALineIdx;
       repeat
@@ -160,9 +161,9 @@ var
       Result.FoldAction := [sfaInvalid]; // LastLine closed Node(maybe force-closed?)
   end;
 
-  function FindStartNode(EndNode: TSynFoldNodeInfo;
-                       var YIndex, NIndex: Integer): TSynFoldNodeInfo;
-    function SearchLine(ALineIdx: Integer; var ANodeIdx: Integer): TSynFoldNodeInfo;
+  function FindStartNode(EndNode: TLazEditFoldNodeInfo;
+                       var YIndex, NIndex: Integer): TLazEditFoldNodeInfo;
+    function SearchLine(ALineIdx: Integer; var ANodeIdx: Integer): TLazEditFoldNodeInfo;
     begin
       NodeList.Line := ALineIdx;
       if ANodeIdx < 0 then
@@ -193,7 +194,7 @@ var
       Result.FoldAction := [sfaInvalid]; // LastLine closed Node(maybe force-closed?)
   end;
 
-  function CompareBounds(const Node1, Node2: TSynFoldNodeInfo): Boolean;
+  function CompareBounds(const Node1, Node2: TLazEditFoldNodeInfo): Boolean;
   begin
     Result := (not (sfaInvalid in Node1.FoldAction)) and
               (not (sfaInvalid in Node2.FoldAction)) and
@@ -201,10 +202,10 @@ var
               (Node1.LogXEnd = Node2.LogXEnd);
   end;
 
-  function CheckNeighbourNode(const CurNode: TSynFoldNodeInfo; Offset: Integer;
-    var FoundNode: TSynFoldNodeInfo): Boolean;
+  function CheckNeighbourNode(const CurNode: TLazEditFoldNodeInfo; Offset: Integer;
+    var FoundNode: TLazEditFoldNodeInfo): Boolean;
   var
-    TmpNode: TSynFoldNodeInfo;
+    TmpNode: TLazEditFoldNodeInfo;
   begin
     TmpNode := NodeList[CurNode.NodeIndex + Offset];
     Result := CompareBounds(CurNode, TmpNode);
@@ -214,7 +215,7 @@ var
 
 var
   i, y: integer;
-  StartNode, CloseNode, Node3, TmpNode: TSynFoldNodeInfo;
+  StartNode, CloseNode, Node3, TmpNode: TLazEditFoldNodeInfo;
 begin
   Word1.Y := -1;
   Word2.Y := -1;

@@ -53,7 +53,7 @@ uses
   LazLoggerBase,
   // LazEdit
   LazEditHighlighterUtils, LazEditTextAttributes, LazEditTextGridPainter, LazEditHighlighter,
-  LazEditFoldHighlighter,
+  LazEditFoldHighlighter, LazEditHighlighterFoldNodeHighlighter,
   // synedit
   SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks,
   SynEditTypes, SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks,
@@ -3083,7 +3083,7 @@ procedure TIDESynGutterCodeFolding.UnFoldIfdef(AInclDisabled, AInclEnabled: Bool
 var
   i, j, k, y1, y2: Integer;
   CurTopLine: TSrcSynTopLineInfo;
-  FldInf: TSynFoldNodeInfo;
+  FldInf: TLazEditFoldNodeInfo;
   Tree: TSynMarkupHighIfDefLinesTree;
   IfLineNode: TSynMarkupHighIfDefLinesNodeInfo;
   IsDisabled: Boolean;
@@ -3137,7 +3137,7 @@ procedure TIDESynGutterCodeFolding.FoldIfdef(AInclTemp: Boolean);
 var
   i, j, k, y1, y2: Integer;
   CurTopLine: TSrcSynTopLineInfo;
-  FldInf: TSynFoldNodeInfo;
+  FldInf: TLazEditFoldNodeInfo;
   Tree: TSynMarkupHighIfDefLinesTree;
   IfLineNode: TSynMarkupHighIfDefLinesNodeInfo;
 begin
@@ -3208,7 +3208,7 @@ procedure TIDESynGutterCodeFolding.PopClickedUnfoldComment(Sender: TObject);
 var
   i, j, y1, y2: Integer;
   CurTopLine: TSrcSynTopLineInfo;
-  FldInf: TSynFoldNodeInfo;
+  FldInf: TLazEditFoldNodeInfo;
 begin
   TIDESynEditor(SynEdit).BeginUpdate(False);
   try
@@ -3248,7 +3248,7 @@ procedure TIDESynGutterCodeFolding.PopClickedFoldComment(Sender: TObject);
 var
   i, j, y1, y2: Integer;
   CurTopLine: TSrcSynTopLineInfo;
-  FldInf: TSynFoldNodeInfo;
+  FldInf: TLazEditFoldNodeInfo;
 begin
   TIDESynEditor(SynEdit).BeginUpdate(False);
   try
@@ -3286,7 +3286,7 @@ procedure TIDESynGutterCodeFolding.PopClickedHideComment(Sender: TObject);
 var
   i, j, y1, y2: Integer;
   CurTopLine: TSrcSynTopLineInfo;
-  FldInf: TSynFoldNodeInfo;
+  FldInf: TLazEditFoldNodeInfo;
 begin
   TIDESynEditor(SynEdit).BeginUpdate(False);
   try
@@ -3332,7 +3332,7 @@ var
   Tree: TSynMarkupHighIfDefLinesTree;
   IfLineNode: TSynMarkupHighIfDefLinesNodeInfo;
   FProv: TSynEditFoldProvider;
-  inf: TSynFoldNodeInfo;
+  inf: TLazEditFoldNodeInfo;
   HasComments, HasIfdef: Boolean;
 
   procedure CheckFoldConf(Val: TPascalCodeFoldBlockType);
