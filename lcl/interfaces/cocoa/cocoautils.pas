@@ -1180,6 +1180,12 @@ begin
   Result:= NSImage.imageWithSystemSymbolName_accessibilityDescription(
              imageName, nil );
 
+  if NOT Assigned(Result) then
+    Result:= NSImage.imageNamed( imageName );
+
+  if NOT Assigned(Result) then
+    Exit;
+
   if Assigned(config) then
     Result:= Result.imageWithSymbolConfiguration( config );
 end;
