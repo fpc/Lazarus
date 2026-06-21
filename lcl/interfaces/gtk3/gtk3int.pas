@@ -96,6 +96,7 @@ type
     procedure SetDefaultAppFontName;
     procedure InitSysColorBrushes;
     procedure FreeSysColorBrushes;
+    procedure LoadThemeMetrics;
   protected
     {shared stuff}
     FSystemMetricsList: TIntegerList;
