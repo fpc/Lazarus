@@ -5823,8 +5823,6 @@ constructor TDwarfCompilationUnit.Create(AOwner: TFpDwarfInfo; ADebugFile: PDwar
     diridx: Cardinal;
     S, S2: String;
     pb: PByte absolute Name;
-    oldFpc: Boolean;
-    i: SizeInt;
   begin
     FLineInfo.Header := AData;
     FLineInfo.AddrSize := FAddressSize;

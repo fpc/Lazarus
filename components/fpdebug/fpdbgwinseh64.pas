@@ -164,7 +164,7 @@ var
   t: TDBGPtr;
   r: TDbgRegisterValue;
   OpInfo: Byte;
-  ChainedAddr, OrigCodePointer, OrigStackPointer: TDBGPtr;
+  ChainedAddr: TDBGPtr;
 begin
   Result := suFailed;
   ANewFrame := nil;

@@ -18,6 +18,7 @@ type
     FHasResetInstructionPointerAfterBreakpoint: boolean;
 
     function GetInstructionPointerForHasBreakpointInfoForAddress: TDBGPtr; override;
+  public
     function GetCurrentStackFrameInfo: TDbgStackFrameInfo; override;
   end;
 
@@ -167,8 +168,6 @@ begin
 end;
 
 function TDbgStackFrameSteppingInfoX86.CalculateHasSteppedOut: Boolean;
-var
-  CurBp, CurSp: TDBGPtr;
 begin
   if FProcessAfterRun then
     DoAfterRun;
@@ -378,7 +377,6 @@ var
   CodePointer2, FrameBasePointer2, StackPointer2: TDBGPtr;
   ANewFrame2: TDbgCallstackEntry;
   ResSeh, ResAsm: TTDbgStackUnwindResult;
-  NextInstruction: TDbgAsmInstruction;
 
   procedure InitPtr2;
   begin

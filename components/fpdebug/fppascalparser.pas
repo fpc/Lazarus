@@ -3023,7 +3023,7 @@ function TFpPascalExpressionPartIntrinsic.DoClassName(
   AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
 var
   AClassName: String;
-  NewResult, Arg: TFpValue;
+  Arg: TFpValue;
 begin
   Result := nil;
   if not CheckArgumentCount(AParams, 1) then
@@ -8014,7 +8014,6 @@ end;
 function TFpPascalExpressionPartOperatorArraySlice.EndValue: Int64;
 var
   tmp: TFpValue;
-  i: Int64;
 begin
   Result := 0;
   if Count < 2 then exit;
