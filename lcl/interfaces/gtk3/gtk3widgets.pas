@@ -2598,10 +2598,10 @@ var
   IsArrowKey: Boolean;
   IsEditableWidget: Boolean;
   TextBeforeKey: String;
+  AFiltered: gboolean;
   {$IFDEF GTK3DEBUGKEYPRESS}
   TempWidget: HWND;
   Info: PTypeInfo;
-  AFiltered: gboolean;
   {$ENDIF}
 begin
   //TODO: finish LCL messaging
@@ -2615,15 +2615,16 @@ begin
   begin
     Gtk3WidgetSet.IMCommitStr := '';
     Gtk3WidgetSet.IMInFilter := True;
-    {$IFDEF GTK3DEBUGKEYPRESS}
     AFiltered := gtk_im_context_filter_keypress(Gtk3WidgetSet.IMContext, PGdkEventKey(Event));
+    {$IFDEF GTK3DEBUGKEYPRESS}
     writeln('GtkEventKey: filter_keypress=', Ord(AFiltered), ' commitStr="', Gtk3WidgetSet.IMCommitStr, '" keyval=', AEvent.keyval, ' widget=', dbgsName(LCLObject));
-    {$ELSE}
-    gtk_im_context_filter_keypress(Gtk3WidgetSet.IMContext, PGdkEventKey(Event));
     {$ENDIF}
     Gtk3WidgetSet.IMInFilter := False;
     if Gtk3WidgetSet.IMCommitStr <> '' then
-      AEventString := Gtk3WidgetSet.IMCommitStr;
+      AEventString := Gtk3WidgetSet.IMCommitStr
+    else
+    if AFiltered then
+      exit(True);
   end;
 
   {$IFDEF GTK3DEBUGKEYPRESS}
