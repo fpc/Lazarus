@@ -287,8 +287,7 @@ begin
   if PatternsDiffer then
   begin
     FreeReference;
-    FPattern := APattern;
-    SetLength(FPattern, Length(FPattern)); // create copy of content
+    FPattern := copy(APattern);
     Changed;
   end;
 end;
