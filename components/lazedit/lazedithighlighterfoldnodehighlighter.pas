@@ -231,8 +231,12 @@ begin
     exit;
   end;
 
-  if Length(FFilteredList) < Length(FNodeInfoList) then
+  if (Length(FFilteredList) < Length(FNodeInfoList)) or
+     (FFilteredList = FNodeInfoList)
+  then begin
+    FFilteredList := nil; // don't copy content
     SetLength(FFilteredList, Length(FNodeInfoList));
+  end;
 
   while FFilteredProgress < FNodeCount do begin
     if Match(FNodeInfoList[FFilteredProgress], FActionFilter, FGroupFilter)
