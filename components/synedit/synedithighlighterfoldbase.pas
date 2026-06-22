@@ -769,7 +769,9 @@ begin
     exit;
   end;
 
-  if Length(FFilteredList) < Length(FNodeInfoList) then
+  if (Length(FFilteredList) < Length(FNodeInfoList)) or
+     (FFilteredList = FNodeInfoList)
+  then
     SetLength(FFilteredList, Length(FNodeInfoList));
 
   while FFilteredProgress < FNodeCount do begin
