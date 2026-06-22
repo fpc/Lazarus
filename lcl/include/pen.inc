@@ -288,6 +288,7 @@ begin
   begin
     FreeReference;
     FPattern := APattern;
+    SetLength(FPattern, Length(FPattern)); // create copy of content
     Changed;
   end;
 end;
