@@ -982,7 +982,7 @@ msgstr "В &объявлении функции"
 
 #: jcfuiconsts.lisspacesingeneric
 msgid "In &generic"
-msgstr "&Других выражений"
+msgstr "Выра&жений Generic"
 
 #: jcfuiconsts.lisspacesinsertspacebeforebracket
 msgid "&Insert space before bracket"
