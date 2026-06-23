@@ -75,7 +75,7 @@ resourcestring
   lisSpacesFunctionReturnTypes = '&Function return types';
   lisSpacesClassVariables = '&Class variables';
   lisSpacesRecordFields = '&Record fields';
-  lisSpacesCaseLAbel = 'Case l&abel';
+  lisSpacesCaseLabel = 'Case l&abel';
   lisSpacesLabel = '&Label';
   lisSpacesInGeneric = 'In &generic';
   lisSpacesSpacesAroundOperators = 'Spaces around &operators';

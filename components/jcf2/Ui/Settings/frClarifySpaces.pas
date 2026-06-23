@@ -138,7 +138,7 @@ begin
   lblSpaceBeforeColonFn.Caption := lisSpacesFunctionReturnTypes;
   lblSpacesBeforeColonClassVar.Caption := lisSpacesClassVariables;
   lblSpacesBeforeColonRecordField.Caption := lisSpacesRecordFields;
-  lblSpacesBeforeCaseLabel.Caption := lisSpacesCaseLAbel;
+  lblSpacesBeforeCaseLabel.Caption := lisSpacesCaseLabel;
   lbSpacesBeforeLabel.Caption := lisSpacesLabel;
   lblSpacesBeforeColonGeneric.Caption := lisSpacesInGeneric;
 
