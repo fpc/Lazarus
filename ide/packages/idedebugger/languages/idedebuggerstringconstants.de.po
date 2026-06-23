@@ -1,9 +1,16 @@
 msgid ""
 msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
+"Language-Team: \n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"X-Generator: Poedit 3.9\n"
 
 #: idedebuggerstringconstants.arrnavautohide
 msgid "Hide automatically"
@@ -338,7 +345,7 @@ msgstr ""
 
 #: idedebuggerstringconstants.dispformatdlgbtnbool
 msgid "Boolean"
-msgstr ""
+msgstr "Boolesch"
 
 #: idedebuggerstringconstants.dispformatdlgbtnchar
 msgctxt "idedebuggerstringconstants.dispformatdlgbtnchar"
@@ -770,7 +777,7 @@ msgstr ""
 
 #: idedebuggerstringconstants.dlgbackendconvoptdefault
 msgid "- Default -"
-msgstr ""
+msgstr "- Standard -"
 
 #: idedebuggerstringconstants.dlgbackendconvoptdisabled
 msgid "- Disabled -"
@@ -837,7 +844,7 @@ msgstr ""
 #: idedebuggerstringconstants.dlgunitdeprefresh
 msgctxt "lazarusidestrconsts.dlgunitdeprefresh"
 msgid "Refresh"
-msgstr "Erneuern"
+msgstr "Aktualisieren"
 
 #: idedebuggerstringconstants.dlgvaluecolor
 msgctxt "lazarusidestrconsts.dlgvaluecolor"
@@ -1115,7 +1122,7 @@ msgstr "Automatische Snapshots ein-/ausschalten"
 
 #: idedebuggerstringconstants.histdlgbtnremovehint
 msgid "Remove selected entry"
-msgstr "Gewählten Eintrag entfernen"
+msgstr "Ausgewählten Eintrag entfernen"
 
 #: idedebuggerstringconstants.histdlgbtnshowhisthint
 msgid "View history"
@@ -1425,7 +1432,7 @@ msgstr "Alle in der gleichen Quelle löschen"
 
 #: idedebuggerstringconstants.lisdeleteallselectedbreakpoints
 msgid "Delete all selected breakpoints?"
-msgstr "Alle gewählten Haltepunkte löschen?"
+msgstr "Alle ausgewählten Haltepunkte löschen?"
 
 #: idedebuggerstringconstants.lisdeletebreakpoint
 msgid "Delete Breakpoint"
@@ -1613,7 +1620,7 @@ msgstr ""
 
 #: idedebuggerstringconstants.lishitcount
 msgid "Hitcount"
-msgstr "Zahl der Treffer"
+msgstr "Anzahl der Treffer"
 
 #: idedebuggerstringconstants.lisid
 msgctxt "lazarusidestrconsts.lisid"
@@ -2174,11 +2181,11 @@ msgstr "Dezimal"
 #: idedebuggerstringconstants.regdlgdefault
 msgctxt "idedebuggerstringconstants.regdlgdefault"
 msgid "Default"
-msgstr ""
+msgstr "Standard"
 
 #: idedebuggerstringconstants.regdlgdisplaytypeforselectedregisters
 msgid "Display type for selected Registers"
-msgstr "Anzeigetyp für gewählte Register"
+msgstr "Anzeigetyp für ausgewählte Register"
 
 #: idedebuggerstringconstants.regdlgformat
 msgid "Format"
@@ -2211,7 +2218,7 @@ msgstr ""
 
 #: idedebuggerstringconstants.rsenterpid
 msgid "Enter PID"
-msgstr "Geben Sie die PID ein:"
+msgstr "PID eingeben"
 
 #: idedebuggerstringconstants.rslength
 msgid "Length"

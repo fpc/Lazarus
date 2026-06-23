@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Swen Heinig <swen@heinig.email>\n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.9\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.9\n"
 
 #: projectgroupstrconst.lisabort
 msgid "Abort"
@@ -273,7 +273,7 @@ msgstr "Hinzufügen"
 
 #: projectgroupstrconst.lisprojectgroupaddexistinghint
 msgid "Add existing target to project group"
-msgstr "Existierendes Ziel zur Projektgruppe hinzufügen"
+msgstr "Vorhandenes Ziel zur Projektgruppe hinzufügen"
 
 #: projectgroupstrconst.lisprojectgroupaddhint
 msgid "Add targets to project group"
@@ -412,7 +412,7 @@ msgstr "Aktivieren"
 
 #: projectgroupstrconst.listargetactivatehint
 msgid "Activate selected target"
-msgstr "Gewähltes Ziel aktivieren"
+msgstr "Ausgewähltes Ziel aktivieren"
 
 #: projectgroupstrconst.listargetadd
 msgid "Add target"
@@ -444,7 +444,7 @@ msgstr ""
 
 #: projectgroupstrconst.listargetcompilecleanhint
 msgid "Compile selected target clean"
-msgstr "Gewähltes Ziel sauber rekompilieren"
+msgstr "Ausgewähltes Ziel sauber rekompilieren"
 
 #: projectgroupstrconst.listargetcompilefromhere
 msgid "Compile from here"
@@ -452,7 +452,7 @@ msgstr ""
 
 #: projectgroupstrconst.listargetcompilehint
 msgid "Compile selected target"
-msgstr "Gewähltes Ziel kompilieren"
+msgstr "Ausgewähltes Ziel kompilieren"
 
 #: projectgroupstrconst.listargetcopyfilename
 #, fuzzy
@@ -494,7 +494,7 @@ msgstr "Installieren"
 
 #: projectgroupstrconst.listargetinstallhint
 msgid "Install selected target"
-msgstr "Gewähltes Ziel installieren"
+msgstr "Ausgewähltes Ziel installieren"
 
 #: projectgroupstrconst.listargetlater
 msgid "Compile target later"
@@ -519,7 +519,7 @@ msgstr "Öffnen"
 
 #: projectgroupstrconst.listargetopenhint
 msgid "Open selected target"
-msgstr "Gewähltes Ziel öffnen"
+msgstr "Ausgewähltes Ziel öffnen"
 
 #: projectgroupstrconst.listargetproperties
 msgid "Target properties"
@@ -531,7 +531,7 @@ msgstr "Eigenschaften"
 
 #: projectgroupstrconst.listargetpropertieshint
 msgid "Show property dialog for selected target"
-msgstr "Eigenschaften-Dialog für gewähltes Ziel anzeigen"
+msgstr "Eigenschaften-Dialog für ausgewähltes Ziel anzeigen"
 
 #: projectgroupstrconst.listargetremove
 msgctxt "projectgroupstrconst.listargetremove"
@@ -548,7 +548,7 @@ msgstr ""
 
 #: projectgroupstrconst.listargetrunhint
 msgid "Run selected target"
-msgstr "Gewähltes Ziel starten"
+msgstr "Ausgewähltes Ziel starten"
 
 #: projectgroupstrconst.listargetuninstall
 msgctxt "projectgroupstrconst.listargetuninstall"
@@ -562,7 +562,7 @@ msgstr "Deinstallieren"
 
 #: projectgroupstrconst.listargetuninstallhint
 msgid "Uninstall selected target"
-msgstr "Gewähltes Ziel deinstallieren"
+msgstr "Ausgewähltes Ziel deinstallieren"
 
 #: projectgroupstrconst.listhelazbuildwasnotfound
 #, object-pascal-format

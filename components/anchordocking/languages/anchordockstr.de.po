@@ -1,13 +1,15 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: \n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
 #, object-pascal-format
@@ -275,7 +277,7 @@ msgstr ""
 #: anchordockstr.adrsnochildrenallowedfornodetype
 #, object-pascal-format
 msgid "No children allowed for Node=\"%s\" Type=%s"
-msgstr ""
+msgstr "Keine Untereinträge für Knoten \"%s\" und Typ “%s” erlaubt"
 
 #: anchordockstr.adrsnotsupportedhasparent
 #, object-pascal-format

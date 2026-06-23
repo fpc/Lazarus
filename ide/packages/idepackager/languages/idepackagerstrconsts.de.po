@@ -1,9 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
+"Language-Team: \n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
 
 #: idepackagerstrconsts.dlgcompileroptions
 msgid "Compiler Options"
@@ -122,7 +128,7 @@ msgstr "Ausgaben-XML-Datei"
 
 #: idepackagerstrconsts.lispkgfiletypelfm
 msgid "LFM - Lazarus form text"
-msgstr "LFM - Lazarus-Formtext"
+msgstr "LFM - Lazarus-Formulartext"
 
 #: idepackagerstrconsts.lispkgfiletypelrs
 msgid "LRS - Lazarus resource"
@@ -211,7 +217,7 @@ msgstr "Kann die Datei nicht löschen"
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format
 msgid "Unable to delete old state file \"%s\"%sfor package %s."
-msgstr "Die alte Statusdatei \"%s\"%sdes Packages %s kann nicht gelöscht werden."
+msgstr "Kann alte Statusdatei \"%s\"%sdes Packages %s nicht löschen."
 
 #: idepackagerstrconsts.lispkgmangunabletoloadpackage
 msgid "Unable to load package"
@@ -220,12 +226,12 @@ msgstr "Kann Package nicht laden"
 #: idepackagerstrconsts.lispkgmangunabletoopenthepackage
 #, object-pascal-format
 msgid "Unable to open the package \"%s\".%sThis package was marked for installation."
-msgstr "Das Package \"%s\".%s kann nicht geöffnet werden. Es war zur Installation vorgemerkt."
+msgstr "Kann Package \"%s\".%s nicht öffnen. Es war zur Installation vorgemerkt."
 
 #: idepackagerstrconsts.lispkgmangunabletoreadstatefileofpackageerror
 #, object-pascal-format
 msgid "Unable to read state file \"%s\"%sof package %s.%sError: %s"
-msgstr "Die Statusdatei \"%s\"%sdes Packages %s kann nicht gelesen werden.%sFehler: %s"
+msgstr "Kann Statusdatei \"%s\"%sdes Packages %s nicht lesen.%sFehler: %s"
 
 #: idepackagerstrconsts.lispkgmangunabletowritestatefileofpackageerror
 #, object-pascal-format
@@ -316,7 +322,7 @@ msgstr "Unit \"%s\" wurde aus Package (lpk) entfernt"
 
 #: idepackagerstrconsts.lisskipthesewarnings
 msgid "Skip these warnings"
-msgstr "Diese Warnungen überspringen"
+msgstr "Diese Warnungen übergehen"
 
 #: idepackagerstrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
 #, object-pascal-format

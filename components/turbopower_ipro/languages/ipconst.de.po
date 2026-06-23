@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2026-06-24 11:07+0200\n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
+"Language-Team: Deutsch <lazarus@miraclec.com>\n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Project-Id-Version: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-03-26 21:17+0100\n"
-"Last-Translator: Swen Heinig <swen@heinig.email>\n"
-"Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"Language: de_DE\n"
-"X-Generator: Poedit 1.8.4\n"
+"X-Generator: Poedit 3.9\n"
 
 #: ipconst.cacheadding
 #, object-pascal-format
@@ -104,7 +104,7 @@ msgstr "Download: (%s), Datenpaketgröße falsch; erwartet %s, erhalten %s"
 #: ipconst.providerunknownformat
 #, object-pascal-format
 msgid "Don't know how to handle %s"
-msgstr "Weiß nicht wie %s zu behandeln ist"
+msgstr "Weiß nicht, wie %s zu behandeln ist"
 
 #: ipconst.providerunknownpicture
 msgid "Invalid picture format"
@@ -149,7 +149,7 @@ msgstr "Druckvorschau"
 
 #: ipconst.rsiphtmlpreviewselectprinter
 msgid "Select printer ..."
-msgstr "Drucker auswählen..."
+msgstr "Drucker auswählen ..."
 
 #: ipconst.rsiphtmlpreviewzoom
 msgid "Zoom:"
@@ -166,11 +166,11 @@ msgstr "Kann Eigenschaft eines aktiven Sockets nicht setzen"
 
 #: ipconst.sattemptingtoread
 msgid "Attempting to read "
-msgstr "Beginne mit dem Lesen"
+msgstr "Beginne mit dem Lesen "
 
 #: ipconst.sattemptingtowrite
 msgid "Attempting to write "
-msgstr "Beginne mit dem Schreiben"
+msgstr "Beginne mit dem Schreiben "
 
 #: ipconst.sbadframelistobject
 #, object-pascal-format
@@ -254,19 +254,19 @@ msgstr "Herunterladen?"
 
 #: ipconst.sbytesfromstream
 msgid " bytes from stream"
-msgstr "Byte aus dem Stream"
+msgstr " Byte aus dem Stream"
 
 #: ipconst.sbytesreadfromstream
 msgid " bytes read from stream"
-msgstr "Byte aus Stream gelesen"
+msgstr " Byte aus Stream gelesen"
 
 #: ipconst.sbytestostream
 msgid " bytes to stream"
-msgstr "Byte in Stream"
+msgstr " Byte in Stream"
 
 #: ipconst.sbyteswrittentostream
 msgid " bytes written to stream"
-msgstr "Byte in Stream geschrieben"
+msgstr " Byte in Stream geschrieben"
 
 #: ipconst.scannotwritetostream
 msgid "Cannot write to stream"
@@ -293,11 +293,11 @@ msgstr "Schließen: Loc: %s Rem: %s"
 
 #: ipconst.sfilename
 msgid " Filename: "
-msgstr "Dateiname:"
+msgstr " Dateiname: "
 
 #: ipconst.sftpbytestransferred
 msgid " bytes Transferred"
-msgstr "Byte übertragen"
+msgstr " Byte übertragen"
 
 #: ipconst.sftpclose
 msgctxt "ipconst.sftpclose"
@@ -306,43 +306,43 @@ msgstr "Verbindung beendet"
 
 #: ipconst.sftpcomplete
 msgid "Transfer complete. "
-msgstr "Übertragung abgeschlossen."
+msgstr "Übertragung abgeschlossen. "
 
 #: ipconst.sftpdelete
 msgid "Deleting "
-msgstr "Lösche"
+msgstr "Lösche "
 
 #: ipconst.sftplogin
 msgid " logged in"
-msgstr "eingeloggt"
+msgstr " eingeloggt"
 
 #: ipconst.sftplogout
 msgid " logged out"
-msgstr "ausgeloggt"
+msgstr " ausgeloggt"
 
 #: ipconst.sftpopen
 msgid "Connected to "
-msgstr "Verbunden mit"
+msgstr "Verbunden mit "
 
 #: ipconst.sftprename
 msgid "Renaming "
-msgstr "Benenne um"
+msgstr "Benenne um "
 
 #: ipconst.sftprestart
 msgid "Attempting to re-start transfer of "
-msgstr "Versuche Neustart der Übertragung von"
+msgstr "Versuche Neustart der Übertragung von "
 
 #: ipconst.sftpretrieve
 msgid "Retrieving "
-msgstr "Lese"
+msgstr "Lese "
 
 #: ipconst.sftpstore
 msgid "Storing "
-msgstr "Speichere"
+msgstr "Speichere "
 
 #: ipconst.sftptimeout
 msgid "Transfer timed out"
-msgstr "Zeitüberschreitung bei Übertragung "
+msgstr "Zeitüberschreitung bei Übertragung"
 
 #: ipconst.sftpuserabort
 msgid "Transfer aborted by user"
@@ -370,11 +370,11 @@ msgstr "Übertragen"
 
 #: ipconst.shtmlencnotsupported
 msgid " encoding not supported"
-msgstr "Kodierung nicht unterstützt"
+msgstr " Kodierung nicht unterstützt"
 
 #: ipconst.shtmlexp
 msgid " expected"
-msgstr "erwartet"
+msgstr " erwartet"
 
 #: ipconst.shtmlinternal
 msgid "Internal error"
@@ -386,7 +386,7 @@ msgstr "Ungültige Anordnung"
 
 #: ipconst.shtmlinvcolor
 msgid "Invalid color constant:"
-msgstr "Ungültiger Farbwert: "
+msgstr "Ungültiger Farbwert:"
 
 #: ipconst.shtmlinvdir
 msgid "Invalid dir value specified"
@@ -455,7 +455,7 @@ msgstr "Bildobjekt enthält kein Grafikobjekt"
 
 #: ipconst.shtmlnotcontainer
 msgid "Parent is not a container"
-msgstr "Elternobjekt ist kein Container"
+msgstr "Übergeordnetes Objekt ist kein Container"
 
 #: ipconst.shtmlresunavail
 msgid "Resource unavailable:"
@@ -472,17 +472,10 @@ msgstr "Unbekannter Token"
 #: ipconst.shtmlunsupprotocol
 #, object-pascal-format
 msgid "Unsupported protocol in URL:%s"
-msgstr "Nicht unterstütztes Protokoll im URL:%s "
+msgstr "Nicht unterstütztes Protokoll im URL:%s"
 
 #: ipconst.sicmpecho
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Echo reply (Hop number: %d)\n"
-#| "             Status = %d\n"
-#| "             RTTime = %d\n"
-#| "             Ttl = %d\n"
-#| "             Tos = %d\n"
-#| "             IpFlags = %d\n"
+#, object-pascal-format
 msgid ""
 "Echo reply (Hop number: %d)\n"
 "             Status = %d\n"
@@ -496,7 +489,7 @@ msgstr ""
 "             RTTime = %d\n"
 "             Ttl = %d\n"
 "             Tos = %d\n"
-"             IpFlags = %d\n"
+"             IpFlags = %d"
 
 #: ipconst.sicmpechostring
 #, object-pascal-format
@@ -521,12 +514,12 @@ msgstr "Thread %d wird beendet (Hop-Nummer ist %d)"
 #: ipconst.sicmptracecomplete
 #, object-pascal-format
 msgid "Trace complete (%s), %d hops"
-msgstr "Verfolgung abgeschlossen (%s), %d Hops"
+msgstr "Trace abgeschlossen (%s), %d Hops"
 
 #: ipconst.sicmptracestart
 #, object-pascal-format
 msgid "Trace to %s started"
-msgstr "Verfolgung nach %s begonnen"
+msgstr "Trace nach %s begonnen"
 
 #: ipconst.sindexerr
 msgid "Index out of range"
@@ -991,7 +984,7 @@ msgstr " (ssNoOp)"
 
 #: ipconst.slogstate
 msgid "State change: "
-msgstr "Statusänderung:"
+msgstr "Statusänderung: "
 
 #: ipconst.slogstlogon
 msgid " (stLogon)"
@@ -1007,11 +1000,11 @@ msgstr " (stSendMail)"
 
 #: ipconst.slogtaskcomplete
 msgid "Generating OnTaskComplete event "
-msgstr "Erzeuge OnTaskComplete-Event"
+msgstr "Erzeuge OnTaskComplete-Event "
 
 #: ipconst.slogtaskstart
 msgid "Starting task: "
-msgstr "Starte Task:"
+msgstr "Starte Task: "
 
 #: ipconst.slogturn
 msgid " (ssTurn)"
@@ -1169,7 +1162,7 @@ msgstr "Stream nicht zugewiesen"
 #: ipconst.snotenoughdata
 #, object-pascal-format
 msgid "Not enough data in queue (%s bytes) to satisfy read request (%s bytes)"
-msgstr "Nicht genug Daten im Zwischenpuffer (%s Byte) für Leseanfrage (%s Byte) "
+msgstr "Nicht genug Daten im Zwischenpuffer (%s Byte) für Leseanfrage (%s Byte)"
 
 #: ipconst.snotimererr
 msgid "Not enough system timers available"
@@ -1295,7 +1288,7 @@ msgstr "Beende Verbindung"
 #: ipconst.snsspecial
 msgctxt "ipconst.snsspecial"
 msgid "Sending special command"
-msgstr "Sende Sonderkommando"
+msgstr "Sende Sonderbefehl"
 
 #: ipconst.snsstat
 msgid "Retrieving status"
@@ -1374,7 +1367,7 @@ msgstr "Bit-Tiefe: %d"
 
 #: ipconst.spngbuffertoosmall
 msgid "PNG Buffer too small."
-msgstr "PNG-Puffer zu klein"
+msgstr "PNG-Puffer zu klein."
 
 #: ipconst.spngcannotsave
 msgid "PNG Saving is not supported"
@@ -1383,7 +1376,7 @@ msgstr "Speichern von PNG nicht unterstützt"
 #: ipconst.spngchunkidandlength
 #, object-pascal-format
 msgid "PNG Chunk: %s  Length: %d"
-msgstr "PNG-Chunk: %s Länge: %d"
+msgstr "PNG-Chunk: %s  Länge:  %d"
 
 #: ipconst.spngcolortype
 #, object-pascal-format
@@ -1818,7 +1811,7 @@ msgstr "Erhaltene Zeile länger als MaxLineBuf"
 
 #: ipconst.srenameddiskfileto
 msgid "Renamed disk file to "
-msgstr "Benenne Datei um in"
+msgstr "Benenne Datei um in "
 
 #: ipconst.srowcoloor
 #, object-pascal-format
@@ -1837,7 +1830,7 @@ msgstr "TIpTerminalArray.ScrollRows: Entweder die Startzeile %d oder die Endzeil
 
 #: ipconst.sseekingdiskfileto
 msgid "Seeking disk file to "
-msgstr "Dateisuche bei"
+msgstr "Dateisuche bei "
 
 #: ipconst.sslnopremastersecret
 msgid "No pre-master secret."
@@ -1845,15 +1838,15 @@ msgstr "Kein Premaster-Geheimnis."
 
 #: ipconst.ssmtpresponse02
 msgid "Success, "
-msgstr "Erfolg,"
+msgstr "Erfolg, "
 
 #: ipconst.ssmtpresponse04
 msgid "Transient, "
-msgstr "Flüchtig,"
+msgstr "Flüchtig, "
 
 #: ipconst.ssmtpresponse05
 msgid "Persistent, "
-msgstr "Persistent,"
+msgstr "Persistent, "
 
 #: ipconst.ssmtpresponse10
 msgid "Other address status"
@@ -1905,7 +1898,7 @@ msgstr "Postfach ist voll"
 
 #: ipconst.ssmtpresponse23
 msgid "Message length exceeds administrative limit."
-msgstr "Länge der Meldung überschreitet Beschränkung durch Admin"
+msgstr "Länge der Meldung überschreitet Beschränkung durch Admin."
 
 #: ipconst.ssmtpresponse24
 msgid "Mailing list expansion problem"
@@ -2119,11 +2112,11 @@ msgstr "MD5-Hash hat nicht gepasst."
 
 #: ipconst.ssslbadpublicencoding
 msgid "Bad public encoding type."
-msgstr "Fehlerhafter öffentlicher Verschlüsselungstyp"
+msgstr "Fehlerhafter öffentlicher Verschlüsselungstyp."
 
 #: ipconst.ssslbadrecordmac
 msgid "Server received a bad record MAC."
-msgstr "Server erhielt eine ungültige MAC-Adresse"
+msgstr "Server erhielt eine ungültige MAC-Adresse."
 
 #: ipconst.ssslbadsha1hash
 msgid "SHA1 hash did not match."
@@ -2135,15 +2128,15 @@ msgstr "Blockgrößenfehler"
 
 #: ipconst.ssslbufferoverflow
 msgid "Buffer overflow error."
-msgstr "Pufferüberlauffehler"
+msgstr "Pufferüberlauffehler."
 
 #: ipconst.ssslbuffersizemissmatch
 msgid "Buffer size miss-match."
-msgstr "Puffergrößenfehler"
+msgstr "Puffergrößenfehler."
 
 #: ipconst.ssslclosenotify
 msgid "Server sent close notify."
-msgstr "Server sendete Schließen-Nachricht"
+msgstr "Server sendete Schließen-Nachricht."
 
 #: ipconst.ssslcompressionfailure
 msgid "Compression failure."
@@ -2155,7 +2148,7 @@ msgstr "SSL-Status kann nicht bei laufender Verbindung geändert werden."
 
 #: ipconst.ssslencryptbuf2small
 msgid "Encrypt buffer to small."
-msgstr "Verschlüsselungspuffer zu klein"
+msgstr "Verschlüsselungspuffer zu klein."
 
 #: ipconst.ssslencryptiontype
 msgid "Encryption type not defined."
@@ -2167,7 +2160,7 @@ msgstr "Abgelaufenes Zertifikat."
 
 #: ipconst.ssslfailedhelloparse
 msgid "Did not parse server hello correctly."
-msgstr "Konnte Server-Hello nicht richtig parsen"
+msgstr "Konnte Server-Hello nicht richtig parsen."
 
 #: ipconst.ssslhandshakefailure
 msgid "Handshake failure."
@@ -2183,15 +2176,15 @@ msgstr "Ungültige Ziffer."
 
 #: ipconst.ssslnocertificate
 msgid "Certificate is not available."
-msgstr "Zertifikat ist nicht verfügbar,"
+msgstr "Zertifikat ist nicht verfügbar."
 
 #: ipconst.ssslnohashtype
 msgid "No hash type selected."
-msgstr "Kein Hash-Typ gewählt"
+msgstr "Kein Hash-Typ gewählt."
 
 #: ipconst.ssslnomessageencslected
 msgid "No message encoding type selected."
-msgstr "Art der Nachrichtenkodierung nicht gewählt"
+msgstr "Art der Nachrichtenkodierung nicht gewählt."
 
 #: ipconst.ssslnoroom
 msgid "Not enough memory available to read SSL record."
@@ -2199,7 +2192,7 @@ msgstr "Zu wenig Speicher für das Lesen des SSL-Records."
 
 #: ipconst.ssslnotenoughkeymaterail
 msgid "Not enough key material."
-msgstr "Zu wenig Schlüsselmaterial"
+msgstr "Zu wenig Schlüsselmaterial."
 
 #: ipconst.ssslpaddingerror
 msgid "Padding error."
@@ -2219,7 +2212,7 @@ msgstr "Lesefehler."
 
 #: ipconst.ssslreadsizemissmatch
 msgid "Read size miss-match."
-msgstr "Größenfehler beim Lesen"
+msgstr "Größenfehler beim Lesen."
 
 #: ipconst.ssslrevokedcertificate
 msgid "Revoked Certificate."
@@ -2247,7 +2240,7 @@ msgstr "Server erhielt eine unerwartete Nachricht."
 
 #: ipconst.ssslunknowncertificate
 msgid "Unknown Certificate."
-msgstr "Unbekanntes Zertifikat"
+msgstr "Unbekanntes Zertifikat."
 
 #: ipconst.ssslunprocesseddata
 msgid "SSL data processing error."
@@ -2263,7 +2256,7 @@ msgstr "Nicht unterstützte Ziffer gewählt."
 
 #: ipconst.ssslunsupportedencoding
 msgid "Unsupported public encoding."
-msgstr "Nicht unterstützte öffentliche Kodierung"
+msgstr "Nicht unterstützte öffentliche Kodierung."
 
 #: ipconst.sssmailfrom
 msgid "Sending sender's info"
@@ -2342,11 +2335,11 @@ msgstr "Keiner"
 
 #: ipconst.sstreamcreated
 msgid "Successfully created "
-msgstr "Erfolgreich erzeugt"
+msgstr "Erfolgreich erzeugt "
 
 #: ipconst.sstreamcreateerror
 msgid "Stream create error "
-msgstr "Streamerzeugungsfehler"
+msgstr "Streamerzeugungsfehler "
 
 #: ipconst.sstsendmail
 msgid "Sending mail"
@@ -2578,7 +2571,7 @@ msgstr "Verbindungstimeout"
 
 #: ipconst.swsaetoomanyrefs
 msgid "Too many references; cannot splice"
-msgstr "Zu viele Referenzen um sie zusammenzuführen"
+msgstr "Zu viele Referenzen, um sie zusammenzuführen"
 
 #: ipconst.swsaeusers
 msgid "Too many users"

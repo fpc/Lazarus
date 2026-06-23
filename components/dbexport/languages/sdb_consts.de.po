@@ -1,14 +1,15 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Swen Heinig <swen@heinig.email>\n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: \n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 3.9\n"
 
 #: sdb_consts.scancelrecordsexported
 #, object-pascal-format
@@ -45,19 +46,19 @@ msgstr "Formatiere"
 
 #: sdb_consts.sdb_moveselectedfielddown
 msgid "Move selected field down"
-msgstr "Gewähltes Feld nach unten"
+msgstr "Ausgewähltes Feld nach unten"
 
 #: sdb_consts.sdb_moveselectedfieldup
 msgid "Move selected field up"
-msgstr "Gewähltes Feld nach oben"
+msgstr "Ausgewähltes Feld nach oben"
 
 #: sdb_consts.sdb_propertiesforselectedfield
 msgid "Properties for selected field:"
-msgstr "Eigenschaften für gewähltes Feld:"
+msgstr "Eigenschaften für ausgewähltes Feld:"
 
 #: sdb_consts.sdb_selectdataexportformat
 msgid "Select data export Format"
-msgstr "Datenexport-Format wählen"
+msgstr "Datenexport-Format auswählen"
 
 #: sdb_consts.sdb_selectfieldstoexport
 msgid "Select fi&elds to export"

@@ -3,13 +3,13 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: \n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: \n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.9\n"
 
 #: iconfinderstrconsts.rsfolders_add
 msgctxt "iconfinderstrconsts.rsfolders_add"
@@ -19,7 +19,7 @@ msgstr "Neu ..."
 #: iconfinderstrconsts.rsfolders_confirmdeletefoldermsg
 msgctxt "iconfinderstrconsts.rsfolders_confirmdeletefoldermsg"
 msgid "Do you really want to remove this folder from the icon library?"
-msgstr "Soll dieser Ordner wirklich aus der Icon-Bibliothek entfernt werden?"
+msgstr "Soll dieses Verzeichnis wirklich aus der Icon-Bibliothek entfernt werden?"
 
 #: iconfinderstrconsts.rsfolders_delete
 msgctxt "iconfinderstrconsts.rsfolders_delete"
@@ -29,7 +29,7 @@ msgstr "Entfernen"
 #: iconfinderstrconsts.rsfolders_iconfinderfolders
 msgctxt "iconfinderstrconsts.rsfolders_iconfinderfolders"
 msgid "Icon Folders"
-msgstr "Icon-Ordner"
+msgstr "Icon-Verzeichnis"
 
 #: iconfinderstrconsts.rsfolders_movedown
 msgctxt "iconfinderstrconsts.rsfolders_movedown"

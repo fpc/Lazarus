@@ -1,14 +1,15 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: \n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 3.9\n"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
 #, object-pascal-format
@@ -36,7 +37,7 @@ msgstr ""
 
 #: lazutilsstrconsts.lrsboolean
 msgid "boolean"
-msgstr ""
+msgstr "boolesch"
 
 #: lazutilsstrconsts.lrscannotexecute
 #, object-pascal-format
@@ -108,7 +109,7 @@ msgstr ""
 #: lazutilsstrconsts.lrsmodified
 msgctxt "lazutilsstrconsts.lrsmodified"
 msgid "  modified "
-msgstr "geändert"
+msgstr " geändert "
 
 #: lazutilsstrconsts.lrsnodeset
 msgid "node set"
@@ -179,7 +180,7 @@ msgstr ""
 #: lazutilsstrconsts.lrssize
 msgctxt "lazutilsstrconsts.lrssize"
 msgid "  size "
-msgstr "Größe"
+msgstr " Größe "
 
 #: lazutilsstrconsts.lrsstring
 msgid "string"

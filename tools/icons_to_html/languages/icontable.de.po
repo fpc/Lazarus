@@ -3,13 +3,13 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: \n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: \n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.9\n"
 
 #: main.rserror
 msgid "Error"
@@ -30,7 +30,7 @@ msgstr "Information"
 
 #: main.rsinfotext1
 msgid "The images in this folder can be used in Lazarus applications as toolbar or button icons."
-msgstr "Die Bilder in diesem Ordner können in Lazarus-Anwendungen als Toolbar- oder Button-Icons verwendet werden."
+msgstr "Die Bilder in diesem Verzeichnis können in Lazarus-Anwendungen als Toolbar- oder Button-Icons verwendet werden."
 
 #: main.rsinfotext2
 msgid "The different sizes as required by LCL scaling for Hi-DPI screens can be used like this, for example:"
@@ -107,7 +107,7 @@ msgstr "Die Temporär-Datei konnte nicht gelöscht werden."
 #: main.rsthisfoldercontains
 #, object-pascal-format
 msgid "This folder contains %0:d icons in %1:d icon groups with %2:d icon sizes."
-msgstr "Dieser Ordner enthält %0:d Icons in %1:d Icon-Gruppen mit %2:d Icon-Größen."
+msgstr "Dieses Verzeichnis enthält %0:d Icons in %1:d Icon-Gruppen mit %2:d Icon-Größen."
 
 #: tmainform.bbtnclose.caption
 msgid "Close"
@@ -123,7 +123,7 @@ msgstr "HTML erzeugen"
 
 #: tmainform.bbtncreatehtml.hint
 msgid "Create HTML page for images found in the selected directory"
-msgstr "Erzeugt den HTML-Code für die im ausgewählten Ordner gefundenen Icons"
+msgstr "Erzeugt den HTML-Code für die im ausgewählten Verzeichnis gefundenen Icons"
 
 #: tmainform.bbtnpreview.caption
 msgid "Preview"
@@ -135,7 +135,7 @@ msgstr "Speichern"
 
 #: tmainform.bbtnsave.hint
 msgid "Save created HTML page as \"IconTable.html\" file in the specified folder"
-msgstr "Speichert den erzeugten HTML-Code in der Datei \"IconTable.html\" im angegebenen Ordner"
+msgstr "Speichert den erzeugten HTML-Code in der Datei \"IconTable.html\" im angegebenen Verzeichnis"
 
 #: tmainform.caption
 msgid "IconTable"
@@ -143,7 +143,7 @@ msgstr ""
 
 #: tmainform.directoryedit.hint
 msgid "Folder with images for which the HTML preview should be created"
-msgstr "Ordner mit den Bildern, für die der HTML-Code erzeugt werden soll"
+msgstr "Verzeichnis mit den Bildern, für die der HTML-Code erzeugt werden soll"
 
 #: tmainform.menudarkhtmlpage.caption
 msgctxt "tmainform.menudarkhtmlpage.caption"

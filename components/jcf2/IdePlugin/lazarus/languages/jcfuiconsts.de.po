@@ -3,13 +3,13 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: \n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.9\n"
 
 #: jcfuiconsts.format_about_menu
 msgid "&About ..."
@@ -139,11 +139,11 @@ msgstr "Asm"
 
 #: jcfuiconsts.lisasmbreaksafterlabel
 msgid "&Breaks after label"
-msgstr "&Umbüche nach Labels"
+msgstr "&Umbrüche nach Labels"
 
 #: jcfuiconsts.lisasmcapitalization
 msgid "&Capitalization"
-msgstr "&Schreibung"
+msgstr "Groß- und Klein&schreibung"
 
 #: jcfuiconsts.lisasmenabled
 msgid "&Enabled"
@@ -163,7 +163,7 @@ msgstr "Einrückung"
 
 #: jcfuiconsts.lisasmnumberofbreaks
 msgid "N&umber of breaks"
-msgstr "Zahl der Umbrüche"
+msgstr "Anzahl der Umbrüche"
 
 #: jcfuiconsts.lisasmparamsindents
 msgid "&Params Indents"
@@ -195,11 +195,11 @@ msgstr "Zeilen vor Prozedur"
 
 #: jcfuiconsts.lisblmaxconsecutiveblanklinesanywhere
 msgid "Max consecutive blank lines anywhere"
-msgstr "Maximal zusätzliche Leerzeichen an bel. Stelle"
+msgstr "Maximal zusätzliche Leerzeilen an bel. Stelle"
 
 #: jcfuiconsts.lisblmaxconsecutiveblanklinesbeforeremoval
 msgid "Max consecutive blank lines before removal"
-msgstr "Maximal zusätzliche Leerzeichen vor dem Entfernen"
+msgstr "Maximal zusätzliche Leerzeilen vor dem Entfernen"
 
 #: jcfuiconsts.lisblnumberofreturnsaftertheunitsfinalend
 msgid "Number of returns after the unit's final End."
@@ -251,11 +251,11 @@ msgstr "Zulassen"
 
 #: jcfuiconsts.liscapsanywordsetcapitalisationonthesewords
 msgid "Set capitalisation on these words:"
-msgstr "Schreibweise auf diese Wörter anwenden:"
+msgstr "Groß- und Kleinschreibung auf diese Wörter anwenden:"
 
 #: jcfuiconsts.liscapscapitalisation
 msgid "Capitalisation"
-msgstr "Großschreibung"
+msgstr "Groß- und Kleinschreibung"
 
 #: jcfuiconsts.liscapsconstants
 msgid "Constants"
@@ -267,7 +267,7 @@ msgstr "Anweisungen"
 
 #: jcfuiconsts.liscapsenablecapitalisationfixing
 msgid "Enable capitalisation fixing"
-msgstr "Schreibweisen korrigieren"
+msgstr "Groß- und Kleinschreibung korrigieren"
 
 #: jcfuiconsts.liscapsfloatingpointnumbers
 msgid "Floating point numbers"
@@ -279,15 +279,15 @@ msgstr "Hexadezimalzahlen"
 
 #: jcfuiconsts.liscapsidentifiersidentifiers
 msgid "Identifiers"
-msgstr "Schlüsselwörter"
+msgstr "Bezeichner"
 
 #: jcfuiconsts.liscapsidentifierssetcapitalisationontheseidentifiers
 msgid "Set capitalisation on these identifiers:"
-msgstr "Schreibweise auf diese Bezeichner anwenden:"
+msgstr "Groß- und Kleinschreibung auf diese Bezeichner anwenden:"
 
 #: jcfuiconsts.liscapsnormalizecapitalisation
 msgid "Normalization of capitalisation"
-msgstr "Normalisierung der Schreibweise"
+msgstr "Normalisierung der Groß- und Kleinschreibung"
 
 #: jcfuiconsts.liscapsnormalizecapitalisationonenamespace
 msgid "Use only one namespace"
@@ -299,7 +299,7 @@ msgstr "Nicht-Bezeichner"
 
 #: jcfuiconsts.liscapsnotidentifierssetcapitalisationonthesenonidentifiers
 msgid "Set capitalisation on these non-identifiers:"
-msgstr "Schreibweise auf diese Nicht-Bezeichner anwenden:"
+msgstr "Groß- und Kleinschreibung auf diese Nicht-Bezeichner anwenden:"
 
 #: jcfuiconsts.liscapsoperators
 msgid "Operators"
@@ -315,7 +315,7 @@ msgstr "Datentypen"
 
 #: jcfuiconsts.liscapsunitnamessetcapitalisationontheseunitnames
 msgid "Set capitalisation on these unit names:"
-msgstr "Schreibweise auf diese Unit-Namen anwenden:"
+msgstr "Groß- und Kleinschreibung auf diese Unit-Namen anwenden:"
 
 #: jcfuiconsts.liscapsunitnamesunitnames
 msgid "Unit Names"
@@ -489,7 +489,7 @@ msgstr "Endung der Ausgabedatei"
 
 #: jcfuiconsts.liscnflogselectdir
 msgid "Select specified directory"
-msgstr "Spezifiziertes Verzeichnis wählen"
+msgstr "Spezifiziertes Verzeichnis auswählen"
 
 #: jcfuiconsts.liscnflogspecified
 #, object-pascal-format
@@ -635,7 +635,7 @@ msgstr ""
 
 #: jcfuiconsts.lisfrfilesopenfolder
 msgid "Open folder"
-msgstr "Ordner öffnen"
+msgstr "Verzeichnis öffnen"
 
 #: jcfuiconsts.lisfrfilessettingsfile
 msgid "Settings File"
@@ -652,7 +652,7 @@ msgstr "Version, die die Datei geschrieben hat: %s"
 
 #: jcfuiconsts.lishintapplicationdefault
 msgid "Application Default: "
-msgstr "Voreinstellung: "
+msgstr "Anwendungsstandard: "
 
 #: jcfuiconsts.lisimbalancedcommentact
 msgid "Imbalanced comment action"
@@ -823,7 +823,7 @@ msgstr "Beibehalten"
 
 #: jcfuiconsts.lisobfsmixedcase
 msgid "Mixed Case"
-msgstr "Gemischte Schreibweise"
+msgstr "Gemischte Groß- und Kleinschreibung"
 
 #: jcfuiconsts.lisobfsobfuscate
 msgid "Obfuscate"
@@ -835,7 +835,7 @@ msgstr "Verwirrmodus"
 
 #: jcfuiconsts.lisobfsobfuscatewordcaps
 msgid "Obfuscate word &caps"
-msgstr "Schreibweise durcheinanderbringen"
+msgstr "Groß- und Kleinschreibung durcheinanderbringen"
 
 #: jcfuiconsts.lisobfsrebreaklines
 msgid "Rebreak &lines"

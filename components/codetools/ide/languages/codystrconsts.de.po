@@ -1,14 +1,15 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Swen Heinig <swen@heinig.email>\n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: \n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 3.9\n"
 
 #: codystrconsts.crsaddassignmethod
 msgid "Add Assign Method"
@@ -755,7 +756,7 @@ msgstr "%s Sekunden"
 
 #: codystrconsts.crsselectexpression
 msgid "Select expression"
-msgstr "Ausdruck wählen"
+msgstr "Ausdruck auswählen"
 
 #: codystrconsts.crsshowcodetoolsnodeinfo
 msgid "Show CodeTools Node Info ..."

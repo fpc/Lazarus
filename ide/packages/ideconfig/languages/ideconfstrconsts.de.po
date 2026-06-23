@@ -1,9 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
+"Language-Team: \n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
 
 #: ideconfstrconsts.dlgfilterfpcmessagefile
 msgid "FPC message file"
@@ -144,7 +150,7 @@ msgstr "Komponentenname \"%s\" ist ein Pascal-Schlüsselwort."
 #: ideconfstrconsts.liscomponentnameisnotavalididentifier
 #, object-pascal-format
 msgid "Component name \"%s\" is not a valid identifier"
-msgstr "Der Komponentenname \"%s\" ist als Bezeichner ungültig."
+msgstr "Der Komponentenname \"%s\" ist als Bezeichner ungültig"
 
 #: ideconfstrconsts.lisconfigdirectory
 msgid "Lazarus config directory"
@@ -790,7 +796,7 @@ msgstr "Kann Verzeichnis \"%s\" nicht erzeugen."
 
 #: ideconfstrconsts.lisunabletocreatefile
 msgid "Unable to create file"
-msgstr "Kann die Datei nicht erzeugen"
+msgstr "Kann Datei nicht erzeugen"
 
 #: ideconfstrconsts.lisunabletocreatefile2
 #, object-pascal-format
@@ -805,12 +811,12 @@ msgstr "Kann Datei%s\"%s\" nicht erzeugen"
 #: ideconfstrconsts.lisunabletocreatelinkwithtarget
 #, object-pascal-format
 msgid "Unable to create link \"%s\" with target \"%s\""
-msgstr "Kann den Link \"%s\" zum Ziel \"%s\" nicht erzeugen"
+msgstr "Kann Link \"%s\" zum Ziel \"%s\" nicht erzeugen"
 
 #: ideconfstrconsts.lisunabletodeleteambiguousfile
 #, object-pascal-format
 msgid "Unable to delete ambiguous file \"%s\""
-msgstr "Kann die unklare Datei \"%s\" nicht löschen"
+msgstr "Kann unklare Datei \"%s\" nicht löschen"
 
 #: ideconfstrconsts.lisunabletoexecute
 #, object-pascal-format
@@ -824,17 +830,17 @@ msgstr "kann Datei %s: %s nicht laden"
 
 #: ideconfstrconsts.lisunabletoreadfile
 msgid "Unable to read file"
-msgstr "Die Datei kann nicht gelesen werden"
+msgstr "Kann Datei nicht lesen"
 
 #: ideconfstrconsts.lisunabletoreadfile2
 #, object-pascal-format
 msgid "Unable to read file \"%s\"."
-msgstr "Die Datei \"%s\" kann nicht gelesen werden."
+msgstr "Kann Datei \"%s\" nicht lesen."
 
 #: ideconfstrconsts.lisunabletoreadfileerror
 #, object-pascal-format
 msgid "Unable to read file \"%s\"%sError: %s"
-msgstr "Die Datei \"%s\" kann nicht gelesen werden.%sFehler: %s"
+msgstr "Kann Datei \"%s\" nicht lesen.%sFehler: %s"
 
 #: ideconfstrconsts.lisunabletoreadprocessexitstatus
 msgid "unable to read process ExitStatus"
@@ -843,7 +849,7 @@ msgstr ""
 #: ideconfstrconsts.lisunabletoremoveoldbackupfile
 #, object-pascal-format
 msgid "Unable to remove old backup file \"%s\"!"
-msgstr "Die alte Sicherungsdatei \"%s\" kann nicht gelöscht werden!"
+msgstr "Kann alte Sicherungsdatei \"%s\" nicht löschen!"
 
 #: ideconfstrconsts.lisunabletorenameambiguousfileto
 #, object-pascal-format
@@ -852,17 +858,17 @@ msgstr "Kann die unklare Datei \"%s\"%snicht nach \"%s\" umbenennen."
 
 #: ideconfstrconsts.lisunabletorenamefile
 msgid "Unable to rename file"
-msgstr "Kann die Datei nicht umbennen"
+msgstr "Kann Datei nicht umbennen"
 
 #: ideconfstrconsts.lisunabletorenamefileto
 #, object-pascal-format
 msgid "Unable to rename file \"%s\" to \"%s\"!"
-msgstr "Die Datei \"%s\" kann nicht in \"%s\" umbenannt werden."
+msgstr "Kann Datei \"%s\" nicht in \"%s\" umbenennen!"
 
 #: ideconfstrconsts.lisunabletorenamefileto2
 #, object-pascal-format
 msgid "Unable to rename file \"%s\"%sto \"%s\"."
-msgstr "Die Datei  \"%s\"%s kann nicht in \"%s\" umbenannt werden."
+msgstr "Kann Datei  \"%s\"%s nicht in \"%s\" umbenennen."
 
 #: ideconfstrconsts.lisunabletowrite2
 #, object-pascal-format
@@ -871,7 +877,7 @@ msgstr "Kann Datei \"%s\" nicht schreiben"
 
 #: ideconfstrconsts.lisunabletowritefile
 msgid "Unable to write file"
-msgstr "Kann die Datei nicht schreiben"
+msgstr "Kann Datei nicht schreiben"
 
 #: ideconfstrconsts.lisunabletowritefile2
 #, object-pascal-format
@@ -881,7 +887,7 @@ msgstr "Kann Datei \"%s\" nicht schreiben."
 #: ideconfstrconsts.lisunabletowritefileerror
 #, object-pascal-format
 msgid "Unable to write file \"%s\"%sError: %s"
-msgstr "Kann die Datei \"%s\"nicht schreiben%sFehler: %s"
+msgstr "Kann Datei \"%s\"nicht schreiben%sFehler: %s"
 
 #: ideconfstrconsts.lisunabletowritetofile2
 #, object-pascal-format
@@ -891,7 +897,7 @@ msgstr "Kann nicht in Datei \"%s\" schreiben."
 #: ideconfstrconsts.lisunabletowritexmlstreamtoerror
 #, object-pascal-format
 msgid "Unable to write xml stream to %s%sError: %s"
-msgstr "Kann XML-Stream nicht in %s%s schreiben. Fehler: %S"
+msgstr "Kann XML-Stream nicht in %s%s schreiben. Fehler: %s"
 
 #: ideconfstrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
 msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."

@@ -3,13 +3,13 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Swen Heinig <swen@heinig.email>\n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: \n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.7\n"
+"X-Generator: Poedit 3.9\n"
 
 #: opkman_const.rsaddrepositorypackagefrm_bcancel_caption
 msgctxt "opkman_const.rsaddrepositorypackagefrm_bcancel_caption"
@@ -35,7 +35,7 @@ msgstr "Repository-Package hinzufügen"
 
 #: opkman_const.rsaddrepositorypackagefrm_rbaddexisting_caption
 msgid "Add existing repository package from file"
-msgstr "Existierendes Repository-Package als Datei hinzufügen"
+msgstr "Vorhandenes Repository-Package als Datei hinzufügen"
 
 #: opkman_const.rsaddrepositorypackagefrm_rbcreatenew_caption
 msgid "Create a new repository package"
@@ -70,7 +70,7 @@ msgstr "Liste mit unterstützten Widgetsets"
 
 #: opkman_const.rscategoriesfrm_lbmessage_caption
 msgid "Please select (check) one or more items"
-msgstr "Bitte wählen Sie eine oder mehrere Kategorien"
+msgstr "Bitte eine oder mehrere Kategorien auswählen"
 
 #: opkman_const.rscolors_caption
 msgctxt "opkman_const.rscolors_caption"
@@ -131,19 +131,19 @@ msgstr "Link zur Package-Zip-Datei"
 
 #: opkman_const.rscreatejsonforupdatesfrm_message0
 msgid "Please check a repository package!"
-msgstr "Bitte wählen Sie ein Repository-Package!"
+msgstr "Bitte ein Repository-Package auswählen!"
 
 #: opkman_const.rscreatejsonforupdatesfrm_message1
 msgid "Please check only one repository package!"
-msgstr "Bitte wählen Sie nur ein Repository-Package!"
+msgstr "Bitte nur ein Repository-Package auswählen!"
 
 #: opkman_const.rscreatejsonforupdatesfrm_message2
 msgid "Please enter a valid URL!"
-msgstr "Bitte geben Sie eine gültige URL ein!"
+msgstr "Bitte gültige URL eingeben!"
 
 #: opkman_const.rscreatejsonforupdatesfrm_message3
 msgid "Please check at least one package file!"
-msgstr "Bitte wählen Sie wenigstens eine Package-Datei!"
+msgstr "Bitte wenigstens eine Package-Datei auswählen!"
 
 #: opkman_const.rscreatejsonforupdatesfrm_message4
 msgid "JSON for updates successfully created."
@@ -203,7 +203,7 @@ msgstr "Privates Repository erzeugen/bearbeiten"
 #: opkman_const.rscreaterepositoryfrm_conf1
 #, object-pascal-format
 msgid "Are you sure you wish to delete package: \"%s\"?"
-msgstr "Wollen Sie Package \"%s\" wirklich löschen?"
+msgstr "Package \"%s\" wirklich löschen?"
 
 #: opkman_const.rscreaterepositoryfrm_conf2
 #, object-pascal-format
@@ -511,11 +511,11 @@ msgstr "SVN:"
 
 #: opkman_const.rscreaterepositorypackagefrm_message0
 msgid "Please select a category for package:"
-msgstr "Bitte wählen Sie eine Kategorie für Package:"
+msgstr "Bitte eine Kategorie für Package auswählen:"
 
 #: opkman_const.rscreaterepositorypackagefrm_message1
 msgid "Please enter supported Lazarus versions for package:"
-msgstr "Bitte geben Sie die unterstützten Lazarus-Versionen ein für Package:"
+msgstr "Bitte unterstützte Lazarus-Versionen für Package eingeben:"
 
 #: opkman_const.rscreaterepositorypackagefrm_message10
 msgid "Cancelling upload. Please wait..."
@@ -523,11 +523,11 @@ msgstr "Breche Upload ab. Bitte warten..."
 
 #: opkman_const.rscreaterepositorypackagefrm_message2
 msgid "Please enter supported FPC versions for package:"
-msgstr "Bitte geben Sie die unterstützen FPC-Versionen ein für Package:"
+msgstr "Bitte unterstütze FPC-Versionen für Package eingeben:"
 
 #: opkman_const.rscreaterepositorypackagefrm_message3
 msgid "Please enter supported widgetsets for package:"
-msgstr "Bitte geben Sie die unterstützten Widgetsets ein für Package:"
+msgstr "Bitte unterstützte Widgetsets für Package eingeben:"
 
 #: opkman_const.rscreaterepositorypackagefrm_message4
 msgid "Compressing package. Please wait..."
@@ -588,7 +588,7 @@ msgstr "Repository-Package speichern als..."
 
 #: opkman_const.rscreaterepositorypackagefrm_sddtitlesrc
 msgid "Select package directory"
-msgstr "Package-Verzeichnis wählen"
+msgstr "Package-Verzeichnis auswählen"
 
 #: opkman_const.rslazaruspackagemanager
 msgid "Online Package Manager"
@@ -778,15 +778,15 @@ msgid ""
 "Do you wish to configure it now?"
 msgstr ""
 "Das externe Package-Repository ist noch nicht konfiguriert.\n"
-"Wollen Sie es jetzt konfigurieren?"
+"Jetzt konfigurieren?"
 
 #: opkman_const.rsmainfrm_rsmessagenothingchacked
 msgid "Please check at least one package!"
-msgstr "Bitte wählen Sie mindestens ein Package aus!"
+msgstr "Bitte mindestens ein Package auswählen!"
 
 #: opkman_const.rsmainfrm_rsmessagenothinginstalled
 msgid "No packages are installed. Please install at least one package first."
-msgstr "Es werden keine Packages installiert. Bitte installieren Sie zumindest ein einziges Package."
+msgstr "Es werden keine Packages installiert. Bitte zumindest ein einziges Package installieren."
 
 #: opkman_const.rsmainfrm_rsmessageparsingjson
 msgid "Parsing JSON. Please wait..."
@@ -794,7 +794,7 @@ msgstr "Analysiere JSON. Bitte warten..."
 
 #: opkman_const.rsmainfrm_rsnopackagetodownload
 msgid "Please check one or more packages!"
-msgstr "Bitte prüfen Sie ein oder mehrere Packages!"
+msgstr "Bitte ein oder mehrere Packages prüfen!"
 
 #: opkman_const.rsmainfrm_rspackagedependency0
 #, object-pascal-format
@@ -840,7 +840,7 @@ msgstr "Kann Package \"%s\" nicht deinstallieren!"
 
 #: opkman_const.rsmainfrm_rsuninstall_nothing
 msgid "None of the checked packages are installed. Nothing to uninstall."
-msgstr "Keines der gewählten Packages ist installiert. Es gibt nichts zum Deinstallieren."
+msgstr "Keines der ausgewählten Packages ist installiert. Es gibt nichts zum Deinstallieren."
 
 #: opkman_const.rsmainfrm_spclear_hint
 msgid "Clear filter text"
@@ -908,7 +908,7 @@ msgstr "Einstellungen-Dialog anzeigen"
 
 #: opkman_const.rsmainfrm_tbrefresh_caption
 msgid "Refresh"
-msgstr "Auffrischen"
+msgstr "Aktualisieren"
 
 #: opkman_const.rsmainfrm_tbrefresh_hint
 msgid "Refresh package list"
@@ -1201,7 +1201,7 @@ msgstr "Spiele und Spiel-Engines"
 #: opkman_const.rsmainfrm_vsttext_packagecategory3
 msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory3"
 msgid "DataControls"
-msgstr "Datenbank-Controls"
+msgstr "Datenbank-Steuerelemente"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory4
 msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory4"
@@ -1372,7 +1372,7 @@ msgstr "Online-Packages installieren"
 
 #: opkman_const.rsopmintfpackagelistfrm_pninfo
 msgid "Please check before install: Lazarus/FPC compatibility, widgetset support, license and version info"
-msgstr "Bitte prüfen Sie vor der Installation: Lazarus/FPC-Kompatibilität, Widgetset-Unterstützung, Lizenz und Versions-Information"
+msgstr "Bitte vor der Installation: prüfen Lazarus/FPC-Kompatibilität, Widgetset-Unterstützung, Lizenz und Versions-Information"
 
 #: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data
 msgctxt "opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data"
@@ -1405,7 +1405,7 @@ msgstr "Bearbeiten"
 
 #: opkman_const.rsoptions_bpoptions_bhelp
 msgid "Restore defaults"
-msgstr "Vorgabe wiederherstellen"
+msgstr "Standard wiederherstellen"
 
 #: opkman_const.rsoptions_cbcheckforupdates_item0
 msgid "Every few minutes"
@@ -1466,7 +1466,7 @@ msgstr "Reguläres Icon für neue Packages nach Installation anzeigen"
 
 #: opkman_const.rsoptions_cbselectprofile_hint
 msgid "Choose a profile that best fits you"
-msgstr "Wählen Sie ein Profil, das am besten zu Ihnen passt"
+msgstr "Ein Profil auswählen, das am besten zu Ihnen passt"
 
 #: opkman_const.rsoptions_cbselectprofile_item0
 msgctxt "opkman_const.rsoptions_cbselectprofile_item0"
@@ -1480,19 +1480,19 @@ msgstr "Package-Betreuer"
 
 #: opkman_const.rsoptions_cbusedefaulttheme_caption
 msgid "Use default theme manager"
-msgstr "Den Vorgabe-Themenmanager verwenden"
+msgstr "Den Standard-Themenmanager verwenden"
 
 #: opkman_const.rsoptions_edlocalrepositoryarchive_hint
 msgid "The folder where the zip files are downloaded from the remote repository"
-msgstr "Ordner, in dem die aus dem externen Repository heruntergeladenen Zip-Dateien gespeichert werden"
+msgstr "Verzeichnis, in dem die aus dem externen Repository heruntergeladenen Zip-Dateien gespeichert werden"
 
 #: opkman_const.rsoptions_edlocalrepositorypackages_hint
 msgid "The folder where the repository packages are extracted/installed"
-msgstr "Ordner, in dem die Repository-Packages extrahiert/installiert werden"
+msgstr "Verzeichnis, in dem die Repository-Packages extrahiert/installiert werden"
 
 #: opkman_const.rsoptions_edlocalrepositoryupdate_hint
 msgid "The folder where the zip files are downloaded from the package maintainer webpage"
-msgstr "Ordner, in dem die von der Internetseite des Package-Betreuers heruntergeladenen Zip-Dateien gespeichert werden"
+msgstr "Verzeichnis, in dem die von der Internetseite des Package-Betreuers heruntergeladenen Zip-Dateien gespeichert werden"
 
 #: opkman_const.rsoptions_frmcaption
 msgctxt "opkman_const.rsoptions_frmcaption"
@@ -1510,20 +1510,20 @@ msgstr "Neuen Ausschluss hinzufügen"
 #: opkman_const.rsoptions_inputbox_conf0
 #, object-pascal-format
 msgid "Delete selected extension (\"%s\")?"
-msgstr "Gewählte Erweiterung (\"%s\") löschen?"
+msgstr "Ausgewählte Erweiterung (\"%s\") löschen?"
 
 #: opkman_const.rsoptions_inputbox_conf1
 #, object-pascal-format
 msgid "Delete selected folder (\"%s\")?"
-msgstr "Gewähltes Verzeichnis (\"%s\") löschen?"
+msgstr "Ausgewähltes Verzeichnis (\"%s\") löschen?"
 
 #: opkman_const.rsoptions_inputbox_info0
 msgid "Please select a file extension!"
-msgstr "Bitte wählen Sie eine Dateierweiterung!"
+msgstr "Bitte eine Dateierweiterung auswählen!"
 
 #: opkman_const.rsoptions_inputbox_info1
 msgid "Please select a folder!"
-msgstr "Bitte wählen Sie ein Verzeichnis!"
+msgstr "Bitte ein Verzeichnis auswählen!"
 
 #: opkman_const.rsoptions_inputbox_text0
 msgid "Type the extension name:"
@@ -1531,7 +1531,7 @@ msgstr "Dateierweiterung eintippen:"
 
 #: opkman_const.rsoptions_inputbox_text1
 msgid "Type the folder name:"
-msgstr "Ordnernamen eintippen:"
+msgstr "Verzeichnisnamen eintippen:"
 
 #: opkman_const.rsoptions_invaliddirectory_info
 msgid "Please enter a valid directory!"
@@ -1566,11 +1566,11 @@ msgstr "Diese Dateien werden von Repository-Packages ausgeschlossen (siehe auch 
 #: opkman_const.rsoptions_lbexcludefolders_hint
 msgctxt "opkman_const.rsoptions_lbexcludefolders_hint"
 msgid "These folders will be excluded from repository packages (see: \"Create repository package\")"
-msgstr "Diese Ordner werden von Repository-Packages ausgeschlossen (siehe auch: \"Repository-Package erzeugen\")"
+msgstr "Diese Verzeichnisse werden von Repository-Packages ausgeschlossen (siehe auch: \"Repository-Package erzeugen\")"
 
 #: opkman_const.rsoptions_lbfilterdirs_caption
 msgid "Excluded folders (packages)"
-msgstr "Ausgeschlossene Ordner (Packages)"
+msgstr "Ausgeschlossene Verzeichnisse (Packages)"
 
 #: opkman_const.rsoptions_lbfilterfiles_caption
 msgid "Excluded files (packages)"
@@ -1606,7 +1606,7 @@ msgstr "Externes Repository"
 
 #: opkman_const.rsoptions_lbselectprofile_caption
 msgid "Select profile"
-msgstr "Wähle Profil"
+msgstr "Profil auswählen"
 
 #: opkman_const.rsoptions_lbserver_caption
 msgid "Server"
@@ -1618,11 +1618,11 @@ msgstr "Benutzername"
 
 #: opkman_const.rsoptions_proxyport_info
 msgid "Please enter the proxy server port!"
-msgstr "Bitte geben Sie den Proxy-Server-Port ein!"
+msgstr "Bitte Proxy-Server-Port eingeben!"
 
 #: opkman_const.rsoptions_proxyserver_info
 msgid "Please enter the proxy server address!"
-msgstr "Bitte geben Sie die Proxy-Server-Adresse ein!"
+msgstr "Bitte Proxy-Server-Adresse eingeben!"
 
 #: opkman_const.rsoptions_rbhintformoptions_caption
 msgid "Quick info for repository packages"
@@ -1662,11 +1662,11 @@ msgstr "Adresse des externen Repositoriums eingeben!"
 
 #: opkman_const.rsoptions_restoredefaults_conf
 msgid "This will restore the default settings. Continue?"
-msgstr "Das wird die Vorgabe-Einstellungen wiederherstellen. Fortfahren?"
+msgstr "Das wird die Standards wiederherstellen. Fortfahren?"
 
 #: opkman_const.rsoptions_tsfolders_caption
 msgid "Folders"
-msgstr "Ordner"
+msgstr "Verzeichnisse"
 
 #: opkman_const.rsoptions_tsgeneral_caption
 msgid "General"
@@ -1745,7 +1745,7 @@ msgstr "Nicht getestet"
 
 #: opkman_const.rspackagelistfrm_lbhint_caption
 msgid "Hint: for more details move the mouse over the problematic column."
-msgstr "Hinweis: Für mehr Informationen bewegen Sie die Maus über die problematische Spalte."
+msgstr "Hinweis: Für mehr Informationen Maus über die problematische Spalte bewegen."
 
 #: opkman_const.rspackagelistfrm_supfpcvers
 msgid "Supported FPC versions: "
@@ -1794,7 +1794,7 @@ msgstr "Nach Download extrahieren"
 
 #: opkman_const.rsprogressfrm_cbextractopen_caption1
 msgid "Open containing folder"
-msgstr "Enthaltenen Ordner öffnen"
+msgstr "Enthaltenes Verzeichnis öffnen"
 
 #: opkman_const.rsprogressfrm_conf0
 msgid "Continue with next one?"
@@ -1944,7 +1944,7 @@ msgstr "Repositories"
 #: opkman_const.rsrepositories_confirmation0
 #, object-pascal-format
 msgid "Delete selected repository \"%s\"?"
-msgstr "Gewähltes Repository \"%s\" löschen?"
+msgstr "Ausgewähltes Repository \"%s\" löschen?"
 
 #: opkman_const.rsrepositories_info1
 #, object-pascal-format
@@ -1961,7 +1961,7 @@ msgstr "Repository bearbeiten"
 
 #: opkman_const.rsrepositories_inputbox_text
 msgid "Type the repository address:"
-msgstr "Geben Sie die Repository-Adresse ein:"
+msgstr "Repository-Adresse eingeben:"
 
 #: opkman_const.rsrepositories_vst_headercolumn
 msgid "Repository Address"
@@ -1995,17 +1995,17 @@ msgstr "Repository-Details"
 #: opkman_const.rsrepositorydetailsfrm_edaddress_hint
 msgctxt "opkman_const.rsrepositorydetailsfrm_edaddress_hint"
 msgid "Enter the repository address (e.g.: \"http://localhost/packages/\")"
-msgstr "Geben Sie die Repository-Addresse ein (z.B.: \"http://localhost/packages/\")"
+msgstr "Repository-Addresse eingeben (z.B.: \"http://localhost/packages/\")"
 
 #: opkman_const.rsrepositorydetailsfrm_edname_hint
 msgctxt "opkman_const.rsrepositorydetailsfrm_edname_hint"
 msgid "Enter the repository name"
-msgstr "Geben Sie den Repository-Namen ein"
+msgstr "Repository-Namen eingeben"
 
 #: opkman_const.rsrepositorydetailsfrm_info1
 msgctxt "opkman_const.rsrepositorydetailsfrm_info1"
 msgid "Please enter the repository name."
-msgstr "Bitte geben Sie den Repository-Namen ein."
+msgstr "Repository-Namen eingeben."
 
 #: opkman_const.rsrepositorydetailsfrm_lbaddress_caption
 msgctxt "opkman_const.rsrepositorydetailsfrm_lbaddress_caption"
@@ -2025,5 +2025,5 @@ msgstr "Name"
 #: opkman_const.rsrepositorydetailsfrm_mdescription_hint
 msgctxt "opkman_const.rsrepositorydetailsfrm_mdescription_hint"
 msgid "Enter the repository description"
-msgstr "Geben Sie die Repository-Beschreibung ein"
+msgstr "Repository-Beschreibung eingeben"
 

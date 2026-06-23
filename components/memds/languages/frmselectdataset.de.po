@@ -2,15 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-28 17:20+0100\n"
-"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"PO-Revision-Date: 2026-06-24 12:39+0200\n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: German\n"
-"X-Poedit-Country: GERMANY\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"X-Generator: Poedit 3.9\n"
 
 #: frmselectdataset.scancelbtn
 msgid "Cancel"
@@ -35,7 +35,7 @@ msgstr "Fehler: Komponente »%s« nicht gefunden"
 
 #: frmselectdataset.serrselectdataset
 msgid "Please select a dataset first"
-msgstr "Bitte wählen Sie zuerst ein Dataset"
+msgstr "Bitte zuerst ein Dataset auswählen"
 
 #: frmselectdataset.smenucopydataset
 msgid "Copy data from Dataset"

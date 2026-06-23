@@ -1,14 +1,15 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Swen Heinig <swen@heinig.email>\n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: \n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 3.9\n"
 
 #: msgjsonviewer.sarray
 #, object-pascal-format
@@ -37,16 +38,13 @@ msgid "JSON document modified"
 msgstr "JSON-Dokument geändert"
 
 #: msgjsonviewer.sdocumentmodifiedaction
-#, object-pascal-format, fuzzy, badformat
-#| msgid ""
-#| "The JSON data was changed but not saved.\n"
-#| "What do want to do ?\n"
+#, object-pascal-format
 msgid ""
 "The JSON data in \"%s\" was changed but not saved.\n"
 "What do want to do ?"
 msgstr ""
-"Die JSON-Daten wurden geändert, aber nicht gespeichert.\n"
-"Was wollen Sie tun ?\n"
+"Die JSON-Daten in \"%s\" wurden geändert, aber nicht gespeichert.\n"
+"Was wollen Sie tun?"
 
 #: msgjsonviewer.sduplicatemembername
 #, object-pascal-format
@@ -245,7 +243,7 @@ msgstr "Wert löschen"
 
 #: tmainform.adeletevalue.hint
 msgid "Delete the selected value"
-msgstr "Den gewählten Wert löschen"
+msgstr "Den ausgewählten Wert löschen"
 
 #: tmainform.aexpandall.caption
 msgid "E&xpand all nodes"
@@ -436,7 +434,7 @@ msgstr ""
 
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
-msgstr "Objektfelder sortieren "
+msgstr "Objektfelder sortieren"
 
 #: tmainform.mistrict.caption
 msgid "&Strict JSON"
@@ -448,7 +446,7 @@ msgstr "Einstellungen"
 
 #: tmainform.odjson.title
 msgid "Select a JSON file"
-msgstr "Wählen Sie eine JSON Datei"
+msgstr "JSON-Datei auswählen"
 
 #: tmainform.sdjson.title
 msgid "Save JSON document to file"
@@ -472,7 +470,7 @@ msgstr ""
 
 #: tnewbooleanform.caption
 msgid "New boolean value"
-msgstr ""
+msgstr "Neuer boolescher Wert"
 
 #: tnewbooleanform.cbvalue.caption
 msgid "Set to true"

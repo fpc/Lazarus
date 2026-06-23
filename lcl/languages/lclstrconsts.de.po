@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-04-04 15:25+0200\n"
-"Last-Translator: Swen Heinig <swen@heinig.email>\n"
+"PO-Revision-Date: 2026-06-24 11:45+0200\n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
@@ -100,7 +100,7 @@ msgstr "3D-Licht"
 
 #: lclstrconsts.rsacontrolcannothaveitselfasparent
 msgid "A control can't have itself as a parent"
-msgstr "Ein Steuerelement kann nicht sein eigener Parent sein"
+msgstr "Ein Steuerelement kann nicht sein eigenes übergeordnetes Objekt sein"
 
 #: lclstrconsts.rsactivebordercolorcaption
 msgid "Active Border"
@@ -126,7 +126,7 @@ msgstr "Aquamarin"
 #: lclstrconsts.rsascannothaveasparent
 #, object-pascal-format
 msgid "Class %s cannot have %s as parent."
-msgstr "Klasse %s kann %s nicht als Parent haben."
+msgstr "Klasse %s kann %s nicht als übergeordnetes Objekt haben."
 
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
@@ -191,12 +191,12 @@ msgstr "Titelleistentext"
 
 #: lclstrconsts.rscasesensitive
 msgid "Case sensitive"
-msgstr "Schreibweisenabhängig"
+msgstr "Groß- und Kleinschreibung beachten"
 
 #: lclstrconsts.rscontrolclasscantcontainchildclass
 #, object-pascal-format
 msgid "Control of class '%s' can't have control of class '%s' as a child"
-msgstr "Ein Steuerelement der Klasse %s kann kein Steuerelement der Klasse %s als Child haben."
+msgstr "Ein Steuerelement der Klasse %s kann kein Steuerelement der Klasse %s als untergeordnetes Objekt haben"
 
 #: lclstrconsts.rscontrolhasnoparentformorframe
 #, object-pascal-format
@@ -206,7 +206,7 @@ msgstr "Steuerelement '%s' hat kein übergeordnetes Formular oder Frame (Parent)
 #: lclstrconsts.rscontrolisnotaparent
 #, object-pascal-format
 msgid "'%s' is not a parent of '%s'"
-msgstr "'%s' ist kein Parent von '%s'"
+msgstr "'%s' ist kein übergeordnetes Objekt von '%s'"
 
 #: lclstrconsts.rscreamcolorcaption
 msgid "Cream"
@@ -232,7 +232,7 @@ msgstr "Datum darf nicht vor dem %s liegen"
 
 #: lclstrconsts.rsdefaultcolorcaption
 msgid "Default"
-msgstr "Voreingestellt"
+msgstr "Standard"
 
 #: lclstrconsts.rsdefaultfileinfovalue
 msgid "permissions user group size date time"
@@ -538,7 +538,7 @@ msgstr "--no-xshm             Abschalten der Verwendung der Shared-Memory-Erweit
 #, fuzzy
 #| msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
 msgid "Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
-msgstr "--sync                Aufruf von XSynchronize (Display, True) nachdem die XServer-Verbindung zustandegekommen ist. Dies erleichtert das Debugging des X-Protokolls, weil die X-Anfragepufferung abgeschaltet ist und X-Fehler sofort ankommen, nachdem die Anfrage, die den Fehler erzeugt hat, beim X-Server angekommen ist."
+msgstr "--sync                Aufruf von XSynchronize (Display, True) nachdem die XServer-Verbindung zustande gekommen ist. Dies erleichtert das Debugging des X-Protokolls, weil die X-Anfragepufferung abgeschaltet ist und X-Fehler sofort ankommen, nachdem die Anfrage, die den Fehler erzeugt hat, beim X-Server angekommen ist."
 
 #: lclstrconsts.rshelp
 msgctxt "lclstrconsts.rshelp"
@@ -1111,7 +1111,7 @@ msgstr ""
 #, fuzzy
 #| msgid "-fg or -foreground color, sets the default foreground color."
 msgid "Sets the default foreground color."
-msgstr "-fg oder -foreground color, setzt die Vorgabe-Vordergrundfarbe."
+msgstr "-fg oder -foreground color, setzt die Standard-Vordergrundfarbe."
 
 #: lclstrconsts.rsqtoptionx11font
 msgid "Defines the application font. The font should be specified using an X logical font description."
@@ -1167,7 +1167,7 @@ msgstr "Rot"
 
 #: lclstrconsts.rsrefreshrecordshint
 msgid "Refresh"
-msgstr "Auffrischen"
+msgstr "Aktualisieren"
 
 #: lclstrconsts.rsreplace
 msgid "Replace"
@@ -1254,7 +1254,7 @@ msgstr "Eine Baumstruktur von Einträgen"
 
 #: lclstrconsts.rsunabletoloaddefaultfont
 msgid "Unable to load default font"
-msgstr "Kann Default-Schriftart nicht laden"
+msgstr "Kann Standard-Schriftart nicht laden"
 
 #: lclstrconsts.rsunknownerrorpleasereportthisbug
 msgid "Unknown Error, please report this bug"
@@ -1492,7 +1492,7 @@ msgstr "Ungültige Gleitkommazahl: %s"
 #: lclstrconsts.sparinvalidinteger
 #, object-pascal-format
 msgid "Invalid integer number: %s"
-msgstr "Ungültiger Integerzahl: %s"
+msgstr "Ungültige Integerzahl: %s"
 
 #: lclstrconsts.sparlocinfo
 #, object-pascal-format
@@ -1528,7 +1528,7 @@ msgstr "%s Bytes"
 
 #: lclstrconsts.sshellctrlsfolder
 msgid "Folder"
-msgstr "Ordner"
+msgstr "Verzeichnis"
 
 #: lclstrconsts.sshellctrlsgb
 #, object-pascal-format

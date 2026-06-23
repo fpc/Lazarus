@@ -1,23 +1,23 @@
 msgid ""
 msgstr ""
-"Last-Translator: Swen Heinig <swen@heinig.email>\n"
-"PO-Revision-Date: 2016-06-19 17:48+0200\n"
 "Project-Id-Version: lazreport\n"
-"Language-Team: Deutsch <lazarus@miraclec.com>\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.7.1\n"
-"MIME-Version: 1.0\n"
-"Last-Translator: Olivier Guilbaud\n"
-"PO-Revision-Date: 2005-05-01 18:33+0200\n"
 "Project-Id-Version: lazreport\n"
-"Language-Team: <fr@li.org>\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.3.1\n"
-"MIME-Version: 1.0\n"
 "POT-Creation-Date: \n"
+"PO-Revision-Date: 2026-06-24 12:50+0200\n"
+"PO-Revision-Date: 2005-05-01 18:33+0200\n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
+"Last-Translator: Olivier Guilbaud\n"
+"Language-Team: Deutsch <lazarus@miraclec.com>\n"
+"Language-Team: <fr@li.org>\n"
 "Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+"X-Generator: KBabel 1.3.1\n"
 
 #: lr_const.saboutformcapt
 msgid "About FastReport"
@@ -114,7 +114,7 @@ msgstr "Kreuz-Footer"
 #: lr_const.sband22
 msgctxt "lr_const.sband22"
 msgid "Child"
-msgstr "Nachfolger"
+msgstr "Untergeordnetes Objekt"
 
 #: lr_const.sband23
 msgctxt "lr_const.sband23"
@@ -250,7 +250,7 @@ msgstr "Zeit"
 
 #: lr_const.scateg5
 msgid "Boolean"
-msgstr "Wahrheitswerte"
+msgstr "Boolesch"
 
 #: lr_const.scharset
 msgid "0"
@@ -459,7 +459,7 @@ msgstr "COPY(<String>, <Position>, <Length>)/gibt <Length> Zeichen von <String> 
 
 #: lr_const.sdescriptioncount
 msgid "COUNT(<BandName>)/Returns count of data rows given in the <BandName>. "
-msgstr "COUNT(<BandName>)/Liefert die Zahl der Datenreihen des angegebenen <BandName>. "
+msgstr "COUNT(<BandName>)/Liefert die Anzahl der Datenreihen des angegebenen <BandName>. "
 
 #: lr_const.sdescriptioncrlf
 msgid "CRLF/Returns lineending character sequence."
@@ -587,11 +587,11 @@ msgstr "TRIM(<String>)/Schneidet alle führenden und anhängenden Leerzeichen au
 
 #: lr_const.sdescriptionuppercase
 msgid "UPPERCASE(<String>)/Converts <String> symbols to upper case."
-msgstr "UPPERCASE(<String>)/Wandert die Zeichen in <String> in Großbuchstaben um."
+msgstr "UPPERCASE(<String>)/Wandelt die Zeichen in <String> in Großbuchstaben um."
 
 #: lr_const.sdescriptionyearof
 msgid "YEAROF(<Date>)/Returns year of given <Date>."
-msgstr "YEAROF(<Date>)/Ergubt das Jahr für <Date>."
+msgstr "YEAROF(<Date>)/Ergibt das Jahr für <Date>."
 
 #: lr_const.sdesignreport
 msgid "Design report"
@@ -611,11 +611,11 @@ msgstr "&8 Pixel"
 
 #: lr_const.sdesoptionsformaligngrd
 msgid "Align to &grid"
-msgstr "Am &Gitter ausrichten"
+msgstr "Am &Grid ausrichten"
 
 #: lr_const.sdesoptionsformcoloredbutton
 msgid "Colored &buttons"
-msgstr "Bunte &Schaltflächen"
+msgstr "Bunte &Buttons"
 
 #: lr_const.sdesoptionsformcontents
 msgid "&Contents"
@@ -632,12 +632,12 @@ msgstr "Nach dem &Einfügen bearbeiten"
 
 #: lr_const.sdesoptionsformgrdsize
 msgid "Grid size"
-msgstr "Gittergröße"
+msgstr "Grid-Größe"
 
 #: lr_const.sdesoptionsformgrid
 msgctxt "lr_const.sdesoptionsformgrid"
 msgid "Grid"
-msgstr "Gitter"
+msgstr "Grid"
 
 #: lr_const.sdesoptionsforminch
 msgid "&Inches"
@@ -679,7 +679,7 @@ msgstr "Band&titel anzeigen"
 
 #: lr_const.sdesoptionsformshowgrd
 msgid "&Show grid"
-msgstr "&Gitter anzeigen"
+msgstr "&Grid anzeigen"
 
 #: lr_const.sdesoptionsformunits
 msgid "Report units"
@@ -920,7 +920,7 @@ msgstr "Text suchen"
 
 #: lr_const.sfindtextcase
 msgid "&Case sensitive"
-msgstr "&Schreibweisenabhängig"
+msgstr "Groß- und Klein&schreibung beachten"
 
 #: lr_const.sfindtextcurrentpg
 msgctxt "lr_const.sfindtextcurrentpg"
@@ -933,7 +933,7 @@ msgstr "&1. Seite"
 
 #: lr_const.sfindtextnotfound
 msgid "Search text not found."
-msgstr "Suchtext nicht gefunden"
+msgstr "Suchtext nicht gefunden."
 
 #: lr_const.sfindtextoptions
 msgctxt "lr_const.sfindtextoptions"
@@ -1182,7 +1182,7 @@ msgstr "Linien zeichnen"
 
 #: lr_const.sfrdesignerformfitgrid
 msgid "Fit to grid"
-msgstr "An Gitter anpassen"
+msgstr "An Grid anpassen"
 
 #: lr_const.sfrdesignerformfont
 msgid "Font color"
@@ -1207,11 +1207,11 @@ msgstr "Rahmenbreite"
 #: lr_const.sfrdesignerformgrid
 msgctxt "lr_const.sfrdesignerformgrid"
 msgid "Grid"
-msgstr "Gitter"
+msgstr "Grid"
 
 #: lr_const.sfrdesignerformgridalign
 msgid "Grid align"
-msgstr "Am Gitter ausrichten"
+msgstr "Am Grid ausrichten"
 
 #: lr_const.sfrdesignerformhightlight
 msgctxt "lr_const.sfrdesignerformhightlight"
@@ -1500,7 +1500,7 @@ msgstr "&Speichern"
 
 #: lr_const.sfrdesignerform_saveas
 msgid "Save &as ..."
-msgstr "Speichern &unter"
+msgstr "Speichern &unter ..."
 
 #: lr_const.sfrdesignerform_selectall
 msgid "Select &all"
@@ -1609,7 +1609,7 @@ msgstr "F&arbe ..."
 
 #: lr_const.shilightformcolor2
 msgid "Co&lor ..."
-msgstr "Far&be"
+msgstr "Far&be ..."
 
 #: lr_const.shilightformcond
 msgctxt "lr_const.shilightformcond"
@@ -1655,7 +1655,7 @@ msgstr "Barcode-Objekt einfügen"
 
 #: lr_const.sinschart
 msgid "Insert Chart object"
-msgstr "Chartobkjekt einfügen"
+msgstr "Chartobjekt einfügen"
 
 #: lr_const.sinscheckbox
 msgid "Insert CheckBox object"
@@ -1744,7 +1744,7 @@ msgstr "Seitenverhältnis beibehalten"
 
 #: lr_const.skeepchild
 msgid "Keep child together with parent"
-msgstr "Nachfolger zusammen mit Elternband drucken"
+msgstr "Untergeordnetes Objekt zusammen mit dem übergeordneten Objekt drucken"
 
 #: lr_const.slazformfile
 msgid "LazReport form"
@@ -2470,11 +2470,11 @@ msgstr "&Ganze &Seite"
 
 #: lr_const.sprintchildifnotvisible
 msgid "Print child if not visible"
-msgstr "Nachfolger drucken, wenn nicht sichtbar"
+msgstr "Untergeordnetes Objekt drucken, wenn nicht sichtbar"
 
 #: lr_const.sprintererror
 msgid "Selected printer is not valid"
-msgstr "Gewählter Drucker ist ungültig"
+msgstr "Ausgewählter Drucker ist ungültig"
 
 #: lr_const.sprintformall
 msgid "&All"
@@ -2808,7 +2808,7 @@ msgstr "Variablen"
 
 #: lr_const.svarformcat
 msgid "&Category:"
-msgstr "&Kategorie"
+msgstr "&Kategorie:"
 
 #: lr_const.svariable
 msgid "Variable"

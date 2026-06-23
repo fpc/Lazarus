@@ -2,15 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-06-15 23:39+0200\n"
-"Last-Translator: Swen Heinig <swen@heinig.email>\n"
+"PO-Revision-Date: 2026-06-24 12:49+0200\n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.9\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -334,7 +334,7 @@ msgstr "Keine Datenmenge zum Kopieren verfügbar."
 
 #: objinspstrconsts.lrsprovidedatafilename
 msgid "Select a data file to save data to"
-msgstr "Datei auswählen zum Speichern der Daten"
+msgstr "Datei zum Speichern der Daten auswählen"
 
 #: objinspstrconsts.lrssavetofile
 msgid "Save data to file"
@@ -450,7 +450,7 @@ msgstr "Array"
 
 #: objinspstrconsts.oisboolean
 msgid "Boolean"
-msgstr "Boolean"
+msgstr "Boolesch"
 
 #: objinspstrconsts.oisbtncomponents
 msgid "Co&mponents"
@@ -479,7 +479,7 @@ msgstr "Ändere Klasse ..."
 
 #: objinspstrconsts.oischangeparent
 msgid "Change Parent"
-msgstr ""
+msgstr "Übergeordnetes Objekt ändern"
 
 #: objinspstrconsts.oischar
 msgid "Char"
@@ -521,7 +521,7 @@ msgstr "Komponente kopieren"
 
 #: objinspstrconsts.oiscreatedefaultevent
 msgid "Create default event"
-msgstr "Default-Ereignis erzeugen"
+msgstr "Standard-Ereignis erzeugen"
 
 #: objinspstrconsts.oiscreatenewfieldandadditatcurrentposition
 msgid "Create new field and add it at current position"
@@ -529,11 +529,11 @@ msgstr "Neues Feld an aktueller Position einfügen"
 
 #: objinspstrconsts.oiscurrentparent
 msgid "Current parent"
-msgstr ""
+msgstr "Aktuelles übergeordnetes Objekt"
 
 #: objinspstrconsts.oiscurrentparents
 msgid "Current parents"
-msgstr ""
+msgstr "Aktuelle übergeordnete Objekte"
 
 #: objinspstrconsts.oiscutcomponents
 msgctxt "objinspstrconsts.oiscutcomponents"
@@ -561,7 +561,7 @@ msgstr "Wollen Sie die Seite löschen?"
 
 #: objinspstrconsts.oisdeleteselectedfields
 msgid "Delete selected field(s)"
-msgstr "Gewählte(s) Feld(er) löschen"
+msgstr "Ausgewählte(s) Feld(er) löschen"
 
 #: objinspstrconsts.oisdlinesdchars
 #, object-pascal-format
@@ -739,7 +739,7 @@ msgstr "Feld nach oben"
 
 #: objinspstrconsts.oisnannotsupported
 msgid "Setting a floating point property to NaN at design time is not supported"
-msgstr "Eine Gleitkomma-Eigenschaft zur Entwurfszeit auf NaN zu setzen wird nicht unterstützt."
+msgstr "Eine Gleitkomma-Eigenschaft zur Entwurfszeit auf NaN zu setzen wird nicht unterstützt"
 
 #: objinspstrconsts.oisnew
 msgid "&New"
@@ -894,7 +894,7 @@ msgstr "Ausgewählte Steuerelemente"
 
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
-msgstr "Gewählte Eigenschaften"
+msgstr "Ausgewählte Eigenschaften"
 
 #: objinspstrconsts.oisselectinputmasksample
 msgid "Select input mask sample file"
@@ -902,7 +902,7 @@ msgstr ""
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
-msgstr "Kürzel auswählen"
+msgstr "Tastaturkürzel auswählen"
 
 #: objinspstrconsts.oisset
 msgid "Set"
@@ -929,11 +929,11 @@ msgstr "Setze aktuelle Größe als untere Grenze"
 #: objinspstrconsts.oissettodefault
 #, object-pascal-format
 msgid "Set to default: %s"
-msgstr "Auf Voreinstellung %s setzen"
+msgstr "Auf Standard %s setzen"
 
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
-msgstr "Eigenschaftswert auf Vorgabe setzen"
+msgstr "Eigenschaftswert auf Standard setzen"
 
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
@@ -1289,7 +1289,7 @@ msgstr "Die Methode \"%s\" ist nicht published.%sAbbrechen um zurückzunehmen,%s
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
 #, object-pascal-format
 msgid "Unable to change parent of control \"%s\" to new parent \"%s\".%s%s"
-msgstr "Parent des Steuerelements \"%s\" kann nicht auf das Elternelement \"%s\" gesetzt werden.%s%s"
+msgstr "Übergeordnetes Objekt des Steuerelements \"%s\" kann nicht auf das neue \"%s\" geändert werden.%s%s"
 
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"
@@ -1659,7 +1659,7 @@ msgstr "Panel-Editor .."
 
 #: objinspstrconsts.sccssgedt
 msgid "Edit StringGrid ..."
-msgstr "Stringgitter bearbeiten ..."
+msgstr "Stringgrid bearbeiten ..."
 
 #: objinspstrconsts.sccssgedtapply
 msgctxt "objinspstrconsts.sccssgedtapply"
@@ -1668,7 +1668,7 @@ msgstr "Zuweisen"
 
 #: objinspstrconsts.sccssgedtcaption
 msgid "StringGrid Editor"
-msgstr "StringGrid Editor"
+msgstr "Stringgrid Editor"
 
 #: objinspstrconsts.sccssgedtclean
 msgid "Clean"
@@ -1711,7 +1711,7 @@ msgstr "Zeilenkopf bearbeiten"
 
 #: objinspstrconsts.sccssgedtgrp
 msgid "String Grid"
-msgstr "String-Gitter"
+msgstr "Stringgrid"
 
 #: objinspstrconsts.sccssgedtinscol
 msgid "Insert column"

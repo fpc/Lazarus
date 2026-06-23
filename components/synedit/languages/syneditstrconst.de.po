@@ -2,12 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-01-08 18:13+0100\n"
-"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"PO-Revision-Date: 2026-06-24 13:53+0200\n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: \n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
 
 #: syneditstrconst.scannotpause
 msgid "Can only pause when recording"
@@ -151,7 +153,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrdefaultpackage
 msgid "Default packages"
-msgstr "Default-Packages"
+msgstr "Standard-Packages"
 
 #: syneditstrconst.syns_attrdir
 msgid "Direction"
@@ -211,7 +213,7 @@ msgstr "Gleitkomma-Zahl"
 
 #: syneditstrconst.syns_attrform
 msgid "Form"
-msgstr "Form"
+msgstr "Formular"
 
 #: syneditstrconst.syns_attrfunction
 msgid "Function"
@@ -415,7 +417,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrprocessinginstr
 msgid "Processing Instruction"
-msgstr "Befehl ausführen"
+msgstr "Anweisung ausführen"
 
 #: syneditstrconst.syns_attrprocessinginstrsym
 msgid "Processing Instruction Symbol"
@@ -495,7 +497,7 @@ msgstr "SQL-Schlüsselwort"
 
 #: syneditstrconst.syns_attrsqlplus
 msgid "SQL*Plus command"
-msgstr "SQL*Plus-Kommando"
+msgstr "SQL*Plus-Anweisung"
 
 #: syneditstrconst.syns_attrsquarebracket
 msgid "Square Bracket"
@@ -551,7 +553,7 @@ msgstr "Abschluss"
 
 #: syneditstrconst.syns_attrtexcommand
 msgid "TeX Command"
-msgstr "TeX Kommando"
+msgstr "TeX-Anweisung"
 
 #: syneditstrconst.syns_attrtext
 msgid "Text"
@@ -744,7 +746,7 @@ msgstr ""
 
 #: syneditstrconst.syns_emcsyneditcommand
 msgid "IDE Command"
-msgstr "IDE-Kommando"
+msgstr "IDE-Anweisung"
 
 #: syneditstrconst.syns_emcwheelhorizscrolldown
 msgid "Wheel scroll down (Horizontal)"

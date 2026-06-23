@@ -3,13 +3,13 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: \n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: \n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.9\n"
 
 #: chmstrconsts.rsabout
 msgid "About..."
@@ -336,7 +336,7 @@ msgstr "URL (HTTP)"
 
 #: chmstrconsts.rsusefoldericons
 msgid "Use folder icons"
-msgstr "Ordner-Icons verwenden"
+msgstr "Verzeichnis-Icons verwenden"
 
 #: chmstrconsts.rsversion
 msgctxt "chmstrconsts.rsversion"
@@ -349,7 +349,7 @@ msgstr "CHMMaker"
 
 #: tchmform.addallbtn.caption
 msgid "Add all files in project directory"
-msgstr "Alle Dateien im Projektordner hinzufügen"
+msgstr "Alle Dateien im Projektverzeichnis hinzufügen"
 
 #: tchmform.addfilesbtn.caption
 msgid "Add files"
@@ -382,11 +382,11 @@ msgstr "Durchsuchbare CHM-Datei erzeugen"
 
 #: tchmform.defaultpagelabel.caption
 msgid "Default page"
-msgstr "Default-Seite"
+msgstr "Standard-Seite"
 
 #: tchmform.filesnotelabel.caption
 msgid "All files must be in the project file directory or a subdirectory."
-msgstr "Alle Dateien müssen sich im Ordner der Projekt-Datei oder einem Unterverzeichnis befinden."
+msgstr "Alle Dateien müssen sich im Verzeichnis der Projekt-Datei oder einem Unterverzeichnis befinden."
 
 #: tchmform.indexlabel.caption
 msgid "Index (*.hhk)"
@@ -407,11 +407,12 @@ msgid "Remove selected"
 msgstr "Auswahl entfernen"
 
 #: tchmform.scanhtmlcheck.caption
+#, fuzzy
 msgid ""
 "Parse *.htm* files to include \n"
 "linked pages and images"
 msgstr ""
-"html-Dateien auf verlinkte Seiten\n"
+"Html-Dateien auf verlinkte Seiten\n"
 "und Bilder untersuchen"
 
 #: tchmform.tableofcontentslabel.caption

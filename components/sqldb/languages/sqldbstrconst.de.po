@@ -3,13 +3,13 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Swen Heinig <swen@heinig.email>\n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: \n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.2\n"
+"X-Generator: Poedit 3.9\n"
 
 #: sqldbstrconst.lrsgeneratesqlstatements
 msgid "Edit/Generate SQL Statements"
@@ -116,7 +116,7 @@ msgstr "Begrenzer für Feld-/Tabellennamen"
 
 #: sqldbstrconst.ssqledit
 msgid "Edit SQL Script ..."
-msgstr "SQL Script bearbeiten ..."
+msgstr "SQL Skript bearbeiten ..."
 
 #: sqldbstrconst.ssqlerror
 msgid "Probable SQL error"

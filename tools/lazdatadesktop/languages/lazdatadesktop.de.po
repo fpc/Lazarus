@@ -3,13 +3,13 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Swen Heinig <swen@heinig.email>\n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: \n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.2\n"
+"X-Generator: Poedit 3.9\n"
 
 #: lazdatadeskstr.eoaddterminator
 msgid "Add terminator"
@@ -33,7 +33,7 @@ msgstr "Feldnamen in Anführungszeichen"
 
 #: lazdatadeskstr.eoskipforeignkeys
 msgid "Skip foreign keys"
-msgstr "Fremdschlüssel überspringen"
+msgstr "Fremdschlüssel übergehen"
 
 #: lazdatadeskstr.eouseoldinwhereparams
 msgid "Use OLD prefix in where parameters"
@@ -41,7 +41,7 @@ msgstr "Präfix \"OLD\" in \"WHERE\" Parametern verwenden"
 
 #: lazdatadeskstr.sabortscript
 msgid "Abort the script"
-msgstr "Das Skript abbrechen"
+msgstr "Skript abbrechen"
 
 #: lazdatadeskstr.sclose
 msgid "Close result"
@@ -92,7 +92,7 @@ msgstr "Schließen bestätigen"
 
 #: lazdatadeskstr.sconnectiondescription
 msgid "Enter a descriptive name for the connection"
-msgstr "Geben Sie einen anschaulichen Namen für die Verbindung ein"
+msgstr "Anschaulichen Namen für die Verbindung eingeben"
 
 #: lazdatadeskstr.sconnectionnameexists
 #, object-pascal-format
@@ -136,7 +136,7 @@ msgstr "Domäne"
 
 #: lazdatadeskstr.sdontclose
 msgid "Do not close editor"
-msgstr "Den Editor nicht schließen"
+msgstr "Editor nicht schließen"
 
 #: lazdatadeskstr.sdontsave
 msgid "Discard changes"
@@ -172,11 +172,11 @@ msgstr "Fehler bei Ausführung von SQL-Anweisung:"
 
 #: lazdatadeskstr.serrselectfields
 msgid "No fields selected. Please select some fields"
-msgstr "Keine Felder ausgewählt. Bitte wählen Sie einige Felder"
+msgstr "Keine Felder ausgewählt. Bitte einige Felder auswählen"
 
 #: lazdatadeskstr.serrselecttable
 msgid "No table selected. Please select a table"
-msgstr "Keine Tabelle ausgewählt. Bitte wählen Sie eine Tabelle"
+msgstr "Keine Tabelle ausgewählt. Bitte eine Tabelle auswählen"
 
 #: lazdatadeskstr.serrunknowndirective
 #, object-pascal-format
@@ -339,7 +339,7 @@ msgstr "&Objekt löschen"
 
 #: lazdatadeskstr.sld_actiondeleteobjecth
 msgid "Delete the currently selected object"
-msgstr "Das aktuell ausgewählte Objekt löschen"
+msgstr "Aktuell ausgewähltes Objekt löschen"
 
 #: lazdatadeskstr.sld_actiondeleterecentdatadict
 msgctxt "lazdatadeskstr.sld_actiondeleterecentdatadict"
@@ -376,7 +376,7 @@ msgstr "Neues &Feld"
 
 #: lazdatadeskstr.sld_actionnewfieldh
 msgid "Create a new field in the current table"
-msgstr "Ein neues Feld in der aktuellen Tabelle erzeugen"
+msgstr "Neues Feld in der aktuellen Tabelle erzeugen"
 
 #: lazdatadeskstr.sld_actionnewh
 msgid "Create a new Data Dictionary"
@@ -397,7 +397,7 @@ msgstr "Neue &Tabelle"
 
 #: lazdatadeskstr.sld_actionnewtableh
 msgid "Create a new table"
-msgstr "Eine neue Tabelle erzeugen"
+msgstr "Neue Tabelle erzeugen"
 
 #: lazdatadeskstr.sld_actionopen
 msgid "&Open ..."
@@ -485,7 +485,7 @@ msgstr "Verbindungen/Datenwörterbücher"
 #: lazdatadeskstr.sld_connecttoadatabase
 #, object-pascal-format
 msgid "Connect to a database of type %s"
-msgstr "Mit einer Datenbank vom Typ %s verbinden"
+msgstr "Mit Datenbank vom Typ %s verbinden"
 
 #: lazdatadeskstr.sld_createfulltablecreationsql
 msgid "Create full table creation SQL"
@@ -684,7 +684,7 @@ msgstr "Akt&ualisieren"
 
 #: lazdatadeskstr.sld_updateexistingtables
 msgid "Update existing tables"
-msgstr "Existierende Tabellen aktualisieren"
+msgstr "Vorhandene Tabellen aktualisieren"
 
 #: lazdatadeskstr.sld_username
 msgid "Username"
@@ -701,7 +701,7 @@ msgstr "SQL laden"
 #: lazdatadeskstr.snamefor
 #, object-pascal-format
 msgid "Enter a name for the new %s"
-msgstr "Geben Sie einen Namen für das neue %s"
+msgstr "Namen für das neue %s eingeben"
 
 #: lazdatadeskstr.snewconnection
 msgid "New connection"
@@ -735,7 +735,7 @@ msgstr "Neues Feld"
 
 #: lazdatadeskstr.snewfieldname
 msgid "Enter a name for the new field:"
-msgstr "Geben Sie einen Namen für das neue Feld ein:"
+msgstr "Namen für das neue Feld eingeben:"
 
 #: lazdatadeskstr.snewforeignkey
 #, object-pascal-format
@@ -762,7 +762,7 @@ msgstr "Neuer Index"
 
 #: lazdatadeskstr.snewindexname
 msgid "Enter a name for the new index:"
-msgstr "Einen Namen für den neuen Index eingeben:"
+msgstr "Namen für den neuen Index eingeben:"
 
 #: lazdatadeskstr.snewobject
 #, object-pascal-format
@@ -780,7 +780,7 @@ msgstr "Neue Sequenz"
 
 #: lazdatadeskstr.snewsequencename
 msgid "Enter a name for the new sequence:"
-msgstr "Einen Namen für die neue Sequenz eingeben:"
+msgstr "Namen für die neue Sequenz eingeben:"
 
 #: lazdatadeskstr.snewtable
 msgid "Create new table"
@@ -792,7 +792,7 @@ msgstr "Neue Tabelle"
 
 #: lazdatadeskstr.snewtablename
 msgid "Enter a name for the new table:"
-msgstr "Einen Namen für die neue Tabelle eingeben:"
+msgstr "Namen für die neue Tabelle eingeben:"
 
 #: lazdatadeskstr.snext
 msgid "Next"

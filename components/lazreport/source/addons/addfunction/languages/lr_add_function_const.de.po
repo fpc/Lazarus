@@ -1,14 +1,15 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Swen Heinig <swen@heinig.email>\n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: \n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 3.9\n"
 
 #: lr_add_function_const.sdatecategory
 msgid "Date"
@@ -36,7 +37,7 @@ msgstr ""
 
 #: lr_add_function_const.sdescriptioncreatestr
 msgid "CREATESTR(<String>)/Adds quotes to the <String> string to use it in SQL clause."
-msgstr "CREATESTR(<String>)/Fügt Anführungszeichen zur <String> Zeichenkette hinzu zur Verwendung in SQL-Befehlen."
+msgstr "CREATESTR(<String>)/Fügt Anführungszeichen zur <String> Zeichenkette hinzu zur Verwendung in SQL-Anweisung."
 
 #: lr_add_function_const.sdescriptiondatediff
 msgid "DATEDIFF(<Date1>,<Date2>,<var String>)/Returns the difference between two dates <Date1> and <Date2>. Result is in the string <String> in format \"days;months;years\"."
@@ -148,7 +149,7 @@ msgstr "RIGHTCOPY(<String>,<Count>)/Kopiert die Anzahl Zeichen von <Count> aus d
 
 #: lr_add_function_const.sdescriptionstrtodatedef
 msgid "STRTODATEDEF(<String>,<DefDate>)/Converts <String> string to date. If conversion fails, returns default value <DefDate>."
-msgstr "STRTODATEDEF(<String>,<DefDate>)/Wandelt die <String> Zeichenkette in ein Datum um. Wenn die Umwandlung fehlschlägt, dann wird der Vorgabewert <DefDate> zurückgegeben."
+msgstr "STRTODATEDEF(<String>,<DefDate>)/Wandelt die <String> Zeichenkette in ein Datum um. Wenn die Umwandlung fehlschlägt, dann wird der Standard <DefDate> zurückgegeben."
 
 #: lr_add_function_const.sdescriptionstrtofloat
 msgid "STRTOFLOAT(<String>)/Converts <String> string to the float value."
@@ -156,7 +157,7 @@ msgstr "STRTOFLOAT(<String>)/Wandelt die <String> Zeichenkette in einen Gleitkom
 
 #: lr_add_function_const.sdescriptionstrtofloatdef
 msgid "STRTOFLOATDEF(<String>,<DefValue>)/Converts <String> string to float value. If conversion fails, returns default value <DefValue>."
-msgstr "STRTOFLOATDEF(<String>,<DefValue>)/Wandelt die <String> Zeichenkette in einen Gleitkomma-Wert um. Wenn die Umwandlung fehlschlägt, wird der Vorgabewert <DefValue> zurückgegeben."
+msgstr "STRTOFLOATDEF(<String>,<DefValue>)/Wandelt die <String> Zeichenkette in einen Gleitkomma-Wert um. Wenn die Umwandlung fehlschlägt, wird der Standard <DefValue> zurückgegeben."
 
 #: lr_add_function_const.sdescriptionstrtoint
 msgid "STRTOINT(<String>)/Converts <String> string to the integer value."
@@ -164,7 +165,7 @@ msgstr "STRTOINT(<String>)/Wandelt die <String> Zeichenkette in einen Ganzzahl-W
 
 #: lr_add_function_const.sdescriptionstrtointdef
 msgid "STRTOINTDEF(<String>,<DefValue>)/Converts <String> string to integer value. If conversion fails, returns default value <DefValue>."
-msgstr "STRTOINTDEF(<String>,<DefValue>)/Wandelt die <String> Zeichenkette in einen Ganzzahl-Wert um. Wenn die Umwandlung fehlschlägt, wird der Vorgabewert <DefValue> zurückgegeben."
+msgstr "STRTOINTDEF(<String>,<DefValue>)/Wandelt die <String> Zeichenkette in einen Ganzzahl-Wert um. Wenn die Umwandlung fehlschlägt, wird der Standard <DefValue> zurückgegeben."
 
 #: lr_add_function_const.sdescriptionswap
 msgid "SWAP(<var var1>,<var var2>)/Swaps the variables var1 and var2."

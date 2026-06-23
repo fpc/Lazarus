@@ -3,13 +3,13 @@ msgstr ""
 "Project-Id-Version: LHelp\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: \n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: \n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.9\n"
 
 #: lhelpstrconsts.slhelp_about
 msgid "About"
@@ -177,7 +177,7 @@ msgstr "Ö&ffnen ..."
 
 #: lhelpstrconsts.slhelp_openexistingfile
 msgid "Open existing file"
-msgstr "Existierende Datei öffnen"
+msgstr "Vorhandene Datei öffnen"
 
 #: lhelpstrconsts.slhelp_opennewfileinseparatetab
 msgid "Open new file in separate tab"

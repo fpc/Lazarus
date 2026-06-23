@@ -1,14 +1,15 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: \n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 3.9\n"
 
 #: ldd_consts.ldd_availablecodegenerators
 msgid "Available code generators"
@@ -40,7 +41,7 @@ msgstr "Datadictionary-Datei:"
 
 #: ldd_consts.ldd_defaultdatadictdirectory
 msgid "Default data dictionary directory"
-msgstr "Voreingestelltes Verzeichnis für Datadictionary"
+msgstr "Standard-Verzeichnis für Datadictionary"
 
 #: ldd_consts.ldd_fields
 msgid "Fields"
@@ -72,7 +73,7 @@ msgstr "&OK"
 
 #: ldd_consts.ldd_openexistingfile
 msgid "Open existing file"
-msgstr "Vorhandene  Datei öffnen"
+msgstr "Vorhandene Datei öffnen"
 
 #: ldd_consts.ldd_options
 msgid "Options"
@@ -80,7 +81,7 @@ msgstr "Einstellungen"
 
 #: ldd_consts.ldd_propertiesforselected
 msgid "Properties for selected fields"
-msgstr "Eigenschaften für gewählte Felder"
+msgstr "Eigenschaften für ausgewählte Felder"
 
 #: ldd_consts.ldd_save
 msgid "&Save"
@@ -129,52 +130,44 @@ msgid "Applying data dictionary to field %s"
 msgstr "Datadictionary dem das Feld %s zuordnen"
 
 #: ldd_consts.serrnodatadesktopdoselect
-#, fuzzy
-#| msgid ""
-#| "Could not locate the database desktop application.\n"
-#| "Would you like to select it ?\n"
 msgid ""
 "Could not locate the database desktop application.\n"
 "Would you like to select it ?"
 msgstr ""
 "Kann die Database-Desktop-Anwendung nicht finden.\n"
-"Wollen Sie danach suchen ?\n"
+"Wollen Sie danach suchen?"
 
 #: ldd_consts.serrnodatadictactive
-#, fuzzy
-#| msgid ""
-#| "No datadictionary active.\n"
-#| "Please set a data dictionary for the project\n"
 msgid ""
 "No datadictionary active.\n"
 "Please set a data dictionary for the project"
 msgstr ""
 "Kein Datadictionary aktiv.\n"
-"Bitte wählen Sie ein Datadictionary für das Projekt\n"
+"Bitte Datadictionary für das Projekt auswählen"
 
 #: ldd_consts.serrselectdd
 msgid "Please select a known data dictionary"
-msgstr "Bitte wählen Sie ein bekanntes Datadictionary"
+msgstr "Bitte bekanntes Datadictionary auswählen"
 
 #: ldd_consts.serrselectdir
 msgid "Please select an existing directory"
-msgstr "Bitte wählen Sie ein bestehendes Verzeichnis"
+msgstr "Bitte vorhandenes Verzeichnis auswählen"
 
 #: ldd_consts.serrselectexe
 msgid "Please select an existing database desktop application"
-msgstr "Bitte wählen Sie eine bestehende Database-Desktop-Anwendung"
+msgstr "Bitte vorhandene Database-Desktop-Anwendung auswählen"
 
 #: ldd_consts.serrselectfile
 msgid "Please select an existing data dictionary file"
-msgstr "Bitte wählen Sie eine vorhandene Datei mit einem Datadictionary"
+msgstr "Bitte vorhandene Datei mit einem Datadictionary auswählen"
 
 #: ldd_consts.sfromfile
 msgid "from file: "
-msgstr "aus Datei:"
+msgstr "aus Datei: "
 
 #: ldd_consts.sloadingdatadict
 msgid "Loading data dictionary "
-msgstr "Lade Datadictionary"
+msgstr "Lade Datadictionary "
 
 #: ldd_consts.smenuconfdatadict
 msgid "Configuration"
