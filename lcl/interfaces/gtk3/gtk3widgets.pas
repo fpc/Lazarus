@@ -1165,6 +1165,7 @@ type
     class function WindowStateSignal(AWidget: PGtkWidget; AEvent: PGdkEvent; AData: gPointer): gboolean; cdecl; static;
     class procedure WaylandPopupSetFocus(AWindow: PGtkWindow; AWidget: PGtkWidget;
       AData: gpointer); cdecl; static;
+    class procedure WaylandAnnounceCSD(AWidget: PGtkWidget; AData: gpointer); cdecl; static;
     class function DeferredResizeCB(data: gpointer): gboolean; cdecl; static;
     class function MenuBarEnterNotify(AWidget: PGtkWidget; AEvent: PGdkEventCrossing; AData: gpointer): gboolean; cdecl; static;
   protected
@@ -15776,12 +15777,31 @@ begin
   end;
 end;
 
+class procedure TGtk3Window.WaylandAnnounceCSD(AWidget: PGtkWidget;
+  AData: gpointer); cdecl;
+var
+  AWindow: PGdkWindow;
+begin
+  AWindow := AWidget^.get_window;
+  if not Gtk3IsGdkWindow(AWindow) then
+    exit;
+  gdk_wayland_window_announce_csd(AWindow);
+end;
+
 procedure TGtk3Window.InitializeWidget;
 begin
   inherited InitializeWidget;
   if GTK3WidgetSet.IsWayland and (wtWindow in FWidgetType) then
     g_signal_connect_data(PGtkWidget(FWidget), 'set-focus',
       TGCallback(@WaylandPopupSetFocus), Self, nil, G_CONNECT_DEFAULT);
+  if GTK3WidgetSet.IsWayland and (wtWindow in FWidgetType) and
+     (LCLObject is TCustomForm) and (TCustomForm(LCLObject).BorderStyle = bsNone) then
+  begin
+    g_signal_connect_data(PGtkWidget(FWidget), 'realize',
+      TGCallback(@WaylandAnnounceCSD), Self, nil, [G_CONNECT_AFTER]);
+    if FWidget^.get_realized then
+      WaylandAnnounceCSD(PGtkWidget(FWidget), Self);
+  end;
   if not IsDesigning then
   begin
     g_signal_connect_data(gtk_scrolled_window_get_hscrollbar(GetScrolledWindow), 'change-value',

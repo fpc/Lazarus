@@ -5084,6 +5084,7 @@ procedure gdk_window_set_type_hint(window: PGdkWindow; hint: TGdkWindowTypeHint)
 procedure gdk_window_set_urgency_hint(window: PGdkWindow; urgent: gboolean); cdecl; external LazGdk3_library name 'gdk_window_set_urgency_hint';
 procedure gdk_window_set_user_data(window: PGdkWindow; user_data: PGObject); cdecl; external LazGdk3_library name 'gdk_window_set_user_data';
 procedure gdk_window_shape_combine_region(window: PGdkWindow; shape_region: Pcairo_region_t; offset_x: gint; offset_y: gint); cdecl; external LazGdk3_library name 'gdk_window_shape_combine_region';
+procedure gdk_wayland_window_announce_csd(window: PGdkWindow); cdecl; external LazGdk3_library name 'gdk_wayland_window_announce_csd';
 procedure gdk_window_show(window: PGdkWindow); cdecl; external LazGdk3_library name 'gdk_window_show';
 procedure gdk_window_show_unraised(window: PGdkWindow); cdecl; external LazGdk3_library name 'gdk_window_show_unraised';
 procedure gdk_window_stick(window: PGdkWindow); cdecl; external LazGdk3_library name 'gdk_window_stick';
