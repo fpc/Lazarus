@@ -220,7 +220,7 @@ type
   TtkTokenKind = (tkAmpersand, tkASP, tkCDATA, tkComment, tkIdentifier, tkKey, tkNull,
     tkSpace, tkString, tkSymbol, tkText, tkUndefKey, tkValue, tkDOCTYPE);
 
-  TRangeState = (rsAmpersand, rsASP, rsCDATA, rsComment, rsKey, rsParam, rsText,
+  TRangeState = (rsAmpersand, rsASP, rsCDATA, rsComment, rsKey, rsParam, rsQuotedParam, rsText,
     rsUnKnown, rsValue, rsDOCTYPE);
 
  THtmlCodeFoldBlockType = (
@@ -2631,21 +2631,32 @@ end;
 
 procedure TSynHTMLSyn.StringProc;
 begin
-  if (fRange = rsValue) then begin
-    fRange := rsParam;
+  if (fRange = rsQuotedParam) then begin
     fTokenID := tkValue;
+  end
+  else
+  if (fRange = rsValue) then begin
+    fRange := rsQuotedParam;
+    fTokenID := tkValue;
+    Inc(Run);  // first '"'
   end else begin
     fTokenID := tkString;
+    Inc(Run);  // first '"'
   end;
-  Inc(Run);  // first '"'
   while not (fLine[Run] in [#0, #10, #13, '"']) do Inc(Run);
-  if fLine[Run] = '"' then Inc(Run);  // last '"'
+  if fLine[Run] = '"' then begin
+    Inc(Run);  // last '"'
+    if (fRange = rsQuotedParam) then
+      fRange := rsParam;
+  end;
 end;
 
 procedure TSynHTMLSyn.Next;
 begin
   fTokenPos := Run;
   case fRange of
+  rsQuotedParam:
+    StringProc;
   rsText:
     begin
       TextProc;
@@ -2684,7 +2695,7 @@ end;
 
 function TSynHTMLSyn.GetEol: Boolean;
 begin
-  Result := fTokenId = tkNull;
+  Result := (fTokenId = tkNull) or (Run >= fLineLen);
 end;
 
 function TSynHTMLSyn.GetToken: string;
