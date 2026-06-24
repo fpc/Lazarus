@@ -5568,8 +5568,6 @@ begin
   gtk_widget_shape_combine_region(TGtk3Widget(hWnd).Widget, PCR);
   if bRedraw and Gtk3IsGtkWindow(TGtk3Widget(hWnd).Widget^.get_toplevel) then
     TGtk3Widget(hWnd).Widget^.realize;
-  if hRgn <> 0 then
-    DeleteObject(hRgn);
   Result:=1;
 end;
 
