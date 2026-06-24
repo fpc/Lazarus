@@ -2,17 +2,17 @@ object Form1: TForm1
   Left = 350
   Height = 299
   Top = 151
-  Width = 538
+  Width = 643
   Caption = 'Form1'
   ClientHeight = 299
-  ClientWidth = 538
+  ClientWidth = 643
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
-  LCLVersion = '2.3.0.0'
   object Chart1: TChart
     Left = 0
     Height = 275
     Top = 24
-    Width = 538
+    Width = 643
     AxisList = <    
       item
         Marks.LabelBrush.Style = bsClear
@@ -52,8 +52,9 @@ object Form1: TForm1
     Align = alClient
     object Chart1BarSeries1: TBarSeries
       BarBrush.Color = clOlive
-      Marks.Format = '%0:.9g'
-      Marks.Style = smsValue
+      Marks.Format = '%0:.2f'
+      Marks.LinkPen.Color = clGray
+      Marks.Style = smsCustom
     end
     object Chart1FuncSeries1: TFuncSeries
       ZPosition = 1
@@ -66,9 +67,9 @@ object Form1: TForm1
     Left = 0
     Height = 24
     Top = 0
-    Width = 538
+    Width = 643
     ButtonHeight = 22
-    ButtonWidth = 100
+    ButtonWidth = 60
     Caption = 'ToolBar1'
     ShowCaptions = True
     TabOrder = 1
@@ -79,28 +80,34 @@ object Form1: TForm1
       OnClick = tbSaveAsBMPClick
     end
     object tbSaveAsPNG: TToolButton
-      Left = 101
+      Left = 75
       Top = 2
       Caption = 'Save as PNG'
       OnClick = tbSaveAsPNGClick
     end
     object tbCopyToClipboard: TToolButton
-      Left = 401
+      Left = 362
       Top = 2
       Caption = 'Copy to clipboard'
       OnClick = tbCopyToClipboardClick
     end
     object tbSaveAsJPEG: TToolButton
-      Left = 201
+      Left = 148
       Top = 2
       Caption = 'Save as JPEG'
       OnClick = tbSaveAsJPEGClick
     end
     object tbSaveAsSVG: TToolButton
-      Left = 301
+      Left = 222
       Top = 2
       Caption = 'Save as SVG'
       OnClick = tbSaveAsSVGClick
+    end
+    object tbSaveAsPDF: TToolButton
+      Left = 292
+      Top = 2
+      Caption = 'Save as PDF'
+      OnClick = tbSaveAsPDFClick
     end
   end
   object SaveDialog1: TSaveDialog

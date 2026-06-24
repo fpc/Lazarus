@@ -5,7 +5,9 @@ unit main;
 interface
 
 uses
-  SysUtils, Forms, Graphics, Dialogs, ComCtrls, TAGraph, TASeries, TAFuncSeries, Classes;
+  SysUtils, Classes, fpPDF,
+  Forms, Graphics, Dialogs, ComCtrls,
+  TAGraph, TASeries, TAFuncSeries;
 
 type
 
@@ -22,11 +24,13 @@ type
     tbCopyToClipboard: TToolButton;
     tbSaveAsJPEG: TToolButton;
     tbSaveAsSVG: TToolButton;
+    tbSaveAsPDF: TToolButton;
     procedure Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure FormCreate(Sender: TObject);
     procedure tbCopyToClipboardClick(Sender: TObject);
     procedure tbSaveAsBMPClick(Sender: TObject);
     procedure tbSaveAsJPEGClick(Sender: TObject);
+    procedure tbSaveAsPDFClick(Sender: TObject);
     procedure tbSaveAsPNGClick(Sender: TObject);
     procedure tbSaveAsSVGClick(Sender: TObject);
   private
@@ -83,6 +87,59 @@ end;
 procedure TForm1.tbSaveAsJPEGClick(Sender: TObject);
 begin
   Chart1.SaveToFile(TJPEGImage, GetFileName('jpg'));
+end;
+
+{ Saves the chart as a pdf file using the fppdf routines of the fcl.
+  Based on code by "paweld", https://www.lazarusforum.de/viewtopic.php?p=156147 }
+procedure TForm1.tbSaveAsPDFClick(Sender: TObject);
+var
+  jpg: TJpegImage;
+  pdf: TPDFDocument;
+  pdfs: TPDFSection;
+  pdfp: TPDFPage;
+  idx, m, w, h, px, py: Integer;
+  scale: Double;
+  ms: TMemoryStream;
+begin
+  jpg := TJpegImage.Create;
+  ms := TMemoryStream.Create;
+  pdf := TPDFDocument.Create(nil);
+  try
+    jpg.SetSize(Chart1.Width, Chart1.Height);
+    Chart1.PaintTo(jpg.Canvas, 0, 0);
+    jpg.SaveToStream(ms);
+    ms.Position := 0;
+    pdf.StartDocument;
+    pdfs := pdf.Sections.AddSection;
+    pdfp := pdf.Pages.AddPage;
+    pdfp.Orientation := ppoLandscape;
+    pdfp.UnitOfMeasure := uomPixels;
+    pdfp.PaperType := ptA4;
+    pdfs.AddPage(pdfp);
+
+    idx := pdf.Images.AddJPEGStream(ms, jpg.Width, jpg.Height);
+
+    // border 10 mm, converted to px
+    m := trunc(mmToPDF(10));
+    // If required, reduce the size of the image on the page
+    scale := jpg.Width / (pdfp.Paper.W - 2 * m);
+    if (jpg.Height / (pdfp.Paper.H - 2 * m)) > scale then
+      scale := jpg.Height / (pdfp.Paper.H - 2 * m);
+    if scale < 1 then
+      scale := 1;
+    w := trunc(jpg.Width / scale);
+    h := trunc(jpg.Height / scale);
+    // Center on the page
+    px := (pdfp.Paper.W - w) div 2;
+    py := (pdfp.Paper.H - h) div 2;
+
+    pdfp.DrawImage(px, py, w, h, idx);
+    pdf.SaveToFile(GetFileName('pdf'));
+  finally
+    pdf.Free;
+    ms.Free;
+    jpg.Free;
+  end;
 end;
 
 procedure TForm1.tbSaveAsPNGClick(Sender: TObject);
