@@ -1457,7 +1457,8 @@ begin
     f := Data[i];
     f.RemoveOutOfScopeFrames(ACurFrame);
     if f.Count = 0 then begin
-      ABreakPoint.RemoveAddress(Keys[i]);
+      if ABreakPoint <> nil then
+        ABreakPoint.RemoveAddress(Keys[i]);
       Delete(i);
     end;
     dec(i);
@@ -2919,6 +2920,17 @@ begin
   debuglnEnter(DBG_BREAKPOINTS, ['>> TFpDebugDebugger.FDbgControllerProcessExitEvent fpc_Raiseexception' ]);
   for a in TBreakPointLoc do
     FreeAndNil(FBreakPoints[a]);
+  FBreakEnabled := [];
+  FBreakNewEnabled := [];
+  FState := esNone;
+  {$IFDEF WIN64}
+  FAddressFrameListSehW64Except.Clear;
+  FAddressFrameListSehW64Finally.Clear;
+  {$ENDIF}
+  {$IFDEF MSWINDOWS}
+  FAddressFrameListSehW32Except.Clear;
+  FAddressFrameListSehW32Finally.Clear;
+  {$ENDIF}
   debuglnExit(DBG_BREAKPOINTS, ['<< TFpDebugDebugger.FDbgControllerProcessExitEvent ' ]);
 end;
 
