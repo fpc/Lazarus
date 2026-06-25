@@ -52,7 +52,7 @@ uses
 type
   TFPDocEditorFlag = (
     fpdefReading,
-    fpdefWriting,
+    fpdefWriting, fpdefWritingNode,
     fpdefCodeCacheNeedsUpdate,
     fpdefChainNeedsUpdate,
     fpdefCaptionNeedsUpdate,
@@ -929,7 +929,9 @@ var
   Values: TFPDocElementValues;
 begin
   Values:=GetGUIValues;
+  Include(FFlags,fpdefWriting);
   WriteNode(Element,Values,true);
+  Exclude(FFlags,fpdefWriting);
 end;
 
 function TFPDocEditor.ExtractIDFromLinkTag(const LinkTag: string; out ID, Title: string
@@ -1505,11 +1507,15 @@ var
 
 begin
   Result:=false;
-  if fpdefWriting in FFlags then begin
+  if not (fpdefWriting in FFlags) then begin
+    DebugLn(['TFPDocEditForm.WriteNode inconsistency not in write']);
+    //exit;
+  end;
+  if fpdefWritingNode in FFlags then begin
     DebugLn(['TFPDocEditForm.WriteNode inconsistency detected: recursive write']);
     exit;
   end;
-  
+
   if Check(Element=nil,'Element=nil') then exit;
   CurDocFile:=Element.FPDocFile;
   if Check(CurDocFile=nil,'Element.FPDocFile=nil') then begin
@@ -1527,7 +1533,7 @@ begin
     Exit;
   end;
 
-  Include(FFlags,fpdefWriting);
+  Include(FFlags,fpdefWritingNode);
   CurDocFile.BeginUpdate;
   try
     if SetValue(fpdiShort)
@@ -1540,7 +1546,7 @@ begin
   finally
     CurDocFile.EndUpdate;
     fChain.MakeValid;
-    Exclude(FFlags,fpdefWriting);
+    Exclude(FFlags,fpdefWritingNode);
   end;
 
   if CodeHelpBoss.SaveFPDocFile(CurDocFile)<>mrOk then begin
