@@ -1104,10 +1104,12 @@ function TGtk3WidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc
 var
   TimerInfo: PGtkITimerinfo;
 begin
-  if ((Interval < 1) or (not Assigned(TimerFunc)))
+  if not Assigned(TimerFunc)
   then
     Result := 0
   else begin
+    if Interval < 1 then
+      Interval := 1;
     New(TimerInfo);
     FillByte(TimerInfo^,SizeOf(TGtkITimerinfo),0);
     TimerInfo^.TimerFunc := TimerFunc;
