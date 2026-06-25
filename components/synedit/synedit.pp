@@ -5310,6 +5310,9 @@ begin
   end;
 
   if (sfMarkupMgrWaitingForHandle in fStateFlags) then begin
+    ScanRanges;
+    if sfAfterLoadFromFileNeeded in fStateFlags then
+      AfterLoadFromFile;
     FMarkupManager.DecPaintLock;
     Exclude(fStateFlags, sfMarkupMgrWaitingForHandle);
   end;
