@@ -12030,9 +12030,13 @@ var
   AModel: PGtkTreeModel;
   Iter: TGtkTreeIter;
   NewIndex: Integer;
-  bmp:TBitmap;
-  pxb:PGdkPixbuf;
-  w,h: gint;
+  bmp: TBitmap;
+  pxb: PGdkPixbuf;
+  w, h: gint;
+  ALV: TCustomListViewHack;
+  ImgIdx: Integer;
+  ImgList: TCustomImageList;
+  ImgWidth: Integer;
 begin
   if not IsWidgetOK then
     exit;
@@ -12051,26 +12055,52 @@ begin
       [0, Pointer(AItem), -1])
   else
   begin
-    bmp:=TBitmap.Create;
-    if Assigned(TListView(LCLObject).LargeImages) then
-      TListView(LCLObject).LargeImages.GetBitmap(AIndex,bmp)
+    ALV := TCustomListViewHack(LCLObject);
+    ImgIdx := AItem.ImageIndex;
+    pxb := nil;
+    if Assigned(FImages) and (ImgIdx >= 0) and (ImgIdx < FImages.Count) then
+      pxb := PGdkPixbuf(FImages[ImgIdx])
     else
     begin
-      gtk_icon_size_lookup(Ord(GTK_ICON_SIZE_LARGE_TOOLBAR), @w, @h);
-      bmp.SetSize(w, h);
+      if ALV.ViewStyle = vsIcon then
+      begin
+        ImgList := ALV.LargeImages;
+        ImgWidth := ALV.LargeImagesWidth;
+      end else
+      begin
+        ImgList := ALV.SmallImages;
+        ImgWidth := ALV.SmallImagesWidth;
+      end;
+      bmp := TBitmap.Create;
+      try
+        if Assigned(ImgList) and (ImgIdx >= 0) and (ImgIdx < ImgList.Count) then
+          ImgList.ResolutionForPPI[ImgWidth, ALV.Font.PixelsPerInch, ALV.GetCanvasScaleFactor].Resolution.GetBitmap(ImgIdx, bmp)
+        else
+        begin
+          gtk_icon_size_lookup(Ord(GTK_ICON_SIZE_LARGE_TOOLBAR), @w, @h);
+          bmp.SetSize(w, h);
+        end;
+        pxb := TGtk3Image(bmp.Handle).Handle^.copy;
+        {$IFDEF DEBUGVERZIJA}
+        DebugLn(['ItemInsert fallback: item=',AIndex,' imgidx=',ImgIdx,' w=',bmp.Width,' h=',bmp.Height]);
+        {$ENDIF}
+      finally
+        bmp.Free;
+      end;
+      gtk_list_store_insert_with_values(PGtkListStore(AModel), @Iter, NewIndex,
+        [0, Pointer(AItem),
+         1, PChar(AItem.Caption),
+         2, pxb, -1]);
+      g_object_unref(pxb);
+      exit;
     end;
-    pxb:=TGtk3Image(bmp.Handle).Handle^.copy;
+    {$IFDEF DEBUGVERZIJA}
+    DebugLn(['ItemInsert FImages: item=',AIndex,' imgidx=',ImgIdx,' w=',pxb^.get_width,' h=',pxb^.get_height]);
+    {$ENDIF}
     gtk_list_store_insert_with_values(PGtkListStore(AModel), @Iter, NewIndex,
       [0, Pointer(AItem),
        1, PChar(AItem.Caption),
-       2, pxb, -1] );
-    // list_store takes ownership, so unref and ref again.
-    g_object_unref(pxb);
-    if not Assigned(FImages) then
-      FImages := TFPList.Create;
-    g_object_ref(pxb);
-    FImages.Add(pxb);
-    bmp.Free;
+       2, pxb, -1]);
   end;
 end;
 
@@ -12095,9 +12125,13 @@ var
   ItemRect: TGdkRectangle;
   AModel: PGtkTreeModel;
   Iter: TGtkTreeIter;
-  bmp:TBitmap;
-  pxb:PGdkPixbuf;
-  w,h: gint;
+  bmp: TBitmap;
+  pxb: PGdkPixbuf;
+  w, h: gint;
+  ALV: TCustomListViewHack;
+  ImgIdx: Integer;
+  ImgList: TCustomImageList;
+  ImgWidth: Integer;
 begin
   if IsTreeView then
   begin
@@ -12107,32 +12141,55 @@ begin
   end else
   begin
     Path := gtk_tree_path_new_from_indices(AIndex, [-1]);
-    AModel:=PGtkIconView(GetContainerWidget)^.get_model;
-    AModel^.get_iter(@iter,path);
-
-    bmp := TBitmap.Create;
-    if (TCustomListViewHack(LCLObject).ViewStyle = vsIcon) and Assigned(TCustomListViewHack(LCLObject).LargeImages) then
-      TCustomListViewHack(LCLObject).LargeImages.GetBitmap(AItem.ImageIndex, bmp)
-    else
-    if (TCustomListViewHack(LCLObject).ViewStyle = vsSmallIcon) and Assigned(TCustomListViewHack(LCLObject).SmallImages) then
-      TCustomListViewHack(LCLObject).SmallImages.GetBitmap(AItem.ImageIndex, bmp)
-    else
+    AModel := PGtkIconView(GetContainerWidget)^.get_model;
+    AModel^.get_iter(@iter, path);
+    ALV := TCustomListViewHack(LCLObject);
+    ImgIdx := AItem.ImageIndex;
+    pxb := nil;
+    if Assigned(FImages) and (ImgIdx >= 0) and (ImgIdx < FImages.Count) then
     begin
-      gtk_icon_size_lookup(Ord(GTK_ICON_SIZE_LARGE_TOOLBAR), @w, @h);
-      bmp.SetSize(w, h);
+      pxb := PGdkPixbuf(FImages[ImgIdx]);
+      {$IFDEF DEBUGVERZIJA}
+      DebugLn(['UpdateItem FImages: item=',AIndex,' imgidx=',ImgIdx,' w=',pxb^.get_width,' h=',pxb^.get_height]);
+      {$ENDIF}
+      gtk_list_store_set(PGtkListStore(AModel), @Iter,
+        [0, Pointer(AItem),
+         1, PChar(AItem.Caption),
+         2, pxb, -1]);
+    end else
+    begin
+      if ALV.ViewStyle = vsIcon then
+      begin
+        ImgList := ALV.LargeImages;
+        ImgWidth := ALV.LargeImagesWidth;
+      end else
+      begin
+        ImgList := ALV.SmallImages;
+        ImgWidth := ALV.SmallImagesWidth;
+      end;
+      bmp := TBitmap.Create;
+      try
+        if Assigned(ImgList) and (ImgIdx >= 0) and (ImgIdx < ImgList.Count) then
+          ImgList.ResolutionForPPI[ImgWidth, ALV.Font.PixelsPerInch, ALV.GetCanvasScaleFactor].Resolution.GetBitmap(ImgIdx, bmp)
+        else
+        begin
+          gtk_icon_size_lookup(Ord(GTK_ICON_SIZE_LARGE_TOOLBAR), @w, @h);
+          bmp.SetSize(w, h);
+        end;
+        pxb := TGtk3Image(bmp.Handle).Handle^.copy;
+        {$IFDEF DEBUGVERZIJA}
+        DebugLn(['UpdateItem fallback: item=',AIndex,' imgidx=',ImgIdx,' w=',bmp.Width,' h=',bmp.Height]);
+        {$ENDIF}
+        gtk_list_store_set(PGtkListStore(AModel), @Iter,
+          [0, Pointer(AItem),
+           1, PChar(AItem.Caption),
+           2, pxb, -1]);
+        g_object_unref(pxb);
+      finally
+        bmp.Free;
+      end;
     end;
-    pxb := TGtk3Image(Bmp.Handle).Handle^.copy;
-    gtk_list_store_set(PGtkListStore(AModel), @Iter,
-      [0, Pointer(AItem),
-       1, PChar(AItem.Caption),
-       2, pxb, -1] );
-    g_object_unref(pxb);
-    if not Assigned(FImages) then
-      FImages := TFPList.Create;
-    g_object_ref(pxb);
-    FImages.Add(pxb);
     gtk_tree_path_free(Path);
-    bmp.Free;
   end;
 end;
 

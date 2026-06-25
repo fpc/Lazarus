@@ -425,17 +425,11 @@ begin
   AListView := TGtk3ListView.Create(AWinControl, AParams);
   if TLVHack(AWinControl).ViewStyle = vsSmallIcon then
   begin
-    if Assigned(TLVHack(AWinControl).SmallImages) then
-      AListView.setItemWidth(TLVHack(AWinControl).SmallImages.Width)
-    else
-      AListView.setItemWidth(0);
+    AListView.setItemWidth(TLVHack(AWinControl).SmallImagesWidth);
   end else
   if TLVHack(AWinControl).ViewStyle = vsIcon then
   begin
-    if Assigned(TLVHack(AWinControl).LargeImages) then
-      AListView.setItemWidth(TLVHack(AWinControl).LargeImages.Width)
-    else
-      AListView.setItemWidth(0);
+    AListView.setItemWidth(TLVHack(AWinControl).LargeImagesWidth);
   end else
   if TLVHack(AWinControl).ViewStyle = vsList then
   begin
