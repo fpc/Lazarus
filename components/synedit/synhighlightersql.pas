@@ -241,6 +241,7 @@ type
     private
       FAlternativeKinds: TAlternativeKinds;
       FKeywordId: TSqlKeywordId;
+      procedure SetNext(ANext: TSynSqlHashEntry);
       function GetAlternativeKind(AnIndex: integer): TAlternativeKind;
       function GetAlternativeKindCount: integer;
     public
@@ -384,6 +385,8 @@ type
     procedure ResetRange; override;
     procedure InitForScanningLine; override;
     procedure SetRange(Value: Pointer); override;
+    procedure AddKeyword(AKeyword: string; AKind: TtkTokenKind; AKeywordId: TSqlKeywordId = skUnknown);
+    procedure RemoveKeyword(AKeyword: string);
   published
     property CommentAttri: TLazEditHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
     property DataTypeAttri: TLazEditHighlighterAttributes index attribDataType read fDataTypeAttri write SetAttribute;
@@ -2533,6 +2536,47 @@ begin
   FTokenState         := SqlCodeFoldRange.TokenState;
 end;
 
+procedure TSynSQLSyn.AddKeyword(AKeyword: string; AKind: TtkTokenKind; AKeywordId: TSqlKeywordId);
+begin
+  fKeywords[KeyHash(PChar(AKeyword))] := TSynSqlHashEntry.Create(AKeyword, ord(AKind), AKeywordId);
+  RequestFullRescan;
+end;
+
+procedure TSynSQLSyn.RemoveKeyword(AKeyword: string);
+var
+  h: Integer;
+  Entry, Prev: TSynSqlHashEntry;
+begin
+  if AKeyword = '' then
+    exit;
+  h := KeyHash(PChar(AKeyword));
+  Entry := fKeywords[h];
+  if Entry = nil then
+    exit;
+  fToIdent := pchar(AKeyword);
+  fStringLen := Length(AKeyword);
+  Prev := nil;
+  while Assigned(Entry) do
+  begin
+    if KeyComp(Entry.Keyword) then
+      Break;
+    Prev := Entry;
+    Entry := Entry.Next;
+  end;
+  if Entry <> nil then begin
+    if Prev <> nil then
+      Prev.SetNext(Entry.Next)
+    else
+    if Entry.Next <> nil then
+      fKeywords.Replace(h, Entry.Next)
+    else
+      fKeywords.Remove(Entry);
+    Entry.SetNext(nil);
+    Entry.Free;
+    RequestFullRescan;
+  end;
+end;
+
 function TSynSQLSyn.GetIdentChars: TSynIdentChars;
 begin
   Result := TSynValidStringChars;
@@ -3036,6 +3080,11 @@ begin
 end;
 
 { TSynSQLSyn.TSynSqlHashEntry }
+
+procedure TSynSQLSyn.TSynSqlHashEntry.SetNext(ANext: TSynSqlHashEntry);
+begin
+  FNext := ANext;
+end;
 
 function TSynSQLSyn.TSynSqlHashEntry.GetAlternativeKind(AnIndex: integer): TAlternativeKind;
 begin

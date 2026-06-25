@@ -125,6 +125,7 @@ type
   public
     { Clears the list and frees all contained keyword entries. }
     procedure Clear; override;
+    procedure Replace(HashKey: Integer; Entry: HE);
   public
     function FindOnAdd(HashKey: Integer; Entry: HE): HE;
     { Type-safe access to the first keyword entry for a hashvalue. }
@@ -247,6 +248,11 @@ begin
   for i := 0 to Count - 1 do
     HE(Items[i]).Free;
   inherited Clear;
+end;
+
+procedure TGenSynHashEntryList.Replace(HashKey: Integer; Entry: HE);
+begin
+  inherited Items[HashKey] := pointer(Entry);
 end;
 
 function TGenSynHashEntryList.FindOnAdd(HashKey: Integer; Entry: HE): HE;

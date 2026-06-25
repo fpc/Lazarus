@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fpdoc-descriptions>
+  <package name="SynEdit">
+    <module name="SynHighlighterSQL">
+      <element name="TSynSQLSyn.AddKeyword">
+        <short>Add Keyword</short>
+        <descr>Adds a Keyword to the current list of keywords, based on the selected dialect. 
+
+The Keyword is not stored as part of the dialect. Changing the dialect will loose any added keywords, and changing it back will not restore them.
+
+The specified "AKind: TtkTokenKind" determines the attribute used to highlight the keyword will.
+
+The optional "AKeywordId: TSqlKeywordId" can be used to set the keyword as a replacement or alternative to the existing keyword of the given kind. This can affect other keywords that depend on scope. It also affects folding.
+</descr>
+      </element>
+      <element name="TSynSQLSyn.RemoveKeyword">
+        <short>Remove a Keyword</short>
+        <descr>Removes a Keyword from the current list of keywords, based on the selected dialect. 
+
+The Keyword is not removed from the dialect itself. Changing, and restoring the dialect will restore any removed keywords.</descr>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>
