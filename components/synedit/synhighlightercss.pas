@@ -59,7 +59,7 @@ type
   TtkTokenKind = (tkComment, tkIdentifier, tkKey, tkNull, tkNumber, tkSpace,
     tkString, tkSymbol, tkMeasurementUnit, tkSelector, tkUnknown);
 
-  TRangeState = (rsCStyle, rsInDeclarationBlock);
+  TRangeState = (rsCStyle, rsInDeclarationBlock, rsAfterColon);
   TRangeStates = set of TRangeState;
 
   TProcTableProc = procedure of object;
@@ -254,7 +254,7 @@ type
     function Func253: TtkTokenKind;
     function Func275: TtkTokenKind;
     procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TLazEditHighlighterAttributes);
-    procedure SymbolProc;
+    procedure SemiColonProc;
     procedure ColonProc;
     procedure SelectorProc;
     procedure PercentProc;
@@ -264,6 +264,7 @@ type
     procedure CStyleCommentProc;
     procedure DashProc;
     procedure IdentProc;
+    procedure IdentProc_U;
     procedure HashProc;
     procedure IntegerProc;
     procedure LFProc;
@@ -1794,14 +1795,15 @@ begin
     case chI of
       '{'                         : FProcTable[chI] := @CurlyOpenProc;
       '}'                         : FProcTable[chI] := @CurlyCloseProc;
-      ';'                         : FProcTable[chI] := @SymbolProc;
+      ';'                         : FProcTable[chI] := @SemiColonProc;
       ':'                         : FProcTable[chI] := @ColonProc;
       '.', '*', ',','>','+','~', '[', ']', '='
                                   : FProcTable[chI] := @SelectorProc;
       '%'                         : FProcTable[chI] := @PercentProc;
       #13                         : FProcTable[chI] := @CRProc;
       '-'                         : FProcTable[chI] := @DashProc;
-      'A'..'Z', 'a'..'z', '_','@' : FProcTable[chI] := @IdentProc;
+      'U', 'u'                    : FProcTable[chI] := @IdentProc_U;
+      'A'..'T', 'V'..'Z', 'a'..'t', 'v'..'z', '_','@' : FProcTable[chI] := @IdentProc;
       '#'                         : FProcTable[chI] := @HashProc;
       '$'                         : FProcTable[chI] := @IntegerProc;
       #10                         : FProcTable[chI] := @LFProc;
@@ -1853,8 +1855,9 @@ begin
   Next;
 end;
 
-procedure TSynCssSyn.SymbolProc;
+procedure TSynCssSyn.SemiColonProc;
 begin
+  fRange := fRange - [rsAfterColon];
   if rsInDeclarationBlock in fRange then
     FTokenID := tkSymbol
   else
@@ -1864,10 +1867,13 @@ end;
 
 procedure TSynCssSyn.ColonProc;
 begin
-  if not(rsInDeclarationBlock in fRange) then
-    FTokenID := tkSelector
-  else
+  if not(rsInDeclarationBlock in fRange) then begin
+    FTokenID := tkSelector;
+  end
+  else begin
     FTokenID := tkSymbol;
+    fRange := fRange + [rsAfterColon];
+  end;
   Inc(Run);
 end;
 
@@ -1900,7 +1906,7 @@ procedure TSynCssSyn.CurlyCloseProc;
 begin
   FTokenID := tkSymbol;
   Inc(Run);
-  fRange := fRange - [rsInDeclarationBlock];
+  fRange := fRange - [rsInDeclarationBlock, rsAfterColon];
 end;
 
 procedure TSynCssSyn.CRProc;
@@ -1948,6 +1954,24 @@ begin
   Inc(Run, FStringLen);
   while Identifiers[LinePtr[Run]] do
     Inc(Run);
+end;
+
+procedure TSynCssSyn.IdentProc_U;
+begin
+  if (rsAfterColon in fRange) and
+     (LinePtr[Run+1] = '+') and
+     (LinePtr[Run+2] in ['0'..'9', 'A'..'F', 'a'..'f', '?'])
+  then begin
+    inc(Run, 3);
+    while (LinePtr[Run] in ['0'..'9', 'A'..'F', 'a'..'f', '?']) do inc(Run);
+    if LinePtr[Run] = '-' then begin
+      inc(Run);
+      while (LinePtr[Run] in ['0'..'9', 'A'..'F', 'a'..'f', '?']) do inc(Run);
+    end;
+    FTokenID := tkIdentifier;
+    exit;
+  end;
+  IdentProc;
 end;
 
 procedure TSynCssSyn.HashProc;
