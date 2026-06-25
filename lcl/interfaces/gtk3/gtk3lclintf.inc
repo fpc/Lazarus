@@ -176,7 +176,7 @@ end;
 function TGtk3WidgetSet.ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 begin
-  // all fonts are UTF-8 under gtk2 => no mapping needed
+  // all fonts are UTF-8 under gtk3 => no mapping needed
   Result:=ExtTextOut(DC,X,Y,Options,Rect,Str,Count,Dx);
 end;
 
@@ -540,27 +540,6 @@ begin
         ADesc.BlueShift := 0;
       end;
   end;
-  (*
-  if not IsValidGDIObject(ABitmap)
-  then begin
-    DebugLn('WARNING: [TGtk3WidgetSet.GetBitmapRawImageDescription] invalid Bitmap!');
-    exit;
-  end;
-
-  case GDIObject^.GDIBitmapType of
-    gbBitmap:
-      Result := RawImage_DescriptionFromDrawable(ADesc,
-        GdiObject^.GDIBitmapObject, False);
-    gbPixmap:
-      Result := RawImage_DescriptionFromDrawable(ADesc,
-        GdiObject^.GDIPixmapObject.Image, GdiObject^.GDIPixmapObject.Mask <> nil);
-    gbPixbuf:
-      Result := RawImage_DescriptionFromPixbuf(ADesc, GdiObject^.GDIPixbufObject);
-  else
-    DebugLn('WARNING: [TGtk3WidgetSet.RawImage_DescriptionFromBitmap] Unknown GDIBitmapType');
-    Exit;
-  end;
-  *)
 end;
 
 {------------------------------------------------------------------------------
