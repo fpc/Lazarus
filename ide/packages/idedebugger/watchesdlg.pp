@@ -688,9 +688,6 @@ begin
     if (not (FWatchesInView is TCurrentWatches)) or (GetSelectedSnapshot <> nil) then
       exit;
 
-    if (Target = nil) then
-      exit;
-
     Nodes := tvWatches.GetSortedSelection(True);
     if Length(Nodes) = 0 then
       exit;
