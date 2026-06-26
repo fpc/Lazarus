@@ -2631,6 +2631,11 @@ end;
 
 procedure TSynHTMLSyn.StringProc;
 begin
+  if (fLine[Run] In [#0, #10, #13]) then begin
+    fProcTable[fLine[Run]];
+    Exit;
+  end;
+
   if (fRange = rsQuotedParam) then begin
     fTokenID := tkValue;
   end
@@ -2695,7 +2700,7 @@ end;
 
 function TSynHTMLSyn.GetEol: Boolean;
 begin
-  Result := (fTokenId = tkNull) or (Run >= fLineLen);
+  Result := (fTokenId = tkNull);
 end;
 
 function TSynHTMLSyn.GetToken: string;
