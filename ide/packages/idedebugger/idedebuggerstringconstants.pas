@@ -173,6 +173,7 @@ resourcestring
   DbgWatchColorEvaluating = 'Evaluating';
   DbgWatchColorUnknown = 'Unknown';
   DbgWatchFoundStackFrame = 'Stack frame (found)';
+  DbgWatchColorShadowLast = 'From previous pause';
 
   // Mem viewer
   liswlMemView = 'Memory';

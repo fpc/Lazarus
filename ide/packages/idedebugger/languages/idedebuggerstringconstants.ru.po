@@ -177,6 +177,10 @@ msgstr "При выводе (один раз за сеанс отладки)"
 msgid "Watches/Locals"
 msgstr "Наблюдения / локальные переменные"
 
+#: idedebuggerstringconstants.dbgwatchcolorshadowlast
+msgid "From previous pause"
+msgstr ""
+
 #: idedebuggerstringconstants.dbgwatchcolorunknown
 msgid "Unknown"
 msgstr "Неизвестные"

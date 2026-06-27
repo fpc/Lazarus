@@ -179,6 +179,10 @@ msgstr ""
 msgid "Watches/Locals"
 msgstr ""
 
+#: idedebuggerstringconstants.dbgwatchcolorshadowlast
+msgid "From previous pause"
+msgstr ""
+
 #: idedebuggerstringconstants.dbgwatchcolorunknown
 msgid "Unknown"
 msgstr ""

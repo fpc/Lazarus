@@ -35,6 +35,9 @@ type
   end;
 
   IWatchAbleResultIntf = interface ['wdr']
+    procedure AddReference;
+    procedure ReleaseReference;
+
     function GetChildrenByNameAsArrayEntry(AName: Int64; DerefCount: Integer): TObject;
     function GetChildrenByNameAsField(AName, AClassName: String; DerefCount: Integer): TObject;
 
@@ -437,7 +440,7 @@ end;
 
 function TWatchValue.GetValidity: TDebuggerDataState;
 begin
-  if Watch <> nil then
+  if (Watch <> nil) or (FValidity in [ddsValid, ddsError, ddsInvalid]) then
     Result := FValidity
   else
     Result := ddsUnknown;

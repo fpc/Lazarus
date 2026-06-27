@@ -55,6 +55,7 @@ type
 
   TDbgTreeNodeData = record
     Item: TObject;  // Must be the first field.  Node.AddChild will write the new "Item" at UserData^  (aka the memory at the start of UserData)
+    Item2: Pointer;
     ImageIndex: Array of Integer;
     RightSideButton: record
       ImageIndex: integer;
@@ -88,6 +89,7 @@ type
     FInToggle: boolean;
     FFirstControlNode: PVirtualNode; // not ordered
     FLazImages: TCustomImageList;
+    FOnBeforeFreeNode: TVTFreeNodeEvent;
     FOnDetermineDropMode: TDetermineDropModeEvent;
     FOnItemRemoved: TItemRemovedEvent;
     FOnNodeRightButtonClick: TDbgTreeRightButtonClickEvent;
@@ -102,7 +104,9 @@ type
     procedure SetNodeRightButtonImgIdx(Node: PVirtualNode; AValue: Integer);
     // Item
     procedure SetNodeItem(Node: PVirtualNode; AValue: TObject);
+    procedure SetNodeItem2(Node: PVirtualNode; AValue: Pointer);
     function GetNodeItem(Node: PVirtualNode): TObject;
+    function GetNodeItem2(Node: PVirtualNode): Pointer;
     // Control
     function  GetNodeControl(Node: PVirtualNode): TControl;
     function  GetNodeControlVisible(Node: PVirtualNode): Boolean;
@@ -185,6 +189,7 @@ type
     procedure SetNodeTextColor(Node: PVirtualNode; AColumn: Integer; AColor: TColor);  // must be added in ascending order
     procedure AddNodeTextColor(Node: PVirtualNode; AColumn, AFrom, ALen: Integer; AColor: TColor);  // must be added in ascending order
     property NodeItem[Node: PVirtualNode]: TObject read GetNodeItem write SetNodeItem;
+    property NodeItem2[Node: PVirtualNode]: Pointer read GetNodeItem2 write SetNodeItem2;
     property NodeText[Node: PVirtualNode; AColumn: integer]: String read GetNodeText write SetNodeText;
     property NodeImageIndex[Node: PVirtualNode; AColumn: integer]: Integer read GetNodeImageIndex write SetNodeImageIndex;
     property IsVisible[Node: PVirtualNode]: Boolean read GetIsVisible write SetIsVisible;
@@ -197,6 +202,7 @@ type
     property NodeControlOutside[Node: PVirtualNode]: Boolean read GetNodeControlOutside write SetNodeControlOutside;
 
     property OnItemRemoved: TItemRemovedEvent read FOnItemRemoved write FOnItemRemoved;
+    property OnBeforeFreeNode: TVTFreeNodeEvent read FOnBeforeFreeNode write FOnBeforeFreeNode;
     property OnDetermineDropMode: TDetermineDropModeEvent read FOnDetermineDropMode write FOnDetermineDropMode;
     property LastDropMode;
 
@@ -383,6 +389,14 @@ begin
   end;
 end;
 
+procedure TDbgTreeView.SetNodeItem2(Node: PVirtualNode; AValue: Pointer);
+var
+  Data: PDbgTreeNodeData;
+begin
+  Data := GetNodeData(Node);
+  Data^.Item2 := AValue;
+end;
+
 function TDbgTreeView.GetNodeItem(Node: PVirtualNode): TObject;
 var
   Data: PDbgTreeNodeData;
@@ -391,6 +405,16 @@ begin
   Data := GetNodeData(Node);
   if Data <> nil then
     Result := Data^.Item;
+end;
+
+function TDbgTreeView.GetNodeItem2(Node: PVirtualNode): Pointer;
+var
+  Data: PDbgTreeNodeData;
+begin
+  Result := nil;
+  Data := GetNodeData(Node);
+  if Data <> nil then
+    Result := Data^.Item2;
 end;
 
 function TDbgTreeView.GetNodeControl(Node: PVirtualNode): TControl;
@@ -1251,6 +1275,8 @@ procedure TDbgTreeView.DoFreeNode(Node: PVirtualNode);
 var
   NData: PDbgTreeNodeData;
 begin
+  if FOnBeforeFreeNode <> nil then
+    FOnBeforeFreeNode(Self, Node);
   NData := GetNodeData(Node);
   if NData <> nil then begin
     if (FOnItemRemoved <> nil) and (NData^.Item <> nil) then

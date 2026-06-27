@@ -49,9 +49,9 @@ uses
   SynEdit,
   // IdeIntf
   IDEWindowIntf, IDEImagesIntf, IdeIntfStrConsts, IdeDebuggerWatchValueIntf, SrcEditorIntf,
-  EditorOptionsIntf,
+  EditorOptionsIntf, EditorSyntaxHighlighterDef,
   // DebuggerIntf
-  DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfMiscClasses,
+  DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfMiscClasses, LazEditTextAttributes,
   // LazDebuggerIntf
   LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   // IdeDebugger
@@ -189,6 +189,7 @@ type
     FSelectedForDrag: TNodeArray;
 
     procedure ApplyPreset(APreset: TWatchDisplayFormatPreset);
+    procedure DoBeforeFreeNode(Sender: TBaseVirtualTree; ANode: PVirtualNode);
     procedure DoEditorOptsChanged(Sender: TObject);
     procedure DoFormatPresetClickedIde(Sender: TObject);
     procedure DoFormatPresetClickedProject(Sender: TObject);
@@ -250,6 +251,7 @@ type
   TDbgTreeViewWatchValueMgr = class(TDbgTreeViewWatchDataMgr)
   private
     FQueuedUnLockCommandProcessing: Boolean;
+    FAttributeMergeRes: TLazEditTextAttributeMergeResult;
     procedure DoUnLockCommandProcessing(Data: PtrInt);
   protected
     FWatchDlg: TWatchesDlg;
@@ -269,6 +271,9 @@ type
     procedure UpdateSubItemsLocked(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf;
       AVNode: PVirtualNode; out ChildCount: LongWord); override;
     function CompareExpandingWatchAbleResult(ACurrent, AnExpanding: TObject): boolean; override;
+  public
+    constructor Create(ATreeView: TDbgTreeView);
+    destructor Destroy; override;
   end;
 
 
@@ -408,6 +413,7 @@ begin
   dec(FInSetup);
 
   //tvWatches.OnItemRemoved := @DoItemRemovedFromView;
+  tvWatches.OnBeforeFreeNode := @DoBeforeFreeNode;
   DebugConfigChanged;
 end;
 
@@ -1243,6 +1249,17 @@ begin
   end;
 end;
 
+procedure TWatchesDlg.DoBeforeFreeNode(Sender: TBaseVirtualTree; ANode: PVirtualNode);
+var
+  c: IWatchAbleResultIntf;
+begin
+  c := IWatchAbleResultIntf(tvWatches.NodeItem2[ANode]);
+  if c <> nil then begin
+    c.ReleaseReference;
+    tvWatches.NodeItem2[ANode] := nil;
+  end;
+end;
+
 procedure TWatchesDlg.DoEditorOptsChanged(Sender: TObject);
 begin
   IDEEditorOptions.GetHighlighterObjSettings(WatchesColorsHL);
@@ -1875,8 +1892,12 @@ begin
   case AField of
     vdfName:
       if AWatchAble <> nil then
-        Result := TheWatch.Expression;
+        Result := TheWatch.Expression
+      else
+        exit(inherited);
     vdfValue: begin
+        if AWatchAble = nil then
+          exit(inherited);
         if AWatchAbleResult = nil then begin
           Result := '<not evaluated>';
           exit;
@@ -1949,15 +1970,71 @@ end;
 
 procedure TDbgTreeViewWatchValueMgr.UpdateColumnsText(AWatchAble: TObject;
   AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode);
+
 var
   TheWatch: TIdeWatch absolute AWatchAble;
   ResData: TWatchResultData;
   WatchValueStr, s, StackPre: String;
   da: TDBGPtr;
   DispFormat: TWatchDisplayFormat;
+  CachedResIntf: IWatchAbleResultIntf;
+  CacheColor: TIdeCustomHighlighterAttributesModifier;
+  IsCached, CanCache: Boolean;
+
+  function AdjustColor(AColor: TColor): TColor;
+  begin
+    Result := AColor;
+    if not IsCached then
+      exit;
+    FAttributeMergeRes.Clear;
+    FAttributeMergeRes.Foreground := AColor;
+    FAttributeMergeRes.Merge(CacheColor);
+    FAttributeMergeRes.FinishMerge;
+    Result := FAttributeMergeRes.Foreground;
+  end;
+
 begin
   TreeView.NodeText[AVNode, COL_WATCH_EXPR-1]:= TIdeWatch(AWatchAble).DisplayName;
   TreeView.NodeText[AVNode, 2] := '';
+
+  IsCached := False;
+  CacheColor := WatchesColorsHL.AttrShadowLastValue;
+  CanCache := (CacheColor.Foreground <> clNone);
+  CachedResIntf := IWatchAbleResultIntf(TreeView.NodeItem2[AVNode]);
+  if CanCache and (FWatchDlg.FWatchesInView is TCurrentWatches) and (FWatchDlg.GetSelectedSnapshot = nil) then begin
+    if (CachedResIntf <> nil) and (DebugBoss.State in [dsRun, dsError, dsStop])
+    then begin
+      AWatchAbleResult := CachedResIntf;
+      CachedResIntf := nil;
+      IsCached := True;
+    end
+    else
+    if (AWatchAble <> nil) and (AWatchAbleResult <> nil) and
+       (DebugBoss.State in [dsPause, dsInternalPause]) and
+       (FWatchDlg.GetStackframe = 0) and
+       (AWatchAbleResult.Enabled)
+    then begin
+      if (AWatchAbleResult.Validity in [ddsValid, ddsError]) then begin
+        AWatchAbleResult.AddReference;
+        TreeView.NodeItem2[AVNode] := AWatchAbleResult;
+        if CachedResIntf <> nil then
+          CachedResIntf.ReleaseReference;
+        CachedResIntf := nil;
+      end
+      else
+      if (CachedResIntf <> nil) and (AWatchAbleResult.Validity in [ddsEvaluating, ddsRequested]) and
+         (AWatchAbleResult.GetThreadId = CachedResIntf.GetThreadId)
+      then begin
+        AWatchAbleResult := CachedResIntf;
+        CachedResIntf := nil;
+        IsCached := True;
+      end;
+    end;
+  end;
+  if CachedResIntf <> nil then begin
+    CachedResIntf.ReleaseReference;
+    TreeView.NodeItem2[AVNode] := nil;
+  end;
 
   if (AWatchAbleResult = nil) then begin
     TreeView.NodeText[AVNode, COL_WATCH_VALUE-1]:= '<not evaluated>';
@@ -1965,10 +2042,8 @@ begin
     exit;
   end;
 
-
-  if AWatchAbleResult.Enabled then begin
+  if AWatchAbleResult.Enabled or IsCached then begin
     StackPre := FWatchDlg.GetFoundInFramePrefix(AWatchAbleResult);
-
     if (FWatchDlg.GetSelectedSnapshot = nil) or  // live watch
        (AWatchAbleResult.Validity in [ddsValid, ddsInvalid, ddsError]) or // snapshot
        (AWatchAbleResult.ResultData <> nil)
@@ -2018,7 +2093,9 @@ begin
         ddsRequested, ddsEvaluating:
           TreeView.SetNodeTextColor(AVNode, COL_WATCH_VALUE-1, WatchesColorsHL.AttrEvaluating.Foreground);
         ddsError:
-          TreeView.SetNodeTextColor(AVNode, COL_WATCH_VALUE-1, WatchesColorsHL.AttrError.Foreground);
+          TreeView.SetNodeTextColor(AVNode, COL_WATCH_VALUE-1, AdjustColor(WatchesColorsHL.AttrError.Foreground));
+        else
+          TreeView.SetNodeTextColor(AVNode, COL_WATCH_VALUE-1, AdjustColor(TreeView.Font.Color));
       end;
     end
     else begin
@@ -2034,7 +2111,7 @@ begin
       end;
     end;
     if StackPre <> '' then begin
-      TreeView.AddNodeTextColor(AVNode, COL_WATCH_VALUE-1, 1, Length(StackPre), WatchesColorsHL.AttrFoundStackFrame.Foreground);
+      TreeView.AddNodeTextColor(AVNode, COL_WATCH_VALUE-1, 1, Length(StackPre), AdjustColor(WatchesColorsHL.AttrFoundStackFrame.Foreground));
     end;
   end
   else begin
@@ -2085,6 +2162,18 @@ begin
      (ACurrent is TIdeWatch) and (AnExpanding is TIdeWatch)
   then
     Result := TIdeWatch(ACurrent).TopParentWatch = TIdeWatch(AnExpanding).TopParentWatch;
+end;
+
+constructor TDbgTreeViewWatchValueMgr.Create(ATreeView: TDbgTreeView);
+begin
+  FAttributeMergeRes := TLazEditTextAttributeMergeResult.Create;
+  inherited Create(ATreeView);
+end;
+
+destructor TDbgTreeViewWatchValueMgr.Destroy;
+begin
+  inherited Destroy;
+  FAttributeMergeRes.Free;
 end;
 
 initialization

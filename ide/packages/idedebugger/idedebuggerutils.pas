@@ -37,6 +37,7 @@ type
     FAttrEvaluating: TIdeCustomHighlighterAttributes;
     FAttrFoundStackFrame: TIdeCustomHighlighterAttributes;
     FAttrUnknown: TIdeCustomHighlighterAttributes;
+    FAttrShadowLastValue: TIdeCustomHighlighterAttributesModifier;
   public
     constructor Create(AOwner: TComponent); override;
     class function GetLanguageName: string; override;
@@ -46,6 +47,7 @@ type
     property AttrEvaluating: TIdeCustomHighlighterAttributes read FAttrEvaluating;
     property AttrUnknown: TIdeCustomHighlighterAttributes    read FAttrUnknown;
     property AttrFoundStackFrame: TIdeCustomHighlighterAttributes  read FAttrFoundStackFrame;
+    property AttrShadowLastValue: TIdeCustomHighlighterAttributesModifier  read FAttrShadowLastValue;
   end;
 
   TWatchParentSearchLimit = record
@@ -105,6 +107,13 @@ begin
   FAttrEvaluating := InitAttr(@DbgWatchColorEvaluating, 'WatchValueEval',     clDkGray);
   FAttrUnknown    := InitAttr(@DbgWatchColorUnknown,    'WatchValueUnknown',  clDkGray);
   FAttrFoundStackFrame  := InitAttr(@DbgWatchFoundStackFrame,  'WatchValueFoundStackFrame',  clFuchsia);
+
+  FAttrShadowLastValue := TIdeCustomHighlighterAttributesModifier.Create(DbgWatchColorShadowLast, 'WatchValueShadowLast');
+  FAttrShadowLastValue.Foreground   := clWhite;
+  FAttrShadowLastValue.ForeAlpha    := 128;
+  FAttrShadowLastValue.AttrFeatures := [hafForeColor, hafAlpha];
+  FAttrShadowLastValue.InternalSaveDefaultValues;
+  AddAttribute(FAttrShadowLastValue);
 end;
 
 class function TIdeDbgWatchesHighlighter.GetLanguageName: string;
