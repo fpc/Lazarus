@@ -840,8 +840,6 @@ var
 begin
   NData := GetNodeData(PaintInfo.Node);
   b := PaintInfo.ContentRect.Bottom;
-  if NData^.Item = nil then
-    exit;
   if (NData^.Control <> nil) and (not NData^.ControlHidden) and (not NData^.ControlOutside) then
     PaintInfo.ContentRect.Bottom := NData^.ControlTop;
 
