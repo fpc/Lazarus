@@ -4363,6 +4363,7 @@ begin
     if not (FValidity in [ddsUnknown, ddsRequested, ddsEvaluating]) then
       FParentFrameNotifyList.CallNotifyEvents(Self);
   end;
+
   if FParentFrameState * [pfLocked, pfDone] <> [] then
     exit;
 
@@ -4374,6 +4375,7 @@ begin
 
   if (ParentFrameFound >= 0) or (ANewValidity <> ddsError) or
      (Watch = nil) or (Watch.ParentFrameSearch = '') or
+     (Watch <> Watch.TopParentWatch) or
      not(ErrorKind in [dekIdentNotFound{, dekMemberNotFound}])
   then
     exit;
@@ -4460,8 +4462,13 @@ begin
       exit;
     end;
 
-    FParentFrameEvalValue.AddParentFrameNotification(@DoParentFrameValueChanged);
-    FParentFrameEvalValue.Value;
+    if FParentFrameEvalValue.Validity in [ddsValid, ddsError, ddsInvalid] then begin
+      DoParentFrameValueChanged(FParentFrameEvalValue);
+    end
+    else begin
+      FParentFrameEvalValue.AddParentFrameNotification(@DoParentFrameValueChanged);
+      FParentFrameEvalValue.Value;
+    end;
 
   until not (pfNeedEvalAgain in FParentFrameState);
   finally
@@ -7308,6 +7315,7 @@ begin
   Result.DisplayFormat := DisplayFormat;
   Result.DbgBackendConverter := DbgBackendConverter;
   Result.DbgValueFormatter   := DbgValueFormatter;
+  Result.FParentFrameSearch := ParentFrameSearch;
   Result.FDisplayName := ADispName;
   Result.EvaluateFlags := Result.EvaluateFlags
     + EvaluateFlags * [defClassAutoCast, defAllowFunctionCall, defFunctionCallRunAllThreads,

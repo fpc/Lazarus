@@ -1741,34 +1741,34 @@ begin
 end;
 
 function TDbgTreeViewWatchValueMgr.WatchAbleResultFromNode(AVNode: PVirtualNode): IWatchAbleResultIntf;
-var
-  AWatchAble: TObject;
-  st: Integer;
-  WatchVal: TIdeWatchValue;
 begin
-  AWatchAble := TreeView.NodeItem[AVNode];
-  if AWatchAble = nil then exit(nil);
-
-  WatchVal := TIdeWatch(AWatchAble).Values[FWatchDlg.GetThreadId, FWatchDlg.GetStackframe];
-  WatchVal.StartEval;
-  st := WatchVal.ParentFrameFound;
-  if st >= 0 then
-    WatchVal := TIdeWatch(AWatchAble).Values[FWatchDlg.GetThreadId, st];
-  Result := WatchVal;
+  Result := WatchAbleResultFromObject(TreeView.NodeItem[AVNode]);
 end;
 
 function TDbgTreeViewWatchValueMgr.WatchAbleResultFromObject(AWatchAble: TObject): IWatchAbleResultIntf;
 var
-  st: Integer;
+  TheWatch: TIdeWatch absolute AWatchAble;
+  st, st2: Integer;
+  t: Boolean;
   WatchVal: TIdeWatchValue;
 begin
   if AWatchAble = nil then exit(nil);
 
-  WatchVal := TIdeWatch(AWatchAble).Values[FWatchDlg.GetThreadId, FWatchDlg.GetStackframe];
+  st := FWatchDlg.GetStackframe;
+  t := TheWatch.TopParentWatch <> TheWatch;
+  if t then begin
+    st2 := TheWatch.TopParentWatch.Values[FWatchDlg.GetThreadId, st].ParentFrameFound;
+    if st2 >= 0 then
+      st := st2;
+  end;
+
+  WatchVal := TheWatch.Values[FWatchDlg.GetThreadId, st];
   WatchVal.StartEval;
-  st := WatchVal.ParentFrameFound;
-  if st >= 0 then
-    WatchVal := TIdeWatch(AWatchAble).Values[FWatchDlg.GetThreadId, st];
+  if not t then begin
+    st := WatchVal.ParentFrameFound;
+    if st >= 0 then
+      WatchVal := TheWatch.Values[FWatchDlg.GetThreadId, st];
+  end;
   Result := WatchVal;
 end;
 
@@ -1915,16 +1915,18 @@ begin
     st := FWatchDlg.GetStackframe;
     stw := AWatchAbleResult.GetStackFrame;
     if stw <> st then begin
-      CurStackList := DebugBoss.CallStack.CurrentCallStackList.EntriesForThreads[AWatchAbleResult.GetThreadId];
-      CurStack := nil;
-      if CurStackList <> nil then
-        CurStack := CurStackList.Entries[stw];
       s := '';
-      if CurStack <> nil then begin
-        s := CurStack.FunctionName;
-        i := pos('(', s);
-        if i > 0 then delete(s,i,Length(s));
-        if s <> '' then s := ' "'+s+'"';
+      if (DebugBoss.State in [dsPause, dsInternalPause]) then begin
+        CurStackList := DebugBoss.CallStack.CurrentCallStackList.EntriesForThreads[AWatchAbleResult.GetThreadId];
+        CurStack := nil;
+        if (CurStackList <> nil) and (stw < CurStackList.CountLimited(stw+1)) then
+          CurStack := CurStackList.Entries[stw];
+        if CurStack <> nil then begin
+          s := CurStack.FunctionName;
+          i := pos('(', s);
+          if i > 0 then delete(s,i,Length(s));
+          if s <> '' then s := ' "'+s+'"';
+        end;
       end;
       if st > 0 then
         StackPre := format('Stackframe %d (+%d)%s: ', [stw, stw-st, s])
