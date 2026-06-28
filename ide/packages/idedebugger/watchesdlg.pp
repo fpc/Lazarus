@@ -2037,12 +2037,18 @@ begin
   end;
 
   if (AWatchAbleResult = nil) then begin
-    TreeView.NodeText[AVNode, COL_WATCH_VALUE-1]:= '<not evaluated>';
-    TreeView.SetNodeTextColor(AVNode, COL_WATCH_VALUE-1, WatchesColorsHL.AttrUnknown.Foreground);
+    if TheWatch.Enabled then begin;
+      TreeView.NodeText[AVNode, COL_WATCH_VALUE-1]:= '<not evaluated>';
+      TreeView.SetNodeTextColor(AVNode, COL_WATCH_VALUE-1, WatchesColorsHL.AttrUnknown.Foreground);
+    end
+    else begin
+      TreeView.NodeText[AVNode, COL_WATCH_VALUE-1]:= '<disabled>';
+      TreeView.SetNodeTextColor(AVNode, COL_WATCH_VALUE-1, WatchesColorsHL.AttrDisabled.Foreground);
+    end;
     exit;
   end;
 
-  if AWatchAbleResult.Enabled or IsCached then begin
+  if AWatchAbleResult.Enabled or (IsCached and TheWatch.Enabled) then begin
     StackPre := FWatchDlg.GetFoundInFramePrefix(AWatchAbleResult);
     if (FWatchDlg.GetSelectedSnapshot = nil) or  // live watch
        (AWatchAbleResult.Validity in [ddsValid, ddsInvalid, ddsError]) or // snapshot
