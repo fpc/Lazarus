@@ -8771,6 +8771,9 @@ begin
   if FColorSchemeHighlighterAddedEventList <> nil then
     for i := 0 to FColorSchemeHighlighterAddedEventList.Count-1 do
       FColorSchemeHighlighterAddedEventList[i](Self, Result);
+
+  if EditorOpts <> nil then
+    EditorOpts.GetHighlighterSettings(AnHighlighter);
 end;
 
 procedure TColorSchemeFactory.AddHighlighterFromFactory(AFactory: TColorSchemeFactory;
