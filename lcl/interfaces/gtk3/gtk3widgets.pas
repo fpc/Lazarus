@@ -9411,7 +9411,8 @@ begin
       begin
         ParentMenu := menuItem.Parent.Items[ndx];
         if ParentMenu.RadioItem and (ParentMenu.GroupIndex = MenuItem.GroupIndex) and
-           ParentMenu.HandleAllocated then
+           ParentMenu.HandleAllocated and
+           Gtk3IsRadioMenuItem(PGObject(TGtk3MenuItem(ParentMenu.Handle).Widget)) then
         begin
           pl := PGtkRadioMenuItem(TGtk3MenuItem(ParentMenu.Handle).Widget)^.get_group;
           PGtkRadioMenuItem(Result)^.set_group(pl);
