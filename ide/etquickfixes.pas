@@ -165,6 +165,17 @@ type
     procedure QuickFix({%H-}Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
 
+  { TQuickFixLowerVisibility_RaiseVisibility - raise the visibility of a virtual
+    method to the visibility of the overridden method in the parent class.
+    QuickFix for FPC note (3250):
+      Virtual method "$1" has a lower visibility ($2) than parent class $3 ($4) }
+
+  TQuickFixLowerVisibility_RaiseVisibility = class(TMsgQuickFix)
+    function IsApplicable(Msg: TMessageLine; out ParentVisibility: TCodeTreeNodeDesc): boolean;
+    procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
+    procedure QuickFix({%H-}Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+  end;
+
   { TIDEQuickFixes }
 
   TIDEQuickFixes = class(TMsgQuickFixes)
@@ -367,6 +378,99 @@ begin
     if not CodeToolBoss.AddProcModifier(Code,Msg.Column,Msg.Line,aModifier) then
     begin
       DebugLn(['TQuickFixInheritedMethodIsHidden_AddOverload AddProcModifier failed']);
+      LazarusIDE.DoJumpToCodeToolBossError;
+      exit;
+    end;
+
+    // success
+    Msg.MarkFixed;
+  finally
+    LazarusIDE.OpenEditorsOnCodeToolChange:=OldChange;
+  end;
+end;
+
+{ TQuickFixLowerVisibility_RaiseVisibility }
+
+function FPCVisibilityToNodeDesc(const s: string): TCodeTreeNodeDesc;
+// map an FPC visibility name ($2/$4 in messages) to a class section node
+begin
+  if CompareText(s,'public')=0 then
+    Result:=ctnClassPublic
+  else if CompareText(s,'published')=0 then
+    Result:=ctnClassPublished
+  else if (CompareText(s,'protected')=0) or (CompareText(s,'strict protected')=0) then
+    Result:=ctnClassProtected
+  else if (CompareText(s,'private')=0) or (CompareText(s,'strict private')=0) then
+    Result:=ctnClassPrivate
+  else
+    Result:=ctnNone;
+end;
+
+function NodeDescToVisibilityKeyword(Desc: TCodeTreeNodeDesc): string;
+begin
+  case Desc of
+  ctnClassPrivate:   Result:='private';
+  ctnClassProtected: Result:='protected';
+  ctnClassPublic:    Result:='public';
+  ctnClassPublished: Result:='published';
+  else               Result:='';
+  end;
+end;
+
+function TQuickFixLowerVisibility_RaiseVisibility.IsApplicable(Msg: TMessageLine;
+  out ParentVisibility: TCodeTreeNodeDesc): boolean;
+begin
+  Result:=false;
+  ParentVisibility:=ctnNone;
+  if (Msg=nil) or (Msg.SubTool<>SubToolFPC) or (Msg.MsgID<>3250)
+  or (not Msg.HasSourcePosition) then exit;
+  // Virtual method "$1" has a lower visibility ($2) than parent class $3 ($4)
+  // $4 is the visibility of the overridden method in the parent class
+  ParentVisibility:=FPCVisibilityToNodeDesc(TIDEFPCParser.GetFPCMsgValue(Msg,4));
+  Result:=ParentVisibility<>ctnNone;
+end;
+
+procedure TQuickFixLowerVisibility_RaiseVisibility.CreateMenuItems(
+  Fixes: TMsgQuickFixes);
+var
+  i: Integer;
+  Msg: TMessageLine;
+  ParentVis: TCodeTreeNodeDesc;
+begin
+  for i:=0 to Fixes.LineCount-1 do begin
+    Msg:=Fixes.Lines[i];
+    if not IsApplicable(Msg,ParentVis) then continue;
+    Fixes.AddMenuItem(Self,Msg,
+      Format(lisChangeMethodVisibilityTo, [NodeDescToVisibilityKeyword(ParentVis)]));
+  end;
+end;
+
+procedure TQuickFixLowerVisibility_RaiseVisibility.QuickFix(
+  Fixes: TMsgQuickFixes; Msg: TMessageLine);
+var
+  ParentVis: TCodeTreeNodeDesc;
+  Code: TCodeBuffer;
+  OldChange: Boolean;
+begin
+  if not IsApplicable(Msg,ParentVis) then begin
+    debugln(['TQuickFixLowerVisibility_RaiseVisibility.QuickFix invalid message ',Msg.Msg]);
+    exit;
+  end;
+
+  if not LazarusIDE.BeginCodeTools then begin
+    DebugLn(['TQuickFixLowerVisibility_RaiseVisibility failed because IDE busy']);
+    exit;
+  end;
+
+  Code:=CodeToolBoss.LoadFile(Msg.GetFullFilename,true,false);
+  if Code=nil then exit;
+
+  OldChange:=LazarusIDE.OpenEditorsOnCodeToolChange;
+  LazarusIDE.OpenEditorsOnCodeToolChange:=true;
+  try
+    if not CodeToolBoss.ChangeMethodVisibility(Code,Msg.Column,Msg.Line,ParentVis)
+    then begin
+      DebugLn(['TQuickFixLowerVisibility_RaiseVisibility ChangeMethodVisibility failed']);
       LazarusIDE.DoJumpToCodeToolBossError;
       exit;
     end;
@@ -1216,6 +1320,7 @@ begin
   IDEQuickFixes.RegisterQuickFix(TQuickFixClassWithAbstractMethods.Create);
   IDEQuickFixes.RegisterQuickFix(TQuickFixSrcPathOfPkgContains_OpenPkg.Create);
   IDEQuickFixes.RegisterQuickFix(TQuickFixInheritedMethodIsHidden_AddModifier.Create);
+  IDEQuickFixes.RegisterQuickFix(TQuickFixLowerVisibility_RaiseVisibility.Create);
 
   // add as last (no fix, just hide message)
   IDEQuickFixes.RegisterQuickFix(TQuickFix_HideWithIDEDirective.Create);

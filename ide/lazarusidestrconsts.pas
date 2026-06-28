@@ -6004,6 +6004,7 @@ resourcestring
   lisAddModifierOverload = 'Add modifier "overload"';
   lisAddModifierReintroduce = 'Add modifier "reintroduce"';
   lisAddModifierOverride = 'Add modifier "override"';
+  lisChangeMethodVisibilityTo = 'Change method visibility to "%s"';
   lisHideWithProjectOptionVm = 'Hide with project option (-vm%s)';
   lisHideWithPackageOptionVm = 'Hide with package option (-vm%s)';
   lisRemoveLocalVariable3 = 'Remove local variable "%s"';

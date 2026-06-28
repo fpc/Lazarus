@@ -209,6 +209,7 @@ type
     class function GetFPCMsgPattern(Msg: TMessageLine): string; override;
     class function GetFPCMsgValue1(Msg: TMessageLine): string; override;
     class function GetFPCMsgValues(Msg: TMessageLine; out Value1, Value2: string): boolean; override;
+    class function GetFPCMsgValue(Msg: TMessageLine; Index: integer): string;
     class function MsgFilePool: TFPCMsgFilePool; virtual;
   end;
 
@@ -3128,6 +3129,34 @@ begin
   if Msg.MsgID<=0 then exit;
   if Msg.SubTool<>DefaultSubTool then exit;
   Result:=etFPCMsgParser.GetFPCMsgValuesTwo(Msg.Msg,GetFPCMsgPattern(Msg),Value1,Value2);
+end;
+
+class function TIDEFPCParser.GetFPCMsgValue(Msg: TMessageLine; Index: integer): string;
+// return the parameter $Index (1-based) of the message, '' on failure
+var
+  aFPCParser: TFPCParser;
+  Pattern: String;
+  VarStarts: PPChar;
+  VarEnds: PPChar;
+begin
+  Result:='';
+  if Msg=nil then exit;
+  if Msg.SubTool<>DefaultSubTool then exit;
+  if (Index<0) or (Index>9) then exit;
+  aFPCParser:=GetFPCParser(Msg);
+  if aFPCParser=nil then exit;
+  Pattern:=aFPCParser.GetFPCMsgIDPattern(Msg.MsgID);
+  if Pattern='' then exit;
+  VarStarts:=GetMem(SizeOf(PChar)*10);
+  VarEnds:=GetMem(SizeOf(PChar)*10);
+  try
+    if FPCMsgFits(Msg.Msg,Pattern,VarStarts,VarEnds)
+    and (VarStarts[Index]<>nil) and (VarEnds[Index]>VarStarts[Index]) then
+      SetString(Result,VarStarts[Index],VarEnds[Index]-VarStarts[Index]);
+  finally
+    Freemem(VarStarts);
+    Freemem(VarEnds);
+  end;
 end;
 
 class function TIDEFPCParser.MsgFilePool: TFPCMsgFilePool;
