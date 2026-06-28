@@ -1149,7 +1149,9 @@ begin
       SetOfMyInt:=[];
       DefSetOfMyInt:=[2];
       MyChar:=low(TMyChar);
+      {$PUSH}{$R-}
       DefMyChar:=succ(MyChar);
+      {$POP}
       SetOfMyChar:=[];
       DefSetOfMyChar:=[#4];
       Event:=@OnClick;
@@ -1248,7 +1250,9 @@ begin
       SetOfMyInt:=[low(MyInt)..high(MyInt)];
       DefSetOfMyInt:=[3];
       MyChar:=high(TMyChar);
+      {$PUSH}{$R-}
       DefMyChar:=pred(MyChar);
+      {$POP}
       SetOfMyChar:=[low(MyChar)..high(MyChar)];
       DefSetOfMyChar:=[#5];
     end;

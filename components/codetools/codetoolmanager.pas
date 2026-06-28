@@ -726,6 +726,7 @@ type
     // alter proc
     function AddProcModifier(Code: TCodeBuffer;  X, Y: integer;
           const aModifier: string): boolean;
+    function ChangeMethodVisibility(Code: TCodeBuffer;  X, Y: integer; NewVisibility: TCodeTreeNodeDesc): boolean;
 
     // extract proc (creates a new procedure from code in selection)
     function CheckExtractProc(Code: TCodeBuffer;
@@ -3930,6 +3931,26 @@ begin
   CursorPos.Code:=Code;
   try
     Result:=FCurCodeTool.AddProcModifier(CursorPos,aModifier,SourceChangeCache);
+  except
+    on e: Exception do HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.ChangeMethodVisibility(Code: TCodeBuffer; X, Y: integer;
+  NewVisibility: TCodeTreeNodeDesc): boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.ChangeMethodVisibility A ',Code.Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.ChangeMethodVisibility(CursorPos,NewVisibility,SourceChangeCache);
   except
     on e: Exception do HandleException(e);
   end;

@@ -1328,7 +1328,23 @@ procedure TSourceChangeCache.AddEntry(FrontGap, AfterGap: TGapTyp; FromPos, ToPo
   IsDirectChange: boolean);
 var
   NewEntry: TSourceChangeCacheEntry;
+  CleanFromPos, CleanToPos: integer;
 begin
+  // For direct changes the callers pass a dummy FromPos/ToPos (e.g. 1,1).
+  // The entries are sorted by FromPos (see CompareSourceChangeCacheEntry), so a
+  // direct change must store its cleaned position too. Otherwise direct changes
+  // and cleaned-position changes (and direct changes in the main source) do not
+  // sort relative to each other and are applied in the wrong order.
+  if IsDirectChange and (FMainScanner<>nil) and (DirectCode<>nil)
+  and (FMainScanner.CursorToCleanPos(FromDirectPos,DirectCode,CleanFromPos)=0) then
+  begin
+    FromPos:=CleanFromPos;
+    if (ToDirectPos>FromDirectPos)
+    and (FMainScanner.CursorToCleanPos(ToDirectPos,DirectCode,CleanToPos)=0) then
+      ToPos:=CleanToPos
+    else
+      ToPos:=FromPos;
+  end;
   NewEntry:=TSourceChangeCacheEntry.Create(FrontGap,AfterGap,FromPos,ToPos,
                       Text,DirectCode,FromDirectPos,ToDirectPos,IsDirectChange);
   FEntries.Add(NewEntry);

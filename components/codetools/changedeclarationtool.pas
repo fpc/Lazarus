@@ -103,6 +103,11 @@ type
       TreeOfPCodeXYPosition: TAVLTree; // positions in this unit are processed and removed from the tree
       SourceChanger: TSourceChangeCache): boolean;
 
+    function ChangeMethodVisibility(const CursorPos: TCodeXYPosition;
+      NewVisibility: TCodeTreeNodeDesc; SourceChanger: TSourceChangeCache): boolean;
+    function ChangeMethodVisibility(Node: TCodeTreeNode;
+      NewVisibility: TCodeTreeNodeDesc; SourceChanger: TSourceChangeCache): boolean;
+
     function AddProcModifier(const CursorPos: TCodeXYPosition; aModifier: string;
       SourceChanger: TSourceChangeCache): boolean;
 
@@ -916,6 +921,182 @@ begin
     ProcPos:=CleanCodeXYPosition;
     if not ChangeParamListDeclarationAtPos(CleanPos,Changes,SourceChanger) then exit;
   end;
+  Result:=SourceChanger.Apply;
+end;
+
+function TChangeDeclarationTool.ChangeMethodVisibility(const CursorPos: TCodeXYPosition;
+  NewVisibility: TCodeTreeNodeDesc; SourceChanger: TSourceChangeCache): boolean;
+var
+  CleanPos: integer;
+  ProcNode: TCodeTreeNode;
+begin
+  Result:=false;
+  BuildTreeAndGetCleanPos(CursorPos,CleanPos);
+  ProcNode:=FindDeepestNodeAtPos(CleanPos,true);
+  Result:=ChangeMethodVisibility(ProcNode,NewVisibility,SourceChanger);
+end;
+
+function TChangeDeclarationTool.ChangeMethodVisibility(Node: TCodeTreeNode;
+  NewVisibility: TCodeTreeNodeDesc; SourceChanger: TSourceChangeCache): boolean;
+
+  function VisibilityRank(Desc: TCodeTreeNodeDesc): integer;
+  begin
+    case Desc of
+    ctnClassPrivate:   Result:=0;
+    ctnClassProtected: Result:=1;
+    ctnClassPublic:    Result:=2;
+    ctnClassPublished: Result:=3;
+    else               Result:=-1;
+    end;
+  end;
+
+  function VisibilityKeyword(Desc: TCodeTreeNodeDesc): string;
+  begin
+    case Desc of
+    ctnClassPrivate:   Result:='private';
+    ctnClassProtected: Result:='protected';
+    ctnClassPublic:    Result:='public';
+    ctnClassPublished: Result:='published';
+    else               Result:='';
+    end;
+  end;
+
+var
+  ProcNode, HeadNode, ClassNode, OldSection, TargetSection, SearchNode,
+    LastMember: TCodeTreeNode;
+  OldVisibility: TCodeTreeNodeDesc;
+  NewIsHigher, NeedNewSection: boolean;
+  Beauty: TBeautifyCodeOptions;
+  SectionIndent, MethodIndent, DelFrom, DelTo, BlockStart, InsertPos: integer;
+  MethodText, InsertTxt: string;
+begin
+  Result:=false;
+
+  if Node=nil then
+    RaiseException(20260628173300,'ChangeMethodVisibility: missing node');
+
+  // check NewVisibility
+  if not (NewVisibility in AllClassBaseSections) then
+    RaiseException(20260628173255,'ChangeMethodVisibility: invalid visibility '
+      +NodeDescriptionAsString(NewVisibility));
+
+  // check if a method
+  ProcNode:=Node;
+  if ProcNode.Desc<>ctnProcedure then begin
+    HeadNode:=ProcNode.GetNodeOfType(ctnProcedureHead);
+    if HeadNode=nil then
+      RaiseExceptionAtCleanPos(20260628173306,'ChangeMethodVisibility expects a procedure header, but found '+ProcNode.DescAsString,ProcNode.StartPos);
+    ProcNode:=HeadNode.Parent;
+  end;
+  if ProcNode.Desc<>ctnProcedure then
+    RaiseExceptionAtCleanPos(20260628173318,'ChangeMethodVisibility expects a procedure, but found '+ProcNode.DescAsString,ProcNode.StartPos);
+
+  // check that the procedure is a method (declared inside a class/record)
+  ClassNode:=ProcNode.Parent;
+  while (ClassNode<>nil) and not (ClassNode.Desc in AllClasses) do
+    ClassNode:=ClassNode.Parent;
+  if ClassNode=nil then
+    RaiseExceptionAtCleanPos(20260628173330,'ChangeMethodVisibility expects a method, but found a normal procedure',ProcNode.StartPos);
+
+  // the method's visibility section
+  OldSection:=ProcNode.Parent;
+  if not (OldSection.Desc in AllClassBaseSections) then
+    RaiseExceptionAtCleanPos(20260628173340,'ChangeMethodVisibility expects a method in a visibility section, but found '+OldSection.DescAsString,ProcNode.StartPos);
+
+  // get OldVisibility
+  OldVisibility:=GetClassVisibility(ProcNode);
+  if OldVisibility=NewVisibility then
+    // already the wanted visibility => nothing to do
+    exit(true);
+
+  NewIsHigher:=VisibilityRank(NewVisibility)>VisibilityRank(OldVisibility);
+
+  // find a target section with NewVisibility
+  // if NewVisibility is higher, search behind the method, else in front
+  TargetSection:=nil;
+  if NewIsHigher then begin
+    SearchNode:=OldSection.NextBrother;
+    while SearchNode<>nil do begin
+      if SearchNode.Desc=NewVisibility then begin
+        TargetSection:=SearchNode;
+        break;
+      end;
+      SearchNode:=SearchNode.NextBrother;
+    end;
+  end else begin
+    SearchNode:=OldSection.PriorBrother;
+    while SearchNode<>nil do begin
+      if SearchNode.Desc=NewVisibility then begin
+        TargetSection:=SearchNode;
+        break;
+      end;
+      SearchNode:=SearchNode.PriorBrother;
+    end;
+  end;
+  NeedNewSection:=TargetSection=nil;
+
+  Beauty:=SourceChanger.BeautifyCodeOptions;
+  SectionIndent:=Beauty.GetLineIndent(Src,OldSection.StartPos);
+  MethodIndent:=Beauty.GetLineIndent(Src,ProcNode.StartPos);
+
+  // the range to cut: the method, a comment directly in front of it and a
+  // comment behind it on its last line.
+  // FindLineEndOrCodeInFrontOfPosition skips comment lines in front (but stops
+  // at empty lines), FindLineEndOrCodeAfterPosition skips a trailing comment up
+  // to the line end.
+  DelFrom:=FindLineEndOrCodeInFrontOfPosition(ProcNode.StartPos);
+  DelTo:=FindLineEndOrCodeAfterPosition(ProcNode.EndPos);
+
+  // The moved text is the cut range without the leading line break and
+  // indentation, so it includes a comment in front and a trailing comment.
+  // The first line is taken without its indentation, the following lines keep
+  // their original indentation (which equals MethodIndent).
+  BlockStart:=DelFrom;
+  while (BlockStart<DelTo) and (Src[BlockStart] in [#10,#13,' ',#9]) do
+    inc(BlockStart);
+  MethodText:=TrimRight(copy(Src,BlockStart,DelTo-BlockStart));
+
+  // find the insert position and build the insert text.
+  // All line breaks and indentation are added explicitly and the insertion uses
+  // gtNone gaps. This avoids the source change cache adjusting whitespace around
+  // the insert position, which could clash with the nearby deletion.
+  if not NeedNewSection then begin
+    // insert at the end of the existing target section
+    LastMember:=TargetSection.LastChild;
+    if LastMember<>nil then
+      InsertPos:=FindLineEndOrCodeAfterPosition(LastMember.EndPos)
+    else begin
+      // empty section => insert right behind the section keyword
+      MoveCursorToNodeStart(TargetSection);
+      ReadNextAtom;
+      InsertPos:=CurPos.EndPos;
+    end;
+    InsertTxt:=Beauty.LineEnd+Beauty.GetIndentStr(MethodIndent)+MethodText;
+  end else if NewIsHigher then begin
+    // append a new section at the end of the class/record
+    LastMember:=ClassNode.LastChild;
+    while (LastMember<>nil) and (LastMember.LastChild<>nil)
+    and (LastMember.Desc in AllClassBaseSections) do
+      LastMember:=LastMember.LastChild;
+    if LastMember<>nil then
+      InsertPos:=FindLineEndOrCodeAfterPosition(LastMember.EndPos)
+    else
+      InsertPos:=FindLineEndOrCodeAfterPosition(ClassNode.FirstChild.EndPos);
+    InsertTxt:=Beauty.LineEnd+Beauty.GetIndentStr(SectionIndent)+VisibilityKeyword(NewVisibility)
+              +Beauty.LineEnd+Beauty.GetIndentStr(MethodIndent)+MethodText;
+  end else begin
+    // insert a new section right in front of the current section
+    InsertPos:=OldSection.StartPos;
+    InsertTxt:=VisibilityKeyword(NewVisibility)
+              +Beauty.LineEnd+Beauty.GetIndentStr(MethodIndent)+MethodText
+              +Beauty.LineEnd+Beauty.GetIndentStr(SectionIndent);
+  end;
+
+  SourceChanger.MainScanner:=Scanner;
+  if not SourceChanger.Replace(gtNone,gtNone,InsertPos,InsertPos,InsertTxt) then
+    exit;
+  if not SourceChanger.DeleteRange(Scanner,DelFrom,DelTo) then
+    exit;
   Result:=SourceChanger.Apply;
 end;
 
