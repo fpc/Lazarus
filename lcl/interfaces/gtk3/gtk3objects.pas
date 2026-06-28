@@ -3266,6 +3266,15 @@ begin
 
   EnsureDefaultOperator;
 
+  if (LToDX(targetRect^.Right) - LToDX(targetRect^.Left) <= 0) or
+     (LToDY(targetRect^.Bottom) - LToDY(targetRect^.Top) <= 0) or
+     (sourceRect^.Right - sourceRect^.Left <= 0) or
+     (sourceRect^.Bottom - sourceRect^.Top <= 0) then
+  begin
+    cairo_restore(pcr);
+    exit;
+  end;
+
   with targetRect^ do
     cairo_rectangle(pcr, LToDX(Left), LToDY(Top), LToDX(Right) - LToDX(Left), LToDY(Bottom) - LToDY(Top));
 
