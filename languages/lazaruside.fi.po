@@ -2086,6 +2086,10 @@ msgstr "Kommentti { }"
 msgid "Case"
 msgstr ""
 
+#: lazarusidestrconsts.dlgfoldpascaseelse
+msgid "Otherwise/Else (Case)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldpasclass
 msgid "Class/Object"
 msgstr ""
@@ -6557,6 +6561,11 @@ msgstr "Vaihda merkkikoodaus"
 #: lazarusidestrconsts.lischangefile
 msgid "Change file"
 msgstr "Muuta tiedosto"
+
+#: lazarusidestrconsts.lischangemethodvisibilityto
+#, object-pascal-format
+msgid "Change method visibility to \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lischangeparent
 msgid "Change Parent"

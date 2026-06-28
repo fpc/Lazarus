@@ -2149,6 +2149,10 @@ msgstr ""
 msgid "Case"
 msgstr ""
 
+#: lazarusidestrconsts.dlgfoldpascaseelse
+msgid "Otherwise/Else (Case)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldpasclass
 msgid "Class/Object"
 msgstr ""
@@ -6708,6 +6712,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lischangefile
 msgid "Change file"
+msgstr ""
+
+#: lazarusidestrconsts.lischangemethodvisibilityto
+#, object-pascal-format
+msgid "Change method visibility to \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.lischangeparent

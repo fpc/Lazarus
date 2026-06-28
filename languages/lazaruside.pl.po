@@ -2151,6 +2151,10 @@ msgstr "Komentarz { }"
 msgid "Case"
 msgstr "Zamień wielkość liter w zaznaczeniu"
 
+#: lazarusidestrconsts.dlgfoldpascaseelse
+msgid "Otherwise/Else (Case)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldpasclass
 msgid "Class/Object"
 msgstr "Klasa/Obiekt"
@@ -6672,6 +6676,11 @@ msgstr "Zmień kodowanie"
 #: lazarusidestrconsts.lischangefile
 msgid "Change file"
 msgstr "Zmień plik"
+
+#: lazarusidestrconsts.lischangemethodvisibilityto
+#, object-pascal-format
+msgid "Change method visibility to \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lischangeparent
 msgid "Change Parent"

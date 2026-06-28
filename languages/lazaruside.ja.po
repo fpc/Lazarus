@@ -2159,6 +2159,10 @@ msgstr "コメント　{ }"
 msgid "Case"
 msgstr "Case"
 
+#: lazarusidestrconsts.dlgfoldpascaseelse
+msgid "Otherwise/Else (Case)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldpasclass
 msgid "Class/Object"
 msgstr "クラス/オブジェクト"
@@ -6670,6 +6674,11 @@ msgstr "エンコーディングを変更"
 #: lazarusidestrconsts.lischangefile
 msgid "Change file"
 msgstr "ファイルを変更"
+
+#: lazarusidestrconsts.lischangemethodvisibilityto
+#, object-pascal-format
+msgid "Change method visibility to \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lischangeparent
 msgid "Change Parent"

@@ -2128,6 +2128,10 @@ msgstr "Komentář { }"
 msgid "Case"
 msgstr "Velikost znaků"
 
+#: lazarusidestrconsts.dlgfoldpascaseelse
+msgid "Otherwise/Else (Case)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldpasclass
 msgid "Class/Object"
 msgstr "Class/Object"
@@ -6607,6 +6611,11 @@ msgstr "Změnit kódování"
 #: lazarusidestrconsts.lischangefile
 msgid "Change file"
 msgstr "Změnit soubor"
+
+#: lazarusidestrconsts.lischangemethodvisibilityto
+#, object-pascal-format
+msgid "Change method visibility to \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lischangeparent
 msgid "Change Parent"
