@@ -1202,6 +1202,7 @@ begin
         PasExpr2.IntrinsicPrefix := TFpDebugDebuggerProperties(FDebugger.GetProperties).IntrinsicPrefix;
         PasExpr2.AutoDeref := TFpDebugDebuggerProperties(FDebugger.GetProperties).AutoDeref;
         PasExpr2.GlobalCache := FDebugger.DbgController.CurrentProcess.GlobalCache;
+        PasExpr2.OnFindIntrinsc := @DoFindIntrinsic;
         PasExpr2.Parse;
         PasExpr2.ResultValue;
         if PasExpr2.Valid then begin
