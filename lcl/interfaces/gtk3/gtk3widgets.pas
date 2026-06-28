@@ -3452,7 +3452,14 @@ end;
 procedure TGtk3Widget.SetVisible(AValue: Boolean);
 begin
   if IsWidgetOK then
+  begin
+    if AValue then
+      FWidget^.set_no_show_all(False)
+    else
+    if [wtNotebook, wtWindow] * WidgetType = [] then
+      FWidget^.set_no_show_all(True);
     FWidget^.Visible := AValue;
+  end;
 end;
 
 function TGtk3Widget.QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
