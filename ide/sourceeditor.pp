@@ -9948,6 +9948,7 @@ var
   NewIndent: TFABIndentationPolicy;
   Indent: LongInt;
   CodeBuf: TCodeBuffer;
+  Edit: TIDESynEditor;
 begin
   Result:=false;
   // SynBeautifier is shared arrcoss SynEdits, and may call the wrong SrcNoteBook
@@ -9983,6 +9984,10 @@ begin
   DebugLn(['TSourceNotebook.EditorGetIndent CodeBuffer: ',dbgstr(copy(CodeBuf.Source,p-10,10)),'|',dbgstr(copy(CodeBuf.Source,p,10))]);
   DebugLn(['TSourceNotebook.EditorGetIndent CodeBuffer: "',copy(CodeBuf.Source,p-10,10),'|',copy(CodeBuf.Source,p,10)]);
   {$ENDIF}
+  Edit:=SrcEdit.EditorComponent;
+  CodeToolBoss.TabWidth:=Edit.TabWidth;
+  CodeToolBoss.IndentSize:=Edit.BlockIndent+Edit.BlockTabIndent*Edit.TabWidth;
+  CodeToolBoss.UseTabs:=Edit.BlockTabIndent>0;
   NestedComments:=CodeToolBoss.GetNestedCommentsFlagForFile(CodeBuf.Filename);
   if not CodeToolBoss.Indenter.GetIndent(CodeBuf.Source,p,NestedComments,
     True,NewIndent,CodeToolsOpts.IndentContextSensitive)
