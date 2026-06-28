@@ -218,6 +218,7 @@ type
     procedure WatchUpdate(const ASender: TIdeWatches; const AWatch: TIdeWatch);
     procedure WatchRemove(const {%H-}ASender: TIdeWatches; const AWatch: TIdeWatch);
 
+    function  CanCallWatchGetValue: Boolean;
     function  GetFoundInFramePrefix(AWatchAbleResult: IWatchAbleResultIntf; AnAppendLineBreak: boolean = False): String;
     procedure UpdateInspectPane;
     procedure UpdateItem(const VNode: PVirtualNode; const AWatch: TIdeWatch);
@@ -1463,7 +1464,9 @@ begin
     else begin
       Watch := TCurrentWatch(GetSelected);
       if (Watch <> nil) and (Watch.TopParentWatch = Watch) then begin
-        d := Watch.GetResolvedParentFrameValue(GetThreadId, GetStackframe);
+        d := nil;
+        if CanCallWatchGetValue then
+          d := Watch.GetResolvedParentFrameValue(GetThreadId, GetStackframe);
         dk := rdkUnknown;
         if (d <> nil) and (d.Validity = ddsValid) and (d.ResultData <> nil) then
           dk := d.ResultData.ValueKind;
@@ -1498,6 +1501,11 @@ begin
   end;
   InspectLabel.Caption := Watch.Expression;
 
+  if not CanCallWatchGetValue then begin
+    // TODO: last cached
+    InspectMemo.Text := '<invalid>';
+    exit;
+  end;
   tid := GetThreadId;
   stf := GetStackframe;
   if not(Watch.Enabled and Watch.HasAllValidParents(tid, stf, True)) then begin
@@ -1749,6 +1757,12 @@ begin
   tvWatchesChange(nil, nil);
 end;
 
+function TWatchesDlg.CanCallWatchGetValue: Boolean;
+begin
+  Result := (GetSelectedSnapshot <> nil) or
+            (DebugBoss.State in [dsPause, dsInternalPause]);
+end;
+
 function TWatchesDlg.GetFoundInFramePrefix(AWatchAbleResult: IWatchAbleResultIntf;
   AnAppendLineBreak: boolean): String;
 var
@@ -1763,7 +1777,7 @@ begin
   stw := AWatchAbleResult.GetStackFrame;
   if stw <> st then begin
     s := '';
-    if (DebugBoss.State in [dsPause, dsInternalPause]) then begin
+    if CanCallWatchGetValue then begin
       CurStackList := DebugBoss.CallStack.CurrentCallStackList.EntriesForThreads[AWatchAbleResult.GetThreadId];
       CurStack := nil;
       if (CurStackList <> nil) and (stw < CurStackList.CountLimited(stw+1)) then
@@ -1803,13 +1817,15 @@ var
   TheWatch: TIdeWatch absolute AWatchAble;
   st, st2: Integer;
 begin
-  if AWatchAble = nil then exit(nil);
+  Result := nil;
+  if (AWatchAble = nil) or (not FWatchDlg.CanCallWatchGetValue) then
+    exit;
 
   st := FWatchDlg.GetStackframe;
   if TheWatch.TopParentWatch <> TheWatch then begin
     st2 := TheWatch.TopParentWatch.Values[FWatchDlg.GetThreadId, st].ParentFrameFound;
-    if st2 >= 0 then
-      st := st2;
+      if st2 >= 0 then
+        st := st2;
     Result := TheWatch.Values[FWatchDlg.GetThreadId, st];
   end
   else

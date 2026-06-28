@@ -121,7 +121,6 @@ type
     FLineInfo: TIDELineInfo;
     FRegisters: TIdeRegistersMonitor;
     FManagerStates: TDebugManagerStates;
-    function  GetState: TDBGState; virtual; abstract;
     function  GetCommands: TDBGCommands; virtual; abstract;
     function GetPseudoTerminal: TPseudoTerminal; virtual; abstract;
     {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
@@ -225,7 +224,6 @@ type
   public
     property Commands: TDBGCommands read GetCommands;  // All current available commands of the debugger
     property Destroying: boolean read FDestroying;
-    property State: TDBGState read GetState;           // The current state of the debugger
 
     property BreakPoints: TIDEBreakPoints read FBreakpoints;   // A list of breakpoints for the current project
     property BreakPointGroups: TIDEBreakPointGroups read FBreakPointGroups;

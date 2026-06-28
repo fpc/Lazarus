@@ -2030,7 +2030,10 @@ type
     FThreads: TIdeThreadsMonitor;
     FSnapshots: TSnapshotManager;
     FCurrentWatches: TCurrentWatches;
+
+    function  GetState: TDBGState; virtual; abstract;
   public
+    property State: TDBGState read GetState;           // The current state of the debugger
     property CallStack: TIdeCallStackMonitor read FCallStack;
     property Locals: TIdeLocalsMonitor read FLocals;
     property Watches: TIdeWatchesMonitor read FWatches;
