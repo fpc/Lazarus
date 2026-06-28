@@ -2066,6 +2066,7 @@ resourcestring
   dlgFoldPasExcept          = 'Except/Finally';
   dlgFoldPasRepeat          = 'Repeat';
   dlgFoldPasCase            = 'Case';
+  dlgFoldPasCaseElse        = 'Otherwise/Else (Case)';
   dlgFoldPasAsm             = 'Asm';
   dlgFoldPasIfDef           = '{$IfDef}';
   dlgFoldPasUserRegion      = '{%Region}';
