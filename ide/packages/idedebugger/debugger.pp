@@ -618,7 +618,7 @@ type
     function GetTopParentWatch: TIdeWatch;
     function GetTrackingID: string;
     function GetValue(const AThreadId: Integer; const AStackFrame: Integer): TIdeWatchValue;
-    function GetAnyValidParentWatchValue(AThreadId: Integer; AStackFrame: Integer): TIdeWatchValue;
+    function GetAnyValidParentWatchValue(AThreadId: Integer; AStackFrame: Integer; AFollowParentFrame: boolean = False): TIdeWatchValue;
     function GetWatchDisplayName: String;
     procedure SetDisplayName(AValue: String); reintroduce;
     function GetEnabled: Boolean;
@@ -653,12 +653,13 @@ type
     procedure LimitChildWatchCount(AMaxCnt: Integer; AKeepIndexEntriesBelow: Int64 = low(Int64));
     property ChildrenByNameAsField[AName, AClassName: String; DerefCount: Integer]: TIdeWatch read GetChildrenByNameAsField;
     property ChildrenByNameAsArrayEntry[AName: Int64; DerefCount: Integer]: TIdeWatch read GetChildrenByNameAsArrayEntry;
-    function HasAllValidParents(AThreadId: Integer; AStackFrame: Integer): boolean;
+    function HasAllValidParents(AThreadId: Integer; AStackFrame: Integer; AFollowParentFrame: boolean = False): boolean;
     property ParentWatch: TIdeWatch read FParentWatch;
     property TopParentWatch: TIdeWatch read GetTopParentWatch;
     property DisplayName: String read GetWatchDisplayName write SetDisplayName;
     property TrackingID: string read GetTrackingID; // experimental
   public
+    function GetResolvedParentFrameValue(const AThreadId: Integer; const AStackFrame: Integer): TIdeWatchValue;
     property Values[const AThreadId: Integer; const AStackFrame: Integer]: TIdeWatchValue
              read GetValue;
   end;
@@ -7154,14 +7155,26 @@ begin
   end;
 end;
 
-function TIdeWatch.HasAllValidParents(AThreadId: Integer; AStackFrame: Integer
-  ): boolean;
+function TIdeWatch.HasAllValidParents(AThreadId: Integer; AStackFrame: Integer;
+  AFollowParentFrame: boolean): boolean;
 begin
   Result := FParentWatch = nil;
   if Result then
     exit;
 
-  Result := (GetAnyValidParentWatchValue(AThreadId, AStackFrame) <> nil);
+  Result := (GetAnyValidParentWatchValue(AThreadId, AStackFrame, AFollowParentFrame) <> nil);
+end;
+
+function TIdeWatch.GetResolvedParentFrameValue(const AThreadId: Integer; const AStackFrame: Integer
+  ): TIdeWatchValue;
+var
+  s: Integer;
+begin
+  Result := Values[AThreadId, AStackFrame];
+  Result.StartEval;
+  s := Result.ParentFrameFound;
+  if s >= 0 then
+    Result := Values[AThreadId, s];
 end;
 
 procedure TIdeWatch.DoEnableChange;
@@ -7198,8 +7211,8 @@ begin
   Result := TIdeWatchValue(inherited Values[AThreadId, AStackFrame]);
 end;
 
-function TIdeWatch.GetAnyValidParentWatchValue(AThreadId: Integer;
-  AStackFrame: Integer): TIdeWatchValue;
+function TIdeWatch.GetAnyValidParentWatchValue(AThreadId: Integer; AStackFrame: Integer;
+  AFollowParentFrame: boolean): TIdeWatchValue;
 var
   i: Integer;
   vl: TWatchValueList;
@@ -7209,15 +7222,25 @@ begin
     exit;
   vl := FParentWatch.FValueList;
   i := vl.Count - 1;
-  while (i >= 0) and (
-    (vl.EntriesByIdx[i].ThreadId <> AThreadId) or
-    (vl.EntriesByIdx[i].StackFrame <> AStackFrame) or
-    (not vl.EntriesByIdx[i].IsValid)
-  ) do
-    dec(i);
-  if i >= 0 then
+  while (i >= 0) do begin
     Result := TIdeWatchValue(vl.EntriesByIdx[i]);
+    dec(i);
+    if (Result.ThreadId <> AThreadId) or
+       (Result.StackFrame <> AStackFrame)
+    then
+      continue;
+
+    if Result.IsValid then
+      exit;
+
+    if AFollowParentFrame and (Result.ParentFrameFound >= 0) then begin
+      Result := GetAnyValidParentWatchValue(AThreadId, Result.ParentFrameFound);
+      exit;
+    end;
+  end;
+  Result := nil;
 end;
+
 function TIdeWatch.GetWatchDisplayName: String;
 begin
   if FDisplayName <> '' then

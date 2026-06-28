@@ -218,6 +218,7 @@ type
     procedure WatchUpdate(const ASender: TIdeWatches; const AWatch: TIdeWatch);
     procedure WatchRemove(const {%H-}ASender: TIdeWatches; const AWatch: TIdeWatch);
 
+    function  GetFoundInFramePrefix(AWatchAbleResult: IWatchAbleResultIntf; AnAppendLineBreak: boolean = False): String;
     procedure UpdateInspectPane;
     procedure UpdateItem(const VNode: PVirtualNode; const AWatch: TIdeWatch);
     procedure UpdateAll;
@@ -1462,7 +1463,7 @@ begin
     else begin
       Watch := TCurrentWatch(GetSelected);
       if (Watch <> nil) and (Watch.TopParentWatch = Watch) then begin
-        d := Watch.Values[GetThreadId, GetStackframe];
+        d := Watch.GetResolvedParentFrameValue(GetThreadId, GetStackframe);
         dk := rdkUnknown;
         if (d <> nil) and (d.Validity = ddsValid) and (d.ResultData <> nil) then
           dk := d.ResultData.ValueKind;
@@ -1477,7 +1478,7 @@ end;
 procedure TWatchesDlg.UpdateInspectPane;
 var
   Watch: TIdeWatch;
-  i: integer;
+  i, tid, stf: integer;
   d: TIdeWatchValue;
   t: TDBGType;
   s, FldName: String;
@@ -1490,16 +1491,29 @@ begin
   InspectLabel.Caption := '...';
 
   Watch:=GetSelected;
-  if Watch = nil then
+  if Watch = nil then begin
+    InspectLabel.Caption := '';
+    InspectMemo.Clear;
     exit;
+  end;
   InspectLabel.Caption := Watch.Expression;
 
-  if not(Watch.Enabled and Watch.HasAllValidParents(GetThreadId, GetStackframe)) then begin
+  tid := GetThreadId;
+  stf := GetStackframe;
+  if not(Watch.Enabled and Watch.HasAllValidParents(tid, stf, True)) then begin
     InspectMemo.Text := '<evaluating>';
     exit;
   end;
 
-  d := Watch.Values[GetThreadId, GetStackframe];
+  if Watch.TopParentWatch <> Watch then begin
+    d := Watch.TopParentWatch.Values[tid, stf];
+    if (d <> nil) and (d.ParentFrameFound >= 0) then
+      d := Watch.GetResolvedParentFrameValue(tid, d.ParentFrameFound)
+    else
+      d := Watch.GetResolvedParentFrameValue(tid, stf)
+  end
+  else
+    d := Watch.GetResolvedParentFrameValue(tid, stf);
   if d = nil then begin
     InspectMemo.Text := '<evaluating>';
     exit;
@@ -1517,7 +1531,7 @@ begin
       FWatchPrinter.FormatFlags := [rpfIndent, rpfMultiLine, rpfSkipValueFormatter];
     FWatchPrinter.OnlyValueFormatter := Watch.DbgValueFormatter;
     s := FWatchPrinter.PrintWatchValue(d.ResultData, Watch.DisplayFormat, Watch.Expression);
-    InspectMemo.Text := s;
+    InspectMemo.Text := GetFoundInFramePrefix(d, True) + s;
     exit;
   end;
 
@@ -1525,7 +1539,7 @@ begin
   if (t <> nil) and
      GlobalValueFormatterSelectorList.FormatValue(t, d.Value, Watch.DisplayFormat, s, AnsiUpperCase(Watch.Expression), AnsiUpperCase(Watch.Expression))
   then begin
-    InspectMemo.Text := s;
+    InspectMemo.Text := GetFoundInFramePrefix(d, True) + s;
     exit;
   end;
 
@@ -1534,6 +1548,9 @@ begin
   then begin
     InspectMemo.Lines.BeginUpdate;
     try
+      s := GetFoundInFramePrefix(d);
+      if s <> '' then
+        InspectMemo.Lines.Append(s);
       for i := 0 to t.Fields.Count - 1 do
         FldName := '';
         if Watch.DisplayFormat.Struct.DataFormat in [vdfStructFields, vdfStructFull] then
@@ -1560,7 +1577,7 @@ begin
     exit;
   end;
 
-  InspectMemo.Text := d.Value;
+  InspectMemo.Text := GetFoundInFramePrefix(d, True) + d.Value;
   finally
     FWatchPrinter.FormatFlags := [rpfClearMultiLine];
     DebugBoss.UnLockCommandProcessing;
@@ -1732,6 +1749,42 @@ begin
   tvWatchesChange(nil, nil);
 end;
 
+function TWatchesDlg.GetFoundInFramePrefix(AWatchAbleResult: IWatchAbleResultIntf;
+  AnAppendLineBreak: boolean): String;
+var
+  st, stw: Integer;
+  s: String;
+  CurStackList: TIdeCallStack;
+  CurStack: TIdeCallStackEntry;
+  i: SizeInt;
+begin
+  Result := '';
+  st := GetStackframe;
+  stw := AWatchAbleResult.GetStackFrame;
+  if stw <> st then begin
+    s := '';
+    if (DebugBoss.State in [dsPause, dsInternalPause]) then begin
+      CurStackList := DebugBoss.CallStack.CurrentCallStackList.EntriesForThreads[AWatchAbleResult.GetThreadId];
+      CurStack := nil;
+      if (CurStackList <> nil) and (stw < CurStackList.CountLimited(stw+1)) then
+        CurStack := CurStackList.Entries[stw];
+      if CurStack <> nil then begin
+        s := CurStack.FunctionName;
+        i := pos('(', s);
+        if i > 0 then delete(s,i,Length(s));
+        if s <> '' then s := ' "'+s+'"';
+      end;
+    end;
+
+    if st > 0 then
+      Result := format('Stackframe %d (+%d)%s: ', [stw, stw-st, s])
+    else
+      Result := format('Stackframe %d%s: ', [stw, s]);
+    if AnAppendLineBreak then
+      Result := Result + LineEnding;
+  end;
+end;
+
 { TDbgTreeViewWatchValueMgr }
 
 procedure TDbgTreeViewWatchValueMgr.DoUnLockCommandProcessing(Data: PtrInt);
@@ -1749,27 +1802,18 @@ function TDbgTreeViewWatchValueMgr.WatchAbleResultFromObject(AWatchAble: TObject
 var
   TheWatch: TIdeWatch absolute AWatchAble;
   st, st2: Integer;
-  t: Boolean;
-  WatchVal: TIdeWatchValue;
 begin
   if AWatchAble = nil then exit(nil);
 
   st := FWatchDlg.GetStackframe;
-  t := TheWatch.TopParentWatch <> TheWatch;
-  if t then begin
+  if TheWatch.TopParentWatch <> TheWatch then begin
     st2 := TheWatch.TopParentWatch.Values[FWatchDlg.GetThreadId, st].ParentFrameFound;
     if st2 >= 0 then
       st := st2;
-  end;
-
-  WatchVal := TheWatch.Values[FWatchDlg.GetThreadId, st];
-  WatchVal.StartEval;
-  if not t then begin
-    st := WatchVal.ParentFrameFound;
-    if st >= 0 then
-      WatchVal := TheWatch.Values[FWatchDlg.GetThreadId, st];
-  end;
-  Result := WatchVal;
+    Result := TheWatch.Values[FWatchDlg.GetThreadId, st];
+  end
+  else
+    Result := TheWatch.GetResolvedParentFrameValue(FWatchDlg.GetThreadId, st);
 end;
 
 function TDbgTreeViewWatchValueMgr.GetTrackingIdFor(AWatchAble: TObject): string;
@@ -1895,10 +1939,6 @@ var
   WatchValueStr, s, StackPre: String;
   da: TDBGPtr;
   DispFormat: TWatchDisplayFormat;
-  st, stw: Integer;
-  CurStackList: TIdeCallStack;
-  CurStack: TIdeCallStackEntry;
-  i: SizeInt;
 begin
   TreeView.NodeText[AVNode, COL_WATCH_EXPR-1]:= TIdeWatch(AWatchAble).DisplayName;
   TreeView.NodeText[AVNode, 2] := '';
@@ -1911,28 +1951,7 @@ begin
 
 
   if AWatchAbleResult.Enabled then begin
-      StackPre := '';
-    st := FWatchDlg.GetStackframe;
-    stw := AWatchAbleResult.GetStackFrame;
-    if stw <> st then begin
-      s := '';
-      if (DebugBoss.State in [dsPause, dsInternalPause]) then begin
-        CurStackList := DebugBoss.CallStack.CurrentCallStackList.EntriesForThreads[AWatchAbleResult.GetThreadId];
-        CurStack := nil;
-        if (CurStackList <> nil) and (stw < CurStackList.CountLimited(stw+1)) then
-          CurStack := CurStackList.Entries[stw];
-        if CurStack <> nil then begin
-          s := CurStack.FunctionName;
-          i := pos('(', s);
-          if i > 0 then delete(s,i,Length(s));
-          if s <> '' then s := ' "'+s+'"';
-        end;
-      end;
-      if st > 0 then
-        StackPre := format('Stackframe %d (+%d)%s: ', [stw, stw-st, s])
-      else
-        StackPre := format('Stackframe %d%s: ', [stw, s]);
-    end;
+    StackPre := FWatchDlg.GetFoundInFramePrefix(AWatchAbleResult);
 
     if (FWatchDlg.GetSelectedSnapshot = nil) or  // live watch
        (AWatchAbleResult.Validity in [ddsValid, ddsInvalid, ddsError]) or // snapshot
