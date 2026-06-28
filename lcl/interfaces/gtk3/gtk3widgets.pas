@@ -4768,8 +4768,12 @@ begin
       if GetContainerWidget^.can_focus then
         FocusWidget := GetContainerWidget
       else
-        FocusWidget := FWidget;
-      PGtkWindow(TopLevel)^.set_focus(FocusWidget);
+      if FWidget^.can_focus then
+        FocusWidget := FWidget
+      else
+        FocusWidget := nil;
+      if FocusWidget <> nil then
+        PGtkWindow(TopLevel)^.set_focus(FocusWidget);
     end;
   end;
 end;
