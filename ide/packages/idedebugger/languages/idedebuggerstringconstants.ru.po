@@ -179,7 +179,7 @@ msgstr "Наблюдения / локальные переменные"
 
 #: idedebuggerstringconstants.dbgwatchcolorshadowlast
 msgid "From previous pause"
-msgstr ""
+msgstr "С предыдущей приостановки"
 
 #: idedebuggerstringconstants.dbgwatchcolorunknown
 msgid "Unknown"
