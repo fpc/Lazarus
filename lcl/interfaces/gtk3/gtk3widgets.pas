@@ -15774,7 +15774,9 @@ begin
          decorated windows, but non decorated with popupparent must align.}
         x := 0;
         y := 0;
-        if not PGtkWindow(Widget)^.get_decorated and (PGtkWindow(Widget)^.transient_for <> nil) then
+        if not PGtkWindow(Widget)^.get_decorated and (PGtkWindow(Widget)^.transient_for <> nil)
+          and (PGtkWindow(Widget)^.transient_for^.window <> nil)
+          and not gdk_window_is_destroyed(PGtkWindow(Widget)^.transient_for^.window) then
           PGtkWindow(Widget)^.transient_for^.window^.get_origin(@x, @y);
         PGtkWindow(Widget)^.move(ALeft + x, ATop + y);
       end;
