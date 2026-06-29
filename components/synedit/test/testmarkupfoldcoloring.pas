@@ -912,7 +912,7 @@ begin
   Lines := TestTextCaseScroll1(ExpLines);
   ReCreateEdit(Lines, 30, 43);
   EnableFolds([cfbtBeginEnd.. cfbtNone], [cfbtSlashComment]);
-  EnableOutlines([cfbtBeginEnd.. cfbtNone]-[cfbtProcedure]);
+  EnableOutlines([cfbtBeginEnd.. cfbtNone]-[cfbtProcedure,cfbtCaseElse]);
 
   FOnlyTestVisibleRows := True;
 
