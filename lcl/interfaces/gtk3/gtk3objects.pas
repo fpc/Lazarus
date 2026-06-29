@@ -237,6 +237,7 @@ type
     ViewPortExt: TPoint;
     ViewPortOrg: TPoint;
     HasTransf: Boolean;
+    Opacity: Byte;
   end;
 
   //Shape selector for drawArcChordPie / drawArcChordPieAngle
@@ -288,6 +289,7 @@ type
     FViewPortExt: TPoint;
     FViewPortOrg: TPoint;
     FHasTransf: Boolean;
+    FOpacity: Byte;
     function GetBkColor:TColorRef;
     function GetOffset: TPoint;
     function GetRasterOp: integer;
@@ -298,6 +300,7 @@ type
     procedure setPen(AValue: TGtk3Pen);
     procedure SetRasterOp(AValue: integer);
     procedure SetvImage(AValue: TGtk3Image);
+    procedure SetOpacity(AValue: Byte);
     function SX(const x: double): Double;
     function SY(const y: double): Double;
     function SX2(const x: double): Double;
@@ -377,6 +380,7 @@ type
     procedure Save;
     procedure Restore;
     property BkMode: integer read FBkMode write FBkMode;
+    property Opacity: Byte read FOpacity write SetOpacity;
     property BkColor: TColorRef read GetBkColor write SetBkColor;
     property BgBrush: TGtk3Brush read FBgBrush; {bgBrush is created when SetBk is called, otherwise is nil}
     property CanRelease: Boolean read FCanRelease write FCanRelease;
@@ -2617,6 +2621,7 @@ begin
   FCanRelease := False;
   FOwnsCairo := True;
   FOwnsSurface := False;
+  FOpacity := $FF;
   FCurrentTextColor := clBlack;
   FBkColor := clWhite;
   FDCSaveCounter := 0;
@@ -2672,6 +2677,7 @@ begin
   ParentPixmap := nil;
   CairoSurface := nil;
   Window := AWindow;
+  FOpacity := $FF;
   FOwnsSurface := False;
   FCanRelease := False;
   FOwnsCairo := True;
@@ -2703,6 +2709,7 @@ begin
   FXorSnapshot := nil;
   FCanvasScaleFactor := 1;
   FOwnsCairo := False;
+  FOpacity := $FF;
   Window := nil;
   Parent := AWidget;
   ParentPixmap := nil;
@@ -3041,7 +3048,6 @@ end;
 procedure TGtk3DeviceContext.drawText(x, y: Integer; AText: PChar; ALen: Integer;
   const ABgFilled: Boolean);
 var
-  R, G, B: Double;
   ornt: Integer;
   tw: gint;
   OldStr: PChar;
@@ -3120,13 +3126,11 @@ begin
     if ABgFilled then
     begin
       FCurrentFont.Layout^.get_pixel_size(@tw, nil);
-      ColorToCairoRGB(TColor(FBgBrush.Color), R, G, B);
-      cairo_set_source_rgb(pcr, R, G, B);
+      SetSourceColor(TColor(FBgBrush.Color));
       cairo_rectangle(pcr, 0, 0, tw, FCurrentFont.FMetricsHeight + FCurrentFont.FInternalLeading);
       cairo_fill(pcr);
     end;
-    ColorToCairoRGB(TColor(CurrentTextColor), R, G, B);
-    cairo_set_source_rgb(pcr, R, G, B);
+    SetSourceColor(TColor(CurrentTextColor));
     cairo_move_to(pcr, 0, 0);
     pango_cairo_show_layout(pcr, FCurrentFont.Layout);
     cairo_restore(pcr);
@@ -3136,14 +3140,12 @@ begin
     if ABgFilled then
     begin
       FCurrentFont.Layout^.get_pixel_size(@tw, nil);
-      ColorToCairoRGB(TColor(FBgBrush.Color), R, G, B);
-      cairo_set_source_rgb(pcr, R, G, B);
+      SetSourceColor(TColor(FBgBrush.Color));
       cairo_rectangle(pcr, LToDX(x), LToDY(y), tw, FCurrentFont.FMetricsHeight + FCurrentFont.FInternalLeading);
       cairo_fill(pcr);
     end;
     cairo_move_to(pcr, LToDX(x), LToDY(y));
-    ColorToCairoRGB(TColor(CurrentTextColor), R, G, B);
-    cairo_set_source_rgb(pcr, R, G, B);
+    SetSourceColor(TColor(CurrentTextColor));
     pango_cairo_show_layout(pcr, FCurrentFont.Layout);
   end;
 
@@ -3298,7 +3300,10 @@ begin
     cairo_pattern_set_filter(cairo_get_source(pcr), CAIRO_FILTER_NEAREST);
 
   cairo_clip(pcr);
-  cairo_paint(pcr);
+  if FOpacity < $FF then
+    cairo_paint_with_alpha(pcr, FOpacity / 255)
+  else
+    cairo_paint(pcr);
 
   cairo_restore(pcr);
 end;
@@ -3480,7 +3485,10 @@ begin
 
   cairo_set_source_surface(pcr, ASurface, LToDX(p^.X), LToDY(p^.Y));
 
-  cairo_paint(pcr);
+  if FOpacity < $FF then
+    cairo_paint_with_alpha(pcr, FOpacity / 255)
+  else
+    cairo_paint(pcr);
   cairo_surface_destroy(ASurface);
 end;
 
@@ -4308,7 +4316,10 @@ var
   R, G, B: double;
 begin
   ColorToCairoRGB(AColor, R, G, B);
-  cairo_set_source_rgb(pcr, R, G, B);
+  if (FOpacity < $FF) and not FXorMode then
+    cairo_set_source_rgba(pcr, R, G, B, FOpacity / 255)
+  else
+    cairo_set_source_rgb(pcr, R, G, B);
 end;
 
 procedure TGtk3DeviceContext.SetImage(AImage: TGtk3Image);
@@ -4389,6 +4400,11 @@ begin
   cairo_set_antialias(pcr, caa[aamode]);
 end;
 
+procedure TGtk3DeviceContext.SetOpacity(AValue: Byte);
+begin
+  FOpacity := AValue;
+end;
+
 procedure TGtk3DeviceContext.Save;
 var
   SavedState: PGtk3DCSavedState;
@@ -4433,6 +4449,7 @@ begin
   SavedState^.ViewPortExt := FViewPortExt;
   SavedState^.ViewPortOrg := FViewPortOrg;
   SavedState^.HasTransf := FHasTransf;
+  SavedState^.Opacity := FOpacity;
   FSavedStateStack.Add(SavedState);
   inc(FDCSaveCounter);
 end;
@@ -4508,6 +4525,7 @@ begin
     FViewPortExt := SavedState^.ViewPortExt;
     FViewPortOrg := SavedState^.ViewPortOrg;
     FHasTransf := SavedState^.HasTransf;
+    SetOpacity(SavedState^.Opacity);
     case FLastApplied of
       claPen: ApplyPen;
       claBrush: ApplyBrush;

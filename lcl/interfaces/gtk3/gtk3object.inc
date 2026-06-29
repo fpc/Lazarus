@@ -1158,6 +1158,20 @@ begin
   end;
 end;
 
+procedure TGtk3WidgetSet.SetDCOpacity(DC: HDC; AOpacity: Byte);
+begin
+  if IsValidDC(DC) then
+    TGtk3DeviceContext(DC).Opacity := AOpacity;
+end;
+
+function TGtk3WidgetSet.GetDCOpacity(DC: HDC): Byte;
+begin
+  if IsValidDC(DC) then
+    Result := TGtk3DeviceContext(DC).Opacity
+  else
+    Result := $FF;
+end;
+
 procedure TGtk3WidgetSet.SetDesigning(AComponent: TComponent);
 begin
   // inherited SetDesigning(AComponent);
