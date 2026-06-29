@@ -74,7 +74,7 @@ begin
   sgStatus.Cells[1, 6] := 'No (planned)';
 
   sgStatus.Cells[0, 7] := 'cocoa';
-  sgStatus.Cells[1, 7] := 'In progress';
+  sgStatus.Cells[1, 7] := 'Yes';
 
   lblRunning.Caption := 'Running widget set: ' + LCLPlatformDisplayNames[WidgetSet.LCLPlatform];
   lblValue.Caption := 'Opacity: ' + IntToStr(tbOpacity.Position);
