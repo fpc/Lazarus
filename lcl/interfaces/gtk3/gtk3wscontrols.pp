@@ -549,10 +549,24 @@ end;
 
 class procedure TGtk3WSWinControl.SetShape(const AWinControl: TWinControl;
   const AShape: HBITMAP);
+var
+  AWidget: TGtk3Widget;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetShape') then
     Exit;
-  TGtk3Widget(AWinControl.Handle).Shape := TGtk3Image(AShape).Handle^.copy;
+
+  AWidget := TGtk3Widget(AWinControl.Handle);
+  // Setting Shape stores the mask and applies it (now if already realized, else
+  // on the next size-allocate). See TGtk3Widget.UpdateShape.
+  if AShape <> 0 then
+  begin
+    // The mask was drawn on the bitmap's cairo surface; sync the pixbuf so it
+    // actually contains the drawing (otherwise Handle is an empty/black pixbuf).
+    TGtk3Image(AShape).UpdatePixbufFromSurface;
+    AWidget.Shape := TGtk3Image(AShape).Handle^.copy;
+  end
+  else
+    AWidget.Shape := nil;
 end;
 
 class procedure TGtk3WSWinControl.SetFont(const AWinControl: TWinControl; const AFont: TFont);

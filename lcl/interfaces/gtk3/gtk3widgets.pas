@@ -226,6 +226,7 @@ type
     procedure SetBounds(ALeft,ATop,AWidth,AHeight:integer); virtual;
     procedure SetLclFont(const AFont:TFont); virtual;
     procedure SetWindowShape(AShape: PGdkPixBuf; AWindow: PGdkWindow); virtual;
+    procedure UpdateShape; virtual;
 
     function GetContainerWidget: PGtkWidget; virtual;
     function GetPosition(out APoint: TPoint): Boolean; virtual;
@@ -1850,6 +1851,15 @@ begin
   //do not send sizes to lcl if widget is unmapped
   if not AWidget^.get_mapped then Exit;
 
+  // A shaped widget is first mapped at 1x1 and only gets its real size later,
+  // so re-apply the window shape once the gdk window has actually been resized
+  // (the default size-allocate handler runs before this one). Only widgets with
+  // their own window can be shaped.
+  if Assigned(ACtl.FShape) and AWidget^.get_has_window and
+     ((AGdkRect^.width <> PtrInt(g_object_get_data(PGObject(AWidget), 'lcl-szalloc-prev-w'))) or
+      (AGdkRect^.height <> PtrInt(g_object_get_data(PGObject(AWidget), 'lcl-szalloc-prev-h')))) then
+    ACtl.UpdateShape;
+
   if Assigned(ACtl.LCLObject) then
   begin
     LastW := PtrInt(g_object_get_data(PGObject(AWidget), 'lcl-szalloc-prev-w'));
@@ -3061,6 +3071,24 @@ begin
   if FShape <> nil then
     FShape^.unref;
   FShape := AValue;
+  UpdateShape;
+end;
+
+procedure TGtk3Widget.UpdateShape;
+var
+  AWindow: PGdkWindow;
+begin
+  if FWidget = nil then
+    Exit;
+  // A shape can only be applied to a widget that has its own window. Forms,
+  // panels and custom controls do; lightweight gtk3 widgets (e.g. GtkButton are
+  // windowless and draw on their parent) cannot be clipped on their own.
+  if FWidget^.get_has_window and FWidget^.get_realized then
+  begin
+    AWindow := FWidget^.get_window;
+    if Gtk3IsGdkWindow(AWindow) then
+      SetWindowShape(FShape, AWindow);
+  end;
 end;
 
 procedure TGtk3Widget.SetFontColor(AValue: TColor);
@@ -4387,6 +4415,7 @@ var
   imageSurface: Pcairo_surface_t;
   ARegion: Pcairo_region_t;
   ACairoRect: Tcairo_rectangle_int_t;
+  AlphaShape: PGdkPixbuf;
 begin
   if (AWindow = nil) or not Gtk3IsGdkWindow(AWindow) then
     exit;
@@ -4401,12 +4430,18 @@ begin
     cairo_region_destroy(ARegion);
   end else
   begin
+    // The shape is a monochrome mask (LCL convention: white = visible/mask color,
+    // black = transparent), stored as a fully opaque ARGB pixbuf. Make the black
+    // pixels transparent, then gdk_cairo_region_create_from_surface gives the
+    // region covering the white (visible) pixels.
+    AlphaShape := AShape^.add_alpha(True{substitute_color}, 0, 0, 0);
     //TODO: check on scaled displays.
-    imageSurface := gdk_cairo_surface_create_from_pixbuf(AShape, 1, AWindow);
+    imageSurface := gdk_cairo_surface_create_from_pixbuf(AlphaShape, 1, AWindow);
     ARegion := gdk_cairo_region_create_from_surface(imageSurface);
     gdk_window_shape_combine_region(AWindow, ARegion, 0, 0);
     cairo_region_destroy(ARegion);
     cairo_surface_destroy(imageSurface);
+    AlphaShape^.unref;
   end;
 end;
 

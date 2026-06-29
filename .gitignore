@@ -15,6 +15,7 @@
 **/testdefaults.ini
 **/*.lps
 **/*.compiled
+**/*.or
 !**/Makefile.compiled
 /docs/chm/**/*.chm
 /docs/chm/**/*.xct
