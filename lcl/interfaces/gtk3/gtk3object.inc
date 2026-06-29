@@ -941,16 +941,124 @@ begin
   end;
 end;
 
+type
+  TGtk3TempFormStyleSet = Set of TFormStyle;
+const
+  TGtk3TopForms: Array[Boolean] of TGtk3TempFormStyleSet = (fsAllNonSystemStayOnTop,
+    fsAllStayOnTop);
+
 function TGtk3WidgetSet.AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean
   ): Boolean;
+var
+  i: Integer;
+  AForm: TCustomForm;
+  W: PGtkWidget;
+  GdkWin: PGdkWindow;
+  act: PGdkWindow;
+  ActTopLvlWnd: PGdkWindow;
+  FoundAct: Boolean;
+  x, y, width, height: gint;
 begin
-  Result := inherited AppRemoveStayOnTopFlags(ASystemTopAlso);
+  Result := True;
+  if StayOnTopList = nil then
+    StayOnTopList := TMap.Create(TMapIdType(ituPtrSize), SizeOf(Pointer));
+
+  act := gdk_screen_get_active_window_raw(gdk_screen_get_default);
+  try
+    ActTopLvlWnd := act;
+    if ActTopLvlWnd <> nil then
+      ActTopLvlWnd := gdk_window_get_toplevel(ActTopLvlWnd);
+
+    FoundAct := False;
+    for i := 0 to Screen.CustomFormCount - 1 do
+    begin
+      AForm := Screen.CustomFormsZOrdered[i];
+      if AForm.HandleAllocated and (AForm.Parent = nil) then
+      begin
+        W := TGtk3Window(AForm.Handle).Widget;
+        if W^.get_window = ActTopLvlWnd then
+          FoundAct := True;
+      end;
+    end;
+
+    if (ActTopLvlWnd <> nil) and not FoundAct then
+    begin
+      gdk_window_get_geometry(ActTopLvlWnd, @x, @y, @width, @height);
+      if (width <= 0) or (height <= 0) or (abs(x) > 100000) or (y > 100000) then
+      begin
+        DebugLn(['Hint: [TGtk3WidgetSet.AppRemoveStayOnTopFlags] ignoring active window: x=', x, ' y=', y, ' ', width, 'x', height]);
+        ActTopLvlWnd := nil;
+      end;
+    end;
+
+    for i := 0 to Screen.CustomFormZOrderCount - 1 do
+    begin
+      AForm := Screen.CustomFormsZOrdered[i];
+      if AForm.HandleAllocated and (AForm.Parent = nil) then
+      begin
+        W := TGtk3Window(AForm.Handle).Widget;
+        GdkWin := W^.get_window;
+
+        if (GdkWin = nil) or gdk_window_is_destroyed(GdkWin) then
+          continue;
+
+        if not (csDesigning in AForm.ComponentState) and
+          (AForm.FormStyle in TGtk3TopForms[ASystemTopAlso]) and
+          W^.get_visible and
+          not gtk_window_get_modal(PGtkWindow(W)) and
+          not (GDK_WINDOW_STATE_ICONIFIED in gdk_window_get_state(GdkWin)) then
+        begin
+          gdk_window_set_keep_above(GdkWin, False);
+          if Assigned(ActTopLvlWnd) then
+          begin
+            gdk_window_restack(GdkWin, ActTopLvlWnd, False);
+            ActTopLvlWnd := GdkWin;
+          end;
+          if not StayOnTopList.HasId(W) then
+            StayOnTopList.Add(W, W);
+        end;
+      end;
+    end;
+  finally
+    if Assigned(act) then
+      g_object_unref(PGObject(act));
+  end;
 end;
 
 function TGtk3WidgetSet.AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean
   ): Boolean;
+var
+  i: Integer;
+  AForm: TCustomForm;
+  W: PGtkWidget;
+  GdkWin: PGdkWindow;
 begin
-  Result := inherited AppRestoreStayOnTopFlags(ASystemTopAlso);
+  Result := True;
+  if StayOnTopList = nil then
+    exit;
+  for i := Screen.CustomFormZOrderCount - 1 downto 0 do
+  begin
+    AForm := Screen.CustomFormsZOrdered[i];
+    if AForm.HandleAllocated and (AForm.Parent = nil) then
+    begin
+      W := TGtk3Window(AForm.Handle).Widget;
+      GdkWin := W^.get_window;
+
+      if (GdkWin = nil) or gdk_window_is_destroyed(GdkWin) then
+        continue;
+
+      if not (csDesigning in AForm.ComponentState) and
+        (AForm.FormStyle in TGtk3TopForms[ASystemTopAlso]) and
+        W^.get_visible and
+        not gtk_window_get_modal(PGtkWindow(W)) and
+        not (GDK_WINDOW_STATE_ICONIFIED in gdk_window_get_state(GdkWin)) then
+      begin
+        if StayOnTopList.HasId(W) then
+          gdk_window_set_keep_above(GdkWin, True);
+      end;
+    end;
+  end;
+  FreeAndNil(StayOnTopList);
 end;
 
 function TGtk3WidgetSet.CreateStandardCursor(ACursor: SmallInt): HCURSOR;
