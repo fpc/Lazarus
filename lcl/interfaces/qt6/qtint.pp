@@ -170,6 +170,8 @@ type
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     procedure DCRedraw(CanvasHandle: HDC); override;
     procedure DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean); override;
+    procedure SetDCOpacity(DC: HDC; AOpacity: Byte); override;
+    function GetDCOpacity(DC: HDC): Byte; override;
     procedure SetDesigning(AComponent: TComponent); override;
 
     // create and destroy

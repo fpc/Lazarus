@@ -377,6 +377,7 @@ type
     SelBrush: TQtBrush;
     SelPen: TQtPen;
     FMetrics: TQtFontMetrics;
+    FOpacity: Byte;
     function GetMetrics: TQtFontMetrics;
     function GetRop: Integer;
     function DeviceSupportsComposition: Boolean;
@@ -384,6 +385,7 @@ type
     function R2ToQtRasterOp(AValue: Integer): QPainterCompositionMode;
     procedure SetTextColor;
     procedure SetRop(const AValue: Integer);
+    procedure SetOpacity(AValue: Byte);
   public
     { public fields }
     Widget: QPainterH;
@@ -481,6 +483,7 @@ type
     procedure translate(dx: Double; dy: Double);
     property Metrics: TQtFontMetrics read GetMetrics;
     property Rop2: Integer read GetRop write SetRop;
+    property Opacity: Byte read FOpacity write SetOpacity;
     property UserDC: boolean read FUserDC write FUserDC; {if context is created from GetDC() and it's not default DC.}
   end;
   
@@ -2268,6 +2271,7 @@ begin
   end;
 
   FRopMode := R2_COPYPEN;
+  FOpacity := $FF;
   FOwnPainter := True;
   CreateObjects;
   FPenPos.X := 0;
@@ -2284,6 +2288,7 @@ begin
   Parent := nil;
   Widget := QPainter_Create(ADevice);
   FRopMode := R2_COPYPEN;
+  FOpacity := $FF;
   FOwnPainter := True;
   CreateObjects;
   FPenPos.X := 0;
@@ -2298,6 +2303,7 @@ begin
   SelPen := nil;
   FMetrics := nil;
   FRopMode := R2_COPYPEN;
+  FOpacity := $FF;
   Widget := APainter;
   Parent := nil;
   FOwnPainter := False;
@@ -2761,6 +2767,13 @@ begin
   QtRopMode := R2ToQtRasterOp(AValue);
   if QPainter_compositionMode(Widget) <> QtRopMode then
     QPainter_setCompositionMode(Widget, QtROPMode);
+end;
+
+procedure TQtDeviceContext.SetOpacity(AValue: Byte);
+begin
+  FOpacity := AValue;
+  if Widget <> nil then
+    QPainter_setOpacity(Widget, AValue / 255);
 end;
 
 {------------------------------------------------------------------------------

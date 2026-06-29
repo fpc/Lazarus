@@ -1439,6 +1439,35 @@ begin
   end;
 end;
 
+procedure TQtWidgetSet.SetDCOpacity(DC: HDC; AOpacity: Byte);
+var
+  ADC: TQtDeviceContext;
+begin
+  if IsValidDC(DC) then
+  begin
+    if DC = 1 then
+      ADC := QtDefaultContext
+    else
+      ADC := TQtDeviceContext(DC);
+    ADC.Opacity := AOpacity;
+  end;
+end;
+
+function TQtWidgetSet.GetDCOpacity(DC: HDC): Byte;
+var
+  ADC: TQtDeviceContext;
+begin
+  if IsValidDC(DC) then
+  begin
+    if DC = 1 then
+      ADC := QtDefaultContext
+    else
+      ADC := TQtDeviceContext(DC);
+    Result := ADC.Opacity;
+  end else
+    Result := $FF;
+end;
+
 procedure TQtWidgetSet.SetDesigning(AComponent: TComponent);
 begin
 

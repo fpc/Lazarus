@@ -381,6 +381,8 @@ type
     SelBrush: TQtBrush;
     SelPen: TQtPen;
     FMetrics: TQtFontMetrics;
+    FOpacity: Byte;
+    procedure SetOpacity(AValue: Byte);
     function GetMetrics: TQtFontMetrics;
     function GetRop: Integer;
     function DeviceSupportsComposition: Boolean;
@@ -487,6 +489,7 @@ type
     procedure restore;
     procedure translate(dx: Double; dy: Double);
     property Metrics: TQtFontMetrics read GetMetrics;
+    property Opacity: Byte read FOpacity write SetOpacity;
     property Rop2: Integer read GetRop write SetRop;
     property UserDC: boolean read FUserDC write FUserDC; {if context is created from GetDC() and it's not default DC.}
     property PenTextInternal: boolean read FPenTextInternal write FPenTextInternal; {optimization for ExtTextOut}
@@ -2298,6 +2301,7 @@ begin
    of TQtWidgetSet.BeginPaint() SET APaintEvent TO FALSE !}
   FPenTextInternal := True;
   FUserDC := False;
+  FOpacity := $FF;
   Parent := nil;
   ParentPixmap := nil;
   FMetrics := nil;
@@ -2340,6 +2344,7 @@ constructor TQtDeviceContext.CreatePrinterContext(ADevice: QPrinterH);
 begin
   FPenTextInternal := True;
   FUserDC := False;
+  FOpacity := $FF;
   SelFont := nil;
   SelBrush := nil;
   SelPen := nil;
@@ -2361,6 +2366,7 @@ constructor TQtDeviceContext.CreateFromPainter(APainter: QPainterH);
 begin
   FPenTextInternal := True;
   FUserDC := False;
+  FOpacity := $FF;
   SelFont := nil;
   SelBrush := nil;
   SelPen := nil;
@@ -2817,6 +2823,13 @@ end;
 function TQtDeviceContext.GetMetrics: TQtFontMetrics;
 begin
   Result := Font.Metrics;
+end;
+
+procedure TQtDeviceContext.SetOpacity(AValue: Byte);
+begin
+  FOpacity := AValue;
+  if Widget <> nil then
+    QPainter_setOpacity(Widget, AValue / 255);
 end;
 
 {------------------------------------------------------------------------------
