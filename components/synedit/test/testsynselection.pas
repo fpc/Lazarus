@@ -317,7 +317,7 @@ begin
     SynEdit.DefaultSelectionMode := smNormal;
     //      Name                                   Start  Select-Key          Block-End    UnSel-Key     End-Caret/Skipped
     TestKey('S-VK_RIGHT, Exit=VK_RIGHT',            3,2, VK_RIGHT,[ssShift],  4,2, 'F',    VK_RIGHT,[],  5,2, 4,2);
-    TestKey('S-VK_RIGHT, Exit=VK_LEFT',             3,2, VK_RIGHT,[ssShift],  4,2, 'F',    VK_LEFT,[],   3,2, 2,2); // VK_LEFT goes back to block begin;
+    TestKey('S-VK_RIGHT, Exit=VK_LEFT',             3,2, VK_RIGHT,[ssShift],  4,2, 'F',    VK_LEFT,[],   3,2, 2,2); // VK_LEFT goes back to block begin
     TestKey('S-VK_RIGHT, Exit=VK_UP',               3,2, VK_RIGHT,[ssShift],  4,2, 'F',    VK_UP,[],     4,1, 3,1);
     TestKey('S-VK_RIGHT, Exit=VK_UP(no move)',      3,1, VK_RIGHT,[ssShift],  4,1, 'g',    VK_UP,[],     4,1, 3,1);
 
@@ -357,7 +357,7 @@ begin
     SynEdit.DefaultSelectionMode := smColumn;
     //      Name                                      Start  Select-Key          Block-End    UnSel-Key     End-Caret/Skipped
     TestKey('S-VK_RIGHT, Exit=VK_RIGHT',               3,2, VK_RIGHT,[ssShift],  4,2, 'F',    VK_RIGHT,[],  5,2, 4,2);
-    TestKey('S-VK_RIGHT, Exit=VK_LEFT',                3,2, VK_RIGHT,[ssShift],  4,2, 'F',    VK_LEFT,[],   3,2, 2,2); // VK_LEFT goes back to block begin;
+    TestKey('S-VK_RIGHT, Exit=VK_LEFT',                3,2, VK_RIGHT,[ssShift],  4,2, 'F',    VK_LEFT,[],   3,2, 2,2); // VK_LEFT goes back to block begin
     SynEdit.Options  := SynEdit.Options  + [eoScrollPastEol];
     TestKey('S-VK_LEFT,  Exit=VK_LEFT(no move)',       2,2, VK_LEFT,[ssShift],   1,2, ' ',    VK_LEFT,[],   1,2, 1,2);
     SynEdit.Options  := SynEdit.Options  - [eoScrollPastEol];
@@ -385,7 +385,7 @@ begin
     SynEdit.DefaultSelectionMode := smLine;
     //      Name                                   Start  Select-Key          Block-End              UnSel-Key     End-Caret/Skipped
     TestKey('S-VK_RIGHT, Exit=VK_RIGHT',            3,2, VK_RIGHT,[ssShift],  4,2, ['  Foo(bar);', ''],    VK_RIGHT,[],  5,2, 4,2);
-    TestKey('S-VK_RIGHT, Exit=VK_LEFT',             3,2, VK_RIGHT,[ssShift],  4,2, ['  Foo(bar);', ''],    VK_LEFT,[],   3,2, 2,2); // VK_LEFT goes back to block begin;
+    TestKey('S-VK_RIGHT, Exit=VK_LEFT',             3,2, VK_RIGHT,[ssShift],  4,2, ['  Foo(bar);', ''],    VK_LEFT,[],   3,2, 2,2); // VK_LEFT goes back to block begin
     TestKey('S-VK_RIGHT, Exit=VK_UP',               3,2, VK_RIGHT,[ssShift],  4,2, ['  Foo(bar);', ''],    VK_UP,[],     4,1, 3,1);
     TestKey('S-VK_RIGHT, Exit=VK_UP(no move)',      3,1, VK_RIGHT,[ssShift],  4,1, ['begin', ''],          VK_UP,[],     4,1, 3,1);
 

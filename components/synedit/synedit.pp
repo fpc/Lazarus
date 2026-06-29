@@ -6296,7 +6296,7 @@ var
   Group: TSynEditUndoGroup;
 begin
   Group := fRedoList.PopItem;
-  if Group <> nil then begin;
+  if Group <> nil then begin
     {$IFDEF SynUndoDebugCalls}
     DebugLnEnter(['>> TCustomSynEdit.Redo ',DbgSName(self), ' ', dbgs(Self), ' Group', dbgs(Group), ' cnt=', Group.Count]);
     {$ENDIF}

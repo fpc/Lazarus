@@ -1472,7 +1472,7 @@ var
     Result:=Test;
     if not Test then exit;
     DebugLn(['TFPDocEditor.WriteNode ERROR ',Msg]);
-    if Interactive then begin;
+    if Interactive then begin
       if Element.FPDocFile<>nil then
         CurName:=Element.FPDocFile.Filename
       else

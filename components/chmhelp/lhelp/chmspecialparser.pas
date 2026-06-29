@@ -200,7 +200,7 @@ begin
   fTreeView.BeginUpdate;
   fTreeView.Enabled:= False;
   if ASortRoot and (fTreeView.Items.Count > 0) and not Assigned(ParentNode) then
-  begin;
+  begin
     // merge sorted TreeNodes
     IdxSrc:=0;
     IdxSm:=0;

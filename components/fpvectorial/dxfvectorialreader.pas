@@ -745,7 +745,7 @@ begin
         CurToken := TDXFToken(ATokens.Items[i+1]);
         case CurToken.GroupCode of
         10:
-        begin;
+        begin
           CurField^.X := StrToFloat(CurToken.StrValue, FPointSeparator);
           Inc(i);
         end;

@@ -1068,7 +1068,7 @@ begin
 
   if ADestPage.FWrappedExtraSumsCount = 0 then begin
     // Moving to an empty page. Do NOT include any lines after FWrappedExtraSumsCount
-    if MinLineCount > 0 then begin;
+    if MinLineCount > 0 then begin
       ADestPage.GrowCapacity(MinLineCount);
       assert(ASourceStartLine<=FWrappedExtraSumsCount, 'TSynWordWrapLineMap.MoveLinesAtEndTo: ASourceStartLine<=FWrappedExtraSumsCount');
       WrapInfoCopyAndAdjustFromTo(

@@ -688,7 +688,7 @@ end;
 procedure TSynGutterBase.DoChange(Sender: TObject);
 begin
   if FInDoChange then exit;
-  if FChangeLock > 0 then begin;
+  if FChangeLock > 0 then begin
     FNeedOnChange := True;
     exit;
   end;
@@ -708,7 +708,7 @@ end;
 
 procedure TSynGutterBase.DoResize(Sender: TObject);
 begin
-  if FChangeLock > 0 then begin;
+  if FChangeLock > 0 then begin
     FNeedOnResize := True;
     exit;
   end;

@@ -568,7 +568,7 @@ begin
   Result[2]  := '';
   Result[3]  := '  if 1=2 then begin';
   Result[4]  := '';
-  Result[5]  := '  end else begin;';
+  Result[5]  := '  end else begin';
   Result[6]  := '';
   Result[7]  := '    if 1=3 then begin';
   Result[8]  := '';
@@ -620,7 +620,7 @@ begin
   SetLength(Result, 2+ALen);
   Result[ALen] := 'program foo;';
   Result[1+ALen] := '';
-  while ALen > 0 do begin;
+  while ALen > 0 do begin
     Result[ALen-1] := '// '+IntToStr(ALen); // hide first line
     dec(ALen);
   end;
@@ -2632,7 +2632,7 @@ begin
   PrepareLine := pl;
   For pm := 1 to Max(1, Min(PrepareLine+1, 4)) do begin
   PrepareMax := pm;
-  for i := 0 to 16 do begin;
+  for i := 0 to 16 do begin
     InitList('',  TheList,  i, 0, [], False);
     case i of
       0:          AssertEquals(BaseTestName + 'Cnt', 0, TheList.Count);

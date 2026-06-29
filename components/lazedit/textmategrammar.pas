@@ -1599,7 +1599,7 @@ begin
   if Result then begin
     AFoundStartPos := FRegExMatchBegin.MatchPos[0];
 
-    if FEndHasBackRef then begin;
+    if FEndHasBackRef then begin
       t := MatchEnd;
       for i := 1 to FRegExMatchBegin.SubExprMatchCount do
         t := ReplaceRegExpr('(?<!(?:^|[^\\])\\(?:\\\\)*)(\\'+IntToStr(i)+')', t, '(?:'+QuoteRegExprMetaChars(FRegExMatchBegin.Match[i])+')');

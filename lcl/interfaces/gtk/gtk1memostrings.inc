@@ -68,7 +68,7 @@ procedure TGtkMemoStrings.AdjustIndices(FromIndex, ToIndex: Integer;
 var
   X: Integer;
 begin
-  for X := FromIndex to ToIndex do begin;
+  for X := FromIndex to ToIndex do begin
     if Back then
       Dec(FLineStartPos[X], ACount)
     else Inc(FLineStartPos[X], ACount);

@@ -199,7 +199,7 @@ begin
                               [CurLine, Rgn.FileName]);
   end;
 
-  while CurAddr <= AEndAddr do begin;
+  while CurAddr <= AEndAddr do begin
     if AWithSrc and (lc >= Rgn.InstrPerLine) then begin
       Result := Result + ']}';
       Result := Result + Format(',src_and_asm_line={line="%d",file="%s",line_asm_insn=[ ',

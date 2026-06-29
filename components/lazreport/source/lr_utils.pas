@@ -548,7 +548,7 @@ begin
           if CurReport.Pages[i] is TfrPageDialog then
           begin
             if CurReport.Pages[i].Name = S1 then
-            begin;
+            begin
               for j:=0 to CurReport.Pages[i].Objects.Count-1 do
               begin
                 if TfrObject(CurReport.Pages[i].Objects[j]) is TLRDataSetControl then

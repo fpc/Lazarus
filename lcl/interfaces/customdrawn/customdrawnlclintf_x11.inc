@@ -160,7 +160,7 @@ Var
 begin
   // setup an artificial ScanLineImage with format RGB 32 bit, 32bit depth format
   //FillChar(Description, SizeOf(Description), 0);
-  with Description do begin;
+  with Description do begin
     Format := ricfRGBA;
     Depth := 24; // used bits per pixel
     Width := AWidth;

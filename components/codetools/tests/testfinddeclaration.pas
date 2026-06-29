@@ -397,7 +397,7 @@ begin
         end;
       end;
       Marker.EndRefPosTest;
-      if Marker.NotFoundRefPosCount > 0 then begin;
+      if Marker.NotFoundRefPosCount > 0 then begin
         WriteSource(CursorPos);
         s := '';
         for j := 0 to Marker.NotFoundRefPosCount-1 do

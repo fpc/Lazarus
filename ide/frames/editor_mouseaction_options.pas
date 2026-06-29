@@ -302,7 +302,7 @@ end;
 
 procedure TEditorMouseOptionsFrame.dropUserSchemesChange(Sender: TObject);
 begin
-  if Sender <> nil then begin;
+  if Sender <> nil then begin
     chkPredefinedScheme.Checked := dropUserSchemes.ItemIndex > 0;
     if dropUserSchemes.ItemIndex > 0 then
       dropUserSchemes.tag := dropUserSchemes.ItemIndex;

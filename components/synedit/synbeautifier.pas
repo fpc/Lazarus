@@ -437,7 +437,7 @@ begin
 
     GetIndentInfo(y, s, Indent);
 
-    if s <> '' then begin;
+    if s <> '' then begin
       FCurrentLines.EditInsert(1, y, s);
       FLogicalIndentLen := length(s);
     end;

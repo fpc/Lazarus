@@ -1712,7 +1712,7 @@ var
   PC: PChar;
 begin
   if Assigned(FMuiObject) then
-  begin;
+  begin
     SL.BeginUpdate;
     SL.Clear;
     SL.Text := GetMUIText;

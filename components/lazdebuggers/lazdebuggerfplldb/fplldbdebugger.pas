@@ -882,7 +882,7 @@ begin
   Reg.Count; // trigger
   if (reg.DataValidity = ddsRequested) then begin
     CmdQueue := FDebugger.CommandQueue;
-    if CmdQueue.Count > 0 then begin;
+    if CmdQueue.Count > 0 then begin
       QItem := CmdQueue.Items[CmdQueue.Count - 1];
       if (QItem is TLldbDebuggerCommandRegister) and (TLldbDebuggerCommandRegister(QItem).Registers = Reg) then begin
         QItem.AddReference;

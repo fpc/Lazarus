@@ -812,7 +812,7 @@ end.
 
       if ((hsCol1 >= FromPos) and (hsCol1 <= ChangePos)) then begin
         hsMarkup := fMarkupHighAll.GetMarkupAttributeAtRowCol(CurLine, hsCol1);
-if hsMarkup<>nil then begin;
+if hsMarkup<>nil then begin
         if (hsCol1 < ChangePos)
         then ChangeTyp := [CHLightOn]
         else include(ChangeTyp, CHLightOn);

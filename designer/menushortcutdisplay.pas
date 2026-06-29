@@ -469,7 +469,7 @@ begin
 
   FEdit:=TEdit.Create(Self);
   with FEdit do
-    begin;
+    begin
       BorderSpacing.Around:=Margin;
       Text:=FMenuItem.Caption;
       Align:=alClient;

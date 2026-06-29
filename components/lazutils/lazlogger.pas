@@ -915,7 +915,7 @@ begin
     if i >= 0 then
       Result := GetParamByName(FParamForLogFileName, i);
   end;
-  if FEnvironmentForLogFileName <> '' then begin;
+  if FEnvironmentForLogFileName <> '' then begin
     // if not found yet, then try to find in the environment variables
     if (length(result)=0) then begin
       // Substitute * with executable filename without extension

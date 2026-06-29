@@ -275,7 +275,7 @@ var
   i:Integer;
 begin
   if listFields.Items.Count = 0 then
-  begin;
+  begin
     ShowMessage(sNoFieldsAddedTableWillNotBeCreated);
     Exit;
   end;

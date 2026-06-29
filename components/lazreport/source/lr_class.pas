@@ -2390,7 +2390,7 @@ begin
   if Trim(AReportName) = '' then exit;
   for i:=0 to FList.Count - 1 do
     if TlrDetailReport(FList[i]).FReportName = AReportName then
-    begin;
+    begin
       Result:=TlrDetailReport(FList[i]);
       exit
     end;

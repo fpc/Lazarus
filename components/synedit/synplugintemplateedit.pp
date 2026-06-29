@@ -385,7 +385,7 @@ begin
   YOffs := FStartPoint.y - 1;
   for i := 0 to aCellList.Count - 1 do begin
     CurCell := aCellList[i];
-    with Cells.AddNew do begin;
+    with Cells.AddNew do begin
       Assign(CurCell);
       p := LogStart;
       if p.y = 1 then

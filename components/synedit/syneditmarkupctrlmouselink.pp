@@ -376,7 +376,7 @@ begin
   SynEdit.UnRegisterBeforeKeyDownHandler(@KeyUpDownEvent);
   SynEdit.UnRegisterMouseLastCaretHandler(@LastCaretChanged);
   SynEdit.UnregisterQueryMouseCursorHandler(@UpdateSynCursor);
-  if Lines <> nil then begin;
+  if Lines <> nil then begin
     Lines.RemoveModifiedHandler(senrLinesModified, @LinesChanged);
   end;
   inherited Destroy;
@@ -403,7 +403,7 @@ procedure TSynEditMarkupMouseLink.SetLines(
   const AValue: TSynEditStringsLinked);
 begin
   inherited SetLines(AValue);
-  if Lines <> nil then begin;
+  if Lines <> nil then begin
     Lines.AddModifiedHandler(senrLinesModified, @LinesChanged);
     LinesChanged(nil,-1,0,0);
   end;

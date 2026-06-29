@@ -262,7 +262,7 @@ begin
         StartPos:=p;
         while (p<=length(s)) and (s[p]<>'"') do inc(p);
         URL:=XMLValueToStr(copy(s,StartPos,p-StartPos));
-        if (URL<>'') and (URLs.IndexOf(URL)<0) then begin;
+        if (URL<>'') and (URLs.IndexOf(URL)<0) then begin
           writeln('TWikiGet.GetAll URL="',URL,'"');
           URLs.Add(URL);
         end;

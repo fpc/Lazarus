@@ -470,7 +470,7 @@ begin
     Result.TextSize.cy := TextRect.Bottom - TextRect.Top;
 
     if AMenuItem.ShortCut <> scNone then
-    begin;
+    begin
       W := UTF8ToUTF16(MenuItemShortCut(AMenuItem));
       GetThemeTextExtent(Theme, DC, MENU_POPUPITEM, 0, PWideChar(W), Length(W),
         DT_SINGLELINE or DT_LEFT, nil, TextRect);

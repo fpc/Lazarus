@@ -1108,7 +1108,7 @@ end;
 procedure TSynGutterLOvProviderModifiedLines.SynStatusChanged(Sender: TObject;
   Changes: TSynStatusChanges);
 begin
-  if (scModified in Changes) and not SynEdit.Modified then begin;
+  if (scModified in Changes) and not SynEdit.Modified then begin
     FFirstTextLineChanged := 1;
     FLastTextLineChanged := 0; // open end
     InvalidateTextLines(FFirstTextLineChanged, TextBuffer.Count);

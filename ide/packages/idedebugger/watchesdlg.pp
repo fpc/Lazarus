@@ -2037,7 +2037,7 @@ begin
   end;
 
   if (AWatchAbleResult = nil) then begin
-    if TheWatch.Enabled then begin;
+    if TheWatch.Enabled then begin
       TreeView.NodeText[AVNode, COL_WATCH_VALUE-1]:= '<not evaluated>';
       TreeView.SetNodeTextColor(AVNode, COL_WATCH_VALUE-1, WatchesColorsHL.AttrUnknown.Foreground);
     end

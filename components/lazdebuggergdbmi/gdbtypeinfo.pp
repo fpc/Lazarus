@@ -763,7 +763,7 @@ begin
         end;
       end;
     ptprkSet: begin
-        if CurPtr^ <> '<' then begin;
+        if CurPtr^ <> '<' then begin
           SetPCharLen(Result.Declaration, DeclPtr, LineEndPtr);
           //CurPtr := Result.BaseDeclaration.Ptr + 3;
           CurPtr := CurPtr + 6;
@@ -3290,7 +3290,7 @@ var
   procedure ProcessInitial;
   begin
     FProcessState := gtpsInitial;
-    if FExpression = '' then begin;
+    if FExpression = '' then begin
       FPTypeExpression := FExpression;
       ProcessInitialSimple;
       exit;

@@ -312,7 +312,7 @@ begin
           if uefTab in AFlags then begin
             inc(Src, 2);
             dec(cnt, 2);
-            if ATabWidth > 0 then begin;
+            if ATabWidth > 0 then begin
               c := Dst - @Result[1];
               if Length(Result) < c + cnt + ATabWidth + 1 then begin
                 SetLength(Result, Length(Result) + ATabWidth);

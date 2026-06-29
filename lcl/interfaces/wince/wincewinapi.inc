@@ -416,7 +416,7 @@ begin
             begin
               BufferStream.Position := 0;
               if FormatID=Windows.CF_UNICODETEXT then
-              begin;
+              begin
                 SetLength(BufferWideString, Size div 2);
                 BufferStream.Read(BufferWideString[1], Size);
                 BufferString := UTF16ToUTF8(BufferWideString);

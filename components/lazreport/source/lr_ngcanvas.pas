@@ -238,7 +238,7 @@ function DrawTextNoGui(Canvas: TCanvas; text: string; var Rect: TRect;
 var
   aSize: TSize;
 begin
-  if DT_CALCRECT and flags<>0 then begin;
+  if DT_CALCRECT and flags<>0 then begin
     aSize := Canvas.TextExtent(text);
     Rect.Width := aSize.Width;
     Rect.Height := aSize.Height;

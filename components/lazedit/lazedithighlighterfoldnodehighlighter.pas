@@ -484,7 +484,7 @@ begin
     j := Index;
     while i < FNodeCount do begin
       if Match(FNodeInfoList[i], AnActionFilter, AGroupFilter) then dec(j);
-      if j < 0 then begin;
+      if j < 0 then begin
         Result := FNodeInfoList[i];
         Result.NodeIndex := Index; // only set copy on result
         exit;

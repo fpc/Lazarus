@@ -305,7 +305,7 @@ function TlrFieldsList.SelectedField: string;
 begin
   Result:='';
   if PageControl1.ActivePageIndex = 0 then
-  begin;
+  begin
     if (lbFieldsList.ItemIndex>-1) and (lbFieldsList.ItemIndex<lbFieldsList.Items.Count) then
       Result:=cbDSList.Text + '."' + lbFieldsList.Items[lbFieldsList.ItemIndex] + '"'
   end

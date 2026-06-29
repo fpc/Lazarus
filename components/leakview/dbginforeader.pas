@@ -193,7 +193,7 @@ begin
   d := @dest;
   totalread := 0;
   r := True;
-  while (totalread < size) and r do begin;
+  while (totalread < size) and r do begin
     if EBufPos >= EBufCnt then begin
       EBufPos := 0;
       EBufCnt := EBUF_SIZE;

@@ -397,7 +397,7 @@ begin
   FResultList:= TStringMap.Create;
   FResultList.Sorted := True;
 
-  if Memo2.Lines.Count > 0 then begin;
+  if Memo2.Lines.Count > 0 then begin
     Memo2.Lines.Add('');
     Memo2.Lines.Add('----- ***** ----- ***** ----- ***** -----');
     Memo2.Lines.Add('');
