@@ -162,6 +162,8 @@ type
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); virtual; abstract;
     procedure DCRedraw(CanvasHandle: HDC); virtual; abstract;
     procedure DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean); virtual;
+    procedure SetDCOpacity(DC: HDC; AOpacity: Byte); virtual;
+    function GetDCOpacity(DC: HDC): Byte; virtual;
     procedure SetDesigning(AComponent: TComponent); virtual;
 
     function  InitStockFont(AFont: TObject; AStockFont: TStockFont): Boolean; virtual;

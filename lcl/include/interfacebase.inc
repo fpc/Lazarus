@@ -115,6 +115,15 @@ procedure TWidgetSet.DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean);
 begin
 end;
 
+procedure TWidgetSet.SetDCOpacity(DC: HDC; AOpacity: Byte);
+begin
+end;
+
+function TWidgetSet.GetDCOpacity(DC: HDC): Byte;
+begin
+  Result := $FF;
+end;
+
 procedure TWidgetSet.SetDesigning(AComponent: TComponent);
 begin
 
