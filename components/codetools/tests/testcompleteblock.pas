@@ -51,6 +51,7 @@ type
     procedure TestCompleteBlockRepeatUntil;
     procedure TestCompleteBlockCase;
     procedure TestCompleteBlockTry;
+    procedure TestCompleteBlockTry_OpenIf_AtEnd; // issue 28048
     procedure TestCompleteBlockAsm;
     procedure TestCompleteBlockIf;
   end;
@@ -444,6 +445,28 @@ begin
     end;
   end;
 }
+end;
+
+procedure TTestCodetoolsCompleteBlock.TestCompleteBlockTry_OpenIf_AtEnd;
+begin
+  CompleteBlock('begin'+LineEnding
+               +'  try'+LineEnding
+               +'    if 1 = 2 then '+LineEnding
+               +'      foo '+LineEnding
+               +'    else '+LineEnding
+               +'      bar '+LineEnding
+               +'  except'+LineEnding
+               +'  end;|'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+               +'  try'+LineEnding
+               +'    if 1 = 2 then '+LineEnding
+               +'      foo '+LineEnding
+               +'    else '+LineEnding
+               +'      bar '+LineEnding
+               +'  except'+LineEnding
+               +'  end;|'+LineEnding
+               +'end.');
 end;
 
 procedure TTestCodetoolsCompleteBlock.TestCompleteBlockAsm;
