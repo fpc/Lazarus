@@ -708,7 +708,7 @@ begin
         //DebugLn('');
         {$ENDIF}
       end else
-        lKeepLevel := False;
+        lKeepLevel := sfaOutlineMergeParent in lCurNode.FoldAction;
 
       AddVerticalLine;
 
@@ -867,7 +867,7 @@ begin
             end;
 
           end else
-            lKeepLevel := False;
+            lKeepLevel := sfaOutlineMergeParent in lCurNode.FoldAction;
 
           if AddHighlight then begin
             if lKeepLevel then begin
