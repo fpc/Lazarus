@@ -19,6 +19,8 @@
  ***************************************************************************
 
 written 2001 by Satan
+modernized to OpenGL 3.2 core profile (shaders, VBOs, VAOs) so it runs on
+backends that only provide a core context, e.g. LCL-GTK3.
 
 }
 unit ExampleForm;
@@ -29,10 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LazFileUtils, LazUTF8, LCLProc, Forms, LResources, Buttons,
-  StdCtrls, Dialogs, Graphics, IntfGraphics, GL, FPimage, OpenGLContext;
-
-const
-  GL_CLAMP_TO_EDGE = $812F;
+  StdCtrls, Dialogs, Graphics, IntfGraphics, GL, GLext, FPimage, OpenGLContext;
 
 type
   TglTexture = class
@@ -41,7 +40,7 @@ type
     Data        : pointer;
     destructor Destroy; override;
   end;
-  
+
 type
 
   { TExampleForm }
@@ -75,6 +74,7 @@ type
     AreaInitialized: boolean;
     FrameCount: integer;
     LastFrameTicks: integer;
+    procedure InitGLResources;
   end;
 
   TParticle = class
@@ -87,7 +87,6 @@ type
     xspawn: GLfloat;
     Particle: array [1..2001] of TParticle;
     procedure MoveParticles;
-    procedure DrawParticles;
     procedure Start;
   public
     constructor Create;
@@ -95,18 +94,13 @@ type
   private
     procedure RespawnParticle(i: integer);
   end;
-  
+
 var AnExampleForm: TExampleForm;
-    front, left1: GLuint;
     rx, ry, rz, rrx, rry, rrz: single;
-    LightAmbient : array [0..3] of GLfloat;
-    checked, blended, lighted, ParticleBlended, MoveCube, MoveBackground: boolean;
+    blended, lighted, ParticleBlended, MoveCube, MoveBackground: boolean;
     textures       : array [0..2] of GLuint;    // Storage For 3 Textures
     MyglTextures   : array [0..2] of TglTexture;
-    lightamb, lightdif, lightpos, light2pos, light2dif,
-    light3pos, light3dif, light4pos, light4dif, fogcolor: array [0..3] of GLfloat;
     ParticleEngine: TParticleEngine;
-    ParticleList, CubeList, BackList: GLuint;
 
 var direction: boolean;
     timer: single;
@@ -118,6 +112,286 @@ function LoadglTexImage2DFromPNG(PNGFilename:string;
 
 implementation
 
+const
+  ParticleCount = 2001;
+
+// --------------------------------------------------------------------------
+//  Minimal 4x4 matrix math (column-major, matching OpenGL memory layout)
+// --------------------------------------------------------------------------
+type
+  TMat4 = array[0..15] of GLfloat;
+
+function Mat4Identity: TMat4;
+begin
+  FillChar(Result, SizeOf(Result), 0);
+  Result[0]:=1; Result[5]:=1; Result[10]:=1; Result[15]:=1;
+end;
+
+// Returns A*B (so the combined transform applied to a vector v is A*B*v).
+function Mat4Mul(const A, B: TMat4): TMat4;
+var
+  c, r, k: integer;
+  s: GLfloat;
+begin
+  for c:=0 to 3 do
+    for r:=0 to 3 do begin
+      s:=0;
+      for k:=0 to 3 do
+        s:=s + A[k*4+r]*B[c*4+k];
+      Result[c*4+r]:=s;
+    end;
+end;
+
+function Mat4Translate(x, y, z: GLfloat): TMat4;
+begin
+  Result:=Mat4Identity;
+  Result[12]:=x; Result[13]:=y; Result[14]:=z;
+end;
+
+// Equivalent of glRotatef(AngleDeg, ax,ay,az).
+function Mat4RotateDeg(AngleDeg, ax, ay, az: GLfloat): TMat4;
+var
+  len, c, s, t, a: GLfloat;
+begin
+  Result:=Mat4Identity;
+  len:=Sqrt(ax*ax+ay*ay+az*az);
+  if len=0 then exit;
+  ax:=ax/len; ay:=ay/len; az:=az/len;
+  a:=AngleDeg*Pi/180;
+  c:=Cos(a); s:=Sin(a); t:=1-c;
+  Result[0]:=t*ax*ax+c;    Result[1]:=t*ax*ay+s*az; Result[2]:=t*ax*az-s*ay;
+  Result[4]:=t*ax*ay-s*az; Result[5]:=t*ay*ay+c;    Result[6]:=t*ay*az+s*ax;
+  Result[8]:=t*ax*az+s*ay; Result[9]:=t*ay*az-s*ax; Result[10]:=t*az*az+c;
+end;
+
+// Equivalent of glFrustum(l,r,b,t,n,f).
+function Mat4Frustum(l, r, b, t, n, f: GLfloat): TMat4;
+begin
+  FillChar(Result, SizeOf(Result), 0);
+  Result[0]:=2*n/(r-l);
+  Result[5]:=2*n/(t-b);
+  Result[8]:=(r+l)/(r-l);
+  Result[9]:=(t+b)/(t-b);
+  Result[10]:=-(f+n)/(f-n);
+  Result[11]:=-1;
+  Result[14]:=-2*f*n/(f-n);
+end;
+
+// --------------------------------------------------------------------------
+//  GLSL shaders (GLSL 1.50 == OpenGL 3.2 core). The three colored point
+//  lights and the ambient term replace the old fixed-function lighting.
+// --------------------------------------------------------------------------
+const
+  VertexShaderSrc =
+    '#version 150'#10+
+    'in vec3 in_position;'#10+
+    'in vec3 in_normal;'#10+
+    'in vec2 in_texcoord;'#10+
+    'uniform mat4 u_mvp;'#10+
+    'uniform mat4 u_modelview;'#10+
+    'out vec3 v_normal;'#10+
+    'out vec3 v_eyepos;'#10+
+    'out vec2 v_texcoord;'#10+
+    'void main() {'#10+
+    '  vec4 eye = u_modelview * vec4(in_position, 1.0);'#10+
+    '  v_eyepos = eye.xyz;'#10+
+    '  v_normal = mat3(u_modelview) * in_normal;'#10+
+    '  v_texcoord = in_texcoord;'#10+
+    '  gl_Position = u_mvp * vec4(in_position, 1.0);'#10+
+    '}'#10;
+
+  FragmentShaderSrc =
+    '#version 150'#10+
+    'in vec3 v_normal;'#10+
+    'in vec3 v_eyepos;'#10+
+    'in vec2 v_texcoord;'#10+
+    'uniform sampler2D u_tex;'#10+
+    'uniform bool u_lighting;'#10+
+    'uniform vec4 u_color;'#10+
+    'out vec4 fragColor;'#10+
+    'const vec3 ambient = vec3(0.5);'#10+
+    'const vec3 lpos0 = vec3( 0.0, 0.0, 3.0);'#10+
+    'const vec3 lpos1 = vec3( 3.0, 0.0, 3.0);'#10+
+    'const vec3 lpos2 = vec3(-3.0, 0.0, 0.0);'#10+
+    'const vec3 lcol0 = vec3(0.8, 0.0, 0.0);'#10+
+    'const vec3 lcol1 = vec3(0.0, 0.8, 0.0);'#10+
+    'const vec3 lcol2 = vec3(0.0, 0.0, 0.8);'#10+
+    'void main() {'#10+
+    '  vec4 tex = texture(u_tex, v_texcoord);'#10+
+    '  vec3 base = tex.rgb * u_color.rgb;'#10+
+    '  vec3 rgb = base;'#10+
+    '  if (u_lighting) {'#10+
+    '    vec3 N = normalize(v_normal);'#10+
+    '    vec3 lit = ambient;'#10+
+    '    lit += lcol0 * max(dot(N, normalize(lpos0 - v_eyepos)), 0.0);'#10+
+    '    lit += lcol1 * max(dot(N, normalize(lpos1 - v_eyepos)), 0.0);'#10+
+    '    lit += lcol2 * max(dot(N, normalize(lpos2 - v_eyepos)), 0.0);'#10+
+    '    rgb = base * lit;'#10+
+    '  }'#10+
+    '  fragColor = vec4(rgb, tex.a * u_color.a);'#10+
+    '}'#10;
+
+  GL_CLAMP_TO_EDGE = $812F;
+
+var
+  // modern GL resources, created on the first paint
+  GLLoaded: boolean = false;
+  GLProg: GLuint = 0;
+  uMVP, uMV, uTex, uLit, uCol: GLint;
+  glVAO: GLuint = 0;
+  vboBack, vboSides, vboCaps, vboPart: GLuint;
+  nBack, nSides, nCaps, nPart: GLsizei;
+  ProjMatrix: TMat4;
+
+// --------------------------------------------------------------------------
+//  Shader/program helpers
+// --------------------------------------------------------------------------
+function CompileShader(AType: GLenum; const Src: string): GLuint;
+var
+  status, loglen: GLint;
+  p: PGLchar;
+  logbuf: AnsiString;
+begin
+  Result := glCreateShader(AType);
+  p := PGLchar(Src);
+  // FPC's glext declares the source param as PGLchar, so pass the address of
+  // the pointer (count=1, length=nil -> null terminated).
+  glShaderSource(Result, 1, PGLchar(@p), nil);
+  glCompileShader(Result);
+  glGetShaderiv(Result, GL_COMPILE_STATUS, @status);
+  if status = 0 then begin
+    logbuf:='';
+    glGetShaderiv(Result, GL_INFO_LOG_LENGTH, @loglen);
+    SetLength(logbuf, loglen);
+    if loglen > 0 then
+      glGetShaderInfoLog(Result, loglen, nil, @logbuf[1]);
+    DebugLn(['OpenGL shader compile error: ', logbuf]);
+  end;
+end;
+
+function BuildProgram: GLuint;
+var
+  vs, fs: GLuint;
+  status, loglen: GLint;
+  logbuf: AnsiString;
+begin
+  vs := CompileShader(GL_VERTEX_SHADER, VertexShaderSrc);
+  fs := CompileShader(GL_FRAGMENT_SHADER, FragmentShaderSrc);
+  Result := glCreateProgram();
+  glAttachShader(Result, vs);
+  glAttachShader(Result, fs);
+  glBindAttribLocation(Result, 0, 'in_position');
+  glBindAttribLocation(Result, 1, 'in_normal');
+  glBindAttribLocation(Result, 2, 'in_texcoord');
+  glLinkProgram(Result);
+  glGetProgramiv(Result, GL_LINK_STATUS, @status);
+  if status = 0 then begin
+    logbuf:='';
+    glGetProgramiv(Result, GL_INFO_LOG_LENGTH, @loglen);
+    SetLength(logbuf, loglen);
+    if loglen > 0 then
+      glGetProgramInfoLog(Result, loglen, nil, @logbuf[1]);
+    DebugLn(['OpenGL program link error: ', logbuf]);
+  end;
+  glDeleteShader(vs);
+  glDeleteShader(fs);
+end;
+
+// --------------------------------------------------------------------------
+//  Mesh builder: interleaved position(3) + normal(3) + texcoord(2)
+// --------------------------------------------------------------------------
+type
+  TMeshBuilder = record
+    Data: array of GLfloat;
+    Count: integer; // floats used
+  end;
+
+procedure MB_Init(out MB: TMeshBuilder);
+begin
+  SetLength(MB.Data, 0);
+  MB.Count := 0;
+end;
+
+procedure MB_Vert(var MB: TMeshBuilder; px,py,pz, nx,ny,nz, u,v: GLfloat);
+begin
+  if MB.Count+8 > Length(MB.Data) then
+    SetLength(MB.Data, (MB.Count+8)*2 + 64);
+  MB.Data[MB.Count+0]:=px; MB.Data[MB.Count+1]:=py; MB.Data[MB.Count+2]:=pz;
+  MB.Data[MB.Count+3]:=nx; MB.Data[MB.Count+4]:=ny; MB.Data[MB.Count+5]:=nz;
+  MB.Data[MB.Count+6]:=u;  MB.Data[MB.Count+7]:=v;
+  Inc(MB.Count, 8);
+end;
+
+// Append a quad (corners a,b,c,d in polygon order) as two triangles.
+procedure MB_Quad(var MB: TMeshBuilder;
+  ax,ay,az, bx,by,bz, cx,cy,cz, dx,dy,dz, nx,ny,nz,
+  au,av, bu,bv, cu,cv, du,dv: GLfloat);
+begin
+  MB_Vert(MB, ax,ay,az, nx,ny,nz, au,av);
+  MB_Vert(MB, bx,by,bz, nx,ny,nz, bu,bv);
+  MB_Vert(MB, cx,cy,cz, nx,ny,nz, cu,cv);
+  MB_Vert(MB, ax,ay,az, nx,ny,nz, au,av);
+  MB_Vert(MB, cx,cy,cz, nx,ny,nz, cu,cv);
+  MB_Vert(MB, dx,dy,dz, nx,ny,nz, du,dv);
+end;
+
+function UploadMesh(const MB: TMeshBuilder; out vbo: GLuint): GLsizei;
+begin
+  glGenBuffers(1, @vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  glBufferData(GL_ARRAY_BUFFER, MB.Count*SizeOf(GLfloat), @MB.Data[0], GL_STATIC_DRAW);
+  Result := MB.Count div 8;
+end;
+
+procedure BuildBackground(out MB: TMeshBuilder);
+const s = 2.5;
+begin
+  MB_Init(MB);
+  MB_Quad(MB,  s, s, s,  -s, s, s,  -s,-s, s,   s,-s, s,   0, 0, 1,  1,1, 0,1, 0,0, 1,0); // front
+  MB_Quad(MB,  s, s,-s,   s,-s,-s,  -s,-s,-s,  -s, s,-s,   0, 0,-1,  0,1, 0,0, 1,0, 1,1); // back
+  MB_Quad(MB, -s, s, s,  -s, s,-s,  -s,-s,-s,  -s,-s, s,  -1, 0, 0,  1,1, 0,1, 0,0, 1,0); // left
+  MB_Quad(MB,  s, s,-s,   s, s, s,   s,-s, s,   s,-s,-s,   1, 0, 0,  1,1, 0,1, 0,0, 1,0); // right
+  MB_Quad(MB,  s, s,-s,  -s, s,-s,  -s, s, s,   s, s, s,   0, 1, 0,  1,1, 0,1, 0,0, 1,0); // top
+  MB_Quad(MB, -s,-s,-s,   s,-s,-s,   s,-s, s,  -s,-s, s,   0,-1, 0,  1,1, 0,1, 0,0, 1,0); // bottom
+end;
+
+procedure BuildCubeSides(out MB: TMeshBuilder);
+const s = 0.5;
+begin
+  MB_Init(MB);
+  MB_Quad(MB,  s, s, s,  -s, s, s,  -s,-s, s,   s,-s, s,   0, 0, 1,  1,1, 0,1, 0,0, 1,0); // front
+  MB_Quad(MB,  s, s,-s,   s,-s,-s,  -s,-s,-s,  -s, s,-s,   0, 0,-1,  0,1, 0,0, 1,0, 1,1); // back
+  MB_Quad(MB, -s, s, s,  -s, s,-s,  -s,-s,-s,  -s,-s, s,  -1, 0, 0,  1,1, 0,1, 0,0, 1,0); // left
+  MB_Quad(MB,  s, s,-s,   s, s, s,   s,-s, s,   s,-s,-s,   1, 0, 0,  1,1, 0,1, 0,0, 1,0); // right
+end;
+
+procedure BuildCubeCaps(out MB: TMeshBuilder);
+const s = 0.5;
+begin
+  MB_Init(MB);
+  MB_Quad(MB,  s, s,-s,  -s, s,-s,  -s, s, s,   s, s, s,   0, 1, 0,  1,1, 0,1, 0,0, 1,0); // top
+  MB_Quad(MB, -s,-s,-s,   s,-s,-s,   s,-s, s,  -s,-s, s,   0,-1, 0,  1,1, 0,1, 0,0, 1,0); // bottom
+end;
+
+procedure BuildParticle(out MB: TMeshBuilder);
+const s = 0.025;
+begin
+  MB_Init(MB);
+  MB_Quad(MB,  s, s, 0,  -s, s, 0,  -s,-s, 0,   s,-s, 0,   0, 0, 1,  1,1, 0,1, 0,0, 1,0);
+end;
+
+procedure BindMesh(vbo: GLuint);
+const
+  stride = 8*SizeOf(GLfloat);
+begin
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, Pointer(0));
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, Pointer(3*SizeOf(GLfloat)));
+  glEnableVertexAttribArray(2);
+  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, Pointer(6*SizeOf(GLfloat)));
+end;
 
 function LoadFileToMemStream(const Filename: string): TMemoryStream;
 var FileStream: TFileStream;
@@ -183,13 +457,13 @@ begin
   if LazarusResources.Find(ClassName)=nil then begin
     SetBounds((Screen.Width-800) div 2,(Screen.Height-600) div 2,800,600);
     Caption:='LCL example for the TOpenGLControl';
-    
+
     Application.OnIdle:=@IdleFunc;
     OnResize:=@FormResize;
     blended:=false;
     lighted:=false;
     ParticleEngine:=TParticleEngine.Create;
-    
+
     ExitButton1:=TButton.Create(Self);
     with ExitButton1 do begin
       Name:='ExitButton1';
@@ -223,7 +497,6 @@ begin
       Parent:=Self;
       SetBounds(320,10,80,25);
       Caption:='Move Cube';
-      Checked:=false;
       OnClick:=@MoveCubeButton1Click;
     end;
 
@@ -233,17 +506,15 @@ begin
       Parent:=Self;
       SetBounds(320,10,80,25);
       Caption:='Move Back';
-      Checked:=false;
       OnClick:=@MoveBackgroundButton1Click;
     end;
-    
+
     RotateZButton1:=TButton.Create(Self);
     with RotateZButton1 do begin
       Name:='RotateZButton1';
       Parent:=Self;
       SetBounds(320,10,80,25);
       Caption:='P. Respawn';
-      Checked:=false;
       OnClick:=@RotateZButton1Click;
     end;
 
@@ -253,7 +524,6 @@ begin
       Parent:=Self;
       SetBounds(320,10,80,25);
       Caption:='P. Blending';
-      Checked:=false;
       OnClick:=@RotateZButton2Click;
     end;
 
@@ -264,7 +534,7 @@ begin
       SetBounds(0,0,280,50);
       Caption:='Demo';
     end;
-    
+
     // resize the components first, because the opengl context needs some time to setup
     FormResize(Self);
 
@@ -329,28 +599,17 @@ end;
 // --------------------------------------------------------------------------
 
 constructor TParticleEngine.Create;
-var i: integer; 
+var i: integer;
 begin
-  for i:=1 to 2001 do Particle[i]:=TParticle.Create;
+  for i:=1 to ParticleCount do Particle[i]:=TParticle.Create;
   xspawn:=0;
 end;
 
 destructor TParticleEngine.Destroy;
 var i: integer;
 begin
-  for i:=1 to 2001 do FreeAndNil(Particle[i]);
+  for i:=1 to ParticleCount do FreeAndNil(Particle[i]);
   inherited Destroy;
-end;
-
-procedure TParticleEngine.DrawParticles;
-var i: integer;
-begin
-  for i:=1 to 2001 do begin
-    glPushMatrix;
-    glTranslatef(Particle[i].x, Particle[i].y, Particle[i].z);
-    glCallList(ParticleList);
-    glPopMatrix;
-  end;
 end;
 
 procedure TParticleEngine.RespawnParticle(i: integer);
@@ -373,25 +632,25 @@ end;
 procedure TParticleEngine.MoveParticles;
 var i: integer;
 begin
-  for i:=1 to 2001 do begin
+  for i:=1 to ParticleCount do begin
     if Particle[i].life>0 then begin
       Particle[i].life:=Particle[i].life-0.01*(timer/10);
       Particle[i].x:=Particle[i].x+Particle[i].vx*(timer/10);
-      
+
       Particle[i].vy:=Particle[i].vy-0.00035*(timer/10); // gravity
       Particle[i].y:=Particle[i].y+Particle[i].vy*(timer/10);
-      
+
       Particle[i].z:=Particle[i].z+Particle[i].vz*(timer/10);
     end else begin
       RespawnParticle(i);
     end;
-  end;  
+  end;
 end;
 
 procedure TParticleEngine.Start;
 var i: integer;
 begin
-  for i:=1 to 2001 do begin
+  for i:=1 to ParticleCount do begin
     RespawnParticle(i);
   end;
 end;
@@ -403,7 +662,6 @@ end;
 procedure TExampleForm.IdleFunc(Sender: TObject; var Done: Boolean);
 begin
   OpenGLControl1.Invalidate;
-  //OpenGLControl1Paint(Self);
   Done:=false; // tell lcl to handle messages and return immediatly
 end;
 
@@ -413,9 +671,8 @@ end;
 
 procedure TExampleForm.LightingButton1Click(Sender: TObject);
 begin
-  if lighted then glDisable(GL_LIGHTING) else glEnable(GL_LIGHTING);
   lighted:=not lighted;
-  OpenGLControl1.Invalidate;// not need
+  OpenGLControl1.Invalidate;
 end;
 
 procedure TExampleForm.BlendButton1Click(Sender: TObject);
@@ -471,78 +728,32 @@ begin
   Close;
 end;
 
-procedure TExampleForm.OpenGLControl1Paint(Sender: TObject);
-
-  procedure myInit;
-  begin
-    {init lighting variables}
-    {ambient color}
-    lightamb[0]:=0.5;
-    lightamb[1]:=0.5;
-    lightamb[2]:=0.5;
-    lightamb[3]:=1.0;
-    {diffuse color}
-    lightdif[0]:=0.8;
-    lightdif[1]:=0.0;
-    lightdif[2]:=0.0;
-    lightdif[3]:=1.0;
-    {diffuse position}
-    lightpos[0]:=0.0;
-    lightpos[1]:=0.0;
-    lightpos[2]:=3.0;
-    lightpos[3]:=1.0;
-    {diffuse 2 color}
-    light2dif[0]:=0.0;
-    light2dif[1]:=0.8;
-    light2dif[2]:=0.0;
-    light2dif[3]:=1.0;
-    {diffuse 2 position}
-    light2pos[0]:=3.0;
-    light2pos[1]:=0.0;
-    light2pos[2]:=3.0;
-    light2pos[3]:=1.0;
-    {diffuse 3 color}
-    light3dif[0]:=0.0;
-    light3dif[1]:=0.0;
-    light3dif[2]:=0.8;
-    light3dif[3]:=1.0;
-    {diffuse 3 position}
-    light3pos[0]:=-3.0;
-    light3pos[1]:=0.0;
-    light3pos[2]:=0.0;
-    light3pos[3]:=1.0;
-    {fog color}
-    
-    fogcolor[0]:=0.5;
-    fogcolor[1]:=0.5;
-    fogcolor[2]:=0.5;
-    fogcolor[3]:=1.0;
-    
-  end;
-
-const GLInitialized: boolean = false;
-
-procedure InitGL;
+procedure TExampleForm.InitGLResources;
 var
   i: Integer;
+  MB: TMeshBuilder;
 begin
-  if GLInitialized then exit;
-  GLInitialized:=true;
-  {setting lighting conditions}
-  glLightfv(GL_LIGHT0,GL_AMBIENT,lightamb);
-  glLightfv(GL_LIGHT1,GL_AMBIENT,lightamb);
-  glLightfv(GL_LIGHT2,GL_DIFFUSE,lightdif);
-  glLightfv(GL_LIGHT2,GL_POSITION,lightpos);
-  glLightfv(GL_LIGHT3,GL_DIFFUSE,light2dif);
-  glLightfv(GL_LIGHT3,GL_POSITION,light2pos);
-  glLightfv(GL_LIGHT4,GL_POSITION,light3pos);
-  glLightfv(GL_LIGHT4,GL_DIFFUSE,light3dif);
-  glEnable(GL_LIGHT0);
-  glEnable(GL_LIGHT1);
-  glEnable(GL_LIGHT2);
-  glEnable(GL_LIGHT3);
-  glEnable(GL_LIGHT4);
+  if not GLLoaded then begin
+    // load the OpenGL 1.5 / 2.0 / 3.0 entry points (buffers, shaders, VAOs)
+    Load_GL_version_1_5;
+    Load_GL_version_2_0;
+    Load_GL_version_3_0;
+    GLLoaded:=true;
+  end;
 
+  GLProg := BuildProgram;
+  uMVP := glGetUniformLocation(GLProg, 'u_mvp');
+  uMV  := glGetUniformLocation(GLProg, 'u_modelview');
+  uTex := glGetUniformLocation(GLProg, 'u_tex');
+  uLit := glGetUniformLocation(GLProg, 'u_lighting');
+  uCol := glGetUniformLocation(GLProg, 'u_color');
+
+  // a single VAO holds the vertex layout; attribute pointers are (re)bound
+  // per mesh in BindMesh
+  glGenVertexArrays(1, @glVAO);
+  glBindVertexArray(glVAO);
+
+  // upload the 3 textures
   glGenTextures(3, @textures[0]);
   for i:=0 to 2 do begin
     glBindTexture(GL_TEXTURE_2D, Textures[i]);
@@ -550,138 +761,28 @@ begin
     glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D,0,3,MyglTextures[i].Width,MyglTextures[i].Height,0
-        ,GL_RGB,GL_UNSIGNED_BYTE,MyglTextures[i].Data);
+    glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,MyglTextures[i].Width,MyglTextures[i].Height,0,
+        GL_RGB,GL_UNSIGNED_BYTE,MyglTextures[i].Data);
   end;
-  glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-  {instead of GL_MODULATE you can try GL_DECAL or GL_BLEND}
-  glEnable(GL_TEXTURE_2D);          // enables 2d textures
-  glClearColor(0.0,0.0,0.0,1.0);    // sets background color
+
+  // build the geometry once into static vertex buffers
+  BuildBackground(MB); nBack  := UploadMesh(MB, vboBack);
+  BuildCubeSides(MB);  nSides := UploadMesh(MB, vboSides);
+  BuildCubeCaps(MB);   nCaps  := UploadMesh(MB, vboCaps);
+  BuildParticle(MB);   nPart  := UploadMesh(MB, vboPart);
+
   glClearDepth(1.0);
-  glDepthFunc(GL_LEQUAL);           // the type of depth test to do
-  glEnable(GL_DEPTH_TEST);          // enables depth testing
-  glShadeModel(GL_SMOOTH);          // enables smooth color shading
-  {blending}
-  glColor4f(1.0,1.0,1.0,0.5);       // Full Brightness, 50% Alpha ( NEW )
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-  glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
-  {}
-  glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
-  glHint(GL_POLYGON_SMOOTH_HINT,GL_NICEST);
-  glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_NICEST);    
-  
-  // creating display lists
-  
-  ParticleList:=glGenLists(1);
-  glNewList(ParticleList, GL_COMPILE);
-    glBindTexture(GL_TEXTURE_2D, textures[0]);
-    glBegin(GL_TRIANGLE_STRIP);
-      glNormal3f( 0.0, 0.0, 1.0);
-      glTexCoord2f( 1.0, 1.0);     glVertex3f(+0.025, +0.025, 0);
-      glTexCoord2f( 0.0, 1.0);     glVertex3f(-0.025, +0.025, 0);
-      glTexCoord2f( 1.0, 0.0);     glVertex3f(+0.025, -0.025, 0);
-      glTexCoord2f( 0.0, 0.0);     glVertex3f(-0.025, -0.025, 0);
-    glEnd;
-  glEndList;
-  
-  BackList:=ParticleList+1;
-  glNewList(BackList, GL_COMPILE);
-    glBindTexture(GL_TEXTURE_2D, textures[2]);
-    glBegin(GL_QUADS);
-      {Front Face}
-      glNormal3f( 0.0, 0.0, 1.0);
-      glTexCoord2f( 1.0, 1.0);     glVertex3f( 2.5, 2.5, 2.5);
-      glTexCoord2f( 0.0, 1.0);     glVertex3f(-2.5, 2.5, 2.5);
-      glTexCoord2f( 0.0, 0.0);     glVertex3f(-2.5,-2.5, 2.5);
-      glTexCoord2f( 1.0, 0.0);     glVertex3f( 2.5,-2.5, 2.5);
-      {Back Face}
-      glNormal3f( 0.0, 0.0,-1.0);
-      glTexCoord2f( 0.0, 1.0);     glVertex3f( 2.5, 2.5,-2.5);
-      glTexCoord2f( 0.0, 0.0);     glVertex3f( 2.5,-2.5,-2.5);
-      glTexCoord2f( 1.0, 0.0);     glVertex3f(-2.5,-2.5,-2.5);
-      glTexCoord2f( 1.0, 1.0);     glVertex3f(-2.5, 2.5,-2.5);      
-      {Left Face}
-      glNormal3f(-1.0, 0.0, 0.0);
-      glTexCoord2f( 1.0, 1.0);     glVertex3f(-2.5, 2.5, 2.5);
-      glTexCoord2f( 0.0, 1.0);     glVertex3f(-2.5, 2.5,-2.5);
-      glTexCoord2f( 0.0, 0.0);     glVertex3f(-2.5,-2.5,-2.5);
-      glTexCoord2f( 1.0, 0.0);     glVertex3f(-2.5,-2.5, 2.5);
-      {Right Face}
-      glNormal3f( 1.0, 0.0, 0.0);
-      glTexCoord2f( 1.0, 1.0);     glVertex3f( 2.5, 2.5,-2.5);
-      glTexCoord2f( 0.0, 1.0);     glVertex3f( 2.5, 2.5, 2.5);
-      glTexCoord2f( 0.0, 0.0);     glVertex3f( 2.5,-2.5, 2.5);
-      glTexCoord2f( 1.0, 0.0);     glVertex3f( 2.5,-2.5,-2.5);      
-      {Top Face}
-      glNormal3f( 0.0, 1.0, 0.0);
-      glTexCoord2f( 1.0, 1.0);     glVertex3f( 2.5, 2.5,-2.5);
-      glTexCoord2f( 0.0, 1.0);     glVertex3f(-2.5, 2.5,-2.5);
-      glTexCoord2f( 0.0, 0.0);     glVertex3f(-2.5, 2.5, 2.5);
-      glTexCoord2f( 1.0, 0.0);     glVertex3f( 2.5, 2.5, 2.5);
-      {Bottom Face}
-      glNormal3f( 0.0,-1.0, 0.0);
-      glTexCoord2f( 1.0, 1.0);     glVertex3f(-2.5,-2.5,-2.5);
-      glTexCoord2f( 0.0, 1.0);     glVertex3f( 2.5,-2.5,-2.5);
-      glTexCoord2f( 0.0, 0.0);     glVertex3f( 2.5,-2.5, 2.5);
-      glTexCoord2f( 1.0, 0.0);     glVertex3f(-2.5,-2.5, 2.5);
- 
-    glEnd;
-  glEndList;
-  
-  CubeList:=BackList+1;
-  glNewList(CubeList, GL_COMPILE);
-    glBindTexture(GL_TEXTURE_2D, textures[1]);
-    glBegin(GL_QUADS);
-      {Front Face}
-      glNormal3f( 0.0, 0.0, 1.0);
-      glTexCoord2f( 1.0, 1.0);     glVertex3f( 0.5, 0.5, 0.5);
-      glTexCoord2f( 0.0, 1.0);     glVertex3f(-0.5, 0.5, 0.5);
-      glTexCoord2f( 0.0, 0.0);     glVertex3f(-0.5,-0.5, 0.5);
-      glTexCoord2f( 1.0, 0.0);     glVertex3f( 0.5,-0.5, 0.5);
-      {Back Face}
-      glNormal3f( 0.0, 0.0,-1.0);
-      glTexCoord2f( 0.0, 1.0);     glVertex3f( 0.5, 0.5,-0.5);
-      glTexCoord2f( 0.0, 0.0);     glVertex3f( 0.5,-0.5,-0.5);
-      glTexCoord2f( 1.0, 0.0);     glVertex3f(-0.5,-0.5,-0.5);
-      glTexCoord2f( 1.0, 1.0);     glVertex3f(-0.5, 0.5,-0.5);      
-    glEnd;
-    glBindTexture(GL_TEXTURE_2D, textures[1]);
-    glBegin(GL_QUADS);
-      {Left Face}
-      glNormal3f(-1.0, 0.0, 0.0);
-      glTexCoord2f( 1.0, 1.0);     glVertex3f(-0.5, 0.5, 0.5);
-      glTexCoord2f( 0.0, 1.0);     glVertex3f(-0.5, 0.5,-0.5);
-      glTexCoord2f( 0.0, 0.0);     glVertex3f(-0.5,-0.5,-0.5);
-      glTexCoord2f( 1.0, 0.0);     glVertex3f(-0.5,-0.5, 0.5);
-      {Right Face}
-      glNormal3f( 1.0, 0.0, 0.0);
-      glTexCoord2f( 1.0, 1.0);     glVertex3f( 0.5, 0.5,-0.5);
-      glTexCoord2f( 0.0, 1.0);     glVertex3f( 0.5, 0.5, 0.5);
-      glTexCoord2f( 0.0, 0.0);     glVertex3f( 0.5,-0.5, 0.5);
-      glTexCoord2f( 1.0, 0.0);     glVertex3f( 0.5,-0.5,-0.5);      
-    glEnd;
-    glBindTexture(GL_TEXTURE_2D, textures[2]);
-    glBegin(GL_QUADS);
-      {Top Face}
-      glNormal3f( 0.0, 1.0, 0.0);
-      glTexCoord2f( 1.0, 1.0);     glVertex3f( 0.5, 0.5,-0.5);
-      glTexCoord2f( 0.0, 1.0);     glVertex3f(-0.5, 0.5,-0.5);
-      glTexCoord2f( 0.0, 0.0);     glVertex3f(-0.5, 0.5, 0.5);
-      glTexCoord2f( 1.0, 0.0);     glVertex3f( 0.5, 0.5, 0.5);
-      {Bottom Face}
-      glNormal3f( 0.0,-1.0, 0.0);
-      glTexCoord2f( 1.0, 1.0);     glVertex3f(-0.5,-0.5,-0.5);
-      glTexCoord2f( 0.0, 1.0);     glVertex3f( 0.5,-0.5,-0.5);
-      glTexCoord2f( 0.0, 0.0);     glVertex3f( 0.5,-0.5, 0.5);
-      glTexCoord2f( 1.0, 0.0);     glVertex3f(-0.5,-0.5, 0.5);
-    glEnd;
-  glEndList;
-  
+  glDepthFunc(GL_LEQUAL);
+
+  ProjMatrix := Mat4Frustum(-1.0, 1.0, -1.0, 1.0, 1.5, 20.0);
 end;
 
+procedure TExampleForm.OpenGLControl1Paint(Sender: TObject);
 var
   CurTime: TDateTime;
   MSecs: integer;
+  Base, MV, MVP: TMat4;
+  i: integer;
 begin
   inc(FrameCount);
   inc(LastFrameTicks,OpenGLControl1.FrameDiffTimeInMSecs);
@@ -691,84 +792,105 @@ begin
     FrameCount:=0;
   end;
 
-  if OpenGLControl1.MakeCurrent then
-  begin
-    if not AreaInitialized then begin
-      myInit;
-      InitGL;
-      glMatrixMode (GL_PROJECTION);    { prepare for and then }
-      glLoadIdentity ();               { define the projection }
-      glFrustum (-1.0, 1.0, -1.0, 1.0, 1.5, 20.0); { transformation } 
-      glMatrixMode (GL_MODELVIEW);  { back to modelview matrix }
-      glViewport (0, 0, OpenGLControl1.Width, OpenGLControl1.Height);
-                                    { define the viewport }
-      AreaInitialized:=true;
-    end;
+  if not OpenGLControl1.MakeCurrent then exit;
 
-    CurTime:=Now;
-    MSecs:=round(CurTime*86400*1000) mod 1000;
-    if MSecs<0 then MSecs:=1000+MSecs;
-    timer:=msecs-LastMsecs;
-    if timer<0 then timer:=1000+timer;
-    LastMsecs:=MSecs;
-    
-    ParticleEngine.MoveParticles;
-    
-    glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);
-    glLoadIdentity;             { clear the matrix }
-    glTranslatef (0.0, 0.0,-3.0);  // -2.5); { viewing transformation }
-    {rotate}
-
-    glPushMatrix;
-
-    if MoveBackground then begin
-      rrx:=rrx-0.6*(timer/10);
-      rry:=rry-0.5*(timer/10);
-      rrz:=rrz-0.3*(timer/10);
-    end;
-    
-    glRotatef(rrx,1.0,0.0,0.0);
-    glRotatef(rry,0.0,1.0,0.0);
-    glRotatef(rrz,0.0,0.0,1.0);
-
-    // draw background
-    if blended then begin
-      glEnable(GL_BLEND);
-      glDisable(GL_DEPTH_TEST);
-    end;
-    glCallList(BackList);
-    
-    glPopMatrix;
-       
-    glPushMatrix;
-
-    if MoveCube then begin
-      rx:=rx+0.5*(timer/10);
-      ry:=ry+0.25*(timer/10);
-      rz:=rz+0.8*(timer/10);
-    end;
-    
-    glRotatef(rx,1.0,0.0,0.0);
-    glRotatef(ry,0.0,1.0,0.0);
-    glRotatef(rz,0.0,0.0,1.0);
-    
-    // draw cube
-    glCallList(CubeList);
-    if blended then begin
-      glDisable(GL_BLEND);
-      glEnable(GL_DEPTH_TEST);
-    end;
-    
-    glPopMatrix;
-    
-    if ParticleBlended then glEnable(GL_BLEND);
-    ParticleEngine.DrawParticles;
-    if ParticleBlended then glDisable(GL_BLEND);
-    //glFlush;
-    //glFinish;
-    // Swap backbuffer to front
-    OpenGLControl1.SwapBuffers;
+  if not AreaInitialized then begin
+    InitGLResources;
+    AreaInitialized:=true;
   end;
+
+  glViewport(0, 0, OpenGLControl1.Width, OpenGLControl1.Height);
+
+  CurTime:=Now;
+  MSecs:=round(CurTime*86400*1000) mod 1000;
+  if MSecs<0 then MSecs:=1000+MSecs;
+  timer:=msecs-LastMsecs;
+  if timer<0 then timer:=1000+timer;
+  LastMsecs:=MSecs;
+
+  ParticleEngine.MoveParticles;
+
+  glClearColor(0.0, 0.0, 0.0, 1.0);
+  glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);
+  glEnable(GL_DEPTH_TEST);
+
+  glUseProgram(GLProg);
+  glBindVertexArray(glVAO);
+  glActiveTexture(GL_TEXTURE0);
+  glUniform1i(uTex, 0);
+  glUniform1i(uLit, Ord(lighted));
+  // matches the old fixed-function glColor4f(1,1,1,0.5)
+  glUniform4f(uCol, 1.0, 1.0, 1.0, 0.5);
+
+  Base := Mat4Translate(0.0, 0.0, -3.0);
+
+  // ------- background -------
+  if MoveBackground then begin
+    rrx:=rrx-0.6*(timer/10);
+    rry:=rry-0.5*(timer/10);
+    rrz:=rrz-0.3*(timer/10);
+  end;
+  MV := Mat4Mul(Base, Mat4Mul(Mat4RotateDeg(rrx,1,0,0),
+        Mat4Mul(Mat4RotateDeg(rry,0,1,0), Mat4RotateDeg(rrz,0,0,1))));
+  MVP := Mat4Mul(ProjMatrix, MV);
+  glUniformMatrix4fv(uMV,  1, GL_FALSE, @MV[0]);
+  glUniformMatrix4fv(uMVP, 1, GL_FALSE, @MVP[0]);
+
+  if blended then begin
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    glDisable(GL_DEPTH_TEST);
+  end;
+  glBindTexture(GL_TEXTURE_2D, textures[2]);
+  BindMesh(vboBack);
+  glDrawArrays(GL_TRIANGLES, 0, nBack);
+
+  // ------- cube -------
+  if MoveCube then begin
+    rx:=rx+0.5*(timer/10);
+    ry:=ry+0.25*(timer/10);
+    rz:=rz+0.8*(timer/10);
+  end;
+  MV := Mat4Mul(Base, Mat4Mul(Mat4RotateDeg(rx,1,0,0),
+        Mat4Mul(Mat4RotateDeg(ry,0,1,0), Mat4RotateDeg(rz,0,0,1))));
+  MVP := Mat4Mul(ProjMatrix, MV);
+  glUniformMatrix4fv(uMV,  1, GL_FALSE, @MV[0]);
+  glUniformMatrix4fv(uMVP, 1, GL_FALSE, @MVP[0]);
+
+  glBindTexture(GL_TEXTURE_2D, textures[1]);
+  BindMesh(vboSides);
+  glDrawArrays(GL_TRIANGLES, 0, nSides);
+  glBindTexture(GL_TEXTURE_2D, textures[2]);
+  BindMesh(vboCaps);
+  glDrawArrays(GL_TRIANGLES, 0, nCaps);
+
+  if blended then begin
+    glDisable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
+  end;
+
+  // ------- particles -------
+  if ParticleBlended then begin
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+  end;
+  glBindTexture(GL_TEXTURE_2D, textures[0]);
+  BindMesh(vboPart);
+  for i:=1 to ParticleCount do begin
+    MV := Mat4Mul(Base, Mat4Translate(ParticleEngine.Particle[i].x,
+            ParticleEngine.Particle[i].y, ParticleEngine.Particle[i].z));
+    MVP := Mat4Mul(ProjMatrix, MV);
+    glUniformMatrix4fv(uMV,  1, GL_FALSE, @MV[0]);
+    glUniformMatrix4fv(uMVP, 1, GL_FALSE, @MVP[0]);
+    glDrawArrays(GL_TRIANGLES, 0, nPart);
+  end;
+  if ParticleBlended then glDisable(GL_BLEND);
+
+  glBindVertexArray(0);
+  glUseProgram(0);
+
+  // Swap backbuffer to front
+  OpenGLControl1.SwapBuffers;
 end;
 
 procedure TExampleForm.OpenGLControl1Resize(Sender: TObject);
