@@ -626,6 +626,13 @@ resourcestring
   DbgWatchColorOnOutputOncePerDebugSessi = 'On output (once per debug session)';
   DbgWatchColorOnOutputAlways = 'On output (always)';
 
+  DbgValueDisabled  = 'Disabled';
+  DbgValueUnavailable  = 'Unavailable';
+  DbgValueEvaluating = 'Evaluating';
+  DbgValueNotEvaluated = 'Not evaluated';
+  DbgValueInvalid = 'Invalid';
+  DbgValueError = 'Error: %s';
+
 implementation
 
 end.

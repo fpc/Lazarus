@@ -49,7 +49,8 @@ uses
   IdeDebuggerWatchValueIntf, RegExpr, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   LazDebuggerValueConverter, LazDebuggerTemplate, LazDebuggerIntfFloatTypes, IdeDebuggerBase,
   IdeDebuggerWatchResult, IdeDebuggerOpts, IdeDebuggerBackendValueConv,
-  IdeDebuggerUtils, IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats, ProjectDebugLink;
+  IdeDebuggerUtils, IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats, ProjectDebugLink,
+  IdeDebuggerStringConstants;
 
 const
   XMLBreakPointsNode = 'BreakPoints';
@@ -4720,20 +4721,20 @@ begin
   if Watch = nil then
     exit;
   if not Watch.Enabled then
-    exit('<disabled>');
+    exit('<'+DbgValueDisabled+'>');
   i := DbgStateChangeCounter;  // workaround for state changes during TWatchValue.GetValue
   if Validity = ddsUnknown then begin
-    Result := '<evaluating>';
+    Result := '<'+DbgValueEvaluating+'>';
     Validity := ddsRequested;
     RequestData;
     if i <> DbgStateChangeCounter then exit; // in case the debugger did run.
     // TODO: The watch can also be deleted by the user
   end;
   case Validity of
-    ddsRequested, ddsEvaluating: Result := '<evaluating>';
+    ddsRequested, ddsEvaluating: Result := '<'+DbgValueEvaluating+'>';
     ddsValid:                    Result := inherited GetValue;
-    ddsInvalid:                  Result := '<invalid>';
-    ddsError:                    Result := '<Error: '+ (inherited GetValue) +'>';
+    ddsInvalid:                  Result := '<'+DbgValueInvalid+'>';
+    ddsError:                    Result := '<'+Format(DbgValueError, [inherited GetValue])+'>';
   end;
 end;
 
@@ -8301,11 +8302,11 @@ function TSubLocalsValue.GetValue: String;
 begin
   RequestData;
   case FValidity of
-    ddsRequested, ddsEvaluating: Result := '<evaluating>';
+    ddsRequested, ddsEvaluating: Result := '<'+DbgValueEvaluating+'>';
     ddsValid:                    Result := inherited GetValue;
-    ddsInvalid:                  Result := '<invalid>';
-    ddsError:                    Result := '<Error: '+ (inherited GetValue) +'>';
-    else Result := '<not evaluated>';
+    ddsInvalid:                  Result := '<'+DbgValueInvalid+'>';
+    ddsError:                    Result := '<'+Format(DbgValueError, [inherited GetValue])+'>';
+    else Result := '<'+DbgValueNotEvaluated+'>';
   end;
 end;
 
@@ -8880,10 +8881,10 @@ function TIdeCallStackEntry.GetFunctionName: String;
 begin
   case Validity of
     ddsValid:     Result := inherited GetFunctionName;
-    ddsError:     Result := '<Error: '+(inherited GetFunctionName)+'>';
-    ddsInvalid:   Result := '<invalid>';
-    ddsRequested, ddsEvaluating: Result := '<evaluating>';
-    ddsUnknown:                  Result := '<unknown>';
+    ddsError:     Result := '<'+Format(DbgValueError, [inherited GetFunctionName])+'>';
+    ddsInvalid:   Result := '<'+DbgValueInvalid+'>';
+    ddsRequested, ddsEvaluating: Result := '<'+DbgValueEvaluating+'>';
+    ddsUnknown:                  Result := '<'+DbgValueUnavailable+'>';
   end;
 end;
 

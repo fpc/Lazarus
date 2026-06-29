@@ -138,6 +138,35 @@ msgstr "Nome:"
 msgid "Please choose the formatter to add."
 msgstr "Por favor, escolha o formatador a adicionar."
 
+#: idedebuggerstringconstants.dbgvaluedisabled
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dbgvaluedisabled"
+msgid "Disabled"
+msgstr "Desactivado"
+
+#: idedebuggerstringconstants.dbgvalueerror
+#, object-pascal-format
+msgid "Error: %s"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgvalueevaluating
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dbgvalueevaluating"
+msgid "Evaluating"
+msgstr "A avaliar"
+
+#: idedebuggerstringconstants.dbgvalueinvalid
+msgid "Invalid"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgvaluenotevaluated
+msgid "Not evaluated"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgvalueunavailable
+msgid "Unavailable"
+msgstr ""
+
 #: idedebuggerstringconstants.dbgwatchcolorautoopenconsolewindowlinu
 msgid "Auto open console Window (Linux):"
 msgstr ""
@@ -157,6 +186,7 @@ msgid "Error"
 msgstr "Erro"
 
 #: idedebuggerstringconstants.dbgwatchcolorevaluating
+msgctxt "idedebuggerstringconstants.dbgwatchcolorevaluating"
 msgid "Evaluating"
 msgstr "A avaliar"
 

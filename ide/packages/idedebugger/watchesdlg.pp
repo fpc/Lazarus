@@ -1520,13 +1520,13 @@ begin
 
   if not CanCallWatchGetValue then begin
     // TODO: last cached
-    InspectMemo.Text := '<invalid>';
+    InspectMemo.Text := '<'+DbgValueInvalid+'>';
     exit;
   end;
   tid := GetThreadId;
   stf := GetStackframe;
   if not(Watch.Enabled and Watch.HasAllValidParents(tid, stf, True)) then begin
-    InspectMemo.Text := '<evaluating>';
+    InspectMemo.Text := '<'+DbgValueEvaluating+'>';
     exit;
   end;
 
@@ -1540,7 +1540,7 @@ begin
   else
     d := Watch.GetResolvedParentFrameValue(tid, stf);
   if d = nil then begin
-    InspectMemo.Text := '<evaluating>';
+    InspectMemo.Text := '<'+DbgValueEvaluating+'>';
     exit;
   end;
   d.StartEval;
@@ -1899,11 +1899,11 @@ begin
         if AWatchAble = nil then
           exit(inherited);
         if AWatchAbleResult = nil then begin
-          Result := '<not evaluated>';
+          Result := '<'+DbgValueNotEvaluated+'>';
           exit;
         end;
         if not AWatchAbleResult.Enabled then begin
-          Result := '<disabled>';
+          Result := '<'+DbgValueDisabled+'>';
           exit;
         end;
         if vdoUnQuoted in AnOpts then begin
@@ -2038,11 +2038,11 @@ begin
 
   if (AWatchAbleResult = nil) then begin
     if TheWatch.Enabled then begin
-      TreeView.NodeText[AVNode, COL_WATCH_VALUE-1]:= '<not evaluated>';
+      TreeView.NodeText[AVNode, COL_WATCH_VALUE-1]:= '<'+DbgValueNotEvaluated+'>';
       TreeView.SetNodeTextColor(AVNode, COL_WATCH_VALUE-1, WatchesColorsHL.AttrUnknown.Foreground);
     end
     else begin
-      TreeView.NodeText[AVNode, COL_WATCH_VALUE-1]:= '<disabled>';
+      TreeView.NodeText[AVNode, COL_WATCH_VALUE-1]:= '<'+DbgValueDisabled+'>';
       TreeView.SetNodeTextColor(AVNode, COL_WATCH_VALUE-1, WatchesColorsHL.AttrDisabled.Foreground);
     end;
     exit;
@@ -2108,11 +2108,11 @@ begin
       if (FWatchDlg.GetSelectedSnapshot = nil) and
          (DebugBoss <> nil) and (DebugBoss.State in [dsPause, dsInternalPause])
       then begin
-        TreeView.NodeText[AVNode, COL_WATCH_VALUE-1]:= StackPre+'<evaluating>';
+        TreeView.NodeText[AVNode, COL_WATCH_VALUE-1]:= StackPre+'<'+DbgValueEvaluating+'>';
         TreeView.SetNodeTextColor(AVNode, COL_WATCH_VALUE-1, WatchesColorsHL.AttrEvaluating.Foreground);
       end
       else begin
-        TreeView.NodeText[AVNode, COL_WATCH_VALUE-1]:= StackPre+'<not evaluated>';
+        TreeView.NodeText[AVNode, COL_WATCH_VALUE-1]:= StackPre+'<'+DbgValueNotEvaluated+'>';
         TreeView.SetNodeTextColor(AVNode, COL_WATCH_VALUE-1, WatchesColorsHL.AttrUnknown.Foreground);
       end;
     end;
@@ -2121,7 +2121,7 @@ begin
     end;
   end
   else begin
-    TreeView.NodeText[AVNode, COL_WATCH_VALUE-1]:= '<disabled>';
+    TreeView.NodeText[AVNode, COL_WATCH_VALUE-1]:= '<'+DbgValueDisabled+'>';
     TreeView.SetNodeTextColor(AVNode, COL_WATCH_VALUE-1, WatchesColorsHL.AttrDisabled.Foreground);
   end;
 

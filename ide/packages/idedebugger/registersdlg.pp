@@ -496,7 +496,7 @@ begin
       if (reg <> nil) then
         reg.Count;
       for n := 1 to lvRegisters.RowCount - 1 do
-        lvRegisters.Cells[2, n] := '<Unavailable>';
+        lvRegisters.Cells[2, n] := '<'+DbgValueUnavailable+'>';
       exit;
     end;
 

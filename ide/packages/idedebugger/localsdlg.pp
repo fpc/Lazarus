@@ -960,7 +960,7 @@ begin
         if AWatchAble = nil then
           exit(inherited);
         if AWatchAbleResult = nil then begin
-          Result := '<not evaluated>';
+          Result := '<'+DbgValueNotEvaluated+'>';
           exit;
         end;
         if not AWatchAbleResult.Enabled then begin
@@ -1095,7 +1095,7 @@ begin
   end;
 
   if AWatchAbleResult = nil then begin
-    TreeView.NodeText[AVNode, 1] := '<not evaluated>';
+    TreeView.NodeText[AVNode, 1] := '<'+DbgValueNotEvaluated+'>';
     TreeView.SetNodeTextColor(AVNode, 1, WatchesColorsHL.AttrUnknown.Foreground);
     exit;
   end;
