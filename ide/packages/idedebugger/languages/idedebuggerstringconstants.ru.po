@@ -139,33 +139,31 @@ msgid "Please choose the formatter to add."
 msgstr "Выберите средство форматирования для добавления."
 
 #: idedebuggerstringconstants.dbgvaluedisabled
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgvaluedisabled"
 msgid "Disabled"
-msgstr "Отключённые"
+msgstr "Отключено"
 
 #: idedebuggerstringconstants.dbgvalueerror
 #, object-pascal-format
 msgid "Error: %s"
-msgstr ""
+msgstr "Ошибка: %s"
 
 #: idedebuggerstringconstants.dbgvalueevaluating
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgvalueevaluating"
 msgid "Evaluating"
-msgstr "Вычисляющиеся"
+msgstr "Вычисляется"
 
 #: idedebuggerstringconstants.dbgvalueinvalid
 msgid "Invalid"
-msgstr ""
+msgstr "Недопустимо"
 
 #: idedebuggerstringconstants.dbgvaluenotevaluated
 msgid "Not evaluated"
-msgstr ""
+msgstr "Не вычислялось"
 
 #: idedebuggerstringconstants.dbgvalueunavailable
 msgid "Unavailable"
-msgstr ""
+msgstr "Недоступно"
 
 #: idedebuggerstringconstants.dbgwatchcolorautoopenconsolewindowlinu
 msgid "Auto open console Window (Linux):"
