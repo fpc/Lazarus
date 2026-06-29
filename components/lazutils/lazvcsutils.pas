@@ -70,6 +70,7 @@ begin
         for i := 0 to high(AParams) do
           Parameters.Add(AParams[i]);
         Options := [poUsePipes];
+        ShowWindow := swoHIDE;
 
         Execute;
         { now process the output }
