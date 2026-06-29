@@ -22,6 +22,8 @@ type
   private
     function GetCTMarker(Code: TCodeBuffer; Comment: string; out Position: TPoint): boolean;
   protected
+    DefUnitName: string;
+    procedure SetUp; override;
     procedure CheckDiff(Msg, Expected, Actual: string);
     procedure WriteSource(aFilename: string; Line, Col: integer);
   end;
@@ -69,6 +71,12 @@ begin
     AssertEquals('Code.AbsoluteToLineCol: '+Comment,true,Position.Y>=1)
   else
     Result:=true;
+end;
+
+procedure TCustomTestCTStdCodetools.SetUp;
+begin
+  inherited SetUp;
+  DefUnitName:='TestStdCodeTools.pas';
 end;
 
 procedure TCustomTestCTStdCodetools.CheckDiff(Msg, Expected, Actual: string);

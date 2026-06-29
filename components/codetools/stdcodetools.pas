@@ -5570,42 +5570,6 @@ var
   InternalCursorAtEmptyLine: TExBool;
   Beauty: TBeautifyCodeOptions;
 
-  function CursorAtEmptyLine: Boolean;
-  // true if cursor in empty line or at line end in front of an empty line
-  var
-    p: LongInt;
-  begin
-    if InternalCursorAtEmptyLine=ebNone then begin
-      if (CleanCursorPos>SrcLen) or InEmptyLine(Src,CleanCursorPos) then
-        InternalCursorAtEmptyLine:=ebTrue
-      else begin
-        p:=CleanCursorPos;
-        while (p<=SrcLen) do begin
-          case Src[p] of
-          ' ',#9: inc(p);
-          #10,#13:
-            begin
-              // after cursor the rest of the line is blank
-              // check the next line
-              inc(p);
-              if (p<=SrcLen) and (Src[p] in [#10,#13]) and (Src[p]<>Src[p-1]) then
-                inc(p);
-              if (p>SrcLen) or InEmptyLine(Src,p) then
-                InternalCursorAtEmptyLine:=ebTrue
-              else
-                InternalCursorAtEmptyLine:=ebFalse;
-              break;
-            end;
-          else
-            InternalCursorAtEmptyLine:=ebFalse;
-            break;
-          end;
-        end;
-      end;
-    end;
-    Result:=InternalCursorAtEmptyLine=ebTrue;
-  end;
-
   procedure InitStack(out Stack: TBlockStack);
   begin
     FillByte(Stack{%H-},SizeOf(Stack),0);
@@ -5656,6 +5620,42 @@ var
       Result:=Stack.Stack[Stack.Top].Typ
     else
       Result:=btNone;
+  end;
+
+  function CursorAtEmptyLine: Boolean;
+  // true if cursor in empty line or at line end in front of an empty line
+  var
+    p: LongInt;
+  begin
+    if InternalCursorAtEmptyLine=ebNone then begin
+      if (CleanCursorPos>SrcLen) or InEmptyLine(Src,CleanCursorPos) then
+        InternalCursorAtEmptyLine:=ebTrue
+      else begin
+        p:=CleanCursorPos;
+        while (p<=SrcLen) do begin
+          case Src[p] of
+          ' ',#9: inc(p);
+          #10,#13:
+            begin
+              // after cursor the rest of the line is blank
+              // check the next line
+              inc(p);
+              if (p<=SrcLen) and (Src[p] in [#10,#13]) and (Src[p]<>Src[p-1]) then
+                inc(p);
+              if (p>SrcLen) or InEmptyLine(Src,p) then
+                InternalCursorAtEmptyLine:=ebTrue
+              else
+                InternalCursorAtEmptyLine:=ebFalse;
+              break;
+            end;
+          else
+            InternalCursorAtEmptyLine:=ebFalse;
+            break;
+          end;
+        end;
+      end;
+    end;
+    Result:=InternalCursorAtEmptyLine=ebTrue;
   end;
 
   function Replace(NewCode: string; FromPos, ToPos, Indent: integer;
@@ -5850,10 +5850,16 @@ var
       if (CurPos.StartPos>SrcLen) or (CurPos.StartPos>=StartNode.EndPos) then
       begin
         if InCursorBlock and (NeedCompletion=0) then begin
-          {$IFDEF VerboseCompleteBlock}
-          DebugLn(['ReadStatements NeedCompletion: source end found at ',CleanPosToStr(CurPos.StartPos)]);
-          {$ENDIF}
-          NeedCompletion:=CleanCursorPos;
+          if (Stack.Top=0)
+              and (StartNode.Parent.Desc in [ctnProgram..ctnLibrary, ctnImplementation])
+              and UpAtomIs('END') then
+            // ok
+          else begin
+            {$IFDEF VerboseCompleteBlock}
+            DebugLn(['ReadStatements NeedCompletion: source end found at ',CleanPosToStr(CurPos.StartPos)]);
+            {$ENDIF}
+            NeedCompletion:=CleanCursorPos;
+          end;
         end;
         break;
       end;
@@ -6038,10 +6044,20 @@ var
           else if UpAtomIs('TRY') then
             BeginBlock(Stack,btTry,CurPos.StartPos)
           else if UpAtomIs('FINALLY') then begin
+            // an open if statement is implicitly closed by finally
+            if InCursorBlock and (TopBlockType(Stack) in [btIf,btIfElse]) then
+              exit; // cursor is in an unfinished if statement => cannot complete
+            while TopBlockType(Stack) in [btIf,btIfElse] do
+              if not EndBlockIsOk then exit;
             if TopBlockType(Stack)=btTry then
               if not EndBlockIsOk then exit;
             BeginBlock(Stack,btFinally,CurPos.StartPos)
           end else if UpAtomIs('EXCEPT') then begin
+            // an open if statement is implicitly closed by except
+            if InCursorBlock and (TopBlockType(Stack) in [btIf,btIfElse]) then
+              exit; // cursor is in an unfinished if statement => cannot complete
+            while TopBlockType(Stack) in [btIf,btIfElse] do
+              if not EndBlockIsOk then exit;
             if TopBlockType(Stack)=btTry then
               if not EndBlockIsOk then exit;
             BeginBlock(Stack,btExcept,CurPos.StartPos)
@@ -6173,7 +6189,7 @@ var
       if NeedCompletion>0 then
         DebugLn(['ReadStatements all blocks closed: no completion needed']);
       {$ENDIF}
-      NeedCompletion:=0;
+      exit(true);
     end;
 
     if (NeedCompletion>0) then begin
@@ -6219,13 +6235,23 @@ var
         ToPos:=BehindPos;
       end;
       case CursorBlock.Typ of
-      btBegin,btFinally,btExcept,btAsm,btCaseOf,btCaseElse:
+      btBegin,btAsm:
+        begin
+          if (Stack.Top=0)
+              and (StartNode.Desc=ctnBeginBlock)
+              and ((StartNode.Parent=nil)
+                or (StartNode.Parent.Desc in AllSourceTypes+[ctnInterface,ctnImplementation])) then
+            NewCode:='end.'
+          else
+            NewCode:='end'+NewCode;
+        end;
+      btFinally,btExcept,btCaseOf,btCaseElse:
         NewCode:='end'+NewCode;
       btRepeat:
         NewCode:='until '+NewCode;
       btTry:
         NewCode:='finally'+SourceChangeCache.BeautifyCodeOptions.LineEnd
-           +'end'+NewCode;
+                +'end'+NewCode;
       btCaseColon:
         begin
           FrontGap:=gtNone;
@@ -6394,7 +6420,7 @@ begin
   InitStack(Stack);
   try
     {$IFDEF VerboseCompleteBlock}
-    DebugLn(['TStandardCodeTool.CompleteBlock ',StartNode.DescAsString]);
+    DebugLn(['TStandardCodeTool.CompleteBlock StartNode=',StartNode.DescAsString]);
     {$ENDIF}
 
     if StartNode.Desc in AllPascalStatements then begin
