@@ -1,0 +1,79 @@
+object MainForm: TMainForm
+  Left = 60
+  Height = 660
+  Top = 60
+  Width = 1080
+  Caption = 'Paint with opacity'
+  ClientHeight = 660
+  ClientWidth = 1080
+  DesignTimePPI = 144
+  Position = poScreenCenter
+  LCLVersion = '4.99.0.0'
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  object pnlTop: TPanel
+    Left = 0
+    Height = 300
+    Top = 0
+    Width = 1080
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 300
+    ClientWidth = 1080
+    TabOrder = 0
+    object sgStatus: TStringGrid
+      Left = 12
+      Height = 276
+      Top = 12
+      Width = 444
+      ColCount = 2
+      FixedCols = 0
+      RowCount = 8
+      TabOrder = 0
+    end
+    object lblRunning: TLabel
+      Left = 480
+      Height = 26
+      Top = 18
+      Width = 168
+      Caption = 'Running widget set:'
+      ParentColor = False
+    end
+    object tbOpacity: TTrackBar
+      Left = 480
+      Height = 60
+      Top = 60
+      Width = 576
+      Max = 255
+      Position = 128
+      OnChange = tbOpacityChange
+      TabOrder = 1
+    end
+    object lblValue: TLabel
+      Left = 480
+      Height = 26
+      Top = 132
+      Width = 104
+      Caption = 'Opacity: 128'
+      ParentColor = False
+    end
+    object lblNote: TLabel
+      Left = 480
+      Height = 75
+      Top = 174
+      Width = 576
+      AutoSize = False
+      Caption = 'Slider opacity applies to the WATERMARK text, the four overlapping circles, and the right-hand image.'
+      ParentColor = False
+      WordWrap = True
+    end
+  end
+  object pbCanvas: TPaintBox
+    Left = 0
+    Height = 360
+    Top = 300
+    Width = 1080
+    Align = alClient
+    OnPaint = pbCanvasPaint
+  end
+end
