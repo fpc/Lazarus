@@ -96,6 +96,8 @@ type
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     procedure DCRedraw(CanvasHandle: HDC); override;
     procedure DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean); override;
+    procedure SetDCOpacity(DC: HDC; AOpacity: Byte); override;
+    function GetDCOpacity(DC: HDC): Byte; override;
     procedure SetDesigning(AComponent: TComponent); override;
 
     // the winapi compatibility methods
@@ -507,6 +509,20 @@ procedure TCocoaWidgetSet.DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean
 begin
   if CanvasHandle <> 0 then
     TCocoaContext(CanvasHandle).SetAntialiasing(AEnabled);
+end;
+
+procedure TCocoaWidgetSet.SetDCOpacity(DC: HDC; AOpacity: Byte);
+begin
+  if DC <> 0 then
+    TCocoaContext(DC).Opacity := AOpacity;
+end;
+
+function TCocoaWidgetSet.GetDCOpacity(DC: HDC): Byte;
+begin
+  if DC <> 0 then
+    Result := TCocoaContext(DC).Opacity
+  else
+    Result := $FF;
 end;
 
 procedure TCocoaWidgetSet.SetDesigning(AComponent: TComponent);

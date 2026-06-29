@@ -322,6 +322,7 @@ type
     BkBrush: TCocoaBrush;
 
     TextColor: TColor;
+    Opacity: Byte;
 
     ROP2: Integer;
     PenPos: TPoint;
@@ -344,6 +345,7 @@ type
     FBkColor: TColor;
     FBkMode: Integer;
     FROP2: Integer;
+    FOpacity: Byte;
     FBrush  : TCocoaBrush;
     FBackgroundColor: TColor;
     FForegroundColor: TColor;
@@ -441,6 +443,7 @@ type
 
     function CGContext: CGContextRef; virtual;
     procedure SetAntialiasing(AValue: Boolean);
+    procedure SetOpacity(AValue: Byte);
 
     function GetLogicalOffset: TPoint;
     function GetClipRect: TRect;
@@ -468,6 +471,7 @@ type
     property Pen: TCocoaPen read FPen write SetPen;
     property Font: TCocoaFont read GetFont write SetFont;
     property Region: TCocoaRegion read FRegion write SetRegion;
+    property Opacity: Byte read FOpacity write SetOpacity;
   end;
 
   { TCocoaBitmapContext }
@@ -1743,6 +1747,13 @@ begin
   ctx.setShouldAntialias(AValue);
 end;
 
+procedure TCocoaContext.SetOpacity(AValue: Byte);
+begin
+  FOpacity := AValue;
+  if CGContext <> nil then
+    CGContextSetAlpha(CGContext, AValue / 255);
+end;
+
 function TCocoaContext.GetLogicalOffset: TPoint;
 begin
   GetWindowViewTranslate(WindowOfs, ViewportOfs, Result.X, Result.Y);
@@ -1903,6 +1914,7 @@ begin
   Result.BkBrush := FBkBrush;
 
   Result.TextColor := TextColor;
+  Result.Opacity := FOpacity;
 
   Result.ROP2 := FROP2;
   Result.PenPos := FPenPos;
@@ -1935,6 +1947,7 @@ begin
   FBkBrush := AData.BkBrush;
 
   TextColor := AData.TextColor;
+  FOpacity := AData.Opacity;
 
   FROP2 := AData.ROP2;
   FPenPos := AData.PenPos;
@@ -1968,6 +1981,7 @@ begin
   FSavedDCList := nil;
   FClipped := False;
   FFlipped := False;
+  FOpacity := $FF;
 end;
 
 destructor TCocoaContext.Destroy;
@@ -2798,7 +2812,7 @@ begin
       Context := ctx;
     NSGraphicsContext.setCurrentContext(Context);
     Result := ImageRep.drawInRect_fromRect_operation_fraction_respectFlipped_hints(
-      dstRect, srcRect, NSCompositeSourceOver, 1.0, True, nil
+      dstRect, srcRect, NSCompositeSourceOver, FOpacity / 255, True, nil
       );
   finally
     NSGraphicsContext.classRestoreGraphicsState;
