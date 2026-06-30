@@ -147,6 +147,11 @@ const
 
 implementation
 
+var
+  RegEx_In: TRegExpr;
+  RegEx_AtFrom: TRegExpr;
+  RegEx_At: TRegExpr;
+
 type
 
   { TValgrindParser }
@@ -350,12 +355,12 @@ function THeapTrcInfo.IsTraceLine(const Idx: Integer;
   function IsGDBLine(s: string): boolean;
   begin
     Result:=false;
-    if ExecRegExpr('^#[0-9]+ +0x[0-9a-f]+ in ',s) then begin
+    if RegEx_In.Exec(s){"^#[0-9]+ +0x[0-9a-f]+ in "} then begin
       // gdb
       //   #4  0x007489de in EXTTOOLEDITDLG_TEXTERNALTOOLMENUITEMS_$__LOAD$TCONFIGSTORAGE$$TMODALRESULT ()
       Result:=true;
     end;
-    if ExecRegExpr('^#[0-9]+ .* (at|from) ',s) then begin
+    if RegEx_AtFrom.Exec(s){"^#[0-9]+ .* (at|from) "} then begin
       // gdb
       //   #0 DOHANDLEMOUSEACTION (this=0x14afae00, ANACTIONLIST=0x14a96af8,ANINFO=...) at synedit.pp:3000
       Result:=true;
@@ -688,8 +693,8 @@ begin
   end else if LeftStr(s,4) = '0000' then begin
     // mantis mangled gdb
     ReadGDBLine;
-  end else if ExecRegExpr('^#[0-9]+ +0x[0-9a-f]+ in ',s) or
-              ExecRegExpr('^#[0-9]+ .* at ',s)
+  end else if RegEx_In.Exec(s){"^#[0-9]+ +0x[0-9a-f]+ in "} or
+              RegEx_At.Exec(s){"^#[0-9]+ .* at "}
   then begin
     // gdb
     //   #4  0x007489de in EXTTOOLEDITDLG_TEXTERNALTOOLMENUITEMS_$__LOAD$TCONFIGSTORAGE$$TMODALRESULT ()
@@ -1063,6 +1068,18 @@ begin
   inherited Create;
 end;
 
+initialization
+  RegEx_In     := TRegExpr.Create;
+  RegEx_AtFrom := TRegExpr.Create;
+  RegEx_At     := TRegExpr.Create;
+  RegEx_In    .Expression := '^#[0-9]+ +0x[0-9a-f]+ in ';
+  RegEx_AtFrom.Expression := '^#[0-9]+ .* (at|from) ';
+  RegEx_At    .Expression := '^#[0-9]+ .* at ';
+
+finalization
+  FreeAndNil(RegEx_In);
+  FreeAndNil(RegEx_AtFrom);
+  FreeAndNil(RegEx_At);
 
 end.
 
