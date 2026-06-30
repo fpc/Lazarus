@@ -69,7 +69,7 @@ msgstr "Namensräume"
 #: ideprojectstrconsts.lisprojmangunabletoreadstatefileofprojecterror
 #, object-pascal-format
 msgid "Unable to read state file %s of project %s%sError: %s"
-msgstr "Die Statusdatei %s des Projekts %s kann nicht gelesen werden%sFehler: %s"
+msgstr "Kann Statusdatei %s des Projekts %s nicht lesen%sFehler: %s"
 
 #: ideprojectstrconsts.lisprojmangunabletowritestatefileforprojecterror
 #, object-pascal-format
@@ -99,7 +99,7 @@ msgstr "Sonderbare .lpi-Datei"
 #: ideprojectstrconsts.listhefiledoesnotlooklikealpifile
 #, object-pascal-format
 msgid "The file %s does not look like a lpi file."
-msgstr "Die Datei %s sieht nicht wie eine .lpi-Datei aus."
+msgstr "Datei %s sieht nicht wie eine .lpi-Datei aus."
 
 #: ideprojectstrconsts.lisunabletoreadlpi
 msgid "Unable to read lpi"
@@ -113,10 +113,10 @@ msgstr "Kann Projekt-Infodatei%s\"%s\" nicht lesen."
 #: ideprojectstrconsts.lisunabletowritetheprojectinfofileerror
 #, object-pascal-format
 msgid "Unable to write the project info file%s\"%s\".%sError: %s"
-msgstr "Kann die Projekt-Infodatei%s\"%s\"nicht schreiben.%sFehler: %s"
+msgstr "Kann Projekt-Infodatei%s\"%s\"nicht schreiben.%sFehler: %s"
 
 #: ideprojectstrconsts.lisunabletowritetheprojectsessionfileerror
 #, object-pascal-format
 msgid "Unable to write the project session file%s\"%s\".%sError: %s"
-msgstr "Kann die Projekt-Sitzungsdatei %s\"%s\" nicht schreiben.%sFehler: %s"
+msgstr "Kann Projekt-Sitzungsdatei %s\"%s\" nicht schreiben.%sFehler: %s"
 
