@@ -5,8 +5,13 @@ unit TestParser;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testutils, testregistry,
-  SimpleIDE, TextTools, leakinfo, LazLogger;
+  Classes, SysUtils,
+  // FPCUnit
+  FPCUnit, TestRegistry,
+  // LazUtils
+  LazLoggerBase,
+  // package
+  LeakInfo;
 
 type
 

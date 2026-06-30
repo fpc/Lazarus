@@ -7,13 +7,11 @@ unit leakinfo;
 interface
 
 uses
-  Classes, SysUtils, fgl,
+  Classes, SysUtils, RegExpr, FGL,
   // CodeTools
   CodeToolManager, CodeCache,
   // LazUtils
   FileUtil, LazFileUtils, LazStringUtils, LazClasses, LazLoggerBase,
-  // LCL
-  TextTools,
   // IDEIntf
   IDEDialogs,
   // LeakView
@@ -352,12 +350,12 @@ function THeapTrcInfo.IsTraceLine(const Idx: Integer;
   function IsGDBLine(s: string): boolean;
   begin
     Result:=false;
-    if REMatches(s,'^#[0-9]+ +0x[0-9a-f]+ in ') then begin
+    if ExecRegExpr('^#[0-9]+ +0x[0-9a-f]+ in ',s) then begin
       // gdb
       //   #4  0x007489de in EXTTOOLEDITDLG_TEXTERNALTOOLMENUITEMS_$__LOAD$TCONFIGSTORAGE$$TMODALRESULT ()
       Result:=true;
     end;
-    if REMatches(s,'^#[0-9]+ .* (at|from) ') then begin
+    if ExecRegExpr('^#[0-9]+ .* (at|from) ',s) then begin
       // gdb
       //   #0 DOHANDLEMOUSEACTION (this=0x14afae00, ANACTIONLIST=0x14a96af8,ANINFO=...) at synedit.pp:3000
       Result:=true;
@@ -690,8 +688,8 @@ begin
   end else if LeftStr(s,4) = '0000' then begin
     // mantis mangled gdb
     ReadGDBLine;
-  end else if REMatches(s,'^#[0-9]+ +0x[0-9a-f]+ in ') or
-              REMatches(s,'^#[0-9]+ .* at ')
+  end else if ExecRegExpr('^#[0-9]+ +0x[0-9a-f]+ in ',s) or
+              ExecRegExpr('^#[0-9]+ .* at ',s)
   then begin
     // gdb
     //   #4  0x007489de in EXTTOOLEDITDLG_TEXTERNALTOOLMENUITEMS_$__LOAD$TCONFIGSTORAGE$$TMODALRESULT ()
