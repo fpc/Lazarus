@@ -711,11 +711,15 @@ begin
       end else
         lKeepLevel := False;
 
-      if (lCurIndex=0) or
-         (lNodeCol <= fFoldColorInfos[lCurIndex-1].PhysCol) or // if sfaOutlineMergeParent, then don't add an extra (further indented) line
-         not( sfaOutlineMergeParent in lCurNode.FoldAction)
-      then
-        AddVerticalLine;
+      AddVerticalLine;
+      if (lCurIndex>0) and
+         (sfaOutlineMergeParent in lCurNode.FoldAction) and
+         (lNodeCol > fFoldColorInfos[lCurIndex-1].PhysCol)  // if sfaOutlineMergeParent, then don't add an extra (further indented) line
+      then begin
+        fFoldColorInfos[lCurIndex].Border := False;
+        fFoldColorInfos[lCurIndex].Ignore := True;
+      end;
+
 
       if lKeepLevel then begin
         // keep level for none sfaOutlineKeepLevel after sfaOutlineKeepLevel
