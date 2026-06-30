@@ -651,6 +651,7 @@ begin
       continue;
     end;
     lCurNode := fNestList.HLNode[i];
+    lKeepLevel := False;
     // sanity check
     Assert(sfaOpen in lCurNode.FoldAction, 'no sfaOpen in lCurNode.FoldAction');
     {$IFDEF SynEditMarkupFoldColoringDebug}
@@ -708,9 +709,13 @@ begin
         //DebugLn('');
         {$ENDIF}
       end else
-        lKeepLevel := sfaOutlineMergeParent in lCurNode.FoldAction;
+        lKeepLevel := False;
 
-      AddVerticalLine;
+      if (lCurIndex=0) or
+         (lNodeCol <= fFoldColorInfos[lCurIndex-1].PhysCol) or // if sfaOutlineMergeParent, then don't add an extra (further indented) line
+         not( sfaOutlineMergeParent in lCurNode.FoldAction)
+      then
+        AddVerticalLine;
 
       if lKeepLevel then begin
         // keep level for none sfaOutlineKeepLevel after sfaOutlineKeepLevel
@@ -867,7 +872,7 @@ begin
             end;
 
           end else
-            lKeepLevel := sfaOutlineMergeParent in lCurNode.FoldAction;
+            lKeepLevel := False;
 
           if AddHighlight then begin
             if lKeepLevel then begin
