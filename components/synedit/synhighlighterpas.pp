@@ -8092,8 +8092,6 @@ begin
 
   if not (TPascalCodeFoldBlockType(Index) in PascalNoOutlineRanges) then
     Result.Modes := Result.Modes + [fmOutline];
-  if (TPascalCodeFoldBlockType(Index) in [cfbtCaseElse]) then // not by default
-    Result.Modes := Result.Modes - [fmOutline];
 
   Result.Enabled := (TPascalCodeFoldBlockType(Index) in [cfbtBeginEnd..cfbtLastPublic]) and
     (Result.Modes <> []);
