@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, fgl, TestDbgConfig, TestDbgCompilerProcess,
   TestOutputLogger, TTestDebuggerClasses, TestCommonSources, LazDebuggerIntf,
-  LazDebuggerIntfBaseTypes, LazFileUtils, LazLoggerBase, FileUtil,
+  LazDebuggerIntfBaseTypes, LazDebuggerIntfExceptions, LazFileUtils, LazLoggerBase, FileUtil,
   LazStringUtils, DbgIntfDebuggerBase, IdeDebuggerBase, fpcunit;
 
 type
@@ -16,6 +16,27 @@ type
     DirName, ExeId: String; // dirname = filename
     SymbolType: TSymbolType;
     ExtraOpts, NamePostFix: string;
+  end;
+
+  { TTestDbgException }
+
+  TTestDbgException  = class(TObject, IDbgExceptionHandler)
+  private
+    FName: string;
+    FEnabled: Boolean;
+  public
+    procedure DoExceptionHit(var AContinue: Boolean; const AnExceptTargetInfo: IDbgTargetExceptionInfo);
+    function GetEnabled: Boolean; deprecated 'use Hit';
+    function GetName: String; deprecated 'use Hit';
+    property Enabled: Boolean read FEnabled write FEnabled;
+  end;
+
+  { TTestDbgExceptions }
+
+  TTestDbgExceptions = class(specialize TDbgExceptionHandlerListTemplate<TStringList>)
+    function Add(const S: string): TTestDbgException;
+    function FindExceptionHandler(const AnExceptTargetInfo: IDbgTargetExceptionInfo): IDbgExceptionHandler;
+    function Find(const AClassName: String): IDbgExceptionHandler; //deprecated'use Find(ExceptInfo)';
   end;
 
   { TTestDbgExternalExe }
@@ -96,7 +117,7 @@ type
   private
     FCallStack: TTestCallStackMonitor;
     FDisassembler: TBaseDisassembler;
-    FExceptions: TBaseExceptions;
+    FExceptions: TTestDbgExceptions;
     //FSignals: TBaseSignals;
     //FBreakPoints: TIDEBreakPoints;
     //FBreakPointGroups: TIDEBreakPointGroups;
@@ -149,7 +170,7 @@ type
 
     property CallStack: TTestCallStackMonitor read FCallStack;
     property Disassembler: TBaseDisassembler read FDisassembler;
-    property Exceptions: TBaseExceptions read FExceptions;
+    property Exceptions: TTestDbgExceptions read FExceptions;
     //property Signals: TBaseSignals read FSignals;
     //property BreakPoints: TIDEBreakPoints read FBreakPoints;
     //property BreakPointGroups: TIDEBreakPointGroups read FBreakPointGroups;
@@ -191,6 +212,52 @@ begin
     else
       Result := Result + '_' + IntToHex(ord(AName[i]), 2);
   end;
+end;
+
+{ TTestDbgException }
+
+procedure TTestDbgException.DoExceptionHit(var AContinue: Boolean;
+  const AnExceptTargetInfo: IDbgTargetExceptionInfo);
+begin
+  AContinue := not FEnabled;
+end;
+
+function TTestDbgException.GetEnabled: Boolean;
+begin
+  Result := FEnabled;
+end;
+
+function TTestDbgException.GetName: String;
+begin
+  Result := FName;
+end;
+
+{ TTestDbgExceptions }
+
+function TTestDbgExceptions.Add(const S: string): TTestDbgException;
+begin
+  Result := TTestDbgException.Create;
+  Result.FName := s;
+  inherited AddObject(S, Result);
+end;
+
+function TTestDbgExceptions.FindExceptionHandler(const AnExceptTargetInfo: IDbgTargetExceptionInfo
+  ): IDbgExceptionHandler;
+var
+  i: Integer;
+begin
+  i := IndexOf(AnExceptTargetInfo.ClassName);
+  Result := nil;
+  if i >= 0 then Result := TTestDbgException(Objects[i]);
+end;
+
+function TTestDbgExceptions.Find(const AClassName: String): IDbgExceptionHandler;
+var
+  i: Integer;
+begin
+  i := IndexOf(AClassName);
+  Result := nil;
+  if i >= 0 then Result := TTestDbgException(Objects[i]);
 end;
 
 { TTestDbgExternalExe }
@@ -401,7 +468,7 @@ begin
   //FBreakPointGroups := TIDEBreakPointGroups.Create;
   FWatches := TTestWatchesMonitor.Create;
   FThreads := TTestThreadsMonitor.Create;
-  FExceptions := TBaseExceptions.Create(TBaseException);
+  FExceptions := TTestDbgExceptions.Create;
   //FSignals := TBaseSignals.Create(TBaseSignal);
   FLocals := TLocalsMonitor.Create;
   FLineInfo := TBaseLineInfo.Create;

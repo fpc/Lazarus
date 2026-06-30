@@ -155,6 +155,7 @@ type
     procedure DebugDialogDestroy(Sender: TObject);
   private
     FDebugger: TDebuggerIntf;
+    FIdeExceptions: TIdeExceptions;
     FEventLogManager: TDebugEventLogManager;
     FUnitInfoProvider: TDebuggerUnitInfoProvider;
     FDialogs: array[TDebugDialogType] of TDebuggerDlg;
@@ -1415,7 +1416,7 @@ begin
     AContinue := ExecuteExceptionDialog(msg, Ignore, AExceptionType in [deInternal, deRunError, deExternal]) = mrCancel;
     if Ignore then begin
       Exceptions.AddIfNeeded(ExpClassName);
-      Exceptions.Find(ExpClassName).Enabled := True;
+      Exceptions.FindItem(ExpClassName).Enabled := True;
     end;
   end
   else begin
@@ -2154,7 +2155,8 @@ begin
   FWatches := TIdeWatchesMonitor.Create;
   FWatches.OnWatchesInvalidated := @CallWatchesInvalidatedHandlers;
   FThreads := TIdeThreadsMonitor.Create;
-  FExceptions := TProjectExceptions.Create;
+  FIdeExceptions := TProjectExceptions.Create;
+  FExceptions := FIdeExceptions;
   FExcludedRoutines := TIdeDebuggerExcludeRoutineMainList.Create;
   FSignals := TIDESignals.Create;
   FLocals := TIdeLocalsMonitor.Create;
@@ -2246,7 +2248,8 @@ begin
   FreeAndNil(FBreakPointGroups);
   FreeAndNil(FCallStack);
   FreeAndNil(FDisassembler);
-  FreeAndNil(FExceptions);
+  FExceptions := nil;
+  FreeAndNil(FIdeExceptions);
   FExcludedRoutines.Free;
   FExcludedRoutines := nil;
   FreeAndNil(FSignals);
@@ -2269,7 +2272,7 @@ begin
   FBreakPointGroups.Clear;
   FWatches.Clear;
   FThreads.Clear;
-  FExceptions.Reset;
+  FIdeExceptions.Reset;
   //FExcludedRoutines.Clear;
   FSignals.Reset;
   FUserSourceFiles.Clear;
@@ -2489,7 +2492,7 @@ procedure TDebugManager.LoadProjectSpecificInfo(XMLConfig: TXMLConfig;
 begin
   if not Merge then
   begin
-    FExceptions.LoadFromXMLConfig(XMLConfig,'Debugging/'+XMLExceptionsNode+'/');
+    FIdeExceptions.LoadFromXMLConfig(XMLConfig,'Debugging/'+XMLExceptionsNode+'/');
   end;
   // keep it simple: just load from the session and don't merge
   FBreakPointGroups.LoadFromXMLConfig(XMLConfig,
@@ -2520,7 +2523,7 @@ begin
   if not (pwfSkipProjectInfo in Flags) then
   begin
     // exceptions are not part of the project info (#0015256)
-    FExceptions.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLExceptionsNode+'/', pwfCompatibilityMode in Flags);
+    FIdeExceptions.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLExceptionsNode+'/', pwfCompatibilityMode in Flags);
   end;
 end;
 
@@ -3736,7 +3739,7 @@ begin
     FSnapshots.Debugger := FDebugger;
     FCallStack.Debugger := FDebugger;
 
-    FDebugger.Exceptions := FExceptions;
+    FDebugger.Exceptions := FIdeExceptions;
     FDebugger.ExcludedRoutines := FExcludedRoutines;
   end;
 end;

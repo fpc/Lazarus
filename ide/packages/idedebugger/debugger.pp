@@ -40,17 +40,20 @@ unit Debugger;
 interface
 
 uses
-  TypInfo, Classes, SysUtils, math, Types, fgl,
+  TypInfo, Classes, SysUtils, math, Types, fgl, RegExpr,
   // LazUtils
   Laz2_XMLCfg, LazFileUtils, LazUtilities, LazLoggerBase,
   LazClasses, Maps, LazMethodList, Laz2_XMLWrite,
+  // IdeIntf
+  IdeDebuggerWatchValueIntf,
   // DebuggerIntf
   DbgIntfMiscClasses, DbgIntfDebuggerBase,
-  IdeDebuggerWatchValueIntf, RegExpr, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
-  LazDebuggerValueConverter, LazDebuggerTemplate, LazDebuggerIntfFloatTypes, IdeDebuggerBase,
-  IdeDebuggerWatchResult, IdeDebuggerOpts, IdeDebuggerBackendValueConv,
-  IdeDebuggerUtils, IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats, ProjectDebugLink,
-  IdeDebuggerStringConstants;
+  LazDebuggerIntf, LazDebuggerIntfBaseTypes, LazDebuggerValueConverter, LazDebuggerTemplate,
+  LazDebuggerIntfFloatTypes, LazDebuggerIntfExceptions,
+  // IdeDebugger
+  IdeDebuggerBase, IdeDebuggerWatchResult, IdeDebuggerOpts, IdeDebuggerBackendValueConv,
+  IdeDebuggerUtils, IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats,
+  ProjectDebugLink, IdeDebuggerStringConstants;
 
 const
   XMLBreakPointsNode = 'BreakPoints';
@@ -1979,39 +1982,60 @@ type
 
 
   { TIDEException }
-  TIDEException = class(TBaseException)
+  TIDEException = class(TDelayedUdateItem, IDbgExceptionHandler)
   private
-    FMaster: TDBGException;
+    FEnabled: Boolean;
+    FName: String;
+
+    function GetEnabled: Boolean;
+    function GetName: String;
+    procedure SetEnabled(AValue: Boolean);
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
+    procedure SetName(const AValue: String); virtual;
+    procedure DoExceptionHit(var AContinue: Boolean; const AnExceptTargetInfo: IDbgTargetExceptionInfo);
   public
     constructor Create(ACollection: TCollection); override;
     procedure LoadFromXMLConfig(const AXMLConfig: TXMLConfig;
                                 const APath: string);
     procedure SaveToXMLConfig(const AXMLConfig: TXMLConfig;
                               const APath: string);
-    procedure ResetMaster;
+
+    property Name: String read GetName write SetName;
+    property Enabled: Boolean read GetEnabled write SetEnabled; // ignored if enabled
   end;
 
   { TIDEExceptions }
 
-  TIDEExceptions = class(TBaseExceptions)
+  TIDEExceptions = class(TCollection, IDbgExceptionHandlerList)
   private
+    FIgnoreAll: Boolean;
+
     function GetItem(const AIndex: Integer): TIDEException;
     procedure SetItem(const AIndex: Integer; const AValue: TIDEException);
+    function GetIgnoreAllExceptions: Boolean;
   protected
+    procedure AssignTo(Dest: TPersistent); override;
+    procedure SetIgnoreAll(const AValue: Boolean); virtual; // TProjectExceptions
     procedure AddDefault;
+    procedure ClearExceptions;
   public
     function Add(const AName: String): TIDEException;
-    function Find(const AName: String): TIDEException;
+    function Find(const AName: String): IDbgExceptionHandler;
+    function FindExceptionHandler(const AnExceptTargetInfo: IDbgTargetExceptionInfo): IDbgExceptionHandler;
+    function FindItem(const AName: String): TIDEException;
+    procedure AddIfNeeded(AName: string);
+    procedure Reset;
   public
     constructor Create;
+    destructor Destroy; override;
     procedure LoadFromXMLConfig(const AXMLConfig: TXMLConfig;
                                 const APath: string);
     procedure SaveToXMLConfig(const AXMLConfig: TXMLConfig;
                               const APath: string; const ALegacyList: Boolean);
-    procedure AddIfNeeded(AName: string);
-    procedure Reset; override;
     property Items[const AIndex: Integer]: TIDEException read GetItem
                                                         write SetItem; default;
+    property IgnoreAll: Boolean read FIgnoreAll write SetIgnoreAll;
   end;
 {%endregion   ^^^^^  Signals / Exceptions  ^^^^^   }
 
@@ -9433,6 +9457,50 @@ end;
 { TIDEException }
 { =========================================================================== }
 
+function TIDEException.GetEnabled: Boolean;
+begin
+  Result := FEnabled;
+end;
+
+function TIDEException.GetName: String;
+begin
+  Result := FName;
+end;
+
+procedure TIDEException.SetEnabled(AValue: Boolean);
+begin
+  if FEnabled = AValue then Exit;
+  FEnabled := AValue;
+  Changed;
+end;
+
+procedure TIDEException.AssignTo(Dest: TPersistent);
+begin
+  if Dest is TIDEException
+  then begin
+    TIDEException(Dest).Name := FName;
+  end
+  else
+    inherited AssignTo(Dest);
+end;
+
+procedure TIDEException.SetName(const AValue: String);
+begin
+  if FName = AValue then exit;
+
+  if TIDEExceptions(GetOwner).FindItem(AValue) <> nil
+  then raise EDBGExceptions.Create('Duplicate name: ' + AValue);
+
+  FName := AValue;
+  Changed;
+end;
+
+procedure TIDEException.DoExceptionHit(var AContinue: Boolean;
+  const AnExceptTargetInfo: IDbgTargetExceptionInfo);
+begin
+  AContinue := not FEnabled;
+end;
+
 constructor TIDEException.Create (ACollection: TCollection );
 begin
   FEnabled := True;
@@ -9453,34 +9521,108 @@ begin
   AXMLConfig.SetDeleteValue(APath+'Enabled/Value',FEnabled,true);
 end;
 
-procedure TIDEException.ResetMaster;
-begin
-  FMaster := nil;
-end;
-
 { =========================================================================== }
 { TIDEExceptions }
 { =========================================================================== }
 
-function TIDEExceptions.Add(const AName: String): TIDEException;
+function TIDEExceptions.GetItem(const AIndex: Integer): TIDEException;
 begin
-  Result := TIDEException(inherited Add(AName));
+  Result := TIDEException(inherited GetItem(AIndex));
 end;
 
-function TIDEExceptions.Find(const AName: String): TIDEException;
+procedure TIDEExceptions.SetItem(const AIndex: Integer;
+  const AValue: TIDEException);
 begin
-  Result := TIDEException(inherited Find(AName));
+  inherited SetItem(Aindex, AValue);
+end;
+
+function TIDEExceptions.Add(const AName: String): TIDEException;
+begin
+  Result := TIDEException(inherited Add);
+  Result.Name := AName;
+end;
+
+function TIDEExceptions.Find(const AName: String): IDbgExceptionHandler;
+begin
+  Result := IDbgExceptionHandler(FindItem(AName));
+end;
+
+function TIDEExceptions.FindExceptionHandler(const AnExceptTargetInfo: IDbgTargetExceptionInfo): IDbgExceptionHandler;
+begin
+  Result := IDbgExceptionHandler(FindItem(AnExceptTargetInfo.ClassName));
+end;
+
+function TIDEExceptions.FindItem(const AName: String): TIDEException;
+var
+  n: Integer;
+begin
+  for n := 0 to Count - 1 do
+  begin
+    Result := TIdeException(GetItem(n));
+    if CompareText(Result.Name, AName) = 0 then Exit;
+  end;
+  Result := nil;
+end;
+
+procedure TIDEExceptions.AddIfNeeded(AName: string);
+begin
+  if Find(AName) = nil then
+    Add(AName);
+end;
+
+procedure TIDEExceptions.Reset;
+begin
+  ClearExceptions;
+  FIgnoreAll := False;
+  AddDefault;
+end;
+
+procedure TIDEExceptions.AssignTo(Dest: TPersistent);
+begin
+  if Dest is TIDEExceptions
+  then begin
+    TideExceptions(Dest).IgnoreAll := IgnoreAll;
+  end
+  else
+    inherited AssignTo(Dest);
+end;
+
+procedure TIDEExceptions.SetIgnoreAll(const AValue: Boolean);
+begin
+  if FIgnoreAll = AValue then exit;
+  FIgnoreAll := AValue;
+  Changed;
+end;
+
+function TIDEExceptions.GetIgnoreAllExceptions: Boolean;
+begin
+  Result := FIgnoreAll;
+end;
+
+procedure TIDEExceptions.AddDefault;
+begin
+  AddIfNeeded('EAbort');
+  AddIfNeeded('ECodetoolError');
+  AddIfNeeded('EFOpenError');
+end;
+
+procedure TIDEExceptions.ClearExceptions;
+begin
+  while Count>0 do
+    Items[Count-1].Free;
 end;
 
 constructor TIDEExceptions.Create;
 begin
   inherited Create(TIDEException);
+  FIgnoreAll := False;
   AddDefault;
 end;
 
-function TIDEExceptions.GetItem(const AIndex: Integer): TIDEException;
+destructor TIDEExceptions.Destroy;
 begin
-  Result := TIDEException(inherited GetItem(AIndex));
+  ClearExceptions;
+  inherited Destroy;
 end;
 
 procedure TIDEExceptions.LoadFromXMLConfig(const AXMLConfig: TXMLConfig;
@@ -9498,7 +9640,7 @@ begin
   FIgnoreAll := AXMLConfig.GetValue(APath + 'IgnoreAll', False);
   for i := 0 to NewCount-1 do
   begin
-    IDEException := TIDEException(inherited Add(''));
+    IDEException := TIDEException(Add(''));
     ItemPath := APath+AXMLConfig.GetListItemXPath('Item', i, IsLegacyList, True)+'/';
     IDEException.LoadFromXMLConfig(AXMLConfig, ItemPath);
   end;
@@ -9521,31 +9663,6 @@ begin
     ItemPath := APath+AXMLConfig.GetListItemXPath('Item', i, ALegacyList, True)+'/';
     IDEException.SaveToXMLConfig(AXMLConfig, ItemPath);
   end;
-end;
-
-procedure TIDEExceptions.AddIfNeeded(AName: string);
-begin
-  if Find(AName) = nil then
-    Add(AName);
-end;
-
-procedure TIDEExceptions.Reset;
-begin
-  inherited Reset;
-  AddDefault;
-end;
-
-procedure TIDEExceptions.SetItem(const AIndex: Integer;
-  const AValue: TIDEException);
-begin
-  inherited SetItem(Aindex, AValue);
-end;
-
-procedure TIDEExceptions.AddDefault;
-begin
-  AddIfNeeded('EAbort');
-  AddIfNeeded('ECodetoolError');
-  AddIfNeeded('EFOpenError');
 end;
 
 { TIDELineInfo }

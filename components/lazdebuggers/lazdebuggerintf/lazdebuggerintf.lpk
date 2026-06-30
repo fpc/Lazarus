@@ -64,6 +64,10 @@ See LCL license for details."/>
         <Filename Value="lazdebuggerintfsynchronizedlist.pas"/>
         <UnitName Value="LazDebuggerIntfSynchronizedList"/>
       </Item>
+      <Item>
+        <Filename Value="lazdebuggerintfexceptions.pas"/>
+        <UnitName Value="lazdebuggerintfexceptions"/>
+      </Item>
     </Files>
     <LazDoc Paths="docs"/>
     <RequiredPkgs>

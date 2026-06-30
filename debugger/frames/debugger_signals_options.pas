@@ -55,7 +55,7 @@ type
     procedure ReadSettings({%H-}AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings({%H-}AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
-  end;
+  end deprecated 'To be removed in 5.99';
 
 implementation
 

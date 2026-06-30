@@ -232,7 +232,7 @@ type
     property Disassembler: TIDEDisassembler read FDisassembler;
     property LineInfo: TIDELineInfo read FLineInfo;
     property Registers: TIdeRegistersMonitor read FRegisters;
-    property Signals: TIDESignals read FSignals;               // A list of actions for signals we know of
+    property Signals: TIDESignals read FSignals;  deprecated 'To be removed in 5.99';              // A list of actions for signals we know of
     property PseudoTerminal: TPseudoTerminal read GetPseudoTerminal; experimental; // 'may be replaced with a more general API';
     (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
     property DebuggerClass: TDebuggerClass read GetCurrentDebuggerClass;

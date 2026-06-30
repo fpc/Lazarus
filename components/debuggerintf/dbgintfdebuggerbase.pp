@@ -51,7 +51,7 @@ uses
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfPseudoTerminal,
   DbgIntfCommonStrings, LazDebuggerIntf, LazDebuggerTemplate,
-  LazDebuggerIntfBaseTypes, LazDebuggerIntfExcludedRoutines;
+  LazDebuggerIntfBaseTypes, LazDebuggerIntfExcludedRoutines, LazDebuggerIntfExceptions;
 
 const
   DebuggerIntfVersion = 0;
@@ -1367,8 +1367,8 @@ type
     property Name: String read FName write SetName;
     property HandledByDebugger: Boolean read FHandledByDebugger write SetHandledByDebugger;
     property ResumeHandled: Boolean read FResumeHandled write SetResumeHandled;
-  end;
-  TBaseSignalClass = class of TBaseSignal;
+  end deprecated 'To be removed in 5.99';
+  TBaseSignalClass = class of TBaseSignal  deprecated 'To be removed in 5.99';
 
   { TDBGSignal }
 
@@ -1378,8 +1378,8 @@ type
   protected
     property Debugger: TDebuggerIntf read GetDebugger;
   public
-  end;
-  TDBGSignalClass = class of TDBGSignal;
+  end deprecated 'To be removed in 5.99';
+  TDBGSignalClass = class of TDBGSignal deprecated 'To be removed in 5.99';
 
   { TBaseSignals }
   TBaseSignals = class(TCollection)
@@ -1408,56 +1408,12 @@ type
   public
     property Items[const AIndex: Integer]: TDBGSignal read GetItem
                                                       write SetItem; default;
-  end;
+  end deprecated 'To be removed in 5.99';
 
 
 
-  { TBaseException }
-  TBaseException = class(TDelayedUdateItem)
-  private
-    procedure SetEnabled(AValue: Boolean);
-  protected
-    FEnabled: Boolean;
-    FName: String;
-    procedure AssignTo(Dest: TPersistent); override;
-    procedure SetName(const AValue: String); virtual;
-  public
-    constructor Create(ACollection: TCollection); override;
-  public
-    property Name: String read FName write SetName;
-    property Enabled: Boolean read FEnabled write SetEnabled; // ignored if enabled
-  end;
-  TBaseExceptionClass = class of TBaseException;
-
-  { TDBGException }
-  TDBGException = class(TBaseException)
-  private
-  protected
-  public
-  end;
-  TDBGExceptionClass = class of TDBGException;
-
-  { TBaseExceptions }
-  TBaseExceptions = class(TCollection)
-  private
-    function GetItem(const AIndex: Integer): TBaseException;
-    procedure SetItem(const AIndex: Integer; AValue: TBaseException);
-  protected
-    FIgnoreAll: Boolean;
-    procedure AssignTo(Dest: TPersistent); override;
-    procedure ClearExceptions; virtual;
-    procedure SetIgnoreAll(const AValue: Boolean); virtual;
-  public
-    constructor Create(const AItemClass: TBaseExceptionClass);
-    destructor Destroy; override;
-    procedure Reset; virtual;
-    function Add(const AName: String): TBaseException;
-    function Find(const AName: String): TBaseException;
-    property IgnoreAll: Boolean read FIgnoreAll write SetIgnoreAll;
-    property Items[const AIndex: Integer]: TBaseException read GetItem
-                                                        write SetItem; default;
-  end;
-
+  TBaseException = IDbgExceptionHandler  deprecated 'To be removed in 5.99/ Use IDbgExceptionHandler';
+  TBaseExceptions = IDbgExceptionHandlerList  deprecated 'To be removed in 5.99 / Use IDbgExceptionHandlerList';
 
 {%endregion   ^^^^^  Signals / Exceptions  ^^^^^   }
 
@@ -1610,7 +1566,7 @@ type
     FEnvironment: TStrings;
     FErrorStateInfo: String;
     FErrorStateMessage: String;
-    FExceptions: TBaseExceptions;
+    FExceptions: IDbgExceptionHandlerList;
     FExcludedRoutines: IDbgExcludedRoutinesIntf;
     FExitCode: Integer;
     FExternalDebugger: String;
@@ -1792,7 +1748,7 @@ type
     property DebuggerEnvironment: TStrings read FDebuggerEnvironment
                                            write SetDebuggerEnvironment;         // The environment passed to the debugger process
     property Environment: TStrings read FEnvironment write SetEnvironment;       // The environment passed to the debuggee
-    property Exceptions: TBaseExceptions read FExceptions write FExceptions;      // A list of exceptions we should ignore
+    property Exceptions: IDbgExceptionHandlerList read FExceptions write FExceptions;      // A list of exceptions we should ignore
     property RunErrorText [ARunError: Integer]: string read GetRunErrorText;
     property ExitCode: Integer read FExitCode;
     property ExternalDebugger: String read FExternalDebugger;                    // The name of the debugger executable
@@ -4551,114 +4507,6 @@ end;
 procedure TDBGSignals.SetItem(const AIndex: Integer; const AValue: TDBGSignal);
 begin
   inherited SetItem(AIndex, AValue);
-end;
-
-{ =========================================================================== }
-{ TBaseException }
-{ =========================================================================== }
-
-procedure TBaseException.SetEnabled(AValue: Boolean);
-begin
-  if FEnabled = AValue then Exit;
-  FEnabled := AValue;
-  Changed;
-end;
-
-procedure TBaseException.AssignTo(Dest: TPersistent);
-begin
-  if Dest is TBaseException
-  then begin
-    TBaseException(Dest).Name := FName;
-  end
-  else inherited AssignTo(Dest);
-end;
-
-constructor TBaseException.Create(ACollection: TCollection);
-begin
-  inherited Create(ACollection);
-end;
-
-procedure TBaseException.SetName(const AValue: String);
-begin
-  if FName = AValue then exit;
-
-  if TBaseExceptions(GetOwner).Find(AValue) <> nil
-  then raise EDBGExceptions.Create('Duplicate name: ' + AValue);
-
-  FName := AValue;
-  Changed;
-end;
-
-{ =========================================================================== }
-{ TBaseExceptions }
-{ =========================================================================== }
-
-function TBaseExceptions.Add(const AName: String): TBaseException;
-begin
-  Result := TBaseException(inherited Add);
-  Result.Name := AName;
-end;
-
-constructor TBaseExceptions.Create(const AItemClass: TBaseExceptionClass);
-begin
-  inherited Create(AItemClass);
-  FIgnoreAll := False;
-end;
-
-destructor TBaseExceptions.Destroy;
-begin
-  ClearExceptions;
-  inherited Destroy;
-end;
-
-procedure TBaseExceptions.Reset;
-begin
-  ClearExceptions;
-  FIgnoreAll := False;
-end;
-
-function TBaseExceptions.Find(const AName: String): TBaseException;
-var
-  n: Integer;
-begin
-  for n := 0 to Count - 1 do
-  begin
-    Result := TBaseException(GetItem(n));
-    if CompareText(Result.Name, AName) = 0 then Exit;
-  end;
-  Result := nil;
-end;
-
-function TBaseExceptions.GetItem(const AIndex: Integer): TBaseException;
-begin
-  Result := TBaseException(inherited GetItem(AIndex));
-end;
-
-procedure TBaseExceptions.SetItem(const AIndex: Integer; AValue: TBaseException);
-begin
-  inherited SetItem(AIndex, AValue);
-end;
-
-procedure TBaseExceptions.ClearExceptions;
-begin
-  while Count>0 do
-    TBaseException(GetItem(Count-1)).Free;
-end;
-
-procedure TBaseExceptions.SetIgnoreAll(const AValue: Boolean);
-begin
-  if FIgnoreAll = AValue then exit;
-  FIgnoreAll := AValue;
-  Changed;
-end;
-
-procedure TBaseExceptions.AssignTo(Dest: TPersistent);
-begin
-  if Dest is TBaseExceptions
-  then begin
-    TBaseExceptions(Dest).IgnoreAll := IgnoreAll;
-  end
-  else inherited AssignTo(Dest);
 end;
 
 { TBaseDisassembler }

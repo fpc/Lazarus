@@ -718,7 +718,7 @@ begin
   FGotExceptCount := 0;
   dbg := StartGDB(AppDir, ExeName);
   try
-    dbg.Exceptions.Add('MyExceptionIgnore').Enabled := False;
+    Debugger.Exceptions.Add('MyExceptionIgnore').Enabled := False;
     dbg.OnException      := @DoDebuggerException;
     dbg.OnCurrent        := @DoCurrent;
 
@@ -958,7 +958,7 @@ begin
 
   dbg := StartGDB(AppDir, ExeName);
   try
-    dbg.Exceptions.Add('MyExceptionIgnore').Enabled := False;
+    Debugger.Exceptions.Add('MyExceptionIgnore').Enabled := False;
     dbg.OnException      := @DoDebuggerException;
     dbg.OnCurrent        := @DoCurrent;
 

@@ -512,7 +512,7 @@ begin
   dbg := Debugger.LazDebugger;
   TFpDebugDebuggerProperties(dbg.GetProperties).NextOnlyStopOnStartLine := ANextOnlyStopOnStartLine;
   try
-    dbg.Exceptions.Add('MyExceptionIgnore').Enabled := False;
+    Debugger.Exceptions.Add('MyExceptionIgnore').Enabled := False;
     dbg.OnException      := @DoDebuggerException;
 
     TstName := ' Run to Except';
@@ -741,7 +741,7 @@ begin
   dbg := Debugger.LazDebugger;
   TFpDebugDebuggerProperties(dbg.GetProperties).NextOnlyStopOnStartLine := ANextOnlyStopOnStartLine;
   try
-    dbg.Exceptions.Add('MyExceptionIgnore').Enabled := False;
+    Debugger.Exceptions.Add('MyExceptionIgnore').Enabled := False;
     dbg.OnException      := @DoDebuggerException;
 
     (* RecRaise
