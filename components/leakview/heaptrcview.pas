@@ -323,7 +323,7 @@ begin
       if txt = '' then exit;
       Finfo := AllocHeapTraceInfoFromText(txt);
     end else begin
-      if (not FileExistsUTF8(edtTrcFileName.Text)) or FromClip then Exit;
+      if not FileExistsUTF8(edtTrcFileName.Text) then Exit;
       Finfo := AllocHeapTraceInfo(edtTrcFileName.Text);
     end;
 
