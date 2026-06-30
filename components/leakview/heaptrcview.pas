@@ -324,7 +324,7 @@ begin
       Finfo := AllocHeapTraceInfoFromText(txt);
     end else begin
       if not FileExistsUTF8(edtTrcFileName.Text) then Exit;
-      Finfo := AllocHeapTraceInfo(edtTrcFileName.Text);
+      Finfo := AllocHeapTraceInfoFromFile(edtTrcFileName.Text);
     end;
 
     if Finfo.GetLeakInfo(data, fItems) then ItemsToTree

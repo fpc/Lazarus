@@ -132,14 +132,14 @@ type
     procedure DoParseTrc(traces: TStackTraceList);
   public
     TraceInfo : THeapTraceInfo;
-    constructor Create(const ATRCFile: string);
-    constructor CreateFromTxt(const AText: string);
+    constructor CreateFromFile(const AFileName: string);
+    constructor CreateFromText(const AText: string);
     destructor Destroy; override;
     function GetLeakInfo(out LeakData: TLeakStatus; var Traces: TStackTraceList): Boolean; override;
     function ResolveLeakInfo(AFileName: string; Traces: TStackTraceList): Boolean; override;
   end;
 
-function AllocHeapTraceInfo(const TrcFile: string): TLeakInfo;
+function AllocHeapTraceInfoFromFile(const TrcFile: string): TLeakInfo;
 function AllocHeapTraceInfoFromText(const TrcText: string): TLeakInfo;
 
 const
@@ -162,14 +162,14 @@ type
       class function ValgrindLineType(s: String): TValgrindLineType;
   end;
 
-function AllocHeapTraceInfo(const TrcFile: string): TLeakInfo;
+function AllocHeapTraceInfoFromFile(const TrcFile: string): TLeakInfo;
 begin
-  Result := THeapTrcInfo.Create(TrcFile);
+  Result := THeapTrcInfo.CreateFromFile(TrcFile);
 end;
 
 function AllocHeapTraceInfoFromText(const TrcText: string): TLeakInfo;
 begin
-  Result := THeapTrcInfo.CreateFromTxt(TrcText);
+  Result := THeapTrcInfo.CreateFromText(TrcText);
 end;
 
 // heap trace parsing implementation
@@ -515,15 +515,15 @@ begin
 
 end;
 
-constructor THeapTrcInfo.Create(const ATRCFile: string);
+constructor THeapTrcInfo.CreateFromFile(const AFileName: string);
 begin
   FKnownAddresses := TStackLines.Create;
-  fTrcFile := ATrcFile;
+  fTrcFile := AFileName;
   fTRCText := '';
   inherited Create;
 end;
 
-constructor THeapTrcInfo.CreateFromTxt(const AText: string);
+constructor THeapTrcInfo.CreateFromText(const AText: string);
 begin
   FKnownAddresses := TStackLines.Create;
   fTRCText := AText;
