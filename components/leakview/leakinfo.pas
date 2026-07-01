@@ -7,13 +7,11 @@ unit leakinfo;
 interface
 
 uses
-  Classes, SysUtils, fgl,
+  Classes, SysUtils, RegExpr, FGL,
   // CodeTools
   CodeToolManager, CodeCache,
   // LazUtils
   FileUtil, LazFileUtils, LazStringUtils, LazClasses, LazLoggerBase,
-  // LCL
-  TextTools,
   // IDEIntf
   IDEDialogs,
   // LeakView
@@ -132,14 +130,14 @@ type
     procedure DoParseTrc(traces: TStackTraceList);
   public
     TraceInfo : THeapTraceInfo;
-    constructor Create(const ATRCFile: string);
-    constructor CreateFromTxt(const AText: string);
+    constructor CreateFromFile(const AFileName: string);
+    constructor CreateFromText(const AText: string);
     destructor Destroy; override;
     function GetLeakInfo(out LeakData: TLeakStatus; var Traces: TStackTraceList): Boolean; override;
     function ResolveLeakInfo(AFileName: string; Traces: TStackTraceList): Boolean; override;
   end;
 
-function AllocHeapTraceInfo(const TrcFile: string): TLeakInfo;
+function AllocHeapTraceInfoFromFile(const TrcFile: string): TLeakInfo;
 function AllocHeapTraceInfoFromText(const TrcText: string): TLeakInfo;
 
 const
@@ -148,6 +146,11 @@ const
   rsStackTrace = 'Stack trace';
 
 implementation
+
+var
+  RegEx_In: TRegExpr;
+  RegEx_AtFrom: TRegExpr;
+  RegEx_At: TRegExpr;
 
 type
 
@@ -162,14 +165,14 @@ type
       class function ValgrindLineType(s: String): TValgrindLineType;
   end;
 
-function AllocHeapTraceInfo(const TrcFile: string): TLeakInfo;
+function AllocHeapTraceInfoFromFile(const TrcFile: string): TLeakInfo;
 begin
-  Result := THeapTrcInfo.Create(TrcFile);
+  Result := THeapTrcInfo.CreateFromFile(TrcFile);
 end;
 
 function AllocHeapTraceInfoFromText(const TrcText: string): TLeakInfo;
 begin
-  Result := THeapTrcInfo.CreateFromTxt(TrcText);
+  Result := THeapTrcInfo.CreateFromText(TrcText);
 end;
 
 // heap trace parsing implementation
@@ -352,12 +355,12 @@ function THeapTrcInfo.IsTraceLine(const Idx: Integer;
   function IsGDBLine(s: string): boolean;
   begin
     Result:=false;
-    if REMatches(s,'^#[0-9]+ +0x[0-9a-f]+ in ') then begin
+    if RegEx_In.Exec(s){"^#[0-9]+ +0x[0-9a-f]+ in "} then begin
       // gdb
       //   #4  0x007489de in EXTTOOLEDITDLG_TEXTERNALTOOLMENUITEMS_$__LOAD$TCONFIGSTORAGE$$TMODALRESULT ()
       Result:=true;
     end;
-    if REMatches(s,'^#[0-9]+ .* (at|from) ') then begin
+    if RegEx_AtFrom.Exec(s){"^#[0-9]+ .* (at|from) "} then begin
       // gdb
       //   #0 DOHANDLEMOUSEACTION (this=0x14afae00, ANACTIONLIST=0x14a96af8,ANINFO=...) at synedit.pp:3000
       Result:=true;
@@ -515,15 +518,15 @@ begin
 
 end;
 
-constructor THeapTrcInfo.Create(const ATRCFile: string);
+constructor THeapTrcInfo.CreateFromFile(const AFileName: string);
 begin
   FKnownAddresses := TStackLines.Create;
-  fTrcFile := ATrcFile;
+  fTrcFile := AFileName;
   fTRCText := '';
   inherited Create;
 end;
 
-constructor THeapTrcInfo.CreateFromTxt(const AText: string);
+constructor THeapTrcInfo.CreateFromText(const AText: string);
 begin
   FKnownAddresses := TStackLines.Create;
   fTRCText := AText;
@@ -690,8 +693,8 @@ begin
   end else if LeftStr(s,4) = '0000' then begin
     // mantis mangled gdb
     ReadGDBLine;
-  end else if REMatches(s,'^#[0-9]+ +0x[0-9a-f]+ in ') or
-              REMatches(s,'^#[0-9]+ .* at ')
+  end else if RegEx_In.Exec(s){"^#[0-9]+ +0x[0-9a-f]+ in "} or
+              RegEx_At.Exec(s){"^#[0-9]+ .* at "}
   then begin
     // gdb
     //   #4  0x007489de in EXTTOOLEDITDLG_TEXTERNALTOOLMENUITEMS_$__LOAD$TCONFIGSTORAGE$$TMODALRESULT ()
@@ -1065,6 +1068,18 @@ begin
   inherited Create;
 end;
 
+initialization
+  RegEx_In     := TRegExpr.Create;
+  RegEx_AtFrom := TRegExpr.Create;
+  RegEx_At     := TRegExpr.Create;
+  RegEx_In    .Expression := '^#[0-9]+ +0x[0-9a-f]+ in ';
+  RegEx_AtFrom.Expression := '^#[0-9]+ .* (at|from) ';
+  RegEx_At    .Expression := '^#[0-9]+ .* at ';
+
+finalization
+  FreeAndNil(RegEx_In);
+  FreeAndNil(RegEx_AtFrom);
+  FreeAndNil(RegEx_At);
 
 end.
 

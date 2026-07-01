@@ -3,7 +3,14 @@ program TestLeakView;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, Forms, GuiTestRunner, TestParser, leakview, simpleideintf;
+  // LCL
+  Interfaces, Forms,
+  // LazUtils
+  LazLogger,
+  // FPCUnit
+  GuiTestRunner,
+  // test suites
+  TestParser;
 
 {$R *.res}
 

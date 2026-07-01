@@ -21,9 +21,6 @@
     </RunParams>
     <RequiredPackages>
       <Item>
-        <PackageName Value="simpleideintf"/>
-      </Item>
-      <Item>
         <PackageName Value="leakview"/>
       </Item>
       <Item>

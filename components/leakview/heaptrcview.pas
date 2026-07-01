@@ -49,7 +49,9 @@ type
     Finfo  : TLeakInfo;
     fItems  : TStackTraceList;
 
-    procedure DoUpdateLeaks(FromClip: Boolean = False);
+    procedure DoUpdateLeaks(aInfo: TLeakInfo);
+    procedure DoUpdateLeaksFromText(aText: string);
+    procedure DoUpdateLeaksFromFile(aFileName: string);
 
     procedure ItemsToTree;
     procedure ChangeTreeText;
@@ -125,13 +127,13 @@ end;
 
 procedure THeapTrcViewForm.btnUpdateClick(Sender: TObject);
 begin
-  DoUpdateLeaks;
+  DoUpdateLeaksFromFile(edtTrcFileName.Text);
   AddFileToList(edtTrcFileName.Text);
 end;
 
 procedure THeapTrcViewForm.btnClipboardClick(Sender: TObject);
 begin
-  DoUpdateLeaks(True);
+  DoUpdateLeaksFromText(Clipboard.AsText);
 end;
 
 procedure THeapTrcViewForm.BtnResolveClick(Sender: TObject);
@@ -155,8 +157,7 @@ begin
   if not OpenDialog.Execute then Exit;
 
   edtTrcFileName.Text := OpenDialog.FileName;
-  DoUpdateLeaks;
-  AddFileToList(edtTrcFileName.Text);
+  btnUpdateClick(Sender);
 end;
 
 procedure THeapTrcViewForm.chkStayOnTopChange(Sender: TObject);
@@ -308,24 +309,18 @@ begin
   fItems.Clear;
 end;
 
-procedure THeapTrcViewForm.DoUpdateLeaks(FromClip: Boolean = False);
+procedure THeapTrcViewForm.DoUpdateLeaks(aInfo: TLeakInfo);
 var
-  data  : TLeakStatus;
-  txt: String;
+  data: TLeakStatus;
 begin
   FreeAndNil(Finfo);
   trvTraceInfo.BeginUpdate;
   try
     ClearItems;
     trvTraceInfo.Items.Clear;
-    if FromClip then begin
-      txt := Clipboard.AsText;
-      if txt = '' then exit;
-      Finfo := AllocHeapTraceInfoFromText(txt);
-    end else begin
-      if (not FileExistsUTF8(edtTrcFileName.Text)) or FromClip then Exit;
-      Finfo := AllocHeapTraceInfo(edtTrcFileName.Text);
-    end;
+
+    Finfo := aInfo;
+    if FInfo = nil then exit;
 
     if Finfo.GetLeakInfo(data, fItems) then ItemsToTree
     else trvTraceInfo.Items.Add(nil, rsErrorParse);
@@ -342,6 +337,22 @@ begin
   end;
   if trvTraceInfo.Items.TopLvlCount = 1 then
     trvTraceInfo.Items.TopLvlItems[0].Expand(False);
+end;
+
+procedure THeapTrcViewForm.DoUpdateLeaksFromText(aText: string);
+begin
+  if aText <> '' then
+    DoUpdateLeaks(AllocHeapTraceInfoFromText(aText))
+  else
+    DoUpdateLeaks(nil); // clear only
+end;
+
+procedure THeapTrcViewForm.DoUpdateLeaksFromFile(aFileName: string);
+begin
+  if FileExistsUTF8(aFileName) then
+    DoUpdateLeaks(AllocHeapTraceInfoFromFile(aFileName))
+  else
+    DoUpdateLeaks(nil); // clear only
 end;
 
 procedure THeapTrcViewForm.DoJump;

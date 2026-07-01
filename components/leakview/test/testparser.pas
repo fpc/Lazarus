@@ -5,8 +5,13 @@ unit TestParser;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testutils, testregistry,
-  SimpleIDE, TextTools, leakinfo, LazLogger;
+  Classes, SysUtils,
+  // FPCUnit
+  FPCUnit, TestRegistry,
+  // LazUtils
+  LazLoggerBase,
+  // package
+  LeakInfo;
 
 type
 
@@ -935,7 +940,7 @@ begin
 
   CheckTrace('T0', [
     el('customform.inc', 939, $0041ab6f, '  * frame #0: 0x0041ab6f project1.exe`DOCREATE(this=0x04a91060) at customform.inc:939'),
-    el(''              ,   0, -2 {$048fa158}, '    frame #1: 0x048fa158'),
+    el(''              ,   0, -2 { $048fa158 }, '    frame #1: 0x048fa158'),
     el('project1.lpr'  ,  19, $00402a42, '    frame #2: 0x00402a42 project1.exe`main at project1.lpr:19')
     ], TrcList[0]);
 
