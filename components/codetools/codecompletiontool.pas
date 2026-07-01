@@ -10118,6 +10118,8 @@ begin
 
   CodeCompleteSrcChgCache:=SourceChangeCache;
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+  if CursorNode=nil then
+    exit;
 
   LastCodeToolsError := nil;
   try
