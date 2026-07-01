@@ -395,7 +395,7 @@ type
   public
     destructor Destroy; override;
     procedure BeginUpdate; override;
-  end;
+  end deprecated 'to be removed in 5.99';
 
   { TBaseBreakPoints }
 
