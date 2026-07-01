@@ -68,9 +68,9 @@ type
     property IgnoreAll: Boolean read GetIgnoreAllExceptions;
   end;
 
-  { TDbgExceptionTargetInfoTemplate }
+  { TDbgTargetExceptionInfoTemplate }
 
-  generic TDbgExceptionTargetInfoTemplate<_Base: TObject> = class(_Base , IDbgTargetExceptionInfo)
+  generic TDbgTargetExceptionInfoTemplate<_Base: TObject> = class(_Base , IDbgTargetExceptionInfo)
   strict private
     function GetExceptionAddress: TDBGPtr;
     function GetExceptionClassName: String;
@@ -94,37 +94,37 @@ type
 
 implementation
 
-{ TDbgExceptionTargetInfoTemplate }
+{ TDbgTargetExceptionInfoTemplate }
 
-function TDbgExceptionTargetInfoTemplate.GetExceptionAddress: TDBGPtr;
+function TDbgTargetExceptionInfoTemplate.GetExceptionAddress: TDBGPtr;
 begin
   Result := 0;
 end;
 
-function TDbgExceptionTargetInfoTemplate.GetExceptionClassName: String;
+function TDbgTargetExceptionInfoTemplate.GetExceptionClassName: String;
 begin
   Result := '';
 end;
 
-function TDbgExceptionTargetInfoTemplate.GetExceptionKind: TDbgTargetExceptionKind;
+function TDbgTargetExceptionInfoTemplate.GetExceptionKind: TDbgTargetExceptionKind;
 begin
   Result := tekUnknown;
 end;
 
-function TDbgExceptionTargetInfoTemplate.GetExceptionMessage(out AMessage: String): boolean;
+function TDbgTargetExceptionInfoTemplate.GetExceptionMessage(out AMessage: String): boolean;
 begin
   AMessage := '';
   Result := False;
 end;
 
-function TDbgExceptionTargetInfoTemplate.GetExceptionRaiseAtFrameAddr(out AFrameAddr: TDBGPtr
+function TDbgTargetExceptionInfoTemplate.GetExceptionRaiseAtFrameAddr(out AFrameAddr: TDBGPtr
   ): boolean;
 begin
   AFrameAddr := 0;
   Result := False;
 end;
 
-function TDbgExceptionTargetInfoTemplate.GetExceptionBaseClassName(out AClassName: String;
+function TDbgTargetExceptionInfoTemplate.GetExceptionBaseClassName(out AClassName: String;
   AnIndex: integer): boolean;
 begin
   AClassName := '';

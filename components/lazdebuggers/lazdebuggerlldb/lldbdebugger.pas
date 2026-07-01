@@ -31,7 +31,7 @@ uses
   DebugProcess,
   // LazDebuggerLldb
   LldbInstructions, LldbHelper, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
-  LazDebuggerIntfExcludedRoutines;
+  LazDebuggerIntfExcludedRoutines, LazDebuggerIntfExceptions;
 
 type
 
@@ -113,10 +113,16 @@ type
 
   { TLldbDebuggerCommandRun }
 
-  TLldbDebuggerCommandRun = class(TLldbDebuggerCommand)
+  TLldbDebuggerCommandRun = class(specialize TDbgTargetExceptionInfoTemplate<TLldbDebuggerCommand>, IDbgTargetExceptionInfo)
   private type
     TExceptionInfoCommand = (exiReg0, exiReg2, exiClass, exiMsg);
     TExceptionInfoCommands = set of TExceptionInfoCommand;
+  private // IDbgTargetExceptionInfo
+    FExceptionClassName: String;
+    FExceptionMessage: String;
+    function GetExceptionAddress: TDBGPtr;
+    function GetExceptionClassName: String;
+    function GetExceptionMessage(out AMessage: String): boolean;
   private
     FMode: (cmRun, cmRunToCatch, cmRunAfterCatch, cmRunToTmpBrk);
     FState: (crRunning, crReadingThreads, crStopped, crStoppedRaise, crDone);
@@ -781,6 +787,22 @@ begin
   Finished;
 end;
 
+function TLldbDebuggerCommandRun.GetExceptionAddress: TDBGPtr;
+begin
+  Result := Debugger.CurrentLocation.Address;
+end;
+
+function TLldbDebuggerCommandRun.GetExceptionClassName: String;
+begin
+  Result := FExceptionClassName;
+end;
+
+function TLldbDebuggerCommandRun.GetExceptionMessage(out AMessage: String): boolean;
+begin
+  AMessage := FExceptionMessage;
+  Result := True;
+end;
+
 procedure TLldbDebuggerCommandRun.ThreadInstructionSucceeded(Sender: TObject);
 begin
   FState := crStopped;
@@ -931,19 +953,18 @@ const
 
   procedure DoException;
   var
-    ExcClass, ExcMsg: String;
     CanContinue: Boolean;
     Instr: TLldbInstructionStackTrace;
-    ExceptItem: TBaseException;
+    ExceptItem: IDbgExceptionHandler;
   begin
     if exiClass in FCurrentExceptionInfo.FHasCommandData then
-      ExcClass := FCurrentExceptionInfo.FExceptClass
+      FExceptionClassName := FCurrentExceptionInfo.FExceptClass
     else
-      ExcClass := '<Unknown Class>'; // TODO: move to IDE
+      FExceptionClassName := '<Unknown Class>'; // TODO: move to IDE
     if exiMsg in FCurrentExceptionInfo.FHasCommandData then
-      ExcMsg := FCurrentExceptionInfo.FExceptMsg
+      FExceptionMessage := FCurrentExceptionInfo.FExceptMsg
     else
-      ExcMsg := '<Unknown Message>'; // TODO: move to IDE
+      FExceptionMessage := '<Unknown Message>'; // TODO: move to IDE
 
     if Debugger.Exceptions.IgnoreAll then begin
       FState := crStoppedRaise;
@@ -951,15 +972,17 @@ const
       exit;
     end;
 
-    ExceptItem := Debugger.Exceptions.Find(ExcClass);
-    if (ExceptItem <> nil) and (ExceptItem.Enabled)
-    then begin
+    ExceptItem := Debugger.Exceptions.Find(FExceptionClassName);
+    CanContinue := False;
+    if (ExceptItem <> nil) then
+      ExceptItem.DoExceptionHit(CanContinue, Self);
+    if CanContinue then begin
       FState := crStoppedRaise;
       ContinueRunning;
       exit;
     end;
 
-    CanContinue := Debugger.DoExceptionHit(ExcClass, ExcMsg);
+    CanContinue := Debugger.DoExceptionHit(FExceptionClassName, FExceptionMessage);
 
     if CanContinue then begin
       FState := crStoppedRaise;
@@ -987,8 +1010,7 @@ const
   var
     CanContinue: Boolean;
     ErrNo: Integer;
-    ExceptName: String;
-    ExceptItem: TBaseException;
+    ExceptItem: IDbgExceptionHandler;
   begin
     ErrNo := 0;
     if exiReg0 in FCurrentExceptionInfo.FHasCommandData then
@@ -1001,16 +1023,19 @@ const
       exit;
     end;
 
-    ExceptName := Format('RunError(%d)', [ErrNo]);
-    ExceptItem := Debugger.Exceptions.Find(ExceptName);
-    if (ExceptItem <> nil) and (ExceptItem.Enabled)
-    then begin
+    FExceptionClassName := Format('RunError(%d)', [ErrNo]);
+    FExceptionMessage := Debugger.RunErrorText[ErrNo];
+    ExceptItem := Debugger.Exceptions.Find(FExceptionClassName);
+    CanContinue := False;
+    if (ExceptItem <> nil) then
+      ExceptItem.DoExceptionHit(CanContinue, Self);
+    if CanContinue then begin
       FState := crStoppedRaise;
       ContinueRunning;
       exit;
     end;
 
-    Debugger.DoException(deRunError, ExceptName, Debugger.FCurrentLocation, Debugger.RunErrorText[ErrNo], CanContinue);
+    Debugger.DoException(deRunError, FExceptionClassName, Debugger.FCurrentLocation, Debugger.RunErrorText[ErrNo], CanContinue);
     if CanContinue
     then begin
       FState := crStoppedRaise;
@@ -1025,7 +1050,7 @@ const
   var
     CanContinue: Boolean;
     ExceptName: String;
-    ExceptItem: TBaseException;
+    ExceptItem: IDbgExceptionHandler;
   begin
     if Debugger.Exceptions.IgnoreAll then begin
       FState := crStoppedRaise;
@@ -1033,10 +1058,13 @@ const
       exit;
     end;
 
-    ExceptName := Format('External: %s', [AStopReason]);
-    ExceptItem := Debugger.Exceptions.Find(ExceptName);
-    if (ExceptItem <> nil) and (ExceptItem.Enabled)
-    then begin
+    FExceptionClassName := Format('External: %s', [AStopReason]);
+    FExceptionMessage := '';
+    ExceptItem := Debugger.Exceptions.Find(FExceptionClassName);
+    CanContinue := False;
+    if (ExceptItem <> nil) then
+      ExceptItem.DoExceptionHit(CanContinue, Self);
+    if CanContinue then begin
       FState := crStoppedRaise;
       ContinueRunning;
       exit;

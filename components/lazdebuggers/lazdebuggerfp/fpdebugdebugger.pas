@@ -37,7 +37,7 @@ uses
   Maps, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazUTF8, lazCollections,
   DbgIntfDebuggerBase, DbgIntfProcess, LazDebuggerIntfBaseTypes,
   FpDebugDebuggerUtils, FpDebugDebuggerWorkThreads, FpDebugDebuggerBase,
-  LazDebuggerIntf, LazDebuggerIntfExcludedRoutines,
+  LazDebuggerIntf, LazDebuggerIntfExcludedRoutines, LazDebuggerIntfExceptions,
   // FpDebug
   {$ifdef windows} FpDbgWinClasses,  {$endif windows}
   {$IFDEF FPDEBUG_THREAD_CHECK} FpDbgCommon, {$ENDIF}
@@ -309,7 +309,18 @@ type
 
   { TFpDebugDebugger }
 
-  TFpDebugDebugger = class(TFpDebugDebuggerBase)
+  TFpDebugDebugger = class(specialize TDbgTargetExceptionInfoTemplate<TFpDebugDebuggerBase>, IDbgTargetExceptionInfo)
+  private
+    FExceptionClassName: String;
+    FExceptionMessage: String;
+    FExceptionKind: TDbgTargetExceptionKind;
+    FExceptionFrameAddr: TDBGPtr;
+    FExceptionHandlerFlags: set of (efHasMessage, efHasFrameAddr);
+    function GetExceptionAddress: TDBGPtr;
+    function GetExceptionClassName: String;
+    function GetExceptionMessage(out AMessage: String): boolean;
+    function GetExceptionRaiseAtFrameAddr(out AFrameAddr: TDBGPtr): boolean;
+    function GetExceptionKind: TDbgTargetExceptionKind;
   private type
     TFpDebugStringQueue = class(specialize TLazThreadedQueue<string>);
   private
@@ -3603,19 +3614,23 @@ end;
 procedure TFpDebugDebugger.FDbgControllerExceptionEvent(var continue: boolean;
   const ExceptionClass, ExceptionMessage: string);
 var
-  ExceptItem: TBaseException;
+  ExceptItem: IDbgExceptionHandler;
 begin
   if Exceptions.IgnoreAll then begin
     continue := True;
     exit;
   end;
 
+  FExceptionClassName := ExceptionClass;
+  FExceptionMessage   := ExceptionMessage;
+  FExceptionHandlerFlags := [efHasMessage];
+  FExceptionKind := tekSignal; // or tekOther?
   ExceptItem := Exceptions.Find(ExceptionClass);
-  if (ExceptItem <> nil) and (ExceptItem.Enabled)
-  then begin
-    continue := True;
+
+  if (ExceptItem <> nil) then
+    ExceptItem.DoExceptionHit(continue, Self);
+  if continue then
     exit;
-  end;
 
   DoException(deExternal, ExceptionClass, GetLocation, ExceptionMessage, continue);
   if not continue then
@@ -3778,6 +3793,41 @@ begin
     Application.QueueAsyncCall(@DoDebugOutput, 0);
 end;
 
+function TFpDebugDebugger.GetExceptionAddress: TDBGPtr;
+begin
+  Result := 0;
+  if DbgController.CurrentThread <> nil then
+    Result := DbgController.CurrentThread.GetInstructionPointerRegisterValue;
+end;
+
+function TFpDebugDebugger.GetExceptionClassName: String;
+begin
+  Result := FExceptionClassName;
+end;
+
+function TFpDebugDebugger.GetExceptionMessage(out AMessage: String): boolean;
+begin
+  Result := efHasMessage in FExceptionHandlerFlags;
+  if Result then
+    AMessage := FExceptionClassName
+  else
+    AMessage := '';
+end;
+
+function TFpDebugDebugger.GetExceptionRaiseAtFrameAddr(out AFrameAddr: TDBGPtr): boolean;
+begin
+  Result := efHasFrameAddr in FExceptionHandlerFlags;
+  if Result then
+    AFrameAddr := FExceptionFrameAddr
+  else
+    AFrameAddr := 0;
+end;
+
+function TFpDebugDebugger.GetExceptionKind: TDbgTargetExceptionKind;
+begin
+  Result := FExceptionKind;
+end;
+
 procedure TFpDebugDebugger.DoDebugOutput(Data: PtrInt);
 var
   s: string;
@@ -3892,11 +3942,16 @@ var
   AnExceptionObjectLocation, ExceptIP, ExceptFramePtr: TDBGPtr;
   ExceptionClass: string;
   ExceptionMessage: string;
-  ExceptItem: TBaseException;
+  ExceptItem: IDbgExceptionHandler;
   Offs: Integer;
   AnTObjSize: Int64;
   AnErr: TFpError;
 begin
+  if Exceptions.IgnoreAll then begin
+    continue := True;
+    exit;
+  end;
+
   Offs := 0;
   if not FDbgController.DefaultContext.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(1),
     SizeVal(SizeOf(ExceptIP)), ExceptIP)
@@ -3925,17 +3980,17 @@ begin
     ExceptionClass := GetClassInstanceName(AnExceptionObjectLocation);
   end;
 
-  if Exceptions.IgnoreAll then begin
-    continue := True;
-    exit;
-  end;
+  FExceptionClassName := ExceptionClass;
+  FExceptionMessage   := ExceptionMessage;
+  FExceptionFrameAddr := ExceptIP;
+  FExceptionHandlerFlags := [efHasMessage, efHasFrameAddr];
+  FExceptionKind := tekFpcRaise;
 
   ExceptItem := Exceptions.Find(ExceptionClass);
-  if (ExceptItem <> nil) and (ExceptItem.Enabled)
-  then begin
-    continue := True;
+  if (ExceptItem <> nil) then
+    ExceptItem.DoExceptionHit(continue, Self);
+  if continue then
     exit;
-  end;
 
   DoException(deInternal, ExceptionClass, AnExceptionLocation, ExceptionMessage, continue);
 
@@ -3954,9 +4009,14 @@ var
   ErrNo: QWord;
   ExceptIP, ExceptFramePtr: TDBGPtr;
   ExceptName: string;
-  ExceptItem: TBaseException;
+  ExceptItem: IDbgExceptionHandler;
   ExceptionLocation: TDBGLocationRec;
 begin
+  if Exceptions.IgnoreAll then begin
+    continue := True;
+    exit;
+  end;
+
   if not FDbgController.DefaultContext.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(1),
     SizeVal(SizeOf(ExceptIP)), ExceptIP)
   then
@@ -3972,17 +4032,17 @@ begin
     ErrNo := 0;
   end;
 
-  if Exceptions.IgnoreAll then begin
-    continue := True;
-    exit;
-  end;
+  FExceptionClassName := ExceptName;
+  FExceptionMessage   := RunErrorText[ErrNo];
+  FExceptionFrameAddr := ExceptIP;
+  FExceptionHandlerFlags := [efHasMessage, efHasFrameAddr];
+  FExceptionKind := tekFpcRunError;
 
   ExceptItem := Exceptions.Find(ExceptName);
-  if (ExceptItem <> nil) and (ExceptItem.Enabled)
-  then begin
-    continue := True;
+  if (ExceptItem <> nil) then
+    ExceptItem.DoExceptionHit(continue, Self);
+  if continue then
     exit;
-  end;
 
   DoException(deRunError, ExceptName, ExceptionLocation, RunErrorText[ErrNo], continue);
 
@@ -4000,9 +4060,14 @@ procedure TFpDebugDebugger.HandleRunError(var continue: boolean);
 var
   ErrNo: QWord;
   ExceptName: string;
-  ExceptItem: TBaseException;
+  ExceptItem: IDbgExceptionHandler;
   ExceptionLocation: TDBGLocationRec;
 begin
+  if Exceptions.IgnoreAll then begin
+    continue := True;
+    exit;
+  end;
+
   // NO Addr / No Frame
   ExceptionLocation:=GetLocationRec;
 
@@ -4015,17 +4080,16 @@ begin
     ErrNo := 0;
   end;
 
-  if Exceptions.IgnoreAll then begin
-    continue := True;
-    exit;
-  end;
+  FExceptionClassName := ExceptName;
+  FExceptionMessage   := RunErrorText[ErrNo];
+  FExceptionHandlerFlags := [efHasMessage];
+  FExceptionKind := tekFpcRunError;
 
   ExceptItem := Exceptions.Find(ExceptName);
-  if (ExceptItem <> nil) and (ExceptItem.Enabled)
-  then begin
-    continue := True;
+  if (ExceptItem <> nil) then
+    ExceptItem.DoExceptionHit(continue, Self);
+  if continue then
     exit;
-  end;
 
   DoException(deRunError, ExceptName, ExceptionLocation, RunErrorText[ErrNo], continue);
 

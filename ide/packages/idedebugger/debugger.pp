@@ -9498,7 +9498,7 @@ end;
 procedure TIDEException.DoExceptionHit(var AContinue: Boolean;
   const AnExceptTargetInfo: IDbgTargetExceptionInfo);
 begin
-  AContinue := not FEnabled;
+  AContinue := FEnabled;
 end;
 
 constructor TIDEException.Create (ACollection: TCollection );
