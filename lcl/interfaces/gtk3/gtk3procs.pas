@@ -318,6 +318,8 @@ function Gtk3IsViewPort(AWidget: PGObject): GBoolean;
 function Gtk3IsWidget(AWidget: PGObject): GBoolean;
 function Gtk3IsGtkWindow(AWidget: PGObject): GBoolean;
 function Gtk3IsGdkWindow(AWidget: PGObject): GBoolean;
+function Gtk3SafeWindowOrigin(AWindow: PGdkWindow; X, Y: Pgint): Boolean;
+function Gtk3SafeWindowRootOrigin(AWindow: PGdkWindow; X, Y: Pgint): Boolean;
 function Gtk3IsGdkPixbuf(AWidget: PGObject): GBoolean;
 function Gtk3IsGdkVisual(AVisual: PGObject): GBoolean;
 
@@ -868,6 +870,44 @@ end;
 function Gtk3IsGdkWindow(AWidget: PGObject): GBoolean;
 begin
   Result := (AWidget <> nil) and  g_type_check_instance_is_a(PGTypeInstance(AWidget), gdk_window_get_type);
+end;
+
+function Gtk3SafeWindowOrigin(AWindow: PGdkWindow; X, Y: Pgint): Boolean;
+begin
+  if X <> nil then
+    X^ := 0;
+  if Y <> nil then
+    Y^ := 0;
+  Result := False;
+  if Gtk3IsGdkWindow(AWindow) and not gdk_window_is_destroyed(AWindow) then
+  begin
+    gdk_error_trap_push;
+    try
+      gdk_window_get_origin(AWindow, X, Y);
+      Result := True;
+    finally
+      gdk_error_trap_pop_ignored;
+    end;
+  end;
+end;
+
+function Gtk3SafeWindowRootOrigin(AWindow: PGdkWindow; X, Y: Pgint): Boolean;
+begin
+  if X <> nil then
+    X^ := 0;
+  if Y <> nil then
+    Y^ := 0;
+  Result := False;
+  if Gtk3IsGdkWindow(AWindow) and not gdk_window_is_destroyed(AWindow) then
+  begin
+    gdk_error_trap_push;
+    try
+      gdk_window_get_root_origin(AWindow, X, Y);
+      Result := True;
+    finally
+      gdk_error_trap_pop_ignored;
+    end;
+  end;
 end;
 
 function Gtk3IsGdkPixbuf(AWidget: PGObject): GBoolean;

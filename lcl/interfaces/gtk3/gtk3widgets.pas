@@ -4061,9 +4061,8 @@ begin
     p.x+=x;
     p.y+=y;
     gw := tw^.get_window;
-    if gw <> nil then
+    if Gtk3SafeWindowOrigin(gw, @x, @y) then
     begin
-      gw^.get_origin(@x,@y); // required for X11
       p.x+=x;
       p.y+=y;
     end;
@@ -4093,7 +4092,7 @@ begin
       if Gtk3IsGdkWindow(AToplevel^.get_window) then
       begin
         AGtkWidget^.translate_coordinates(AToplevel, 0, 0, @WX, @WY);
-        AToplevel^.get_window^.get_origin(@X, @Y);
+        Gtk3SafeWindowOrigin(AToplevel^.get_window, @X, @Y);
         dec(P.X, X + WX);
         dec(P.Y, Y + WY);
         Result := 0;
@@ -4102,17 +4101,17 @@ begin
     end;
     if not AGtkWidget^.get_has_window and (AGtkWidget^.get_parent <> nil) then
     begin
-      PGdkWindow(AWindow)^.get_origin(@X, @Y);
+      Gtk3SafeWindowOrigin(AWindow, @X, @Y);
       P.X := P.X - X - Allocation.x;
       P.Y := P.Y - Y - Allocation.y;
       exit;
     end;
-    PGdkWindow(AWindow)^.get_origin(@X, @Y);
+    Gtk3SafeWindowOrigin(AWindow, @X, @Y);
   end else
   if Gtk3IsGdkWindow(fWidget^.window) then
   begin
     AWindow := fWidget^.window;
-    PGdkWindow(AWindow)^.get_origin(@X, @Y);
+    Gtk3SafeWindowOrigin(AWindow, @X, @Y);
   end else
   begin
     fWidget^.get_allocation(@Allocation);
@@ -4500,7 +4499,7 @@ begin
     if (GdkWindow<>nil) and (Self.FWidget^.get_mapped) then
     begin
       // window is mapped = window manager has put the window somewhere
-      gdk_window_get_root_origin(GdkWindow, @GtkLeft, @GtkTop);
+      Gtk3SafeWindowRootOrigin(GdkWindow, @GtkLeft, @GtkTop);
       APoint.X := GtkLeft;
       APoint.Y := GtkTop;
       Result:=true;
@@ -10067,7 +10066,7 @@ begin
     screen := gdk_screen_get_default;
 
   gdk_device_get_position(pointer, @screen, @x, @y);
-  gdk_window_get_origin(AWindow, @win_x, @win_y);
+  Gtk3SafeWindowOrigin(AWindow, @win_x, @win_y);
 
   // Translate the pointer position to the scrollbar's local coordinates
   x := x - win_x;
@@ -10127,7 +10126,7 @@ begin
   aWindow := GetContainerWidget^.get_window;
   if not Gtk3IsGdkWindow(aWindow) then
     exit;
-  gdk_window_get_origin(aWindow, @WinX, @WinY);
+  Gtk3SafeWindowOrigin(aWindow, @WinX, @WinY);
   LocalX := Trunc(aGlobalX) - WinX;
   LocalY := Trunc(aGlobalY) - WinY;
 
@@ -10405,9 +10404,8 @@ begin
   else
     AWindow := nil;
 
-  if Gtk3IsGdkWindow(AWindow) then
+  if Gtk3SafeWindowOrigin(AWindow, @gx, @gy) then
   begin
-    gdk_window_get_origin(AWindow, @gx, @gy);
     P := Point(P.X + gx, P.Y + gy);
     Result := True;
   end else
@@ -10427,9 +10425,8 @@ begin
   else
     AWindow := nil;
 
-  if Gtk3IsGdkWindow(AWindow) then
+  if Gtk3SafeWindowOrigin(AWindow, @gx, @gy) then
   begin
-    gdk_window_get_origin(AWindow, @gx, @gy);
     dec(P.X, gx);
     dec(P.Y, gy);
     Result := 0;
@@ -15784,10 +15781,8 @@ begin
           PGtkWindow(Widget)^.resize(AWidth, AHeight);
           x := 0;
           y := 0;
-          if not PGtkWindow(Widget)^.get_decorated and (PGtkWindow(Widget)^.transient_for <> nil)
-            and (PGtkWindow(Widget)^.transient_for^.window <> nil)
-            and not gdk_window_is_destroyed(PGtkWindow(Widget)^.transient_for^.window) then
-            PGtkWindow(Widget)^.transient_for^.window^.get_origin(@x, @y);
+          if not PGtkWindow(Widget)^.get_decorated and (PGtkWindow(Widget)^.transient_for <> nil) then
+            Gtk3SafeWindowOrigin(PGtkWindow(Widget)^.transient_for^.window, @x, @y);
           PGtkWindow(Widget)^.move(ALeft + x, ATop + y);
         end;
       end else
@@ -15809,10 +15804,8 @@ begin
          decorated windows, but non decorated with popupparent must align.}
         x := 0;
         y := 0;
-        if not PGtkWindow(Widget)^.get_decorated and (PGtkWindow(Widget)^.transient_for <> nil)
-          and (PGtkWindow(Widget)^.transient_for^.window <> nil)
-          and not gdk_window_is_destroyed(PGtkWindow(Widget)^.transient_for^.window) then
-          PGtkWindow(Widget)^.transient_for^.window^.get_origin(@x, @y);
+        if not PGtkWindow(Widget)^.get_decorated and (PGtkWindow(Widget)^.transient_for <> nil) then
+          Gtk3SafeWindowOrigin(PGtkWindow(Widget)^.transient_for^.window, @x, @y);
         PGtkWindow(Widget)^.move(ALeft + x, ATop + y);
       end;
     end;

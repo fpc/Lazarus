@@ -2513,7 +2513,8 @@ begin
       // LCLObject := TGtk3Widget(HwndFromGtkWidget(DevCtx.Parent));
     end;
   end else
-    gdk_window_get_origin(DCWindow, @DCScreenOrigin.X, @DCScreenOrigin.Y);
+    if not Gtk3SafeWindowOrigin(DCWindow, @DCScreenOrigin.X, @DCScreenOrigin.Y) then
+      DCScreenOrigin := DevCtx.Offset;
 
   Widget := TGtk3Widget(WindowHandle).GetContainerWidget;
   if Widget = nil then
@@ -2522,9 +2523,7 @@ begin
     Exit;
   end;
 
-  if Gtk3IsGdkWindow(Widget^.window) then
-    gdk_window_get_origin(Widget^.window, @WindowScreenOrigin.X, @WindowScreenOrigin.Y)
-  else
+  if not Gtk3SafeWindowOrigin(Widget^.window, @WindowScreenOrigin.X, @WindowScreenOrigin.Y) then
     exit; // no valid window
 
   // Calculate the origin difference
@@ -3682,7 +3681,7 @@ begin
       begin
         // get_origin gives the screen position of the GDK client window.
         // On Wayland this is always 0,0 - no global screen coordinates.
-        AGdkWindow^.get_origin(@x, @y);
+        Gtk3SafeWindowOrigin(AGdkWindow, @x, @y);
         if IsWayland then
           AWindow^.get_size(@aWidth, @aHeight)
         else
@@ -3710,7 +3709,7 @@ begin
       AGdkWindow := TGtk3Widget(Handle).Widget^.get_window;
       if AGdkWindow <> nil then
       begin
-        AGdkWindow^.get_origin(@x, @y);
+        Gtk3SafeWindowOrigin(AGdkWindow, @x, @y);
         if TGtk3Widget(Handle).Widget^.get_has_window then
           ARect := Bounds(x, y, Allocation.width, Allocation.height)
         else
