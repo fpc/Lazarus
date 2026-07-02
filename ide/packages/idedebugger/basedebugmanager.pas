@@ -200,7 +200,7 @@ type
                                 ): TModalResult; virtual; abstract;
     function DoDeleteBreakPointAtMark(const ASourceMarkObj: TObject): TModalResult; virtual; abstract;
 
-    function ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult; virtual; abstract;
+    function ShowBreakPointProperties(const ABreakpoint: TIdeTracePoint): TModalresult; virtual; abstract;
     function ShowWatchProperties(const AWatch: TCurrentWatch; AWatchExpression: String = ''; AResDataType: TWatchResultDataKind = rdkUnknown): TModalresult; virtual; abstract;
 
     procedure RequestWatchData(AWatchValue: IDbgWatchValueIntf); override;

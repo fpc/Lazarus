@@ -1485,6 +1485,11 @@ msgstr "Usunąć pułapkę na adresie %s?"
 msgid "Delete watchpoint for \"%s\"?"
 msgstr "Usunąć pułapkę \"%s\"?"
 
+#: idedebuggerstringconstants.lisdeletetracepointforexception
+#, object-pascal-format
+msgid "Delete exception filter for \"%s\"?"
+msgstr ""
+
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
 msgstr "Cyfry:"
@@ -1580,10 +1585,18 @@ msgstr "Dodaj komentarz..."
 msgid "Add Comment"
 msgstr "Dodaj komentarz"
 
+#: idedebuggerstringconstants.lisexceptionclass
+msgid "Class:"
+msgstr ""
+
 #: idedebuggerstringconstants.lisexceptiondialog
 #, fuzzy
 msgid "Debugger Exception Notification"
 msgstr "Wyjątek"
+
+#: idedebuggerstringconstants.lisexceptionfilter
+msgid "&Exception filter"
+msgstr ""
 
 #: idedebuggerstringconstants.lisexport
 msgctxt "lazarusidestrconsts.lisexport"
@@ -1901,9 +1914,9 @@ msgctxt "idedebuggerstringconstants.lismenuviewassembler"
 msgid "Assembler"
 msgstr "Asembler"
 
-#: idedebuggerstringconstants.lismenuviewbreakpoints
-msgid "BreakPoints"
-msgstr "Pułapki"
+#: idedebuggerstringconstants.lismenuviewbreakpointsandexceptions
+msgid "BreakPoints/Exceptions"
+msgstr ""
 
 #: idedebuggerstringconstants.lismenuviewcallstack
 msgid "Call Stack"
@@ -1989,6 +2002,10 @@ msgstr ""
 
 #: idedebuggerstringconstants.lissearchparenthint
 msgid "MaxCount:NamePattern"
+msgstr ""
+
+#: idedebuggerstringconstants.lisskipexception
+msgid "Continue"
 msgstr ""
 
 #: idedebuggerstringconstants.lissourcebreakpoint

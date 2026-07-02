@@ -6371,6 +6371,18 @@ end;
 function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
   const AIgnoreSigIntState: Boolean): Boolean;
 
+  function CheckCondition(AnExpression: String; AnErrorResult: Boolean): Boolean;
+  var
+    s: String;
+  begin
+    s := lowercase(GetStrValue(AnExpression, [], [{cfNoTimeoutWarning}]));
+    if s = 'true' then Result := True
+    else
+    if s = 'false' then Result := False
+    else
+    Result := AnErrorResult;
+  end;
+
   function GetExceptionInfo: TGDBMIExceptionInfo;
   begin
     FTheDebugger.QueueExecuteLock;
@@ -6394,6 +6406,8 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
   var
     CanContinue: Boolean;
     ExceptItem: IDbgExceptionHandler;
+    NeedInternalPause: boolean;
+    expr: String;
   begin
     FTheDebugger.FStoppedReason := srRaiseExcept;
     if (FTheDebugger.Exceptions = nil) or FTheDebugger.Exceptions.IgnoreAll
@@ -6410,11 +6424,17 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     FExceptionMessage := '';
     FMayHaveExceptionMessage := True;
     CanContinue := False;
-    if (ExceptItem <> nil) then
-      ExceptItem.DoExceptionHit(CanContinue, Self);
-    if CanContinue then begin
-      Result := True; //ExecuteCommand('-exec-continue')
-      exit;
+    if (ExceptItem <> nil) then begin
+      NeedInternalPause := False;
+      expr := Trim(ExceptItem.Expression);
+      if (expr = '') or CheckCondition(expr, False) then
+        ExceptItem.DoExceptionHit(CanContinue, NeedInternalPause, Self);
+      if CanContinue then begin
+        if NeedInternalPause then
+          SetDebuggerState(dsInternalPause);
+        Result := True; //ExecuteCommand('-exec-continue')
+        exit;
+      end;
     end;
 
     FTheDebugger.QueueExecuteLock;
@@ -6445,6 +6465,8 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     ErrorNo: Integer;
     CanContinue: Boolean;
     ExceptItem: IDbgExceptionHandler;
+    NeedInternalPause: boolean;
+    expr: String;
   begin
     FTheDebugger.QueueExecuteLock;
     try
@@ -6472,11 +6494,17 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     FMayHaveExceptionMessage := True;
     ExceptItem := FTheDebugger.Exceptions.Find(FExceptionClassName);
     CanContinue := False;
-    if (ExceptItem <> nil) then
-      ExceptItem.DoExceptionHit(CanContinue, Self);
-    if CanContinue then begin
-      Result := True; //ExecuteCommand('-exec-continue')
-      exit;
+    if (ExceptItem <> nil) then begin
+      NeedInternalPause := False;
+      expr := Trim(ExceptItem.Expression);
+      if (expr = '') or CheckCondition(expr, False) then
+        ExceptItem.DoExceptionHit(CanContinue, NeedInternalPause, Self);
+      if CanContinue then begin
+        if NeedInternalPause then
+          SetDebuggerState(dsInternalPause);
+        Result := True; //ExecuteCommand('-exec-continue')
+        exit;
+      end;
     end;
 
     FTheDebugger.DoException(deRunError, FExceptionClassName, FExceptionAddress, FTheDebugger.RunErrorText[ErrorNo], CanContinue);
@@ -6495,8 +6523,9 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
   var
     ErrorNo: Integer;
     CanContinue: Boolean;
-    ExceptName: String;
+    ExceptName, expr: String;
     ExceptItem: IDbgExceptionHandler;
+    NeedInternalPause: boolean;
   begin
     FTheDebugger.QueueExecuteLock;
     try
@@ -6520,11 +6549,17 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     FMayHaveExceptionMessage := True;
     ExceptItem := FTheDebugger.Exceptions.Find(FExceptionClassName);
     CanContinue := False;
-    if (ExceptItem <> nil) then
-      ExceptItem.DoExceptionHit(CanContinue, Self);
-    if CanContinue then begin
-      Result := True; //ExecuteCommand('-exec-continue')
-      exit;
+    if (ExceptItem <> nil) then begin
+      NeedInternalPause := False;
+      expr := Trim(ExceptItem.Expression);
+      if (expr = '') or CheckCondition(expr, False) then
+        ExceptItem.DoExceptionHit(CanContinue, NeedInternalPause, Self);
+      if CanContinue then begin
+        if NeedInternalPause then
+          SetDebuggerState(dsInternalPause);
+        Result := True; //ExecuteCommand('-exec-continue')
+        exit;
+      end;
     end;
 
     FTheDebugger.DoException(deRunError, FExceptionClassName, FExceptionAddress, FTheDebugger.RunErrorText[ErrorNo], CanContinue);
@@ -6542,8 +6577,9 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
   procedure ProcessSignalReceived(const AList: TGDBMINameValueList);
   var
     SigInt, CanContinue: Boolean;
-    S, F: String;
+    S, F, expr: String;
     ExceptItem: IDbgExceptionHandler;
+    NeedInternalPause: boolean;
     {$IFdef MSWindows}
     fixed: Boolean;
     {$ENDIF}
@@ -6601,11 +6637,17 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       FMayHaveExceptionMessage := True;
       ExceptItem := FTheDebugger.Exceptions.Find(S);
       CanContinue := False;
-      if (ExceptItem <> nil) then
-        ExceptItem.DoExceptionHit(CanContinue, Self);
-      if CanContinue then begin
-        Result := True; //ExecuteCommand('-exec-continue')
-        exit;
+      if (ExceptItem <> nil) then begin
+        NeedInternalPause := False;
+        expr := Trim(ExceptItem.Expression);
+        if (expr = '') or CheckCondition(expr, False) then
+          ExceptItem.DoExceptionHit(CanContinue, NeedInternalPause, Self);
+        if CanContinue then begin
+          if NeedInternalPause then
+            SetDebuggerState(dsInternalPause);
+          Result := True; //ExecuteCommand('-exec-continue')
+          exit;
+        end;
       end;
 
       FTheDebugger.DoException(deExternal, S, FTheDebugger.FCurrentLocation, '', CanContinue);

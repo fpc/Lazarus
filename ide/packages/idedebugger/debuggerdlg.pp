@@ -80,7 +80,9 @@ type
     FRegistersMonitor: TIdeRegistersMonitor;
     FRegistersNotification: TRegistersNotification;
     FBreakPoints: TIDEBreakPoints;
+    FExceptions: TIDEExceptions;
     FBreakpointsNotification: TIDEBreakPointsNotification;
+    FExceptionsNotification: TIDEExceptionsNotification;
     function  GetSnapshotNotification: TSnapshotNotification;
     function  GetThreadsNotification: TThreadsNotification;
     function  GetCallStackNotification: TCallStackNotification;
@@ -88,6 +90,7 @@ type
     function  GetWatchesNotification: TWatchesNotification;
     function  GetRegistersNotification: TRegistersNotification;
     function  GetBreakpointsNotification: TIDEBreakPointsNotification;
+    function  GetExceptionsNotification: TIDEExceptionsNotification;
     procedure SetSnapshotManager(const AValue: TSnapshotManager);
     procedure SetThreadsMonitor(const AValue: TIdeThreadsMonitor);
     procedure SetCallStackMonitor(const AValue: TIdeCallStackMonitor);
@@ -95,12 +98,14 @@ type
     procedure SetWatchesMonitor(const AValue: TIdeWatchesMonitor);
     procedure SetRegistersMonitor(AValue: TIdeRegistersMonitor);
     procedure SetBreakPoints(const AValue: TIDEBreakPoints);
+    procedure SetExceptions(AValue: TIDEExceptions);
   protected
     procedure JumpToUnitSource(AnUnitInfo: TDebuggerUnitInfo; ALine: Integer);
     procedure DoWatchesChanged; virtual; // called if the WatchesMonitor object was changed
     procedure DoRegistersChanged; virtual; // called if the WatchesMonitor object was changed
     procedure DoBreakPointsChanged; virtual; // called if the BreakPoint(Monitor) object was changed
-    function GetBreakPointImageIndex(ABreakPoint: TIDEBreakPoint; AIsCurLine: Boolean = False): Integer;
+    procedure DoExceptionsChanged; virtual; // called if the BreakPoint(Monitor) object was changed
+    function GetBreakPointImageIndex(ABreakPoint: TIdeTracePoint; AIsCurLine: Boolean = False): Integer;
     property SnapshotNotification:    TSnapshotNotification  read GetSnapshotNotification;
     property ThreadsNotification:     TThreadsNotification   read GetThreadsNotification;
     property CallStackNotification:   TCallStackNotification read GetCallStackNotification;
@@ -108,6 +113,7 @@ type
     property WatchesNotification:     TWatchesNotification   read GetWatchesNotification;
     property RegistersNotification:   TRegistersNotification read GetRegistersNotification;
     property BreakpointsNotification: TIDEBreakPointsNotification read GetBreakpointsNotification;
+    property ExceptionsNotification:  TIDEExceptionsNotification read GetExceptionsNotification;
   protected
     // publish as needed
     property SnapshotManager:  TSnapshotManager  read FSnapshotManager  write SetSnapshotManager;
@@ -117,6 +123,7 @@ type
     property WatchesMonitor:   TIdeWatchesMonitor   read FWatchesMonitor   write SetWatchesMonitor;
     property RegistersMonitor: TIdeRegistersMonitor read FRegistersMonitor write SetRegistersMonitor;
     property BreakPoints:      TIDEBreakPoints   read FBreakPoints      write SetBreakPoints;
+    property Exceptions:       TIDEExceptions    read FExceptions       write SetExceptions;
   public
     destructor  Destroy; override;
     procedure DebugConfigChanged; virtual;
@@ -135,7 +142,7 @@ implementation
 var
   DBG_LOCATION_INFO: PLazLoggerLogGroup;
   BrkImgIdxInitialized: Boolean;
-  ImgBreakPoints: Array [0..10] of Integer;
+  ImgBreakPoints: Array [0..12] of Integer;
 
 procedure CreateDebugDialog(Sender: TObject; aFormName: string; var AForm: TCustomForm;
   DoDisableAutoSizing: boolean);
@@ -243,6 +250,17 @@ begin
     then FBreakPoints.AddNotification(FBreakpointsNotification);
   end;
   Result := FBreakpointsNotification;
+end;
+
+function TDebuggerDlg.GetExceptionsNotification: TIDEExceptionsNotification;
+begin
+  If FExceptionsNotification = nil then begin
+    FExceptionsNotification := TIDEExceptionsNotification.Create;
+    FExceptionsNotification.AddReference;
+    if (FExceptions <> nil)
+    then FExceptions.AddNotification(FExceptionsNotification);
+  end;
+  Result := FExceptionsNotification;
 end;
 
 procedure TDebuggerDlg.SetRegistersMonitor(AValue: TIdeRegistersMonitor);
@@ -368,6 +386,22 @@ begin
   end;
 end;
 
+procedure TDebuggerDlg.SetExceptions(AValue: TIDEExceptions);
+begin
+  if FExceptions = AValue then Exit;
+  BeginUpdate;
+  try
+    if (FExceptions <> nil) and (FExceptionsNotification <> nil)
+    then FExceptions.RemoveNotification(FExceptionsNotification);
+    FExceptions := AValue;
+    if (FExceptions <> nil) and (FExceptionsNotification <> nil)
+    then FExceptions.AddNotification(FExceptionsNotification);
+    DoExceptionsChanged;
+  finally
+    EndUpdate;
+  end;
+end;
+
 procedure TDebuggerDlg.JumpToUnitSource(AnUnitInfo: TDebuggerUnitInfo; ALine: Integer);
 begin
   DebugBoss.JumpToUnitSource(AnUnitInfo, ALine);
@@ -388,8 +422,13 @@ begin
   //
 end;
 
-function TDebuggerDlg.GetBreakPointImageIndex(ABreakPoint: TIDEBreakPoint;
-  AIsCurLine: Boolean = False): Integer;
+procedure TDebuggerDlg.DoExceptionsChanged;
+begin
+  //
+end;
+
+function TDebuggerDlg.GetBreakPointImageIndex(ABreakPoint: TIdeTracePoint; AIsCurLine: Boolean
+  ): Integer;
 var
   i: Integer;
 begin
@@ -411,9 +450,20 @@ begin
     ImgBreakPoints[9] := IDEImages.LoadImage('debugger_current_line_breakpoint');
     ImgBreakPoints[10] := IDEImages.LoadImage('debugger_current_line_disabled_breakpoint');
 
+    ImgBreakPoints[11] := IDEImages.LoadImage('ExceptActive');
+    ImgBreakPoints[12] := IDEImages.LoadImage('ExceptDisabled');
+
     BrkImgIdxInitialized := True;
   end;
 
+  if ABreakPoint is TIDEException then begin
+    if ABreakPoint = nil
+    then Result := ImgBreakPoints[11]
+    else if ABreakPoint.Enabled
+    then Result := ImgBreakPoints[11]
+    else Result := ImgBreakPoints[12];
+  end
+  else
   if AIsCurLine
   then begin
     if ABreakPoint = nil
@@ -490,6 +540,14 @@ begin
   end;
   SetBreakPoints(nil);
   ReleaseRefAndNil(FBreakpointsNotification);
+
+  if FExceptionsNotification <> nil then begin
+    FExceptionsNotification.OnAdd := nil;
+    FExceptionsNotification.OnRemove := nil;
+    FExceptionsNotification.OnUpdate := nil;
+  end;
+  SetExceptions(nil);
+  ReleaseRefAndNil(FExceptionsNotification);
 
   inherited Destroy;
 end;

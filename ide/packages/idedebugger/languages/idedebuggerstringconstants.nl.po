@@ -1460,6 +1460,11 @@ msgstr ""
 msgid "Delete watchpoint for \"%s\"?"
 msgstr ""
 
+#: idedebuggerstringconstants.lisdeletetracepointforexception
+#, object-pascal-format
+msgid "Delete exception filter for \"%s\"?"
+msgstr ""
+
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
 msgstr ""
@@ -1554,8 +1559,16 @@ msgstr ""
 msgid "Add Comment"
 msgstr ""
 
+#: idedebuggerstringconstants.lisexceptionclass
+msgid "Class:"
+msgstr ""
+
 #: idedebuggerstringconstants.lisexceptiondialog
 msgid "Debugger Exception Notification"
+msgstr ""
+
+#: idedebuggerstringconstants.lisexceptionfilter
+msgid "&Exception filter"
 msgstr ""
 
 #: idedebuggerstringconstants.lisexport
@@ -1864,9 +1877,9 @@ msgctxt "idedebuggerstringconstants.lismenuviewassembler"
 msgid "Assembler"
 msgstr ""
 
-#: idedebuggerstringconstants.lismenuviewbreakpoints
-msgid "BreakPoints"
-msgstr "Breekpunten"
+#: idedebuggerstringconstants.lismenuviewbreakpointsandexceptions
+msgid "BreakPoints/Exceptions"
+msgstr ""
 
 #: idedebuggerstringconstants.lismenuviewcallstack
 msgid "Call Stack"
@@ -1949,6 +1962,10 @@ msgstr ""
 
 #: idedebuggerstringconstants.lissearchparenthint
 msgid "MaxCount:NamePattern"
+msgstr ""
+
+#: idedebuggerstringconstants.lisskipexception
+msgid "Continue"
 msgstr ""
 
 #: idedebuggerstringconstants.lissourcebreakpoint

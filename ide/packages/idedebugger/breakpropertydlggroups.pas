@@ -24,12 +24,12 @@ type
     CheckListBox1: TCheckListBox;
     Label1: TLabel;
   protected
-    FBrkPointPoint: TIDEBreakPoint;
+    FBrkPointPoint: TIdeTracePoint;
     FGroupList: TStringListUTF8Fast;
     FAvailableGroups: TIDEBreakPointGroups;
   public
     { public declarations }
-    constructor Create(ABrkPointPoint: TIDEBreakPoint;
+    constructor Create(ABrkPointPoint: TIdeTracePoint;
                        AGroupList: String;
                        AAvailableGroups: TIDEBreakPointGroups;
                        AAction: TBreakPointGroupAction
@@ -39,7 +39,7 @@ type
   end; 
 
 
-function ExecuteBreakPointGroupDlg(ABrkPointPoint: TIDEBreakPoint;
+function ExecuteBreakPointGroupDlg(ABrkPointPoint: TIdeTracePoint;
                                var AGroupList: String;
                                AAvailableGroups: TIDEBreakPointGroups;
                                AAction: TBreakPointGroupAction
@@ -48,7 +48,7 @@ function ExecuteBreakPointGroupDlg(ABrkPointPoint: TIDEBreakPoint;
 
 implementation
 
-function ExecuteBreakPointGroupDlg(ABrkPointPoint: TIDEBreakPoint;
+function ExecuteBreakPointGroupDlg(ABrkPointPoint: TIdeTracePoint;
   var AGroupList: String; AAvailableGroups: TIDEBreakPointGroups;
   AAction: TBreakPointGroupAction): TModalResult;
 var
@@ -67,7 +67,7 @@ end;
 
 { TBreakPointGroupDlg }
 
-constructor TBreakPointGroupDlg.Create(ABrkPointPoint: TIDEBreakPoint;
+constructor TBreakPointGroupDlg.Create(ABrkPointPoint: TIdeTracePoint;
   AGroupList: String; AAvailableGroups: TIDEBreakPointGroups;
   AAction: TBreakPointGroupAction);
 var

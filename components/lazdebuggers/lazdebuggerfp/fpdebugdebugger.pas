@@ -366,6 +366,7 @@ type
     function GetClassInstanceName(AnAddr: TDBGPtr): string;
     procedure DoReadAnsiString;
     function ReadAnsiString(AnAddr: TDbgPtr): string;
+    function CheckCondition(AnExpression: String; AnErrorResult: Boolean): Boolean;
     procedure HandleSoftwareException(out AnExceptionLocation: TDBGLocationRec; var continue: boolean);
     // HandleBreakError: Default handler for range-check etc
     procedure HandleBreakError(var continue: boolean);
@@ -3615,6 +3616,8 @@ procedure TFpDebugDebugger.FDbgControllerExceptionEvent(var continue: boolean;
   const ExceptionClass, ExceptionMessage: string);
 var
   ExceptItem: IDbgExceptionHandler;
+  NeedInternalPause: boolean;
+  expr: String;
 begin
   if Exceptions.IgnoreAll then begin
     continue := True;
@@ -3627,8 +3630,16 @@ begin
   FExceptionKind := tekSignal; // or tekOther?
   ExceptItem := Exceptions.Find(ExceptionClass);
 
-  if (ExceptItem <> nil) then
-    ExceptItem.DoExceptionHit(continue, Self);
+  if (ExceptItem <> nil) then begin
+    expr := Trim(ExceptItem.Expression);
+    if (expr = '') or CheckCondition(expr, False) then begin
+      ExceptItem.DoExceptionHit(continue, NeedInternalPause, Self);
+      if continue and NeedInternalPause then begin
+        EnterPause(GetLocation, True);
+        exit;
+      end;
+    end;
+  end;
   if continue then
     exit;
 
@@ -3809,7 +3820,7 @@ function TFpDebugDebugger.GetExceptionMessage(out AMessage: String): boolean;
 begin
   Result := efHasMessage in FExceptionHandlerFlags;
   if Result then
-    AMessage := FExceptionClassName
+    AMessage := FExceptionMessage
   else
     AMessage := '';
 end;
@@ -3936,13 +3947,45 @@ begin
   result := FCacheFileName;
 end;
 
+function TFpDebugDebugger.CheckCondition(AnExpression: String; AnErrorResult: Boolean): Boolean;
+var
+  ExprContext: TFpDbgSymbolScope;
+  PasExpr: TFpPascalExpression;
+begin
+  Result := AnErrorResult; // the empty expression
+  if AnExpression = '' then
+    exit;
+
+  ExprContext := GetContextForEvaluate(FDbgController.CurrentThreadId, 0);
+  if ExprContext = nil then
+    exit;
+
+  PasExpr := nil;
+  try
+    PasExpr := TFpPascalExpression.Create(AnExpression, ExprContext, True);
+    PasExpr.IntrinsicPrefix := TFpDebugDebuggerProperties(GetProperties).IntrinsicPrefix;
+    // TODO: extra intrinsics / OnGetIntrinsic
+    PasExpr.Parse;
+    PasExpr.ResultValue; // trigger full validation
+
+    if PasExpr.Valid and (svfBoolean in PasExpr.ResultValue.FieldFlags) then
+      Result := PasExpr.ResultValue.AsBool
+    else
+      Result := AnErrorResult
+  finally
+    PasExpr.Free;
+    ExprContext.ReleaseReference;
+  end;
+end;
+
 procedure TFpDebugDebugger.HandleSoftwareException(out
   AnExceptionLocation: TDBGLocationRec; var continue: boolean);
 var
   AnExceptionObjectLocation, ExceptIP, ExceptFramePtr: TDBGPtr;
   ExceptionClass: string;
-  ExceptionMessage: string;
+  ExceptionMessage, expr: string;
   ExceptItem: IDbgExceptionHandler;
+  NeedInternalPause: boolean;
   Offs: Integer;
   AnTObjSize: Int64;
   AnErr: TFpError;
@@ -3987,8 +4030,16 @@ begin
   FExceptionKind := tekFpcRaise;
 
   ExceptItem := Exceptions.Find(ExceptionClass);
-  if (ExceptItem <> nil) then
-    ExceptItem.DoExceptionHit(continue, Self);
+  if (ExceptItem <> nil) then begin
+    expr := Trim(ExceptItem.Expression);
+    if (expr = '') or CheckCondition(expr, False) then begin
+      ExceptItem.DoExceptionHit(continue, NeedInternalPause, Self);
+      if continue and NeedInternalPause then begin
+        EnterPause(AnExceptionLocation, True);
+        exit;
+      end;
+    end;
+  end;
   if continue then
     exit;
 
@@ -4008,9 +4059,10 @@ procedure TFpDebugDebugger.HandleBreakError(var continue: boolean);
 var
   ErrNo: QWord;
   ExceptIP, ExceptFramePtr: TDBGPtr;
-  ExceptName: string;
+  ExceptName, expr: string;
   ExceptItem: IDbgExceptionHandler;
   ExceptionLocation: TDBGLocationRec;
+  NeedInternalPause: boolean;
 begin
   if Exceptions.IgnoreAll then begin
     continue := True;
@@ -4039,8 +4091,16 @@ begin
   FExceptionKind := tekFpcRunError;
 
   ExceptItem := Exceptions.Find(ExceptName);
-  if (ExceptItem <> nil) then
-    ExceptItem.DoExceptionHit(continue, Self);
+  if (ExceptItem <> nil) then begin
+    expr := Trim(ExceptItem.Expression);
+    if (expr = '') or CheckCondition(expr, False) then begin
+      ExceptItem.DoExceptionHit(continue, NeedInternalPause, Self);
+      if continue and NeedInternalPause then begin
+        EnterPause(ExceptionLocation, True);
+        exit;
+      end;
+    end;
+  end;
   if continue then
     exit;
 
@@ -4059,9 +4119,10 @@ end;
 procedure TFpDebugDebugger.HandleRunError(var continue: boolean);
 var
   ErrNo: QWord;
-  ExceptName: string;
+  ExceptName, expr: string;
   ExceptItem: IDbgExceptionHandler;
   ExceptionLocation: TDBGLocationRec;
+  NeedInternalPause: boolean;
 begin
   if Exceptions.IgnoreAll then begin
     continue := True;
@@ -4086,8 +4147,16 @@ begin
   FExceptionKind := tekFpcRunError;
 
   ExceptItem := Exceptions.Find(ExceptName);
-  if (ExceptItem <> nil) then
-    ExceptItem.DoExceptionHit(continue, Self);
+  if (ExceptItem <> nil) then begin
+    expr := Trim(ExceptItem.Expression);
+    if (expr = '') or CheckCondition(expr, False) then begin
+      ExceptItem.DoExceptionHit(continue, NeedInternalPause, Self);
+      if continue and NeedInternalPause then begin
+        EnterPause(ExceptionLocation, True);
+        exit;
+      end;
+    end;
+  end;
   if continue then
     exit;
 

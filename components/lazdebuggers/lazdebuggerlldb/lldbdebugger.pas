@@ -956,6 +956,7 @@ const
     CanContinue: Boolean;
     Instr: TLldbInstructionStackTrace;
     ExceptItem: IDbgExceptionHandler;
+    NeedInternalPause: boolean;
   begin
     if exiClass in FCurrentExceptionInfo.FHasCommandData then
       FExceptionClassName := FCurrentExceptionInfo.FExceptClass
@@ -974,12 +975,15 @@ const
 
     ExceptItem := Debugger.Exceptions.Find(FExceptionClassName);
     CanContinue := False;
-    if (ExceptItem <> nil) then
-      ExceptItem.DoExceptionHit(CanContinue, Self);
-    if CanContinue then begin
-      FState := crStoppedRaise;
-      ContinueRunning;
-      exit;
+    if (ExceptItem <> nil) then begin
+      ExceptItem.DoExceptionHit(CanContinue, NeedInternalPause, Self);
+      if CanContinue then begin
+        if NeedInternalPause then
+          SetDebuggerState(dsInternalPause);
+        FState := crStoppedRaise;
+        ContinueRunning;
+        exit;
+      end;
     end;
 
     CanContinue := Debugger.DoExceptionHit(FExceptionClassName, FExceptionMessage);
@@ -1011,6 +1015,7 @@ const
     CanContinue: Boolean;
     ErrNo: Integer;
     ExceptItem: IDbgExceptionHandler;
+    NeedInternalPause: boolean;
   begin
     ErrNo := 0;
     if exiReg0 in FCurrentExceptionInfo.FHasCommandData then
@@ -1027,12 +1032,15 @@ const
     FExceptionMessage := Debugger.RunErrorText[ErrNo];
     ExceptItem := Debugger.Exceptions.Find(FExceptionClassName);
     CanContinue := False;
-    if (ExceptItem <> nil) then
-      ExceptItem.DoExceptionHit(CanContinue, Self);
-    if CanContinue then begin
-      FState := crStoppedRaise;
-      ContinueRunning;
-      exit;
+    if (ExceptItem <> nil) then begin
+      ExceptItem.DoExceptionHit(CanContinue, NeedInternalPause, Self);
+      if CanContinue then begin
+        if NeedInternalPause then
+          SetDebuggerState(dsInternalPause);
+        FState := crStoppedRaise;
+        ContinueRunning;
+        exit;
+      end;
     end;
 
     Debugger.DoException(deRunError, FExceptionClassName, Debugger.FCurrentLocation, Debugger.RunErrorText[ErrNo], CanContinue);
@@ -1051,6 +1059,7 @@ const
     CanContinue: Boolean;
     ExceptName: String;
     ExceptItem: IDbgExceptionHandler;
+    NeedInternalPause: boolean;
   begin
     if Debugger.Exceptions.IgnoreAll then begin
       FState := crStoppedRaise;
@@ -1062,12 +1071,15 @@ const
     FExceptionMessage := '';
     ExceptItem := Debugger.Exceptions.Find(FExceptionClassName);
     CanContinue := False;
-    if (ExceptItem <> nil) then
-      ExceptItem.DoExceptionHit(CanContinue, Self);
-    if CanContinue then begin
-      FState := crStoppedRaise;
-      ContinueRunning;
-      exit;
+    if (ExceptItem <> nil) then begin
+      ExceptItem.DoExceptionHit(CanContinue, NeedInternalPause, Self);
+      if CanContinue then begin
+        if NeedInternalPause then
+          SetDebuggerState(dsInternalPause);
+        FState := crStoppedRaise;
+        ContinueRunning;
+        exit;
+      end;
     end;
 
     Debugger.DoException(deExternal, Format('External: %s', [AStopReason]), Debugger.FCurrentLocation, '', CanContinue);

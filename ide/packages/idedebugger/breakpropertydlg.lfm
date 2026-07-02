@@ -62,7 +62,7 @@ object BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 15
-    Top = 172
+    Top = 193
     Width = 50
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -75,7 +75,7 @@ object BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 15
-    Top = 259
+    Top = 280
     Width = 36
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -88,7 +88,7 @@ object BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 15
-    Top = 230
+    Top = 251
     Width = 103
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -102,7 +102,7 @@ object BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideTop.Side = asrCenter
     Left = 205
     Height = 15
-    Top = 230
+    Top = 251
     Width = 24
     BorderSpacing.Left = 6
     Caption = '(ms)'
@@ -116,7 +116,7 @@ object BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideRight.Side = asrBottom
     Left = 139
     Height = 23
-    Top = 226
+    Top = 247
     Width = 60
     BorderSpacing.Left = 24
     BorderSpacing.Around = 6
@@ -126,13 +126,13 @@ object BreakPropertyDlg: TBreakPropertyDlg
   object edtCounter: TEdit
     AnchorSideLeft.Control = lblAutoContinue
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = edtCondition
+    AnchorSideTop.Control = TOnlyFpDebug
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 139
     Height = 23
-    Top = 168
+    Top = 189
     Width = 305
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 24
@@ -146,7 +146,7 @@ object BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 15
-    Top = 201
+    Top = 222
     Width = 57
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -162,7 +162,7 @@ object BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideRight.Side = asrBottom
     Left = 139
     Height = 23
-    Top = 197
+    Top = 218
     Width = 305
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 24
@@ -189,6 +189,7 @@ object BreakPropertyDlg: TBreakPropertyDlg
     ReadOnly = True
     TabOrder = 0
     Text = 'edtFilename'
+    OnChange = edtFilenameChange
   end
   object cmbGroup: TComboBox
     AnchorSideLeft.Control = lblAutoContinue
@@ -199,7 +200,7 @@ object BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideRight.Side = asrBottom
     Left = 139
     Height = 23
-    Top = 255
+    Top = 276
     Width = 305
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 24
@@ -220,7 +221,7 @@ object BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 215
-    Top = 305
+    Top = 326
     Width = 438
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -442,8 +443,8 @@ object BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideTop.Control = gbActions
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 45
-    Top = 526
+    Height = 24
+    Top = 547
     Width = 438
     Anchors = [akTop, akLeft, akRight, akBottom]
     OKButton.Name = 'OKButton'
@@ -477,6 +478,19 @@ object BreakPropertyDlg: TBreakPropertyDlg
     ItemHeight = 15
     TabOrder = 5
     Text = 'edtCondition'
+  end
+  object TOnlyFpDebug: TLabel
+    AnchorSideLeft.Control = rgWatchKind
+    AnchorSideTop.Control = edtCondition
+    AnchorSideTop.Side = asrBottom
+    Left = 139
+    Height = 15
+    Top = 168
+    Width = 78
+    Caption = 'TOnlyFpDebug'
+    Font.Color = clGrayText
+    ParentFont = False
+    Visible = False
   end
   object edtLine: TSpinEdit
     AnchorSideLeft.Control = lblAutoContinue
@@ -660,7 +674,7 @@ object BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideRight.Side = asrBottom
     Left = 139
     Height = 15
-    Top = 284
+    Top = 305
     Width = 305
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6

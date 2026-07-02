@@ -115,6 +115,9 @@ begin
     for i := 0 to DebugBoss.BreakPoints.Count - 1 do
       if DebugBoss.BreakPoints[i].Group = BrkGroup then
         DebugBoss.BreakPoints[i].Enabled := False;
+    for i := 0 to DebugBoss.Exceptions.Count - 1 do
+      if DebugBoss.Exceptions[i].Group = BrkGroup then
+        DebugBoss.Exceptions[i].Enabled := False;
   finally
     FOwner.EndUpdate;
   end;
@@ -129,6 +132,9 @@ begin
   for i := 0 to DebugBoss.BreakPoints.Count - 1 do
     if DebugBoss.BreakPoints[i].Group = BrkGroup then
       DebugBoss.BreakPoints[i].Enabled := True;
+  for i := 0 to DebugBoss.Exceptions.Count - 1 do
+    if DebugBoss.Exceptions[i].Group = BrkGroup then
+      DebugBoss.Exceptions[i].Enabled := True;
   finally
     FOwner.EndUpdate;
   end;

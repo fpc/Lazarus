@@ -144,7 +144,6 @@ uses
   codetools_wordpolicy_options, codetools_linesplitting_options,
   codetools_space_options, codetools_identifiercompletion_options,
   debugger_general_options, debugger_class_options, debugger_eventlog_options,
-  debugger_language_exceptions_options, debugger_signals_options,
   codeexplorer_update_options, codeexplorer_categories_options,
   codeobserver_options, help_general_options, env_file_filters,
   // project option frames

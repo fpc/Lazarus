@@ -1482,6 +1482,11 @@ msgstr "%s adresi için kesme noktası silinsin mi?"
 msgid "Delete watchpoint for \"%s\"?"
 msgstr "\"%s\" için izleme noktası silinsin mi?"
 
+#: idedebuggerstringconstants.lisdeletetracepointforexception
+#, object-pascal-format
+msgid "Delete exception filter for \"%s\"?"
+msgstr ""
+
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
 msgstr "Rakamlar:"
@@ -1577,9 +1582,17 @@ msgstr "Yorum ekle ..."
 msgid "Add Comment"
 msgstr "Yorum ekle"
 
+#: idedebuggerstringconstants.lisexceptionclass
+msgid "Class:"
+msgstr ""
+
 #: idedebuggerstringconstants.lisexceptiondialog
 msgid "Debugger Exception Notification"
 msgstr "Hata Ayıklayıcı İstisna Bildirimi"
+
+#: idedebuggerstringconstants.lisexceptionfilter
+msgid "&Exception filter"
+msgstr ""
 
 #: idedebuggerstringconstants.lisexport
 msgctxt "lazarusidestrconsts.lisexport"
@@ -1887,8 +1900,8 @@ msgctxt "idedebuggerstringconstants.lismenuviewassembler"
 msgid "Assembler"
 msgstr "Assembler"
 
-#: idedebuggerstringconstants.lismenuviewbreakpoints
-msgid "BreakPoints"
+#: idedebuggerstringconstants.lismenuviewbreakpointsandexceptions
+msgid "BreakPoints/Exceptions"
 msgstr ""
 
 #: idedebuggerstringconstants.lismenuviewcallstack
@@ -1973,6 +1986,10 @@ msgstr ""
 
 #: idedebuggerstringconstants.lissearchparenthint
 msgid "MaxCount:NamePattern"
+msgstr ""
+
+#: idedebuggerstringconstants.lisskipexception
+msgid "Continue"
 msgstr ""
 
 #: idedebuggerstringconstants.lissourcebreakpoint

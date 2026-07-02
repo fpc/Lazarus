@@ -24,69 +24,93 @@ object BreakpointsDlg: TBreakpointsDlg
     ShowHint = True
     TabOrder = 0
     Orientation = tboHorizontal
-    object ToolButtonAdd: TToolButton
+    object tbShowBreakPoints: TToolButton
       Left = 1
+      Top = 2
+      Caption = 'tbShowBreakPoints'
+      Down = True
+      ShowCaption = False
+      Style = tbsCheck
+      OnClick = tbShowBreakPointsClick
+    end
+    object tbShowException: TToolButton
+      Left = 24
+      Top = 2
+      Caption = 'tbShowException'
+      ShowCaption = False
+      Style = tbsCheck
+      OnClick = tbShowBreakPointsClick
+    end
+    object tbShowDivider: TToolButton
+      Left = 47
+      Height = 22
+      Top = 2
+      Caption = 'tbShowDivider'
+      Style = tbsDivider
+    end
+    object ToolButtonAdd: TToolButton
+      Left = 52
       Top = 2
       Caption = 'Add...'
       MenuItem = popAdd
       Style = tbsButtonDrop
     end
     object ToolButtonEnable: TToolButton
-      Left = 34
+      Left = 85
       Top = 2
       Action = actEnableSelected
     end
     object ToolButtonDisable: TToolButton
-      Left = 57
+      Left = 108
       Top = 2
       Action = actDisableSelected
     end
     object ToolButtonTrash: TToolButton
-      Left = 80
+      Left = 131
       Top = 2
       Action = actDeleteSelected
     end
     object ToolSep1: TToolButton
-      Left = 134
-      Height = 22
-      Top = 2
-      Style = tbsDivider
-    end
-    object ToolButtonEnableAll: TToolButton
-      Left = 139
-      Top = 2
-      Action = actEnableAll
-    end
-    object ToolButtonDisableAll: TToolButton
-      Left = 162
-      Top = 2
-      Action = actDisableAll
-    end
-    object ToolButtonTrashAll: TToolButton
-      Left = 111
-      Top = 2
-      Action = actDeleteAll
-    end
-    object ToolSep2: TToolButton
       Left = 185
       Height = 22
       Top = 2
       Style = tbsDivider
     end
-    object ToolButtonProperties: TToolButton
+    object ToolButtonEnableAll: TToolButton
       Left = 190
+      Top = 2
+      Action = actEnableAll
+    end
+    object ToolButtonDisableAll: TToolButton
+      Left = 213
+      Top = 2
+      Action = actDisableAll
+    end
+    object ToolButtonTrashAll: TToolButton
+      Left = 162
+      Top = 2
+      Action = actDeleteAll
+    end
+    object ToolSep2: TToolButton
+      Left = 236
+      Height = 22
+      Top = 2
+      Style = tbsDivider
+    end
+    object ToolButtonProperties: TToolButton
+      Left = 241
       Top = 2
       Action = actProperties
     end
     object tbGroupByBrkGroup: TToolButton
-      Left = 213
+      Left = 264
       Top = 2
       Caption = 'Grp'
       Style = tbsCheck
       OnClick = tbGroupByBrkGroupClick
     end
     object ToolButton1: TToolButton
-      Left = 103
+      Left = 154
       Height = 22
       Top = 2
       Caption = 'ToolButton1'
@@ -176,6 +200,9 @@ object BreakpointsDlg: TBreakpointsDlg
       end
       object popAddWatchPoint: TMenuItem
         Action = actAddWatchPoint
+      end
+      object popAddException: TMenuItem
+        Action = actAddException
       end
     end
     object N1: TMenuItem
@@ -314,6 +341,11 @@ object BreakpointsDlg: TBreakpointsDlg
     object actGroupSetNone: TAction
       Caption = 'actGroupSetNone'
       OnExecute = actGroupSetNoneExecute
+    end
+    object actAddException: TAction
+      Category = 'Add'
+      Caption = 'actAddException'
+      OnExecute = actAddExceptionExecute
     end
   end
 end

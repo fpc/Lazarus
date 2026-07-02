@@ -1468,6 +1468,11 @@ msgstr "Удалить точку останова по адресу %s?"
 msgid "Delete watchpoint for \"%s\"?"
 msgstr "Удалить наблюдение для \"%s\"?"
 
+#: idedebuggerstringconstants.lisdeletetracepointforexception
+#, object-pascal-format
+msgid "Delete exception filter for \"%s\"?"
+msgstr ""
+
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
 msgstr "Разряды:"
@@ -1562,9 +1567,17 @@ msgstr "Добавить комментарий ..."
 msgid "Add Comment"
 msgstr "Добавление комментария"
 
+#: idedebuggerstringconstants.lisexceptionclass
+msgid "Class:"
+msgstr ""
+
 #: idedebuggerstringconstants.lisexceptiondialog
 msgid "Debugger Exception Notification"
 msgstr "Уведомление об исключении отладчика"
+
+#: idedebuggerstringconstants.lisexceptionfilter
+msgid "&Exception filter"
+msgstr ""
 
 #: idedebuggerstringconstants.lisexport
 msgctxt "lazarusidestrconsts.lisexport"
@@ -1869,9 +1882,9 @@ msgctxt "idedebuggerstringconstants.lismenuviewassembler"
 msgid "Assembler"
 msgstr "Ассемблер"
 
-#: idedebuggerstringconstants.lismenuviewbreakpoints
-msgid "BreakPoints"
-msgstr "Точки останова"
+#: idedebuggerstringconstants.lismenuviewbreakpointsandexceptions
+msgid "BreakPoints/Exceptions"
+msgstr ""
 
 #: idedebuggerstringconstants.lismenuviewcallstack
 msgid "Call Stack"
@@ -1956,6 +1969,10 @@ msgstr "Предел для стека поиска некорректен."
 #: idedebuggerstringconstants.lissearchparenthint
 msgid "MaxCount:NamePattern"
 msgstr "ПределКоличества:ШаблонИмени"
+
+#: idedebuggerstringconstants.lisskipexception
+msgid "Continue"
+msgstr ""
 
 #: idedebuggerstringconstants.lissourcebreakpoint
 msgid "&Source Breakpoint ..."

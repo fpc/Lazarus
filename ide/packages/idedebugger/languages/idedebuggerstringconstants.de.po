@@ -1488,6 +1488,11 @@ msgstr "Haltepunkt für Adresse %s löschen?"
 msgid "Delete watchpoint for \"%s\"?"
 msgstr "Überwachung für \"%s\" löschen?"
 
+#: idedebuggerstringconstants.lisdeletetracepointforexception
+#, object-pascal-format
+msgid "Delete exception filter for \"%s\"?"
+msgstr ""
+
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
 msgstr "Ziffern:"
@@ -1583,9 +1588,17 @@ msgstr "Kommentar hinzufügen ..."
 msgid "Add Comment"
 msgstr "Kommentar hinzufügen"
 
+#: idedebuggerstringconstants.lisexceptionclass
+msgid "Class:"
+msgstr ""
+
 #: idedebuggerstringconstants.lisexceptiondialog
 msgid "Debugger Exception Notification"
 msgstr "Debuggerausnahmen-Nachricht"
+
+#: idedebuggerstringconstants.lisexceptionfilter
+msgid "&Exception filter"
+msgstr ""
 
 #: idedebuggerstringconstants.lisexport
 msgctxt "lazarusidestrconsts.lisexport"
@@ -1893,9 +1906,9 @@ msgctxt "idedebuggerstringconstants.lismenuviewassembler"
 msgid "Assembler"
 msgstr "Assembler"
 
-#: idedebuggerstringconstants.lismenuviewbreakpoints
-msgid "BreakPoints"
-msgstr "Haltepunkte"
+#: idedebuggerstringconstants.lismenuviewbreakpointsandexceptions
+msgid "BreakPoints/Exceptions"
+msgstr ""
 
 #: idedebuggerstringconstants.lismenuviewcallstack
 msgid "Call Stack"
@@ -1981,6 +1994,10 @@ msgstr "Limit für “Such-Stack” ungültig."
 #: idedebuggerstringconstants.lissearchparenthint
 msgid "MaxCount:NamePattern"
 msgstr "MaxAnzahl:Namensmuster"
+
+#: idedebuggerstringconstants.lisskipexception
+msgid "Continue"
+msgstr ""
 
 #: idedebuggerstringconstants.lissourcebreakpoint
 msgid "&Source Breakpoint ..."

@@ -49,6 +49,7 @@ type
     edtFilename: TEdit;
     gbActions: TGroupBox;
     Label1: TLabel;
+    TOnlyFpDebug: TLabel;
     lblBadGroupName: TLabel;
     lblPassCount: TLabel;
     lblWatchKind: TLabel;
@@ -71,10 +72,6 @@ type
     rgWatchKind: TPanel;
     rgWatchScope: TPanel;
     procedure btnOKClick(Sender: TObject);
-    procedure BreakPointRemove(const {%H-}ASender: TIDEBreakPoints;
-      const ABreakpoint: TIDEBreakPoint);
-    procedure BreakPointUpdate(const {%H-}ASender: TIDEBreakPoints;
-      const {%H-}ABreakpoint: TIDEBreakPoint);
     procedure chkDisableGroupsChange(Sender: TObject);
     procedure chkEnableGroupsChange(Sender: TObject);
     procedure chkEvalExpressionChange(Sender: TObject);
@@ -84,16 +81,17 @@ type
     procedure cmbGroupKeyPress(Sender: TObject; var Key: char);
     procedure edtDisableGroupsButtonClick(Sender: TObject);
     procedure edtEnableGroupsButtonClick(Sender: TObject);
+    procedure edtFilenameChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
-    FBreakpointsNotification : TIDEBreakPointsNotification;
-    FBreakpoint: TIDEBreakPoint;
+    FBreakpoint: TIdeTracePoint;
     FUpdatingInfo: Boolean;
+    procedure UpdateOkButtonEnabled;
   protected
     procedure DoEndUpdate; override;
     procedure UpdateInfo;
   public
-    constructor Create(AOwner: TComponent; ABreakPoint: TIDEBreakPoint);overload;
+    constructor Create(AOwner: TComponent; ABreakPoint: TIdeTracePoint);overload;
     destructor Destroy; override;
   end;
 
@@ -102,12 +100,6 @@ implementation
 {$R *.lfm}
 
 { TBreakPropertyDlg }
-
-procedure TBreakPropertyDlg.BreakPointUpdate(
-  const ASender: TIDEBreakPoints; const ABreakpoint: TIDEBreakPoint);
-begin
-  UpdateInfo;
-end;
 
 procedure TBreakPropertyDlg.chkDisableGroupsChange(Sender: TObject);
 begin
@@ -137,7 +129,7 @@ end;
 procedure TBreakPropertyDlg.cmbGroupEditingDone(Sender: TObject);
 begin
   lblBadGroupName.Visible := (cmbGroup.Text <> '') and (not TIDEBreakPointGroup.CheckName(cmbGroup.Text));
-  ButtonPanel.OKButton.Enabled := (cmbGroup.Text = '') or (TIDEBreakPointGroup.CheckName(cmbGroup.Text));
+  UpdateOkButtonEnabled;
 end;
 
 procedure TBreakPropertyDlg.cmbGroupKeyPress(Sender: TObject; var Key: char);
@@ -165,17 +157,38 @@ begin
   then edtEnableGroups.Text := s;
 end;
 
+procedure TBreakPropertyDlg.edtFilenameChange(Sender: TObject);
+begin
+  if FBreakpoint = nil then exit;
+  UpdateOkButtonEnabled;
+end;
+
 procedure TBreakPropertyDlg.FormCreate(Sender: TObject);
 begin
   edtCondition.DropDownCount := EnvironmentOptions.DropDownCount;
   cmbGroup.DropDownCount := EnvironmentOptions.DropDownCount;
 end;
 
-procedure TBreakPropertyDlg.BreakPointRemove(
-  const ASender: TIDEBreakPoints; const ABreakpoint: TIDEBreakPoint);
+procedure TBreakPropertyDlg.UpdateOkButtonEnabled;
+var
+  r: Boolean;
+  e: TIDEException;
 begin
-  if ABreakpoint = FBreakpoint
-  then ModalResult := mrCancel;
+  r := True;
+
+  if not( (cmbGroup.Text = '') or (TIDEBreakPointGroup.CheckName(cmbGroup.Text)) ) then
+    r := False;
+
+  if FBreakpoint.Kind = bpkException then begin
+    if edtFilename.Text <> '' then begin
+      e := TIDEExceptions(FBreakpoint.Collection).FindItem(edtFilename.Text);
+      if (e<>nil) and (e<>FBreakpoint) then r := False;
+    end
+    else
+      r := False;
+  end;
+
+  ButtonPanel.OKButton.Enabled := r;
 end;
 
 procedure TBreakPropertyDlg.btnOKClick(Sender: TObject);
@@ -240,7 +253,6 @@ begin
     EnableGroupList.DelimitedText := edtEnableGroups.Text;
     DisableGroupList.DelimitedText := edtDisableGroups.Text;
 
-    FBreakpointsNotification.OnUpdate := nil;
     case FBreakpoint.Kind of
       bpkSource:
         begin
@@ -265,14 +277,22 @@ begin
           then wk := wpkWriteChange;
           FBreakpoint.SetWatch(edtFilename.Text, ws, wk);
         end;
+      bpkException:
+        begin
+          FBreakpoint.SetName(edtFilename.Text);
+        end;
     end;
     FBreakpoint.Enabled := chkEnabled.Checked;
     // expression
     FBreakpoint.Expression := edtCondition.Text;
     // hitcount
-    FBreakpoint.BreakHitCount := StrToIntDef(edtCounter.Text, FBreakpoint.HitCount);
+    if trim(edtCounter.Text) = ''
+    then FBreakpoint.BreakHitCount := 0
+    else FBreakpoint.BreakHitCount := StrToIntDef(edtCounter.Text, FBreakpoint.HitCount);
     //auto continue
-    FBreakpoint.AutoContinueTime := StrToIntDef(edtAutocontinueMS.Text, FBreakpoint.AutoContinueTime);
+    if trim(edtAutocontinueMS.Text) = ''
+    then FBreakpoint.AutoContinueTime := 0
+    else FBreakpoint.AutoContinueTime := StrToIntDef(edtAutocontinueMS.Text, FBreakpoint.AutoContinueTime);
     // group
     GroupName := cmbGroup.Text;
     NewGroup := DebugBoss.BreakPointGroups.GetGroupByName(GroupName);
@@ -363,6 +383,11 @@ begin
         rbReadWrite.Checked := FBreakpoint.WatchKind = wpkReadWrite;
         rbWriteChange.Checked := FBreakpoint.WatchKind = wpkWriteChange;
       end;
+    bpkException:
+      begin
+        edtFilename.Text := FBreakpoint.Source;
+        edtFilenameChange(nil);
+      end;
   end;
   // expression
   edtCondition.Text := FBreakpoint.Expression;
@@ -410,7 +435,7 @@ begin
   FUpdatingInfo := False;
 end;
 
-constructor TBreakPropertyDlg.Create(AOwner: TComponent; ABreakPoint: TIDEBreakPoint);
+constructor TBreakPropertyDlg.Create(AOwner: TComponent; ABreakPoint: TIdeTracePoint);
 begin
   inherited Create(AOwner);
 
@@ -449,6 +474,20 @@ begin
         rbReadWrite.Caption := lisWatchKindReadWrite;
         rbWriteChange.Caption := lisWatchKindWriteChanged;
       end;
+    bpkException:
+      begin
+        lblFileName.Caption := lisExceptionClass;
+        lblLine.Visible := False;
+        edtLine.Visible := False;
+        edtFilename.ReadOnly := False;
+        edtFilename.Color := clDefault;
+        chkEvalExpression.Enabled := False;
+        edtEvalExpression.Enabled := False;
+        chkLogCallStack.Enabled := False;
+        edtLogCallStack.Enabled := False;
+        TOnlyFpDebug.Visible := True;
+        TOnlyFpDebug.Caption:= 'Conditions are limited to FpDebug';
+      end;
   end;
   chkEnabled.Caption := lisBPSEnabled;
   lblCondition.Caption := lisCondition + ':';
@@ -459,7 +498,10 @@ begin
   lblGroup.Caption := lisGroup + ':';
   lblBadGroupName.Caption := lisGroupNameInvalid;
   gbActions.Caption := lisActions;
-  chkActionBreak.Caption := lisBreak;
+  if ABreakPoint.Kind = bpkException then
+    chkActionBreak.Caption := lisSkipException
+  else
+    chkActionBreak.Caption := lisBreak;
   chkEnableGroups.Caption := lisEnableGroups;
   chkDisableGroups.Caption := lisDisableGroups;
   chkEvalExpression.Caption := lisEvalExpression;
@@ -471,10 +513,6 @@ begin
     'BreakPointExpression', True,rltCaseSensitive));
 
   FBreakpoint := ABreakPoint;
-  FBreakpointsNotification := TIDEBreakPointsNotification.Create;
-  FBreakpointsNotification.AddReference;
-  FBreakpointsNotification.OnUpdate := @BreakPointUpdate;
-  FBreakpointsNotification.OnRemove := @BreakPointRemove;
   UpdateInfo;
 
   ButtonPanel.OKButton.Caption:=lisBtnOk;
@@ -484,10 +522,6 @@ end;
 
 destructor TBreakPropertyDlg.Destroy;
 begin
-  FBreakpointsNotification.OnUpdate := nil;
-  FBreakpointsNotification.OnRemove := nil;
-  FBreakpointsNotification.ReleaseReference;
-  FBreakpointsNotification := nil;
   inherited Destroy;
 end;
 

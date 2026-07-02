@@ -167,7 +167,7 @@ type
     FCurrentLocation: TDBGLocationRec;
     FCallStackNotification: TCallStackNotification;
     // last hit breakpoint
-    FCurrentBreakpoint: TIDEBreakpoint;
+    FCurrentBreakpoint: TIdeTracePoint;
     FAutoContinueTimer: TTimer;
     FIsInitializingDebugger: Boolean;
     FStateNotificationList, FWatchesInvalidatedNotificationList: TMethodList;
@@ -311,7 +311,7 @@ type
     function DoDeleteBreakPoint(ABrkPoint: TIDEBreakPoint): TModalResult;
     function DoDeleteBreakPointAtMark(const ASourceMarkObj: TObject): TModalResult; override;
 
-    function ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult; override;
+    function ShowBreakPointProperties(const ABreakpoint: TIdeTracePoint): TModalresult; override;
     function ShowWatchProperties(const AWatch: TCurrentWatch; AWatchExpression: String = ''; AResDataType: TWatchResultDataKind = rdkUnknown): TModalresult; override;
 
     // Dialog routines
@@ -1240,8 +1240,11 @@ begin
   if ABreakpoint = nil then Exit;
 
   FCurrentBreakpoint := nil;
-  if (ABreakPoint is TDBGBreakPoint) and (TDBGBreakPoint(ABreakPoint).Slave is TIDEBreakPoint) then
-    FCurrentBreakpoint := TIDEBreakPoint(TDBGBreakPoint(ABreakPoint).Slave)
+  if (ABreakPoint is TDBGBreakPoint) and (TDBGBreakPoint(ABreakPoint).Slave is TIdeTracePoint) then
+    FCurrentBreakpoint := TIdeTracePoint(TDBGBreakPoint(ABreakPoint).Slave)
+  else
+  if ABreakPoint is TIdeTracePoint then
+    FCurrentBreakpoint := TIdeTracePoint(ABreakPoint)
   else
     DebugLn('ERROR: Breakpoint does not have correct class, or IDE slave breakpoint');
   // TODO: remove / fallback to old behaviour
@@ -1651,6 +1654,7 @@ begin
       end;
     end;
     dsInit: begin
+      Exceptions.ResetHitCounts;
       if FDialogs[ddtPseudoTerminal] <> nil then
         TPseudoConsoleDlg(FDialogs[ddtPseudoTerminal]).Clear;
     end;
@@ -2019,6 +2023,7 @@ begin
   if Project1 <> nil
   then TheDialog.BaseDirectory := Project1.Directory;
   TheDialog.BreakPoints := FBreakPoints;
+  TheDialog.Exceptions := FExceptions;
   TheDialog.EndUpdate;
 end;
 
@@ -2157,6 +2162,7 @@ begin
   FThreads := TIdeThreadsMonitor.Create;
   FIdeExceptions := TProjectExceptions.Create;
   FExceptions := FIdeExceptions;
+  FExceptions.OnBreakPointHit := @DebuggerBreakPointHit;
   FExcludedRoutines := TIdeDebuggerExcludeRoutineMainList.Create;
   FSignals := TIDESignals.Create;
   FLocals := TIdeLocalsMonitor.Create;
@@ -2198,6 +2204,7 @@ begin
   LazarusIDE.AddHandlerOnProjectClose(@DoProjectClose);
 
   FEventLogManager := TDebugEventLogManager.Create;
+  FIdeExceptions.EventLogHandler := FEventLogManager;
 
   DbgProjectLink.ValueFormatterConfig.AddChangeNotification(@DoDisplayFormatChanged);
   DebuggerOptions.ValueFormatterConfig.AddChangeNotification(@DoDisplayFormatChanged);
@@ -2490,13 +2497,15 @@ end;
 procedure TDebugManager.LoadProjectSpecificInfo(XMLConfig: TXMLConfig;
   Merge: boolean);
 begin
+  FBreakPointGroups.LoadFromXMLConfig(XMLConfig,
+                                     'Debugging/'+XMLBreakPointGroupsNode+'/',
+                                     not Merge);
+
   if not Merge then
   begin
-    FIdeExceptions.LoadFromXMLConfig(XMLConfig,'Debugging/'+XMLExceptionsNode+'/');
+    FIdeExceptions.LoadFromXMLConfig(XMLConfig,'Debugging/'+XMLExceptionsNode+'/', @FBreakPointGroups.GetGroupByName);
   end;
   // keep it simple: just load from the session and don't merge
-  FBreakPointGroups.LoadFromXMLConfig(XMLConfig,
-                                     'Debugging/'+XMLBreakPointGroupsNode+'/');
   FBreakPoints.LoadFromXMLConfig(XMLConfig,'Debugging/'+XMLBreakPointsNode+'/',
                                  @Project1.ConvertFromLPIFilename,
                                  @FBreakPointGroups.GetGroupByName);
@@ -3675,7 +3684,7 @@ begin
     Result := SizeOf(Pointer)*8;
 end;
 
-function TDebugManager.ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult;
+function TDebugManager.ShowBreakPointProperties(const ABreakpoint: TIdeTracePoint): TModalresult;
 begin
   Result := TBreakPropertyDlg.Create(Self, ABreakpoint).ShowModal;
 end;

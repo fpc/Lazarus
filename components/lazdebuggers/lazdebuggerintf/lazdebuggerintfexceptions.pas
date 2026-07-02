@@ -49,11 +49,13 @@ type
   { IDbgExceptionHandler - provided by the debugger front-end }
 
   IDbgExceptionHandler = interface ['{120E119B-0249-4957-BC7F-4F0521AE35E2}']
-    procedure DoExceptionHit(var AContinue: Boolean; const AnExceptTargetInfo: IDbgTargetExceptionInfo);
+    procedure DoExceptionHit(var AContinue: Boolean; out ANeedInternalPause: boolean; const AnExceptTargetInfo: IDbgTargetExceptionInfo);
 
+    function GetExpression: String;
     function GetEnabled: Boolean; deprecated 'use Hit';
     function GetName: String; deprecated 'use Hit';
 
+    property Expression: String read GetExpression;
     property Name: String read GetName; deprecated 'use Hit';
     property Enabled: Boolean read GetEnabled; deprecated 'use Hit'; // ignored if enabled
   end;

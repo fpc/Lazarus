@@ -243,8 +243,10 @@ type
   TDBGBreakPointKind = (
     bpkSource,  // source breakpoint
     bpkAddress, // address breakpoint
-    bpkData     // data/watchpoint
+    bpkData,     // data/watchpoint
+    bpkException
   );
+  TDBGBreakPointKinds = set of TDBGBreakPointKind;
 
   TDBGWatchPointScope = (
     wpsLocal,
@@ -339,6 +341,7 @@ type
     procedure SetLocation(const ASource: String; const ALine: Integer); virtual;
     procedure SetWatch(const AData: String; const AScope: TDBGWatchPointScope;
                        const AKind: TDBGWatchPointKind); virtual;
+    procedure SetName(const AValue: String); virtual;
     // bpkAddress
     property Address: TDBGPtr read GetAddress write SetAddress;
     // bpkSource
@@ -3345,6 +3348,11 @@ begin
   Changed;
   MarkPropertyChanged(ciLocation);
   EndUpdate;
+end;
+
+procedure TBaseBreakPoint.SetName(const AValue: String);
+begin
+  //
 end;
 
 procedure TBaseBreakPoint.SetValid(const AValue: TValidState );
