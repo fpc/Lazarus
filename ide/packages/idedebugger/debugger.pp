@@ -6588,9 +6588,9 @@ begin
 
   AConfig.SetDeleteValue(APath+'WatchData/Value', FWatchData, '');
   WriteStr(s{%H-}, FWatchScope);
-  AConfig.SetDeleteValue(APath+'WatchScope/Value', s, '');
+  AConfig.SetDeleteValue(APath+'WatchScope/Value', s, 'wpsGlobal');
   WriteStr(s, FWatchKind);
-  AConfig.SetDeleteValue(APath+'WatchKind/Value', s, '');
+  AConfig.SetDeleteValue(APath+'WatchKind/Value', s, 'wpkWrite');
 
   AConfig.SetDeleteValue(APath+'Expression/Value',Expression,'');
 
