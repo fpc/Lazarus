@@ -830,6 +830,7 @@ resourcestring
     +'class with the name %s.';
   lisTheUnitItselfHasAlreadyTheNamePascalIdentifiersMus = 'The unit itself '
     +'has already the name "%s". Pascal identifiers must be unique.';
+  lisUnableToRenameFileTo = 'Unable to rename file "%s" to "%s".';
   lisUnableToRenameVariableInSource = 'Unable to rename variable in source.';
   lisUnableToUpdateCreateFormStatementInProjectSource = 'Unable to update '
     +'CreateForm statement in project source';

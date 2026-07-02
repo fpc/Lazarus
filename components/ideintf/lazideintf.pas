@@ -336,6 +336,8 @@ type
     function DoSaveEditorFileAs(AEditor: TSourceEditorInterface;
                               NewFilename: string; // must be an absolute filename
                               Flags: TSaveFlags): TModalResult; virtual; abstract;
+    function RenameIDEFile(OldFilename, NewFilename: string; // must be absolute filenames
+                              Flags: TSaveFlags): TModalResult; virtual; abstract;
     function DoSaveAll(Flags: TSaveFlags): TModalResult; virtual; abstract;
     function DoCloseEditorFile(AEditor: TSourceEditorInterface;
                                Flags: TCloseFlags):TModalResult; virtual; abstract;

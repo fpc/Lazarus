@@ -253,6 +253,7 @@ procedure CreateFileDialogFilterForSourceEditorFiles(Filter: string;
 function SaveEditorFile(AEditor: TSourceEditorInterface; Flags: TSaveFlags;
   const AForcedFilename: string = ''): TModalResult;
 function SaveEditorFile(const Filename: string; Flags: TSaveFlags): TModalResult;
+function RenameIDEFile(OldFilename, NewFilename: string; Flags: TSaveFlags): TModalResult;
 function CloseEditorFile(AEditor: TSourceEditorInterface; Flags: TCloseFlags):TModalResult;
 function CloseEditorFile(const Filename: string; Flags: TCloseFlags): TModalResult;
 // interactive unit selection
@@ -2973,6 +2974,68 @@ begin
     if Result <> mrOK then Break;
     Flags:=Flags-[sfSaveAs,sfCheckAmbiguousFiles];
   end;
+end;
+
+function RenameIDEFile(OldFilename, NewFilename: string; Flags: TSaveFlags): TModalResult;
+var
+  SrcEdit: TSourceEditorInterface;
+  AnUnitInfo: TUnitInfo;
+  IsPartOfProject: Boolean;
+begin
+  Result:=mrCancel;
+  OldFilename:=TrimFilename(OldFilename);
+  NewFilename:=TrimFilename(NewFilename);
+  if (OldFilename='') or (NewFilename='') then exit;
+  if not FilenameIsAbsolute(OldFilename) then
+    raise Exception.Create('RenameIDEFile: OldFilename must be absolute: '+OldFilename);
+  if not FilenameIsAbsolute(NewFilename) then
+    raise Exception.Create('RenameIDEFile: NewFilename must be absolute: '+NewFilename);
+  if CompareFilenames(OldFilename,NewFilename)=0 then exit(mrOk);
+
+  // renaming the project info file or the project main source
+  // means renaming the whole project
+  if (not Project1.IsVirtual)
+  and ((CompareFilenames(OldFilename,Project1.ProjectInfoFile)=0)
+    or (CompareFilenames(OldFilename,Project1.MainFilename)=0)) then
+    exit(MainIDEInterface.DoSaveProjectAs(NewFilename,Flags));
+
+  // if the file is already open in an editor let the source editor rename it
+  SrcEdit:=SourceEditorManagerIntf.SourceEditorIntfWithFilename(OldFilename);
+  if (SrcEdit=nil) and FilenameIsPascalSource(OldFilename)
+  and FileExistsUTF8(OldFilename) then begin
+    // a pascal source without an editor => open one first, so it is renamed as unit
+    Result:=OpenEditorFile(OldFilename,-1,-1,nil,[ofOnlyIfExists,ofRegularFile]);
+    if Result<>mrOk then exit;
+    SrcEdit:=SourceEditorManagerIntf.SourceEditorIntfWithFilename(OldFilename);
+  end;
+  if SrcEdit<>nil then
+    exit(MainIDEInterface.DoSaveEditorFileAs(SrcEdit,NewFilename,Flags));
+
+  // otherwise: a plain file without editor
+  // => rename it in the project, in the open packages and on disk
+
+  // rename on disk
+  if FileExistsUTF8(OldFilename) then begin
+    if not RenameFileUTF8(OldFilename,NewFilename) then begin
+      IDEMessageDialog(lisError,
+        Format(lisUnableToRenameFileTo,[OldFilename,NewFilename]),mtError,[mbOk]);
+      exit(mrCancel);
+    end;
+  end;
+
+  // rename in the project
+  AnUnitInfo:=Project1.UnitInfoWithFilename(OldFilename);
+  IsPartOfProject:=(AnUnitInfo<>nil) and AnUnitInfo.IsPartOfProject;
+  if AnUnitInfo<>nil then begin
+    AnUnitInfo.Filename:=NewFilename;
+    Project1.Modified:=true;
+  end;
+
+  // rename in the open packages
+  Result:=PkgBoss.OnRenameFile(OldFilename,NewFilename,IsPartOfProject);
+  if Result=mrAbort then exit;
+
+  Result:=mrOk;
 end;
 
 function CloseEditorFile(AEditor: TSourceEditorInterface; Flags: TCloseFlags): TModalResult;
