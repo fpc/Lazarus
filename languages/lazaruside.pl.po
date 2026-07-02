@@ -18806,6 +18806,11 @@ msgstr ""
 msgid "Unable to remove project title from source.%s%s"
 msgstr ""
 
+#: lazarusidestrconsts.lisunabletorenamefileto
+#, object-pascal-format
+msgid "Unable to rename file \"%s\" to \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletorenameforminsource
 msgid "Unable to rename form in source."
 msgstr "Nie udało się zmienić nazwy formularza w źródle."

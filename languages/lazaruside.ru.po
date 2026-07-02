@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-06-28 22:10+0300\n"
+"PO-Revision-Date: 2026-07-03 02:10+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -18461,6 +18461,11 @@ msgstr "Невозможно удалить свойство Scaled проект
 #, object-pascal-format
 msgid "Unable to remove project title from source.%s%s"
 msgstr "Невозможно удалить заголовок проекта из исходного кода.%s%s"
+
+#: lazarusidestrconsts.lisunabletorenamefileto
+#, object-pascal-format
+msgid "Unable to rename file \"%s\" to \"%s\"."
+msgstr "Невозможно переименовать файл \"%s\" в \"%s\"."
 
 #: lazarusidestrconsts.lisunabletorenameforminsource
 msgid "Unable to rename form in source."

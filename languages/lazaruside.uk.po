@@ -18639,6 +18639,11 @@ msgstr "Неможливо змінити властивість Scaled проє
 msgid "Unable to remove project title from source.%s%s"
 msgstr "Неможливо видалити заголовок проєкту з джерела.%s%s"
 
+#: lazarusidestrconsts.lisunabletorenamefileto
+#, object-pascal-format
+msgid "Unable to rename file \"%s\" to \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletorenameforminsource
 msgid "Unable to rename form in source."
 msgstr "Неможливо змінити назву форми в коді"

@@ -18674,6 +18674,11 @@ msgstr "Nem lehet eltávolítani a projekt méretezését a forrásból.%s%s"
 msgid "Unable to remove project title from source.%s%s"
 msgstr "Nem lehet eltávolítani a projekt címét a forrásból.%s%s"
 
+#: lazarusidestrconsts.lisunabletorenamefileto
+#, object-pascal-format
+msgid "Unable to rename file \"%s\" to \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletorenameforminsource
 msgid "Unable to rename form in source."
 msgstr "Nem nevezhető át a form a forrásban."

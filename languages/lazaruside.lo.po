@@ -18476,6 +18476,11 @@ msgstr "ບໍ່ສາມາດລຶບ project scaled ອອກຈາກ sour
 msgid "Unable to remove project title from source.%s%s"
 msgstr "ບໍ່ສາມາດລຶບຫົວຂໍ້ໂປຣເຈັກອອກຈາກ source ໄດ້.%s%s"
 
+#: lazarusidestrconsts.lisunabletorenamefileto
+#, object-pascal-format
+msgid "Unable to rename file \"%s\" to \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletorenameforminsource
 msgid "Unable to rename form in source."
 msgstr "ບໍ່ສາມາດປ່ຽນຊື່ form ໃນ source ໄດ້."

@@ -18557,6 +18557,11 @@ msgstr ""
 msgid "Unable to remove project title from source.%s%s"
 msgstr "Projektin otsikon %s%s poisto ei onnistu!"
 
+#: lazarusidestrconsts.lisunabletorenamefileto
+#, object-pascal-format
+msgid "Unable to rename file \"%s\" to \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletorenameforminsource
 msgid "Unable to rename form in source."
 msgstr "Lomakkeen nimeäminen lähdekoodissa ei onnistu."
