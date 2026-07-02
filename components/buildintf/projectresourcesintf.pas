@@ -13,9 +13,9 @@ interface
 uses
   Classes, SysUtils, resource,
   // LazUtils
-  Laz2_XMLCfg,
+  Laz2_XMLCfg, LazMethodList,
   // BuildIntf
-  CompOptsIntf;
+  BuildStrConsts, CompOptsIntf;
 
 type
   TProjResourceType = (
@@ -23,9 +23,27 @@ type
     rtRes    // fpc resources
   );
 
+  TUserResourceType = (
+    rtIcon,    // maps to RT_GROUP_ICON
+    rtCursor,  // maps to RT_GROUP_CURSOR
+    rtBitmap,  // maps to RT_BITMAP
+    rtHTML,    // maps to RT_HTML
+    rtRCData   // maps to RT_RCDATA
+  );
+
+  TProjectUserResourceInfo = record
+    FileName: string;            // may contain IDE macros / be project-relative
+    ResType: TUserResourceType;
+    ResName: string;
+  end;
+
+  EProjectUserResourceError = class(Exception);
+
   TAbstractProjectResources = class;
+  TAbstractProjectUserResources = class;
 
   { TAbstractProjectResource }
+
   TAbstractProjectResource = class
   private
     FModified: boolean;
@@ -59,6 +77,7 @@ type
     FMessages: TStringList;
     procedure SetResourceType(const AValue: TProjResourceType); virtual;
     function GetProjectResource(AIndex: TAbstractProjectResourceClass): TAbstractProjectResource; virtual; abstract;
+    function GetUserResources: TAbstractProjectUserResources; virtual; abstract;
     class function GetRegisteredResources: TList;
   public
     constructor Create; virtual;
@@ -74,7 +93,68 @@ type
     property ResourceType: TProjResourceType read FResourceType write SetResourceType;
     property Resource[AIndex: TAbstractProjectResourceClass]: TAbstractProjectResource
                                                       read GetProjectResource; default;
+    // Public access to the project's user resource files (list/add/remove/rename).
+    property UserResources: TAbstractProjectUserResources read GetUserResources;
   end;
+
+  { TAbstractProjectUserResources
+    Public interface to the project's user resource *files* - the list edited
+    under Project Options > Resources. Designtime packages reach it via
+    LazarusIDE.ActiveProject.Resources.UserResources. }
+  TAbstractProjectUserResources = class(TAbstractProjectResource)
+  private
+    FUpdateCount: integer;
+    FChangedPending: boolean;
+    FChangeHandlers: TMethodList;
+    procedure DoChanged;
+  protected
+    function GetCount: integer; virtual; abstract;
+    function GetInfo(AIndex: integer): TProjectUserResourceInfo; virtual; abstract;
+    // Descendants call these after mutating the list.
+    procedure Changed;
+    // Raise EProjectUserResourceError on a duplicate file name or resource name.
+    procedure CheckCanAdd(const AFileName, AResName: string);
+    procedure CheckCanRename(AIndex: integer; const ANewResName: string);
+  public
+    constructor Create; override;
+    destructor Destroy; override;
+
+    // Batch several edits, so observers are notified only once at EndUpdate.
+    procedure BeginUpdate;
+    procedure EndUpdate;
+
+    // Observers (e.g. the open Project Options dialog).
+    procedure AddChangeHandler(const AHandler: TNotifyEvent);
+    procedure RemoveChangeHandler(const AHandler: TNotifyEvent);
+
+    // Enumerate.
+    property Count: integer read GetCount;
+    property Items[AIndex: integer]: TProjectUserResourceInfo read GetInfo; default;
+    function IndexOfFileName(const AFileName: string): integer; virtual; abstract;
+    function IndexOfResName(const AResName: string): integer; virtual; abstract;
+
+    // Add / remove.
+    function AddFile(const AFileName: string; AResType: TUserResourceType;
+                     const AResName: string): integer; virtual; abstract;
+    procedure Delete(AIndex: integer); virtual; abstract;
+    function RemoveFile(const AFileName: string): boolean; virtual; abstract;
+
+    // Modify.
+    procedure SetFileName(AIndex: integer; const ANewFileName: string); virtual; abstract;
+    procedure SetResName(AIndex: integer; const ANewResName: string); virtual; abstract;
+    procedure SetResType(AIndex: integer; ANewResType: TUserResourceType); virtual; abstract;
+  end;
+
+const
+  ResourceTypeToStr: array[TUserResourceType] of String = (
+  'ICON',
+  'CURSOR',
+  'BITMAP',
+  'HTML',
+  'RCDATA'
+  );
+
+function StrToResourceType(const AStr: String): TUserResourceType;
 
 procedure RegisterProjectResource(AResource: TAbstractProjectResourceClass);
 
@@ -82,6 +162,18 @@ implementation
 
 var
   FRegisteredProjectResources: TList = nil;
+
+function StrToResourceType(const AStr: String): TUserResourceType;
+begin
+  case AStr of
+    'ICON': Result := rtIcon;
+    'CURSOR': Result := rtCursor;
+    'BITMAP': Result := rtBitmap;
+    'HTML': Result := rtHTML;
+  else
+    Result := rtRCData;
+  end;
+end;
 
 procedure RegisterProjectResource(AResource: TAbstractProjectResourceClass);
 begin
@@ -143,6 +235,76 @@ destructor TAbstractProjectResources.Destroy;
 begin
   FreeAndNil(FMessages);
   inherited Destroy;
+end;
+
+{ TAbstractProjectUserResources }
+
+constructor TAbstractProjectUserResources.Create;
+begin
+  inherited Create;
+  FChangeHandlers := TMethodList.Create;
+end;
+
+destructor TAbstractProjectUserResources.Destroy;
+begin
+  FreeAndNil(FChangeHandlers);
+  inherited Destroy;
+end;
+
+procedure TAbstractProjectUserResources.BeginUpdate;
+begin
+  Inc(FUpdateCount);
+end;
+
+procedure TAbstractProjectUserResources.EndUpdate;
+begin
+  if FUpdateCount = 0 then
+    raise EProjectUserResourceError.Create('EndUpdate without BeginUpdate');
+  Dec(FUpdateCount);
+  if (FUpdateCount = 0) and FChangedPending then
+    DoChanged;
+end;
+
+procedure TAbstractProjectUserResources.Changed;
+begin
+  FChangedPending := True;
+  if FUpdateCount = 0 then
+    DoChanged;
+end;
+
+procedure TAbstractProjectUserResources.DoChanged;
+begin
+  FChangedPending := False;
+  Modified := True;                        // -> OnModified -> project marked dirty
+  FChangeHandlers.CallNotifyEvents(Self);  // -> live observers (options dialog)
+end;
+
+procedure TAbstractProjectUserResources.AddChangeHandler(const AHandler: TNotifyEvent);
+begin
+  FChangeHandlers.Add(TMethod(AHandler));
+end;
+
+procedure TAbstractProjectUserResources.RemoveChangeHandler(const AHandler: TNotifyEvent);
+begin
+  FChangeHandlers.Remove(TMethod(AHandler));
+end;
+
+procedure TAbstractProjectUserResources.CheckCanAdd(const AFileName, AResName: string);
+begin
+  if IndexOfFileName(AFileName) >= 0 then
+    raise EProjectUserResourceError.CreateFmt(lisResFileAlreadyExists, [AFileName]);
+  if IndexOfResName(AResName) >= 0 then
+    raise EProjectUserResourceError.CreateFmt(lisResNameAlreadyExists, [AResName]);
+end;
+
+procedure TAbstractProjectUserResources.CheckCanRename(AIndex: integer;
+  const ANewResName: string);
+var
+  j: integer;
+begin
+  j := IndexOfResName(ANewResName);
+  if (j >= 0) and (j <> AIndex) then
+    raise EProjectUserResourceError.CreateFmt(lisResNameAlreadyExists, [ANewResName]);
 end;
 
 finalization

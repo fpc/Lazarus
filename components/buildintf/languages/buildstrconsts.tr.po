@@ -23,6 +23,16 @@ msgstr "Pascal birimi"
 msgid "Create a new pascal unit."
 msgstr "Yeni bir pascal birimi oluşturun."
 
+#: buildstrconsts.lisresfilealreadyexists
+#, object-pascal-format
+msgid "A resource with file name \"%s\" already exists."
+msgstr ""
+
+#: buildstrconsts.lisresnamealreadyexists
+#, object-pascal-format
+msgid "A resource with name \"%s\" already exists."
+msgstr ""
+
 #: buildstrconsts.lisshowalloutputlines
 msgid "Show all output lines"
 msgstr "Tüm çıktı satırlarını göster"

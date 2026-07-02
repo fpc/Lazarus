@@ -20,6 +20,16 @@ msgstr "Unidade pascal"
 msgid "Create a new pascal unit."
 msgstr "Criar uma nova unidade pascal."
 
+#: buildstrconsts.lisresfilealreadyexists
+#, object-pascal-format
+msgid "A resource with file name \"%s\" already exists."
+msgstr ""
+
+#: buildstrconsts.lisresnamealreadyexists
+#, object-pascal-format
+msgid "A resource with name \"%s\" already exists."
+msgstr ""
+
 #: buildstrconsts.lisshowalloutputlines
 msgid "Show all output lines"
 msgstr "Exibir todas as linhas de saída"

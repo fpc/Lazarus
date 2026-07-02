@@ -88,6 +88,7 @@ type
   protected
     procedure SetResourceType(const AValue: TProjResourceType); override;
     function GetProjectResource(AIndex: TAbstractProjectResourceClass): TAbstractProjectResource; override;
+    function GetUserResources: TAbstractProjectUserResources; override;
   public
     constructor Create; override;
     // Deprecated in Lazarus 4.99, March 2026
@@ -390,6 +391,11 @@ end;
 function TProjectResources.GetProjectUserResources: TProjectUserResources;
 begin
   Result := TProjectUserResources(GetProjectResource(TProjectUserResources));
+end;
+
+function TProjectResources.GetUserResources: TAbstractProjectUserResources;
+begin
+  Result := GetProjectUserResources;
 end;
 
 function TProjectResources.GetVersionInfo: TProjectVersionInfo;

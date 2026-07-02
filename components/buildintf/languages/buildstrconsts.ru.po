@@ -20,6 +20,16 @@ msgstr "Модуль Паскаля"
 msgid "Create a new pascal unit."
 msgstr "Создать новый модуль Паскаля."
 
+#: buildstrconsts.lisresfilealreadyexists
+#, object-pascal-format
+msgid "A resource with file name \"%s\" already exists."
+msgstr ""
+
+#: buildstrconsts.lisresnamealreadyexists
+#, object-pascal-format
+msgid "A resource with name \"%s\" already exists."
+msgstr ""
+
 #: buildstrconsts.lisshowalloutputlines
 msgid "Show all output lines"
 msgstr "Показать все строки вывода"

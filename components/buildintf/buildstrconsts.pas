@@ -17,6 +17,8 @@ resourcestring
   lisUnableToFindParserWithName = 'Unable to find parser with name "%s"';
   lirsUnit = 'Pascal unit';
   lisCreateANewPascalUnit = 'Create a new pascal unit.';
+  lisResFileAlreadyExists = 'A resource with file name "%s" already exists.';
+  lisResNameAlreadyExists = 'A resource with name "%s" already exists.';
 
 implementation
 

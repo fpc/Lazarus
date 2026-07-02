@@ -47,13 +47,7 @@ uses
 type
   TAddIDEMessageEvent = procedure(Urgency: TMessageLineUrgency; Msg: string);
 
-  TUserResourceType = (
-    rtIcon,    // maps to RT_GROUP_ICON
-    rtCursor,  // maps to RT_GROUP_CURSOR
-    rtBitmap,  // maps to RT_BITMAP
-    rtHTML,    // maps to RT_HTML
-    rtRCData   // maps to RT_RCDATA
-  );
+  TUserResourceType = ProjectResourcesIntf.TUserResourceType;
 
   { TResourceItem }
 
@@ -92,9 +86,12 @@ type
 
   { TProjectUserResources }
 
-  TProjectUserResources = class(TAbstractProjectResource)
+  TProjectUserResources = class(TAbstractProjectUserResources)
   private
     FList: TResourceList;
+  protected
+    function GetCount: integer; override;
+    function GetInfo(AIndex: integer): TProjectUserResourceInfo; override;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -103,37 +100,25 @@ type
                              const MainFilename: string): Boolean; override;
     procedure WriteToProjectFile(AConfig: TXMLConfig; const Path: String); override;
     procedure ReadFromProjectFile(AConfig: TXMLConfig; const Path: String); override;
-    property List: TResourceList read FList;
-  end;
 
-const
-  ResourceTypeToStr: array[TUserResourceType] of String = (
- { rtIcon   } 'ICON',
- { rtCursor } 'CURSOR',
- { rtBitmap } 'BITMAP',
- { rtHTML   } 'HTML',
- { rtRCData } 'RCDATA'
-  );
+    function IndexOfFileName(const AFileName: string): integer; override;
+    function IndexOfResName(const AResName: string): integer; override;
+    function AddFile(const AFileName: string; AResType: TUserResourceType;
+                     const AResName: string): integer; override;
+    procedure Delete(AIndex: integer); override;
+    function RemoveFile(const AFileName: string): boolean; override;
+    procedure SetFileName(AIndex: integer; const ANewFileName: string); override;
+    procedure SetResName(AIndex: integer; const ANewResName: string); override;
+    procedure SetResType(AIndex: integer; ANewResType: TUserResourceType); override;
+
+    property List: TResourceList read FList;   // internal use (options frame, build)
+  end;
 
 var
   OnAddIDEMessage: TAddIDEMessageEvent;
 
-function StrToResourceType(const AStr: String): TUserResourceType;
-
 
 implementation
-
-function StrToResourceType(const AStr: String): TUserResourceType;
-begin
-  case AStr of
-    'ICON': Result := rtIcon;
-    'CURSOR': Result := rtCursor;
-    'BITMAP': Result := rtBitmap;
-    'HTML': Result := rtHTML;
-  else
-    Result := rtRCData;
-  end;
-end;
 
 { TResourceItem }
 
@@ -308,11 +293,11 @@ end;
 
 procedure TProjectUserResources.ReadFromProjectFile(AConfig: TXMLConfig; const Path: String);
 var
-  I, Count: Integer;
+  I, ACount: Integer;
 begin
   List.Clear;
-  Count := AConfig.GetValue(Path+'General/Resources/Count', 0);
-  for I := 0 to Count - 1 do
+  ACount := AConfig.GetValue(Path+'General/Resources/Count', 0);
+  for I := 0 to ACount - 1 do
     List.AddItem.ReadFromProjectFile(TXMLConfig(AConfig), Path + 'General/Resources/Resource_' + IntToStr(I) + '/')
 end;
 
@@ -326,6 +311,81 @@ destructor TProjectUserResources.Destroy;
 begin
   FList.Free;
   inherited Destroy;
+end;
+
+function TProjectUserResources.GetCount: integer;
+begin
+  Result := FList.Count;
+end;
+
+function TProjectUserResources.GetInfo(AIndex: integer): TProjectUserResourceInfo;
+begin
+  Result.FileName := FList[AIndex].FileName;
+  Result.ResType  := FList[AIndex].ResType;
+  Result.ResName  := FList[AIndex].ResName;
+end;
+
+function TProjectUserResources.IndexOfFileName(const AFileName: string): integer;
+begin
+  Result := FList.IndexOfFileName(AFileName);
+end;
+
+function TProjectUserResources.IndexOfResName(const AResName: string): integer;
+begin
+  for Result := 0 to FList.Count - 1 do
+    if FList[Result].ResName = AResName then
+      Exit;
+  Result := -1;
+end;
+
+function TProjectUserResources.AddFile(const AFileName: string;
+  AResType: TUserResourceType; const AResName: string): integer;
+begin
+  CheckCanAdd(AFileName, AResName);   // raises EProjectUserResourceError on collision
+  FList.AddResource(AFileName, AResType, AResName);
+  Result := FList.Count - 1;
+  Changed;
+end;
+
+procedure TProjectUserResources.Delete(AIndex: integer);
+begin
+  FList.Delete(AIndex);               // TFPObjectList frees the item + its cache
+  Changed;
+end;
+
+function TProjectUserResources.RemoveFile(const AFileName: string): boolean;
+var
+  I: Integer;
+begin
+  I := FList.IndexOfFileName(AFileName);
+  Result := I >= 0;
+  if Result then
+    Delete(I);
+end;
+
+procedure TProjectUserResources.SetFileName(AIndex: integer; const ANewFileName: string);
+begin
+  if CompareFilenames(FList[AIndex].FileName, ANewFileName) = 0 then
+    Exit;
+  FList[AIndex].FileName := ANewFileName; // content cache self-invalidates on next build
+  Changed;
+end;
+
+procedure TProjectUserResources.SetResName(AIndex: integer; const ANewResName: string);
+begin
+  if FList[AIndex].ResName = ANewResName then
+    Exit;
+  CheckCanRename(AIndex, ANewResName);    // raises EProjectUserResourceError on collision
+  FList[AIndex].ResName := ANewResName;
+  Changed;
+end;
+
+procedure TProjectUserResources.SetResType(AIndex: integer; ANewResType: TUserResourceType);
+begin
+  if FList[AIndex].ResType = ANewResType then
+    Exit;
+  FList[AIndex].ResType := ANewResType;
+  Changed;
 end;
 
 initialization
