@@ -378,7 +378,7 @@ else
 ifeq ($(OS_TARGET),darwin)
 LCL_PLATFORM=cocoa
 else
-LCL_PLATFORM=gtk2
+LCL_PLATFORM=gtk3
 endif
 endif
 endif
@@ -4955,14 +4955,7 @@ makefiles: fpc_makefiles
 ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
-.PHONY: ide bigide starter lazbuilder all clean cleanide purge revisioninc
-revisioninc:
-ifneq ($(USESVN2REVISIONINC),0)
-ifeq ($(wildcard ../tools/svn2revisioninc$(SRCEXEEXT)),)
-	$(MAKE) -C ../tools svn2revisioninc$(SRCEXEEXT) OS_TARGET=$(OS_SOURCE) CPU_TARGET=$(CPU_SOURCE) OPT=''
-endif
-	../tools/svn2revisioninc$(SRCEXEEXT) .. revision.inc
-endif
+.PHONY: ide bigide starter lazbuilder all clean cleanide purge
 idepackages:
 	$(MAKE) -C packages/ideconfig
 	$(MAKE) -C packages/ideutils

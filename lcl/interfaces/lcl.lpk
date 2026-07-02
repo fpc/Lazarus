@@ -30,7 +30,7 @@ if LCLWidgetType+&apos;&apos;=&apos;&apos; then begin
     else if (TargetOS=&apos;amiga&apos;) or (TargetOS=&apos;aros&apos;) or (TargetOS=&apos;morphos&apos;) then
       LCLWidgetType := &apos;mui&apos;
     else
-      LCLWidgetType:=&apos;gtk2&apos;;
+      LCLWidgetType:=&apos;gtk3&apos;;
   end;
 end;
 

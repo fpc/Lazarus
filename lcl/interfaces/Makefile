@@ -380,7 +380,7 @@ else
 ifneq ($(findstring $(OS_TARGET),amiga aros morphos),)
 LCL_PLATFORM=mui
 else
-LCL_PLATFORM=gtk2
+LCL_PLATFORM=gtk3
 endif
 endif
 endif
