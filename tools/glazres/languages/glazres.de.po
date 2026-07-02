@@ -81,7 +81,7 @@ msgstr ""
 
 #: glazresmain.msgwrongext
 msgid "Filename does not have the required extension: fix it?"
-msgstr "Der Dateiname besitzt nicht die benötigte Erweiterung: Korrigieren?"
+msgstr "Dateiname besitzt nicht die benötigte Erweiterung: Korrigieren?"
 
 #: glazresmain.odopenexistingfile
 msgctxt "glazresmain.odopenexistingfile"
@@ -130,14 +130,12 @@ msgid "Delete all"
 msgstr "Alle löschen"
 
 #: tglazresform.clearbtn.hint
-#, fuzzy
-#| msgid "Cleare the entire list"
 msgid "Clear the entire list"
-msgstr "Die ganze Liste löschen"
+msgstr "Ganze Liste löschen"
 
 #: tglazresform.closebtn.hint
 msgid "Exit the program"
-msgstr "Das Programm beenden"
+msgstr "Programm beenden"
 
 #: tglazresform.deletebtn.caption
 msgctxt "tglazresform.deletebtn.caption"
@@ -167,5 +165,5 @@ msgstr "Erzeugen"
 
 #: tglazresform.startbtn.hint
 msgid "Create the output LRS file"
-msgstr "Die Ausgabe-Ressourcendatei erzeugen"
+msgstr "Ausgabe-Ressourcendatei erzeugen"
 

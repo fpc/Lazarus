@@ -327,7 +327,7 @@ msgstr "Mit LazBuild erzeugen??"
 
 #: chmstrconsts.rsuntitled
 msgid "Untitled"
-msgstr "Ohne Namen"
+msgstr "Ohne Titel"
 
 #: chmstrconsts.rsurl
 msgctxt "chmstrconsts.rsurl"
@@ -407,12 +407,11 @@ msgid "Remove selected"
 msgstr "Auswahl entfernen"
 
 #: tchmform.scanhtmlcheck.caption
-#, fuzzy
 msgid ""
 "Parse *.htm* files to include \n"
 "linked pages and images"
 msgstr ""
-"Html-Dateien auf verlinkte Seiten\n"
+"HTML-Dateien auf verlinkte Seiten\n"
 "und Bilder untersuchen"
 
 #: tchmform.tableofcontentslabel.caption

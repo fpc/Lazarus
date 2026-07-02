@@ -18,11 +18,11 @@ msgstr "Array (%d Elemente)"
 
 #: msgjsonviewer.scancelclose
 msgid "Do not close the window"
-msgstr "Schließen Sie nicht das Fenster"
+msgstr "Fenster nicht schließen"
 
 #: msgjsonviewer.scancelpaste
 msgid "Do not paste the new data"
-msgstr "Fügen Sie die neuen Daten nicht ein"
+msgstr "Neue Daten nicht einfügen"
 
 #: msgjsonviewer.scaption
 msgctxt "msgjsonviewer.scaption"
@@ -43,17 +43,17 @@ msgid ""
 "The JSON data in \"%s\" was changed but not saved.\n"
 "What do want to do ?"
 msgstr ""
-"Die JSON-Daten in \"%s\" wurden geändert, aber nicht gespeichert.\n"
+"JSON-Daten in \"%s\" wurden geändert, aber nicht gespeichert.\n"
 "Was wollen Sie tun?"
 
 #: msgjsonviewer.sduplicatemembername
 #, object-pascal-format
 msgid "Duplicate member name \"%s\"."
-msgstr ""
+msgstr "Doppelter Membername \"%s\"."
 
 #: msgjsonviewer.sefilenameneeded
 msgid "Filename needed for generated code"
-msgstr ""
+msgstr "Dateiname für erzeugten Code benötigt"
 
 #: msgjsonviewer.selement
 #, object-pascal-format
@@ -67,7 +67,7 @@ msgstr "Leeres Dokument"
 #: msgjsonviewer.serrcreatingconfigdir
 #, object-pascal-format
 msgid "Could not create the configuration files directory \"%s\""
-msgstr "Kann das Konfigurationsdateien-Verzeichnis \"%s\" nicht erzeugen"
+msgstr "Kann Konfigurationsdateien-Verzeichnis \"%s\" nicht erzeugen"
 
 #: msgjsonviewer.serrinvalidvalue
 #, object-pascal-format
@@ -76,29 +76,29 @@ msgstr "Ungültiger Wert oder falscher Typ: \"%s\""
 
 #: msgjsonviewer.serrnovalidjsonclipboard
 msgid "The clipboard does not contain valid JSON data"
-msgstr "Die Zwischenablage enthält keine gültigen JSON Daten"
+msgstr "Zwischenablage enthält keine gültigen JSON-Daten"
 
 #: msgjsonviewer.snewmember
 msgid "New object member"
-msgstr ""
+msgstr "Neues Objektmember"
 
 #: msgjsonviewer.snewmembername
 #, object-pascal-format
 msgid "Enter a name for the new member (type: %s)"
-msgstr ""
+msgstr "Namen für neues Member (Typ: %s) eingeben"
 
 #: msgjsonviewer.snomorematches
 msgid "No nodes match the criterium"
-msgstr ""
+msgstr "Kein Knoten erfüllt das Kriterium"
 
 #: msgjsonviewer.snull
 msgid "null"
-msgstr ""
+msgstr "Null"
 
 #: msgjsonviewer.sobject
 #, object-pascal-format
 msgid "Object (%d members)"
-msgstr ""
+msgstr "Objekt (%d Member)"
 
 #: msgjsonviewer.ssavedata
 msgid "Save the changes"
@@ -106,25 +106,25 @@ msgstr "Änderungen speichern"
 
 #: msgjsonviewer.stabcaptionraw
 msgid "Raw"
-msgstr ""
+msgstr "Roh"
 
 #: msgjsonviewer.stabcaptionvisual
 msgid "Visual"
-msgstr ""
+msgstr "Visuell"
 
 #: tauthenticationform.caption
 msgctxt "tauthenticationform.caption"
 msgid "HTTP Authentication"
-msgstr ""
+msgstr "HTTP Authentifizierung"
 
 #: tauthenticationform.lcbusername.caption
 msgctxt "tauthenticationform.lcbusername.caption"
 msgid "&Username"
-msgstr ""
+msgstr "&Nutzername"
 
 #: tauthenticationform.lepassword.caption
 msgid "&Password"
-msgstr ""
+msgstr "&Passwort"
 
 #: tcreatecodeform.caption
 msgctxt "tcreatecodeform.caption"
@@ -133,81 +133,81 @@ msgstr "Pascal Code erzeugen"
 
 #: tcreatecodeform.cgoptions.caption
 msgid "Other options"
-msgstr ""
+msgstr "Andere Einstellungen"
 
 #: tcreatecodeform.eextraunitnames.texthint
 msgid "Unit names, separated by commas"
-msgstr ""
+msgstr "Unit-Namen, Komma-getrennt"
 
 #: tcreatecodeform.leconstructorargslabel1.caption
 msgid "Constructor arguments"
-msgstr ""
+msgstr "Konstruktor-Argumente"
 
 #: tcreatecodeform.lepropertytypesuffix.caption
 msgid "Property type suffix"
-msgstr ""
+msgstr "Suffix von Eigenschaftstyp"
 
 #: tcreatecodeform.letoplevelclassname.caption
 msgid "Toplevel class name"
-msgstr ""
+msgstr "Toplevel-Klassenname"
 
 #: tcreatecodeform.leunitname.caption
 msgid "Unit name"
-msgstr ""
+msgstr "Unit-Name"
 
 #: tcreatecodeform.leunitname1.caption
 msgid "Field Prefix"
-msgstr ""
+msgstr "Feld-Prefix"
 
 #: tcreatecodeform.lextraunitnames.caption
 msgid "Extra units in uses"
-msgstr ""
+msgstr "Verwendete extra Units"
 
 #: tcreatecodeform.lfecode.caption
 msgid "File"
-msgstr ""
+msgstr "Datei"
 
 #: tcreatecodeform.lparentname.caption
 msgid "Object Parent class"
-msgstr ""
+msgstr "Übergeordnete Objektklasse"
 
 #: tcreatecodeform.lseindent.caption
 msgid "Indent"
-msgstr ""
+msgstr "Einzug"
 
 #: tcreatecodeform.tscode.caption
 msgid "Preview"
-msgstr ""
+msgstr "Vorschau"
 
 #: tcreatecodeform.tsoptions.caption
 msgid "Options"
-msgstr ""
+msgstr "Einstellungen"
 
 #: theaderform.caption
 msgid "Request header"
-msgstr ""
+msgstr "Header abfragen"
 
 #: theaderform.lcbname.caption
 msgctxt "theaderform.lcbname.caption"
 msgid "&Name"
-msgstr ""
+msgstr "&Name"
 
 #: theaderform.lcbvalue.caption
 msgctxt "theaderform.lcbvalue.caption"
 msgid "&Value"
-msgstr ""
+msgstr "&Wert"
 
 #: tmainform.aaddtofavourites.caption
 msgid "Add request to favourites"
-msgstr ""
+msgstr "Abfrage zu Favoriten hinzufügen"
 
 #: tmainform.aclose.caption
 msgid "&Close"
-msgstr ""
+msgstr "&Schließen"
 
 #: tmainform.aclose.hint
 msgid "Close file"
-msgstr ""
+msgstr "Datei schließen"
 
 #: tmainform.acopy.caption
 msgid "&Copy"
@@ -215,11 +215,9 @@ msgstr "Kopieren"
 
 #: tmainform.acopy.hint
 msgid "Copy selected node to clipboard as JSON"
-msgstr ""
+msgstr "Ausgewählten Knoten als JSON in die Zwischenablage kopieren"
 
 #: tmainform.acreatecode.caption
-#, fuzzy
-#| msgid "Create pascal code"
 msgctxt "tmainform.acreatecode.caption"
 msgid "Create Pascal code"
 msgstr "Pascal Code erzeugen"
@@ -235,7 +233,7 @@ msgstr "A&usschneiden"
 
 #: tmainform.acut.hint
 msgid "Cut selected node to clipboard as JSON"
-msgstr ""
+msgstr "Ausgewählten Knoten als JSON in die Zwischenablage ausschneiden"
 
 #: tmainform.adeletevalue.caption
 msgid "&Delete value"
@@ -243,7 +241,7 @@ msgstr "Wert löschen"
 
 #: tmainform.adeletevalue.hint
 msgid "Delete the selected value"
-msgstr "Den ausgewählten Wert löschen"
+msgstr "Ausgewählten Wert löschen"
 
 #: tmainform.aexpandall.caption
 msgid "E&xpand all nodes"
@@ -251,7 +249,7 @@ msgstr "Alle Knoten erweitern"
 
 #: tmainform.aexpandall.hint
 msgid "Expand all nodes in the document"
-msgstr ""
+msgstr "Alle Knoten im Dokument aufklappen"
 
 #: tmainform.aexpandcurrentcontainer.caption
 msgid "Expand &current object/array"
@@ -259,7 +257,7 @@ msgstr "Aktuelles Objekt/Array erweitern"
 
 #: tmainform.aexpandcurrentcontainer.hint
 msgid "Expand all nodes in the current object/array"
-msgstr ""
+msgstr "All Knoten im aktuellen Objekt/Array aufklappen"
 
 #: tmainform.afind.caption
 msgid "&Find"
@@ -271,11 +269,11 @@ msgstr "Suchen"
 
 #: tmainform.afindnext.caption
 msgid "Find &next occurrence"
-msgstr ""
+msgstr "Suche &nächste Fundstelle"
 
 #: tmainform.afindnext.hint
 msgid "Find next"
-msgstr ""
+msgstr "Weiter suchen"
 
 #: tmainform.anew.caption
 msgid "&New"
@@ -283,7 +281,7 @@ msgstr "&Neu"
 
 #: tmainform.anew.hint
 msgid "Create new JSON document"
-msgstr "Ein neues JSON-Dokument erzeugen"
+msgstr "Neues JSON-Dokument erzeugen"
 
 #: tmainform.anewarray.caption
 msgid "New &Array"
@@ -291,7 +289,7 @@ msgstr "Neues &Array"
 
 #: tmainform.anewarray.hint
 msgid "Add a new JSON array"
-msgstr "Ein neues JSON-Array hinzufügen"
+msgstr "Neues JSON-Array hinzufügen"
 
 #: tmainform.anewbooleanvalue.caption
 msgid "New &boolean value"
@@ -299,15 +297,15 @@ msgstr "Neuer &boolescher Wert"
 
 #: tmainform.anewbooleanvalue.hint
 msgid "Add a new boolean value"
-msgstr "Einen neuen booleschen Wert hinzufügen"
+msgstr "Neuen booleschen Wert hinzufügen"
 
 #: tmainform.anewnullvalue.caption
 msgid "New N&ull value"
-msgstr "Neuer N&ull Wert"
+msgstr "Neuer N&ull-Wert"
 
 #: tmainform.anewnullvalue.hint
 msgid "Add a new null value"
-msgstr "Neuen Null Wert hinzufügen"
+msgstr "Neuen Null-Wert hinzufügen"
 
 #: tmainform.anewnumbervalue.caption
 msgid "&New numerical Value"
@@ -315,7 +313,7 @@ msgstr "&Neuer numerischer Wert"
 
 #: tmainform.anewnumbervalue.hint
 msgid "Add a new number value"
-msgstr ""
+msgstr "Neuen Zahlenwert hinzufügen"
 
 #: tmainform.anewobject.caption
 msgid "New &Object"
@@ -323,7 +321,7 @@ msgstr "Neues &Objekt"
 
 #: tmainform.anewobject.hint
 msgid "Add a new JSON object"
-msgstr "Ein neues JSON-Objekt hinzufügen"
+msgstr "Neues JSON-Objekt hinzufügen"
 
 #: tmainform.anewstringvalue.caption
 msgid "New &string value"
@@ -331,7 +329,7 @@ msgstr "Neuer &String Wert"
 
 #: tmainform.anewstringvalue.hint
 msgid "Add a new string value"
-msgstr ""
+msgstr "Neue Zeichenkette hinzufügen"
 
 #: tmainform.aopen.caption
 msgid "&Open"
@@ -347,7 +345,7 @@ msgstr "Einfügen"
 
 #: tmainform.apaste.hint
 msgid "Paste JSON data in clipboard as new member"
-msgstr ""
+msgstr "JSON-Daten als neues Member in die Zwischenablage einfügen"
 
 #: tmainform.apasteasdocument.caption
 msgid "Paste as new document"
@@ -363,7 +361,7 @@ msgstr "Beenden"
 
 #: tmainform.aquit.hint
 msgid "Exit the program"
-msgstr "Das Programm beenden"
+msgstr "Programm beenden"
 
 #: tmainform.asave.caption
 msgid "&Save"
@@ -382,7 +380,6 @@ msgid "Save JSON document with a new name"
 msgstr "JSON-Dokument unter neuem Namen speichern"
 
 #: tmainform.caption
-#, fuzzy
 msgctxt "tmainform.caption"
 msgid "JSON Viewer"
 msgstr "JSON-Betrachter"
@@ -393,7 +390,7 @@ msgstr "B&earbeiten"
 
 #: tmainform.mfavourites.caption
 msgid "Favourites"
-msgstr ""
+msgstr "Favoriten"
 
 #: tmainform.mfile.caption
 msgid "&File"
@@ -430,7 +427,7 @@ msgstr "Fomatiertes JSON speichern"
 
 #: tmainform.mishowrest.caption
 msgid "Show REST panel"
-msgstr ""
+msgstr "Rest-Panel anzeigen"
 
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
@@ -442,7 +439,7 @@ msgstr "&Striktes JSON"
 
 #: tmainform.moptions.caption
 msgid "&Options"
-msgstr "Einstellungen"
+msgstr "&Einstellungen"
 
 #: tmainform.odjson.title
 msgid "Select a JSON file"
@@ -454,19 +451,19 @@ msgstr "JSON Dokument in Datei speichern"
 
 #: tmainform.tbjson.caption
 msgid "TBJSON"
-msgstr ""
+msgstr "TBJSON"
 
 #: tmainform.tbshowrest.caption
 msgid "Show &REST query"
-msgstr ""
+msgstr "&REST Abfrage anzeigen"
 
 #: tmainform.toolbutton1.caption
 msgid "ToolButton1"
-msgstr ""
+msgstr "ToolButton1"
 
 #: tmainform.toolbutton4.caption
 msgid "ToolButton4"
-msgstr ""
+msgstr "ToolButton4"
 
 #: tnewbooleanform.caption
 msgid "New boolean value"
@@ -474,125 +471,125 @@ msgstr "Neuer boolescher Wert"
 
 #: tnewbooleanform.cbvalue.caption
 msgid "Set to true"
-msgstr ""
+msgstr "Auf WAHR setzen"
 
 #: tnewbooleanform.label1.caption
 msgid "&Member name"
-msgstr ""
+msgstr "&Membername"
 
 #: tnewnumberform.caption
 msgid "New number value"
-msgstr ""
+msgstr "Neuer Zahlenwert"
 
 #: tnewnumberform.label1.caption
 msgctxt "tnewnumberform.label1.caption"
 msgid "&Name"
-msgstr ""
+msgstr "&Name"
 
 #: tnewnumberform.label2.caption
 msgid "Value"
-msgstr ""
+msgstr "Wert"
 
 #: tnewnumberform.rgtype.caption
 msgid "Number Type"
-msgstr ""
+msgstr "Zahlentyp"
 
 #: tnewstringform.caption
 msgid "New String value"
-msgstr ""
+msgstr "Neue Zeichenkette"
 
 #: tnewstringform.label1.caption
 msgctxt "tnewstringform.label1.caption"
 msgid "&Name"
-msgstr ""
+msgstr "&Name"
 
 #: tnewstringform.label2.caption
 msgctxt "tnewstringform.label2.caption"
 msgid "&Value"
-msgstr ""
+msgstr "&Wert"
 
 #: trestframe.aaddheader.caption
 msgctxt "trestframe.aaddheader.caption"
 msgid "Add Header"
-msgstr ""
+msgstr "Header hinzufügen"
 
 #: trestframe.aaddheader.hint
 msgctxt "trestframe.aaddheader.hint"
 msgid "Add Header"
-msgstr ""
+msgstr "Header hinzufügen"
 
 #: trestframe.aaddtofavourites.caption
 msgid "Add to favourites..."
-msgstr ""
+msgstr "Zu Favoriten hinzufügen …"
 
 #: trestframe.aauthentication.caption
 msgctxt "trestframe.aauthentication.caption"
 msgid "HTTP Basic authentication"
-msgstr ""
+msgstr "HTTP Basic-Authentifizierung"
 
 #: trestframe.aauthentication.hint
 msgctxt "trestframe.aauthentication.hint"
 msgid "HTTP Basic authentication"
-msgstr ""
+msgstr "HTTP Basic-Authentifizierung"
 
 #: trestframe.adeleteheader.caption
 msgctxt "trestframe.adeleteheader.caption"
 msgid "Delete Header"
-msgstr ""
+msgstr "Header löschen"
 
 #: trestframe.adeleteheader.hint
 msgctxt "trestframe.adeleteheader.hint"
 msgid "Delete Header"
-msgstr ""
+msgstr "Header löschen"
 
 #: trestframe.aeditheader.caption
 msgctxt "trestframe.aeditheader.caption"
 msgid "Edit Header"
-msgstr ""
+msgstr "Header bearbeiten"
 
 #: trestframe.aeditheader.hint
 msgctxt "trestframe.aeditheader.hint"
 msgid "Edit Header"
-msgstr ""
+msgstr "Header bearbeiten"
 
 #: trestframe.asend.caption
 msgid "&Send"
-msgstr ""
+msgstr "&Senden"
 
 #: trestframe.asend.hint
 msgid "Send request"
-msgstr ""
+msgstr "Abfrage senden"
 
 #: trestframe.cbusecurrenttabcontent.caption
 msgctxt "trestframe.cbusecurrenttabcontent.caption"
 msgid "Use current tab as content"
-msgstr ""
+msgstr "Aktuellen Tab als Inhalt nutzen"
 
 #: trestframe.lhttpstatus.caption
 msgid "HTTP"
-msgstr ""
+msgstr "HTTP"
 
 #: trestframe.tsheaders.caption
 msgid "Request headers"
-msgstr ""
+msgstr "Header abfragen"
 
 #: trestframe.tsrequestcontent.caption
 msgid "Request content"
-msgstr ""
+msgstr "Inhalt abfragen"
 
 #: trestframe.tsresult.caption
 msgid "Request result"
-msgstr ""
+msgstr "Ergebnis abfragen"
 
 #: tsaverequestdataform.caption
 msgid "Save request data as favourite"
-msgstr ""
+msgstr "Abfragedaten als Favoriten speichern"
 
 #: tsaverequestdataform.cbsavecontent.caption
 msgid "Save request content"
-msgstr ""
+msgstr "Abgefragten Inhalt speichern"
 
 #: tsaverequestdataform.label1.caption
 msgid "Name"
-msgstr ""
+msgstr "Name"
 

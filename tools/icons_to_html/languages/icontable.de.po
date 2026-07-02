@@ -82,12 +82,12 @@ msgstr "16x16, 24x24 und 32x32 Pixel für \"kleine\" Bilder,"
 
 #: main.rstheconfigurationcouldnotbesaved
 msgid "Configuration file could not be saved."
-msgstr "Die Konfiguration konnte nicht gespeichert werden."
+msgstr "Konnte Konfigurationsdatei nicht speichern."
 
 #: main.rsthefilecouldnotbesavedas
 #, object-pascal-format
 msgid "The file could not be saved as: %s"
-msgstr "Die Datei konnte nicht gespeichert werden als: %s"
+msgstr "Konnte Datei nicht als: %s speichern"
 
 #: main.rsthefolderdoesnotexist
 #, object-pascal-format
@@ -102,7 +102,7 @@ msgstr ""
 
 #: main.rsthetempfilecouldnotbedeleted
 msgid "Temporary file could not be deleted."
-msgstr "Die Temporär-Datei konnte nicht gelöscht werden."
+msgstr "Temporär-Datei konnte nicht gelöscht werden."
 
 #: main.rsthisfoldercontains
 #, object-pascal-format
@@ -139,7 +139,7 @@ msgstr "Speichert den erzeugten HTML-Code in der Datei \"IconTable.html\" im ang
 
 #: tmainform.caption
 msgid "IconTable"
-msgstr ""
+msgstr "Icon-Tabelle"
 
 #: tmainform.directoryedit.hint
 msgid "Folder with images for which the HTML preview should be created"
@@ -161,5 +161,5 @@ msgstr "Zuletzt benutzt"
 
 #: tmainform.tbmenu.hint
 msgid "Options"
-msgstr "Optionen"
+msgstr "Einstellungen"
 
