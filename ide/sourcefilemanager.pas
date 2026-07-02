@@ -250,7 +250,8 @@ function NewUnitOrForm(Template: TNewIDEItemTemplate;
   DefaultDesc: TProjectFileDescriptor): TModalResult;
 procedure CreateFileDialogFilterForSourceEditorFiles(Filter: string;
     out AllEditorMask, AllMask: string);
-function SaveEditorFile(AEditor: TSourceEditorInterface; Flags: TSaveFlags): TModalResult;
+function SaveEditorFile(AEditor: TSourceEditorInterface; Flags: TSaveFlags;
+  const AForcedFilename: string = ''): TModalResult;
 function SaveEditorFile(const Filename: string; Flags: TSaveFlags): TModalResult;
 function CloseEditorFile(AEditor: TSourceEditorInterface; Flags: TCloseFlags):TModalResult;
 function CloseEditorFile(const Filename: string; Flags: TCloseFlags): TModalResult;
@@ -276,7 +277,7 @@ function InitOpenedProjectFile(AFileName: string; Flags: TOpenFlags): TModalResu
 procedure NewProjectFromFile;
 function CreateProjectForProgram(ProgramBuf: TCodeBuffer): TModalResult;
 function InitProjectForProgram(ProgramBuf: TCodeBuffer): TModalResult;
-function SaveProject(Flags: TSaveFlags): TModalResult;
+function SaveProject(Flags: TSaveFlags; const AForcedProjectFilename: string = ''): TModalResult;
 function SaveProjectIfChanged: TModalResult;
 function CloseProject: TModalResult;
 procedure OpenProject(aMenuItem: TIDEMenuItem);
@@ -329,7 +330,8 @@ function GetDsgnComponentBaseClassname(aCompClass: TClass): string;
   function NewUniqueComponentName(Prefix: string): string;
 //save unit
   function ShowSaveFileAsDialog(var AFilename: string; AnUnitInfo: TEditableUnitInfo;
-      var LFMCode, LRSCode: TCodeBuffer; CanAbort: boolean; Flags: TSaveFlags=[]): TModalResult;
+      var LFMCode, LRSCode: TCodeBuffer; CanAbort: boolean; Flags: TSaveFlags=[];
+      const AForcedFilename: string = ''): TModalResult;
   function SaveUnitComponent(AnUnitInfo: TUnitInfo;
       LRSCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
   function RemoveLooseEvents(AnUnitInfo: TUnitInfo; Flags: TSaveFlags =[]): TModalResult;
@@ -357,8 +359,10 @@ function GetDsgnComponentBaseClassname(aCompClass: TClass): string;
   function LoadIDECodeBuffer(var ACodeBuffer: TCodeBuffer;
       const AFilename: string; Flags: TLoadBufferFlags; ShowAbort: boolean): TModalResult;
 //save project
-  function ShowSaveProjectAsDialog(Flags: TSaveFlags=[]): TModalResult;
-  function SaveProjectInfo(var Flags: TSaveFlags): TModalResult;
+  function ShowSaveProjectAsDialog(Flags: TSaveFlags=[];
+      const AForcedProjectFilename: string = ''): TModalResult;
+  function SaveProjectInfo(var Flags: TSaveFlags;
+      const AForcedProjectFilename: string = ''): TModalResult;
   procedure GetMainUnit(out MainUnitInfo: TEditableUnitInfo; out MainUnitSrcEdit: TSourceEditor);
   procedure SaveSrcEditorProjectSpecificSettings(AnEditorInfo: TUnitEditorInfo);
   procedure SaveSourceEditorProjectSpecificSettings;
@@ -2708,7 +2712,8 @@ begin
   end;
 end;
 
-function SaveEditorFile(AEditor: TSourceEditorInterface; Flags: TSaveFlags): TModalResult;
+function SaveEditorFile(AEditor: TSourceEditorInterface; Flags: TSaveFlags;
+  const AForcedFilename: string = ''): TModalResult;
 var
   AnUnitInfo, MainUnitInfo: TEditableUnitInfo;
   TestFilename, DestFilename: string;
@@ -2720,6 +2725,9 @@ var
 begin
   Result:=mrCancel;
   CanAbort:=[sfCanAbort,sfProjectSaving]*Flags<>[];
+  // a caller supplied filename always means "save as"
+  if AForcedFilename<>'' then
+    Include(Flags,sfSaveAs);
   //debugln(['SaveEditorFile A AEditor=',AEditor,' Flags=',SaveFlagsToString(Flags)]);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('SaveEditorFile A');{$ENDIF}
   if not (MainIDE.ToolStatus in [itNone,itDebugger]) then
@@ -2737,8 +2745,14 @@ begin
 
   // if this file is part of a virtual project then save the project first
   if (not (sfProjectSaving in Flags)) and Project1.IsVirtual and AnUnitInfo.IsPartOfProject
-  then
+  then begin
+    if AForcedFilename<>'' then begin
+      // renaming a file of a not yet saved project would rename the project
+      debugln(['Info: (lazarus) [SaveEditorFile] cannot save "',AForcedFilename,'" as: the project is virtual and must be saved/named first']);
+      exit(mrCancel);
+    end;
     exit(SaveProject(Flags*[sfSaveToTestDir]));
+  end;
 
   // update codetools cache and collect Modified flags
   if not (sfProjectSaving in Flags) then
@@ -2780,8 +2794,14 @@ begin
   //   special cases (rare functions don't need front ends).
   MainUnitInfo:=AnUnitInfo.EditableProject.MainUnitInfo;
   if (sfSaveAs in Flags) and (not (sfProjectSaving in Flags)) and (AnUnitInfo=MainUnitInfo)
-  then
+  then begin
+    if AForcedFilename<>'' then begin
+      // renaming the main source is a "save project as", use DoSaveProjectAs instead
+      debugln(['Info: (lazarus) [SaveEditorFile] cannot save "',AForcedFilename,'" as: renaming the main source renames the project']);
+      exit(mrCancel);
+    end;
     exit(SaveProject([sfSaveAs]));
+  end;
 
   // if nothing modified then a simple Save can be skipped
   //debugln(['SaveEditorFile A ',AnUnitInfo.Filename,' ',AnUnitInfo.NeedsSaveToDisk(true)]);
@@ -2823,7 +2843,7 @@ begin
   if [sfSaveAs,sfSaveToTestDir]*Flags=[sfSaveAs] then begin
     // let user choose a filename
     NewFilename:=OldFilename;
-    Result:=ShowSaveFileAsDialog(NewFilename,AnUnitInfo,LFMCode,LRSCode,CanAbort,Flags);
+    Result:=ShowSaveFileAsDialog(NewFilename,AnUnitInfo,LFMCode,LRSCode,CanAbort,Flags,AForcedFilename);
     if not (Result in [mrIgnore,mrOk]) then
       exit;
     // this has already renamed the source in this file
@@ -4309,7 +4329,8 @@ begin
   Result:=mrOk;
 end;
 
-function SaveProject(Flags: TSaveFlags):TModalResult;
+function SaveProject(Flags: TSaveFlags;
+  const AForcedProjectFilename: string = ''):TModalResult;
 var
   i, j: integer;
   AnUnitInfo: TEditableUnitInfo;
@@ -4321,6 +4342,9 @@ begin
     Result:=mrAbort;
     exit;
   end;
+  // a caller supplied filename always means "save as"
+  if AForcedProjectFilename<>'' then
+    Include(Flags,sfSaveAs);
   SaveEditorChangesToCodeCache(nil);
   //DebugLn('SaveProject A SaveAs=',dbgs(sfSaveAs in Flags),' SaveToTestDir=',dbgs(sfSaveToTestDir in Flags),' ProjectInfoFile=',Project1.ProjectInfoFile);
   Result:=MainIDE.DoCheckFilesOnDisk(true);
@@ -4338,7 +4362,7 @@ begin
   // to get a project directory
   if Project1.IsVirtual and ([sfSaveToTestDir,sfDoNotSaveVirtualFiles]*Flags=[])
   then begin
-    Result:=SaveProjectInfo(Flags);
+    Result:=SaveProjectInfo(Flags,AForcedProjectFilename);
     if Result in [mrCancel,mrAbort] then begin
       debugln(['Info: (lazarus) [SaveProject] SaveProjectInfo failed']);
       exit;
@@ -4370,7 +4394,7 @@ begin
     end;
   end;
 
-  Result:=SaveProjectInfo(Flags);
+  Result:=SaveProjectInfo(Flags,AForcedProjectFilename);
   if Result in [mrCancel,mrAbort] then begin
     debugln(['Info: (lazarus) [SaveProject] SaveProjectInfo failed']);
     exit;
@@ -4963,7 +4987,8 @@ begin
 end;
 
 function ShowSaveFileAsDialog(var AFilename: string; AnUnitInfo: TEditableUnitInfo;
-  var LFMCode, LRSCode: TCodeBuffer; CanAbort: boolean; Flags: TSaveFlags = []): TModalResult;
+  var LFMCode, LRSCode: TCodeBuffer; CanAbort: boolean; Flags: TSaveFlags = [];
+  const AForcedFilename: string = ''): TModalResult;
 var
   SaveDialog: TSaveDialog;
   SrcEdit: TSourceEditor;
@@ -5049,10 +5074,15 @@ begin
       SaveDialog.InitialDir:=APath;
     repeat
       Result:=mrCancel;
-      // show save dialog
-      if (not SaveDialog.Execute) or (ExtractFileName(SaveDialog.Filename)='') then
-        exit;  // user cancels
-      NewFilename:=ExpandFileNameUTF8(SaveDialog.Filename);
+      if AForcedFilename<>'' then
+        // filename given by caller => do not ask the user
+        NewFilename:=AForcedFilename
+      else begin
+        // show save dialog
+        if (not SaveDialog.Execute) or (ExtractFileName(SaveDialog.Filename)='') then
+          exit;  // user cancels
+        NewFilename:=ExpandFileNameUTF8(SaveDialog.Filename);
+      end;
 
       // check file extension
       NewFileExt:=ExtractFileExt(NewFilename);
@@ -8124,7 +8154,8 @@ end;
 
 // Methods for 'save project'
 
-function SaveProjectInfo(var Flags: TSaveFlags): TModalResult;
+function SaveProjectInfo(var Flags: TSaveFlags;
+  const AForcedProjectFilename: string = ''): TModalResult;
 var
   MainUnitInfo: TEditableUnitInfo;
   MainUnitSrcEdit: TSourceEditor;
@@ -8147,8 +8178,8 @@ begin
   and (not (sfDoNotSaveVirtualFiles in Flags)) then
     Include(Flags,sfSaveAs);
   if ([sfSaveAs,sfSaveToTestDir]*Flags=[sfSaveAs]) then begin
-    // let user choose a filename
-    Result := ShowSaveProjectAsDialog(Flags);
+    // let user choose a filename (or use the caller supplied one)
+    Result := ShowSaveProjectAsDialog(Flags,AForcedProjectFilename);
     if Result<>mrOk then begin
       debugln(['Info: (lazarus) [SaveProjectInfo] ShowSaveProjectAsDialog failed']);
       exit;
@@ -8353,7 +8384,8 @@ begin
   Result:=mrOk;
 end;
 
-function ShowSaveProjectAsDialog(Flags: TSaveFlags=[]): TModalResult;
+function ShowSaveProjectAsDialog(Flags: TSaveFlags=[];
+  const AForcedProjectFilename: string = ''): TModalResult;
 var
   SaveDialog: TSaveDialog;
   NewProgramName: String;
@@ -8399,10 +8431,15 @@ begin
         Result:=mrCancel;
         NewLPIFilename:='';     // the project info file name
         NewProgramFN:='';       // the program source filename
-        if not SaveDialog.Execute then
-          exit;   // user cancels
-        AFilename := ExpandFileNameUTF8(SaveDialog.FileName);
-        // Note: the user might have chosen a filename without proper extension, e.g. Foo.Bar
+        if AForcedProjectFilename<>'' then
+          // filename given by caller => do not ask the user
+          AFilename := AForcedProjectFilename
+        else begin
+          if not SaveDialog.Execute then
+            exit;   // user cancels
+          AFilename := ExpandFileNameUTF8(SaveDialog.FileName);
+          // Note: the user might have chosen a filename without proper extension, e.g. Foo.Bar
+        end;
 
         // check program name
         if FilenameIsPascalSource(AFilename) or (CompareFileExt(AFilename,Ext)=0) then
@@ -8415,6 +8452,10 @@ begin
           NewLPIFilename:=AFilename+Ext;
         end;
         if (NewProgramName='') then begin
+          if AForcedProjectFilename<>'' then begin
+            debugln(['Info: (lazarus) [ShowSaveProjectAsDialog] invalid project name in forced filename "',AForcedProjectFilename,'"']);
+            exit(mrCancel);
+          end;
           Result:=IDEMessageDialog(lisInvalidProjectFilename,
             Format(lisisAnInvalidProjectNamePleaseChooseAnotherEGProject,[SaveDialog.Filename,LineEnding]),
             mtInformation,[mbRetry,mbIgnore,mbAbort]);
@@ -8432,6 +8473,10 @@ begin
           NewProgramFN := ChangeFileExt(NewLPIFilename,Ext);
           if CompareFilenames(NewLPIFilename, NewProgramFN) = 0 then
           begin
+            if AForcedProjectFilename<>'' then begin
+              debugln(['Info: (lazarus) [ShowSaveProjectAsDialog] forced filename "',AForcedProjectFilename,'" equals the project main source']);
+              exit(mrCancel);
+            end;
             ACaption:=lisChooseADifferentName;
             AText:=Format(lisTheProjectInfoFileIsEqualToTheProjectMainSource,[NewLPIFilename,LineEnding]);
             Result:=IDEMessageDialog(ACaption, AText, mtError, [mbAbort,mbRetry]);
@@ -8442,6 +8487,10 @@ begin
           if (Project1.IndexOfUnitWithName(NewProgramName,true,
                                            Project1.MainUnitInfo)>=0) then
           begin
+            if AForcedProjectFilename<>'' then begin
+              debugln(['Info: (lazarus) [ShowSaveProjectAsDialog] a unit with name "',NewProgramName,'" already exists in the project']);
+              exit(mrCancel);
+            end;
             ACaption:=lisUnitIdentifierExists;
             AText:=Format(lisThereIsAUnitWithTheNameInTheProjectPleaseChoose,[NewProgramName,LineEnding]);
             Result:=IDEMessageDialog(ACaption,AText,mtError,[mbRetry,mbAbort]);
@@ -8462,23 +8511,26 @@ begin
     //         ' NewMainSource=',NewProgramFN]);
     // check if info file or source file already exists
     // Note: if user confirms overwriting .lpi do not ask for overwriting .lpr
-    if FileExistsUTF8(NewLPIFilename) then
-    begin
-      if IDESaveDialogClass.NeedOverwritePrompt then
+    // When the filename is given by the caller do not ask, just overwrite.
+    if AForcedProjectFilename='' then begin
+      if FileExistsUTF8(NewLPIFilename) then
       begin
-        ACaption:=lisOverwriteFile;
-        AText:=Format(lisAFileAlreadyExistsReplaceIt, [NewLPIFilename, LineEnding]);
-        Result:=IDEMessageDialog(ACaption, AText, mtConfirmation, [mbOk, mbCancel]);
-        if Result=mrCancel then exit;
-      end;
-    end
-    else begin
-      if FileExistsUTF8(NewProgramFN) then
-      begin
-        ACaption:=lisOverwriteFile;
-        AText:=Format(lisAFileAlreadyExistsReplaceIt, [NewProgramFN, LineEnding]);
-        Result:=IDEMessageDialog(ACaption, AText, mtConfirmation,[mbOk,mbCancel]);
-        if Result=mrCancel then exit;
+        if IDESaveDialogClass.NeedOverwritePrompt then
+        begin
+          ACaption:=lisOverwriteFile;
+          AText:=Format(lisAFileAlreadyExistsReplaceIt, [NewLPIFilename, LineEnding]);
+          Result:=IDEMessageDialog(ACaption, AText, mtConfirmation, [mbOk, mbCancel]);
+          if Result=mrCancel then exit;
+        end;
+      end
+      else begin
+        if FileExistsUTF8(NewProgramFN) then
+        begin
+          ACaption:=lisOverwriteFile;
+          AText:=Format(lisAFileAlreadyExistsReplaceIt, [NewProgramFN, LineEnding]);
+          Result:=IDEMessageDialog(ACaption, AText, mtConfirmation,[mbOk,mbCancel]);
+          if Result=mrCancel then exit;
+        end;
       end;
     end;
     Result:=FinalizeSavingProject(NewProgramName,NewProgramFN,NewLPIFilename,OldProjectDir);

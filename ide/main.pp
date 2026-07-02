@@ -789,6 +789,9 @@ type
                               Flags: TSaveFlags): TModalResult; override;
     function DoSaveEditorFile(const Filename: string;
                               Flags: TSaveFlags): TModalResult; override;
+    function DoSaveEditorFileAs(AEditor: TSourceEditorInterface;
+                              NewFilename: string;
+                              Flags: TSaveFlags): TModalResult; override;
 
     function DoCloseEditorFile(AEditor: TSourceEditorInterface;
                                Flags: TCloseFlags): TModalResult; override;
@@ -840,6 +843,8 @@ type
                       FallbackProjectDesc: TProjectDescriptor): TProject; override;
     function DoNewProject(ProjectDesc: TProjectDescriptor): TModalResult; override;
     function DoSaveProject(Flags: TSaveFlags): TModalResult; override;
+    function DoSaveProjectAs(NewFilename: string;
+                             Flags: TSaveFlags): TModalResult; override;
     function DoCloseProject: TModalResult; override;
     procedure DoNoProjectWizard(Sender: TObject);
     function DoOpenProjectFile(AFileName: string;
@@ -5813,6 +5818,14 @@ begin
   Result:=SaveEditorFile(Filename, Flags);
 end;
 
+function TMainIDE.DoSaveEditorFileAs(AEditor: TSourceEditorInterface;
+  NewFilename: string; Flags: TSaveFlags): TModalResult;
+begin
+  if not FilenameIsAbsolute(NewFilename) then
+    raise Exception.Create('TMainIDE.DoSaveEditorFileAs: NewFilename must be absolute: '+NewFilename);
+  Result:=SaveEditorFile(AEditor, Flags+[sfSaveAs], NewFilename);
+end;
+
 function TMainIDE.DoCloseEditorFile(const Filename: string; Flags: TCloseFlags): TModalResult;
 begin
   Result:=CloseEditorFile(Filename, Flags);
@@ -6502,6 +6515,14 @@ end;
 function TMainIDE.DoSaveProject(Flags: TSaveFlags): TModalResult;
 begin
   Result:=SaveProject(Flags);
+end;
+
+function TMainIDE.DoSaveProjectAs(NewFilename: string;
+  Flags: TSaveFlags): TModalResult;
+begin
+  if not FilenameIsAbsolute(NewFilename) then
+    raise Exception.Create('TMainIDE.DoSaveProjectAs: NewFilename must be absolute: '+NewFilename);
+  Result:=SaveProject(Flags+[sfSaveAs], NewFilename);
 end;
 
 function TMainIDE.DoCloseProject: TModalResult;
