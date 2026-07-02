@@ -347,7 +347,7 @@ begin
     lbResources.Items.BeginUpdate;
     try
       for I := 0 to List.Count - 1 do
-        AddResourceItem(List[I]^.FileName, List[I]^.ResType, List[I]^.ResName);
+        AddResourceItem(List[I].FileName, List[I].ResType, List[I].ResName);
     finally
       lbResources.Items.EndUpdate;
     end;
@@ -361,14 +361,57 @@ end;
 procedure TResourcesOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
   Project: TProject;
-  I: Integer;
+  List: TResourceList;
+  NewItems: TFPList;
+  I, OldIndex: Integer;
+  Item: TResourceItem;
+  aFileName, aResName: String;
+  aResType: TUserResourceType;
 begin
   if not FModified then Exit;
   Project := (AOptions as TProjectIDEOptions).Project;
-  Project.ProjResources.UserResources.List.Clear;
-  for I := 0 to lbResources.Items.Count - 1 do
-    Project.ProjResources.UserResources.List.AddResource(lbResources.Items[I].Caption,
-      StrToResourceType(lbResources.Items[I].SubItems[LVSUBITEM_TYPE]), lbResources.Items[I].SubItems[LVSUBITEM_NAME]);
+  List := Project.ProjResources.UserResources.List;
+
+  // Compare the old list with the new one and keep the old TResourceItem for
+  // unchanged files, so their cached file content survives the edit.
+  NewItems := TFPList.Create;
+  try
+    for I := 0 to lbResources.Items.Count - 1 do
+    begin
+      aFileName := lbResources.Items[I].Caption;
+      aResType := StrToResourceType(lbResources.Items[I].SubItems[LVSUBITEM_TYPE]);
+      aResName := lbResources.Items[I].SubItems[LVSUBITEM_NAME];
+
+      OldIndex := List.IndexOfFileName(aFileName);
+      if OldIndex >= 0 then
+      begin
+        // Reuse the existing item (keeps its file content cache).
+        Item := List[OldIndex];
+        List.Extract(Item); // detach without freeing
+        // Update the filename too, the casing might have changed.
+        Item.FileName := aFileName;
+        Item.ResType := aResType;
+        Item.ResName := aResName;
+      end
+      else
+      begin
+        Item := TResourceItem.Create;
+        Item.FileName := aFileName;
+        Item.ResType := aResType;
+        Item.ResName := aResName;
+      end;
+      NewItems.Add(Item);
+    end;
+
+    // Whatever is left in List are removed resources -> free them.
+    List.Clear;
+    // Put the reused/new items back in the order shown in the dialog.
+    for I := 0 to NewItems.Count - 1 do
+      List.Add(TResourceItem(NewItems[I]));
+  finally
+    NewItems.Free;
+  end;
+
   Project.ProjResources.Modified := True;
 end;
 

@@ -30,16 +30,15 @@
 unit ProjectUserResources;
 
 {$mode objfpc}{$H+}
-{$modeswitch advancedrecords}
 
 interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils,
+  Classes, SysUtils, Contnrs,
   resource, bitmapresource, groupresource, groupiconresource, groupcursorresource,
   // LazUtils
-  LazFileUtils, LazUTF8, Laz2_XMLCfg, LazLoggerBase,
+  LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg, LazLoggerBase,
   // BuildIntf
   ProjectResourcesIntf, MacroIntf, IDEExternToolIntf,
   // IDE
@@ -55,11 +54,20 @@ type
     rtHTML,    // maps to RT_HTML
     rtRCData   // maps to RT_RCDATA
   );
-  PResourceItem = ^TResourceItem;
 
   { TResourceItem }
 
-  TResourceItem = record
+  TResourceItem = class
+  private
+    // Cache of the file content, so that unchanged files are not re-read on
+    // every build. Keyed on the resolved filename and its cached file age.
+    FCacheData: TBytes;
+    FCacheRealFileName: String;
+    FCacheFileAge: Int64;
+    FCacheValid: Boolean;
+    // Returns a stream with the (cached) file content, or nil if the file does
+    // not exist. The caller is responsible for freeing the stream.
+    function GetFileStream(const RealFileName: String): TStream;
   public
     FileName: String;
     ResType: TUserResourceType;
@@ -72,15 +80,14 @@ type
 
   { TResourceList }
 
-  TResourceList = class(TList)
+  TResourceList = class(TFPObjectList)
   private
-    function GetItem(AIndex: Integer): PResourceItem;
-  protected
-    procedure Notify(Ptr: Pointer; Action: TListNotification); override;
+    function GetItem(AIndex: Integer): TResourceItem;
   public
-    function AddItem: PResourceItem;
+    function IndexOfFileName(const AFileName: String): Integer;
+    function AddItem: TResourceItem;
     procedure AddResource(const FileName: String; ResType: TUserResourceType; const ResName: String);
-    property Items[AIndex: Integer]: PResourceItem read GetItem; default;
+    property Items[AIndex: Integer]: TResourceItem read GetItem; default;
   end;
 
   { TProjectUserResources }
@@ -144,9 +151,41 @@ begin
   AConfig.SetValue(Path + 'ResourceName', ResName);
 end;
 
+function TResourceItem.GetFileStream(const RealFileName: String): TStream;
+var
+  Age: Int64;
+  FileStream: TFileStream;
+begin
+  Age := FileAgeCached(RealFileName);
+  if Age = -1 then
+  begin
+    // File does not exist -> drop cache and signal "no data".
+    FCacheValid := False;
+    Exit(nil);
+  end;
+  if (not FCacheValid) or (FCacheRealFileName <> RealFileName)
+  or (FCacheFileAge <> Age) then
+  begin
+    // The file is new or has changed since last read -> (re)load it.
+    FileStream := TFileStream.Create(UTF8ToSys(RealFileName), fmOpenRead or fmShareDenyWrite);
+    try
+      SetLength(FCacheData, FileStream.Size);
+      if Length(FCacheData) > 0 then
+        FileStream.ReadBuffer(FCacheData[0], Length(FCacheData));
+    finally
+      FileStream.Free;
+    end;
+    FCacheRealFileName := RealFileName;
+    FCacheFileAge := Age;
+    FCacheValid := True;
+  end;
+  // Shares the cached byte array (reference counted, no copy).
+  Result := TBytesStream.Create(FCacheData);
+end;
+
 function TResourceItem.CreateResource(const ProjectDirectory: String): TAbstractResource;
 var
-  Stream: TFileStream;
+  Stream: TStream;
   TypeDesc, NameDesc: TResourceDesc;
   RealFileName: String;
 begin
@@ -154,9 +193,9 @@ begin
 
   RealFileName := GetRealFileName(ProjectDirectory);
 
-  if FileExistsUTF8(RealFileName) then
+  Stream := GetFileStream(RealFileName);
+  if Stream <> nil then
   begin
-    Stream := TFileStream.Create(UTF8ToSys(RealFileName), fmOpenRead or fmShareDenyWrite);
     try
       NameDesc := TResourceDesc.Create(ResName);
       case ResType of
@@ -196,7 +235,7 @@ begin
     end;
   end
   else if Assigned(OnAddIDEMessage) then
-    OnAddIDEMessage(mluError, Format(lisFileNotFound2,[Filename]));
+    OnAddIDEMessage(mluError, Format(lisFileNotFound2,[FileName]));
 end;
 
 function TResourceItem.GetRealFileName(const ProjectDirectory: String): String;
@@ -212,34 +251,34 @@ end;
 
 { TResourceList }
 
-function TResourceList.GetItem(AIndex: Integer): PResourceItem;
+function TResourceList.GetItem(AIndex: Integer): TResourceItem;
 begin
-  Result := PResourceItem(inherited Get(AIndex));
+  Result := TResourceItem(inherited Items[AIndex]);
 end;
 
-procedure TResourceList.Notify(Ptr: Pointer; Action: TListNotification);
+function TResourceList.IndexOfFileName(const AFileName: String): Integer;
 begin
-  if Action = lnDeleted then
-    Dispose(PResourceItem(Ptr))
-  else
-    inherited Notify(Ptr, Action);
+  for Result := 0 to Count - 1 do
+    if CompareFilenames(Items[Result].FileName, AFileName) = 0 then
+      Exit;
+  Result := -1;
 end;
 
-function TResourceList.AddItem: PResourceItem;
+function TResourceList.AddItem: TResourceItem;
 begin
-  New(Result);
+  Result := TResourceItem.Create;
   Add(Result);
 end;
 
 procedure TResourceList.AddResource(const FileName: String;
   ResType: TUserResourceType; const ResName: String);
 var
-  Data: PResourceItem;
+  Data: TResourceItem;
 begin
   Data := AddItem;
-  Data^.FileName := FileName;
-  Data^.ResType := ResType;
-  Data^.ResName := ResName;
+  Data.FileName := FileName;
+  Data.ResType := ResType;
+  Data.ResName := ResName;
 end;
 
 function TProjectUserResources.UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean;
@@ -252,7 +291,7 @@ begin
   ProjectDirectory := ExtractFilePath(MainFileName);
   for I := 0 to List.Count - 1 do
   begin
-    ARes := List[I]^.CreateResource(ProjectDirectory);
+    ARes := List[I].CreateResource(ProjectDirectory);
     if Assigned(ARes) then
       AResources.AddSystemResource(ARes);
   end;
@@ -264,7 +303,7 @@ var
 begin
   AConfig.SetDeleteValue(Path+'General/Resources/Count', List.Count, 0);
   for I := 0 to List.Count - 1 do
-    List[I]^.WriteToProjectFile(TXMLConfig(AConfig), Path + 'General/Resources/Resource_' + IntToStr(I) + '/')
+    List[I].WriteToProjectFile(TXMLConfig(AConfig), Path + 'General/Resources/Resource_' + IntToStr(I) + '/')
 end;
 
 procedure TProjectUserResources.ReadFromProjectFile(AConfig: TXMLConfig; const Path: String);
@@ -274,7 +313,7 @@ begin
   List.Clear;
   Count := AConfig.GetValue(Path+'General/Resources/Count', 0);
   for I := 0 to Count - 1 do
-    List.AddItem^.ReadFromProjectFile(TXMLConfig(AConfig), Path + 'General/Resources/Resource_' + IntToStr(I) + '/')
+    List.AddItem.ReadFromProjectFile(TXMLConfig(AConfig), Path + 'General/Resources/Resource_' + IntToStr(I) + '/')
 end;
 
 constructor TProjectUserResources.Create;
