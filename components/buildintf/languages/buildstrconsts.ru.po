@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.1\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"Language-Team: \n"
 "Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"X-Generator: Poedit 3.6\n"
 
 #: buildstrconsts.lirsunit
 msgid "Pascal unit"
@@ -23,12 +23,12 @@ msgstr "Создать новый модуль Паскаля."
 #: buildstrconsts.lisresfilealreadyexists
 #, object-pascal-format
 msgid "A resource with file name \"%s\" already exists."
-msgstr ""
+msgstr "Ресурс с именем файла \"%s\" уже имеется."
 
 #: buildstrconsts.lisresnamealreadyexists
 #, object-pascal-format
 msgid "A resource with name \"%s\" already exists."
-msgstr ""
+msgstr "Ресурс с именем \"%s\" уже имеется."
 
 #: buildstrconsts.lisshowalloutputlines
 msgid "Show all output lines"
