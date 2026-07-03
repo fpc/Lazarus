@@ -1471,7 +1471,7 @@ msgstr "Удалить наблюдение для \"%s\"?"
 #: idedebuggerstringconstants.lisdeletetracepointforexception
 #, object-pascal-format
 msgid "Delete exception filter for \"%s\"?"
-msgstr ""
+msgstr "Удалить фильтр исключений для \"%s\"?"
 
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
@@ -1569,7 +1569,7 @@ msgstr "Добавление комментария"
 
 #: idedebuggerstringconstants.lisexceptionclass
 msgid "Class:"
-msgstr ""
+msgstr "Класс:"
 
 #: idedebuggerstringconstants.lisexceptiondialog
 msgid "Debugger Exception Notification"
@@ -1577,7 +1577,7 @@ msgstr "Уведомление об исключении отладчика"
 
 #: idedebuggerstringconstants.lisexceptionfilter
 msgid "&Exception filter"
-msgstr ""
+msgstr "Фильтр и&сключений"
 
 #: idedebuggerstringconstants.lisexport
 msgctxt "lazarusidestrconsts.lisexport"
@@ -1884,7 +1884,7 @@ msgstr "Ассемблер"
 
 #: idedebuggerstringconstants.lismenuviewbreakpointsandexceptions
 msgid "BreakPoints/Exceptions"
-msgstr ""
+msgstr "Точки останова и исключения"
 
 #: idedebuggerstringconstants.lismenuviewcallstack
 msgid "Call Stack"
@@ -1972,7 +1972,7 @@ msgstr "ПределКоличества:ШаблонИмени"
 
 #: idedebuggerstringconstants.lisskipexception
 msgid "Continue"
-msgstr ""
+msgstr "Продолжить"
 
 #: idedebuggerstringconstants.lissourcebreakpoint
 msgid "&Source Breakpoint ..."
