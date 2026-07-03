@@ -370,7 +370,7 @@ type
     property ActiveProject: TLazProject read GetActiveProject;
     function DoNewProject(ProjectDesc: TProjectDescriptor): TModalResult; virtual; abstract;
     function DoSaveProject(Flags: TSaveFlags): TModalResult; virtual; abstract;
-    function DoSaveProjectAs(NewFilename: string; // must be an absolute filename
+    function DoSaveProjectAs(NewFilename: string; // must be an absolute filename, either .lpr, .pas, .pp, or .p
                              Flags: TSaveFlags): TModalResult; virtual; abstract;
     function DoCloseProject: TModalResult; virtual; abstract;
     function DoOpenProjectFile(AFileName: string;
