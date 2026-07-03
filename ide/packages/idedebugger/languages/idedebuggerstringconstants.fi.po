@@ -1588,7 +1588,7 @@ msgid "Debugger Exception Notification"
 msgstr "Virheejäljettimen kiinniottaman poikkeuksen havainto"
 
 #: idedebuggerstringconstants.lisexceptionfilter
-msgid "&Exception filter"
+msgid "&Exception filter ..."
 msgstr ""
 
 #: idedebuggerstringconstants.lisexport

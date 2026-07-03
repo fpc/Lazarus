@@ -1591,7 +1591,7 @@ msgid "Debugger Exception Notification"
 msgstr "Upozornění výjimky Ladiče"
 
 #: idedebuggerstringconstants.lisexceptionfilter
-msgid "&Exception filter"
+msgid "&Exception filter ..."
 msgstr ""
 
 #: idedebuggerstringconstants.lisexport

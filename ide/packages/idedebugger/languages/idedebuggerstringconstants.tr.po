@@ -1591,7 +1591,7 @@ msgid "Debugger Exception Notification"
 msgstr "Hata Ayıklayıcı İstisna Bildirimi"
 
 #: idedebuggerstringconstants.lisexceptionfilter
-msgid "&Exception filter"
+msgid "&Exception filter ..."
 msgstr ""
 
 #: idedebuggerstringconstants.lisexport

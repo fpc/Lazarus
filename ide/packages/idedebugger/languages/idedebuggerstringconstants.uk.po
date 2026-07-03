@@ -1591,7 +1591,7 @@ msgid "Debugger Exception Notification"
 msgstr "Повідомлення про виняток зневаджувача"
 
 #: idedebuggerstringconstants.lisexceptionfilter
-msgid "&Exception filter"
+msgid "&Exception filter ..."
 msgstr ""
 
 #: idedebuggerstringconstants.lisexport

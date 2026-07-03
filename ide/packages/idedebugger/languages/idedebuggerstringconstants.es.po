@@ -1593,7 +1593,7 @@ msgid "Debugger Exception Notification"
 msgstr "Notificación de Excepciones del Depurador"
 
 #: idedebuggerstringconstants.lisexceptionfilter
-msgid "&Exception filter"
+msgid "&Exception filter ..."
 msgstr ""
 
 #: idedebuggerstringconstants.lisexport

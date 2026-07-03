@@ -1595,7 +1595,7 @@ msgid "Debugger Exception Notification"
 msgstr "הערת חריגה של מנפה השגיאות"
 
 #: idedebuggerstringconstants.lisexceptionfilter
-msgid "&Exception filter"
+msgid "&Exception filter ..."
 msgstr ""
 
 #: idedebuggerstringconstants.lisexport

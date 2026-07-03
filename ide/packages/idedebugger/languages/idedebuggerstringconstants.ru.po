@@ -1576,8 +1576,8 @@ msgid "Debugger Exception Notification"
 msgstr "Уведомление об исключении отладчика"
 
 #: idedebuggerstringconstants.lisexceptionfilter
-msgid "&Exception filter"
-msgstr "Фильтр и&сключений"
+msgid "&Exception filter ..."
+msgstr "Фильтр и&сключений ..."
 
 #: idedebuggerstringconstants.lisexport
 msgctxt "lazarusidestrconsts.lisexport"

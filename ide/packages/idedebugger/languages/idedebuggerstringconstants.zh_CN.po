@@ -1575,7 +1575,7 @@ msgid "Debugger Exception Notification"
 msgstr "调试器异常通知"
 
 #: idedebuggerstringconstants.lisexceptionfilter
-msgid "&Exception filter"
+msgid "&Exception filter ..."
 msgstr ""
 
 #: idedebuggerstringconstants.lisexport
