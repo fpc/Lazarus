@@ -3033,9 +3033,31 @@ begin
 
   // rename on disk
   if FileExistsUTF8(OldFilename) then begin
-    if not RenameFileUTF8(OldFilename,NewFilename) then begin
-      IDEMessageDialog(lisError,
-        Format(lisUnableToRenameFileTo,[OldFilename,NewFilename]),mtError,[mbOk]);
+    // check if the target file already exists
+    if FileExistsUTF8(NewFilename) then begin
+      if ReadFileToString(OldFilename)=ReadFileToString(NewFilename) then
+        // the target already contains the same content => nothing to do on disk
+        exit(mrOk);
+      // the target already exists with a different content => ask the user
+      case IDEQuestionDialog(lisOverwriteFile,
+        Format(lisAFileAlreadyExistsReplaceIt, [NewFilename, LineEnding]),
+        mtConfirmation,
+        [mrYes, lisOverwriteFileOnDisk,
+         mrIgnore, lisIgnore,
+         mrCancel]) of
+      mrYes:
+        // overwrite: delete the target, so it can be replaced by the old file
+        if DeleteFileInteractive(NewFilename,[])<>mrOk then
+          exit(mrCancel);
+      mrIgnore:
+        // keep the existing target file untouched, skip the whole rename
+        exit(mrIgnore);
+      else
+        exit(mrCancel);
+      end;
+    end;
+    if RenameFileWithErrorDialogs(OldFilename,NewFilename,[mbIgnore,mbCancel])=mrCancel then
+    begin
       exit(mrCancel);
     end;
   end;
