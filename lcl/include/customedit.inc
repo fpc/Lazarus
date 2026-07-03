@@ -78,7 +78,7 @@ begin
     SetInitialBounds(0, 0, CX, CY);
   FEchoMode := emNormal;
   BorderStyle := bsSingle;
-  FVerticalAlignment := tlDefault;
+  FLayout := tlCenter;
   FAutoSelect := True;
   FAutoSelected := False;
   FTextChangedByRealSetText := False;
@@ -740,13 +740,13 @@ begin
     TWSCustomEditClass(WidgetSetClass).SetAlignment(Self, FAlignment);
 end;
 
-procedure TCustomEdit.SetVerticalAlignment(const AValue: TTextLayout);
+procedure TCustomEdit.SetLayout(const AValue: TTextLayout);
 begin
-  if FVerticalAlignment = AValue then
+  if FLayout = AValue then
     exit;
-  FVerticalAlignment := AValue;
+  FLayout := AValue;
   if HandleAllocated then
-    TWSCustomEditClass(WidgetSetClass).SetVerticalAlignment(Self, FVerticalAlignment);
+    TWSCustomEditClass(WidgetSetClass).SetTextLayout(Self, FLayout);
 end;
 
 
