@@ -576,6 +576,10 @@ begin
 
     AWindow^.realize;
 
+    if Assigned(AForm.Menu) then
+      TGtk3Window(AGtk3Widget).SetBounds(AWinControl.Left, AWinControl.Top,
+        AWinControl.Width, AWinControl.Height);
+
     if (AForm.BorderStyle = bsNone) then
     begin
       if AWindow^.transient_for = nil then

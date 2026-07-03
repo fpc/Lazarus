@@ -1144,6 +1144,7 @@ type
     FResizeState: TGtk3WindowResizeState;
     function GetCSDShadowW: gint;
     function GetCSDShadowH: gint;
+    function GetMenuBarHeight: gint;
     function GetSkipTaskBarHint: Boolean;
     function GetTitle: String;
     procedure SetIcon(AValue: PGdkPixBuf);
@@ -14542,6 +14543,7 @@ var
   KwinProtectUntil: PtrUInt;
   KwinResizeData: PKwinResizeIdleData;
   WinGen: PtrUInt;
+  MenuH: gint;
 begin
   if AWidget=nil then ;
 
@@ -14649,6 +14651,14 @@ begin
   if not (csDesigning in ACtl.LCLObject.ComponentState) and ACtl.InUpdate then
     exit;
 
+  MenuH := 0;
+  if Gtk3IsGtkWindow(AWidget) and not (csDesigning in ACtl.LCLObject.ComponentState) and
+     not Assigned(ACtl.LCLObject.Parent) and
+     (not (ACtl.LCLObject is TCustomForm) or (TCustomForm(ACtl.LCLObject).FormStyle <> fsMDIChild)) then
+    MenuH := ACtl.GetMenuBarHeight;
+  if MenuH > 0 then
+    NewSize.cy := Max(0, NewSize.cy - MenuH);
+
   {$IFDEF GTK3DEBUGSCROLLEDWIN}
   writeln(Format('[%d] WindowSizeAllocate %s gdk w=%d h=%d LCL w=%d h=%d InUpd=%s',
     [GetTickCount64, dbgsName(ACtl.LCLObject), NewSize.cx, NewSize.cy,
@@ -14729,7 +14739,10 @@ begin
        ((SzH < AGdkRect^.Height div 2) or (SzW < AGdkRect^.Width div 2)) then
       exit;
     NewSize.cx := SzW;
-    NewSize.cy := SzH;
+    if MenuH > 0 then
+      NewSize.cy := Max(0, SzH - MenuH)
+    else
+      NewSize.cy := SzH;
     Msg.Width := Word(NewSize.cx);
     Msg.Height := Word(NewSize.cy);
   end else
@@ -15597,9 +15610,16 @@ var
   Alloc:TGtkAllocation;
   x, y: gint;
   WSAInterval: Int64;
+  MenuH: gint;
 begin
   AForm := TCustomForm(LCLObject);
   BeginUpdate;
+  MenuH := 0;
+  if Gtk3IsGtkWindow(fWidget) and not (csDesigning in AForm.ComponentState) and
+     not Assigned(AForm.Parent) and (AForm.FormStyle <> fsMDIChild) then
+    MenuH := GetMenuBarHeight;
+  if MenuH > 0 then
+    Inc(AHeight, MenuH);
   ARect.x := ALeft;
   ARect.y := ATop;
   ARect.width := AWidth;
@@ -15661,20 +15681,20 @@ begin
         else
           max_width := 32767;
         if not AFixedWidthHeight and (AForm.Constraints.MinHeight > 0) then
-          min_height := AForm.Constraints.MinHeight + FResizeState.ShadowH
+          min_height := AForm.Constraints.MinHeight + FResizeState.ShadowH + MenuH
         else if AFixedWidthHeight then
-          min_height := AForm.Height
+          min_height := AForm.Height + MenuH
         else
           min_height := 1;
         if not AFixedWidthHeight and (AForm.Constraints.MaxHeight > 0) then
-          max_height := AForm.Constraints.MaxHeight + FResizeState.ShadowH
+          max_height := AForm.Constraints.MaxHeight + FResizeState.ShadowH + MenuH
         else if AFixedWidthHeight then
-          max_height := AForm.Height
+          max_height := AForm.Height + MenuH
         else
           max_height := 32767;
 
         base_width := AForm.Width;
-        base_height := AForm.Height;
+        base_height := AForm.Height + MenuH;
         width_inc := 1;
         height_inc := 1;
         min_aspect := 0;
@@ -16135,6 +16155,21 @@ begin
       PGdkCursor(TGtk3Cursor(CursorHdl).Handle));
 end;
 
+function TGtk3Window.GetMenuBarHeight: gint;
+var
+  MinH, NatH: gint;
+begin
+  Result := 0;
+  if not Assigned(FMenuBar) then
+    exit;
+  MinH := 0;
+  NatH := 0;
+  PGtkWidget(FMenuBar)^.get_preferred_height(@MinH, @NatH);
+  Result := NatH;
+  if Result <= 0 then
+    Result := GetSystemMetrics(SM_CYMENU);
+end;
+
 function TGtk3Window.GetMenuBar: PGtkMenuBar;
 var
   ABox:PGtkBox;
@@ -16154,6 +16189,9 @@ begin
       ABox^.pack_start(FMenuBar, False, False, 0);
       g_signal_connect_data(PGObject(FMenuBar), 'enter-notify-event',
         TGCallback(@MenuBarEnterNotify), Self, nil, G_CONNECT_DEFAULT);
+      if Assigned(LCLObject) and not (csDesigning in LCLObject.ComponentState) and
+         Gtk3IsGtkWindow(Widget) and not Assigned(LCLObject.Parent) then
+        SetBounds(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
     end;
   end;
   Result := FMenuBar;
