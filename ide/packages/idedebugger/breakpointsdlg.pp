@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, LazFileUtils, Forms, Controls, Dialogs, IDEWindowIntf,
-  Menus, ComCtrls, Debugger, DebuggerDlg, ActnList, ExtCtrls, IDEImagesIntf,
+  Menus, ComCtrls, Debugger, DebuggerDlg, ActnList, ExtCtrls, StdCtrls, IDEImagesIntf,
   {$ifdef Windows} ActiveX, {$else} laz.FakeActiveX, {$endif}
   DbgIntfDebuggerBase, DbgIntfMiscClasses, BaseDebugManager, IdeDebuggerStringConstants,
   DebuggerTreeView, breakpointgroupframe, IdeDebuggerOpts, EnvDebuggerOptions, IdeIntfStrConsts,
@@ -76,6 +76,7 @@ type
     ActionList1: TActionList;
     popAddException: TMenuItem;
     tbGroupByBrkGroup: TToolButton;
+    tbExceptOff: TToggleBox;
     ToolButton1: TToolButton;
     tbShowBreakPoints: TToolButton;
     tbShowException: TToolButton;
@@ -135,6 +136,7 @@ type
     procedure popDisableAllClick(Sender: TObject);
     procedure popEnableAllClick(Sender: TObject);
     procedure popDeleteAllClick(Sender: TObject);
+    procedure tbExceptOffChange(Sender: TObject);
     procedure tbGroupByBrkGroupClick(Sender: TObject);
     procedure tbShowBreakPointsClick(Sender: TObject);
     procedure tvBreakPointsChange(Sender: TBaseVirtualTree; Node: PVirtualNode);
@@ -411,6 +413,7 @@ begin
       end;
       UpdateItem(VNode, AnException);
     end;
+    tbExceptOff.Checked := Exceptions.IgnoreAll;
   finally
     EndUpdate;
   end;
@@ -1048,6 +1051,11 @@ begin
   finally
     EndUpdate;
   end;
+end;
+
+procedure TBreakPointsDlg.tbExceptOffChange(Sender: TObject);
+begin
+  Exceptions.IgnoreAll := tbExceptOff.Checked;
 end;
 
 procedure TBreakPointsDlg.tbGroupByBrkGroupClick(Sender: TObject);
@@ -1839,6 +1847,7 @@ begin
       for i:=0 to Exceptions.Count-1 do
         ExceptionUpdate(Exceptions, Exceptions.Items[i]);
     end;
+    tbExceptOff.Checked := Exceptions.IgnoreAll;
   finally
     EndUpdate;
   end;
