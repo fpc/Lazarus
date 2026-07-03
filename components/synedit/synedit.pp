@@ -1252,12 +1252,13 @@ type
     property MaxUndo: Integer read GetMaxUndo write SetMaxUndo default 1024;
     property ShareOptions: TSynEditorShareOptions read FShareOptions write SetShareOptions
       default SYNEDIT_DEFAULT_SHARE_OPTIONS; experimental;
-    property VisibleSpecialChars: TSynVisibleSpecialChars read FVisibleSpecialChars write SetVisibleSpecialChars;
+    property VisibleSpecialChars: TSynVisibleSpecialChars read FVisibleSpecialChars write SetVisibleSpecialChars
+      default SYNEDIT_DEFAULT_VISIBLESPECIALCHARS;
     property RightEdge: Integer read GetRightEdge write SetRightEdge default 80;
     property RightEdgeColor: TColor read GetRightEdgeColor write SetRightEdgeColor default clSilver;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
     property BracketHighlightStyle: TSynEditBracketHighlightStyle
-      read GetBracketHighlightStyle write SetBracketHighlightStyle;
+      read GetBracketHighlightStyle write SetBracketHighlightStyle default sbhsBoth;
     property TabWidth: integer read fTabWidth write SetTabWidth default 8;
     property WantTabs: boolean read fWantTabs write SetWantTabs default True;
     property TabViewClass: TSynEditStringTabExpanderClass write SetTabViewClass;
@@ -1304,8 +1305,8 @@ type
     property Font;
     property Height;
     property Name;
-    property ParentColor;
-    property ParentFont;
+    property ParentColor default false;
+    property ParentFont default false;
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
@@ -2517,6 +2518,7 @@ begin
   fMarkupSpecialChar := TSynEditMarkupSpecialChar.Create(self);
 
   fMarkupSelection.MarkupInfoSelection.SetAllPriorities(50);
+  fMarkupSelection.MarkupInfoSelection.InternalSaveDefaultValues;
 
   fMarkupManager := TSynEditMarkupManager.Create(self);
   fMarkupManager.AddMarkUp(fMarkupSpecialChar);

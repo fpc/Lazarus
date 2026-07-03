@@ -1017,6 +1017,9 @@ begin
   FMarkupInfoWrapEol.Clear;
   FMarkupInfoWrapIndent.FrameEdges := sfeLeft;
   FMarkupInfoWrapIndent.AddChangeHandler(@DoMarkupChanged);
+  FMarkupInfoWrapSubLine.InternalSaveDefaultValues;
+  FMarkupInfoWrapIndent.InternalSaveDefaultValues;
+  FMarkupInfoWrapEol.InternalSaveDefaultValues;
 
   FKeyStrokes := TSynEditLineMapKeyStrokes.Create(Self);
 

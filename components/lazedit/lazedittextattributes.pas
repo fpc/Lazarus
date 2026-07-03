@@ -236,6 +236,7 @@ type
     procedure SetStylePriority(AnIndex: TFontStyle; AValue: integer); override;
 
     function GetFeaturesStored: Boolean;
+    function GetIndexedFeanuleStored(AnIndex: TLazTextAttributeFeature): Boolean;
     function GetColorStored(AnIndex: TLazTextAttributeColor): Boolean;
     function GetPriorityStored(AnIndex: TLazTextAttributeColor): Boolean;
     function GetFrameStyleStored: Boolean;
@@ -288,6 +289,7 @@ type
     property StrikeOutPriority stored GetStylePriorityStored;
 
     property Features stored GetFeaturesStored;
+    property ExtendPastEol stored GetIndexedFeanuleStored;
 
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
@@ -837,6 +839,11 @@ end;
 function TLazEditTextAttribute.GetFeaturesStored: Boolean;
 begin
   Result := FFeatures <> FDefaultFeatures;
+end;
+
+function TLazEditTextAttribute.GetIndexedFeanuleStored(AnIndex: TLazTextAttributeFeature): Boolean;
+begin
+  Result := (FFeatures * [AnIndex]) <> (FDefaultFeatures * [AnIndex]);
 end;
 
 function TLazEditTextAttribute.GetColorStored(AnIndex: TLazTextAttributeColor): Boolean;

@@ -3069,16 +3069,19 @@ begin
   FMarkupInfoFoldedCode.Background := clNone;
   FMarkupInfoFoldedCode.Foreground := clDkGray;
   FMarkupInfoFoldedCode.FrameColor := clDkGray;
+  FMarkupInfoFoldedCode.InternalSaveDefaultValues;
 
   FMarkupInfoFoldedCodeLine := TSynSelectedColor.Create;
   FMarkupInfoFoldedCodeLine.Background := clNone;
   FMarkupInfoFoldedCodeLine.Foreground := clNone;
   FMarkupInfoFoldedCodeLine.FrameColor := clNone;
+  FMarkupInfoFoldedCodeLine.InternalSaveDefaultValues;
 
   FMarkupInfoHiddenCodeLine := TSynSelectedColor.Create;
   FMarkupInfoHiddenCodeLine.Background := clNone;
   FMarkupInfoHiddenCodeLine.Foreground := clNone;
   FMarkupInfoHiddenCodeLine.FrameColor := clNone;
+  FMarkupInfoHiddenCodeLine.InternalSaveDefaultValues;
 
   FOwner.RegisterStatusChangedHandler(@DoBlockSelChanged, [scSelection]);
   FOwner.RegisterCommandHandler(@ProcessMySynCommand, nil, [hcfPreExec]);

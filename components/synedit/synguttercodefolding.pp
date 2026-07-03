@@ -466,6 +466,8 @@ begin
   MarkupInfo.Background := clNone;
   MarkupInfo.Foreground := clDkGray;
   MarkupInfo.FrameColor := clNone;
+  MarkupInfo.InternalSaveDefaultValues;
+  FMarkupInfoCurrentFold.InternalSaveDefaultValues;
 
   CaretObj.AddChangeHandler(@CaretChanged);
   ViewedTextBuffer.AddChangeHandler(senrHighlightChanged, @DoHighlightChanged);

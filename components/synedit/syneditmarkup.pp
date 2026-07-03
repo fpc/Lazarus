@@ -435,6 +435,7 @@ begin
   FTempEnable := 0;
   fMarkupInfo := TSynSelectedColor.Create;
   fMarkupInfo.AddChangeHandler(@MarkupChanged);
+  FMarkupInfo.InternalSaveDefaultValues;
 end;
 
 destructor TSynEditMarkup.Destroy;

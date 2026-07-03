@@ -389,6 +389,7 @@ begin
   inherited Create(AOwner);
   MarkupInfo.Background := clWhite;
   MarkupInfo.Foreground := clDkGray;
+  MarkupInfo.InternalSaveDefaultValues;
   FLineWidth := 1;
   FLineOffset := 0;
   FLineOnRight := True;

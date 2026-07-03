@@ -363,6 +363,7 @@ begin
   MarkupInfo.StyleMask := [];
   MarkupInfo.Foreground := clBlue; {TODO:  invert blue to bg .... see below}
   MarkupInfo.Background := clNone;
+  MarkupInfo.InternalSaveDefaultValues;
 
   SynEdit.RegisterQueryMouseCursorHandler(@UpdateSynCursor);
   SynEdit.RegisterMouseLastCaretHandler(@LastCaretChanged);

@@ -60,11 +60,11 @@ type
   published
     property MarkupInfo;
     property MarkupInfoCurrentLine;
-    property DigitCount: integer read FDigitCount write SetDigitCount;
+    property DigitCount: integer read FDigitCount write SetDigitCount default 2;
     property ShowOnlyLineNumbersMultiplesOf: integer
-             read FShowOnlyLineNumbersMultiplesOf write SetShowOnlyLineNumbersMultiplesOf;
-    property ZeroStart: boolean read FZeroStart write SetZeroStart;
-    property LeadingZeros: boolean read FLeadingZeros write SetLeadingZeros;
+             read FShowOnlyLineNumbersMultiplesOf write SetShowOnlyLineNumbersMultiplesOf default 1;
+    property ZeroStart: boolean read FZeroStart write SetZeroStart  default False;
+    property LeadingZeros: boolean read FLeadingZeros write SetLeadingZeros default False;
     property OnFormatLineNumber: TSynEditGetGutterLineTextEvent read FOnFormatLineNumber write FOnFormatLineNumber;
   end;
 

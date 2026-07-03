@@ -159,6 +159,7 @@ begin
   FMarkupLineHighlightInfo.Background := clNone;
   FMarkupLineHighlightInfo.Foreground := clNone;
   FMarkupLineHighlightInfo.AddChangeHandler(@DoMarkupLineHighlightInfoChange);
+  FMarkupLineHighlightInfo.InternalSaveDefaultValues;
 
   FInternalEventColors := TSynSelectedColor.Create;
 

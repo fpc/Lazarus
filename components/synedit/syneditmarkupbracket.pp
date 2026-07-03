@@ -91,6 +91,7 @@ begin
   MarkupInfo.Background := clNone;
   MarkupInfo.Style := [fsBold];
   MarkupInfo.StyleMask := [];
+  MarkupInfo.InternalSaveDefaultValues;
   FBracketChars := GetBracketCharSet(SynEdit.Highlighter);
 end;
 

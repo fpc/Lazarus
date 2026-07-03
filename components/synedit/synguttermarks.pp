@@ -18,6 +18,10 @@ type
   );
   TSynGutterMarksOptions = set of TSynGutterMarksOption;
 
+const
+  SYNGUTTER_MARKS_OPTIONS_DEFAULT = TSynGutterMarksOptions([sgmoDeDuplicateMarksOnOverflow]);
+type
+
   { TSynGutterMarks }
 
   TSynGutterMarks = class(TSynGutterPartBase)
@@ -68,8 +72,8 @@ type
     property ColumnCount: Integer read FColumnCount write SetColumnCount;
   published
     // Max amount of marks show in addition to ColumnCount
-    property MaxExtraMarksColums: Integer read FMaxExtraMarksColums write FMaxExtraMarksColums;
-    property Options: TSynGutterMarksOptions read FOptions write FOptions;
+    property MaxExtraMarksColums: Integer read FMaxExtraMarksColums write FMaxExtraMarksColums default 0;
+    property Options: TSynGutterMarksOptions read FOptions write FOptions default SYNGUTTER_MARKS_OPTIONS_DEFAULT;
     property MarkupInfo;
     property MarkupInfoCurrentLine;
   end;
@@ -83,7 +87,7 @@ begin
   FInternalImage := nil;
   FDebugMarksImageIndex := -1;
   FNoInternalImage := False;
-  FOptions := [sgmoDeDuplicateMarksOnOverflow];
+  FOptions := SYNGUTTER_MARKS_OPTIONS_DEFAULT;
   inherited Create(AOwner);
 end;
 

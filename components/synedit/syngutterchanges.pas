@@ -24,8 +24,8 @@ type
     destructor Destroy; override;
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer); override;
   published
-    property ModifiedColor: TColor read GetModifiedColor write SetModifiedColor;
-    property SavedColor: TColor read GetSavedColor write SetSavedColor;
+    property ModifiedColor: TColor read GetModifiedColor write SetModifiedColor default $00E9FC; // MarkupInfo.FrameColor
+    property SavedColor: TColor read GetSavedColor write SetSavedColor default clGreen; // MarkupInfo.Foreground
     property MarkupInfo;
     property MarkupInfoCurrentLine;
   end;
@@ -41,6 +41,7 @@ begin
   MarkupInfo.Background := clNone;
   MarkupInfo.Foreground := clGreen;
   MarkupInfo.FrameColor := $00E9FC;
+  MarkupInfo.InternalSaveDefaultValues;
 end;
 
 destructor TSynGutterChanges.Destroy;

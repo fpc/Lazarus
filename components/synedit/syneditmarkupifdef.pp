@@ -653,6 +653,11 @@ begin
   MarkupInfoEnabled.AddChangeHandler(@MarkupChanged);
   MarkupInfoTempEnabled.AddChangeHandler(@MarkupChanged);
   MarkupInfoTempDisabled.AddChangeHandler(@MarkupChanged);
+
+  MarkupInfoDisabled.InternalSaveDefaultValues;
+  MarkupInfoEnabled.InternalSaveDefaultValues;
+  MarkupInfoTempDisabled.InternalSaveDefaultValues;
+  MarkupInfoTempEnabled.InternalSaveDefaultValues;
 end;
 
 destructor TSynEditMarkupIfDefNodes.Destroy;

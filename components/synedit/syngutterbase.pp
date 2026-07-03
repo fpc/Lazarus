@@ -1039,11 +1039,13 @@ begin
   FMarkupInfo.Background := clBtnFace;
   FMarkupInfo.Foreground := clNone;
   FMarkupInfo.FrameColor := clNone;
+  FMarkupInfo.InternalSaveDefaultValues;
 
   FMarkupInfoCurrentLine := TSynGutterDefColorAttributesModifier.Create;
   FMarkupInfoCurrentLine.Background := clNone;
   FMarkupInfoCurrentLine.Foreground := clNone;
   FMarkupInfoCurrentLine.FrameColor := clNone;
+  FMarkupInfoCurrentLine.InternalSaveDefaultValues;
 
   FMarkupInfoInternal := TLazEditTextAttributeModifier.Create;
   FMarkupInfoCurLineMerged := TLazEditTextAttributeMergeResult.Create;
