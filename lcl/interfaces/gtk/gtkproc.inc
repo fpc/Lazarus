@@ -870,7 +870,7 @@ procedure SetLabelAlignment(LabelWidget: PGtkLabel;
   const NewAlignment: TAlignment);
 const
   cLabelAlignX : array[TAlignment] of gfloat = (0.0, 1.0, 0.5);
-  cLabelAlignY : array[TTextLayout] of gfloat = (0.0, 0.5, 1.0, 0.0);
+  cLabelAlignY : array[TTextLayout] of gfloat = (0.0, 0.5, 1.0);
   cLabelAlign : array[TAlignment] of TGtkJustification =
     (GTK_JUSTIFY_LEFT, GTK_JUSTIFY_RIGHT, GTK_JUSTIFY_CENTER);
 begin

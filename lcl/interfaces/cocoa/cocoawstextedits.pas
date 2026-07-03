@@ -37,7 +37,7 @@ type
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class procedure SetAlignment(const ACustomEdit: TCustomEdit; const NewAlignment: TAlignment); override;
-    class procedure SetVerticalAlignment(const ACustomEdit: TCustomEdit; const AVerticalAlignment: TTextLayout); override;
+    class procedure SetTextLayout(const ACustomEdit: TCustomEdit; const ATextLayout: TTextLayout); override;
 
     {class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;}
@@ -165,7 +165,7 @@ begin
   if (field.respondsToSelector(ObjCSelector('cell'))) and Assigned(field.cell) then
   begin
     cell:= TCocoaVertAlignTextFieldCell.new;
-    cell.vertAlignment:= edit.VerticalAlignment;
+    cell.vertAlignment:= edit.Layout;
     field.setCell( cell );
     cell.release;
     cell.setWraps(false);
@@ -314,9 +314,9 @@ begin
   TCocoaTextControlUtil.setAllignment(field, NewAlignment);
 end;
 
-class procedure TCocoaWSCustomEdit.SetVerticalAlignment(
+class procedure TCocoaWSCustomEdit.SetTextLayout(
   const ACustomEdit: TCustomEdit;
-  const AVerticalAlignment: TTextLayout);
+  const ATextLayout: TTextLayout);
 var
   field: NSTextField;
   cell: NSCell;
@@ -327,7 +327,7 @@ begin
   cell:= field.cell;
   if NOT cell.isKindOfClass(TCocoaVertAlignTextFieldCell) then
     Exit;
-  TCocoaVertAlignTextFieldCell(cell).vertAlignment:= AVerticalAlignment;
+  TCocoaVertAlignTextFieldCell(cell).vertAlignment:= ATextLayout;
   TCocoaTextControlUtil.setBorderStyle( field, ACustomEdit );
 
   // force cell.drawingRectForBounds() be called

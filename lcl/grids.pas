@@ -10812,7 +10812,7 @@ procedure TStringCellEditor.msg_SetPos(var Msg: TGridMessage);
 begin
   FCol := Msg.Col;
   FRow := Msg.Row;
-  self.VerticalAlignment := FGrid.GetColumnLayout(FCol, False);
+  self.Layout := FGrid.GetColumnLayout(FCol, False);
   self.Font:= FGrid.Canvas.Font;
 end;
 
@@ -10825,6 +10825,7 @@ end;
 constructor TStringCellEditor.Create(Aowner: TComponent);
 begin
   inherited Create(Aowner);
+  Options:= [teoEnableTextLayout];
   AutoSize := false;
 end;
 
