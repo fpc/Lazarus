@@ -38,6 +38,10 @@ type
 
   TEditCharCase = (ecNormal, ecUppercase, ecLowerCase);
   TEchoMode = (emNormal, emNone, emPassword);
+  TEditOption = (
+    teoEnableTextLayout // enable Layout property
+    );
+  TEditOptions = set of TEditOption;
 
   { TScrollBar }
 
@@ -778,6 +782,8 @@ type
   { TCustomEdit }
 
   TCustomEdit = class(TWinControl)
+  private const
+    DefOptions = [];
   private
     FAlignment: TAlignment;
     FAutoSelect: Boolean;
@@ -790,6 +796,7 @@ type
     FMaxLength: Integer;
     FModified: Boolean;
     FOnChangeHandler: TMethodList;
+    FOptions: TEditOptions;
     FPasswordChar: Char;
     FReadOnly: Boolean;
     FNumbersOnly: Boolean;
@@ -886,6 +893,7 @@ type
     property Modified: Boolean read GetModified write SetModified;
     property NumbersOnly: Boolean read GetNumbersOnly write SetNumbersOnly default false;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property Options: TEditOptions read FOptions write FOptions default DefOptions;
     property PasswordChar: Char read FPasswordChar write SetPasswordChar default #0;
     property PopupMenu;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default false;

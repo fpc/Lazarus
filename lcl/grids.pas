@@ -10825,6 +10825,7 @@ end;
 constructor TStringCellEditor.Create(Aowner: TComponent);
 begin
   inherited Create(Aowner);
+  Options:= [teoEnableTextLayout];
   AutoSize := false;
 end;
 

@@ -718,7 +718,7 @@ begin
   {$else}
   bordered:= lclEdit.borderStyle <> bsNone;
   {$endif}
-  if lclEdit.TextLayout <> tlDefault then
+  if teoEnableTextLayout in lclEdit.Options then
     bordered:= True;
   textField.setBordered( bordered );
   textField.setBezeled( bordered );

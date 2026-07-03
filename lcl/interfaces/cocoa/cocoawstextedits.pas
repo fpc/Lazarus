@@ -165,7 +165,7 @@ begin
   if (field.respondsToSelector(ObjCSelector('cell'))) and Assigned(field.cell) then
   begin
     cell:= TCocoaVertAlignTextFieldCell.new;
-    cell.vertAlignment:= edit.TextLayout;
+    cell.vertAlignment:= edit.Layout;
     field.setCell( cell );
     cell.release;
     cell.setWraps(false);

@@ -78,6 +78,7 @@ begin
     SetInitialBounds(0, 0, CX, CY);
   FEchoMode := emNormal;
   BorderStyle := bsSingle;
+  FOptions := DefOptions;
   FLayout := tlCenter;
   FAutoSelect := True;
   FAutoSelected := False;
