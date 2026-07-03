@@ -2555,6 +2555,7 @@ begin
   fFontDummy.Height := SynDefaultFontHeight;
   fFontDummy.Pitch := SynDefaultFontPitch;
   fFontDummy.Quality := SynDefaultFontQuality;
+  fFontDummy.Style := [];
   FLastSetFontSize := fFontDummy.Height;
   FLastMouseLocation.LastMouseCaret := Point(-1,-1);
   FLastMouseLocation.LastMousePoint := Point(-1,-1);
