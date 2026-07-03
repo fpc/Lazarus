@@ -1001,8 +1001,8 @@ begin
                   for j:= AUnitInfo.EditorInfoCount-1 downto 1 do
                     CloseEditorFile(AUnitInfo.EditorInfo[j].EditorComponent,
                     [cfQuiet, cfCloseDependencies]);
-                ReloadUnitComponent(AUnitInfo);
               end;
+              ReloadUnitComponent(AUnitInfo);
             end;
           end;
         end;
