@@ -50,9 +50,9 @@ type
   TSynPluginTemplateEdit = class(TSynPluginCustomSyncroEdit)
   private
     FCellParserEnabled: Boolean;
-    FKeystrokes, FKeyStrokesOffCell: TSynEditKeyStrokes;
+    FKeyStrokes, FKeyStrokesOffCell: TSynEditKeyStrokes;
     FStartPoint: TPoint;
-    procedure SetKeystrokes(const AValue: TSynEditKeyStrokes);
+    procedure SetKeyStrokes(const AValue: TSynEditKeyStrokes);
     procedure SetKeystrokesOffCell(const AValue: TSynEditKeyStrokes);
   protected
     procedure DoEditorRemoving(AValue: TCustomSynEdit); override;
@@ -76,8 +76,8 @@ type
     procedure AddEditCells(aCellList: TSynPluginSyncronizedEditList);
 
     property CellParserEnabled: Boolean read FCellParserEnabled write FCellParserEnabled;
-    property Keystrokes: TSynEditKeyStrokes
-      read FKeystrokes write SetKeystrokes;
+    property KeyStrokes: TSynEditKeyStrokes
+      read FKeyStrokes write SetKeyStrokes;
     property KeystrokesOffCell: TSynEditKeyStrokes
       read FKeystrokesOffCell write SetKeystrokesOffCell;
   end;
@@ -111,8 +111,8 @@ implementation
 
 constructor TSynPluginTemplateEdit.Create(AOwner: TComponent);
 begin
-  FKeystrokes := TSynEditTemplateEditKeyStrokes.Create(Self);
-  FKeystrokes.ResetDefaults;
+  FKeyStrokes := TSynEditTemplateEditKeyStrokes.Create(Self);
+  FKeyStrokes.ResetDefaults;
   FKeyStrokesOffCell := TSynEditTemplateEditKeyStrokesOffCell.Create(self);
   FKeyStrokesOffCell.ResetDefaults;
   inherited Create(AOwner);
@@ -122,7 +122,7 @@ end;
 destructor TSynPluginTemplateEdit.Destroy;
 begin
   inherited Destroy;
-  FreeAndNil(FKeystrokes);
+  FreeAndNil(FKeyStrokes);
   FreeAndNil(FKeyStrokesOffCell);
 end;
 
@@ -144,12 +144,12 @@ begin
   end;
 end;
 
-procedure TSynPluginTemplateEdit.SetKeystrokes(const AValue: TSynEditKeyStrokes);
+procedure TSynPluginTemplateEdit.SetKeyStrokes(const AValue: TSynEditKeyStrokes);
 begin
   if AValue = nil then
-    FKeystrokes.Clear
+    FKeyStrokes.Clear
   else
-    FKeystrokes.Assign(AValue);
+    FKeyStrokes.Assign(AValue);
 end;
 
 procedure TSynPluginTemplateEdit.SetKeystrokesOffCell(const AValue: TSynEditKeyStrokes);

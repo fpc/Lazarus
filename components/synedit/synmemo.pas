@@ -111,7 +111,7 @@ type
     property Highlighter;
     property InsertCaret;
     property InsertMode;
-    property Keystrokes;
+    property KeyStrokes;
     property MouseActions;
     property MouseTextActions;
     property MouseSelActions;

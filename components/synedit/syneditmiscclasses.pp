@@ -80,7 +80,7 @@ const
     eoAutoSizeMaxScrollWidth,  //TODO Automatically resizes the MaxScrollWidth property when inserting text
     eoDisableScrollArrows,     //TODO Disables the scroll bar arrow buttons when you can't scroll in that direction any more
     eoDropFiles,               //TODO Allows the editor accept file drops
-    eoHideShowScrollbars,      //TODO if enabled, then the scrollbars will only show when necessary.  If you have ScrollPastEOL, then it the horizontal bar will always be there (it uses MaxLength instead)
+    eoHideShowScrollBars,      //TODO if enabled, then the ScrollBars will only show when necessary.  If you have ScrollPastEOL, then it the horizontal bar will always be there (it uses MaxLength instead)
     eoSmartTabDelete,          //TODO similar to Smart Tabs, but when you delete characters
     ////eoSpecialLineDefaultFg,    //TODO disables the foreground text color override when using the OnSpecialLineColor event
     eoAutoIndentOnPaste,       // Indent text inserted from clipboard

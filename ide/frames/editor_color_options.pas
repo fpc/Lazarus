@@ -1616,10 +1616,10 @@ begin
         PreviewEdits[a].CaretXY := EditorOpts.HighlighterList[CurLanguageID].CaretXY;
         PreviewEdits[a].TopLine := 1;
         PreviewEdits[a].LeftChar := 1;
-        PreviewEdits[a].Keystrokes.Clear;
+        PreviewEdits[a].KeyStrokes.Clear;
         PreviewEdits[a].MouseActions.Clear;
         PreviewEdits[a].AfterLoadFromFile;
-        PreviewEdits[a].Keystrokes.Clear;
+        PreviewEdits[a].KeyStrokes.Clear;
         PreviewEdits[a].MouseOptions := [emUseMouseActions];
         PreviewEdits[a].MouseActions.Clear;
         PreviewEdits[a].MouseActions.AddCommand(emcWheelVertScrollDown, False, mbXWheelDown, ccAny, cdDown, [], []);

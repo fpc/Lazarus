@@ -178,9 +178,9 @@ type
     FMode: TSynPluginSyncroEditModes;
 
     FKeystrokesSelecting: TSynEditKeyStrokes;
-    FKeystrokes, FKeyStrokesOffCell: TSynEditKeyStrokes;
+    FKeyStrokes, FKeyStrokesOffCell: TSynEditKeyStrokes;
     procedure SetKeystrokesSelecting(const AValue: TSynEditKeyStrokes);
-    procedure SetKeystrokes(const AValue: TSynEditKeyStrokes);
+    procedure SetKeyStrokes(const AValue: TSynEditKeyStrokes);
     procedure SetKeystrokesOffCell(const AValue: TSynEditKeyStrokes);
     function  GetMarkup: TSynPluginSyncroEditMarkup;
     function  GetContextAt(APos: TPoint): String; inline;
@@ -228,8 +228,8 @@ type
     property GutterGlyph: TBitmap read FGutterGlyph write SetGutterGlyph;
     property KeystrokesSelecting: TSynEditKeyStrokes
       read FKeystrokesSelecting write SetKeystrokesSelecting;
-    property Keystrokes: TSynEditKeyStrokes
-      read FKeystrokes write SetKeystrokes;
+    property KeyStrokes: TSynEditKeyStrokes
+      read FKeyStrokes write SetKeyStrokes;
     property KeystrokesOffCell: TSynEditKeyStrokes
       read FKeystrokesOffCell write SetKeystrokesOffCell;
     property OnModeChange: TNotifyEvent read FOnModeChange write FOnModeChange;
@@ -873,12 +873,12 @@ begin
     FKeystrokesSelecting.Assign(AValue);
 end;
 
-procedure TSynPluginSyncroEdit.SetKeystrokes(const AValue: TSynEditKeyStrokes);
+procedure TSynPluginSyncroEdit.SetKeyStrokes(const AValue: TSynEditKeyStrokes);
 begin
   if AValue = nil then
-    FKeystrokes.Clear
+    FKeyStrokes.Clear
   else
-    FKeystrokes.Assign(AValue);
+    FKeyStrokes.Assign(AValue);
 end;
 
 procedure TSynPluginSyncroEdit.SetKeystrokesOffCell(const AValue: TSynEditKeyStrokes);
@@ -1425,8 +1425,8 @@ begin
   FMouseActions := TSynPluginSyncroEditMouseActions.Create(self);
   FMouseActions.ResetDefaults;
 
-  FKeystrokes := TSynEditSyncroEditKeyStrokes.Create(Self);
-  FKeystrokes.ResetDefaults;
+  FKeyStrokes := TSynEditSyncroEditKeyStrokes.Create(Self);
+  FKeyStrokes.ResetDefaults;
 
   FKeyStrokesOffCell := TSynEditSyncroEditKeyStrokesOffCell.Create(self);
   FKeyStrokesOffCell.ResetDefaults;
@@ -1454,7 +1454,7 @@ begin
     FreeAndNil(FWordIndex[m]);
   FreeAndNil(FGutterGlyph);
   FreeAndNil(FMouseActions);
-  FreeAndNil(FKeystrokes);
+  FreeAndNil(FKeyStrokes);
   FreeAndNil(FKeyStrokesOffCell);
   FreeAndNil(FKeystrokesSelecting);
 end;

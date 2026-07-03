@@ -6508,7 +6508,7 @@ var
   c, i: Integer;
 begin
   if SimilarEdit<>nil then
-    ASynEdit.KeyStrokes.Assign(SimilarEdit.Keystrokes)
+    ASynEdit.KeyStrokes.Assign(SimilarEdit.KeyStrokes)
   else
     KeyMap.AssignTo(ASynEdit.KeyStrokes, TSourceEditorWindowInterface);
 
@@ -6523,15 +6523,15 @@ begin
       i:= -1;
 
     if (ASynEdit.Plugin[c] is TSynPluginTemplateEdit) then begin
-      TSynPluginTemplateEdit(ASynEdit.Plugin[c]).Keystrokes.Clear;
+      TSynPluginTemplateEdit(ASynEdit.Plugin[c]).KeyStrokes.Clear;
       TSynPluginTemplateEdit(ASynEdit.Plugin[c]).KeystrokesOffCell.Clear;
       if i >= 0 then begin
-        TSynPluginTemplateEdit(ASynEdit.Plugin[c]).Keystrokes.Assign(
+        TSynPluginTemplateEdit(ASynEdit.Plugin[c]).KeyStrokes.Assign(
                                TSynPluginTemplateEdit(SimilarEdit.Plugin[i]).KeyStrokes);
         TSynPluginTemplateEdit(ASynEdit.Plugin[c]).KeystrokesOffCell.Assign(
                                TSynPluginTemplateEdit(SimilarEdit.Plugin[i]).KeystrokesOffCell);
       end else begin
-        KeyMap.AssignTo(TSynPluginTemplateEdit(ASynEdit.Plugin[c]).Keystrokes,
+        KeyMap.AssignTo(TSynPluginTemplateEdit(ASynEdit.Plugin[c]).KeyStrokes,
                         TLazSynPluginTemplateEditForm, ecIdePTmplOffset);
         KeyMap.AssignTo(TSynPluginTemplateEdit(ASynEdit.Plugin[c]).KeystrokesOffCell,
                         TLazSynPluginTemplateEditFormOff, ecIdePTmplOutOffset);
@@ -6540,19 +6540,19 @@ begin
 
     if (ASynEdit.Plugin[c] is TSynPluginSyncroEdit) then begin
       TSynPluginSyncroEdit(ASynEdit.Plugin[c]).KeystrokesSelecting.Clear;
-      TSynPluginSyncroEdit(ASynEdit.Plugin[c]).Keystrokes.Clear;
+      TSynPluginSyncroEdit(ASynEdit.Plugin[c]).KeyStrokes.Clear;
       TSynPluginSyncroEdit(ASynEdit.Plugin[c]).KeystrokesOffCell.Clear;
       if i >= 0 then begin
         TSynPluginSyncroEdit(ASynEdit.Plugin[c]).KeystrokesSelecting.Assign(
                              TSynPluginSyncroEdit(SimilarEdit.Plugin[i]).KeystrokesSelecting);
-        TSynPluginSyncroEdit(ASynEdit.Plugin[c]).Keystrokes.Assign(
+        TSynPluginSyncroEdit(ASynEdit.Plugin[c]).KeyStrokes.Assign(
                              TSynPluginSyncroEdit(SimilarEdit.Plugin[i]).KeyStrokes);
         TSynPluginSyncroEdit(ASynEdit.Plugin[c]).KeystrokesOffCell.Assign(
                              TSynPluginSyncroEdit(SimilarEdit.Plugin[i]).KeystrokesOffCell);
       end else begin
         KeyMap.AssignTo(TSynPluginSyncroEdit(ASynEdit.Plugin[c]).KeystrokesSelecting,
                         TLazSynPluginSyncroEditFormSel, ecIdePSyncroSelOffset);
-        KeyMap.AssignTo(TSynPluginSyncroEdit(ASynEdit.Plugin[c]).Keystrokes,
+        KeyMap.AssignTo(TSynPluginSyncroEdit(ASynEdit.Plugin[c]).KeyStrokes,
                         TLazSynPluginSyncroEditForm, ecIdePSyncroOffset);
         KeyMap.AssignTo(TSynPluginSyncroEdit(ASynEdit.Plugin[c]).KeystrokesOffCell,
                         TLazSynPluginSyncroEditFormOff, ecIdePSyncroOutOffset);
@@ -6561,13 +6561,13 @@ begin
 
     if (ASynEdit.Plugin[c] is TSynPluginMultiCaret) then begin
       // Only ecPluginMultiCaretClearAll
-      // the others are handled in SynEdit.Keystrokes
-      TSynPluginMultiCaret(ASynEdit.Plugin[c]).Keystrokes.Clear;
+      // the others are handled in SynEdit.KeyStrokes
+      TSynPluginMultiCaret(ASynEdit.Plugin[c]).KeyStrokes.Clear;
       if i >= 0 then begin
-        TSynPluginMultiCaret(ASynEdit.Plugin[c]).Keystrokes.Assign(
+        TSynPluginMultiCaret(ASynEdit.Plugin[c]).KeyStrokes.Assign(
                                TSynPluginMultiCaret(SimilarEdit.Plugin[i]).KeyStrokes);
       end else begin
-        KeyMap.AssignTo(TSynPluginMultiCaret(ASynEdit.Plugin[c]).Keystrokes,
+        KeyMap.AssignTo(TSynPluginMultiCaret(ASynEdit.Plugin[c]).KeyStrokes,
                         TLazSynPluginTemplateMultiCaret, 0); //ecIdePTmplOffset);
       end;
     end;
