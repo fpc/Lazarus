@@ -306,7 +306,7 @@ resourcestring
   lisAddressBreakpoint = '&Address Breakpoint ...';
   lisWatchPoint = '&Data/Watch Breakpoint ...';
   lisWatchPointBreakpoint = '&Data/watch Breakpoint ...';
-  lisExceptionFilter = '&Exception filter';
+  lisExceptionFilter = '&Exception filter ...';
   lisEnableAll = '&Enable All';
   lisDeleteAll = '&Delete All';
   lisDisableAllInSameSource = 'Disable All in same source';
