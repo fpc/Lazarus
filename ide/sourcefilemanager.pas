@@ -2976,6 +2976,23 @@ begin
   end;
 end;
 
+procedure RenameProjectUserResource(const OldFilename, NewFilename: string);
+// rename a file in the project user resources (Project Options > Resources)
+var
+  UserResources: TAbstractProjectUserResources;
+  i: Integer;
+begin
+  UserResources:=Project1.ProjResources.UserResources;
+  for i:=0 to UserResources.Count-1 do
+    if CompareFilenames(UserResources.GetRealFileName(i),OldFilename)=0 then begin
+      // keep the stored path relative if it was relative
+      if FilenameIsAbsolute(UserResources[i].FileName) then
+        UserResources.SetFileName(i,NewFilename)
+      else
+        UserResources.SetFileName(i,CreateRelativePath(NewFilename,Project1.Directory));
+    end;
+end;
+
 function RenameIDEFile(OldFilename, NewFilename: string; Flags: TSaveFlags): TModalResult;
 var
   SrcEdit: TSourceEditorInterface;
@@ -3034,6 +3051,9 @@ begin
   // rename in the open packages
   Result:=PkgBoss.OnRenameFile(OldFilename,NewFilename,IsPartOfProject);
   if Result=mrAbort then exit;
+
+  // rename in the project user resources (Project Options > Resources)
+  RenameProjectUserResource(OldFilename,NewFilename);
 
   Result:=mrOk;
 end;
@@ -6119,6 +6139,9 @@ begin
     Result:=PkgBoss.OnRenameFile(OldFilename,AnUnitInfo.Filename,
                                  AnUnitInfo.IsPartOfProject);
     if Result=mrAbort then exit;
+
+    // change filename in the project user resources (Project Options > Resources)
+    RenameProjectUserResource(OldFilename,AnUnitInfo.Filename);
 
     // delete ambiguous files
     OldFileRemoved:=false;

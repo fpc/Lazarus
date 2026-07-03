@@ -40,7 +40,7 @@ uses
   // LazUtils
   LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg, LazLoggerBase,
   // BuildIntf
-  ProjectResourcesIntf, MacroIntf, IDEExternToolIntf,
+  ProjectResourcesIntf, ProjectIntf, MacroIntf, IDEExternToolIntf,
   // IDE
   IdeProjectStrConsts;
 
@@ -103,6 +103,7 @@ type
 
     function IndexOfFileName(const AFileName: string): integer; override;
     function IndexOfResName(const AResName: string): integer; override;
+    function GetRealFileName(AIndex: integer): string; override;
     function AddFile(const AFileName: string; AResType: TUserResourceType;
                      const AResName: string): integer; override;
     procedure Delete(AIndex: integer); override;
@@ -361,6 +362,18 @@ begin
   Result := I >= 0;
   if Result then
     Delete(I);
+end;
+
+function TProjectUserResources.GetRealFileName(AIndex: integer): string;
+var
+  ProjectDirectory: String;
+begin
+  // The user resources always belong to the active project (LazProject1).
+  if LazProject1 <> nil then
+    ProjectDirectory := LazProject1.Directory
+  else
+    ProjectDirectory := '';
+  Result := FList[AIndex].GetRealFileName(ProjectDirectory);
 end;
 
 procedure TProjectUserResources.SetFileName(AIndex: integer; const ANewFileName: string);

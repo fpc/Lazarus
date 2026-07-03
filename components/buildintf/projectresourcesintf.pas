@@ -132,6 +132,11 @@ type
     property Items[AIndex: integer]: TProjectUserResourceInfo read GetInfo; default;
     function IndexOfFileName(const AFileName: string): integer; virtual; abstract;
     function IndexOfResName(const AResName: string): integer; virtual; abstract;
+    // Resolve item AIndex's stored file name (which may be project-relative or
+    // contain IDE macros) to an absolute path, mirroring how the file is located
+    // at build time. The user resources always belong to the active project,
+    // whose directory is used to expand relative names.
+    function GetRealFileName(AIndex: integer): string; virtual; abstract;
 
     // Add / remove.
     function AddFile(const AFileName: string; AResType: TUserResourceType;
