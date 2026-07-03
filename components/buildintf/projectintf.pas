@@ -46,27 +46,6 @@ const
 type
   TLazProjectFile = class;
 
-  { TLazUnitEditorInfo }
-{
-  TLazUnitEditorInfo = class
-  private
-  protected
-    FUnitInfo: TLazProjectFile;
-  public
-    constructor Create(aUnitInfo: TLazProjectFile);
-  end;
-}
-  { TUnitEditorInfoList }
-{
-  TLazUnitEditorInfoList = class
-  private
-  protected
-    FList: TFPList;
-    FUnitInfo: TLazProjectFile;
-  public
-    constructor Create(aUnitInfo: TLazProjectFile);
-  end;
-}
   { TLazProjectFile }
 
   TLazProjectFile = class(TIDEOwnedFile)
