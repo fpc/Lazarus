@@ -209,6 +209,7 @@ type
     procedure DecHintLock;
     procedure DoOnDragResize(Sender: TObject);
     procedure ClearCurrentString;
+    procedure CreateWnd; override;
   public
     constructor Create(AOwner: Tcomponent); override;
     destructor Destroy; override;
@@ -688,7 +689,9 @@ begin
   ClSelect := clHighlight;
   TStringList(FItemList).OnChange := @StringListChange;
   FNbLinesInWindow := 6;
-  FontChanged(Font);
+  // Don't force creating a handle / call in CreateWnd
+  if (CurrentEditor <> nil) and (CurrentEditor.HandleAllocated) then
+    FontChanged(Font);
   ShowHint := False;
   EndFormUpdate;
   FResizeLock := 0;
@@ -1352,6 +1355,12 @@ begin
   FPosition := 0;
 end;
 
+procedure TSynBaseCompletionForm.CreateWnd;
+begin
+  inherited CreateWnd;
+  FontChanged(Font);
+end;
+
 procedure TSynBaseCompletionForm.SetItemList(const Value: TStrings);
 begin
   FItemList.Assign(Value);
@@ -1401,9 +1410,9 @@ end;
 constructor TSynBaseCompletion.Create(AOwner: TComponent);
 begin
   FWidth := 262;
-  inherited Create(AOwner);
   Form := GetCompletionFormClass.Create(nil); // Do not create with owner, or the designer will make it visible
   Form.Width := FWidth;
+  inherited Create(AOwner);
   FAutoUseSingleIdent := True;
 end;
 
