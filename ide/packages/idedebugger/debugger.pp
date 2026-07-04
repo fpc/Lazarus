@@ -7083,7 +7083,7 @@ begin
     ItemPath := Path+XMLConfig.GetListItemXPath('Item', i, IsLegacyList, True)+'/';
     NewGroup.LoadFromXMLConfig(XMLConfig, ItemPath);
     OldGroup := FindGroupByName(NewGroup.Name, NewGroup);
-    if OldGroup <> nil then
+    if (OldGroup <> nil) or (NewGroup.Name = '') then
       NewGroup.Free;
   end;
 end;
@@ -7109,6 +7109,8 @@ end;
 function TIDEBreakPointGroups.GetGroupByName(const GroupName: string; ACreateIfNotExist: boolean
   ): TIDEBreakPointGroup;
 begin
+  if GroupName = '' then
+    exit(nil);
   Result := FindGroupByName(GroupName, nil);
   if (Result = nil) and ACreateIfNotExist then begin
     Result := TIDEBreakPointGroup(Add);
