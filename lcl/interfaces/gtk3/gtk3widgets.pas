@@ -1956,7 +1956,7 @@ begin
     if (Word(NewSize.cx) = Word(ACtl.LCLObject.Width)) and
        (Word(NewSize.cy) = Word(ACtl.LCLObject.Height)) then
       exit;
-    if csDesigning in ACtl.LCLObject.ComponentState then
+    if (csDesigning in ACtl.LCLObject.ComponentState) and ACtl.LCLObject.AutoSize then
     begin
       Msg.Width := Word(NewSize.cx);
       Msg.Height := Word(NewSize.cy);
