@@ -745,6 +745,10 @@
         <Filename Value="testhighlightsql.pas"/>
         <UnitName Value="TestHighlightSql"/>
       </Unit>
+      <Unit>
+        <Filename Value="testlfmstreaming.pas"/>
+        <UnitName Value="TestLfmStreaming"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

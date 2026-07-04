@@ -6,15 +6,14 @@ program SynTest;
 uses
   Interfaces, Forms, consoletestrunner,
   {$ifNdef NOGUI} GuiTestRunner, {$ENDIF}
-  LazUTF8, TestBase, TestBasicSynEdit, TestNavigation,
+  LazUTF8, TestBase, TestBasicSynEdit, TestNavigation, TestLfmStreaming,
   TestSynSelection, TestSynMultiCaret, TestBlockIndent, TestBookMarks, TestSearch,
   TestSynBeautifier, TestTrimSpace, TestSyncroEdit, TestSynTextArea,
   TestHighlightPas, TestHighlightXml, TestHighlightSql, TestHighlighterLfm,
   TestHighlightMulti,
   TestMarkupwordGroup, TestMarkupHighAll, TestFoldedView, TestSynSharedEdits,
   TestNestedFoldsList, TestMarkupIfDef, testPaintColorMerging,
-  TestMarkupFoldColoring, TestWordWrap
-  ;
+  TestMarkupFoldColoring, TestWordWrap;
 
 {$IFDEF WINDOWS}{  $R SynTest.rc}{$ENDIF}
 
