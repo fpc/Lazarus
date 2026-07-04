@@ -48,10 +48,10 @@ type
   TIpHttpDataProvider = class(TIpCustomHtmlDataProvider)
   private
     FClient: TIpHttpClient;
-    FDocumment: TMemoryStream;
+    FDocument: TMemoryStream;
     FContentType: string;
   protected
-    property Documment: TMemoryStream read FDocumment;
+    property Document: TMemoryStream read FDocument;
     property Client: TIpHttpClient read FClient;
   public
     constructor Create(AOwner : TComponent); override;
@@ -78,7 +78,7 @@ constructor TIpHttpDataProvider.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FClient := TIpHttpClient.Create(nil);
-  FDocumment := TMemoryStream.Create;
+  FDocument := TMemoryStream.Create;
   HandledProtocols.Add('HTTP');
   FClient.ResponseHeaders.NameValueSeparator := ':';
   FClient.AllowRedirect := True;
@@ -87,7 +87,7 @@ end;
 
 destructor TIpHttpDataProvider.Destroy;
 begin
-  FDocumment.Free;
+  FDocument.Free;
   FClient.Free;
   inherited Destroy;
 end;
@@ -96,14 +96,14 @@ function TIpHttpDataProvider.GetHtmlStream(const AUrl: string;
   APostData: TIpFormDataEntity): TStream;
 begin
   Result := TMemoryStream.Create;
-  Result.CopyFrom(FDocumment, 0);
+  Result.CopyFrom(FDocument, 0);
   Result.Seek(0, soFromBeginning);
 end;
 
 function TIpHttpDataProvider.DoGetStream(const AUrl: string): TStream;
 begin
   Result := TMemoryStream.Create;
-  Result.CopyFrom(FDocumment, 0);
+  Result.CopyFrom(FDocument, 0);
   Result.Seek(0, soFromBeginning);
 end;
 
@@ -116,8 +116,8 @@ begin
   Initialize(VAddrRec);
   try
     IpParseURL(AUrl, VAddrRec);
-    FDocumment.Clear;
-    FClient.Get(AUrl, FDocumment);
+    FDocument.Clear;
+    FClient.Get(AUrl, FDocument);
     Result := (FClient.ResponseStatusCode = 200)
       or FClient.IsRedirect(FClient.ResponseStatusCode);
     if Result then
@@ -169,7 +169,7 @@ end;
 
 function TIpHttpDataProvider.CanHandle(const AUrl: string): Boolean;
 begin
-  Result := Assigned(FDocumment) and ((Pos('text/html', FContentType) > 0) or
+  Result := Assigned(FDocument) and ((Pos('text/html', FContentType) > 0) or
     (Pos('image/', FContentType) > 0));
 end;
 
