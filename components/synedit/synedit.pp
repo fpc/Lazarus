@@ -585,6 +585,7 @@ type
     fOverwriteCaret: TSynEditCaretType;
     fInsertCaret: TSynEditCaretType;
     FKeyStrokes: TSynEditKeyStrokes;
+    FIsKeyStrokesStored: Boolean;
     FCurrentComboKeyStrokes: TSynEditKeyStrokes; // Holding info about the keystroke(s) already received for a mult-stroke-combo
     FMouseActions, FMouseSelActions, FMouseTextActions: TSynEditMouseInternalActions;
     FMouseActionSearchHandlerList: TSynEditMouseActionSearchList;
@@ -640,6 +641,7 @@ type
     procedure DoTopViewChanged(Sender: TObject);
     function GetIsStickySelecting: Boolean;
     function GetOnSpecialLineMarkupEx: TSpecialLineMarkupExEvent;
+    function IsKeyStrokesStored: Boolean;
     procedure SetOnSpecialLineMarkupEx(AValue: TSpecialLineMarkupExEvent);
     procedure SetScrollOnEditLeftOptions(AValue: TSynScrollOnEditOptions);
     procedure SetScrollOnEditRightOptions(AValue: TSynScrollOnEditOptions);
@@ -873,8 +875,11 @@ type
     procedure SetLogicalCaretXY(const NewLogCaretXY: TPoint); override;
 
     function GetMouseActions: TSynEditMouseActions; override;
+    function IsMouseActionsStored: Boolean;
     function GetMouseSelActions: TSynEditMouseActions; override;
+    function IsMouseSelActionsStored: Boolean;
     function GetMouseTextActions: TSynEditMouseActions; override;
+    function IsMouseTextActionsStored: Boolean;
     procedure SetMouseActions(const AValue: TSynEditMouseActions); override;
     procedure SetMouseSelActions(const AValue: TSynEditMouseActions); override;
     procedure SetMouseTextActions(AValue: TSynEditMouseActions); override;
@@ -882,6 +887,7 @@ type
     procedure SetExtraCharSpacing(const Value: integer); override;
     procedure SetExtraLineSpacing(const Value: integer); override;
 
+    procedure KeyStrokesChanged(Sender: TObject);
     procedure SetHighlighter(const Value: TLazEditCustomHighlighter); virtual;
     procedure UpdateShowing; override;
     procedure SetColor(Value: TColor); override;
@@ -1248,8 +1254,11 @@ type
     property Gutter: TSynGutter read FLeftGutter write SetGutter;
     property RightGutter: TSynGutter read FRightGutter write SetRightGutter;
     property InsertMode: boolean read fInserting write SetInsertMode default true;
-    property KeyStrokes: TSynEditKeyStrokes read FKeyStrokes write SetKeyStrokes;
+    property KeyStrokes: TSynEditKeyStrokes read FKeyStrokes write SetKeyStrokes stored IsKeyStrokesStored;
     property MaxUndo: Integer read GetMaxUndo write SetMaxUndo default 1024;
+    property MouseActions stored IsMouseActionsStored;
+    property MouseSelActions stored IsMouseSelActionsStored;
+    property MouseTextActions stored IsMouseTextActionsStored;
     property ShareOptions: TSynEditorShareOptions read FShareOptions write SetShareOptions
       default SYNEDIT_DEFAULT_SHARE_OPTIONS; experimental;
     property VisibleSpecialChars: TSynVisibleSpecialChars read FVisibleSpecialChars write SetVisibleSpecialChars
@@ -2598,10 +2607,9 @@ begin
   fInsertCaret := ctVerticalLine;
   fOverwriteCaret := ctBlock;
   FKeyStrokes := TSynEditKeyStrokes.Create(Self);
+  FKeyStrokes.OnChanged := @KeyStrokesChanged;
   FCurrentComboKeyStrokes := nil;
-  if assigned(Owner) and not (csLoading in Owner.ComponentState) then begin
-    SetDefaultKeystrokes;
-  end;
+  SetDefaultKeystrokes;
 
   fWantTabs := True;
   fTabWidth := 8;
@@ -3519,6 +3527,11 @@ begin
     // Key was handled anyway, so eat it!
     Key:=#0;
   end;
+end;
+
+procedure TCustomSynEdit.KeyStrokesChanged(Sender: TObject);
+begin
+  FIsKeyStrokesStored := True;
 end;
 
 function TCustomSynEdit.DoHandleMouseAction(AnActionList: TSynEditMouseActions;
@@ -6659,6 +6672,21 @@ begin
   Result := j > 1;
 end;
 
+function TCustomSynEdit.IsMouseActionsStored: Boolean;
+begin
+  Result := MouseActions.Count>0;
+end;
+
+function TCustomSynEdit.IsMouseSelActionsStored: Boolean;
+begin
+  Result := MouseSelActions.Count>0;
+end;
+
+function TCustomSynEdit.IsMouseTextActionsStored: Boolean;
+begin
+  Result := MouseTextActions.Count>0;
+end;
+
 procedure TCustomSynEdit.RecreateMarkList;
 var
   s: TSynEditBase;
@@ -7374,6 +7402,7 @@ end;
 procedure TCustomSynEdit.SetDefaultKeystrokes;
 begin
   FKeyStrokes.ResetDefaults;
+  FIsKeyStrokesStored := False;
 end;
 
 procedure TCustomSynEdit.ResetMouseActions;
@@ -10425,6 +10454,11 @@ end;
 function TCustomSynEdit.IsIdentChar(const c: TUTF8Char): boolean;
 begin
   Result:=(length(c)=1) and (c[1] in IdentChars);
+end;
+
+function TCustomSynEdit.IsKeyStrokesStored: Boolean;
+begin
+  Result := fIsKeyStrokesStored;
 end;
 
 procedure TCustomSynEdit.GetWordBoundsAtRowCol(const XY: TPoint; out StartX,
