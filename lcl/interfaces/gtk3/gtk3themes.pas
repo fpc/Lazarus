@@ -422,18 +422,7 @@ var
   AScreen: PGdkScreen;
   dL, dT, dR, dB, t: Integer;
 begin
-  if (GtkDC.Parent <> nil) and not Gtk3IsWidget(PGObject(GtkDC.Parent)) then
-    exit;
-  if (GtkDC.Window <> nil) and
-     (not Gtk3IsGdkWindow(GtkDC.Window) or gdk_window_is_destroyed(GtkDC.Window)) then
-    exit;
-
-  if GtkDC.Parent <> nil then
-    AScreen := gtk_widget_get_screen(GtkDC.Parent)
-  else if GtkDC.Window <> nil then
-    AScreen := gdk_window_get_screen(GtkDC.Window)
-  else
-    AScreen := gdk_screen_get_default();
+  AScreen := gdk_screen_get_default();
 
   dL := GtkDC.LToDX(R.Left);
   dT := GtkDC.LToDY(R.Top);
