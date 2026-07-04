@@ -42,7 +42,7 @@ unit SynEditKeyCmds;
 interface
 
 uses
-  Classes, Menus, SysUtils, Types, Math, LCLIntf, LCLType, LCLProc, SynEditStrConst;
+  Classes, Menus, SysUtils, Types, Math, LCLIntf, LCLType, LCLProc, LCLClasses, SynEditStrConst;
 
 const
   //****************************************************************************
@@ -383,7 +383,7 @@ type
 
   { TSynEditKeyStrokes }
 
-  TSynEditKeyStrokes = class(TCollection)
+  TSynEditKeyStrokes = class(TLCLCollection)
   private
     FOwner: TPersistent;
     fLastKey: word;

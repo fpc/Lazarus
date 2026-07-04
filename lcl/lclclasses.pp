@@ -87,6 +87,16 @@ type
     property ReferenceAllocated: Boolean read GetReferenceAllocated;
   end;
 
+  // Unfortunately TCollection doesn't clear itself if it is read from the LFM as empty:
+  //    MyCollection = <>
+  // Therefore such a collection beholds its default items in this case.
+  // TLCLCollection solves this issue - it always clears its values when it is read from the LFM (the entry must exist in the LFM).
+  // If the collection is not present in the LFM at all, then the collection beholds its default values.
+  TLCLCollection = class(TCollection)
+  public
+    procedure BeginUpdate; override;
+  end;
+
 var
   OnDecLCLRefcountToZero: TNotifyEvent;
 
@@ -270,6 +280,19 @@ end;
 procedure TLCLReferenceComponent.WSDestroyReference;
 begin
   TWSLCLReferenceComponentClass(WidgetSetClass).DestroyReference(Self);
+end;
+
+{ TLCLCollection }
+
+procedure TLCLCollection.BeginUpdate;
+var
+  LClear: Boolean;
+begin
+  // always clear the collection when reading from the LFM
+  LClear := (UpdateCount=0) and (Owner is TComponent) and (csReading in TComponent(Owner).ComponentState);
+  inherited BeginUpdate;
+  if LClear then
+    Clear;
 end;
 
 end.
