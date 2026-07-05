@@ -36,7 +36,7 @@ uses
 
 const
   //LPI
-  standartLPI = 5;
+  standardLPI = 5;
 
   // DPI
   horizontalDPI = (93 / 1.015); // Horizontal DPI, 91 DPI default (used by lazreport)
@@ -313,7 +313,7 @@ begin
   fPageWidth := (fMarginRight - fMarginLeft);
 
   // Number of lines
-  fNumberOfLines := round(fPageHeight / verticalDPI * standartLPI);
+  fNumberOfLines := round(fPageHeight / verticalDPI * standardLPI);
   {%EndRegion}
 
   // Clear buffer
@@ -495,7 +495,7 @@ begin
     Exit;
   end;
   // Row position
-  vRow := round(((y - fMarginTop) / verticalDPI) * standartLPI);
+  vRow := round(((y - fMarginTop) / verticalDPI) * standardLPI);
   // Row restrictions
   if (vRow < 0) or (vRow > fNumberOfLines) then
   begin
