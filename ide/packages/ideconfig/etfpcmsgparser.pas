@@ -45,8 +45,6 @@ uses
   // IdeConfig
   EnvironmentOpts, LazConf, SearchPathProcs, etMakeMsgParser, etFPCMsgFilePool,
   FindProjPackUnit, IdeConfStrConsts;
-  // IDE
-  //LazarusIDEStrConsts;
 
 const
   FPCMsgIDCompiling = 3104;

@@ -6327,10 +6327,11 @@ begin
   if Result<>mrOk then exit;
 
   // open messages window
-  SourceEditorManager.ClearErrorLines;
   if MessagesView<>nil then
     MessagesView.Clear;
-  MainIDE.DoShowMessagesView(false);
+  if EnvironmentGuiOpts.MsgViewShowAutomatically <> mwsaNever then
+    MainIDE.DoShowMessagesView(false);
+  SourceEditorManager.ClearErrorLines;
 
   // parse the LFM file and the pascal unit
   LFMChecker:=TLFMChecker.Create(PascalBuf,LFMUnitInfo.Source);

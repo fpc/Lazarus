@@ -6973,7 +6973,8 @@ begin
 
   // show messages
   MessagesView.ApplyIDEOptions;
-  IDEWindowCreators.ShowForm(MessagesView,EnvironmentGuiOpts.MsgViewFocus);
+  if EnvironmentGuiOpts.MsgViewShowAutomatically = mwsaCompiling then
+    IDEWindowCreators.ShowForm(MessagesView,EnvironmentGuiOpts.MsgViewFocus);
   // clear old error lines
   SourceEditorManager.ClearErrorLines;
 
@@ -7292,7 +7293,8 @@ begin
     // check sources
     DoCheckFilesOnDisk;
   end;
-  IDEWindowCreators.ShowForm(MessagesView,EnvironmentGuiOpts.MsgViewFocus);
+  if EnvironmentGuiOpts.MsgViewShowAutomatically = mwsaCompiling then
+    IDEWindowCreators.ShowForm(MessagesView,EnvironmentGuiOpts.MsgViewFocus);
   if ConsoleVerbosity>=0 then
     debugln(['Info: (lazarus) [TMainIDE.DoBuildProject] Success']);
   Result:=mrOk;
@@ -8062,7 +8064,8 @@ begin
 
   // show messages
   MessagesView.ApplyIDEOptions;
-  IDEWindowCreators.ShowForm(MessagesView,EnvironmentGuiOpts.MsgViewFocus);
+  if EnvironmentGuiOpts.MsgViewShowAutomatically = mwsaCompiling then
+    IDEWindowCreators.ShowForm(MessagesView,EnvironmentGuiOpts.MsgViewFocus);
   // clear old error lines
   SourceEditorManager.ClearErrorLines;
 
@@ -8676,7 +8679,8 @@ begin
   if CodeToolBoss.CheckSyntax(ActiveUnitInfo.Source,NewCode,NewX,NewY,
     NewTopLine,ErrorMsg) then
   begin
-    DoShowMessagesView(false);
+    if EnvironmentGuiOpts.MsgViewShowAutomatically = mwsaCompiling then
+      DoShowMessagesView(false);
     MessagesView.ClearCustomMessages;
     MessagesView.AddCustomMessage(mluImportant,lisMenuQuickSyntaxCheckOk);
   end else begin
@@ -9450,7 +9454,8 @@ begin
       TopLine:=LogCaretXY.Y-(SrcEdit.EditorComponent.LinesInWindow div 2);
       if TopLine<1 then TopLine:=1;
       if FocusEditor then begin
-        IDEWindowCreators.ShowForm(MessagesView,true);
+        if EnvironmentGuiOpts.MsgViewShowAutomatically = mwsaError then
+          IDEWindowCreators.ShowForm(MessagesView,true);
         SourceEditorManager.ShowActiveWindowOnTop(True);
       end;
       if IDETabMaster <> nil then
@@ -10536,7 +10541,8 @@ begin
     exit;
   end;
   // syntax error -> show error in message view and jump
-  DoShowMessagesView(false);
+  if EnvironmentGuiOpts.MsgViewShowAutomatically = mwsaError then
+    DoShowMessagesView(false);
   DoShowCodeToolBossError;
 
   // jump to error in source editor
@@ -10562,7 +10568,8 @@ begin
         ActiveSrcEdit:=SourceEditorManager.ActiveEditor;
     end;
     if ActiveSrcEdit<> nil then begin
-      IDEWindowCreators.ShowForm(MessagesView,true);
+      if EnvironmentGuiOpts.MsgViewShowAutomatically = mwsaError then
+        IDEWindowCreators.ShowForm(MessagesView,true);
       with ActiveSrcEdit.EditorComponent do begin
         LogicalCaretXY:=ErrorCaret;
         if ErrorTopLine>0 then

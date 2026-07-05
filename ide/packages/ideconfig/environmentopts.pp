@@ -558,7 +558,6 @@ function BackupTypeToName(b: TBackupType): string;
 function NameToBackupType(const s: string): TBackupType;
 
 const
-  DefaultMsgViewFocus = {$IFDEF Windows}true{$ELSE}false{$ENDIF};
   MaxComboBoxCount: integer = 20;
   EnvOptsConfFileName = 'environmentoptions.xml';
   BakMaxCounterInfiniteTxt = 'infinite';
