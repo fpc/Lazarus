@@ -15,7 +15,7 @@ resourcestring
   SEnterYouText      = 'Enter your text ...';
 
   SmiHTMLEditor      = 'HTML Editor';
-  SmiHTMLStandart    = 'Standard';
+  SmiHTMLStandard    = 'Standard';
 
   SmiHTMLTextBold           = 'Bold';
   SmiHTMLTextItalic         = 'Italic';
