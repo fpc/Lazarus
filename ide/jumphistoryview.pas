@@ -83,13 +83,13 @@ end;
 
 procedure TJumpHistoryViewWin.listHistoryClick(Sender : TObject);
 begin
-  if EnvironmentGuiOpts.MsgViewDblClickJumps then exit;
+  if EnvironmentGuiOpts.PreferDoubleClick then exit;
   if Assigned(fOnSelectionChanged) then fOnSelectionChanged(self);
 end;
 
 procedure TJumpHistoryViewWin.listHistoryDblClick(Sender : TObject);
 begin
-  if not EnvironmentGuiOpts.MsgViewDblClickJumps then exit;
+  if not EnvironmentGuiOpts.PreferDoubleClick then exit;
   if Assigned(fOnSelectionChanged) then fOnSelectionChanged(self);
 end;
 

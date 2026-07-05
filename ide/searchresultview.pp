@@ -829,7 +829,7 @@ begin
   if Node=nil then exit;
   if x<Node.DisplayTextLeft then exit;
   //debugln(['TSearchResultsView.TreeViewMouseDown single=',([ssDouble,ssTriple,ssQuad]*Shift=[]),' Option=',EnvironmentOptions.MsgViewDblClickJumps]);
-  if EnvironmentGuiOpts.MsgViewDblClickJumps then
+  if EnvironmentGuiOpts.PreferDoubleClick then
   begin
     // double click jumps
     if not (ssDouble in Shift) then exit;

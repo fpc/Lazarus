@@ -239,6 +239,8 @@ type
   TEnvGuiOptions = class(TIDESubOptions)
   private
     FConfigStorage: TXMLOptionsStorage;
+    // mouse action
+    FPreferDoubleClick: boolean;
     // hints
     FShowHintsForComponentPalette: boolean;
     FShowHintsForMainSpeedButtons: boolean;
@@ -281,7 +283,6 @@ type
     // object inspector
     FObjectInspectorOptions: TOIOptions;
     // messages
-    FMsgViewDblClickJumps: boolean;
     FMsgViewFocus: boolean;
     FShowMessagesIcons: boolean;
     FMsgViewStayOnTop: boolean;
@@ -316,7 +317,9 @@ type
     procedure EnableDebugDesktop;
     procedure DisableDebugDesktop;
     class function DesktopCanBeLoaded(const aDockMaster: string): Boolean;
-
+    // mouse action
+    // true=double click, false=single click
+    property PreferDoubleClick: boolean read FPreferDoubleClick write FPreferDoubleClick;
     // hints
     property ShowHintsForComponentPalette: boolean read FShowHintsForComponentPalette
                                                   write FShowHintsForComponentPalette;
@@ -377,8 +380,6 @@ type
     // object inspector
     property ObjectInspectorOptions: TOIOptions read FObjectInspectorOptions;
     // messages view
-    property MsgViewDblClickJumps: boolean read FMsgViewDblClickJumps
-      write FMsgViewDblClickJumps; // true=dbl click jump to error, false=single click jumps
     property MsgViewFocus: boolean read FMsgViewFocus
       write FMsgViewFocus; // when showing the message window, focus it
     property ShowMessagesIcons: boolean read FShowMessagesIcons write FShowMessagesIcons;
@@ -946,6 +947,7 @@ var
   c: TMsgWndColor;
   u: TMessageLineUrgency;
 begin
+  FPreferDoubleClick:=true;
   FShowHintsForComponentPalette:=true;
   FShowHintsForMainSpeedButtons:=true;
   // glyphs
@@ -981,7 +983,6 @@ begin
   // object inspector
   FObjectInspectorOptions:=TOIOptions.Create;
   // messages view
-  fMsgViewDblClickJumps:=true;
   fMsgViewFocus:=DefaultMsgViewFocus;
   FShowMessagesIcons:=true;
   FMsgViewStayOnTop:=false;
@@ -1019,6 +1020,9 @@ var
   i, j: Integer;
 begin
   Path:='EnvironmentOptions/';
+  // mouse action
+  // ToDo: Change XML key name to 'PreferDoubleClick'.
+  FPreferDoubleClick:=XMLCfg.GetValue(Path+'MsgViewDblClickJumps/Value',false);
   // hints
   FShowHintsForComponentPalette:=XMLCfg.GetValue(Path+'ShowHintsForComponentPalette/Value',true);
   FShowHintsForMainSpeedButtons:=XMLCfg.GetValue(Path+'ShowHintsForMainSpeedButtons/Value',true);
@@ -1070,7 +1074,6 @@ begin
   FObjectInspectorOptions.Load;
   FObjectInspectorOptions.SaveBounds:=false;
   // messages view
-  fMsgViewDblClickJumps:=XMLCfg.GetValue(Path+'MsgViewDblClickJumps/Value',false);
   fMsgViewFocus:=XMLCfg.GetValue(Path+'MsgViewFocus/Value',DefaultMsgViewFocus);
   FShowMessagesIcons:=XMLCfg.GetValue(Path+'MsgView/ShowMessagesIcons/Value',true);
   FMsgViewStayOnTop:=XMLCfg.GetValue(Path+'MsgView/StayOnTop/Value',false);
@@ -1148,6 +1151,9 @@ var
   xActiveDesktopName: string;
 begin
   Path:='EnvironmentOptions/';
+  // mouse action
+  // ToDo: Change XML key name to 'PreferDoubleClick'.
+  XMLCfg.SetDeleteValue(Path+'MsgViewDblClickJumps/Value',FPreferDoubleClick,false);
   // hints
   XMLCfg.SetDeleteValue(Path+'ShowHintsForComponentPalette/Value',FShowHintsForComponentPalette,true);
   XMLCfg.SetDeleteValue(Path+'ShowHintsForMainSpeedButtons/Value',FShowHintsForMainSpeedButtons,true);
@@ -1197,7 +1203,6 @@ begin
   FObjectInspectorOptions.SaveBounds:=false;
   FObjectInspectorOptions.Save;
   // messages view
-  XMLCfg.SetDeleteValue(Path+'MsgViewDblClickJumps/Value',fMsgViewDblClickJumps,false);
   XMLCfg.SetDeleteValue(Path+'MsgViewFocus/Value',fMsgViewFocus,DefaultMsgViewFocus);
   XMLCfg.SetDeleteValue(Path+'MsgView/ShowMessagesIcons/Value',FShowMessagesIcons,true);
   XMLCfg.SetDeleteValue(Path+'MsgView/StayOnTop/Value',FMsgViewStayOnTop,false);

@@ -217,7 +217,7 @@ begin
     //debugln('TEnvironmentOptionsDialog.ReadSettings LanguageComboBox.ItemIndex=',dbgs(LanguageComboBox.ItemIndex),' LanguageID="',LanguageID,'" LanguageComboBox.Text="',LanguageComboBox.Text,'"');
 
     // mouse action
-    PreferDoubleClickCheckBox.Checked := MsgViewDblClickJumps;
+    PreferDoubleClickCheckBox.Checked := PreferDoubleClick;
 
     // hints
     ShowHintsForMainSpeedButtonsCheckBox.Checked:=ShowHintsForMainSpeedButtons;
@@ -274,7 +274,7 @@ begin
     //debugln('TEnvironmentOptionsDialog.WriteSettings A LanguageID="',LanguageID,'" LanguageComboBox.ItemIndex=',dbgs(LanguageComboBox.ItemIndex),' LanguageComboBox.Text=',LanguageComboBox.Text);
 
     // mouse action
-    MsgViewDblClickJumps := PreferDoubleClickCheckBox.Checked;
+    PreferDoubleClick := PreferDoubleClickCheckBox.Checked;
 
     // hints
     ShowHintsForMainSpeedButtons:=ShowHintsForMainSpeedButtonsCheckBox.Checked;

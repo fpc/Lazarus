@@ -3135,7 +3135,7 @@ begin
   HeaderBackground[lmvtsFailed]:=EnvironmentGuiOpts.MsgViewColors[mwFailed];
   TextColor:=EnvironmentGuiOpts.MsgViewColors[mwTextColor];
   NewOptions:=Options;
-  SetOption(mcoSingleClickOpensFile,not EnvironmentGuiOpts.MsgViewDblClickJumps);
+  SetOption(mcoSingleClickOpensFile,not EnvironmentGuiOpts.PreferDoubleClick);
   SetOption(mcoShowMsgIcons,EnvironmentGuiOpts.ShowMessagesIcons);
   SetOption(mcoShowTranslated,EnvironmentGuiOpts.MsgViewShowTranslations);
   SetOption(mcoAlwaysDrawFocused,EnvironmentGuiOpts.MsgViewAlwaysDrawFocused);
