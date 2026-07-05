@@ -707,6 +707,7 @@ begin
       Pitch := fpDefault;
     Style := AStyle;
     Quality := TFontQuality(ALogFont.lfQuality);
+    Orientation := ALogFont.lfOrientation;   //Note: what to do with ALogFont.lfEscapement here?
     Name := ALogFont.lfFaceName;
   finally
     EndUpdate;
