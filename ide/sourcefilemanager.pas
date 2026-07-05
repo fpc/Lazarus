@@ -237,7 +237,6 @@ procedure RemoveRecentProjectFile(const AFilename: string);
 procedure UpdateSourceNames;
 function CheckEditorNeedsSave(AEditor: TSourceEditorInterface;
     IgnoreSharedEdits: Boolean): Boolean;
-procedure ArrangeSourceEditorAndMessageView(PutOnTop: boolean);
 // files/units/projects
 function MaybeOpenProject(AFiles: TStrings): Boolean;
 function MaybeOpenEditorFiles(AFiles: TStrings; WindowIndex: integer): Boolean;
@@ -2220,20 +2219,6 @@ begin
   SaveSrcEditorProjectSpecificSettings(AnEditorInfo);
 
   Result := (AEditor.Modified) or (AnUnitInfo.Modified);
-end;
-
-procedure ArrangeSourceEditorAndMessageView(PutOnTop: boolean);
-begin
-  if SourceEditorManager.SourceWindowCount > 0 then
-  begin
-    if PutOnTop then
-    begin
-      IDEWindowCreators.ShowForm(MessagesView,true);
-      SourceEditorManager.ShowActiveWindowOnTop(False);
-      exit;
-    end;
-  end;
-  MainIDE.DoShowMessagesView(PutOnTop);
 end;
 
 function MaybeOpenProject(AFiles: TStrings): Boolean;
@@ -6345,7 +6330,7 @@ begin
   SourceEditorManager.ClearErrorLines;
   if MessagesView<>nil then
     MessagesView.Clear;
-  ArrangeSourceEditorAndMessageView(false);
+  MainIDE.DoShowMessagesView(false);
 
   // parse the LFM file and the pascal unit
   LFMChecker:=TLFMChecker.Create(PascalBuf,LFMUnitInfo.Source);

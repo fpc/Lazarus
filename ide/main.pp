@@ -6972,11 +6972,10 @@ begin
   end;
 
   // show messages
+  MessagesView.ApplyIDEOptions;
   IDEWindowCreators.ShowForm(MessagesView,EnvironmentGuiOpts.MsgViewFocus);
-
   // clear old error lines
   SourceEditorManager.ClearErrorLines;
-  ArrangeSourceEditorAndMessageView(false);
 
   // check common mistakes in search paths
   Result:=PkgBoss.CheckUserSearchPaths(Project1.CompilerOptions);
@@ -8062,11 +8061,10 @@ begin
   if DoAbortBuild(true)<>mrOK then exit;
 
   // show messages
+  MessagesView.ApplyIDEOptions;
   IDEWindowCreators.ShowForm(MessagesView,EnvironmentGuiOpts.MsgViewFocus);
-
   // clear old error lines
   SourceEditorManager.ClearErrorLines;
-  ArrangeSourceEditorAndMessageView(false);
 
   Result:=DoSaveAll([sfDoNotSaveVirtualFiles]);
   if Result<>mrOk then begin
@@ -8678,7 +8676,7 @@ begin
   if CodeToolBoss.CheckSyntax(ActiveUnitInfo.Source,NewCode,NewX,NewY,
     NewTopLine,ErrorMsg) then
   begin
-    ArrangeSourceEditorAndMessageView(false);
+    DoShowMessagesView(false);
     MessagesView.ClearCustomMessages;
     MessagesView.AddCustomMessage(mluImportant,lisMenuQuickSyntaxCheckOk);
   end else begin
@@ -10537,9 +10535,8 @@ begin
       debugln('Note: (lazarus) TMainIDE.DoJumpToCodeToolBossError No errormessage');
     exit;
   end;
-  // syntax error -> show error and jump
-  // show error in message view
-  ArrangeSourceEditorAndMessageView(false);
+  // syntax error -> show error in message view and jump
+  DoShowMessagesView(false);
   DoShowCodeToolBossError;
 
   // jump to error in source editor
