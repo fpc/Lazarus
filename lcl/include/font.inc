@@ -724,7 +724,8 @@ begin
   or (Name<>AFont.Name)
   or (Pitch<>AFont.Pitch)
   or (Quality<>AFont.Quality)
-  or (Style<>AFont.Style) then
+  or (Style<>AFont.Style)
+  or (Orientation<>AFont.Orientation) then
     Result := False
   else
     Result := True;
