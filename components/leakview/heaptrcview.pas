@@ -453,11 +453,6 @@ begin
     cfg.SetValue(DOMString('path'+IntToStr(i)), UTF8Decode(edtTrcFileName.Items[i]) );
 end;
 
-function PointInRect(p: TPoint; const r: TRect): Boolean;
-begin
-  Result:=(p.X>=r.Left) and (p.X<=r.Right) and (p.y>=r.Top) and (p.y<=r.Bottom);
-end;
-
 procedure inAnyMonitor(var b: TRect);
 var
   m: TMonitor;
