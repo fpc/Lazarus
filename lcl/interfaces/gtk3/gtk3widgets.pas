@@ -1144,7 +1144,6 @@ type
     FResizeState: TGtk3WindowResizeState;
     function GetCSDShadowW: gint;
     function GetCSDShadowH: gint;
-    function GetMenuBarHeight: gint;
     function GetSkipTaskBarHint: Boolean;
     function GetTitle: String;
     procedure SetIcon(AValue: PGdkPixBuf);
@@ -1198,6 +1197,7 @@ type
     function CloseQuery: Boolean;
     function GetWindow: PGdkWindow; override;
     function GetMenuBar: PGtkMenuBar;
+    function GetMenuBarHeight: gint;
     function GetBox: PGtkBox;
     function GetWindowState: TGdkWindowState;
     property Icon: PGdkPixBuf read FIcon write SetIcon;
@@ -14652,11 +14652,12 @@ begin
     exit;
 
   MenuH := 0;
-  if Gtk3IsGtkWindow(AWidget) and not (csDesigning in ACtl.LCLObject.ComponentState) and
+  if Gtk3IsGtkWindow(AWidget) and
      not Assigned(ACtl.LCLObject.Parent) and
      (not (ACtl.LCLObject is TCustomForm) or (TCustomForm(ACtl.LCLObject).FormStyle <> fsMDIChild)) then
     MenuH := ACtl.GetMenuBarHeight;
-  if MenuH > 0 then
+  if (MenuH > 0)
+  and (AWidget^.get_mapped or (AGdkRect^.height >= ACtl.LCLObject.Height + MenuH)) then
     NewSize.cy := Max(0, NewSize.cy - MenuH);
 
   {$IFDEF GTK3DEBUGSCROLLEDWIN}
@@ -15615,7 +15616,7 @@ begin
   AForm := TCustomForm(LCLObject);
   BeginUpdate;
   MenuH := 0;
-  if Gtk3IsGtkWindow(fWidget) and not (csDesigning in AForm.ComponentState) and
+  if Gtk3IsGtkWindow(fWidget) and
      not Assigned(AForm.Parent) and (AForm.FormStyle <> fsMDIChild) then
     MenuH := GetMenuBarHeight;
   if MenuH > 0 then
@@ -16158,14 +16159,20 @@ end;
 function TGtk3Window.GetMenuBarHeight: gint;
 var
   MinH, NatH: gint;
+  HasMenu: Boolean;
 begin
   Result := 0;
-  if not Assigned(FMenuBar) then
+  HasMenu := Assigned(FMenuBar) or
+    ((LCLObject is TCustomForm) and (TCustomForm(LCLObject).Menu <> nil));
+  if not HasMenu then
     exit;
-  MinH := 0;
-  NatH := 0;
-  PGtkWidget(FMenuBar)^.get_preferred_height(@MinH, @NatH);
-  Result := NatH;
+  if Assigned(FMenuBar) then
+  begin
+    MinH := 0;
+    NatH := 0;
+    PGtkWidget(FMenuBar)^.get_preferred_height(@MinH, @NatH);
+    Result := NatH;
+  end;
   if Result <= 0 then
     Result := GetSystemMetrics(SM_CYMENU);
 end;
@@ -16189,7 +16196,7 @@ begin
       ABox^.pack_start(FMenuBar, False, False, 0);
       g_signal_connect_data(PGObject(FMenuBar), 'enter-notify-event',
         TGCallback(@MenuBarEnterNotify), Self, nil, G_CONNECT_DEFAULT);
-      if Assigned(LCLObject) and not (csDesigning in LCLObject.ComponentState) and
+      if Assigned(LCLObject) and
          Gtk3IsGtkWindow(Widget) and not Assigned(LCLObject.Parent) then
         SetBounds(LCLObject.Left, LCLObject.Top, LCLObject.Width, LCLObject.Height);
     end;

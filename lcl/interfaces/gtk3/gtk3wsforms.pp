@@ -404,9 +404,14 @@ var
     TargetOpacity: Double;
     GdkDisplay: PGdkDisplay;
     IsX11: Boolean;
+    MenuHFix: gint;
   begin
     GdkDisplay := gdk_window_get_display(AWindow^.window);
     IsX11 := not Gtk3WidgetSet.IsWayland;
+    MenuHFix := 0;
+    if (AGtk3Widget is TGtk3Window) and
+       not Assigned(AForm.Parent) and (AForm.FormStyle <> fsMDIChild) then
+      MenuHFix := TGtk3Window(AGtk3Widget).GetMenuBarHeight;
     IsBorderLess := (AForm.BorderStyle = bsNone) or (not AWindow^.get_decorated);
 
     if not IsX11 then
@@ -457,7 +462,7 @@ var
     end;
 
     with AWinControl do
-      AWindow^.window^.move_resize(Left, Top, Width, Height);
+      AWindow^.window^.move_resize(Left, Top, Width, Height + MenuHFix);
 
     gdk_display_flush(GdkDisplay);
 
