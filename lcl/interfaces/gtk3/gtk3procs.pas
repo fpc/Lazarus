@@ -1297,7 +1297,7 @@ begin
     GDK_KEY_KP_9: Result := AValue - GDK_KEY_Home;
     GDK_KEY_Return, GDK_KEY_KP_Enter, GDK_KEY_3270_Enter: Result := VK_RETURN;
     GDK_KEY_Escape: Result := VK_ESCAPE;
-    GDK_KEY_Insert: Result := VK_INSERT;
+    GDK_KEY_Insert, GDK_KEY_KP_Insert: Result := VK_INSERT;
     GDK_KEY_Delete, GDK_KEY_KP_Delete: Result := VK_DELETE;
     GDK_KEY_BackSpace: Result := VK_BACK;
     GDK_KEY_Home, GDK_KEY_KP_Home: Result := VK_HOME;
@@ -1309,7 +1309,7 @@ begin
     GDK_KEY_Right, GDK_KEY_KP_Right: Result := VK_RIGHT;
     GDK_KEY_Down, GDK_KEY_KP_Down: Result := VK_DOWN;
     GDK_KEY_Menu: Result := VK_APPS;
-    GDK_KEY_Tab, GDK_KEY_3270_BackTab, GDK_KEY_ISO_Left_Tab: Result := VK_TAB;
+    GDK_KEY_Tab, GDK_KEY_3270_BackTab, GDK_KEY_ISO_Left_Tab, GDK_KEY_KP_Tab: Result := VK_TAB;
     GDK_KEY_Shift_L, GDK_KEY_Shift_R: Result := VK_SHIFT;
     GDK_KEY_Control_L, GDK_KEY_Control_R: Result := VK_CONTROL;
     GDK_KEY_F1 .. GDK_KEY_F30:
@@ -1322,6 +1322,11 @@ begin
       Result := VK_MULTIPLY;
     GDK_KEY_division, GDK_KEY_KP_Divide:
       Result := VK_DIVIDE;
+    GDK_KEY_KP_Begin, GDK_KEY_KP_Space: Result := VK_CLEAR;
+    GDK_KEY_KP_Decimal: Result := VK_DECIMAL;
+    GDK_KEY_KP_Separator: Result := VK_SEPARATOR;
+    GDK_KEY_KP_F1..GDK_KEY_KP_F4:
+      Result := VK_F1 + (AValue - GDK_KEY_KP_F1);
   end;
 end;
 
