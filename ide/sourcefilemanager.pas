@@ -2504,6 +2504,9 @@ begin
     NewUnitInfo.GetClosedOrNewEditorInfo.EditorComponent := NewSrcEdit;
     NewSrcEdit.EditorComponent.CaretXY := Point(1,1);
 
+    // call handler
+    NewFileDescriptor.EditorCreated(NewUnitInfo);
+
     // create component
     AncestorType:=NewFileDescriptor.ResourceClass;
     if AncestorType <> nil then
@@ -2579,6 +2582,9 @@ begin
     if NewUnitInfo.Component<>nil then begin
       // show form
       MainIDE.DoShowDesignerFormOfCurrentSrc(False);
+
+      // call handler
+      NewFileDescriptor.DesignerCreated(NewUnitInfo);
     end else begin
       MainIDE.DisplayState:= dsSource;
     end;

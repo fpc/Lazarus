@@ -121,7 +121,9 @@ type
     procedure UpdateDefaultPascalFileExtension(const DefPasExt: string); virtual;
     function Init(var {%H-}NewFilename: string; {%H-}NewOwner: TObject;
                   var {%H-}NewSource: string; {%H-}Quiet: boolean): TModalResult; virtual;
-    function Initialized({%H-}NewFile: TLazProjectFile): TModalResult; virtual; // ready to open in source editor
+    function Initialized(NewFile: TLazProjectFile): TModalResult; virtual; // ready to open in source editor
+    procedure EditorCreated(NewFile: TLazProjectFile); virtual; // source editor created
+    procedure DesignerCreated(NewFile: TLazProjectFile); virtual; // form designer created
   public
     property Owner: TIDEProjPackBase read FOwner write FOwner; // project, package or nil
     property Name: string read FName write SetName;
@@ -1167,7 +1169,18 @@ end;
 function TProjectFileDescriptor.Initialized(NewFile: TLazProjectFile
   ): TModalResult;
 begin
+  if NewFile=nil then ;
   Result:=mrOk;
+end;
+
+procedure TProjectFileDescriptor.EditorCreated(NewFile: TLazProjectFile);
+begin
+  if NewFile=nil then ;
+end;
+
+procedure TProjectFileDescriptor.DesignerCreated(NewFile: TLazProjectFile);
+begin
+  if NewFile=nil then ;
 end;
 
 { TFileDescPascalUnit }
