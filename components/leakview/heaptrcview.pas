@@ -136,6 +136,7 @@ end;
 procedure THeapTrcViewForm.btnClipboardClick(Sender: TObject);
 begin
   DoUpdateLeaksFromText(Clipboard.AsText);
+  edtTrcFileName.Text := ''; // avoid confusion about loading a report from a file
 end;
 
 procedure THeapTrcViewForm.BtnResolveClick(Sender: TObject);
