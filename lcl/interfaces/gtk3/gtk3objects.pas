@@ -967,8 +967,13 @@ var
   weight: TPangoWeight;
   AFamily: PChar;
   AFaceStr: string;
+  SavedEscapement, SavedOrientation: Longint;
+  SavedCharSet: Byte;
 begin
   if not Assigned(fHandle) then exit;
+  SavedEscapement := fLogFont.lfEscapement;
+  SavedOrientation := fLogFont.lfOrientation;
+  SavedCharSet := fLogFont.lfCharSet;
   fillchar(fLogFont,sizeof(fLogFont),0);
   members:=fHandle^.get_set_fields;
   AFamily := fHandle^.get_family;
@@ -1026,6 +1031,13 @@ begin
 
     fLogFont.lfHeight:=sz;//round(sz/PANGO_SCALE);
   end;
+  fLogFont.lfEscapement := SavedEscapement;
+  if SavedOrientation <> 0 then
+    fLogFont.lfOrientation := SavedOrientation;
+  if SavedCharSet <> 0 then
+    fLogFont.lfCharSet := SavedCharSet
+  else
+    fLogFont.lfCharSet := DEFAULT_CHARSET;
 end;
 
 function TGtk3Font.IsMonospace: boolean;
@@ -1245,6 +1257,8 @@ end;
 
 destructor TGtk3Font.Destroy;
 begin
+  if Assigned(fContext) and (fContext.CurrentFont = Self) then
+    fContext.CurrentFont := nil;
   if Assigned(FLayout) then
   begin
     g_object_unref(FLayout);
