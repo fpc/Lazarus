@@ -3876,13 +3876,12 @@ begin
     TControl(AComponent).ControlStyle:=
       TControl(AComponent).ControlStyle-[csNoDesignVisible];
   // create designer
-  aDesigner:=TDesigner.Create(DesignerForm, TheControlSelection);;
+  aDesigner:=TDesigner.Create(DesignerForm, AnUnitInfo, TheControlSelection);;
   DesignerForm.Designer := aDesigner;
-  aDesigner.SetProjectFile(AnUnitInfo);
   {$IFDEF IDE_DEBUG}
   debugln('[TMainIDE.CreateDesignerForComponent] B');
   {$ENDIF}
-  with TDesigner(DesignerForm.Designer) do begin
+  with aDesigner do begin
     TheFormEditor := FormEditor1;
     OnActivated:=@DesignerActivated;
     OnCloseQuery:=@DesignerCloseQuery;
@@ -3909,6 +3908,7 @@ begin
     ShowNonVisualComponents:=EnvironmentGuiOpts.ShowNonVisualComponents;
     ShowComponentCaptions:=EnvironmentGuiOpts.ShowComponentCaptions;
   end;
+
   if AnUnitInfo<>nil then
     AnUnitInfo.LoadedDesigner:=true;
 end;

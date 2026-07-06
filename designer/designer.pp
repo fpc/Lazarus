@@ -286,11 +286,10 @@ type
     Selection: TControlSelection;
     DDC: TDesignerDeviceContext;
 
-    constructor Create(TheDesignerForm: TCustomForm; AControlSelection: TControlSelection);
+    constructor Create(TheDesignerForm: TCustomForm; aFile: TLazProjectFile; AControlSelection: TControlSelection);
     procedure PrepareFreeDesigner(AFreeComponent: boolean); override;
     procedure DisconnectComponent; override;
     destructor Destroy; override;
-    procedure SetProjectFile(aFile: TLazProjectFile);
 
     procedure Modified; override;
     procedure SelectOnlyThisComponent(AComponent: TComponent); override;
@@ -665,7 +664,7 @@ begin
   LUIncreaseChangeStamp64(FUndoGroupId);
 end;
 
-constructor TDesigner.Create(TheDesignerForm: TCustomForm;
+constructor TDesigner.Create(TheDesignerForm: TCustomForm; aFile: TLazProjectFile;
   AControlSelection: TControlSelection);
 var
   LNonControlDesigner: INonControlDesigner;
@@ -674,17 +673,8 @@ begin
   inherited Create;
   //debugln(['TDesigner.Create Self=',dbgs(Pointer(Self)),' TheDesignerForm=',DbgSName(TheDesignerForm)]);
   FForm := TheDesignerForm;
-  if FForm is INonControlDesigner then begin
-    LNonControlDesigner := FForm as INonControlDesigner;
-    FLookupRoot := LNonControlDesigner.LookupRoot;
-    Mediator := LNonControlDesigner.Mediator;
-  end
-  else if FForm is IFrameDesigner then
-    FLookupRoot := (FForm as IFrameDesigner).LookupRoot
-  else
-    FLookupRoot := FForm;
+  FProjectFile := aFile;
 
-  Selection := AControlSelection;
   FFlags := [dfShowNonVisualComponents];
   FGridColor := clGray;
 
@@ -711,6 +701,21 @@ begin
   FUndoLock := 0;
   FUndoState := ucsNone;
   FUndoGroupId := 1;
+
+  // now things that can trigger events
+  if FForm is INonControlDesigner then begin
+    LNonControlDesigner := FForm as INonControlDesigner;
+    FLookupRoot := LNonControlDesigner.LookupRoot;
+
+    // this can trigger events:
+    Mediator := LNonControlDesigner.Mediator;
+  end
+  else if FForm is IFrameDesigner then
+    FLookupRoot := (FForm as IFrameDesigner).LookupRoot
+  else
+    FLookupRoot := FForm;
+
+  Selection := AControlSelection;
 end;
 
 procedure TDesigner.AddComponent(
@@ -866,11 +871,6 @@ begin
   FreeAndNil(DDC);
   FreeAndNil(DeletingPersistent);
   inherited Destroy;
-end;
-
-procedure TDesigner.SetProjectFile(aFile: TLazProjectFile);
-begin
-  FProjectFile:=aFile;
 end;
 
 procedure TDesigner.NudgePosition(DiffX, DiffY : Integer);

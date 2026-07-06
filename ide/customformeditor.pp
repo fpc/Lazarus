@@ -184,6 +184,7 @@ type
     // ancestors
     function GetAncestorLookupRoot(AComponent: TComponent): TComponent; override;
     function GetAncestorInstance(AComponent: TComponent): TComponent; override;
+
     function RegisterDesignerBaseClass(AClass: TComponentClass): integer; override;
     function DesignerBaseClassCount: Integer; override;
     procedure UnregisterDesignerBaseClass(AClass: TComponentClass); override;
