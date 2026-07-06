@@ -124,7 +124,7 @@ uses
   fpIDEExtEditorInsertFileNameUnit;
 
 var
-  //Standart items
+  //Standard items
   CmdHTMLBold : TIDECommand;
   CmdHTMLItalic : TIDECommand;
   CmdHTMLUnderline : TIDECommand;
@@ -188,7 +188,7 @@ var
   mnuHTMLMain : TIDEMenuSection;
   mnuHTMLSection : TIDEMenuSection;
 
-  mnuHTMLStandart : TIDEMenuSection;
+  mnuHTMLStandard : TIDEMenuSection;
   mnuHTMLStyles : TIDEMenuSection;
   mnuHTMLTables : TIDEMenuSection;
   mnuHTMLLists : TIDEMenuSection;
@@ -266,25 +266,25 @@ begin
 
   mnuHTMLSection:=RegisterIDESubMenu(mnuHTMLMain, 'HTMLEditor', SmiHTMLEditor, nil, nil);
 
-  mnuHTMLStandart := RegisterIDESubMenu(mnuHTMLSection, 'HTMLStandart', SmiHTMLStandart, nil, nil);
-    RegisterIDEMenuCommand(mnuHTMLStandart, 'HTMLBold', SmiHTMLTextBold, nil, nil, CmdHTMLBold, 'tag_bold');
-    RegisterIDEMenuCommand(mnuHTMLStandart, 'HTMLItalic', SmiHTMLTextItalic, nil, nil, CmdHTMLItalic, 'tag_i');
-    RegisterIDEMenuCommand(mnuHTMLStandart, 'HTMLUnderline', SmiHTMLTextUnderline, nil, nil, CmdHTMLUnderline, 'tag_u');
-    RegisterIDEMenuCommand(mnuHTMLStandart, '', '-', nil, nil, nil, '');
-    RegisterIDEMenuCommand(mnuHTMLStandart, 'HTMLBR', SmiHTMLInsertBR, nil, nil, CmdHTMLBR, 'tag_br');
+  mnuHTMLStandard := RegisterIDESubMenu(mnuHTMLSection, 'HTMLStandard', SmiHTMLStandard, nil, nil);
+    RegisterIDEMenuCommand(mnuHTMLStandard, 'HTMLBold', SmiHTMLTextBold, nil, nil, CmdHTMLBold, 'tag_bold');
+    RegisterIDEMenuCommand(mnuHTMLStandard, 'HTMLItalic', SmiHTMLTextItalic, nil, nil, CmdHTMLItalic, 'tag_i');
+    RegisterIDEMenuCommand(mnuHTMLStandard, 'HTMLUnderline', SmiHTMLTextUnderline, nil, nil, CmdHTMLUnderline, 'tag_u');
+    RegisterIDEMenuCommand(mnuHTMLStandard, '', '-', nil, nil, nil, '');
+    RegisterIDEMenuCommand(mnuHTMLStandard, 'HTMLBR', SmiHTMLInsertBR, nil, nil, CmdHTMLBR, 'tag_br');
     //Paragraph
-    RegisterIDEMenuCommand(mnuHTMLStandart, 'HTMLNBSP', SmiHTMLInsertNBSP, nil, nil, CmdHTMLNBSP, 'tag_nbsp');
-    RegisterIDEMenuCommand(mnuHTMLStandart, '', '-', nil, nil, nil, '');
-    RegisterIDEMenuCommand(mnuHTMLStandart, 'HTMLLink', SmiHTMLInsertLink, nil, nil, CmdHTMLLink, 'tag_a');
-    RegisterIDEMenuCommand(mnuHTMLStandart, 'HTMLIMG', SmiHTMLInsertIMG, nil, nil, CmdHTMLIMG, 'tag_image');
-    RegisterIDEMenuCommand(mnuHTMLStandart, 'HTMLHR', SmiHTMLInsertHR, nil, nil, CmdHTMLHR, 'tag_hr');
-    RegisterIDEMenuCommand(mnuHTMLStandart, 'HTMLComment', SmiHTMLInsertComment, nil, nil, CmdHTMLComment, 'tag_comm');
-    RegisterIDEMenuCommand(mnuHTMLStandart, '', '-', nil, nil, nil, '');
+    RegisterIDEMenuCommand(mnuHTMLStandard, 'HTMLNBSP', SmiHTMLInsertNBSP, nil, nil, CmdHTMLNBSP, 'tag_nbsp');
+    RegisterIDEMenuCommand(mnuHTMLStandard, '', '-', nil, nil, nil, '');
+    RegisterIDEMenuCommand(mnuHTMLStandard, 'HTMLLink', SmiHTMLInsertLink, nil, nil, CmdHTMLLink, 'tag_a');
+    RegisterIDEMenuCommand(mnuHTMLStandard, 'HTMLIMG', SmiHTMLInsertIMG, nil, nil, CmdHTMLIMG, 'tag_image');
+    RegisterIDEMenuCommand(mnuHTMLStandard, 'HTMLHR', SmiHTMLInsertHR, nil, nil, CmdHTMLHR, 'tag_hr');
+    RegisterIDEMenuCommand(mnuHTMLStandard, 'HTMLComment', SmiHTMLInsertComment, nil, nil, CmdHTMLComment, 'tag_comm');
+    RegisterIDEMenuCommand(mnuHTMLStandard, '', '-', nil, nil, nil, '');
     //--
-    RegisterIDEMenuCommand(mnuHTMLStandart, 'HTMLTextAlignLeft', SmiHTMLTextAlignLeft, nil, nil, CmdHTMLTextAlignLeft, 'div_left');
-    RegisterIDEMenuCommand(mnuHTMLStandart, 'HTMLTextAlignRight', SmiHTMLTextAlignRight, nil, nil, CmdHTMLTextAlignRight, 'div_right');
-    RegisterIDEMenuCommand(mnuHTMLStandart, 'HTMLTextAlignCenter', SmiHTMLTextAlignCenter, nil, nil, CmdHTMLTextAlignCenter, 'div_center');
-    RegisterIDEMenuCommand(mnuHTMLStandart, 'HTMLTextAlignJustify', SmiHTMLTextAlignJustify, nil, nil, CmdHTMLTextAlignJustify, 'div_justify');
+    RegisterIDEMenuCommand(mnuHTMLStandard, 'HTMLTextAlignLeft', SmiHTMLTextAlignLeft, nil, nil, CmdHTMLTextAlignLeft, 'div_left');
+    RegisterIDEMenuCommand(mnuHTMLStandard, 'HTMLTextAlignRight', SmiHTMLTextAlignRight, nil, nil, CmdHTMLTextAlignRight, 'div_right');
+    RegisterIDEMenuCommand(mnuHTMLStandard, 'HTMLTextAlignCenter', SmiHTMLTextAlignCenter, nil, nil, CmdHTMLTextAlignCenter, 'div_center');
+    RegisterIDEMenuCommand(mnuHTMLStandard, 'HTMLTextAlignJustify', SmiHTMLTextAlignJustify, nil, nil, CmdHTMLTextAlignJustify, 'div_justify');
     //Span text
 
   //List's

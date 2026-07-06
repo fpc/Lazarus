@@ -474,7 +474,9 @@ msgstr "Listák"
 msgid "Other"
 msgstr "Egyéb"
 
-#: fpwebstrconsts.smihtmlstandart
+#: fpwebstrconsts.smihtmlstandard
+#, fuzzy
+msgctxt "fpwebstrconsts.smihtmlstandard"
 msgid "Standard"
 msgstr "Alapvető"
 

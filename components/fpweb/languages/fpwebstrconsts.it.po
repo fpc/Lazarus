@@ -475,7 +475,9 @@ msgstr "Liste"
 msgid "Other"
 msgstr "Altro"
 
-#: fpwebstrconsts.smihtmlstandart
+#: fpwebstrconsts.smihtmlstandard
+#, fuzzy
+msgctxt "fpwebstrconsts.smihtmlstandard"
 msgid "Standard"
 msgstr "Standard"
 
