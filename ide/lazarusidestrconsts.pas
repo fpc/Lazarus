@@ -1115,6 +1115,11 @@ resourcestring
   dlgEOFocusMessagesAtCompilation = 'Focus messages at compilation';
   lisMaximumParallelProcesses0MeansDefault = 'Maximum parallel processes, 0 '
     +'means default (%s)';
+  lisShowAutomatically = 'Show automatically';
+  lisWhenCompiling = 'When compiling';
+  lisOnlyWhenErrorsOccur = 'Only when errors occur';
+  lisShowAutomaticallyNever = 'Never';
+  lisMustBeOpenedManually = 'Must be opened manually from View -> Messages.';
   lisShowFPCMessageLinesCompiled = 'Show FPC message "lines compiled"';
   lisElevateTheMessagePriorityToAlwaysShowItByDefaultIt = 'Elevate the message'
     +' priority to always show it (by default it has low priority "verbose")';

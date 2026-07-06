@@ -243,7 +243,6 @@ begin
 
   cbStayOnTop.Caption := lisWindowStaysOnTop;
   cbFocusAtCompilation.Caption := dlgEOFocusMessagesAtCompilation;
-  cbFocusAtCompilation.Hint := 'Affects if the window is shown automatically for compiling.';
   cbAlwaysDrawFocused.Caption := lisAlwaysDrawSelectedItemsFocused;
   cbAlwaysDrawFocused.Hint := lisDrawTheSelectionFocusedEvenIfTheMessagesWindowHasN;
   cbShowFPCLinesCompiled.Caption := lisShowFPCMessageLinesCompiled;
@@ -252,11 +251,12 @@ begin
   cbShowIcons.Hint := dlgAnIconForErrorWarningHintIsShown;
   lbMaxProcs.Caption := Format(lisMaximumParallelProcesses0MeansDefault,
                                [IntToStr(DefaultMaxProcessCount)]);
-  lbShowAutomatically.Caption := 'Show automatically'; //lisShowAutomatically;
-  cbShowAutomatically.Items.Add('When compiling');
-  cbShowAutomatically.Items.Add('Only when errors occur');
-  cbShowAutomatically.Items.Add('Never');
+  lbShowAutomatically.Caption := lisShowAutomatically;
+  cbShowAutomatically.Items.Add(lisWhenCompiling);
+  cbShowAutomatically.Items.Add(lisOnlyWhenErrorsOccur);
+  cbShowAutomatically.Items.Add(lisShowAutomaticallyNever);
   cbShowAutomatically.ItemIndex := 0;
+  lbWarning.Caption := lisMustBeOpenedManually;
 end;
 
 function TMsgWndOptionsFrame.GetTitle: String;
