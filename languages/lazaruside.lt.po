@@ -14221,6 +14221,10 @@ msgstr "Spalvos pranešimuose"
 msgid "Multiple directories are separated with semicolons"
 msgstr "Aplankai atskiriami dvitaškiais"
 
+#: lazarusidestrconsts.lismustbeopenedmanually
+msgid "Must be opened manually from View -> Messages."
+msgstr ""
+
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "Įrašyti pranešimus faile (*.txt)"
@@ -14629,6 +14633,10 @@ msgstr "Tik registruoti „Lazarus“ paketo failus (.lpk). Nedaryti."
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "Ieškoti tik ištisų žodžių"
+
+#: lazarusidestrconsts.lisonlywhenerrorsoccur
+msgid "Only when errors occur"
+msgstr ""
 
 #: lazarusidestrconsts.lisonpastefromclipboard
 msgid "On paste from clipboard"
@@ -17278,6 +17286,16 @@ msgstr "Rodyti"
 msgid "Show abstract methods of \"%s\""
 msgstr "Rodyti „%s“ abstrakčius metodus"
 
+#: lazarusidestrconsts.lisshowautomatically
+msgid "Show automatically"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowautomaticallynever
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisshowautomaticallynever"
+msgid "Never"
+msgstr "Niekada"
+
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr "Rodyti komponenčių medį"
@@ -19336,6 +19354,10 @@ msgstr "Numatomų darymų suvestinė"
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 msgid "When a unit is renamed, update references"
 msgstr "Pakeitus modulio pavadinimą, naujinti nuorodas"
+
+#: lazarusidestrconsts.liswhencompiling
+msgid "When compiling"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 #, fuzzy

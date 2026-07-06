@@ -14210,6 +14210,10 @@ msgstr ""
 msgid "Multiple directories are separated with semicolons"
 msgstr "Cartelle multiple sono separate da punto e virgola"
 
+#: lazarusidestrconsts.lismustbeopenedmanually
+msgid "Must be opened manually from View -> Messages."
+msgstr ""
+
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "Salva i messaggi in un file (*.txt)"
@@ -14618,6 +14622,10 @@ msgstr ""
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "Ricerca solo parole intere"
+
+#: lazarusidestrconsts.lisonlywhenerrorsoccur
+msgid "Only when errors occur"
+msgstr ""
 
 #: lazarusidestrconsts.lisonpastefromclipboard
 msgid "On paste from clipboard"
@@ -17239,6 +17247,16 @@ msgstr "Mostra"
 msgid "Show abstract methods of \"%s\""
 msgstr "Mostra metodi astratti di \"%s\""
 
+#: lazarusidestrconsts.lisshowautomatically
+msgid "Show automatically"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowautomaticallynever
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisshowautomaticallynever"
+msgid "Never"
+msgstr "Mai"
+
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr "Mostra l'albero dei componenti"
@@ -19304,6 +19322,10 @@ msgstr "Che cosa occorre costruire"
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 msgid "When a unit is renamed, update references"
 msgstr "Quando si rinomina una unit, aggiorna riferimenti..."
+
+#: lazarusidestrconsts.liswhencompiling
+msgid "When compiling"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 #, fuzzy

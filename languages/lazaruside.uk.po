@@ -13993,6 +13993,10 @@ msgstr "Кольори повідомлення"
 msgid "Multiple directories are separated with semicolons"
 msgstr "Декілька тек, відокремлених крапкою з комою"
 
+#: lazarusidestrconsts.lismustbeopenedmanually
+msgid "Must be opened manually from View -> Messages."
+msgstr ""
+
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "Зберегти повідомлення у файл (*.txt)"
@@ -14400,6 +14404,10 @@ msgstr "Лише зареєструвати файли пакунків Lazarus 
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "Шукати лише для повних слів"
+
+#: lazarusidestrconsts.lisonlywhenerrorsoccur
+msgid "Only when errors occur"
+msgstr ""
 
 #: lazarusidestrconsts.lisonpastefromclipboard
 msgid "On paste from clipboard"
@@ -17014,6 +17022,16 @@ msgstr "Показати"
 msgid "Show abstract methods of \"%s\""
 msgstr "Показати абстрактні методи \"%s\""
 
+#: lazarusidestrconsts.lisshowautomatically
+msgid "Show automatically"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowautomaticallynever
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisshowautomaticallynever"
+msgid "Never"
+msgstr "Ніколи"
+
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr "Показати дерево компонентів"
@@ -19051,6 +19069,10 @@ msgstr "Що потребує збирання"
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 msgid "When a unit is renamed, update references"
 msgstr "Коли модуль перейменований оновити залежності"
+
+#: lazarusidestrconsts.liswhencompiling
+msgid "When compiling"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template which is used when creating new projects"

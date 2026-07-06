@@ -13881,6 +13881,10 @@ msgstr "信息颜色"
 msgid "Multiple directories are separated with semicolons"
 msgstr "多个目录被使用分号分开"
 
+#: lazarusidestrconsts.lismustbeopenedmanually
+msgid "Must be opened manually from View -> Messages."
+msgstr ""
+
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "保存信息到文件 (*.txt)"
@@ -14288,6 +14292,10 @@ msgstr "仅注册Lazarus软件包文件(.lpk).不构建."
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "仅搜索整个单词"
+
+#: lazarusidestrconsts.lisonlywhenerrorsoccur
+msgid "Only when errors occur"
+msgstr ""
 
 #: lazarusidestrconsts.lisonpastefromclipboard
 msgid "On paste from clipboard"
@@ -16886,6 +16894,16 @@ msgstr "显示"
 msgid "Show abstract methods of \"%s\""
 msgstr "显示\"%s\"的抽象方法"
 
+#: lazarusidestrconsts.lisshowautomatically
+msgid "Show automatically"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowautomaticallynever
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisshowautomaticallynever"
+msgid "Never"
+msgstr "从不"
+
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr "显示组件树"
@@ -18911,6 +18929,10 @@ msgstr "需要构建什么"
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 msgid "When a unit is renamed, update references"
 msgstr "当一个单元被重命名时，更新相关的引用"
+
+#: lazarusidestrconsts.liswhencompiling
+msgid "When compiling"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template which is used when creating new projects"

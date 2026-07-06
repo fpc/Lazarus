@@ -13857,6 +13857,10 @@ msgstr "ສີຂໍ້ຄວາມ"
 msgid "Multiple directories are separated with semicolons"
 msgstr "ຫຼາຍໄດເຣັກທໍຣີຖືກແຍກດ້ວຍ semicolon"
 
+#: lazarusidestrconsts.lismustbeopenedmanually
+msgid "Must be opened manually from View -> Messages."
+msgstr ""
+
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "ບັນທຶກຂໍ້ຄວາມລົງໄຟລ໌ (*.txt)"
@@ -14264,6 +14268,10 @@ msgstr "ລົງທະບຽນສະເພາະໄຟລ໌ແພັກເກ
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "ຄົ້ນຫາສະເພາະຄຳເຕັມ"
+
+#: lazarusidestrconsts.lisonlywhenerrorsoccur
+msgid "Only when errors occur"
+msgstr ""
 
 #: lazarusidestrconsts.lisonpastefromclipboard
 msgid "On paste from clipboard"
@@ -16863,6 +16871,16 @@ msgstr "ສະແດງ"
 msgid "Show abstract methods of \"%s\""
 msgstr "ສະແດງ abstract methods ຂອງ \"%s\""
 
+#: lazarusidestrconsts.lisshowautomatically
+msgid "Show automatically"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowautomaticallynever
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisshowautomaticallynever"
+msgid "Never"
+msgstr "ບໍ່ເຄີຍ"
+
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr "ສະແດງ component tree"
@@ -18888,6 +18906,10 @@ msgstr "ສິ່ງທີ່ຕ້ອງການ build"
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 msgid "When a unit is renamed, update references"
 msgstr "ເມື່ອ unit ຖືກປ່ຽນຊື່, ໃຫ້ອັບເດດການອ້າງອີງ"
+
+#: lazarusidestrconsts.liswhencompiling
+msgid "When compiling"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template which is used when creating new projects"

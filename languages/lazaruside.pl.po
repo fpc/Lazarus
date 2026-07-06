@@ -14125,6 +14125,10 @@ msgstr "Kolory komunikatów"
 msgid "Multiple directories are separated with semicolons"
 msgstr "Wiele katalogów oddzielonych średnikami"
 
+#: lazarusidestrconsts.lismustbeopenedmanually
+msgid "Must be opened manually from View -> Messages."
+msgstr ""
+
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "Zapisz komunikaty do pliku (*.txt)"
@@ -14542,6 +14546,10 @@ msgstr "Zarejestruj tylko pliki pakietów Lazarusa (.lpk). Nie buduj."
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "Szukaj tylko całych wyrazów"
+
+#: lazarusidestrconsts.lisonlywhenerrorsoccur
+msgid "Only when errors occur"
+msgstr ""
 
 #: lazarusidestrconsts.lisonpastefromclipboard
 msgid "On paste from clipboard"
@@ -17175,6 +17183,16 @@ msgstr "Pokaż"
 msgid "Show abstract methods of \"%s\""
 msgstr "Pokaż metody abstrakcyjne \"%s\""
 
+#: lazarusidestrconsts.lisshowautomatically
+msgid "Show automatically"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowautomaticallynever
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisshowautomaticallynever"
+msgid "Never"
+msgstr "Nigdy"
+
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr "Pokaż drzewo komponentów"
@@ -19222,6 +19240,10 @@ msgstr "Wymagające budowania"
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 msgid "When a unit is renamed, update references"
 msgstr "Gdy zmieniana jest nazwa modułu, zmieniaj odnośniki"
+
+#: lazarusidestrconsts.liswhencompiling
+msgid "When compiling"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template which is used when creating new projects"

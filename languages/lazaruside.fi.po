@@ -13929,6 +13929,10 @@ msgstr "Viestin värit"
 msgid "Multiple directories are separated with semicolons"
 msgstr "Hakemistot erotetaan puolipisteellä"
 
+#: lazarusidestrconsts.lismustbeopenedmanually
+msgid "Must be opened manually from View -> Messages."
+msgstr ""
+
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "Tallenna viestit tiedostoon (*.txt)"
@@ -14336,6 +14340,10 @@ msgstr ""
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "Esittävä sana ei voi olla osa toista sanaa"
+
+#: lazarusidestrconsts.lisonlywhenerrorsoccur
+msgid "Only when errors occur"
+msgstr ""
 
 #: lazarusidestrconsts.lisonpastefromclipboard
 msgid "On paste from clipboard"
@@ -16935,6 +16943,16 @@ msgstr "Näytä"
 msgid "Show abstract methods of \"%s\""
 msgstr "Näytä \"%s\":n abstraktit metodit"
 
+#: lazarusidestrconsts.lisshowautomatically
+msgid "Show automatically"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowautomaticallynever
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisshowautomaticallynever"
+msgid "Never"
+msgstr "Ei koskaan"
+
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr "Näytä komponenttipuu"
@@ -18968,6 +18986,10 @@ msgstr "Mitä tarvitsee koota"
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 msgid "When a unit is renamed, update references"
 msgstr "Käännösyksikön nimeä muutettaessa päivitetään viittaukset"
+
+#: lazarusidestrconsts.liswhencompiling
+msgid "When compiling"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template which is used when creating new projects"

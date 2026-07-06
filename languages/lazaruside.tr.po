@@ -13885,6 +13885,10 @@ msgstr "Mesaj renkleri"
 msgid "Multiple directories are separated with semicolons"
 msgstr "Birden çok dizin noktalı virgül ile ayrılır"
 
+#: lazarusidestrconsts.lismustbeopenedmanually
+msgid "Must be opened manually from View -> Messages."
+msgstr ""
+
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "Mesajları dosyaya kaydet (*.txt)"
@@ -14292,6 +14296,10 @@ msgstr "Yalnızca Lazarus paket dosyalarını (.lpk) kaydedin. Derleme yapmayın
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "Yalnızca tüm kelimeleri ara"
+
+#: lazarusidestrconsts.lisonlywhenerrorsoccur
+msgid "Only when errors occur"
+msgstr ""
 
 #: lazarusidestrconsts.lisonpastefromclipboard
 msgid "On paste from clipboard"
@@ -16866,6 +16874,16 @@ msgstr "Göster"
 msgid "Show abstract methods of \"%s\""
 msgstr "Soyut yöntemleri göster \"%s\""
 
+#: lazarusidestrconsts.lisshowautomatically
+msgid "Show automatically"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowautomaticallynever
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisshowautomaticallynever"
+msgid "Never"
+msgstr "Asla"
+
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr "Bileşen ağacını göster"
@@ -18885,6 +18903,10 @@ msgstr "Neyin derlenmesi edilmesi gerekiyor"
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 msgid "When a unit is renamed, update references"
 msgstr "Bir birim yeniden adlandırıldığında, referansları güncelleyin"
+
+#: lazarusidestrconsts.liswhencompiling
+msgid "When compiling"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template which is used when creating new projects"
