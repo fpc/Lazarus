@@ -343,7 +343,8 @@ type
     semEditorMouseUp,
     semEditorMoved,     // Called when moved to a new window
     semEditorCloned,     // Called when cloned to a new window.
-    semEditorReConfigured // Called when the configuration of an editor changes
+    semEditorReConfigured, // Called when the configuration of an editor changes
+    semEditorTextChanged   // Called when the editor's text content changed
   );
 
   TSemSelectionMode = (

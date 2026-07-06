@@ -289,6 +289,7 @@ type
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure EditorKeyUp({%H-}Sender: TObject; var {%H-}Key: Word; {%H-}Shift: TShiftState);
     procedure EditorStatusChanged(Sender: TObject; {%H-}Changes: TSynStatusChanges);
+    procedure EditorTextChanged(Sender: TObject);
     procedure EditorPaste(Sender: TObject; var AText: String;
          var AMode: TSynSelectionMode; ALogStartPos: TPoint;
          var AnAction: TSynCopyPasteAction);
@@ -1034,6 +1035,7 @@ type
     procedure SetActiveEditor(const AValue: TSourceEditorInterface); override;
     procedure DoActiveEditorChanged;
     procedure DoEditorStatusChanged(AEditor: TSourceEditor);
+    procedure DoEditorTextChanged(AEditor: TSourceEditor);
     function  GetSourceEditors(Index: integer): TSourceEditorInterface; override;
     function  GetUniqueSourceEditors(Index: integer): TSourceEditorInterface; override;
     function GetMarklingProducers(Index: integer): TSourceMarklingProducer; override;
@@ -4525,6 +4527,12 @@ Begin
     IDECommandList.PostponeUpdateEvents;
 end;
 
+procedure TSourceEditor.EditorTextChanged(Sender: TObject);
+begin
+  if Manager<>nil then
+    Manager.DoEditorTextChanged(Self);
+end;
+
 function TSourceEditor.SelectionAvailable: boolean;
 begin
   Result := EditorComponent.SelAvail;
@@ -5458,6 +5466,7 @@ Begin
 
       // IMPORTANT: when you change below, don't forget updating UnbindEditor
       OnStatusChange := @EditorStatusChanged;
+      OnChange := @EditorTextChanged;
       OnProcessCommand := @ProcessCommand;
       OnProcessUserCommand := @ProcessUserCommand;
       OnCommandProcessed := @UserCommandProcessed;
@@ -6857,6 +6866,7 @@ var
 begin
   with EditorComponent do begin
     OnStatusChange := nil;
+    OnChange := nil;
     OnProcessCommand := nil;
     OnProcessUserCommand := nil;
     OnCommandProcessed := nil;
@@ -10329,6 +10339,11 @@ procedure TSourceEditorManagerBase.DoEditorStatusChanged(AEditor: TSourceEditor)
 begin
   CodeToolsToSrcEditTimer.Enabled:=false;
   FChangeNotifyLists[semEditorStatus].CallNotifyEvents(AEditor);
+end;
+
+procedure TSourceEditorManagerBase.DoEditorTextChanged(AEditor: TSourceEditor);
+begin
+  FChangeNotifyLists[semEditorTextChanged].CallNotifyEvents(AEditor);
 end;
 
 function TSourceEditorManagerBase.GetSourceEditors(Index: integer): TSourceEditorInterface;
