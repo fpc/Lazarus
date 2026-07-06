@@ -38,7 +38,7 @@ msgstr "Neu generieren"
 
 #: lazdemsg.sbuilddocumentation
 msgid "Build documentation"
-msgstr "Dokumentation generieren"
+msgstr "Dokumentation erstellen"
 
 #: lazdemsg.sbuildok
 msgid "Documentation successfully built."
@@ -51,7 +51,7 @@ msgstr "Ausgabe erzeugen"
 #: lazdemsg.sclose
 msgctxt "lazdemsg.sclose"
 msgid "&Close"
-msgstr "Beenden"
+msgstr "Schließen"
 
 #: lazdemsg.scodeexample
 msgid "Example code File"
@@ -90,7 +90,7 @@ msgstr "Wollen Sie das Modul  \"%s\" wirklich löschen?"
 #: lazdemsg.sdeletepackage
 #, object-pascal-format
 msgid "Are you sure you want to delete package \"%s\" ?"
-msgstr "Wollen Sie das sPackage \"%s\"  wirklich löschen?"
+msgstr "Wollen Sie das Package \"%s\"  wirklich löschen?"
 
 #: lazdemsg.sdeletetopic
 #, object-pascal-format
@@ -112,7 +112,7 @@ msgstr "Beschreibungsdatei ändern"
 #: lazdemsg.serrfpdoc
 #, object-pascal-format
 msgid "Building failed with exit code %d. Please check log."
-msgstr "Das Anlegen schlug mit dem Code %d fehl. Prüfen Sie das Protokoll."
+msgstr "Das Erstellen schlug mit dem Code %d fehl. Prüfen Sie das Protokoll."
 
 #: lazdemsg.serrnomoduleforelement
 #, object-pascal-format
@@ -151,7 +151,7 @@ msgstr "Unbekanntes DOM-Element als Vorgänger des ausgewählten Elements: \"%s\
 #: lazdemsg.sfilemodified
 #, object-pascal-format
 msgid "Document \"%s\" was modified, would you like to save it?"
-msgstr "Dokument \"%s\" wurde verändert, wollen Sie es speichern?"
+msgstr "Dokument \"%s\" wurde verändert. Wollen Sie es speichern?"
 
 #: lazdemsg.sfilestructure
 msgid "Documentation structure"
@@ -245,7 +245,7 @@ msgstr "Variable"
 #: lazdemsg.shintinsertbulletedlist
 msgctxt "lazdemsg.shintinsertbulletedlist"
 msgid "Insert bulleted list"
-msgstr ""
+msgstr "Aufzählungsliste einfügen"
 
 #: lazdemsg.shintinsertelement
 msgctxt "lazdemsg.shintinsertelement"
@@ -265,7 +265,7 @@ msgstr "Neues Modul"
 #: lazdemsg.shintinsertnumberedlist
 msgctxt "lazdemsg.shintinsertnumberedlist"
 msgid "Insert numbered list"
-msgstr ""
+msgstr "Nummerierte Liste einfügen"
 
 #: lazdemsg.shintinsertpackage
 msgctxt "lazdemsg.shintinsertpackage"
@@ -318,7 +318,7 @@ msgstr "Content-Datei importieren"
 #: lazdemsg.sinsertbulletedlist
 msgctxt "lazdemsg.sinsertbulletedlist"
 msgid "Insert bulleted list"
-msgstr ""
+msgstr "Nummerierte Liste"
 
 #: lazdemsg.sinsertexamplecode
 msgid "Insert example code"
@@ -332,7 +332,7 @@ msgstr "Link einfügen"
 #: lazdemsg.sinsertnumberedlist
 msgctxt "lazdemsg.sinsertnumberedlist"
 msgid "Insert numbered list"
-msgstr ""
+msgstr "Nummerierte Liste einfügen"
 
 #: lazdemsg.sinsertprintshortlink
 msgid "Insert short description link"
@@ -345,7 +345,7 @@ msgstr "Tabelle einfügen"
 
 #: lazdemsg.sitemscount
 msgid "Items count"
-msgstr ""
+msgstr "Anzahl an Elementen"
 
 #: lazdemsg.slazdoceditor
 msgid "Lazarus Documentation Editor"
@@ -410,7 +410,7 @@ msgstr "Datei"
 #: lazdemsg.smenufileclose
 msgctxt "lazdemsg.smenufileclose"
 msgid "&Close"
-msgstr "Beenden"
+msgstr "Schließen"
 
 #: lazdemsg.smenufilenew
 msgid "&New"
@@ -492,7 +492,7 @@ msgstr "E&infügen"
 
 #: lazdemsg.smenuinsertbulletedlist
 msgid "Bulleted list"
-msgstr ""
+msgstr "Aufzählungsliste"
 
 #: lazdemsg.smenuinsertelement
 msgid "&Element"
@@ -512,7 +512,7 @@ msgstr "&Modul"
 
 #: lazdemsg.smenuinsertnumberedlist
 msgid "Numbered list"
-msgstr ""
+msgstr "Nummerierte Liste"
 
 #: lazdemsg.smenuinsertpackage
 msgctxt "lazdemsg.smenuinsertpackage"
@@ -582,7 +582,7 @@ msgstr "Neuer Eintrag"
 
 #: lazdemsg.snodename
 msgid "Node name"
-msgstr ""
+msgstr "Knotenname"
 
 #: lazdemsg.snoelement
 msgid "No element selected"
@@ -606,7 +606,7 @@ msgstr "Standard-Erweiterung"
 
 #: lazdemsg.soptdlgdesktop
 msgid "Desktop"
-msgstr "Desktop"
+msgstr "Schreibtisch"
 
 #: lazdemsg.soptdlgfpdocprogram
 msgid "fpdoc program"
@@ -675,7 +675,7 @@ msgstr "Package umbenennen"
 
 #: lazdemsg.srenametopic
 msgid "Rename topic"
-msgstr "Eintrag auswählen"
+msgstr "Eintrag umbenennen"
 
 #: lazdemsg.ssave
 msgctxt "lazdemsg.ssave"
@@ -685,7 +685,7 @@ msgstr "&Speichern"
 #: lazdemsg.ssavebeforebuildquestion
 #, object-pascal-format
 msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
-msgstr ""
+msgstr "Ungesicherte Änderungen in in \"%s\".%sSie sollten gespeichert werden, um in der erstellten Dokumentation enthalten zu sein. Speichern?"
 
 #: lazdemsg.sseealso
 msgid "See Also"
@@ -736,7 +736,7 @@ msgstr "Spalten"
 
 #: lazdemsg.stableheader
 msgid "Use header row"
-msgstr ""
+msgstr "Header-Zeile benutzen"
 
 #: lazdemsg.stablerows
 msgid "Rows"
@@ -748,7 +748,7 @@ msgstr "Ziel-OS"
 
 #: lazdemsg.susingcommand
 msgid "Building docs using command: "
-msgstr "Docs mit dem folgenden Befehl anlegen: "
+msgstr "Docs mit dem folgenden Befehl erstellen: "
 
 #: lazdemsg.swarnifnodocumentationnodefound
 msgid "Warn if no documentation node found"

@@ -18,31 +18,31 @@ msgstr "Bier"
 
 #: stringsunit.rseight
 msgid "Eight"
-msgstr "acht"
+msgstr "Acht"
 
 #: stringsunit.rsfive
 msgid "Five"
-msgstr "fünf"
+msgstr "Fünf"
 
 #: stringsunit.rsfour
 msgid "Four"
-msgstr "vier"
+msgstr "Vier"
 
 #: stringsunit.rsnine
 msgid "Nine"
-msgstr "neun"
+msgstr "Neun"
 
 #: stringsunit.rsone
 msgid "One"
-msgstr "eins"
+msgstr "Eins"
 
 #: stringsunit.rsseven
 msgid "Seven"
-msgstr "sieben"
+msgstr "Sieben"
 
 #: stringsunit.rssix
 msgid "Six"
-msgstr "sechs"
+msgstr "Sechs"
 
 #: stringsunit.rssumofselectednumbers
 #, object-pascal-format
@@ -51,17 +51,17 @@ msgstr "Summe der ausgewählten Zahlen: %s"
 
 #: stringsunit.rsthree
 msgid "Three"
-msgstr "drei"
+msgstr "Drei"
 
 #: stringsunit.rstodayis
 #, object-pascal-format
 msgctxt "stringsunit.rstodayis"
 msgid "Today is %s"
-msgstr "Heute ist %s."
+msgstr "Heute ist der %s"
 
 #: stringsunit.rstwo
 msgid "Two"
-msgstr "zwei"
+msgstr "Zwei"
 
 #: stringsunit.rswater
 msgctxt "stringsunit.rswater"
