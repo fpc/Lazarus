@@ -4789,7 +4789,18 @@ procedure TGtk3Widget.SetFocus;
 var
   TopLevel: PGtkWidget;
   FocusWidget: PGtkWidget;
+  TopWidget: TGtk3Widget;
 begin
+  TopLevel := FWidget^.get_toplevel;
+  if Gtk3IsGtkWindow(TopLevel) and TopLevel^.get_mapped
+  and not PGtkWindow(TopLevel)^.is_active then
+  begin
+    TopWidget := TGtk3Widget(HwndFromGtkWidget(TopLevel));
+    if (TopWidget is TGtk3Window) and Assigned(TopWidget.LCLObject)
+    and (TopWidget.LCLObject is TCustomForm) then
+      TGtk3Window(TopWidget).Activate;
+  end;
+
   if GetContainerWidget^.can_focus and GetContainerWidget^.get_mapped then
     GetContainerWidget^.grab_focus
   else
