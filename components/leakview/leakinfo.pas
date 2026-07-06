@@ -8,18 +8,25 @@ interface
 
 uses
   Classes, SysUtils, RegExpr, FGL,
-  // CodeTools
-  CodeToolManager, CodeCache,
   // LazUtils
   FileUtil, LazFileUtils, LazStringUtils, LazClasses, LazLoggerBase,
+  // LCL
+  Dialogs,
+  // CodeTools
+  CodeToolManager, CodeCache,
   // IDEIntf
   IDEDialogs,
+  // DebuggerIntf
+  DbgIntfBaseTypes,
+  // LazDebuggers
+  LldbHelper,
+  // FpDebug
+  FpDbgLoader, FpDbgDwarf, FpDbgInfo, FpdMemoryTools
   // LeakView
   {$IFDEF LEAK_RESOLVE_USE_FPC}
-  DbgInfoReader,
+  , DbgInfoReader
   {$ENDIF}
-  DbgIntfBaseTypes, FpDbgLoader, FpDbgDwarf, FpDbgInfo, FpdMemoryTools, Dialogs,
-  LldbHelper;
+  ;
 
 type
   { TStackLine }

@@ -5,10 +5,9 @@ unit HeapTrcView;
 interface
 
 uses
-  Types, Classes, SysUtils, XMLConf, DOM, contnrs,
+  Classes, SysUtils, Types, XMLConf, DOM, Contnrs,
   // LCL
-  LCLType, Clipbrd, LResources,
-  Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, ExtCtrls,
+  Forms, Controls, Dialogs, StdCtrls, ComCtrls, ExtCtrls, LCLType, Clipbrd, LResources,
   // LazUtils
   FileUtil, LazFileUtils,
   // IDEIntf
