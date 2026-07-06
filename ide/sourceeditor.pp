@@ -3422,6 +3422,11 @@ begin
 
       for i := 0 to SharedEditorCount-1 do
         SharedEditors[i].AfterCodeBufferReplace;
+      // AssignTo replaces the whole text without going through the SynEdit
+      // OnChange event (e.g. when the file was reverted/reloaded from disk),
+      // so notify the text change explicitly.
+      for i := 0 to FSharedEditorList.Count - 1 do
+        SharedEditors[i].EditorTextChanged(SharedEditors[i].EditorComponent);
       // HasExecutionMarks is shared through synedit => this is only needed once // but HasExecutionMarks must be called on each synedit, so each synedit is notified
       for i := 0 to FSharedEditorList.Count - 1 do begin
         SharedEditors[i].FillExecutionMarks;
