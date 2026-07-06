@@ -8,10 +8,12 @@ object HeapTrcViewForm: THeapTrcViewForm
   ClientHeight = 444
   ClientWidth = 637
   FormStyle = fsStayOnTop
+  KeyPreview = True
   Position = poScreenCenter
   LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnKeyDown = FormKeyDown
   object lblTrcFile: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = edtTrcFileName
@@ -118,6 +120,7 @@ object HeapTrcViewForm: THeapTrcViewForm
       TabOrder = 0
       Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
       OnDblClick = trvTraceInfoDblClick
+      OnKeyDown = trvTraceInfoKeyDown
     end
     object memoSummary: TMemo
       Left = 0

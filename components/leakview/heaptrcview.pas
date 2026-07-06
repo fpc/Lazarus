@@ -44,7 +44,9 @@ type
     procedure chkUseRawChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure trvTraceInfoDblClick(Sender: TObject);
+    procedure trvTraceInfoKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     Finfo  : TLeakInfo;
     fItems  : TStackTraceList;
@@ -224,9 +226,47 @@ begin
   HeapTrcViewForm:=nil;
 end;
 
+procedure THeapTrcViewForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_F5) and (Shift = []) then
+  begin
+    btnUpdateClick(Sender);
+    Key := 0;
+  end
+  else if (Key = VK_O) and (Shift = [ssCtrl]) then
+  begin
+    btnBrowseClick(Sender);
+    Key := 0;
+  end
+  else if (Key = VK_L) and (Shift = [ssCtrl]) then
+  begin
+    edtTrcFileName.SetFocus;
+    Key := 0;
+  end
+  else if (Key = VK_T) and (Shift = [ssCtrl]) then
+  begin
+    trvTraceInfo.SetFocus;
+    Key := 0;
+  end
+  else if (Key = VK_V) and (Shift = [ssCtrl, ssShift]) then
+  begin
+    btnClipboardClick(Sender);
+    Key := 0;
+  end;
+end;
+
 procedure THeapTrcViewForm.trvTraceInfoDblClick(Sender: TObject);
 begin
   DoJump;
+end;
+
+procedure THeapTrcViewForm.trvTraceInfoKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) and (Shift = []) then
+  begin
+    DoJump;
+    Key := 0;
+  end;
 end;
 
 //note: to range check performed
