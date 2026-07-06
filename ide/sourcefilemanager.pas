@@ -2994,10 +2994,10 @@ begin
   OldFilename:=TrimFilename(OldFilename);
   NewFilename:=TrimFilename(NewFilename);
   if (OldFilename='') or (NewFilename='') then exit;
-  if not FilenameIsAbsolute(OldFilename) then
-    raise Exception.Create('RenameIDEFile: OldFilename must be absolute: '+OldFilename);
+  if not FileExistsInIDE(OldFilename,[pfsfOnlyVirtualFiles]) then
+    raise Exception.Create('RenameIDEFile: OldFilename not found: "'+OldFilename+'"');
   if not FilenameIsAbsolute(NewFilename) then
-    raise Exception.Create('RenameIDEFile: NewFilename must be absolute: '+NewFilename);
+    raise Exception.Create('RenameIDEFile: NewFilename must be absolute: "'+NewFilename+'"');
   if CompareFilenames(OldFilename,NewFilename)=0 then exit(mrOk);
 
   // renaming the project info file or the project main source
@@ -3010,9 +3010,9 @@ begin
   // if the file is already open in an editor let the source editor rename it
   SrcEdit:=SourceEditorManagerIntf.SourceEditorIntfWithFilename(OldFilename);
   if (SrcEdit=nil) and FilenameIsPascalSource(OldFilename)
-  and FileExistsUTF8(OldFilename) then begin
+  and FileExistsInIDE(OldFilename,[pfsfOnlyVirtualFiles]) then begin
     // a pascal source without an editor => open one first, so it is renamed as unit
-    Result:=OpenEditorFile(OldFilename,-1,-1,nil,[ofOnlyIfExists,ofRegularFile]);
+    Result:=OpenEditorFile(OldFilename,-1,-1,nil,[ofRegularFile]);
     if Result<>mrOk then exit;
     SrcEdit:=SourceEditorManagerIntf.SourceEditorIntfWithFilename(OldFilename);
   end;
