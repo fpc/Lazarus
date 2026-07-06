@@ -485,7 +485,8 @@ msgctxt "fpwebstrconsts.smihtmlother"
 msgid "Other"
 msgstr ""
 
-#: fpwebstrconsts.smihtmlstandart
+#: fpwebstrconsts.smihtmlstandard
+msgctxt "fpwebstrconsts.smihtmlstandard"
 msgid "Standard"
 msgstr ""
 

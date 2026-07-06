@@ -455,7 +455,9 @@ msgstr "Списки"
 msgid "Other"
 msgstr "Інше"
 
-#: fpwebstrconsts.smihtmlstandart
+#: fpwebstrconsts.smihtmlstandard
+#, fuzzy
+msgctxt "fpwebstrconsts.smihtmlstandard"
 msgid "Standard"
 msgstr "Стандартні"
 

@@ -474,7 +474,9 @@ msgstr "Sąrašai"
 msgid "Other"
 msgstr "Kita"
 
-#: fpwebstrconsts.smihtmlstandart
+#: fpwebstrconsts.smihtmlstandard
+#, fuzzy
+msgctxt "fpwebstrconsts.smihtmlstandard"
 msgid "Standard"
 msgstr "Standartinis"
 

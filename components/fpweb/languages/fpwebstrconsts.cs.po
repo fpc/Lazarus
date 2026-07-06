@@ -465,7 +465,9 @@ msgstr "Seznamy"
 msgid "Other"
 msgstr "Ostatní"
 
-#: fpwebstrconsts.smihtmlstandart
+#: fpwebstrconsts.smihtmlstandard
+#, fuzzy
+msgctxt "fpwebstrconsts.smihtmlstandard"
 msgid "Standard"
 msgstr "Standardní"
 

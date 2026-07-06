@@ -453,7 +453,9 @@ msgstr "列表"
 msgid "Other"
 msgstr "其他"
 
-#: fpwebstrconsts.smihtmlstandart
+#: fpwebstrconsts.smihtmlstandard
+#, fuzzy
+msgctxt "fpwebstrconsts.smihtmlstandard"
 msgid "Standard"
 msgstr "标准"
 
