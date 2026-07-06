@@ -561,7 +561,9 @@ end;
 procedure THeapTrcViewForm.AddFileToList(const FileName:AnsiString);
 var
   i : Integer;
+  s: string;
 begin
+  s := edtTrcFileName.Text; // store current text
   i:=edtTrcFileName.Items.IndexOf(FileName);
   if (i<0) then begin
     if edtTrcFileName.Items.Count=8 then
@@ -569,6 +571,7 @@ begin
   end else
     edtTrcFileName.Items.Delete(i);
   edtTrcFileName.Items.Insert(0, FileName);
+  edtTrcFileName.Text := s;
 end;
 
 procedure THeapTrcViewForm.LazarusJump(Sender: TObject;
