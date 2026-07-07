@@ -1274,7 +1274,7 @@ resourcestring
   lisShowAutoWhenCompiling = 'When compiling';
   lisShowAutoOnlyWhenErrorsOccur = 'Only when errors occur';
   lisShowAutoNever = 'Never';
-  lisMustBeOpenedManually = 'Must be opened manually from View -> Messages';
+  lisMustBeOpenedManually = 'Must be opened manually from View -> Messages.';
   lisEditorColors = 'Editor Colors';
   lisPastelColors = 'Pastel Colors';
 
