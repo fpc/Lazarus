@@ -179,7 +179,7 @@ var
 begin
   FindRenameIdentifierDialog:=TFindRenameIdentifierDialog.Create(nil);
   try
-    FindRenameIdentifierDialog.LoadFromConfig;
+    // LoadFromConfig executed at FindRenameIdentifierDialogCreate in OnCreate
     FindRenameIdentifierDialog.SetIdentifier(Filename,Position,IdentifierKind);
     FindRenameIdentifierDialog.AllowRename:=AllowRename;
     FindRenameIdentifierDialog.RenameCheckBox.Checked:=SetRenameActive and AllowRename;
@@ -685,9 +685,8 @@ begin
   if DeclTool.TruePredefinedResult or DeclTool.TrueSelf then begin  // stay where you are
     DeclCodeXY.X:=StartCaretXY.X;
     DeclCodeXY.Y:=StartCaretXY.Y;
+    DeclCodeXY.Code:=StartSrcCode;
     DeclTool.CaretToCleanPos(DeclCodeXY,DeclCleanPos);
-    DeclNode:=DeclTool.FindDeepestNodeAtPos(DeclCleanPos,false);
-    DeclTool.CleanPosToCaret(DeclCleanPos,DeclCodeXY);
     DeclTopLine:=DeclCodeXY.Y;
   end else begin
     if not UpdateCodeNode then exit;

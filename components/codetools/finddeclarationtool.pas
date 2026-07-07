@@ -11666,6 +11666,7 @@ var
 
   procedure ResolvePoint;
   begin
+    TrueSelf:=false;
     // for example 'A.B'
     if (ExprType.Context.Node=nil) then
       // 'a:array[0. '
