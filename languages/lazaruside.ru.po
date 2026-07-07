@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-07-07 01:50+0300\n"
+"PO-Revision-Date: 2026-07-03 02:10+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -13843,10 +13843,6 @@ msgstr "Цвета сообщений"
 msgid "Multiple directories are separated with semicolons"
 msgstr "Разделителем каталогов является точка с запятой"
 
-#: lazarusidestrconsts.lismustbeopenedmanually
-msgid "Must be opened manually from View -> Messages."
-msgstr "Следует открывать вручную через пункт меню Вид -> Сообщения."
-
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "Сохранить сообщения в файл (*.txt)"
@@ -14254,10 +14250,6 @@ msgstr "Только зарегистрировать файлы пакета La
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "Поиск только целых слов"
-
-#: lazarusidestrconsts.lisonlywhenerrorsoccur
-msgid "Only when errors occur"
-msgstr "Только при возникновении ошибок"
 
 #: lazarusidestrconsts.lisonpastefromclipboard
 msgid "On paste from clipboard"
@@ -16857,15 +16849,6 @@ msgstr "Отображать"
 msgid "Show abstract methods of \"%s\""
 msgstr "Показать абстрактные методы в \"%s\""
 
-#: lazarusidestrconsts.lisshowautomatically
-msgid "Show automatically"
-msgstr "Показывать автоматически"
-
-#: lazarusidestrconsts.lisshowautomaticallynever
-msgctxt "lazarusidestrconsts.lisshowautomaticallynever"
-msgid "Never"
-msgstr "Никогда"
-
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr "Показывать дерево компонентов"
@@ -18891,10 +18874,6 @@ msgstr "Что требует сборки"
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 msgid "When a unit is renamed, update references"
 msgstr "Обновление ссылок на модуль при его переименовании"
-
-#: lazarusidestrconsts.liswhencompiling
-msgid "When compiling"
-msgstr "При компиляции"
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template which is used when creating new projects"

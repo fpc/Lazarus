@@ -10,28 +10,25 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
   DesignLeft = 347
   DesignTop = 227
   object cbShowIcons: TCheckBox
-    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Control = cbStayOnTop
     AnchorSideTop.Control = cbShowFPCLinesCompiled
-    AnchorSideTop.Side = asrBottom
-    Left = 6
+    Left = 210
     Height = 22
-    Top = 459
+    Top = 393
     Width = 104
-    BorderSpacing.Left = 6
     Caption = 'cbShowIcons'
     ParentShowHint = False
     ShowHint = True
     TabOrder = 6
   end
   object cbFocusAtCompilation: TCheckBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = cbStayOnTop
+    AnchorSideLeft.Control = cbShowAutomatically
+    AnchorSideTop.Control = cbShowAutomatically
     AnchorSideTop.Side = asrBottom
-    Left = 6
+    Left = 133
     Height = 22
-    Top = 393
+    Top = 483
     Width = 161
-    BorderSpacing.Left = 6
     Caption = 'cbFocusAtCompilation'
     ParentShowHint = False
     ShowHint = True
@@ -39,11 +36,11 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
   end
   object cbAlwaysDrawFocused: TCheckBox
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = cbFocusAtCompilation
+    AnchorSideTop.Control = OptionsBevel
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 22
-    Top = 415
+    Top = 371
     Width = 163
     BorderSpacing.Left = 6
     Caption = 'cbAlwaysDrawFocused'
@@ -54,11 +51,11 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
   object MaxProcsSpinEdit: TSpinEdit
     AnchorSideLeft.Control = lbMaxProcs
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = cbShowIcons
+    AnchorSideTop.Control = cbShowFPCLinesCompiled
     AnchorSideTop.Side = asrBottom
     Left = 85
     Height = 32
-    Top = 483
+    Top = 417
     Width = 50
     BorderSpacing.Left = 6
     BorderSpacing.Top = 2
@@ -69,7 +66,7 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 8
     Height = 18
-    Top = 490
+    Top = 424
     Width = 71
     BorderSpacing.Left = 6
     Caption = 'lbMaxProcs'
@@ -238,7 +235,7 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 22
-    Top = 437
+    Top = 393
     Width = 184
     BorderSpacing.Left = 6
     Caption = 'cbShowFPCLinesCompiled'
@@ -247,14 +244,14 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     TabOrder = 5
   end
   object cbStayOnTop: TCheckBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = OptionsBevel
-    AnchorSideTop.Side = asrBottom
-    Left = 6
+    AnchorSideLeft.Control = cbAlwaysDrawFocused
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = cbAlwaysDrawFocused
+    Left = 210
     Height = 22
     Top = 371
     Width = 105
-    BorderSpacing.Left = 6
+    BorderSpacing.Left = 41
     Caption = 'cbStayOnTop'
     ParentShowHint = False
     ShowHint = True
@@ -284,7 +281,7 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 133
     Height = 32
-    Top = 517
+    Top = 451
     Width = 371
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
@@ -300,17 +297,17 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 8
     Height = 18
-    Top = 524
+    Top = 458
     Width = 119
     Caption = 'Show automatically'
   end
   object lbWarning: TLabel
     AnchorSideLeft.Control = cbShowAutomatically
-    AnchorSideTop.Control = cbShowAutomatically
+    AnchorSideTop.Control = cbFocusAtCompilation
     AnchorSideTop.Side = asrBottom
     Left = 133
     Height = 18
-    Top = 555
+    Top = 511
     Width = 303
     BorderSpacing.Top = 6
     Caption = 'Must be opened manually from View -> Messages'

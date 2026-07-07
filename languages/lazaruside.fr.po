@@ -13926,10 +13926,6 @@ msgstr "Couleurs des messages"
 msgid "Multiple directories are separated with semicolons"
 msgstr "Les différents répertoires sont séparés par des points-virgules"
 
-#: lazarusidestrconsts.lismustbeopenedmanually
-msgid "Must be opened manually from View -> Messages."
-msgstr ""
-
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "Enregistrer les messages dans le fichier (*.txt)"
@@ -14337,10 +14333,6 @@ msgstr "Seulement inscrire les fichiers de paquets Lazarus (.lpk). Ne pas constr
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "Chercher les mots entiers seulement"
-
-#: lazarusidestrconsts.lisonlywhenerrorsoccur
-msgid "Only when errors occur"
-msgstr ""
 
 #: lazarusidestrconsts.lisonpastefromclipboard
 msgid "On paste from clipboard"
@@ -16940,16 +16932,6 @@ msgstr "Afficher"
 msgid "Show abstract methods of \"%s\""
 msgstr "Montrer les méthodes abstraites de \"%s\""
 
-#: lazarusidestrconsts.lisshowautomatically
-msgid "Show automatically"
-msgstr ""
-
-#: lazarusidestrconsts.lisshowautomaticallynever
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisshowautomaticallynever"
-msgid "Never"
-msgstr "Jamais"
-
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr "Afficher l'arbre des composants"
@@ -18977,10 +18959,6 @@ msgstr "Ce qui doit être construit"
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 msgid "When a unit is renamed, update references"
 msgstr "Si une unité est renommée, mettre à jour les références"
-
-#: lazarusidestrconsts.liswhencompiling
-msgid "When compiling"
-msgstr ""
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template which is used when creating new projects"

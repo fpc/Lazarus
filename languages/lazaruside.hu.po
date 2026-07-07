@@ -14030,10 +14030,6 @@ msgstr "Üzenetek színei"
 msgid "Multiple directories are separated with semicolons"
 msgstr "Több könyvtárat pontosvesszővel kell elválasztani"
 
-#: lazarusidestrconsts.lismustbeopenedmanually
-msgid "Must be opened manually from View -> Messages."
-msgstr ""
-
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "Üzenetek szöveges fájlba (*.txt) mentése"
@@ -14441,10 +14437,6 @@ msgstr "Csak regisztrálja a Lazarus csomagfájlokat (.lpk). Ne legyen építés
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "Csak egész szavakra keresés"
-
-#: lazarusidestrconsts.lisonlywhenerrorsoccur
-msgid "Only when errors occur"
-msgstr ""
 
 #: lazarusidestrconsts.lisonpastefromclipboard
 msgid "On paste from clipboard"
@@ -17059,16 +17051,6 @@ msgstr "Megjelenítés"
 msgid "Show abstract methods of \"%s\""
 msgstr "\"%s\" absztrakt metódusainak megjelenítése"
 
-#: lazarusidestrconsts.lisshowautomatically
-msgid "Show automatically"
-msgstr ""
-
-#: lazarusidestrconsts.lisshowautomaticallynever
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisshowautomaticallynever"
-msgid "Never"
-msgstr "Soha"
-
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr "Komponensfa megjelenítése"
@@ -19104,10 +19086,6 @@ msgstr "Amit építeni kell"
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 msgid "When a unit is renamed, update references"
 msgstr "Amikor egy unit átnevezésre kerül frissítse a hivatkozásokat"
-
-#: lazarusidestrconsts.liswhencompiling
-msgid "When compiling"
-msgstr ""
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template which is used when creating new projects"

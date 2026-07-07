@@ -9454,7 +9454,7 @@ begin
       TopLine:=LogCaretXY.Y-(SrcEdit.EditorComponent.LinesInWindow div 2);
       if TopLine<1 then TopLine:=1;
       if FocusEditor then begin
-        if EnvironmentGuiOpts.MsgViewShowAutomatically = mwsaError then
+        if EnvironmentGuiOpts.MsgViewShowAutomatically <> mwsaNever then
           IDEWindowCreators.ShowForm(MessagesView,true);
         SourceEditorManager.ShowActiveWindowOnTop(True);
       end;
@@ -10541,7 +10541,7 @@ begin
     exit;
   end;
   // syntax error -> show error in message view and jump
-  if EnvironmentGuiOpts.MsgViewShowAutomatically = mwsaError then
+  if EnvironmentGuiOpts.MsgViewShowAutomatically <> mwsaNever then
     DoShowMessagesView(false);
   DoShowCodeToolBossError;
 
@@ -10568,7 +10568,7 @@ begin
         ActiveSrcEdit:=SourceEditorManager.ActiveEditor;
     end;
     if ActiveSrcEdit<> nil then begin
-      if EnvironmentGuiOpts.MsgViewShowAutomatically = mwsaError then
+      if EnvironmentGuiOpts.MsgViewShowAutomatically <> mwsaNever then
         IDEWindowCreators.ShowForm(MessagesView,true);
       with ActiveSrcEdit.EditorComponent do begin
         LogicalCaretXY:=ErrorCaret;

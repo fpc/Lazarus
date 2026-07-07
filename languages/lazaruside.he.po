@@ -14603,10 +14603,6 @@ msgstr ""
 msgid "Multiple directories are separated with semicolons"
 msgstr ""
 
-#: lazarusidestrconsts.lismustbeopenedmanually
-msgid "Must be opened manually from View -> Messages."
-msgstr ""
-
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "שמור הודעות לקובץ (*.txt)"
@@ -15025,10 +15021,6 @@ msgstr ""
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "חפש רק מילים שלמות"
-
-#: lazarusidestrconsts.lisonlywhenerrorsoccur
-msgid "Only when errors occur"
-msgstr ""
 
 #: lazarusidestrconsts.lisonpastefromclipboard
 msgid "On paste from clipboard"
@@ -17771,16 +17763,6 @@ msgstr ""
 msgid "Show abstract methods of \"%s\""
 msgstr ""
 
-#: lazarusidestrconsts.lisshowautomatically
-msgid "Show automatically"
-msgstr ""
-
-#: lazarusidestrconsts.lisshowautomaticallynever
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisshowautomaticallynever"
-msgid "Never"
-msgstr "אף פעם"
-
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr ""
@@ -19901,10 +19883,6 @@ msgstr ""
 #| msgid "When a unit is renamed, update references ..."
 msgid "When a unit is renamed, update references"
 msgstr "כששם היחידה משתנה, עדכן את המקורות"
-
-#: lazarusidestrconsts.liswhencompiling
-msgid "When compiling"
-msgstr ""
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 #, fuzzy

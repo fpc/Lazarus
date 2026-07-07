@@ -14104,10 +14104,6 @@ msgstr "Barvy zpráv"
 msgid "Multiple directories are separated with semicolons"
 msgstr "Více adresářů je odděleno středníkem"
 
-#: lazarusidestrconsts.lismustbeopenedmanually
-msgid "Must be opened manually from View -> Messages."
-msgstr ""
-
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "Uložit zprávy do souboru (*.txt)"
@@ -14515,10 +14511,6 @@ msgstr "Pouze registrovat soubory balíčeků Lazarusu (.lpk). Nesestavovat."
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "Hledat pouze celá slova"
-
-#: lazarusidestrconsts.lisonlywhenerrorsoccur
-msgid "Only when errors occur"
-msgstr ""
 
 #: lazarusidestrconsts.lisonpastefromclipboard
 msgid "On paste from clipboard"
@@ -17131,16 +17123,6 @@ msgstr "Ukázat"
 msgid "Show abstract methods of \"%s\""
 msgstr "Ukázat abstraktní metody \"%s\""
 
-#: lazarusidestrconsts.lisshowautomatically
-msgid "Show automatically"
-msgstr ""
-
-#: lazarusidestrconsts.lisshowautomaticallynever
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisshowautomaticallynever"
-msgid "Never"
-msgstr "Nikdy"
-
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr "Zobrazit strom komponent"
@@ -19176,10 +19158,6 @@ msgstr "Co potřebuje sestavit"
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 msgid "When a unit is renamed, update references"
 msgstr "Aktualizuj odkazy, pokud je jednotka přejmenována"
-
-#: lazarusidestrconsts.liswhencompiling
-msgid "When compiling"
-msgstr ""
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template which is used when creating new projects"

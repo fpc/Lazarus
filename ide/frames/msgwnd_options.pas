@@ -135,8 +135,12 @@ begin
 end;
 
 procedure TMsgWndOptionsFrame.cbShowAutomaticallyChange(Sender: TObject);
+var
+  SA: TMsgWndShowAutomatically;
 begin
-  lbWarning.Visible := (Sender as TComboBox).ItemIndex = 2; // 'Never'
+  SA := TMsgWndShowAutomatically((Sender as TComboBox).ItemIndex);
+  cbFocusAtCompilation.Enabled := SA = mwsaCompiling;
+  lbWarning.Visible := SA = mwsaNever;
 end;
 
 procedure TMsgWndOptionsFrame.MsgColorListBoxGetColors(Sender: TCustomColorListBox;
@@ -241,21 +245,21 @@ begin
   IDEImages.AssignImage(MWSetPastelColorsButton, 'pastel_colors');
   MWSetEditorColorsButton.Caption := lisEditorColors;
 
-  cbStayOnTop.Caption := lisWindowStaysOnTop;
-  cbFocusAtCompilation.Caption := dlgEOFocusMessagesAtCompilation;
+  cbStayOnTop.Caption := lisStayOnTop;
   cbAlwaysDrawFocused.Caption := lisAlwaysDrawSelectedItemsFocused;
   cbAlwaysDrawFocused.Hint := lisDrawTheSelectionFocusedEvenIfTheMessagesWindowHasN;
   cbShowFPCLinesCompiled.Caption := lisShowFPCMessageLinesCompiled;
   cbShowFPCLinesCompiled.Hint := lisElevateTheMessagePriorityToAlwaysShowItByDefaultIt;
-  cbShowIcons.Caption := dlgShowMessagesIcons;
+  cbShowIcons.Caption := lisShowIcons;
   cbShowIcons.Hint := dlgAnIconForErrorWarningHintIsShown;
   lbMaxProcs.Caption := Format(lisMaximumParallelProcesses0MeansDefault,
                                [IntToStr(DefaultMaxProcessCount)]);
   lbShowAutomatically.Caption := lisShowAutomatically;
-  cbShowAutomatically.Items.Add(lisWhenCompiling);
-  cbShowAutomatically.Items.Add(lisOnlyWhenErrorsOccur);
-  cbShowAutomatically.Items.Add(lisShowAutomaticallyNever);
+  cbShowAutomatically.Items.Add(lisShowAuto1);
+  cbShowAutomatically.Items.Add(lisShowAuto2);
+  cbShowAutomatically.Items.Add(lisShowAuto3);
   cbShowAutomatically.ItemIndex := 0;
+  cbFocusAtCompilation.Caption := lisFocusAtCompilation;
   lbWarning.Caption := lisMustBeOpenedManually;
 end;
 

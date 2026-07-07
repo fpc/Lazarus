@@ -1112,14 +1112,8 @@ resourcestring
   // Options dialog
   dlgIDEOptions = 'IDE Options';
   dlgBakNoSubDirectory = '(no subdirectory)';
-  dlgEOFocusMessagesAtCompilation = 'Focus messages at compilation';
   lisMaximumParallelProcesses0MeansDefault = 'Maximum parallel processes, 0 '
     +'means default (%s)';
-  lisShowAutomatically = 'Show automatically';
-  lisWhenCompiling = 'When compiling';
-  lisOnlyWhenErrorsOccur = 'Only when errors occur';
-  lisShowAutomaticallyNever = 'Never';
-  lisMustBeOpenedManually = 'Must be opened manually from View -> Messages.';
   lisShowFPCMessageLinesCompiled = 'Show FPC message "lines compiled"';
   lisElevateTheMessagePriorityToAlwaysShowItByDefaultIt = 'Elevate the message'
     +' priority to always show it (by default it has low priority "verbose")';
@@ -1267,14 +1261,20 @@ resourcestring
     'before the IDE''s name and other info in the title. Example: project1 - Lazarus.';
 
   // Message window options
-  lisWindowStaysOnTop = 'Window stays on top';
-  dlgShowMessagesIcons = 'Show Messages Icons';
+  lisStayOnTop = 'Stay on top';
+  lisShowIcons = 'Show Icons';
   dlgAnIconForErrorWarningHintIsShown = 'An icon for error/warning/hint is shown '
     +'in front of a message. The same icon shows in source editor gutter in any case.';
+  lisFocusAtCompilation = 'Focus at compilation';
   lisAlwaysDrawSelectedItemsFocused = 'Always draw selected items focused';
   lisDrawTheSelectionFocusedEvenIfTheMessagesWindowHasN = 'Draw the selection '
     +'focused even if the Messages window has no focus. Use this if your '
     +'theme has a hardly visible unfocused drawing.';
+  lisShowAutomatically = 'Show automatically';
+  lisShowAuto1 = 'When compiling';
+  lisShowAuto2 = 'Only when errors occur';
+  lisShowAuto3 = 'Never';
+  lisMustBeOpenedManually = 'Must be opened manually from View -> Messages';
   lisEditorColors = 'Editor Colors';
   lisPastelColors = 'Pastel Colors';
 
