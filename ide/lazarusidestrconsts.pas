@@ -1271,9 +1271,9 @@ resourcestring
     +'focused even if the Messages window has no focus. Use this if your '
     +'theme has a hardly visible unfocused drawing.';
   lisShowAutomatically = 'Show automatically';
-  lisShowAuto1 = 'When compiling';
-  lisShowAuto2 = 'Only when errors occur';
-  lisShowAuto3 = 'Never';
+  lisShowAutoWhenCompiling = 'When compiling';
+  lisShowAutoOnlyWhenErrorsOccur = 'Only when errors occur';
+  lisShowAutoNever = 'Never';
   lisMustBeOpenedManually = 'Must be opened manually from View -> Messages';
   lisEditorColors = 'Editor Colors';
   lisPastelColors = 'Pastel Colors';

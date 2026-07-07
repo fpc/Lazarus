@@ -255,9 +255,9 @@ begin
   lbMaxProcs.Caption := Format(lisMaximumParallelProcesses0MeansDefault,
                                [IntToStr(DefaultMaxProcessCount)]);
   lbShowAutomatically.Caption := lisShowAutomatically;
-  cbShowAutomatically.Items.Add(lisShowAuto1);
-  cbShowAutomatically.Items.Add(lisShowAuto2);
-  cbShowAutomatically.Items.Add(lisShowAuto3);
+  cbShowAutomatically.Items.Add(lisShowAutoWhenCompiling);
+  cbShowAutomatically.Items.Add(lisShowAutoOnlyWhenErrorsOccur);
+  cbShowAutomatically.Items.Add(lisShowAutoNever);
   cbShowAutomatically.ItemIndex := 0;
   cbFocusAtCompilation.Caption := lisFocusAtCompilation;
   lbWarning.Caption := lisMustBeOpenedManually;
