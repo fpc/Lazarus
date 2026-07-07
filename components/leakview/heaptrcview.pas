@@ -52,6 +52,8 @@ type
     Finfo  : TLeakInfo;
     fItems  : TStackTraceList;
 
+    procedure SetSummaryInfo(aTotalMemAlloc, aLeakingMemSize, aLeakingBlocksCount: int64);
+
     procedure DoUpdateLeaks(aInfo: TLeakInfo);
     procedure DoUpdateLeaksFromText(aText: string);
     procedure DoUpdateLeaksFromFile(aFileName: string);
@@ -188,6 +190,13 @@ begin
   Result.FileName:=ConfigFileName;
 end;
 
+procedure THeapTrcViewForm.SetSummaryInfo(aTotalMemAlloc, aLeakingMemSize, aLeakingBlocksCount: int64);
+begin
+  lblTotalMemAlloc     .Caption := Format(strTotalMemAlloc     , [aTotalMemAlloc     ]);
+  lblLeakingMemSize    .Caption := Format(strLeakingMemSize    , [aLeakingMemSize    ]);
+  lblLeakingBlocksCount.Caption := Format(strLeakingBlocksCount, [aLeakingBlocksCount]);
+end;
+
 procedure THeapTrcViewForm.FormCreate(Sender: TObject);
 var
   cfg   : TXMLConfig;
@@ -199,9 +208,8 @@ begin
   BtnResolve.Caption:=sbtnResolve;
   chkUseRaw.Caption:=schkRaw;
   chkStayOnTop.Caption:=schkTop;
-  lblTotalMemAlloc.Caption:=Format(strTotalMemAlloc,[0]);
-  lblLeakingMemSize.Caption:=Format(strLeakingMemSize,[0]);
-  lblLeakingBlocksCount.Caption:=Format(strLeakingBlocksCount,[0]);
+
+  SetSummaryInfo(0,0,0);
 
   fItems:=TStackTraceList.Create;
   try
@@ -367,14 +375,13 @@ begin
     trvTraceInfo.Items.Clear;
 
     Finfo := aInfo;
+    SetSummaryInfo(0, 0, 0);
     if FInfo = nil then exit;
 
     if Finfo.GetLeakInfo(data, fItems) then ItemsToTree
     else trvTraceInfo.Items.Add(nil, rsErrorParse);
 
-    lblTotalMemAlloc.Caption := Format(strTotalMemAlloc, [data.TotalMem]);
-    lblLeakingMemSize.Caption := Format(strLeakingMemSize, [data.LeakedMem]);
-    lblLeakingBlocksCount.Caption := Format(strLeakingBlocksCount, [data.LeakCount]);
+    SetSummaryInfo(data.TotalMem, data.LeakedMem, data.LeakCount);
   finally
     trvTraceInfo.EndUpdate;
   end;
