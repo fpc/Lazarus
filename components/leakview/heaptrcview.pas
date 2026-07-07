@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Types, XMLConf, DOM, Contnrs,
   // LCL
-  Forms, Controls, Dialogs, StdCtrls, ComCtrls, ExtCtrls, LCLType, Clipbrd, LResources,
+  Forms, Controls, Dialogs, StdCtrls, ComCtrls, ExtCtrls, LCLType, Clipbrd, LResources, LCLStrConsts,
   // LazUtils
   FileUtil, LazFileUtils,
   // IDEIntf
@@ -90,7 +90,7 @@ resourcestring
   rsDTimes = ' (%d times)';
   rsLeakView = 'Leaks and Traces';
   //
-  slblTrace = '.trc file';
+  slblTrace = 'Trace file';
   sbtnUpdate = 'Update';
   sbtnClipBrd = 'Paste Clipboard';
   sbtnResolve = 'Resolve';
@@ -154,7 +154,8 @@ end;
 procedure THeapTrcViewForm.btnBrowseClick(Sender: TObject);
 begin
   OpenDialog.FileName := '';
-  OpenDialog.Filter := slblTrace + '|*.trc';
+  OpenDialog.Filter := slblTrace + ' (*.trc;*.log;*.txt) |*.trc;*.log;*.txt|' +
+                       Format(rsAllFiles, [GetAllFilesMask, GetAllFilesMask, '']);
   OpenDialog.Title := sfrmSelectTrcFile;
   if not OpenDialog.Execute then Exit;
 
