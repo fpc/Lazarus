@@ -707,7 +707,10 @@ begin
       Pitch := fpDefault;
     Style := AStyle;
     Quality := TFontQuality(ALogFont.lfQuality);
-    Orientation := ALogFont.lfOrientation;   //Note: what to do with ALogFont.lfEscapement here?
+    //Note: TFont.Orientation is **not** mapped to TLogFont.lfOrientation
+    //MS DOcs: https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-logfontw
+    //Notice that Delphi Docs say otherwise: https://docwiki.embarcadero.com/Libraries/Sydney/en/Vcl.Graphics.TFont.Orientation?
+    Orientation := ALogFont.lfEscapement;
     Name := ALogFont.lfFaceName;
   finally
     EndUpdate;
