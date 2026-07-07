@@ -1098,6 +1098,14 @@ msgstr "Scegliere il file modello di codice (*.dci)"
 msgid "Show close buttons in notebook"
 msgstr "Mostra i pulsanti di chiusura negli appunti"
 
+#: lazarusidestrconsts.dlgcloseotherpagesmod
+msgid "Close all other tabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcloserightpagesmod
+msgid "Close tabs on the right"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclrscheme
 msgid "Color Scheme"
 msgstr "Schema colori"
@@ -1929,10 +1937,6 @@ msgstr "Linguette del progetto"
 msgctxt "lazarusidestrconsts.dlgenvtype"
 msgid "Type"
 msgstr "Tipo"
-
-#: lazarusidestrconsts.dlgeofocusmessagesatcompilation
-msgid "Focus messages at compilation"
-msgstr ""
 
 #: lazarusidestrconsts.dlgextracharspacing
 #, fuzzy
@@ -3097,14 +3101,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
 msgstr "File di progetto recenti massimi"
-
-#: lazarusidestrconsts.dlgmiddletabcloseotherpagesmod
-msgid "Middle-click-modifier to close all other tabs"
-msgstr ""
-
-#: lazarusidestrconsts.dlgmiddletabcloserightpagesmod
-msgid "Middle-click-modifier to close tabs on the right"
-msgstr ""
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -4478,10 +4474,6 @@ msgstr "Finestre visibili"
 msgctxt "lazarusidestrconsts.dlgshowlinenumbers"
 msgid "Show line numbers"
 msgstr "Mostra numeri di riga"
-
-#: lazarusidestrconsts.dlgshowmessagesicons
-msgid "Show Messages Icons"
-msgstr "Mostra le icone dei messaggi"
 
 #: lazarusidestrconsts.dlgshownotes
 msgid "Show notes"
@@ -10345,6 +10337,10 @@ msgstr ""
 msgid "Fix LFM file"
 msgstr "Ripara file LFM"
 
+#: lazarusidestrconsts.lisfocusatcompilation
+msgid "Focus at compilation"
+msgstr ""
+
 #: lazarusidestrconsts.lisfocushint
 msgid "Focus hint"
 msgstr "Fuoco sui consigli"
@@ -13797,6 +13793,10 @@ msgstr "Finestra Messaggi"
 msgid "Method class not found"
 msgstr "Metodo di classe non trovato"
 
+#: lazarusidestrconsts.lismiddleclickmodifiers
+msgid "Middle-click-modifiers"
+msgstr ""
+
 #: lazarusidestrconsts.lismissingevents
 msgid "Missing Events"
 msgstr "Eventi non trovati"
@@ -14209,6 +14209,10 @@ msgstr ""
 #: lazarusidestrconsts.lismultipledirectoriesareseparatedwithsemicolons
 msgid "Multiple directories are separated with semicolons"
 msgstr "Cartelle multiple sono separate da punto e virgola"
+
+#: lazarusidestrconsts.lismustbeopenedmanually
+msgid "Must be opened manually from View -> Messages."
+msgstr ""
 
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
@@ -17239,6 +17243,24 @@ msgstr "Mostra"
 msgid "Show abstract methods of \"%s\""
 msgstr "Mostra metodi astratti di \"%s\""
 
+#: lazarusidestrconsts.lisshowautomatically
+msgid "Show automatically"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowautonever
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisshowautonever"
+msgid "Never"
+msgstr "Mai"
+
+#: lazarusidestrconsts.lisshowautoonlywhenerrorsoccur
+msgid "Only when errors occur"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowautowhencompiling
+msgid "When compiling"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr "Mostra l'albero dei componenti"
@@ -17279,6 +17301,10 @@ msgstr "Mostra aiuto"
 msgctxt "lazarusidestrconsts.lisshowhintsinobjectinspector"
 msgid "Show hints"
 msgstr "Mostra suggerimenti nell'analizzatore oggetti"
+
+#: lazarusidestrconsts.lisshowicons
+msgid "Show Icons"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowidentifiers
 msgid "Show identifiers"
@@ -17578,6 +17604,10 @@ msgstr "Inizia con un nuovo progetto"
 #: lazarusidestrconsts.lisstatusbarshowspropertysnameandclass
 msgid "Statusbar shows the property's name and the class where it is published."
 msgstr "La barra di stato mostra il nome della proprietà e la classe in cui è pubblicata."
+
+#: lazarusidestrconsts.lisstayontop
+msgid "Stay on top"
+msgstr ""
 
 #: lazarusidestrconsts.lisstop
 msgctxt "lazarusidestrconsts.lisstop"
@@ -19334,10 +19364,6 @@ msgstr "Il menu della finestra mostra il nome della form dal progetto invece del
 #: lazarusidestrconsts.liswindowmenuwithnamefordesignedformhint
 msgid "Useful especially if the caption is left empty."
 msgstr "Utile specialmente se l'intestazione è lasciata vuota"
-
-#: lazarusidestrconsts.liswindowstaysontop
-msgid "Window stays on top"
-msgstr "Finestra sempre in primo piano"
 
 #: lazarusidestrconsts.liswithincludes2
 msgid ", with includes "

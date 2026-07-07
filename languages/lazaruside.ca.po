@@ -1078,6 +1078,14 @@ msgstr "Tria un fitxer de plantilla (*.dci)"
 msgid "Show close buttons in notebook"
 msgstr "Mostra els botons de tancar en el llibre de notes"
 
+#: lazarusidestrconsts.dlgcloseotherpagesmod
+msgid "Close all other tabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcloserightpagesmod
+msgid "Close tabs on the right"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclrscheme
 msgid "Color Scheme"
 msgstr "Esquema de Color"
@@ -1909,10 +1917,6 @@ msgstr "Projecte"
 msgctxt "lazarusidestrconsts.dlgenvtype"
 msgid "Type"
 msgstr "Tipus"
-
-#: lazarusidestrconsts.dlgeofocusmessagesatcompilation
-msgid "Focus messages at compilation"
-msgstr ""
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra character spacing"
@@ -3050,14 +3054,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
 msgstr "Màx.fitxers projecte recents"
-
-#: lazarusidestrconsts.dlgmiddletabcloseotherpagesmod
-msgid "Middle-click-modifier to close all other tabs"
-msgstr ""
-
-#: lazarusidestrconsts.dlgmiddletabcloserightpagesmod
-msgid "Middle-click-modifier to close tabs on the right"
-msgstr ""
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -4436,10 +4432,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.dlgshowlinenumbers"
 msgid "Show line numbers"
 msgstr "Mostra els números de línia"
-
-#: lazarusidestrconsts.dlgshowmessagesicons
-msgid "Show Messages Icons"
-msgstr ""
 
 #: lazarusidestrconsts.dlgshownotes
 #, fuzzy
@@ -10316,6 +10308,10 @@ msgstr ""
 msgid "Fix LFM file"
 msgstr "Fixa el fitxer LFM"
 
+#: lazarusidestrconsts.lisfocusatcompilation
+msgid "Focus at compilation"
+msgstr ""
+
 #: lazarusidestrconsts.lisfocushint
 msgid "Focus hint"
 msgstr ""
@@ -13835,6 +13831,10 @@ msgstr ""
 msgid "Method class not found"
 msgstr ""
 
+#: lazarusidestrconsts.lismiddleclickmodifiers
+msgid "Middle-click-modifiers"
+msgstr ""
+
 #: lazarusidestrconsts.lismissingevents
 msgid "Missing Events"
 msgstr ""
@@ -14195,6 +14195,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lismultipledirectoriesareseparatedwithsemicolons
 msgid "Multiple directories are separated with semicolons"
+msgstr ""
+
+#: lazarusidestrconsts.lismustbeopenedmanually
+msgid "Must be opened manually from View -> Messages."
 msgstr ""
 
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
@@ -17292,6 +17296,23 @@ msgstr ""
 msgid "Show abstract methods of \"%s\""
 msgstr ""
 
+#: lazarusidestrconsts.lisshowautomatically
+msgid "Show automatically"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowautonever
+msgctxt "lazarusidestrconsts.lisshowautonever"
+msgid "Never"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowautoonlywhenerrorsoccur
+msgid "Only when errors occur"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowautowhencompiling
+msgid "When compiling"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr ""
@@ -17333,6 +17354,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisshowhintsinobjectinspector"
 msgid "Show hints"
 msgstr "Mostra sugerències a l'inspector d'Objectes"
+
+#: lazarusidestrconsts.lisshowicons
+msgid "Show Icons"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowidentifiers
 msgid "Show identifiers"
@@ -17625,6 +17650,10 @@ msgstr "Inicia amb un nou projecte"
 
 #: lazarusidestrconsts.lisstatusbarshowspropertysnameandclass
 msgid "Statusbar shows the property's name and the class where it is published."
+msgstr ""
+
+#: lazarusidestrconsts.lisstayontop
+msgid "Stay on top"
 msgstr ""
 
 #: lazarusidestrconsts.lisstop
@@ -19386,10 +19415,6 @@ msgstr ""
 
 #: lazarusidestrconsts.liswindowmenuwithnamefordesignedformhint
 msgid "Useful especially if the caption is left empty."
-msgstr ""
-
-#: lazarusidestrconsts.liswindowstaysontop
-msgid "Window stays on top"
 msgstr ""
 
 #: lazarusidestrconsts.liswithincludes2

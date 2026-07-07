@@ -1088,6 +1088,14 @@ msgstr "Kódsablon fájl választása (*.dci)"
 msgid "Show close buttons in notebook"
 msgstr "Bezáró gomb megjelenítése a lapfüleken"
 
+#: lazarusidestrconsts.dlgcloseotherpagesmod
+msgid "Close all other tabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcloserightpagesmod
+msgid "Close tabs on the right"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclrscheme
 msgid "Color Scheme"
 msgstr "Színséma"
@@ -1886,10 +1894,6 @@ msgstr "A projekt lapjai"
 msgctxt "lazarusidestrconsts.dlgenvtype"
 msgid "Type"
 msgstr "Típus"
-
-#: lazarusidestrconsts.dlgeofocusmessagesatcompilation
-msgid "Focus messages at compilation"
-msgstr "Üzenetek előtérbe hozása fordításkor"
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra character spacing"
@@ -3015,14 +3019,6 @@ msgstr "A 0 érték korlátlant jelent."
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
 msgstr "Legutóbbi projektek maximális száma"
-
-#: lazarusidestrconsts.dlgmiddletabcloseotherpagesmod
-msgid "Middle-click-modifier to close all other tabs"
-msgstr "Középső gomb módosítója minden más lap bezárásához"
-
-#: lazarusidestrconsts.dlgmiddletabcloserightpagesmod
-msgid "Middle-click-modifier to close tabs on the right"
-msgstr "Középső gomb módosítója a jobbra lévő lapok bezárásához"
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -4375,10 +4371,6 @@ msgstr "Ablakok megjelenítése"
 msgctxt "lazarusidestrconsts.dlgshowlinenumbers"
 msgid "Show line numbers"
 msgstr "Sorszámok megjelenítése"
-
-#: lazarusidestrconsts.dlgshowmessagesicons
-msgid "Show Messages Icons"
-msgstr "Üzenetikonok megjelenítése"
 
 #: lazarusidestrconsts.dlgshownotes
 msgid "Show notes"
@@ -10216,6 +10208,10 @@ msgstr "Első teszt"
 msgid "Fix LFM file"
 msgstr "LFM fájl javítása"
 
+#: lazarusidestrconsts.lisfocusatcompilation
+msgid "Focus at compilation"
+msgstr ""
+
 #: lazarusidestrconsts.lisfocushint
 msgid "Focus hint"
 msgstr "Fókusz tipp"
@@ -13645,6 +13641,10 @@ msgstr "Üzenetek ablaka"
 msgid "Method class not found"
 msgstr "Metódus osztálya nem található"
 
+#: lazarusidestrconsts.lismiddleclickmodifiers
+msgid "Middle-click-modifiers"
+msgstr ""
+
 #: lazarusidestrconsts.lismissingevents
 msgid "Missing Events"
 msgstr "Hiányzó események"
@@ -14029,6 +14029,10 @@ msgstr "Üzenetek színei"
 #: lazarusidestrconsts.lismultipledirectoriesareseparatedwithsemicolons
 msgid "Multiple directories are separated with semicolons"
 msgstr "Több könyvtárat pontosvesszővel kell elválasztani"
+
+#: lazarusidestrconsts.lismustbeopenedmanually
+msgid "Must be opened manually from View -> Messages."
+msgstr ""
 
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
@@ -17051,6 +17055,24 @@ msgstr "Megjelenítés"
 msgid "Show abstract methods of \"%s\""
 msgstr "\"%s\" absztrakt metódusainak megjelenítése"
 
+#: lazarusidestrconsts.lisshowautomatically
+msgid "Show automatically"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowautonever
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisshowautonever"
+msgid "Never"
+msgstr "Soha"
+
+#: lazarusidestrconsts.lisshowautoonlywhenerrorsoccur
+msgid "Only when errors occur"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowautowhencompiling
+msgid "When compiling"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr "Komponensfa megjelenítése"
@@ -17091,6 +17113,10 @@ msgstr "Súgó megjelenítése"
 msgctxt "lazarusidestrconsts.lisshowhintsinobjectinspector"
 msgid "Show hints"
 msgstr "Tippek megjelenítése"
+
+#: lazarusidestrconsts.lisshowicons
+msgid "Show Icons"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowidentifiers
 msgid "Show identifiers"
@@ -17386,6 +17412,10 @@ msgstr "Induljon új projekttel"
 #: lazarusidestrconsts.lisstatusbarshowspropertysnameandclass
 msgid "Statusbar shows the property's name and the class where it is published."
 msgstr "Az állapotsor megjeleníti a tulajdonság nevét és az osztályt amelyben közzé lett téve."
+
+#: lazarusidestrconsts.lisstayontop
+msgid "Stay on top"
+msgstr ""
 
 #: lazarusidestrconsts.lisstop
 msgctxt "lazarusidestrconsts.lisstop"
@@ -19114,10 +19144,6 @@ msgstr "Az Ablak menü a tervezett form nevét jeleníti meg a címe helyett"
 #: lazarusidestrconsts.liswindowmenuwithnamefordesignedformhint
 msgid "Useful especially if the caption is left empty."
 msgstr "Különösen hasznos ha a cím üresen maradt."
-
-#: lazarusidestrconsts.liswindowstaysontop
-msgid "Window stays on top"
-msgstr "Az ablak legfelül marad"
 
 #: lazarusidestrconsts.liswithincludes2
 msgid ", with includes "

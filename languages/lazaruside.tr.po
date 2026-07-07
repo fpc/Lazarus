@@ -1083,6 +1083,14 @@ msgstr "Kod şablon dosyası (* .dci) seç"
 msgid "Show close buttons in notebook"
 msgstr "Not defterinde kapat düğmelerini göster"
 
+#: lazarusidestrconsts.dlgcloseotherpagesmod
+msgid "Close all other tabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcloserightpagesmod
+msgid "Close tabs on the right"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclrscheme
 msgid "Color Scheme"
 msgstr "Renk şeması"
@@ -1874,10 +1882,6 @@ msgstr "Projenin sekmeleri"
 msgctxt "lazarusidestrconsts.dlgenvtype"
 msgid "Type"
 msgstr "Tür"
-
-#: lazarusidestrconsts.dlgeofocusmessagesatcompilation
-msgid "Focus messages at compilation"
-msgstr "Derleme anında mesajları odakla"
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra character spacing"
@@ -2979,14 +2983,6 @@ msgstr "0 değeri sınırsız demektir."
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
 msgstr "Maksimum yeni proje dosyaları"
-
-#: lazarusidestrconsts.dlgmiddletabcloseotherpagesmod
-msgid "Middle-click-modifier to close all other tabs"
-msgstr "Diğer tüm sekmeleri kapatmak için orta tıklamayla değiştirir"
-
-#: lazarusidestrconsts.dlgmiddletabcloserightpagesmod
-msgid "Middle-click-modifier to close tabs on the right"
-msgstr "Sağdaki sekmeleri kapatmak için orta tıklama değiştir"
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -4331,10 +4327,6 @@ msgstr "Gösterilen Pencereler"
 msgctxt "lazarusidestrconsts.dlgshowlinenumbers"
 msgid "Show line numbers"
 msgstr "Satır numaralarını göster"
-
-#: lazarusidestrconsts.dlgshowmessagesicons
-msgid "Show Messages Icons"
-msgstr "Mesaj Simgelerini Göster"
 
 #: lazarusidestrconsts.dlgshownotes
 msgid "Show notes"
@@ -10112,6 +10104,10 @@ msgstr "&İlk test"
 msgid "Fix LFM file"
 msgstr "LFM dosyasını düzelt"
 
+#: lazarusidestrconsts.lisfocusatcompilation
+msgid "Focus at compilation"
+msgstr ""
+
 #: lazarusidestrconsts.lisfocushint
 msgid "Focus hint"
 msgstr "İpucuna odaklan"
@@ -13503,6 +13499,10 @@ msgstr "Mesajlar Penceresi"
 msgid "Method class not found"
 msgstr "Yöntem sınıfı bulunamadı"
 
+#: lazarusidestrconsts.lismiddleclickmodifiers
+msgid "Middle-click-modifiers"
+msgstr ""
+
 #: lazarusidestrconsts.lismissingevents
 msgid "Missing Events"
 msgstr "Eksik Etkinlikler"
@@ -13884,6 +13884,10 @@ msgstr "Mesaj renkleri"
 #: lazarusidestrconsts.lismultipledirectoriesareseparatedwithsemicolons
 msgid "Multiple directories are separated with semicolons"
 msgstr "Birden çok dizin noktalı virgül ile ayrılır"
+
+#: lazarusidestrconsts.lismustbeopenedmanually
+msgid "Must be opened manually from View -> Messages."
+msgstr ""
 
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
@@ -16866,6 +16870,24 @@ msgstr "Göster"
 msgid "Show abstract methods of \"%s\""
 msgstr "Soyut yöntemleri göster \"%s\""
 
+#: lazarusidestrconsts.lisshowautomatically
+msgid "Show automatically"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowautonever
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisshowautonever"
+msgid "Never"
+msgstr "Asla"
+
+#: lazarusidestrconsts.lisshowautoonlywhenerrorsoccur
+msgid "Only when errors occur"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowautowhencompiling
+msgid "When compiling"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr "Bileşen ağacını göster"
@@ -16906,6 +16928,10 @@ msgstr "Yardımı göster"
 msgctxt "lazarusidestrconsts.lisshowhintsinobjectinspector"
 msgid "Show hints"
 msgstr "İpuçlarını göster"
+
+#: lazarusidestrconsts.lisshowicons
+msgid "Show Icons"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowidentifiers
 msgid "Show identifiers"
@@ -17194,6 +17220,10 @@ msgstr "Yeni bir proje ile başla"
 #: lazarusidestrconsts.lisstatusbarshowspropertysnameandclass
 msgid "Statusbar shows the property's name and the class where it is published."
 msgstr "Durum çubuğu özelliğin adını ve yayınlandığı sınıfı gösterir."
+
+#: lazarusidestrconsts.lisstayontop
+msgid "Stay on top"
+msgstr ""
 
 #: lazarusidestrconsts.lisstop
 msgid "Stop"
@@ -18913,10 +18943,6 @@ msgstr "Pencere menüsü başlık yerine tasarlanan formun adını gösterir"
 #: lazarusidestrconsts.liswindowmenuwithnamefordesignedformhint
 msgid "Useful especially if the caption is left empty."
 msgstr "Özellikle başlık boş bırakılmışsa kullanışlıdır."
-
-#: lazarusidestrconsts.liswindowstaysontop
-msgid "Window stays on top"
-msgstr "Herzaman üstte"
 
 #: lazarusidestrconsts.liswithincludes2
 msgid ", with includes "

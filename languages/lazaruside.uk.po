@@ -1083,6 +1083,14 @@ msgstr "Виберіть файл шаблонів коду (*.dci)"
 msgid "Show close buttons in notebook"
 msgstr "Кнопки закриття в записнику"
 
+#: lazarusidestrconsts.dlgcloseotherpagesmod
+msgid "Close all other tabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcloserightpagesmod
+msgid "Close tabs on the right"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclrscheme
 msgid "Color Scheme"
 msgstr "Колірна схема"
@@ -1877,10 +1885,6 @@ msgstr "Вкладки для проєкту"
 msgctxt "lazarusidestrconsts.dlgenvtype"
 msgid "Type"
 msgstr "Тип"
-
-#: lazarusidestrconsts.dlgeofocusmessagesatcompilation
-msgid "Focus messages at compilation"
-msgstr "Фокусувати при компіляції на вікні повідомлень"
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra character spacing"
@@ -3004,14 +3008,6 @@ msgstr "Значення 0 означає необмежено."
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
 msgstr "Максимум останніх файлів проєктів"
-
-#: lazarusidestrconsts.dlgmiddletabcloseotherpagesmod
-msgid "Middle-click-modifier to close all other tabs"
-msgstr "Модифікатор середньої кнопки для закриття решти вкладок"
-
-#: lazarusidestrconsts.dlgmiddletabcloserightpagesmod
-msgid "Middle-click-modifier to close tabs on the right"
-msgstr "Модифікатор середньої кнопки для закриття вкладок праворуч"
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -4362,10 +4358,6 @@ msgstr "Показ вікон"
 msgctxt "lazarusidestrconsts.dlgshowlinenumbers"
 msgid "Show line numbers"
 msgstr "Показувати номери рядків"
-
-#: lazarusidestrconsts.dlgshowmessagesicons
-msgid "Show Messages Icons"
-msgstr "Показувати значки повідомлень"
 
 #: lazarusidestrconsts.dlgshownotes
 msgid "Show notes"
@@ -10190,6 +10182,10 @@ msgstr "&Перший тест"
 msgid "Fix LFM file"
 msgstr "Виправити файл LFM"
 
+#: lazarusidestrconsts.lisfocusatcompilation
+msgid "Focus at compilation"
+msgstr ""
+
 #: lazarusidestrconsts.lisfocushint
 msgid "Focus hint"
 msgstr "Фокусна підказка"
@@ -13611,6 +13607,10 @@ msgstr "Вікно повідомлень"
 msgid "Method class not found"
 msgstr "Клас методу не знайдено"
 
+#: lazarusidestrconsts.lismiddleclickmodifiers
+msgid "Middle-click-modifiers"
+msgstr ""
+
 #: lazarusidestrconsts.lismissingevents
 msgid "Missing Events"
 msgstr "Пропущені події"
@@ -13992,6 +13992,10 @@ msgstr "Кольори повідомлення"
 #: lazarusidestrconsts.lismultipledirectoriesareseparatedwithsemicolons
 msgid "Multiple directories are separated with semicolons"
 msgstr "Декілька тек, відокремлених крапкою з комою"
+
+#: lazarusidestrconsts.lismustbeopenedmanually
+msgid "Must be opened manually from View -> Messages."
+msgstr ""
 
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
@@ -17014,6 +17018,24 @@ msgstr "Показати"
 msgid "Show abstract methods of \"%s\""
 msgstr "Показати абстрактні методи \"%s\""
 
+#: lazarusidestrconsts.lisshowautomatically
+msgid "Show automatically"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowautonever
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisshowautonever"
+msgid "Never"
+msgstr "Ніколи"
+
+#: lazarusidestrconsts.lisshowautoonlywhenerrorsoccur
+msgid "Only when errors occur"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowautowhencompiling
+msgid "When compiling"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr "Показати дерево компонентів"
@@ -17054,6 +17076,10 @@ msgstr "Показати довідку"
 msgctxt "lazarusidestrconsts.lisshowhintsinobjectinspector"
 msgid "Show hints"
 msgstr "Показувати підказки"
+
+#: lazarusidestrconsts.lisshowicons
+msgid "Show Icons"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowidentifiers
 msgid "Show identifiers"
@@ -17351,6 +17377,10 @@ msgstr "Розпочати з нового проєкту"
 #: lazarusidestrconsts.lisstatusbarshowspropertysnameandclass
 msgid "Statusbar shows the property's name and the class where it is published."
 msgstr "Рядок стану показує назву властивості і клас, де її опубліковано."
+
+#: lazarusidestrconsts.lisstayontop
+msgid "Stay on top"
+msgstr ""
 
 #: lazarusidestrconsts.lisstop
 msgctxt "lazarusidestrconsts.lisstop"
@@ -19079,10 +19109,6 @@ msgstr "Меню вікна показує назву форми замість 
 #: lazarusidestrconsts.liswindowmenuwithnamefordesignedformhint
 msgid "Useful especially if the caption is left empty."
 msgstr "Корисно, якщо заголовок залишено порожнім."
-
-#: lazarusidestrconsts.liswindowstaysontop
-msgid "Window stays on top"
-msgstr "Вікно залишається попереду всіх"
 
 #: lazarusidestrconsts.liswithincludes2
 msgid ", with includes "

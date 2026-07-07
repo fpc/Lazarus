@@ -1099,6 +1099,14 @@ msgstr "Rinkitės kodo šablono failą (*.dci)"
 msgid "Show close buttons in notebook"
 msgstr "Rengyklės kortelėse rodyti „Užverti“ mygtukus"
 
+#: lazarusidestrconsts.dlgcloseotherpagesmod
+msgid "Close all other tabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcloserightpagesmod
+msgid "Close tabs on the right"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclrscheme
 msgid "Color Scheme"
 msgstr "Spalvų derinys"
@@ -1930,10 +1938,6 @@ msgstr "Projekto kortelės"
 msgctxt "lazarusidestrconsts.dlgenvtype"
 msgid "Type"
 msgstr "Tipas"
-
-#: lazarusidestrconsts.dlgeofocusmessagesatcompilation
-msgid "Focus messages at compilation"
-msgstr "Kompiliuojant fokusą perkelti į pranešimus"
 
 #: lazarusidestrconsts.dlgextracharspacing
 #, fuzzy
@@ -3081,14 +3085,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
 msgstr "Maksimalus atvertų projektų sąrašo ilgis"
-
-#: lazarusidestrconsts.dlgmiddletabcloseotherpagesmod
-msgid "Middle-click-modifier to close all other tabs"
-msgstr ""
-
-#: lazarusidestrconsts.dlgmiddletabcloserightpagesmod
-msgid "Middle-click-modifier to close tabs on the right"
-msgstr ""
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -4467,10 +4463,6 @@ msgstr "Rodomi langai"
 msgctxt "lazarusidestrconsts.dlgshowlinenumbers"
 msgid "Show line numbers"
 msgstr "Rodyti eilučių numerius"
-
-#: lazarusidestrconsts.dlgshowmessagesicons
-msgid "Show Messages Icons"
-msgstr "Rodyti pranešimų ikonas"
 
 #: lazarusidestrconsts.dlgshownotes
 msgid "Show notes"
@@ -10332,6 +10324,10 @@ msgstr "&Pirmasis testas"
 msgid "Fix LFM file"
 msgstr "LFM failo taisa"
 
+#: lazarusidestrconsts.lisfocusatcompilation
+msgid "Focus at compilation"
+msgstr ""
+
 #: lazarusidestrconsts.lisfocushint
 msgid "Focus hint"
 msgstr "Fokusuoti užuominą"
@@ -13809,6 +13805,10 @@ msgstr "Pranešimų langas"
 msgid "Method class not found"
 msgstr "Nerasta metodo klasė"
 
+#: lazarusidestrconsts.lismiddleclickmodifiers
+msgid "Middle-click-modifiers"
+msgstr ""
+
 #: lazarusidestrconsts.lismissingevents
 msgid "Missing Events"
 msgstr "Trūksta įvykių"
@@ -14220,6 +14220,10 @@ msgstr "Spalvos pranešimuose"
 #: lazarusidestrconsts.lismultipledirectoriesareseparatedwithsemicolons
 msgid "Multiple directories are separated with semicolons"
 msgstr "Aplankai atskiriami dvitaškiais"
+
+#: lazarusidestrconsts.lismustbeopenedmanually
+msgid "Must be opened manually from View -> Messages."
+msgstr ""
 
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
@@ -17278,6 +17282,24 @@ msgstr "Rodyti"
 msgid "Show abstract methods of \"%s\""
 msgstr "Rodyti „%s“ abstrakčius metodus"
 
+#: lazarusidestrconsts.lisshowautomatically
+msgid "Show automatically"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowautonever
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisshowautonever"
+msgid "Never"
+msgstr "Niekada"
+
+#: lazarusidestrconsts.lisshowautoonlywhenerrorsoccur
+msgid "Only when errors occur"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowautowhencompiling
+msgid "When compiling"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr "Rodyti komponenčių medį"
@@ -17318,6 +17340,10 @@ msgstr "Rodyti žinyną"
 msgctxt "lazarusidestrconsts.lisshowhintsinobjectinspector"
 msgid "Show hints"
 msgstr "Rodyti informacinius langelius objektų inspektoriuje"
+
+#: lazarusidestrconsts.lisshowicons
+msgid "Show Icons"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowidentifiers
 msgid "Show identifiers"
@@ -17617,6 +17643,10 @@ msgstr "Startuoti su nauju projektu"
 #: lazarusidestrconsts.lisstatusbarshowspropertysnameandclass
 msgid "Statusbar shows the property's name and the class where it is published."
 msgstr "Būsenos juostoje rodomas savybės pavadinimas ir klasė, kurioje ji paskelbta."
+
+#: lazarusidestrconsts.lisstayontop
+msgid "Stay on top"
+msgstr ""
 
 #: lazarusidestrconsts.lisstop
 msgctxt "lazarusidestrconsts.lisstop"
@@ -19366,10 +19396,6 @@ msgstr "Lango meniu vietoje antraštės bus rodoma komponuojamos formos pavadini
 #: lazarusidestrconsts.liswindowmenuwithnamefordesignedformhint
 msgid "Useful especially if the caption is left empty."
 msgstr "Naudinga ypač tada, kai antraštė būna tuščia."
-
-#: lazarusidestrconsts.liswindowstaysontop
-msgid "Window stays on top"
-msgstr "Langas visada būna virš kitų"
 
 #: lazarusidestrconsts.liswithincludes2
 msgid ", with includes "

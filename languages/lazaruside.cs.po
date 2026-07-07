@@ -1095,6 +1095,14 @@ msgstr "Vyberte šablonu kódu (*.dci)"
 msgid "Show close buttons in notebook"
 msgstr "Ukázat tlačítka pro zavření v zápisníku"
 
+#: lazarusidestrconsts.dlgcloseotherpagesmod
+msgid "Close all other tabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcloserightpagesmod
+msgid "Close tabs on the right"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclrscheme
 msgid "Color Scheme"
 msgstr "Barevné schéma"
@@ -1898,10 +1906,6 @@ msgstr "Listy projektu"
 msgctxt "lazarusidestrconsts.dlgenvtype"
 msgid "Type"
 msgstr "Typ"
-
-#: lazarusidestrconsts.dlgeofocusmessagesatcompilation
-msgid "Focus messages at compilation"
-msgstr "Zaměřit zprávy při překládání"
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra character spacing"
@@ -3037,14 +3041,6 @@ msgstr "Hodnota 0 znamená neomezeně."
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
 msgstr "Maximum nedávných souborů projektů"
-
-#: lazarusidestrconsts.dlgmiddletabcloseotherpagesmod
-msgid "Middle-click-modifier to close all other tabs"
-msgstr ""
-
-#: lazarusidestrconsts.dlgmiddletabcloserightpagesmod
-msgid "Middle-click-modifier to close tabs on the right"
-msgstr ""
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -4409,10 +4405,6 @@ msgstr "Ukazují se okna"
 msgctxt "lazarusidestrconsts.dlgshowlinenumbers"
 msgid "Show line numbers"
 msgstr "Ukázat čísla řádků"
-
-#: lazarusidestrconsts.dlgshowmessagesicons
-msgid "Show Messages Icons"
-msgstr "Ukázat ikony zpráv"
 
 #: lazarusidestrconsts.dlgshownotes
 msgid "Show notes"
@@ -10259,6 +10251,10 @@ msgstr "&První test"
 msgid "Fix LFM file"
 msgstr "Opravit LFM soubor"
 
+#: lazarusidestrconsts.lisfocusatcompilation
+msgid "Focus at compilation"
+msgstr ""
+
 #: lazarusidestrconsts.lisfocushint
 msgid "Focus hint"
 msgstr "Tip při fokusu"
@@ -13697,6 +13693,10 @@ msgstr "Okno zpráv"
 msgid "Method class not found"
 msgstr "Třída metody nenalezena"
 
+#: lazarusidestrconsts.lismiddleclickmodifiers
+msgid "Middle-click-modifiers"
+msgstr ""
+
 #: lazarusidestrconsts.lismissingevents
 msgid "Missing Events"
 msgstr "Chybějící události"
@@ -14103,6 +14103,10 @@ msgstr "Barvy zpráv"
 #: lazarusidestrconsts.lismultipledirectoriesareseparatedwithsemicolons
 msgid "Multiple directories are separated with semicolons"
 msgstr "Více adresářů je odděleno středníkem"
+
+#: lazarusidestrconsts.lismustbeopenedmanually
+msgid "Must be opened manually from View -> Messages."
+msgstr ""
 
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
@@ -17123,6 +17127,24 @@ msgstr "Ukázat"
 msgid "Show abstract methods of \"%s\""
 msgstr "Ukázat abstraktní metody \"%s\""
 
+#: lazarusidestrconsts.lisshowautomatically
+msgid "Show automatically"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowautonever
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisshowautonever"
+msgid "Never"
+msgstr "Nikdy"
+
+#: lazarusidestrconsts.lisshowautoonlywhenerrorsoccur
+msgid "Only when errors occur"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowautowhencompiling
+msgid "When compiling"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
 msgstr "Zobrazit strom komponent"
@@ -17163,6 +17185,10 @@ msgstr "Ukázat nápovědu"
 msgctxt "lazarusidestrconsts.lisshowhintsinobjectinspector"
 msgid "Show hints"
 msgstr "Ukázat pokyny"
+
+#: lazarusidestrconsts.lisshowicons
+msgid "Show Icons"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowidentifiers
 msgid "Show identifiers"
@@ -17458,6 +17484,10 @@ msgstr "Začít s novým projektem"
 #: lazarusidestrconsts.lisstatusbarshowspropertysnameandclass
 msgid "Statusbar shows the property's name and the class where it is published."
 msgstr "Stavová lišta ukazuje jména vlastností a třídu, kde jsou zveřejněny."
+
+#: lazarusidestrconsts.lisstayontop
+msgid "Stay on top"
+msgstr ""
 
 #: lazarusidestrconsts.lisstop
 msgctxt "lazarusidestrconsts.lisstop"
@@ -19186,10 +19216,6 @@ msgstr "Nabídka okna zobrazuje jméno navrhovaného formuláře namísto jeho p
 #: lazarusidestrconsts.liswindowmenuwithnamefordesignedformhint
 msgid "Useful especially if the caption is left empty."
 msgstr "Užitečné zejména když je titulek okna prázdný."
-
-#: lazarusidestrconsts.liswindowstaysontop
-msgid "Window stays on top"
-msgstr "Okno Zůstává Vždy Nahoře"
 
 #: lazarusidestrconsts.liswithincludes2
 msgid ", with includes "
