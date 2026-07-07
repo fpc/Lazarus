@@ -30,6 +30,8 @@ uses
   LCLType, StdCtrls, ExtCtrls, CheckLst, ComCtrls, Dialogs, Spin, Controls,
   // LazUtils
   LazStringUtils,
+  // LazControls
+  DividerBevel,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEIntfUtils,
   // IDE
@@ -54,6 +56,7 @@ type
     chkShowNumbers: TCheckBox;
     chkHideSingleTab: TCheckBox;
     DisableAntialiasingCheckBox: TCheckBox;
+    MiddleClickDivider: TDividerBevel;
     TabFontButton: TButton;
     TabFontComboBox: TComboBox;
     TabFontGroupBox: TGroupBox;
@@ -243,8 +246,9 @@ begin
   EditorTabPositionLabel.Caption := dlgNotebookTabPos;
   TabFontGroupBox.Caption := dlgDefaultTabFont;
   DisableAntialiasingCheckBox.Caption := dlgDisableAntialiasing;
-  cgCloseOther.Caption := dlgMiddleTabCloseOtherPagesMod;
-  cgCloseRight.Caption := dlgMiddleTabCloseRightPagesMod;
+  MiddleClickDivider.Caption := lisMiddleClickModifiers;
+  cgCloseOther.Caption := dlgCloseOtherPagesMod;
+  cgCloseRight.Caption := dlgCloseRightPagesMod;
 end;
 
 procedure TEditorMultiWindowOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

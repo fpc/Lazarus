@@ -1533,9 +1533,10 @@ resourcestring
   dlgScrollBarPastEOLFixed = 'Force 1024 columns minimum for horizontal scroll range';
   dlgScrollHint = 'Show scroll hint';
   lisShowSpecialCharacters = 'Show special characters';
+  lisMiddleClickModifiers = 'Middle-click-modifiers';
   dlgCloseButtonsNotebook = 'Show close buttons in notebook';
-  dlgMiddleTabCloseOtherPagesMod = 'Middle-click-modifier to close all other tabs';
-  dlgMiddleTabCloseRightPagesMod = 'Middle-click-modifier to close tabs on the right';
+  dlgCloseOtherPagesMod = 'Close all other tabs';
+  dlgCloseRightPagesMod = 'Close tabs on the right';
   dlgShowFileNameInCaption = 'Show file name in caption';
   dlgSourceEditTabMultiLine = 'Multiline tabs';
   dlgHideSingleTabInNotebook = 'Hide tab in single page windows';
