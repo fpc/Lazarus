@@ -31,10 +31,12 @@ type
     edtTrcFileName:TComboBox;
     lblTrcFile: TLabel;
     ctrlPanel: TPanel;
-    memoSummary: TMemo;
     OpenDialog: TOpenDialog;
-    splitter: TSplitter;
     trvTraceInfo: TTreeView;
+    pnlSummary: TPanel;
+    lblLeakingMemSize: TLabel;
+    lblLeakingBlocksCount: TLabel;
+    lblTotalMemAlloc: TLabel;
     procedure btnClipboardClick(Sender: TObject);
     procedure BtnResolveClick(Sender: TObject);
     procedure btnUpdateClick(Sender: TObject);
@@ -197,6 +199,10 @@ begin
   BtnResolve.Caption:=sbtnResolve;
   chkUseRaw.Caption:=schkRaw;
   chkStayOnTop.Caption:=schkTop;
+  lblTotalMemAlloc.Caption:=Format(strTotalMemAlloc,[0]);
+  lblLeakingMemSize.Caption:=Format(strLeakingMemSize,[0]);
+  lblLeakingBlocksCount.Caption:=Format(strLeakingBlocksCount,[0]);
+
   fItems:=TStackTraceList.Create;
   try
     cfg:=CreateXMLConfig;
@@ -366,13 +372,9 @@ begin
     if Finfo.GetLeakInfo(data, fItems) then ItemsToTree
     else trvTraceInfo.Items.Add(nil, rsErrorParse);
 
-    memoSummary.Clear;
-    with memoSummary.Lines do begin
-      Add( Format(strTotalMemAlloc, [data.TotalMem]));
-      Add( Format(strLeakingMemSize, [data.LeakedMem]));
-      Add( Format(strLeakingBlocksCount, [data.LeakCount]));
-    end;
-
+    lblTotalMemAlloc.Caption := Format(strTotalMemAlloc, [data.TotalMem]);
+    lblLeakingMemSize.Caption := Format(strLeakingMemSize, [data.LeakedMem]);
+    lblLeakingBlocksCount.Caption := Format(strLeakingBlocksCount, [data.LeakCount]);
   finally
     trvTraceInfo.EndUpdate;
   end;
