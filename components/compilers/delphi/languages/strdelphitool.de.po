@@ -1,0 +1,49 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: strdelphitool.sconfigfileextensioncaption
+msgid "Configuration file extension"
+msgstr "Erweiterung der Konfigurationsdatei"
+
+#: strdelphitool.sconvertdostounixcaption
+msgid "Map filenames from Windows to Unix notation"
+msgstr "Setze Windows-Schreibweise von Dateinamen auf Linux um"
+
+#: strdelphitool.sdelphicompilecommand
+msgid "Delphi compile command"
+msgstr "Delphi-Compile-Kommando"
+
+#: strdelphitool.sdelphicompilerargs
+msgid "Additional compiler options"
+msgstr "Zusätzliche Compiler-Einstellungen"
+
+#: strdelphitool.sdelphicompilerconfigfilename
+msgid "Delphi compiler configuration filename for project"
+msgstr "Dateiname der Delphi-Compiler-Konfiguration für das Projekt"
+
+#: strdelphitool.sdelphicompilerfilenamecaption
+msgid "Delphi compiler executable"
+msgstr "Delphi-Compiler-Programm"
+
+#: strdelphitool.sdelphilocalizedparsername
+msgid "Delphi Compiler"
+msgstr "Delphi-Compiler"
+
+#: strdelphitool.sgenerateconfigfilecaption
+msgid "Generate Delphi config file based on FPC compiler options"
+msgstr "Delphi-Config-Datei ausgehend von FPC-Coompilereinstellungen erzeugen"
+
+#: strdelphitool.sselectdelphiexecutable
+msgid "Select Delphi compiler executable"
+msgstr "Delphi-Compiler-Programm auswählen"
+

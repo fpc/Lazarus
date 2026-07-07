@@ -1,0 +1,45 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: buildstrconsts.lirsunit
+msgid "Pascal unit"
+msgstr "Pascal-Unit"
+
+#: buildstrconsts.liscreateanewpascalunit
+msgid "Create a new pascal unit."
+msgstr "Neue Pascal-Unit erzeugen."
+
+#: buildstrconsts.lisresfilealreadyexists
+#, object-pascal-format
+msgid "A resource with file name \"%s\" already exists."
+msgstr "Eine Resource mit dem Dateinamen \"%s\" ist bereits vorhanden."
+
+#: buildstrconsts.lisresnamealreadyexists
+#, object-pascal-format
+msgid "A resource with name \"%s\" already exists."
+msgstr "Eine Resource mit dem Namen \"%s\" ist bereits vorhanden."
+
+#: buildstrconsts.lisshowalloutputlines
+msgid "Show all output lines"
+msgstr "Alle Ausgabezeilen anzeigen"
+
+#: buildstrconsts.lisunabletofindparserfortool
+#, object-pascal-format
+msgid "Unable to find parser for tool \"%s\""
+msgstr "Kann Parser für das Werkzeug \"%s\" nicht finden"
+
+#: buildstrconsts.lisunabletofindparserwithname
+#, object-pascal-format
+msgid "Unable to find parser with name \"%s\""
+msgstr "Kann Parser mit dem Namen \"%s\" nicht finden"
+

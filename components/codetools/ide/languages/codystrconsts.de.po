@@ -13,24 +13,24 @@ msgstr ""
 
 #: codystrconsts.crsaddassignmethod
 msgid "Add Assign Method"
-msgstr ""
+msgstr "Assign-Methode hinzufügen"
 
 #: codystrconsts.crsaddassignmethod2
 msgid "Add Assign Method ..."
-msgstr ""
+msgstr "Assign-Methode hinzufügen ..."
 
 #: codystrconsts.crsaddawithblock
 msgid "Add a \"With\" Block"
-msgstr ""
+msgstr "\"With\"-Block hinzufügen"
 
 #: codystrconsts.crsaddunittoimplementationusessection
 msgctxt "codystrconsts.crsaddunittoimplementationusessection"
 msgid "Add unit to implementation uses section"
-msgstr ""
+msgstr "Unit zum Abschnitt \"implementation uses\" hinzufügen"
 
 #: codystrconsts.crsaddwithblock
 msgid "Add \"With\" Block"
-msgstr ""
+msgstr "\"With\"-Block hinzufügen"
 
 #: codystrconsts.crsalreadydefined
 msgid "Already defined"
@@ -42,12 +42,13 @@ msgid "Already defined at %s"
 msgstr "Bereits definiert bei %s"
 
 #: codystrconsts.crsany
+#, fuzzy
 msgid "Any"
-msgstr ""
+msgstr "Jeder"
 
 #: codystrconsts.crsawindowforthelazarusideitcanbedockedlikethecodeexp
 msgid "A window for the Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor. This also creates a menu item in the View menu and a short cut."
-msgstr ""
+msgstr "Ein Fenster für die Lazarus-IDE. Es kann wie der Code-Explorer oder der FPDOC-Editor angedockt werden. Es wird auch ein Menu-Eintrag im Menu \"Ansicht\" und ein Kurzbefehl erzeugt."
 
 #: codystrconsts.crsbtncancel
 msgid "Cancel"
@@ -59,20 +60,20 @@ msgstr "&OK"
 
 #: codystrconsts.crsbyfpccfg
 msgid "by fpc.cfg"
-msgstr ""
+msgstr "durch fpc.cfg"
 
 #: codystrconsts.crscamaddassignmethodtoclass
 #, object-pascal-format
 msgid "Add Assign method to class %s"
-msgstr ""
+msgstr "Assign-Methode zur Klasse %s hinzufügen"
 
 #: codystrconsts.crscamcallinherited
 msgid "Call inherited"
-msgstr ""
+msgstr "\"Inherited\" aufrufen"
 
 #: codystrconsts.crscamcallinheritedonlyifwrongclass
 msgid "Call inherited only if wrong class"
-msgstr ""
+msgstr "\"Inherited\" nur bei falscher Klasse aufrufen"
 
 #: codystrconsts.crscamcursorisnotinapascalclassdeclaration
 msgid "cursor is not in a pascal class declaration"
@@ -80,11 +81,11 @@ msgstr "Cursor befindet sich nicht in einer Pascal-Klassendeklaration"
 
 #: codystrconsts.crscamexistsalready
 msgid "exists already"
-msgstr "existiert bereits"
+msgstr "ist bereits vorhanden"
 
 #: codystrconsts.crscaminherited
 msgid "Inherited:"
-msgstr ""
+msgstr "Inherited:"
 
 #: codystrconsts.crscaminvalididentifier
 msgid "invalid identifier"
@@ -100,11 +101,11 @@ msgstr "Methodenname:"
 
 #: codystrconsts.crscamnewmethod
 msgid "New method:"
-msgstr "Neue methode:"
+msgstr "Neue Methode:"
 
 #: codystrconsts.crscamoverride
 msgid "Override"
-msgstr ""
+msgstr "Überschreiben"
 
 #: codystrconsts.crscamparametername
 msgid "Parameter name:"
@@ -116,11 +117,11 @@ msgstr "Parametertyp:"
 
 #: codystrconsts.crscampleasepositionthecursorofthesourceeditorinapascalc
 msgid "Please position the cursor of the source editor in a pascal class declaration before invoking \"Add Assign method\"."
-msgstr ""
+msgstr "Vor dem Aufruf von \"Assign-Methode hinzufügen\" bitte den Cursor im Quelleneditor über einer Pascal-Klassen-Deklaration positionieren."
 
 #: codystrconsts.crscamprivate
 msgid "private"
-msgstr ""
+msgstr "private"
 
 #: codystrconsts.crscamproperty
 #, object-pascal-format
@@ -129,49 +130,49 @@ msgstr "%s Eigenschaft"
 
 #: codystrconsts.crscamprotected
 msgid "protected"
-msgstr ""
+msgstr "protected"
 
 #: codystrconsts.crscampublic
 msgid "public"
-msgstr ""
+msgstr "public"
 
 #: codystrconsts.crscampublished
 msgid "published"
-msgstr ""
+msgstr "published"
 
 #: codystrconsts.crscamselectmemberstoassign
 msgid "Select members to assign:"
-msgstr ""
+msgstr "Zuzuweisendes Member auswählen:"
 
 #: codystrconsts.crscamthereisnoinheritedmethod
 msgid "There is no inherited method."
-msgstr ""
+msgstr "Vererbte Methode nicht vorhanden."
 
 #: codystrconsts.crscamvar
 #, object-pascal-format
 msgid "%s var"
-msgstr ""
+msgstr "%s var"
 
 #: codystrconsts.crscamvisibility
 msgid "?visibility?"
-msgstr ""
+msgstr "?Sichtbarkeit?"
 
 #: codystrconsts.crscamwrittenbyproperty
 #, object-pascal-format
 msgid "%s, written by property %s"
-msgstr ""
+msgstr "%s, geschrieben durch Eigenschaft %s"
 
 #: codystrconsts.crscaretoutsideofcode
 msgid "Caret outside of code"
-msgstr ""
+msgstr "Einfügemarke außerhalb von Code"
 
 #: codystrconsts.crscheetaheditor
 msgid "Cheetah Editor"
-msgstr ""
+msgstr "Cheetah Editor"
 
 #: codystrconsts.crsclose
 msgid "&Close"
-msgstr ""
+msgstr "S&chließen"
 
 #: codystrconsts.crscloseotherpackageandopennew
 msgid "Close other package and open new"
@@ -179,15 +180,15 @@ msgstr "Anderes Package schließen und neues öffnen"
 
 #: codystrconsts.crscodebuffers
 msgid "CodeBuffers"
-msgstr ""
+msgstr "Code-Puffer"
 
 #: codystrconsts.crscodenodeinformation
 msgid "Code Node Information"
-msgstr ""
+msgstr "Code-Knoten-Information"
 
 #: codystrconsts.crscodyfindoverloads
 msgid "Cody - Find Overloads"
-msgstr ""
+msgstr "Cody - \"Overloads\" suchen"
 
 #: codystrconsts.crscodyidentifierdictionary
 msgid "Identifier Dictionary"
@@ -195,7 +196,7 @@ msgstr "Bezeichnerwörterbuch"
 
 #: codystrconsts.crscodyoptionstitle
 msgid "Cody"
-msgstr ""
+msgstr "Cody"
 
 #: codystrconsts.crscogeneral
 msgctxt "codystrconsts.crscogeneral"
@@ -204,11 +205,11 @@ msgstr "Allgemein"
 
 #: codystrconsts.crscompatibility
 msgid "Compatibility"
-msgstr ""
+msgstr "Kompatibilität"
 
 #: codystrconsts.crscompatible
 msgid "compatible"
-msgstr ""
+msgstr "kompatibel"
 
 #: codystrconsts.crsconfigurenewidewindow
 msgid "Configure new IDE window"
@@ -216,27 +217,27 @@ msgstr "Neues IDE-Fenster konfigurieren"
 
 #: codystrconsts.crscontains
 msgid "Contains"
-msgstr ""
+msgstr "Enthält"
 
 #: codystrconsts.crscontextdeletepackage
 #, object-pascal-format
 msgid "Delete package \"%s\""
-msgstr ""
+msgstr "Package \"%s\" löschen"
 
 #: codystrconsts.crscontextdeleteunit
 #, object-pascal-format
 msgid "Delete unit \"%s\""
-msgstr ""
+msgstr "Unit \"%s\" löschen"
 
 #: codystrconsts.crscontextjumpto
 #, object-pascal-format
 msgid "Jump to \"%s\""
-msgstr ""
+msgstr "Zu \"%s\" springen"
 
 #: codystrconsts.crscontextuseidentifier
 #, object-pascal-format
 msgid "Use \"%s\""
-msgstr ""
+msgstr "\"%s\" benutzen"
 
 #: codystrconsts.crscontinue
 msgid "Continue"
@@ -248,12 +249,12 @@ msgstr "Deklaration in Zwischenablage kopieren"
 
 #: codystrconsts.crscount
 msgid "Count"
-msgstr ""
+msgstr "Anzahl"
 
 #: codystrconsts.crscousespath
 msgctxt "codystrconsts.crscousespath"
 msgid "Uses path"
-msgstr ""
+msgstr "Uses-Pfad"
 
 #: codystrconsts.crscuallfiles
 #, object-pascal-format
@@ -266,11 +267,11 @@ msgstr "Pascal (*.pas;*.pp)|*.pas;*.pp"
 
 #: codystrconsts.crscupleaseplacethecursorofthesourceeditorinanimplement
 msgid "Please place the cursor of the source editor in an implementation of an overridden method."
-msgstr ""
+msgstr "Bitte mit dem Cursor im Quelleneditor auf die Implementation einer \"overridden\" Methode zeigen."
 
 #: codystrconsts.crscuselectfiletoinsertatcursor
 msgid "Select file to insert at cursor"
-msgstr ""
+msgstr "Datei für das Einfügen am Cursor anzeigen"
 
 #: codystrconsts.crscutdeclarationtoclipboard
 msgid "Cut declaration to Clipboard"
@@ -278,7 +279,7 @@ msgstr "Deklaration in Zwischenablage ausschneiden"
 
 #: codystrconsts.crscuthefileseemstobeabinaryproceed
 msgid "The file seems to be a binary. Proceed?"
-msgstr ""
+msgstr "Datei ist anscheinend binär. Weiter machen?"
 
 #: codystrconsts.crscuunabletoloadfile
 #, object-pascal-format
@@ -295,7 +296,7 @@ msgstr "Fehler"
 
 #: codystrconsts.crscwpleaseplacethecursorofthesourceeditoronawithvariab
 msgid "Please place the cursor of the source editor on a With variable."
-msgstr ""
+msgstr "Bitte mit dem Cursor im Quelleneditor auf eine \"With\"-Variable zeigen."
 
 #: codystrconsts.crsdeclarevariable
 msgid "Declare Variable"
@@ -320,11 +321,11 @@ msgstr "Unit löschen?"
 
 #: codystrconsts.crsdictionarymaxlistitems
 msgid "Maximum displayed items in the list"
-msgstr ""
+msgstr "Maximale Anzahl angezeigter Elemente der Liste"
 
 #: codystrconsts.crsdistance
 msgid "Distance"
-msgstr ""
+msgstr "Abstand"
 
 #: codystrconsts.crsdvisakeyword
 #, object-pascal-format
@@ -338,19 +339,19 @@ msgstr "Fehler: %s"
 
 #: codystrconsts.crserrorcursorisnotinaprojectunit
 msgid "Error: cursor is not in a project unit"
-msgstr ""
+msgstr "Fehler: Cursor ist nicht in einer Projekt-Unit"
 
 #: codystrconsts.crserrorneedsourceeditoratprocedurecallordeclaration
 msgid "Error: Need source editor at procedure call or declaration"
-msgstr ""
+msgstr "Fehler: Der Quelleneditor muss bei einem Prozeduraufruf oder einer Deklaration sein"
 
 #: codystrconsts.crsexact
 msgid "exact"
-msgstr ""
+msgstr "exakt"
 
 #: codystrconsts.crsexplodeawithblock
 msgid "Explode a \"With\" Block"
-msgstr ""
+msgstr "\"With\"-Block aufklappen"
 
 #: codystrconsts.crsexpression
 msgid "Expression"
@@ -383,23 +384,23 @@ msgstr "(Filter)"
 
 #: codystrconsts.crsfilter2
 msgid "Filter"
-msgstr ""
+msgstr "Filter"
 
 #: codystrconsts.crsfindgdbbacktraceline
 msgid "Find GDB backtrace line"
-msgstr ""
+msgstr "GDB-Backtrace-Zeile suchen"
 
 #: codystrconsts.crsfindproceduremethodoverloads
 msgid "Find Procedure/Method Overloads"
-msgstr ""
+msgstr "\"Procedure/Method Overloads\" suchen"
 
 #: codystrconsts.crsfindsourceofgdbbacktrace
 msgid "Find source of GDB backtrace"
-msgstr ""
+msgstr "GDB-Backtrace-Quelle suchen"
 
 #: codystrconsts.crsflags
 msgid "Flags"
-msgstr ""
+msgstr "Flags"
 
 #: codystrconsts.crsfpcunitwithoutppu
 msgid "FPC unit without ppu"
@@ -407,11 +408,11 @@ msgstr "FPC-Unit ohne ppu"
 
 #: codystrconsts.crsframeworks
 msgid "Frameworks"
-msgstr ""
+msgstr "Frameworks"
 
 #: codystrconsts.crsgbytes
 msgid "GB"
-msgstr ""
+msgstr "GB"
 
 #: codystrconsts.crshelp
 msgid "&Help"
@@ -419,7 +420,7 @@ msgstr "&Hilfe"
 
 #: codystrconsts.crshideabstractmethodsandmethodsofclassinterfaces
 msgid "Hide abstract methods and methods of class interfaces"
-msgstr ""
+msgstr "Abstrakte Methoden und Methode von Klassen-Interfaces verbergen"
 
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
@@ -441,11 +442,11 @@ msgstr "IDE-Fenster, andockbar"
 #: codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne
 msgctxt "codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne"
 msgid "If identifier is added to the implementation section and needed unit needs to be added, add to the uses section of the implementation"
-msgstr ""
+msgstr "Wird ein Bezeichner im Abschnitt \"Implementation\" hinzugefügt und dafür eine Unit benötigt, füge die Unit zum Abschnitt \"Uses\" hinzu"
 
 #: codystrconsts.crsifuncheckedlistalsoprocedureswithsamenameandincomp
 msgid "If unchecked list also procedures with same name and incompatible parameter lists."
-msgstr ""
+msgstr "Wenn abgewählt, liste auch Prozeduren mit dem selben Namen und inkompatibler Parameterliste auf."
 
 #: codystrconsts.crsimpossibledependency
 msgid "Impossible dependency"
@@ -454,35 +455,35 @@ msgstr "Unmögliche Abhängigkeit"
 #: codystrconsts.crsin
 #, object-pascal-format
 msgid "in \"%s\""
-msgstr ""
+msgstr "in \"%s\""
 
 #: codystrconsts.crsincompatible
 msgid "incompatible"
-msgstr ""
+msgstr "inkompatibel"
 
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
-msgstr ""
+msgstr "In \"implementation\""
 
 #: codystrconsts.crsininterface
 msgid "In interface"
-msgstr ""
+msgstr "In \"interface\""
 
 #: codystrconsts.crsinsertcallinherited
 msgid "Insert Call Inherited"
-msgstr ""
+msgstr "\"Call Inherited\" einfügen"
 
 #: codystrconsts.crsinsertfileatcursor
 msgid "Insert File Contents at Cursor ..."
-msgstr ""
+msgstr "Dateiinhalt beim Cursor einfügen ..."
 
 #: codystrconsts.crsinsertint64idyyyyddmmhhnnss
 msgid "Insert int64 ID YYYYDDMMhhnnss"
-msgstr ""
+msgstr "Int64 ID YYYYDDMMhhnnss einfügen"
 
 #: codystrconsts.crsjump
 msgid "Jump"
-msgstr ""
+msgstr "Springe"
 
 #: codystrconsts.crsjumpto
 msgid "&Jump to"
@@ -490,19 +491,19 @@ msgstr "Springe zu"
 
 #: codystrconsts.crsjumpto2
 msgid "Jump to"
-msgstr ""
+msgstr "Springe nach"
 
 #: codystrconsts.crskbytes
 msgid "KB"
-msgstr ""
+msgstr "KB"
 
 #: codystrconsts.crslinkedfiles
 msgid "Linked files"
-msgstr ""
+msgstr "Verlinkte Dateien"
 
 #: codystrconsts.crslinks
 msgid "Links"
-msgstr ""
+msgstr "Links"
 
 #: codystrconsts.crsloaddictionaryafter
 #, object-pascal-format
@@ -521,16 +522,16 @@ msgstr "Haupt-Quelldatei: %s"
 
 #: codystrconsts.crsmbytes
 msgid "MB"
-msgstr ""
+msgstr "MB"
 
 #: codystrconsts.crsmemberof
 #, object-pascal-format
 msgid "%s member of %s %s"
-msgstr ""
+msgstr "%s Member von %s %s"
 
 #: codystrconsts.crsmenuitemcaption
 msgid "Menu item caption:"
-msgstr ""
+msgstr "Titel des Menueintrags:"
 
 #: codystrconsts.crsminutes
 #, object-pascal-format
@@ -539,19 +540,19 @@ msgstr "%s Minuten"
 
 #: codystrconsts.crsmissing
 msgid "missing ..."
-msgstr ""
+msgstr "fehlend ..."
 
 #: codystrconsts.crsname
 msgid "Name"
-msgstr ""
+msgstr "Name"
 
 #: codystrconsts.crsnoneselected
 msgid "none selected"
-msgstr ""
+msgstr "Keine Auswahl"
 
 #: codystrconsts.crsnooverloadsfoundinprojectunits
 msgid "no overloads found in project units"
-msgstr ""
+msgstr "Keine \"Overloads\" in Projekt-Units gefunden"
 
 #: codystrconsts.crsnoproject
 msgid "No project"
@@ -559,32 +560,33 @@ msgstr "Kein Projekt"
 
 #: codystrconsts.crsnotethenameoftheformmustbeavalidpascalidentifieran
 msgid "Note: The name of the form must be a valid pascal identifier and unique across the whole IDE, which includes all packages. Prepend the name with an abbreviation of your package. The prefixes \"IDE\", \"Laz\", \"Pkg\" are already used by the IDE itself."
-msgstr ""
+msgstr "Anmerkung: Der Name des Formulars muss ein gültiger Pascal-Bezeichner sein und einmalig in der ganzen IDE, einschließlich aller Packages. Stelle dem Namen die Abkürzung deines Package als Präfix voran. Die Präfixe \"IDE\", \"Laz\", \"Pkg\" werden bereits von der IDE selbst benutzt."
 
 #: codystrconsts.crsnounitselected
 msgid "No unit selected"
 msgstr "Keine Unit ausgewählt"
 
 #: codystrconsts.crsonclipboard
+#, fuzzy
 msgid "On clipboard"
-msgstr ""
+msgstr "Auf der Zwischenablage"
 
 #: codystrconsts.crsonlydescendantsof
 #, object-pascal-format
 msgid "Only descendants of %s"
-msgstr ""
+msgstr "Nur Nachfahren von %s"
 
 #: codystrconsts.crsonlymethods
 msgid "Only methods"
-msgstr ""
+msgstr "Nur Methoden"
 
 #: codystrconsts.crsonlynonmethods
 msgid "Only non methods"
-msgstr ""
+msgstr "Alles außer Methoden"
 
 #: codystrconsts.crsonlyprocedureswithcompatibleparameters
 msgid "Only procedures with compatible parameters"
-msgstr ""
+msgstr "Nur Methoden mir kompatiblen Parametern"
 
 #: codystrconsts.crsoptions
 msgid "Options"
@@ -592,15 +594,15 @@ msgstr "Einstellungen"
 
 #: codystrconsts.crsotherobjectfiles
 msgid "Other object files"
-msgstr ""
+msgstr "Andere Objekt-Dateien"
 
 #: codystrconsts.crsothersharedlibraries
 msgid "Other shared libraries"
-msgstr ""
+msgstr "Andere \"shared\" Bibliotheken"
 
 #: codystrconsts.crsotherstaticlibraries
 msgid "Other static libraries"
-msgstr ""
+msgstr "Andere statische Bibliotheken"
 
 #: codystrconsts.crspackage
 msgid "Package"
@@ -631,45 +633,45 @@ msgstr "Package mit dem selben Namen"
 
 #: codystrconsts.crsparseerror
 msgid "Parse error"
-msgstr ""
+msgstr "Parse-Fehler"
 
 #: codystrconsts.crspastelinesofagdbbacktrace
 msgid "Paste lines of a gdb backtrace:"
-msgstr ""
+msgstr "Zeilen eines GDB-Backtrace einfügen:"
 
 #: codystrconsts.crspleaseopenaprojectfirst
 msgid "Please open a project first."
-msgstr ""
+msgstr "Bitte zuerst ein Projekt öffnen."
 
 #: codystrconsts.crspleaseplacethecursorofthesourceeditoratanidentifie
 #, object-pascal-format
 msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example:%sMyVar:=3;"
-msgstr ""
+msgstr "Bitte mit dem Cursor im Quelleneditor auf einen Bezeichner in einer Anweisung zeigen.%sZum Beispiel:%sMyVar:=3;"
 
 #: codystrconsts.crspleaseplacethecursorofthesourceeditoronanidentifie
 msgid "Please place the cursor of the source editor on an identifier of a declaration."
-msgstr ""
+msgstr "Bitte mit dem Cursor im Quelleneditor auf einen Bezeichner in einer Deklaration zeigen."
 
 #: codystrconsts.crspleaseselectsomecodeinthesourceeditor
 msgid "Please select some code in the Source Editor."
-msgstr ""
+msgstr "Bitte Code im Quelleneditor auswählen."
 
 #: codystrconsts.crspleaseselectsomecodeinthesourceeditorforanewwithbl
 msgid "Please select some code in the Source Editor for a new \"With\" block. No candidate for a with expression was found."
-msgstr ""
+msgstr "Bitte Code im Quelleneditor für einen neuen \"With\"-Block auswählen. Konnten keinen Kandidaten für eine \"With\"-Anweisung finden."
 
 #: codystrconsts.crspleasespecifyalocation
 msgid "Please specify a location"
-msgstr ""
+msgstr "Bitte Ort angeben"
 
 #: codystrconsts.crspleasespecifyatype
 msgid "Please specify a type"
-msgstr ""
+msgstr "Bitte Typ angeben"
 
 #: codystrconsts.crsppu
 #, object-pascal-format
 msgid "PPU: %s"
-msgstr ""
+msgstr "PPU: %s"
 
 #: codystrconsts.crsppufilesofproject
 #, object-pascal-format
@@ -678,7 +680,7 @@ msgstr "ppu-Dateien von Projekt \"%s\""
 
 #: codystrconsts.crsprivate
 msgid "Private"
-msgstr ""
+msgstr "Private"
 
 #: codystrconsts.crsprojecthasnomainsourcefile
 msgid "Project has no main source file."
@@ -690,25 +692,25 @@ msgstr "Projektausgabe"
 
 #: codystrconsts.crsprotected
 msgid "Protected"
-msgstr ""
+msgstr "Protected"
 
 #: codystrconsts.crspublic
 msgid "Public"
-msgstr ""
+msgstr "Public"
 
 #: codystrconsts.crspublished
 msgid "Published"
-msgstr ""
+msgstr "Published"
 
 #: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisdoe
 #, object-pascal-format
 msgid "Really delete the package from the database?%sNote: This does not change the source or any configuration.%s%s\"%s\""
-msgstr ""
+msgstr "Package wirklich in der Datenbank löschen?%sAnmerkung: Dies ändert weder die Quelle noch irgendeine Konfiguration.%s%s\"%s\""
 
 #: codystrconsts.crsreallydeletetheunitfromthedatabasenotethisdoesno
 #, object-pascal-format
 msgid "Really delete the unit from the database?%sNote: This does not change the source or any configuration.%s%sunit: \"%s\""
-msgstr ""
+msgstr "Unit wirklich in der Datenbank löschen?%sAnmerkung: Dies ändert weder die Quelle noch irgendeine Konfiguration.%s%sUnit: \"%s\""
 
 #: codystrconsts.crsrefresh
 msgid "Refresh"
@@ -716,7 +718,7 @@ msgstr "Aktualisieren"
 
 #: codystrconsts.crsrelations
 msgid "Relations:"
-msgstr ""
+msgstr "Beziehungen:"
 
 #: codystrconsts.crsreport
 msgid "Report"
@@ -734,20 +736,20 @@ msgstr "Speichere Wörterbuch jetzt"
 #: codystrconsts.crssavetofile
 #, object-pascal-format
 msgid "Save to file %s"
-msgstr ""
+msgstr "In Datei %s speichern"
 
 #: codystrconsts.crsscanning
 msgid "Scanning ..."
-msgstr ""
+msgstr "Scanning ..."
 
 #: codystrconsts.crsscanningsunits
 #, object-pascal-format
 msgid "Scanning: %s units ..."
-msgstr ""
+msgstr "Scanning: %s Units ..."
 
 #: codystrconsts.crssearching
 msgid "searching ..."
-msgstr ""
+msgstr "suchen ..."
 
 #: codystrconsts.crsseconds
 #, object-pascal-format
@@ -760,7 +762,7 @@ msgstr "Ausdruck auswählen"
 
 #: codystrconsts.crsshowcodetoolsnodeinfo
 msgid "Show CodeTools Node Info ..."
-msgstr ""
+msgstr "CodeTools-Knoten-Info anzeigen ..."
 
 #: codystrconsts.crsshowcodydict
 #, object-pascal-format
@@ -770,20 +772,20 @@ msgstr "Cody-Verzeichnis für \"%s\" anzeigen"
 #: codystrconsts.crsshowmoreidentifiers
 #, object-pascal-format
 msgid "... click to show %d more (up to %d left)"
-msgstr ""
+msgstr "... klicken, um weitere %d anzuzeigen (noch bis zu %d übrig)"
 
 #: codystrconsts.crsshowonlyidentifierscontainingfiltertext
 msgid "Show only identifiers containing filter text"
-msgstr ""
+msgstr "Nur Bezeichner mit dem Filtertext anzeigen"
 
 #: codystrconsts.crsshowonlyidentifiersstartingwithfiltertext
 msgid "Show only identifiers starting with filter text"
-msgstr ""
+msgstr "Nur Bezeichner mit dem Filtertext am Anfang anzeigen"
 
 #: codystrconsts.crsshowremainingidentifiers
 #, object-pascal-format
 msgid "... click to show remaining (up to %d left)"
-msgstr ""
+msgstr "... klicken, um den Rest anzuzeigen (noch bis zu %d übrig)"
 
 #: codystrconsts.crsshowunitidentifierdictionary
 msgid "Show Unit / Identifier Dictionary ..."
@@ -804,19 +806,19 @@ msgstr "Größe der .ppu-Datei"
 #: codystrconsts.crssource
 #, object-pascal-format
 msgid "Source: %s"
-msgstr ""
+msgstr "Quelle: %s"
 
 #: codystrconsts.crsstarts
 msgid "Starts"
-msgstr ""
+msgstr "Beginnt"
 
 #: codystrconsts.crsthedictionaryisloadedondemandorafterthistime
 msgid "The dictionary is loaded on demand or after this time"
-msgstr ""
+msgstr "Wörterbuch wird bei Bedarf oder nach dieser Zeit geladen"
 
 #: codystrconsts.crsthedictionaryissavedinintervals
 msgid "The dictionary is saved in intervals"
-msgstr ""
+msgstr "Wörterbuch wird in Intervallen gespeichert"
 
 #: codystrconsts.crstheidentifierisalreadydefined
 #, object-pascal-format
@@ -826,21 +828,21 @@ msgstr "Der Bezeichner \"%s\" ist bereits definiert."
 #: codystrconsts.crsthereisalreadyanotherpackageloadedwiththesamenameo
 #, object-pascal-format
 msgid "There is already another package loaded with the same name.%sOpen package: %s%sNew package: %s%sOnly one package can be loaded at a time."
-msgstr ""
+msgstr "Ein anderes Package mit dem selben Namen ist bereits geladen. %sGeöffnetes Package: %s%sNeues Package: %s%sEs kann jeweils nur ein Package geladen sein."
 
 #: codystrconsts.crsthetargetunithasthesamenameasthecurrentunitfreepas
 #, object-pascal-format
 msgid "The target unit has the same name as the current unit.%s Free Pascal does not support that."
-msgstr ""
+msgstr "Die Ziel-Unit hat den selben Namen wie die aktuelle Unit.%s Free Pascal unterstützt dies nicht."
 
 #: codystrconsts.crstheunitispartofitcannotuseanotherpackagewiththesam
 #, object-pascal-format
 msgid "The unit \"%s\"%sis part of \"%s\".%sIt can not use another package with the same name:%s\"%s\""
-msgstr ""
+msgstr "Die Unit \"%s\"%sist Teil von \"%s\".%sSie kann nicht ein anderes Package mit dem selben Namen benutzen:%s\"%s\""
 
 #: codystrconsts.crsthisunitislocatedinthefreepascalsourcesbutnoppufil
 msgid "This unit is located in the Free Pascal sources, but no ppu file is installed. Maybe this unit is not available for this target platform."
-msgstr ""
+msgstr "Diese Unit stammt aus den Free Pascal-Quellen, aber es ist keine ppu-Datei installiert. Vermutlich ist diese Unit für diese Zielplattform nicht verfügbar."
 
 #: codystrconsts.crstotal
 msgid "Total"
@@ -880,11 +882,11 @@ msgstr "Unit- / Bezeichnerwörterbuch"
 
 #: codystrconsts.crsunitnameclash
 msgid "Unit name clash"
-msgstr ""
+msgstr "Konflikt mit Unitnamen"
 
 #: codystrconsts.crsunitobjectfiles
 msgid "Unit object files"
-msgstr ""
+msgstr "Objekt-Dateien der Unit"
 
 #: codystrconsts.crsunits
 msgid "Units"
@@ -892,16 +894,16 @@ msgstr "Units"
 
 #: codystrconsts.crsunitsharedlibraries
 msgid "Unit shared libraries"
-msgstr ""
+msgstr "\"shared\"-Bibliotheken der Unit"
 
 #: codystrconsts.crsunitss
 #, object-pascal-format
 msgid "Units: %s"
-msgstr ""
+msgstr "Units: %s"
 
 #: codystrconsts.crsunitstaticlibraries
 msgid "Unit static libraries"
-msgstr ""
+msgstr "statische Bibliotheken der Unit"
 
 #: codystrconsts.crsusedby
 msgid "Used by"
@@ -913,13 +915,13 @@ msgstr "Verwende Bezeichner"
 
 #: codystrconsts.crsuses
 msgid "Uses"
-msgstr ""
+msgstr "Uses"
 
 #: codystrconsts.crsvirtualunit
 msgid "Virtual Unit"
-msgstr ""
+msgstr "Virtuelle Unit"
 
 #: codystrconsts.crswhere
 msgid "Where"
-msgstr ""
+msgstr "Wo"
 

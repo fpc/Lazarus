@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-06-24 11:17+0200\n"
+"PO-Revision-Date: 2026-07-07 14:37+0200\n"
 "Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -14,20 +14,20 @@ msgstr ""
 
 #: codetoolsstrconsts.crsbracketnotfound
 msgid "bracket ) not found"
-msgstr "Klammer ) nicht gefunden"
+msgstr "Klammer \")\" nicht gefunden"
 
 #: codetoolsstrconsts.crsbracketnotfound2
 msgid "bracket ] not found"
-msgstr "Klammer ] nicht gefunden"
+msgstr "Klammer \"]\" nicht gefunden"
 
 #: codetoolsstrconsts.crsclosingbracketnotfound
 msgid "closing bracket not found"
 msgstr "schließende Klammer nicht gefunden"
 
 #: codetoolsstrconsts.crsfoundunexpectedat
-#, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "%s, found unexpected %s at %s"
-msgstr ""
+msgstr "%s, gefunden, unerwartet %s bei %s"
 
 #: codetoolsstrconsts.crsrecordendnotfound
 msgid "record end not found"
@@ -91,12 +91,13 @@ msgid "bracket open expected, but %s found"
 msgstr "öffnende Klammer erwartet, aber %s gefunden"
 
 #: codetoolsstrconsts.ctscannotaddaunittotheimplementationbecauseonlyaunith
+#, fuzzy
 msgid "cannot add a unit to the implementation, because only a unit has one"
-msgstr ""
+msgstr "Kann Unit nicht zur Implementation hinzufügen, weil nur eine Unit eine hat"
 
 #: codetoolsstrconsts.ctscharacterconstantoutofrange
 msgid "character constant out of range"
-msgstr ""
+msgstr "Zeichenkonstante außerhalb des Bereichs"
 
 #: codetoolsstrconsts.ctscircleindefinitions
 msgid "circle in definitions"
@@ -143,6 +144,7 @@ msgid "Comment end not found"
 msgstr "Kommentarende nicht gefunden"
 
 #: codetoolsstrconsts.ctscompiledsrcpath
+#, fuzzy
 msgid "Compiled SrcPath"
 msgstr "Kompiliert Quellpfad"
 
@@ -160,7 +162,7 @@ msgstr "Konstante"
 
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
-msgstr "Cursorposition außerhalb des Codes"
+msgstr "Cursorposition außerhalb des Code"
 
 #: codetoolsstrconsts.ctscustomcomponentsdirectory
 msgid "Custom Components Directory"
@@ -177,19 +179,19 @@ msgstr "Standard-Vorfahr %s nicht gefunden"
 
 #: codetoolsstrconsts.ctsdefaultclassancestortobjectnotfound
 msgid "default class ancestor TObject not found"
-msgstr "Standard-Klassenvorfahr TObject nicht gefunden"
+msgstr "Standard-Klassenvorfahr \"TObject\" nicht gefunden"
 
 #: codetoolsstrconsts.ctsdefaultdispinterfaceancestoridispatchnotfound
 msgid "default dispinterface ancestor IDispatch not found"
-msgstr ""
+msgstr "Standard-Dispinterface-Vorfahr \"IDispatch\" nicht gefunden"
 
 #: codetoolsstrconsts.ctsdefaultfpcsource2operatingsystem
 msgid "Default fpc source Operating System 2"
-msgstr ""
+msgstr "Standard fpc-Quelle Betriebssystem 2"
 
 #: codetoolsstrconsts.ctsdefaultfpcsourceoperatingsystem
 msgid "Default fpc source Operating System"
-msgstr ""
+msgstr "Standard fpc-Quelle Betriebssystem"
 
 #: codetoolsstrconsts.ctsdefaultfpcsymbol
 msgid "Default fpc symbol"
@@ -205,11 +207,11 @@ msgstr "Standard-FPC-Zielprozessor"
 
 #: codetoolsstrconsts.ctsdefaultinterfaceancestoriinterfacenotfound
 msgid "default interface ancestor IInterface not found"
-msgstr "Standard-Interfacevorfahr IInterface nicht gefunden"
+msgstr "Standard-Interfacevorfahr \"IInterface\" nicht gefunden"
 
 #: codetoolsstrconsts.ctsdefaultjavaclassancestorjlobjectnotfound
 msgid "default java class ancestor JLObject not found"
-msgstr ""
+msgstr "Standard-Java-Klassen-Vorfahr \"JLObject\" nicht gefunden"
 
 #: codetoolsstrconsts.ctsdefaultparameterexpectedbutatomfound
 #, object-pascal-format
@@ -234,7 +236,7 @@ msgstr "LCL festlegen"
 
 #: codetoolsstrconsts.ctsdefinelclwidgetset
 msgid "Define LCLwidgetset, e.g. LCLgtk"
-msgstr "LCL-Widgetset definieren, z.B. LCLgtk"
+msgstr "LCL-Widgetset definieren, z. B. LCLgtk"
 
 #: codetoolsstrconsts.ctsdefinemacroname
 #, object-pascal-format
@@ -277,7 +279,7 @@ msgstr "\"end\" für Klasse/Objekt nicht gefunden"
 
 #: codetoolsstrconsts.ctsendforrecordnotfound
 msgid "end for record not found"
-msgstr "End-Anweisung des Records nicht gefunden"
+msgstr "End-Anweisung des Record nicht gefunden"
 
 #: codetoolsstrconsts.ctsendoffile
 msgid "end of file"
@@ -286,7 +288,7 @@ msgstr "Dateiende"
 #: codetoolsstrconsts.ctsendofsourceexpectedbutatomfound
 #, object-pascal-format
 msgid "expected end., but %s found"
-msgstr "\"End.\" erwartet, aber %s gefunden"
+msgstr "\"end.\" erwartet, aber %s gefunden"
 
 #: codetoolsstrconsts.ctsendofsourcenotfound
 msgid "End of source not found."
@@ -329,17 +331,17 @@ msgstr "einen Methodentyp erwartet, aber %s gefunden"
 #: codetoolsstrconsts.ctsexpectedbutfound
 #, object-pascal-format
 msgid "expected (, but found %s"
-msgstr "( erwartet, aber %s gefunden"
+msgstr "\"(\" erwartet, aber %s gefunden"
 
 #: codetoolsstrconsts.ctsexpectedbutfound2
 #, object-pascal-format
 msgid "expected ), but found %s"
-msgstr ") erwartet, aber %s gefunden"
+msgstr "\")\" erwartet, aber %s gefunden"
 
 #: codetoolsstrconsts.ctsexpectedbutfound3
 #, object-pascal-format
 msgid "expected :=, but %s found"
-msgstr ":= erwartet, aber %s gefunden"
+msgstr "\":=\" erwartet, aber %s gefunden"
 
 #: codetoolsstrconsts.ctsexpectedidentifierbutfound
 #, object-pascal-format
@@ -349,7 +351,7 @@ msgstr "Bezeichner erwartet, aber %s gefunden"
 #: codetoolsstrconsts.ctsexpectedsemicolonofstatementbutfound
 #, object-pascal-format
 msgid "expected ; of statement, but found %s"
-msgstr ""
+msgstr "\";\" einer Anweisung erwartet, aber \"%s\" gefunden"
 
 #: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"
@@ -405,16 +407,16 @@ msgstr "Funktion GetEnumerator in dieser Klasse nicht gefunden"
 
 #: codetoolsstrconsts.ctsgenericidentifier
 msgid "generic identifier"
-msgstr "Allgemeine Bezeichner"
+msgstr "allgemeiner Bezeichner"
 
 #: codetoolsstrconsts.ctshaserror
 msgid "HasError"
-msgstr ""
+msgstr "HasError"
 
 #: codetoolsstrconsts.ctshelperisnotallowed
 #, object-pascal-format
 msgid "Helper after %s is not allowed"
-msgstr ""
+msgstr "Helper nach %s ist nicht erlaubt"
 
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
@@ -484,7 +486,7 @@ msgstr "ungültige Zirkuläreinbindung mit der Unit: %s"
 #: codetoolsstrconsts.ctsillegalqualifier
 #, object-pascal-format
 msgid "illegal qualifier %s found"
-msgstr "ungültiger Bezeichner %s gefunden"
+msgstr "ungültigen Bezeichner %s gefunden"
 
 #: codetoolsstrconsts.ctsimplementationnodenotfound
 msgid "implementation node not found"
@@ -557,11 +559,11 @@ msgstr "ungültiger Mode \"%s\""
 #: codetoolsstrconsts.ctsinvalidoperator
 #, object-pascal-format
 msgid "invalid operator %s"
-msgstr "ungültger Operator %s"
+msgstr "ungültiger Operator %s"
 
 #: codetoolsstrconsts.ctsinvalidpositionforinsertionofstatements
 msgid "invalid position for insertion of statements"
-msgstr ""
+msgstr "ungültige Position für das Einfügen von Anweisungen"
 
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
@@ -588,7 +590,7 @@ msgstr "Schlüsselwort"
 #: codetoolsstrconsts.ctskeywordexampleexpectedbutatomfound
 #, object-pascal-format
 msgid "keyword (e.g. %s) expected, but %s found"
-msgstr "Schlüsselwort (z.B. %s) erwartet, aber %s gefunden"
+msgstr "Schlüsselwort (z. B. %s) erwartet, aber %s gefunden"
 
 #: codetoolsstrconsts.ctskeywordin
 msgid "keyword \"in\""
@@ -605,7 +607,7 @@ msgstr "Lazarus-Quellen"
 #: codetoolsstrconsts.ctsmethodhasnodeclaration
 #, object-pascal-format
 msgid "method \"%s\" has no declaration"
-msgstr ""
+msgstr "Methode \"%s\" hat keine Deklaration"
 
 #: codetoolsstrconsts.ctsmethodname
 msgid "method name"
@@ -622,11 +624,11 @@ msgstr "Methodentypdefinition nicht gefunden"
 
 #: codetoolsstrconsts.ctsmissing
 msgid "missing :="
-msgstr "fehlendes :="
+msgstr "fehlendes \":=\""
 
 #: codetoolsstrconsts.ctsmissingenumlist
 msgid "missing enum list"
-msgstr "Fehlende Aufzählungsliste"
+msgstr "fehlende Aufzählungsliste"
 
 #: codetoolsstrconsts.ctsmissingpointafterend
 msgid "missing . after end"
@@ -662,7 +664,7 @@ msgstr "neuen Prozedur-Rumpf nicht gefunden"
 
 #: codetoolsstrconsts.ctsnocontextnodefoundatcursor
 msgid "no context node found at cursor"
-msgstr "kein Kontext-Knoten an der Cursorposition gefunden"
+msgstr "keinen Kontext-Knoten an der Cursorposition gefunden"
 
 #: codetoolsstrconsts.ctsnodefaultspecifierdefinedtwice
 msgid "nodefault specifier defined twice"
@@ -671,7 +673,7 @@ msgstr "Nicht-Standard-Bezeichner doppelt definiert"
 #: codetoolsstrconsts.ctsnopascalcodefound
 #, object-pascal-format
 msgid "no pascal code found (first token is %s)"
-msgstr "kein Pascal-Quelltext gefunden (erster Token ist %s)"
+msgstr "keinen Pascal-Quelltext gefunden (erster Token ist %s)"
 
 #: codetoolsstrconsts.ctsnoscanneravailable
 msgid "No scanner available"
@@ -680,11 +682,11 @@ msgstr "Kein Scanner verfügbar"
 #: codetoolsstrconsts.ctsnoscannerfound
 #, object-pascal-format
 msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
-msgstr "Kein Scanner für \"%s\" gefunden. Wenn das eine Include-Datei ist, öffnen Sie bitte zuerst die Haupt-Quelltextdatei."
+msgstr "Keinen Scanner für \"%s\" gefunden. Wenn das eine Include-Datei ist, öffnen Sie bitte zuerst die Haupt-Quelltextdatei."
 
 #: codetoolsstrconsts.ctsnotenoughgenparams
 msgid "Not enough actual generic parameters"
-msgstr ""
+msgstr "Nicht ausreichend tatsächliche generische Parameter"
 
 #: codetoolsstrconsts.ctsoldmethodnotfound
 #, object-pascal-format
@@ -766,7 +768,7 @@ msgstr "prozessorspezifisch"
 #: codetoolsstrconsts.ctsproperttypeexpectedbutatomfound
 #, object-pascal-format
 msgid "property type expected, but %s found"
-msgstr "Eigenschaftentyp erwartet, aber %s gefunden"
+msgstr "Eigenschaftstyp erwartet, aber %s gefunden"
 
 #: codetoolsstrconsts.ctspropertycurrentnotfound
 msgid "property Current not found"
@@ -775,7 +777,7 @@ msgstr "Eigenschaft \"Current\" nicht gefunden"
 #: codetoolsstrconsts.ctspropertyspecifieralreadydefined
 #, object-pascal-format
 msgid "property specifier already defined: %s"
-msgstr "Eigenschaftenbeschreiber bereits definiert: %s"
+msgstr "Eigenschaftsbezeichner bereits definiert: %s"
 
 #: codetoolsstrconsts.ctsqualifierexpectedbutatomfound
 #, object-pascal-format
@@ -788,7 +790,7 @@ msgstr "Alle Angaben zurücksetzen"
 
 #: codetoolsstrconsts.ctsresulttypeoffunctiongetenumeratornotfound
 msgid "result type of function GetEnumerator not found"
-msgstr "Ergebnistype der Funktion GetEnumerator nicht gefunden"
+msgstr "Ergebnistyp der Funktion GetEnumerator nicht gefunden"
 
 #: codetoolsstrconsts.ctsruntimelibrary
 msgid "Runtime library"
@@ -802,7 +804,7 @@ msgstr "Gescannte Dateien: %s"
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
 #, object-pascal-format
 msgid "; expected after \"%s\" property specifier, but %s found"
-msgstr "; nach dem Eigenschaftenbeschreiber \"%s\" erwartet, aber %s gefunden"
+msgstr "\";\" nach dem Eigenschaftsbezeichner \"%s\" erwartet, aber %s gefunden"
 
 #: codetoolsstrconsts.ctssemicolonnotfound
 msgid "semicolon not found"
@@ -856,7 +858,7 @@ msgstr "Term besitzt keinen einfachen Typ"
 #: codetoolsstrconsts.ctsthenexpectedbutfound
 #, object-pascal-format
 msgid "then expected, but %s found"
-msgstr "then erwartet, aber %s gefunden"
+msgstr "\"then\" erwartet, aber %s gefunden"
 
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
@@ -912,7 +914,7 @@ msgstr "unerwartetes Schlüsselwort \"%s\" im ASM-Block gefunden"
 #: codetoolsstrconsts.ctsunexpectedkeywordinbeginendblock
 #, object-pascal-format
 msgid "unexpected keyword \"%s\" in begin..end found"
-msgstr "unerwartetes Schlüsselwort \"%s\" in Begin..End gefunden"
+msgstr "unerwartetes Schlüsselwort \"%s\" in \"Begin..End\" gefunden"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordwhilereadingbackwards
 #, object-pascal-format
@@ -922,11 +924,11 @@ msgstr "unerwartetes Schlüsselwort \"%s\" beim Rückwärtslesen der Blocks gefu
 #: codetoolsstrconsts.ctsunexpectedsectionkeyword
 #, object-pascal-format
 msgid "unexpected section keyword %s found"
-msgstr ""
+msgstr "unerwartetes Abschnitts-Schlüsselwort %s gefunden"
 
 #: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
-msgstr "ungültigen Unterbereichsoperator '..' gefunden"
+msgstr "ungültigen Unterbereichsoperator \"..\" gefunden"
 
 #: codetoolsstrconsts.ctsunitnotfound
 #, object-pascal-format

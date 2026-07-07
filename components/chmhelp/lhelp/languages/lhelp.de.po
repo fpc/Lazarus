@@ -63,7 +63,7 @@ msgstr "S&chließen"
 
 #: lhelpstrconsts.slhelp_closeconfirm
 msgid "You can hide Help via Esc key. Do you really want to close LHelp?"
-msgstr "Das Hilfefenster kann mit ESC versteckt werden. Soll LHelp wirklich geschlossen werden?"
+msgstr "Das Hilfefenster kann mit ESC verborgen werden. Soll LHelp wirklich geschlossen werden?"
 
 #: lhelpstrconsts.slhelp_contents
 msgid "Contents"
@@ -107,11 +107,11 @@ msgstr "    --help     :  Diese Information anzeigen"
 
 #: lhelpstrconsts.slhelp_hide
 msgid "&Hide"
-msgstr "&Verstecken"
+msgstr "&Verbergen"
 
 #: lhelpstrconsts.slhelp_hidestarthiddenbutacceptcommunicationsviaipc
 msgid "    --hide     :  Start hidden but accept communications via IPC"
-msgstr "    --hide     :  Versteckt starten, aber Kommunikation via IPC akzeptieren"
+msgstr "    --hide     :  Verborgen starten, aber Kommunikation via IPC akzeptieren"
 
 #: lhelpstrconsts.slhelp_index
 msgid "Index"
@@ -197,7 +197,7 @@ msgstr "&URL öffnen ..."
 
 #: lhelpstrconsts.slhelp_pagecannotbefound
 msgid "Page cannot be found!"
-msgstr "Seite kann nicht gefunden werden!"
+msgstr "Kann Seite nicht finden!"
 
 #: lhelpstrconsts.slhelp_pleaseenteraurl
 msgid "Please enter a URL"
