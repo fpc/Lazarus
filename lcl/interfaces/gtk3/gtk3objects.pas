@@ -2863,6 +2863,8 @@ procedure TGtk3DeviceContext.DeleteObjects;
 var
   i: Integer;
 begin
+  if Assigned(FCurrentFont) and (FCurrentFont.fContext = Self) then
+    FCurrentFont.fContext := nil;
   if Assigned(FBrush) then
     FreeAndNil(FBrush);
   if Assigned(FPen) then
