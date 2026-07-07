@@ -192,6 +192,7 @@ end;
 
 procedure THeapTrcViewForm.SetSummaryInfo(aTotalMemAlloc, aLeakingMemSize, aLeakingBlocksCount: int64);
 begin
+  pnlSummary.Visible := aTotalMemAlloc >= 0; // equals -1 if a simple stack trace is open (not a leak report)
   lblTotalMemAlloc     .Caption := Format(strTotalMemAlloc     , [aTotalMemAlloc     ]);
   lblLeakingMemSize    .Caption := Format(strLeakingMemSize    , [aLeakingMemSize    ]);
   lblLeakingBlocksCount.Caption := Format(strLeakingBlocksCount, [aLeakingBlocksCount]);
