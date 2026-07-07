@@ -3543,6 +3543,12 @@ var
   AFocus: PGtkWidget;
   I: Integer;
 begin
+  if (Gtk3WidgetSet.IMContext <> nil) and (Gtk3WidgetSet.IMTarget = Self) then
+  begin
+    gtk_im_context_focus_out(Gtk3WidgetSet.IMContext);
+    gtk_im_context_set_client_window(Gtk3WidgetSet.IMContext, nil);
+    Gtk3WidgetSet.IMTarget := nil;
+  end;
   {$IFDEF GTK3USEDEFERREDRESIZING}
   if Assigned(LCLObject) then
     Gtk3RemoveFromResizeQueue(LCLObject);
