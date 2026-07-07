@@ -1408,7 +1408,8 @@ begin
     if Result<>mrOk then exit;
 
     // check readonly
-    FNewUnitInfo.FileReadOnly:=FileExistsCached(FNewUnitInfo.Filename)
+    FNewUnitInfo.FileReadOnly:=FilenameIsAbsolute(FNewUnitInfo.Filename)
+                              and FileExistsCached(FNewUnitInfo.Filename)
                               and (not FileIsWritable(FNewUnitInfo.Filename));
     //debugln('[TFileOpener.OpenEditorFile] B');
     // open file in source notebook
