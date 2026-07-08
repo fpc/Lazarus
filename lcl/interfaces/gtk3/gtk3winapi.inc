@@ -2262,10 +2262,9 @@ var
   W:PGtkWidget;
 begin
   W := gtk_grab_get_current;
+  if (W <> nil) and Gtk3IsGtkWindow(W) and gtk_window_get_modal(PGtkWindow(W)) then
+    W := nil;
   Result := HwndFromGtkWidget(W);
-  //debug
-  if (Result = 0) and (W <> nil) and Gtk3IsWidget(W) then
-    DebugLn('WARNING: TGtk3WidgetSet.GetCapture returned wrong result grabber is: ',g_type_name(W^.g_type_instance.g_class^.g_type),' please report a bug.');
   {$IFDEF VerboseGtk3WinApi}
   DebugLn('TGtk3WidgetSet.GetCapture ',dbgHex(Result));
   {$ENDIF}
