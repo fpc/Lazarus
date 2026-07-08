@@ -4520,7 +4520,14 @@ begin
     FScratchBrush.FStyle := SavedState^.BrushStyle;
     FScratchBrush.LogBrush := SavedState^.BrushLogBrush;
     FCurrentBrush := FScratchBrush;
-    FCurrentFont := SavedState^.FontObj;
+    if Assigned(SavedState^.FontObj) then
+      SavedState^.FontObj.Select(Self)
+    else
+    begin
+      if Assigned(FCurrentFont) and (FCurrentFont.fContext = Self) then
+        FCurrentFont.fContext := nil;
+      FCurrentFont := nil;
+    end;
     SetBkColor(SavedState^.BkColor);
     FBkMode := SavedState^.BkMode;
     FCurrentTextColor := SavedState^.TextColor;
