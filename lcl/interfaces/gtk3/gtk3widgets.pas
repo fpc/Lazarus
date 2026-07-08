@@ -7369,7 +7369,7 @@ begin
   AStep := ATrack.LineSize;
 
   if AStep <= 0 then AStep := 1;
-  if Up then
+  if Up = ATrack.Reversed then
     NewPos := ATrack.Position + AStep
   else
     NewPos := ATrack.Position - AStep;
