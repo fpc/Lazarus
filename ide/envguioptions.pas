@@ -1046,8 +1046,9 @@ var
 begin
   Path:='EnvironmentOptions/';
   // mouse action
-  // ToDo: Change XML key name to 'PreferDoubleClick'.
-  FPreferDoubleClick:=XMLCfg.GetValue(Path+'MsgViewDblClickJumps/Value',false);
+  // Key changed to PreferDoubleClick in Lazarus 4.99
+  FPreferDoubleClick:=XMLCfg.GetValue(Path+'MsgViewDblClickJumps/Value',false); // Old key
+  FPreferDoubleClick:=XMLCfg.GetValue(Path+'PreferDoubleClick/Value',FPreferDoubleClick);
   // hints
   FShowHintsForComponentPalette:=XMLCfg.GetValue(Path+'ShowHintsForComponentPalette/Value',true);
   FShowHintsForMainSpeedButtons:=XMLCfg.GetValue(Path+'ShowHintsForMainSpeedButtons/Value',true);
@@ -1100,7 +1101,9 @@ begin
   FObjectInspectorOptions.SaveBounds:=false;
   // messages view
   FMsgViewStayOnTop:=XMLCfg.GetValue(Path+'MsgView/StayOnTop/Value',false);
-  fMsgViewFocus:=XMLCfg.GetValue(Path+'MsgView/Focus/Value',DefaultMsgViewFocus);
+  // Key changed to MsgView/Focus in Lazarus 4.99
+  fMsgViewFocus:=XMLCfg.GetValue(Path+'MsgViewFocus/Value',DefaultMsgViewFocus); // Old key
+  fMsgViewFocus:=XMLCfg.GetValue(Path+'MsgView/Focus/Value',FMsgViewFocus);
   FShowMessagesIcons:=XMLCfg.GetValue(Path+'MsgView/ShowMessagesIcons/Value',true);
   FMsgViewShowAutomatically:=StrToMsgWndShowAuto(XMLCfg.GetValue(
     Path+'MsgView/ShowAutomatically/Value',MsgWndShowAutoNames[mwsaCompiling]));
@@ -1179,8 +1182,7 @@ var
 begin
   Path:='EnvironmentOptions/';
   // mouse action
-  // ToDo: Change XML key name to 'PreferDoubleClick'.
-  XMLCfg.SetDeleteValue(Path+'MsgViewDblClickJumps/Value',FPreferDoubleClick,false);
+  XMLCfg.SetDeleteValue(Path+'PreferDoubleClick/Value',FPreferDoubleClick,false);
   // hints
   XMLCfg.SetDeleteValue(Path+'ShowHintsForComponentPalette/Value',FShowHintsForComponentPalette,true);
   XMLCfg.SetDeleteValue(Path+'ShowHintsForMainSpeedButtons/Value',FShowHintsForMainSpeedButtons,true);
