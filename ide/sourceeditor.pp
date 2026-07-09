@@ -3258,8 +3258,8 @@ begin
         if assigned(SharedEdit.FEditPlugin) then
           SharedEdit.FEditPlugin.Changes := ETChanges;
       end;
-      if MessagesView<>nil then
-        MessagesView.MessagesFrame1.CreateMarksForFile(SynEditor,FCodeBuffer.Filename,true);
+      Assert(Assigned(MessagesView), 'MessagesView=Nil');
+      MessagesView.MessagesFrame1.CreateMarksForFile(SynEditor,FCodeBuffer.Filename,true);
       if (FIgnoreCodeBufferLock <= 0) and (not FCodeBuffer.IsEqual(SynEditor.Lines))
       then begin
         {$IFDEF IDE_DEBUG}
@@ -7640,8 +7640,7 @@ begin
         Marks[i].CreatePopupMenuItems(@AddUserDefinedPopupMenuItem);
       FreeMem(Marks);
     end;
-    if (EditorCaret.Y<=EditorComp.Lines.Count)
-    and (MessagesView<>nil) then
+    if EditorCaret.Y<=EditorComp.Lines.Count then
       MessagesView.SourceEditorPopup(EditorComp.Marks.Line[EditorCaret.Y],
         EditorComp.LogicalCaretXY);
   end;
@@ -10084,9 +10083,8 @@ begin
           if HintStr<>'' then HintStr:=HintStr+LineEnding;
           HintStr:=HintStr+CurHint;
         end;
-
-        if (MessagesView<>nil) then
-          MessagesView.SourceEditorHint(MLine,HintStr);
+        Assert(Assigned(MessagesView), 'MessagesView=Nil');
+        MessagesView.SourceEditorHint(MLine,HintStr);
       end;
 
       if HintStr<>'' then

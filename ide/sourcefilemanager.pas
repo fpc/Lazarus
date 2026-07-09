@@ -6334,8 +6334,8 @@ begin
   if Result<>mrOk then exit;
 
   // open messages window
-  if MessagesView<>nil then
-    MessagesView.Clear;
+  Assert(Assigned(MessagesView), 'MessagesView=Nil');
+  MessagesView.Clear;
   if EnvironmentGuiOpts.MsgViewShowAutomatically <> mwsaNever then
     MainIDE.DoShowMessagesView(false);
   SourceEditorManager.ClearErrorLines;

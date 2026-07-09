@@ -5053,8 +5053,8 @@ begin
     DebugLn(['Hint: (lazarus) TMainIDE.LoadDesktopSettings']);
   if ObjectInspector1<>nil then
     aOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
-  if MessagesView<>nil then
-    MessagesView.ApplyIDEOptions;
+  Assert(Assigned(MessagesView), 'MessagesView=Nil');
+  MessagesView.ApplyIDEOptions;
 end;
 
 procedure TMainIDE.SaveDesktopSettings(aOptions: TEnvGuiOptions);
@@ -9455,7 +9455,7 @@ begin
       if TopLine<1 then TopLine:=1;
       if FocusEditor then begin
         if EnvironmentGuiOpts.MsgViewShowAutomatically <> mwsaNever then
-          IDEWindowCreators.ShowForm(MessagesView,true);
+          DoShowMessagesView(true);
         SourceEditorManager.ShowActiveWindowOnTop(True);
       end;
       if IDETabMaster <> nil then

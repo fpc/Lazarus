@@ -83,7 +83,7 @@ uses
   OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg,
   BuildLazDialog, NewDialog, FindInFilesDlg, ProjectInspector, EditableProject,
   PackageEditor, SourceEditor, ProjPackChecks, AddFileToAPackageDlg, PublishModuleDlg,
-  PkgLinksDlg, InstallPkgSetDlg, ConfirmPkgListDlg,
+  PkgLinksDlg, InstallPkgSetDlg, ConfirmPkgListDlg, etMessagesWnd, EnvGuiOptions,
   {$IFDEF EnableCheckInterPkgFiles}
   InterPkgConflictFileDlg,  // This adds a GUI for InterPkgConflictFiles.
   {$ENDIF}
@@ -4255,6 +4255,9 @@ begin
     OldToolStatus:=LazarusIDE.ToolStatus;
     LazarusIDE.ToolStatus:=itBuilder;
   end;
+  MessagesView.ApplyIDEOptions;
+  if EnvironmentGuiOpts.MsgViewShowAutomatically = mwsaCompiling then
+    IDEWindowCreators.ShowForm(MessagesView,EnvironmentGuiOpts.MsgViewFocus);
   Result:=PackageGraph.CompilePackage(TLazPackage(APackage),Flags,false);
   if LazarusIDE<>nil then
     LazarusIDE.ToolStatus:=OldToolStatus;

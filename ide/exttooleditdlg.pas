@@ -57,7 +57,7 @@ uses
   // IdeConfig
   TransferMacros, EnvironmentOpts, ExtTools,
   // IDE
-  LazarusIDEStrConsts, KeyMapping, EditorOptions;
+  LazarusIDEStrConsts, MainBase, KeyMapping, EditorOptions, EnvGuiOptions;
 
 const
   ExternalToolOptionsVersion = 3;
@@ -639,6 +639,8 @@ end;
 function TExternalUserTools.DoRun(Index: integer; ShowAbort: Boolean): TModalResult;
 begin
   SourceEditorManagerIntf.ClearErrorLines;
+  if EnvironmentGuiOpts.MsgViewShowAutomatically = mwsaCompiling then
+    MainIDE.DoShowMessagesView(false);
   Result:=Run(Index,ShowAbort);
   LazarusIDE.DoCheckFilesOnDisk;
 end;
