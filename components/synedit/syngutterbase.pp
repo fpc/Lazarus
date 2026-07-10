@@ -123,6 +123,7 @@ type
     FOnChangeHandler: TMethodList;
 
     procedure DoColorChanged(Sender: TObject);
+    function GetWidthStored: Boolean;
     function IsMouseActionsStored: Boolean;
     procedure UpdateInternalColors;
     function GetColor: TColor;
@@ -181,7 +182,7 @@ type
     property Left: Integer read FLeft;
     property Top: Integer read FTop;
     property Height:Integer read FHeight;
-    property Width: integer read FWidth write SetWidth;
+    property Width: integer read FWidth write SetWidth stored GetWidthStored;
     property Side:TSynGutterSide read FSide;
     property AutoSize: boolean read FAutoSize write SetAutoSize default True;
     property Visible: boolean read FVisible write SetVisible default True;
@@ -266,6 +267,7 @@ type
     function GetGutterArea: TLazSynSurfaceWithText;
     function GetGutterParts: TSynGutterPartListBase;
     function GetMouseActions: TSynEditMouseActions;
+    function GetWidthStored: Boolean;
     procedure SetLeftOffset(AValue: integer);
     procedure SetMarkupInfo(const AValue: TSynGutterColorAttributes);
     procedure SetMarkupInfoCurrentLine(AValue: TSynGutterColorAttributesModifier);
@@ -327,7 +329,7 @@ type
     property MarkupInfoCurrentLine: TSynGutterColorAttributesModifier read FMarkupInfoCurrentLine write SetMarkupInfoCurrentLine;
   published
     property AutoSize: boolean read FAutoSize write SetAutoSize default True;
-    property Width: integer read FWidth write SetWidth default 10;
+    property Width: integer read FWidth write SetWidth stored GetWidthStored;
     property FullWidth: integer read GetFullWidth; // includes Offsets
     property LeftOffset: integer read FLeftOffset write SetLeftOffset default 0;
     property RightOffset: integer read FRightOffset write SetRightOffset default 0;
@@ -521,6 +523,11 @@ procedure TSynGutterBase.DoColorChanged(Sender: TObject);
 begin
   UpdateInternalColors;
   DoChange(Self);
+end;
+
+function TSynGutterBase.GetWidthStored: Boolean;
+begin
+  Result := not AutoSize;
 end;
 
 procedure TSynGutterBase.UpdateInternalColors;
@@ -836,6 +843,11 @@ end;
 function TSynGutterPartBase.GetMouseActions: TSynEditMouseActions;
 begin
   Result := FMouseActions.UserActions;
+end;
+
+function TSynGutterPartBase.GetWidthStored: Boolean;
+begin
+  Result := not AutoSize;
 end;
 
 procedure TSynGutterPartBase.SetLeftOffset(AValue: integer);
