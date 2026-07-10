@@ -51,6 +51,18 @@ implementation
 
 {$R syneditlazdsgn.res}
 
+type
+
+  { TKeyStrokesPropertyEditor }
+
+  TKeyStrokesPropertyEditor = class(TCollectionClassPropertyEditor)
+  public
+    function GetVerbCount: Integer; override;
+    function GetVerb(Index: Integer): string; override;
+    procedure ExecuteVerb(Index: Integer); override;
+  end;
+
+
 procedure RegisterSynCompletion;
 begin
   RegisterComponents('SynEdit',[TSynCompletion]);
@@ -283,6 +295,8 @@ begin
     '', TSynMouseCommandPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TSynEditorCommand), nil,
     '', TSynKeyCommandPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TSynEditMainKeyStrokes), nil,
+    '', TKeyStrokesPropertyEditor);
 
   RegisterGutterPartClass(TSynGutterLineNumber, syndsLineNumbers);
   RegisterGutterPartClass(TSynGutterCodeFolding, syndsCodeFolding);
@@ -294,6 +308,60 @@ begin
   {$ENDIF}
 
   SynPluginExternalLink.Register;
+end;
+
+{ TKeyStrokesPropertyEditor }
+
+function TKeyStrokesPropertyEditor.GetVerbCount: Integer;
+begin
+  Result := inherited GetVerbCount;
+  Result := Result + 2;
+end;
+
+function TKeyStrokesPropertyEditor.GetVerb(Index: Integer): string;
+begin
+  case Index - (inherited GetVerbCount) of
+    0: Result := syndsResetKeyStrokes;
+    1: Result := syndsClearKeyStrokes;
+    else
+      Result := inherited GetVerb(Index);
+  end;
+end;
+
+procedure TKeyStrokesPropertyEditor.ExecuteVerb(Index: Integer);
+var
+  KeyStrokes: TObject;
+begin
+  case Index - (inherited GetVerbCount) of
+    0: begin
+        KeyStrokes := GetObjectValue;
+        if KeyStrokes is TSynEditKeyStrokes then begin
+          TSynEditKeyStrokes(KeyStrokes).ResetDefaults;
+          if (GlobalDesignHook<>nil) then begin
+            GlobalDesignHook.CallCollectionChangedHandlers(Self, TSynEditKeyStrokes(KeyStrokes));
+            GlobalDesignHook.RefreshPropertyValues;
+          end;
+          UpdateListPropertyEditors(KeyStrokes);
+          UpdateListPropertyEditors(GetComponent(0));
+          Modified;
+        end;
+      end;
+    1: begin
+        KeyStrokes := GetObjectValue;
+        if KeyStrokes is TSynEditKeyStrokes then begin
+          TSynEditKeyStrokes(KeyStrokes).Clear;
+          if (GlobalDesignHook<>nil) then begin
+            GlobalDesignHook.CallCollectionChangedHandlers(Self, TSynEditKeyStrokes(KeyStrokes));
+            GlobalDesignHook.RefreshPropertyValues;
+          end;
+          UpdateListPropertyEditors(KeyStrokes);
+          UpdateListPropertyEditors(GetComponent(0));
+          Modified;
+        end;
+      end;
+    else
+      inherited ExecuteVerb(Index);
+  end;
 end;
 
 end.

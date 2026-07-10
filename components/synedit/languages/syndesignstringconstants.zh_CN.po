@@ -20,6 +20,10 @@ msgstr "书签"
 msgid "Change Marker"
 msgstr "更改标记"
 
+#: syndesignstringconstants.syndsclearkeystrokes
+msgid "Clear KeyStrokes"
+msgstr ""
+
 #: syndesignstringconstants.syndscodefolding
 msgid "Code Folding"
 msgstr "代码折叠"
@@ -31,6 +35,10 @@ msgstr "行号"
 #: syndesignstringconstants.syndslineoverview
 msgid "Line Overview"
 msgstr "行概述"
+
+#: syndesignstringconstants.syndsresetkeystrokes
+msgid "Reset KeyStrokes"
+msgstr ""
 
 #: syndesignstringconstants.syndsresetmouseactions
 msgid "Reset mouse actions"

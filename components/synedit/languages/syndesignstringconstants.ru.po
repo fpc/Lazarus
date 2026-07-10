@@ -17,6 +17,10 @@ msgstr "Закладки"
 msgid "Change Marker"
 msgstr "Метка изменённой строки"
 
+#: syndesignstringconstants.syndsclearkeystrokes
+msgid "Clear KeyStrokes"
+msgstr ""
+
 #: syndesignstringconstants.syndscodefolding
 msgid "Code Folding"
 msgstr "Сворачивание кода"
@@ -28,6 +32,10 @@ msgstr "Номера строк"
 #: syndesignstringconstants.syndslineoverview
 msgid "Line Overview"
 msgstr "Обзор строк"
+
+#: syndesignstringconstants.syndsresetkeystrokes
+msgid "Reset KeyStrokes"
+msgstr ""
 
 #: syndesignstringconstants.syndsresetmouseactions
 msgid "Reset mouse actions"

@@ -17,6 +17,10 @@ msgstr "סימניות"
 msgid "Change Marker"
 msgstr "שנה את הסמן"
 
+#: syndesignstringconstants.syndsclearkeystrokes
+msgid "Clear KeyStrokes"
+msgstr ""
+
 #: syndesignstringconstants.syndscodefolding
 #, fuzzy
 #| msgid "Code fFolding"
@@ -30,6 +34,10 @@ msgstr "מספרי שורות"
 #: syndesignstringconstants.syndslineoverview
 msgid "Line Overview"
 msgstr "סקירה של כל השורה"
+
+#: syndesignstringconstants.syndsresetkeystrokes
+msgid "Reset KeyStrokes"
+msgstr ""
 
 #: syndesignstringconstants.syndsresetmouseactions
 msgid "Reset mouse actions"

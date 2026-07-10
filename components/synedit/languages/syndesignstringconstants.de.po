@@ -18,6 +18,10 @@ msgstr "Lesezeichen"
 msgid "Change Marker"
 msgstr "Änderungskennzeichen"
 
+#: syndesignstringconstants.syndsclearkeystrokes
+msgid "Clear KeyStrokes"
+msgstr ""
+
 #: syndesignstringconstants.syndscodefolding
 msgid "Code Folding"
 msgstr "Codefaltung"
@@ -29,6 +33,10 @@ msgstr "Zeilennummern"
 #: syndesignstringconstants.syndslineoverview
 msgid "Line Overview"
 msgstr "Zeilenübersicht"
+
+#: syndesignstringconstants.syndsresetkeystrokes
+msgid "Reset KeyStrokes"
+msgstr ""
 
 #: syndesignstringconstants.syndsresetmouseactions
 msgid "Reset mouse actions"

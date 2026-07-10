@@ -19,6 +19,10 @@ msgstr "Žymės"
 msgid "Change Marker"
 msgstr "Keisti žymeklį"
 
+#: syndesignstringconstants.syndsclearkeystrokes
+msgid "Clear KeyStrokes"
+msgstr ""
+
 #: syndesignstringconstants.syndscodefolding
 msgid "Code Folding"
 msgstr "Kodo suvėrimas"
@@ -30,6 +34,10 @@ msgstr "Eilučių numeriai"
 #: syndesignstringconstants.syndslineoverview
 msgid "Line Overview"
 msgstr "Eilutės apžvalga"
+
+#: syndesignstringconstants.syndsresetkeystrokes
+msgid "Reset KeyStrokes"
+msgstr ""
 
 #: syndesignstringconstants.syndsresetmouseactions
 msgid "Reset mouse actions"

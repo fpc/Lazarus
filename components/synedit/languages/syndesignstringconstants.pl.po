@@ -20,6 +20,10 @@ msgstr "Zakładki"
 msgid "Change Marker"
 msgstr "Znacznik zmiany"
 
+#: syndesignstringconstants.syndsclearkeystrokes
+msgid "Clear KeyStrokes"
+msgstr ""
+
 #: syndesignstringconstants.syndscodefolding
 msgid "Code Folding"
 msgstr "Zwijanie kodu"
@@ -30,6 +34,10 @@ msgstr "Numery wierszy"
 
 #: syndesignstringconstants.syndslineoverview
 msgid "Line Overview"
+msgstr ""
+
+#: syndesignstringconstants.syndsresetkeystrokes
+msgid "Reset KeyStrokes"
 msgstr ""
 
 #: syndesignstringconstants.syndsresetmouseactions

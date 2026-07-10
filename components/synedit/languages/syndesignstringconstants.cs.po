@@ -18,6 +18,10 @@ msgstr "Záložky"
 msgid "Change Marker"
 msgstr "Změň zvýrazňovač"
 
+#: syndesignstringconstants.syndsclearkeystrokes
+msgid "Clear KeyStrokes"
+msgstr ""
+
 #: syndesignstringconstants.syndscodefolding
 msgid "Code Folding"
 msgstr "Skládání kódu"
@@ -29,6 +33,10 @@ msgstr "Čísla řádků"
 #: syndesignstringconstants.syndslineoverview
 msgid "Line Overview"
 msgstr "Přehledový řádek"
+
+#: syndesignstringconstants.syndsresetkeystrokes
+msgid "Reset KeyStrokes"
+msgstr ""
 
 #: syndesignstringconstants.syndsresetmouseactions
 msgid "Reset mouse actions"

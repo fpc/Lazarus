@@ -584,7 +584,7 @@ type
     FMouseWheelAccumulator, FMouseWheelLinesAccumulator: Array [Boolean] of integer;
     fOverwriteCaret: TSynEditCaretType;
     fInsertCaret: TSynEditCaretType;
-    FKeyStrokes: TSynEditKeyStrokes;
+    FKeyStrokes: TSynEditMainKeyStrokes;
     FCurrentComboKeyStrokes: TSynEditKeyStrokes; // Holding info about the keystroke(s) already received for a mult-stroke-combo
     FMouseActions, FMouseSelActions, FMouseTextActions: TSynEditMouseInternalActions;
     FMouseActionSearchHandlerList: TSynEditMouseActionSearchList;
@@ -639,6 +639,7 @@ type
 
     procedure DoTopViewChanged(Sender: TObject);
     function GetIsStickySelecting: Boolean;
+    function GetKeyStrokesStored: Boolean;
     function GetOnSpecialLineMarkupEx: TSpecialLineMarkupExEvent;
     procedure SetOnSpecialLineMarkupEx(AValue: TSpecialLineMarkupExEvent);
     procedure SetScrollOnEditLeftOptions(AValue: TSynScrollOnEditOptions);
@@ -737,7 +738,7 @@ type
     procedure RemoveHooksFromHighlighter;
     procedure SetInsertCaret(const Value: TSynEditCaretType);
     procedure SetInsertMode(const Value: boolean);
-    procedure SetKeyStrokes(const Value: TSynEditKeyStrokes);
+    procedure SetKeyStrokes(const Value: TSynEditMainKeyStrokes);
     procedure SetLastMouseCaret(const AValue: TPoint);
     function  CurrentMaxLeftChar(AIncludeCharsInWin: Boolean = False): Integer;
 
@@ -1251,7 +1252,7 @@ type
     property Gutter: TSynGutter read FLeftGutter write SetGutter;
     property RightGutter: TSynGutter read FRightGutter write SetRightGutter;
     property InsertMode: boolean read fInserting write SetInsertMode default true;
-    property KeyStrokes: TSynEditKeyStrokes read FKeyStrokes write SetKeyStrokes;
+    property KeyStrokes: TSynEditMainKeyStrokes read FKeyStrokes write SetKeyStrokes stored GetKeyStrokesStored;
     property MaxUndo: Integer read GetMaxUndo write SetMaxUndo default 1024;
     property MouseActions stored IsMouseActionsStored;
     property MouseSelActions stored IsMouseSelActionsStored;
@@ -2317,6 +2318,11 @@ begin
   Result := FBlockSelection.StickyAutoExtend;
 end;
 
+function TCustomSynEdit.GetKeyStrokesStored: Boolean;
+begin
+  Result := FKeyStrokes.IsModified or FKeyStrokes.ForceSaveToLfm;
+end;
+
 function TCustomSynEdit.GetOnSpecialLineMarkupEx: TSpecialLineMarkupExEvent;
 begin
   Result := fMarkupSpecialLine.OnSpecialLineMarkupEx;
@@ -2603,12 +2609,9 @@ begin
   BorderStyle := bsSingle;
   fInsertCaret := ctVerticalLine;
   fOverwriteCaret := ctBlock;
-  FKeyStrokes := TSynEditKeyStrokes.Create(Self);
   FCurrentComboKeyStrokes := nil;
-  if assigned(Owner) and not (csLoading in Owner.ComponentState) then begin
-    SetDefaultKeystrokes;
-  end;
-
+  FKeyStrokes := TSynEditMainKeyStrokes.Create(Self);
+  SetDefaultKeystrokes;
   fWantTabs := True;
   fTabWidth := 8;
   FOldTopView := 1;
@@ -7367,7 +7370,7 @@ begin
   end;
 end;
 
-procedure TCustomSynEdit.SetKeyStrokes(const Value: TSynEditKeyStrokes);
+procedure TCustomSynEdit.SetKeyStrokes(const Value: TSynEditMainKeyStrokes);
 begin
   if Value = nil then
     FKeyStrokes.Clear

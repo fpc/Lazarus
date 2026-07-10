@@ -19,6 +19,10 @@ msgstr "Könyvjelzők"
 msgid "Change Marker"
 msgstr "Jelölő megváltoztatása"
 
+#: syndesignstringconstants.syndsclearkeystrokes
+msgid "Clear KeyStrokes"
+msgstr ""
+
 #: syndesignstringconstants.syndscodefolding
 msgid "Code Folding"
 msgstr "Kód blokkok"
@@ -30,6 +34,10 @@ msgstr "Sorszámok"
 #: syndesignstringconstants.syndslineoverview
 msgid "Line Overview"
 msgstr "Sorok áttekintése"
+
+#: syndesignstringconstants.syndsresetkeystrokes
+msgid "Reset KeyStrokes"
+msgstr ""
 
 #: syndesignstringconstants.syndsresetmouseactions
 msgid "Reset mouse actions"

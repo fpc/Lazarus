@@ -20,6 +20,10 @@ msgstr "Закладки"
 msgid "Change Marker"
 msgstr "Маркер зміни"
 
+#: syndesignstringconstants.syndsclearkeystrokes
+msgid "Clear KeyStrokes"
+msgstr ""
+
 #: syndesignstringconstants.syndscodefolding
 msgid "Code Folding"
 msgstr "Згортання коду"
@@ -31,6 +35,10 @@ msgstr "Номери рядків"
 #: syndesignstringconstants.syndslineoverview
 msgid "Line Overview"
 msgstr "Огляд рядків"
+
+#: syndesignstringconstants.syndsresetkeystrokes
+msgid "Reset KeyStrokes"
+msgstr ""
 
 #: syndesignstringconstants.syndsresetmouseactions
 msgid "Reset mouse actions"

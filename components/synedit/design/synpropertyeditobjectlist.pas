@@ -170,8 +170,19 @@ var
 begin
   case Index - (inherited GetVerbCount) of
     0: begin
-        if Component is TCustomSynEdit then
+        if Component is TCustomSynEdit then begin
           TCustomSynEdit(Component).ResetMouseActions;
+          if (GlobalDesignHook<>nil) then begin
+            GlobalDesignHook.CallCollectionChangedHandlers(Self, TCustomSynEdit(Component).MouseActions);
+            GlobalDesignHook.CallCollectionChangedHandlers(Self, TCustomSynEdit(Component).MouseSelActions);
+            GlobalDesignHook.CallCollectionChangedHandlers(Self, TCustomSynEdit(Component).MouseTextActions);
+            GlobalDesignHook.CallCollectionChangedHandlers(Self, TCustomSynEdit(Component).Gutter.MouseActions);
+            GlobalDesignHook.CallCollectionChangedHandlers(Self, TCustomSynEdit(Component).RightGutter.MouseActions);
+            GlobalDesignHook.RefreshPropertyValues;
+          end;
+          UpdateListPropertyEditors(GetComponent);
+        end;
+
         Modified;
         GetHook(Hook);
         if Assigned(Hook) then Hook.Modified(Self);

@@ -19,6 +19,10 @@ msgstr "Yer imleri"
 msgid "Change Marker"
 msgstr "Işareti Değiştir"
 
+#: syndesignstringconstants.syndsclearkeystrokes
+msgid "Clear KeyStrokes"
+msgstr ""
+
 #: syndesignstringconstants.syndscodefolding
 msgid "Code Folding"
 msgstr "Kod Katlama"
@@ -30,6 +34,10 @@ msgstr "Satır Numaraları"
 #: syndesignstringconstants.syndslineoverview
 msgid "Line Overview"
 msgstr "Satıra genel bakış"
+
+#: syndesignstringconstants.syndsresetkeystrokes
+msgid "Reset KeyStrokes"
+msgstr ""
 
 #: syndesignstringconstants.syndsresetmouseactions
 msgid "Reset mouse actions"

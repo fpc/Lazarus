@@ -16,6 +16,8 @@ resourcestring
   syndsLineOverview = 'Line Overview';
 
   syndsResetMouseActions = 'Reset mouse actions';
+  syndsResetKeyStrokes = 'Reset KeyStrokes';
+  syndsClearKeyStrokes = 'Clear KeyStrokes';
 
 
 implementation

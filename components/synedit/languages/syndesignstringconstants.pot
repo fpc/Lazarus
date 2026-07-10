@@ -9,6 +9,10 @@ msgstr ""
 msgid "Change Marker"
 msgstr ""
 
+#: syndesignstringconstants.syndsclearkeystrokes
+msgid "Clear KeyStrokes"
+msgstr ""
+
 #: syndesignstringconstants.syndscodefolding
 msgid "Code Folding"
 msgstr ""
@@ -19,6 +23,10 @@ msgstr ""
 
 #: syndesignstringconstants.syndslineoverview
 msgid "Line Overview"
+msgstr ""
+
+#: syndesignstringconstants.syndsresetkeystrokes
+msgid "Reset KeyStrokes"
 msgstr ""
 
 #: syndesignstringconstants.syndsresetmouseactions

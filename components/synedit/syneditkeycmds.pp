@@ -361,6 +361,7 @@ type
     function GetDisplayName: string; override;
   public
     procedure Assign(Source: TPersistent); override;
+    function IsEqual(AnOtherKeyStroke: TSynEditKeyStroke): boolean;
     // TODO: add ShiftMask optional
     procedure LoadFromStream(AStream: TStream);
     procedure SaveToStream(AStream: TStream);
@@ -401,6 +402,8 @@ type
     constructor Create(AOwner: TPersistent);
     function Add: TSynEditKeyStroke;
     procedure Assign(Source: TPersistent); override;
+    function IsEqual(AnOtherKeyStrokes: TSynEditKeyStrokes): Boolean;
+    function IsModified: Boolean;
     function FindCommand(Cmd: TSynEditorCommand): integer;
     function FindCommandAll(Cmd: TSynEditorCommand): TIntegerDynArray;
     function FindKeycode(Code: word; SS: TShiftState): integer;
@@ -421,6 +424,18 @@ type
     // only switch on while needed.
     // So streaming will always see the constant, unmodified values
     property UsePluginOffset: Boolean read FUsePluginOffset write FUsePluginOffset;
+  end;
+  TSynEditKeyStrokesClass = class of TSynEditKeyStrokes;
+
+  { TSynEditMainKeyStrokes }
+
+  TSynEditMainKeyStrokes = class(TSynEditKeyStrokes)
+  private
+    FForceSaveToLfm: boolean;
+  protected
+    procedure EndUpdate; override;
+  published
+    property ForceSaveToLfm: boolean read FForceSaveToLfm write FForceSaveToLfm default False;
   end;
 
   TGetEditorCommandValuesProc = procedure(Proc: TGetStrProc);
@@ -748,6 +763,19 @@ begin
     inherited Assign(Source);
 end;
 
+function TSynEditKeyStroke.IsEqual(AnOtherKeyStroke: TSynEditKeyStroke
+  ): boolean;
+begin
+  Result :=
+    (FKey        = AnOtherKeyStroke.FKey) and
+    (FShift      = AnOtherKeyStroke.FShift) and
+    (FKey2       = AnOtherKeyStroke.FKey2) and
+    (FShift2     = AnOtherKeyStroke.FShift2) and
+    (FShiftMask  = AnOtherKeyStroke.FShiftMask) and
+    (FShiftMask2 = AnOtherKeyStroke.FShiftMask2) and
+    (FCommand    = AnOtherKeyStroke.FCommand);
+end;
+
 function TSynEditKeyStroke.GetDisplayName: string;
 begin
   Result := EditorCommandToCodeString(Command) + ' - ' + ShortCutToText(ShortCut);
@@ -911,6 +939,29 @@ begin
   end
   else
     inherited Assign(Source);
+end;
+
+function TSynEditKeyStrokes.IsEqual(AnOtherKeyStrokes: TSynEditKeyStrokes
+  ): Boolean;
+var
+  i: Integer;
+begin
+  Result := Count = AnOtherKeyStrokes.Count;
+  if not Result then
+    exit;
+  for i := 0 to Count - 1 do
+    if not Items[i].IsEqual(AnOtherKeyStrokes.Items[i]) then
+      exit(False);
+end;
+
+function TSynEditKeyStrokes.IsModified: Boolean;
+var
+  t: TSynEditKeyStrokes;
+begin
+  t := TSynEditKeyStrokesClass(ClassType).Create(nil);
+  t.ResetDefaults;
+  Result := not IsEqual(t);
+  t.Destroy;
 end;
 
 constructor TSynEditKeyStrokes.Create(AOwner: TPersistent);
@@ -1256,6 +1307,22 @@ begin
   for i := 0 to Num - 1 do
     Items[i].SaveToStream(AStream);
 end;
+
+{ TSynEditMainKeyStrokes }
+
+procedure TSynEditMainKeyStrokes.EndUpdate;
+begin
+  inherited EndUpdate;
+  if (UpdateCount = 0) and
+     assigned(Owner) and (Owner is TComponent) and
+     assigned(TComponent(Owner).Owner) and
+     (csLoading in TComponent(Owner).Owner.ComponentState)
+  then begin
+    if not IsModified then
+      FForceSaveToLfm := True;
+  end;
+end;
+
 {end}                                                                           //ac 2000-07-05
 
 initialization
