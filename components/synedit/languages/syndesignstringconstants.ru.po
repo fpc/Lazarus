@@ -1,13 +1,15 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.6\n"
 
 #: syndesignstringconstants.syndsbookmarks
 msgid "Bookmarks"
@@ -19,7 +21,7 @@ msgstr "Метка изменённой строки"
 
 #: syndesignstringconstants.syndsclearkeystrokes
 msgid "Clear KeyStrokes"
-msgstr ""
+msgstr "Очистить KeyStrokes"
 
 #: syndesignstringconstants.syndscodefolding
 msgid "Code Folding"
@@ -35,7 +37,7 @@ msgstr "Обзор строк"
 
 #: syndesignstringconstants.syndsresetkeystrokes
 msgid "Reset KeyStrokes"
-msgstr ""
+msgstr "Сбросить KeyStrokes"
 
 #: syndesignstringconstants.syndsresetmouseactions
 msgid "Reset mouse actions"
