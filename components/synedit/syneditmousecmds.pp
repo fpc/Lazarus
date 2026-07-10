@@ -194,6 +194,7 @@ type
   public
     constructor Create(AOwner: TPersistent);
     function Add: TSynEditMouseAction;
+    function IsModified: boolean; virtual;
     procedure Assign(Source: TPersistent); override;
     procedure AssertNoConflict(MAction: TSynEditMouseAction);
     function Equals(Other: TSynEditMouseActions): Boolean; reintroduce;
@@ -915,6 +916,11 @@ end;
 function TSynEditMouseActions.Add: TSynEditMouseAction;
 begin
   Result := TSynEditMouseAction(inherited Add);
+end;
+
+function TSynEditMouseActions.IsModified: boolean;
+begin
+  Result := Count > 0;
 end;
 
 procedure TSynEditMouseActions.Assign(Source: TPersistent);

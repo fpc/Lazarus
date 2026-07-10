@@ -155,6 +155,9 @@ type
     fExtraCharSpacing: integer;
     fExtraLineSpacing: integer;
     procedure BookMarkOptionsChanged(Sender: TObject);
+    function IsMouseActionsStored: Boolean;
+    function IsMouseSelActionsStored: Boolean;
+    function IsMouseTextActionsStored: Boolean;
     procedure SetHideSelection(Value: boolean);
   protected
     FWordBreaker: TSynWordBreaker;
@@ -386,10 +389,10 @@ type
     property IsBackwardSel: Boolean read GetIsBackwardSel;
     property SelText: string read GetSelText write SetSelTextExternal;
 
-    property MouseActions: TSynEditMouseActions read GetMouseActions write SetMouseActions;
+    property MouseActions: TSynEditMouseActions read GetMouseActions write SetMouseActions stored IsMouseActionsStored;
     // Mouseactions, if mouse is over selection => fallback to normal
-    property MouseSelActions: TSynEditMouseActions read GetMouseSelActions write SetMouseSelActions;
-    property MouseTextActions: TSynEditMouseActions read GetMouseTextActions write SetMouseTextActions;
+    property MouseSelActions: TSynEditMouseActions read GetMouseSelActions write SetMouseSelActions stored IsMouseSelActionsStored;
+    property MouseTextActions: TSynEditMouseActions read GetMouseTextActions write SetMouseTextActions stored IsMouseTextActionsStored;
     property MouseOptions: TSynEditorMouseOptions read FMouseOptions write SetMouseOptions
       default SYNEDIT_DEFAULT_MOUSE_OPTIONS;
 
@@ -890,6 +893,21 @@ end;
 procedure TSynEditBase.BookMarkOptionsChanged(Sender: TObject);
 begin
   InvalidateGutter;
+end;
+
+function TSynEditBase.IsMouseActionsStored: Boolean;
+begin
+  Result := MouseActions.IsModified;
+end;
+
+function TSynEditBase.IsMouseSelActionsStored: Boolean;
+begin
+  Result := MouseSelActions.IsModified;
+end;
+
+function TSynEditBase.IsMouseTextActionsStored: Boolean;
+begin
+  Result := MouseTextActions.IsModified;
 end;
 
 destructor TSynEditBase.Destroy;

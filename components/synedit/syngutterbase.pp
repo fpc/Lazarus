@@ -267,6 +267,7 @@ type
     function GetGutterArea: TLazSynSurfaceWithText;
     function GetGutterParts: TSynGutterPartListBase;
     function GetMouseActions: TSynEditMouseActions;
+    function GetMouseActionsStored: Boolean;
     function GetWidthStored: Boolean;
     procedure SetLeftOffset(AValue: integer);
     procedure SetMarkupInfo(const AValue: TSynGutterColorAttributes);
@@ -335,8 +336,7 @@ type
     property RightOffset: integer read FRightOffset write SetRightOffset default 0;
     property Visible: boolean read FVisible write SetVisible default True;
     property OnClick: TSynGutterClickEvent read FOnClick write FOnClick;
-    property MouseActions: TSynEditMouseActions
-      read GetMouseActions write SetMouseActions;
+    property MouseActions: TSynEditMouseActions read GetMouseActions write SetMouseActions stored GetMouseActionsStored;
   end;
 
 
@@ -777,7 +777,7 @@ end;
 
 function TSynGutterBase.IsMouseActionsStored: Boolean;
 begin
-  Result := MouseActions.Count>0;
+  Result := MouseActions.IsModified;
 end;
 
 procedure TSynGutterBase.DecChangeLock;
@@ -843,6 +843,11 @@ end;
 function TSynGutterPartBase.GetMouseActions: TSynEditMouseActions;
 begin
   Result := FMouseActions.UserActions;
+end;
+
+function TSynGutterPartBase.GetMouseActionsStored: Boolean;
+begin
+  Result := FMouseActions.IsModified;
 end;
 
 function TSynGutterPartBase.GetWidthStored: Boolean;

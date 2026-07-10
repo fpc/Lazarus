@@ -108,6 +108,8 @@ type
     FNeedInnerFoldRange: Boolean;
     FFirstInvalidLine, FLastInvalidLine: integer;
     FInnerFoldStart, FInnerFoldEnd, FInnerFoldCaretY: integer;
+    function GetMouseActionsCollapsedStored: Boolean;
+    function GetMouseActionsExpandedStored: Boolean;
     procedure UpdateInnerFoldRange;
   protected
     procedure UpdateInternalColors; override;
@@ -135,9 +137,9 @@ type
     property MarkupInfoCurrentLine;
     property MarkupInfoCurrentFold: TSynGutterColorAttributes read FMarkupInfoCurrentFold write SetMarkupInfoCurrentFold;
     property MouseActionsExpanded: TSynEditMouseActions
-      read GetMouseActionsExpanded write SetMouseActionsExpanded;
+      read GetMouseActionsExpanded write SetMouseActionsExpanded stored GetMouseActionsExpandedStored;
     property MouseActionsCollapsed: TSynEditMouseActions
-      read GetMouseActionsCollapsed write SetMouseActionsCollapsed;
+      read GetMouseActionsCollapsed write SetMouseActionsCollapsed stored GetMouseActionsCollapsedStored;
     property ReversePopMenuOrder: Boolean
       read FReversePopMenuOrder write FReversePopMenuOrder default True;
   end;
@@ -873,6 +875,16 @@ begin
       SynEdit.InvalidateGutterLines(ToPos(y2), ToPos(FInnerFoldEnd));
     FInnerFoldEnd := y2;
   end;
+end;
+
+function TSynGutterCodeFolding.GetMouseActionsCollapsedStored: Boolean;
+begin
+  Result := MouseActionsCollapsed.IsModified;
+end;
+
+function TSynGutterCodeFolding.GetMouseActionsExpandedStored: Boolean;
+begin
+  Result := MouseActionsExpanded.IsModified;
 end;
 
 function TSynGutterCodeFolding.PreferedWidth: Integer;

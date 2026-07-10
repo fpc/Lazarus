@@ -874,11 +874,8 @@ type
     procedure SetLogicalCaretXY(const NewLogCaretXY: TPoint); override;
 
     function GetMouseActions: TSynEditMouseActions; override;
-    function IsMouseActionsStored: Boolean;
     function GetMouseSelActions: TSynEditMouseActions; override;
-    function IsMouseSelActionsStored: Boolean;
     function GetMouseTextActions: TSynEditMouseActions; override;
-    function IsMouseTextActionsStored: Boolean;
     procedure SetMouseActions(const AValue: TSynEditMouseActions); override;
     procedure SetMouseSelActions(const AValue: TSynEditMouseActions); override;
     procedure SetMouseTextActions(AValue: TSynEditMouseActions); override;
@@ -1254,9 +1251,9 @@ type
     property InsertMode: boolean read fInserting write SetInsertMode default true;
     property KeyStrokes: TSynEditMainKeyStrokes read FKeyStrokes write SetKeyStrokes stored GetKeyStrokesStored;
     property MaxUndo: Integer read GetMaxUndo write SetMaxUndo default 1024;
-    property MouseActions stored IsMouseActionsStored;
-    property MouseSelActions stored IsMouseSelActionsStored;
-    property MouseTextActions stored IsMouseTextActionsStored;
+    property MouseActions;
+    property MouseSelActions;
+    property MouseTextActions;
     property ShareOptions: TSynEditorShareOptions read FShareOptions write SetShareOptions
       default SYNEDIT_DEFAULT_SHARE_OPTIONS; experimental;
     property VisibleSpecialChars: TSynVisibleSpecialChars read FVisibleSpecialChars write SetVisibleSpecialChars
@@ -6666,21 +6663,6 @@ begin
     dec(i);
   end;
   Result := j > 1;
-end;
-
-function TCustomSynEdit.IsMouseActionsStored: Boolean;
-begin
-  Result := MouseActions.Count>0;
-end;
-
-function TCustomSynEdit.IsMouseSelActionsStored: Boolean;
-begin
-  Result := MouseSelActions.Count>0;
-end;
-
-function TCustomSynEdit.IsMouseTextActionsStored: Boolean;
-begin
-  Result := MouseTextActions.Count>0;
 end;
 
 procedure TCustomSynEdit.RecreateMarkList;

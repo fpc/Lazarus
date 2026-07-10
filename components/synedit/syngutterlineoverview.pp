@@ -293,6 +293,7 @@ type
     FPpiPenWidth: Integer;
     function GetMarkHeight: Integer;
     function GetMouseActionsForMarks: TSynEditMouseActions;
+    function GetMouseActionsForMarksStored: Boolean;
     procedure SetMarkHeight(const AValue: Integer);
     procedure ScheduleASync(AStates: TSynGutterLOvStateFlags);
     procedure ExecASync(Data: PtrInt);
@@ -332,7 +333,7 @@ type
     property MarkHeight: Integer read GetMarkHeight write SetMarkHeight;
     property MarkupInfo;
     property MouseActionsForMarks: TSynEditMouseActions
-      read GetMouseActionsForMarks write SetMouseActionsForMarks;
+      read GetMouseActionsForMarks write SetMouseActionsForMarks stored GetMouseActionsForMarksStored;
   end;
 
 implementation
@@ -1461,6 +1462,11 @@ end;
 function TSynGutterLineOverview.GetMouseActionsForMarks: TSynEditMouseActions;
 begin
   Result := FMouseActionsForMarks.UserActions;
+end;
+
+function TSynGutterLineOverview.GetMouseActionsForMarksStored: Boolean;
+begin
+  Result := MouseActionsForMarks.IsModified;
 end;
 
 procedure TSynGutterLineOverview.SetMarkHeight(const AValue: Integer);
