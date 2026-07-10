@@ -826,8 +826,11 @@ var
   N, Target: PVirtualNode;
   IDrag: IIdeDbgDragDropWatchSource;
 begin
-  Accept := (Mode in [dmAbove, dmBelow]) and
-            (tvWatches.DropTargetNode <> nil);
+  Accept := ( (Mode in [dmAbove, dmBelow]) and
+              (tvWatches.DropTargetNode <> nil) ) or
+            ( (Mode in [dmAbove]) and
+              (tvWatches.DropTargetNode = nil)
+            );
   if not Accept then
     exit;
   Accept := ( (Source is TSynEdit) and (TSynEdit(Source).SelAvail) ) or
@@ -849,7 +852,7 @@ begin
 
   if Accept then begin
     case Mode of
-      dmAbove: Accept := (tvWatches.NodeParent[tvWatches.DropTargetNode] = nil);
+      dmAbove: Accept := (tvWatches.DropTargetNode=nil) or (tvWatches.NodeParent[tvWatches.DropTargetNode] = nil);
       dmBelow: begin
           Target := tvWatches.GetNextVisibleNoInit(tvWatches.DropTargetNode);
           Accept := (Target = nil) or
