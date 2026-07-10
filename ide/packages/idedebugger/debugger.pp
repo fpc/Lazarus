@@ -359,6 +359,8 @@ type
   end;
 
   TIDEBreakPoint = class(TIdeTracePoint)
+  private
+    function IgnoreAll: boolean; inline;
   protected
     procedure AssignLocationTo(Dest: TPersistent); override;
     procedure AssignTo(Dest: TPersistent); override;
@@ -367,6 +369,7 @@ type
     function GetValid: TValidState; override;
     procedure SetBreakHitCount(const AValue: Integer); override;
     procedure SetEnabled(const AValue: Boolean); override;
+    procedure IgnoreAllChanged;
     procedure SetInitialEnabled(const AValue: Boolean); override;
     procedure SetExpression(const AValue: String); override;
     procedure SetKind(const AValue: TDBGBreakPointKind);
@@ -410,8 +413,10 @@ type
 
   TIDEBreakPoints = class(TBaseBreakPoints)
   private
+    FIgnoreAll: boolean;
     FNotificationList: TList;
     FMaster: TDBGBreakPoints;
+    procedure SetIgnoreAll(AValue: boolean);
     procedure SetMaster(const AValue: TDBGBreakPoints);
     function GetItem(const AnIndex: Integer): TIDEBreakPoint;
     procedure SetItem(const AnIndex: Integer; const AValue: TIDEBreakPoint);
@@ -445,6 +450,7 @@ type
   public
     property Items[const AnIndex: Integer]: TIDEBreakPoint read GetItem
                                                          write SetItem; default;
+    property IgnoreAll: boolean read FIgnoreAll write SetIgnoreAll;
   end;
 
 
@@ -6443,6 +6449,11 @@ end;
 { TIDEBreakPoint }
 { =========================================================================== }
 
+function TIDEBreakPoint.IgnoreAll: boolean;
+begin
+  Result := (Collection <> nil) and (TIDEBreakPoints(Collection).IgnoreAll);
+end;
+
 procedure TIDEBreakPoint.AssignLocationTo(Dest: TPersistent);
 var
   DestBreakPoint: TBaseBreakPoint absolute Dest;
@@ -6464,6 +6475,7 @@ begin
     if Master <> nil then Master.Slave := nil;
     Master := TDBGBreakPoint(Dest);
     Master.Slave := Self;
+    IgnoreAllChanged;
   end;
 end;
 
@@ -6502,7 +6514,13 @@ begin
   if Enabled = AValue then exit;
   inherited SetEnabled(AValue);
   InitialEnabled:=Enabled;
-  if Master <> nil then Master.Enabled := AValue;
+  if Master <> nil then Master.Enabled := AValue and not IgnoreAll;
+end;
+
+procedure TIDEBreakPoint.IgnoreAllChanged;
+begin
+  if Master <> nil then Master.Enabled := Enabled and not IgnoreAll;
+  Changed;
 end;
 
 procedure TIDEBreakPoint.SetInitialEnabled(const AValue: Boolean);
@@ -6771,6 +6789,19 @@ begin
   else begin
     FMaster.Assign(Self);
   end;
+end;
+
+procedure TIDEBreakPoints.SetIgnoreAll(AValue: boolean);
+var
+  i: Integer;
+begin
+  if FIgnoreAll = AValue then Exit;
+  FIgnoreAll := AValue;
+  BeginUpdate;
+  for i := 0 to Count - 1 do
+    Items[i].IgnoreAllChanged;
+  Changed;
+  EndUpdate;
 end;
 
 function TIDEBreakPoints.GetItem(const AnIndex: Integer): TIDEBreakPoint;

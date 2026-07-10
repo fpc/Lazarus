@@ -76,11 +76,15 @@ type
     ActionList1: TActionList;
     popAddException: TMenuItem;
     tbGroupByBrkGroup: TToolButton;
-    tbExceptOff: TToggleBox;
     ToolButton1: TToolButton;
     tbShowBreakPoints: TToolButton;
     tbShowException: TToolButton;
     tbShowDivider: TToolButton;
+    tbExceptIgnoreAll: TToolButton;
+    tbBreakIgnoreAll: TToolButton;
+    tbIgnoreDivider: TToolButton;
+    tbShowBreakAndExcept: TToolButton;
+    ToolButton2: TToolButton;
     tvBreakPoints: TDbgTreeView;
     popGroupSep: TMenuItem;
     popGroupSetNew: TMenuItem;
@@ -136,7 +140,8 @@ type
     procedure popDisableAllClick(Sender: TObject);
     procedure popEnableAllClick(Sender: TObject);
     procedure popDeleteAllClick(Sender: TObject);
-    procedure tbExceptOffChange(Sender: TObject);
+    procedure tbBreakIgnoreAllClick(Sender: TObject);
+    procedure tbExceptIgnoreAllClick(Sender: TObject);
     procedure tbGroupByBrkGroupClick(Sender: TObject);
     procedure tbShowBreakPointsClick(Sender: TObject);
     procedure tvBreakPointsChange(Sender: TBaseVirtualTree; Node: PVirtualNode);
@@ -165,6 +170,7 @@ type
     FUngroupedHeader, FAddGroupedHeader: TBreakpointGroupFrame;
     FDragSource: Boolean;
     FLastTargetHeader: TBreakpointGroupFrame;
+    FBreakPowerImgIdx, FExceptPowerImgIdx: array[boolean] of integer;
 
     function GetDropTargetGroup(ANode: PVirtualNode): TBreakpointGroupFrame;
     procedure DoDetermineDropMode(const P: TPoint; var HitInfo: THitInfo;
@@ -304,7 +310,7 @@ var
   VNode, p: PVirtualNode;
   g: TBreakpointGroupFrame;
 begin
-  if not tbShowBreakPoints.Down then exit;
+  if not (tbShowBreakPoints.Down or tbShowBreakAndExcept.Down) then exit;
   BeginUpdate;
   try
     VNode := tvBreakPoints.FindNodeForItem(ABreakpoint);
@@ -316,7 +322,6 @@ begin
       if g <> nil then g.UpdateDisplay;
       tvBreakPoints.SelectNode(VNode);
     end;
-
     UpdateItem(VNode, ABreakPoint);
   finally
     EndUpdate;
@@ -328,6 +333,11 @@ procedure TBreakPointsDlg.BreakPointUpdate(const ASender: TIDEBreakPoints;
 var
   VNode: PVirtualNode;
 begin
+  if BreakPoints <> nil then begin
+    tbBreakIgnoreAll.Down := not BreakPoints.IgnoreAll;
+    tbBreakIgnoreAll.ImageIndex  := FBreakPowerImgIdx[tbBreakIgnoreAll.Down];
+  end;
+
   if ABreakpoint = nil then Exit;
 
   BeginUpdate;
@@ -342,6 +352,7 @@ begin
       end;
       UpdateItem(VNode, ABreakPoint);
     end;
+
   finally
     EndUpdate;
   end;
@@ -364,7 +375,7 @@ var
   VNode, p: PVirtualNode;
   g: TBreakpointGroupFrame;
 begin
-  if not tbShowException.Down then exit;
+  if not (tbShowException.Down or tbShowBreakAndExcept.Down) then exit;
   BeginUpdate;
   try
     VNode := tvBreakPoints.FindNodeForItem(AnException);
@@ -399,6 +410,11 @@ procedure TBreakPointsDlg.ExceptionUpdate(const ASender: TIDEExceptions;
 var
   VNode: PVirtualNode;
 begin
+  if Exceptions <> nil then begin
+    tbExceptIgnoreAll.Down := not Exceptions.IgnoreAll;
+    tbExceptIgnoreAll.ImageIndex := FExceptPowerImgIdx[tbExceptIgnoreAll.Down];
+  end;
+
   if AnException = nil then Exit;
 
   BeginUpdate;
@@ -413,7 +429,6 @@ begin
       end;
       UpdateItem(VNode, AnException);
     end;
-    tbExceptOff.Checked := Exceptions.IgnoreAll;
   finally
     EndUpdate;
   end;
@@ -712,6 +727,7 @@ begin
 
   tbShowBreakPoints.ImageIndex := IDEImages.LoadImage('ActiveBreakPoint');
   tbShowException.ImageIndex   := IDEImages.LoadImage('ExceptActive');
+  tbShowBreakAndExcept.ImageIndex   := IDEImages.LoadImage('ExceptAndBreak');
 
   actToggleCurrentEnable.Caption:= lisBtnEnabled;
 
@@ -720,6 +736,11 @@ begin
   actDeleteAllInSrc.Caption:= lisDeleteAllInSameSource;
   for i := low(COL_WIDTHS) to high(COL_WIDTHS) do
     tvBreakPoints.Header.Columns[i].Width := COL_WIDTHS[i];
+
+  FBreakPowerImgIdx[True]  := IDEImages.LoadImage('PowerBreak');
+  FBreakPowerImgIdx[False] := IDEImages.LoadImage('PowerBreakDisabled');
+  FExceptPowerImgIdx[True]  := IDEImages.LoadImage('PowerExcept');
+  FExceptPowerImgIdx[False]  := IDEImages.LoadImage('PowerExceptDisabled');
 
   ClearTree;
 end;
@@ -858,7 +879,8 @@ begin
       NewBreakpoint := BreakPoints.Add('', 0, True);
     if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then begin
       NewBreakpoint.EndUpdate;
-      tbShowBreakPoints.Down := True;
+      if not tbShowBreakPoints.Down then
+        tbShowBreakAndExcept.Down := True;
       UpdateAll;
     end
     else
@@ -877,7 +899,8 @@ begin
     NewBreakpoint := BreakPoints.Add('', wpsGlobal, wpkWrite, True);
     if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then begin
       NewBreakpoint.EndUpdate;
-      tbShowBreakPoints.Down := True;
+      if not tbShowBreakPoints.Down then
+        tbShowBreakAndExcept.Down := True;
       UpdateAll;
     end
     else
@@ -896,7 +919,8 @@ begin
     NewBreakpoint := BreakPoints.Add(0, True);
     if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then begin
       NewBreakpoint.EndUpdate;
-      tbShowBreakPoints.Down := True;
+      if not tbShowBreakPoints.Down then
+        tbShowBreakAndExcept.Down := True;
       UpdateAll;
     end
     else
@@ -915,7 +939,8 @@ begin
     NewException := Exceptions.Add('', True);
     if DebugBoss.ShowBreakPointProperties(NewException) = mrOk then begin
       NewException.EndUpdate;
-      tbShowException.Down := True;
+      if not tbShowException.Down then
+        tbShowBreakAndExcept.Down := True;
       UpdateAll;
     end
     else
@@ -1053,9 +1078,16 @@ begin
   end;
 end;
 
-procedure TBreakPointsDlg.tbExceptOffChange(Sender: TObject);
+procedure TBreakPointsDlg.tbBreakIgnoreAllClick(Sender: TObject);
 begin
-  Exceptions.IgnoreAll := tbExceptOff.Checked;
+  BreakPoints.IgnoreAll := not tbBreakIgnoreAll.Down;
+  tbBreakIgnoreAll.ImageIndex  := FBreakPowerImgIdx[tbBreakIgnoreAll.Down];
+end;
+
+procedure TBreakPointsDlg.tbExceptIgnoreAllClick(Sender: TObject);
+begin
+  Exceptions.IgnoreAll := not tbExceptIgnoreAll.Down;
+  tbExceptIgnoreAll.ImageIndex := FExceptPowerImgIdx[tbExceptIgnoreAll.Down];
 end;
 
 procedure TBreakPointsDlg.tbGroupByBrkGroupClick(Sender: TObject);
@@ -1071,10 +1103,6 @@ end;
 
 procedure TBreakPointsDlg.tbShowBreakPointsClick(Sender: TObject);
 begin
-  if (not tbShowBreakPoints.Down) and (not tbShowException.Down) then begin
-    if (Sender = tbShowBreakPoints) then tbShowException.Down := True;
-    if (Sender = tbShowException)   then tbShowBreakPoints.Down := True;
-  end;
   ClearTree;
   DoBreakPointsChanged;
   DoExceptionsChanged;
@@ -1809,7 +1837,11 @@ var
   i: Integer;
   VNode: PVirtualNode;
 begin
-  if not tbShowBreakPoints.Down then exit;
+  if BreakPoints <> nil then
+    tbBreakIgnoreAll.Down := not BreakPoints.IgnoreAll;
+  tbBreakIgnoreAll.ImageIndex  := FBreakPowerImgIdx[tbBreakIgnoreAll.Down];
+
+  if not (tbShowBreakPoints.Down or tbShowBreakAndExcept.Down) then exit;
   BeginUpdate;
   try
     for VNode in tvBreakPoints.NoInitItemNodes(False, True) do
@@ -1833,7 +1865,11 @@ var
   i: Integer;
   VNode: PVirtualNode;
 begin
-  if not tbShowException.Down then exit;
+  if Exceptions <> nil then
+    tbExceptIgnoreAll.Down := not Exceptions.IgnoreAll;
+  tbExceptIgnoreAll.ImageIndex := FExceptPowerImgIdx[tbExceptIgnoreAll.Down];
+
+  if not (tbShowException.Down or tbShowBreakAndExcept.Down) then exit;
   BeginUpdate;
   try
     for VNode in tvBreakPoints.NoInitItemNodes(False, True) do
@@ -1847,7 +1883,6 @@ begin
       for i:=0 to Exceptions.Count-1 do
         ExceptionUpdate(Exceptions, Exceptions.Items[i]);
     end;
-    tbExceptOff.Checked := Exceptions.IgnoreAll;
   finally
     EndUpdate;
   end;

@@ -2873,6 +2873,65 @@ begin
   end;
 end;
 
+function TLCLGlyphs.GetImageIndexWithEffect(const AResourceName, ANewName: string;
+  ADrawEffect: TGraphicsDrawEffect; ABlendColor: TColor; ABlendPercent: byte): Integer;
+var
+  R: TCustomImageListResolution;
+  Bmp, bmp2: TBitmap;
+  Data: TRGBAQuadArray;
+
+  procedure _Replace;
+  var
+    cr, cg, cb: Byte;
+    cr2, cg2, cb2: Integer;
+    i: Integer;
+  begin
+    ScaleImage(Bmp, nil, R.Width, R.Height, Data);
+    if (ABlendColor <> clNone) and (ABlendPercent <> 0) then begin
+      RedGreenBlue(ABlendColor, cr, cg, cb);
+      cr2 := cr * ABlendPercent;
+      cg2 := cg * ABlendPercent;
+      cb2 := cb * ABlendPercent;
+      ABlendPercent := 256 - ABlendPercent;
+      for i := 0 to Length(Data)-1 do begin
+        Data[i].Blue  := Byte((data[i].Blue  * ABlendPercent + cb2) div 256);
+        Data[i].Red   := Byte((data[i].Red   * ABlendPercent + cr2) div 256);
+        Data[i].Green := Byte((data[i].Green * ABlendPercent + cg2) div 256);
+      end;
+    end;
+    R.InternalReplace(Result, @Data[0]);
+  end;
+
+var
+  K: TEntryKey;
+  ANode: TAVLTreeNode;
+  E: TEntry;
+  SrcIdx: Integer;
+begin
+  K.GlyphName := ANewName;
+
+  ANode := FImageIndexes.FindKey(@K, @TLCLGlyphs_TEntry_CompareKey);
+  if ANode<>nil then
+    Result := TEntry(ANode.Data).ImageIndex
+  else
+  begin
+    SrcIdx := GetImageIndex(AResourceName);
+    Bmp := TBitmap.Create;
+    Result := Add(Bmp, nil);
+
+    for R in Resolutions do begin
+      GetResolution(r.Width).GetBitmap(SrcIdx, Bmp, ADrawEffect);
+      _Replace;
+    end;
+    Bmp.Free;
+
+    E := TEntry.Create;
+    E.GlyphName := ANewName;
+    E.ImageIndex := Result;
+    FImageIndexes.Add(E);
+  end;
+end;
+
 procedure TLCLGlyphs.RegisterResolutions(const AResolutionWidths,
   AResolutionScaleSuffixes: array of Integer);
 var

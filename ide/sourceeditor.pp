@@ -5220,9 +5220,9 @@ begin
         BrkMark.Visible := False;
         BreakPoint := DebugBoss.BreakPoints.Find(Self.FileName, ExecutionLine);
         if (BreakPoint <> nil) and (not BreakPoint.Enabled) then
-          ExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineDisabledBreakPointImg
+          ExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineBreakPointImg[not DebugBoss.BreakPoints.IgnoreAll, False]
         else
-          ExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineBreakPointImg;
+          ExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineBreakPointImg[not DebugBoss.BreakPoints.IgnoreAll, True];
       end
       else
         ExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineImg;

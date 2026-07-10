@@ -42,7 +42,7 @@ uses
   // LCL
   Graphics, Controls, ImgList,
   // LazUtils
-  LazMethodList, LazTracer, LazUtilities,
+  LazMethodList, LazTracer, LazUtilities, GraphType,
   // SynEdit
   SynEdit, SynEditMarks, SynEditMarkupGutterMark,
   // IdeIntf
@@ -194,27 +194,28 @@ type
 
   TExecutionMark = class(TSourceMark) end;
 
+
+  TBreakImageEnabled = Boolean;
+  TBreakImagePowered = Boolean;
+  TBreakImageIndex = Array[TBreakImagePowered, TBreakImageEnabled] of integer;
+
   { TSourceMarks }
   
   TSourceMarks = class(TComponent)
   private
-    fActiveBreakPointImg: Integer;
-    FCurrentLineBreakPointImg: Integer;
+    FActiveBreakPointImg: TBreakImageIndex;
+    FInvalidBreakPointImg: TBreakImageIndex;
+    FPendingBreakPointImg: TBreakImageIndex;
+    FUnknownBreakPointImg: TBreakImageIndex;
+    FCurrentLineBreakPointImg: TBreakImageIndex;
     FCurrentLineImg: Integer;
-    FCurrentLineDisabledBreakPointImg: Integer;
     FExtToolsMarks: TETMarks;
-    fPendingBreakPointImg: Integer;
     FSourceLineImg: Integer;
     FImgList: TLCLGlyphs;
-    fInactiveBreakPointImg: Integer;
-    fInvalidBreakPointImg: Integer;
-    fInvalidDisabledBreakPointImg: Integer;
     fItems: TList;// list of TSourceMark
     fMultiBreakPointImg: Integer;
     FOnAction: TMarksActionEvent;
     fSortedItems: TAVLTree;// tree of TSourceMark
-    fUnknownBreakPointImg: Integer;
-    fUnknownDisabledBreakPointImg: Integer;
     function GetItems(Index: integer): TSourceMark;
     procedure CreateImageList;
   protected
@@ -246,17 +247,13 @@ type
     property ExtToolsMarks: TETMarks read FExtToolsMarks;
   public
     // icon index
-    property ActiveBreakPointImg: Integer read fActiveBreakPointImg;
-    property InactiveBreakPointImg: Integer read fInactiveBreakPointImg;
-    property InvalidBreakPointImg: Integer read fInvalidBreakPointImg;
-    property InvalidDisabledBreakPointImg: Integer read fInvalidDisabledBreakPointImg;
-    property PendingBreakPointImg: Integer read fPendingBreakPointImg;
+    property ActiveBreakPointImg: TBreakImageIndex read fActiveBreakPointImg;
+    property InvalidBreakPointImg: TBreakImageIndex read fInvalidBreakPointImg;
+    property PendingBreakPointImg: TBreakImageIndex read fPendingBreakPointImg;
+    property UnknownBreakPointImg: TBreakImageIndex read fUnknownBreakPointImg;
     property MultiBreakPointImg: Integer read fMultiBreakPointImg;
-    property UnknownBreakPointImg: Integer read fUnknownBreakPointImg;
-    property UnknownDisabledBreakPointImg: Integer read fUnknownDisabledBreakPointImg;
     property CurrentLineImg: Integer read FCurrentLineImg;
-    property CurrentLineBreakPointImg: Integer read FCurrentLineBreakPointImg;
-    property CurrentLineDisabledBreakPointImg: Integer read FCurrentLineDisabledBreakPointImg;
+    property CurrentLineBreakPointImg: TBreakImageIndex read FCurrentLineBreakPointImg;
     property SourceLineImg: Integer read FSourceLineImg;
   end;
 
@@ -548,27 +545,39 @@ begin
     AddImage('bookmark'+IntToStr(i));
 
   // load active breakpoint image
-  fActiveBreakPointImg:=AddImage('ActiveBreakPoint');
-  // load disabled breakpoint image
-  fInactiveBreakPointImg:=AddImage('InactiveBreakPoint');
+  fActiveBreakPointImg[True, True]:=AddImage('ActiveBreakPoint');
+  fActiveBreakPointImg[True, False]:=AddImage('InactiveBreakPoint');
+  fActiveBreakPointImg[False,True]:=FImgList.GetImageIndexWithEffect('ActiveBreakPoint', 'ActiveBreakPoint__Grey', gdeDisabled);
+  fActiveBreakPointImg[False,False]:=FImgList.GetImageIndexWithEffect('InactiveBreakPoint', 'InactiveBreakPoint__Grey', gdeDisabled);
+
   // load invalid breakpoint image
-  fInvalidBreakPointImg:=AddImage('InvalidBreakPoint');
-  // load invalid disabled breakpoint image
-  fInvalidDisabledBreakPointImg := AddImage('InvalidDisabledBreakPoint');
+  fInvalidBreakPointImg[True, True]:=AddImage('InvalidBreakPoint');
+  fInvalidBreakPointImg[True, False]:=AddImage('InvalidDisabledBreakPoint');
+  fInvalidBreakPointImg[False, True]:=FImgList.GetImageIndexWithEffect('InvalidBreakPoint', 'InvalidBreakPoint__Grey', gdeDisabled);
+  fInvalidBreakPointImg[False, False]:=FImgList.GetImageIndexWithEffect('InvalidDisabledBreakPoint', 'InvalidDisabledBreakPoint__Grey', gdeDisabled);
+
   // load pending active breakpoint image
-  fPendingBreakPointImg := AddImage('PendingBreakPoint');
+  fPendingBreakPointImg[True, True] := AddImage('PendingBreakPoint');
+  fPendingBreakPointImg[True, False] := AddImage('InactiveBreakPoint');
+  fPendingBreakPointImg[False,True] := FImgList.GetImageIndexWithEffect('PendingBreakPoint', 'PendingBreakPoint__Grey', gdeDisabled);
+  fPendingBreakPointImg[False,False] := FImgList.GetImageIndexWithEffect('InactiveBreakPoint', 'InactiveBreakPoint__Grey', gdeDisabled);
+
   // load unknown breakpoint image
-  fUnknownBreakPointImg:=AddImage('UnknownBreakPoint');
-  // load unknown disabled breakpoint image
-  fUnknownDisabledBreakPointImg := AddImage('UnknownDisabledBreakPoint');
+  fUnknownBreakPointImg[True, True]:=AddImage('UnknownBreakPoint');
+  fUnknownBreakPointImg[True, False]:=AddImage('UnknownDisabledBreakPoint');
+  fUnknownBreakPointImg[False,True]:=FImgList.GetImageIndexWithEffect('UnknownBreakPoint', 'UnknownBreakPoint__Grey', gdeDisabled);
+  fUnknownBreakPointImg[False,False]:=FImgList.GetImageIndexWithEffect('UnknownDisabledBreakPoint', 'UnknownDisabledBreakPoint__Grey', gdeDisabled);
+
   // load multi mixed breakpoint image
   fMultiBreakPointImg:=AddImage('MultiBreakPoint');
   // load current line image
   FCurrentLineImg:=AddImage('debugger_current_line');
   // load current line + breakpoint image
-  FCurrentLineBreakPointImg:=AddImage('debugger_current_line_breakpoint');
-  // load current line + disabled breakpoint image
-  FCurrentLineDisabledBreakPointImg := AddImage('debugger_current_line_disabled_breakpoint');
+  FCurrentLineBreakPointImg[True, True] :=AddImage('debugger_current_line_breakpoint');
+  FCurrentLineBreakPointImg[True, False]:=AddImage('debugger_current_line_disabled_breakpoint');
+  FCurrentLineBreakPointImg[False,True] :=FImgList.GetImageIndexWithEffect('debugger_current_line_breakpoint', 'debugger_current_line_breakpoint__Grey', gdeDisabled);
+  FCurrentLineBreakPointImg[False,False]:=FImgList.GetImageIndexWithEffect('debugger_current_line_disabled_breakpoint', 'debugger_current_line_disabled_breakpoint__Grey', gdeDisabled);
+
   // load source line
   FSourceLineImg:=AddImage('debugger_source_line');
 

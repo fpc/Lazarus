@@ -365,7 +365,6 @@ type
     function GetDebuggerState: TDBGState;
     procedure SetSlave(const ASlave : TBaseBreakPoint);
   protected
-    procedure SetEnabled(const AValue: Boolean); override; // TODO: remove, currently used by WatchPoint, instead of vsInvalid
     procedure DoChanged; override;
     procedure DoStateChange(const AOldState: TDBGState); virtual;
     property  Debugger: TDebuggerIntf read GetDebugger;
@@ -375,6 +374,7 @@ type
     destructor Destroy; override;
     procedure Hit(var ACanContinue: Boolean);
     procedure Hit(var ACanContinue, ANeedInternalPause: Boolean);
+    procedure MakeDisabled;
     property Slave: TBaseBreakPoint read FSlave write SetSlave;
     property Kind: TDBGBreakPointKind read GetKind write SetKind; // TODO: remove, used by TIDEBreakPoint.SetKind
 
@@ -398,6 +398,7 @@ type
   public
     destructor Destroy; override;
     procedure BeginUpdate; override;
+    property Enabled: Boolean read GetEnabled write SetEnabled;
   end deprecated 'to be removed in 5.99';
 
   { TBaseBreakPoints }
@@ -3406,6 +3407,12 @@ begin
   Debugger.DoBreakpointHit(Self, ACanContinue)
 end;
 
+procedure TDBGBreakPoint.MakeDisabled;
+begin
+  inherited SetEnabled(False);
+  if FSlave <> nil then FSlave.Enabled := False;
+end;
+
 procedure TDBGBreakPoint.DoChanged;
 begin
   inherited DoChanged;
@@ -3423,7 +3430,8 @@ begin
   BeginUpdate;
   try
     SetLocation(FSource, Line);
-    Enabled := InitialEnabled;
+    if FSlave <> nil then
+      FSlave.SetEnabled(InitialEnabled);
     SetHitCount(0);
   finally
     EndUpdate;
@@ -3495,14 +3503,6 @@ procedure TDBGBreakPoint.SetSlave(const ASlave : TBaseBreakPoint);
 begin
   Assert((FSlave = nil) or (ASlave = nil), 'TDBGBreakPoint.SetSlave already has a slave');
   FSlave := ASlave;
-end;
-
-procedure TDBGBreakPoint.SetEnabled(const AValue: Boolean);
-begin
-  if Enabled = AValue then exit;
-  inherited SetEnabled(AValue);
-  // feedback to IDEBreakPoint
-  if FSlave <> nil then FSlave.Enabled := AValue;
 end;
 
 { TIdeBreakPointBase }

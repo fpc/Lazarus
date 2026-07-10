@@ -2616,16 +2616,21 @@ begin
       //if (AMark.ImageList = SourceEditorMarks.ImgList) then begin
       i := AMark.ImageIndex;
       if (i = SourceEditorMarks.CurrentLineImg) or
-         (i = SourceEditorMarks.CurrentLineBreakPointImg) or
-         (i = SourceEditorMarks.CurrentLineDisabledBreakPointImg)
+         (i = SourceEditorMarks.CurrentLineBreakPointImg[True, True]) or
+         (i = SourceEditorMarks.CurrentLineBreakPointImg[True, False]) or
+         (i = SourceEditorMarks.CurrentLineBreakPointImg[False, True]) or
+         (i = SourceEditorMarks.CurrentLineBreakPointImg[False, False])
       then begin
         dec(APriority, 1);
         AColor := TColor(FRGBExecLineColor);
       end
       else
-      if (i = SourceEditorMarks.InactiveBreakPointImg) or
-         (i = SourceEditorMarks.InvalidDisabledBreakPointImg) or
-         (i = SourceEditorMarks.UnknownDisabledBreakPointImg)
+      if (i = SourceEditorMarks.ActiveBreakPointImg[True, False]) or
+         (i = SourceEditorMarks.ActiveBreakPointImg[False,False]) or
+         (i = SourceEditorMarks.InvalidBreakPointImg[True, False]) or
+         (i = SourceEditorMarks.InvalidBreakPointImg[False,False]) or
+         (i = SourceEditorMarks.UnknownBreakPointImg[True, False]) or
+         (i = SourceEditorMarks.UnknownBreakPointImg[False, False])
       then begin
         inc(APriority, 2);
         AColor := TColor(FRGBBreakDisabledColor);

@@ -433,6 +433,8 @@ type
     gmrOneMustExist, // Show exception if no resolution is found. Missing resolutions will be auto-generated from the biggest one.
     gmrIgnoreAll);   // Ignore all missing resources. No image will be added and TLCLGlyphs.GetImageIndex Result is -1 if no resolution is found.
 
+  { TLCLGlyphs }
+
   TLCLGlyphs = class(TCustomImageList)
   private type
     TEntryKey = record
@@ -460,6 +462,7 @@ type
     FSuffix100Scale: Integer;
   public
     function GetImageIndex(const AResourceName: string): Integer;
+    function GetImageIndexWithEffect(const AResourceName, ANewName: string; ADrawEffect :TGraphicsDrawEffect = gdeDisabled; ABlendColor: TColor = clNone; ABlendPercent: byte = 128): Integer;
 
     // AResolutionWidths must be sorted from smallest to biggest
     procedure RegisterResolutions(const AResolutionWidths: array of Integer); override;

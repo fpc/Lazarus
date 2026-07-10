@@ -302,6 +302,13 @@ const
   ecAttach                  = ecFirstLazarus + 452;
   ecDetach                  = ecFirstLazarus + 453;
 
+  ecBreakIgnoreToggle       = ecFirstLazarus + 454;
+  ecBreakIgnoreOn           = ecFirstLazarus + 455;
+  ecBreakIgnoreOff          = ecFirstLazarus + 456;
+  ecExceptIgnoreToggle      = ecFirstLazarus + 457;
+  ecExceptIgnoreOn          = ecFirstLazarus + 458;
+  ecExceptIgnoreOff         = ecFirstLazarus + 459;
+
   // 460++ : used for ecViewHistory (debugger) / ecViewMacroList
 
   ecToggleBreakPoint        = ecFirstLazarus + 470;
@@ -2022,7 +2029,7 @@ begin
 end;
 
 const
-  IDEEditorCommandStrs: array[0..340] of TIdentMapEntry = (
+  IDEEditorCommandStrs: array[0..346] of TIdentMapEntry = (
   // search
     (Value: ecFind;                                   Name: 'ecFind'),
     (Value: ecFindAgain;                              Name: 'ecFindAgain'),
@@ -2266,6 +2273,12 @@ const
     (Value: ecAddBpDataWatch;                         Name: 'ecAddBpDataWatch'),
     (Value: ecAttach;                                 Name: 'ecAttach'),
     (Value: ecDetach;                                 Name: 'ecDetach'),
+    (Value: ecBreakIgnoreToggle;                      Name: 'ecBreakIgnoreToggle'),
+    (Value: ecBreakIgnoreOn;                          Name: 'ecBreakIgnoreOn'),
+    (Value: ecBreakIgnoreOff;                         Name: 'ecBreakIgnoreOff'),
+    (Value: ecExceptIgnoreToggle;                     Name: 'ecExceptIgnoreToggle'),
+    (Value: ecExceptIgnoreOn;                         Name: 'ecExceptIgnoreOn'),
+    (Value: ecExceptIgnoreOff;                        Name: 'ecExceptIgnoreOff'),
 
   // 460++ : used for ecViewHistory (debugger) / ecViewMacroList
 

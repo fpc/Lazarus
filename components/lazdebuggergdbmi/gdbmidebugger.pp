@@ -6780,7 +6780,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
         if AReason = gbrWatchScope
         then begin
           BreakPoint.ReleaseBreakPoint; // gdb should have released already => ignore error
-          BreakPoint.Enabled := False;
+          BreakPoint.MakeDisabled;
           BreakPoint.FBreakID := 0; // removed by debugger, ID no longer exists
         end;
 
@@ -7170,7 +7170,7 @@ const
               if b <> nil
               then begin
                 if b.Kind = bpkData
-                then b.Enabled := False
+                then b.MakeDisabled
                 else b.MakeInvalid;
               end
               else ExecuteCommand('-break-delete %d', [bp[i]], [cfNoThreadContext]);

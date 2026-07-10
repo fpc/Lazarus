@@ -1,7 +1,7 @@
 object BreakpointsDlg: TBreakpointsDlg
-  Left = 344
+  Left = 529
   Height = 205
-  Top = 153
+  Top = 120
   Width = 560
   HelpType = htKeyword
   HorzScrollBar.Page = 559
@@ -10,17 +10,19 @@ object BreakpointsDlg: TBreakpointsDlg
   Caption = 'Breakpoint list'
   ClientHeight = 205
   ClientWidth = 560
+  Font.Height = 15
   LCLVersion = '4.99.0.0'
   Visible = True
   OnCreate = BreakpointsDlgCREATE
   object ToolBar1: TToolBar
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = tbExceptOff
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 24
     Top = 0
-    Width = 425
+    Width = 560
     Align = alNone
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -29,25 +31,59 @@ object BreakpointsDlg: TBreakpointsDlg
     ShowHint = True
     TabOrder = 0
     Orientation = tboHorizontal
-    object tbShowBreakPoints: TToolButton
+    object tbBreakIgnoreAll: TToolButton
       Left = 1
+      Top = 2
+      Caption = 'tbBreakIgnoreAll'
+      Down = True
+      Style = tbsCheck
+      OnClick = tbBreakIgnoreAllClick
+    end
+    object tbExceptIgnoreAll: TToolButton
+      Left = 24
+      Top = 2
+      Caption = 'tbExceptIgnoreAll'
+      Down = True
+      Style = tbsCheck
+      OnClick = tbExceptIgnoreAllClick
+    end
+    object tbIgnoreDivider: TToolButton
+      Left = 55
+      Height = 22
+      Top = 2
+      Caption = 'tbIgnoreDivider'
+      Style = tbsDivider
+    end
+    object tbShowBreakPoints: TToolButton
+      Left = 60
       Top = 2
       Caption = 'tbShowBreakPoints'
       Down = True
+      Grouped = True
       ShowCaption = False
       Style = tbsCheck
       OnClick = tbShowBreakPointsClick
     end
     object tbShowException: TToolButton
-      Left = 24
+      Left = 83
       Top = 2
       Caption = 'tbShowException'
+      Grouped = True
+      ShowCaption = False
+      Style = tbsCheck
+      OnClick = tbShowBreakPointsClick
+    end
+    object tbShowBreakAndExcept: TToolButton
+      Left = 106
+      Top = 2
+      Caption = 'tbShowBreakAndExcept'
+      Grouped = True
       ShowCaption = False
       Style = tbsCheck
       OnClick = tbShowBreakPointsClick
     end
     object tbShowDivider: TToolButton
-      Left = 47
+      Left = 129
       Height = 22
       Top = 2
       Caption = 'tbShowDivider'
@@ -55,7 +91,7 @@ object BreakpointsDlg: TBreakpointsDlg
       Style = tbsDivider
     end
     object ToolButtonAdd: TToolButton
-      Left = 52
+      Left = 134
       Top = 2
       Caption = 'Add...'
       MenuItem = popAdd
@@ -63,63 +99,63 @@ object BreakpointsDlg: TBreakpointsDlg
       Style = tbsButtonDrop
     end
     object ToolButtonEnable: TToolButton
-      Left = 85
+      Left = 167
       Top = 2
       Action = actEnableSelected
       ShowCaption = False
     end
     object ToolButtonDisable: TToolButton
-      Left = 108
+      Left = 190
       Top = 2
       Action = actDisableSelected
       ShowCaption = False
     end
     object ToolButtonTrash: TToolButton
-      Left = 131
+      Left = 213
       Top = 2
       Action = actDeleteSelected
       ShowCaption = False
     end
     object ToolSep1: TToolButton
-      Left = 185
+      Left = 267
       Height = 22
       Top = 2
       ShowCaption = False
       Style = tbsDivider
     end
     object ToolButtonEnableAll: TToolButton
-      Left = 190
+      Left = 272
       Top = 2
       Action = actEnableAll
       ShowCaption = False
     end
     object ToolButtonDisableAll: TToolButton
-      Left = 213
+      Left = 295
       Top = 2
       Action = actDisableAll
       ShowCaption = False
     end
     object ToolButtonTrashAll: TToolButton
-      Left = 162
+      Left = 244
       Top = 2
       Action = actDeleteAll
       ShowCaption = False
     end
     object ToolSep2: TToolButton
-      Left = 236
+      Left = 318
       Height = 22
       Top = 2
       ShowCaption = False
       Style = tbsDivider
     end
     object ToolButtonProperties: TToolButton
-      Left = 241
+      Left = 323
       Top = 2
       Action = actProperties
       ShowCaption = False
     end
     object tbGroupByBrkGroup: TToolButton
-      Left = 264
+      Left = 346
       Top = 2
       Caption = 'Grp'
       ShowCaption = False
@@ -127,11 +163,18 @@ object BreakpointsDlg: TBreakpointsDlg
       OnClick = tbGroupByBrkGroupClick
     end
     object ToolButton1: TToolButton
-      Left = 154
+      Left = 236
       Height = 22
       Top = 2
       Caption = 'ToolButton1'
       ShowCaption = False
+      Style = tbsSeparator
+    end
+    object ToolButton2: TToolButton
+      Left = 47
+      Height = 22
+      Top = 2
+      Caption = 'tbSepPower'
       Style = tbsSeparator
     end
   end
@@ -143,11 +186,13 @@ object BreakpointsDlg: TBreakpointsDlg
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
+    Cursor = 63
     Left = 0
     Height = 181
     Top = 24
     Width = 560
     Anchors = [akTop, akLeft, akRight, akBottom]
+    DefaultNodeHeight = 22
     DefaultText = 'Node'
     DragMode = dmAutomatic
     DragType = dtVCL
@@ -187,6 +232,7 @@ object BreakpointsDlg: TBreakpointsDlg
         Text = 'Group'
         Width = 80
       end>
+    Header.Height = 23
     Header.Options = [hoColumnResize, hoShowSortGlyphs, hoVisible]
     PopupMenu = mnuPopup
     TabOrder = 1
@@ -204,24 +250,10 @@ object BreakpointsDlg: TBreakpointsDlg
     OnNodeDblClick = tvBreakPointsNodeDblClick
     OnStartDrag = tvBreakPointsStartDrag
   end
-  object tbExceptOff: TToggleBox
-    AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 425
-    Height = 25
-    Top = 0
-    Width = 135
-    Anchors = [akTop, akRight]
-    AutoSize = True
-    Caption = 'Ignore all exceptions'
-    TabOrder = 2
-    OnChange = tbExceptOffChange
-  end
   object mnuPopup: TPopupMenu
     OnPopup = mnuPopupPopup
-    Left = 24
-    Top = 40
+    Left = 26
+    Top = 42
     object popShow: TMenuItem
       Action = actShow
       Default = True
@@ -296,8 +328,8 @@ object BreakpointsDlg: TBreakpointsDlg
     end
   end
   object ActionList1: TActionList
-    Left = 96
-    Top = 72
+    Left = 100
+    Top = 76
     object actToggleCurrentEnable: TAction
       Caption = 'actToggleCurrentEnable'
       ShortCut = 16462

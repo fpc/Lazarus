@@ -740,25 +740,13 @@ begin
   if SourceMark = nil then Exit;
   case Valid of
     vsValid:
-      if Enabled then
-        Img := SourceEditorMarks.ActiveBreakPointImg
-      else
-        Img := SourceEditorMarks.InactiveBreakPointImg;
+      Img := SourceEditorMarks.ActiveBreakPointImg[not DebugBossMgr.BreakPoints.IgnoreAll, Enabled];
     vsInvalid:
-      if Enabled then
-        Img := SourceEditorMarks.InvalidBreakPointImg
-      else
-        Img := SourceEditorMarks.InvalidDisabledBreakPointImg;
+      Img := SourceEditorMarks.InvalidBreakPointImg[not DebugBossMgr.BreakPoints.IgnoreAll, Enabled];
     vsPending:
-      if Enabled then
-        Img := SourceEditorMarks.PendingBreakPointImg
-      else
-        Img := SourceEditorMarks.InactiveBreakPointImg;
+      Img := SourceEditorMarks.PendingBreakPointImg[not DebugBossMgr.BreakPoints.IgnoreAll, Enabled];
     else
-      if Enabled then
-        Img := SourceEditorMarks.UnknownBreakPointImg
-      else
-        Img := SourceEditorMarks.UnknownDisabledBreakPointImg;
+      Img := SourceEditorMarks.UnknownBreakPointImg[not DebugBossMgr.BreakPoints.IgnoreAll, Enabled];
   end;
   SourceMark.ImageIndex := Img;
   SourceMark.Visible := True;

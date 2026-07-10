@@ -3676,6 +3676,13 @@ begin
   ecStopProgram:              mnuStopProjectClicked(self);
   ecBuildFile:                DoBuildFile(false);
   ecRunFile:                  DoRunFile;
+  ecBreakIgnoreToggle:  DebugbossMgr.BreakPoints.IgnoreAll := not DebugbossMgr.BreakPoints.IgnoreAll;
+  ecBreakIgnoreOn:      DebugbossMgr.BreakPoints.IgnoreAll := True;
+  ecBreakIgnoreOff:     DebugbossMgr.BreakPoints.IgnoreAll := False;
+  ecExceptIgnoreToggle: DebugbossMgr.Exceptions.IgnoreAll := not DebugbossMgr.Exceptions.IgnoreAll;
+  ecExceptIgnoreOn:     DebugbossMgr.Exceptions.IgnoreAll := True;
+  ecExceptIgnoreOff:    DebugbossMgr.Exceptions.IgnoreAll := False;
+
   ecFindInFiles:              DoFindInFiles;
   ecJumpToNextSearchResult:   DoJumpToNextSearchResult(true);
   ecJumpToPrevSearchResult:   DoJumpToNextSearchResult(false);

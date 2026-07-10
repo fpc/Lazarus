@@ -846,6 +846,12 @@ begin
     ecAddBpSource             : Result:= srkmecAddBpSource;
     ecAddBpAddress            : Result:= srkmecAddBpAddress;
     ecAddBpDataWatch          : Result:= srkmecAddBpWatchPoint;
+    ecBreakIgnoreToggle       : Result:= liskecBreakIgnoreToggle;
+    ecBreakIgnoreOn           : Result:= liskecBreakIgnoreOn;
+    ecBreakIgnoreOff          : Result:= liskecBreakIgnoreOff;
+    ecExceptIgnoreToggle      : Result:= liskecExceptIgnoreToggle;
+    ecExceptIgnoreOn          : Result:= liskecExceptIgnoreOn;
+    ecExceptIgnoreOff         : Result:= liskecExceptIgnoreOff;
 
     // components menu
     ecNewPackage              : Result:= lisKMNewPackage;
@@ -3371,6 +3377,12 @@ begin
   AddDefault(C, 'Add source breakpoint', lisKMAddBpSource, ecAddBpSource);
   AddDefault(C, 'Add address breakpoint', lisKMAddBpAddress, ecAddBpAddress);
   AddDefault(C, 'Add data watchpoint', lisKMAddBpWatchPoint, ecAddBpDataWatch);
+  AddDefault(C, 'Toggle Ignore all Breakpoints', liskecBreakIgnoreToggle  ,ecBreakIgnoreToggle  );
+  AddDefault(C, 'Set Ignore all Breakpoints',    liskecBreakIgnoreOn      ,ecBreakIgnoreOn      );
+  AddDefault(C, 'Unset Ignore all Breakpoints',  liskecBreakIgnoreOff     ,ecBreakIgnoreOff     );
+  AddDefault(C, 'Toggle Ignore all Exceptions',  liskecExceptIgnoreToggle ,ecExceptIgnoreToggle );
+  AddDefault(C, 'Set Ignore all Exceptions',     liskecExceptIgnoreOn     ,ecExceptIgnoreOn     );
+  AddDefault(C, 'Unset Ignore all Exceptions',   liskecExceptIgnoreOff    ,ecExceptIgnoreOff    );
 
   // components menu
   C:=Categories[AddCategory('Components',srkmCatPackageMenu,nil)];

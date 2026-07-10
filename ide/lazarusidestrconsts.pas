@@ -463,7 +463,12 @@ resourcestring
   lisMenuEvaluate = 'E&valuate/Modify ...';
   lisMenuAddWatch = 'Add &Watch ...';
   lisMenuAddBreakpoint = 'Add &Breakpoint';
-
+  liskecBreakIgnoreToggle =   'Toggle Ignore all Breakpoints';
+  liskecBreakIgnoreOn =       'Set Ignore all Breakpoints';
+  liskecBreakIgnoreOff =      'Unset Ignore all Breakpoints';
+  liskecExceptIgnoreToggle =  'Toggle Ignore all Exceptions';
+  liskecExceptIgnoreOn =      'Set Ignore all Exceptions';
+  liskecExceptIgnoreOff =     'Unset Ignore all Exceptions';
   lisMenuNewPackage = 'New Package ...';
   lisMenuOpenPackage = 'Open Loaded Package ...';
   lisMenuOpenRecentPkg = 'Open Recent Package';
