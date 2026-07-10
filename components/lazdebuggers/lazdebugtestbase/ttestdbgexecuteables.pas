@@ -25,7 +25,9 @@ type
     FName: string;
     FEnabled: Boolean;
   public
-    procedure DoExceptionHit(var AContinue: Boolean; const AnExceptTargetInfo: IDbgTargetExceptionInfo);
+    procedure DoExceptionHit(var AContinue: Boolean; out ANeedInternalPause: boolean;
+      const AnExceptTargetInfo: IDbgTargetExceptionInfo);
+    function GetExpression: String;
     function GetEnabled: Boolean; deprecated 'use Hit';
     function GetName: String; deprecated 'use Hit';
     property Enabled: Boolean read FEnabled write FEnabled;
@@ -216,10 +218,16 @@ end;
 
 { TTestDbgException }
 
-procedure TTestDbgException.DoExceptionHit(var AContinue: Boolean;
-  const AnExceptTargetInfo: IDbgTargetExceptionInfo);
+procedure TTestDbgException.DoExceptionHit(var AContinue: Boolean; out
+  ANeedInternalPause: boolean; const AnExceptTargetInfo: IDbgTargetExceptionInfo);
 begin
   AContinue := not FEnabled;
+  ANeedInternalPause := False;
+end;
+
+function TTestDbgException.GetExpression: String;
+begin
+  Result := '';
 end;
 
 function TTestDbgException.GetEnabled: Boolean;
