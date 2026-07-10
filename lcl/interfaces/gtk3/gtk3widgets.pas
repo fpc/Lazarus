@@ -5386,7 +5386,8 @@ begin
   if not ACtl.InUpdate then
   begin
     if ACtl.LCLObject.ClientRectNeedsInterfaceUpdate or
-       (ACtl.LCLObject.Height <> AGdkRect^.Height) then
+       (guint(HSize) <> uWidth) or
+       (guint(VSize) <> uHeight) then
     begin
       if not ACtl.LCLObject.ClientRectNeedsInterfaceUpdate then
         ACtl.LCLObject.InvalidateClientRectCache(False);
