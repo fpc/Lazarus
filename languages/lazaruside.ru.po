@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-07-07 23:19+0300\n"
+"PO-Revision-Date: 2026-07-10 23:12+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -11155,6 +11155,30 @@ msgstr "Перейти к процедуре %s"
 #, object-pascal-format
 msgid "%s KB"
 msgstr "%s кБ"
+
+#: lazarusidestrconsts.liskecbreakignoreoff
+msgid "Unset Ignore all Breakpoints"
+msgstr "Выключить игнорирование всех точек останова"
+
+#: lazarusidestrconsts.liskecbreakignoreon
+msgid "Set Ignore all Breakpoints"
+msgstr "Включить игнорирование всех точек останова"
+
+#: lazarusidestrconsts.liskecbreakignoretoggle
+msgid "Toggle Ignore all Breakpoints"
+msgstr "Переключить игнорирование всех точек останова"
+
+#: lazarusidestrconsts.liskecexceptignoreoff
+msgid "Unset Ignore all Exceptions"
+msgstr "Выключить игнорирование всех исключений"
+
+#: lazarusidestrconsts.liskecexceptignoreon
+msgid "Set Ignore all Exceptions"
+msgstr "Включить игнорирование всех исключений"
+
+#: lazarusidestrconsts.liskecexceptignoretoggle
+msgid "Toggle Ignore all Exceptions"
+msgstr "Переключить игнорирование всех исключений"
 
 #: lazarusidestrconsts.liskeep2
 msgid "Keep"
