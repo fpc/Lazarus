@@ -148,16 +148,29 @@ uses
 
 const
   // SynDefaultFont is determined in InitSynDefaultFont()
+  SynFontNameForDefault = 'syn/default';
   SynDefaultFontName:    String       = '';
   SynDefaultFontHeight:  Integer      = 13;
   SynDefaultFontSize:    Integer      = 10;
-  SynDefaultFontPitch:   TFontPitch   = fpFixed;
-  SynDefaultFontQuality: TFontQuality = fqNonAntialiased;
+  SynDefaultFontPitch   = fpFixed;
+  SynDefaultFontQuality = fqNonAntialiased;
 
   // maximum scroll range
   MAX_SCROLL = 32767;
 
 type
+
+  { TSynControlFont }
+
+  TSynControlFont = class(TControlFont)
+  private
+    function IsSynFontNameStored: Boolean;
+  published
+    property Name stored IsSynFontNameStored;
+    property Pitch default SynDefaultFontPitch;
+    property Quality default SynDefaultFontQuality;
+  end;
+
   TSynEditMarkupClass = SynEditMarkup.TSynEditMarkupClass;
   TSynReplaceAction = (raCancel, raSkip, raReplace, raReplaceAll);
 
@@ -530,7 +543,7 @@ type
     fMarkupSpecialLine : TSynEditMarkupSpecialLine;
     fMarkupSelection : TSynEditMarkupSelection;
     fMarkupSpecialChar : TSynEditMarkupSpecialChar;
-    fFontDummy: TFont;
+    fSynTextFont: TFont;
     FLastSetFontSize: Integer;
     fInserting: Boolean;
     FLastMouseLocation: TSynMouseLocationInfo;
@@ -638,9 +651,11 @@ type
     FPendingFoldState: String;
 
     procedure DoTopViewChanged(Sender: TObject);
+    function GetFont: TSynControlFont; inline;
     function GetIsStickySelecting: Boolean;
     function GetKeyStrokesStored: Boolean;
     function GetOnSpecialLineMarkupEx: TSpecialLineMarkupExEvent;
+    procedure SetFont(AValue: TSynControlFont);
     procedure SetOnSpecialLineMarkupEx(AValue: TSpecialLineMarkupExEvent);
     procedure SetScrollOnEditLeftOptions(AValue: TSynScrollOnEditOptions);
     procedure SetScrollOnEditRightOptions(AValue: TSynScrollOnEditOptions);
@@ -910,6 +925,7 @@ type
     function GetSelectedColor : TLazEditHighlighterAttributesModifier; override;
     function GetTextViewsManager: TSynTextViewsManager; override;
     procedure FontChanged(Sender: TObject); override;
+    function ControlFontClass: TControlFontClass; override;
     Procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     Procedure LineTextChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     procedure SizeOrFontChanged(bFont: boolean);
@@ -1290,6 +1306,7 @@ type
     property OnSpecialLineMarkup: TSpecialLineMarkupEvent read FOnSpecialLineMarkup write SetSpecialLineMarkup; deprecated;
     property OnSpecialLineMarkupEx: TSpecialLineMarkupExEvent read GetOnSpecialLineMarkupEx write SetOnSpecialLineMarkupEx;
     property OnStatusChange: TStatusChangeEvent read fOnStatusChange write fOnStatusChange;
+    property Font: TSynControlFont read GetFont write SetFont;
   end;
 
   TSynEdit = class(TCustomSynEdit)
@@ -1842,6 +1859,10 @@ begin
   if Screen.Fonts.IndexOf('DejaVu Sans Mono') >= 0 then begin
     SynDefaultFontName   := 'DejaVu Sans Mono';
     SynDefaultFontHeight := 13;
+  end
+  else begin
+    SynDefaultFontName := '';
+    SynDefaultFontHeight := 0;
   end;
 end;
 
@@ -1927,6 +1948,13 @@ begin
   FScrollExtraColumns        := CScrollExtraColumns;
   FScrollExtraMax            := CScrollExtraMax;
   FScrollExtraPercent        := CScrollExtraPercent;
+end;
+
+{ TSynControlFont }
+
+function TSynControlFont.IsSynFontNameStored: Boolean;
+begin
+  Result := LowerCase(Name) <> LowerCase(SynFontNameForDefault);
 end;
 
 { TCustomSynEdit }
@@ -2310,6 +2338,11 @@ begin
     SizeOrFontChanged(True);
 end;
 
+function TCustomSynEdit.GetFont: TSynControlFont;
+begin
+  Result := TSynControlFont(inherited Font);
+end;
+
 function TCustomSynEdit.GetIsStickySelecting: Boolean;
 begin
   Result := FBlockSelection.StickyAutoExtend;
@@ -2323,6 +2356,11 @@ end;
 function TCustomSynEdit.GetOnSpecialLineMarkupEx: TSpecialLineMarkupExEvent;
 begin
   Result := fMarkupSpecialLine.OnSpecialLineMarkupEx;
+end;
+
+procedure TCustomSynEdit.SetFont(AValue: TSynControlFont);
+begin
+  inherited Font := AValue;
 end;
 
 procedure TCustomSynEdit.SetOnSpecialLineMarkupEx(AValue: TSpecialLineMarkupExEvent);
@@ -2434,7 +2472,7 @@ begin
 
   FCaret.Lines := FTheLinesView;
   FInternalCaret.Lines := FTheLinesView;
-  FFontDummy := TFont.Create;
+  FSynTextFont := TFont.Create;
 
   with FTheLinesView do begin
     AddChangeHandler(senrLineCount, @LineCountChanged);
@@ -2480,8 +2518,14 @@ begin
 
   RecreateMarkList;
 
-  fFontDummy.Style := [fsBold];
-  fTextDrawer := TLazEditTextGridPainter.Create(Canvas, fFontDummy);
+  fSynTextFont.BeginUpdate;
+  fSynTextFont.Name := SynDefaultFontName;
+  fSynTextFont.Height := SynDefaultFontHeight;
+  fSynTextFont.Pitch := SynDefaultFontPitch;
+  fSynTextFont.Quality := SynDefaultFontQuality;
+  fSynTextFont.Style := [fsBold];
+  fSynTextFont.EndUpdate;
+  fTextDrawer := TLazEditTextGridPainter.Create(Canvas, fSynTextFont);
   {$IFDEF WithSynExperimentalCharWidth}
   FSysCharWidthLinesView.TextDrawer := fTextDrawer;
   {$ENDIF} // WithSynExperimentalCharWidth
@@ -2562,12 +2606,8 @@ begin
   FImeHandler.InvalidateLinesMethod := @InvalidateLines;
   {$ENDIF}
 
-  fFontDummy.Name := SynDefaultFontName;
-  fFontDummy.Height := SynDefaultFontHeight;
-  fFontDummy.Pitch := SynDefaultFontPitch;
-  fFontDummy.Quality := SynDefaultFontQuality;
-  fFontDummy.Style := [];
-  FLastSetFontSize := fFontDummy.Height;
+  fSynTextFont.Style := [];
+  FLastSetFontSize := fSynTextFont.Height;
   FLastMouseLocation.LastMouseCaret := Point(-1,-1);
   FLastMouseLocation.LastMousePoint := Point(-1,-1);
   fBlockIndent := 2;
@@ -2596,7 +2636,9 @@ begin
   FPaintArea.DisplayView := FTheLinesView.DisplayView;
 
   Color := clWhite;
-  Font.Assign(fFontDummy);
+  Font.Name := SynFontNameForDefault;
+  Font.Pitch   := SynDefaultFontPitch;
+  Font.Quality := SynDefaultFontQuality;
   ParentFont := False;
   ParentColor := False;
   TabStop := True;
@@ -2976,7 +3018,7 @@ begin
   FreeAndNil(FPaintLineColor);
   FreeAndNil(FPaintLineColor2);
   FreeAndNil(fTextDrawer);
-  FreeAndNil(fFontDummy);
+  FreeAndNil(fSynTextFont);
   DestroyMarkList; // before detach from FLines
   FreeAndNil(FWordBreaker);
   FreeAndNil(FInternalBlockSelection);
@@ -3045,7 +3087,12 @@ procedure TCustomSynEdit.FontChanged(Sender: TObject);
 begin // TODO: inherited ?
   FPaintArea.ForegroundColor := Font.Color;
   FLastSetFontSize := Font.Height;
-  RecalcCharExtent;
+  RecalcCharExtent;  // Updates fSynTextFont;
+end;
+
+function TCustomSynEdit.ControlFontClass: TControlFontClass;
+begin
+  Result := TSynControlFont;
 end;
 
 function TCustomSynEdit.GetTextBuffer: TSynEditStrings;
@@ -9387,8 +9434,9 @@ begin
   try
     inc(FRecalcCharsAndLinesLock);
     try
-      FFontDummy.Assign(Font);
-      with FFontDummy do begin
+      fSynTextFont.BeginUpdate;
+      FSynTextFont.Assign(Font);
+      with FSynTextFont do begin
         // Keep GTK happy => By ensuring a change the XFLD fontname gets cleared
         {$IFDEF LCLGTK1}
         Pitch := fpVariable;
@@ -9398,10 +9446,20 @@ begin
         // TODO: Clear style only, if Highlighter uses styles
         Style := [];        // Reserved for Highlighter
       end;
-      //debugln(['TCustomSynEdit.RecalcCharExtent ',fFontDummy.Name,' ',fFontDummy.Size]);
+      if LowerCase(Font.Name) = LowerCase(SynFontNameForDefault) then begin
+        FSynTextFont.Name := SynDefaultFontName;
+        if Font.Height = 0 then
+          FSynTextFont.Height := SynDefaultFontHeight;
+        if Font.Pitch = fpDefault then
+          FSynTextFont.Pitch   := SynDefaultFontPitch;
+        if Font.Quality = fqDefault then
+          FSynTextFont.Quality := SynDefaultFontQuality;
+      end;
+      FSynTextFont.EndUpdate;
+      //debugln(['TCustomSynEdit.RecalcCharExtent ',fSynTextFont.Name,' ',fSynTextFont.Size]);
       //debugln('TCustomSynEdit.RecalcCharExtent  CharHeight=',dbgs(CharHeight));
 
-      fTextDrawer.SetBaseFont(FFontDummy);
+      fTextDrawer.SetBaseFont(FSynTextFont);
       if Assigned(fHighlighter) then
         for i := 0 to Pred(fHighlighter.AttrCount) do
           fTextDrawer.AddBaseStyle(fHighlighter.Attribute[i].Style);
@@ -10787,7 +10845,7 @@ end;
 procedure TCustomSynEdit.DoOnPaint;
 begin
   if Assigned(fOnPaint) then begin
-    Canvas.Font.Assign(Font);
+    Canvas.Font.Assign(fSynTextFont);
     Canvas.Brush.Color := Color;
     fOnPaint(Self, Canvas);
   end;

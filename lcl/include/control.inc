@@ -644,6 +644,11 @@ begin
   end;
 end;
 
+function TControl.ControlFontClass: TControlFontClass;
+begin
+  Result := TControlFont;
+end;
+
 procedure TControl.ParentFontChanged;
 begin
   //kept for compatibility. The real work is done in CMParentFontChanged
@@ -5316,7 +5321,7 @@ begin
     FParentShowHint := True;
     FWindowProc := @WndProc;
     FCursor := crDefault;
-    FFont := TControlFont.Create(Self);
+    FFont := ControlFontClass().Create(Self);
     FIsControl := False;
     FEnabled := True;
     FHelpType := htContext;
