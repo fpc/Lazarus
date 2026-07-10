@@ -973,6 +973,7 @@ procedure TComponentTreeView.UpdateComponentNodesValues;
 // Could be optimised by adding a PropName parameter and searching a node by name.
 begin
   BeginUpdate;
+  if IdleBuildNodes then BuildComponentNodes(true);
   UpdateCompNode(Items.GetFirstNode);
   EndUpdate;
 end;

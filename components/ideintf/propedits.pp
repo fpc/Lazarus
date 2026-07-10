@@ -668,9 +668,9 @@ type
     function OrdValueToVisualValue(OrdValue: longint): string; override;
   end;
 
-  { TStructurePropertyEditor }
+  { TStructurePropertyEditorBase }
 
-  TStructurePropertyEditor = class(TPropertyEditor)
+  TStructurePropertyEditorBase = class(TPropertyEditor)
   private
     FSubPropsTypeFilter: TTypeKinds;
     FSubPropsNameFilter: String;
@@ -682,12 +682,18 @@ type
   public
     constructor Create(Hook: TPropertyEditorHook; APropCount: Integer); override;
     destructor Destroy; override;
-    function AllEqual: Boolean; override;
 
     property SubPropsTypeFilter: TTypeKinds
       read FSubPropsTypeFilter write SetSubPropsTypeFilter default tkAny;
     property SubPropsNameFilter: String
       read FSubPropsNameFilter write FSubPropsNameFilter;
+  end;
+
+  { TStructurePropertyEditor }
+
+  TStructurePropertyEditor = class(TStructurePropertyEditorBase)
+  public
+    function AllEqual: Boolean; override;
   end;
 
 { TClassPropertyEditor
@@ -1135,7 +1141,7 @@ type
   for the list elements must be deleted or created.
   }
 
-  TListPropertyEditor = class(TPropertyEditor)
+  TListPropertyEditor = class(TStructurePropertyEditorBase)
   private
     FSaveElementLock: integer;
     FSubPropertiesChanged: boolean;
@@ -1210,6 +1216,16 @@ type
     procedure Edit; override;
     class function ShowCollectionEditor(ACollection: TCollection; 
       OwnerPersistent: TPersistent; const PropName: String): TCustomForm; virtual;
+  end;
+
+  { TCollectionClassPropertyEditor }
+
+  TCollectionClassPropertyEditor = class(TCollectionPropertyEditor)
+  protected
+    function GetSelections: TPersistentSelectionList; virtual;
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    procedure GetProperties(Proc: TGetPropEditProc); override;
   end;
 
   { TDisabledCollectionPropertyEditor }
@@ -4945,31 +4961,31 @@ begin
   Result := Result + ']';
 end;
 
-{ TStructurePropertyEditor }
+{ TStructurePropertyEditorBase }
 
-function TStructurePropertyEditor.EditorFilter(const AEditor: TPropertyEditor): Boolean;
+function TStructurePropertyEditorBase.EditorFilter(const AEditor: TPropertyEditor): Boolean;
 begin
   Result := IsInteresting(AEditor, SubPropsTypeFilter, SubPropsNameFilter);
 end;
 
-procedure TStructurePropertyEditor.ListSubProps(Prop: TPropertyEditor);
+procedure TStructurePropertyEditorBase.ListSubProps(Prop: TPropertyEditor);
 begin
   FSubProps.Add(Prop);
 end;
 
-procedure TStructurePropertyEditor.SetSubPropsTypeFilter(const AValue: TTypeKinds);
+procedure TStructurePropertyEditorBase.SetSubPropsTypeFilter(const AValue: TTypeKinds);
 begin
   if FSubPropsTypeFilter = AValue then exit;
   FSubPropsTypeFilter := AValue;
 end;
 
-constructor TStructurePropertyEditor.Create(Hook: TPropertyEditorHook; APropCount: Integer);
+constructor TStructurePropertyEditorBase.Create(Hook: TPropertyEditorHook; APropCount: Integer);
 begin
   inherited Create(Hook, APropCount);
   FSubPropsTypeFilter := tkAny;
 end;
 
-destructor TStructurePropertyEditor.Destroy;
+destructor TStructurePropertyEditorBase.Destroy;
 begin
   FreeAndNil(FSubProps);
   inherited Destroy;
@@ -5337,6 +5353,43 @@ begin
   if TheCollection = nil then
     raise Exception.Create('Collection=nil');
   ShowCollectionEditor(TheCollection, GetComponent(0), GetName);
+end;
+
+{ TCollectionClassPropertyEditor }
+
+function TCollectionClassPropertyEditor.GetSelections: TPersistentSelectionList;
+var
+  i: Integer;
+  subItem: TPersistent;
+begin
+  Result := TPersistentSelectionList.Create;
+  try
+    for i := 0 to PropCount - 1 do begin
+      subItem := TPersistent(GetObjectValueAt(i));
+      if subItem <> nil then
+        Result.Add(subItem);
+    end;
+  except
+    Result.Free;
+    raise;
+  end;
+end;
+
+function TCollectionClassPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := inherited GetAttributes;
+  Result := Result + [paSubProperties, paReadOnly];
+end;
+
+procedure TCollectionClassPropertyEditor.GetProperties(Proc: TGetPropEditProc);
+var
+  selection: TPersistentSelectionList;
+begin
+  selection := GetSelections;
+  if selection = nil then exit;
+  GetPersistentProperties(
+    selection, SubPropsTypeFilter + [tkClass], PropertyHook, Proc, @EditorFilter);
+  selection.Free;
 end;
 
 { TDisabledCollectionPropertyEditor }
