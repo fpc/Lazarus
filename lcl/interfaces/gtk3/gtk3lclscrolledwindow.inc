@@ -497,7 +497,10 @@ begin
   ParentClass^.get_preferred_height(widget, min_height, nat_height);
 
   min_height^ := 1;
-  nat_height^ := Max(nat_height^, LCLIntendedH);
+  if LCLIntendedH > 0 then
+    nat_height^ := LCLIntendedH
+  else
+    nat_height^ := Max(nat_height^, LCLIntendedH);
   nat_height^ := Max(nat_height^, min_height^);
   {$IFDEF GTK3DEBUGHEIGHTZERO}
   writeln(Format('LCLGSW.GetPrefH: positive -> min=%d nat=%d (LCLIntendedH=%d)',
