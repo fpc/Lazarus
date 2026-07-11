@@ -9594,9 +9594,7 @@ begin
 
   c := HitCount + 1;
   SetHitCount(c);
-  //if (BreakHitCount > 0) and (c >= BreakHitCount) then begin
-  //  AContinue := True;
-  if (BreakHitCount > 0) and (c < BreakHitCount) then begin
+  if (BreakHitCount > 0) and (c >= BreakHitCount) then begin
     exit;
   end;
 
