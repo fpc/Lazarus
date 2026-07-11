@@ -8120,10 +8120,10 @@ begin
   if not Visible then
     exit;
   DC := TGtk3DeviceContext(Context);
-  NColor := LCLObject.Color;
-  if (NColor <> clNone) and (NColor <> clDefault) then
+  NColor := LCLObject.GetRGBColorResolvingParent;
+  if NColor <> clNone then
   begin
-    DC.CurrentBrush.Color := ColorToRGB(NColor);
+    DC.CurrentBrush.Color := NColor;
     DC.fillRect(0, 0, LCLObject.Width, LCLObject.Height);
   end;
 end;
