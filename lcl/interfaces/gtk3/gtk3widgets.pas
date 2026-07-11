@@ -4637,6 +4637,7 @@ procedure TGtk3Widget.preferredSize(var PreferredWidth,
 var
   AMinH: gint;
   AMinW: gint;
+  ASaveReqW, ASaveReqH: gint;
   AWidget:PGtkWidget;
   {$IFDEF GTK3DEBUGPREFERREDSIZE}
   ABorder: TGtkBorder;
@@ -4657,8 +4658,13 @@ begin
      AWidget^.get_size_request(@AMinW, @AMinH);
      DebugLn('>',dbgsName(LCLObject),'.preferredSize W=',dbgs(PreferredWidth),' H=',dbgs(PreferredHeight),' WithThemeSpace ',dbgs(WithThemeSpace),' AMinW=',dbgs(AMinW),' AMinH=',dbgs(AMinH));
     {$ENDIF}
+    ASaveReqW := -1;
+    ASaveReqH := -1;
+    AWidget^.get_size_request(@ASaveReqW, @ASaveReqH);
+    AWidget^.set_size_request(-1, -1);
     AWidget^.get_preferred_height(@AMinH, @PreferredHeight);
     AWidget^.get_preferred_width(@AMinW, @PreferredWidth);
+    AWidget^.set_size_request(ASaveReqW, ASaveReqH);
     {$IFDEF GTK3DEBUGPREFERREDSIZE}
     if WithThemeSpace then
     begin
@@ -10005,6 +10011,9 @@ begin
     gtk_scrolled_window_get_policy(ASW, @HPolicy, @VPolicy);
   if HPolicy = GTK_POLICY_NEVER then
     HSize := AGdkRect^.Width
+  else
+  if Assigned(TGtk3ScrollableWin(aCtl).LCLHAdj) and (TGtk3ScrollableWin(aCtl).LCLHAdj^.upper > 0) then
+    HSize := Max(AGdkRect^.Width, Round(TGtk3ScrollableWin(aCtl).LCLHAdj^.upper))
   else
     HSize := Max(AGdkRect^.Width, Round(hAdj^.upper));
 
