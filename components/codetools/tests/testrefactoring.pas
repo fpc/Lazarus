@@ -52,6 +52,10 @@ type
     procedure TestIdentifierHasKeywords;
 
     procedure TestPossibleInitsForVarLongint;
+    procedure TestPossibleInitsForVarString;
+    procedure TestPossibleInitsForVarDynArray;
+    procedure TestPossibleInitsForVarAnonymousArray;
+    procedure TestPossibleInitsForVarEnum;
 
     procedure TestRenameVarReferences;
     procedure TestRenameProcReferences;
@@ -514,9 +518,9 @@ begin
       writeln(Code.Source);
       Fail('GetPossibleInitsForVariable InsertPositions=nil at '+Code.AbsoluteToLineColStr(aMarker.CleanPos));
     end;
-    if Statements.Count<>InsertPositions.Count then begin
+    if InsertPositions.Count<>1 then begin
       writeln(Code.Source);
-      Fail('GetPossibleInitsForVariable Statements.Count='+dbgs(Statements.Count)+'<>InsertPositions.Count='+dbgs(InsertPositions.Count)+' at '+Code.AbsoluteToLineColStr(aMarker.CleanPos));
+      Fail('GetPossibleInitsForVariable InsertPositions.Count='+dbgs(InsertPositions.Count)+'<>1 at '+Code.AbsoluteToLineColStr(aMarker.CleanPos));
     end;
 
     ok:=true;
@@ -549,7 +553,7 @@ begin
               writeln('Error: Expected="',Expected[i],'" column is not a number, e.g. "1,2|bird"');
               ok:=false;
             end;
-            InsertPosDesc:=TInsertStatementPosDescription(InsertPositions[i]);
+            InsertPosDesc:=TInsertStatementPosDescription(InsertPositions[0]);
             if (InsertPosDesc.CodeXYPos.Y<>aLine) or (InsertPosDesc.CodeXYPos.X<>aCol) then begin
               writeln('Error: Expected="',Expected[i],'", but got position '+IntToStr(InsertPosDesc.CodeXYPos.Y)+','+IntToStr(InsertPosDesc.CodeXYPos.X));
               ok:=false;
@@ -709,6 +713,52 @@ begin
   '  if Cow{#Check}=3 then ;',
   'end.']);
   TestPossibleInitForVar(['6,6|Cow:=0;']);
+end;
+
+procedure TTestRefactoring.TestPossibleInitsForVarString;
+begin
+  StartProgram;
+  Add([
+  'var Cow: string;',
+  'begin',
+  '  if Cow{#Check}=''a'' then ;',
+  'end.']);
+  TestPossibleInitForVar(['6,6|Cow:='''';']);
+end;
+
+procedure TTestRefactoring.TestPossibleInitsForVarDynArray;
+begin
+  StartProgram;
+  Add([
+  'type TBools = array of boolean;',
+  'var Cow: TBools;',
+  'begin',
+  '  if Cow{#Check}=nil then ;',
+  'end.']);
+  TestPossibleInitForVar(['7,6|Cow:=nil;']);
+end;
+
+procedure TTestRefactoring.TestPossibleInitsForVarAnonymousArray;
+begin
+  StartProgram;
+  Add([
+  'var Cow: array of boolean;',
+  'begin',
+  '  if Cow{#Check}=nil then ;',
+  'end.']);
+  TestPossibleInitForVar(['6,6|Cow:=nil;']);
+end;
+
+procedure TTestRefactoring.TestPossibleInitsForVarEnum;
+begin
+  StartProgram;
+  Add([
+  'type TCol = (red, green, blue);',
+  'var Cow: TCol;',
+  'begin',
+  '  if Cow{#Check}=nil then ;',
+  'end.']);
+  TestPossibleInitForVar(['7,6|Cow:=red;','7,6|Cow:=green;','7,6|Cow:=blue;']);
 end;
 
 procedure TTestRefactoring.TestRenameVarReferences;

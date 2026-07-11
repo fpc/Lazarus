@@ -6900,6 +6900,9 @@ begin
         AddAssignment('nil');
       ctnPointerType:
         AddAssignment('nil');
+      ctnOpenArrayType:
+        // dynamic array
+        AddAssignment('nil');
       ctnProcedureType,ctnReferenceTo:
         // address of proc
         AddAssignment('nil');
