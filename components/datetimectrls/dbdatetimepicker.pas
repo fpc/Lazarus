@@ -80,6 +80,7 @@ type
     property Checked;
     property CenturyFrom;
     property DateDisplayOrder;
+    property DateTimeSpacing;
     property MaxDate;
     property MinDate;
     property AutoSize;
