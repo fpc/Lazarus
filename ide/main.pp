@@ -7463,7 +7463,7 @@ begin
     end;
 
     if (dcrDwarfOnly in ReqOpts)
-    and (not (Project1.CompilerOptions.DebugInfoType in [dsDwarf2, dsDwarf2Set, dsDwarf3])) then
+    and (not (Project1.CompilerOptions.DebugInfoType in [dsDwarf2, dsDwarf2Set, dsDwarf3, dsDwarf4, dsDwarf5])) then
     begin
       // this debugger does ONLY support external debug symbols
       ChangeDebugInfoFormatDialog := TTaskDialog.Create(Self);
