@@ -1171,6 +1171,7 @@ type
     class function MenuBarEnterNotify(AWidget: PGtkWidget; AEvent: PGdkEventCrossing; AData: gpointer): gboolean; cdecl; static;
   protected
     FFirstMapRect: TRect;
+    FInActivate: Boolean; // set while delivering LM_ACTIVATE, mirrors gtk2 wwiActivating
     procedure ConnectSizeAllocateSignal(ToWidget: PGtkWidget); override;
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
     function EatArrowKeys(const {%H-}AKey: Word): Boolean; override;
@@ -4809,7 +4810,8 @@ begin
   begin
     TopWidget := TGtk3Widget(HwndFromGtkWidget(TopLevel));
     if (TopWidget is TGtk3Window) and Assigned(TopWidget.LCLObject)
-    and (TopWidget.LCLObject is TCustomForm) then
+    and (TopWidget.LCLObject is TCustomForm)
+    and not TGtk3Window(TopWidget).FInActivate then
       TGtk3Window(TopWidget).Activate;
   end;
 
@@ -15124,7 +15126,15 @@ begin
     MsgActivate.Active := WA_INACTIVE;
   MsgActivate.ActiveWindow := HWND(TGtk3Window(Data).LCLObject.Handle);
 
-  TGtk3Window(Data).DeliverMessage(MsgActivate);
+  // Guard against SetFocus re-activating this window from within the activate
+  // cascade (would ping-pong window activation and flood the IM/ibus). Mirrors
+  // gtk2 wwiActivating (gtk2callback.inc / gtk2winapi.inc).
+  TGtk3Window(Data).FInActivate := True;
+  try
+    TGtk3Window(Data).DeliverMessage(MsgActivate);
+  finally
+    TGtk3Window(Data).FInActivate := False;
+  end;
 end;
 
 class function TGtk3Window.WindowFocusIn(AWidget: PGtkWidget; AEvent: PGdkEventFocus; AData: gpointer): gboolean; cdecl;

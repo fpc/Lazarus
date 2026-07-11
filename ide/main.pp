@@ -9547,7 +9547,11 @@ begin
         if LogCaretXY.Y>SrcEdit.EditorComponent.Lines.Count then
           LogCaretXY.Y:=SrcEdit.EditorComponent.Lines.Count;
         if FocusEditor then begin
-          IDEWindowCreators.ShowForm(SearchResultsView,true);
+          // Ensure the search results window is shown, but do NOT bring it to
+          // front: it is already the front window (the user just clicked it),
+          // and raising it here fights the source editor raise below for
+          // activation (endless bring-to-top loop on gtk3).
+          IDEWindowCreators.ShowForm(SearchResultsView,false);
           SourceEditorManager.ShowActiveWindowOnTop(True);
         end;
         if IDETabMaster <> nil then
