@@ -83,7 +83,6 @@ type
     FSehUnwinder: TDbgStackUnwinder;
     FFrameUnwinder: TDbgStackUnwinderX86FramePointer;
     FAsmUnwinder: TDbgStackUnwinderIntelDisAssembler;
-    FFlags: TDbgUnwinderFlags;
   public
     constructor Create(AProcess: TDbgProcess);
     destructor Destroy; override;
@@ -91,7 +90,6 @@ type
     function Unwind(AFrameIndex: integer; var CodePointer, StackPointer,
       FrameBasePointer: TDBGPtr; ACurrentFrame: TDbgCallstackEntry; out
       ANewFrame: TDbgCallstackEntry): TTDbgStackUnwindResult; override;
-    procedure SetUnwindFlags(AFlags: TDbgUnwinderFlags); override;
   end;
 
 implementation
@@ -365,7 +363,6 @@ begin
   if FSehUnwinder <> nil then FSehUnwinder.InitForThread(AThread);
   FFrameUnwinder.InitForThread(AThread);
   FAsmUnwinder.InitForThread(AThread);
-  FFlags := [];
 end;
 
 function TDbgStackUnwinderX86MultiMethod.Unwind(AFrameIndex: integer;
@@ -377,6 +374,8 @@ var
   CodePointer2, FrameBasePointer2, StackPointer2: TDBGPtr;
   ANewFrame2: TDbgCallstackEntry;
   ResSeh, ResAsm: TTDbgStackUnwindResult;
+  i: integer;
+  IsFinProc: Boolean;
 
   procedure InitPtr2;
   begin
@@ -415,7 +414,15 @@ begin
 
   (* *** SEH *** *)
 
-  if FSehUnwinder <> nil then begin
+  if (ACurrentFrame.OrigProcSymbol <> nil) then begin
+    i := Pos('$fin$', LowerCase(ACurrentFrame.OrigProcSymbol.Name));
+    IsFinProc := (i > 0) and (i < 5);
+  end
+  else
+    IsFinProc := False;
+
+  ResSeh := suFailed;
+  if (not IsFinProc) and (FSehUnwinder <> nil) then begin
     InitPtr2;
     ResSeh := FSehUnwinder.Unwind(AFrameIndex, CodePointer2, StackPointer2, FrameBasePointer2, ACurrentFrame, ANewFrame2);
     case ResSeh of
@@ -449,7 +456,7 @@ begin
   (* *** ASM *** *)
 
   ResAsm := suFailed;
-  if not (ufSkipArtificialFrames in FFlags) then begin
+  if (not IsFinProc) then begin
     // Get Asm unwind
     InitPtr2;
     ResAsm := FAsmUnwinder.Unwind(AFrameIndex, CodePointer2, StackPointer2, FrameBasePointer2, ACurrentFrame, ANewFrame2);
@@ -503,12 +510,6 @@ begin
     exit;
   end;
 
-
-end;
-
-procedure TDbgStackUnwinderX86MultiMethod.SetUnwindFlags(AFlags: TDbgUnwinderFlags);
-begin
-  FFlags := AFlags;
 end;
 
 end.

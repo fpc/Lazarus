@@ -1344,10 +1344,6 @@ begin
   t := FController.CurrentThread;
   Unwinder := t.GetStackUnwinder;
   Unwinder.InitForThread(t);
-
-  // TODO: DWARF-4 has incorrect DFI, returning a bad result
-  Unwinder.SetUnwindFlags([ufSkipArtificialFrames]); // prevent using the asm unwinder
-
   Unwinder.GetTopFrame(CodeAddress, AStackPointerValue, AFramePointerValue, AnEntry);
   Res := Unwinder.Unwind(1, CodeAddress, AStackPointerValue, AFramePointerValue, AnEntry, AnEntry2);
   AnEntry.Free;
