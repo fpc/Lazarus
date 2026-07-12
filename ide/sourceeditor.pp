@@ -8831,12 +8831,19 @@ begin
   aFilename:=copy(aFilename,p,length(aFilename)-(length(ResStr)-2));
   if not FilenameIsAbsolute(aFilename) then
     aFilename:=TrimFilename(ExtractFilePath(GetActiveSE.Filename)+aFilename);
-  if FilenameExtIs(aFilename,'lpi',false) then
-    MainIDEInterface.DoOpenProjectFile(aFilename,[ofOnlyIfExists,ofAddToRecent,ofUseCache])
-  else if FilenameExtIs(aFilename,'lpk',true) then
-    PackageEditingInterface.DoOpenPackageFile(aFilename,[pofAddToRecent],false)
-  else
-    MainIDEInterface.DoOpenEditorFile(aFilename,
+  if FilenameIsAbsolute(aFilename) then begin
+    if FilenameExtIs(aFilename,'lpi',false) then
+    begin
+      MainIDEInterface.DoOpenProjectFile(aFilename,[ofOnlyIfExists,ofAddToRecent,ofUseCache]);
+      exit;
+    end
+    else if FilenameExtIs(aFilename,'lpk',true) then
+    begin
+      PackageEditingInterface.DoOpenPackageFile(aFilename,[pofAddToRecent],false);
+      exit;
+    end;
+  end;
+  MainIDEInterface.DoOpenEditorFile(aFilename,
       PageIndex+1, Manager.IndexOfSourceWindow(self),
       [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
 end;
