@@ -836,17 +836,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  Function: TFont.GetSize
-  Params: none
-  Returns:  The font size
-
-  Calculates the size based on height
- ------------------------------------------------------------------------------}
-//function TFont.GetSize: Integer;
-//begin
-//  Result := inherited Size;
-//end;
 
 {------------------------------------------------------------------------------
   Method: TFont.SetPitch
@@ -956,31 +945,6 @@ begin
     Result := TCanvas(Canvas).GetDefaultColor(dctFont);
 end;
 
-{------------------------------------------------------------------------------
-  Function: TFont.GetName
-  Params: none
-  Returns:  The font name
-
-  Returns the name of the font
- ------------------------------------------------------------------------------}
-//function TFont.GetName: string;
-//begin
-//  Result := inherited Name;
-//end;
-
-{------------------------------------------------------------------------------
-  Returns the orientation of the font
-
-  The orientation is defined as the angle, in tenths of degrees,
-  between the X axis of the Canvas and the baseline of the font.
-
-  The property and it's setter/getter pair are compatible with Delphi
- ------------------------------------------------------------------------------}
-
-//function TFont.GetOrientation: Integer;
-//begin
-//  Result := FOrientation;
-//end;
 
 
 {------------------------------------------------------------------------------

@@ -507,7 +507,6 @@ type
   private
     FIsMonoSpace: boolean;
     FIsMonoSpaceValid: boolean;
-    //FOrientation: Integer;
     FPitch: TFontPitch;
     FQuality: TFontQuality;
     FStyle: TFontStylesBase;
@@ -533,10 +532,7 @@ type
   protected
     function GetCharSet: TFontCharSet;
     function GetHeight: Integer;
-    //function GetName: string;
-    //function GetOrientation: Integer;
     function GetPitch: TFontPitch;
-    //function GetSize: Integer;
     function GetStyle: TFontStyles;
     procedure Changed; override;
     procedure DoAllocateResources; override;
@@ -550,7 +546,7 @@ type
     procedure SetFPColor(const AValue: TFPColor); override;
     procedure SetHeight(Avalue: Integer);
     procedure SetName(AValue: string); override;
-    procedure SetOrientation(AValue: Integer); override; // This was introduced in 2.5 quite late, and the Android pre-compiled compiler was before this, so I prefer to let it only for 2.6
+    procedure SetOrientation(AValue: Integer); override;
     procedure SetPitch(Value: TFontPitch);
     procedure SetSize(AValue: integer); override;
     procedure SetStyle(Value: TFontStyles);
@@ -577,11 +573,11 @@ type
     property CharSet: TFontCharSet read GetCharSet write SetCharSet default DEFAULT_CHARSET;
     property Color: TColor read FColor write SetColor default {$ifdef UseCLDefault}clDefault{$else}clWindowText{$endif};
     property Height: Integer read GetHeight write SetHeight stored IsHeightStored;
-    property Name{: string read GetName write SetName} stored IsNameStored;
-    property Orientation; //: Integer read GetOrientation write SetOrientation default 0;
+    property Name stored IsNameStored;
+    property Orientation;
     property Pitch: TFontPitch read GetPitch write SetPitch default fpDefault;
     property Quality: TFontQuality read FQuality write SetQuality default fqDefault;
-    property Size{: Integer read GetSize write SetSize} stored false;
+    property Size stored false;
     property Style: TFontStyles read GetStyle write SetStyle default [];
   end;
 
