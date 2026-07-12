@@ -56,7 +56,7 @@ uses
   LazStringUtils,
   // codetools
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
-  LinkScanner, CodeTree, SourceChanger, IdentCompletionTool,
+  LinkScanner, CodeTree, SourceChanger, IdentCompletionTool, DirectoryCacher,
   // synedit
   SynEditLines, SynEditStrConst, SynEditTypes, SynEdit, SynEditAutoComplete,
   SynEditKeyCmds, SynCompletion, SynEditMarkupHighAll, SynEditMarks, SynBeautifier,
@@ -7530,18 +7530,53 @@ var
   ASrcEdit: TSourceEditor;
   CurFilename: String;
 
-  function MaybeAddPopup(const ASuffix: String; ANewOnClick: TNotifyEvent = nil;
-    Filename: string = ''): TIDEMenuItem;
+  procedure AddSiblingTextFiles;
+  // Add a menu item for every other text file in the same directory sharing
+  // the base filename (case-insensitively) of the active editor file.
+  var
+    ActFile, Base, Dir, ShortName: String;
+    Files: TStrings;
+    BufList: TFPList;
+    Code: TCodeBuffer;
+    i: Integer;
   begin
-    Result:=nil;
-    if ANewOnClick=nil then
-      ANewOnClick:=@PopupMenuOpenFile;
-    if Filename='' then
-      Filename:=CurFilename;
-    Filename:=ChangeFileExt(Filename,ASuffix);
-    if FileExistsCached(Filename) then begin
-      Filename:=CreateRelativePath(Filename,ExtractFilePath(ASrcEdit.FileName));
-      Result:=AddContextPopupMenuItem(Format(lisOpenLfm,[Filename]), true, ANewOnClick);
+    ActFile:=ASrcEdit.FileName;
+    Base:=ExtractFileNameOnly(ActFile);
+    if Base='' then exit;
+    ShortName:=ExtractFileName(ActFile);
+    if FilenameIsAbsolute(ActFile) then begin
+      // saved file: scan the real directory
+      Dir:=ExtractFilePath(ActFile);
+      Files:=nil;
+      try
+        CodeToolBoss.DirectoryCachePool.GetListing(Dir,Files,false);
+        if Files<>nil then
+          for i:=0 to Files.Count-1 do begin
+            if UTF8CompareText(ExtractFileNameOnly(Files[i]),Base)<>0 then continue;
+            if UTF8CompareText(Files[i],ShortName)=0 then continue; // not itself
+            if not FileIsTextCached(Dir+Files[i]) then continue; // skip binaries
+            AddContextPopupMenuItem(Format(lisOpenLfm,[Files[i]]),true,
+                                    @PopupMenuOpenFile);
+          end;
+      finally
+        Files.Free;
+      end;
+    end else begin
+      // virtual (unsaved) file: no directory to list, enumerate in-memory buffers
+      BufList:=CodeToolBoss.SourceCache.FindFilesInDir('');
+      if BufList<>nil then
+        try
+          for i:=0 to BufList.Count-1 do begin
+            Code:=TCodeBuffer(BufList[i]);
+            if UTF8CompareText(ExtractFileNameOnly(Code.Filename),Base)<>0 then continue;
+            if UTF8CompareText(Code.Filename,ShortName)=0 then continue; // not itself
+            if Code.IsDeleted or (not Code.SourceIsText) then continue; // skip binaries
+            AddContextPopupMenuItem(Format(lisOpenLfm,[Code.Filename]),true,
+                                    @PopupMenuOpenFile);
+          end;
+        finally
+          BufList.Free;
+        end;
     end;
   end;
 
@@ -7604,21 +7639,9 @@ begin
                [CreateRelativePath(CurFilename,ExtractFilePath(ASrcEdit.Filename))]),
         true,@PopupMenuOpenFile);
     end;
-    if FilenameHasPascalExt(ShortFileName) then begin
-      MaybeAddPopup('.lfm');
-      MaybeAddPopup('.dfm');
-      MaybeAddPopup('.fmx');
-      MaybeAddPopup('.lrs');
-      MaybeAddPopup('.s');
-    end;
+    // add one "Open ..." item for each sibling text file with the same base name
+    AddSiblingTextFiles;
     // ToDo: unit resources
-    if FilenameExtIs(ShortFileName,'lfm',true)
-       or FilenameExtIs(ShortFileName,'dfm')
-       or FilenameExtIs(ShortFileName,'fmx') then begin
-      MaybeAddPopup('.pas');
-      MaybeAddPopup('.pp');
-      MaybeAddPopup('.p');
-    end;
     if FilenameExtIn(ShortFileName, ['lpi','lpk'], false) then begin
       AddContextPopupMenuItem(Format(lisOpenLfm,[ShortFileName]),true,@PopupMenuOpenFile);
     end;
@@ -7628,7 +7651,10 @@ begin
         Format(lisOpenLfm,
                [CreateRelativePath(FPDocSrc,ExtractFilePath(CurFilename))]),
         true,@PopupMenuOpenFile);
-  end;
+  end
+  else
+    // virtual (unsaved) file: offer related in-memory buffers
+    AddSiblingTextFiles;
 
   EditorPopupPoint:=EditorComp.ScreenToClient(SrcPopUpMenu.PopupPoint);
   if EditorPopupPoint.X<=EditorComp.Gutter.Width then begin

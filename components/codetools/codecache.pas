@@ -184,6 +184,7 @@ type
     function Count: integer;
     function CreateFile(const AFilename: string): TCodeBuffer;
     function FindFile(AFilename: string): TCodeBuffer;
+    function FindFilesInDir(Dir: string): TFPList; // list of TCodeBuffer, caller must free
     function LastIncludedByFile(const IncludeFilename: string): string;
     function LoadFile(AFilename: string): TCodeBuffer;
     procedure RemoveCodeBuffer(Buffer: TCodeBuffer);
@@ -678,6 +679,25 @@ begin
     else exit;
   end;
   Result:=nil;
+end;
+
+function TCodeCache.FindFilesInDir(Dir: string): TFPList;
+var
+  ANode: TAVLTreeNode;
+  Code: TCodeBuffer;
+begin
+  Result:=nil;
+  if FItems=nil then exit;
+  Dir:=AppendPathDelim(Dir);
+  ANode:=FItems.FindLowest;
+  while ANode<>nil do begin
+    Code:=TCodeBuffer(ANode.Data);
+    if CompareFilenames(ExtractFilePath(Code.Filename),Dir)=0 then begin
+      if Result=nil then Result:=TFPList.Create;
+      Result.Add(Code);
+    end;
+    ANode:=FItems.FindSuccessor(ANode);
+  end;
 end;
 
 function TCodeCache.LoadFile(AFilename: string): TCodeBuffer;
