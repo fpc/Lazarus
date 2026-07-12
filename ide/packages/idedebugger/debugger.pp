@@ -9631,10 +9631,16 @@ end;
 procedure TIDEException.LoadFromXMLConfig(const AXMLConfig: TXMLConfig; const APath: string;
   const OnGetGroup: TOnGetGroupByName);
 begin
-  inherited LoadFromXMLConfig(AXMLConfig, APath, OnGetGroup);
-  FName:=AXMLConfig.GetValue(APath+'Name/Value','');
-  Enabled:=AXMLConfig.GetValue(APath+'Enabled/Value',true);
-  SetKind(bpkException);
+  inc(FLoading);
+  try
+    inherited LoadFromXMLConfig(AXMLConfig, APath, OnGetGroup);
+    FName:=AXMLConfig.GetValue(APath+'Name/Value','');
+    Enabled:=AXMLConfig.GetValue(APath+'Enabled/Value',true);
+    SetKind(bpkException);
+  finally
+    dec(FLoading);
+    DoUserChanged;
+  end;
 end;
 
 procedure TIDEException.SaveToXMLConfig(const AXMLConfig: TXMLConfig;

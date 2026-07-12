@@ -205,6 +205,8 @@ type
     procedure JumpToCurrentBreakPoint;
     procedure ShowProperties;
   protected
+    function  IsShowingBreaks: boolean; inline;
+    function  IsShowingExcepts: boolean; inline;
     procedure AcceptGroupHeaderDrop(ADroppedGroupFrame: TBreakpointGroupFrame; ATargetNode: PVirtualNode); override;
     procedure DoBreakPointsChanged; override;
     procedure DoExceptionsChanged; override;
@@ -879,9 +881,14 @@ begin
       NewBreakpoint := BreakPoints.Add('', 0, True);
     if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then begin
       NewBreakpoint.EndUpdate;
-      if not tbShowBreakPoints.Down then
+      if not tbShowBreakPoints.Down then begin
         tbShowBreakAndExcept.Down := True;
-      UpdateAll;
+        ClearTree;
+        DoBreakPointsChanged;
+        DoExceptionsChanged;
+      end
+      else
+        UpdateAll;
     end
     else
       ReleaseRefAndNil(NewBreakpoint);
@@ -899,9 +906,14 @@ begin
     NewBreakpoint := BreakPoints.Add('', wpsGlobal, wpkWrite, True);
     if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then begin
       NewBreakpoint.EndUpdate;
-      if not tbShowBreakPoints.Down then
+      if not tbShowBreakPoints.Down then begin
         tbShowBreakAndExcept.Down := True;
-      UpdateAll;
+        ClearTree;
+        DoBreakPointsChanged;
+        DoExceptionsChanged;
+      end
+      else
+        UpdateAll;
     end
     else
       ReleaseRefAndNil(NewBreakpoint);
@@ -919,9 +931,14 @@ begin
     NewBreakpoint := BreakPoints.Add(0, True);
     if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then begin
       NewBreakpoint.EndUpdate;
-      if not tbShowBreakPoints.Down then
+      if not tbShowBreakPoints.Down then begin
         tbShowBreakAndExcept.Down := True;
-      UpdateAll;
+        ClearTree;
+        DoBreakPointsChanged;
+        DoExceptionsChanged;
+      end
+      else
+        UpdateAll;
     end
     else
       ReleaseRefAndNil(NewBreakpoint);
@@ -939,9 +956,14 @@ begin
     NewException := Exceptions.Add('', True);
     if DebugBoss.ShowBreakPointProperties(NewException) = mrOk then begin
       NewException.EndUpdate;
-      if not tbShowException.Down then
+      if not tbShowException.Down then begin
         tbShowBreakAndExcept.Down := True;
-      UpdateAll;
+        ClearTree;
+        DoBreakPointsChanged;
+        DoExceptionsChanged;
+      end
+      else
+        UpdateAll;
     end
     else
       ReleaseRefAndNil(NewException);
@@ -980,6 +1002,8 @@ begin
     VNode := tvBreakPoints.FocusedNode;
     if VNode = nil then
       exit;
+    if not (tvBreakPoints.NodeItem[VNode] is TIDEBreakPoint) then
+      exit;
     Filename:=TIDEBreakpoint(tvBreakPoints.NodeItem[VNode]).Source;
 
     if EnvironmentDebugOpts.ConfirmDeleteFileBreakPoints then begin
@@ -993,6 +1017,8 @@ begin
 
     for VNode in tvBreakPoints.NoInitItemNodes do
     begin
+      if not (tvBreakPoints.NodeItem[VNode] is TIDEBreakPoint) then
+        continue;
       CurBreakPoint:=TIDEBreakPoint(tvBreakPoints.NodeItem[VNode]);
       if CompareFilenames(CurBreakPoint.Source,Filename)=0
       then ReleaseRefAndNil(CurBreakPoint);
@@ -1013,10 +1039,14 @@ begin
     VNode := tvBreakPoints.FocusedNode;
     if VNode = nil then
       exit;
+    if not (tvBreakPoints.NodeItem[VNode] is TIDEBreakPoint) then
+      exit;
     Filename:=TIDEBreakpoint(tvBreakPoints.NodeItem[VNode]).Source;
 
     for VNode in tvBreakPoints.NoInitItemNodes do
     begin
+      if not (tvBreakPoints.NodeItem[VNode] is TIDEBreakPoint) then
+        continue;
       CurBreakPoint:=TIDEBreakPoint(tvBreakPoints.NodeItem[VNode]);
       if CompareFilenames(CurBreakPoint.Source,Filename)=0
       then CurBreakPoint.Enabled := False;
@@ -1037,10 +1067,14 @@ begin
     VNode := tvBreakPoints.FocusedNode;
     if VNode = nil then
       exit;
+    if not (tvBreakPoints.NodeItem[VNode] is TIDEBreakPoint) then
+      exit;
     Filename:=TIDEBreakpoint(tvBreakPoints.NodeItem[VNode]).Source;
 
     for VNode in tvBreakPoints.NoInitItemNodes do
     begin
+      if not (tvBreakPoints.NodeItem[VNode] is TIDEBreakPoint) then
+        continue;
       CurBreakPoint:=TIDEBreakPoint(tvBreakPoints.NodeItem[VNode]);
       if CompareFilenames(CurBreakPoint.Source,Filename)=0
       then CurBreakPoint.Enabled := True;
@@ -1071,7 +1105,10 @@ begin
     for VNode in tvBreakPoints.NoInitItemNodes do
     begin
       CurBreakPoint:=TIdeTracePoint(tvBreakPoints.NodeItem[VNode]);
-      CurBreakPoint.ReleaseReference;
+      if ((CurBreakPoint is TIDEBreakPoint) and IsShowingBreaks) or
+         ((CurBreakPoint is TIDEException) and IsShowingExcepts)
+      then
+        CurBreakPoint.ReleaseReference;
     end;
   finally
     EndUpdate;
@@ -1177,7 +1214,7 @@ procedure TBreakPointsDlg.tvBreakPointsCompareNodes(Sender: TBaseVirtualTree;
   Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
 var
   c1, c2: TBreakpointGroupFrame;
-  b1, b2: TIDEBreakPoint;
+  b1, b2: TIdeTracePoint;
   Desc: integer;
 begin
   Result := 0;
@@ -1204,8 +1241,8 @@ begin
     exit;
   end;
 
-  b1 := TIDEBreakPoint(tvBreakPoints.NodeItem[Node1]);
-  b2 := TIDEBreakPoint(tvBreakPoints.NodeItem[Node2]);
+  b1 := TIdeTracePoint(tvBreakPoints.NodeItem[Node1]);
+  b2 := TIdeTracePoint(tvBreakPoints.NodeItem[Node2]);
 
   case Column of
     0: Result := (ord(b1.Enabled)*256 + ord(b1.Valid)) - (ord(b2.Enabled)*256 + ord(b2.Valid));
@@ -1309,7 +1346,7 @@ procedure TBreakPointsDlg.tvBreakPointsDragDrop(Sender: TBaseVirtualTree;
 var
   TargetNd, N: PVirtualNode;
   TargetHeader: TBreakpointGroupFrame;
-  Brk: TIDEBreakPoint;
+  Brk: TIdeTracePoint;
   idx: Integer;
 begin
   BeginUpdate;
@@ -1317,12 +1354,12 @@ begin
     TargetNd := tvBreakPoints.GetNodeAt(Pt);
     if (TargetNd <> nil) and (Source = tvBreakPoints) and (tvBreakPoints.SelectedCount > 0) then begin
       TargetHeader := GetDropTargetGroup(TargetNd);
-      Brk := TIDEBreakPoint(tvBreakPoints.NodeItem[TargetNd]);
+      Brk := TIdeTracePoint(tvBreakPoints.NodeItem[TargetNd]);
       if (tvBreakPoints.Header.SortColumn < 0) and (Brk <> nil) then begin
         idx := Brk.Index;
         //  inc(idx);
         for N in tvBreakPoints.SelectedItemNodes do begin
-          Brk := TIDEBreakPoint(tvBreakPoints.NodeItem[N]);
+          Brk := TIdeTracePoint(tvBreakPoints.NodeItem[N]);
           if Mode = dmAbove then begin
             if Brk.Index < idx then
               dec(idx);
@@ -1359,18 +1396,18 @@ var
   TargetNd, SNd: PVirtualNode;
   TargetHeader: TBreakpointGroupFrame;
   dummy: Boolean;
-  TBrk, SBrk: TIDEBreakPoint;
+  TBrk, SBrk: TIdeTracePoint;
 begin
   Accept := False;
   if FDragSource and tbGroupByBrkGroup.Down then
     FAddGroupedHeader.NodeVisible := True;
 
   TargetNd := tvBreakPoints.GetNodeAt(Pt);
-  TBrk := TIDEBreakPoint(tvBreakPoints.NodeItem[TargetNd]);
+  TBrk := TIdeTracePoint(tvBreakPoints.NodeItem[TargetNd]);
   SNd := tvBreakPoints.GetFirstSelected;
   SBrk := nil;
   if SNd <> nil then
-    SBrk := TIDEBreakPoint(tvBreakPoints.NodeItem[SNd]);
+    SBrk := TIdeTracePoint(tvBreakPoints.NodeItem[SNd]);
   if (TBrk <> nil) and (SBrk <> nil) and ((TBrk.Kind = bpkException) <> (SBrk.Kind = bpkException)) then
     exit;
 
@@ -1525,11 +1562,17 @@ end;
 procedure TBreakPointsDlg.popDisableAllClick(Sender: TObject);
 var
   VNode: PVirtualNode;
+  CurTracePoint: TIdeTracePoint;
 begin
   BeginUpdate;
   try
-    for VNode in tvBreakPoints.NoInitItemNodes do
-      TIDEBreakPoint(tvBreakPoints.NodeItem[VNode]).Enabled := False;
+    for VNode in tvBreakPoints.NoInitItemNodes do begin
+      CurTracePoint := TIdeTracePoint(tvBreakPoints.NodeItem[VNode]);
+      if ((CurTracePoint is TIDEBreakPoint) and IsShowingBreaks) or
+         ((CurTracePoint is TIDEException) and IsShowingExcepts)
+      then
+        CurTracePoint.Enabled := False;
+    end;
   finally
     EndUpdate;
   end;
@@ -1538,11 +1581,17 @@ end;
 procedure TBreakPointsDlg.popEnableAllClick(Sender: TObject);
 var
   VNode: PVirtualNode;
+  CurTracePoint: TIdeTracePoint;
 begin
   BeginUpdate;
   try
-    for VNode in tvBreakPoints.NoInitItemNodes do
-      TIDEBreakPoint(tvBreakPoints.NodeItem[VNode]).Enabled := True;
+    for VNode in tvBreakPoints.NoInitItemNodes do begin
+      CurTracePoint := TIdeTracePoint(tvBreakPoints.NodeItem[VNode]);
+      if ((CurTracePoint is TIDEBreakPoint) and IsShowingBreaks) or
+         ((CurTracePoint is TIDEException) and IsShowingExcepts)
+      then
+      CurTracePoint.Enabled := True;
+    end;
   finally
     EndUpdate;
   end;
@@ -1551,7 +1600,7 @@ end;
 procedure TBreakPointsDlg.popEnabledClick(Sender: TObject);
 var
   VNode: PVirtualNode;
-  CurBreakPoint: TIDEBreakPoint;
+  CurBreakPoint: TIdeTracePoint;
   Enable: Boolean;
 begin
   BeginUpdate;
@@ -1560,13 +1609,13 @@ begin
     if VNode = nil then
       exit;
 
-    CurBreakPoint:=TIDEBreakpoint(tvBreakPoints.NodeItem[VNode]);
+    CurBreakPoint:=TIdeTracePoint(tvBreakPoints.NodeItem[VNode]);
     Enable := not CurBreakPoint.Enabled;
 
     if tvBreakPoints.SelectedCount > 1
     then begin
       for VNode in tvBreakPoints.SelectedItemNodes do
-        TIDEBreakPoint(tvBreakPoints.NodeItem[VNode]).Enabled := Enable;
+        TIdeTracePoint(tvBreakPoints.NodeItem[VNode]).Enabled := Enable;
     end
     else begin
       CurBreakPoint.Enabled:= Enable;
@@ -1830,6 +1879,16 @@ begin
   finally
     EndUpdate;
   end;
+end;
+
+function TBreakPointsDlg.IsShowingBreaks: boolean;
+begin
+  Result := (tbShowBreakPoints.Down or tbShowBreakAndExcept.Down);
+end;
+
+function TBreakPointsDlg.IsShowingExcepts: boolean;
+begin
+  Result := (tbShowException.Down or tbShowBreakAndExcept.Down);
 end;
 
 procedure TBreakPointsDlg.DoBreakPointsChanged;
