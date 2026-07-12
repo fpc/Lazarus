@@ -366,7 +366,9 @@ type
     function GetClassInstanceName(AnAddr: TDBGPtr): string;
     procedure DoReadAnsiString;
     function ReadAnsiString(AnAddr: TDbgPtr): string;
-    function CheckCondition(AnExpression: String; AnErrorResult: Boolean): Boolean;
+    function DoFindIntrinsic(AnExpression: TFpPascalExpression; AStart: PChar; ALen: Integer
+      ): TFpPascalExpressionPartIntrinsicBase;
+    function CheckCondition(AnExpression: String; AnErrorResult: Boolean; AnAtException: Boolean = False): Boolean;
     procedure HandleSoftwareException(out AnExceptionLocation: TDBGLocationRec; var continue: boolean);
     // HandleBreakError: Default handler for range-check etc
     procedure HandleBreakError(var continue: boolean);
@@ -3947,10 +3949,32 @@ begin
   result := FCacheFileName;
 end;
 
-function TFpDebugDebugger.CheckCondition(AnExpression: String; AnErrorResult: Boolean): Boolean;
+function TFpDebugDebugger.DoFindIntrinsic(AnExpression: TFpPascalExpression; AStart: PChar;
+  ALen: Integer): TFpPascalExpressionPartIntrinsicBase;
+begin
+  Result := nil;
+  if (ALen = 1) and (strlicomp(AStart, pchar('e'), 1) = 0) then
+    Result := TFpPascalExpressionPartIntrinsicExceptObject.Create(AnExpression.SharedData,
+      AStart, AStart+ALen,
+      DbgController.CurrentProcess,
+      ExceptionState = esStoppedAtRaise
+    )
+  else
+  if (ALen = 3) and (strlicomp(AStart, pchar('i2o'), 3) = 0) and
+     (DbgController.CurrentProcess.Disassembler is TX86AsmDecoder)
+  then
+    Result := TFpPascalExpressionPartIntrinsicIntfToObj.Create(AnExpression.SharedData,
+      AStart, AStart+ALen,
+      TX86AsmDecoder(DbgController.CurrentProcess.Disassembler)
+    );
+end;
+
+function TFpDebugDebugger.CheckCondition(AnExpression: String; AnErrorResult: Boolean;
+  AnAtException: Boolean): Boolean;
 var
   ExprContext: TFpDbgSymbolScope;
   PasExpr: TFpPascalExpression;
+  st: TExceptStepState;
 begin
   Result := AnErrorResult; // the empty expression
   if AnExpression = '' then
@@ -3961,10 +3985,13 @@ begin
     exit;
 
   PasExpr := nil;
+  FExceptionStepper.FState := ExceptionState;
+  if AnAtException then
+    FExceptionStepper.FState := esStoppedAtRaise;
   try
     PasExpr := TFpPascalExpression.Create(AnExpression, ExprContext, True);
     PasExpr.IntrinsicPrefix := TFpDebugDebuggerProperties(GetProperties).IntrinsicPrefix;
-    // TODO: extra intrinsics / OnGetIntrinsic
+    PasExpr.OnFindIntrinsc := @DoFindIntrinsic;
     PasExpr.Parse;
     PasExpr.ResultValue; // trigger full validation
 
@@ -3973,6 +4000,7 @@ begin
     else
       Result := AnErrorResult
   finally
+    FExceptionStepper.FState := st;
     PasExpr.Free;
     ExprContext.ReleaseReference;
   end;
@@ -4032,7 +4060,7 @@ begin
   ExceptItem := Exceptions.Find(ExceptionClass);
   if (ExceptItem <> nil) then begin
     expr := Trim(ExceptItem.Expression);
-    if (expr = '') or CheckCondition(expr, False) then begin
+    if (expr = '') or CheckCondition(expr, False, True) then begin
       ExceptItem.DoExceptionHit(continue, NeedInternalPause, Self);
       if continue and NeedInternalPause then begin
         EnterPause(AnExceptionLocation, True);
