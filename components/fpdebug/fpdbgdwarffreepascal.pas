@@ -2686,6 +2686,20 @@ end;
 function TFpSymbolDwarfFreePascalDataProc.ResolveInternalFinallySymbol(
   Process: Pointer): TFpSymbol;
 {$IfDef WINDOWS}
+
+  function MaybeRecurse(AFoundSym: TFpSymbolDwarfFreePascalDataProc): TFpSymbol;
+  begin
+    Result := nil;
+    if (StrLComp(PChar(AFoundSym.Name), PChar('$fin'), 4) = 0) and
+       (AFoundSym.Name <> Name) and
+       (AFoundSym.Address < Address) // a nested finally has a lower address / serves as recursion check
+    then begin
+      Result := AFoundSym.ResolveInternalFinallySymbol(Process);
+      if Result <> nil then
+        TFpSymbolDwarfFreePascalDataProc(Result).FOrigSymbol := Self;
+    end;
+  end;
+
 var
   StartPC, EndPC: TDBGPtr;
   HelpSymbol2: TFpSymbolDwarf;
@@ -2736,13 +2750,23 @@ begin
         if (AnAddresses[i] < StartPC) or (AnAddresses[i] > EndPC) then begin
           TFpSymbol(HelpSymbol2) := DbgInfo.FindProcSymbol(AnAddresses[i]);
           if (HelpSymbol2 <> nil) and (HelpSymbol2.CompilationUnit = CompilationUnit) and
-             (HelpSymbol2.InheritsFrom(TFpSymbolDwarfFreePascalDataProc)) and
-             ('$fin' <> copy(HelpSymbol2.Name,1, 4) )
+             (HelpSymbol2.InheritsFrom(TFpSymbolDwarfFreePascalDataProc))
           then begin
-            Result := HelpSymbol2;
-            // *** FOrigSymbol has now the reference that the caller had. ***
-            TFpSymbolDwarfFreePascalDataProc(Result).FOrigSymbol := Self;
-            exit;
+            if ('$fin' <> copy(HelpSymbol2.Name,1, 4) )
+            then begin
+              Result := HelpSymbol2;
+              // *** FOrigSymbol has now the reference that the caller had. ***
+              TFpSymbolDwarfFreePascalDataProc(Result).FOrigSymbol := Self;
+              exit;
+            end
+            else begin
+              Result := MaybeRecurse(TFpSymbolDwarfFreePascalDataProc(HelpSymbol2));
+              if Result <> nil then begin
+                HelpSymbol2.ReleaseReference;
+                exit;
+              end;
+              Result := Self;
+            end;
           end;
           HelpSymbol2.ReleaseReference;
         end;
@@ -2756,9 +2780,15 @@ begin
       if (HelpSymbol2 <> nil) and (HelpSymbol2.CompilationUnit = CompilationUnit) and
          (HelpSymbol2.InheritsFrom(TFpSymbolDwarfFreePascalDataProc))
       then begin
-        Result := HelpSymbol2;
-        // *** FOrigSymbol has now the reference that the caller had. ***
-        TFpSymbolDwarfFreePascalDataProc(Result).FOrigSymbol := Self;
+        Result := MaybeRecurse(TFpSymbolDwarfFreePascalDataProc(HelpSymbol2));
+        if Result <> nil then begin
+          HelpSymbol2.ReleaseReference;
+        end
+        else begin
+          Result := HelpSymbol2;
+          // *** FOrigSymbol has now the reference that the caller had. ***
+          TFpSymbolDwarfFreePascalDataProc(Result).FOrigSymbol := Self;
+        end;
         exit;
       end;
       HelpSymbol2.ReleaseReference;
