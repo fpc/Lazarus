@@ -533,7 +533,7 @@ type
   protected
     function GetCharSet: TFontCharSet;
     function GetHeight: Integer;
-    function GetName: string;
+    //function GetName: string;
     //function GetOrientation: Integer;
     function GetPitch: TFontPitch;
     function GetSize: Integer;
@@ -577,7 +577,7 @@ type
     property CharSet: TFontCharSet read GetCharSet write SetCharSet default DEFAULT_CHARSET;
     property Color: TColor read FColor write SetColor default {$ifdef UseCLDefault}clDefault{$else}clWindowText{$endif};
     property Height: Integer read GetHeight write SetHeight stored IsHeightStored;
-    property Name: string read GetName write SetName stored IsNameStored;
+    property Name{: string read GetName write SetName} stored IsNameStored;
     property Orientation; //: Integer read GetOrientation write SetOrientation default 0;
     property Pitch: TFontPitch read GetPitch write SetPitch default fpDefault;
     property Quality: TFontQuality read FQuality write SetQuality default fqDefault;

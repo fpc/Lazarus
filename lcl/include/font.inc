@@ -963,10 +963,10 @@ end;
 
   Returns the name of the font
  ------------------------------------------------------------------------------}
-function TFont.GetName: string;
-begin
-  Result := inherited Name;
-end;
+//function TFont.GetName: string;
+//begin
+//  Result := inherited Name;
+//end;
 
 {------------------------------------------------------------------------------
   Returns the orientation of the font
