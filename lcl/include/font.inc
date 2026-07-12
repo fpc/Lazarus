@@ -843,10 +843,10 @@ end;
 
   Calculates the size based on height
  ------------------------------------------------------------------------------}
-function TFont.GetSize: Integer;
-begin
-  Result := inherited Size;
-end;
+//function TFont.GetSize: Integer;
+//begin
+//  Result := inherited Size;
+//end;
 
 {------------------------------------------------------------------------------
   Method: TFont.SetPitch

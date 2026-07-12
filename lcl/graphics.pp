@@ -536,7 +536,7 @@ type
     //function GetName: string;
     //function GetOrientation: Integer;
     function GetPitch: TFontPitch;
-    function GetSize: Integer;
+    //function GetSize: Integer;
     function GetStyle: TFontStyles;
     procedure Changed; override;
     procedure DoAllocateResources; override;
@@ -581,7 +581,7 @@ type
     property Orientation; //: Integer read GetOrientation write SetOrientation default 0;
     property Pitch: TFontPitch read GetPitch write SetPitch default fpDefault;
     property Quality: TFontQuality read FQuality write SetQuality default fqDefault;
-    property Size: Integer read GetSize write SetSize stored false;
+    property Size{: Integer read GetSize write SetSize} stored false;
     property Style: TFontStyles read GetStyle write SetStyle default [];
   end;
 
