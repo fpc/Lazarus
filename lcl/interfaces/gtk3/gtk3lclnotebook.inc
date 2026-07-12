@@ -201,11 +201,50 @@ begin
   nat_height^ := Max(base_nat, 1);
 end;
 
+function LCLGtkNotebookDraw(widget: PGtkWidget; cr: Pcairo_t): gboolean; cdecl;
+var
+  ParentClass: PGtkWidgetClass;
+  AAlloc, PAlloc: TGtkAllocation;
+  ACurPage: gint;
+  APage: PGtkWidget;
+  ANotebook: PGtkNotebook;
+begin
+  Result := False;
+  ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
+  if not Assigned(ParentClass) or not Assigned(ParentClass^.draw) then
+    Exit;
+
+  ANotebook := PGtkNotebook(widget);
+  if gtk_notebook_get_show_tabs(ANotebook) then
+  begin
+    ACurPage := gtk_notebook_get_current_page(ANotebook);
+    if ACurPage >= 0 then
+    begin
+      APage := gtk_notebook_get_nth_page(ANotebook, ACurPage);
+      if APage <> nil then
+      begin
+        gtk_widget_get_allocation(widget, @AAlloc);
+        gtk_widget_get_allocation(APage, @PAlloc);
+        if gtk_notebook_get_tab_pos(ANotebook) in [GTK_POS_LEFT, GTK_POS_RIGHT] then
+        begin
+          if (PAlloc.width > 0) and (PAlloc.width >= AAlloc.width) then
+            Exit;
+        end else
+          if (PAlloc.height > 0) and (PAlloc.height >= AAlloc.height) then
+            Exit;
+      end;
+    end;
+  end;
+
+  Result := ParentClass^.draw(widget, cr);
+end;
+
 procedure LCLGtkNotebookClassInit(klass: PGTypeClass; {%H-}data: Pointer); cdecl;
 var
   AWidgetClass: PGtkWidgetClass;
 begin
   AWidgetClass := PGtkWidgetClass(klass);
+  AWidgetClass^.draw := @LCLGtkNotebookDraw;
   AWidgetClass^.size_allocate := @LCLGtkNotebookSizeAllocate;
   AWidgetClass^.get_preferred_width := @LCLGtkNotebookGetPreferredWidth;
   AWidgetClass^.get_preferred_height := @LCLGtkNotebookGetPreferredHeight;
