@@ -6384,6 +6384,7 @@ begin
 
     AutoContinueTime:=XMLConfig.GetValue(Path+'AutoContinueTime/Value',0);
     BreakHitCount := XMLConfig.GetValue(Path+'BreakHitCount/Value',0);
+    Expression:=XMLConfig.GetValue(Path+'Expression/Value','');
 
     InitialEnabled:=XMLConfig.GetValue(Path+'InitialEnabled/Value',true);
     Enabled:=InitialEnabled;
@@ -6429,6 +6430,7 @@ begin
 
   AConfig.SetDeleteValue(APath+'AutoContinueTime/Value',AutoContinueTime,0);
   AConfig.SetDeleteValue(APath+'BreakHitCount/Value',BreakHitCount,0);
+  AConfig.SetDeleteValue(APath+'Expression/Value',Expression,'');
 
   AConfig.SetDeleteValue(APath+'InitialEnabled/Value',InitialEnabled,true);
   AConfig.SetDeleteValue(APath+'LogEvalExpression/Value', FLogEvalExpression,'');
@@ -6614,8 +6616,6 @@ begin
     try ReadStr(XMLConfig.GetValue(Path+'WatchKind/Value', 'wpkWrite'), FWatchKind);
     except FWatchKind:= wpkWrite; end;
 
-    Expression:=XMLConfig.GetValue(Path+'Expression/Value','');
-
     Filename:=XMLConfig.GetValue(Path+'Source/Value','');
     if Assigned(OnLoadFilename) then OnLoadFilename(Filename);
     FSource:=Filename;
@@ -6641,8 +6641,6 @@ begin
   AConfig.SetDeleteValue(APath+'WatchScope/Value', s, 'wpsGlobal');
   WriteStr(s, FWatchKind);
   AConfig.SetDeleteValue(APath+'WatchKind/Value', s, 'wpkWrite');
-
-  AConfig.SetDeleteValue(APath+'Expression/Value',Expression,'');
 
   Filename := Source;
   if Assigned(OnSaveFilename) then OnSaveFilename(Filename);
