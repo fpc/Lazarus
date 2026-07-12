@@ -101,6 +101,7 @@ type
     class function MoveTabFocus(aWidget: PGtkWidget;
       aDirection: TGtkDirectionType; aData: gPointer): gBoolean; cdecl; static;
     class function WidgetEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl; static; {main event filter of widget}
+    class procedure GrabNotify({%H-}widget: PGtkWidget; was_grabbed: gboolean; {%H-}data: GPointer); cdecl; static;
     class procedure DestroyWidgetEvent({%H-}w: PGtkWidget;{%H-}data:gpointer); cdecl; static;
   strict private
     FCentralWidgetRGBA: array [0{GTK_STATE_NORMAL}..4{GTK_STATE_INSENSITIVE}] of TDefaultRGBA;
@@ -2556,8 +2557,8 @@ end;
 function TGtk3Widget.SetCapture: HWND;
 begin
   Result := HWND(GetCapture);
-  gtk_grab_add(GetContainerWidget);
-  Gtk3WidgetSet.FLCLCaptureWidget := GetContainerWidget;
+  gtk_grab_add(FWidget);
+  Gtk3WidgetSet.FLCLCaptureWidget := FWidget;
 end;
 
 procedure TGtk3Widget.DeliverIMCommit(const AStr: string);
@@ -3460,6 +3461,18 @@ begin
     GetContainerWidget^.set_style(AValue);}
 end;
 
+class procedure TGtk3Widget.GrabNotify(widget: PGtkWidget; was_grabbed: gboolean; data: GPointer); cdecl;
+var
+  CurGrab: PGtkWidget;
+begin
+  if not was_grabbed then
+    exit;
+  CurGrab := gtk_grab_get_current;
+  if (Gtk3WidgetSet.FLCLCaptureWidget <> nil) and
+     ((CurGrab = nil) or (CurGrab = Gtk3WidgetSet.FLCLCaptureWidget)) then
+    Gtk3WidgetSet.ReleaseCapture;
+end;
+
 class procedure TGtk3Widget.DestroyWidgetEvent(w: PGtkWidget; data: gpointer); cdecl;
 begin
   {$IFDEF GTK3DEBUGCORE}
@@ -3872,6 +3885,7 @@ begin
     FWidget^.set_events(GDK_DEFAULT_EVENTS_MASK);
   g_signal_connect_data(FWidget, 'destroy', TGCallback(@DestroyWidgetEvent), Self, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(FWidget, 'event', TGCallback(@WidgetEvent), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(FWidget, 'grab-notify', TGCallback(@GrabNotify), Self, nil, G_CONNECT_DEFAULT);
 
   if FWidgetType * [wtWindow, wtDialog, wtHintWindow] = [] then
   begin
