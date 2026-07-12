@@ -1,0 +1,45 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: reglazdaemon.sdaemonappdescr
+msgid "Daemon (service) application is a non-gui application that runs in the background."
+msgstr "Daemon(Service)-Programm hat kein GUI und läuft im Hintergrund."
+
+#: reglazdaemon.sdaemonappname
+msgid "Daemon (service) application"
+msgstr "Daemon(Service)-Programm"
+
+#: reglazdaemon.sdaemonapps
+msgid "Daemon (service) applications"
+msgstr "Daemon(Service)-Programme"
+
+#: reglazdaemon.sdaemondescr
+msgid "Daemon Module for inclusion in a daemon application"
+msgstr "Daemon-Modul für die Einbindung in ein Daemon-Programm"
+
+#: reglazdaemon.sdaemonmapperdescr
+msgid ""
+"Daemon mapper for inclusion in a daemon application.\n"
+"Only one daemon mapper may exist in a daemon application."
+msgstr ""
+"Daemon-Mapper für die Einbindung in ein Daemon-Programm.\n"
+"In einem Daemon-Programm darf es nur einen einzigen Daemon-Mapper geben."
+
+#: reglazdaemon.sdaemonmappername
+msgid "Daemon mapper"
+msgstr "Daemon-Mapper"
+
+#: reglazdaemon.sdaemonname
+msgid "Daemon Module"
+msgstr "Daemon-Modul"
+

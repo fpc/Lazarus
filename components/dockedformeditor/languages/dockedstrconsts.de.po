@@ -1,0 +1,225 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: dockedstrconsts.sallowsizingcaption
+msgid "Allow size changing"
+msgstr "Erlaube die Größe zu ändern"
+
+#: dockedstrconsts.sallowsizinghint
+msgid "Grips can change size in Anchor Editor"
+msgstr "Griffe können die Größe im Anker-Editor ändern"
+
+#: dockedstrconsts.sanchorbottomcolorcaption
+msgid "Bottom Anchor"
+msgstr "Unterer-Rand-Anker"
+
+#: dockedstrconsts.sanchorcontrolbordercaption
+msgid "Border Around Control"
+msgstr "Steuerelement-Rundherum-Rand"
+
+#: dockedstrconsts.sanchorcontrolcolorcaption
+msgid "Control Background"
+msgstr "Steuerelement-Hintergrund"
+
+#: dockedstrconsts.sanchorleftcolorcaption
+msgid "Left Anchor"
+msgstr "Linker Anker"
+
+#: dockedstrconsts.sanchorrightcolorcaption
+msgid "Right Anchor"
+msgstr "Rechter Anker"
+
+#: dockedstrconsts.sanchors
+msgid "Anchors"
+msgstr "Anker"
+
+#: dockedstrconsts.sanchortabvisiblecaption
+msgid "Show Anchors Tab"
+msgstr "Anker-Reiter anzeigen"
+
+#: dockedstrconsts.sanchortabvisiblehint
+msgid "Show Anchor Editor"
+msgstr "Anker-Editor anzeigen"
+
+#: dockedstrconsts.sanchortargetcolorcaption
+msgid "Anchor Target"
+msgstr "Anker-Ziel"
+
+#: dockedstrconsts.sanchortopcolorcaption
+msgid "Top Anchor"
+msgstr "Oberer Anker"
+
+#: dockedstrconsts.sargumentoutofrange
+msgctxt "dockedstrconsts.sargumentoutofrange"
+msgid "Argument out of range."
+msgstr "Argument außerhalb des Bereichs."
+
+#: dockedstrconsts.sattachcontrol
+msgid "Attach Control"
+msgstr "Steuerelement anhängen"
+
+#: dockedstrconsts.sattachpoint
+msgid "Attach Control Sides"
+msgstr "Seiten des Steuerelements anhängen"
+
+#: dockedstrconsts.sattachside
+msgid "Attach Control Side"
+msgstr "Seite des Steuerelements anhängen"
+
+#: dockedstrconsts.scaptiondockedformeditor
+msgid "Docked Form Editor"
+msgstr "Angedockter Formular-Editor"
+
+#: dockedstrconsts.scapturedistancecaption
+msgid "Capture Distance"
+msgstr "Entfernung erfassen"
+
+#: dockedstrconsts.scapturedistancehint
+msgid "Minimal distance to capture a control with mouse"
+msgstr "Minimaler Abstand um ein Steuerelement mit der Maus zu erfassen"
+
+#: dockedstrconsts.scirculardependency
+msgid "This will create a circular dependency."
+msgstr "Dies wird eine zirkuläre Abhängigkeit erzeugen."
+
+#: dockedstrconsts.scode
+msgctxt "dockedstrconsts.scode"
+msgid "Code"
+msgstr "Code"
+
+#: dockedstrconsts.scolorscaption
+msgid "Colors"
+msgstr "Farben"
+
+#: dockedstrconsts.sdesigner
+msgctxt "dockedstrconsts.sdesigner"
+msgid "Form"
+msgstr "Formular"
+
+#: dockedstrconsts.sdetachcontrol
+msgid "Detach Control"
+msgstr "Steuerelement abtrennen"
+
+#: dockedstrconsts.sdetachpoint
+msgid "Detach Control Sides"
+msgstr "Seiten des Steuerelements abtrennen"
+
+#: dockedstrconsts.sdetachside
+msgid "Detach Control Side"
+msgstr "Seite des Steuerelements abtrennen"
+
+#: dockedstrconsts.senabledockeddsgner
+msgid "Show the form-editor as (docked) tab in the editor window (Requires IDE restart)"
+msgstr "Den Formular-Editor als (angedockten) Tab im Editorfenster anzeigen (Erfordert Neustart der IDE)"
+
+#: dockedstrconsts.setupdesignerclassic
+msgid "Classic Form Editor (floating):"
+msgstr "Klassischer Formular-Editor (Schwebend)"
+
+#: dockedstrconsts.setupdesignerdocked
+msgid "The form editor is part of the IDE's source editor (tabbed interface)."
+msgstr "Der Formulareditor ist Teil des Quelltext-Editors der IDE (Tabbed Interface)"
+
+#: dockedstrconsts.setupdesignerfloat
+msgid "The form editor shows the edited form as a normal window."
+msgstr "Der Formular-Editor zeigt das editierte Formular als normales Fenster."
+
+#: dockedstrconsts.setupdesignerinfo
+msgid "The \"classic\" designer can be positioned on your screen independent of other parts of the IDE. The \"modern\" docked designer will be embedded into the source-edit window, and you will have a tab to toggle between source and form. You can open a 2nd source-edit window to see both at the same time."
+msgstr "Der \"klassische\" Designer kann auf dem Bildschirm unabhängig von anderen Teilen der IDE positioniert werden. Der \"moderne\" angedockte Designer wird in das Quelltext-Editor-Fenster integriert and es gibt einen Reiter, um zwischen Quelle und Formular hin und her zu schalten. Man kann ein 2. Quelltext-Editor-Fenster öffnen, um beide gleichzeitig zu sehen."
+
+#: dockedstrconsts.setupdesignermodern
+msgid "Modern Form Editor (docked/tabbed):"
+msgstr "Moderner Formular-Editor (angedockt/tabbed)"
+
+#: dockedstrconsts.setupmultiwindowideoption
+msgid "You can change this in the IDE options under: \"Docked Form Editor\""
+msgstr "Sie können dies in den IDE-Einstellungen unter \"Angedockter Formular-Editor\" ändern"
+
+#: dockedstrconsts.sforcerefreshingcaption
+msgid "Force Refreshing At Sizing"
+msgstr "Aktualisierung beim Ändern der Größe erzwingen"
+
+#: dockedstrconsts.sforcerefreshinghint
+msgid "Force refreshing form when user is sizing it"
+msgstr "Aktualisierung beim Ändern der Größe durch den Nutzer erzwingen"
+
+#: dockedstrconsts.sformeditor
+msgid "Form editor / Designer"
+msgstr "Formular-Editor / Designer"
+
+#: dockedstrconsts.sidelayout
+msgid "IDE Layout"
+msgstr "IDE-Layout"
+
+#: dockedstrconsts.smouseborderfactorcaption
+msgid "Mouse cursor factor for BorderSpacing property"
+msgstr "Faktor des Maus-Zeigers für die Eigenschaft BorderSpacing"
+
+#: dockedstrconsts.smouseborderfactorhint
+msgid "Mouse cursor factor is used to set small values of BorderSpacing property more precisely"
+msgstr "Der Faktor des Maus-Zeigers wird genutzt, um kleine Werte der Eigenschaft BorderSpacing präziser einzustellen"
+
+#: dockedstrconsts.sresizercolorcaption
+msgid "Resizer Color"
+msgstr "Farbe des Resizer"
+
+#: dockedstrconsts.sresizercolorhint
+#, fuzzy
+msgid "Color of resizer bars"
+msgstr "Farbe der Resizer-Balken"
+
+#: dockedstrconsts.stabpositionbottom
+msgid "Bottom"
+msgstr "Unten"
+
+#: dockedstrconsts.stabpositioncaption
+msgid "Tab Position"
+msgstr "Reiter-Position"
+
+#: dockedstrconsts.stabpositionhint
+msgid "Position of Code, Form, Anchors tabs"
+msgstr "Reiter-Positionen für Code, Formular und Anker"
+
+#: dockedstrconsts.stabpositionleft
+msgid "Left"
+msgstr "Links"
+
+#: dockedstrconsts.stabpositionright
+msgid "Right"
+msgstr "Rechts"
+
+#: dockedstrconsts.stabpositiontop
+msgid "Top"
+msgstr "Oben"
+
+#: dockedstrconsts.streataligncaption
+msgid "Automatically treat Align properties"
+msgstr "Align-Eigenschaften automatisch behandeln"
+
+#: dockedstrconsts.streatalignhint
+msgid "Automatically replace Align properties with appropriate Anchors"
+msgstr "Align-Eigenschaften automatisch mit passenden Ankern ersetzen"
+
+#: dockedstrconsts.streatbordercaption
+msgid "Automatically treat BorderSpacing properties"
+msgstr "BorderSpacing-Eigenschaften automatisch behandeln"
+
+#: dockedstrconsts.streatborderhint
+msgid "Automatically replace BorderSpacing.Around properties of controls and adapt BorderSpacing.Left/Right/Top/Bottom if needed"
+msgstr "BorderSpacing.Around-Eigenschaften von Steuerelement automatisch ersetzen und falls nötig BorderSpacing.Left/Right/Top/Bottom anpassen"
+
+#: dockedstrconsts.swarningcaption
+msgid "Warning"
+msgstr "Warnung"
+

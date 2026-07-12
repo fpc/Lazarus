@@ -13,12 +13,12 @@ msgstr ""
 
 #: eduoptions.edurseducation
 msgid "Education"
-msgstr ""
+msgstr "Bildung"
 
 #: eduoptions.ersaddanentrytothenewdialogtocreateanewprogram
 #, object-pascal-format
 msgid "Add an entry to the %sNew ...%s dialog to create a new program"
-msgstr ""
+msgstr "Füge einen Eintrag im Dialog %sNeu ...%s hinzu, um ein neues Progamm zu erzeugen"
 
 #: eduoptions.ersaddanidemenuitemtocreateanewprogram
 msgid "Add an IDE menu item to create a new program"
@@ -26,7 +26,7 @@ msgstr "Einen IDE-Menüeintrag zum Erzeugen eines neuen Programms hinzufügen"
 
 #: eduoptions.ersaddaspeedbuttontotheidetoolbartocreateanewprogram
 msgid "Add a speed button to the IDE toolbar to create a new program"
-msgstr ""
+msgstr "Füge einen SpeedButton in Werkzeugleiste der IDE hinzu, um ein neues Programm zu erzeugen"
 
 #: eduoptions.ersaddicon
 msgid "Add icon"
@@ -72,11 +72,11 @@ msgstr "Eigenschaften und Ereignisse"
 
 #: eduoptions.ersedusbtitle
 msgid "Speed Buttons"
-msgstr ""
+msgstr "SpeedButtons"
 
 #: eduoptions.ersenableeducheckboxcaption
 msgid "Enable education settings"
-msgstr ""
+msgstr "Einstellungen für Lehre anschalten"
 
 #: eduoptions.ersgrpboxeventsext
 msgid "Events: Extended Configuration"
@@ -112,11 +112,11 @@ msgstr "IDE Menüpunkte"
 
 #: eduoptions.ersloaddefaultcode
 msgid "Load default code?"
-msgstr ""
+msgstr "Standard-Code laden?"
 
 #: eduoptions.ersloadsourcefromfile
 msgid "Load source from file"
-msgstr ""
+msgstr "Quellcode aus Datei laden"
 
 #: eduoptions.ersnewprogram
 msgctxt "eduoptions.ersnewprogram"
@@ -125,11 +125,11 @@ msgstr "Neues Programm"
 
 #: eduoptions.ersnewsinglefileeducationprogram
 msgid "New single file education program"
-msgstr ""
+msgstr "Neues Ein-Datei-Programm für Ausbildung"
 
 #: eduoptions.ersnewsinglefileprogram
 msgid "New single file program"
-msgstr ""
+msgstr "Neues Ein-Datei-Programm"
 
 #: eduoptions.ersrdbtnfull
 msgid "Show All"
@@ -145,11 +145,11 @@ msgstr "Eigenschaften"
 
 #: eduoptions.ersreplacecurrentsourcewithdefaultsourcecode
 msgid "Replace current source with default source code"
-msgstr ""
+msgstr "Aktuellen Quellcode durch Standard ersetzen"
 
 #: eduoptions.ersreplacecurrentwithdefaultsourcecode
 msgid "Replace current with default source code?"
-msgstr ""
+msgstr "Aktuellen Quellcode durch Standard ersetzen?"
 
 #: eduoptions.ersshowall
 msgid "Show all"
@@ -161,11 +161,11 @@ msgstr "Alle untergeordneten Objekte anzeigen"
 
 #: eduoptions.ersshowextended
 msgid "Show Extended"
-msgstr ""
+msgstr "Erweitert anzeigen"
 
 #: eduoptions.ersshowminimal
 msgid "Show Minimal"
-msgstr ""
+msgstr "Minimal anzeigen"
 
 #: eduoptions.ersshowoipages
 msgid "Show Object Inspector Pages"
@@ -177,7 +177,7 @@ msgstr "Auswahl anzeigen"
 
 #: eduoptions.erssinglefileprogram
 msgid "Single file program"
-msgstr ""
+msgstr "Ein-Datei-Programm"
 
 #: eduoptions.erssource
 msgid "Source"
@@ -185,7 +185,7 @@ msgstr "Quelltext"
 
 #: eduoptions.erssttexteventsext
 msgid "OnClick, OnChange, OnMouseMove, OnDblClick, OnCreate, OnKeyPress, OnFormCreate"
-msgstr ""
+msgstr "OnClick, OnChange, OnMouseMove, OnDblClick, OnCreate, OnKeyPress, OnFormCreate"
 
 #: eduoptions.erssttexteventsfull
 msgid "All Events available"
@@ -193,11 +193,11 @@ msgstr "Alle Ereignisse verfügbar"
 
 #: eduoptions.erssttexteventsmin
 msgid "OnClick, OnChange, OnMouseMove"
-msgstr ""
+msgstr "OnClick, OnChange, OnMouseMove"
 
 #: eduoptions.erssttextpropsext
 msgid "Align, Left, Top, Hint, ShowHint, ParentFont, TabOrder, ParentShowHint, WordWrap, FixedCols, FixedRows, DefaultColWidth, DefaultRowHeight, ColCount, RowCount, Borderstyle, Glyph, State, Interval, DataSource, DataField + DB-Properties"
-msgstr ""
+msgstr "Align, Left, Top, Hint, ShowHint, ParentFont, TabOrder, ParentShowHint, WordWrap, FixedCols, FixedRows, DefaultColWidth, DefaultRowHeight, ColCount, RowCount, Borderstyle, Glyph, State, Interval, DataSource, DataField + DB-Properties"
 
 #: eduoptions.erssttextpropsfull
 msgid "All Properties available"
@@ -205,7 +205,7 @@ msgstr "Alle Eigenschaften verfügbar"
 
 #: eduoptions.erssttextpropsmin
 msgid "Name, Caption, Visible, Text, Checked, Items, Font, Color, Enabled, Height, Width, MaxLength, Picture, Columns"
-msgstr ""
+msgstr "Name, Caption, Visible, Text, Checked, Items, Font, Color, Enabled, Height, Width, MaxLength, Picture, Columns"
 
 #: eduoptions.ersvisiblecomponents
 msgid "Visible components"

@@ -1,0 +1,240 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: dbgintfcommonstrings.rsrunerrorarithmeticoverflowerror
+msgid "Arithmetic overflow error"
+msgstr "Fehler: Arithmetischer Überlauf"
+
+#: dbgintfcommonstrings.rsrunerrorassertionfailederror
+msgid "Assertion failed error"
+msgstr "Fehler: Assertion fehlgeschlagen"
+
+#: dbgintfcommonstrings.rsrunerrorbaddriverequeststructleng
+#, fuzzy
+msgid "Bad drive request struct length"
+msgstr "Schlechte Struct-Länge beim Anfordern eines Laufwerks"
+
+#: dbgintfcommonstrings.rsrunerrorcalltoabstractmethod
+msgid "Call to abstract method"
+msgstr "Aufruf einer abstrakten Methode"
+
+#: dbgintfcommonstrings.rsrunerrorcannotremovecurrentdirect
+msgid "Cannot remove current directory"
+msgstr "Kann das aktuelle Verzeichnis nicht löschen"
+
+#: dbgintfcommonstrings.rsrunerrorcannotrenameacrossdrives
+msgid "Cannot rename across drives"
+msgstr "Kann nicht über Laufwerke hinweg umbenennen"
+
+#: dbgintfcommonstrings.rsrunerrorcollectionindexoutofrange
+msgid "Collection index out of range"
+msgstr "Bereichsüberschreitung des Collection-Index"
+
+#: dbgintfcommonstrings.rsrunerrorcollectionoverflowerror
+msgid "Collection overflow error"
+msgstr "Fehler: Collection-Überlauf"
+
+#: dbgintfcommonstrings.rsrunerrorcrcerrorindata
+msgid "CRC error in data"
+msgstr "CRC-Fehler in Daten"
+
+#: dbgintfcommonstrings.rsrunerrordevicereadfault
+msgid "Device read fault"
+msgstr "Gerät-Lesefehler"
+
+#: dbgintfcommonstrings.rsrunerrordevicewritefault
+msgid "Device write fault"
+msgstr "Gerät-Schreibfehler"
+
+#: dbgintfcommonstrings.rsrunerrordiskiswriteprotected
+msgid "Disk is write-protected"
+msgstr "Festplatte ist schreibgeschützt"
+
+#: dbgintfcommonstrings.rsrunerrordiskreaderror
+msgid "Disk read error"
+msgstr "Festplatten-Lesefehler"
+
+#: dbgintfcommonstrings.rsrunerrordiskseekerror
+msgid "Disk seek error"
+msgstr "Festplatten-Suchfehler"
+
+#: dbgintfcommonstrings.rsrunerrordiskwriteerror
+msgid "Disk write error"
+msgstr "Festplatten-Schreibfehler"
+
+#: dbgintfcommonstrings.rsrunerrordivisionbyzero
+msgid "Division by zero"
+msgstr "Null-Division"
+
+#: dbgintfcommonstrings.rsrunerrordrivenotready
+msgid "Drive not ready"
+msgstr "Laufwerk ist nicht bereit"
+
+#: dbgintfcommonstrings.rsrunerrorexceptionstackcorrupted
+msgid "Exception stack corrupted"
+msgstr "Beschädigter Ausnahme-Stack"
+
+#: dbgintfcommonstrings.rsrunerrorfileaccessdenied
+msgid "File access denied"
+msgstr "Dateizugriff verweigert"
+
+#: dbgintfcommonstrings.rsrunerrorfilenotassigned
+msgid "File not assigned"
+msgstr "Datei nicht zugewiesen"
+
+#: dbgintfcommonstrings.rsrunerrorfilenotfound
+msgid "File not found"
+msgstr "Datei nicht gefunden"
+
+#: dbgintfcommonstrings.rsrunerrorfilenotopen
+msgid "File not open"
+msgstr "Daten nicht geöffnet"
+
+#: dbgintfcommonstrings.rsrunerrorfilenotopenforinput
+msgid "File not open for input"
+msgstr "Datei nicht für Eingabe geöffnet"
+
+#: dbgintfcommonstrings.rsrunerrorfilenotopenforoutput
+msgid "File not open for output"
+msgstr "Datei nicht für Ausgabe geöffnet"
+
+#: dbgintfcommonstrings.rsrunerrorfloatingpointoverflow
+msgid "Floating point overflow"
+msgstr "Gleitkomma-Überlauf"
+
+#: dbgintfcommonstrings.rsrunerrorfloatingpointunderflow
+#, fuzzy
+msgid "Floating point underflow"
+msgstr "Gleitkomma-Underflow"
+
+#: dbgintfcommonstrings.rsrunerrorgeneralprotectionfault
+msgid "General Protection fault"
+msgstr "Allgemeiner Schutzfehler"
+
+#: dbgintfcommonstrings.rsrunerrorhardwarefailure
+msgid "Hardware failure"
+msgstr "Hardware-Fehler"
+
+#: dbgintfcommonstrings.rsrunerrorheapoverflowerror
+msgid "Heap overflow error"
+msgstr "Fehler: Heap-Überlauf"
+
+#: dbgintfcommonstrings.rsrunerrorinvaliddrivenumber
+msgid "Invalid drive number"
+msgstr "Ungültige Laufwerksnummer"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidenumeration
+msgid "Invalid enumeration"
+msgstr "Ungültige Aufzählung"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidfileaccesscode
+msgid "Invalid file access code"
+msgstr "Ungültiger Dateizugriffs-Code"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidfilehandle
+msgid "Invalid file handle"
+msgstr "Ungültiges Datei-Handle"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidfloatingpointopera
+msgid "Invalid floating point operation"
+msgstr "Ungültige Gleitkomma-Operation"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidfunctionnumber
+msgid "Invalid function number"
+msgstr "Ungültige Funktionsnummer"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidnumericformat
+msgid "Invalid numeric format"
+msgstr "Ungültiges numerisches Format"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidpointeroperation
+msgid "Invalid pointer operation"
+msgstr "Ungültige Pointer-Operation"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidtypecast
+msgid "Invalid typecast"
+msgstr "Ungültige Typumwandlung"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidvaluespecified
+msgid "Invalid value specified"
+msgstr "Ungültiger Wert angegeben"
+
+#: dbgintfcommonstrings.rsrunerrorobjectnotinitialized
+msgid "Object not initialized"
+msgstr "Objekt nicht initialisiert"
+
+#: dbgintfcommonstrings.rsrunerrorpathnotfound
+msgid "Path not found"
+msgstr "Pfad nicht gefunden"
+
+#: dbgintfcommonstrings.rsrunerrorprinteroutofpaper
+msgid "Printer out of paper"
+msgstr "Drucker hat kein Papier"
+
+#: dbgintfcommonstrings.rsrunerrorrangecheckerror
+msgid "Range check error"
+msgstr "Fehler: Bereichsüberschreitung"
+
+#: dbgintfcommonstrings.rsrunerrorsafecallerrorcheck
+#, fuzzy
+msgid "Safecall error check"
+msgstr "Safecall error check"
+
+#: dbgintfcommonstrings.rsrunerrorsectornotfound
+msgid "Sector Not Found"
+msgstr "Sektor nicht gefunden"
+
+#: dbgintfcommonstrings.rsrunerrorstackoverflowerror
+msgid "Stack overflow error"
+msgstr "Fehler: Stack-Überlauf"
+
+#: dbgintfcommonstrings.rsrunerrorstreamregistrationerror
+msgid "Stream registration error"
+msgstr "Fehler: Stream-Registrierung"
+
+#: dbgintfcommonstrings.rsrunerrorthreadsnotsupported
+msgid "Threads not supported"
+msgstr "Threads nicht unterstützt"
+
+#: dbgintfcommonstrings.rsrunerrortoomanyopenfiles
+msgid "Too many open files"
+msgstr "Zu viele geöffnete Dateien"
+
+#: dbgintfcommonstrings.rsrunerrorunhandledexceptionoccurre
+msgid "Unhandled exception occurred"
+msgstr "Eine nicht behandelte Exception trat auf"
+
+#: dbgintfcommonstrings.rsrunerrorunknownmediatype
+msgid "Unknown media type"
+msgstr "Unbekannte Medientyp"
+
+#: dbgintfcommonstrings.rsrunerrorvararrayboundscheckerror
+#, fuzzy
+msgid "Var Array Bounds check error"
+msgstr "Fehler: Bereichsüberschreitung bei einem Var-Array"
+
+#: dbgintfcommonstrings.rsrunerrorvariantarraycreate
+#, fuzzy
+msgid "Variant array create"
+msgstr "Variant Array erzeugen"
+
+#: dbgintfcommonstrings.rsrunerrorvariantdispatcherror
+#, fuzzy
+msgid "Variant dispatch error"
+msgstr "Variant dispatch error"
+
+#: dbgintfcommonstrings.rsrunerrorvariantisnotanarray
+#, fuzzy
+msgid "Variant is not an array"
+msgstr "Variant ist kein Array"
+

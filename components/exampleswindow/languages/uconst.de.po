@@ -1,0 +1,110 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: uconst.rsdefault
+msgid "Default"
+msgstr "Standard"
+
+#: uconst.rsdirwhereexamplesgo
+msgid "Directory where Examples go"
+msgstr "Verzeichnis für die Beispiele"
+
+#: uconst.rsexamplecategory
+msgid "Category"
+msgstr "Kategorie"
+
+#: uconst.rsexampleclose
+msgid "Close"
+msgstr "Schließen"
+
+#: uconst.rsexamplekeywords
+msgid "Keywords"
+msgstr "Schlüsselwörter"
+
+#: uconst.rsexamplename
+msgid "Name"
+msgstr "Name"
+
+#: uconst.rsexampleopen
+msgid "Open"
+msgstr "Öffnen"
+
+#: uconst.rsexamplepath
+msgid "Path"
+msgstr "Pfad"
+
+#: uconst.rsexampleprojects
+msgid "Example Projects"
+msgstr "Beispielprojekte"
+
+#: uconst.rsexamplerefresh
+msgid "Refresh"
+msgstr "Aktualisieren"
+
+#: uconst.rsexampleview
+msgid "View in Browser"
+msgstr "Im Browser ansehen"
+
+#: uconst.rsexcopyingproject
+msgid "Copying Project ..."
+msgstr "Projekt kopieren ..."
+
+#: uconst.rsexdownloadingproject
+msgid "Downloading Project ..."
+msgstr "Projekt herunterladen ..."
+
+#: uconst.rsexnetworkerror
+msgid "GitLab Network Error"
+msgstr "Gitlab-Netzwerk-Fehler"
+
+#: uconst.rsexnoprojectfile
+msgid "Project file not found."
+msgstr "Projekt nicht gefunden."
+
+#: uconst.rsexprojectcopiedto
+msgid "Project Copied to"
+msgstr "Projekt kopiert nach"
+
+#: uconst.rsexprojectdownloadedto
+msgid "Project Downloaded to"
+msgstr "Projekt herunter geladen in"
+
+#: uconst.rsexsearchingforexamples
+msgid "Searching for Examples ..."
+msgstr "Nach Beispielen suchen ..."
+
+#: uconst.rsexsearchprompt
+msgid "Search Here"
+msgstr "Hier suchen"
+
+#: uconst.rsfailedtocopyfilesto
+msgid "Failed to copy files to"
+msgstr "Fehlgeschlagen: Kopieren von Dateien nach"
+
+#: uconst.rsfoundexampleprojects
+#, object-pascal-format
+msgid "Found %d Example Projects"
+msgstr "%d Beispielprojekte gefunden"
+
+#: uconst.rsgeneral
+msgid "General"
+msgstr "Allgemein"
+
+#: uconst.rsgrouphint
+msgid "Double click inverts selection"
+msgstr "Doppelklick invertiert die Auswahl"
+
+#: uconst.rsrefreshexistingexample
+msgid "Refresh Existing Example?"
+msgstr "Vorhandenes Beispiel aktualisieren?"
+

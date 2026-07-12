@@ -127,7 +127,7 @@ msgstr "Datadictionary dem Dataset %s zuordnen"
 #: ldd_consts.sapplyingddtofield
 #, object-pascal-format
 msgid "Applying data dictionary to field %s"
-msgstr "Datadictionary dem das Feld %s zuordnen"
+msgstr "Datadictionary dem Feld %s zuordnen"
 
 #: ldd_consts.serrnodatadesktopdoselect
 msgid ""
