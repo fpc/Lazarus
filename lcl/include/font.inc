@@ -976,10 +976,12 @@ end;
 
   The property and it's setter/getter pair are compatible with Delphi
  ------------------------------------------------------------------------------}
-function TFont.GetOrientation: Integer;
-begin
-  Result := FOrientation;
-end;
+
+//function TFont.GetOrientation: Integer;
+//begin
+//  Result := FOrientation;
+//end;
+
 
 {------------------------------------------------------------------------------
   Method: TFont.SetName
@@ -1008,10 +1010,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TFont.SetOrientation(AValue: Integer);
 begin
-  if FOrientation <> AValue then
+  if GetOrientation <> AValue then
   begin
     FreeReference;
-    FOrientation := AValue;
+    inherited SetOrientation(AValue);
     Changed;
   end;
 end;
@@ -1155,8 +1157,8 @@ begin
   begin
     lfHeight := Height;
     lfWidth := 0;
-    lfEscapement := FOrientation;
-    lfOrientation := FOrientation;
+    lfEscapement := Orientation;
+    lfOrientation := Orientation;
     lfWeight := LF_WEIGHT[fsBold in Style];
     lfItalic := LF_BOOL[fsItalic in Style];
     lfUnderline := LF_BOOL[fsUnderline in Style];
@@ -1335,7 +1337,9 @@ begin
       inherited SetFlags(7, fsUnderline in FStyle);
     if (fsStrikeOut in OldStyle)<>(fsStrikeOut in FStyle) then
       inherited SetFlags(8, fsStrikeOut in FStyle);
-    FOrientation := FontData.Orientation;
+    BeginUpdate; //setting Orientation may call Changed, which is not needed yet
+    Orientation := FontData.Orientation;
+    EndUpDate;
     Changed;
   end;
 end;

@@ -507,7 +507,7 @@ type
   private
     FIsMonoSpace: boolean;
     FIsMonoSpaceValid: boolean;
-    FOrientation: Integer;
+    //FOrientation: Integer;
     FPitch: TFontPitch;
     FQuality: TFontQuality;
     FStyle: TFontStylesBase;
@@ -534,7 +534,7 @@ type
     function GetCharSet: TFontCharSet;
     function GetHeight: Integer;
     function GetName: string;
-    function GetOrientation: Integer;
+    //function GetOrientation: Integer;
     function GetPitch: TFontPitch;
     function GetSize: Integer;
     function GetStyle: TFontStyles;
@@ -578,7 +578,7 @@ type
     property Color: TColor read FColor write SetColor default {$ifdef UseCLDefault}clDefault{$else}clWindowText{$endif};
     property Height: Integer read GetHeight write SetHeight stored IsHeightStored;
     property Name: string read GetName write SetName stored IsNameStored;
-    property Orientation: Integer read GetOrientation write SetOrientation default 0;
+    property Orientation; //: Integer read GetOrientation write SetOrientation default 0;
     property Pitch: TFontPitch read GetPitch write SetPitch default fpDefault;
     property Quality: TFontQuality read FQuality write SetQuality default fqDefault;
     property Size: Integer read GetSize write SetSize stored false;
