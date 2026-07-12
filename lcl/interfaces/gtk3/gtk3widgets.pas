@@ -2624,7 +2624,8 @@ begin
   AEventString := AEvent.string_;
   if AKeyPress and (Gtk3WidgetSet.IMContext <> nil) and
      not Gtk3IsEntry(PGObject(Sender)) and
-     not Gtk3IsTextView(PGObject(Sender)) then
+     not Gtk3IsTextView(PGObject(Sender)) and
+     not ((GDK_CONTROL_MASK in AEvent.state) and not (GDK_MOD1_MASK in AEvent.state)) then
   begin
     Gtk3WidgetSet.IMCommitStr := '';
     Gtk3WidgetSet.IMInFilter := True;
