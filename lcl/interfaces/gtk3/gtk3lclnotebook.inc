@@ -67,6 +67,11 @@ begin
   if not Assigned(ParentClass) or not Assigned(ParentClass^.size_allocate) then
     Exit;
 
+  if allocation^.width < 0 then
+    allocation^.width := 0;
+  if allocation^.height < 0 then
+    allocation^.height := 0;
+
   Last1W := PtrInt(g_object_get_data(PGObject(widget), 'lcl-prev-aw'));
   Last1H := PtrInt(g_object_get_data(PGObject(widget), 'lcl-prev-ah'));
   Last2W := PtrInt(g_object_get_data(PGObject(widget), 'lcl-prev2-aw'));
@@ -204,9 +209,9 @@ end;
 function LCLGtkNotebookDraw(widget: PGtkWidget; cr: Pcairo_t): gboolean; cdecl;
 var
   ParentClass: PGtkWidgetClass;
-  AAlloc, PAlloc: TGtkAllocation;
+  AAlloc, PAlloc, TAlloc: TGtkAllocation;
   ACurPage: gint;
-  APage: PGtkWidget;
+  APage, ATabLabel: PGtkWidget;
   ANotebook: PGtkNotebook;
 begin
   Result := False;
@@ -215,23 +220,29 @@ begin
     Exit;
 
   ANotebook := PGtkNotebook(widget);
-  if gtk_notebook_get_show_tabs(ANotebook) then
+  ACurPage := gtk_notebook_get_current_page(ANotebook);
+
+  if gtk_notebook_get_show_tabs(ANotebook) and (ACurPage >= 0) then
   begin
-    ACurPage := gtk_notebook_get_current_page(ANotebook);
-    if ACurPage >= 0 then
+    APage := gtk_notebook_get_nth_page(ANotebook, ACurPage);
+    if APage <> nil then
     begin
-      APage := gtk_notebook_get_nth_page(ANotebook, ACurPage);
-      if APage <> nil then
+      gtk_widget_get_allocation(widget, @AAlloc);
+      gtk_widget_get_allocation(APage, @PAlloc);
+      if gtk_notebook_get_tab_pos(ANotebook) in [GTK_POS_LEFT, GTK_POS_RIGHT] then
       begin
-        gtk_widget_get_allocation(widget, @AAlloc);
-        gtk_widget_get_allocation(APage, @PAlloc);
-        if gtk_notebook_get_tab_pos(ANotebook) in [GTK_POS_LEFT, GTK_POS_RIGHT] then
-        begin
-          if (PAlloc.width > 0) and (PAlloc.width >= AAlloc.width) then
-            Exit;
-        end else
-          if (PAlloc.height > 0) and (PAlloc.height >= AAlloc.height) then
-            Exit;
+        if (PAlloc.width > 0) and (PAlloc.width >= AAlloc.width) then
+          Exit;
+      end else
+        if (PAlloc.height > 0) and (PAlloc.height >= AAlloc.height) then
+          Exit;
+
+      ATabLabel := gtk_notebook_get_tab_label(ANotebook, APage);
+      if (ATabLabel <> nil) and gtk_widget_get_visible(ATabLabel) then
+      begin
+        gtk_widget_get_allocation(ATabLabel, @TAlloc);
+        if (TAlloc.width <= 1) or (TAlloc.height <= 1) then
+          Exit;
       end;
     end;
   end;
