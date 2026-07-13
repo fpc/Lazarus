@@ -340,7 +340,10 @@ begin
     tbBreakIgnoreAll.ImageIndex  := FBreakPowerImgIdx[tbBreakIgnoreAll.Down];
   end;
 
-  if ABreakpoint = nil then Exit;
+  if ABreakpoint = nil then begin
+    UpdateAll;
+    exit;
+  end;
 
   BeginUpdate;
   try

@@ -47,7 +47,7 @@ uses
   // IdeIntf
   IdeDebuggerWatchValueIntf,
   // DebuggerIntf
-  DbgIntfMiscClasses, DbgIntfDebuggerBase,
+  DbgIntfMiscClasses, DbgIntfDebuggerBase, ProjectIntf,
   LazDebuggerIntf, LazDebuggerIntfBaseTypes, LazDebuggerValueConverter, LazDebuggerTemplate,
   LazDebuggerIntfFloatTypes, LazDebuggerIntfExceptions,
   // IdeDebugger
@@ -387,6 +387,7 @@ type
     procedure SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string;
                       const OnSaveFilename: TOnSaveFilenameToConfig); reintroduce;
     procedure SetAddress(const AValue: TDBGPtr); override;
+    procedure SetSource(const ASource: String);
     procedure SetLocation(const ASource: String; const ALine: Integer); override;
     procedure SetWatch(const AData: String; const AScope: TDBGWatchPointScope;
                        const AKind: TDBGWatchPointKind); override;
@@ -413,20 +414,23 @@ type
 
   TIDEBreakPoints = class(TBaseBreakPoints)
   private
+    FDebugger: TIdeDebugManagerIntf;
     FIgnoreAll: boolean;
     FNotificationList: TList;
     FMaster: TDBGBreakPoints;
-    procedure SetIgnoreAll(AValue: boolean);
+    procedure DoFileRenamed(ASender: TLazProjectFile; AnOldName, ANewName: String);
     procedure SetMaster(const AValue: TDBGBreakPoints);
     function GetItem(const AnIndex: Integer): TIDEBreakPoint;
     procedure SetItem(const AnIndex: Integer; const AValue: TIDEBreakPoint);
   protected
+    procedure SetIgnoreAll(AValue: boolean); virtual;
     procedure NotifyAdd(const ABreakPoint: TIDEBreakPoint); virtual;    // called when a breakpoint is added
     procedure NotifyRemove(const ABreakpoint: TIDEBreakPoint); virtual; // called by breakpoint when destructed
     procedure Update(Item: TCollectionItem); override;
   public
     constructor Create(const ABreakPointClass: TIDEBreakPointClass);
     destructor Destroy; override;
+    procedure Clear; override;
     function Add(const ASource: String; const ALine: Integer; AnUpdating: Boolean = False): TIDEBreakPoint; overload; reintroduce;
     function Add(const AAddress: TDBGPtr; AnUpdating: Boolean = False): TIDEBreakPoint; overload; reintroduce;
     function Add(const AData: String; const AScope: TDBGWatchPointScope;
@@ -448,6 +452,7 @@ type
                       const OnSaveFilename: TOnSaveFilenameToConfig); virtual;
     property Master: TDBGBreakPoints read FMaster write SetMaster;
   public
+    property Debugger: TIdeDebugManagerIntf read FDebugger write FDebugger;
     property Items[const AnIndex: Integer]: TIDEBreakPoint read GetItem
                                                          write SetItem; default;
     property IgnoreAll: boolean read FIgnoreAll write SetIgnoreAll;
@@ -6658,6 +6663,16 @@ begin
   //TODO: Why not DoUserChanged; ?
 end;
 
+procedure TIDEBreakPoint.SetSource(const ASource: String);
+begin
+  if (TIDEBreakPoints(Collection).Debugger <> nil) and
+     (TIDEBreakPoints(Collection).Debugger.State in [dsRun, dsPause, dsInternalPause])
+  then
+    inherited SetLocation(ASource, Line)
+  else
+    SetLocation(ASource, Line);
+end;
+
 procedure TIDEBreakPoint.SetLocation(const ASource: String; const ALine: Integer);
 begin
   inherited SetLocation(ASource, ALine);
@@ -6723,6 +6738,7 @@ constructor TIDEBreakPoints.Create(const ABreakPointClass: TIDEBreakPointClass);
 begin
   FMaster := nil;
   FNotificationList := TList.Create;
+  GlobalLazProjectHooks.RegisterProjectFileRenamedHandler(@DoFileRenamed);
   inherited Create(ABreakPointClass);
 end;
 
@@ -6730,12 +6746,19 @@ destructor TIDEBreakPoints.Destroy;
 var
   n: Integer;
 begin
+  GlobalLazProjectHooks.UnregisterProjectFileRenamedHandler(@DoFileRenamed);
   for n := FNotificationList.Count - 1 downto 0 do
     TDebuggerNotification(FNotificationList[n]).ReleaseReference;
 
   inherited;
 
   FreeAndNil(FNotificationList);
+end;
+
+procedure TIDEBreakPoints.Clear;
+begin
+  inherited Clear;
+  IgnoreAll := False;
 end;
 
 function TIDEBreakPoints.Find(const ASource: String;
@@ -6802,6 +6825,23 @@ begin
   EndUpdate;
 end;
 
+procedure TIDEBreakPoints.DoFileRenamed(ASender: TLazProjectFile; AnOldName, ANewName: String);
+var
+  i: Integer;
+  b: TIDEBreakPoint;
+begin
+  BeginUpdate;
+  try
+    for i := 0 to Count - 1 do begin
+      b := Items[i];
+      if (b.Kind = bpkSource) and (b.Source = AnOldName) then
+        b.SetSource(ANewName);
+    end;
+  finally
+    EndUpdate;
+  end;
+end;
+
 function TIDEBreakPoints.GetItem(const AnIndex: Integer): TIDEBreakPoint;
 begin
   Result := TIDEBreakPoint(inherited GetItem(AnIndex));
@@ -6865,6 +6905,8 @@ var
   BreakPointPath: string;
 begin
   Clear;
+  FIgnoreAll := XMLConfig.GetValue(Path + 'IgnoreAll', False);
+
   IsLegacyList := XMLConfig.IsLegacyList(Path);
   NewCount := XMLConfig.GetListItemCount(Path, 'Item', IsLegacyList);
 
@@ -6916,6 +6958,7 @@ var
   CurBreakPoint: TIDEBreakPoint;
   BreakPointPath: string;
 begin
+  XMLConfig.SetDeleteValue(Path + 'IgnoreAll', IgnoreAll, False);
   Cnt:=Count;
   XMLConfig.SetListItemCount(Path,Cnt,ALegacyList);
   for i:=0 to Cnt-1 do begin

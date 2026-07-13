@@ -1422,6 +1422,8 @@ begin
 end;
 
 procedure TUnitInfo.SetInternalFilename(const NewFilename: string);
+var
+  s: String;
 begin
   if fFileName=NewFilename then exit;
   //DebugLn('TUnitInfo.SetInternalFilename Old=',fFileName,' New=',NewFilename);
@@ -1433,9 +1435,11 @@ begin
     Project.SourceDirectories.RemoveFilename(fLastDirectoryReferenced);
     FSourceDirectoryReferenced:=false;
   end;
-  
+
+  s := fFileName;
   fFileName:=NewFilename;
   UpdateSourceDirectoryReference;
+  CallProjectFileRenamedHandler(s, fFileName);
 end;
 
 function TUnitInfo.GetFileName: string;
@@ -5201,6 +5205,7 @@ begin
       FSourceDirectories.RemoveFilename(fProjectDirectoryReferenced);
     if fProjectDirectory<>'' then
       FSourceDirectories.AddFilename(fProjectDirectory);
+    CallProjectDirChangedHandler(fProjectDirectoryReferenced, fProjectDirectory);
     fProjectDirectoryReferenced:=fProjectDirectory;
   end;
 end;

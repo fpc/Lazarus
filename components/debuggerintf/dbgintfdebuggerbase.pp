@@ -414,7 +414,7 @@ type
   public
     constructor Create(const ABreakPointClass: TBaseBreakPointClass);
     destructor Destroy; override;
-    procedure Clear; reintroduce;
+    procedure Clear; reintroduce; virtual;
     function Add(AnUpdating: Boolean = False): TBaseBreakPoint; reintroduce; overload;
     function Add(const ASource: String; const ALine: Integer; AnUpdating: Boolean = False): TBaseBreakPoint; overload;
     function Add(const AAddress: TDBGPtr; AnUpdating: Boolean = False): TBaseBreakPoint; overload;
@@ -3429,9 +3429,11 @@ begin
 
   BeginUpdate;
   try
-    SetLocation(FSource, Line);
-    if FSlave <> nil then
+    if FSlave <> nil then begin
+      if Kind = bpkSource then
+        SetLocation(FSlave.Source, FSlave.Line); // Source file may have been renamed
       FSlave.SetEnabled(InitialEnabled);
+    end;
     SetHitCount(0);
   finally
     EndUpdate;

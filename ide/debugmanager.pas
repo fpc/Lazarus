@@ -404,6 +404,7 @@ type
   private
     FManager: TDebugManager;
   protected
+    procedure SetIgnoreAll(AValue: boolean); override;
     procedure NotifyAdd(const ABreakPoint: TIDEBreakPoint); override;
     procedure NotifyRemove(const ABreakPoint: TIDEBreakPoint); override;
     procedure Update(Item: TCollectionItem); override;
@@ -592,6 +593,13 @@ constructor TManagedBreakPoints.Create(const AManager: TDebugManager);
 begin
   FManager := AManager;
   inherited Create(TManagedBreakPoint);
+end;
+
+procedure TManagedBreakPoints.SetIgnoreAll(AValue: boolean);
+begin
+  if (IgnoreAll <> AValue) and (Project1 <> nil) then
+    Project1.Modified := True;
+  inherited SetIgnoreAll(AValue);
 end;
 
 procedure TManagedBreakPoints.NotifyAdd(const ABreakPoint: TIDEBreakPoint);
@@ -2160,6 +2168,7 @@ begin
   FRegisters := TIdeRegistersMonitor.Create;
 
   FWatches.Debugger := Self;
+  FBreakPoints.Debugger := Self;
 
   FCallStackNotification := TCallStackNotification.Create;
   FCallStackNotification.AddReference;
@@ -2484,6 +2493,8 @@ end;
 ------------------------------------------------------------------------------}
 procedure TDebugManager.LoadProjectSpecificInfo(XMLConfig: TXMLConfig;
   Merge: boolean);
+var
+  b: Boolean;
 begin
   FBreakPointGroups.LoadFromXMLConfig(XMLConfig,
                                      'Debugging/'+XMLBreakPointGroupsNode+'/',
@@ -2494,9 +2505,12 @@ begin
     FIdeExceptions.LoadFromXMLConfig(XMLConfig,'Debugging/'+XMLExceptionsNode+'/', @FBreakPointGroups.GetGroupByName);
   end;
   // keep it simple: just load from the session and don't merge
+  b := FBreakPoints.IgnoreAll;
   FBreakPoints.LoadFromXMLConfig(XMLConfig,'Debugging/'+XMLBreakPointsNode+'/',
                                  @Project1.ConvertFromLPIFilename,
                                  @FBreakPointGroups.GetGroupByName);
+  if Merge and b then
+    FBreakPoints.IgnoreAll := True;
   FWatches.LoadFromXMLConfig(XMLConfig,'Debugging/'+XMLWatchesNode+'/');
 end;
 
