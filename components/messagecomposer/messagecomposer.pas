@@ -72,6 +72,7 @@ type
     IfThenElseRadioButton: TRadioButton;
     CaseOfEndRadioButton: TRadioButton;
     CaseOfEndElseRadioButton: TRadioButton;
+    NoneRadioButton: TRadioButton;
     SourceWrapperGroupBox: TGroupBox;
     Test: TAction;
     TestButton: TButton;
@@ -504,6 +505,8 @@ begin
         srcMessage := srcMessage+'else'+LineEnding;
       srcMessage := srcMessage+'end;'
     end;
+    if NoneRadioButton.Checked then
+      srcMessage := srcMessage+';';
   end;
 end;
 
@@ -891,10 +894,18 @@ var
 begin
   ComposedMsgKind := TComposedMsgKind(KindMessageComboBox.ItemIndex);
   if (ComposedMsgKind in [cmkInpBox, cmkPasswBox]) then exit;
-  if IfThenRadioButton.Checked or IfThenElseRadioButton.Checked then
-    SourceNotebook.PageIndex := idxPageIf
-  else
-    SourceNotebook.PageIndex := idxPageCase;
+  if NoneRadioButton.Checked then begin
+    BeginEndCheckBox.Enabled:=false;
+    SourceNotebook.Enabled:=false;
+  end
+  else begin
+    BeginEndCheckBox.Enabled:=true;
+    SourceNotebook.Enabled:=true;
+    if IfThenRadioButton.Checked or IfThenElseRadioButton.Checked then
+      SourceNotebook.PageIndex := idxPageIf
+    else
+      SourceNotebook.PageIndex := idxPageCase;
+  end;
 end;
 
 procedure TFormMessagesComposer.TestExecute(Sender: TObject);
