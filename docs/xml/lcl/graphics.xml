@@ -891,6 +891,7 @@ is added to the end of the text value. Preference is given to
 <short>Represents the clear pen style.</short>
 <descr>
 <p>Alias for the FPCanvas.psClear enumeration value in the FCL.
+No line is drawn when the Pen.Style is psClear.
 </p>
 </descr>
 <seealso/>
@@ -4022,11 +4023,16 @@ a different type (LongWord instead of TPenPattern).
 
 <element name="TPen.SetPattern">
 <short>
-<var>SetPattern</var> - specifies the pattern for the pen.
+<var>SetPattern</var> - specifies the pattern for the pen used when the Pen.Style is psPattern.
 </short>
 <descr>
-<p>SetPattern is a reintroduced procedure in TPen to use the TPenPattern 
+<p>
+SetPattern is a reintroduced procedure in TPen to use the TPenPattern 
 type. The property in the ancestor class uses the LongWord type.
+</p>
+<p>
+TPenPattern is an array of LongWord values which represent the lengths of
+strokes and spaces in an alternating way.
 </p>
 </descr>
 <seealso/>
@@ -7497,23 +7503,39 @@ Defined for FPC compiler version 3.3.1 and higher.
 </element>
 
 <element name="TLCLTextMetric">
-<short>Represents text metrics used in the LCL.</short>
-<descr/>
+<short>A record representing the physical dimensions of the currently selected 
+font in the canvas.</short>
+<descr>
+<p>
+The TLCLTextMetric record contains the elements Ascender, Descender and Height.
+Ascender and descender are relative to the baseline which is the line on which 
+the characters are drawn. Ascender is the distance the characters extend above,
+descender is the distance they extend below the baseline. Empty space to the
+next line is included in these values. The height encloses the entire character, 
+i.e. it is the sum of ascender and descender.
+</p>
+<p>
+When the canvas methods <var>TextOut</var> or <var>TextRect</var> draw text at 
+a point X,Y then Y is understood as the top of the characters. Therefore, the
+baseline is located below Y by the amount of ascender pixels, i.e. at 
+position Y + Ascender.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TLCLTextMetric.Ascender">
-<short>The portion of a font face above the mean line.</short>
+<short>The distance a character extends above the baseline.</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TLCLTextMetric.Descender">
-<short>The portion of a font face below the baseline for a font face.</short>
+<short>The distance a character extends below the baseline</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TLCLTextMetric.Height">
 <short>
-Distance between the baseline and the mean line for a font face.
+Entire character height, sum of ascender and descender.
 </short>
 <descr/>
 <seealso/>
@@ -8104,12 +8126,12 @@ rectangle and fill it.
 </element>
 
 <element name="TCanvas.DoEllipse">
-<short>Draws an Arc of 360 degrees within the specified Bounds.
+<short>Draws a full ellipse enclosed by the specified Bounds.
 </short>
 <descr>
 <p>
-<var>DoEllipse</var> draws an <var>Arc</var> of 360 degrees within given 
-<var>Bounds</var>, making an ellipse.
+<var>DoEllipse</var> draws a full ellipse (elliptical <var>Arc</var> of 360 degrees) within the given 
+<var>Bounds</var>.
 </p>
 </descr>
 <seealso>
@@ -8941,26 +8963,31 @@ for the platform.
 </p>
 <p>
 <var>ALeft</var>, <var>ATop</var>, <var>ABottom</var>, and <var>ARight</var> 
-represent the canvas bounds in which the drawing operation is performed.
+define the rectangle which encloses the full ellipse from which a part is
+drawn as arc.
 </p>
 <p>
 One variant of the method provides the <var>Angle16Deg</var> and 
 <var>Angle16DegLength</var> arguments.
 </p>
 <p>
-Angle16Deg contains the central angle which defines the direction for the arc 
-endpoint. Positive values indicate a counter-clockwise direction.Zero degrees 
-lies at the 3 o'clock position. These value is expressed in 1/16ths of a 
-degree. For example, a full circle equals 5760 (16*360) increments.
+Angle16Deg contains the angle at which the arc begins. Zero degrees lies at the
+3 o'clock position. Positive values indicate a counter-clockwise direction to 
+the start point. The angle is expressed in units of 1/16th of a degress.
 </p>
 <p>
-Angle16DegLength contains the arc length used to determine the over-all 
-circumference of the circle for with the arc is a segment.
+Angle16DegLength contains the arc length expressed in 1/16ths degrees. For
+example, a full circle would be represented by the value 5760 (=16*360). 
+A positive value indicates that the arc runs in counter-clockwise direction, 
+a negative value means clockwise direction.
 </p>
 <p>
 Another variant provides the <var>SX</var>, <var>SY</var> and <var>EX</var>, 
 <var>EY</var> arguments representing the starting and ending radial points 
-between which the Arc is drawn.
+between which the Arc is drawn. These points do not necessarily need to be on
+the ellipse outline. The Arc begins and ends at the intersection between the
+ellipse and the straight lines between the ellipse center and the points 
+(SX,SY) and (EX,EY), respectively.
 </p>
 </descr>
 <version>
@@ -8969,40 +8996,40 @@ were added in LCL version 2.6.1.
 </version>
 </element>
 <element name="TCanvas.Arc.ALeft">
-<short>Left boundary for the canvas.</short>
+<short>Coordinate of the left side of the rectangle enclosing the full ellipse.</short>
 </element>
 <element name="TCanvas.Arc.ATop">
-<short>Top boundary for the canvas.</short>
+<short>Coordinate of the top side of the rectangle enclosing the full ellipse.</short>
 </element>
 <element name="TCanvas.Arc.ARight">
-<short>Right boundary for the canvas.</short>
+<short>Coordinate of the top side of the rectangle enclosing the full ellipse.</short>
 </element>
 <element name="TCanvas.Arc.ABottom">
-<short>Bottom boundary for the canvas.</short>
+<short>Coordinate of the bottom side of the rectangle enclosing the full ellipse.</short>
 </element>
 <element name="TCanvas.Arc.Angle16Deg">
-<short>Angle for the arc segment in 1/16ths of a degree.</short>
+<short>Angle in 1/16ths of a degree at which the arc starts.</short>
 </element>
 <element name="TCanvas.Arc.Angle16DegLength">
-<short>Arc length.</short>
+<short>Length of the arc, given in units of 1/16th of a degree.</short>
 </element>
 <element name="TCanvas.Arc.SX">
 <short>
-Horizontal coordinate for the starting radial point in the arc.
+Horizontal coordinate of the point defining the start of the arc.
 </short>
 </element>
 <element name="TCanvas.Arc.SY">
 <short>
-Vertical coordinate for the starting radial point in the arc.
+Vertical coordinate of the point defining the start of the arc.
 </short>
 </element>
 <element name="TCanvas.Arc.EX">
 <short>
-Horizontal coordinate for the ending radial point in the arc.
+Horizontal coordinate of the point defining the end of the arc.
 </short>
 </element>
 <element name="TCanvas.Arc.EY">
-<short>Vertical coordinate for the ending radial point in the arc.</short>
+<short>Vertical coordinate of the point defining the end of the arc.</short>
 </element>
 
 <element name="TCanvas.ArcTo">
@@ -9043,7 +9070,7 @@ Like the Arc method, but updates the Pen position.
 
 <element name="TCanvas.AngleArc">
 <short>
-Draws an arc over a specified angle along the circumference of a circle.
+Draws a circular arc over a specified angle.
 </short>
 <descr>
 <p>
@@ -9051,7 +9078,7 @@ Draws an arc over a specified angle along the circumference of a circle.
 along the circumference of a circle with given radius and center point.
 </p>
 <p>
-<var>X</var> and <var>Y</var> contain the coordinates for the center of the 
+<var>X</var> and <var>Y</var> contain the coordinates of the center of the 
 circle along which the arc is drawn.
 </p>
 <p>
@@ -9065,14 +9092,13 @@ drawn on the circumference of the circle. The angle values are specified in
 degrees.
 </p>
 <p>
-StartAngle contains the angle from the center of the circle to the starting 
-point on the circumference. Its value is relative to the X-Axis and 
-increments in the counter-clockwise direction.
+StartAngle contains the angle to the starting point on the circumference. 
+Its value is relative to the X-Axis and increments in  counter-clockwise direction.
 </p>
 <p>
 SweepAngle defines the length of the arc expressed in degrees, and is 
 used to find the ending point for the arc. Its value is relative to the 
-starting point, and increments in the counter-clockwise direction.
+starting point, and increases in counter-clockwise direction.
 </p>
 <p>
 Before the arc is drawn, LineTo is used to drawn a line from the current pen 
@@ -9098,12 +9124,12 @@ method.
 </element>
 <element name="TCanvas.AngleArc.X">
 <short>
-Horizontal coordinate for the center of the circle.
+Horizontal coordinate of the center of the circle.
 </short>
 </element>
 <element name="TCanvas.AngleArc.Y">
 <short>
-Vertical coordinate for the center of the circle.
+Vertical coordinate of the center of the circle.
 </short>
 </element>
 <element name="TCanvas.AngleArc.Radius">
@@ -9173,25 +9199,36 @@ the destination rectangle on the Canvas.
 
 <element name="TCanvas.Chord">
 <short>
-Draw a filled chord shape starting and finishing at the specified angular 
-positions on the circumference.
+Draws a filled chord shape starting and ending at the specified angular 
+positions on the circumference of an ellipse. This shape consists of an 
+elliptical arc and a straight line connecting the start and end points of the arc.
 </short>
 <descr>
 <p>
-Use Chord to draw a filled Chord shape on the canvas.
+Use Chord to draw a chord shape on the canvas. The enclosed area is filled by 
+the current Brush of the canvas, the outline is drawn by the current Pen.
 </p>
 <p>
-The angles angle1 and angle2 are 1/16th of a degree. For example, a full 
-circle equals 5760 (16*360).
+The full ellipse from which a part is used for the arc is enclosed by
+the rectangle given by the corner coordinates x1 (left), y1 (top), x2 (right), 
+y2 (bottom).
 </p>
 <p>
-Positive values of Angle and AngleLength mean counter-clockwise while 
-negative values mean clockwise direction. Zero degrees is at the 3 o'clock 
+The angles Angle16Deg and Angle16DegLength define the position and length of 
+the arc on the circumference of the ellipse. They are given in 1/16th of a degree. 
+For example, a full circle equals 5760 (16*360).
+</p>
+<p>
+Positive values of Angle16Deg and Angle16DegLength mean counter-clockwise while 
+negative values mean clockwise directions. Zero degrees is at the 3 o'clock 
 position.
 </p>
 <p>
 Alternatively the starting and ending points may be specified as radial 
-points (sx, sy, ex, ey).
+points (SX, SY, EX, EY). These points do not necessarily have to be elements of 
+the arc itself. Instead, the intersection of the lines between the ellipse center
+and the points (SX, SY) and (EX, EY) with the ellipse define the arc's start
+and end points, respectively.
 </p>
 </descr>
 </element>
@@ -9207,10 +9244,10 @@ points (sx, sy, ex, ey).
 <element name="TCanvas.Chord.Height">
 <short/>
 </element>
-<element name="TCanvas.Chord.StartAngle16Deg">
+<element name="TCanvas.Chord.Angle16Deg">
 <short/>
 </element>
-<element name="TCanvas.Chord.EndAngle16Deg">
+<element name="TCanvas.Chord.Angle16DegLength">
 <short/>
 </element>
 <element name="TCanvas.Chord.SX">
@@ -9430,23 +9467,24 @@ Draws a filled ellipse (or circle) on the canvas.
 <descr>
 <p>
 <var>Ellipse</var> is an overloaded, reintroduced method in TCanvas used to 
-draw a filled ellipse shape. The overloaded variants allow the shape to be 
-defined either as a rectangular area where the shape is drawn, or by using 
-Integer coordinates to establish the major and minor axis for the shape.
+draw a filled ellipse shape. The ellipse is not rotated and has its axes along
+the x and y axes. It is defined by means of the enclosing rectangle which can 
+either be passed as a <var>TRect</var> parameter or as four separate integer 
+coordinates. 
 </p>
 <p>
-ARect is the TRect instance with the bounds for the shape.
+ARect is the <var>TRect</var> instance with the bounds for the enclosing rectangle.
 </p>
 <p>
-x1, y1, x2, and y2 allows the bounds for the shape to be specified as Integer 
-values.
+x1, y1, x2, and y2 allows the bounds for the enclosing rectangle to be specified 
+separately as Integer values.
 </p>
 <p>
 The bounds are used to calculate the vertex, co-vertex, linear eccentricity 
 and focal points for the shape.
 </p>
 <p>
-When the bounds area is a square, the resulting shape is a circle.
+When the bounding rectangle is a square, the resulting shape is a circle.
 </p>
 <p>
 Ellipse calls the Ellipse routine in the LCL interface to perform the drawing 
@@ -9459,7 +9497,7 @@ operation.
 </element>
 <element name="TCanvas.Ellipse.ARect">
 <short>
-TRect instance with the bounds for the shape.
+TRect instance with the bounds for the enclosing rectangle.
 </short>
 </element>
 <element name="TCanvas.Ellipse.x1">
@@ -9485,19 +9523,20 @@ Bottom coordinate for the bounding box.
 
 <element name="TCanvas.FillRect">
 <short>
-Fills a rectangular area on the canvas using the current Brush settings.
+Fills a rectangular area on the canvas using the current Brush settings. No
+border line is painted.
 </short>
 <descr>
 <p>
 <var>FillRect</var> is an overloaded method used to fill a rectangular area 
-on the canvas using the style, color, or bitmap defined in Brush. The 
-overloaded variants allow the vertices for the rectangle to be specified as 
-either:
+on the canvas using the style, color, or bitmap defined in Brush. The border
+of the rectangle is not drawn. The overloaded variants allow the vertices for 
+the rectangle to be specified as either:
 </p>
 <ul>
 <li>
 Four separate Integer coordinates representing the top/left and bottom/right 
-of the shape.
+sides of the shape.
 </li>
 <li>
 A TRect instance where the vertices are represented as either four Integers, 
@@ -9511,7 +9550,7 @@ for a specific widgetset.
 </p>
 <p>
 Use Rectangle to draw a filled rectangle with borders. Use FloodFill to fill 
-a rectangular area bounded by a specified color value.
+an area (not necessarily rectangular) bounded by a specified color value.
 </p>
 </descr>
 <seealso>
@@ -9528,22 +9567,22 @@ method.
 </short>
 </element>
 <element name="TCanvas.FillRect.X1">
-<short>Left coordinate for the Top, Left of the rectangle.</short>
+<short>Coordinate of the left side of the rectangle.</short>
 </element>
 <element name="TCanvas.FillRect.Y1">
-<short>Top coordinate for the Top, Left of the rectangle.</short>
+<short>Coordinate of the top side of the rectangle.</short>
 </element>
 <element name="TCanvas.FillRect.X2">
-<short>Right coordinate for the Bottom, Right of the rectangle.</short>
+<short>Coordinate of the right side of the rectangle.</short>
 </element>
 <element name="TCanvas.FillRect.Y2">
-<short>Bottom coordinate for the Bottom, Right of the rectangle.</short>
+<short>Coordinate of the bottom side of the rectangle.</short>
 </element>
 
 <element name="TCanvas.FloodFill">
 <short>
-Fills an area at the specified coordinates with the current Brush for the 
-canvas.
+Fills the area containing the specified point with the current Brush of the 
+canvas. The area can have an arbitrary shape.
 </short>
 <descr>
 <p>
@@ -9555,8 +9594,7 @@ FillColor contains the color value for the boundary of the fill, or the area
 to be filled, depending on the value in FillStyle.
 </p>
 <p>
-FillStyle determines the type of fill operation performed in the method. For 
-example:
+FillStyle determines the type of fill operation performed in the method:
 </p>
 <dl>
 <dt>
@@ -9565,21 +9603,17 @@ fsBorder
 <dd>
 The fill area is bounded by pixels with the color specified in FillColor. 
 Pixels are filled in all directions with the Brush until the a pixel with the 
-specified color is found.
+specified FillColor is found.
 </dd>
 <dt>
 fsSurface
 </dt>
 <dd>
-The fill area is defined as the color specified in FillColor. Pixels with 
-this color are filled in all directions with the Brush until no more pixels 
-with this color are found.
+The fill area is defined by all pixels having the color specified in FillColor. 
+Pixels with this color are filled in all directions with the Brush until no more 
+pixels with this color are found.
 </dd>
 </dl>
-<p>
-Please note that comments in the TGraphicsFillStyle source code have these 
-conditions reversed.
-</p>
 <p>
 FloodFill calls the routine in the LCL interface used to implement the method 
 for the widgetset. The return value from the LCL interface is ignored.
@@ -9595,12 +9629,12 @@ for the widgetset. The return value from the LCL interface is ignored.
 </element>
 <element name="TCanvas.FloodFill.X">
 <short>
-Horizontal coordinate where the fill operation is performed.
+Horizontal coordinate where the fill operation is started.
 </short>
 </element>
 <element name="TCanvas.FloodFill.Y">
 <short>
-Vertical coordinate where the fill operation is performed.
+Vertical coordinate where the fill operation is started.
 </short>
 </element>
 <element name="TCanvas.FloodFill.FillColor">
@@ -9623,7 +9657,7 @@ Draws a frame for the specified rectangle with a 3-dimensional appearance.
 <p>
 <var>Frame3D</var> is an overloaded method used to draw a frame for the 
 specified rectangle with a 3-dimensional appearance. It draws the frame using 
-the Brush for the canvas with the style, colors, and size passed in the 
+the Pen for the canvas with the style, colors, and size passed in the 
 parameter values. Frame3D does not fill the inner area for the rectangle; it 
 draws the frame or borders only.
 </p>
@@ -9649,7 +9683,7 @@ cl3DHilight, cl3DDkShadow, cl3DShadow, and cl3DFace are commonly used in
 these parameters.
 </p>
 <p>
-<var>FrameWidth</var> contains the thickness for the 3-D frame; for left and 
+<var>FrameWidth</var> contains the line thickness for the 3-D frame; for left and 
 right edges it is the border width, for top and bottom edges it is the border 
 height. The bounds in ARect are inflated by this value before exit.
 </p>
@@ -9695,8 +9729,8 @@ canvas.
 </short>
 <descr>
 <p>
-<var>Frame</var> is method used to draw a border or frame for the specified 
-rectangle use the Pen for the canvas. Overloaded variants of the method are 
+<var>Frame</var> is a method to draw a border or frame for the specified 
+rectangle using the Pen for the canvas. Overloaded variants of the method are 
 provided which allow the rectangle to be specified as:
 </p>
 <ul>
@@ -9713,7 +9747,7 @@ TArray4IntegerType.
 <p>
 Frame sets the Style property in Brush to bsClear. This suppresses filling 
 the interior of the rectangle with the Color for the Brush. In others words, 
-the area in side the frame is transparent. The Brush style is restored to its 
+the area inside the frame is transparent. The Brush style is restored to its 
 previous value prior to exit.
 </p>
 <p>
@@ -9741,27 +9775,27 @@ Set property values in Pen prior to calling the method, including:
 </element>
 <element name="TCanvas.Frame.ARect">
 <short>
-TRect instance with the bounds for the rectangle.
+TRect instance with the bounds of the rectangle.
 </short>
 </element>
 <element name="TCanvas.Frame.X1">
 <short>
-Left coordinate for the Top, Left of the rectangle.
+Left coordinate for the left side of the rectangle.
 </short>
 </element>
 <element name="TCanvas.Frame.Y1">
 <short>
-Top coordinate for the Top, Left of the rectangle.
+Top coordinate for top side of the rectangle.
 </short>
 </element>
 <element name="TCanvas.Frame.X2">
 <short>
-Right coordinate for the Bottom, Right of the rectangle.
+Right coordinate for the right side of the rectangle.
 </short>
 </element>
 <element name="TCanvas.Frame.Y2">
 <short>
-Bottom coordinate for the Bottom, Right of the rectangle.
+Bottom coordinate for the bottom side of the rectangle.
 </short>
 </element>
 
@@ -9772,8 +9806,9 @@ Draws a border around the specified rectangle with the Brush for the canvas.
 <descr>
 <p>
 <var>FrameRect</var> is an overloaded method used to draw a frame or border 
-for the specified rectangular area using the Brush for the canvas. Overloaded 
-variants allow the bounds for the rectangle to be defined using:
+for the specified rectangular area using the Brush for the canvas. Note that
+this is different from the <var>Frame</var> method which uses the Pen for drawing.
+Overloaded variants allow the bounds for the rectangle to be defined using:
 </p>
 <p>
 Four separate Integer values representing the Top/Left and Bottom/Right 
@@ -9814,27 +9849,27 @@ TRect instance with the bounds for the rectangle.
 </element>
 <element name="TCanvas.FrameRect.X1">
 <short>
-Left coordinate for the Top, Left of the rectangle.
+Left coordinate for the left side of the rectangle.
 </short>
 </element>
 <element name="TCanvas.FrameRect.Y1">
 <short>
-Top coordinate for the Top, Left of the rectangle.
+Top coordinate for the top side of the rectangle.
 </short>
 </element>
 <element name="TCanvas.FrameRect.X2">
 <short>
-Right coordinate for the Bottom, Right of the rectangle.
+Right coordinate for right side of the rectangle.
 </short>
 </element>
 <element name="TCanvas.FrameRect.Y2">
 <short>
-Bottom coordinate for the Bottom, Right of the rectangle.
+Bottom coordinate for the bottom side of the rectangle.
 </short>
 </element>
 
 <element name="TCanvas.GetTextMetrics">
-<short>Gets text metrics for the canvas font.</short>
+<short>Gets physical dimension of the currently selected font of the canvas.</short>
 <descr>
 <p>
 Calls <var>RequiredState</var> to check state flags for the canvas, and 
@@ -9851,7 +9886,9 @@ The return value is <b>True</b> when text metrics were successfully retrieved
 from the widgetset.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TLCLTextMetric"/>
+</seealso>
 </element>
 <element name="TCanvas.GetTextMetrics.Result">
 <short><b>True</b> on success.</short>
@@ -9934,20 +9971,21 @@ Direction for the color gradient.
 <element name="TCanvas.RadialPie">
 <short>
 <var>RadialPie</var> draws a filled pie-shaped wedge on the canvas with 
-specified start and end coordinates, and starting and ending angular 
-positions.
+start and end points of the arc defined by a starting angle (StartAngle16Deg)
+and the arc length (Angle16DegLength).
 </short>
 <descr>
 <p>
 Use Pie to draw a filled pie-shaped wedge on the canvas.
 </p>
 <p>
-The angles StartAngle16Deg and Angle16DegLength are 1/16th of a degree. For 
-example, a full circle equals 5760 (16*360).
+The angles StartAngle16Deg and Angle16DegLength are given an 1/16th of a degree. 
+For example, a full circle equals 5760 (16*360).
 </p>
 <p>
-Positive values in StartAngle16Deg means counter-clockwise while negative 
-values mean clockwise direction. Zero degrees is at the 3 o'clock position.
+Positive values in StartAngle16Deg and Angle16DegLength mean counter-clockwise 
+while negative values mean clockwise direction. Zero degrees is at the 3 o'clock 
+position.
 </p>
 </descr>
 <seealso>
@@ -9987,14 +10025,22 @@ values mean clockwise direction. Zero degrees is at the 3 o'clock position.
 
 <element name="TCanvas.Pie">
 <short>
-<var>Pie</var> draws a filled Pie-shaped wedge on the canvas.
+<var>Pie</var> draws a filled pie-shaped wedge on the canvas.
 </short>
 <descr>
 <p>
-Pie is a method used to draw a filled Pie-shaped wedge on the canvas. The pie 
-is part of an ellipse between the points EllipseX1, EllipseY1, EllipseX2, 
-EllipseY2. The values StartX, StartY and EndX, EndY represent the starting 
-and ending radial-points between which the Bounding-Arc is drawn.
+Pie is a method for drawing a filled pie-shaped wedge on the canvas. The pie is
+formed by an arc along the ellipse circumference and straight line from the
+ellipse center to the arc's start and end points.
+</p>
+<p>
+The ellipse is defined by the enclosing rectangle given by the corner coordinates
+EllipseX1, EllipseY1, EllipseX2, EllipseY2. The values StartX, StartY as well as
+EndX, EndY define the starting and ending radial-points between which the 
+bounding arc is drawn. But note that these points do not necessarily have to lie
+exactly on the arc itself. Instead of that, the intersection points of the
+ellipse with the lines from the ellipse center to the points (StartX, StartY)
+and (EndX, EndY), respectively, are calculated automatically. 
 </p>
 </descr>
 </element>
@@ -10185,13 +10231,13 @@ overloaded variants allow the coordinates to be specified as either:
 </p>
 <ul>
 <li>
-Four separate Integer values representing the top, left, bottom, and right 
-vertices for the shape (X1, Y1, X2, Y2).
+Four separate Integer values representing the position of the top, left, bottom, 
+and right edges for the shape (X1, Y1, X2, Y2).
 </li>
 <li>
 A TRect instance where the vertices are represented as either four Integers, 
-two TPoint instances for TopLeft and BottomRight, or a vector using the 
-TArray4IntegerType (Rect).
+two TPoint instances for the TopLeft and BottomRight corner points, or a vector 
+using the TArray4IntegerType (Rect).
 </li>
 </ul>
 <p>
@@ -10222,16 +10268,16 @@ for the current widgetset.
 </seealso>
 </element>
 <element name="TCanvas.Rectangle.X1">
-<short>Left coordinate for the top, left of the rectangle.</short>
+<short>Coordinate for the left side of the rectangle.</short>
 </element>
 <element name="TCanvas.Rectangle.Y1">
-<short>Top coordinate for the top, left of the rectangle.</short>
+<short>Coordinate for the top side of the rectangle.</short>
 </element>
 <element name="TCanvas.Rectangle.X2">
-<short>Right coordinate for the bottom, right of the rectangle.</short>
+<short>Coordinate for the right side of the rectangle.</short>
 </element>
 <element name="TCanvas.Rectangle.Y2">
-<short>Bottom coordinate for the bottom, right of the rectangle.</short>
+<short>Coordinate for the bottom side of the rectangle.</short>
 </element>
 <element name="TCanvas.Rectangle.Rect">
 <short>
@@ -10252,8 +10298,8 @@ the coordinates to be specified as either:
 </p>
 <ul>
 <li>
-Four separate Integer values representing the top, left, bottom, and right 
-vertices for the shape (X1, Y1, X2, Y2).
+Four separate Integer values representing the position of the top, left, bottom, 
+and right edges of the shape (X1, Y1, X2, Y2).
 </li>
 <li>
 A TRect instance where the vertices are represented as either four Integers, 
@@ -10263,7 +10309,7 @@ TArray4IntegerType (Rect).
 </ul>
 <p>
 RX and RY contain the width and height (respectively) for an ellipse used to 
-draw arc segments for the rounded corners on the rectangular shape.
+draw arc segments for the rounded corners on the rectangular shape. 
 </p>
 <p>
 RoundRect (like Rectangle) draws an outline (or borders) for the shape using 
@@ -10280,31 +10326,35 @@ for the current widgetset.
 </seealso>
 </element>
 <element name="TCanvas.RoundRect.X1">
-<short>Left coordinate for the top, left corner of the rectangle.</short>
+<short>Coordinate for the left side of the rectangle.</short>
 </element>
 <element name="TCanvas.RoundRect.Y1">
-<short>Top coordinate for the top, left corner of the rectangle.</short>
+<short>Coordinate for the top side of the rectangle.</short>
 </element>
 <element name="TCanvas.RoundRect.X2">
-<short>Right coordinate for the bottom, right corner of the rectangle.</short>
+<short>Coordinate for the right side of the rectangle.</short>
 </element>
 <element name="TCanvas.RoundRect.Y2">
-<short>Bottom coordinate for the bottom, right corner of the rectangle.</short>
+<short>Coordinate for the bottom side of the rectangle.</short>
 </element>
 <short/>
 <element name="TCanvas.RoundRect.RX">
 <short>
-Width of the ellipse a quarter of which is drawn in the rounded corners. Note that this is the <i>full</i> width rather than the radius as suggested by the variable name.
+Width of the ellipse a quarter of which is drawn in the rounded corners. 
+Note that this is the <i>full</i> width rather than the radius as suggested by 
+the variable name.
 </short>
 </element>
 <element name="TCanvas.RoundRect.RY">
 <short>
-Height of the ellipse a quarter of which is drawn in the rounded corners. Note that this is the <i>full</i> height rather than the radius as suggested by the variable name.
+Height of the ellipse a quarter of which is drawn in the rounded corners. 
+Note that this is the <i>full</i> height rather than the radius as suggested by 
+the variable name.
 </short>
 </element>
 <element name="TCanvas.RoundRect.Rect">
 <short>
-TRect instance with the coordinates for the rectangle vertices.
+TRect instance with the coordinates for the rectangle sides.
 </short>
 </element>
 
