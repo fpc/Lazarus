@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <icons>
+    <icon filename="btn_abort.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>abort</keyword>
+        <keyword>cancel</keyword>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_abort_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>abort</keyword>
+        <keyword>cancel</keyword>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_abort_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>abort</keyword>
+        <keyword>cancel</keyword>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_all.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>accept</keyword>
+        <keyword>all</keyword>
+        <keyword>check</keyword>
+        <keyword>ok</keyword>
+        <keyword>yes</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_all_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>accept</keyword>
+        <keyword>all</keyword>
+        <keyword>check</keyword>
+        <keyword>ok</keyword>
+        <keyword>yes</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_all_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>accept</keyword>
+        <keyword>all</keyword>
+        <keyword>check</keyword>
+        <keyword>ok</keyword>
+        <keyword>yes</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_arrowright.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_arrowright_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_arrowright_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_cancel.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>abort</keyword>
+        <keyword>cancel</keyword>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_cancel_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>abort</keyword>
+        <keyword>cancel</keyword>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_cancel_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>abort</keyword>
+        <keyword>cancel</keyword>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_close.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>abort</keyword>
+        <keyword>cancel</keyword>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_close_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>abort</keyword>
+        <keyword>cancel</keyword>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_close_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>abort</keyword>
+        <keyword>cancel</keyword>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_help.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>help</keyword>
+        <keyword>info</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_help_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>help</keyword>
+        <keyword>info</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_help_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>help</keyword>
+        <keyword>info</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_ignore.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>help</keyword>
+        <keyword>info</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_ignore_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>help</keyword>
+        <keyword>info</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_ignore_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>help</keyword>
+        <keyword>info</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_no.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>abort</keyword>
+        <keyword>cancel</keyword>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_no_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>abort</keyword>
+        <keyword>cancel</keyword>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_no_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>abort</keyword>
+        <keyword>cancel</keyword>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_ok.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>accept</keyword>
+        <keyword>check</keyword>
+        <keyword>ok</keyword>
+        <keyword>yes</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_ok_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>accept</keyword>
+        <keyword>check</keyword>
+        <keyword>ok</keyword>
+        <keyword>yes</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_ok_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>accept</keyword>
+        <keyword>check</keyword>
+        <keyword>ok</keyword>
+        <keyword>yes</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_retry.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>redo</keyword>
+        <keyword>refresh</keyword>
+        <keyword>repeat</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_retry_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>redo</keyword>
+        <keyword>refresh</keyword>
+        <keyword>repeat</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_retry_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>redo</keyword>
+        <keyword>refresh</keyword>
+        <keyword>repeat</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_yes.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>accept</keyword>
+        <keyword>check</keyword>
+        <keyword>ok</keyword>
+        <keyword>yes</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_yes_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>accept</keyword>
+        <keyword>check</keyword>
+        <keyword>ok</keyword>
+        <keyword>yes</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btn_yes_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>accept</keyword>
+        <keyword>check</keyword>
+        <keyword>ok</keyword>
+        <keyword>yes</keyword>
+      </keywords>
+    </icon>
+  </icons>
+</metadata>
