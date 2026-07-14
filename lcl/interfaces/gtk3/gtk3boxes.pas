@@ -645,14 +645,16 @@ var
 begin
   // icons
   case uType and $000000F0 of
-//  MB_ICONEXCLAMATION:
-  MB_ICONWARNING: AType:=idDialogWarning;
-  //MB_ICONASTERISK:
-  MB_ICONINFORMATION: AType:=idDialogInfo;
-  MB_ICONQUESTION: Atype:=idDialogConfirm;
-  // MB_ICONSTOP:
-  // MB_ICONHAND:
-  MB_ICONERROR: Atype:=idDialogError;
+    //  MB_ICONEXCLAMATION:
+    MB_ICONWARNING: AType:=idDialogWarning;
+    //MB_ICONASTERISK:
+    MB_ICONINFORMATION: AType:=idDialogInfo;
+    MB_ICONQUESTION: Atype:=idDialogConfirm;
+    // MB_ICONSTOP:
+    // MB_ICONHAND:
+    MB_ICONERROR: Atype:=idDialogError;
+    else
+      AType := idDialogInfo;
   end;
   // default button
   DefIndex:=(uType and $00000F00) shr 8;
