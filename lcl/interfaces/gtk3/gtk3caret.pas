@@ -156,7 +156,7 @@ begin
   begin
     if Assigned(W) and (W.Context = 0) then
     begin
-      if (FLastPos.X >= 0) and (FLastPos.Y >=0) and (FLastPos.X <> FPos.X) or (FLastPos.Y <> FPos.Y) then
+      if (FLastPos.X >= 0) and (FLastPos.Y >=0) and ((FLastPos.X <> FPos.X) or (FLastPos.Y <> FPos.Y)) then
       begin
         FBlinkState := False;
         RepaintLayoutCaret(Bounds(FLastPos.X, FLastPos.Y, FWidth, FHeight));
