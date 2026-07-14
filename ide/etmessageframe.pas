@@ -2978,7 +2978,6 @@ function TMessagesCtrl.SelectFirstUrgentMessage(
   aMinUrgency: TMessageLineUrgency; WithSrcPos: boolean): boolean;
 var
   FoundP: TMsgPoint;
-  //LineNumber: integer;
 begin
   Result:=false;
   if ViewCount=0 then exit;
@@ -2992,7 +2991,6 @@ function TMessagesCtrl.SelectNextUrgentMessage(aMinUrgency: TMessageLineUrgency;
   WithSrcPos: boolean; Downwards: boolean): boolean;
 var
   FoundP: TMsgPoint;
-  LineNumber, FirstSelLine: integer;
 begin
   Result:=false;
   if not SearchNextUrgent(FTextCursorPoint,true,Downwards,aMinUrgency,WithSrcPos,FoundP)
