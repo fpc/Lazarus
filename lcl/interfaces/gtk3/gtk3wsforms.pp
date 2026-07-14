@@ -363,7 +363,7 @@ begin
   gdk_seat_ungrab(Seat);
 end;
 
-function ModalFilter(xevent: PGdkXEvent; event: PGdkEvent; data: gpointer): TGdkFilterReturn;
+function ModalFilter(xevent: PGdkXEvent; event: PGdkEvent; data: gpointer): TGdkFilterReturn; cdecl;
 const
   X11_ButtonPress = 4;
   X11_ButtonRelease = 5;
@@ -702,6 +702,12 @@ begin
           if (fsModal in AForm.FormState) and Gtk3IsGdkWindow(AWindow^.transient_for^.window) then
             gdk_window_remove_filter(AWindow^.transient_for^.window, TGdkFilterFunc(@ModalFilter), AGtk3Widget);
           AWindow^.set_transient_for(nil);
+        end;
+        if fsModal in AForm.FormState then
+        begin
+          AWindow^.set_modal(False);
+          if Gtk3IsGdkWindow(AWindow^.window) then
+            AWindow^.window^.set_modal_hint(false);
         end;
       end;
     end;
