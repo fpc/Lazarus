@@ -2008,6 +2008,19 @@ var
     end;
   end;
 
+  function HeaderTextColor(aBackground: TColor): TColor;
+  // choose black text on light backgrounds, white text on dark backgrounds
+  var
+    R, G, B: Byte;
+  begin
+    RedGreenBlue(ColorToRGB(aBackground), R, G, B);
+    // perceived luminance (ITU-R BT.601)
+    if (R*299+G*587+B*114) div 1000 >= 128 then
+      Result:=clBlack
+    else
+      Result:=clWhite;
+  end;
+
 var
   i, j, y: Integer;
   Indent, ImgIndex: Integer;
@@ -2052,9 +2065,10 @@ begin
     if (y+ItemHeight>0) and (y<ClientHeight) then begin
       // header text
       NodeRect:=Rect(0,y,ClientWidth,y+ItemHeight);
-      Canvas.Brush.Color:=HeaderBackground[View.ToolState];
+      col:=HeaderBackground[View.ToolState];
+      Canvas.Brush.Color:=col;
       Canvas.FillRect(NodeRect);
-      DrawText(NodeRect,View.GetHeaderText, View.FSelectedLines.IndexOf(-1)>=0, TextColor);
+      DrawText(NodeRect,View.GetHeaderText, View.FSelectedLines.IndexOf(-1)>=0, HeaderTextColor(col));
       Canvas.Brush.Color:=BackgroundColor;
     end;
     inc(y,ItemHeight);
@@ -2119,7 +2133,8 @@ begin
       Canvas.GradientFill(NodeRect,HeaderBackground[View.ToolState],
         AutoHeaderBackground,gdVertical);
       NodeRect:=Rect(0,0,ClientWidth,ItemHeight);
-      DrawText(NodeRect,'...'+View.GetHeaderText,false,TextColor);
+      DrawText(NodeRect,'...'+View.GetHeaderText,false,
+        HeaderTextColor(HeaderBackground[View.ToolState]));
       Canvas.Brush.Color:=BackgroundColor;
     end;
     inc(y,ItemHeight*(View.Lines.Count-j));
