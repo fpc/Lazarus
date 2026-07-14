@@ -114,6 +114,8 @@ begin
     DebugLn('Error: LCLGtkComboBoxGetPreferredHeight cannot get TGtk3Widget for widget parameter.');
     exit;
   end;
+  if not Assigned(AControl.LCLObject) then
+    exit;
 
   if not AControl.LCLObject.AutoSize then
   begin
@@ -153,7 +155,7 @@ begin
   if Assigned(AControl) and Assigned(AControl.LCLObject) then
     LCLGtkComboBoxSetShrinkClassRecursive(widget, not AControl.LCLObject.AutoSize);
   ParentClass^.get_preferred_height_for_width(widget, width, min_height, nat_height);
-  if not Assigned(AControl) then exit;
+  if not Assigned(AControl) or not Assigned(AControl.LCLObject) then exit;
 
   if not AControl.LCLObject.AutoSize then
   begin
