@@ -39,7 +39,7 @@ begin
     min_width^ := AControl.LCLWidth;
     nat_width^ := AControl.LCLWidth;
   end else
-  if AControl.LCLObject.Width > 0 then
+  if Assigned(AControl.LCLObject) and (AControl.LCLObject.Width > 0) then
   begin
     min_width^ := AControl.LCLObject.Width;
     nat_width^ := AControl.LCLObject.Width;
@@ -85,7 +85,7 @@ begin
     min_height^ := AControl.LCLHeight;
     nat_height^ := AControl.LCLHeight;
   end else
-  if AControl.LCLObject.Height > 0 then
+  if Assigned(AControl.LCLObject) and (AControl.LCLObject.Height > 0) then
   begin
     min_height^ := AControl.LCLObject.Height;
     nat_height^ := AControl.LCLObject.Height;
