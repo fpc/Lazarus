@@ -1306,9 +1306,11 @@ begin
   bs := sett^.get_string('color-scheme');
   sett^.unref;
   if bs <> '' then
-    Result := Pos('prefer-dark', bs) > 0
-  else
-    Result := inherited IsDarkTheme;
+    if Pos('prefer-dark', bs) > 0 then
+      exit(true); // if exists it is conclusive
+  // not every dark theme has the 'prefer-dark'
+  // -> guess from colors
+  Result := inherited IsDarkTheme;
 end;
 
 end.
