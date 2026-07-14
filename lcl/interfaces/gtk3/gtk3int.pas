@@ -70,6 +70,7 @@ type
     FAppFocusTimerID: guint;
     FLastFocusIn: PGtkWidget;
     FLastFocusOut: PGtkWidget;
+    FMsgActivationLevel: Integer;
     {$IFDEF UNIX}
     FX11PollTimerID: guint;
     {$ENDIF}
@@ -211,6 +212,7 @@ type
     property AppIcon: PGdkPixbuf read FAppIcon;
     property LastFocusIn: PGtkWidget read FLastFocusIn write FLastFocusIn;
     property LastFocusOut: PGtkWidget read FLastFocusOut write FLastFocusOut;
+    property MsgActivationLevel: Integer read FMsgActivationLevel write FMsgActivationLevel;
     {$IFDEF UNIX}
     property X11PollTimerID: guint read FX11PollTimerID write FX11PollTimerID;
     {$ENDIF}

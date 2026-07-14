@@ -30,6 +30,9 @@ uses
 
 type
   GType = TGType;
+
+  TGtk3WindowStateFlag = (wwiActivating, wwiDeactivating);
+  TGtk3WindowStateFlags = set of TGtk3WindowStateFlag;
 {$IFDEF UNIX}
   PPChildSignalEventHandler = ^PChildSignalEventHandler;
   PChildSignalEventHandler = ^TChildSignalEventHandler;

@@ -2732,6 +2732,9 @@ begin
   if AActiveWindow <> 0 then
   begin
     AWidget := PGtkWindow(TGtk3Widget(AActiveWindow).Widget)^.get_focus;
+    if (TGtk3Widget(AActiveWindow) is TGtk3Window) and
+       (wwiDeactivating in TGtk3Window(AActiveWindow).StateFlags) then
+      AWidget := nil;
   end else
   begin
     // worst case scenario is to search for widget or when application

@@ -1172,7 +1172,7 @@ type
     class function MenuBarEnterNotify(AWidget: PGtkWidget; AEvent: PGdkEventCrossing; AData: gpointer): gboolean; cdecl; static;
   protected
     FFirstMapRect: TRect;
-    FInActivate: Boolean; // set while delivering LM_ACTIVATE, mirrors gtk2 wwiActivating
+    FStateFlags: TGtk3WindowStateFlags;
     procedure ConnectSizeAllocateSignal(ToWidget: PGtkWidget); override;
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
     function EatArrowKeys(const {%H-}AKey: Word): Boolean; override;
@@ -1202,6 +1202,7 @@ type
     function GetMenuBarHeight: gint;
     function GetBox: PGtkBox;
     function GetWindowState: TGdkWindowState;
+    property StateFlags: TGtk3WindowStateFlags read FStateFlags write FStateFlags;
     property Icon: PGdkPixBuf read FIcon write SetIcon;
     property SkipTaskBarHint: Boolean read GetSkipTaskBarHint write SetSkipTaskBarHint;
     property Title: String read GetTitle write SetTitle;
@@ -2337,7 +2338,12 @@ begin
   LWidgetType := WidgetType;
   LIsCombo := Self is TGtk3ComboBox;
 
-  DeliverMessage(Msg);
+  Gtk3WidgetSet.MsgActivationLevel := Gtk3WidgetSet.MsgActivationLevel + 1;
+  try
+    DeliverMessage(Msg);
+  finally
+    Gtk3WidgetSet.MsgActivationLevel := Gtk3WidgetSet.MsgActivationLevel - 1;
+  end;
 
   if Msg.Msg = LM_KILLFOCUS then
   begin
@@ -4826,7 +4832,8 @@ begin
     TopWidget := TGtk3Widget(HwndFromGtkWidget(TopLevel));
     if (TopWidget is TGtk3Window) and Assigned(TopWidget.LCLObject)
     and (TopWidget.LCLObject is TCustomForm)
-    and not TGtk3Window(TopWidget).FInActivate then
+    and not (wwiActivating in TGtk3Window(TopWidget).FStateFlags)
+    and (Gtk3WidgetSet.MsgActivationLevel = 0) then
       TGtk3Window(TopWidget).Activate;
   end;
 
@@ -15141,14 +15148,19 @@ begin
     MsgActivate.Active := WA_INACTIVE;
   MsgActivate.ActiveWindow := HWND(TGtk3Window(Data).LCLObject.Handle);
 
-  // Guard against SetFocus re-activating this window from within the activate
-  // cascade (would ping-pong window activation and flood the IM/ibus). Mirrors
-  // gtk2 wwiActivating (gtk2callback.inc / gtk2winapi.inc).
-  TGtk3Window(Data).FInActivate := True;
+  if IsActive then
+    Include(TGtk3Window(Data).FStateFlags, wwiActivating)
+  else
+    Include(TGtk3Window(Data).FStateFlags, wwiDeactivating);
+  Gtk3WidgetSet.MsgActivationLevel := Gtk3WidgetSet.MsgActivationLevel + 1;
   try
     TGtk3Window(Data).DeliverMessage(MsgActivate);
   finally
-    TGtk3Window(Data).FInActivate := False;
+    Gtk3WidgetSet.MsgActivationLevel := Gtk3WidgetSet.MsgActivationLevel - 1;
+    if IsActive then
+      Exclude(TGtk3Window(Data).FStateFlags, wwiActivating)
+    else
+      Exclude(TGtk3Window(Data).FStateFlags, wwiDeactivating);
   end;
 end;
 
