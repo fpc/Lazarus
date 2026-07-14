@@ -52,7 +52,7 @@ begin
     nat_width^ := min_width^;
 
   //apply constraints ONLY if we are primary widget, not eg our spin edit implemenation.
-  if (AControl.Widget = widget) and Assigned(AControl.LCLObject.Constraints) then
+  if (AControl.Widget = widget) and Assigned(AControl.LCLObject) and Assigned(AControl.LCLObject.Constraints) then
     with AControl.LCLObject.Constraints do
     begin
       if MaxWidth > 0 then
@@ -103,6 +103,13 @@ begin
   end;
 
   if AControl.Widget <> widget then
+  begin
+    if nat_height^ < min_height^ then
+      nat_height^ := min_height^;
+    exit;
+  end;
+
+  if not Assigned(AControl.LCLObject) then
   begin
     if nat_height^ < min_height^ then
       nat_height^ := min_height^;
