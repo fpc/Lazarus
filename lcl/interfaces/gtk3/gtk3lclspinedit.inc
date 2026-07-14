@@ -368,7 +368,7 @@ begin
   ParentClass^.get_preferred_width(widget, min_width, nat_width);
 
   AControl := TGtk3Widget(HwndFromGtkWidget(widget));
-  if not Assigned(AControl) then Exit;
+  if not Assigned(AControl) or not Assigned(AControl.LCLObject) then Exit;
 
   LDesiredWidth := AControl.LCLWidth;
   if LDesiredWidth <= 0 then
@@ -420,7 +420,7 @@ begin
   end;
 
   AControl := TGtk3Widget(HwndFromGtkWidget(widget));
-  if not Assigned(AControl) then Exit;
+  if not Assigned(AControl) or not Assigned(AControl.LCLObject) then Exit;
 
   if not AControl.LCLObject.AutoSize then
   begin
