@@ -3987,34 +3987,33 @@ end;
 function TGtk2WidgetSet.FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): Bool;
 var
   GtkDC: Integer;
-  OldRgn: PGdkRegion;
   DevCtx: TGtkDeviceContext absolute DC;
   ARect: TRect;
   CRect : TGDKRectangle;
-  hasClipping: Boolean;
+  TmpRgn: HRGN;
+  TransP: TPoint;
 begin
-
   Result := IsValidDC(DC) and IsValidGDIObject(hbr) and IsValidGDIObject(RegionHnd);
   if not Result then Exit;
   GtkDC := SaveDC(DC);
-  if (DevCtx.ClipRegion <> nil) and (DevCtx.ClipRegion^.GDIRegionObject <> nil) then
-    OldRgn := gdk_region_copy(DevCtx.ClipRegion^.GDIRegionObject)
-  else
-    OldRgn := nil;
-  hasClipping := Assigned(OldRgn);
+  if DevCtx.HasTransf then
+  begin
+    TransP := DevCtx.TransfPointIndirect(Point(0, 0));
+    TmpRgn := CreateRegionCopy(RegionHnd);
+    gdk_region_offset({%H-}PGDIObject(TmpRgn)^.GDIRegionObject, TransP.X, TransP.Y);
+  end else
+    TmpRgn := RegionHnd;
   try
-    if SelectClipRGN(DC, RegionHnd) <> ERROR then
+    if SelectClipRGN(DC, TmpRgn) <> ERROR then
     begin
       gdk_region_get_clipbox({%H-}PGDIObject(RegionHnd)^.GDIRegionObject, @CRect);
       ARect := RectFromGdkRect(CRect);
       DevCtx.FillRect(ARect, hbr, True);
-      // revert clip (whatever it is - null or valid region)
-      SelectClipRGN(DC, {%H-}HRGN(OldRgn));
       Result := True;
     end;
   finally
-    if hasClipping then
-      gdk_region_destroy(OldRgn);
+    if TmpRgn <> RegionHnd then
+      DeleteObject(TmpRgn);
     RestoreDC(DC, GtkDC);
   end;
 end;
