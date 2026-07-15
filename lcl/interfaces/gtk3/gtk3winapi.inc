@@ -357,7 +357,7 @@ begin
      end;
      RGN_COPY:
      begin
-       ARegion := cairo_region_copy(RSrc2);
+       ARegion := cairo_region_copy(RSrc1);
        AStatus := CAIRO_STATUS_SUCCESS;
      end;
      RGN_DIFF:
@@ -2985,7 +2985,10 @@ begin
   begin
     lpRect^ := TGtk3Region(RGN).GetExtents;
     if IsRectEmpty(lpRect^) then
-      Result := NullRegion
+    begin
+      lpRect^ := Rect(0, 0, 0, 0);
+      Result := NullRegion;
+    end
     else
     if cairo_region_num_rectangles(TGtk3Region(RGN).Handle) > 1 then
       Result := ComplexRegion
