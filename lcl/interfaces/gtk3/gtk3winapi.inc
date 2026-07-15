@@ -5541,6 +5541,8 @@ var
   AGtkWidget: TGtk3Widget absolute hWnd;
   Alloc: TGtkAllocation;
   AX, AY: gint;
+  SizeMsg: TLMSize;
+  MoveMsg: TLMMove;
 begin
   Result := IsValidHandle(hWnd);
   if not Result then
@@ -5579,6 +5581,26 @@ begin
           AGtkWidget.SetBounds(Alloc.X, Alloc.Y, CX, CY);
         end;
       end;
+    end;
+
+    if (SWP_NOSIZE and uFlags) = 0 then
+    begin
+      FillChar(SizeMsg{%H-}, SizeOf(SizeMsg), 0);
+      SizeMsg.Msg := LM_SIZE;
+      SizeMsg.SizeType := SIZE_RESTORED or Size_SourceIsInterface;
+      SizeMsg.Width := Word(CX);
+      SizeMsg.Height := Word(CY);
+      AGtkWidget.DeliverMessage(SizeMsg);
+    end;
+
+    if (SWP_NOMOVE and uFlags) = 0 then
+    begin
+      FillChar(MoveMsg{%H-}, SizeOf(MoveMsg), 0);
+      MoveMsg.Msg := LM_MOVE;
+      MoveMsg.MoveType := Move_SourceIsInterface;
+      MoveMsg.XPos := SmallInt(X);
+      MoveMsg.YPos := SmallInt(Y);
+      AGtkWidget.DeliverMessage(MoveMsg);
     end;
 
     if (SWP_SHOWWINDOW and uFlags) <> 0 then
