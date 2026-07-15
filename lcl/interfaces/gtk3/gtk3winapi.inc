@@ -532,7 +532,7 @@ begin
   end;
   case ADepth of
     1: Format := CAIRO_FORMAT_A1;
-    2: Format := CAIRO_FORMAT_A8;
+    8: Format := CAIRO_FORMAT_A8;
     24: Format := CAIRO_FORMAT_RGB24;
     else
       Format := CAIRO_FORMAT_ARGB32;
