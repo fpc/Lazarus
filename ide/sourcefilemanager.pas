@@ -4171,24 +4171,12 @@ procedure CheckProjectCompilerPathTrust(AProject: TProject);
 // This runs only in the IDE; lazbuild does not use InitOpenedProjectFile and always trusts.
 var
   Opts: TProjectCompilerOptions;
-  UnparsedPath, ParsedPath: string;
+  UnparsedPath: string;
   WasModified: Boolean;
 begin
   Opts:=AProject.CompilerOptions; // active build mode's compiler options
-  if Opts=nil then exit;
-  UnparsedPath:=Opts.CompilerPath;
 
-  // safe cases: empty or the default macro resolve to the IDE default anyway
-  if (UnparsedPath='') or (UnparsedPath=DefaultCompilerPath) then exit;
-
-  // resolve macros and compare against the IDE-configured default compiler
-  ParsedPath:=Opts.ParsedOpts.GetParsedValue(pcosCompilerPath);
-  if (ParsedPath='')
-  or (CompareFilenames(ParsedPath,EnvironmentOptions.GetParsedCompilerFilename)=0) then
-    exit;
-
-  // already trusted permanently -> use silently
-  if EnvironmentOptions.IsCompilerTrusted(ParsedPath) then exit;
+  if not CompilerPathNeedsTrust(Opts,UnparsedPath) then exit;
 
   // custom compiler: neutralize BEFORE asking so nothing (e.g. codetools) uses it while the
   // dialog is open. Preserve the project's modified state so declining does not trigger a
@@ -4209,7 +4197,7 @@ begin
     mrAll:
       begin
         Opts.CompilerPath:=UnparsedPath; // trust and remember
-        EnvironmentOptions.AddTrustedCompiler(ParsedPath);
+        EnvironmentOptions.AddTrustedCompiler(UnparsedPath);
         EnvironmentOptions.Save(False); // persist the trusted list immediately
       end;
     // mrNo / closed: keep DefaultCompilerPath

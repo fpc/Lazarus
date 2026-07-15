@@ -282,9 +282,11 @@ begin
   
   if AllBuildModes then
     ShowMessage(lisThisWillAllowChangingAllBuildModesAtOnceNotImpleme)
+  else if not CheckBuildModeCompilerBeforeSwitch(BuildModeComboBox.Text) then
+    UpdateBuildModeCombo(BuildModeComboBox)  // user cancelled -> revert selection
   else begin
     SwitchBuildMode(BuildModeComboBox.Text);
-    UpdateDialogCaption;    
+    UpdateDialogCaption;
   end;
 end;
 

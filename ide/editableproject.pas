@@ -14,11 +14,11 @@ uses
   CodeToolsConfig, ExprEval, DefineTemplates, BasicCodeTools,
   LinkScanner, CodeToolManager, CodeCache, StdCodeTools,
   // BuildIntf
-  ProjectIntf, PackageIntf, LazMsgWorker,
+  ProjectIntf, PackageIntf, LazMsgWorker, IDEOptionsIntf,
   // IdeConfig
   ProjectBuildMode, IdeXmlConfigProcs, RecentListProcs, IdeConfStrConsts,
   // IDEIntf
-  EditorSyntaxHighlighterDef, SrcEditorIntf,
+  EditorSyntaxHighlighterDef, SrcEditorIntf, IDEOptEditorIntf,
   // IdeProject
   Project, ProjectDefs, IdeBookmark, RunParamOptions, IdeProjectStrConsts;
 
@@ -1147,6 +1147,10 @@ begin
   Bookmarks.Delete(i);
   SessionModified := true;
 end;
+
+initialization
+  RegisterIDEOptionsGroup(GroupProject, TProjectIDEOptions);
+  RegisterIDEOptionsGroup(GroupCompiler, TProjectCompilerOptions);
 
 end.
 

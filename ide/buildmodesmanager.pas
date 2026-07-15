@@ -126,6 +126,14 @@ function ShowBuildModesDlg(aShowSession: Boolean): TModalResult;
 procedure SwitchBuildMode(aBuildModeID: string);
 procedure UpdateBuildModeCombo(aCombo: TComboBox);
 
+// Compiler trust: check whether a build mode's compiler executable is a custom,
+// not-yet-trusted compiler that the user must be asked about.
+function CompilerPathNeedsTrust(aOpts: TBaseCompilerOptions;
+                                out UnparsedPath: string): boolean;
+// Ask the user before switching to aBuildModeID. Returns True if the switch may proceed
+// (compiler safe/trusted, or the user chose to proceed), False if the user cancelled.
+function CheckBuildModeCompilerBeforeSwitch(const aBuildModeID: string): boolean;
+
 // Functions dealing with many BuildModes. They depend on TBuildModesCheckList.
 function AddPathToBuildModes(aDir: string; IsIncludeFile: Boolean): Boolean;
 procedure RemovePathFromBuildModes(ObsoletePaths: String; pcos: TParsedCompilerOptString);
@@ -190,6 +198,56 @@ begin
   Project1.ActiveBuildModeID := aBuildModeID;             // Switch
   PrepareForBuild;
   OnLoadIDEOptionsHook(Nil, Project1.CompilerOptions);    // Load options
+end;
+
+function CompilerPathNeedsTrust(aOpts: TBaseCompilerOptions;
+  out UnparsedPath: string): boolean;
+begin
+  Result:=false;
+  UnparsedPath:='';
+  if aOpts=nil then exit;
+  UnparsedPath:=aOpts.CompilerPath;
+  // safe cases: empty or the default macro resolve to the IDE default anyway
+  if (UnparsedPath='') or SameText(UnparsedPath,DefaultCompilerPath) then exit;
+  // Important: do not resolve macros here
+  if (CompareFilenames(UnparsedPath,EnvironmentOptions.GetParsedCompilerFilename)=0) then exit;
+  // already trusted permanently -> no need to ask
+  if EnvironmentOptions.IsCompilerTrusted(UnparsedPath) then exit;
+  Result:=true; // custom, unknown compiler -> caller must ask
+end;
+
+function CheckBuildModeCompilerBeforeSwitch(const aBuildModeID: string): boolean;
+var
+  bm: TProjectBuildMode;
+  Opts: TBaseCompilerOptions;
+  UnparsedPath: string;
+begin
+  Result:=true;
+  bm:=Project1.BuildModes.Find(aBuildModeID);
+  if bm=nil then exit;
+  Opts:=bm.CompilerOptions;
+  if not CompilerPathNeedsTrust(Opts,UnparsedPath) then exit;
+  // The target mode is not active yet, so nothing runs its compiler while the dialog is open.
+  case IDEQuestionDialog(lisTrustCompilerCaption,
+         Format(lisTheProjectWantsToUseTheCompiler,
+                [Project1.GetTitleOrName, LineEnding+LineEnding, UnparsedPath,
+                 LineEnding+LineEnding, LineEnding+LineEnding]),
+         mtConfirmation,
+         [mrYes, lisTrustCompilerThisTime,
+          mrAll, lisTrustCompilerAlways,
+          mrIgnore, lisUseDefaultCompiler,
+          mrCancel, lisCancel], '') of
+    mrYes: ; // trust this time -> keep the custom path, switch
+    mrAll:
+      begin // trust always -> remember, switch
+        EnvironmentOptions.AddTrustedCompiler(UnparsedPath);
+        EnvironmentOptions.Save(False);
+      end;
+    mrIgnore:
+      Opts.CompilerPath:=DefaultCompilerPath; // use default compiler ($(CompPath)), switch
+  else
+    Result:=false; // mrCancel -> cancel switch
+  end;
 end;
 
 procedure UpdateBuildModeCombo(aCombo: TComboBox);

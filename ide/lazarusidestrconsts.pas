@@ -2455,6 +2455,7 @@ resourcestring
   lisTrustCompilerThisTime = 'Trust this time';
   lisTrustCompilerAlways = 'Trust always';
   lisDoNotTrustCompiler = 'Do not trust';
+  lisUseDefaultCompiler = 'Use default compiler';
   lisTrustedCompilers = 'Trusted compilers';
   lisDeleteSelectedTrustedCompilers = 'Delete selected';
   lisCOSkipCallingCompiler = 'Skip calling compiler';

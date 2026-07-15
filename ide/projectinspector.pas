@@ -82,6 +82,7 @@ uses
   Project, ProjectIcon, ProjectUserResources, BuildManager,
   // IDE
   LazarusIDEStrConsts, MainBase, MainBar, AddToProjectDlg, EnvGuiOptions,
+  BuildModesManager,
   ProjPackChecks, ProjPackEditing, ProjPackFilePropGui, EditableProject,
   AddPkgDependencyDlg, AddFPMakeDependencyDlg;
 
@@ -2127,6 +2128,8 @@ begin
     exit;
   end;
 
+  if not CheckBuildModeCompilerBeforeSwitch(NewMode.Identifier) then exit; // user cancelled
+
   Project1.ActiveBuildMode := NewMode;
   Project1.DefineTemplates.AllChanged(false);
   IncreaseCompilerParseStamp;
@@ -2151,8 +2154,6 @@ initialization
   Project.OnHasDesigner := @HasDesigner;
   ProjectIcon.OnLoadProjectMainIcon := @LoadProjectMainIcon2Stream;
   ProjectUserResources.OnAddIDEMessage := @AddProjectIDEMessage;
-  RegisterIDEOptionsGroup(GroupProject, TProjectIDEOptions);
-  RegisterIDEOptionsGroup(GroupCompiler, TProjectCompilerOptions);
 
 end.
 
