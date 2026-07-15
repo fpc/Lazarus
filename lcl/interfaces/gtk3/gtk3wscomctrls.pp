@@ -564,6 +564,7 @@ begin
         g_value_init(@PixbufValue, gdk_pixbuf_get_type());
         g_value_set_object(@PixbufValue, pixbuf);
         g_object_set_property(PGObject(cell), PChar('pixbuf'), @PixbufValue);
+        pixbuf^.unref;
       end;
     finally
       Bmp.Free;
