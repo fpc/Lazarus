@@ -237,7 +237,8 @@ begin
           mrAll, lisTrustCompilerAlways,
           mrIgnore, lisUseDefaultCompiler,
           mrCancel, lisCancel], '') of
-    mrYes: ; // trust this time -> keep the custom path, switch
+    mrYes: // trust this time -> keep the custom path, switch
+      EnvironmentOptions.AddSessionTrustedCompiler(UnparsedPath); // don't ask again until project close
     mrAll:
       begin // trust always -> remember, switch
         EnvironmentOptions.AddTrustedCompiler(UnparsedPath);

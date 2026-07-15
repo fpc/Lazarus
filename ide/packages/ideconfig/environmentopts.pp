@@ -287,6 +287,7 @@ type
     FLazarusDirHistory: TStringList;
     FCompilerFileHistory: TStringList;
     FTrustedCompilers: TStringList;
+    FSessionTrustedCompilers: TStringList; // trusted via "Trust this time", not saved, cleared on project close
     FFPCSourceDirHistory: TStringList;
     FMakeFileHistory: TStringList;
     FTestBuildDirHistory: TStringList;
@@ -439,6 +440,8 @@ type
     property TrustedCompilers: TStringList read FTrustedCompilers;
     function IsCompilerTrusted(const aFilename: string): boolean;
     procedure AddTrustedCompiler(const aFilename: string);
+    procedure AddSessionTrustedCompiler(const aFilename: string); // trust for this session only, not saved to disk
+    procedure ClearSessionTrustedCompilers; // called when a project is closed
     property FPCSourceDirectory: string read GetFPCSourceDirectory write SetFPCSourceDirectory;
     property FPCSourceDirHistory: TStringList read FFPCSourceDirHistory;
     property MakeFilename: string read GetMakeFilename write SetMakeFilename;
@@ -737,6 +740,7 @@ begin
   CompilerFilename:='';
   FCompilerFileHistory:=TStringList.Create;
   FTrustedCompilers:=TStringList.Create;
+  FSessionTrustedCompilers:=TStringList.Create;
   FPCSourceDirectory:='';
   FFPCSourceDirHistory:=TStringList.Create;
   MakeFilename:=DefaultMakefilename;
@@ -810,6 +814,7 @@ begin
   FreeAndNil(FLazarusDirHistory);
   FreeAndNil(FCompilerFileHistory);
   FreeAndNil(FTrustedCompilers);
+  FreeAndNil(FSessionTrustedCompilers);
   FreeAndNil(FFPCSourceDirHistory);
   FreeAndNil(FMakeFileHistory);
   FreeAndNil(FManyBuildModesSelection);
@@ -1601,6 +1606,8 @@ var
 begin
   for i:=0 to FTrustedCompilers.Count-1 do
     if CompareFilenames(FTrustedCompilers[i],aFilename)=0 then exit(true);
+  for i:=0 to FSessionTrustedCompilers.Count-1 do
+    if CompareFilenames(FSessionTrustedCompilers[i],aFilename)=0 then exit(true);
   Result:=false;
 end;
 
@@ -1608,6 +1615,17 @@ procedure TEnvironmentOptions.AddTrustedCompiler(const aFilename: string);
 begin
   if (aFilename='') or IsCompilerTrusted(aFilename) then exit;
   FTrustedCompilers.Add(aFilename);
+end;
+
+procedure TEnvironmentOptions.AddSessionTrustedCompiler(const aFilename: string);
+begin
+  if (aFilename='') or IsCompilerTrusted(aFilename) then exit;
+  FSessionTrustedCompilers.Add(aFilename);
+end;
+
+procedure TEnvironmentOptions.ClearSessionTrustedCompilers;
+begin
+  FSessionTrustedCompilers.Clear;
 end;
 
 function TEnvironmentOptions.FileHasChangedOnDisk: boolean;

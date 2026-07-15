@@ -4193,7 +4193,10 @@ begin
         mrAll, lisTrustCompilerAlways,
         mrNo, lisDoNotTrustCompiler], '') of
     mrYes:
-      Opts.CompilerPath:=UnparsedPath; // trust for this session only
+      begin
+        Opts.CompilerPath:=UnparsedPath; // trust for this project session only
+        EnvironmentOptions.AddSessionTrustedCompiler(UnparsedPath); // don't ask again until project close
+      end;
     mrAll:
       begin
         Opts.CompilerPath:=UnparsedPath; // trust and remember
@@ -4647,6 +4650,7 @@ begin
   if ProjInspector<>nil then
     ProjInspector.LazProject:=nil;
   FreeThenNil(Project1);
+  EnvironmentOptions.ClearSessionTrustedCompilers; // forget "Trust this time" choices
   if IDEMessagesWindow<>nil then IDEMessagesWindow.Clear;
 
   MainIDE.UpdateCaption;
