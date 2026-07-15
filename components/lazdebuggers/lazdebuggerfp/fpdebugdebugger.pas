@@ -39,7 +39,7 @@ uses
   FpDebugDebuggerUtils, FpDebugDebuggerWorkThreads, FpDebugDebuggerBase,
   LazDebuggerIntf, LazDebuggerIntfExcludedRoutines, LazDebuggerIntfExceptions,
   // FpDebug
-  {$ifdef windows} FpDbgWinClasses,  {$endif windows}
+  {$if (defined(windows) and (defined(CPUx86_64) or defined(CPUi386)))}   FpDbgWinClasses,  {$endif}
   {$IFDEF FPDEBUG_THREAD_CHECK} FpDbgCommon, {$ENDIF}
   FpDbgClasses, FpDbgInfo, FpErrorMessages, FpPascalBuilder, FpdMemoryTools,
   FpPascalParser, FPDbgController, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal,
@@ -3329,7 +3329,7 @@ begin
     FBreakPoints[bplSehW32Finally].SetBreak;
   end
   {$ENDIF}
-  {$IFDEF WIN64}
+  {$IF DEFined(WIN64) and defined(cpux86_64)}
   else
   (* ***** Win64 SEH ***** *)
   // bplFpcSpecific
