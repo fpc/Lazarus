@@ -2932,7 +2932,7 @@ function TGtk3WidgetSet.GetMonitorInfo(Monitor: HMONITOR; lpmi: PMonitorInfo
 var
   MonitorRect, MonitorWorkArea: TGdkRectangle;
 begin
-  Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo)) or (Monitor = 0);
+  Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo)) and (Monitor <> 0);
   if not Result then Exit;
   Dec(Monitor);
   gdk_screen_get_monitor_geometry(gdk_screen_get_default, Monitor, @MonitorRect);
