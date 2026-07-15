@@ -150,10 +150,10 @@ const
   // SynDefaultFont is determined in InitSynDefaultFont()
   SynFontNameForDefault = 'syn/default';
   SynDefaultFontName:    String       = '';
-  SynDefaultFontHeight:  Integer      = 13;
-  SynDefaultFontSize:    Integer      = 10;
+  SynDefaultFontHeight:  Integer      = 0;
+  SynDefaultFontSize:    Integer      = 0;
   SynDefaultFontPitch   = fpFixed;
-  SynDefaultFontQuality = fqNonAntialiased;
+  SynDefaultFontQuality = fqDefault;
 
   // maximum scroll range
   MAX_SCROLL = 32767;
@@ -1830,40 +1830,42 @@ begin
 end;
 
 procedure InitSynDefaultFont;
+  procedure CheckFont(f: String);
+  begin
+    if SynDefaultFontName <> '' then exit;
+    if Screen.Fonts.IndexOf(f) >= 0 then
+      SynDefaultFontName  := f;
+  end;
 begin
   if SynDefaultFontName <> '' then exit;
   Screen.Fonts;
-  {$UNDEF SynDefaultFont}
-  {$IFDEF LCLgtk}
-    SynDefaultFontName   := '-adobe-courier-medium-r-normal-*-*-140-*-*-*-*-iso10646-1';
-    SynDefaultFontHeight := 14;
-    {$DEFINE SynDefaultFont}
+  {$IFDEF WINDOWS}
+    CheckFont('Consolas');
+    CheckFont('Cascadia Mono');
+    CheckFont('Courier New');
+    CheckFont('DejaVu Sans Mono');
+    CheckFont('Lucida Console');
   {$ENDIF}
   {$IFDEF LCLcarbon}
-    SynDefaultFontName   := 'Monaco'; // Note: carbon is case sensitive
-    SynDefaultFontHeight := 12;
-    {$DEFINE SynDefaultFont}
+    // Note: carbon is case sensitive
+    CheckFont('SF Mono');
+    CheckFont('Menlo');
+    CheckFont('Monaco'); // Note: carbon is case sensitive
+    CheckFont('DejaVu Sans Mono');
   {$ENDIF}
   {$IFDEF LCLcocoa}
-    SynDefaultFontName   := 'Andale Mono'; // Note: cocoa is case sensitive
-    SynDefaultFontHeight := 10;
-    {$DEFINE SynDefaultFont}
+    // Note: carbon is case sensitive
+    CheckFont('SF Mono');
+    CheckFont('Menlo');
+    CheckFont('Monaco');
+    CheckFont('Andale Mono');
+    CheckFont('DejaVu Sans Mono');
   {$ENDIF}
-  // LCLgtk2 and LCLQt use default settings
-  {$IFnDEF SynDefaultFont}
-    SynDefaultFontName   := 'Courier New';
-    SynDefaultFontHeight := -13;
-  {$ENDIF}
-  if Screen.Fonts.IndexOf(SynDefaultFontName) >= 0 then
-    exit;
-  if Screen.Fonts.IndexOf('DejaVu Sans Mono') >= 0 then begin
-    SynDefaultFontName   := 'DejaVu Sans Mono';
-    SynDefaultFontHeight := 13;
-  end
-  else begin
-    SynDefaultFontName := '';
-    SynDefaultFontHeight := 0;
-  end;
+
+  // Fallback for all other OS, or not resolved above
+  CheckFont('Monospace');
+  CheckFont('DejaVu Sans Mono');
+  CheckFont('Courier New');
 end;
 
 { TSynScrollOnEditOptions }
