@@ -1838,7 +1838,6 @@ procedure InitSynDefaultFont;
   end;
 begin
   if SynDefaultFontName <> '' then exit;
-  Screen.Fonts;
   {$IFDEF WINDOWS}
     CheckFont('Consolas');
     CheckFont('Cascadia Mono');
