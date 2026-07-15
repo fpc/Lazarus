@@ -62,9 +62,14 @@ uses
 
 class function TGtk3WSCustomCheckListBox.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
+var
+  ACheckListBox: TGtk3CheckListBox;
 begin
   // DebugLn('>TGtk3WSCustomCheckListBox.CreateHandle');
-  Result := TLCLHandle(TGtk3CheckListBox.Create(AWinControl, AParams));
+  ACheckListBox := TGtk3CheckListBox.Create(AWinControl, AParams);
+  ACheckListBox.BorderStyle := TCustomCheckListBox(AWinControl).BorderStyle;
+  ACheckListBox.MultiSelect := TCustomCheckListBox(AWinControl).MultiSelect;
+  Result := TLCLHandle(ACheckListBox);
   // DebugLn('<TGtk3WSCustomCheckListBox.CreateHandle: Result=',dbgHex(Result));
 end;
 
