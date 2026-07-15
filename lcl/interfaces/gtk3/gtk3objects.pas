@@ -1753,7 +1753,7 @@ begin
     inc(psrc); inc(pdst);
   end;
   {GTK3 states the buffer must exist, until image that uses the buffer - destroyed}
-  brush_pattern:=create_stipple(PByte(pat_buf),w,w);
+  brush_pattern:=create_stipple(PByte(pat_buf),w,h);
 end;
 
 
@@ -2944,6 +2944,7 @@ var
   img_surf,view:Pcairo_surface_t;
 begin
   Result := 0;
+  APixelValue := 0;
 
   if CairoSurface = nil then
     exit;
@@ -4660,6 +4661,8 @@ begin
   if AMetrics = nil then
   begin
     Debugln('WARNING: GetTextExtentIgnoringAmpersands AMetrics=nil');
+    if NewStr <> Str then
+      StrDispose(NewStr);
     exit;
   end;
 
