@@ -4161,6 +4161,62 @@ begin
   end;
 end;
 
+procedure CheckProjectCompilerPathTrust(AProject: TProject);
+// When opening a project the IDE reads the compiler executable path from the .lpi and uses
+// it for building and for background codetools. A custom compiler path is a code execution
+// vector, so if the project's active build mode points at a compiler that is neither the
+// default macro $(CompPath) nor the IDE-configured default, neutralize it to $(CompPath) and
+// ask the user whether they trust it. On trust the original path is restored; otherwise the
+// safe default is kept (in memory only, the .lpi on disk is left untouched).
+// This runs only in the IDE; lazbuild does not use InitOpenedProjectFile and always trusts.
+var
+  Opts: TProjectCompilerOptions;
+  UnparsedPath, ParsedPath: string;
+  WasModified: Boolean;
+begin
+  Opts:=AProject.CompilerOptions; // active build mode's compiler options
+  if Opts=nil then exit;
+  UnparsedPath:=Opts.CompilerPath;
+
+  // safe cases: empty or the default macro resolve to the IDE default anyway
+  if (UnparsedPath='') or (UnparsedPath=DefaultCompilerPath) then exit;
+
+  // resolve macros and compare against the IDE-configured default compiler
+  ParsedPath:=Opts.ParsedOpts.GetParsedValue(pcosCompilerPath);
+  if (ParsedPath='')
+  or (CompareFilenames(ParsedPath,EnvironmentOptions.GetParsedCompilerFilename)=0) then
+    exit;
+
+  // already trusted permanently -> use silently
+  if EnvironmentOptions.IsCompilerTrusted(ParsedPath) then exit;
+
+  // custom compiler: neutralize BEFORE asking so nothing (e.g. codetools) uses it while the
+  // dialog is open. Preserve the project's modified state so declining does not trigger a
+  // spurious "save project?" prompt and the next open asks again.
+  WasModified:=AProject.Modified;
+  Opts.CompilerPath:=DefaultCompilerPath;
+  case IDEQuestionDialog(lisTrustCompilerCaption,
+       Format(lisTheProjectWantsToUseTheCompiler,
+              [AProject.GetTitleOrName,
+               LineEnding+LineEnding, UnparsedPath, LineEnding+LineEnding,
+               LineEnding+LineEnding]),
+       mtConfirmation,
+       [mrYes, lisTrustCompilerThisTime,
+        mrAll, lisTrustCompilerAlways,
+        mrNo, lisDoNotTrustCompiler], '') of
+    mrYes:
+      Opts.CompilerPath:=UnparsedPath; // trust for this session only
+    mrAll:
+      begin
+        Opts.CompilerPath:=UnparsedPath; // trust and remember
+        EnvironmentOptions.AddTrustedCompiler(ParsedPath);
+        EnvironmentOptions.Save(False); // persist the trusted list immediately
+      end;
+    // mrNo / closed: keep DefaultCompilerPath
+  end;
+  AProject.Modified:=WasModified;
+end;
+
 function InitOpenedProjectFile(AFileName: string; Flags: TOpenFlags): TModalResult;
 var
   EditorInfoIndex, i, j: Integer;
@@ -4185,6 +4241,7 @@ begin
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('InitOpenedProjectFile B3');{$ENDIF}
     Project1.ReadProject(AFilename, EnvironmentOptions.BuildMatrixOptions, True);
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('InitOpenedProjectFile B4');{$ENDIF}
+    CheckProjectCompilerPathTrust(Project1);
     Result:=CompleteLoadingProjectInfo;
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('InitOpenedProjectFile B5');{$ENDIF}
     if Result<>mrOk then exit;

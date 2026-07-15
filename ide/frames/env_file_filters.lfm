@@ -1,29 +1,89 @@
 object FileFiltersOptionsFrame: TFileFiltersOptionsFrame
   Left = 0
-  Height = 319
+  Height = 469
   Top = 0
   Width = 455
-  ClientHeight = 319
+  ClientHeight = 469
   ClientWidth = 455
   TabOrder = 0
   DesignLeft = 386
   DesignTop = 179
+  object lblTrustedCompilers: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 15
+    Top = 6
+    Width = 110
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'lblTrustedCompilers'
+  end
+  object clbTrustedCompilers: TCheckListBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblTrustedCompilers
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 100
+    Top = 27
+    Width = 443
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    ItemHeight = 0
+    TabOrder = 0
+  end
+  object btnDeleteTrustedCompiler: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = clbTrustedCompilers
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 25
+    Top = 133
+    Width = 200
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    AutoSize = True
+    Caption = 'btnDeleteTrustedCompiler'
+    OnClick = btnDeleteTrustedCompilerClick
+    TabOrder = 1
+  end
+  object lblFileDlgFilters: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = btnDeleteTrustedCompiler
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 176
+    Width = 85
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 12
+    Caption = 'lblFileDlgFilters'
+  end
   object grdFileFilters: TStringGrid
+    AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = lblFileDlgFilters
     AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = lblStarDirExcludes
     Left = 8
-    Height = 223
-    Top = 27
+    Height = 173
+    Top = 197
     Width = 440
     Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 8
     BorderSpacing.Top = 6
+    BorderSpacing.Right = 7
     ColCount = 3
-    Columns = <    
+    Columns = <
       item
         Title.Caption = 'Name'
         Width = 250
-      end    
+      end
       item
         Title.Caption = 'File mask'
         Width = 300
@@ -31,15 +91,8 @@ object FileFiltersOptionsFrame: TFileFiltersOptionsFrame
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goThumbTracking, goSmoothScroll, goFixedRowNumbering]
     PopupMenu = pmGrid
     RowCount = 1
-    TabOrder = 0
+    TabOrder = 2
     OnKeyDown = grdFileFiltersKeyDown
-  end
-  object lblFileDlgFilters: TLabel
-    Left = 6
-    Height = 15
-    Top = 6
-    Width = 85
-    Caption = 'lblFileDlgFilters'
   end
   object lblStarDirExcludes: TLabel
     AnchorSideLeft.Control = Owner
@@ -47,7 +100,7 @@ object FileFiltersOptionsFrame: TFileFiltersOptionsFrame
     AnchorSideBottom.Control = edStarDirExcludes
     Left = 6
     Height = 15
-    Top = 260
+    Top = 410
     Width = 100
     Anchors = [akLeft, akBottom]
     BorderSpacing.Left = 6
@@ -65,17 +118,17 @@ object FileFiltersOptionsFrame: TFileFiltersOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 6
     Height = 32
-    Top = 281
+    Top = 431
     Width = 443
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
-    TabOrder = 1
+    TabOrder = 3
   end
   object pmGrid: TPopupMenu
     Left = 205
-    Top = 75
+    Top = 245
     object pmiAddRow: TMenuItem
       Caption = 'Add row'
       OnClick = pmiAddRowClick

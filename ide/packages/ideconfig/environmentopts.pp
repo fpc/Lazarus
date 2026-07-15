@@ -286,6 +286,7 @@ type
     FParseValues: array[TEnvOptParseType] of TParseString;
     FLazarusDirHistory: TStringList;
     FCompilerFileHistory: TStringList;
+    FTrustedCompilers: TStringList;
     FFPCSourceDirHistory: TStringList;
     FMakeFileHistory: TStringList;
     FTestBuildDirHistory: TStringList;
@@ -435,6 +436,9 @@ type
     property LazarusDirHistory: TStringList read FLazarusDirHistory write FLazarusDirHistory;
     property CompilerFilename: string read GetCompilerFilename write SetCompilerFilename;
     property CompilerFileHistory: TStringList read FCompilerFileHistory write FCompilerFileHistory;
+    property TrustedCompilers: TStringList read FTrustedCompilers;
+    function IsCompilerTrusted(const aFilename: string): boolean;
+    procedure AddTrustedCompiler(const aFilename: string);
     property FPCSourceDirectory: string read GetFPCSourceDirectory write SetFPCSourceDirectory;
     property FPCSourceDirHistory: TStringList read FFPCSourceDirHistory;
     property MakeFilename: string read GetMakeFilename write SetMakeFilename;
@@ -732,6 +736,7 @@ begin
   FLazarusDirHistory:=TStringList.Create;
   CompilerFilename:='';
   FCompilerFileHistory:=TStringList.Create;
+  FTrustedCompilers:=TStringList.Create;
   FPCSourceDirectory:='';
   FFPCSourceDirHistory:=TStringList.Create;
   MakeFilename:=DefaultMakefilename;
@@ -804,6 +809,7 @@ begin
   FreeAndNil(FRecentPackageFiles);
   FreeAndNil(FLazarusDirHistory);
   FreeAndNil(FCompilerFileHistory);
+  FreeAndNil(FTrustedCompilers);
   FreeAndNil(FFPCSourceDirHistory);
   FreeAndNil(FMakeFileHistory);
   FreeAndNil(FManyBuildModesSelection);
@@ -945,6 +951,7 @@ begin
   CompilerFilename:=TrimFilename(FXMLCfg.GetValue(
                         Path+'CompilerFilename/Value',CompilerFilename));
   LoadRecentList(FXMLCfg,FCompilerFileHistory,Path+'CompilerFilename/History/',rltFile);
+  LoadRecentList(FXMLCfg,FTrustedCompilers,Path+'TrustedCompilers/',rltFile);
   FPCSourceDirectory:=FXMLCfg.GetValue(Path+'FPCSourceDirectory/Value',FPCSourceDirectory);
   LoadRecentList(FXMLCfg,FFPCSourceDirHistory,Path+'FPCSourceDirectory/History/',rltFile);
   MakeFilename:=TrimFilename(FXMLCfg.GetValue(Path+'MakeFilename/Value',MakeFilename));
@@ -1175,6 +1182,7 @@ begin
   SaveRecentList(FXMLCfg,FLazarusDirHistory,Path+'LazarusDirectory/History/');
   FXMLCfg.SetDeleteValue(Path+'CompilerFilename/Value',CompilerFilename,'');
   SaveRecentList(FXMLCfg,FCompilerFileHistory,Path+'CompilerFilename/History/');
+  SaveRecentList(FXMLCfg,FTrustedCompilers,Path+'TrustedCompilers/');
   FXMLCfg.SetDeleteValue(Path+'FPCSourceDirectory/Value',FPCSourceDirectory,'');
   SaveRecentList(FXMLCfg,FFPCSourceDirHistory,Path+'FPCSourceDirectory/History/');
   FXMLCfg.SetDeleteValue(Path+'MakeFilename/Value',MakeFilename,DefaultMakefilename);
@@ -1585,6 +1593,21 @@ end;
 function TEnvironmentOptions.GetParsedCompilerFilename: string;
 begin
   Result:=GetParsedValue(eopCompilerFilename);
+end;
+
+function TEnvironmentOptions.IsCompilerTrusted(const aFilename: string): boolean;
+var
+  i: integer;
+begin
+  for i:=0 to FTrustedCompilers.Count-1 do
+    if CompareFilenames(FTrustedCompilers[i],aFilename)=0 then exit(true);
+  Result:=false;
+end;
+
+procedure TEnvironmentOptions.AddTrustedCompiler(const aFilename: string);
+begin
+  if (aFilename='') or IsCompilerTrusted(aFilename) then exit;
+  FTrustedCompilers.Add(aFilename);
 end;
 
 function TEnvironmentOptions.FileHasChangedOnDisk: boolean;

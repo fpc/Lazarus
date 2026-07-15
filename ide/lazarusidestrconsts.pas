@@ -2448,6 +2448,15 @@ resourcestring
   lisDebugger = 'Debugger';
 
   lisToFPCPath = 'Path:';
+  lisTrustCompilerCaption = 'Trust project compiler?';
+  lisTheProjectWantsToUseTheCompiler = 'The project "%s" wants to use the compiler:%s%s%s'
+    +'This is not the default compiler configured in the IDE. Opening a project with a custom '
+    +'compiler can run arbitrary programs.%sDo you want to trust and use this compiler?';
+  lisTrustCompilerThisTime = 'Trust this time';
+  lisTrustCompilerAlways = 'Trust always';
+  lisDoNotTrustCompiler = 'Do not trust';
+  lisTrustedCompilers = 'Trusted compilers';
+  lisDeleteSelectedTrustedCompilers = 'Delete selected';
   lisCOSkipCallingCompiler = 'Skip calling compiler';
   lisCOAmbiguousAdditionalCompilerConfigFile = 'Ambiguous additional compiler config file';
   lisCOWarningTheAdditionalCompilerConfigFileHasTheSameNa = 'Warning: The '
