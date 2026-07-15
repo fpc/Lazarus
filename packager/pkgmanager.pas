@@ -3563,6 +3563,61 @@ begin
   Result:=DoOpenPackage(APackage,Flags,ShowAbort);
 end;
 
+procedure CheckPackageCompilerPathTrust(APackage: TEditablePackage);
+// When opening a package the IDE reads the compiler executable path from the .lpk and uses
+// it for building and for background codetools. A custom compiler path is a code execution
+// vector, so if the package points at a compiler that is neither the default macro
+// $(CompPath) nor the IDE-configured default, neutralize it to $(CompPath) and ask the user
+// whether they trust it. On trust the original path is restored; otherwise the safe default
+// is kept (in memory only, the .lpk on disk is left untouched).
+// This runs only in the IDE; lazbuild uses its own TLazBuildApplication.LoadPackage (it does
+// not link pkgmanager) and always trusts.
+var
+  Opts: TBaseCompilerOptions;
+  UnparsedPath: string;
+  WasModified: Boolean;
+begin
+  if APackage=nil then exit;
+  Opts:=APackage.CompilerOptions;
+  if Opts=nil then exit;
+  UnparsedPath:=Opts.CompilerPath;
+
+  // safe cases: empty or the default macro resolve to the IDE default anyway
+  if (UnparsedPath='') or SameText(UnparsedPath,DefaultCompilerPath) then exit;
+  // Important: do not resolve macros here
+  if CompareFilenames(UnparsedPath,EnvironmentOptions.GetParsedCompilerFilename)=0 then exit;
+  // already trusted (permanently or "this time" this session) -> use silently
+  if EnvironmentOptions.IsCompilerTrusted(UnparsedPath) then exit;
+
+  // custom compiler: neutralize BEFORE asking so nothing (e.g. codetools) uses it while the
+  // dialog is open. Preserve the package's modified state so declining does not mark it dirty.
+  WasModified:=APackage.Modified;
+  Opts.CompilerPath:=DefaultCompilerPath;
+  case IDEQuestionDialog(lisTrustPkgCompilerCaption,
+       Format(lisThePackageWantsToUseTheCompiler,
+              [APackage.Name,
+               LineEnding+LineEnding, UnparsedPath, LineEnding+LineEnding,
+               LineEnding+LineEnding]),
+       mtConfirmation,
+       [mrYes, lisTrustCompilerThisTime,
+        mrAll, lisTrustCompilerAlways,
+        mrNo, lisDoNotTrustCompiler], '') of
+    mrYes:
+      begin
+        Opts.CompilerPath:=UnparsedPath; // trust for this project session only
+        EnvironmentOptions.AddSessionTrustedCompiler(UnparsedPath); // don't ask again until project close
+      end;
+    mrAll:
+      begin
+        Opts.CompilerPath:=UnparsedPath; // trust and remember
+        EnvironmentOptions.AddTrustedCompiler(UnparsedPath);
+        EnvironmentOptions.Save(False); // persist the trusted list immediately
+      end;
+    // mrNo / closed: keep DefaultCompilerPath
+  end;
+  APackage.Modified:=WasModified;
+end;
+
 function TPkgManager.DoOpenPackageFile(AFilename: string; Flags: TPkgOpenFlags;
   ShowAbort: boolean): TModalResult;
 
@@ -3664,6 +3719,9 @@ begin
 
       // newly loaded is not modified
       APackage.Modified:=false;
+
+      // ask the user before trusting a custom compiler executable from the .lpk
+      CheckPackageCompilerPathTrust(APackage);
 
       // check if package name and file name correspond
       if (SysUtils.CompareText(AlternativePkgName,APackage.Name)<>0) then begin
