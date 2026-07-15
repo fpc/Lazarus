@@ -83,6 +83,8 @@ type
     FSavedCursor: PGdkCursor;
     FSavedCursorValid: Boolean;
     FCursorOnEdge: Boolean;
+    FCloseIdleId: guint;
+    FFirstPaintIdleId: guint;
     procedure SetCaption(const AValue: String);
     procedure SetActive(AValue: Boolean);
     procedure SetState(AValue: TGtk3MDIWindowState);
@@ -214,6 +216,8 @@ begin
   FStateBeforeMin := mwsNormal;
   FMinimizedSlot := -1;
   FBorderStyle := bsSizeable;
+  FCloseIdleId := 0;
+  FFirstPaintIdleId := 0;
 
   FFrame := gtk_event_box_new;
   g_object_set_data(PGObject(FFrame), 'lcl-mdi-frame', Self);
@@ -384,6 +388,18 @@ end;
 
 destructor TGtk3MDIChildFrame.Destroy;
 begin
+  if FCloseIdleId <> 0 then
+  begin
+    g_source_remove(FCloseIdleId);
+    FCloseIdleId := 0;
+  end;
+
+  if FFirstPaintIdleId <> 0 then
+  begin
+    g_source_remove(FFirstPaintIdleId);
+    FFirstPaintIdleId := 0;
+  end;
+
   if FCaptureGesture <> nil then
   begin
     g_object_unref(FCaptureGesture);
@@ -490,7 +506,8 @@ begin
   PGtkBox(FBox)^.pack_start(AContent, True, True, 0);
   PGtkWidget(AContent)^.show_all;
   //defer a redraw so TGraphicControls paint after GdkWindows are fully mapped
-  g_idle_add(@TGtk3MDIChildFrame.DeferFirstPaint, Self);
+  if FFirstPaintIdleId = 0 then
+    FFirstPaintIdleId := g_idle_add(@TGtk3MDIChildFrame.DeferFirstPaint, Self);
 end;
 
 class function TGtk3MDIChildFrame.DeferFirstPaint(data: gpointer): gboolean; cdecl;
@@ -502,6 +519,7 @@ var
 begin
   if (AFrame <> nil) and (AFrame.FFrame <> nil) then
   begin
+    AFrame.FFirstPaintIdleId := 0;
     gtk_widget_queue_draw(AFrame.FFrame);
     if AFrame.FWorkspace <> nil then
     begin
@@ -1205,7 +1223,8 @@ begin
         else
           AFrame.Maximize;
       end;
-      2: g_idle_add(@TGtk3MDIChildFrame.DeferCloseChild, AFrame);
+      2: if AFrame.FCloseIdleId = 0 then
+           AFrame.FCloseIdleId := g_idle_add(@TGtk3MDIChildFrame.DeferCloseChild, AFrame);
     end;
 
     exit(true);
@@ -1261,6 +1280,7 @@ begin
   if (AFrame = nil) or (AFrame.FWorkspace = nil) then
     exit;
 
+  AFrame.FCloseIdleId := 0;
   CanClose := True;
 
   if Assigned(AFrame.FWorkspace.FOnChildCloseQuery) then
