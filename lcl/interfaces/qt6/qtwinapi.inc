@@ -247,15 +247,7 @@ begin
       QRegion_xored(RSrc1, RDest, RSrc2);
   end;
 
-  if QRegion_isEmpty(RDest) then
-    Result := NULLREGION
-  else
-  begin
-    if TQtRegion(Dest).IsPolyRegion or (TQtRegion(Dest).numRects > 0) then
-      Result := COMPLEXREGION
-    else
-      Result := SIMPLEREGION;
-  end;
+  Result := TQtRegion(Dest).GetRegionType;
 end;
 
 {------------------------------------------------------------------------------
@@ -2344,8 +2336,9 @@ begin
     if HasClipping then
       QPainter_clipRegion(QtDC.Widget, OldRgn.FHandle);
 
-    if SelectClipRgn(DC, RegionHnd) <> ERROR then
+    if TQtRegion(RegionHnd).GetRegionType <> ERROR then
     begin
+      QtDC.setClipRegion(TQtRegion(RegionHnd).FHandle);
       if TQtRegion(RegionHnd).IsPolyRegion then
       begin
         APath := QPainterPath_create();
@@ -2363,7 +2356,7 @@ begin
         QtDC.fillRect(@R, TQtBrush(hbr).FHandle);
       end;
       if HasClipping then
-        SelectClipRgn(DC, HRGN(OldRgn));
+        QtDC.setClipRegion(OldRgn.FHandle);
       Result := True;
     end;
   finally
@@ -3447,13 +3440,7 @@ begin
     if not (Result in [ERROR, NULLREGION]) and (lpRect <> nil) then
     begin
       R := TQtRegion(RGN).getBoundingRect;
-      with lpRect^ do
-      begin
-        Left   := R.Left;
-        Top    := R.Top;
-        Right  := R.Left + R.Right;
-        Bottom := R.Top + R.Bottom;
-      end;
+      lpRect^ := R;
     end;
   end;
 end;
@@ -5826,6 +5813,7 @@ function TQtWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;
 var
   QtDC: TQtDeviceContext;
   EmptyRegion: QRegionH;
+  TransRegion: QRegionH;
   P: TPoint;
 begin
   Result := ERROR;
@@ -5838,8 +5826,13 @@ begin
       // RGN is in Device coordinates. Qt expects logical coordinates
       // so we need to convert RGN coords.
       GetWindowOrgEx(DC, @P);
-      TQtRegion(Rgn).translate(P.X, P.Y);
-      QtDC.setClipRegion(TQtRegion(Rgn).FHandle);
+      TransRegion := QRegion_create;
+      try
+        QRegion_translated(TQtRegion(Rgn).FHandle, TransRegion, P.X, P.Y);
+        QtDC.setClipRegion(TransRegion);
+      finally
+        QRegion_destroy(TransRegion);
+      end;
     end else
     begin
       EmptyRegion := QRegion_create;
