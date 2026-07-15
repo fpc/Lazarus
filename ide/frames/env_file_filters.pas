@@ -29,11 +29,14 @@ type
 
   TFileFiltersOptionsFrame = class(TAbstractIDEOptionsEditor)
     btnDeleteTrustedCompiler: TButton;
+    btnDeleteTrustedCommand: TButton;
     clbTrustedCompilers: TCheckListBox;
+    clbTrustedCommands: TCheckListBox;
     edStarDirExcludes: TEdit;
     grdFileFilters: TStringGrid;
     lblStarDirExcludes: TLabel;
     lblTrustedCompilers: TLabel;
+    lblTrustedCommands: TLabel;
     MenuItem1: TMenuItem;
     SetDefaultMenuItem: TMenuItem;
     pmGrid: TPopupMenu;
@@ -42,6 +45,7 @@ type
     pmiInsRow: TMenuItem;
     lblFileDlgFilters: TLabel;
     procedure btnDeleteTrustedCompilerClick(Sender: TObject);
+    procedure btnDeleteTrustedCommandClick(Sender: TObject);
     procedure grdFileFiltersKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure pmiAddRowClick(Sender: TObject);
     procedure pmiDelRowClick(Sender: TObject);
@@ -261,6 +265,16 @@ begin
       clbTrustedCompilers.Items.Delete(i);
 end;
 
+procedure TFileFiltersOptionsFrame.btnDeleteTrustedCommandClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  // remove all checked (selected) trusted commands
+  for i:=clbTrustedCommands.Items.Count-1 downto 0 do
+    if clbTrustedCommands.Checked[i] then
+      clbTrustedCommands.Items.Delete(i);
+end;
+
 procedure TFileFiltersOptionsFrame.grdFileFiltersKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -315,6 +329,9 @@ begin
 
   lblTrustedCompilers.Caption:=lisTrustedCompilers;
   btnDeleteTrustedCompiler.Caption:=lisDeleteSelectedTrustedCompilers;
+
+  lblTrustedCommands.Caption:=lisTrustedCommands;
+  btnDeleteTrustedCommand.Caption:=lisDeleteSelectedTrustedCompilers;
 end;
 
 procedure TFileFiltersOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -327,6 +344,7 @@ begin
   edStarDirExcludes.Text:=EnvironmentOptions.StarDirectoryExcludes;
 
   clbTrustedCompilers.Items.Assign(EnvironmentOptions.TrustedCompilers);
+  clbTrustedCommands.Items.Assign(EnvironmentOptions.TrustedCommands);
 end;
 
 procedure TFileFiltersOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -347,6 +365,7 @@ begin
   EnvironmentOptions.StarDirectoryExcludes:=edStarDirExcludes.Text;
 
   EnvironmentOptions.TrustedCompilers.Assign(clbTrustedCompilers.Items);
+  EnvironmentOptions.TrustedCommands.Assign(clbTrustedCommands.Items);
 end;
 
 class function TFileFiltersOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

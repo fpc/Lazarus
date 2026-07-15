@@ -6989,6 +6989,10 @@ begin
   Result:=PkgBoss.CheckUserSearchPaths(Project1.CompilerOptions);
   if Result<>mrOk then exit;
 
+  // ask the user about untrusted compilers/commands before building anything
+  Result:=PkgBoss.CheckCompileTrust(Project1,nil);
+  if Result<>mrOk then exit;
+
   CompilerParams:=nil;
   CmdLineParams:=nil;
   try

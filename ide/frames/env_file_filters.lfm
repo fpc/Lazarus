@@ -51,9 +51,53 @@ object FileFiltersOptionsFrame: TFileFiltersOptionsFrame
     OnClick = btnDeleteTrustedCompilerClick
     TabOrder = 1
   end
-  object lblFileDlgFilters: TLabel
+  object lblTrustedCommands: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = btnDeleteTrustedCompiler
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 164
+    Width = 114
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 12
+    Caption = 'lblTrustedCommands'
+  end
+  object clbTrustedCommands: TCheckListBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblTrustedCommands
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 100
+    Top = 185
+    Width = 443
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    ItemHeight = 0
+    TabOrder = 2
+  end
+  object btnDeleteTrustedCommand: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = clbTrustedCommands
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 25
+    Top = 291
+    Width = 200
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    AutoSize = True
+    Caption = 'btnDeleteTrustedCommand'
+    OnClick = btnDeleteTrustedCommandClick
+    TabOrder = 3
+  end
+  object lblFileDlgFilters: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = btnDeleteTrustedCommand
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 15
@@ -91,7 +135,7 @@ object FileFiltersOptionsFrame: TFileFiltersOptionsFrame
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goThumbTracking, goSmoothScroll, goFixedRowNumbering]
     PopupMenu = pmGrid
     RowCount = 1
-    TabOrder = 2
+    TabOrder = 4
     OnKeyDown = grdFileFiltersKeyDown
   end
   object lblStarDirExcludes: TLabel
@@ -124,7 +168,7 @@ object FileFiltersOptionsFrame: TFileFiltersOptionsFrame
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
-    TabOrder = 3
+    TabOrder = 5
   end
   object pmGrid: TPopupMenu
     Left = 205

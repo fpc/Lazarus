@@ -4651,6 +4651,7 @@ begin
     ProjInspector.LazProject:=nil;
   FreeThenNil(Project1);
   EnvironmentOptions.ClearSessionTrustedCompilers; // forget "Trust this time" choices
+  EnvironmentOptions.ClearSessionTrustedCommands;
   if IDEMessagesWindow<>nil then IDEMessagesWindow.Clear;
 
   MainIDE.UpdateCaption;

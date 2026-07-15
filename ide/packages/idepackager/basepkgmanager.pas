@@ -128,6 +128,11 @@ type
     // package compilation
     function DoCompileProjectDependencies(AProject: TLazProject;
                       Flags: TPkgCompileFlags): TModalResult; virtual; abstract;
+    // Before building, ask the user about untrusted compiler paths and execute
+    // before/after commands of the target and all its required packages.
+    // Exactly one of AProject/APackage must be set. Returns mrCancel to abort the build.
+    function CheckCompileTrust(AProject: TLazProject;
+                      APackage: TIDEPackage): TModalResult; virtual; abstract;
 
     // package installation
     procedure LoadInstalledPackages; virtual; abstract;

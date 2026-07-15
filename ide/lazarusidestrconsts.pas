@@ -2462,6 +2462,20 @@ resourcestring
   lisUseDefaultCompiler = 'Use default compiler';
   lisTrustedCompilers = 'Trusted compilers';
   lisDeleteSelectedTrustedCompilers = 'Delete selected';
+  lisTrustedCommands = 'Trusted commands';
+  lisTheProjectWantsToUseTheCompilerBuild = 'The project "%s" wants to use the compiler:%s%s%s'
+    +'This is not the default compiler configured in the IDE. Building with a custom '
+    +'compiler can run arbitrary programs.%sDo you want to trust and use this compiler?';
+  lisThePackageWantsToUseTheCompilerBuild = 'The package "%s" wants to use the compiler:%s%s%s'
+    +'This is not the default compiler configured in the IDE. Building with a custom '
+    +'compiler can run arbitrary programs.%sDo you want to trust and use this compiler?';
+  lisTrustCommandCaption = 'Trust build command?';
+  lisTheProjectWantsToRunTheCommand = 'The project "%s" wants to run the command:%s%s%s'
+    +'Building with a custom command can run arbitrary programs.%sDo you want to trust '
+    +'and run this command?';
+  lisThePackageWantsToRunTheCommand = 'The package "%s" wants to run the command:%s%s%s'
+    +'Building with a custom command can run arbitrary programs.%sDo you want to trust '
+    +'and run this command?';
   lisCOSkipCallingCompiler = 'Skip calling compiler';
   lisCOAmbiguousAdditionalCompilerConfigFile = 'Ambiguous additional compiler config file';
   lisCOWarningTheAdditionalCompilerConfigFileHasTheSameNa = 'Warning: The '
