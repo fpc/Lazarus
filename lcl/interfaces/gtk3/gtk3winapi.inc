@@ -2077,13 +2077,30 @@ end;
 
 function TGtk3WidgetSet.FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): Bool;
 var
-  R: TRect;
+  ADC: TGtk3DeviceContext;
+  ARegion: Pcairo_region_t;
+  ACairoRect: Tcairo_rectangle_int_t;
+  cr: Pcairo_t;
+  i: Integer;
 begin
   Result := False;
   if IsValidDC(DC) and IsValidGDIObject(RegionHnd) then
   begin
-    R := TGtk3Region(RegionHnd).GetExtents;
-    TGtk3DeviceContext(DC).fillRect(R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top);
+    ADC := TGtk3DeviceContext(DC);
+    ARegion := TGtk3Region(RegionHnd).Handle;
+    cr := ADC.pcr;
+    cairo_save(cr);
+    for i := 0 to cairo_region_num_rectangles(ARegion) - 1 do
+    begin
+      cairo_region_get_rectangle(ARegion, i, @ACairoRect);
+      cairo_rectangle(cr, ADC.LToDX(ACairoRect.x), ADC.LToDY(ACairoRect.y),
+        ADC.LToDX(ACairoRect.x + ACairoRect.width) - ADC.LToDX(ACairoRect.x),
+        ADC.LToDY(ACairoRect.y + ACairoRect.height) - ADC.LToDY(ACairoRect.y));
+    end;
+    if IsValidGDIObject(hbr) then
+      ADC.SetSourceColor(TGtk3Brush(hbr).Color);
+    cairo_fill(cr);
+    cairo_restore(cr);
     Result := True;
   end;
 end;
