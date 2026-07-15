@@ -36,6 +36,7 @@ type
   { TTestDbgExceptions }
 
   TTestDbgExceptions = class(specialize TDbgExceptionHandlerListTemplate<TStringList>)
+    destructor Destroy; override;
     function Add(const S: string): TTestDbgException;
     function FindExceptionHandler(const AnExceptTargetInfo: IDbgTargetExceptionInfo): IDbgExceptionHandler;
     function Find(const AClassName: String): IDbgExceptionHandler; //deprecated'use Find(ExceptInfo)';
@@ -241,6 +242,15 @@ begin
 end;
 
 { TTestDbgExceptions }
+
+destructor TTestDbgExceptions.Destroy;
+begin
+  while Count>0 do begin
+    TTestDbgException(Objects[0]).Free;
+    Delete(0);
+  end;
+  inherited Destroy;
+end;
 
 function TTestDbgExceptions.Add(const S: string): TTestDbgException;
 begin

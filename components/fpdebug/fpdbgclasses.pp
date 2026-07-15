@@ -2000,6 +2000,7 @@ end;
 function TDbgCallstackEntry.GetProcSymbol: TFpSymbol;
 begin
   if FSymbol = nil then begin
+    // FSymbol has no refcount of tis own.
     FSymbol := GetOrigProcSymbol;
     if (FSymbol <> nil) and (FSymbol is TFpSymbolDwarfDataProc) then begin
       FSymbol := TFpSymbolDwarfDataProc(FSymbol).ResolveInternalFinallySymbol(FThread.Process);
@@ -2116,7 +2117,8 @@ end;
 destructor TDbgCallstackEntry.Destroy;
 begin
   FreeAndNil(FRegisterValueList);
-  ReleaseRefAndNil(FSymbol);
+  FSymbol := nil;
+  ReleaseRefAndNil(FOrigProcSymbol);
   FContext.ReleaseReference;
   inherited Destroy;
 end;
