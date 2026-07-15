@@ -40,13 +40,12 @@ resourcestring
     rsRefreshExistingExample =  'Refresh Existing Example?';
     rsExDownloadingProject = 'Downloading Project ...';
     rsExCopyingProject = 'Copying Project ...';
-    rsExProjectDownloadedTo = 'Project Downloaded to';      // followed by a full path name
-    rsExProjectCopiedTo = 'Project Copied to';              // followed by a full path name
+    rsExProjectCopiedTo = 'Project Copied to %s';           // %s replaced by a full path name
     rsExampleName = 'Name';                                 // Column title
     rsExamplePath = 'Path';                                 //  "
     rsExampleKeyWords = 'Keywords';                         //  "
     rsExSearchingForExamples = 'Searching for Examples ...';
-    rsFailedToCopyFilesTo = 'Failed to copy files to';        // Followed by a dir were we, apparently, cannot write
+    rsFailedToCopyFilesTo = 'Failed to copy files to %s';   // %s replaced by a dir where we, apparently, cannot write
     rsGroupHint = 'Double click inverts selection';
 
     // These are ObjectInspector set but I believe I cannot get OI literals i18n in a Package ??

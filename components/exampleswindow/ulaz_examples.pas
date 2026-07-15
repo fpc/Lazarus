@@ -279,9 +279,8 @@ begin
             // note we copy files to exampleworkingdir + lowercase(exampe name)
             if copyFiles(  lowercase(ListView1.Selected.Caption),        // force toplevel ex dir to lowercase as per lazarus std
                         ExtractFilePath(Ex.ExList[ExIndex]^.FFName), Ex.ExampleWorkingDir()) then
-                StatusBar1.SimpleText := rsExProjectCopiedTo + ' ' + Ex.ExampleWorkingDir()
-                            + ListView1.Selected.Caption
-            else StatusBar1.SimpleText := rsFailedToCopyFilesTo + ' ' + Ex.ExampleWorkingDir();
+                StatusBar1.SimpleText := Format(rsExProjectCopiedTo, [Ex.ExampleWorkingDir() + ListView1.Selected.Caption])
+            else StatusBar1.SimpleText := Format(rsFailedToCopyFilesTo, [Ex.ExampleWorkingDir()]);
         end;
     finally
         Screen.Cursor := crDefault;

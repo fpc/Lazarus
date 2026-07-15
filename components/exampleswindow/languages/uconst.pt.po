@@ -72,12 +72,9 @@ msgid "Project file not found."
 msgstr "Ficheiro de projecto não encontrado."
 
 #: uconst.rsexprojectcopiedto
-msgid "Project Copied to"
-msgstr "Projecto copiado para"
-
-#: uconst.rsexprojectdownloadedto
-msgid "Project Downloaded to"
-msgstr "Projecto transferido para"
+#, object-pascal-format
+msgid "Project Copied to %s"
+msgstr "Projecto copiado para %s"
 
 #: uconst.rsexsearchingforexamples
 msgid "Searching for Examples ..."
@@ -88,8 +85,9 @@ msgid "Search Here"
 msgstr "Procurar aqui"
 
 #: uconst.rsfailedtocopyfilesto
-msgid "Failed to copy files to"
-msgstr "Falha ao copiar para"
+#, object-pascal-format
+msgid "Failed to copy files to %s"
+msgstr "Falha ao copiar para %s"
 
 #: uconst.rsfoundexampleprojects
 #, object-pascal-format
@@ -107,4 +105,3 @@ msgstr "Duplo clique inverte a selecção"
 #: uconst.rsrefreshexistingexample
 msgid "Refresh Existing Example?"
 msgstr "Actualizar o exemplo existente?"
-

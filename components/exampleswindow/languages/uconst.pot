@@ -62,11 +62,8 @@ msgid "Project file not found."
 msgstr ""
 
 #: uconst.rsexprojectcopiedto
-msgid "Project Copied to"
-msgstr ""
-
-#: uconst.rsexprojectdownloadedto
-msgid "Project Downloaded to"
+#, object-pascal-format
+msgid "Project Copied to %s"
 msgstr ""
 
 #: uconst.rsexsearchingforexamples
@@ -78,7 +75,8 @@ msgid "Search Here"
 msgstr ""
 
 #: uconst.rsfailedtocopyfilesto
-msgid "Failed to copy files to"
+#, object-pascal-format
+msgid "Failed to copy files to %s"
 msgstr ""
 
 #: uconst.rsfoundexampleprojects
