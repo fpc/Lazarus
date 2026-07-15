@@ -5540,6 +5540,7 @@ var
   DisableUpdates: boolean;
   AGtkWidget: TGtk3Widget absolute hWnd;
   Alloc: TGtkAllocation;
+  AX, AY: gint;
 begin
   Result := IsValidHandle(hWnd);
   if not Result then
@@ -5567,7 +5568,17 @@ begin
       end;
 
       if (SWP_NOSIZE and uFlags) = 0 then
-        AGtkWidget.SetBounds(X, Y, CX, CY);
+      begin
+        if Gtk3IsGtkWindow(AGtkWidget.Widget) then
+        begin
+          PGtkWindow(AGtkWidget.Widget)^.get_position(@AX, @AY);
+          AGtkWidget.SetBounds(AX, AY, CX, CY);
+        end else
+        begin
+          AGtkWidget.Widget^.get_allocation(@Alloc);
+          AGtkWidget.SetBounds(Alloc.X, Alloc.Y, CX, CY);
+        end;
+      end;
     end;
 
     if (SWP_SHOWWINDOW and uFlags) <> 0 then
