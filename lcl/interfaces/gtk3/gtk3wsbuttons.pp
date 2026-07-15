@@ -310,6 +310,10 @@ begin
 
     { store glyph to prevent leaks }
     TGtk3Button(ABitBtn.Handle).Image:=AGlyph;
+  end else
+  begin
+    gtk_button_set_image(PGtkButton(TGtk3Button(ABitBtn.Handle).Widget), nil);
+    TGtk3Button(ABitBtn.Handle).Image := nil;
   end;
 end;
 
