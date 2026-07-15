@@ -424,26 +424,60 @@ procedure LCLGtkScrolledWindowGetPreferredWidth(widget: PGtkWidget; min_width, n
 var
   AParent, AGrandParent: PGtkWidget;
   ALCLWidget: TGtk3Widget;
+  AControl: TGtk3Widget;
+  ParentClass: PGtkWidgetClass;
+  LCLIntendedW: gint;
 begin
-  min_width^ := 1;
-  nat_width^ := 10;
-  AParent := widget^.get_parent;
-  if AParent <> nil then
+  AControl := TGtk3Widget(HwndFromGtkWidget(widget));
+  if not (Assigned(AControl) and Assigned(AControl.LCLObject)) then
   begin
-    AGrandParent := AParent^.get_parent;
-    if AGrandParent <> nil then
+    min_width^ := 1;
+    nat_width^ := 10;
+    AParent := widget^.get_parent;
+    if AParent <> nil then
     begin
-      ALCLWidget := TGtk3Widget(g_object_get_data(PGObject(AGrandParent), 'lclwidget'));
-      if Assigned(ALCLWidget) and Assigned(ALCLWidget.LCLObject) and
-         (csDesigning in ALCLWidget.LCLObject.ComponentState) then
-        nat_width^ := ALCLWidget.LCLObject.Width;
+      AGrandParent := AParent^.get_parent;
+      if AGrandParent <> nil then
+      begin
+        ALCLWidget := TGtk3Widget(g_object_get_data(PGObject(AGrandParent), 'lclwidget'));
+        if Assigned(ALCLWidget) and Assigned(ALCLWidget.LCLObject) and
+           (csDesigning in ALCLWidget.LCLObject.ComponentState) then
+          nat_width^ := ALCLWidget.LCLObject.Width;
+      end;
     end;
+    {$IFDEF GTK3DEBUGSIZE}
+    DebugLn(Format('LCLGSW.GetPreferredWidth (nolcl) min=%d nat=%d',
+      [min_width^, nat_width^]));
+    {$ENDIF}
+    exit;
   end;
+
+  if AControl.LCLObject.Width <= 1 then
+  begin
+    min_width^ := 0;
+    nat_width^ := 0;
+    {$IFDEF GTK3DEBUGSIZE}
+    DebugLn(Format('LCLGSW.GetPreferredWidth %s collapsed min=0 nat=0',
+      [dbgsName(AControl.LCLObject)]));
+    {$ENDIF}
+    exit;
+  end;
+
+  ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
+  ParentClass^.get_preferred_width(widget, min_width, nat_width);
+
+  min_width^ := 1;
+  if AControl.LCLWidth > 0 then
+    LCLIntendedW := AControl.LCLWidth
+  else
+    LCLIntendedW := AControl.LCLObject.Width;
+  nat_width^ := LCLIntendedW;
+  if nat_width^ < min_width^ then
+    nat_width^ := min_width^;
   {$IFDEF GTK3DEBUGSIZE}
-  ALCLWidget := TGtk3Widget(HwndFromGtkWidget(widget));
-  if Assigned(ALCLWidget) and Assigned(ALCLWidget.LCLObject) then
-    DebugLn(Format('LCLGSW.GetPreferredWidth %s min=%d nat=%d',
-      [dbgsName(ALCLWidget.LCLObject), min_width^, nat_width^]));
+  DebugLn(Format('LCLGSW.GetPreferredWidth %s min=%d nat=%d LCLIntW=%d LCLWidth=%d LCLObj.W=%d',
+    [dbgsName(AControl.LCLObject), min_width^, nat_width^, LCLIntendedW,
+     AControl.LCLWidth, AControl.LCLObject.Width]));
   {$ENDIF}
 end;
 

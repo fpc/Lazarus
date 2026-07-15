@@ -264,7 +264,6 @@ class function TGtk3WSCustomForm.GetDefaultClientRect(
 var
   AWindow: TGtk3Window;
   Alloc: TGtkAllocation;
-  MenuH: Integer;
 begin
   Result := False;
   if AWinControl.HandleAllocated then
@@ -275,16 +274,6 @@ begin
       exit;
   end;
   aClientRect := Rect(0, 0, aWidth, aHeight);
-  if (AWinControl is TCustomForm) and (TCustomForm(AWinControl).Menu <> nil) then
-  begin
-    MenuH := Gtk3WidgetSet.GetSystemMetrics(SM_CYMENU);
-    if MenuH > 0 then
-    begin
-      Dec(aClientRect.Bottom, MenuH);
-      if aClientRect.Bottom < 0 then
-        aClientRect.Bottom := 0;
-    end;
-  end;
   Result := True;
 end;
 

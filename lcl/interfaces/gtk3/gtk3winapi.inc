@@ -1481,6 +1481,7 @@ function TGtk3WidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
 var
   bFill, bBorder: Boolean;
 begin
+  if not IsValidDC(DC) then exit(False);
   bFill := (TGtk3DeviceContext(DC).CurrentBrush.Style <> BS_NULL);
   bBorder := TGtk3DeviceContext(DC).CurrentPen.Style <> psClear;
   TGtk3DeviceContext(DC).drawEllipse(x1, y1, x2 - x1 - 1, y2 - y1 - 1, bFill, bBorder);
@@ -3745,11 +3746,14 @@ function TGtk3WidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: integer
   ): boolean;
 var
   aWidget: PGtkWidget;
+  AGtkControl: TGtk3Widget;
+  MenuH: gint;
 begin
   Result := False;
   if Handle <> 0 then
   begin
-    aWidget:= TGtk3Widget(Handle).Widget;
+    AGtkControl := TGtk3Widget(Handle);
+    aWidget := AGtkControl.Widget;
     if aWidget<>nil then
     begin
       if Gtk3WidgetSet.IsWayland and Gtk3IsGtkWindow(aWidget) then
@@ -3758,6 +3762,18 @@ begin
       begin
         Width := aWidget^.get_allocated_width;
         Height := aWidget^.get_allocated_Height;
+      end;
+      if (AGtkControl is TGtk3Window) and Gtk3IsGtkWindow(aWidget) and
+         Assigned(AGtkControl.LCLObject) and
+         not Assigned(AGtkControl.LCLObject.Parent) and
+         (not (AGtkControl.LCLObject is TCustomForm) or
+          (TCustomForm(AGtkControl.LCLObject).FormStyle <> fsMDIChild)) then
+      begin
+        MenuH := TGtk3Window(AGtkControl).GetMenuBarHeight;
+        if MenuH > 0 then
+        begin
+          Height := Max(0, Height - MenuH);
+        end;
       end;
       Result := True;
     end;
@@ -4018,6 +4034,11 @@ var
   pscr:PGdkScreen;
   nmon:gint;
 begin
+  if not IsValidHandle(hWnd) then
+  begin
+    Result := HMONITOR(1);
+    Exit;
+  end;
   pscr:=TGdkScreen.get_default;
   nmon:=pscr^.get_monitor_at_window(TGtk3Widget(hWnd).GetWindow);
   Result:=HMONITOR(nmon+1);
@@ -4938,9 +4959,9 @@ var
         if Round(adjustment^.upper) <> uHeight then
         begin
           if HaveLogicalValues and (ScrollInfo.nPage = ScrollInfo.nMax) and (ScrollInfo.nMax > 0) then
-            PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(uWidth, ScrollInfo.nMax)
+            PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(uWidth, Max(0, ScrollInfo.nMax))
           else
-            PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(uWidth, Round(adjustment^.upper + 0.5)); //eg TTreeView
+            PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(uWidth, Max(0, Round(adjustment^.upper + 0.5)));
           PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.queue_resize;
           TGtk3ScrollableWin(AControl).LCLObject.InvalidateClientRectCache(False);
         end;
@@ -4950,9 +4971,9 @@ var
         if Round(adjustment^.upper) <> uWidth then
         begin
           if HaveLogicalValues and (ScrollInfo.nPage = ScrollInfo.nMax) and (ScrollInfo.nMax > 0) then
-            PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(ScrollInfo.nMax, uHeight)
+            PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(Max(0, ScrollInfo.nMax), uHeight)
           else
-            PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(Round(adjustment^.upper + 0.5), uHeight);
+            PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(Max(0, Round(adjustment^.upper + 0.5)), uHeight);
           PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.queue_resize;
           TGtk3ScrollableWin(AControl).LCLObject.InvalidateClientRectCache(False);
         end;
@@ -5337,7 +5358,7 @@ begin
   Result := Round(Adjustment^.value);
   if Result < 0 then
   begin
-    DebugLn(Format('WARNING: TGtk3WidgetSet.SetScrollInfo: Result < 0 control %s',[Result, dbgsName(TGtk3Widget(Handle).LCLObject)]));
+    DebugLn(Format('WARNING: TGtk3WidgetSet.SetScrollInfo: Result %d < 0 control %s',[Result, dbgsName(TGtk3Widget(Handle).LCLObject)]));
     Result := 0;
   end;
 
@@ -5562,6 +5583,7 @@ function TGtk3WidgetSet.SetWindowRgn(hWnd: HWND; hRgn: HRGN; bRedraw: Boolean
 var
   PCR: Pcairo_region_t;
 begin
+  if not IsValidHandle(hWnd) then exit(0);
   if hRgn = 0 then
     PCR := nil
   else
@@ -5734,11 +5756,18 @@ begin
       SrcH := cairo_image_surface_get_height(ASrcSurface);
       FreshSrcPixbuf := gdk_pixbuf_get_from_surface(ASrcSurface, 0, 0, SrcW, SrcH);
     end;
+    if (FreshSrcPixbuf = nil) and Assigned(SrcContext.CurrentImage) then
+      FreshSrcPixbuf := SrcContext.CurrentImage.Handle;
     if FreshSrcPixbuf = nil then
-      FreshSrcPixbuf := SrcContext.CurrentImage.Handle;  // fallback
+    begin
+      if ATempSurface <> nil then
+        cairo_surface_destroy(ATempSurface);
+      Result := False;
+      exit;
+    end;
     DestContext.drawImage1(@ATargetRect, FreshSrcPixbuf, @ASrcRect,
       TGtk3Image(mask).Handle, @AMaskRect);
-    if FreshSrcPixbuf <> SrcContext.CurrentImage.Handle then
+    if (not Assigned(SrcContext.CurrentImage)) or (FreshSrcPixbuf <> SrcContext.CurrentImage.Handle) then
       g_object_unref(FreshSrcPixbuf);
   end else
   begin
