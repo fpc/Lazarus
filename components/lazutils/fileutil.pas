@@ -83,7 +83,7 @@ type
   TSearchFileInPathFlags = set of TSearchFileInPathFlag;
 const
   sffFindProgramInPath = [
-    {$IFDEF Unix}sffDontSearchInBasePath,{$ENDIF}
+    sffDontSearchInBasePath, // for security reasons, default is not searching in current directory
     {$IFDEF Windows}sffDequoteSearchPath,{$ENDIF}
     sffFile,
     sffExecutable

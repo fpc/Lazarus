@@ -82,7 +82,7 @@ procedure GetDefaultTestBuildDirs(List: TStrings);
 // create a pascal file, which can be used to test the compiler
 function CreateCompilerTestPascalFilename: string;
 
-function FindDefaultExecutablePath(const Executable: string): string;
+function FindDefaultExecutablePath(const Executable: string; SearchInCurDir: boolean = false): string;
 function FindDefaultMakePath: string; // full path of "make"
 procedure GetDefaultMakeFilenames(List: TStrings); // list of standard paths of "make" on various distributions
 function GetDefaultFPCSrcDirectories: TStringList;
@@ -174,14 +174,19 @@ begin
   Result:='';
 end;
 
-function FindDefaultExecutablePath(const Executable: string): string;
+function FindDefaultExecutablePath(const Executable: string; SearchInCurDir: boolean): string;
+var
+  Flags: TSearchFileInPathFlags;
 begin
   if FilenameIsAbsolute(Executable) then
     Result:=Executable
-  else
+  else begin
+    Flags:=sffFindProgramInPath;
+    if SearchInCurDir then Exclude(flags,sffDontSearchInBasePath);
     Result:=SearchFileInPath(Executable,'',
                              GetEnvironmentVariableUTF8('PATH'),PathSeparator,
-                             sffFindProgramInPath);
+                             Flags);
+  end;
   Result:=TrimFilename(Result);
 end;
 
