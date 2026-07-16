@@ -1544,6 +1544,7 @@ begin
     Params.Add('-B');
   if aBuildMode<>'' then
     Params.Add('--build-mode='+aBuildMode);
+  Params.Add('--mistrust'); // invoke only whitelisted tools
   Params.Add(Filename);
 
   Tool:=ExternalToolList.Add(ToolTitle);
