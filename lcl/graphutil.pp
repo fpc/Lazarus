@@ -116,10 +116,9 @@ function ColorToGray(const AColor: TColor): Byte;
 var
   RGB: TColorRef;
 begin
-  if AColor = clNone
-  then RGB := 0
-  else RGB := ColorToRGB(AColor);
-  Result := Trunc(0.222 * (RGB and $FF) + 0.707 * ((RGB shr 8) and $FF) + 0.071 * (RGB shr 16 and $FF));
+  if AColor = clNone then exit(0);
+  RGB := ColorToRGB(AColor);
+  Result := (222 * (RGB and $FF) + 707 * ((RGB shr 8) and $FF) + 71 * (RGB shr 16 and $FF)) div 1000;
 end;
 
 procedure ColorToHLS(const AColor: TColor; out H, L, S: Byte);
@@ -217,7 +216,7 @@ end;
 { Returns true when the color is darker than clGray }
 function ColorIsDark(const AColor: TColor): Boolean;
 begin
-  Result := ColorToGray(AColor) <= ColorToGray(clGray);
+  Result := ColorToGray(AColor) < 128 {Gray};
 end;
 
 { Returns white when the color is darker than clGray, otherwise black.
