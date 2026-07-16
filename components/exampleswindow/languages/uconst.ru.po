@@ -105,3 +105,4 @@ msgstr "Двойной щелчок обращает выбор"
 #: uconst.rsrefreshexistingexample
 msgid "Refresh Existing Example?"
 msgstr "Обновить уже имеющийся пример?"
+

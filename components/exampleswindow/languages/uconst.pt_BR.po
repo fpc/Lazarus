@@ -106,3 +106,4 @@ msgstr "Duplo clique inverte a seleção"
 #: uconst.rsrefreshexistingexample
 msgid "Refresh Existing Example?"
 msgstr "Atualizar exemplo existente?"
+
