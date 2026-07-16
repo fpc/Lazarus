@@ -8324,7 +8324,7 @@ begin
   Result:=AClassName;
   if (length(Result)>2) and (Result[1] in ['T','t'])
   and (not (Result[2] in ['0'..'9'])) then
-    System.Delete(Result,1,1);
+    System.Delete(Result,1,1);  // Delete 'T'.
 end;
 
 function ControlAcceptsStreamableChildComponent(aControl: TWinControl;

@@ -465,7 +465,7 @@ end;
 
 { TCustomFormEditor }
 
-procedure OnPasWriterDefinePropertyTStrings(Writer: TCompWriterPas;
+procedure PasWriterDefinePropertyTStrings(Writer: TCompWriterPas;
   Instance: TPersistent; const Identifier: string; var Handled: boolean);
 var
   List: TStrings;
@@ -530,7 +530,7 @@ begin
 
   GlobalDesignHook.AddHandlerGetAncestorInstProp(@OnPropHookGetAncestorInstProp);
 
-  RegisterDefinePropertiesPas(TStrings,@OnPasWriterDefinePropertyTStrings);
+  RegisterDefinePropertiesPas(TStrings,@PasWriterDefinePropertyTStrings);
 end;
 
 destructor TCustomFormEditor.Destroy;
@@ -2566,22 +2566,22 @@ function TCustomFormEditor.CreateUniqueComponentName(const AClassName: string;
   OwnerComponent: TComponent): string;
 var
   i, j: integer;
+  CompName: string;
 begin
   Result:=AClassName;
   if (OwnerComponent=nil) or (Result='') then exit;
-  i:=1;
-  while true do begin
-    j:=OwnerComponent.ComponentCount-1;
-    Result:=ClassNameToComponentName(AClassName);
-    if Result[length(Result)] in ['0'..'9'] then
-      Result:=Result+'_';
-    Result:=Result+IntToStr(i);
-    while (j>=0)
-    and (CompareText(Result,OwnerComponent.Components[j].Name)<>0) do
-      dec(j);
-    if j<0 then exit;
+  CompName:=ClassNameToComponentName(AClassName);
+  if CompName[length(CompName)] in ['0'..'9'] then
+    CompName:=CompName+'_';
+  i:=0;
+  repeat
     inc(i);
-  end;
+    Result:=CompName+IntToStr(i);
+    j:=OwnerComponent.ComponentCount;
+    repeat
+      dec(j);
+    until (j<0) or (CompareText(Result,OwnerComponent.Components[j].Name)=0);
+  until j<0;
 end;
 
 function TCustomFormEditor.TranslateKeyToDesignerCommand(Key: word; Shift: TShiftState): word;
