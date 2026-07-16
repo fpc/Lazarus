@@ -5196,6 +5196,10 @@ msgstr "Değişikliklerden vazgeçilsin mi?"
 msgid "Abort all loading"
 msgstr "Tüm yüklemeyi iptal et"
 
+#: lazarusidestrconsts.lisabortifanycompilerpathorexecut
+msgid "Abort if any compiler path or execute-before/after command is missing in the IDE trust whitelist."
+msgstr ""
+
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
 msgstr "Projeyi yüklemeyi iptal et"
@@ -5957,10 +5961,22 @@ msgstr "Yeni proje oluştur"
 msgid "Build number"
 msgstr "Yapı numarası"
 
+#: lazarusidestrconsts.lisbuildreleasepackagesstorecompi
+msgid "Build release packages. Store compiler checksum instead of date in package.compiled files."
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildstage
 msgctxt "lazarusidestrconsts.lisbuildstage"
 msgid "Build"
 msgstr "Derle"
+
+#: lazarusidestrconsts.lisbuildtheminimalidewithdefaults
+msgid "Build the minimal IDE with defaults."
+msgstr ""
+
+#: lazarusidestrconsts.lisbuildthereleaseidesameasminima
+msgid "Build the release IDE. Same as minimal plus a fixed set of extra packages."
+msgstr ""
 
 #: lazarusidestrconsts.lisbusy
 msgid "Busy"

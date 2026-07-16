@@ -5219,6 +5219,10 @@ msgstr "Zahodiť zmeny?"
 msgid "Abort all loading"
 msgstr "Prerušiť všetky načítania"
 
+#: lazarusidestrconsts.lisabortifanycompilerpathorexecut
+msgid "Abort if any compiler path or execute-before/after command is missing in the IDE trust whitelist."
+msgstr ""
+
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
 msgstr "Prerušiť načítanie projektu"
@@ -5983,10 +5987,22 @@ msgstr "Vybudovať nový projekt"
 msgid "Build number"
 msgstr "Číslo vybudovania"
 
+#: lazarusidestrconsts.lisbuildreleasepackagesstorecompi
+msgid "Build release packages. Store compiler checksum instead of date in package.compiled files."
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildstage
 msgctxt "lazarusidestrconsts.lisbuildstage"
 msgid "Build"
 msgstr "Vybudovať"
+
+#: lazarusidestrconsts.lisbuildtheminimalidewithdefaults
+msgid "Build the minimal IDE with defaults."
+msgstr ""
+
+#: lazarusidestrconsts.lisbuildthereleaseidesameasminima
+msgid "Build the release IDE. Same as minimal plus a fixed set of extra packages."
+msgstr ""
 
 #: lazarusidestrconsts.lisbusy
 msgid "Busy"
