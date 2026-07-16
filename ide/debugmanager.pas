@@ -750,7 +750,7 @@ begin
   Greyed := DebugBossMgr.BreakPoints.IgnoreAll or
     ( (Project1.CompilerOptions <> nil) and
       Project1.CompilerOptions.RunWithoutDebug and
-      ( (DebugBoss.Debugger = nil) or (DebugBoss.State in [dsNone, dsIdle, dsStop, dsDestroying]) )
+      (DebugBoss.State in [dsNone, dsIdle, dsStop, dsDestroying])
     );
   case Valid of
     vsValid:
