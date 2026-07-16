@@ -5328,6 +5328,8 @@ resourcestring
     +'unit was compiled again.';
   lisApplyBuildFlagsBToDependenciesToo = 'Apply build flags (-B) to dependencies too.';
   lisDoNotCompileDependencies = 'Do not compile dependencies.';
+  lisAbortIfAnyCompilerPathOrExecut = 'Abort if any compiler path or execute-'
+    +'before/after command is missing in the IDE trust whitelist.';
   lisAddPackageSToListOfInstalledPackagesCombineWithBui = 'Add package(s) to the '
     +'list of installed packages (combine with --build-ide to rebuild IDE).';
   lisWriteWhatPackageFilesAreS = 'Write what package files are searched and '
@@ -5335,7 +5337,12 @@ resourcestring
   lisBuildIDEWithPackages = 'Build IDE with packages. Optional compiler options '+
     'will be passed after the options from used build mode and can be specified here or '+
     'with the --opt option.';
+  lisBuildTheMinimalIDEWithDefaults = 'Build the minimal IDE with defaults.';
+  lisBuildTheReleaseIDESameAsMinima = 'Build the release IDE. Same as minimal '
+    +'plus a fixed set of extra packages.';
   lisShowVersionAndExit = 'Show version and exit.';
+  lisBuildReleasePackagesStoreCompi = 'Build release packages. Store compiler '
+    +'checksum instead of date in package.compiled files.';
   lisBeLessVerboseCanBeGivenMultipleTimes = 'Be less verbose. Can be given '
     +'multiple times.';
   lisPassingQuietTwoTimesWillP = 'Passing --quiet two times will pass -vw-n-h-'
