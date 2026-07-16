@@ -195,7 +195,11 @@ begin
       bsdRightOrPartRight: x1 := ALogX-length(BracketToken)+1;
       bsdRight:            x1 := ALogX;
       bsdLeft:             x1 := ALogX-length(BracketToken);
-      bsdRightThenLeft:  begin
+      bsdRightThenLeft:  if ALogX > Length(Line) then begin
+                           // At eol, do left only
+                           x1 := ALogX-length(BracketToken);
+                         end
+                         else begin
                            x1 := ALogX;
                            x2 := ALogX;
                          end;
