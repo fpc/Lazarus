@@ -35,7 +35,7 @@ uses
   Math, StrUtils, Classes, SysUtils, AVL_Tree,
   // LCL
   Forms, Buttons, ExtCtrls, Controls, LMessages, LCLType, LCLIntf,
-  Graphics, Themes, ImgList, Menus, Clipbrd, Dialogs, StdCtrls,
+  Graphics, Themes, ImgList, Menus, Clipbrd, Dialogs, StdCtrls, GraphUtil,
   // LazUtils
   GraphType, UTF8Process, LazUTF8, LazFileCache, LazFileUtils, IntegerList, LazLoggerBase,
   // SynEdit
@@ -2010,15 +2010,8 @@ var
 
   function HeaderTextColor(aBackground: TColor): TColor;
   // choose black text on light backgrounds, white text on dark backgrounds
-  var
-    R, G, B: Byte;
   begin
-    RedGreenBlue(ColorToRGB(aBackground), R, G, B);
-    // perceived luminance (ITU-R BT.601)
-    if (R*299+G*587+B*114) div 1000 >= 128 then
-      Result:=clBlack
-    else
-      Result:=clWhite;
+    Result:=ContrastColor(aBackground);
   end;
 
 var
