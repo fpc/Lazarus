@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-07-10 23:12+0300\n"
+"PO-Revision-Date: 2026-07-16 03:54+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -8812,6 +8812,11 @@ msgstr "Удалить старый файл \"%s\"?"
 msgid "Delete selected macro?"
 msgstr "Удалить выделенный макрос?"
 
+#: lazarusidestrconsts.lisdeleteselectedtrustedcompilers
+msgctxt "lazarusidestrconsts.lisdeleteselectedtrustedcompilers"
+msgid "Delete selected"
+msgstr "Удалить выбранные"
+
 #: lazarusidestrconsts.lisdeletethisaddition
 msgid "Delete this addition"
 msgstr "Удалить дополнение"
@@ -9062,6 +9067,10 @@ msgstr "Не показывать этот диалог для данного п
 #: lazarusidestrconsts.lisdonotshowthismessageagain
 msgid "Do not show this message again"
 msgstr "Больше не показывать это сообщение"
+
+#: lazarusidestrconsts.lisdonottrustcompiler
+msgid "Do not trust"
+msgstr "Не доверять"
 
 #: lazarusidestrconsts.lisdonotwriteupdatedprojectinfoafterbuild
 msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
@@ -17725,6 +17734,21 @@ msgstr "Пакет %s не является пакетом времени раз
 msgid "The package \"%s\" is used by"
 msgstr "Пакет \"%s\" используется в"
 
+#: lazarusidestrconsts.listhepackagewantstorunthecommand
+#, object-pascal-format
+msgid "The package \"%s\" wants to run the command:%s%s%sBuilding with a custom command can run arbitrary programs.%sDo you want to trust and run this command?"
+msgstr "Пакет \"%s\" требует запуска команды:%s%s%sСборка с пользовательской командой может повлечь за собой запуск произвольных программ.%sВы желаете довериться и запустить эту команду?"
+
+#: lazarusidestrconsts.listhepackagewantstousethecompiler
+#, object-pascal-format
+msgid "The package \"%s\" wants to use the compiler:%s%s%sThis is not the default compiler configured in the IDE. Opening a package with a custom compiler can run arbitrary programs.%sDo you want to trust and use this compiler?"
+msgstr "Пакет \"%s\" требует использования компилятора:%s%s%sОн отличается от компилятора IDE по умолчанию. Открытие пакета с пользовательским компилятором может повлечь за собой запуск произвольных программ.%sВы желаете довериться и использовать этот компилятор?"
+
+#: lazarusidestrconsts.listhepackagewantstousethecompilerbuild
+#, object-pascal-format
+msgid "The package \"%s\" wants to use the compiler:%s%s%sThis is not the default compiler configured in the IDE. Building with a custom compiler can run arbitrary programs.%sDo you want to trust and use this compiler?"
+msgstr "Пакет \"%s\" требует использования компилятора:%s%s%sОн отличается от компилятора IDE по умолчанию. Сборка с пользовательским компилятором может повлечь за собой запуск произвольных программ.%sВы желаете довериться и использовать этот компилятор?"
+
 #: lazarusidestrconsts.listhepathofmakeisnotcorrect
 #, object-pascal-format
 msgid "The path of \"make\" is not correct: \"%s\""
@@ -17787,6 +17811,21 @@ msgstr "Проект требуется сохранить перед компи
 #: lazarusidestrconsts.listheprojectusesfpcresourceswhichrequireatleast
 msgid "The project uses FPC resources which require at least FPC 2.4"
 msgstr "Проект использует ресурсы FPC, требующие компилятор версии не ниже 2.4"
+
+#: lazarusidestrconsts.listheprojectwantstorunthecommand
+#, object-pascal-format
+msgid "The project \"%s\" wants to run the command:%s%s%sBuilding with a custom command can run arbitrary programs.%sDo you want to trust and run this command?"
+msgstr "Проект \"%s\" требует запуска команды:%s%s%sСборка с пользовательской командой может повлечь за собой запуск произвольных программ.%sВы желаете довериться и запустить эту команду?"
+
+#: lazarusidestrconsts.listheprojectwantstousethecompiler
+#, object-pascal-format
+msgid "The project \"%s\" wants to use the compiler:%s%s%sThis is not the default compiler configured in the IDE. Opening a project with a custom compiler can run arbitrary programs.%sDo you want to trust and use this compiler?"
+msgstr "Проект \"%s\" требует использования компилятора:%s%s%sОн отличается от компилятора IDE по умолчанию. Открытие проекта с пользовательским компилятором может повлечь за собой запуск произвольных программ.%sВы желаете довериться и использовать этот компилятор?"
+
+#: lazarusidestrconsts.listheprojectwantstousethecompilerbuild
+#, object-pascal-format
+msgid "The project \"%s\" wants to use the compiler:%s%s%sThis is not the default compiler configured in the IDE. Building with a custom compiler can run arbitrary programs.%sDo you want to trust and use this compiler?"
+msgstr "Проект \"%s\" требует использования компилятора:%s%s%sОн отличается от компилятора IDE по умолчанию. Сборка с пользовательским компилятором может повлечь за собой запуск произвольных программ.%sВы желаете довериться и использовать этот компилятор?"
 
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
 #, object-pascal-format
@@ -18105,6 +18144,34 @@ msgstr "Всего вкладок: %s"
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "Дерево требует обновления"
+
+#: lazarusidestrconsts.listrustcommandcaption
+msgid "Trust build command?"
+msgstr "Доверять команде сборки?"
+
+#: lazarusidestrconsts.listrustcompileralways
+msgid "Trust always"
+msgstr "Доверять всегда"
+
+#: lazarusidestrconsts.listrustcompilercaption
+msgid "Trust project compiler?"
+msgstr "Доверять компилятору проекта?"
+
+#: lazarusidestrconsts.listrustcompilerthistime
+msgid "Trust this time"
+msgstr "Доверять в этот раз"
+
+#: lazarusidestrconsts.listrustedcommands
+msgid "Trusted commands"
+msgstr "Доверенные команды"
+
+#: lazarusidestrconsts.listrustedcompilers
+msgid "Trusted compilers"
+msgstr "Доверенные компиляторы"
+
+#: lazarusidestrconsts.listrustpkgcompilercaption
+msgid "Trust package compiler?"
+msgstr "Доверять компилятору пакета?"
 
 #: lazarusidestrconsts.listwomovedfileswillhavethesamefilenamein
 #, object-pascal-format
@@ -18754,6 +18821,10 @@ msgstr "Отображать флажок для логических значе
 msgid "Use comments in custom options"
 msgstr "Комментарии в параметрах пользователя"
 
+#: lazarusidestrconsts.lisusedefaultcompiler
+msgid "Use default compiler"
+msgstr "Использовать компилятор по умолчанию"
+
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"
 msgstr "Использовать пакеты времени разработки"
@@ -19047,6 +19118,7 @@ msgid "Source Editor"
 msgstr "Редактор исходного кода"
 
 #: lazarusidestrconsts.lrsplddeleteselected
+msgctxt "lazarusidestrconsts.lrsplddeleteselected"
 msgid "Delete selected"
 msgstr "Удалить выделенные"
 
