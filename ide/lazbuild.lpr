@@ -86,6 +86,7 @@ type
     fLazarusDirInCfg: string;
     fLazarusDirOverride : String;
     FMaxProcessCount: integer;
+    FMistrust: boolean;
     FNoWriteProject: Boolean;
     fOSOverride: String;
     FPackageAction: TPkgAction;
@@ -148,6 +149,9 @@ type
     function LoadProject(const AFilename: string): TProject;
     procedure CloseProject(var AProject: TProject);
 
+    // with --mistrust: abort if compiler path or before/after command is not whitelisted
+    procedure CheckMistrust(AProject: TProject; APackage: TLazPackage);
+
     // Adding packages to list of to-be-installed packages in the IDE.
     // The packages can then be installed by recompiling the IDE (because we're using static packages)
     function AddPackagesToInstallList(const PackageNamesOrFiles: TStringList): boolean;
@@ -202,6 +206,7 @@ type
     property LazarusDirOverride: String read fLazarusDirOverride write fLazarusDirOverride;
     property BuildModeOverride: String read FBuildModeOverride write FBuildModeOverride;
     property MaxProcessCount: integer read FMaxProcessCount write FMaxProcessCount;
+    property Mistrust: boolean read FMistrust write FMistrust;// check compiler paths and before/after commands against the trust whitelist
     property NoWriteProject: boolean read FNoWriteProject write FNoWriteProject;
     property PkgGraphVerbosity: TPkgVerbosityFlags read FPkgGraphVerbosity write FPkgGraphVerbosity;
   end;
@@ -783,6 +788,8 @@ begin
     CheckPackageGraphForCompilation(APackage,nil);
   end;
 
+  CheckMistrust(nil,APackage);
+
   if PackageGraph.CompilePackage(APackage,Flags,false)<>mrOk then
     PrintErrorAndHalt(ErrorBuildFailed, '"' + APackage.IDAsString + '": compilation failed');
 end;
@@ -909,6 +916,10 @@ var
       WriteLn(S);
       exit(true);
     end;
+
+    // with --mistrust: abort before compiling anything or running any command if a
+    // compiler path or before/after command is not whitelisted
+    CheckMistrust(Project1,nil);
 
     CompilerParams:=nil;
     CmdLineParams:=nil;
@@ -1143,6 +1154,89 @@ procedure TLazBuildApplication.CloseProject(var AProject: TProject);
 begin
   // free project, if it is still there
   FreeThenNil(AProject);
+end;
+
+procedure TLazBuildApplication.CheckMistrust(AProject: TProject;
+  APackage: TLazPackage);
+// When Mistrust is set, replicate the IDE's trust checks (see
+// TPkgManager.CheckCompileTrust), but non-interactively: warn about every untrusted
+// compiler path and execute-before/after command, then abort the build with an error.
+var
+  Failed: boolean;
+
+  procedure CheckCommand(const aCommand, aOwnerName, aWhen: string);
+  begin
+    // a command is an exact shell command line -> compared case-sensitive by IsCommandTrusted
+    if (aCommand<>'') and (not EnvironmentOptions.IsCommandTrusted(aCommand)) then
+    begin
+      PrintWarning('untrusted execute-'+aWhen+' command in "'+aOwnerName+'": '+aCommand);
+      Failed:=true;
+    end;
+  end;
+
+  procedure CheckOpts(Opts: TBaseCompilerOptions; const aOwnerName: string);
+  var
+    UnparsedPath: string;
+  begin
+    if Opts=nil then exit;
+    // compiler path: compare the unparsed value, do not resolve macros here.
+    // safe cases: empty, the default macro, or the IDE default compiler.
+    UnparsedPath:=Opts.CompilerPath;
+    if (UnparsedPath<>'') and (not SameText(UnparsedPath,DefaultCompilerPath))
+    and (CompareFilenames(UnparsedPath,EnvironmentOptions.GetParsedCompilerFilename)<>0)
+    and (not EnvironmentOptions.IsCompilerTrusted(UnparsedPath)) then
+    begin
+      PrintWarning('untrusted compiler in "'+aOwnerName+'": '+UnparsedPath);
+      Failed:=true;
+    end;
+    CheckCommand(Opts.ExecuteBefore.Command,aOwnerName,'before');
+    CheckCommand(Opts.ExecuteAfter.Command,aOwnerName,'after');
+  end;
+
+var
+  PkgList: TFPList;
+  i: integer;
+  Pkg: TLazPackage;
+begin
+  if not Mistrust then exit;
+  Failed:=false;
+
+  // check the top-level target first
+  if APackage<>nil then
+    CheckOpts(APackage.CompilerOptions,APackage.Name)
+  else if AProject<>nil then
+    CheckOpts(AProject.CompilerOptions,AProject.GetTitleOrName)
+  else
+    exit;
+
+  // unless dependencies are skipped, check every required package in compile order
+  if not SkipDependencies then
+  begin
+    PkgList:=nil;
+    try
+      if APackage<>nil then
+      begin
+        // ensure the required packages are opened before enumerating
+        PackageGraph.OpenRequiredDependencyList(APackage.FirstRequiredDependency);
+        PackageGraph.GetAllRequiredPackages(APackage,nil,PkgList,[pirCompileOrder]);
+      end
+      else
+        PackageGraph.GetAllRequiredPackages(nil,AProject.FirstRequiredDependency,
+                                            PkgList,[pirCompileOrder]);
+      if PkgList<>nil then
+        for i:=0 to PkgList.Count-1 do
+        begin
+          Pkg:=TLazPackage(PkgList[i]);
+          CheckOpts(Pkg.CompilerOptions,Pkg.Name);
+        end;
+    finally
+      PkgList.Free;
+    end;
+  end;
+
+  if Failed then
+    PrintErrorAndHalt(ErrorBuildFailed,
+      'untrusted compiler path or command; not in trust whitelist');
 end;
 
 function TLazBuildApplication.AddPackagesToInstallList(
@@ -1689,6 +1783,7 @@ begin
     LongOptions.Add('lazarus-dir:');
     LongOptions.Add('create-makefile');
     LongOptions.Add('max-process-count:');
+    LongOptions.Add('mistrust');
     LongOptions.Add('no-write-project');
     LongOptions.Add('get-expand-text:');
     LongOptions.Add('get:');
@@ -1800,6 +1895,11 @@ begin
     if BuildRecursive and SkipDependencies then
       PrintErrorAndHalt(ErrorInvalidSyntax, '"--recursive" and "--skip-dependencies" options are incompatible');
 
+    if HasOption('mistrust') then begin
+      Mistrust:=true;
+      PrintInfo('Parameter: --mistrust');
+    end;
+
     { Overrides }
 
     // widgetset
@@ -1907,6 +2007,9 @@ begin
   writeln('');
   writeln('-d, --skip-dependencies');
   w(lisDoNotCompileDependencies);
+  writeln('');
+  writeln('--mistrust');
+  w('Abort if any compiler path or execute-before/after command is missing in the IDE trust whitelist.');
   writeln('');
   writeln('--build-ide, --build-ide=<options>');
   w(lisBuildIDEWithPackages);
