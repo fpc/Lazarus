@@ -255,6 +255,7 @@ begin
 
       if (ASearchDirection = bsdRightThenLeft) and (x2 = ALogX) then begin
         x1 := ALogX-length(BracketToken);
+        if x1 < 1 then x1 := 1;
         x2 := ALogX-1;
         continue;
       end;
