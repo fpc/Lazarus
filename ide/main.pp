@@ -4616,6 +4616,8 @@ begin
     MainBuildBoss.SetBuildTargetProject1(false);
     UpdateCaption;
     UpdateDefineTemplates;
+    if DebugBossMgr <> nil then
+      DebugBossMgr.BreakPoints.TriggerChanged;
   end;
 end;
 
@@ -5288,6 +5290,8 @@ begin
                            mtWarning, [mbOk]);
     end;
     UpdateCaption;
+    if DebugBossMgr <> nil then
+      DebugBossMgr.BreakPoints.TriggerChanged;
     if Assigned(ProjInspector) then
       ProjInspector.UpdateTitle;
     if Project1.UseAsDefault then

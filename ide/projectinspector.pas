@@ -83,7 +83,7 @@ uses
   // IDE
   LazarusIDEStrConsts, MainBase, MainBar, AddToProjectDlg, EnvGuiOptions,
   BuildModesManager,
-  ProjPackChecks, ProjPackEditing, ProjPackFilePropGui, EditableProject,
+  ProjPackChecks, ProjPackEditing, ProjPackFilePropGui, EditableProject, BaseDebugManager,
   AddPkgDependencyDlg, AddFPMakeDependencyDlg;
 
 const
@@ -2134,6 +2134,8 @@ begin
   Project1.DefineTemplates.AllChanged(false);
   IncreaseCompilerParseStamp;
   MainBuildBoss.SetBuildTargetProject1(false);
+  if DebugBoss <> nil then
+    DebugBoss.BreakPoints.TriggerChanged;
   MainIDE.UpdateCaption;
   MainIDE.UpdateDefineTemplates;
   if Assigned(ProjInspector) then

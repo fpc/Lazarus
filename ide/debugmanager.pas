@@ -744,17 +744,23 @@ end;
 procedure TManagedBreakPoint.UpdateSourceMarkImage;
 var
   Img: Integer;
+  Greyed: Boolean;
 begin
   if SourceMark = nil then Exit;
+  Greyed := DebugBossMgr.BreakPoints.IgnoreAll or
+    ( (Project1.CompilerOptions <> nil) and
+      Project1.CompilerOptions.RunWithoutDebug and
+      ( (DebugBoss.Debugger = nil) or (DebugBoss.State in [dsNone, dsIdle, dsStop, dsDestroying]) )
+    );
   case Valid of
     vsValid:
-      Img := SourceEditorMarks.ActiveBreakPointImg[not DebugBossMgr.BreakPoints.IgnoreAll, Enabled];
+      Img := SourceEditorMarks.ActiveBreakPointImg[not Greyed, Enabled];
     vsInvalid:
-      Img := SourceEditorMarks.InvalidBreakPointImg[not DebugBossMgr.BreakPoints.IgnoreAll, Enabled];
+      Img := SourceEditorMarks.InvalidBreakPointImg[not Greyed, Enabled];
     vsPending:
-      Img := SourceEditorMarks.PendingBreakPointImg[not DebugBossMgr.BreakPoints.IgnoreAll, Enabled];
+      Img := SourceEditorMarks.PendingBreakPointImg[not Greyed, Enabled];
     else
-      Img := SourceEditorMarks.UnknownBreakPointImg[not DebugBossMgr.BreakPoints.IgnoreAll, Enabled];
+      Img := SourceEditorMarks.UnknownBreakPointImg[not Greyed, Enabled];
   end;
   SourceMark.ImageIndex := Img;
   SourceMark.Visible := True;

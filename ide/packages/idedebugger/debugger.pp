@@ -431,6 +431,7 @@ type
     constructor Create(const ABreakPointClass: TIDEBreakPointClass);
     destructor Destroy; override;
     procedure Clear; override;
+    procedure TriggerChanged;
     function Add(const ASource: String; const ALine: Integer; AnUpdating: Boolean = False): TIDEBreakPoint; overload; reintroduce;
     function Add(const AAddress: TDBGPtr; AnUpdating: Boolean = False): TIDEBreakPoint; overload; reintroduce;
     function Add(const AData: String; const AScope: TDBGWatchPointScope;
@@ -6759,6 +6760,14 @@ procedure TIDEBreakPoints.Clear;
 begin
   inherited Clear;
   IgnoreAll := False;
+end;
+
+procedure TIDEBreakPoints.TriggerChanged;
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+    Items[i].DoChanged;
 end;
 
 function TIDEBreakPoints.Find(const ASource: String;
