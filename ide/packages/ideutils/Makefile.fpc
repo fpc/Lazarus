@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for IdeUtilsPkg 1.0
 #
-#   This file was generated on 1-5-26
+#   This file was generated on 16-7-26
 
 [package]
 name=ideutilspkg
@@ -37,7 +37,7 @@ else
 ifeq ($(OS_TARGET),darwin)
 LCL_PLATFORM=cocoa
 else
-LCL_PLATFORM=gtk2
+LCL_PLATFORM=gtk3
 endif
 endif
 endif

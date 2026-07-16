@@ -2057,7 +2057,7 @@ begin
   w(Format(lisOverrideTheProjectOperatingSystemEGWin32LinuxDefau, [FPCAdds.GetCompiledTargetOS]));
   writeln('');
   writeln('--ws=<widgetset>, --widgetset=<widgetset>');
-  w(Format(lisOverrideTheProjectWidgetsetEGDefault, ['gtk2 qt qt5 qt6 win32 cocoa', LCLPlatformDirNames[GetBuildLCLWidgetType]]));
+  w(Format(lisOverrideTheProjectWidgetsetEGDefault, ['gtk3 qt qt5 qt6 win32 cocoa', LCLPlatformDirNames[GetBuildLCLWidgetType]]));
   writeln('');
   writeln('--cpu=<cpu>');
   w(Format(lisOverrideTheProjectCpuEGI386X86_64PowerpcPowerpc_64, [FPCAdds.GetCompiledTargetCPU]));

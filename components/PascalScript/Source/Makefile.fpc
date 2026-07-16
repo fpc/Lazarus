@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for pascalscript 0.0.0.1
 #
-#   This file was generated on 3-9-23
+#   This file was generated on 16-7-26
 
 [package]
 name=pascalscript
@@ -37,7 +37,7 @@ else
 ifeq ($(OS_TARGET),darwin)
 LCL_PLATFORM=cocoa
 else
-LCL_PLATFORM=gtk2
+LCL_PLATFORM=gtk3
 endif
 endif
 endif

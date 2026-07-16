@@ -1,8 +1,8 @@
 #   File generated automatically by Lazarus Package Manager
 #
-#   Makefile.fpc for freetypelaz 1.0
+#   Makefile.fpc for FreeTypeLaz 1.0
 #
-#   This file was generated on 3-9-23
+#   This file was generated on 16-7-26
 
 [package]
 name=freetypelaz
@@ -37,7 +37,7 @@ else
 ifeq ($(OS_TARGET),darwin)
 LCL_PLATFORM=cocoa
 else
-LCL_PLATFORM=gtk2
+LCL_PLATFORM=gtk3
 endif
 endif
 endif

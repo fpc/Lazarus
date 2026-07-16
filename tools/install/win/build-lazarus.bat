@@ -9,7 +9,7 @@ rem %MAKEEXE% lazutils OPT="-gl -Ur" PP=%COMPILER% >> %LOGFILE%
 rem %MAKEEXE% lcl OPT="-gl -Ur" PP=%COMPILER% >> %LOGFILE%
 
 IF NOT "%FPCTARGETOS%"=="win32" GOTO BUILDIDE
-rem %MAKEEXE% lcl OPT="-gl -Ur" PP=%COMPILER% LCL_PLATFORM=gtk2 >> %LOGFILE%
+rem %MAKEEXE% lcl OPT="-gl -Ur" PP=%COMPILER% LCL_PLATFORM=gtk3 >> %LOGFILE%
 rem %MAKEEXE% lcl OPT="-gl -Ur" PP=%COMPILER% LCL_PLATFORM=qt >> %LOGFILE%
 
 :BUILDIDE

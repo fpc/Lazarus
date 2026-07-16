@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for LazEdit 1.0
 #
-#   This file was generated on 10-7-25
+#   This file was generated on 16-7-26
 
 [package]
 name=lazedit
@@ -37,7 +37,7 @@ else
 ifeq ($(OS_TARGET),darwin)
 LCL_PLATFORM=cocoa
 else
-LCL_PLATFORM=gtk2
+LCL_PLATFORM=gtk3
 endif
 endif
 endif

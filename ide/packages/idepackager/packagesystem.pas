@@ -5218,7 +5218,7 @@ begin
   s:=s+'ifeq ($(OS_TARGET),darwin)'+e;
   s:=s+'LCL_PLATFORM=cocoa'+e;
   s:=s+'else'+e;
-  s:=s+'LCL_PLATFORM=gtk2'+e;
+  s:=s+'LCL_PLATFORM=gtk3'+e;
   s:=s+'endif'+e;
   s:=s+'endif'+e;
   s:=s+'endif'+e;
