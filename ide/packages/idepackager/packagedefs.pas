@@ -2966,6 +2966,7 @@ var
 begin
   UsePathDelim:=StorePathDelim;
   XMLConfig.SetValue(Path+'Version',LazPkgXMLFileVersion);
+  SaveFlags(Path);
   XMLConfig.SetDeleteValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[UsePathDelim],'/');
   XMLConfig.SetDeleteValue(Path+'Name/Value',Name,'');
   XMLConfig.SetDeleteValue(Path+'Type/Value',LazPackageTypeIdents[FPackageType],
@@ -2982,7 +2983,6 @@ begin
   XMLConfig.SetDeleteValue(Path+'License/Value',FLicense,'');
   PkgVersionSaveToXMLConfig(FVersion,XMLConfig,Path+'Version/');
   SaveFiles(Path+'Files/',FFiles);
-  SaveFlags(Path);
   XMLConfig.SetDeleteValue(Path+'IconFile/Value',f(FIconFile),'');
   XMLConfig.SetDeleteValue(Path+'OutputStateFile/Value',f(OutputStateFile),'');
   XMLConfig.SetDeleteValue(Path+'LazDoc/Paths',f(FFPDocPaths),'');
