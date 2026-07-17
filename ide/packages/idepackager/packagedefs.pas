@@ -533,7 +533,6 @@ type
     function GetFiles(Index: integer): TPkgFile;
     function GetIDEOptions: TPackageIDEOptions;
     function GetSourceDirectories: TFileReferenceList;
-    function GetUseLegacyLists: Boolean;
     procedure SetAddToProjectUsesSection(const AValue: boolean);
     procedure SetAuthor(const AValue: string);
     procedure SetAutoIncrementVersionOnBuild(const AValue: boolean);
@@ -554,7 +553,6 @@ type
     procedure SetRegistered(const AValue: boolean);
     procedure SetPackageType(const AValue: TLazPackageType);
     procedure SetStorePathDelim(const AValue: TPathDelimSwitch);
-    procedure SetUseLegacyLists(const AUseLegacyLists: Boolean);
     procedure SetUserReadOnly(const AValue: boolean);
     procedure MacroListSubstitution({%H-}TheMacro: TTransferMacro;
       const MacroName: string; var s: string;
@@ -755,7 +753,6 @@ type
     property TopologicalLevel: integer read FTopologicalLevel write FTopologicalLevel;
     property Translated: string read FTranslated write FTranslated;
     property UsageOptions: TPkgAdditionalCompilerOptions read FUsageOptions;
-    property UseLegacyLists: Boolean read GetUseLegacyLists write SetUseLegacyLists;
     property UserReadOnly: boolean read FUserReadOnly write SetUserReadOnly;
     property UserIgnoreChangeStamp: integer read FUserIgnoreChangeStamp
                                             write FUserIgnoreChangeStamp;
@@ -805,7 +802,7 @@ procedure LoadPkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
   HoldPackages, SortList: boolean);
 procedure SavePkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
   First: TPkgDependency; ListType: TPkgDependencyDirection;
-  UsePathDelim: TPathDelimSwitch;LegacyLists:Boolean);
+  UsePathDelim: TPathDelimSwitch);
 procedure ListPkgIDToDependencyList(ListOfTLazPackageID: TObjectList;
   var First: TPkgDependency; ListType: TPkgDependencyDirection; Owner: TObject;
   HoldPackages: boolean);
@@ -958,9 +955,8 @@ begin
   List.Free;
 end;
 
-procedure SavePkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
-  First: TPkgDependency; ListType: TPkgDependencyDirection;
-  UsePathDelim: TPathDelimSwitch; LegacyLists: Boolean);
+procedure SavePkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string; First: TPkgDependency; ListType: TPkgDependencyDirection;
+  UsePathDelim: TPathDelimSwitch);
 var
   i: Integer;
   Dependency: TPkgDependency;
@@ -969,12 +965,11 @@ begin
   i:=0;
   Dependency:=First;
   while Dependency<>nil do begin
-    SubPath:=ThePath+XMLConfig.GetListItemXPath('Item', i, LegacyLists, True)+'/';
+    SubPath:=ThePath+XMLConfig.GetListItemXPath('Item', i)+'/';
     Dependency.SaveToXMLConfig(XMLConfig,SubPath,UsePathDelim);
     Dependency:=Dependency.NextDependency[ListType];
     inc(i);
   end;
-  XMLConfig.SetListItemCount(ThePath, i, LegacyLists);
 end;
 
 procedure ListPkgIDToDependencyList(ListOfTLazPackageID: TObjectList;
@@ -2569,16 +2564,6 @@ begin
   FStorePathDelim:=AValue;
 end;
 
-procedure TLazPackage.SetUseLegacyLists(const AUseLegacyLists: Boolean);
-begin
-  if AUseLegacyLists=UseLegacyLists then exit;
-  if AUseLegacyLists then
-    Include(FFlags, lpfCompatibilityMode)
-  else
-    Exclude(FFlags, lpfCompatibilityMode);
-  Modified:=true;
-end;
-
 constructor TLazPackage.Create;
 var
   pod: TPkgOutputDir;
@@ -2961,10 +2946,9 @@ var
     PkgFile: TPkgFile;
     SubPath: string;
   begin
-    XMLConfig.SetListItemCount(ThePath, List.Count, UseLegacyLists);
     for i:=0 to List.Count-1 do begin
       PkgFile:=TPkgFile(List[i]);
-      SubPath := ThePath+XMLConfig.GetListItemXPath('Item', i, UseLegacyLists, True)+'/';
+      SubPath := ThePath+XMLConfig.GetListItemXPath('Item', i)+'/';
       PkgFile.SaveToXMLConfig(XMLConfig,SubPath,UsePathDelim);
     end;
   end;
@@ -2974,7 +2958,7 @@ var
     XMLConfig.SetDeleteValue(ThePath+'AutoIncrementVersionOnBuild/Value',
       AutoIncrementVersionOnBuild,true);
     XMLConfig.SetDeleteValue(ThePath+'CompatibilityMode/Value',
-      UseLegacyLists,false);
+      lpfCompatibilityMode in Flags,false);
   end;
 
 begin
@@ -3007,7 +2991,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'i18n/EnableI18NForLFM/Value', EnableI18NForLFM, false);
 
   SavePkgDependencyList(XMLConfig,Path+'RequiredPkgs/',
-                        FFirstRequiredDependency,pddRequires,UsePathDelim,UseLegacyLists);
+                        FFirstRequiredDependency,pddRequires,UsePathDelim);
   FUsageOptions.SaveToXMLConfig(XMLConfig,Path+'UsageOptions/',UsePathDelim);
   fPublishOptions.SaveToXMLConfig(XMLConfig,Path+'PublishOptions/',UsePathDelim);
   SaveStringList(XMLConfig,FProvides,Path+'Provides/');
@@ -3924,11 +3908,6 @@ end;
 function TLazPackage.GetUnitPath(RelativeToBaseDir: boolean): string;
 begin
   Result:=CompilerOptions.GetUnitPath(RelativeToBaseDir);
-end;
-
-function TLazPackage.GetUseLegacyLists: Boolean;
-begin
-  Result:=lpfCompatibilityMode in Flags;
 end;
 
 function TLazPackage.GetIncludePath(RelativeToBaseDir: boolean): string;

@@ -977,7 +977,7 @@ begin
   and Assigned(FJumpHistory) then begin
     if (pfSaveJumpHistory in Flags) then begin
       FJumpHistory.DeleteInvalidPositions;
-      FJumpHistory.SaveToXMLConfig(FXMLConfig,Path,UseLegacyLists);
+      FJumpHistory.SaveToXMLConfig(FXMLConfig,Path);
     end
     else
       FXMLConfig.DeletePath(Path+'JumpHistory');
@@ -998,7 +998,7 @@ begin
   FXMLConfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
 
   // Save the session build modes
-  BuildModes.SaveSessionOptsToXMLConfig(FXMLConfig, Path, True, UseLegacyLists);
+  BuildModes.SaveSessionOptsToXMLConfig(FXMLConfig, Path, True);
   BuildModes.SaveSessionData(Path);
   // save all units
   SaveUnits(Path,true,true);
@@ -1011,9 +1011,9 @@ begin
   // save session info
   SaveSessionInfo(Path);
   // save the Run and Build parameter options
-  RunParameterOptions.Save(FXMLConfig,Path+'RunParams/',fCurStorePathDelim,rpsLPS, UseLegacyLists);
+  RunParameterOptions.Save(FXMLConfig,Path+'RunParams/',fCurStorePathDelim,rpsLPS);
   // save history lists
-  FHistoryLists.SaveToXMLConfig(FXMLConfig,Path+'HistoryLists/', UseLegacyLists);
+  FHistoryLists.SaveToXMLConfig(FXMLConfig,Path+'HistoryLists/');
 
   // Notifiy hooks
   if Assigned(OnSaveProjectInfo) then

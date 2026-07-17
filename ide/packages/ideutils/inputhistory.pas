@@ -464,7 +464,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'Clean/SourcesFilemask',FCleanSourcesFileMask,
                                            DefaultProjectCleanSourcesFileMask);
   // history lists
-  FHistoryLists.SaveToXMLConfig(XMLConfig,Path+'HistoryLists/',True);
+  FHistoryLists.SaveToXMLConfig(XMLConfig,Path+'HistoryLists/');
   // diff dialog
   for DiffFlag:=Low(TTextDiffFlag) to High(TTextDiffFlag) do begin
     XMLConfig.SetDeleteValue(

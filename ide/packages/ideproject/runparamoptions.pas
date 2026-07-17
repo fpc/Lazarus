@@ -106,8 +106,7 @@ type
     function LegacySave(XMLConfig: TXMLConfig; const Path: string;
       UsePathDelim: TPathDelimSwitch): TModalResult;
     function Save(XMLConfig: TXMLConfig; const Path: string;
-      UsePathDelim: TPathDelimSwitch; const ASaveIn: TRunParamsOptionsModeSave;
-      const ALegacyList: Boolean): TModalResult;
+      UsePathDelim: TPathDelimSwitch; const ASaveIn: TRunParamsOptionsModeSave): TModalResult;
     //function GetActiveMode: TRunParamsOptionsMode;
   end;
 
@@ -276,9 +275,8 @@ begin
     ActiveModeName := Modes[0].Name;
 end;
 
-function TRunParamsOptions.Save(XMLConfig: TXMLConfig; const Path: string;
-  UsePathDelim: TPathDelimSwitch; const ASaveIn: TRunParamsOptionsModeSave;
-  const ALegacyList: Boolean): TModalResult;
+function TRunParamsOptions.Save(XMLConfig: TXMLConfig; const Path: string; UsePathDelim: TPathDelimSwitch;
+  const ASaveIn: TRunParamsOptionsModeSave): TModalResult;
 var
   AMode: TRunParamsOptionsMode;
   I, Cnt: Integer;
@@ -298,7 +296,7 @@ begin
 
     if AMode.SaveIn=ASaveIn then
     begin
-      ModePath := ModesPath+XMLConfig.GetListItemXPath('Mode', Cnt, ALegacyList, False)+'/';
+      ModePath := ModesPath+XMLConfig.GetListItemXPath('Mode', Cnt)+'/';
       Result := AMode.Save(XMLConfig, ModePath, UsePathDelim);
       if Result<>mrOK then
         Exit;
@@ -306,7 +304,6 @@ begin
     end;
   end;
 
-  XMLConfig.SetListItemCount(ModesPath, Cnt, ALegacyList);
   if ASaveIn=rpsLPS then
     XMLConfig.SetValue(Path + 'Modes/ActiveMode', ActiveModeName);
 end;

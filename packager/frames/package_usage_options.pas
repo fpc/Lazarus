@@ -211,7 +211,7 @@ begin
     CustomOptionsMemo.Text := CustomOptions;
   end;
   AddPackageUnitToProjectCheckBox.Checked := FLazPackage.AddToProjectUsesSection;
-  CompatibilityModeCheckBox.Checked := FLazPackage.UseLegacyLists;
+  CompatibilityModeCheckBox.Checked := lpfCompatibilityMode in FLazPackage.Flags;
 end;
 
 procedure TPackageUsageOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -229,7 +229,10 @@ begin
     CustomOptions := CustomOptionsMemo.Text;
   end;
   LazPackage.AddToProjectUsesSection := AddPackageUnitToProjectCheckBox.Checked;
-  FLazPackage.UseLegacyLists := CompatibilityModeCheckBox.Checked;
+  if CompatibilityModeCheckBox.Checked then
+    FLazPackage.Flags := FLazPackage.Flags + [lpfCompatibilityMode]
+  else
+    FLazPackage.Flags := FLazPackage.Flags - [lpfCompatibilityMode];
 end;
 
 class function TPackageUsageOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

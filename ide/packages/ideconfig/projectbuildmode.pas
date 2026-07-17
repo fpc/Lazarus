@@ -58,7 +58,7 @@ type
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveMacroValuesAtOldPlace(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-                              IsDefault, ALegacyList: Boolean; var Cnt: integer);
+                              IsDefault: Boolean; var Cnt: integer);
     function GetCaption: string; override;
   public
     // copied by Assign, compared by Equals, cleared by Clear
@@ -121,9 +121,9 @@ type
     procedure LoadSessionFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                        LoadAllOptions: boolean);
     procedure SaveProjOptsToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-                                      SaveSession, ALegacyList: boolean);
+                                      SaveSession: boolean);
     procedure SaveSessionOptsToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-                                         SaveSession, ALegacyList: boolean);
+                                         SaveSession: boolean);
     // Used by Project's SaveToXMLConfig
     procedure SaveSessionData(const Path: string);
     procedure SaveSharedMatrixOptions(const Path: string);
@@ -226,12 +226,11 @@ begin
   XMLConfig.SetDeleteValue(Path+'Count',Cnt,0);
 end;
 
-procedure TProjectBuildMode.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string; IsDefault, ALegacyList: Boolean; var Cnt: integer);
+procedure TProjectBuildMode.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string; IsDefault: Boolean; var Cnt: integer);
 var
   SubPath: String;
 begin
-  SubPath:=Path+'BuildModes/'+XMLConfig.GetListItemXPath('Item', Cnt, ALegacyList, True)+'/';
+  SubPath:=Path+'BuildModes/'+XMLConfig.GetListItemXPath('Item', Cnt)+'/';
   inc(Cnt);
   XMLConfig.SetDeleteValue(SubPath+'Name',Identifier,'');
   if IsDefault then
@@ -786,8 +785,7 @@ begin
 end;
 
 // SaveToXMLConfig itself
-procedure TProjectBuildModes.SaveProjOptsToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string; SaveSession, ALegacyList: boolean);
+procedure TProjectBuildModes.SaveProjOptsToXMLConfig(XMLConfig: TXMLConfig; const Path: string; SaveSession: boolean);
 var
   i, Cnt: Integer;
 begin
@@ -802,12 +800,10 @@ begin
   Cnt:=0;
   for i:=0 to Count-1 do
     if SaveSession or not Items[i].InSession then
-      Items[i].SaveToXMLConfig(FXMLConfig, Path, i=0, ALegacyList, Cnt);
-  FXMLConfig.SetListItemCount(Path+'BuildModes/',Cnt,ALegacyList);
+      Items[i].SaveToXMLConfig(FXMLConfig, Path, i=0, Cnt);
 end;
 
-procedure TProjectBuildModes.SaveSessionOptsToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string; SaveSession, ALegacyList: boolean);
+procedure TProjectBuildModes.SaveSessionOptsToXMLConfig(XMLConfig: TXMLConfig; const Path: string; SaveSession: boolean);
 var
   i, Cnt: Integer;
 begin
@@ -815,8 +811,7 @@ begin
   Cnt:=0;
   for i:=0 to Count-1 do
     if Items[i].InSession and SaveSession then
-      Items[i].SaveToXMLConfig(FXMLConfig, Path, false, ALegacyList, Cnt);
-  FXMLConfig.SetListItemCount(Path+'BuildModes/',Cnt,ALegacyList);
+      Items[i].SaveToXMLConfig(FXMLConfig, Path, false, Cnt);
 end;
 
 

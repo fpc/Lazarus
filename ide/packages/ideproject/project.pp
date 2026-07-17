@@ -610,7 +610,6 @@ type
     function GetSourceDirectories: TFileReferenceList;
     function GetTargetFilename: string;
     function GetUnits(Index: integer): TUnitInfo;
-    function GetUseLegacyLists: Boolean;
     procedure ClearSourceDirectories;
     procedure EmbeddedObjectModified(Sender: TObject);
     function FileBackupHandler(const Filename: string): TModalResult;
@@ -878,7 +877,6 @@ type
     property EnableI18NForLFM: boolean read FEnableI18NForLFM write SetEnableI18NForLFM;
     property I18NExcludedIdentifiers: TStrings read FI18NExcludedIdentifiers;
     property I18NExcludedOriginals: TStrings read FI18NExcludedOriginals;
-    property UseLegacyLists: Boolean read GetUseLegacyLists;
     property ForceUpdatePoFiles: Boolean read FForceUpdatePoFiles write FForceUpdatePoFiles;
     property FirstRemovedDependency: TPkgDependency read FFirstRemovedDependency;
     property FirstRequiredDependency: TPkgDependency read FFirstRequiredDependency;
@@ -2675,11 +2673,10 @@ begin
   for i:=0 to UnitCount-1 do
     if UnitMustBeSaved(Units[i],FProjectWriteFlags,SaveSession) then begin
       Units[i].SaveToXMLConfig(FXMLConfig,
-        Path+'Units/'+FXMLConfig.GetListItemXPath('Unit',SaveUnitCount,UseLegacyLists)+'/',
+        Path+'Units/'+FXMLConfig.GetListItemXPath('Unit',SaveUnitCount)+'/',
                                                   True,SaveSession,IsExternalSessionFile,FCurStorePathDelim);
       inc(SaveUnitCount);
     end;
-  FXMLConfig.SetListItemCount(Path+'Units/',SaveUnitCount,UseLegacyLists);
 end;
 
 procedure TProject.SaveOtherDefines(const Path: string);
@@ -2760,7 +2757,7 @@ begin
   // save custom data
   SaveCustomData(Self,CustomData,FXMLConfig,Path+'CustomData/');
   // Save the macro values and compiler options
-  BuildModes.SaveProjOptsToXMLConfig(FXMLConfig, Path, FSaveSessionInLPI, UseLegacyLists);
+  BuildModes.SaveProjOptsToXMLConfig(FXMLConfig, Path, FSaveSessionInLPI);
   BuildModes.SaveSharedMatrixOptions(Path);
   if FSaveSessionInLPI then
     BuildModes.SaveSessionData(Path);
@@ -2769,10 +2766,10 @@ begin
   // save the Run and Build parameter options
   if pfCompatibilityMode in Flags then
     RunParameterOptions.LegacySave(FXMLConfig,Path,FCurStorePathDelim);
-  RunParameterOptions.Save(FXMLConfig,Path+'RunParams/',FCurStorePathDelim,rpsLPI, UseLegacyLists);
+  RunParameterOptions.Save(FXMLConfig,Path+'RunParams/',FCurStorePathDelim,rpsLPI);
   // save dependencies
   SavePkgDependencyList(FXMLConfig,Path+'RequiredPackages/',
-    FFirstRequiredDependency,pddRequires,FCurStorePathDelim,pfCompatibilityMode in FFlags);
+    FFirstRequiredDependency,pddRequires,FCurStorePathDelim);
   // save units
   SaveUnits(Path,FSaveSessionInLPI,False);
 
@@ -2791,7 +2788,7 @@ begin
     CurFlags:=FProjectWriteFlags;
     if not FSaveSessionInLPI then
       CurFlags:=CurFlags+[pwfSkipSeparateSessionInfo];
-    if UseLegacyLists then
+    if pfCompatibilityMode in Flags then
       CurFlags:=CurFlags+[pwfCompatibilityMode];
     OnSaveProjectInfo(Self,FXMLConfig,CurFlags);
   end;
@@ -3922,11 +3919,6 @@ begin
     Add(AnUnitInfo.Source);
     Add(AnUnitInfo.SourceLFM);
   end;
-end;
-
-function TProject.GetUseLegacyLists: Boolean;
-begin
-  Result:=pfCompatibilityMode in Flags;
 end;
 
 function TProject.HasProjectInfoFileChangedOnDisk: boolean;

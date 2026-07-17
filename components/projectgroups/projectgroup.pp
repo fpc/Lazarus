@@ -1389,7 +1389,6 @@ begin
       ARoot:='ProjectGroup/';
       XMLConfig.SetValue(ARoot+'FileVersion',PGFileVersion);
       ATargetsPath := ARoot+'Targets/';
-      XMLConfig.SetListItemCount(ATargetsPath, TargetCount, False);
       ACount:=0;
       For i:=0 to TargetCount-1 do
       begin
@@ -1828,7 +1827,6 @@ var
   aMode: TPGBuildMode;
 begin
   aPath := aPath+'BuildModes/';
-  XMLConfig.SetListItemCount('Mode', BuildModeCount, False);
   for i:=0 to BuildModeCount-1 do begin
     SubPath:=aPath+XMLConfig.GetListItemXPath('Mode', i, False, True)+'/';
     aMode:=BuildModes[i];

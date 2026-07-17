@@ -184,7 +184,7 @@ type
     procedure Insert(Index: integer; APosition: TProjectJumpHistoryPosition);
     procedure InsertSmart(Index: integer; APosition: TProjectJumpHistoryPosition);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string; const ALegacyLists: Boolean);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure WriteDebugReport;
     property HistoryIndex: integer read FHistoryIndex write SetHistoryIndex;
     property Items[Index:integer]:TProjectJumpHistoryPosition 
@@ -413,16 +413,14 @@ begin
   HistoryIndex:=NewHistoryIndex;
 end;
 
-procedure TProjectJumpHistory.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string; const ALegacyLists: Boolean);
+procedure TProjectJumpHistory.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
 var i: integer;
   JmpPath, PosPath: string;
 begin
   JmpPath := Path+'JumpHistory/';
-  XMLConfig.SetListItemCount(JmpPath,Count,ALegacyLists);
   XMLConfig.SetDeleteValue(JmpPath+'HistoryIndex',HistoryIndex,0);
   for i:=0 to Count-1 do begin
-    PosPath := JmpPath+XMLConfig.GetListItemXPath('Position', i, ALegacyLists, True)+'/';
+    PosPath := JmpPath+XMLConfig.GetListItemXPath('Position', i)+'/';
     Items[i].SaveToXMLConfig(XMLConfig, PosPath);
   end;
 end;
