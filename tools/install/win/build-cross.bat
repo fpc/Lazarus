@@ -261,7 +261,7 @@ if not exist %LAZBUILD_REPLACE_TEXT% GOTO NO_REPLACE
 %LAZBUILD_REPLACE_TEXT% %BUILDDIR%\image\components\buildintf\units\%TARGETCPU%-%TARGETOS%\BuildIntf.compiled "-MObjFPC" "-T%TARGETOS% -P%TARGETCPU% -MObjFPC"
 %LAZBUILD_REPLACE_TEXT% %BUILDDIR%\image\components\ideintf\units\%TARGETCPU%-%TARGETOS%\%LCL_PLATFORM%\IDEIntf.compiled "-MObjFPC" "-T%TARGETOS% -P%TARGETCPU% -MObjFPC"
 
-:GOTO NO_REPLACE
+:NO_REPLACE
 
 %ISCC% lazarus-cross.iss 
 
