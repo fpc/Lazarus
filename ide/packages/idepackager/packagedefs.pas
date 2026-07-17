@@ -407,7 +407,9 @@ type
   
 const
   pupAllAuto = [pupAsNeeded,pupOnRebuildingAll];
-  
+
+  DefaultPackageFlags = [lpfCompatibilityMode];
+
 type
   TPkgOutputDirWritable = (
     podwUnknown,
@@ -764,7 +766,7 @@ type
 
 
 const
-  LazPkgXMLFileVersion = 5;
+  LazPkgXMLFileVersion = 6;
 
 var
   // All TPkgDependency are added to this AVL tree (sorted for names, not version!)
@@ -2589,6 +2591,7 @@ begin
   for pod in TPkgOutputDir do
     LastCompile[pod]:=TPkgLastCompileStats.Create;
   FUsageOptions.ParsedOpts.InvalidateParseOnChange:=true;
+  FFlags:=DefaultPackageFlags;
 end;
 
 constructor TLazPackage.CreateAndClear;
@@ -2845,13 +2848,12 @@ var
       Include(FFlags,lpfAutoIncrementVersionOnBuild)
     else
       Exclude(FFlags,lpfAutoIncrementVersionOnBuild);
-    if FileVersion<=4 then begin
-      // set CompatibilityMode flag for legacy projects (this flag was added in FileVersion=5 that changed
-      // item format so that LPK cannot be opened in legacy Lazarus unless lpfCompatibilityMode is set)
+    if FileVersion<6 then begin
+      // force CompatibilityMode flag for legacy projects
       Include(FFlags,lpfCompatibilityMode);
     end else
     begin
-      if XMLConfig.GetValue(ThePath+'CompatibilityMode/Value',false) then
+      if XMLConfig.GetValue(ThePath+'CompatibilityMode/Value',True) then
         Include(FFlags,lpfCompatibilityMode)
       else
         Exclude(FFlags,lpfCompatibilityMode);
@@ -2958,7 +2960,7 @@ var
     XMLConfig.SetDeleteValue(ThePath+'AutoIncrementVersionOnBuild/Value',
       AutoIncrementVersionOnBuild,true);
     XMLConfig.SetDeleteValue(ThePath+'CompatibilityMode/Value',
-      lpfCompatibilityMode in Flags,false);
+      lpfCompatibilityMode in Flags,true);
   end;
 
 begin

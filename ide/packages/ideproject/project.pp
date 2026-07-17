@@ -2284,6 +2284,8 @@ begin
   DefFlags:=DefaultProjectFlags;
   if FFileVersion<7 then
     Exclude(DefFlags,pfLRSFilesInOutputDirectory);
+  if FFileVersion<13 then
+    Exclude(DefFlags,pfCompatibilityMode);
   Flags:=[];
   for f:=Low(TProjectFlag) to High(TProjectFlag) do
     SetFlag(f,FXMLConfig.GetValue(Path+'General/Flags/'+ProjectFlagNames[f]+'/Value',f in DefFlags));
@@ -2296,9 +2298,8 @@ begin
     SetFlag(pfMainUnitHasScaledStatement,OldProjectType in [ptApplication]);
     SetFlag(pfRunnable, OldProjectType in [ptProgram,ptApplication,ptCustomProgram]);
   end;
-  if FFileVersion<=11 then begin
-    // set CompatibilityMode flag for legacy projects (this flag was added in FFileVersion=12 that changed
-    // item format so that LPI cannot be opened in legacy Lazarus unless pfCompatibilityMode is set)
+  if FFileVersion<13 then begin
+    // force CompatibilityMode flag when loading legacy projects (format changed again between version 12 and 13)
     SetFlag(pfCompatibilityMode, True);
   end;
   Flags:=Flags-[pfUseDefaultCompilerOptions];

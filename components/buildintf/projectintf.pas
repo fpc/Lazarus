@@ -718,7 +718,8 @@ const
   DefaultProjectFlags = DefaultProjectNoApplicationFlags+[
                          pfMainUnitHasCreateFormStatements,
                          pfMainUnitHasTitleStatement,
-                         pfMainUnitHasScaledStatement];
+                         pfMainUnitHasScaledStatement,
+                         pfCompatibilityMode];
 
 function ProjectFlagsToStr(Flags: TProjectFlags): string;
 function StrToProjectSessionStorage(const s: string): TProjectSessionStorage;
