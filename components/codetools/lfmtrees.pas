@@ -1484,10 +1484,7 @@ begin
     while Result <> nil do
     begin
       if Result.NextSibling <> nil then
-      begin
-        Result := Result.NextSibling;
-        Exit;
-      end;
+        Exit(Result.NextSibling);
       Result := Result.Parent;
     end;
   end;

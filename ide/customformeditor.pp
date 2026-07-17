@@ -2567,8 +2567,8 @@ function TCustomFormEditor.CreateUniqueComponentName(const AClassName: string;
 var
   i, j, k: integer;
   CompName: string;
-  fram: TFrame;
   HasConflict: Boolean;
+  SubComp: TComponent;
 begin
   Result:=AClassName;
   if (OwnerComponent=nil) or (Result='') then exit;
@@ -2584,16 +2584,16 @@ begin
       dec(j);
       HasConflict:=False;
       if j<0 then break;
-      if OwnerComponent.Components[j] is TFrame then begin
-        fram:=TFrame(OwnerComponent.Components[j]);
-        k:=fram.ComponentCount;
+      SubComp:=OwnerComponent.Components[j];
+      if SubComp is TFrame then begin
+        k:=SubComp.ComponentCount;
         repeat
           dec(k);
           if k<0 then break;
-          HasConflict:=SameText(Result, fram.Components[k].Name);
+          HasConflict:=SameText(Result, SubComp.Components[k].Name);
         until HasConflict;
       end;
-    until HasConflict or SameText(Result, OwnerComponent.Components[j].Name);
+    until HasConflict or SameText(Result, SubComp.Name);
   until j<0;
 end;
 
