@@ -2898,8 +2898,13 @@ var
   MsgPopup : TLMMouse;
   MousePos: TPoint;
   MButton: guint;
-  SavedHandle: PtrUInt;
   AParentControl: TWinControl;
+
+  function CheckWidget: boolean;
+  begin
+    Result := (Gtk3WidgetFromGtkWidget(Sender) = Self) and CanSendLCLMessage;
+  end;
+
 begin
   Result := gtk_false;
   {$IF DEFINED(GTK3DEBUGEVENTS) OR DEFINED(GTK3DEBUGMOUSE)}
@@ -2909,8 +2914,6 @@ begin
   {$ENDIF}
   if Event^.button.send_event = NO_PROPAGATION_TO_PARENT then
     exit(gtk_true);
-
-  SavedHandle := PtrUInt(Self);
 
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
@@ -3018,7 +3021,7 @@ begin
   NotifyApplicationUserInput(LCLObject, PLMessage(@Msg)^);
   Event^.button.send_event := NO_PROPAGATION_TO_PARENT;
 
-  if (SavedHandle <> PtrUInt(Self)) or (LCLObject = nil) or (FWidget = nil) then
+  if not CheckWidget then
     exit;
   Result := DeliverMessage(Msg, True) <> 0;
 
@@ -3029,10 +3032,13 @@ begin
     MsgPopup.XPos := SmallInt(Round(Event^.button.x_root));
     MsgPopup.YPos := SmallInt(Round(Event^.button.y_root));
 
-    if (SavedHandle <> PtrUInt(Self)) or (LCLObject = nil) or (FWidget = nil) then
+    if not CheckWidget then
       exit;
 
     Result := DeliverMessage(MsgPopup, True) <> 0;
+
+    if not CheckWidget then
+      exit;
 
     // If still not handled and we are not a notebook (notebooks have their own
     // ActiveSheet.PopupMenu special path in the override), propagate
@@ -3052,6 +3058,9 @@ begin
       Result := MsgPopup.Result <> 0;
     end;
   end;
+
+  if not CheckWidget then
+    exit;
 
   if wtPanel in WidgetType then
     Result := GDK_EVENT_STOP;
