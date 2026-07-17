@@ -83,6 +83,8 @@ Set the environment as in B.1
      This changes the last bit of the istaller filename lazarus-x.y-fpc-a.b.c-cross-i386-win32-WIN32 to WIN64 
      (the last segment should indicate the target on which the install should run)
 
+  SET LAZ_BITNESS=32
+    for building cross addons for the 32 bit Lazarus IDE (adds the "(32 bit)" part to the version
 
 Call the script:
 

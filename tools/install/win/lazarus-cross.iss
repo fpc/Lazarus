@@ -32,19 +32,26 @@ EnableISX=true
 #define CurrentYear GetDateTimeString('yyyy','','')
 #define AppAuthor "Lazarus Team"
 #define AppURL "https://www.lazarus-ide.org/"
+#define LAZ_BITNESS GetEnv('LAZ_BITNESS')
+#if LAZ_BITNESS=="32"
+#define bitness " (32 bit)"
+#else
+#define bitness ""
+#endif
 
 [Setup]
+AppId={code:GetAppId}
+AppVersion={#AppVersion}
 #if CrossTagetOs!=""
-AppName={#AppName} - Addon for target {#CrossTagetOs}-{#CrossTargetCPU}
+AppName={#AppName}{#bitness} - Addon for target {#CrossTagetOs}-{#CrossTargetCPU}
+AppVerName={#AppName} {#AppVersion}{#bitness}
 #else
-AppName={#AppName} (Addon)
+AppName={#AppName}{#bitness} (Addon)
+AppVerName={#AppName} {#AppVersion}{#bitness}
 #endif
 UpdateUninstallLogAppName=no
 ;UninstallDisplayName={#AppName} {#AppVersion}
 ; AddId: registry/uninstall info: Max 127 char
-AppId={code:GetAppId}
-AppVersion={#AppVersion}
-AppVerName={#AppName} {#AppVersion}
 AppPublisher={#AppAuthor}
 AppPublisherURL={#AppURL}
 AppSupportURL={#AppURL}

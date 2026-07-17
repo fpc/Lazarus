@@ -31,6 +31,11 @@ EnableISX=true
 #define CurrentYear GetDateTimeString('yyyy','','')
 #define AppAuthor "Lazarus Team"
 #define AppURL "https://www.lazarus-ide.org/"
+#if FPCTargetOS=="win32"
+#define bitness " (32 bit)"
+#else
+#define bitness ""
+#endif
 
 [Setup]
 AllowNoIcons=yes
@@ -38,7 +43,7 @@ AppName={#AppName}
 ; AddId: registry/uninstall info: Max 127 char
 AppId={code:GetAppId}
 AppVersion={#AppVersion}
-AppVerName={#AppName} {#AppVersion}
+AppVerName={#AppName} {#AppVersion}{#bitness}
 AppPublisher={#AppAuthor}
 AppPublisherURL={#AppURL}
 AppSupportURL={#AppURL}
