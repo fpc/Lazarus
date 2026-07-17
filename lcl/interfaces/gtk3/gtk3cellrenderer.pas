@@ -187,8 +187,7 @@ begin
   {here we cheat cell renderer to paint eg. height 1 }
   aligned_area^.height := gint(MeasureItemStruct.itemHeight);
   cell_area^.height := gint(MeasureItemStruct.itemHeight);
-  DebugLn('**** Cell_Area ',dbgs(RectFromGdkRect(cell_area^)),' Aligned_Area ',dbgs(RectFromGdkRect(aligned_area^)));
-
+  // DebugLn('**** Cell_Area ',dbgs(RectFromGdkRect(cell_area^)),' Aligned_Area ',dbgs(RectFromGdkRect(aligned_area^)));
 end;
 
 function GTK_IS_CELL_RENDERER_TEXT(cell: PGtkCellRenderer): Boolean;
