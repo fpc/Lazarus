@@ -153,9 +153,9 @@ type
     procedure DeleteBookmark(ID: integer);
     //
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-        Merge, IsExternalSessionFile: boolean; FileVersion: integer); override;
+        Merge, IsPartOfProjectDefValue: boolean; FileVersion: integer); override;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-        SaveData, SaveSession, IsExternalSessionFile: boolean; UsePathDelim: TPathDelimSwitch); override;
+        SaveData, SaveSession, IsPartOfProjectDefValue: boolean; UsePathDelim: TPathDelimSwitch); override;
     procedure SetSourceText(const SourceText: string; Beautify: boolean = false); override;
   public
     property Bookmarks: TFileBookmarkList read FBookmarks write FBookmarks;
@@ -729,11 +729,11 @@ begin
 end;
 
 procedure TEditableUnitInfo.LoadFromXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string; Merge, IsExternalSessionFile: boolean; FileVersion: integer);
+  const Path: string; Merge, IsPartOfProjectDefValue: boolean; FileVersion: integer);
 var
   c, i: Integer;
 begin
-  inherited LoadFromXMLConfig(XMLConfig, Path, Merge, IsExternalSessionFile, FileVersion);
+  inherited LoadFromXMLConfig(XMLConfig, Path, Merge, IsPartOfProjectDefValue, FileVersion);
   FComponentState := TWindowState(XMLConfig.GetValue(Path+'ComponentState/Value',0));
   FEditorInfoList.Clear;
   FEditorInfoList.NewEditorInfo;
@@ -745,14 +745,14 @@ begin
   FBookmarks.LoadFromXMLConfig(XMLConfig,Path+'Bookmarks/');
 end;
 
-procedure TEditableUnitInfo.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string; SaveData, SaveSession, IsExternalSessionFile: boolean;
+procedure TEditableUnitInfo.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string; SaveData, SaveSession, IsPartOfProjectDefValue: boolean;
   UsePathDelim: TPathDelimSwitch);
 var
   i, X, Y, L, T: Integer;
   BM: TFileBookmark;
   ProjBM: TProjectBookmark;
 begin
-  inherited SaveToXMLConfig(XMLConfig, Path, SaveData, SaveSession, IsExternalSessionFile, UsePathDelim);
+  inherited SaveToXMLConfig(XMLConfig, Path, SaveData, SaveSession, IsPartOfProjectDefValue, UsePathDelim);
   if SaveSession then
   begin
     XMLConfig.SetDeleteValue(Path+'ComponentState/Value',Ord(FComponentState),0);
@@ -1001,7 +1001,7 @@ begin
   BuildModes.SaveSessionOptsToXMLConfig(FXMLConfig, Path, True);
   BuildModes.SaveSessionData(Path);
   // save all units
-  SaveUnits(Path,true,true);
+  SaveUnits(Path,true,false);
 
   if Assigned(FDebuggerLink) then
     FDebuggerLink.SaveToSession(FXMLConfig, Path);

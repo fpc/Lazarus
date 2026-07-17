@@ -283,10 +283,10 @@ type
     function GetUsesUnitName: string;
     function CreateUnitName: string;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-                                Merge, IsExternalSessionFile: boolean;
+                                Merge, IsPartOfProjectDefValue: boolean;
                                 FileVersion: integer); virtual;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-                              SaveData, SaveSession, IsExternalSessionFile: boolean;
+                              SaveData, SaveSession, IsPartOfProjectDefValue: boolean;
                               UsePathDelim: TPathDelimSwitch); virtual;
     procedure UpdateUsageCount(Min, IfBelowThis, IncIfBelow: extended);
     procedure UpdateUsageCount(TheUsage: TUnitUsage; const Factor: TDateTime);
@@ -705,7 +705,7 @@ type
     procedure SaveSessionInfo(const Path: string); virtual;
     procedure SaveOtherDefines(const Path: string);
     procedure SaveToSession; virtual;
-    procedure SaveUnits(const Path: string; SaveSession, IsExternalSessionFile: boolean);
+    procedure SaveUnits(const Path: string; SaveSession, IsPartOfProjectDefValue: boolean);
   public
     constructor Create(ProjectDescription: TProjectDescriptor); override;
     destructor Destroy; override;
@@ -1249,11 +1249,10 @@ end;
   TUnitInfo SaveToXMLConfig
  ------------------------------------------------------------------------------}
 procedure TUnitInfo.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-  SaveData, SaveSession, IsExternalSessionFile: boolean; UsePathDelim: TPathDelimSwitch);
+  SaveData, SaveSession, IsPartOfProjectDefValue: boolean; UsePathDelim: TPathDelimSwitch);
 var
   AFilename: String;
   s: String;
-  IsPartOfProjectDefValue: Boolean;
 begin
   // global data
   AFilename:=Filename;
@@ -1261,11 +1260,8 @@ begin
     fOnLoadSaveFilename(AFilename, False);
   XMLConfig.SetValue(Path+'Filename/Value',SwitchPathDelims(AFilename,UsePathDelim));
 
-  if SaveData and not IsExternalSessionFile then
-  begin
-    IsPartOfProjectDefValue:=not(pfCompatibilityMode in Project.Flags);
+  if SaveData then
     XMLConfig.SetDeleteValue(Path+'IsPartOfProject/Value',IsPartOfProject,IsPartOfProjectDefValue);
-  end;
 
   if SaveSession and Assigned(Project.OnSaveUnitSessionInfo) then
     Project.OnSaveUnitSessionInfo(Self);
@@ -1307,12 +1303,9 @@ end;
 {------------------------------------------------------------------------------
   TUnitInfo LoadFromXMLConfig
  ------------------------------------------------------------------------------}
-procedure TUnitInfo.LoadFromXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string; Merge, IsExternalSessionFile: boolean;
-  FileVersion: integer);
+procedure TUnitInfo.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string; Merge, IsPartOfProjectDefValue: Boolean; FileVersion: integer);
 var
   AFilename: string;
-  IsPartOfProjectDefValue: Boolean;
 begin
   // project data
   if not Merge then begin
@@ -1331,11 +1324,7 @@ begin
                          XMLConfig.GetValue(Path+'ResourceBaseClass/Value',''));
     FResourceBaseClassname:=XMLConfig.GetValue(Path+'ResourceBaseClassname/Value',
                           DefaultResourceBaseClassnames[FResourceBaseClass]);
-    if not IsExternalSessionFile then
-    begin
-      IsPartOfProjectDefValue:=(FileVersion>=13) and not(pfCompatibilityMode in Project.Flags);
-      IsPartOfProject:=XMLConfig.GetValue(Path+'IsPartOfProject/Value',IsPartOfProjectDefValue);
-    end;
+    IsPartOfProject:=XMLConfig.GetValue(Path+'IsPartOfProject/Value',IsPartOfProjectDefValue);
     AFilename:=XMLConfig.GetValue(Path+'ResourceFilename/Value','');
     if (AFilename<>'') and Assigned(fOnLoadSaveFilename) then
       fOnLoadSaveFilename(AFilename,true);
@@ -2337,10 +2326,11 @@ var
   OldUnitInfo, NewUnitInfo: TUnitInfo;
   NewUnitCount, i: integer;
   SubPath, NewUnitFilename: String;
-  MergeUnitInfo, LegacyList: Boolean;
+  MergeUnitInfo, LegacyList, IsPartOfProjectDefValue: Boolean;
 begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject D reading units');{$ENDIF}
   LegacyList:=(FFileVersion<=11) or FXMLConfig.IsLegacyList(Path+'Units/');
+  IsPartOfProjectDefValue:=FXMLConfig.GetValue(Path+'Units/IsPartOfProject',False);
   NewUnitCount:=FXMLConfig.GetListItemCount(Path+'Units/', 'Unit', LegacyList);
   for i := 0 to NewUnitCount - 1 do begin
     SubPath:=Path+'Units/'+FXMLConfig.GetListItemXPath('Unit', i, LegacyList)+'/';
@@ -2364,7 +2354,7 @@ begin
       MergeUnitInfo:=false;
     end;
 
-    NewUnitInfo.LoadFromXMLConfig(FXMLConfig,SubPath,MergeUnitInfo,Merge,FFileVersion);
+    NewUnitInfo.LoadFromXMLConfig(FXMLConfig,SubPath,MergeUnitInfo,IsPartOfProjectDefValue,FFileVersion);
     if i=FNewMainUnitID then begin
       MainUnitID:=IndexOf(NewUnitInfo);
       FNewMainUnitID:=-1;
@@ -2666,16 +2656,17 @@ begin
   end;
 end;
 
-procedure TProject.SaveUnits(const Path: string; SaveSession,IsExternalSessionFile: boolean);
+procedure TProject.SaveUnits(const Path: string; SaveSession,IsPartOfProjectDefValue: boolean);
 var
   i, SaveUnitCount: integer;
 begin
   SaveUnitCount:=0;
+  FXMLConfig.SetDeleteValue(Path+'Units/IsPartOfProject',IsPartOfProjectDefValue,False);
   for i:=0 to UnitCount-1 do
     if UnitMustBeSaved(Units[i],FProjectWriteFlags,SaveSession) then begin
       Units[i].SaveToXMLConfig(FXMLConfig,
         Path+'Units/'+FXMLConfig.GetListItemXPath('Unit',SaveUnitCount)+'/',
-                                                  True,SaveSession,IsExternalSessionFile,FCurStorePathDelim);
+                                                  True,SaveSession,IsPartOfProjectDefValue,FCurStorePathDelim);
       inc(SaveUnitCount);
     end;
 end;
@@ -2772,7 +2763,7 @@ begin
   SavePkgDependencyList(FXMLConfig,Path+'RequiredPackages/',
     FFirstRequiredDependency,pddRequires,FCurStorePathDelim);
   // save units
-  SaveUnits(Path,FSaveSessionInLPI,False);
+  SaveUnits(Path,FSaveSessionInLPI,not(pfCompatibilityMode in Flags));
 
   if Assigned(FDebuggerLink) then
     FDebuggerLink.SaveToLPI(FXMLConfig, Path);

@@ -1749,9 +1749,9 @@ begin
         Path:='ProjectOptions/';
         ALPIFileVersion := xml.GetValue(Path+'Version/Value',0);
         CompatibilityMode := xml.GetValue(Path+'General/Flags/CompatibilityMode/Value', pfCompatibilityMode in DefaultProjectFlags);
-        IsPartOfProjectDefValue := (ALPIFileVersion>=13) and not CompatibilityMode;
 
         Path:='ProjectOptions/Units/';
+        IsPartOfProjectDefValue := xml.GetValue(Path+'IsPartOfProject', False);
         LegacyList:=(ALPIFileVersion<=11) or xml.IsLegacyList(Path);
         Cnt:=xml.GetListItemCount(Path, 'Unit', LegacyList);
         for i := 0 to Cnt - 1 do begin
