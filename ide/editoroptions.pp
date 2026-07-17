@@ -86,6 +86,7 @@ uses
 const
   DefaultCompletionLongLineHintType = sclpExtendRightOnly;
   DefaultEditorDisableAntiAliasing = false;
+  DefaultEditorFontHeight: integer = 12;
 
 type
   TPreviewPasSyn = TIDESynFreePasSyn;
@@ -2933,7 +2934,7 @@ procedure RepairEditorFontSize(var FontSize: integer);
 begin
   if ((FontSize>=0) and (FontSize<=EditorOptionsMinimumFontSize))
   or ((FontSize<0) and (FontSize>=-EditorOptionsMinimumFontSize)) then
-    FontSize := SynDefaultFontSize;
+    FontSize := DefaultEditorFontHeight;
 end;
 
 const
@@ -5903,7 +5904,7 @@ begin
   fBracketHighlightStyle := sbhsBoth;
   // Display options
   fEditorFont := SynDefaultFontName;
-  fEditorFontSize := SynDefaultFontSize;
+  fEditorFontSize := DefaultEditorFontHeight;
   fDisableAntialiasing := DefaultEditorDisableAntiAliasing;
   // Key Mappings
   fKeyMappingScheme := KeyMapSchemeNames[kmsLazarus];
@@ -6106,7 +6107,7 @@ begin
       fEditorFontSize := FontHeightToSize(fEditorFontSize);
     end else begin
       fEditorFontSize :=
-        XMLConfig.GetValue('EditorOptions/Display/EditorFontSize', SynDefaultFontSize);
+        XMLConfig.GetValue('EditorOptions/Display/EditorFontSize', DefaultEditorFontHeight);
     end;
     RepairEditorFontSize(fEditorFontSize);
     fExtraCharSpacing :=
@@ -6325,7 +6326,7 @@ begin
       fEditorFont, SynDefaultFontName);
     XMLConfig.DeleteValue('EditorOptions/Display/EditorFontHeight'); // unused old value
     XMLConfig.SetDeleteValue('EditorOptions/Display/EditorFontSize'
-      ,fEditorFontSize, SynDefaultFontSize);
+      ,fEditorFontSize, DefaultEditorFontHeight);
     XMLConfig.SetDeleteValue('EditorOptions/Display/ExtraCharSpacing'
       ,fExtraCharSpacing, 0);
     XMLConfig.SetDeleteValue('EditorOptions/Display/ExtraLineSpacing'
@@ -9041,8 +9042,44 @@ begin
   Result := CompareText(s1, s2);
 end;
 
+procedure InitIdeDefaultSynFont;
+  procedure CheckFont(f: String; h: integer = 12);
+  begin
+    if SynDefaultFontName <> '' then exit;
+    if Screen.Fonts.IndexOf(f) >= 0 then begin
+      SynDefaultFontName  := f;
+      DefaultEditorFontHeight := h;
+    end;
+  end;
+var
+  s: String;
+begin
+  // stick to the old order of tests
+  s := SynDefaultFontName;
+  SynDefaultFontName := '';
+  {$IFDEF LCLcarbon}
+    // Note: carbon is case sensitive
+    CheckFont('Monaco'); // Note: carbon is case sensitive
+  {$ENDIF}
+  {$IFDEF LCLcocoa}
+    // Note: carbon is case sensitive
+    CheckFont('Andale Mono', 10);
+  {$ENDIF}
+
+  CheckFont('Courier New', -13);
+  CheckFont('DejaVu Sans Mono', 13);
+  {$IFnDEF WINDOWS}
+  CheckFont('Monospace');
+  {$ENDIF}
+
+  if SynDefaultFontName <> '' then
+    exit;
+  DefaultEditorFontHeight := 12;
+  SynDefaultFontName := s;
+end;
 
 initialization
+  InitIdeDefaultSynFont;
   RegisterIDEOptionsGroup(GroupEditor, TEditorOptions);
   IdeSyntaxHighlighters := HighlighterList;
 
