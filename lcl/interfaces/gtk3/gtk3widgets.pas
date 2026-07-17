@@ -2605,6 +2605,13 @@ const
   LM_KeyUpMsgs: array[Boolean] of UINT = (LM_KEYUP, LM_SYSKEYUP);
   CN_CharMsg: array[Boolean] of UINT = (CN_CHAR, CN_SYSCHAR);
   LM_CharMsg: array[Boolean] of UINT = (LM_CHAR, LM_SYSCHAR);
+
+
+function CheckWidget: boolean;
+begin
+  Result := (Gtk3WidgetFromGtkWidget(Sender) = Self) and CanSendLCLMessage;
+end;
+
 var
   AEvent: TGdkEventKey;
   Msg: TLMKey;
@@ -2763,7 +2770,7 @@ begin
 
     NotifyApplicationUserInput(LCLObject, PLMessage(@Msg)^);
 
-    if not CanSendLCLMessage then
+    if not CheckWidget then
       exit;
 
     if (DeliverMessage(Msg, True) <> 0) or (Msg.CharCode = VK_UNKNOWN) then
@@ -2771,7 +2778,7 @@ begin
       {$IFDEF GTK3DEBUGKEYPRESS}
       writeln('<==== CN_KeyDownMsgs handled ... exiting');
       {$ENDIF}
-      if Gtk3WidgetFromGtkWidget(Sender) <> Self then
+      if not CheckWidget then
         exit(True);
       if IsEditableWidget and (Self.getText <> TextBeforeKey) then
         exit(True)
@@ -2781,7 +2788,7 @@ begin
         exit(True);
     end;
 
-    if not CanSendLCLMessage then
+    if not CheckWidget then
       exit;
 
     if AKeyPress then
@@ -2793,7 +2800,7 @@ begin
 
     NotifyApplicationUserInput(LCLObject, PLMessage(@Msg)^);
 
-    if not CanSendLCLMessage then
+    if not CheckWidget then
       exit;
 
     if IsArrowKey and ([wtListBox,wtListView,wtEntry,wtMemo,wtComboBox] * WidgetType <> []) then
@@ -2808,7 +2815,7 @@ begin
       exit;
     end;
 
-    if not CanSendLCLMessage then
+    if not CheckWidget then
       exit;
   end;
 
@@ -2821,7 +2828,7 @@ begin
     // TODO: If not IsControlKey
     Result := LCLObject.IntfUTF8KeyPress(UTF8Char, 1, IsSysKey);
 
-    if not CanSendLCLMessage then
+    if not CheckWidget then
       exit;
 
     if Result then
@@ -2840,12 +2847,12 @@ begin
     CharMsg.CharCode := Word(AChar);
     NotifyApplicationUserInput(LCLObject, PLMessage(@CharMsg)^);
 
-    if not CanSendLCLMessage then
+    if not CheckWidget then
       exit;
 
     Result := (DeliverMessage(CharMsg, True) <> 0) or (CharMsg.CharCode = VK_UNKNOWN) or IsArrowKey;
 
-    if not CanSendLCLMessage then
+    if not CheckWidget then
       exit;
 
     if Result then
@@ -2861,12 +2868,12 @@ begin
 
     NotifyApplicationUserInput(LCLObject, PLMessage(@CharMsg)^);
 
-    if not CanSendLCLMessage then
+    if not CheckWidget then
       exit;
 
     DeliverMessage(CharMsg, True);
 
-    if not CanSendLCLMessage then
+    if not CheckWidget then
       exit;
   end;
   if AKeyPress then
