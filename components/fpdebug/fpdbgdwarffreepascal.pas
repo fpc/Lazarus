@@ -384,6 +384,18 @@ uses
 var
   FPDBG_DWARF_VERBOSE: PLazLoggerLogGroup;
 
+const
+  FALLBACK_CompilerVersion =
+  {$IF FPC_FULLVERSION < 030202}  $030200 {$ELSE}
+  {$IF FPC_FULLVERSION = 030202}  $030202 {$ELSE}
+  {$IF FPC_FULLVERSION = 030203}  $030203 {$ELSE}
+  {$IF FPC_FULLVERSION = 030204}  $030204 {$ELSE}
+  {$IF FPC_FULLVERSION = 030205}  $030205 {$ELSE}
+  {$IF FPC_FULLVERSION >=030400}  $030400 {$ELSE}
+                                  $030301 {$ENDIF}
+  {$ENDIF}{$ENDIF}{$ENDIF}{$ENDIF}{$ENDIF}
+  ;
+
 function ObtainDynamicCodePage(Addr: TFpDbgMemLocation; AContext: TFpDbgLocationContext;
   TypeInfo: TFpSymbolDwarfType; out Codepage: TSystemCodePage): Boolean;
 var
@@ -498,7 +510,7 @@ begin
   if LastInfo <> nil then
     exit;
 
-  if not (ADbgInfo is TFpDwarfInfo) then
+  if (ADbgInfo = nil) or (not (ADbgInfo is TFpDwarfInfo)) then
     exit;
 
   for i := 0 to TFpDwarfInfo(ADbgInfo).CompilationUnitsCount - 1 do
@@ -557,16 +569,24 @@ function TFpDwarfFreePascalSymbolClassMap.GetInstanceClassNameFromPVmt(
   APVmt: TDbgPtr; AContext: TFpDbgLocationContext; ASizeOfAddr: Integer;
   AClassName, AUnitName: PString; out AnError: TFpError): boolean;
 begin
-  Result := TFpSymbolDwarfFreePascalTypeStructure.GetInstanceClassNameFromPVmt(APVmt,
-    AContext, ASizeOfAddr, AClassName, AUnitName, AnError, 0, FCompilerVersion);
+  if self = nil then
+    Result := TFpSymbolDwarfFreePascalTypeStructure.GetInstanceClassNameFromPVmt(APVmt,
+      AContext, ASizeOfAddr, AClassName, AUnitName, AnError, 0, FALLBACK_CompilerVersion)
+  else
+    Result := TFpSymbolDwarfFreePascalTypeStructure.GetInstanceClassNameFromPVmt(APVmt,
+      AContext, ASizeOfAddr, AClassName, AUnitName, AnError, 0, FCompilerVersion);
 end;
 
 function TFpDwarfFreePascalSymbolClassMap.GetInstanceSizeFromPVmt(APVmt: TDbgPtr;
   AContext: TFpDbgLocationContext; ASizeOfAddr: Integer; out AnInstSize: Int64; out
   AnError: TFpError; AParentClassIndex: integer): boolean;
 begin
-  Result := TFpSymbolDwarfFreePascalTypeStructure.GetInstanceSizeFromPVmt(APVmt,
-    AContext, ASizeOfAddr, AnInstSize, AnError, AParentClassIndex, FCompilerVersion);
+  if Self = nil then
+    Result := TFpSymbolDwarfFreePascalTypeStructure.GetInstanceSizeFromPVmt(APVmt,
+      AContext, ASizeOfAddr, AnInstSize, AnError, AParentClassIndex, FALLBACK_CompilerVersion)
+  else
+    Result := TFpSymbolDwarfFreePascalTypeStructure.GetInstanceSizeFromPVmt(APVmt,
+      AContext, ASizeOfAddr, AnInstSize, AnError, AParentClassIndex, FCompilerVersion);
 end;
 
 { TFpDwarfFreePascalSymbolClassMapDwarf2 }
