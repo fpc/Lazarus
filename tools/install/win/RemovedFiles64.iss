@@ -538,4 +538,5 @@ Type: files; Name: "{app}\packager\pkgsysbasepkgs.pas"
 Type: files; Name: "{app}\packager\projpackcommon.pas"
 Type: files; Name: "{app}\tools\chmmaker\unit1.lfm"
 Type: files; Name: "{app}\tools\chmmaker\unit1.pas"
+Type: files; Name: "{app}\tools\find_merged_revisions.pas"
 
