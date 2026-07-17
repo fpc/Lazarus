@@ -32,7 +32,7 @@ unit etMessageFrame;
 interface
 
 uses
-  Math, StrUtils, Classes, SysUtils, AVL_Tree,
+  Types, Math, StrUtils, Classes, SysUtils, AVL_Tree,
   // LCL
   Forms, Buttons, ExtCtrls, Controls, LMessages, LCLType, LCLIntf,
   Graphics, Themes, ImgList, Menus, Clipbrd, Dialogs, StdCtrls, GraphUtil,
@@ -56,16 +56,28 @@ const
 type
   TMessagesCtrl = class;
 
+  // One logical line as painted in the last Paint (valid only while
+  // FPaintStamp=Control.FPaintStamp). A logical line may span several visual
+  // rows when it is wrapped, so YTop..YBottom covers all of them.
+  TMsgWndPaintedLine = record
+    LogLine: integer;   // -1=header, 0..Lines.Count-1=message, Lines.Count=progress
+    YTop, YBottom: integer; // pixel in client area
+  end;
+  TMsgWndPaintedLineArray = array of TMsgWndPaintedLine;
+
   { TLMsgWndView }
 
   TLMsgWndView = class(TLazExtToolView)
   private
     FAsyncQueued: boolean;
     FControl: TMessagesCtrl;
+    FIndex: integer;          // 0-based index in Control, kept in sync by the Control
     FViewFilter: TLMsgViewFilter;
     fPaintBottom: integer;    // only valid if FPaintStamp=Control.FPaintStamp
     FPaintStamp: int64;
     fPaintTop: integer;       // only valid if FPaintStamp=Control.FPaintStamp
+    fPaintedLines: TMsgWndPaintedLineArray; // only valid if FPaintStamp=Control.FPaintStamp
+    fPaintedCount: integer;   // number of used entries in fPaintedLines
     FPendingChanges: TETMultiSrcChanges;
     FSelectedLines: TIntegerList;
     function GetSelLineFirst: integer;
@@ -101,6 +113,8 @@ type
     function ApplySrcChanges(Changes: TETSingleSrcChanges): boolean; // true if something changed
   public
     property Control: TMessagesCtrl read FControl;
+    // 0-based index in Control, or -1 when not attached to a Control
+    property Index: integer read FIndex;
     // requires Enter/LeaveCriticalSection, write only via main thread
     property ViewFilter: TLMsgViewFilter read FViewFilter write SetViewFilter;
     property PendingChanges: TETMultiSrcChanges read FPendingChanges;// src changes for messages adding to view
@@ -175,6 +189,16 @@ const
 
 type
 
+  // Cached wrapped-row counts for a contiguous range of message lines of one
+  // view. Used by the scrollbar heuristic so we never measure all lines.
+  // Stored in TMessagesCtrl.fWrapChunks, an AVL tree sorted by View.Index then
+  // FirstLine.
+  TWrapChunk = class
+    View: TLMsgWndView;
+    FirstLine, LastLine: integer;    // inclusive message-line range within View
+    RowCounts: array of integer;     // one visual-row count per line FirstLine..LastLine
+  end;
+
   { TMessagesCtrl }
 
   TMessagesCtrl = class(TCustomControl)
@@ -192,8 +216,15 @@ type
     FOnOptionsChanged: TNotifyEvent;
     FOptions: TMsgCtrlOptions;
     FScrollLeft: integer;
-    FScrollTop: integer;
-    fScrollTopMax: integer;
+    FScrollTop: integer;         // top of viewport as an approximate global visual-row index
+    fWrapStamp: int64;           // bumped whenever width/font/options/content change
+    fWrapChunks: TAVLTree;       // of TWrapChunk, sorted by View.Index then FirstLine, ascending left to right
+    fWrapWinStamp: int64;        // state for which fWrapChunks was last built...
+    fWrapWinScrollTop: integer;  // ...so EnsureWrapWindows can skip redundant rebuilds
+    fWrapWinWidth, fWrapWinHeight: integer;
+    fArrowWidth: integer;        // Canvas.TextWidth(MsgWndWrapArrow)
+    fContIndentWidth: integer;   // pixel width of the 2-space continuation indent
+    fIconWidth: integer;         // horizontal space a message icon takes (0 if none)
     FSourceMarks: TETMarks;
     FTextColor: TColor;
     fUpdateLock: integer;
@@ -224,6 +255,7 @@ type
     function GetHeaderBackground(aToolState: TLMVToolState): TColor;
     function GetUrgencyStyles(Urgency: TMessageLineUrgency): TMsgCtrlUrgencyStyle;
     function GetViews(Index: integer): TLMsgWndView;
+    procedure UpdateViewIndices; // keep TLMsgWndView.Index in sync with FViews
     function FirstViewWithContext(out Line: integer): TLMsgWndView;
     function LastViewWithContext(out Line: integer): TLMsgWndView;
     function ViewsHaveContent: Boolean;
@@ -262,6 +294,24 @@ type
     procedure FetchNewMessages;
     function FetchNewMessages(View: TLMsgWndView): boolean; // true if new lines
     procedure UpdateScrollBar(InvalidateScrollMax: boolean);
+    // line wrapping / scrollbar heuristic
+    function VisiblePageRows: integer; // number of regular rows fitting in ClientHeight (the "n")
+    function ViewShownRows(View: TLMsgWndView): integer; // logical rows of a view (header+lines+progress)
+    procedure MsgLineRowWidths(IconW: integer; out FirstRowWidth, ContRowWidth: integer);
+    function FindRowBreak(const aText: string; StartByte, RowWidth: integer): integer;
+    function ComputeRowBreaks(const aText: string; FirstRowWidth, ContRowWidth: integer;
+      out RowStarts: TIntegerDynArray): integer;
+    function MeasureRowCount(const aText: string; FirstRowWidth, ContRowWidth: integer): integer;
+    function LineRowCount(View: TLMsgWndView; MsgLine: integer): integer; // measured, else 1
+    function FindWrapChunk(View: TLMsgWndView; MsgLine: integer): TWrapChunk; // chunk covering the line, else nil
+    function FirstWrapChunkNode(View: TLMsgWndView): TAVLTreeNode; // node of view's chunk with lowest FirstLine, else nil
+    procedure InvalidateWrapCache;
+    procedure RefreshWrapMetrics; // recompute fArrowWidth/fContIndentWidth
+    procedure EnsureWrapWindows;
+    function ViewApproxVisualRows(View: TLMsgWndView): integer;
+    function ApproxTotalVisualRows: integer;
+    procedure VisualRowToPos(VisualRow: integer; out ViewIdx, InternalRow, SubRow: integer);
+    function EstimateLogicalAtVisual(VisualRow: integer): integer;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Paint; override;
@@ -331,7 +381,6 @@ type
     function OpenSelection: boolean;
     procedure CreateMarksForFile(aSynEdit: TSynEdit; aFilename: string; DeleteOld: boolean);
     function ApplySrcChanges(Changes: TETSingleSrcChanges): boolean; // true if something changed
-    procedure MsgCtrlShowHint(Sender: TObject; {%H-}HintInfo: PHintInfo);
   public
     // properties
     property AutoHeaderBackground: TColor read FAutoHeaderBackground write SetAutoHeaderBackground default MsgWndDefAutoHeaderBackground;
@@ -348,7 +397,6 @@ type
     property Options: TMsgCtrlOptions read FOptions write SetOptions default MCDefaultOptions;
     property SearchText: string read FSearchText write SetSearchText;
     property TextCursorPoint: TMsgPoint read FTextCursorPoint write FTextCursorPoint;
-    property ShowHint default true;
     property SourceMarks: TETMarks read FSourceMarks write SetSourceMarks;
     property TextColor: TColor read FTextColor write SetTextColor default MsgWndDefTextColor;
     property UrgencyStyles[Urgency: TMessageLineUrgency]: TMsgCtrlUrgencyStyle read GetUrgencyStyles write SetUrgencyStyles;
@@ -502,6 +550,65 @@ implementation
 
 const
   cNotALineHint=low(integer);
+  MsgWndWrapArrow = #$E2#$86#$B5; // U+21B5 ↵ , marks a wrapped (continued) visual row
+  MsgWndContIndent = '  ';        // 2 space indent for continuation rows
+
+type
+  // search key for the fWrapChunks AVL tree
+  PMsgWrapKey = ^TMsgWrapKey;
+  TMsgWrapKey = record
+    ViewIndex: integer;
+    Line: integer;
+  end;
+
+function CompareMsgWrapChunks(Item1, Item2: Pointer): integer;
+// sort by View.Index, then FirstLine (explicit compares avoid integer overflow)
+var
+  Chunk1: TWrapChunk absolute Item1;
+  Chunk2: TWrapChunk absolute Item2;
+  a, b: Integer;
+begin
+  a:=Chunk1.View.Index;
+  b:=Chunk2.View.Index;
+  if a>b then
+    Result:=1
+  else if a<b then
+    Result:=-1
+  else begin
+    a:=Chunk1.FirstLine;
+    b:=Chunk2.FirstLine;
+    if a>b then
+      Result:=1
+    else if a<b then
+      Result:=-1
+    else
+      Result:=0;
+  end;
+end;
+
+function CompareMsgWrapKey(Key, Data: Pointer): integer;
+var
+  aKey: PMsgWrapKey absolute Key;
+  aChunk: TWrapChunk absolute Data;
+  a, b: Integer;
+begin
+  a:=aKey^.ViewIndex;
+  b:=aChunk.View.Index;
+  if a>b then
+    Result:=1
+  else if a<b then
+    Result:=-1
+  else begin
+    a:=aKey^.Line;
+    b:=aChunk.FirstLine;
+    if a>b then
+      Result:=1
+    else if a<b then
+      Result:=-1
+    else
+      Result:=0;
+  end;
+end;
 
 procedure RegisterStandardMessagesViewMenuItems;
 var
@@ -643,6 +750,7 @@ end;
 constructor TLMsgWndView.Create(AOwner: TComponent);
 begin
   fMessageLineClass:=TLMsgViewLine;
+  FIndex:=-1;
   inherited Create(AOwner);
   Lines.OnMarksFixed:=@MarksFixed;
   FViewFilter:=TLMsgViewFilter.Create;
@@ -1266,6 +1374,7 @@ begin
   Filters.OnChanged:=@FilterChanged;
   FActiveFilter:=Filters[0];
   FViews:=TFPList.Create;
+  fWrapChunks:=TAVLTree.Create(@CompareMsgWrapChunks);
   FUpdateTimer:=TTimer.Create(Self);
   FUpdateTimer.Name:='MsgUpdateTimer';
   FUpdateTimer.Interval:=200;
@@ -1285,9 +1394,8 @@ begin
   FImageChangeLink.OnChange:=@ImageListChange;
   for u:=Low(TMessageLineUrgency) to high(TMessageLineUrgency) do
     fUrgencyStyles[u]:=TMsgCtrlUrgencyStyle.Create(Self,u);
-  ShowHint:= True;
+  ShowHint:= False;
   OnMouseMove:=@MsgCtrlMouseMove;
-  OnShowHint:=@MsgCtrlShowHint;
 end;
 
 destructor TMessagesCtrl.Destroy;
@@ -1298,6 +1406,10 @@ begin
   Images:=nil;
   ClearViews(false);
   FreeAndNil(FViews);
+  if fWrapChunks<>nil then begin
+    fWrapChunks.FreeAndClear;
+    FreeAndNil(fWrapChunks);
+  end;
   FreeAndNil(FUpdateTimer);
   FreeAndNil(FImageChangeLink);
   for u:=Low(TMessageLineUrgency) to high(TMessageLineUrgency) do
@@ -1334,6 +1446,14 @@ begin
   if (Index<0) or (Index>=ViewCount) then
     raise Exception.Create('TMessagesCtrl.GetViews '+IntToStr(Index)+' out of bounds '+IntToStr(ViewCount));
   Result:=TLMsgWndView(FViews[Index]);
+end;
+
+procedure TMessagesCtrl.UpdateViewIndices;
+var
+  i: Integer;
+begin
+  for i:=0 to FViews.Count-1 do
+    TLMsgWndView(FViews[i]).FIndex:=i;
 end;
 
 procedure TMessagesCtrl.ViewChanged(Sender: TObject);
@@ -1578,6 +1698,8 @@ procedure TMessagesCtrl.SetFilenameStyle(AValue: TMsgWndFileNameStyle);
 begin
   if FFilenameStyle=AValue then Exit;
   FFilenameStyle:=AValue;
+  // the filename length changes -> re-wrap and re-measure
+  UpdateScrollBar(true);
   Invalidate;
 end;
 
@@ -1622,12 +1744,14 @@ begin
     if ItemHeight<Images.Height+2 then
       ItemHeight:=Images.Height+2;
   end;
+  // icon width affects the wrapping of message lines
+  UpdateScrollBar(true);
   Invalidate;
 end;
 
 procedure TMessagesCtrl.SetItemHeight(AValue: integer);
 begin
-  FItemHeight:=Max(0,FItemHeight);
+  AValue:=Max(5,AValue);
   if FItemHeight=AValue then Exit;
   FItemHeight:=AValue;
   UpdateScrollBar(true);
@@ -1641,9 +1765,12 @@ begin
   if FOptions=NewOptions then Exit;
   ChangedOptions:=(FOptions-NewOptions)+(NewOptions-FOptions);
   FOptions:=NewOptions;
-  if [mcoShowStats,mcoShowTranslated,mcoShowMessageID,mcoShowMsgIcons,
-    mcoAlwaysDrawFocused]*ChangedOptions<>[]
-  then
+  if [mcoShowStats,mcoShowTranslated,mcoShowMessageID,mcoShowMsgIcons]*ChangedOptions<>[]
+  then begin
+    // these change the line text or the icon width -> re-wrap and re-measure
+    UpdateScrollBar(true);
+    Invalidate;
+  end else if mcoAlwaysDrawFocused in ChangedOptions then
     Invalidate;
   if Assigned(OnOptionsChanged) then
     OnOptionsChanged(Self);
@@ -1735,15 +1862,9 @@ begin
     // Scrolls to start / end of the text
     SB_TOP:        ScrollTop := 0;
     SB_BOTTOM:     ScrollTop := ScrollTopMax;
-    {$IFDEF EnableMsgWndLineWrap}
-    // Scrolls one line up / down
+    // Scrolls one visual row up / down
     SB_LINEDOWN:   ScrollTop := ScrollTop + 1;
     SB_LINEUP:     ScrollTop := ScrollTop - 1;
-    {$ELSE}
-      // Scrolls one line up / down
-    SB_LINEDOWN:   ScrollTop := ScrollTop + ItemHeight div 2;
-    SB_LINEUP:     ScrollTop := ScrollTop - ItemHeight div 2;
-    {$ENDIF}
     // Scrolls one page of lines up / down
     SB_PAGEDOWN:   ScrollTop := ScrollTop + GetPageScroll;
     SB_PAGEUP:     ScrollTop := ScrollTop - GetPageScroll;
@@ -1762,16 +1883,9 @@ begin
     // -1 : scroll by page
     ScrollTop := ScrollTop - (Message.WheelDelta * GetPageScroll) div 120;
   end else begin
-    {$IFDEF EnableMsgWndLineWrap}
-    // scrolling one line -> see SB_LINEDOWN and SB_LINEUP handler in WMVScroll
+    // scrolling by visual rows -> see SB_LINEDOWN and SB_LINEUP in WMVScroll
     ScrollTop := ScrollTop -
-        (Message.WheelDelta * Mouse.WheelScrollLines) div 240;
-    {$ELSE}
-    // scrolling one line -> scroll half an item, see SB_LINEDOWN and SB_LINEUP
-    // handler in WMVScroll
-    ScrollTop := ScrollTop -
-        (Message.WheelDelta * Mouse.WheelScrollLines*ItemHeight) div 240;
-    {$ENDIF}
+        (Message.WheelDelta * Mouse.WheelScrollLines) div 120;
   end;
   Message.Result := 1;
 end;
@@ -1836,12 +1950,12 @@ begin
 end;
 
 function TMessagesCtrl.GetPageScroll: integer;
+// one page in visual rows
 begin
-  {$IFDEF EnableMsgWndLineWrap}
-  Result:=Max(1,((ClientHeight-BorderWidth) div ItemHeight));
-  {$ELSE}
-  Result:=ClientHeight - ItemHeight;
-  {$ENDIF}
+  if ItemHeight<=0 then
+    Result:=1
+  else
+    Result:=Max(1,((ClientHeight-BorderWidth) div ItemHeight));
 end;
 
 procedure TMessagesCtrl.CreateSourceMark(MsgLine: TMessageLine;
@@ -1914,7 +2028,8 @@ var
 begin
   if Assigned(OnAllViewsStopped) then
     OnAllViewsStopped(Self);
-  if mcoAutoOpenFirstError in Options then begin
+  if mcoAutoOpenFirstError in Options then
+  begin
     CurLine:=GetSelectedMsg;
     if (CurLine<>nil) and (CurLine.Urgency>=mluError)
     and CurLine.HasSourcePosition then
@@ -1941,8 +2056,10 @@ procedure TMessagesCtrl.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if Operation=opRemove then begin
-    if (AComponent is TLMsgWndView) and (FViews.IndexOf(AComponent)>=0) then begin
+  if Operation=opRemove then
+  begin
+    if (AComponent is TLMsgWndView) and (FViews.IndexOf(AComponent)>=0) then
+    begin
       if fLastSearchStart.View=AComponent then
         fLastSearchStart.View:=nil;
       if FTextCursorPoint.View=AComponent then
@@ -1953,6 +2070,562 @@ begin
       Images:=nil
     else if AComponent=SourceMarks then
       SourceMarks:=nil;
+  end;
+end;
+
+function TMessagesCtrl.VisiblePageRows: integer;
+begin
+  if ItemHeight<=0 then
+    Result:=1
+  else
+    Result:=Max(1,ClientHeight div ItemHeight);
+end;
+
+function TMessagesCtrl.ViewShownRows(View: TLMsgWndView): integer;
+begin
+  Result:=View.GetShownLineCount(true,true);
+end;
+
+procedure TMessagesCtrl.MsgLineRowWidths(IconW: integer; out FirstRowWidth,
+  ContRowWidth: integer);
+// available text pixel width for the first row (with icon) and continuation rows
+var
+  Indent: integer;
+begin
+  Indent:=BorderWidth+2;
+  FirstRowWidth:=ClientWidth-Indent-IconW-fArrowWidth;
+  ContRowWidth:=ClientWidth-Indent-fContIndentWidth-fArrowWidth;
+  if FirstRowWidth<1 then FirstRowWidth:=1;
+  if ContRowWidth<1 then ContRowWidth:=1;
+end;
+
+function TMessagesCtrl.FindRowBreak(const aText: string; StartByte,
+  RowWidth: integer): integer;
+// aText is UTF8, StartByte is the 1-based byte index where this visual row
+// starts. Returns the 1-based byte index where the NEXT row starts (i.e. one
+// past this row's last byte). Canvas.TextWidth is expensive, so:
+//  * first test whether the whole remainder fits (the common case: 1 call),
+//  * otherwise binary search over word breaks (spaces/tabs) for the last one
+//    that fits,
+//  * if not even the first word fits, binary search over codepoints to hard
+//    break inside it. Always advances by at least one codepoint.
+var
+  Len, p, cpLen, l, h, mid, best, ncps, nb: integer;
+  cps: TIntegerDynArray;    // byte positions of codepoint starts
+  breaks: TIntegerDynArray; // byte positions right after a space/tab (word breaks)
+
+  function FitsTo(EndExcl: integer): boolean;
+  begin
+    Result:=Canvas.TextWidth(copy(aText,StartByte,EndExcl-StartByte))<=RowWidth;
+  end;
+
+begin
+  Len:=length(aText);
+  if StartByte>Len then exit(Len+1);
+  // common case: the whole remainder fits on this row
+  if FitsTo(Len+1) then exit(Len+1);
+
+  // collect codepoint starts and word breaks (no TextWidth calls)
+  cps:=[];
+  SetLength(cps,length(aText));
+  breaks:=[];
+  SetLength(breaks,16);
+  ncps:=0;
+  nb:=0;
+  p:=StartByte;
+  while p<=Len do begin
+    cps[ncps]:=p;
+    inc(ncps);
+    if (p>StartByte) and (aText[p-1] in [' ',#9]) then
+    begin
+      if nb>=length(breaks) then
+        SetLength(breaks,nb*2);
+      breaks[nb]:=p;   // a new row could start here (after the space/tab)
+      inc(nb);
+    end;
+    cpLen:=UTF8CodepointSize(@aText[p]);
+    if cpLen<1 then cpLen:=1;
+    inc(p,cpLen);
+  end;
+  if ncps>=length(cps) then
+    SetLength(cps,ncps+1);
+  cps[ncps]:=Len+1;  // sentinel: end of text
+  inc(ncps);
+
+  // 1. binary search over word breaks for the last one that fits
+  best:=-1;
+  l:=0;
+  h:=nb-1;
+  while l<=h do
+  begin
+    mid:=(l+h) div 2;
+    if FitsTo(breaks[mid]) then
+    begin
+      best:=breaks[mid];
+      l:=mid+1;
+    end else
+      h:=mid-1;
+  end;
+  if best>StartByte then
+    exit(best);
+
+  // 2. not even the first word fits -> hard break inside it at a codepoint.
+  // cps[0]=StartByte; cps[i] is the start of the i-th following codepoint.
+  best:=cps[1];   // at least one codepoint, so wrapping always progresses
+  l:=1;
+  h:=ncps-1;
+  while l<=h do
+  begin
+    mid:=(l+h) div 2;
+    if FitsTo(cps[mid]) then
+    begin
+      best:=cps[mid];
+      l:=mid+1;
+    end else
+      h:=mid-1;
+  end;
+  Result:=best;
+end;
+
+function TMessagesCtrl.ComputeRowBreaks(const aText: string; FirstRowWidth,
+  ContRowWidth: integer; out RowStarts: TIntegerDynArray): integer;
+// RowStarts[r] = 1-based byte index where visual row r starts. Returns row count.
+var
+  Len, p, w: integer;
+begin
+  SetLength(RowStarts,1);
+  Len:=length(aText);
+  Result:=0;
+  p:=1;
+  repeat
+    if Result=0 then
+      w:=FirstRowWidth
+    else
+      w:=ContRowWidth;
+    if Result>=length(RowStarts) then
+      SetLength(RowStarts,Max(4,Result*2));
+    RowStarts[Result]:=p;
+    inc(Result);
+    p:=FindRowBreak(aText,p,w);
+  until p>Len;
+  SetLength(RowStarts,Result);
+end;
+
+function TMessagesCtrl.MeasureRowCount(const aText: string; FirstRowWidth,
+  ContRowWidth: integer): integer;
+var
+  Len, p, w: integer;
+begin
+  Len:=length(aText);
+  Result:=0;
+  p:=1;
+  repeat
+    if Result=0 then
+      w:=FirstRowWidth
+    else
+      w:=ContRowWidth;
+    inc(Result);
+    p:=FindRowBreak(aText,p,w);
+  until p>Len;
+end;
+
+function TMessagesCtrl.FindWrapChunk(View: TLMsgWndView; MsgLine: integer): TWrapChunk;
+// the chunk whose [FirstLine..LastLine] contains MsgLine of View, else nil
+var
+  Node: TAVLTreeNode;
+  aChunk: TWrapChunk;
+  aViewIndex: Integer;
+begin
+  Result:=nil;
+  if (fWrapChunks=nil) or (fWrapChunks.Count=0) or (View=nil) then exit;
+
+  aViewIndex:=View.Index;
+  Node:=fWrapChunks.Root;
+  while Node<>nil do
+  begin
+    aChunk:=TWrapChunk(Node.Data);
+    if aViewIndex>aChunk.View.Index then
+      Node:=Node.Right
+    else if aViewIndex<aChunk.View.Index then
+      Node:=Node.Left
+    else begin
+      if MsgLine<aChunk.FirstLine then
+        Node:=Node.Right
+      else if MsgLine>aChunk.LastLine then
+        Node:=Node.Left
+      else
+        exit(aChunk);
+    end;
+  end;
+end;
+
+function TMessagesCtrl.FirstWrapChunkNode(View: TLMsgWndView): TAVLTreeNode;
+// node of the View's chunk with the lowest FirstLine, else nil
+var
+  Node: TAVLTreeNode;
+  aChunk: TWrapChunk;
+  aViewIndex: Integer;
+begin
+  Result:=nil;
+  if (fWrapChunks=nil) or (fWrapChunks.Count=0) or (View=nil) then exit;
+
+  aViewIndex:=View.Index;
+  Node:=fWrapChunks.Root;
+  while Node<>nil do
+  begin
+    aChunk:=TWrapChunk(Node.Data);
+    if aViewIndex>aChunk.View.Index then
+      Node:=Node.Right
+    else if aViewIndex<aChunk.View.Index then
+      Node:=Node.Left
+    else begin
+      Result:=Node;
+      Node:=Node.Left;
+    end;
+  end;
+end;
+
+function TMessagesCtrl.LineRowCount(View: TLMsgWndView; MsgLine: integer): integer;
+var
+  c: TWrapChunk;
+begin
+  c:=FindWrapChunk(View,MsgLine);
+  if c<>nil then
+    Result:=c.RowCounts[MsgLine-c.FirstLine]
+  else
+    Result:=1;
+end;
+
+procedure TMessagesCtrl.InvalidateWrapCache;
+begin
+  if fWrapStamp=High(fWrapStamp) then
+    fWrapStamp:=1
+  else
+    inc(fWrapStamp);
+  if fWrapChunks<>nil then
+    fWrapChunks.FreeAndClear;
+end;
+
+procedure TMessagesCtrl.RefreshWrapMetrics;
+begin
+  if not HandleAllocated then exit;
+  fArrowWidth:=Canvas.TextWidth(MsgWndWrapArrow)+2;
+  fContIndentWidth:=Canvas.TextWidth(MsgWndContIndent);
+  if (Images<>nil) and (mcoShowMsgIcons in Options) then
+    fIconWidth:=Images.ResolutionForControl[0, Self].Width+2
+  else
+    fIconWidth:=0;
+end;
+
+function TMessagesCtrl.ViewApproxVisualRows(View: TLMsgWndView): integer;
+// visual rows a view occupies = its logical rows + extra rows of measured lines
+var
+  j: integer;
+  Node: TAVLTreeNode;
+  aChunk: TWrapChunk;
+begin
+  Result:=ViewShownRows(View);
+  Node:=FirstWrapChunkNode(View);
+  while Node<>nil do
+  begin
+    aChunk:=TWrapChunk(Node.Data);
+    if aChunk.View<>View then break;
+    for j:=0 to length(aChunk.RowCounts)-1 do
+      inc(Result,aChunk.RowCounts[j]-1);
+    Node:=Node.Successor;
+  end;
+end;
+
+function TMessagesCtrl.ApproxTotalVisualRows: integer;
+var
+  i, j: integer;
+  Node: TAVLTreeNode;
+  c: TWrapChunk;
+begin
+  Result:=0;
+  for i:=0 to ViewCount-1 do
+    inc(Result,ViewShownRows(Views[i]));
+  if fWrapChunks<>nil then begin
+    Node:=fWrapChunks.FindLowest;
+    while Node<>nil do begin
+      c:=TWrapChunk(Node.Data);
+      for j:=0 to length(c.RowCounts)-1 do
+        inc(Result,c.RowCounts[j]-1);
+      Node:=Node.Successor;
+    end;
+  end;
+end;
+
+procedure TMessagesCtrl.VisualRowToPos(VisualRow: integer; out ViewIdx,
+  InternalRow, SubRow: integer);
+// Maps an approximate global visual-row index to a paint start position:
+// the view, the internal row (0=header, 1..Count=message, Count+1=progress)
+// and the visual sub-row offset within that logical line. O(views + measured).
+
+  procedure LocalVisualToInternal(View: TLMsgWndView; LocalVis: integer;
+    out AnInternal, ASub: integer);
+  var
+    shown, cnt, vis, msg, nextMeas, gap, rc: integer;
+    Node: TAVLTreeNode;
+    c: TWrapChunk;
+  begin
+    shown:=ViewShownRows(View);
+    // header = internal 0, always 1 visual row
+    if LocalVis<1 then
+    begin
+      AnInternal:=0;
+      ASub:=0;
+      exit;
+    end;
+    vis:=1;            // consumed the header row
+    cnt:=View.Lines.Count;
+    msg:=0;
+    Node:=FirstWrapChunkNode(View); // view's chunks in ascending FirstLine order
+    while msg<cnt do begin
+      // advance past chunks that end before msg
+      while (Node<>nil) and (TWrapChunk(Node.Data).View=View)
+      and (TWrapChunk(Node.Data).LastLine<msg) do
+        Node:=Node.Successor;
+      if (Node<>nil) and (TWrapChunk(Node.Data).View=View) then
+        c:=TWrapChunk(Node.Data)
+      else
+        c:=nil;
+      if (c<>nil) and (msg>=c.FirstLine) then
+      begin
+        // msg is a measured (possibly multi-row) line
+        rc:=c.RowCounts[msg-c.FirstLine];
+        if LocalVis<vis+rc then
+        begin
+          AnInternal:=1+msg;
+          ASub:=LocalVis-vis;
+          exit;
+        end;
+        inc(vis,rc);
+        inc(msg);
+      end else
+      begin
+        // lines [msg..nextMeas-1] are all single-row -> jump
+        if c<>nil then nextMeas:=c.FirstLine else nextMeas:=cnt;
+        if nextMeas>cnt then nextMeas:=cnt;
+        gap:=nextMeas-msg;
+        if gap<1 then gap:=1;
+        if LocalVis<vis+gap then
+        begin
+          AnInternal:=1+msg+(LocalVis-vis);
+          ASub:=0;
+          exit;
+        end;
+        inc(vis,gap); inc(msg,gap);
+      end;
+    end;
+    // past the messages -> progress line (or clamp to the last row)
+    if shown>0 then
+      AnInternal:=Min(1+cnt,shown-1)
+    else
+      AnInternal:=0;
+    ASub:=LocalVis-vis;
+    if ASub<0 then ASub:=0;
+  end;
+
+var
+  i, offVis, vr: integer;
+begin
+  ViewIdx:=-1; InternalRow:=0; SubRow:=0;
+  if VisualRow<0 then VisualRow:=0;
+  if ViewCount=0 then exit;
+  offVis:=0;
+  for i:=0 to ViewCount-1 do begin
+    vr:=ViewApproxVisualRows(Views[i]);
+    if vr=0 then continue;
+    if VisualRow<offVis+vr then begin
+      ViewIdx:=i;
+      LocalVisualToInternal(Views[i],VisualRow-offVis,InternalRow,SubRow);
+      exit;
+    end;
+    inc(offVis,vr);
+  end;
+  // past the end -> clamp to the last non-empty view's last row
+  for i:=ViewCount-1 downto 0 do
+    if ViewShownRows(Views[i])>0 then begin
+      ViewIdx:=i;
+      InternalRow:=ViewShownRows(Views[i])-1;
+      SubRow:=0;
+      exit;
+    end;
+end;
+
+function TMessagesCtrl.EstimateLogicalAtVisual(VisualRow: integer): integer;
+// global logical-row index (header/msg/progress counted as one each) at VisualRow
+var
+  vi, ir, sr, i: integer;
+begin
+  if VisualRow<=0 then exit(0);
+  VisualRowToPos(VisualRow,vi,ir,sr);
+  if vi<0 then exit(0);
+  Result:=0;
+  for i:=0 to vi-1 do
+    inc(Result,ViewShownRows(Views[i]));
+  inc(Result,ir);
+end;
+
+procedure TMessagesCtrl.EnsureWrapWindows;
+// (Re)measures the wrapped row-counts of the heuristic windows and caches them.
+var
+  n, TotalLog, TopLog, IconW, FirstW, ContW: integer;
+  // desired (disjoint) per-view message-line ranges
+  MViews: array of TLMsgWndView;
+  MStarts, MEnds: array of integer;
+  MCount: integer;
+
+  procedure AddRange(View: TLMsgWndView; aStart, aEnd: integer);
+  var
+    i, j: integer;
+  begin
+    if View=nil then exit;
+    if aStart<0 then aStart:=0;
+    if aEnd>View.Lines.Count-1 then aEnd:=View.Lines.Count-1;
+    if aEnd<aStart then exit;
+    // merge with existing ranges of the same view that overlaps or touches
+    for i:=0 to MCount-1 do
+      if (MViews[i]=View) and (aEnd>=MStarts[i]-1) and (aStart<=MEnds[i]+1) then
+      begin
+        if aStart>MStarts[i] then aStart:=MStarts[i];
+        if aEnd<MEnds[i] then aEnd:=MEnds[i];
+        // remove this range; it is now folded into (aStart,aEnd) and re-added below
+        for j:=i to MCount-2 do
+        begin
+          MViews[j]:=MViews[j+1];
+          MStarts[j]:=MStarts[j+1];
+          MEnds[j]:=MEnds[j+1];
+        end;
+        dec(MCount);
+      end;
+    if MCount>=length(MViews) then
+    begin
+      SetLength(MViews,Max(8,MCount*2));
+      SetLength(MStarts,length(MViews));
+      SetLength(MEnds,length(MViews));
+    end;
+    MViews[MCount]:=View;
+    MStarts[MCount]:=aStart;
+    MEnds[MCount]:=aEnd;
+    inc(MCount);
+  end;
+
+  procedure AddGlobalRange(gStart, gEnd: integer);
+  var
+    i, ShowCnt, Shown, ViewStart, ViewEnd, StartLine, EndLine, Cnt: integer;
+    View: TLMsgWndView;
+  begin
+    if gStart<0 then gStart:=0;
+    if gEnd>TotalLog then gEnd:=TotalLog;
+    if gStart>=gEnd then exit;
+    ShowCnt:=0;
+    for i:=0 to ViewCount-1 do begin
+      View:=Views[i];
+      Shown:=ViewShownRows(View);
+      if Shown>0 then begin
+        Cnt:=View.Lines.Count;
+        if Cnt>0 then begin
+          ViewStart:=ShowCnt+1;         // header at ShowCnt, message line 0 at ShowCnt+1
+          ViewEnd:=ViewStart+Cnt;     // exclusive
+          StartLine:=Max(gStart,ViewStart);
+          EndLine:=Min(gEnd,ViewEnd);
+          if StartLine<EndLine then
+            AddRange(View,StartLine-ViewStart,EndLine-1-ViewStart);
+        end;
+        inc(ShowCnt,Shown);
+        if ShowCnt>=gEnd then break;
+      end;
+    end;
+  end;
+
+  function OldRowCount(View: TLMsgWndView; MsgLine: integer; out Found: boolean): integer;
+  // reuse a still-valid measurement from the current tree (before it is rebuilt)
+  var
+    oc: TWrapChunk;
+  begin
+    oc:=FindWrapChunk(View,MsgLine);
+    Found:=oc<>nil;
+    if Found then
+      Result:=oc.RowCounts[MsgLine-oc.FirstLine]
+    else
+      Result:=1;
+  end;
+
+var
+  i, k, msg: integer;
+  Found: boolean;
+  Line: TMessageLine;
+  NewChunks: TFPList; // of TWrapChunk, built before the old tree is cleared
+  Chunk: TWrapChunk;
+begin
+  if not HandleAllocated then exit;
+  if ClientWidth<=0 then exit;
+  if fArrowWidth<=0 then
+    RefreshWrapMetrics;
+  // skip if the cache already matches the current state
+  if (fWrapWinStamp=fWrapStamp) and (fWrapWinScrollTop=ScrollTop)
+  and (fWrapWinWidth=ClientWidth) and (fWrapWinHeight=ClientHeight) then
+    exit;
+  fWrapWinStamp:=fWrapStamp;
+  fWrapWinScrollTop:=ScrollTop;
+  fWrapWinWidth:=ClientWidth;
+  fWrapWinHeight:=ClientHeight;
+
+  n:=VisiblePageRows;
+  TotalLog:=0;
+  // O(#Views)
+  for i:=0 to ViewCount-1 do
+    inc(TotalLog,ViewShownRows(Views[i]));
+  if TotalLog=0 then begin
+    fWrapChunks.FreeAndClear;
+    exit;
+  end;
+
+  // coarse position of the viewport using the currently cached chunks
+  TopLog:=EstimateLogicalAtVisual(ScrollTop);
+
+  MCount:=0;
+  AddGlobalRange(0,Max(n,30));                         // W1: first lines
+  AddGlobalRange(TopLog-Max(n,30),TopLog+Max(2*n,60)); // W2: lines above the viewport and below
+  AddGlobalRange(TotalLog-Max(30,n),TotalLog);         // W3: last lines
+
+  // Build the new chunks first (reusing still-valid measurements from the old
+  // tree via OldRowCount), then swap the tree contents.
+  NewChunks:=TFPList.Create;
+  try
+    for i:=0 to MCount-1 do
+    begin
+      Chunk:=TWrapChunk.Create;
+      Chunk.View:=MViews[i];
+      Chunk.FirstLine:=MStarts[i];
+      Chunk.LastLine:=MEnds[i];
+      SetLength(Chunk.RowCounts,MEnds[i]-MStarts[i]+1);
+      for k:=0 to MEnds[i]-MStarts[i] do
+      begin
+        msg:=MStarts[i]+k;
+        Chunk.RowCounts[k]:=OldRowCount(MViews[i],msg,Found);
+        if not Found then begin
+          Line:=MViews[i].Lines[msg];
+          // same icon budget as the Paint would use for this line
+          if (fIconWidth>0)
+          and (fUrgencyStyles[Line.Urgency].ImageIndex>=0)
+          and (fUrgencyStyles[Line.Urgency].ImageIndex<Images.Count) then
+            IconW:=fIconWidth
+          else
+            IconW:=0;
+          MsgLineRowWidths(IconW,FirstW,ContW);
+          Chunk.RowCounts[k]:=MeasureRowCount(GetLineText(Line),FirstW,ContW);
+        end;
+      end;
+      NewChunks.Add(Chunk);
+    end;
+    fWrapChunks.FreeAndClear;
+    for i:=0 to NewChunks.Count-1 do
+      fWrapChunks.Add(NewChunks[i]);
+  finally
+    NewChunks.Free;
   end;
 end;
 
@@ -2014,16 +2687,91 @@ var
     Result:=ContrastColor(aBackground);
   end;
 
+  procedure DrawVisualRow(ARect: TRect; const aFullText: string;
+    RowStart, RowEndExcl: integer; Continued, IsSelected: boolean;
+    TxtColor: TColor);
+  // Draws one visual row = the substring aFullText[RowStart..RowEndExcl-1].
+  // When Continued, a wrap arrow is drawn at the right edge.
+  var
+    aTxt: string;
+    Details: TThemedElementDetails;
+    TextRect: TRect;
+    p, LastP: SizeInt;
+    aLeft, aRight, ay: integer;
+    LoTxt: string;
+  begin
+    aTxt:=copy(aFullText,RowStart,RowEndExcl-RowStart);
+    Canvas.Font.Color:=Font.Color;
+    TextRect:=ARect;
+    TextRect.Right:=TextRect.Left+Canvas.TextWidth(aTxt)+2;
+    if IsSelected then begin
+      if (mcsFocused in FStates) or (mcoAlwaysDrawFocused in Options) then
+        Details:=ThemeServices.GetElementDetails(ttItemSelected)
+      else
+        Details:=ThemeServices.GetElementDetails(ttItemSelectedNotFocus);
+      ThemeServices.DrawElement(Canvas.Handle, Details, TextRect, nil);
+      TxtColor:=clDefault;
+    end else
+      Details:=ThemeServices.GetElementDetails(ttItemNormal);
+    if LoSearchText<>'' then begin
+      LoTxt:=UTF8LowerCase(aTxt);
+      p:=1;
+      LastP:=1;
+      while p<=length(LoTxt) do begin
+        p:=PosEx(LoSearchText,LoTxt,LastP);
+        if p<1 then break;
+        Canvas.Brush.Color:=clHighlight;
+        aLeft:=TextRect.Left+Canvas.TextWidth(copy(aTxt,1,p-1));
+        aRight:=aLeft+Canvas.TextWidth(copy(aTxt,p,length(LoSearchText)));
+        Canvas.FillRect(aLeft,TextRect.Top+1,aRight,TextRect.Bottom-1);
+        LastP:=p+length(LoSearchText);
+      end;
+      Canvas.Brush.Color:=BackgroundColor;
+    end;
+    if TxtColor=clDefault then
+      ThemeServices.DrawText(Canvas, Details, aTxt, TextRect,
+        DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX, 0)
+    else begin
+      p:=(TextRect.Top+TextRect.Bottom-Canvas.TextHeight('Mg')) div 2;
+      Canvas.Font.Color:=TxtColor;
+      Canvas.TextOut(TextRect.Left+2,p,aTxt);
+    end;
+    if Continued then begin
+      // wrap arrow at the right margin
+      if TxtColor=clDefault then
+        Canvas.Font.Color:=Font.Color
+      else
+        Canvas.Font.Color:=TxtColor;
+      ay:=(ARect.Top+ARect.Bottom-Canvas.TextHeight('Mg')) div 2;
+      Canvas.TextOut(ClientWidth-fArrowWidth+1,ay,MsgWndWrapArrow);
+    end;
+  end;
+
+  procedure RecordPaintedLine(View: TLMsgWndView; LogLine, YTop, YBottom: integer);
+  begin
+    if View.fPaintedCount>=length(View.fPaintedLines) then
+      SetLength(View.fPaintedLines,Max(16,View.fPaintedCount*2));
+    View.fPaintedLines[View.fPaintedCount].LogLine:=LogLine;
+    View.fPaintedLines[View.fPaintedCount].YTop:=YTop;
+    View.fPaintedLines[View.fPaintedCount].YBottom:=YBottom;
+    inc(View.fPaintedCount);
+  end;
+
 var
-  i, j, y: Integer;
-  Indent, ImgIndex: Integer;
+  i, y: Integer;
+  Indent, ImgIndex, IconW, FirstW, ContW: Integer;
+  FirstViewIdx, FirstInternal, FirstSub: Integer;
+  Internal, Shown, Cnt, Msg, Rows, r, RowLeft, yTop, RowEnd: Integer;
+  RowStarts: TIntegerDynArray;
+  Txt: string;
+  HasIcon: boolean;
   View: TLMsgWndView;
   Line: TMessageLine;
   NodeRect: TRect;
   IsSelected: Boolean;
   FirstLineIsNotSelectedMessage: Boolean;
-  SecondLineIsNotSelectedMessage: Boolean;
-  col: TColor;
+  SecondLineIsNotSelectedMessage, Continued: Boolean;
+  Col: TColor;
   ImgRes: TScaledImageListResolution;
 begin
   if Focused then
@@ -2040,82 +2788,125 @@ begin
   LoSearchText:=fLastLoSearchText;
   fHasHeaderHint:=False;
 
-  // paint from top to bottom
-  {$IFDEF EnableMsgWndLineWrap}
-  y:=-ScrollTop*ItemHeight;
-  {$ELSE}
-  y:=-ScrollTop;
-  {$ENDIF}
-  for i:=0 to ViewCount-1 do begin
+  // make sure the wrap metrics and the measured heuristic windows are current
+  RefreshWrapMetrics;
+  EnsureWrapWindows;
+
+  // find the first visible logical line and the sub-row within it
+  VisualRowToPos(ScrollTop,FirstViewIdx,FirstInternal,FirstSub);
+  if FirstViewIdx<0 then FirstViewIdx:=ViewCount; // nothing to paint
+
+  // paint from top to bottom, starting at the first visible view
+  y:=-FirstSub*ItemHeight;
+  for i:=FirstViewIdx to ViewCount-1 do begin
     if y>ClientHeight then break;
     View:=Views[i];
     if not View.HasContent then continue;
 
     View.FPaintStamp:=FPaintStamp;
     View.fPaintTop:=y;
+    View.fPaintedCount:=0;
 
-    // draw header
-    if (y+ItemHeight>0) and (y<ClientHeight) then begin
-      // header text
-      NodeRect:=Rect(0,y,ClientWidth,y+ItemHeight);
-      col:=HeaderBackground[View.ToolState];
-      Canvas.Brush.Color:=col;
-      Canvas.FillRect(NodeRect);
-      DrawText(NodeRect,View.GetHeaderText, View.FSelectedLines.IndexOf(-1)>=0, HeaderTextColor(col));
-      Canvas.Brush.Color:=BackgroundColor;
-    end;
-    inc(y,ItemHeight);
+    Cnt:=View.Lines.Count;
+    Shown:=ViewShownRows(View);
+    if i=FirstViewIdx then
+      Internal:=FirstInternal
+    else
+      Internal:=0;
 
-    // draw lines
-    j:=0;
-    if y<0 then begin
-      j:=Min((-y) div ItemHeight,View.Lines.Count);
-      inc(y,j*ItemHeight);
-    end;
     FirstLineIsNotSelectedMessage:=false;
     SecondLineIsNotSelectedMessage:=false;
-    while (j<View.Lines.Count) and (y<ClientHeight) do begin
-      Line:=View.Lines[j];
-      NodeRect:=Rect(Indent,y,ClientWidth,y+ItemHeight);
-      IsSelected:=View.FSelectedLines.IndexOf(j)>=0;
-      if not IsSelected then begin
-        if (y>-ItemHeight) and (y<=0) then
-          FirstLineIsNotSelectedMessage:=true
-        else if (y>0) and (y<=ItemHeight) then
-          SecondLineIsNotSelectedMessage:=true;
+
+    while (Internal<Shown) and (y<ClientHeight) do begin
+      if Internal=0 then begin
+        // header (single visual row)
+        yTop:=y;
+        if (y+ItemHeight>0) and (y<ClientHeight) then begin
+          NodeRect:=Rect(0,y,ClientWidth,y+ItemHeight);
+          Col:=HeaderBackground[View.ToolState];
+          Canvas.Brush.Color:=Col;
+          Canvas.FillRect(NodeRect);
+          DrawText(NodeRect,View.GetHeaderText, View.FSelectedLines.IndexOf(-1)>=0, HeaderTextColor(Col));
+          Canvas.Brush.Color:=BackgroundColor;
+        end;
+        RecordPaintedLine(View,-1,yTop,y+ItemHeight);
+        inc(y,ItemHeight);
+        inc(Internal);
+      end else if Internal<=Cnt then begin
+        // message line, may wrap into several visual Rows
+        Msg:=Internal-1;
+        Line:=View.Lines[Msg];
+        IsSelected:=View.FSelectedLines.IndexOf(Msg)>=0;
+        ImgIndex:=fUrgencyStyles[Line.Urgency].ImageIndex;
+        HasIcon:=(Images<>nil) and (mcoShowMsgIcons in Options)
+                 and (ImgIndex>=0) and (ImgIndex<Images.Count);
+        if HasIcon then IconW:=fIconWidth else IconW:=0;
+        MsgLineRowWidths(IconW,FirstW,ContW);
+        Txt:=GetLineText(Line);
+        Rows:=ComputeRowBreaks(Txt,FirstW,ContW,RowStarts);
+        Col:=UrgencyStyles[Line.Urgency].Color;
+        if Col=clDefault then
+          Col:=TextColor;
+        yTop:=y;
+        for r:=0 to Rows-1 do begin
+          RowLeft:=Indent;
+          if r>0 then inc(RowLeft,fContIndentWidth);
+          if (y+ItemHeight>0) and (y<ClientHeight) then begin
+            if HasIcon and (r=0) then begin
+              ImgRes := Images.ResolutionForControl[0, Self];
+              ImgRes.Draw(Canvas,
+                RowLeft + 1, (y + y + ItemHeight - Images.Height) div 2,
+                ImgIndex, gdeNormal);
+            end;
+            if r=0 then
+              inc(RowLeft,IconW);
+            NodeRect:=Rect(RowLeft,y,ClientWidth,y+ItemHeight);
+            Continued:=r<Rows-1;
+            if Continued then
+              RowEnd:=RowStarts[r+1]
+            else
+              RowEnd:=length(Txt)+1;
+            DrawVisualRow(NodeRect,Txt,RowStarts[r],RowEnd,Continued,IsSelected,Col);
+          end;
+          if not IsSelected then begin
+            if (y>-ItemHeight) and (y<=0) then
+              FirstLineIsNotSelectedMessage:=true
+            else if (y>0) and (y<=ItemHeight) then
+              SecondLineIsNotSelectedMessage:=true;
+          end;
+          inc(y,ItemHeight);
+          if y>ClientHeight then break;
+        end;
+        // cursor focus rectangle around the whole logical line
+        if (Msg=FTextCursorPoint.LineNro)
+        and (View=FTextCursorPoint.View) and (mcsFocused in FStates) then begin
+          Canvas.Pen.Style:=psDot;
+          Canvas.Pen.Color:=Font.Color;
+          Canvas.Line(Indent,yTop,ClientWidth,yTop);
+          Canvas.Line(Indent,y-1,ClientWidth,y-1);
+          Canvas.Pen.Style:=psSolid;
+        end;
+        RecordPaintedLine(View,Msg,yTop,y);
+        inc(Internal);
+      end else begin
+        // progress line (single visual row)
+        yTop:=y;
+        if (y+ItemHeight>0) and (y<ClientHeight) and (View.ProgressLine.Msg<>'') then begin
+          NodeRect:=Rect(Indent,y,ClientWidth,y+ItemHeight);
+          Col:=UrgencyStyles[View.ProgressLine.Urgency].Color;
+          if Col=clDefault then
+            Col:=TextColor;
+          DrawText(NodeRect,View.ProgressLine.Msg,
+                   View.FSelectedLines.IndexOf(Cnt)>=0, Col);
+        end;
+        RecordPaintedLine(View,Cnt,yTop,y+ItemHeight);
+        inc(y,ItemHeight);
+        inc(Internal);
       end;
-      ImgIndex:=fUrgencyStyles[Line.Urgency].ImageIndex;
-      if (Images<>nil) and (mcoShowMsgIcons in Options)
-      and (ImgIndex>=0) and (ImgIndex<Images.Count) then begin
-        ImgRes := Images.ResolutionForControl[0, Self];
-        ImgRes.Draw(Canvas,
-          NodeRect.Left + 1, (NodeRect.Top + NodeRect.Bottom - Images.Height) div 2,
-          ImgIndex, gdeNormal);
-        inc(NodeRect.Left, ImgRes.Width+2);
-      end;
-      // message text
-      col:=UrgencyStyles[Line.Urgency].Color;
-      if col=clDefault then
-        col:=TextColor;
-      DrawText(NodeRect,GetLineText(Line),IsSelected,col);
-      // cursor line
-      if (j=FTextCursorPoint.LineNro)
-      and (View=FTextCursorPoint.View) and (mcsFocused in FStates) then begin
-        // setup pen
-        Canvas.Pen.Style:=psDot;
-        Canvas.Pen.Color:=Font.Color;
-        // draw line focus
-        Canvas.Line(NodeRect.Left,NodeRect.Top,NodeRect.Right,NodeRect.Top);
-        Canvas.Line(NodeRect.Left,NodeRect.Bottom-1,NodeRect.Right,NodeRect.Bottom-1);
-        // restore pen
-        Canvas.Pen.Style:=psSolid;
-      end;
-      // next item
-      inc(y,ItemHeight);
-      inc(j);
     end;
+
     if FirstLineIsNotSelectedMessage and SecondLineIsNotSelectedMessage then begin
-      // the first two lines are normal messages, not selected
+      // the first two visual Rows are normal messages, not selected
       // => paint view header hint
       fHasHeaderHint:=True;
       NodeRect:=Rect(0,0,ClientWidth,ItemHeight div 2);
@@ -2130,21 +2921,6 @@ begin
         HeaderTextColor(HeaderBackground[View.ToolState]));
       Canvas.Brush.Color:=BackgroundColor;
     end;
-    inc(y,ItemHeight*(View.Lines.Count-j));
-
-    // draw progress line
-    if View.ProgressLine.Msg<>'' then begin
-      if (y+ItemHeight>0) and (y<ClientHeight) then begin
-        // progress text
-        NodeRect:=Rect(Indent,y,ClientWidth,y+ItemHeight);
-        col:=UrgencyStyles[View.ProgressLine.Urgency].Color;
-        if col=clDefault then
-          col:=TextColor;
-        DrawText(NodeRect,View.ProgressLine.Msg,
-                 View.FSelectedLines.IndexOf(View.Lines.Count)>=0, col);
-      end;
-      inc(y,ItemHeight);
-    end;
 
     View.fPaintBottom:=y;
   end;
@@ -2157,20 +2933,17 @@ procedure TMessagesCtrl.UpdateScrollBar(InvalidateScrollMax: boolean);
 var
   ScrollInfo: TScrollInfo;
 begin
-  if InvalidateScrollMax then begin
-    fScrollTopMax:=-1;
-  end;
+  // the scrollbar counts in visual rows (each a regular ItemHeight high)
+  if InvalidateScrollMax then
+    InvalidateWrapCache;
   if not HandleAllocated then exit;
 
   ScrollInfo.cbSize := SizeOf(ScrollInfo);
   ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
   ScrollInfo.nMin := 0;
   ScrollInfo.nTrackPos := 0;
-  ScrollInfo.nMax := ScrollTopMax+ClientHeight-1;
-  if ClientHeight < 2 then
-    ScrollInfo.nPage := 1
-  else
-    ScrollInfo.nPage := ClientHeight-1;
+  ScrollInfo.nMax := ScrollTopMax+VisiblePageRows-1;
+  ScrollInfo.nPage := VisiblePageRows;
   if ScrollTop > ScrollTopMax then
     ScrollTop := ScrollTopMax;
   ScrollInfo.nPos := ScrollTop;
@@ -2183,13 +2956,23 @@ procedure TMessagesCtrl.CreateWnd;
 begin
   inherited CreateWnd;
   ItemHeight:=Canvas.TextHeight('Mg')+2;
+  RefreshWrapMetrics;
+  InvalidateWrapCache;
   UpdateScrollBar(false);
 end;
 
 procedure TMessagesCtrl.DoSetBounds(ALeft, ATop, AWidth, AHeight: integer);
+var
+  WidthChanged: boolean;
 begin
+  WidthChanged:=AWidth<>Width;
   inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
-  UpdateScrollBar(true);
+  if WidthChanged then begin
+    // wrapping depends on the width -> remeasure
+    RefreshWrapMetrics;
+    UpdateScrollBar(true);
+  end else
+    UpdateScrollBar(false);
 end;
 
 procedure TMessagesCtrl.MsgCtrlMouseMove(Sender: TObject; Shift: TShiftState;
@@ -3053,49 +3836,68 @@ end;
 
 procedure TMessagesCtrl.ScrollToLine(View: TLMsgWndView; LineNumber: integer;
   FullyVisible: boolean);
+// ScrollTop counts in visual rows
 var
-  y: Integer;
+  aRrow, aLineRows, n: Integer;
   MinScrollTop: integer;
   MaxScrollTop: Integer;
 begin
-  {$IFDEF EnableMsgWndLineWrap}
-  {$ELSE}
-  y:=GetLineTop(View,LineNumber,false);
+  if View=nil then exit;
+  EnsureWrapWindows;
+  aRrow:=GetLineTop(View,LineNumber,false);   // first visual aRrow of the line
+  if LineNumber<0 then
+    aLineRows:=1
+  else if LineNumber<View.Lines.Count then
+    aLineRows:=LineRowCount(View,LineNumber)
+  else
+    aLineRows:=1;
+  n:=VisiblePageRows;
   if FullyVisible then begin
-    MinScrollTop:=Max(0,y+ItemHeight-ClientHeight);
-    MaxScrollTop:=y;
+    MinScrollTop:=Max(0,aRrow+aLineRows-n);
+    MaxScrollTop:=aRrow;
   end else begin
-    MinScrollTop:=Max(0,y-1-ClientHeight);
-    MaxScrollTop:=y+ItemHeight-1;
+    MinScrollTop:=Max(0,aRrow-(n-1));
+    MaxScrollTop:=aRrow+aLineRows-1;
   end;
-  {$ENDIF}
-  //debugln(['TMessagesCtrl.ScrollToLine ',LineNumber,' y=',y,' Min=',MinScrollTop,' Max=',MaxScrollTop]);
-  y:=Max(Min(ScrollTop,MaxScrollTop),MinScrollTop);
-  //debugln(['TMessagesCtrl.ScrollToLine y=',y,' ScrollTopMax=',ScrollTopMax]);
-  ScrollTop:=y;
+  if MaxScrollTop<MinScrollTop then
+    MaxScrollTop:=MinScrollTop;
+  //debugln(['TMessagesCtrl.ScrollToLine ',LineNumber,' row=',aRrow,' Min=',MinScrollTop,' Max=',MaxScrollTop]);
+  aRrow:=Max(Min(ScrollTop,MaxScrollTop),MinScrollTop);
+  ScrollTop:=aRrow;
 end;
 
 function TMessagesCtrl.GetLineTop(View: TLMsgWndView; LineNumber: integer;
   Scrolled: boolean): integer;
+// returns the global visual-row index of the first visual row of LineNumber
 var
-  i: Integer;
+  i, k, minLN: Integer;
   CurView: TLMsgWndView;
+  Node: TAVLTreeNode;
+  c: TWrapChunk;
 begin
   Result:=0;
   if View=nil then exit;
   for i:=0 to ViewCount-1 do begin
     CurView:=Views[i];
     if CurView=View then break;
-    inc(Result,ItemHeight*CurView.GetShownLineCount(true,true));
+    inc(Result,ViewApproxVisualRows(CurView));
   end;
-  if LineNumber<0 then begin
-    // header
-  end else if LineNumber<View.Lines.Count then begin
-    // normal messages
-    inc(Result,(LineNumber+1)*ItemHeight);
-  end else begin
-    // last line
-    inc(Result,(View.Lines.Count+1)*ItemHeight);
+  if LineNumber>=0 then begin
+    inc(Result); // header row
+    minLN:=LineNumber;
+    if minLN>View.Lines.Count then
+      minLN:=View.Lines.Count;
+    inc(Result,minLN); // one row per preceding message line (baseline)
+    // add the extra rows of measured (wrapped) preceding lines
+    Node:=FirstWrapChunkNode(View);
+    while Node<>nil do begin
+      c:=TWrapChunk(Node.Data);
+      if c.View<>View then break;
+      for k:=0 to length(c.RowCounts)-1 do
+        if c.FirstLine+k<minLN then
+          inc(Result,c.RowCounts[k]-1);
+      Node:=Node.Successor;
+    end;
   end;
   if Scrolled then
     dec(Result,ScrollTop);
@@ -3151,7 +3953,10 @@ end;
 
 function TMessagesCtrl.IndexOfView(View: TLMsgWndView): integer;
 begin
-  Result:=FViews.IndexOf(View);
+  if (View=nil) or (View.Control<>Self) then
+    Result:=-1
+  else
+    Result:=View.Index;
 end;
 
 procedure TMessagesCtrl.ClearViews(OnlyFinished: boolean);
@@ -3177,6 +3982,8 @@ begin
   if FViews.IndexOf(View)<0 then exit;
   FViews.Remove(View);
   View.FControl:=nil;
+  View.FIndex:=-1;
+  UpdateViewIndices;
   View.OnChanged:=nil;
   if fLastSearchStart.View=View then
     fLastSearchStart.View:=nil;
@@ -3201,7 +4008,7 @@ begin
   Result.FControl:=Self;
   Result.Caption:=aCaption;
   Result.ViewFilter.Assign(ActiveFilter);
-  FViews.Add(Result);
+  Result.FIndex:=FViews.Add(Result);
   FreeNotification(Result);
   Result.OnChanged:=@ViewChanged;
   fSomeViewsRunning:=true;
@@ -3210,14 +4017,18 @@ end;
 function TMessagesCtrl.GetLineAt(Y: integer; out View: TLMsgWndView;
   out Line: integer): boolean;
 var
-  i: Integer;
+  i, k: Integer;
 begin
   for i:=0 to ViewCount-1 do begin
     View:=Views[i];
     if View.FPaintStamp<>FPaintStamp then continue;
     if (View.fPaintTop>Y) or (View.fPaintBottom<Y) then continue;
-    Line:=((Y-View.fPaintTop) div ItemHeight)-1;
-    exit(true);
+    // a logical line can span several visual rows -> use the painted extents
+    for k:=0 to View.fPaintedCount-1 do
+      if (Y>=View.fPaintedLines[k].YTop) and (Y<View.fPaintedLines[k].YBottom) then begin
+        Line:=View.fPaintedLines[k].LogLine;
+        exit(true);
+      end;
   end;
   View:=nil;
   Line:=-1;
@@ -3230,19 +4041,10 @@ begin
 end;
 
 function TMessagesCtrl.ScrollTopMax: integer;
-var
-  i: Integer;
-  View: TLMsgWndView;
+// maximum ScrollTop as an approximate global visual-row index
 begin
-  if fScrollTopMax<0 then begin
-    fScrollTopMax:=0;
-    for i:=0 to ViewCount-1 do begin
-      View:=Views[i];
-      inc(fScrollTopMax,View.GetShownLineCount(true,true)*ItemHeight);
-    end;
-    fScrollTopMax:=Max(0,fScrollTopMax-ClientHeight);
-  end;
-  Result:=fScrollTopMax;
+  EnsureWrapWindows;
+  Result:=Max(0,ApproxTotalVisualRows-VisiblePageRows);
 end;
 
 procedure TMessagesCtrl.StoreSelectedAsSearchStart;
@@ -3292,22 +4094,6 @@ begin
   if Result then
     Invalidate;
 end;
-
-procedure TMessagesCtrl.MsgCtrlShowHint(Sender: TObject; HintInfo: PHintInfo);
-begin
-  if fUpdateLock > 0 then
-    exit;
-  { No selected 'view' or not specified line }
-  if (FHintLast.View=nil) or (FHintLast.LineNro=cNotALineHint) then
-    Application.CancelHint
-  else
-    with HintInfo^ do begin
-      HintStr := FHintLast.View.AsHintString(FHintLast.LineNro);
-      ReshowTimeout := 0;
-      HideTimeout := 5000;
-    end;
-end;
-
 
 procedure UpdateQuickFixes(CurLine: TMessageLine);
 begin
