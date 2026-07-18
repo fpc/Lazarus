@@ -86,7 +86,7 @@ uses
 const
   DefaultCompletionLongLineHintType = sclpExtendRightOnly;
   DefaultEditorDisableAntiAliasing = false;
-  DefaultEditorFontHeight: integer = 12;
+  DefaultEditorFontHeight = 10;
 
 type
   TPreviewPasSyn = TIDESynFreePasSyn;
@@ -9043,13 +9043,11 @@ begin
 end;
 
 procedure InitIdeDefaultSynFont;
-  procedure CheckFont(f: String; h: integer = 12);
+  procedure CheckFont(f: String);
   begin
     if SynDefaultFontName <> '' then exit;
-    if Screen.Fonts.IndexOf(f) >= 0 then begin
+    if Screen.Fonts.IndexOf(f) >= 0 then
       SynDefaultFontName  := f;
-      DefaultEditorFontHeight := h;
-    end;
   end;
 var
   s: String;
@@ -9063,18 +9061,17 @@ begin
   {$ENDIF}
   {$IFDEF LCLcocoa}
     // Note: carbon is case sensitive
-    CheckFont('Andale Mono', 10);
+    CheckFont('Andale Mono');
   {$ENDIF}
 
-  CheckFont('Courier New', -13);
-  CheckFont('DejaVu Sans Mono', 13);
+  CheckFont('Courier New');
+  CheckFont('DejaVu Sans Mono');
   {$IFnDEF WINDOWS}
   CheckFont('Monospace');
   {$ENDIF}
 
   if SynDefaultFontName <> '' then
     exit;
-  DefaultEditorFontHeight := 12;
   SynDefaultFontName := s;
 end;
 
