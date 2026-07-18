@@ -7309,7 +7309,6 @@ var
               if not Found then begin
                 PropName:=ExprType.Context.Tool.GetPropertyNameIdentifier(ExprType.Context.Node);
                 i:=ExprType.Context.Tool.ConvertSrcPCharToPos(PropName);
-                //PropNameStr:=ExprType.Context.Tool.ExtractIdentifierWithPoints(i,false); // may be dotted
                 PropNameStr:=GetIdentifier(@ExprType.Context.Tool.Src[i]);
                 Params.SetIdentifier(ExprType.Context.Tool, PropName,@CheckSrcIdentifier);
                 Params.ContextNode:=ExprType.Context.Node;
@@ -7337,7 +7336,7 @@ var
                       Found:= NodeHasParentNode(ExprType.Context.Node, AFindContext.Node);
                       if not Found then begin
                         FindContext:=FindClassMember(AFindContext.Node,
-                          PropNameStr,true); // TODO: verify processing dotted properties
+                          PropNameStr,true);
                         if FindContext.Node<>nil then
                           Found:= NodeHasParentNode(FindContext.Node, AFindContext.Node);
                       end;

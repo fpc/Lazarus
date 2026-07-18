@@ -1362,9 +1362,9 @@ var
   Action: TModalResult;
 begin
   if IndexOf(JITOwnerComponent)<0 then
-    RaiseGDBException('TJITComponentList.AddJITChildComponentFromStream');
+    RaiseGDBException('TJITComponentList.AddJITChildComponentsFromStream');
   {$IFDEF VerboseJITForms}
-  debugln('[TJITComponentList.AddJITChildComponentFromStream] A');
+  debugln('[TJITComponentList.AddJITChildComponentsFromStream] A');
   {$ENDIF}
   FCurReadJITComponent:=nil;
   FCurReadClass:=nil;
@@ -1375,7 +1375,7 @@ begin
     InitReading;
     CreateReader(BinStream,LFMUnitResourcefileFormat, Reader,DestroyDriver);
     {$IFDEF VerboseJITForms}
-    debugln('[TJITComponentList.AddJITChildComponentFromStream] B');
+    debugln('[TJITComponentList.AddJITChildComponentsFromStream] B');
     {$ENDIF}
     fReadComponents:=NewComponents;
     try
@@ -1385,13 +1385,13 @@ begin
 
       FFlags:=FFlags+[jclAutoRenameComponents];
       {$IFDEF VerboseJITForms}
-      debugln('[TJITComponentList.AddJITChildComponentFromStream] C1 ',ComponentClass.ClassName);
+      debugln('[TJITComponentList.AddJITChildComponentsFromStream] C1 ',ComponentClass.ClassName);
       {$ENDIF}
       Reader.ReadComponents(FCurReadJITComponent,ParentControl,@ReadComponentsProc);
 
       {$IFDEF VerboseJITForms}
-      DebugLn('[TJITComponentList.AddJITChildComponentFromStream] C6 ');
-      debugln('[TJITComponentList.AddJITChildComponentFromStream] D');
+      DebugLn('[TJITComponentList.AddJITChildComponentsFromStream] C6 ');
+      debugln('[TJITComponentList.AddJITChildComponentsFromStream] D');
       {$ENDIF}
       DoFinishReading;
     finally
@@ -1403,7 +1403,7 @@ begin
     end;
   except
     on E: Exception do begin
-      HandleException(E,'[TJITComponentList.AddJITChildComponentFromStream] ERROR reading form stream'
+      HandleException(E,'[TJITComponentList.AddJITChildComponentsFromStream] ERROR reading form stream'
           +' of Class "'+ComponentClass.ClassName+'"',Action);
     end;
   end;
@@ -1983,9 +1983,6 @@ end;
 procedure TJITComponentList.ReaderCreateComponent(Reader: TReader;
   ComponentClass: TComponentClass; var Component: TComponent);
 begin
-  fCurReadChild:=Component;
-  fCurReadChildClass:=ComponentClass;
-  
   ReadInlineComponent(Component,ComponentClass,Reader.Owner);
   //debugln(['[TJITComponentList.ReaderCreateComponent] Class=',ComponentClass.ClassName,' Component=',dbgsName(Component)]);
 end;

@@ -1136,7 +1136,7 @@ var
         ParserNextToken;
         parser.CheckToken(']');
         ParserNextToken;
-        Flags := Flags or 2;
+        Flags := Flags or ObjStreamMaskChildPos;
       end;
     end;
     if Flags <> 0 then begin
