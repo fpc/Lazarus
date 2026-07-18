@@ -434,6 +434,9 @@ begin
 // THEN we should ask, if the uninstalled (todo uninstall cfg file) should be restored?
 		UpdateUninstallInfo;
 
+        if IsSecondaryCheckBoxChecked and (not IsSecondaryUpdate) and (wpAskConfDir.Values[0] = '') then
+          wpAskConfDir.Values[0] := AddBackslash(folder) + 'conf';
+          
         if FolderEmpty then
           exit;
 
