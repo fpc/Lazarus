@@ -418,10 +418,15 @@ begin
         if not WizardSilent() then
 		if Pos( ' ', folder ) > 0 then
 		begin
-			MsgBox(SaveCustomMessage('FolderHasSpaces', 'Selected folder contains spaces, please select a folder without spaces in it.'),
-                   mbInformation, MB_OK );
-			Result := false;
-			exit;
+			Result := MsgBox(Format(SaveCustomMessage('FolderHasSpacesWarn',
+			                        'Selected folder contains spaces, some tools needed by Lazarus may not work. '+
+			                        '%0:sPlease select a different folder without spaces in it. %0:s%0:s' +
+			                        '"No" to keep the selection and continue at your own risk.'), [#13#10]
+			                       ),
+			                       mbError, MB_YESNO+MB_DEFBUTTON1) = IDNo;
+
+			if not Result then
+  			exit;
 		end;
 
 		FolderEmpty := IsDirEmpty(folder);

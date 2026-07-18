@@ -19,6 +19,7 @@ CheckSecondClick=Create a new secondary installation
 CheckSecondInfo=A secondary installation allows two or more versions of Lazarus to be installed. Each version will have its own configuration. Please read the FAQ on multiple installations before using this option.
 
 FolderHasSpaces=Selected folder contains spaces, please select a folder without spaces in it.
+FolderHasSpacesWarn=Selected folder contains spaces, some tools needed by Lazarus may not work. %0:sPlease select a different folder without spaces in it. %0:s%0:s"No" to keep the selection and continue at your own risk.
 FolderNotEmpty=The target folder is not empty. Continue with installation?
 FolderNotEmpty2=The target folder is not empty.
 
