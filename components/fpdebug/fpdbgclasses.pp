@@ -1108,6 +1108,11 @@ type
     procedure RemoveThread(const AID: DWord);
     function FormatAddress(const AAddress): String;
     function  Pause: boolean; virtual;
+    { Step-Out: may a genuine return leave the stack pointer unchanged?  True for
+      architectures whose "call" keeps the return address in a link register (e.g.
+      RISC-V ra), so a step-out before the prologue spills it returns with SP
+      unchanged.  Default False (x86: a real return always increases SP). }
+    function StepOutReturnMayKeepStackPointer: Boolean; virtual;
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; virtual;
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData; out APartSize: Cardinal): Boolean; virtual;
@@ -3670,6 +3675,11 @@ end;
 function TDbgProcess.CreateWatchPointData: TFpWatchPointData;
 begin
   Result := TFpWatchPointData.Create;
+end;
+
+function TDbgProcess.StepOutReturnMayKeepStackPointer: Boolean;
+begin
+  Result := False;
 end;
 
 procedure TDbgProcess.Init(const AProcessID, AThreadID: Integer);

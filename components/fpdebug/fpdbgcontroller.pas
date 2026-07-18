@@ -1318,16 +1318,26 @@ begin
 end;
 
 function TDbgControllerStepOutCmd.IsAtHiddenBreak: Boolean;
+var
+  SteppedOut: Boolean;
 begin
+  {$IF (defined(CPUAARCH64))}
+  // We may have been outside the frame. "ret" uses the link register, so stack would not change.
+  SteppedOut := FThread.GetStackPointerRegisterValue >= FHiddenBreakStackPtrAddr;
+  {$ELSE}
+  // Target-dependent: architectures whose "call" keeps the return address in a link
+  // register (RISC-V ra) can return with SP unchanged when stepping out before the
+  // prologue spills it -- accept SP >= recorded there.  x86 keeps strict > : a
+  // conditional jump can land on the hidden-break address without a real return, and
+  // a genuine return always increases SP.
+  if FProcess.StepOutReturnMayKeepStackPointer then
+    SteppedOut := FThread.GetStackPointerRegisterValue >= FHiddenBreakStackPtrAddr
+  else
+    SteppedOut := FThread.GetStackPointerRegisterValue > FHiddenBreakStackPtrAddr;
+  {$ENDIF}
   Result := (FHiddenBreakpoint <> nil) and
             (FThread.GetInstructionPointerRegisterValue = FHiddenBreakAddr) and // FHiddenBreakpoint.HasLocation()
-            {$IF (defined(CPUAARCH64))}
-            // We may have been outside the frame. "ret" uses the link register, so stack would not change.
-            (FThread.GetStackPointerRegisterValue >= FHiddenBreakStackPtrAddr);
-            {$ELSE}
-            (FThread.GetStackPointerRegisterValue > FHiddenBreakStackPtrAddr);
-            {$ENDIF}
-            // if SP > FStackPtrRegVal >> then the brk was hit stepped out (should not happen)
+            SteppedOut;
   debugln(FPDBG_COMMANDS and Result, ['TDbgControllerStepOutCmd.IsAtHiddenBreak: At Hidden break = true']);
 end;
 

@@ -1108,9 +1108,10 @@ begin
   ANewFrame := nil;
   Result := suFailed;
 
-  if (StackPointer > $40000000) or (StackPointer < $3F000000) or
-     (CodePointer < $40000001) or {not FLastFrameBaseIncreased then}
-     (AFrameIndex - FSPchangeCount > 0) then
+  // Address-range guard removed: it was ESP32-C specific (SP in $3F000000..$40000000,
+  // PC >= $40000001) and rejected other RISC-V memory maps (e.g. CH32V: RAM $20000000,
+  // flash $08000000). Keep only the frame-progress guard below.
+  if (AFrameIndex - FSPchangeCount > 0) then
     exit;
 
   OutSideFrame := False;
