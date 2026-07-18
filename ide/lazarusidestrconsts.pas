@@ -1180,7 +1180,7 @@ resourcestring
   lisFilesNotInASCIINorUTF8Encoding = 'Files not in ASCII nor UTF-8 encoding';
   podAddPackageUnitToUsesSection = 'Add package unit to uses section';
   lisLPKCompatibilityModeCheckBox = 'Maximize compatibility of package file (LPK)';
-  lisLPKCompatibilityModeCheckBoxHint = 'Check this if you want to open your package in legacy (2.0 and older) Lazarus versions.';
+  lisLPKCompatibilityModeCheckBoxHint = 'Check this if you want to open your package in legacy (2.2 - 4.8) Lazarus versions.';
   lisCodeBrowser = 'Code Browser';
 
   // IDE General options
@@ -2742,7 +2742,7 @@ resourcestring
   lisUpdateApplicationScaledStatement = 'Update Application.Scaled statement in main unit';
   lisIdeMaintainsScaledInMainUnit = 'The IDE maintains Application.Scaled (Hi-DPI) in main unit.';
   lisLPICompatibilityModeCheckBox = 'Maximize compatibility of project files (LPI and LPS)';
-  lisLPICompatibilityModeCheckBoxHint = 'Check this if you want to open your project in legacy (2.0 and older) Lazarus versions.';
+  lisLPICompatibilityModeCheckBoxHint = 'Check this if you want to open your project in legacy (2.2 - 4.8) Lazarus versions.';
   lisProjectIsRunnable = 'Project is runnable';
   lisProjectIsRunnableHint = 'Generates a binary executable which can be run.';
   lisUseDesignTimePackages = 'Use design time packages';
