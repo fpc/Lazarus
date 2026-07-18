@@ -784,9 +784,13 @@ begin
 
     // create the file list
     Files:=TStringList.Create;
-    Files.Add(DeclCodeXY.Code.Filename);
-    if CompareFilenames(DeclCodeXY.Code.Filename,StartSrcCode.Filename)<>0 then
+    if (Options.Scope = frCurrentUnit) then begin
       Files.Add(StartSrcCode.Filename);
+    end else begin
+      Files.Add(DeclCodeXY.Code.Filename);
+      if CompareFilenames(DeclCodeXY.Code.Filename,StartSrcCode.Filename)<>0 then
+        Files.Add(StartSrcCode.Filename);
+    end;
 
     // add packages, projects
     case Options.Scope of

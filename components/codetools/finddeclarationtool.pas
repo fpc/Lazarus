@@ -7166,6 +7166,18 @@ var
     end;
   end;
 
+  function NodeHasParentNode(Node, ParentNode: TCodeTreeNode): boolean;
+  begin
+    Result:=false;
+    if Node=nil then exit;
+    if ParentNode=nil then exit;
+    while Node<>nil do begin
+      if Node=ParentNode then
+        exit(true);
+      Node:=Node.Parent;
+    end;
+  end;
+
   procedure ReadIdentifier(IsComment: boolean);
   var
     IdentStartPos: Integer;
@@ -7176,11 +7188,14 @@ var
     IdentStripped: string;
     aComment: string;
     UnitInFilename: ansistring;
-    Node: TCodeTreeNode;
+    Node, ClassNode: TCodeTreeNode;
     IsDotted: boolean;
-    dLen: integer;
+    dLen, i: integer;
     ExprType: TExpressionType;
     PropName: PChar;
+    PropNameStr: string;
+    ListOfPFindContext: TFPList;
+    AFindContext, FindContext: TFindContext;
   begin
     if (not IsComment) then
       UnitStartFound:=true;
@@ -7285,26 +7300,59 @@ var
         try
           if DeclarationNode.Desc=ctnProperty then begin // it needs additional checking
             Params.Flags:=[fdfSearchInAncestors,
-                          fdfExceptionOnNotFound,
                           fdfSearchInParentNodes,
                           fdfIgnoreCurContextNode,
                           fdfExceptionOnPredefinedIdent,
                           fdfTopLvlResolving];
             if FindDeclarationOfIdentAtParam(Params, ExprType) then begin
               Found := ExprType.Context.Node = DeclarationNode;
-              // first ancestor (if property found here) can be not enough
-              if not Found and (ExprType.Context.Node.Desc=ctnProperty) then begin
+              if not Found then begin
                 PropName:=ExprType.Context.Tool.GetPropertyNameIdentifier(ExprType.Context.Node);
+                i:=ExprType.Context.Tool.ConvertSrcPCharToPos(PropName);
+                //PropNameStr:=ExprType.Context.Tool.ExtractIdentifierWithPoints(i,false); // may be dotted
+                PropNameStr:=GetIdentifier(@ExprType.Context.Tool.Src[i]);
                 Params.SetIdentifier(ExprType.Context.Tool, PropName,@CheckSrcIdentifier);
                 Params.ContextNode:=ExprType.Context.Node;
                 Params.IdentifierTool:=ExprType.Context.Tool;
                 Params.IdentifierNode:=ExprType.Context.Node;
                 Params.Flags:=[fdfSearchInAncestors,
-                              fdfExceptionOnNotFound,
                               fdfSearchInParentNodes,
-                              fdfExceptionOnPredefinedIdent];
+                              fdfSearchInHelpersInTheEnd];
                 if ExprType.Context.Tool.FindDeclarationOfIdentAtParam(Params, ExprType) then
                   Found:= ExprType.Context.Node = DeclarationNode;
+              end;
+              if not Found and (ExprType.Context.Node.Desc=ctnProperty) then begin
+              // try more ancestors classes
+                try
+                  ListOfPFindContext:=nil;
+                  ClassNode:= DeclarationTool.FindClassOfMethod(DeclarationNode,
+                    true,false);
+
+                  if DeclarationTool.
+                    FindClassAndAncestors(ClassNode,ListOfPFindContext,false) then
+                  begin
+                    i:=0;
+                    while i<=ListOfPFindContext.Count-1 do begin
+                      AFindContext:=TFindContext(ListOfPFindContext.Items[i]^);
+                      Found:= NodeHasParentNode(ExprType.Context.Node, AFindContext.Node);
+                      if not Found then begin
+                        FindContext:=FindClassMember(AFindContext.Node,
+                          PropNameStr,true); // TODO: verify processing dotted properties
+                        if FindContext.Node<>nil then
+                          Found:= NodeHasParentNode(FindContext.Node, AFindContext.Node);
+                      end;
+                      // Found = true -> declaration is in ancestor
+                      if Found then begin // show node as matching the declaration
+                        Params.NewNode:=DeclarationNode;
+                        Params.NewCodeTool:=DeclarationTool;
+                        break;
+                      end;
+                      inc(i);
+                    end;
+                  end;
+                finally
+                  FreeListOfPFindContext(ListOfPFindContext);
+                end;
               end;
             end;
           end else begin
@@ -7321,7 +7369,19 @@ var
             if E.Sender<>Self then begin
               // there is an error in another unit, which prevents searching
               // stop further searching in this unit
-              raise;
+
+              //debugln(['*** ID=',E.Id,', ', e.Message,', StartPos=',
+              //  e.Sender.CurPos.StartPos,' ', Params.IdentifierTool.GetSourceName(false),
+              //  ' IdentifierNode=nil -> ', Params.IdentifierNode=nil,
+              //  ' fdfExceptionOnNotFound in Flags -> ', fdfExceptionOnNotFound in Params.Flags
+              //]);
+
+              if not ((Params.IdentifierNode=nil) and
+                (Params.NewCodeTool=nil) and
+                (Params.NewNode=nil) and
+                (fdfExceptionOnNotFound in Params.Flags)) then
+              raise; // skip when symptoms of failure search in ancestors observed
+                     // to prevent gathered references
             end;
             // continue
           end;
