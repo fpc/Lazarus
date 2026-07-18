@@ -44,6 +44,7 @@ uses
   Forms, Controls, Graphics, Dialogs, ExtCtrls, Menus, ClipBrd,
   // LazUtils
   GraphType, GraphMath, LazFileUtils, LazFileCache, LazLoggerBase, LazUtilities,
+  ProjResProc,
   // BuildIntf
   ProjectIntf, ComponentReg,
   // IDEIntf
