@@ -2607,10 +2607,10 @@ const
   LM_CharMsg: array[Boolean] of UINT = (LM_CHAR, LM_SYSCHAR);
 
 
-function CheckWidget: boolean;
-begin
-  Result := (Gtk3WidgetFromGtkWidget(Sender) = Self) and CanSendLCLMessage;
-end;
+  function CheckWidget: boolean;
+  begin
+    Result := (Gtk3WidgetFromGtkWidget(Sender) = Self) and CanSendLCLMessage;
+  end;
 
 var
   AEvent: TGdkEventKey;
