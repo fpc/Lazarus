@@ -415,7 +415,6 @@ DEFAULT_IDE_OPTIONS=  \
   -Fu../components/lazdebuggers/lazdebuggerfp/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/lazdebuggers/lazdebuggerlldb/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/lazdebuggers/lazdebuggerfplldb/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
-  -Fupackages/idesynedit/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fupackages/ideconfig/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fupackages/idepackager/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fupackages/ideproject/lib/$(CPU_TARGET)-$(OS_TARGET) \
@@ -468,7 +467,6 @@ LAZBUILD_OPT=$(LAZARUS_LIBPATHS) \
   -Fu../components/lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/buildintf/units/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fupackages/idesynedit/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fupackages/ideconfig/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fupackages/idepackager/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fupackages/ideproject/lib/$(CPU_TARGET)-$(OS_TARGET)
@@ -4958,13 +4956,6 @@ ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
 .PHONY: ide bigide starter lazbuilder all clean cleanide purge
-idepackages:
-	$(MAKE) -C packages/idesynedit
-	$(MAKE) -C packages/ideconfig
-	$(MAKE) -C packages/ideutils
-	$(MAKE) -C packages/idepackager
-	$(MAKE) -C packages/ideproject
-	$(MAKE) -C packages/idedebugger
 ide: $(COMPILER_UNITTARGETDIR) revisioninc
 	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(LAZARUS_OPT) $(OPT)'
 bigide: $(COMPILER_UNITTARGETDIR) revisioninc
@@ -5000,7 +4991,6 @@ ifneq ($(findstring $(OS_TARGET),win32 win64),)
 	-$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res)
 endif
 cleanlaz: clean cleanide
-	$(MAKE) -C packages/idesynedit clean
 	$(MAKE) -C packages/ideconfig clean
 	$(MAKE) -C packages/idepackager clean
 	$(MAKE) -C packages/ideproject clean

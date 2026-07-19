@@ -24,13 +24,13 @@ files=$(wildcard ./units/*$(OEXT)) \
 help:
 	@$(ECHO)
 	@$(ECHO) " Targets"
-	@$(ECHO) "   all         same as idepackages bigide, requires lazbuildpackages and lcl"
+	@$(ECHO) "   all         same as idepackages bigide, requires lcl"
 	@$(ECHO) "   clean       deletes output files of base and bigide components"
 	@$(ECHO)
-	@$(ECHO) "   lazbuildpackages build non lcl packages needed by lazbuild and"
-	@$(ECHO) "                    the minimal ide, requires packager registration"
+	@$(ECHO) "   lazbuildpackages build packages needed by lazbuild"
+	@$(ECHO) "   lclpackages build packages needed by the lcl, requires lazbuildpackages"
 	@$(ECHO) "   idepackages build packages of the minimal ide,"
-	@$(ECHO) "               requires lazbuildpackages and lcl"
+	@$(ECHO) "               requires lclpackages and lcl"
 	@$(ECHO) "   bigide      build the extra packages for the bigide, requires lcl"
 
 #-----------------------------------------------------------------------------

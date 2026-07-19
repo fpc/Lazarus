@@ -3131,7 +3131,7 @@ makefiles: fpc_makefiles
 ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
-.PHONY: help registration tools lcl basecomponents bigidecomponents lazbuild ide idebig cleanlazbuildpkg cleanide bigide useride starter lhelp all clean purge distclean install
+.PHONY: help registration tools lazbuild ide idebig cleanlazbuildpkg cleanide bigide useride starter lhelp all clean purge distclean install
 help:
 	@$(ECHO)
 	@$(ECHO) " Main targets"
@@ -3148,18 +3148,16 @@ help:
 	@$(ECHO)
 	@$(ECHO) " Sub targets"
 	@$(ECHO) "   registration   build package FCL"
-	@$(ECHO) "   basecomponents build packages needed by the minimal IDE for the LCL_PLATFORM"
-	@$(ECHO) "   bigidecomponents build many extra packages for the LCL_PLATFORM, requires basecomponents"
 	@$(ECHO) "   tools          build LCL with nogui widgetset, lazres, svn2revisioninc, updatepofiles, lrstolfm"
-	@$(ECHO) "   lhelp          build lhelp, requires bigidecomponents"
-	@$(ECHO) "   starter        build startlazarus, requires basecomponents"
+	@$(ECHO) "   lhelp          build lhelp"
+	@$(ECHO) "   starter        build startlazarus"
 	@$(ECHO) "   ide            build ide with minimum of packages"
 	@$(ECHO)
 	@$(ECHO) " Flags:"
 	@$(ECHO) "   PP=/path/to/fpc        use another compiler"
 	@$(ECHO) "   USESVN2REVISIONINC=0   do not update ide/revision.inc"
 	@$(ECHO) "   INSTALL_PREFIX=/usr    used by 'install' as path prefix"
-	@$(ECHO) "   FPC_DIR=/usr/share/fpcsrc/3.0.4   used by fpcmake when regenerating Makefiles"
+	@$(ECHO) "   FPC_DIR=/usr/share/fpcsrc/3.3.1   used by fpcmake when regenerating Makefiles"
 	@$(ECHO) "   OPT='-vwnbq -gh'       append these options when calling the compiler"
 	@$(ECHO)
 	@$(ECHO) " Usage examples:"
@@ -3175,7 +3173,7 @@ help:
 	@$(ECHO) " Updating git and build an IDE with your last set of packages:"
 	@$(ECHO) "   make distclean"
 	@$(ECHO) "   git pull"
-	@$(ECHO) "   make clean lazbuild useride"
+	@$(ECHO) "   make clean all useride"
 	@$(ECHO)
 	@$(ECHO) " Clean up:"
 	@$(ECHO) "   git restore ."
@@ -3192,19 +3190,6 @@ help:
 	@exit
 registration:
 	$(MAKE) -C packager/registration
-lcl:
-	$(MAKE) -C components lclpackages
-	$(MAKE) -C lcl
-basecomponents:
-	$(MAKE) -C components idepackages
-	$(MAKE) -C ide/packages/idesynedit
-	$(MAKE) -C ide/packages/ideconfig
-	$(MAKE) -C ide/packages/ideutils
-	$(MAKE) -C ide/packages/idepackager
-	$(MAKE) -C ide/packages/ideproject
-	$(MAKE) -C ide/packages/idedebugger
-bigidecomponents:
-	$(MAKE) -C components bigide
 tools:
 	$(MAKE) -C components/freetype
 	$(MAKE) -C lcl LCL_PLATFORM=nogui
@@ -3242,7 +3227,6 @@ cleanlazbuildpkg:
 	$(MAKE) -C components/buildintf clean
 	$(MAKE) -C components/lazdebuggers/lazdebuggerintf clean
 	$(MAKE) -C components/debuggerintf clean
-	$(MAKE) -C ide/packages/idesynedit clean
 	$(MAKE) -C ide/packages/ideconfig clean
 	$(MAKE) -C ide/packages/idepackager clean
 	$(MAKE) -C ide/packages/ideproject clean
@@ -3250,8 +3234,6 @@ cleanlaz: cleanide
 	$(MAKE) -C packager/registration clean
 	$(MAKE) -C lcl cleanall
 	$(MAKE) -C components clean
-	$(MAKE) -C ide/packages/ clean
-	$(MAKE) -C ide/packages/idesynedit clean
 	$(MAKE) -C ide/packages/ideconfig clean
 	$(MAKE) -C ide/packages/ideutils clean
 	$(MAKE) -C ide/packages/idepackager clean
@@ -3266,7 +3248,6 @@ purge:
 	$(MAKE) -C packager/registration distclean
 	$(MAKE) -C lcl distclean
 	$(MAKE) -C components distclean
-	$(MAKE) -C ide/packages/idesynedit distclean
 	$(MAKE) -C ide/packages/ideconfig distclean
 	$(MAKE) -C ide/packages/ideutils distclean
 	$(MAKE) -C ide/packages/idepackager distclean
