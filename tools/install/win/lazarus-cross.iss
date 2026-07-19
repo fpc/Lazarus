@@ -92,7 +92,7 @@ Filename: {app}\{#FPCDIR}\{#FPCVersion}\bin\{#FPCFullTarget}\fpcmkcfg.exe; Param
 
 [INI]
 Filename: {app}\Lazarus Home Page.url; Section: InternetShortcut; Key: URL; String: https://www.lazarus-ide.org/
-Filename: {app}\Lazarus Forums.url; Section: InternetShortcut; Key: URL; String: http://www.lazarus.freepascal.org/index.php?action=forum
+Filename: {app}\Lazarus Forums.url; Section: InternetShortcut; Key: URL; String: https://www.lazarus-ide.org/index.php?action=forum
 Filename: {app}\Lazarus Wiki Help.url; Section: InternetShortcut; Key: URL; String: http://wiki.lazarus.freepascal.org/
 
 [Languages]

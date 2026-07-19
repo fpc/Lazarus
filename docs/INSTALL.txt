@@ -13,7 +13,7 @@ What is required for Lazarus:
   See www.gtk.org.
 
 
-The FAQ - Frequently Asked Question is available at www.lazarus.freepascal.org
+The FAQ - Frequently Asked Question is available at www.lazarus-ide.org
   and some can be found in the file 'FAQ'.
 
 
@@ -87,7 +87,7 @@ properly:
   manager to install them.
 
   The FPC binaries:
-  At the Lazarus downloads section (www.lazarus.freepascal.org
+  At the Lazarus downloads section (www.lazarus-ide.org
   or http://sourceforge.net/project/showfiles.php?group_id=89339) you can get
   the rpm/deb of the Free Pascal compiler(compiler / linux) and its packages.
   Alternatively, if you don't have a rpm system, you can download and install 

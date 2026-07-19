@@ -5,7 +5,7 @@ Summary:        Lazarus Component Library and IDE
 
 Group:          Development/Languages
 License:        GPL and modified LGPL
-URL:            http://www.lazarus.freepascal.org/
+URL:            https://www.lazarus-ide.org/
 Source0:        https://prdownloads.sourceforge.net/lazarus/lazarus-%{version}-%{release}.tar.gz
 Packager:       Mattias Gaertner
 BuildRoot:      %{_tmppath}/lazarus-%{version}-%{release}-root-%(%{__id_u} -n)

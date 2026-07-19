@@ -19,7 +19,7 @@ BuildRequires:  binutils, glibc-devel
 
 Units and binutils needed by Freepascal to cross compile to target win32.
 This rpm was built from sources built by the scripts of the lazarus project.
-See http://www.lazarus.freepascal.org.
+See https://www.lazarus-ide.org/.
 Download the lazarus sources and see <lazarusdir>/tools/install/cross_unix/
 
 %prep

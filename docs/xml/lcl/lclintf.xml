@@ -6542,7 +6542,7 @@ platform. If it was found, it is started and the returns value is set to
 </p>
 <p>
 AURL is passed as parameter to the browser application. AURL must be a URL 
-like http://www.lazarus.freepascal.org or file:///tmp/test.txt or 
+like https://www.lazarus-ide.org/ or file:///tmp/test.txt or 
 file://C:\test.txt. AURL is quoted when passed as an argument to ensure that 
 space(s) in the path or file name are handled properly.
 </p>

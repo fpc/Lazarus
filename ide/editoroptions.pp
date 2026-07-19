@@ -3991,7 +3991,7 @@ begin
     SynInstance := LazSyntaxHighlighterClasses{%H-}[TheType].Create(nil);
     SetBothFilextensions('php;php3;php4');
     SampleSource :=
-      '<?if ( ($HTTP_HOST == "www.lazarus.com") || ($HTTP_HOST == "lazarus.com") ){'#10 + '   HEADER("Location:http://www.lazarus.freepascal.org/\n\n");'#10
+      '<?if ( ($HTTP_HOST == "www.lazarus.com") || ($HTTP_HOST == "lazarus.com") ){'#10 + '   HEADER("Location:https://www.lazarus-ide.org/\n\n");'#10
       + '};'#10 + '?>'#10 + #10;
     AddAttrSampleLines[ahaTextBlock] := 8;
     MappedAttributes := TStringList.Create;
