@@ -42,10 +42,11 @@ program LazRes;
 uses
   Classes, SysUtils, resource, reswriter,
   bitmapresource, groupresource, groupiconresource, groupcursorresource,
-  // LCL
-  LResources,
   // LazUtils
-  LazFileUtils, LazUTF8, ProjResProc, LazLoggerBase;
+  LazFileUtils, LazUTF8, ProjResProc, LazLoggerBase,
+  // LCL
+  LResources
+  ;
 
 type
   TOutputFileType = (ftLrs, ftRc, ftRes);

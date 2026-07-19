@@ -3192,7 +3192,7 @@ registration:
 	$(MAKE) -C packager/registration
 tools:
 	$(MAKE) -C components/freetype
-	$(MAKE) -C lcl LCL_PLATFORM=nogui
+	$(MAKE) -C lcl lclbase
 	$(MAKE) -C tools
 idemin:
 	$(LAZBUILDEXE) $(LAZBUILDOPTS) --build-ide-minimal --pkg-release

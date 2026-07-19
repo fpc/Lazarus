@@ -19,8 +19,7 @@ packages=rtl
 options=-gl $(LAZARUS_LIBPATHS) $(DBG_OPTIONS)
 unitdir=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
           $(LAZDIR)/components/freetype/lib/$(CPU_TARGET)-$(OS_TARGET) \
-          $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
-          $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+          $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)
 unittargetdir=.
 targetdir=.
 

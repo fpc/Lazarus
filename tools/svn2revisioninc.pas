@@ -59,9 +59,9 @@ program Svn2RevisionInc;
 {$WARN 6058 off : Call to subroutine "$1" marked as inline is not inlined}
 {$ENDIF}
 uses
-  Classes, CustApp, SysUtils, Process, Dom, XmlRead,
+  Classes, CustApp, SysUtils, Process, Dom, XmlRead, StrUtils,
   // LazUtils
-  LazFileUtils, LazUTF8, LazLogger, StrUtils, LazVCSUtils;
+  LazFileUtils, LazUTF8, LazLogger, LazVCSUtils;
 
 type
 

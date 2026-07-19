@@ -5,7 +5,9 @@ unit LazVCSUtils;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazFileUtils, Laz2_DOM, Laz_XMLRead, process, StrUtils;
+  Classes, SysUtils, process, StrUtils,
+  // lazutils
+  FileUtil, LazFileUtils, Laz2_DOM, Laz_XMLRead;
 
 type
   TVCSSCoutLogEvent = procedure(Msg: string) of object;
