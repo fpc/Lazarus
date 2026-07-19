@@ -201,6 +201,7 @@ type
     FShowDirectoryHierarchy: boolean;
     FSortAlphabetically: boolean;
     FUpdateLock: integer;
+    FLockActiveEditChanged: integer;
     FLazProject: TProject;
     FFilesNode: TTreeNode;
     FNextSelectedPart: TObject;// select this file/dependency on next update
@@ -252,6 +253,8 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function IsUpdateLocked: boolean; inline;
+    procedure LockActiveEditorChanged;
+    procedure UnlockActiveEditorChanged;
     procedure UpdateTitle(Immediately: boolean = false);
     procedure UpdateRequiredPackages(Immediately: boolean = false);
     function TreeViewToInspector(TV: TTreeView): TProjectInspectorForm;
@@ -552,6 +555,18 @@ end;
 function TProjectInspectorForm.IsUpdateLocked: boolean;
 begin
   Result:=FUpdateLock>0;
+end;
+
+procedure TProjectInspectorForm.LockActiveEditorChanged;
+begin
+  inc(FLockActiveEditChanged);
+end;
+
+procedure TProjectInspectorForm.UnlockActiveEditorChanged;
+begin
+  if FLockActiveEditChanged=0 then
+    raise Exception.Create('20260719224317');
+  dec(FLockActiveEditChanged);
 end;
 
 function TProjectInspectorForm.TVNodeFiles: TTreeNode;
@@ -1130,22 +1145,29 @@ var
   NodeData: TPENodeData;
   Item: TObject;
 begin
-  for i:=0 to ItemsTreeView.SelectionCount-1 do
-  begin
-    if GetNodeDataItem(ItemsTreeView.Selections[i], NodeData, Item) then
+  // opening a file/package activates a source editor or the package editor,
+  // which must not change the selection here
+  LockActiveEditorChanged;
+  try
+    for i:=0 to ItemsTreeView.SelectionCount-1 do
     begin
-      if Item is TUnitInfo then
+      if GetNodeDataItem(ItemsTreeView.Selections[i], NodeData, Item) then
       begin
-        if LazarusIDE.DoOpenEditorFile(TUnitInfo(Item).Filename,
-                                       -1,-1,[ofAddToRecent]) <> mrOk then
-          Exit;
-      end
-      else if Item is TPkgDependency then
-        if not OpmAddOrOpenDependency(TPkgDependency(Item)) then
-          Exit;
+        if Item is TUnitInfo then
+        begin
+          if LazarusIDE.DoOpenEditorFile(TUnitInfo(Item).Filename,
+                                         -1,-1,[ofAddToRecent]) <> mrOk then
+            Exit;
+        end
+        else if Item is TPkgDependency then
+          if not OpmAddOrOpenDependency(TPkgDependency(Item)) then
+            Exit;
+      end;
     end;
+    OpmInstallPendingDependencies;
+  finally
+    UnlockActiveEditorChanged;
   end;
-  OpmInstallPendingDependencies;
 end;
 
 procedure TProjectInspectorForm.OptionsBitBtnClick(Sender: TObject);
@@ -1723,9 +1745,20 @@ begin
 end;
 
 procedure TProjectInspectorForm.ActiveEditorChanged(Sender: TObject);
+var
+  TVNode: TTreeNode;
+  NodeData: TPENodeData;
+  Item: TObject;
 begin
-  if Assigned(SourceEditorManagerIntf.ActiveEditor) then
-    SelectFileNode(SourceEditorManagerIntf.ActiveEditor.FileName);
+  if FLockActiveEditChanged>0 then exit;
+  if SourceEditorManagerIntf.ActiveEditor=nil then exit;
+  // only follow the source editor when a file is selected, so that a
+  // selected dependency/package is not silently replaced
+  TVNode:=ItemsTreeView.Selected;
+  if (TVNode<>nil)
+  and not (GetNodeDataItem(TVNode,NodeData,Item) and (Item is TUnitInfo)) then
+    exit;
+  SelectFileNode(SourceEditorManagerIntf.ActiveEditor.FileName);
 end;
 
 destructor TProjectInspectorForm.Destroy;
