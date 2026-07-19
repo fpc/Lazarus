@@ -11916,7 +11916,9 @@ msgid "Maximize compatibility of project files (LPI and LPS)"
 msgstr "Kompatibilität von Projektdateien (LPI und LPS) maximieren"
 
 #: lazarusidestrconsts.lislpicompatibilitymodecheckboxhint
-msgid "Check this if you want to open your project in legacy (2.0 and older) Lazarus versions."
+#, fuzzy
+#| msgid "Check this if you want to open your project in legacy (2.0 and older) Lazarus versions."
+msgid "Check this if you want to open your project in legacy (2.2 - 4.8) Lazarus versions."
 msgstr "Prüfen, ob das Projekt in alten Lazarus-Versionen (2.0 oder älter) geöffnet werden kann."
 
 #: lazarusidestrconsts.lislpkcompatibilitymodecheckbox
@@ -11924,7 +11926,9 @@ msgid "Maximize compatibility of package file (LPK)"
 msgstr "Kompatibilität von Package-Dateien (LPK) maximieren"
 
 #: lazarusidestrconsts.lislpkcompatibilitymodecheckboxhint
-msgid "Check this if you want to open your package in legacy (2.0 and older) Lazarus versions."
+#, fuzzy
+#| msgid "Check this if you want to open your package in legacy (2.0 and older) Lazarus versions."
+msgid "Check this if you want to open your package in legacy (2.2 - 4.8) Lazarus versions."
 msgstr "Prüfen, ob das Package in alten Lazarus-Versionen (2.0 oder älter) geöffnet werden kann."
 
 #: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
