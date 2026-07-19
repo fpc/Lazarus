@@ -1,0 +1,85 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: idesyneditstrings.dlgaddhiattrcustom
+#, object-pascal-format
+msgid "Custom %d"
+msgstr ""
+
+#: idesyneditstrings.dlgaddhiattrnestedbracket
+#, object-pascal-format
+msgid "Nested bracket %d"
+msgstr ""
+
+#: idesyneditstrings.synffoldcomments
+msgid "Fold comments"
+msgstr ""
+
+#: idesyneditstrings.synffoldcommentsinselection
+msgid "Fold comments in selection"
+msgstr ""
+
+#: idesyneditstrings.synffoldinactiveifdef
+msgid "Fold inactive Ifdef"
+msgstr ""
+
+#: idesyneditstrings.synffoldinactiveifdefexcludemixedstate
+msgid "Fold inactive Ifdef (exclude mixed state)"
+msgstr ""
+
+#: idesyneditstrings.synffoldinactiveifdefinselection
+msgid "Fold inactive Ifdef in selection"
+msgstr ""
+
+#: idesyneditstrings.synffoldinactiveifdefinselectionexcludemixedstate
+msgid "Fold inactive Ifdef in selection (exclude mixed state)"
+msgstr ""
+
+#: idesyneditstrings.synfhidecomments
+msgid "Hide comments"
+msgstr ""
+
+#: idesyneditstrings.synfhidecommentsinselection
+msgid "Hide comments in selection"
+msgstr ""
+
+#: idesyneditstrings.synfunfoldactiveifdef
+msgid "Unfold active Ifdef"
+msgstr ""
+
+#: idesyneditstrings.synfunfoldactiveifdefinselection
+msgid "Unfold active Ifdef in selection"
+msgstr ""
+
+#: idesyneditstrings.synfunfoldall
+msgid "Unfold all"
+msgstr ""
+
+#: idesyneditstrings.synfunfoldallifdef
+msgid "Unfold all Ifdef"
+msgstr ""
+
+#: idesyneditstrings.synfunfoldallifdefinselection
+msgid "Unfold all Ifdef in selection"
+msgstr ""
+
+#: idesyneditstrings.synfunfoldallinselection
+msgid "Unfold all in selection"
+msgstr ""
+
+#: idesyneditstrings.synfunfoldcomments
+msgid "Unfold comments"
+msgstr ""
+
+#: idesyneditstrings.synfunfoldcommentsinselection
+msgid "Unfold comments in selection"
+msgstr ""
+
+#: idesyneditstrings.synfunfoldinactiveifdef
+msgid "Unfold inactive Ifdef"
+msgstr ""
+
+#: idesyneditstrings.synfunfoldinactiveifdefinselection
+msgid "Unfold inactive Ifdef in selection"
+msgstr ""
+

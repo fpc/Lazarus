@@ -488,11 +488,6 @@ msgstr "Arbre de pliage de code"
 msgid "Code folding (current)"
 msgstr "Pliage de code (en cours)"
 
-#: lazarusidestrconsts.dlgaddhiattrcustom
-#, object-pascal-format
-msgid "Custom %d"
-msgstr ""
-
 #: lazarusidestrconsts.dlgaddhiattrdefault
 msgid "Default Text"
 msgstr "Texte par défaut"
@@ -646,11 +641,6 @@ msgstr "Ligne modifiée"
 #: lazarusidestrconsts.dlgaddhiattrmouselink
 msgid "Mouse link"
 msgstr "Lien souris"
-
-#: lazarusidestrconsts.dlgaddhiattrnestedbracket
-#, object-pascal-format
-msgid "Nested bracket %d"
-msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevelcolor
 #, object-pascal-format
@@ -21160,38 +21150,6 @@ msgstr "Éditer les touches de commande"
 msgid "Continue with next mouse up action"
 msgstr "Continuer avec la prochaine action de bouton de souris relâché"
 
-#: lazarusidestrconsts.synffoldcomments
-msgid "Fold comments"
-msgstr "Replier les commentaires"
-
-#: lazarusidestrconsts.synffoldcommentsinselection
-msgid "Fold comments in selection"
-msgstr "Replier les commentaires de la sélection"
-
-#: lazarusidestrconsts.synffoldinactiveifdef
-msgid "Fold inactive Ifdef"
-msgstr "Replier les Ifdef inactifs"
-
-#: lazarusidestrconsts.synffoldinactiveifdefexcludemixedstate
-msgid "Fold inactive Ifdef (exclude mixed state)"
-msgstr "Replier les Ifdef inactifs (exclure les états mixtes)"
-
-#: lazarusidestrconsts.synffoldinactiveifdefinselection
-msgid "Fold inactive Ifdef in selection"
-msgstr "Replier les Ifdef inactifs de la sélection"
-
-#: lazarusidestrconsts.synffoldinactiveifdefinselectionexcludemixedstate
-msgid "Fold inactive Ifdef in selection (exclude mixed state)"
-msgstr "Replier les Ifdef inactifs de la sélection (exclure les états mixtes)"
-
-#: lazarusidestrconsts.synfhidecomments
-msgid "Hide comments"
-msgstr "Cacher les commentaires"
-
-#: lazarusidestrconsts.synfhidecommentsinselection
-msgid "Hide comments in selection"
-msgstr "Cacher les commentaires de la sélection"
-
 #: lazarusidestrconsts.synfmatchactionbuttonofmousedown
 msgid "Match action button of mouse down"
 msgstr "Dernier bouton pressé identique"
@@ -21211,47 +21169,6 @@ msgstr "Même action que sur clic à cet endroit"
 #: lazarusidestrconsts.synfsearchallactionofmousedown
 msgid "Search all action of mouse down"
 msgstr "Rechercher toutes les actions du bouton de la souris enfoncé"
-
-#: lazarusidestrconsts.synfunfoldactiveifdef
-msgid "Unfold active Ifdef"
-msgstr "Déplier les Ifdef actifs"
-
-#: lazarusidestrconsts.synfunfoldactiveifdefinselection
-msgid "Unfold active Ifdef in selection"
-msgstr "Déplier les Ifdef actifs de la sélection"
-
-#: lazarusidestrconsts.synfunfoldall
-msgctxt "lazarusidestrconsts.synfunfoldall"
-msgid "Unfold all"
-msgstr "Tout déplier"
-
-#: lazarusidestrconsts.synfunfoldallifdef
-msgid "Unfold all Ifdef"
-msgstr "Déplier tous les Ifdef"
-
-#: lazarusidestrconsts.synfunfoldallifdefinselection
-msgid "Unfold all Ifdef in selection"
-msgstr "Déplier tous les Ifdef de la sélection"
-
-#: lazarusidestrconsts.synfunfoldallinselection
-msgid "Unfold all in selection"
-msgstr "Tout déplier dans la sélection"
-
-#: lazarusidestrconsts.synfunfoldcomments
-msgid "Unfold comments"
-msgstr "Déplier les commentaires"
-
-#: lazarusidestrconsts.synfunfoldcommentsinselection
-msgid "Unfold comments in selection"
-msgstr "Déplier les commentaires de la sélection"
-
-#: lazarusidestrconsts.synfunfoldinactiveifdef
-msgid "Unfold inactive Ifdef"
-msgstr "Déplier les Ifdef inactifs"
-
-#: lazarusidestrconsts.synfunfoldinactiveifdefinselection
-msgid "Unfold inactive Ifdef in selection"
-msgstr "Déplier les Ifdef inactifs de la sélection"
 
 #: lazarusidestrconsts.synspelloptmousewheelchangestabs
 msgid "Mouse-wheel changes tabs"

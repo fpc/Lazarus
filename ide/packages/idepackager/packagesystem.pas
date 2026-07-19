@@ -200,6 +200,7 @@ type
     FDebuggerIntfPackage: TLazPackage;
     FIdePackagerPackage: TLazPackage;
     FIdeProjectPackage: TLazPackage;
+    FIdeSyneditPackage: TLazPackage;
     FIdeUtilsPkgPackage: TLazPackage;
     FLazDebuggerIntfPackage: TLazPackage;
     FLazDebuggerGdbmiPackage: TLazPackage;
@@ -517,6 +518,7 @@ type
     property DebuggerIntfPackage: TLazPackage read FDebuggerIntfPackage;
     property LazDebuggerGdbmiPackage: TLazPackage read FLazDebuggerGdbmiPackage;
     property IdeDebuggerPackage: TLazPackage read FIdeDebuggerPackage;
+    property IdeSyneditPackage: TLazPackage read FIdeSyneditPackage;
     property IdeUtilsPkgPackage: TLazPackage read FIdeUtilsPkgPackage;
     property IdeConfigPackage: TLazPackage read FIdeConfigPackage;
     property IdePackagerPackage: TLazPackage read FIdePackagerPackage;
@@ -1294,6 +1296,8 @@ begin
     FDebuggerIntfPackage:=nil
   else if CurPkg=LazDebuggerGdbmiPackage then
     FLazDebuggerGdbmiPackage:=nil
+  else if CurPkg=IdeSyneditPackage then
+    FIdeSyneditPackage:=nil
   else if CurPkg=IdeUtilsPkgPackage then
     FIdeUtilsPkgPackage:=nil
   else if CurPkg=IdeConfigPackage then
@@ -2356,6 +2360,8 @@ begin
         SetBasePackage(FLazDebuggerGdbmiPackage)
       else if SysUtils.CompareText(APackage.Name,'IdeDebugger')=0 then
         SetBasePackage(FIdeDebuggerPackage)
+      else if SysUtils.CompareText(APackage.Name,'idesynedit')=0 then
+        SetBasePackage(FIdeSyneditPackage)
       else if SysUtils.CompareText(APackage.Name,'IdeUtilsPkg')=0 then
         SetBasePackage(FIdeUtilsPkgPackage)
       else if SysUtils.CompareText(APackage.Name,'IdeConfig')=0 then

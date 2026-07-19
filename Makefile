@@ -3197,6 +3197,7 @@ lcl:
 	$(MAKE) -C lcl
 basecomponents:
 	$(MAKE) -C components idepackages
+	$(MAKE) -C ide/packages/idesynedit
 	$(MAKE) -C ide/packages/ideconfig
 	$(MAKE) -C ide/packages/ideutils
 	$(MAKE) -C ide/packages/idepackager
@@ -3241,6 +3242,7 @@ cleanlazbuildpkg:
 	$(MAKE) -C components/buildintf clean
 	$(MAKE) -C components/lazdebuggers/lazdebuggerintf clean
 	$(MAKE) -C components/debuggerintf clean
+	$(MAKE) -C ide/packages/idesynedit clean
 	$(MAKE) -C ide/packages/ideconfig clean
 	$(MAKE) -C ide/packages/idepackager clean
 	$(MAKE) -C ide/packages/ideproject clean
@@ -3248,6 +3250,8 @@ cleanlaz: cleanide
 	$(MAKE) -C packager/registration clean
 	$(MAKE) -C lcl cleanall
 	$(MAKE) -C components clean
+	$(MAKE) -C ide/packages/ clean
+	$(MAKE) -C ide/packages/idesynedit clean
 	$(MAKE) -C ide/packages/ideconfig clean
 	$(MAKE) -C ide/packages/ideutils clean
 	$(MAKE) -C ide/packages/idepackager clean
@@ -3262,6 +3266,7 @@ purge:
 	$(MAKE) -C packager/registration distclean
 	$(MAKE) -C lcl distclean
 	$(MAKE) -C components distclean
+	$(MAKE) -C ide/packages/idesynedit distclean
 	$(MAKE) -C ide/packages/ideconfig distclean
 	$(MAKE) -C ide/packages/ideutils distclean
 	$(MAKE) -C ide/packages/idepackager distclean

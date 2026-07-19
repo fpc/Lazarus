@@ -486,11 +486,6 @@ msgstr "コード折りたたみツリー"
 msgid "Code folding (current)"
 msgstr ""
 
-#: lazarusidestrconsts.dlgaddhiattrcustom
-#, object-pascal-format
-msgid "Custom %d"
-msgstr ""
-
 #: lazarusidestrconsts.dlgaddhiattrdefault
 msgid "Default Text"
 msgstr "既定のテキスト"
@@ -644,11 +639,6 @@ msgstr "修正行"
 #: lazarusidestrconsts.dlgaddhiattrmouselink
 msgid "Mouse link"
 msgstr "マウスリンク"
-
-#: lazarusidestrconsts.dlgaddhiattrnestedbracket
-#, object-pascal-format
-msgid "Nested bracket %d"
-msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevelcolor
 #, object-pascal-format
@@ -21495,38 +21485,6 @@ msgstr "コマンドのキーを編集"
 msgid "Continue with next mouse up action"
 msgstr "次のマウスアップ動作で続行"
 
-#: lazarusidestrconsts.synffoldcomments
-msgid "Fold comments"
-msgstr "コメントを折り畳み"
-
-#: lazarusidestrconsts.synffoldcommentsinselection
-msgid "Fold comments in selection"
-msgstr "選択範囲のコメントを折り畳み"
-
-#: lazarusidestrconsts.synffoldinactiveifdef
-msgid "Fold inactive Ifdef"
-msgstr "アクティブでないifdefを折り畳み"
-
-#: lazarusidestrconsts.synffoldinactiveifdefexcludemixedstate
-msgid "Fold inactive Ifdef (exclude mixed state)"
-msgstr "アクティブでないifdefを折り畳み（混合状態を除き）"
-
-#: lazarusidestrconsts.synffoldinactiveifdefinselection
-msgid "Fold inactive Ifdef in selection"
-msgstr "選択範囲のアクティブでないifdefを折り畳み"
-
-#: lazarusidestrconsts.synffoldinactiveifdefinselectionexcludemixedstate
-msgid "Fold inactive Ifdef in selection (exclude mixed state)"
-msgstr "選択範囲のアクティブでないifdefを折り畳み（混合状態を除き）"
-
-#: lazarusidestrconsts.synfhidecomments
-msgid "Hide comments"
-msgstr "コメントを隠す"
-
-#: lazarusidestrconsts.synfhidecommentsinselection
-msgid "Hide comments in selection"
-msgstr "選択範囲のコメントを隠す"
-
 #: lazarusidestrconsts.synfmatchactionbuttonofmousedown
 msgid "Match action button of mouse down"
 msgstr "マウスダウンのアクションボタンを適合"
@@ -21546,47 +21504,6 @@ msgstr "マウスダウンのアクション位置を適合"
 #: lazarusidestrconsts.synfsearchallactionofmousedown
 msgid "Search all action of mouse down"
 msgstr "マウスダウンのすべてのアクションを検索"
-
-#: lazarusidestrconsts.synfunfoldactiveifdef
-msgid "Unfold active Ifdef"
-msgstr "アクティブなifdefを展開"
-
-#: lazarusidestrconsts.synfunfoldactiveifdefinselection
-msgid "Unfold active Ifdef in selection"
-msgstr "選択範囲のアクティブなifdefを展開"
-
-#: lazarusidestrconsts.synfunfoldall
-msgctxt "lazarusidestrconsts.synfunfoldall"
-msgid "Unfold all"
-msgstr "すべて展開"
-
-#: lazarusidestrconsts.synfunfoldallifdef
-msgid "Unfold all Ifdef"
-msgstr "すべてのifdefを展開"
-
-#: lazarusidestrconsts.synfunfoldallifdefinselection
-msgid "Unfold all Ifdef in selection"
-msgstr "選択範囲のifdefを展開"
-
-#: lazarusidestrconsts.synfunfoldallinselection
-msgid "Unfold all in selection"
-msgstr "選択範囲をすべて展開"
-
-#: lazarusidestrconsts.synfunfoldcomments
-msgid "Unfold comments"
-msgstr "コメントを展開"
-
-#: lazarusidestrconsts.synfunfoldcommentsinselection
-msgid "Unfold comments in selection"
-msgstr "選択範囲のコメントを展開"
-
-#: lazarusidestrconsts.synfunfoldinactiveifdef
-msgid "Unfold inactive Ifdef"
-msgstr "アクティブでないIfdefを展開"
-
-#: lazarusidestrconsts.synfunfoldinactiveifdefinselection
-msgid "Unfold inactive Ifdef in selection"
-msgstr "選択範囲のアクティブでないIfdefを展開"
 
 #: lazarusidestrconsts.synspelloptmousewheelchangestabs
 msgid "Mouse-wheel changes tabs"

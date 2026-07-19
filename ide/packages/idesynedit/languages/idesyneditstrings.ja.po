@@ -1,0 +1,89 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: idesyneditstrings.dlgaddhiattrcustom
+#, object-pascal-format
+msgid "Custom %d"
+msgstr ""
+
+#: idesyneditstrings.dlgaddhiattrnestedbracket
+#, object-pascal-format
+msgid "Nested bracket %d"
+msgstr ""
+
+#: idesyneditstrings.synffoldcomments
+msgid "Fold comments"
+msgstr "コメントを折り畳み"
+
+#: idesyneditstrings.synffoldcommentsinselection
+msgid "Fold comments in selection"
+msgstr "選択範囲のコメントを折り畳み"
+
+#: idesyneditstrings.synffoldinactiveifdef
+msgid "Fold inactive Ifdef"
+msgstr "アクティブでないifdefを折り畳み"
+
+#: idesyneditstrings.synffoldinactiveifdefexcludemixedstate
+msgid "Fold inactive Ifdef (exclude mixed state)"
+msgstr "アクティブでないifdefを折り畳み（混合状態を除き）"
+
+#: idesyneditstrings.synffoldinactiveifdefinselection
+msgid "Fold inactive Ifdef in selection"
+msgstr "選択範囲のアクティブでないifdefを折り畳み"
+
+#: idesyneditstrings.synffoldinactiveifdefinselectionexcludemixedstate
+msgid "Fold inactive Ifdef in selection (exclude mixed state)"
+msgstr "選択範囲のアクティブでないifdefを折り畳み（混合状態を除き）"
+
+#: idesyneditstrings.synfhidecomments
+msgid "Hide comments"
+msgstr "コメントを隠す"
+
+#: idesyneditstrings.synfhidecommentsinselection
+msgid "Hide comments in selection"
+msgstr "選択範囲のコメントを隠す"
+
+#: idesyneditstrings.synfunfoldactiveifdef
+msgid "Unfold active Ifdef"
+msgstr "アクティブなifdefを展開"
+
+#: idesyneditstrings.synfunfoldactiveifdefinselection
+msgid "Unfold active Ifdef in selection"
+msgstr "選択範囲のアクティブなifdefを展開"
+
+#: idesyneditstrings.synfunfoldall
+msgid "Unfold all"
+msgstr "すべて展開"
+
+#: idesyneditstrings.synfunfoldallifdef
+msgid "Unfold all Ifdef"
+msgstr "すべてのifdefを展開"
+
+#: idesyneditstrings.synfunfoldallifdefinselection
+msgid "Unfold all Ifdef in selection"
+msgstr "選択範囲のifdefを展開"
+
+#: idesyneditstrings.synfunfoldallinselection
+msgid "Unfold all in selection"
+msgstr "選択範囲をすべて展開"
+
+#: idesyneditstrings.synfunfoldcomments
+msgid "Unfold comments"
+msgstr "コメントを展開"
+
+#: idesyneditstrings.synfunfoldcommentsinselection
+msgid "Unfold comments in selection"
+msgstr "選択範囲のコメントを展開"
+
+#: idesyneditstrings.synfunfoldinactiveifdef
+msgid "Unfold inactive Ifdef"
+msgstr "アクティブでないIfdefを展開"
+
+#: idesyneditstrings.synfunfoldinactiveifdefinselection
+msgid "Unfold inactive Ifdef in selection"
+msgstr "選択範囲のアクティブでないIfdefを展開"
+

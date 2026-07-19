@@ -1,0 +1,89 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: idesyneditstrings.dlgaddhiattrcustom
+#, object-pascal-format
+msgid "Custom %d"
+msgstr ""
+
+#: idesyneditstrings.dlgaddhiattrnestedbracket
+#, object-pascal-format
+msgid "Nested bracket %d"
+msgstr ""
+
+#: idesyneditstrings.synffoldcomments
+msgid "Fold comments"
+msgstr "Suskleisti komentarus"
+
+#: idesyneditstrings.synffoldcommentsinselection
+msgid "Fold comments in selection"
+msgstr "Suskleisti pažymėtus komentarus"
+
+#: idesyneditstrings.synffoldinactiveifdef
+msgid "Fold inactive Ifdef"
+msgstr "Suskleisti neaktyvius „IFDEF“"
+
+#: idesyneditstrings.synffoldinactiveifdefexcludemixedstate
+msgid "Fold inactive Ifdef (exclude mixed state)"
+msgstr "Suskleisti neaktyvius „IFDEF“ (neleisti mišrios būsenos)"
+
+#: idesyneditstrings.synffoldinactiveifdefinselection
+msgid "Fold inactive Ifdef in selection"
+msgstr "Pažymėjime suskleisti neaktyvius „IFDEF“ "
+
+#: idesyneditstrings.synffoldinactiveifdefinselectionexcludemixedstate
+msgid "Fold inactive Ifdef in selection (exclude mixed state)"
+msgstr "Pažymėjime suskleisti neaktyvius „IFDEF“ (neleisti mišrios būsenos)"
+
+#: idesyneditstrings.synfhidecomments
+msgid "Hide comments"
+msgstr "Slėpti komentarus"
+
+#: idesyneditstrings.synfhidecommentsinselection
+msgid "Hide comments in selection"
+msgstr "Slėpti pažymėtus komentarus"
+
+#: idesyneditstrings.synfunfoldactiveifdef
+msgid "Unfold active Ifdef"
+msgstr "Išskleisti aktyvus „IFDEF“"
+
+#: idesyneditstrings.synfunfoldactiveifdefinselection
+msgid "Unfold active Ifdef in selection"
+msgstr "Pažymėjime išskleisti aktyvius „IFDEF“"
+
+#: idesyneditstrings.synfunfoldall
+msgid "Unfold all"
+msgstr "Visus išskleisti"
+
+#: idesyneditstrings.synfunfoldallifdef
+msgid "Unfold all Ifdef"
+msgstr "Išskleisti visus „IFDEF“"
+
+#: idesyneditstrings.synfunfoldallifdefinselection
+msgid "Unfold all Ifdef in selection"
+msgstr "Pažymėjime išskleisti visus „IFDEF“"
+
+#: idesyneditstrings.synfunfoldallinselection
+msgid "Unfold all in selection"
+msgstr "Išskleisti viską kas pažymėta"
+
+#: idesyneditstrings.synfunfoldcomments
+msgid "Unfold comments"
+msgstr "Išskleisti komentarus"
+
+#: idesyneditstrings.synfunfoldcommentsinselection
+msgid "Unfold comments in selection"
+msgstr "Išskleisti pažymėtus komentarus"
+
+#: idesyneditstrings.synfunfoldinactiveifdef
+msgid "Unfold inactive Ifdef"
+msgstr "Išskleisti neaktyvius „IFDEF“"
+
+#: idesyneditstrings.synfunfoldinactiveifdefinselection
+msgid "Unfold inactive Ifdef in selection"
+msgstr "Pažymėjime išskleisti neaktyvius „IFDEF“"
+

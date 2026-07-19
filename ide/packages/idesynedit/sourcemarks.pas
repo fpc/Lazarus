@@ -47,7 +47,7 @@ uses
   SynEdit, SynEditMarks, SynEditMarkupGutterMark,
   // IdeIntf
   MenuIntf, SrcEditorIntf, IDEExternToolIntf, IDEImagesIntf,
-  // IDE
+  // IdeSynEdit
   etSrcEditMarks;
   
 type

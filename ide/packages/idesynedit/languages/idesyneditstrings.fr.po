@@ -1,0 +1,89 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: idesyneditstrings.dlgaddhiattrcustom
+#, object-pascal-format
+msgid "Custom %d"
+msgstr ""
+
+#: idesyneditstrings.dlgaddhiattrnestedbracket
+#, object-pascal-format
+msgid "Nested bracket %d"
+msgstr ""
+
+#: idesyneditstrings.synffoldcomments
+msgid "Fold comments"
+msgstr "Replier les commentaires"
+
+#: idesyneditstrings.synffoldcommentsinselection
+msgid "Fold comments in selection"
+msgstr "Replier les commentaires de la sélection"
+
+#: idesyneditstrings.synffoldinactiveifdef
+msgid "Fold inactive Ifdef"
+msgstr "Replier les Ifdef inactifs"
+
+#: idesyneditstrings.synffoldinactiveifdefexcludemixedstate
+msgid "Fold inactive Ifdef (exclude mixed state)"
+msgstr "Replier les Ifdef inactifs (exclure les états mixtes)"
+
+#: idesyneditstrings.synffoldinactiveifdefinselection
+msgid "Fold inactive Ifdef in selection"
+msgstr "Replier les Ifdef inactifs de la sélection"
+
+#: idesyneditstrings.synffoldinactiveifdefinselectionexcludemixedstate
+msgid "Fold inactive Ifdef in selection (exclude mixed state)"
+msgstr "Replier les Ifdef inactifs de la sélection (exclure les états mixtes)"
+
+#: idesyneditstrings.synfhidecomments
+msgid "Hide comments"
+msgstr "Cacher les commentaires"
+
+#: idesyneditstrings.synfhidecommentsinselection
+msgid "Hide comments in selection"
+msgstr "Cacher les commentaires de la sélection"
+
+#: idesyneditstrings.synfunfoldactiveifdef
+msgid "Unfold active Ifdef"
+msgstr "Déplier les Ifdef actifs"
+
+#: idesyneditstrings.synfunfoldactiveifdefinselection
+msgid "Unfold active Ifdef in selection"
+msgstr "Déplier les Ifdef actifs de la sélection"
+
+#: idesyneditstrings.synfunfoldall
+msgid "Unfold all"
+msgstr "Tout déplier"
+
+#: idesyneditstrings.synfunfoldallifdef
+msgid "Unfold all Ifdef"
+msgstr "Déplier tous les Ifdef"
+
+#: idesyneditstrings.synfunfoldallifdefinselection
+msgid "Unfold all Ifdef in selection"
+msgstr "Déplier tous les Ifdef de la sélection"
+
+#: idesyneditstrings.synfunfoldallinselection
+msgid "Unfold all in selection"
+msgstr "Tout déplier dans la sélection"
+
+#: idesyneditstrings.synfunfoldcomments
+msgid "Unfold comments"
+msgstr "Déplier les commentaires"
+
+#: idesyneditstrings.synfunfoldcommentsinselection
+msgid "Unfold comments in selection"
+msgstr "Déplier les commentaires de la sélection"
+
+#: idesyneditstrings.synfunfoldinactiveifdef
+msgid "Unfold inactive Ifdef"
+msgstr "Déplier les Ifdef inactifs"
+
+#: idesyneditstrings.synfunfoldinactiveifdefinselection
+msgid "Unfold inactive Ifdef in selection"
+msgstr "Déplier les Ifdef inactifs de la sélection"
+

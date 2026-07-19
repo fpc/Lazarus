@@ -40,8 +40,6 @@ interface
   {$ENDIF}
 {$ENDIF}
 
-{$I ide.inc}
-
 uses
   LazSynIMMBase,
   {$IFDEF WinIME}
@@ -66,8 +64,8 @@ uses
   SynPluginMultiCaret, SynEditPointClasses,
   SynEditMarkupFoldColoring, SynEditTextTabExpander, SynEditMouseCmds, SynEditWrappedView,
   SynPluginExternalLink, SynPluginAutoBraces,
-  // IDE
-  etSrcEditMarks, LazarusIDEStrConsts, SourceMarks;
+  // IdeSynEdit
+  etSrcEditMarks, SourceMarks, IdeSynEditStrings;
 
 type
 

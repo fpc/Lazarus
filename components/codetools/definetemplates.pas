@@ -6911,6 +6911,7 @@ begin
       d(LazarusSrcDir+'/ide;'
        +LazarusSrcDir+'/ide/frames;'
        +LazarusSrcDir+'/designer;'
+       +LazarusSrcDir+'/ide/packages/idesynedit;'
        +LazarusSrcDir+'/ide/packages/ideutils;'
        +LazarusSrcDir+'/ide/packages/ideconfig;'
        +LazarusSrcDir+'/ide/packages/idepackager;'
@@ -6961,6 +6962,7 @@ begin
     SrcPathMacroName,
       d('../components/lazutils'
        +';../components/codetools'
+       +';../ide/packages/idesynedit;'
        +';../ide/packages/ideutils;'
        +';../ide/packages/ideconfig;'
        +';../ide/packages/idepackager;'
@@ -7003,6 +7005,7 @@ begin
       d(LazarusSrcDir+'/debugger;'
        +LazarusSrcDir+'/debugger/frames;'
        +LazarusSrcDir+'/ide;'
+       +LazarusSrcDir+'/ide/packages/idesynedit;'
        +LazarusSrcDir+'/ide/packages/ideutils;'
        +LazarusSrcDir+'/ide/packages/ideconfig;'
        +LazarusSrcDir+'/ide/packages/ideproject;'
@@ -7034,6 +7037,7 @@ begin
     Format(ctsAddsDirToSourcePath,['lcl, components']),
     SrcPathMacroName,
       d('../ide'
+       +';../ide/packages/idesynedit;'
        +';../ide/packages/ideutils;'
        +';../ide/packages/ideconfig;'
        +';../ide/packages/idepackager;'
@@ -7065,6 +7069,7 @@ begin
       +';'+LazarusSrcDir+'/lcl/interfaces'
       +';'+LazarusSrcDir+'/lcl/interfaces/'+WidgetType
       +';'+LazarusSrcDir+'/ide'
+      +';'+LazarusSrcDir+'/ide/packages/idesynedit'
       +';'+LazarusSrcDir+'/ide/packages/ideutils'
       +';'+LazarusSrcDir+'/ide/packages/ideconfig'
       +';'+LazarusSrcDir+'/ide/packages/idepackager'
@@ -7092,6 +7097,7 @@ begin
     Format(ctsAddsDirToSourcePath,['ide']),
     SrcPathMacroName,
     d(LazarusSrcDir+'/ide;'
+     +LazarusSrcDir+'/ide/packages/idesynedit;'
      +LazarusSrcDir+'/ide/packages/ideutils;'
      +LazarusSrcDir+'/ide/packages/ideconfig;'
      +LazarusSrcDir+'/ide/packages/idepackager;'

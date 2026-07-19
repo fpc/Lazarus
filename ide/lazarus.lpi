@@ -38,6 +38,9 @@
     </RunParams>
     <RequiredPackages>
       <Item>
+        <PackageName Value="IdeSynEdit"/>
+      </Item>
+      <Item>
         <PackageName Value="IdePackager"/>
       </Item>
       <Item>
@@ -618,11 +621,6 @@
         <UnitName Value="EditorMacroListViewer"/>
       </Unit>
       <Unit>
-        <Filename Value="sourcesyneditor.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="SourceSynEditor"/>
-      </Unit>
-      <Unit>
         <Filename Value="editoroptions.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="EditorOptionsForm"/>
@@ -669,10 +667,6 @@
         <Filename Value="etquickfixes.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="etQuickFixes"/>
-      </Unit>
-      <Unit>
-        <Filename Value="etsrceditmarks.pas"/>
-        <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="etmessageswnd.pas"/>
@@ -734,11 +728,6 @@
         <Filename Value="lfmunitresource.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="LfmUnitResource"/>
-      </Unit>
-      <Unit>
-        <Filename Value="sourcemarks.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="SourceMarks"/>
       </Unit>
       <Unit>
         <Filename Value="checklfmdlg.pas"/>
@@ -895,6 +884,7 @@
       <Unit>
         <Filename Value="srcedithintfrm.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="SrcEditHintFrm"/>
       </Unit>
       <Unit>
         <Filename Value="findreplacedialog.pp"/>

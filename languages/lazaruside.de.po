@@ -483,11 +483,6 @@ msgstr "Codefaltungs-Baum"
 msgid "Code folding (current)"
 msgstr ""
 
-#: lazarusidestrconsts.dlgaddhiattrcustom
-#, object-pascal-format
-msgid "Custom %d"
-msgstr ""
-
 #: lazarusidestrconsts.dlgaddhiattrdefault
 msgid "Default Text"
 msgstr "Standardtext"
@@ -641,11 +636,6 @@ msgstr "Geänderte Zeile"
 #: lazarusidestrconsts.dlgaddhiattrmouselink
 msgid "Mouse link"
 msgstr "Maus-Link"
-
-#: lazarusidestrconsts.dlgaddhiattrnestedbracket
-#, object-pascal-format
-msgid "Nested bracket %d"
-msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevelcolor
 #, object-pascal-format
@@ -21019,38 +21009,6 @@ msgstr "Taste für Befehl bearbeiten"
 msgid "Continue with next mouse up action"
 msgstr ""
 
-#: lazarusidestrconsts.synffoldcomments
-msgid "Fold comments"
-msgstr "Kommentare falten"
-
-#: lazarusidestrconsts.synffoldcommentsinselection
-msgid "Fold comments in selection"
-msgstr "Kommentare in Auswahl falten"
-
-#: lazarusidestrconsts.synffoldinactiveifdef
-msgid "Fold inactive Ifdef"
-msgstr "Inaktive Ifdef falten"
-
-#: lazarusidestrconsts.synffoldinactiveifdefexcludemixedstate
-msgid "Fold inactive Ifdef (exclude mixed state)"
-msgstr ""
-
-#: lazarusidestrconsts.synffoldinactiveifdefinselection
-msgid "Fold inactive Ifdef in selection"
-msgstr "Inaktive Ifdef in Auswahl falten"
-
-#: lazarusidestrconsts.synffoldinactiveifdefinselectionexcludemixedstate
-msgid "Fold inactive Ifdef in selection (exclude mixed state)"
-msgstr ""
-
-#: lazarusidestrconsts.synfhidecomments
-msgid "Hide comments"
-msgstr "Kommentare verbergen"
-
-#: lazarusidestrconsts.synfhidecommentsinselection
-msgid "Hide comments in selection"
-msgstr "Kommentare in Auswahl verbergen"
-
 #: lazarusidestrconsts.synfmatchactionbuttonofmousedown
 msgid "Match action button of mouse down"
 msgstr ""
@@ -21070,47 +21028,6 @@ msgstr ""
 #: lazarusidestrconsts.synfsearchallactionofmousedown
 msgid "Search all action of mouse down"
 msgstr ""
-
-#: lazarusidestrconsts.synfunfoldactiveifdef
-msgid "Unfold active Ifdef"
-msgstr "Aktive Ifdef entfalten"
-
-#: lazarusidestrconsts.synfunfoldactiveifdefinselection
-msgid "Unfold active Ifdef in selection"
-msgstr "Aktive Ifdef in Auswahl entfalten"
-
-#: lazarusidestrconsts.synfunfoldall
-msgctxt "lazarusidestrconsts.synfunfoldall"
-msgid "Unfold all"
-msgstr "Alle entfalten"
-
-#: lazarusidestrconsts.synfunfoldallifdef
-msgid "Unfold all Ifdef"
-msgstr "Alle Ifdef entfalten"
-
-#: lazarusidestrconsts.synfunfoldallifdefinselection
-msgid "Unfold all Ifdef in selection"
-msgstr "Alle Ifdef in Auswahl entfalten"
-
-#: lazarusidestrconsts.synfunfoldallinselection
-msgid "Unfold all in selection"
-msgstr "Alles in Auswahl entfalten"
-
-#: lazarusidestrconsts.synfunfoldcomments
-msgid "Unfold comments"
-msgstr "Kommentare entfalten"
-
-#: lazarusidestrconsts.synfunfoldcommentsinselection
-msgid "Unfold comments in selection"
-msgstr "Kommentare in Auswahl entfalten"
-
-#: lazarusidestrconsts.synfunfoldinactiveifdef
-msgid "Unfold inactive Ifdef"
-msgstr "Inaktive Ifdef entfalten"
-
-#: lazarusidestrconsts.synfunfoldinactiveifdefinselection
-msgid "Unfold inactive Ifdef in selection"
-msgstr "Inaktive Ifdef in Auswahl entfalten"
 
 #: lazarusidestrconsts.synspelloptmousewheelchangestabs
 msgid "Mouse-wheel changes tabs"

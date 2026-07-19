@@ -482,11 +482,6 @@ msgstr "ໂຄງສ້າງການຫຍໍ້ໂຄ້ດ"
 msgid "Code folding (current)"
 msgstr "ການຫຍໍ້ໂຄ້ດ (ປັດຈຸບັນ)"
 
-#: lazarusidestrconsts.dlgaddhiattrcustom
-#, object-pascal-format
-msgid "Custom %d"
-msgstr "ກຳນົດເອງ %d"
-
 #: lazarusidestrconsts.dlgaddhiattrdefault
 msgid "Default Text"
 msgstr "ຂໍ້ຄວາມເລີ່ມຕົ້ນ"
@@ -640,11 +635,6 @@ msgstr "ແຖວທີ່ຖືກແກ້ໄຂ"
 #: lazarusidestrconsts.dlgaddhiattrmouselink
 msgid "Mouse link"
 msgstr "ລິງກ໌ເມົ້າ"
-
-#: lazarusidestrconsts.dlgaddhiattrnestedbracket
-#, object-pascal-format
-msgid "Nested bracket %d"
-msgstr "ວົງເລັບຊ້ອນກັນ %d"
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevelcolor
 #, object-pascal-format
@@ -21036,38 +21026,6 @@ msgstr "ແກ້ໄຂປຸ່ມຂອງຄຳສັ່ງ"
 msgid "Continue with next mouse up action"
 msgstr "ດຳເນີນການຕໍ່ກັບການກະທຳປ່ອຍເມົາສ໌ຖັດໄປ"
 
-#: lazarusidestrconsts.synffoldcomments
-msgid "Fold comments"
-msgstr "ພັບຄຳອະທິບາຍ (comments)"
-
-#: lazarusidestrconsts.synffoldcommentsinselection
-msgid "Fold comments in selection"
-msgstr "ພັບຄຳອະທິບາຍໃນສ່ວນທີ່ເລືອກ"
-
-#: lazarusidestrconsts.synffoldinactiveifdef
-msgid "Fold inactive Ifdef"
-msgstr "ພັບ Ifdef ທີ່ບໍ່ໄດ້ເຮັດວຽກ"
-
-#: lazarusidestrconsts.synffoldinactiveifdefexcludemixedstate
-msgid "Fold inactive Ifdef (exclude mixed state)"
-msgstr "ພັບ Ifdef ທີ່ບໍ່ໄດ້ເຮັດວຽກ (ຍົກເວັ້ນສະຖານະປະສົມ)"
-
-#: lazarusidestrconsts.synffoldinactiveifdefinselection
-msgid "Fold inactive Ifdef in selection"
-msgstr "ພັບ Ifdef ທີ່ບໍ່ໄດ້ເຮັດວຽກໃນສ່ວນທີ່ເລືອກ"
-
-#: lazarusidestrconsts.synffoldinactiveifdefinselectionexcludemixedstate
-msgid "Fold inactive Ifdef in selection (exclude mixed state)"
-msgstr "ພັບ Ifdef ທີ່ບໍ່ໄດ້ເຮັດວຽກໃນສ່ວນທີ່ເລືອກ (ຍົກເວັ້ນສະຖານະປະສົມ)"
-
-#: lazarusidestrconsts.synfhidecomments
-msgid "Hide comments"
-msgstr "ເຊື່ອງຄຳອະທິບາຍ"
-
-#: lazarusidestrconsts.synfhidecommentsinselection
-msgid "Hide comments in selection"
-msgstr "ເຊື່ອງຄຳອະທິບາຍໃນສ່ວນທີ່ເລືອກ"
-
 #: lazarusidestrconsts.synfmatchactionbuttonofmousedown
 msgid "Match action button of mouse down"
 msgstr "ຈັບຄູ່ປຸ່ມການກະທຳຂອງການກົດເມົາສ໌"
@@ -21087,47 +21045,6 @@ msgstr "ຈັບຄູ່ຕຳແໜ່ງການກະທຳຂອງກາ
 #: lazarusidestrconsts.synfsearchallactionofmousedown
 msgid "Search all action of mouse down"
 msgstr "ຄົ້ນຫາການກະທຳທັງໝົດຂອງການກົດເມົາສ໌"
-
-#: lazarusidestrconsts.synfunfoldactiveifdef
-msgid "Unfold active Ifdef"
-msgstr "ຄາຍ Ifdef ທີ່ເຮັດວຽກຢູ່ອອກ"
-
-#: lazarusidestrconsts.synfunfoldactiveifdefinselection
-msgid "Unfold active Ifdef in selection"
-msgstr "ຄາຍ Ifdef ທີ່ເຮັດວຽກຢູ່ອອກໃນສ່ວນທີ່ເລືອກ"
-
-#: lazarusidestrconsts.synfunfoldall
-msgctxt "lazarusidestrconsts.synfunfoldall"
-msgid "Unfold all"
-msgstr "ຄາຍອອກທັງໝົດ"
-
-#: lazarusidestrconsts.synfunfoldallifdef
-msgid "Unfold all Ifdef"
-msgstr "ຄາຍ Ifdef ທັງໝົດອອກ"
-
-#: lazarusidestrconsts.synfunfoldallifdefinselection
-msgid "Unfold all Ifdef in selection"
-msgstr "ຄາຍ Ifdef ທັງໝົດອອກໃນສ່ວນທີ່ເລືອກ"
-
-#: lazarusidestrconsts.synfunfoldallinselection
-msgid "Unfold all in selection"
-msgstr "ຄາຍທັງໝົດອອກໃນສ່ວນທີ່ເລືອກ"
-
-#: lazarusidestrconsts.synfunfoldcomments
-msgid "Unfold comments"
-msgstr "ຄາຍຄຳອະທິບາຍອອກ"
-
-#: lazarusidestrconsts.synfunfoldcommentsinselection
-msgid "Unfold comments in selection"
-msgstr "ຄາຍຄຳອະທິບາຍອອກໃນສ່ວນທີ່ເລືອກ"
-
-#: lazarusidestrconsts.synfunfoldinactiveifdef
-msgid "Unfold inactive Ifdef"
-msgstr "ຄາຍ Ifdef ທີ່ບໍ່ໄດ້ເຮັດວຽກອອກ"
-
-#: lazarusidestrconsts.synfunfoldinactiveifdefinselection
-msgid "Unfold inactive Ifdef in selection"
-msgstr "ຄາຍ Ifdef ທີ່ບໍ່ໄດ້ເຮັດວຽກອອກໃນສ່ວນທີ່ເລືອກ"
 
 #: lazarusidestrconsts.synspelloptmousewheelchangestabs
 msgid "Mouse-wheel changes tabs"

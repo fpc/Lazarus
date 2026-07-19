@@ -488,11 +488,6 @@ msgstr "Strom složení kódu"
 msgid "Code folding (current)"
 msgstr ""
 
-#: lazarusidestrconsts.dlgaddhiattrcustom
-#, object-pascal-format
-msgid "Custom %d"
-msgstr ""
-
 #: lazarusidestrconsts.dlgaddhiattrdefault
 msgid "Default Text"
 msgstr "Přednastavený text"
@@ -646,11 +641,6 @@ msgstr "Změněný řádek"
 #: lazarusidestrconsts.dlgaddhiattrmouselink
 msgid "Mouse link"
 msgstr "Odkaz myši"
-
-#: lazarusidestrconsts.dlgaddhiattrnestedbracket
-#, object-pascal-format
-msgid "Nested bracket %d"
-msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevelcolor
 #, object-pascal-format
@@ -21352,38 +21342,6 @@ msgstr "Upravit klávesy povelů"
 msgid "Continue with next mouse up action"
 msgstr "Pokračovat s další akcí uvolnění tlačítka myši"
 
-#: lazarusidestrconsts.synffoldcomments
-msgid "Fold comments"
-msgstr "Složit komentáře"
-
-#: lazarusidestrconsts.synffoldcommentsinselection
-msgid "Fold comments in selection"
-msgstr "Zabalit komentáře ve výběru"
-
-#: lazarusidestrconsts.synffoldinactiveifdef
-msgid "Fold inactive Ifdef"
-msgstr "Složit neaktivní Ifdef"
-
-#: lazarusidestrconsts.synffoldinactiveifdefexcludemixedstate
-msgid "Fold inactive Ifdef (exclude mixed state)"
-msgstr "Složit neaktivní Ifdef (vyloučit smíšený stav)"
-
-#: lazarusidestrconsts.synffoldinactiveifdefinselection
-msgid "Fold inactive Ifdef in selection"
-msgstr "Složit neaktivní Ifdef ve výběru"
-
-#: lazarusidestrconsts.synffoldinactiveifdefinselectionexcludemixedstate
-msgid "Fold inactive Ifdef in selection (exclude mixed state)"
-msgstr "Složit neaktivní IfDef ve výběru (vyloučit smíšený stav)"
-
-#: lazarusidestrconsts.synfhidecomments
-msgid "Hide comments"
-msgstr "Skrýt komentáře"
-
-#: lazarusidestrconsts.synfhidecommentsinselection
-msgid "Hide comments in selection"
-msgstr "Skrýt komentáře ve výběru"
-
 #: lazarusidestrconsts.synfmatchactionbuttonofmousedown
 msgid "Match action button of mouse down"
 msgstr "Srovnat akci tlačítka s tlačítkem myši dolů"
@@ -21403,47 +21361,6 @@ msgstr "Srovnat akci pozice s tlačítkem myši dolů"
 #: lazarusidestrconsts.synfsearchallactionofmousedown
 msgid "Search all action of mouse down"
 msgstr "Hledat všechny akce kliknutí myši"
-
-#: lazarusidestrconsts.synfunfoldactiveifdef
-msgid "Unfold active Ifdef"
-msgstr "Rozložit aktivní IfDef"
-
-#: lazarusidestrconsts.synfunfoldactiveifdefinselection
-msgid "Unfold active Ifdef in selection"
-msgstr "Rozložit aktivní Ifdef ve výběru"
-
-#: lazarusidestrconsts.synfunfoldall
-msgctxt "lazarusidestrconsts.synfunfoldall"
-msgid "Unfold all"
-msgstr "Rozevřít vše"
-
-#: lazarusidestrconsts.synfunfoldallifdef
-msgid "Unfold all Ifdef"
-msgstr "Rozložit všechny Ifdef"
-
-#: lazarusidestrconsts.synfunfoldallifdefinselection
-msgid "Unfold all Ifdef in selection"
-msgstr "Rozložit všechny Ifdef ve výběru"
-
-#: lazarusidestrconsts.synfunfoldallinselection
-msgid "Unfold all in selection"
-msgstr "Rozbalit všechny komentáře ve výběru"
-
-#: lazarusidestrconsts.synfunfoldcomments
-msgid "Unfold comments"
-msgstr "Rozložit komentáře"
-
-#: lazarusidestrconsts.synfunfoldcommentsinselection
-msgid "Unfold comments in selection"
-msgstr "Rozbalit komentáře ve výběru"
-
-#: lazarusidestrconsts.synfunfoldinactiveifdef
-msgid "Unfold inactive Ifdef"
-msgstr "Rozložit neaktivní Ifdef"
-
-#: lazarusidestrconsts.synfunfoldinactiveifdefinselection
-msgid "Unfold inactive Ifdef in selection"
-msgstr "Rozložit neaktivní Ifdef ve výběru"
 
 #: lazarusidestrconsts.synspelloptmousewheelchangestabs
 msgid "Mouse-wheel changes tabs"
