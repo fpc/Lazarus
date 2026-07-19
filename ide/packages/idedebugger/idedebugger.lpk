@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="5">
+  <Package Version="6">
     <PathDelim Value="\"/>
     <Name Value="IdeDebugger"/>
     <Type Value="RunAndDesignTime"/>
@@ -344,6 +344,9 @@
       <OutDir Value="languages"/>
     </i18n>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="IdeHelpUtils"/>
+      </Item>
       <Item>
         <PackageName Value="IdeUtilsPkg"/>
       </Item>

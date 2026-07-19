@@ -81,7 +81,7 @@ uses
   ProjectDebugLink, IdeDebuggerExcludedRoutines,
   // IDE
   DebugEventsForm, LazarusIDEStrConsts, SourceEditor, SourceMarks, MemViewerDlg,
-  MainBar, MainIntf, MainBase, EditableProject, EnvGuiOptions;
+  MainBar, MainIntf, MainBase, EditableProject, EnvGuiOptions, EditorOptions;
 
 type
 
@@ -317,6 +317,7 @@ type
     // Dialog routines
     procedure CreateDebugDialog(Sender: TObject; aFormName: string;
                           var AForm: TCustomForm; DoDisableAutoSizing: boolean); override;
+    procedure UpdateDebugDialogFromOptions;
     procedure ViewDebugDialog(const ADialogType: TDebugDialogType;
                               BringToFront: Boolean = true;
                               Show: Boolean = true;
@@ -2040,6 +2041,10 @@ begin
   TheDialog.CallStackMonitor := FCallStack;
   TheDialog.BreakPoints := FBreakPoints;
   TheDialog.SnapshotManager := FSnapshots;
+  if DebuggerOptions.ShowHintForWatches then
+    TheDialog.HintTime := EditorOpts.AutoHintDelayInMSec
+  else
+    TheDialog.HintTime := 0;
   TheDialog.EndUpdate;
 end;
 
@@ -2072,6 +2077,10 @@ begin
   TheDialog.ThreadsMonitor := FThreads;
   TheDialog.CallStackMonitor := FCallStack;
   TheDialog.SnapshotManager := FSnapshots;
+  if DebuggerOptions.ShowHintForWatches then
+    TheDialog.HintTime := EditorOpts.AutoHintDelayInMSec
+  else
+    TheDialog.HintTime := 0;
   TheDialog.EndUpdate;
 end;
 
@@ -2611,6 +2620,18 @@ begin
       exit;
     end;
   raise Exception.Create('TDebugManager.CreateDebugDialog invalid FormName "'+aFormName+'"');
+end;
+
+procedure TDebugManager.UpdateDebugDialogFromOptions;
+begin
+  if DebuggerOptions.ShowHintForWatches then begin
+    if FDialogs[ddtWatches] <> nil then TWatchesDlg(FDialogs[ddtWatches]).HintTime := EditorOpts.AutoHintDelayInMSec;
+    if FDialogs[ddtLocals] <> nil  then TLocalsDlg(FDialogs[ddtLocals]).HintTime   := EditorOpts.AutoHintDelayInMSec;
+  end
+  else begin
+    if FDialogs[ddtWatches] <> nil then TWatchesDlg(FDialogs[ddtWatches]).HintTime := 0;
+    if FDialogs[ddtLocals] <> nil  then TLocalsDlg(FDialogs[ddtLocals]).HintTime   := 0;
+  end;
 end;
 
 procedure TDebugManager.ClearDebugOutputLog;

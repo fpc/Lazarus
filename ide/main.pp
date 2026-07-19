@@ -5234,6 +5234,7 @@ begin
   finally
     SourceEditorManager.EndGlobalUpdate;
   end;
+  DebugBossMgr.UpdateDebugDialogFromOptions;
 end;
 
 procedure TMainIDE.CodetoolsOptionsAfterWrite(Sender: TObject; Restore: boolean);
@@ -5388,6 +5389,7 @@ begin
     SaveDesktopSettings(EnvironmentGuiOpts);
     DebuggerOptions.Save; // before environment
     EnvironmentOptions.Save(false);
+    DebugBossMgr.UpdateDebugDialogFromOptions;
     EditorMacroListViewer.SaveGlobalInfo;
     (IDEMacros as TLazIDEMacros).SaveBuildMacros;
     //debugln('TMainIDE.SaveEnvironment A ',dbgsName(ObjectInspector1.Favorites));

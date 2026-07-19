@@ -95,6 +95,7 @@ begin
     gcbDebuggerGeneralOptions.Checked[2] := DebuggerAutoSetInstanceFromClass;
     gcbDebuggerGeneralOptions.Checked[3] := DebuggerAllowFunctionCalls;
     gcbDebuggerGeneralOptions.Checked[4] := DebuggerOptions.AlwaysBringDbgDialogsToFront;
+    gcbDebuggerGeneralOptions.Checked[5] := DebuggerOptions.ShowHintForWatches;
 
     gcbDebuggerDialogSettings.Checked[0] := DebuggerShowStopMessage;
     gcbDebuggerDialogSettings.Checked[1] := DebuggerShowExitCodeMessage;
@@ -127,6 +128,7 @@ begin
   gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmAutoInstanceClass);      // 2 auto set class-from-instance
   gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmAllowFunctionCalls);     // 3 allow function calls
   gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmDialogsToFront);         // 4 bring dialogs to front
+  gcbDebuggerGeneralOptions.Items.Add(lisDebugDialogShowWatchesHint);            // 5 Show hint for watches/locals
 
   gcbDebuggerDialogSettings.Caption := lisDebugOptionsFrmDebuggerDialogSettings;
   gcbDebuggerDialogSettings.Items.Add(lisDebugOptionsFrmShowMessageOnStop);      // 0 Message on stop
@@ -163,6 +165,7 @@ begin
     DebuggerAutoSetInstanceFromClass := gcbDebuggerGeneralOptions.Checked[2];
     DebuggerAllowFunctionCalls       := gcbDebuggerGeneralOptions.Checked[3];
     DebuggerOptions.AlwaysBringDbgDialogsToFront := gcbDebuggerGeneralOptions.Checked[4];
+    DebuggerOptions.ShowHintForWatches           := gcbDebuggerGeneralOptions.Checked[5];
 
     DebuggerShowStopMessage          := gcbDebuggerDialogSettings.Checked[0];
     DebuggerShowExitCodeMessage      := gcbDebuggerDialogSettings.Checked[1];

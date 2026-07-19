@@ -323,6 +323,7 @@ begin
   if (Length(FFilteredList) < Length(FNodeInfoList)) or
      (FFilteredList = FNodeInfoList)
   then begin
+    assert(FFilteredProgress = 0, 'TLazEditFoldNodeInfoList.DoFilter: FFilteredProgress = 0');
     FFilteredList := nil; // don't copy content
     SetLength(FFilteredList, Length(FNodeInfoList));
   end;

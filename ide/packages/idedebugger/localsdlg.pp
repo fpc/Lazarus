@@ -53,7 +53,7 @@ uses
   IdeDebuggerStringConstants, BaseDebugManager, Debugger, DebuggerDlg, IdeDebuggerWatchResPrinter,
   IdeDebuggerUtils, DebuggerTreeView, IdeDebuggerWatchResult, IdeDebuggerBase,
   DbgTreeViewWatchData, EnvDebuggerOptions, IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats,
-  IdeDebuggerOpts, ProjectDebugLink,
+  IdeDebuggerOpts, ProjectDebugLink, CodeHelp,
   {$ifdef Windows}ActiveX{$else}laz.FakeActiveX{$endif};
 
 type
@@ -130,6 +130,9 @@ type
     FUpdateFlags: set of (ufNeedUpdating);
     procedure DoBeforeFreeNode(Sender: TBaseVirtualTree; ANode: PVirtualNode);
     procedure DoEditorOptsChanged(Sender: TObject);
+    procedure DoGetHintForCell(Sender: TDbgTreeView; const AHitInfo: THitInfo;
+      var AShowHint: boolean; var AHintText: String);
+    function GetHintTime: integer;
     function GetSelected: TLocalsValue; // The focused Selected Node
     procedure CopyRAWValueEvaluateCallback(Sender: TObject; ASuccess: Boolean;
       ResultText: String; ResultDBGType: TDBGType);
@@ -139,6 +142,7 @@ type
     procedure ClearTree(OnlyClearNodeData: boolean = False);
     procedure LocalsAnyChanged(Sender: TObject);
     procedure LocalsChanged(Sender: TObject);
+    procedure SetHintTime(AValue: integer);
     procedure SubLocalChanged(Sender: TObject);
     function  GetThreadId: Integer;
     function  GetSelectedThreads(Snap: TSnapshot): TIdeThreads;
@@ -162,6 +166,7 @@ type
     property ThreadsMonitor;
     property CallStackMonitor;
     property SnapshotManager;
+    property HintTime: integer read GetHintTime write SetHintTime;
   end;
 
   { TDbgTreeViewLocalsValueMgr }
@@ -399,6 +404,7 @@ begin
 
   vtLocals.EllipsisColor := WatchesColorsHL.AttrEllipsis.Foreground;
   vtLocals.OnBeforeFreeNode := @DoBeforeFreeNode;
+  vtLocals.OnHintForCell := @DoGetHintForCell;
   SourceEditorManagerIntf.RegisterChangeEvent(semEditorOptsChanged, @DoEditorOptsChanged);
 
   DebugConfigChanged;
@@ -531,6 +537,46 @@ begin
   IDEEditorOptions.GetHighlighterObjSettings(WatchesColorsHL);
   vtLocals.EllipsisColor := WatchesColorsHL.AttrEllipsis.Foreground;
   LocalsChanged(nil);
+end;
+
+procedure TLocalsDlg.DoGetHintForCell(Sender: TDbgTreeView; const AHitInfo: THitInfo;
+  var AShowHint: boolean; var AHintText: String);
+var
+  AWatchAble: TIdeLocalsValue;
+  AWatchAbleResult: IWatchAbleResultIntf;
+  da: TDBGPtr;
+  s: String;
+begin
+  AShowHint := AHitInfo.HitNode <> nil;
+  if not AShowHint then
+    exit;
+
+  AWatchAble := TIdeLocalsValue(vtLocals.NodeItem[AHitInfo.HitNode]);
+  AWatchAbleResult := FLocalsTreeMgr.WatchAbleResultFromObject(AWatchAble);
+  if (AWatchAble = nil) or (AWatchAbleResult = nil) then begin
+    AHintText := CodeHelpBoss.TextToHTML(vtLocals.NodeText[AHitInfo.HitNode, 0]);
+    exit;
+  end;
+
+  if AWatchAble.DisplayName <> '' then
+    AHintText := '<b>' + CodeHelpBoss.TextToHTML(AWatchAble.DisplayName) + '</b>&nbsp;(&nbsp;' + CodeHelpBoss.TextToHTML(AWatchAble.Name) + '&nbsp;)<br/>'
+  else
+    AHintText := '<b>' + CodeHelpBoss.TextToHTML(AWatchAble.Name) + '</b><br/>';
+
+  if AWatchAbleResult.ResultData.HasDataAddress then begin
+    da := AWatchAbleResult.ResultData.DataAddress;
+    if da = 0
+    then s := 'nil'
+    else s := '$' + IntToHex(da, HexDigicCount(da, 4, True));
+    AHintText := AHintText + '<i>Address:&nbsp;' + s + '</i><br/>';
+  end;
+
+  AHintText := AHintText + CodeHelpBoss.TextToHTML(FLocalsTreeMgr.GetFieldAsText(AHitInfo.HitNode, AWatchAble, AWatchAbleResult, vdfValue, [vdoAllowMultiLine]));
+end;
+
+function TLocalsDlg.GetHintTime: integer;
+begin
+  Result := vtLocals.HintTime;
 end;
 
 procedure TLocalsDlg.DoBeforeFreeNode(Sender: TBaseVirtualTree; ANode: PVirtualNode);
@@ -735,6 +781,11 @@ begin
     EndUpdate;
     vtLocals.Invalidate;
   end;
+end;
+
+procedure TLocalsDlg.SetHintTime(AValue: integer);
+begin
+  vtLocals.HintTime := AValue;
 end;
 
 procedure TLocalsDlg.SubLocalChanged(Sender: TObject);

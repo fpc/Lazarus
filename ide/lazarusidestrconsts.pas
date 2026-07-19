@@ -5110,6 +5110,7 @@ resourcestring
   lisDebugDialogConfirmDelBreaks = 'Confirm to delete all Breakpoints';
   lisDebugDialogConfirmDelBreaksFile = 'Confirm to delete Breakpoints in same file';
   lisDebugDialogConfirmDelHistory = 'Confirm to clear History';
+  lisDebugDialogShowWatchesHint = 'Show hint for watches/locals (with same delay as source hint)';
 
   lisDebugOptionsFrmResetDebuggerOnEachRun = 'Reset Debugger after each run';
   lisDebugOptionsFrmAutoCloseAsm = 'Automatically close the assembler window, after source not found';

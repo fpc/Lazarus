@@ -58,7 +58,7 @@ uses
   Debugger, DebuggerTreeView, IdeDebuggerBase, DebuggerDlg, BaseDebugManager,
   IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter, IdeDebuggerUtils,
   IdeDebuggerStringConstants, DbgTreeViewWatchData, EnvDebuggerOptions,
-  IdeDebuggerDisplayFormats, IdeDebuggerOpts, ProjectDebugLink, WatchPropertyDlg;
+  IdeDebuggerDisplayFormats, IdeDebuggerOpts, ProjectDebugLink, WatchPropertyDlg, CodeHelp;
 
 type
 
@@ -193,6 +193,8 @@ type
     procedure DoEditorOptsChanged(Sender: TObject);
     procedure DoFormatPresetClickedIde(Sender: TObject);
     procedure DoFormatPresetClickedProject(Sender: TObject);
+    procedure DoGetHintForCell(Sender: TDbgTreeView; const AHitInfo: THitInfo;
+      var AShowHint: boolean; var AHintText: String);
     procedure DoUnLockCommandProcessing(Data: PtrInt);
     function GetWatches: TIdeWatches;
     procedure ContextChanged(Sender: TObject);
@@ -211,10 +213,12 @@ type
     FUpdateAllNeeded, FInEndUpdate: Boolean;
     FWatchInUpDateItem, FCurrentWatchInUpDateItem: TIdeWatch;
     FStateFlags: TWatchesDlgStateFlags;
+    function GetHintTime: integer;
     function GetSelected: TIdeWatch; // The focused Selected Node
     function  GetThreadId: Integer;
     function  GetSelectedThreads(Snap: TSnapshot): TIdeThreads;
     function GetStackframe: Integer;
+    procedure SetHintTime(AValue: integer);
     procedure WatchAdd(const {%H-}ASender: TIdeWatches; const AWatch: TIdeWatch);
     procedure WatchUpdate(const ASender: TIdeWatches; const AWatch: TIdeWatch);
     procedure WatchRemove(const {%H-}ASender: TIdeWatches; const AWatch: TIdeWatch);
@@ -244,6 +248,7 @@ type
     property BreakPoints;
     property SnapshotManager;
     property WatchPrinter: TWatchResultPrinter read FWatchPrinter;
+    property HintTime: integer read GetHintTime write SetHintTime;
   end;
 
   { TDbgTreeViewWatchValueMgr }
@@ -414,6 +419,7 @@ begin
 
   //tvWatches.OnItemRemoved := @DoItemRemovedFromView;
   tvWatches.OnBeforeFreeNode := @DoBeforeFreeNode;
+  tvWatches.OnHintForCell := @DoGetHintForCell;
   DebugConfigChanged;
 end;
 
@@ -475,6 +481,11 @@ begin
   Result := TIdeWatch(tvWatches.FocusedItem(True));
 end;
 
+function TWatchesDlg.GetHintTime: integer;
+begin
+  Result := tvWatches.HintTime;
+end;
+
 function TWatchesDlg.GetThreadId: Integer;
 var
   Threads: TIdeThreads;
@@ -521,6 +532,11 @@ begin
   if Stack <> nil
   then Result := Stack.CurrentIndex
   else Result := 0;
+end;
+
+procedure TWatchesDlg.SetHintTime(AValue: integer);
+begin
+  tvWatches.HintTime := AValue;
 end;
 
 procedure TWatchesDlg.tvWatchesChange(Sender: TBaseVirtualTree;
@@ -1224,6 +1240,41 @@ begin
     exit;
 
   ApplyPreset(DbgProjectLink.DisplayFormatConfigs.DisplayFormatPresets[i]);
+end;
+
+procedure TWatchesDlg.DoGetHintForCell(Sender: TDbgTreeView; const AHitInfo: THitInfo;
+  var AShowHint: boolean; var AHintText: String);
+var
+  AWatchAble: TIdeWatch;
+  AWatchAbleResult: IWatchAbleResultIntf;
+  da: TDBGPtr;
+  s: String;
+begin
+  AShowHint := AHitInfo.HitNode <> nil;
+  if not AShowHint then
+    exit;
+
+  AWatchAble := TIdeWatch(tvWatches.NodeItem[AHitInfo.HitNode]);
+  AWatchAbleResult := FWatchTreeMgr.WatchAbleResultFromObject(AWatchAble);
+  if (AWatchAble = nil) or (AWatchAbleResult = nil) then begin
+    AHintText := CodeHelpBoss.TextToHTML(tvWatches.NodeText[AHitInfo.HitNode, 0]);
+    exit;
+  end;
+
+  if AWatchAble.DisplayName <> '' then
+    AHintText := '<b>' + CodeHelpBoss.TextToHTML(AWatchAble.DisplayName) + '</b>&nbsp;(&nbsp;' + CodeHelpBoss.TextToHTML(AWatchAble.Expression) + '&nbsp;)<br/>'
+  else
+    AHintText := '<b>' + CodeHelpBoss.TextToHTML(AWatchAble.Expression) + '</b><br/>';
+
+  if AWatchAbleResult.ResultData.HasDataAddress then begin
+    da := AWatchAbleResult.ResultData.DataAddress;
+    if da = 0
+    then s := 'nil'
+    else s := '$' + IntToHex(da, HexDigicCount(da, 4, True));
+    AHintText := AHintText + '<i>Address:&nbsp;' + s + '</i><br/>';
+  end;
+
+  AHintText := AHintText + CodeHelpBoss.TextToHTML(FWatchTreeMgr.GetFieldAsText(AHitInfo.HitNode, AWatchAble, AWatchAbleResult, vdfValue, [vdoAllowMultiLine]));
 end;
 
 procedure TWatchesDlg.ApplyPreset(APreset: TWatchDisplayFormatPreset);

@@ -5,8 +5,8 @@ unit DebuggerTreeView;
 interface
 
 uses
-  Classes, SysUtils, Types, Math, laz.VirtualTrees, SpinEx, GraphType, LMessages, Controls,
-  ImgList, LCLIntf, Graphics, LCLType;
+  Classes, SysUtils, Types, Math, laz.VirtualTrees, SpinEx, GraphType, LazStringUtils, IDEHelpIntf,
+  LMessages, Controls, ImgList, LCLIntf, Graphics, LCLType, ExtCtrls, CodeHelp;
 
 type
 
@@ -78,6 +78,8 @@ type
   TItemRemovedEvent = procedure (Sender: TDbgTreeView; AnItem: TObject; ANode: PVirtualNode) of object;
   TDetermineDropModeEvent = procedure (const P: TPoint; var HitInfo: THitInfo; var NodeRect: TRect; var DropMode: TDropMode) of object;
   TDbgTreeRightButtonClickEvent = procedure (Sender: TDbgTreeView; ANode: PVirtualNode) of object;
+  TDbgTreeCellHintEvent = procedure (Sender: TDbgTreeView; const AHitInfo: THitInfo;
+    var AShowHint: boolean; var AHintText: String) of object;
 
   { TDbgTreeView }
 
@@ -86,6 +88,8 @@ type
     FCheckControlsVisibleLock: integer;
     FCheckControlsVisibleRunning, FCheckControlsVisibleAgain: Boolean;
     FEllipsisColor: TColor;
+    FOnHintForCell: TDbgTreeCellHintEvent;
+    FHintTime: integer;
     FInToggle: boolean;
     FFirstControlNode: PVirtualNode; // not ordered
     FLazImages: TCustomImageList;
@@ -93,12 +97,19 @@ type
     FOnDetermineDropMode: TDetermineDropModeEvent;
     FOnItemRemoved: TItemRemovedEvent;
     FOnNodeRightButtonClick: TDbgTreeRightButtonClickEvent;
+    FHintTimer, FHintHideTimer: TIdleTimer;
+    FHintWindow: THintWindowManager;
+    FHintMousePos: TPoint;
+    FMouseIsDown: Boolean;
 
     // Text/Image
+    procedure DoHintHideTimer(Sender: TObject);
+    procedure DoHintTimer(Sender: TObject);
     function  GetNodeImageIndex(Node: PVirtualNode; AColumn: integer): Integer;
     function  GetNodeText(Node: PVirtualNode; AColumn: integer): String;
     function  GetNodeRightButtonImgIdx(Node: PVirtualNode): Integer;
     function  GetNodeRightButtonRect(Node: PVirtualNode): TRect;
+    procedure SetHintTime(AValue: integer);
     procedure SetNodeImageIndex(Node: PVirtualNode; AColumn: integer; AValue: Integer);
     procedure SetNodeText(Node: PVirtualNode; AColumn: integer; AValue: String);
     procedure SetNodeRightButtonImgIdx(Node: PVirtualNode; AValue: Integer);
@@ -125,6 +136,7 @@ type
     procedure DoAllAutoSize; override;
     procedure CheckControlsVisible;
     procedure VisibleChanged; override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
 
     // Paint / Invalidate
     procedure EndUpdate; override;
@@ -148,6 +160,8 @@ type
       var NodeRect: TRect): TDropMode; override;
     procedure HandleMouseDown(var Message: TLMMouse; var HitInfo: THitInfo); override;
     procedure HandleMouseDblClick(var Message: TLMMouse; const HitInfo: THitInfo); override;
+    procedure HandleMouseUp(Keys: PtrUInt; const HitInfo: THitInfo); override;
+    procedure WMKillFocus(var Msg: TLMKillFocus); message LM_KILLFOCUS;
 
     // Data
     procedure DoGetText(Node: PVirtualNode; Column: TColumnIndex;
@@ -164,6 +178,7 @@ type
     procedure ValidateNodeDataSize(var Size: Integer); override;
     procedure DoFreeNode(Node: PVirtualNode); override;
   public
+    destructor Destroy; override;
     function GetFocusedNode(OnlySelected: Boolean = True; AnIncludeControlNodes: Boolean = False): PVirtualNode;
     function FocusedData(OnlySelected: Boolean = True): PDbgTreeNodeData;
     function FocusedItem(OnlySelected: Boolean = True): TObject;
@@ -211,6 +226,9 @@ type
     property NodeRightButtonImgIdx[Node: PVirtualNode]: Integer read GetNodeRightButtonImgIdx write SetNodeRightButtonImgIdx;
     property NodeRightButtonRect[Node: PVirtualNode]: TRect read GetNodeRightButtonRect;
     property OnNodeRightButtonClick: TDbgTreeRightButtonClickEvent read FOnNodeRightButtonClick write FOnNodeRightButtonClick;
+
+    property HintTime: integer read FHintTime write SetHintTime;
+    property OnHintForCell: TDbgTreeCellHintEvent read FOnHintForCell write FOnHintForCell;
   end;
 
 implementation
@@ -296,6 +314,87 @@ begin
     Result := Data^.ImageIndex[AColumn] - 1;
 end;
 
+procedure TDbgTreeView.DoHintTimer(Sender: TObject);
+var
+  MC, p: TPoint;
+  HitInfo: THitInfo;
+  AShowHint: Boolean;
+  TheHintText, BaseURL, SmartHintStr: string;
+  i: Integer;
+  ExRect: TRect;
+begin
+  FHintTimer.Enabled := False;
+  FHintTimer.AutoEnabled := False;
+
+  if FHintWindow = nil then
+    FHintWindow := THintWindowManager.Create;
+
+  MC := Mouse.CursorPos;
+  p := ScreenToClient(MC);
+
+  HitInfo := Default(THitInfo);
+  GetHitTestInfoAt(p.X, p.Y, True, HitInfo);
+
+  TheHintText := '';
+  AShowHint := HitInfo.HitNode <> nil;
+  if AShowHint then begin
+    TheHintText := CodeHelpBoss.TextToHTML(NodeText[HitInfo.HitNode, 0]);
+    if HitInfo.HitColumn <> 0 then
+      TheHintText := '<b>' + TheHintText + '</b><br/>'+ CodeHelpBoss.TextToHTML(NodeText[HitInfo.HitNode, HitInfo.HitColumn]);
+  end;
+
+  if FOnHintForCell <> nil then
+    FOnHintForCell(Self, HitInfo, AShowHint, TheHintText);
+
+  if not AShowHint then
+    exit;
+
+  CodeHelpBoss.GetHTMLStub(BaseURL, SmartHintStr);
+
+  i := PosI('<body>',SmartHintStr);
+  if i > 0 then
+    Insert('<div class="debuggerhint">' + TheHintText + '</div><br>',
+           SmartHintStr,
+           i+length('<body>'))
+  else
+    SmartHintStr := TheHintText;
+
+  if FHintHideTimer = nil then begin
+    FHintHideTimer := TIdleTimer.Create(nil);
+    with FHintHideTimer do begin
+      Interval := 200;
+      Enabled := False;
+      AutoEnabled := False;
+      OnTimer := @DoHintHideTimer;
+    end;
+  end;
+
+  FHintMousePos := MC;
+  FHintWindow.BaseURL := BaseURL;
+  FHintWindow.AutoHide := False;
+  ExRect := GetDisplayRect(HitInfo.HitNode, -1, False);
+  IntersectRect(ExRect, ExRect, ClientRect);
+  ExRect := ClientToScreen(ExRect);
+  FHintWindow.ShowHint(MC, SmartHintStr, False, nil, hwpAfter, hwpAfter, [hwfAllowOppositePos, hwfAllowSwapXYPref], @ExRect);
+  FHintHideTimer.Enabled := True;
+end;
+
+procedure TDbgTreeView.DoHintHideTimer(Sender: TObject);
+var
+  MP: TPoint;
+begin
+  if (FHintWindow = nil) or (not FHintWindow.HintIsVisible) then begin
+    FHintHideTimer.Enabled := False;
+    exit;
+  end;
+
+  MP := Mouse.CursorPos;
+  if (abs(MP.Y - FHintMousePos.Y) < 3) and (abs(MP.X - FHintMousePos.X) < 3) then
+    exit;
+  FHintWindow.HideHint;
+  FHintHideTimer.Enabled := False;
+end;
+
 function TDbgTreeView.GetNodeText(Node: PVirtualNode; AColumn: integer): String;
 var
   Data: PDbgTreeNodeData;
@@ -325,6 +424,22 @@ begin
     Result := Data^.RightSideButton.Rect
   else
     Result := Rect(-1,-1,-1,-1);
+end;
+
+procedure TDbgTreeView.SetHintTime(AValue: integer);
+begin
+  if FHintTimer = nil then
+    FHintTimer := TIdleTimer.Create(nil);
+
+  if FHintTime = AValue then Exit;
+  FHintTime := AValue;
+
+  with FHintTimer do begin
+    Interval := FHintTime;
+    Enabled := False;
+    AutoEnabled := False;
+    OnTimer := @DoHintTimer;
+  end;
 end;
 
 procedure TDbgTreeView.SetNodeImageIndex(Node: PVirtualNode; AColumn: integer;
@@ -763,6 +878,13 @@ begin
   CheckControlsVisible;
 end;
 
+procedure TDbgTreeView.MouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+  inherited MouseMove(Shift, X, Y);
+  if (FHintTimer <> nil) then
+    FHintTimer.Enabled := (FHintTime > 0) and (not FMouseIsDown) and IsControlVisible;
+end;
+
 procedure TDbgTreeView.EndUpdate;
 begin
   inc(FCheckControlsVisibleLock);
@@ -1138,6 +1260,9 @@ procedure TDbgTreeView.HandleMouseDown(var Message: TLMMouse;
 var
   NData: PDbgTreeNodeData;
 begin
+  FMouseIsDown := True;
+  if FHintTimer <> nil then
+    FHintTimer.Enabled := False;
   if Message.Msg = LM_LBUTTONDOWN then
     DragMode := dmAutomatic
   else
@@ -1157,6 +1282,18 @@ begin
   end;
 
   inherited HandleMouseDown(Message, HitInfo);
+end;
+
+procedure TDbgTreeView.HandleMouseUp(Keys: PtrUInt; const HitInfo: THitInfo);
+begin
+  inherited HandleMouseUp(Keys, HitInfo);
+  FMouseIsDown := False;
+end;
+
+procedure TDbgTreeView.WMKillFocus(var Msg: TLMKillFocus);
+begin
+  FMouseIsDown := False;
+  inherited WMKillFocus(Msg);
 end;
 
 procedure TDbgTreeView.HandleMouseDblClick(var Message: TLMMouse;
@@ -1296,6 +1433,14 @@ begin
   end;
 
   inherited DoFreeNode(Node);
+end;
+
+destructor TDbgTreeView.Destroy;
+begin
+  inherited Destroy;
+  FHintTimer.Free;
+  FHintHideTimer.Free;
+  FHintWindow.Free;
 end;
 
 function TDbgTreeView.GetNodeData(Node: PVirtualNode): PDbgTreeNodeData;

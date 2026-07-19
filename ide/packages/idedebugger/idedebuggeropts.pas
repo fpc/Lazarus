@@ -143,6 +143,7 @@ type
     FHasActiveDebuggerEntry: Boolean;
     FPrimaryConfigPath: String;
     FSetupCheckIgnoreNoDefault: Boolean;
+    FShowHintForWatches: boolean;
     FValueFormatterConfig: TIdeDbgValueFormatterSelectorList;
     FExcludeRoutineEntryConfig: TIdeDebuggerExcludeRoutineConfList;
     FWatchesDetailPaneWordWrap: boolean;
@@ -196,6 +197,7 @@ type
     property AlwaysBringDbgDialogsToFront: boolean read FAlwaysBringDbgDialogsToFront write FAlwaysBringDbgDialogsToFront default true;
     property WatchesDetailPaneWordWrap: boolean read FWatchesDetailPaneWordWrap write FWatchesDetailPaneWordWrap default False;
     property EvaluateWordWrap: boolean read FEvaluateWordWrap write FEvaluateWordWrap default False;
+    property ShowHintForWatches: boolean read FShowHintForWatches write FShowHintForWatches default True;
   end;
 
   TCurrentDebuggerSetupResult = (
@@ -870,6 +872,7 @@ begin
   // Init for all published values
   FBreakpointsDialogShowTree := bstBrkGroup;
   FAlwaysBringDbgDialogsToFront := True;
+  FShowHintForWatches := True;
 end;
 
 procedure TDebuggerOptions.Load;
