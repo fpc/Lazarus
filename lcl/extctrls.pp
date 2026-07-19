@@ -1598,6 +1598,7 @@ type
     FBandMove: TBandMove;
     FCursorLock: Boolean;
     FDefCursor: TCursor;
+    FGrabberCursor: TCursor;
     FHoveredBand: TCtrlBand;
     FInitDrag: TPoint;
     FInnerBevelWidth: SmallInt;
@@ -1661,6 +1662,7 @@ type
     property AutoSize;
     property DockSite default True;
     property DrawingStyle: TBandDrawingStyle read FDrawingStyle write SetDrawingStyle default dsNormal;
+    property GrabberCursor: TCursor read FGrabberCursor write FGrabberCursor default crDrag;
     property GradientDirection: TGradientDirection read FGradientDirection write SetGradientDirection default gdVertical;
     property GradientStartColor: TColor read FGradientStartColor write SetGradientStartColor default clDefault;
     property GradientEndColor: TColor read FGradientEndColor write SetGradientEndColor default clDefault;
@@ -1698,6 +1700,7 @@ type
     property DragMode;
     property DrawingStyle;
     property Enabled;
+    property GrabberCursor;
     property GradientDirection;
     property GradientEndColor;
     property GradientStartColor;
