@@ -964,6 +964,7 @@ type
   protected
     procedure ConnectSizeAllocateSignal(ToWidget:PGtkWidget);override;
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
+    procedure DestroyWidget; override;
     function EatArrowKeys(const AKey: Word): Boolean; override;
     function getText: String; override;
     procedure setText(const AValue: String); override;
@@ -3500,8 +3501,16 @@ begin
   {$IFDEF GTK3DEBUGCORE}
   writeln('DestroyWidgetEvent entered ',Assigned(w),' Data ? ',Assigned(data));
   {$ENDIF}
+  // clear the back reference while the GtkWidget is still alive, otherwise
+  // Gtk3WidgetFromGtkWidget() keeps returning the soon to be freed TGtk3Widget
+  // to event handlers running inside the current signal emission.
+  Gtk3ClearLCLWidgetData(w);
   if Assigned(data) then
+  begin
+    if TGtk3Widget(Data).FCentralWidget <> w then
+      Gtk3ClearLCLWidgetData(TGtk3Widget(Data).FCentralWidget);
     TGtk3Widget(Data).FWidget:=nil;
+  end;
 end;
 
 function TGtk3Widget.getText: String;
@@ -3609,8 +3618,12 @@ begin
   if HasCaret and IsValidHandle then
     GTK3WidgetSet.DestroyCaret(HWND(Self));
 
-  if IsValidHandle then
-    g_object_set_data(PGObject(FWidget), 'lclwidget', nil);
+  // do not use IsValidHandle here, the back reference must be cleared even when
+  // gtk is already destroying the widget, otherwise Gtk3WidgetFromGtkWidget()
+  // returns a dangling TGtk3Widget to still running event handlers.
+  Gtk3ClearLCLWidgetData(FWidget);
+  if FCentralWidget <> FWidget then
+    Gtk3ClearLCLWidgetData(FCentralWidget);
 
   if IsValidHandle and FOwnWidget then
   begin
@@ -6671,6 +6684,14 @@ begin
   Data := LCLSpinEditGetData(Widget);
   if Assigned(Data) and (Widget <> nil) then
     g_object_set_data(PGObject(Widget), LCL_SPIN_DATA_KEY, nil);
+  if Assigned(Data) then
+  begin
+    // the composite children carry a back reference to Self too, see CreateWidget
+    Gtk3ClearLCLWidgetData(PGObject(Data^.Entry));
+    Gtk3ClearLCLWidgetData(PGObject(Data^.BtnUp));
+    Gtk3ClearLCLWidgetData(PGObject(Data^.BtnDown));
+    Gtk3ClearLCLWidgetData(PGObject(Data^.BtnBox));
+  end;
   inherited DestroyWidget;
   if Assigned(Data) then
     Dispose(Data);
@@ -8402,6 +8423,11 @@ procedure TGtk3Page.DestroyWidget;
 var
   AContent: PGtkWidget;
 begin
+  // the tab widgets carry a back reference to Self too
+  Gtk3ClearLCLWidgetData(FPageBox);
+  Gtk3ClearLCLWidgetData(FPageLabel);
+  Gtk3ClearLCLWidgetData(FImageWidget);
+  Gtk3ClearLCLWidgetData(FCloseButton);
   // unref it to allow it to be destroyed
   FPageBox^.unref;
   AContent := FWidget;
@@ -12860,6 +12886,15 @@ begin
       TGCallback(@disableScrollEvent), Self, nil, G_CONNECT_DEFAULT);
   end;
   Result^.show;
+end;
+
+procedure TGtk3ComboBox.DestroyWidget;
+begin
+  // the child (the entry of an editable combobox) carries a back reference
+  // to Self too, see CreateWidget
+  if Gtk3IsComboBox(FWidget) then
+    Gtk3ClearLCLWidgetData(PGtkComboBox(FWidget)^.get_child);
+  inherited DestroyWidget;
 end;
 
 function TGtk3ComboBox.EatArrowKeys(const AKey: Word): Boolean;

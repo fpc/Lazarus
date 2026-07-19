@@ -326,6 +326,8 @@ function Gtk3SafeWindowRootOrigin(AWindow: PGdkWindow; X, Y: Pgint): Boolean;
 function Gtk3IsGdkPixbuf(AWidget: PGObject): GBoolean;
 function Gtk3IsGdkVisual(AVisual: PGObject): GBoolean;
 
+procedure Gtk3ClearLCLWidgetData(AWidget: PGObject);
+
 function Gtk3WidgetIsA(AWidget: PGtkWidget; AType: TGType): boolean;
 function Get3WidgetClassName(AWidget: PGtkWidget): string;
 
@@ -925,6 +927,14 @@ end;
 function Gtk3IsGdkVisual(AVisual: PGObject): GBoolean;
 begin
   Result := (AVisual <> nil) and  g_type_check_instance_is_a(PGTypeInstance(AVisual), gdk_visual_get_type);
+end;
+
+procedure Gtk3ClearLCLWidgetData(AWidget: PGObject);
+begin
+  // removes the back reference to the TGtk3Widget, so that
+  // Gtk3WidgetFromGtkWidget() cannot return a dangling object
+  if Gtk3IsWidget(AWidget) then
+    g_object_set_data(AWidget, 'lclwidget', nil);
 end;
 
 function Gtk3WidgetIsA(AWidget: PGtkWidget; AType: TGType): boolean;
