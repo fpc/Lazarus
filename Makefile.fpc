@@ -141,8 +141,7 @@ registration:
 # build lazres, svn2revisioninc, updatepofiles, lrstolfm
 # requires lazbuild
 tools:
-	$(MAKE) -C components/freetype
-	$(MAKE) -C lcl lclbase
+	$(LAZBUILDEXE) $(LAZBUILDOPTS) --pkg-release lcl/lclbase.lpk
 	$(MAKE) -C tools
 
 #-----------------------------------------------------------------------------

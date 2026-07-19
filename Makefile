@@ -3148,10 +3148,10 @@ help:
 	@$(ECHO)
 	@$(ECHO) " Sub targets"
 	@$(ECHO) "   registration   build package FCL"
-	@$(ECHO) "   tools          build LCL with nogui widgetset, lazres, svn2revisioninc, updatepofiles, lrstolfm"
-	@$(ECHO) "   lhelp          build lhelp"
-	@$(ECHO) "   starter        build startlazarus"
+	@$(ECHO) "   tools          build lazres, svn2revisioninc, updatepofiles, lrstolfm"
 	@$(ECHO) "   ide            build ide with minimum of packages"
+	@$(ECHO) "   starter        build startlazarus"
+	@$(ECHO) "   lhelp          build lhelp"
 	@$(ECHO)
 	@$(ECHO) " Flags:"
 	@$(ECHO) "   PP=/path/to/fpc        use another compiler"
@@ -3191,8 +3191,7 @@ help:
 registration:
 	$(MAKE) -C packager/registration
 tools:
-	$(MAKE) -C components/freetype
-	$(MAKE) -C lcl lclbase
+	$(LAZBUILDEXE) $(LAZBUILDOPTS) --pkg-release lcl/lclbase.lpk
 	$(MAKE) -C tools
 idemin:
 	$(LAZBUILDEXE) $(LAZBUILDOPTS) --build-ide-minimal --pkg-release
