@@ -188,7 +188,7 @@ lazbuild: registration
 #-----------------------------------------------------------------------------
 # build lhelp
 lhelp:
-	$(MAKE) -C components/chmhelp/lhelp
+	$(LAZBUILDEXE) $(LAZBUILDOPTS) --pkg-release --build-mode=release components/chmhelp/lhelp/lhelp.lpi
 
 #-----------------------------------------------------------------------------
 # build lazarus,lazbuild,tools,startlazarus with base packages for the LCL_PLATFORM

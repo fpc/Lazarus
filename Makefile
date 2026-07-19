@@ -3214,7 +3214,7 @@ lazbuild: registration
 	$(MAKE) -C ide/packages/ideproject
 	$(MAKE) -C ide lazbuilder
 lhelp:
-	$(MAKE) -C components/chmhelp/lhelp
+	$(LAZBUILDEXE) $(LAZBUILDOPTS) --pkg-release --build-mode=release components/chmhelp/lhelp/lhelp.lpi
 all: lazbuild tools cleanlazbuildpkg idemin starter
 bigide: lazbuild tools cleanlazbuildpkg idebig starter lhelp
 cleanide:
