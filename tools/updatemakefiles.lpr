@@ -125,22 +125,96 @@ begin
   end;
 end;
 
-procedure FindLPKFilesWithMakefiles(Dir: string; LPKFiles, ExtraMakefiles: TStrings);
+{ Collect the directories of all "$(MAKE) -C <dir>" lines of the rule Target
+  and recursively of its prerequisites. }
+procedure CollectMakeDirs(Lines: TStrings; Target: string;
+  Dirs, VisitedTargets: TStrings);
 var
-  FileInfo: TSearchRec;
+  i, j, LineLen, StartPos: Integer;
+  Line, Prereqs, CurDir: String;
+  Prereq: String;
+  PrereqList: TStringList;
 begin
-  Dir:=AppendPathDelim(Dir);
-  if FindFirstUTF8(Dir+AllFilesMask,faAnyFile,FileInfo)=0 then begin
-    repeat
-      if (FileInfo.Name='') or (FileInfo.Name='.') or (FileInfo.Name='..') then
-        continue;
-      if (FileInfo.Attr and faDirectory)<>0 then
-        FindLPKFilesWithMakefiles(Dir+FileInfo.Name,LPKFiles,ExtraMakefiles)
-      else if FileInfo.Name='Makefile.compiled' then
-        CheckMakefileCompiled(Dir+FileInfo.Name,LPKFiles,ExtraMakefiles);
-    until FindNextUTF8(FileInfo)<>0;
+  if VisitedTargets.IndexOf(Target)>=0 then exit;
+  VisitedTargets.Add(Target);
+
+  for i:=0 to Lines.Count-1 do begin
+    Line:=Lines[i];
+    // a rule starts at column 1 with "Target:"
+    if copy(Line,1,length(Target)+1)<>Target+':' then continue;
+
+    // the rest of the line is the list of prerequisites
+    Prereqs:=copy(Line,length(Target)+2,length(Line));
+    PrereqList:=TStringList.Create;
+    try
+      PrereqList.Delimiter:=' ';
+      PrereqList.StrictDelimiter:=false;
+      PrereqList.DelimitedText:=Prereqs;
+      for Prereq in PrereqList do
+        if Prereq<>'' then
+          CollectMakeDirs(Lines,Prereq,Dirs,VisitedTargets);
+    finally
+      PrereqList.Free;
+    end;
+
+    // the following lines starting with a TAB are the recipe
+    for j:=i+1 to Lines.Count-1 do begin
+      Line:=Lines[j];
+      if Line='' then continue;
+      if Line[1]<>#9 then break;
+      LineLen:=length(Line);
+      // search the token "-C" and take the next token as directory
+      StartPos:=1;
+      while StartPos<LineLen do begin
+        if (Line[StartPos]='-') and (Line[StartPos+1]='C')
+            and ((StartPos=1) or (Line[StartPos-1]<=' '))
+            and ((StartPos+2>LineLen) or (Line[StartPos+2]<=' ')) then
+        begin
+          inc(StartPos,2);
+          while (StartPos<=LineLen) and (Line[StartPos]<=' ') do inc(StartPos);
+          CurDir:='';
+          while (StartPos<=LineLen) and (Line[StartPos]>' ') do begin
+            CurDir:=CurDir+Line[StartPos];
+            inc(StartPos);
+          end;
+          if (CurDir<>'') and (Dirs.IndexOf(CurDir)<0) then
+            Dirs.Add(CurDir);
+          break;
+        end;
+        inc(StartPos);
+      end;
+    end;
+    break;
   end;
-  FindCloseUTF8(FileInfo);
+end;
+
+{ Check the Makefile.compiled of all directories listed in the Makefile.fpc
+  rule "lazbuild" (including its prerequisites). }
+procedure FindLazbuildMakefiles(LPKFiles, ExtraMakefiles: TStrings);
+var
+  MakefileFPC, Dir, MakefileCompiled: String;
+  Lines, Dirs, VisitedTargets: TStringList;
+begin
+  MakefileFPC:=LazarusDir+'Makefile.fpc';
+  if not FileExistsUTF8(MakefileFPC) then
+    raise Exception.Create('missing '+MakefileFPC);
+
+  Lines:=TStringList.Create;
+  Dirs:=TStringList.Create;
+  VisitedTargets:=TStringList.Create;
+  try
+    Lines.LoadFromFile(MakefileFPC);
+    CollectMakeDirs(Lines,'lazbuild',Dirs,VisitedTargets);
+    for Dir in Dirs do begin
+      MakefileCompiled:=AppendPathDelim(LazarusDir+SetDirSeparators(Dir))+'Makefile.compiled';
+      if not FileExistsUTF8(MakefileCompiled) then continue;
+      CheckMakefileCompiled(MakefileCompiled,LPKFiles,ExtraMakefiles);
+    end;
+  finally
+    VisitedTargets.Free;
+    Dirs.Free;
+    Lines.Free;
+  end;
 end;
 
 procedure CheckFPCMake;
@@ -162,9 +236,7 @@ end;
 
 procedure UpdateCustomMakefiles(ExtraMakefiles: TStrings);
 const
-  Dirs: array[1..5] of string = (
-    'lcl/interfaces',
-    'components/chmhelp/lhelp',
+  Dirs: array[1..3] of string = (
     'components',
     'ide',
     'tools'
@@ -210,7 +282,7 @@ begin
   LPKFiles:=TStringList.Create;
   ExtraMakefiles:=TStringList.Create;
 
-  FindLPKFilesWithMakefiles(LazarusDir,LPKFiles,ExtraMakefiles);
+  FindLazbuildMakefiles(LPKFiles,ExtraMakefiles);
   writeln(LPKFiles.Text);
   writeln(ExtraMakefiles.Text);
   LPKFiles.StrictDelimiter:=true;
