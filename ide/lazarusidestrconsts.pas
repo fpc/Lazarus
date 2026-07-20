@@ -1275,6 +1275,9 @@ resourcestring
   lisDrawTheSelectionFocusedEvenIfTheMessagesWindowHasN = 'Draw the selection '
     +'focused even if the Messages window has no focus. Use this if your '
     +'theme has a hardly visible unfocused drawing.';
+  lisWrapLongMessageLinesOtherwiseTheyAreClippedAndAHi = 'Wrap long message '
+    +'lines into several rows. Otherwise they are clipped and a hint shows the '
+    +'full text.';
   lisShowAutomatically = 'Show automatically';
   lisShowAutoWhenCompiling = 'When compiling';
   lisShowAutoOnlyWhenErrorsOccur = 'Only when errors occur';

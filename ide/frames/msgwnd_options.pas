@@ -62,6 +62,7 @@ type
     cbShowFPCLinesCompiled: TCheckBox;
     cbStayOnTop: TCheckBox;
     cbShowIcons: TCheckBox;
+    cbWordWrap: TCheckBox;
     lbMaxProcs: TLabel;
     MaxProcsSpinEdit: TSpinEdit;
     MWColorBox: TColorBox;
@@ -252,6 +253,8 @@ begin
   cbShowFPCLinesCompiled.Hint := lisElevateTheMessagePriorityToAlwaysShowItByDefaultIt;
   cbShowIcons.Caption := lisShowIcons;
   cbShowIcons.Hint := dlgAnIconForErrorWarningHintIsShown;
+  cbWordWrap.Caption := dlgOptWordWrap;
+  cbWordWrap.Hint := lisWrapLongMessageLinesOtherwiseTheyAreClippedAndAHi;
   lbMaxProcs.Caption := Format(lisMaximumParallelProcesses0MeansDefault,
                                [IntToStr(DefaultMaxProcessCount)]);
   lbShowAutomatically.Caption := lisShowAutomatically;
@@ -294,6 +297,7 @@ begin
     cbStayOnTop.Checked := MsgViewStayOnTop;
     cbShowIcons.Checked := ShowMessagesIcons;
     cbAlwaysDrawFocused.Checked := MsgViewAlwaysDrawFocused;
+    cbWordWrap.Checked := MsgViewWordWrap;
     cbFocusAtCompilation.Checked := MsgViewFocus;
     cbShowAutomatically.ItemIndex := Integer(MsgViewShowAutomatically);
     cbShowAutomaticallyChange(cbShowAutomatically); // Update the warning.
@@ -321,6 +325,7 @@ begin
     MsgViewStayOnTop := cbStayOnTop.Checked;
     ShowMessagesIcons := cbShowIcons.Checked;
     MsgViewAlwaysDrawFocused := cbAlwaysDrawFocused.Checked;
+    MsgViewWordWrap := cbWordWrap.Checked;
     MsgViewFocus := cbFocusAtCompilation.Checked;
     MsgViewShowAutomatically := TMsgWndShowAutomatically(cbShowAutomatically.ItemIndex);
   end;
@@ -336,4 +341,5 @@ end;
 initialization
   RegisterIDEOptionsEditor(GroupEnvironment, TMsgWndOptionsFrame, EnvOptionsMessages);
 end.
+
 
