@@ -17,7 +17,7 @@ uses
   IDETranslations, IdeXmlConfigProcs, InitialSetupProc, LazConf, MiscOptions, 
   ModeMatrixOpts, ParsedCompilerOpts, ProjectBuildMode, ProjPackCommon, 
   RecentListProcs, ResourceConvertProc, SearchPathProcs, ToolBarOptionsBase, 
-  TransferMacros, LazarusPackageIntf;
+  TransferMacros, CompilerTargetInfo, LazarusPackageIntf;
 
 implementation
 

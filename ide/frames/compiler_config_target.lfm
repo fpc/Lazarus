@@ -156,12 +156,13 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
     object TargetOSComboBox: TComboBox
       AnchorSideLeft.Control = lblTargetOS
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = grbTargetPlatform
+      AnchorSideTop.Control = chkOnlyAvailable
+      AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = grbTargetPlatform
       AnchorSideRight.Side = asrBottom
       Left = 83
       Height = 20
-      Top = 3
+      Top = 27
       Width = 495
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
@@ -170,7 +171,7 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       ItemHeight = 26
       OnSelect = TargetOSComboBoxSelect
       Style = csDropDownList
-      TabOrder = 0
+      TabOrder = 1
       Text = '0'
     end
     object TargetCPUComboBox: TComboBox
@@ -191,7 +192,7 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       ItemHeight = 26
       OnSelect = TargetCPUComboBoxSelect
       Style = csDropDownList
-      TabOrder = 1
+      TabOrder = 2
       Text = '0'
     end
     object TargetProcComboBox: TComboBox
@@ -212,7 +213,7 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       BorderSpacing.Bottom = 3
       ItemHeight = 26
       Style = csDropDownList
-      TabOrder = 2
+      TabOrder = 3
       Text = '0'
     end
     object SubtargetComboBox: TComboBox
@@ -232,8 +233,52 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
       ItemHeight = 19
-      TabOrder = 3
+      TabOrder = 4
       Text = '0'
+    end
+    object chkOnlyAvailable: TCheckBox
+      AnchorSideLeft.Control = grbTargetPlatform
+      AnchorSideTop.Control = grbTargetPlatform
+      Left = 6
+      Height = 18
+      Top = 3
+      Width = 250
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 3
+      Caption = 'chkOnlyAvailable'
+      OnClick = chkOnlyAvailableClick
+      TabOrder = 0
+    end
+    object lblController: TLabel
+      AnchorSideLeft.Control = lblSubtarget
+      AnchorSideTop.Control = ControllerComboBox
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 16
+      Top = 119
+      Width = 74
+      Caption = 'lblController'
+      ParentColor = False
+    end
+    object ControllerComboBox: TComboBox
+      AnchorSideLeft.Control = lblController
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = SubtargetComboBox
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = grbTargetPlatform
+      AnchorSideRight.Side = asrBottom
+      Left = 86
+      Height = 20
+      Top = 117
+      Width = 492
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 3
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      ItemHeight = 19
+      Style = csDropDownList
+      TabOrder = 5
     end
   end
   object grbTargetOptions: TGroupBox

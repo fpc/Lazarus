@@ -1180,6 +1180,7 @@ function ParseFPCInfo(FPCInfo: string; InfoTypes: TFPCInfoTypes;
                       out Infos: TFPCInfoStrings): boolean;
 function RunFPCInfo(const CompilerFilename: string;
                    InfoTypes: TFPCInfoTypes; const Options: string =''): string;
+function RunFPCInfoXML(const CompilerFilename, Options: string; aXMLLines: TStrings): boolean;
 function FPCVersionToNumber(const FPCVersionString: string): integer; // 2.7.1 -> 20701
 function SplitFPCVersion(const FPCVersionString: string;
                         out FPCVersion, FPCRelease, FPCPatch: integer): boolean; // 2.7.1 -> 2,7,1
@@ -1660,6 +1661,37 @@ begin
   finally
     Params.Free;
     List.free;
+  end;
+end;
+
+function RunFPCInfoXML(const CompilerFilename, Options: string; aXMLLines: TStrings): boolean;
+// Runs "<compiler> -ix <Options>" and returns its stdout (the <fpcoutput> XML) as lines.
+// False if the tool produced nothing or an "Error:" first line.
+var
+  Params, ToolOutput: TStringList;
+begin
+  Result:=false;
+  aXMLLines.Clear;
+  Params:=TStringList.Create;
+  try
+    // -P<cpu> must come before -ix so the fpc wrapper dispatches to the right ppc<cpu>
+    // (otherwise it answers -ix with the native compiler).
+    SplitCmdLineParams(Options,Params);
+    Params.Add('-ix');
+    // run from the compiler's own directory so it resolves fpc.cfg / cross compiler
+    // the same way an interactive shell in that directory would
+    ToolOutput:=RunTool(CompilerFilename,Params,ExtractFilePath(CompilerFilename),CTConsoleVerbosity<0);
+    if ToolOutput=nil then exit;
+    try
+      if ToolOutput.Count<1 then exit;
+      if copy(ToolOutput[0],1,6)='Error:' then exit;
+      aXMLLines.Assign(ToolOutput);
+      Result:=true;
+    finally
+      ToolOutput.Free;
+    end;
+  finally
+    Params.Free;
   end;
 end;
 

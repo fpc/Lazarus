@@ -43,6 +43,7 @@ uses
   InputHistory,
   // IdeConfig
   RecentListProcs, TransferMacros, CompilerOptions, IdeConfStrConsts,
+  EnvironmentOpts, ParsedCompilerOpts, CompilerTargetInfo, MiscOptions,
   // IDE
   LazarusIDEStrConsts, PackageDefs, Project, compiler_parsing_options;
 
@@ -70,6 +71,10 @@ type
     TargetOSComboBox: TComboBox;
     TargetProcComboBox: TComboBox;
     SubtargetComboBox: TComboBox;
+    chkOnlyAvailable: TCheckBox;
+    lblController: TLabel;
+    ControllerComboBox: TComboBox;
+    procedure chkOnlyAvailableClick(Sender: TObject);
     procedure chkCustomConfigFileClick(Sender: TObject);
     procedure chkWriteConfigFileClick(Sender: TObject);
     procedure TargetOSComboBoxSelect(Sender: TObject);
@@ -84,6 +89,15 @@ type
     procedure UpdateByTargetOS(aTargetOS: string);
     procedure UpdateByTargetCPU(aTargetCPU: string);
     procedure FillSubTargetComboBox(UseSubTarget: string);
+    function OnlyAvailable: boolean;
+    function GetQueryCompilerFilename: string;
+    function GetSelectedTargetCPU: string;
+    function GetSelectedTargetOS: string;
+    function CurrentCPUInfo: TFPCTargetInfoCPU;
+    function IsControllerOS(aInfo: TFPCTargetInfoCPU; const aTargetOS: string): boolean;
+    procedure RefillCPUList;
+    procedure RefillOSList;
+    procedure RefillControllerList(const KeepController: string; KeepIfMissing: boolean);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -151,7 +165,6 @@ begin
   else
     Result := aCaption;
 end;
-
 
 { TCompilerConfigTargetFrame }
 
@@ -237,6 +250,8 @@ var
   ParsingFrame: TCompilerParsingOptionsFrame;
   sl: TStringListUTF8Fast;
   i: Integer;
+  Info: TFPCTargetInfoCPU;
+  KeepProc: string;
 begin
   if aTargetCPU = '' then
   begin
@@ -245,21 +260,218 @@ begin
       raise Exception.CreateFmt(lisCannotSubstituteMacroS, [aTargetCPU]);
   end;
 
-  // Update selection list for target processor
+  // Update selection list for target processor (from the -ix cache in available mode, else static)
+  KeepProc := TargetProcComboBox.Text;
   sl:=TStringListUTF8Fast.Create;
-  GetTargetProcessors(aTargetCPU,sl);
+  Info:=CurrentCPUInfo;
+  if OnlyAvailable and (Info<>nil) and (Info.InstructionSets.Count>0) then
+    sl.AddStrings(Info.InstructionSets)
+  else
+    GetTargetProcessors(aTargetCPU,sl);
   sl.Sort;
   sl.Insert(0,'('+lisDefault+')');
   for i:=0 to sl.Count-1 do
     sl[i]:=ProcessorToCaption(sl[i]);
   TargetProcComboBox.Items.Assign(sl);
   sl.Free;
-  TargetProcComboBox.ItemIndex := 0;
+  SetComboBoxText(TargetProcComboBox,KeepProc,cstCaseInsensitive);
+  if TargetProcComboBox.ItemIndex<0 then
+    TargetProcComboBox.ItemIndex := 0;
 
   // Update selection list for assembler style
   ParsingFrame := TCompilerParsingOptionsFrame(FDialog.FindEditor(TCompilerParsingOptionsFrame));
   Assert(Assigned(ParsingFrame));
   ParsingFrame.grpAsmStyle.Visible := IsCPUX86(aTargetCPU);
+end;
+
+function TCompilerConfigTargetFrame.OnlyAvailable: boolean;
+begin
+  Result := chkOnlyAvailable.Checked;
+end;
+
+function TCompilerConfigTargetFrame.GetQueryCompilerFilename: string;
+// The compiler that will build this project (may be a custom trunk/cross build with extra
+// controllers); fall back to the IDE default. -P<cpu> dispatches the fpc wrapper.
+begin
+  Result := '';
+  if FCompOptions <> nil then
+    Result := FCompOptions.ParsedOpts.GetParsedValue(pcosCompilerPath);
+  if Result = '' then
+    Result := EnvironmentOptions.GetParsedCompilerFilename;
+end;
+
+function TCompilerConfigTargetFrame.GetSelectedTargetCPU: string;
+begin
+  if TargetCPUComboBox.ItemIndex <= 0 then
+    Result := ''
+  else
+    Result := CaptionToCPU(TargetCPUComboBox.Text);
+end;
+
+function TCompilerConfigTargetFrame.GetSelectedTargetOS: string;
+begin
+  if TargetOSComboBox.ItemIndex <= 0 then
+    Result := ''
+  else
+    Result := CaptionToOS(TargetOSComboBox.Text);
+end;
+
+function TCompilerConfigTargetFrame.CurrentCPUInfo: TFPCTargetInfoCPU;
+// nil in static mode, for the default CPU, or when the compiler/-ix is unavailable.
+var
+  CPU: string;
+begin
+  Result := nil;
+  if not OnlyAvailable then Exit;
+  CPU := GetSelectedTargetCPU;
+  if CPU = '' then Exit;
+  Result := TargetInfoCache.GetInfo(GetQueryCompilerFilename, CPU);
+end;
+
+function TCompilerConfigTargetFrame.IsControllerOS(aInfo: TFPCTargetInfoCPU;
+  const aTargetOS: string): boolean;
+// When the compiler emits the <ostarget hascontrollers="..."> flag it is the source of truth;
+// the static embedded/freertos list is only a fallback for compilers that don't emit it.
+var
+  OS: string;
+begin
+  if (aInfo <> nil) and aInfo.ControllerFlagProvided then
+    Result := aInfo.OSUsesControllers(aTargetOS)   // compiler is authoritative
+  else
+  begin
+    OS := lowercase(aTargetOS);
+    Result := (OS = 'embedded') or (OS = 'freertos'); // legacy fallback
+  end;
+end;
+
+procedure TCompilerConfigTargetFrame.RefillCPUList;
+// In "available" mode narrow the list to the CPUs the configured fpc can actually target
+// (its native target plus the cross compilers in its fpc.cfg), asked of fpc itself - no
+// assumptions about ppc names/paths. Otherwise the full static list.
+var
+  sl, Avail: TStringListUTF8Fast;
+  KeepCPU, KeepNorm: string;
+  s: ShortString;
+  UseStatic: boolean;
+begin
+  KeepCPU := TargetCPUComboBox.Text;
+  sl := TStringListUTF8Fast.Create;
+  try
+    sl.Add('(' + lisDefault + ')');
+    UseStatic := True;
+    if OnlyAvailable then
+    begin
+      Avail := TStringListUTF8Fast.Create;
+      try
+        if GetConfiguredTargetCPUs(GetQueryCompilerFilename, Avail) > 0 then
+        begin
+          sl.AddStrings(Avail);
+          UseStatic := False;
+        end;
+      finally
+        Avail.Free;
+      end;
+    end;
+    if UseStatic then
+    begin
+      for s in FPCProcessorNames do sl.Add(s);
+      for s in Pas2jsProcessorNames do sl.Add(s);
+    end
+    else
+    begin
+      // keep the current selection even if detection somehow missed it
+      KeepNorm := CaptionToCPU(KeepCPU);
+      if (KeepNorm <> '') and (sl.IndexOf(KeepNorm) < 0) then
+        sl.Add(KeepNorm);
+    end;
+    TargetCPUComboBox.Items.Assign(sl);
+    SetComboBoxText(TargetCPUComboBox, KeepCPU, cstCaseInsensitive);
+    if TargetCPUComboBox.ItemIndex < 0 then TargetCPUComboBox.ItemIndex := 0;
+  finally
+    sl.Free;
+  end;
+end;
+
+procedure TCompilerConfigTargetFrame.RefillOSList;
+var
+  sl: TStringListUTF8Fast;
+  KeepOS: string;
+  s: ShortString;
+  Info: TFPCTargetInfoCPU;
+  i: integer;
+  UseStatic: boolean;
+begin
+  KeepOS := TargetOSComboBox.Text;
+  sl := TStringListUTF8Fast.Create;
+  try
+    sl.Add('(' + lisDefault + ')');
+    UseStatic := True;
+    Info := CurrentCPUInfo;
+    if OnlyAvailable and (Info <> nil) and (Info.OSCount > 0) then
+    begin
+      for i := 0 to Info.OSCount - 1 do
+        sl.Add(lowercase(Info.OSes[i].ShortName));
+      UseStatic := False;
+    end;
+    if UseStatic then
+    begin
+      for s in FPCOperatingSystemCaptions do sl.Add(s);
+      for s in Pas2jsPlatformNames do sl.Add(s);
+    end;
+    TargetOSComboBox.Items.Assign(sl);
+    SetComboBoxText(TargetOSComboBox, KeepOS, cstCaseInsensitive);
+    if TargetOSComboBox.ItemIndex < 0 then TargetOSComboBox.ItemIndex := 0;
+  finally
+    sl.Free;
+  end;
+end;
+
+procedure TCompilerConfigTargetFrame.RefillControllerList(const KeepController: string;
+  KeepIfMissing: boolean);
+var
+  sl, tmp: TStringListUTF8Fast;
+  Info: TFPCTargetInfoCPU;
+  DefCap: string;
+  InList: boolean;
+begin
+  DefCap := '(' + lisDefault + ')';
+  Info := CurrentCPUInfo;
+  sl := TStringListUTF8Fast.Create;
+  try
+    sl.Add(DefCap);
+    if OnlyAvailable and (Info <> nil) and IsControllerOS(Info, GetSelectedTargetOS) then
+    begin
+      tmp := TStringListUTF8Fast.Create;
+      try
+        Info.GetControllerNames(tmp);
+        sl.AddStrings(tmp);
+      finally
+        tmp.Free;
+      end;
+    end;
+    InList := (KeepController = '') or (KeepController = DefCap) or (sl.IndexOf(KeepController) >= 0);
+    if (not InList) and KeepIfMissing then
+    begin
+      sl.Add(KeepController);
+      InList := True;
+    end;
+    ControllerComboBox.Items.Assign(sl);
+    if InList and (KeepController <> '') and (KeepController <> DefCap) then
+      SetComboBoxText(ControllerComboBox, KeepController, cstCaseInsensitive)
+    else
+      ControllerComboBox.ItemIndex := 0;
+  finally
+    sl.Free;
+  end;
+end;
+
+procedure TCompilerConfigTargetFrame.chkOnlyAvailableClick(Sender: TObject);
+// Full refresh, preserving still-valid selections.
+begin
+  RefillCPUList;
+  RefillOSList;
+  UpdateByTargetCPU(GetSelectedTargetCPU);
+  RefillControllerList(ControllerComboBox.Text, False);
 end;
 
 procedure TCompilerConfigTargetFrame.FillSubTargetComboBox(UseSubTarget: string);
@@ -391,6 +603,12 @@ begin
 
     // Subtarget
     lblSubtarget.Caption := lisSubtarget+' (-t)';
+
+    // Controller / available-configs toggle
+    lblController.Caption := lisTargetController + ' (-Wp)';
+    chkOnlyAvailable.Caption := lisQueryCompilerForTargets;
+    chkOnlyAvailable.Hint := lisQueryCompilerForTargetsHint;
+    chkOnlyAvailable.ShowHint := True;
   finally
     List.Free;
   end;
@@ -422,6 +640,7 @@ begin
       TargetCPUComboBox.Text := 'default';
       TargetProcComboBox.Text := 'default';
       SubtargetComboBox.Text := 'default';
+      ControllerComboBox.Text := 'default';
       CurrentWidgetTypeLabel.Visible:=false;
       LCLWidgetTypeLabel.Visible:=false;
     end else begin
@@ -442,6 +661,18 @@ begin
       TargetProcComboBox.Text := ProcessorToCaption(TargetProcessor);
       // SubTarget
       FillSubTargetComboBox(Subtarget);
+
+      // Controller (MCU) - the query toggle is a sticky IDE-wide preference (defaults off)
+      chkOnlyAvailable.OnClick := nil;
+      chkOnlyAvailable.Checked := MiscellaneousOptions.QueryCompilerForTargets;
+      chkOnlyAvailable.OnClick := @chkOnlyAvailableClick;
+      if OnlyAvailable then
+      begin
+        RefillCPUList;
+        RefillOSList;
+        UpdateByTargetCPU(GetSelectedTargetCPU);
+      end;
+      RefillControllerList(Controller, True);
 
       PkgDep:=TProjectCompilerOptions(AOptions).LazProject.FindDependencyByName('LCL');
       CurrentWidgetTypeLabel.Visible:=Assigned(PkgDep);
@@ -481,8 +712,19 @@ begin
       TargetCPU := CaptionToCPU(NewTargetCPU);
       TargetProcessor := CaptionToProcessor(TargetProcComboBox.Text);
       Subtarget := lowercase(SubtargetComboBox.Text);
+      if ControllerComboBox.ItemIndex <= 0 then
+        Controller := ''
+      else
+        Controller := ControllerComboBox.Text;
     end;
     Win32GraphicApp := chkWin32GraphicApp.Checked;
+  end;
+  // persist the query toggle as a sticky IDE-wide preference. This dialog does not own
+  // MiscellaneousOptions, so write the file out ourselves when it changes.
+  if MiscellaneousOptions.QueryCompilerForTargets <> chkOnlyAvailable.Checked then
+  begin
+    MiscellaneousOptions.QueryCompilerForTargets := chkOnlyAvailable.Checked;
+    MiscellaneousOptions.Save;
   end;
 end;
 
@@ -507,6 +749,7 @@ begin
   else
     s := cb.Text;
   UpdateByTargetOS(s);
+  RefillControllerList(ControllerComboBox.Text, False);
 end;
 
 procedure TCompilerConfigTargetFrame.TargetCPUComboBoxSelect(Sender: TObject);
@@ -520,6 +763,8 @@ begin
   else
     s := cb.Text;
   UpdateByTargetCPU(s);
+  RefillOSList;
+  RefillControllerList(ControllerComboBox.Text, False);
 end;
 
 procedure TCompilerConfigTargetFrame.LCLWidgetTypeLabelClick(Sender: TObject);

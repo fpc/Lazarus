@@ -200,6 +200,7 @@ type
     FMakeResourceStringInsertPolicy: TResourcestringInsertPolicy;
     FShowCompOptFullFilenames: boolean;
     FShowCompOptMultiLine: boolean;
+    FQueryCompilerTargets: boolean;
     FSortSelDirection: TTextSortDirection;
     FSortSelDomain: TSortDomain;
     fSavedStamp: integer;
@@ -212,6 +213,7 @@ type
     procedure SetModified(AValue: boolean);
     procedure SetShowCompOptFullFilenames(AValue: boolean);
     procedure SetShowCompOptMultiLine(const AValue: boolean);
+    procedure SetQueryCompilerTargets(AValue: boolean);
     procedure SetSortSelDirection(AValue: TTextSortDirection);
   public
     constructor Create;
@@ -239,6 +241,8 @@ type
                                               write SetShowCompOptFullFilenames;
     property ShowCompOptMultiLine: boolean read FShowCompOptMultiLine
                                               write SetShowCompOptMultiLine;
+    property QueryCompilerForTargets: boolean read FQueryCompilerTargets
+                                              write SetQueryCompilerTargets;
   end;
 
 const
@@ -755,6 +759,13 @@ begin
   IncreaseChangeStamp;
 end;
 
+procedure TMiscellaneousOptions.SetQueryCompilerTargets(AValue: boolean);
+begin
+  if FQueryCompilerTargets=AValue then Exit;
+  FQueryCompilerTargets:=AValue;
+  IncreaseChangeStamp;
+end;
+
 procedure TMiscellaneousOptions.SetShowCompOptMultiLine(const AValue: boolean);
 begin
   if FShowCompOptMultiLine=AValue then Exit;
@@ -802,6 +813,7 @@ begin
                                                   Path+'FindRenameIdentifier/');
       ShowCompOptFullFilenames:=XMLConfig.GetValue(Path+'ShowCompOpts/Filenames/Full',false);
       ShowCompOptMultiLine:=XMLConfig.GetValue(Path+'ShowCompOpts/MultiLine',true);
+      QueryCompilerForTargets:=XMLConfig.GetValue(Path+'QueryCompilerForTargets/Value',false);
     finally
       XMLConfig.Free;
     end;
@@ -847,6 +859,7 @@ begin
       FindRenameIdentifierOptions.SaveToXMLConfig(XMLConfig,
                                                   Path+'FindRenameIdentifier/');
       XMLConfig.SetDeleteValue(Path+'ShowCompOpts/MultLine',ShowCompOptMultiLine,true);
+      XMLConfig.SetDeleteValue(Path+'QueryCompilerForTargets/Value',QueryCompilerForTargets,false);
       XMLConfig.Flush;
     finally
       XMLConfig.Free;
