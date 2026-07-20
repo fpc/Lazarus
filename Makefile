@@ -3231,16 +3231,16 @@ cleanlazbuildpkg:
 	$(MAKE) -C ide/packages/ideproject clean
 cleanlaz: cleanide
 	$(MAKE) -C packager/registration clean
-	$(MAKE) -C lcl cleanall
 	$(MAKE) -C components clean
+	$(DELTREE) lcl/units/*
 clean: cleanlaz
 	$(MAKE) -C tools clean
 cleanbigide: clean
 purge:
 	$(MAKE) -C ide distclean
 	$(MAKE) -C packager/registration distclean
-	$(MAKE) -C lcl distclean
 	$(MAKE) -C components distclean
+	$(DELTREE) lcl/units/*
 	$(MAKE) -C tools distclean
 cleanall: purge
 distclean: purge
