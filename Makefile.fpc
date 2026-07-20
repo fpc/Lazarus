@@ -169,7 +169,7 @@ ide:
 
 #-----------------------------------------------------------------------------
 starter:
-	$(MAKE) -C ide starter
+	$(LAZBUILDEXE) $(LAZBUILDOPTS) --pkg-release --build-mode=release ide/startlazarus.lpi
 
 #-----------------------------------------------------------------------------
 # build lazbuild

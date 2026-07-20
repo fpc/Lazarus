@@ -3202,7 +3202,7 @@ useride:
 ide:
 	$(MAKE) -C ide ide
 starter:
-	$(MAKE) -C ide starter
+	$(LAZBUILDEXE) $(LAZBUILDOPTS) --pkg-release --build-mode=release ide/startlazarus.lpi
 lazbuild: registration
 	$(MAKE) -C components/lazutils
 	$(MAKE) -C components/codetools
