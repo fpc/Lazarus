@@ -1355,6 +1355,7 @@ begin
     CreatePrimaryConfigPath;
 
     MainBuildBoss:=TBuildManager.Create(nil);
+    MainBuildBoss.BuildRelease:=BuildRelease;
     SetupMacros;
     LoadEnvironmentOptions;
     if Terminated then exit(false);

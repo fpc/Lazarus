@@ -5343,7 +5343,7 @@ resourcestring
     +'plus a fixed set of extra packages.';
   lisShowVersionAndExit = 'Show version and exit.';
   lisBuildReleasePackagesStoreCompi = 'Build release packages. Store compiler '
-    +'checksum instead of date in package.compiled files.';
+    +'checksum instead of date in package.compiled files. And ignore session and environment options.';
   lisBeLessVerboseCanBeGivenMultipleTimes = 'Be less verbose. Can be given '
     +'multiple times.';
   lisPassingQuietTwoTimesWillP = 'Passing --quiet two times will pass -vw-n-h-'
