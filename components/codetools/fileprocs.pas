@@ -1901,12 +1901,9 @@ function UniversalFileAgeToLocalStr(aFileAge: TCTFileAgeTime): string;
 var
   LDate: TDateTime;
   LOffset: integer;
-  {$if FPC_FULLVERSION>=030300}
-  InDST: Boolean;
-  {$endif}
 begin
   LDate := UniversalFileDateToDateTimeDef(aFileAge);
-  if GetLocalTimeOffset(LDate, true, LOffset {$if FPC_FULLVERSION>=030300},InDST{$endif}) then
+  if GetLocalTimeOffset(LDate, true, LOffset) then
     LDate := LDate - (LOffset/MinsPerDay);
   Result:=DateTimeToStr(LDate);
 end;
