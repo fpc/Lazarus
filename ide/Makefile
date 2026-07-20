@@ -4946,11 +4946,12 @@ ifneq ($(findstring $(OS_TARGET),win32 win64),)
 	-$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res)
 endif
 cleanlaz: clean cleanide
-	$(MAKE) -C packages/ideconfig clean
-	$(MAKE) -C packages/idepackager clean
-	$(MAKE) -C packages/ideproject clean
-	$(MAKE) -C packages/ideutils clean
-	$(MAKE) -C packages/idedebugger clean
+	$(DELTREE) packages/ideconfig/lib/*
+	$(DELTREE) packages/idepackager/lib/*
+	$(DELTREE) packages/ideproject/lib/*
+	$(DELTREE) packages/ideutils/lib/*
+	$(DELTREE) packages/idedebugger/lib/*
+	$(DELTREE) packages/idesynedit/lib/*
 	${DELTREE} ../units/*
 purge: cleanlaz
 distclean: cleanlaz

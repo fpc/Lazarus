@@ -3218,7 +3218,7 @@ lhelp:
 all: lazbuild tools cleanlazbuildpkg idemin starter
 bigide: lazbuild tools cleanlazbuildpkg idebig starter lhelp
 cleanide:
-	$(MAKE) -C ide cleanide
+	$(MAKE) -C ide cleanlaz
 cleanlazbuildpkg:
 	$(MAKE) -C packager/registration clean
 	$(MAKE) -C components/lazutils clean
@@ -3233,11 +3233,6 @@ cleanlaz: cleanide
 	$(MAKE) -C packager/registration clean
 	$(MAKE) -C lcl cleanall
 	$(MAKE) -C components clean
-	$(MAKE) -C ide/packages/ideconfig clean
-	$(MAKE) -C ide/packages/ideutils clean
-	$(MAKE) -C ide/packages/idepackager clean
-	$(MAKE) -C ide/packages/ideproject clean
-	$(MAKE) -C ide/packages/idedebugger clean
 clean: cleanlaz
 	$(MAKE) -C tools clean
 cleanbigide: clean
@@ -3246,11 +3241,6 @@ purge:
 	$(MAKE) -C packager/registration distclean
 	$(MAKE) -C lcl distclean
 	$(MAKE) -C components distclean
-	$(MAKE) -C ide/packages/ideconfig distclean
-	$(MAKE) -C ide/packages/ideutils distclean
-	$(MAKE) -C ide/packages/idepackager distclean
-	$(MAKE) -C ide/packages/ideproject distclean
-	$(MAKE) -C ide/packages/idedebugger distclean
 	$(MAKE) -C tools distclean
 cleanall: purge
 distclean: purge
