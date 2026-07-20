@@ -3239,7 +3239,6 @@ cleanlaz: cleanide
 	$(MAKE) -C ide/packages/ideproject clean
 	$(MAKE) -C ide/packages/idedebugger clean
 clean: cleanlaz
-	$(MAKE) -C . cleanlaz LCL_PLATFORM=nogui
 	$(MAKE) -C tools clean
 cleanbigide: clean
 purge:
