@@ -3198,7 +3198,7 @@ idemin:
 idebig:
 	$(LAZBUILDEXE) $(LAZBUILDOPTS) --build-ide-release --pkg-release
 useride:
-	$(LAZBUILDEXE) $(LAZBUILDOPTS) --build-ide --pkg-release
+	$(LAZBUILDEXE) $(LAZBUILDOPTS) --build-ide
 ide:
 	$(MAKE) -C ide ide
 starter:

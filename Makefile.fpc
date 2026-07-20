@@ -160,7 +160,7 @@ idebig:
 # calls lazbuild to build lazarus and packages with user's settings
 # requires lazbuild
 useride:
-	$(LAZBUILDEXE) $(LAZBUILDOPTS) --build-ide --pkg-release
+	$(LAZBUILDEXE) $(LAZBUILDOPTS) --build-ide
 
 #-----------------------------------------------------------------------------
 # For legacy IDE, which calls "make ide" to rebuild itself (and not packages)
