@@ -2038,7 +2038,7 @@ clean:
 	$(MAKE) -C mouseandkeyinput clean
 	$(MAKE) -C chmhelp/packages/help clean
 	$(MAKE) -C chmhelp/packages/idehelp clean
-	$(MAKE) -C chmhelp/lhelp clean
+	${DELTREE} chmhelp/lhelp/lib/*
 	$(MAKE) -C instantfpc clean
 	$(MAKE) -C externhelp clean
 	$(MAKE) -C tdbf clean
@@ -2100,7 +2100,7 @@ distclean:
 	$(MAKE) -C mouseandkeyinput distclean
 	$(MAKE) -C chmhelp/packages/help distclean
 	$(MAKE) -C chmhelp/packages/idehelp distclean
-	$(MAKE) -C chmhelp/lhelp distclean
+	${DELTREE} chmhelp/lhelp/lib/*
 	$(MAKE) -C instantfpc distclean
 	$(MAKE) -C externhelp distclean
 	$(MAKE) -C tdbf distclean
