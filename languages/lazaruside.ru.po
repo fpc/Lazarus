@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-07-19 22:08+0300\n"
+"PO-Revision-Date: 2026-07-21 02:08+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -5929,8 +5929,8 @@ msgid "Build number"
 msgstr "Номер сборки"
 
 #: lazarusidestrconsts.lisbuildreleasepackagesstorecompi
-msgid "Build release packages. Store compiler checksum instead of date in package.compiled files."
-msgstr "Собрать пакеты в режиме конечного выпуска. Сохранить контрольную сумму компилятора вместо даты в файлах package.compiled."
+msgid "Build release packages. Store compiler checksum instead of date in package.compiled files. Ignore session and environment options."
+msgstr "Собрать пакеты в режиме конечного выпуска. Сохранить контрольную сумму компилятора вместо даты в файлах package.compiled. Игнорировать параметры сеанса и окружения."
 
 #: lazarusidestrconsts.lisbuildstage
 msgctxt "lazarusidestrconsts.lisbuildstage"
@@ -19072,6 +19072,10 @@ msgstr "Рабочий каталог для сборки"
 #: lazarusidestrconsts.lisworkingdirectoryforrun
 msgid "Working directory for run"
 msgstr "Рабочий каталог для запуска"
+
+#: lazarusidestrconsts.liswraplongmessagelinesotherwisetheyareclippedandahi
+msgid "Wrap long message lines into several rows. Otherwise they are clipped and a hint shows the full text."
+msgstr "Использовать несколько строк для вывода длинных сообщений. В противном случае они будут обрезаться, при этом полный текст будет показан в подсказке."
 
 #: lazarusidestrconsts.liswriteconfiginsteadofcommandlineparameters
 msgid "Write config instead of command line parameters"

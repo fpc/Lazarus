@@ -6140,7 +6140,7 @@ msgid "Build number"
 msgstr "Número de construcción"
 
 #: lazarusidestrconsts.lisbuildreleasepackagesstorecompi
-msgid "Build release packages. Store compiler checksum instead of date in package.compiled files."
+msgid "Build release packages. Store compiler checksum instead of date in package.compiled files. Ignore session and environment options."
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildstage
@@ -19489,6 +19489,10 @@ msgstr "Directorio de trabajo para construcción"
 #: lazarusidestrconsts.lisworkingdirectoryforrun
 msgid "Working directory for run"
 msgstr "Directorio de trabajo para ejecución"
+
+#: lazarusidestrconsts.liswraplongmessagelinesotherwisetheyareclippedandahi
+msgid "Wrap long message lines into several rows. Otherwise they are clipped and a hint shows the full text."
+msgstr ""
 
 #: lazarusidestrconsts.liswriteconfiginsteadofcommandlineparameters
 msgid "Write config instead of command line parameters"
