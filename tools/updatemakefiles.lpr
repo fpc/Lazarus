@@ -33,8 +33,8 @@ program updatemakefiles;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, sysutils, FileProcs, DefineTemplates, LazFileUtils, Laz2_XMLCfg,
-  FileUtil, LazLogger;
+  Classes, sysutils, StrUtils, FileProcs, DefineTemplates, LazFileUtils,
+  Laz2_XMLCfg, FileUtil, LazLogger;
 
 var
   LazarusDir: String;
@@ -217,6 +217,199 @@ begin
   end;
 end;
 
+{ Cut the macros from an UnitOutputDirectory, i.e. return the leading path parts
+  without a macro.
+  For example 'lib/$(TargetCPU)-$(TargetOS)' returns 'lib'. }
+function ExtractMacroFreeDir(Value: string): string;
+var
+  StartPos, i: Integer;
+begin
+  Result:=Value;
+  for i:=1 to length(Result) do
+    if Result[i]='\' then Result[i]:='/';
+  StartPos:=Pos('$',Result);
+  if StartPos<1 then exit;
+  while (StartPos>0) and (Result[StartPos]<>'/') do dec(StartPos);
+  Result:=LeftStr(Result,StartPos-1);
+end;
+
+{ Collect for every folder below components containing an lpk the output
+  directories without macros.
+  Folders[i] is the folder relative to components, Folders.Objects[i] is a
+  TStringList of output directories. }
+procedure CollectComponentOutDirs(Folders: TStringList);
+var
+  LPKFilenames: TStringList;
+  LPKFilename, ComponentsDir, Folder, OutDir: String;
+  LPK: TXMLConfig;
+  i, j, k: Integer;
+  OutDirs: TStringList;
+begin
+  ComponentsDir:=AppendPathDelim(LazarusDir+'components');
+  LPKFilenames:=FindAllFiles(ComponentsDir,'*.lpk',true);
+  try
+    for LPKFilename in LPKFilenames do begin
+      LPK:=TXMLConfig.Create(LPKFilename);
+      try
+        OutDir:=ExtractMacroFreeDir(LPK.GetValue(
+          'Package/CompilerOptions/SearchPaths/UnitOutputDirectory/Value',''));
+      finally
+        LPK.Free;
+      end;
+      if OutDir='' then begin
+        writeln('NOTE: no UnitOutputDirectory in ',
+                CreateRelativePath(LPKFilename,LazarusDir));
+        continue;
+      end;
+      Folder:=ChompPathDelim(CreateRelativePath(ExtractFilePath(LPKFilename),ComponentsDir));
+      for i:=1 to length(Folder) do
+        if Folder[i]='\' then Folder[i]:='/';
+      if Folder='' then continue; // components itself has no lpk, but be safe
+      i:=Folders.IndexOf(Folder);
+      if i<0 then begin
+        OutDirs:=TStringList.Create;
+        i:=Folders.AddObject(Folder,OutDirs);
+      end else
+        OutDirs:=TStringList(Folders.Objects[i]);
+      if OutDirs.IndexOf(OutDir)<0 then
+        OutDirs.Add(OutDir);
+    end;
+  finally
+    LPKFilenames.Free;
+  end;
+
+  // drop output dirs nested in another output dir of the same folder
+  // for example 'lib/fcl' is deleted by 'lib'
+  for i:=0 to Folders.Count-1 do begin
+    OutDirs:=TStringList(Folders.Objects[i]);
+    for j:=OutDirs.Count-1 downto 0 do
+      for k:=0 to OutDirs.Count-1 do
+        if (k<>j) and (LeftStr(OutDirs[j],length(OutDirs[k])+1)=OutDirs[k]+'/') then begin
+          OutDirs.Delete(j);
+          break;
+        end;
+    OutDirs.Sort;
+  end;
+  Folders.Sort;
+end;
+
+// Append the "${DELTREE} folder/outdir/*" lines of Folder to Lines, skipping lines already in Lines.
+procedure AddDeltreeLines(Lines: TStrings; Folder: string; OutDirs: TStrings);
+var
+  OutDir, Line: String;
+begin
+  for OutDir in OutDirs do begin
+    Line:=#9'${DELTREE} '+Folder+'/'+OutDir+'/*';
+    if Lines.IndexOf(Line)<0 then
+      Lines.Add(Line);
+  end;
+end;
+
+// Return the directory of a "$(MAKE) -C <dir> <target>" line, otherwise ''.
+function ExtractMakeDirOfLine(const Line: string; out Target: string): string;
+var
+  LineLen, p: Integer;
+begin
+  Result:='';
+  Target:='';
+  LineLen:=length(Line);
+  p:=1;
+  while p<LineLen do begin
+    if (Line[p]='-') and (Line[p+1]='C')
+        and ((p=1) or (Line[p-1]<=' '))
+        and ((p+2>LineLen) or (Line[p+2]<=' ')) then
+    begin
+      inc(p,2);
+      while (p<=LineLen) and (Line[p]<=' ') do inc(p);
+      while (p<=LineLen) and (Line[p]>' ') do begin
+        Result:=Result+Line[p];
+        inc(p);
+      end;
+      while (p<=LineLen) and (Line[p]<=' ') do inc(p);
+      while (p<=LineLen) and (Line[p]>' ') do begin
+        Target:=Target+Line[p];
+        inc(p);
+      end;
+      exit;
+    end;
+    inc(p);
+  end;
+end;
+
+// Updates the rules "clean" and "distclean" of components/Makefile.fpc
+// Remove any "$(MAKE) -C <folder> clean|distclean" of a folder with an lpk.
+// Add "${DELTREE} <folder>/<outdir>/*" for lpk folders.
+procedure UpdateComponentsMakefileFPC(Folders: TStringList);
+const
+  Rules: array[1..2] of string = ('clean','distclean');
+var
+  Filename, Rule, Line, Dir, Target: String;
+  Old, New, Recipe: TStringList;
+  i, j, RuleIndex, FolderIndex: Integer;
+  Done: TStringList;
+begin
+  Filename:=LazarusDir+SetDirSeparators('components/Makefile.fpc');
+  if not FileExistsUTF8(Filename) then
+    raise Exception.Create('missing '+Filename);
+
+  Old:=TStringList.Create;
+  New:=TStringList.Create;
+  Recipe:=TStringList.Create;
+  Done:=TStringList.Create;
+  try
+    Old.LoadFromFile(Filename);
+    i:=0;
+    while i<Old.Count do begin
+      Line:=Old[i];
+      RuleIndex:=0;
+      for j:=low(Rules) to high(Rules) do
+        if Line=Rules[j]+':' then RuleIndex:=j;
+      New.Add(Line);
+      inc(i);
+      if RuleIndex=0 then continue;
+
+      // this is the recipe of rule "clean" resp. "distclean"
+      Rule:=Rules[RuleIndex];
+      Done.Clear;
+      Recipe.Clear;
+      while (i<Old.Count) do begin
+        Line:=Old[i];
+        if Line='' then break;
+        if Line[1]<>#9 then break;
+        inc(i);
+        Dir:=ExtractMakeDirOfLine(Line,Target);
+        FolderIndex:=-1;
+        if (Dir<>'') and (Target=Rule) then
+          FolderIndex:=Folders.IndexOf(Dir);
+        if FolderIndex>=0 then begin
+          AddDeltreeLines(Recipe,Dir,TStringList(Folders.Objects[FolderIndex]));
+          Done.Add(Dir);
+        end else if Recipe.IndexOf(Line)<0 then
+          Recipe.Add(Line);
+      end;
+
+      // append the folders not yet in the rule
+      for j:=0 to Folders.Count-1 do
+        if Done.IndexOf(Folders[j])<0 then
+          AddDeltreeLines(Recipe,Folders[j],TStringList(Folders.Objects[j]));
+
+      New.AddStrings(Recipe);
+    end;
+
+    if New.Text=Old.Text then begin
+      writeln('components/Makefile.fpc is up to date');
+    end else begin
+      writeln('updating components/Makefile.fpc');
+      New.SaveToFile(Filename);
+    end;
+  finally
+    Done.Free;
+    Recipe.Free;
+    New.Free;
+    Old.Free;
+  end;
+end;
+
 procedure CheckFPCMake;
 const
   LastTarget = 'aarch64-darwin';
@@ -261,8 +454,9 @@ end;
 
 var
   LPKFiles: TStringList;
-  LazbuildOut, ExtraMakefiles: TStringList;
+  LazbuildOut, ExtraMakefiles, ComponentFolders: TStringList;
   LazbuildExe: String;
+  i: Integer;
 begin
   if Paramcount>0 then begin
     writeln('Updates for every lpk in the lazarus directory the Makefile.fpc, Makefile.compiled and Makefile.');
@@ -298,11 +492,21 @@ begin
   LazbuildOut:=RunTool(SetDirSeparators(LazarusDir+'lazbuild'+ExeExt),'--lazarusdir="'+LazarusDir+'" --create-makefile '+LPKFiles.DelimitedText,LazarusDir);
   writeln(LazbuildOut.Text);
 
-  // update custom Makefiles
-
   LazbuildOut.Free;
   LPKFiles.Free;
 
+  // update the clean/distclean rules of components/Makefile.fpc
+  ComponentFolders:=TStringList.Create;
+  try
+    CollectComponentOutDirs(ComponentFolders);
+    UpdateComponentsMakefileFPC(ComponentFolders);
+  finally
+    for i:=0 to ComponentFolders.Count-1 do
+      ComponentFolders.Objects[i].Free;
+    ComponentFolders.Free;
+  end;
+
+  // update custom Makefiles
   UpdateCustomMakefiles(ExtraMakefiles);
   ExtraMakefiles.Free;
 end.

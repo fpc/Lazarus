@@ -1997,125 +1997,293 @@ bigide:
 	$(MAKE) -C anchordocking/design
 all: lazbuildpackages idepackages bigide
 clean:
-	$(MAKE) -C lazutils clean
-	$(MAKE) -C lazedit clean
-	$(MAKE) -C codetools clean
-	$(MAKE) -C codetools/ide clean
-	$(MAKE) -C freetype clean
-	$(MAKE) -C debuggerintf clean
-	$(MAKE) -C lazdebuggergdbmi clean
-	$(MAKE) -C lazcontrols clean
-	$(MAKE) -C lazcontrols/design clean
-	$(MAKE) -C buildintf clean
-	$(MAKE) -C ideintf clean
-	$(MAKE) -C synedit clean
-	$(MAKE) -C synedit/design clean
-	$(MAKE) -C rtticontrols clean
-	$(MAKE) -C cairocanvas clean
-	$(MAKE) -C printers clean
-	$(MAKE) -C printers/design clean
-	$(MAKE) -C turbopower_ipro clean
-	$(MAKE) -C turbopower_ipro/design clean
-	$(MAKE) -C fpcunit clean
-	$(MAKE) -C fpcunit/testinsight clean
-	$(MAKE) -C fpcunit/ide clean
-	$(MAKE) -C projecttemplates clean
-	$(MAKE) -C fpdebug clean
-	$(MAKE) -C lazdebuggers/lazdebuggerintf clean
-	$(MAKE) -C lazdebuggers/cmdlinedebuggerbase clean
-	$(MAKE) -C lazdebuggers/lazdebuggerlldb clean
-	$(MAKE) -C lazdebuggers/lazdebuggerfplldb clean
-	$(MAKE) -C lazdebuggers/lazdebuggerfp clean
-	$(MAKE) -C leakview clean
-	$(MAKE) -C memds clean
-	$(MAKE) -C sdf clean
-	$(MAKE) -C tachart clean
-	$(MAKE) -C todolist clean
-	$(MAKE) -C datetimectrls clean
-	$(MAKE) -C datetimectrls/design clean
-	$(MAKE) -C jcf2 clean
-	$(MAKE) -C jcf2/IdePlugin/lazarus clean
-	$(MAKE) -C mouseandkeyinput clean
-	$(MAKE) -C chmhelp/packages/help clean
-	$(MAKE) -C chmhelp/packages/idehelp clean
+	${DELTREE} lazutils/lib/*
+	${DELTREE} lazedit/lib/*
+	${DELTREE} codetools/units/*
+	${DELTREE} codetools/ide/lib/*
+	${DELTREE} freetype/lib/*
+	${DELTREE} debuggerintf/lib/*
+	${DELTREE} lazdebuggergdbmi/units/*
+	${DELTREE} lazcontrols/lib/*
+	${DELTREE} lazcontrols/design/lib/*
+	${DELTREE} buildintf/units/*
+	${DELTREE} ideintf/units/*
+	${DELTREE} synedit/units/*
+	${DELTREE} synedit/design/units/*
+	${DELTREE} rtticontrols/lib/*
+	${DELTREE} cairocanvas/lib/*
+	${DELTREE} printers/lib/*
+	${DELTREE} printers/design/lib/*
+	${DELTREE} turbopower_ipro/units/*
+	${DELTREE} turbopower_ipro/design/lib/*
+	${DELTREE} fpcunit/lib/*
+	${DELTREE} fpcunit/testinsight/lib/*
+	${DELTREE} fpcunit/ide/lib/*
+	${DELTREE} projecttemplates/lib/*
+	${DELTREE} fpdebug/lib/*
+	${DELTREE} lazdebuggers/lazdebuggerintf/lib/*
+	${DELTREE} lazdebuggers/cmdlinedebuggerbase/lib/*
+	${DELTREE} lazdebuggers/lazdebuggerlldb/lib/*
+	${DELTREE} lazdebuggers/lazdebuggerfplldb/lib/*
+	${DELTREE} lazdebuggers/lazdebuggerfp/lib/*
+	${DELTREE} leakview/lib/*
+	${DELTREE} memds/lib/*
+	${DELTREE} sdf/lib/*
+	${DELTREE} tachart/lib/*
+	${DELTREE} todolist/lib/*
+	${DELTREE} datetimectrls/lib/*
+	${DELTREE} datetimectrls/design/lib/*
+	${DELTREE} jcf2/lib/*
+	${DELTREE} jcf2/IdePlugin/lazarus/lib/*
+	${DELTREE} mouseandkeyinput/lib/*
+	${DELTREE} chmhelp/packages/help/lib/*
+	${DELTREE} chmhelp/packages/idehelp/lib/*
 	${DELTREE} chmhelp/lhelp/lib/*
-	$(MAKE) -C instantfpc clean
-	$(MAKE) -C externhelp clean
-	$(MAKE) -C tdbf clean
-	$(MAKE) -C sqldb clean
-	$(MAKE) -C PascalScript/Source clean
-	$(MAKE) -C macroscript clean
-	$(MAKE) -C lclextensions clean
-	$(MAKE) -C virtualtreeview clean
-	$(MAKE) -C onlinepackagemanager clean
-	$(MAKE) -C simplewebservergui clean
-	$(MAKE) -C projectgroups clean
-	$(MAKE) -C pas2js clean
-	$(MAKE) -C exampleswindow clean
-	$(MAKE) -C charactermap clean
-	$(MAKE) -C charactermap/design clean
-	$(MAKE) -C dockedformeditor clean
-	$(MAKE) -C anchordocking clean
-	$(MAKE) -C anchordocking/design clean
+	${DELTREE} instantfpc/lib/*
+	${DELTREE} externhelp/lib/*
+	${DELTREE} tdbf/lib/*
+	${DELTREE} sqldb/lib/*
+	${DELTREE} PascalScript/Source/lib/*
+	${DELTREE} macroscript/lib/*
+	${DELTREE} lclextensions/lib/*
+	${DELTREE} virtualtreeview/lib/*
+	${DELTREE} onlinepackagemanager/lib/*
+	${DELTREE} simplewebservergui/lib/*
+	${DELTREE} projectgroups/lib/*
+	${DELTREE} pas2js/units/*
+	${DELTREE} exampleswindow/lib/*
+	${DELTREE} charactermap/lib/*
+	${DELTREE} charactermap/design/lib/*
+	${DELTREE} dockedformeditor/lib/*
+	${DELTREE} anchordocking/units/*
+	${DELTREE} anchordocking/design/units/*
+	${DELTREE} aarre/src/lib/*
+	${DELTREE} activex/lib/*
+	${DELTREE} aggpas/lazarus/lib/*
+	${DELTREE} aissist/api/lib/*
+	${DELTREE} aissist/ide/lib/*
+	${DELTREE} chatcontrol/lib/*
+	${DELTREE} compilers/c/lib/*
+	${DELTREE} compilers/delphi/lib/*
+	${DELTREE} customdrawn/lib/*
+	${DELTREE} customform/lib//*
+	${DELTREE} customform/demo/lib/*
+	${DELTREE} daemon/lib/*
+	${DELTREE} datadict/lib/*
+	${DELTREE} dbexport/lib/*
+	${DELTREE} education/lib/*
+	${DELTREE} fastopen/lib/*
+	${DELTREE} favorites/lib/*
+	${DELTREE} filebrowser/lib/*
+	${DELTREE} fpcunit/console/lib/*
+	${DELTREE} fppkg/src/lib/*
+	${DELTREE} fpreport/lib/*
+	${DELTREE} fpreport/design/lib/*
+	${DELTREE} fpvectorial/lib/*
+	${DELTREE} fpweb/lib/*
+	${DELTREE} googleapis/lib/*
+	${DELTREE} h2pas/lib/*
+	${DELTREE} iconfinder/packages/designtime/lib/design/*
+	${DELTREE} iconfinder/packages/runtime/lib/run/*
+	${DELTREE} IdeInspector/lib/*
+	${DELTREE} IdeLazLogger/lib/*
+	${DELTREE} idescout/lib/*
+	${DELTREE} images/lib/*
+	${DELTREE} instantsearch/lib/*
+	${DELTREE} jitclasses/lib/*
+	${DELTREE} lazdebuggergdbmi/test/gdbmitestutils/lib/*
+	${DELTREE} lazdebuggers/lazdebuggerfpdserver/lib/*
+	${DELTREE} lazdebuggers/lazdebuggerfpgdbmi/lib/*
+	${DELTREE} lazdebuggers/lazdebuggerfprspremote/lib/*
+	${DELTREE} lazdebuggers/lazdebugtestbase/lib/*
+	${DELTREE} lazreport/source/lib/*
+	${DELTREE} lazreport/source/addons/addfunction/lib/*
+	${DELTREE} lazreport/source/addons/cairoexport/lib/*
+	${DELTREE} lazreport/source/addons/DialogControls/lib/*
+	${DELTREE} lazreport/source/addons/imgexport/lib/*
+	${DELTREE} lazreport/source/addons/lrcodereport/lib/*
+	${DELTREE} lazreport/source/addons/LrDotMatrix/lib/*
+	${DELTREE} lazreport/source/addons/lrEmailExport/lib/*
+	${DELTREE} lazreport/source/addons/lrFclPDFExport/lib/*
+	${DELTREE} lazreport/source/addons/lrOfficeImport/lib/*
+	${DELTREE} lazreport/source/addons/lrspreadsheetexport/lib/*
+	${DELTREE} lazreport/source/addons/pdfexport/lib/*
+	${DELTREE} lazreport/source/addons/SqlDB/lib/*
+	${DELTREE} lazreport/source/addons/TDbfDB/lib/*
+	${DELTREE} lazreport/source/addons/ZeosDB/lib/*
+	${DELTREE} lazsvnpkg/lib/*
+	${DELTREE} lazthread/lib/*
+	${DELTREE} macfiles/lib/*
+	${DELTREE} markdown/lib/*
+	${DELTREE} messagecomposer/lib/*
+	${DELTREE} minimap/lib/*
+	${DELTREE} mrumenu/lib/*
+	${DELTREE} multithreadprocs/lib/*
+	${DELTREE} openapi/lib/*
+	${DELTREE} opengl/lib/*
+	${DELTREE} packagetabs/lib/*
+	${DELTREE} paradox/lib/*
+	${DELTREE} pas2js/components/lib/*
+	${DELTREE} plotfunction/lib/*
+	${DELTREE} pochecker/lib/*
+	${DELTREE} simpleideintf/lib/*
+	${DELTREE} sqldbrest/lib/*
+	${DELTREE} sqldbrest/design/lib/*
+	${DELTREE} sqlite/lib/*
+	${DELTREE} syneditspellchecker/lib/*
+	${DELTREE} syneditspellchecker/dsgn/lib/*
+	${DELTREE} synunihighlighter/lib/*
+	${DELTREE} tachart/aggpas/lib/*
+	${DELTREE} tachart/bgra/lib/*
+	${DELTREE} tachart/fpvectorial/lib/*
+	${DELTREE} tachart/opengl/lib/*
+	${DELTREE} tachart/print/lib/*
+	${DELTREE} tachart/wmf/lib/*
+	${DELTREE} vlc/lib/*
+	${DELTREE} wiki/lazwiki/lib/*
 cleanall: clean
 distclean:
-	$(MAKE) -C lazutils distclean
-	$(MAKE) -C lazedit distclean
-	$(MAKE) -C codetools distclean
-	$(MAKE) -C codetools/ide distclean
-	$(MAKE) -C freetype distclean
-	$(MAKE) -C debuggerintf distclean
-	$(MAKE) -C lazdebuggergdbmi distclean
-	$(MAKE) -C lazcontrols distclean
-	$(MAKE) -C lazcontrols/design distclean
-	$(MAKE) -C buildintf distclean
-	$(MAKE) -C ideintf distclean
-	$(MAKE) -C synedit distclean
-	$(MAKE) -C synedit/design distclean
-	$(MAKE) -C rtticontrols distclean
-	$(MAKE) -C cairocanvas distclean
-	$(MAKE) -C printers distclean
-	$(MAKE) -C printers/design distclean
-	$(MAKE) -C turbopower_ipro distclean
-	$(MAKE) -C turbopower_ipro/design distclean
-	$(MAKE) -C fpcunit distclean
-	$(MAKE) -C fpcunit/testinsight distclean
-	$(MAKE) -C fpcunit/ide distclean
-	$(MAKE) -C projecttemplates distclean
-	$(MAKE) -C fpdebug distclean
-	$(MAKE) -C lazdebuggers/lazdebuggerintf distclean
-	$(MAKE) -C lazdebuggers/cmdlinedebuggerbase distclean
-	$(MAKE) -C lazdebuggers/lazdebuggerlldb distclean
-	$(MAKE) -C lazdebuggers/lazdebuggerfplldb distclean
-	$(MAKE) -C lazdebuggers/lazdebuggerfp distclean
-	$(MAKE) -C leakview distclean
-	$(MAKE) -C memds distclean
-	$(MAKE) -C sdf distclean
-	$(MAKE) -C tachart distclean
-	$(MAKE) -C todolist distclean
-	$(MAKE) -C datetimectrls distclean
-	$(MAKE) -C datetimectrls/design distclean
-	$(MAKE) -C jcf2	distclean
-	$(MAKE) -C jcf2/IdePlugin/lazarus distclean
-	$(MAKE) -C mouseandkeyinput distclean
-	$(MAKE) -C chmhelp/packages/help distclean
-	$(MAKE) -C chmhelp/packages/idehelp distclean
+	${DELTREE} lazutils/lib/*
+	${DELTREE} lazedit/lib/*
+	${DELTREE} codetools/units/*
+	${DELTREE} codetools/ide/lib/*
+	${DELTREE} freetype/lib/*
+	${DELTREE} debuggerintf/lib/*
+	${DELTREE} lazdebuggergdbmi/units/*
+	${DELTREE} lazcontrols/lib/*
+	${DELTREE} lazcontrols/design/lib/*
+	${DELTREE} buildintf/units/*
+	${DELTREE} ideintf/units/*
+	${DELTREE} synedit/units/*
+	${DELTREE} synedit/design/units/*
+	${DELTREE} rtticontrols/lib/*
+	${DELTREE} cairocanvas/lib/*
+	${DELTREE} printers/lib/*
+	${DELTREE} printers/design/lib/*
+	${DELTREE} turbopower_ipro/units/*
+	${DELTREE} turbopower_ipro/design/lib/*
+	${DELTREE} fpcunit/lib/*
+	${DELTREE} fpcunit/testinsight/lib/*
+	${DELTREE} fpcunit/ide/lib/*
+	${DELTREE} projecttemplates/lib/*
+	${DELTREE} fpdebug/lib/*
+	${DELTREE} lazdebuggers/lazdebuggerintf/lib/*
+	${DELTREE} lazdebuggers/cmdlinedebuggerbase/lib/*
+	${DELTREE} lazdebuggers/lazdebuggerlldb/lib/*
+	${DELTREE} lazdebuggers/lazdebuggerfplldb/lib/*
+	${DELTREE} lazdebuggers/lazdebuggerfp/lib/*
+	${DELTREE} leakview/lib/*
+	${DELTREE} memds/lib/*
+	${DELTREE} sdf/lib/*
+	${DELTREE} tachart/lib/*
+	${DELTREE} todolist/lib/*
+	${DELTREE} datetimectrls/lib/*
+	${DELTREE} datetimectrls/design/lib/*
+	${DELTREE} jcf2/lib/*
+	${DELTREE} jcf2/IdePlugin/lazarus/lib/*
+	${DELTREE} mouseandkeyinput/lib/*
+	${DELTREE} chmhelp/packages/help/lib/*
+	${DELTREE} chmhelp/packages/idehelp/lib/*
 	${DELTREE} chmhelp/lhelp/lib/*
-	$(MAKE) -C instantfpc distclean
-	$(MAKE) -C externhelp distclean
-	$(MAKE) -C tdbf distclean
-	$(MAKE) -C sqldb distclean
-	$(MAKE) -C PascalScript/Source distclean
-	$(MAKE) -C macroscript distclean
-	$(MAKE) -C lclextensions distclean
-	$(MAKE) -C virtualtreeview distclean
-	$(MAKE) -C onlinepackagemanager distclean
-	$(MAKE) -C simplewebservergui distclean
-	$(MAKE) -C projectgroups distclean
-	$(MAKE) -C pas2js distclean
-	$(MAKE) -C exampleswindow distclean
-	$(MAKE) -C charactermap distclean
-	$(MAKE) -C charactermap/design distclean
-	$(MAKE) -C dockedformeditor distclean
-	$(MAKE) -C anchordocking distclean
-	$(MAKE) -C anchordocking/design distclean
+	${DELTREE} instantfpc/lib/*
+	${DELTREE} externhelp/lib/*
+	${DELTREE} tdbf/lib/*
+	${DELTREE} sqldb/lib/*
+	${DELTREE} PascalScript/Source/lib/*
+	${DELTREE} macroscript/lib/*
+	${DELTREE} lclextensions/lib/*
+	${DELTREE} virtualtreeview/lib/*
+	${DELTREE} onlinepackagemanager/lib/*
+	${DELTREE} simplewebservergui/lib/*
+	${DELTREE} projectgroups/lib/*
+	${DELTREE} pas2js/units/*
+	${DELTREE} exampleswindow/lib/*
+	${DELTREE} charactermap/lib/*
+	${DELTREE} charactermap/design/lib/*
+	${DELTREE} dockedformeditor/lib/*
+	${DELTREE} anchordocking/units/*
+	${DELTREE} anchordocking/design/units/*
+	${DELTREE} aarre/src/lib/*
+	${DELTREE} activex/lib/*
+	${DELTREE} aggpas/lazarus/lib/*
+	${DELTREE} aissist/api/lib/*
+	${DELTREE} aissist/ide/lib/*
+	${DELTREE} chatcontrol/lib/*
+	${DELTREE} compilers/c/lib/*
+	${DELTREE} compilers/delphi/lib/*
+	${DELTREE} customdrawn/lib/*
+	${DELTREE} customform/lib//*
+	${DELTREE} customform/demo/lib/*
+	${DELTREE} daemon/lib/*
+	${DELTREE} datadict/lib/*
+	${DELTREE} dbexport/lib/*
+	${DELTREE} education/lib/*
+	${DELTREE} fastopen/lib/*
+	${DELTREE} favorites/lib/*
+	${DELTREE} filebrowser/lib/*
+	${DELTREE} fpcunit/console/lib/*
+	${DELTREE} fppkg/src/lib/*
+	${DELTREE} fpreport/lib/*
+	${DELTREE} fpreport/design/lib/*
+	${DELTREE} fpvectorial/lib/*
+	${DELTREE} fpweb/lib/*
+	${DELTREE} googleapis/lib/*
+	${DELTREE} h2pas/lib/*
+	${DELTREE} iconfinder/packages/designtime/lib/design/*
+	${DELTREE} iconfinder/packages/runtime/lib/run/*
+	${DELTREE} IdeInspector/lib/*
+	${DELTREE} IdeLazLogger/lib/*
+	${DELTREE} idescout/lib/*
+	${DELTREE} images/lib/*
+	${DELTREE} instantsearch/lib/*
+	${DELTREE} jitclasses/lib/*
+	${DELTREE} lazdebuggergdbmi/test/gdbmitestutils/lib/*
+	${DELTREE} lazdebuggers/lazdebuggerfpdserver/lib/*
+	${DELTREE} lazdebuggers/lazdebuggerfpgdbmi/lib/*
+	${DELTREE} lazdebuggers/lazdebuggerfprspremote/lib/*
+	${DELTREE} lazdebuggers/lazdebugtestbase/lib/*
+	${DELTREE} lazreport/source/lib/*
+	${DELTREE} lazreport/source/addons/addfunction/lib/*
+	${DELTREE} lazreport/source/addons/cairoexport/lib/*
+	${DELTREE} lazreport/source/addons/DialogControls/lib/*
+	${DELTREE} lazreport/source/addons/imgexport/lib/*
+	${DELTREE} lazreport/source/addons/lrcodereport/lib/*
+	${DELTREE} lazreport/source/addons/LrDotMatrix/lib/*
+	${DELTREE} lazreport/source/addons/lrEmailExport/lib/*
+	${DELTREE} lazreport/source/addons/lrFclPDFExport/lib/*
+	${DELTREE} lazreport/source/addons/lrOfficeImport/lib/*
+	${DELTREE} lazreport/source/addons/lrspreadsheetexport/lib/*
+	${DELTREE} lazreport/source/addons/pdfexport/lib/*
+	${DELTREE} lazreport/source/addons/SqlDB/lib/*
+	${DELTREE} lazreport/source/addons/TDbfDB/lib/*
+	${DELTREE} lazreport/source/addons/ZeosDB/lib/*
+	${DELTREE} lazsvnpkg/lib/*
+	${DELTREE} lazthread/lib/*
+	${DELTREE} macfiles/lib/*
+	${DELTREE} markdown/lib/*
+	${DELTREE} messagecomposer/lib/*
+	${DELTREE} minimap/lib/*
+	${DELTREE} mrumenu/lib/*
+	${DELTREE} multithreadprocs/lib/*
+	${DELTREE} openapi/lib/*
+	${DELTREE} opengl/lib/*
+	${DELTREE} packagetabs/lib/*
+	${DELTREE} paradox/lib/*
+	${DELTREE} pas2js/components/lib/*
+	${DELTREE} plotfunction/lib/*
+	${DELTREE} pochecker/lib/*
+	${DELTREE} simpleideintf/lib/*
+	${DELTREE} sqldbrest/lib/*
+	${DELTREE} sqldbrest/design/lib/*
+	${DELTREE} sqlite/lib/*
+	${DELTREE} syneditspellchecker/lib/*
+	${DELTREE} syneditspellchecker/dsgn/lib/*
+	${DELTREE} synunihighlighter/lib/*
+	${DELTREE} tachart/aggpas/lib/*
+	${DELTREE} tachart/bgra/lib/*
+	${DELTREE} tachart/fpvectorial/lib/*
+	${DELTREE} tachart/opengl/lib/*
+	${DELTREE} tachart/print/lib/*
+	${DELTREE} tachart/wmf/lib/*
+	${DELTREE} vlc/lib/*
+	${DELTREE} wiki/lazwiki/lib/*
