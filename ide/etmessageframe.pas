@@ -223,8 +223,7 @@ type
     fWrapWinScrollTop: integer;  // ...so EnsureWrapWindows can skip redundant rebuilds
     fWrapWinWidth, fWrapWinHeight: integer;
     fArrowWidth: integer;        // Canvas.TextWidth(MsgWndWrapArrow)
-    fContIndentWidth: integer;   // pixel width of the 2-space continuation indent
-    fIconWidth: integer;         // horizontal space a message icon takes (0 if none)
+    fIconWidth: integer;         // horizontal space a message icon takes (0 if none), also the continuation row indent
     FSourceMarks: TETMarks;
     FTextColor: TColor;
     fUpdateLock: integer;
@@ -306,7 +305,7 @@ type
     function FindWrapChunk(View: TLMsgWndView; MsgLine: integer): TWrapChunk; // chunk covering the line, else nil
     function FirstWrapChunkNode(View: TLMsgWndView): TAVLTreeNode; // node of view's chunk with lowest FirstLine, else nil
     procedure InvalidateWrapCache;
-    procedure RefreshWrapMetrics; // recompute fArrowWidth/fContIndentWidth
+    procedure RefreshWrapMetrics; // recompute fArrowWidth/fIconWidth
     procedure EnsureWrapWindows;
     function ViewApproxVisualRows(View: TLMsgWndView): integer;
     function ApproxTotalVisualRows: integer;
@@ -551,7 +550,6 @@ implementation
 const
   cNotALineHint=low(integer);
   MsgWndWrapArrow = #$E2#$86#$B5; // U+21B5 ↵ , marks a wrapped (continued) visual row
-  MsgWndContIndent = '  ';        // 2 space indent for continuation rows
 
 type
   // search key for the fWrapChunks AVL tree
@@ -2094,7 +2092,7 @@ var
 begin
   Indent:=BorderWidth+2;
   FirstRowWidth:=ClientWidth-Indent-IconW-fArrowWidth;
-  ContRowWidth:=ClientWidth-Indent-fContIndentWidth-fArrowWidth;
+  ContRowWidth:=ClientWidth-Indent-fIconWidth-fArrowWidth;
   if FirstRowWidth<1 then FirstRowWidth:=1;
   if ContRowWidth<1 then ContRowWidth:=1;
 end;
@@ -2310,7 +2308,6 @@ procedure TMessagesCtrl.RefreshWrapMetrics;
 begin
   if not HandleAllocated then exit;
   fArrowWidth:=Canvas.TextWidth(MsgWndWrapArrow)+2;
-  fContIndentWidth:=Canvas.TextWidth(MsgWndContIndent);
   if (Images<>nil) and (mcoShowMsgIcons in Options) then
     fIconWidth:=Images.ResolutionForControl[0, Self].Width+2
   else
@@ -2850,7 +2847,7 @@ begin
         yTop:=y;
         for r:=0 to Rows-1 do begin
           RowLeft:=Indent;
-          if r>0 then inc(RowLeft,fContIndentWidth);
+          if r>0 then inc(RowLeft,fIconWidth);
           if (y+ItemHeight>0) and (y<ClientHeight) then begin
             if HasIcon and (r=0) then begin
               ImgRes := Images.ResolutionForControl[0, Self];
