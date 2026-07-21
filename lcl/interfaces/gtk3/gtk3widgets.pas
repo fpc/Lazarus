@@ -27,7 +27,7 @@ uses
   Controls, StdCtrls, ExtCtrls, Buttons, ComCtrls, Graphics, Dialogs, Forms, Menus, ExtDlgs,
   Spin, CheckLst, PairSplitter, LCLType, LMessages, LCLMessageGlue, LCLIntf,
   // LazUtils
-  GraphType,
+  GraphType, LazUTF8,
   // GTK3
   LazGtk3, LazGdk3, LazGObject2, LazGLib2, LazCairo1, LazPango1, LazPangoCairo1, LazGdkPixbuf2,
   gtk3objects, gtk3procs, gtk3private, Gtk3CellRenderer, gtk3mdiemulator;
@@ -2627,6 +2627,9 @@ var
   IsEditableWidget: Boolean;
   TextBeforeKey: String;
   AFiltered: gboolean;
+  NewKeyVal: guint;
+  UniChar: Cardinal;
+  UniLen: Integer;
   {$IFDEF GTK3DEBUGKEYPRESS}
   TempWidget: HWND;
   Info: PTypeInfo;
@@ -2840,6 +2843,23 @@ begin
       exit;
     end;
 
+    if UTF8Char <> AEventString then
+    begin
+      if Length(UTF8Char) = 0 then
+        Result := True
+      else
+      begin
+        UniChar := UTF8CodepointToUnicode(@UTF8Char[1], UniLen);
+        if UniChar > 0 then
+        begin
+          NewKeyVal := gdk_unicode_to_keyval(UniChar);
+          if NewKeyVal <> 0 then
+            Event^.key.keyval := NewKeyVal;
+        end;
+      end;
+      exit;
+    end;
+
     // create the CN_CHAR / CN_SYSCHAR message
     FillChar(CharMsg{%H-}, SizeOf(CharMsg), 0);
     CharMsg.Msg := CN_CharMsg[IsSysKey];
@@ -2862,6 +2882,13 @@ begin
       writeln('<=== CN_CharMsg handled ... exiting');
       {$ENDIF}
       exit;
+    end;
+
+    if (CharMsg.CharCode <> 0) and (CharMsg.CharCode <> Word(AChar)) then
+    begin
+      NewKeyVal := gdk_unicode_to_keyval(CharMsg.CharCode);
+      if NewKeyVal <> 0 then
+        Event^.key.keyval := NewKeyVal;
     end;
 
     //Send a LM_(SYS)CHAR
