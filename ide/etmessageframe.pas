@@ -231,6 +231,8 @@ type
     FUpdateTimer: TTimer;
     fSomeViewsRunning: boolean;
     fHasHeaderHint: boolean;
+    // The View whose header is painted as hint over the first visual row.
+    fHeaderHintView: TLMsgWndView;
     fUrgencyStyles: array[TMessageLineUrgency] of TMsgCtrlUrgencyStyle;
     FAutoHeaderBackground: TColor;
     // The View with the first selected line (property SelLineFirst).
@@ -2080,6 +2082,10 @@ begin
         fLastSearchStart.View:=nil;
       if FTextCursorPoint.View=AComponent then
         FTextCursorPoint.View:=nil;
+      if fHeaderHintView=AComponent then begin
+        fHeaderHintView:=nil;
+        fHasHeaderHint:=false;
+      end;
       RemoveView(TLMsgWndView(AComponent));
     end
     else if AComponent=Images then
@@ -2810,6 +2816,7 @@ begin
   Indent:=BorderWidth+2;
   LoSearchText:=fLastLoSearchText;
   fHasHeaderHint:=False;
+  fHeaderHintView:=nil;
 
   // make sure the wrap metrics and the measured heuristic windows are current
   RefreshWrapMetrics;
@@ -2932,6 +2939,7 @@ begin
       // the first two visual Rows are normal messages, not selected
       // => paint view header hint
       fHasHeaderHint:=True;
+      fHeaderHintView:=View;
       NodeRect:=Rect(0,0,ClientWidth,ItemHeight div 2);
       Canvas.Brush.Color:=HeaderBackground[View.ToolState];
       Canvas.Brush.Style:=bsSolid;
@@ -3052,13 +3060,10 @@ begin
     else begin
       if (Button=mbLeft) or (View.FSelectedLines.IndexOf(LineNumber)=-1) then
       begin
-        if fHasHeaderHint and (Y<ItemHeight) then
-          // The header is drawn on top as a hint. Select the actual header line.
-          SelectOne(View,-1)
-        else begin
-          SelectOne(View,LineNumber);
-          StoreSelectedAsSearchStart;
-        end;
+        // note: GetLineAt already returns the header line if the header is
+        // drawn on top as a hint
+        SelectOne(View,LineNumber);
+        StoreSelectedAsSearchStart;
       end;
       if (Button=mbLeft) then begin
         if ((ssDouble in Shift) and (not (mcoSingleClickOpensFile in FOptions)))
@@ -4058,6 +4063,13 @@ function TMessagesCtrl.GetLineAt(Y: integer; out View: TLMsgWndView;
 var
   i, k: Integer;
 begin
+  if fHasHeaderHint and (fHeaderHintView<>nil) and (Y>=0) and (Y<ItemHeight) then begin
+    // the view header is painted on top of the first visual row, hiding the
+    // message line below it => return the header line
+    View:=fHeaderHintView;
+    Line:=-1;
+    exit(true);
+  end;
   for i:=0 to ViewCount-1 do begin
     View:=Views[i];
     if View.FPaintStamp<>FPaintStamp then continue;
