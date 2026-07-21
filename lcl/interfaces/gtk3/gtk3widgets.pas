@@ -14719,6 +14719,31 @@ var
   KwinResizeData: PKwinResizeIdleData;
   WinGen: PtrUInt;
   MenuH: gint;
+  OldShadowW, OldShadowH: gint;
+
+  procedure UpdateShadowAndHints;
+  begin
+    OldShadowW := TGtk3Window(ACtl).FResizeState.ShadowW;
+    OldShadowH := TGtk3Window(ACtl).FResizeState.ShadowH;
+    TGtk3Window(ACtl).FResizeState.ShadowW := Max(0, AGdkRect^.Width  - SzW);
+    TGtk3Window(ACtl).FResizeState.ShadowH := Max(0, AGdkRect^.Height - SzH);
+    if ((OldShadowW <> TGtk3Window(ACtl).FResizeState.ShadowW) or
+        (OldShadowH <> TGtk3Window(ACtl).FResizeState.ShadowH)) and
+       Assigned(ACtl.LCLObject) and (ACtl.LCLObject is TCustomForm) then
+    begin
+      with TCustomForm(ACtl.LCLObject).Constraints do
+        if (MinWidth > 0) or (MaxWidth > 0) or (MinHeight > 0) or (MaxHeight > 0) then
+        begin
+          {$IFDEF GTK3DEBUGSIZE}
+          writeln(Format('[%d] WindowSizeAllocate %s shadow changed %dx%d -> %dx%d, refire constraint hints',
+            [GetTickCount64, dbgsName(ACtl.LCLObject), OldShadowW, OldShadowH,
+             TGtk3Window(ACtl).FResizeState.ShadowW, TGtk3Window(ACtl).FResizeState.ShadowH]));
+          {$ENDIF}
+          TWSWinControlClass(ACtl.LCLObject.WidgetSetClass).ConstraintsChange(ACtl.LCLObject);
+        end;
+    end;
+  end;
+
 begin
   if AWidget=nil then ;
 
@@ -14878,8 +14903,7 @@ begin
        (SzW <= AGdkRect^.Width) and (SzH <= AGdkRect^.Height) and
        (AGdkRect^.Width - SzW < 250) and (AGdkRect^.Height - SzH < 250) then
     begin
-      TGtk3Window(ACtl).FResizeState.ShadowW := Max(0, AGdkRect^.Width  - SzW);
-      TGtk3Window(ACtl).FResizeState.ShadowH := Max(0, AGdkRect^.Height - SzH);
+      UpdateShadowAndHints;
       {$IFDEF GTK3DEBUGSIZE}
       writeln(Format('[%d] WindowSizeAllocate %s shadow updated to %dx%d (AGdk=%dx%d sz=%dx%d)',
         [GetTickCount64, dbgsName(ACtl.LCLObject),
@@ -14904,7 +14928,7 @@ begin
          ACtl.LCLObject.Width, ACtl.LCLObject.Height, ACtl.LCLObject.Width, ACtl.LCLObject.Height,
          TGtk3Window(ACtl).FResizeState.ShadowW, TGtk3Window(ACtl).FResizeState.ShadowH, SzW, SzH]));
       {$ENDIF}
-      PGtkWindow(AWidget)^.resize(ACtl.LCLObject.Width, ACtl.LCLObject.Height);
+      PGtkWindow(AWidget)^.resize(ACtl.LCLObject.Width, ACtl.LCLObject.Height + MenuH);
     end;
 
     if (NewSize.cx = ACtl.LCLObject.Width) and (NewSize.cy = ACtl.LCLObject.Height) then
@@ -14913,7 +14937,8 @@ begin
        (SzW = ACtl.LCLObject.Width) and (SzH = ACtl.LCLObject.Height) then
       exit;
     if (SzW > 0) and (SzH > 0) and
-       ((SzH < AGdkRect^.Height div 2) or (SzW < AGdkRect^.Width div 2)) then
+       ((SzH < (ACtl.LCLObject.Height + MenuH) div 2) or
+        (SzW < ACtl.LCLObject.Width div 2)) then
       exit;
     NewSize.cx := SzW;
     if MenuH > 0 then
@@ -14949,8 +14974,7 @@ begin
      (SzW <= AGdkRect^.Width) and (SzH <= AGdkRect^.Height) and
      (AGdkRect^.Width - SzW < 250) and (AGdkRect^.Height - SzH < 250) then
   begin
-    TGtk3Window(ACtl).FResizeState.ShadowW := Max(0, AGdkRect^.Width  - SzW);
-    TGtk3Window(ACtl).FResizeState.ShadowH := Max(0, AGdkRect^.Height - SzH);
+    UpdateShadowAndHints;
     {$IFDEF GTK3DEBUGSIZE}
     DebugLn(Format('[%d] WindowSizeAllocate %s shadow updated to %dx%d (AGdk=%dx%d sz=%dx%d)',
       [GetTickCount64, dbgsName(ACtl.LCLObject),
@@ -14971,7 +14995,7 @@ begin
       [GetTickCount64, dbgsName(ACtl.LCLObject), ACtl.LCLObject.Width, ACtl.LCLObject.Height, ACtl.LCLObject.Width, ACtl.LCLObject.Height,
        TGtk3Window(ACtl).FResizeState.ShadowW, TGtk3Window(ACtl).FResizeState.ShadowH, SzW, SzH]));
     {$ENDIF}
-    PGtkWindow(AWidget)^.resize(ACtl.LCLObject.Width, ACtl.LCLObject.Height);
+    PGtkWindow(AWidget)^.resize(ACtl.LCLObject.Width, ACtl.LCLObject.Height + MenuH);
   end;
 
   TGtk3Window(ACtl).FResizeState.PrevWSATime := TGtk3Window(ACtl).FResizeState.LastWSATime;
@@ -15604,7 +15628,6 @@ var
   x: gint;
   y: gint;
   AViewPort: PGtkViewport;
-  MenuSize:Integer;
   Bar: PGtkScrollbar;
 begin
   AViewPort := PGtkViewPort(FCentralWidget^.get_parent);
@@ -15615,13 +15638,7 @@ begin
     if Gtk3WidgetSet.IsWayland and Gtk3IsGtkWindow(FWidget) and
        not Assigned(LCLObject.Parent) and not (wtHintWindow in FWidgetType) then
     begin
-      MenuSize := 0;
-      if (LCLObject is TCustomForm) then
-      begin
-        if (TCustomForm(LCLObject).Menu <> nil) or (FMenuBar <> nil) then
-          MenuSize := GetSystemMetrics(SM_CYMENU);
-      end;
-      Result := Rect(0, 0, LCLObject.Width, LCLObject.Height - MenuSize);
+      Result := Rect(0, 0, LCLObject.Width, LCLObject.Height);
       exit;
     end;
     AViewPort^.get_view_window^.get_geometry(@x, @y, @w, @h);
@@ -15670,16 +15687,10 @@ begin
          (Allocation.Height < FResizeState.ShadowH) and
          (LCLObject.Width > 0) and (LCLObject.Height > 0) then
       begin
-        MenuSize := 0;
-        if (LCLObject is TCustomForm) then
-        begin
-          if (TCustomForm(LCLObject).Menu <> nil) or (FMenuBar <> nil) then
-            MenuSize := GetSystemMetrics(SM_CYMENU);
-        end;
         Allocation.x := 0;
         Allocation.y := 0;
         Allocation.width := LCLObject.Width;
-        Allocation.Height := LCLObject.Height - MenuSize;
+        Allocation.Height := LCLObject.Height;
       end;
     end;
   end;

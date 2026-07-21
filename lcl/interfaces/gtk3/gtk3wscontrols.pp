@@ -146,7 +146,7 @@ var
   AHints: TGdkWindowHints;
   AFixedWidthHeight: Boolean;
   AForm: TCustomForm;
-  AShadowW, AShadowH: Integer;
+  AShadowW, AShadowH, MenuH: Integer;
 begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WSWinControl.ConstraintsChange');
@@ -168,27 +168,43 @@ begin
     AShadowH := TGtk3Window(AWidget).CSDShadowH;
   end;
 
+  MenuH := 0;
+  if not Assigned(AForm.Parent) and (AForm.FormStyle <> fsMDIChild) then
+    MenuH := TGtk3Window(AWidget).GetMenuBarHeight;
+
   FillChar(Geometry, SizeOf(Geometry), 0);
   with Geometry do
   begin
     if not AFixedWidthHeight and (AForm.Constraints.MinWidth > 0) then
       min_width := AForm.Constraints.MinWidth + AShadowW
     else
-      min_width := AForm.Width;
+    if AFixedWidthHeight then
+      min_width := AForm.Width
+    else
+      min_width := 1;
     if not AFixedWidthHeight and (AForm.Constraints.MaxWidth > 0) then
       max_width := AForm.Constraints.MaxWidth + AShadowW
     else
-      max_width := AForm.Width;
+    if AFixedWidthHeight then
+      max_width := AForm.Width
+    else
+      max_width := 32767;
     if not AFixedWidthHeight and (AForm.Constraints.MinHeight > 0) then
-      min_height := AForm.Constraints.MinHeight + AShadowH
+      min_height := AForm.Constraints.MinHeight + AShadowH + MenuH
     else
-      min_height := AForm.Height;
+    if AFixedWidthHeight then
+      min_height := AForm.Height + MenuH
+    else
+      min_height := 1;
     if not AFixedWidthHeight and (AForm.Constraints.MaxHeight > 0) then
-      max_height := AForm.Constraints.MaxHeight + AShadowH
+      max_height := AForm.Constraints.MaxHeight + AShadowH + MenuH
     else
-      max_height := AForm.Height;
+    if AFixedWidthHeight then
+      max_height := AForm.Height + MenuH
+    else
+      max_height := 32767;
     base_width  := AForm.Width;
-    base_height := AForm.Height;
+    base_height := AForm.Height + MenuH;
     width_inc   := 1;
     height_inc  := 1;
     min_aspect  := 0;
