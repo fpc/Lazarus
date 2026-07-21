@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-06-20 18:25+0200\n"
+"PO-Revision-Date: 2026-07-21 23:00+0200\n"
 "Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Language: de_DE\n"
@@ -103,8 +103,9 @@ msgid "Preview report"
 msgstr "Report-Vorschau"
 
 #: maincalleditor.cerprintgrid
+#, fuzzy
 msgid "Print grid"
-msgstr "Grid drucken"
+msgstr "Gitter drucken"
 
 #: maincalleditor.cerprintreport
 msgid "Print report"
@@ -162,8 +163,9 @@ msgid "Preview Report"
 msgstr "Reportvorschau"
 
 #: tfrmmain.accprintgrid.caption
+#, fuzzy
 msgid "Print Grid"
-msgstr "Grid drucken"
+msgstr "Gitter drucken"
 
 #: tfrmmain.accprintreport.caption
 msgid "Print Report"

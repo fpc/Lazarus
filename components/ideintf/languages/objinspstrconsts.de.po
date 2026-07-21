@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-06-24 12:49+0200\n"
+"PO-Revision-Date: 2026-07-21 22:58+0200\n"
 "Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Language: de\n"
@@ -412,7 +412,7 @@ msgstr "Action&List-Editor ..."
 
 #: objinspstrconsts.oisactionlisteditor
 msgid "ActionList Editor"
-msgstr "Aktionslisteneditor"
+msgstr "Aktionslisten-Editor"
 
 #: objinspstrconsts.oisadd
 msgctxt "objinspstrconsts.oisadd"
@@ -1668,7 +1668,7 @@ msgstr "Zuweisen"
 
 #: objinspstrconsts.sccssgedtcaption
 msgid "StringGrid Editor"
-msgstr "Stringgrid Editor"
+msgstr "Stringgrid-Editor"
 
 #: objinspstrconsts.sccssgedtclean
 msgid "Clean"

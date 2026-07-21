@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazreport\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-06-24 12:50+0200\n"
+"PO-Revision-Date: 2026-07-21 23:04+0200\n"
 "Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Language: de_DE\n"
@@ -602,8 +602,9 @@ msgid "&8 pixels"
 msgstr "&8 Pixel"
 
 #: lr_const.sdesoptionsformaligngrd
+#, fuzzy
 msgid "Align to &grid"
-msgstr "Am &Grid ausrichten"
+msgstr "Am &Gitter ausrichten"
 
 #: lr_const.sdesoptionsformcoloredbutton
 msgid "Colored &buttons"
@@ -623,13 +624,15 @@ msgid "&Editing after insert"
 msgstr "Nach dem &Einfügen bearbeiten"
 
 #: lr_const.sdesoptionsformgrdsize
+#, fuzzy
 msgid "Grid size"
-msgstr "Grid-Größe"
+msgstr "Gitter-Größe"
 
 #: lr_const.sdesoptionsformgrid
+#, fuzzy
 msgctxt "lr_const.sdesoptionsformgrid"
 msgid "Grid"
-msgstr "Grid"
+msgstr "Gitter"
 
 #: lr_const.sdesoptionsforminch
 msgid "&Inches"
@@ -670,8 +673,9 @@ msgid "Show band &titles"
 msgstr "Band&titel anzeigen"
 
 #: lr_const.sdesoptionsformshowgrd
+#, fuzzy
 msgid "&Show grid"
-msgstr "&Grid anzeigen"
+msgstr "&Gitter anzeigen"
 
 #: lr_const.sdesoptionsformunits
 msgid "Report units"
@@ -1173,8 +1177,9 @@ msgid "Draw lines"
 msgstr "Linien zeichnen"
 
 #: lr_const.sfrdesignerformfitgrid
+#, fuzzy
 msgid "Fit to grid"
-msgstr "An Grid anpassen"
+msgstr "An Gitter anpassen"
 
 #: lr_const.sfrdesignerformfont
 msgid "Font color"
@@ -1197,13 +1202,15 @@ msgid "Frame width"
 msgstr "Rahmenbreite"
 
 #: lr_const.sfrdesignerformgrid
+#, fuzzy
 msgctxt "lr_const.sfrdesignerformgrid"
 msgid "Grid"
-msgstr "Grid"
+msgstr "Gitter"
 
 #: lr_const.sfrdesignerformgridalign
+#, fuzzy
 msgid "Grid align"
-msgstr "Am Grid ausrichten"
+msgstr "Am Gitter ausrichten"
 
 #: lr_const.sfrdesignerformhightlight
 msgctxt "lr_const.sfrdesignerformhightlight"

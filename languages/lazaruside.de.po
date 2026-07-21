@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-06-24 14:12+0200\n"
+"PO-Revision-Date: 2026-07-22 11:49+0200\n"
 "Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Language: de_DE\n"
@@ -1564,7 +1564,7 @@ msgstr "Antialiasing abschalten"
 
 #: lazarusidestrconsts.dlgdistancebetweengridpointsissmalleststep
 msgid "Distance between grid points is the smallest step when moving a control."
-msgstr ""
+msgstr "Abstand zwischen Gitterpunkten ist der kleinste Schritt beim Verschieben eines Steuerelements."
 
 #: lazarusidestrconsts.dlgdividercolordefault
 msgid "Use right margin color"
@@ -1822,7 +1822,7 @@ msgstr "Dateien"
 
 #: lazarusidestrconsts.dlgenvgrid
 msgid "Grid"
-msgstr "Grid"
+msgstr "Gitter"
 
 #: lazarusidestrconsts.dlgenvidestartup
 msgid "IDE Startup"
@@ -2303,27 +2303,27 @@ msgstr "Ausgegraute Desktops sind für die nicht-gedockte IDE."
 
 #: lazarusidestrconsts.dlggridcolor
 msgid "Grid color"
-msgstr "Grid-Farbe"
+msgstr "Gitter-Farbe"
 
 #: lazarusidestrconsts.dlggridconsistsofsmalldots
 msgid "Grid consists of small dots which help aligning controls."
-msgstr ""
+msgstr "Das Gitter besteht aus kleinen Punkten, die beim Ausrichten von Steuerelementen helfen."
 
 #: lazarusidestrconsts.dlggridx
 msgid "Grid size X"
-msgstr "Grid-Größe X"
+msgstr "Gitter-Weite X"
 
 #: lazarusidestrconsts.dlggridxhint
 msgid "Horizontal grid step size"
-msgstr "Waagrechte Grid-Schrittweite"
+msgstr "Waagrechte Gitter-Schrittweite"
 
 #: lazarusidestrconsts.dlggridy
 msgid "Grid size Y"
-msgstr "Grid-Größe Y"
+msgstr "Gitter-Weite Y"
 
 #: lazarusidestrconsts.dlggridyhint
 msgid "Vertical grid step size"
-msgstr "Senkrechte Grid-Schrittweite"
+msgstr "Senkrechte Gitter-Schrittweite"
 
 #: lazarusidestrconsts.dlggroupcodeexplorer
 msgctxt "lazarusidestrconsts.dlggroupcodeexplorer"
@@ -2398,7 +2398,7 @@ msgstr "Heap-Größe"
 
 #: lazarusidestrconsts.dlgheightofonepropertyingrid
 msgid "Height of one property in the grid."
-msgstr "Höhe einer Eigenschaft im Grid."
+msgstr "Zeilenhöhe im Objektinspektor."
 
 #: lazarusidestrconsts.dlgheightpos
 msgid "Height:"
@@ -3921,11 +3921,11 @@ msgstr "Abstand vom Rand"
 
 #: lazarusidestrconsts.dlgqshowgrid
 msgid "Show grid"
-msgstr "Grid anzeigen"
+msgstr "Gitter anzeigen"
 
 #: lazarusidestrconsts.dlgqsnaptogrid
 msgid "Snap to grid"
-msgstr "Am Grid ausrichten"
+msgstr "Am Gitter ausrichten"
 
 #: lazarusidestrconsts.dlgreallydeletedesktop
 #, object-pascal-format
@@ -4819,7 +4819,7 @@ msgstr "Größe"
 
 #: lazarusidestrconsts.fdmsnaptogridoption
 msgid "Option: Snap to grid"
-msgstr "Einstellung: Ans Grid kleben"
+msgstr "Einstellung: Am Gitter ausrichten"
 
 #: lazarusidestrconsts.fdmsnaptoguidelinesoption
 msgid "Option: Snap to guide lines"
@@ -9142,7 +9142,7 @@ msgstr "Wirklich beenden?"
 
 #: lazarusidestrconsts.lisdrawgridlinesobjectinspector
 msgid "Draw grid lines"
-msgstr "Grid-Linien zeichnen"
+msgstr "Gitter-Linien zeichnen"
 
 #: lazarusidestrconsts.lisdrawtheselectionfocusedevenifthemessageswindowhasn
 msgid "Draw the selection focused even if the Messages window has no focus. Use this if your theme has a hardly visible unfocused drawing."
@@ -13682,7 +13682,7 @@ msgstr "Ausgabeverzeichnis -FU des Ziels ersetzen"
 
 #: lazarusidestrconsts.lismmredolastundotothisgrid
 msgid "Redo last undo to this grid"
-msgstr ""
+msgstr "Die widerrufene Änderung an dieser Tabelle erneut ausführen"
 
 #: lazarusidestrconsts.lismmsetanidemacroeglclwidgettypewin32
 msgid "Set an IDE macro, e.g.: LCLWidgetType:=win32"
@@ -13711,7 +13711,7 @@ msgstr "Ziele: "
 
 #: lazarusidestrconsts.lismmundolastchangetothisgrid
 msgid "Undo last change to this grid"
-msgstr ""
+msgstr "Die letzte Änderung an dieser Tabelle widerrufen"
 
 #: lazarusidestrconsts.lismmvalues
 #, object-pascal-format
