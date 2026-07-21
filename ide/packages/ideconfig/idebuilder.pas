@@ -504,8 +504,10 @@ var
   s, MakeExe, LazbuildExe, StarterFilename: String;
   Tool: TAbstractExternalTool;
   EnvironmentOverrides: TStringList;
+  LazProf: TBuildLazarusProfile;
 begin
   Result:=mrCancel;
+  LazProf:=MiscellaneousOptions.BuildLazProfiles.Current;
 
   EnvironmentOverrides:=TStringList.Create;
   try
@@ -513,6 +515,7 @@ begin
     s:=EnvironmentOptions.GetParsedCompilerFilename;
     if s<>'' then
       EnvironmentOverrides.Values['PP']:=s;
+    EnvironmentOverrides.Values['LCL_PLATFORM']:=LCLPlatformDirNames[LazProf.TargetPlatform];
 
     MakeExe:=SearchMakeExe(true);
     fWorkingDir:=EnvironmentOptions.GetParsedLazarusDirectory;
@@ -571,13 +574,14 @@ begin
     Tool:=ExternalToolList.Add('lazbuild --useride=');
     Tool.Reference(Self,ClassName);
     try
-      Tool.Data:=TIDEExternalToolData.Create(IDEToolCompileIDE,'lazbuild --user-ide=',
+      Tool.Data:=TIDEExternalToolData.Create(IDEToolCompileIDE,'lazbuild --build-ide',
         MakeExe);
       Tool.FreeData:=true;
       Tool.Process.Executable:=LazbuildExe;
-      Tool.Process.Parameters.Add('--build-ide=');
+      Tool.Process.Parameters.Add('--build-ide');
       Tool.Process.Parameters.Add('--lazarusdir=.');
       Tool.Process.Parameters.Add('--pcp='+GetPrimaryConfigPath);
+      Tool.Process.Parameters.Add('--ws='+LCLPlatformDirNames[LazProf.TargetPlatform]);
       Tool.AddParsers(SubToolFPC);
       Tool.AddParsers(SubToolMake);
       Tool.Process.CurrentDirectory:=fWorkingDir;
