@@ -581,7 +581,7 @@ begin
       Tool.Process.Parameters.Add('--build-ide');
       Tool.Process.Parameters.Add('--lazarusdir=.');
       Tool.Process.Parameters.Add('--pcp='+GetPrimaryConfigPath);
-      Tool.Process.Parameters.Add('--ws='+LCLPlatformDirNames[LazProf.TargetPlatform]);
+      // all other settings like lcl widgettype and target os lazbuild will fetch from the env xml
       Tool.AddParsers(SubToolFPC);
       Tool.AddParsers(SubToolMake);
       Tool.Process.CurrentDirectory:=fWorkingDir;
