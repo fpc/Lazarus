@@ -674,8 +674,7 @@ begin
   Result := Result+'}';
 end;
 
-function GetJITMethod(const aMethod: TMethod; out aJITMethod: TJITMethod
-  ): boolean;
+function GetJITMethod(const aMethod: TMethod; out aJITMethod: TJITMethod): boolean;
 begin
   if IsJITMethod(aMethod) then begin
     Result:=true;
@@ -879,7 +878,7 @@ function TJITComponentList.AddJITComponentFromStream(BinStream: TStream;
     DestroyDriver: Boolean;
   begin
     {$IFDEF VerboseJITForms}
-    debugln('[TJITComponentList.AddJITComponentFromStream] InitReading ...');
+    debugln('[TJITComponentList.AddJITComponentFromStream] Init Reading ...');
     {$ENDIF}
     FCurReadStreamClass:=StreamClass;
     DestroyDriver:=false;
@@ -1011,7 +1010,9 @@ begin
   // The other components are done at the end via GlobalFixupReferences.
   // So, there is nothing left to do here.
   Result := nil;
-  //DebugLn(dbgsName(CurReadJITComponent), ' FIND global component ', AName, ' ', dbgsName(Result));
+  {$IFDEF VerboseJITForms}
+  DebugLn('[FindGlobalComponent] ', dbgsName(CurReadJITComponent), ' FIND ', AName, ' ', dbgsName(Result));
+  {$ENDIF}
 end;
 
 procedure TJITComponentList.InitReading;

@@ -319,9 +319,14 @@ procedure WriteComponentStates(aComponent: TComponent; Recursive: boolean;
   const Prefix: string);
 var
   i: Integer;
+  S: String;
 begin
   if aComponent=nil then exit;
-  debugln([Prefix,DbgSName(aComponent),' ',dbgs(aComponent.ComponentState)]);
+  if aComponent is TControl then
+    S:=' Parent='+DbgSName(TControl(aComponent).Parent)
+  else
+    S:='';
+  debugln(Prefix,DbgSName(aComponent),' ',dbgs(aComponent.ComponentState),S);
   if Recursive then begin
     for i:=0 to aComponent.ComponentCount-1 do
       WriteComponentStates(aComponent.Components[i],true,Prefix+'  ');
