@@ -5103,6 +5103,7 @@ begin
     Result.FLabel^.set_xalign(0.0);
   end;
   Result.FLabel^.set_ellipsize(PANGO_ELLIPSIZE_END);
+  Result.FLabel^.set_max_width_chars(1);
   Result.FLabel^.set_line_wrap(False);
   gtk_widget_set_halign(Result.FLabel, GTK_ALIGN_FILL);
   gtk_widget_set_valign(Result.FLabel, GTK_ALIGN_CENTER);
@@ -5197,6 +5198,7 @@ var
   Msg: TLMDrawItems;
   AItemStruct: TDrawItemStruct;
   ADC: TGtk3DeviceContext;
+  AContext: PGtkStyleContext;
 begin
   Result := gtk_false;
 
@@ -5219,16 +5221,16 @@ begin
 
   AWidget^.get_allocation(@Alloc);
 
-  cairo_translate(ACairo, -Alloc.x, -Alloc.y);
+  AContext := gtk_widget_get_style_context(AWidget);
+  gtk_render_background(AContext, ACairo, 0, 0, Alloc.width, Alloc.height);
+  gtk_render_frame(AContext, ACairo, 0, 0, Alloc.width, Alloc.height);
 
   FillChar(Msg{%H-}, SizeOf(Msg), 0);
   FillChar(AItemStruct{%H-}, SizeOf(AItemStruct), 0);
 
   AItemStruct.itemID := APanelIndex;
   AItemStruct.hwndItem := LCLBar.Handle;
-  //rcItem in StatusBar-local coords
-  AItemStruct.rcItem := Rect(Alloc.x, Alloc.y,
-                                Alloc.x + Alloc.width, Alloc.y + Alloc.height);
+  AItemStruct.rcItem := Rect(0, 0, Alloc.width, Alloc.height);
 
   ADC := TGtk3DeviceContext.CreateFromCairo(AWidget, ACairo);
   AItemStruct._hDC := HDC(ADC);
