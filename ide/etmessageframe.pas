@@ -1399,7 +1399,7 @@ begin
   FImageChangeLink.OnChange:=@ImageListChange;
   for u:=Low(TMessageLineUrgency) to high(TMessageLineUrgency) do
     fUrgencyStyles[u]:=TMsgCtrlUrgencyStyle.Create(Self,u);
-  ShowHint:= not FWordWrap;
+  ShowHint:=true;
   OnMouseMove:=@MsgCtrlMouseMove;
   OnShowHint:=@MsgCtrlShowHint;
 end;
@@ -1827,7 +1827,6 @@ begin
   if FWordWrap=AValue then Exit;
   FWordWrap:=AValue;
   // without wrapping long lines are clipped -> let a hint show the full text
-  ShowHint:=not FWordWrap;
   InvalidateWrapCache;
   UpdateScrollBar(true);
   Invalidate;
@@ -3003,13 +3002,13 @@ procedure TMessagesCtrl.MsgCtrlMouseMove(Sender: TObject; Shift: TShiftState;
   X, Y: Integer);
 var
   lLineFound: boolean;
-  loLine: integer;
+  logLine: integer;
 begin
-  lLineFound := GetLineAt(Y,{out}FHintLast.View, loLine);
+  lLineFound := GetLineAt(Y,{out}FHintLast.View, logLine);
   if lLineFound then begin
-    if loLine<>FHintLast.LineNumber then
+    if logLine<>FHintLast.LineNumber then
       Application.CancelHint;
-    FHintLast.LineNumber := loLine;
+    FHintLast.LineNumber := logLine;
   end
   else begin
     if FHintLast.LineNumber>cNotALineHint then
