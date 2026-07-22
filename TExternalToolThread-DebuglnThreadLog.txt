@@ -1,0 +1,2 @@
+[136134363875008] AAA8 TExternalToolThread.Execute Exe="/usr/lib/fpc/3.2.4/ppcx64" PID=226652
+[139860868826816] AAA8 TExternalToolThread.Execute Exe="/usr/lib/fpc/3.2.4/ppcx64" PID=226796

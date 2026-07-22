@@ -6578,7 +6578,7 @@ var
   Params: TStringList;
 begin
   Result:=nil;
-  //DebugLn('TDefinePool.CreateFPCTemplate PPC386Path="',CompilerPath,'" FPCOptions="',CompilerOptions,'"');
+  //DebugLn('TDefinePool.CreateFPCTemplate CompilerPath="',CompilerPath,'" FPCOptions="',CompilerOptions,'"');
   if TestPascalFile='' then begin
     DebugLn(['Warning: [TDefinePool.CreateFPCTemplate] TestPascalFile empty']);
   end;

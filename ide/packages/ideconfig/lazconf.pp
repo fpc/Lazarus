@@ -286,9 +286,9 @@ begin
   if NewExpValue=PrimaryConfigPath then exit;
   if ConsoleVerbosity>=0 then
     if NewValue=NewExpValue then
-      debugln('SetPrimaryConfigPath NewValue="',UTF8ToConsole(NewExpValue),'"')
+      debugln('Hint: (lazarus) SetPrimaryConfigPath NewValue="',UTF8ToConsole(NewExpValue),'"')
     else
-      debugln('SetPrimaryConfigPath NewValue="',UTF8ToConsole(NewValue),'" expanded to "',UTF8ToConsole(NewExpValue),'"');
+      debugln('Hint: (lazarus) SetPrimaryConfigPath NewValue="',UTF8ToConsole(NewValue),'" expanded to "',UTF8ToConsole(NewExpValue),'"');
   PrimaryConfigPath := NewExpValue;
 end;
 
@@ -303,9 +303,9 @@ begin
   if NewExpValue=SecondaryConfigPath then exit;
   if ConsoleVerbosity>=0 then
     if NewValue=NewExpValue then
-      debugln('SetSecondaryConfigPath NewValue="',UTF8ToConsole(NewExpValue),'"')
+      debugln('Hint: (lazarus) SetSecondaryConfigPath NewValue="',UTF8ToConsole(NewExpValue),'"')
     else
-      debugln('SetSecondaryConfigPath NewValue="',UTF8ToConsole(NewValue),'" expanded to "',UTF8ToConsole(NewExpValue),'"');
+      debugln('Hint: (lazarus) SetSecondaryConfigPath NewValue="',UTF8ToConsole(NewValue),'" expanded to "',UTF8ToConsole(NewExpValue),'"');
   SecondaryConfigPath := NewExpValue;
 end;
 

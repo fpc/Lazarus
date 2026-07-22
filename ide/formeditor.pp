@@ -84,7 +84,7 @@ end;
 procedure FreeFormEditor;
 begin
   if FormEditor1=nil then exit;
-  DebugLn(['FreeFormEditor: FormEditor1=', FormEditor1]);
+  //DebugLn(['FreeFormEditor: FormEditor1=', FormEditor1]);
   FormEditingHook:=nil;
   FormEditor1.Free;
   FormEditor1:=nil;

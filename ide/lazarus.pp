@@ -175,7 +175,7 @@ begin
   CleanUpPIDFile;
   FreeThenNil(SplashForm);
 
-  debugln('LAZARUS END - cleaning up ...');
+  debugln('Hint: (lazarus) LAZARUS END - cleaning up ...');
 
   // free the IDE, so everything is freed before the finalization sections
   MainIDE.Free;

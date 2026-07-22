@@ -1839,7 +1839,7 @@ begin
   EnvironmentOptions.UnRegisterSubConfig(EnvironmentGuiOpts);
   FreeThenNil(EnvironmentDebugOpts);
   FreeThenNil(EnvironmentGuiOpts);
-  if ConsoleVerbosity>=0 then
+  if ConsoleVerbosity>0 then
     DebugLn('Hint: (lazarus) [TMainIDE.Destroy] B  -> inherited Destroy... ',ClassName);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy B ');{$ENDIF}
   FreeThenNil(MainBuildBoss);
