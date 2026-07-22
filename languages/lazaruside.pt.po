@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.9\n"
+"X-Generator: Poedit 3.6\n"
 
 #: lazarusidestrconsts.cocoamfstbicommand
 msgid "Command"
@@ -1062,11 +1062,11 @@ msgstr "Mostrar botões de fecho no bloco de notas"
 
 #: lazarusidestrconsts.dlgcloseotherpagesmod
 msgid "Close all other tabs"
-msgstr ""
+msgstr "Fechar todos os outros separadores"
 
 #: lazarusidestrconsts.dlgcloserightpagesmod
 msgid "Close tabs on the right"
-msgstr ""
+msgstr "Fechar separadores à direita"
 
 #: lazarusidestrconsts.dlgclrscheme
 msgid "Color Scheme"
@@ -1406,18 +1406,16 @@ msgid "Dwarf 2 with sets"
 msgstr "Dwarf 2 com conjuntos"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf3
-#, fuzzy
-#| msgid "Dwarf 3 (beta)"
 msgid "Dwarf 3"
-msgstr "Dwarf 3 (beta)"
+msgstr "Dwarf 3"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf4
 msgid "Dwarf 4"
-msgstr ""
+msgstr "Dwarf 4"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf5
 msgid "Dwarf 5 (FPC 3.3.1)"
-msgstr ""
+msgstr "Dwarf 5 (FPC 3.3.1)"
 
 #: lazarusidestrconsts.dlgcosymboltypestabs
 msgid "Stabs"
@@ -2086,7 +2084,7 @@ msgstr "Case"
 
 #: lazarusidestrconsts.dlgfoldpascaseelse
 msgid "Otherwise/Else (Case)"
-msgstr ""
+msgstr "Otherwise/Else (Case)"
 
 #: lazarusidestrconsts.dlgfoldpasclass
 msgid "Class/Object"
@@ -2270,7 +2268,6 @@ msgid "From c&ursor"
 msgstr "&Desde o cursor"
 
 #: lazarusidestrconsts.dlggeneral
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlggeneral"
 msgid "General"
 msgstr "Geral"
@@ -3339,15 +3336,15 @@ msgstr "Activar a selecção de colunas com vários cursores"
 
 #: lazarusidestrconsts.dlgmultipleinstances_alwaysstartnew
 msgid "always start a new instance"
-msgstr "Começar sempre nova instância"
+msgstr "começar sempre nova instância"
 
 #: lazarusidestrconsts.dlgmultipleinstances_forcesingleinstance
 msgid "do not allow multiple instances"
-msgstr "Não permitir novas instâncias"
+msgstr "não permitir múltiplas instâncias"
 
 #: lazarusidestrconsts.dlgmultipleinstances_openfilesinrunning
 msgid "open files in a running instance"
-msgstr "Abrir ficheiros na instância actual"
+msgstr "abrir ficheiros numa instância em curso"
 
 #: lazarusidestrconsts.dlgmultiselect
 msgid "Multi Select"
@@ -5174,7 +5171,7 @@ msgstr "Abortar carregamento"
 
 #: lazarusidestrconsts.lisabortifanycompilerpathorexecut
 msgid "Abort if any compiler path or execute-before/after command is missing in the IDE trust whitelist."
-msgstr ""
+msgstr "Abortar se qualquer comando do caminho do compilador ou executar-antes/depois estiver em falta na lista de confiança do IDE."
 
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
@@ -5930,7 +5927,7 @@ msgstr "Número da construção"
 
 #: lazarusidestrconsts.lisbuildreleasepackagesstorecompi
 msgid "Build release packages. Store compiler checksum instead of date in package.compiled files. Ignore session and environment options."
-msgstr ""
+msgstr "Construir pacotes de lançamento. Armazenar checksum do compilador em vez da data em ficheiros package.compiled. Ignorar opções de sessão e ambiente."
 
 #: lazarusidestrconsts.lisbuildstage
 msgctxt "lazarusidestrconsts.lisbuildstage"
@@ -5939,11 +5936,11 @@ msgstr "Construir"
 
 #: lazarusidestrconsts.lisbuildtheminimalidewithdefaults
 msgid "Build the minimal IDE with defaults."
-msgstr ""
+msgstr "Construir IDE mínimo com predefinições."
 
 #: lazarusidestrconsts.lisbuildthereleaseidesameasminima
 msgid "Build the release IDE. Same as minimal plus a fixed set of extra packages."
-msgstr ""
+msgstr "Construir IDE de lançamento, Igual ao mínimo mais um conjunto fixo de pacotes extra."
 
 #: lazarusidestrconsts.lisbusy
 msgid "Busy"
@@ -6483,7 +6480,7 @@ msgstr "Mudar ficheiro"
 #: lazarusidestrconsts.lischangemethodvisibilityto
 #, object-pascal-format
 msgid "Change method visibility to \"%s\""
-msgstr ""
+msgstr "Alterar visibilidade do método para \"%s\""
 
 #: lazarusidestrconsts.lischangeparent
 msgid "Change Parent"
@@ -8822,7 +8819,6 @@ msgid "Delete selected macro?"
 msgstr "Eliminar a macro seleccionada?"
 
 #: lazarusidestrconsts.lisdeleteselectedtrustedcompilers
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisdeleteselectedtrustedcompilers"
 msgid "Delete selected"
 msgstr "Eliminar selecção"
@@ -9080,7 +9076,7 @@ msgstr "Não voltar a mostrar esta mensagem"
 
 #: lazarusidestrconsts.lisdonottrustcompiler
 msgid "Do not trust"
-msgstr ""
+msgstr "Não confiar"
 
 #: lazarusidestrconsts.lisdonotwriteupdatedprojectinfoafterbuild
 msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
@@ -9429,11 +9425,11 @@ msgstr "Activar Dwarf 3 (-gw3)"
 
 #: lazarusidestrconsts.lisenableoptiondwarf4
 msgid "Enable Dwarf 4 (-gw4)"
-msgstr ""
+msgstr "Activar Dwarf 4 (-gw4)"
 
 #: lazarusidestrconsts.lisenableoptiondwarf5
 msgid "Enable Dwarf 5 [FPC 3.3.1] (-gw5)"
-msgstr ""
+msgstr "Activar Dwarf 5 [FPC 3.3.1] (-gw5)"
 
 #: lazarusidestrconsts.lisenableoptionxg
 msgid "Enable Option -Xg?"
@@ -10088,7 +10084,7 @@ msgstr "Reparar ficheiro LFM"
 
 #: lazarusidestrconsts.lisfocusatcompilation
 msgid "Focus at compilation"
-msgstr ""
+msgstr "Foco na compilação"
 
 #: lazarusidestrconsts.lisfocushint
 msgid "Focus hint"
@@ -10305,7 +10301,7 @@ msgstr "em todos os pacotes e projectos abertos"
 
 #: lazarusidestrconsts.lisfriincurrentmethod
 msgid "in current method"
-msgstr ""
+msgstr "no método actual"
 
 #: lazarusidestrconsts.lisfriincurrentunit
 msgid "in current unit"
@@ -10313,7 +10309,7 @@ msgstr "na unidade actual"
 
 #: lazarusidestrconsts.lisfriinlocalfunction
 msgid "in local function"
-msgstr ""
+msgstr "na função local"
 
 #: lazarusidestrconsts.lisfriinmainproject
 msgid "in main project"
@@ -11177,27 +11173,27 @@ msgstr "%s KB"
 
 #: lazarusidestrconsts.liskecbreakignoreoff
 msgid "Unset Ignore all Breakpoints"
-msgstr ""
+msgstr "Desmarcar Ignorar todos os pontos de interrupção"
 
 #: lazarusidestrconsts.liskecbreakignoreon
 msgid "Set Ignore all Breakpoints"
-msgstr ""
+msgstr "Marcar Ignorar todos os pontos de interrupção"
 
 #: lazarusidestrconsts.liskecbreakignoretoggle
 msgid "Toggle Ignore all Breakpoints"
-msgstr ""
+msgstr "Alternar Ignorar todos os pontos de interrupção"
 
 #: lazarusidestrconsts.liskecexceptignoreoff
 msgid "Unset Ignore all Exceptions"
-msgstr ""
+msgstr "Desmarcar Ignorar todas as excepções"
 
 #: lazarusidestrconsts.liskecexceptignoreon
 msgid "Set Ignore all Exceptions"
-msgstr ""
+msgstr "Marcar Ignorar todas as excepções"
 
 #: lazarusidestrconsts.liskecexceptignoretoggle
 msgid "Toggle Ignore all Exceptions"
-msgstr ""
+msgstr "Alternar Ignorar todas as excepções"
 
 #: lazarusidestrconsts.liskeep2
 msgid "Keep"
@@ -11922,25 +11918,21 @@ msgid "Maximize compatibility of project files (LPI and LPS)"
 msgstr "Maximizar a compatibilidade dos ficheiros de projecto (LPI e LPS)"
 
 #: lazarusidestrconsts.lislpicompatibilitymodecheckboxhint
-#, fuzzy
-#| msgid "Check this if you want to open your project in legacy (2.0 and older) Lazarus versions."
 msgid "Check this if you want to open your project in legacy (2.2 - 4.8) Lazarus versions."
-msgstr "Marque esta opção se pretender abrir o seu projecto em versões antigas (2.0 e anteriores) do Lazarus."
+msgstr "Marque esta opção se pretender abrir o seu projecto em versões antigas (2.2 - 4.8) do Lazarus."
 
 #: lazarusidestrconsts.lislpkcompatibilitymodecheckbox
 msgid "Maximize compatibility of package file (LPK)"
 msgstr "Maximizar a compatibilidade dos ficheiros de pacote (LPK)"
 
 #: lazarusidestrconsts.lislpkcompatibilitymodecheckboxhint
-#, fuzzy
-#| msgid "Check this if you want to open your package in legacy (2.0 and older) Lazarus versions."
 msgid "Check this if you want to open your package in legacy (2.2 - 4.8) Lazarus versions."
-msgstr "Marque esta opção se pretender abrir o seu pacote em versões antigas (2.0 e anteriores) do Lazarus."
+msgstr "Marque esta opção se pretender abrir o seu pacote em versões antigas (2.2 - 4.8) do Lazarus."
 
 #: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
 #, object-pascal-format
 msgid "lpk has vanished on disk. Using as alternative%s"
-msgstr "O lpk desapareceu do disco. A usar como alternativa%s"
+msgstr "o lpk desapareceu do disco. A usar como alternativa%s"
 
 #: lazarusidestrconsts.lislpkismissing
 msgid "lpk is missing"
@@ -13505,7 +13497,7 @@ msgstr "Classe do método não encontrada"
 
 #: lazarusidestrconsts.lismiddleclickmodifiers
 msgid "Middle-click-modifiers"
-msgstr ""
+msgstr "Modificadores do clique central"
 
 #: lazarusidestrconsts.lismissingevents
 msgid "Missing Events"
@@ -13891,7 +13883,7 @@ msgstr "Múltiplas pastas são separadas com ponto e vírgula"
 
 #: lazarusidestrconsts.lismustbeopenedmanually
 msgid "Must be opened manually from View -> Messages."
-msgstr ""
+msgstr "Tem de ser aberto manualmente de Ver -> Mensagens."
 
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
@@ -16901,21 +16893,20 @@ msgstr "Mostrar métodos abstractos de \"%s\""
 
 #: lazarusidestrconsts.lisshowautomatically
 msgid "Show automatically"
-msgstr ""
+msgstr "Mostrar automaticamente"
 
 #: lazarusidestrconsts.lisshowautonever
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisshowautonever"
 msgid "Never"
 msgstr "Nunca"
 
 #: lazarusidestrconsts.lisshowautoonlywhenerrorsoccur
 msgid "Only when errors occur"
-msgstr ""
+msgstr "Só quando ocorrem erros"
 
 #: lazarusidestrconsts.lisshowautowhencompiling
 msgid "When compiling"
-msgstr ""
+msgstr "Ao compilar"
 
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
@@ -16960,7 +16951,7 @@ msgstr "Mostrar dicas"
 
 #: lazarusidestrconsts.lisshowicons
 msgid "Show Icons"
-msgstr ""
+msgstr "Mostrar ícones"
 
 #: lazarusidestrconsts.lisshowidentifiers
 msgid "Show identifiers"
@@ -17253,7 +17244,7 @@ msgstr "A barra de estado mostra o nome da propriedade e a classe onde está pub
 
 #: lazarusidestrconsts.lisstayontop
 msgid "Stay on top"
-msgstr ""
+msgstr "Manter no topo"
 
 #: lazarusidestrconsts.lisstop
 msgctxt "lazarusidestrconsts.lisstop"
@@ -17751,17 +17742,17 @@ msgstr "O pacote \"%s\" é usado por"
 #: lazarusidestrconsts.listhepackagewantstorunthecommand
 #, object-pascal-format
 msgid "The package \"%s\" wants to run the command:%s%s%sBuilding with a custom command can run arbitrary programs.%sDo you want to trust and run this command?"
-msgstr ""
+msgstr "O pacote \"%s\" quer executar o comando:%s%s%sConstruir com um comando personalizado pode executar programas arbitrários.%sDeseja confiar e executar este comando?"
 
 #: lazarusidestrconsts.listhepackagewantstousethecompiler
 #, object-pascal-format
 msgid "The package \"%s\" wants to use the compiler:%s%s%sThis is not the default compiler configured in the IDE. Opening a package with a custom compiler can run arbitrary programs.%sDo you want to trust and use this compiler?"
-msgstr ""
+msgstr "O pacote \"%s\" quer usar o compilador%s%s%sEste não é o compilador configurado no IDE. Abrir um pacote com um compilador personalizado pode executar programas arbitrários.%sDeseja confiar e usar este compilador?"
 
 #: lazarusidestrconsts.listhepackagewantstousethecompilerbuild
 #, object-pascal-format
 msgid "The package \"%s\" wants to use the compiler:%s%s%sThis is not the default compiler configured in the IDE. Building with a custom compiler can run arbitrary programs.%sDo you want to trust and use this compiler?"
-msgstr ""
+msgstr "O pacote \"%s\" quer usar o compilador%s%s%sEste não é o compilador configurado no IDE. Construir com um compilador personalizado pode executar programas arbitrários.%sDeseja confiar e usar este compilador?"
 
 #: lazarusidestrconsts.listhepathofmakeisnotcorrect
 #, object-pascal-format
@@ -17829,17 +17820,17 @@ msgstr "O projecto utiliza recursos que requerem, no mínimo, a versão 2.4 do F
 #: lazarusidestrconsts.listheprojectwantstorunthecommand
 #, object-pascal-format
 msgid "The project \"%s\" wants to run the command:%s%s%sBuilding with a custom command can run arbitrary programs.%sDo you want to trust and run this command?"
-msgstr ""
+msgstr "O projecto \"%s\" quer executar o comando%s%s%sConstruir com um comando personalizado pode executar programas arbitrários.%sDeseja confiar e executar este comando?"
 
 #: lazarusidestrconsts.listheprojectwantstousethecompiler
 #, object-pascal-format
 msgid "The project \"%s\" wants to use the compiler:%s%s%sThis is not the default compiler configured in the IDE. Opening a project with a custom compiler can run arbitrary programs.%sDo you want to trust and use this compiler?"
-msgstr ""
+msgstr "O projecto \"%s\" quer usar o compilador%s%s%sEste não é o compilador configurado no IDE. Abrir um projecto com um compilador personalizado pode executar programas arbitrários.%sDeseja confiar e usar este compilador?"
 
 #: lazarusidestrconsts.listheprojectwantstousethecompilerbuild
 #, object-pascal-format
 msgid "The project \"%s\" wants to use the compiler:%s%s%sThis is not the default compiler configured in the IDE. Building with a custom compiler can run arbitrary programs.%sDo you want to trust and use this compiler?"
-msgstr ""
+msgstr "O projecto \"%s\" quer usar o compilador%s%s%sEste não é o compilador configurado no IDE. Construir com um compilador personalizado pode executar programas arbitrários.%sDeseja confiar e usar este compilador?"
 
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
 #, object-pascal-format
@@ -18161,31 +18152,31 @@ msgstr "A árvore precisa de actualização"
 
 #: lazarusidestrconsts.listrustcommandcaption
 msgid "Trust build command?"
-msgstr ""
+msgstr "Confiar neste comando de construção?"
 
 #: lazarusidestrconsts.listrustcompileralways
 msgid "Trust always"
-msgstr ""
+msgstr "Sempre"
 
 #: lazarusidestrconsts.listrustcompilercaption
 msgid "Trust project compiler?"
-msgstr ""
+msgstr "Confiar no compilador do projecto?"
 
 #: lazarusidestrconsts.listrustcompilerthistime
 msgid "Trust this time"
-msgstr ""
+msgstr "Esta vez"
 
 #: lazarusidestrconsts.listrustedcommands
 msgid "Trusted commands"
-msgstr ""
+msgstr "Comandos confiados"
 
 #: lazarusidestrconsts.listrustedcompilers
 msgid "Trusted compilers"
-msgstr ""
+msgstr "Compiladores confiados"
 
 #: lazarusidestrconsts.listrustpkgcompilercaption
 msgid "Trust package compiler?"
-msgstr ""
+msgstr "Confiar no compilador do pacote?"
 
 #: lazarusidestrconsts.listwomovedfileswillhavethesamefilenamein
 #, object-pascal-format
@@ -18599,7 +18590,7 @@ msgstr "Impossível remover o título do projecto da fonte.%s%s"
 #: lazarusidestrconsts.lisunabletorenamefileto
 #, object-pascal-format
 msgid "Unable to rename file \"%s\" to \"%s\"."
-msgstr ""
+msgstr "Impossível renomear \"%s\" para \"%s\"."
 
 #: lazarusidestrconsts.lisunabletorenameforminsource
 msgid "Unable to rename form in source."
@@ -18837,7 +18828,7 @@ msgstr "Usar comentários em opções personalizadas"
 
 #: lazarusidestrconsts.lisusedefaultcompiler
 msgid "Use default compiler"
-msgstr ""
+msgstr "Usar o compilador predefinido"
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"
@@ -19083,7 +19074,7 @@ msgstr "Pasta de trabalho para executar"
 
 #: lazarusidestrconsts.liswraplongmessagelinesotherwisetheyareclippedandahi
 msgid "Wrap long message lines into several rows. Otherwise they are clipped and a hint shows the full text."
-msgstr ""
+msgstr "Quebrar linhas de mensagens longas. Senão, serão cortadas e uma dica mostrará o texto completo."
 
 #: lazarusidestrconsts.liswriteconfiginsteadofcommandlineparameters
 msgid "Write config instead of command line parameters"

@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.9\n"
+"X-Generator: Poedit 3.6\n"
 
 #: todoliststrconsts.attribgroupname
 msgid "ToDo comments"
@@ -145,7 +145,6 @@ msgid "%d items"
 msgstr "%d itens"
 
 #: todoliststrconsts.listodolcategory
-#, fuzzy
 msgctxt "todoliststrconsts.listodolcategory"
 msgid "Category"
 msgstr "Categoria"
@@ -160,7 +159,7 @@ msgstr "Módulo"
 
 #: todoliststrconsts.listodolfilepath
 msgid "Path"
-msgstr ""
+msgstr "Caminho"
 
 #: todoliststrconsts.listodolissue
 msgid "Issue ID"
@@ -198,7 +197,7 @@ msgstr "Ir para a linha-fonte seleccionada"
 
 #: todoliststrconsts.listodolistofproject
 msgid "ToDo List of Project"
-msgstr ""
+msgstr "Lista de afazeres do projecto"
 
 #: todoliststrconsts.listodolistrefresh
 msgid "Refresh ToDo items"
@@ -215,7 +214,7 @@ msgstr "Dono"
 #: todoliststrconsts.listodolpackage
 msgctxt "todoliststrconsts.listodolpackage"
 msgid "(Package)"
-msgstr ""
+msgstr "(pacote)"
 
 #: todoliststrconsts.listodolpriority
 msgid "Priority"
@@ -224,7 +223,7 @@ msgstr "Prioridade"
 #: todoliststrconsts.listodolproject
 msgctxt "todoliststrconsts.listodolproject"
 msgid "(Project)"
-msgstr ""
+msgstr "(projecto)"
 
 #: todoliststrconsts.listodoltype
 msgid "Type"

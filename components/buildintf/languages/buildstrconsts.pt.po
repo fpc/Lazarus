@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.9\n"
+"X-Generator: Poedit 3.6\n"
 
 #: buildstrconsts.lirsunit
 msgid "Pascal unit"
@@ -22,12 +22,12 @@ msgstr "Criar uma unidade Pascal."
 #: buildstrconsts.lisresfilealreadyexists
 #, object-pascal-format
 msgid "A resource with file name \"%s\" already exists."
-msgstr ""
+msgstr "Já existe um recurso com o nome de ficheiro \"%s\"."
 
 #: buildstrconsts.lisresnamealreadyexists
 #, object-pascal-format
 msgid "A resource with name \"%s\" already exists."
-msgstr ""
+msgstr "Já existe um recurso com o nome \"%s\"."
 
 #: buildstrconsts.lisshowalloutputlines
 msgid "Show all output lines"
