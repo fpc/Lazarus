@@ -614,7 +614,8 @@ var
   Tool: TIDEExternalToolOptions;
 begin
   Result:=mrCancel;
-  Assert((Index>=0) and (Index<fItems.Count), 'TExternalUserTools.Run: Index out of bounds.');
+  // tool can be called via a IDE command - need to ignore non-existent ones
+  if (Index<0) or (Index>=fItems.Count) then exit;
   Item:=Items[Index];
   if (ExternalToolsRef.RunningCount=0) and (Item.Parsers.Count>0) then
     IDEMessagesWindow.Clear;
