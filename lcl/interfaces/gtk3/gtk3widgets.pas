@@ -4879,6 +4879,9 @@ var
   TopLevel: PGtkWidget;
   FocusWidget: PGtkWidget;
   TopWidget: TGtk3Widget;
+  AMsg: TLMessage;
+  AMsgAct: TLMActivate;
+  APopupForm: TCustomForm;
 begin
   TopLevel := FWidget^.get_toplevel;
   if Gtk3IsGtkWindow(TopLevel) and TopLevel^.get_mapped
@@ -4889,7 +4892,51 @@ begin
     and (TopWidget.LCLObject is TCustomForm)
     and not (wwiActivating in TGtk3Window(TopWidget).FStateFlags)
     and (Gtk3WidgetSet.MsgActivationLevel = 0) then
+    begin
       TGtk3Window(TopWidget).Activate;
+    end;
+  end;
+
+  if Gtk3WidgetSet.IsWayland and Assigned(LCLObject) and
+    Gtk3IsGtkWindow(TopLevel) and TopLevel^.get_mapped and
+    (Gtk3WidgetSet.MsgActivationLevel = 0) then
+  begin
+    TopWidget := TGtk3Widget(HwndFromGtkWidget(TopLevel));
+    if (TopWidget is TGtk3Window) and Assigned(TopWidget.LCLObject) and
+      (TopWidget.LCLObject is TCustomForm) and
+      Assigned(Screen.FocusedForm) and
+      (Screen.FocusedForm <> TopWidget.LCLObject) and
+      Screen.FocusedForm.HandleAllocated and
+      Gtk3IsGtkWindow(TGtk3Widget(Screen.FocusedForm.Handle).Widget) and
+      (PGtkWindow(TGtk3Widget(Screen.FocusedForm.Handle).Widget)^.get_window_type = GTK_WINDOW_POPUP) then
+    begin
+      APopupForm := Screen.FocusedForm;
+      Gtk3WidgetSet.MsgActivationLevel := Gtk3WidgetSet.MsgActivationLevel + 1;
+      try
+        if not TCustomForm(TopWidget.LCLObject).Active then
+        begin
+          FillChar(AMsgAct{%H-}, SizeOf(AMsgAct), 0);
+          AMsgAct.Msg := LM_ACTIVATE;
+          AMsgAct.Active := WA_ACTIVE;
+          AMsgAct.ActiveWindow := HWND(TopWidget.LCLObject.Handle);
+          TopWidget.DeliverMessage(AMsgAct);
+        end;
+        FillChar(AMsg{%H-}, SizeOf(AMsg), 0);
+        AMsg.Msg := LM_SETFOCUS;
+        DeliverMessage(AMsg);
+        if Assigned(APopupForm) and (Screen.FocusedForm <> APopupForm) and
+          APopupForm.HandleAllocated and APopupForm.Active then
+        begin
+          FillChar(AMsgAct{%H-}, SizeOf(AMsgAct), 0);
+          AMsgAct.Msg := LM_ACTIVATE;
+          AMsgAct.Active := WA_INACTIVE;
+          AMsgAct.ActiveWindow := HWND(TopWidget.LCLObject.Handle);
+          TGtk3Widget(APopupForm.Handle).DeliverMessage(AMsgAct);
+        end;
+      finally
+        Gtk3WidgetSet.MsgActivationLevel := Gtk3WidgetSet.MsgActivationLevel - 1;
+      end;
+    end;
   end;
 
   if GetContainerWidget^.can_focus and GetContainerWidget^.get_mapped then
@@ -16297,6 +16344,10 @@ end;
 procedure TGtk3Window.Activate;
 var
   ATime: guint32;
+  AList, L: PGList;
+  AWin: PGtkWindow;
+  PopupActive: Boolean;
+  Msg: TLMActivate;
 begin
   if not Assigned(LCLObject) then
     exit;
@@ -16313,6 +16364,46 @@ begin
         PGtkWindow(FWidget)^.present_with_time(ATime);
       end else
         PGtkWindow(FWidget)^.activate;
+
+      if Gtk3WidgetSet.IsWayland and (LCLObject is TCustomForm) and
+        not TCustomForm(LCLObject).Active and
+        not PGtkWindow(FWidget)^.is_active then
+      begin
+        PopupActive := False;
+        AList := gtk_window_list_toplevels;
+        L := AList;
+        while L <> nil do
+        begin
+          AWin := PGtkWindow(L^.data);
+          if Assigned(AWin) and Gtk3IsGtkWindow(PGtkWidget(AWin)) then
+          begin
+            if AWin^.is_active then
+            begin
+              PopupActive := (PGtkWidget(AWin) <> FWidget) and
+                (AWin^.get_window_type = GTK_WINDOW_POPUP);
+              break;
+            end;
+          end;
+          L := L^.next;
+        end;
+        if AList <> nil then
+          g_list_free(AList);
+        if PopupActive then
+        begin
+          FillChar(Msg{%H-}, SizeOf(Msg), 0);
+          Msg.Msg := LM_ACTIVATE;
+          Msg.Active := WA_ACTIVE;
+          Msg.ActiveWindow := HWND(LCLObject.Handle);
+          Include(FStateFlags, wwiActivating);
+          Gtk3WidgetSet.MsgActivationLevel := Gtk3WidgetSet.MsgActivationLevel + 1;
+          try
+            DeliverMessage(Msg);
+          finally
+            Gtk3WidgetSet.MsgActivationLevel := Gtk3WidgetSet.MsgActivationLevel - 1;
+            Exclude(FStateFlags, wwiActivating);
+          end;
+        end;
+      end;
     end;
   end;
 end;

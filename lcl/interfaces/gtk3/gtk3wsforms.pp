@@ -380,6 +380,8 @@ var
   LCLCanFocus: boolean;
   ATime: guint32;
   NeedSizeProtect: boolean;
+  MsgAct: TLMActivate;
+  MsgSF: TLMessage;
   SplashClock: PGdkFrameClock;
   SplashFrame: gint64;
   SplashDeadline: QWord;
@@ -671,6 +673,33 @@ begin
         //wayland, add grab
         //TODO: gdk_display_device_is_grabbed
         gtk_grab_add(PGtkWidget(AWindow));
+        if (AGtk3Widget is TGtk3Window) and not AForm.Active and
+          (Gtk3WidgetSet.MsgActivationLevel = 0) then
+        begin
+          Gtk3WidgetSet.MsgActivationLevel := Gtk3WidgetSet.MsgActivationLevel + 1;
+          try
+            OtherForm := Screen.ActiveCustomForm;
+            if Assigned(OtherForm) and (OtherForm <> AForm) and
+              OtherForm.Active and OtherForm.HandleAllocated then
+            begin
+              FillChar(MsgAct{%H-}, SizeOf(MsgAct), 0);
+              MsgAct.Msg := LM_ACTIVATE;
+              MsgAct.Active := WA_INACTIVE;
+              MsgAct.ActiveWindow := HWND(AForm.Handle);
+              TGtk3Widget(OtherForm.Handle).DeliverMessage(MsgAct);
+            end;
+            FillChar(MsgAct{%H-}, SizeOf(MsgAct), 0);
+            MsgAct.Msg := LM_ACTIVATE;
+            MsgAct.Active := WA_ACTIVE;
+            MsgAct.ActiveWindow := HWND(AForm.Handle);
+            AGtk3Widget.DeliverMessage(MsgAct);
+            FillChar(MsgSF{%H-}, SizeOf(MsgSF), 0);
+            MsgSF.Msg := LM_SETFOCUS;
+            AGtk3Widget.DeliverMessage(MsgSF);
+          finally
+            Gtk3WidgetSet.MsgActivationLevel := Gtk3WidgetSet.MsgActivationLevel - 1;
+          end;
+        end;
       end;
     end;
   end else
