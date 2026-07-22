@@ -17,7 +17,7 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
     Caption = 'grpConditionals'
     ClientHeight = 175
     ClientWidth = 517
-    TabOrder = 0
+    TabOrder = 2
     inline CondSynEdit: TSynEdit
       AnchorSideRight.Side = asrBottom
       Left = 0
@@ -548,6 +548,7 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
       Lines.Strings = (
         'CondSynEdit'
       )
+      WantTabs = False
       VisibleSpecialChars = [vscSpace, vscTabAtLast]
       SelectedColor.BackPriority = 50
       SelectedColor.ForePriority = 50
@@ -685,7 +686,7 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
     Caption = 'grpCustomOptions'
     ClientHeight = 189
     ClientWidth = 517
-    TabOrder = 2
+    TabOrder = 0
     object memoCustomOptions: TMemo
       AnchorSideLeft.Control = grpCustomOptions
       AnchorSideRight.Control = btnDefines
