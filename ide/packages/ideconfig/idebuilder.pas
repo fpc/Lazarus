@@ -357,7 +357,10 @@ begin
   try
     // setup external tool
     EnvironmentOverrides.Values['LCL_PLATFORM']:=LCLPlatformDirNames[Profile.TargetPlatform];
-    EnvironmentOverrides.Values['LANG']:= 'en_US';
+    // Note: the codeset must be given, otherwise the tool runs with an ASCII
+    // codepage and every filename needs an iconv conversion, which can deadlock
+    // in a forked child (see TProcess.Execute calling ChDir after fpfork).
+    EnvironmentOverrides.Values['LANG']:= 'en_US.UTF-8';
     s:=EnvironmentOptions.GetParsedCompilerFilename;
     if s<>'' then
       EnvironmentOverrides.Values['PP']:=s;
@@ -511,7 +514,8 @@ begin
 
   EnvironmentOverrides:=TStringList.Create;
   try
-    EnvironmentOverrides.Values['LANG']:= 'en_US';
+    // Note: see MakeLazarus why the codeset must be given
+    EnvironmentOverrides.Values['LANG']:= 'en_US.UTF-8';
     s:=EnvironmentOptions.GetParsedCompilerFilename;
     if s<>'' then
       EnvironmentOverrides.Values['PP']:=s;
