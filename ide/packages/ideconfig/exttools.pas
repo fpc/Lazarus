@@ -965,6 +965,7 @@ begin
     EnterCriticalSection;
     try
       if Stage=etsDestroying then exit;
+      //writeln('TExternalTool.WaitForExit ',Title,' ',Stage,' FindUnfinishedView=',FindUnfinishedView=nil);
       if (Stage=etsStopped) and (FindUnfinishedView=nil) then exit;
     finally
       LeaveCriticalSection;
@@ -973,7 +974,7 @@ begin
     if MainThreadID=ThreadID then
     begin
       Assert(Owner is TExternalToolsBase, 'TExternalTool.WaitForExit: Owner is not TExternalToolsBase.');
-             TExternalToolsBase(Owner).HandleMessages;
+      TExternalToolsBase(Owner).HandleMessages;
     end;
     Assert(Assigned(ExternalToolList), 'TExternalTool.WaitForExit: ExternalToolList=Nil.');
     // check if this tool still exists
