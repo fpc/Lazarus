@@ -1998,8 +1998,7 @@ begin
      (PGtkWindow(AWidget)^.get_window_type = GTK_WINDOW_POPUP) and
      PGtkWindow(AWidget)^.get_accept_focus then
   begin
-    gtk_device_grab_remove(AWidget,
-      gdk_seat_get_keyboard(gdk_display_get_default_seat(gdk_display_get_default)));
+    gtk_grab_remove(AWidget);
   end;
 
   {do not pass message to LCL if LCL setted up control visibility}
@@ -16291,8 +16290,7 @@ begin
   if IsValidHandle and Gtk3WidgetSet.IsWayland and Gtk3IsGtkWindow(FWidget) and
      (PGtkWindow(FWidget)^.get_window_type = GTK_WINDOW_POPUP) and
      PGtkWindow(FWidget)^.get_accept_focus then
-    gtk_device_grab_remove(PGtkWidget(FWidget),
-      gdk_seat_get_keyboard(gdk_display_get_default_seat(gdk_display_get_default)));
+    gtk_grab_remove(PGtkWidget(FWidget));
   inherited Destroy;
 end;
 

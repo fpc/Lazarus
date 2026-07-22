@@ -670,8 +670,7 @@ begin
       begin
         //wayland, add grab
         //TODO: gdk_display_device_is_grabbed
-        gtk_device_grab_add(PGtkWidget(AWindow),
-          gdk_seat_get_keyboard(gdk_display_get_default_seat(gdk_display_get_default)), False);
+        gtk_grab_add(PGtkWidget(AWindow));
       end;
     end;
   end else
@@ -684,8 +683,7 @@ begin
         //wayland, remove grab
         if Gtk3WidgetSet.IsWayland and (AWindow^.get_window_type = GTK_WINDOW_POPUP) and AWindow^.get_accept_focus
           and not AWindow^.window^.get_pass_through and LCLCanFocus then
-            gtk_device_grab_remove(PGtkWidget(AWindow),
-              gdk_seat_get_keyboard(gdk_display_get_default_seat(gdk_display_get_default)));
+            gtk_grab_remove(PGtkWidget(AWindow));
         if AWindow^.transient_for <> nil then
         begin
           if (fsModal in AForm.FormState) and Gtk3IsGdkWindow(AWindow^.transient_for^.window) then
