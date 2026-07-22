@@ -455,7 +455,7 @@ type
     // installed packages
     FirstInstallDependency: TPkgDependency;
     function ParseBasePackages(Verbose: boolean): boolean; // read list from current sources
-    function SrcBasePackagesNeedLazbuild: string; // check if compiled-in and source base pkg list differ that a built using make is needed
+    function SrcBasePackagesNeedLazbuild: string; // check if compiled-in and source base pkg list differ -> a built using make is needed
     procedure LoadStaticBasePackages;
     procedure LoadAutoInstallPackages(PkgList: TStringList);
     procedure LoadReleasePackages;
@@ -5710,6 +5710,7 @@ var
   PkgName, aFilename: String;
   bp: TLazarusIDEBasePkg;
   Pkg: TLazPackage;
+  ok: Boolean;
 begin
   Result:='';
   if not ParseBasePackages(true) then
@@ -5738,12 +5739,15 @@ begin
     // sources do not listen this as base package
     Pkg:=FindPackageWithName(PkgName,nil);
     if Pkg=nil then continue;
+    ok:=true;
     if Pkg.IsVirtual then
-      exit('Sources do not use "'+PkgName+'" as base package.'); // avoid IDE package check errors and use lazbuild
+      ok:=false;
     aFilename:=Pkg.GetResolvedFilename(true);
     if aFilename='' then
-      exit('Sources do not use "'+PkgName+'" as base package.'); // avoid IDE package check errors and use lazbuild
+      ok:=false;
     if not FileExistsCached(aFilename) then
+      ok:=false;
+    if not ok then
       exit('Sources do not use "'+PkgName+'" as base package.'); // avoid IDE package check errors and use lazbuild
   end;
 end;

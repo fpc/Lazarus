@@ -8114,6 +8114,9 @@ begin
     MainBuildBoss.SetBuildTargetIDE;
 
     ErrMsg:=PackageGraph.SrcBasePackagesNeedLazbuild;
+    {$IFDEF TestBuildLazNeedsLazbuild}
+    ErrMsg:='TestBuildLazNeedsLazbuild';
+    {$ENDIF}
     if ErrMsg<>'' then
     begin
       r:=IDEQuestionDialog(lisMajorChangesDetected,

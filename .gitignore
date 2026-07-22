@@ -28,6 +28,7 @@
 /lazarus
 /lazarus.old*
 /lazbuild
+/lazbuild.old*
 /startlazarus
 ide/revision.inc
 /config
