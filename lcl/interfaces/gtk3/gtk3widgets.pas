@@ -4882,6 +4882,7 @@ var
   AMsg: TLMessage;
   AMsgAct: TLMActivate;
   APopupForm: TCustomForm;
+  ACaret: TGtk3Caret;
 begin
   TopLevel := FWidget^.get_toplevel;
   if Gtk3IsGtkWindow(TopLevel) and TopLevel^.get_mapped
@@ -4924,6 +4925,12 @@ begin
         FillChar(AMsg{%H-}, SizeOf(AMsg), 0);
         AMsg.Msg := LM_SETFOCUS;
         DeliverMessage(AMsg);
+        if HasCaret then
+        begin
+          ACaret := TGtk3Caret(g_object_get_data(PGObject(getContainerWidget),'gtk3-caret'));
+          if Assigned(ACaret) and ACaret.RespondToFocus then
+            ACaret.Show;
+        end;
         if Assigned(APopupForm) and (Screen.FocusedForm <> APopupForm) and
           APopupForm.HandleAllocated and APopupForm.Active then
         begin

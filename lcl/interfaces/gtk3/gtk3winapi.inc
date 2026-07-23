@@ -2233,6 +2233,7 @@ var
   AData, AWidget: gpointer;
   Hndl: HWND;
   i: Integer;
+  AList, L: PGList;
 begin
   Result := 0;
   AWindow := gdk_screen_get_active_window(gdk_screen_get_default);
@@ -2258,6 +2259,45 @@ begin
         end;
       end;
     end;
+  end else
+  if IsWayland then
+  begin
+    AList := gtk_window_list_toplevels;
+    L := AList;
+    while L <> nil do
+    begin
+      if Gtk3IsGtkWindow(PGObject(L^.data)) then
+      begin
+        AGtkWin := PGtkWindow(L^.data);
+        if AGtkWin^.has_toplevel_focus then
+        begin
+          Result := HwndFromGtkWidget(PGtkWidget(AGtkWin));
+          if Result <> 0 then
+            break;
+        end;
+      end;
+      L := L^.next;
+    end;
+    if Result = 0 then
+    begin
+      L := AList;
+      while L <> nil do
+      begin
+        if Gtk3IsGtkWindow(PGObject(L^.data)) then
+        begin
+          AGtkWin := PGtkWindow(L^.data);
+          if AGtkWin^.is_active then
+          begin
+            Result := HwndFromGtkWidget(PGtkWidget(AGtkWin));
+            if Result <> 0 then
+              break;
+          end;
+        end;
+        L := L^.next;
+      end;
+    end;
+    if AList <> nil then
+      g_list_free(AList);
   end;
 end;
 
