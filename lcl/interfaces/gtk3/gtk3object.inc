@@ -1300,7 +1300,7 @@ end;
 
 function TGtk3WidgetSet.IsValidGDIObject(const AGdiObject: HGDIOBJ): Boolean;
 begin
-  Result := (AGdiObject <> 0) and (TObject(AGdiObject) is TGtk3ContextObject);
+  Result := Gtk3IsValidGDIObject(AGdiObject);
 end;
 
 function TGtk3WidgetSet.IsValidHandle(const AHandle: HWND): Boolean;

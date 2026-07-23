@@ -815,14 +815,11 @@ begin
   {$ifdef VerboseGtk3DeviceContext}
   DebugLn('TGtk3WidgetSet.DeleteObject GDIObject: ', dbghex(GdiObject),' name ',dbgsName(TObject(GdiObject)));
   {$endif}
-  if TObject(GDIObject) is TGtk3ContextObject then
+  if not TGtk3ContextObject(GDIObject).Shared then
   begin
-    if TGtk3ContextObject(GDIOBJECT).Shared then
-      // DebugLn('ERROR: TGtk3WidgetSet.DeleteObject trial to delete shared object ',dbgsName(TGtk3ContextObject(GdiObject)))
-    else
-      TGtk3ContextObject(GDIObject).Free;
-  end else
-    TObject(GDIObject).Free;
+    TGtk3ContextObject(GDIObject).Free;
+    Result := True;
+  end;
 end;
 
 function TGtk3WidgetSet.DestroyCaret(Handle: HWND): Boolean;
@@ -5677,6 +5674,7 @@ var
   PCR: Pcairo_region_t;
 begin
   if not IsValidHandle(hWnd) then exit(0);
+  if (hRgn <> 0) and not IsValidGDIObject(hRgn) then exit(0);
   if hRgn = 0 then
     PCR := nil
   else
@@ -5684,6 +5682,8 @@ begin
   gtk_widget_shape_combine_region(TGtk3Widget(hWnd).Widget, PCR);
   if bRedraw and Gtk3IsGtkWindow(TGtk3Widget(hWnd).Widget^.get_toplevel) then
     TGtk3Widget(hWnd).Widget^.realize;
+  if hRgn <> 0 then
+    DeleteObject(hRgn);
   Result:=1;
 end;
 

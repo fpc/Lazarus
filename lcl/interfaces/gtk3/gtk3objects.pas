@@ -23,7 +23,7 @@ interface
 uses
   Classes, SysUtils, Types, math, FPCanvas,
   // LazUtils
-  LazUTF8, IntegerList, LazStringUtils,
+  LazUTF8, IntegerList, LazStringUtils, Maps,
   // LCL
   LCLType, LCLProc, Graphics,
   LazGtk3, LazGdk3, LazGObject2, LazGLib2, LazGdkPixbuf2,
@@ -53,6 +53,7 @@ type
     fContext:TGtk3DeviceContext;
   public
     constructor Create; override;
+    destructor Destroy; override;
     function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject; virtual;
     function Get(szbuf:integer;pbuf:pointer):integer; virtual;abstract;
     property Shared: Boolean read FShared write FShared;
@@ -418,6 +419,7 @@ procedure Gtk3WordWrap(DC: HDC; AText: PChar;
 
 function Gtk3DefaultContext: TGtk3DeviceContext;
 function Gtk3ScreenContext: TGtk3DeviceContext;
+function Gtk3IsValidGDIObject(const AGDIObj: PtrUInt): Boolean;
 
 function ReplaceAmpersandsWithUnderscores(const S: string): string; inline;
 function ReplaceUnderscoresWithAmpersands(const S: string): string; inline;
@@ -428,6 +430,36 @@ uses gtk3int, Controls;
 
 const
   PixelOffset = 0.5; // Cairo API needs 0.5 pixel offset to not make blurry lines
+
+var
+  FGDIHandles: TMap;
+
+procedure Gtk3AddGDIObject(AObject: TObject);
+var
+  Key: PtrUInt;
+begin
+  if (AObject = nil) or (FGDIHandles = nil) then
+    exit;
+  Key := PtrUInt(AObject);
+  if not FGDIHandles.HasId(Key) then
+    FGDIHandles.Add(Key, AObject);
+end;
+
+procedure Gtk3RemoveGDIObject(AObject: TObject);
+var
+  Key: PtrUInt;
+begin
+  if (AObject = nil) or (FGDIHandles = nil) then
+    exit;
+  Key := PtrUInt(AObject);
+  if FGDIHandles.HasId(Key) then
+    FGDIHandles.Delete(Key);
+end;
+
+function Gtk3IsValidGDIObject(const AGDIObj: PtrUInt): Boolean;
+begin
+  Result := (AGDIObj <> 0) and (FGDIHandles <> nil) and FGDIHandles.HasId(AGDIObj);
+end;
 
 const
   Dash_Dash:        array [0..1] of double = (3, 2);              //____ ____
@@ -787,6 +819,13 @@ constructor TGtk3ContextObject.Create;
 begin
   inherited Create;
   FShared := False;
+  Gtk3AddGDIObject(Self);
+end;
+
+destructor TGtk3ContextObject.Destroy;
+begin
+  Gtk3RemoveGDIObject(Self);
+  inherited Destroy;
 end;
 
 function TGtk3ContextObject.Select(ACtx:TGtk3DeviceContext): TGtk3ContextObject;
@@ -4870,5 +4909,11 @@ begin
 
   LinesList.Free;
 end;
+
+initialization
+  FGDIHandles := TMap.Create(TMapIdType(ituPtrSize), SizeOf(TObject));
+
+finalization
+  FreeAndNil(FGDIHandles);
 
 end.
