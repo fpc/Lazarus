@@ -29,20 +29,6 @@ unitdir=../designer \
 includedir=include include/$(OS_TARGET) ../images
 targetdir=..
 
-[clean]
-files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
-      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
-      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
-      $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) \
-      $(wildcard $(COMPILER_UNITTARGETDIR)/*.or) \
-      $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) \
-      $(wildcard ../designer/*$(OEXT)) $(wildcard ../designer/*$(PPUEXT)) \
-      $(wildcard ../debugger/*$(OEXT)) $(wildcard ../debugger/*$(PPUEXT)) \
-      $(wildcard ../converter/*$(OEXT)) $(wildcard ../converter/*$(PPUEXT)) \
-      $(wildcard ../packager/*$(OEXT)) $(wildcard ../packager/*$(PPUEXT)) \
-      $(wildcard ../*$(OEXT)) $(wildcard ../*$(PPUEXT)) \
-      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
-
 [install]
 fpcpackage=n
 basedir=share/lazarus/ide
@@ -156,10 +142,6 @@ cleanide:
         -$(DEL) $(wildcard *$(OEXT))
         -$(DEL) $(wildcard *$(PPUEXT))
         -$(DEL) $(wildcard *$(RSTEXT))
-        -$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT))
-        -$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT))
-        -$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT))
-        -$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm)
         -$(DEL) $(wildcard ../*$(OEXT))
         -$(DEL) $(wildcard ../*$(PPUEXT))
         -$(DEL) $(wildcard ../designer/*$(OEXT))
@@ -172,10 +154,6 @@ cleanide:
         -$(DEL) $(wildcard ../converter/*$(PPUEXT))
         -$(DEL) $(wildcard ../doceditor/*$(OEXT))
         -$(DEL) $(wildcard ../doceditor/*$(PPUEXT))
-ifneq ($(findstring $(OS_TARGET),win32 win64),)
-        -$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*.or)
-        -$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res)
-endif
 
 cleanlaz: clean cleanide
         $(DELTREE) packages/ideconfig/lib/*
