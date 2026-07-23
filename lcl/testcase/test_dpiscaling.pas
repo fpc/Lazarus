@@ -8,10 +8,10 @@ uses
   Classes, SysUtils, Math,
   // FPCUnit
   fpcunit, testregistry,
-  // LazUtils
-  LazLoggerBase,
   // LCL
-  Forms, Controls, StdCtrls, ExtCtrls, LResources, LMessages;
+  Forms, Controls, StdCtrls, ExtCtrls, LResources, LMessages,
+  // LazUtils
+  LazLoggerBase, ProjResConvert;
 
 type
 

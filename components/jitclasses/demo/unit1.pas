@@ -8,7 +8,7 @@ interface
 uses
   Classes, SysUtils, TypInfo, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, LResources, ObjectInspector, PropEdits, ComponentTreeView,
-  JitClass, JitTypes, JitHelper, LazLogger;
+  JitClass, JitTypes, JitHelper, ProjResConvert, LazLogger;
 
 type
 

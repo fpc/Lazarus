@@ -33,11 +33,10 @@ unit CustomFormEditor;
 interface
 
 { $DEFINE VerboseFormEditor}
+{ $DEFINE VerboseSaveUnitComponent}
 
 uses
-{$IFDEF IDE_MEM_CHECK}
-  MemCheck,
-{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}MemCheck,{$ENDIF}
   // RTL+FCL
   Classes, SysUtils, TypInfo, Math, AVL_Tree,
   // LCL
@@ -45,6 +44,7 @@ uses
   // LazUtils
   FileUtil, LazFileUtils, LazFileCache, CompWriterPas, LazLoggerBase, LazTracer,
   LazMemManager, LazUTF8, AvgLvlTree,
+  {$IFDEF VerboseSaveUnitComponent}ProjResConvert,{$ENDIF}
   // Codetools
   CodeCache, CodeTree, CodeToolManager, FindDeclarationTool,
   // BuildIntf

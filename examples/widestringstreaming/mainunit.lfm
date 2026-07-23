@@ -8,6 +8,7 @@ object StreamDemoForm: TStreamDemoForm
   Caption = 'Streaming components example'
   ClientHeight = 503
   ClientWidth = 601
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   LCLVersion = '0.9.31'
   object Note1Label: TLabel

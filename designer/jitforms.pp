@@ -46,7 +46,7 @@ uses
   // LCL
   Forms, Controls, Dialogs, LResources,
   //LazUtils
-  AvgLvlTree, LazUtilities, LazStringUtils, LazMemManager, ProjResProc,
+  AvgLvlTree, LazUtilities, LazStringUtils, LazMemManager, ProjResConvert,
   LazLoggerBase, LazTracer,
   // CodeTools
   BasicCodeTools,
@@ -802,8 +802,7 @@ begin
   FreeJITClass(OldClass);
 end;
 
-function TJITComponentList.FindComponentByClassName(
-  const AClassName:shortstring):integer;
+function TJITComponentList.FindComponentByClassName(const AClassName:shortstring):integer;
 begin
   Result:=FJITComponents.Count-1;
   while (Result>=0)
@@ -811,15 +810,14 @@ begin
     dec(Result);
 end;
 
-function TJITComponentList.FindComponentByClass(AClass: TComponentClass
-  ): integer;
+function TJITComponentList.FindComponentByClass(AClass: TComponentClass): integer;
 begin
   Result:=FJITComponents.Count-1;
   while (Result>=0) and (Items[Result].ClassType<>AClass) do
     dec(Result);
 end;
 
-function TJITComponentList.FindComponentByName(const AName:shortstring):integer;
+function TJITComponentList.FindComponentByName(const AName:shortstring): integer;
 begin
   Result:=FJITComponents.Count-1;
   while (Result>=0)

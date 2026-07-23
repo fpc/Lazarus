@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="5">
+  <Package Version="6">
     <Name Value="LazUtils"/>
     <Type Value="RunAndDesignTime"/>
     <BuildMethod Value="Both"/>
@@ -283,6 +283,10 @@
         <UnitName Value="LazUtilsStrConsts"/>
       </Item>
       <Item>
+        <Filename Value="lazvcsutils.pas"/>
+        <UnitName Value="LazVCSUtils"/>
+      </Item>
+      <Item>
         <Filename Value="lazversion.pas"/>
         <UnitName Value="LazVersion"/>
       </Item>
@@ -313,6 +317,10 @@
       <Item>
         <Filename Value="plist2json.pas"/>
         <UnitName Value="PList2JSon"/>
+      </Item>
+      <Item>
+        <Filename Value="projresconvert.pas"/>
+        <UnitName Value="ProjResConvert"/>
       </Item>
       <Item>
         <Filename Value="projresproc.pas"/>
@@ -357,10 +365,6 @@
       <Item>
         <Filename Value="winlazutf8.inc"/>
         <Type Value="Include"/>
-      </Item>
-      <Item>
-        <Filename Value="lazvcsutils.pas"/>
-        <UnitName Value="lazvcsutils"/>
       </Item>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>

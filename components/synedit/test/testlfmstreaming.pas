@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, TestBase, SynEdit, SynGutter, SynGutterBase, SynGutterMarks,
-  SynGutterLineNumber, SynGutterChanges, SynGutterCodeFolding, LResources, Forms, ProjResProc,
+  SynGutterLineNumber, SynGutterChanges, SynGutterCodeFolding, LResources, Forms, ProjResConvert,
   testregistry;
 
 type
@@ -94,9 +94,8 @@ begin
   strm.Position := 0;
 
   strm2 := TStringStream.Create;
-  ProjResProc.LRSObjectTextToBinary(strm, strm2);
+  ProjResConvert.LRSObjectTextToBinary(strm, strm2);
   strm.Free;
-
 
   strm2.Position := 0;
   Result := strm2.DataString;

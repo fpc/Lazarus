@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics,
-  Dialogs, StdCtrls, Buttons;
+  Dialogs, StdCtrls, Buttons, ProjResConvert;
 
 type
 
