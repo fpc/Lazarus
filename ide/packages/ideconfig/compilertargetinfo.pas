@@ -13,15 +13,14 @@ uses
 
 type
 
-  { TFPCControllerInfo - one MCU (-Wp value). CPU/FPU/memory are '' / 0 until FPC MR5
-    adds them to the <controllertype> element; the parser fills whatever is present. }
+  { TFPCControllerInfo - one MCU (-Wp value) and the OS targets it is valid under }
   TFPCControllerInfo = class
   public
     ControllerName: string;   // -Wp value
     ControllerUnit: string;
-    CPU: string;              // instruction set (-Cp)
-    FPU: string;
-    FlashBase, FlashSize, SRAMBase, SRAMSize: int64;
+    OSes: TStringList;        // <ostarget shortname> children: OS targets this MCU is valid under
+    constructor Create;
+    destructor Destroy; override;
   end;
 
   { TFPCTargetOSInfo - one <ostarget> }
@@ -30,11 +29,9 @@ type
     ShortName: string;
     LongName: string;
     UnderDevelopment: boolean; // experimental="1"
-    HasControllers: boolean;   // hascontrollers="1"  (whether the MCU picker applies)
-    HasControllersProvided: boolean; // the hascontrollers attribute was present at all
   end;
 
-  { TFPCTargetInfoCPU - everything -ix reports for one CPU }
+  { TFPCTargetInfoCPU - everything the per-CPU "-ix" reports for one CPU }
   TFPCTargetInfoCPU = class
   private
     FCPU: string;
@@ -50,9 +47,9 @@ type
     function OSCount: integer;
     function ControllerCount: integer;
     function FindOS(const aTargetOS: string): TFPCTargetOSInfo;   // case-insensitive, nil if none
-    function OSUsesControllers(const aTargetOS: string): boolean; // reads the controllers flag
-    function ControllerFlagProvided: boolean; // True if the compiler emitted hascontrollers at all
-    procedure GetControllerNames(aList: TStrings);                // sorted
+    function OSUsesControllers(const aTargetOS: string): boolean; // any controller valid under this OS
+    function ControllerFlagProvided: boolean; // True if the compiler maps controllers to OSes
+    procedure GetControllerNamesForOS(const aTargetOS: string; aList: TStrings); // sorted, OS-filtered
     property CPU: string read FCPU;
     property OSes[Index: integer]: TFPCTargetOSInfo read GetOS;
     property Controllers[Index: integer]: TFPCControllerInfo read GetController;
@@ -78,11 +75,10 @@ type
 // Session singleton (created on first use, freed on finalization).
 function TargetInfoCache: TFPCTargetInfoCache;
 
-// CPUs the configured fpc can actually target: its native target plus the cross compilers
-// configured in its fpc.cfg. Fast path is a single front-line "fpc -ix" whose <crosscputargets>
-// section lists the crosses (by design the section is crosses-only, so the IDE adds the native
-// itself via -iTP); if that section is absent, falls back to probing each known CPU with
-// "-P<cpu> -iTP". Cached per compiler for the session.
+// CPUs the configured fpc can actually build for (its native target plus the crosses configured in
+// its fpc.cfg). Fast path is the driver query "fpc -ixC" (<cputargets>: native + crosses in one
+// call); if that yields nothing (older fpc without the query), falls back to probing each known CPU
+// with "-P<cpu> -iTP". Cached per compiler for the session.
 function GetConfiguredTargetCPUs(const aCompilerFilename: string; aList: TStrings): integer;
 
 implementation
@@ -110,11 +106,6 @@ begin
   end;
 end;
 
-function AttrExists(aNode: TDOMNode; const aName: string): boolean;
-begin
-  Result:=(aNode is TDOMElement) and TDOMElement(aNode).hasAttribute(aName);
-end;
-
 procedure AddNamedChildren(aSection: TDOMNode; const aChildTag: string; aList: TStrings);
 var
   Child: TDOMNode;
@@ -137,9 +128,10 @@ function ParseIXXML(const XMLText: string; Info: TFPCTargetInfoCPU): boolean;
 var
   Stream: TStringStream;
   Doc: TXMLDocument;
-  InfoNode, Section, Item: TDOMNode;
+  InfoNode, Section, Item, Child: TDOMNode;
   OSInfo: TFPCTargetOSInfo;
   Ctrl: TFPCControllerInfo;
+  s: string;
 begin
   Result:=false;
   if XMLText='' then exit;
@@ -176,8 +168,6 @@ begin
                 OSInfo.ShortName:=AttrStr(Item,'shortname');
                 OSInfo.LongName:=AttrStr(Item,'name');
                 OSInfo.UnderDevelopment:=AttrStr(Item,'experimental')='1';
-                OSInfo.HasControllers:=AttrStr(Item,'hascontrollers')='1';
-                OSInfo.HasControllersProvided:=AttrExists(Item,'hascontrollers');
                 Info.FOSes.Add(OSInfo);
               end;
               Item:=Item.NextSibling;
@@ -193,13 +183,22 @@ begin
                 Ctrl:=TFPCControllerInfo.Create;
                 Ctrl.ControllerName:=AttrStr(Item,'name');
                 Ctrl.ControllerUnit:=AttrStr(Item,'controllerunit');
-                Ctrl.CPU:=AttrStr(Item,'cpu');   // present once FPC MR5 lands
-                Ctrl.FPU:=AttrStr(Item,'fpu');
-                Ctrl.FlashBase:=StrToInt64Def(AttrStr(Item,'flashbase'),0); // "$..." parses natively
-                Ctrl.FlashSize:=StrToInt64Def(AttrStr(Item,'flashsize'),0);
-                Ctrl.SRAMBase :=StrToInt64Def(AttrStr(Item,'srambase'),0);
-                Ctrl.SRAMSize :=StrToInt64Def(AttrStr(Item,'sramsize'),0);
-                Info.FControllers.Add(Ctrl);
+                // nested <ostarget shortname=> children: the OS targets this MCU is valid under
+                Child:=Item.FirstChild;
+                while Child<>nil do
+                begin
+                  if (Child.NodeType=ELEMENT_NODE) and SameText(Child.NodeName,'ostarget') then
+                  begin
+                    s:=AttrStr(Child,'shortname');
+                    if (s<>'') and (Ctrl.OSes.IndexOf(s)<0) then
+                      Ctrl.OSes.Add(s);
+                  end;
+                  Child:=Child.NextSibling;
+                end;
+                if Ctrl.ControllerName<>'' then
+                  Info.FControllers.Add(Ctrl)
+                else
+                  Ctrl.Free; // skip sentinel entries with empty name
               end;
               Item:=Item.NextSibling;
             end;
@@ -212,6 +211,19 @@ begin
     Stream.Free;
     Doc.Free;
   end;
+end;
+
+{ TFPCControllerInfo }
+
+constructor TFPCControllerInfo.Create;
+begin
+  OSes:=TStringList.Create; // CaseSensitive stays False -> OS shortname matching is case-insensitive
+end;
+
+destructor TFPCControllerInfo.Destroy;
+begin
+  OSes.Free;
+  inherited Destroy;
 end;
 
 { TFPCTargetInfoCPU }
@@ -267,29 +279,40 @@ begin
 end;
 
 function TFPCTargetInfoCPU.OSUsesControllers(const aTargetOS: string): boolean;
-var O: TFPCTargetOSInfo;
-begin
-  O:=FindOS(aTargetOS);
-  Result:=(O<>nil) and O.HasControllers;
-end;
-
-function TFPCTargetInfoCPU.ControllerFlagProvided: boolean;
-// True when the compiler emitted the hascontrollers attribute on any <ostarget> - i.e. it
-// speaks the flag dialect, so its per-OS answer is authoritative and the static list is not needed.
+// True when at least one controller lists this OS among its <ostarget> children.
 var i: integer;
 begin
   Result:=false;
-  for i:=0 to FOSes.Count-1 do
-    if TFPCTargetOSInfo(FOSes[i]).HasControllersProvided then
+  if aTargetOS='' then exit;
+  for i:=0 to FControllers.Count-1 do
+    if TFPCControllerInfo(FControllers[i]).OSes.IndexOf(aTargetOS)>=0 then
       exit(true);
 end;
 
-procedure TFPCTargetInfoCPU.GetControllerNames(aList: TStrings);
+function TFPCTargetInfoCPU.ControllerFlagProvided: boolean;
+// True when the compiler maps controllers to OSes (any controller carries <ostarget> children) -
+// i.e. it speaks the dialect, so its per-OS answer is authoritative and the static list is not
+// needed. Older compilers that emit no mapping return False, so the caller keeps its static gate.
 var i: integer;
 begin
+  Result:=false;
   for i:=0 to FControllers.Count-1 do
-    aList.Add(Controllers[i].ControllerName);
-  TStringList(aList).Sort;
+    if TFPCControllerInfo(FControllers[i]).OSes.Count>0 then
+      exit(true);
+end;
+
+procedure TFPCTargetInfoCPU.GetControllerNamesForOS(const aTargetOS: string; aList: TStrings);
+// Controller names valid under the given OS shortname, sorted.
+var i: integer; Ctrl: TFPCControllerInfo;
+begin
+  if aTargetOS='' then exit;
+  for i:=0 to FControllers.Count-1 do
+  begin
+    Ctrl:=Controllers[i];
+    if (Ctrl.ControllerName<>'') and (Ctrl.OSes.IndexOf(aTargetOS)>=0) then
+      aList.Add(Ctrl.ControllerName);
+  end;
+  if aList is TStringList then TStringList(aList).Sort;
 end;
 
 { TFPCTargetInfoCache }
@@ -379,10 +402,9 @@ begin
 end;
 
 procedure QueryConfiguredTargetCPUs(const aCompilerFilename: string; aList: TStrings);
-// Ask the configured front-line fpc, for each known CPU, whether it can target it - i.e.
-// whether a cross compiler for it is configured in fpc.cfg. No assumptions about ppc names
-// or paths: run "<fpc> -P<cpu> -iTP" from the compiler's own directory and keep <cpu> only
-// if fpc reports that target processor back (otherwise it fell back to the native one).
+// Fallback for compilers without the -ixC driver query: ask fpc, for each known CPU, whether it can
+// target it (a cross configured in fpc.cfg) via "-P<cpu> -iTP" run from the compiler's own dir, and
+// keep <cpu> only if fpc reports that target processor back (otherwise it fell back to the native).
 var
   CPU: string;
   Params, ToolOut: TStringList;
@@ -409,70 +431,46 @@ begin
   end;
 end;
 
-function GetNativeTargetCPU(const aCompilerFilename: string): string;
-// The compiler's own native CPU, asked via "-iTP" from its directory. Lowercased to match the
-// cross names. Used to seed the CPU list, since <crosscputargets> lists only the fpc.cfg crosses.
+function GetCPUTargetsFromIXC(const aCompilerFilename: string; aList: TStrings): boolean;
+// Driver query "fpc -ixC": fills aList from <fpcoutput><cputargets><cputarget name=> - the complete
+// CPU-target list (native + fpc.cfg crosses) in one call, answered by the fpc driver itself. Returns
+// True when it yielded targets; False (older fpc that lacks the query, or an empty list) lets the
+// caller fall back to the per-CPU -iTP probe.
 var
   Params, ToolOut: TStringList;
-begin
-  Result:='';
-  if aCompilerFilename='' then exit;
-  Params:=TStringList.Create;
-  try
-    Params.Add('-iTP');
-    ToolOut:=RunTool(aCompilerFilename,Params,ExtractFilePath(aCompilerFilename),true);
-  finally
-    Params.Free;
-  end;
-  if ToolOut<>nil then
-    try
-      if ToolOut.Count>0 then
-        Result:=LowerCase(Trim(ToolOut[0]));
-    finally
-      ToolOut.Free;
-    end;
-end;
-
-function GetCrossCpuTargetsFromIX(const aCompilerFilename: string; aList: TStrings): boolean;
-// Runs front-line "fpc -ix" once. If it carries a <crosscputargets> section (by design this lists
-// only the fpc.cfg cross CPUs, via the "name" attribute), the IDE owns the merge: aList is seeded
-// with the native target (from -iTP) and the crosses are appended. Returns True when the section
-// is present, so the caller uses this fast path; returns False only when the section is absent
-// (older fpc), letting the caller fall back to per-CPU -iTP probing.
-var
-  XMLLines: TStringList;
   Stream: TStringStream;
   Doc: TXMLDocument;
-  InfoNode, Section, Item: TDOMNode;
-  CPU, Native: string;
+  Section, Item: TDOMNode;
+  CPU: string;
 begin
   Result:=false;
   aList.Clear;
   if aCompilerFilename='' then exit;
-  XMLLines:=TStringList.Create;
+  ToolOut:=nil;
+  Params:=TStringList.Create;
   try
-    if not RunFPCInfoXML(aCompilerFilename,'',XMLLines) then exit;
+    Params.Add('-ixC');
+    ToolOut:=RunTool(aCompilerFilename,Params,ExtractFilePath(aCompilerFilename),true);
+  finally
+    Params.Free;
+  end;
+  if ToolOut=nil then exit;
+  try
     Doc:=nil;
-    Stream:=TStringStream.Create(XMLLines.Text);
+    Stream:=TStringStream.Create(ToolOut.Text);
     try
       try
         ReadXMLFile(Doc,Stream);
       except
-        exit;
+        exit; // not XML (old fpc rejecting -ixC) -> caller falls back
       end;
       if (Doc=nil) or (Doc.DocumentElement=nil) then exit;
-      InfoNode:=Doc.DocumentElement.FindNode('info');
-      if InfoNode=nil then exit;
-      Section:=InfoNode.FindNode('crosscputargets');
-      if Section=nil then exit; // older fpc without the section -> caller falls back
-      // New-format fpc. Seed with the native target, then append the fpc.cfg crosses.
-      Native:=GetNativeTargetCPU(aCompilerFilename);
-      if (Native<>'') and (aList.IndexOf(Native)<0) then
-        aList.Add(Native);
+      Section:=Doc.DocumentElement.FindNode('cputargets');
+      if Section=nil then exit; // query not supported -> caller falls back
       Item:=Section.FirstChild;
       while Item<>nil do
       begin
-        if (Item.NodeType=ELEMENT_NODE) and SameText(Item.NodeName,'crosscputarget') then
+        if (Item.NodeType=ELEMENT_NODE) and SameText(Item.NodeName,'cputarget') then
         begin
           CPU:=LowerCase(AttrStr(Item,'name'));
           if (CPU<>'') and (aList.IndexOf(CPU)<0) then
@@ -486,19 +484,19 @@ begin
       Stream.Free;
     end;
   finally
-    XMLLines.Free;
+    ToolOut.Free;
   end;
 end;
 
 function GetConfiguredTargetCPUs(const aCompilerFilename: string; aList: TStrings): integer;
-// Cached wrapper. Prefer a single front-line "fpc -ix" when it advertises a <crosscputargets>
-// section; otherwise fall back to probing each CPU with "-P<cpu> -iTP".
+// Cached wrapper. Prefer the "fpc -ixC" driver query (one call: native + crosses); if it yields
+// nothing, fall back to probing each known CPU with "-P<cpu> -iTP".
 begin
   if FAvailCPUList=nil then
     FAvailCPUList:=TStringList.Create;
   if not SameText(FAvailCPUCompiler,aCompilerFilename) then
   begin
-    if not GetCrossCpuTargetsFromIX(aCompilerFilename,FAvailCPUList) then
+    if not GetCPUTargetsFromIXC(aCompilerFilename,FAvailCPUList) then
       QueryConfiguredTargetCPUs(aCompilerFilename,FAvailCPUList);
     FAvailCPUCompiler:=aCompilerFilename;
   end;

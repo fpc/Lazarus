@@ -38,7 +38,7 @@ uses
   // BuildIntf
   IDEOptionsIntf, MacroIntf,
   // IdeIntf
-  IDEOptEditorIntf, IDEDialogs, IDEIntfUtils,
+  IDEOptEditorIntf, IDEDialogs, IDEIntfUtils, IDEIntfStrConsts,
   // IdeUtils
   InputHistory,
   // IdeConfig
@@ -79,6 +79,8 @@ type
     procedure chkWriteConfigFileClick(Sender: TObject);
     procedure TargetOSComboBoxSelect(Sender: TObject);
     procedure TargetCPUComboBoxSelect(Sender: TObject);
+    procedure TargetProcComboBoxSelect(Sender: TObject);
+    procedure ControllerComboBoxSelect(Sender: TObject);
     procedure LCLWidgetTypeLabelClick(Sender: TObject);
     procedure LCLWidgetTypeLabelMouseEnter(Sender: TObject);
     procedure LCLWidgetTypeLabelMouseLeave(Sender: TObject);
@@ -86,6 +88,10 @@ type
     FDialog: TAbstractOptionsEditorDialog;
     FCompOptions: TBaseCompilerOptions;
     FIsPackage: boolean;
+    FUpdating: boolean; // reentrancy guard while one combo forces another
+    function EnsureQueryCompilerTrusted: boolean;
+    procedure SelectComboOrDefault(aCombo: TComboBox; const aText: string);
+    procedure RevertInvalidSubOptions;
     procedure UpdateByTargetOS(aTargetOS: string);
     procedure UpdateByTargetCPU(aTargetCPU: string);
     procedure FillSubTargetComboBox(UseSubTarget: string);
@@ -274,9 +280,8 @@ begin
     sl[i]:=ProcessorToCaption(sl[i]);
   TargetProcComboBox.Items.Assign(sl);
   sl.Free;
-  SetComboBoxText(TargetProcComboBox,KeepProc,cstCaseInsensitive);
-  if TargetProcComboBox.ItemIndex<0 then
-    TargetProcComboBox.ItemIndex := 0;
+  // restore only if still valid for this CPU; otherwise revert to (Default) (do not insert)
+  SelectComboOrDefault(TargetProcComboBox,KeepProc);
 
   // Update selection list for assembler style
   ParsingFrame := TCompilerParsingOptionsFrame(FDialog.FindEditor(TCompilerParsingOptionsFrame));
@@ -330,8 +335,9 @@ end;
 
 function TCompilerConfigTargetFrame.IsControllerOS(aInfo: TFPCTargetInfoCPU;
   const aTargetOS: string): boolean;
-// When the compiler emits the <ostarget hascontrollers="..."> flag it is the source of truth;
-// the static embedded/freertos list is only a fallback for compilers that don't emit it.
+// When the compiler maps controllers to their OS targets (the <controllertype><ostarget> children)
+// it is the source of truth; the static embedded/freertos list is only a fallback for compilers
+// that don't emit that mapping.
 var
   OS: string;
 begin
@@ -342,6 +348,117 @@ begin
     OS := lowercase(aTargetOS);
     Result := (OS = 'embedded') or (OS = 'freertos'); // legacy fallback
   end;
+end;
+
+function TCompilerConfigTargetFrame.EnsureQueryCompilerTrusted: boolean;
+// Before running the query compiler (which may be a project-supplied fpc.exe override), verify it
+// against Lazarus's trusted-compiler list, mirroring buildmodesmanager.CompilerPathNeedsTrust. The
+// unparsed path is used deliberately - resolving macros is itself an attack surface. If the compiler
+// is untrusted the user is prompted (this time / always / use default), and the caller reverts the
+// checkbox if the prompt is cancelled. Nothing runs the compiler while the dialog is open.
+var
+  UnparsedPath: string;
+begin
+  Result := True;
+  if FIsPackage or (FCompOptions = nil) then Exit;
+  UnparsedPath := FCompOptions.CompilerPath;
+  // safe cases: empty or the default macro resolve to the IDE default compiler
+  if (UnparsedPath = '') or SameText(UnparsedPath, DefaultCompilerPath) then Exit;
+  if CompareFilenames(UnparsedPath, EnvironmentOptions.GetParsedCompilerFilename) = 0 then Exit;
+  if EnvironmentOptions.IsCompilerTrusted(UnparsedPath) then Exit;
+  // custom, untrusted compiler -> ask
+  Result := False;
+  case IDEQuestionDialog(lisTrustCompilerCaption,
+         Format(lisTheProjectWantsToUseTheCompiler,
+                [Project1.GetTitleOrName, LineEnding+LineEnding, UnparsedPath,
+                 LineEnding+LineEnding, LineEnding+LineEnding]),
+         mtConfirmation,
+         [mrYes, lisTrustCompilerThisTime,
+          mrAll, lisTrustCompilerAlways,
+          mrIgnore, lisUseDefaultCompiler,
+          mrCancel, lisCancel], '') of
+    mrYes: // trust for this session only
+      begin
+        EnvironmentOptions.AddSessionTrustedCompiler(UnparsedPath);
+        Result := True;
+      end;
+    mrAll: // trust permanently
+      begin
+        EnvironmentOptions.AddTrustedCompiler(UnparsedPath);
+        EnvironmentOptions.Save(False);
+        Result := True;
+      end;
+    mrIgnore: // fall back to the IDE default compiler for this options set
+      begin
+        FCompOptions.CompilerPath := DefaultCompilerPath;
+        Result := True;
+      end;
+  end;
+end;
+
+procedure TCompilerConfigTargetFrame.SelectComboOrDefault(aCombo: TComboBox;
+  const aText: string);
+// Select aText only if it is a genuine item of aCombo (case-insensitive); otherwise fall back to
+// (Default) at index 0. Unlike SetComboBoxText, this never inserts an unknown value - so a
+// selection that is not valid for the current CPU/OS is reverted instead of being silently kept.
+var
+  idx: integer;
+begin
+  idx := LazStringUtils.IndexInStringList(aCombo.Items, cstCaseInsensitive, aText);
+  if idx < 0 then idx := 0;
+  aCombo.ItemIndex := idx;
+end;
+
+procedure TCompilerConfigTargetFrame.RevertInvalidSubOptions;
+// Net that runs after any dropdown change: snap any fixed-list subordinate combo whose selection is
+// no longer a valid item back to (Default), and keep Target Processor / Target Controller mutually
+// exclusive. The refills already restore-or-default each combo (see SelectComboOrDefault); this
+// guards the cross-combo invariants regardless of which control changed.
+begin
+  if (TargetProcComboBox.ItemIndex < 0)
+  or (LazStringUtils.IndexInStringList(TargetProcComboBox.Items, cstCaseInsensitive,
+        TargetProcComboBox.Text) < 0) then
+    TargetProcComboBox.ItemIndex := 0;
+  if (ControllerComboBox.ItemIndex < 0)
+  or (LazStringUtils.IndexInStringList(ControllerComboBox.Items, cstCaseInsensitive,
+        ControllerComboBox.Text) < 0) then
+    ControllerComboBox.ItemIndex := 0;
+  // mutual exclusivity: never both non-default at once (a controller implies its own -Cp)
+  if (ControllerComboBox.ItemIndex > 0) and (TargetProcComboBox.ItemIndex > 0) then
+    TargetProcComboBox.ItemIndex := 0;
+end;
+
+procedure TCompilerConfigTargetFrame.TargetProcComboBoxSelect(Sender: TObject);
+// Target Processor and Target Controller are mutually exclusive: choosing a processor clears any
+// controller back to (Default).
+begin
+  if FUpdating then Exit;
+  if TargetProcComboBox.ItemIndex > 0 then
+  begin
+    FUpdating := True;
+    try
+      ControllerComboBox.ItemIndex := 0;
+    finally
+      FUpdating := False;
+    end;
+  end;
+  RevertInvalidSubOptions;
+end;
+
+procedure TCompilerConfigTargetFrame.ControllerComboBoxSelect(Sender: TObject);
+// Mutually exclusive with Target Processor: choosing a controller clears any processor to (Default).
+begin
+  if FUpdating then Exit;
+  if ControllerComboBox.ItemIndex > 0 then
+  begin
+    FUpdating := True;
+    try
+      TargetProcComboBox.ItemIndex := 0;
+    finally
+      FUpdating := False;
+    end;
+  end;
+  RevertInvalidSubOptions;
 end;
 
 procedure TCompilerConfigTargetFrame.RefillCPUList;
@@ -419,8 +536,8 @@ begin
       for s in Pas2jsPlatformNames do sl.Add(s);
     end;
     TargetOSComboBox.Items.Assign(sl);
-    SetComboBoxText(TargetOSComboBox, KeepOS, cstCaseInsensitive);
-    if TargetOSComboBox.ItemIndex < 0 then TargetOSComboBox.ItemIndex := 0;
+    // restore only if still valid for this CPU; otherwise revert to (Default) (do not insert)
+    SelectComboOrDefault(TargetOSComboBox, KeepOS);
   finally
     sl.Free;
   end;
@@ -443,7 +560,7 @@ begin
     begin
       tmp := TStringListUTF8Fast.Create;
       try
-        Info.GetControllerNames(tmp);
+        Info.GetControllerNamesForOS(GetSelectedTargetOS, tmp);
         sl.AddStrings(tmp);
       finally
         tmp.Free;
@@ -466,12 +583,21 @@ begin
 end;
 
 procedure TCompilerConfigTargetFrame.chkOnlyAvailableClick(Sender: TObject);
-// Full refresh, preserving still-valid selections.
+// Full refresh, preserving still-valid selections. When switching the query on, verify the query
+// compiler is trusted first; if the user declines, switch the checkbox back off (no ambiguity) and
+// fall through to a normal static refresh.
 begin
+  if chkOnlyAvailable.Checked and not EnsureQueryCompilerTrusted then
+  begin
+    chkOnlyAvailable.OnClick := nil;
+    chkOnlyAvailable.Checked := False;
+    chkOnlyAvailable.OnClick := @chkOnlyAvailableClick;
+  end;
   RefillCPUList;
   RefillOSList;
   UpdateByTargetCPU(GetSelectedTargetCPU);
   RefillControllerList(ControllerComboBox.Text, False);
+  RevertInvalidSubOptions;
 end;
 
 procedure TCompilerConfigTargetFrame.FillSubTargetComboBox(UseSubTarget: string);
@@ -487,8 +613,9 @@ begin
   sl:=TStringListUTF8Fast.Create;
   try
     sl.Assign(InputHistories.HistoryLists.GetList('Subtarget',true,rltCaseInsensitive));
-    if sl.IndexOf('')<0 then
-      sl.Add(''); // always have the default target
+    // represent "no subtarget" as the (Default) sentinel rather than an empty entry
+    for i := sl.Count-1 downto 0 do
+      if sl[i] = '' then sl.Delete(i);
 
     // search for possible subtargets
     // fpc searches subtarget configs in the same directories it searches for normal configs
@@ -535,10 +662,15 @@ begin
       end;
     end;
     //debugln(['TCompilerConfigTargetFrame.FillSubTargetComboBox UseSubTarget="',UseSubTarget,'" Candidates=[',sl.Text,']']);
+    sl.Insert(0,'('+lisDefault+')'); // (Default) at the top = emit no -t
     with SubtargetComboBox do begin
       Items.BeginUpdate;
       Items.Assign(sl);
-      SetComboBoxText(SubtargetComboBox,UseSubTarget,cstCaseInsensitive);
+      if UseSubTarget = '' then
+        SetComboBoxText(SubtargetComboBox,'('+lisDefault+')',cstCaseInsensitive)
+      else
+        SetComboBoxText(SubtargetComboBox,UseSubTarget,cstCaseInsensitive);
+      if ItemIndex < 0 then ItemIndex := 0;
       Items.EndUpdate;
     end;
     //debugln(['TCompilerConfigTargetFrame.FillSubTargetComboBox SubtargetComboBox: Text="',SubtargetComboBox.Text,'" Index=',SubtargetComboBox.ItemIndex,' Items=[',SubtargetComboBox.Items.Text,']']);
@@ -662,9 +794,13 @@ begin
       // SubTarget
       FillSubTargetComboBox(Subtarget);
 
-      // Controller (MCU) - the query toggle is a sticky IDE-wide preference (defaults off)
+      // Controller (MCU) - the query toggle is a sticky IDE-wide preference (defaults off).
+      // If it was persisted on but the project's query compiler is untrusted this session, prompt
+      // once (safe here - nothing runs the compiler yet) and turn it off if the user declines.
       chkOnlyAvailable.OnClick := nil;
       chkOnlyAvailable.Checked := MiscellaneousOptions.QueryCompilerForTargets;
+      if chkOnlyAvailable.Checked and not EnsureQueryCompilerTrusted then
+        chkOnlyAvailable.Checked := False;
       chkOnlyAvailable.OnClick := @chkOnlyAvailableClick;
       if OnlyAvailable then
       begin
@@ -711,7 +847,10 @@ begin
         NewTargetCPU := '';
       TargetCPU := CaptionToCPU(NewTargetCPU);
       TargetProcessor := CaptionToProcessor(TargetProcComboBox.Text);
-      Subtarget := lowercase(SubtargetComboBox.Text);
+      if (SubtargetComboBox.Text = '') or (SubtargetComboBox.Text = '('+lisDefault+')') then
+        Subtarget := ''
+      else
+        Subtarget := lowercase(SubtargetComboBox.Text);
       if ControllerComboBox.ItemIndex <= 0 then
         Controller := ''
       else
@@ -750,6 +889,7 @@ begin
     s := cb.Text;
   UpdateByTargetOS(s);
   RefillControllerList(ControllerComboBox.Text, False);
+  RevertInvalidSubOptions;
 end;
 
 procedure TCompilerConfigTargetFrame.TargetCPUComboBoxSelect(Sender: TObject);
@@ -765,6 +905,7 @@ begin
   UpdateByTargetCPU(s);
   RefillOSList;
   RefillControllerList(ControllerComboBox.Text, False);
+  RevertInvalidSubOptions;
 end;
 
 procedure TCompilerConfigTargetFrame.LCLWidgetTypeLabelClick(Sender: TObject);
