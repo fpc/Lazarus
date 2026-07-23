@@ -2140,7 +2140,8 @@ begin
   if (CopyW <= 0) or (CopyH <= 0) then
     exit;
 
-  if FBackTarget <> nil then
+  if (FBackTarget <> nil) and
+    (cairo_surface_get_type(DestSurface) <> CAIRO_SURFACE_TYPE_IMAGE) then
     TargetCairo := FBackTarget
   else
     TargetCairo := FCairo;
@@ -2233,7 +2234,7 @@ begin
 
   TempDestSurface := nil;
 
-  if FBackTarget <> nil then
+  if TargetCairo = FBackTarget then
   begin
     //x11 type, read from underlying X11 surface via FBackTarget matrix.
     ReadSurface := cairo_get_target(FBackTarget);
