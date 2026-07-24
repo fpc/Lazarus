@@ -3264,14 +3264,6 @@ begin
   end;
 end;
 
-function GtkStateToStateFlags(AState: TGtkStateType): TGtkStateFlags;
-begin
-  if AState = GTK_STATE_NORMAL then
-    Result := GTK_STATE_FLAG_NORMAL
-  else
-    Result := TGtkStateFlags(1 shl (AState - 1));
-end;
-
 procedure TGtk3Widget.SetColor(AValue: TColor);
 var
   AColor: TGdkRGBA;
@@ -3473,15 +3465,15 @@ begin
       with FWidget^ do
         for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
           if AValue = clDefault then
-            override_background_color(GtkStateToStateFlags(i), nil)
+            override_background_color(TGtkStateFlags(1 shl (i - 1)), nil)
           else
-            override_background_color(GtkStateToStateFlags(i), @AColor);
+            override_background_color(TGtkStateFlags(1 shl (i - 1)), @AColor);
     with GetContainerWidget^ do
       for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
         if AValue = clDefault then
-          override_background_color(GtkStateToStateFlags(i), nil)
+          override_background_color(TGtkStateFlags(1 shl (i - 1)), nil)
         else
-          override_background_color(GtkStateToStateFlags(i), @AColor);
+          override_background_color(TGtkStateFlags(1 shl (i - 1)), @AColor);
   end;
 end;
 
@@ -4026,7 +4018,7 @@ begin
 
   for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
   begin
-    FWidget^.get_style_context^.get_background_color(GtkStateToStateFlags(i), @ARgba);
+    FWidget^.get_style_context^.get_background_color(TGtkStateFlags(1 shl (i - 1)), @ARgba);
     with FWidgetRGBA[i] do
     begin
       R := ARgba.red;
@@ -4044,7 +4036,7 @@ begin
     g_signal_connect_data(FCentralWidget, 'event', TGCallback(@WidgetEvent), Self, nil, G_CONNECT_DEFAULT);
     for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
     begin
-      FCentralWidget^.get_style_context^.get_background_color(GtkStateToStateFlags(i), @ARgba);
+      FCentralWidget^.get_style_context^.get_background_color(TGtkStateFlags(1 shl (i - 1)), @ARgba);
       with FCentralWidgetRGBA[i] do
       begin
         R := ARgba.red;
