@@ -2129,13 +2129,16 @@ var
   NeedSource: Boolean;
   AMatrix: Tcairo_matrix_t;
   ReadOffsetX, ReadOffsetY: Double;
+  DRect: TRect;
 begin
   DestSurface := cairo_get_target(FCairo);
   if DestSurface = nil then
     exit;
 
-  CopyW := ADestRect.Right - ADestRect.Left;
-  CopyH := ADestRect.Bottom - ADestRect.Top;
+  DRect := Rect(LToDX(ADestRect.Left), LToDY(ADestRect.Top),
+    LToDX(ADestRect.Right), LToDY(ADestRect.Bottom));
+  CopyW := DRect.Right - DRect.Left;
+  CopyH := DRect.Bottom - DRect.Top;
 
   if (CopyW <= 0) or (CopyH <= 0) then
     exit;
@@ -2150,7 +2153,7 @@ begin
   begin
 
     cairo_save(TargetCairo);
-    cairo_rectangle(TargetCairo, ADestRect.Left, ADestRect.Top, CopyW, CopyH);
+    cairo_rectangle(TargetCairo, DRect.Left, DRect.Top, CopyW, CopyH);
     cairo_clip(TargetCairo);
 
     case Rop of
@@ -2239,8 +2242,8 @@ begin
     //x11 type, read from underlying X11 surface via FBackTarget matrix.
     ReadSurface := cairo_get_target(FBackTarget);
     cairo_get_matrix(FBackTarget, @AMatrix);
-    ReadOffsetX := -(AMatrix.x0 + ADestRect.Left);
-    ReadOffsetY := -(AMatrix.y0 + ADestRect.Top);
+    ReadOffsetX := -(AMatrix.x0 + DRect.Left);
+    ReadOffsetY := -(AMatrix.y0 + DRect.Top);
     TempDestSurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, CopyW, CopyH);
     TempCairo := cairo_create(TempDestSurface);
     cairo_set_source_surface(TempCairo, ReadSurface, ReadOffsetX, ReadOffsetY);
@@ -2259,8 +2262,8 @@ begin
     if (AMatrix.x0 <> 0) or (AMatrix.y0 <> 0) or
        (cairo_surface_get_type(DestSurface) <> CAIRO_SURFACE_TYPE_IMAGE) then
     begin
-      ReadOffsetX := -(AMatrix.x0 + ADestRect.Left);
-      ReadOffsetY := -(AMatrix.y0 + ADestRect.Top);
+      ReadOffsetX := -(AMatrix.x0 + DRect.Left);
+      ReadOffsetY := -(AMatrix.y0 + DRect.Top);
       TempDestSurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, CopyW, CopyH);
       TempCairo := cairo_create(TempDestSurface);
       cairo_set_source_surface(TempCairo, DestSurface, ReadOffsetX, ReadOffsetY);
@@ -2301,7 +2304,7 @@ begin
   for Y := 0 to CopyH - 1 do
   begin
     if TempDestSurface = nil then
-      if (ADestRect.Top + Y < 0) or (ADestRect.Top + Y >= DstH) then
+      if (DRect.Top + Y < 0) or (DRect.Top + Y >= DstH) then
         continue;
 
     if NeedSource and (TempSurface = nil) then
@@ -2311,7 +2314,7 @@ begin
     for X := 0 to CopyW - 1 do
     begin
       if TempDestSurface = nil then
-        if (ADestRect.Left + X < 0) or (ADestRect.Left + X >= DstW) then
+        if (DRect.Left + X < 0) or (DRect.Left + X >= DstW) then
           continue;
 
       if NeedSource and (TempSurface = nil) then
@@ -2321,7 +2324,7 @@ begin
       if TempDestSurface <> nil then
         DstOff := Y * DstStride + X * 4
       else
-        DstOff := (ADestRect.Top + Y) * DstStride + (ADestRect.Left + X) * 4;
+        DstOff := (DRect.Top + Y) * DstStride + (DRect.Left + X) * 4;
 
       SrcOff := 0;
       if NeedSource then
@@ -2419,8 +2422,8 @@ begin
     //write back via x11 FBackTarget when X11-backed, else via FCairo.
     cairo_save(TargetCairo);
     cairo_set_operator(TargetCairo, CAIRO_OPERATOR_SOURCE);
-    cairo_set_source_surface(TargetCairo, TempDestSurface, ADestRect.Left, ADestRect.Top);
-    cairo_rectangle(TargetCairo, ADestRect.Left, ADestRect.Top, CopyW, CopyH);
+    cairo_set_source_surface(TargetCairo, TempDestSurface, DRect.Left, DRect.Top);
+    cairo_rectangle(TargetCairo, DRect.Left, DRect.Top, CopyW, CopyH);
     cairo_fill(TargetCairo);
     cairo_restore(TargetCairo);
     if TargetCairo = FCairo then
