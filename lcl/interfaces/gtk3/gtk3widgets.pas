@@ -5016,7 +5016,9 @@ begin
         FocusWidget := nil;
       if FocusWidget <> nil then
         PGtkWindow(TopLevel)^.set_focus(FocusWidget);
-    end;
+    end else
+    if GetContainerWidget^.get_mapped then
+      GetContainerWidget^.child_focus(GTK_DIR_TAB_FORWARD);
   end;
 end;
 
