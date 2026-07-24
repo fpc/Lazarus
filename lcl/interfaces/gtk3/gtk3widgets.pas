@@ -3264,6 +3264,14 @@ begin
   end;
 end;
 
+function GtkStateToStateFlags(AState: TGtkStateType): TGtkStateFlags;
+begin
+  if AState = GTK_STATE_NORMAL then
+    Result := GTK_STATE_FLAG_NORMAL
+  else
+    Result := TGtkStateFlags(1 shl (AState - 1));
+end;
+
 procedure TGtk3Widget.SetColor(AValue: TColor);
 var
   AColor: TGdkRGBA;
@@ -3276,6 +3284,9 @@ var
   AOldProvider: PGtkCssProvider;
   ANewProvider: PGtkCssProvider;
   ACSS: AnsiString;
+  ALum, AF: Double;
+  ABase, AHover, APress: array[0..2] of Integer;
+  k: Integer;
 begin
   if not IsWidgetOK then Exit;
 
@@ -3408,21 +3419,69 @@ begin
         TGDestroyNotify(@g_object_unref));
     end;
   end else
+  if Self is TGtk3Button then
+  begin
+    AOldProvider := PGtkCssProvider(g_object_get_data(PGObject(FWidget), 'lclBgColorProv'));
+    if Assigned(AOldProvider) then
+    begin
+      gtk_style_context_remove_provider(gtk_widget_get_style_context(FWidget),
+        PGtkStyleProvider(AOldProvider));
+      g_object_set_data(PGObject(FWidget), 'lclBgColorProv', nil);
+    end;
+    if AValue <> clDefault then
+    begin
+      RGBA := ColorToRGB(AValue);
+      ABase[0] := Red(RGBA);
+      ABase[1] := Green(RGBA);
+      ABase[2] := Blue(RGBA);
+      ALum := (0.2126 * ABase[0] + 0.7152 * ABase[1] + 0.0722 * ABase[2]) / 255.0;
+      if (ABase[0] >= 220) and (ABase[1] >= 220) and (ABase[2] >= 220) then
+      begin
+        for k := 0 to 2 do
+        begin
+          AHover[k] := Round(ABase[k] * 0.92);
+          APress[k] := Round(ABase[k] * 0.82);
+        end;
+      end else
+      begin
+        AF := 0.25 + 0.30 * ALum;
+        for k := 0 to 2 do
+        begin
+          AHover[k] := ABase[k] + Round((255 - ABase[k]) * AF);
+          APress[k] := Round(ABase[k] * 0.85);
+        end;
+      end;
+      CSSData := Format(
+        'button { background-color: #%.2x%.2x%.2x; background-image: none; } ' +
+        'button:hover { background-color: #%.2x%.2x%.2x; } ' +
+        'button:active { background-color: #%.2x%.2x%.2x; }',
+        [ABase[0], ABase[1], ABase[2],
+         AHover[0], AHover[1], AHover[2],
+         APress[0], APress[1], APress[2]]);
+      ANewProvider := gtk_css_provider_new();
+      gtk_css_provider_load_from_data(ANewProvider, PChar(CSSData), -1, nil);
+      gtk_style_context_add_provider(gtk_widget_get_style_context(FWidget),
+        PGtkStyleProvider(ANewProvider),
+        GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+      g_object_set_data_full(PGObject(FWidget), 'lclBgColorProv', ANewProvider,
+        TGDestroyNotify(@g_object_unref));
+    end;
+  end else
   begin
     AColor := TColortoTGdkRGBA(AValue);
     if FWidget <> GetContainerWidget then
       with FWidget^ do
         for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
           if AValue = clDefault then
-            override_background_color(TGtkStateFlags(1 shl (i - 1)), nil)
+            override_background_color(GtkStateToStateFlags(i), nil)
           else
-            override_background_color(TGtkStateFlags(1 shl (i - 1)), @AColor);
+            override_background_color(GtkStateToStateFlags(i), @AColor);
     with GetContainerWidget^ do
       for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
         if AValue = clDefault then
-          override_background_color(TGtkStateFlags(1 shl (i - 1)), nil)
+          override_background_color(GtkStateToStateFlags(i), nil)
         else
-          override_background_color(TGtkStateFlags(1 shl (i - 1)), @AColor);
+          override_background_color(GtkStateToStateFlags(i), @AColor);
   end;
 end;
 
@@ -3967,7 +4026,7 @@ begin
 
   for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
   begin
-    FWidget^.get_style_context^.get_background_color(TGtkStateFlags(1 shl (i - 1)), @ARgba);
+    FWidget^.get_style_context^.get_background_color(GtkStateToStateFlags(i), @ARgba);
     with FWidgetRGBA[i] do
     begin
       R := ARgba.red;
@@ -3985,7 +4044,7 @@ begin
     g_signal_connect_data(FCentralWidget, 'event', TGCallback(@WidgetEvent), Self, nil, G_CONNECT_DEFAULT);
     for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
     begin
-      FCentralWidget^.get_style_context^.get_background_color(TGtkStateFlags(1 shl (i - 1)), @ARgba);
+      FCentralWidget^.get_style_context^.get_background_color(GtkStateToStateFlags(i), @ARgba);
       with FCentralWidgetRGBA[i] do
       begin
         R := ARgba.red;
