@@ -5754,17 +5754,23 @@ begin
 end;
 
 function TGtk3GroupBox.getText: String;
+var
+  ALabel: PGtkWidget;
 begin
   Result := '';
   if IsWidgetOK then
   begin
-    if PGtkFrame(Widget)^.get_label_widget = nil then
+    ALabel := PGtkFrame(Widget)^.get_label_widget;
+    if (ALabel = nil) or
+      not g_type_check_instance_is_a(PGTypeInstance(ALabel), gtk_label_get_type) then
       exit;
-    Result := {%H-}ReplaceUnderscoresWithAmpersands(PGtkFrame(Widget)^.get_label);
+    Result := {%H-}ReplaceUnderscoresWithAmpersands(PGtkLabel(ALabel)^.get_label);
   end;
 end;
 
 procedure TGtk3GroupBox.setText(const AValue: String);
+var
+  ALabel: PGtkWidget;
 begin
   if IsWidgetOK then
   begin
@@ -5772,9 +5778,15 @@ begin
       PGtkFrame(Widget)^.set_label_widget(nil)
     else
     begin
-      if PGtkFrame(Widget)^.get_label_widget = nil then
-        PGtkFrame(Widget)^.set_label_widget(TGtkLabel.new(''));
-      {%H-}PGtkFrame(Widget)^.set_label(PgChar({%H-}ReplaceAmpersandsWithUnderscores(AValue)));
+      ALabel := PGtkFrame(Widget)^.get_label_widget;
+      if (ALabel = nil) or
+        not g_type_check_instance_is_a(PGTypeInstance(ALabel), gtk_label_get_type) then
+      begin
+        ALabel := TGtkLabel.new('');
+        PGtkFrame(Widget)^.set_label_widget(ALabel);
+        ALabel^.show;
+      end;
+      PGtkLabel(ALabel)^.set_text_with_mnemonic(PgChar({%H-}ReplaceAmpersandsWithUnderscores(AValue)));
     end;
   end;
 end;
