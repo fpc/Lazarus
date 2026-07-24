@@ -4593,6 +4593,7 @@ cleanlaz: clean cleanide
 	$(DELTREE) packages/ideutils/lib/*
 	$(DELTREE) packages/idedebugger/lib/*
 	$(DELTREE) packages/idesynedit/lib/*
+	$(DELTREE) packages/idehelputils/lib/*
 	${DELTREE} ../units/*
 purge: cleanlaz
 distclean: cleanlaz

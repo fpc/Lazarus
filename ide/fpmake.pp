@@ -135,6 +135,7 @@ begin
     P.Dependencies.Add('debuggerintf');
     P.Dependencies.Add('lazdebuggergdbmi');
     P.Dependencies.Add('idesynedit');
+    P.Dependencies.Add('idehelputils');
     P.Dependencies.Add('ideutilspkg');
     P.Dependencies.Add('ideconfig');
     P.Dependencies.Add('idepackager');

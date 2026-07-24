@@ -38,6 +38,9 @@
     </RunParams>
     <RequiredPackages>
       <Item>
+        <PackageName Value="IdeHelpUtils"/>
+      </Item>
+      <Item>
         <PackageName Value="IdeSynEdit"/>
       </Item>
       <Item>
