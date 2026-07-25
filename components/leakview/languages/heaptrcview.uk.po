@@ -59,7 +59,9 @@ msgid "Select file with trace log"
 msgstr "Виберіть файл з журналом трасування"
 
 #: heaptrcview.slbltrace
-msgid ".trc file"
+#, fuzzy
+#| msgid ".trc file"
+msgid "Trace file"
 msgstr "файл .trc"
 
 #: heaptrcview.stacklineformat

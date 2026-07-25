@@ -5,10 +5,9 @@ unit HeapTrcView;
 interface
 
 uses
-  Types, Classes, SysUtils, XMLConf, DOM, contnrs,
+  Classes, SysUtils, Types, XMLConf, DOM, Contnrs,
   // LCL
-  LCLType, Clipbrd, LResources,
-  Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, ExtCtrls,
+  Forms, Controls, Dialogs, StdCtrls, ComCtrls, ExtCtrls, LCLType, Clipbrd, LResources, LCLStrConsts,
   // LazUtils
   FileUtil, LazFileUtils,
   // IDEIntf
@@ -32,10 +31,12 @@ type
     edtTrcFileName:TComboBox;
     lblTrcFile: TLabel;
     ctrlPanel: TPanel;
-    memoSummary: TMemo;
     OpenDialog: TOpenDialog;
-    splitter: TSplitter;
     trvTraceInfo: TTreeView;
+    pnlSummary: TPanel;
+    lblLeakingMemSize: TLabel;
+    lblLeakingBlocksCount: TLabel;
+    lblTotalMemAlloc: TLabel;
     procedure btnClipboardClick(Sender: TObject);
     procedure BtnResolveClick(Sender: TObject);
     procedure btnUpdateClick(Sender: TObject);
@@ -44,10 +45,14 @@ type
     procedure chkUseRawChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure trvTraceInfoDblClick(Sender: TObject);
+    procedure trvTraceInfoKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     Finfo  : TLeakInfo;
     fItems  : TStackTraceList;
+
+    procedure SetSummaryInfo(aTotalMemAlloc, aLeakingMemSize, aLeakingBlocksCount: int64);
 
     procedure DoUpdateLeaks(aInfo: TLeakInfo);
     procedure DoUpdateLeaksFromText(aText: string);
@@ -89,7 +94,7 @@ resourcestring
   rsDTimes = ' (%d times)';
   rsLeakView = 'Leaks and Traces';
   //
-  slblTrace = '.trc file';
+  slblTrace = 'Trace file';
   sbtnUpdate = 'Update';
   sbtnClipBrd = 'Paste Clipboard';
   sbtnResolve = 'Resolve';
@@ -134,6 +139,7 @@ end;
 procedure THeapTrcViewForm.btnClipboardClick(Sender: TObject);
 begin
   DoUpdateLeaksFromText(Clipboard.AsText);
+  edtTrcFileName.Text := ''; // avoid confusion about loading a report from a file
 end;
 
 procedure THeapTrcViewForm.BtnResolveClick(Sender: TObject);
@@ -152,7 +158,8 @@ end;
 procedure THeapTrcViewForm.btnBrowseClick(Sender: TObject);
 begin
   OpenDialog.FileName := '';
-  OpenDialog.Filter := slblTrace + '|*.trc';
+  OpenDialog.Filter := slblTrace + ' (*.trc;*.log;*.txt) |*.trc;*.log;*.txt|' +
+                       Format(rsAllFiles, [GetAllFilesMask, GetAllFilesMask, '']);
   OpenDialog.Title := sfrmSelectTrcFile;
   if not OpenDialog.Execute then Exit;
 
@@ -183,6 +190,14 @@ begin
   Result.FileName:=ConfigFileName;
 end;
 
+procedure THeapTrcViewForm.SetSummaryInfo(aTotalMemAlloc, aLeakingMemSize, aLeakingBlocksCount: int64);
+begin
+  pnlSummary.Visible := aTotalMemAlloc >= 0; // equals -1 if a simple stack trace is open (not a leak report)
+  lblTotalMemAlloc     .Caption := Format(strTotalMemAlloc     , [aTotalMemAlloc     ]);
+  lblLeakingMemSize    .Caption := Format(strLeakingMemSize    , [aLeakingMemSize    ]);
+  lblLeakingBlocksCount.Caption := Format(strLeakingBlocksCount, [aLeakingBlocksCount]);
+end;
+
 procedure THeapTrcViewForm.FormCreate(Sender: TObject);
 var
   cfg   : TXMLConfig;
@@ -194,6 +209,9 @@ begin
   BtnResolve.Caption:=sbtnResolve;
   chkUseRaw.Caption:=schkRaw;
   chkStayOnTop.Caption:=schkTop;
+
+  SetSummaryInfo(0,0,0);
+
   fItems:=TStackTraceList.Create;
   try
     cfg:=CreateXMLConfig;
@@ -224,9 +242,47 @@ begin
   HeapTrcViewForm:=nil;
 end;
 
+procedure THeapTrcViewForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_F5) and (Shift = []) then
+  begin
+    btnUpdateClick(Sender);
+    Key := 0;
+  end
+  else if (Key = VK_O) and (Shift = [ssCtrl]) then
+  begin
+    btnBrowseClick(Sender);
+    Key := 0;
+  end
+  else if (Key = VK_L) and (Shift = [ssCtrl]) then
+  begin
+    edtTrcFileName.SetFocus;
+    Key := 0;
+  end
+  else if (Key = VK_T) and (Shift = [ssCtrl]) then
+  begin
+    trvTraceInfo.SetFocus;
+    Key := 0;
+  end
+  else if (Key = VK_V) and (Shift = [ssCtrl, ssShift]) then
+  begin
+    btnClipboardClick(Sender);
+    Key := 0;
+  end;
+end;
+
 procedure THeapTrcViewForm.trvTraceInfoDblClick(Sender: TObject);
 begin
   DoJump;
+end;
+
+procedure THeapTrcViewForm.trvTraceInfoKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) and (Shift = []) then
+  begin
+    DoJump;
+    Key := 0;
+  end;
 end;
 
 //note: to range check performed
@@ -320,18 +376,13 @@ begin
     trvTraceInfo.Items.Clear;
 
     Finfo := aInfo;
+    SetSummaryInfo(0, 0, 0);
     if FInfo = nil then exit;
 
     if Finfo.GetLeakInfo(data, fItems) then ItemsToTree
     else trvTraceInfo.Items.Add(nil, rsErrorParse);
 
-    memoSummary.Clear;
-    with memoSummary.Lines do begin
-      Add( Format(strTotalMemAlloc, [data.TotalMem]));
-      Add( Format(strLeakingMemSize, [data.LeakedMem]));
-      Add( Format(strLeakingBlocksCount, [data.LeakCount]));
-    end;
-
+    SetSummaryInfo(data.TotalMem, data.LeakedMem, data.LeakCount);
   finally
     trvTraceInfo.EndUpdate;
   end;
@@ -521,7 +572,9 @@ end;
 procedure THeapTrcViewForm.AddFileToList(const FileName:AnsiString);
 var
   i : Integer;
+  s: string;
 begin
+  s := edtTrcFileName.Text; // store current text
   i:=edtTrcFileName.Items.IndexOf(FileName);
   if (i<0) then begin
     if edtTrcFileName.Items.Count=8 then
@@ -529,6 +582,7 @@ begin
   end else
     edtTrcFileName.Items.Delete(i);
   edtTrcFileName.Items.Insert(0, FileName);
+  edtTrcFileName.Text := s;
 end;
 
 procedure THeapTrcViewForm.LazarusJump(Sender: TObject;

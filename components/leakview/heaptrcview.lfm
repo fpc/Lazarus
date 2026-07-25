@@ -8,10 +8,12 @@ object HeapTrcViewForm: THeapTrcViewForm
   ClientHeight = 444
   ClientWidth = 637
   FormStyle = fsStayOnTop
+  KeyPreview = True
   Position = poScreenCenter
   LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnKeyDown = FormKeyDown
   object lblTrcFile: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = edtTrcFileName
@@ -108,7 +110,7 @@ object HeapTrcViewForm: THeapTrcViewForm
     object trvTraceInfo: TTreeView
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 278
+      Height = 343
       Top = 6
       Width = 625
       Align = alClient
@@ -118,25 +120,45 @@ object HeapTrcViewForm: THeapTrcViewForm
       TabOrder = 0
       Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
       OnDblClick = trvTraceInfoDblClick
+      OnKeyDown = trvTraceInfoKeyDown
     end
-    object memoSummary: TMemo
+    object pnlSummary: TPanel
       Left = 0
-      Height = 81
-      Top = 289
+      Height = 15
+      Top = 355
       Width = 625
       Align = alBottom
-      ReadOnly = True
-      ScrollBars = ssVertical
+      AutoSize = True
+      BorderSpacing.Top = 6
+      BevelOuter = bvNone
+      ChildSizing.HorizontalSpacing = 16
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.Layout = cclTopToBottomThenLeftToRight
+      ChildSizing.ControlsPerLine = 1
+      ClientHeight = 15
+      ClientWidth = 625
       TabOrder = 1
-    end
-    object splitter: TSplitter
-      Cursor = crVSplit
-      Left = 0
-      Height = 5
-      Top = 284
-      Width = 625
-      Align = alBottom
-      ResizeAnchor = akBottom
+      object lblLeakingMemSize: TLabel
+        Left = 0
+        Height = 15
+        Top = 0
+        Width = 187
+        Caption = 'Leaking Mem Size: 0'
+      end
+      object lblLeakingBlocksCount: TLabel
+        Left = 203
+        Height = 15
+        Top = 0
+        Width = 205
+        Caption = 'Leaking Blocks Count: 0'
+      end
+      object lblTotalMemAlloc: TLabel
+        Left = 424
+        Height = 15
+        Top = 0
+        Width = 201
+        Caption = 'Total Mem allocated: 0'
+      end
     end
   end
   object btnClipboard: TButton
