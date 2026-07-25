@@ -63,11 +63,6 @@ msgstr "Choisir le fichier contenant un journal d'exécution"
 msgid "Trace file"
 msgstr "Fichier .trc"
 
-#: heaptrcview.stacklineformat
-#, object-pascal-format
-msgid "%s"
-msgstr "%s"
-
 #: heaptrcview.stacklineformatwithfile
 #, object-pascal-format
 msgid "%s file: %s : %d; "

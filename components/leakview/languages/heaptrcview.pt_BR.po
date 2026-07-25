@@ -62,11 +62,6 @@ msgstr "Selecionar arquivo com log de rastreamento"
 msgid "Trace file"
 msgstr "arquivo .trc"
 
-#: heaptrcview.stacklineformat
-#, object-pascal-format
-msgid "%s"
-msgstr "%s"
-
 #: heaptrcview.stacklineformatwithfile
 #, object-pascal-format
 msgid "%s file: %s : %d; "

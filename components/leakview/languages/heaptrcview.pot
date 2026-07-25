@@ -50,11 +50,6 @@ msgstr ""
 msgid "Trace file"
 msgstr ""
 
-#: heaptrcview.stacklineformat
-#, object-pascal-format
-msgid "%s"
-msgstr ""
-
 #: heaptrcview.stacklineformatwithfile
 #, object-pascal-format
 msgid "%s file: %s : %d; "

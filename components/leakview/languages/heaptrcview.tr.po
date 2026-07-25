@@ -63,11 +63,6 @@ msgstr "İzleme günlüğü olan dosyayı seçin"
 msgid "Trace file"
 msgstr ".trc dosyası"
 
-#: heaptrcview.stacklineformat
-#, object-pascal-format
-msgid "%s"
-msgstr "%s"
-
 #: heaptrcview.stacklineformatwithfile
 #, object-pascal-format
 msgid "%s file: %s : %d; "
