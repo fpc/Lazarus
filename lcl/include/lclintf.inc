@@ -258,6 +258,11 @@ begin
   Result := WidgetSet.GetControlConstraints(Constraints);
 end;
 
+function GetDCOpacity(DC: HDC): Byte;
+begin
+  Result := WidgetSet.GetDCOpacity(DC);
+end;
+
 function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND;
   var OriginDiff: TPoint): boolean;
 begin
@@ -438,6 +443,11 @@ function SetComboMinDropDownSize(Handle: HWND;
 begin
   Result := WidgetSet.SetComboMinDropDownSize(Handle,
                                    MinItemsWidth, MinItemsHeight, MinItemCount);
+end;
+
+procedure SetDCOpacity(DC: HDC; AOpacity: Byte);
+begin
+  WidgetSet.SetDCOpacity(DC, AOpacity);
 end;
 
 procedure SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword);
