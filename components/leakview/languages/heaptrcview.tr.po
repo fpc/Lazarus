@@ -58,7 +58,9 @@ msgid "Select file with trace log"
 msgstr "İzleme günlüğü olan dosyayı seçin"
 
 #: heaptrcview.slbltrace
-msgid ".trc file"
+#, fuzzy
+#| msgid ".trc file"
+msgid "Trace file"
 msgstr ".trc dosyası"
 
 #: heaptrcview.stacklineformat
