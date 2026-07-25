@@ -483,7 +483,7 @@ begin
     with Line do
       if FileName <> ''
         then Result := Format(StackLineFormatWithFile, ['$'+IntToHex(Addr, sizeof(Pointer)*2), ExtractFileName(FileName), LineNum])
-        else Result := Format('%s', ['$'+IntToHex(Addr, sizeof(Pointer)*2)]);
+        else Result := '$'+IntToHex(Addr, sizeof(Pointer)*2);
 end;
 
 procedure THeapTrcViewForm.SaveState(cfg:TXMLConfig);
