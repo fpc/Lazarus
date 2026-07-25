@@ -1,0 +1,295 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: idehelputilstrings.dlgccotest
+msgid "Test"
+msgstr "Teszt"
+
+#: idehelputilstrings.dlgfilterall
+msgid "All files"
+msgstr "Minden fájl"
+
+#: idehelputilstrings.dlgfilterpascalfile
+msgid "Pascal file"
+msgstr "Pascal fájl"
+
+#: idehelputilstrings.lisalreadycontainsthehe
+#, object-pascal-format
+msgid ""
+"%s already contains the help:\n"
+"%s"
+msgstr ""
+
+#: idehelputilstrings.lisceisarootcontrol
+msgid "Is a root control"
+msgstr "Egy gyökér vezérlő"
+
+#: idehelputilstrings.lischooseafpdoclink
+msgid "Choose a FPDoc link"
+msgstr "Válasszon egy FPDoc hivatkozást!"
+
+#: idehelputilstrings.lischooseanexamplefile
+msgid "Choose an example file"
+msgstr "Válasszon egy példa fájlt!"
+
+#: idehelputilstrings.liscodehelpbrowseexamplebutton
+msgid "Browse"
+msgstr "Tallózás"
+
+#: idehelputilstrings.liscodehelpconfirmreplace
+msgid "Confirm replace"
+msgstr "Csere megerősítése"
+
+#: idehelputilstrings.liscodehelpcreatebutton
+msgid "Create help item"
+msgstr "Súgó elem létrehozása"
+
+#: idehelputilstrings.liscodehelpdescrtag
+msgid "Description"
+msgstr "Leírás"
+
+#: idehelputilstrings.liscodehelperrorstag
+msgid "Errors"
+msgstr "Hibák"
+
+#: idehelputilstrings.liscodehelpexampletag
+msgid "Example"
+msgstr "Példa"
+
+#: idehelputilstrings.liscodehelphintboldformat
+msgid "Insert bold formatting tag"
+msgstr "Félkövér formázó címke beszúrása"
+
+#: idehelputilstrings.liscodehelphintinsertcodetag
+msgid "Insert code formatting tag"
+msgstr "Kód formázó címke beszúrása"
+
+#: idehelputilstrings.liscodehelphintitalicformat
+msgid "Insert italic formatting tag"
+msgstr "Dőlt formázó címke beszúrása"
+
+#: idehelputilstrings.liscodehelphintremarktag
+msgid "Insert remark formatting tag"
+msgstr "Megjegyzés formázó címke beszúrása"
+
+#: idehelputilstrings.liscodehelphintunderlineformat
+msgid "Insert underline formatting tag"
+msgstr "Aláhúzott formázó címke beszúrása"
+
+#: idehelputilstrings.liscodehelphintvartag
+msgid "Insert var formatting tag"
+msgstr "Változó formázó címke beszúrása"
+
+#: idehelputilstrings.liscodehelpinherited
+msgid "Inherited"
+msgstr "Öröklött"
+
+#: idehelputilstrings.liscodehelpinsertalink
+msgid "Insert a link ..."
+msgstr "Link beszúrása ..."
+
+#: idehelputilstrings.liscodehelpinsertparagraphformattingtag
+msgid "Insert paragraph formatting tag"
+msgstr "Bekezdés formázó címke beszúrása"
+
+#: idehelputilstrings.liscodehelpmainformcaption
+msgid "FPDoc Editor"
+msgstr "FPDoc szerkesztő"
+
+#: idehelputilstrings.liscodehelpnoinheriteddescriptionfound
+msgid "(no inherited description found)"
+msgstr "(öröklött leírás nem található)"
+
+#: idehelputilstrings.liscodehelpnotagcaption
+msgid "<NONE>"
+msgstr "<SEMMI>"
+
+#: idehelputilstrings.liscodehelpseealsotag
+msgid "See also"
+msgstr "Lásd még"
+
+#: idehelputilstrings.liscodehelpshortdescriptionof
+msgid "Short description of"
+msgstr "Rövid leírása"
+
+#: idehelputilstrings.liscodehelpshorttag
+msgid "Short"
+msgstr "Rövid"
+
+#: idehelputilstrings.lisconfirmreplace
+msgid "Confirm Replace"
+msgstr ""
+
+#: idehelputilstrings.liscreatehelpnode
+msgid "Create Help node"
+msgstr "Súgó csomópont létrehozása"
+
+#: idehelputilstrings.lisdlgopen
+msgid "Open ..."
+msgstr "&Megnyitás ..."
+
+#: idehelputilstrings.liseditcontexthelp
+msgid "Edit context help"
+msgstr "Tartalmi súgó szerkesztése"
+
+#: idehelputilstrings.liserrorreadingxml
+msgid "Error reading XML"
+msgstr "Hiba XML olvasása közben"
+
+#: idehelputilstrings.liserrorreadingxmlfile
+#, object-pascal-format
+msgid "Error reading xml file \"%s\"%s%s"
+msgstr "Hiba az XML fájl olvasása közben: \"%s\"%s%s"
+
+#: idehelputilstrings.liserrorwritingfile
+#, object-pascal-format
+msgid "Error writing file \"%s\""
+msgstr "Hiba a fájl írása közben: \"%s\""
+
+#: idehelputilstrings.lisexamplesidentifiertmyenumenumunitnameidentifierpac
+#, object-pascal-format
+msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
+msgstr "Példák:%sAzonosító%sTMyEnum.Enum%sUnitnév.Azonosító%s#Csomagnév.UnitNév.Azonosító"
+
+#: idehelputilstrings.lisfpdocerrorwriting
+#, object-pascal-format
+msgid "Error writing \"%s\"%s%s"
+msgstr "Hiba írás közben: \"%s\"%s%s"
+
+#: idehelputilstrings.lisfpdocfpdocsyntaxerror
+msgid "FPDoc syntax error"
+msgstr "FPDoc szintaktikai hiba"
+
+#: idehelputilstrings.lisfpdocthereisasyntaxerrorinthefpdocelement
+#, object-pascal-format
+msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
+msgstr "Szintaktikai hiba a(z) \"%s\" FPDoc elemben:%s%s"
+
+#: idehelputilstrings.lishashelp
+msgid "Has Help"
+msgstr "Van súgója"
+
+#: idehelputilstrings.lishelpentries
+msgid "Help entries"
+msgstr "Súgó bejegyzések"
+
+#: idehelputilstrings.lisidentifier
+msgid "identifier"
+msgstr "azonosító"
+
+#: idehelputilstrings.lisinsertprintshorttag2
+msgid "Insert printshort tag"
+msgstr "PrintShort címke beszúrása"
+
+#: idehelputilstrings.lisinserturltag
+msgid "Insert url tag"
+msgstr "URL címke beszúrása"
+
+#: idehelputilstrings.lisinvaliddeclaration
+msgid "Invalid Declaration"
+msgstr ""
+
+#: idehelputilstrings.lisldaddlinktoinherited
+msgid "Add link to inherited"
+msgstr "Hivatkozás hozzáadása az öröklötthöz"
+
+#: idehelputilstrings.lisldcopyfrominherited
+msgid "Copy from inherited"
+msgstr "Másolás öröklöttből"
+
+#: idehelputilstrings.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
+#, object-pascal-format
+msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
+msgstr "A(z) %s nem tartalmaz érvényes FPDoc útvonalat.%sNem lehet létrehozni az FPDoc fájlt ehhez: %s"
+
+#: idehelputilstrings.lisldmoveentriestoinherited
+msgid "Move entries to inherited"
+msgstr "Bejegyzések áthelyezése az öröklöttbe"
+
+#: idehelputilstrings.lisldnovalidfpdocpath
+msgid "No valid FPDoc path"
+msgstr "Nincs érvényes FPDoc útvonal"
+
+#: idehelputilstrings.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
+#, object-pascal-format
+msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
+msgstr "A(z) %s unit nem része csomagnak vagy projektnek.%sAdja hozzá a unit-ot egy csomaghoz vagy projekthez!%sAz FPDoc fájl nem hozható létre."
+
+#: idehelputilstrings.lislink
+msgid "Link:"
+msgstr "Hivatkozás:"
+
+#: idehelputilstrings.lislinktarget
+msgid "Link target"
+msgstr "Hivatkozási cél"
+
+#: idehelputilstrings.lisname
+msgid "Name"
+msgstr "Név"
+
+#: idehelputilstrings.lisnoidewindowselected
+msgid "No IDE window selected"
+msgstr "Nincs kiválaszott IDE ablak."
+
+#: idehelputilstrings.lisnonodeselected
+msgid "no node selected"
+msgstr "nincs csomópont kiválasztva"
+
+#: idehelputilstrings.lisopenxml
+msgid "Open XML"
+msgstr "XML megnyitása"
+
+#: idehelputilstrings.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr "%s csomag"
+
+#: idehelputilstrings.lispackageunit
+msgid "package unit"
+msgstr "csomag unit"
+
+#: idehelputilstrings.lispath
+msgid "Path"
+msgstr "Útvonal"
+
+#: idehelputilstrings.lispleaseplacetheeditorcaretonanidentifierifthisisane
+msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
+msgstr ""
+
+#: idehelputilstrings.lisprojaddpackagenotfound
+msgid "Package not found"
+msgstr "Csomag nem található"
+
+#: idehelputilstrings.lisprojectunit
+msgid "project unit"
+msgstr "projekt unit"
+
+#: idehelputilstrings.lisreplace
+msgid "Replace"
+msgstr "Csere"
+
+#: idehelputilstrings.lissave
+msgid "Save"
+msgstr "Mentés"
+
+#: idehelputilstrings.lisshort
+msgid "Short:"
+msgstr "Rövidítés:"
+
+#: idehelputilstrings.listheunitispartofthefpcsourcesbutthecorrespondingfpd
+#, object-pascal-format
+msgid "The unit %s is part of the FPC sources but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
+msgstr "A(z) %s unit az FPC forrásainak része, de a megfelelő FPDoc xml fájl nincs meg.%sVagy az fpcdocs könyvtár nem lett hozzáadva a keresési útvonalakhoz vagy a unit még nincs dokumentálva.%sAz FPC forrásainak FPDoc fájljai letölthetők innen: %s%sAdja meg a könyvtárat az FPDoc szerkesztő beállításai között.%sÚj fájl létrehozásához a könyvtárnak írhatónak kell lennie."
+
+#: idehelputilstrings.listitleleaveemptyfordefault
+msgid "Title (leave empty for default)"
+msgstr "Cím (üres = alapértelmezett)"
+
+#: idehelputilstrings.rsselectaninheritedentry
+msgid "Select an inherited entry"
+msgstr "Minden öröklött bejegyzés kijelölése"
+

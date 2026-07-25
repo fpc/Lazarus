@@ -46,7 +46,7 @@ uses
   // IdeConfig
   IdeConfStrConsts,
   // IDE
-  IDEOptionDefs, EnvironmentOpts, LazarusIDEStrConsts,
+  IDEOptionDefs, EnvironmentOpts, IdeHelpUtilStrings,
   FPDocSelectInherited, FPDocSelectLink, CodeHelp;
 
 type

@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, LazarusIdeStrConsts, ButtonPanel;
+  Buttons, IdeHelpUtilStrings, ButtonPanel;
 
 type
 

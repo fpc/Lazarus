@@ -1,0 +1,296 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: idehelputilstrings.dlgccotest
+msgid "Test"
+msgstr "テスト"
+
+#: idehelputilstrings.dlgfilterall
+msgid "All files"
+msgstr "すべてのファイル"
+
+#: idehelputilstrings.dlgfilterpascalfile
+msgid "Pascal file"
+msgstr "Pascalファイル"
+
+#: idehelputilstrings.lisalreadycontainsthehe
+#, object-pascal-format
+msgid ""
+"%s already contains the help:\n"
+"%s"
+msgstr ""
+
+#: idehelputilstrings.lisceisarootcontrol
+msgid "Is a root control"
+msgstr "はルートコントロールです"
+
+#: idehelputilstrings.lischooseafpdoclink
+msgid "Choose a FPDoc link"
+msgstr "FPDocリンクを選択してください"
+
+#: idehelputilstrings.lischooseanexamplefile
+msgid "Choose an example file"
+msgstr "例となるファイルを選択してください"
+
+#: idehelputilstrings.liscodehelpbrowseexamplebutton
+msgid "Browse"
+msgstr "閲覧"
+
+#: idehelputilstrings.liscodehelpconfirmreplace
+msgid "Confirm replace"
+msgstr "置換を確認"
+
+#: idehelputilstrings.liscodehelpcreatebutton
+msgid "Create help item"
+msgstr "ヘルプ項目を作成"
+
+#: idehelputilstrings.liscodehelpdescrtag
+msgid "Description"
+msgstr "説明"
+
+#: idehelputilstrings.liscodehelperrorstag
+msgid "Errors"
+msgstr "エラー"
+
+#: idehelputilstrings.liscodehelpexampletag
+msgid "Example"
+msgstr "実例"
+
+#: idehelputilstrings.liscodehelphintboldformat
+msgid "Insert bold formatting tag"
+msgstr "太字設定タグを挿入"
+
+#: idehelputilstrings.liscodehelphintinsertcodetag
+msgid "Insert code formatting tag"
+msgstr "コード書式設定タグを挿入"
+
+#: idehelputilstrings.liscodehelphintitalicformat
+msgid "Insert italic formatting tag"
+msgstr "イタリック体タグを挿入"
+
+#: idehelputilstrings.liscodehelphintremarktag
+msgid "Insert remark formatting tag"
+msgstr "注釈設定タグを挿入"
+
+#: idehelputilstrings.liscodehelphintunderlineformat
+msgid "Insert underline formatting tag"
+msgstr "下線設定タグを挿入"
+
+#: idehelputilstrings.liscodehelphintvartag
+msgid "Insert var formatting tag"
+msgstr "var書式設定タグを挿入"
+
+#: idehelputilstrings.liscodehelpinherited
+msgid "Inherited"
+msgstr "継承されたもの"
+
+#: idehelputilstrings.liscodehelpinsertalink
+msgid "Insert a link ..."
+msgstr "リンクを挿入 ..."
+
+#: idehelputilstrings.liscodehelpinsertparagraphformattingtag
+msgid "Insert paragraph formatting tag"
+msgstr "段落書式設定タグを挿入"
+
+#: idehelputilstrings.liscodehelpmainformcaption
+msgid "FPDoc Editor"
+msgstr "FPDocエディタ"
+
+#: idehelputilstrings.liscodehelpnoinheriteddescriptionfound
+msgid "(no inherited description found)"
+msgstr "（継承された記述が見つかりません）"
+
+#: idehelputilstrings.liscodehelpnotagcaption
+msgid "<NONE>"
+msgstr "<無し>"
+
+#: idehelputilstrings.liscodehelpseealsotag
+msgid "See also"
+msgstr "参照"
+
+#: idehelputilstrings.liscodehelpshortdescriptionof
+msgid "Short description of"
+msgstr "手短な説明"
+
+#: idehelputilstrings.liscodehelpshorttag
+msgid "Short"
+msgstr "短い"
+
+#: idehelputilstrings.lisconfirmreplace
+msgid "Confirm Replace"
+msgstr ""
+
+#: idehelputilstrings.liscreatehelpnode
+msgid "Create Help node"
+msgstr "ヘルプノードを作成"
+
+#: idehelputilstrings.lisdlgopen
+msgid "Open ..."
+msgstr "開く ..."
+
+#: idehelputilstrings.liseditcontexthelp
+msgid "Edit context help"
+msgstr "状況依存ヘルプを編集"
+
+#: idehelputilstrings.liserrorreadingxml
+msgid "Error reading XML"
+msgstr "XMLの読み取り中にエラー"
+
+#: idehelputilstrings.liserrorreadingxmlfile
+#, object-pascal-format
+msgid "Error reading xml file \"%s\"%s%s"
+msgstr "XML ファイル \"%s\"%s%s 読み取り中のエラー"
+
+#: idehelputilstrings.liserrorwritingfile
+#, object-pascal-format
+msgid "Error writing file \"%s\""
+msgstr "ファイル\"%s\"への書き込み中にエラー"
+
+#: idehelputilstrings.lisexamplesidentifiertmyenumenumunitnameidentifierpac
+#, object-pascal-format
+msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
+msgstr "例：%s識別子%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
+
+#: idehelputilstrings.lisfpdocerrorwriting
+#, object-pascal-format
+msgid "Error writing \"%s\"%s%s"
+msgstr "\"%s\"%s%sの書き出しに失敗"
+
+#: idehelputilstrings.lisfpdocfpdocsyntaxerror
+msgid "FPDoc syntax error"
+msgstr "FPDocの表記法エラー"
+
+#: idehelputilstrings.lisfpdocthereisasyntaxerrorinthefpdocelement
+#, object-pascal-format
+msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
+msgstr "FPDoc要素\"%s\"に表記法エラーがあります:%s%s"
+
+#: idehelputilstrings.lishashelp
+msgid "Has Help"
+msgstr "ヘルプあり"
+
+#: idehelputilstrings.lishelpentries
+msgid "Help entries"
+msgstr "ヘルプエントリ"
+
+#: idehelputilstrings.lisidentifier
+msgid "identifier"
+msgstr "識別子"
+
+#: idehelputilstrings.lisinsertprintshorttag2
+msgid "Insert printshort tag"
+msgstr "printshortタグを挿入"
+
+#: idehelputilstrings.lisinserturltag
+msgid "Insert url tag"
+msgstr "url タグを挿入"
+
+#: idehelputilstrings.lisinvaliddeclaration
+msgid "Invalid Declaration"
+msgstr ""
+
+#: idehelputilstrings.lisldaddlinktoinherited
+msgid "Add link to inherited"
+msgstr "継承へのリンクを挿入"
+
+#: idehelputilstrings.lisldcopyfrominherited
+msgid "Copy from inherited"
+msgstr "継承からコピー"
+
+#: idehelputilstrings.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
+#, object-pascal-format
+msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
+msgstr "%s は有効なFPDocパスを持ちません。%s %sのfpdocファイルを作成できません。"
+
+#: idehelputilstrings.lisldmoveentriestoinherited
+msgid "Move entries to inherited"
+msgstr "エントリを継承したものに移動"
+
+#: idehelputilstrings.lisldnovalidfpdocpath
+msgid "No valid FPDoc path"
+msgstr "有効なFPDocパスがありません"
+
+#: idehelputilstrings.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
+#, object-pascal-format
+msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
+msgstr "ユニット%sはどのパッケージもしくはプロジェクトにも所有されていません。%sいずれかのパッケージもしくはプロジェクトにユニットを追加してください。%sfpdocファイルを作成できません。"
+
+#: idehelputilstrings.lislink
+msgid "Link:"
+msgstr "リンク"
+
+#: idehelputilstrings.lislinktarget
+msgid "Link target"
+msgstr "リンクターゲット"
+
+#: idehelputilstrings.lisname
+msgid "Name"
+msgstr "名前"
+
+#: idehelputilstrings.lisnoidewindowselected
+msgid "No IDE window selected"
+msgstr "IDEウィンドウが選択されていません"
+
+#: idehelputilstrings.lisnonodeselected
+msgid "no node selected"
+msgstr "ノードが選択されていません"
+
+#: idehelputilstrings.lisopenxml
+msgid "Open XML"
+msgstr "XMLを開く"
+
+#: idehelputilstrings.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr "パッケージ %s"
+
+#: idehelputilstrings.lispackageunit
+msgid "package unit"
+msgstr "パッケージユニット"
+
+#: idehelputilstrings.lispath
+msgid "Path"
+msgstr "Path"
+
+#: idehelputilstrings.lispleaseplacetheeditorcaretonanidentifierifthisisane
+msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
+msgstr ""
+
+#: idehelputilstrings.lisprojaddpackagenotfound
+msgid "Package not found"
+msgstr "パッケージが見つかりません"
+
+#: idehelputilstrings.lisprojectunit
+msgid "project unit"
+msgstr "プロジェクトユニット"
+
+#: idehelputilstrings.lisreplace
+msgid "Replace"
+msgstr "置換"
+
+#: idehelputilstrings.lissave
+msgid "Save"
+msgstr "保存"
+
+#: idehelputilstrings.lisshort
+msgid "Short:"
+msgstr "短縮:"
+
+#: idehelputilstrings.listheunitispartofthefpcsourcesbutthecorrespondingfpd
+#, object-pascal-format, fuzzy
+#| msgid "The unit %s is part of the FPC sources, but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
+msgid "The unit %s is part of the FPC sources but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
+msgstr "ユニット%sはFPCソースの一部ですが、対応するfpdoc xmlファイルが見つかりませんでした。%sまだfpdocディレクトリを検索パスに追加していないか、ユニットがまだドキュメントされていないかのどちらかです。%sFPCソースのfpdocファイルは%s%sからダウンロードできます。そのディレクトリをfpdocエディタオプションに追加して下さい。%s新しいファイルを作成するためには、そのディレクトリが書き込み可能でなければなりません。"
+
+#: idehelputilstrings.listitleleaveemptyfordefault
+msgid "Title (leave empty for default)"
+msgstr "タイトル（デフォルトの場合空欄にしておいて下さい）"
+
+#: idehelputilstrings.rsselectaninheritedentry
+msgid "Select an inherited entry"
+msgstr "継承されたエントリを選択"
+

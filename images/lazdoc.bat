@@ -1,1 +1,1 @@
-..\tools\lazres ..\ide\lazdoc.res @lazdoc.txt
+..\tools\lazres ..\ide\packages\idehelputils\lazdoc.res @lazdoc.txt

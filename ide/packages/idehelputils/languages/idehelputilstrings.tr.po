@@ -1,0 +1,295 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: idehelputilstrings.dlgccotest
+msgid "Test"
+msgstr "Test"
+
+#: idehelputilstrings.dlgfilterall
+msgid "All files"
+msgstr "Tüm dosyalar"
+
+#: idehelputilstrings.dlgfilterpascalfile
+msgid "Pascal file"
+msgstr "Pascal dosyası"
+
+#: idehelputilstrings.lisalreadycontainsthehe
+#, object-pascal-format
+msgid ""
+"%s already contains the help:\n"
+"%s"
+msgstr ""
+
+#: idehelputilstrings.lisceisarootcontrol
+msgid "Is a root control"
+msgstr "Kök kontrol"
+
+#: idehelputilstrings.lischooseafpdoclink
+msgid "Choose a FPDoc link"
+msgstr "Bir FPDoc bağlantısı seçin"
+
+#: idehelputilstrings.lischooseanexamplefile
+msgid "Choose an example file"
+msgstr "Örnek bir dosya seçin"
+
+#: idehelputilstrings.liscodehelpbrowseexamplebutton
+msgid "Browse"
+msgstr "Gözat"
+
+#: idehelputilstrings.liscodehelpconfirmreplace
+msgid "Confirm replace"
+msgstr "Değiştirmeyi onayla"
+
+#: idehelputilstrings.liscodehelpcreatebutton
+msgid "Create help item"
+msgstr "Yardım öğesi oluştur"
+
+#: idehelputilstrings.liscodehelpdescrtag
+msgid "Description"
+msgstr "Açıklama"
+
+#: idehelputilstrings.liscodehelperrorstag
+msgid "Errors"
+msgstr "Hatalar"
+
+#: idehelputilstrings.liscodehelpexampletag
+msgid "Example"
+msgstr "Örnek"
+
+#: idehelputilstrings.liscodehelphintboldformat
+msgid "Insert bold formatting tag"
+msgstr "Kalın biçimlendirme etiketi ekle"
+
+#: idehelputilstrings.liscodehelphintinsertcodetag
+msgid "Insert code formatting tag"
+msgstr "Kod biçimlendirme etiketi ekle"
+
+#: idehelputilstrings.liscodehelphintitalicformat
+msgid "Insert italic formatting tag"
+msgstr "Eğik biçimlendirme etiketi ekle"
+
+#: idehelputilstrings.liscodehelphintremarktag
+msgid "Insert remark formatting tag"
+msgstr "Açıklama biçimlendirme etiketi ekle"
+
+#: idehelputilstrings.liscodehelphintunderlineformat
+msgid "Insert underline formatting tag"
+msgstr "Alt çizgi biçimlendirme etiketi ekle"
+
+#: idehelputilstrings.liscodehelphintvartag
+msgid "Insert var formatting tag"
+msgstr "Var biçimlendirme etiketini ekle"
+
+#: idehelputilstrings.liscodehelpinherited
+msgid "Inherited"
+msgstr "Inherited"
+
+#: idehelputilstrings.liscodehelpinsertalink
+msgid "Insert a link ..."
+msgstr "Bir bağlantı ekle ..."
+
+#: idehelputilstrings.liscodehelpinsertparagraphformattingtag
+msgid "Insert paragraph formatting tag"
+msgstr "Paragraf biçimlendirme etiketi ekleme"
+
+#: idehelputilstrings.liscodehelpmainformcaption
+msgid "FPDoc Editor"
+msgstr "FPDoc Editör"
+
+#: idehelputilstrings.liscodehelpnoinheriteddescriptionfound
+msgid "(no inherited description found)"
+msgstr "(Devralınan açıklama bulunamadı)"
+
+#: idehelputilstrings.liscodehelpnotagcaption
+msgid "<NONE>"
+msgstr "<YOK>"
+
+#: idehelputilstrings.liscodehelpseealsotag
+msgid "See also"
+msgstr "Ayrıca bakınız"
+
+#: idehelputilstrings.liscodehelpshortdescriptionof
+msgid "Short description of"
+msgstr "Kısa açıklama"
+
+#: idehelputilstrings.liscodehelpshorttag
+msgid "Short"
+msgstr "Kısa"
+
+#: idehelputilstrings.lisconfirmreplace
+msgid "Confirm Replace"
+msgstr ""
+
+#: idehelputilstrings.liscreatehelpnode
+msgid "Create Help node"
+msgstr "Yardım oluştur düğüm"
+
+#: idehelputilstrings.lisdlgopen
+msgid "Open ..."
+msgstr "Aç ..."
+
+#: idehelputilstrings.liseditcontexthelp
+msgid "Edit context help"
+msgstr "Bağlam yardımını düzenle"
+
+#: idehelputilstrings.liserrorreadingxml
+msgid "Error reading XML"
+msgstr "XML okunurken hata oluştu"
+
+#: idehelputilstrings.liserrorreadingxmlfile
+#, object-pascal-format
+msgid "Error reading xml file \"%s\"%s%s"
+msgstr "Xml dosyası okunurken hata oluştu \"%s\" %s %s"
+
+#: idehelputilstrings.liserrorwritingfile
+#, object-pascal-format
+msgid "Error writing file \"%s\""
+msgstr "Dosya \"%s\" yazarken hata oluştu"
+
+#: idehelputilstrings.lisexamplesidentifiertmyenumenumunitnameidentifierpac
+#, object-pascal-format
+msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
+msgstr "Örnekler: %sIdentifier %sTMyEnum.Enum %sUnitname.Identifier %s # PackageName.UnitName.Identifier"
+
+#: idehelputilstrings.lisfpdocerrorwriting
+#, object-pascal-format
+msgid "Error writing \"%s\"%s%s"
+msgstr "\"%s\"%s%s yazılırken hata oluştu"
+
+#: idehelputilstrings.lisfpdocfpdocsyntaxerror
+msgid "FPDoc syntax error"
+msgstr "FPDoc sözdizimi hatası"
+
+#: idehelputilstrings.lisfpdocthereisasyntaxerrorinthefpdocelement
+#, object-pascal-format
+msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
+msgstr "\"%s\":%s%s fpdoc öğesinde bir sözdizimi hatası var"
+
+#: idehelputilstrings.lishashelp
+msgid "Has Help"
+msgstr "Yardım var"
+
+#: idehelputilstrings.lishelpentries
+msgid "Help entries"
+msgstr "Yardım girdileri"
+
+#: idehelputilstrings.lisidentifier
+msgid "identifier"
+msgstr "tanımlayıcı"
+
+#: idehelputilstrings.lisinsertprintshorttag2
+msgid "Insert printshort tag"
+msgstr "Yazdırma kısayolu ekle"
+
+#: idehelputilstrings.lisinserturltag
+msgid "Insert url tag"
+msgstr "URL etiketi ekle"
+
+#: idehelputilstrings.lisinvaliddeclaration
+msgid "Invalid Declaration"
+msgstr ""
+
+#: idehelputilstrings.lisldaddlinktoinherited
+msgid "Add link to inherited"
+msgstr "Devralınan bağlantı ekle"
+
+#: idehelputilstrings.lisldcopyfrominherited
+msgid "Copy from inherited"
+msgstr "Devralınandan kopyala"
+
+#: idehelputilstrings.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
+#, object-pascal-format
+msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
+msgstr "%s geçerli bir FPDoc yolu yok.%s %s için fpdoc dosyası oluşturmaktan vazgeç"
+
+#: idehelputilstrings.lisldmoveentriestoinherited
+msgid "Move entries to inherited"
+msgstr "Girişleri devralınanlara taşı"
+
+#: idehelputilstrings.lisldnovalidfpdocpath
+msgid "No valid FPDoc path"
+msgstr "Geçerli FPDoc yolu yok"
+
+#: idehelputilstrings.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
+#, object-pascal-format
+msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
+msgstr "%s birimi herhangi bir paket veya proje değil.%sLütfen birimi bir pakete veya projeye ekleyin.%s fpdoc dosyası oluşturulamadı."
+
+#: idehelputilstrings.lislink
+msgid "Link:"
+msgstr "Bağlantı:"
+
+#: idehelputilstrings.lislinktarget
+msgid "Link target"
+msgstr "Bağlantı hedefi"
+
+#: idehelputilstrings.lisname
+msgid "Name"
+msgstr "Ad"
+
+#: idehelputilstrings.lisnoidewindowselected
+msgid "No IDE window selected"
+msgstr "IDE penceresi seçilmedi"
+
+#: idehelputilstrings.lisnonodeselected
+msgid "no node selected"
+msgstr "hiçbir düğüm seçilmedi"
+
+#: idehelputilstrings.lisopenxml
+msgid "Open XML"
+msgstr "XML Aç"
+
+#: idehelputilstrings.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr "paket %s"
+
+#: idehelputilstrings.lispackageunit
+msgid "package unit"
+msgstr "paket birimi"
+
+#: idehelputilstrings.lispath
+msgid "Path"
+msgstr "Yol"
+
+#: idehelputilstrings.lispleaseplacetheeditorcaretonanidentifierifthisisane
+msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
+msgstr ""
+
+#: idehelputilstrings.lisprojaddpackagenotfound
+msgid "Package not found"
+msgstr "Paket bulunamadı"
+
+#: idehelputilstrings.lisprojectunit
+msgid "project unit"
+msgstr "proje birimi"
+
+#: idehelputilstrings.lisreplace
+msgid "Replace"
+msgstr "Değiştir"
+
+#: idehelputilstrings.lissave
+msgid "Save"
+msgstr "Kaydet"
+
+#: idehelputilstrings.lisshort
+msgid "Short:"
+msgstr "Kısa:"
+
+#: idehelputilstrings.listheunitispartofthefpcsourcesbutthecorrespondingfpd
+#, object-pascal-format
+msgid "The unit %s is part of the FPC sources but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
+msgstr "\"%s\" birimi FPC kaynaklarının bir parçası, ancak ilgili fpdoc xml dosyası bulunamadı.%sYa fpcdocs dizinini arama yoluna henüz eklemediniz ya da birim henüz belgelenmemiş.%s FPC kaynakları için fpdoc dosyaları şu adresten indirilebilir:%s%s Lütfen dizini fpdoc düzenleyici seçeneklerine ekleyin.%s Yeni bir dosya oluşturmak için dizinin yazılabilir olması gerekir."
+
+#: idehelputilstrings.listitleleaveemptyfordefault
+msgid "Title (leave empty for default)"
+msgstr "Başlık (varsayılan olarak boş bırakın)"
+
+#: idehelputilstrings.rsselectaninheritedentry
+msgid "Select an inherited entry"
+msgstr "Devralınan bir girişi seçin"
+

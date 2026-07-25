@@ -5537,13 +5537,6 @@ msgstr "Всі ваші зміни у \"%s\"%sбудуть втрачені і �
 msgid "Alpha"
 msgstr "Альфа"
 
-#: lazarusidestrconsts.lisalreadycontainsthehe
-#, object-pascal-format
-msgid ""
-"%s already contains the help:\n"
-"%s"
-msgstr ""
-
 #: lazarusidestrconsts.lisalternativekey
 msgid "Alternative key"
 msgstr "Альтернативна кнопка"
@@ -6284,10 +6277,6 @@ msgstr "(фільтр)"
 msgid "Follow cursor"
 msgstr "Слідувати за курсором"
 
-#: lazarusidestrconsts.lisceisarootcontrol
-msgid "Is a root control"
-msgstr "Є кореневим елементом керування"
-
 #: lazarusidestrconsts.liscelongparamlistcount
 msgid "Parameters count treated as \"many\""
 msgstr "\"Багато\" параметрів означає"
@@ -6629,10 +6618,6 @@ msgstr "Виберіть іншу назву"
 msgid "Choose a file with CodeTools templates"
 msgstr "Виберіть файл з шаблонами CodeTools"
 
-#: lazarusidestrconsts.lischooseafpdoclink
-msgid "Choose a FPDoc link"
-msgstr "Виберіть посилання FPDoc"
-
 #: lazarusidestrconsts.lischooseakey
 msgid "Choose a key ..."
 msgstr "Виберіть клавішу ..."
@@ -6640,10 +6625,6 @@ msgstr "Виберіть клавішу ..."
 #: lazarusidestrconsts.lischooseanameforthecomponent
 msgid "Choose a name for the component"
 msgstr "Виберіть назву для компонента"
-
-#: lazarusidestrconsts.lischooseanexamplefile
-msgid "Choose an example file"
-msgstr "Виберіть файл прикладу"
 
 #: lazarusidestrconsts.lischooseanfpcmessagefile
 msgid "Choose an FPC message file"
@@ -6974,102 +6955,13 @@ msgstr "Параметри генерування коду"
 msgid "Add path"
 msgstr "Додати шлях"
 
-#: lazarusidestrconsts.liscodehelpbrowseexamplebutton
-msgctxt "lazarusidestrconsts.liscodehelpbrowseexamplebutton"
-msgid "Browse"
-msgstr "Огляд"
-
-#: lazarusidestrconsts.liscodehelpconfirmreplace
-msgid "Confirm replace"
-msgstr "Підтвердити заміну"
-
-#: lazarusidestrconsts.liscodehelpcreatebutton
-msgid "Create help item"
-msgstr "Створити елемент довідки"
-
 #: lazarusidestrconsts.liscodehelpdeletepathbutton
 msgid "Remove path"
 msgstr "Видалити шлях"
 
-#: lazarusidestrconsts.liscodehelpdescrtag
-msgctxt "lazarusidestrconsts.liscodehelpdescrtag"
-msgid "Description"
-msgstr "Опис"
-
-#: lazarusidestrconsts.liscodehelperrorstag
-msgctxt "lazarusidestrconsts.liscodehelperrorstag"
-msgid "Errors"
-msgstr "Помилки"
-
-#: lazarusidestrconsts.liscodehelpexampletag
-msgid "Example"
-msgstr "Приклад"
-
 #: lazarusidestrconsts.liscodehelpgroupbox
 msgid "FPDoc settings"
 msgstr "Параметри FPDoc"
-
-#: lazarusidestrconsts.liscodehelphintboldformat
-msgid "Insert bold formatting tag"
-msgstr "Вставити тег жирності тексту"
-
-#: lazarusidestrconsts.liscodehelphintinsertcodetag
-msgid "Insert code formatting tag"
-msgstr "Вставити тег форматування тексту програми"
-
-#: lazarusidestrconsts.liscodehelphintitalicformat
-msgid "Insert italic formatting tag"
-msgstr "Вставити тег форматування курсивом"
-
-#: lazarusidestrconsts.liscodehelphintremarktag
-msgid "Insert remark formatting tag"
-msgstr "Вставити тег ремарок"
-
-#: lazarusidestrconsts.liscodehelphintunderlineformat
-msgid "Insert underline formatting tag"
-msgstr "Вставити тег форматування підкресленням"
-
-#: lazarusidestrconsts.liscodehelphintvartag
-msgid "Insert var formatting tag"
-msgstr "Вставити тег форматування для змінних"
-
-#: lazarusidestrconsts.liscodehelpinherited
-msgctxt "lazarusidestrconsts.liscodehelpinherited"
-msgid "Inherited"
-msgstr "Наслідуваний"
-
-#: lazarusidestrconsts.liscodehelpinsertalink
-msgid "Insert a link ..."
-msgstr "Вставити посилання ..."
-
-#: lazarusidestrconsts.liscodehelpinsertparagraphformattingtag
-msgid "Insert paragraph formatting tag"
-msgstr "Вставити тег абзацу"
-
-#: lazarusidestrconsts.liscodehelpmainformcaption
-msgctxt "lazarusidestrconsts.liscodehelpmainformcaption"
-msgid "FPDoc Editor"
-msgstr "Редактор FPDoc"
-
-#: lazarusidestrconsts.liscodehelpnoinheriteddescriptionfound
-msgid "(no inherited description found)"
-msgstr "(не знайдено успадкованого опису)"
-
-#: lazarusidestrconsts.liscodehelpnotagcaption
-msgid "<NONE>"
-msgstr "<НІЧОГО>"
-
-#: lazarusidestrconsts.liscodehelpseealsotag
-msgid "See also"
-msgstr "Дивись також"
-
-#: lazarusidestrconsts.liscodehelpshortdescriptionof
-msgid "Short description of"
-msgstr "Короткий опис для"
-
-#: lazarusidestrconsts.liscodehelpshorttag
-msgid "Short"
-msgstr "Короткий"
 
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
 msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
@@ -8400,10 +8292,6 @@ msgstr "Відновити конфігурацію Fppkg"
 msgid "Create function"
 msgstr "Створити функцію"
 
-#: lazarusidestrconsts.liscreatehelpnode
-msgid "Create Help node"
-msgstr "Створити вузол Довідки"
-
 #: lazarusidestrconsts.liscreateit
 msgid "Create it"
 msgstr "Створити його"
@@ -9131,11 +9019,6 @@ msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr "Імпорт ..."
 
-#: lazarusidestrconsts.lisdlgopen
-msgctxt "lazarusidestrconsts.lisdlgopen"
-msgid "Open ..."
-msgstr "Відкрити ..."
-
 #: lazarusidestrconsts.lisdoesnotexists
 #, object-pascal-format
 msgid "%s does not exist: %s"
@@ -9360,10 +9243,6 @@ msgstr "Змінити додаткову довідку для повідомл
 #: lazarusidestrconsts.liseditbuildmodes
 msgid "Edit build modes"
 msgstr ""
-
-#: lazarusidestrconsts.liseditcontexthelp
-msgid "Edit context help"
-msgstr "Редагувати контекстну допомогу"
 
 #: lazarusidestrconsts.liseditfpcmessagehelp
 msgid "Edit FPC Message Help ..."
@@ -9691,11 +9570,6 @@ msgstr "Помилка читання списку пакунків з файл�
 msgid "Error reading XML"
 msgstr "Помилка читання XML"
 
-#: lazarusidestrconsts.liserrorreadingxmlfile
-#, object-pascal-format
-msgid "Error reading xml file \"%s\"%s%s"
-msgstr "Помилка читання xml-файлу \"%s\"%s%s"
-
 #: lazarusidestrconsts.liserrors
 msgctxt "lazarusidestrconsts.liserrors"
 msgid "Errors"
@@ -9715,11 +9589,6 @@ msgstr "Помилка збереження форми"
 msgid "Error setting the name of a component %s to %s"
 msgstr "Помилка задання назви компонента %s на %s"
 
-#: lazarusidestrconsts.liserrorwritingfile
-#, object-pascal-format
-msgid "Error writing file \"%s\""
-msgstr "Помилка запису файлу \"%s\""
-
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 #, object-pascal-format
 msgid "Error writing package list to file%s%s%s%s"
@@ -9734,11 +9603,6 @@ msgstr "Кожен n-ний номер рядка"
 #: lazarusidestrconsts.lisexamplefile
 msgid "Example file:"
 msgstr "Файл прикладу:"
-
-#: lazarusidestrconsts.lisexamplesidentifiertmyenumenumunitnameidentifierpac
-#, object-pascal-format
-msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
-msgstr "Приклади:%sІдентифікатор%sTMyEnum.Enum%sНазвамодуля.Ідентифікатор%s#Назвапакунку.Назвамодуля.Ідентифікатор"
 
 #: lazarusidestrconsts.lisexclude
 msgid "Exclude"
@@ -10265,15 +10129,6 @@ msgctxt "lazarusidestrconsts.lisfpdoceditor"
 msgid "FPDoc Editor"
 msgstr "Редактор FPDoc"
 
-#: lazarusidestrconsts.lisfpdocerrorwriting
-#, object-pascal-format
-msgid "Error writing \"%s\"%s%s"
-msgstr "Помилка запису \"%s\"%s%s"
-
-#: lazarusidestrconsts.lisfpdocfpdocsyntaxerror
-msgid "FPDoc syntax error"
-msgstr "Синтаксична помилка FPDoc"
-
 #: lazarusidestrconsts.lisfpdocpackagename
 msgid "FPDoc package name:"
 msgstr "Назва пакунка FPDoc:"
@@ -10281,11 +10136,6 @@ msgstr "Назва пакунка FPDoc:"
 #: lazarusidestrconsts.lisfpdocpackagenamedefaultisprojectfilename
 msgid "FPDoc package name. Default is project file name."
 msgstr "Назва пакунка FPDoc. Типовим є назва файлу проєкту."
-
-#: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
-#, object-pascal-format
-msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
-msgstr "Є синтаксична помилка  в елементі fpdoc \"%s\":%s%s"
 
 #: lazarusidestrconsts.lisfppkgcompilerproblem
 msgid "there is a problem with the Free Pascal compiler executable, "
@@ -10562,10 +10412,6 @@ msgstr ""
 msgid "Width"
 msgstr ""
 
-#: lazarusidestrconsts.lishashelp
-msgid "Has Help"
-msgstr "Має довідку"
-
 #: lazarusidestrconsts.lisheadercolors
 msgid "Header colors"
 msgstr "Кольори заголовка"
@@ -10573,10 +10419,6 @@ msgstr "Кольори заголовка"
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
 msgstr "Коментар заголовка для класу"
-
-#: lazarusidestrconsts.lishelpentries
-msgid "Help entries"
-msgstr "Розділи довідки"
 
 #: lazarusidestrconsts.lishelpselectordialog
 msgid "Help selector"
@@ -10730,10 +10572,6 @@ msgstr "ІСР зберігає Application.Scaled (Hi-DPI) у головном�
 #: lazarusidestrconsts.lisidemaintainsthetitleinmainunit
 msgid "The IDE maintains the title in main unit."
 msgstr "ІСР зберігає заголовок у головному модулі"
-
-#: lazarusidestrconsts.lisidentifier
-msgid "identifier"
-msgstr "Ідентифікатор"
 
 #: lazarusidestrconsts.lisidentifierbeginswith
 msgid "Identifier begins with ..."
@@ -11087,10 +10925,6 @@ msgstr "Вставити макрос"
 msgid "Insert name of current procedure."
 msgstr "Вставити назву поточної процедури."
 
-#: lazarusidestrconsts.lisinsertprintshorttag2
-msgid "Insert printshort tag"
-msgstr "Вставити тег printshort"
-
 #: lazarusidestrconsts.lisinsertprocedurehead
 msgid "insert procedure head"
 msgstr "вставити заголовок процедури"
@@ -11110,10 +10944,6 @@ msgstr "вставити час"
 #: lazarusidestrconsts.lisinserttimeoptionalformatstring
 msgid "Insert time. Optional: format string."
 msgstr "Вставити час. Можливо: рядок формату."
-
-#: lazarusidestrconsts.lisinserturltag
-msgid "Insert url tag"
-msgstr "Вставити тег url"
 
 #: lazarusidestrconsts.lisinsession
 msgid "In session"
@@ -11163,10 +10993,6 @@ msgstr "Інтерактивний"
 #, object-pascal-format
 msgid "internal error: %s"
 msgstr "внутрішня помилка: %s"
-
-#: lazarusidestrconsts.lisinvaliddeclaration
-msgid "Invalid Declaration"
-msgstr ""
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -11915,32 +11741,6 @@ msgstr "Оновити дані про ревізію в діалозі \"Про
 msgid "Package distributed with Lazarus"
 msgstr ""
 
-#: lazarusidestrconsts.lisldaddlinktoinherited
-msgid "Add link to inherited"
-msgstr "Додати посилання до нащадка"
-
-#: lazarusidestrconsts.lisldcopyfrominherited
-msgid "Copy from inherited"
-msgstr "Копіювати з успадкованого"
-
-#: lazarusidestrconsts.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
-#, object-pascal-format
-msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
-msgstr "%s не має діючого шляху FPDoc.%sНеможливо створити файл fpdoc для %s"
-
-#: lazarusidestrconsts.lisldmoveentriestoinherited
-msgid "Move entries to inherited"
-msgstr "Пересунути включення до успадкованого"
-
-#: lazarusidestrconsts.lisldnovalidfpdocpath
-msgid "No valid FPDoc path"
-msgstr "Немає дійсного шляху FPDoc"
-
-#: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
-#, object-pascal-format
-msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
-msgstr "Модуль %s не належить жодному пакунку чи проєкту.%sДодайте модуль до пакунка або проєкту.%sНеможливо створити fpdoc файл."
-
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
 msgid "Left"
@@ -12032,17 +11832,9 @@ msgstr "шлях до бібліотек"
 msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under macOS)."
 msgstr "Спільна бібліотека Free Pascal (.dll під Windows, .so під Linux, .dylib під macOS)."
 
-#: lazarusidestrconsts.lislink
-msgid "Link:"
-msgstr "Посилання:"
-
 #: lazarusidestrconsts.lislinkeroptions
 msgid "linker options"
 msgstr "параметри компонувальника"
-
-#: lazarusidestrconsts.lislinktarget
-msgid "Link target"
-msgstr "Ціль посилання"
 
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
@@ -14179,10 +13971,6 @@ msgstr "відсутній префікс компілятора Free Pascal."
 msgid "no hints"
 msgstr "підказок немає"
 
-#: lazarusidestrconsts.lisnoidewindowselected
-msgid "No IDE window selected"
-msgstr "Вікно ІСР не вибране"
-
 #: lazarusidestrconsts.lisnolfmfile
 msgid "No LFM file"
 msgstr "Файл LFM відсутній"
@@ -14210,10 +13998,6 @@ msgstr "(Не вибрано)"
 #: lazarusidestrconsts.lisnonewfilefound
 msgid "No new file found"
 msgstr ""
-
-#: lazarusidestrconsts.lisnonodeselected
-msgid "no node selected"
-msgstr "не вибрано вузлів"
 
 #: lazarusidestrconsts.lisnopascalfile
 msgid "No Pascal file"
@@ -14572,10 +14356,6 @@ msgstr "Відкрити модуль"
 msgid "Open URL"
 msgstr "Відкрити URL"
 
-#: lazarusidestrconsts.lisopenxml
-msgid "Open XML"
-msgstr "Відкритий XML"
-
 #: lazarusidestrconsts.lisoptions
 msgctxt "lazarusidestrconsts.lisoptions"
 msgid "Options"
@@ -14646,11 +14426,6 @@ msgstr "'Власник' вже використовується в TReader/TWri
 msgid "Package"
 msgstr "Пакунок"
 
-#: lazarusidestrconsts.lispackage2
-#, object-pascal-format
-msgid "package %s"
-msgstr "пакунок %s"
-
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
 msgstr "Інфо про пакунок"
@@ -14689,10 +14464,6 @@ msgstr "Теки з сирцями пакунка"
 #, object-pascal-format
 msgid "packages=%s/%s units=%s/%s identifiers=%s/%s lines=%s bytes=%s"
 msgstr "пакунків=%s/%s модулів=%s/%s ідентифікаторів=%s/%s рядків=%s байтів=%s"
-
-#: lazarusidestrconsts.lispackageunit
-msgid "package unit"
-msgstr "модуль пакунка"
 
 #: lazarusidestrconsts.lispage
 msgctxt "lazarusidestrconsts.lispage"
@@ -14741,10 +14512,6 @@ msgstr "Вставити з буфера обміну."
 #: lazarusidestrconsts.lispastelcolors
 msgid "Pastel Colors"
 msgstr "Пастельні кольори"
-
-#: lazarusidestrconsts.lispath
-msgid "Path"
-msgstr "Шлях"
 
 #: lazarusidestrconsts.lispatheditbrowse
 msgctxt "lazarusidestrconsts.lispatheditbrowse"
@@ -15809,10 +15576,6 @@ msgstr "Виправте помилку, показану у вікні пові
 msgid "Please open a unit before run."
 msgstr "Відкрийте модуль перед запуском."
 
-#: lazarusidestrconsts.lispleaseplacetheeditorcaretonanidentifierifthisisane
-msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
-msgstr ""
-
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "Виберіть трохи коду, щоб витягти нову процедуру/метод."
@@ -16141,10 +15904,6 @@ msgstr "%0:s%0:s У файлі '%1:s' рядок %2:d"
 #, object-pascal-format
 msgid "%0:s%0:s In file '%1:s' at line %2:d:%0:s%3:s"
 msgstr "%0:s%0:s У файлі '%1:s' рядок %2:d:%0:s%3:s"
-
-#: lazarusidestrconsts.lisprojectunit
-msgid "project unit"
-msgstr "модуль проєкту"
 
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
@@ -17039,10 +16798,6 @@ msgstr "Задайте для перекладу повідомлень комп
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Set up default indentation)"
 msgstr "(Встановити типові відступи)"
-
-#: lazarusidestrconsts.lisshort
-msgid "Short:"
-msgstr "Коротко:"
 
 #: lazarusidestrconsts.lisshortnopath
 msgid "Short, no path"
@@ -18173,11 +17928,6 @@ msgstr "Модуль має цю назву"
 msgid "The unit filename \"%s\" is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%sRename file lowercase?"
 msgstr "Назва файлу модуля \"%s\" - не в нижньому регістрі.%sКомпілятор Free Pascal не шукає всі регістри. Рекомендовано користуватися нижнім регістром для назви.%sПерейменувати файл?"
 
-#: lazarusidestrconsts.listheunitispartofthefpcsourcesbutthecorrespondingfpd
-#, object-pascal-format
-msgid "The unit %s is part of the FPC sources but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
-msgstr "Модуль %s є частиною сирців FPC, але відповідний fpdoc xml файл не було знайдено.%sАбо ви ще не додали теку fpcdocs до пошукового шляху або модуль ще не документований.%sФайли fpdoc файли для сирців FPC можуть бути завантажені з: %s%sДодайте теку в опціях редактора fpdoc.%sЩоб створити новий файл, каталог має бути доступним для запису."
-
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
 #, object-pascal-format
 msgid "The unit %s is used by other files.%sUpdate references automatically?"
@@ -18257,10 +18007,6 @@ msgstr "&Заголовок"
 #| msgid "Title in taskbar shows for example: project1.lpi - Lazarus"
 msgid "Show the custom IDE title before the IDE's name and other info in the title. Example: project1 - Lazarus."
 msgstr "Назва на панелі завдань показує наприклад: project1.lpi - Lazarus"
-
-#: lazarusidestrconsts.listitleleaveemptyfordefault
-msgid "Title (leave empty for default)"
-msgstr "Назва (залишити порожнім для типової)"
 
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
@@ -19646,10 +19392,6 @@ msgstr "Тип"
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
 msgstr "&Ревізія:"
-
-#: lazarusidestrconsts.rsselectaninheritedentry
-msgid "Select an inherited entry"
-msgstr "Виберіть успадкований елемент"
 
 #: lazarusidestrconsts.rsshowabspath
 msgid "Absolute path"
@@ -21567,4 +21309,9 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Інформація про версію"
+
+#: lazarusidestrconsts.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr "пакунок %s"
 

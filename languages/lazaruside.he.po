@@ -5783,13 +5783,6 @@ msgstr "כל השינויים שלך של %s%s%s%sיאבדו והקובץ יפת
 msgid "Alpha"
 msgstr ""
 
-#: lazarusidestrconsts.lisalreadycontainsthehe
-#, object-pascal-format
-msgid ""
-"%s already contains the help:\n"
-"%s"
-msgstr ""
-
 #: lazarusidestrconsts.lisalternativekey
 msgid "Alternative key"
 msgstr "מקש חלופי"
@@ -6551,10 +6544,6 @@ msgstr "(סנן)"
 msgid "Follow cursor"
 msgstr "עקוב אחר סמן העכבר"
 
-#: lazarusidestrconsts.lisceisarootcontrol
-msgid "Is a root control"
-msgstr "הוא בשליטה של ה root"
-
 #: lazarusidestrconsts.liscelongparamlistcount
 #, fuzzy
 #| msgid "Parameters count treating as \"many\""
@@ -6915,20 +6904,12 @@ msgstr "בחר בשם אחר"
 msgid "Choose a file with CodeTools templates"
 msgstr ""
 
-#: lazarusidestrconsts.lischooseafpdoclink
-msgid "Choose a FPDoc link"
-msgstr "בחר קישור ל FPDoc"
-
 #: lazarusidestrconsts.lischooseakey
 msgid "Choose a key ..."
 msgstr "בחר מקשר ..."
 
 #: lazarusidestrconsts.lischooseanameforthecomponent
 msgid "Choose a name for the component"
-msgstr ""
-
-#: lazarusidestrconsts.lischooseanexamplefile
-msgid "Choose an example file"
 msgstr ""
 
 #: lazarusidestrconsts.lischooseanfpcmessagefile
@@ -7265,104 +7246,13 @@ msgstr "אפשרויות יצירת קוד"
 msgid "Add path"
 msgstr "הוסף נתיב"
 
-#: lazarusidestrconsts.liscodehelpbrowseexamplebutton
-msgctxt "lazarusidestrconsts.liscodehelpbrowseexamplebutton"
-msgid "Browse"
-msgstr "דפדף"
-
-#: lazarusidestrconsts.liscodehelpconfirmreplace
-msgid "Confirm replace"
-msgstr "אשר החלפה"
-
-#: lazarusidestrconsts.liscodehelpcreatebutton
-msgid "Create help item"
-msgstr "צור פריט עזרה"
-
 #: lazarusidestrconsts.liscodehelpdeletepathbutton
 msgid "Remove path"
 msgstr "הסר נתיב"
 
-#: lazarusidestrconsts.liscodehelpdescrtag
-msgctxt "lazarusidestrconsts.liscodehelpdescrtag"
-msgid "Description"
-msgstr "תאור"
-
-#: lazarusidestrconsts.liscodehelperrorstag
-msgctxt "lazarusidestrconsts.liscodehelperrorstag"
-msgid "Errors"
-msgstr "שגיאות"
-
-#: lazarusidestrconsts.liscodehelpexampletag
-msgid "Example"
-msgstr "דוגמה"
-
 #: lazarusidestrconsts.liscodehelpgroupbox
 msgid "FPDoc settings"
 msgstr ""
-
-#: lazarusidestrconsts.liscodehelphintboldformat
-msgid "Insert bold formatting tag"
-msgstr "הכנס תגית של טקסט מודגש"
-
-#: lazarusidestrconsts.liscodehelphintinsertcodetag
-msgid "Insert code formatting tag"
-msgstr "הכנס תגית של קוד"
-
-#: lazarusidestrconsts.liscodehelphintitalicformat
-msgid "Insert italic formatting tag"
-msgstr "הכנס תגית של טקסט נטוי"
-
-#: lazarusidestrconsts.liscodehelphintremarktag
-msgid "Insert remark formatting tag"
-msgstr "הכנס תגית של הערה"
-
-#: lazarusidestrconsts.liscodehelphintunderlineformat
-msgid "Insert underline formatting tag"
-msgstr "הכנס תגית של טקסט עם קו תחתון"
-
-#: lazarusidestrconsts.liscodehelphintvartag
-msgid "Insert var formatting tag"
-msgstr "הכנס תגית של משתנה"
-
-#: lazarusidestrconsts.liscodehelpinherited
-msgctxt "lazarusidestrconsts.liscodehelpinherited"
-msgid "Inherited"
-msgstr "מורש"
-
-#: lazarusidestrconsts.liscodehelpinsertalink
-msgid "Insert a link ..."
-msgstr "הוסף קישור ..."
-
-#: lazarusidestrconsts.liscodehelpinsertparagraphformattingtag
-msgid "Insert paragraph formatting tag"
-msgstr "הכנס תגית של סעיף"
-
-#: lazarusidestrconsts.liscodehelpmainformcaption
-#, fuzzy
-#| msgid "FPDoc editor"
-msgctxt "lazarusidestrconsts.liscodehelpmainformcaption"
-msgid "FPDoc Editor"
-msgstr "עורך FPDoc"
-
-#: lazarusidestrconsts.liscodehelpnoinheriteddescriptionfound
-msgid "(no inherited description found)"
-msgstr "(לא נמצא תאור מורש)"
-
-#: lazarusidestrconsts.liscodehelpnotagcaption
-msgid "<NONE>"
-msgstr "<ללא>"
-
-#: lazarusidestrconsts.liscodehelpseealsotag
-msgid "See also"
-msgstr "ראה גם"
-
-#: lazarusidestrconsts.liscodehelpshortdescriptionof
-msgid "Short description of"
-msgstr "תאור קצר של"
-
-#: lazarusidestrconsts.liscodehelpshorttag
-msgid "Short"
-msgstr "קצר"
 
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
 msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
@@ -8746,10 +8636,6 @@ msgstr ""
 msgid "Create function"
 msgstr "צור פונקציה"
 
-#: lazarusidestrconsts.liscreatehelpnode
-msgid "Create Help node"
-msgstr "צור צומת עזרה"
-
 #: lazarusidestrconsts.liscreateit
 msgid "Create it"
 msgstr "צור זאת"
@@ -9491,11 +9377,6 @@ msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr ""
 
-#: lazarusidestrconsts.lisdlgopen
-msgctxt "lazarusidestrconsts.lisdlgopen"
-msgid "Open ..."
-msgstr "פתח..."
-
 #: lazarusidestrconsts.lisdoesnotexists
 #, object-pascal-format, fuzzy
 #| msgid "%s does not exists: %s"
@@ -9719,10 +9600,6 @@ msgstr ""
 #: lazarusidestrconsts.liseditbuildmodes
 msgid "Edit build modes"
 msgstr ""
-
-#: lazarusidestrconsts.liseditcontexthelp
-msgid "Edit context help"
-msgstr "ערוך עזרה תלויית הקשר"
 
 #: lazarusidestrconsts.liseditfpcmessagehelp
 msgid "Edit FPC Message Help ..."
@@ -10055,12 +9932,6 @@ msgstr "שגיאה בקריאת רשימת חבילות מהקובץ s%s%s%s%"
 msgid "Error reading XML"
 msgstr "שגיאה בקריאת קובץ XML"
 
-#: lazarusidestrconsts.liserrorreadingxmlfile
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Error reading xml file %s%s%s%s%s"
-msgid "Error reading xml file \"%s\"%s%s"
-msgstr "שגיאה בקריאת קובץ xml %s%s%s%s%s"
-
 #: lazarusidestrconsts.liserrors
 msgctxt "lazarusidestrconsts.liserrors"
 msgid "Errors"
@@ -10080,11 +9951,6 @@ msgstr ""
 msgid "Error setting the name of a component %s to %s"
 msgstr "שגיאה בהגדרת שם ברכיב s% ל s%"
 
-#: lazarusidestrconsts.liserrorwritingfile
-#, object-pascal-format
-msgid "Error writing file \"%s\""
-msgstr "שגיאה בקריאת קובץ  \"%s\""
-
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 #, object-pascal-format, fuzzy, badformat
 msgid "Error writing package list to file%s%s%s%s"
@@ -10099,11 +9965,6 @@ msgstr "כל שורה שמספרה הוא n:"
 #: lazarusidestrconsts.lisexamplefile
 msgid "Example file:"
 msgstr "קובץ דוגמה"
-
-#: lazarusidestrconsts.lisexamplesidentifiertmyenumenumunitnameidentifierpac
-#, object-pascal-format, fuzzy, badformat
-msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
-msgstr "דוגמה: מזהים TMyEnum.Enum \"שם יחידה.מ/nזהה\"  \"#שם חבילה.שם יחידה.מזהה\""
 
 #: lazarusidestrconsts.lisexclude
 msgid "Exclude"
@@ -10634,15 +10495,6 @@ msgctxt "lazarusidestrconsts.lisfpdoceditor"
 msgid "FPDoc Editor"
 msgstr "עורך FPDoc"
 
-#: lazarusidestrconsts.lisfpdocerrorwriting
-#, object-pascal-format
-msgid "Error writing \"%s\"%s%s"
-msgstr "שגיאה בכתיבת \"%s\"%s%s"
-
-#: lazarusidestrconsts.lisfpdocfpdocsyntaxerror
-msgid "FPDoc syntax error"
-msgstr "שגיאת תחביר ב FPDoc"
-
 #: lazarusidestrconsts.lisfpdocpackagename
 msgid "FPDoc package name:"
 msgstr ""
@@ -10650,11 +10502,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfpdocpackagenamedefaultisprojectfilename
 msgid "FPDoc package name. Default is project file name."
 msgstr ""
-
-#: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
-#, object-pascal-format, fuzzy, badformat
-msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
-msgstr "יש שגיאת תחביר באלמנט של  fpdoc"
 
 #: lazarusidestrconsts.lisfppkgcompilerproblem
 msgid "there is a problem with the Free Pascal compiler executable, "
@@ -10932,10 +10779,6 @@ msgstr ""
 msgid "Width"
 msgstr ""
 
-#: lazarusidestrconsts.lishashelp
-msgid "Has Help"
-msgstr "יש לו עזרה"
-
 #: lazarusidestrconsts.lisheadercolors
 msgid "Header colors"
 msgstr ""
@@ -10943,10 +10786,6 @@ msgstr ""
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
 msgstr "הערת כותרת למחלקה"
-
-#: lazarusidestrconsts.lishelpentries
-msgid "Help entries"
-msgstr "כניסות עזרה"
 
 #: lazarusidestrconsts.lishelpselectordialog
 msgid "Help selector"
@@ -11103,10 +10942,6 @@ msgstr ""
 #: lazarusidestrconsts.lisidemaintainsthetitleinmainunit
 msgid "The IDE maintains the title in main unit."
 msgstr ""
-
-#: lazarusidestrconsts.lisidentifier
-msgid "identifier"
-msgstr "מזהה"
 
 #: lazarusidestrconsts.lisidentifierbeginswith
 msgid "Identifier begins with ..."
@@ -11443,10 +11278,6 @@ msgstr "הכנס מאקרו"
 msgid "Insert name of current procedure."
 msgstr "הכנס את שם הפרוצדורה הנוכחית"
 
-#: lazarusidestrconsts.lisinsertprintshorttag2
-msgid "Insert printshort tag"
-msgstr "הכנס תוית printshort"
-
 #: lazarusidestrconsts.lisinsertprocedurehead
 msgid "insert procedure head"
 msgstr "הכנס את כותרת הפרוצדורה"
@@ -11468,10 +11299,6 @@ msgstr "הכנס שעה"
 #| msgid "Insert time. Optional: format string"
 msgid "Insert time. Optional: format string."
 msgstr "הכנס שעה. אפשרי: עיצוב המחרוזת"
-
-#: lazarusidestrconsts.lisinserturltag
-msgid "Insert url tag"
-msgstr "הכנס תוית url"
 
 #: lazarusidestrconsts.lisinsession
 msgid "In session"
@@ -11520,10 +11347,6 @@ msgstr "אינטראקטיבי"
 #: lazarusidestrconsts.lisinternalerror
 #, object-pascal-format
 msgid "internal error: %s"
-msgstr ""
-
-#: lazarusidestrconsts.lisinvaliddeclaration
-msgid "Invalid Declaration"
 msgstr ""
 
 #: lazarusidestrconsts.lisinvaliddelete
@@ -12322,32 +12145,6 @@ msgstr "עדכן את מידע התיקון בדיאלוג \"About Lazarus\""
 msgid "Package distributed with Lazarus"
 msgstr ""
 
-#: lazarusidestrconsts.lisldaddlinktoinherited
-msgid "Add link to inherited"
-msgstr "הוסף קישור לירושה"
-
-#: lazarusidestrconsts.lisldcopyfrominherited
-msgid "Copy from inherited"
-msgstr "העתק מהירושה"
-
-#: lazarusidestrconsts.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
-#, object-pascal-format
-msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
-msgstr ""
-
-#: lazarusidestrconsts.lisldmoveentriestoinherited
-msgid "Move entries to inherited"
-msgstr "הזז ערך ליורש"
-
-#: lazarusidestrconsts.lisldnovalidfpdocpath
-msgid "No valid FPDoc path"
-msgstr ""
-
-#: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
-#, object-pascal-format, fuzzy, badformat
-msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
-msgstr "היחידה s% אינה בבעלות חבילה או פרוייקט כלשהם. הוסף את היחידה לחבילה או לפרוייקט. לא יכול ליצור את קובץ ה fpdoc."
-
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
 msgid "Left"
@@ -12443,17 +12240,9 @@ msgstr "נתיב הספריה"
 msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under macOS)."
 msgstr ""
 
-#: lazarusidestrconsts.lislink
-msgid "Link:"
-msgstr "קישור:"
-
 #: lazarusidestrconsts.lislinkeroptions
 msgid "linker options"
 msgstr "אפשרויות מקשר"
-
-#: lazarusidestrconsts.lislinktarget
-msgid "Link target"
-msgstr "קשר יעד"
 
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
@@ -14786,10 +14575,6 @@ msgstr ""
 msgid "no hints"
 msgstr "אין טיפים"
 
-#: lazarusidestrconsts.lisnoidewindowselected
-msgid "No IDE window selected"
-msgstr "לא נבחר חלון IDE"
-
 #: lazarusidestrconsts.lisnolfmfile
 msgid "No LFM file"
 msgstr "אין קובץ LFM"
@@ -14817,10 +14602,6 @@ msgstr ""
 #: lazarusidestrconsts.lisnonewfilefound
 msgid "No new file found"
 msgstr ""
-
-#: lazarusidestrconsts.lisnonodeselected
-msgid "no node selected"
-msgstr "לא נבחרה צומת"
 
 #: lazarusidestrconsts.lisnopascalfile
 #, fuzzy
@@ -15192,10 +14973,6 @@ msgstr ""
 msgid "Open URL"
 msgstr ""
 
-#: lazarusidestrconsts.lisopenxml
-msgid "Open XML"
-msgstr ""
-
 #: lazarusidestrconsts.lisoptions
 #, fuzzy
 msgctxt "lazarusidestrconsts.lisoptions"
@@ -15267,11 +15044,6 @@ msgstr "\"הבעלים\" כבר בשימוש ע\"י TReader/TWriter. בחר שם
 msgid "Package"
 msgstr "חבילה"
 
-#: lazarusidestrconsts.lispackage2
-#, object-pascal-format, fuzzy, badformat
-msgid "package %s"
-msgstr "חבילה s%"
-
 #: lazarusidestrconsts.lispackageinfo
 #, fuzzy
 #| msgid "Package Info"
@@ -15312,10 +15084,6 @@ msgstr ""
 #, object-pascal-format
 msgid "packages=%s/%s units=%s/%s identifiers=%s/%s lines=%s bytes=%s"
 msgstr ""
-
-#: lazarusidestrconsts.lispackageunit
-msgid "package unit"
-msgstr "יחידה של החבילה"
 
 #: lazarusidestrconsts.lispage
 msgctxt "lazarusidestrconsts.lispage"
@@ -15364,10 +15132,6 @@ msgstr ""
 #: lazarusidestrconsts.lispastelcolors
 msgid "Pastel Colors"
 msgstr ""
-
-#: lazarusidestrconsts.lispath
-msgid "Path"
-msgstr "נתיב"
 
 #: lazarusidestrconsts.lispatheditbrowse
 msgctxt "lazarusidestrconsts.lispatheditbrowse"
@@ -16511,10 +16275,6 @@ msgstr "תקן בבקשה את שגיאה המופיעה בחלון ההודעו
 msgid "Please open a unit before run."
 msgstr "אנא פתח יחידה לפני הרצה."
 
-#: lazarusidestrconsts.lispleaseplacetheeditorcaretonanidentifierifthisisane
-msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
-msgstr ""
-
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "אנא בחר את הקוד לחילוץ לפרוצדורה/מתודה חדשה."
@@ -16856,10 +16616,6 @@ msgstr ""
 #, object-pascal-format
 msgid "%0:s%0:s In file '%1:s' at line %2:d:%0:s%3:s"
 msgstr ""
-
-#: lazarusidestrconsts.lisprojectunit
-msgid "project unit"
-msgstr "יחידת הפרוייקט"
 
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
@@ -17783,10 +17539,6 @@ msgstr ""
 #| msgid "(Setup default indentation)"
 msgid "(Set up default indentation)"
 msgstr "(קבע זיהוי ברירת מחדל)"
-
-#: lazarusidestrconsts.lisshort
-msgid "Short:"
-msgstr "קצר:"
 
 #: lazarusidestrconsts.lisshortnopath
 msgid "Short, no path"
@@ -18966,11 +18718,6 @@ msgstr "ליחידה יש את השם הבא"
 msgid "The unit filename \"%s\" is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%sRename file lowercase?"
 msgstr "שם קובץ היחידה %s%s%s אינו באותיות קטנות. המהדר של FreePascal לא מחפש את כל אפשרויות הראשיות. מומלץ להשתמש באותיות קטנות בשם הקובץ.לשנות את השם לאותיות קטנות."
 
-#: lazarusidestrconsts.listheunitispartofthefpcsourcesbutthecorrespondingfpd
-#, object-pascal-format
-msgid "The unit %s is part of the FPC sources but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
-msgstr ""
-
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
 #, object-pascal-format, fuzzy, badformat
 msgid "The unit %s is used by other files.%sUpdate references automatically?"
@@ -19054,10 +18801,6 @@ msgstr "כותרת&"
 #| msgid "Title in taskbar shows for example: project1.lpi - Lazarus"
 msgid "Show the custom IDE title before the IDE's name and other info in the title. Example: project1 - Lazarus."
 msgstr "הכותרת בסרגל המשימות מראה למשל: project1.lpi - Lazarus"
-
-#: lazarusidestrconsts.listitleleaveemptyfordefault
-msgid "Title (leave empty for default)"
-msgstr "כותרת (השאר ריק לברירת מחדל)"
 
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
@@ -20480,10 +20223,6 @@ msgstr "סוג"
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
 msgstr "עידכון:"
-
-#: lazarusidestrconsts.rsselectaninheritedentry
-msgid "Select an inherited entry"
-msgstr "בחר ערך מורש"
 
 #: lazarusidestrconsts.rsshowabspath
 msgid "Absolute path"
@@ -22504,4 +22243,9 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "מידע אודות הגרסה"
+
+#: lazarusidestrconsts.lispackage2
+#, object-pascal-format, fuzzy, badformat
+msgid "package %s"
+msgstr "חבילה s%"
 

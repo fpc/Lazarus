@@ -5650,13 +5650,6 @@ msgstr "\"%s\"%sへのすべての修正は失われ、ファイルが再び開�
 msgid "Alpha"
 msgstr "アルファ"
 
-#: lazarusidestrconsts.lisalreadycontainsthehe
-#, object-pascal-format
-msgid ""
-"%s already contains the help:\n"
-"%s"
-msgstr ""
-
 #: lazarusidestrconsts.lisalternativekey
 msgid "Alternative key"
 msgstr "代替キー "
@@ -6398,10 +6391,6 @@ msgstr "(フィルター)"
 msgid "Follow cursor"
 msgstr "カーソルを追跡"
 
-#: lazarusidestrconsts.lisceisarootcontrol
-msgid "Is a root control"
-msgstr "はルートコントロールです"
-
 #: lazarusidestrconsts.liscelongparamlistcount
 msgid "Parameters count treated as \"many\""
 msgstr "「多い」と扱われる引数の数"
@@ -6744,10 +6733,6 @@ msgstr "違う名前を選択してください"
 msgid "Choose a file with CodeTools templates"
 msgstr "CodeToolsテンプレートをもつファイルを選んでください"
 
-#: lazarusidestrconsts.lischooseafpdoclink
-msgid "Choose a FPDoc link"
-msgstr "FPDocリンクを選択してください"
-
 #: lazarusidestrconsts.lischooseakey
 msgid "Choose a key ..."
 msgstr "キーを選択してください..."
@@ -6755,10 +6740,6 @@ msgstr "キーを選択してください..."
 #: lazarusidestrconsts.lischooseanameforthecomponent
 msgid "Choose a name for the component"
 msgstr "コンポーネントの名前を選択してください"
-
-#: lazarusidestrconsts.lischooseanexamplefile
-msgid "Choose an example file"
-msgstr "例となるファイルを選択してください"
 
 #: lazarusidestrconsts.lischooseanfpcmessagefile
 msgid "Choose an FPC message file"
@@ -7089,102 +7070,13 @@ msgstr "コード生成オプション"
 msgid "Add path"
 msgstr "パス追加"
 
-#: lazarusidestrconsts.liscodehelpbrowseexamplebutton
-msgctxt "lazarusidestrconsts.liscodehelpbrowseexamplebutton"
-msgid "Browse"
-msgstr "閲覧"
-
-#: lazarusidestrconsts.liscodehelpconfirmreplace
-msgid "Confirm replace"
-msgstr "置換を確認"
-
-#: lazarusidestrconsts.liscodehelpcreatebutton
-msgid "Create help item"
-msgstr "ヘルプ項目を作成"
-
 #: lazarusidestrconsts.liscodehelpdeletepathbutton
 msgid "Remove path"
 msgstr "パスを削除"
 
-#: lazarusidestrconsts.liscodehelpdescrtag
-msgctxt "lazarusidestrconsts.liscodehelpdescrtag"
-msgid "Description"
-msgstr "説明"
-
-#: lazarusidestrconsts.liscodehelperrorstag
-msgctxt "lazarusidestrconsts.liscodehelperrorstag"
-msgid "Errors"
-msgstr "エラー"
-
-#: lazarusidestrconsts.liscodehelpexampletag
-msgid "Example"
-msgstr "実例"
-
 #: lazarusidestrconsts.liscodehelpgroupbox
 msgid "FPDoc settings"
 msgstr "FPDocの設定"
-
-#: lazarusidestrconsts.liscodehelphintboldformat
-msgid "Insert bold formatting tag"
-msgstr "太字設定タグを挿入"
-
-#: lazarusidestrconsts.liscodehelphintinsertcodetag
-msgid "Insert code formatting tag"
-msgstr "コード書式設定タグを挿入"
-
-#: lazarusidestrconsts.liscodehelphintitalicformat
-msgid "Insert italic formatting tag"
-msgstr "イタリック体タグを挿入"
-
-#: lazarusidestrconsts.liscodehelphintremarktag
-msgid "Insert remark formatting tag"
-msgstr "注釈設定タグを挿入"
-
-#: lazarusidestrconsts.liscodehelphintunderlineformat
-msgid "Insert underline formatting tag"
-msgstr "下線設定タグを挿入"
-
-#: lazarusidestrconsts.liscodehelphintvartag
-msgid "Insert var formatting tag"
-msgstr "var書式設定タグを挿入"
-
-#: lazarusidestrconsts.liscodehelpinherited
-msgctxt "lazarusidestrconsts.liscodehelpinherited"
-msgid "Inherited"
-msgstr "継承されたもの"
-
-#: lazarusidestrconsts.liscodehelpinsertalink
-msgid "Insert a link ..."
-msgstr "リンクを挿入 ..."
-
-#: lazarusidestrconsts.liscodehelpinsertparagraphformattingtag
-msgid "Insert paragraph formatting tag"
-msgstr "段落書式設定タグを挿入"
-
-#: lazarusidestrconsts.liscodehelpmainformcaption
-msgctxt "lazarusidestrconsts.liscodehelpmainformcaption"
-msgid "FPDoc Editor"
-msgstr "FPDocエディタ"
-
-#: lazarusidestrconsts.liscodehelpnoinheriteddescriptionfound
-msgid "(no inherited description found)"
-msgstr "（継承された記述が見つかりません）"
-
-#: lazarusidestrconsts.liscodehelpnotagcaption
-msgid "<NONE>"
-msgstr "<無し>"
-
-#: lazarusidestrconsts.liscodehelpseealsotag
-msgid "See also"
-msgstr "参照"
-
-#: lazarusidestrconsts.liscodehelpshortdescriptionof
-msgid "Short description of"
-msgstr "手短な説明"
-
-#: lazarusidestrconsts.liscodehelpshorttag
-msgid "Short"
-msgstr "短い"
 
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
 msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
@@ -8530,10 +8422,6 @@ msgstr ""
 msgid "Create function"
 msgstr "関数を作成"
 
-#: lazarusidestrconsts.liscreatehelpnode
-msgid "Create Help node"
-msgstr "ヘルプノードを作成"
-
 #: lazarusidestrconsts.liscreateit
 msgid "Create it"
 msgstr "それを作成"
@@ -9265,11 +9153,6 @@ msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr "インポート ..."
 
-#: lazarusidestrconsts.lisdlgopen
-msgctxt "lazarusidestrconsts.lisdlgopen"
-msgid "Open ..."
-msgstr "開く ..."
-
 #: lazarusidestrconsts.lisdoesnotexists
 #, object-pascal-format
 msgid "%s does not exist: %s"
@@ -9494,10 +9377,6 @@ msgstr "メッセージの追加的なヘルプを編集"
 #: lazarusidestrconsts.liseditbuildmodes
 msgid "Edit build modes"
 msgstr ""
-
-#: lazarusidestrconsts.liseditcontexthelp
-msgid "Edit context help"
-msgstr "状況依存ヘルプを編集"
 
 #: lazarusidestrconsts.liseditfpcmessagehelp
 msgid "Edit FPC Message Help ..."
@@ -9827,11 +9706,6 @@ msgstr "ファイル%s%s%s%sからパッケージリストを読み取り中に�
 msgid "Error reading XML"
 msgstr "XMLの読み取り中にエラー"
 
-#: lazarusidestrconsts.liserrorreadingxmlfile
-#, object-pascal-format
-msgid "Error reading xml file \"%s\"%s%s"
-msgstr "XML ファイル \"%s\"%s%s 読み取り中のエラー"
-
 #: lazarusidestrconsts.liserrors
 msgctxt "lazarusidestrconsts.liserrors"
 msgid "Errors"
@@ -9851,11 +9725,6 @@ msgstr "フォームを保存する際にエラー"
 msgid "Error setting the name of a component %s to %s"
 msgstr "コンポーネントの名前を %s から %sに変更中にエラー"
 
-#: lazarusidestrconsts.liserrorwritingfile
-#, object-pascal-format
-msgid "Error writing file \"%s\""
-msgstr "ファイル\"%s\"への書き込み中にエラー"
-
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 #, object-pascal-format
 msgid "Error writing package list to file%s%s%s%s"
@@ -9870,11 +9739,6 @@ msgstr "すべてのn番目の行番号"
 #: lazarusidestrconsts.lisexamplefile
 msgid "Example file:"
 msgstr "例のファイル"
-
-#: lazarusidestrconsts.lisexamplesidentifiertmyenumenumunitnameidentifierpac
-#, object-pascal-format
-msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
-msgstr "例：%s識別子%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
 
 #: lazarusidestrconsts.lisexclude
 msgid "Exclude"
@@ -10402,15 +10266,6 @@ msgctxt "lazarusidestrconsts.lisfpdoceditor"
 msgid "FPDoc Editor"
 msgstr "FPDocエディタ"
 
-#: lazarusidestrconsts.lisfpdocerrorwriting
-#, object-pascal-format
-msgid "Error writing \"%s\"%s%s"
-msgstr "\"%s\"%s%sの書き出しに失敗"
-
-#: lazarusidestrconsts.lisfpdocfpdocsyntaxerror
-msgid "FPDoc syntax error"
-msgstr "FPDocの表記法エラー"
-
 #: lazarusidestrconsts.lisfpdocpackagename
 msgid "FPDoc package name:"
 msgstr "FPDocパッケージ名"
@@ -10418,11 +10273,6 @@ msgstr "FPDocパッケージ名"
 #: lazarusidestrconsts.lisfpdocpackagenamedefaultisprojectfilename
 msgid "FPDoc package name. Default is project file name."
 msgstr "FPDocパッケージ名。デフォルトではプロジェクトファイル名です。"
-
-#: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
-#, object-pascal-format
-msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
-msgstr "FPDoc要素\"%s\"に表記法エラーがあります:%s%s"
 
 #: lazarusidestrconsts.lisfppkgcompilerproblem
 msgid "there is a problem with the Free Pascal compiler executable, "
@@ -10709,10 +10559,6 @@ msgstr ""
 msgid "Width"
 msgstr ""
 
-#: lazarusidestrconsts.lishashelp
-msgid "Has Help"
-msgstr "ヘルプあり"
-
 #: lazarusidestrconsts.lisheadercolors
 msgid "Header colors"
 msgstr "ヘッダ色"
@@ -10720,10 +10566,6 @@ msgstr "ヘッダ色"
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
 msgstr "クラスのためのヘッダコメント"
-
-#: lazarusidestrconsts.lishelpentries
-msgid "Help entries"
-msgstr "ヘルプエントリ"
 
 #: lazarusidestrconsts.lishelpselectordialog
 msgid "Help selector"
@@ -10879,10 +10721,6 @@ msgstr "IDEはメインユニットのApplication.Scaled (Hi-DPI)を維持しま
 #: lazarusidestrconsts.lisidemaintainsthetitleinmainunit
 msgid "The IDE maintains the title in main unit."
 msgstr "IDEはメインユニットのタイトルを維持します。"
-
-#: lazarusidestrconsts.lisidentifier
-msgid "identifier"
-msgstr "識別子"
 
 #: lazarusidestrconsts.lisidentifierbeginswith
 msgid "Identifier begins with ..."
@@ -11211,10 +11049,6 @@ msgstr "マクロを挿入"
 msgid "Insert name of current procedure."
 msgstr "現在の手続きの名前を挿入"
 
-#: lazarusidestrconsts.lisinsertprintshorttag2
-msgid "Insert printshort tag"
-msgstr "printshortタグを挿入"
-
 #: lazarusidestrconsts.lisinsertprocedurehead
 msgid "insert procedure head"
 msgstr "手続きのヘッドを挿入"
@@ -11234,10 +11068,6 @@ msgstr "時刻を挿入"
 #: lazarusidestrconsts.lisinserttimeoptionalformatstring
 msgid "Insert time. Optional: format string."
 msgstr "時刻と挿入。オプションとして：書式化文字列"
-
-#: lazarusidestrconsts.lisinserturltag
-msgid "Insert url tag"
-msgstr "url タグを挿入"
 
 #: lazarusidestrconsts.lisinsession
 msgid "In session"
@@ -11285,10 +11115,6 @@ msgstr "双方向的"
 #, object-pascal-format
 msgid "internal error: %s"
 msgstr "内部エラー: %s"
-
-#: lazarusidestrconsts.lisinvaliddeclaration
-msgid "Invalid Declaration"
-msgstr ""
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -12047,32 +11873,6 @@ msgstr "\"Lazarusについて\"ダイアログの改訂情報を更新"
 msgid "Package distributed with Lazarus"
 msgstr ""
 
-#: lazarusidestrconsts.lisldaddlinktoinherited
-msgid "Add link to inherited"
-msgstr "継承へのリンクを挿入"
-
-#: lazarusidestrconsts.lisldcopyfrominherited
-msgid "Copy from inherited"
-msgstr "継承からコピー"
-
-#: lazarusidestrconsts.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
-#, object-pascal-format
-msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
-msgstr "%s は有効なFPDocパスを持ちません。%s %sのfpdocファイルを作成できません。"
-
-#: lazarusidestrconsts.lisldmoveentriestoinherited
-msgid "Move entries to inherited"
-msgstr "エントリを継承したものに移動"
-
-#: lazarusidestrconsts.lisldnovalidfpdocpath
-msgid "No valid FPDoc path"
-msgstr "有効なFPDocパスがありません"
-
-#: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
-#, object-pascal-format
-msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
-msgstr "ユニット%sはどのパッケージもしくはプロジェクトにも所有されていません。%sいずれかのパッケージもしくはプロジェクトにユニットを追加してください。%sfpdocファイルを作成できません。"
-
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
 msgid "Left"
@@ -12177,17 +11977,9 @@ msgstr "ライブラリパス"
 msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under macOS)."
 msgstr "Free Pascal共有ライブラリ（Windowsでは.dll, Linuxでは.so, MacOS Xでは.dylib）"
 
-#: lazarusidestrconsts.lislink
-msgid "Link:"
-msgstr "リンク"
-
 #: lazarusidestrconsts.lislinkeroptions
 msgid "linker options"
 msgstr "リンカオプション"
-
-#: lazarusidestrconsts.lislinktarget
-msgid "Link target"
-msgstr "リンクターゲット"
 
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
@@ -14365,10 +14157,6 @@ msgstr ""
 msgid "no hints"
 msgstr "ヒントがありません"
 
-#: lazarusidestrconsts.lisnoidewindowselected
-msgid "No IDE window selected"
-msgstr "IDEウィンドウが選択されていません"
-
 #: lazarusidestrconsts.lisnolfmfile
 msgid "No LFM file"
 msgstr "LFMファイルはありません"
@@ -14396,10 +14184,6 @@ msgstr "（何も選択されていません）"
 #: lazarusidestrconsts.lisnonewfilefound
 msgid "No new file found"
 msgstr ""
-
-#: lazarusidestrconsts.lisnonodeselected
-msgid "no node selected"
-msgstr "ノードが選択されていません"
 
 #: lazarusidestrconsts.lisnopascalfile
 msgid "No Pascal file"
@@ -14759,10 +14543,6 @@ msgstr "ユニットを開く"
 msgid "Open URL"
 msgstr "URLを開く"
 
-#: lazarusidestrconsts.lisopenxml
-msgid "Open XML"
-msgstr "XMLを開く"
-
 #: lazarusidestrconsts.lisoptions
 #, fuzzy
 msgctxt "lazarusidestrconsts.lisoptions"
@@ -14835,11 +14615,6 @@ msgstr "'Owner'は既にTReaderもしくはTWriterに使用されています。
 msgid "Package"
 msgstr "パッケージ"
 
-#: lazarusidestrconsts.lispackage2
-#, object-pascal-format
-msgid "package %s"
-msgstr "パッケージ %s"
-
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
 msgstr "パッケージ情報"
@@ -14878,10 +14653,6 @@ msgstr "パッケージソースディレクトリ"
 #, object-pascal-format
 msgid "packages=%s/%s units=%s/%s identifiers=%s/%s lines=%s bytes=%s"
 msgstr ""
-
-#: lazarusidestrconsts.lispackageunit
-msgid "package unit"
-msgstr "パッケージユニット"
 
 #: lazarusidestrconsts.lispage
 msgctxt "lazarusidestrconsts.lispage"
@@ -14930,10 +14701,6 @@ msgstr "クリップボードから貼り付け"
 #: lazarusidestrconsts.lispastelcolors
 msgid "Pastel Colors"
 msgstr "パステルカラー"
-
-#: lazarusidestrconsts.lispath
-msgid "Path"
-msgstr "Path"
 
 #: lazarusidestrconsts.lispatheditbrowse
 msgctxt "lazarusidestrconsts.lispatheditbrowse"
@@ -16008,10 +15775,6 @@ msgstr "メッセージウィンドウ（通常ソースエディタの下にあ
 msgid "Please open a unit before run."
 msgstr "実行する前にユニットを開いて下さい。"
 
-#: lazarusidestrconsts.lispleaseplacetheeditorcaretonanidentifierifthisisane
-msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
-msgstr ""
-
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "新しい手続き/メソッドを抽出するためにコードの一部を選択してください。"
@@ -16341,10 +16104,6 @@ msgstr "%0:s%0:s 該当ファイル '%1:s' 該当行 %2:d"
 #, object-pascal-format
 msgid "%0:s%0:s In file '%1:s' at line %2:d:%0:s%3:s"
 msgstr "%0:s%0:s 該当ファイル '%1:s' 該当行 %2:d:%0:s%3:s"
-
-#: lazarusidestrconsts.lisprojectunit
-msgid "project unit"
-msgstr "プロジェクトユニット"
 
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
@@ -17258,10 +17017,6 @@ msgstr "コンパイルメッセージを他の言語（非英語）に翻訳す
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Set up default indentation)"
 msgstr "（既定のインデント合わせを設定）"
-
-#: lazarusidestrconsts.lisshort
-msgid "Short:"
-msgstr "短縮:"
 
 #: lazarusidestrconsts.lisshortnopath
 msgid "Short, no path"
@@ -18400,12 +18155,6 @@ msgstr "ユニットは、この名前を持っています。"
 msgid "The unit filename \"%s\" is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%sRename file lowercase?"
 msgstr "ユニットファイル名 \"%s\" は小文字ではありません。%sFree Pascal コンパイラは大文字小文字を区別して検索しません。小文字のファイル名を用いることが推奨されます。%s小文字に名称変更しますか？"
 
-#: lazarusidestrconsts.listheunitispartofthefpcsourcesbutthecorrespondingfpd
-#, object-pascal-format, fuzzy
-#| msgid "The unit %s is part of the FPC sources, but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
-msgid "The unit %s is part of the FPC sources but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
-msgstr "ユニット%sはFPCソースの一部ですが、対応するfpdoc xmlファイルが見つかりませんでした。%sまだfpdocディレクトリを検索パスに追加していないか、ユニットがまだドキュメントされていないかのどちらかです。%sFPCソースのfpdocファイルは%s%sからダウンロードできます。そのディレクトリをfpdocエディタオプションに追加して下さい。%s新しいファイルを作成するためには、そのディレクトリが書き込み可能でなければなりません。"
-
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
 #, object-pascal-format
 msgid "The unit %s is used by other files.%sUpdate references automatically?"
@@ -18486,10 +18235,6 @@ msgstr "タイトル(&T)"
 #| msgid "Title in taskbar shows for example: project1.lpi - Lazarus"
 msgid "Show the custom IDE title before the IDE's name and other info in the title. Example: project1 - Lazarus."
 msgstr "タスクバーのタイトルはproject1.lpi - Lazarusなどと表示します。"
-
-#: lazarusidestrconsts.listitleleaveemptyfordefault
-msgid "Title (leave empty for default)"
-msgstr "タイトル（デフォルトの場合空欄にしておいて下さい）"
 
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
@@ -19888,10 +19633,6 @@ msgstr "タイプ"
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
 msgstr "改訂(&R)"
-
-#: lazarusidestrconsts.rsselectaninheritedentry
-msgid "Select an inherited entry"
-msgstr "継承されたエントリを選択"
 
 #: lazarusidestrconsts.rsshowabspath
 msgid "Absolute path"
@@ -21798,4 +21539,9 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "バージョン情報"
+
+#: lazarusidestrconsts.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr "パッケージ %s"
 

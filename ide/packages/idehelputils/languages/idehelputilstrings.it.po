@@ -1,0 +1,298 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: idehelputilstrings.dlgccotest
+msgid "Test"
+msgstr "Test"
+
+#: idehelputilstrings.dlgfilterall
+#, fuzzy
+msgid "All files"
+msgstr "Tutti i file"
+
+#: idehelputilstrings.dlgfilterpascalfile
+#, fuzzy
+msgid "Pascal file"
+msgstr "File Pascal"
+
+#: idehelputilstrings.lisalreadycontainsthehe
+#, object-pascal-format
+msgid ""
+"%s already contains the help:\n"
+"%s"
+msgstr ""
+
+#: idehelputilstrings.lisceisarootcontrol
+msgid "Is a root control"
+msgstr "E' un controllo principale"
+
+#: idehelputilstrings.lischooseafpdoclink
+msgid "Choose a FPDoc link"
+msgstr "Scegli un link FPDoc"
+
+#: idehelputilstrings.lischooseanexamplefile
+msgid "Choose an example file"
+msgstr "Scegliere un file di esempio"
+
+#: idehelputilstrings.liscodehelpbrowseexamplebutton
+msgid "Browse"
+msgstr "Esplora"
+
+#: idehelputilstrings.liscodehelpconfirmreplace
+msgid "Confirm replace"
+msgstr "Conferma sostituzione"
+
+#: idehelputilstrings.liscodehelpcreatebutton
+msgid "Create help item"
+msgstr "Crea oggetto di aiuto"
+
+#: idehelputilstrings.liscodehelpdescrtag
+msgid "Description"
+msgstr "Descrizione"
+
+#: idehelputilstrings.liscodehelperrorstag
+msgid "Errors"
+msgstr "Errori"
+
+#: idehelputilstrings.liscodehelpexampletag
+msgid "Example"
+msgstr "Esempio"
+
+#: idehelputilstrings.liscodehelphintboldformat
+msgid "Insert bold formatting tag"
+msgstr "Inserisci tag di formattazione grassetto"
+
+#: idehelputilstrings.liscodehelphintinsertcodetag
+msgid "Insert code formatting tag"
+msgstr "Inserisci il tag di formattazione codice"
+
+#: idehelputilstrings.liscodehelphintitalicformat
+msgid "Insert italic formatting tag"
+msgstr "Inserisci it tag di formattazione corsivo"
+
+#: idehelputilstrings.liscodehelphintremarktag
+msgid "Insert remark formatting tag"
+msgstr "Inserisci il tag di formattazione evidenziato"
+
+#: idehelputilstrings.liscodehelphintunderlineformat
+msgid "Insert underline formatting tag"
+msgstr "Inserisci il tag di formattazione sottolineato"
+
+#: idehelputilstrings.liscodehelphintvartag
+msgid "Insert var formatting tag"
+msgstr "Inserisci il tag di formattazione Var"
+
+#: idehelputilstrings.liscodehelpinherited
+msgid "Inherited"
+msgstr "Ereditati"
+
+#: idehelputilstrings.liscodehelpinsertalink
+msgid "Insert a link ..."
+msgstr "Inserisci un link ..."
+
+#: idehelputilstrings.liscodehelpinsertparagraphformattingtag
+msgid "Insert paragraph formatting tag"
+msgstr "Inserisci il tag di formattazione paragrafo"
+
+#: idehelputilstrings.liscodehelpmainformcaption
+msgid "FPDoc Editor"
+msgstr "Editor FPDoc"
+
+#: idehelputilstrings.liscodehelpnoinheriteddescriptionfound
+msgid "(no inherited description found)"
+msgstr "(nessuna descrizione ereditata trovata)"
+
+#: idehelputilstrings.liscodehelpnotagcaption
+msgid "<NONE>"
+msgstr "<NESSUNO>"
+
+#: idehelputilstrings.liscodehelpseealsotag
+msgid "See also"
+msgstr "Vedi anche"
+
+#: idehelputilstrings.liscodehelpshortdescriptionof
+msgid "Short description of"
+msgstr "Breve descrizione di"
+
+#: idehelputilstrings.liscodehelpshorttag
+msgid "Short"
+msgstr "Breve"
+
+#: idehelputilstrings.lisconfirmreplace
+msgid "Confirm Replace"
+msgstr ""
+
+#: idehelputilstrings.liscreatehelpnode
+msgid "Create Help node"
+msgstr "Crea nodo di aiuto"
+
+#: idehelputilstrings.lisdlgopen
+msgid "Open ..."
+msgstr "Apri ..."
+
+#: idehelputilstrings.liseditcontexthelp
+msgid "Edit context help"
+msgstr "Edita aiuto contestuale"
+
+#: idehelputilstrings.liserrorreadingxml
+msgid "Error reading XML"
+msgstr "Errore nella lettura XML"
+
+#: idehelputilstrings.liserrorreadingxmlfile
+#, object-pascal-format
+msgid "Error reading xml file \"%s\"%s%s"
+msgstr "Errore nella lettura del file XML \"%s\"%s%s"
+
+#: idehelputilstrings.liserrorwritingfile
+#, object-pascal-format
+msgid "Error writing file \"%s\""
+msgstr "Errore di scrittura file \"%s\""
+
+#: idehelputilstrings.lisexamplesidentifiertmyenumenumunitnameidentifierpac
+#, object-pascal-format
+msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
+msgstr "Esempi:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#Packagename.UnitName.Identifier"
+
+#: idehelputilstrings.lisfpdocerrorwriting
+#, object-pascal-format
+msgid "Error writing \"%s\"%s%s"
+msgstr "Errore nella scrittura di \"%s\"%s%s"
+
+#: idehelputilstrings.lisfpdocfpdocsyntaxerror
+msgid "FPDoc syntax error"
+msgstr "Errore di sintassi FPDoc"
+
+#: idehelputilstrings.lisfpdocthereisasyntaxerrorinthefpdocelement
+#, object-pascal-format
+msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
+msgstr "C'è un errore di sintassi nell'elemento FPDoc \"%s\":%s%s"
+
+#: idehelputilstrings.lishashelp
+msgid "Has Help"
+msgstr "Ha aiuto"
+
+#: idehelputilstrings.lishelpentries
+msgid "Help entries"
+msgstr "Voci di aiuto"
+
+#: idehelputilstrings.lisidentifier
+msgid "identifier"
+msgstr "identificatore"
+
+#: idehelputilstrings.lisinsertprintshorttag2
+msgid "Insert printshort tag"
+msgstr "Inserisci tag PrintShort"
+
+#: idehelputilstrings.lisinserturltag
+msgid "Insert url tag"
+msgstr "Inserisci tag URL"
+
+#: idehelputilstrings.lisinvaliddeclaration
+msgid "Invalid Declaration"
+msgstr ""
+
+#: idehelputilstrings.lisldaddlinktoinherited
+msgid "Add link to inherited"
+msgstr "Aggiungi link da ereditare"
+
+#: idehelputilstrings.lisldcopyfrominherited
+msgid "Copy from inherited"
+msgstr "Copia dall'ereditato"
+
+#: idehelputilstrings.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
+#, object-pascal-format
+msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
+msgstr "%s non ha un percorso valido per FPDoc.%sImpossibile creare il file fpdoc per %s"
+
+#: idehelputilstrings.lisldmoveentriestoinherited
+msgid "Move entries to inherited"
+msgstr "Muovi le voci a inherited"
+
+#: idehelputilstrings.lisldnovalidfpdocpath
+msgid "No valid FPDoc path"
+msgstr "Percorso FPDoc non valido"
+
+#: idehelputilstrings.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
+#, object-pascal-format
+msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
+msgstr "La unit %s non è parte di nessun pacchetto o progetto.%sAggiungere la unit a un pacchetto o a un progetto.%sImpossibile creare il file fpdoc."
+
+#: idehelputilstrings.lislink
+msgid "Link:"
+msgstr "Link:"
+
+#: idehelputilstrings.lislinktarget
+msgid "Link target"
+msgstr "Destinazione di link"
+
+#: idehelputilstrings.lisname
+msgid "Name"
+msgstr "Nome"
+
+#: idehelputilstrings.lisnoidewindowselected
+msgid "No IDE window selected"
+msgstr "Nessuna finestra IDE selezionata"
+
+#: idehelputilstrings.lisnonodeselected
+msgid "no node selected"
+msgstr "nessun nodo selezionato"
+
+#: idehelputilstrings.lisopenxml
+msgid "Open XML"
+msgstr "Apri XML"
+
+#: idehelputilstrings.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr "pacchetto %s"
+
+#: idehelputilstrings.lispackageunit
+msgid "package unit"
+msgstr "unit del pacchetto "
+
+#: idehelputilstrings.lispath
+msgid "Path"
+msgstr "Percorso"
+
+#: idehelputilstrings.lispleaseplacetheeditorcaretonanidentifierifthisisane
+msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
+msgstr ""
+
+#: idehelputilstrings.lisprojaddpackagenotfound
+msgid "Package not found"
+msgstr "Pacchetto non trovato"
+
+#: idehelputilstrings.lisprojectunit
+msgid "project unit"
+msgstr "unit del progetto"
+
+#: idehelputilstrings.lisreplace
+msgid "Replace"
+msgstr "&Sostituisci"
+
+#: idehelputilstrings.lissave
+msgid "Save"
+msgstr "Salva"
+
+#: idehelputilstrings.lisshort
+msgid "Short:"
+msgstr "Breve:"
+
+#: idehelputilstrings.listheunitispartofthefpcsourcesbutthecorrespondingfpd
+#, object-pascal-format, fuzzy
+#| msgid "The unit %s is part of the FPC sources, but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
+msgid "The unit %s is part of the FPC sources but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
+msgstr "La unit %s fa parte dei sorgenti FPC, ma il corrispondente file xml fpdoc non è stato trovato.%sO non avete ancora aggiunto la cartella fpcdocs ai percorsi di ricerca oppure la unit non è ancora documentata.%sI file fpdoc per i sorgenti FPC si possono scaricare da: %s%sAggiungere la cartella nelle opzioni dell'editor di fpdoc.%sPer poter creare un nuovo file, la cartella deve essere scrivibile."
+
+#: idehelputilstrings.listitleleaveemptyfordefault
+msgid "Title (leave empty for default)"
+msgstr "Titolo (lasciare vuoto per usare il predefinito)"
+
+#: idehelputilstrings.rsselectaninheritedentry
+msgid "Select an inherited entry"
+msgstr "Scegli una voce ereditata"
+

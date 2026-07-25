@@ -43,7 +43,7 @@ cd <lazarusdir>/images
 5. lazdoc.res
 
 cd <lazarusdir>/images/
-../../tools/lazres ../ide/lazdoc.res @lazdoc.txt
+../../tools/lazres ../ide/packages/idehelputils/lazdoc.res @lazdoc.txt
 
 
 

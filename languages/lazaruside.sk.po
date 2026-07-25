@@ -5517,13 +5517,6 @@ msgstr "Všetky úpravy v %s%s%s%sbudú stratené a súbor bude znova otvorený.
 msgid "Alpha"
 msgstr ""
 
-#: lazarusidestrconsts.lisalreadycontainsthehe
-#, object-pascal-format
-msgid ""
-"%s already contains the help:\n"
-"%s"
-msgstr ""
-
 #: lazarusidestrconsts.lisalternativekey
 msgid "Alternative key"
 msgstr "Alternatívny kláves"
@@ -6257,10 +6250,6 @@ msgstr "(filter)"
 msgid "Follow cursor"
 msgstr "Nasledovať kurzor"
 
-#: lazarusidestrconsts.lisceisarootcontrol
-msgid "Is a root control"
-msgstr ""
-
 #: lazarusidestrconsts.liscelongparamlistcount
 msgid "Parameters count treated as \"many\""
 msgstr ""
@@ -6602,20 +6591,12 @@ msgstr "Zvoľte iné meno"
 msgid "Choose a file with CodeTools templates"
 msgstr ""
 
-#: lazarusidestrconsts.lischooseafpdoclink
-msgid "Choose a FPDoc link"
-msgstr "Zvoľte odkaz FPDoc"
-
 #: lazarusidestrconsts.lischooseakey
 msgid "Choose a key ..."
 msgstr "Zvoľte kláves ..."
 
 #: lazarusidestrconsts.lischooseanameforthecomponent
 msgid "Choose a name for the component"
-msgstr ""
-
-#: lazarusidestrconsts.lischooseanexamplefile
-msgid "Choose an example file"
 msgstr ""
 
 #: lazarusidestrconsts.lischooseanfpcmessagefile
@@ -6944,102 +6925,13 @@ msgstr "Voľby generovania kódu"
 msgid "Add path"
 msgstr "Pridať cestu"
 
-#: lazarusidestrconsts.liscodehelpbrowseexamplebutton
-msgctxt "lazarusidestrconsts.liscodehelpbrowseexamplebutton"
-msgid "Browse"
-msgstr "Prezerať"
-
-#: lazarusidestrconsts.liscodehelpconfirmreplace
-msgid "Confirm replace"
-msgstr "Potvrdiť nahradenie"
-
-#: lazarusidestrconsts.liscodehelpcreatebutton
-msgid "Create help item"
-msgstr "Vytvoriť položku pomoci"
-
 #: lazarusidestrconsts.liscodehelpdeletepathbutton
 msgid "Remove path"
 msgstr "Odstrániť cestu"
 
-#: lazarusidestrconsts.liscodehelpdescrtag
-msgctxt "lazarusidestrconsts.liscodehelpdescrtag"
-msgid "Description"
-msgstr "Popis"
-
-#: lazarusidestrconsts.liscodehelperrorstag
-msgctxt "lazarusidestrconsts.liscodehelperrorstag"
-msgid "Errors"
-msgstr "Chyby"
-
-#: lazarusidestrconsts.liscodehelpexampletag
-msgid "Example"
-msgstr "Príklad"
-
 #: lazarusidestrconsts.liscodehelpgroupbox
 msgid "FPDoc settings"
 msgstr ""
-
-#: lazarusidestrconsts.liscodehelphintboldformat
-msgid "Insert bold formatting tag"
-msgstr ""
-
-#: lazarusidestrconsts.liscodehelphintinsertcodetag
-msgid "Insert code formatting tag"
-msgstr "Vložiť formátovaciu značku pre kód"
-
-#: lazarusidestrconsts.liscodehelphintitalicformat
-msgid "Insert italic formatting tag"
-msgstr "Vložiť formátovaciu značku pre kurzívu"
-
-#: lazarusidestrconsts.liscodehelphintremarktag
-msgid "Insert remark formatting tag"
-msgstr "Vložiť formátovaciu značku poznámky"
-
-#: lazarusidestrconsts.liscodehelphintunderlineformat
-msgid "Insert underline formatting tag"
-msgstr "Vložiť formátovaciu značku pre podčiarknuté"
-
-#: lazarusidestrconsts.liscodehelphintvartag
-msgid "Insert var formatting tag"
-msgstr "Vložiť formátovaciu značku var"
-
-#: lazarusidestrconsts.liscodehelpinherited
-msgctxt "lazarusidestrconsts.liscodehelpinherited"
-msgid "Inherited"
-msgstr "Zdedené"
-
-#: lazarusidestrconsts.liscodehelpinsertalink
-msgid "Insert a link ..."
-msgstr "Vložiť odkaz ..."
-
-#: lazarusidestrconsts.liscodehelpinsertparagraphformattingtag
-msgid "Insert paragraph formatting tag"
-msgstr "Vložiť značku formátovania odseku"
-
-#: lazarusidestrconsts.liscodehelpmainformcaption
-msgctxt "lazarusidestrconsts.liscodehelpmainformcaption"
-msgid "FPDoc Editor"
-msgstr "Editor FPCDoc"
-
-#: lazarusidestrconsts.liscodehelpnoinheriteddescriptionfound
-msgid "(no inherited description found)"
-msgstr "(nenájdený zdedený popis)"
-
-#: lazarusidestrconsts.liscodehelpnotagcaption
-msgid "<NONE>"
-msgstr "<NIČ>"
-
-#: lazarusidestrconsts.liscodehelpseealsotag
-msgid "See also"
-msgstr "Pozri aj"
-
-#: lazarusidestrconsts.liscodehelpshortdescriptionof
-msgid "Short description of"
-msgstr "Krátky popis"
-
-#: lazarusidestrconsts.liscodehelpshorttag
-msgid "Short"
-msgstr "Krátky"
 
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
 msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
@@ -8369,10 +8261,6 @@ msgstr ""
 msgid "Create function"
 msgstr ""
 
-#: lazarusidestrconsts.liscreatehelpnode
-msgid "Create Help node"
-msgstr "Vytvoriť uzol Pomoci"
-
 #: lazarusidestrconsts.liscreateit
 msgid "Create it"
 msgstr "Vytvoriť v"
@@ -9097,11 +8985,6 @@ msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr "Importovať ..."
 
-#: lazarusidestrconsts.lisdlgopen
-msgctxt "lazarusidestrconsts.lisdlgopen"
-msgid "Open ..."
-msgstr ""
-
 #: lazarusidestrconsts.lisdoesnotexists
 #, object-pascal-format
 msgid "%s does not exist: %s"
@@ -9323,10 +9206,6 @@ msgstr ""
 #: lazarusidestrconsts.liseditbuildmodes
 msgid "Edit build modes"
 msgstr "Upraviť režim vybudovania"
-
-#: lazarusidestrconsts.liseditcontexthelp
-msgid "Edit context help"
-msgstr "Upraviť kontextovú pomoc"
 
 #: lazarusidestrconsts.liseditfpcmessagehelp
 msgid "Edit FPC Message Help ..."
@@ -9654,11 +9533,6 @@ msgstr "Chyba čítania zoznamu balíčkov zo súboru %s%s%s%s"
 msgid "Error reading XML"
 msgstr "Chyba čítania XML"
 
-#: lazarusidestrconsts.liserrorreadingxmlfile
-#, object-pascal-format
-msgid "Error reading xml file \"%s\"%s%s"
-msgstr "Chyba čítania XML súboru \"%s\"%s%s"
-
 #: lazarusidestrconsts.liserrors
 msgctxt "lazarusidestrconsts.liserrors"
 msgid "Errors"
@@ -9678,11 +9552,6 @@ msgstr ""
 msgid "Error setting the name of a component %s to %s"
 msgstr ""
 
-#: lazarusidestrconsts.liserrorwritingfile
-#, object-pascal-format
-msgid "Error writing file \"%s\""
-msgstr ""
-
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 #, object-pascal-format
 msgid "Error writing package list to file%s%s%s%s"
@@ -9697,11 +9566,6 @@ msgstr "Každé n-té číslo riadku"
 #: lazarusidestrconsts.lisexamplefile
 msgid "Example file:"
 msgstr ""
-
-#: lazarusidestrconsts.lisexamplesidentifiertmyenumenumunitnameidentifierpac
-#, object-pascal-format
-msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
-msgstr "Príklady:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
 
 #: lazarusidestrconsts.lisexclude
 msgid "Exclude"
@@ -10214,26 +10078,12 @@ msgctxt "lazarusidestrconsts.lisfpdoceditor"
 msgid "FPDoc Editor"
 msgstr "Editor FPCDoc"
 
-#: lazarusidestrconsts.lisfpdocerrorwriting
-#, object-pascal-format
-msgid "Error writing \"%s\"%s%s"
-msgstr ""
-
-#: lazarusidestrconsts.lisfpdocfpdocsyntaxerror
-msgid "FPDoc syntax error"
-msgstr ""
-
 #: lazarusidestrconsts.lisfpdocpackagename
 msgid "FPDoc package name:"
 msgstr ""
 
 #: lazarusidestrconsts.lisfpdocpackagenamedefaultisprojectfilename
 msgid "FPDoc package name. Default is project file name."
-msgstr ""
-
-#: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
-#, object-pascal-format
-msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisfppkgcompilerproblem
@@ -10510,10 +10360,6 @@ msgstr ""
 msgid "Width"
 msgstr ""
 
-#: lazarusidestrconsts.lishashelp
-msgid "Has Help"
-msgstr "Má pomoc"
-
 #: lazarusidestrconsts.lisheadercolors
 msgid "Header colors"
 msgstr ""
@@ -10521,10 +10367,6 @@ msgstr ""
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
 msgstr "Hlavičkový komentár pre triedu"
-
-#: lazarusidestrconsts.lishelpentries
-msgid "Help entries"
-msgstr "Položky pomoci"
 
 #: lazarusidestrconsts.lishelpselectordialog
 msgid "Help selector"
@@ -10678,10 +10520,6 @@ msgstr "IDE udržiava Application.Scaled (Hi-DPI) v hlavnej jednotke."
 #: lazarusidestrconsts.lisidemaintainsthetitleinmainunit
 msgid "The IDE maintains the title in main unit."
 msgstr "IDE udržiava názov (Title) v hlavnej jednotke."
-
-#: lazarusidestrconsts.lisidentifier
-msgid "identifier"
-msgstr ""
 
 #: lazarusidestrconsts.lisidentifierbeginswith
 msgid "Identifier begins with ..."
@@ -11007,10 +10845,6 @@ msgstr "Vložiť makro"
 msgid "Insert name of current procedure."
 msgstr "Vložiť meno aktuálnej procedúry."
 
-#: lazarusidestrconsts.lisinsertprintshorttag2
-msgid "Insert printshort tag"
-msgstr ""
-
 #: lazarusidestrconsts.lisinsertprocedurehead
 msgid "insert procedure head"
 msgstr ""
@@ -11029,10 +10863,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinserttimeoptionalformatstring
 msgid "Insert time. Optional: format string."
-msgstr ""
-
-#: lazarusidestrconsts.lisinserturltag
-msgid "Insert url tag"
 msgstr ""
 
 #: lazarusidestrconsts.lisinsession
@@ -11078,10 +10908,6 @@ msgstr "Interaktívne"
 #: lazarusidestrconsts.lisinternalerror
 #, object-pascal-format
 msgid "internal error: %s"
-msgstr ""
-
-#: lazarusidestrconsts.lisinvaliddeclaration
-msgid "Invalid Declaration"
 msgstr ""
 
 #: lazarusidestrconsts.lisinvaliddelete
@@ -11820,32 +11646,6 @@ msgstr ""
 msgid "Package distributed with Lazarus"
 msgstr ""
 
-#: lazarusidestrconsts.lisldaddlinktoinherited
-msgid "Add link to inherited"
-msgstr "Pridať odkaz k zdedeným"
-
-#: lazarusidestrconsts.lisldcopyfrominherited
-msgid "Copy from inherited"
-msgstr "Kopírovať zo zdedených"
-
-#: lazarusidestrconsts.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
-#, object-pascal-format
-msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
-msgstr ""
-
-#: lazarusidestrconsts.lisldmoveentriestoinherited
-msgid "Move entries to inherited"
-msgstr "Presunúť položky do zdedených"
-
-#: lazarusidestrconsts.lisldnovalidfpdocpath
-msgid "No valid FPDoc path"
-msgstr ""
-
-#: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
-#, object-pascal-format
-msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
-msgstr "Jednotku %s nevlastní žiadny balíček alebo projekt.%sProsím pridajte jednotku do balíčka alebo projektu.%sNemožno vytvoriť súbor fpdoc."
-
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
 msgid "Left"
@@ -11941,17 +11741,9 @@ msgstr "cesta knižnice"
 msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under macOS)."
 msgstr ""
 
-#: lazarusidestrconsts.lislink
-msgid "Link:"
-msgstr "Odkaz:"
-
 #: lazarusidestrconsts.lislinkeroptions
 msgid "linker options"
 msgstr "voľby spojovacieho programu"
-
-#: lazarusidestrconsts.lislinktarget
-msgid "Link target"
-msgstr "Cieľ linkovania"
 
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
@@ -14070,10 +13862,6 @@ msgstr ""
 msgid "no hints"
 msgstr ""
 
-#: lazarusidestrconsts.lisnoidewindowselected
-msgid "No IDE window selected"
-msgstr "Nie je vybrané okno IDE"
-
 #: lazarusidestrconsts.lisnolfmfile
 msgid "No LFM file"
 msgstr ""
@@ -14101,10 +13889,6 @@ msgstr ""
 #: lazarusidestrconsts.lisnonewfilefound
 msgid "No new file found"
 msgstr ""
-
-#: lazarusidestrconsts.lisnonodeselected
-msgid "no node selected"
-msgstr "nie je vybratý žiadny uzol"
 
 #: lazarusidestrconsts.lisnopascalfile
 msgid "No Pascal file"
@@ -14466,10 +14250,6 @@ msgstr ""
 msgid "Open URL"
 msgstr ""
 
-#: lazarusidestrconsts.lisopenxml
-msgid "Open XML"
-msgstr ""
-
 #: lazarusidestrconsts.lisoptions
 msgctxt "lazarusidestrconsts.lisoptions"
 msgid "Options"
@@ -14538,11 +14318,6 @@ msgstr ""
 msgid "Package"
 msgstr "Balíček"
 
-#: lazarusidestrconsts.lispackage2
-#, object-pascal-format
-msgid "package %s"
-msgstr "balíček %s"
-
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
 msgstr "Informácie o balíčku"
@@ -14580,10 +14355,6 @@ msgstr "Zdrojové adresáre balíčka"
 #: lazarusidestrconsts.lispackagesunitsidentifierslinesbytes
 #, object-pascal-format
 msgid "packages=%s/%s units=%s/%s identifiers=%s/%s lines=%s bytes=%s"
-msgstr ""
-
-#: lazarusidestrconsts.lispackageunit
-msgid "package unit"
 msgstr ""
 
 #: lazarusidestrconsts.lispage
@@ -14633,10 +14404,6 @@ msgstr "Vložiť zo schránky."
 #: lazarusidestrconsts.lispastelcolors
 msgid "Pastel Colors"
 msgstr ""
-
-#: lazarusidestrconsts.lispath
-msgid "Path"
-msgstr "Cesta"
 
 #: lazarusidestrconsts.lispatheditbrowse
 msgctxt "lazarusidestrconsts.lispatheditbrowse"
@@ -15724,10 +15491,6 @@ msgstr ""
 msgid "Please open a unit before run."
 msgstr "Prosím pred spustením otvorte jednotku."
 
-#: lazarusidestrconsts.lispleaseplacetheeditorcaretonanidentifierifthisisane
-msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
-msgstr ""
-
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "Prosím vyberte kód pre oddelenie procedúry/metódy."
@@ -16059,10 +15822,6 @@ msgstr ""
 #: lazarusidestrconsts.lisprojectsraisedexceptioninfilelinesrc
 #, object-pascal-format
 msgid "%0:s%0:s In file '%1:s' at line %2:d:%0:s%3:s"
-msgstr ""
-
-#: lazarusidestrconsts.lisprojectunit
-msgid "project unit"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojectwizard
@@ -16936,10 +16695,6 @@ msgstr ""
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Set up default indentation)"
 msgstr "(Nastaviť predvolené odsadzovanie)"
-
-#: lazarusidestrconsts.lisshort
-msgid "Short:"
-msgstr "Krátky:"
 
 #: lazarusidestrconsts.lisshortnopath
 msgid "Short, no path"
@@ -18077,11 +17832,6 @@ msgstr ""
 msgid "The unit filename \"%s\" is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%sRename file lowercase?"
 msgstr "Meno súboru jednotky \"%s\" nie je malými písmenami.%sPrekladač FreePascal nehľadá všetky veľkosti. Je odporúčané použiť mena súborov s malými písmenami.%sPremenovať súbor na malé písmená?"
 
-#: lazarusidestrconsts.listheunitispartofthefpcsourcesbutthecorrespondingfpd
-#, object-pascal-format
-msgid "The unit %s is part of the FPC sources but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
-msgstr ""
-
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
 #, object-pascal-format
 msgid "The unit %s is used by other files.%sUpdate references automatically?"
@@ -18160,10 +17910,6 @@ msgstr "&Nadpis"
 #: lazarusidestrconsts.listitleintaskbarshowsforexampleproject1lpilazarus
 msgid "Show the custom IDE title before the IDE's name and other info in the title. Example: project1 - Lazarus."
 msgstr "Zobraziť vlastný titulok IDE pred názvom IDE a ďalšími informáciami v titulku. Príklad: project1 - Lazarus."
-
-#: lazarusidestrconsts.listitleleaveemptyfordefault
-msgid "Title (leave empty for default)"
-msgstr "Titulok (nechajte prázdne pre predvolený)"
 
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
@@ -19552,10 +19298,6 @@ msgstr "Typ"
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
 msgstr "&Revízia:"
-
-#: lazarusidestrconsts.rsselectaninheritedentry
-msgid "Select an inherited entry"
-msgstr "Vybrať zdedenú položku"
 
 #: lazarusidestrconsts.rsshowabspath
 msgid "Absolute path"
@@ -21452,4 +21194,9 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Informácie o verzii"
+
+#: lazarusidestrconsts.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr "balíček %s"
 

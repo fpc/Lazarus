@@ -1,0 +1,295 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: idehelputilstrings.dlgccotest
+msgid "Test"
+msgstr "Testi"
+
+#: idehelputilstrings.dlgfilterall
+msgid "All files"
+msgstr "Kaikki tiedostot"
+
+#: idehelputilstrings.dlgfilterpascalfile
+msgid "Pascal file"
+msgstr "Pascal-tiedosto"
+
+#: idehelputilstrings.lisalreadycontainsthehe
+#, object-pascal-format
+msgid ""
+"%s already contains the help:\n"
+"%s"
+msgstr ""
+
+#: idehelputilstrings.lisceisarootcontrol
+msgid "Is a root control"
+msgstr "On juurikontrolli"
+
+#: idehelputilstrings.lischooseafpdoclink
+msgid "Choose a FPDoc link"
+msgstr "Valitse FPDoc-linkki"
+
+#: idehelputilstrings.lischooseanexamplefile
+msgid "Choose an example file"
+msgstr "Valitse esimerkkitiedosto"
+
+#: idehelputilstrings.liscodehelpbrowseexamplebutton
+msgid "Browse"
+msgstr "Selaa"
+
+#: idehelputilstrings.liscodehelpconfirmreplace
+msgid "Confirm replace"
+msgstr "Varmista korvaaminen"
+
+#: idehelputilstrings.liscodehelpcreatebutton
+msgid "Create help item"
+msgstr "Luo ohje"
+
+#: idehelputilstrings.liscodehelpdescrtag
+msgid "Description"
+msgstr "Selitys"
+
+#: idehelputilstrings.liscodehelperrorstag
+msgid "Errors"
+msgstr "Virheet"
+
+#: idehelputilstrings.liscodehelpexampletag
+msgid "Example"
+msgstr "Esimerkki"
+
+#: idehelputilstrings.liscodehelphintboldformat
+msgid "Insert bold formatting tag"
+msgstr "Merkitse muotoiluksi lihavoitu"
+
+#: idehelputilstrings.liscodehelphintinsertcodetag
+msgid "Insert code formatting tag"
+msgstr "Merkitse muotoiluksi koodi"
+
+#: idehelputilstrings.liscodehelphintitalicformat
+msgid "Insert italic formatting tag"
+msgstr "Merkitse muotoiluksi kursiivi"
+
+#: idehelputilstrings.liscodehelphintremarktag
+msgid "Insert remark formatting tag"
+msgstr "Merkitse muotoiluksi huomautus"
+
+#: idehelputilstrings.liscodehelphintunderlineformat
+msgid "Insert underline formatting tag"
+msgstr "Merkitse muotoiluksi alleviivaus"
+
+#: idehelputilstrings.liscodehelphintvartag
+msgid "Insert var formatting tag"
+msgstr "Merkitse muotoiluksi var"
+
+#: idehelputilstrings.liscodehelpinherited
+msgid "Inherited"
+msgstr "Periytyneet"
+
+#: idehelputilstrings.liscodehelpinsertalink
+msgid "Insert a link ..."
+msgstr "Lisää linkki ..."
+
+#: idehelputilstrings.liscodehelpinsertparagraphformattingtag
+msgid "Insert paragraph formatting tag"
+msgstr "Merkitse muotoiluksi kappale"
+
+#: idehelputilstrings.liscodehelpmainformcaption
+msgid "FPDoc Editor"
+msgstr "FPDoc-muokkain"
+
+#: idehelputilstrings.liscodehelpnoinheriteddescriptionfound
+msgid "(no inherited description found)"
+msgstr "(periytyvää selitystä ei löydy)"
+
+#: idehelputilstrings.liscodehelpnotagcaption
+msgid "<NONE>"
+msgstr ""
+
+#: idehelputilstrings.liscodehelpseealsotag
+msgid "See also"
+msgstr "Katso myös"
+
+#: idehelputilstrings.liscodehelpshortdescriptionof
+msgid "Short description of"
+msgstr "Lyhyt kuvaus: "
+
+#: idehelputilstrings.liscodehelpshorttag
+msgid "Short"
+msgstr "Lyhyt"
+
+#: idehelputilstrings.lisconfirmreplace
+msgid "Confirm Replace"
+msgstr ""
+
+#: idehelputilstrings.liscreatehelpnode
+msgid "Create Help node"
+msgstr "Luo ohje-solmu"
+
+#: idehelputilstrings.lisdlgopen
+msgid "Open ..."
+msgstr "Avaa ..."
+
+#: idehelputilstrings.liseditcontexthelp
+msgid "Edit context help"
+msgstr "Muokkaa tilannekohtaista ohjetta"
+
+#: idehelputilstrings.liserrorreadingxml
+msgid "Error reading XML"
+msgstr "Virhe luettaessa XML"
+
+#: idehelputilstrings.liserrorreadingxmlfile
+#, object-pascal-format
+msgid "Error reading xml file \"%s\"%s%s"
+msgstr "Virhe luettaessa xml-tiedostosta \"%s\"%s%s"
+
+#: idehelputilstrings.liserrorwritingfile
+#, object-pascal-format
+msgid "Error writing file \"%s\""
+msgstr "Virhe tallennettaessa tiedosto \"%s\""
+
+#: idehelputilstrings.lisexamplesidentifiertmyenumenumunitnameidentifierpac
+#, object-pascal-format
+msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
+msgstr ""
+
+#: idehelputilstrings.lisfpdocerrorwriting
+#, object-pascal-format
+msgid "Error writing \"%s\"%s%s"
+msgstr "Virhe kirjoitettaessa \"%s\"%s%s"
+
+#: idehelputilstrings.lisfpdocfpdocsyntaxerror
+msgid "FPDoc syntax error"
+msgstr "FPDoc-kielioppivirhe"
+
+#: idehelputilstrings.lisfpdocthereisasyntaxerrorinthefpdocelement
+#, object-pascal-format
+msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
+msgstr "FPDoc-elementissä \"%s\":%s%s on kielioppivirhe"
+
+#: idehelputilstrings.lishashelp
+msgid "Has Help"
+msgstr "Ohje löytyy"
+
+#: idehelputilstrings.lishelpentries
+msgid "Help entries"
+msgstr "Ohjemerkinnät"
+
+#: idehelputilstrings.lisidentifier
+msgid "identifier"
+msgstr "tunniste"
+
+#: idehelputilstrings.lisinsertprintshorttag2
+msgid "Insert printshort tag"
+msgstr "Lisää printshort merkki"
+
+#: idehelputilstrings.lisinserturltag
+msgid "Insert url tag"
+msgstr "Lisää URL tagi"
+
+#: idehelputilstrings.lisinvaliddeclaration
+msgid "Invalid Declaration"
+msgstr ""
+
+#: idehelputilstrings.lisldaddlinktoinherited
+msgid "Add link to inherited"
+msgstr "Lisää linkki perittyyn"
+
+#: idehelputilstrings.lisldcopyfrominherited
+msgid "Copy from inherited"
+msgstr "Kopioi peritystä"
+
+#: idehelputilstrings.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
+#, object-pascal-format
+msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
+msgstr "%s:lla ei ole kelvollista FPDoc polkua.%sEi voida luoda fpdoc tiedostoa %s:lle"
+
+#: idehelputilstrings.lisldmoveentriestoinherited
+msgid "Move entries to inherited"
+msgstr "Siirrä kohdat perittyyn"
+
+#: idehelputilstrings.lisldnovalidfpdocpath
+msgid "No valid FPDoc path"
+msgstr "Ei kelvollista FPDoc polkua"
+
+#: idehelputilstrings.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
+#, object-pascal-format
+msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
+msgstr "Käännösyksikkö %s ei kuulu mihinkään pakettiin tai projektiin.%sLisää se johonkin.%sfpdoc tiedoston luonti ei onnistu."
+
+#: idehelputilstrings.lislink
+msgid "Link:"
+msgstr "Linkki:"
+
+#: idehelputilstrings.lislinktarget
+msgid "Link target"
+msgstr "Linkityskohde"
+
+#: idehelputilstrings.lisname
+msgid "Name"
+msgstr "Nimi"
+
+#: idehelputilstrings.lisnoidewindowselected
+msgid "No IDE window selected"
+msgstr "Ei IDEn ikkunoita valittuna"
+
+#: idehelputilstrings.lisnonodeselected
+msgid "no node selected"
+msgstr "ei solmua valittuna"
+
+#: idehelputilstrings.lisopenxml
+msgid "Open XML"
+msgstr "Avaa XML"
+
+#: idehelputilstrings.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr "Paketti %s"
+
+#: idehelputilstrings.lispackageunit
+msgid "package unit"
+msgstr "paketin käännösyksikkö"
+
+#: idehelputilstrings.lispath
+msgid "Path"
+msgstr "Polku"
+
+#: idehelputilstrings.lispleaseplacetheeditorcaretonanidentifierifthisisane
+msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
+msgstr ""
+
+#: idehelputilstrings.lisprojaddpackagenotfound
+msgid "Package not found"
+msgstr "Pakettia ei löytynyt"
+
+#: idehelputilstrings.lisprojectunit
+msgid "project unit"
+msgstr "projektin käännösyksikkö"
+
+#: idehelputilstrings.lisreplace
+msgid "Replace"
+msgstr "Korvaa"
+
+#: idehelputilstrings.lissave
+msgid "Save"
+msgstr "Tallenna"
+
+#: idehelputilstrings.lisshort
+msgid "Short:"
+msgstr "Lyhyt:"
+
+#: idehelputilstrings.listheunitispartofthefpcsourcesbutthecorrespondingfpd
+#, object-pascal-format
+msgid "The unit %s is part of the FPC sources but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
+msgstr "Käännösyksikkö %s kuuluu FPC:n lähdekoodeihin, mutta vastaavaa fpdoc xml tiedostoa ei löydy.%sJoko et ole lisännyt fpcdoc hakemistoa hakupolkuun tai käännösyksikköä ei ole vielä dokumentoitu.%sfpdoc tiedostot FPC lähdekoodeille voi ladata täältä: %s%sLisää hakemisto fpdoc editorin valintoihin.%sUuden tiedoston luomiseksi hakemistoon pitää olla kirjoitusoikeus."
+
+#: idehelputilstrings.listitleleaveemptyfordefault
+msgid "Title (leave empty for default)"
+msgstr "Otsikko (oletusotsikko jos tyhjä)"
+
+#: idehelputilstrings.rsselectaninheritedentry
+msgid "Select an inherited entry"
+msgstr "Valitse periytyvä kohta"
+

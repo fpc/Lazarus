@@ -5253,6 +5253,8 @@ procedure TMainIDE.ProjectOptionsBeforeRead(Sender: TObject);
 //var
 //  ActiveSrcEdit: TSourceEditor;
 //  ActiveUnitInfo: TUnitInfo;
+var
+  Cmd: TKeyCommandRelation;
 begin
   //DebugLn(['TMainIDE.DoProjectOptionsBeforeRead ',DbgSName(Sender)]);
   if not (Sender is TProjectIDEOptions) then exit;
@@ -5263,6 +5265,11 @@ begin
   Project1.UpdateExecutableType;
   Project1.UseAsDefault := False;
   TProjectIDEOptions(Sender).CheckLclApp;
+  if (CodeHelpBoss <> nil) then begin
+    Cmd:=EditorOpts.KeyMap.FindByCommand(ecFocusHint);
+    if (Cmd<>nil) then
+      CodeHelpBoss.FocusHintShortCut := Cmd.ShortcutA;
+  end;
 end;
 
 procedure TMainIDE.ProjectOptionsAfterWrite(Sender: TObject; Restore: boolean);

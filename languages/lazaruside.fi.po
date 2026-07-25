@@ -5539,13 +5539,6 @@ msgstr "Kaikki muutokset tiedostoon \"%s\"%smenetetään ja se avataan uudestaan
 msgid "Alpha"
 msgstr ""
 
-#: lazarusidestrconsts.lisalreadycontainsthehe
-#, object-pascal-format
-msgid ""
-"%s already contains the help:\n"
-"%s"
-msgstr ""
-
 #: lazarusidestrconsts.lisalternativekey
 msgid "Alternative key"
 msgstr "Vaihtoehtoinen näppäin"
@@ -6286,10 +6279,6 @@ msgstr "(suodatin)"
 msgid "Follow cursor"
 msgstr "Seuraa kursoria"
 
-#: lazarusidestrconsts.lisceisarootcontrol
-msgid "Is a root control"
-msgstr "On juurikontrolli"
-
 #: lazarusidestrconsts.liscelongparamlistcount
 msgid "Parameters count treated as \"many\""
 msgstr "Parametrien määrä tulkitaan \"monta\""
@@ -6629,10 +6618,6 @@ msgstr "Valitse toisenlainen nimi"
 msgid "Choose a file with CodeTools templates"
 msgstr "Valitse CodeTools-mallitiedosto"
 
-#: lazarusidestrconsts.lischooseafpdoclink
-msgid "Choose a FPDoc link"
-msgstr "Valitse FPDoc-linkki"
-
 #: lazarusidestrconsts.lischooseakey
 msgid "Choose a key ..."
 msgstr "Valitse näppäin ..."
@@ -6640,10 +6625,6 @@ msgstr "Valitse näppäin ..."
 #: lazarusidestrconsts.lischooseanameforthecomponent
 msgid "Choose a name for the component"
 msgstr "Valitse komponentille nimi"
-
-#: lazarusidestrconsts.lischooseanexamplefile
-msgid "Choose an example file"
-msgstr "Valitse esimerkkitiedosto"
 
 #: lazarusidestrconsts.lischooseanfpcmessagefile
 msgid "Choose an FPC message file"
@@ -6973,101 +6954,13 @@ msgstr "Koodin generoinnin asetukset"
 msgid "Add path"
 msgstr "Lisää polku"
 
-#: lazarusidestrconsts.liscodehelpbrowseexamplebutton
-msgctxt "lazarusidestrconsts.liscodehelpbrowseexamplebutton"
-msgid "Browse"
-msgstr "Selaa"
-
-#: lazarusidestrconsts.liscodehelpconfirmreplace
-msgid "Confirm replace"
-msgstr "Varmista korvaaminen"
-
-#: lazarusidestrconsts.liscodehelpcreatebutton
-msgid "Create help item"
-msgstr "Luo ohje"
-
 #: lazarusidestrconsts.liscodehelpdeletepathbutton
 msgid "Remove path"
 msgstr "Poista polku"
 
-#: lazarusidestrconsts.liscodehelpdescrtag
-msgid "Description"
-msgstr "Selitys"
-
-#: lazarusidestrconsts.liscodehelperrorstag
-msgctxt "lazarusidestrconsts.liscodehelperrorstag"
-msgid "Errors"
-msgstr "Virheet"
-
-#: lazarusidestrconsts.liscodehelpexampletag
-msgid "Example"
-msgstr "Esimerkki"
-
 #: lazarusidestrconsts.liscodehelpgroupbox
 msgid "FPDoc settings"
 msgstr "FPDoc-asetukset"
-
-#: lazarusidestrconsts.liscodehelphintboldformat
-msgid "Insert bold formatting tag"
-msgstr "Merkitse muotoiluksi lihavoitu"
-
-#: lazarusidestrconsts.liscodehelphintinsertcodetag
-msgid "Insert code formatting tag"
-msgstr "Merkitse muotoiluksi koodi"
-
-#: lazarusidestrconsts.liscodehelphintitalicformat
-msgid "Insert italic formatting tag"
-msgstr "Merkitse muotoiluksi kursiivi"
-
-#: lazarusidestrconsts.liscodehelphintremarktag
-msgid "Insert remark formatting tag"
-msgstr "Merkitse muotoiluksi huomautus"
-
-#: lazarusidestrconsts.liscodehelphintunderlineformat
-msgid "Insert underline formatting tag"
-msgstr "Merkitse muotoiluksi alleviivaus"
-
-#: lazarusidestrconsts.liscodehelphintvartag
-msgid "Insert var formatting tag"
-msgstr "Merkitse muotoiluksi var"
-
-#: lazarusidestrconsts.liscodehelpinherited
-msgctxt "lazarusidestrconsts.liscodehelpinherited"
-msgid "Inherited"
-msgstr "Periytyneet"
-
-#: lazarusidestrconsts.liscodehelpinsertalink
-msgid "Insert a link ..."
-msgstr "Lisää linkki ..."
-
-#: lazarusidestrconsts.liscodehelpinsertparagraphformattingtag
-msgid "Insert paragraph formatting tag"
-msgstr "Merkitse muotoiluksi kappale"
-
-#: lazarusidestrconsts.liscodehelpmainformcaption
-msgctxt "lazarusidestrconsts.liscodehelpmainformcaption"
-msgid "FPDoc Editor"
-msgstr "FPDoc-muokkain"
-
-#: lazarusidestrconsts.liscodehelpnoinheriteddescriptionfound
-msgid "(no inherited description found)"
-msgstr "(periytyvää selitystä ei löydy)"
-
-#: lazarusidestrconsts.liscodehelpnotagcaption
-msgid "<NONE>"
-msgstr ""
-
-#: lazarusidestrconsts.liscodehelpseealsotag
-msgid "See also"
-msgstr "Katso myös"
-
-#: lazarusidestrconsts.liscodehelpshortdescriptionof
-msgid "Short description of"
-msgstr "Lyhyt kuvaus: "
-
-#: lazarusidestrconsts.liscodehelpshorttag
-msgid "Short"
-msgstr "Lyhyt"
 
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
 msgid "Ignore constants in next functions"
@@ -8404,10 +8297,6 @@ msgstr ""
 msgid "Create function"
 msgstr "Luo funktio"
 
-#: lazarusidestrconsts.liscreatehelpnode
-msgid "Create Help node"
-msgstr "Luo ohje-solmu"
-
 #: lazarusidestrconsts.liscreateit
 msgid "Create it"
 msgstr "Luo se"
@@ -9133,10 +9022,6 @@ msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr "Tuo ..."
 
-#: lazarusidestrconsts.lisdlgopen
-msgid "Open ..."
-msgstr "Avaa ..."
-
 #: lazarusidestrconsts.lisdoesnotexists
 #, object-pascal-format
 msgid "%s does not exist: %s"
@@ -9358,10 +9243,6 @@ msgstr "Muokkaa viestien lisäavuste"
 #: lazarusidestrconsts.liseditbuildmodes
 msgid "Edit build modes"
 msgstr ""
-
-#: lazarusidestrconsts.liseditcontexthelp
-msgid "Edit context help"
-msgstr "Muokkaa tilannekohtaista ohjetta"
 
 #: lazarusidestrconsts.liseditfpcmessagehelp
 msgid "Edit FPC Message Help ..."
@@ -9688,11 +9569,6 @@ msgstr "Virhe luettaessa pakettiluetteloa tiedostosta%s%s%s%s"
 msgid "Error reading XML"
 msgstr "Virhe luettaessa XML"
 
-#: lazarusidestrconsts.liserrorreadingxmlfile
-#, object-pascal-format
-msgid "Error reading xml file \"%s\"%s%s"
-msgstr "Virhe luettaessa xml-tiedostosta \"%s\"%s%s"
-
 #: lazarusidestrconsts.liserrors
 msgctxt "lazarusidestrconsts.liserrors"
 msgid "Errors"
@@ -9712,11 +9588,6 @@ msgstr "Virhe tallennettaessa lomaketta"
 msgid "Error setting the name of a component %s to %s"
 msgstr "Virhe nimettäessä komponentti %s %s:ksi"
 
-#: lazarusidestrconsts.liserrorwritingfile
-#, object-pascal-format
-msgid "Error writing file \"%s\""
-msgstr "Virhe tallennettaessa tiedosto \"%s\""
-
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 #, object-pascal-format
 msgid "Error writing package list to file%s%s%s%s"
@@ -9731,11 +9602,6 @@ msgstr "Rivinumeroiden näyttöväli"
 #: lazarusidestrconsts.lisexamplefile
 msgid "Example file:"
 msgstr "Esimerkkitiedosto:"
-
-#: lazarusidestrconsts.lisexamplesidentifiertmyenumenumunitnameidentifierpac
-#, object-pascal-format
-msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
-msgstr ""
 
 #: lazarusidestrconsts.lisexclude
 msgid "Exclude"
@@ -10262,15 +10128,6 @@ msgctxt "lazarusidestrconsts.lisfpdoceditor"
 msgid "FPDoc Editor"
 msgstr "FPDoc-muokkain"
 
-#: lazarusidestrconsts.lisfpdocerrorwriting
-#, object-pascal-format
-msgid "Error writing \"%s\"%s%s"
-msgstr "Virhe kirjoitettaessa \"%s\"%s%s"
-
-#: lazarusidestrconsts.lisfpdocfpdocsyntaxerror
-msgid "FPDoc syntax error"
-msgstr "FPDoc-kielioppivirhe"
-
 #: lazarusidestrconsts.lisfpdocpackagename
 msgid "FPDoc package name:"
 msgstr "FPDoc paketin nimi:"
@@ -10278,11 +10135,6 @@ msgstr "FPDoc paketin nimi:"
 #: lazarusidestrconsts.lisfpdocpackagenamedefaultisprojectfilename
 msgid "FPDoc package name. Default is project file name."
 msgstr "FPDoc paketin nimi. Oletus on projektin tiedostonimi."
-
-#: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
-#, object-pascal-format
-msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
-msgstr "FPDoc-elementissä \"%s\":%s%s on kielioppivirhe"
 
 #: lazarusidestrconsts.lisfppkgcompilerproblem
 msgid "there is a problem with the Free Pascal compiler executable, "
@@ -10549,10 +10401,6 @@ msgstr ""
 msgid "Width"
 msgstr ""
 
-#: lazarusidestrconsts.lishashelp
-msgid "Has Help"
-msgstr "Ohje löytyy"
-
 #: lazarusidestrconsts.lisheadercolors
 msgid "Header colors"
 msgstr "Otsikon värit"
@@ -10560,10 +10408,6 @@ msgstr "Otsikon värit"
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
 msgstr "Luokan pääkommentti"
-
-#: lazarusidestrconsts.lishelpentries
-msgid "Help entries"
-msgstr "Ohjemerkinnät"
 
 #: lazarusidestrconsts.lishelpselectordialog
 msgid "Help selector"
@@ -10717,10 +10561,6 @@ msgstr "IDE ylläpitää lausetta Application.Scaled (Hi-DPI) pääohjelmassa"
 #: lazarusidestrconsts.lisidemaintainsthetitleinmainunit
 msgid "The IDE maintains the title in main unit."
 msgstr "IDE pitää yllä otsikkoa päätiedostossa."
-
-#: lazarusidestrconsts.lisidentifier
-msgid "identifier"
-msgstr "tunniste"
 
 #: lazarusidestrconsts.lisidentifierbeginswith
 msgid "Identifier begins with ..."
@@ -11048,10 +10888,6 @@ msgstr "Lisää makro"
 msgid "Insert name of current procedure."
 msgstr "Lisää nykyisen funktion nimi."
 
-#: lazarusidestrconsts.lisinsertprintshorttag2
-msgid "Insert printshort tag"
-msgstr "Lisää printshort merkki"
-
 #: lazarusidestrconsts.lisinsertprocedurehead
 msgid "insert procedure head"
 msgstr "lisää aliohjelman alku"
@@ -11071,10 +10907,6 @@ msgstr "lisää aika"
 #: lazarusidestrconsts.lisinserttimeoptionalformatstring
 msgid "Insert time. Optional: format string."
 msgstr "Lisää aika. Valinnaisesti muotoile merkkijono."
-
-#: lazarusidestrconsts.lisinserturltag
-msgid "Insert url tag"
-msgstr "Lisää URL tagi"
 
 #: lazarusidestrconsts.lisinsession
 msgid "In session"
@@ -11126,10 +10958,6 @@ msgstr "Vuorovaikutteinen"
 #, object-pascal-format
 msgid "internal error: %s"
 msgstr "sisäinen virhe: %s"
-
-#: lazarusidestrconsts.lisinvaliddeclaration
-msgid "Invalid Declaration"
-msgstr ""
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -11875,32 +11703,6 @@ msgstr "Päivitä revisiokenttä \"Tietoja Lazaruksesta\" ikkunassa"
 msgid "Package distributed with Lazarus"
 msgstr ""
 
-#: lazarusidestrconsts.lisldaddlinktoinherited
-msgid "Add link to inherited"
-msgstr "Lisää linkki perittyyn"
-
-#: lazarusidestrconsts.lisldcopyfrominherited
-msgid "Copy from inherited"
-msgstr "Kopioi peritystä"
-
-#: lazarusidestrconsts.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
-#, object-pascal-format
-msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
-msgstr "%s:lla ei ole kelvollista FPDoc polkua.%sEi voida luoda fpdoc tiedostoa %s:lle"
-
-#: lazarusidestrconsts.lisldmoveentriestoinherited
-msgid "Move entries to inherited"
-msgstr "Siirrä kohdat perittyyn"
-
-#: lazarusidestrconsts.lisldnovalidfpdocpath
-msgid "No valid FPDoc path"
-msgstr "Ei kelvollista FPDoc polkua"
-
-#: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
-#, object-pascal-format
-msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
-msgstr "Käännösyksikkö %s ei kuulu mihinkään pakettiin tai projektiin.%sLisää se johonkin.%sfpdoc tiedoston luonti ei onnistu."
-
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
 msgid "Left"
@@ -11985,17 +11787,9 @@ msgstr "kirjastopolku"
 msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under macOS)."
 msgstr "Free Pascal jaettu kirjasto (.dll Windowsissa, .so Linuxissa, .dylib MacOS X:ssä)."
 
-#: lazarusidestrconsts.lislink
-msgid "Link:"
-msgstr "Linkki:"
-
 #: lazarusidestrconsts.lislinkeroptions
 msgid "linker options"
 msgstr "linkittäjän asetukset"
-
-#: lazarusidestrconsts.lislinktarget
-msgid "Link target"
-msgstr "Linkityskohde"
 
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
@@ -14111,10 +13905,6 @@ msgstr ""
 msgid "no hints"
 msgstr "ei vihjeitä"
 
-#: lazarusidestrconsts.lisnoidewindowselected
-msgid "No IDE window selected"
-msgstr "Ei IDEn ikkunoita valittuna"
-
 #: lazarusidestrconsts.lisnolfmfile
 msgid "No LFM file"
 msgstr "Ei LFM-tiedostoa"
@@ -14142,10 +13932,6 @@ msgstr "(ei mitään valittuna)"
 #: lazarusidestrconsts.lisnonewfilefound
 msgid "No new file found"
 msgstr ""
-
-#: lazarusidestrconsts.lisnonodeselected
-msgid "no node selected"
-msgstr "ei solmua valittuna"
 
 #: lazarusidestrconsts.lisnopascalfile
 msgid "No Pascal file"
@@ -14502,10 +14288,6 @@ msgstr "Avaa käännösyksikkö"
 msgid "Open URL"
 msgstr "Avaa URL"
 
-#: lazarusidestrconsts.lisopenxml
-msgid "Open XML"
-msgstr "Avaa XML"
-
 #: lazarusidestrconsts.lisoptions
 msgctxt "lazarusidestrconsts.lisoptions"
 msgid "Options"
@@ -14576,11 +14358,6 @@ msgstr "TReader/TWriter käyttää jo nimeä 'Owner'. Valitse toinen nimi."
 msgid "Package"
 msgstr "Paketti"
 
-#: lazarusidestrconsts.lispackage2
-#, object-pascal-format
-msgid "package %s"
-msgstr "Paketti %s"
-
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
 msgstr "Paketin tietoja"
@@ -14619,10 +14396,6 @@ msgstr "Paketin lähdehakemistot"
 #, object-pascal-format
 msgid "packages=%s/%s units=%s/%s identifiers=%s/%s lines=%s bytes=%s"
 msgstr "paketteja=%s/%s käännösyksikköjä=%s/%s tunnisteita=%s/%s rivejä=%s tavuja=%s"
-
-#: lazarusidestrconsts.lispackageunit
-msgid "package unit"
-msgstr "paketin käännösyksikkö"
 
 #: lazarusidestrconsts.lispage
 msgctxt "lazarusidestrconsts.lispage"
@@ -14671,10 +14444,6 @@ msgstr "Liitä leikepöydältä."
 #: lazarusidestrconsts.lispastelcolors
 msgid "Pastel Colors"
 msgstr "Pastelli värit"
-
-#: lazarusidestrconsts.lispath
-msgid "Path"
-msgstr "Polku"
 
 #: lazarusidestrconsts.lispatheditbrowse
 msgctxt "lazarusidestrconsts.lispatheditbrowse"
@@ -15740,10 +15509,6 @@ msgstr "Korjaa viesti-ikkunassa näkyvä virhe."
 msgid "Please open a unit before run."
 msgstr "Avaa käänösyksikkö ennen suoritusta."
 
-#: lazarusidestrconsts.lispleaseplacetheeditorcaretonanidentifierifthisisane
-msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
-msgstr ""
-
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "Valitse ensin jokin koodin osa josta tehdään uusi aliohjelma tai metodi"
@@ -16072,10 +15837,6 @@ msgstr "%0:s%0:s Tiedostossa '%1:s' rivillä %2:d"
 #, object-pascal-format
 msgid "%0:s%0:s In file '%1:s' at line %2:d:%0:s%3:s"
 msgstr "%0:s%0:s Tiedostossa '%1:s' rivillä %2:d:%0:s%3:s"
-
-#: lazarusidestrconsts.lisprojectunit
-msgid "project unit"
-msgstr "projektin käännösyksikkö"
 
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
@@ -16956,10 +16717,6 @@ msgstr "Tämän avulla voidaan kääntäjän viestit kääntää toiselle kielel
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Set up default indentation)"
 msgstr "(Aseta oletus sisennys)"
-
-#: lazarusidestrconsts.lisshort
-msgid "Short:"
-msgstr "Lyhyt:"
 
 #: lazarusidestrconsts.lisshortnopath
 msgid "Short, no path"
@@ -18087,11 +17844,6 @@ msgstr "Käännösyksiköllä on tämä nimi"
 msgid "The unit filename \"%s\" is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%sRename file lowercase?"
 msgstr "Käännösyksikön nimi \"%s\" ei ole pienillä kirjaimilla.%sFree Pascal -kääntäjä ei etsi kaikkia variaatioita. On suositeltavaa käyttää vain pieniä kirjaimia.%sVaihdetaanko tiedoston nimi?"
 
-#: lazarusidestrconsts.listheunitispartofthefpcsourcesbutthecorrespondingfpd
-#, object-pascal-format
-msgid "The unit %s is part of the FPC sources but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
-msgstr "Käännösyksikkö %s kuuluu FPC:n lähdekoodeihin, mutta vastaavaa fpdoc xml tiedostoa ei löydy.%sJoko et ole lisännyt fpcdoc hakemistoa hakupolkuun tai käännösyksikköä ei ole vielä dokumentoitu.%sfpdoc tiedostot FPC lähdekoodeille voi ladata täältä: %s%sLisää hakemisto fpdoc editorin valintoihin.%sUuden tiedoston luomiseksi hakemistoon pitää olla kirjoitusoikeus."
-
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
 #, object-pascal-format
 msgid "The unit %s is used by other files.%sUpdate references automatically?"
@@ -18171,10 +17923,6 @@ msgstr "&Otsikko"
 #| msgid "Title in taskbar shows for example: project1.lpi - Lazarus"
 msgid "Show the custom IDE title before the IDE's name and other info in the title. Example: project1 - Lazarus."
 msgstr "Tehtäväpalkin otsikko näyttää esim: project1.lpi - Lazarus"
-
-#: lazarusidestrconsts.listitleleaveemptyfordefault
-msgid "Title (leave empty for default)"
-msgstr "Otsikko (oletusotsikko jos tyhjä)"
 
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
@@ -19557,10 +19305,6 @@ msgstr "Tyyppi"
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
 msgstr "&Revisio:"
-
-#: lazarusidestrconsts.rsselectaninheritedentry
-msgid "Select an inherited entry"
-msgstr "Valitse periytyvä kohta"
 
 #: lazarusidestrconsts.rsshowabspath
 msgid "Absolute path"
@@ -21462,4 +21206,9 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versiotiedot"
+
+#: lazarusidestrconsts.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr "Paketti %s"
 

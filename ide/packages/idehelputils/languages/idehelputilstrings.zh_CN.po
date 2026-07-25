@@ -1,0 +1,297 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: idehelputilstrings.dlgccotest
+msgid "Test"
+msgstr "测试"
+
+#: idehelputilstrings.dlgfilterall
+msgid "All files"
+msgstr "所有文件"
+
+#: idehelputilstrings.dlgfilterpascalfile
+msgid "Pascal file"
+msgstr "Pascal 文件"
+
+#: idehelputilstrings.lisalreadycontainsthehe
+#, object-pascal-format
+msgid ""
+"%s already contains the help:\n"
+"%s"
+msgstr ""
+"%s 已经包含帮助：\n"
+"%s"
+
+#: idehelputilstrings.lisceisarootcontrol
+msgid "Is a root control"
+msgstr "是一个root control"
+
+#: idehelputilstrings.lischooseafpdoclink
+msgid "Choose a FPDoc link"
+msgstr "选择一个 FPDoc 链接"
+
+#: idehelputilstrings.lischooseanexamplefile
+msgid "Choose an example file"
+msgstr "选择一个示例文件"
+
+#: idehelputilstrings.liscodehelpbrowseexamplebutton
+msgid "Browse"
+msgstr "浏览"
+
+#: idehelputilstrings.liscodehelpconfirmreplace
+msgid "Confirm replace"
+msgstr "确认替换"
+
+#: idehelputilstrings.liscodehelpcreatebutton
+msgid "Create help item"
+msgstr "创建帮助项目"
+
+#: idehelputilstrings.liscodehelpdescrtag
+msgid "Description"
+msgstr "描述"
+
+#: idehelputilstrings.liscodehelperrorstag
+msgid "Errors"
+msgstr "错误"
+
+#: idehelputilstrings.liscodehelpexampletag
+msgid "Example"
+msgstr "示例"
+
+#: idehelputilstrings.liscodehelphintboldformat
+msgid "Insert bold formatting tag"
+msgstr "插入bold(粗体)格式标记"
+
+#: idehelputilstrings.liscodehelphintinsertcodetag
+msgid "Insert code formatting tag"
+msgstr "插入代码(code)格式标记"
+
+#: idehelputilstrings.liscodehelphintitalicformat
+msgid "Insert italic formatting tag"
+msgstr "插入斜体(italic)格式标记"
+
+#: idehelputilstrings.liscodehelphintremarktag
+msgid "Insert remark formatting tag"
+msgstr "插入备注(remark)格式标记"
+
+#: idehelputilstrings.liscodehelphintunderlineformat
+msgid "Insert underline formatting tag"
+msgstr "插入下划线(underline))格式标记"
+
+#: idehelputilstrings.liscodehelphintvartag
+msgid "Insert var formatting tag"
+msgstr "插入变量(var)格式标记"
+
+#: idehelputilstrings.liscodehelpinherited
+msgid "Inherited"
+msgstr "继承"
+
+#: idehelputilstrings.liscodehelpinsertalink
+msgid "Insert a link ..."
+msgstr "插入一个链接 ..."
+
+#: idehelputilstrings.liscodehelpinsertparagraphformattingtag
+msgid "Insert paragraph formatting tag"
+msgstr "插入段落(paragraph)格式标记"
+
+#: idehelputilstrings.liscodehelpmainformcaption
+msgid "FPDoc Editor"
+msgstr "FPDoc 编辑器"
+
+#: idehelputilstrings.liscodehelpnoinheriteddescriptionfound
+msgid "(no inherited description found)"
+msgstr "(没有继承的描述找到)"
+
+#: idehelputilstrings.liscodehelpnotagcaption
+msgid "<NONE>"
+msgstr "<NONE>"
+
+#: idehelputilstrings.liscodehelpseealsotag
+msgid "See also"
+msgstr "请参阅"
+
+#: idehelputilstrings.liscodehelpshortdescriptionof
+msgid "Short description of"
+msgstr "简短的描述属于"
+
+#: idehelputilstrings.liscodehelpshorttag
+msgid "Short"
+msgstr "短"
+
+#: idehelputilstrings.lisconfirmreplace
+msgid "Confirm Replace"
+msgstr "确认替换"
+
+#: idehelputilstrings.liscreatehelpnode
+msgid "Create Help node"
+msgstr "创建帮助节点"
+
+#: idehelputilstrings.lisdlgopen
+msgid "Open ..."
+msgstr "打开(&O) ..."
+
+#: idehelputilstrings.liseditcontexthelp
+msgid "Edit context help"
+msgstr "编辑上下文帮助"
+
+#: idehelputilstrings.liserrorreadingxml
+msgid "Error reading XML"
+msgstr "读取XML出错"
+
+#: idehelputilstrings.liserrorreadingxmlfile
+#, object-pascal-format
+msgid "Error reading xml file \"%s\"%s%s"
+msgstr "读取XML文件\"%s\"%s%s错误"
+
+#: idehelputilstrings.liserrorwritingfile
+#, object-pascal-format
+msgid "Error writing file \"%s\""
+msgstr "写入文件\"%s\"错误"
+
+#: idehelputilstrings.lisexamplesidentifiertmyenumenumunitnameidentifierpac
+#, object-pascal-format
+msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
+msgstr "示例:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
+
+#: idehelputilstrings.lisfpdocerrorwriting
+#, object-pascal-format
+msgid "Error writing \"%s\"%s%s"
+msgstr "写入\"%s\"%s%s错误"
+
+#: idehelputilstrings.lisfpdocfpdocsyntaxerror
+msgid "FPDoc syntax error"
+msgstr "FPDoc 语法错误"
+
+#: idehelputilstrings.lisfpdocthereisasyntaxerrorinthefpdocelement
+#, object-pascal-format
+msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
+msgstr "在 fpdoc 节点中存在语法错误 \"%s\":%s%s"
+
+#: idehelputilstrings.lishashelp
+msgid "Has Help"
+msgstr "Has帮助"
+
+#: idehelputilstrings.lishelpentries
+msgid "Help entries"
+msgstr "帮助条目"
+
+#: idehelputilstrings.lisidentifier
+msgid "identifier"
+msgstr "标识符"
+
+#: idehelputilstrings.lisinsertprintshorttag2
+msgid "Insert printshort tag"
+msgstr "插入PrintShort标签"
+
+#: idehelputilstrings.lisinserturltag
+msgid "Insert url tag"
+msgstr "插入url标记"
+
+#: idehelputilstrings.lisinvaliddeclaration
+msgid "Invalid Declaration"
+msgstr "无效声明"
+
+#: idehelputilstrings.lisldaddlinktoinherited
+msgid "Add link to inherited"
+msgstr "添加链接继承"
+
+#: idehelputilstrings.lisldcopyfrominherited
+msgid "Copy from inherited"
+msgstr "从继承复制"
+
+#: idehelputilstrings.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
+#, object-pascal-format
+msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
+msgstr "%s 没有任何有效的 FPDoc 路径。%s不能为 %s 创建 fpdoc 文件"
+
+#: idehelputilstrings.lisldmoveentriestoinherited
+msgid "Move entries to inherited"
+msgstr "移动项目来继承"
+
+#: idehelputilstrings.lisldnovalidfpdocpath
+msgid "No valid FPDoc path"
+msgstr "没有有效的 FPDoc 路径"
+
+#: idehelputilstrings.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
+#, object-pascal-format
+msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
+msgstr "单元%s不属于任何软件包或项目.%s请添加单元到一个软件包或项目.%s不能创建fpdoc文件."
+
+#: idehelputilstrings.lislink
+msgid "Link:"
+msgstr "链接:"
+
+#: idehelputilstrings.lislinktarget
+msgid "Link target"
+msgstr "连接目标"
+
+#: idehelputilstrings.lisname
+msgid "Name"
+msgstr "名称"
+
+#: idehelputilstrings.lisnoidewindowselected
+msgid "No IDE window selected"
+msgstr "没有IDE窗口选择"
+
+#: idehelputilstrings.lisnonodeselected
+msgid "no node selected"
+msgstr "没有节点选择"
+
+#: idehelputilstrings.lisopenxml
+msgid "Open XML"
+msgstr "打开XML"
+
+#: idehelputilstrings.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr "软件包%s"
+
+#: idehelputilstrings.lispackageunit
+msgid "package unit"
+msgstr "软件包单元"
+
+#: idehelputilstrings.lispath
+msgid "Path"
+msgstr "路径"
+
+#: idehelputilstrings.lispleaseplacetheeditorcaretonanidentifierifthisisane
+msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
+msgstr "请将编辑器光标放在一个标识符上。如果是新单元，请先保存文件。"
+
+#: idehelputilstrings.lisprojaddpackagenotfound
+msgid "Package not found"
+msgstr "软件包未找到"
+
+#: idehelputilstrings.lisprojectunit
+msgid "project unit"
+msgstr "项目单元"
+
+#: idehelputilstrings.lisreplace
+msgid "Replace"
+msgstr "替换"
+
+#: idehelputilstrings.lissave
+msgid "Save"
+msgstr "保存"
+
+#: idehelputilstrings.lisshort
+msgid "Short:"
+msgstr "短:"
+
+#: idehelputilstrings.listheunitispartofthefpcsourcesbutthecorrespondingfpd
+#, object-pascal-format
+msgid "The unit %s is part of the FPC sources but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
+msgstr "单元 %s 是 FPC 源代码的一部分，但未找到相应的 fpdoc xml 文件。%s要么您尚未将 fpcdocs 目录添加到搜索路径中，要么该单元尚未被记录。%sFPC 源代码的 fpdoc 文件可以从以下地址下载： %s%s请在 fpdoc 编辑器选项中添加该目录。%s为了创建新文件，该目录必须可写。"
+
+#: idehelputilstrings.listitleleaveemptyfordefault
+msgid "Title (leave empty for default)"
+msgstr "标题(Title)(默认留空)"
+
+#: idehelputilstrings.rsselectaninheritedentry
+msgid "Select an inherited entry"
+msgstr "选择继承的条目"
+

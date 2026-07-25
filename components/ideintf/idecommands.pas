@@ -890,6 +890,7 @@ function RegisterIDECommandScope(const Name: string): TIDECommandScope;
 procedure CreateStandardIDECommandScopes;
 
 
+function IDEShortCutEmpty(const Key: TIDEShortCut): boolean;
 function KeyAndShiftStateToEditorKeyString(const Key: TIDEShortCut): String;
 function KeyValuesToCaptionStr(const ShortcutA, ShortcutB: TIDEShortCut; Brackets: Char = '['): String;
 
@@ -966,6 +967,11 @@ begin
   IDECmdScopeSrcEditOnlySyncroEditOff:=RegisterIDECommandScope('SourceEditorOnlySyncroEdit');
   IDECmdScopeDesignerOnly:=RegisterIDECommandScope('DesignerOnly');
   IDECmdScopeObjectInspectorOnly:=RegisterIDECommandScope('ObjectInspectorOnly');
+end;
+
+function IDEShortCutEmpty(const Key: TIDEShortCut): boolean;
+begin
+  Result:=(Key.Key1=VK_UNKNOWN) and (Key.Key2=VK_UNKNOWN);
 end;
 
 function KeyAndShiftStateToEditorKeyString(const Key: TIDEShortCut): String;

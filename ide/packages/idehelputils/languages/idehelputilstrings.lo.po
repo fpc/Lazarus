@@ -1,0 +1,299 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: idehelputilstrings.dlgccotest
+msgid "Test"
+msgstr "ທົດສອບ"
+
+#: idehelputilstrings.dlgfilterall
+msgid "All files"
+msgstr "ໄຟລ໌ທັງໝົດ"
+
+#: idehelputilstrings.dlgfilterpascalfile
+msgid "Pascal file"
+msgstr "ໄຟລ໌ Pascal"
+
+#: idehelputilstrings.lisalreadycontainsthehe
+#, object-pascal-format
+msgid ""
+"%s already contains the help:\n"
+"%s"
+msgstr ""
+"%s ມີ help ຢູ່ແລ້ວ:\n"
+"%s"
+
+#: idehelputilstrings.lisceisarootcontrol
+msgid "Is a root control"
+msgstr "ເປັນ control ຮາກຖານ"
+
+#: idehelputilstrings.lischooseafpdoclink
+msgid "Choose a FPDoc link"
+msgstr "ເລືອກລິ້ງ FPDoc"
+
+#: idehelputilstrings.lischooseanexamplefile
+msgid "Choose an example file"
+msgstr "ເລືອກຟາຍລ໌ຕົວຢ່າງ"
+
+#: idehelputilstrings.liscodehelpbrowseexamplebutton
+msgid "Browse"
+msgstr "ເບິ່ງ"
+
+#: idehelputilstrings.liscodehelpconfirmreplace
+msgid "Confirm replace"
+msgstr "ຢືນຢັນການແທນທີ່"
+
+#: idehelputilstrings.liscodehelpcreatebutton
+msgid "Create help item"
+msgstr "ສ້າງລາຍການຊ່ວຍເຫຼືອ"
+
+#: idehelputilstrings.liscodehelpdescrtag
+msgid "Description"
+msgstr "ຄຳອະທິບາຍ"
+
+#: idehelputilstrings.liscodehelperrorstag
+msgid "Errors"
+msgstr "ຂໍ້ຜິດພາດ"
+
+#: idehelputilstrings.liscodehelpexampletag
+msgid "Example"
+msgstr "ຕົວຢ່າງ"
+
+#: idehelputilstrings.liscodehelphintboldformat
+msgid "Insert bold formatting tag"
+msgstr "ແຊກແທັກຮູບແບບຕົວໜາ"
+
+#: idehelputilstrings.liscodehelphintinsertcodetag
+msgid "Insert code formatting tag"
+msgstr "ແຊກແທັກຮູບແບບໂຄດ"
+
+#: idehelputilstrings.liscodehelphintitalicformat
+msgid "Insert italic formatting tag"
+msgstr "ແຊກແທັກຮູບແບບຕົວອ່ຽງ"
+
+#: idehelputilstrings.liscodehelphintremarktag
+msgid "Insert remark formatting tag"
+msgstr "ແຊກແທັກຮູບແບບໝາຍເຫດ"
+
+#: idehelputilstrings.liscodehelphintunderlineformat
+msgid "Insert underline formatting tag"
+msgstr "ແຊກແທັກຮູບແບບຂີດກ້ອງ"
+
+#: idehelputilstrings.liscodehelphintvartag
+msgid "Insert var formatting tag"
+msgstr "ແຊກແທັກຮູບແບບ var"
+
+#: idehelputilstrings.liscodehelpinherited
+msgid "Inherited"
+msgstr "ສືບທອດ"
+
+#: idehelputilstrings.liscodehelpinsertalink
+msgid "Insert a link ..."
+msgstr "ແຊກລິ້ງ ..."
+
+#: idehelputilstrings.liscodehelpinsertparagraphformattingtag
+msgid "Insert paragraph formatting tag"
+msgstr "ແຊກແທັກຮູບແບບຫຍໍ້ໜ້າ"
+
+#: idehelputilstrings.liscodehelpmainformcaption
+msgid "FPDoc Editor"
+msgstr "ຕົວແກ້ໄຂ FPDoc"
+
+#: idehelputilstrings.liscodehelpnoinheriteddescriptionfound
+msgid "(no inherited description found)"
+msgstr "(ບໍ່ພົບຄຳອະທິບາຍທີ່ສືບທອດມາ)"
+
+#: idehelputilstrings.liscodehelpnotagcaption
+msgid "<NONE>"
+msgstr "<ບໍ່ມີ>"
+
+#: idehelputilstrings.liscodehelpseealsotag
+msgid "See also"
+msgstr "ເບິ່ງເພີ່ມເຕີມ"
+
+#: idehelputilstrings.liscodehelpshortdescriptionof
+msgid "Short description of"
+msgstr "ຄຳອະທິບາຍສັ້ນຂອງ"
+
+#: idehelputilstrings.liscodehelpshorttag
+msgid "Short"
+msgstr "ສັ້ນ"
+
+#: idehelputilstrings.lisconfirmreplace
+msgid "Confirm Replace"
+msgstr "ຢືນຢັນການແທນທີ່"
+
+#: idehelputilstrings.liscreatehelpnode
+msgid "Create Help node"
+msgstr "ສ້າງໂນດ Help"
+
+#: idehelputilstrings.lisdlgopen
+msgid "Open ..."
+msgstr "ເປີດ ..."
+
+#: idehelputilstrings.liseditcontexthelp
+msgid "Edit context help"
+msgstr "ແກ້ໄຂ Context help"
+
+#: idehelputilstrings.liserrorreadingxml
+msgid "Error reading XML"
+msgstr "ເກີດຂໍ້ຜິດພາດໃນການອ່ານ XML"
+
+#: idehelputilstrings.liserrorreadingxmlfile
+#, object-pascal-format
+msgid "Error reading xml file \"%s\"%s%s"
+msgstr "ເກີດຂໍ້ຜິດພາດໃນການອ່ານໄຟລ໌ xml \"%s\"%s%s"
+
+#: idehelputilstrings.liserrorwritingfile
+#, object-pascal-format
+msgid "Error writing file \"%s\""
+msgstr "ເກີດຂໍ້ຜິດພາດໃນການຂຽນໄຟລ໌ \"%s\""
+
+#: idehelputilstrings.lisexamplesidentifiertmyenumenumunitnameidentifierpac
+#, object-pascal-format
+msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
+msgstr ""
+"ຕົວຢ່າງ:\n"
+"%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
+
+#: idehelputilstrings.lisfpdocerrorwriting
+#, object-pascal-format
+msgid "Error writing \"%s\"%s%s"
+msgstr "ເກີດຂໍ້ຜິດພາດໃນການຂຽນ \"%s\"%s%s"
+
+#: idehelputilstrings.lisfpdocfpdocsyntaxerror
+msgid "FPDoc syntax error"
+msgstr "FPDoc syntax ຜິດພາດ"
+
+#: idehelputilstrings.lisfpdocthereisasyntaxerrorinthefpdocelement
+#, object-pascal-format
+msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
+msgstr "ມີ syntax ຜິດພາດໃນ fpdoc element \"%s\":%s%s"
+
+#: idehelputilstrings.lishashelp
+msgid "Has Help"
+msgstr "ມີ Help"
+
+#: idehelputilstrings.lishelpentries
+msgid "Help entries"
+msgstr "ລາຍການ Help"
+
+#: idehelputilstrings.lisidentifier
+msgid "identifier"
+msgstr "identifier"
+
+#: idehelputilstrings.lisinsertprintshorttag2
+msgid "Insert printshort tag"
+msgstr "ແຊກ printshort tag"
+
+#: idehelputilstrings.lisinserturltag
+msgid "Insert url tag"
+msgstr "ແຊກ url tag"
+
+#: idehelputilstrings.lisinvaliddeclaration
+msgid "Invalid Declaration"
+msgstr "Declaration ບໍ່ຖືກຕ້ອງ"
+
+#: idehelputilstrings.lisldaddlinktoinherited
+msgid "Add link to inherited"
+msgstr "ເພີ່ມລິ້ງໄປຫາ inherited"
+
+#: idehelputilstrings.lisldcopyfrominherited
+msgid "Copy from inherited"
+msgstr "ສຳເນົາຈາກ inherited"
+
+#: idehelputilstrings.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
+#, object-pascal-format
+msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
+msgstr "%s ບໍ່ມີ path FPDoc ທີ່ຖືກຕ້ອງ.%sບໍ່ສາມາດສ້າງໄຟລ໌ fpdoc ສຳລັບ %s"
+
+#: idehelputilstrings.lisldmoveentriestoinherited
+msgid "Move entries to inherited"
+msgstr "ຍ້າຍລາຍການໄປຫາ inherited"
+
+#: idehelputilstrings.lisldnovalidfpdocpath
+msgid "No valid FPDoc path"
+msgstr "ບໍ່ມີ path FPDoc ທີ່ຖືກຕ້ອງ"
+
+#: idehelputilstrings.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
+#, object-pascal-format
+msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
+msgstr "ຢູນິດ %s ບໍ່ໄດ້ຢູ່ໃນແພັກເກັດ ຫຼື ໂຄງການໃດໆ.%sກະລຸນາເພີ່ມຢູນິດໃສ່ແພັກເກັດ ຫຼື ໂຄງການ.%sບໍ່ສາມາດສ້າງໄຟລ໌ fpdoc ໄດ້."
+
+#: idehelputilstrings.lislink
+msgid "Link:"
+msgstr "ລິ້ງ:"
+
+#: idehelputilstrings.lislinktarget
+msgid "Link target"
+msgstr "ເປົ້າໝາຍລິ້ງ"
+
+#: idehelputilstrings.lisname
+msgid "Name"
+msgstr "ຊື່"
+
+#: idehelputilstrings.lisnoidewindowselected
+msgid "No IDE window selected"
+msgstr "ບໍ່ມີປ່ອງຢ້ຽມ IDE ຖືກເລືອກ"
+
+#: idehelputilstrings.lisnonodeselected
+msgid "no node selected"
+msgstr "ບໍ່ມີ node ຖືກເລືອກ"
+
+#: idehelputilstrings.lisopenxml
+msgid "Open XML"
+msgstr "ເປີດ XML"
+
+#: idehelputilstrings.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr "ແພັກເກັດ %s"
+
+#: idehelputilstrings.lispackageunit
+msgid "package unit"
+msgstr "unit ຂອງແພັກເກັດ"
+
+#: idehelputilstrings.lispath
+msgid "Path"
+msgstr "ເສັ້ນທາງ"
+
+#: idehelputilstrings.lispleaseplacetheeditorcaretonanidentifierifthisisane
+msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
+msgstr "ກະລຸນາວາງ editor caret ໃສ່ identifier. ຖ້ານີ້ແມ່ນ Unit ໃໝ່, ກະລຸນາບັນທຶກໄຟລ໌ກ່ອນ."
+
+#: idehelputilstrings.lisprojaddpackagenotfound
+msgid "Package not found"
+msgstr "ບໍ່ພົບແພັກເກັດ"
+
+#: idehelputilstrings.lisprojectunit
+msgid "project unit"
+msgstr "unit ໂຄງການ"
+
+#: idehelputilstrings.lisreplace
+msgid "Replace"
+msgstr "ແທນທີ່"
+
+#: idehelputilstrings.lissave
+msgid "Save"
+msgstr "ບັນທຶກ"
+
+#: idehelputilstrings.lisshort
+msgid "Short:"
+msgstr "ສັ້ນ:"
+
+#: idehelputilstrings.listheunitispartofthefpcsourcesbutthecorrespondingfpd
+#, object-pascal-format
+msgid "The unit %s is part of the FPC sources but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
+msgstr "Unit %s ແມ່ນສ່ວນໜຶ່ງຂອງ FPC sources ແຕ່ບໍ່ພົບໄຟລ໌ fpdoc xml ທີ່ກ່ຽວຂ້ອງ.%sທ່ານອາດຈະຍັງບໍ່ໄດ້ເພີ່ມໄດເຣັກທໍຣີ fpcdocs ໃສ່ເສັ້ນທາງຄົ້ນຫາ ຫຼື unit ຍັງບໍ່ໄດ້ຖືກບັນທຶກເອກະສານ.%sໄຟລ໌ fpdoc ສຳລັບ FPC sources ສາມາດດາວໂຫຼດໄດ້ຈາກ: %s%sກະລຸນາເພີ່ມໄດເຣັກທໍຣີໃນຕົວເລືອກ fpdoc editor.%sເພື່ອສ້າງໄຟລ໌ໃໝ່ ໄດເຣັກທໍຣີຕ້ອງສາມາດຂຽນໄດ້."
+
+#: idehelputilstrings.listitleleaveemptyfordefault
+msgid "Title (leave empty for default)"
+msgstr "ຫົວຂໍ້ (ປະວ່າງໄວ້ເພື່ອໃຊ້ຄ່າເລີ່ມຕົ້ນ)"
+
+#: idehelputilstrings.rsselectaninheritedentry
+msgid "Select an inherited entry"
+msgstr "ເລືອກລາຍການທີ່ສືບທອດມາ"
+

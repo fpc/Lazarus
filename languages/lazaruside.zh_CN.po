@@ -5494,15 +5494,6 @@ msgstr "您对“%s”%s的所有修改都将丢失，并且文件将重新打�
 msgid "Alpha"
 msgstr "透明度"
 
-#: lazarusidestrconsts.lisalreadycontainsthehe
-#, object-pascal-format
-msgid ""
-"%s already contains the help:\n"
-"%s"
-msgstr ""
-"%s 已经包含帮助：\n"
-"%s"
-
 #: lazarusidestrconsts.lisalternativekey
 msgid "Alternative key"
 msgstr "替代键(Alternative key)"
@@ -6227,10 +6218,6 @@ msgstr "(过滤器)"
 msgid "Follow cursor"
 msgstr "跟随光标"
 
-#: lazarusidestrconsts.lisceisarootcontrol
-msgid "Is a root control"
-msgstr "是一个root control"
-
 #: lazarusidestrconsts.liscelongparamlistcount
 msgid "Parameters count treated as \"many\""
 msgstr "参数总数,被视为\"很多\""
@@ -6571,10 +6558,6 @@ msgstr "选择一个不同的名称"
 msgid "Choose a file with CodeTools templates"
 msgstr "选择一个带有 CodeTools 模板的文件"
 
-#: lazarusidestrconsts.lischooseafpdoclink
-msgid "Choose a FPDoc link"
-msgstr "选择一个 FPDoc 链接"
-
 #: lazarusidestrconsts.lischooseakey
 msgid "Choose a key ..."
 msgstr "选择一个键 ..."
@@ -6582,10 +6565,6 @@ msgstr "选择一个键 ..."
 #: lazarusidestrconsts.lischooseanameforthecomponent
 msgid "Choose a name for the component"
 msgstr "选择一个名称对于组件"
-
-#: lazarusidestrconsts.lischooseanexamplefile
-msgid "Choose an example file"
-msgstr "选择一个示例文件"
 
 #: lazarusidestrconsts.lischooseanfpcmessagefile
 msgid "Choose an FPC message file"
@@ -6914,102 +6893,13 @@ msgstr "代码生成选项"
 msgid "Add path"
 msgstr "添加路径"
 
-#: lazarusidestrconsts.liscodehelpbrowseexamplebutton
-msgctxt "lazarusidestrconsts.liscodehelpbrowseexamplebutton"
-msgid "Browse"
-msgstr "浏览"
-
-#: lazarusidestrconsts.liscodehelpconfirmreplace
-msgid "Confirm replace"
-msgstr "确认替换"
-
-#: lazarusidestrconsts.liscodehelpcreatebutton
-msgid "Create help item"
-msgstr "创建帮助项目"
-
 #: lazarusidestrconsts.liscodehelpdeletepathbutton
 msgid "Remove path"
 msgstr "移除路径"
 
-#: lazarusidestrconsts.liscodehelpdescrtag
-msgctxt "lazarusidestrconsts.liscodehelpdescrtag"
-msgid "Description"
-msgstr "描述"
-
-#: lazarusidestrconsts.liscodehelperrorstag
-msgctxt "lazarusidestrconsts.liscodehelperrorstag"
-msgid "Errors"
-msgstr "错误"
-
-#: lazarusidestrconsts.liscodehelpexampletag
-msgid "Example"
-msgstr "示例"
-
 #: lazarusidestrconsts.liscodehelpgroupbox
 msgid "FPDoc settings"
 msgstr "FPDoc 设置"
-
-#: lazarusidestrconsts.liscodehelphintboldformat
-msgid "Insert bold formatting tag"
-msgstr "插入bold(粗体)格式标记"
-
-#: lazarusidestrconsts.liscodehelphintinsertcodetag
-msgid "Insert code formatting tag"
-msgstr "插入代码(code)格式标记"
-
-#: lazarusidestrconsts.liscodehelphintitalicformat
-msgid "Insert italic formatting tag"
-msgstr "插入斜体(italic)格式标记"
-
-#: lazarusidestrconsts.liscodehelphintremarktag
-msgid "Insert remark formatting tag"
-msgstr "插入备注(remark)格式标记"
-
-#: lazarusidestrconsts.liscodehelphintunderlineformat
-msgid "Insert underline formatting tag"
-msgstr "插入下划线(underline))格式标记"
-
-#: lazarusidestrconsts.liscodehelphintvartag
-msgid "Insert var formatting tag"
-msgstr "插入变量(var)格式标记"
-
-#: lazarusidestrconsts.liscodehelpinherited
-msgctxt "lazarusidestrconsts.liscodehelpinherited"
-msgid "Inherited"
-msgstr "继承"
-
-#: lazarusidestrconsts.liscodehelpinsertalink
-msgid "Insert a link ..."
-msgstr "插入一个链接 ..."
-
-#: lazarusidestrconsts.liscodehelpinsertparagraphformattingtag
-msgid "Insert paragraph formatting tag"
-msgstr "插入段落(paragraph)格式标记"
-
-#: lazarusidestrconsts.liscodehelpmainformcaption
-msgctxt "lazarusidestrconsts.liscodehelpmainformcaption"
-msgid "FPDoc Editor"
-msgstr "FPDoc 编辑器"
-
-#: lazarusidestrconsts.liscodehelpnoinheriteddescriptionfound
-msgid "(no inherited description found)"
-msgstr "(没有继承的描述找到)"
-
-#: lazarusidestrconsts.liscodehelpnotagcaption
-msgid "<NONE>"
-msgstr "<NONE>"
-
-#: lazarusidestrconsts.liscodehelpseealsotag
-msgid "See also"
-msgstr "请参阅"
-
-#: lazarusidestrconsts.liscodehelpshortdescriptionof
-msgid "Short description of"
-msgstr "简短的描述属于"
-
-#: lazarusidestrconsts.liscodehelpshorttag
-msgid "Short"
-msgstr "短"
 
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
 msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
@@ -8339,10 +8229,6 @@ msgstr "恢复 Fppkg 配置文件"
 msgid "Create function"
 msgstr "创建函数"
 
-#: lazarusidestrconsts.liscreatehelpnode
-msgid "Create Help node"
-msgstr "创建帮助节点"
-
 #: lazarusidestrconsts.liscreateit
 msgid "Create it"
 msgstr "创建它"
@@ -9070,11 +8956,6 @@ msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr "导入(&I) ..."
 
-#: lazarusidestrconsts.lisdlgopen
-msgctxt "lazarusidestrconsts.lisdlgopen"
-msgid "Open ..."
-msgstr "打开(&O) ..."
-
 #: lazarusidestrconsts.lisdoesnotexists
 #, object-pascal-format
 msgid "%s does not exist: %s"
@@ -9293,10 +9174,6 @@ msgstr "为信息编辑附加的帮助"
 #: lazarusidestrconsts.liseditbuildmodes
 msgid "Edit build modes"
 msgstr "编辑构建模式"
-
-#: lazarusidestrconsts.liseditcontexthelp
-msgid "Edit context help"
-msgstr "编辑上下文帮助"
 
 #: lazarusidestrconsts.liseditfpcmessagehelp
 msgid "Edit FPC Message Help ..."
@@ -9623,11 +9500,6 @@ msgstr "错误读取软件包列表从文件%s%s%s%s"
 msgid "Error reading XML"
 msgstr "读取XML出错"
 
-#: lazarusidestrconsts.liserrorreadingxmlfile
-#, object-pascal-format
-msgid "Error reading xml file \"%s\"%s%s"
-msgstr "读取XML文件\"%s\"%s%s错误"
-
 #: lazarusidestrconsts.liserrors
 msgctxt "lazarusidestrconsts.liserrors"
 msgid "Errors"
@@ -9647,11 +9519,6 @@ msgstr "保存窗体错误"
 msgid "Error setting the name of a component %s to %s"
 msgstr "设置组件的名称%s到%s错误"
 
-#: lazarusidestrconsts.liserrorwritingfile
-#, object-pascal-format
-msgid "Error writing file \"%s\""
-msgstr "写入文件\"%s\"错误"
-
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 #, object-pascal-format
 msgid "Error writing package list to file%s%s%s%s"
@@ -9664,11 +9531,6 @@ msgstr "显示每隔 n 行的行号"
 #: lazarusidestrconsts.lisexamplefile
 msgid "Example file:"
 msgstr "示例文件:"
-
-#: lazarusidestrconsts.lisexamplesidentifiertmyenumenumunitnameidentifierpac
-#, object-pascal-format
-msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
-msgstr "示例:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
 
 #: lazarusidestrconsts.lisexclude
 msgid "Exclude"
@@ -10179,15 +10041,6 @@ msgctxt "lazarusidestrconsts.lisfpdoceditor"
 msgid "FPDoc Editor"
 msgstr "FPDoc 编辑器"
 
-#: lazarusidestrconsts.lisfpdocerrorwriting
-#, object-pascal-format
-msgid "Error writing \"%s\"%s%s"
-msgstr "写入\"%s\"%s%s错误"
-
-#: lazarusidestrconsts.lisfpdocfpdocsyntaxerror
-msgid "FPDoc syntax error"
-msgstr "FPDoc 语法错误"
-
 #: lazarusidestrconsts.lisfpdocpackagename
 msgid "FPDoc package name:"
 msgstr "FPDoc 软件包名称："
@@ -10195,11 +10048,6 @@ msgstr "FPDoc 软件包名称："
 #: lazarusidestrconsts.lisfpdocpackagenamedefaultisprojectfilename
 msgid "FPDoc package name. Default is project file name."
 msgstr "FPDoc 软件包名称，默认是项目文件名。"
-
-#: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
-#, object-pascal-format
-msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
-msgstr "在 fpdoc 节点中存在语法错误 \"%s\":%s%s"
 
 #: lazarusidestrconsts.lisfppkgcompilerproblem
 msgid "there is a problem with the Free Pascal compiler executable, "
@@ -10474,10 +10322,6 @@ msgstr "可见的"
 msgid "Width"
 msgstr "宽度"
 
-#: lazarusidestrconsts.lishashelp
-msgid "Has Help"
-msgstr "Has帮助"
-
 #: lazarusidestrconsts.lisheadercolors
 msgid "Header colors"
 msgstr "标头颜色"
@@ -10485,10 +10329,6 @@ msgstr "标头颜色"
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
 msgstr "Header注释对于类"
-
-#: lazarusidestrconsts.lishelpentries
-msgid "Help entries"
-msgstr "帮助条目"
 
 #: lazarusidestrconsts.lishelpselectordialog
 msgid "Help selector"
@@ -10642,10 +10482,6 @@ msgstr "IDE 在主单元中维护 Application.Scaled（Hi-DPI）。"
 #: lazarusidestrconsts.lisidemaintainsthetitleinmainunit
 msgid "The IDE maintains the title in main unit."
 msgstr "IDE 在主单元中维护标题。"
-
-#: lazarusidestrconsts.lisidentifier
-msgid "identifier"
-msgstr "标识符"
 
 #: lazarusidestrconsts.lisidentifierbeginswith
 msgid "Identifier begins with ..."
@@ -10995,10 +10831,6 @@ msgstr "插入宏命令"
 msgid "Insert name of current procedure."
 msgstr "插入当前过程的名称."
 
-#: lazarusidestrconsts.lisinsertprintshorttag2
-msgid "Insert printshort tag"
-msgstr "插入PrintShort标签"
-
 #: lazarusidestrconsts.lisinsertprocedurehead
 msgid "insert procedure head"
 msgstr "插入过程头(head)"
@@ -11018,10 +10850,6 @@ msgstr "插入时间"
 #: lazarusidestrconsts.lisinserttimeoptionalformatstring
 msgid "Insert time. Optional: format string."
 msgstr "插入时间.可选项:格式化字符串."
-
-#: lazarusidestrconsts.lisinserturltag
-msgid "Insert url tag"
-msgstr "插入url标记"
 
 #: lazarusidestrconsts.lisinsession
 msgid "In session"
@@ -11069,10 +10897,6 @@ msgstr "交互式的(Interactive)"
 #, object-pascal-format
 msgid "internal error: %s"
 msgstr "内部错误:%s"
-
-#: lazarusidestrconsts.lisinvaliddeclaration
-msgid "Invalid Declaration"
-msgstr "无效声明"
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -11801,32 +11625,6 @@ msgstr "更新在\"关于 Lazarus\"对话框中的修订信息"
 msgid "Package distributed with Lazarus"
 msgstr ""
 
-#: lazarusidestrconsts.lisldaddlinktoinherited
-msgid "Add link to inherited"
-msgstr "添加链接继承"
-
-#: lazarusidestrconsts.lisldcopyfrominherited
-msgid "Copy from inherited"
-msgstr "从继承复制"
-
-#: lazarusidestrconsts.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
-#, object-pascal-format
-msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
-msgstr "%s 没有任何有效的 FPDoc 路径。%s不能为 %s 创建 fpdoc 文件"
-
-#: lazarusidestrconsts.lisldmoveentriestoinherited
-msgid "Move entries to inherited"
-msgstr "移动项目来继承"
-
-#: lazarusidestrconsts.lisldnovalidfpdocpath
-msgid "No valid FPDoc path"
-msgstr "没有有效的 FPDoc 路径"
-
-#: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
-#, object-pascal-format
-msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
-msgstr "单元%s不属于任何软件包或项目.%s请添加单元到一个软件包或项目.%s不能创建fpdoc文件."
-
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
 msgid "Left"
@@ -11917,17 +11715,9 @@ msgstr "库路径"
 msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under macOS)."
 msgstr "一个 Free Pascal 共享库（在 Windows 下为 .dll，在 Linux 下为 .so，在 macOS 下为 .dylib）。"
 
-#: lazarusidestrconsts.lislink
-msgid "Link:"
-msgstr "链接:"
-
 #: lazarusidestrconsts.lislinkeroptions
 msgid "linker options"
 msgstr "连接器选项"
-
-#: lazarusidestrconsts.lislinktarget
-msgid "Link target"
-msgstr "连接目标"
 
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
@@ -14067,10 +13857,6 @@ msgstr "空的Free Pascal编译器前缀。"
 msgid "no hints"
 msgstr "没有提示"
 
-#: lazarusidestrconsts.lisnoidewindowselected
-msgid "No IDE window selected"
-msgstr "没有IDE窗口选择"
-
 #: lazarusidestrconsts.lisnolfmfile
 msgid "No LFM file"
 msgstr "没有LFM文件"
@@ -14098,10 +13884,6 @@ msgstr "(没有选择)"
 #: lazarusidestrconsts.lisnonewfilefound
 msgid "No new file found"
 msgstr "未找到新文件"
-
-#: lazarusidestrconsts.lisnonodeselected
-msgid "no node selected"
-msgstr "没有节点选择"
 
 #: lazarusidestrconsts.lisnopascalfile
 msgid "No Pascal file"
@@ -14464,10 +14246,6 @@ msgstr "打开单元"
 msgid "Open URL"
 msgstr "打开URL"
 
-#: lazarusidestrconsts.lisopenxml
-msgid "Open XML"
-msgstr "打开XML"
-
 #: lazarusidestrconsts.lisoptions
 msgctxt "lazarusidestrconsts.lisoptions"
 msgid "Options"
@@ -14530,11 +14308,6 @@ msgstr "'Owner'已经被TReader/TWriter使用.请选择另一个名称."
 msgid "Package"
 msgstr "软件包"
 
-#: lazarusidestrconsts.lispackage2
-#, object-pascal-format
-msgid "package %s"
-msgstr "软件包%s"
-
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
 msgstr "软件包信息"
@@ -14573,10 +14346,6 @@ msgstr "软件包源文件目录"
 #, object-pascal-format
 msgid "packages=%s/%s units=%s/%s identifiers=%s/%s lines=%s bytes=%s"
 msgstr "软件包=%s/%s 单元=%s/%s 识别符=%s/%s 行=%s 字节=%s"
-
-#: lazarusidestrconsts.lispackageunit
-msgid "package unit"
-msgstr "软件包单元"
 
 #: lazarusidestrconsts.lispage
 msgctxt "lazarusidestrconsts.lispage"
@@ -14625,10 +14394,6 @@ msgstr "从剪贴板粘贴."
 #: lazarusidestrconsts.lispastelcolors
 msgid "Pastel Colors"
 msgstr "柔和的颜色"
-
-#: lazarusidestrconsts.lispath
-msgid "Path"
-msgstr "路径"
 
 #: lazarusidestrconsts.lispatheditbrowse
 msgctxt "lazarusidestrconsts.lispatheditbrowse"
@@ -15693,10 +15458,6 @@ msgstr "请修复消息窗口中显示的错误，该窗口通常位于源代码
 msgid "Please open a unit before run."
 msgstr "请在运行前打开一个单元."
 
-#: lazarusidestrconsts.lispleaseplacetheeditorcaretonanidentifierifthisisane
-msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
-msgstr "请将编辑器光标放在一个标识符上。如果是新单元，请先保存文件。"
-
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "请选择一些代码以提取一个新过程或方法."
@@ -16024,10 +15785,6 @@ msgstr "%0:s%0:s在文件'%1:s'在行%2:d"
 #, object-pascal-format
 msgid "%0:s%0:s In file '%1:s' at line %2:d:%0:s%3:s"
 msgstr "%0:s%0:s在文件'%1:s'在行%2:d:%0:s%3:s"
-
-#: lazarusidestrconsts.lisprojectunit
-msgid "project unit"
-msgstr "项目单元"
 
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
@@ -16911,10 +16668,6 @@ msgstr "设置这个来翻译编译器信息到另外一种语言(例如,非英�
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Set up default indentation)"
 msgstr "(建立默认缩进)"
-
-#: lazarusidestrconsts.lisshort
-msgid "Short:"
-msgstr "短:"
 
 #: lazarusidestrconsts.lisshortnopath
 msgid "Short, no path"
@@ -18037,11 +17790,6 @@ msgstr "该单元有这个名称"
 msgid "The unit filename \"%s\" is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%sRename file lowercase?"
 msgstr "单元文件名称\"%s\"不是小写的.%sFree Pascal编译器不能搜索所有的情况.建议使用小写的文件名称.%s重命名文件名称为小写的?"
 
-#: lazarusidestrconsts.listheunitispartofthefpcsourcesbutthecorrespondingfpd
-#, object-pascal-format
-msgid "The unit %s is part of the FPC sources but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
-msgstr "单元 %s 是 FPC 源代码的一部分，但未找到相应的 fpdoc xml 文件。%s要么您尚未将 fpcdocs 目录添加到搜索路径中，要么该单元尚未被记录。%sFPC 源代码的 fpdoc 文件可以从以下地址下载： %s%s请在 fpdoc 编辑器选项中添加该目录。%s为了创建新文件，该目录必须可写。"
-
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
 #, object-pascal-format
 msgid "The unit %s is used by other files.%sUpdate references automatically?"
@@ -18117,10 +17865,6 @@ msgstr "标题(Title)(&T)"
 #: lazarusidestrconsts.listitleintaskbarshowsforexampleproject1lpilazarus
 msgid "Show the custom IDE title before the IDE's name and other info in the title. Example: project1 - Lazarus."
 msgstr "在 IDE 名称和其他信息之前显示自定义 IDE 标题。示例：project1 - Lazarus。"
-
-#: lazarusidestrconsts.listitleleaveemptyfordefault
-msgid "Title (leave empty for default)"
-msgstr "标题(Title)(默认留空)"
 
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
@@ -19498,10 +19242,6 @@ msgstr "类型"
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
 msgstr "修订:(&R)"
-
-#: lazarusidestrconsts.rsselectaninheritedentry
-msgid "Select an inherited entry"
-msgstr "选择继承的条目"
 
 #: lazarusidestrconsts.rsshowabspath
 msgid "Absolute path"
@@ -21400,4 +21140,9 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "版本信息"
+
+#: lazarusidestrconsts.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr "软件包%s"
 

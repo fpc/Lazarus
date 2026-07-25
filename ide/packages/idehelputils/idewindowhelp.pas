@@ -40,7 +40,7 @@ uses
   // IdeConfig
   IdeConfStrConsts,
   // IDE
-  EnvironmentOpts, IDEOptionDefs, LazarusIDEStrConsts;
+  EnvironmentOpts, IDEOptionDefs, IdeHelpUtilStrings;
   
 type
 

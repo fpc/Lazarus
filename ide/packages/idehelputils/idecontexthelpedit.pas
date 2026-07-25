@@ -42,7 +42,7 @@ uses
   // IDEIntf
   PropEdits, LazIDEIntf, IDEWindowIntf, IDEDialogs,
   // IDE
-  IDEWindowHelp, LazarusIDEStrConsts;
+  IDEWindowHelp, IdeHelpUtilStrings;
 
 type
 

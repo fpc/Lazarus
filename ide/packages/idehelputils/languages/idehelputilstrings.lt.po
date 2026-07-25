@@ -1,0 +1,296 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: idehelputilstrings.dlgccotest
+msgid "Test"
+msgstr "Testas"
+
+#: idehelputilstrings.dlgfilterall
+msgid "All files"
+msgstr "Visi failai"
+
+#: idehelputilstrings.dlgfilterpascalfile
+msgid "Pascal file"
+msgstr "„Paskalio“ failas"
+
+#: idehelputilstrings.lisalreadycontainsthehe
+#, object-pascal-format
+msgid ""
+"%s already contains the help:\n"
+"%s"
+msgstr ""
+
+#: idehelputilstrings.lisceisarootcontrol
+msgid "Is a root control"
+msgstr "Tai šakninis valdiklis"
+
+#: idehelputilstrings.lischooseafpdoclink
+msgid "Choose a FPDoc link"
+msgstr "Nurodykite FPDoc saitą"
+
+#: idehelputilstrings.lischooseanexamplefile
+msgid "Choose an example file"
+msgstr "Parinkite pavyzdžio failą"
+
+#: idehelputilstrings.liscodehelpbrowseexamplebutton
+msgid "Browse"
+msgstr "Naršyti"
+
+#: idehelputilstrings.liscodehelpconfirmreplace
+msgid "Confirm replace"
+msgstr "Patvirtinimas pakeičiant"
+
+#: idehelputilstrings.liscodehelpcreatebutton
+msgid "Create help item"
+msgstr "Kurti žinyno elementą"
+
+#: idehelputilstrings.liscodehelpdescrtag
+msgid "Description"
+msgstr "Aprašymas"
+
+#: idehelputilstrings.liscodehelperrorstag
+msgid "Errors"
+msgstr "Klaidos"
+
+#: idehelputilstrings.liscodehelpexampletag
+msgid "Example"
+msgstr "Pavyzdys"
+
+#: idehelputilstrings.liscodehelphintboldformat
+msgid "Insert bold formatting tag"
+msgstr "Įterpti pusjuodžio formatavimo gairę"
+
+#: idehelputilstrings.liscodehelphintinsertcodetag
+msgid "Insert code formatting tag"
+msgstr "Įterpti kodo formatavimo gairę"
+
+#: idehelputilstrings.liscodehelphintitalicformat
+msgid "Insert italic formatting tag"
+msgstr "Įterpti kursyvo formatavimo gairę"
+
+#: idehelputilstrings.liscodehelphintremarktag
+msgid "Insert remark formatting tag"
+msgstr "Įterpti pastabos formatavimo gairę"
+
+#: idehelputilstrings.liscodehelphintunderlineformat
+msgid "Insert underline formatting tag"
+msgstr "Įterpti pabraukimo formatavimo gairę"
+
+#: idehelputilstrings.liscodehelphintvartag
+msgid "Insert var formatting tag"
+msgstr "Įterpti kintamojo formatavimo gairę"
+
+#: idehelputilstrings.liscodehelpinherited
+msgid "Inherited"
+msgstr "Paveldėta"
+
+#: idehelputilstrings.liscodehelpinsertalink
+msgid "Insert a link ..."
+msgstr "Įterpti nuorodą…"
+
+#: idehelputilstrings.liscodehelpinsertparagraphformattingtag
+msgid "Insert paragraph formatting tag"
+msgstr "Įterpti paragrafo formatavimo gairę"
+
+#: idehelputilstrings.liscodehelpmainformcaption
+msgid "FPDoc Editor"
+msgstr "FPDoc rengyklė"
+
+#: idehelputilstrings.liscodehelpnoinheriteddescriptionfound
+msgid "(no inherited description found)"
+msgstr "(paveldėtas aprašymas nerastas)"
+
+#: idehelputilstrings.liscodehelpnotagcaption
+msgid "<NONE>"
+msgstr "<JOKS>"
+
+#: idehelputilstrings.liscodehelpseealsotag
+msgid "See also"
+msgstr "Taip pat žiūrėkite"
+
+#: idehelputilstrings.liscodehelpshortdescriptionof
+msgid "Short description of"
+msgstr "Trumpas aprašymas"
+
+#: idehelputilstrings.liscodehelpshorttag
+msgid "Short"
+msgstr "Santrumpa"
+
+#: idehelputilstrings.lisconfirmreplace
+msgid "Confirm Replace"
+msgstr ""
+
+#: idehelputilstrings.liscreatehelpnode
+msgid "Create Help node"
+msgstr "Kurti žinyno mazgą"
+
+#: idehelputilstrings.lisdlgopen
+msgid "Open ..."
+msgstr "Atverti…"
+
+#: idehelputilstrings.liseditcontexthelp
+msgid "Edit context help"
+msgstr "Keisti kontekstinį žinyną"
+
+#: idehelputilstrings.liserrorreadingxml
+msgid "Error reading XML"
+msgstr "Klaida skaitant XML"
+
+#: idehelputilstrings.liserrorreadingxmlfile
+#, object-pascal-format
+msgid "Error reading xml file \"%s\"%s%s"
+msgstr "Įvyko klaida skaitant XML failą „%s“%s%s"
+
+#: idehelputilstrings.liserrorwritingfile
+#, object-pascal-format
+msgid "Error writing file \"%s\""
+msgstr "Rašant į failą „%s“ įvyko klaida"
+
+#: idehelputilstrings.lisexamplesidentifiertmyenumenumunitnameidentifierpac
+#, object-pascal-format
+msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
+msgstr "Pavyzdžiai:%sIdentifikatorius%sTManoEnum.Enum%sModulioPavadinimas.Identifikatorius%s#PaketoPavadinimas.ModulioPavadinimas.Identifikatorius"
+
+#: idehelputilstrings.lisfpdocerrorwriting
+#, object-pascal-format
+msgid "Error writing \"%s\"%s%s"
+msgstr "Rašant „%s“ įvyko klaida%s%s"
+
+#: idehelputilstrings.lisfpdocfpdocsyntaxerror
+msgid "FPDoc syntax error"
+msgstr "FPDoc sintaksės klaida"
+
+#: idehelputilstrings.lisfpdocthereisasyntaxerrorinthefpdocelement
+#, object-pascal-format
+msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
+msgstr "FPDoc elemente „%s“ yra sintaksės klaida:%s%s"
+
+#: idehelputilstrings.lishashelp
+msgid "Has Help"
+msgstr "Turi žinyną"
+
+#: idehelputilstrings.lishelpentries
+msgid "Help entries"
+msgstr "Žinyno įrašai"
+
+#: idehelputilstrings.lisidentifier
+msgid "identifier"
+msgstr "Identifikatorius"
+
+#: idehelputilstrings.lisinsertprintshorttag2
+msgid "Insert printshort tag"
+msgstr "Įterpti žymą „printshort“"
+
+#: idehelputilstrings.lisinserturltag
+msgid "Insert url tag"
+msgstr "Įterpti URL žymą"
+
+#: idehelputilstrings.lisinvaliddeclaration
+msgid "Invalid Declaration"
+msgstr ""
+
+#: idehelputilstrings.lisldaddlinktoinherited
+msgid "Add link to inherited"
+msgstr "Pridėti nuorodą į paveldą"
+
+#: idehelputilstrings.lisldcopyfrominherited
+msgid "Copy from inherited"
+msgstr "Kopijuoti iš paveldo"
+
+#: idehelputilstrings.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
+#, object-pascal-format
+msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
+msgstr "Šiame „%s“ nėra tinkamo FPDoc kelio.%sNeina sukurti „%s“ skirto „fpdoc“ failo."
+
+#: idehelputilstrings.lisldmoveentriestoinherited
+msgid "Move entries to inherited"
+msgstr "Įrašus perkelti į paveldą"
+
+#: idehelputilstrings.lisldnovalidfpdocpath
+msgid "No valid FPDoc path"
+msgstr "Reikia FPDoc kelio"
+
+#: idehelputilstrings.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
+#, object-pascal-format
+msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
+msgstr "Modulis %s nepriklauso jokiam paketui ar projektui.%sPriskirkite modulį paketui ar projektui.%sNeina sukurti FPDoc failo."
+
+#: idehelputilstrings.lislink
+msgid "Link:"
+msgstr "Saitas:"
+
+#: idehelputilstrings.lislinktarget
+msgid "Link target"
+msgstr "Saito paskirtis"
+
+#: idehelputilstrings.lisname
+msgid "Name"
+msgstr "Pavadinimas"
+
+#: idehelputilstrings.lisnoidewindowselected
+msgid "No IDE window selected"
+msgstr "IKA langas nepažymėtas"
+
+#: idehelputilstrings.lisnonodeselected
+msgid "no node selected"
+msgstr "mazgas nepažymėtas"
+
+#: idehelputilstrings.lisopenxml
+msgid "Open XML"
+msgstr "Atverti XML"
+
+#: idehelputilstrings.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr "paketas %s"
+
+#: idehelputilstrings.lispackageunit
+msgid "package unit"
+msgstr "paketo modulis"
+
+#: idehelputilstrings.lispath
+msgid "Path"
+msgstr "Kelias"
+
+#: idehelputilstrings.lispleaseplacetheeditorcaretonanidentifierifthisisane
+msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
+msgstr ""
+
+#: idehelputilstrings.lisprojaddpackagenotfound
+msgid "Package not found"
+msgstr "Paketas nerastas"
+
+#: idehelputilstrings.lisprojectunit
+msgid "project unit"
+msgstr "projekto modulis"
+
+#: idehelputilstrings.lisreplace
+msgid "Replace"
+msgstr "Pakeisti"
+
+#: idehelputilstrings.lissave
+msgid "Save"
+msgstr "Įrašyti"
+
+#: idehelputilstrings.lisshort
+msgid "Short:"
+msgstr "Trumpai:"
+
+#: idehelputilstrings.listheunitispartofthefpcsourcesbutthecorrespondingfpd
+#, object-pascal-format, fuzzy
+#| msgid "The unit %s is part of the FPC sources, but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
+msgid "The unit %s is part of the FPC sources but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
+msgstr "Modulis „%s“ yra FPC pirminio kodo dalis, tačiau nepavyko rasti jam priklausančio FPDoc „.xml“ failo.%sTo priežastis - paieškos kelyje nėra nurodyto FPDoc failų aplanko, arba tiesiog šiam moduliui nėra sukurta dokumentacija.%sFPC pirminiam kodui skirtus FPDoc failus galima atsisiųsti iš: %s%sKelią reikia įdėti į FPDoc rengyklės parinktis.%sĮ aplanką turi būti leidžiama rašyti tam, kad būtų įmanoma suskurti failą."
+
+#: idehelputilstrings.listitleleaveemptyfordefault
+msgid "Title (leave empty for default)"
+msgstr "Antraštė (palikus tuščią - bus naudojama numatytoji)"
+
+#: idehelputilstrings.rsselectaninheritedentry
+msgid "Select an inherited entry"
+msgstr "Pažymėti paveldėtą įrašą"
+

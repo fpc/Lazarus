@@ -57,8 +57,10 @@ uses
   IDEDialogs, IDEHelpIntf, LazIDEIntf, IDEExternToolIntf,
   // IdeConfig
   EnvironmentOpts, TransferMacros, IDEProcs, DialogProcs, SearchPathProcs, IdeConfStrConsts,
-  // IDE
-  EditorOptions, LazarusIDEStrConsts, PackageDefs, PackageSystem, KeyMapping;
+  // IdePackager
+  PackageDefs, PackageSystem,
+  // IdeHelpUtils
+  IdeHelpUtilStrings;
 
 const
   IDEProjectName = 'Lazarus';
@@ -236,6 +238,7 @@ type
   TCodeHelpManager = class(TComponent)
   private
     FDocs: TAvlTree;// tree of loaded TLazFPDocFile
+    FFocusHintShortCut: TIDEShortCut;
     FHandlers: array[TCodeHelpManagerHandler] of TMethodList;
     FPasHighlighter: TSynPasSyn;
     FSrcToDocMap: TAvlTree; // tree of TCHSourceToFPDocFile sorted for SourceFilename
@@ -350,6 +353,7 @@ type
     procedure RemoveHandlerOnChanged(const OnDocChangedEvent: TCodeHelpChangeEvent);
   public
     property PasHighlighter: TSynPasSyn read FPasHighlighter;
+    property FocusHintShortCut: TIDEShortCut read FFocusHintShortCut write FFocusHintShortCut;
   end;
 
   TFPDocHintToken = (
@@ -2523,7 +2527,6 @@ var
   OldCTNode: TCodeTreeNode;
   n: Integer;
   s, Descr, Short: String;
-  Cmd: TKeyCommandRelation;
   CTTool: TFindDeclarationTool;
   CTNode: TCodeTreeNode;
   HasXML: Boolean;
@@ -2672,10 +2675,9 @@ begin
 
     if HTMLHint<>'' then begin
       if (chhoShowFocusHint in Options) then begin
-        Cmd:=EditorOpts.KeyMap.FindByCommand(ecFocusHint);
-        if (Cmd<>nil) and (not IDEShortCutEmpty(Cmd.ShortcutA)) then begin
+        if not IDEShortCutEmpty(FocusHintShortCut) then begin
           HTMLHint:=HTMLHint+'<div class="focushint">Press '
-            +KeyAndShiftStateToEditorKeyString(Cmd.ShortcutA)+' for focus</div>'+LineEnding;
+            +KeyAndShiftStateToEditorKeyString(FocusHintShortCut)+' for focus</div>'+LineEnding;
         end;
       end;
       HTMLHint:='<html><head><link rel="stylesheet" href="lazdoc://lazarus/lazdoc.css" type="text/css">'+LineEnding

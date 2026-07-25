@@ -1,0 +1,295 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: idehelputilstrings.dlgccotest
+msgid "Test"
+msgstr "Тест"
+
+#: idehelputilstrings.dlgfilterall
+msgid "All files"
+msgstr "Всі файли"
+
+#: idehelputilstrings.dlgfilterpascalfile
+msgid "Pascal file"
+msgstr "Файл Pascal"
+
+#: idehelputilstrings.lisalreadycontainsthehe
+#, object-pascal-format
+msgid ""
+"%s already contains the help:\n"
+"%s"
+msgstr ""
+
+#: idehelputilstrings.lisceisarootcontrol
+msgid "Is a root control"
+msgstr "Є кореневим елементом керування"
+
+#: idehelputilstrings.lischooseafpdoclink
+msgid "Choose a FPDoc link"
+msgstr "Виберіть посилання FPDoc"
+
+#: idehelputilstrings.lischooseanexamplefile
+msgid "Choose an example file"
+msgstr "Виберіть файл прикладу"
+
+#: idehelputilstrings.liscodehelpbrowseexamplebutton
+msgid "Browse"
+msgstr "Огляд"
+
+#: idehelputilstrings.liscodehelpconfirmreplace
+msgid "Confirm replace"
+msgstr "Підтвердити заміну"
+
+#: idehelputilstrings.liscodehelpcreatebutton
+msgid "Create help item"
+msgstr "Створити елемент довідки"
+
+#: idehelputilstrings.liscodehelpdescrtag
+msgid "Description"
+msgstr "Опис"
+
+#: idehelputilstrings.liscodehelperrorstag
+msgid "Errors"
+msgstr "Помилки"
+
+#: idehelputilstrings.liscodehelpexampletag
+msgid "Example"
+msgstr "Приклад"
+
+#: idehelputilstrings.liscodehelphintboldformat
+msgid "Insert bold formatting tag"
+msgstr "Вставити тег жирності тексту"
+
+#: idehelputilstrings.liscodehelphintinsertcodetag
+msgid "Insert code formatting tag"
+msgstr "Вставити тег форматування тексту програми"
+
+#: idehelputilstrings.liscodehelphintitalicformat
+msgid "Insert italic formatting tag"
+msgstr "Вставити тег форматування курсивом"
+
+#: idehelputilstrings.liscodehelphintremarktag
+msgid "Insert remark formatting tag"
+msgstr "Вставити тег ремарок"
+
+#: idehelputilstrings.liscodehelphintunderlineformat
+msgid "Insert underline formatting tag"
+msgstr "Вставити тег форматування підкресленням"
+
+#: idehelputilstrings.liscodehelphintvartag
+msgid "Insert var formatting tag"
+msgstr "Вставити тег форматування для змінних"
+
+#: idehelputilstrings.liscodehelpinherited
+msgid "Inherited"
+msgstr "Наслідуваний"
+
+#: idehelputilstrings.liscodehelpinsertalink
+msgid "Insert a link ..."
+msgstr "Вставити посилання ..."
+
+#: idehelputilstrings.liscodehelpinsertparagraphformattingtag
+msgid "Insert paragraph formatting tag"
+msgstr "Вставити тег абзацу"
+
+#: idehelputilstrings.liscodehelpmainformcaption
+msgid "FPDoc Editor"
+msgstr "Редактор FPDoc"
+
+#: idehelputilstrings.liscodehelpnoinheriteddescriptionfound
+msgid "(no inherited description found)"
+msgstr "(не знайдено успадкованого опису)"
+
+#: idehelputilstrings.liscodehelpnotagcaption
+msgid "<NONE>"
+msgstr "<НІЧОГО>"
+
+#: idehelputilstrings.liscodehelpseealsotag
+msgid "See also"
+msgstr "Дивись також"
+
+#: idehelputilstrings.liscodehelpshortdescriptionof
+msgid "Short description of"
+msgstr "Короткий опис для"
+
+#: idehelputilstrings.liscodehelpshorttag
+msgid "Short"
+msgstr "Короткий"
+
+#: idehelputilstrings.lisconfirmreplace
+msgid "Confirm Replace"
+msgstr ""
+
+#: idehelputilstrings.liscreatehelpnode
+msgid "Create Help node"
+msgstr "Створити вузол Довідки"
+
+#: idehelputilstrings.lisdlgopen
+msgid "Open ..."
+msgstr "Відкрити ..."
+
+#: idehelputilstrings.liseditcontexthelp
+msgid "Edit context help"
+msgstr "Редагувати контекстну допомогу"
+
+#: idehelputilstrings.liserrorreadingxml
+msgid "Error reading XML"
+msgstr "Помилка читання XML"
+
+#: idehelputilstrings.liserrorreadingxmlfile
+#, object-pascal-format
+msgid "Error reading xml file \"%s\"%s%s"
+msgstr "Помилка читання xml-файлу \"%s\"%s%s"
+
+#: idehelputilstrings.liserrorwritingfile
+#, object-pascal-format
+msgid "Error writing file \"%s\""
+msgstr "Помилка запису файлу \"%s\""
+
+#: idehelputilstrings.lisexamplesidentifiertmyenumenumunitnameidentifierpac
+#, object-pascal-format
+msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
+msgstr "Приклади:%sІдентифікатор%sTMyEnum.Enum%sНазвамодуля.Ідентифікатор%s#Назвапакунку.Назвамодуля.Ідентифікатор"
+
+#: idehelputilstrings.lisfpdocerrorwriting
+#, object-pascal-format
+msgid "Error writing \"%s\"%s%s"
+msgstr "Помилка запису \"%s\"%s%s"
+
+#: idehelputilstrings.lisfpdocfpdocsyntaxerror
+msgid "FPDoc syntax error"
+msgstr "Синтаксична помилка FPDoc"
+
+#: idehelputilstrings.lisfpdocthereisasyntaxerrorinthefpdocelement
+#, object-pascal-format
+msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
+msgstr "Є синтаксична помилка  в елементі fpdoc \"%s\":%s%s"
+
+#: idehelputilstrings.lishashelp
+msgid "Has Help"
+msgstr "Має довідку"
+
+#: idehelputilstrings.lishelpentries
+msgid "Help entries"
+msgstr "Розділи довідки"
+
+#: idehelputilstrings.lisidentifier
+msgid "identifier"
+msgstr "Ідентифікатор"
+
+#: idehelputilstrings.lisinsertprintshorttag2
+msgid "Insert printshort tag"
+msgstr "Вставити тег printshort"
+
+#: idehelputilstrings.lisinserturltag
+msgid "Insert url tag"
+msgstr "Вставити тег url"
+
+#: idehelputilstrings.lisinvaliddeclaration
+msgid "Invalid Declaration"
+msgstr ""
+
+#: idehelputilstrings.lisldaddlinktoinherited
+msgid "Add link to inherited"
+msgstr "Додати посилання до нащадка"
+
+#: idehelputilstrings.lisldcopyfrominherited
+msgid "Copy from inherited"
+msgstr "Копіювати з успадкованого"
+
+#: idehelputilstrings.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
+#, object-pascal-format
+msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
+msgstr "%s не має діючого шляху FPDoc.%sНеможливо створити файл fpdoc для %s"
+
+#: idehelputilstrings.lisldmoveentriestoinherited
+msgid "Move entries to inherited"
+msgstr "Пересунути включення до успадкованого"
+
+#: idehelputilstrings.lisldnovalidfpdocpath
+msgid "No valid FPDoc path"
+msgstr "Немає дійсного шляху FPDoc"
+
+#: idehelputilstrings.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
+#, object-pascal-format
+msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
+msgstr "Модуль %s не належить жодному пакунку чи проєкту.%sДодайте модуль до пакунка або проєкту.%sНеможливо створити fpdoc файл."
+
+#: idehelputilstrings.lislink
+msgid "Link:"
+msgstr "Посилання:"
+
+#: idehelputilstrings.lislinktarget
+msgid "Link target"
+msgstr "Ціль посилання"
+
+#: idehelputilstrings.lisname
+msgid "Name"
+msgstr "Назва"
+
+#: idehelputilstrings.lisnoidewindowselected
+msgid "No IDE window selected"
+msgstr "Вікно ІСР не вибране"
+
+#: idehelputilstrings.lisnonodeselected
+msgid "no node selected"
+msgstr "не вибрано вузлів"
+
+#: idehelputilstrings.lisopenxml
+msgid "Open XML"
+msgstr "Відкритий XML"
+
+#: idehelputilstrings.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr "пакунок %s"
+
+#: idehelputilstrings.lispackageunit
+msgid "package unit"
+msgstr "модуль пакунка"
+
+#: idehelputilstrings.lispath
+msgid "Path"
+msgstr "Шлях"
+
+#: idehelputilstrings.lispleaseplacetheeditorcaretonanidentifierifthisisane
+msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
+msgstr ""
+
+#: idehelputilstrings.lisprojaddpackagenotfound
+msgid "Package not found"
+msgstr "Пакунок не знайдено"
+
+#: idehelputilstrings.lisprojectunit
+msgid "project unit"
+msgstr "модуль проєкту"
+
+#: idehelputilstrings.lisreplace
+msgid "Replace"
+msgstr "Заміна"
+
+#: idehelputilstrings.lissave
+msgid "Save"
+msgstr "Зберегти"
+
+#: idehelputilstrings.lisshort
+msgid "Short:"
+msgstr "Коротко:"
+
+#: idehelputilstrings.listheunitispartofthefpcsourcesbutthecorrespondingfpd
+#, object-pascal-format
+msgid "The unit %s is part of the FPC sources but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
+msgstr "Модуль %s є частиною сирців FPC, але відповідний fpdoc xml файл не було знайдено.%sАбо ви ще не додали теку fpcdocs до пошукового шляху або модуль ще не документований.%sФайли fpdoc файли для сирців FPC можуть бути завантажені з: %s%sДодайте теку в опціях редактора fpdoc.%sЩоб створити новий файл, каталог має бути доступним для запису."
+
+#: idehelputilstrings.listitleleaveemptyfordefault
+msgid "Title (leave empty for default)"
+msgstr "Назва (залишити порожнім для типової)"
+
+#: idehelputilstrings.rsselectaninheritedentry
+msgid "Select an inherited entry"
+msgstr "Виберіть успадкований елемент"
+

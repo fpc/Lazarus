@@ -8,7 +8,8 @@ unit IdeHelpUtils;
 interface
 
 uses
-  LazarusPackageIntf;
+  CodeHelp, IdeHelpUtilStrings, SrcEditHintFrm, FPDocHints, FPDocSelectInherited, 
+  FPDocSelectLink, IDEContextHelpEdit, IDEWindowHelp, FPDocEditWindow, LazarusPackageIntf;
 
 implementation
 

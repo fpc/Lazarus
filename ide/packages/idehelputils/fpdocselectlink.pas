@@ -38,7 +38,7 @@ uses
   // IdeIntf
   PackageIntf, ProjectIntf,
   // IDE
-  CodeHelp, LazarusIDEStrConsts, PackageSystem, PackageDefs;
+  CodeHelp, IdeHelpUtilStrings, PackageSystem, PackageDefs;
 
 type
 

@@ -1,0 +1,295 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: idehelputilstrings.dlgccotest
+msgid "Test"
+msgstr "Test"
+
+#: idehelputilstrings.dlgfilterall
+msgid "All files"
+msgstr "Všetky súbory"
+
+#: idehelputilstrings.dlgfilterpascalfile
+msgid "Pascal file"
+msgstr "Súbor Pascalu"
+
+#: idehelputilstrings.lisalreadycontainsthehe
+#, object-pascal-format
+msgid ""
+"%s already contains the help:\n"
+"%s"
+msgstr ""
+
+#: idehelputilstrings.lisceisarootcontrol
+msgid "Is a root control"
+msgstr ""
+
+#: idehelputilstrings.lischooseafpdoclink
+msgid "Choose a FPDoc link"
+msgstr "Zvoľte odkaz FPDoc"
+
+#: idehelputilstrings.lischooseanexamplefile
+msgid "Choose an example file"
+msgstr ""
+
+#: idehelputilstrings.liscodehelpbrowseexamplebutton
+msgid "Browse"
+msgstr "Prezerať"
+
+#: idehelputilstrings.liscodehelpconfirmreplace
+msgid "Confirm replace"
+msgstr "Potvrdiť nahradenie"
+
+#: idehelputilstrings.liscodehelpcreatebutton
+msgid "Create help item"
+msgstr "Vytvoriť položku pomoci"
+
+#: idehelputilstrings.liscodehelpdescrtag
+msgid "Description"
+msgstr "Popis"
+
+#: idehelputilstrings.liscodehelperrorstag
+msgid "Errors"
+msgstr "Chyby"
+
+#: idehelputilstrings.liscodehelpexampletag
+msgid "Example"
+msgstr "Príklad"
+
+#: idehelputilstrings.liscodehelphintboldformat
+msgid "Insert bold formatting tag"
+msgstr ""
+
+#: idehelputilstrings.liscodehelphintinsertcodetag
+msgid "Insert code formatting tag"
+msgstr "Vložiť formátovaciu značku pre kód"
+
+#: idehelputilstrings.liscodehelphintitalicformat
+msgid "Insert italic formatting tag"
+msgstr "Vložiť formátovaciu značku pre kurzívu"
+
+#: idehelputilstrings.liscodehelphintremarktag
+msgid "Insert remark formatting tag"
+msgstr "Vložiť formátovaciu značku poznámky"
+
+#: idehelputilstrings.liscodehelphintunderlineformat
+msgid "Insert underline formatting tag"
+msgstr "Vložiť formátovaciu značku pre podčiarknuté"
+
+#: idehelputilstrings.liscodehelphintvartag
+msgid "Insert var formatting tag"
+msgstr "Vložiť formátovaciu značku var"
+
+#: idehelputilstrings.liscodehelpinherited
+msgid "Inherited"
+msgstr "Zdedené"
+
+#: idehelputilstrings.liscodehelpinsertalink
+msgid "Insert a link ..."
+msgstr "Vložiť odkaz ..."
+
+#: idehelputilstrings.liscodehelpinsertparagraphformattingtag
+msgid "Insert paragraph formatting tag"
+msgstr "Vložiť značku formátovania odseku"
+
+#: idehelputilstrings.liscodehelpmainformcaption
+msgid "FPDoc Editor"
+msgstr "Editor FPCDoc"
+
+#: idehelputilstrings.liscodehelpnoinheriteddescriptionfound
+msgid "(no inherited description found)"
+msgstr "(nenájdený zdedený popis)"
+
+#: idehelputilstrings.liscodehelpnotagcaption
+msgid "<NONE>"
+msgstr "<NIČ>"
+
+#: idehelputilstrings.liscodehelpseealsotag
+msgid "See also"
+msgstr "Pozri aj"
+
+#: idehelputilstrings.liscodehelpshortdescriptionof
+msgid "Short description of"
+msgstr "Krátky popis"
+
+#: idehelputilstrings.liscodehelpshorttag
+msgid "Short"
+msgstr "Krátky"
+
+#: idehelputilstrings.lisconfirmreplace
+msgid "Confirm Replace"
+msgstr ""
+
+#: idehelputilstrings.liscreatehelpnode
+msgid "Create Help node"
+msgstr "Vytvoriť uzol Pomoci"
+
+#: idehelputilstrings.lisdlgopen
+msgid "Open ..."
+msgstr ""
+
+#: idehelputilstrings.liseditcontexthelp
+msgid "Edit context help"
+msgstr "Upraviť kontextovú pomoc"
+
+#: idehelputilstrings.liserrorreadingxml
+msgid "Error reading XML"
+msgstr "Chyba čítania XML"
+
+#: idehelputilstrings.liserrorreadingxmlfile
+#, object-pascal-format
+msgid "Error reading xml file \"%s\"%s%s"
+msgstr "Chyba čítania XML súboru \"%s\"%s%s"
+
+#: idehelputilstrings.liserrorwritingfile
+#, object-pascal-format
+msgid "Error writing file \"%s\""
+msgstr ""
+
+#: idehelputilstrings.lisexamplesidentifiertmyenumenumunitnameidentifierpac
+#, object-pascal-format
+msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
+msgstr "Príklady:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
+
+#: idehelputilstrings.lisfpdocerrorwriting
+#, object-pascal-format
+msgid "Error writing \"%s\"%s%s"
+msgstr ""
+
+#: idehelputilstrings.lisfpdocfpdocsyntaxerror
+msgid "FPDoc syntax error"
+msgstr ""
+
+#: idehelputilstrings.lisfpdocthereisasyntaxerrorinthefpdocelement
+#, object-pascal-format
+msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
+msgstr ""
+
+#: idehelputilstrings.lishashelp
+msgid "Has Help"
+msgstr "Má pomoc"
+
+#: idehelputilstrings.lishelpentries
+msgid "Help entries"
+msgstr "Položky pomoci"
+
+#: idehelputilstrings.lisidentifier
+msgid "identifier"
+msgstr ""
+
+#: idehelputilstrings.lisinsertprintshorttag2
+msgid "Insert printshort tag"
+msgstr ""
+
+#: idehelputilstrings.lisinserturltag
+msgid "Insert url tag"
+msgstr ""
+
+#: idehelputilstrings.lisinvaliddeclaration
+msgid "Invalid Declaration"
+msgstr ""
+
+#: idehelputilstrings.lisldaddlinktoinherited
+msgid "Add link to inherited"
+msgstr "Pridať odkaz k zdedeným"
+
+#: idehelputilstrings.lisldcopyfrominherited
+msgid "Copy from inherited"
+msgstr "Kopírovať zo zdedených"
+
+#: idehelputilstrings.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
+#, object-pascal-format
+msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
+msgstr ""
+
+#: idehelputilstrings.lisldmoveentriestoinherited
+msgid "Move entries to inherited"
+msgstr "Presunúť položky do zdedených"
+
+#: idehelputilstrings.lisldnovalidfpdocpath
+msgid "No valid FPDoc path"
+msgstr ""
+
+#: idehelputilstrings.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
+#, object-pascal-format
+msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
+msgstr "Jednotku %s nevlastní žiadny balíček alebo projekt.%sProsím pridajte jednotku do balíčka alebo projektu.%sNemožno vytvoriť súbor fpdoc."
+
+#: idehelputilstrings.lislink
+msgid "Link:"
+msgstr "Odkaz:"
+
+#: idehelputilstrings.lislinktarget
+msgid "Link target"
+msgstr "Cieľ linkovania"
+
+#: idehelputilstrings.lisname
+msgid "Name"
+msgstr "Meno"
+
+#: idehelputilstrings.lisnoidewindowselected
+msgid "No IDE window selected"
+msgstr "Nie je vybrané okno IDE"
+
+#: idehelputilstrings.lisnonodeselected
+msgid "no node selected"
+msgstr "nie je vybratý žiadny uzol"
+
+#: idehelputilstrings.lisopenxml
+msgid "Open XML"
+msgstr ""
+
+#: idehelputilstrings.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr "balíček %s"
+
+#: idehelputilstrings.lispackageunit
+msgid "package unit"
+msgstr ""
+
+#: idehelputilstrings.lispath
+msgid "Path"
+msgstr "Cesta"
+
+#: idehelputilstrings.lispleaseplacetheeditorcaretonanidentifierifthisisane
+msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
+msgstr ""
+
+#: idehelputilstrings.lisprojaddpackagenotfound
+msgid "Package not found"
+msgstr "Balíček nenájdený"
+
+#: idehelputilstrings.lisprojectunit
+msgid "project unit"
+msgstr ""
+
+#: idehelputilstrings.lisreplace
+msgid "Replace"
+msgstr "Nahradiť"
+
+#: idehelputilstrings.lissave
+msgid "Save"
+msgstr "Uložiť"
+
+#: idehelputilstrings.lisshort
+msgid "Short:"
+msgstr "Krátky:"
+
+#: idehelputilstrings.listheunitispartofthefpcsourcesbutthecorrespondingfpd
+#, object-pascal-format
+msgid "The unit %s is part of the FPC sources but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
+msgstr ""
+
+#: idehelputilstrings.listitleleaveemptyfordefault
+msgid "Title (leave empty for default)"
+msgstr "Titulok (nechajte prázdne pre predvolený)"
+
+#: idehelputilstrings.rsselectaninheritedentry
+msgid "Select an inherited entry"
+msgstr "Vybrať zdedenú položku"
+

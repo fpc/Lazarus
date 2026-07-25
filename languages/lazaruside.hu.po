@@ -5548,13 +5548,6 @@ msgstr "A(z) \"%s\"%sminden módosítása el fog veszni és a fájl újra meg le
 msgid "Alpha"
 msgstr "Alfa"
 
-#: lazarusidestrconsts.lisalreadycontainsthehe
-#, object-pascal-format
-msgid ""
-"%s already contains the help:\n"
-"%s"
-msgstr ""
-
 #: lazarusidestrconsts.lisalternativekey
 msgid "Alternative key"
 msgstr "Helyettesítő billentyű"
@@ -6295,10 +6288,6 @@ msgstr "(szűrő)"
 msgid "Follow cursor"
 msgstr "beszúrási jel követése"
 
-#: lazarusidestrconsts.lisceisarootcontrol
-msgid "Is a root control"
-msgstr "Egy gyökér vezérlő"
-
 #: lazarusidestrconsts.liscelongparamlistcount
 msgid "Parameters count treated as \"many\""
 msgstr "\"Sok\"-nak tekintett paraméterek száma"
@@ -6640,10 +6629,6 @@ msgstr "Válasszon egy másik nevet!"
 msgid "Choose a file with CodeTools templates"
 msgstr "Válasszon egy fájlt CodeTools sablonokkal!"
 
-#: lazarusidestrconsts.lischooseafpdoclink
-msgid "Choose a FPDoc link"
-msgstr "Válasszon egy FPDoc hivatkozást!"
-
 #: lazarusidestrconsts.lischooseakey
 msgid "Choose a key ..."
 msgstr "Válasszon egy billentyűt ..."
@@ -6651,10 +6636,6 @@ msgstr "Válasszon egy billentyűt ..."
 #: lazarusidestrconsts.lischooseanameforthecomponent
 msgid "Choose a name for the component"
 msgstr "Válasszon nevet a komponensnek!"
-
-#: lazarusidestrconsts.lischooseanexamplefile
-msgid "Choose an example file"
-msgstr "Válasszon egy példa fájlt!"
 
 #: lazarusidestrconsts.lischooseanfpcmessagefile
 msgid "Choose an FPC message file"
@@ -6985,102 +6966,13 @@ msgstr "Kód létrehozásának beállításai"
 msgid "Add path"
 msgstr "Útvonal hozzáadása"
 
-#: lazarusidestrconsts.liscodehelpbrowseexamplebutton
-msgctxt "lazarusidestrconsts.liscodehelpbrowseexamplebutton"
-msgid "Browse"
-msgstr "Tallózás"
-
-#: lazarusidestrconsts.liscodehelpconfirmreplace
-msgid "Confirm replace"
-msgstr "Csere megerősítése"
-
-#: lazarusidestrconsts.liscodehelpcreatebutton
-msgid "Create help item"
-msgstr "Súgó elem létrehozása"
-
 #: lazarusidestrconsts.liscodehelpdeletepathbutton
 msgid "Remove path"
 msgstr "Útvonal törlése"
 
-#: lazarusidestrconsts.liscodehelpdescrtag
-msgctxt "lazarusidestrconsts.liscodehelpdescrtag"
-msgid "Description"
-msgstr "Leírás"
-
-#: lazarusidestrconsts.liscodehelperrorstag
-msgctxt "lazarusidestrconsts.liscodehelperrorstag"
-msgid "Errors"
-msgstr "Hibák"
-
-#: lazarusidestrconsts.liscodehelpexampletag
-msgid "Example"
-msgstr "Példa"
-
 #: lazarusidestrconsts.liscodehelpgroupbox
 msgid "FPDoc settings"
 msgstr "FPDoc beállításai"
-
-#: lazarusidestrconsts.liscodehelphintboldformat
-msgid "Insert bold formatting tag"
-msgstr "Félkövér formázó címke beszúrása"
-
-#: lazarusidestrconsts.liscodehelphintinsertcodetag
-msgid "Insert code formatting tag"
-msgstr "Kód formázó címke beszúrása"
-
-#: lazarusidestrconsts.liscodehelphintitalicformat
-msgid "Insert italic formatting tag"
-msgstr "Dőlt formázó címke beszúrása"
-
-#: lazarusidestrconsts.liscodehelphintremarktag
-msgid "Insert remark formatting tag"
-msgstr "Megjegyzés formázó címke beszúrása"
-
-#: lazarusidestrconsts.liscodehelphintunderlineformat
-msgid "Insert underline formatting tag"
-msgstr "Aláhúzott formázó címke beszúrása"
-
-#: lazarusidestrconsts.liscodehelphintvartag
-msgid "Insert var formatting tag"
-msgstr "Változó formázó címke beszúrása"
-
-#: lazarusidestrconsts.liscodehelpinherited
-msgctxt "lazarusidestrconsts.liscodehelpinherited"
-msgid "Inherited"
-msgstr "Öröklött"
-
-#: lazarusidestrconsts.liscodehelpinsertalink
-msgid "Insert a link ..."
-msgstr "Link beszúrása ..."
-
-#: lazarusidestrconsts.liscodehelpinsertparagraphformattingtag
-msgid "Insert paragraph formatting tag"
-msgstr "Bekezdés formázó címke beszúrása"
-
-#: lazarusidestrconsts.liscodehelpmainformcaption
-msgctxt "lazarusidestrconsts.liscodehelpmainformcaption"
-msgid "FPDoc Editor"
-msgstr "FPDoc szerkesztő"
-
-#: lazarusidestrconsts.liscodehelpnoinheriteddescriptionfound
-msgid "(no inherited description found)"
-msgstr "(öröklött leírás nem található)"
-
-#: lazarusidestrconsts.liscodehelpnotagcaption
-msgid "<NONE>"
-msgstr "<SEMMI>"
-
-#: lazarusidestrconsts.liscodehelpseealsotag
-msgid "See also"
-msgstr "Lásd még"
-
-#: lazarusidestrconsts.liscodehelpshortdescriptionof
-msgid "Short description of"
-msgstr "Rövid leírása"
-
-#: lazarusidestrconsts.liscodehelpshorttag
-msgid "Short"
-msgstr "Rövid"
 
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
 msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
@@ -8425,10 +8317,6 @@ msgstr "Fppkg beállítások visszaállítása"
 msgid "Create function"
 msgstr "Függvény létrehozása"
 
-#: lazarusidestrconsts.liscreatehelpnode
-msgid "Create Help node"
-msgstr "Súgó csomópont létrehozása"
-
 #: lazarusidestrconsts.liscreateit
 msgid "Create it"
 msgstr "Hozza létre"
@@ -9155,11 +9043,6 @@ msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr "Importálás ..."
 
-#: lazarusidestrconsts.lisdlgopen
-msgctxt "lazarusidestrconsts.lisdlgopen"
-msgid "Open ..."
-msgstr "&Megnyitás ..."
-
 #: lazarusidestrconsts.lisdoesnotexists
 #, object-pascal-format
 msgid "%s does not exist: %s"
@@ -9384,10 +9267,6 @@ msgstr "Kiegészítő súgó szerkesztése üzenetekhez"
 #: lazarusidestrconsts.liseditbuildmodes
 msgid "Edit build modes"
 msgstr ""
-
-#: lazarusidestrconsts.liseditcontexthelp
-msgid "Edit context help"
-msgstr "Tartalmi súgó szerkesztése"
 
 #: lazarusidestrconsts.liseditfpcmessagehelp
 msgid "Edit FPC Message Help ..."
@@ -9715,11 +9594,6 @@ msgstr "Hiba a csomaglista fájlból történő beolvasása közben:%s%s%s%s"
 msgid "Error reading XML"
 msgstr "Hiba XML olvasása közben"
 
-#: lazarusidestrconsts.liserrorreadingxmlfile
-#, object-pascal-format
-msgid "Error reading xml file \"%s\"%s%s"
-msgstr "Hiba az XML fájl olvasása közben: \"%s\"%s%s"
-
 #: lazarusidestrconsts.liserrors
 msgctxt "lazarusidestrconsts.liserrors"
 msgid "Errors"
@@ -9739,11 +9613,6 @@ msgstr "Hiba a form mentésekor"
 msgid "Error setting the name of a component %s to %s"
 msgstr "Hiba a(z) %s komponens nevének beállításakor erre: %s"
 
-#: lazarusidestrconsts.liserrorwritingfile
-#, object-pascal-format
-msgid "Error writing file \"%s\""
-msgstr "Hiba a fájl írása közben: \"%s\""
-
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 #, object-pascal-format
 msgid "Error writing package list to file%s%s%s%s"
@@ -9758,11 +9627,6 @@ msgstr "Minden n-dik sorszám"
 #: lazarusidestrconsts.lisexamplefile
 msgid "Example file:"
 msgstr "Példa fájl:"
-
-#: lazarusidestrconsts.lisexamplesidentifiertmyenumenumunitnameidentifierpac
-#, object-pascal-format
-msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
-msgstr "Példák:%sAzonosító%sTMyEnum.Enum%sUnitnév.Azonosító%s#Csomagnév.UnitNév.Azonosító"
 
 #: lazarusidestrconsts.lisexclude
 msgid "Exclude"
@@ -10291,15 +10155,6 @@ msgctxt "lazarusidestrconsts.lisfpdoceditor"
 msgid "FPDoc Editor"
 msgstr "FPDoc szerkesztő"
 
-#: lazarusidestrconsts.lisfpdocerrorwriting
-#, object-pascal-format
-msgid "Error writing \"%s\"%s%s"
-msgstr "Hiba írás közben: \"%s\"%s%s"
-
-#: lazarusidestrconsts.lisfpdocfpdocsyntaxerror
-msgid "FPDoc syntax error"
-msgstr "FPDoc szintaktikai hiba"
-
 #: lazarusidestrconsts.lisfpdocpackagename
 msgid "FPDoc package name:"
 msgstr "FPDoc csomagnév:"
@@ -10307,11 +10162,6 @@ msgstr "FPDoc csomagnév:"
 #: lazarusidestrconsts.lisfpdocpackagenamedefaultisprojectfilename
 msgid "FPDoc package name. Default is project file name."
 msgstr "FPDoc csomagnév. Alapértelmezett a projektfájl neve."
-
-#: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
-#, object-pascal-format
-msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
-msgstr "Szintaktikai hiba a(z) \"%s\" FPDoc elemben:%s%s"
 
 #: lazarusidestrconsts.lisfppkgcompilerproblem
 msgid "there is a problem with the Free Pascal compiler executable, "
@@ -10588,10 +10438,6 @@ msgstr ""
 msgid "Width"
 msgstr ""
 
-#: lazarusidestrconsts.lishashelp
-msgid "Has Help"
-msgstr "Van súgója"
-
 #: lazarusidestrconsts.lisheadercolors
 msgid "Header colors"
 msgstr "Fejlécek színei"
@@ -10599,10 +10445,6 @@ msgstr "Fejlécek színei"
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
 msgstr "Fejléc megjegyzés az osztályhoz"
-
-#: lazarusidestrconsts.lishelpentries
-msgid "Help entries"
-msgstr "Súgó bejegyzések"
 
 #: lazarusidestrconsts.lishelpselectordialog
 msgid "Help selector"
@@ -10756,10 +10598,6 @@ msgstr "Az IDE karbantartja az Application.Scaled (Hi-DPI) beállítást a fő u
 #: lazarusidestrconsts.lisidemaintainsthetitleinmainunit
 msgid "The IDE maintains the title in main unit."
 msgstr "Az IDE karbantartja a címet a fő unit-ban."
-
-#: lazarusidestrconsts.lisidentifier
-msgid "identifier"
-msgstr "azonosító"
 
 #: lazarusidestrconsts.lisidentifierbeginswith
 msgid "Identifier begins with ..."
@@ -11113,10 +10951,6 @@ msgstr "Makró beszúrása"
 msgid "Insert name of current procedure."
 msgstr "Aktuális eljárás nevének beszúrása."
 
-#: lazarusidestrconsts.lisinsertprintshorttag2
-msgid "Insert printshort tag"
-msgstr "PrintShort címke beszúrása"
-
 #: lazarusidestrconsts.lisinsertprocedurehead
 msgid "insert procedure head"
 msgstr "eljárás fej beszúrása"
@@ -11136,10 +10970,6 @@ msgstr "idő beszúrása"
 #: lazarusidestrconsts.lisinserttimeoptionalformatstring
 msgid "Insert time. Optional: format string."
 msgstr "Idő beszúrása. Nem kötelező: formátum karakterlánc."
-
-#: lazarusidestrconsts.lisinserturltag
-msgid "Insert url tag"
-msgstr "URL címke beszúrása"
 
 #: lazarusidestrconsts.lisinsession
 msgid "In session"
@@ -11189,10 +11019,6 @@ msgstr "Interaktív"
 #, object-pascal-format
 msgid "internal error: %s"
 msgstr "belső hiba: %s"
-
-#: lazarusidestrconsts.lisinvaliddeclaration
-msgid "Invalid Declaration"
-msgstr ""
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -11941,32 +11767,6 @@ msgstr "Revízió infó frissítése a \"Lazarus névjegye\" ablakban"
 msgid "Package distributed with Lazarus"
 msgstr ""
 
-#: lazarusidestrconsts.lisldaddlinktoinherited
-msgid "Add link to inherited"
-msgstr "Hivatkozás hozzáadása az öröklötthöz"
-
-#: lazarusidestrconsts.lisldcopyfrominherited
-msgid "Copy from inherited"
-msgstr "Másolás öröklöttből"
-
-#: lazarusidestrconsts.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
-#, object-pascal-format
-msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
-msgstr "A(z) %s nem tartalmaz érvényes FPDoc útvonalat.%sNem lehet létrehozni az FPDoc fájlt ehhez: %s"
-
-#: lazarusidestrconsts.lisldmoveentriestoinherited
-msgid "Move entries to inherited"
-msgstr "Bejegyzések áthelyezése az öröklöttbe"
-
-#: lazarusidestrconsts.lisldnovalidfpdocpath
-msgid "No valid FPDoc path"
-msgstr "Nincs érvényes FPDoc útvonal"
-
-#: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
-#, object-pascal-format
-msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
-msgstr "A(z) %s unit nem része csomagnak vagy projektnek.%sAdja hozzá a unit-ot egy csomaghoz vagy projekthez!%sAz FPDoc fájl nem hozható létre."
-
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
 msgid "Left"
@@ -12060,17 +11860,9 @@ msgstr "függvénytár elérési út"
 msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under macOS)."
 msgstr "Egy Free Pascal megosztott függvénytár (.dll Windows alatt, .so Linux alatt, .dylib MacOS X alatt)."
 
-#: lazarusidestrconsts.lislink
-msgid "Link:"
-msgstr "Hivatkozás:"
-
 #: lazarusidestrconsts.lislinkeroptions
 msgid "linker options"
 msgstr "linker beállítások"
-
-#: lazarusidestrconsts.lislinktarget
-msgid "Link target"
-msgstr "Hivatkozási cél"
 
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
@@ -14216,10 +14008,6 @@ msgstr "üres a Free Pascal fordító útvonala."
 msgid "no hints"
 msgstr "Nincs tipp"
 
-#: lazarusidestrconsts.lisnoidewindowselected
-msgid "No IDE window selected"
-msgstr "Nincs kiválaszott IDE ablak."
-
 #: lazarusidestrconsts.lisnolfmfile
 msgid "No LFM file"
 msgstr "Nincs LFM fájl"
@@ -14247,10 +14035,6 @@ msgstr "(Nincs kijelölve semmi)"
 #: lazarusidestrconsts.lisnonewfilefound
 msgid "No new file found"
 msgstr ""
-
-#: lazarusidestrconsts.lisnonodeselected
-msgid "no node selected"
-msgstr "nincs csomópont kiválasztva"
 
 #: lazarusidestrconsts.lisnopascalfile
 msgid "No Pascal file"
@@ -14609,10 +14393,6 @@ msgstr "Unit megnyitása"
 msgid "Open URL"
 msgstr "URL megnyitása"
 
-#: lazarusidestrconsts.lisopenxml
-msgid "Open XML"
-msgstr "XML megnyitása"
-
 #: lazarusidestrconsts.lisoptions
 msgctxt "lazarusidestrconsts.lisoptions"
 msgid "Options"
@@ -14683,11 +14463,6 @@ msgstr "Az 'Owner'-t már használja a TReader/TWritter. Válasszon másik nevet
 msgid "Package"
 msgstr "Csomag"
 
-#: lazarusidestrconsts.lispackage2
-#, object-pascal-format
-msgid "package %s"
-msgstr "%s csomag"
-
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
 msgstr "Csomag infó"
@@ -14726,10 +14501,6 @@ msgstr "Csomagok forrásainak könyvtárai"
 #, object-pascal-format
 msgid "packages=%s/%s units=%s/%s identifiers=%s/%s lines=%s bytes=%s"
 msgstr "csomagok=%s/%s unit-ok=%s/%s azonosítók=%s/%s sorok=%s bájtok=%s"
-
-#: lazarusidestrconsts.lispackageunit
-msgid "package unit"
-msgstr "csomag unit"
 
 #: lazarusidestrconsts.lispage
 msgctxt "lazarusidestrconsts.lispage"
@@ -14778,10 +14549,6 @@ msgstr "Beillesztés a vágólapról."
 #: lazarusidestrconsts.lispastelcolors
 msgid "Pastel Colors"
 msgstr "Pasztellszínek"
-
-#: lazarusidestrconsts.lispath
-msgid "Path"
-msgstr "Útvonal"
 
 #: lazarusidestrconsts.lispatheditbrowse
 msgctxt "lazarusidestrconsts.lispatheditbrowse"
@@ -15846,10 +15613,6 @@ msgstr "Javítsa a hibát ami az üzenetablakban látható, ez alapértelmezette
 msgid "Please open a unit before run."
 msgstr "Nyisson meg egy unit-ot futtatás előtt!"
 
-#: lazarusidestrconsts.lispleaseplacetheeditorcaretonanidentifierifthisisane
-msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
-msgstr ""
-
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "Jelöljön ki kódot, amit új eljárásba/metódusba helyezhet!"
@@ -16178,10 +15941,6 @@ msgstr "%0:s%0:s a(z) '%1:s' fájlban, a következő sorban: %2:d"
 #, object-pascal-format
 msgid "%0:s%0:s In file '%1:s' at line %2:d:%0:s%3:s"
 msgstr "%0:s%0:s a(z) '%1:s' fájlban, a következő sorban: %2:d:%0:s%3:s"
-
-#: lazarusidestrconsts.lisprojectunit
-msgid "project unit"
-msgstr "projekt unit"
 
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
@@ -17076,10 +16835,6 @@ msgstr "Állítsa be ezt a fordító üzeneteinek más nyelvre történő leford
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Set up default indentation)"
 msgstr "(Alapértelmezett behúzás beállítása)"
-
-#: lazarusidestrconsts.lisshort
-msgid "Short:"
-msgstr "Rövidítés:"
 
 #: lazarusidestrconsts.lisshortnopath
 msgid "Short, no path"
@@ -18208,11 +17963,6 @@ msgstr "A unit-nak ez a neve"
 msgid "The unit filename \"%s\" is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%sRename file lowercase?"
 msgstr "A(z) \"%s\" unit fájlneve nem kisbetűs.%sA Free Pascal fordító nem keres minden betűmérettel. Ajánlott csak kisbetűk használata a fájlnévben.%sÁtnevezi kisbetűsre?"
 
-#: lazarusidestrconsts.listheunitispartofthefpcsourcesbutthecorrespondingfpd
-#, object-pascal-format
-msgid "The unit %s is part of the FPC sources but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
-msgstr "A(z) %s unit az FPC forrásainak része, de a megfelelő FPDoc xml fájl nincs meg.%sVagy az fpcdocs könyvtár nem lett hozzáadva a keresési útvonalakhoz vagy a unit még nincs dokumentálva.%sAz FPC forrásainak FPDoc fájljai letölthetők innen: %s%sAdja meg a könyvtárat az FPDoc szerkesztő beállításai között.%sÚj fájl létrehozásához a könyvtárnak írhatónak kell lennie."
-
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
 #, object-pascal-format
 msgid "The unit %s is used by other files.%sUpdate references automatically?"
@@ -18292,10 +18042,6 @@ msgstr "Cím"
 #| msgid "Title in taskbar shows for example: project1.lpi - Lazarus"
 msgid "Show the custom IDE title before the IDE's name and other info in the title. Example: project1 - Lazarus."
 msgstr "A cím a tálcán így jelenik meg: project1.lpi - Lazarus"
-
-#: lazarusidestrconsts.listitleleaveemptyfordefault
-msgid "Title (leave empty for default)"
-msgstr "Cím (üres = alapértelmezett)"
 
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
@@ -19677,10 +19423,6 @@ msgstr "Típus"
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
 msgstr "Revízió:"
-
-#: lazarusidestrconsts.rsselectaninheritedentry
-msgid "Select an inherited entry"
-msgstr "Minden öröklött bejegyzés kijelölése"
 
 #: lazarusidestrconsts.rsshowabspath
 msgid "Absolute path"
@@ -21597,4 +21339,9 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Változatinformációk"
+
+#: lazarusidestrconsts.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr "%s csomag"
 
