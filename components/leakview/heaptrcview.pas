@@ -84,7 +84,6 @@ resourcestring
   StackTraceFormat         = 'Leak: %d bytes x %d times'; // number of bytes leaked, leaks count
   StackTraceFormatSingle   = 'Leak: %d bytes';            // number of bytes leaked
   StackLineFormatWithFile  = '%s file: %s : %d; ';        // stack addr, filename (no path), line number
-  StackLineFormat          = '%s';                        // stack addr
 
   strTotalMemAlloc      = 'Total Mem allocated: %d';
   strLeakingMemSize     = 'Leaking Mem Size: %d';
@@ -484,7 +483,7 @@ begin
     with Line do
       if FileName <> ''
         then Result := Format(StackLineFormatWithFile, ['$'+IntToHex(Addr, sizeof(Pointer)*2), ExtractFileName(FileName), LineNum])
-        else Result := Format(StackLineFormat, ['$'+IntToHex(Addr, sizeof(Pointer)*2)]);
+        else Result := Format('%s', ['$'+IntToHex(Addr, sizeof(Pointer)*2)]);
 end;
 
 procedure THeapTrcViewForm.SaveState(cfg:TXMLConfig);
