@@ -8177,9 +8177,12 @@ var
   f: TWatchResultDataFieldInfo;
   i: int64;
 begin
+  Result := FValue <> nil;
+  if Result then
+    exit;
   ParentVal := FindParentValue;
   Result := (ParentVal <> nil) and (ParentVal.FValue <> nil);
-  if (not Result) or (FValue <> nil) then
+  if (not Result) then
     exit;
 
   if (ParentVal.FValue.ValueKind = rdkStruct) then begin
