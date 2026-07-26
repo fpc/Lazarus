@@ -79,7 +79,6 @@ resourcestring
   lisKey = 'Key';
   lisValue = 'Value';
   lisVariable = 'Variable';
-  lisPath = 'Path';
   lisId = 'ID';
   lisPage = 'Page';
   lisPackage = 'Package';
@@ -5312,16 +5311,6 @@ resourcestring
   lisDestructorCode = 'Destructor code';
   lisCheckOptions = 'Check options';
   lisNewConsoleApplication = 'New console application';
-
-  // Edit context help dialog (IDEContextHelpEdit.pas)
-  lisHelpEntries = 'Help entries';
-  lisCEIsARootControl = 'Is a root control';
-  lisHasHelp = 'Has Help';
-  lisCreateHelpNode = 'Create Help node';
-  lisDlgOpen = 'Open ...';
-  lisEditContextHelp = 'Edit context help';
-  lisNoNodeSelected = 'no node selected';
-  lisNoIDEWindowSelected = 'No IDE window selected';
 
   // Messages Editor dialog (MsgViewEditor.pas)
   lisAddNewSet = 'Add new set';
