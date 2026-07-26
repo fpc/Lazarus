@@ -4241,13 +4241,12 @@ begin
     exit;
   end;
 
-  gdk_screen_get_monitor_geometry(AScreen, AMonitorIdx, @AMonitorRect);
-  AWmm := gdk_screen_get_monitor_width_mm(AScreen, AMonitorIdx);
-  AHmm := gdk_screen_get_monitor_height_mm(AScreen, AMonitorIdx);
-
   case dpiType of
     MDT_RAW_DPI:
     begin
+      gdk_screen_get_monitor_geometry(AScreen, AMonitorIdx, @AMonitorRect);
+      AWmm := gdk_screen_get_monitor_width_mm(AScreen, AMonitorIdx);
+      AHmm := gdk_screen_get_monitor_height_mm(AScreen, AMonitorIdx);
       if AWmm > 0 then
         dpiX := Round(AMonitorRect.width * 25.4 / AWmm)
       else
@@ -4259,21 +4258,8 @@ begin
     end;
     MDT_EFFECTIVE_DPI, MDT_ANGULAR_DPI:
     begin
-      if AFallback > 96 then
-      begin
-        dpiX := AFallback;
-        dpiY := AFallback;
-      end else
-      begin
-        if AWmm > 0 then
-          dpiX := Round(AMonitorRect.width * 25.4 / AWmm)
-        else
-          dpiX := AFallback;
-        if AHmm > 0 then
-          dpiY := Round(AMonitorRect.height * 25.4 / AHmm)
-        else
-          dpiY := AFallback;
-      end;
+      dpiX := AFallback;
+      dpiY := AFallback;
     end;
   end;
 end;
