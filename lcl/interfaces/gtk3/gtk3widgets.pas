@@ -11648,7 +11648,33 @@ var
   ListStore: PGtkTreeModel;
   Path: PGtkTreePath;
   AState: TCheckBoxState;
+  AEvent: PGdkEvent;
+  SkipToggle: Boolean;
+  ARect: TGdkRectangle;
+  Alloc: TGtkAllocation;
+  AX, AY: gint;
 begin
+  AEvent := gtk_get_current_event;
+  if AEvent <> nil then
+  begin
+    SkipToggle := AEvent^.type_ = GDK_KEY_PRESS;
+    gdk_event_free(AEvent);
+    if SkipToggle then
+    begin
+      Val(arg1, Param);
+      TreeView := PGtkTreeView(TGtk3CheckListBox(AData).GetContainerWidget);
+      Path := gtk_tree_path_new_from_indices(Param, [-1]);
+      if Path <> nil then
+      begin
+        TreeView^.get_background_area(Path, nil, @ARect);
+        TreeView^.convert_bin_window_to_widget_coords(0, ARect.y, @AX, @AY);
+        PGtkWidget(TreeView)^.get_allocation(@Alloc);
+        gtk_widget_queue_draw_area(PGtkWidget(TreeView), 0, AY, Alloc.width, ARect.height);
+        gtk_tree_path_free(Path);
+      end;
+      Exit;
+    end;
+  end;
   Val(arg1, Param);
 
   TreeView := PGtkTreeView(TGtk3CheckListBox(AData).GetContainerWidget);
