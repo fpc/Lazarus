@@ -1123,7 +1123,7 @@ type
     // allocation-space (what LCL tracks) to content-space (what resize() takes).
     ShadowW: gint;
     ShadowH: gint;
-    WaylandChromeApplied: Boolean;
+    WaylandChromeTries: gint;
     HaveLastMove: Boolean;
     LastMoveX: gint;
     LastMoveY: gint;
@@ -15032,7 +15032,7 @@ begin
       {$ENDIF}
     end;
 
-    if not TGtk3Window(ACtl).FResizeState.WaylandChromeApplied and
+    if (TGtk3Window(ACtl).FResizeState.WaylandChromeTries < 5) and
        (TGtk3Window(ACtl).FResizeState.ShadowH > 0) and Assigned(ACtl.LCLObject) and
        (ACtl.LCLObject.Width > 0) and (ACtl.LCLObject.Height > 0) and
        (SzH < ACtl.LCLObject.Height div 2) and (ACtl.LCLObject is TCustomForm) and
@@ -15041,11 +15041,12 @@ begin
        not (csDesigning in ACtl.LCLObject.ComponentState) and
        (AState * [GDK_WINDOW_STATE_ICONIFIED, GDK_WINDOW_STATE_MAXIMIZED, GDK_WINDOW_STATE_FULLSCREEN] = []) then
     begin
-      TGtk3Window(ACtl).FResizeState.WaylandChromeApplied := True;
+      Inc(TGtk3Window(ACtl).FResizeState.WaylandChromeTries);
       {$IFDEF GTK3DEBUGSIZE}
-      writeln(Format('[%d] WindowSizeAllocate %s Wayland CHROME-COMPENSATE resize(%d, %d) [LCL=%dx%d shadow=%dx%d content_was=%dx%d]',
+      writeln(Format('[%d] WindowSizeAllocate %s Wayland CHROME-COMPENSATE resize(%d, %d) try=%d [LCL=%dx%d shadow=%dx%d content_was=%dx%d]',
         [GetTickCount64, dbgsName(ACtl.LCLObject),
-         ACtl.LCLObject.Width, ACtl.LCLObject.Height, ACtl.LCLObject.Width, ACtl.LCLObject.Height,
+         ACtl.LCLObject.Width, ACtl.LCLObject.Height,
+         TGtk3Window(ACtl).FResizeState.WaylandChromeTries, ACtl.LCLObject.Width, ACtl.LCLObject.Height,
          TGtk3Window(ACtl).FResizeState.ShadowW, TGtk3Window(ACtl).FResizeState.ShadowH, SzW, SzH]));
       {$ENDIF}
       PGtkWindow(AWidget)^.resize(ACtl.LCLObject.Width, ACtl.LCLObject.Height + MenuH);
@@ -15104,15 +15105,16 @@ begin
   end;
 
   if Gtk3WidgetSet.IsWayland and Gtk3IsGtkWindow(AWidget) and AWidget^.get_mapped and
-     not TGtk3Window(ACtl).FResizeState.WaylandChromeApplied and
+     (TGtk3Window(ACtl).FResizeState.WaylandChromeTries < 5) and
      (TGtk3Window(ACtl).FResizeState.ShadowH > 0) and Assigned(ACtl.LCLObject) and
      (ACtl.LCLObject.Width > 0) and (ACtl.LCLObject.Height > 0) and
      (SzH < ACtl.LCLObject.Height) then
   begin
-    TGtk3Window(ACtl).FResizeState.WaylandChromeApplied := True;
+    Inc(TGtk3Window(ACtl).FResizeState.WaylandChromeTries);
     {$IFDEF GTK3DEBUGSIZE}
-    writeln(Format('[%d] WindowSizeAllocate %s Wayland CHROME-COMPENSATE resize(%d, %d) [LCL=%dx%d shadow=%dx%d content_was=%dx%d]',
-      [GetTickCount64, dbgsName(ACtl.LCLObject), ACtl.LCLObject.Width, ACtl.LCLObject.Height, ACtl.LCLObject.Width, ACtl.LCLObject.Height,
+    writeln(Format('[%d] WindowSizeAllocate %s Wayland CHROME-COMPENSATE resize(%d, %d) try=%d [LCL=%dx%d shadow=%dx%d content_was=%dx%d]',
+      [GetTickCount64, dbgsName(ACtl.LCLObject), ACtl.LCLObject.Width, ACtl.LCLObject.Height,
+       TGtk3Window(ACtl).FResizeState.WaylandChromeTries, ACtl.LCLObject.Width, ACtl.LCLObject.Height,
        TGtk3Window(ACtl).FResizeState.ShadowW, TGtk3Window(ACtl).FResizeState.ShadowH, SzW, SzH]));
     {$ENDIF}
     PGtkWindow(AWidget)^.resize(ACtl.LCLObject.Width, ACtl.LCLObject.Height + MenuH);
