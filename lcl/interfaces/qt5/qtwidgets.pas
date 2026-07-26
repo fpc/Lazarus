@@ -14499,6 +14499,13 @@ begin
       inherited signalSelectionChanged();
     end;
   end else
+  if (QEvent_type(Event) = QEventKeyPress) and
+    (QKeyEvent_key(QKeyEventH(Event)) = QtKey_Space) and
+    (QKeyEvent_modifiers(QKeyEventH(Event)) and QtControlModifier = 0) then
+  begin
+    inherited EventFilter(Sender, Event);
+    Result := True;
+  end else
   if (QEvent_type(Event) = QEventMouseButtonDblClick) then
     // issue #25089
   else
