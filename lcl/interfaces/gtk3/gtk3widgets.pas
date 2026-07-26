@@ -13136,7 +13136,6 @@ begin
         BeginUpdate;
         try
           {%H-}PGtkEntry(get_child)^.Text := Pgchar(AValue);
-          g_idle_remove_by_data(Self);
         finally
           EndUpdate;
         end;
@@ -13346,28 +13345,17 @@ begin
   end;
 end;
 
-function GtkComboBoxEntryChangedIdle(AData: gpointer): gboolean; cdecl;
+class procedure TGtk3ComboBox.EntryChanged(AEntry: PGtkEntry; AData: gpointer); cdecl;
 var
   Msg: TLMessage;
 begin
-  Result := False; //G_SOURCE_REMOVE - one-shot
   if AData = nil then
-    Exit;
+    exit;
   if TGtk3Widget(AData).InUpdate then
-    Exit;
+    exit;
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
   Msg.Msg := LM_CHANGED;
   TGtk3Widget(AData).DeliverMessage(Msg);
-end;
-
-class procedure TGtk3ComboBox.EntryChanged(AEntry: PGtkEntry; AData: gpointer); cdecl;
-begin
-  if AData = nil then
-    exit;
-  if TGtk3Widget(AData).InUpdate then
-    exit;
-  g_idle_remove_by_data(AData);
-  g_idle_add(@GtkComboBoxEntryChangedIdle, AData);
 end;
 
 
