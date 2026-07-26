@@ -461,11 +461,13 @@ type
     function GetStaticBorderStyle: TStaticBorderStyle;
     procedure SetAlignment(AValue: TAlignment);
     procedure SetStaticBorderStyle(AValue: TStaticBorderStyle);
+    class function Gtk3StaticTextDrawBackground(aWidget: PGtkWidget; cr: Pcairo_t; data: gpointer): gboolean; cdecl; static;
   protected
     function getText: String; override;
     procedure setText(const AValue: String); override;
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
   public
+    procedure InitializeWidget; override;
     procedure OffsetMousePos(const aGlobalX, aGlobalY: double; APoint: PPoint); override;
     property Alignment: TAlignment read GetAlignment write SetAlignment;
     property StaticBorderStyle: TStaticBorderStyle read GetStaticBorderStyle write SetStaticBorderStyle;
@@ -8047,6 +8049,40 @@ begin
 end;
 
 { TGtk3StaticText }
+
+class function TGtk3StaticText.Gtk3StaticTextDrawBackground(aWidget: PGtkWidget; cr: Pcairo_t; data: gpointer): gboolean; cdecl;
+var
+  ALCL: TGtk3Widget;
+  BgColor: LongWord;
+  W, H: gint;
+begin
+  Result := False;
+  ALCL := TGtk3Widget(data);
+  if not Assigned(ALCL) or not Assigned(ALCL.LCLObject) then
+    exit;
+  W := aWidget^.get_allocated_width;
+  H := aWidget^.get_allocated_height;
+  if (W <= 0) or (H <= 0) then
+    exit;
+  if csOpaque in ALCL.LCLObject.ControlStyle then
+    BgColor := ColorToRGB(ALCL.LCLObject.GetColorResolvingParent)
+  else
+  if ALCL.LCLObject.Parent <> nil then
+    BgColor := ColorToRGB(ALCL.LCLObject.Parent.GetColorResolvingParent)
+  else
+    BgColor := ColorToRGB(clBtnFace);
+  cairo_set_source_rgba(cr, (BgColor and $FF) / 255, ((BgColor shr 8) and $FF) / 255,
+    ((BgColor shr 16) and $FF) / 255, 1.0);
+  cairo_rectangle(cr, 0, 0, W, H);
+  cairo_fill(cr);
+end;
+
+procedure TGtk3StaticText.InitializeWidget;
+begin
+  inherited InitializeWidget;
+  g_signal_connect_data(GetContainerWidget, 'draw',
+    TGCallback(@Gtk3StaticTextDrawBackground), Self, nil, G_CONNECT_DEFAULT);
+end;
 
 function TGtk3StaticText.GetAlignment: TAlignment;
 var
