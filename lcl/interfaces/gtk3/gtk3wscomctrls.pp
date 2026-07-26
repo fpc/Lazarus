@@ -446,6 +446,11 @@ var
   ListItem: TLVItemHack;
   AEvent: PGdkEvent;
   SkipToggle: Boolean;
+  TreeView: PGtkTreeView;
+  Path: PGtkTreePath;
+  ARect: TGdkRectangle;
+  Alloc: TGtkAllocation;
+  AX, AY: gint;
 begin
   AEvent := gtk_get_current_event;
   if AEvent <> nil then
@@ -467,7 +472,17 @@ begin
     if Assigned(LV.OnItemChecked) then
       LV.OnItemChecked(TGtk3ListView(aData).LCLObject, LV.Items.Item[Index]);
 
-    gtk_widget_queue_draw(TGtk3ListView(aData).getContainerWidget);
+    TreeView := PGtkTreeView(TGtk3ListView(aData).getContainerWidget);
+    Path := gtk_tree_path_new_from_string(PathStr);
+    if Path <> nil then
+    begin
+      TreeView^.get_background_area(Path, nil, @ARect);
+      TreeView^.convert_bin_window_to_widget_coords(0, ARect.y, @AX, @AY);
+      PGtkWidget(TreeView)^.get_allocation(@Alloc);
+      gtk_widget_queue_draw_area(PGtkWidget(TreeView), 0, AY, Alloc.width, ARect.height);
+      gtk_tree_path_free(Path);
+    end else
+      gtk_widget_queue_draw(PGtkWidget(TreeView));
   end;
 end;
 
