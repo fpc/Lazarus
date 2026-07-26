@@ -55,15 +55,25 @@ GDIObj := {%H-}PGDIObject(BitImage.Handle);
   end;
 end;
 
-procedure Gtk2_ItemCheckedChanged(renderer: PGtkCellRendererToggle; PathStr: Pgchar; WidgetInfo: PWidgetInfo);cdecl;
+procedure Gtk2_ItemCheckedChanged({%H-}renderer: PGtkCellRendererToggle; PathStr: Pgchar; WidgetInfo: PWidgetInfo);cdecl;
 var
   LV: TLVHack;
   Index: Integer;
   ListItem: TLVItemHack;
-  ARect: TGdkRectangle;
-  R: TRect;
-  x, y, cellw, cellh: gint;
+  AEvent: PGdkEvent;
+  SkipToggle: Boolean;
 begin
+  AEvent := gtk_get_current_event;
+  if AEvent <> nil then
+  begin
+    SkipToggle := (AEvent^._type = GDK_KEY_PRESS) and
+      ((AEvent^.key.keyval = GDK_KEY_Return) or
+       (AEvent^.key.keyval = GDK_KEY_KP_Enter) or
+       (AEvent^.key.keyval = GDK_KEY_ISO_Enter));
+    gdk_event_free(AEvent);
+    if SkipToggle then
+      Exit;
+  end;
   LV := TLVHack(WidgetInfo^.LCLObject);
   Index := StrToInt(PathStr);
   ListItem := TLVItemHack(LV.Items.Item[Index]);
@@ -73,14 +83,7 @@ begin
     if Assigned(LV.OnItemChecked) then
       LV.OnItemChecked(TListView(WidgetInfo^.LCLObject), LV.Items.Item[Index]);
 
-    // we must update renderer row, otherwise visually it looks different
-    // if we change toggle state by keyboard (eg. pressing Space key)
-    R := ListItem.DisplayRect(drBounds);
-    ARect := GdkRectFromRect(R);
-    gtk_cell_renderer_get_size(PGtkCellRenderer(renderer),
-      WidgetInfo^.CoreWidget, @ARect, @x,@y, @cellw, @cellh);
-    with R do
-      gtk_widget_queue_draw_area(WidgetInfo^.CoreWidget, Left, Top, cellW, cellH);
+    gtk_widget_queue_draw(WidgetInfo^.CoreWidget);
   end;
 end;
 
