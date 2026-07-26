@@ -7010,6 +7010,10 @@ msgstr "Přidat cestu"
 msgid "Remove path"
 msgstr "Odstranit cestu"
 
+#: lazarusidestrconsts.liscodehelpdescrtag
+msgid "Description"
+msgstr ""
+
 #: lazarusidestrconsts.liscodehelpgroupbox
 msgid "FPDoc settings"
 msgstr "Nastavení FPDoc"
@@ -9634,10 +9638,6 @@ msgstr "Chyba analýzy komponentového proudu lfm."
 msgid "Error reading package list from file%s%s%s%s"
 msgstr "Chyba načítání seznamu balíčků ze souboru%s%s%s%s"
 
-#: lazarusidestrconsts.liserrorreadingxml
-msgid "Error reading XML"
-msgstr "Chyba načítání XML"
-
 #: lazarusidestrconsts.liserrors
 msgctxt "lazarusidestrconsts.liserrors"
 msgid "Errors"
@@ -9656,6 +9656,11 @@ msgstr "Chyba během ukládání formuláře"
 #, object-pascal-format
 msgid "Error setting the name of a component %s to %s"
 msgstr "Chyba nastavení jména komponenty %s na %s"
+
+#: lazarusidestrconsts.liserrorwritingfile
+#, object-pascal-format
+msgid "Error writing file \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 #, object-pascal-format
@@ -14532,6 +14537,11 @@ msgstr "'Owner' je již použit v TReader/TWriter. Prosím zvolte jiné jméno."
 #: lazarusidestrconsts.lispackage
 msgid "Package"
 msgstr "Balíček"
+
+#: lazarusidestrconsts.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr "balíček %s"
 
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
@@ -21397,9 +21407,4 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Informace o verzi"
-
-#: lazarusidestrconsts.lispackage2
-#, object-pascal-format
-msgid "package %s"
-msgstr "balíček %s"
 

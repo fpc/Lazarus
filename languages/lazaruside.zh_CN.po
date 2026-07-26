@@ -6897,6 +6897,10 @@ msgstr "添加路径"
 msgid "Remove path"
 msgstr "移除路径"
 
+#: lazarusidestrconsts.liscodehelpdescrtag
+msgid "Description"
+msgstr ""
+
 #: lazarusidestrconsts.liscodehelpgroupbox
 msgid "FPDoc settings"
 msgstr "FPDoc 设置"
@@ -9496,10 +9500,6 @@ msgstr "分析lfm组件流时错误."
 msgid "Error reading package list from file%s%s%s%s"
 msgstr "错误读取软件包列表从文件%s%s%s%s"
 
-#: lazarusidestrconsts.liserrorreadingxml
-msgid "Error reading XML"
-msgstr "读取XML出错"
-
 #: lazarusidestrconsts.liserrors
 msgctxt "lazarusidestrconsts.liserrors"
 msgid "Errors"
@@ -9518,6 +9518,11 @@ msgstr "保存窗体错误"
 #, object-pascal-format
 msgid "Error setting the name of a component %s to %s"
 msgstr "设置组件的名称%s到%s错误"
+
+#: lazarusidestrconsts.liserrorwritingfile
+#, object-pascal-format
+msgid "Error writing file \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 #, object-pascal-format
@@ -14307,6 +14312,11 @@ msgstr "'Owner'已经被TReader/TWriter使用.请选择另一个名称."
 #: lazarusidestrconsts.lispackage
 msgid "Package"
 msgstr "软件包"
+
+#: lazarusidestrconsts.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr "软件包%s"
 
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
@@ -21140,9 +21150,4 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "版本信息"
-
-#: lazarusidestrconsts.lispackage2
-#, object-pascal-format
-msgid "package %s"
-msgstr "软件包%s"
 

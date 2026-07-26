@@ -6906,6 +6906,10 @@ msgstr "Yol ekle"
 msgid "Remove path"
 msgstr "Yolu kaldır"
 
+#: lazarusidestrconsts.liscodehelpdescrtag
+msgid "Description"
+msgstr ""
+
 #: lazarusidestrconsts.liscodehelpgroupbox
 msgid "FPDoc settings"
 msgstr "FPDoc ayarları"
@@ -9506,10 +9510,6 @@ msgstr "Lfm bileşen akışının ayrıştırılması sırasında hata oluştu."
 msgid "Error reading package list from file%s%s%s%s"
 msgstr "%s%s%s%s dosyasından paket listesi okunurken hata oluştu"
 
-#: lazarusidestrconsts.liserrorreadingxml
-msgid "Error reading XML"
-msgstr "XML okunurken hata oluştu"
-
 #: lazarusidestrconsts.liserrors
 msgctxt "lazarusidestrconsts.liserrors"
 msgid "Errors"
@@ -9528,6 +9528,11 @@ msgstr "Form kaydetme hatası"
 #, object-pascal-format
 msgid "Error setting the name of a component %s to %s"
 msgstr "%s bileşeninin adını %s olarak ayarlama hatası"
+
+#: lazarusidestrconsts.liserrorwritingfile
+#, object-pascal-format
+msgid "Error writing file \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 #, object-pascal-format
@@ -14306,6 +14311,11 @@ msgstr "'Sahibi' zaten TReader / TWriter tarafından kullanılıyor, lütfen ba�
 #: lazarusidestrconsts.lispackage
 msgid "Package"
 msgstr "Paket"
+
+#: lazarusidestrconsts.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr "paket %s"
 
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
@@ -21132,9 +21142,4 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versiyon bilgisi"
-
-#: lazarusidestrconsts.lispackage2
-#, object-pascal-format
-msgid "package %s"
-msgstr "paket %s"
 

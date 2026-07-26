@@ -7076,6 +7076,10 @@ msgstr "Afegeix trajectòria"
 msgid "Remove path"
 msgstr ""
 
+#: lazarusidestrconsts.liscodehelpdescrtag
+msgid "Description"
+msgstr ""
+
 #: lazarusidestrconsts.liscodehelpgroupbox
 msgid "FPDoc settings"
 msgstr ""
@@ -9699,10 +9703,6 @@ msgstr ""
 msgid "Error reading package list from file%s%s%s%s"
 msgstr "S'ha produït un error mentre es llegia la llista de paquets des del fitxer%s%s%s%s"
 
-#: lazarusidestrconsts.liserrorreadingxml
-msgid "Error reading XML"
-msgstr ""
-
 #: lazarusidestrconsts.liserrors
 msgctxt "lazarusidestrconsts.liserrors"
 msgid "Errors"
@@ -9720,6 +9720,11 @@ msgstr ""
 #: lazarusidestrconsts.liserrorsettingthenameofacomponentto
 #, object-pascal-format
 msgid "Error setting the name of a component %s to %s"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorwritingfile
+#, object-pascal-format
+msgid "Error writing file \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
@@ -14623,6 +14628,11 @@ msgstr ""
 #: lazarusidestrconsts.lispackage
 msgid "Package"
 msgstr "Paquet"
+
+#: lazarusidestrconsts.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispackageinfo
 #, fuzzy
@@ -21653,9 +21663,4 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Informació de la versió"
-
-#: lazarusidestrconsts.lispackage2
-#, object-pascal-format
-msgid "package %s"
-msgstr ""
 

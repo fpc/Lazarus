@@ -7091,6 +7091,10 @@ msgstr "Añadir ruta"
 msgid "Remove path"
 msgstr "Eliminar ruta"
 
+#: lazarusidestrconsts.liscodehelpdescrtag
+msgid "Description"
+msgstr ""
+
 #: lazarusidestrconsts.liscodehelpgroupbox
 msgid "FPDoc settings"
 msgstr "Ajustes FPDoc"
@@ -9734,10 +9738,6 @@ msgstr "Error al analizar el flujo (stream) del componente lfm."
 msgid "Error reading package list from file%s%s%s%s"
 msgstr "Error al leer lista de paquetes del archivo%s%s%s%s"
 
-#: lazarusidestrconsts.liserrorreadingxml
-msgid "Error reading XML"
-msgstr "Error al leer XML"
-
 #: lazarusidestrconsts.liserrors
 msgctxt "lazarusidestrconsts.liserrors"
 msgid "Errors"
@@ -9756,6 +9756,11 @@ msgstr "Error al grabar el formulario"
 #, object-pascal-format
 msgid "Error setting the name of a component %s to %s"
 msgstr "Error al cambiar el nombre del componente de %s a %s"
+
+#: lazarusidestrconsts.liserrorwritingfile
+#, object-pascal-format
+msgid "Error writing file \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 #, object-pascal-format
@@ -14641,6 +14646,11 @@ msgstr "'Propietario' ya es usado por TReader/TWriter. Por favor, escoja otro no
 #: lazarusidestrconsts.lispackage
 msgid "Package"
 msgstr "Paquete"
+
+#: lazarusidestrconsts.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr "paquete %s"
 
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
@@ -21538,9 +21548,4 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Información de versión"
-
-#: lazarusidestrconsts.lispackage2
-#, object-pascal-format
-msgid "package %s"
-msgstr "paquete %s"
 

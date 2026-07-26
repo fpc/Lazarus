@@ -6959,6 +6959,10 @@ msgstr "Додати шлях"
 msgid "Remove path"
 msgstr "Видалити шлях"
 
+#: lazarusidestrconsts.liscodehelpdescrtag
+msgid "Description"
+msgstr ""
+
 #: lazarusidestrconsts.liscodehelpgroupbox
 msgid "FPDoc settings"
 msgstr "Параметри FPDoc"
@@ -9566,10 +9570,6 @@ msgstr "Помилка аналізу потоку lfm компонента"
 msgid "Error reading package list from file%s%s%s%s"
 msgstr "Помилка читання списку пакунків з файлу%s%s%s%s"
 
-#: lazarusidestrconsts.liserrorreadingxml
-msgid "Error reading XML"
-msgstr "Помилка читання XML"
-
 #: lazarusidestrconsts.liserrors
 msgctxt "lazarusidestrconsts.liserrors"
 msgid "Errors"
@@ -9588,6 +9588,11 @@ msgstr "Помилка збереження форми"
 #, object-pascal-format
 msgid "Error setting the name of a component %s to %s"
 msgstr "Помилка задання назви компонента %s на %s"
+
+#: lazarusidestrconsts.liserrorwritingfile
+#, object-pascal-format
+msgid "Error writing file \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 #, object-pascal-format
@@ -14425,6 +14430,11 @@ msgstr "'Власник' вже використовується в TReader/TWri
 #: lazarusidestrconsts.lispackage
 msgid "Package"
 msgstr "Пакунок"
+
+#: lazarusidestrconsts.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr "пакунок %s"
 
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
@@ -21309,9 +21319,4 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Інформація про версію"
-
-#: lazarusidestrconsts.lispackage2
-#, object-pascal-format
-msgid "package %s"
-msgstr "пакунок %s"
 

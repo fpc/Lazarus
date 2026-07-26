@@ -7074,6 +7074,10 @@ msgstr "パス追加"
 msgid "Remove path"
 msgstr "パスを削除"
 
+#: lazarusidestrconsts.liscodehelpdescrtag
+msgid "Description"
+msgstr ""
+
 #: lazarusidestrconsts.liscodehelpgroupbox
 msgid "FPDoc settings"
 msgstr "FPDocの設定"
@@ -9702,10 +9706,6 @@ msgstr "lfmコンポーネントストリームの構文解析中にエラー"
 msgid "Error reading package list from file%s%s%s%s"
 msgstr "ファイル%s%s%s%sからパッケージリストを読み取り中にエラー"
 
-#: lazarusidestrconsts.liserrorreadingxml
-msgid "Error reading XML"
-msgstr "XMLの読み取り中にエラー"
-
 #: lazarusidestrconsts.liserrors
 msgctxt "lazarusidestrconsts.liserrors"
 msgid "Errors"
@@ -9724,6 +9724,11 @@ msgstr "フォームを保存する際にエラー"
 #, object-pascal-format
 msgid "Error setting the name of a component %s to %s"
 msgstr "コンポーネントの名前を %s から %sに変更中にエラー"
+
+#: lazarusidestrconsts.liserrorwritingfile
+#, object-pascal-format
+msgid "Error writing file \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 #, object-pascal-format
@@ -14614,6 +14619,11 @@ msgstr "'Owner'は既にTReaderもしくはTWriterに使用されています。
 #: lazarusidestrconsts.lispackage
 msgid "Package"
 msgstr "パッケージ"
+
+#: lazarusidestrconsts.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr "パッケージ %s"
 
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
@@ -21539,9 +21549,4 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "バージョン情報"
-
-#: lazarusidestrconsts.lispackage2
-#, object-pascal-format
-msgid "package %s"
-msgstr "パッケージ %s"
 

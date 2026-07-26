@@ -7092,6 +7092,10 @@ msgstr "Pad toevoegen"
 msgid "Remove path"
 msgstr "Verwijder pad"
 
+#: lazarusidestrconsts.liscodehelpdescrtag
+msgid "Description"
+msgstr ""
+
 #: lazarusidestrconsts.liscodehelpgroupbox
 msgid "FPDoc settings"
 msgstr ""
@@ -9731,10 +9735,6 @@ msgstr "Fout bij het verwerken van de lfm componenten stream."
 msgid "Error reading package list from file%s%s%s%s"
 msgstr "Error bij lezen pakket lijst uit bestand%s%s%s%s"
 
-#: lazarusidestrconsts.liserrorreadingxml
-msgid "Error reading XML"
-msgstr ""
-
 #: lazarusidestrconsts.liserrors
 msgctxt "lazarusidestrconsts.liserrors"
 msgid "Errors"
@@ -9752,6 +9752,11 @@ msgstr ""
 #: lazarusidestrconsts.liserrorsettingthenameofacomponentto
 #, object-pascal-format
 msgid "Error setting the name of a component %s to %s"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorwritingfile
+#, object-pascal-format
+msgid "Error writing file \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
@@ -14676,6 +14681,11 @@ msgstr ""
 #: lazarusidestrconsts.lispackage
 msgid "Package"
 msgstr "Pakket"
+
+#: lazarusidestrconsts.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispackageinfo
 #, fuzzy
@@ -21729,9 +21739,4 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versie informatie"
-
-#: lazarusidestrconsts.lispackage2
-#, object-pascal-format
-msgid "package %s"
-msgstr ""
 

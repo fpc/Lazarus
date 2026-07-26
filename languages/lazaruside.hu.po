@@ -6970,6 +6970,10 @@ msgstr "Útvonal hozzáadása"
 msgid "Remove path"
 msgstr "Útvonal törlése"
 
+#: lazarusidestrconsts.liscodehelpdescrtag
+msgid "Description"
+msgstr ""
+
 #: lazarusidestrconsts.liscodehelpgroupbox
 msgid "FPDoc settings"
 msgstr "FPDoc beállításai"
@@ -9590,10 +9594,6 @@ msgstr "Hiba .lfm komponens folyam elemzése közben."
 msgid "Error reading package list from file%s%s%s%s"
 msgstr "Hiba a csomaglista fájlból történő beolvasása közben:%s%s%s%s"
 
-#: lazarusidestrconsts.liserrorreadingxml
-msgid "Error reading XML"
-msgstr "Hiba XML olvasása közben"
-
 #: lazarusidestrconsts.liserrors
 msgctxt "lazarusidestrconsts.liserrors"
 msgid "Errors"
@@ -9612,6 +9612,11 @@ msgstr "Hiba a form mentésekor"
 #, object-pascal-format
 msgid "Error setting the name of a component %s to %s"
 msgstr "Hiba a(z) %s komponens nevének beállításakor erre: %s"
+
+#: lazarusidestrconsts.liserrorwritingfile
+#, object-pascal-format
+msgid "Error writing file \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 #, object-pascal-format
@@ -14462,6 +14467,11 @@ msgstr "Az 'Owner'-t már használja a TReader/TWritter. Válasszon másik nevet
 #: lazarusidestrconsts.lispackage
 msgid "Package"
 msgstr "Csomag"
+
+#: lazarusidestrconsts.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr "%s csomag"
 
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
@@ -21339,9 +21349,4 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Változatinformációk"
-
-#: lazarusidestrconsts.lispackage2
-#, object-pascal-format
-msgid "package %s"
-msgstr "%s csomag"
 

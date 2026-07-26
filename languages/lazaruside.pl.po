@@ -7075,6 +7075,10 @@ msgstr "Dodaj ścieżkę"
 msgid "Remove path"
 msgstr "Usuń ścieżkę"
 
+#: lazarusidestrconsts.liscodehelpdescrtag
+msgid "Description"
+msgstr ""
+
 #: lazarusidestrconsts.liscodehelpgroupbox
 msgid "FPDoc settings"
 msgstr "Ustawienia FPDoc"
@@ -9705,10 +9709,6 @@ msgstr ""
 msgid "Error reading package list from file%s%s%s%s"
 msgstr ""
 
-#: lazarusidestrconsts.liserrorreadingxml
-msgid "Error reading XML"
-msgstr "Błąd odczytu XML"
-
 #: lazarusidestrconsts.liserrors
 msgctxt "lazarusidestrconsts.liserrors"
 msgid "Errors"
@@ -9727,6 +9727,11 @@ msgstr "Błąd podczas zapisu formularza"
 #, object-pascal-format
 msgid "Error setting the name of a component %s to %s"
 msgstr "Błąd podczas nadawania komponentowi %s nazwy %s"
+
+#: lazarusidestrconsts.liserrorwritingfile
+#, object-pascal-format
+msgid "Error writing file \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 #, object-pascal-format
@@ -14546,6 +14551,11 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lispackage"
 msgid "Package"
 msgstr "Pakiet"
+
+#: lazarusidestrconsts.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr "pakiet %s"
 
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
@@ -21472,9 +21482,4 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Informacje o wersji"
-
-#: lazarusidestrconsts.lispackage2
-#, object-pascal-format
-msgid "package %s"
-msgstr "pakiet %s"
 

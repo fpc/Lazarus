@@ -6958,6 +6958,10 @@ msgstr "Lisää polku"
 msgid "Remove path"
 msgstr "Poista polku"
 
+#: lazarusidestrconsts.liscodehelpdescrtag
+msgid "Description"
+msgstr ""
+
 #: lazarusidestrconsts.liscodehelpgroupbox
 msgid "FPDoc settings"
 msgstr "FPDoc-asetukset"
@@ -9565,10 +9569,6 @@ msgstr "Virhe jäsennettäessä lfm komponentin virtaa."
 msgid "Error reading package list from file%s%s%s%s"
 msgstr "Virhe luettaessa pakettiluetteloa tiedostosta%s%s%s%s"
 
-#: lazarusidestrconsts.liserrorreadingxml
-msgid "Error reading XML"
-msgstr "Virhe luettaessa XML"
-
 #: lazarusidestrconsts.liserrors
 msgctxt "lazarusidestrconsts.liserrors"
 msgid "Errors"
@@ -9587,6 +9587,11 @@ msgstr "Virhe tallennettaessa lomaketta"
 #, object-pascal-format
 msgid "Error setting the name of a component %s to %s"
 msgstr "Virhe nimettäessä komponentti %s %s:ksi"
+
+#: lazarusidestrconsts.liserrorwritingfile
+#, object-pascal-format
+msgid "Error writing file \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 #, object-pascal-format
@@ -14357,6 +14362,11 @@ msgstr "TReader/TWriter käyttää jo nimeä 'Owner'. Valitse toinen nimi."
 #: lazarusidestrconsts.lispackage
 msgid "Package"
 msgstr "Paketti"
+
+#: lazarusidestrconsts.lispackage2
+#, object-pascal-format
+msgid "package %s"
+msgstr "Paketti %s"
 
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
@@ -21206,9 +21216,4 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versiotiedot"
-
-#: lazarusidestrconsts.lispackage2
-#, object-pascal-format
-msgid "package %s"
-msgstr "Paketti %s"
 
