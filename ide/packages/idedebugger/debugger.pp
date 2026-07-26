@@ -8392,6 +8392,9 @@ end;
 
 procedure TSubLocalsValue.RequestData;
 begin
+  if FValidity <> ddsUnknown then
+    exit;
+
   if MaybeCopyResultForChild and
      (FValue <> nil) and FValue.IsFullDephtEvaluated
   then begin
@@ -8399,9 +8402,7 @@ begin
     exit;
   end;
 
-  if(DebugBossManager <> nil) and
-     (FValidity = ddsUnknown) and
-     (TSubLocals(Owner).TopOwner is TCurrentLocals)
+  if (DebugBossManager <> nil) and (TSubLocals(Owner).TopOwner is TCurrentLocals)
   then begin
     FValidity := ddsRequested;
     DebugBossManager.RequestWatchData(Self);
