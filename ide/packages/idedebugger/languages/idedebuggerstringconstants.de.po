@@ -459,6 +459,10 @@ msgctxt "idedebuggerstringconstants.dispformatdlgindent"
 msgid "Multiline"
 msgstr "Mehrzeilig"
 
+#: idedebuggerstringconstants.dispformatdlgnumprefix
+msgid "Number marker"
+msgstr ""
+
 #: idedebuggerstringconstants.dispformatenumname
 #, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatenumname"

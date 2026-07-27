@@ -1589,8 +1589,13 @@ begin
     SourceEditorManager.ClearExecutionLines;
 
   if (FDebugger.State in [dsPause, dsInit]) and (SourceEditorManager <> nil)
-  then
+  then begin
     SourceEditorManager.FillExecutionMarks;
+    if FDialogs[ddtWatches]  <> nil then TWatchesDlg(FDialogs[ddtWatches]).WatchPrinter.TargetAddressSize := FDebugger.TargetWidth;
+    if FDialogs[ddtLocals]   <> nil then TLocalsDlg(FDialogs[ddtLocals]).WatchPrinter.TargetAddressSize := FDebugger.TargetWidth;
+    if FDialogs[ddtInspect]  <> nil then TIDEInspectDlg(FDialogs[ddtInspect]).WatchPrinter.TargetAddressSize := FDebugger.TargetWidth;
+    if FDialogs[ddtEvaluate] <> nil then TEvaluateDlg(FDialogs[ddtEvaluate]).WatchPrinter.TargetAddressSize := FDebugger.TargetWidth;
+  end;
 
   if not (FDebugger.State in [dsRun, dsPause, dsInit]) and (SourceEditorManager <> nil)
   then begin
@@ -2041,6 +2046,8 @@ begin
   TheDialog.CallStackMonitor := FCallStack;
   TheDialog.BreakPoints := FBreakPoints;
   TheDialog.SnapshotManager := FSnapshots;
+  if Debugger <> nil then
+    TheDialog.WatchPrinter.TargetAddressSize := Debugger.TargetWidth;
   if DebuggerOptions.ShowHintForWatches then
     TheDialog.HintTime := EditorOpts.AutoHintDelayInMSec
   else
@@ -2077,6 +2084,8 @@ begin
   TheDialog.ThreadsMonitor := FThreads;
   TheDialog.CallStackMonitor := FCallStack;
   TheDialog.SnapshotManager := FSnapshots;
+  if Debugger <> nil then
+    TheDialog.WatchPrinter.TargetAddressSize := Debugger.TargetWidth;
   if DebuggerOptions.ShowHintForWatches then
     TheDialog.HintTime := EditorOpts.AutoHintDelayInMSec
   else
@@ -2124,6 +2133,8 @@ var
   TheDialog: TIDEInspectDlg;
 begin
   TheDialog := TIDEInspectDlg(FDialogs[ddtInspect]);
+  if Debugger <> nil then
+    TheDialog.WatchPrinter.TargetAddressSize := Debugger.TargetWidth;
 end;
 
 procedure TDebugManager.InitHistoryDlg;
@@ -2154,6 +2165,8 @@ var
   TheDialog: TEvaluateDlg;
 begin
   TheDialog := TEvaluateDlg(FDialogs[ddtEvaluate]);
+  if Debugger <> nil then
+    TheDialog.WatchPrinter.TargetAddressSize := Debugger.TargetWidth;
 end;
 
 constructor TDebugManager.Create(TheOwner: TComponent);

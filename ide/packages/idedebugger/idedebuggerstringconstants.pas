@@ -539,6 +539,7 @@ resourcestring
   DispFormatPointerDerefOn       = 'Show deref data';
   DispFormatPointerDerefOnly     = 'Only deref data';
   DispFormatDlgIndent            = 'Multiline';
+  DispFormatDlgNumPrefix         = 'Number marker';
   DispFormatIndentMaxWrap        = 'Max multiline level';
   DispFormatForceSingleLineToggle    = 'Keep singleline, if ...';
   DispFormatForceSingleLineArrayLen  = 'Max len';

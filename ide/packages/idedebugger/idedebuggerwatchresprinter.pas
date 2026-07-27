@@ -54,6 +54,7 @@ type
     function ResolveMultiLine(const ADispFormat: TWatchDisplayFormat): TWatchDisplayFormatMultiline;
     function ResolveArrayNavBar(const ADispFormat: TWatchDisplayFormat): TWatchDisplayFormatArrayNav;
     function ResolveArrayLen(const ADispFormat: TWatchDisplayFormat): TWatchDisplayFormatArrayLen;
+    function ResolveNumPrefix(const ADispFormat: TWatchDisplayFormat): TWatchDisplayFormatNumPrefix;
     // Resolving from FallBackFormats[n] to FallBackFormats[0]
     // [0] must be the IDE global format, and will be used regardless of UseInherited
     property FallBackFormats: TWatchDisplayFormatList read FFallBackFormats;
@@ -88,6 +89,7 @@ type
     FParentResValue, FCurrentResValue: TWatchResultData;
     FCurrentOuterMostArrayLvl, FOuterMostArrayCount, FCurrentArrayCombineLvl: integer;
     FCurrentArrayLenShown: boolean;
+    FNumPrefixFormat: TWatchDisplayFormatNumPrefix;
   protected const
     MAX_ALLOWED_NEST_LVL = 100;
   protected type
@@ -115,6 +117,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function PrintWatchValue(AResValue: TWatchResultData; const ADispFormat: TWatchDisplayFormat; const AWatchedExpr: String): String;
+    function PrintWatchValueDataAddress(AResValue: TWatchResultData; const ADispFormat: TWatchDisplayFormat): String;
     function PrintWatchValueIntf(AResValue: IWatchResultDataIntf; const ADispFormat: TWatchDisplayFormat; AFlags: TWatchResultPrinterFlags = []): String;
     function IWatchResultPrinter.PrintWatchValue = PrintWatchValueIntf;
 
@@ -137,6 +140,14 @@ implementation
 
 const
   {$WRITEABLECONST OFF}
+
+  NumPrefixHex:  array [TValueDisplayFormatHexPrefix] of string = ('$', '0x', '0X', '#', '&H', 'U+', '', '');
+  NumPostfixHex: array [TValueDisplayFormatHexPrefix] of string = ('', '', '', '', '', '', 'h', '₁₆');
+  NumPrefixOct:  array [TValueDisplayFormatOctPrefix] of string = ('&', '0o', '0O', '', '', '');
+  NumPostfixOct: array [TValueDisplayFormatOctPrefix] of string = ('', '', '', 'o', 'q', '₈');
+  NumPrefixBin:  array [TValueDisplayFormatBinPrefix] of string = ('%', '0b', '0B', '', '');
+  NumPostfixBin: array [TValueDisplayFormatBinPrefix] of string = ('', '', '', 'b', '₂');
+
   (* NO vdf...default in the below *)
     DefaultEnumNum: TResolvedDisplayFormatNum = (
       UseInherited:         False;
@@ -152,7 +163,7 @@ const
       Visible:              False;
       BaseFormat:           vdfBaseHex;
       SignFormat:           vdfSignUnsigned;
-      MinDigits:            0;
+      MinDigits:            -1;
       SeparatorDec:         False;
       SeparatorHexBin:      vdfhsNone;
     );
@@ -443,6 +454,21 @@ begin
     Result := DefaultWatchDisplayFormat.ArrayLen;
 end;
 
+function TDisplayFormatResolver.ResolveNumPrefix(const ADispFormat: TWatchDisplayFormat
+  ): TWatchDisplayFormatNumPrefix;
+var
+  i: Integer;
+begin
+  Result := ADispFormat.NumPrefix;
+  i := FFallBackFormats.Count-1;
+  while (Result.UseInherited) and (i > 0) do begin
+    Result := FFallBackFormats[i].NumPrefix;
+    dec(i);
+  end;
+  if (Result.UseInherited) then
+    Result := DefaultWatchDisplayFormat.NumPrefix;
+end;
+
 { TWatchResultPrinter }
 
 procedure TWatchResultPrinter.StoreSetting(var AStorage: TWatchResStoredSettings);
@@ -523,7 +549,7 @@ begin
         Result := s + Result;
       end;
     vdfBaseHex: begin
-        s := s + '$';
+        s := s + NumPrefixHex[FNumPrefixFormat.HexPrefix];
         if ANumFormat.SignFormat = vdfSignSigned then Result := IntToHex(qword(abs(ASignedValue)), 1)
         else                                          Result := IntToHex(AUnsignedValue, 1);
         d := ANumFormat.MinDigits;
@@ -543,10 +569,10 @@ begin
           vdfhsWord: Result := PadNumber(Result, d, 4, ' ');
           vdfhsLong: Result := PadNumber(Result, d, 8, ' ');
         end;
-        Result := s + Result;
+        Result := s + Result + NumPostfixHex[FNumPrefixFormat.HexPrefix];
       end;
     vdfBaseOct: begin
-        s := s + '&';
+        s := s + NumPrefixOct[FNumPrefixFormat.OctPrefix];
         if ANumFormat.SignFormat = vdfSignSigned then Result := Dec64ToNumb(qword(abs(ASignedValue)), 0 , 8)
         else                                          Result := Dec64ToNumb(AUnsignedValue, 0 , 8);
         d := ANumFormat.MinDigits;
@@ -561,10 +587,10 @@ begin
           d := i;
 
         if d > i then Result := StringOfChar('0', d - i) + Result;
-        Result := s + Result;
+        Result := s + Result + NumPostfixOct[FNumPrefixFormat.OctPrefix];
       end;
     vdfBaseBin: begin
-        s := s + '%';
+        s := s + NumPrefixBin[FNumPrefixFormat.BinPrefix];
         if ANumFormat.SignFormat = vdfSignSigned then Result := Dec64ToNumb(qword(abs(ASignedValue)), 0 , 2)
         else                                          Result := Dec64ToNumb(AUnsignedValue, 0 , 2);
         d := ANumFormat.MinDigits;
@@ -584,7 +610,7 @@ begin
           vdfhsWord: Result := PadNumber(Result, d, 16, ' ');
           vdfhsLong: Result := PadNumber(Result, d, 32, ' ');
         end;
-        Result := s + Result;
+        Result := s + Result + NumPostfixBin[FNumPrefixFormat.BinPrefix];
     end;
     vdfBaseChar: begin
         if AUnsignedValue <= 31 then
@@ -720,7 +746,7 @@ begin
 
     if (ADispFormat.Struct.ShowPointerFormat = vdfStructPointerOnly) then begin
       R2 := Result.RawAsStringPtr;
-      R2^ := '$'+IntToHex(AResValue.DataAddress, HexDigicCount(AResValue.DataAddress, 4, True));
+      R2^ := PrintNumber(AResValue.DataAddress, Int64(AResValue.DataAddress), FTargetAddressSize, DefaultAddrNum, True);
 
       if tn <> '' then
         R2^ := tn + '(' + R2^ + ')';
@@ -1555,6 +1581,7 @@ var
 begin
   DisableFloatExceptions;
   try
+    FNumPrefixFormat := FDisplayFormatResolver.ResolveNumPrefix(ADispFormat);
     FNextValueFormatter := nil;
     if FOnlyValueFormatter <> nil then
       FDefaultValueFormatter := FOnlyValueFormatter
@@ -1586,6 +1613,13 @@ begin
   end;
 end;
 
+function TWatchResultPrinter.PrintWatchValueDataAddress(AResValue: TWatchResultData;
+  const ADispFormat: TWatchDisplayFormat): String;
+begin
+  FNumPrefixFormat := FDisplayFormatResolver.ResolveNumPrefix(ADispFormat);
+  Result := PrintNumber(AResValue.DataAddress, Int64(AResValue.DataAddress), FTargetAddressSize, DefaultAddrNum, True);
+end;
+
 function TWatchResultPrinter.PrintWatchValueIntf(AResValue: IWatchResultDataIntf;
   const ADispFormat: TWatchDisplayFormat; AFlags: TWatchResultPrinterFlags): String;
 var
@@ -1593,6 +1627,7 @@ var
   IncLvl: Integer;
   Res: TStringBuilderPart;
 begin
+  FNumPrefixFormat := FDisplayFormatResolver.ResolveNumPrefix(ADispFormat);
   AResValObj := TWatchResultData(AResValue.GetInternalObject);
   FNextValueFormatter := nil;
   if wpfUseDefaultValueFormatterList in AFlags then

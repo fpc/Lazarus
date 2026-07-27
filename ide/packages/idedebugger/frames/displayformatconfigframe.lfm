@@ -1,6 +1,6 @@
 object DisplayFormatFrame: TDisplayFormatFrame
   Left = 0
-  Height = 780
+  Height = 917
   Top = 0
   Width = 592
   HorzScrollBar.Increment = 1
@@ -13,10 +13,11 @@ object DisplayFormatFrame: TDisplayFormatFrame
   VertScrollBar.Tracking = True
   AutoScroll = True
   AutoSize = True
-  ClientHeight = 780
+  ClientHeight = 917
   ClientWidth = 592
   Constraints.MaxWidth = 1400
   Constraints.MinWidth = 500
+  LCLVersion = '4.99.0.0'
   TabOrder = 0
   DesignLeft = 430
   DesignTop = 14
@@ -2922,15 +2923,416 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
     end
   end
-  object PanelArray: TPanel
+  object PanelNumPrefix: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = PanelIndent
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 98
+    Height = 60
     Top = 554
+    Width = 592
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Bottom = 4
+    BevelOuter = bvNone
+    ChildSizing.EnlargeHorizontal = crsScaleChilds
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    ClientHeight = 60
+    ClientWidth = 592
+    TabOrder = 13
+    object SpacerNPre1: TLabel
+      Left = 0
+      Height = 15
+      Top = 0
+      Width = 108
+      Caption = '  '
+    end
+    object SpacerNPre2: TLabel
+      Left = 108
+      Height = 15
+      Top = 0
+      Width = 484
+      Caption = '         '
+    end
+    object DividerBevelNumPrefix: TDividerBevel
+      Left = 0
+      Height = 1
+      Top = 0
+      Width = 592
+      Align = alTop
+      AutoSize = False
+      BevelWidth = 1
+      BorderSpacing.Bottom = 2
+      CaptionSpacing = 5
+      Font.Height = 2
+      Font.Style = [fsBold]
+      LeftIndent = 30
+      ParentFont = False
+      Style = gsHorLines
+    end
+    object cbOverrideNumPrefix: TCheckBox
+      AnchorSideLeft.Control = SpacerNPre1
+      AnchorSideTop.Control = DividerBevelNumPrefix
+      AnchorSideTop.Side = asrBottom
+      Left = 0
+      Height = 17
+      Top = 3
+      Width = 18
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 0
+      OnChange = OverrideCheckChanged
+    end
+    object lbOverrideNumPrefix: TLabel
+      AnchorSideLeft.Control = cbOverrideNumPrefix
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cbOverrideNumPrefix
+      AnchorSideRight.Control = SpacerNPre1
+      AnchorSideRight.Side = asrBottom
+      Left = 18
+      Height = 15
+      Top = 3
+      Width = 90
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'lbOverrideNumPrefix'
+      Font.Style = [fsBold]
+      ParentFont = False
+      WordWrap = True
+      OnClick = CheckLabelClicked
+    end
+    object PanelNumPrefixHex: TPanel
+      AnchorSideLeft.Control = SpacerNPre2
+      AnchorSideTop.Control = DividerBevelNumPrefix
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = SpacerNPre2
+      AnchorSideRight.Side = asrBottom
+      Left = 108
+      Height = 19
+      Top = 3
+      Width = 484
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BevelOuter = bvNone
+      ChildSizing.EnlargeHorizontal = crsSameSize
+      ChildSizing.ShrinkHorizontal = crsSameSize
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 9
+      ClientHeight = 19
+      ClientWidth = 484
+      TabOrder = 1
+      object lbNumPrefixHex: TLabel
+        AnchorSideTop.Side = asrCenter
+        Left = 0
+        Height = 19
+        Top = 0
+        Width = 70
+        BorderSpacing.Right = 3
+        Caption = 'lbNumPrefixHex'
+        Constraints.MinWidth = 70
+      end
+      object rbNumPreHDollar: TRadioButton
+        Left = 73
+        Height = 19
+        Top = 0
+        Width = 51
+        Caption = 'rbNumPreHDollar'
+        Constraints.MinWidth = 1
+        TabOrder = 1
+        OnChange = rbNumPreHDollarChange
+      end
+      object rbNumPreHZeroX: TRadioButton
+        Left = 124
+        Height = 19
+        Top = 0
+        Width = 52
+        Caption = 'rbNumPreHZeroX'
+        Constraints.MinWidth = 1
+        TabOrder = 2
+        OnChange = rbNumPreHDollarChange
+      end
+      object rbNumPreHZeroUpX: TRadioButton
+        Left = 176
+        Height = 19
+        Top = 0
+        Width = 51
+        Caption = 'rbNumPreHZeroUpX'
+        Constraints.MinWidth = 1
+        TabOrder = 3
+        OnChange = rbNumPreHDollarChange
+      end
+      object rbNumPreHHash: TRadioButton
+        Left = 227
+        Height = 19
+        Top = 0
+        Width = 52
+        Caption = 'rbNumPreHHash'
+        Constraints.MinWidth = 1
+        TabOrder = 6
+        OnChange = rbNumPreHDollarChange
+      end
+      object rbNumPreHAmpUpH: TRadioButton
+        Left = 279
+        Height = 19
+        Top = 0
+        Width = 51
+        Caption = 'rbNumPreHAmpUpH'
+        Constraints.MinWidth = 1
+        TabOrder = 0
+        OnChange = rbNumPreHDollarChange
+      end
+      object rbNumPreHUPlus: TRadioButton
+        Left = 330
+        Height = 19
+        Top = 0
+        Width = 51
+        Caption = 'rbNumPreHUPlus'
+        Constraints.MinWidth = 1
+        TabOrder = 5
+        OnChange = rbNumPreHDollarChange
+      end
+      object rbNumPreHPostH: TRadioButton
+        Left = 381
+        Height = 19
+        Top = 0
+        Width = 52
+        Caption = 'rbNumPreHPostH'
+        Constraints.MinWidth = 1
+        TabOrder = 4
+        OnChange = rbNumPreHDollarChange
+      end
+      object rbNumPreHPost16: TRadioButton
+        Left = 433
+        Height = 19
+        Top = 0
+        Width = 51
+        Caption = 'rbNumPreHPost16'
+        Checked = True
+        Constraints.MinWidth = 1
+        TabOrder = 7
+        TabStop = True
+        OnChange = rbNumPreHDollarChange
+      end
+    end
+    object PanelNumPrefixOct: TPanel
+      AnchorSideLeft.Control = SpacerNPre2
+      AnchorSideTop.Control = PanelNumPrefixHex
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = SpacerNPre2
+      AnchorSideRight.Side = asrBottom
+      Left = 108
+      Height = 19
+      Top = 22
+      Width = 484
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BevelOuter = bvNone
+      ChildSizing.EnlargeHorizontal = crsSameSize
+      ChildSizing.ShrinkHorizontal = crsSameSize
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 9
+      ClientHeight = 19
+      ClientWidth = 484
+      TabOrder = 2
+      object lbNumPrefixOct: TLabel
+        AnchorSideTop.Side = asrCenter
+        Left = 0
+        Height = 19
+        Top = 0
+        Width = 70
+        BorderSpacing.Right = 3
+        Caption = 'lbNumPrefixOct'
+        Constraints.MinWidth = 70
+      end
+      object rbNumPreOAmp: TRadioButton
+        Left = 73
+        Height = 19
+        Top = 0
+        Width = 51
+        Caption = 'rbNumPreOAmp'
+        Checked = True
+        Constraints.MinWidth = 1
+        TabOrder = 0
+        TabStop = True
+        OnChange = rbNumPreHDollarChange
+      end
+      object rbNumPreOZeroO: TRadioButton
+        Left = 124
+        Height = 19
+        Top = 0
+        Width = 52
+        Caption = 'rbNumPreOZeroO'
+        Constraints.MinWidth = 1
+        TabOrder = 1
+        OnChange = rbNumPreHDollarChange
+      end
+      object rbNumPreOZeroUpO: TRadioButton
+        Left = 176
+        Height = 19
+        Top = 0
+        Width = 51
+        Caption = 'rbNumPreOZeroUpO'
+        Constraints.MinWidth = 1
+        TabOrder = 2
+        OnChange = rbNumPreHDollarChange
+      end
+      object rbNumPreOPostO: TRadioButton
+        Left = 227
+        Height = 19
+        Top = 0
+        Width = 52
+        Caption = 'rbNumPreOPostO'
+        Constraints.MinWidth = 1
+        TabOrder = 3
+        OnChange = rbNumPreHDollarChange
+      end
+      object rbNumPreOPostQ: TRadioButton
+        Left = 279
+        Height = 19
+        Top = 0
+        Width = 51
+        Caption = 'rbNumPreOPostQ'
+        Constraints.MinWidth = 1
+        TabOrder = 4
+        OnChange = rbNumPreHDollarChange
+      end
+      object rbNumPreOPost8: TRadioButton
+        Left = 330
+        Height = 19
+        Top = 0
+        Width = 51
+        Caption = 'rbNumPreOPost8'
+        Constraints.MinWidth = 1
+        TabOrder = 5
+        OnChange = rbNumPreHDollarChange
+      end
+      object spacer23: TLabel
+        Left = 381
+        Height = 19
+        Top = 0
+        Width = 52
+      end
+      object spacer25: TLabel
+        Left = 433
+        Height = 19
+        Top = 0
+        Width = 51
+      end
+    end
+    object PanelNumPrefixBin: TPanel
+      AnchorSideLeft.Control = SpacerNPre2
+      AnchorSideTop.Control = PanelNumPrefixOct
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = SpacerNPre2
+      AnchorSideRight.Side = asrBottom
+      Left = 108
+      Height = 19
+      Top = 41
+      Width = 484
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BevelOuter = bvNone
+      ChildSizing.EnlargeHorizontal = crsSameSize
+      ChildSizing.ShrinkHorizontal = crsSameSize
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 9
+      ClientHeight = 19
+      ClientWidth = 484
+      TabOrder = 3
+      object lbNumPrefixBin: TLabel
+        AnchorSideTop.Side = asrCenter
+        Left = 0
+        Height = 19
+        Top = 0
+        Width = 70
+        BorderSpacing.Right = 3
+        Caption = 'lbNumPrefixBin'
+        Constraints.MinWidth = 70
+      end
+      object rbNumPreBPercent: TRadioButton
+        Left = 73
+        Height = 19
+        Top = 0
+        Width = 51
+        Caption = 'rbNumPreBPercent'
+        Checked = True
+        Constraints.MinWidth = 1
+        TabOrder = 0
+        TabStop = True
+        OnChange = rbNumPreHDollarChange
+      end
+      object rbNumPreBZeroB: TRadioButton
+        Left = 124
+        Height = 19
+        Top = 0
+        Width = 52
+        Caption = 'rbNumPreBZeroB'
+        Constraints.MinWidth = 1
+        TabOrder = 1
+        OnChange = rbNumPreHDollarChange
+      end
+      object rbNumPreBZeroUpB: TRadioButton
+        Left = 176
+        Height = 19
+        Top = 0
+        Width = 51
+        Caption = 'rbNumPreBZeroUpB'
+        Constraints.MinWidth = 1
+        TabOrder = 2
+        OnChange = rbNumPreHDollarChange
+      end
+      object rbNumPreBPostB: TRadioButton
+        Left = 227
+        Height = 19
+        Top = 0
+        Width = 52
+        Caption = 'rbNumPreBPostB'
+        Constraints.MinWidth = 1
+        TabOrder = 3
+        OnChange = rbNumPreHDollarChange
+      end
+      object rbNumPreBPost2: TRadioButton
+        Left = 279
+        Height = 19
+        Top = 0
+        Width = 51
+        Caption = 'rbNumPreBPost2'
+        Constraints.MinWidth = 1
+        TabOrder = 4
+        OnChange = rbNumPreHDollarChange
+      end
+      object spacer24: TLabel
+        Left = 330
+        Height = 19
+        Top = 0
+        Width = 51
+      end
+      object spacer26: TLabel
+        Left = 381
+        Height = 19
+        Top = 0
+        Width = 52
+      end
+      object spacer27: TLabel
+        Left = 433
+        Height = 19
+        Top = 0
+        Width = 51
+      end
+    end
+  end
+  object PanelArray: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = PanelNumPrefix
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 98
+    Top = 618
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -3334,7 +3736,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 26
-    Top = 656
+    Top = 720
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -3490,7 +3892,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 34
-    Top = 686
+    Top = 750
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True

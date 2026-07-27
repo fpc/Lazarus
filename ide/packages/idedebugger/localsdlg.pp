@@ -544,7 +544,6 @@ procedure TLocalsDlg.DoGetHintForCell(Sender: TDbgTreeView; const AHitInfo: THit
 var
   AWatchAble: TIdeLocalsValue;
   AWatchAbleResult: IWatchAbleResultIntf;
-  da: TDBGPtr;
   s: String;
 begin
   AShowHint := AHitInfo.HitNode <> nil;
@@ -563,13 +562,9 @@ begin
   else
     AHintText := '<b>' + CodeHelpBoss.TextToHTML(AWatchAble.Name) + '</b><br/>';
 
-  if AWatchAbleResult.ResultData.HasDataAddress then begin
-    da := AWatchAbleResult.ResultData.DataAddress;
-    if da = 0
-    then s := 'nil'
-    else s := '$' + IntToHex(da, HexDigicCount(da, 4, True));
+  s := FLocalsTreeMgr.GetFieldAsText(AHitInfo.HitNode, AWatchAble, AWatchAbleResult, vdfDataAddress, []);
+  if s <> '' then
     AHintText := AHintText + '<i>Address:&nbsp;' + s + '</i><br/>';
-  end;
 
   AHintText := AHintText + CodeHelpBoss.TextToHTML(FLocalsTreeMgr.GetFieldAsText(AHitInfo.HitNode, AWatchAble, AWatchAbleResult, vdfValue, [vdoAllowMultiLine]));
 end;
@@ -993,7 +988,6 @@ function TDbgTreeViewLocalsValueMgr.GetFieldAsText(Nd: PVirtualNode;
   AField: TTreeViewDataToTextField; AnOpts: TTreeViewDataToTextOptions): String;
 var
   ResData: TWatchResultData;
-  da: TDBGPtr;
   DispFormat: TWatchDisplayFormat;
   s: String;
 begin
@@ -1060,11 +1054,10 @@ begin
         end;
       end;
     vdfDataAddress: begin
-      if AWatchAbleResult.ResultData.HasDataAddress then begin
-        da := AWatchAbleResult.ResultData.DataAddress;
-        if da = 0
-        then Result := 'nil'
-        else Result := '$' + IntToHex(da, HexDigicCount(da, 4, True));
+      ResData :=  AWatchAbleResult.ResultData;
+      if (ResData <> nil) and ResData.HasDataAddress then begin
+        DispFormat := DefaultWatchDisplayFormat;
+        Result := FLocalsDlg.FWatchPrinter.PrintWatchValueDataAddress(ResData, DispFormat);
       end;
     end;
   end;
@@ -1075,7 +1068,6 @@ procedure TDbgTreeViewLocalsValueMgr.UpdateColumnsText(AWatchAble: TObject;
 var
   WatchValueStr, s, LName: String;
   ResData: TWatchResultData;
-  da: TDBGPtr;
   DispFormat: TWatchDisplayFormat;
   CachedResIntf: IWatchAbleResultIntf;
   CacheColor: TIdeCustomHighlighterAttributesModifier;
@@ -1183,13 +1175,8 @@ begin
       TreeView.SetNodeTextColor(AVNode, 1, AdjustColor(TreeView.Font.Color));
   end;
 
-  if (ResData <> nil) and (ResData.HasDataAddress) then begin
-    da := ResData.DataAddress;
-    if da = 0
-    then TreeView.NodeText[AVNode, 2] := 'nil'
-    else TreeView.NodeText[AVNode, 2] := '$' + IntToHex(da, HexDigicCount(da, 4, True));
-  end
-
+  if (ResData <> nil) and (ResData.HasDataAddress) then
+    TreeView.NodeText[AVNode, 2] := FLocalsDlg.FWatchPrinter.PrintWatchValueDataAddress(ResData, DispFormat);
 end;
 
 procedure TDbgTreeViewLocalsValueMgr.ConfigureNewSubItem(AWatchAble: TObject);

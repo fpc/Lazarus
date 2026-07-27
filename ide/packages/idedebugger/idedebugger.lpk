@@ -345,6 +345,9 @@
     </i18n>
     <RequiredPkgs>
       <Item>
+        <PackageName Value="LazControlDsgn"/>
+      </Item>
+      <Item>
         <PackageName Value="IdeHelpUtils"/>
       </Item>
       <Item>

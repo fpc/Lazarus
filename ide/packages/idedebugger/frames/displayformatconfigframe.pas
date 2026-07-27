@@ -14,6 +14,9 @@ type
   TValueDisplayFormatHexSeperatorArray = array of TValueDisplayFormatHexSeperator;
   TValueDisplayFormatArrayTypeArray = array of TValueDisplayFormatArrayType;
   TBoolSet = set of boolean;
+  TValueDisplayFormatHexPrefixs = set of TValueDisplayFormatHexPrefix;
+  TValueDisplayFormatOctPrefixs = set of TValueDisplayFormatOctPrefix;
+  TValueDisplayFormatBinPrefixs = set of TValueDisplayFormatBinPrefix;
 
   TRadioButton = class;
 
@@ -56,6 +59,7 @@ type
     cbOverrideArray: TCheckBox;
     cbOverrideEnumVal: TCheckBox;
     cbOverrideArrayNavBar: TCheckBox;
+    cbOverrideNumPrefix: TCheckBox;
     cbOverrideNum2Base: TCheckBox;
     cbOverridePointerDeref: TCheckBox;
     cbOverrideAddressFormat: TCheckBox;
@@ -85,6 +89,7 @@ type
     DividerBevelFloat: TDividerBevel;
     DividerBevelPointerDeref1: TDividerBevel;
     DividerBevelArrayNavBar: TDividerBevel;
+    DividerBevelNumPrefix: TDividerBevel;
     DividerBevelStruct: TDividerBevel;
     fill1: TLabel;
     fill10: TLabel;
@@ -97,6 +102,39 @@ type
     fill8: TLabel;
     fill9: TLabel;
     Label1: TLabel;
+    rbNumPreBPostB: TRadioButton;
+    rbNumPreBPost2: TRadioButton;
+    rbNumPreHAmpUpH: TRadioButton;
+    rbNumPreHUPlus: TRadioButton;
+    rbNumPreHPostH: TRadioButton;
+    rbNumPreHPost16: TRadioButton;
+    rbNumPreOPostO: TRadioButton;
+    rbNumPreOPostQ: TRadioButton;
+    rbNumPreOPost8: TRadioButton;
+    lbNumPrefixHex: TLabel;
+    lbNumPrefixOct: TLabel;
+    lbNumPrefixBin: TLabel;
+    lbOverrideNumPrefix: TLabel;
+    PanelNumPrefixHex: TPanel;
+    PanelNumPrefixOct: TPanel;
+    PanelNumPrefixBin: TPanel;
+    rbNumPreHZeroX: TRadioButton;
+    rbNumPreOZeroO: TRadioButton;
+    rbNumPreBZeroB: TRadioButton;
+    rbNumPreHHash: TRadioButton;
+    rbNumPreHDollar: TRadioButton;
+    rbNumPreOAmp: TRadioButton;
+    rbNumPreBPercent: TRadioButton;
+    rbNumPreHZeroUpX: TRadioButton;
+    rbNumPreOZeroUpO: TRadioButton;
+    rbNumPreBZeroUpB: TRadioButton;
+    spacer23: TLabel;
+    spacer24: TLabel;
+    spacer25: TLabel;
+    spacer26: TLabel;
+    spacer27: TLabel;
+    SpacerNPre1: TLabel;
+    SpacerNPre2: TLabel;
     lbArrayCombine: TLabel;
     lbArrayHideLenIfLess: TLabel;
     lbForceSingleLineArrayLen: TLabel;
@@ -130,6 +168,7 @@ type
     lbOverrideAddressFormat: TLabel;
     lbOverrideNumBase: TLabel;
     lbNum2SepGroup: TLabel;
+    PanelNumPrefix: TPanel;
     PanelAddressLeadZero: TPanel;
     PanelArray: TPanel;
     PanelIndentForceSingleLine: TPanel;
@@ -328,6 +367,7 @@ type
     procedure FormatSignCBChanged(Sender: TObject);
     procedure FormatSpinChanged(Sender: TObject);
     procedure OverrideCheckChanged(Sender: TObject);
+    procedure rbNumPreHDollarChange(Sender: TObject);
     procedure Spin2DigitsKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure Spin2DigitsKeyPress(Sender: TObject; var Key: char);
     procedure tbAllClick(Sender: TObject);
@@ -379,9 +419,11 @@ type
     procedure ApplyDispForm(APanel: TPanel; ADispForm: TValueDisplayFormats; AnRbOrder: TValueDisplayFormatArray);
     procedure ApplyDispForm(APanel: TPanel; ADispForm: TValueDisplayFormatHexSeperators; AnRbOrder: TValueDisplayFormatHexSeperatorArray);
     procedure ApplyDispForm(APanel: TPanel; ADispForm: TValueDisplayFormatArrayTypes; AnRbOrder: TValueDisplayFormatArrayTypeArray);
+    procedure ApplyDispForm(APanel: TPanel; ADispForm: QWord);
     function ReadDispForm(APanel: TPanel; AnRbOrder: TValueDisplayFormatArray): TValueDisplayFormats;
     function ReadDispForm(APanel: TPanel; AnRbOrder: TValueDisplayFormatHexSeperatorArray): TValueDisplayFormatHexSeperators;
     function ReadDispForm(APanel: TPanel; AnRbOrder: TValueDisplayFormatArrayTypeArray): TValueDisplayFormatArrayTypes;
+    function ReadDispForm(APanel: TPanel): integer;
     function BtnDownCount: integer;
 
     procedure UpdateButtonStates;
@@ -754,6 +796,15 @@ begin
   UpdateDisplay;
 end;
 
+procedure TDisplayFormatFrame.rbNumPreHDollarChange(Sender: TObject);
+begin
+  if FUpdatingDisplay > 0 then
+    exit;
+  EnableParentOverride(TControl(Sender));
+  UpdateFormat;
+  TRadioButton(Sender).ClearMultiMarkers;
+end;
+
 procedure TDisplayFormatFrame.Spin2DigitsKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
   );
 begin
@@ -1078,6 +1129,7 @@ begin
   cbOverridePointerDeref.Visible  := FShowOverrideChecks;
   cbOverrideAddressFormat.Visible := FShowOverrideChecks;
   cbOverrideIndent.Visible        := FShowOverrideChecks;
+  cbOverrideNumPrefix.Visible     := FShowOverrideChecks;
   cbOverrideArray.Visible         := FShowOverrideChecks;
   cbOverrideArrayNavBar.Visible   := FShowOverrideChecks;
 end;
@@ -1208,6 +1260,35 @@ begin
   end;
 end;
 
+procedure TDisplayFormatFrame.ApplyDispForm(APanel: TPanel; ADispForm: QWord);
+var
+  i: Integer;
+begin
+  ClearRadios(APanel);
+
+  if PopCnt(ADispForm) = 1 then begin
+    for i := 0 to APanel.ControlCount - 1 do begin
+      if not (APanel.Controls[i] is TRadioButton) then
+        continue;
+      if (ADispForm and (1 << TRadioButton(APanel.Controls[i]).Tag)) <> 0 then begin
+        TRadioButton(APanel.Controls[i]).Checked := True;
+        break;
+      end;
+    end;
+  end
+  else
+  if FShowMultiRadio then begin
+    for i := 0 to APanel.ControlCount - 1 do begin
+      if not (APanel.Controls[i] is TRadioButton) then
+        continue;
+      if (ADispForm and (1 << TRadioButton(APanel.Controls[i]).Tag)) <> 0 then
+        TRadioButton(APanel.Controls[i]).ShowMultiMarker
+      else
+        TRadioButton(APanel.Controls[i]).HideMultiMarker;
+    end;
+  end;
+end;
+
 function TDisplayFormatFrame.ReadDispForm(APanel: TPanel; AnRbOrder: TValueDisplayFormatArray): TValueDisplayFormats;
 var
   i, j: Integer;
@@ -1255,6 +1336,18 @@ begin
     inc(j);
     if j >= Length(AnRbOrder) then break;
   end
+end;
+
+function TDisplayFormatFrame.ReadDispForm(APanel: TPanel): integer;
+var
+  i: Integer;
+begin
+  for i := 0 to APanel.ControlCount - 1 do
+    if (APanel.Controls[i] is TRadioButton) and
+       TRadioButton(APanel.Controls[i]).Checked
+    then
+      exit(TRadioButton(APanel.Controls[i]).Tag);
+  Result := -1;
 end;
 
 function TDisplayFormatFrame.BtnDownCount: integer;
@@ -1306,6 +1399,7 @@ begin
   PanelArrayNavBar.Visible   := ArrayOnly and FShowArrayNavBarOpts;
 
   PanelIndent.Visible        := tbIndent.Down;
+  PanelNumPrefix.Visible     := tbIndent.Down;
 
   lbStructAddrTypedFiller.Visible := CheckAddrFormatVis;
   cbStructAddrTyped.Visible       := CheckAddrFormatVis;
@@ -1461,6 +1555,7 @@ begin
     end;
     if FButtonStates[bsIndent] then begin
       BoolFromCBState(cbOverrideIndent.State, FDisplayFormat[i].MultiLine.UseInherited);
+      BoolFromCBState(cbOverrideNumPrefix.State, FDisplayFormat[i].NumPrefix.UseInherited);
     end;
   end;
 end;
@@ -1477,7 +1572,7 @@ var
   ds: TValueDisplayFormats;
   g: TValueDisplayFormatHexSeperator;
   gs: TValueDisplayFormatHexSeperators;
-  i: Integer;
+  i,j: Integer;
   als: TValueDisplayFormatArrayTypes;
   al: TValueDisplayFormatArrayType;
 begin
@@ -1704,6 +1799,13 @@ begin
       SpinToValue(spinForceSingleLineArrayLen,  FDisplayFormat[i].MultiLine.ForceSingleLineReverseDepth);
       SpinToValue(spinForceSingleLineEach,      FDisplayFormat[i].MultiLine.ForceSingleLineThresholdEach);
       SpinToValue(spinForceSingleLineLen,       FDisplayFormat[i].MultiLine.ForceSingleLineThresholdLen);
+
+      j := ReadDispForm(PanelNumPrefixHex);
+      if j >= 0 then FDisplayFormat[i].NumPrefix.HexPrefix := TValueDisplayFormatHexPrefix(j);
+      j := ReadDispForm(PanelNumPrefixOct);
+      if j >= 0 then FDisplayFormat[i].NumPrefix.OctPrefix := TValueDisplayFormatOctPrefix(j);
+      j := ReadDispForm(PanelNumPrefixBin);
+      if j >= 0 then FDisplayFormat[i].NumPrefix.BinPrefix := TValueDisplayFormatBinPrefix(j);
     end;
 
     BoolFromCBState(cbMemDump.State, FDisplayFormat[i].MemDump, False);
@@ -1773,7 +1875,7 @@ procedure TDisplayFormatFrame.UpdateDisplay;
 
 var
   InherhitNum, InherhitNum2, InherhitEnum, InherhitEnumVal, InherhitFloat,
-  InherhitStruct, InherhitPtr, InherhitAddress, InherhitIndent, InherhitArrayLen, InherhitArrayNav: TBoolSet;
+  InherhitStruct, InherhitPtr, InherhitAddress, InherhitIndent, InherhitNumPrefix, InherhitArrayLen, InherhitArrayNav: TBoolSet;
 
   FormatNumBase:       TValueDisplayFormats;
   FormatNumSign:       TValueDisplayFormats;
@@ -1819,6 +1921,10 @@ var
   FormatHideLenThresholdEach:   integer;
   FormatHideLenThresholdFullLen:integer;
 
+  FormatNumPrefixHex: TValueDisplayFormatHexPrefixs;
+  FormatNumPrefixOct: TValueDisplayFormatOctPrefixs;
+  FormatNumPrefixBin: TValueDisplayFormatBinPrefixs;
+
   FormatArrayNavAutoHide:    TBoolSet;
   FormatArrayNavForceBounds: TBoolSet;
   FormatPageSize:     integer;
@@ -1859,6 +1965,7 @@ begin
     InherhitArrayLen:= [];
     InherhitArrayNav:= [];
     InherhitIndent  := [];
+    InherhitNumPrefix  := [];
 
     FormatNumBase       := [];
     FormatNumSign       := [];
@@ -1903,6 +2010,10 @@ begin
     FormatHideLenThresholdCnt     := MULTIOPT_INT_UNK;
     FormatHideLenThresholdEach    := MULTIOPT_INT_UNK;
     FormatHideLenThresholdFullLen := MULTIOPT_INT_UNK;
+
+    FormatNumPrefixHex := [];
+    FormatNumPrefixOct := [];
+    FormatNumPrefixBin := [];
 
     FormatArrayNavAutoHide    := [];
     FormatArrayNavForceBounds := [];
@@ -2036,6 +2147,7 @@ begin
 
       if FButtonStates[bsIndent] then begin
         include(InherhitIndent,  FDisplayFormat[i].MultiLine.UseInherited);
+        include(InherhitNumPrefix,  FDisplayFormat[i].NumPrefix.UseInherited);
         if (not FDisplayFormat[i].MultiLine.UseInherited) or (not ShowOverrideChecks) then begin
           include(FormatForceSingleLine,  FDisplayFormat[i].MultiLine.ForceSingleLine);
           UpdateIntSetting(FormatIndentMaxWrap, FDisplayFormat[i].MultiLine.MaxMultiLineDepth);
@@ -2044,6 +2156,12 @@ begin
           UpdateIntSetting(FormatForceSingleLineReverseDepth,       FDisplayFormat[i].MultiLine.ForceSingleLineReverseDepth      );
           UpdateIntSetting(FormatForceSingleLineThresholdEach,      FDisplayFormat[i].MultiLine.ForceSingleLineThresholdEach     );
           UpdateIntSetting(FormatForceSingleLineThresholdLen,       FDisplayFormat[i].MultiLine.ForceSingleLineThresholdLen      );
+        end;
+
+        if (not FDisplayFormat[i].NumPrefix.UseInherited) then begin
+          include(FormatNumPrefixHex, FDisplayFormat[i].NumPrefix.HexPrefix);
+          include(FormatNumPrefixOct, FDisplayFormat[i].NumPrefix.OctPrefix);
+          include(FormatNumPrefixBin, FDisplayFormat[i].NumPrefix.BinPrefix);
         end;
       end;
     end;
@@ -2060,6 +2178,7 @@ begin
       cbOverrideArray.State         := BoolsetToCBState(InherhitArrayLen);
       cbOverrideArrayNavBar.State   := BoolsetToCBState(InherhitArrayNav);
       cbOverrideIndent.State        := BoolsetToCBState(InherhitIndent);
+      cbOverrideNumPrefix.State     := BoolsetToCBState(InherhitNumPrefix);
     end
     else begin
       InherhitNum     := [False];
@@ -2073,6 +2192,7 @@ begin
       InherhitArrayLen:= [False];
       InherhitArrayNav:= [False];
       InherhitIndent  := [False];
+      InherhitNumPrefix:= [False];
     end;
 
 
@@ -2225,6 +2345,17 @@ begin
       IntToSpinEdit(spinForceSingleLineRevDepth,  FormatForceSingleLineReverseDepth     );
       IntToSpinEdit(spinForceSingleLineEach,      FormatForceSingleLineThresholdEach      );
       IntToSpinEdit(spinForceSingleLineLen,       FormatForceSingleLineThresholdLen);
+    end;
+
+    if InherhitNumPrefix = [True] then begin
+      ClearRadios(PanelNumPrefixHex);
+      ClearRadios(PanelNumPrefixOct);
+      ClearRadios(PanelNumPrefixBin);
+    end
+    else begin
+      ApplyDispForm(PanelNumPrefixHex, cardinal(FormatNumPrefixHex));
+      ApplyDispForm(PanelNumPrefixOct, cardinal(FormatNumPrefixOct));
+      ApplyDispForm(PanelNumPrefixBin, cardinal(FormatNumPrefixBin));
     end;
 
     UpdateNumDigitPanel;
@@ -2495,6 +2626,49 @@ begin
   lbForceSingleLineRevDepth.Caption  := DispFormatForceSingleLineDepth;
   lbForceSingleLineEach.Caption      := DispFormatForceSingleLineEach;
   lbForceSingleLineLen.Caption       := DispFormatForceSingleLineLen;
+
+  lbOverrideNumPrefix.Caption := DispFormatDlgNumPrefix;
+  lbNumPrefixHex.Caption := DispFormatBaseHex;
+  rbNumPreHDollar.Caption  := '$';
+  rbNumPreHZeroX.Caption   := '0x';
+  rbNumPreHZeroUpX.Caption := '0X';
+  rbNumPreHHash.Caption    := '#';
+  rbNumPreHAmpUpH.Caption  := '&H';
+  rbNumPreHUPlus.Caption   := 'U+';
+  rbNumPreHPostH.Caption   := '...h';
+  rbNumPreHPost16.Caption  := '...₁₆';
+  rbNumPreHDollar.Tag  := ord(vdfhpDollar);
+  rbNumPreHZeroX.Tag   := ord(vdfhpZeroX);
+  rbNumPreHZeroUpX.Tag := ord(vdfhpZeroUpX);
+  rbNumPreHHash.Tag    := ord(vdfhpHash);
+  rbNumPreHAmpUpH.Tag  := ord(vdfhpAmpUpH);
+  rbNumPreHUPlus.Tag   := ord(vdfhpUPlus);
+  rbNumPreHPostH.Tag   := ord(vdfhpPostH);
+  rbNumPreHPost16.Tag  := ord(vdfhpPost16);
+  lbNumPrefixOct.Caption := DispFormatBaseOct;
+  rbNumPreOAmp.Caption     := '&&';
+  rbNumPreOZeroO.Caption   := '0o';
+  rbNumPreOZeroUpO.Caption := '0O';
+  rbNumPreOPostO.Caption   := '...o';
+  rbNumPreOPostQ.Caption   := '...q';
+  rbNumPreOPost8.Caption   := '...₈';
+  rbNumPreOAmp.Tag     := ord(vdfopAmp);
+  rbNumPreOZeroO.Tag   := ord(vdfopZeroO);
+  rbNumPreOZeroUpO.Tag := ord(vdfopZeroUpO);
+  rbNumPreOPostO.Tag   := ord(vdfopPostO);
+  rbNumPreOPostQ.Tag   := ord(vdfopPostQ);
+  rbNumPreOPost8.Tag   := ord(vdfopPost8);
+  lbNumPrefixBin.Caption := DispFormatBaseBin;
+  rbNumPreBPercent.Caption := '%';
+  rbNumPreBZeroB.Caption   := '0b';
+  rbNumPreBZeroUpB.Caption := '0B';
+  rbNumPreBPostB.Caption   := '...b';
+  rbNumPreBPost2.Caption   := '...₂';
+  rbNumPreBPercent.Tag := ord(vdfbpPercent);
+  rbNumPreBZeroB.Tag   := ord(vdfbpZeroB);
+  rbNumPreBZeroUpB.Tag := ord(vdfbpZeroUpB);
+  rbNumPreBPostB.Tag   := ord(vdfbpPostB);
+  rbNumPreBPost2.Tag   := ord(vdfbpPost2);
 
   lbOverrideArray.Caption           := DispFormatDlgArrayLen;
   cbArrayShowPrefix.Caption         := DispFormatDlgArrayShowPrefix;

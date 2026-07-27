@@ -231,6 +231,10 @@ begin
    ADisplayFormat.MultiLine.ForceSingleLineReverseDepth       := AConfig.GetValue(APath + 'MultiLineForceSingleLineReverseDepth',       DefaultWatchDisplayFormat.MultiLine.ForceSingleLineReverseDepth      );
    ADisplayFormat.MultiLine.ForceSingleLineThresholdEach      := AConfig.GetValue(APath + 'MultiLineForceSingleLineThresholdEach',      DefaultWatchDisplayFormat.MultiLine.ForceSingleLineThresholdEach     );
    ADisplayFormat.MultiLine.ForceSingleLineThresholdLen       := AConfig.GetValue(APath + 'MultiLineForceSingleLineThresholdLen',       DefaultWatchDisplayFormat.MultiLine.ForceSingleLineThresholdLen      );
+  ADisplayFormat.NumPrefix.UseInherited := AConfig.GetValue(APath + 'NumPrefixInherit', DefaultWatchDisplayFormat.NumPrefix.UseInherited);
+   AConfig.GetValue(APath + 'NumPrefixHex',   ord(DefaultWatchDisplayFormat.NumPrefix.HexPrefix),            ADisplayFormat.NumPrefix.HexPrefix,           TypeInfo(TValueDisplayFormatHexPrefix));
+   AConfig.GetValue(APath + 'NumPrefixOct',   ord(DefaultWatchDisplayFormat.NumPrefix.OctPrefix),            ADisplayFormat.NumPrefix.OctPrefix,           TypeInfo(TValueDisplayFormatOctPrefix));
+   AConfig.GetValue(APath + 'NumPrefixBin',   ord(DefaultWatchDisplayFormat.NumPrefix.BinPrefix),            ADisplayFormat.NumPrefix.BinPrefix,           TypeInfo(TValueDisplayFormatBinPrefix));
   ADisplayFormat.ArrayNavBar.UseInherited := AConfig.GetValue(APath + 'ArrayNavBarInherit', DefaultWatchDisplayFormat.ArrayNavBar.UseInherited);
    ADisplayFormat.ArrayNavBar.PageSize       := AConfig.GetValue(APath + 'ArrayNavBarPageSize', DefaultWatchDisplayFormat.ArrayNavBar.PageSize);
    ADisplayFormat.ArrayNavBar.EnforceBounds  := AConfig.GetValue(APath + 'ArrayNavBarEnforceBounds', DefaultWatchDisplayFormat.ArrayNavBar.EnforceBounds);
@@ -312,6 +316,10 @@ begin
    AConfig.SetDeleteValue(APath + 'MultiLineForceSingleLineReverseDepth',      ADisplayFormat.MultiLine.ForceSingleLineReverseDepth,       DefaultWatchDisplayFormat.MultiLine.ForceSingleLineReverseDepth      );
    AConfig.SetDeleteValue(APath + 'MultiLineForceSingleLineThresholdEach',     ADisplayFormat.MultiLine.ForceSingleLineThresholdEach,      DefaultWatchDisplayFormat.MultiLine.ForceSingleLineThresholdEach     );
    AConfig.SetDeleteValue(APath + 'MultiLineForceSingleLineThresholdLen',      ADisplayFormat.MultiLine.ForceSingleLineThresholdLen,       DefaultWatchDisplayFormat.MultiLine.ForceSingleLineThresholdLen      );
+  AConfig.SetDeleteValue(APath + 'NumPrefixInherit',   ADisplayFormat.NumPrefix.UseInherited,       DefaultWatchDisplayFormat.NumPrefix.UseInherited);
+   AConfig.SetDeleteValue(APath + 'NumPrefixHex',      ADisplayFormat.NumPrefix.HexPrefix,    ord(DefaultWatchDisplayFormat.NumPrefix.HexPrefix),    TypeInfo(TValueDisplayFormatHexPrefix));
+   AConfig.SetDeleteValue(APath + 'NumPrefixOct',      ADisplayFormat.NumPrefix.OctPrefix,    ord(DefaultWatchDisplayFormat.NumPrefix.OctPrefix),    TypeInfo(TValueDisplayFormatOctPrefix));
+   AConfig.SetDeleteValue(APath + 'NumPrefixBin',      ADisplayFormat.NumPrefix.BinPrefix,    ord(DefaultWatchDisplayFormat.NumPrefix.BinPrefix),    TypeInfo(TValueDisplayFormatBinPrefix));
   AConfig.SetDeleteValue(APath + 'ArrayNavBarInherit',   ADisplayFormat.ArrayNavBar.UseInherited,       DefaultWatchDisplayFormat.ArrayNavBar.UseInherited);
    AConfig.SetDeleteValue(APath + 'ArrayNavBarPageSize',ADisplayFormat.ArrayNavBar.PageSize, DefaultWatchDisplayFormat.ArrayNavBar.PageSize);
    AConfig.SetDeleteValue(APath + 'ArrayNavBarEnforceBounds',ADisplayFormat.ArrayNavBar.EnforceBounds, DefaultWatchDisplayFormat.ArrayNavBar.EnforceBounds);

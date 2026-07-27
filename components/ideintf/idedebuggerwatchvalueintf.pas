@@ -78,6 +78,16 @@ type
   TValueDisplayFormatHexSeperators = set of TValueDisplayFormatHexSeperator;
   TValueDisplayNumDigitsArray = array [TValueDisplayFormatBase] of integer; // Entry for Char is not used
 
+  // $ 0x # &h U+ .h  .₁₆
+  TValueDisplayFormatHexPrefix = (vdfhpDollar,  vdfhpZeroX, vdfhpZeroUpX, vdfhpHash, vdfhpAmpUpH, vdfhpUPlus,
+                                  vdfhpPostH, vdfhpPost16);
+  // & 0o 0O  .o .q  .₈
+  TValueDisplayFormatOctPrefix = (vdfopAmp,     vdfopZeroO, vdfopZeroUpO,
+                                  vdfopPostO, vdfopPostQ, vdfopPost8);
+  // % 0b 0B  .b   .₂
+  TValueDisplayFormatBinPrefix = (vdfbpPercent, vdfbpZeroB, vdfbpZeroUpB,
+                                  vdfbpPostB, vdfbpPost2);
+
   TValueDisplayFormatArrayType = (vdfatNone, vdfatAll, vdfatStat, vdfatDyn);
   TValueDisplayFormatArrayTypes = set of TValueDisplayFormatArrayType;
 
@@ -183,6 +193,17 @@ type
     ForceSingleLineThresholdLen:       integer; // max printed len of each field (name + content)
     class operator = (a,b: TWatchDisplayFormatMultiline): boolean;
   end;
+
+  { TWatchDisplayFormatNumPrefix }
+
+  TWatchDisplayFormatNumPrefix = packed record
+    UseInherited:          boolean;
+    HexPrefix:             TValueDisplayFormatHexPrefix;
+    OctPrefix:             TValueDisplayFormatOctPrefix;
+    BinPrefix:             TValueDisplayFormatBinPrefix;
+    class operator = (a,b: TWatchDisplayFormatNumPrefix): boolean;
+  end;
+
   TWatchDisplayFormatArrayNav = packed record
     UseInherited:          boolean;
     PageSize:              Integer;
@@ -205,6 +226,7 @@ type
     Pointer: TWatchDisplayFormatPointer;
     ArrayLen:  TWatchDisplayFormatArrayLen;
     MultiLine:   TWatchDisplayFormatMultiline;
+    NumPrefix:   TWatchDisplayFormatNumPrefix;
     ArrayNavBar: TWatchDisplayFormatArrayNav;
 
     MemDump: boolean;
@@ -298,6 +320,11 @@ const
                 ForceSingleLineReverseDepth:       2;
                 ForceSingleLineThresholdEach:      4;
                 ForceSingleLineThresholdLen:      20;
+               );
+    NumPrefix: (UseInherited:          True;
+                HexPrefix:             vdfhpDollar;
+                OctPrefix:             vdfopAmp;
+                BinPrefix:             vdfbpPercent;
                );
     ArrayNavBar: (UseInherited:   True;
                   PageSize:       10;
@@ -551,6 +578,19 @@ begin
   Result[Length(Result)] := ']';
 end;
 
+function dbgs(v: TValueDisplayFormatHexPrefix): String;
+begin
+  WriteStr(Result, v);
+end;
+function dbgs(v: TValueDisplayFormatOctPrefix): String;
+begin
+  WriteStr(Result, v);
+end;
+function dbgs(v: TValueDisplayFormatBinPrefix): String;
+begin
+  WriteStr(Result, v);
+end;
+
 function dbgs(df: TWatchDisplayFormat): string;
 begin
   Result :=
@@ -569,6 +609,7 @@ begin
     'Addr: '+dbgs(df.Pointer.Address.UseInherited)+' '+dbgs(df.Pointer.Address.TypeFormat)+' '+dbgs(df.Pointer.Address.BaseFormat)+' '+dbgs(df.Pointer.Address.Signed)+' '+dbgs(df.Struct.Address.NoLeadZero) + LineEnding+
     'Array: '+dbgs(df.ArrayLen.UseInherited)+' '+dbgs(df.ArrayLen.ShowLenPrefix) +dbgs(df.ArrayLen.ShowLenPrefixEmbedded) +dbgs(df.ArrayLen.LenPrefixMaxNest) +dbgs(df.ArrayLen.LenPrefixCombine) + LineEnding+
     'Indent: '+dbgs(df.MultiLine.UseInherited)+' '+dbgs(df.MultiLine.MaxMultiLineDepth) + LineEnding+
+    'NumPrefix: '+dbgs(df.NumPrefix.HexPrefix)+' '+dbgs(df.NumPrefix.OctPrefix)+' '+dbgs(df.NumPrefix.BinPrefix) + LineEnding+
     'ArrayNav: '+dbgs(df.ArrayNavBar.UseInherited)+' '+dbgs(df.ArrayNavBar.PageSize)+' '+dbgs(df.ArrayNavBar.EnforceBounds)+' '+dbgs(df.ArrayNavBar.AutoHideNavBar) + LineEnding+
     'Dmp: '+dbgs(df.MemDump);
 end;
@@ -746,6 +787,17 @@ begin
   ;
 end;
 
+{ TWatchDisplayFormatNumPrefix }
+
+class operator TWatchDisplayFormatNumPrefix. = (a, b: TWatchDisplayFormatNumPrefix): boolean;
+begin
+  Result :=
+    (a.UseInherited          = b.UseInherited) and
+    (a.HexPrefix              = b.HexPrefix) and
+    (a.OctPrefix              = b.OctPrefix) and
+    (a.BinPrefix              = b.BinPrefix);
+end;
+
 { TWatchDisplayFormatArrayNav }
 
 class operator TWatchDisplayFormatArrayNav. = (a, b: TWatchDisplayFormatArrayNav): boolean;
@@ -771,6 +823,7 @@ begin
     (a.Pointer     = b.Pointer) and
     (a.ArrayLen    = b.ArrayLen) and
     (a.MultiLine   = b.MultiLine) and
+    (a.NumPrefix   = b.NumPrefix) and
     (a.ArrayNavBar = b.ArrayNavBar) and
     (a.MemDump     = b.MemDump);
 end;
@@ -783,7 +836,9 @@ begin
                 Struct.UseInherited and Struct.Address.UseInherited and
                 Pointer.UseInherited and Pointer.Address.UseInherited and
                 ArrayLen.UseInherited and
-                MultiLine.UseInherited and ArrayNavBar.UseInherited
+                MultiLine.UseInherited and
+                NumPrefix.UseInherited and
+                ArrayNavBar.UseInherited
                );
 end;
 
@@ -802,6 +857,7 @@ begin
   Pointer.Address.UseInherited := False;
   ArrayLen.UseInherited         := False;
   MultiLine.UseInherited       := False;
+  NumPrefix.UseInherited       := False;
   ArrayNavBar.UseInherited     := False;
 end;
 
@@ -824,6 +880,7 @@ begin
   if not a.UseInherited           then Pointer.Address := a;
   if ArrayLen.UseInherited        then ArrayLen        := AnOther.ArrayLen;
   if MultiLine.UseInherited       then MultiLine       := AnOther.MultiLine;
+  if NumPrefix.UseInherited       then NumPrefix       := AnOther.NumPrefix;
   if ArrayNavBar.UseInherited     then ArrayNavBar     := AnOther.ArrayNavBar;
 end;
 

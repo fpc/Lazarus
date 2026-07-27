@@ -1247,7 +1247,6 @@ procedure TWatchesDlg.DoGetHintForCell(Sender: TDbgTreeView; const AHitInfo: THi
 var
   AWatchAble: TIdeWatch;
   AWatchAbleResult: IWatchAbleResultIntf;
-  da: TDBGPtr;
   s: String;
 begin
   AShowHint := AHitInfo.HitNode <> nil;
@@ -1266,13 +1265,9 @@ begin
   else
     AHintText := '<b>' + CodeHelpBoss.TextToHTML(AWatchAble.Expression) + '</b><br/>';
 
-  if AWatchAbleResult.ResultData.HasDataAddress then begin
-    da := AWatchAbleResult.ResultData.DataAddress;
-    if da = 0
-    then s := 'nil'
-    else s := '$' + IntToHex(da, HexDigicCount(da, 4, True));
+  s := FWatchTreeMgr.GetFieldAsText(AHitInfo.HitNode, AWatchAble, AWatchAbleResult, vdfDataAddress, []);
+  if s <> '' then
     AHintText := AHintText + '<i>Address:&nbsp;' + s + '</i><br/>';
-  end;
 
   AHintText := AHintText + CodeHelpBoss.TextToHTML(FWatchTreeMgr.GetFieldAsText(AHitInfo.HitNode, AWatchAble, AWatchAbleResult, vdfValue, [vdoAllowMultiLine]));
 end;
@@ -1935,7 +1930,6 @@ function TDbgTreeViewWatchValueMgr.GetFieldAsText(Nd: PVirtualNode;
 var
   TheWatch: TIdeWatch absolute AWatchAble;
   ResData: TWatchResultData;
-  da: TDBGPtr;
   DispFormat: TWatchDisplayFormat;
   s: String;
 begin
@@ -2012,11 +2006,12 @@ begin
         end;
       end;
     vdfDataAddress: begin
-      if AWatchAbleResult.ResultData.HasDataAddress then begin
-        da := AWatchAbleResult.ResultData.DataAddress;
-        if da = 0
-        then Result := 'nil'
-        else Result := '$' + IntToHex(da, HexDigicCount(da, 4, True));
+      ResData :=  AWatchAbleResult.ResultData;
+      if (ResData <> nil) and ResData.HasDataAddress then begin
+        DispFormat := DefaultWatchDisplayFormat;
+        if AWatchAble <> nil then
+          DispFormat := TheWatch.DisplayFormat;
+        Result := FWatchDlg.FWatchPrinter.PrintWatchValueDataAddress(ResData, DispFormat);
       end;
     end;
   end;
@@ -2029,7 +2024,6 @@ var
   TheWatch: TIdeWatch absolute AWatchAble;
   ResData: TWatchResultData;
   WatchValueStr, s, StackPre: String;
-  da: TDBGPtr;
   DispFormat: TWatchDisplayFormat;
   CachedResIntf: IWatchAbleResultIntf;
   CacheColor: TIdeCustomHighlighterAttributesModifier;
@@ -2125,12 +2119,8 @@ begin
         WatchValueStr := LimitTextLength(WatchValueStr, FWatchDlg.MAX_GRID_VALUE_LEN);
         TreeView.NodeText[AVNode, COL_WATCH_VALUE-1] := StackPre + WatchValueStr;
 
-        if ResData.HasDataAddress then begin
-          da := ResData.DataAddress;
-          if da = 0
-          then TreeView.NodeText[AVNode, 2] := 'nil'
-          else TreeView.NodeText[AVNode, 2] := '$' + IntToHex(da, HexDigicCount(da, 4, True));
-        end
+        if ResData.HasDataAddress then
+          TreeView.NodeText[AVNode, 2] := FWatchDlg.FWatchPrinter.PrintWatchValueDataAddress(ResData, DispFormat);
       end
       else begin
         s := AnsiUpperCase(TheWatch.Expression);
