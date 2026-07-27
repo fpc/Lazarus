@@ -17,10 +17,10 @@ unit IDEHelpIntf;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, Types, Math,
   // LCL
   LMessages, LCLType, LCLIntf, Forms, Controls, Graphics, HelpIntfs, LazHelpIntf,
-  TextTools;
+  TextTools, LazLogger;
 
 type
   { THelpDBIRegExprMessage
@@ -190,7 +190,26 @@ type
 
   { THintWindowManager }
 
+  THintWindowShowPos = (
+    hwpAfter,   // Below/Right
+    hwpCenter,  //
+    hwpBefore   // Above/Left
+  );
+  THintWindowShowFlag = (
+    hwfSwapXYPreference,  // Swap order in which Y/X are computed
+                          // - E.g.: Prefer placing to the Left/Right of the exclusion (keeping Y at ScreenPos)
+                          //         Rather than Above/Below the Exclusion (keeping X at ScreenPos)
+                          // - Ignored, if hwpCenter
+                          // - If there is no exclusion, then the Offset will be applied according to this
+    hwfAllowOppositePos,  // Allows above/below (or left/right, if XY-Pref) to be swapped if there is not enough space
+    hwfAllowSwapXYPref,   // Only, if there is not enough space on the original preference
+    hwfPreventSliding     // Don't push to left/right (up/down), if there is not enough space
+  );
+  THintWindowShowFlags = set of THintWindowShowFlag;
+
   THintWindowManager = class
+  //private const
+  //  HINTWIN_DEF_FLAGS = THintWindowShowFlags([]);
   private
     // 2 HintWindows, one for simple text and one for rendered hint with child control.
     // Only one is visible at a time.
@@ -219,8 +238,17 @@ type
     constructor Create; overload;
     destructor Destroy; override;
     function HintIsVisible: boolean;
-    function ShowHint(ScreenPos: TPoint; TheHint: string; const MouseOffset: Boolean = True;
-      HintFont: TFont = nil): boolean;
+    function ShowHint(ScreenPos: TPoint; TheHint: string;
+      MouseOffset: Boolean = True; // If false don't allow *ANY* offset to mouse (ScreenPos).
+                                         // No distance: Don't add internal offset.
+                                         // No overlap:  Don't allow moving oversized hint, cut off instead.
+                                         //   Hint may slide sidewards below the point (or instead upwards, behind it)
+      HintFont: TFont = nil;
+      AHintYPos: THintWindowShowPos = hwpAfter;
+      AHintXPos: THintWindowShowPos = hwpAfter;
+      AHintFlags: THintWindowShowFlags = [];
+      AnExclusionRect: PRect = nil
+      ): boolean;
     procedure HideHint;
     procedure HideIfVisible;
   public
@@ -410,8 +438,209 @@ begin
   Result := FHtmlHelpProvider;
 end;
 
-function THintWindowManager.ShowHint(ScreenPos: TPoint; TheHint: string;
-  const MouseOffset: Boolean; HintFont: TFont): boolean;
+function THintWindowManager.ShowHint(ScreenPos: TPoint; TheHint: string; MouseOffset: Boolean;
+  HintFont: TFont; AHintYPos: THintWindowShowPos; AHintXPos: THintWindowShowPos;
+  AHintFlags: THintWindowShowFlags; AnExclusionRect: PRect): boolean;
+
+  procedure AdjustHintRect(AHintWindow: THintWindow; AScrollBarHeight: integer = 0; AScrollBarWidth: integer = 0);
+  var
+    OrigRect, ExclusionRect, BestRect, CurRect, MonitorBounds: TRect;
+    dy, x, y, CurLoss: Integer;
+    HintMonitor: TMonitor;
+
+    procedure RectToMonitor(var TmpRect: TRect; KeepWidth, KeepHeight: Boolean);
+    begin
+      if HintMonitor = nil then
+        exit;
+      // offset hint to fit into monitor
+      if TmpRect.Bottom > MonitorBounds.Bottom then
+      begin
+        if KeepHeight then
+          TmpRect.Top := MonitorBounds.Bottom - (TmpRect.Bottom - TmpRect.Top);
+        TmpRect.Bottom := MonitorBounds.Bottom;
+      end;
+      if TmpRect.Top < MonitorBounds.Top then
+      begin
+        if KeepHeight then
+          TmpRect.Bottom := Min(MonitorBounds.Top + (TmpRect.Bottom - TmpRect.Top), MonitorBounds.Bottom);
+        TmpRect.Top := MonitorBounds.Top;
+      end;
+
+      if TmpRect.Right > MonitorBounds.Right then
+      begin
+        if KeepWidth then
+          TmpRect.Left := MonitorBounds.Right - (TmpRect.Right - TmpRect.Left);
+        TmpRect.Right := MonitorBounds.Right;
+      end;
+      if TmpRect.Left < MonitorBounds.Left then
+      begin
+        if KeepWidth then
+          TmpRect.Right:= Min(MonitorBounds.Left + (TmpRect.Right - TmpRect.Left), MonitorBounds.Right);
+        TmpRect.Left := MonitorBounds.Left;
+      end;
+    end;
+
+    function OffsetHintRect(TmpRect: TRect; AOffset: TPoint; KeepWidth, KeepHeight: Boolean): TRect;
+    begin
+      Result := TmpRect;
+      OffsetRect(Result, AOffset.X, AOffset.Y );
+      RectToMonitor(Result, KeepWidth, KeepHeight);
+    end;
+
+    procedure ApplyScrollBarSpace(var TmpRect: TRect; ABefore, AnAbove, KeepWidth, KeepHeight: Boolean);
+    var
+      ReducedWidth, ReducedHeight: Boolean;
+    begin
+      ReducedWidth  := (TmpRect.Width  < OrigRect.Width)  and (AScrollBarHeight > 0);
+      ReducedHeight := (TmpRect.Height < OrigRect.Height) and (AScrollBarWidth  > 0);
+      if ReducedHeight <> ReducedWidth then begin // if both were reduced, they can't be increased
+        if ReducedWidth then begin // the width was decreased -> scrollbar will be shown, increase width
+          if AnAbove then
+            //TmpRect.Top := Max(0, TmpRect.Top - GetSystemMetrics(SM_CYHSCROLL))
+            Dec(TmpRect.Top, AScrollBarHeight)
+          else
+            Inc(TmpRect.Bottom, AScrollBarHeight);
+        end;
+        if ReducedHeight then begin // the height was decreased -> scrollbar will be shown, increase width
+          if ABefore then
+            //TmpRect.Left := Max(0, TmpRect.Left - GetSystemMetrics(SM_CXVSCROLL))
+            Dec(TmpRect.Left, AScrollBarWidth)
+          else
+            Inc(TmpRect.Right, AScrollBarWidth);
+        end;
+        TmpRect := OffsetHintRect(TmpRect, Point(0, 0), KeepWidth, KeepHeight);
+      end;
+    end;
+
+    function UpdateBestFound(TmpRect: TRect): boolean;
+    var
+      Loss, L1, L2, L3: Integer;
+      TmpClientRect: TRect;
+    begin
+      TmpClientRect := TmpRect;
+      if TmpClientRect.Width  < OrigRect.Width  then TmpClientRect.Bottom := Max(0, TmpClientRect.Bottom - AScrollBarHeight);
+      if TmpClientRect.Height < OrigRect.Height then TmpClientRect.Right  := Max(0, TmpClientRect.Right  - AScrollBarWidth);
+      // the amount of pixels lost in width/height, in percent (base $4000)
+      L1 := Max(0, OrigRect.Width  - TmpClientRect.Width)  * $4000 div OrigRect.Width;
+      L2 := Max(0, OrigRect.Height - TmpClientRect.Height) * $4000 div OrigRect.Height;
+      // The surface loss
+      L3 := Max(0, OrigRect.Height*OrigRect.Width - TmpClientRect.Height*TmpClientRect.Height) * $4000 div (OrigRect.Height*OrigRect.Width);
+      // If either has full size, then make the loss count less.
+      if L1 <= 2 then begin L2 := L2 div 2; L3 := L3 div 2; end;
+      if L2 <= 2 then begin L1 := L1 div 2; L3 := L3 div 2; end;
+      Loss := Max(Max(L1, L2), L3);
+      if Loss < CurLoss then begin
+        CurLoss  := Loss;
+        BestRect := TmpRect;
+      end;
+
+      Result := CurLoss <= 0;
+    end;
+
+  begin
+    HintMonitor := Screen.MonitorFromPoint(ScreenPos);
+    if HintMonitor <> nil then
+      MonitorBounds := HintMonitor.WorkareaRect;
+
+    OrigRect := AHintWindow.HintRect;
+    if AnExclusionRect <> nil then begin
+      ExclusionRect := AnExclusionRect^;
+      MouseOffset := False; // don't allow to slide over exclusion rect // don't use "dy"
+    end
+    else
+      ExclusionRect := Rect(ScreenPos.X, ScreenPos.Y, ScreenPos.X+1, ScreenPos.Y+1);
+    if MouseOffset then
+      dy := 15
+    else
+      dy := 0;
+
+    if AHintXPos = hwpCenter then exclude(AHintFlags, hwfSwapXYPreference)
+    else
+    if AHintYPos = hwpCenter then include(AHintFlags, hwfSwapXYPreference);
+
+    CurLoss := MaxInt;
+
+    repeat
+      if hwfSwapXYPreference in AHintFlags then begin
+        case AHintYPos of
+          hwpAfter:  y := ExclusionRect.Top;
+          hwpCenter: y := ExclusionRect.Top + (ExclusionRect.Height - OrigRect.Height) div 2;
+          hwpBefore: y := ExclusionRect.Bottom - OrigRect.Height;
+        end;
+
+        case AHintXPos of
+          hwpAfter:  x := ExclusionRect.Right + dy;
+          hwpCenter: x := ExclusionRect.Right + (ExclusionRect.Width - OrigRect.Width) div 2;
+          hwpBefore: x := ExclusionRect.Left - OrigRect.Width - dy;
+        end;
+        CurRect := OffsetHintRect(OrigRect, Point(x, y),
+                                  MouseOffset,                            // shrink Width,  if no overlap allowed
+                                  not (hwfPreventSliding in AHintFlags)); // shrink Height, instead of sliding
+        ApplyScrollBarSpace(CurRect, AHintXPos = hwpBefore, AHintYPos = hwpBefore, MouseOffset, not (hwfPreventSliding in AHintFlags));
+        if UpdateBestFound(CurRect) then
+          break;
+
+        if (hwfAllowOppositePos in AHintFlags) and (AHintXPos <> hwpCenter) then begin
+          case AHintXPos of
+            hwpAfter:  x := ExclusionRect.Left - OrigRect.Width - dy;
+            hwpBefore: x := ExclusionRect.Right + dy;
+          end;
+          CurRect := OffsetHintRect(OrigRect, Point(x, y),
+                                    MouseOffset,                            // shrink Width,  if no overlap allowed
+                                    not (hwfPreventSliding in AHintFlags)); // shrink Height, instead of sliding
+          ApplyScrollBarSpace(CurRect, AHintXPos = hwpAfter, AHintYPos = hwpBefore, MouseOffset, not (hwfPreventSliding in AHintFlags));
+          if UpdateBestFound(CurRect) then
+            break;
+        end;
+
+        if (hwfAllowSwapXYPref in AHintFlags) and (AHintYPos <> hwpCenter) then begin
+          AHintFlags := AHintFlags - [hwfAllowSwapXYPref] + [hwfSwapXYPreference];
+          Continue;
+        end;
+      end
+      else begin
+        case AHintXPos of
+          hwpAfter:  x := ExclusionRect.Left;
+          hwpCenter: x := ExclusionRect.Left + (ExclusionRect.Width - OrigRect.Width) div 2;
+          hwpBefore: x := ExclusionRect.Right - OrigRect.Width;
+        end;
+
+        case AHintYPos of
+          hwpAfter:  y := ExclusionRect.Bottom + dy;
+          hwpCenter: y := ExclusionRect.Bottom + (ExclusionRect.Height - OrigRect.Height) div 2;
+          hwpBefore: y := ExclusionRect.Top - OrigRect.Height - dy;
+        end;
+        CurRect := OffsetHintRect(OrigRect, Point(x, y),
+                                  not (hwfPreventSliding in AHintFlags), // shrink width, instead of sliding
+                                  MouseOffset);                          // shrink height, if no overlap allowed
+        ApplyScrollBarSpace(CurRect, AHintXPos = hwpBefore, AHintYPos = hwpBefore, not (hwfPreventSliding in AHintFlags), MouseOffset);
+        if UpdateBestFound(CurRect) then
+          break;
+
+        if (hwfAllowOppositePos in AHintFlags) and (AHintYPos <> hwpCenter) then begin
+          case AHintYPos of
+            hwpAfter:  y := ExclusionRect.Top - OrigRect.Height - dy;
+            hwpBefore: y := ExclusionRect.Bottom + dy;
+          end;
+          CurRect := OffsetHintRect(OrigRect, Point(x, y),
+                                     not (hwfPreventSliding in AHintFlags), // shrink width, instead of sliding
+                                     MouseOffset);                          // shrink height, if no overlap allowed
+          ApplyScrollBarSpace(CurRect, AHintXPos = hwpBefore, AHintYPos = hwpAfter, not (hwfPreventSliding in AHintFlags), MouseOffset);
+          if UpdateBestFound(CurRect) then
+            break;
+        end;
+
+        if (hwfAllowSwapXYPref in AHintFlags) and (AHintXPos <> hwpCenter) then begin
+          AHintFlags := AHintFlags - [hwfAllowSwapXYPref] + [hwfSwapXYPreference];
+          Continue;
+        end;
+      end;
+
+      break;
+    until False;
+
+    AHintWindow.HintRect := BestRect;
+  end;
 
   procedure DoText;
   var
@@ -421,10 +650,7 @@ function THintWindowManager.ShowHint(ScreenPos: TPoint; TheHint: string;
       HintTextWindow.Font := HintFont;
     HintWinRect := HintTextWindow.CalcHintRect(Screen.Width, TheHint, Nil);
     HintTextWindow.HintRect := HintWinRect;      // Adds borders.
-    if MouseOffset then
-      HintTextWindow.OffsetHintRect(ScreenPos)
-    else                   // shrink height only for fixed (no MouseOffset) hints
-      HintTextWindow.OffsetHintRect(ScreenPos, 0, True, False);
+    AdjustHintRect(HintTextWindow);
     HintTextWindow.ActivateHint(TheHint);
   end;
 
@@ -459,26 +685,30 @@ function THintWindowManager.ShowHint(ScreenPos: TPoint; TheHint: string;
     {$ENDIF}
     HintRenderWindow.HintRectAdjust := Rect(0, 0, NewWidth, NewHeight);
     R1 := HintRenderWindow.HintRect;
-    if MouseOffset then
-      HintRenderWindow.OffsetHintRect(ScreenPos)
-    else
-      HintRenderWindow.OffsetHintRect(ScreenPos, 0, True, False); // shrink height only for fixed (no MouseOffset) hints
-
-    R2 := HintRenderWindow.HintRect;
-    ReducedWidth := R1.Right-R1.Left>R2.Right-R2.Left;
-    ReducedHeight := R1.Bottom-R1.Top>R2.Bottom-R2.Top;
-    if ReducedHeight <> ReducedWidth then begin // if both were reduced, they can't be increased
-      if ReducedWidth then // the width was decreased -> scrollbar will be shown, increase width
-        Inc(R2.Bottom, GetSystemMetrics(SM_CYHSCROLL));
-      if ReducedHeight then // the height was decreased -> scrollbar will be shown, increase width
-        Inc(R2.Right, GetSystemMetrics(SM_CXVSCROLL));
-      HintRenderWindow.HintRect := R2;
-
-      if MouseOffset then
-        HintRenderWindow.OffsetHintRect(Point(0, 0), 0)
-      else
-        HintRenderWindow.OffsetHintRect(Point(0, 0), 0, True, False); // shrink height only for fixed (no MouseOffset) hints
-    end;
+    AdjustHintRect(HintRenderWindow, GetSystemMetrics(SM_CYHSCROLL), GetSystemMetrics(SM_CXVSCROLL));
+    //R2 := HintRenderWindow.HintRect;
+    //ReducedWidth := R1.Right-R1.Left>R2.Right-R2.Left;
+    //ReducedHeight := R1.Bottom-R1.Top>R2.Bottom-R2.Top;
+    //if ReducedHeight <> ReducedWidth then begin // if both were reduced, they can't be increased
+    //  if ReducedWidth then begin // the width was decreased -> scrollbar will be shown, increase width
+    //    if R2.Bottom <= ScreenPos.y then
+    //      R2.Top := Max(0, R2.Top - GetSystemMetrics(SM_CYHSCROLL))
+    //    else
+    //      Inc(R2.Bottom, GetSystemMetrics(SM_CYHSCROLL));
+    //  end;
+    //  if ReducedHeight then begin // the height was decreased -> scrollbar will be shown, increase width
+    //    if R2.Right <= ScreenPos.x then
+    //      R2.Left := Max(0, R2.Left - GetSystemMetrics(SM_CXVSCROLL))
+    //    else
+    //      Inc(R2.Right, GetSystemMetrics(SM_CXVSCROLL));
+    //  end;
+    //  HintRenderWindow.HintRect := R2;
+    //
+    //  if MouseOffset then
+    //    HintRenderWindow.OffsetHintRect(Point(0, 0), 0)
+    //  else
+    //    HintRenderWindow.OffsetHintRect(Point(0, 0), 0, True, False); // shrink height only for fixed (no MouseOffset) hints
+    //end;
     HintRenderWindow.ActivateRendered;
   end;
 
