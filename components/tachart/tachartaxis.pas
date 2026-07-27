@@ -685,9 +685,7 @@ var
 begin
   if not Visible then exit;
   fixedCoord := TChartAxisMargins(FAxisRect)[Alignment];
-  FHelper.BeginDrawing;
   FHelper.DrawAxisLine(AxisPen, fixedCoord);
-  FHelper.EndDrawing;
 end;
 
 procedure TChartAxis.DrawGrid;
