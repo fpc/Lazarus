@@ -229,6 +229,7 @@ type
   TSynStateFlag = (sfCaretChanged, sfHideCursor,
     sfEnsureCursorPos, sfEnsureCursorPosAtResize, sfEnsureCursorPosForEditRight, sfEnsureCursorPosForEditLeft,
     sfExplicitTopLine, sfExplicitLeftChar,  // when doing EnsureCursorPos keep top/Left, if they where set explicitly after the caret (only applies before handle creation)
+    sfExplicitTopLineForFoldState,
     sfCheckScrollRangeVert, sfCheckScrollRangeHoriz,  // Call TopView:=TopView / Ensure they are in MAX-scrollRange
     sfRecalculateScrollOnEdit,
     sfPreventScrollAfterSelect,
@@ -6216,6 +6217,8 @@ begin
 
   if WaitingForInitialSize then
     Include(fStateFlags, sfExplicitTopLine);
+  if FPendingFoldState <> '' then
+    Include(fStateFlags, sfExplicitTopLineForFoldState);
 
   (* ToDo: FFoldedLinesView.TopLine := AValue;
     Required, if "TopView := TopView" or "TopLine := TopLine" is called,
@@ -6561,6 +6564,8 @@ begin
 end;
 
 procedure TCustomSynEdit.SetFoldState(const AValue: String);
+var
+  tl: integer;
 begin
   if assigned(fHighlighter) then begin
     fHighlighter.CurrentLines := FTheLinesView;
@@ -6573,10 +6578,16 @@ begin
     FPendingFoldState := AValue;
     exit;
   end;
+  if sfExplicitTopLineForFoldState in fStateFlags then
+    tl := TopLine;
   FFoldedLinesView.Lock;
   FFoldedLinesView.ApplyFoldDescription(0, 0, -1, -1, PChar(AValue), length(AValue), True);
   FFoldedLinesView.UnLock;
   FPendingFoldState := '';
+  if sfExplicitTopLineForFoldState in fStateFlags then begin
+    TopLine := tl;
+    Exclude(fStateFlags, sfExplicitTopLineForFoldState);
+  end;
 end;
 
 procedure TCustomSynEdit.SetHiddenCodeLineColor(AValue: TLazEditHighlighterAttributesModifier);
