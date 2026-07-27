@@ -100,7 +100,7 @@ var
 begin
   Result := False;
   if (AEvent <> nil) and
-     (AEvent^.type_ in [GDK_BUTTON_PRESS, GDK_2BUTTON_PRESS, GDK_3BUTTON_PRESS]) and
+     (AEvent^.type_ = GDK_BUTTON_PRESS) and
      (AEvent^.button = 1) then
   begin
     LCLSpinEditUpClicked(PGtkButton(AWidget), AData);
@@ -116,7 +116,7 @@ var
 begin
   Result := False;
   if (AEvent <> nil) and
-     (AEvent^.type_ in [GDK_BUTTON_PRESS, GDK_2BUTTON_PRESS, GDK_3BUTTON_PRESS]) and
+     (AEvent^.type_ = GDK_BUTTON_PRESS) and
      (AEvent^.button = 1) then
   begin
     LCLSpinEditDownClicked(PGtkButton(AWidget), AData);
