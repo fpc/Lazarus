@@ -339,9 +339,6 @@ procedure TButtonGlyph.SetExternalImageIndex(AState: TButtonState;
 begin
   if FExternalImageIndexes[AState] = AExternalImageIndex then Exit;
   FExternalImageIndexes[AState] := AExternalImageIndex;
-  if FExternalImageIndexes[AState] >= 0 then
-    ClearLCLGlyph;
-  FOriginal.Clear;
   DoChange;
 end;
 
@@ -350,9 +347,6 @@ procedure TButtonGlyph.SetExternalImages(const AExternalImages: TCustomImageList
 begin
   if FExternalImages = AExternalImages then Exit;
   FExternalImages := AExternalImages;
-  if FExternalImages<>nil then
-    ClearLCLGlyph;
-  FOriginal.Clear;
   DoChange;
 end;
 
