@@ -13,29 +13,29 @@ msgstr ""
 
 #: fppkg_const.lisfppkgbuildmethodboth
 msgid "Both"
-msgstr ""
+msgstr "Beide"
 
 #: fppkg_const.lisfppkgbuildmethodfpmake
 msgctxt "fppkg_const.lisfppkgbuildmethodfpmake"
 msgid "FPMake"
-msgstr ""
+msgstr "FPMake"
 
 #: fppkg_const.lisfppkgbuildmethodlazarus
 msgid "Lazbuild"
-msgstr ""
+msgstr "Lazbuild"
 
 #: fppkg_const.lisfppkgpckoptsbuildmethod
 msgid "Supported build methods"
-msgstr ""
+msgstr "Unterstützte Build-Methoden"
 
 #: fppkg_const.lisfppkgpckoptstitle
 msgctxt "fppkg_const.lisfppkgpckoptstitle"
 msgid "Fppkg"
-msgstr ""
+msgstr "Fppkg"
 
 #: fppkg_const.rsaboutform
 msgid "About form"
-msgstr ""
+msgstr "Formular \"Über\""
 
 #: fppkg_const.rsarchivesdirectory
 msgid "Archives directory"
@@ -43,7 +43,7 @@ msgstr "Archiv-Verzeichnis"
 
 #: fppkg_const.rsbuilddirectory
 msgid "Build directory"
-msgstr ""
+msgstr "Build-Verzeichnis"
 
 #: fppkg_const.rscompiler
 msgid "Compiler"
@@ -63,7 +63,7 @@ msgstr "Compilerversion"
 
 #: fppkg_const.rscustomfpmakeoptions
 msgid "Custom fpmake options"
-msgstr ""
+msgstr "Benutzerdefinierte fpmake-Einstellungen"
 
 #: fppkg_const.rsdefaultcompilerconfig
 msgid "Default compiler config"
@@ -71,7 +71,7 @@ msgstr "Standard-Compilerkonfiguration"
 
 #: fppkg_const.rsdownloader
 msgid "Downloader"
-msgstr ""
+msgstr "Downloader"
 
 #: fppkg_const.rsfpmakecompilerconfig
 msgid "fpmake compiler config"
@@ -80,11 +80,11 @@ msgstr "fpmake-Compilerkonfiguration"
 #: fppkg_const.rsfppkgenvironmentoptions
 msgctxt "fppkg_const.rsfppkgenvironmentoptions"
 msgid "Fppkg"
-msgstr ""
+msgstr "Fppkg"
 
 #: fppkg_const.rsfppkgenvironmentoptionscaption
 msgid "Compilation"
-msgstr ""
+msgstr "Kompilierung"
 
 #: fppkg_const.rsfppkgoptions
 msgid "fppkg options"
@@ -130,11 +130,11 @@ msgstr "Einstellungen"
 #: fppkg_const.rspackagefileoptionstitle
 msgctxt "fppkg_const.rspackagefileoptionstitle"
 msgid "FPMake"
-msgstr ""
+msgstr "FPMake"
 
 #: fppkg_const.rsremotemirrorsurl
 msgid "Remote mirrors URL"
-msgstr ""
+msgstr "URL externer Spiegel"
 
 #: fppkg_const.rsremoterepository
 msgid "Remote repository"
@@ -142,118 +142,122 @@ msgstr "Entferntes Repository"
 
 #: fppkg_const.rsshowfppkgpackagemanager
 msgid "Show Fppkg Package Manager"
-msgstr ""
+msgstr "Fppkg Package-Manager anzeigen"
 
 #: fppkg_const.sactarchivepackages
 msgid "create archive(s) for package(s)"
-msgstr ""
+msgstr "Archiv(e) für Package(s) erzeugen"
 
 #: fppkg_const.sactbuildpackages
 msgid "build package(s)"
-msgstr ""
+msgstr "Package(s) erstellen"
 
 #: fppkg_const.sactcleanpackages
 msgid "clean package(s)"
-msgstr ""
+msgstr "Package(s) aufräumen"
 
 #: fppkg_const.sactcompilepackages
 msgid "compile packages"
-msgstr ""
+msgstr "Package(s) kompilieren"
 
 #: fppkg_const.sactdownloadpackages
 msgid "download packages"
-msgstr ""
+msgstr "Package(s) herunterladen"
 
 #: fppkg_const.sactfixbroken
 msgid "fix broken packages"
-msgstr ""
+msgstr "kaputte Package(s) reparieren"
 
 #: fppkg_const.sactinitializefppkg
 msgid "initialize fppkg"
-msgstr ""
+msgstr "fppkg initialisieren"
 
 #: fppkg_const.sactinstallpackages
 msgid "install package(s)"
-msgstr ""
+msgstr "Package(s) installieren"
 
 #: fppkg_const.sactuninstpackages
 msgid "uninstall package(s)"
-msgstr ""
+msgstr "Package(s) deinstallieren"
 
 #: fppkg_const.sactupdate
 msgid "update repository"
-msgstr ""
+msgstr "Repository aktualisieren"
 
 #: fppkg_const.sauthor
 msgid "Author"
-msgstr ""
+msgstr "Autor"
 
 #: fppkg_const.savailable
 msgid "Available"
-msgstr ""
+msgstr "Verfügbar"
 
 #: fppkg_const.scategory
 msgid "Category"
-msgstr ""
+msgstr "Kategorie"
 
 #: fppkg_const.scpu
 msgid "CPU"
-msgstr ""
+msgstr "CPU"
 
 #: fppkg_const.sdownload
+#, fuzzy
 msgid "Download"
-msgstr ""
+msgstr "Herunterladen"
 
 #: fppkg_const.semail
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
 #: fppkg_const.serractionfailed
-#, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid ""
 "Failed to %s: \n"
 "\n"
 "%s"
 msgstr ""
+"Fehlgeschlagen bei %s: \n"
+"\n"
+"%s"
 
 #: fppkg_const.sfilename
 msgid "Filename"
-msgstr ""
+msgstr "Dateiname"
 
 #: fppkg_const.shomepage
 msgid "Homepage"
-msgstr ""
+msgstr "Homepage"
 
 #: fppkg_const.sinstalled
 msgid "Installed"
-msgstr ""
+msgstr "Installiert"
 
 #: fppkg_const.skeywords
 msgid "Keywords"
-msgstr ""
+msgstr "Schlüsselwörter"
 
 #: fppkg_const.slicense
 msgid "License"
-msgstr ""
+msgstr "Lizenz"
 
 #: fppkg_const.smsgactionsucceeded
 #, object-pascal-format
 msgid "%s succeeded."
-msgstr ""
+msgstr "%s erfolgreich."
 
 #: fppkg_const.smsgfppkgrunning
 msgid "A prior command is still in progress."
-msgstr ""
+msgstr "Ein voriges Kommando ist noch am Laufen."
 
 #: fppkg_const.sos
 msgid "OS"
-msgstr ""
+msgstr "OS"
 
 #: fppkg_const.ssupport
 msgid "Support"
-msgstr ""
+msgstr "Unterstützung"
 
 #: fppkg_const.sunknown
 msgid "Unknown"
-msgstr ""
+msgstr "Unbekannt"
 

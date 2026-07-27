@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-07-07 14:37+0200\n"
+"PO-Revision-Date: 2026-07-30 21:01+0200\n"
 "Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -509,7 +509,7 @@ msgstr "Include-Datei nicht gefunden \"%s\""
 #: codetoolsstrconsts.ctsincompatibletypesgotexpected
 #, object-pascal-format
 msgid "incompatibles types: expected \"%s\" but got \"%s\""
-msgstr "inkompatible Typen: \"%s\" erwartet, aber \"%s\" erhalten"
+msgstr "inkompatible Typen: \"%s\" erwartet, aber \"%s\" vorgefunden"
 
 #: codetoolsstrconsts.ctsindexparameterexpectedbutatomfound
 #, object-pascal-format

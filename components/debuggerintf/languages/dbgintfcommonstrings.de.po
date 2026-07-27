@@ -82,7 +82,7 @@ msgstr "Laufwerk ist nicht bereit"
 
 #: dbgintfcommonstrings.rsrunerrorexceptionstackcorrupted
 msgid "Exception stack corrupted"
-msgstr "Beschädigter Ausnahme-Stack"
+msgstr "Beschädigter Exception-Stack"
 
 #: dbgintfcommonstrings.rsrunerrorfileaccessdenied
 msgid "File access denied"

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-07-22 11:49+0200\n"
+"PO-Revision-Date: 2026-07-30 21:18+0200\n"
 "Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Language: de_DE\n"
@@ -4668,7 +4668,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgwordexceptions
 msgid "Exceptions"
-msgstr "Ausnahmen"
+msgstr "Exceptions"
 
 #: lazarusidestrconsts.dlgwordspolicies
 msgctxt "lazarusidestrconsts.dlgwordspolicies"
@@ -6373,7 +6373,7 @@ msgstr "Falsche Einrückung"
 #: lazarusidestrconsts.liscfeanexceptionoccurredduringdeletionof
 #, object-pascal-format
 msgid "An exception occurred during deletion of%s\"%s:%s\"%s%s"
-msgstr "Eine Ausnahme trat auf während des Löschens von%s\"%s:%s\"%s%s"
+msgstr "Eine Exception trat auf während des Löschens von%s\"%s:%s\"%s%s"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocopythisformeditingselection
 msgid "Do not know how to copy this form editing selection"
@@ -7598,7 +7598,7 @@ msgstr "Konsolenanwendung"
 
 #: lazarusidestrconsts.lisconsoleapplicationprogramdescriptor
 msgid "A Free Pascal command line program using TCustomApplication to easily check command line options, handling exceptions, etc."
-msgstr "Ein Free-Pascal-Kommandozeilenprogramm auf Basis von TCustomApplication um unkompliziert Kommandozeilenoptionen zu verwenden, Ausnahmen zu behandeln, etc."
+msgstr "Ein Free-Pascal-Kommandozeilenprogramm auf Basis von TCustomApplication um unkompliziert Kommandozeilenoptionen zu verwenden, Exceptions zu behandeln, etc."
 
 #: lazarusidestrconsts.lisconstructorcode
 msgid "Constructor code"
@@ -8383,7 +8383,7 @@ msgstr "Standardfarbe"
 
 #: lazarusidestrconsts.lisdbgenexceptionraised
 msgid "Exception Raised"
-msgstr "Ausnahme ausgelöst"
+msgstr "Exception ausgelöst"
 
 #: lazarusidestrconsts.lisdbgenmoduleload
 msgid "Module Load"
@@ -8488,7 +8488,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmaddexception
 msgid "Add Exception"
-msgstr "Ausnahme hinzufügen"
+msgstr "Exception hinzufügen"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
@@ -8545,7 +8545,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmduplicateexceptionname
 msgid "Duplicate Exception name"
-msgstr "Doppelte Ausnahmebezeichnung"
+msgstr "Doppelter Exceptionbezeichner"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmeditclass
 msgid "Change type"
@@ -8557,7 +8557,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmenterexceptionname
 msgid "Enter the name of the exception"
-msgstr "Name der Ausnahme eingeben"
+msgstr "Name der Exception eingeben"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmeventlog
 msgctxt "lazarusidestrconsts.lisdebugoptionsfrmeventlog"
@@ -8578,11 +8578,11 @@ msgstr "Vom Programm behandelt"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
-msgstr "Diese Ausnahmen übergehen"
+msgstr "Diese Exceptions übergehen"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmlanguageexceptions
 msgid "Language Exceptions"
-msgstr "Sprach-Ausnahmen"
+msgstr "Sprach-Exceptions"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmlimitlinecountto
 msgid "Limit line count to"
@@ -8600,11 +8600,11 @@ msgstr "Name:"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
 msgid "Notify on Exceptions"
-msgstr "Bei Lazarus-Ausnahmen benachrichtigen"
+msgstr "Bei Lazarus-Exceptions benachrichtigen"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmosexceptions
 msgid "OS Exceptions"
-msgstr "Betriebssystem-Ausnahmen"
+msgstr "Betriebssystem-Exceptions"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmoutput
 msgid "Output"
@@ -17014,7 +17014,7 @@ msgstr "Debugging beenden?"
 
 #: lazarusidestrconsts.lisstoponexception
 msgid "Stop on exception"
-msgstr "Bei Ausnahmen anhalten"
+msgstr "Bei Exception anhalten"
 
 #: lazarusidestrconsts.lisstopthedebugging
 msgid "Stop the debugging?"

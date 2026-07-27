@@ -1,13 +1,15 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: \n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
 
 #: guitestrunner.rsalltests
 msgid "All Tests"
@@ -21,17 +23,17 @@ msgstr "%s    Fehler: %s"
 #: guitestrunner.rsexception
 #, object-pascal-format
 msgid "Exception: %s"
-msgstr ""
+msgstr "Exception: %s"
 
 #: guitestrunner.rsexceptioncla
 #, object-pascal-format
 msgid "Exception class: %s"
-msgstr ""
+msgstr "Exceptionklasse: %s"
 
 #: guitestrunner.rsexceptionmes
 #, object-pascal-format
 msgid "Exception message: %s"
-msgstr ""
+msgstr "Exceptionmeldung: %s"
 
 #: guitestrunner.rsfailures
 #, object-pascal-format
@@ -46,27 +48,26 @@ msgstr "Meldung: %s"
 #: guitestrunner.rsnumberofexec
 #, object-pascal-format
 msgid "Number of executed tests: %s  Time elapsed: %s"
-msgstr ""
+msgstr "Anzahl ausgeführter Tests: %s  verstrichene Zeit: %s"
 
 #: guitestrunner.rsrunning
 #, object-pascal-format
 msgid "Running %s"
-msgstr ""
+msgstr "In Bearbeitung %s"
 
 #: guitestrunner.rsruns
 #, object-pascal-format
 msgid "Runs: %s/%s"
-msgstr ""
+msgstr "Läufe: %s/%s"
 
 #: guitestrunner.sactcheckall
 #, fuzzy
-#| msgid "Check all Tests"
 msgid "Select all tests"
-msgstr "Alle Tests markieren"
+msgstr "Alle Tests auswählen"
 
 #: guitestrunner.sactcheckcurrentsuite
 msgid "Select current suite"
-msgstr ""
+msgstr "Aktuelle Suite auswählen"
 
 #: guitestrunner.sactcloseform
 msgid "Quit"
@@ -74,19 +75,19 @@ msgstr "Beenden"
 
 #: guitestrunner.sactcloseformh
 msgid "Quit testing"
-msgstr ""
+msgstr "Tests beenden"
 
 #: guitestrunner.sactcopyalltoclipboard
 msgid "Copy text to clipboard"
-msgstr ""
+msgstr "Text in Zwischenablage kopieren"
 
 #: guitestrunner.sactcopyalltoclipboardh
 msgid "Copy the entire text to clipboard"
-msgstr ""
+msgstr "Kompletten Text in Zwischenablage kopieren"
 
 #: guitestrunner.sactrunaction
 msgid "&Run all"
-msgstr ""
+msgstr "Alle sta&rten"
 
 #: guitestrunner.sactrunactionh
 #, fuzzy
@@ -95,31 +96,29 @@ msgid "Run all checked tests"
 msgstr "Alle markierten Tests starten"
 
 #: guitestrunner.sactrunhighlightedtest
-#, fuzzy
-#| msgid "Run highlighted test"
 msgctxt "guitestrunner.sactrunhighlightedtest"
 msgid "Run selected"
-msgstr "hervorgehobenen Test starten"
+msgstr "Ausgewählten Test starten"
 
 #: guitestrunner.sactrunhighlightedtesth
 msgid "Run selected test"
-msgstr ""
+msgstr "Ausgewählten Test starten"
 
 #: guitestrunner.sactsaveresults
 msgid "Save results"
-msgstr ""
+msgstr "Ergebnisse speichern"
 
 #: guitestrunner.sactsaveresultsh
 msgid "Save XML results to file"
-msgstr ""
+msgstr "Ergebnisse in XML-Datei speichern"
 
 #: guitestrunner.sactuncheckall
 msgid "Deselect all tests"
-msgstr ""
+msgstr "Alle Tests abwählen"
 
 #: guitestrunner.sactuncheckcurrentsuite
 msgid "Deselect current suite"
-msgstr ""
+msgstr "Aktuelle Suite abwählen"
 
 #: guitestrunner.sfrmguitest
 msgid "FPCUnit - run unit test"
@@ -127,21 +126,21 @@ msgstr "FPCUnit - starte Unit-Test"
 
 #: guitestrunner.smiactions
 msgid "Actions"
-msgstr ""
+msgstr "Aktionen"
 
 #: guitestrunner.smiedit
 msgid "Edit"
-msgstr ""
+msgstr "Bearbeiten"
 
 #: guitestrunner.smitesttree
 msgid "Test tree"
-msgstr ""
+msgstr "Testbaum"
 
 #: guitestrunner.stshresults
 msgid "Results XML"
-msgstr ""
+msgstr "Ergebnisse (XML)"
 
 #: guitestrunner.stshtree
 msgid "Testcase tree"
-msgstr ""
+msgstr "Baum der Testfälle"
 

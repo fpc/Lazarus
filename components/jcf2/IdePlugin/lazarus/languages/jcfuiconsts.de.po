@@ -550,7 +550,7 @@ msgstr "Fehler"
 #: jcfuiconsts.lisedexception
 #, object-pascal-format
 msgid "Exception %s"
-msgstr "Ausnahme-Fehler %s"
+msgstr "Exception %s"
 
 #: jcfuiconsts.lisedin
 #, object-pascal-format

@@ -1606,7 +1606,7 @@ msgstr ""
 
 #: idedebuggerstringconstants.lisexceptiondialog
 msgid "Debugger Exception Notification"
-msgstr "Debuggerausnahmen-Nachricht"
+msgstr "Debugger-Exception-Nachricht"
 
 #: idedebuggerstringconstants.lisexceptionfilter
 msgid "&Exception filter ..."
@@ -1689,7 +1689,7 @@ msgstr "ID"
 
 #: idedebuggerstringconstants.lisignoreexceptiontype
 msgid "Ignore this exception type"
-msgstr "Diesen Ausnahmetyp übergehen"
+msgstr "Diesen Exceptiontyp übergehen"
 
 #: idedebuggerstringconstants.lisimport
 msgctxt "lazarusidestrconsts.lisimport"

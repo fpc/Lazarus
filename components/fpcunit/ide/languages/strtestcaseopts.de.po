@@ -13,140 +13,140 @@ msgstr ""
 
 #: strtestcaseopts.rsalltests
 msgid "All Tests"
-msgstr ""
+msgstr "Alle Tests"
 
 #: strtestcaseopts.rsautomaticallyfetchtestlistonopen
 msgid "Automatically fetch test list on open"
-msgstr ""
+msgstr "Beim Öffnen die Testliste automatisch laden"
 
 #: strtestcaseopts.rscouldnotdete
 #, object-pascal-format
 msgid "Could not determine class and method from test path \"%s\""
-msgstr ""
+msgstr "Konnte Klasse und Methode vom Testpfad \"%s\" nicht bestimmen"
 
 #: strtestcaseopts.rserrors
 #, object-pascal-format
 msgid "%s    Errors: %s"
-msgstr ""
+msgstr "%s    Fehler: %s"
 
 #: strtestcaseopts.rsexception
 #, object-pascal-format
 msgid "Exception: %s"
-msgstr ""
+msgstr "Exception: %s"
 
 #: strtestcaseopts.rsexceptioncla
 #, object-pascal-format
 msgid "Exception class: %s"
-msgstr ""
+msgstr "Exceptionklasse: %s"
 
 #: strtestcaseopts.rsexceptionmes
 #, object-pascal-format
 msgid "Exception message: %s"
-msgstr ""
+msgstr "Exceptionmeldung: %s"
 
 #: strtestcaseopts.rsfailures
 #, object-pascal-format
 msgid "%s     Failures: %s"
-msgstr ""
+msgstr "%s     Fehlschläge: %s"
 
 #: strtestcaseopts.rsmessage
 #, object-pascal-format
 msgid "Message: %s"
-msgstr ""
+msgstr "Meldung: %s"
 
 #: strtestcaseopts.rsnexterror
 msgid "Next error"
-msgstr ""
+msgstr "Nächster Fehler"
 
 #: strtestcaseopts.rspreviouserror
 msgid "Previous error"
-msgstr ""
+msgstr "Vorheriger Fehler"
 
 #: strtestcaseopts.rsruns
 #, object-pascal-format
 msgid "Runs: %s/%s"
-msgstr ""
+msgstr "Durchläufe: %s/%s"
 
 #: strtestcaseopts.rsserverpath
 msgid "Server path"
-msgstr ""
+msgstr "Serverpfad"
 
 #: strtestcaseopts.rsserverport
 msgid "Server port"
-msgstr ""
+msgstr "Serverport"
 
 #: strtestcaseopts.rstestinsighttitle
 msgid "Test Insight"
-msgstr ""
+msgstr "Test-Insight"
 
 #: strtestcaseopts.sactcheckall
 msgid "Select all tests"
-msgstr ""
+msgstr "Alle Tests auswählen"
 
 #: strtestcaseopts.sactcheckcurrentsuite
 msgid "Select current suite"
-msgstr ""
+msgstr "Aktuelle Suite auswählen"
 
 #: strtestcaseopts.sactcloseform
 msgid "Quit"
-msgstr ""
+msgstr "Beenden"
 
 #: strtestcaseopts.sactcloseformh
 msgid "Quit testing"
-msgstr ""
+msgstr "Tests beenden"
 
 #: strtestcaseopts.sactcopyalltoclipboard
 msgid "Copy text to clipboard"
-msgstr ""
+msgstr "Text in Zwischenablage kopieren"
 
 #: strtestcaseopts.sactcopyalltoclipboardh
 msgid "Copy the entire text to clipboard"
-msgstr ""
+msgstr "Kompletten Text in Zwischenablage kopieren"
 
 #: strtestcaseopts.sactcopymessagetoclipboard
 msgctxt "strtestcaseopts.sactcopymessagetoclipboard"
 msgid "Copy message to clipboard"
-msgstr ""
+msgstr "Meldung in Zwischenablage kopieren"
 
 #: strtestcaseopts.sactrunaction
 msgid "&Run all"
-msgstr ""
+msgstr "Alle sta&rten"
 
 #: strtestcaseopts.sactrunactionh
 msgid "Run all checked tests"
-msgstr ""
+msgstr "Alle markierten Tests starten"
 
 #: strtestcaseopts.sactrunhighlightedtest
 msgid "Run selected"
-msgstr ""
+msgstr "Ausgewähltes starten"
 
 #: strtestcaseopts.sactrunhighlightedtesth
 msgid "Run selected test"
-msgstr ""
+msgstr "Ausgewählte Tests starten"
 
 #: strtestcaseopts.sactuncheckall
 msgid "Deselect all tests"
-msgstr ""
+msgstr "Alle Tests abwählen"
 
 #: strtestcaseopts.sactuncheckcurrentsuite
 msgid "Deselect current suite"
-msgstr ""
+msgstr "Aktuelle Suite abwählen"
 
 #: strtestcaseopts.sbtncreate
 msgid "Create unit"
-msgstr "Erzeuge Unit"
+msgstr "Unit erzeugen"
 
 #: strtestcaseopts.schksetup
 msgid "Create Setup Method"
-msgstr "Erzeuge Setup-Methode"
+msgstr "Setup-Methode erzeugen"
 
 #: strtestcaseopts.schktear
 msgid "Create TearDown method"
-msgstr "Erzeuge TearDown Methode"
+msgstr "TearDown-Methode erzeugen"
 
 #: strtestcaseopts.screatefirsttestcase
 msgid "&Create first test case"
-msgstr ""
+msgstr "Ersten Testfall erzeugen"
 
 #: strtestcaseopts.sdefault
 msgid "Default"
@@ -154,35 +154,35 @@ msgstr "Standard"
 
 #: strtestcaseopts.sdefaultoutputformat
 msgid "Default output &format"
-msgstr ""
+msgstr "Standard Ausgabe-&Format"
 
 #: strtestcaseopts.sfpcunconsoletestapp
 msgid "FPCUnit Console Test Application"
-msgstr ""
+msgstr "FPCUnit Konsolen-Test-Anwendung"
 
 #: strtestcaseopts.sfpcunconsoletestdesc
 msgid "An application to run FPCUnit test cases in console mode."
-msgstr ""
+msgstr "Eine Anwendung, um FPCUnit-Testfälle im Konsolenmodus zu starten."
 
 #: strtestcaseopts.sfpcuntestapp
 msgid "FPCUnit Test Application"
-msgstr ""
+msgstr "FPCUnit-Test-Anwendung"
 
 #: strtestcaseopts.sfpcuntestappdesc
 msgid "An application to run FPCUnit test cases."
-msgstr ""
+msgstr "Eine Anwendung, um FPCUnit-Testfälle zu starten."
 
 #: strtestcaseopts.sfpcuntestcase
 msgid "FPCUnit Test Case"
-msgstr ""
+msgstr "FPCUnit-Testfall"
 
 #: strtestcaseopts.sfpcuntestcasedesc
 msgid "A unit containing a FPCUnit Test Case."
-msgstr ""
+msgstr "Eine Unit mit einem FPCUnit-Testfall."
 
 #: strtestcaseopts.sfrmguitest
 msgid "FPCUnit - run unit test"
-msgstr ""
+msgstr "FPCUnit - Unit-Test starten"
 
 #: strtestcaseopts.sfrmtest
 msgid "TestCase Options"
@@ -190,7 +190,7 @@ msgstr "TestCase-Einstellungen"
 
 #: strtestcaseopts.sgrpfixture
 msgid "Fixture"
-msgstr ""
+msgstr "Vorgegebene Methoden"
 
 #: strtestcaseopts.sgrpnames
 msgid "Names"
@@ -198,7 +198,7 @@ msgstr "Namen"
 
 #: strtestcaseopts.slatex
 msgid "LaTeX"
-msgstr ""
+msgstr "LaTeX"
 
 #: strtestcaseopts.slbldefault
 msgid "Default Test Name"
@@ -206,62 +206,63 @@ msgstr "Standard-Testname"
 
 #: strtestcaseopts.smiactions
 msgid "Actions"
-msgstr ""
+msgstr "Aktionen"
 
 #: strtestcaseopts.smicollapsenodes
 msgid "Collapse Nodes"
-msgstr ""
+msgstr "Knoten zusammenklappen"
 
 #: strtestcaseopts.smiedit
 msgid "Edit"
-msgstr ""
+msgstr "Bearbeiten"
 
 #: strtestcaseopts.smiexpandnodes
 msgid "Expand Nodes"
-msgstr ""
+msgstr "Knoten aufklappen"
 
 #: strtestcaseopts.smitesttree
 msgid "Test tree"
-msgstr ""
+msgstr "Testbaum"
 
 #: strtestcaseopts.snavigationnotavailable
 msgid "Source navigation not available."
-msgstr ""
+msgstr "Quellcode-Navigation ist nicht verfügbar."
 
 #: strtestcaseopts.snewfpcunitprogramtor
 msgid "New FPCUnit console testrunner program"
-msgstr ""
+msgstr "Neue FPCUnit-Konsolen-Testrunner-Anwendung"
 
 #: strtestcaseopts.snoexecutableavailable
 #, object-pascal-format
 msgid "Test executable is not available: \"%s\""
-msgstr ""
+msgstr "Test-Programm ist nicht verfügbar: \"%s\""
 
 #: strtestcaseopts.snotestprojectconfigured
 msgid "No test project configured."
-msgstr ""
+msgstr "Kein Testprojekt konfiguriert."
 
 #: strtestcaseopts.splaintext
 msgid "Plain text"
-msgstr ""
+msgstr "Einfacher Text"
 
 #: strtestcaseopts.splaintextwithouttimi
 msgid "Plain text without timings"
-msgstr ""
+msgstr "Einfacher Text ohne Zeiten"
 
 #: strtestcaseopts.srunalltests
 msgid "&Run all tests by default"
-msgstr ""
+msgstr "Alle Tests sta&rten als Standard"
 
 #: strtestcaseopts.susetextinsight
+#, fuzzy
 msgid "Use &Test Insight to communicate results to the IDE"
-msgstr ""
+msgstr "&Test-Insight für die Mitteilung der Ergebnisse an die IDE verwenden"
 
 #: strtestcaseopts.swriteyourowntest
 msgid "Write your own test"
-msgstr ""
+msgstr "Eigenen Test schreiben"
 
 #: strtestcaseopts.sxml
 msgid "XML"
-msgstr ""
+msgstr "XML"
 
