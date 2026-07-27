@@ -81,7 +81,7 @@ uses
   ProjectDebugLink, IdeDebuggerExcludedRoutines,
   // IDE
   DebugEventsForm, LazarusIDEStrConsts, SourceEditor, SourceMarks, MemViewerDlg,
-  MainBar, MainIntf, MainBase, EditableProject, EnvGuiOptions, EditorOptions;
+  MainBar, MainIntf, MainBase, EditableProject, EnvGuiOptions, EditorOptions, KeyMapping;
 
 type
 
@@ -2105,6 +2105,7 @@ begin
   TheDialog.BreakPoints := FBreakPoints;
   TheDialog.Disassembler := FDisassembler;
   TheDialog.DebugManager := Self;
+  UpdateDebugDialogFromOptions;
   TheDialog.EndUpdate;
 end;
 
@@ -2623,6 +2624,8 @@ begin
 end;
 
 procedure TDebugManager.UpdateDebugDialogFromOptions;
+var
+  cmd: TKeyCommandRelation;
 begin
   if DebuggerOptions.ShowHintForWatches then begin
     if FDialogs[ddtWatches] <> nil then TWatchesDlg(FDialogs[ddtWatches]).HintTime := EditorOpts.AutoHintDelayInMSec;
@@ -2631,6 +2634,15 @@ begin
   else begin
     if FDialogs[ddtWatches] <> nil then TWatchesDlg(FDialogs[ddtWatches]).HintTime := 0;
     if FDialogs[ddtLocals] <> nil  then TLocalsDlg(FDialogs[ddtLocals]).HintTime   := 0;
+  end;
+
+  if FDialogs[ddtAssembler] <> nil  then begin
+    cmd := EditorOpts.KeyMap.FindByCommand(ecStepIntoInstr);
+    if (cmd <> nil) then
+      TAssemblerDlg(FDialogs[ddtAssembler]).actStepIntoInstr.ShortCut := cmd.AsShortCut;
+    cmd := EditorOpts.KeyMap.FindByCommand(ecStepOverInstr);
+    if (cmd <> nil) then
+      TAssemblerDlg(FDialogs[ddtAssembler]).actStepOverInstr.ShortCut := cmd.AsShortCut;
   end;
 end;
 
