@@ -27,6 +27,7 @@ uses
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
   SysUtils, Classes, Controls, Dialogs, Forms,
+	DefaultTranslator,  // include translator support
   lhelpcontrolpkg, LHelpCore, LHelpStrConsts, filecontentprovider;
 
 var
