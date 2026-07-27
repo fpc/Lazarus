@@ -1116,8 +1116,8 @@ begin
   end;
   Line:=MsgLine.Line;
   Column:=MsgLine.Column;
-  if (mlfLeftToken in MsgLine.Flags) then begin
-    // the mark is at the of the token
+  if not (mlfLeftToken in MsgLine.Flags) then begin
+    // the mark is at the right of the token
     // synedit only supports starts of tokens
     // => adjust to start of token
     if (Column>1) and (Line>=1) and (Line<=aSynEdit.Lines.Count) then begin
