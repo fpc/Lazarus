@@ -2046,8 +2046,8 @@ begin
   TheDialog.CallStackMonitor := FCallStack;
   TheDialog.BreakPoints := FBreakPoints;
   TheDialog.SnapshotManager := FSnapshots;
-  if Debugger <> nil then
-    TheDialog.WatchPrinter.TargetAddressSize := Debugger.TargetWidth;
+  if FDebugger <> nil then
+    TheDialog.WatchPrinter.TargetAddressSize := FDebugger.TargetWidth;
   if DebuggerOptions.ShowHintForWatches then
     TheDialog.HintTime := EditorOpts.AutoHintDelayInMSec
   else
@@ -2084,8 +2084,8 @@ begin
   TheDialog.ThreadsMonitor := FThreads;
   TheDialog.CallStackMonitor := FCallStack;
   TheDialog.SnapshotManager := FSnapshots;
-  if Debugger <> nil then
-    TheDialog.WatchPrinter.TargetAddressSize := Debugger.TargetWidth;
+  if FDebugger <> nil then
+    TheDialog.WatchPrinter.TargetAddressSize := FDebugger.TargetWidth;
   if DebuggerOptions.ShowHintForWatches then
     TheDialog.HintTime := EditorOpts.AutoHintDelayInMSec
   else
@@ -2133,8 +2133,8 @@ var
   TheDialog: TIDEInspectDlg;
 begin
   TheDialog := TIDEInspectDlg(FDialogs[ddtInspect]);
-  if Debugger <> nil then
-    TheDialog.WatchPrinter.TargetAddressSize := Debugger.TargetWidth;
+  if FDebugger <> nil then
+    TheDialog.WatchPrinter.TargetAddressSize := FDebugger.TargetWidth;
 end;
 
 procedure TDebugManager.InitHistoryDlg;
@@ -2165,8 +2165,8 @@ var
   TheDialog: TEvaluateDlg;
 begin
   TheDialog := TEvaluateDlg(FDialogs[ddtEvaluate]);
-  if Debugger <> nil then
-    TheDialog.WatchPrinter.TargetAddressSize := Debugger.TargetWidth;
+  if FDebugger <> nil then
+    TheDialog.WatchPrinter.TargetAddressSize := FDebugger.TargetWidth;
 end;
 
 constructor TDebugManager.Create(TheOwner: TComponent);
