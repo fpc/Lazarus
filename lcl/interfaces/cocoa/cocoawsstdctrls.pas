@@ -71,6 +71,7 @@ type
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
 implementation
@@ -82,16 +83,18 @@ class function TCocoaWSCustomStaticText.CreateHandle(const AWinControl: TWinCont
 var
   lclStaticText: TCustomStaticText absolute AWinControl;
   field: NSTextField;
+  drawsBackground: Boolean;
 begin
-  field := TCocoaWSTextControlUtil.createTextField(AWinControl, AParams);
+  field:= TCocoaWSTextControlUtil.createTextField(AWinControl, AParams);
+  drawsBackground:= NOT lclStaticText.Transparent;
   {$ifdef BOOLFIX}
   field.setBezeled_(Ord(False));
-  field.setDrawsBackground_(Ord(False));
+  field.setDrawsBackground_(Ord(drawsBackground));
   field.setEditable_(Ord(False));
   field.setSelectable_(Ord(False));
   {$else}
   field.setBezeled(False);
-  field.setDrawsBackground(False);
+  field.setDrawsBackground(drawsBackground);
   field.setEditable(False);
   field.setSelectable(False);
   {$endif}
@@ -105,6 +108,11 @@ begin
   if not Assigned(ACustomStaticText) or (not ACustomStaticText.HandleAllocated) or (ACustomStaticText.Handle=0) then
     exit;
   TCocoaTextControlUtil.setAllignment(NSTextField(ACustomStaticText.Handle), NewAlignment);
+end;
+
+class procedure TCocoaWSCustomStaticText.SetColor(const AWinControl: TWinControl);
+begin
+  TCocoaWSCustomEdit.SetColor( AWinControl );
 end;
 
 { TCocoaWSToggleBox }
