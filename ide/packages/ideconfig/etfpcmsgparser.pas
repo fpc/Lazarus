@@ -1954,7 +1954,7 @@ begin
         if MissingPkgName<>'' then
           s+=Format(lisCheckIfPackageIsInTheDependencies, [MissingPkgName]);
         if UsedByOwner is TLazProject then
-          s+=lisOfTheProjectInspector
+
         else if UsedByPkg<>nil then
           s+=Format(lisOfPackage, [UsedByPkg.Name]);
         s+='.';
