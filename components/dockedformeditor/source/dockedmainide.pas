@@ -32,6 +32,8 @@ uses
   Classes, SysUtils, Contnrs,
   // LCL
   LCLIntf, Controls, Forms,
+  // LazUtils
+  LazFileUtils,
   // IdeIntf
   SrcEditorIntf, LazIDEIntf, FormEditingIntf, PropEdits, LazLoggerBase,
   // DockedFormEditor
@@ -456,13 +458,14 @@ begin
     LDesignForm := SourceWindows.FindDesignForm(LPageCtrl);
     if LDesigner = nil then
     begin
-      if (not FormEditingHook.AutoCreateFormsOnOpen)
-      and SourceEditorHasLFM(LSourceEditor) then
+      // don't create tabs for source editor with lfm,dfm,fmx resource
+      if FilenameExtIn(LSourceEditor.FileName, ['.LFM','.DFM','.FMX'])
+      or FormEditingHook.AutoCreateFormsOnOpen then
+        LPageCtrl.RemoveDesignPages
+      else
         // The unit has a form, but the option is off: show an empty designer page
         // as placeholder. The form is loaded on demand when the user switches to it.
-        LPageCtrl.CreateTabSheetDesigner
-      else
-        LPageCtrl.RemoveDesignPages;
+        LPageCtrl.CreateTabSheetDesigner;
     end
     else begin
       if not Assigned(LPageCtrl.Resizer) then
