@@ -325,6 +325,10 @@ msgctxt "idedebuggerstringconstants.dispformatcharord"
 msgid "Ordinal"
 msgstr ""
 
+#: idedebuggerstringconstants.dispformatdlgaddrprefix
+msgid "Address marker"
+msgstr ""
+
 #: idedebuggerstringconstants.dispformatdlgarraycombine
 msgid "Combine lengths"
 msgstr ""
@@ -368,6 +372,10 @@ msgstr ""
 
 #: idedebuggerstringconstants.dispformatdlgbtnadrformat
 msgid "Address"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgbtnadrformatdata
+msgid "Data-address"
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatdlgbtnall

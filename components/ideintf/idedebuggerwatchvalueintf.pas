@@ -226,7 +226,9 @@ type
     Pointer: TWatchDisplayFormatPointer;
     ArrayLen:  TWatchDisplayFormatArrayLen;
     MultiLine:   TWatchDisplayFormatMultiline;
+    DataAddr:    TWatchDisplayFormatAddr; // does not use "TypedFormat"
     NumPrefix:   TWatchDisplayFormatNumPrefix;
+    AddrPrefix:   TWatchDisplayFormatNumPrefix;
     ArrayNavBar: TWatchDisplayFormatArrayNav;
 
     MemDump: boolean;
@@ -321,7 +323,18 @@ const
                 ForceSingleLineThresholdEach:      4;
                 ForceSingleLineThresholdLen:      20;
                );
+    DataAddr: (UseInherited:          True;
+               TypeFormat:            vdfAddressPlain;
+               BaseFormat:            vdfBaseHex;
+               Signed:                False;
+               NoLeadZero:            False;
+              );
     NumPrefix: (UseInherited:          True;
+                HexPrefix:             vdfhpDollar;
+                OctPrefix:             vdfopAmp;
+                BinPrefix:             vdfbpPercent;
+               );
+    AddrPrefix: (UseInherited:          True;
                 HexPrefix:             vdfhpDollar;
                 OctPrefix:             vdfopAmp;
                 BinPrefix:             vdfbpPercent;
@@ -606,10 +619,12 @@ begin
     'Struct: '+dbgs(df.Struct.UseInherited)+' '+dbgs(df.Struct.DataFormat)+' '+dbgs(df.Struct.ShowPointerFormat) + LineEnding+
     'Addr: '+dbgs(df.Struct.Address.UseInherited)+' '+dbgs(df.Struct.Address.TypeFormat)+' '+dbgs(df.Struct.Address.BaseFormat)+' '+dbgs(df.Struct.Address.Signed)+' '+dbgs(df.Struct.Address.NoLeadZero) + LineEnding+
     'Ptr: '+dbgs(df.Pointer.UseInherited)+' '+dbgs(df.Pointer.DerefFormat) + LineEnding+
-    'Addr: '+dbgs(df.Pointer.Address.UseInherited)+' '+dbgs(df.Pointer.Address.TypeFormat)+' '+dbgs(df.Pointer.Address.BaseFormat)+' '+dbgs(df.Pointer.Address.Signed)+' '+dbgs(df.Struct.Address.NoLeadZero) + LineEnding+
+    'Addr: '+dbgs(df.Pointer.Address.UseInherited)+' '+dbgs(df.Pointer.Address.TypeFormat)+' '+dbgs(df.Pointer.Address.BaseFormat)+' '+dbgs(df.Pointer.Address.Signed)+' '+dbgs(df.Pointer.Address.NoLeadZero) + LineEnding+
     'Array: '+dbgs(df.ArrayLen.UseInherited)+' '+dbgs(df.ArrayLen.ShowLenPrefix) +dbgs(df.ArrayLen.ShowLenPrefixEmbedded) +dbgs(df.ArrayLen.LenPrefixMaxNest) +dbgs(df.ArrayLen.LenPrefixCombine) + LineEnding+
     'Indent: '+dbgs(df.MultiLine.UseInherited)+' '+dbgs(df.MultiLine.MaxMultiLineDepth) + LineEnding+
+    'DataAddr: '+dbgs(df.DataAddr.UseInherited)+' '+dbgs(df.DataAddr.TypeFormat)+' '+dbgs(df.DataAddr.BaseFormat)+' '+dbgs(df.DataAddr.Signed)+' '+dbgs(df.DataAddr.NoLeadZero) + LineEnding+
     'NumPrefix: '+dbgs(df.NumPrefix.HexPrefix)+' '+dbgs(df.NumPrefix.OctPrefix)+' '+dbgs(df.NumPrefix.BinPrefix) + LineEnding+
+    'AddrPrefix: '+dbgs(df.AddrPrefix.HexPrefix)+' '+dbgs(df.AddrPrefix.OctPrefix)+' '+dbgs(df.AddrPrefix.BinPrefix) + LineEnding+
     'ArrayNav: '+dbgs(df.ArrayNavBar.UseInherited)+' '+dbgs(df.ArrayNavBar.PageSize)+' '+dbgs(df.ArrayNavBar.EnforceBounds)+' '+dbgs(df.ArrayNavBar.AutoHideNavBar) + LineEnding+
     'Dmp: '+dbgs(df.MemDump);
 end;
@@ -823,7 +838,9 @@ begin
     (a.Pointer     = b.Pointer) and
     (a.ArrayLen    = b.ArrayLen) and
     (a.MultiLine   = b.MultiLine) and
+    (a.DataAddr    = b.DataAddr) and
     (a.NumPrefix   = b.NumPrefix) and
+    (a.AddrPrefix  = b.AddrPrefix) and
     (a.ArrayNavBar = b.ArrayNavBar) and
     (a.MemDump     = b.MemDump);
 end;
@@ -837,7 +854,9 @@ begin
                 Pointer.UseInherited and Pointer.Address.UseInherited and
                 ArrayLen.UseInherited and
                 MultiLine.UseInherited and
+                DataAddr.UseInherited and
                 NumPrefix.UseInherited and
+                AddrPrefix.UseInherited and
                 ArrayNavBar.UseInherited
                );
 end;
@@ -855,9 +874,11 @@ begin
   Struct.Address.UseInherited  := False;
   Pointer.UseInherited         := False;
   Pointer.Address.UseInherited := False;
-  ArrayLen.UseInherited         := False;
+  ArrayLen.UseInherited        := False;
   MultiLine.UseInherited       := False;
+  DataAddr.UseInherited        := False;
   NumPrefix.UseInherited       := False;
+  AddrPrefix.UseInherited      := False;
   ArrayNavBar.UseInherited     := False;
 end;
 
@@ -880,7 +901,9 @@ begin
   if not a.UseInherited           then Pointer.Address := a;
   if ArrayLen.UseInherited        then ArrayLen        := AnOther.ArrayLen;
   if MultiLine.UseInherited       then MultiLine       := AnOther.MultiLine;
+  if DataAddr.UseInherited        then DataAddr       := AnOther.DataAddr;
   if NumPrefix.UseInherited       then NumPrefix       := AnOther.NumPrefix;
+  if AddrPrefix.UseInherited      then AddrPrefix      := AnOther.AddrPrefix;
   if ArrayNavBar.UseInherited     then ArrayNavBar     := AnOther.ArrayNavBar;
 end;
 
