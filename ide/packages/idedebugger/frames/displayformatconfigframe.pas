@@ -2633,7 +2633,7 @@ begin
   rbNumPreHZeroX.Caption   := '0x';
   rbNumPreHZeroUpX.Caption := '0X';
   rbNumPreHHash.Caption    := '#';
-  rbNumPreHAmpUpH.Caption  := '&H';
+  rbNumPreHAmpUpH.Caption  := '&&H';
   rbNumPreHUPlus.Caption   := 'U+';
   rbNumPreHPostH.Caption   := '...h';
   rbNumPreHPost16.Caption  := '...₁₆';
