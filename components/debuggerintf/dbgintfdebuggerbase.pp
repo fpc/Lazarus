@@ -477,9 +477,9 @@ type
                          saArray, saDynArray
                         );
   TDBGSymbolAttributes = set of TDBGSymbolAttribute;
-  TDBGFieldLocation = (flPrivate, flProtected, flPublic, flPublished);
-  TDBGFieldFlag = (ffVirtual,ffConstructor,ffDestructor);
-  TDBGFieldFlags = set of TDBGFieldFlag;
+  TDBGFieldLocation = (flPrivate, flProtected, flPublic, flPublished) deprecated 'to be removed / use IDbgWatchDataIntf / to be removed in 5.99';
+  TDBGFieldFlag = (ffVirtual,ffConstructor,ffDestructor) deprecated 'to be removed / use IDbgWatchDataIntf / to be removed in 5.99';
+  TDBGFieldFlags = set of TDBGFieldFlag deprecated 'to be removed / use IDbgWatchDataIntf / to be removed in 5.99';
 
   TDBGType = class;
 
@@ -493,7 +493,7 @@ type
       4: (AsSingle: Single);
       5: (AsDouble: Double);
       6: (AsPointer: Pointer);
-  end;
+  end deprecated 'to be removed / use IDbgWatchDataIntf / to be removed in 5.99';
 
   { TDBGField }
 
@@ -519,7 +519,7 @@ type
     property Location: TDBGFieldLocation read FLocation;
     property Flags: TDBGFieldFlags read FFlags;
     property ClassName: String read FClassName write FClassName; // the class in which the field was declared
-  end;
+  end deprecated 'to be removed / use IDbgWatchDataIntf / to be removed in 5.99';
 
   { TDBGFields }
 
@@ -535,7 +535,7 @@ type
     property Count: Integer read GetCount;
     property Items[const AIndex: Integer]: TDBGField read GetField; default;
     procedure Add(const AField: TDBGField);
-  end;
+  end deprecated 'to be removed / use IDbgWatchDataIntf / to be removed in 5.99';
 
   TDBGTypes = class(TObject)
   private
@@ -548,7 +548,7 @@ type
     destructor Destroy; override;
     property Count: Integer read GetCount;
     property Items[const AIndex: Integer]: TDBGType read GetType; default;
-  end;
+  end deprecated 'to be removed / use IDbgWatchDataIntf / to be removed in 5.99';
 
   { TDBGType }
 
@@ -588,7 +588,7 @@ type
     property BoundLow: Integer read FBoundLow;              // Array
     property BoundHigh: Integer read FBoundHigh;            // Array
     property Result: TDBGType read FResult;
-  end;
+  end deprecated 'to be removed / use IDbgWatchDataIntf / to be removed in 5.99';
 
 {%endregion   ^^^^^  Debug Info  ^^^^^   }
 
