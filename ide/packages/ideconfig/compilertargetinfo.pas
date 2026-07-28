@@ -76,7 +76,7 @@ type
 function TargetInfoCache: TFPCTargetInfoCache;
 
 // CPUs the configured fpc can actually build for (its native target plus the crosses configured in
-// its fpc.cfg). Fast path is the driver query "fpc -ixC" (<cputargets>: native + crosses in one
+// its fpc.cfg). Fast path is the driver query "fpc -ix" (<cputargets>: native + crosses in one
 // call); if that yields nothing (older fpc without the query), falls back to probing each known CPU
 // with "-P<cpu> -iTP". Cached per compiler for the session.
 function GetConfiguredTargetCPUs(const aCompilerFilename: string; aList: TStrings): integer;
@@ -402,7 +402,7 @@ begin
 end;
 
 procedure QueryConfiguredTargetCPUs(const aCompilerFilename: string; aList: TStrings);
-// Fallback for compilers without the -ixC driver query: ask fpc, for each known CPU, whether it can
+// Fallback for compilers without the -ix driver query: ask fpc, for each known CPU, whether it can
 // target it (a cross configured in fpc.cfg) via "-P<cpu> -iTP" run from the compiler's own dir, and
 // keep <cpu> only if fpc reports that target processor back (otherwise it fell back to the native).
 var
@@ -432,7 +432,7 @@ begin
 end;
 
 function GetCPUTargetsFromIXC(const aCompilerFilename: string; aList: TStrings): boolean;
-// Driver query "fpc -ixC": fills aList from <fpcoutput><cputargets><cputarget name=> - the complete
+// Driver query "fpc -ix": fills aList from <fpcoutput><cputargets><cputarget name=> - the complete
 // CPU-target list (native + fpc.cfg crosses) in one call, answered by the fpc driver itself. Returns
 // True when it yielded targets; False (older fpc that lacks the query, or an empty list) lets the
 // caller fall back to the per-CPU -iTP probe.
@@ -449,7 +449,7 @@ begin
   ToolOut:=nil;
   Params:=TStringList.Create;
   try
-    Params.Add('-ixC');
+    Params.Add('-ix');
     ToolOut:=RunTool(aCompilerFilename,Params,ExtractFilePath(aCompilerFilename),true);
   finally
     Params.Free;
@@ -462,7 +462,7 @@ begin
       try
         ReadXMLFile(Doc,Stream);
       except
-        exit; // not XML (old fpc rejecting -ixC) -> caller falls back
+        exit; // not XML (old fpc rejecting -ix) -> caller falls back
       end;
       if (Doc=nil) or (Doc.DocumentElement=nil) then exit;
       Section:=Doc.DocumentElement.FindNode('cputargets');
@@ -489,7 +489,7 @@ begin
 end;
 
 function GetConfiguredTargetCPUs(const aCompilerFilename: string; aList: TStrings): integer;
-// Cached wrapper. Prefer the "fpc -ixC" driver query (one call: native + crosses); if it yields
+// Cached wrapper. Prefer the "fpc -ix" driver query (one call: native + crosses); if it yields
 // nothing, fall back to probing each known CPU with "-P<cpu> -iTP".
 begin
   if FAvailCPUList=nil then
