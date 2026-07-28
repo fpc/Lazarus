@@ -1036,8 +1036,8 @@ var
     SetLength(Result, ALines.Count);
     bmp := TBitmap.Create;
     try
-//      ts := bmp.Canvas.TextStyle;
-//      ts.RightToLeft := IsRTL;
+      ts := bmp.Canvas.TextStyle;
+      ts.RightToLeft := IsRTL;   // Maybe obsolete: Does text width depend on RTL setting?
       bmp.Canvas.TextStyle := ts;
       bmp.Canvas.Font.Assign(ACanvas.Font);
       // At least on Windows, the text height is not correct when font is rotated.
