@@ -2366,6 +2366,9 @@ resourcestring
   dlgLevel4Opt = '4 (-O3 + aggressive optimizations, beware)';
   dlgTargetOS = 'Target OS';
   dlgTargetCPUFamily = 'Target CPU family';
+  lisTargetController = 'Target controller';
+  lisQueryCompilerForTargets = 'Query installed compiler for available targets';
+  lisQueryCompilerForTargetsHint = 'List only the targets, processors and controllers the configured compiler actually supports';
   dlgCOInfoForGDB = 'Debugger info';
   dlgCOOtherDebuggingInfo = 'Other debugging info';
   dlgCOGDB = 'Generate info for the debugger (slower / increases exe-size)';
