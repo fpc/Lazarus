@@ -106,7 +106,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function CreateMark(MsgLine: TMessageLine; aSynEdit: TSynEdit = nil): TETMark;
+    function CreateMark(MsgLine: TMessageLine; aSynEdit: TSynEdit = nil): TETMark; overload;
+    function CreateMark(MsgLine: TMessageLine; aSynEdit: TSynEdit;
+      aLine: integer; const ColRanges: TSynEditMarkColRangeArray): TETMark; overload;
     procedure RemoveMarks(aSynEdit: TSynEdit);
     property ImageList: TCustomImageList read FImageList write FImageList; // must have same Width/Height as the TSynEdits bookmarkimages
     property OnGetSynEditOfFile: TOnGetSynEditOfFile read FOnGetSynEditOfFile write FOnGetSynEditOfFile;
@@ -1137,6 +1139,31 @@ begin
   Result.MsgLine:=MsgLine;
   Result.Line:=Line;
   Result.Column:=Column;
+  Result.Visible:=true;
+  Result.Priority:= 100 + Priority; // show before breakpoints (breakpoints lowest prior are kept to the right)
+  Result.Urgency:=MsgLine.Urgency;
+  Result.ImageList:=ImageList;
+  Result.ImageIndex:=MarkStyles[Result.Urgency].ImageIndex;
+  Result.SourceMarkup:=MarkStyles[Result.Urgency].SourceMarkup;
+  aSynEdit.Marks.Add(Result);
+end;
+
+function TETMarks.CreateMark(MsgLine: TMessageLine; aSynEdit: TSynEdit;
+  aLine: integer; const ColRanges: TSynEditMarkColRangeArray): TETMark;
+begin
+  Result:=nil;
+  if (aLine<1) or (Length(ColRanges)=0) or (MsgLine.Filename='') then exit;
+  if aSynEdit=nil then begin
+    if OnGetSynEditOfFile=nil then exit;
+    OnGetSynEditOfFile(Self,MsgLine.Filename,aSynEdit);
+    if (aSynEdit=nil) then exit;
+  end;
+  Result:=TETMark.Create(aSynEdit);
+  Result.SourceMarks:=Self;
+  Result.MsgLine:=MsgLine;
+  Result.Line:=aLine;
+  Result.Column:=ColRanges[0].StartCol;
+  Result.ColRanges:=ColRanges;
   Result.Visible:=true;
   Result.Priority:= 100 + Priority; // show before breakpoints (breakpoints lowest prior are kept to the right)
   Result.Urgency:=MsgLine.Urgency;

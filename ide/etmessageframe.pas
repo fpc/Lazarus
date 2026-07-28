@@ -39,11 +39,14 @@ uses
   // LazUtils
   GraphType, UTF8Process, LazUTF8, LazFileCache, LazFileUtils, IntegerList, LazLoggerBase,
   // SynEdit
-  SynEdit, SynEditMarks,
+  SynEdit, SynEditMarks, SynEditMarkupGutterMark,
+  // Codetools
+  CodeCache,
   // BuildIntf
   ProjectIntf, PackageIntf, CompOptsIntf, IDEExternToolIntf,
   // IDEIntf
   IDEImagesIntf, MenuIntf, IDECommands, IDEDialogs, LazIDEIntf, IdeIntfStrConsts,
+  IDEMsgIntf,
   // IdeConfig
   EnvironmentOpts, IDEOptionDefs, CompilerOptions, ExtTools, IdeConfStrConsts,
   // IDE
@@ -1980,10 +1983,47 @@ procedure TMessagesCtrl.CreateSourceMark(MsgLine: TMessageLine;
   aSynEdit: TSynEdit);
 var
   SourceMark: TETMark;
+  Marks: TMsgMarkArray;
+  Cols: TSynEditMarkColRangeArray;
+  i, aLine, sy, sx, ey, ex: integer;
+  Code: TCodeBuffer;
+  Full: string;
 begin
   if TLMsgViewLine(MsgLine).Mark<>nil then exit;
   if ord(MsgLine.Urgency)<ord(mluHint) then exit;
-  SourceMark:=SourceMarks.CreateMark(MsgLine,aSynEdit);
+
+  // some messages want to underline several tokens (e.g. a dotted unit name).
+  // Ask the quick fixes that provide multi markers.
+  Cols:=nil;
+  aLine:=0;
+  Marks:=nil;
+  if IDEQuickFixes<>nil then
+    for i:=0 to IDEQuickFixes.MultiMarkerCount-1 do begin
+      Marks:=IDEQuickFixes.MultiMarkerFixes[i].GetMultiMarkers(MsgLine);
+      if Marks<>nil then break;
+    end;
+  if Marks<>nil then begin
+    Full:=TrimFilename(MsgLine.GetFullFilename);
+    for i:=0 to high(Marks) do begin
+      Code:=TCodeBuffer(Marks[i].Code);
+      if Code=nil then continue;
+      // ignore ranges in another file
+      if CompareFilenames(Code.Filename,Full)<>0 then continue;
+      Code.AbsoluteToLineCol(Marks[i].StartPos,sy,sx);
+      Code.AbsoluteToLineCol(Marks[i].EndPos,ey,ex);
+      if (sy<1) or (sx<1) or (ey<>sy) or (ex<=sx) then continue;
+      if aLine=0 then aLine:=sy;
+      if sy<>aLine then continue; // a mark belongs to a single line
+      SetLength(Cols,length(Cols)+1);
+      Cols[high(Cols)].StartCol:=sx;
+      Cols[high(Cols)].EndCol:=ex;
+    end;
+  end;
+
+  if Cols<>nil then
+    SourceMark:=SourceMarks.CreateMark(MsgLine,aSynEdit,aLine,Cols)
+  else
+    SourceMark:=SourceMarks.CreateMark(MsgLine,aSynEdit);
   if SourceMark=nil then exit;
   TLMsgViewLine(MsgLine).Mark:=SourceMark;
 end;

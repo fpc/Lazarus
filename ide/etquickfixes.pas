@@ -103,6 +103,8 @@ type
       out MissingUnitName, UsedByUnit: string): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
     procedure QuickFix({%H-}Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+    class function HasMultiMarker: boolean; override;
+    function GetMultiMarkers(Msg: TMessageLine): TMsgMarkArray; override;
   end;
 
   { TQuickFixClassWithAbstractMethods
@@ -207,6 +209,8 @@ function GetMsgSrcPosOfIdentifier(Msg: TMessageLine; out Identifier: string;
 function GetMsgSrcPosOfThisIdentifier(Msg: TMessageLine; const Identifier: string;
   out Code: TCodeBuffer; out Tool: TCodeTool; out CleanPos: integer;
   out Node: TCodeTreeNode): boolean;
+function GetMsgSrcPosOfDottedIdentifier(Msg: TMessageLine;
+  const Identifier: string; out Marks: TMsgMarkArray): boolean;
 
 implementation
 
@@ -299,6 +303,143 @@ var
 begin
   Result:=GetMsgSrcPosOfIdentifier(Msg,CurIdentifier,Code,Tool,CleanPos,Node)
      and (CompareIdentifiers(PChar(CurIdentifier),PChar(Identifier))=0);
+end;
+
+function GetMsgSrcPosOfDottedIdentifier(Msg: TMessageLine;
+  const Identifier: string; out Marks: TMsgMarkArray): boolean;
+// For a dotted identifier like 'foo.Unit6' at the message position, returns the
+// source ranges of its tokens. A contiguous 'foo.Unit6' gives one range;
+// whitespace or comments between tokens (e.g. 'foo{c}. Unit6') split it into more.
+var
+  Code: TCodeBuffer;
+  Tool: TCodeTool;
+  CleanPos, IdentLen: integer;
+  Node: TCodeTreeNode;
+  Comp: array of string;
+  ChainStart: integer;
+  i: integer;
+  AtStart: boolean;
+  Runs: array of record StartClean, EndClean: integer; end;
+  PrevEnd: integer;
+  StartCodePos, EndCodePos: TCodePosition;
+
+  function SplitComponents: boolean;
+  var
+    StartP, p: integer;
+  begin
+    Result:=false;
+    Comp:=nil;
+    StartP:=1;
+    for p:=1 to IdentLen do
+      if Identifier[p]='.' then begin
+        if p=StartP then exit;
+        System.Insert(copy(Identifier,StartP,p-StartP),Comp,length(Comp));
+        StartP:=p+1;
+      end;
+    SetLength(Comp,length(Comp)+1);
+    Comp[high(Comp)]:=copy(Identifier,StartP,IdentLen-StartP+1);
+    Result:=true;
+  end;
+
+  procedure AddToken(aStart, aEnd: integer);
+  begin
+    // merge with the previous run if there is no gap (whitespace/comment) in between
+    if (length(Runs)=0) or (aStart<>PrevEnd) then begin
+      SetLength(Runs,length(Runs)+1);
+      Runs[high(Runs)].StartClean:=aStart;
+    end;
+    Runs[high(Runs)].EndClean:=aEnd;
+    PrevEnd:=aEnd;
+  end;
+
+  procedure OneMark(StartPos, EndPos: integer);
+  begin
+    SetLength(Marks,1);
+    Marks[0].Code:=Code;
+    Marks[0].StartPos:=StartPos;
+    Marks[0].EndPos:=EndPos;
+    Result:=true;
+  end;
+
+begin
+  Result:=false;
+  Marks:=nil;
+  if not IsValidIdent(Identifier,true,true) then exit;
+  if not GetMsgCodetoolPos(Msg,Code,Tool,CleanPos,Node) then exit;
+  IdentLen:=length(Identifier);
+  if not SplitComponents then exit;
+
+  // FPC gives the position of the start or the end of the identifier.
+  // Decide the direction and validate the anchor token.
+  AtStart:=(CleanPos>=1) and (CleanPos<=Tool.SrcLen) and IsIdentChar[Tool.Src[CleanPos]];
+  if AtStart then begin
+    // there is an identifier at the position: it must be the first token
+    if CompareIdentifiers(@Tool.Src[CleanPos],PChar(Identifier))<>0 then exit;
+    if (length(Comp)=1) or SameText(Identifier,copy(Tool.Src,CleanPos,IdentLen)) then
+    begin
+      // simple case, the identifier is the same in source
+      OneMark(CleanPos,CleanPos+IdentLen);
+      exit;
+    end;
+    ChainStart:=CleanPos;
+  end else begin
+    // the position is behind the identifier: the last token must be in front
+    Tool.MoveCursorToCleanPos(CleanPos);
+    if (CleanPos<=1) or (CleanPos-1>Tool.SrcLen)
+    or (not IsIdentChar[Tool.Src[CleanPos-1]]) then exit;
+
+    if (length(Comp)=1) or SameText(Identifier,copy(Tool.Src,CleanPos-IdentLen,IdentLen)) then
+    begin
+      // simple case, the identifier is the same in source
+      OneMark(CleanPos-IdentLen,CleanPos);
+      exit;
+    end;
+
+    Tool.MoveCursorToCleanPos(CleanPos);
+    Tool.ReadPriorAtom;
+    if Tool.CurPos.StartPos<1 then exit;
+    if CompareIdentifiers(@Tool.Src[Tool.CurPos.StartPos],PChar(Comp[high(Comp)]))<>0 then exit;
+    // walk backward over '.' identifier pairs to the first token
+    for i:=high(Comp)-1 downto 0 do begin
+      Tool.ReadPriorAtom;
+      if Tool.CurPos.Flag<>cafPoint then exit;
+      Tool.ReadPriorAtom;
+      if Tool.CurPos.StartPos<1 then exit;
+      if CompareIdentifiers(@Tool.Src[Tool.CurPos.StartPos],PChar(Comp[i]))<>0 then exit;
+    end;
+    ChainStart:=Tool.CurPos.StartPos;
+  end;
+
+  // read forward from the first token, validating the chain and collecting runs
+  // Beware: ampersand &, whitespace and comments
+  Runs:=nil;
+  PrevEnd:=0;
+  Tool.MoveCursorToCleanPos(ChainStart);
+  for i:=0 to high(Comp) do begin
+    Tool.ReadNextAtom;
+    if Tool.CurPos.StartPos>Tool.SrcLen then exit;
+    if CompareIdentifiers(@Tool.Src[Tool.CurPos.StartPos],PChar(Comp[i]))<>0 then exit;
+    AddToken(Tool.CurPos.StartPos,Tool.CurPos.EndPos);
+    if i<high(Comp) then begin
+      Tool.ReadNextAtom;
+      if Tool.CurPos.Flag<>cafPoint then exit;
+      AddToken(Tool.CurPos.StartPos,Tool.CurPos.EndPos);
+    end;
+  end;
+
+  // convert clean positions to 1-based indices into the code buffer's Source
+  SetLength(Marks,length(Runs));
+  for i:=0 to high(Runs) do begin
+    if (not Tool.CleanPosToCodePos(Runs[i].StartClean,StartCodePos))
+    or (not Tool.CleanPosToCodePos(Runs[i].EndClean,EndCodePos)) then begin
+      Marks:=nil;
+      exit;
+    end;
+    Marks[i].Code:=StartCodePos.Code;
+    Marks[i].StartPos:=StartCodePos.P;
+    Marks[i].EndPos:=EndCodePos.P;
+  end;
+  Result:=length(Marks)>0;
 end;
 
 { TQuickFixInheritedMethodIsHidden_AddModifier }
@@ -996,6 +1137,21 @@ begin
     exit;
   end;
   Result:=true;
+end;
+
+class function TQuickFixUnitNotFound_Remove.HasMultiMarker: boolean;
+begin
+  Result:=true;
+end;
+
+function TQuickFixUnitNotFound_Remove.GetMultiMarkers(Msg: TMessageLine
+  ): TMsgMarkArray;
+var
+  MissingUnitName, UsedByUnit: string;
+begin
+  Result:=nil;
+  if not IsApplicable(Msg,MissingUnitName,UsedByUnit) then exit;
+  GetMsgSrcPosOfDottedIdentifier(Msg,MissingUnitName,Result);
 end;
 
 procedure TQuickFixUnitNotFound_Remove.CreateMenuItems(Fixes: TMsgQuickFixes);

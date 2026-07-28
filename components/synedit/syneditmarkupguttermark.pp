@@ -38,13 +38,23 @@ type
   end;
   PMarkSection = ^TMarkSection;
 
+  // Explicit underline ranges for a mark, on the mark's line.
+  // StartCol/EndCol are logical columns; EndCol is behind the last character.
+  TSynEditMarkColRange = record
+    StartCol, EndCol: integer;
+  end;
+  TSynEditMarkColRangeArray = array of TSynEditMarkColRange;
+
   { TSynEditMarkupMark }
 
   TSynEditMarkupMark = class(TSynEditMark)
   private
     FSourceMarkup: TLazEditHighlighterAttributesModifier;
+    FColRanges: TSynEditMarkColRangeArray;
   public
     property SourceMarkup: TLazEditHighlighterAttributesModifier read FSourceMarkup write FSourceMarkup;
+    // if set, underline exactly these ranges instead of the word at Column
+    property ColRanges: TSynEditMarkColRangeArray read FColRanges write FColRanges;
   end;
 
 
@@ -90,7 +100,7 @@ end;
 procedure TSynEditMarkupGutterMark.PrepareMarkupForRow(ARow: Integer);
 var
   MLine: TSynEditMarkLine;
-  i, j: Integer;
+  i, j, k: Integer;
   s: string;
   Markup: TSynEditMarkupMark;
   Section: PMarkSection;
@@ -112,6 +122,25 @@ begin
     if Markup.SourceMarkup = nil then
       continue;
 
+    if Length(Markup.ColRanges) > 0 then begin
+      // explicit underline ranges: one section per range
+      for k := 0 to High(Markup.ColRanges) do begin
+        if j > High(FRowData) then
+          SetLength(FRowData, j + 4);
+        Section := @FRowData[j];
+        Section^.Markup := Markup.SourceMarkup;
+        Section^.Priority := Markup.Priority;
+        Section^.StartX := Markup.ColRanges[k].StartCol;
+        Section^.EndX   := Markup.ColRanges[k].EndCol;
+        if (Section^.StartX > 0) and (Section^.EndX > 0) and (Section^.StartX<Section^.EndX)
+        then
+          inc(j);
+      end;
+      continue;
+    end;
+
+    if j > High(FRowData) then
+      SetLength(FRowData, j + 4);
     Section := @FRowData[j];
     Section^.Markup := Markup.SourceMarkup;
     Section^.Priority := Markup.Priority;

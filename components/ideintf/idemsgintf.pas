@@ -29,6 +29,15 @@ uses
 type
   TMsgQuickFixes = class;
 
+  // A source range to underline in the source editor for a message.
+  // Code is a TCodeBuffer. StartPos/EndPos are 1-based indices into Code.Source.
+  // EndPos is the index behind the last character of the last token.
+  TMsgMark = record
+    Code: Pointer; // TCodeBuffer
+    StartPos, EndPos: integer;
+  end;
+  TMsgMarkArray = array of TMsgMark;
+
   { TMsgQuickFix }
 
   TMsgQuickFix = class
@@ -36,6 +45,8 @@ type
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); virtual;
     procedure JumpTo({%H-}Msg: TMessageLine; var {%H-}Handled: boolean); virtual; // called when user (double) clicks on message
     procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); virtual; // Msg=nil means fix all Fixes.Lines
+    class function HasMultiMarker: boolean; virtual; // true if GetMultiMarkers can return marks
+    function GetMultiMarkers({%H-}Msg: TMessageLine): TMsgMarkArray; virtual; // source ranges to underline, nil = default behavior
   end;
   TMsgQuickFixClass = class of TMsgQuickFix;
 
@@ -45,9 +56,11 @@ type
   private
     function GetLines(Index: integer): TMessageLine; inline;
     function GetQuickFixes(Index: integer): TMsgQuickFix; inline;
+    function GetMultiMarkerFixes(Index: integer): TMsgQuickFix; inline;
   protected
     fMsg: TFPList; // list of TMessageLine
     fItems: TObjectList; // list of TMsgQuickFix
+    fMultiMarkerItems: TFPList; // subset of fItems with HasMultiMarker=true
     FCurrentSender: TObject;
     FCurrentCommand: TIDEMenuCommand;
   public
@@ -57,6 +70,8 @@ type
     procedure UnregisterQuickFix(Fix: TMsgQuickFix);
     function Count: integer; inline;
     property Items[Index: integer]: TMsgQuickFix read GetQuickFixes; default;
+    function MultiMarkerCount: integer; inline;
+    property MultiMarkerFixes[Index: integer]: TMsgQuickFix read GetMultiMarkerFixes;
     function LineCount: integer; inline;
     property Lines[Index: integer]: TMessageLine read GetLines;
     function AddMenuItem(Fix: TMsgQuickFix; Msg: TMessageLine; aCaption: string;
@@ -191,6 +206,16 @@ begin
 
 end;
 
+class function TMsgQuickFix.HasMultiMarker: boolean;
+begin
+  Result:=false;
+end;
+
+function TMsgQuickFix.GetMultiMarkers(Msg: TMessageLine): TMsgMarkArray;
+begin
+  Result:=nil;
+end;
+
 { TMsgQuickFixes }
 
 // inline
@@ -206,9 +231,21 @@ begin
 end;
 
 // inline
+function TMsgQuickFixes.GetMultiMarkerFixes(Index: integer): TMsgQuickFix;
+begin
+  Result:=TMsgQuickFix(fMultiMarkerItems[Index]);
+end;
+
+// inline
 function TMsgQuickFixes.Count: integer;
 begin
   Result:=fItems.Count;
+end;
+
+// inline
+function TMsgQuickFixes.MultiMarkerCount: integer;
+begin
+  Result:=fMultiMarkerItems.Count;
 end;
 
 // inline
@@ -221,12 +258,14 @@ constructor TMsgQuickFixes.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
   fItems:=TObjectList.create(true);
+  fMultiMarkerItems:=TFPList.Create;
   fMsg:=TFPList.Create;
 end;
 
 destructor TMsgQuickFixes.Destroy;
 begin
   FreeAndNil(fMsg);
+  FreeAndNil(fMultiMarkerItems);
   FreeAndNil(fItems);
   inherited Destroy;
   if MsgQuickFixes=Self then
@@ -238,10 +277,13 @@ begin
   if fItems.IndexOf(Fix)>=0 then
     raise Exception.Create('quick fix already registered');
   fItems.Add(Fix);
+  if Fix.HasMultiMarker then
+    fMultiMarkerItems.Add(Fix);
 end;
 
 procedure TMsgQuickFixes.UnregisterQuickFix(Fix: TMsgQuickFix);
 begin
+  fMultiMarkerItems.Remove(Fix);
   fItems.Remove(Fix);
 end;
 
