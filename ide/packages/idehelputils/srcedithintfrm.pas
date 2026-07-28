@@ -73,6 +73,8 @@ type
     procedure SetHelpEnabled(const AValue: boolean);
     procedure SetProvider(const AValue: TCodeHintProvider);
     procedure UpdatePosition;
+  protected
+    procedure VisibleChanged; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -281,6 +283,13 @@ begin
   //DebugLn(['TCodeHintFrm.UpdatePosition NewBounds=',dbgs(NewBounds),' BoundsRect=',dbgs(BoundsRect)]);
   BoundsRect:=NewBounds;
   Visible:=true;
+end;
+
+procedure TSrcEditHintWindow.VisibleChanged;
+begin
+  inherited VisibleChanged;
+  if not IsVisible then
+    ActiveControl := nil;
 end;
 
 procedure TSrcEditHintWindow.Paint;
