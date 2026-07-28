@@ -354,10 +354,13 @@ var
 
   procedure OneMark(StartPos, EndPos: integer);
   begin
+    if (not Tool.CleanPosToCodePos(StartPos,StartCodePos)) then exit;
+    if (not Tool.CleanPosToCodePos(EndPos,EndCodePos)) then exit;
+    if StartCodePos.Code<>EndCodePos.Code then exit;
     SetLength(Marks,1);
     Marks[0].Code:=Code;
-    Marks[0].StartPos:=StartPos;
-    Marks[0].EndPos:=EndPos;
+    Marks[0].StartPos:=StartCodePos.p;
+    Marks[0].EndPos:=EndCodePos.p;
     Result:=true;
   end;
 
