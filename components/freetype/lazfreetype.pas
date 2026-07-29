@@ -184,6 +184,14 @@ uses TTTypes, Classes;
                                        rotated   : Boolean;
                                        distorted : Boolean ) : TT_Error;
 
+  function TT_Set_Instance_Variation( _ins    : TT_Instance;
+                                      axisTag : TT_ULong;
+                                      value   : TT_Fixed ) : TT_Error;
+
+  function TT_Font_Has_Variation_Axis( const fontname : string;
+                                       axisTag        : LongWord;
+                                       value          : LongInt ) : Boolean;
+
   (*****************************************************************)
   (*  Return instance metrics in 'm'                               *)
   (*                                                               *)
@@ -480,7 +488,8 @@ uses
   TTLoad,
   TTGLoad,
   TTKern,
-  TTRaster;
+  TTRaster,
+  TTVar;
 
   (*****************************************************************)
   (*                                                               *)
@@ -831,6 +840,50 @@ uses
       end
     else
       TT_Set_Instance_Transforms := TT_Err_Invalid_Instance_Handle;
+  end;
+
+  function TT_Set_Instance_Variation( _ins    : TT_Instance;
+                                      axisTag : TT_ULong;
+                                      value   : TT_Fixed ) : TT_Error;
+  var
+    ins : PInstance;
+  begin
+    ins := _ins.z;
+    if ins = nil then
+      Exit(TT_Err_Invalid_Instance_Handle);
+
+    if (ins^.variations = nil) or
+       not ins^.variations.SetCoordinate(axisTag, value) then
+      Exit(TT_Err_Invalid_Argument);
+
+    ins^.valid := False;
+    TT_Set_Instance_Variation := TT_Err_Ok;
+  end;
+
+  function TT_Font_Has_Variation_Axis( const fontname : string;
+                                       axisTag        : LongWord;
+                                       value          : LongInt ) : Boolean;
+  var
+    face     : TT_Face;
+    instance : TT_Instance;
+  begin
+    Result := False;
+    face.z := nil;
+    instance.z := nil;
+
+    if TT_Open_Face(fontname, face) <> TT_Err_Ok then
+      Exit;
+    try
+      if TT_New_Instance(face, instance) <> TT_Err_Ok then
+        Exit;
+      try
+        Result := TT_Set_Instance_Variation(instance, axisTag, value) = TT_Err_Ok;
+      finally
+        TT_Done_Instance(instance);
+      end;
+    finally
+      TT_Close_Face(face);
+    end;
   end;
 
 
@@ -1757,4 +1810,3 @@ uses
 
 
 end.
-

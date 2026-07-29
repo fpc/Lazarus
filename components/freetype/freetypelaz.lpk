@@ -121,6 +121,10 @@
         <Filename Value="tttypes.pas"/>
         <UnitName Value="TTTypes"/>
       </Item>
+      <Item>
+        <Filename Value="ttvar.pas"/>
+        <UnitName Value="TTVar"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>

@@ -61,7 +61,8 @@ uses
   TTTables,
   TTCalc,
   TTFile,
-  TTLoad;
+  TTLoad,
+  TTVar;
 
 const
   ARGS_ARE_WORDS      = $01;
@@ -193,6 +194,101 @@ const
      for k := 0 to n-1 do inc( coords^[k].y, dy );
  end;
 
+ function Count_Composite_Components(AStream: TFreeTypeStream;
+                                     AStartOffset: Long;
+                                     out ACount: Int): TError;
+ var
+   save_pos : Long;
+   flags    : Int;
+   skip     : Int;
+ label
+   Restore;
+ begin
+   Count_Composite_Components := Failure;
+   ACount := 0;
+   save_pos := AStream.Position;
+
+   if AStream.SeekFile(AStartOffset) then
+     exit;
+
+   repeat
+     if AStream.AccessFrame(4) then
+       goto Restore;
+
+     flags := AStream.Get_UShort;
+     AStream.Get_UShort;
+     AStream.ForgetFrame;
+
+     if flags and ARGS_ARE_WORDS <> 0 then
+       skip := 4
+     else
+       skip := 2;
+
+     if flags and WE_HAVE_A_SCALE <> 0 then
+       inc(skip, 2);
+
+     if flags and WE_HAVE_AN_XY_SCALE <> 0 then
+       inc(skip, 4);
+
+     if flags and WE_HAVE_A_2X2 <> 0 then
+       inc(skip, 8);
+
+     if AStream.SkipFile(skip) then
+       goto Restore;
+
+     inc(ACount);
+   until flags and MORE_COMPONENTS = 0;
+
+   Count_Composite_Components := Success;
+
+ Restore:
+   if AStream.SeekFile(save_pos) then
+     Count_Composite_Components := Failure;
+ end;
+
+ procedure Get_Composite_Variation_Delta(exec           : PExec_Context;
+                                         subg           : PSubGlyph_Record;
+                                         point_index    : Int;
+                                         point_count    : Int;
+                                         already_scaled : Boolean;
+                                         var dx, dy     : TT_Pos);
+ var
+   points : TT_Points;
+   total  : Int;
+   k      : Int;
+ begin
+   dx := 0;
+   dy := 0;
+
+   if (exec^.face^.variations = nil) or
+      (exec^.instance^.variations = nil) or
+      (point_count <= 0) then
+     exit;
+
+   total := point_count + TTVar_PhantomPointCount;
+   if (point_index < 0) or (point_index >= total) then
+     exit;
+
+   GetMem(points, total * SizeOf(TT_Vector));
+   try
+     for k := 0 to total - 1 do
+     begin
+       points^[k].x := 0;
+       points^[k].y := 0;
+     end;
+
+     exec^.face^.variations.ApplyGlyphDeltas(exec^.instance^.variations,
+       subg^.index, points, nil, total, 0, already_scaled,
+       exec^.metrics.x_scale1, exec^.metrics.x_scale2,
+       exec^.metrics.y_scale1, exec^.metrics.y_scale2);
+
+     dx := points^[point_index].x;
+     dy := points^[point_index].y;
+   finally
+     FreeMem(points, total * SizeOf(TT_Vector));
+   end;
+ end;
+
  (********************************************************)
  (* mount one zone on top of another one                 *)
  (*                                                      *)
@@ -230,8 +326,9 @@ const
                              load_flags    : Int;
                              subg          : PSubGlyph_Record ) : TError;
  var
-   n_points,
-   n_ins, k : Int;
+  n_points,
+  n_ins, k : Int;
+  h_origin, h_advance: Int;
 
    c, cnt : Byte;
    face   : PFace;
@@ -387,27 +484,38 @@ const
 
    AStream.ForgetFrame;
 
-   (* Now adds the two shadow points at n and n+1     *)
-   (* We need the left side bearing and advance width *)
+  (* Now add the phantom points. Variation tables can address all four
+     TrueType phantom points, so they must exist before gvar is applied. *)
+  h_origin := n_points + TTVar_PhantomHOrigin;
+  h_advance := n_points + TTVar_PhantomHAdvance;
 
-   (* pp1 = xMin - lsb == glyph origin *)
-   coords^[n_points].x := subg^.bbox.XMin-subg^.leftBearing;
-   coords^[n_points].y := 0;
+  (* pp1 = xMin - lsb == glyph origin *)
+  coords^[h_origin].x := subg^.bbox.XMin-subg^.leftBearing;
+  coords^[h_origin].y := 0;
 
-   (* pp2 = pp1 + aw == glyph next position *)
-   coords^[n_points+1].x := subg^.bbox.xMin-
-                            subg^.leftBearing + subg^.advanceWidth;
-   coords^[n_points+1].y := 0;
+  (* pp2 = pp1 + aw == glyph next position *)
+  coords^[h_advance].x := subg^.bbox.xMin-
+                          subg^.leftBearing + subg^.advanceWidth;
+  coords^[h_advance].y := 0;
 
-   for k := 0 to n_points-1 do
-     exec^.pts.flags^[k] := exec^.pts.flags^[k] and TT_Flag_On_Curve;
+  coords^[n_points + TTVar_PhantomVOrigin].x := 0;
+  coords^[n_points + TTVar_PhantomVOrigin].y := 0;
+  coords^[n_points + TTVar_PhantomVAdvance].x := 0;
+  coords^[n_points + TTVar_PhantomVAdvance].y := 0;
 
-   exec^.pts.flags^[n_points  ] := 0;
-   exec^.pts.flags^[n_points+1] := 0;
+  for k := 0 to n_points-1 do
+    exec^.pts.flags^[k] := exec^.pts.flags^[k] and TT_Flag_On_Curve;
 
-   (* Note that we now return two more points, that are not *)
-   (* part of the glyph outline                             *)
-   inc( n_points, 2 );
+  for k := 0 to TTVar_PhantomPointCount - 1 do
+    exec^.pts.flags^[n_points + k] := 0;
+
+  inc( n_points, TTVar_PhantomPointCount );
+
+  if (face^.variations <> nil) and (exec^.instance^.variations <> nil) then
+    face^.variations.ApplyGlyphDeltas(exec^.instance^.variations, subg^.index,
+      exec^.pts.org, exec^.pts.conEnds, n_points, n_contours, false,
+      exec^.metrics.x_scale1, exec^.metrics.x_scale2,
+      exec^.metrics.y_scale1, exec^.metrics.y_scale2);
 
    (* now eventually scale and hint the glyph *)
 
@@ -431,12 +539,14 @@ const
        for k := 0 to n_points-1 do with pts^ do
          org^[k].y := Scale_Y( exec^.metrics, org^[k].y );
 
-       (* if hinting, round pp1, and shift the glyph accordingly *)
-       if subg^.is_hinted then
-       begin
-         x := pts^.org^[n_points-2].x;
-         x := ((x+32) and -64) - x;
-         translate_array( n_points, pts^.org, x, 0 );
+      (* if hinting, round pp1, and shift the glyph accordingly *)
+      if subg^.is_hinted then
+      begin
+        h_origin := n_points - TTVar_PhantomPointCount + TTVar_PhantomHOrigin;
+        h_advance := n_points - TTVar_PhantomPointCount + TTVar_PhantomHAdvance;
+        x := pts^.org^[h_origin].x;
+        x := ((x+32) and -64) - x;
+        translate_array( n_points, pts^.org, x, 0 );
 
          org_to_cur( n_points, pts );
 
@@ -447,7 +557,7 @@ const
            cur_x^[n_points-1] := cur_x^[n_points-2]+x;
          *)
          with pts^ do
-           cur^[n_points-1].x := (cur^[n_points-1].x+32) and -64;
+          cur^[h_advance].x := (cur^[h_advance].x+32) and -64;
 
          (* now consider hinting *)
          if (exec^.glyphSize > 0) then
@@ -463,11 +573,13 @@ const
      end;
 
    (* save glyph origin and advance points *)
-   if not subg^.preserve_pps then
-   begin
-     subg^.pp1 := pts^.cur^[n_points-2];
-     subg^.pp2 := pts^.cur^[n_points-1];
-   end;
+  if not subg^.preserve_pps then
+  begin
+    h_origin := n_points - TTVar_PhantomPointCount + TTVar_PhantomHOrigin;
+    h_advance := n_points - TTVar_PhantomPointCount + TTVar_PhantomHAdvance;
+    subg^.pp1 := pts^.cur^[h_origin];
+    subg^.pp2 := pts^.cur^[h_advance];
+  end;
 
    Load_Simple_Glyph := Success;
 
@@ -495,12 +607,14 @@ const
                                {%H-}n_contours : Int;
                                exec       : PExec_Context;
                                subg       : PSubglyph_Record;
+                               load_flags : Int;
                                debug      : Boolean ) : TError;
  var
    pts     : PGlyph_Zone;
    n_ins   : Int;
    k       : Int;
    x, y    : TT_Pos;
+   h_origin_delta, h_advance_delta : TT_Pos;
 
  label
    Fail, Fail_File, Fail_Exec;
@@ -540,31 +654,50 @@ const
                        glyphSize ) then goto Fail_File;
    end;
 
-   (* prepare the execution context *)
-   inc( n_points, 2 );
+  if subg^.componentCount > 0 then
+  begin
+    Get_Composite_Variation_Delta(exec, subg,
+      subg^.componentCount + TTVar_PhantomHOrigin, subg^.componentCount,
+      load_flags and TT_Load_Scale_Glyph <> 0, h_origin_delta, y);
+    inc(subg^.pp1.x, h_origin_delta);
+    inc(subg^.pp1.y, y);
 
-   exec^.pts     := subg^.zone;
-   pts           := @exec^.pts;
-   pts^.n_points := n_points;
+    Get_Composite_Variation_Delta(exec, subg,
+      subg^.componentCount + TTVar_PhantomHAdvance, subg^.componentCount,
+      load_flags and TT_Load_Scale_Glyph <> 0, h_advance_delta, y);
+    inc(subg^.pp2.x, h_advance_delta);
+    inc(subg^.pp2.y, y);
+  end;
 
-   (* add phantom points *)
-   with pts^ do
-   begin
-     cur^[n_points-2] := subg^.pp1;
-     cur^[n_points-1] := subg^.pp2;
-     flags^[n_points-2] := 0;
-     flags^[n_points-1] := 0;
-   end;
+  (* prepare the execution context *)
+  inc( n_points, TTVar_PhantomPointCount );
 
-   (* if hinting, round the phantom points *)
-   if subg^.is_hinted then
-   begin
-     y := ((subg^.pp1.x+32) and -64);
-     pts^.cur^[n_points-2].y := y;
+  exec^.pts     := subg^.zone;
+  pts           := @exec^.pts;
+  pts^.n_points := n_points;
 
-     x := ((subg^.pp2.x+32) and -64);
-     pts^.cur^[n_points-1].x := x;
-   end;
+  (* add phantom points *)
+  with pts^ do
+  begin
+    cur^[n_points - TTVar_PhantomPointCount + TTVar_PhantomHOrigin] := subg^.pp1;
+    cur^[n_points - TTVar_PhantomPointCount + TTVar_PhantomHAdvance] := subg^.pp2;
+    cur^[n_points - TTVar_PhantomPointCount + TTVar_PhantomVOrigin].x := 0;
+    cur^[n_points - TTVar_PhantomPointCount + TTVar_PhantomVOrigin].y := 0;
+    cur^[n_points - TTVar_PhantomPointCount + TTVar_PhantomVAdvance].x := 0;
+    cur^[n_points - TTVar_PhantomPointCount + TTVar_PhantomVAdvance].y := 0;
+    for k := 0 to TTVar_PhantomPointCount - 1 do
+      flags^[n_points - TTVar_PhantomPointCount + k] := 0;
+  end;
+
+  (* if hinting, round the phantom points *)
+  if subg^.is_hinted then
+  begin
+    x := ((subg^.pp1.x+32) and -64);
+    pts^.cur^[n_points - TTVar_PhantomPointCount + TTVar_PhantomHOrigin].x := x;
+
+    x := ((subg^.pp2.x+32) and -64);
+    pts^.cur^[n_points - TTVar_PhantomPointCount + TTVar_PhantomHAdvance].x := x;
+  end;
 
    for k := 0 to n_points-1 do
      pts^.flags^[k] := pts^.flags^[k] and TT_Flag_On_Curve;
@@ -580,9 +713,9 @@ const
        goto Fail_Exec;
    end;
 
-   (* save glyph origin and advance points *)
-   subg^.pp1 := pts^.cur^[n_points-2];
-   subg^.pp2 := pts^.cur^[n_points-1];
+  (* save glyph origin and advance points *)
+  subg^.pp1 := pts^.cur^[n_points - TTVar_PhantomPointCount + TTVar_PhantomHOrigin];
+  subg^.pp2 := pts^.cur^[n_points - TTVar_PhantomPointCount + TTVar_PhantomHAdvance];
 
    Load_Composite_End := Success;
    error := TT_Err_Ok;
@@ -640,6 +773,10 @@ const
 
      transform.ox := 0;
      transform.oy := 0;
+     componentCount := 0;
+     componentIndex := 0;
+     varDeltaX := 0;
+     varDeltaY := 0;
 
      leftBearing  := 0;
      advanceWidth := 0;
@@ -833,8 +970,39 @@ const
 
                subglyph^.pp1.x := 0;
                subglyph^.pp2.x := subglyph^.advanceWidth;
+
+               exec^.pts.n_points := TTVar_PhantomPointCount;
+               exec^.pts.n_contours := 0;
+               exec^.pts.org^[TTVar_PhantomHOrigin] := subglyph^.pp1;
+               exec^.pts.org^[TTVar_PhantomHAdvance] := subglyph^.pp2;
+               exec^.pts.org^[TTVar_PhantomVOrigin].x := 0;
+               exec^.pts.org^[TTVar_PhantomVOrigin].y := 0;
+               exec^.pts.org^[TTVar_PhantomVAdvance].x := 0;
+               exec^.pts.org^[TTVar_PhantomVAdvance].y := 0;
+               for k := 0 to TTVar_PhantomPointCount - 1 do
+                 exec^.pts.flags^[k] := 0;
+
+               if (face^.variations <> nil) and
+                  (exec^.instance^.variations <> nil) then
+                 face^.variations.ApplyGlyphDeltas(exec^.instance^.variations,
+                   subglyph^.index, exec^.pts.org, exec^.pts.conEnds,
+                   TTVar_PhantomPointCount, 0, false,
+                   exec^.metrics.x_scale1, exec^.metrics.x_scale2,
+                   exec^.metrics.y_scale1, exec^.metrics.y_scale2);
+
                if load_flags and TT_LOAD_Scale_Glyph <> 0 then
-                 subglyph^.pp2.x := Scale_X( exec^.metrics, subglyph^.pp2.x );
+               begin
+                 for k := 0 to TTVar_PhantomPointCount - 1 do
+                 begin
+                   exec^.pts.org^[k].x := Scale_X( exec^.metrics,
+                     exec^.pts.org^[k].x );
+                   exec^.pts.org^[k].y := Scale_Y( exec^.metrics,
+                     exec^.pts.org^[k].y );
+                 end;
+               end;
+               org_to_cur( TTVar_PhantomPointCount, @exec^.pts );
+               subglyph^.pp1 := exec^.pts.cur^[TTVar_PhantomHOrigin];
+               subglyph^.pp2 := exec^.pts.cur^[TTVar_PhantomHAdvance];
 
                exec^.glyphSize := 0;
                phase := Load_End;
@@ -894,7 +1062,13 @@ const
                if num_contours >= 0 then
                  phase := Load_Simple
                else
-                 phase := Load_Composite;
+                 begin
+                   if Count_Composite_Components(ftstream, ftstream.Position,
+                     subglyph^.componentCount) then
+                     goto Fail_File;
+                   subglyph^.componentIndex := 0;
+                   phase := Load_Composite;
+                 end;
 
              end
          end;
@@ -936,7 +1110,7 @@ const
                        subglyph ) then
              goto Fail;
 
-           num_points := exec^.pts.n_points-2;
+          num_points := exec^.pts.n_points-TTVar_PhantomPointCount;
 
            phase := Load_End;
          end;
@@ -1055,6 +1229,16 @@ const
            subglyph^.transform.xy := xy;
            subglyph^.transform.yx := yx;
            subglyph^.transform.yy := yy;
+           subglyph^.varDeltaX := 0;
+           subglyph^.varDeltaY := 0;
+
+           if subglyph^.componentCount > 0 then
+           begin
+             Get_Composite_Variation_Delta(exec, subglyph,
+               subglyph^.componentIndex, subglyph^.componentCount,
+               false, subglyph^.varDeltaX, subglyph^.varDeltaY);
+             inc(subglyph^.componentIndex);
+           end;
 
            delta := MulDiv_Round( xx, yy, 1 shl 16 ) -
                     MulDiv_Round( xy, yx, 1 shl 16 );
@@ -1160,11 +1344,22 @@ const
 
                  vec.y := subglyph^.zone.cur^[k].y -
                           subglyph^.zone.cur^[l].y;
+
+                 if load_flags and TT_Load_Scale_Glyph <> 0 then
+                 begin
+                   inc(vec.x, Scale_X( exec^.metrics, subglyph^.varDeltaX ));
+                   inc(vec.y, Scale_Y( exec^.metrics, subglyph^.varDeltaY ));
+                 end
+                 else
+                 begin
+                   inc(vec.x, subglyph^.varDeltaX);
+                   inc(vec.y, subglyph^.varDeltaY);
+                 end;
                end
              else
                begin
-                 vec.x := subglyph^.transform.ox;
-                 vec.y := subglyph^.transform.oy;
+                 vec.x := subglyph^.transform.ox + subglyph^.varDeltaX;
+                 vec.y := subglyph^.transform.oy + subglyph^.varDeltaY;
 
                  if load_flags and TT_Load_Scale_Glyph <> 0 then
                  begin
@@ -1203,6 +1398,7 @@ const
                                         num_contours,
                                         exec,
                                         subglyph,
+                                        load_flags,
                                         debug ) then goto Fail;
                  phase := Load_End;
                end;
@@ -1219,7 +1415,7 @@ const
    exec^.pts := base_pts;
 
    (* copy also the phantom points, the debugger needs them *)
-   inc( num_points, 2 );
+   inc( num_points, TTVar_PhantomPointCount );
 
    for k := 0 to num_points-1 do with glyph^.outline do
    begin
@@ -1234,7 +1430,7 @@ const
    glyph^.outline.n_contours  := num_contours;
    glyph^.outline.second_pass := true;
 
-   TT_Get_Outline_BBox( glyph^.outline, glyph^.metrics.bbox, 2 );
+   TT_Get_Outline_BBox( glyph^.outline, glyph^.metrics.bbox, TTVar_PhantomPointCount );
 
    glyph^.metrics.horiBearingX := glyph^.metrics.bbox.xMin - subglyph^.pp1.x;
    glyph^.metrics.horiBearingY := glyph^.metrics.bbox.yMax;

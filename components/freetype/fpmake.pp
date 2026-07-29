@@ -72,6 +72,7 @@ begin
     D := T.Dependencies.AddInclude('ttraster_sweep.inc');
     D := T.Dependencies.AddUnit('TTTables');
     D := T.Dependencies.AddUnit('TTTypes');
+    D := T.Dependencies.AddUnit('TTVar');
     T := P.Targets.AddImplicitUnit('easylazfreetype.pas');
     T := P.Targets.AddImplicitUnit('lazfreetype.pas');
     T := P.Targets.AddImplicitUnit('lazfreetypefontcollection.pas');
