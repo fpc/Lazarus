@@ -4276,7 +4276,7 @@ begin
     if (AnEventType = deHardCodedBreakpoint) and (FDbgController.CurrentThread <> nil) then begin
       &continue:=true;
       Opts := TFpDebugDebuggerProperties(GetProperties).HandleDebugBreakInstruction;
-      if not (dboIgnoreAll in Opts) then
+      if (not (dboIgnoreAll in Opts)) and (not BreakPoints.IgnoreAll) then
         &continue:=False;
       if  continue then
         exit;

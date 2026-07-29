@@ -6813,6 +6813,7 @@ begin
   end
   else begin
     FMaster.Assign(Self);
+    FMaster.IgnoreAll := FIgnoreAll;
   end;
 end;
 
@@ -6820,6 +6821,9 @@ procedure TIDEBreakPoints.SetIgnoreAll(AValue: boolean);
 var
   i: Integer;
 begin
+  if FMaster <> nil then
+    FMaster.IgnoreAll := AValue;
+
   if FIgnoreAll = AValue then Exit;
   FIgnoreAll := AValue;
   BeginUpdate;

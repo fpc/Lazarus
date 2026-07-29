@@ -437,6 +437,7 @@ type
   TDBGBreakPoints = class(TBaseBreakPoints)
   private
     FDebugger: TDebuggerIntf;  // reference to our debugger
+    FIgnoreAll: boolean;
     function GetItem(const AnIndex: Integer): TDBGBreakPoint;
     procedure SetItem(const AnIndex: Integer; const AValue: TDBGBreakPoint);
   protected
@@ -459,6 +460,7 @@ type
                   const AKind: TDBGWatchPointKind; const AIgnore: TDBGBreakPoint): TDBGBreakPoint; overload;
 
     property Items[const AnIndex: Integer]: TDBGBreakPoint read GetItem write SetItem; default;
+    property IgnoreAll: boolean read FIgnoreAll write FIgnoreAll;
   end;
 
 {%endregion   ^^^^^  Breakpoints  ^^^^^   }
