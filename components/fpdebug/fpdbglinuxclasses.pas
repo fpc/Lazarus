@@ -1140,7 +1140,9 @@ begin
   end;
 
   if (AThread <> nil) and TDbgLinuxThread(AThread).FIsPaused then  // in case of deInternal, it may not be paused and can be ignored
-  if HasInsertedBreakInstructionAtLocation(AThread.GetInstructionPointerRegisterValue) then begin
+  if HasInsertedBreakInstructionAtLocation(AThread.GetInstructionPointerRegisterValue) and
+     (not AThread.PausedAtHardcodeBreakPoint) // IP was not decremented, so we are already past the int3 (but could be on the next)
+  then begin
     TempRemoveBreakInstructionCode(AThread.GetInstructionPointerRegisterValue);
     TDbgLinuxThread(AThread).FIsSteppingBreakPoint := True;
     fpseterrno(0);

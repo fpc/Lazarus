@@ -243,6 +243,7 @@ type
 
     function ResetInstructionPointerAfterBreakpoint: boolean; override;
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
+    function GetAdjustedInstructionPointerRegisterValue: TDbgPtr; override;
     function GetStackBasePointerRegisterValue: TDbgPtr; override;
     function GetStackPointerRegisterValue: TDbgPtr; override;
     procedure SetInstructionPointerRegisterValue(AValue: TDbgPtr); override;
@@ -623,6 +624,13 @@ begin
     result := FUserRegs.regs32[eip]
   else
     result := FUserRegs.regs64[rip];
+end;
+
+function TDbgX86LinuxThread.GetAdjustedInstructionPointerRegisterValue: TDbgPtr;
+begin
+  Result := inherited GetAdjustedInstructionPointerRegisterValue;
+  if PausedAtHardcodeBreakPoint and (Result <> 0) then
+    dec(Result)
 end;
 
 function TDbgX86LinuxThread.GetStackBasePointerRegisterValue: TDbgPtr;

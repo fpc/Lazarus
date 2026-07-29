@@ -5118,6 +5118,7 @@ function TFpDebugDebugger.GetLocationRec(AnAddress: TDBGPtr;
   AnAddrOffset: Integer): TDBGLocationRec;
 var
   sym, symproc: TFpSymbol;
+  s: String;
 begin
   result.FuncName:='';
   result.SrcFile:='';
@@ -5150,6 +5151,24 @@ begin
       result.FuncName:=symproc.Name;
     sym.ReleaseReference;
     end;
+
+    {$IFDEF windows}
+    if (Result.SrcLine = 0) and
+       ( (DbgController.Event = deHardCodedBreakpoint) or
+         ( (DbgController.CurrentThread <> nil) and (DbgController.CurrentThread.PausedAtHardcodeBreakPoint) )
+       )
+    then begin
+      s := LowerCase(Result.FuncName);
+         // ":" from TFpSymbolInfo.FindProcSymbol NamePreFix
+      if ( (s = 'kernelbase:debugbreak') or
+           (s = 'ntdll:debugbreak') )
+      then begin
+        Result.SrcLine    := -3;
+        Result.StackIndex := 1;
+      end;
+    end;
+    {$ENDIF}
+
 end;
 
 function TFpDebugDebugger.GetLocation: TDBGLocationRec;

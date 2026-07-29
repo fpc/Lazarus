@@ -148,6 +148,7 @@ type
     FName: String;
     FUnwinder: TDbgStackUnwinderX86MultiMethod;
     FFailed_CONTEXT_EXTENDED_REGISTERS: boolean;
+    FAtHardCodeBreakpoint: boolean;
   protected
     FThreadContextChanged: boolean;
     FThreadContextChangeFlags: TFpContextChangeFlags;
@@ -170,6 +171,7 @@ type
     function DetectHardwareWatchpoint: TFpInternalWatchpoint; override;
     procedure BeforeContinue; override;
     function ResetInstructionPointerAfterBreakpoint: boolean; override;
+    function GetAdjustedInstructionPointerRegisterValue: TDbgPtr; override;
     function ReadThreadState: boolean;
     procedure ClearExceptionSignal; override;
     property HasExceptionCleared: boolean read FHasExceptionCleared;
@@ -2394,6 +2396,7 @@ begin
   FThreadContextChangeFlags := [];
   FCurrentContext := nil;
   FHasResetInstructionPointerAfterBreakpoint := False;
+  FAtHardCodeBreakpoint := False;
 end;
 
 function TDbgWinThread.ResetInstructionPointerAfterBreakpoint: boolean;
@@ -2409,15 +2412,18 @@ begin
 
   assert(not FHasResetInstructionPointerAfterBreakpoint, 'TDbgWinThread.ResetInstructionPointerAfterBreakpoint: not FHasResetInstructionPointerAfterBreakpoint');
   {$ifdef cpui386}
-  if not CheckForHardcodeBreakPoint(FCurrentContext^.def.Eip - 1) then
+  FAtHardCodeBreakpoint := CheckForHardcodeBreakPoint(FCurrentContext^.def.Eip - 1);
+  if not FAtHardCodeBreakpoint then
     dec(FCurrentContext^.def.Eip);
   {$else}
   if (TDbgWinProcess(Process).FBitness = b32) then begin
-    if not CheckForHardcodeBreakPoint(FCurrentContext^.WOW.Eip - 1) then
+    FAtHardCodeBreakpoint := CheckForHardcodeBreakPoint(FCurrentContext^.WOW.Eip - 1);
+    if not FAtHardCodeBreakpoint then
       dec(FCurrentContext^.WOW.Eip);
   end
   else begin
-    if not CheckForHardcodeBreakPoint(FCurrentContext^.def.Rip - 1) then
+    FAtHardCodeBreakpoint := CheckForHardcodeBreakPoint(FCurrentContext^.def.Rip - 1);
+    if not FAtHardCodeBreakpoint then
       dec(FCurrentContext^.def.Rip);
   end;
   {$endif}
@@ -2425,6 +2431,13 @@ begin
   FThreadContextChanged := True;
   FHasResetInstructionPointerAfterBreakpoint := True;
   Result := True;
+end;
+
+function TDbgWinThread.GetAdjustedInstructionPointerRegisterValue: TDbgPtr;
+begin
+  Result := inherited GetAdjustedInstructionPointerRegisterValue;
+  if (Result <> 0) and FAtHardCodeBreakpoint then
+    dec(Result);
 end;
 
 function TDbgWinThread.ReadThreadState: boolean;
@@ -2447,6 +2460,7 @@ begin
   FThreadContextChangeFlags := [];
   FRegisterValueListValid:=False;
   FHasResetInstructionPointerAfterBreakpoint := False;
+  FAtHardCodeBreakpoint := False;
 end;
 
 procedure TDbgWinThread.ClearExceptionSignal;

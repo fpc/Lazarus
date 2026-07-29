@@ -322,6 +322,7 @@ type
     procedure SetRegisterValue(AName: string; AValue: QWord); virtual; abstract;
 
     function GetInstructionPointerRegisterValue: TDbgPtr; virtual; abstract;
+    function GetAdjustedInstructionPointerRegisterValue: TDbgPtr; virtual; // maybe replaces GetInstructionPointerForHasBreakpointInfoForAddress
     function GetStackBasePointerRegisterValue: TDbgPtr; virtual; abstract;
     function GetStackPointerRegisterValue: TDbgPtr; virtual; abstract;
     procedure SetStackPointerRegisterValue(AValue: TDbgPtr); virtual; abstract;
@@ -4122,6 +4123,11 @@ end;
 function TDbgThread.DetectHardwareWatchpoint: TFpInternalWatchpoint;
 begin
   result := nil;
+end;
+
+function TDbgThread.GetAdjustedInstructionPointerRegisterValue: TDbgPtr;
+begin
+  Result := GetInstructionPointerRegisterValue;
 end;
 
 function TDbgThread.GetCurrentStackFrameInfo: TDbgStackFrameInfo;

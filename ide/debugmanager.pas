@@ -40,7 +40,7 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils,
+  Classes, SysUtils, Math,
   // LCL
   LCLType, LCLIntf, Forms, Controls, Dialogs, ExtCtrls,
   // LazUtils
@@ -1671,7 +1671,7 @@ end;
 
 procedure TDebugManager.DebuggerCurrentLine(Sender: TObject; const ALocation: TDBGLocationRec);
 var
-  SrcLine, TId: Integer;
+  SrcLine, TId, StackIdx: Integer;
 begin
   FCallStackNotification.OnChange := nil;
   if (Sender<>FDebugger) or (Sender=nil) then exit;
@@ -1686,7 +1686,9 @@ begin
   and not FAsmStepping
   then begin
     TId := Threads.CurrentThreads.CurrentThreadId;
-    if CallStack.CurrentCallStackList.EntriesForThreads[TId].HasAtLeastCount(30) = nbUnknown then begin
+    StackIdx := 30;
+    if SrcLine = -3 then StackIdx := FCurrentLocation.StackIndex + 1;
+    if CallStack.CurrentCallStackList.EntriesForThreads[TId].HasAtLeastCount(StackIdx) = nbUnknown then begin
       FCallStackNotification.OnChange := @DoDebuggerCurrentLine;
 
       if FDialogs[ddtAssembler] <> nil
@@ -1715,7 +1717,7 @@ var
   NewSource: TCodeBuffer;
   Editor: TSourceEditor;
   SrcLine: Integer;
-  c, i, TId: Integer;
+  c, i, TId, StackIdx: Integer;
   StackEntry: TIdeCallStackEntry;
   Flags: TJumpToCodePosFlags;
   CurrentSourceUnitInfo: TDebuggerUnitInfo;
@@ -1734,14 +1736,20 @@ begin
   then begin
     // jump to the deepest stack frame with debugging info
     // TODO: Only below the frame supplied by debugger
-    i:=0;
+    StackIdx := 30;
+    if SrcLine = -3 then StackIdx := FCurrentLocation.StackIndex + 1;
     TId := Threads.CurrentThreads.CurrentThreadId;
-    if CallStack.CurrentCallStackList.EntriesForThreads[TId].HasAtLeastCount(30) = nbUnknown then begin
+    if CallStack.CurrentCallStackList.EntriesForThreads[TId].HasAtLeastCount(StackIdx) = nbUnknown then begin
       FCallStackNotification.OnChange := @DoDebuggerCurrentLine;
       exit;
     end;
 
-    c := CallStack.CurrentCallStackList.EntriesForThreads[TId].CountLimited(30);
+    c := CallStack.CurrentCallStackList.EntriesForThreads[TId].CountLimited(StackIdx);
+    i:=0;
+    if SrcLine = -3 then begin
+      i := FCurrentLocation.StackIndex;
+      c := Min(c, i+1);
+    end;
     while (i < c) do
     begin
       StackEntry := CallStack.CurrentCallStackList.EntriesForThreads[TId].Entries[i];

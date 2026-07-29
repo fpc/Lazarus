@@ -1658,7 +1658,7 @@ begin
 
   if FDefaultContext = nil then begin
     FDefaultContext := TFpDbgSimpleLocationContext.Create(MemManager,
-      FCurrentThread.GetInstructionPointerRegisterValue,
+      FCurrentThread.GetAdjustedInstructionPointerRegisterValue,
       DBGPTRSIZE[CurrentProcess.Mode],
       CurrentThread.ID,
       0

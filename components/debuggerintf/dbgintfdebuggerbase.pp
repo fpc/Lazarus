@@ -108,6 +108,7 @@ type
     SrcFile: String;
     SrcFullName: String;
     SrcLine: Integer;
+    StackIndex: integer; // only if SrcLine = -3
   end;
 
   TDBGExceptionType = (
