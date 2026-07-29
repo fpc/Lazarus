@@ -321,6 +321,7 @@ type
     csAutoSize0x0,           // If the preferred size is 0x0 then control is shrinked to 0x0. Default is minimum 1x1.
     csAutoSizeKeepChildLeft, // When AutoSize=True, do not move children horizontally.
     csAutoSizeKeepChildTop,  // When AutoSize=True, do not move children vertically.
+    csAutoSizeIgnoreByParent,// if parent is autosized, don't include this child in the calculation
     csRequiresKeyboardInput  // If the device has no physical keyboard then show the virtual keyboard when this control gets focus (therefore available only to TWinControl descendents).
     );
   TControlStyle = set of TControlStyleType;

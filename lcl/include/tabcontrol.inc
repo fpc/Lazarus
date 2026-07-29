@@ -233,6 +233,12 @@ begin
   //RegisterWSComponent(TNoteBookStringsTabControl, TWSPageControl);
 end;
 
+constructor TNoteBookStringsTabControl.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  ControlStyle := ControlStyle + [csAutoSizeIgnoreByParent];
+end;
+
 { TTabControlNoteBookStrings }
 
 procedure TTabControlNoteBookStrings.NBGetImageIndex(Sender: TObject;

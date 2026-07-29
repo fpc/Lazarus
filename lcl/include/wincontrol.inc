@@ -832,7 +832,7 @@ begin
     ChildCount:=WinControl.ControlCount;
   end else
     ChildCount:=0;
-  Visible:=Control.IsControlVisible;
+  Visible:=Control.IsControlVisible and not (csAutoSizeIgnoreByParent in Control.ControlStyle);
   Control.BorderSpacing.GetSpaceAround(CurBorders);
   Borders[akLeft]:=CurBorders.Left;
   Borders[akTop]:=CurBorders.Top;
