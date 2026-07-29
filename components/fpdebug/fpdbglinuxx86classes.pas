@@ -627,10 +627,16 @@ begin
 end;
 
 function TDbgX86LinuxThread.GetAdjustedInstructionPointerRegisterValue: TDbgPtr;
+var
+  i: integer;
 begin
   Result := inherited GetAdjustedInstructionPointerRegisterValue;
-  if PausedAtHardcodeBreakPoint and (Result <> 0) then
-    dec(Result)
+  if PausedAtHardcodeBreakPoint and (Result <> 0) then begin
+    i := 1;
+    if Process.BreakTargetHandler is TBreakPointx86Handler then
+      i := TBreakPointx86Handler(Process.BreakTargetHandler).LastHardcodedSize;
+    dec(Result, i);
+  end;
 end;
 
 function TDbgX86LinuxThread.GetStackBasePointerRegisterValue: TDbgPtr;

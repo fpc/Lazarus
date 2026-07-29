@@ -149,6 +149,7 @@ type
     FUnwinder: TDbgStackUnwinderX86MultiMethod;
     FFailed_CONTEXT_EXTENDED_REGISTERS: boolean;
     FAtHardCodeBreakpoint: boolean;
+    FLastHardcodedSize: integer;
   protected
     FThreadContextChanged: boolean;
     FThreadContextChangeFlags: TFpContextChangeFlags;
@@ -2430,14 +2431,18 @@ begin
 
   FThreadContextChanged := True;
   FHasResetInstructionPointerAfterBreakpoint := True;
+  FLastHardcodedSize := 1;
+  if Process.BreakTargetHandler is TBreakPointx86Handler then
+    FLastHardcodedSize := TBreakPointx86Handler(Process.BreakTargetHandler).LastHardcodedSize;
   Result := True;
 end;
 
 function TDbgWinThread.GetAdjustedInstructionPointerRegisterValue: TDbgPtr;
 begin
   Result := inherited GetAdjustedInstructionPointerRegisterValue;
-  if (Result <> 0) and FAtHardCodeBreakpoint then
-    dec(Result);
+  if (Result <> 0) and FAtHardCodeBreakpoint then begin
+    dec(Result, FLastHardcodedSize); // must be set, if FAtHardCodeBreakpoint
+  end;
 end;
 
 function TDbgWinThread.ReadThreadState: boolean;

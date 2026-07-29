@@ -1170,6 +1170,7 @@ type
     property CurrentWatchpoint: TFpInternalWatchpoint read FCurrentWatchpoint;
     property PauseRequested: boolean read GetPauseRequested write SetPauseRequested;
     function GetAndClearPauseRequested: Boolean;
+    property BreakTargetHandler: TFpBreakPointTargetHandler read FBreakTargetHandler;
 
     // Properties valid when last event was an deException
     property ExceptionMessage: string read FExceptionMessage write FExceptionMessage;

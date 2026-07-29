@@ -27,7 +27,15 @@ type
     _CODE: Byte = $CC;
   end;
 
-  TBreakPointx86Handler = specialize TGenericBreakPointTargetHandler<Byte, TBreakInfoX86>;
+  { TBreakPointx86Handler }
+
+  TBreakPointx86Handler = class(specialize TGenericBreakPointTargetHandler<Byte, TBreakInfoX86>)
+  private
+    FLastHardcodedSize: integer;
+  public
+    function IsHardcodeBreakPointInCode(const ALocation: TDBGPtr): Boolean; override;
+    property LastHardcodedSize: integer read FLastHardcodedSize;
+  end;
 
   { TDbgx86Process }
 
@@ -106,6 +114,24 @@ end;
 function TDbgx86Thread.GetCurrentStackFrameInfo: TDbgStackFrameInfo;
 begin
   Result := TDbgStackFrameSteppingInfoX86.Create(Self);
+end;
+
+{ TBreakPointx86Handler }
+
+function TBreakPointx86Handler.IsHardcodeBreakPointInCode(const ALocation: TDBGPtr): Boolean;
+var
+  OVal: Word;
+begin
+  FLastHardcodedSize := 1;
+  Result := inherited IsHardcodeBreakPointInCode(ALocation);
+  if Result or (ALocation = 0) then
+    exit;
+
+  // ALocation will be IP-1 (adjusted for 1 byte "int3"
+  if Process.ReadData(ALocation-1, 2, OVal) then begin
+    Result := OVal = $03CD;
+    FLastHardcodedSize := 2;
+  end;
 end;
 
 { TDbgx86Process }
