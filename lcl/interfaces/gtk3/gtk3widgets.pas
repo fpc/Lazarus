@@ -4533,8 +4533,7 @@ begin
     AGtkFont^.set_family(PgChar(Family));
   end;
 
-  if Stretch <> PANGO_STRETCH_NORMAL then
-    AGtkFont^.set_stretch(Stretch);
+  AGtkFont^.set_stretch(Stretch);
 
   if AFont.Size <> 0 then
     AGtkFont^.set_size(Abs(AFont.Size) * PANGO_SCALE);
@@ -4542,7 +4541,7 @@ begin
   if (fsBold in AFont.Style) and (Weight < PANGO_WEIGHT_SEMIBOLD) then
     // bold is specified by the fsBold flag only
     AGtkFont^.set_weight(PANGO_WEIGHT_BOLD)
-  else if (Weight <> PANGO_WEIGHT_NORMAL) then
+  else
     AGtkFont^.set_weight(Weight);
 
   if fsItalic in AFont.Style then
