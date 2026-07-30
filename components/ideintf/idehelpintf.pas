@@ -445,8 +445,9 @@ function THintWindowManager.ShowHint(ScreenPos: TPoint; TheHint: string; MouseOf
   procedure AdjustHintRect(AHintWindow: THintWindow; AScrollBarHeight: integer = 0; AScrollBarWidth: integer = 0);
   var
     OrigRect, ExclusionRect, BestRect, CurRect, MonitorBounds: TRect;
-    dy, x, y, CurLoss: Integer;
+    dy, x, y, CurLoss, OW, OH: Integer;
     HintMonitor: TMonitor;
+    OA: Int64;
 
     procedure RectToMonitor(var TmpRect: TRect; KeepWidth, KeepHeight: Boolean);
     begin
@@ -513,6 +514,8 @@ function THintWindowManager.ShowHint(ScreenPos: TPoint; TheHint: string; MouseOf
     end;
 
     function UpdateBestFound(TmpRect: TRect): boolean;
+    const
+      BASE = int64($4000);
     var
       Loss, L1, L2, L3: Integer;
       TmpClientRect: TRect;
@@ -520,11 +523,12 @@ function THintWindowManager.ShowHint(ScreenPos: TPoint; TheHint: string; MouseOf
       TmpClientRect := TmpRect;
       if TmpClientRect.Width  < OrigRect.Width  then TmpClientRect.Bottom := Max(0, TmpClientRect.Bottom - AScrollBarHeight);
       if TmpClientRect.Height < OrigRect.Height then TmpClientRect.Right  := Max(0, TmpClientRect.Right  - AScrollBarWidth);
-      // the amount of pixels lost in width/height, in percent (base $4000)
-      L1 := Max(0, OrigRect.Width  - TmpClientRect.Width)  * $4000 div OrigRect.Width;
-      L2 := Max(0, OrigRect.Height - TmpClientRect.Height) * $4000 div OrigRect.Height;
+      // the amount of pixels lost in width/height
+
+      L1 := Int64(Max(0, OW - TmpClientRect.Width))  * BASE div OW;
+      L2 := Int64(Max(0, OH - TmpClientRect.Height)) * BASE div OH;
       // The surface loss
-      L3 := Max(0, OrigRect.Height*OrigRect.Width - TmpClientRect.Height*TmpClientRect.Height) * $4000 div (OrigRect.Height*OrigRect.Width);
+      L3 := Int64(Max(0, OA - TmpClientRect.Height*TmpClientRect.Width)) * BASE div OA;
       // If either has full size, then make the loss count less.
       if L1 <= 2 then begin L2 := L2 div 2; L3 := L3 div 2; end;
       if L2 <= 2 then begin L1 := L1 div 2; L3 := L3 div 2; end;
@@ -543,6 +547,10 @@ function THintWindowManager.ShowHint(ScreenPos: TPoint; TheHint: string; MouseOf
       MonitorBounds := HintMonitor.WorkareaRect;
 
     OrigRect := AHintWindow.HintRect;
+    OW := Min(100000, OrigRect.Width); // limit for comparison
+    OH := Min(100000, OrigRect.Width);
+    OA := Int64(OH)*Int64(OW);
+
     if AnExclusionRect <> nil then begin
       ExclusionRect := AnExclusionRect^;
       MouseOffset := False; // don't allow to slide over exclusion rect // don't use "dy"
