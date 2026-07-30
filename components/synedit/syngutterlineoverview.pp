@@ -1280,6 +1280,7 @@ end;
 constructor TSynChildWinControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ControlStyle := ControlStyle + [csAutoSizeIgnoreByParent];
   BorderStyle := bsNone;
 end;
 
