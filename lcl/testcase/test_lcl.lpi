@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="12"/>
+    <Version Value="13"/>
     <PathDelim Value="\"/>
     <General>
       <Flags>
@@ -126,6 +126,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestNotebook"/>
       </Unit>
+      <Unit>
+        <Filename Value="test_parentsizing.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Test_ParentSizing"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -166,13 +171,7 @@
   <Debugging>
     <Exceptions>
       <Item>
-        <Name Value="EAbort"/>
-      </Item>
-      <Item>
-        <Name Value="ECodetoolError"/>
-      </Item>
-      <Item>
-        <Name Value="EFOpenError"/>
+        <Name Value="EListError"/>
       </Item>
     </Exceptions>
   </Debugging>

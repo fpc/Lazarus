@@ -11,7 +11,7 @@ uses
   // (test suites - common)
   Test_ChildSizing, Test_DpiScaling,
   // (test suites - components)
-  TestNotebook;
+  TestNotebook, test_parentsizing;
 
 type
 
