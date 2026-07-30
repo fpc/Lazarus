@@ -2407,15 +2407,23 @@ var
   Cur: TPoint;
   OkX, OkY: Boolean;
   hw: THintWindow;
+  r: TRect;
 begin
   if HintIsVisible and not FAutoShown then Exit;
   FAutoHideHintTimer.Enabled := False;
   if HintIsVisible then begin
     Cur := Mouse.CursorPos; // Desktop coordinates
+    if PtInRect(CurHintWindow.BoundsRect, Cur) then // above the hint itself
+      Exit;
+
     if (not IsRectEmpty(FScreenRect)) then
     begin
       // Do not close, if mouse still over the same word, that triggered the hint
-      if PtInRect(FScreenRect, Cur) then
+      r := FScreenRect;
+      // extend for any gap
+      r.Top    := min(r.Top, CurHintWindow.Top + CurHintWindow.Height)-1;
+      r.Bottom := max(r.Bottom, CurHintWindow.Top)+1;
+      if PtInRect(r, Cur) then
         Exit;
     end else
     begin
