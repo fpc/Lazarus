@@ -128,8 +128,6 @@ begin
   FXMLCfg.SetValue(Path + 'FontSize', FontSize);
   FXMLCfg.SetValue(Path + 'ActivePage', ord(ActivePage));
   FXMLCfg.SetValue(Path + 'SortedUnicodeRangeList', AlphaSort);
-
-  EnvironmentOptions.DropDownCount := DropDownCount;
 end;
 
 
