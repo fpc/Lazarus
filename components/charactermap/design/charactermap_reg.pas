@@ -6,8 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LCLIntf, LCLType, Forms, SynEdit, Laz2_XMLCfg,
-  MenuIntf, IDECommands, SrcEditorIntf, EnvironmentOpts,
-  CharacterMapFrm;
+  MenuIntf, IDECommands, SrcEditorIntf, LazIDEIntf, CharacterMapFrm;
 
 type
 
@@ -19,6 +18,7 @@ type
     procedure InsertCharacter(const C: TUTF8Char);
     procedure CloseQueryHandler(Sender: TObject; var CanClose: Boolean);
     procedure LoadConfig;
+    function ReadDropDownCount: Integer;
     procedure SaveConfig;
   public
     constructor Create(AOwner: TComponent); override;
@@ -47,11 +47,14 @@ const
   Path = 'CharacterMap/';
 
 constructor TCharacterMapDialog.Create(AOwner: TComponent);
+var
+  dir: String;
 begin
   inherited;
   OnInsertCharacter := @InsertCharacter;
   OnCloseQuery := @CloseQueryHandler;
-  FXMLCfg := TXMLConfig.Create(ExtractFilePath(EnvironmentOptions.FileName) + 'charactermap.xml');
+  dir := IncludeTrailingPathDelimiter(LazarusIDE.GetPrimaryConfigPath);
+  FXMLCfg := TXMLConfig.Create(dir + 'charactermap.xml');
 end;
 
 destructor TCharacterMapDialog.Destroy;
@@ -102,7 +105,25 @@ begin
   ActivePage := TCharMapPage(FXMLCfg.GetValue(Path + 'ActivePage', Integer(ActivePage)));
   AlphaSort := FXMLCfg.GetValue(Path + 'SortedUnicodeRangeList', AlphaSort);
 
-  DropDownCount := EnvironmentOptions.DropDownCount;
+  DropDownCount := ReadDropDownCount;
+end;
+
+// Note: Restart of the IDE required to update to a changed value of the DropDownCount.
+function TCharacterMapDialog.ReadDropDownCount: Integer;
+const
+  DefaultDropDownCount = 8;
+var
+  envCfg: TXMLConfig;
+  dir: String;
+begin
+  Result := DefaultDropDownCount;
+  dir := IncludeTrailingPathDelimiter(LazarusIDE.GetPrimaryConfigPath);
+  envCfg := TXMLConfig.Create(dir + 'environmentoptions.xml');
+  try
+    Result := envCfg.GetValue('EnvironmentOptions/ComboBoxes/DropDownCount', DefaultDropDownCount);
+  finally
+    envCfg.Free;
+  end;
 end;
 
 procedure TCharacterMapDialog.SaveConfig;

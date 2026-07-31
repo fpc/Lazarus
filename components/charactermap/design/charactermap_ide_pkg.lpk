@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="5">
+  <Package Version="6">
     <PathDelim Value="\"/>
     <Name Value="charactermap_ide_pkg"/>
     <Type Value="DesignTime"/>
@@ -26,9 +26,6 @@
     <RequiredPkgs>
       <Item>
         <PackageName Value="SynEdit"/>
-      </Item>
-      <Item>
-        <PackageName Value="IdeConfig"/>
       </Item>
       <Item>
         <PackageName Value="charactermappkg"/>
