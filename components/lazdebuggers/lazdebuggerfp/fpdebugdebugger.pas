@@ -39,7 +39,7 @@ uses
   FpDebugDebuggerUtils, FpDebugDebuggerWorkThreads, FpDebugDebuggerBase,
   LazDebuggerIntf, LazDebuggerIntfExcludedRoutines, LazDebuggerIntfExceptions,
   // FpDebug
-  {$if (defined(windows) and (defined(CPUx86_64) or defined(CPUi386)))}   FpDbgWinClasses,  {$endif}
+  {$if (defined(windows) and (defined(CPUx86_64) or defined(CPUi386)))}   FpDbgWinClasses,  FpDbgCpuX86, {$endif}
   {$IFDEF FPDEBUG_THREAD_CHECK} FpDbgCommon, {$ENDIF}
   FpDbgClasses, FpDbgInfo, FpErrorMessages, FpPascalBuilder, FpdMemoryTools,
   FpPascalParser, FPDbgController, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal,
@@ -458,6 +458,7 @@ type
     destructor Destroy; override;
     procedure LockCommandProcessing; override;
     procedure UnLockCommandProcessing; override;
+    function IsKernelDebugBreak(ALocation: TDBGLocationRec): Boolean;
     function GetLocationRec(AnAddress: TDBGPtr=0; AnAddrOffset: Integer = 0): TDBGLocationRec;
     function GetLocation: TDBGLocationRec; override;
 
@@ -4238,9 +4239,11 @@ var
   Context: TFpDbgSymbolScope;
   PasExpr: TFpPascalExpression;
   Opts: TFpInt3DebugBreakOptions;
-  NeedInternalPause: Boolean;
+  NeedInternalPause, IsDBrk: Boolean;
+  b: Integer;
 begin
     // If a user single steps to an excepiton handler, do not open the dialog (there is no continue possible)
+  ALocationAddr.Address := 0;
   try
     (* FExceptionStepper.BreakpointHit may call EnterPause, and with that set a location.
        In that case the EnterPause in the finally block will detect the state, and do nothing.
@@ -4275,9 +4278,33 @@ begin
     else
     if (AnEventType = deHardCodedBreakpoint) and (FDbgController.CurrentThread <> nil) then begin
       &continue:=true;
-      Opts := TFpDebugDebuggerProperties(GetProperties).HandleDebugBreakInstruction;
-      if (not (dboIgnoreAll in Opts)) and (not BreakPoints.IgnoreAll) then
-        &continue:=False;
+      if  (not BreakPoints.IgnoreAll) then begin
+        Opts := TFpDebugDebuggerProperties(GetProperties).HandleDebugBreakInstruction;
+        IsDBrk := False;
+        if (not (dboIgnoreAll in Opts)) and
+           (Opts * [dboIgnoreNtdllDebugBreak, dboIgnoreInt3, dboIgnoreInt_3] <> [])
+        then begin
+          ALocationAddr := GetLocation;
+          IsDBrk := IsKernelDebugBreak(ALocationAddr);
+        end;
+        b := 1;
+        {$if (defined(windows) and (defined(CPUx86_64) or defined(CPUi386)))}
+        if (Opts * [dboIgnoreInt3, dboIgnoreInt_3] <> []) then
+        if (DbgController.CurrentProcess <> nil) and
+           (DbgController.CurrentProcess.BreakTargetHandler is TBreakPointx86Handler)
+        then
+          b := TBreakPointx86Handler(DbgController.CurrentProcess.BreakTargetHandler).LastHardcodedSize;
+        {$endif}
+
+        &continue :=
+          ( dboIgnoreAll in Opts ) or
+          ( (dboIgnoreNtdllDebugBreak in Opts) and IsDBrk ) or
+          ( (not IsDBrk) and (
+            ( (dboIgnoreInt3 in Opts)  and (b = 1) ) or
+            ( (dboIgnoreInt_3 in Opts) and (b = 2) )
+          ) );
+      end;
+
       if  continue then
         exit;
     end
@@ -4298,7 +4325,8 @@ begin
       if FPauseForEvent then
         &continue := False; // Only continue, if ALL events did say to continue
 
-      ALocationAddr := GetLocation;
+      if ALocationAddr.Address = 0 then
+        ALocationAddr := GetLocation;
       if ALocationAddr.SrcLine = 0 then
         ALocationAddr.SrcLine := -2; // Prevent stack search for caller with source. Breakpoint hit should be at frame 0
 
@@ -5118,15 +5146,13 @@ function TFpDebugDebugger.GetLocationRec(AnAddress: TDBGPtr;
   AnAddrOffset: Integer): TDBGLocationRec;
 var
   sym, symproc: TFpSymbol;
-  s: String;
 begin
   result.FuncName:='';
   result.SrcFile:='';
   result.SrcFullName:='';
   result.SrcLine:=0;
 
-  if Assigned(FDbgController.CurrentProcess) then
-    begin
+  if Assigned(FDbgController.CurrentProcess) then begin
     if AnAddress=0 then
       result.Address := FDbgController.DefaultContext.Address // DefaultContext has the InstrPtr cached
       //result.Address := FDbgController.CurrentThread.GetInstructionPointerRegisterValue
@@ -5150,25 +5176,12 @@ begin
     if assigned(symproc) then
       result.FuncName:=symproc.Name;
     sym.ReleaseReference;
-    end;
 
-    {$IFDEF windows}
-    if (Result.SrcLine = 0) and
-       ( (DbgController.Event = deHardCodedBreakpoint) or
-         ( (DbgController.CurrentThread <> nil) and (DbgController.CurrentThread.PausedAtHardcodeBreakPoint) )
-       )
-    then begin
-      s := LowerCase(Result.FuncName);
-         // ":" from TFpSymbolInfo.FindProcSymbol NamePreFix
-      if ( (s = 'kernelbase:debugbreak') or
-           (s = 'ntdll:debugbreak') )
-      then begin
-        Result.SrcLine    := -3;
-        Result.StackIndex := 1;
-      end;
+    if IsKernelDebugBreak(Result) then begin
+      Result.SrcLine    := -3;
+      Result.StackIndex := 1;
     end;
-    {$ENDIF}
-
+  end;
 end;
 
 function TFpDebugDebugger.GetLocation: TDBGLocationRec;
@@ -5315,6 +5328,27 @@ procedure TFpDebugDebugger.UnLockCommandProcessing;
 begin
   //inherited UnLockCommandProcessing;
 //  FWorkQueue.Unlock;
+end;
+
+function TFpDebugDebugger.IsKernelDebugBreak(ALocation: TDBGLocationRec): Boolean;
+var
+  s: String;
+begin
+  Result := False;
+  {$IFDEF windows}
+  if (ALocation.SrcLine <= 0) and
+     ( (DbgController.Event = deHardCodedBreakpoint) or
+       ( (DbgController.CurrentThread <> nil) and (DbgController.CurrentThread.PausedAtHardcodeBreakPoint) )
+     )
+  then begin
+    s := LowerCase(ALocation.FuncName);
+       // ":" from TFpSymbolInfo.FindProcSymbol NamePreFix
+    Result :=
+         (s = 'kernelbase:debugbreak') or
+         (s = 'ntdll:debugbreak')
+         ;
+  end;
+  {$ENDIF}
 end;
 
 class function TFpDebugDebugger.GetSupportedCommands: TDBGCommands;
