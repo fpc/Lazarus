@@ -41,6 +41,7 @@ procedure TTestNotebook.TearDown;
 begin
   FreeAndNil(FNotebook);
   inherited TearDown;
+  Application.ProcessMessages; // when running real WS
 end;
 
 procedure TTestNotebook.TryMove;

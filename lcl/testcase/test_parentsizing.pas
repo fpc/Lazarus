@@ -87,6 +87,7 @@ procedure TTestParentSizing.TearDown;
 begin
   inherited TearDown;
   FTestForm.Free;
+  Application.ProcessMessages; // when running real WS
 end;
 
 procedure TTestParentSizing.AssertNoScroll(AName: String; AScrollBar: TControlScrollBar);
