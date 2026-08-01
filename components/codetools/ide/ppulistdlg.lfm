@@ -53,10 +53,20 @@ object PPUListDialog: TPPUListDialog
       Caption = 'UnitsTabSheet'
       ClientHeight = 430
       ClientWidth = 732
+      object FilterEdit: TEdit
+        Left = 6
+        Height = 23
+        Top = 6
+        Width = 720
+        Align = alTop
+        BorderSpacing.Around = 6
+        TabOrder = 0
+        OnChange = FilterEditChange
+      end
       object UnitsStringGrid: TStringGrid
         Left = 6
-        Height = 222
-        Top = 6
+        Height = 187
+        Top = 41
         Width = 720
         Align = alClient
         AutoFillColumns = True
@@ -100,8 +110,8 @@ object PPUListDialog: TPPUListDialog
         ParentShowHint = False
         RowCount = 2
         ShowHint = True
-        TabOrder = 0
-        OnMouseDown = UnitsStringGridMouseDown
+        TabOrder = 1
+        OnHeaderClick = UnitsStringGridHeaderClick
         OnSelectCell = UnitsStringGridSelectCell
         ColWidths = (
           120
