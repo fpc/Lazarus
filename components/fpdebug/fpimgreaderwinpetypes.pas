@@ -257,6 +257,7 @@ const
   IMAGE_FILE_MACHINE_AMD64            = $8664;  // AMD64 (K8)
   IMAGE_FILE_MACHINE_M32R             = $9041;  // M32R little-endian
   IMAGE_FILE_MACHINE_CEE              = $C0EE;
+  IMAGE_FILE_MACHINE_ARM64            = $AA64;
 
 //
 // Directory format.

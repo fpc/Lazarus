@@ -13,7 +13,8 @@ uses
   DbgIntfBaseTypes, DbgIntfDebuggerBase,
   FpDbgDisasX86,
   FpDbgClasses, FpDbgCallContextInfo, FpDbgUtil,
-  {$if (defined(windows) and (defined(CPUx86_64) or defined(CPUi386)))}   FpDbgWinClasses,  {$endif}
+  {$if (defined(windows) and (defined(CPUx86_64) or defined(CPUi386)))}   FpDbgWinX86Classes,  {$endif}
+  {$if (defined(windows) and defined(CPUAARCH64))}   FpDbgWinAarch64Classes,  {$endif}
   {$ifdef darwin}  FpDbgDarwinClasses,  {$endif}
   {$ifdef linux}  FpDbgLinuxClasses, FpDbgLinuxX86Classes, FpDbgLinuxAarch64Classes,  {$endif}
   FpDbgInfo, FpDbgDwarf, FpdMemoryTools, FpErrorMessages,

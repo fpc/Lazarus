@@ -440,6 +440,11 @@ begin
       FTargetInfo.machineType := mtX86_64;
       FTargetInfo.byteOrder := boLSB;
     end;
+    IMAGE_FILE_MACHINE_ARM64:
+    begin
+      FTargetInfo.machineType := mtARM64;
+      FTargetInfo.byteOrder := boLSB;
+    end;
   else
     FTargetInfo.OS := osNone;
   end;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="5">
+  <Package Version="6">
     <PathDelim Value="\"/>
     <Name Value="fpdebug"/>
     <Author Value="Lazarus Team"/>
@@ -263,6 +263,20 @@ File(s) with other licenses (see also header in file(s):
       <Item>
         <Filename Value="fpdbgwinseh64.pas"/>
         <UnitName Value="FpDbgWinSeh64"/>
+      </Item>
+      <Item>
+        <Filename Value="fpdbgwinaarch64classes.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpdbgwinaarch64classes"/>
+      </Item>
+      <Item>
+        <Filename Value="fpdbgcpuaarch64.pas"/>
+        <UnitName Value="FpDbgCpuAarch64"/>
+      </Item>
+      <Item>
+        <Filename Value="fpdbgwinx86classes.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="FpDbgWinX86Classes"/>
       </Item>
     </Files>
     <i18n>

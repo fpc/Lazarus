@@ -5412,23 +5412,24 @@ end;
 
 class function TFpDebugDebugger.SupportedFeatures: TDBGFeatures;
 begin
-  {$IF (defined(windows) or defined(linux)) and
-       (defined(CPU386) or defined(CPUI386) or defined(CPUX86_64) or defined(CPUX64))
-  }
-  Result := [dfEvalFunctionCalls, dfThreadSuspension];
-    {$IFDEF windows}
-    Result := Result + [dfConsoleWinPos];
-    {$ENDIF}
-    if DBG_PROCESS_HAS_REDIRECT then
-      Result := Result + [dfStdInOutRedirect];
-  {$ELSE}
-    {$IF (defined(linux)) and
-         (defined(CPUAARCH64))
-    }
-    result := [];
+  Result := [];
+  {$IF ( (defined(windows) or defined(linux)) ) }
+    {$IF ( (defined(CPU386) or defined(CPUI386) or defined(CPUX86_64) or defined(CPUX64)) ) }
+    Result := [dfEvalFunctionCalls, dfThreadSuspension];
+      {$IFDEF windows}
+      Result := Result + [dfConsoleWinPos];
+      {$ENDIF}
+      if DBG_PROCESS_HAS_REDIRECT then
+        Result := Result + [dfStdInOutRedirect];
     {$ELSE}
-    Result := [dfNotSuitableForOsArch];
+      {$IF (defined(CPUAARCH64)) }
+        Result := [];
+      {$ELSE}
+        Result := [dfNotSuitableForOsArch];
+      {$ENDIF}
     {$ENDIF}
+  {$ELSE}
+    Result := [dfNotSuitableForOsArch];
   {$ENDIF}
 end;
 
