@@ -129,8 +129,22 @@ begin
 end;
 
 function TProcessDebugger.ProcessRun: Boolean;
+var
+  (* A plain process run has nowhere to capture to, so only the two file modes
+     produce a redirection here; anything else leaves the stream alone. *)
+  RedirIn, RedirOut, RedirErr: String;
 begin
   DebugLn('PR: %s %s', [FileName, Arguments]);
+
+  if TargetIoStdInMode in [diomRedirectFileOverwrite, diomRedirectFileAppend]
+  then RedirIn := TargetIoStdInFileName
+  else RedirIn := '';
+  if TargetIoStdOutMode in [diomRedirectFileOverwrite, diomRedirectFileAppend]
+  then RedirOut := TargetIoStdOutFileName
+  else RedirOut := '';
+  if TargetIoStdErrMode in [diomRedirectFileOverwrite, diomRedirectFileAppend]
+  then RedirErr := TargetIoStdErrFileName
+  else RedirErr := '';
 
   if FProcess <> nil
   then begin
@@ -171,16 +185,17 @@ begin
     end;
     {$ENDIF}
     if DBG_PROCESS_HAS_REDIRECT then begin
-      FProcess.SetRedirection(dtStdIn,  FileNameStdIn,  FileOverwriteStdIn);
-      if (FileNameStdOut = FileNameStdErr) then begin
-        if FileNameStdOut <> '' then begin
-          FProcess.SetRedirection(dtStdOut, FileNameStdOut, FileOverwriteStdOut or FileOverwriteStdErr);
+      FProcess.SetRedirection(dtStdIn,  RedirIn,  TargetIoStdInMode = diomRedirectFileOverwrite);
+      if (RedirOut = RedirErr) then begin
+        if RedirOut <> '' then begin
+          FProcess.SetRedirection(dtStdOut, RedirOut,
+            (TargetIoStdOutMode = diomRedirectFileOverwrite) or (TargetIoStdErrMode = diomRedirectFileOverwrite));
           FProcess.Options := FProcess.Options + [poStdErrToOutPut];
         end;
       end
       else begin
-        FProcess.SetRedirection(dtStdOut, FileNameStdOut, FileOverwriteStdOut);
-        FProcess.SetRedirection(dtStdErr, FileNameStdErr, FileOverwriteStdErr);
+        FProcess.SetRedirection(dtStdOut, RedirOut, TargetIoStdOutMode = diomRedirectFileOverwrite);
+        FProcess.SetRedirection(dtStdErr, RedirErr, TargetIoStdErrMode = diomRedirectFileOverwrite);
       end;
 
       {$IFDEF LCLWin}

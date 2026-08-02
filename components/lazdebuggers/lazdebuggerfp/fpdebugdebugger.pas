@@ -4453,7 +4453,20 @@ begin
     FDbgController.ExecutableFilename:=FileName;
     AConsoleTty:=TFpDebugDebuggerProperties(GetProperties).ConsoleTty;
     FDbgController.ConsoleTty:=AConsoleTty;
+    {$ifdef windows}
+    (* Windows has three outcomes, not two: inherit the parent process's console
+       (diomDefault), get a console of its own (ForceNewConsoleWin), or be
+       captured. Capture must therefore be requested explicitly -- keying it on
+       "ConsoleTty is empty", which is always true here, captured every launch
+       and destroyed the inherit case. Until a stream is set to
+       diomCaptureInternal this stays False and the backend behaves as before. *)
+    FDbgController.RedirectConsoleOutput :=
+      (TargetIoStdInMode  = diomCaptureInternal) or
+      (TargetIoStdOutMode = diomCaptureInternal) or
+      (TargetIoStdErrMode = diomCaptureInternal);
+    {$else}
     FDbgController.RedirectConsoleOutput:=AConsoleTty='';
+    {$endif windows}
     FDbgController.Params.Clear;
     if Arguments<>'' then
       CommandToList(Arguments, FDbgController.Params);
@@ -4484,12 +4497,25 @@ begin
       FDbgController.CurrentProcess.Config.ConsoleWinSize   := FConsoleWinSize;
       FDbgController.CurrentProcess.Config.ConsoleWinBuffer := FConsoleWinBuffer;
 
-      FDbgController.CurrentProcess.Config.StdInRedirFile      := FileNameStdIn;
-      FDbgController.CurrentProcess.Config.FileOverwriteStdIn  := FileOverwriteStdIn;
-      FDbgController.CurrentProcess.Config.StdOutRedirFile     := FileNameStdOut;
-      FDbgController.CurrentProcess.Config.FileOverwriteStdOut := FileOverwriteStdOut;
-      FDbgController.CurrentProcess.Config.StdErrRedirFile     := FileNameStdErr;
-      FDbgController.CurrentProcess.Config.FileOverwriteStdErr := FileOverwriteStdErr;
+      (* A file name only reaches the backend for the two file modes. The
+         capture branch in the backend is skipped whenever a redirection file is
+         set, so a stale name left over from an earlier run must not be passed
+         on when the stream is no longer going to a file. *)
+      if TargetIoStdInMode in [diomRedirectFileOverwrite, diomRedirectFileAppend] then
+        FDbgController.CurrentProcess.Config.StdInRedirFile  := TargetIoStdInFileName
+      else
+        FDbgController.CurrentProcess.Config.StdInRedirFile  := '';
+      if TargetIoStdOutMode in [diomRedirectFileOverwrite, diomRedirectFileAppend] then
+        FDbgController.CurrentProcess.Config.StdOutRedirFile := TargetIoStdOutFileName
+      else
+        FDbgController.CurrentProcess.Config.StdOutRedirFile := '';
+      if TargetIoStdErrMode in [diomRedirectFileOverwrite, diomRedirectFileAppend] then
+        FDbgController.CurrentProcess.Config.StdErrRedirFile := TargetIoStdErrFileName
+      else
+        FDbgController.CurrentProcess.Config.StdErrRedirFile := '';
+      FDbgController.CurrentProcess.Config.FileOverwriteStdIn  := TargetIoStdInMode  = diomRedirectFileOverwrite;
+      FDbgController.CurrentProcess.Config.FileOverwriteStdOut := TargetIoStdOutMode = diomRedirectFileOverwrite;
+      FDbgController.CurrentProcess.Config.FileOverwriteStdErr := TargetIoStdErrMode = diomRedirectFileOverwrite;
 
       FDbgController.CurrentProcess.Config.BreakpointSearchMaxLines := TFpDebugDebuggerProperties(GetProperties).BreakpointSearchMaxLines;
       FDbgController.CurrentProcess.Config.IntrinsicPrefix := TFpDebugDebuggerProperties(GetProperties).IntrinsicPrefix;
