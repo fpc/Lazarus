@@ -2941,23 +2941,38 @@ begin
         AMode := Project1.RunParameterOptions.GetActiveMode;
         if (AMode <> nil) then begin
           if AMode.RedirectStdIn <> rprOff then begin
-            FDebugger.FileNameStdIn := CreateAbsolutePath(AMode.FileNameStdIn, NewWorkingDir);
-            FDebugger.FileOverwriteStdIn := AMode.RedirectStdIn = rprOverwrite;
+            FDebugger.TargetIoStdInFileName := CreateAbsolutePath(AMode.FileNameStdIn, NewWorkingDir);
+            if AMode.RedirectStdIn = rprOverwrite then
+              FDebugger.TargetIoStdInMode := diomRedirectFileOverwrite
+            else
+              FDebugger.TargetIoStdInMode := diomRedirectFileAppend;
           end
-          else
-            FDebugger.FileNameStdIn := '';
+          else begin
+            FDebugger.TargetIoStdInFileName := '';
+            FDebugger.TargetIoStdInMode := diomDefault;
+          end;
           if AMode.RedirectStdOut <> rprOff then begin
-            FDebugger.FileNameStdOut := CreateAbsolutePath(AMode.FileNameStdOut, NewWorkingDir);
-            FDebugger.FileOverwriteStdOut := AMode.RedirectStdOut = rprOverwrite;
+            FDebugger.TargetIoStdOutFileName := CreateAbsolutePath(AMode.FileNameStdOut, NewWorkingDir);
+            if AMode.RedirectStdOut = rprOverwrite then
+              FDebugger.TargetIoStdOutMode := diomRedirectFileOverwrite
+            else
+              FDebugger.TargetIoStdOutMode := diomRedirectFileAppend;
           end
-          else
-            FDebugger.FileNameStdOut := '';
+          else begin
+            FDebugger.TargetIoStdOutFileName := '';
+            FDebugger.TargetIoStdOutMode := diomDefault;
+          end;
           if AMode.RedirectStdErr <> rprOff then begin
-            FDebugger.FileNameStdErr := CreateAbsolutePath(AMode.FileNameStdErr, NewWorkingDir);
-            FDebugger.FileOverwriteStdErr := AMode.RedirectStdErr = rprOverwrite;
+            FDebugger.TargetIoStdErrFileName := CreateAbsolutePath(AMode.FileNameStdErr, NewWorkingDir);
+            if AMode.RedirectStdErr = rprOverwrite then
+              FDebugger.TargetIoStdErrMode := diomRedirectFileOverwrite
+            else
+              FDebugger.TargetIoStdErrMode := diomRedirectFileAppend;
           end
-          else
-            FDebugger.FileNameStdErr := '';
+          else begin
+            FDebugger.TargetIoStdErrFileName := '';
+            FDebugger.TargetIoStdErrMode := diomDefault;
+          end;
 
           if AMode.UseConsoleWinPos then
             FDebugger.SetConsoleWinPos(AMode.ConsoleWinPos.X, AMode.ConsoleWinPos.Y)

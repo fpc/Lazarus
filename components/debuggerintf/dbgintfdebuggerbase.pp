@@ -74,6 +74,22 @@ type
   );
   TDBGFeatures = set of TDBGFeature;
 
+  (* What is to become of one of the debuggee's standard streams.
+
+     diomDefault is NOT "no redirection". It is whatever this OS and this
+     backend already do when nothing is asked for -- on Windows that means the
+     debuggee inherits the parent process's console. Targets differ in what
+     their default is, which is why the value is not called "Off".
+
+     diomCaptureInternal means captured into the IDE process (the debug
+     terminal), as opposed to a destination outside it. *)
+  TLzDbgTargetIoMode = (
+    diomDefault,
+    diomRedirectFileOverwrite,
+    diomRedirectFileAppend,
+    diomCaptureInternal
+  );
+
   TDBGCommand = (
     dcRun,
     dcPause,
@@ -1578,12 +1594,12 @@ type
     FExitCode: Integer;
     FExternalDebugger: String;
     FFileName: String;
-    FFileNameStdErr: String;
-    FFileNameStdIn: String;
-    FFileNameStdOut: String;
-    FFileOverwriteStdErr: Boolean;
-    FFileOverwriteStdIn: Boolean;
-    FFileOverwriteStdOut: Boolean;
+    FTargetIoStdErrFileName: String;
+    FTargetIoStdInFileName: String;
+    FTargetIoStdOutFileName: String;
+    FTargetIoStdErrMode: TLzDbgTargetIoMode;
+    FTargetIoStdInMode: TLzDbgTargetIoMode;
+    FTargetIoStdOutMode: TLzDbgTargetIoMode;
     FIsInReset: Boolean;
     FLocals: TLocalsSupplier;
     FLineInfo: TDBGLineInfo;
@@ -1740,12 +1756,12 @@ type
     procedure SetConsoleWinBuffer(AColumns, ARows: Integer); virtual;
     procedure UnSetConsoleWinBuffer; virtual;
 
-    property FileNameStdIn:  String read FFileNameStdIn  write FFileNameStdIn;
-    property FileNameStdOut: String read FFileNameStdOut write FFileNameStdOut;
-    property FileNameStdErr: String read FFileNameStdErr write FFileNameStdErr;
-    property FileOverwriteStdIn:  Boolean read FFileOverwriteStdIn  write FFileOverwriteStdIn;
-    property FileOverwriteStdOut: Boolean read FFileOverwriteStdOut write FFileOverwriteStdOut;
-    property FileOverwriteStdErr: Boolean read FFileOverwriteStdErr write FFileOverwriteStdErr;
+    property TargetIoStdInMode:  TLzDbgTargetIoMode read FTargetIoStdInMode  write FTargetIoStdInMode;
+    property TargetIoStdOutMode: TLzDbgTargetIoMode read FTargetIoStdOutMode write FTargetIoStdOutMode;
+    property TargetIoStdErrMode: TLzDbgTargetIoMode read FTargetIoStdErrMode write FTargetIoStdErrMode;
+    property TargetIoStdInFileName:  String read FTargetIoStdInFileName  write FTargetIoStdInFileName;
+    property TargetIoStdOutFileName: String read FTargetIoStdOutFileName write FTargetIoStdOutFileName;
+    property TargetIoStdErrFileName: String read FTargetIoStdErrFileName write FTargetIoStdErrFileName;
 
     property Arguments: String read FArguments write FArguments;                 // Arguments feed to the program
     property BreakPoints: TDBGBreakPoints read FBreakPoints;                     // list of all breakpoints
