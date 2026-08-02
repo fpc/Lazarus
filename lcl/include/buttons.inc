@@ -300,8 +300,6 @@ end;
 procedure TCustomButton.TextChanged;
 begin
   InvalidatePreferredSize;
-  if Assigned(Parent) and Parent.AutoSize then
-    Parent.AdjustSize;
   AdjustSize;
   inherited TextChanged;
 end;

@@ -260,8 +260,6 @@ end;
 procedure TCustomCheckBox.TextChanged;
 begin
   InvalidatePreferredSize;
-  if (Parent<>nil) and Parent.AutoSize then
-    Parent.AdjustSize;
   AdjustSize;
   inherited TextChanged;
 end;
