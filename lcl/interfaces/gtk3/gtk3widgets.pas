@@ -1779,6 +1779,7 @@ var
   ShiftState: TShiftState;
   MappedXY: TPoint;
   MessE : TLMMouseEvent;
+  aDir: TGdkScrollDirection;
 begin
   Result := False;
   if AWidget=nil then ;
@@ -1798,13 +1799,14 @@ begin
   if AState and MK_ALT <> 0 then
     ShiftState := ShiftState + [ssAlt];
 
+  //writeln('TGtk3Widget.ScrollEvent ',AEvent^.scroll.direction,' ',MappedXY.X,' ',MappedXY.Y,' ',FloatToStr(AEvent^.scroll.delta_x),' ',FloatToStr(AEvent^.scroll.delta_y));
   TGtk3Widget(AData).OffsetMousePos(AEvent^.scroll.x_root, AEvent^.scroll.y_root, @MappedXY);
 
   FillChar(MessE{%H-},SizeOf(MessE),0);
   MessE.Msg := LM_MOUSEWHEEL;
   case AEvent^.scroll.direction of
-    GDK_SCROLL_UP, GDK_SCROLL_RIGHT {0}: MessE.WheelDelta := 120;
-    GDK_SCROLL_DOWN, GDK_SCROLL_LEFT {1}: MessE.WheelDelta := -120;
+    GDK_SCROLL_UP, GDK_SCROLL_RIGHT {0}: MessE.WheelDelta := -120;
+    GDK_SCROLL_DOWN, GDK_SCROLL_LEFT {1}: MessE.WheelDelta := 120;
     GDK_SCROLL_SMOOTH:
       begin
         if AEvent^.scroll.delta_y <> 0 then
@@ -1815,14 +1817,24 @@ begin
             MessE.WheelDelta := 120;
           //TODO: find in settings default wheel scroll distance
           //MessE.WheelDelta := -Round((120 * AEvent^.scroll.delta_y) / 10);
-        end else
+        end;
         if AEvent^.scroll.delta_x <> 0 then
         begin
           if AEvent^.scroll.delta_x > 0 then
             MessE.WheelDelta := -120
           else
             MessE.WheelDelta := 120;
-        end else
+        end;
+        if (AEvent^.scroll.delta_x=0) and (AEvent^.scroll.delta_y=0) then
+        begin
+          // the initial wheel smooth scroll has no delta -> get direction
+          gdk_event_get_scroll_direction(AEvent,@aDir);
+          case aDir of
+          GDK_SCROLL_UP, GDK_SCROLL_RIGHT {0}: MessE.WheelDelta := -120;
+          GDK_SCROLL_DOWN, GDK_SCROLL_LEFT {1}: MessE.WheelDelta := 120;
+          end;
+        end;
+        if MessE.WheelDelta=0 then
           exit;
       end;
   else
