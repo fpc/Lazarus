@@ -494,7 +494,8 @@ begin
   Allocation.Y := AParams.Y;
   Allocation.Width := AParams.Width;
   Allocation.Height := AParams.Height;
-  gtk_widget_size_allocate(P, @Allocation);
+  if AWinControl.Visible then
+    gtk_widget_size_allocate(P, @Allocation);
 
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(P, dbgsName(AWinControl));
