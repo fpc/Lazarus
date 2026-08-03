@@ -180,6 +180,7 @@ begin
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
   ButtonPanel.OKButton.ModalResult := mrNone;
   ButtonPanel.CancelButton.OnClick := @CancelButtonClick;
+  ButtonPanel.CancelButton.Cancel := false; // FormKeyDown with KeyPreview will handle this
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 
   // caption
@@ -371,6 +372,8 @@ begin
   // dialog
   else if (Key = VK_ESCAPE) and (Shift = []) then
   begin
+    if assigned(ActiveControl) and (ActiveControl is TCustomComboBox) and TCustomComboBox(ActiveControl).DroppedDown then
+      exit;
     CancelButtonClick(Sender);
     Key := 0;
   end
