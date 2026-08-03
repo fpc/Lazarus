@@ -1287,6 +1287,10 @@ msgstr "Görünürlük"
 msgid "Condition"
 msgstr "Şart"
 
+#: idedebuggerstringconstants.lisconsolelocalecho
+msgid "Echo typed input"
+msgstr ""
+
 #: idedebuggerstringconstants.liscopyall
 msgid "Copy All"
 msgstr "Tümünü Kopyala"

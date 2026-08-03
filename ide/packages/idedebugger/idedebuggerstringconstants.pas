@@ -191,6 +191,7 @@ resourcestring
   lisHexASCII = 'Hex + ASCII';
   lisLineLimit = 'Line limit';
   lisRawOutput = 'Raw Output';
+  lisConsoleLocalEcho = 'Echo typed input';
 
   // Call Stack Dialog
   lisCurrent = 'Select as context';

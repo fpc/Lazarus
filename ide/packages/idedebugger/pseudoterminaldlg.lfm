@@ -130,6 +130,21 @@ object PseudoConsoleDlg: TPseudoConsoleDlg
               SpaceChar = '_'
             end
           end
+          object cbLocalEcho: TCheckBox
+            AnchorSideLeft.Control = PanelRightBelowCG
+            AnchorSideRight.Control = PanelRightBelowCG
+            AnchorSideRight.Side = asrBottom
+            AnchorSideBottom.Control = lbAutoOpenConsole
+            Left = 6
+            Height = 19
+            Top = 190
+            Width = 249
+            Anchors = [akLeft, akRight, akBottom]
+            BorderSpacing.Around = 6
+            Caption = 'cbLocalEcho'
+            OnChange = cbLocalEchoChange
+            TabOrder = 2
+          end
           object lbAutoOpenConsole: TLabel
             AnchorSideLeft.Control = PanelRightBelowCG
             AnchorSideTop.Control = cbAutoOpenConsole

@@ -1286,6 +1286,10 @@ msgstr "Viditeľnosť"
 msgid "Condition"
 msgstr "Podmienka"
 
+#: idedebuggerstringconstants.lisconsolelocalecho
+msgid "Echo typed input"
+msgstr ""
+
 #: idedebuggerstringconstants.liscopyall
 msgid "Copy All"
 msgstr "Kopírovať všetko"

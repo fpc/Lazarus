@@ -1284,6 +1284,10 @@ msgstr "Näkyvyys"
 msgid "Condition"
 msgstr "Ehto"
 
+#: idedebuggerstringconstants.lisconsolelocalecho
+msgid "Echo typed input"
+msgstr ""
+
 #: idedebuggerstringconstants.liscopyall
 msgid "Copy All"
 msgstr "Kopioi kaikki"

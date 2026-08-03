@@ -50,6 +50,7 @@ type
 
   TPseudoConsoleDlg = class(TDebuggerDlg)
     cbAutoOpenConsole: TComboBox;
+    cbLocalEcho: TCheckBox;
     CheckGroupRight: TCheckGroup;
     GroupBoxRight: TGroupBox;
     lbAutoOpenConsole: TLabel;
@@ -63,6 +64,7 @@ type
     StatusBar1: TStatusBar;
     TabSheetRaw: TTabSheet;
     procedure cbAutoOpenConsoleChange(Sender: TObject);
+    procedure cbLocalEchoChange(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure Memo1UTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
@@ -131,8 +133,25 @@ begin
   if KeyText = #13 then
     KeyText := #13#10;
   {$ENDIF}
+  (* Echo likewise belongs to the terminal. A pty does it in the driver and the
+     character arrives back through the output stream; a pipe returns nothing,
+     so the window has to show it. Routed through AddOutput rather than appended
+     to the memo, so that echoed text gets the same view and decorations as the
+     program's own output and shares its partial-line state -- typing halfway
+     through an unterminated line then continues that line rather than starting
+     a new one. *)
+  if EnvironmentDebugOpts.ConsoleLocalEcho then
+    AddOutput(KeyText);
   DebugBoss.DoSendConsoleInput(KeyText);
   Utf8Key := '';
+end;
+
+procedure TPseudoConsoleDlg.cbLocalEchoChange(Sender: TObject);
+begin
+  if EnvironmentDebugOpts.ConsoleLocalEcho = cbLocalEcho.Checked then
+    exit;
+  EnvironmentDebugOpts.ConsoleLocalEcho := cbLocalEcho.Checked;
+  EnvironmentOptions.Save(False);
 end;
 
 
@@ -215,6 +234,7 @@ end { TPseudoConsoleDlg.FormResize } ;
 procedure TPseudoConsoleDlg.FormShow(Sender: TObject);
 begin
   cbAutoOpenConsole.ItemIndex := ord(EnvironmentDebugOpts.AutoOpenConsoleWin);
+  cbLocalEcho.Checked := EnvironmentDebugOpts.ConsoleLocalEcho;
 end;
 
 procedure TPseudoConsoleDlg.cbAutoOpenConsoleChange(Sender: TObject);
@@ -256,6 +276,7 @@ begin
   RadioGroupRight.Items[3] := lisHexASCII;
   GroupBoxRight.Caption := lisLineLimit;
   TabSheetRaw.Caption := lisRawOutput;
+  cbLocalEcho.Caption := lisConsoleLocalEcho;
 
   lbAutoOpenConsole.Caption := DbgWatchColorAutoOpenConsoleWindowLinu;
   cbAutoOpenConsole.AddItem(DbgWatchColorNever, nil);

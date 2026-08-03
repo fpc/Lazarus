@@ -1274,6 +1274,10 @@ msgstr "可视性"
 msgid "Condition"
 msgstr "状态"
 
+#: idedebuggerstringconstants.lisconsolelocalecho
+msgid "Echo typed input"
+msgstr ""
+
 #: idedebuggerstringconstants.liscopyall
 msgid "Copy All"
 msgstr "复制所有"
