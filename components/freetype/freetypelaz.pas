@@ -8,8 +8,8 @@ unit freetypelaz;
 interface
 
 uses
-  EasyLazFreeType, LazFreeType, LazFreeTypeFontCollection, LazFreeTypeFPImageDrawer, TTCache, TTCalc, TTCMap, TTDebug, 
-  TTError, TTFile, TTGLoad, TTInterp, TTKern, TTLoad, TTMemory, TTObjs, TTProfile, TTRASTER, TTTables, TTTypes, 
+  EasyLazFreeType, LazFreeType, LazFreeTypeFontCollection, LazFreeTypeFPImageDrawer, TTCache, TTCalc, TTCMap, TTDebug,
+  TTError, TTFile, TTGLoad, TTInterp, TTKern, TTLoad, TTMemory, TTObjs, TTProfile, TTRASTER, TTTables, TTTypes, TTVar,
   LazarusPackageIntf;
 
 implementation

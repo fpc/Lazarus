@@ -23,7 +23,7 @@ uses
   // LazUtils
   LazUTF8,
   // FreeType
-  LazFreeType, TTRaster, TTTypes, TTObjs,
+  LazFreeType, TTRaster, TTTypes, TTObjs, TTVar,
   Types;  // Note: Types must be after TTTypes for PByte.
 
 type
@@ -1281,6 +1281,7 @@ end;
 procedure TFreeTypeFont.UpdateInstance;
 var
   errorNum: TT_Error;
+  styleText: string;
 begin
   DiscardInstance;
 
@@ -1288,6 +1289,12 @@ begin
   if errorNum = TT_Err_Ok then
   begin
     FInstanceCreated := true;
+    styleText := LowerCase(FStyleStr);
+    if Pos('bold', styleText) > 0 then
+      TT_Set_Instance_Variation(FInstance, TTVar_MakeTag('wght'), 700 * 65536);
+    if Pos('italic', styleText) > 0 then
+      if TT_Set_Instance_Variation(FInstance, TTVar_MakeTag('ital'), 65536) <> TT_Err_Ok then
+        TT_Set_Instance_Variation(FInstance, TTVar_MakeTag('slnt'), -12 * 65536);
     TT_Set_Instance_Resolutions(FInstance, FDPI,FDPI);
     UpdateSizeInPoints;
     UpdateMetrics;
