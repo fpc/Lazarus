@@ -2241,7 +2241,11 @@ end;
 
 function HasConsoleSupport: Boolean;
 begin
-  {$IFDEF DBG_ENABLE_TERMINAL}
+  (* Windows is deliberately tested for separately rather than by defining
+     DBG_ENABLE_TERMINAL for it. That define also guards the pseudo-terminal
+     code, which is a Unix pty and does not build here; the console dialog
+     itself has no such dependency and compiles on Windows already. *)
+  {$IF defined(DBG_ENABLE_TERMINAL) or defined(MSWINDOWS)}
   Result := True;
   {$ELSE}
   Result := False;

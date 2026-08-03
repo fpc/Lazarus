@@ -119,8 +119,19 @@ var
 
 procedure TPseudoConsoleDlg.Memo1UTF8KeyPress(Sender: TObject;
   var UTF8Key: TUTF8Char);
+var
+  KeyText: String;
 begin
-  DebugBoss.DoSendConsoleInput(Utf8Key);
+  KeyText := Utf8Key;
+  (* Return arrives as a bare CR. A terminal driver translates that on the way
+     to the program reading it, but where the input reaches the debuggee down a
+     pipe there is no driver to do so, and the RTL's ReadLn will not return
+     until it has seen the whole CRLF. *)
+  {$IFDEF MSWINDOWS}
+  if KeyText = #13 then
+    KeyText := #13#10;
+  {$ENDIF}
+  DebugBoss.DoSendConsoleInput(KeyText);
   Utf8Key := '';
 end;
 
