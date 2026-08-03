@@ -370,6 +370,8 @@ begin
   FileNameStdOut := XMLConfig.GetValue(Path + 'local/FileNameStdOut/Value', '');
   FileNameStdErr := XMLConfig.GetValue(Path + 'local/FileNameStdErr/Value', '');
 
+  ConsoleId := XMLConfig.GetValue(Path + 'local/ConsoleId/Value', RunParamsConsoleIdDefault);
+
   // environment options
   LoadUserOverrides(Path + 'environment/UserOverrides/');
   IncludeSystemVariables := XMLConfig.GetValue(
@@ -435,6 +437,8 @@ begin
   XMLConfig.SetDeleteValue(Path + 'local/FileNameStdOut/Value', FileNameStdOut, '');
   XMLConfig.SetDeleteValue(Path + 'local/FileNameStdErr/Value', FileNameStdErr, '');
 
+  XMLConfig.SetDeleteValue(Path + 'local/ConsoleId/Value', ConsoleId, RunParamsConsoleIdDefault);
+
   Result := mrOk;
 end;
 
@@ -499,6 +503,8 @@ begin
   FileNameStdIn  := XMLConfig.GetValue(Path + 'local/FileNameStdIn/Value',  '');
   FileNameStdOut := XMLConfig.GetValue(Path + 'local/FileNameStdOut/Value', '');
   FileNameStdErr := XMLConfig.GetValue(Path + 'local/FileNameStdErr/Value', '');
+
+  ConsoleId := XMLConfig.GetValue(Path + 'local/ConsoleId/Value', RunParamsConsoleIdDefault);
 
   // environment options
   LoadUserOverrides(Path + 'environment/UserOverrides/');
@@ -566,6 +572,8 @@ begin
   XMLConfig.SetDeleteValue(Path + 'local/FileNameStdIn/Value',  FileNameStdIn,  '');
   XMLConfig.SetDeleteValue(Path + 'local/FileNameStdOut/Value', FileNameStdOut, '');
   XMLConfig.SetDeleteValue(Path + 'local/FileNameStdErr/Value', FileNameStdErr, '');
+
+  XMLConfig.SetDeleteValue(Path + 'local/ConsoleId/Value', ConsoleId, RunParamsConsoleIdDefault);
 
   // environment options
   SaveUserOverrides(Path + 'environment/UserOverrides/');

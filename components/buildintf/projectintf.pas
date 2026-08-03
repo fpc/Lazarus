@@ -351,6 +351,36 @@ type
 
   TRunParamsRedirectMode = (rprOff, rprOverwrite, rprAppend);
 
+const
+  (* Which console serves as the debuggee's console. Held as a string, not an
+     enum, because terminal providers are to be registered at run time and
+     identified by an id; these two are merely the built-in ones.
+
+     An empty string means "follow the IDE-wide default" rather than any
+     particular console, the same sentinel role '' plays for
+     TProjectDebugLink.DebuggerBackend. Keeping it distinct from
+     RunParamsConsoleIdOs matters: without it every project saved by this
+     version would record an explicit choice and would go on ignoring the
+     IDE-wide setting once that setting exists. *)
+  RunParamsConsoleIdDefault   = '';
+  RunParamsConsoleIdOs        = 'OSConsole';
+  RunParamsConsoleIdIdeWindow = 'IDEConsole';
+
+(* Whether the selected console is one served by capturing the debuggee's
+   streams into the IDE, rather than by a console of the OS.
+
+   RunParamsConsoleIdDefault follows the IDE-wide default, which until there is
+   a setting for it is the OS console. Capture is a Windows-only ability this
+   cycle, so elsewhere the answer is always False: a selection made on Windows
+   is still read from and written back to the project, it simply does not take
+   effect, and the OS console goes on serving as it did before.
+
+   The dialog asks this too, so that the per-stream file choices are enabled in
+   exactly the cases where they will be honoured. *)
+function RunParamsConsoleIsCaptured(const AConsoleId: String): Boolean;
+
+type
+
   { TAbstractRunParamsOptionsMode }
 
   TAbstractRunParamsOptionsMode = class(TPersistent)
@@ -383,6 +413,7 @@ type
     FFileNameStdIn:  String;
     FFileNameStdOut: String;
     FFileNameStdErr: String;
+    FConsoleId:      String;
 
     procedure AssignTo(Dest: TPersistent); override;
   public
@@ -424,6 +455,8 @@ type
     property FileNameStdIn:  String read FFileNameStdIn  write FFileNameStdIn;
     property FileNameStdOut: String read FFileNameStdOut write FFileNameStdOut;
     property FileNameStdErr: String read FFileNameStdErr write FFileNameStdErr;
+    // Console
+    property ConsoleId: String read FConsoleId write FConsoleId;
   end;
 
   { TAbstractRunParamsOptions }
@@ -903,6 +936,15 @@ begin
   Result:=cetProgram;
 end;
 
+function RunParamsConsoleIsCaptured(const AConsoleId: String): Boolean;
+begin
+  {$IFDEF MSWINDOWS}
+  Result := AConsoleId = RunParamsConsoleIdIdeWindow;
+  {$ELSE}
+  Result := False;
+  {$ENDIF}
+end;
+
 { TAbstractRunParamsOptionsMode }
 
 constructor TAbstractRunParamsOptionsMode.Create(const AName: string);
@@ -943,6 +985,8 @@ begin
     ADest.FFileNameStdIn  := FFileNameStdIn;
     ADest.FFileNameStdOut := FFileNameStdOut;
     ADest.FFileNameStdErr := FFileNameStdErr;
+    // Console
+    ADest.FConsoleId      := FConsoleId;
 
     ADest.UserOverrides.Assign(UserOverrides);
     ADest.IncludeSystemVariables := IncludeSystemVariables;
@@ -974,6 +1018,8 @@ begin
   FFileNameStdIn  := '';
   FFileNameStdOut := '';
   FFileNameStdErr := '';
+  // Console
+  FConsoleId      := RunParamsConsoleIdDefault;
 
   // environment options
   fUserOverrides.Clear;
