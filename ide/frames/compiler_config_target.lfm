@@ -5,27 +5,28 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
   Width = 594
   ClientHeight = 446
   ClientWidth = 594
+  LCLVersion = '4.99.0.0'
   TabOrder = 0
   DesignLeft = 436
   DesignTop = 273
   object grbConfigFile: TGroupBox
     Left = 0
-    Height = 139
+    Height = 164
     Top = 0
     Width = 594
     Align = alTop
     AutoSize = True
     Caption = 'grbConfigFile'
-    ClientHeight = 112
-    ClientWidth = 584
+    ClientHeight = 143
+    ClientWidth = 592
     TabOrder = 0
     object chkConfigFile: TCheckBox
       AnchorSideLeft.Control = grbConfigFile
       AnchorSideTop.Control = grbConfigFile
       Left = 6
-      Height = 18
+      Height = 23
       Top = 3
-      Width = 104
+      Width = 110
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       Caption = 'chkConfigFile'
@@ -37,13 +38,13 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 18
-      Top = 24
-      Width = 134
+      Height = 23
+      Top = 29
+      Width = 144
       BorderSpacing.Top = 3
       Caption = 'chkWriteConfigFile'
-      OnClick = chkWriteConfigFileClick
       TabOrder = 1
+      OnClick = chkWriteConfigFileClick
     end
     object edtWriteConfigFilePath: TEdit
       AnchorSideLeft.Control = chkWriteConfigFile
@@ -52,9 +53,9 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       AnchorSideRight.Control = grbConfigFile
       AnchorSideRight.Side = asrBottom
       Left = 25
-      Height = 22
-      Top = 43
-      Width = 553
+      Height = 30
+      Top = 53
+      Width = 561
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 19
       BorderSpacing.Top = 1
@@ -68,13 +69,13 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       AnchorSideTop.Control = edtWriteConfigFilePath
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 18
-      Top = 68
-      Width = 147
+      Height = 23
+      Top = 86
+      Width = 157
       BorderSpacing.Top = 3
       Caption = 'chkCustomConfigFile'
-      OnClick = chkCustomConfigFileClick
       TabOrder = 3
+      OnClick = chkCustomConfigFileClick
     end
     object edtCustomConfigPath: TEdit
       AnchorSideLeft.Control = chkCustomConfigFile
@@ -83,9 +84,9 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       AnchorSideRight.Control = grbConfigFile
       AnchorSideRight.Side = asrBottom
       Left = 25
-      Height = 22
-      Top = 87
-      Width = 553
+      Height = 30
+      Top = 110
+      Width = 561
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 19
       BorderSpacing.Top = 1
@@ -98,37 +99,37 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
   object grbTargetPlatform: TGroupBox
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 175
-    Top = 147
+    Height = 210
+    Top = 172
     Width = 594
     Align = alTop
     AutoSize = True
     BorderSpacing.Top = 8
     Caption = 'Target Platform'
-    ClientHeight = 148
-    ClientWidth = 584
+    ClientHeight = 189
+    ClientWidth = 592
     TabOrder = 1
     object chkOnlyAvailable: TCheckBox
       AnchorSideLeft.Control = grbTargetPlatform
       AnchorSideTop.Control = grbTargetPlatform
       Left = 6
-      Height = 18
+      Height = 23
       Top = 3
-      Width = 250
+      Width = 132
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       Caption = 'chkOnlyAvailable'
-      OnClick = chkOnlyAvailableClick
       TabOrder = 0
+      OnClick = chkOnlyAvailableClick
     end
     object lblTargetCPU: TLabel
       AnchorSideLeft.Control = grbTargetPlatform
       AnchorSideTop.Control = TargetCPUComboBox
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 16
-      Top = 29
-      Width = 166
+      Height = 18
+      Top = 34
+      Width = 300
       Alignment = taRightJustify
       AutoSize = False
       BorderSpacing.Left = 6
@@ -136,24 +137,24 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       ParentColor = False
     end
     object TargetCPUComboBox: TComboBox
-      AnchorSideLeft.Control = grbTargetPlatform
+      AnchorSideLeft.Control = lblTargetCPU
+      AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = chkOnlyAvailable
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = grbTargetPlatform
       AnchorSideRight.Side = asrBottom
-      Left = 178
-      Height = 20
-      Top = 27
-      Width = 400
+      Left = 312
+      Height = 28
+      Top = 29
+      Width = 274
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Left = 178
+      BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       BorderSpacing.Right = 6
-      ItemHeight = 26
-      OnSelect = TargetCPUComboBoxSelect
+      ItemHeight = 0
       Style = csDropDownList
       TabOrder = 1
-      Text = '0'
+      OnSelect = TargetCPUComboBoxSelect
     end
     object lblTargetProc: TLabel
       AnchorSideLeft.Control = grbTargetPlatform
@@ -161,8 +162,8 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 16
-      Top = 52
-      Width = 166
+      Top = 66
+      Width = 300
       Alignment = taRightJustify
       AutoSize = False
       BorderSpacing.Left = 6
@@ -170,24 +171,24 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       ParentColor = False
     end
     object TargetProcComboBox: TComboBox
-      AnchorSideLeft.Control = grbTargetPlatform
+      AnchorSideLeft.Control = lblTargetProc
+      AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = TargetCPUComboBox
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = grbTargetPlatform
       AnchorSideRight.Side = asrBottom
-      Left = 178
-      Height = 20
-      Top = 50
-      Width = 400
+      Left = 312
+      Height = 28
+      Top = 60
+      Width = 274
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Left = 178
+      BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       BorderSpacing.Right = 6
-      ItemHeight = 26
-      OnSelect = TargetProcComboBoxSelect
+      ItemHeight = 0
       Style = csDropDownList
       TabOrder = 2
-      Text = '0'
+      OnSelect = TargetProcComboBoxSelect
     end
     object lblController: TLabel
       AnchorSideLeft.Control = grbTargetPlatform
@@ -195,8 +196,8 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 16
-      Top = 75
-      Width = 166
+      Top = 97
+      Width = 300
       Alignment = taRightJustify
       AutoSize = False
       BorderSpacing.Left = 6
@@ -204,23 +205,24 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       ParentColor = False
     end
     object ControllerComboBox: TComboBox
-      AnchorSideLeft.Control = grbTargetPlatform
+      AnchorSideLeft.Control = lblController
+      AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = TargetProcComboBox
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = grbTargetPlatform
       AnchorSideRight.Side = asrBottom
-      Left = 178
-      Height = 20
-      Top = 73
-      Width = 400
+      Left = 312
+      Height = 28
+      Top = 91
+      Width = 274
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Left = 178
+      BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       BorderSpacing.Right = 6
-      ItemHeight = 19
-      OnSelect = ControllerComboBoxSelect
+      ItemHeight = 0
       Style = csDropDownList
       TabOrder = 3
+      OnSelect = ControllerComboBoxSelect
     end
     object lblTargetOS: TLabel
       AnchorSideLeft.Control = grbTargetPlatform
@@ -228,8 +230,8 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 16
-      Top = 98
-      Width = 166
+      Top = 128
+      Width = 300
       Alignment = taRightJustify
       AutoSize = False
       BorderSpacing.Left = 6
@@ -237,24 +239,24 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       ParentColor = False
     end
     object TargetOSComboBox: TComboBox
-      AnchorSideLeft.Control = grbTargetPlatform
+      AnchorSideLeft.Control = lblTargetOS
+      AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ControllerComboBox
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = grbTargetPlatform
       AnchorSideRight.Side = asrBottom
-      Left = 178
-      Height = 20
-      Top = 96
-      Width = 400
+      Left = 312
+      Height = 28
+      Top = 122
+      Width = 274
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Left = 178
+      BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       BorderSpacing.Right = 6
-      ItemHeight = 26
-      OnSelect = TargetOSComboBoxSelect
+      ItemHeight = 0
       Style = csDropDownList
       TabOrder = 4
-      Text = '0'
+      OnSelect = TargetOSComboBoxSelect
     end
     object lblSubtarget: TLabel
       AnchorSideLeft.Control = grbTargetPlatform
@@ -262,8 +264,8 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 16
-      Top = 121
-      Width = 166
+      Top = 160
+      Width = 300
       Alignment = taRightJustify
       AutoSize = False
       BorderSpacing.Left = 6
@@ -271,42 +273,43 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       ParentColor = False
     end
     object SubtargetComboBox: TComboBox
-      AnchorSideLeft.Control = grbTargetPlatform
+      AnchorSideLeft.Control = lblSubtarget
+      AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = TargetOSComboBox
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = grbTargetPlatform
       AnchorSideRight.Side = asrBottom
-      Left = 178
-      Height = 20
-      Top = 119
-      Width = 400
+      Left = 312
+      Height = 30
+      Top = 153
+      Width = 274
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Left = 178
+      BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
-      ItemHeight = 19
+      ItemHeight = 0
       TabOrder = 5
       Text = '0'
     end
   end
   object grbTargetOptions: TGroupBox
     Left = 0
-    Height = 57
-    Top = 330
+    Height = 56
+    Top = 390
     Width = 594
     Align = alTop
     AutoSize = True
     BorderSpacing.Top = 8
     Caption = 'Target-specific options'
-    ClientHeight = 30
-    ClientWidth = 584
+    ClientHeight = 35
+    ClientWidth = 592
     TabOrder = 2
     object chkWin32GraphicApp: TCheckBox
       Left = 6
-      Height = 18
+      Height = 23
       Top = 6
-      Width = 572
+      Width = 580
       Align = alTop
       BorderSpacing.Around = 6
       Caption = 'chkWin32GraphicApp'
@@ -317,9 +320,9 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
     AnchorSideTop.Control = CurrentWidgetTypeLabel
     AnchorSideTop.Side = asrBottom
     Left = 16
-    Height = 16
-    Top = 415
-    Width = 128
+    Height = 18
+    Top = 476
+    Width = 126
     BorderSpacing.Top = 3
     Caption = 'LCLWidgetTypeLabel'
     Font.Color = clBlue
@@ -333,9 +336,9 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
     AnchorSideTop.Control = grbTargetOptions
     AnchorSideTop.Side = asrBottom
     Left = 3
-    Height = 16
-    Top = 396
-    Width = 151
+    Height = 18
+    Top = 455
+    Width = 150
     BorderSpacing.Top = 9
     Caption = 'CurrentWidgetTypeLabel'
     ParentColor = False
