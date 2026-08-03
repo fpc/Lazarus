@@ -6,12 +6,12 @@ object IpHTMLPreview: TIpHTMLPreview
   Caption = 'Print preview'
   ClientHeight = 498
   ClientWidth = 863
+  Position = poScreenCenter
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnResize = FormResize
   OnShow = FormShow
-  Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
   object ToolbarPanel: TPanel
     Left = 0
     Height = 36
@@ -85,8 +85,8 @@ object IpHTMLPreview: TIpHTMLPreview
       BorderSpacing.Around = 5
       Caption = 'Print'
       Default = True
-      OnClick = btnPrintClick
       TabOrder = 0
+      OnClick = btnPrintClick
     end
     object btnFirst: TButton
       AnchorSideLeft.Control = btnFit
@@ -100,8 +100,8 @@ object IpHTMLPreview: TIpHTMLPreview
       AutoSize = True
       BorderSpacing.Around = 5
       Caption = '<<'
-      OnClick = btnFirstClick
       TabOrder = 6
+      OnClick = btnFirstClick
     end
     object btnPrev: TButton
       AnchorSideLeft.Control = btnFirst
@@ -115,8 +115,8 @@ object IpHTMLPreview: TIpHTMLPreview
       AutoSize = True
       BorderSpacing.Around = 5
       Caption = '<'
-      OnClick = btnPrevClick
       TabOrder = 7
+      OnClick = btnPrevClick
     end
     object btnNext: TButton
       AnchorSideLeft.Control = lblMaxPage
@@ -130,8 +130,8 @@ object IpHTMLPreview: TIpHTMLPreview
       AutoSize = True
       BorderSpacing.Around = 5
       Caption = '>'
-      OnClick = btnNextClick
       TabOrder = 9
+      OnClick = btnNextClick
     end
     object btnLast: TButton
       AnchorSideLeft.Control = btnNext
@@ -145,8 +145,8 @@ object IpHTMLPreview: TIpHTMLPreview
       AutoSize = True
       BorderSpacing.Around = 5
       Caption = '>>'
-      OnClick = btnLastClick
       TabOrder = 10
+      OnClick = btnLastClick
     end
     object btnClose: TButton
       AnchorSideLeft.Control = btnLast
@@ -175,9 +175,9 @@ object IpHTMLPreview: TIpHTMLPreview
       Width = 32
       Alignment = taRightJustify
       BorderSpacing.Around = 5
-      OnChange = edtPageChange
       TabOrder = 8
       Text = '1'
+      OnChange = edtPageChange
     end
     object btnSelectPrinter: TButton
       AnchorSideLeft.Control = btnPrint
@@ -191,8 +191,8 @@ object IpHTMLPreview: TIpHTMLPreview
       AutoSize = True
       BorderSpacing.Around = 5
       Caption = 'Select printer...'
-      OnClick = btnSelectPrinterClick
       TabOrder = 1
+      OnClick = btnSelectPrinterClick
     end
     object edtZoom: TSpinEdit
       AnchorSideLeft.Control = Label3
@@ -207,9 +207,9 @@ object IpHTMLPreview: TIpHTMLPreview
       BorderSpacing.Around = 5
       MaxValue = 1000
       MinValue = 1
-      OnChange = edtZoomChange
       TabOrder = 2
       Value = 100
+      OnChange = edtZoomChange
     end
     object btnFitHeight: TButton
       AnchorSideLeft.Control = edtZoom
@@ -223,8 +223,8 @@ object IpHTMLPreview: TIpHTMLPreview
       AutoSize = True
       BorderSpacing.Around = 5
       Caption = 'Height'
-      OnClick = btnFitHeightClick
       TabOrder = 3
+      OnClick = btnFitHeightClick
     end
     object btnFitWidth: TButton
       AnchorSideLeft.Control = btnFitHeight
@@ -238,8 +238,8 @@ object IpHTMLPreview: TIpHTMLPreview
       AutoSize = True
       BorderSpacing.Around = 5
       Caption = 'Width'
-      OnClick = btnFitWidthClick
       TabOrder = 4
+      OnClick = btnFitWidthClick
     end
     object btnFit: TButton
       AnchorSideLeft.Control = btnFitWidth
@@ -253,8 +253,8 @@ object IpHTMLPreview: TIpHTMLPreview
       AutoSize = True
       BorderSpacing.Around = 5
       Caption = 'Fit all'
-      OnClick = btnFitClick
       TabOrder = 5
+      OnClick = btnFitClick
     end
   end
   object ScrollBox1: TScrollBox
@@ -270,6 +270,7 @@ object IpHTMLPreview: TIpHTMLPreview
     ClientHeight = 458
     ClientWidth = 859
     Color = clBtnFace
+    ParentBackground = False
     ParentColor = False
     TabOrder = 1
     object PaperPanel: TPanel
@@ -281,6 +282,7 @@ object IpHTMLPreview: TIpHTMLPreview
       ClientHeight = 125
       ClientWidth = 158
       Color = clWhite
+      ParentBackground = False
       ParentColor = False
       TabOrder = 0
       object PaintBox1: TPaintBox

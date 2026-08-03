@@ -39,7 +39,7 @@ unit IpHtmlPv;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, Types,
   // LCL
   LCLIntf, LCLType, GraphType, Buttons, Messages, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Spin,
