@@ -822,21 +822,15 @@ function TDbgWinProcess.StartInstance(AParams, AnEnvironment: TStrings;
   AnError: TFpError): boolean;
 var
   LastErr: Integer;
+  CaptureIo: Boolean;
 begin
   result := false;
   FProcProcess := TProcessWithRedirect.Create(nil);
   try
-    // To debug sub-processes, this needs to be poDebugProcess
-    FProcProcess.Options:=[poDebugProcess, poDebugOnlyThisProcess, poNewProcessGroup];
-    if siForceNewConsole in AFlags then
-      FProcProcess.Options:=FProcProcess.Options+[poNewConsole];
     { Capture the debuggee's stdio into pipes so the debugger can read/write it
       (RedirectConsoleOutput / siRediretOutput) -- this is what fills
-      GetConsoleOutput / SendConsoleInput below.
-        - Skip when the caller asked for a SEPARATE console window
-          (siForceNewConsole): its stdio must stay visible in that console, not
-          be captured -- so Force New Console effectively turns capture off.
-        - Skip when explicit file redirection is configured.
+      GetConsoleOutput / SendConsoleInput below. Skipped when explicit file
+      redirection is configured, which is handled further down instead.
       stderr is merged into stdout for a single stream. poDetached
       (DETACHED_PROCESS) gives the captured child no console at all, so no empty
       console window appears; STARTF_USESTDHANDLES still routes its stdio to the
@@ -844,9 +838,20 @@ begin
       poNoConsole here -- CREATE_NO_WINDOW from a console-less (GUI) parent such
       as the IDE allocates a hidden console and defeats the pipe capture (stdio
       ends up on that fresh console instead of the inherited pipe handles). }
-    if (siRediretOutput in AFlags) and not (siForceNewConsole in AFlags) and
-       (Config.StdOutRedirFile = '') and (Config.StdErrRedirFile = '') and
-       (Config.StdInRedirFile = '') then
+    CaptureIo := (siRediretOutput in AFlags) and
+                 (Config.StdOutRedirFile = '') and (Config.StdErrRedirFile = '') and
+                 (Config.StdInRedirFile = '');
+
+    // To debug sub-processes, this needs to be poDebugProcess
+    FProcProcess.Options:=[poDebugProcess, poDebugOnlyThisProcess, poNewProcessGroup];
+    { Capture wins over a separate console window. ForceNewConsole defaults to
+      True, so honouring it here would leave a caller that asked for capture
+      with no output at all. The two are exclusive at the OS level as well:
+      CREATE_NEW_CONSOLE and DETACHED_PROCESS cannot both be passed, and
+      CreateProcess fails outright if they are. }
+    if (siForceNewConsole in AFlags) and not CaptureIo then
+      FProcProcess.Options:=FProcProcess.Options+[poNewConsole];
+    if CaptureIo then
       FProcProcess.Options := FProcProcess.Options + [poUsePipes, poStderrToOutPut, poDetached];
     FProcProcess.Executable:=Name;
     FProcProcess.Parameters:=AParams;
