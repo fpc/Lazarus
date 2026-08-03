@@ -333,7 +333,7 @@ const
 
 implementation
 
-uses LazUTF8, InterfaceBase, CarbonInt, CarbonProc, CarbonDbgConsts, CarbonUtils, CarbonCanvas, CarbonCaret;
+uses LazUTF8, LazUTF16, InterfaceBase, CarbonInt, CarbonProc, CarbonDbgConsts, CarbonUtils, CarbonCanvas, CarbonCaret;
 
 var
   // recursive number of draw events called by OSX
@@ -558,7 +558,7 @@ begin
   
   // create custom view above all others
   GetClientRect(R{%H-});
-  OffsetRect(R, -R.Left, -R.Top);
+  Types.OffsetRect(R, -R.Left, -R.Top);
   FDesignControl := CreateCustomHIView(RectToCGRect(R));
   
   OSError(
@@ -636,7 +636,7 @@ begin
   else
     GetScreenBounds(R{%H-});
 
-  OffsetRect(R, -R.Left, -R.Top);
+  Types.OffsetRect(R, -R.Left, -R.Top);
   OSError(HIViewSetFrame(FDesignControl, RectToCGRect(R)),
     Self, SSetBounds, SViewFrame);
 

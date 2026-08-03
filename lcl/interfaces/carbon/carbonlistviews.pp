@@ -295,7 +295,7 @@ const
 
 implementation
 
-uses InterfaceBase, CarbonProc, CarbonDbgConsts;
+uses InterfaceBase, LazUtilities, CarbonProc, CarbonDbgConsts;
      
 var CarbonItemDataCallBackUPP        : DataBrowserItemDataUPP;
     CarbonItemNotificationCallBackUPP: DataBrowserItemNotificationUPP;

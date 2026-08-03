@@ -1194,7 +1194,7 @@ begin
       InvalidPaint:=True; // Needed to get scrollbars updated
 
     GetClientRect(after{%H-});
-    if not CompareRect(@before, @after) then
+    if not (before=after) then
       UpdateLCLClientRect;
   finally
     ReleaseEvent(Event);
@@ -1216,8 +1216,8 @@ begin
     GetClientRect(ClientR{%H-});
     LCLR:=LCLObject.BoundsRect;
     LCLClientR:=LCLObject.ClientRect;
-    RChanged:=not CompareRect(@R,@LCLR);
-    ClientChanged:=not CompareRect(@ClientR,@LCLClientR);
+    RChanged:=not (R=LCLR);
+    ClientChanged:=not (ClientR=LCLClientR);
 
     if not RChanged and ((LCLObject.CachedClientWidth <>  ClientR.Right) or
       (LCLObject.CachedClientHeight <> ClientR.Bottom)) then
@@ -1423,7 +1423,7 @@ begin
       WindowRect{%H-}), Self, SName, SGetWindowBounds) then Exit;
     
   ARect := CGRectToRect(BoundsRect);
-  OffsetRect(ARect, WindowRect.left, WindowRect.top);
+  Types.OffsetRect(ARect, WindowRect.left, WindowRect.top);
 
   Result := True;
 end;
@@ -1761,7 +1761,7 @@ begin
     Self, 'GetClientRect', 'HIViewGetFrame') then Exit;
 
   ARect := CGrectToRect(R);
-  OffsetRect(ARect, -ARect.Left, -ARect.Top);
+  Types.OffsetRect(ARect, -ARect.Left, -ARect.Top);
   Result := True;
 
   {$IFDEF VerboseBounds}

@@ -485,7 +485,7 @@ begin
     if I = FTabIndex then // update tab bounds
     begin
       GetClientRect(R{%H-});
-      OffsetRect(R, -R.Left, -R.Top);
+      Types.OffsetRect(R, -R.Left, -R.Top);
       TCarbonTab(FTabs[I]).SetBounds(R);
     end;
     
@@ -900,7 +900,7 @@ var
   R: TRect;
 begin
   GetClientRect(R{%H-});
-  Offsetrect(R, -R.Left, -R.Top);
+  Types.Offsetrect(R, -R.Left, -R.Top);
   
   case FTabPosition of
     tpTop: Result := P.Y < R.Top;

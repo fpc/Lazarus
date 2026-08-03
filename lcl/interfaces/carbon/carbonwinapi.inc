@@ -1257,7 +1257,7 @@ begin
   if not CheckWidget(Handle, 'GetClientRect') then Exit;
   
   Result := TCarbonWidget(Handle).GetClientRect(ARect);
-  if Result then OffsetRect(ARect, -ARect.Left, -ARect.Top);
+  if Result then Types.OffsetRect(ARect, -ARect.Left, -ARect.Top);
   
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.GetClientRect Result: ' + DbgS(Result));
@@ -2570,7 +2570,7 @@ begin
   if Rect <> nil then
   begin
     Pt := TCarbonWidget(AHandle).ScrollOffset;
-    OffsetRect(Rect^, -Pt.X, -Pt.Y);
+    Types.OffsetRect(Rect^, -Pt.X, -Pt.Y);
   end;
   TCarbonWidget(AHandle).Invalidate(Rect);
   Result := True;

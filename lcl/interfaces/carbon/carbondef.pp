@@ -186,7 +186,7 @@ procedure FreePendingWidgets;
 implementation
 
 uses
-  CarbonProc, CarbonDbgConsts, CarbonUtils, CarbonCaret;
+  CarbonProc, CarbonDbgConsts, CarbonUtils, CarbonCaret, GraphMath;
 
 var
   WantFreeList : TFPList;
@@ -502,8 +502,8 @@ begin
     GetClientRect(ClientR{%H-});
     LCLR:=LCLObject.BoundsRect;
     LCLClientR:=LCLObject.ClientRect;
-    RChanged:=not CompareRect(@R,@LCLR);
-    ClientChanged:=not CompareRect(@ClientR,@LCLClientR);
+    RChanged:=not (R=LCLR);
+    ClientChanged:=not (ClientR=LCLClientR);
 
     if not ClientChanged then
       LCLObject.InvalidateClientRectCache(False);
