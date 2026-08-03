@@ -2940,38 +2940,53 @@ begin
       if FDebugger <> nil then begin
         AMode := Project1.RunParameterOptions.GetActiveMode;
         if (AMode <> nil) then begin
-          if AMode.RedirectStdIn <> rprOff then begin
-            FDebugger.TargetIoStdInFileName := CreateAbsolutePath(AMode.FileNameStdIn, NewWorkingDir);
-            if AMode.RedirectStdIn = rprOverwrite then
-              FDebugger.TargetIoStdInMode := diomRedirectFileOverwrite
-            else
-              FDebugger.TargetIoStdInMode := diomRedirectFileAppend;
-          end
-          else begin
-            FDebugger.TargetIoStdInFileName := '';
-            FDebugger.TargetIoStdInMode := diomDefault;
-          end;
-          if AMode.RedirectStdOut <> rprOff then begin
-            FDebugger.TargetIoStdOutFileName := CreateAbsolutePath(AMode.FileNameStdOut, NewWorkingDir);
-            if AMode.RedirectStdOut = rprOverwrite then
-              FDebugger.TargetIoStdOutMode := diomRedirectFileOverwrite
-            else
-              FDebugger.TargetIoStdOutMode := diomRedirectFileAppend;
-          end
-          else begin
+          if RunParamsConsoleIsCaptured(AMode.ConsoleId) then begin
+            (* All three streams or none: Windows cannot capture a subset,
+               because a pipe is handed to CreateProcess for the whole set of
+               standard handles at once. The dialog disables the per-stream
+               choices while a captured console is selected, so nothing here
+               is being overridden behind the user's back. *)
+            FDebugger.TargetIoStdInFileName  := '';
             FDebugger.TargetIoStdOutFileName := '';
-            FDebugger.TargetIoStdOutMode := diomDefault;
-          end;
-          if AMode.RedirectStdErr <> rprOff then begin
-            FDebugger.TargetIoStdErrFileName := CreateAbsolutePath(AMode.FileNameStdErr, NewWorkingDir);
-            if AMode.RedirectStdErr = rprOverwrite then
-              FDebugger.TargetIoStdErrMode := diomRedirectFileOverwrite
-            else
-              FDebugger.TargetIoStdErrMode := diomRedirectFileAppend;
+            FDebugger.TargetIoStdErrFileName := '';
+            FDebugger.TargetIoStdInMode  := diomCaptureInternal;
+            FDebugger.TargetIoStdOutMode := diomCaptureInternal;
+            FDebugger.TargetIoStdErrMode := diomCaptureInternal;
           end
           else begin
-            FDebugger.TargetIoStdErrFileName := '';
-            FDebugger.TargetIoStdErrMode := diomDefault;
+            if AMode.RedirectStdIn <> rprOff then begin
+              FDebugger.TargetIoStdInFileName := CreateAbsolutePath(AMode.FileNameStdIn, NewWorkingDir);
+              if AMode.RedirectStdIn = rprOverwrite then
+                FDebugger.TargetIoStdInMode := diomRedirectFileOverwrite
+              else
+                FDebugger.TargetIoStdInMode := diomRedirectFileAppend;
+            end
+            else begin
+              FDebugger.TargetIoStdInFileName := '';
+              FDebugger.TargetIoStdInMode := diomDefault;
+            end;
+            if AMode.RedirectStdOut <> rprOff then begin
+              FDebugger.TargetIoStdOutFileName := CreateAbsolutePath(AMode.FileNameStdOut, NewWorkingDir);
+              if AMode.RedirectStdOut = rprOverwrite then
+                FDebugger.TargetIoStdOutMode := diomRedirectFileOverwrite
+              else
+                FDebugger.TargetIoStdOutMode := diomRedirectFileAppend;
+            end
+            else begin
+              FDebugger.TargetIoStdOutFileName := '';
+              FDebugger.TargetIoStdOutMode := diomDefault;
+            end;
+            if AMode.RedirectStdErr <> rprOff then begin
+              FDebugger.TargetIoStdErrFileName := CreateAbsolutePath(AMode.FileNameStdErr, NewWorkingDir);
+              if AMode.RedirectStdErr = rprOverwrite then
+                FDebugger.TargetIoStdErrMode := diomRedirectFileOverwrite
+              else
+                FDebugger.TargetIoStdErrMode := diomRedirectFileAppend;
+            end
+            else begin
+              FDebugger.TargetIoStdErrFileName := '';
+              FDebugger.TargetIoStdErrMode := diomDefault;
+            end;
           end;
 
           if AMode.UseConsoleWinPos then
