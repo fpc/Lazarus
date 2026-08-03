@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-07-26 18:27+0300\n"
+"PO-Revision-Date: 2026-08-03 17:01+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -8434,6 +8434,10 @@ msgstr "Подтверждать очистку истории"
 msgid "Confirm to delete all Watches"
 msgstr "Подтверждать удаление всех наблюдений"
 
+#: lazarusidestrconsts.lisdebugdialogshowwatcheshint
+msgid "Show hint for watches/locals (with same delay as source hint)"
+msgstr "Выводить подсказки для наблюдений (с задержкой, равной таковой для подсказок в исходном коде)"
+
 #: lazarusidestrconsts.lisdebugger
 msgctxt "lazarusidestrconsts.lisdebugger"
 msgid "Debugger"
@@ -15905,6 +15909,14 @@ msgstr "Открыть &недавний проект"
 msgid "View &Example Projects"
 msgstr "Просмотреть пр&имеры проектов"
 
+#: lazarusidestrconsts.lisquerycompilerfortargets
+msgid "Query installed compiler for available targets"
+msgstr "Запрашивать доступные цели у компилятора"
+
+#: lazarusidestrconsts.lisquerycompilerfortargetshint
+msgid "List only the targets, processors and controllers the configured compiler actually supports"
+msgstr "Выводить только цели, процессоры и контроллеры, поддерживаемые используемым компилятором"
+
 #: lazarusidestrconsts.lisquickcheckfppkgconfigurationatstart
 msgid "Quick check Fppkg configuration at start"
 msgstr "Проводить быструю проверку настройки Fppkg при запуске"
@@ -17156,6 +17168,10 @@ msgstr "Вкладки %s"
 #: lazarusidestrconsts.listarget
 msgid "Target:"
 msgstr "Цель:"
+
+#: lazarusidestrconsts.listargetcontroller
+msgid "Target controller"
+msgstr "Целевой контроллер"
 
 #: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
 msgid "Target file name: (-o, empty = use unit output directory)"

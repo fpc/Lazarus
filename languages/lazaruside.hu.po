@@ -8553,6 +8553,10 @@ msgstr ""
 msgid "Confirm to delete all Watches"
 msgstr ""
 
+#: lazarusidestrconsts.lisdebugdialogshowwatcheshint
+msgid "Show hint for watches/locals (with same delay as source hint)"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugger
 msgctxt "lazarusidestrconsts.lisdebugger"
 msgid "Debugger"
@@ -16104,6 +16108,14 @@ msgstr "Legutóbbi projekt megnyitása"
 msgid "View &Example Projects"
 msgstr "Példa projektek megjelenítése"
 
+#: lazarusidestrconsts.lisquerycompilerfortargets
+msgid "Query installed compiler for available targets"
+msgstr ""
+
+#: lazarusidestrconsts.lisquerycompilerfortargetshint
+msgid "List only the targets, processors and controllers the configured compiler actually supports"
+msgstr ""
+
 #: lazarusidestrconsts.lisquickcheckfppkgconfigurationatstart
 msgid "Quick check Fppkg configuration at start"
 msgstr ""
@@ -17372,6 +17384,10 @@ msgstr "%s lapjai"
 #: lazarusidestrconsts.listarget
 msgid "Target:"
 msgstr "Cél:"
+
+#: lazarusidestrconsts.listargetcontroller
+msgid "Target controller"
+msgstr ""
 
 #: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
 msgid "Target file name: (-o, empty = use unit output directory)"

@@ -8434,6 +8434,10 @@ msgstr "Confirme a limpeza do histórico"
 msgid "Confirm to delete all Watches"
 msgstr "Confirme a eliminação de todas as vigias"
 
+#: lazarusidestrconsts.lisdebugdialogshowwatcheshint
+msgid "Show hint for watches/locals (with same delay as source hint)"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugger
 msgctxt "lazarusidestrconsts.lisdebugger"
 msgid "Debugger"
@@ -15904,6 +15908,14 @@ msgstr "Abrir projecto &recente"
 msgid "View &Example Projects"
 msgstr "Ver projectos de &exemplo"
 
+#: lazarusidestrconsts.lisquerycompilerfortargets
+msgid "Query installed compiler for available targets"
+msgstr ""
+
+#: lazarusidestrconsts.lisquerycompilerfortargetshint
+msgid "List only the targets, processors and controllers the configured compiler actually supports"
+msgstr ""
+
 #: lazarusidestrconsts.lisquickcheckfppkgconfigurationatstart
 msgid "Quick check Fppkg configuration at start"
 msgstr "Verificação rápida da configuração Fppkg ao iniciar"
@@ -17155,6 +17167,10 @@ msgstr "Separadores para %s"
 #: lazarusidestrconsts.listarget
 msgid "Target:"
 msgstr "Alvo:"
+
+#: lazarusidestrconsts.listargetcontroller
+msgid "Target controller"
+msgstr ""
 
 #: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
 msgid "Target file name: (-o, empty = use unit output directory)"

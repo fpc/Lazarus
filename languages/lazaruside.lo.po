@@ -8448,6 +8448,10 @@ msgstr "ຢືນຢັນການລຶບລ້າງປະຫວັດ"
 msgid "Confirm to delete all Watches"
 msgstr "ຢືນຢັນການລຶບ Watches ທັງໝົດ"
 
+#: lazarusidestrconsts.lisdebugdialogshowwatcheshint
+msgid "Show hint for watches/locals (with same delay as source hint)"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugger
 msgctxt "lazarusidestrconsts.lisdebugger"
 msgid "Debugger"
@@ -15922,6 +15926,14 @@ msgstr "ເປີດໂຄງການ&ຫຼ້າສຸດ"
 msgid "View &Example Projects"
 msgstr "ເບິ່ງໂຄງການ&ຕົວຢ່າງ"
 
+#: lazarusidestrconsts.lisquerycompilerfortargets
+msgid "Query installed compiler for available targets"
+msgstr ""
+
+#: lazarusidestrconsts.lisquerycompilerfortargetshint
+msgid "List only the targets, processors and controllers the configured compiler actually supports"
+msgstr ""
+
 #: lazarusidestrconsts.lisquickcheckfppkgconfigurationatstart
 msgid "Quick check Fppkg configuration at start"
 msgstr "ກວດສອບການຕັ້ງຄ່າ Fppkg ດ່ວນຕອນເລີ່ມຕົ້ນ"
@@ -17174,6 +17186,10 @@ msgstr "ແຖບສຳລັບ %s"
 #: lazarusidestrconsts.listarget
 msgid "Target:"
 msgstr "ເປົ້າໝາຍ:"
+
+#: lazarusidestrconsts.listargetcontroller
+msgid "Target controller"
+msgstr ""
 
 #: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
 msgid "Target file name: (-o, empty = use unit output directory)"

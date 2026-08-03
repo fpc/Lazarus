@@ -8465,6 +8465,10 @@ msgstr "确认清除历史记录"
 msgid "Confirm to delete all Watches"
 msgstr "确认删除所有监视点"
 
+#: lazarusidestrconsts.lisdebugdialogshowwatcheshint
+msgid "Show hint for watches/locals (with same delay as source hint)"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugger
 msgctxt "lazarusidestrconsts.lisdebugger"
 msgid "Debugger"
@@ -15948,6 +15952,14 @@ msgstr "打开最近项目(&R)"
 msgid "View &Example Projects"
 msgstr "查看示例项目(&E)"
 
+#: lazarusidestrconsts.lisquerycompilerfortargets
+msgid "Query installed compiler for available targets"
+msgstr ""
+
+#: lazarusidestrconsts.lisquerycompilerfortargetshint
+msgid "List only the targets, processors and controllers the configured compiler actually supports"
+msgstr ""
+
 #: lazarusidestrconsts.lisquickcheckfppkgconfigurationatstart
 msgid "Quick check Fppkg configuration at start"
 msgstr "在启动时快速检查 Fppkg 配置"
@@ -17199,6 +17211,10 @@ msgstr "%s 的 Tabs"
 #: lazarusidestrconsts.listarget
 msgid "Target:"
 msgstr "目标："
+
+#: lazarusidestrconsts.listargetcontroller
+msgid "Target controller"
+msgstr ""
 
 #: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
 msgid "Target file name: (-o, empty = use unit output directory)"

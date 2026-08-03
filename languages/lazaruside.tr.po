@@ -8475,6 +8475,10 @@ msgstr "Geçmişi temizlemek için onaylayın"
 msgid "Confirm to delete all Watches"
 msgstr "Tüm izlemeleri silmek için onaylayın"
 
+#: lazarusidestrconsts.lisdebugdialogshowwatcheshint
+msgid "Show hint for watches/locals (with same delay as source hint)"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugger
 msgctxt "lazarusidestrconsts.lisdebugger"
 msgid "Debugger"
@@ -15933,6 +15937,14 @@ msgstr "&En son Projeyi aç"
 msgid "View &Example Projects"
 msgstr "&Örnek Projeleri gör"
 
+#: lazarusidestrconsts.lisquerycompilerfortargets
+msgid "Query installed compiler for available targets"
+msgstr ""
+
+#: lazarusidestrconsts.lisquerycompilerfortargetshint
+msgid "List only the targets, processors and controllers the configured compiler actually supports"
+msgstr ""
+
 #: lazarusidestrconsts.lisquickcheckfppkgconfigurationatstart
 msgid "Quick check Fppkg configuration at start"
 msgstr "Başlangıçta Fppkg yapılandırmasını hızlı kontrol edin"
@@ -17179,6 +17191,10 @@ msgstr "%s için sekmeler"
 #: lazarusidestrconsts.listarget
 msgid "Target:"
 msgstr "Hedef:"
+
+#: lazarusidestrconsts.listargetcontroller
+msgid "Target controller"
+msgstr ""
 
 #: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
 msgid "Target file name: (-o, empty = use unit output directory)"
