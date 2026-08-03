@@ -317,7 +317,7 @@ msgstr "Числовое значение"
 
 #: idedebuggerstringconstants.dispformatdlgaddrprefix
 msgid "Address marker"
-msgstr ""
+msgstr "Маркер адреса"
 
 #: idedebuggerstringconstants.dispformatdlgarraycombine
 msgid "Combine lengths"
@@ -366,7 +366,7 @@ msgstr "Адрес"
 
 #: idedebuggerstringconstants.dispformatdlgbtnadrformatdata
 msgid "Data-address"
-msgstr ""
+msgstr "Адрес данных"
 
 #: idedebuggerstringconstants.dispformatdlgbtnall
 msgid "All"
@@ -460,7 +460,7 @@ msgstr "Многострочность"
 
 #: idedebuggerstringconstants.dispformatdlgnumprefix
 msgid "Number marker"
-msgstr ""
+msgstr "Маркер числа"
 
 #: idedebuggerstringconstants.dispformatenumname
 msgctxt "idedebuggerstringconstants.dispformatenumname"
