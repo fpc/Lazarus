@@ -1326,7 +1326,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       else begin
         repeat
           TmpVal := AValue.Member[StartIdx + min(CacheCnt, Cnt) + LowBnd]; // // TODO : CheckError // ClearError for AValue
-          if IsTargetNotNil(TmpVal.Address) then begin
+          if (TmpVal <> nil) and IsTargetNotNil(TmpVal.Address) then begin
             {$PUSH}{$R-}{$Q-}
             CacheSize := TmpVal.Address.Address - MemberValue.Address.Address;
             TmpVal.ReleaseReference;
