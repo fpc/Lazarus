@@ -351,33 +351,40 @@ type
 
   TRunParamsRedirectMode = (rprOff, rprOverwrite, rprAppend);
 
+  (* Where the debuggee's console I/O appears -- the one question the user is
+     actually answering. Capture is not one of the answers; it is the mechanism
+     the non-OS answers need.
+
+     Two values today. When inherit-versus-new console stops being a hidden
+     backend property, rpcmOsConsole splits in two and this gains a value
+     rather than changing shape. *)
+  TRunParamsConsoleMode = (rpcmOsConsole, rpcmIdeConsole);
+
 const
-  (* Which console serves as the debuggee's console. Held as a string, not an
-     enum, because terminal providers are to be registered at run time and
-     identified by an id; these two are merely the built-in ones.
+  (* Which console serves, once rpcmIdeConsole says it is not the OS. Held as a
+     string, not an enum, because terminal providers are to be registered at run
+     time and identified by an id; the built-in window is merely the first of
+     them.
 
      An empty string means "follow the IDE-wide default" rather than any
      particular console, the same sentinel role '' plays for
-     TProjectDebugLink.DebuggerBackend. Keeping it distinct from
-     RunParamsConsoleIdOs matters: without it every project saved by this
-     version would record an explicit choice and would go on ignoring the
-     IDE-wide setting once that setting exists. *)
+     TProjectDebugLink.DebuggerBackend. Keeping it matters: without it every
+     project saved by this version would record an explicit choice and would go
+     on ignoring the IDE-wide setting once that setting exists. *)
   RunParamsConsoleIdDefault   = '';
-  RunParamsConsoleIdOs        = 'OSConsole';
   RunParamsConsoleIdIdeWindow = 'IDEConsole';
 
-(* Whether the selected console is one served by capturing the debuggee's
-   streams into the IDE, rather than by a console of the OS.
+(* Whether the debuggee's streams are to be captured into the IDE rather than
+   served by a console of the OS.
 
-   RunParamsConsoleIdDefault follows the IDE-wide default, which until there is
-   a setting for it is the OS console. Capture is a Windows-only ability this
-   cycle, so elsewhere the answer is always False: a selection made on Windows
-   is still read from and written back to the project, it simply does not take
-   effect, and the OS console goes on serving as it did before.
+   Capture is a Windows-only ability this cycle, so elsewhere the answer is
+   always False: a selection made on Windows is still read from and written back
+   to the project, it simply does not take effect, and the OS console goes on
+   serving as it did before.
 
    The dialog asks this too, so that the per-stream file choices are enabled in
    exactly the cases where they will be honoured. *)
-function RunParamsConsoleIsCaptured(const AConsoleId: String): Boolean;
+function RunParamsConsoleIsCaptured(AConsoleMode: TRunParamsConsoleMode): Boolean;
 
 type
 
@@ -413,6 +420,7 @@ type
     FFileNameStdIn:  String;
     FFileNameStdOut: String;
     FFileNameStdErr: String;
+    FConsoleMode:    TRunParamsConsoleMode;
     FConsoleId:      String;
 
     procedure AssignTo(Dest: TPersistent); override;
@@ -456,6 +464,7 @@ type
     property FileNameStdOut: String read FFileNameStdOut write FFileNameStdOut;
     property FileNameStdErr: String read FFileNameStdErr write FFileNameStdErr;
     // Console
+    property ConsoleMode: TRunParamsConsoleMode read FConsoleMode write FConsoleMode;
     property ConsoleId: String read FConsoleId write FConsoleId;
   end;
 
@@ -936,10 +945,10 @@ begin
   Result:=cetProgram;
 end;
 
-function RunParamsConsoleIsCaptured(const AConsoleId: String): Boolean;
+function RunParamsConsoleIsCaptured(AConsoleMode: TRunParamsConsoleMode): Boolean;
 begin
   {$IFDEF MSWINDOWS}
-  Result := AConsoleId = RunParamsConsoleIdIdeWindow;
+  Result := AConsoleMode = rpcmIdeConsole;
   {$ELSE}
   Result := False;
   {$ENDIF}
@@ -986,6 +995,7 @@ begin
     ADest.FFileNameStdOut := FFileNameStdOut;
     ADest.FFileNameStdErr := FFileNameStdErr;
     // Console
+    ADest.FConsoleMode    := FConsoleMode;
     ADest.FConsoleId      := FConsoleId;
 
     ADest.UserOverrides.Assign(UserOverrides);
@@ -1019,6 +1029,7 @@ begin
   FFileNameStdOut := '';
   FFileNameStdErr := '';
   // Console
+  FConsoleMode    := rpcmOsConsole;
   FConsoleId      := RunParamsConsoleIdDefault;
 
   // environment options

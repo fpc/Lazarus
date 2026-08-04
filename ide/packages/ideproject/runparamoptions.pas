@@ -370,6 +370,7 @@ begin
   FileNameStdOut := XMLConfig.GetValue(Path + 'local/FileNameStdOut/Value', '');
   FileNameStdErr := XMLConfig.GetValue(Path + 'local/FileNameStdErr/Value', '');
 
+  XMLConfig.GetValue(Path + 'local/ConsoleMode/Value', ord(rpcmOsConsole), FConsoleMode, TypeInfo(TRunParamsConsoleMode));
   ConsoleId := XMLConfig.GetValue(Path + 'local/ConsoleId/Value', RunParamsConsoleIdDefault);
 
   // environment options
@@ -437,6 +438,7 @@ begin
   XMLConfig.SetDeleteValue(Path + 'local/FileNameStdOut/Value', FileNameStdOut, '');
   XMLConfig.SetDeleteValue(Path + 'local/FileNameStdErr/Value', FileNameStdErr, '');
 
+  XMLConfig.SetDeleteValue(Path + 'local/ConsoleMode/Value', FConsoleMode, ord(rpcmOsConsole), TypeInfo(TRunParamsConsoleMode));
   XMLConfig.SetDeleteValue(Path + 'local/ConsoleId/Value', ConsoleId, RunParamsConsoleIdDefault);
 
   Result := mrOk;
@@ -504,6 +506,7 @@ begin
   FileNameStdOut := XMLConfig.GetValue(Path + 'local/FileNameStdOut/Value', '');
   FileNameStdErr := XMLConfig.GetValue(Path + 'local/FileNameStdErr/Value', '');
 
+  XMLConfig.GetValue(Path + 'local/ConsoleMode/Value', ord(rpcmOsConsole), FConsoleMode, TypeInfo(TRunParamsConsoleMode));
   ConsoleId := XMLConfig.GetValue(Path + 'local/ConsoleId/Value', RunParamsConsoleIdDefault);
 
   // environment options
@@ -573,6 +576,7 @@ begin
   XMLConfig.SetDeleteValue(Path + 'local/FileNameStdOut/Value', FileNameStdOut, '');
   XMLConfig.SetDeleteValue(Path + 'local/FileNameStdErr/Value', FileNameStdErr, '');
 
+  XMLConfig.SetDeleteValue(Path + 'local/ConsoleMode/Value', FConsoleMode, ord(rpcmOsConsole), TypeInfo(TRunParamsConsoleMode));
   XMLConfig.SetDeleteValue(Path + 'local/ConsoleId/Value', ConsoleId, RunParamsConsoleIdDefault);
 
   // environment options

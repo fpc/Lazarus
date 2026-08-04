@@ -2940,7 +2940,7 @@ begin
       if FDebugger <> nil then begin
         AMode := Project1.RunParameterOptions.GetActiveMode;
         if (AMode <> nil) then begin
-          if RunParamsConsoleIsCaptured(AMode.ConsoleId) then begin
+          if RunParamsConsoleIsCaptured(AMode.ConsoleMode) then begin
             (* All three streams or none: Windows cannot capture a subset,
                because a pipe is handed to CreateProcess for the whole set of
                standard handles at once. The dialog disables the per-stream

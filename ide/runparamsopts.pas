@@ -76,7 +76,7 @@ type
     cbRedirStdIn: TComboBox;
     cbRedirStdOut: TComboBox;
     cbRedirStdErr: TComboBox;
-    lbConsole: TLabel;
+    rgConsole: TRadioGroup;
     lbStdIn: TLabel;
     lbStdOut: TLabel;
     lbStdErr: TLabel;
@@ -133,7 +133,7 @@ type
     WorkingDirectoryBtn: TButton;
     WorkingDirectoryComboBox: TComboBox;
     WorkingDirectoryGroupBox: TGroupBox;
-    procedure cbConsoleChange(Sender: TObject);
+    procedure rgConsoleSelectionChanged(Sender: TObject);
     procedure cbRedirStdInChange(Sender: TObject);
     procedure DeleteModeButtonClick(Sender: TObject);
     procedure EnvVarsPageResize(Sender: TObject);
@@ -165,6 +165,7 @@ type
     fUnlistedConsoleId: String;
     procedure LoadConsoleId(const AConsoleId: String);
     function  SelectedConsoleId: String;
+    function  SelectedConsoleMode: TRunParamsConsoleMode;
     procedure SetupNotebook;
     procedure SetupLocalPage;
     procedure SetupEnvironmentPage;
@@ -199,14 +200,14 @@ const
   hlCmdLineParameters = 'CommandLineParameters';
   hlWorkingDirectory = 'WorkingDirectory';
 
-  (* The consoles cbConsole offers, in the order its items are added. The
-     captions are separate because they are translated; only these ids are
-     written to the project. Once terminals can be registered this list becomes
-     the built-in head of a longer one, which is why the code below looks a
-     value up rather than casting an index as the three redirect combos do. *)
-  ConsoleIds: array[0..2] of String = (
+  (* The consoles cbConsole offers, in the order its items are added -- which
+     the radio group has already narrowed to "not the OS one". The captions are
+     separate because they are translated; only these ids are written to the
+     project. Once terminals can be registered this list becomes the built-in
+     head of a longer one, which is why the code below looks a value up rather
+     than casting an index as the three redirect combos do. *)
+  ConsoleIds: array[0..1] of String = (
     RunParamsConsoleIdDefault,
-    RunParamsConsoleIdOs,
     RunParamsConsoleIdIdeWindow
   );
 
@@ -302,16 +303,28 @@ begin
     Result := fUnlistedConsoleId;
 end;
 
-procedure TRunParamsOptsDlg.cbConsoleChange(Sender: TObject);
+function TRunParamsOptsDlg.SelectedConsoleMode: TRunParamsConsoleMode;
+begin
+  if rgConsole.ItemIndex = ord(rpcmIdeConsole) then
+    Result := rpcmIdeConsole
+  else
+    Result := rpcmOsConsole;
+end;
+
+procedure TRunParamsOptsDlg.rgConsoleSelectionChanged(Sender: TObject);
 var
   RedirectsApply: Boolean;
 begin
+  (* The drop-down answers "which internal console", so it has nothing to say
+     while the OS one is serving. *)
+  cbConsole.Enabled := rgConsole.Enabled and (SelectedConsoleMode = rpcmIdeConsole);
+
   (* Where the console is served by capturing the debuggee's streams, all three
      are captured or none -- Windows hands a pipe to CreateProcess for the whole
      set of standard handles at once -- so a per-stream file has nowhere to go.
      The controls are disabled rather than cleared: whatever was configured
      survives in the project, and returning to the OS console brings it back. *)
-  RedirectsApply := not RunParamsConsoleIsCaptured(SelectedConsoleId);
+  RedirectsApply := not RunParamsConsoleIsCaptured(SelectedConsoleMode);
   cbRedirStdIn.Enabled   := RedirectsApply;
   cbRedirStdOut.Enabled  := RedirectsApply;
   cbRedirStdErr.Enabled  := RedirectsApply;
@@ -420,18 +433,20 @@ begin
   UseConsoleBufferCheckBox.Caption := dlgUseConsoleBuffer;
   ConsoleSizeWarnLabel.Caption := dlgConsoleSizeNotSupported;
 
+  rgConsole.Caption := dlgConsoleGroup;
+  rgConsole.Items[ord(rpcmOsConsole)]  := dlgConsoleModeOs;
+  rgConsole.Items[ord(rpcmIdeConsole)] := dlgConsoleModeIde;
+  rgConsole.ItemIndex := ord(rpcmOsConsole);
+
   cbConsole.Items.Add(dlgConsoleUseIdeDefault);
-  cbConsole.Items.Add(dlgConsoleOs);
   cbConsole.Items.Add(dlgConsoleIdeWindow);
   cbConsole.ItemIndex := 0;
-  lbConsole.Caption := dlgConsoleLabel;
   (* Elsewhere only the OS console can serve, so there is nothing to choose
-     between. The combo is left in place and merely disabled: it still shows and
-     writes back whatever a project configured on Windows selected, so moving a
-     project between platforms does not quietly discard the setting. *)
+     between. The controls are left in place and merely disabled: they still
+     show and write back whatever a project configured on Windows selected, so
+     moving a project between platforms does not quietly discard the setting. *)
   {$IFnDEF MSWINDOWS}
-  cbConsole.Enabled := False;
-  lbConsole.Enabled := False;
+  rgConsole.Enabled := False;
   {$ENDIF}
 
   cbRedirStdIn.Items.Add (dlgRedirOff);
@@ -726,8 +741,9 @@ begin
   FileNameStdOut.Text := AMode.FileNameStdOut;
   FileNameStdErr.Text := AMode.FileNameStdErr;
 
+  rgConsole.ItemIndex := ord(AMode.ConsoleMode);
   LoadConsoleId(AMode.ConsoleId);
-  cbConsoleChange(cbConsole);
+  rgConsoleSelectionChanged(rgConsole);
 
   // environment
   FillSystemVariablesListView;
@@ -866,7 +882,8 @@ begin
   AMode.FileNameStdOut := FileNameStdOut.Text;
   AMode.FileNameStdErr := FileNameStdErr.Text;
 
-  AMode.ConsoleId := SelectedConsoleId;
+  AMode.ConsoleMode := SelectedConsoleMode;
+  AMode.ConsoleId   := SelectedConsoleId;
 
   // history list: WorkingDirectoryComboBox
   SaveComboHistory(WorkingDirectoryComboBox,hlWorkingDirectory,rltFile);
