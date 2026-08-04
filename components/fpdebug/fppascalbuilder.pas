@@ -836,6 +836,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     if ADisplayFormat = ddfPointer then begin
       if s <> '' then
         APrintedValue := s + '(' + APrintedValue + ')';
+      Result := True;
       exit; // no data
     end;
 
