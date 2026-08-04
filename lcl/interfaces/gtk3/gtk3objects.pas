@@ -856,6 +856,8 @@ begin
 end;
 
 constructor TGtk3Region.Create(X1,Y1,X2,Y2,nW,nH: Integer);
+// Like CreateEllipse: the rounded rectangle is drawn in the scratch surface's local
+// coordinates (0,0 .. W,H) and the resulting region is translated to X1,Y1.
 var
   ASurface: pcairo_surface_t;
   cr:Pcairo_t;
@@ -863,31 +865,37 @@ var
   w,h:integer;
 begin
   inherited Create;
-  FHandle := nil;
   w:=x2-x1;
   h:=y2-y1;
+  if (w<=0) or (h<=0) then
+  begin
+    FHandle := cairo_region_create;
+    exit;
+  end;
   rr:=nW/2;
 
+  FHandle := nil;
   ASurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h);
   cr:=cairo_create(ASurface);
   try
     cairo_new_path(cr);
 
-    cairo_move_to(cr,x1,y2-rr);
-    cairo_line_to(cr,x1,y1+rr);
-    cairo_arc(cr,x1 + rr, y1 + rr, rr, pi, 3*pi/2);
-    cairo_line_to(cr,x2-rr,y1);
-    cairo_arc(cr,x2 - rr, y1 + rr, rr, 3*pi/2, 0);
-    cairo_line_to(cr,x2,y2-rr);
-    cairo_arc(cr,x2 - rr, y2 - rr, rr, 0, pi/2);
-    cairo_line_to(cr,x1-rr,y2);
-    cairo_arc(cr,x1 + rr, y2 - rr, rr, pi/2, pi);
+    cairo_move_to(cr,0,h-rr);
+    cairo_line_to(cr,0,rr);
+    cairo_arc(cr,rr, rr, rr, pi, 3*pi/2);
+    cairo_line_to(cr,w-rr,0);
+    cairo_arc(cr,w - rr, rr, rr, 3*pi/2, 2*pi);
+    cairo_line_to(cr,w,h-rr);
+    cairo_arc(cr,w - rr, h - rr, rr, 0, pi/2);
+    cairo_line_to(cr,rr,h);
+    cairo_arc(cr,rr, h - rr, rr, pi/2, pi);
 
     cairo_close_path(cr);
     cairo_set_source_rgba(cr,1,1,1,1);
     cairo_fill_preserve(cr);
 
     FHandle := gdk_cairo_region_create_from_surface(ASurface);
+    cairo_region_translate(FHandle, x1, y1);
   finally
     cairo_destroy(cr);
     cairo_surface_destroy(ASurface);
@@ -895,42 +903,47 @@ begin
 end;
 
 constructor TGtk3Region.CreateEllipse(X1,Y1,X2,Y2: Integer);
+// The ellipse is rasterized into a scratch surface that is only W x H pixels, so it
+// must be drawn in surface local coordinates (0,0 .. W,H). The region built from the
+// surface is then translated to X1,Y1 to give the caller device coordinates. Drawing
+// at X1,Y1 instead would put the ellipse outside the scratch surface and the region
+// would come out empty.
 var
   ASurface: pcairo_surface_t;
   cr:Pcairo_t;
   w,h:integer;
-  save_matrix: Tcairo_matrix_t;
 begin
   inherited Create;
-  FHandle := nil;
   w:=x2-x1;
   h:=y2-y1;
+  if (w<=0) or (h<=0) then
+  begin
+    FHandle := cairo_region_create;
+    exit;
+  end;
 
+  FHandle := nil;
   ASurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h);
   cr:=cairo_create(ASurface);
   try
-    cairo_save(cr);
-    try
-      cairo_get_matrix(cr, @save_matrix);
-      cairo_translate (cr, x1 + w / 2.0 + PixelOffset, y1 + h / 2.0 + PixelOffset);
-      cairo_scale (cr, w / 2.0, h / 2.0);
-      cairo_new_path(cr);
-      cairo_arc
-          (
-            (*cr =*) cr,
-            (*xc =*) 0,
-            (*yc =*) 0,
-            (*radius =*) 1,
-            (*angle1 =*) 0,
-            (*angle2 =*) 2 * Pi
-          );
-      cairo_close_path(cr);
-      cairo_set_source_rgba(cr,1,1,1,1);
-      cairo_fill_preserve(cr);
-    finally
-      cairo_restore(cr);
-    end;
+    cairo_translate (cr, w / 2.0 + PixelOffset, h / 2.0 + PixelOffset);
+    cairo_scale (cr, w / 2.0, h / 2.0);
+    cairo_new_path(cr);
+    cairo_arc
+        (
+          (*cr =*) cr,
+          (*xc =*) 0,
+          (*yc =*) 0,
+          (*radius =*) 1,
+          (*angle1 =*) 0,
+          (*angle2 =*) 2 * Pi
+        );
+    cairo_close_path(cr);
+    cairo_set_source_rgba(cr,1,1,1,1);
+    cairo_fill_preserve(cr);
+
     FHandle := gdk_cairo_region_create_from_surface(ASurface);
+    cairo_region_translate(FHandle, x1, y1);
   finally
     cairo_destroy(cr);
     cairo_surface_destroy(ASurface);
