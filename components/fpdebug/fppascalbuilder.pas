@@ -1277,6 +1277,8 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     CacheMax, CacheSize: Int64;
     StartIdx, j: Int64;
     Cache: TFpDbgMemCacheBase;
+    sz: TFpDbgValueSize;
+    fl: TFpValueFlags;
   begin
     APrintedValue := '';
 
@@ -1316,25 +1318,39 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       LowBnd := 0; // TODO: see WatchResultData
       CacheMax  := StartIdx;
       CacheSize := 0;
-      CacheCnt  := 200;
+      CacheCnt  := Min(Cnt, 200);
       MemberValue := AValue.Member[StartIdx+LowBnd]; // // TODO : CheckError // ClearError for AValue
       if (MemberValue = nil) or (not IsTargetNotNil(MemberValue.Address)) or
-         (Context.MemManager.CacheManager = nil)
+         (Context.MemManager.CacheManager = nil) or
+         (Cnt <= 2)
       then begin
         CacheMax := StartIdx + Cnt; // no caching possible
       end
       else begin
+        fl := AValue.Flags;
+        if CacheCnt < Cnt then fl := [];
         repeat
-          TmpVal := AValue.Member[StartIdx + min(CacheCnt, Cnt) + LowBnd]; // // TODO : CheckError // ClearError for AValue
+          // We want the address of the next member, so the last member is included in the cache
+          j := 0;
+          if not (vfArrayUpperBoundLimit in fl) then begin
+            TmpVal := AValue.Member[StartIdx + min(CacheCnt, Cnt) + LowBnd];
+            AValue.ResetError;
+          end
+          else
+            TmpVal := nil;
+          if (TmpVal = nil) and (Cnt >= CacheCnt) then begin
+            TmpVal := AValue.Member[StartIdx + min(CacheCnt, Cnt-1) + LowBnd];
+            if (TmpVal <> nil) and TmpVal.GetSize(sz) then j := SizeToFullBytes(sz);
+          end;
           if (TmpVal <> nil) and IsTargetNotNil(TmpVal.Address) then begin
             {$PUSH}{$R-}{$Q-}
-            CacheSize := TmpVal.Address.Address - MemberValue.Address.Address;
+            CacheSize := TmpVal.Address.Address - MemberValue.Address.Address + j;
             TmpVal.ReleaseReference;
             {$POP}
             if CacheSize > Context.MemManager.MemLimits.MaxMemReadSize then begin
               CacheSize := 0;
               CacheCnt := CacheCnt div 2;
-              if CacheCnt <= 1 then
+              if CacheCnt <= 2 then
                 break;
               continue;
             end;
