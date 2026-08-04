@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Lazarus
-Comment=Lazarus IDE
+Comment=Open Source IDE for Free Pascal
+Comment[ru]=Свободная интегрированная среда разработки (IDE) для Free Pascal
 Exec=startlazarus %f
 Terminal=false
 Type=Application

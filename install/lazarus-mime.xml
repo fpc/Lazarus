@@ -8,6 +8,7 @@
     <expanded-acronym>Lazarus project source</expanded-acronym>
     <glob pattern="*.lpr"/>
     <comment xml:lang="de">Lazarus Projekt-Quelldatei</comment>
+    <comment xml:lang="ru">Главный файл исходного кода проекта Lazarus</comment>
   </mime-type>
   <mime-type type="text/lazarus-project-information">
     <sub-class-of type="text/xml"/>
@@ -17,6 +18,7 @@
     <expanded-acronym>Lazarus project</expanded-acronym>
     <glob pattern="*.lpi"/>
     <comment xml:lang="de">Lazarus Projekt</comment>
+    <comment xml:lang="ru">Проект Lazarus</comment>
   </mime-type>
   <mime-type type="text/lazarus-form">
     <sub-class-of type="text/plain"/>
@@ -26,6 +28,7 @@
     <expanded-acronym>Lazarus form</expanded-acronym>
     <glob pattern="*.lfm"/>
     <comment xml:lang="de">Lazarus Formular</comment>
+    <comment xml:lang="ru">Форма Lazarus</comment>
   </mime-type>
   <mime-type type="text/lazarus-resource">
     <sub-class-of type="text/pascal"/>
@@ -35,6 +38,7 @@
     <expanded-acronym>Lazarus resource</expanded-acronym>
     <glob pattern="*.lrs"/>
     <comment xml:lang="de">Lazarus Resource</comment>
+    <comment xml:lang="ru">Ресурс Lazarus</comment>
   </mime-type>
   <mime-type type="text/lazarus-package">
     <sub-class-of type="text/xml"/>
@@ -44,6 +48,7 @@
     <expanded-acronym>Lazarus package</expanded-acronym>
     <glob pattern="*.lpk"/>
     <comment xml:lang="de">Lazarus Package</comment>
+    <comment xml:lang="ru">Пакет Lazarus</comment>
   </mime-type>
   <mime-type type="text/lazarus-package-link">
     <sub-class-of type="text/plain"/>
@@ -53,6 +58,7 @@
     <expanded-acronym>Lazarus package link</expanded-acronym>
     <glob pattern="*.lpl"/>
     <comment xml:lang="de">Lazarus Package Verweis</comment>
+    <comment xml:lang="ru">Ссылка на пакет Lazarus</comment>
   </mime-type>
   <mime-type type="text/lazarus-code-inlay">
     <sub-class-of type="text/plain"/>
@@ -62,5 +68,6 @@
     <expanded-acronym>Lazarus code inlay</expanded-acronym>
     <glob pattern="*.dci"/>
     <comment xml:lang="de">Lazarus Quellcode Schablonen</comment>
+    <comment xml:lang="ru">Шаблоны кода Lazarus</comment>
   </mime-type>
 </mime-info>
