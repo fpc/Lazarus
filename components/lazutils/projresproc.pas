@@ -439,7 +439,6 @@ type
 
 var
   Q: PQWord absolute LEDouble;
-  C: PCardinal absolute LEDouble;
   W: PWord absolute LEDouble;
   E: ^TExpWrap absolute LRSExtended;
   {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
@@ -563,6 +562,7 @@ function ReadLRSWideString(s: TStream): WideString;
 var
   Len: LongInt;
 begin
+  Result:='';
   Len:=ReadLRSInteger(s);
   SetLength(Result,Len);
   if Len>0 then begin

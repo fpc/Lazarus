@@ -480,6 +480,7 @@ function TLRSObjBinToTextConvert.ReadShortString: String;
 var
   len: Byte;
 begin
+  Result:='';
   len := fInput.ReadByte;
   SetLength(Result, len);
   if (Len > 0) then
@@ -490,6 +491,7 @@ function TLRSObjBinToTextConvert.ReadLongString: String;
 var
   len: integer;
 begin
+  Result:='';
   len := ReadLRSInteger(fInput);
   SetLength(Result, len);
   if (Len > 0) then
@@ -1108,7 +1110,7 @@ var
 begin
   if fLinks<>nil then
     fLinks.Sort(true);    // sort fLinks for LFM positions
-  debugln(['TLRSObjTextToBinConvert.Run Start']);
+  //debugln(['TLRSObjTextToBinConvert.Run Start']);
   fParser := TParser.Create(fInput);
   OldDecimalSeparator:=DefaultFormatSettings.DecimalSeparator;
   DefaultFormatSettings.DecimalSeparator:='.';
