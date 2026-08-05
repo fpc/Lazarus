@@ -351,9 +351,10 @@ type
 
   TRunParamsRedirectMode = (rprOff, rprOverwrite, rprAppend);
 
-  (* Where the debuggee's console I/O appears -- the one question the user is
-     actually answering. Capture is not one of the answers; it is the mechanism
-     the non-OS answers need.
+  (* Where the debuggee's console I/O appears. rpcmIdeConsole is capture: the
+     streams are taken into the IDE rather than served by a console of the OS.
+     What this does not say is which console then displays them -- that is
+     ConsoleId below, and it is the only part a registered provider names.
 
      Two values today. When inherit-versus-new console stops being a hidden
      backend property, rpcmOsConsole splits in two and this gains a value
