@@ -1,0 +1,262 @@
+object RptFormA: TRptFormA
+  Tag = 500
+  Left = 376
+  Height = 712
+  Top = 184
+  Width = 733
+  ActiveControl = ckbGridPrint
+  BorderIcons = [biSystemMenu, biMinimize, biMaximize, biHelp]
+  Caption = 'Report'
+  ClientHeight = 712
+  ClientWidth = 733
+  DragKind = dkDock
+  Font.Height = -11
+  Font.Name = 'Arial'
+  Font.Pitch = fpVariable
+  KeyPreview = True
+  Position = poDefaultPosOnly
+  LCLVersion = '4.99.0.0'
+  WindowState = wsMaximized
+  OnDestroy = FormDestroy
+  OnMouseWheel = sbxMainMouseWheel
+  OnResize = FormResize
+  OnShow = FormShow
+  object sbxMain: TScrollBox
+    Left = 0
+    Height = 667
+    Top = 22
+    Width = 733
+    HorzScrollBar.Page = 462
+    VertScrollBar.Page = 650
+    Align = alClient
+    ClientHeight = 663
+    ClientWidth = 729
+    Color = clGray
+    ParentBackground = False
+    ParentColor = False
+    TabOrder = 0
+    TabStop = True
+    OnResize = sbxMainResize
+    object pnlShadow: TPanel
+      Left = 24
+      Height = 634
+      Top = 16
+      Width = 438
+      BevelOuter = bvNone
+      Color = 4934475
+      Enabled = False
+      ParentBackground = False
+      ParentColor = False
+      TabOrder = 0
+      UseDockManager = False
+    end
+  end
+  object tbrMain: TToolBar
+    Left = 0
+    Height = 22
+    Top = 0
+    Width = 733
+    AutoSize = True
+    EdgeBorders = []
+    Images = ilSmall
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+    object tbtPrint: TToolButton
+      Left = 1
+      Hint = 'Print'
+      Top = 0
+      Caption = 'tbtPrint'
+      ImageIndex = 0
+      OnClick = tbtPrintClick
+    end
+    object tbtPrintDialog: TToolButton
+      Left = 24
+      Hint = 'Print dialog'
+      Top = 0
+      Caption = 'tbtPrintDialog'
+      ImageIndex = 1
+      OnClick = tbtPrintDialogClick
+    end
+    object tbtPrinterSetupDialog: TToolButton
+      Left = 47
+      Hint = 'Print Setup'
+      Top = 0
+      Caption = 'tbtPrinterSetupDialog'
+      ImageIndex = 2
+      OnClick = tbtPrinterSetupDialogClick
+    end
+    object tbtPrevPage: TToolButton
+      Left = 70
+      Hint = 'Previous Page'
+      Top = 0
+      Caption = 'tbtPrevPage'
+      ImageIndex = 4
+      OnClick = tbtPrevPageClick
+    end
+    object tbtNextPage: TToolButton
+      Left = 93
+      Hint = 'Next Page'
+      Top = 0
+      Caption = 'tbtNextPage'
+      ImageIndex = 5
+      OnClick = tbtNextPageClick
+    end
+    object ToolButton1: TToolButton
+      Left = 116
+      Height = 22
+      Top = 0
+      Caption = 'ToolButton1'
+      ImageIndex = 6
+      Style = tbsSeparator
+    end
+    object ToolButton2: TToolButton
+      Left = 262
+      Height = 22
+      Top = 0
+      Caption = 'ToolButton2'
+      ImageIndex = 4
+      Style = tbsSeparator
+    end
+    object ToolButton3: TToolButton
+      Left = 353
+      Height = 22
+      Top = 0
+      Caption = 'ToolButton3'
+      ImageIndex = 5
+      Style = tbsSeparator
+    end
+    object cbxScale: TComboBox
+      Left = 124
+      Height = 22
+      Hint = 'Масштаб'
+      Top = 0
+      Width = 138
+      DropDownCount = 20
+      ItemHeight = 14
+      ItemIndex = 8
+      Items.Strings = (
+        '200%'
+        '150%'
+        '100%'
+        '75%'
+        '50%'
+        '25%'
+        '10%'
+        'Page Width'
+        'Whole Page'
+      )
+      TabOrder = 0
+      Text = 'Whole Page'
+      OnChange = mniScaleClick
+      OnKeyDown = cbxScaleKeyDown
+    end
+    object btnRefresh: TButton
+      Left = 270
+      Height = 22
+      Top = 0
+      Width = 83
+      Caption = 'Refresh'
+      TabOrder = 1
+      OnClick = btnRefreshClick
+    end
+    object ckbGridPrint: TCheckBox
+      Left = 361
+      Height = 18
+      Top = 0
+      Width = 42
+      Caption = '2 x 2'
+      TabOrder = 2
+      OnChange = ckbGridPrintChange
+      OnClick = ckbGridPrintClick
+    end
+  end
+  object stbMain: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 689
+    Width = 733
+    Panels = <>
+  end
+  object imlMain: TImageList
+    Height = 32
+    Width = 32
+    Left = 56
+    Top = 48
+    Bitmap = {
+      4C7A070000002000000020000000950400000000000078DAED9D8D92E2300880
+      79F43E9A6FD6BDAAA994420209F9396533995BE7B41F903F4032BBC3FE356DDB
+      B63DF5196CFC33520ECA1E29C7850DF0EA83E410F526723C1E8F7F2FE1D947EB
+      9DD85DE6B8526F4F6E1ACB92EE5E6CCC3D9E79F492EE1E6C89ABD1FD60D7EE45
+      39EED1CF795CD0FD78EF4DEE062E7EDE653D31BAD3CFE3D7745C725CE9B52407
+      D69DFBBCC4A77BD4F9EC77D3CA91E3623E1E0BAC3B96E5FAECD7F06AEDC37131
+      9FBE07F3D333383968B77039FE690B869F93A3864BED9FE641898FE568E1DED6
+      AF30FE257B63395AD978FD69F9357A27AEB4274B7B4C2B3F31A5B58FF99A35AE
+      E5536E898FF7CC9C1C257E8E5B3A0FD37B727248FC166EAD1CDE5C8B1C3DB91A
+      39467073728CE44A728CE646EB1FB38FEED44F1ED9297F3B7E1FD93BF2B14F2C
+      FDFECD7C50F4E5E6DFC07527F147FDF4E067F3329DF962EEB133BFC4917204AD
+      7C8DAD41C8C7B5F0B978D9CAAEE1733912294EA63E5A0B9FCDFB909C089707E1
+      F6995ABE9403A03911295E68E563AE2527D283AFC98978F2A51888CB8914730E
+      95F31F3F436BEF5BCEA161FD51BF411B8B49B6AF59FF949B8BC5B279E2C6FD4F
+      9243CBF5DAFFB3B1E8C0F33F37C7ACFC99FEDFCCF86B768F083CE2FF88FF23FE
+      8FF83FE2FFFF8D6FC93978F3E977D5161FA8DAFF3C3EC3CCA3CBF7BA0A7BD4F0
+      E1FDFFF0EE340FF05CD7F83DCEF907FC7C6C7F1A6740B293133FD93C75290F72
+      DA9FD65B39F0A9FD692D1267FFDC3858E33FAA3F10DF1FC723403FE3C9277300
+      A8AE68ECBDF8173F1DEBFE7EFE5367221B8D51BDD61F48E39164C373D57BFD51
+      3E1D97D43BF1399B9E7A93FAA7DEF1778FF8F7D7CFFF88FF23FE8FE69F17E851
+      536FF1916BE79817BF56062FBE54F73B8A4FF7DB197CAB0CA55C55EDF7C22519
+      705CB5DF3CE9FD92BBB0CC7FCDDEFB7966F26FE0F6FA253F64CF4DEDF9CBD5E0
+      2626D61FB339196ACFFF3BFF7A6F4362A77F6BE603C7BFB2817CDF29CBD06283
+      3B7F37EB5F9A07B93961D59F3F5B7AE90F3FA53F278365EE697C5D0D1FEF3979
+      FDC17DFD5319727A63B6C7F873B5B58943BBF4BD6B4DFE31770EE672E6499F33
+      6683F25CA8B99B96CB875CCEC777218AC50E35FCDB3D10804FD687C8D053FFD3
+      0EE79D3330DBA155FFD30E05197AEADF62074F7E8D0CDE7CAB0C5ABE39A79191
+      81AB53D3DE33B0744E86D1B9878B0C91E788166D789BB9E666E63601D540CC62
+      6F93EEA56D93F820D4A0CC628FE243A1066716BB371F943548B3D8DFACFF0AE3
+      BFC2FC5F61FDAFB0FFADB0FFAF70FEAD70FEAFE0FFACE0FF458B162D5AB4EFD8
+      CB6181F374059F6205BF6A05DF7205FF7A85186385386B85587385787B76CE61
+      A6FE33C77FE6FC9FB9FE67EE7F33F7FF99E7DFCCF37FB6FF135E70B468BFD946
+      DE3B70A9C569B877E0C5F79081BB376EA97B6FB9FB80EF0EA45ABF540369A9BB
+      AFBB7720D7C26A6468A937E26AE1A90CDA3A43EBDF02D0D6825BEB6F6DFC722D
+      7C5FBE4D7F4DDDAF87FE2DB5DF96BFC7A09DFF96BA672B9FAB056FA97BB7FE3D
+      8ACFFE238F7B8FF1D7D4407275D7DEFA4BF6C0B5DFA59A670FFDE9BA2CD55DF7
+      D4FF72B674A837B69CFF3DEA8DADFE8777BDB1664FE8596F6C5D87516F2CDB28
+      229668D174ED0FB323D371
+    }
+  end
+  object ilSmall: TImageList
+    Left = 176
+    Top = 48
+    Bitmap = {
+      4C7A060000001000000010000000590200000000000078DAED97DD71C3201084
+      29C5A5A81497A252F4904254481E5C42DEF3A0682F2C5EDD1C08DBCA4C26119A
+      1BFF886F39100B68494B5ACBA2B1A4ED358EE3C2F0F73C3BCFF34603CCC7E762
+      81E27594C1270A7965C9A3CCEFF3365FFC272C022CEA215483ACCF5FD9C2AF9A
+      1659C3B3D531C8EDB2AFD4611F750CEC33F7C9F4714DD7F25B753CCF3CB59081
+      CC90EE1ACA453C73F43A88B769B268F2D20E75C845ACF2FAAC544379D5F0F354
+      3555C3B3FA6CFD1C609BAA4356B9A87D9D03AAD3C3D5E6927FCE7B5C6B4E3EC2
+      4557CBFF3D6CCBFFBD6CCDFFAD7C7BFC1F71CCB3D7FFCA45BE3DFD7FFAFF37FB
+      DF8F732B6ABC7AAC16C3303479F479B85C4A78DD5E9EF58FE2D3F56AD1CBEB78
+      81A31EBEEFF1C65C060BF2E3EDB6AE0953E1EDBB3C0BDF4FB699023E499F5A7C
+      A9EF79B917F1C81BF519C663ED935C109AC386873EFACFBA6099073CE1720979
+      E93FDB2A5AEC3FBC51E175EC908BF160735EAA61EB0F72CB51C6887519684FFF
+      AB78C99E6FE637BF75BDDAE1F7F47AF7FA5A0C95791CEDD93E30D6585BBD46D1
+      16EFFBBD5B3D69FB62D6D03D8CA5A6817687EC650459FAEFBB240B68A00D7A59
+      CF10EC43C4B37EB486A9468DAFB5AF791CD5FEDEF88DD8BF5C0E9EA7868DA95B
+      BBCD17AB86CF239A037EFECCEB9C9DA764A179F4F2D440256AF4F09BB30822D0
+      68F1658EE95C5BC7443578EF913DDDE7F1CC59DEC6B4732DF81BD72BEF3F609F
+      E553B6F2337CDA9CE9EF7968D4D9B123F6CE8E5A3705D173FE1C5F7CFF3CE2FD
+      F588F7DFF3FAAFFE7F750DB87BB96F1E063EDF2C036D8D1EDFB734229FF7B23F
+      B50EA403D690D303F5EB0BF42CED73
+    }
+  end
+  object PrinterSetupDialog: TPrinterSetupDialog
+    Left = 112
+    Top = 118
+  end
+  object PrintDialog: TPrintDialog
+    Options = [poPrintToFile, poPageNums, poSelection]
+    Left = 112
+    Top = 192
+  end
+end
