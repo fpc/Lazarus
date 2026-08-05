@@ -324,7 +324,11 @@ begin
      set of standard handles at once -- so a per-stream file has nowhere to go.
      The controls are disabled rather than cleared: whatever was configured
      survives in the project, and returning to the OS console brings it back. *)
-  RedirectsApply := not RunParamsConsoleIsCaptured(SelectedConsoleMode);
+{$IFnDef LCLNoGui}
+  RedirectsApply := not DebugBoss.ConsoleIsCaptured(SelectedConsoleMode);
+{$ELSE}
+  RedirectsApply := SelectedConsoleMode <> rpcmIdeConsole;
+{$ENDIF}
   cbRedirStdIn.Enabled   := RedirectsApply;
   cbRedirStdOut.Enabled  := RedirectsApply;
   cbRedirStdErr.Enabled  := RedirectsApply;
@@ -441,12 +445,13 @@ begin
   cbConsole.Items.Add(dlgConsoleUseIdeDefault);
   cbConsole.Items.Add(dlgConsoleIdeWindow);
   cbConsole.ItemIndex := 0;
-  (* Elsewhere only the OS console can serve, so there is nothing to choose
-     between. The controls are left in place and merely disabled: they still
-     show and write back whatever a project configured on Windows selected, so
-     moving a project between platforms does not quietly discard the setting. *)
-  {$IFnDEF MSWINDOWS}
-  rgConsole.Enabled := False;
+  (* Where the selected backend cannot capture, only the OS console can serve
+     and there is nothing to choose between. The controls are left in place and
+     merely disabled: they still show and write back whatever the project
+     selected, so opening it under a backend that cannot capture -- or on
+     another platform -- does not quietly discard the setting. *)
+  {$IFnDef LCLNoGui}
+  rgConsole.Enabled := dfStdIoCapture in DebugBoss.DebuggerClass.SupportedFeatures;
   {$ENDIF}
 
   cbRedirStdIn.Items.Add (dlgRedirOff);

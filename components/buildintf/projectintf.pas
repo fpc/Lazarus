@@ -374,18 +374,6 @@ const
   RunParamsConsoleIdDefault   = '';
   RunParamsConsoleIdIdeWindow = 'IDEConsole';
 
-(* Whether the debuggee's streams are to be captured into the IDE rather than
-   served by a console of the OS.
-
-   Capture is a Windows-only ability this cycle, so elsewhere the answer is
-   always False: a selection made on Windows is still read from and written back
-   to the project, it simply does not take effect, and the OS console goes on
-   serving as it did before.
-
-   The dialog asks this too, so that the per-stream file choices are enabled in
-   exactly the cases where they will be honoured. *)
-function RunParamsConsoleIsCaptured(AConsoleMode: TRunParamsConsoleMode): Boolean;
-
 type
 
   { TAbstractRunParamsOptionsMode }
@@ -943,15 +931,6 @@ begin
   for Result:=Low(TCompilationExecutableType) to High(TCompilationExecutableType)
   do if CompareText(s,CompilationExecutableTypeNames[Result])=0 then exit;
   Result:=cetProgram;
-end;
-
-function RunParamsConsoleIsCaptured(AConsoleMode: TRunParamsConsoleMode): Boolean;
-begin
-  {$IFDEF MSWINDOWS}
-  Result := AConsoleMode = rpcmIdeConsole;
-  {$ELSE}
-  Result := False;
-  {$ENDIF}
 end;
 
 { TAbstractRunParamsOptionsMode }

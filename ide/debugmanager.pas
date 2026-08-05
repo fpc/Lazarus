@@ -264,6 +264,7 @@ type
     function DoStopProject: TModalResult; override;
     procedure DoToggleCallStack; override;
     procedure DoSendConsoleInput(AText: String); override;
+    function ConsoleIsCaptured(AConsoleMode: TRunParamsConsoleMode): Boolean; override;
     procedure ProcessCommand(Command: word; var Handled: boolean); override;
 
     //Some debuugers may do things like ProcessMessages while processing commands
@@ -2940,7 +2941,7 @@ begin
       if FDebugger <> nil then begin
         AMode := Project1.RunParameterOptions.GetActiveMode;
         if (AMode <> nil) then begin
-          if RunParamsConsoleIsCaptured(AMode.ConsoleMode) then begin
+          if ConsoleIsCaptured(AMode.ConsoleMode) then begin
             (* All three streams or none: Windows cannot capture a subset,
                because a pipe is handed to CreateProcess for the whole set of
                standard handles at once. The dialog disables the per-stream
@@ -3220,6 +3221,14 @@ procedure TDebugManager.DoSendConsoleInput(AText: String);
 begin
   if FDebugger <> nil then
     FDebugger.SendConsoleInput(AText);
+end;
+
+function TDebugManager.ConsoleIsCaptured(AConsoleMode: TRunParamsConsoleMode
+  ): Boolean;
+begin
+  Result := (AConsoleMode = rpcmIdeConsole) and
+            (DebuggerClass <> nil) and
+            (dfStdIoCapture in DebuggerClass.SupportedFeatures);
 end;
 
 procedure TDebugManager.ProcessCommand(Command: word; var Handled: boolean);
