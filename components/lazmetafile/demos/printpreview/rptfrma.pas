@@ -295,7 +295,7 @@ begin
 
     img.Draw(cnv,Rect(mm(110),mm(140),mm(194),mm(256)));
 
-  {  cnv.StretchDraw(Rect(mm(120),mm(140),mm(204),mm(256)), img);}
+    cnv.StretchDraw(Rect(mm(120),mm(140),mm(204),mm(256)), img);
 
   finally
     cnv.Free;

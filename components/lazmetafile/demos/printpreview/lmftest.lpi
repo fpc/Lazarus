@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="12"/>
+    <Version Value="13"/>
     <PathDelim Value="\"/>
     <General>
       <Scaled Value="True"/>
@@ -18,6 +18,9 @@
       <Version Value="2"/>
     </PublishOptions>
     <RunParams>
+      <local>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T &apos;Lazarus Run Output&apos; -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+      </local>
       <FormatVersion Value="2"/>
       <Modes>
         <Mode Name="default">
@@ -40,20 +43,20 @@
       <Unit>
         <Filename Value="lmftest.lpr"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="44" Y="18"/>
-        <SyntaxHighlighter Value="Delphi"/>
-        <UsageCount Value="36"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
+        <UsageCount Value="38"/>
+        <CursorPos X="44" Y="18"/>
+        <SyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="unit1.pas"/>
         <ComponentName Value="Form1"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
+        <UsageCount Value="24"/>
         <CursorPos X="43" Y="27"/>
         <SyntaxHighlighter Value="Delphi"/>
-        <UsageCount Value="24"/>
       </Unit>
       <Unit>
         <Filename Value="rptfrma.pas"/>
@@ -61,269 +64,287 @@
         <ComponentName Value="RptFormA"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+        <UsageCount Value="38"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="85"/>
+        <TopLine Value="268"/>
+        <CursorPos X="65" Y="298"/>
         <SyntaxHighlighter Value="Delphi"/>
-        <UsageCount Value="36"/>
         <Bookmarks Count="1">
           <Item0 X="41" Y="230" Left="1" Top="216" ID="1"/>
         </Bookmarks>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="..\..\dcommon\fontutils.pas"/>
+        <UsageCount Value="11"/>
         <TopLine Value="92"/>
         <CursorPos X="47" Y="90"/>
         <SyntaxHighlighter Value="Delphi"/>
-        <UsageCount Value="11"/>
       </Unit>
       <Unit>
         <Filename Value="..\..\..\..\..\lcl\graphics.pp"/>
         <UnitName Value="Graphics"/>
+        <UsageCount Value="14"/>
         <TopLine Value="75"/>
         <CursorPos X="30" Y="65"/>
         <SyntaxHighlighter Value="Delphi"/>
-        <UsageCount Value="14"/>
       </Unit>
       <Unit>
         <Filename Value="lmf.pas"/>
+        <UsageCount Value="12"/>
         <EditorIndex Value="-1"/>
         <SyntaxHighlighter Value="Delphi"/>
-        <UsageCount Value="12"/>
       </Unit>
       <Unit>
         <Filename Value="..\..\..\..\..\lcl\include\control.inc"/>
+        <UsageCount Value="12"/>
         <TopLine Value="1189"/>
         <CursorPos Y="1209"/>
         <SyntaxHighlighter Value="Delphi"/>
-        <UsageCount Value="12"/>
       </Unit>
       <Unit>
         <Filename Value="..\..\..\..\..\lcl\include\canvas.inc"/>
+        <UsageCount Value="14"/>
         <TopLine Value="881"/>
         <CursorPos X="45" Y="905"/>
         <SyntaxHighlighter Value="Delphi"/>
-        <UsageCount Value="14"/>
       </Unit>
       <Unit>
         <Filename Value="..\..\dcommon\lmf.pas"/>
+        <UsageCount Value="16"/>
         <TopLine Value="861"/>
         <CursorPos X="11" Y="880"/>
         <SyntaxHighlighter Value="Delphi"/>
-        <UsageCount Value="16"/>
       </Unit>
       <Unit>
         <Filename Value="..\..\..\..\..\lcl\include\rasterimage.inc"/>
+        <UsageCount Value="12"/>
         <TopLine Value="215"/>
         <CursorPos X="68" Y="240"/>
         <SyntaxHighlighter Value="Delphi"/>
-        <UsageCount Value="12"/>
       </Unit>
       <Unit>
         <Filename Value="..\..\..\..\..\fpc\2.3.1\source\rtl\win\wininc\struct.inc"/>
+        <UsageCount Value="10"/>
         <TopLine Value="197"/>
         <CursorPos X="6" Y="217"/>
         <SyntaxHighlighter Value="Delphi"/>
-        <UsageCount Value="10"/>
       </Unit>
       <Unit>
         <Filename Value="..\..\..\..\..\lcl\include\picture.inc"/>
+        <UsageCount Value="12"/>
         <TopLine Value="636"/>
         <CursorPos Y="656"/>
         <SyntaxHighlighter Value="Delphi"/>
-        <UsageCount Value="12"/>
       </Unit>
       <Unit>
         <Filename Value="..\..\..\..\..\lcl\extctrls.pp"/>
         <UnitName Value="ExtCtrls"/>
+        <UsageCount Value="11"/>
         <TopLine Value="1131"/>
         <CursorPos X="33" Y="1052"/>
         <SyntaxHighlighter Value="Delphi"/>
-        <UsageCount Value="11"/>
       </Unit>
       <Unit>
         <Filename Value="..\..\..\..\..\lcl\controls.pp"/>
         <UnitName Value="Controls"/>
+        <UsageCount Value="11"/>
         <TopLine Value="1078"/>
         <CursorPos X="23" Y="1082"/>
         <SyntaxHighlighter Value="Delphi"/>
-        <UsageCount Value="11"/>
       </Unit>
       <Unit>
         <Filename Value="..\..\..\..\..\fpc\2.3.1\source\packages\fcl-image\src\fpcanvas.pp"/>
         <UnitName Value="FPCanvas"/>
+        <UsageCount Value="11"/>
         <TopLine Value="227"/>
         <CursorPos X="25" Y="234"/>
         <SyntaxHighlighter Value="Delphi"/>
-        <UsageCount Value="11"/>
       </Unit>
       <Unit>
         <Filename Value="..\..\..\..\..\fpc\2.3.1\source\packages\fcl-image\src\fpcanvas.inc"/>
+        <UsageCount Value="11"/>
         <TopLine Value="436"/>
         <SyntaxHighlighter Value="Delphi"/>
-        <UsageCount Value="11"/>
       </Unit>
       <Unit>
         <Filename Value="..\..\lazarus\components\printers\printer4lazarus.pas"/>
         <UnitName Value="Printer4Lazarus"/>
+        <UsageCount Value="12"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="21" Y="10"/>
-        <UsageCount Value="12"/>
       </Unit>
       <Unit>
         <Filename Value="..\..\lazarus\components\printers\osprinters.pas"/>
         <UnitName Value="OSPrinters"/>
+        <UsageCount Value="12"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="47"/>
         <CursorPos X="20" Y="75"/>
-        <UsageCount Value="12"/>
       </Unit>
       <Unit>
         <Filename Value="..\..\lazarus\components\printers\unix\cupsprinters.inc"/>
+        <UsageCount Value="12"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="760"/>
         <CursorPos X="26" Y="781"/>
-        <UsageCount Value="12"/>
       </Unit>
       <Unit>
         <Filename Value="..\..\lazarus\lcl\postscriptcanvas.pas"/>
         <UnitName Value="PostScriptCanvas"/>
+        <UsageCount Value="10"/>
         <TopLine Value="1448"/>
         <CursorPos X="26" Y="1490"/>
         <SyntaxHighlighter Value="Delphi"/>
-        <UsageCount Value="10"/>
       </Unit>
       <Unit>
         <Filename Value="..\..\..\..\lcl\graphics.pp"/>
         <UnitName Value="Graphics"/>
+        <Loaded Value="True"/>
+        <UsageCount Value="12"/>
         <EditorIndex Value="3"/>
         <TopLine Value="928"/>
         <CursorPos X="16" Y="956"/>
-        <UsageCount Value="11"/>
-        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="..\..\..\..\lcl\include\canvas.inc"/>
+        <Loaded Value="True"/>
+        <UsageCount Value="12"/>
         <EditorIndex Value="2"/>
         <TopLine Value="1348"/>
         <CursorPos X="3" Y="1358"/>
-        <UsageCount Value="11"/>
-        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="..\..\lmf.pas"/>
+        <Loaded Value="True"/>
+        <UsageCount Value="11"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="4"/>
-        <CursorPos X="66" Y="19"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
+        <TopLine Value="233"/>
+        <CursorPos Y="249"/>
       </Unit>
     </Units>
-    <JumpHistory HistoryIndex="26">
+    <JumpHistory HistoryIndex="29">
       <Position>
-        <Filename Value="rptfrma.pas"/>
-        <Caret Line="305" Column="13" TopLine="286"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="892" Column="18" TopLine="865"/>
       </Position>
       <Position>
-        <Filename Value="rptfrma.pas"/>
-        <Caret Line="278" Column="18" TopLine="232"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="117" Column="5" TopLine="99"/>
       </Position>
       <Position>
-        <Filename Value="..\..\..\..\lcl\graphics.pp"/>
-        <Caret Line="1167" Column="22" TopLine="1155"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="914" Column="20" TopLine="891"/>
       </Position>
       <Position>
-        <Filename Value="..\..\..\..\lcl\graphics.pp"/>
-        <Caret Line="69" TopLine="69"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="130" Column="15" TopLine="112"/>
       </Position>
       <Position>
-        <Filename Value="..\..\..\..\lcl\graphics.pp"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="959" Column="19" TopLine="937"/>
       </Position>
       <Position>
-        <Filename Value="..\..\..\..\lcl\graphics.pp"/>
-        <Caret Line="935" Column="12" TopLine="907"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="146" Column="15" TopLine="128"/>
       </Position>
       <Position>
-        <Filename Value="rptfrma.pas"/>
-        <Caret Line="278" Column="18" TopLine="232"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="969" TopLine="958"/>
       </Position>
       <Position>
-        <Filename Value="rptfrma.pas"/>
-        <Caret Line="232" Column="19" TopLine="232"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="178" Column="23" TopLine="164"/>
       </Position>
       <Position>
-        <Filename Value="rptfrma.pas"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="1018" Column="19" TopLine="1002"/>
       </Position>
       <Position>
-        <Filename Value="rptfrma.pas"/>
-        <Caret Line="86" Column="54" TopLine="58"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="176" Column="15" TopLine="162"/>
       </Position>
       <Position>
-        <Filename Value="rptfrma.pas"/>
-        <Caret Line="93" Column="54" TopLine="65"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="992" Column="3" TopLine="990"/>
       </Position>
       <Position>
-        <Filename Value="rptfrma.pas"/>
-        <Caret Line="79" Column="20" TopLine="69"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="180" Column="17" TopLine="159"/>
       </Position>
       <Position>
-        <Filename Value="rptfrma.pas"/>
-        <Caret Line="232" Column="3" TopLine="224"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="1021" Column="37" TopLine="1017"/>
       </Position>
       <Position>
-        <Filename Value="rptfrma.pas"/>
-        <Caret Line="85" Column="15" TopLine="63"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="180" Column="15" TopLine="162"/>
       </Position>
       <Position>
-        <Filename Value="rptfrma.pas"/>
-        <Caret Line="433" Column="3" TopLine="430"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="1021" Column="83" TopLine="1017"/>
       </Position>
       <Position>
-        <Filename Value="rptfrma.pas"/>
-        <Caret Line="81" Column="15" TopLine="70"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="180" Column="15" TopLine="162"/>
       </Position>
       <Position>
-        <Filename Value="rptfrma.pas"/>
-        <Caret Line="169" Column="3" TopLine="169"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="1051" Column="42" TopLine="1032"/>
       </Position>
       <Position>
-        <Filename Value="rptfrma.pas"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="208" Column="15" TopLine="178"/>
       </Position>
       <Position>
-        <Filename Value="rptfrma.pas"/>
-        <Caret Line="81" Column="24" TopLine="53"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="1085" Column="17" TopLine="1072"/>
       </Position>
       <Position>
-        <Filename Value="rptfrma.pas"/>
-        <Caret Line="137" Column="16" TopLine="111"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="210" Column="15" TopLine="192"/>
       </Position>
       <Position>
-        <Filename Value="rptfrma.pas"/>
-        <Caret Line="141" Column="30" TopLine="141"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="1084" Column="3" TopLine="1078"/>
       </Position>
       <Position>
-        <Filename Value="rptfrma.pas"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="210" Column="15" TopLine="192"/>
       </Position>
       <Position>
-        <Filename Value="rptfrma.pas"/>
-        <Caret Line="228" Column="14" TopLine="221"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="1100" TopLine="1076"/>
       </Position>
       <Position>
-        <Filename Value="rptfrma.pas"/>
-        <Caret Line="244" TopLine="217"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="237" Column="5" TopLine="217"/>
       </Position>
       <Position>
-        <Filename Value="rptfrma.pas"/>
-        <Caret Line="232" Column="48" TopLine="217"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="1176" Column="19" TopLine="1161"/>
       </Position>
       <Position>
-        <Filename Value="rptfrma.pas"/>
-        <Caret Line="85" TopLine="85"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="239" Column="15" TopLine="221"/>
       </Position>
       <Position>
-        <Filename Value="rptfrma.pas"/>
-        <Caret Line="77" Column="12" TopLine="77"/>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="1181" Column="33" TopLine="1175"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="239" Column="15" TopLine="221"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="1181" TopLine="1175"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="1049" Column="21" TopLine="1032"/>
       </Position>
     </JumpHistory>
   </ProjectOptions>

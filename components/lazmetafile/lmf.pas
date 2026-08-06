@@ -117,8 +117,8 @@ type
   private
     fClip:TRect;
   public
-    constructor Create(AClip:TRect);virtual;overload;
-    procedure Action(fImage:TlmfImage;ACanvas:TCanvas);override;
+    constructor Create(AClip:TRect); virtual; overload;
+    procedure Action(fImage:TlmfImage; ACanvas:TCanvas); override;
   published
     property Left:integer read fClip.Left write fClip.Left;
     property Top:integer read fClip.Top write fClip.Top;
@@ -231,7 +231,7 @@ type
     procedure DoLine(x1, y1, x2, y2: integer); override;
     //  procedure DoEllipseFill (const Bounds:TRect); override;
     procedure DoEllipse (const Bounds:TRect); override;
-    procedure DoRectangleFill (Const Bounds:TRect); override;
+//    procedure DoRectangleFill (Const Bounds:TRect); override;
     procedure SetPixel(X,Y: Integer; Value: TColor); override;
     procedure SetColor (x,y:integer; const Value:TFPColor); override;
     function  GetColor (x,y:integer) : TFPColor; override;
@@ -246,10 +246,16 @@ type
     procedure TextRect(ARect: TRect; X, Y: integer; const Text: string;
       const Style: TTextStyle); override;
     procedure StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic); override;
+
+    procedure Ellipse (x1,y1,x2,y2:integer); override;
+
+    procedure FillRect(const ARect: TRect); override; overload;
+    procedure FillRect(X1, Y1, X2, Y2: Integer); overload;
+
     procedure Rectangle(X1,Y1,X2,Y2: Integer); override; // already in fpcanvas
+
     procedure Polyline(Points: PPoint; NumPts: Integer);override;
     procedure Polygon(Points: PPoint; NumPts: Integer;  Winding: boolean = False);override;
-    procedure Ellipse (x1,y1,x2,y2:integer); override;
   end;
 
 
@@ -555,20 +561,34 @@ procedure TlmfCanvas.Rectangle(X1,Y1,X2,Y2: Integer);
 var
   item:TlmfObject;
 begin
-  RequiredState([csPenValid]); // this adds TlmfPen
+  RequiredState([csPenValid, csBrushValid]); // this adds TlmfPen and TlmfBrush
   item:=TlmfRect.Create(Rect(x1,y1,x2,y2));
   fImage.fList.InsertComponent(item);
 end;
 
-procedure TlmfCanvas.DoRectangleFill(const Bounds:TRect);
+procedure TlmfCanvas.FillRect(const ARect: TRect);
 var
-  item:TlmfFillRect;
+  item: TlmfObject;
 begin
-  RequiredState([csBrushValid,csPenvalid]); // this adds TlmfBrush, TlmfPen
-  item:=TlmfFillRect.Create(nil);
+  RequiredState([csBrushValid]);
+  item := TlmfFillRect.Create(ARect);
   fImage.fList.InsertComponent(item);
 end;
 
+procedure TlmfCanvas.FillRect(X1, Y1, X2, Y2: Integer);
+begin
+  FillRect(Rect(X1, Y1, X2, Y2));
+end;
+  (*
+procedure TlmfCanvas.DoRectangleFill(const Bounds:TRect);
+var
+  item:TlmfObject;
+begin
+  RequiredState([csBrushValid, csPenValid]); // this adds TlmfBrush and TlmfPen
+  item := TlmfRect.Create(nil);
+  fImage.fList.InsertComponent(item);
+end;
+*)
 function  TlmfCanvas.DoAllowBrush (ABrush: TFPCustomBrush): boolean;
 begin
   Result:=true;
