@@ -50,9 +50,9 @@ type
     procedure LoadRegisterCache; override;
     procedure SaveRegisterCache; override;
     function GetReturnPC: TDbgPtr;
-    function GetStackUnwinder: TDbgStackUnwinder; override;
   public
     destructor Destroy; override;
+    function GetStackUnwinder: TDbgStackUnwinder; override;
     procedure LoadRegisterValues; override;
     procedure SetRegisterValue(AName: string; AValue: QWord); override;
     function GetInstructionPointerRegisterValue: TDbgPtr; override;

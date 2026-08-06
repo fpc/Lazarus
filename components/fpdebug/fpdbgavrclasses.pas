@@ -86,9 +86,9 @@ end;
     procedure LoadRegisterCache; override;
     procedure SaveRegisterCache; override;
     function FormatStatusFlags(sreg: byte): string;
-    function GetStackUnwinder: TDbgStackUnwinder; override;
   public
     destructor Destroy; override;
+    function GetStackUnwinder: TDbgStackUnwinder; override;
     procedure LoadRegisterValues; override;
     procedure SetRegisterValue(AName: string; AValue: QWord); override;
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
