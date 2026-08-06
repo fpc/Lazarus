@@ -3115,12 +3115,12 @@ procedure TPackageEditorForm.FilterEditAfterFilter(Sender: TObject);
 var
   LPackage: TIDEPackage;
 begin
-  if Assigned(SourceEditorManagerIntf) and Assigned(PackageEditingInterface) and Assigned(SourceEditorManagerIntf.ActiveEditor) then
-  begin
-    PackageEditingInterface.GetPackageOfSourceEditor(LPackage, SourceEditorManagerIntf.ActiveEditor);
-    if (LPackage is TEditablePackage) and (TEditablePackage(LPackage).Editor = Self) then
-      SelectFileNode(SourceEditorManagerIntf.ActiveEditor.FileName);
-  end;
+  if (SourceEditorManagerIntf=nil) or (SourceEditorManagerIntf.ActiveEditor=nil)
+  or (PackageEditingInterface=nil) or LazarusIDE.IDEIsClosing then
+    exit;
+  PackageEditingInterface.GetPackageOfSourceEditor(LPackage, SourceEditorManagerIntf.ActiveEditor);
+  if (LPackage is TEditablePackage) and (TEditablePackage(LPackage).Editor = Self) then
+    SelectFileNode(SourceEditorManagerIntf.ActiveEditor.FileName);
 end;
 
 function TPackageEditorForm.FirstRequiredDependency: TPkgDependency;
