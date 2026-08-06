@@ -678,6 +678,7 @@ type
     constructor Create(AFpDebugDebugger: TFpDebugDebugger);
     destructor Destroy; override;
     procedure Execute; override;
+    procedure StopWait;
   end;
 
 
@@ -1652,16 +1653,27 @@ var
 begin
   while not terminated do
   begin
-    res := FFpDebugDebugger.FDbgController.CurrentProcess.CheckForConsoleOutput(100);
+    res := FFpDebugDebugger.FDbgController.CurrentProcess.CheckForConsoleOutput(250);
     if res<0 then
       Terminate
     else if res>0 then
     begin
       RTLeventResetEvent(FHasConsoleOutputQueued);
       Application.QueueAsyncCall(@DoHasConsoleOutput, PtrInt(FFpDebugDebugger));
+      if Terminated then
+        break;
       RTLeventWaitFor(FHasConsoleOutputQueued);
     end;
   end;
+end;
+
+procedure TFpWaitForConsoleOutputThread.StopWait;
+begin
+  inherited Terminate;
+  if (FFpDebugDebugger.FDbgController <> nil) and
+     (FFpDebugDebugger.FDbgController.CurrentProcess <> nil)
+  then
+    FFpDebugDebugger.FDbgController.CurrentProcess.StopCheckingForConsoleOutput;
 end;
 
 { TFpDbgMemReader }
@@ -3593,7 +3605,7 @@ begin
     begin
     AThread := TFpWaitForConsoleOutputThread(FConsoleOutputThread);
     FConsoleOutputThread := nil;
-    AThread.Terminate;
+    AThread.StopWait;
     AThread.DoHasConsoleOutput(0);
     AThread.WaitFor;
     sleep(50);

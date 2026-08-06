@@ -1056,7 +1056,7 @@ begin
     if ATimeOutMs <= 0 then
       Exit(0);
     Sleep(10);
-  until GetTickCount64 >= Deadline;
+  until StopCheckingForConsoleOutputRequested or (GetTickCount64 >= Deadline);
   Result := 0;
 end;
 
