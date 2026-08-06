@@ -451,7 +451,7 @@ begin
      selected, so opening it under a backend that cannot capture -- or on
      another platform -- does not quietly discard the setting. *)
   {$IFnDef LCLNoGui}
-  rgConsole.Enabled := dfStdIoCapture in DebugBoss.DebuggerClass.SupportedFeatures;
+  rgConsole.Enabled := dfStdInOutCapture in DebugBoss.DebuggerClass.SupportedFeatures;
   {$ENDIF}
 
   cbRedirStdIn.Items.Add (dlgRedirOff);

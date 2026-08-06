@@ -5422,7 +5422,7 @@ begin
          through a pty rather than pipes and has not been exercised against
          diomCaptureInternal, so widening this is a testing question rather than
          a design one. *)
-      Result := Result + [dfStdIoCapture];
+      Result := Result + [dfStdInOutCapture];
       {$ENDIF}
       if DBG_PROCESS_HAS_REDIRECT then
         Result := Result + [dfStdInOutRedirect];

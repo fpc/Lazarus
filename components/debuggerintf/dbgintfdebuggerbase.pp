@@ -66,13 +66,13 @@ type
     dfConsoleWinPos,        // Able to set position of console Window
     dfStdInOutRedirect,     // Able to redirect StdIn/Out
 
-    (* dfStdIoCapture:
+    (* dfStdInOutCapture:
     Able to capture the debuggee's standard streams into the IDE, i.e. to
     honour diomCaptureInternal. Whether that is on offer is a property of the
     backend and not of the platform: on Windows FpDebug can, and a backend
     driving an external debugger may not. The frontend must ask rather than
     assume, or it will select a destination that silently receives nothing. *)
-    dfStdIoCapture,
+    dfStdInOutCapture,
 
     (* dfNotSuitableForOsArch:
        If this is set, then this debugger can not be used on the current

@@ -3228,7 +3228,7 @@ function TDebugManager.ConsoleIsCaptured(AConsoleMode: TRunParamsConsoleMode
 begin
   Result := (AConsoleMode = rpcmIdeConsole) and
             (DebuggerClass <> nil) and
-            (dfStdIoCapture in DebuggerClass.SupportedFeatures);
+            (dfStdInOutCapture in DebuggerClass.SupportedFeatures);
 end;
 
 procedure TDebugManager.ProcessCommand(Command: word; var Handled: boolean);
