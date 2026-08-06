@@ -220,6 +220,8 @@ type
     FDbgUiRemoteBreakin: TDBGPtr;
     FBitness: TBitness;
     FThreadNameList: TDbgWinThreadNameList;
+    FGetConsoleBuffer: char;
+    FGetConsoleBufferCnt: LongInt;
     function GetFullProcessImageName(AProcessHandle: THandle): string;
     function GetModuleFileName(AModuleHandle: THandle): string;
     function GetProcFilename(AProcess: TDbgProcess; lpImageName: LPVOID; fUnicode: word; hFile: handle): string;
@@ -252,6 +254,7 @@ type
       TProcess's pipes when siRediretOutput was requested at StartInstance;
       the base no-ops apply otherwise. }
     function CheckForConsoleOutput(ATimeOutMs: integer): integer; override;
+    procedure StopCheckingForConsoleOutput; override;
     function GetConsoleOutput: string; override;
     procedure SendConsoleInput(AString: string); override;
 
@@ -404,6 +407,7 @@ var
   _DebugBreakProcess: function(Process:HANDLE): WINBOOL; stdcall = nil;
   _GetThreadDescription: function(hThread: THandle; ppszThreadDescription: PPWSTR): HResult; stdcall = nil;
   _WaitForDebugEventEx: function(var lpDebugEvent: TDebugEvent; dwMilliseconds: DWORD): BOOL; stdcall = nil;
+  _CancelSynchronousIo: function(hThread: HANDLE): BOOL; stdcall = nil; // requires Vista
   // XState
   _GetEnabledXStateFeatures: function(): DWORD64; stdcall = nil;
   _InitializeContext:     function(Buffer: Pointer; ContextFlags: DWORD; Context: PPCONTEXT; ContextLength: PDWORD): BOOL; stdcall = nil;
@@ -436,6 +440,7 @@ begin
   Pointer(_Wow64SuspendThread) := GetProcAddress(hMod, 'Wow64SuspendThread');
   {$endif}
   Pointer(_WaitForDebugEventEx) := GetProcAddress(hMod, 'WaitForDebugEventEx');
+  Pointer(_CancelSynchronousIo) := GetProcAddress(hMod, 'CancelSynchronousIo'); // requires Vista
   // xstate
   Pointer(_GetEnabledXStateFeatures) := GetProcAddress(hMod, 'GetEnabledXStateFeatures');
   Pointer(_InitializeContext)        := GetProcAddress(hMod, 'InitializeContext');
@@ -461,6 +466,7 @@ begin
   DebugLn(DBG_WARNINGS and (_GetFinalPathNameByHandle = nil), ['WARNING: Failed to get GetFinalPathNameByHandle']);
   DebugLn(DBG_WARNINGS and (_DebugBreakProcess = nil), ['WARNING: Failed to get DebugBreakProcess']);
   DebugLn(DBG_WARNINGS and (_GetThreadDescription = nil), ['WARNING: Failed to get GetThreadDescription']);
+  DebugLn(DBG_WARNINGS and (_CancelSynchronousIo = nil), ['WARNING: Failed to get CancelSynchronousIo']);
   {$ifdef cpux86_64}
   DebugLn(DBG_WARNINGS and (_IsWow64Process = nil), ['WARNING: Failed to get IsWow64Process']);
   DebugLn(DBG_WARNINGS and (_Wow64GetThreadContext = nil), ['WARNING: Failed to get Wow64GetThreadContext']);
@@ -1040,6 +1046,12 @@ var
   Avail: DWord;
   Deadline: QWord;
 begin
+  if (_CancelSynchronousIo <> nil) and (CheckingForConsoleOutputThread <> nil) then begin
+    FGetConsoleBufferCnt := FProcProcess.Output.Read(FGetConsoleBuffer, 1);
+    Result := FProcProcess.Output.NumBytesAvailable + FGetConsoleBufferCnt;
+    exit;
+  end;
+
   // Launched without pipe capture -> report "no console" (< 0 stops the IDE
   // reader thread; fpdmcp's pull just returns empty).
   if (FProcProcess = nil) or (FProcProcess.Output = nil) then
@@ -1060,6 +1072,15 @@ begin
   Result := 0;
 end;
 
+procedure TDbgWinProcess.StopCheckingForConsoleOutput;
+begin
+  inherited StopCheckingForConsoleOutput;
+  { The supported way to abort the read: it returns with
+    ERROR_OPERATION_ABORTED and the loop then sees Terminated. }
+  if (_CancelSynchronousIo <> nil) and (CheckingForConsoleOutputThread <> nil) then
+    _CancelSynchronousIo(THandle(CheckingForConsoleOutputThread.Handle));
+end;
+
 function TDbgWinProcess.GetConsoleOutput: string;
 var
   Avail: DWord;
@@ -1067,6 +1088,8 @@ var
   Got: LongInt;
 begin
   Result := '';
+  if FGetConsoleBufferCnt = 1 then
+    Result := FGetConsoleBuffer;
   if (FProcProcess = nil) or (FProcProcess.Output = nil) then
     Exit;
   try
@@ -1076,8 +1099,9 @@ begin
   end;
   if Avail = 0 then
     Exit;
-  SetLength(Buf, Avail);
-  Got := FProcProcess.Output.Read(Buf[0], Length(Buf));
+  SetLength(Buf, Avail+FGetConsoleBufferCnt);
+  Buf[0] := ord(FGetConsoleBuffer);
+  Got := FProcProcess.Output.Read(Buf[FGetConsoleBufferCnt], Length(Buf)) + FGetConsoleBufferCnt;
   if Got > 0 then
     SetString(Result, PAnsiChar(@Buf[0]), Got);
 end;

@@ -984,6 +984,7 @@ type
 
   TDbgProcess = class(TDbgInstance)
   private
+    FCheckingForConsoleOutputThread: TThread;
     FDisassembler: TDbgAsmDecoder;
     FExceptionClass: string;
     FExceptionMessage: string;
@@ -1052,6 +1053,7 @@ type
     function CreateConfig: TDbgConfig;
     function CreateBreakPointTargetHandler: TFpBreakPointTargetHandler; virtual; abstract;
     procedure InitializeLoaders; override;
+    property CheckingForConsoleOutputThread: TThread read FCheckingForConsoleOutputThread;
     property StopCheckingForConsoleOutputRequested: boolean read FStopCheckingForConsoleOutputRequested;
   public
     class function isSupported(ATargetInfo: TTargetDescriptor): boolean; virtual;
@@ -1142,6 +1144,7 @@ type
     procedure RemoveAllBreakPoints;
 
     function CheckForConsoleOutput(ATimeOutMs: integer): integer; virtual;
+    procedure SetCheckingForConsoleOutputThread(AThread: TThread);
     procedure StopCheckingForConsoleOutput; virtual;
     procedure ClearStopCheckingForConsoleOutputRequested;
     function GetConsoleOutput: string; virtual;
@@ -3233,6 +3236,11 @@ end;
 function TDbgProcess.CheckForConsoleOutput(ATimeOutMs: integer): integer;
 begin
   result := -1;
+end;
+
+procedure TDbgProcess.SetCheckingForConsoleOutputThread(AThread: TThread);
+begin
+  FCheckingForConsoleOutputThread := AThread;
 end;
 
 procedure TDbgProcess.StopCheckingForConsoleOutput;

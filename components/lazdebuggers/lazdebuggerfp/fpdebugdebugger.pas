@@ -4393,8 +4393,10 @@ begin
 
   FExceptionStepper.DoProcessLoaded;
 
-  if assigned(OnConsoleOutput) then
+  if assigned(OnConsoleOutput) then begin
     FConsoleOutputThread := TFpWaitForConsoleOutputThread.Create(self);
+    FDbgController.CurrentProcess.SetCheckingForConsoleOutputThread(FConsoleOutputThread);
+  end;
 
   case FStartupCommand of
     dcRunTo: begin
