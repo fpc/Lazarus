@@ -336,6 +336,17 @@ type
     function Call(const FunctionAddress: TFpDbgMemLocation; const ABaseContext: TFpDbgLocationContext; const AMemReader: TFpDbgMemReaderBase; const AMemConverter: TFpDbgMemConvertor): TFpDbgInfoCallContext;
     procedure StepOut(AForceStoreStepInfo: Boolean = False);
     function Pause: boolean;
+    { Drop a pause request that was raised but never delivered.
+
+      Pause sets FPauseRequest BEFORE it tests FRunning, so a Pause that
+      arrives once the target has already stopped leaves the flag set with no
+      break-in behind it.  The next ProcessLoop then short-circuits before
+      resuming, and the caller is handed a stop that never moved.  A pause
+      belongs to the run it was aimed at, so a driver that raises pause on a
+      deadline needs a way to retract one that lost the race.
+
+      Returns True if a request was actually pending. }
+    function CancelPauseRequest: boolean;
     function Detach: boolean;
     procedure ProcessLoop;
     procedure SendEvents(out continue: boolean);
@@ -1837,6 +1848,11 @@ begin
   Result := InterLockedExchangeAdd(FRunning, 0) = 0; // not running
   if not Result then
     Result := FCurrentProcess.Pause;
+end;
+
+function TDbgController.CancelPauseRequest: boolean;
+begin
+  Result := InterLockedExchange(FPauseRequest, 0) = 1;
 end;
 
 function TDbgController.Detach: boolean;
