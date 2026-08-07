@@ -46,7 +46,7 @@
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
         <UsageCount Value="38"/>
-        <CursorPos X="44" Y="18"/>
+        <CursorPos X="44" Y="17"/>
         <SyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
@@ -68,8 +68,8 @@
         <LoadedDesigner Value="True"/>
         <UsageCount Value="38"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="268"/>
-        <CursorPos X="65" Y="298"/>
+        <TopLine Value="269"/>
+        <CursorPos X="32" Y="283"/>
         <SyntaxHighlighter Value="Delphi"/>
         <Bookmarks Count="1">
           <Item0 X="41" Y="230" Left="1" Top="216" ID="1"/>
@@ -221,91 +221,19 @@
         <UsageCount Value="11"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="4"/>
-        <TopLine Value="233"/>
-        <CursorPos Y="249"/>
+        <CursorPos X="16" Y="19"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\..\lmfobj.pas"/>
+        <UnitName Value="lmfObj"/>
+        <Loaded Value="True"/>
+        <UsageCount Value="20"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="82"/>
+        <CursorPos X="12" Y="110"/>
       </Unit>
     </Units>
-    <JumpHistory HistoryIndex="29">
-      <Position>
-        <Filename Value="..\..\lmf.pas"/>
-        <Caret Line="892" Column="18" TopLine="865"/>
-      </Position>
-      <Position>
-        <Filename Value="..\..\lmf.pas"/>
-        <Caret Line="117" Column="5" TopLine="99"/>
-      </Position>
-      <Position>
-        <Filename Value="..\..\lmf.pas"/>
-        <Caret Line="914" Column="20" TopLine="891"/>
-      </Position>
-      <Position>
-        <Filename Value="..\..\lmf.pas"/>
-        <Caret Line="130" Column="15" TopLine="112"/>
-      </Position>
-      <Position>
-        <Filename Value="..\..\lmf.pas"/>
-        <Caret Line="959" Column="19" TopLine="937"/>
-      </Position>
-      <Position>
-        <Filename Value="..\..\lmf.pas"/>
-        <Caret Line="146" Column="15" TopLine="128"/>
-      </Position>
-      <Position>
-        <Filename Value="..\..\lmf.pas"/>
-        <Caret Line="969" TopLine="958"/>
-      </Position>
-      <Position>
-        <Filename Value="..\..\lmf.pas"/>
-        <Caret Line="178" Column="23" TopLine="164"/>
-      </Position>
-      <Position>
-        <Filename Value="..\..\lmf.pas"/>
-        <Caret Line="1018" Column="19" TopLine="1002"/>
-      </Position>
-      <Position>
-        <Filename Value="..\..\lmf.pas"/>
-        <Caret Line="176" Column="15" TopLine="162"/>
-      </Position>
-      <Position>
-        <Filename Value="..\..\lmf.pas"/>
-        <Caret Line="992" Column="3" TopLine="990"/>
-      </Position>
-      <Position>
-        <Filename Value="..\..\lmf.pas"/>
-        <Caret Line="180" Column="17" TopLine="159"/>
-      </Position>
-      <Position>
-        <Filename Value="..\..\lmf.pas"/>
-        <Caret Line="1021" Column="37" TopLine="1017"/>
-      </Position>
-      <Position>
-        <Filename Value="..\..\lmf.pas"/>
-        <Caret Line="180" Column="15" TopLine="162"/>
-      </Position>
-      <Position>
-        <Filename Value="..\..\lmf.pas"/>
-        <Caret Line="1021" Column="83" TopLine="1017"/>
-      </Position>
-      <Position>
-        <Filename Value="..\..\lmf.pas"/>
-        <Caret Line="180" Column="15" TopLine="162"/>
-      </Position>
-      <Position>
-        <Filename Value="..\..\lmf.pas"/>
-        <Caret Line="1051" Column="42" TopLine="1032"/>
-      </Position>
-      <Position>
-        <Filename Value="..\..\lmf.pas"/>
-        <Caret Line="208" Column="15" TopLine="178"/>
-      </Position>
-      <Position>
-        <Filename Value="..\..\lmf.pas"/>
-        <Caret Line="1085" Column="17" TopLine="1072"/>
-      </Position>
-      <Position>
-        <Filename Value="..\..\lmf.pas"/>
-        <Caret Line="210" Column="15" TopLine="192"/>
-      </Position>
+    <JumpHistory HistoryIndex="28">
       <Position>
         <Filename Value="..\..\lmf.pas"/>
         <Caret Line="1084" Column="3" TopLine="1078"/>
@@ -345,6 +273,80 @@
       <Position>
         <Filename Value="..\..\lmf.pas"/>
         <Caret Line="1049" Column="21" TopLine="1032"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="211" Column="19" TopLine="200"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="599" Column="16" TopLine="571"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="601" Column="17" TopLine="573"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="886" Column="18" TopLine="874"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="141" Column="12" TopLine="125"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="884" Column="3" TopLine="882"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="38" Column="9" TopLine="17"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\lmfobj.pas"/>
+        <Caret Line="52" Column="40" TopLine="22"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="614" Column="8" TopLine="597"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="270" Column="3" TopLine="242"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\lmfobj.pas"/>
+        <Caret Line="9" Column="3"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\lmfobj.pas"/>
+        <Caret Line="49" Column="3" TopLine="28"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="624" Column="10" TopLine="600"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\lmf.pas"/>
+        <Caret Line="616" Column="15" TopLine="600"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\lmfobj.pas"/>
+        <Caret Line="28" Column="32" TopLine="28"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\lmfobj.pas"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\lmfobj.pas"/>
+        <Caret Line="112" Column="5" TopLine="87"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\lmfobj.pas"/>
+        <Caret Line="337" Column="3" TopLine="337"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\lmfobj.pas"/>
       </Position>
     </JumpHistory>
   </ProjectOptions>
