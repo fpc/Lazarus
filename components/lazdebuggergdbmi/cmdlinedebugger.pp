@@ -162,7 +162,7 @@ begin
   end;
 
   if ATimeOut > 0
-  then t := GetTickCount64;
+  then t := SysUtils.GetTickCount64;
 
   // wait for all handles
   Step:=IDLE_STEP_COUNT-1;
@@ -178,7 +178,7 @@ begin
       exit;
 
     if (ATimeOut > 0) then begin
-      t2 := GetTickCount64;
+      t2 := SysUtils.GetTickCount64;
       if t2 < t
       then t3 := t2 + (High(t) - t)
       else t3 := t2 - t;
@@ -238,7 +238,7 @@ begin
   Step:=IDLE_STEP_COUNT-1;
   //if ATimeOut > 0
   //then
-  t := GetTickCount64;
+  t := SysUtils.GetTickCount64;
   FullTimeOut := ATimeOut;
 
   while Result=0 do
@@ -264,7 +264,7 @@ begin
     if CurCallStamp <> FReadLineCallStamp then
       exit;
 
-    t2 := GetTickCount64;
+    t2 := SysUtils.GetTickCount64;
     if (FullTimeOut > 0) then begin
       if t2 < t
       then t3 := t2 + (High(t) - t)
@@ -618,7 +618,7 @@ begin
     LE := LineEnding;
     FDbgProcess.Input.Write(LE[1], Length(LE));
     {$IFdef MSWindows}
-    FLastWrite := GetTickCount64;
+    FLastWrite := SysUtils.GetTickCount64;
     {$EndIf}
   end
   else begin

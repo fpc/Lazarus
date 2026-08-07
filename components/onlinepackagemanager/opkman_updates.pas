@@ -542,9 +542,9 @@ begin
     if FNeedToBreak then
       Break;
     Sleep(50);
-    if (GetTickCount64 - FTime > FInterval)then
+    if (SysUtils.GetTickCount64 - FTime > FInterval)then
     begin
-      FTime := GetTickCount64;
+      FTime := SysUtils.GetTickCount64;
       if (IsTimeToUpdate) then
       begin
         GetSerializablePackages;
@@ -561,7 +561,7 @@ procedure TUpdates.StartUpdate;
 begin
   FStarted := True;
   CheckForOpenSSL;
-  FTime := GetTickCount64;
+  FTime := SysUtils.GetTickCount64;
   FInterval := 6000;
   Start;
 end;
