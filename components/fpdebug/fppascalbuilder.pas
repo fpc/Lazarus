@@ -1440,7 +1440,9 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
                 break;
               continue;
             end;
-          end;
+          end
+          else
+            TmpVal.ReleaseReference; // may be non-nil, with an address that is not in the target
           break;
         until false;
         if CacheSize = 0 then
