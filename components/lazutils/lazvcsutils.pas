@@ -68,6 +68,8 @@ begin
   try
     try
       with p do begin
+        if (SourceDirectory<>'') and DirectoryExistsUTF8(SourceDirectory) then
+          CurrentDirectory := ChompPathDelim(SourceDirectory);
         Executable := ACmd;
         for i := 0 to high(AParams) do
           Parameters.Add(AParams[i]);
@@ -402,6 +404,8 @@ begin
   p := TProcess.Create(nil);
   sl := TStringList.Create;
   try
+    if (SourceDirectory<>'') and DirectoryExistsUTF8(SourceDirectory) then
+      p.CurrentDirectory := ChompPathDelim(SourceDirectory);
     p.Executable:='git';
     p.Parameters.Add('branch');
     p.Options := [poUsePipes, poWaitOnExit];

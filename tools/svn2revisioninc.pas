@@ -184,6 +184,8 @@ begin
   Verbose := False;
   ConstName := 'RevisionStr';
   SourceDirectory:=ChompPathDelim(ExtractFilePath(ParamStrUTF8(0)));
+  if ExtractFileName(SourceDirectory)='tools' then
+    SourceDirectory:=ChompPathDelim(ExtractFilePath(SourceDirectory));
   RevisionIncFileName := ExpandFileNameUTF8('revision.inc');
 
   //find switchless parameters
@@ -193,7 +195,7 @@ begin
     if Copy(ParamStrUTF8(i),1,1) <> '-' then
     begin
       case index of
-        1: SourceDirectory:=ChompPathDelim(ParamStrUTF8(i));
+        1: SourceDirectory:=ChompPathDelim(ExpandFileNameUTF8(ParamStrUTF8(i)));
         2: RevisionIncFileName := ExpandFileNameUTF8(ParamStrUTF8(i));
       end;
       Inc(index);
@@ -241,6 +243,7 @@ begin
     exit;
   end;
 
+  Scout.SourceDirectory:=SourceDirectory;
   if not (Scout.GitInPath or Scout.SvnInPath or Scout.HgInPath) then
     debugln('Warning: Version control client not in path.');
 
