@@ -6191,6 +6191,7 @@ begin
         continue;
       // a lpk has changed, this might include dependencies => reload lpl files
       UpdateGlobalLinks;
+      APackage.UpdateEditor;
     end else begin
       // lpk has vanished -> search alternative => reload lpl files
       UpdateGlobalLinks;

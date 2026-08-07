@@ -660,6 +660,7 @@ type
     procedure RemoveFileSilently(PkgFile: TPkgFile);
     procedure RemoveFile(PkgFile: TPkgFile); // move file to removed file list
     procedure UnremovePkgFile(PkgFile: TPkgFile); // move file back to file list
+    procedure UpdateEditor; virtual;
     // True if something changed. Param is ignored here, just to match with interface.
     function RemoveNonExistingFiles({%H-}RemoveFromUsesSection: boolean = true): boolean;
     function GetFileDialogInitialDir(const DefaultDirectory: string): string;
@@ -3462,6 +3463,11 @@ begin
   FFiles.Add(PkgFile);
   FRemovedFiles.Remove(PkgFile);
   PkgFile.Removed:=false;
+end;
+
+procedure TLazPackage.UpdateEditor;
+begin
+  ;
 end;
 
 function TLazPackage.RemoveNonExistingFiles(RemoveFromUsesSection: boolean): boolean;
