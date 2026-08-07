@@ -176,11 +176,13 @@ end;
 
 function TDbgEntityValue.GetStackFrame: Integer;
 begin
+  if FOwner = nil then exit(-1);
   Result := FOwner.StackFrame;
 end;
 
 function TDbgEntityValue.GetThreadId: Integer;
 begin
+  if FOwner = nil then exit(-1);
   Result := FOwner.ThreadId;
 end;
 
