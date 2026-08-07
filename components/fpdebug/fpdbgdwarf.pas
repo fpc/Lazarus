@@ -650,6 +650,7 @@ type
     function  DoGetNestedTypeInfo: TFpSymbolDwarfType; virtual;
     function  ReadMemberVisibility(out AMemberVisibility: TDbgSymbolMemberVisibility): Boolean;
     function  IsArtificial: Boolean; // usud by formal param and subprogram
+    function  GetFlags: TDbgSymbolFlags; override;
     procedure NameNeeded; override;
     procedure TypeInfoNeeded; override;
     property NestedTypeInfo: TFpSymbolDwarfType read GetNestedTypeInfo;
@@ -4871,6 +4872,13 @@ begin
     Include(FDwarfReadFlags, didtArtificialRead);
   end;
   Result := didtIsArtifical in FDwarfReadFlags;
+end;
+
+function TFpSymbolDwarf.GetFlags: TDbgSymbolFlags;
+begin
+  Result := inherited GetFlags;
+  if IsArtificial then
+    Include(Result, sfArtificial);
 end;
 
 procedure TFpSymbolDwarf.NameNeeded;

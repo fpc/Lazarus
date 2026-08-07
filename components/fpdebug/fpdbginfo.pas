@@ -68,6 +68,9 @@ type
     sfStatArray,    // skArray is known to be a static array
     sfVirtual,      // skProcedure,skFunction:  virtual function (or overriden)
     sfParameter,    // Parameter to a function
+    sfArtificial,   // Created by the compiler / not declared in the source
+                    // (e.g. "self", "$result"). Describes the symbol itself,
+                    // not its type.
     // unimplemented:
     sfInternalRef,  // TODO: (May not always be present) Internal ref/pointer e.g. var/constref parameters
     sfConst,         // The sym is a constant and cannot be modified
