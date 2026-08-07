@@ -1056,7 +1056,7 @@ begin
   // reader thread; fpdmcp's pull just returns empty).
   if (FProcProcess = nil) or (FProcProcess.Output = nil) then
     Exit(-1);
-  Deadline := GetTickCount64 + QWord(ATimeOutMs);
+  Deadline := SysUtils.GetTickCount64 + QWord(ATimeOutMs);
   repeat
     try
       Avail := FProcProcess.Output.NumBytesAvailable;
@@ -1068,7 +1068,7 @@ begin
     if ATimeOutMs <= 0 then
       Exit(0);
     Sleep(10);
-  until StopCheckingForConsoleOutputRequested or (GetTickCount64 >= Deadline);
+  until StopCheckingForConsoleOutputRequested or (SysUtils.GetTickCount64 >= Deadline);
   Result := 0;
 end;
 
