@@ -11,10 +11,13 @@ uses
   FpdMemoryTools, FpErrorMessages, FpDbgDwarfDataClasses, FpDbgDwarf,
   FpDbgClasses,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif},
-  LazUTF8, LazClasses, LazDebuggerIntfFloatTypes;
+  LazUTF8, LazClasses, LazDebuggerIntfFloatTypes, LazDebuggerUtils;
 
 type
 
+  (* ddfString is not honoured: TFpPascalPrettyPrinter.PrintValue returns False
+     for it. A display format selects between renderings of the same value, and
+     a string has only one. *)
   TDataDisplayFormat =
     (ddfDefault,
      ddfStructure,
@@ -799,6 +802,69 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       Result := '';
   end;
 
+  (* Byte size of the current value, or 0 if the debug info does not give one. *)
+  function OrdByteSize: Integer;
+  var
+    ValSize: TFpDbgValueSize;
+  begin
+    if (svfSize in AValue.FieldFlags) and AValue.GetSize(ValSize) then
+      Result := SizeToFullBytes(ValSize)
+    else
+      Result := 0;
+  end;
+
+  (* The ordinal narrowed to its declared size. A signed value arrives here
+     sign-extended, and both a bit pattern and a character should show the
+     value's own width, not 64 bits of sign. Same masking as the IDE's
+     TGenericWatchResultDataSizedNum.GetAsQWord. *)
+  function MaskedOrd(AnOrdinal: QWord; AByteSize: Integer): QWord;
+  begin
+    Result := AnOrdinal;
+    if (AByteSize > 0) and (AByteSize < 8) then
+      Result := Result and ((QWord(1) shl (AByteSize*8)) - 1);
+  end;
+
+  (* ddfBinary and ddfChar for ordinals.
+
+     Both follow the IDE's TWatchResultPrinter.PrintNumber (vdfBaseBin and
+     vdfBaseChar in idedebuggerwatchresprinter.pas), so the same value reads
+     the same whichever printer produced it.
+
+     Binary always prints the unsigned bit pattern, including for signed
+     values. That matches the ddfHex branches below, and the IDE's
+     vdfSignAuto, which resolves to unsigned for any base but decimal. *)
+  function OrdToBinary(AnOrdinal: QWord; AByteSize: Integer): String;
+  var
+    n: Integer;
+  begin
+    AnOrdinal := MaskedOrd(AnOrdinal, AByteSize);
+    case AByteSize of
+      0:    begin // no size in the debug info: use the smallest that holds it
+              n := 64;
+              if AnOrdinal <= high(Cardinal) then n := 32;
+              if AnOrdinal <= high(Word)     then n := 16;
+              if AnOrdinal <= high(Byte)     then n :=  8;
+            end;
+      1:    n :=  8;
+      2:    n := 16;
+      3, 4: n := 32;
+      else  n := 64;
+    end;
+    Result := '%' + Dec64ToNumb(AnOrdinal, n, 2);
+  end;
+
+  function OrdToChar(AnOrdinal: QWord; AByteSize: Integer): String;
+  begin
+    AnOrdinal := MaskedOrd(AnOrdinal, AByteSize);
+    if AnOrdinal <= 31 then
+      Result := '#' + IntToStr(AnOrdinal)
+    else
+    if AnOrdinal <= high(Cardinal) then
+      Result := UnicodeToUTF8(Cardinal(AnOrdinal))
+    else
+      Result := IntToStr(AnOrdinal);
+  end;
+
   procedure DoPointer(AnAddress: boolean);
   var
     s: String;
@@ -824,6 +890,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     case ADisplayFormat of
       ddfDecimal, ddfUnsigned: APrintedValue := IntToStr(v);
       ddfHex: APrintedValue := '$'+IntToHex(v, AnAddressSize*2);
+      ddfBinary: APrintedValue := OrdToBinary(v, AnAddressSize);
       else begin //ddfPointer/Default ;
           if v = 0 then
             APrintedValue := 'nil'
@@ -977,7 +1044,8 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
           end;
           APrintedValue := '$'+IntToHex(QWord(AValue.AsInteger), n);
         end;
-      // TODO ddfChar:
+      ddfBinary: APrintedValue := OrdToBinary(QWord(AValue.AsInteger), OrdByteSize);
+      ddfChar:   APrintedValue := OrdToChar(QWord(AValue.AsInteger), OrdByteSize);
       else
           APrintedValue := IntToStr(AValue.AsInteger);
     end;
@@ -1007,7 +1075,8 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
           end;
           APrintedValue := '$'+IntToHex(AValue.AsCardinal, n);
         end;
-      // TODO ddfChar:
+      ddfBinary: APrintedValue := OrdToBinary(AValue.AsCardinal, OrdByteSize);
+      ddfChar:   APrintedValue := OrdToChar(AValue.AsCardinal, OrdByteSize);
       else
           APrintedValue := IntToStr(AValue.AsCardinal);
     end;
@@ -1021,6 +1090,9 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
 
   procedure DoBool;
   begin
+    if ADisplayFormat = ddfBinary then
+      APrintedValue := OrdToBinary(AValue.AsCardinal, OrdByteSize)
+    else
     if AValue.AsBool then begin
       APrintedValue := 'True';
       if AValue.AsCardinal <> 1 then
@@ -1037,6 +1109,13 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
 
   procedure DoChar;
   begin
+    if ADisplayFormat = ddfBinary then begin
+      APrintedValue := OrdToBinary(AValue.AsCardinal, OrdByteSize);
+      if (ppvCreateDbgType in AFlags) then
+        ADBGTypeInfo^ := TDBGType.Create(skSimple, ResTypeName);
+      Result := True;
+      exit;
+    end;
     if svfWideString in AValue.FieldFlags then
       APrintedValue := QuoteWideText(AValue.AsWideString)
     else
@@ -1080,7 +1159,10 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
   var
     s: String;
   begin
-    APrintedValue := AValue.AsString;
+    if ADisplayFormat = ddfBinary then
+      APrintedValue := OrdToBinary(AValue.AsCardinal, OrdByteSize)
+    else
+      APrintedValue := AValue.AsString;
     if APrintedValue = '' then begin
       s := ResTypeName;
       APrintedValue := s + '(' + IntToStr(AValue.AsCardinal) + ')';
@@ -1099,7 +1181,10 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     APrintedValue := AValue.AsString;
     if APrintedValue <> '' then
       APrintedValue := APrintedValue + ':=';
-    APrintedValue := APrintedValue+ IntToStr(AValue.AsCardinal);
+    if ADisplayFormat = ddfBinary then
+      APrintedValue := APrintedValue + OrdToBinary(AValue.AsCardinal, OrdByteSize)
+    else
+      APrintedValue := APrintedValue + IntToStr(AValue.AsCardinal);
 
     if (ppvCreateDbgType in AFlags) then begin
       ADBGTypeInfo^ := TDBGType.Create(skSimple, ResTypeName);
@@ -1468,6 +1553,20 @@ begin
 
     APrintedValue := 'Cannot read memory for expression';
     exit
+  end;
+
+  (* ddfString has never had an implementation, and there is nothing for it to
+     do. Report that rather than silently printing the default: a caller that
+     asked for a format and got the default back has no way to tell.
+
+     The IDE's newer display-format model has no string entry at all
+     (TWatchDisplayFormat, idedebuggerwatchvalueintf.pas), its printer takes no
+     format for rdkString, and its migration of the old TWatchDisplayFormat
+     maps wdfString to nothing (debugger.pp). *)
+  if ADisplayFormat = ddfString then begin
+    APrintedValue := '';
+    Result := False;
+    exit;
   end;
 
   Result := False;
