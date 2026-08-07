@@ -458,17 +458,17 @@ begin
   TVNodeMakeExe:=PropertiesTreeView.Items.Add(nil,MakeExeTabSheet.Caption);
   TVNodeDebugger:=PropertiesTreeView.Items.Add(nil,DebuggerTabSheet.Caption);
 
-  LazarusTabSheet.Tag    := PtrUInt(Pointer(TVNodeLazarus));
-  CompilerTabSheet.Tag   := PtrUInt(Pointer(TVNodeCompiler));
-  FPCSourcesTabSheet.Tag := PtrUInt(Pointer(TVNodeFPCSources));
-  MakeExeTabSheet.Tag    := PtrUInt(Pointer(TVNodeMakeExe));
-  DebuggerTabSheet.Tag   := PtrUInt(Pointer(TVNodeDebugger));
+  LazarusTabSheet.Tag    := PtrInt(Pointer(TVNodeLazarus));
+  CompilerTabSheet.Tag   := PtrInt(Pointer(TVNodeCompiler));
+  FPCSourcesTabSheet.Tag := PtrInt(Pointer(TVNodeFPCSources));
+  MakeExeTabSheet.Tag    := PtrInt(Pointer(TVNodeMakeExe));
+  DebuggerTabSheet.Tag   := PtrInt(Pointer(TVNodeDebugger));
 
 
   FppkgTabSheet.TabVisible := EnvironmentOptions.FppkgCheck;
   if FppkgTabSheet.TabVisible then begin
     TVNodeFppkg:=PropertiesTreeView.Items.Add(nil,FppkgTabSheet.Caption);
-    FppkgTabSheet.Tag      := PtrUInt(Pointer(TVNodeFppkg));
+    FppkgTabSheet.Tag      := PtrInt(Pointer(TVNodeFppkg));
   end;
   ImgIDFatal   := Imagelist1.AddResourceName(HInstance, 'state_fatal');
   ImgIDError   := Imagelist1.AddResourceName(HInstance, 'state_error');
@@ -503,7 +503,7 @@ begin
 
         NewTab := PropertiesPageControl.AddTabSheet;
         NewTab.Caption := CurFrame.Caption;
-        NewTab.Tag := PtrUInt(NewNode);
+        NewTab.Tag := PtrInt(NewNode);
 
         ScrollBox := TScrollBox.Create(Self);
         ScrollBox.Parent := NewTab;
