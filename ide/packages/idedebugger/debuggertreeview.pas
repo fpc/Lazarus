@@ -339,7 +339,7 @@ begin
   AShowHint := HitInfo.HitNode <> nil;
   if AShowHint then begin
     TheHintText := CodeHelpBoss.TextToHTML(NodeText[HitInfo.HitNode, 0]);
-    if HitInfo.HitColumn <> 0 then
+    if HitInfo.HitColumn > 0 then
       TheHintText := '<b>' + TheHintText + '</b><br/>'+ CodeHelpBoss.TextToHTML(NodeText[HitInfo.HitNode, HitInfo.HitColumn]);
   end;
 
@@ -401,7 +401,7 @@ var
 begin
   Result := '';
   Data := GetNodeData(Node);
-  if (Data <> nil) and (AColumn < Length(Data^.CachedText)) then
+  if (Data <> nil) and (AColumn >= 0) and (AColumn < Length(Data^.CachedText)) then
     Result := Data^.CachedText[AColumn].Txt;
 end;
 
