@@ -175,6 +175,7 @@ type
   private
     FLocalsDlg: TLocalsDlg;
     FAttributeMergeRes: TLazEditTextAttributeMergeResult;
+    FCachedNodesThreadId: integer;
   protected
     function WatchAbleResultFromNode(AVNode: PVirtualNode): IWatchAbleResultIntf; override;
     function WatchAbleResultFromObject(AWatchAble: TObject): IWatchAbleResultIntf; override;
@@ -1085,6 +1086,21 @@ var
     Result := FAttributeMergeRes.Foreground;
   end;
 
+  procedure ClearAllCached;
+  var
+    N: PVirtualNode;
+    C: IWatchAbleResultIntf;
+  begin
+    CachedResIntf := nil; // will be cleared
+    for N in TreeView.NoInitNodes do begin
+      C := IWatchAbleResultIntf(TreeView.NodeItem2[AVNode]);
+      if C <> nil then begin
+        TreeView.NodeItem2[AVNode] := nil;
+        C.ReleaseReference;
+      end;
+    end;
+  end;
+
 begin
   LName := '';
   if AWatchAble <> nil then
@@ -1116,6 +1132,9 @@ begin
       if (AWatchAbleResult.Validity in [ddsValid, ddsError]) then begin
         AWatchAbleResult.AddReference;
         TreeView.NodeItem2[AVNode] := AWatchAbleResult;
+        if FCachedNodesThreadId <> AWatchAbleResult.GetThreadId then
+          ClearAllCached;
+        FCachedNodesThreadId := AWatchAbleResult.GetThreadId;
         TreeView.NodeText[AVNode, TLocalsDlg.COL_NAME_CACHE] := LName;
         if CachedResIntf <> nil then
           CachedResIntf.ReleaseReference;
@@ -1123,7 +1142,7 @@ begin
       end
       else
       if (CachedResIntf <> nil) and (AWatchAbleResult.Validity in [ddsEvaluating, ddsRequested]) and
-         (AWatchAbleResult.GetThreadId = CachedResIntf.GetThreadId)
+         (AWatchAbleResult.GetThreadId = FCachedNodesThreadId)
       then begin
         AWatchAbleResult := CachedResIntf;
         LName := TreeView.NodeText[AVNode, TLocalsDlg.COL_NAME_CACHE];

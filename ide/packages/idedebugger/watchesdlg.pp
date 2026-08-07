@@ -257,6 +257,7 @@ type
   private
     FQueuedUnLockCommandProcessing: Boolean;
     FAttributeMergeRes: TLazEditTextAttributeMergeResult;
+    FCachedNodesThreadId: integer;
     procedure DoUnLockCommandProcessing(Data: PtrInt);
   protected
     FWatchDlg: TWatchesDlg;
@@ -2041,6 +2042,21 @@ var
     Result := FAttributeMergeRes.Foreground;
   end;
 
+  procedure ClearAllCached;
+  var
+    N: PVirtualNode;
+    C: IWatchAbleResultIntf;
+  begin
+    CachedResIntf := nil; // will be cleared
+    for N in TreeView.NoInitNodes do begin
+      C := IWatchAbleResultIntf(TreeView.NodeItem2[AVNode]);
+      if C <> nil then begin
+        TreeView.NodeItem2[AVNode] := nil;
+        C.ReleaseReference;
+      end;
+    end;
+  end;
+
 begin
   TreeView.NodeText[AVNode, COL_WATCH_EXPR-1]:= TIdeWatch(AWatchAble).DisplayName;
   TreeView.NodeText[AVNode, 2] := '';
@@ -2065,13 +2081,16 @@ begin
       if (AWatchAbleResult.Validity in [ddsValid, ddsError]) then begin
         AWatchAbleResult.AddReference;
         TreeView.NodeItem2[AVNode] := AWatchAbleResult;
+        if FCachedNodesThreadId <> AWatchAbleResult.GetThreadId then
+          ClearAllCached;
+        FCachedNodesThreadId := AWatchAbleResult.GetThreadId;
         if CachedResIntf <> nil then
           CachedResIntf.ReleaseReference;
         CachedResIntf := nil;
       end
       else
       if (CachedResIntf <> nil) and (AWatchAbleResult.Validity in [ddsEvaluating, ddsRequested]) and
-         (AWatchAbleResult.GetThreadId = CachedResIntf.GetThreadId)
+         (AWatchAbleResult.GetThreadId = FCachedNodesThreadId)
       then begin
         AWatchAbleResult := CachedResIntf;
         CachedResIntf := nil;
