@@ -6,7 +6,7 @@ interface
 
 uses
   SysUtils, Classes, Types,
-  Graphics, LCLType, LCLIntf, FPCanvas, FPImage, syncobjs;
+  GraphMath, Graphics, LCLType, LCLIntf, FPCanvas, FPImage, syncobjs;
 
 type
   TlmfList = class;
@@ -89,21 +89,28 @@ type
 
     procedure StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic); override;
 
-    procedure Ellipse (x1,y1,x2,y2:integer); override;
+    procedure Ellipse (x1,y1,x2,y2:integer); override; overload;
 
     procedure FillRect(const ARect: TRect); override; overload;
-    procedure FillRect(X1, Y1, X2, Y2: Integer); overload;
-
-    procedure Rectangle(X1,Y1,X2,Y2: Integer); override; // already in fpcanvas
+    procedure Frame(const ARect: TRect); override; overload;
+    procedure FrameRect(const ARect: TRect); override; overload;
+    procedure Rectangle(X1,Y1,X2,Y2: Integer); override; overload; // already in fpcanvas
+    procedure RoundRect(X1, Y1, X2, Y2, Rx, Ry: Integer); override; overload;
 
     procedure Polyline(Points: PPoint; NumPts: Integer);override;
-    procedure Polygon(Points: PPoint; NumPts: Integer;  Winding: boolean = False);override;
+    procedure Polygon(Points: PPoint; NumPts: Integer;  Winding: boolean = False); override;
 
     procedure TextOut (x,y:integer;const text:string); override; // already in fpcanvas
-    function TextExtent(const Text: string): TSize;override;
+    function TextExtent(const Text: string): TSize; override;
     procedure TextRect(ARect: TRect; X, Y: integer; const Text: string;
       const Style: TTextStyle); override;
 
+    procedure Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); override; overload;
+    procedure Arc(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer); override; overload;
+    procedure Chord(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); override; overload;
+    procedure Chord(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer); override; overload;
+    procedure Pie(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); override;
+    procedure RadialPie(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer); override;
   end;
 
 
@@ -364,7 +371,7 @@ var
   item:TlmfText;
 begin
   RequiredState([csFontValid,csBrushValid]);
-  item:=TlmfText.Create(x,y,text);
+  item:=TlmfTextInRect.Create(ARect, x, y, Text, Style);
   fImage.fList.InsertComponent(item);
 end;
 
@@ -420,7 +427,16 @@ var
   item:TlmfObject;
 begin
   RequiredState([csPenValid, csBrushValid]); // this adds TlmfPen and TlmfBrush
-  item:=TlmfRect.Create(Rect(x1,y1,x2,y2));
+  item := TlmfRect.Create(Rect(x1,y1,x2,y2));
+  fImage.fList.InsertComponent(item);
+end;
+
+procedure TlmfCanvas.RoundRect(X1, Y1, X2, Y2, Rx, Ry: Integer);
+var
+  item: TlmfObject;
+begin
+  RequiredState([csPenValid, csBrushValid]);
+  item := TlmfRoundRect.Create(Rect(X1, Y1, X2, Y2), Rx, Ry);
   fImage.fList.InsertComponent(item);
 end;
 
@@ -433,11 +449,25 @@ begin
   fImage.fList.InsertComponent(item);
 end;
 
-procedure TlmfCanvas.FillRect(X1, Y1, X2, Y2: Integer);
+procedure TlmfCanvas.Frame(const ARect: TRect);
+var
+  item: TlmfObject;
 begin
-  FillRect(Rect(X1, Y1, X2, Y2));
+  RequiredState([csPenValid]);
+  item := TlmfFrame.Create(ARect);
+  fImage.fList.InsertComponent(item);
 end;
-  (*
+
+procedure TlmfCanvas.FrameRect(const ARect: TRect);
+var
+  item: TlmfObject;
+begin
+  RequiredState([csBrushValid]);
+  item := TlmfFrameRect.Create(ARect);
+  fImage.fList.InsertComponent(item);
+end;
+
+(*
 procedure TlmfCanvas.DoRectangleFill(const Bounds:TRect);
 var
   item:TlmfObject;
@@ -557,10 +587,10 @@ procedure TlmfCanvas.Polygon(Points: PPoint; NumPts: Integer;
 var
   item:TlmfPolygon;
 begin
-  if NumPts<=0 then exit;
+  if NumPts <= 0 then exit;
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  item:=TlmfPolygon.Create(Points,NumPts);
+  item := TlmfPolygon.Create(Points, NumPts, Winding);
   item.Clip := Self.ClipRect;
   fImage.fList.InsertComponent(item);
   Changed;
@@ -569,6 +599,72 @@ end;
 procedure TlmfCanvas.Ellipse (x1,y1,x2,y2:integer);
 begin
   DoEllipse(Rect(x1,y1,x2,y2));
+end;
+
+procedure TlmfCanvas.Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer);
+var
+  item: TlmfObject;
+begin
+  RequiredState([csPenValid]);
+  item := TlmfArc.Create(Rect(ALeft, ATop, ARight, ABottom), Point(SX, SY), Point(EX, EY));
+  fImage.fList.InsertComponent(item);
+end;
+
+procedure TlmfCanvas.Arc(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer);
+var
+  SX, SY, EX, EY: Integer;
+begin
+  Angles2Coords(
+    ALeft, ATop, abs(ARight-ALeft), abs(ABottom-ATop),
+    Angle16Deg, Angle16DegLength,
+    SX, SY, EX, EY
+  );
+  Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY);
+end;
+
+procedure TlmfCanvas.Chord(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer);
+var
+  item: TlmfObject;
+begin
+  RequiredState([csBrushValid, csPenValid]);
+  item := TlmfChord.Create(Rect(ALeft, ATop, ARight, ABottom), Point(SX, SY), Point(EX, EY));
+  fImage.fList.InsertComponent(item);
+end;
+
+procedure TlmfCanvas.Chord(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer);
+var
+  SX, SY, EX, EY: Integer;
+begin
+  Angles2Coords(
+    ALeft, ATop, abs(ARight-ALeft), abs(ABottom-ATop),
+    Angle16Deg, Angle16DegLength,
+    SX, SY, EX, EY
+  );
+  Chord(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY);
+end;
+
+
+{ TlmfPie }
+
+procedure TlmfCanvas.Pie(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer);
+var
+  item: TlmfObject;
+begin
+  RequiredState([csBrushValid, csPenValid]);
+  item := TlmfPie.Create(Rect(ALeft, ATop, ARight, ABottom), Point(SX, SY), Point(EX, EY));
+  fImage.fList.InsertComponent(item);
+end;
+
+procedure TlmfCanvas.RadialPie(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer);
+var
+  SX, SY, EX, EY: Integer;
+begin
+  Angles2Coords(
+    ALeft, ATop, abs(ARight-ALeft), abs(ABottom-ATop),
+    Angle16Deg, Angle16DegLength,
+    SX, SY, EX, EY
+  );
+  Pie(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY);
 end;
 
 
