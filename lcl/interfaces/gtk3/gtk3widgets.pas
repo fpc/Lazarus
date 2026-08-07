@@ -6236,6 +6236,10 @@ begin
     exit;
 
   edt := TGtk3Entry(data);
+
+  if not Assigned(edt.LCLObject) then
+    exit;
+
   if [wtSpinEdit] * TGtk3Widget(data).WidgetType <> [] then
   begin
     (*
