@@ -6,7 +6,7 @@ interface
 
 uses
   SysUtils, Classes, Types,
-  GraphMath, Graphics, LCLType, LCLIntf, FPCanvas, FPImage, syncobjs;
+  GraphMath, GraphType, Graphics, LCLType, LCLIntf, FPCanvas, FPImage, syncobjs;
 
 type
   TlmfList = class;
@@ -94,16 +94,19 @@ type
     procedure FillRect(const ARect: TRect); override; overload;
     procedure Frame(const ARect: TRect); override; overload;
     procedure FrameRect(const ARect: TRect); override; overload;
+    procedure Frame3D(var ARect: TRect; TopColor, BottomColor: TColor; const FrameWidth: Integer); overload;
+    procedure Frame3D(var ARect: TRect; const FrameWidth: integer; const Style: TGraphicsBevelCut); override; overload;
     procedure Rectangle(X1,Y1,X2,Y2: Integer); override; overload; // already in fpcanvas
     procedure RoundRect(X1, Y1, X2, Y2, Rx, Ry: Integer); override; overload;
 
     procedure Polyline(Points: PPoint; NumPts: Integer);override;
     procedure Polygon(Points: PPoint; NumPts: Integer;  Winding: boolean = False); override;
 
+    procedure GradientFill(const ARect: TRect; AStartColor, AEndColor: TColor; ADirection: TGradientDirection);
+
     procedure TextOut (x,y:integer;const text:string); override; // already in fpcanvas
     function TextExtent(const Text: string): TSize; override;
-    procedure TextRect(ARect: TRect; X, Y: integer; const Text: string;
-      const Style: TTextStyle); override;
+    procedure TextRect(ARect: TRect; X, Y: integer; const Text: string; const Style: TTextStyle); override;
 
     procedure Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); override; overload;
     procedure Arc(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer); override; overload;
@@ -462,9 +465,31 @@ procedure TlmfCanvas.FrameRect(const ARect: TRect);
 var
   item: TlmfObject;
 begin
-  RequiredState([csBrushValid]);
+  RequiredState([csBrushValid]);  // frame is drawn using current BRUSH settings
   item := TlmfFrameRect.Create(ARect);
   fImage.fList.InsertComponent(item);
+end;
+
+procedure TlmfCanvas.Frame3D(var ARect: TRect; TopColor, BottomColor: TColor;
+  const Framewidth: Integer);
+var
+  item: TlmfObject;
+begin
+  RequiredState([csPenValid]);
+  item := TlmfFrame3d.Create(ARect, TopColor, BottomColor, FrameWidth);
+  fImage.fList.InsertComponent(item);
+  InflateRect(ARect, FrameWidth, FrameWidth);
+end;
+
+procedure TlmfCanvas.Frame3D(var ARect: TRect; const FrameWidth: integer;
+  const Style: TGraphicsBevelCut);
+begin
+  case Style of
+    bvNone: ;
+    bvLowered: Frame3D(ARect, cl3dShadow, cl3dLight, FrameWidth);
+    bvRaised: Frame3D(ARect, cl3dLight, cl3dShadow, FrameWidth);
+    bvSpace: ;
+  end;
 end;
 
 (*
@@ -665,6 +690,19 @@ begin
     SX, SY, EX, EY
   );
   Pie(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY);
+end;
+
+
+{ TlmfGradientFill }
+
+procedure TlmfCanvas.GradientFill(const ARect: TRect;
+  AStartColor, AEndColor: TColor; ADirection: TGradientDirection);
+var
+  item: TlmfObject;
+begin
+  RequiredState([csBrushValid, csPenValid]);
+  item := TlmfGradientFill.Create(ARect, AStartColor, AEndColor, ADirection);
+  fImage.fList.InsertComponent(item);
 end;
 
 

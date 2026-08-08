@@ -36,9 +36,11 @@ var
   P1, P2, C: TPoint;
   R: TRect;
   ts: TTextStyle;
+  penPattern: TPenPattern = nil;
+  bmp: TCustomBitmap;
 begin
-  Width := 520;
-  Height := 370;
+  Width := 510;
+  Height := 360;
 
   FLmfImg := TlmfImage.Create;
   FLmfImg.Width := 500;
@@ -71,13 +73,24 @@ begin
     LmfCanvas.Pen.Color := clGray;
     LmfCanvas.Pen.Style := psDot;
     LmfCanvas.Pen.Width := 1;
-    LmfCanvas.Frame(Rect(20, 160, 80, 180));
-    LmfCanvas.Frame(25, 165, 85, 185);
+    LmfCanvas.Frame(Rect(20, 160, 70, 180));
+    LmfCanvas.Frame(25, 165, 75, 185);
 
     // FrameRect (border using brush)
     LmfCanvas.Brush.Color := clRed;
-    LmfCanvas.FrameRect(Rect(90, 165, 150, 185));
-    LmfCanvas.FrameRect(95, 170, 155, 190);
+    LmfCanvas.FrameRect(Rect(90, 165, 140, 185));
+    LmfCanvas.FrameRect(95, 170, 145, 190);
+
+    //Frame3D
+    R := Rect(270, 100, 310, 130);
+    lmfCanvas.Brush.Color := clWhite;
+    lmfCanvas.FillRect(R);
+    LmfCanvas.Pen.Style := psSolid;
+    LmfCanvas.Frame3d(R, cl3DLight, cl3DShadow, 3);
+    R := Rect(320, 100, 360, 130);
+    lmfCanvas.Brush.Color := clWhite;
+    lmfCanvas.FillRect(R);
+    LmfCanvas.Frame3D(R, 3, bvLowered);
 
     // RoundRect
     LmfCanvas.Brush.Color := clYellow;
@@ -85,17 +98,28 @@ begin
     LmfCanvas.Pen.Style := psSolid;
     LmfCanvas.Pen.Width := 3;
     LmfCanvas.RoundRect(260, 40, 340, 80, 40, 40);
-    LmfCanvas.RoundRect(Rect(265, 45, 345, 85), 40, 40);
+    LmfCanvas.RoundRect(Rect(270, 50, 350, 90), 40, 40);
+
+    // Draw an alpha-transparent bitmap
+    bmp := TPortableNetworkGraphic.Create;
+    try
+      bmp.LoadFromFile('../../../../images/general_purpose/Bag_01_48.png');
+      LmfCanvas.Draw(200, 0, bmp);
+    finally
+      bmp.Free;
+    end;
 
     // Ellipse
     LmfCanvas.Brush.Style := bsHorizontal;
-    LmfCanvas.Brush.Color := clRed;
+    LmfCanvas.Brush.Color := clYellow;
     LmfCanvas.Pen.Color := clYellow;
     LmfCanvas.Pen.Style := psSolid;
     LmfCanvas.Pen.Width := 2;
-    LmfCanvas.Ellipse(50, 50, 250, 150);
-    //LmfCanvas.Frame(50, 50, 250, 150);
-    LmfCanvas.Ellipse(Rect(55, 55, 255, 155));
+    LmfCanvas.Ellipse(50, 40, 250, 140);
+    LmfCanvas.Brush.Style := bsFDiagonal;
+    LmfCanvas.Brush.Color := clRed;
+    LmfCanvas.Pen.Color := clRed;
+    LmfCanvas.Ellipse(Rect(60, 55, 260, 155));
 
     // Arc
     P1 := Point(250, 260);  // Point on x axis
@@ -129,16 +153,17 @@ begin
     LmfCanvas.Chord(70, 220, 230, 300, 90*16, 120*16);
 
     // ArcTo
-    C := Point(170, 310);
-    P1 := C + Point(100, 0);
-    P2 := C + Point(100, -100);
+    C := Point(190, 300);
+    P1 := C + Point(10, 0);
+    P2 := C + Point(30, -30);
     LmfCanvas.Pen.Color := clNavy;
     LmfCanvas.Pen.Width := 2;
     LmfCanvas.MoveTo(C.X, C.Y);
-    LmfCanvas.ArcTo(C.X-60, C.Y-30, C.X+60, C.Y+30, P1.X, P1.Y, P2.X, P2.Y);
-    LmfCanvas.Arc(C.X-60, C.Y-30, C.X+60, C.Y+30, P1.X, P1.Y, P2.X, P2.Y);
+    LmfCanvas.ArcTo(C.X-50, C.Y-30, C.X+50, C.Y+30, P1.X, P1.Y, P2.X, P2.Y);
+    LmfCanvas.Arc(C.X-50, C.Y-30, C.X+50, C.Y+30, P1.X, P1.Y, P2.X, P2.Y);
     LmfCanvas.Pen.Width := 1;;
-    LmfCanvas.Frame(C.X-60, C.Y-30, C.X+60, C.Y+30);
+    LmfCanvas.Frame(C.X-50, C.Y-30, C.X+50, C.Y+30);
+    LmfCanvas.Line(C, P2);
 
     // AngleArc
     C := Point(440, 280);
@@ -166,10 +191,21 @@ begin
     inc(P[4].Y, 110);
     LmfCanvas.Polygon(@P[0], 5, true);
 
+    // GradientFill
+    R := Rect(270, 250, 350, 290);
+    LmfCanvas.GradientFill(R, clRed, clYellow, gdVertical);
+    LmfCanvas.Pen.Width := 1;
+    LmfCanvas.Pen.Color := clBlack;
+    LmfCanvas.Pen.Style := psSolid;
+    LmfCanvas.Frame(R);
+    R := Rect(270, 290, 350, 330);
+    LmfCanvas.GradientFill(R, clRed, clYellow, gdHorizontal);
+    LmfCanvas.Frame(R);
+
     // Text
-    LmfCanvas.Font.Size := 12;
+    LmfCanvas.Font.Size := 10;
     LmfCanvas.Font.Color := clOlive;
-    LmfCanvas.TextOut(20, 20, 'Painted in OnCreate');
+    LmfCanvas.TextOut(20, 20, 'Text drawn by TextOut');
 
     // TextRect
     R := Rect(0, 0, FLmfImg.Width, FLmfImg.Height);
@@ -180,7 +216,30 @@ begin
     LmfCanvas.Font.Color := clBlue;
     LmfCanvas.Font.Style := [fsBold, fsItalic];
     LmfCanvas.Font.Size := 16;
-    LmfCanvas.TextRect(R, 0, 0, 'Centered' + LineEnding + 'in rect', ts);
+    LmfCanvas.TextRect(R, 0, 0, 'Centered' + LineEnding + 'in blue rectangle', ts);
+
+    // Pen styles
+    LmfCanvas.Pen.Color := clGreen;
+    LmfCanvas.Pen.Width := 1;
+    LmfCanvas.Brush.Style := bsClear;  // Clear the gaps
+    LmfCanvas.Pen.Style := psSolid;
+    LmfCanvas.Line(10, 320, 110, 320);
+    LmfCanvas.Pen.Style := psDash;
+    LmfCanvas.Line(10, 325, 110, 325);
+    LmfCanvas.Pen.Style := psDot;
+    LmfCanvas.Line(10, 330, 110, 330);
+    LmfCanvas.Pen.Style := psDashDot;
+    LmfCanvas.Line(10, 335, 110, 335);
+    LmfCanvas.Pen.Style := psDashDotDot;
+    LmfCanvas.Line(10, 340, 110, 340);
+    SetLength(PenPattern, 4);
+    penPattern[0] := 1;  // line
+    penPattern[1] := 1;  // space
+    penPattern[2] := 4;  // line
+    penPattern[3] := 4;  // space
+    LmfCanvas.Pen.Style := psPattern;
+    LmfCanvas.Pen.SetPattern(penPattern);
+    LmfCanvas.Line(10, 345, 110, 345);
 
   finally
     LmfCanvas.Free;
@@ -197,7 +256,9 @@ begin
   if Assigned(FLmfImg) then
   begin
     // Paint metafile image on the canvas of the form
-    Canvas.Draw(10, 10, FLmfImg);
+    // !!! Activate one of the two next lines !!!
+//    Canvas.Draw(10, 10, FLmfImg);
+    Canvas.StretchDraw(Rect(5, 5, ClientWidth-5, ClientHeight-5), FLmfImg);
   end;
 end;
 

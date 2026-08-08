@@ -123,15 +123,43 @@ type
     procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
   end;
 
+  TlmfFrame3D = class(TlmfRect)
+  private
+    fTopColor: TColor;
+    fBottomColor: TColor;
+    fFrameWidth: Integer;
+  public
+    constructor Create(ARect:TRect; ATopColor, ABottomColor: TColor; AFrameWidth: Integer); overload;
+    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+  published
+    property TopColor: TColor read fTopColor write fTopColor;
+    property BottomColor: TColor read fBottomColor write fBottomColor;
+    property FrameWidth: Integer read fFrameWidth write fFrameWidth;
+  end;
+
   TlmfRoundRect = class(TlmfRect)
   private
     frx, fry: Integer;
   public
-    constructor Create(AClip: TRect; ARx, ARy: Integer); overload;
+    constructor Create(ARect: TRect; ARx, ARy: Integer); overload;
     procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
   published
     property Rx: Integer read frx write frx;
     property Ry: Integer read fry write fry;
+  end;
+
+  TlmfGradientFill = class(TlmfClip)
+  private
+    fStartColor: TColor;
+    fEndColor: TColor;
+    fDirection: TGradientDirection;
+  public
+    constructor Create(ARect: TRect; AStartColor, AEndColor: TColor; ADirection: TGradientDirection); overload;
+    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+  published
+    property StartColor: TColor read fStartColor write fStartColor;
+    property EndColor: TColor read fEndColor write fEndColor;
+    property Direction: TGradientDirection read fDirection write fDirection;
   end;
 
   TlmfEllipse=class(TlmfClip)
@@ -458,9 +486,9 @@ end;
 
 { TlmfRoundRect }
 
-constructor TlmfRoundRect.Create(AClip: TRect; ARx, ARy: Integer);
+constructor TlmfRoundRect.Create(ARect: TRect; ARx, ARy: Integer);
 begin
-  inherited Create(AClip);
+  inherited Create(ARect);
   frx := ARx;
   fry := ARy;
 end;
@@ -474,6 +502,135 @@ begin
     fImage.ScaleY(fClip.Bottom),
     frx, fry
   );
+end;
+
+
+{ TlmfFrame3d }
+
+constructor TlmfFrame3d.Create(ARect: TRect; ATopColor, ABottomColor: TColor;
+  AFrameWidth: Integer);
+begin
+  inherited Create(ARect);
+  fTopColor := ATopColor;
+  fBottomColor := ABottomColor;
+  fFrameWidth := AFrameWidth;
+end;
+
+procedure TlmfFrame3d.Action(fImage: TlmfImage; ACanvas: TCanvas);
+var
+  xL, xR, yT, yB: Integer;
+  W, wFrame, i : Integer;
+begin
+  xL := fImage.ScaleX(Left);
+  xR := fImage.ScaleX(Right);
+  yT := fImage.ScaleY(Top);
+  yB := fImage.ScaleY(Bottom);
+
+  if yB - yT > xR - xL then
+  begin
+    W := xR - xL + 1;
+    wFrame := fImage.ScaleSizeX(fFrameWidth);
+  end else
+  begin
+    W := yB - yT + 1;
+    wFrame := fImage.ScaleSizeY(fFrameWidth);
+  end;
+
+  if wFrame > W then
+    W := W-1
+  else
+    W := wFrame;
+
+  for i := 1 to W do
+  begin
+    ACanvas.Pen.Color := fTopColor;
+    ACanvas.MoveTo(xL, yB-1);
+    ACanvas.LineTo(xL, yT);
+    ACanvas.LineTo(xR-1, yT);
+
+    ACanvas.Pen.Color := fBottomColor;
+    ACanvas.LineTo(xR-1, yB-1);
+    ACanvas.LineTo(xL, yB-1);
+
+    inc(xL);
+    inc(yT);
+    dec(xR);
+    dec(yB);
+  end;
+end;
+
+
+{ TlmfGradientFill }
+
+constructor TlmfGradientFill.Create(ARect: TRect; AStartColor, AEndColor: TColor;
+  ADirection: TGradientDirection);
+begin
+  inherited Create(ARect);
+  fStartColor := ColorToRGB(AStartColor);
+  fEndColor := ColorToRGB(AEndColor);
+  fDirection := ADirection;
+end;
+
+procedure TlmfGradientFill.Action(fImage: TlmfImage; ACanvas: TCanvas);
+
+  function InterpolateColor(C1, C2: TColor; x, Total: Integer): TColor;
+  var
+    f1, f2: Double;
+  begin
+    f2 := x / Total;
+    f1 := 1.0 - f2;
+    TRgbQuad(Result).rgbRed := round(TRgbQuad(C1).rgbRed * f1 + TRgbQuad(C2).rgbRed * f2);
+    TRgbQuad(Result).rgbGreen := round(TRgbQuad(C1).rgbGreen * f1 + TRgbQuad(C2).rgbGreen * f2);
+    TRgbQuad(Result).rgbBlue := round(TRgbQuad(C1).rgbBlue * f1 + TRgbQuad(C2).rgbBlue * f2);
+    TRgbQuad(Result).rgbReserved := round(TRgbQuad(C1).rgbReserved * f1 + TRgbQuad(C2).rgbReserved * f2);
+  end;
+
+var
+  x, y, i, n: Integer;
+  xL, xR, yT, yB: Integer;
+  oldPenStyle: TPenStyle;
+  oldPenWidth: Integer;
+  oldPenColor: TColor;
+begin
+  oldPenStyle := ACanvas.Pen.Style;
+  oldPenWidth := ACanvas.Pen.Width;
+  oldPenColor := ACanvas.Pen.Color;
+  ACanvas.Pen.Style := psSolid;
+  ACanvas.Pen.Width := 1;
+
+  xL := fImage.ScaleX(Left);
+  xR := fImage.ScaleX(Right);
+  yT := fImage.ScaleY(Top);
+  yB := fImage.ScaleY(Bottom);
+  if fDirection = gdVertical then
+  begin
+    n := yB - yT;
+    if n = 0 then
+      exit;
+    i := 0;
+    for y := yT to yB - 1 do
+    begin
+      ACanvas.Pen.Color := InterpolateColor(fStartColor, fEndColor, i, n);
+      ACanvas.Line(xL, y, xR - 1, y);
+      inc(i);
+    end;
+  end else
+  begin
+    n := xR - xL;
+    if n = 0 then
+      exit;
+    i := 0;
+    for x := xL to xR - 1 do
+    begin
+      ACanvas.Pen.Color := InterpolateColor(fStartColor, fEndColor, i, n);
+      ACanvas.Line(x, yT, x, yB - 1);
+      inc(i);
+    end;
+  end;
+
+  ACanvas.Pen.Style := oldPenStyle;
+  ACanvas.Pen.Width := oldPenWidth;
+  ACanvas.Pen.Color := oldPenColor;
 end;
 
 
