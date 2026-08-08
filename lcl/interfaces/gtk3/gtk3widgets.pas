@@ -793,6 +793,7 @@ type
     function getVerticalScrollbar: PGtkScrollbar; override;
     function GetScrolledWindow: PGtkScrolledWindow; override;
     procedure ClearImages;
+    procedure SyncImages;
     procedure ColumnDelete(AIndex: Integer);
     function ColumnGetWidth(AIndex: Integer): Integer;
     procedure ColumnInsert(AIndex: Integer; AColumn: TListColumn);
@@ -12130,6 +12131,42 @@ begin
   end;
 end;
 
+procedure TGtk3ListView.SyncImages;
+var
+  ALV: TCustomListViewHack;
+  ImgList: TCustomImageList;
+  ImgWidth: Integer;
+  i: Integer;
+  bmp: TBitmap;
+  pxb: PGdkPixbuf;
+begin
+  if (FImages = nil) or not Assigned(LCLObject) then
+    exit;
+  ALV := TCustomListViewHack(LCLObject);
+  if ALV.ViewStyle = vsIcon then
+  begin
+    ImgList := ALV.LargeImages;
+    ImgWidth := ALV.LargeImagesWidth;
+  end else
+  begin
+    ImgList := ALV.SmallImages;
+    ImgWidth := ALV.SmallImagesWidth;
+  end;
+  if ImgList = nil then
+    exit;
+  for i := FImages.Count to ImgList.Count - 1 do
+  begin
+    bmp := TBitmap.Create;
+    try
+      ImgList.ResolutionForPPI[ImgWidth, ALV.Font.PixelsPerInch, ALV.GetCanvasScaleFactor].Resolution.GetBitmap(i, bmp);
+      pxb := TGtk3Image(bmp.Handle).Handle^.copy;
+      FImages.Add(pxb);
+    finally
+      bmp.Free;
+    end;
+  end;
+end;
+
 procedure TGtk3ListView.ColumnDelete(AIndex: Integer);
 var
   AColumn: PGtkTreeViewColumn;
@@ -12199,6 +12236,9 @@ begin
   else
     if ColumnIndex - 1 <= ListItem.SubItems.Count - 1 then
       ImageIndex := ListItem.SubItemImages[ColumnIndex - 1];
+
+  if ImageIndex > AImages.Count - 1 then
+    TGtk3ListView(AData).SyncImages;
 
   if (ImageIndex > -1) and (ImageIndex <= AImages.Count-1) then
     pb := PGdkPixbuf(AImages.Items[ImageIndex])^.copy

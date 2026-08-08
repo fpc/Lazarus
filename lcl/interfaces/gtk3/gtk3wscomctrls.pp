@@ -567,6 +567,9 @@ begin
     if ColumnIndex -1 <= ListItem.SubItems.Count-1 then
       ImageIndex := ListItem.SubItemImages[ColumnIndex-1];
 
+  if (Images <> nil) and (ImageIndex > Images.Count - 1) then
+    TGtk3ListView(aData).SyncImages;
+
   if (ImageList <> nil) and
     (ImageIndex > -1) and (ImageIndex <= ImageList.Count-1) then
   begin
