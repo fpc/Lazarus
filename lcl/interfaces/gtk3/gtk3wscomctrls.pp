@@ -1172,12 +1172,10 @@ begin
     Exit;
   if TGtk3ListView(ALV.Handle).IsTreeView then
   begin
-    //PGtkTreeView(TGtk3ListView(ALV.Handle).GetContainerWidget)^.get_bin_window^.get_position(@cx, @cy);
-    //Dec(x, cx);
-    //Dec(y, cy);
+    PGtkTreeView(TGtk3ListView(ALV.Handle).GetContainerWidget)^.convert_widget_to_bin_window_coords(x, y, @cx, @cy);
     ItemPath := nil;
     Column := nil;
-    if PGtkTreeView(TGtk3ListView(ALV.Handle).GetContainerWidget)^.get_path_at_pos(x, y, @ItemPath, @Column, nil, nil) then
+    if PGtkTreeView(TGtk3ListView(ALV.Handle).GetContainerWidget)^.get_path_at_pos(cx, cy, @ItemPath, @Column, nil, nil) then
     begin
       if ItemPath <> nil then
       begin
@@ -1187,7 +1185,8 @@ begin
     end;
   end else
   begin
-    ItemPath := PGtkIconView(TGtk3ListView(ALV.Handle).GetContainerWidget)^.get_path_at_pos(x, y);
+    PGtkIconView(TGtk3ListView(ALV.Handle).GetContainerWidget)^.convert_widget_to_bin_window_coords(x, y, @cx, @cy);
+    ItemPath := PGtkIconView(TGtk3ListView(ALV.Handle).GetContainerWidget)^.get_path_at_pos(cx, cy);
     if ItemPath <> nil then
     begin
       Result := gtk_tree_path_get_indices(ItemPath)^;
