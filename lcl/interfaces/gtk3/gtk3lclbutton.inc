@@ -229,6 +229,25 @@ begin
     ParentClass^.size_allocate(widget, allocation);
 end;
 
+function LCLGtkButtonDraw(widget: PGtkWidget; cr: Pcairo_t): gboolean; cdecl;
+var
+  ParentClass: PGtkWidgetClass;
+  AAlloc: TGtkAllocation;
+begin
+  Result := gtk_false;
+  if not Gtk3IsWidget(widget) or not Assigned(cr) then
+    Exit;
+  ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
+  if not Assigned(ParentClass) or not Assigned(ParentClass^.draw) then
+    Exit;
+  widget^.get_allocation(@AAlloc);
+  cairo_save(cr);
+  cairo_rectangle(cr, 0, 0, AAlloc.width, AAlloc.height);
+  cairo_clip(cr);
+  Result := ParentClass^.draw(widget, cr);
+  cairo_restore(cr);
+end;
+
 procedure LCLGtkButtonClassInit(klass: PGTypeClass; {%H-}data: Pointer); cdecl;
 var
   AWidgetClass: PGtkWidgetClass;
@@ -237,6 +256,7 @@ begin
   AWidgetClass^.get_preferred_width := @LCLGtkButtonGetPreferredWidth;
   AWidgetClass^.get_preferred_height := @LCLGtkButtonGetPreferredHeight;
   AWidgetClass^.size_allocate := @LCLGtkButtonSizeAllocate;
+  AWidgetClass^.draw := @LCLGtkButtonDraw;
 end;
 
 procedure LCLGtkButtonInstanceInit({%H-}instance: PGTypeInstance; {%H-}klass: PGTypeClass); cdecl;
