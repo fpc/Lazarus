@@ -99,7 +99,8 @@ end;
 
 procedure TEditablePackage.UpdateEditor;
 begin
-  Editor.UpdateAll(True);
+  if Assigned(Editor) then
+    Editor.UpdateAll(True);
 end;
 
 { TBasePackageEditor }
