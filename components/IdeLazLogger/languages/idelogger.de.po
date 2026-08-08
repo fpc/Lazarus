@@ -1,0 +1,25 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: idelogger.ideloggerapply
+msgid "&Apply"
+msgstr "&Anwenden"
+
+#: idelogger.ideloggercaption
+msgid "Logging"
+msgstr "Protokollierung"
+
+#: idelogger.ideloggermenucaption
+msgid "Logging ..."
+msgstr "Protokollierung ..."
+

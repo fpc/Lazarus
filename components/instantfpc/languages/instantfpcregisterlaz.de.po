@@ -1,0 +1,29 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: instantfpcregisterlaz.rsinstantfpcpr
+msgid "InstantFPC program"
+msgstr "InstantFPC-Programm"
+
+#: instantfpcregisterlaz.rsinstantfpcsc
+msgid "InstantFPC script"
+msgstr "InstantFPC-Skript"
+
+#: instantfpcregisterlaz.rssinglefilefr
+msgid "Single file Free Pascal program executed by InstantFPC."
+msgstr "Ein-Datei-Free-Pascal-Programm für die Ausführung durch InstantFPC."
+
+#: instantfpcregisterlaz.rssinglefilepr
+msgid "Single file program using InstantFPC to compile and execute."
+msgstr "Ein-Datei-Free-Pascal-Programm, das InstantFPC für das Kompilieren und Ausführen verwendet."
+
