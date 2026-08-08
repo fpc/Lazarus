@@ -1067,31 +1067,39 @@ begin
     end else
     begin
       SrcBmp := TBitmap.Create;
-      if (AddType in [atReplace, atReplaceAllResolutions]) and (GetSelGlyphInfo<>nil) then
-      begin
-        P := GetSelGlyphInfo;
-        P.Bitmap.Free;
-        P.Bitmap := SrcBmp;
-      end else
-      begin
-        P := TGlyphInfo.Create;
-        P.Bitmap := SrcBmp;
-      end;
-      P.TransparentColor := clDefault;
-      P.Adjustment := gaNone;
-      if not (AddType in [atReplace, atReplaceAllResolutions]) then
-        ImageListBox.Items.AddObject('', P);
-
-      SrcBmp.Assign(Picture.Graphic);
-      DestBmp := CreateGlyph(SrcBmp, SrcBmp.Width, SrcBmp.Height, P.Adjustment, P.TransparentColor);
       try
-        case AddType of
-          atAdd: ImageList.Add(DestBmp, nil);
-          atInsert: ImageList.Insert(ImageListBox.ItemIndex+1, DestBmp, nil);
-          atReplace, atReplaceAllResolutions: ImageList.Replace(ImageListBox.ItemIndex, DestBmp, nil, AddType=atReplaceAllResolutions);
+        if (AddType in [atReplace, atReplaceAllResolutions]) and (GetSelGlyphInfo<>nil) then
+        begin
+          P := GetSelGlyphInfo;
+          P.Bitmap.Free;
+          P.Bitmap := SrcBmp;
+        end else
+        begin
+          P := TGlyphInfo.Create;
+          P.Bitmap := SrcBmp;
+        end;
+        P.TransparentColor := clDefault;
+        P.Adjustment := gaNone;
+        if not (AddType in [atReplace, atReplaceAllResolutions]) then
+          ImageListBox.Items.AddObject('', P);
+
+        SrcBmp.Assign(Picture.Graphic);
+        DestBmp := CreateGlyph(SrcBmp, SrcBmp.Width, SrcBmp.Height, P.Adjustment, P.TransparentColor);
+        try
+          case AddType of
+            atAdd: ImageList.Add(DestBmp, nil);
+            atInsert: ImageList.Insert(ImageListBox.ItemIndex+1, DestBmp, nil);
+            atReplace, atReplaceAllResolutions: ImageList.Replace(ImageListBox.ItemIndex, DestBmp, nil, AddType=atReplaceAllResolutions);
+          end;
+        finally
+          DestBmp.Free;
         end;
       finally
-        DestBmp.Free;
+        if P = nil then
+          SrcBmp.Free;
+        // Only free P if it was newly created and NOT added to the ImageListBox.
+        if (AddType in [atReplace, atReplaceAllResolutions]) and (GetSelGlyphInfo=nil) then
+          P.Free;
       end;
     end;
 
