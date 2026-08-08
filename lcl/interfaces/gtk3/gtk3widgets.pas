@@ -10974,6 +10974,8 @@ begin
   Mess := Default(TLMessage);
   if (aData = nil) then
     exit;
+  if not Assigned(TGtk3Widget(aData).LCLObject) then
+    exit;
   Mess.Msg := CM_TEXTCHANGED;
   LCLMessageGlue.DeliverMessage(TGtk3Widget(aData).LCLObject, Mess);
 end;
