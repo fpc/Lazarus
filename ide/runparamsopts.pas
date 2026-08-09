@@ -28,7 +28,7 @@
     command line parameters and working directory.
     
     The options saved in a TRunParamsOptions are stored in the project info file
-    (.lpi) together with the rest of the project.
+    (.lpi) together with the rest of the project or in session file (.lps).
     
     The dialog will be activated by main.pp with the function
     ShowRunParamsOptsDlg (see below) when the user clicks on the
