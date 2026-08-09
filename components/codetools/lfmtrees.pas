@@ -48,6 +48,25 @@ type
 
   TLFMTree = class;
 
+  { TLFMDeclarationCache - a pascal declaration of an identifier in the LFM.
+    Note: LFMTrees must not use FindDeclarationTool (circular reference),
+    so the pascal context is stored as TObject. }
+
+  TLFMDeclarationCache = record
+    Valid: boolean; // true = already searched, Node=nil then means: not found
+    Tool: TObject;  // TFindDeclarationTool
+    Node: TObject;  // TCodeTreeNode
+  end;
+
+  { TLFMDeclarationCacheItem - a TLFMDeclarationCache for an identifier at
+    StartPos, needed when one node contains several identifiers at varying
+    positions, e.g. a dotted value 'Owner.Foo.Bar' }
+
+  TLFMDeclarationCacheItem = record
+    StartPos: integer; // 1-based position of the identifier in the LFM source
+    Decl: TLFMDeclarationCache;
+  end;
+
   TLFMTreeNode = class
   public
     TheType: TLFMNodeType;
@@ -69,6 +88,7 @@ type
     function GetSrcPos: string;
     function GetSource(Count: integer): string;
     function Next(SkipChildren: Boolean = False): TLFMTreeNode;
+    procedure ClearDeclCache; virtual;
   end;
   
   TLFMTreeNodeClass = class of TLFMTreeNode;
@@ -90,10 +110,15 @@ type
     AncestorTool: TObject; // TFindDeclarationTool
     AncestorNode: TObject; // TCodeTreeNode
     AncestorContextValid: boolean;
+    NameDecl: TLFMDeclarationCache; // declaration of Name, e.g. the field 'Button1'
+    TypeDecl: TLFMDeclarationCache; // declaration of TypeName, e.g. 'TButton = class'
+    TypeUnitDecl: TLFMDeclarationCache; // declaration of TypeUnitName, e.g. 'unit Controls'
+    ClassDecl: TLFMDeclarationCache; // class node used to search the child nodes
     constructor CreateVirtual; override;
     function GetFullName(UnitNameSep: char = '/'; WithName: boolean = true): string;
     function GetIdentifier: string; override;
     function GetPropertyPath: string;
+    procedure ClearDeclCache; override;
   end;
 
   { TLFMNameParts }
@@ -120,11 +145,13 @@ type
   public
     CompleteName: string;
     NameParts: TLFMNameParts;
+    PartDecls: array of TLFMDeclarationCache; // one per NameParts item
     constructor CreateVirtual; override;
     destructor Destroy; override;
     procedure Clear;
     procedure Add(const Name: string; NamePosition: integer);
     function GetPropertyPath: string;
+    procedure ClearDeclCache; override;
   end;
 
 
@@ -164,7 +191,10 @@ type
   TLFMValueNodeSymbol = class(TLFMValueNode)
   public
     SymbolType: TLFMSymbolType;
+    // one per part of a dotted identifier, e.g. 'Owner.Foo.Bar'
+    PartDecls: array of TLFMDeclarationCacheItem;
     constructor CreateVirtual; override;
+    procedure ClearDeclCache; override;
   end;
 
 
@@ -204,7 +234,9 @@ type
 
   TLFMEnumNode = class(TLFMTreeNode)
   public
+    Decl: TLFMDeclarationCache;
     constructor CreateVirtual; override;
+    procedure ClearDeclCache; override;
   end;
 
 
@@ -301,6 +333,11 @@ type
     FirstError: TLFMError;
     LastError: TLFMError;
     Trees: TLFMTrees;
+    // stamps of the declaration caches of the nodes
+    DeclCacheTool: TObject; // TStandardCodeTool used for the last resolution
+    DeclCacheSourcesChangeStep: int64;
+    DeclCacheFilesChangeStep: int64;
+    DeclCacheInitValuesChangeStep: integer;
     constructor Create(TheTrees: TLFMTrees; aLFMBuf: TCodeBuffer);
     constructor Create;
     destructor Destroy; override;
@@ -309,6 +346,11 @@ type
     function Parse(LFMBuf: TCodeBuffer = nil): boolean;
     function ParseIfNeeded: boolean;
     function UpdateNeeded: boolean;
+    procedure InvalidateDeclCaches;
+    function CheckDeclCacheStamps(aTool: TObject;
+                       const NewSourcesChangeStep, NewFilesChangeStep: int64;
+                       NewInitValuesChangeStep: integer): boolean;
+    function FindNodeAtPos(p: integer): TLFMTreeNode;
     function PositionToCaret(p: integer): TPoint;
     procedure AddError(ErrorType: TLFMErrorType; LFMNode: TLFMTreeNode;
                        const ErrorMessage: string; ErrorPosition: integer);
@@ -443,6 +485,7 @@ end;
 
 constructor TLFMTree.Create;
 begin
+  InvalidateDeclCaches;
 end;
 
 destructor TLFMTree.Destroy;
@@ -455,6 +498,7 @@ end;
 procedure TLFMTree.Clear;
 begin
   // do not set LFMBuffer to nil
+  InvalidateDeclCaches; // note: the nodes are freed below anyway
   FTokenStart:=nil;
   FTokenEnd:=nil;
   FTokenKind:=ltkNone;
@@ -533,6 +577,69 @@ function TLFMTree.UpdateNeeded: boolean;
 begin
   Result:=(LFMBuffer=nil) or (LFMBuffer.ChangeStep<>LFMBufferChangeStep)
        or (FirstError<>nil);
+end;
+
+procedure TLFMTree.InvalidateDeclCaches;
+var
+  Node: TLFMTreeNode;
+begin
+  DeclCacheTool:=nil;
+  DeclCacheSourcesChangeStep:=CTInvalidChangeStamp64;
+  DeclCacheFilesChangeStep:=CTInvalidChangeStamp64;
+  DeclCacheInitValuesChangeStep:=CTInvalidChangeStamp;
+  // note: Next continues with the next root node, so this covers all roots
+  Node:=Root;
+  while Node<>nil do begin
+    Node.ClearDeclCache;
+    Node:=Node.Next;
+  end;
+end;
+
+function TLFMTree.CheckDeclCacheStamps(aTool: TObject;
+  const NewSourcesChangeStep, NewFilesChangeStep: int64;
+  NewInitValuesChangeStep: integer): boolean;
+// check if the declaration caches of the nodes are still valid
+// if not, they are cleared and the new stamps are stored
+begin
+  if (DeclCacheTool=aTool) and (aTool<>nil)
+  and (DeclCacheSourcesChangeStep=NewSourcesChangeStep)
+  and (DeclCacheSourcesChangeStep<>CTInvalidChangeStamp64)
+  and (DeclCacheFilesChangeStep=NewFilesChangeStep)
+  and (DeclCacheFilesChangeStep<>CTInvalidChangeStamp64)
+  and (DeclCacheInitValuesChangeStep=NewInitValuesChangeStep)
+  and (DeclCacheInitValuesChangeStep<>CTInvalidChangeStamp) then
+    exit(true);
+  InvalidateDeclCaches;
+  DeclCacheTool:=aTool;
+  DeclCacheSourcesChangeStep:=NewSourcesChangeStep;
+  DeclCacheFilesChangeStep:=NewFilesChangeStep;
+  DeclCacheInitValuesChangeStep:=NewInitValuesChangeStep;
+  Result:=false;
+end;
+
+function TLFMTree.FindNodeAtPos(p: integer): TLFMTreeNode;
+// returns the deepest node containing the 1-based source position p
+var
+  Node, Child: TLFMTreeNode;
+begin
+  Result:=nil;
+  Node:=Root;
+  while Node<>nil do begin
+    if (p>=Node.StartPos) and (p<Node.EndPos) then begin
+      // p is in Node -> search a child containing p
+      Result:=Node;
+      Child:=Node.FirstChild;
+      Node:=nil;
+      while Child<>nil do begin
+        if (p>=Child.StartPos) and (p<Child.EndPos) then begin
+          Node:=Child;
+          break;
+        end;
+        Child:=Child.NextSibling;
+      end;
+    end else
+      Node:=Node.NextSibling;
+  end;
 end;
 
 function TLFMTree.PositionToCaret(p: integer): TPoint;
@@ -981,8 +1088,8 @@ begin
             CreateChildNode(TLFMEnumNode);
             if FTokenKind<>ltkIdentifier then
               ParseErrorExp('identifier');
-            CloseChildNode;
             NextToken;
+            CloseChildNode;
             if FTokenChar = ']' then
               break
             else if FTokenChar<>',' then
@@ -1318,6 +1425,7 @@ begin
   if (TheTrees=nil)
   or (aLFMBuf=nil) then
     raise Exception.Create('TLFMTree.Create need tree and buffer');
+  InvalidateDeclCaches;
   Trees:=TheTrees;
   Trees.FItems.Add(Self);
   LFMBuffer:=aLFMBuf;
@@ -1474,6 +1582,11 @@ begin
   Result:=copy(Src,StartPos,Cnt);
 end;
 
+procedure TLFMTreeNode.ClearDeclCache;
+begin
+  // nothing to do, see the descendants
+end;
+
 function TLFMTreeNode.Next(SkipChildren: Boolean = False): TLFMTreeNode;
 begin
   if not SkipChildren and (FirstChild <> nil) then
@@ -1533,6 +1646,17 @@ begin
   end;
 end;
 
+procedure TLFMObjectNode.ClearDeclCache;
+begin
+  AncestorTool:=nil;
+  AncestorNode:=nil;
+  AncestorContextValid:=false;
+  NameDecl:=Default(TLFMDeclarationCache);
+  TypeDecl:=Default(TLFMDeclarationCache);
+  TypeUnitDecl:=Default(TLFMDeclarationCache);
+  ClassDecl:=Default(TLFMDeclarationCache);
+end;
+
 { TLFMPropertyNode }
 
 constructor TLFMPropertyNode.CreateVirtual;
@@ -1568,6 +1692,11 @@ begin
   Result:=CompleteName;
   if Parent is TLFMObjectNode then
     Result:=TLFMObjectNode(Parent).GetPropertyPath+'.'+Result;
+end;
+
+procedure TLFMPropertyNode.ClearDeclCache;
+begin
+  PartDecls:=nil;
 end;
 
 { TLFMValueNode }
@@ -1657,6 +1786,11 @@ begin
   SymbolType:=lfmsIdentifier;
 end;
 
+procedure TLFMValueNodeSymbol.ClearDeclCache;
+begin
+  PartDecls:=nil;
+end;
+
 { TLFMValueNodeSet }
 
 constructor TLFMValueNodeSet.CreateVirtual;
@@ -1670,6 +1804,11 @@ end;
 constructor TLFMEnumNode.CreateVirtual;
 begin
   TheType:=lfmnEnum;
+end;
+
+procedure TLFMEnumNode.ClearDeclCache;
+begin
+  Decl:=Default(TLFMDeclarationCache);
 end;
 
 { TLFMValueNodeList }

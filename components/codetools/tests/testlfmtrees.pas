@@ -36,13 +36,17 @@ type
     function AddControls(const aFilename: string = 'controls.pas'; AddCollection: boolean = false): TCodeBuffer;
     function AddFormUnit(const Fields: array of string;
       const aFormClass: string = 'TForm';
-      const aFilename: string = 'unit1.pas'): TCodeBuffer;
+      const aFilename: string = 'unit1.pas';
+      const aVarName: string = ''): TCodeBuffer;
     function AddSource(aFilename, aSource: string): TCodeBuffer;
   public
     constructor Create; override;
     destructor Destroy; override;
     procedure CheckLFM;
     procedure CheckLFMExpectedError(ErrorType: TLFMErrorType; const CursorPos: TCodeXYPosition; ErrorMsg: string);
+    procedure CheckLFMDeclaration(const LFMPos: TCodeXYPosition;
+      const ExpPos: TCodeXYPosition);
+    procedure CheckLFMDeclarationNotFound(const LFMPos: TCodeXYPosition);
     function CheckHasProperty(const PropertyPath: string): TLFMPropertyNode;
     function CheckPropertyType(const PropertyPath: string; ValueType: TLFMValueType): TLFMValueNode;
     procedure ParseLFM;
@@ -69,6 +73,19 @@ type
     procedure LFM_Set;
     procedure LFM_List;
     procedure LFM_Collection;
+
+    // find declaration
+    procedure TestFindLFMDeclaration_ObjectName;
+    procedure TestFindLFMDeclaration_ObjectTypeName;
+    procedure TestFindLFMDeclaration_RootObject;
+    procedure TestFindLFMDeclaration_TypeUnitName;
+    procedure TestFindLFMDeclaration_Property;
+    procedure TestFindLFMDeclaration_DottedProperty;
+    procedure TestFindLFMDeclaration_EnumValue;
+    procedure TestFindLFMDeclaration_SetValue;
+    procedure TestFindLFMDeclaration_EventHandler;
+    procedure TestFindLFMDeclaration_NotAnIdentifier;
+    procedure TestFindLFMDeclaration_Cache;
 
     // unicode
     procedure LFMParseUnicode; // todo
@@ -189,15 +206,19 @@ begin
 end;
 
 function TCustomTestLFMTrees.AddFormUnit(const Fields: array of string;
-  const aFormClass: string; const aFilename: string): TCodeBuffer;
+  const aFormClass: string; const aFilename: string; const aVarName: string
+  ): TCodeBuffer;
 var
-  Src: String;
+  Src, VarSrc: String;
   i: Integer;
 begin
   Src:='';
   for i:=low(Fields) to high(Fields) do begin
     Src:=Src+'    '+Fields[i]+';'+sLineBreak;
   end;
+  VarSrc:='';
+  if aVarName<>'' then
+    VarSrc:='var'+sLineBreak+'  '+aVarName+': '+aFormClass+'1;'+sLineBreak;
   FUnitCode:=AddSource(aFilename,LinesToStr([
     'unit Unit1;',
     '{$mode objfpc}{$H+}',
@@ -206,7 +227,7 @@ begin
     'type',
     '  '+aFormClass+'1 = class('+aFormClass+')',
     Src+'  end;',
-    'implementation',
+    VarSrc+'implementation',
     'end.'
     ]));
   Result:=FUnitCode;
@@ -283,6 +304,44 @@ begin
     LFMErr:=LFMErr.NextError;
   end;
   Fail('TCustomTestLFMTrees.CheckLFMParseError Missing '+LFMErrorTypeNames[ErrorType]+': '+CursorPos.Code.Filename+'('+IntToStr(CursorPos.Y)+','+IntToStr(CursorPos.X)+'): '+ErrorMsg);
+end;
+
+procedure TCustomTestLFMTrees.CheckLFMDeclaration(
+  const LFMPos: TCodeXYPosition; const ExpPos: TCodeXYPosition);
+var
+  NewCode: TCodeBuffer;
+  NewX, NewY: integer;
+begin
+  if not CodeToolBoss.FindLFMDeclaration(UnitCode,LFMPos.Code,LFMPos.X,LFMPos.Y,
+                                         NewCode,NewX,NewY)
+  then begin
+    WriteSource(LFMPos);
+    Fail('FindLFMDeclaration failed at '+LFMPos.Code.Filename
+      +'('+IntToStr(LFMPos.Y)+','+IntToStr(LFMPos.X)+'): '
+      +CodeToolBoss.ErrorMessage);
+  end;
+  if (NewCode<>ExpPos.Code) or (NewX<>ExpPos.X) or (NewY<>ExpPos.Y) then begin
+    WriteSource(LFMPos);
+    Fail('FindLFMDeclaration at '+LFMPos.Code.Filename
+      +'('+IntToStr(LFMPos.Y)+','+IntToStr(LFMPos.X)+'): expected '
+      +ExpPos.Code.Filename+'('+IntToStr(ExpPos.Y)+','+IntToStr(ExpPos.X)+')'
+      +', but found '+NewCode.Filename+'('+IntToStr(NewY)+','+IntToStr(NewX)+')');
+  end;
+end;
+
+procedure TCustomTestLFMTrees.CheckLFMDeclarationNotFound(
+  const LFMPos: TCodeXYPosition);
+var
+  NewCode: TCodeBuffer;
+  NewX, NewY: integer;
+begin
+  if not CodeToolBoss.FindLFMDeclaration(UnitCode,LFMPos.Code,LFMPos.X,LFMPos.Y,
+                                         NewCode,NewX,NewY)
+  then exit;
+  WriteSource(LFMPos);
+  Fail('FindLFMDeclaration at '+LFMPos.Code.Filename
+    +'('+IntToStr(LFMPos.Y)+','+IntToStr(LFMPos.X)+'): expected no declaration'
+    +', but found '+NewCode.Filename+'('+IntToStr(NewY)+','+IntToStr(NewX)+')');
 end;
 
 function TCustomTestLFMTrees.CheckHasProperty(const PropertyPath: string): TLFMPropertyNode;
@@ -543,6 +602,214 @@ begin
     'end'
     ]));
   CheckLFM;
+end;
+
+procedure TTestLFMTrees.TestFindLFMDeclaration_ObjectName;
+begin
+  AddControls;
+  AddFormUnit(['Button1: TButton']);
+  FLFMCode:=AddSource('unit1.lfm',LinesToStr([
+    'object Form1: TForm1',
+    '  object Button1: TButton',
+    '  end',
+    'end'
+    ]));
+  CheckLFM;
+  // 'Button1' -> the field 'Button1: TButton' of TForm1
+  CheckLFMDeclaration(CodeXYPosition(10,2,LFMCode),
+                      CodeXYPosition(5,7,UnitCode));
+end;
+
+procedure TTestLFMTrees.TestFindLFMDeclaration_ObjectTypeName;
+begin
+  AddControls;
+  AddFormUnit(['Button1: TButton']);
+  FLFMCode:=AddSource('unit1.lfm',LinesToStr([
+    'object Form1: TForm1',
+    '  object Button1: TButton',
+    '  end',
+    'end'
+    ]));
+  CheckLFM;
+  // 'TButton' -> 'TButton = class(TControl)' in controls.pas
+  CheckLFMDeclaration(CodeXYPosition(19,2,LFMCode),
+                      CodeXYPosition(3,22,ControlsCode));
+end;
+
+procedure TTestLFMTrees.TestFindLFMDeclaration_RootObject;
+begin
+  AddControls;
+  AddFormUnit(['Button1: TButton'],'TForm','unit1.pas','Form1');
+  FLFMCode:=AddSource('unit1.lfm',LinesToStr([
+    'object Form1: TForm1',
+    'end'
+    ]));
+  CheckLFM;
+  // 'Form1' -> the global variable 'Form1: TForm1'
+  CheckLFMDeclaration(CodeXYPosition(8,1,LFMCode),
+                      CodeXYPosition(3,10,UnitCode));
+  // 'TForm1' -> 'TForm1 = class(TForm)'
+  CheckLFMDeclaration(CodeXYPosition(15,1,LFMCode),
+                      CodeXYPosition(3,6,UnitCode));
+end;
+
+procedure TTestLFMTrees.TestFindLFMDeclaration_TypeUnitName;
+begin
+  AddControls;
+  AddFormUnit(['Button1: Controls.TButton']);
+  FLFMCode:=AddSource('unit1.lfm',LinesToStr([
+    'object Form1: unit1/TForm1',
+    '  object Button1: Controls/TButton',
+    '  end',
+    'end'
+    ]));
+  CheckLFM;
+  // 'unit1' -> 'unit Unit1;'
+  CheckLFMDeclaration(CodeXYPosition(15,1,LFMCode),
+                      CodeXYPosition(6,1,UnitCode));
+  // 'Controls' -> 'unit Controls;'
+  CheckLFMDeclaration(CodeXYPosition(19,2,LFMCode),
+                      CodeXYPosition(6,1,ControlsCode));
+  // 'TButton' -> 'TButton = class(TControl)'
+  CheckLFMDeclaration(CodeXYPosition(28,2,LFMCode),
+                      CodeXYPosition(3,22,ControlsCode));
+end;
+
+procedure TTestLFMTrees.TestFindLFMDeclaration_Property;
+begin
+  AddControls;
+  AddFormUnit(['Button1: TButton']);
+  FLFMCode:=AddSource('unit1.lfm',LinesToStr([
+    'object Form1: TForm1',
+    '  object Button1: TButton',
+    '    Caption = ''ClickMe''',
+    '  end',
+    'end'
+    ]));
+  CheckLFM;
+  // 'Caption' -> 'property Caption: TCaption;' of TControl
+  CheckLFMDeclaration(CodeXYPosition(5,3,LFMCode),
+                      CodeXYPosition(14,14,ControlsCode));
+end;
+
+procedure TTestLFMTrees.TestFindLFMDeclaration_DottedProperty;
+begin
+  // Note: TBitmap.Data is streamed via DefineProperties, it has no declaration
+  AddControls;
+  AddFormUnit(['Button1: TButton']);
+  FLFMCode:=AddSource('unit1.lfm',LinesToStr([
+    'object Form1: TForm1',
+    '  object Button1: TButton',
+    '    Glyph.Data = {',
+    '      36040000424D3604000000000000360000002800000010000000100000000100',
+    '    }',
+    '  end',
+    'end'
+    ]));
+  ParseLFM;
+  // 'Glyph' -> 'property Glyph: TBitmap;' of TButton
+  CheckLFMDeclaration(CodeXYPosition(5,3,LFMCode),
+                      CodeXYPosition(14,25,ControlsCode));
+  // 'Data' -> no pascal declaration
+  CheckLFMDeclarationNotFound(CodeXYPosition(11,3,LFMCode));
+end;
+
+procedure TTestLFMTrees.TestFindLFMDeclaration_EnumValue;
+begin
+  AddControls;
+  AddFormUnit([]);
+  FLFMCode:=AddSource('unit1.lfm',LinesToStr([
+    'object Form1: TForm1',
+    '  FormStyle = fsNormal',
+    'end'
+    ]));
+  CheckLFM;
+  // 'FormStyle' -> 'property FormStyle: TFormStyle;' of TForm
+  CheckLFMDeclaration(CodeXYPosition(3,2,LFMCode),
+                      CodeXYPosition(14,33,ControlsCode));
+  // 'fsNormal' -> the enum of TFormStyle
+  CheckLFMDeclaration(CodeXYPosition(15,2,LFMCode),
+                      CodeXYPosition(17,29,ControlsCode));
+end;
+
+procedure TTestLFMTrees.TestFindLFMDeclaration_SetValue;
+begin
+  AddControls;
+  AddFormUnit([]);
+  FLFMCode:=AddSource('unit1.lfm',LinesToStr([
+    'object Form1: TForm1',
+    '  Styles = [fsNormal,fsStayOnTop]',
+    'end'
+    ]));
+  CheckLFM;
+  // 'fsNormal' and 'fsStayOnTop' -> the enums of TFormStyle
+  CheckLFMDeclaration(CodeXYPosition(13,2,LFMCode),
+                      CodeXYPosition(17,29,ControlsCode));
+  CheckLFMDeclaration(CodeXYPosition(22,2,LFMCode),
+                      CodeXYPosition(50,29,ControlsCode));
+end;
+
+procedure TTestLFMTrees.TestFindLFMDeclaration_EventHandler;
+begin
+  AddControls;
+  AddFormUnit(['Button1: TButton','procedure Button1Click(Sender: TObject)']);
+  FLFMCode:=AddSource('unit1.lfm',LinesToStr([
+    'object Form1: TForm1',
+    '  object Button1: TButton',
+    '    OnClick = Button1Click',
+    '  end',
+    'end'
+    ]));
+  CheckLFM;
+  // 'OnClick' -> 'property OnClick: TNotifyEvent;' of TControl
+  CheckLFMDeclaration(CodeXYPosition(5,3,LFMCode),
+                      CodeXYPosition(14,17,ControlsCode));
+  // 'Button1Click' -> the method of TForm1
+  CheckLFMDeclaration(CodeXYPosition(15,3,LFMCode),
+                      CodeXYPosition(15,8,UnitCode));
+end;
+
+procedure TTestLFMTrees.TestFindLFMDeclaration_NotAnIdentifier;
+begin
+  AddControls;
+  AddFormUnit(['Button1: TButton']);
+  FLFMCode:=AddSource('unit1.lfm',LinesToStr([
+    'object Form1: TForm1',
+    '  object Button1: TButton',
+    '    Caption = ''ClickMe''',
+    '  end',
+    'end'
+    ]));
+  CheckLFM;
+  // the 'object' keyword
+  CheckLFMDeclarationNotFound(CodeXYPosition(1,1,LFMCode));
+  // inside the string constant
+  CheckLFMDeclarationNotFound(CodeXYPosition(16,3,LFMCode));
+  // the 'end' keyword
+  CheckLFMDeclarationNotFound(CodeXYPosition(1,5,LFMCode));
+end;
+
+procedure TTestLFMTrees.TestFindLFMDeclaration_Cache;
+begin
+  AddControls;
+  AddFormUnit(['Button1: TButton']);
+  FLFMCode:=AddSource('unit1.lfm',LinesToStr([
+    'object Form1: TForm1',
+    '  object Button1: TButton',
+    '  end',
+    'end'
+    ]));
+  CheckLFM;
+  // resolve twice, the second call must use the cache
+  CheckLFMDeclaration(CodeXYPosition(10,2,LFMCode),
+                      CodeXYPosition(5,7,UnitCode));
+  CheckLFMDeclaration(CodeXYPosition(10,2,LFMCode),
+                      CodeXYPosition(5,7,UnitCode));
+  // change the pascal source -> the stamps must invalidate the cache
+  UnitCode.Source:=StringReplace(UnitCode.Source,'type',
+                                 'type'+LineEnding+'  // moved down',[]);
+  CheckLFMDeclaration(CodeXYPosition(10,2,LFMCode),
+                      CodeXYPosition(5,8,UnitCode));
 end;
 
 procedure TTestLFMTrees.LFMParseUnicode;
