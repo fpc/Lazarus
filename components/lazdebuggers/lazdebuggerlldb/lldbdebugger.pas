@@ -3231,7 +3231,7 @@ class function TLldbDebugger.GetSupportedCommands: TDBGCommands;
 begin
   Result := [dcRun, dcStop, dcStepOver, dcStepInto, dcStepOut, dcEvaluate,
              dcStepOverInstr, dcStepIntoInstr, dcPause, dcEnvironment];
-//  Result := [dcStepTo, dcAttach, dcDetach, dcJumpto,
+//  Result := [dcStepTo, dcAttach, dcAttachToTargetStarter, dcDetach, dcJumpto,
 //             dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify,
 //             dcSetStackFrame, dcDisassemble
 //            ];
@@ -3264,7 +3264,7 @@ begin
                      end;
 //      dcStepTo:       Result := GDBRunTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
 //      dcJumpto:      Result := GDBJumpTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
-//      dcAttach:      Result := GDBAttach(String(AParams[0].VAnsiString));
+//      dcAttach, dcAttachToTargetStarter:      Result := GDBAttach(String(AParams[0].VAnsiString));
 //      dcDetach:      Result := GDBDetach;
 //      dcModify:      Result := GDBModify(String(AParams[0].VAnsiString), String(AParams[1].VAnsiString));
       dcEnvironment: Result := LldbEnvironment(String(AParams[0].VAnsiString), AParams[1].VBoolean);

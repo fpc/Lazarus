@@ -681,10 +681,11 @@ type
   private
     FProcessID: String;
     FSuccess: Boolean;
+    FAttachToStarter: Boolean;
   protected
     function  DoExecute: Boolean; override;
   public
-    constructor Create(AOwner: TGDBMIDebuggerBase; AProcessID: String);
+    constructor Create(AOwner: TGDBMIDebuggerBase; AProcessID: String; AnAttachToStarter: boolean = False);
     function  DebugText: String; override;
     property Success: Boolean read FSuccess;
   end;
@@ -743,6 +744,13 @@ type
     function  DebugText: String; override;
     property  Result: TGDBMIExecResult read FResult;
     property  NextExecQueued: Boolean read FNextExecQueued;
+  end;
+
+  { TGDBMIDebuggerCommandAttachWaitRun }
+
+  TGDBMIDebuggerCommandAttachWaitRun = class(TGDBMIDebuggerCommandExecute)
+  protected
+    function  DoExecute: Boolean; override;
   end;
 
   { TGDBMIDebuggerCommandKill }
@@ -1012,7 +1020,7 @@ type
     function  GDBStepTo(const ASource: String; const ALine: Integer): Boolean;
     function  GDBRunTo(const ASource: String; const ALine: Integer): Boolean;
     function  GDBJumpTo(const {%H-}ASource: String; const {%H-}ALine: Integer): Boolean;
-    function  GDBAttach(AProcessID: String): Boolean;
+    function  GDBAttach(AProcessID: String; AnAttachToStarter: boolean = False): Boolean;
     function  GDBDetach: Boolean;
     function  GDBDisassemble(AAddr: TDbgPtr; ABackward: Boolean; out ANextAddr: TDbgPtr;
                              out ADump, AStatement, AFile: String; out ALine: Integer): Boolean;
@@ -1035,6 +1043,7 @@ type
     procedure RunQueueASync;
     procedure RemoveRunQueueASync;
     procedure DoRunQueueFromASync({%H-}Data: PtrInt);
+    procedure DoWaitRunningAsync(Data: PtrInt);
     function  StartDebugging(AContinueCommand: TGDBMIExecCommandType): Boolean;
     function  StartDebugging(AContinueCommand: TGDBMIExecCommandType; AValues: array of const): Boolean;
     function  StartDebugging(AContinueCommand: TGDBMIDebuggerCommand = nil): Boolean;
@@ -1162,6 +1171,7 @@ type
     {$IFDEF MSWindows}
     destructor Destroy; override;
     {$ENDIF}
+    class function SupportedFeatures: TDBGFeatures; override;
   end;
 
   {%region       *****  TGDBMINameValueList and Parsers  *****   }
@@ -2022,8 +2032,16 @@ begin
   end;
   inherited Destroy;
 end;
-
 {$ENDIF}
+
+class function TGDBMIDebugger.SupportedFeatures: TDBGFeatures;
+begin
+  Result := inherited SupportedFeatures;
+  {$IFDEF linux}
+  Result := Result + [dfAttachToExecStarter];
+  {$ENDIF}
+end;
+
 
 function TGDBMIDebugger.CreateCommandStartDebugging(
   AContinueCommand: TGDBMIDebuggerCommand): TGDBMIDebuggerCommandStartDebugging;
@@ -6073,8 +6091,10 @@ begin
   //InitConsole;
   //{$ENDIF}
 
-  SetDebuggerState(dsInit); // triggers all breakpoints to be set.
-  Application.ProcessMessages; // workaround, allow source-editor to queue line info request (Async call)
+  if not FAttachToStarter then begin
+    SetDebuggerState(dsInit); // triggers all breakpoints to be set.
+    Application.ProcessMessages; // workaround, allow source-editor to queue line info request (Async call)
+  end;
 
 
   // Attach
@@ -6091,7 +6111,7 @@ begin
   then SetDebuggerState(R.State);
 
   if R.State = dsRun then begin
-    ProcessRunning(StoppedParams, R);;
+    ProcessRunning(StoppedParams, R);
     if (R.State = dsError) then begin
       ExecuteCommand('detach', [], R);
       SetDebuggerErrorState('Attach failed');
@@ -6181,17 +6201,28 @@ begin
   if ieRunErrorBreakPoint in TGDBMIDebuggerPropertiesBase(FTheDebugger.GetProperties).InternalExceptionBreakPoints
   then FTheDebugger.FRunErrorBreak.SetByAddr(Self);
 
+  if FAttachToStarter then begin
+    ExecuteCommand('tcatch exec', R);
+    ExecuteCommand('-exec-continue', R);
+    if R.State = dsRun then begin
+      Application.QueueAsyncCall(@FTheDebugger.DoWaitRunningAsync, 0);
+      FSuccess := True;
+      exit;
+    end;
+  end;
+
   if not(DebuggerState in [dsPause]) then
     SetDebuggerState(dsPause);
   ProcessFrame; // Includes DoLocation
   FSuccess := True;
 end;
 
-constructor TGDBMIDebuggerCommandAttach.Create(AOwner: TGDBMIDebuggerBase;
-  AProcessID: String);
+constructor TGDBMIDebuggerCommandAttach.Create(AOwner: TGDBMIDebuggerBase; AProcessID: String;
+  AnAttachToStarter: boolean);
 begin
   inherited Create(AOwner);
   FSuccess := False;
+  FAttachToStarter := AnAttachToStarter;
   FProcessID := AProcessID;
   FContext.ThreadContext := ccNotRequired;
   FContext.StackContext := ccNotRequired;
@@ -6200,6 +6231,19 @@ end;
 function TGDBMIDebuggerCommandAttach.DebugText: String;
 begin
   Result := Format('%s: ProcessID= %s', [ClassName, FProcessID]);
+end;
+
+{ TGDBMIDebuggerCommandAttachWaitRun }
+
+function TGDBMIDebuggerCommandAttachWaitRun.DoExecute: Boolean;
+var
+  s: String;
+  R: TGDBMIExecResult;
+begin
+  ProcessRunning(s, R);
+  if not (r.State = dsError) then
+    ProcessStopped(s, False);
+  Result := True;
 end;
 
 { TGDBMIDebuggerCommandDetach }
@@ -7056,6 +7100,17 @@ begin
     then begin
       SetDebuggerState(dsPause);
       ProcessFrame(List.Values['frame'], False);
+      Exit;
+    end;
+
+    if (Reason = 'exec') and (DebuggerState in [dsIdle, dsStop])
+    then begin
+      // dfAttachToExecStarter has run execv
+      SetDebuggerState(dsInit);
+      Application.ProcessMessages; // workaround, allow source-editor to queue line info request (Async call)
+      FTheDebugger.QueueCommand(TGDBMIDebuggerCommandExecute.Create(FTheDebugger, ectContinue));
+      SetDebuggerState(dsRun);
+      Result := True;
       Exit;
     end;
 
@@ -9756,6 +9811,11 @@ begin
   DebugLnExit(DBGMI_QUEUE_DEBUG, ['TGDBMIDebuggerBase.DoRunQueueFromASync: Finished RunQueue']);
 end;
 
+procedure TGDBMIDebuggerBase.DoWaitRunningAsync(Data: PtrInt);
+begin
+  QueueCommand(TGDBMIDebuggerCommandAttachWaitRun.Create(Self, ectContinue));
+end;
+
 class function TGDBMIDebuggerBase.ExePaths: String;
 begin
   {$IFdef MSWindows}
@@ -9940,14 +10000,14 @@ begin
   Result := False;
 end;
 
-function TGDBMIDebuggerBase.GDBAttach(AProcessID: String): Boolean;
+function TGDBMIDebuggerBase.GDBAttach(AProcessID: String; AnAttachToStarter: boolean): Boolean;
 var
   Cmd: TGDBMIDebuggerCommandAttach;
 begin
   Result := False;
   if State <> dsStop then exit;
 
-  Cmd := TGDBMIDebuggerCommandAttach.Create(Self, AProcessID);
+  Cmd := TGDBMIDebuggerCommandAttach.Create(Self, AProcessID, AnAttachToStarter);
   Cmd.AddReference;
   QueueCommand(Cmd);
   Result := Cmd.Success;
@@ -10233,7 +10293,7 @@ end;
 class function TGDBMIDebuggerBase.GetSupportedCommands: TDBGCommands;
 begin
   Result := [dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcStepOut,
-             dcStepOverInstr, dcStepIntoInstr, dcStepTo, dcRunTo, dcAttach, dcDetach, dcJumpto,
+             dcStepOverInstr, dcStepIntoInstr, dcStepTo, dcRunTo, dcAttach, dcAttachToTargetStarter, dcDetach, dcJumpto,
              dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment,
              dcSetStackFrame, dcDisassemble
              {$IFDEF DBG_ENABLE_TERMINAL}, dcSendConsoleInput{$ENDIF}
@@ -10459,6 +10519,7 @@ begin
       dcRunTo:       Result := GDBRunTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
       dcJumpto:      Result := GDBJumpTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
       dcAttach:      Result := GDBAttach(String(AParams[0].VAnsiString));
+      dcAttachToTargetStarter: Result := GDBAttach(String(AParams[0].VAnsiString), True);
       dcDetach:      Result := GDBDetach;
       dcEvaluate:    begin
                        EvalFlags := [];

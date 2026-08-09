@@ -4385,6 +4385,9 @@ var
   end;
 
 begin
+  if State in [dsIdle, dsStop] then
+    SetState(dsInit);
+
   // This will trigger setting the breakpoints,
   // may also trigger the evaluation of the callstack or disassembler.
   FSendingEvents := True; // Let DoStateChange know that the debugger is paused
@@ -4455,7 +4458,7 @@ begin
   FMirroredExcludedRoutines.Update;
 
   if (ACommand in [dcRun, dcStepOver, dcStepInto, dcStepOut, dcStepTo, dcRunTo, dcJumpto,
-      dcStepOverInstr, dcStepIntoInstr, dcAttach]) and
+      dcStepOverInstr, dcStepIntoInstr, dcAttach, dcAttachToTargetStarter]) and
      not assigned(FDbgController.MainProcess)
   then
   begin
@@ -4464,6 +4467,7 @@ begin
     except
       assert(False, 'TFpDebugDebugger.RequestCommand: DoDbgStopped failed');
     end;
+
     FDbgController.ExecutableFilename:=FileName;
     AConsoleTty:=TFpDebugDebuggerProperties(GetProperties).ConsoleTty;
     FDbgController.ConsoleTty:=AConsoleTty;
@@ -4491,7 +4495,7 @@ begin
     {$endif windows}
 
     FDbgController.AttachToPid := 0;
-    if ACommand = dcAttach then begin
+    if ACommand in [dcAttach, dcAttachToTargetStarter] then begin
       FDbgController.AttachToPid := StrToIntDef(String(AParams[0].VAnsiString), 0);
       Result := FDbgController.AttachToPid <> 0;
       if not Result then begin
@@ -4501,9 +4505,11 @@ begin
     end;
 
     // Check if CreateDbgProcess returns a valid TDbgProcess
-//    if ACommand <> dcAttach then begin
+//    if not (ACommand in [dcAttach, dcAttachToTargetStarter]) then begin
     FDbgController.CreateCurrentProcess;
     if Assigned(FDbgController.CurrentProcess) then begin
+      FDbgController.CurrentProcess.PreAttach := ACommand = dcAttachToTargetStarter;
+
       FDbgController.CurrentProcess.Config.UseConsoleWinPos    := FUseConsoleWinPos;
       FDbgController.CurrentProcess.Config.UseConsoleWinSize   := FUseConsoleWinSize;
       FDbgController.CurrentProcess.Config.UseConsoleWinBuffer := FUseConsoleWinBuffer;
@@ -4571,7 +4577,10 @@ begin
       FStartuRunToFile := AnsiString(AParams[0].VAnsiString);
       FStartuRunToLine := AParams[1].VInteger;
     end;
-    StartDebugLoop(dsInit);
+    if ACommand = dcAttachToTargetStarter then
+      StartDebugLoop(State) // don't change state / don't trigger breakpoints, or loading line info
+    else
+      StartDebugLoop(dsInit);
     exit;
   end;
 
@@ -5397,8 +5406,8 @@ begin
            dcStepTo, dcContinueLastStep,
            dcRunTo, dcPause, dcStepOut, dcStepInto, dcEvaluate, dcModify,
            dcSendConsoleInput
-           {$IFDEF windows} , dcAttach, dcDetach {$ENDIF}
-           {$IFDEF linux} , dcAttach, dcDetach {$ENDIF}
+           {$IFDEF windows} , dcAttach, dcAttachToTargetStarter, dcDetach {$ENDIF}
+           {$IFDEF linux} , dcAttach, dcAttachToTargetStarter, dcDetach {$ENDIF}
           ];
 end;
 
@@ -5416,6 +5425,9 @@ begin
   {$IF ( (defined(windows) or defined(linux)) ) }
     {$IF ( (defined(CPU386) or defined(CPUI386) or defined(CPUX86_64) or defined(CPUX64)) ) }
     Result := [dfEvalFunctionCalls, dfThreadSuspension];
+      {$IFDEF linux}
+      Result := Result + [dfAttachToExecStarter];
+      {$ENDIF}
       {$IFDEF windows}
       Result := Result + [dfConsoleWinPos];
       (* Claimed on Windows only for now. The Linux side reaches the debuggee

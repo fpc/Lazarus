@@ -95,7 +95,7 @@ type
   private
     FPostponedSignals: TFpDbgLinuxSignalQueue;
     FStatus: cint;
-    FProcessStarted: boolean;
+    FProcessStarted, FDoneFirstWait: boolean;
     FProcProcess: TProcessWithRedirect;
     FIsTerminating: boolean;
     FMasterPtyFd: cint;
@@ -1228,7 +1228,8 @@ begin
     ThreadIdentifier := PID;
     FCurrentThreadId := PID;
 
-    if not FProcessStarted and (PID <> ProcessID) then
+    // Check if a new thread was announced before the start/attach event
+    if (not FProcessStarted) and (PID <> ProcessID) and (not wifexited(FStatus)) then
       DebugLn(DBG_WARNINGS, 'ThreadID of main thread does not match the ProcessID');
 
     ProcessIdentifier := ProcessID;
@@ -1236,6 +1237,12 @@ begin
     debugln(FPDBG_LINUX, ['##### GOT EVENT FOR ',pid, ' st ', FStatus]);
     {$ENDIF}
     end;
+
+  if not FDoneFirstWait then begin
+    if fpPTrace(PTRACE_SETOPTIONS, ProcessID, nil,  Pointer( PTRACE_O_TRACECLONE or PTRACE_O_TRACEEXEC) ) <> 0 then
+      writeln('Failed to set set trace options. Errcode: '+inttostr(fpgeterrno));
+    FDoneFirstWait := True;
+  end;
 end;
 
 function TDbgLinuxProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
@@ -1307,7 +1314,7 @@ begin
       Exit;
       end;
 
-    if (not FProcessStarted) and (wstopsig(FStatus) <> SIGTRAP) then begin
+    if (not FProcessStarted) and (not PreAttach) and (wstopsig(FStatus) <> SIGTRAP) then begin
       // attached, should be SigStop, but may be out of order
       debugln(DBG_VERBOSE, ['Attached ', wstopsig(FStatus)]);
       result := deCreateProcess;
@@ -1320,13 +1327,16 @@ begin
     case wstopsig(FStatus) of
       SIGTRAP:
         begin
-        if not FProcessStarted then
-          begin
+        if (not FProcessStarted) and (
+           (not PreAttach) or
+           (((FStatus >> 16) and $FF) = PTRACE_EVENT_EXEC)
+        )
+        then begin
           result := deCreateProcess;
+          PreAttach := false;
+          //if FProcessStarted then //SetFileName
           FProcessStarted:=true;
-          if fpPTrace(PTRACE_SETOPTIONS, ProcessID, nil,  Pointer( PTRACE_O_TRACECLONE) ) <> 0 then
-            writeln('Failed to set set trace options. Errcode: '+inttostr(fpgeterrno));
-          end
+        end
         else
 // TODO: check it is not a real breakpoint
 // or end of single step

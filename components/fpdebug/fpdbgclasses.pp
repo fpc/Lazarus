@@ -993,6 +993,7 @@ type
     FLastLibraryUnloaded: TDbgLibrary;
     FOnDebugOutputEvent: TDebugOutputEvent;
     FOSDbgClasses: TOSDbgClasses;
+    FPreAttach: boolean;
     FProcessID: Integer;
     FStopCheckingForConsoleOutputRequested: boolean;
     FThreadID: Integer;
@@ -1165,6 +1166,7 @@ type
     procedure TerminateProcess; virtual; abstract;
     function Detach(AProcess: TDbgProcess; AThread: TDbgThread): boolean; virtual;
 
+    property PreAttach: boolean read FPreAttach write FPreAttach;
     property OSDbgClasses: TOSDbgClasses read FOSDbgClasses;
     property RequiresExecutionInDebuggerThread: boolean read GetRequiresExecutionInDebuggerThread;
     property Handle: THandle read GetHandle;

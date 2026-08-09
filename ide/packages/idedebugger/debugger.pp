@@ -2149,6 +2149,7 @@ const
     'RunTo',
     'Jumpto',
     'Attach',
+    'AttachToExecStarter',
     'Detach',
     'Break',
     'Watch',

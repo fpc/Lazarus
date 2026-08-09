@@ -53,6 +53,7 @@ const
   PTRACE_O_TRACEFORK                           = 1 << PTRACE_EVENT_FORK;
   PTRACE_O_TRACEVFORK                          = 1 << PTRACE_EVENT_VFORK;
   PTRACE_O_TRACECLONE                          = 1 << PTRACE_EVENT_CLONE;
+  PTRACE_O_TRACEEXEC                           = 1 << PTRACE_EVENT_EXEC;
 {$endif linux}
   PTRACE_ATTACH                                = 16;
   PTRACE_DETACH                                = 17;
