@@ -50,7 +50,7 @@ type
   private
     fWidth,fHeight:integer;
   public
-    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
+    procedure GetChildren(Proc: TGetChildProc; {%H-}Root: TComponent); override;
     function GetChildOwner: TComponent; override;
   published
     property Width:integer read fWidth write fWidth;
@@ -159,17 +159,8 @@ begin
 end;
 
 procedure TlmfImage.Clear;
-var
-  i:integer;
-  item:TObject;
 begin
   fList.DestroyComponents;
- (* for i:=fList.Count-1 downto 0 do
-  begin
-    item:=TObject(fList[i]);
-    fList.Delete(i);
-    item.Free;
-  end;*)
 end;
 
 function TlmfImage.GetWidth: integer;
@@ -637,7 +628,10 @@ end;
 
 procedure TlmfCanvas.Arc(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer);
 var
-  SX, SY, EX, EY: Integer;
+  SX: Integer = 0;
+  SY: Integer = 0;
+  EX: Integer = 0;
+  EY: Integer = 0;
 begin
   Angles2Coords(
     ALeft, ATop, abs(ARight-ALeft), abs(ABottom-ATop),
@@ -658,7 +652,10 @@ end;
 
 procedure TlmfCanvas.Chord(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer);
 var
-  SX, SY, EX, EY: Integer;
+  SX: Integer = 0;
+  SY: Integer = 0;
+  EX: Integer = 0;
+  EY: Integer = 0;
 begin
   Angles2Coords(
     ALeft, ATop, abs(ARight-ALeft), abs(ABottom-ATop),
@@ -682,7 +679,10 @@ end;
 
 procedure TlmfCanvas.RadialPie(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer);
 var
-  SX, SY, EX, EY: Integer;
+  SX: Integer = 0;
+  SY: Integer = 0;
+  EX: Integer = 0;
+  EY: Integer = 0;
 begin
   Angles2Coords(
     ALeft, ATop, abs(ARight-ALeft), abs(ABottom-ATop),

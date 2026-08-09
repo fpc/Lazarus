@@ -22,7 +22,7 @@ type
   private
     fPos:TPoint;
   public
-    constructor Create(Ax,Ay:integer);virtual;
+    constructor Create(Ax,Ay:integer); virtual; reintroduce;
   published
     property px:integer read fPos.x write fpos.x;
     property py:integer read fPos.y write fpos.y;
@@ -212,7 +212,7 @@ type
   public
     constructor Create(AnOwner:TComponent);override;
     destructor Destroy;override;
-    procedure Action(fImage:TlmfImage;ACanvas:TCanvas);override;
+    procedure Action({%H-}fImage:TlmfImage;ACanvas:TCanvas);override;
   published
     property Brush:TBrush read fBrush write fBrush;
   end;
@@ -319,26 +319,30 @@ begin
 end;
 
 procedure TlmfText.Action(fImage:TlmfImage;ACanvas:TCanvas);
+{
 var
   fnt:TFont;
   ofh:Hfont;
+}
 begin
-(*	if (fRotation<>0) then
+{
+  if (fRotation<>0) then
   begin
-  	fnt:=CreateOrtFont(round(fImage.ky*fHeight),fRotation div 10,ACanvas.Font.PixelsPerInch);
+    fnt:=CreateOrtFont(round(fImage.ky*fHeight),fRotation div 10,ACanvas.Font.PixelsPerInch);
     Acanvas.Font.Assign(fnt);
     Acanvas.Font.Name:='Arial';
-	  {$message 'This is font-selection workaround'}
-  	ofh:=SelectObject(ACanvas.Handle,fnt.Handle);
+      // $message 'This is font-selection workaround'
+    ofh:=SelectObject(ACanvas.Handle,fnt.Handle);
     ACanvas.TextOut(fImage.ScaleX(fPos.X),fImage.ScaleY(fPos.Y),fText);
     ofh:=SelectObject(ACanvas.Handle,ofh);
     fnt.Free;
   end
   else
   begin
-	  ACanvas.Font.Height:=round(fImage.ky*fHeight);
-  	ACanvas.TextOut(fImage.ScaleX(fPos.X),fImage.ScaleY(fPos.Y),fText);
-  end;*)
+    ACanvas.Font.Height:=round(fImage.ky*fHeight);
+    ACanvas.TextOut(fImage.ScaleX(fPos.X),fImage.ScaleY(fPos.Y),fText);
+  end;
+}
   ACanvas.TextOut(fImage.ScaleX(fPos.X),fImage.ScaleY(fPos.Y),fText);
 end;
 
@@ -706,7 +710,7 @@ end;
 
 procedure TlmfFont.Action(fImage: TlmfImage; ACanvas: TCanvas);
 var
-  AFont: TFont;
+  //AFont: TFont;
   rot, ht: integer;
 //  ofh: Hfont;
 begin
@@ -816,11 +820,11 @@ end;
 
 procedure TlmfPolyLine.LoadPoints(AStream:TStream);
 var
-  len:longint;
+  len:longint = 0;
 begin
   Setlength(pts,0);
   if AStream.Read(len,sizeof(len))=sizeof(len) then
-    if len>0 then
+    if len > 0 then
     begin
       setlength(pts,len);
       AStream.Read(pts[0],len*sizeof(pts[0]));
@@ -835,10 +839,10 @@ end;
 
 procedure TlmfPolyLine.Action(fImage:TlmfImage;ACanvas:TCanvas);
 var
-  i:longint;
-  npts:array of TPoint;
+  i: Longint;
+  npts: array of TPoint = nil;
 begin
-  setlength(npts,length(pts));
+  SetLength(npts, Length(pts));
   for i:=0 to high(pts) do
   begin
     npts[i].x:=fImage.ScaleX(pts[i].x);
@@ -859,8 +863,8 @@ end;
 
 procedure TlmfPolygon.Action(fImage:TlmfImage;ACanvas:TCanvas);
 var
-  i:longint;
-  npts:array of TPoint;
+  i: longint;
+  npts: array of TPoint = nil;
 begin
   Setlength(npts, Length(pts));
   for i:=0 to High(pts) do

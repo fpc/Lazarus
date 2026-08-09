@@ -171,7 +171,7 @@ begin
     LmfCanvas.Pen.Width := 2;
     LmfCanvas.MoveTo(C.X, C.Y);
     LmfCanvas.AngleArc(C.X, C.Y, 50, 45, 90);
-    LmfCanvas.Pen.Width := 1;;
+    LmfCanvas.Pen.Width := 1;
     LmfCanvas.Frame(C.X-50, C.Y-50, C.X+50, C.Y+50);
 
     // Polygon
@@ -216,7 +216,7 @@ begin
     LmfCanvas.Font.Color := clBlue;
     LmfCanvas.Font.Style := [fsBold, fsItalic];
     LmfCanvas.Font.Size := 16;
-    LmfCanvas.TextRect(R, 0, 0, 'Centered' + LineEnding + 'in blue rectangle', ts);
+    LmfCanvas.TextRect(R, 0, 0, 'Centered by TextRect' + LineEnding + 'in blue rectangle', ts);
 
     // Pen styles
     LmfCanvas.Pen.Color := clGreen;

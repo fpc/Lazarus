@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="6">
+    <PathDelim Value="\"/>
+    <Name Value="LazMetafilePkg"/>
+    <Author Value="Anton Kavalenka, Werner Pamler"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Description Value="Cross-platform implementation of a MetaFile."/>
+    <License Value="LGPL with linking exception (like Lazarus LCL)"/>
+    <Version Minor="1"/>
+    <Files>
+      <Item>
+        <Filename Value="lmf.pas"/>
+        <UnitName Value="lmf"/>
+      </Item>
+      <Item>
+        <Filename Value="lmfobj.pas"/>
+        <UnitName Value="lmfObj"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="LCL"/>
+      </Item>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
