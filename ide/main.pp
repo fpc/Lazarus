@@ -904,6 +904,8 @@ type
     function GetDesignerFormOfSource(AnUnitInfo: TEditableUnitInfo;
                                      LoadForm: boolean): TCustomForm;
     function GetUnitFileOfLFM(LFMFilename: string): string;
+    function GetUnitCodeOfLFMFile(AnUnitInfo: TEditableUnitInfo;
+                                  out PasCode: TCodeBuffer): boolean;
     function GetProjectFileWithRootComponent(AComponent: TComponent): TLazProjectFile; override;
     function GetProjectFileWithDesigner(ADesigner: TIDesigner): TLazProjectFile; override;
     procedure GetObjectInspectorUnit(
@@ -10629,7 +10631,7 @@ procedure TMainIDE.DoFindDeclarationAtCaret(const LogCaretXY: TPoint);
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TEditableUnitInfo;
-  NewSource, BodySource: TCodeBuffer;
+  NewSource, BodySource, PasCode: TCodeBuffer;
   NewX, NewY, NewTopLine, BodyX, BodyY, BodyTopLine, NewCleanPos,
     BlockTopLine, BlockBottomLine: integer;
   FindFlags: TFindSmartFlags;
@@ -10646,6 +10648,18 @@ begin
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoFindDeclarationAtCaret A');{$ENDIF}
   //DebugLn(['TMainIDE.DoFindDeclarationAtCaret LogCaretXY=',dbgs(LogCaretXY),' SynEdit.Log=',dbgs(ActiveSrcEdit.EditorComponent.LogicalCaretXY),' SynEdit.Caret=',dbgs(ActiveSrcEdit.EditorComponent.CaretXY)]);
+
+  if GetUnitCodeOfLFMFile(ActiveUnitInfo,PasCode) then begin
+    // the source editor shows a form file -> search the identifier in its unit
+    if (PasCode<>nil)
+    and CodeToolBoss.FindLFMDeclaration(PasCode,ActiveUnitInfo.Source,
+      LogCaretXY.X,LogCaretXY.Y,NewSource,NewX,NewY)
+    then
+      DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
+          NewSource, NewX, NewY, -1, -1, -1,
+          [jfAddJumpPoint, jfFocusEditor]);
+    exit;
+  end;
 
   // do not jump twice, check if current node is procedure
   JumpToBody := False;
@@ -12359,7 +12373,7 @@ procedure TMainIDE.SrcNoteBookMouseLink(Sender: TObject; X, Y: Integer;
   var AllowMouseLink: Boolean);
 var
   ActiveUnitInfo: TEditableUnitInfo;
-  NewSource: TCodeBuffer;
+  NewSource, PasCode: TCodeBuffer;
   NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine: integer;
   SrcEdit: TSourceEditor;
 begin
@@ -12374,6 +12388,13 @@ begin
     {$IFDEF VerboseFindDeclarationFail}
     debugln(['TMainIDE.SrcNoteBookMouseLink BeginCodeTool failed ',SrcEdit.FileName,' X=',X,' Y=',Y]);
     {$ENDIF}
+    exit;
+  end;
+  if GetUnitCodeOfLFMFile(ActiveUnitInfo,PasCode) then begin
+    // the source editor shows a form file -> search the identifier in its unit
+    AllowMouseLink:=(PasCode<>nil)
+      and CodeToolBoss.FindLFMDeclaration(PasCode,ActiveUnitInfo.Source,X,Y,
+                                          NewSource,NewX,NewY);
     exit;
   end;
   AllowMouseLink := CodeToolBoss.FindDeclaration(
@@ -13164,6 +13185,27 @@ begin
     end;
   end;
   Result:='';
+end;
+
+function TMainIDE.GetUnitCodeOfLFMFile(AnUnitInfo: TEditableUnitInfo; out
+  PasCode: TCodeBuffer): boolean;
+{ Check if AnUnitInfo is a form file (lfm/dfm/fmx).
+  Result=true means it is a form file, no matter if the pascal unit was found.
+  PasCode is the code of the pascal unit or nil if there is none. }
+var
+  UnitFilename: String;
+begin
+  PasCode:=nil;
+  Result:=false;
+  if AnUnitInfo=nil then exit;
+  if not (FilenameExtIs(AnUnitInfo.Filename,'lfm',true)
+       or FilenameExtIs(AnUnitInfo.Filename,'dfm')
+       or FilenameExtIs(AnUnitInfo.Filename,'fmx')) then exit;
+  Result:=true;
+  UnitFilename:=GetUnitFileOfLFM(AnUnitInfo.Filename);
+  if UnitFilename='' then exit;
+  // Note: keep this quiet, it is called on every mouse move over a link
+  PasCode:=CodeToolBoss.LoadFile(UnitFilename,false,false);
 end;
 
 function TMainIDE.GetProjectFileWithRootComponent(AComponent: TComponent): TLazProjectFile;
