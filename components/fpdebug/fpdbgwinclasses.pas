@@ -995,7 +995,7 @@ begin
     Exit;
   SetLength(Buf, Avail+FGetConsoleBufferCnt);
   Buf[0] := ord(FGetConsoleBuffer);
-  Got := FProcProcess.Output.Read(Buf[FGetConsoleBufferCnt], Length(Buf)) + FGetConsoleBufferCnt;
+  Got := FProcProcess.Output.Read(Buf[FGetConsoleBufferCnt], Avail);
   if Got > 0 then
     SetString(Result, PAnsiChar(@Buf[0]), Got);
 end;
