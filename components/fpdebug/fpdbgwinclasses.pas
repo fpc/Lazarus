@@ -204,6 +204,7 @@ type
     FThreadNameList: TDbgWinThreadNameList;
     FGetConsoleBuffer: char;
     FGetConsoleBufferCnt: LongInt;
+    FGetConsoleBufferNeedSleep: boolean;
     function GetFullProcessImageName(AProcessHandle: THandle): string;
     function GetModuleFileName(AModuleHandle: THandle): string;
     function GetProcFilename(AProcess: TDbgProcess; lpImageName: LPVOID; fUnicode: word; hFile: handle): string;
@@ -937,19 +938,34 @@ end;
 
 function TDbgWinProcess.CheckForConsoleOutput(ATimeOutMs: integer): integer;
 var
-  Avail: DWord;
+  Avail, e: DWord;
   Deadline: QWord;
 begin
+  if (FProcProcess = nil) or (FProcProcess.Output = nil) then
+    Exit(-1);
+
   if (_CancelSynchronousIo <> nil) and (CheckingForConsoleOutputThread <> nil) then begin
-    FGetConsoleBufferCnt := FProcProcess.Output.Read(FGetConsoleBuffer, 1);
-    Result := FProcProcess.Output.NumBytesAvailable + FGetConsoleBufferCnt;
+    if FGetConsoleBufferNeedSleep then sleep(10);
+    try
+      FGetConsoleBufferCnt := FProcProcess.Output.Read(FGetConsoleBuffer, 1);
+      if FGetConsoleBufferCnt < 0 then FGetConsoleBufferCnt := 0; // Should never happen, but otherwise we should get the error on the next line
+      Result := FProcProcess.Output.NumBytesAvailable + FGetConsoleBufferCnt;
+    except
+      Result := -1;
+    end;
+    FGetConsoleBufferNeedSleep := Result = 0;
+    if (Result = 0) then begin
+      e := GetLastError;
+      if (e = ERROR_BROKEN_PIPE) or (e = ERROR_PIPE_NOT_CONNECTED) or
+         (e = ERROR_INVALID_HANDLE)
+      then
+        Result := -1;
+    end;
     exit;
   end;
 
   // Launched without pipe capture -> report "no console" (< 0 stops the IDE
   // reader thread; fpdmcp's pull just returns empty).
-  if (FProcProcess = nil) or (FProcProcess.Output = nil) then
-    Exit(-1);
   Deadline := SysUtils.GetTickCount64 + QWord(ATimeOutMs);
   repeat
     try
@@ -993,6 +1009,7 @@ begin
   end;
   if Avail = 0 then
     Exit;
+  FGetConsoleBufferNeedSleep := False; // there was something to be read after all
   SetLength(Buf, Avail+FGetConsoleBufferCnt);
   Buf[0] := ord(FGetConsoleBuffer);
   Got := FProcProcess.Output.Read(Buf[FGetConsoleBufferCnt], Avail);
