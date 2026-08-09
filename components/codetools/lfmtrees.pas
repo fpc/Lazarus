@@ -57,6 +57,7 @@ type
     Tool: TObject;  // TFindDeclarationTool
     Node: TObject;  // TCodeTreeNode
   end;
+  TLFMDeclarationCacheArray = array of TLFMDeclarationCache;
 
   { TLFMDeclarationCacheItem - a TLFMDeclarationCache for an identifier at
     StartPos, needed when one node contains several identifiers at varying
@@ -66,6 +67,7 @@ type
     StartPos: integer; // 1-based position of the identifier in the LFM source
     Decl: TLFMDeclarationCache;
   end;
+  TLFMDeclarationCacheItems = array of TLFMDeclarationCacheItem;
 
   TLFMTreeNode = class
   public
@@ -145,7 +147,7 @@ type
   public
     CompleteName: string;
     NameParts: TLFMNameParts;
-    PartDecls: array of TLFMDeclarationCache; // one per NameParts item
+    PartDecls: TLFMDeclarationCacheArray; // one per NameParts item
     constructor CreateVirtual; override;
     destructor Destroy; override;
     procedure Clear;
@@ -192,7 +194,7 @@ type
   public
     SymbolType: TLFMSymbolType;
     // one per part of a dotted identifier, e.g. 'Owner.Foo.Bar'
-    PartDecls: array of TLFMDeclarationCacheItem;
+    PartDecls: TLFMDeclarationCacheItems;
     constructor CreateVirtual; override;
     procedure ClearDeclCache; override;
   end;
