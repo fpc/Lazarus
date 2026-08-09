@@ -110,7 +110,7 @@ type
     //function GetActiveMode: TRunParamsOptionsMode;
   end;
 
-function FindTerminalInPath(const ATerm: String = ''): String;
+function FindTerminalInPath(Term: String = ''): String;
 
 implementation
 
@@ -118,13 +118,11 @@ const
   DefaultLauncherTitle = '''Lazarus Run Output''';
   DefaultLauncherApplication = '$(LazarusDir)/tools/runwait.sh $(TargetCmdLine)';
 
-function FindTerminalInPath(const ATerm: String = ''): String;
+function FindTerminalInPath(Term: String = ''): String;
 var
   s: String;
-  Term: String;
 begin
   Result := '';
-  Term := ATerm;
   if Term = '' then
     Term := GetEnvironmentVariableUTF8('TERM');
   {$IFDEF MSWINDOWS}
