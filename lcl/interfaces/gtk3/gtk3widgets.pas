@@ -1805,9 +1805,10 @@ begin
 
   FillChar(MessE{%H-},SizeOf(MessE),0);
   MessE.Msg := LM_MOUSEWHEEL;
+  // Note: negative is treated by the LCL as WheelDown
   case AEvent^.scroll.direction of
-    GDK_SCROLL_UP, GDK_SCROLL_RIGHT {0}: MessE.WheelDelta := -120;
-    GDK_SCROLL_DOWN, GDK_SCROLL_LEFT {1}: MessE.WheelDelta := 120;
+    GDK_SCROLL_UP, GDK_SCROLL_RIGHT {0}: MessE.WheelDelta := 120;
+    GDK_SCROLL_DOWN, GDK_SCROLL_LEFT {1}: MessE.WheelDelta := -120;
     GDK_SCROLL_SMOOTH:
       begin
         if AEvent^.scroll.delta_y <> 0 then
@@ -1830,20 +1831,22 @@ begin
         begin
           // the initial wheel smooth scroll has no delta -> get direction
           gdk_event_get_scroll_direction(AEvent,@aDir);
+          // for some reason the gdk_event_get_scroll_direction returns inverted GDK_SCROLL_UP/GDK_SCROLL_DOWN
+          //writeln('TGtk3Widget.ScrollEvent initial smooth aDir=',aDir,' ',DbgSName(AWinControl));
           case aDir of
-          GDK_SCROLL_UP, GDK_SCROLL_RIGHT {0}: MessE.WheelDelta := -120;
+          GDK_SCROLL_UP, GDK_SCROLL_RIGHT {0}: MessE.WheelDelta := -120; // inverted GDK_SCROLL_UP/GDK_SCROLL_DOWN
           GDK_SCROLL_DOWN, GDK_SCROLL_LEFT {1}: MessE.WheelDelta := 120;
           end;
         end;
+
         if MessE.WheelDelta=0 then
           exit;
       end;
   else
-  begin
     DebugLn('WARNING: ',dbgsName(aWinControl),' unhandled scrollDirection event ',dbgs(Ord(AEvent^.scroll.direction)));
     exit;
   end;
-  end;
+  //writeln('TGtk3Widget.ScrollEvent scroll.direction=',AEvent^.scroll.direction,' MappedXY=',MappedXY.X,',',MappedXY.Y,' delta_x=',FloatToStr(AEvent^.scroll.delta_x),' delta_y=',FloatToStr(AEvent^.scroll.delta_y),' WheelDelta=',MessE.WheelDelta);
   MessE.X := SmallInt(MappedXY.X);
   MessE.Y := SmallInt(MappedXY.Y);
   MessE.State := ShiftState;
