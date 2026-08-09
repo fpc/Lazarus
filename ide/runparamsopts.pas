@@ -134,7 +134,6 @@ type
     procedure cbRedirStdInChange(Sender: TObject);
     procedure DeleteModeButtonClick(Sender: TObject);
     procedure EnvVarsPageResize(Sender: TObject);
-    procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure ModesComboBoxChange(Sender: TObject);
@@ -513,16 +512,6 @@ begin
 
   UserOverridesListView.Column[0].Width := UserOverridesListView.Width div 2;
   UserOverridesListView.Column[1].Width := UserOverridesListView.Column[0].Width;
-end;
-
-procedure TRunParamsOptsDlg.FormActivate(Sender: TObject);
-var
-  delta: Integer;
-begin
-  delta := WorkingDirectoryGroupbox.Top + WorkingDirectoryGroupbox.Height + 
-    WorkingDirectoryGroupbox.BorderSpacing.Around - Notebook.ClientHeight;
-  ClientHeight := Notebook.Top + Notebook.Height + delta + 
-    2*ButtonPanel.BorderSpacing.Around + ButtonPanel.Height;
 end;
 
 procedure TRunParamsOptsDlg.FormClose(Sender: TObject;
