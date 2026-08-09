@@ -1829,14 +1829,9 @@ begin
         end;
         if (AEvent^.scroll.delta_x=0) and (AEvent^.scroll.delta_y=0) then
         begin
-          // the initial wheel smooth scroll has no delta -> get direction
-          gdk_event_get_scroll_direction(AEvent,@aDir);
-          // for some reason the gdk_event_get_scroll_direction returns inverted GDK_SCROLL_UP/GDK_SCROLL_DOWN
-          //writeln('TGtk3Widget.ScrollEvent initial smooth aDir=',aDir,' ',DbgSName(AWinControl));
-          case aDir of
-          GDK_SCROLL_UP, GDK_SCROLL_RIGHT {0}: MessE.WheelDelta := -120; // inverted GDK_SCROLL_UP/GDK_SCROLL_DOWN
-          GDK_SCROLL_DOWN, GDK_SCROLL_LEFT {1}: MessE.WheelDelta := 120;
-          end;
+          // the initial wheel smooth scroll has no delta
+          MessE.WheelDelta := -120;
+          // gdk_event_get_scroll_direction does not help here
         end;
 
         if MessE.WheelDelta=0 then
