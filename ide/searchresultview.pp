@@ -1245,6 +1245,7 @@ begin
   begin
     FFocusTreeViewInEndUpdate := (ActivePage = nil) and SearchInListEdit.IsParentOf(ActivePage);
     lTabCaption := BeautifyPageName(aSearchText, lTabEllipsed); // default page name
+    lTabCaption := StringReplace(lTabCaption, '&', '&&', [rfReplaceAll]); // escape accel in tab caption
     PageIndex := TCustomTabControl(ResultsNoteBook).Pages.Add(lTabCaption);
 
     lNewTree := TLazSearchResultTV.Create(Page[PageIndex]);
