@@ -1277,7 +1277,7 @@ msgstr "Условие"
 
 #: idedebuggerstringconstants.lisconsolelocalecho
 msgid "Echo typed input"
-msgstr ""
+msgstr "Эхо-вывод набираемых символов"
 
 #: idedebuggerstringconstants.liscopyall
 msgid "Copy All"
