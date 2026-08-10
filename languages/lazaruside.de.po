@@ -1335,8 +1335,33 @@ msgstr "Konfiguration und Ziele"
 msgid "Config files"
 msgstr "Konfigurationsdateien"
 
+#: lazarusidestrconsts.dlgconsolegroup
+msgid "Console"
+msgstr ""
+
+#: lazarusidestrconsts.dlgconsoleidewindow
+msgid "IDE internal window"
+msgstr ""
+
+#: lazarusidestrconsts.dlgconsolemodeide
+msgid "Internal IDE consoles"
+msgstr ""
+
+#: lazarusidestrconsts.dlgconsolemodeos
+msgid "OS console"
+msgstr ""
+
 #: lazarusidestrconsts.dlgconsolesizenotsupported
 msgid "Current debugger does not support this."
+msgstr ""
+
+#: lazarusidestrconsts.dlgconsoleunknown
+#, object-pascal-format
+msgid "Unknown console \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgconsoleuseidedefault
+msgid "-- Use IDE default console --"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcootherdebugginginfo
@@ -9969,12 +9994,12 @@ msgstr ""
 msgid "Fix LFM file"
 msgstr ".lfm-Datei korrigieren"
 
-#: lazarusidestrconsts.lisfocusatcompilation
-msgid "Focus at compilation"
-msgstr ""
-
 #: lazarusidestrconsts.lisfocushint
 msgid "Focus hint"
+msgstr ""
+
+#: lazarusidestrconsts.lisfocuswhengettingmessages
+msgid "Focus when getting messages"
 msgstr ""
 
 #: lazarusidestrconsts.lisforcerenaming
@@ -14085,6 +14110,25 @@ msgstr "Öffnen"
 msgid "Open as XML file"
 msgstr "Als XML-Datei öffnen"
 
+#: lazarusidestrconsts.lisopenautomatically
+msgid "Open automatically"
+msgstr ""
+
+#: lazarusidestrconsts.lisopenautonever
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisopenautonever"
+msgid "Never"
+msgstr "Nie"
+
+#: lazarusidestrconsts.lisopenautoonlywhenerrorsoccur
+msgctxt "lazarusidestrconsts.lisopenautoonlywhenerrorsoccur"
+msgid "Only when errors occur"
+msgstr ""
+
+#: lazarusidestrconsts.lisopenautowhencompiling
+msgid "When getting messages"
+msgstr ""
+
 #: lazarusidestrconsts.lisopencontexthelpinbrowser
 msgid "Open context help in the browser"
 msgstr ""
@@ -16638,24 +16682,6 @@ msgstr "Anzeigen"
 #, object-pascal-format
 msgid "Show abstract methods of \"%s\""
 msgstr "Abstrakte Methoden von \"%s\" anzeigen"
-
-#: lazarusidestrconsts.lisshowautomatically
-msgid "Show automatically"
-msgstr ""
-
-#: lazarusidestrconsts.lisshowautonever
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisshowautonever"
-msgid "Never"
-msgstr "Nie"
-
-#: lazarusidestrconsts.lisshowautoonlywhenerrorsoccur
-msgid "Only when errors occur"
-msgstr ""
-
-#: lazarusidestrconsts.lisshowautowhencompiling
-msgid "When compiling"
-msgstr ""
 
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"

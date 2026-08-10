@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-08-03 17:01+0300\n"
+"PO-Revision-Date: 2026-08-10 22:50+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -1333,9 +1333,34 @@ msgstr "Настройка и целевая платформа"
 msgid "Config files"
 msgstr "Файлы настройки"
 
+#: lazarusidestrconsts.dlgconsolegroup
+msgid "Console"
+msgstr "Консоль"
+
+#: lazarusidestrconsts.dlgconsoleidewindow
+msgid "IDE internal window"
+msgstr "Внутреннее окно IDE"
+
+#: lazarusidestrconsts.dlgconsolemodeide
+msgid "Internal IDE consoles"
+msgstr "Внутренние консоли IDE"
+
+#: lazarusidestrconsts.dlgconsolemodeos
+msgid "OS console"
+msgstr "Консоль ОС"
+
 #: lazarusidestrconsts.dlgconsolesizenotsupported
 msgid "Current debugger does not support this."
 msgstr "Текущий отладчик не поддерживает эту возможность."
+
+#: lazarusidestrconsts.dlgconsoleunknown
+#, object-pascal-format
+msgid "Unknown console \"%s\""
+msgstr "Неизвестная консоль \"%s\""
+
+#: lazarusidestrconsts.dlgconsoleuseidedefault
+msgid "-- Use IDE default console --"
+msgstr "-- Использовать консоль IDE по умолчанию --"
 
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
@@ -9953,13 +9978,13 @@ msgstr "&Первая проверка"
 msgid "Fix LFM file"
 msgstr "Исправить файл LFM"
 
-#: lazarusidestrconsts.lisfocusatcompilation
-msgid "Focus at compilation"
-msgstr "Переводить в фокус при компиляции"
-
 #: lazarusidestrconsts.lisfocushint
 msgid "Focus hint"
 msgstr "Прикрепить подсказку"
+
+#: lazarusidestrconsts.lisfocuswhengettingmessages
+msgid "Focus when getting messages"
+msgstr "Переводить в фокус при появлении сообщений"
 
 #: lazarusidestrconsts.lisforcerenaming
 msgid "Force renaming"
@@ -14098,6 +14123,24 @@ msgstr "Открыть"
 msgid "Open as XML file"
 msgstr "Открыть как файл XML"
 
+#: lazarusidestrconsts.lisopenautomatically
+msgid "Open automatically"
+msgstr "Открывать автоматически"
+
+#: lazarusidestrconsts.lisopenautonever
+msgctxt "lazarusidestrconsts.lisopenautonever"
+msgid "Never"
+msgstr "Никогда"
+
+#: lazarusidestrconsts.lisopenautoonlywhenerrorsoccur
+msgctxt "lazarusidestrconsts.lisopenautoonlywhenerrorsoccur"
+msgid "Only when errors occur"
+msgstr "Только при возникновении ошибок"
+
+#: lazarusidestrconsts.lisopenautowhencompiling
+msgid "When getting messages"
+msgstr "При появлении сообщений"
+
 #: lazarusidestrconsts.lisopencontexthelpinbrowser
 msgid "Open context help in the browser"
 msgstr "Открыть контекстную справку в браузере"
@@ -16666,23 +16709,6 @@ msgstr "Отображать"
 #, object-pascal-format
 msgid "Show abstract methods of \"%s\""
 msgstr "Показать абстрактные методы в \"%s\""
-
-#: lazarusidestrconsts.lisshowautomatically
-msgid "Show automatically"
-msgstr "Показывать автоматически"
-
-#: lazarusidestrconsts.lisshowautonever
-msgctxt "lazarusidestrconsts.lisshowautonever"
-msgid "Never"
-msgstr "Никогда"
-
-#: lazarusidestrconsts.lisshowautoonlywhenerrorsoccur
-msgid "Only when errors occur"
-msgstr "Только при возникновении ошибок"
-
-#: lazarusidestrconsts.lisshowautowhencompiling
-msgid "When compiling"
-msgstr "При компиляции"
 
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"

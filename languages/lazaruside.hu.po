@@ -1351,8 +1351,33 @@ msgstr "Beállítás és cél"
 msgid "Config files"
 msgstr "Beállítás fájlok"
 
+#: lazarusidestrconsts.dlgconsolegroup
+msgid "Console"
+msgstr ""
+
+#: lazarusidestrconsts.dlgconsoleidewindow
+msgid "IDE internal window"
+msgstr ""
+
+#: lazarusidestrconsts.dlgconsolemodeide
+msgid "Internal IDE consoles"
+msgstr ""
+
+#: lazarusidestrconsts.dlgconsolemodeos
+msgid "OS console"
+msgstr ""
+
 #: lazarusidestrconsts.dlgconsolesizenotsupported
 msgid "Current debugger does not support this."
+msgstr ""
+
+#: lazarusidestrconsts.dlgconsoleunknown
+#, object-pascal-format
+msgid "Unknown console \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgconsoleuseidedefault
+msgid "-- Use IDE default console --"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcootherdebugginginfo
@@ -10097,13 +10122,13 @@ msgstr "Első teszt"
 msgid "Fix LFM file"
 msgstr "LFM fájl javítása"
 
-#: lazarusidestrconsts.lisfocusatcompilation
-msgid "Focus at compilation"
-msgstr ""
-
 #: lazarusidestrconsts.lisfocushint
 msgid "Focus hint"
 msgstr "Fókusz tipp"
+
+#: lazarusidestrconsts.lisfocuswhengettingmessages
+msgid "Focus when getting messages"
+msgstr ""
 
 #: lazarusidestrconsts.lisforcerenaming
 msgid "Force renaming"
@@ -14292,6 +14317,25 @@ msgstr "Megnyitás"
 msgid "Open as XML file"
 msgstr "Megnyitás XML fájlként"
 
+#: lazarusidestrconsts.lisopenautomatically
+msgid "Open automatically"
+msgstr ""
+
+#: lazarusidestrconsts.lisopenautonever
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisopenautonever"
+msgid "Never"
+msgstr "Soha"
+
+#: lazarusidestrconsts.lisopenautoonlywhenerrorsoccur
+msgctxt "lazarusidestrconsts.lisopenautoonlywhenerrorsoccur"
+msgid "Only when errors occur"
+msgstr ""
+
+#: lazarusidestrconsts.lisopenautowhencompiling
+msgid "When getting messages"
+msgstr ""
+
 #: lazarusidestrconsts.lisopencontexthelpinbrowser
 msgid "Open context help in the browser"
 msgstr ""
@@ -16875,24 +16919,6 @@ msgstr "Megjelenítés"
 #, object-pascal-format
 msgid "Show abstract methods of \"%s\""
 msgstr "\"%s\" absztrakt metódusainak megjelenítése"
-
-#: lazarusidestrconsts.lisshowautomatically
-msgid "Show automatically"
-msgstr ""
-
-#: lazarusidestrconsts.lisshowautonever
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisshowautonever"
-msgid "Never"
-msgstr "Soha"
-
-#: lazarusidestrconsts.lisshowautoonlywhenerrorsoccur
-msgid "Only when errors occur"
-msgstr ""
-
-#: lazarusidestrconsts.lisshowautowhencompiling
-msgid "When compiling"
-msgstr ""
 
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"

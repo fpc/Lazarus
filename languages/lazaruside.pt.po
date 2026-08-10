@@ -1331,9 +1331,34 @@ msgstr "Configuração e destino"
 msgid "Config files"
 msgstr "Ficheiros de configuração"
 
+#: lazarusidestrconsts.dlgconsolegroup
+msgid "Console"
+msgstr ""
+
+#: lazarusidestrconsts.dlgconsoleidewindow
+msgid "IDE internal window"
+msgstr ""
+
+#: lazarusidestrconsts.dlgconsolemodeide
+msgid "Internal IDE consoles"
+msgstr ""
+
+#: lazarusidestrconsts.dlgconsolemodeos
+msgid "OS console"
+msgstr ""
+
 #: lazarusidestrconsts.dlgconsolesizenotsupported
 msgid "Current debugger does not support this."
 msgstr "O depurador actual não suporta isto."
+
+#: lazarusidestrconsts.dlgconsoleunknown
+#, object-pascal-format
+msgid "Unknown console \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgconsoleuseidedefault
+msgid "-- Use IDE default console --"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
@@ -9953,13 +9978,13 @@ msgstr "&Primeiro teste"
 msgid "Fix LFM file"
 msgstr "Reparar ficheiro LFM"
 
-#: lazarusidestrconsts.lisfocusatcompilation
-msgid "Focus at compilation"
-msgstr "Foco na compilação"
-
 #: lazarusidestrconsts.lisfocushint
 msgid "Focus hint"
 msgstr "Dica de focagem"
+
+#: lazarusidestrconsts.lisfocuswhengettingmessages
+msgid "Focus when getting messages"
+msgstr ""
 
 #: lazarusidestrconsts.lisforcerenaming
 msgid "Force renaming"
@@ -14097,6 +14122,26 @@ msgstr "Abrir"
 msgid "Open as XML file"
 msgstr "Abrir como ficheiro XML"
 
+#: lazarusidestrconsts.lisopenautomatically
+msgid "Open automatically"
+msgstr ""
+
+#: lazarusidestrconsts.lisopenautonever
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisopenautonever"
+msgid "Never"
+msgstr "Nunca"
+
+#: lazarusidestrconsts.lisopenautoonlywhenerrorsoccur
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisopenautoonlywhenerrorsoccur"
+msgid "Only when errors occur"
+msgstr "Só quando ocorrem erros"
+
+#: lazarusidestrconsts.lisopenautowhencompiling
+msgid "When getting messages"
+msgstr ""
+
 #: lazarusidestrconsts.lisopencontexthelpinbrowser
 msgid "Open context help in the browser"
 msgstr "Abrir a ajuda contextual no navegador"
@@ -16665,23 +16710,6 @@ msgstr "Mostrar"
 #, object-pascal-format
 msgid "Show abstract methods of \"%s\""
 msgstr "Mostrar métodos abstractos de \"%s\""
-
-#: lazarusidestrconsts.lisshowautomatically
-msgid "Show automatically"
-msgstr "Mostrar automaticamente"
-
-#: lazarusidestrconsts.lisshowautonever
-msgctxt "lazarusidestrconsts.lisshowautonever"
-msgid "Never"
-msgstr "Nunca"
-
-#: lazarusidestrconsts.lisshowautoonlywhenerrorsoccur
-msgid "Only when errors occur"
-msgstr "Só quando ocorrem erros"
-
-#: lazarusidestrconsts.lisshowautowhencompiling
-msgid "When compiling"
-msgstr "Ao compilar"
 
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
