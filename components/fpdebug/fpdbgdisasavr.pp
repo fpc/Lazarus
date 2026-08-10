@@ -162,11 +162,9 @@ type
     procedure Disassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String); override; overload;
     function GetInstructionInfo(AnAddress: TDBGPtr): TDbgAsmInstruction; override;
 
-    // Don't use, not really suited to AVR ABI
     function GetFunctionFrameInfo(AnAddress: TDBGPtr; out
       AnIsOutsideFrame: Boolean): Boolean; override;
 
-    // Rather use the next function to locate the call return address.
     // AStartPC & AEndPC indicates proc limits to help with scanning for prologue/epilogue
     // returnAddressOffset gives the offset to return address relative to Y pointer (r28:r29) inside frame
     // else returnAddressOffset gives the offset to return address relative to SP
@@ -815,15 +813,30 @@ end;
 
 function TAvrAsmDecoder.GetFunctionFrameInfo(AnAddress: TDBGPtr; out
   AnIsOutsideFrame: Boolean): Boolean;
+var
+  startPC, endPC: TDBGPtr;
+  returnAddrStackOffset: word;
 begin
-  Result := False;
+  AnIsOutsideFrame := False;
+
+  // Get start/end PC of proc from debug info
+  if not Self.FProcess.FindProcStartEndPC(AnAddress, startPC, endPC) then
+  begin
+    // Proc boundaries not found
+    startPC := AnAddress;
+    endPC := AnAddress;
+  end;
+
+  Result := GetFunctionFrameReturnAddress(AnAddress, startPC, endPC, returnAddrStackOffset, AnIsOutsideFrame);
 end;
 
 function TAvrAsmDecoder.GetFunctionFrameReturnAddress(AnAddress, AStartPC,
   AEndPC: TDBGPtr; out returnAddressOffset: word; out AnIsOutsideFrame: Boolean
   ): Boolean;
 begin
-  { Cases to consider:
+  { AStartPC = AEndPC = AnAddress - no function boundary information, abort.
+
+    If AStartPC & AEndPC is available then conisder following cases:
     A - if (AStartPC + MaxPrologueSize < AnAddress) and (AnAddress + MaxEpilogueSize < AEndPC)
         then currently inside stack frame. Parse prologue to figure out
         offset from frame pointer to return address.
@@ -840,12 +853,17 @@ begin
         If frame pointer has been restored before AnAddress then ouside frame.
   }
 
-  if (AnAddress = AStartPC) or (AnAddress = AEndPC) then
+  if (AnAddress = AStartPC) and (AnAddress = AEndPC) then
+  begin
+    // Give up if no proc boundaries are known
+    Result := false;
+    exit;
+  end
+  else if (AnAddress = AStartPC) or (AnAddress = AEndPC) then
   begin
     // Frame not yet constructed, so return address is located via SP + offset
     returnAddressOffset := 1;
     AnIsOutsideFrame := true;
-    exit;
   end
   //else if (AStartPC + MaxPrologueSize > AnAddress) then
   else if (AnAddress - AStartPC) < (AEndPC - AnAddress) then
@@ -1525,15 +1543,15 @@ begin
   // Get start/end PC of proc from debug info
   if not Self.Process.FindProcStartEndPC(CodePointer, startPC, endPC) then
   begin
-    { Assume we are at beginning of proc. GetFunctionFrameReturnAddress should then
-      assume we are outside the stack frame (or no stack frame exists).
-    }
+    // Proc boundaries not found
+    startPC := CodePointer;
     endPC := CodePointer;
   end;
 
   if not TAvrAsmDecoder(Process.Disassembler).GetFunctionFrameReturnAddress(CodePointer, startPC, endPC, returnAddrStackOffset, OutSideFrame) then
   begin
-    OutSideFrame := False;
+    OutSideFrame := true;
+    returnAddrStackOffset := 1;
   end;
 
   if OutSideFrame then begin
