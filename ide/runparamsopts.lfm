@@ -309,6 +309,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
             ItemHeight = 15
             Style = csDropDownList
             TabOrder = 8
+            Visible = False
           end
         end
         object UseLaunchingApplicationGroupBox: TGroupBox
