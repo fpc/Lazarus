@@ -137,12 +137,11 @@ object PseudoConsoleDlg: TPseudoConsoleDlg
             AnchorSideBottom.Control = lbAutoOpenConsole
             Left = 6
             Height = 19
-            Top = 190
+            Top = 196
             Width = 249
             Anchors = [akLeft, akRight, akBottom]
             BorderSpacing.Around = 6
             Caption = 'cbLocalEcho'
-            OnChange = cbLocalEchoChange
             TabOrder = 2
           end
           object lbAutoOpenConsole: TLabel

@@ -64,7 +64,6 @@ type
     StatusBar1: TStatusBar;
     TabSheetRaw: TTabSheet;
     procedure cbAutoOpenConsoleChange(Sender: TObject);
-    procedure cbLocalEchoChange(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure Memo1UTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
@@ -140,20 +139,11 @@ begin
      program's own output and shares its partial-line state -- typing halfway
      through an unterminated line then continues that line rather than starting
      a new one. *)
-  if EnvironmentDebugOpts.ConsoleLocalEcho then
+  if cbLocalEcho.Checked then
     AddOutput(KeyText);
   DebugBoss.DoSendConsoleInput(KeyText);
   Utf8Key := '';
 end;
-
-procedure TPseudoConsoleDlg.cbLocalEchoChange(Sender: TObject);
-begin
-  if EnvironmentDebugOpts.ConsoleLocalEcho = cbLocalEcho.Checked then
-    exit;
-  EnvironmentDebugOpts.ConsoleLocalEcho := cbLocalEcho.Checked;
-  EnvironmentOptions.Save(False);
-end;
-
 
 procedure TPseudoConsoleDlg.PairSplitterRawRightResize(Sender: TObject);
 
@@ -234,7 +224,6 @@ end { TPseudoConsoleDlg.FormResize } ;
 procedure TPseudoConsoleDlg.FormShow(Sender: TObject);
 begin
   cbAutoOpenConsole.ItemIndex := ord(EnvironmentDebugOpts.AutoOpenConsoleWin);
-  cbLocalEcho.Checked := EnvironmentDebugOpts.ConsoleLocalEcho;
 end;
 
 procedure TPseudoConsoleDlg.cbAutoOpenConsoleChange(Sender: TObject);

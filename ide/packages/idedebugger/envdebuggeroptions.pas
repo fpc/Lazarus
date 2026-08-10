@@ -115,7 +115,6 @@ type
   TEnvDebuggerOptions = class(TIDESubOptions)
   private
     FAutoOpenConsoleWin: TDbgAutoOpenConsoleWin;
-    FConsoleLocalEcho: Boolean;
     FConfirmDeleteAllBreakPoints: boolean;
     FConfirmDeleteAllHistory: boolean;
     FConfirmDeleteAllWatches: boolean;
@@ -182,16 +181,6 @@ type
     property ConfirmDeleteFileBreakPoints: boolean read FConfirmDeleteFileBreakPoints write FConfirmDeleteFileBreakPoints;
     property ConfirmDeleteAllHistory: boolean read FConfirmDeleteAllHistory write FConfirmDeleteAllHistory;
     property AutoOpenConsoleWin: TDbgAutoOpenConsoleWin read FAutoOpenConsoleWin write FAutoOpenConsoleWin default ocOnceOnOutput;
-    (* Whether the console window shows what is typed into it.
-
-       Echo belongs to the terminal, not to the program: a pty does it in the
-       driver, which is why this has never been wanted before. Where the
-       debuggee's input arrives down a pipe there is no driver, nothing comes
-       back, and without this the user types blind. Hence the default follows
-       the platform rather than a fixed value -- switching it on under a pty
-       would show every character twice. *)
-    property ConsoleLocalEcho: Boolean read FConsoleLocalEcho write FConsoleLocalEcho
-      default {$IFDEF MSWINDOWS} True {$ELSE} False {$ENDIF};
   end;
 
 var
@@ -318,7 +307,6 @@ begin
   FConfirmDeleteAllHistory := True;
   FConfirmDeleteAllWatches := True;
   FAutoOpenConsoleWin := ocOnceOnOutput;
-  FConsoleLocalEcho := {$IFDEF MSWINDOWS} True {$ELSE} False {$ENDIF};
 end;
 
 destructor TEnvDebuggerOptions.Destroy;
