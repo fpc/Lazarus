@@ -294,13 +294,8 @@ begin
 end;
 
 procedure TBuildManager.ProjectDestroy(Sender: TObject);
-var
-  aProject: TProject;
 begin
-  if not (Sender is TProjectIDEOptions) then
-    exit;
-  aProject:=TProjectIDEOptions(Sender).Project;
-  if FBuildTarget=aProject then
+  if (Sender is TProjectIDEOptions) and (TProjectIDEOptions(Sender).Project = FBuildTarget) then
     FBuildTarget:=nil;
 end;
 
