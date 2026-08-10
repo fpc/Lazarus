@@ -789,7 +789,7 @@ begin
   if (TFPReportShape(AShape).Color = fpreport.clNone)
   or (TFPReportShape(AShape).Color = AShape.Frame.BackgroundColor) then
     exit;
-  Canvas.Pen.Color:=TFPReportShape(AShape).Color;
+  Canvas.Pen.Color:=RGBtoBGR(TFPReportShape(AShape).Color);
   Canvas.Pen.Style:=psSolid;
   Canvas.Pen.Width:=PtToPixels(1);
   lPt1.Left := BL.Left + SL.Left;
