@@ -410,7 +410,7 @@ type
     FFileNameStdOut: String;
     FFileNameStdErr: String;
     FConsoleMode:    TRunParamsConsoleMode;
-    FConsoleId:      String;
+    FIdeDbgConsoleId:      String;
 
     procedure AssignTo(Dest: TPersistent); override;
   public
@@ -454,7 +454,7 @@ type
     property FileNameStdErr: String read FFileNameStdErr write FFileNameStdErr;
     // Console
     property ConsoleMode: TRunParamsConsoleMode read FConsoleMode write FConsoleMode;
-    property ConsoleId: String read FConsoleId write FConsoleId;
+    property IdeDbgConsoleId: String read FIdeDbgConsoleId write FIdeDbgConsoleId;
   end;
 
   { TAbstractRunParamsOptions }
@@ -976,7 +976,7 @@ begin
     ADest.FFileNameStdErr := FFileNameStdErr;
     // Console
     ADest.FConsoleMode    := FConsoleMode;
-    ADest.FConsoleId      := FConsoleId;
+    ADest.FIdeDbgConsoleId      := FIdeDbgConsoleId;
 
     ADest.UserOverrides.Assign(UserOverrides);
     ADest.IncludeSystemVariables := IncludeSystemVariables;
@@ -1010,7 +1010,7 @@ begin
   FFileNameStdErr := '';
   // Console
   FConsoleMode    := rpcmOsConsole;
-  FConsoleId      := RunParamsConsoleIdDefault;
+  FIdeDbgConsoleId      := RunParamsConsoleIdDefault;
 
   // environment options
   fUserOverrides.Clear;

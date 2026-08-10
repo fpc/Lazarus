@@ -371,7 +371,7 @@ begin
   FileNameStdErr := XMLConfig.GetValue(Path + 'local/FileNameStdErr/Value', '');
 
   XMLConfig.GetValue(Path + 'local/ConsoleMode/Value', ord(rpcmOsConsole), FConsoleMode, TypeInfo(TRunParamsConsoleMode));
-  ConsoleId := XMLConfig.GetValue(Path + 'local/ConsoleId/Value', RunParamsConsoleIdDefault);
+  IdeDbgConsoleId := XMLConfig.GetValue(Path + 'local/IdeDbgConsoleId/Value', RunParamsConsoleIdDefault);
 
   // environment options
   LoadUserOverrides(Path + 'environment/UserOverrides/');
@@ -439,7 +439,7 @@ begin
   XMLConfig.SetDeleteValue(Path + 'local/FileNameStdErr/Value', FileNameStdErr, '');
 
   XMLConfig.SetDeleteValue(Path + 'local/ConsoleMode/Value', FConsoleMode, ord(rpcmOsConsole), TypeInfo(TRunParamsConsoleMode));
-  XMLConfig.SetDeleteValue(Path + 'local/ConsoleId/Value', ConsoleId, RunParamsConsoleIdDefault);
+  XMLConfig.SetDeleteValue(Path + 'local/IdeDbgConsoleId/Value', IdeDbgConsoleId, RunParamsConsoleIdDefault);
 
   Result := mrOk;
 end;
@@ -507,7 +507,7 @@ begin
   FileNameStdErr := XMLConfig.GetValue(Path + 'local/FileNameStdErr/Value', '');
 
   XMLConfig.GetValue(Path + 'local/ConsoleMode/Value', ord(rpcmOsConsole), FConsoleMode, TypeInfo(TRunParamsConsoleMode));
-  ConsoleId := XMLConfig.GetValue(Path + 'local/ConsoleId/Value', RunParamsConsoleIdDefault);
+  IdeDbgConsoleId := XMLConfig.GetValue(Path + 'local/IdeDbgConsoleId/Value', RunParamsConsoleIdDefault);
 
   // environment options
   LoadUserOverrides(Path + 'environment/UserOverrides/');
@@ -577,7 +577,7 @@ begin
   XMLConfig.SetDeleteValue(Path + 'local/FileNameStdErr/Value', FileNameStdErr, '');
 
   XMLConfig.SetDeleteValue(Path + 'local/ConsoleMode/Value', FConsoleMode, ord(rpcmOsConsole), TypeInfo(TRunParamsConsoleMode));
-  XMLConfig.SetDeleteValue(Path + 'local/ConsoleId/Value', ConsoleId, RunParamsConsoleIdDefault);
+  XMLConfig.SetDeleteValue(Path + 'local/IdeDbgConsoleId/Value', IdeDbgConsoleId, RunParamsConsoleIdDefault);
 
   // environment options
   SaveUserOverrides(Path + 'environment/UserOverrides/');

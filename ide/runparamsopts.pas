@@ -747,7 +747,7 @@ begin
   FileNameStdErr.Text := AMode.FileNameStdErr;
 
   rgConsole.ItemIndex := ord(AMode.ConsoleMode);
-  LoadConsoleId(AMode.ConsoleId);
+  LoadConsoleId(AMode.IdeDbgConsoleId);
   rgConsoleSelectionChanged(rgConsole);
 
   // environment
@@ -888,7 +888,7 @@ begin
   AMode.FileNameStdErr := FileNameStdErr.Text;
 
   AMode.ConsoleMode := SelectedConsoleMode;
-  AMode.ConsoleId   := SelectedConsoleId;
+  AMode.IdeDbgConsoleId   := SelectedConsoleId;
 
   // history list: WorkingDirectoryComboBox
   SaveComboHistory(WorkingDirectoryComboBox,hlWorkingDirectory,rltFile);
