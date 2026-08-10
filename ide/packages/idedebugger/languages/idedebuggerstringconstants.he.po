@@ -1279,6 +1279,10 @@ msgstr ""
 msgid "Condition"
 msgstr "מצב"
 
+#: idedebuggerstringconstants.lisconsolelocalecho
+msgid "Echo typed input"
+msgstr ""
+
 #: idedebuggerstringconstants.liscopyall
 msgid "Copy All"
 msgstr "העתק הכל"

@@ -1287,6 +1287,10 @@ msgstr "Widoczność"
 msgid "Condition"
 msgstr "Warunek"
 
+#: idedebuggerstringconstants.lisconsolelocalecho
+msgid "Echo typed input"
+msgstr ""
+
 #: idedebuggerstringconstants.liscopyall
 msgid "Copy All"
 msgstr "Kopiuj wszystko"

@@ -370,6 +370,9 @@ begin
   FileNameStdOut := XMLConfig.GetValue(Path + 'local/FileNameStdOut/Value', '');
   FileNameStdErr := XMLConfig.GetValue(Path + 'local/FileNameStdErr/Value', '');
 
+  XMLConfig.GetValue(Path + 'local/ConsoleMode/Value', ord(rpcmOsConsole), FConsoleMode, TypeInfo(TRunParamsConsoleMode));
+  IdeDbgConsoleId := XMLConfig.GetValue(Path + 'local/IdeDbgConsoleId/Value', RunParamsConsoleIdDefault);
+
   // environment options
   LoadUserOverrides(Path + 'environment/UserOverrides/');
   IncludeSystemVariables := XMLConfig.GetValue(
@@ -435,6 +438,9 @@ begin
   XMLConfig.SetDeleteValue(Path + 'local/FileNameStdOut/Value', FileNameStdOut, '');
   XMLConfig.SetDeleteValue(Path + 'local/FileNameStdErr/Value', FileNameStdErr, '');
 
+  XMLConfig.SetDeleteValue(Path + 'local/ConsoleMode/Value', FConsoleMode, ord(rpcmOsConsole), TypeInfo(TRunParamsConsoleMode));
+  XMLConfig.SetDeleteValue(Path + 'local/IdeDbgConsoleId/Value', IdeDbgConsoleId, RunParamsConsoleIdDefault);
+
   Result := mrOk;
 end;
 
@@ -499,6 +505,9 @@ begin
   FileNameStdIn  := XMLConfig.GetValue(Path + 'local/FileNameStdIn/Value',  '');
   FileNameStdOut := XMLConfig.GetValue(Path + 'local/FileNameStdOut/Value', '');
   FileNameStdErr := XMLConfig.GetValue(Path + 'local/FileNameStdErr/Value', '');
+
+  XMLConfig.GetValue(Path + 'local/ConsoleMode/Value', ord(rpcmOsConsole), FConsoleMode, TypeInfo(TRunParamsConsoleMode));
+  IdeDbgConsoleId := XMLConfig.GetValue(Path + 'local/IdeDbgConsoleId/Value', RunParamsConsoleIdDefault);
 
   // environment options
   LoadUserOverrides(Path + 'environment/UserOverrides/');
@@ -566,6 +575,9 @@ begin
   XMLConfig.SetDeleteValue(Path + 'local/FileNameStdIn/Value',  FileNameStdIn,  '');
   XMLConfig.SetDeleteValue(Path + 'local/FileNameStdOut/Value', FileNameStdOut, '');
   XMLConfig.SetDeleteValue(Path + 'local/FileNameStdErr/Value', FileNameStdErr, '');
+
+  XMLConfig.SetDeleteValue(Path + 'local/ConsoleMode/Value', FConsoleMode, ord(rpcmOsConsole), TypeInfo(TRunParamsConsoleMode));
+  XMLConfig.SetDeleteValue(Path + 'local/IdeDbgConsoleId/Value', IdeDbgConsoleId, RunParamsConsoleIdDefault);
 
   // environment options
   SaveUserOverrides(Path + 'environment/UserOverrides/');

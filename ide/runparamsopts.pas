@@ -72,9 +72,11 @@ type
 
   TRunParamsOptsDlg = class(TForm)
     ButtonPanel: TButtonPanel;
+    cbConsole: TComboBox;
     cbRedirStdIn: TComboBox;
     cbRedirStdOut: TComboBox;
     cbRedirStdErr: TComboBox;
+    rgConsole: TRadioGroup;
     lbStdIn: TLabel;
     lbStdOut: TLabel;
     lbStdErr: TLabel;
@@ -131,6 +133,7 @@ type
     WorkingDirectoryBtn: TButton;
     WorkingDirectoryComboBox: TComboBox;
     WorkingDirectoryGroupBox: TGroupBox;
+    procedure rgConsoleSelectionChanged(Sender: TObject);
     procedure cbRedirStdInChange(Sender: TObject);
     procedure DeleteModeButtonClick(Sender: TObject);
     procedure EnvVarsPageResize(Sender: TObject);
@@ -155,6 +158,14 @@ type
     fOptions: TRunParamsOptions;
     fSaveToOptions: TRunParamsOptions;
     fLastSelectedMode: TRunParamsOptionsMode;
+    (* The id of the mode's console when it is one this IDE has no item for.
+       Held so that displaying such a mode and leaving it alone writes the same
+       id back, rather than replacing it with whatever the list happens to
+       offer. *)
+    fUnlistedConsoleId: String;
+    procedure LoadConsoleId(const AConsoleId: String);
+    function  SelectedConsoleId: String;
+    function  SelectedConsoleMode: TRunParamsConsoleMode;
     procedure SetupNotebook;
     procedure SetupLocalPage;
     procedure SetupEnvironmentPage;
@@ -188,6 +199,17 @@ const
   hlLaunchingApplication = 'LaunchingApplication';
   hlCmdLineParameters = 'CommandLineParameters';
   hlWorkingDirectory = 'WorkingDirectory';
+
+  (* The consoles cbConsole offers, in the order its items are added -- which
+     the radio group has already narrowed to "not the OS one". The captions are
+     separate because they are translated; only these ids are written to the
+     project. Once terminals can be registered this list becomes the built-in
+     head of a longer one, which is why the code below looks a value up rather
+     than casting an index as the three redirect combos do. *)
+  ConsoleIds: array[0..1] of String = (
+    RunParamsConsoleIdDefault,
+    RunParamsConsoleIdIdeWindow
+  );
 
 function ShowRunParamsOptsDlg(RunParamsOptions: TRunParamsOptions;
   HistoryLists: THistoryLists): TModalResult;
@@ -247,10 +269,83 @@ begin
   ModesComboBoxChange(ModesComboBox);
 end;
 
+procedure TRunParamsOptsDlg.LoadConsoleId(const AConsoleId: String);
+var
+  i: Integer;
+begin
+  // Discard any unlisted item left over from the mode shown before this one.
+  while cbConsole.Items.Count > Length(ConsoleIds) do
+    cbConsole.Items.Delete(cbConsole.Items.Count - 1);
+  fUnlistedConsoleId := '';
+
+  for i := Low(ConsoleIds) to High(ConsoleIds) do
+    if ConsoleIds[i] = AConsoleId then begin
+      cbConsole.ItemIndex := i;
+      exit;
+    end;
+
+  (* A console this IDE has no item for: written by a build with a terminal
+     registered that this one does not have, or by one that has since been
+     removed. Shown by id rather than quietly replaced, so that opening the
+     dialog and pressing OK does not rewrite the project. *)
+  cbConsole.Items.Add(Format(dlgConsoleUnknown, [AConsoleId]));
+  cbConsole.ItemIndex := cbConsole.Items.Count - 1;
+  fUnlistedConsoleId := AConsoleId;
+end;
+
+function TRunParamsOptsDlg.SelectedConsoleId: String;
+begin
+  if (cbConsole.ItemIndex >= Low(ConsoleIds)) and
+     (cbConsole.ItemIndex <= High(ConsoleIds))
+  then
+    Result := ConsoleIds[cbConsole.ItemIndex]
+  else
+    Result := fUnlistedConsoleId;
+end;
+
+function TRunParamsOptsDlg.SelectedConsoleMode: TRunParamsConsoleMode;
+begin
+  if rgConsole.ItemIndex = ord(rpcmIdeConsole) then
+    Result := rpcmIdeConsole
+  else
+    Result := rpcmOsConsole;
+end;
+
+procedure TRunParamsOptsDlg.rgConsoleSelectionChanged(Sender: TObject);
+var
+  RedirectsApply: Boolean;
+begin
+  (* The drop-down answers "which internal console", so it has nothing to say
+     while the OS one is serving. *)
+  cbConsole.Enabled := rgConsole.Enabled and (SelectedConsoleMode = rpcmIdeConsole);
+
+  (* Where the console is served by capturing the debuggee's streams, all three
+     are captured or none -- Windows hands a pipe to CreateProcess for the whole
+     set of standard handles at once -- so a per-stream file has nowhere to go.
+     The controls are disabled rather than cleared: whatever was configured
+     survives in the project, and returning to the OS console brings it back. *)
+{$IFnDef LCLNoGui}
+  RedirectsApply := not DebugBoss.ConsoleIsCaptured(SelectedConsoleMode);
+{$ELSE}
+  RedirectsApply := SelectedConsoleMode <> rpcmIdeConsole;
+{$ENDIF}
+  cbRedirStdIn.Enabled   := RedirectsApply;
+  cbRedirStdOut.Enabled  := RedirectsApply;
+  cbRedirStdErr.Enabled  := RedirectsApply;
+  FileNameStdIn.Enabled  := RedirectsApply;
+  FileNameStdOut.Enabled := RedirectsApply;
+  FileNameStdErr.Enabled := RedirectsApply;
+  lbStdIn.Enabled        := RedirectsApply;
+  lbStdOut.Enabled       := RedirectsApply;
+  lbStdErr.Enabled       := RedirectsApply;
+  cbRedirStdInChange(Sender);
+end;
+
 procedure TRunParamsOptsDlg.cbRedirStdInChange(Sender: TObject);
 begin
 {$IFnDef LCLNoGui}
   RedirectWarnLabel.Visible :=
+    cbRedirStdIn.Enabled and
     ( (cbRedirStdIn.ItemIndex <> 0) or
       (cbRedirStdOut.ItemIndex <> 0) or
       (cbRedirStdErr.ItemIndex <> 0)
@@ -341,6 +436,23 @@ begin
   UseConsoleSizeCheckBox.Caption   := dlgUseConsoleSize;
   UseConsoleBufferCheckBox.Caption := dlgUseConsoleBuffer;
   ConsoleSizeWarnLabel.Caption := dlgConsoleSizeNotSupported;
+
+  rgConsole.Caption := dlgConsoleGroup;
+  rgConsole.Items[ord(rpcmOsConsole)]  := dlgConsoleModeOs;
+  rgConsole.Items[ord(rpcmIdeConsole)] := dlgConsoleModeIde;
+  rgConsole.ItemIndex := ord(rpcmOsConsole);
+
+  cbConsole.Items.Add(dlgConsoleUseIdeDefault);
+  cbConsole.Items.Add(dlgConsoleIdeWindow);
+  cbConsole.ItemIndex := 0;
+  (* Where the selected backend cannot capture, only the OS console can serve
+     and there is nothing to choose between. The controls are left in place and
+     merely disabled: they still show and write back whatever the project
+     selected, so opening it under a backend that cannot capture -- or on
+     another platform -- does not quietly discard the setting. *)
+  {$IFnDef LCLNoGui}
+  rgConsole.Enabled := dfStdInOutCapture in DebugBoss.DebuggerClass.SupportedFeatures;
+  {$ENDIF}
 
   cbRedirStdIn.Items.Add (dlgRedirOff);
   cbRedirStdIn.Items.Add (dlgRedirInput);
@@ -634,6 +746,10 @@ begin
   FileNameStdOut.Text := AMode.FileNameStdOut;
   FileNameStdErr.Text := AMode.FileNameStdErr;
 
+  rgConsole.ItemIndex := ord(AMode.ConsoleMode);
+  LoadConsoleId(AMode.IdeDbgConsoleId);
+  rgConsoleSelectionChanged(rgConsole);
+
   // environment
   FillSystemVariablesListView;
   FillUserOverridesListView(AMode);
@@ -770,6 +886,9 @@ begin
   AMode.FileNameStdIn  := FileNameStdIn.Text;
   AMode.FileNameStdOut := FileNameStdOut.Text;
   AMode.FileNameStdErr := FileNameStdErr.Text;
+
+  AMode.ConsoleMode := SelectedConsoleMode;
+  AMode.IdeDbgConsoleId   := SelectedConsoleId;
 
   // history list: WorkingDirectoryComboBox
   SaveComboHistory(WorkingDirectoryComboBox,hlWorkingDirectory,rltFile);

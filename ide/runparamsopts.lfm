@@ -77,14 +77,14 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         end
         object CmdLineParametersGroupBox: TGroupBox
           Left = 6
-          Height = 151
+          Height = 225
           Top = 67
           Width = 757
           Align = alTop
           AutoSize = True
           BorderSpacing.Around = 6
           Caption = 'CmdLineParametersGroupBox'
-          ClientHeight = 131
+          ClientHeight = 205
           ClientWidth = 753
           TabOrder = 1
           object CmdLineParametersComboBox: TComboBox
@@ -258,6 +258,58 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
             BorderSpacing.Left = 6
             BorderSpacing.Right = 6
             Caption = 'lbStdErr'
+          end
+          object rgConsole: TRadioGroup
+            AnchorSideLeft.Control = CmdLineParametersGroupBox
+            AnchorSideTop.Control = RedirectWarnLabel
+            AnchorSideTop.Side = asrBottom
+            Left = 6
+            Height = 68
+            Top = 131
+            Width = 200
+            AutoFill = True
+            AutoSize = True
+            BorderSpacing.Left = 6
+            BorderSpacing.Top = 3
+            BorderSpacing.Bottom = 6
+            Caption = 'rgConsole'
+            ChildSizing.LeftRightSpacing = 6
+            ChildSizing.TopBottomSpacing = 6
+            ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+            ChildSizing.EnlargeVertical = crsHomogenousChildResize
+            ChildSizing.ShrinkHorizontal = crsScaleChilds
+            ChildSizing.ShrinkVertical = crsScaleChilds
+            ChildSizing.Layout = cclLeftToRightThenTopToBottom
+            ChildSizing.ControlsPerLine = 1
+            ClientHeight = 48
+            ClientWidth = 196
+            ItemIndex = 0
+            Items.Strings = (
+              'rgConsoleOs'
+              'rgConsoleIde'
+            )
+            OnSelectionChanged = rgConsoleSelectionChanged
+            TabOrder = 7
+          end
+          object cbConsole: TComboBox
+            AnchorSideLeft.Control = rgConsole
+            AnchorSideLeft.Side = asrBottom
+            AnchorSideRight.Control = CmdLineParametersGroupBox
+            AnchorSideRight.Side = asrBottom
+            AnchorSideBottom.Control = rgConsole
+            AnchorSideBottom.Side = asrBottom
+            Left = 212
+            Height = 23
+            Top = 170
+            Width = 535
+            Anchors = [akLeft, akRight, akBottom]
+            BorderSpacing.Left = 6
+            BorderSpacing.Right = 6
+            BorderSpacing.Bottom = 6
+            ItemHeight = 15
+            Style = csDropDownList
+            TabOrder = 8
+            Visible = False
           end
         end
         object UseLaunchingApplicationGroupBox: TGroupBox

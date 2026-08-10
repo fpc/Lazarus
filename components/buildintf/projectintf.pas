@@ -351,6 +351,32 @@ type
 
   TRunParamsRedirectMode = (rprOff, rprOverwrite, rprAppend);
 
+  (* Where the debuggee's console I/O appears. rpcmIdeConsole is capture: the
+     streams are taken into the IDE rather than served by a console of the OS.
+     What this does not say is which console then displays them -- that is
+     ConsoleId below, and it is the only part a registered provider names.
+
+     Two values today. When inherit-versus-new console stops being a hidden
+     backend property, rpcmOsConsole splits in two and this gains a value
+     rather than changing shape. *)
+  TRunParamsConsoleMode = (rpcmOsConsole, rpcmIdeConsole);
+
+const
+  (* Which console serves, once rpcmIdeConsole says it is not the OS. Held as a
+     string, not an enum, because terminal providers are to be registered at run
+     time and identified by an id; the built-in window is merely the first of
+     them.
+
+     An empty string means "follow the IDE-wide default" rather than any
+     particular console, the same sentinel role '' plays for
+     TProjectDebugLink.DebuggerBackend. Keeping it matters: without it every
+     project saved by this version would record an explicit choice and would go
+     on ignoring the IDE-wide setting once that setting exists. *)
+  RunParamsConsoleIdDefault   = '';
+  RunParamsConsoleIdIdeWindow = 'IDEConsole';
+
+type
+
   { TAbstractRunParamsOptionsMode }
 
   TAbstractRunParamsOptionsMode = class(TPersistent)
@@ -383,6 +409,8 @@ type
     FFileNameStdIn:  String;
     FFileNameStdOut: String;
     FFileNameStdErr: String;
+    FConsoleMode:    TRunParamsConsoleMode;
+    FIdeDbgConsoleId:      String;
 
     procedure AssignTo(Dest: TPersistent); override;
   public
@@ -424,6 +452,9 @@ type
     property FileNameStdIn:  String read FFileNameStdIn  write FFileNameStdIn;
     property FileNameStdOut: String read FFileNameStdOut write FFileNameStdOut;
     property FileNameStdErr: String read FFileNameStdErr write FFileNameStdErr;
+    // Console
+    property ConsoleMode: TRunParamsConsoleMode read FConsoleMode write FConsoleMode;
+    property IdeDbgConsoleId: String read FIdeDbgConsoleId write FIdeDbgConsoleId;
   end;
 
   { TAbstractRunParamsOptions }
@@ -943,6 +974,9 @@ begin
     ADest.FFileNameStdIn  := FFileNameStdIn;
     ADest.FFileNameStdOut := FFileNameStdOut;
     ADest.FFileNameStdErr := FFileNameStdErr;
+    // Console
+    ADest.FConsoleMode    := FConsoleMode;
+    ADest.FIdeDbgConsoleId      := FIdeDbgConsoleId;
 
     ADest.UserOverrides.Assign(UserOverrides);
     ADest.IncludeSystemVariables := IncludeSystemVariables;
@@ -974,6 +1008,9 @@ begin
   FFileNameStdIn  := '';
   FFileNameStdOut := '';
   FFileNameStdErr := '';
+  // Console
+  FConsoleMode    := rpcmOsConsole;
+  FIdeDbgConsoleId      := RunParamsConsoleIdDefault;
 
   // environment options
   fUserOverrides.Clear;

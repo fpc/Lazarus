@@ -50,6 +50,7 @@ type
 
   TPseudoConsoleDlg = class(TDebuggerDlg)
     cbAutoOpenConsole: TComboBox;
+    cbLocalEcho: TCheckBox;
     CheckGroupRight: TCheckGroup;
     GroupBoxRight: TGroupBox;
     lbAutoOpenConsole: TLabel;
@@ -119,11 +120,30 @@ var
 
 procedure TPseudoConsoleDlg.Memo1UTF8KeyPress(Sender: TObject;
   var UTF8Key: TUTF8Char);
+var
+  KeyText: String;
 begin
-  DebugBoss.DoSendConsoleInput(Utf8Key);
+  KeyText := Utf8Key;
+  (* Return arrives as a bare CR. A terminal driver translates that on the way
+     to the program reading it, but where the input reaches the debuggee down a
+     pipe there is no driver to do so, and the RTL's ReadLn will not return
+     until it has seen the whole CRLF. *)
+  {$IFDEF MSWINDOWS}
+  if KeyText = #13 then
+    KeyText := #13#10;
+  {$ENDIF}
+  (* Echo likewise belongs to the terminal. A pty does it in the driver and the
+     character arrives back through the output stream; a pipe returns nothing,
+     so the window has to show it. Routed through AddOutput rather than appended
+     to the memo, so that echoed text gets the same view and decorations as the
+     program's own output and shares its partial-line state -- typing halfway
+     through an unterminated line then continues that line rather than starting
+     a new one. *)
+  if cbLocalEcho.Checked then
+    AddOutput(KeyText);
+  DebugBoss.DoSendConsoleInput(KeyText);
   Utf8Key := '';
 end;
-
 
 procedure TPseudoConsoleDlg.PairSplitterRawRightResize(Sender: TObject);
 
@@ -245,6 +265,7 @@ begin
   RadioGroupRight.Items[3] := lisHexASCII;
   GroupBoxRight.Caption := lisLineLimit;
   TabSheetRaw.Caption := lisRawOutput;
+  cbLocalEcho.Caption := lisConsoleLocalEcho;
 
   lbAutoOpenConsole.Caption := DbgWatchColorAutoOpenConsoleWindowLinu;
   cbAutoOpenConsole.AddItem(DbgWatchColorNever, nil);

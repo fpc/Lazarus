@@ -2793,6 +2793,12 @@ resourcestring
   dlgRedirInputEnd  = 'From file (at EOF)';
 
   dlgRedirStdNotSupported = 'Current debugger does not support redirection.';
+  dlgConsoleGroup = 'Console';
+  dlgConsoleModeOs = 'OS console';
+  dlgConsoleModeIde = 'Internal IDE consoles';
+  dlgConsoleUseIdeDefault = '-- Use IDE default console --';
+  dlgConsoleIdeWindow = 'IDE internal window';
+  dlgConsoleUnknown = 'Unknown console "%s"';
   dlgRunOSystemVariables = 'System variables';
   dlgRunOUserOverrides = 'User overrides';
   dlgIncludeSystemVariables = 'Include system variables';
