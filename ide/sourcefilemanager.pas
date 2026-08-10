@@ -6387,7 +6387,7 @@ begin
   Assert(Assigned(MessagesView), 'MessagesView=Nil');
   MessagesView.Clear;
   if EnvironmentGuiOpts.MsgViewShowAutomatically <> mwsaNever then
-    MainIDE.DoShowMessagesView(false);
+    MainIDE.DoShowMessagesView;
   SourceEditorManager.ClearErrorLines;
 
   // parse the LFM file and the pascal unit

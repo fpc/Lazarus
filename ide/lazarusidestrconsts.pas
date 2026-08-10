@@ -1269,7 +1269,7 @@ resourcestring
   lisShowIcons = 'Show Icons';
   dlgAnIconForErrorWarningHintIsShown = 'An icon for error/warning/hint is shown '
     +'in front of a message. The same icon shows in source editor gutter in any case.';
-  lisFocusAtCompilation = 'Focus at compilation';
+  lisFocusWhenGettingMessages = 'Focus when getting messages';
   lisAlwaysDrawSelectedItemsFocused = 'Always draw selected items focused';
   lisDrawTheSelectionFocusedEvenIfTheMessagesWindowHasN = 'Draw the selection '
     +'focused even if the Messages window has no focus. Use this if your '
@@ -1277,10 +1277,10 @@ resourcestring
   lisWrapLongMessageLinesOtherwiseTheyAreClippedAndAHi = 'Wrap long message '
     +'lines into several rows. Otherwise they are clipped and a hint shows the '
     +'full text.';
-  lisShowAutomatically = 'Show automatically';
-  lisShowAutoWhenCompiling = 'When compiling';
-  lisShowAutoOnlyWhenErrorsOccur = 'Only when errors occur';
-  lisShowAutoNever = 'Never';
+  lisOpenAutomatically = 'Open automatically';
+  lisOpenAutoWhenCompiling = 'When getting messages';
+  lisOpenAutoOnlyWhenErrorsOccur = 'Only when errors occur';
+  lisOpenAutoNever = 'Never';
   lisMustBeOpenedManually = 'Must be opened manually from View -> Messages.';
   lisEditorColors = 'Editor Colors';
   lisPastelColors = 'Pastel Colors';

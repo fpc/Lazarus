@@ -641,7 +641,7 @@ function TExternalUserTools.DoRun(Index: integer; ShowAbort: Boolean): TModalRes
 begin
   SourceEditorManagerIntf.ClearErrorLines;
   if EnvironmentGuiOpts.MsgViewShowAutomatically = mwsaCompiling then
-    MainIDE.DoShowMessagesView(false);
+    MainIDE.DoShowMessagesView;
   Result:=Run(Index,ShowAbort);
   LazarusIDE.DoCheckFilesOnDisk;
 end;

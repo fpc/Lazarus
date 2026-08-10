@@ -49,7 +49,7 @@ type
 
   TMsgWndOptionsFrame = class(TAbstractIDEOptionsEditor)
     cbShowAutomatically: TComboBox;
-    lbShowAutomatically: TLabel;
+    lbOpenAutomatically: TLabel;
     lbWarning: TLabel;
     OptionsBevel: TDividerBevel;
     MWCtrlLeftActionComboBox: TComboBox;
@@ -57,7 +57,7 @@ type
     MsgColorListBox: TColorListBox;
     MsgColorGroupBox: TGroupBox;
     cbAlwaysDrawFocused: TCheckBox;
-    cbFocusAtCompilation: TCheckBox;
+    cbFocusWhenGettingMessages: TCheckBox;
     MWSetPastelColorsButton: TBitBtn;
     cbShowFPCLinesCompiled: TCheckBox;
     cbStayOnTop: TCheckBox;
@@ -140,7 +140,6 @@ var
   SA: TMsgWndShowAutomatically;
 begin
   SA := TMsgWndShowAutomatically((Sender as TComboBox).ItemIndex);
-  cbFocusAtCompilation.Enabled := SA = mwsaCompiling;
   lbWarning.Visible := SA = mwsaNever;
 end;
 
@@ -257,12 +256,12 @@ begin
   cbWordWrap.Hint := lisWrapLongMessageLinesOtherwiseTheyAreClippedAndAHi;
   lbMaxProcs.Caption := Format(lisMaximumParallelProcesses0MeansDefault,
                                [IntToStr(DefaultMaxProcessCount)]);
-  lbShowAutomatically.Caption := lisShowAutomatically;
-  cbShowAutomatically.Items.Add(lisShowAutoWhenCompiling);
-  cbShowAutomatically.Items.Add(lisShowAutoOnlyWhenErrorsOccur);
-  cbShowAutomatically.Items.Add(lisShowAutoNever);
+  lbOpenAutomatically.Caption := lisOpenAutomatically;
+  cbShowAutomatically.Items.Add(lisOpenAutoWhenCompiling);
+  cbShowAutomatically.Items.Add(lisOpenAutoOnlyWhenErrorsOccur);
+  cbShowAutomatically.Items.Add(lisOpenAutoNever);
   cbShowAutomatically.ItemIndex := 0;
-  cbFocusAtCompilation.Caption := lisFocusAtCompilation;
+  cbFocusWhenGettingMessages.Caption := lisFocusWhenGettingMessages;
   lbWarning.Caption := lisMustBeOpenedManually;
 end;
 
@@ -298,7 +297,7 @@ begin
     cbShowIcons.Checked := ShowMessagesIcons;
     cbAlwaysDrawFocused.Checked := MsgViewAlwaysDrawFocused;
     cbWordWrap.Checked := MsgViewWordWrap;
-    cbFocusAtCompilation.Checked := MsgViewFocus;
+    cbFocusWhenGettingMessages.Checked := MsgViewFocus;
     cbShowAutomatically.ItemIndex := Integer(MsgViewShowAutomatically);
     cbShowAutomaticallyChange(cbShowAutomatically); // Update the warning.
   end;
@@ -326,7 +325,7 @@ begin
     ShowMessagesIcons := cbShowIcons.Checked;
     MsgViewAlwaysDrawFocused := cbAlwaysDrawFocused.Checked;
     MsgViewWordWrap := cbWordWrap.Checked;
-    MsgViewFocus := cbFocusAtCompilation.Checked;
+    MsgViewFocus := cbFocusWhenGettingMessages.Checked;
     MsgViewShowAutomatically := TMsgWndShowAutomatically(cbShowAutomatically.ItemIndex);
   end;
   EnvOpt.MsgViewShowFPCMsgLinesCompiled := cbShowFPCLinesCompiled.Checked;
