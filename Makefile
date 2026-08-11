@@ -3175,7 +3175,7 @@ help:
 	@$(ECHO) "   git pull"
 	@$(ECHO) "   make clean all useride"
 	@$(ECHO)
-	@$(ECHO) " Clean up:"
+	@$(ECHO) " Clean up (beware, this action will irreversibly discard local source modifications):"
 	@$(ECHO) "   git restore ."
 	@$(ECHO) "   make distclean"
 	@$(ECHO)
