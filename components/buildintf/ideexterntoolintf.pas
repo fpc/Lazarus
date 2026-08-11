@@ -629,9 +629,12 @@ type
     function Count: integer;
     procedure Execute; virtual;
     procedure WaitForExit; virtual;
-    procedure Terminate; virtual;
+    procedure Terminate; virtual; // terminate all tools, including the running ones
+    procedure TerminateNotStarted; virtual; // terminate only the tools which have not yet started
     function AllStopped: boolean;
     property Items[Index: integer]: TAbstractExternalTool read GetItems; default;
+    // AbortIfOneFails: when a tool fails, start no further tools of this group.
+    // Tools which are already running are left alone, so they can finish.
     property AbortIfOneFails: boolean read FAbortIfOneFails write FAbortIfOneFails;
     procedure ToolExited(Tool: TAbstractExternalTool); virtual;
     property ErrorMessage: string read FErrorMessage write FErrorMessage;
@@ -970,6 +973,21 @@ begin
       Items[i].Terminate;
 end;
 
+procedure TExternalToolGroup.TerminateNotStarted;
+var
+  i: Integer;
+  Tool: TAbstractExternalTool;
+begin
+  for i:=Count-1 downto 0 do begin
+    if i>=Count then continue;
+    Tool:=Items[i];
+    if ord(Tool.Stage)>=ord(etsStarting) then continue; // already started -> let it finish
+    // Note: the tool must be terminated, not merely skipped, otherwise it stays
+    // in etsWaitingForStart and WaitForExit would wait forever.
+    Tool.Terminate;
+  end;
+end;
+
 function TExternalToolGroup.AllStopped: boolean;
 var
   i: Integer;
@@ -1001,7 +1019,9 @@ begin
     if ErrorMessage='' then
       ErrorMessage:=Tool.ErrorMessage;
     if AbortIfOneFails then
-      Terminate;
+      // do not kill the already running tools, let them finish,
+      // but do not start any further tool
+      TerminateNotStarted;
   end;
 end;
 

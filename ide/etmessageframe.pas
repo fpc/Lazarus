@@ -243,6 +243,13 @@ type
     FStartSelectionView: TLMsgWndView;
     // View/Line of the text cursor. Typically the last selected line but not necessarily.
     FTextCursorPoint: TMsgPoint;
+    // A tool has failed: the error was made visible, stop auto scrolling.
+    // The user can scroll themselves.
+    fAutoScrollStopped: boolean;
+    fFailedView: TLMsgWndView; // the first view whose tool failed
+    // True if the user selected a message, false if there is no selection or
+    // the message was selected automatically (e.g. the first error).
+    fUserSelectedMsg: boolean;
     FHintLast: TMsgPoint;
     FLastSearchStart: TMsgPoint;
     FSearchText: string;
@@ -255,6 +262,7 @@ type
     procedure CopySelectedToClipboard(OnlyFilename: boolean);
     procedure CreateSourceMark(MsgLine: TMessageLine; aSynEdit: TSynEdit);
     procedure CreateSourceMarks(View: TLMsgWndView; StartLineNumber: Integer);
+    procedure CheckFirstFailedView;
     procedure DoAllViewsStopped;
     function GetActiveFilter: TLMsgViewFilter; inline;
     function GetHeaderBackground(aToolState: TLMVToolState): TColor;
@@ -1509,6 +1517,7 @@ begin
     EndUpdate;
   end;
   UpdateScrollBar(true);
+  CheckFirstFailedView;
 end;
 
 function TMessagesCtrl.FetchNewMessages(View: TLMsgWndView): boolean;
@@ -1532,6 +1541,8 @@ begin
   Invalidate;
 
   // auto scroll
+  if fAutoScrollStopped then
+    exit; // a tool has failed -> keep the error visible, the user can scroll
   if FTextCursorPoint.View<>nil then
     exit; // user has selected a non progress line -> do not auto scroll
 
@@ -2038,6 +2049,39 @@ begin
     CreateSourceMark(View.Lines[i],nil);
 end;
 
+procedure TMessagesCtrl.CheckFirstFailedView;
+// If a tool has stopped with an error, show its first error and stop auto
+// scrolling. The other tools are still running and their messages must no
+// longer scroll the error out of sight. The user can scroll themselves.
+var
+  i: Integer;
+  View: TLMsgWndView;
+  StartP, FoundP: TMsgPoint;
+begin
+  if fAutoScrollStopped then exit;
+  for i:=0 to ViewCount-1 do begin
+    View:=Views[i];
+    if View.ToolState<>lmvtsFailed then continue;
+    // search the first error of this view, prefer one with a source position
+    StartP.View:=View;
+    StartP.LineNumber:=-1;
+    if (not SearchNextUrgent(StartP,false,true,mluError,true,FoundP))
+    or (FoundP.View<>View) then
+      if (not SearchNextUrgent(StartP,false,true,mluError,false,FoundP))
+      or (FoundP.View<>View) then
+        // no error message (e.g. the tool was aborted by the user) or the
+        // messages have not yet been applied -> check again next time
+        continue;
+    fAutoScrollStopped:=true;
+    fFailedView:=View;
+    SelectOne(FoundP);
+    fUserSelectedMsg:=false; // selected automatically, not by the user
+    if mcoAutoOpenFirstError in Options then
+      OpenSelection;
+    exit;
+  end;
+end;
+
 procedure TMessagesCtrl.DoAllViewsStopped;
 {off $DEFINE VerboseMsgFrame}
 
@@ -2081,19 +2125,19 @@ procedure TMessagesCtrl.DoAllViewsStopped;
   end;
   {$ENDIF}
 
-var
-  CurLine: TMessageLine;
 begin
   if Assigned(OnAllViewsStopped) then
     OnAllViewsStopped(Self);
-  if mcoAutoOpenFirstError in Options then
+  // scroll to and select the first error with source position,
+  // except when the user has selected a message
+  if not fUserSelectedMsg then
   begin
-    CurLine:=GetSelectedMsg;
-    if (CurLine<>nil) and (CurLine.Urgency>=mluError)
-    and CurLine.HasSourcePosition then
-      exit;
     if SelectFirstUrgentMessage(mluError,true) then
-      OpenSelection;
+    begin
+      fUserSelectedMsg:=false; // selected automatically, not by the user
+      if mcoAutoOpenFirstError in Options then
+        OpenSelection;
+    end;
   end;
   {$IFDEF VerboseMsgFrame}
   DbgViews;
@@ -2120,8 +2164,14 @@ begin
     begin
       if fLastSearchStart.View=AComponent then
         fLastSearchStart.View:=nil;
-      if FTextCursorPoint.View=AComponent then
+      if FTextCursorPoint.View=AComponent then begin
         FTextCursorPoint.View:=nil;
+        fUserSelectedMsg:=false;
+      end;
+      if fFailedView=AComponent then begin
+        fFailedView:=nil;
+        fAutoScrollStopped:=false;
+      end;
       if fHeaderHintView=AComponent then begin
         fHeaderHintView:=nil;
         fHasHeaderHint:=false;
@@ -3344,6 +3394,7 @@ var
     CurView.ExtendSelection(LineNumber);
     FTextCursorPoint.View:=CurView;
     FTextCursorPoint.LineNumber:=LineNumber;
+    fUserSelectedMsg:=true;
   end;
 
   procedure SelFromBeginningToLine;
@@ -3501,6 +3552,7 @@ begin
   if View=nil then exit;
   FTextCursorPoint.View:=View;
   FTextCursorPoint.LineNumber:=LineNumber;
+  fUserSelectedMsg:=true;
   ScrollToLine(FTextCursorPoint, True);
   Invalidate;
 end;
@@ -3516,6 +3568,7 @@ procedure TMessagesCtrl.ToggleSelectedLine(View: TLMsgWndView; LineNumber: integ
 begin
   if View=nil then exit;
   FTextCursorPoint.View:=View;
+  fUserSelectedMsg:=true;
   View.ToggleSelectedLine(LineNumber);
   Invalidate;
 end;
@@ -3540,6 +3593,8 @@ begin
   ClearSelections;
   FTextCursorPoint.View:=View;
   FTextCursorPoint.LineNumber:=LineNumber;
+  // the automatic callers reset this
+  fUserSelectedMsg:=true;
   FStartSelectionView:=View;
   View.SelLineFirst:=LineNumber;
   ScrollToLine(FTextCursorPoint,true);
@@ -3551,6 +3606,7 @@ begin
     SelectOne(TLMsgWndView(Msg.Lines.Owner), Msg.Index)
   else begin
     FTextCursorPoint.View:=nil;
+    fUserSelectedMsg:=false;
     ClearSelections;
   end;
 end;
@@ -4048,6 +4104,10 @@ var
   i: Integer;
   View: TLMsgWndView;
 begin
+  // a new run starts -> auto scroll again
+  fAutoScrollStopped:=false;
+  fFailedView:=nil;
+  fUserSelectedMsg:=false;
   if OnlyFinished then begin
     for i:=ViewCount-1 downto 0 do begin
       if i>=ViewCount then continue;
@@ -4071,8 +4131,14 @@ begin
   View.OnChanged:=nil;
   if fLastSearchStart.View=View then
     fLastSearchStart.View:=nil;
-  if FTextCursorPoint.View=View then
+  if FTextCursorPoint.View=View then begin
     FTextCursorPoint.View:=nil;
+    fUserSelectedMsg:=false;
+  end;
+  if fFailedView=View then begin
+    fFailedView:=nil;
+    fAutoScrollStopped:=false;
+  end;
   UpdateScrollBar(true);
   Invalidate;
 end;
