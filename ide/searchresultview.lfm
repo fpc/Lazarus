@@ -153,6 +153,7 @@ object SearchResultsView: TSearchResultsView
     Height = 249
     Top = 26
     Width = 722
+    TabStop = False
     Align = alClient
     MultiLine = True
     TabOrder = 1
