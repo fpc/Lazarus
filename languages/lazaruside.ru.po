@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-08-10 22:50+0300\n"
+"PO-Revision-Date: 2026-08-11 22:31+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -9508,6 +9508,11 @@ msgstr ", ошибок: %s"
 #: lazarusidestrconsts.liserrorsavingform
 msgid "Error saving form"
 msgstr "Ошибка сохранения формы"
+
+#: lazarusidestrconsts.liserrorscount
+#, object-pascal-format
+msgid "Errors: %s"
+msgstr "Ошибок: %s"
 
 #: lazarusidestrconsts.liserrorsettingthenameofacomponentto
 #, object-pascal-format

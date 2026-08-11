@@ -9653,6 +9653,11 @@ msgstr ", Erros: %s"
 msgid "Error saving form"
 msgstr "Erro ao salvar formulário"
 
+#: lazarusidestrconsts.liserrorscount
+#, object-pascal-format
+msgid "Errors: %s"
+msgstr ""
+
 #: lazarusidestrconsts.liserrorsettingthenameofacomponentto
 #, object-pascal-format
 msgid "Error setting the name of a component %s to %s"
