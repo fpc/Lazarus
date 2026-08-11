@@ -8434,7 +8434,7 @@ begin
   if Assigned(FPageLabel) then
   begin
     bs:=ReplaceAmpersandsWithUnderscores(Avalue);
-    FPageLabel^.set_markup_with_mnemonic(PChar(bs));
+    FPageLabel^.set_text_with_mnemonic(PChar(bs));
   end;
 end;
 
@@ -8622,7 +8622,7 @@ begin
   FCloseButton := nil;
 
   if Params.Caption <> '' then
-    FPageLabel := TGtkLabel.new(PChar(Params.Caption))
+    FPageLabel := TGtkLabel.new(PChar(ReplaceAmpersandsWithUnderscores(Params.Caption)))
   else
     FPageLabel := TGtkLabel.new(' ');
   FPageLabel^.set_use_underline(True);
