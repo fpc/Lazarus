@@ -786,9 +786,24 @@ begin
   Delete(ACodeBytes, length(ACodeBytes), 1);
   ACode := FormatInstruction(instr);
 
-  // Todo: Indicate whether currrent instruction has a destination code address
-  //       call jump branch(?)
-  //       Return information in AnInfo
+  if instr.OpCode in [A_CALL, A_RCALL, A_JMP, A_RJMP, A_BR] then
+  begin
+    if instr.OpCode in [A_CALL, A_JMP] then
+    begin
+      AnInfo.InstrType := itJumpAbs;
+      AnInfo.InstrTargetOffs := instr.Oper[1];
+    end
+    else
+    begin
+      AnInfo.InstrType := itJump;
+      AnInfo.InstrTargetOffs := instr.Oper[1] + 2;
+    end;
+  end
+  else
+  begin
+    AnInfo.InstrType := itAny;
+    AnInfo.InstrTargetOffs := 0;
+  end;
 end;
 
 procedure TAvrAsmDecoder.Disassemble(var AAddress: Pointer; out

@@ -2273,11 +2273,14 @@ var
     AnEntry.TargetName := '';
     AnEntry.TargetFile := '';
     AnEntry.TargetLine := 0;
-    if AnInfo.InstrType = itJump then begin
+    if AnInfo.InstrType in [itJump, itJumpAbs] then begin
       AnEntry.IsJump := True;
-      {$PUSH}{$R-}{$Q-}
-      AnEntry.TargetAddr := ALineAddr + AnInfo.InstrTargetOffs;
-      {$POP}
+      if AnInfo.InstrType = itJump then
+        {$PUSH}{$R-}{$Q-}
+        AnEntry.TargetAddr := ALineAddr + AnInfo.InstrTargetOffs
+        {$POP}
+      else
+        AnEntry.TargetAddr := AnInfo.InstrTargetOffs;
       Sym := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.FindProcSymbol(AnEntry.TargetAddr);
       if Sym <> nil then begin
         AnEntry.TargetName := Sym.Name;
@@ -2358,7 +2361,7 @@ begin
 
          tmpPointer := TDBGPtr(@CodeBin[bufOffset]) + TDBGPtr(sz) - TDBGPtr(bytesDisassembled);
          p := pointer(tmpPointer);
-         ADisassembler.ReverseDisassemble(p, ADump, AStatement); // give statement before pointer p, pointer p points to decoded instruction on return
+         ADisassembler.ReverseDisassemble(p, ADump, AStatement, AnInfo); // give statement before pointer p, pointer p points to decoded instruction on return
          prevInstructionSize := tmpPointer - PtrUInt(p);
          bytesDisassembled := bytesDisassembled + prevInstructionSize;
          DebugLn(DBG_VERBOSE, format('Disassembled: [%.8X:  %s] %s',[tmpAddr, ADump, Astatement]));
