@@ -1,0 +1,248 @@
+{ Declarations for Windows meta files
+
+  Infos taken from
+  - http://msdn.microsoft.com/en-us/library/cc250370.aspx
+  - http://wvware.sourceforge.net/caolan/ora-wmf.html
+  - http://www.symantec.com/avcenter/reference/inside.the.windows.meta.file.format.pdf
+}
+
+unit lmfWMF;
+
+{$mode objfpc}{$H+}
+
+interface
+
+uses
+  Classes, SysUtils;
+
+const
+  // WMF Record types
+  META_EOF = $0000;
+  META_REALIZEPALETTE = $0035;
+  META_SETPALENTRIES = $0037;
+  META_SETBKMODE = $0102;
+  META_SETMAPMODE = $0103;
+  META_SETROP2 = $0104;
+  META_SETRELABS = $0105;
+  META_SETPOLYFILLMODE = $0106;
+  META_SETSTRETCHBLTMODE = $0107;
+  META_SETTEXTCHAREXTRA = $0108;
+  META_RESTOREDC = $0127;
+  META_RESIZEPALETTE = $0139;
+  META_DIBCREATEPATTERNBRUSH = $0142;
+  META_SETLAYOUT = $0149;
+  META_SETBKCOLOR = $0201;
+  META_SETTEXTCOLOR = $0209;
+  META_OFFSETVIEWPORTORG = $0211;
+  META_LINETO = $0213;
+  META_MOVETO = $0214;
+  META_OFFSETCLIPRGN = $0220;
+  META_FILLREGION = $0228;
+  META_SETMAPPERFLAGS = $0231;
+  META_SELECTPALETTE = $0234;
+  META_POLYGON = $0324;
+  META_POLYLINE = $0325;
+  META_SETTEXTJUSTIFICATION = $020A;
+  META_SETWINDOWORG = $020B;
+  META_SETWINDOWEXT = $020C;
+  META_SETVIEWPORTORG = $020D;
+  META_SETVIEWPORTEXT = $020E;
+  META_OFFSETWINDOWORG = $020F;
+  META_SCALEWINDOWEXT = $0410;
+  META_SCALEVIEWPORTEXT = $0412;
+  META_EXCLUDECLIPRECT = $0415;
+  META_INTERSECTCLIPRECT = $0416;
+  META_ELLIPSE = $0418;
+  META_FLOODFILL = $0419;
+  META_FRAMEREGION = $0429;
+  META_ANIMATEPALETTE = $0436;
+  META_TEXTOUT = $0521;
+  META_POLYPOLYGON = $0538;
+  META_EXTFLOODFILL = $0548;
+  META_RECTANGLE = $041B;
+  META_SETPIXEL = $041F;
+  META_ROUNDRECT = $061C;
+  META_PATBLT = $061D;
+
+  META_SAVEDC = $001E;
+  META_PIE = $081A;
+  META_STRETCHBLT = $0B23;
+  META_ESCAPE = $0626;
+  META_INVERTREGION = $012A;
+  META_PAINTREGION = $012B;
+  META_SELECTCLIPREGION = $012C;
+  META_SELECTOBJECT = $012D;
+  META_SETTEXTALIGN = $012E;
+  META_ARC = $0817;
+  META_CHORD = $0830;
+  META_BITBLT = $0922;
+  META_EXTTEXTOUT = $0a32;
+  META_SETDIBTODEV = $0d33;
+  META_DIBBITBLT = $0940;
+  META_DIBSTRETCHBLT = $0b41;
+  META_STRETCHDIB = $0f43;
+  META_DELETEOBJECT = $01F0;
+  META_CREATEPALETTE = $00F7;
+  META_CREATEPATTERNBRUSH = $01F9;
+  META_CREATEPENINDIRECT = $02FA;
+  META_CREATEFONTINDIRECT = $02FB;
+  META_CREATEBRUSHINDIRECT = $02FC;
+  META_CREATEREGION = $06FF;
+
+  // WMF Magic number in Placeable Meta Header
+  WMF_MAGIC_NUMBER = $9AC6CDD7;
+
+type
+  TWMFHeader = packed record
+    FileType: Word;        // Type of metafile (0=memory, 1=disk)
+    HeaderSize: Word;      // Size of header in WORDS (always 9)
+    Version: Word;         // Version of Microsoft Windows used
+    FileSize: DWord;       // Total size of the metafile in WORDs
+    NumOfObjects: Word;    // Number of objects in the file
+    MaxRecordSize: DWord;  // The size of largest record in WORDs
+    NumOfParams: Word;     // Not Used (always 0)
+  end;
+  PWMFHeader = ^TWMFHeader;
+
+ { Placeable Metafiles (file extension .APM) were created by Aldus Corporation
+   as a non-standard way of specifying how a metafile is mapped and scaled on an
+   output device. Placeable metafiles are quite wide-spread, but not directly
+   supported by the Windows API.
+   Placeable Metafiles are limited to 64K in length.
+   Each placeable metafile begins with a 22-byte header followed by a standard
+   metafile. }
+  TPlaceableMetaHeader = packed record
+    Key: DWord;               // Magic number (always 9AC6CDD7h)
+    Handle: Word;             // Metafile HANDLE number (always 0)
+    Left: SmallInt;           // Left coordinate in metafile units
+    Top: SmallInt;            // Top coordinate in metafile units
+    Right: SmallInt;          // Right coordinate in metafile units
+    Bottom: SmallInt;         // Bottom coordinate in metafile units
+    Inch: Word;               // Number of metafile units per inch
+    Reserved: DWord;          // Reserved (always 0)
+    Checksum: Word;           // Checksum value for previous 10 WORDs
+  end;
+  PPlaceableMetaHeader = ^TPlaceableMetaHeader;
+
+  TWMFRecord = packed record
+    Size: DWord;              // Total size of the record in WORDs
+    Func: Word;               // Function number (defined in WINDOWS.H)
+    // Parameters[]: Word;    // Parameter values passed to function - will be read separately
+  end;
+
+  TWMFColorRecord = packed record
+    ColorRED: Byte;
+    ColorGREEN: Byte;
+    ColorBLUE: Byte;
+    Reserved: Byte;
+  end;
+  PWMFColorRecord = ^TWMFColorRecord;
+
+  TWMFPenRecord = packed record
+    Style: Word;
+    Width: Word;
+    Ignored1: Word;
+    ColorRED: Byte;
+    ColorGREEN: Byte;
+    ColorBLUE: Byte;
+    Ignored2: Byte;
+  end;
+  PWMFPenRecord = ^TWMFPenRecord;
+
+  TWMFBrushRecord = packed record
+    Style: Word;
+    ColorRED: Byte;
+    ColorGREEN: Byte;
+    ColorBLUE: Byte;
+    Reserved: Byte;
+    // Brush hatch/pattern data of variable length follow
+    case integer of
+      0: (Hatch: Word);
+      // pattern not yet implemented here...
+  end;
+  PWMFBrushRecord = ^TWMFBrushRecord;
+
+  TWMFFontRecord = packed record
+    Height: SmallInt;    // signed int!
+    Width: SmallInt;
+    Escapement: SmallInt;
+    Orientation: SmallInt;
+    Weight: SmallInt;
+    Italic: Byte;
+    UnderLine: Byte;
+    Strikeout: Byte;
+    CharSet: Byte;
+    OutPrecision: Byte;
+    ClipPrecision: Byte;
+    Quality: Byte;
+    PitchAndFamily: byte;
+    FaceName: array[0..31] of AnsiChar;
+    // FaceName will be handled separately immediately afterwards.
+  end;
+  PWMFFontRecord = ^TWMFFontRecord;
+
+  TWMFPointRecord = packed record
+    Y, X: SmallInt;             // reverse order (y, x) as through-out wmf
+  end;
+  PWMFPointRecord = ^TWMFPointRecord;
+
+  TWMFPointXYRecord = packed record
+    X, Y: SmallInt;             // Regular order (x,y) as needed by polygons
+  end;
+  PWMFPointXYRecord = ^TWMFPointXYRecord;
+
+  TWMFLineRecord = packed record
+    NumPts: word;               // must be 2
+    P1: TWMFPointXYRecord;
+    P2: TWMFPointXYRecord;
+  end;
+
+  TWMFRectRecord = packed record
+    Bottom: SmallInt;
+    Right: SmallInt;
+    Top: SmallInt;
+    Left: SmallInt;
+  end;
+  PWMFRectRecord = ^TWMFRectRecord;
+
+  TWMFRoundRectRecord = packed record
+    RY: SmallInt;
+    RX: SmallInt;
+    Bottom: SmallInt;
+    Right: SmallInt;
+    Top: SmallInt;
+    Left: SmallInt;
+  end;
+  PWMFRoundRectRecord = ^TWMFRoundRectRecord;
+
+  TWMFArcRecord = packed record
+    YEndArc: SmallInt;        // y coordinate of end pt of radial line to arc end point
+    XEndArc: SmallInt;        // x coordinate of end pt of radial line to arc end point
+    YStartArc: SmallInt;      // y coordinate of end pt of radial line to arc start point
+    XStartArc: SmallInt;      // x coordinate of end pt of radial line to arc start point
+    Bottom: SmallInt;         // y coordinate of bottom of bounding rectangle
+    Right: SmallInt;          // x coordinate of right edge of bounding rectangle
+    Top: SmallInt;            // y coordinate of top of bounding rectangle
+    Left: SmallInt;           // x coordinate of left of bounding rectangle
+  end;
+  PWMFArcRecord = ^TWMFArcRecord;
+
+  TWMFSetPolyFillModeRecord = packed record
+    PolyFillMode: word;       // 1 (ALTERNATE) or 2 (WINDING)
+    Reserved: word;
+  end;
+
+  TWMFExtTextOutRecord = packed record
+    Y: SmallInt;
+    X: SmallInt;
+    Len: SmallInt;    // String length
+    Options: Word;
+    // Rectangle and text follow, plus optional inter-character spacings (Dx)
+  end;
+  PWMFExtTextOutRecord = ^TWMFExtTextOutRecord;
+
+
+implementation
+
+end.
+

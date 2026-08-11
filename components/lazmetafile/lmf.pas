@@ -10,14 +10,30 @@ uses
 
 type
   TlmfList = class;
+  TlmfImage = class;
 
-  TlmfImage=class(TGraphic)
+  TlmfWriter = class
+  public
+    function AddToObjTable(AItem: TComponent): Integer; virtual; abstract;
+    function FindInObjTable(AItem: TComponent): Integer; virtual; abstract;
+    function ScaleX(x: Double): Integer;  virtual; abstract;
+    function ScaleY(y: Double): Integer; virtual; abstract;
+    function ScaleSizeX(x: Double): Integer; virtual; abstract;
+    function ScaleSizeY(y: Double): Integer; virtual; abstract;
+    procedure WriteWMFRecord(AStream: TStream; AFunc: word; ASize: Integer); virtual; abstract; overload;
+    procedure WriteWMFRecord(AStream: TStream; AFunc: Word; const AParams; ASize: Integer); virtual; abstract; overload;
+    procedure WriteWMFParams(AStream: TStream; const AParams; ASize: Integer); virtual; abstract;
+    procedure WriteToStream(AStream: TStream; AImage: TlmfImage); virtual; abstract;
+  end;
+
+  TlmfImage = class(TGraphic)
   private
     forgX,forgY,
     fWidth,fHeight:integer;
     kx,ky:double;
     fList:TlmfList;
     fCrs:TCriticalSection;
+    fEnhanced: Boolean;
   protected
     procedure AssignTo(Dest:TPersistent);override;
     function GetWidth:integer;override;
@@ -28,7 +44,6 @@ type
     function GetTransparent: Boolean; override;
     procedure SetTransparent(Value: Boolean); override;
       //procedure Erase;override;
-
   public
     constructor Create;override;
     destructor Destroy;override;
@@ -40,15 +55,17 @@ type
     function ScaleX(ax: Integer): Integer;
     function ScaleY(ay:Integer): Integer;
 
+    procedure SaveToLMFStream(Stream: TStream);
     procedure SaveToStream(Stream: TStream); override;
     procedure LoadFromStream(Stream: TStream); override;
 
-    property List:TlmfList read fList;
+    property Enhanced: Boolean read FEnhanced write FEnhanced;  // Write WMF or EMF stream
+    property List: TlmfList read fList;
   end;
 
   TlmfList = class(TComponent)
   private
-    fWidth,fHeight:integer;
+    fWidth, fHeight:integer;
   public
     procedure GetChildren(Proc: TGetChildProc; {%H-}Root: TComponent); override;
     function GetChildOwner: TComponent; override;
@@ -104,8 +121,8 @@ type
 
     procedure GradientFill(const ARect: TRect; AStartColor, AEndColor: TColor; ADirection: TGradientDirection);
 
-    procedure TextOut (x,y:integer;const text:string); override; // already in fpcanvas
-    function TextExtent(const Text: string): TSize; override;
+    procedure TextOut(x, y: integer; const AText: string); override; // already in fpcanvas
+    function  TextExtent(const Text: string): TSize; override;
     procedure TextRect(ARect: TRect; X, Y: integer; const Text: string; const Style: TTextStyle); override;
 
     procedure Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); override; overload;
@@ -120,7 +137,7 @@ type
 implementation
 
 uses
-  lmfObj;
+  lmfObj, lmfReadWrite;
 
 constructor TlmfImage.Create;
 begin
@@ -251,6 +268,21 @@ begin
   Stream.WriteComponent(fList);
 end;
 
+procedure TlmfImage.SaveToLMFStream(Stream: TStream);
+var
+  writer: TlmfWriter;
+begin
+  if FEnhanced then
+    writer := TEMFWriter.Create
+  else
+    writer := TWMFWriter.Create;
+  try
+    writer.WriteToStream(Stream, self);
+  finally
+    writer.Free;
+  end;
+end;
+
 procedure TlmfImage.LoadFromStream(Stream: TStream);
 begin
   Stream.ReadComponent(fList);
@@ -317,7 +349,7 @@ end;
 
 procedure TlmfCanvas.DoMoveTo(x, y: integer);
 var
-  item:TlmfMoveTo;
+  item: TlmfMoveTo;
 begin
   item := TlmfMoveTo.Create(x,y);
   fImage.fList.InsertComponent(item);
@@ -350,12 +382,12 @@ begin
   fImage.fList.InsertComponent(item);
 end;
 
-procedure TlmfCanvas.TextOut(x,y:integer;const text:string);
+procedure TlmfCanvas.TextOut(x, y: integer; const AText: string);
 var
-  item:TlmfText;
+  item: TlmfText;
 begin
-  RequiredState([csFontValid,csBrushValid]);
-  item := TlmfText.Create(x,y,text);
+  RequiredState([csFontValid, csBrushValid]);
+  item := TlmfText.Create(x, y, AText);
   fImage.fList.InsertComponent(item);
 end;
 
@@ -437,28 +469,46 @@ end;
 procedure TlmfCanvas.FillRect(const ARect: TRect);
 var
   item: TlmfObject;
+  ps: TPenStyle;
 begin
-  RequiredState([csBrushValid]);
-  item := TlmfFillRect.Create(ARect);
+  ps := Pen.Style;
+  Pen.Style := psClear;
+
+  RequiredState([csBrushValid, csPenValid]);
+  item := TlmfRect.Create(ARect);
   fImage.fList.InsertComponent(item);
+
+  Pen.Style := ps;
 end;
 
 procedure TlmfCanvas.Frame(const ARect: TRect);
 var
   item: TlmfObject;
+  bs: TBrushStyle;
 begin
-  RequiredState([csPenValid]);
-  item := TlmfFrame.Create(ARect);
+  bs := Brush.Style;
+  Brush.Style := bsClear;
+
+  RequiredState([csPenValid, csBrushValid]);
+  item := TlmfRect.Create(ARect);
   fImage.fList.InsertComponent(item);
+
+  Brush.Style := bs;
 end;
 
 procedure TlmfCanvas.FrameRect(const ARect: TRect);
 var
   item: TlmfObject;
+  ps: TPenStyle;
 begin
-  RequiredState([csBrushValid]);  // frame is drawn using current BRUSH settings
+  ps := Pen.Style;
+  Pen.Style := psClear;
+
+  RequiredState([csPenValid, csBrushValid]);
   item := TlmfFrameRect.Create(ARect);
   fImage.fList.InsertComponent(item);
+
+  Pen.Style := ps;
 end;
 
 procedure TlmfCanvas.Frame3D(var ARect: TRect; TopColor, BottomColor: TColor;

@@ -7,15 +7,16 @@ unit lmfObj;
 interface
 
 uses
-  Classes, SysUtils, Types,
-  FPImage, Graphics,
-  LCLType, LCLIntf,
-  lmf;
+  Classes, SysUtils, Types, Math,
+  FPImage, Graphics, //GraphMath,
+  LCLType, LCLIntf, LConvEncoding,
+  lmf, lmfWMF;
 
 type
   TlmfObject = class(TComponent)
   public
     procedure Action(fImage: TlmfImage; ACanvas:TCanvas); virtual; abstract;
+    procedure WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter; AStream: TStream); virtual;
   end;
 
   TlmfAnchor = class(TlmfObject)
@@ -31,11 +32,13 @@ type
   TlmfMoveTo = class(TlmfAnchor)
   public
     procedure Action(fImage:TlmfImage; ACanvas:TCanvas); override;
+    procedure WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter; AStream: TStream); override;
   end;
 
   TlmfLineTo = class(TlmfAnchor)
   public
     procedure Action(fImage:TlmfImage;ACanvas:TCanvas); override;
+    procedure WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter; AStream: TStream); override;
   end;
 
   TlmfLine = class(TlmfAnchor)
@@ -44,6 +47,7 @@ type
   public
     constructor Create(x1,y1,x2,y2:integer);overload;
     procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter; AStream: TStream); override;
   published
     property px1:integer read fEndPos.x write fEndpos.x;
     property py1:integer read fEndPos.y write fEndpos.y;
@@ -52,11 +56,10 @@ type
   TlmfText = class(TlmfAnchor)
   private
     fText: string;
-  protected
-    procedure DefineProperties(Filer: TFiler); override;
   public
     constructor Create(x,y:integer; const AText:string);overload;
     procedure Action(fImage:TlmfImage;ACanvas:TCanvas);override;
+    procedure WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter; AStream: TStream); override;
   published
     property Text:string read fText write fText;
   end;
@@ -73,6 +76,7 @@ type
     constructor Create(const ARect: TRect; x, y: Integer; const AText: String;
       const AStyle: TTextStyle); overload;
     procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter; AStream: TStream); override;
     property TextStyle: TTextStyle read fStyle write fStyle;
   end;
 
@@ -106,21 +110,12 @@ type
   TlmfRect=class(TlmfClip)
   public
     procedure Action(fImage: TlmfImage; ACanvas: TCanvas);override;
-  end;
-
-  TlmfFillRect=class(TlmfRect)
-  public
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
-  end;
-
-  TlmfFrame = class(TlmfRect)
-  public
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter; AStream: TStream); override;
   end;
 
   TlmfFrameRect = class(TlmfRect)
   public
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Action(fImage: TlmfImage; ACanvas: TCanvas);override;
   end;
 
   TlmfFrame3D = class(TlmfRect)
@@ -143,6 +138,7 @@ type
   public
     constructor Create(ARect: TRect; ARx, ARy: Integer); overload;
     procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter; AStream: TStream); override;
   published
     property Rx: Integer read frx write frx;
     property Ry: Integer read fry write fry;
@@ -162,9 +158,10 @@ type
     property Direction: TGradientDirection read fDirection write fDirection;
   end;
 
-  TlmfEllipse=class(TlmfClip)
+  TlmfEllipse = class(TlmfClip)
   public
     procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter; AStream: TStream); override;
   end;
 
   TlmfArc = class(TlmfEllipse)
@@ -174,6 +171,7 @@ type
   public
     constructor Create(ARect: TRect; AStartPt, AEndPt: TPoint); overload;
     procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter; AStream: TStream); override;
   published
     property StartPtX: Integer read fStartPt.X write fStartPt.X;
     property StartPtY: Integer read fStartPt.Y write fStartPt.Y;
@@ -184,48 +182,53 @@ type
   TlmfChord = class(TlmfArc)
   public
     procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter; AStream: TStream); override;
   end;
 
   TlmfPie = class(TlmfArc)
   public
     procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter; AStream: TStream); override;
   end;
 
   TlmfFont=class(TlmfObject)
   private
     fFont: TFont;
     fHeight, fRotation: integer;
-//    fName:string;
   public
-    constructor Create(AnOwner:TComponent);override;
-    destructor Destroy;override;
-    procedure Action(fImage:TlmfImage;ACanvas:TCanvas);override;
+    constructor Create(AnOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter; AStream: TStream); override;
   published
-    property Font:TFont read fFont write fFont;
-    property Height:integer read fHeight write fHeight;
-    property Rotation:integer read fRotation write fRotation;
+    property Font: TFont read fFont write fFont;
+    property Height: integer read fHeight write fHeight;
+    property Rotation: integer read fRotation write fRotation;
   end;
 
   TlmfBrush=class(TlmfObject)
   private
-    fBrush:TBrush;
+    fBrush: TBrush;
   public
     constructor Create(AnOwner:TComponent);override;
     destructor Destroy;override;
-    procedure Action({%H-}fImage:TlmfImage;ACanvas:TCanvas);override;
+    procedure Action({%H-}fImage: TlmfImage; ACanvas: TCanvas);override;
+    procedure WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter; AStream: TStream); override;
   published
     property Brush:TBrush read fBrush write fBrush;
   end;
 
   TlmfPen=class(TlmfObject)
   private
-    fPen:TPen;
+    fPen: TPen;
   public
-    constructor Create(AnOwner:TComponent);override;
-    destructor Destroy;override;
-    procedure Action(fImage:TlmfImage;ACanvas:TCanvas);override;
+    constructor Create(AnOwner:TComponent); override;
+    destructor Destroy; override;
+    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter;
+      AStream: TStream); override;
   published
-    property Pen:TPen read fPen write fPen;
+    property Pen: TPen read fPen write fPen;
   end;
 
   TlmfGraph=class(TlmfClip)
@@ -250,14 +253,18 @@ type
     constructor Create(Points:PPoint; NumPts:integer); overload;
     destructor Destroy;override;
     procedure Action(fImage:TlmfImage; ACanvas:TCanvas); override;
+    procedure WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter;
+      AStream: TStream); override;
   end;
 
   TlmfPolygon=class(TlmfPolyline)
   private
-    fWinding:boolean;
+    fWinding: boolean;
   public
     constructor Create(Points: PPoint; NumPts: integer; Winding: boolean = false); overload;
     procedure Action(fImage:TlmfImage;ACanvas:TCanvas); override;
+    procedure WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter;
+      AStream: TStream); override;
   published
     property Winding:boolean read fWinding write fWinding;
   end;
@@ -267,13 +274,20 @@ implementation
 
 { LMF object }
 
+procedure TlmfObject.WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter;
+  AStream: TStream);
+begin
+  // to be overridden by descendants
+end;
+
+
 { TlmfAnchor }
 
 constructor TlmfAnchor.Create(Ax,Ay:integer);
 begin
   inherited Create(nil);
-  fPos.X:=Ax;
-  fPos.Y:=Ay;
+  fPos.X := Ax;
+  fPos.Y := Ay;
 end;
 
 
@@ -284,12 +298,36 @@ begin
   ACanvas.MoveTo(fImage.ScaleX(fPos.X), fImage.ScaleY(fPos.Y));
 end;
 
+procedure TlmfMoveTo.WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter;
+  AStream: TStream);
+var
+  rec: TWMFPointRecord;
+begin
+  rec.X := AWriter.ScaleX(fPos.X);
+  rec.Y := AWriter.ScaleY(fPos.Y);
+
+  // WMF record header + parameters
+  AWriter.WriteWMFRecord(AStream, META_MOVETO, rec, SizeOf(TWMFPointRecord));
+end;
+
 
 { TlmfLineTo }
 
 procedure TlmfLineTo.Action(fImage: TlmfImage; ACanvas: TCanvas);
 begin
   ACanvas.LineTo(fImage.ScaleX(fPos.X), fImage.ScaleY(fPos.Y));
+end;
+
+procedure TlmfLineTo.WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter;
+  AStream: TStream);
+var
+  rec: TWMFPointRecord;
+begin
+  rec.X := AWriter.ScaleX(fPos.X);
+  rec.Y := AWriter.ScaleY(fPos.Y);
+
+  // WMF record header + parameters
+  AWriter.WriteWMFRecord(AStream, META_LINETO, rec, SizeOf(TWMFPointRecord));
 end;
 
 
@@ -311,6 +349,22 @@ begin
     fImage.ScaleY(fEndPos.Y));
 end;
 
+procedure TlmfLine.WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter;
+  AStream: TStream);
+var
+  rec: TWMFLineRecord;
+begin
+  rec.NumPts := 2;
+  rec.P1.X := AWriter.ScaleX(fPos.X);
+  rec.P1.Y := AWriter.ScaleY(fPos.Y);
+  rec.P2.X := AWriter.ScaleX(fEndPos.X);
+  rec.P2.Y := AWriter.ScaleY(fEndPos.Y);
+
+  // WMF record header + parameters
+  AWriter.WriteWMFRecord(AStream, META_POLYLINE, rec, SizeOf(TWMFLineRecord));
+end;
+
+{ TlmfText }
 
 constructor TlmfText.Create(x,y:integer; const AText:string);
 begin
@@ -346,11 +400,40 @@ begin
   ACanvas.TextOut(fImage.ScaleX(fPos.X),fImage.ScaleY(fPos.Y),fText);
 end;
 
-procedure TlmfText.DefineProperties(Filer: TFiler);
+procedure TlmfText.WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter;
+  AStream: TStream);
+// text record
+//  - StringLength (word)
+//  - String (variable length)
+//  - YStart (word)
+//  - XStart (word)
+var
+  ptRec: TWMFPointRecord;
+  len: Word;
+  s: String;
 begin
-  inherited DefineProperties(Filer);
-end;
+  if fText = '' then
+    exit;
 
+  s := fText;
+  len := Length(s);
+  if odd(len) then     // String length must be even
+  begin
+    s := s + #0;
+    inc(len);
+  end;
+
+  // Record header
+  AWriter.WriteWMFRecord(AStream, META_TEXTOUT, len + 3*SizeOf(word));
+  // String length
+  AWriter.WriteWMFParams(AStream, len, SizeOf(word));
+  // String
+  AWriter.WriteWMFParams(AStream, s[1], len);
+  // String position
+  ptRec.X := AWriter.ScaleX(fPos.X);
+  ptRec.Y := AWriter.ScaleY(fPos.Y);
+  AWriter.WriteWMFParams(AStream, ptRec, SizeOf(TWMFPointRecord));
+end;
 
 { TlmfTextInRect }
 
@@ -391,8 +474,56 @@ begin
   Writer.Write(fStyle, SizeOf(fStyle));
 end;
 
+procedure TlmfTextInRect.WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter;
+  AStream: TStream);
+var
+  rec: TWMFExtTextOutRecord;
+  R: packed array[0..3] of SmallInt;
+  strLen, adjLen: Word;
+  s: AnsiString;
+  n, nR: Integer;
+  P: Int64;
+begin
+  if fText = '' then
+    exit;
 
-// pixel mode
+  s := UTF8ToISO_8859_1(fText);
+  strLen := Length(s);
+  adjLen := strLen;
+  if odd(strLen) then   // String length must be even
+  begin
+    s := s + #0;
+    inc(adjLen);
+  end;
+
+  n := SizeOf(TWMFExtTextOutRecord) + adjLen;
+
+  rec := Default(TWMFExtTextOutRecord);
+  rec.X := AWriter.ScaleX(fPos.X);
+  rec.Y := AWriter.ScaleY(fPos.Y);
+  rec.Len := strLen;
+  if fStyle.Opaque then rec.Options := rec.Options or ETO_OPAQUE;
+  if fStyle.Clipping then rec.Options := rec.Options or ETO_CLIPPED;
+  if fStyle.RightToLeft then rec.Options := rec.Options or ETO_RTLREADING;
+  if (rec.Options and (ETO_OPAQUE or ETO_CLIPPED) <> 0) then
+  begin
+    R[0] := AWriter.ScaleX(fRect.Left);
+    R[1] := AWriter.ScaleY(fRect.Top);
+    R[2] := AWriter.ScaleX(fRect.Right);
+    R[3] := AWriter.ScaleY(fRect.Bottom);
+    nR := SizeOf(R);
+  end else
+    nR := 0;
+  AWriter.WriteWMFRecord(AStream, META_EXTTEXTOUT, rec, n + nR);
+  AStream.Position := AStream.Position - nR - adjLen;
+  if nR > 0 then
+    AStream.WriteBuffer(R, nR);
+  AStream.WriteBuffer(s[1], adjLen);
+end;
+
+
+{ TlmfColor (pixel mode) }
+
 constructor TlmfColor.Create(x,y:integer; AColor:TfpColor);
 begin
   inherited Create(x,y);
@@ -439,10 +570,11 @@ begin
   end;
 end;
 
-// rectangle
+
+{ TlmfRect (rectangle) }
+
 procedure TlmfRect.Action(fImage:TlmfImage; ACanvas:TCanvas);
 begin
- // ACanvas.Brush.Style:=bsClear;
   ACanvas.Rectangle(
     fImage.ScaleX(fClip.Left),
     fImage.ScaleY(fClip.Top),
@@ -451,38 +583,28 @@ begin
   );
 end;
 
-procedure TlmfFillRect.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfRect.WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter; AStream: TStream);
+var
+  rec: TWMFRectRecord;
 begin
-  ACanvas.FillRect(
-    fImage.ScaleX(fClip.Left),
-    fImage.ScaleY(fClip.Top),
-    fImage.Scalex(fClip.Right),
-    fImage.ScaleY(fClip.Bottom)
-  );
+  rec.Left := AWriter.ScaleX(fClip.Left);
+  rec.Top := AWriter.ScaleY(fClip.Top);
+  rec.Right := AWriter.ScaleX(fClip.Right);
+  rec.Bottom := AWriter.ScaleY(fClip.Bottom);
+
+  // WMF record header + parameters
+  AWriter.WriteWMFRecord(AStream, META_RECTANGLE, rec, SizeOf(TWMFRectRecord));
 end;
 
 
-{ TlmfFrame }
+{ TlmfFrameRect (rectangle drawn with brush settings) }
 
-procedure TlmfFrame.Action(fImage: TlmfImage; ACanvas: TCanvas);
-begin
-  ACanvas.Frame(
-    fImage.ScaleX(fClip.Left),
-    fImage.ScaleY(fClip.Top),
-    fImage.Scalex(fClip.Right),
-    fImage.ScaleY(fClip.Bottom)
-  );
-end;
-
-
-{ TlmfFrame }
-
-procedure TlmfFrameRect.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfFrameRect.Action(fImage:TlmfImage; ACanvas:TCanvas);
 begin
   ACanvas.FrameRect(
     fImage.ScaleX(fClip.Left),
     fImage.ScaleY(fClip.Top),
-    fImage.Scalex(fClip.Right),
+    fImage.ScaleX(fClip.Right),
     fImage.ScaleY(fClip.Bottom)
   );
 end;
@@ -506,6 +628,21 @@ begin
     fImage.ScaleY(fClip.Bottom),
     frx, fry
   );
+end;
+
+procedure TlmfRoundRect.WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter; AStream: TStream);
+var
+  rec: TWMFRoundRectRecord;
+begin
+  rec.Left := AWriter.ScaleX(fClip.Left);
+  rec.Top := AWriter.ScaleY(fClip.Top);
+  rec.Right := AWriter.ScaleX(fClip.Right);
+  rec.Bottom := AWriter.ScaleY(fClip.Bottom);
+  rec.RX := AWriter.ScaleX(frx);
+  rec.RY := AWriter.ScaleY(fry);
+
+  // WMF record header + parameters
+  AWriter.WriteWMFRecord(AStream, META_ROUNDRECT, rec, SizeOf(TWMFRoundRectRecord));
 end;
 
 
@@ -650,6 +787,19 @@ begin
   );
 end;
 
+procedure TlmfEllipse.WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter; AStream: TStream);
+var
+  rec: TWMFRectRecord;
+begin
+  rec.Left := AWriter.ScaleX(fClip.Left);
+  rec.Top := AWriter.ScaleY(fClip.Top);
+  rec.Right := AWriter.ScaleX(fClip.Right);
+  rec.Bottom := AWriter.ScaleY(fClip.Bottom);
+
+  // WMF record header + parameters
+  AWriter.WriteWMFRecord(AStream, META_ELLIPSE, rec, SizeOf(TWMFRectRecord));
+end;
+
 
 { TlmfArc }
 
@@ -669,6 +819,23 @@ begin
   );
 end;
 
+procedure TlmfArc.WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter; AStream: TStream);
+var
+  rec: TWMFArcRecord;
+begin
+  rec.Left := AWriter.ScaleX(fClip.Left);
+  rec.Top := AWriter.ScaleY(fClip.Top);
+  rec.Right := AWriter.ScaleX(fClip.Right);
+  rec.Bottom := AWriter.ScaleY(fClip.Bottom);
+  rec.XStartArc := AWriter.ScaleX(fStartPt.X);
+  rec.YStartArc := AWriter.ScaleY(fStartPt.Y);
+  rec.XEndArc := AWriter.ScaleX(fEndPt.X);
+  rec.YEndArc := AWriter.ScaleY(fEndPt.Y);
+
+  // WMF record header + parameters
+  AWriter.WriteWMFRecord(AStream, META_ARC, rec, SizeOf(TWMFArcRecord));
+end;
+
 
 { TlmfChord }
 
@@ -681,6 +848,23 @@ begin
   );
 end;
 
+procedure TlmfChord.WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter; AStream: TStream);
+var
+  rec: TWMFArcRecord;  // same structure for both arc, chord and pie
+begin
+  rec.Left := AWriter.ScaleX(fClip.Left);
+  rec.Top := AWriter.ScaleY(fClip.Top);
+  rec.Right := AWriter.ScaleX(fClip.Right);
+  rec.Bottom := AWriter.ScaleY(fClip.Bottom);
+  rec.XStartArc := AWriter.ScaleX(fStartPt.X);
+  rec.YStartArc := AWriter.ScaleY(fStartPt.Y);
+  rec.XEndArc := AWriter.ScaleX(fEndPt.X);
+  rec.YEndArc := AWriter.ScaleY(fEndPt.Y);
+
+  // WMF record header + parameters
+  AWriter.WriteWMFRecord(AStream, META_CHORD, rec, SizeOf(TWMFArcRecord));
+end;
+
 
 { TlmfPie }
 
@@ -691,6 +875,23 @@ begin
     fImage.ScaleX(fStartPt.X), fImage.ScaleY(fStartPt.Y),
     fImage.ScaleX(fEndPt.X), fImage.ScaleY(fEndPt.Y)
   );
+end;
+
+procedure TlmfPie.WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter; AStream: TStream);
+var
+  rec: TWMFArcRecord;  // same structure for both arc, chord and pie
+begin
+  rec.Left := AWriter.ScaleX(fClip.Left);
+  rec.Top := AWriter.ScaleY(fClip.Top);
+  rec.Right := AWriter.ScaleX(fClip.Right);
+  rec.Bottom := AWriter.ScaleY(fClip.Bottom);
+  rec.XStartArc := AWriter.ScaleX(fStartPt.X);
+  rec.YStartArc := AWriter.ScaleY(fStartPt.Y);
+  rec.XEndArc := AWriter.ScaleX(fEndPt.X);
+  rec.YEndArc := AWriter.ScaleY(fEndPt.Y);
+
+  // WMF record header + parameters
+  AWriter.WriteWMFRecord(AStream, META_PIE, rec, SizeOf(TWMFArcRecord));
 end;
 
 
@@ -723,6 +924,63 @@ begin
   ACanvas.Font.Orientation := rot;
 end;
 
+procedure TlmfFont.WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter; AStream: TStream);
+const
+  ZERO_OR_ONE: array[boolean] of byte = (0, 1);
+var
+  rec: TWMFFontRecord;
+  colorRec: TWMFColorRecord;
+  fntName: String;
+  idx, n: Integer;
+  idxObj: Word;
+begin
+  idx := AWriter.FindInObjTable(Self);
+  if idx = -1 then
+  begin
+    rec := Default(TWMFFontRecord);
+
+    fntName := UTF8ToISO_8859_1(fFont.Name) + #0;
+    if odd(Length(fntName)) then
+      fntName := fntName + #0;
+    if Length(fntName) > 32 then begin
+      SetLength(fntName, 32);
+      fntName[32] := #0;
+    end;
+
+    rec.Height := abs(AWriter.ScaleSizeY(fHeight));
+    rec.Width := 0;
+    rec.Orientation := round(fFont.Orientation * 10);
+    rec.Escapement := round(fFont.Orientation * 10); // 0;
+      // strange: must use "Escapement" here, not "Orientation".
+      // Otherwise MS software will not show the rotated font.
+    rec.Weight := IfThen(fsBold in fFont.Style, 700, 400);
+    rec.Italic := ZERO_OR_ONE[fsItalic in fFont.Style];
+    rec.Underline := ZERO_OR_ONE[fsUnderline in fFont.Style];
+    rec.Strikeout := ZERO_OR_ONE[fsStrikeOut in fFont.Style];
+    rec.Charset := DEFAULT_CHARSET;
+    rec.OutPrecision := 0;  // default
+    rec.ClipPrecision := 0; // default
+    rec.Quality := 0; // default
+    rec.PitchAndFamily := 0;  // don't care / default
+    Move(fntName[1], rec.FaceName[0], Length(fntName));
+    // Write wmf record
+    AWriter.WriteWMFRecord(AStream, META_CREATEFONTINDIRECT, rec, SizeOf(TWMFFontRecord));
+    idx := AWriter.AddToObjTable(Self);
+  end;
+  // Find the (existing or newly created) font in the WMFObjTable and
+  // write its index to the SelectObject WMF record:
+  idxObj := word(idx);
+  AWriter.WriteWMFRecord(AStream, META_SELECTOBJECT, idxObj, SizeOf(Word));
+
+  // Write text color
+  colorRec.ColorRED := Red(fFont.Color);
+  colorRec.ColorGREEN := Green(fFont.Color);
+  colorRec.ColorBLUE := Blue(fFont.Color);
+  colorRec.Reserved := 0;
+  AWriter.WriteWMFRecord(AStream, META_SETTEXTCOLOR, colorRec, SizeOf(TWMFColorRecord));
+
+end;
+
 
 { TlmfBrush }
 
@@ -741,6 +999,40 @@ end;
 procedure TlmfBrush.Action(fImage:TlmfImage;ACanvas:TCanvas);
 begin
   ACanvas.Brush.Assign(fBrush);
+end;
+
+procedure TlmfBrush.WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter; AStream: TStream);
+var
+  rec: TWMFBrushRecord;
+  idx: Integer;
+  idxObj: Word;
+begin
+  idx := AWriter.FindInObjTable(Self);
+  if idx = -1 then
+  begin
+    rec := Default(TWMFBrushRecord);
+    case fBrush.Style of
+      bsClear      : rec.Style := BS_NULL;
+      bsSolid      : rec.Style := BS_SOLID;
+      bsHorizontal : begin rec.Style := BS_HATCHED; rec.Hatch := HS_HORIZONTAL; end;
+      bsVertical   : begin rec.Style := BS_HATCHED; rec.Hatch := HS_VERTICAL; end;
+      bsFDiagonal  : begin rec.Style := BS_HATCHED; rec.Hatch := HS_FDIAGONAL; end;
+      bsBDiagonal  : begin rec.Style := BS_HATCHED; rec.Hatch := HS_BDIAGONAL; end;
+      bsCross      : begin rec.Style := BS_HATCHED; rec.Hatch := HS_CROSS; end;
+      bsDiagCross  : begin rec.Style := BS_HATCHED; rec.Hatch := HS_DIAGCROSS; end;
+      else           rec.Style := BS_SOLID;
+    end;
+    rec.ColorRED := Red(fBrush.Color);
+    rec.ColorGREEN := Green(fBrush.Color);
+    rec.ColorBLUE := Blue(fBrush.Color);
+    rec.Reserved := 0;
+    idx := AWriter.AddToObjTable(Self);
+    AWriter.WriteWMFRecord(AStream, META_CREATEBRUSHINDIRECT, rec, SizeOf(rec));
+  end;
+  // Find the (existing or newly created) brush in the WMFObjTable and
+  // write its index to the SelectObject WMF record:
+  idxObj := word(idx);
+  AWriter.WriteWMFRecord(AStream, META_SELECTOBJECT, idxObj, SizeOf(Word));
 end;
 
 
@@ -762,6 +1054,54 @@ procedure TlmfPen.Action(fImage: TlmfImage; ACanvas: TCanvas);
 begin
   ACanvas.Pen.Assign(fPen);
   ACanvas.Pen.Width := fImage.ScaleSizeY(fPen.Width);
+end;
+
+procedure TlmfPen.WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter; AStream: TStream);
+var
+  rec: TWMFPenRecord;
+  idx: Integer;
+  idxObj: Word;
+begin
+  // Searches the object list for the first usage of this pen and returns its index
+  idx := AWriter.FindInObjTable(Self);; //fImage.List.FindPen(fPen);
+
+  // This pen is used here for the first time --> createpen record
+  if idx = -1 then //ComponentIndex then
+  begin
+    case fPen.Style of
+      psDash       : rec.Style := PS_DASH;
+      psDot        : rec.Style := PS_DOT;
+      psDashDot    : rec.Style := PS_DASHDOT;
+      psDashDotDot : rec.Style := PS_DASHDOTDOT;
+      psClear      : rec.Style := PS_NULL;
+      psInsideFrame: rec.Style := PS_INSIDEFRAME;
+      else           rec.Style := PS_SOLID;
+    end;
+    if fPen.Cosmetic then
+      rec.Style := rec.Style or PS_COSMETIC;
+    case fPen.JoinStyle of
+      pjsRound: rec.Style := rec.Style or PS_JOIN_ROUND;
+      pjsBevel: rec.Style := rec.Style or PS_JOIN_BEVEL;
+      pjsMiter: rec.Style := rec.Style or PS_JOIN_MITER;
+    end;
+    case fPen.EndCap of
+      pecRound: rec.Style := rec.Style or PS_ENDCAP_ROUND;
+      pecSquare: rec.Style := rec.Style or PS_ENDCAP_SQUARE;
+      pecFlat: rec.Style := rec.Style or PS_ENDCAP_FLAT;
+    end;
+    rec.Width := AWriter.ScaleSizeX(fPen.Width);
+    rec.Ignored1 := 0;
+    rec.ColorRED := Red(fPen.Color);
+    rec.ColorGREEN := Green(fPen.Color);
+    rec.ColorBLUE := Blue(fPen.Color);
+    rec.Ignored2 := 0;
+    AWriter.WriteWMFRecord(AStream, META_CREATEPENINDIRECT, rec, SizeOf(rec));
+    idx := AWriter.AddToObjTable(Self);
+  end;
+  // Find the (existing or newly created) brush in the WMFObjTable and
+  // write its index to the SelectObject WMF record.
+  idxObj := word(idx);
+  AWriter.WriteWMFRecord(AStream, META_SELECTOBJECT, idxObj, SizeOf(Word));
 end;
 
 
@@ -851,6 +1191,27 @@ begin
   ACanvas.Polyline(npts);
 end;
 
+procedure TlmfPolyLine.WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter;
+  AStream: TStream);
+var
+  numPts: Word;
+  recPts: packed array of TWMFPointXYRecord = nil;
+  i: Integer;
+begin
+  numPts := Length(pts);
+  SetLength(recPts, numPts);
+  for i := 0 to numPts-1 do
+  begin
+    recPts[i].X := AWriter.ScaleX(pts[i].X);
+    recPts[i].Y := AWriter.ScaleY(pts[i].Y);
+  end;
+
+  // WMF record header + parameters
+  AWriter.WriteWMFRecord(AStream, META_POLYLINE, SizeOf(word) + numPts * SizeOf(TWMFPointXYRecord));
+  AWriter.WriteWMFParams(AStream, numPts, SizeOf(Word));
+  AWriter.WriteWMFParams(AStream, recPts[0], numPts * SizeOf(TWMFPointXYRecord));
+end;
+
 
 { TlmfPolygon }
 
@@ -875,12 +1236,35 @@ begin
   ACanvas.Polygon(npts,fWinding,0,length(npts));
 end;
 
+procedure TlmfPolygon.WriteWMFRecord(fImage: TlmfImage; AWriter: TlmfWriter;
+  AStream: TStream);
+var
+  numPts: Word;
+  recPts: packed array of TWMFPointXYRecord = nil;
+  fillModeRec: TWMFSetPolyFillModeRecord;
+  i: Integer;
+begin
+  numPts := Length(pts);
+  SetLength(recPts, numPts);
+  for i := 0 to numPts-1 do
+  begin
+    recPts[i].X := AWriter.ScaleX(pts[i].X);
+    recPts[i].Y := AWriter.ScaleY(pts[i].Y);
+  end;
+
+  fillModeRec.PolyFillMode := IfThen(fWinding, LCLType.WINDING, LCLType.ALTERNATE);
+  fillModeRec.Reserved := 0;
+  AWriter.WriteWMFRecord(AStream, META_SETPOLYFILLMODE, fillModeRec, SizeOf(TWmfSetPolyFillModeRecord));
+  AWriter.WriteWMFRecord(AStream, META_POLYGON, SizeOf(word) + numPts * SizeOf(TWMFPointXYRecord));
+  AWriter.WriteWMFParams(AStream, numPts, SizeOf(Word));
+  AWriter.WriteWMFParams(AStream, recPts[0], numPts * SizeOf(TWMFPointXYRecord));
+end;
+
 
 initialization
   RegisterClasses([TlmfAnchor,
     TlmfMoveTo, TlmfLineTo, TlmfLine, TlmfText, TlmfTextInRect, TlmfColor,
-    TlmfClip, TlmfRect, TlmfFillRect, TlmfFrame, TLmfFrameRect, TlmfRoundRect,
-    TlmfEllipse, TlmfArc, TlmfChord, TlmfPie,
+    TlmfClip, TlmfRect, TlmfRoundRect, TlmfEllipse, TlmfArc, TlmfChord, TlmfPie,
     TlmfGraph, TlmfPolyLine, TlmfPolygon,
     TlmfFont, TlmfBrush, TlmfPen
   ]);

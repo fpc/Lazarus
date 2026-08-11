@@ -1,11 +1,13 @@
 object MainForm: TMainForm
-  Left = 793
+  Left = 813
   Height = 534
-  Top = 370
+  Top = 393
   Width = 520
-  Caption = 'MainForm'
+  Caption = 'MainForm [Press F2 to save as wmf file]'
+  KeyPreview = True
   LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnKeyUp = FormKeyUp
   OnPaint = FormPaint
 end

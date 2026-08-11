@@ -5,7 +5,7 @@ unit main;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, lmf;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LCLType, lmf;
 
 type
 
@@ -14,6 +14,7 @@ type
   TMainForm = class(TForm)
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormPaint(Sender: TObject);
   private
     FLmfImg: TLmfImage;
@@ -50,7 +51,7 @@ begin
   try
     // Rectangle
     LmfCanvas.Brush.Color := clSkyBlue;
-    LmfCanvas.Rectangle(0, 0, 500, 350);
+    LmfCanvas.Rectangle(0, 0, FlmfImg.Width, FLmfImg.Height);
 
     // Line
     LmfCanvas.Pen.Width := 1;
@@ -77,12 +78,16 @@ begin
     LmfCanvas.Frame(25, 165, 75, 185);
 
     // FrameRect (border using brush)
+    // Incorrect wmf output (won't fix)
     LmfCanvas.Brush.Color := clRed;
+    LmfCanvas.Brush.Style := bsVertical;
     LmfCanvas.FrameRect(Rect(90, 165, 140, 185));
     LmfCanvas.FrameRect(95, 170, 145, 190);
 
     //Frame3D
+    // Incorrect wmf output (won't fix)
     R := Rect(270, 100, 310, 130);
+    lmfCanvas.Brush.Style := bsSolid;
     lmfCanvas.Brush.Color := clWhite;
     lmfCanvas.FillRect(R);
     LmfCanvas.Pen.Style := psSolid;
@@ -99,7 +104,7 @@ begin
     LmfCanvas.Pen.Width := 3;
     LmfCanvas.RoundRect(260, 40, 340, 80, 40, 40);
     LmfCanvas.RoundRect(Rect(270, 50, 350, 90), 40, 40);
-
+               (*
     // Draw an alpha-transparent bitmap
     bmp := TPortableNetworkGraphic.Create;
     try
@@ -108,6 +113,7 @@ begin
     finally
       bmp.Free;
     end;
+    *)
 
     // Ellipse
     LmfCanvas.Brush.Style := bsHorizontal;
@@ -160,7 +166,6 @@ begin
     LmfCanvas.Pen.Width := 2;
     LmfCanvas.MoveTo(C.X, C.Y);
     LmfCanvas.ArcTo(C.X-50, C.Y-30, C.X+50, C.Y+30, P1.X, P1.Y, P2.X, P2.Y);
-    LmfCanvas.Arc(C.X-50, C.Y-30, C.X+50, C.Y+30, P1.X, P1.Y, P2.X, P2.Y);
     LmfCanvas.Pen.Width := 1;;
     LmfCanvas.Frame(C.X-50, C.Y-30, C.X+50, C.Y+30);
     LmfCanvas.Line(C, P2);
@@ -192,6 +197,7 @@ begin
     LmfCanvas.Polygon(@P[0], 5, true);
 
     // GradientFill
+    // Incorrect wmf output (won't fix)
     R := Rect(270, 250, 350, 290);
     LmfCanvas.GradientFill(R, clRed, clYellow, gdVertical);
     LmfCanvas.Pen.Width := 1;
@@ -237,7 +243,7 @@ begin
     penPattern[1] := 1;  // space
     penPattern[2] := 4;  // line
     penPattern[3] := 4;  // space
-    LmfCanvas.Pen.Style := psPattern;
+    LmfCanvas.Pen.Style := psPattern;     // Incorrect wmf output
     LmfCanvas.Pen.SetPattern(penPattern);
     LmfCanvas.Line(10, 345, 110, 345);
 
@@ -249,6 +255,23 @@ end;
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   FLmfImg.Free;
+end;
+
+procedure TMainForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+var
+  stream: TStream;
+begin
+  case Key of
+    VK_F2:
+      begin
+        stream := TFileStream.Create('test.wmf', fmCreate);
+        try
+          FLmfImg.SaveToLMFStream(stream);
+        finally
+          stream.Free;
+        end;
+      end;
+  end;
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
