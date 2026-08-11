@@ -5121,21 +5121,33 @@ end;
 
 procedure TMessagesFrame.UpdateErrorsPanel;
 var
-  Cnt: Integer;
+  Cnt, i, aLineCnt: Integer;
   NewParent: TWinControl;
 begin
   if FErrorsPanel=nil then exit;
   if csDestroying in ComponentState then exit;
   Cnt:=FMessagesCtrl.GetUrgentMsgCount(mluError);
-  if Cnt<=1 then begin
+  if (Cnt<=1) and (FMessagesCtrl.ApproxTotalVisualRows>2*FMessagesCtrl.VisiblePageRows) then begin
     FErrorsPanel.Visible:=false;
     exit;
   end;
-  FErrorsLabel.Caption:=Format(lisErrorsCount,[IntToStr(Cnt)]);
+
   if SearchPanel.Visible then
+    // show inside search panel
     NewParent:=SearchPanel // no extra bar needed, the search panel has room
-  else
+  else begin
+    // show as overlay, but only if scrolling is possible, so the user can scroll to see what is below the overlay
     NewParent:=Self;
+    aLineCnt:=0;
+    for i:=0 to ViewCount-1 do
+      inc(aLineCnt,FMessagesCtrl.ViewShownRows(Views[i]));
+    if aLineCnt<2*FMessagesCtrl.VisiblePageRows then begin
+      FErrorsPanel.Visible:=false;
+      exit;
+    end;
+  end;
+
+  FErrorsLabel.Caption:=Format(lisErrorsCount,[IntToStr(Cnt)]);
   if FErrorsPanel.Parent<>NewParent then begin
     // clear the old position, its anchors point to controls of the old parent
     FErrorsPanel.Parent:=NewParent;
