@@ -514,6 +514,7 @@ resourcestring
   lisToolStoppedWithExitStatusUseContextMenuToGetMoreInfo = 'tool stopped with '
     +'ExitCode 0 and ExitStatus %s. Use context menu to get more information.';
   lisErrors2 = ', Errors: %s';
+  lisErrorsCount = 'Errors: %s';
   lisWarnings = ', Warnings: %s';
   lisHints = ', Hints: %s';
   lisInternalError = 'internal error: %s';

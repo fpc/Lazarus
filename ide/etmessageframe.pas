@@ -215,6 +215,7 @@ type
     FImages: TCustomImageList;
     FItemHeight: integer;
     FOnAllViewsStopped: TNotifyEvent;
+    FOnMsgCountsChanged: TNotifyEvent;
     FOnOpenMessage: TOnOpenMessageLine;
     FOnOptionsChanged: TNotifyEvent;
     FOptions: TMsgCtrlOptions;
@@ -263,6 +264,7 @@ type
     procedure CreateSourceMark(MsgLine: TMessageLine; aSynEdit: TSynEdit);
     procedure CreateSourceMarks(View: TLMsgWndView; StartLineNumber: Integer);
     procedure CheckFirstFailedView;
+    procedure NotifyMsgCountsChanged;
     procedure DoAllViewsStopped;
     function GetActiveFilter: TLMsgViewFilter; inline;
     function GetHeaderBackground(aToolState: TLMVToolState): TColor;
@@ -354,6 +356,8 @@ type
     function GetLineText(Line: TMessageLine): string;
     function FindUnfinishedView: TLMsgWndView; // running or waiting for run
     function GetLastViewWithContent: TLMsgWndView;
+    // number of shown messages of this urgency or higher, over all views
+    function GetUrgentMsgCount(aMinUrgency: TMessageLineUrgency): integer;
 
     // filter
     property ActiveFilter: TLMsgViewFilter read GetActiveFilter write SetActiveFilter;
@@ -407,6 +411,8 @@ type
     property Images: TCustomImageList read FImages write SetImages;
     property ItemHeight: integer read FItemHeight write SetItemHeight;
     property OnAllViewsStopped: TNotifyEvent read FOnAllViewsStopped write FOnAllViewsStopped;
+    // called when the number of shown messages may have changed
+    property OnMsgCountsChanged: TNotifyEvent read FOnMsgCountsChanged write FOnMsgCountsChanged;
     property OnOpenMessage: TOnOpenMessageLine read FOnOpenMessage write FOnOpenMessage;
     Property OnOptionsChanged: TNotifyEvent read FOnOptionsChanged write FOnOptionsChanged;
     property Options: TMsgCtrlOptions read FOptions write SetOptions default MCDefaultOptions;
@@ -437,6 +443,9 @@ type
     procedure SearchPrevSpeedButtonClick(Sender: TObject);
   private
     // Event handlers
+    procedure NextErrorSpeedButtonClick(Sender: TObject);
+    procedure PrevErrorSpeedButtonClick(Sender: TObject);
+    procedure MsgCountsChanged(Sender: TObject);
     procedure AboutToolMenuItemClick(Sender: TObject);
     procedure AddFilterMenuItemClick(Sender: TObject);
     procedure ClearFilterMsgTypesMenuItemClick(Sender: TObject);
@@ -469,6 +478,12 @@ type
   private
     FImages: TLCLGlyphs;
     FMessagesCtrl: TMessagesCtrl;
+    FErrorsPanel: TPanel;
+    FErrorsLabel: TLabel;
+    FPrevErrorSpeedButton: TSpeedButton;
+    FNextErrorSpeedButton: TSpeedButton;
+    procedure CreateErrorsPanel;
+    procedure UpdateErrorsPanel;
     function GetAboutView: TLMsgWndView;
     function GetViews(Index: integer): TLMsgWndView;
     procedure HideSearch;
@@ -1518,6 +1533,7 @@ begin
   end;
   UpdateScrollBar(true);
   CheckFirstFailedView;
+  NotifyMsgCountsChanged;
 end;
 
 function TMessagesCtrl.FetchNewMessages(View: TLMsgWndView): boolean;
@@ -1944,11 +1960,14 @@ var
   View: TLMsgWndView;
   FoundP: TMsgPoint;
   i: Integer;
+  FilterHasChanged: Boolean;
 begin
   //debugln(['TMessagesCtrl.OnIdle fLastLoSearchText=',fLastLoSearchText,' ',UTF8LowerCase(fSearchText)]);
+  FilterHasChanged:=false;
   for i:=0 to ViewCount-1 do begin
     View:=Views[i];
     if not View.ViewFilter.IsEqual(ActiveFilter) then begin
+      FilterHasChanged:=true;
       View.EnterCriticalSection;
       try
         View.ViewFilter:=ActiveFilter;
@@ -1961,6 +1980,8 @@ begin
       Invalidate;
     end;
   end;
+  if FilterHasChanged then
+    NotifyMsgCountsChanged;
 
   if fLastLoSearchText<>UTF8LowerCase(fSearchText) then begin
     fLastLoSearchText:=UTF8LowerCase(FSearchText);
@@ -2080,6 +2101,13 @@ begin
       OpenSelection;
     exit;
   end;
+end;
+
+procedure TMessagesCtrl.NotifyMsgCountsChanged;
+begin
+  if csDestroying in ComponentState then exit;
+  if Assigned(OnMsgCountsChanged) then
+    OnMsgCountsChanged(Self);
 end;
 
 procedure TMessagesCtrl.DoAllViewsStopped;
@@ -4141,6 +4169,22 @@ begin
   end;
   UpdateScrollBar(true);
   Invalidate;
+  NotifyMsgCountsChanged;
+end;
+
+function TMessagesCtrl.GetUrgentMsgCount(aMinUrgency: TMessageLineUrgency): integer;
+// (main thread) number of shown messages of this urgency or higher, over all views
+var
+  i: Integer;
+  u: TMessageLineUrgency;
+  Lines: TMessageLines;
+begin
+  Result:=0;
+  for i:=0 to ViewCount-1 do begin
+    Lines:=Views[i].Lines;
+    for u:=aMinUrgency to high(TMessageLineUrgency) do
+      inc(Result,Lines.UrgencyCounts[u]);
+  end;
 end;
 
 function TMessagesCtrl.GetView(aCaption: string; CreateIfNotExist: boolean): TLMsgWndView;
@@ -4716,6 +4760,7 @@ procedure TMessagesFrame.FindMenuItemClick(Sender: TObject);
 begin
   FMessagesCtrl.StoreSelectedAsSearchStart;
   SearchPanel.Visible:=true;
+  UpdateErrorsPanel; // move the error buttons into the search panel
   SearchEditChange(Sender);
   SearchEdit.SetFocus;
 end;
@@ -4909,6 +4954,7 @@ procedure TMessagesFrame.HideSearch;
 begin
   FMessagesCtrl.SetFocus;
   SearchPanel.Visible:=false;
+  UpdateErrorsPanel; // move the error buttons back onto the messages
   FMessagesCtrl.SearchText:='';
 end;
 
@@ -5010,6 +5056,116 @@ begin
   SearchPrevSpeedButton.Hint:=lisUDSearchPreviousOccurrenceOfThisPhrase + ' [Shift+F3]';
   IDEImages.AssignImage(SearchPrevSpeedButton, 'callstack_top');
   SearchEdit.TextHint:=lisUDSearch;
+
+  // jump to error
+  CreateErrorsPanel;
+  FMessagesCtrl.OnMsgCountsChanged:=@MsgCountsChanged;
+  UpdateErrorsPanel;
+end;
+
+procedure TMessagesFrame.CreateErrorsPanel;
+
+  function AddButton(const aName, aImage, aHint: string;
+    aOnClick: TNotifyEvent; LeftOf: TControl): TSpeedButton;
+  begin
+    Result:=TSpeedButton.Create(Self);
+    with Result do begin
+      Name:=aName;
+      Flat:=true;
+      ShowHint:=true;
+      ParentShowHint:=false;
+      Hint:=aHint;
+      SetBounds(0,0,23,23);
+      AnchorToNeighbour(akLeft,0,LeftOf);
+      Anchors:=[akLeft,akTop];
+      OnClick:=aOnClick;
+      Parent:=FErrorsPanel;
+    end;
+    IDEImages.AssignImage(Result, aImage);
+  end;
+
+begin
+  // the panel in the top right corner, used when the search panel is hidden
+  FErrorsPanel:=TPanel.Create(Self);
+  with FErrorsPanel do begin
+    Name:='ErrorsPanel';
+    BevelOuter:=bvNone;
+    AutoSize:=true;
+    Visible:=false;
+    Color:=clBackground;
+    Anchors:=[akTop,akRight];
+    AnchorParallel(akTop,0,Self);
+    AnchorParallel(akRight,0,Self);
+    // Parent and position are set by UpdateErrorsPanel
+  end;
+
+  FErrorsLabel:=TLabel.Create(Self);
+  with FErrorsLabel do begin
+    Name:='ErrorsLabel';
+    Parent:=FErrorsPanel;
+    Caption:=Format(lisErrorsCount,['0']);
+    BorderSpacing.Left:=3;
+    BorderSpacing.Right:=3;
+    AnchorParallel(akLeft,0,FErrorsPanel);
+  end;
+
+  // the buttons define the height of the panel, the label is centered on them
+  FPrevErrorSpeedButton:=AddButton('PrevErrorSpeedButton',
+    'menu_search_previous_error',lisMenuJumpToPrevError,
+    @PrevErrorSpeedButtonClick,FErrorsLabel);
+  FNextErrorSpeedButton:=AddButton('NextErrorSpeedButton',
+    'menu_search_next_error',lisMenuJumpToNextError,
+    @NextErrorSpeedButtonClick,FPrevErrorSpeedButton);
+  FErrorsLabel.AnchorVerticalCenterTo(FPrevErrorSpeedButton);
+end;
+
+procedure TMessagesFrame.UpdateErrorsPanel;
+var
+  Cnt: Integer;
+  NewParent: TWinControl;
+begin
+  if FErrorsPanel=nil then exit;
+  if csDestroying in ComponentState then exit;
+  Cnt:=FMessagesCtrl.GetUrgentMsgCount(mluError);
+  if Cnt<=1 then begin
+    FErrorsPanel.Visible:=false;
+    exit;
+  end;
+  FErrorsLabel.Caption:=Format(lisErrorsCount,[IntToStr(Cnt)]);
+  if SearchPanel.Visible then
+    NewParent:=SearchPanel // no extra bar needed, the search panel has room
+  else
+    NewParent:=Self;
+  if FErrorsPanel.Parent<>NewParent then begin
+    // clear the old position, its anchors point to controls of the old parent
+    FErrorsPanel.Parent:=NewParent;
+    FErrorsPanel.Anchors:=[akTop,akRight];
+    if NewParent=SearchPanel then begin
+      FErrorsPanel.AnchorParallel(akRight,6,SearchPanel);
+      FErrorsPanel.AnchorVerticalCenterTo(SearchPanel);
+    end else begin
+      FErrorsPanel.AnchorParallel(akTop,0,NewParent);
+      FErrorsPanel.AnchorParallel(akRight,6,NewParent);
+    end;
+  end;
+  FErrorsPanel.Visible:=true;
+end;
+
+procedure TMessagesFrame.MsgCountsChanged(Sender: TObject);
+begin
+  UpdateErrorsPanel;
+end;
+
+procedure TMessagesFrame.NextErrorSpeedButtonClick(Sender: TObject);
+begin
+  if LazarusIDE<>nil then
+    LazarusIDE.DoJumpToNextError(true);
+end;
+
+procedure TMessagesFrame.PrevErrorSpeedButtonClick(Sender: TObject);
+begin
+  if LazarusIDE<>nil then
+    LazarusIDE.DoJumpToNextError(false);
 end;
 
 destructor TMessagesFrame.Destroy;
