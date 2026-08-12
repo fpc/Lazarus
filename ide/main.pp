@@ -4429,8 +4429,9 @@ end;
 
 procedure TMainIDE.mnuViewMessagesClick(Sender: TObject);
 begin
-  // it was already visible, but user does not see it, try to move in view
-  DoShowMessagesView;
+  MessagesView.ApplyIDEOptions;
+  // If it was already visible, but user does not see it, try to move in view
+  IDEWindowCreators.ShowForm(MessagesView, true);
 end;
 
 procedure TMainIDE.mnuViewSearchResultsClick(Sender: TObject);

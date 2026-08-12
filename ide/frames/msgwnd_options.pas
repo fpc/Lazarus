@@ -261,7 +261,7 @@ begin
   cbShowAutomatically.Items.Add(lisOpenAutoOnlyWhenErrorsOccur);
   cbShowAutomatically.Items.Add(lisOpenAutoNever);
   cbShowAutomatically.ItemIndex := 0;
-  cbFocusWhenGettingMessages.Caption := lisFocusWhenGettingMessages;
+  cbFocusWhenGettingMessages.Caption := lisFocusWindow;
   lbWarning.Caption := lisMustBeOpenedManually;
 end;
 

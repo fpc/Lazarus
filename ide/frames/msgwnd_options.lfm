@@ -22,14 +22,14 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     TabOrder = 5
   end
   object cbFocusWhenGettingMessages: TCheckBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = cbShowFPCLinesCompiled
+    AnchorSideLeft.Control = cbShowAutomatically
+    AnchorSideTop.Control = cbShowAutomatically
     AnchorSideTop.Side = asrBottom
-    Left = 6
+    Left = 131
     Height = 23
-    Top = 407
+    Top = 496
     Width = 223
-    BorderSpacing.Left = 6
+    BorderSpacing.Top = 3
     Caption = 'cbFocusWhenGettingMessages'
     ParentShowHint = False
     ShowHint = True
@@ -50,12 +50,14 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     TabOrder = 2
   end
   object cbWordWrap: TCheckBox
-    AnchorSideLeft.Control = cbShowIcons
-    AnchorSideTop.Control = cbFocusWhenGettingMessages
-    Left = 247
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbShowFPCLinesCompiled
+    AnchorSideTop.Side = asrBottom
+    Left = 6
     Height = 23
     Top = 407
     Width = 109
+    BorderSpacing.Left = 6
     Caption = 'cbWordWrap'
     ParentShowHint = False
     ShowHint = True
@@ -64,7 +66,7 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
   object MaxProcsSpinEdit: TSpinEdit
     AnchorSideLeft.Control = lbMaxProcs
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = cbFocusWhenGettingMessages
+    AnchorSideTop.Control = cbWordWrap
     AnchorSideTop.Side = asrBottom
     Left = 84
     Height = 32
@@ -294,11 +296,11 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 131
     Height = 26
-    Top = 466
+    Top = 467
     Width = 327
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
-    BorderSpacing.Top = 2
+    BorderSpacing.Top = 3
     ItemHeight = 0
     Style = csDropDownList
     TabOrder = 8
@@ -310,17 +312,17 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 8
     Height = 18
-    Top = 470
+    Top = 471
     Width = 117
     Caption = 'Open automatically'
   end
   object lbWarning: TLabel
     AnchorSideLeft.Control = cbShowAutomatically
-    AnchorSideTop.Control = cbShowAutomatically
+    AnchorSideTop.Control = cbFocusWhenGettingMessages
     AnchorSideTop.Side = asrBottom
     Left = 131
     Height = 18
-    Top = 498
+    Top = 525
     Width = 295
     BorderSpacing.Top = 6
     Caption = 'Must be opened manually from View -> Messages'
