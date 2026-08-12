@@ -1861,12 +1861,15 @@ end;
 
 class function TGtk3WSCustomTabControl.GetNotebookMinTabHeight(
   const AWinControl: TWinControl): integer;
+var
+  R: TRect;
 begin
   Result := TWSCustomTabControl.GetNotebookMinTabHeight(AWinControl);
-  if AWinControl.HandleAllocated then
+  if not (AWinControl is TTabControl) then
   begin
-    if not (AWinControl is TTabControl) then
-      Result := TGtk3Notebook(AWinControl.Handle).GetTabSize(AWinControl);
+    R := MeasureClientRect(AWinControl, 0, 0, 300, 200);
+    if (R.Height > 0) and (R.Height < 200) then
+      Result := 200 - R.Height;
   end;
 end;
 
