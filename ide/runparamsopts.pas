@@ -63,9 +63,10 @@ uses
   InputHistory,
   // IdeConfig
   EnvironmentOpts, RecentListProcs, MiscOptions,
+  // IdeDebugger
+  BaseDebugManager,
   // IDE
-  SysVarUserOverrideDlg, LazarusIDEStrConsts
-  {$IFnDef LCLNoGui}, BaseDebugManager {$ENDIF} ;
+  SysVarUserOverrideDlg, LazarusIDEStrConsts;
 
 type
   { TRunParamsOptsDlg - the form of the run parameters options dialog }
@@ -324,11 +325,7 @@ begin
      set of standard handles at once -- so a per-stream file has nowhere to go.
      The controls are disabled rather than cleared: whatever was configured
      survives in the project, and returning to the OS console brings it back. *)
-{$IFnDef LCLNoGui}
   RedirectsApply := not DebugBoss.ConsoleIsCaptured(SelectedConsoleMode);
-{$ELSE}
-  RedirectsApply := SelectedConsoleMode <> rpcmIdeConsole;
-{$ENDIF}
   cbRedirStdIn.Enabled   := RedirectsApply;
   cbRedirStdOut.Enabled  := RedirectsApply;
   cbRedirStdErr.Enabled  := RedirectsApply;
@@ -343,7 +340,6 @@ end;
 
 procedure TRunParamsOptsDlg.cbRedirStdInChange(Sender: TObject);
 begin
-{$IFnDef LCLNoGui}
   RedirectWarnLabel.Visible :=
     cbRedirStdIn.Enabled and
     ( (cbRedirStdIn.ItemIndex <> 0) or
@@ -351,7 +347,6 @@ begin
       (cbRedirStdErr.ItemIndex <> 0)
     ) and
     not (dfStdInOutRedirect in DebugBoss.DebuggerClass.SupportedFeatures);
-{$ENDIF}
 end;
 
 destructor TRunParamsOptsDlg.Destroy;
@@ -407,14 +402,12 @@ end;
 
 procedure TRunParamsOptsDlg.UseConsolePosCheckBoxChange(Sender: TObject);
 begin
-{$IFnDef LCLNoGui}
   ConsoleSizeWarnLabel.Visible :=
     ( UseConsolePosCheckBox.Checked or
       UseConsoleSizeCheckBox.Checked or
       UseConsoleBufferCheckBox.Checked
     ) and
     not (dfConsoleWinPos in DebugBoss.DebuggerClass.SupportedFeatures);
-{$ENDIF}
 end;
 
 procedure TRunParamsOptsDlg.SetupLocalPage;
@@ -450,9 +443,7 @@ begin
      merely disabled: they still show and write back whatever the project
      selected, so opening it under a backend that cannot capture -- or on
      another platform -- does not quietly discard the setting. *)
-  {$IFnDef LCLNoGui}
   rgConsole.Enabled := dfStdInOutCapture in DebugBoss.DebuggerClass.SupportedFeatures;
-  {$ENDIF}
 
   cbRedirStdIn.Items.Add (dlgRedirOff);
   cbRedirStdIn.Items.Add (dlgRedirInput);
