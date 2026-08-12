@@ -91,7 +91,7 @@ help:
 	@$(ECHO)
 	@$(ECHO) " Sub targets"
 	@$(ECHO) "   registration   build package FCL"
-	@$(ECHO) "   tools          build lazres, svn2revisioninc, updatepofiles, lrstolfm"
+	@$(ECHO) "   tools          build lazres, svn2revisioninc, updatepofiles, lrstolfm, lazdebugtargetstarter"
 	@$(ECHO) "   ide            build ide with minimum of packages"
 	@$(ECHO) "   starter        build startlazarus"
 	@$(ECHO) "   lhelp          build lhelp"

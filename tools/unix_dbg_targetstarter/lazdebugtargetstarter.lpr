@@ -7,8 +7,6 @@ uses
 var
   FD: LongInt;
   s, n: string;
-  i: integer;
-
 begin
   if argc < 3 then
     exit;

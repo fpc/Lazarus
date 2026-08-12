@@ -10,6 +10,10 @@ version=1.0
 [target]
 dirs=
 programs=lazres svn2revisioninc updatepofiles lrstolfm
+programs_linux=lazdebugtargetstarter
+
+[clean]
+units_linux=lazdebuggerstarterutils
 
 [require]
 libc=y
@@ -17,7 +21,9 @@ packages=rtl
 
 [compiler]
 options=-gl $(LAZARUS_LIBPATHS) $(DBG_OPTIONS)
-unitdir=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
+sourcedir=unix_dbg_targetstarter
+unitdir=. unix_dbg_targetstarter \
+          $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
           $(LAZDIR)/components/freetype/lib/$(CPU_TARGET)-$(OS_TARGET) \
           $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)
 unittargetdir=.
@@ -38,6 +44,9 @@ all:
         $(MAKE) --assume-new=svn2revisioninc.pas svn2revisioninc$(EXEEXT)
         $(MAKE) --assume-new=updatepofiles.pas updatepofiles$(EXEEXT)
         $(MAKE) --assume-new=lrstolfm.lpr lrstolfm$(EXEEXT)
+ifeq ($(OS_TARGET),linux)
+        $(MAKE) --assume-new=unix_dbg_targetstarter/lazdebugtargetstarter.lpr lazdebugtargetstarter$(EXEEXT)
+endif
 
 # end.
 

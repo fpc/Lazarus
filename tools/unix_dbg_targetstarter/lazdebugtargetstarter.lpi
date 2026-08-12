@@ -11,8 +11,8 @@
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <Title Value="LazDebugTargetStarter"/>
+      <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
-      <UseXPManifest Value="True"/>
       <XPManifest>
         <DpiAware Value="True"/>
       </XPManifest>
@@ -49,7 +49,7 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="../lazdebugtargetstarter"/>
+      <Filename Value="..\lazdebugtargetstarter"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
@@ -57,20 +57,14 @@
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>
-        <IncludeAssertionCode Value="True"/>
+        <AllowLabel Value="False"/>
       </SyntaxOptions>
     </Parsing>
-    <CodeGeneration>
-      <Checks>
-        <IOChecks Value="True"/>
-        <RangeChecks Value="True"/>
-        <OverflowChecks Value="True"/>
-        <StackChecks Value="True"/>
-      </Checks>
-    </CodeGeneration>
     <Linking>
       <Debugging>
-        <DebugInfoType Value="dsDwarf3"/>
+        <GenerateDebugInfo Value="False"/>
+        <RunWithoutDebug Value="True"/>
+        <UseLineInfoUnit Value="False"/>
       </Debugging>
     </Linking>
   </CompilerOptions>
