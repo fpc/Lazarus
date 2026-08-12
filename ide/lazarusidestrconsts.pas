@@ -1390,7 +1390,6 @@ resourcestring
   lisToolHeaderRunning = 'Tool Header: Running';
   lisToolHeaderSuccess = 'Tool Header: Success';
   lisToolHeaderFailed = 'Tool Header: Failed';
-  lisToolHeaderScrolledUp = 'Tool Header: Scrolled up';
   dlgSubPropColor = 'SubProperties';
   dlgReferenceColor = 'Reference';
   lisAllBuildModes = '<All build modes>';

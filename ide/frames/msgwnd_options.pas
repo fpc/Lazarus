@@ -111,7 +111,6 @@ begin
   Items.Add(lisToolHeaderRunning);
   Items.Add(lisToolHeaderSuccess);
   Items.Add(lisToolHeaderFailed);
-  Items.Add(lisToolHeaderScrolledUp);
   Items.Add(dlfMouseSimpleTextSect);
 end;
 
@@ -210,8 +209,7 @@ begin
   {MWColorListBox.Colors[mwBackground]:=aSynEdit.Color;
   MWColorListBox.Colors[mwRunning]:=aSynEdit.
   MWColorListBox.Colors[mwSuccess]:=aSynEdit.
-  MWColorListBox.Colors[mwFailed]:=aSynEdit.
-  MWColorListBox.Colors[mwAutoHeader]:=aSynEdit.}
+  MWColorListBox.Colors[mwFailed]:=aSynEdit.}
   MWColorBox.Selected := MWColorListBox.Selected;
 end;
 
@@ -221,7 +219,6 @@ begin
   MWColorListBox.Colors[ord(mwRunning)]   :=TColor($00CBF3FF); // harmonic pastel yellow
   MWColorListBox.Colors[ord(mwSuccess)]   :=TColor($00BEEFC3); // harmonic pastel green
   MWColorListBox.Colors[ord(mwFailed)]    :=TColor($00CCCBFF); // harmonic pastel rose
-  MWColorListBox.Colors[ord(mwAutoHeader)]:=TColor($00EEC3BD); // harmonic pastel blue
   MWColorBox.Selected := MWColorListBox.Selected;
 end;
 

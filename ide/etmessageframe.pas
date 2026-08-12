@@ -238,7 +238,6 @@ type
     // The View whose header is painted as hint over the first visual row.
     fHeaderHintView: TLMsgWndView;
     fUrgencyStyles: array[TMessageLineUrgency] of TMsgCtrlUrgencyStyle;
-    FAutoHeaderBackground: TColor;
     // The View with the first selected line (property SelLineFirst).
     // Extending selection is done relative to this.
     FStartSelectionView: TLMsgWndView;
@@ -297,7 +296,6 @@ type
     procedure SetWordWrap(AValue: boolean);
     procedure SetUrgencyStyles(Urgency: TMessageLineUrgency;
       AValue: TMsgCtrlUrgencyStyle);
-    procedure SetAutoHeaderBackground(AValue: TColor);
     procedure WMHScroll(var Msg: TLMScroll); message LM_HSCROLL;
     procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
     procedure WMMouseWheel(var Message: TLMMouseEvent); message LM_MOUSEWHEEL;
@@ -402,7 +400,6 @@ type
     function ApplySrcChanges(Changes: TETSingleSrcChanges): boolean; // true if something changed
   public
     // properties
-    property AutoHeaderBackground: TColor read FAutoHeaderBackground write SetAutoHeaderBackground default MsgWndDefAutoHeaderBackground;
     property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor default MsgWndDefBackgroundColor;
     property Color default clWindow;
     property FilenameStyle: TMsgWndFileNameStyle read FFilenameStyle write SetFilenameStyle;
@@ -1421,7 +1418,6 @@ begin
   FHeaderBackground[lmvtsRunning]:=MsgWndDefHeaderBackgroundRunning;
   FHeaderBackground[lmvtsSuccess]:=MsgWndDefHeaderBackgroundSuccess;
   FHeaderBackground[lmvtsFailed]:=MsgWndDefHeaderBackgroundFailed;
-  FAutoHeaderBackground:=MsgWndDefAutoHeaderBackground;
   FTextColor:=MsgWndDefTextColor;
   TabStop:=True;
   ParentColor:=False;
@@ -1870,13 +1866,6 @@ procedure TMessagesCtrl.SetUrgencyStyles(Urgency: TMessageLineUrgency;
   AValue: TMsgCtrlUrgencyStyle);
 begin
   fUrgencyStyles[Urgency].Assign(AValue);
-end;
-
-procedure TMessagesCtrl.SetAutoHeaderBackground(AValue: TColor);
-begin
-  if FAutoHeaderBackground=AValue then Exit;
-  FAutoHeaderBackground:=AValue;
-  Invalidate;
 end;
 
 function TMessagesCtrl.UrgencyToStr(Urgency: TMessageLineUrgency): string;
@@ -2896,6 +2885,24 @@ var
     end;
   end;
 
+  procedure DrawHeaderHintShadow;
+  // The sticky header hint covers the topmost visual row. Draw a shadow below it,
+  // onto the already painted background of the next message line, before its text.
+  // There is no alpha => fade from a shadow color to the background color.
+  var
+    r: TRect;
+    ShadowColor: TColor;
+  begin
+    r:=Rect(0,ItemHeight,ClientWidth,
+            Min(ItemHeight+Max(2,ItemHeight div 4),ClientHeight));
+    if r.Bottom<=r.Top then exit;
+    if ColorIsDark(BackgroundColor) then
+      ShadowColor:=GetHighLightColor(BackgroundColor,50) // light shadow on dark theme
+    else
+      ShadowColor:=GetShadowColor(BackgroundColor,-50);  // dark shadow on light theme
+    Canvas.GradientFill(r,ShadowColor,BackgroundColor,gdVertical);
+  end;
+
   procedure RecordPaintedLine(View: TLMsgWndView; LogLine, YTop, YBottom: integer);
   begin
     if View.fPaintedCount>=length(View.fPaintedLines) then
@@ -2999,6 +3006,18 @@ begin
           Col:=TextColor;
         yTop:=y;
         for r:=0 to Rows-1 do begin
+          if not IsSelected then begin
+            if (y>-ItemHeight) and (y<=0) then
+              FirstLineIsNotSelectedMessage:=true
+            else if (y>0) and (y<=ItemHeight) then begin
+              SecondLineIsNotSelectedMessage:=true;
+              if FirstLineIsNotSelectedMessage then
+                // the view header hint will be painted at the top
+                // => draw its shadow now: the background is already painted
+                // and the text of this row follows below
+                DrawHeaderHintShadow;
+            end;
+          end;
           RowLeft:=Indent;
           if r>0 then inc(RowLeft,fIconWidth);
           if (y+ItemHeight>0) and (y<ClientHeight) then begin
@@ -3017,12 +3036,6 @@ begin
             else
               RowEnd:=length(Txt)+1;
             DrawVisualRow(NodeRect,Txt,RowStarts[r],RowEnd,Continued,IsSelected,Col);
-          end;
-          if not IsSelected then begin
-            if (y>-ItemHeight) and (y<=0) then
-              FirstLineIsNotSelectedMessage:=true
-            else if (y>0) and (y<=ItemHeight) then
-              SecondLineIsNotSelectedMessage:=true;
           end;
           inc(y,ItemHeight);
           if y>ClientHeight then break;
@@ -3057,17 +3070,13 @@ begin
 
     if FirstLineIsNotSelectedMessage and SecondLineIsNotSelectedMessage then begin
       // the first two visual Rows are normal messages, not selected
-      // => paint view header hint
+      // => paint view header hint (its shadow was already painted below)
       fHasHeaderHint:=True;
       fHeaderHintView:=View;
-      NodeRect:=Rect(0,0,ClientWidth,ItemHeight div 2);
+      NodeRect:=Rect(0,0,ClientWidth,ItemHeight);
       Canvas.Brush.Color:=HeaderBackground[View.ToolState];
       Canvas.Brush.Style:=bsSolid;
       Canvas.FillRect(NodeRect);
-      NodeRect:=Rect(0,NodeRect.Bottom,ClientWidth,ItemHeight);
-      Canvas.GradientFill(NodeRect,HeaderBackground[View.ToolState],
-        AutoHeaderBackground,gdVertical);
-      NodeRect:=Rect(0,0,ClientWidth,ItemHeight);
       DrawText(NodeRect,'...'+View.GetHeaderText,false,
         HeaderTextColor(HeaderBackground[View.ToolState]));
       Canvas.Brush.Color:=BackgroundColor;
@@ -4106,7 +4115,6 @@ begin
   for u in TMessageLineUrgency do
     UrgencyStyles[u].Color:=EnvironmentGuiOpts.MsgColors[u];
   BackgroundColor:=EnvironmentGuiOpts.MsgViewColors[mwBackground];
-  AutoHeaderBackground:=EnvironmentGuiOpts.MsgViewColors[mwAutoHeader];
   HeaderBackground[lmvtsRunning]:=EnvironmentGuiOpts.MsgViewColors[mwRunning];
   HeaderBackground[lmvtsSuccess]:=EnvironmentGuiOpts.MsgViewColors[mwSuccess];
   HeaderBackground[lmvtsFailed]:=EnvironmentGuiOpts.MsgViewColors[mwFailed];
@@ -5122,7 +5130,7 @@ end;
 
 procedure TMessagesFrame.UpdateErrorsPanel;
 var
-  Cnt, i, aLineCnt: Integer;
+  Cnt: Integer;
   NewParent: TWinControl;
 begin
   if FErrorsPanel=nil then exit;

@@ -57,7 +57,6 @@ type
     mwRunning,
     mwSuccess,
     mwFailed,
-    mwAutoHeader,
     mwTextColor
     );
 const
@@ -65,7 +64,6 @@ const
   MsgWndDefHeaderBackgroundRunning = clYellow;
   MsgWndDefHeaderBackgroundSuccess = TColor($60FF60); // light green
   MsgWndDefHeaderBackgroundFailed = TColor($6060FF); // light red
-  MsgWndDefAutoHeaderBackground = clSkyBlue;
   MsgWndDefTextColor = clDefault;
 
   MsgWndDefaultColors: array[TMsgWndColor] of TColor = (
@@ -73,7 +71,6 @@ const
     MsgWndDefHeaderBackgroundRunning, // mwRunning
     MsgWndDefHeaderBackgroundSuccess, // mwSuccess
     MsgWndDefHeaderBackgroundFailed,  // mwFailed
-    MsgWndDefAutoHeaderBackground,    // mwAutoHeader
     MsgWndDefTextColor
     );
   MsgWndColorNames: array[TMsgWndColor] of string = (
@@ -81,7 +78,6 @@ const
     'Running',
     'Success',
     'Failed',
-    'AutoHeader',
     'TextColor'
     );
 
