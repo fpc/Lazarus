@@ -11,8 +11,8 @@ Packager:       Mattias Gaertner
 BuildRoot:      %{_tmppath}/lazarus-%{version}-%{release}-root-%(%{__id_u} -n)
 Conflicts:      lazarus, lazarus-ide, lazarus-docs, lazarus-lcl, lazarus-lcl-gtk, lazarus-lcl-gtk2, lazarus-lcl-gtk3, lazarus-lcl-nogui, lazarus-lcl-qt, lazarus-lcl-qt5, lazarus-lcl-qt6, lazarus-tools
 
-BuildRequires:  fpc-laz = FPCVERSION, gtk2-devel, glibc-devel
-Requires:       fpc-src-laz = FPCSRCVERSION, fpc-laz = FPCVERSION, gtk2-devel, glibc-devel, binutils, gdb
+BuildRequires:  fpc-laz = FPCVERSION, gtk3-devel, glibc-devel
+Requires:       fpc-src-laz = FPCSRCVERSION, fpc-laz = FPCVERSION, gtk3-devel, glibc-devel, binutils, gdb
 
 Requires(post): desktop-file-utils
 Requires(postun): desktop-file-utils
@@ -51,6 +51,7 @@ strip tools/lazres
 strip tools/updatepofiles
 strip tools/lrstolfm
 strip tools/svn2revisioninc
+strip tools/lazdebugtargetstarter
 if [ -f components/chmhelp/lhelp/lhelp ]; then
   strip components/chmhelp/lhelp/lhelp
 fi
@@ -73,6 +74,7 @@ cp -a lazarus/* %{buildroot}$LAZARUSDIR/
 ln -sf $LAZARUSDIR/lazarus %{buildroot}%{_bindir}/lazarus-ide
 ln -sf $LAZARUSDIR/startlazarus %{buildroot}%{_bindir}/startlazarus
 ln -sf $LAZARUSDIR/lazbuild %{buildroot}%{_bindir}/lazbuild
+ln -sf $LAZARUSDIR/tools/lazdebugtargetstarter %{buildroot}%{_bindir}/lazdebugtargetstarter
 cat lazarus/install/man/man1/lazbuild.1 | gzip > %{buildroot}%{_mandir}/man1/lazbuild.1.gz
 cat lazarus/install/man/man1/lazarus-ide.1 | gzip > %{buildroot}%{_mandir}/man1/lazarus-ide.1.gz
 cat lazarus/install/man/man1/startlazarus.1 | gzip > %{buildroot}%{_mandir}/man1/startlazarus.1.gz
@@ -100,6 +102,8 @@ update-desktop-database &> /dev/null ||:
 %{_mandir}/*/*
 
 %changelog
+* Wed Aug 12 20262 Mattias Gaertner <mattias@freepascal.org> 5.0-0
+- lazdebugtargetstarter
 * Thu Jun 21 2012 Mattias Gaertner <mattias@freepascal.org> 1.0-0
 - 128x128 icon, chmhelp
 * Sat Sep 9 2006 Mattias Gaertner <mattias@freepascal.org> 0.9.18-0

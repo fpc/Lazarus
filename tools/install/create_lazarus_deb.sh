@@ -214,6 +214,7 @@ strip tools/updatepofiles
 strip tools/lrstolfm
 # Note: svn2revisioninc supports git too
 strip tools/svn2revisioninc
+strip tools/lazdebugtargetstarter
 if [ -f components/chmhelp/lhelp/lhelp ]; then
   strip components/chmhelp/lhelp/lhelp
 fi
@@ -258,6 +259,7 @@ install -m 644 $LazDestDir/install/lazarus-mime.xml $LazBuildDir/usr/share/mime/
 ln -s $LazDestDirInstalled/lazarus $LazBuildDir/usr/bin/lazarus-ide
 ln -s $LazDestDirInstalled/startlazarus $LazBuildDir/usr/bin/startlazarus
 ln -s $LazDestDirInstalled/lazbuild $LazBuildDir/usr/bin/lazbuild
+ln -s $LazDestDirInstalled/tools/lazdebugtargetstarter $LazBuildDir/usr/bin/lazdebugtargetstarter
 
 # docs
 mkdir -p $LazBuildDir/usr/share/man/man1
