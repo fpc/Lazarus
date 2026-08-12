@@ -620,6 +620,10 @@ begin
     if not Assigned(LPageCtrl.Resizer) then
     begin
       LPageCtrl.CreateResizer;
+      // EditorActivated could not create the anchors page, because the form was
+      // not yet loaded
+      if LDesignForm.IsAnchorDesign then
+        LPageCtrl.CreateTabSheetAnchors;
       LPageCtrl.InitPage;
     end;
     LSourceWindow.ActiveDesignForm := LDesignForm;
