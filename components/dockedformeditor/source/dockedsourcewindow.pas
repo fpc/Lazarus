@@ -30,7 +30,7 @@ uses
   // LCL
   Forms, Controls, LCLProc,
   // IDEIntf
-  SrcEditorIntf, LazIDEIntf, FormEditingIntf, ExtendedNotebook,
+  SrcEditorIntf, LazIDEIntf, FormEditingIntf,
   // DockedFormEditor
   DockedDesignForm, DockedSourcePageControl,
   DockedOptionsIDE, DockedTools;
@@ -44,7 +44,6 @@ type
     FActiveDesignForm: TDesignForm;
     FLastActiveSourceEditor: TSourceEditorInterface;
     FLastTopParent: TControl;
-    FNotebook: TExtendedNotebook;
     FPageControlList: TSourcePageControls;
     FSourceWindowIntf: TSourceEditorWindowInterface;
     function GetActiveEditor: TSourceEditorInterface;

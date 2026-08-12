@@ -23,9 +23,7 @@ uses
   //LazUtils
   LazLoggerBase, LazFileCache, LazFileUtils,
   // IDEIntf
-  IDEMsgIntf, SrcEditorIntf, IDEExternToolIntf,
-  // DockedFormEditor
-  DockedDesignForm;
+  IDEMsgIntf, SrcEditorIntf, IDEExternToolIntf;
 
 {$IFDEF DEBUGDOCKEDFORMEDITORINIDE}
 procedure DebugLn(s: String); overload;
