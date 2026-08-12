@@ -597,7 +597,6 @@ procedure TExternalTool.DoExecute;
     end;
     CreateView;
     NotifyHandlerStopped;
-
     Result:=true;
   end;
 

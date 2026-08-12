@@ -1094,6 +1094,8 @@ begin
           MsgLine.Urgency:=mluPanic;
           MsgLine.Msg:=Format(lisInternalError, [sl[i]]);
           PendingLines.Add(MsgLine);
+          if EnvironmentGuiOpts.MsgViewShowAutomatically=mwsaError then
+            LazarusIDE.DoShowMessagesView;
         end;
       finally
         sl.Free;
