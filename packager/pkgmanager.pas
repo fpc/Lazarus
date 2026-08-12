@@ -4448,7 +4448,7 @@ begin
     LazarusIDE.ToolStatus:=itBuilder;
   end;
   MessagesView.ApplyIDEOptions;
-  if EnvironmentGuiOpts.MsgViewShowAutomatically = mwsaCompiling then
+  if EnvironmentGuiOpts.MsgViewShowAutomatically = mwsaDefault then
     IDEWindowCreators.ShowForm(MessagesView,EnvironmentGuiOpts.MsgViewFocus);
   Result:=PackageGraph.CompilePackage(TLazPackage(APackage),Flags,false);
   if LazarusIDE<>nil then

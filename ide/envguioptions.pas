@@ -40,14 +40,14 @@ const
     'Full'      // mwfsFull
     );
 type
-  TMsgWndShowAutomatically = (
-    mwsaCompiling,
-    mwsaError,
-    mwsaNever
+  TMsgWndShowAutomatically = (  // Messages window is opened automatically ...
+    mwsaDefault, // when any message is received
+    mwsaError,   // when an error occurs
+    mwsaNever    // never
   );
 const
   MsgWndShowAutoNames: array[TMsgWndShowAutomatically] of string = (
-    'Compiling', // mwsaCompiling
+    'Default',   // mwsaDefault
     'Error',     // mwsaError
     'Never'      // mwsaNever
     );
@@ -438,7 +438,7 @@ function StrToMsgWndShowAuto(const s: string): TMsgWndShowAutomatically;
 begin
   for Result in TMsgWndShowAutomatically do
     if CompareText(s,MsgWndShowAutoNames[Result])=0 then exit;
-  Result:=mwsaCompiling;
+  Result:=mwsaDefault;
 end;
 
 { TCustomDesktopOpt }
@@ -1008,7 +1008,7 @@ begin
   FMsgViewStayOnTop:=false;
   fMsgViewFocus:=DefaultMsgViewFocus;
   FShowMessagesIcons:=true;
-  FMsgViewShowAutomatically:=mwsaCompiling;
+  FMsgViewShowAutomatically:=mwsaDefault;
   FMsgViewShowTranslations:=false;
   FMsgViewAlwaysDrawFocused:=false;
   FMsgViewWordWrap:=true;
@@ -1105,7 +1105,7 @@ begin
   fMsgViewFocus:=XMLCfg.GetValue(Path+'MsgView/Focus/Value',FMsgViewFocus);
   FShowMessagesIcons:=XMLCfg.GetValue(Path+'MsgView/ShowMessagesIcons/Value',true);
   FMsgViewShowAutomatically:=StrToMsgWndShowAuto(XMLCfg.GetValue(
-    Path+'MsgView/ShowAutomatically/Value',MsgWndShowAutoNames[mwsaCompiling]));
+    Path+'MsgView/ShowAutomatically/Value',MsgWndShowAutoNames[mwsaDefault]));
   FMsgViewShowTranslations:=XMLCfg.GetValue(Path+'MsgView/ShowTranslations/Value',false);
   FMsgViewAlwaysDrawFocused:=XMLCfg.GetValue(Path+'MsgView/AlwaysDrawFocused/Value',false);
   FMsgViewWordWrap:=XMLCfg.GetValue(Path+'MsgView/WordWrap/Value',true);
@@ -1237,7 +1237,7 @@ begin
   XMLCfg.SetDeleteValue(Path+'MsgView/ShowMessagesIcons/Value',FShowMessagesIcons,true);
   XMLCfg.SetDeleteValue(Path+'MsgView/ShowAutomatically/Value',
     MsgWndShowAutoNames[FMsgViewShowAutomatically],
-    MsgWndShowAutoNames[mwsaCompiling]);
+    MsgWndShowAutoNames[mwsaDefault]);
   XMLCfg.SetDeleteValue(Path+'MsgView/ShowTranslations/Value',FMsgViewShowTranslations,false);
   XMLCfg.SetDeleteValue(Path+'MsgView/AlwaysDrawFocused/Value',FMsgViewAlwaysDrawFocused,false);
   XMLCfg.SetDeleteValue(Path+'MsgView/WordWrap/Value',FMsgViewWordWrap,true);

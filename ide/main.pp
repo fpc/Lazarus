@@ -6996,7 +6996,7 @@ begin
 
   // show messages
   MessagesView.ApplyIDEOptions;
-  if EnvironmentGuiOpts.MsgViewShowAutomatically = mwsaCompiling then
+  if EnvironmentGuiOpts.MsgViewShowAutomatically = mwsaDefault then
     IDEWindowCreators.ShowForm(MessagesView,EnvironmentGuiOpts.MsgViewFocus);
   // clear old error lines
   SourceEditorManager.ClearErrorLines;
@@ -7320,7 +7320,7 @@ begin
     // check sources
     DoCheckFilesOnDisk;
   end;
-  if EnvironmentGuiOpts.MsgViewShowAutomatically = mwsaCompiling then
+  if EnvironmentGuiOpts.MsgViewShowAutomatically = mwsaDefault then
     IDEWindowCreators.ShowForm(MessagesView,EnvironmentGuiOpts.MsgViewFocus);
   if ConsoleVerbosity>=0 then
     debugln(['Info: (lazarus) [TMainIDE.DoBuildProject] Success']);
@@ -8091,7 +8091,7 @@ begin
 
   // show messages
   MessagesView.ApplyIDEOptions;
-  if EnvironmentGuiOpts.MsgViewShowAutomatically = mwsaCompiling then
+  if EnvironmentGuiOpts.MsgViewShowAutomatically = mwsaDefault then
     IDEWindowCreators.ShowForm(MessagesView,EnvironmentGuiOpts.MsgViewFocus);
   // clear old error lines
   SourceEditorManager.ClearErrorLines;
@@ -8709,7 +8709,7 @@ begin
   if CodeToolBoss.CheckSyntax(ActiveUnitInfo.Source,NewCode,NewX,NewY,
     NewTopLine,ErrorMsg) then
   begin
-    if EnvironmentGuiOpts.MsgViewShowAutomatically = mwsaCompiling then
+    if EnvironmentGuiOpts.MsgViewShowAutomatically = mwsaDefault then
       DoShowMessagesView;
     MessagesView.ClearCustomMessages;
     MessagesView.AddCustomMessage(mluImportant,lisMenuQuickSyntaxCheckOk);
