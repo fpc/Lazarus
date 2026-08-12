@@ -10000,8 +10000,8 @@ msgstr "ສ້ອມແປງໄຟລ໌ LFM"
 msgid "Focus hint"
 msgstr "Focus hint"
 
-#: lazarusidestrconsts.lisfocuswhengettingmessages
-msgid "Focus when getting messages"
+#: lazarusidestrconsts.lisfocuswindow
+msgid "Focus window"
 msgstr ""
 
 #: lazarusidestrconsts.lisforcerenaming
@@ -17913,10 +17913,6 @@ msgstr "Tool Header: ລົ້ມເຫຼວ"
 #: lazarusidestrconsts.listoolheaderrunning
 msgid "Tool Header: Running"
 msgstr "Tool Header: ກຳລັງເຮັດວຽກ"
-
-#: lazarusidestrconsts.listoolheaderscrolledup
-msgid "Tool Header: Scrolled up"
-msgstr "Tool Header: ເລື່ອນຂຶ້ນ"
 
 #: lazarusidestrconsts.listoolheadersuccess
 msgid "Tool Header: Success"

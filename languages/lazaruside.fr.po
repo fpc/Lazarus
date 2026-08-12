@@ -10046,8 +10046,8 @@ msgstr "Corriger le fichier LFM"
 msgid "Focus hint"
 msgstr "Bulle d'aide de focus"
 
-#: lazarusidestrconsts.lisfocuswhengettingmessages
-msgid "Focus when getting messages"
+#: lazarusidestrconsts.lisfocuswindow
+msgid "Focus window"
 msgstr ""
 
 #: lazarusidestrconsts.lisforcerenaming
@@ -17988,10 +17988,6 @@ msgstr "En-tête d'outil : Échec"
 #: lazarusidestrconsts.listoolheaderrunning
 msgid "Tool Header: Running"
 msgstr "En-tête d'outil : En cours"
-
-#: lazarusidestrconsts.listoolheaderscrolledup
-msgid "Tool Header: Scrolled up"
-msgstr "En-tête d'outil : Défilé vers le haut"
 
 #: lazarusidestrconsts.listoolheadersuccess
 msgid "Tool Header: Success"

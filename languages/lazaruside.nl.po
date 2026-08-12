@@ -10264,8 +10264,8 @@ msgstr "Repareer .lfm-bestand"
 msgid "Focus hint"
 msgstr ""
 
-#: lazarusidestrconsts.lisfocuswhengettingmessages
-msgid "Focus when getting messages"
+#: lazarusidestrconsts.lisfocuswindow
+msgid "Focus window"
 msgstr ""
 
 #: lazarusidestrconsts.lisforcerenaming
@@ -18437,10 +18437,6 @@ msgstr ""
 
 #: lazarusidestrconsts.listoolheaderrunning
 msgid "Tool Header: Running"
-msgstr ""
-
-#: lazarusidestrconsts.listoolheaderscrolledup
-msgid "Tool Header: Scrolled up"
 msgstr ""
 
 #: lazarusidestrconsts.listoolheadersuccess

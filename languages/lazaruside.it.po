@@ -10260,8 +10260,8 @@ msgstr "Ripara file LFM"
 msgid "Focus hint"
 msgstr "Fuoco sui consigli"
 
-#: lazarusidestrconsts.lisfocuswhengettingmessages
-msgid "Focus when getting messages"
+#: lazarusidestrconsts.lisfocuswindow
+msgid "Focus window"
 msgstr ""
 
 #: lazarusidestrconsts.lisforcerenaming
@@ -18312,10 +18312,6 @@ msgstr "Intestazione strumento: Fallita"
 #: lazarusidestrconsts.listoolheaderrunning
 msgid "Tool Header: Running"
 msgstr "Intestazione strumento: In esecuzione"
-
-#: lazarusidestrconsts.listoolheaderscrolledup
-msgid "Tool Header: Scrolled up"
-msgstr "Intestazione strumento: Scorrimento in su"
 
 #: lazarusidestrconsts.listoolheadersuccess
 msgid "Tool Header: Success"

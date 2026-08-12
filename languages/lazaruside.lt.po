@@ -10247,8 +10247,8 @@ msgstr "LFM failo taisa"
 msgid "Focus hint"
 msgstr "Fokusuoti užuominą"
 
-#: lazarusidestrconsts.lisfocuswhengettingmessages
-msgid "Focus when getting messages"
+#: lazarusidestrconsts.lisfocuswindow
+msgid "Focus window"
 msgstr ""
 
 #: lazarusidestrconsts.lisforcerenaming
@@ -18349,10 +18349,6 @@ msgstr "Įrankio antraštė: nepavyko"
 #: lazarusidestrconsts.listoolheaderrunning
 msgid "Tool Header: Running"
 msgstr "Įrankio antraštė: vykdoma"
-
-#: lazarusidestrconsts.listoolheaderscrolledup
-msgid "Tool Header: Scrolled up"
-msgstr "Įrankio antraštė: paslinktas viršun"
 
 #: lazarusidestrconsts.listoolheadersuccess
 msgid "Tool Header: Success"

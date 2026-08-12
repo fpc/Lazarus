@@ -10105,8 +10105,8 @@ msgstr "Виправити файл LFM"
 msgid "Focus hint"
 msgstr "Фокусна підказка"
 
-#: lazarusidestrconsts.lisfocuswhengettingmessages
-msgid "Focus when getting messages"
+#: lazarusidestrconsts.lisfocuswindow
+msgid "Focus window"
 msgstr ""
 
 #: lazarusidestrconsts.lisforcerenaming
@@ -18080,10 +18080,6 @@ msgstr "Заголовок засобу: Невдача"
 #: lazarusidestrconsts.listoolheaderrunning
 msgid "Tool Header: Running"
 msgstr "Заголовок засобу: Виконання"
-
-#: lazarusidestrconsts.listoolheaderscrolledup
-msgid "Tool Header: Scrolled up"
-msgstr "Заголовок засобу: Прокрутка вгору"
 
 #: lazarusidestrconsts.listoolheadersuccess
 msgid "Tool Header: Success"

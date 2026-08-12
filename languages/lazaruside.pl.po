@@ -10244,8 +10244,8 @@ msgstr "Naprawa pliku LFM"
 msgid "Focus hint"
 msgstr "WSKAZÓWKA:"
 
-#: lazarusidestrconsts.lisfocuswhengettingmessages
-msgid "Focus when getting messages"
+#: lazarusidestrconsts.lisfocuswindow
+msgid "Focus window"
 msgstr ""
 
 #: lazarusidestrconsts.lisforcerenaming
@@ -18223,10 +18223,6 @@ msgstr "Narzędzie zaznaczania"
 #, fuzzy
 msgid "Tool Header: Running"
 msgstr "Narzędzie p&omocy"
-
-#: lazarusidestrconsts.listoolheaderscrolledup
-msgid "Tool Header: Scrolled up"
-msgstr ""
 
 #: lazarusidestrconsts.listoolheadersuccess
 #, fuzzy

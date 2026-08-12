@@ -10174,8 +10174,8 @@ msgstr "Opravit LFM soubor"
 msgid "Focus hint"
 msgstr "Tip při fokusu"
 
-#: lazarusidestrconsts.lisfocuswhengettingmessages
-msgid "Focus when getting messages"
+#: lazarusidestrconsts.lisfocuswindow
+msgid "Focus window"
 msgstr ""
 
 #: lazarusidestrconsts.lisforcerenaming
@@ -18183,10 +18183,6 @@ msgstr "Hlavička Nástroje: Selhalo"
 #: lazarusidestrconsts.listoolheaderrunning
 msgid "Tool Header: Running"
 msgstr "Hlavička Nástroje: Běží"
-
-#: lazarusidestrconsts.listoolheaderscrolledup
-msgid "Tool Header: Scrolled up"
-msgstr "Hlavička Nástroje: Odscrollováno"
 
 #: lazarusidestrconsts.listoolheadersuccess
 msgid "Tool Header: Success"

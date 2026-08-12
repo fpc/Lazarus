@@ -10027,8 +10027,8 @@ msgstr "LFM dosyasını düzelt"
 msgid "Focus hint"
 msgstr "İpucuna odaklan"
 
-#: lazarusidestrconsts.lisfocuswhengettingmessages
-msgid "Focus when getting messages"
+#: lazarusidestrconsts.lisfocuswindow
+msgid "Focus window"
 msgstr ""
 
 #: lazarusidestrconsts.lisforcerenaming
@@ -17920,10 +17920,6 @@ msgstr "Araç Başlığı: Başarısız"
 #: lazarusidestrconsts.listoolheaderrunning
 msgid "Tool Header: Running"
 msgstr "Alet Başlığı: Çalışıyor"
-
-#: lazarusidestrconsts.listoolheaderscrolledup
-msgid "Tool Header: Scrolled up"
-msgstr "Araç Başlığı: Kaydırıldı"
 
 #: lazarusidestrconsts.listoolheadersuccess
 msgid "Tool Header: Success"

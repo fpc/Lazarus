@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-08-11 22:31+0300\n"
+"PO-Revision-Date: 2026-08-12 22:59+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -9987,9 +9987,9 @@ msgstr "Исправить файл LFM"
 msgid "Focus hint"
 msgstr "Прикрепить подсказку"
 
-#: lazarusidestrconsts.lisfocuswhengettingmessages
-msgid "Focus when getting messages"
-msgstr "Переводить в фокус при появлении сообщений"
+#: lazarusidestrconsts.lisfocuswindow
+msgid "Focus window"
+msgstr "Переводить окно в фокус"
 
 #: lazarusidestrconsts.lisforcerenaming
 msgid "Force renaming"
@@ -17895,10 +17895,6 @@ msgstr "Заголовок средства: завершение с ошибк�
 #: lazarusidestrconsts.listoolheaderrunning
 msgid "Tool Header: Running"
 msgstr "Заголовок средства: исполнение"
-
-#: lazarusidestrconsts.listoolheaderscrolledup
-msgid "Tool Header: Scrolled up"
-msgstr "Заголовок средства: прокрученный вывод"
 
 #: lazarusidestrconsts.listoolheadersuccess
 msgid "Tool Header: Success"

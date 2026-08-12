@@ -10242,8 +10242,8 @@ msgstr "LFMファイルを修復"
 msgid "Focus hint"
 msgstr "フォーカスヒント"
 
-#: lazarusidestrconsts.lisfocuswhengettingmessages
-msgid "Focus when getting messages"
+#: lazarusidestrconsts.lisfocuswindow
+msgid "Focus window"
 msgstr ""
 
 #: lazarusidestrconsts.lisforcerenaming
@@ -18308,10 +18308,6 @@ msgstr "ツールヘッダ：失敗"
 #: lazarusidestrconsts.listoolheaderrunning
 msgid "Tool Header: Running"
 msgstr "ツールヘッダ：実行中"
-
-#: lazarusidestrconsts.listoolheaderscrolledup
-msgid "Tool Header: Scrolled up"
-msgstr "ツールヘッダ：上へスクロール"
 
 #: lazarusidestrconsts.listoolheadersuccess
 msgid "Tool Header: Success"

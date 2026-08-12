@@ -10104,8 +10104,8 @@ msgstr "LFM-tiedoston korjaus"
 msgid "Focus hint"
 msgstr "Fokusoi vihje"
 
-#: lazarusidestrconsts.lisfocuswhengettingmessages
-msgid "Focus when getting messages"
+#: lazarusidestrconsts.lisfocuswindow
+msgid "Focus window"
 msgstr ""
 
 #: lazarusidestrconsts.lisforcerenaming
@@ -17996,10 +17996,6 @@ msgstr "Työkalu otsikko: Epäonnistui"
 #: lazarusidestrconsts.listoolheaderrunning
 msgid "Tool Header: Running"
 msgstr "Työkalu otsikko: Suorittaa"
-
-#: lazarusidestrconsts.listoolheaderscrolledup
-msgid "Tool Header: Scrolled up"
-msgstr "Työkalu otsikko: Rullattu ylös"
 
 #: lazarusidestrconsts.listoolheadersuccess
 msgid "Tool Header: Success"

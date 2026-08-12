@@ -10131,8 +10131,8 @@ msgstr "LFM fájl javítása"
 msgid "Focus hint"
 msgstr "Fókusz tipp"
 
-#: lazarusidestrconsts.lisfocuswhengettingmessages
-msgid "Focus when getting messages"
+#: lazarusidestrconsts.lisfocuswindow
+msgid "Focus window"
 msgstr ""
 
 #: lazarusidestrconsts.lisforcerenaming
@@ -18115,10 +18115,6 @@ msgstr "Eszköz-fejléc: Sikertelen"
 #: lazarusidestrconsts.listoolheaderrunning
 msgid "Tool Header: Running"
 msgstr "Eszköz-fejléc: Fut"
-
-#: lazarusidestrconsts.listoolheaderscrolledup
-msgid "Tool Header: Scrolled up"
-msgstr "Eszköz-fejléc: Felgördítve"
 
 #: lazarusidestrconsts.listoolheadersuccess
 msgid "Tool Header: Success"

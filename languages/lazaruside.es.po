@@ -10270,8 +10270,8 @@ msgstr "Corregir fichero LFM"
 msgid "Focus hint"
 msgstr "Enfocar sugerencia"
 
-#: lazarusidestrconsts.lisfocuswhengettingmessages
-msgid "Focus when getting messages"
+#: lazarusidestrconsts.lisfocuswindow
+msgid "Focus window"
 msgstr ""
 
 #: lazarusidestrconsts.lisforcerenaming
@@ -18312,10 +18312,6 @@ msgstr "Cabecera de utilidad: Fallida"
 #: lazarusidestrconsts.listoolheaderrunning
 msgid "Tool Header: Running"
 msgstr "Cabecera de utilidad: Funcionando"
-
-#: lazarusidestrconsts.listoolheaderscrolledup
-msgid "Tool Header: Scrolled up"
-msgstr "Cabecera de utilidad: Desplazada hacia arriba"
 
 #: lazarusidestrconsts.listoolheadersuccess
 msgid "Tool Header: Success"

@@ -10147,8 +10147,8 @@ msgstr "Corrigir arquivo LFM"
 msgid "Focus hint"
 msgstr "Dica de foco"
 
-#: lazarusidestrconsts.lisfocuswhengettingmessages
-msgid "Focus when getting messages"
+#: lazarusidestrconsts.lisfocuswindow
+msgid "Focus window"
 msgstr ""
 
 #: lazarusidestrconsts.lisforcerenaming
@@ -18139,10 +18139,6 @@ msgstr "Cabeçalho ferramenta: Falhou"
 #: lazarusidestrconsts.listoolheaderrunning
 msgid "Tool Header: Running"
 msgstr "Cabeçalho ferramenta: Executando"
-
-#: lazarusidestrconsts.listoolheaderscrolledup
-msgid "Tool Header: Scrolled up"
-msgstr "Cabeçalho ferramenta: Deslocado acima"
 
 #: lazarusidestrconsts.listoolheadersuccess
 msgid "Tool Header: Success"
