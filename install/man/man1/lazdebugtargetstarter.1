@@ -1,0 +1,51 @@
+.TH "lazdebugtargetstarter" "1" "12 August 2026" "Lazarus" "Lazarus Debug Target Starter"
+.SH "NAME"
+lazdebugtargetstarter \- The Lazarus helper to start a debug target in a terminal.
+
+.SH "SYNOPSIS"
+.B lazdebugtargetstarter
+.I <pipename> <program> [arguments]
+
+.SH "DESCRIPTION"
+.B lazdebugtargetstarter
+is used by the
+.B Lazarus
+IDE to run a debugged program in a real terminal, so that the program can use
+the terminal for its own input and output while the debugger (gdb or FpDebug)
+controls it.
+
+The IDE creates a named pipe and starts a terminal, which runs this tool with
+the name of that pipe and the command line of the program to debug. The tool
+creates a second named pipe, reports its own process ID and the name of that
+second pipe to the IDE, and then waits until the IDE answers, that is until the
+debugger has attached to the process. Finally the tool replaces itself with the
+program to debug (exec), so the debugged program keeps the process ID the
+debugger attached to and runs in the terminal.
+
+If the IDE does not answer within two minutes, or if any pipe cannot be created
+or opened, the tool removes its pipe and exits without starting the program.
+
+The named pipes are created in
+.B /tmp
+(or in the current directory, if that fails) with names starting with
+.BR laz_fpdebug_starter_p_ .
+
+This tool is only useful on Linux and is normally not called by the user.
+
+.SH "OPTIONS"
+No options. The first argument is the name of the pipe created by the IDE, the
+second argument is the program to run, all further arguments are passed to that
+program. If called with less than two arguments it does nothing.
+
+.SH "SEE ALSO"
+.IP
+.BR lazarus\-ide (1)
+.BR startlazarus (1)
+.BR lazbuild (1)
+.BR gdb (1)
+.BR fpc (1)
+.BR make (1)
+
+.SH "Websites"
+.IP
+.BR  https://www.lazarus-ide.org/

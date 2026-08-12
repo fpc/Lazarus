@@ -259,11 +259,10 @@ install -m 644 $LazDestDir/install/lazarus-mime.xml $LazBuildDir/usr/share/mime/
 ln -s $LazDestDirInstalled/lazarus $LazBuildDir/usr/bin/lazarus-ide
 ln -s $LazDestDirInstalled/startlazarus $LazBuildDir/usr/bin/startlazarus
 ln -s $LazDestDirInstalled/lazbuild $LazBuildDir/usr/bin/lazbuild
-ln -s $LazDestDirInstalled/tools/lazdebugtargetstarter $LazBuildDir/usr/bin/lazdebugtargetstarter
 
 # docs
 mkdir -p $LazBuildDir/usr/share/man/man1
-for exe in lazbuild lazarus-ide startlazarus lazres svn2revisioninc updatepofiles; do
+for exe in lazbuild lazarus-ide startlazarus lazres svn2revisioninc updatepofiles lazdebugtargetstarter; do
   cat $LazDestDir/install/man/man1/$exe.1 | gzip -n --best > $LazBuildDir/usr/share/man/man1/$exe.1.gz
 done
 
