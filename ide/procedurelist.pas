@@ -113,6 +113,7 @@ type
     procedure PopulateGrid;
     { Populates only tho cbObjects combo with available classes. }
     procedure PopulateObjectsCombo;
+    function GetCodeNodeImage(aTool: TCodeTool; aNode: TCodeTreeNode): integer;
     function AddToGrid(pCodeTool: TCodeTool; pNode: TCodeTreeNode): boolean;
     function PassFilter(pSearchAll: boolean; pProcName, pSearchStr: string; pCodeTool: TCodeTool; pNode: TCodeTreeNode): boolean;
     procedure ClearGrid;
@@ -551,6 +552,16 @@ begin
   end;
 end;
 
+function TProcedureListForm.GetCodeNodeImage(aTool: TCodeTool; aNode: TCodeTreeNode): integer;
+begin
+  if aNode.Desc <> ctnProcedure then exit(-1);
+
+  if      aTool.NodeIsConstructor(aNode) then result := FImageIdxConstructor
+  else if aTool.NodeIsDestructor (aNode) then result := FImageIdxDestructor
+  else if aTool.NodeIsFunction   (aNode) then result := FImageIdxFunction
+  else                                        result := FImageIdxProcedure;
+end;
+
 function TProcedureListForm.AddToGrid(pCodeTool: TCodeTool; pNode: TCodeTreeNode): boolean;
 var
   lNodeText: string;
@@ -613,16 +624,8 @@ begin
                    phpWithOfObject,phpWithCallingSpecs,phpWithProcModifiers]);
   lRowObject.FullProcedureName := lNodeText;
 
-  if PosI('procedure ', lNodeText) > 0 then
-    lRowObject.ImageIdx := FImageIdxProcedure
-  else if PosI('function ', lNodeText) > 0 then
-    lRowObject.ImageIdx := FImageIdxFunction
-  else if PosI('constructor ', lNodeText) > 0 then
-    lRowObject.ImageIdx := FImageIdxConstructor
-  else if PosI('destructor ', lNodeText) > 0 then
-    lRowObject.ImageIdx := FImageIdxDestructor
-  else
-    lRowObject.ImageIdx := -1;
+  { image }
+  lRowObject.ImageIdx := GetCodeNodeImage(pCodeTool, pNode);
 
   result := true;
 end;
