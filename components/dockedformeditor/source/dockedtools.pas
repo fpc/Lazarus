@@ -21,7 +21,7 @@ uses
   // LCL
   LCLProc, Forms, Controls,
   //LazUtils
-  LazLoggerBase, LazFileCache,
+  LazLoggerBase, LazFileCache, LazFileUtils,
   // IDEIntf
   IDEMsgIntf, SrcEditorIntf, IDEExternToolIntf,
   // DockedFormEditor
@@ -37,7 +37,7 @@ function  EnumerationString(Str1, Str2: String): String;
 function  FindSourceEditorForDesigner(ADesigner: TIDesigner): TSourceEditorInterface;
 procedure IDEMessage(AString: String);
 function  LinedString(Str1, Str2: String): String;
-function  SourceEditorHasLFM(ASourceEditor: TSourceEditorInterface): Boolean;
+function  SourceEditorHasResourceFile(ASourceEditor: TSourceEditorInterface): Boolean;
 function  SourceWindowCaption(ASourceEditor: TSourceEditorInterface): String;
 function  SourceWindowGet(ASourceEditor: TSourceEditorInterface): TSourceEditorWindowInterface;
 
@@ -95,18 +95,21 @@ begin
     Result := Str1 + LineEnding + Str2;
 end;
 
-function SourceEditorHasLFM(ASourceEditor: TSourceEditorInterface): Boolean;
+function SourceEditorHasResourceFile(ASourceEditor: TSourceEditorInterface): Boolean;
 var
   LFilename: String;
 begin
-  // True if the unit has a form resource (.lfm) on disk, without loading it.
-  // Used to decide whether to show an (empty) designer page as placeholder when
-  // the IDE option "Open designer on open unit" is disabled.
+  // Quick test if the unit could have a form: does a resource file (.lfm, .dfm)
+  // exist? The resource itself is not read and the form is not loaded.
+  // Used to decide whether to show a form page as placeholder. The designer is
+  // created on demand when the user clicks the form page.
   Result := False;
   if not Assigned(ASourceEditor) then Exit;
   LFilename := ASourceEditor.FileName;
-  if LFilename = '' then Exit;
-  Result := FileExistsCached(ChangeFileExt(LFilename, '.lfm'));
+  // a not yet saved unit has no resource file on disk
+  if not FilenameIsAbsolute(LFilename) then Exit;
+  Result := FileExistsCached(ChangeFileExt(LFilename, '.lfm'))
+         or FileExistsCached(ChangeFileExt(LFilename, '.dfm'));
 end;
 
 function SourceWindowCaption(ASourceEditor: TSourceEditorInterface): String;

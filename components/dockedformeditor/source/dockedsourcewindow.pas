@@ -324,8 +324,7 @@ begin
       LSourceEditorInterface := LSourceWindow.ActiveEditor;
       if LSourceEditorInterface = nil then Exit;
       // Use GetDesigner(False): this is a lookup and must not create/load the
-      // designer form (would ignore the "Open designer on open unit" option).
-      // A wrapper only exists for an already loaded designer anyway.
+      // designer form. A wrapper only exists for an already loaded designer anyway.
       Result := DesignForms.Find(LSourceEditorInterface.GetDesigner(False));
       Exit;
     end;

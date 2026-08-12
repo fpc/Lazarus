@@ -449,22 +449,23 @@ begin
     LPageCtrl := TSourcePageControl(LSourceEditor.EditorControl.Parent.Parent);
     if LPageCtrl = nil then Exit;
 
-    // Respect IDE option "Open designer on open unit" (AutoCreateFormsOnOpen).
-    // When disabled, never force the form to load on open/activate. The designer
-    // form is created on demand when the user switches to the designer page (see
-    // TabChange), not here.
-    LDesigner := LSourceEditor.GetDesigner(FormEditingHook.AutoCreateFormsOnOpen);
+    // Never force the form to load on open/activate. The IDE option "Open designer
+    // on open unit" (AutoCreateFormsOnOpen) is only relevant for the undocked
+    // designer. Here the form page itself is the trigger: the designer is created
+    // on demand when the user clicks the form page (see TabChange).
+    LDesigner := LSourceEditor.GetDesigner(False);
 
     LDesignForm := SourceWindows.FindDesignForm(LPageCtrl);
     if LDesigner = nil then
     begin
       // don't create tabs for source editor with lfm,dfm,fmx resource
       if FilenameExtIn(LSourceEditor.FileName, ['.LFM','.DFM','.FMX'])
-      or FormEditingHook.AutoCreateFormsOnOpen then
+      // quick test: without a resource file (lfm, dfm) the unit has no form
+      or not SourceEditorHasResourceFile(LSourceEditor) then
         LPageCtrl.RemoveDesignPages
       else
-        // The unit has a form, but the option is off: show an empty designer page
-        // as placeholder. The form is loaded on demand when the user switches to it.
+        // The unit might have a form: show the form page as placeholder. The
+        // form is loaded when the user clicks the page.
         LPageCtrl.CreateTabSheetDesigner;
     end
     else begin
@@ -614,8 +615,8 @@ begin
     LPageCtrl.InitPage;
     LSourceWindowIntf.ActiveEditor.EditorControl.SetFocus;
   end else begin
-    // The form may have just been loaded on demand (option "Open designer on open
-    // unit" disabled, placeholder page): build the resizer now and lay out the page.
+    // The form was just loaded on demand by GetDesigner above (the form page was
+    // only a placeholder): build the resizer now and lay out the page.
     if not Assigned(LPageCtrl.Resizer) then
     begin
       LPageCtrl.CreateResizer;
