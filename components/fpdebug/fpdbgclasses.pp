@@ -930,8 +930,8 @@ type
   end;
 
   TDbgInstInfo = record
-    InstrType: (itAny, itJump);
-    InstrTargetOffs: Int64; // offset from the START address of instruction
+    InstrType: (itAny, itJump, itJumpAbs);
+    InstrTargetOffs: Int64; // offset from the START address of instruction, or absolute offset
   end;
 
   TDbgFrameBoundaryKind = (
@@ -961,7 +961,7 @@ type
 
     procedure Disassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String; out AnInfo: TDbgInstInfo); virtual; overload;
     procedure Disassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String); virtual; abstract; overload;
-    procedure ReverseDisassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String); virtual;
+    procedure ReverseDisassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String; out AnInfo: TDbgInstInfo); virtual;
 
     function GetInstructionInfo(AnAddress: TDBGPtr): TDbgAsmInstruction; virtual; abstract;
     function GetFrameBoundaryInfo(AnAddress: TDBGPtr; out AFrameBoundaryInfo: TDbgFrameBoundaryInfo; ARoutineStartAddr: TDBGPtr = 0): TDbgFrameBoundaryKind; virtual;
@@ -2444,7 +2444,7 @@ end;
 // Many pitfalls with X86 instruction encoding...
 // Avr may give 130/65535 = 0.2% errors per instruction reverse decoded
 procedure TDbgAsmDecoder.ReverseDisassemble(var AAddress: Pointer; out
-  ACodeBytes: String; out ACode: String);
+  ACodeBytes: String; out ACode: String; out AnInfo: TDbgInstInfo);
 var
   instrLen: integer;
   tmpAddress: PtrUint;
@@ -2454,7 +2454,7 @@ begin
   repeat
     dec(instrLen, MinInstructionSize);
     tmpAddress := PtrUInt(AAddress) - instrLen;
-    Disassemble(pointer(tmpAddress), ACodeBytes, ACode);
+    Disassemble(pointer(tmpAddress), ACodeBytes, ACode, AnInfo);
   until (tmpAddress >= PtrUInt(AAddress)) or (instrLen = MinInstructionSize);
 
   // After disassemble tmpAddress points to the starting address of next instruction
