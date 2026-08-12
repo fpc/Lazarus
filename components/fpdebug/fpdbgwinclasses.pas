@@ -1000,11 +1000,13 @@ function TDbgWinProcess.GetConsoleOutput: string;
 var
   Avail: DWord;
   Buf: array of Byte;
-  Got: LongInt;
+  Got, c: LongInt;
 begin
   Result := '';
   if FGetConsoleBufferCnt = 1 then
     Result := FGetConsoleBuffer;
+  c := FGetConsoleBufferCnt;
+  FGetConsoleBufferCnt := 0;
   if (FProcProcess = nil) or (FProcProcess.Output = nil) then
     Exit;
   try
@@ -1015,9 +1017,10 @@ begin
   if Avail = 0 then
     Exit;
   FGetConsoleBufferNeedSleep := False; // there was something to be read after all
-  SetLength(Buf, Avail+FGetConsoleBufferCnt);
+  SetLength(Buf, Avail+c);
   Buf[0] := ord(FGetConsoleBuffer);
-  Got := FProcProcess.Output.Read(Buf[FGetConsoleBufferCnt], Avail);
+  Got := FProcProcess.Output.Read(Buf[c], Avail) + c;
+
   if Got > 0 then
     SetString(Result, PAnsiChar(@Buf[0]), Got);
 end;
