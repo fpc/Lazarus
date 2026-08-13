@@ -3971,6 +3971,11 @@ begin
   begin
     if g_object_get_data(AParent, 'lcl-tab-switch-active') <> nil then
       exit;
+    if g_object_get_data(AParent, 'lcl-setfocus-descend') <> nil then
+    begin
+      Result := gtk_false;
+      exit;
+    end;
     AParent := AParent^.get_parent;
   end;
   aForm := GetParentForm(TGtk3Widget(aData).LCLObject);
@@ -5044,7 +5049,14 @@ begin
         PGtkWindow(TopLevel)^.set_focus(FocusWidget);
     end else
     if GetContainerWidget^.get_mapped then
-      GetContainerWidget^.child_focus(GTK_DIR_TAB_FORWARD);
+    begin
+      g_object_set_data(GetContainerWidget, 'lcl-setfocus-descend', Pointer(1));
+      try
+        GetContainerWidget^.child_focus(GTK_DIR_TAB_FORWARD);
+      finally
+        g_object_set_data(GetContainerWidget, 'lcl-setfocus-descend', nil);
+      end;
+    end;
   end;
 end;
 
