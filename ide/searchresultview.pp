@@ -852,12 +852,12 @@ function TSearchResultsView.BeautifyPageName(const APageName: string; out
 const
   MaxPageName = 25;
 begin
-  aoTabEllipsed:= False;
-  Result:=Utf8EscapeControlChars(APageName, emHexPascal);
-  if UTF8Length(Result)>MaxPageName then begin
-    Result:=UTF8Copy(Result,1,MaxPageName-5)+'...';
-    aoTabEllipsed:= True;
-  end;
+  aoTabEllipsed := UTF8Length(result) > MaxPageName;
+  if aoTabEllipsed then
+    result := UTF8Copy(result, 1, MaxPageName - 5) + '...';
+  // escape special chars after trimming to avoid cutting off special sequences
+  result := Utf8EscapeControlChars(APageName, emHexPascal);
+  result := StringReplace(result, '&', '&&', [rfReplaceAll]); // escape key accel
 end;
 
 procedure TSearchResultsView.AddMatch(const APageIndex: integer;
@@ -955,10 +955,8 @@ begin
 
   // Page name
   lPage := GetResultsPage(APageIndex); // this also check APageIndex range
-  if (lPage <> nil) and (APageName <> '') then
-  begin
-    lPage.Caption := StringReplace(BeautifyPageName(APageName, lEllipsed), '&', '&&', [rfReplaceAll]);
-  end;
+  if APageName <> '' then
+    lPage.Caption := BeautifyPageName(APageName, lEllipsed);
 
   // Count
   lPage.Caption := lPage.Caption + ' (' + inttostr(lTree.Items.Count - lTree.Items.TopLvlCount) + ')';
@@ -1245,7 +1243,6 @@ begin
   begin
     FFocusTreeViewInEndUpdate := (ActivePage = nil) and SearchInListEdit.IsParentOf(ActivePage);
     lTabCaption := BeautifyPageName(aSearchText, lTabEllipsed); // default page name
-    lTabCaption := StringReplace(lTabCaption, '&', '&&', [rfReplaceAll]); // escape accel in tab caption
     PageIndex := TCustomTabControl(ResultsNoteBook).Pages.Add(lTabCaption);
 
     lNewTree := TLazSearchResultTV.Create(Page[PageIndex]);
