@@ -24,12 +24,12 @@
         <UnitName Value="lmfObj"/>
       </Item>
       <Item>
-        <Filename Value="lmfreadwrite.pas"/>
-        <UnitName Value="lmfreadwrite"/>
+        <Filename Value="lmfwmf.pas"/>
+        <UnitName Value="lmfWMF"/>
       </Item>
       <Item>
-        <Filename Value="lmfwmf.pas"/>
-        <UnitName Value="lmfwmf"/>
+        <Filename Value="lmfwmfwrite.pas"/>
+        <UnitName Value="lmfWMFWrite"/>
       </Item>
     </Files>
     <RequiredPkgs>

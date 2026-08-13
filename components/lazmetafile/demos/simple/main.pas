@@ -33,7 +33,7 @@ implementation
 procedure TMainForm.FormCreate(Sender: TObject);
 var
   LmfCanvas: TlmfCanvas;
-  P: array[0..4] of TPoint;
+  P: array[0..5] of TPoint;
   P1, P2, C: TPoint;
   R: TRect;
   ts: TTextStyle;
@@ -181,20 +181,30 @@ begin
 
     // Polygon
     P[0] := Point(400, 0);
-    P[1] := Point(480, 100);
-    P[2] := Point(360, 50);
-    P[3] := Point(480, 0);
-    P[4] := Point(400, 100);
+    P[1] := Point(450, 70);
+    P[2] := Point(380, 40);
+    P[3] := Point(450, 0);
+    P[4] := Point(400, 70);
+    P[5] := P[0];  // used only by PolyLine demo
     LmfCanvas.Brush.Style := bsSolid;
     LmfCanvas.Brush.Color := clMoneygreen;
     Lmfcanvas.Pen.Color := clGreen;
     LmfCanvas.Polygon(@P[0], 5, false);
-    inc(P[0].Y, 110);
-    inc(P[1].Y, 110);
-    inc(P[2].Y, 110);
-    inc(P[3].Y, 110);
-    inc(P[4].Y, 110);
+    inc(P[0].Y, 75);
+    inc(P[1].Y, 75);
+    inc(P[2].Y, 75);
+    inc(P[3].Y, 75);
+    inc(P[4].Y, 75);
+    inc(P[5].Y, 75);
     LmfCanvas.Polygon(@P[0], 5, true);
+
+    inc(P[0].Y, 75);
+    inc(P[1].Y, 75);
+    inc(P[2].Y, 75);
+    inc(P[3].Y, 75);
+    inc(P[4].Y, 75);
+    inc(P[5].Y, 75);
+    LmfCanvas.PolyLine(@P[0], 6);
 
     // GradientFill
     // Incorrect wmf output (won't fix)

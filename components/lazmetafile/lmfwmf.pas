@@ -241,6 +241,78 @@ type
   end;
   PWMFExtTextOutRecord = ^TWMFExtTextOutRecord;
 
+  {Clipboard metafiles are also based on the standard metafile format, but are
+   preceded by an additional 8- or 16-byte header that allows the position of
+   the metafile on the Clipboard viewer. If the Clipboard metafile was created
+   using a 16-bit version of Windows (Windows and Windows for Workgroups) this
+   header will contain 2-byte fields arranged in the following structure. If the
+   clipboard metafile was created under a 32-bit Windows environment (Windows NT
+   and Windows 95) this header will contain the same fields as the Win16 WMF
+   header, but the fields are 32 bytes in length. }
+  TWMFClipboard16MetaHeader = packed record
+    MappingMode: SmallInt;    // see MM_XXXX constants
+    Width: SmallInt;          // Width in units of MappingMode
+    Height: SmallInt;         // Height in units of MappingMode
+    Handle: Word;             // Handle to the metafile in memory
+  end;
+
+  TWMFClipboard32MetaHeader = packed record
+    MappingMode: LongInt;     // see MM_XXXX constants
+    Width: LongInt;           // Width in units of MappingMode
+    Height: LongInt;          // Height in units of MappingMode
+    Handle: DWord;            // Handle to the metafile in memory
+  end;
+
+  TWMFPaletteColorRecord = packed record
+    Values: Byte;                    // NOTE: reverse order!
+    ColorBLUE: Byte;
+    ColorGREEN: Byte;
+    ColorRED: Byte;
+  end;
+  PWMFPaletteColorRecord = ^TWMFPaletteColorRecord;
+
+  TWMFStretchDIBRecord = packed record
+    RasterOperation: DWord;
+    ColorUsage: Word;
+    SrcHeight: SmallInt;
+    SrcWidth: SmallInt;
+    SrcY: SmallInt;
+    SrcX: SmallInt;
+    DestHeight: SmallInt;
+    DestWidth: SmallInt;
+    DestX: SmallInt;
+    DestY: SmallInt;
+    // the remainder is handled separately:
+    // - TWMFBitmapCoreHeader or TWMFBitmapInfoHeader
+    // - optional: Colors
+    // - BitmapBuffer
+    //
+  end;
+  PWMFStretchDIBRecord = ^TWMFStretchDIBRecord;
+
+  TWMFBitmapCoreHeader = packed record
+    HeaderSize: DWord;
+    Width: Word;
+    Height: Word;
+    Planes: Word;
+    BitCount: Word;
+  end;
+  PWMFBitmapCoreHeader = ^TWMFBitmapCoreHeader;
+
+  TWMFBitmapInfoHeader = packed record
+    HeaderSize: DWord;
+    Width: LongInt;
+    Height: LongInt;
+    Planes: Word;
+    BitCount: Word;
+    Compression: DWord;
+    ImageSize: DWord;
+    XPelsPerMeter: DWord;
+    YPelsPerMeter: DWord;
+    ColorsUsed: DWord;
+    ColorImporant: DWord;
+  end;
+  PWMFBitmapInfoHeader = ^TWMFBitmapInfoHeader;
 
 implementation
 

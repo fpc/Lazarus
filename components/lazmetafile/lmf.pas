@@ -14,15 +14,6 @@ type
 
   TlmfWriter = class
   public
-    function AddToObjTable(AItem: TComponent): Integer; virtual; abstract;
-    function FindInObjTable(AItem: TComponent): Integer; virtual; abstract;
-    function ScaleX(x: Double): Integer;  virtual; abstract;
-    function ScaleY(y: Double): Integer; virtual; abstract;
-    function ScaleSizeX(x: Double): Integer; virtual; abstract;
-    function ScaleSizeY(y: Double): Integer; virtual; abstract;
-    procedure WriteWMFRecord(AStream: TStream; AFunc: word; ASize: Integer); virtual; abstract; overload;
-    procedure WriteWMFRecord(AStream: TStream; AFunc: Word; const AParams; ASize: Integer); virtual; abstract; overload;
-    procedure WriteWMFParams(AStream: TStream; const AParams; ASize: Integer); virtual; abstract;
     procedure WriteToStream(AStream: TStream; AImage: TlmfImage); virtual; abstract;
   end;
 
@@ -31,7 +22,7 @@ type
     forgX,forgY,
     fWidth,fHeight:integer;
     kx,ky:double;
-    fList:TlmfList;
+    fList: TlmfList;
     fCrs:TCriticalSection;
     fEnhanced: Boolean;
   protected
@@ -137,7 +128,7 @@ type
 implementation
 
 uses
-  lmfObj, lmfReadWrite;
+  lmfObj, lmfWMFWrite;
 
 constructor TlmfImage.Create;
 begin
@@ -273,7 +264,7 @@ var
   writer: TlmfWriter;
 begin
   if FEnhanced then
-    writer := TEMFWriter.Create
+    //writer := TEMFWriter.Create  // to be completed...
   else
     writer := TWMFWriter.Create;
   try
