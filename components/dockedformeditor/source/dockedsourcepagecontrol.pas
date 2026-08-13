@@ -280,6 +280,7 @@ begin
     Resizer.Parent := FTabSheetAnchors;
     Resizer.ResizeControl.FormClient.Visible := False;
     Resizer.ResizeControl.AnchorContainer.Visible := True;
+    if DesignForm=nil then exit;
     if not Assigned(DesignForm.AnchorDesigner) then
     begin
       DesignForm.AnchorDesigner := TAnchorDesigner.Create(DesignForm, Resizer.ResizeControl.AnchorContainer);
