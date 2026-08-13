@@ -22,6 +22,8 @@ uses
   LCLProc, Forms, Controls,
   //LazUtils
   LazLoggerBase, LazFileCache, LazFileUtils,
+  // CodeTools
+  FileProcs,
   // IDEIntf
   IDEMsgIntf, SrcEditorIntf, IDEExternToolIntf;
 
@@ -96,18 +98,32 @@ end;
 function SourceEditorHasResourceFile(ASourceEditor: TSourceEditorInterface): Boolean;
 var
   LFilename: String;
+  e: TCTPascalExtType;
 begin
-  // Quick test if the unit could have a form: does a resource file (.lfm, .dfm)
-  // exist? The resource itself is not read and the form is not loaded.
+  // Quick test if the unit could have a form: is it a pascal unit and does a
+  // resource file (.lfm, .dfm) exist? The resource itself is not read and the
+  // form is not loaded.
   // Used to decide whether to show a form page as placeholder. The designer is
   // created on demand when the user clicks the form page.
   Result := False;
   if not Assigned(ASourceEditor) then Exit;
   LFilename := ASourceEditor.FileName;
+  // only a pascal unit (.pas, .pp, .p) can have a form
+  if not FilenameIsPascalUnit(LFilename) then Exit;
   // a not yet saved unit has no resource file on disk
   if not FilenameIsAbsolute(LFilename) then Exit;
-  Result := FileExistsCached(ChangeFileExt(LFilename, '.lfm'))
-         or FileExistsCached(ChangeFileExt(LFilename, '.dfm'));
+  if not FileExistsCached(ChangeFileExt(LFilename, '.lfm'))
+  and not FileExistsCached(ChangeFileExt(LFilename, '.dfm')) then Exit;
+  // Several pascal units can share the same resource file, e.g. foo.pas and
+  // foo.pp both point to foo.lfm. Only the unit used by the IDE gets the form
+  // page, that is the one with the first existing pascal extension.
+  // See TMainIDE.GetUnitFileOfLFM.
+  for e := Low(CTPascalExtension) to High(CTPascalExtension) do
+  begin
+    if CTPascalExtension[e] = '' then Continue;
+    if FileExistsCached(ChangeFileExt(LFilename, CTPascalExtension[e])) then
+      Exit(FilenameExtIs(LFilename, CTPascalExtension[e]));
+  end;
 end;
 
 function SourceWindowCaption(ASourceEditor: TSourceEditorInterface): String;

@@ -32,8 +32,6 @@ uses
   Classes, SysUtils, Contnrs,
   // LCL
   LCLIntf, Controls, Forms,
-  // LazUtils
-  LazFileUtils,
   // IdeIntf
   SrcEditorIntf, LazIDEIntf, FormEditingIntf, PropEdits, LazLoggerBase,
   // DockedFormEditor
@@ -458,10 +456,9 @@ begin
     LDesignForm := SourceWindows.FindDesignForm(LPageCtrl);
     if LDesigner = nil then
     begin
-      // don't create tabs for source editor with lfm,dfm,fmx resource
-      if FilenameExtIn(LSourceEditor.FileName, ['.LFM','.DFM','.FMX'])
-      // quick test: without a resource file (lfm, dfm) the unit has no form
-      or not SourceEditorHasResourceFile(LSourceEditor) then
+      // quick test: only a pascal unit with a resource file (lfm, dfm) can
+      // have a form, so don't create tabs for anything else
+      if not SourceEditorHasResourceFile(LSourceEditor) then
         LPageCtrl.RemoveDesignPages
       else
         // The unit might have a form: show the form page as placeholder. The
