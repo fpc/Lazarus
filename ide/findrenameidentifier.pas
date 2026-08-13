@@ -1196,7 +1196,6 @@ begin
 
     OldSearchPageIndex:=SearchPageIndex;
     SearchPageIndex:=nil;
-    Identifier:=LCLEncodeAmps(Identifier);
     SearchResultsView.EndUpdate(OldSearchPageIndex.PageIndex, 'Ref: '+Identifier);
     IDEWindowCreators.ShowForm(SearchResultsView,true);
 
