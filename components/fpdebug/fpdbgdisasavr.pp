@@ -111,9 +111,9 @@ type
 
   TAvrAsmDecoder = class(TDbgAsmDecoder)
   private const
-    MaxPrologueSize = 64;  // Bytes, so ~32 instructions
-    MaxEpilogueSize = MaxPrologueSize; // Perhaps a bit smaller, since the locals/parameters do not have to be initialized
-    MAX_CODEBIN_LEN = MaxPrologueSize; // About 32 instructions
+    MaxPrologueSize = 82;  // Bytes, ~41 instructions
+    MaxEpilogueSize = MaxPrologueSize;
+    MAX_CODEBIN_LEN = MaxPrologueSize;
 
     // Opcodes for prologue / epilogue parsing
     OpCodeNOP = $0000;
@@ -145,9 +145,9 @@ type
     FCodeBin: array[0..MAX_CODEBIN_LEN-1] of byte;
     FLastInstr: TAvrAsmInstruction;
     function FParsePrologue(AnAddress, AStartPC, AEndPC: TDBGPtr; out
-      returnAddressOffset: word; out AnIsOutsideFrame: Boolean): Boolean;
+      returnAddressOffset: word; out AnIsOutsideFrame, AnUseFP: Boolean): Boolean;
     function FParseEpilogue(AnAddress, AStartPC, AEndPC: TDBGPtr; out
-      returnAddressOffset: word; out AnIsOutsideFrame: Boolean): Boolean;
+      returnAddressOffset: word; out AnIsOutsideFrame, AnUseFP: Boolean): Boolean;
 
     function FormatInstruction(instr: TAVRInstruction): string;
   protected
@@ -169,7 +169,7 @@ type
     // returnAddressOffset gives the offset to return address relative to Y pointer (r28:r29) inside frame
     // else returnAddressOffset gives the offset to return address relative to SP
     function GetFunctionFrameReturnAddress(AnAddress, AStartPC, AEndPC: TDBGPtr; out
-      returnAddressOffset: word; out AnIsOutsideFrame: Boolean): Boolean;
+      returnAddressOffset: word; out AnIsOutsideFrame, AnUseFP: Boolean): Boolean;
 
     constructor Create(AProcess: TDbgProcess); override;
     destructor Destroy;
@@ -407,10 +407,12 @@ end;
 
 type
   TPrologueState = (psStart, psPush, psLoadSPL, psLoadSPH, psLoadSreg,
-    psModifySPL, psModifySPH, psWriteSPH, psWriteSreg, psWriteSPL, psCopyParams);
+    psModifyFPL, psModifyFPH, psWriteSPH, psWriteSreg, psWriteSPL, psCopyParams,
+    psNotPrologue);
 
 function TAvrAsmDecoder.FParsePrologue(AnAddress, AStartPC, AEndPC: TDBGPtr;
-  out returnAddressOffset: word; out AnIsOutsideFrame: Boolean): Boolean;
+  out returnAddressOffset: word; out AnIsOutsideFrame, AnUseFP: Boolean
+  ): Boolean;
 var
   ADataLen: Cardinal;
   AData: PByte;
@@ -418,32 +420,32 @@ var
   d, k: byte;
   stackState: TPrologueState;
 begin
-{ AVR function entry example
-  3e:	df 93       	push	r29
-  40:	cf 93       	push	r28
-  42:	3f 92       	push	r3
-  44:	2f 92       	push	r2
-
-  // Load SP and calculate BP
-  46:	cd b7       	in	r28, 0x3d	; 61    // SPL
-  48:	de b7       	in	r29, 0x3e	; 62    // SPH
-  4a:	c6 50       	subi	r28, 0x06	; 6
-  4c:	d0 40       	sbci	r29, 0x00	; 0
-  // Disable interrupts
-  4e:	0f b6       	in	r0, 0x3f	; 63
-  50:	f8 94       	cli
-  // Then write out new SP
-  52:	de bf       	out	0x3e, r29	; 62
-  // Interleaved with restoring SREG
-  54:	0f be       	out	0x3f, r0	; 63
-  56:	cd bf       	out	0x3d, r28	; 61
-  // Copy param to stack
-  58:	8a 83       	std	Y+2, r24	; 0x02
-  5a:	9b 83       	std	Y+3, r25	; 0x03
+{ AVR function entry point                   State
+  // Save registers to be preserved          psStart
+  3e:   df 93           push    r29          psPush
+  40:   cf 93           push    r28          .
+  42:   3f 92           push    r3           .
+  44:   2f 92           push    r2           .
+  // Load SP into FP
+  46:	cd b7           in      r28, 0x3d    psLoadSPL
+  48:	de b7           in      r29, 0x3e    psLoadSPH
+  // Update FP with new frame size
+  4a:	c6 50           subi    r28, 0x06    psModifyFPL
+  4c:	d0 40           sbci    r29, 0x00    psModifyFPH
+  // Store SREG and disable interrupts
+  4e:	0f b6           in      r0, 0x3f     psLoadSreg
+  50:	f8 94           cli                                 .
+  // Create new stack frame: Update SP with new FP value
+  52:	de bf           out     0x3e, r29    psWriteSPH
+  54:	0f be           out     0x3f, r0     psWriteSreg
+  56:	cd bf           out     0x3d, r28    psWriteSPL
+  // Copy locals to stack
+  58:	8a 83           std     Y+2, r24     psCopyParams
+  5a:	9b 83           std     Y+3, r25     .               .
 }
   // Also read next instruction, for simple procs/interrupts it may not be easy to spot the end of prologue
   // so the next instruction could tie break
-  ADataLen := Min(MaxPrologueSize, AnAddress - AStartPC + 2);
+  ADataLen := Min(MaxPrologueSize, AnAddress - AStartPC);
   Result := ReadCodeAt(AStartPC, ADataLen);
   if not Result then
     exit;
@@ -452,18 +454,19 @@ begin
   // SP points to next empty slot, previous data is before current SP
   returnAddressOffset := 1;
   AnIsOutsideFrame := true;
+  AnUseFP := false;  // only becomes true after FP is fully adjusted
   stackState := psStart;
   frameOffset := 0;
 
   // Loop until prologue buffer is empty, or stepped inside stack frame
-  while (ADataLen > 1) and AnIsOutsideFrame do
+  while (ADataLen > 1) and AnIsOutsideFrame and (stackState < psNotPrologue) do
   begin
     opcode := AData[0] or (AData[1] shl 8);
     inc(AData, 2);
     dec(ADataLen, 2);
 
     case opcode of
-      OpCodeNOP: ;
+      OpCodeNOP, OpCodeZeroR1, OpCodeZeroR16: ;
       OpCodeLoadSPL: stackState := psLoadSPL;
       OpCodeLoadSPH: stackState := psLoadSPH;
       OpCodeLoadSRegR0, OpCodeLoadSRegR16: stackState := psLoadSreg;
@@ -471,7 +474,6 @@ begin
       OpCodeSetSPH: stackState := psWriteSPH;
       OpCodeSetSregR0, OpCodeSetSregR16: stackState := psWriteSreg;
       OpCodeSetSPL: stackState := psWriteSPL;
-      OpCodeZeroR1, OpCodeZeroR16: ;
     else
       // Push stack
       if (opcode and OpCodePushMask) = OpCodePushMask then
@@ -489,7 +491,7 @@ begin
       begin
         if stackState >= psLoadSPH then
         begin
-          stackState := psModifySPL;
+          stackState := psModifyFPL;
           // Decode register and constant
           get_k_r16(opcode, d, k);
           frameOffset := frameOffset + k;
@@ -501,10 +503,14 @@ begin
       begin
         if stackState >= psLoadSPH then
         begin
-          stackState := psModifySPH;
+          stackState := psModifyFPH;
           // Decode register and constant
           get_k_r16(opcode, d, k);
+          {$PUSH}{$R-}{$Q-}
           frameOffset := frameOffset + (k shl 8);
+          {$POP}
+          AnUseFP := true;
+          returnAddressOffset := returnAddressOffset + frameOffset;
         end
         else
           DebugLn(DBG_WARNINGS, ['Invalid stack state for OpCodeAdjustFrameHMask opcode: ', stackState]);
@@ -513,10 +519,12 @@ begin
       begin
         if stackState >= psLoadSPH then
         begin
-          stackState := psModifySPH;
+          stackState := psModifyFPH;
           // Decode constant in SBIW opcode
           k := ((opcode and $00c0) shr 2) or (opcode and $f);
           frameOffset := frameOffset + k;
+          AnUseFP := true;
+          returnAddressOffset := returnAddressOffset + frameOffset;
         end
         else
           DebugLn(DBG_WARNINGS, ['Invalid stack state for OpCodeAdjustFrameMask opcode: ', stackState]);
@@ -531,52 +539,47 @@ begin
           DebugLn(DBG_WARNINGS, ['Invalid stack state for OpCodeStoreOnStackMask opcode: ', stackState]);
       end
       else  // Any other opcode isn't part of prologue
-      begin
-        AnIsOutsideFrame := false;
-      end;
+        stackState := psNotPrologue;
     end;
   end;
 
-  // Check if frame pointer was updated
-  if (stackState >= psWriteSPL) and (frameOffset > 0) then
-  begin
-    AnIsOutsideFrame := false;
-    returnAddressOffset := returnAddressOffset + frameOffset;
-  end
-  else
-    AnIsOutsideFrame := true;
+  // Check if stack frame was created
+  // Local params not necessarily copied yet
+  AnIsOutsideFrame := (stackState < psWriteSPL) or not AnUseFP;
 end;
 
 type
   // State sequence runs in reverse direction
-  TEpilogueState = (esStart, esRet, esPop, esWriteSPH, esWriteSreg, esWriteSPL,
-    esLoadSreg, esModifyFPH, esModifyFPL);
+  TEpilogueState = (esStart, esRet, esPop, esWriteSPL, esWriteSreg, esWriteSPH,
+    esLoadSreg, esModifyFPH, esModifyFPL, esNotEpilogue);
 
 function TAvrAsmDecoder.FParseEpilogue(AnAddress, AStartPC, AEndPC: TDBGPtr;
-  out returnAddressOffset: word; out AnIsOutsideFrame: Boolean): Boolean;
+  out returnAddressOffset: word; out AnIsOutsideFrame, AnUseFP: Boolean
+  ): Boolean;
 var
   ADataLen: Cardinal;
   AData: PByte;
-  opcode, frameOffset: word;
+  opcode: word;
   d, k: byte;
   stackState: TEpilogueState;
+  currentPC: TDBGPtr;
 begin
-{ AVR function epilogue example
-  // Move FP to previous frame
-  ba:	cd 5f       	subi	r28, 0xFD	; 253
-  bc:	df 4f       	sbci	r29, 0xFF	; 255
+{ AVR function epilogue example, scanned in reverse direction
+  // Move FP to previous frame               State
+  ba:	cd 5f           subi    r28, 0xFD    esModifyFPL
+  bc:	df 4f           sbci    r29, 0xFF    esModifyFPH
 
   // Update SP
-  be:	0f b6       	in	r0, 0x3f	; 63
-  c0:	f8 94       	cli
-  c2:	de bf       	out	0x3e, r29	; 62
-  c4:	0f be       	out	0x3f, r0	; 63
-  c6:	cd bf       	out	0x3d, r28	; 61
+  be:	0f b6           in      r0, 0x3f     esLoadSreg
+  c0:	f8 94           cli                  .
+  c2:	de bf           out     0x3e, r29    esWriteSPH
+  c4:	0f be           out     0x3f, r0     esWriteSreg
+  c6:	cd bf           out     0x3d, r28    esWriteSPL
 
   // Restore saved regs
-  c8:	cf 91       	pop	r28
-  ca:	df 91       	pop	r29
-  cc:	08 95       	ret
+  c8:	cf 91           pop     r28          .
+  ca:	df 91           pop     r29          esPop
+  cc:	08 95           ret                  esRet
 }
 
   ADataLen := Min(MaxEpilogueSize, AEndPC - AnAddress);
@@ -589,7 +592,8 @@ begin
   returnAddressOffset := 1;
   AnIsOutsideFrame := true;
   stackState := esStart;
-  frameOffset := 0;
+  AnUseFP := false;
+  currentPC := AEndPC + 2;
 
   // Loop until epilogue buffer is empty, or stepped inside stack frame
   while (ADataLen > 1) and AnIsOutsideFrame do
@@ -597,14 +601,18 @@ begin
     opcode := AData[0] or (AData[1] shl 8);
     dec(AData, 2);
     dec(ADataLen, 2);
+    dec(currentPC, 2);
 
     case opcode of
-      OpCodeNOP: ;
+      OpCodeNOP, OpCodeCli: ;
       OpCodeLoadSRegR0, OpCodeLoadSRegR16: stackState := esLoadSreg;
-      OpCodeCli: ;
       OpCodeSetSPH: stackState := esWriteSPH;
       OpCodeSetSregR0, OpCodeSetSregR16: stackState := esWriteSreg;
-      OpCodeSetSPL: stackState := esWriteSPL;
+      OpCodeSetSPL:
+      begin
+        stackState := esWriteSPL;
+        AnUseFP := true;
+      end;
       OpCodeRet, OpCodeReti: stackState := esRet;
     else
       // Pop stack
@@ -626,9 +634,10 @@ begin
           stackState := esModifyFPL;
           // Decode register and constant
           get_k_r16(opcode, d, k);
-          // Normally subtract negative values to increase FP
+          // Subtract negative values to increase FP
           k := (256 - word(k));
-          frameOffset := frameOffset + k;
+          returnAddressOffset := returnAddressOffset + k;
+          AnUseFP := true;
         end
         else
           DebugLn(DBG_WARNINGS, ['Invalid stack state for OpCodeAdjustFrameLMask opcode: ', stackState]);
@@ -640,39 +649,21 @@ begin
           stackState := esModifyFPH;
           // Decode register and constant
           get_k_r16(opcode, d, k);
-          // Normally subtract negative values to increase FP, + carry bit
+          // Subtract negative values to increase FP
           k := (256 - word(k) - 1);
-          frameOffset := frameOffset + (k shl 8);
+          returnAddressOffset := returnAddressOffset + (k shl 8);
+          AnUseFP := true;
         end
         else
           DebugLn(DBG_WARNINGS, ['Invalid stack state for OpCodeAdjustFrameHMask opcode: ', stackState]);
       end
-      else  // Any other opcode isn't part of prologue
-      begin
+      else  // Any other opcode isn't part of epilogue, or no stack frame is constructed
         AnIsOutsideFrame := false;
-      end;
     end;
   end;
 
-  // Check before frame pointer gets adjusted
-  if (stackState >= esModifyFPL) and (frameOffset > 0) then
-  begin
-    AnIsOutsideFrame := false;
-    returnAddressOffset := returnAddressOffset + frameOffset;
-  end
-  // Frame pointer inconsistent, so work relative to SP
-  // Unreliable, SP can be adjusted inside frame
-  //else if (stackState = esModifyFPH) then
-  //begin
-  //  AnIsOutsideFrame := true;
-  //  returnAddressOffset := returnAddressOffset + frameOffset;
-  //end
-  //else if (stackState > esPop) then
-  //begin
-  //
-  //end
-  else
-    AnIsOutsideFrame := true;
+  // Check if before frame pointer gets adjusted
+  AnIsOutsideFrame := (stackState <= esModifyFPL);
 end;
 
 function TAvrAsmDecoder.FormatInstruction(instr: TAVRInstruction): string;
@@ -831,6 +822,7 @@ function TAvrAsmDecoder.GetFunctionFrameInfo(AnAddress: TDBGPtr; out
 var
   startPC, endPC: TDBGPtr;
   returnAddrStackOffset: word;
+  useFP: boolean;
 begin
   AnIsOutsideFrame := False;
 
@@ -842,12 +834,12 @@ begin
     endPC := AnAddress;
   end;
 
-  Result := GetFunctionFrameReturnAddress(AnAddress, startPC, endPC, returnAddrStackOffset, AnIsOutsideFrame);
+  Result := GetFunctionFrameReturnAddress(AnAddress, startPC, endPC, returnAddrStackOffset, AnIsOutsideFrame, useFP);
 end;
 
 function TAvrAsmDecoder.GetFunctionFrameReturnAddress(AnAddress, AStartPC,
-  AEndPC: TDBGPtr; out returnAddressOffset: word; out AnIsOutsideFrame: Boolean
-  ): Boolean;
+  AEndPC: TDBGPtr; out returnAddressOffset: word; out AnIsOutsideFrame,
+  AnUseFP: Boolean): Boolean;
 begin
   { AStartPC = AEndPC = AnAddress - no function boundary information, abort.
 
@@ -868,23 +860,17 @@ begin
         If frame pointer has been restored before AnAddress then ouside frame.
   }
 
-  if (AnAddress = AStartPC) and (AnAddress = AEndPC) then
-  begin
-    // Give up if no proc boundaries are known
-    Result := false;
-    exit;
-  end
-  else if (AnAddress = AStartPC) or (AnAddress = AEndPC) then
+  if (AnAddress = AStartPC) or (AnAddress = AEndPC) then
   begin
     // Frame not yet constructed, so return address is located via SP + offset
     returnAddressOffset := 1;
     AnIsOutsideFrame := true;
+    AnUseFP := false;
   end
-  //else if (AStartPC + MaxPrologueSize > AnAddress) then
   else if (AnAddress - AStartPC) < (AEndPC - AnAddress) then
-    result := FParsePrologue(AnAddress, AStartPC, AEndPC, returnAddressOffset, AnIsOutsideFrame)
+    result := FParsePrologue(AnAddress, AStartPC, AEndPC, returnAddressOffset, AnIsOutsideFrame, AnUseFP)
   else
-    result := FParseEpilogue(AnAddress, AStartPC, AEndPC, returnAddressOffset, AnIsOutsideFrame);
+    result := FParseEpilogue(AnAddress, AStartPC, AEndPC, returnAddressOffset, AnIsOutsideFrame, AnUseFP);
 end;
 
 constructor TAvrAsmDecoder.Create(AProcess: TDbgProcess);
@@ -1539,7 +1525,7 @@ const
   Size = 2;
 var
   LastFrameBase: TDBGPtr;
-  OutSideFrame: Boolean;
+  OutSideFrame, useFP: Boolean;
   startPC, endPC: TDBGPtr;
   returnAddrStackOffset: word;
   b: byte;
@@ -1563,37 +1549,36 @@ begin
     endPC := CodePointer;
   end;
 
-  if not TAvrAsmDecoder(Process.Disassembler).GetFunctionFrameReturnAddress(CodePointer, startPC, endPC, returnAddrStackOffset, OutSideFrame) then
+  if not TAvrAsmDecoder(Process.Disassembler).GetFunctionFrameReturnAddress(
+    CodePointer, startPC, endPC, returnAddrStackOffset, OutSideFrame, useFP) then
   begin
     OutSideFrame := true;
     returnAddrStackOffset := 1;
   end;
 
-  if OutSideFrame then begin
-    // Before adjustment of frame pointer, or after restoration of frame pointer,
-    // return PC should be located by offset from SP
+  if useFP then begin
+    if not Process.ReadData(DataOffset or (FrameBasePointer + returnAddrStackOffset), Size, CodePointer) or (CodePointer = 0) then exit;
+    {$PUSH}{$R-}{$Q-}
+    FrameBasePointer := FrameBasePointer + returnAddrStackOffset + Size - 1; // After popping return-addr from stack
+    // An estimate of SP, needed when attempting unwinding of next frame
+    // If registers are spilled to stack this will be wrong.
+    StackPointer := FrameBasePointer;
+    {$POP}
+  end
+  else begin
     if not Process.ReadData(DataOffset or (StackPointer + returnAddrStackOffset), Size, CodePointer) or
       (CodePointer = 0) then
       exit;
     {$PUSH}{$R-}{$Q-}
-    StackPointer := StackPointer + returnAddrStackOffset + 1;
+    StackPointer := StackPointer + returnAddrStackOffset + Size - 1;
     FrameBasePointer := StackPointer; // After popping return-addr from "StackPtr"
-    {$POP}
-  end
-  else begin
-    // Inside stack frame, return PC should be located by offset from FP
-    if not Process.ReadData(DataOffset or (FrameBasePointer + returnAddrStackOffset), Size, CodePointer) or (CodePointer = 0) then exit;
-    {$PUSH}{$R-}{$Q-}
-    FrameBasePointer := StackPointer + returnAddrStackOffset + Size - 1; // After popping return-addr from stack
-    // An estimate of SP, needed when attempting unwinding of next frame
-    // If registers are spilled to stack this will be wrong.
-    StackPointer := FrameBasePointer;
     {$POP}
   end;
   // Convert return address from BE to LE, shl 1 to get byte address
   CodePointer := BEtoN(word(CodePointer)) shl 1;
 
-  FLastFrameBaseIncreased := (FrameBasePointer <> 0) and (FrameBasePointer > LastFrameBase);
+  // Frame basepointer may not be updated yet when outside the frame
+  FLastFrameBaseIncreased := (FrameBasePointer <> 0) and ((FrameBasePointer > LastFrameBase) or OutSideFrame);
 
   ANewFrame:= TDbgCallstackEntry.create(Thread, AFrameIndex, FrameBasePointer, CodePointer);
   ANewFrame.RegisterValueList.DbgRegisterAutoCreate[nPC].SetValue(CodePointer, IntToStr(CodePointer),Size, PCindex);
