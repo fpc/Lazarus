@@ -911,7 +911,7 @@ var
     len: Integer;
     sLine: String = '';
   begin
-    len := ALineEnd - ALineStart - 1;
+    len := ALineEnd - ALineStart; // - 1;
     SetLength(sLine, len);
     Move(ALineStart^, sLine[1], len);
     ALines.Add(sLine);
@@ -937,6 +937,15 @@ begin
     PWordStart := P;               // points to start of current word
     while P < PTextEnd do
     begin
+      if P^ in ['-'] then
+      begin
+        if TextisTooWide(PLineStart, P - 1 - PLineStart) then
+        begin
+          AddLineToList(PLineStart, PWordStart);
+          PLineStart := PWordStart;
+        end;
+        PWordStart := P + 1;
+      end else
       if P^ in [' ', #9] then
       begin
         if TextIsTooWide(PLineStart, P - 1 - PLineStart) then
