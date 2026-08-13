@@ -23,7 +23,6 @@ object SearchResultsView: TSearchResultsView
     ClientHeight = 26
     ClientWidth = 722
     TabOrder = 0
-    TabStop = True
     object PageToolBar: TToolBar
       AnchorSideLeft.Control = ControlBar1
       Left = 0
