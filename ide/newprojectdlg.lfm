@@ -8,6 +8,7 @@ object NewProjectDialog: TNewProjectDialog
   ClientHeight = 302
   ClientWidth = 561
   Position = poScreenCenter
+  LCLVersion = '4.99.0.0'
   OnClose = FormClose
   object pnlList: TPanel
     Left = 6
@@ -50,6 +51,7 @@ object NewProjectDialog: TNewProjectDialog
       MaxLength = 0
       TabOrder = 0
       FilteredTreeview = Tree
+      ExpandAllInitially = True
     end
   end
   object Splitter1: TSplitter

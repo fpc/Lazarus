@@ -134,6 +134,7 @@ object NewOtherDialog: TNewOtherDialog
         MaxLength = 0
         TabOrder = 0
         FilteredTreeview = ItemsTreeView
+        ExpandAllInitially = True
       end
       object ItemsTreeView: TTreeView
         Left = 0
