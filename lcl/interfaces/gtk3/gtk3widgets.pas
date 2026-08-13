@@ -6443,6 +6443,7 @@ begin
 
   Self.SetTextHint(TCustomEdit(Self.LCLObject).TextHint);
   Self.SetNumbersOnly(TCustomEdit(Self.LCLObject).NumbersOnly);
+  Self.SetFrame(TCustomEdit(Self.LCLObject).BorderStyle <> bsNone);
 
   Gtk3ClampEntryPadding(Widget);
 
@@ -6486,9 +6487,34 @@ begin
 end;
 
 procedure TGtk3Entry.SetFrame(const aborder: boolean);
+var
+  AProvider: PGtkCssProvider;
 begin
-  if IsWidgetOk then
-    PGtkEntry(Widget)^.set_has_frame(aborder);
+  if not IsWidgetOk then
+    exit;
+  PGtkEntry(Widget)^.set_has_frame(aborder);
+  AProvider := PGtkCssProvider(g_object_get_data(PGObject(Widget), 'lcl-noframe-css'));
+  if aborder then
+  begin
+    if Assigned(AProvider) then
+    begin
+      gtk_style_context_remove_provider(Widget^.get_style_context,
+        PGtkStyleProvider(AProvider));
+      g_object_unref(gpointer(AProvider));
+      g_object_set_data(PGObject(Widget), 'lcl-noframe-css', nil);
+    end;
+  end else
+  begin
+    if not Assigned(AProvider) then
+    begin
+      AProvider := gtk_css_provider_new;
+      gtk_css_provider_load_from_data(AProvider,
+        'entry { border-style: none; box-shadow: none; }', -1, nil);
+      gtk_style_context_add_provider(Widget^.get_style_context,
+        PGtkStyleProvider(AProvider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+      g_object_set_data(PGObject(Widget), 'lcl-noframe-css', AProvider);
+    end;
+  end;
 end;
 
 procedure TGtk3Entry.SetSelText(const ASelText: string);
