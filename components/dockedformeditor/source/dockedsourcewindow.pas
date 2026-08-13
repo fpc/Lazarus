@@ -397,11 +397,7 @@ begin
       LPageCtrl.RemoveDesignPages
     else
       if Assigned(LPageCtrl.DesignForm) then
-      begin
         LPageCtrl.CreateTabSheetDesigner;
-        if not (LPageCtrl.DesignForm.Form is TNonControlProxyDesignerForm) then
-          LPageCtrl.CreateTabSheetAnchors;
-      end;
   end;
 end;
 
@@ -415,7 +411,9 @@ begin
     begin
       LPageCtrl.TabPosition := DockedOptions.TabPosition;
       LPageCtrl.RefreshResizer;
-      if not DockedOptions.AnchorTabVisible then
+      if DockedOptions.AnchorTabVisible then
+        LPageCtrl.CreateTabSheetAnchors
+      else
         LPageCtrl.RemoveTabSheetAnchors;
     end;
 end;

@@ -172,6 +172,10 @@ msgstr "Коефіцієнт вказівника миші для властив
 msgid "Mouse cursor factor is used to set small values of BorderSpacing property more precisely"
 msgstr "Коефіцієнт дії вказівника миші для точнішого  встановлення малих значень властивості BorderSpacing"
 
+#: dockedstrconsts.snoanchorsforcomponent
+msgid "No anchors for this component"
+msgstr ""
+
 #: dockedstrconsts.sresizercolorcaption
 msgid "Resizer Color"
 msgstr "Колір смуг змінення розміру"

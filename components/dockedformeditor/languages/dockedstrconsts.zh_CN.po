@@ -171,6 +171,10 @@ msgstr "BorderSpacing 属性的鼠标指针系数"
 msgid "Mouse cursor factor is used to set small values of BorderSpacing property more precisely"
 msgstr "鼠标指针系数用于更精确地设置 BorderSpacing 属性"
 
+#: dockedstrconsts.snoanchorsforcomponent
+msgid "No anchors for this component"
+msgstr ""
+
 #: dockedstrconsts.sresizercolorcaption
 msgid "Resizer Color"
 msgstr "调整器颜色"

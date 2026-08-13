@@ -170,6 +170,10 @@ msgstr "Масштаб движения курсора мыши для свой�
 msgid "Mouse cursor factor is used to set small values of BorderSpacing property more precisely"
 msgstr "Масштаб движения курсора мыши используется для более точной установки малых значений свойства BorderSpacing"
 
+#: dockedstrconsts.snoanchorsforcomponent
+msgid "No anchors for this component"
+msgstr ""
+
 #: dockedstrconsts.sresizercolorcaption
 msgid "Resizer Color"
 msgstr "Цвет области изменения размера"

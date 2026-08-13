@@ -23,7 +23,7 @@ uses
   // RTL
   Classes, SysUtils, fgl,
   // LCL
-  Forms, ComCtrls, Controls, LCLProc,
+  Forms, ComCtrls, Controls, StdCtrls, LCLProc,
   // IDEIntf
   SrcEditorIntf, FormEditingIntf, LazIDEIntf,
   // DockedFormEditor
@@ -38,6 +38,7 @@ type
   private
     FDesignerSetFocusAsyncCount: Integer;
     FDesignForm: TDesignForm;
+    FLabelNoAnchors: TLabel;
     FResizer: TResizer;
     FSourceEditor: TSourceEditorInterface;
     FTabSheetAnchors: TTabSheet;
@@ -53,6 +54,7 @@ type
     constructor Create(ASourceEditor: TSourceEditorInterface); reintroduce;
     destructor Destroy; override;
     procedure AdjustPage;
+    function  AnchorDesignPossible: Boolean;
     function  AnchorPageActive: Boolean;
     procedure CreateResizer;
     procedure CreateTabSheetAnchors;
@@ -187,6 +189,12 @@ begin
     FResizer.AdjustResizer(nil);
 end;
 
+function TSourcePageControl.AnchorDesignPossible: Boolean;
+begin
+  // the anchor editor needs a TWinControl, e.g. a TDataModule has no anchors
+  Result := Assigned(FDesignForm) and FDesignForm.IsAnchorDesign;
+end;
+
 function TSourcePageControl.AnchorPageActive: Boolean;
 begin
   Result := ActivePage = FTabSheetAnchors;
@@ -198,28 +206,40 @@ begin
   if Assigned(FResizer) then
     raise Exception.Create('TSourcePageControl.CreateResizer: Resizer already created');
   FResizer := TResizer.Create(Self);
-  if not Assigned(FTabSheetDesigner) then
-    CreateTabSheetDesigner;
+  CreateTabSheetDesigner;
   FResizer.Parent := FTabSheetDesigner;
 end;
 
 procedure TSourcePageControl.CreateTabSheetAnchors;
 begin
   if not DockedOptions.AnchorTabVisible then Exit;
+  // the anchors page is only shown together with the form page
+  if not Assigned(FTabSheetDesigner) then Exit;
   if Assigned(FTabSheetAnchors) then Exit;
   {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TSourcePageControl.CreateTabSheetAnchors'); {$ENDIF}
   FTabSheetAnchors := TTabSheet.Create(Self);
   FTabSheetAnchors.PageControl := Self;
   FTabSheetAnchors.Caption := SAnchors;
+  // shown instead of the anchor editor, if the designed component has no anchors
+  FLabelNoAnchors := TLabel.Create(FTabSheetAnchors);
+  FLabelNoAnchors.Parent := FTabSheetAnchors;
+  FLabelNoAnchors.Left:=6;
+  FLabelNoAnchors.Top:=6;
+  FLabelNoAnchors.Caption := SNoAnchorsForComponent;
+  FLabelNoAnchors.Visible := False;
 end;
 
 procedure TSourcePageControl.CreateTabSheetDesigner;
 begin
-  if Assigned(FTabSheetDesigner) then Exit;
-  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TSourcePageControl.CreateTabSheetDesigner'); {$ENDIF}
-  FTabSheetDesigner := TTabSheet.Create(Self);
-  FTabSheetDesigner.PageControl := Self;
-  FTabSheetDesigner.Caption := SDesigner;
+  if not Assigned(FTabSheetDesigner) then
+  begin
+    {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TSourcePageControl.CreateTabSheetDesigner'); {$ENDIF}
+    FTabSheetDesigner := TTabSheet.Create(Self);
+    FTabSheetDesigner.PageControl := Self;
+    FTabSheetDesigner.Caption := SDesigner;
+  end;
+  // always show the anchors page too, so the user knows it exists
+  CreateTabSheetAnchors;
 end;
 
 procedure TSourcePageControl.DesignerSetFocus;
@@ -259,16 +279,24 @@ end;
 procedure TSourcePageControl.RemoveTabSheetAnchors;
 begin
   if not Assigned(FTabSheetAnchors) then Exit;
+  if Assigned(FResizer) and (FResizer.Parent = FTabSheetAnchors) then
+    FResizer.Parent := FTabSheetDesigner;
   FreeAndNil(FTabSheetAnchors);
+  FLabelNoAnchors := nil; // was owned by FTabSheetAnchors
 end;
 
 procedure TSourcePageControl.InitPage;
 begin
   ShowTabs := PageCount > 1;
   {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TSourcePageControls.InitPage: ShowTabs[' + ShowTabs.ToString(TUseBoolStrs.True) + ']'); {$ENDIF}
+  // The anchors page is always shown, even for components without anchors.
+  // Those get a hint instead of the anchor editor.
+  if Assigned(FLabelNoAnchors) then
+    FLabelNoAnchors.Visible := (ActivePage = FTabSheetAnchors) and not AnchorDesignPossible;
   // The form page can exist as an empty placeholder (created because a resource
   // file exists) before the form is loaded and a resizer is created.
   if not Assigned(FResizer) then Exit;
+  if (ActivePage = FTabSheetAnchors) and not AnchorDesignPossible then Exit;
   if ActivePage = FTabSheetDesigner then
   begin
     Resizer.Parent := FTabSheetDesigner;

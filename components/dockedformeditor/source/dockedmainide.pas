@@ -322,8 +322,6 @@ begin
       begin
         LPageCtrl.DesignForm := LDesignForm;
         LPageCtrl.CreateTabSheetDesigner;
-        if LDesignForm.IsAnchorDesign then
-          LPageCtrl.CreateTabSheetAnchors;
       end;
     end;
     SetTimer(AForm.Handle, WM_SETNOFRAME, 10, nil);
@@ -469,8 +467,6 @@ begin
       if not Assigned(LPageCtrl.Resizer) then
         LPageCtrl.CreateResizer;
       LPageCtrl.CreateTabSheetDesigner;
-      if LDesignForm.IsAnchorDesign then
-        LPageCtrl.CreateTabSheetAnchors;
     end;
 
     LSourceWindowIntf := TSourceEditorWindowInterface(LPageCtrl.Owner);
@@ -617,10 +613,6 @@ begin
     if not Assigned(LPageCtrl.Resizer) then
     begin
       LPageCtrl.CreateResizer;
-      // EditorActivated could not create the anchors page, because the form was
-      // not yet loaded
-      if LDesignForm.IsAnchorDesign then
-        LPageCtrl.CreateTabSheetAnchors;
       LPageCtrl.InitPage;
     end;
     LSourceWindow.ActiveDesignForm := LDesignForm;

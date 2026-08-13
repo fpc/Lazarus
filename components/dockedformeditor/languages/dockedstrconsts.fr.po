@@ -171,6 +171,10 @@ msgstr "Facteur de curseur de souris pour la propriété BorderSpacing"
 msgid "Mouse cursor factor is used to set small values of BorderSpacing property more precisely"
 msgstr "Le facteur du curseur de la souris est utilisé pour définir plus précisément les petites valeurs de la propriété BorderSpacing"
 
+#: dockedstrconsts.snoanchorsforcomponent
+msgid "No anchors for this component"
+msgstr ""
+
 #: dockedstrconsts.sresizercolorcaption
 msgid "Resizer Color"
 msgstr "Couleur de redimensionnement"

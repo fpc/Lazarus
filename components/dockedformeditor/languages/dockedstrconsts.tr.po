@@ -176,6 +176,10 @@ msgstr "BorderSpacing özelliği için fare imleci faktörü"
 msgid "Mouse cursor factor is used to set small values of BorderSpacing property more precisely"
 msgstr "Fare imleci faktörü, BorderSpacing özelliğinin küçük değerlerini daha kesin olarak ayarlamak için kullanılır"
 
+#: dockedstrconsts.snoanchorsforcomponent
+msgid "No anchors for this component"
+msgstr ""
+
 #: dockedstrconsts.sresizercolorcaption
 msgid "Resizer Color"
 msgstr "Yeniden Boyutlandırıcı Renk"

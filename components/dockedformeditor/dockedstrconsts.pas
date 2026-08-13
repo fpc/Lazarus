@@ -38,6 +38,7 @@ resourceString
   SForceRefreshingHint        = 'Force refreshing form when user is sizing it';
   SMouseBorderFactorCaption   = 'Mouse cursor factor for BorderSpacing property';
   SMouseBorderFactorHint      = 'Mouse cursor factor is used to set small values of BorderSpacing property more precisely';
+  SNoAnchorsForComponent      = 'No anchors for this component';
   SResizerColorCaption        = 'Resizer Color';
   SResizerColorHint           = 'Color of resizer bars';
   STabPositionCaption         = 'Tab Position';
