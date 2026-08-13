@@ -6,7 +6,8 @@ interface
 
 uses
   SysUtils, Classes, Types,
-  GraphMath, GraphType, Graphics, LCLType, LCLIntf, FPCanvas, FPImage, syncobjs;
+  LCLType, LCLIntf,
+  FPCanvas, FPImage, GraphMath, GraphType, Graphics, syncobjs;
 
 type
   TlmfList = class;
@@ -16,6 +17,8 @@ type
   public
     procedure WriteToStream(AStream: TStream; AImage: TlmfImage); virtual; abstract;
   end;
+
+  { TlmfImage }
 
   TlmfImage = class(TGraphic)
   private
@@ -46,6 +49,7 @@ type
     function ScaleX(ax: Integer): Integer;
     function ScaleY(ay:Integer): Integer;
 
+    procedure SaveToLMFFile(AFileName: String);
     procedure SaveToLMFStream(Stream: TStream);
     procedure SaveToStream(Stream: TStream); override;
     procedure LoadFromStream(Stream: TStream); override;
@@ -67,9 +71,9 @@ type
 
   TlmfCanvas = class(TCanvas)
   private
-    fClipRect:TRect;
-    fState:TCanvasState;
-    fImage:TlmfImage;
+    fClipRect: TRect;
+    fState: TCanvasState;
+    fImage: TlmfImage;
   protected
     procedure CreateFont;override;
     procedure CreateBrush;override;
@@ -122,6 +126,9 @@ type
     procedure Chord(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer); override; overload;
     procedure Pie(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); override;
     procedure RadialPie(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer); override;
+
+    procedure SetBkColor(AColor: TColor);
+    procedure SetBkMode(AMode: Word);  // 1 = TRANSPARENT, 2 = OPAQUE
   end;
 
 
@@ -227,16 +234,29 @@ end;
 procedure TlmfImage.Draw(ACanvas: TCanvas; const Rect: TRect);
 var
   i:integer;
+  item: TlmfObject;
+  bkMode: Word;
 begin
   fCrs.Acquire;
   try
+    bkMode := 1;  // Transparent
     fOrgX:=Rect.Left;
     fOrgY:=Rect.Top;
     kx:=(Rect.Right-Rect.Left)/Width;
     ky:=(Rect.Bottom-Rect.Top)/Height;
     ACanvas.MoveTo(ScaleX(Rect.Left), ScaleY(Rect.Top));
     for i:=0 to fList.ComponentCount-1 do
-      TlmfObject(fList.Components[i]).Action(Self, ACanvas);
+    begin
+      item := TlmfObject(fList.Components[i]);
+      // It seems that SetBkMode must be executed immediately before a command
+      // which depends on it (text, patterned line) is drawn.
+      if (item is TlmfBkMode) then
+        bkMode := TlmfBkMode(item).Mode
+      else
+      if (item is TlmfLine) or (item is TlmfLineTo) or (item is TlmfText) then
+        SetBkMode(ACanvas.Handle, bkMode);
+      item.Action(Self, ACanvas);
+    end;
   finally
     kx:=1;
     ky:=1;
@@ -257,6 +277,18 @@ end;
 procedure TlmfImage.SaveToStream(Stream: TStream);
 begin
   Stream.WriteComponent(fList);
+end;
+
+procedure TlmfImage.SaveToLMFFile(AFileName: String);
+var
+  stream: TFileStream;
+begin
+  stream := TFileStream.Create(AFileName, fmCreate or fmShareDenyWrite);
+  try
+    SaveToLMFStream(stream);
+  finally
+    stream.Free;
+  end;
 end;
 
 procedure TlmfImage.SaveToLMFStream(Stream: TStream);
@@ -368,7 +400,7 @@ procedure TlmfCanvas.DoEllipse(const Bounds:TRect);
 var
   item:TlmfEllipse;
 begin
-  RequiredState([csPenValid,csBrushValid]);
+  RequiredState([csPenValid, csBrushValid]);
   item := TlmfEllipse.Create(Bounds);
   fImage.fList.InsertComponent(item);
 end;
@@ -733,9 +765,6 @@ begin
   Pie(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY);
 end;
 
-
-{ TlmfGradientFill }
-
 procedure TlmfCanvas.GradientFill(const ARect: TRect;
   AStartColor, AEndColor: TColor; ADirection: TGradientDirection);
 var
@@ -743,6 +772,24 @@ var
 begin
   RequiredState([csBrushValid, csPenValid]);
   item := TlmfGradientFill.Create(ARect, AStartColor, AEndColor, ADirection);
+  fImage.fList.InsertComponent(item);
+end;
+
+procedure TlmfCanvas.SetBkColor(AColor: TColor);
+var
+  item: TlmfObject;
+begin
+  RequiredState([csBrushValid]);
+  item := TlmfBkColor.Create(AColor);
+  fImage.fList.InsertComponent(item);
+end;
+
+procedure TlmfCanvas.SetBkMode(AMode: Word);
+var
+  item: TlmfObject;
+begin
+  RequiredState([csBrushValid]);
+  item := TlmfBkMode.Create(AMode);
   fImage.fList.InsertComponent(item);
 end;
 

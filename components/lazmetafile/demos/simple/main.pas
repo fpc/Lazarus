@@ -40,12 +40,12 @@ var
   penPattern: TPenPattern = nil;
   bmp: TCustomBitmap;
 begin
-  Width := 510;
-  Height := 360;
+  Width := 610;
+  Height := 410;
 
   FLmfImg := TlmfImage.Create;
-  FLmfImg.Width := 500;
-  FLmfImg.Height := 350;
+  FLmfImg.Width := 600;
+  FLmfImg.Height := 400;
 
   LmfCanvas := TlmfCanvas.Create(FLmfImg);
   try
@@ -55,7 +55,7 @@ begin
 
     // Line
     LmfCanvas.Pen.Width := 1;
-    LmfCanvas.Line(0, 0, 500, 350);
+    LmfCanvas.Line(0, 0, FLmfImg.Width, FLmfImg.Height);
 
     // MoveTo + LineTo
     LmfCanvas.Pen.Width := 3;
@@ -197,7 +197,6 @@ begin
     inc(P[4].Y, 75);
     inc(P[5].Y, 75);
     LmfCanvas.Polygon(@P[0], 5, true);
-
     inc(P[0].Y, 75);
     inc(P[1].Y, 75);
     inc(P[2].Y, 75);
@@ -219,6 +218,8 @@ begin
     LmfCanvas.Frame(R);
 
     // Text
+    LmfCanvas.SetBkMode(OPAQUE);
+    LmfCanvas.SetBkColor(clYellow);
     LmfCanvas.Font.Size := 10;
     LmfCanvas.Font.Color := clOlive;
     LmfCanvas.TextOut(20, 20, 'Text drawn by TextOut');
@@ -229,12 +230,27 @@ begin
     ts.Alignment := taCenter;
     ts.Layout := tlCenter;
     ts.SingleLine := false;
+    LmfCanvas.SetBkMode(TRANSPARENT);
     LmfCanvas.Font.Color := clBlue;
     LmfCanvas.Font.Style := [fsBold, fsItalic];
     LmfCanvas.Font.Size := 16;
-    LmfCanvas.TextRect(R, 0, 0, 'Centered by TextRect' + LineEnding + 'in blue rectangle', ts);
+    LmfCanvas.TextRect(R, 0, 0, 'Text drawn by TextRect' + LineEnding + 'Centered in blue rectangle', ts);
+
+    // Rotated text
+    LmfCanvas.SetBkMode(TRANSPARENT);
+    LmfCanvas.Font.Size := 12;
+    LmfCanvas.Font.Color := clRed;
+    LmfCanvas.Font.Style := [];
+    while LmfCanvas.Font.Orientation < 3600 do
+    begin
+      LmfCanvas.TextOut(530, 80, 'abcdef');
+      LmfCanvas.Font.Orientation := LmfCanvas.Font.Orientation + 45*10;
+    end;
+    LmfCanvas.Font.Orientation := 0;
 
     // Pen styles
+    //LmfCanvas.SetBkMode(OPAQUE);
+    //LmfCanvas.SetBkColor(clRed);
     LmfCanvas.Pen.Color := clGreen;
     LmfCanvas.Pen.Width := 1;
     LmfCanvas.Brush.Style := bsClear;  // Clear the gaps
@@ -268,19 +284,10 @@ begin
 end;
 
 procedure TMainForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
-var
-  stream: TStream;
 begin
   case Key of
     VK_F2:
-      begin
-        stream := TFileStream.Create('test.wmf', fmCreate);
-        try
-          FLmfImg.SaveToLMFStream(stream);
-        finally
-          stream.Free;
-        end;
-      end;
+      FLmfImg.SaveToLMFFile('test.wmf');
   end;
 end;
 

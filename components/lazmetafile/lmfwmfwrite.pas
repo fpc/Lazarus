@@ -5,8 +5,8 @@ unit lmfWMFWrite;
 interface
 
 uses
-  Classes, SysUtils, Math,
-  Graphics, LCLType, LConvEncoding,
+  Classes, SysUtils, Math, Types,
+  GraphUtil, Graphics, LCLType, LConvEncoding,
   lmf, lmfObj, lmfWMF;
 
 type
@@ -20,11 +20,14 @@ type
     FLogicalMaxY: Word;        // Max y coordinate used for scaling, in logical units
     FScalingFactor: Double;    // Conversion to logical units
     FObjTable: TFPList;        // List with WMF objects (pen, brush, ...)
+    FCurrFont: TFont;
 
     // Specific WMF records
     procedure WriteArc(AStream: TStream; AItem: TlmfArc);
     procedure WriteBkColor(AStream: TStream; AColor: TColor);
+    procedure WriteBkColor(AStream: TStream; AItem: TlmfBkColor);
     procedure WriteBkMode(AStream: TStream; AMode: Word);
+    procedure WriteBkMode(AStream: TStream; AItem: TlmfBkMode);
     procedure WriteBrush(AStream: TStream; AItem: TlmfBrush);
     procedure WriteChord(AStream: TStream; AItem: TlmfChord);
     procedure WriteEllipse(AStream: TStream; AItem: TlmfEllipse);
@@ -45,6 +48,9 @@ type
     procedure WriteTextInRect(AStream: TStream; AItem: TlmfTextInRect);
     procedure WriteWindowExt(AStream: TStream);
     procedure WriteWindowOrg(AStream: TStream);
+    // misc
+    procedure ProcessTextInRect(AStream: TStream; AItem: TObject; ACanvas: TCanvas);
+
   protected
     // General routines
     function AddToObjTable(AItem: TComponent): Integer;
@@ -490,13 +496,10 @@ begin
 end;
 
 function TWMFWriter.MakeWMFColorRecord(AColor: TColor): TWMFColorRecord;
-var
-  c: TRGBQuad;
 begin
-  c := TRGBQuad(AColor);
-  Result.ColorRED := c.rgbRed;
-  Result.ColorGREEN := c.rgbGreen;
-  Result.ColorBLUE := c.rgbBlue;
+  Result.ColorRED := Red(AColor);
+  Result.ColorGREEN := Green(AColor);
+  Result.ColorBLUE := Blue(AColor);
   Result.Reserved := 0;
 end;
 
@@ -524,6 +527,64 @@ begin
   end;
   FLogicalMaxX := trunc(maxx);
   FLogicalMaxY := trunc(maxy);
+end;
+
+procedure TWMFWriter.ProcessTextInRect(AStream: TStream; AItem: TObject;
+  ACanvas: TCanvas);
+var
+  item: TlmfTextInRect;
+  lineItem: TlmfTextInRect;
+  L: TStringList;
+  ts: TTextStyle;
+  R: TRect;
+  P: TPoint;
+  i: Integer;
+  s: String;
+  ext: TSize;
+  lineHeight, totalHeight: Integer;
+begin
+  item := TlmfTextInRect(AItem);
+
+  ts := item.TextStyle;
+  ts.SingleLine := true;
+  ts.Alignment := taLeftJustify;
+  ts.Layout := tlTop;
+
+  L := TStringList.Create;
+  try
+    if item.TextStyle.Wordbreak then
+      WordWrap(ACanvas.Font, item.Text, item.Right-item.Left, L)
+    else
+    if item.TextStyle.SingleLine then
+      L.Add(item.Text)
+    else
+      L.Text := item.Text;
+    lineHeight := ACanvas.TextHeight('Tg');
+    totalHeight := lineHeight * L.Count;
+    case item.TextStyle.Layout of
+      tlTop: P.Y := item.Top;
+      tlCenter: P.Y := (item.Top + item.Bottom - totalHeight) div 2;
+      tlBottom: P.Y := item.Bottom - totalHeight;
+    end;
+    for i := 0 to L.Count-1 do
+    begin
+      s := L[i];
+      ext := ACanvas.TextExtent(s);
+      case item.TextStyle.Alignment of
+        taLeftJustify: P.X := item.Left;
+        taCenter: P.X := (item.Left + item.Right - ext.CX) div 2;
+        taRightJustify: P.X := item.Right - ext.CX;
+      end;
+      R := Rect(P.X, P.Y, P.X + ext.CX, P.Y + ext.CY);
+      lineItem := TlmfTextInRect.Create(R, P.X, P.Y, s, ts);
+      WriteText(AStream, lineitem);
+      lineItem.Free;
+//      ACanvas.TextRect(R, R.Left, R.Top, s, item.TextStyle);
+      inc(P.Y, ext.CY);
+    end;
+  finally
+    L.Free;
+  end;
 end;
 
 { Scaling routines which convert to wmf-specific units ("logical units").
@@ -574,14 +635,19 @@ begin
   WriteWMFRecord(AStream, META_SETBKCOLOR, rec, SizeOf(rec));
 end;
 
-procedure TWMFWriter.WriteBkMode(AStream: TStream; AMode: Word);
-var
-  mode: DWord;
+procedure TWMFWriter.WriteBkColor(AStream: TStream; AItem: TlmfBkColor);
 begin
-  if AMode in [BM_TRANSPARENT, BM_OPAQUE] then begin
-    mode := AMode;
-    WriteWMFRecord(AStream, META_SETBKMODE, mode, SizeOf(mode));
-  end;
+  WriteBkColor(AStream, AItem.Color);
+end;
+
+procedure TWMFWriter.WriteBkMode(AStream: TStream; AMode: Word);
+begin
+  WriteWMFRecord(AStream, META_SETBKMODE, AMode, SizeOf(AMode));
+end;
+
+procedure TWMFWriter.WriteBkMode(AStream: TStream; AItem: TlmfBkMode);
+begin
+  WriteBkMode(AStream, AItem.Mode);
 end;
 
 procedure TWMFWriter.WriteBrush(AStream: TStream; AItem: TlmfBrush);
@@ -710,6 +776,9 @@ begin
   colorRec.ColorBLUE := Blue(AItem.Font.Color);
   colorRec.Reserved := 0;
   WriteWMFRecord(AStream, META_SETTEXTCOLOR, colorRec, SizeOf(TWMFColorRecord));
+
+  // Store font for text layout for TlmfTextInRect records
+  FCurrFont := AItem.Font;
 end;
 
 procedure TWMFWriter.WriteLineTo(AStream: TStream; AItem: TlmfLineTo);
@@ -860,6 +929,7 @@ procedure TWMFWriter.WriteRecords(AStream: TStream);
 var
   i: Integer;
   item: TlmfObject;
+  bmp: TBitmap;
 begin
   // Setup defaults
   WriteWindowExt(AStream);
@@ -917,10 +987,25 @@ begin
       WriteLine(AStream, TlmfLine(item))
     else
     if item is TlmfTextInRect then
-      WriteTextInRect(AStream, TlmfTextInRect(item))
-    else
+    begin
+      bmp := TBitmap.Create;
+      try
+        bmp.SetSize(10, 10);
+        bmp.Canvas.Font.Assign(FCurrFont);
+        ProcessTextInRect(AStream, item, bmp.Canvas);
+      finally
+        bmp.Free;
+      end;
+//      WriteTextInRect(AStream, TlmfTextInRect(item))
+    end else
     if item is TlmfText then
-      WriteText(AStream, TlmfText(item));
+      WriteText(AStream, TlmfText(item))
+    else
+    if item is TlmfBkColor then
+      WriteBkColor(AStream, TlmfBkColor(item))
+    else
+    if item is TlmfBkMode then
+      WriteBkMode(AStream, TlmfBkMode(item));
   end;
 
   // Last record must be an EOF record.
@@ -1026,6 +1111,8 @@ begin
   if AItem.TextStyle.RightToLeft then rec.Options := rec.Options or ETO_RTLREADING;
   if (rec.Options and (ETO_OPAQUE or ETO_CLIPPED) <> 0) then
   begin
+    // The entire rectangle is filled here. Note that this is in addition to
+    // SetBkMode which fill only the background of the text itself.
     R[0] := ScaleX(AItem.Left);
     R[1] := ScaleY(AItem.Top);
     R[2] := ScaleX(AItem.Right);
@@ -1033,6 +1120,7 @@ begin
     nR := SizeOf(R);
   end else
     nR := 0;
+
   WriteWMFRecord(AStream, META_EXTTEXTOUT, SizeOf(TWMFExtTextOutRecord) + nR + adjLen);
   WriteWMFParams(AStream, rec, SizeOf(TWMFExtTextOutRecord));
   if nr > 0 then

@@ -20,6 +20,26 @@ type
     procedure Action(fImage: TlmfImage; ACanvas:TCanvas); virtual; abstract;
   end;
 
+  TlmfBkColor = class(TlmfObject)
+  private
+    fColor: TColor;
+  public
+    constructor Create(AColor: TColor); virtual; reintroduce;
+    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+  published
+    property Color: TColor read fColor write fColor;
+  end;
+
+  TlmfBkMode = class(TlmfObject)
+  private
+    fMode: Word;
+  public
+    constructor Create(AMode: Word); virtual; reintroduce;
+    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+  published
+    property Mode: Word read fMode write fMode;
+  end;
+
   TlmfAnchor = class(TlmfObject)
   private
     fPos:TPoint;
@@ -188,7 +208,9 @@ type
   TlmfFont=class(TlmfObject)
   private
     fFont: TFont;
-    fHeight, fRotation: integer;
+    fHeight: integer;
+    function GetRotation: Integer;
+    procedure SetRotation(AValue: Integer);
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
@@ -196,7 +218,7 @@ type
   published
     property Font: TFont read fFont write fFont;
     property Height: integer read fHeight write fHeight;
-    property Rotation: integer read fRotation write fRotation;
+    property Rotation: integer read GetRotation write SetRotation;
   end;
 
   TlmfBrush=class(TlmfObject)
@@ -259,6 +281,36 @@ type
 
 implementation
 
+{ TlmfBkColor (Text background color) }
+
+constructor TlmfBkColor.Create(AColor: TColor);
+begin
+  inherited Create(nil);
+  fColor := AColor;
+end;
+
+procedure TlmfBkColor.Action(fImage: TlmfImage; ACanvas: TCanvas);
+begin
+  SetBkColor(ACanvas.Handle, fColor);
+end;
+
+
+{ TlmfBkMode (Text background transparent or opaque) }
+
+constructor TlmfBkMode.Create(AMode: Word);
+begin
+  inherited Create(nil);
+  if not (AMode in [TRANSPARENT, OPAQUE]) then
+    raise Exception.Create('Illegal BkMode value');
+  fMode := AMode;
+end;
+
+procedure TlmfBkMode.Action(fImage: TlmfImage; ACanvas: TCanvas);
+begin
+  SetBkMode(ACanvas.Handle, fMode);
+end;
+
+
 { TlmfAnchor }
 
 constructor TlmfAnchor.Create(Ax,Ay:integer);
@@ -294,7 +346,7 @@ begin
   fEndPos.Y:=y2;
 end;
 
-procedure TlmfLine.Action(fImage:TlmfImage;ACanvas:TCanvas);
+procedure TlmfLine.Action(fImage: TlmfImage; ACanvas: TCanvas);
 begin
   ACanvas.Line(
     fImage.ScaleX(fPos.X),
@@ -361,7 +413,7 @@ begin
     fImage.ScaleX(fRect.Right),
     fImage.ScaleY(fRect.bottom)
   );
-  ACanvas.TextRect(R, fImage.ScaleX(fPos.X), fImage.ScaleY(fPos.Y), fText, fStyle);
+  ACanvas.TextRect(R, R.Left, R.Top, fText, fStyle);
 end;
 
 procedure TlmfTextInRect.DefineProperties(Filer: TFiler);
@@ -678,17 +730,22 @@ end;
 
 procedure TlmfFont.Action(fImage: TlmfImage; ACanvas: TCanvas);
 var
-  //AFont: TFont;
-  rot, ht: integer;
-//  ofh: Hfont;
+  ht: integer;
 begin
-  rot:=fRotation;//TRotFont(fFont).Rotation;
-
-  Acanvas.Font.Assign(fFont);
+  ACanvas.Font.Assign(fFont);
   ht := abs(fImage.ScaleSizeY(fHeight));
   if ht <= 0 then ht := 1;
   ACanvas.Font.Height := -ht;
-  ACanvas.Font.Orientation := rot;
+end;
+
+function TlmfFont.GetRotation: Integer;
+begin
+  Result := fFont.Orientation;
+end;
+
+procedure TlmfFont.SetRotation(AValue: Integer);
+begin
+  fFont.Orientation := AValue;
 end;
 
 
