@@ -40,7 +40,7 @@ uses
   {$ENDIF}
   Classes, SysUtils,
   // LCL
-  Controls, Forms, StdCtrls, ComCtrls, Dialogs, ButtonPanel, Menus, LCLStrConsts,
+  Controls, Forms, StdCtrls, ComCtrls, Dialogs, ButtonPanel, Menus, LCLStrConsts, LCLType,
   // LazUtils
   FileUtil,
   // IdeIntf
@@ -76,6 +76,7 @@ type
     MoveDownButton: TToolButton;
     tbSeparator2: TToolButton;
     ExtraButton: TToolButton;
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure AddButtonClick(Sender: TObject);
     procedure MenuItemCloneClick(Sender: TObject);
     procedure MenuItemExportClick(Sender: TObject);
@@ -207,6 +208,54 @@ begin
     NewTool.Free;
   end;
   EnableButtons;
+end;
+
+procedure TExternalToolDialog.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  // dialog
+  if (Key = VK_ESCAPE) and (Shift = []) then
+  begin
+    ModalResult := mrCancel;
+    Key := 0;
+  end
+  else if (Key = VK_LCL_ENTER) and (Shift = [ssCtrl]) then
+  begin
+    ModalResult := mrOK;
+    Key := 0;
+  end
+  // add/remove
+  else if (Key = VK_N) and (Shift = [ssCtrl]) then
+  begin
+    AddButtonClick(nil);
+    Key := 0;
+  end
+  else if (Key = VK_C) and (Shift = [ssCtrl, ssAlt]) then
+  begin
+    MenuItemCloneClick(nil);
+    Key := 0;
+  end
+  else if (Key = VK_DELETE) and (Shift = []) then
+  begin
+    RemoveButtonClick(nil);
+    Key := 0;
+  end
+  // edit
+  else if (Key = VK_LCL_ENTER) and (Shift = []) then
+  begin
+    EditButtonClick(nil);
+    Key := 0;
+  end
+  // move
+  else if (Key = VK_DOWN) and (Shift = [ssCtrl, ssShift]) then
+  begin
+    MoveDownButtonClick(nil);
+    Key := 0;
+  end
+  else if (Key = VK_UP) and (Shift = [ssCtrl, ssShift]) then
+  begin
+    MoveUpButtonClick(nil);
+    Key := 0;
+  end
 end;
 
 procedure TExternalToolDialog.MenuItemCloneClick(Sender: TObject);

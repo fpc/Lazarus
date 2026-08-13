@@ -8,8 +8,10 @@ object ExternalToolDialog: TExternalToolDialog
   Caption = 'ExternalToolDialog'
   ClientHeight = 347
   ClientWidth = 451
+  KeyPreview = True
   Position = poScreenCenter
   LCLVersion = '1.5'
+  OnKeyDown = FormKeyDown
   object ToolBar: TToolBar
     Left = 0
     Height = 94
