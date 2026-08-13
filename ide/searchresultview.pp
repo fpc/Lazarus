@@ -957,7 +957,7 @@ begin
   lPage := GetResultsPage(APageIndex); // this also check APageIndex range
   if (lPage <> nil) and (APageName <> '') then
   begin
-    lPage.Caption := BeautifyPageName(APageName, lEllipsed);
+    lPage.Caption := StringReplace(BeautifyPageName(APageName, lEllipsed), '&', '&&', [rfReplaceAll]);
   end;
 
   // Count

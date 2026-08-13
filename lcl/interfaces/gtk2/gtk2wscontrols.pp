@@ -886,7 +886,6 @@ class procedure TGtk2WSWinControl.SetText(const AWinControl: TWinControl;
     MenuWidget: PGtkWidget;     // the popup menu (hbox containing a pixmap and
                                 // a label)
     MenuLabelWidget: PGtkWidget; // the label in the popup menu item
-    NewText: PChar;
   begin
     if (AWinControl.Parent <> nil) and (AWinControl.Parent is TTabControl) then
       exit;
@@ -907,11 +906,10 @@ class procedure TGtk2WSWinControl.SetText(const AWinControl: TWinControl;
     else
       MenuLabelWidget:=nil;
     // set new text
-    NewText:=PChar(AText);
     if TabLabelWidget<>nil then
-      gtk_label_set_text(pGtkLabel(TabLabelWidget), NewText);
+      GTK2WidgetSet.SetLabelCaption(pGtkLabel(TabLabelWidget), AText);
     if MenuLabelWidget<>nil then
-      gtk_label_set_text(pGtkLabel(MenuLabelWidget), NewText);
+      GTK2WidgetSet.SetLabelCaption(pGtkLabel(MenuLabelWidget), AText);
   end;
 
 var
