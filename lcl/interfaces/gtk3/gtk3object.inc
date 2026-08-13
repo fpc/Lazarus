@@ -369,6 +369,8 @@ var
 begin
   SetExceptionMask([exInvalidOp, exDenormalized, exZeroDivide, exOverflow, exUnderflow, exPrecision]);
   inherited Create;
+  System.InitCriticalSection(FHandlesCS);
+  FSavedHandlesList := TMap.Create(TMapIdType(ituPtrSize), SizeOf(TObject));
   FDockImage := nil;
 
   FDragImageList := nil;
@@ -475,6 +477,8 @@ begin
   FCSSTheme.Free;
   FSystemMetricsList.Free;
   DoneGtk3KeyboardTables;
+  FreeAndNil(FSavedHandlesList);
+  System.DoneCriticalSection(FHandlesCS);
   inherited Destroy;
 end;
 
@@ -1304,8 +1308,52 @@ begin
 end;
 
 function TGtk3WidgetSet.IsValidHandle(const AHandle: HWND): Boolean;
+var
+  Key: PtrUInt;
 begin
-  Result := AHandle <> 0;
+  if (AHandle = 0) or (FSavedHandlesList = nil) then
+    exit(False);
+  Key := PtrUInt(AHandle);
+  System.EnterCriticalSection(FHandlesCS);
+  try
+    Result := FSavedHandlesList.HasId(Key);
+  finally
+    System.LeaveCriticalSection(FHandlesCS);
+  end;
+end;
+
+procedure TGtk3WidgetSet.AddHandle(AHandle: TObject);
+var
+  Key: PtrUInt;
+  Obj: TObject;
+begin
+  if (AHandle = nil) or (FSavedHandlesList = nil) then
+    exit;
+  Key := PtrUInt(AHandle);
+  Obj := AHandle;
+  System.EnterCriticalSection(FHandlesCS);
+  try
+    if not FSavedHandlesList.HasId(Key) then
+      FSavedHandlesList.Add(Key, Obj);
+  finally
+    System.LeaveCriticalSection(FHandlesCS);
+  end;
+end;
+
+procedure TGtk3WidgetSet.RemoveHandle(AHandle: TObject);
+var
+  Key: PtrUInt;
+begin
+  if (AHandle = nil) or (FSavedHandlesList = nil) then
+    exit;
+  Key := PtrUInt(AHandle);
+  System.EnterCriticalSection(FHandlesCS);
+  try
+    if FSavedHandlesList.HasId(Key) then
+      FSavedHandlesList.Delete(Key);
+  finally
+    System.LeaveCriticalSection(FHandlesCS);
+  end;
 end;
 
 procedure TGtk3WidgetSet.InitStockItems;

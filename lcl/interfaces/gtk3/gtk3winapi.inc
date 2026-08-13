@@ -4219,7 +4219,7 @@ begin
   if user_data <> nil then
   begin
     AMsg := TCustomGtk3Message(user_data^);
-    if AMsg.Handle <> 0 then
+    if Gtk3WidgetSet.IsValidHandle(AMsg.Handle) then
     begin
       FillChar(AMessage{%H-}, SizeOf(AMessage), #0);
       AMessage.Msg := AMsg.Msg;
@@ -4241,7 +4241,7 @@ var
   AEvent: PCustomGtk3Message;
 begin
   Result := False;
-  if Handle <> 0 then
+  if IsValidHandle(Handle) then
   begin
     AEvent := GetMem(SizeOf(TCustomGtk3Message));
     AEvent^.Handle := Handle;

@@ -66,6 +66,8 @@ type
     FWMNameCached: boolean;
     FTrackBarKnobSize: Integer;
     FActivityCounter: integer;
+    FHandlesCS: TRTLCriticalSection;
+    FSavedHandlesList: TMap;
     FLastUserEventTime: guint32;
     FAppFocusTimerID: guint;
     FLastFocusIn: PGtkWidget;
@@ -206,6 +208,8 @@ type
     function IsValidDC(const DC: HDC): Boolean;
     function IsValidGDIObject(const AGdiObject: HGDIOBJ): Boolean;
     function IsValidHandle(const AHandle: HWND): Boolean;
+    procedure AddHandle(AHandle: TObject);
+    procedure RemoveHandle(AHandle: TObject);
 
     property ActivityCounter: integer read FActivityCounter write FActivityCounter;
     property AppFocusTimerID: guint read FAppFocusTimerID write FAppFocusTimerID;

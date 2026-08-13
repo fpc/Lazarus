@@ -3774,6 +3774,7 @@ constructor TGtk3Widget.Create(const AWinControl: TWinControl;
   const AParams: TCreateParams);
 begin
   inherited Create;
+  Gtk3WidgetSet.AddHandle(Self);
   LCLWidth := 0;
   LCLHeight := 0;
   LCLLeft := -MaxInt;
@@ -3799,6 +3800,7 @@ constructor TGtk3Widget.CreateFrom(const AWinControl: TWinControl;
   AWidget: PGtkWidget);
 begin
   inherited Create;
+  Gtk3WidgetSet.AddHandle(Self);
   FContext := 0;
   FWidgetMapped := False;
   FHasPaint := False;
@@ -4126,6 +4128,7 @@ end;
 
 destructor TGtk3Widget.Destroy;
 begin
+  Gtk3WidgetSet.RemoveHandle(Self);
   DestroyWidget;
   inherited Destroy;
 end;
@@ -9639,6 +9642,7 @@ end;
 constructor TGtk3MenuShell.Create(const AMenu: TMenu; AMenuBar: PGtkMenuBar);
 begin
   inherited Create;
+  Gtk3WidgetSet.AddHandle(Self);
   MenuObject := AMenu;
   FCentralWidget := nil;
   if AMenuBar <> nil then
@@ -9839,6 +9843,7 @@ end;
 constructor TGtk3MenuItem.Create(const AMenuItem: TMenuItem);
 begin
   inherited Create;
+  Gtk3WidgetSet.AddHandle(Self);
   MenuItem := AMenuItem;
   FOwnWidget := True;
   // Initializes the properties
@@ -17104,6 +17109,7 @@ begin
 
   // FHasPaint := False;
   CommonDialog := ACommonDialog;
+  Gtk3WidgetSet.AddHandle(Self);
   // Defines an action for the dialog and creates it
   Action := GTK_FILE_CHOOSER_ACTION_OPEN;
   Button1 := GTK_STOCK_OPEN;
@@ -17237,6 +17243,7 @@ begin
 
   // FHasPaint := False;
   CommonDialog := ACommonDialog;
+  Gtk3WidgetSet.AddHandle(Self);
   InitializeWidget;
   Self.SetCallbacks;
 end;
@@ -17270,6 +17277,7 @@ begin
 
   // FHasPaint := False;
   CommonDialog := ACommonDialog;
+  Gtk3WidgetSet.AddHandle(Self);
   TGtk3Widget(Self).InitializeWidget;
   Self.SetCallbacks;
 end;
@@ -17320,6 +17328,7 @@ begin
 
   // FHasPaint := False;
   CommonDialog := ACommonDialog;
+  Gtk3WidgetSet.AddHandle(Self);
   TGtk3Widget(Self).InitializeWidget;
   Self.SetCallbacks;
 end;
