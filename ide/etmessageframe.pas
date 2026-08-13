@@ -309,6 +309,7 @@ type
     procedure FetchNewMessages;
     function FetchNewMessages(View: TLMsgWndView): boolean; // true if new lines
     procedure UpdateScrollBar(InvalidateScrollMax: boolean);
+    procedure UpdateItemHeight; // compute ItemHeight from font and icon size
     // line wrapping / scrollbar heuristic
     function VisiblePageRows: integer; // number of regular rows fitting in ClientHeight (the "n")
     function ViewShownRows(View: TLMsgWndView): integer; // logical rows of a view (header+lines+progress)
@@ -332,6 +333,8 @@ type
     procedure Paint; override;
     procedure CreateWnd; override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
+    procedure Resize; override;
+    procedure FontChanged(Sender: TObject); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
   public
@@ -581,6 +584,8 @@ implementation
 const
   cNotALineHint=low(integer);
   MsgWndWrapArrow = #$E2#$86#$B5; // U+21B5 ↵ , marks a wrapped (continued) visual row
+  // upper limit of message lines whose wrapped row count is cached
+  MsgWndMaxMeasuredLines = 10000;
 
 type
   // search key for the fWrapChunks AVL tree
@@ -1569,14 +1574,16 @@ begin
     if OtherView.Running then begin
       // there is still a prior View running
       // -> keep the last line of the other View visible
-      MaxY:=GetLineTop(OtherView,OtherView.GetShownLineCount(true,true),false);
-      y:=GetLineTop(View,View.GetShownLineCount(false,true),false);
+      // Note: GetLineTop needs a line number: -1=header, Lines.Count=progress line
+      EnsureWrapWindows;
+      MaxY:=GetLineTop(OtherView,OtherView.GetShownLineCount(false,true)-1,false);
+      y:=GetLineTop(View,View.GetShownLineCount(false,true)-1,false);
       ScrollTop:=Min(MaxY,y);
       exit;
     end;
   end;
   // scroll to last line
-  ScrollToLine(View,View.GetShownLineCount(false,true),true);
+  ScrollToLine(View,View.GetShownLineCount(false,true)-1,true);
 end;
 
 function TMessagesCtrl.AllMessagesAsString(OnlyShown: boolean): String;
@@ -2385,10 +2392,11 @@ begin
     else if aViewIndex<aChunk.View.Index then
       Node:=Node.Left
     else begin
+      // the tree is sorted ascending: smaller lines are left
       if MsgLine<aChunk.FirstLine then
-        Node:=Node.Right
-      else if MsgLine>aChunk.LastLine then
         Node:=Node.Left
+      else if MsgLine>aChunk.LastLine then
+        Node:=Node.Right
       else
         exit(aChunk);
     end;
@@ -2621,7 +2629,9 @@ var
     if aEnd>View.Lines.Count-1 then aEnd:=View.Lines.Count-1;
     if aEnd<aStart then exit;
     // merge with existing ranges of the same view that overlaps or touches
-    for i:=0 to MCount-1 do
+    // Note: MCount shrinks while removing => no for-loop
+    i:=0;
+    while i<MCount do
       if (MViews[i]=View) and (aEnd>=MStarts[i]-1) and (aStart<=MEnds[i]+1) then
       begin
         if aStart>MStarts[i] then aStart:=MStarts[i];
@@ -2634,7 +2644,8 @@ var
           MEnds[j]:=MEnds[j+1];
         end;
         dec(MCount);
-      end;
+      end else
+        inc(i);
     if MCount>=length(MViews) then
     begin
       SetLength(MViews,Max(8,MCount*2));
@@ -2689,11 +2700,12 @@ var
   end;
 
 var
-  i, k, msg: integer;
+  i, k, msg, KeptLines: integer;
   Found: boolean;
   Line: TMessageLine;
   NewChunks: TFPList; // of TWrapChunk, built before the old tree is cleared
   Chunk: TWrapChunk;
+  Node: TAVLTreeNode;
 begin
   if not HandleAllocated then exit;
   if ClientWidth<=0 then exit;
@@ -2708,6 +2720,9 @@ begin
   if (fWrapWinStamp=fWrapStamp) and (fWrapWinScrollTop=ScrollTop)
   and (fWrapWinWidth=ClientWidth) and (fWrapWinHeight=ClientHeight) then
     exit;
+  if fWrapWinWidth<>ClientWidth then
+    // wrapping depends on the width => all measurements are outdated
+    InvalidateWrapCache;
   fWrapWinStamp:=fWrapStamp;
   fWrapWinScrollTop:=ScrollTop;
   fWrapWinWidth:=ClientWidth;
@@ -2727,6 +2742,20 @@ begin
   TopLog:=EstimateLogicalAtVisual(ScrollTop);
 
   MCount:=0;
+  // Keep what was already measured. The window W2 below moves with ScrollTop,
+  // so dropping the old measurements would shrink ApproxTotalVisualRows and
+  // ScrollTop would point behind the last row (=> everything painted too high).
+  // Measurements are only kept as long as they are valid: InvalidateWrapCache
+  // drops them whenever the content, the width, the font or the options change.
+  KeptLines:=0;
+  Node:=fWrapChunks.FindLowest;
+  while Node<>nil do begin
+    Chunk:=TWrapChunk(Node.Data);
+    inc(KeptLines,Chunk.LastLine-Chunk.FirstLine+1);
+    if KeptLines>MsgWndMaxMeasuredLines then break; // keep time and memory bounded
+    AddRange(Chunk.View,Chunk.FirstLine,Chunk.LastLine);
+    Node:=Node.Successor;
+  end;
   AddGlobalRange(0,Max(n,30));                         // W1: first lines
   AddGlobalRange(TopLog-Max(n,30),TopLog+Max(2*n,60)); // W2: lines above the viewport and below
   AddGlobalRange(TotalLog-Max(30,n),TotalLog);         // W3: last lines
@@ -2917,6 +2946,7 @@ var
 
 var
   i, y: Integer;
+  MaxScrollTop, OldScrollTop: Integer;
   Indent, ImgIndex, IconW, FirstW, ContW: Integer;
   FirstViewIdx, FirstInternal, FirstSub: Integer;
   Internal, Shown, Cnt, Msg, Rows, r, RowLeft, yTop, RowEnd: Integer;
@@ -2950,6 +2980,22 @@ begin
   // make sure the wrap metrics and the measured heuristic windows are current
   RefreshWrapMetrics;
   EnsureWrapWindows;
+
+  // ScrollTop was clamped when it was set, but its maximum depends on
+  // ClientHeight, ItemHeight and on which lines are measured - all of which can
+  // have changed since. Without clamping again the viewport would start behind
+  // the last row: everything would be painted too high and the last rows would
+  // stay empty. Note: moving ScrollTop moves the measured window as well
+  // => clamp until it fits, at most twice.
+  OldScrollTop:=FScrollTop;
+  for i:=1 to 2 do begin
+    MaxScrollTop:=ScrollTopMax; // this updates the measured windows
+    if FScrollTop<=MaxScrollTop then break;
+    // set the field, not the property: no Invalidate while painting
+    FScrollTop:=Max(0,MaxScrollTop);
+  end;
+  if OldScrollTop<>FScrollTop then
+    UpdateScrollBar(false);
 
   // find the first visible logical line and the sub-row within it
   VisualRowToPos(ScrollTop,FirstViewIdx,FirstInternal,FirstSub);
@@ -3098,6 +3144,10 @@ begin
   // the scrollbar counts in visual rows (each a regular ItemHeight high)
   if InvalidateScrollMax then
     InvalidateWrapCache;
+  // the maximum depends on the content and on the client size
+  // => clamp, even when there is no handle yet
+  if ScrollTop > ScrollTopMax then
+    ScrollTop := ScrollTopMax;
   if not HandleAllocated then exit;
 
   ScrollInfo.cbSize := SizeOf(ScrollInfo);
@@ -3106,18 +3156,27 @@ begin
   ScrollInfo.nTrackPos := 0;
   ScrollInfo.nMax := ScrollTopMax+VisiblePageRows-1;
   ScrollInfo.nPage := VisiblePageRows;
-  if ScrollTop > ScrollTopMax then
-    ScrollTop := ScrollTopMax;
   ScrollInfo.nPos := ScrollTop;
   //debugln(['TMessagesCtrl.UpdateScrollBar ScrollTop=',ScrollTop,' ScrollTopMax=',ScrollTopMax]);
   ShowScrollBar(Handle, SB_VERT, True);
   SetScrollInfo(Handle, SB_VERT, ScrollInfo, false);
 end;
 
+procedure TMessagesCtrl.UpdateItemHeight;
+var
+  h: Integer;
+begin
+  if not HandleAllocated then exit;
+  h:=Canvas.TextHeight('Mg')+2;
+  if (Images<>nil) and (h<Images.Height+2) then
+    h:=Images.Height+2;
+  ItemHeight:=h;
+end;
+
 procedure TMessagesCtrl.CreateWnd;
 begin
   inherited CreateWnd;
-  ItemHeight:=Canvas.TextHeight('Mg')+2;
+  UpdateItemHeight;
   RefreshWrapMetrics;
   InvalidateWrapCache;
   UpdateScrollBar(false);
@@ -3135,6 +3194,27 @@ begin
     UpdateScrollBar(true);
   end else
     UpdateScrollBar(false);
+end;
+
+procedure TMessagesCtrl.Resize;
+begin
+  inherited Resize;
+  if (FViews=nil) or (csDestroying in ComponentState) then exit;
+  // The client area can change without DoSetBounds, e.g. when the widgetset
+  // adjusts the border or a scrollbar appears. That changes VisiblePageRows and
+  // therefore ScrollTopMax => clamp ScrollTop and update the scrollbar.
+  UpdateScrollBar(false);
+end;
+
+procedure TMessagesCtrl.FontChanged(Sender: TObject);
+begin
+  inherited FontChanged(Sender);
+  if (FViews=nil) or (csDestroying in ComponentState) then exit;
+  // the row height and all text widths depend on the font
+  UpdateItemHeight;
+  RefreshWrapMetrics;
+  UpdateScrollBar(true);
+  Invalidate;
 end;
 
 procedure TMessagesCtrl.MsgCtrlMouseMove(Sender: TObject; Shift: TShiftState;
@@ -4023,6 +4103,11 @@ var
   MaxScrollTop: Integer;
 begin
   if View=nil then exit;
+  // clamp to the last existing line: -1 is the header, Lines.Count-1 the last
+  // message, Lines.Count the progress line. Scrolling to the row *behind* the
+  // last one would move the viewport one row too far.
+  if LineNumber>=View.GetShownLineCount(false,true) then
+    LineNumber:=View.GetShownLineCount(false,true)-1;
   EnsureWrapWindows;
   aRrow:=GetLineTop(View,LineNumber,false);   // first visual aRrow of the line
   if LineNumber<0 then
