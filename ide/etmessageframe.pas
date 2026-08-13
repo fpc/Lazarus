@@ -1413,7 +1413,9 @@ begin
   FUpdateTimer.OnTimer:=@MsgUpdateTimerTimer;
   FItemHeight:=20;
   FHintLast.LineNumber:=cNotALineHint;
-  BorderWidth:=0;
+  BorderWidth:=1;
+  BorderStyle := bsSingle;
+  BorderSpacing.Bottom := 1;
   fBackgroundColor:=MsgWndDefBackgroundColor;
   FHeaderBackground[lmvtsRunning]:=MsgWndDefHeaderBackgroundRunning;
   FHeaderBackground[lmvtsSuccess]:=MsgWndDefHeaderBackgroundSuccess;
