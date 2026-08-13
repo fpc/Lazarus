@@ -903,7 +903,7 @@ var
   begin
     R := Rect(0, 0, AMaxWidth, 9999);
     DrawText(bmp.Canvas.Handle, P, ALength, R, DT_CALCRECT);
-    Result := R.Right > AMaxWidth;
+    Result := R.Right >= AMaxWidth;
   end;
 
   procedure AddLineToList(ALineStart, ALineEnd: PChar);
@@ -939,7 +939,7 @@ begin
     begin
       if P^ in ['-'] then
       begin
-        if TextisTooWide(PLineStart, P - 1 - PLineStart) then
+        if TextIsTooWide(PLineStart, P - PLineStart + 1) then
         begin
           AddLineToList(PLineStart, PWordStart);
           PLineStart := PWordStart;
@@ -948,7 +948,7 @@ begin
       end else
       if P^ in [' ', #9] then
       begin
-        if TextIsTooWide(PLineStart, P - 1 - PLineStart) then
+        if TextIsTooWide(PLineStart, P - PLineStart) then
         begin
           AddLineToList(PLineStart, PWordStart);
           PLineStart := PWordStart; // Next line begins at position of previous word
