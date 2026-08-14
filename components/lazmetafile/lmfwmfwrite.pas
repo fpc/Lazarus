@@ -49,7 +49,7 @@ type
     procedure WriteWindowExt(AStream: TStream);
     procedure WriteWindowOrg(AStream: TStream);
     // misc
-    procedure ProcessTextInRect(AStream: TStream; AItem: TObject; ACanvas: TCanvas);
+    procedure ProcessTextInRect(AStream: TStream; AItem: TObject);
 
   protected
     // General routines
@@ -232,6 +232,7 @@ const
   EMR_COLORMATCHTOTARGETW = $00000079;
   EMR_CREATECOLORSPACEW = $0000007A;
              *)
+             (*
   // Brush styles
   BS_SOLID = $0000;
   BS_NULL = $0001;
@@ -264,7 +265,7 @@ const
   THAI_CHARSET = $000000DE;
   EASTEUROPE_CHARSET = $000000EE;
   OEM_CHARSET = $000000FF;
-          (*
+
   // ExtTextOutOptions flags
   ETO_OPAQUE = $0002;
   ETO_CLIPPED = $0004;
@@ -273,7 +274,7 @@ const
   ETO_NUMERICSLOCAL = $0400;
   ETO_NUMERICSLATIN = $0800;
   ETO_PDY = $2000;
-                *)
+
   // Family font
   FF_DONTCARE = $00;
   FF_ROMAN = $01;
@@ -316,15 +317,11 @@ const
   MEMORYMETAFILE = $0001;  // Metafile is stored in memory
   DISKMETAFILE = $0002;    // ... on disk.
 
-  // Background MixMode for text, hatched brushes and other nonsolid pen styles
-  BM_TRANSPARENT = $0001;
-  BM_OPAQUE = $0002;
-
   // PitchFont
   DEFAULT_PITCH = 0;
   FIXED_PITCH = 1;
   VARIABLE_PITCH = 2;
-             (*
+
   // TextAlignment flags
   TA_NOUPDATECP = $0000;
   TA_LEFT = $0000;
@@ -343,7 +340,7 @@ const
   VTA_BOTTOM = $0002;
   VTA_CENTER = $0006;  // why not $0004?
   VTA_BASELINE = $0018;
-               *)
+
   // Ternary Raster Operations
   BLACKNESS = $00;
   NOTSRCERASE = $11;
@@ -379,6 +376,7 @@ const
   // Arc direction (EMF)
   AD_COUNTERCLOCKWISE = $00000001;
   AD_CLOCKWISE = $00000002;
+                  *)
 
 function WMF_GetRecordTypeName(ARecordType: Word): String;
 begin
@@ -529,8 +527,11 @@ begin
   FLogicalMaxY := trunc(maxy);
 end;
 
-procedure TWMFWriter.ProcessTextInRect(AStream: TStream; AItem: TObject;
-  ACanvas: TCanvas);
+{ The META_EXTTEXTOUT function which is called by WriteWMFTextInRect is rather
+  primitive: it ignores line-breaks and does not allow for word-wrapping.
+  To implement them we break the text provided into lines and pass each line
+  individually to WriteWMFTextInRect. }
+procedure TWMFWriter.ProcessTextInRect(AStream: TStream; AItem: TObject);
 var
   item: TlmfTextInRect;
   lineItem: TlmfTextInRect;
@@ -542,6 +543,7 @@ var
   s: String;
   ext: TSize;
   lineHeight, totalHeight: Integer;
+  txtAlign: Word;
 begin
   item := TlmfTextInRect(AItem);
 
@@ -552,36 +554,59 @@ begin
 
   L := TStringList.Create;
   try
+    L.TrailingLineBreak := false;
     if item.TextStyle.Wordbreak then
-      WordWrap(ACanvas.Font, item.Text, item.Right-item.Left, L)
+      WordWrap(FCurrFont, item.Text, item.Right-item.Left, L)
     else
     if item.TextStyle.SingleLine then
       L.Add(item.Text)
     else
       L.Text := item.Text;
-    lineHeight := ACanvas.TextHeight('Tg');
+    lineHeight := abs(FCurrFont.Height);
     totalHeight := lineHeight * L.Count;
+    txtAlign := 0;
     case item.TextStyle.Layout of
-      tlTop: P.Y := item.Top;
-      tlCenter: P.Y := (item.Top + item.Bottom - totalHeight) div 2;
-      tlBottom: P.Y := item.Bottom - totalHeight;
+      tlTop:
+        begin
+          P.Y := item.Top;
+          txtAlign := txtAlign or TA_TOP;
+        end;
+      tlCenter:
+        begin
+          P.Y := (item.Top + item.Bottom - totalHeight) div 2;
+          txtAlign := txtAlign or TA_TOP;
+        end;
+      tlBottom:
+        begin
+          P.Y := item.Bottom - totalHeight;
+          txtAlign := txtAlign or TA_TOP;
+        end;
     end;
+    case item.TextStyle.Alignment of
+      taLeftJustify:
+        txtAlign := txtAlign or TA_LEFT;
+      taCenter:
+        txtAlign := txtAlign or TA_CENTER;
+      taRightJustify:
+        txtAlign := txtAlign or TA_RIGHT;
+    end;
+    //txtAlign := txtAlign or TA_UPDATECP;
+    WriteTextAlign(AStream, txtAlign);
     for i := 0 to L.Count-1 do
     begin
       s := L[i];
-      ext := ACanvas.TextExtent(s);
       case item.TextStyle.Alignment of
         taLeftJustify: P.X := item.Left;
-        taCenter: P.X := (item.Left + item.Right - ext.CX) div 2;
-        taRightJustify: P.X := item.Right - ext.CX;
+        taCenter: P.X := (item.Left + item.Right) div 2;
+        taRightJustify: P.X := item.Right;
       end;
-      R := Rect(P.X, P.Y, P.X + ext.CX, P.Y + ext.CY);
+      R := Rect(item.Left, item.Top, item.Right, item.Bottom);
       lineItem := TlmfTextInRect.Create(R, P.X, P.Y, s, ts);
-      WriteText(AStream, lineitem);
+      WriteTextInRect(AStream, lineitem);
       lineItem.Free;
-//      ACanvas.TextRect(R, R.Left, R.Top, s, item.TextStyle);
-      inc(P.Y, ext.CY);
+      inc(P.Y, lineHeight);
     end;
+    WriteTextAlign(AStream, TA_LEFT or TA_TOP);  // Restore default
   finally
     L.Free;
   end;
@@ -929,14 +954,13 @@ procedure TWMFWriter.WriteRecords(AStream: TStream);
 var
   i: Integer;
   item: TlmfObject;
-  bmp: TBitmap;
 begin
   // Setup defaults
   WriteWindowExt(AStream);
   WriteWindowOrg(AStream);
   WriteMapMode(AStream, MM_ANISOTROPIC);
   WriteBkColor(AStream, clWhite);
-  WriteBkMode(AStream, BM_TRANSPARENT);
+  WriteBkMode(AStream, TRANSPARENT);
   WriteTextAlign(AStream, TA_TOP or TA_LEFT);
 
   // Write object records of the drawing
@@ -987,17 +1011,8 @@ begin
       WriteLine(AStream, TlmfLine(item))
     else
     if item is TlmfTextInRect then
-    begin
-      bmp := TBitmap.Create;
-      try
-        bmp.SetSize(10, 10);
-        bmp.Canvas.Font.Assign(FCurrFont);
-        ProcessTextInRect(AStream, item, bmp.Canvas);
-      finally
-        bmp.Free;
-      end;
-//      WriteTextInRect(AStream, TlmfTextInRect(item))
-    end else
+      ProcessTextInRect(AStream, item)
+    else
     if item is TlmfText then
       WriteText(AStream, TlmfText(item))
     else
@@ -1085,8 +1100,7 @@ var
   R: packed array[0..3] of SmallInt;
   strLen, adjLen: Word;
   s: AnsiString;
-  n, nR: Integer;
-  P: Int64;
+  nR: Integer;
 begin
   if AItem.Text = '' then
     exit;
@@ -1099,8 +1113,6 @@ begin
     s := s + #0;
     inc(adjLen);
   end;
-
-  n := SizeOf(TWMFExtTextOutRecord) + adjLen;
 
   rec := Default(TWMFExtTextOutRecord);
   rec.X := ScaleX(AItem.PX);

@@ -166,7 +166,7 @@ begin
     LmfCanvas.Pen.Width := 2;
     LmfCanvas.MoveTo(C.X, C.Y);
     LmfCanvas.ArcTo(C.X-50, C.Y-30, C.X+50, C.Y+30, P1.X, P1.Y, P2.X, P2.Y);
-    LmfCanvas.Pen.Width := 1;;
+    LmfCanvas.Pen.Width := 1;
     LmfCanvas.Frame(C.X-50, C.Y-30, C.X+50, C.Y+30);
     LmfCanvas.Line(C, P2);
 
@@ -230,6 +230,7 @@ begin
     ts.Alignment := taCenter;
     ts.Layout := tlCenter;
     ts.SingleLine := false;
+    ts.Clipping := false;
     LmfCanvas.SetBkMode(TRANSPARENT);
     LmfCanvas.Font.Color := clBlue;
     LmfCanvas.Font.Style := [fsBold, fsItalic];
