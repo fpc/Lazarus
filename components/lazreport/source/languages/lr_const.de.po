@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazreport\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-07-21 23:04+0200\n"
+"PO-Revision-Date: 2026-08-14 19:07+0200\n"
 "Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Language: de_DE\n"
@@ -73,11 +73,11 @@ msgstr "Overlay"
 
 #: lr_const.sband15
 msgid "Column header"
-msgstr "Spaltenkopf"
+msgstr "Spalten-Kopfzeile"
 
 #: lr_const.sband16
 msgid "Column footer"
-msgstr "Spaltenfooter"
+msgstr "Spalten-Fußzeile"
 
 #: lr_const.sband17
 msgid "Group header"
@@ -101,7 +101,7 @@ msgstr "Kreuzdaten"
 
 #: lr_const.sband21
 msgid "Cross footer"
-msgstr "Kreuz-Footer"
+msgstr "Kreuz-Fußzeile"
 
 #: lr_const.sband22
 msgctxt "lr_const.sband22"
@@ -259,47 +259,48 @@ msgstr "Bestätigen"
 
 #: lr_const.scrosseditoraverage
 msgid "Average"
-msgstr ""
+msgstr "Mittelwert"
 
 #: lr_const.scrosseditorblue
 msgid "Blue"
-msgstr ""
+msgstr "Blau"
 
 #: lr_const.scrosseditorbluewhite
 msgid "Blue and White"
-msgstr ""
+msgstr "Blau und weiß"
 
 #: lr_const.scrosseditorcaption
+#, fuzzy
 msgid "Cross tab editor"
-msgstr ""
+msgstr "Editor für Cross-Tabs"
 
 #: lr_const.scrosseditorcount
 msgid "Count"
-msgstr ""
+msgstr "Anzahl"
 
 #: lr_const.scrosseditorcyan
 msgid "Cyan"
-msgstr ""
+msgstr "Cyan"
 
 #: lr_const.scrosseditorgray
 msgid "Gray"
-msgstr ""
+msgstr "Grau"
 
 #: lr_const.scrosseditorgreen
 msgid "Green"
-msgstr ""
+msgstr "Grün"
 
 #: lr_const.scrosseditorgreenorange
 msgid "Green and Orange"
-msgstr ""
+msgstr "Grün und Orange"
 
 #: lr_const.scrosseditormax
 msgid "Max"
-msgstr ""
+msgstr "Max"
 
 #: lr_const.scrosseditormin
 msgid "Min"
-msgstr ""
+msgstr "Min"
 
 #: lr_const.scrosseditornone
 #, fuzzy
@@ -309,91 +310,94 @@ msgstr "Keiner"
 
 #: lr_const.scrosseditororange
 msgid "Orange"
-msgstr ""
+msgstr "Orange"
 
 #: lr_const.scrosseditorshowcolheader
 msgid "Show column header"
-msgstr ""
+msgstr "Spaltenkopf anzeigen"
 
 #: lr_const.scrosseditorshowcoltotal
 msgid "Show column total"
-msgstr ""
+msgstr "Spaltengesamtsumme anzeigen"
 
 #: lr_const.scrosseditorshowcorner1
 msgid "Show corner 1"
-msgstr ""
+msgstr "Ecke 1 anzeigen"
 
 #: lr_const.scrosseditorshowcorner2
 msgid "Show corner 2"
-msgstr ""
+msgstr "Ecke 2 anzeigen"
 
 #: lr_const.scrosseditorshowgrantotal
 msgid "Show grand total"
-msgstr ""
+msgstr "Gesamttotale anzeigen"
 
 #: lr_const.scrosseditorshowrowheader
 msgid "Show row header"
-msgstr ""
+msgstr "Reihenkopf anzeigen"
 
 #: lr_const.scrosseditorshowrowtotal
 msgid "Show row total"
-msgstr ""
+msgstr "Reihensumme anzeigen"
 
 #: lr_const.scrosseditorshowtitle
 msgid "Show title"
-msgstr ""
+msgstr "Titel anzeigen"
 
 #: lr_const.scrosseditorsource
 msgid "Source data"
-msgstr ""
+msgstr "Quelldaten"
 
 #: lr_const.scrosseditorstructure
+#, fuzzy
 msgid "Cross-tab structure"
-msgstr ""
+msgstr "Cross-tab Struktur"
 
 #: lr_const.scrosseditorstyle
 msgid "Select style"
-msgstr ""
+msgstr "Stil auswählen"
 
 #: lr_const.scrosseditorsum
 msgid "Sum"
-msgstr ""
+msgstr "Summe"
 
 #: lr_const.scrosseditorwhite
 msgid "White"
-msgstr ""
+msgstr "Weiß"
 
 #: lr_const.scrosstabcoltitle
 msgid "Col title"
-msgstr ""
+msgstr "Spaltentitel"
 
 #: lr_const.scrosstabcoltotal
 msgid "Col total"
-msgstr ""
+msgstr "Spaltengesamtsumme"
 
 #: lr_const.scrosstabdata
 msgid "Data"
-msgstr ""
+msgstr "Daten"
 
 #: lr_const.scrosstabgrantotal
 msgid "Grand total"
-msgstr ""
+msgstr "Gesamtsumme"
 
 #: lr_const.scrosstabrowtitle
 msgid "Row title"
-msgstr ""
+msgstr "Reihentitel"
 
 #: lr_const.scrosstabrowtotal
 msgid "Row total"
-msgstr ""
+msgstr "Reihengesamtsumme"
 
 #: lr_const.scrosstabtotalchcell
+#, fuzzy
 msgid "Total CH cell"
-msgstr ""
+msgstr "Gesamt CH-Zelle"
 
 #: lr_const.scrosstabtotalrhcell
+#, fuzzy
 msgid "Total RH cell"
-msgstr ""
+msgstr "Gesamt RH-Zelle"
 
 #: lr_const.scsvfile
 msgid "CSV File"
@@ -405,7 +409,7 @@ msgstr "Memo:"
 
 #: lr_const.sdatainspfields
 msgid "Fields"
-msgstr ""
+msgstr "Felder"
 
 #: lr_const.sdatainspvariables
 #, fuzzy
@@ -455,7 +459,7 @@ msgstr "COUNT(<BandName>)/Liefert die Anzahl der Datenreihen des angegebenen <Ba
 
 #: lr_const.sdescriptioncrlf
 msgid "CRLF/Returns lineending character sequence."
-msgstr ""
+msgstr "CRLF/Gibt die Zeichensequenz für Zeilenende zurück."
 
 #: lr_const.sdescriptiondayof
 msgid "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
@@ -483,7 +487,7 @@ msgstr "FRAC(<Wert>)/Ergibt den Bruchanteil der Gleitkommazahl <Wert>."
 
 #: lr_const.sdescriptionif
 msgid "IF(<expression>, <Value1>, <Value2>)/Returns <Value1>, if <expression> is true; otherwise returns <Value2>."
-msgstr ""
+msgstr "IF(<expression>, <Value1>, <Value2>)/gibt <Value1>zurück, wenn <expression> wahr ist; andernfalls <Value2>."
 
 #: lr_const.sdescriptioninc
 msgid "INC(<Value>)/Increment <Value>."
@@ -640,7 +644,7 @@ msgstr "&Zoll"
 
 #: lr_const.sdesoptionsforminplace
 msgid "Use inplace editor"
-msgstr ""
+msgstr "Inplace-Editor verwenden"
 
 #: lr_const.sdesoptionsformmm
 msgid "&MM"
@@ -833,7 +837,7 @@ msgstr "\";\" oder \"until\" erwartet"
 
 #: lr_const.serrlabelgoto
 msgid "Label in goto must be a number"
-msgstr ""
+msgstr "Das Label in einem GoTo muss eine Zahl sein"
 
 #: lr_const.serrline
 msgid "Line"
@@ -841,11 +845,11 @@ msgstr "Zeile"
 
 #: lr_const.serrneeddo
 msgid "Need \"do\" here"
-msgstr ""
+msgstr "\"do\" hier benötigt"
 
 #: lr_const.serrneedto
 msgid "Need \"to\" here"
-msgstr ""
+msgstr "\"to\" hier benötigt"
 
 #: lr_const.serror
 msgid "Error"
@@ -1617,7 +1621,7 @@ msgstr "Bedingung"
 
 #: lr_const.shilightformfont
 msgid "Font"
-msgstr "Schrift"
+msgstr "Schriftart"
 
 #: lr_const.shilightformhilitattr
 msgctxt "lr_const.shilightformhilitattr"
@@ -1661,8 +1665,9 @@ msgid "Insert CheckBox object"
 msgstr "Checkboxobjekt einfügen"
 
 #: lr_const.sinscrosstab
+#, fuzzy
 msgid "Insert Cross-tab object"
-msgstr ""
+msgstr "Cross-Tab-Objekt einfügen"
 
 #: lr_const.sinsert
 msgid "Insert"
@@ -1678,11 +1683,11 @@ msgstr "Datenbankfelder einfügen"
 
 #: lr_const.sinsertfieldsdbnofields
 msgid "Database without fields"
-msgstr ""
+msgstr "Datenbank ohne Felder"
 
 #: lr_const.sinsertfieldsformaviabledset
 msgid "&Available datasets"
-msgstr "&Verfügbare Datasets"
+msgstr "&Verfügbare Datensätze"
 
 #: lr_const.sinsertfieldsformband
 msgid "Include &bands"
@@ -2328,7 +2333,7 @@ msgstr "&Höhe, mm"
 
 #: lr_const.spgoptforminvalidcustompapersize
 msgid "Invalid custom paper size."
-msgstr ""
+msgstr "Benutzerdef. Papiergröße ungültig."
 
 #: lr_const.spgoptformland
 msgid "&Landscape"
@@ -2494,7 +2499,7 @@ msgstr "Aktuelle &Seite"
 
 #: lr_const.sprintforminfo
 msgid "Enter page numbers and/or page ranges, separated by commas. For example, 1,3,5-12"
-msgstr "Geben sie die Seitenzahlen und/oder -bereiche durch ein Komma getrennt ein, z.B. 1,3,5-12"
+msgstr "Geben sie die Seitenzahlen und/oder -bereiche durch Komma getrennt ein, z. B. 1,3,5-12"
 
 #: lr_const.sprintformnumber
 msgid "&Numbers:"
@@ -2511,7 +2516,7 @@ msgstr "Drucken"
 #: lr_const.sprintformprinter
 msgctxt "lr_const.sprintformprinter"
 msgid "Printer"
-msgstr "Drucken"
+msgstr "Drucker"
 
 #: lr_const.sprintformprop
 msgid "Properties"
@@ -2577,7 +2582,7 @@ msgstr "Kurve"
 
 #: lr_const.sroundrectformdata
 msgid "Data .."
-msgstr "Daten..."
+msgstr "Daten ..."
 
 #: lr_const.sroundrectformendcolor
 msgid "End Color"
@@ -2708,19 +2713,19 @@ msgstr "ASCII-Textdatei"
 
 #: lr_const.stimeformat1
 msgid "hh:nn:ss"
-msgstr ""
+msgstr "hh:nn:ss"
 
 #: lr_const.stimeformat2
 msgid "h:nn:ss"
-msgstr ""
+msgstr "h:nn:ss"
 
 #: lr_const.stimeformat3
 msgid "hh:nn"
-msgstr ""
+msgstr "hh:nn"
 
 #: lr_const.stimeformat4
 msgid "h:nn"
-msgstr ""
+msgstr "h:nn"
 
 #: lr_const.sto
 msgid "to"
@@ -2736,7 +2741,7 @@ msgstr "Kann Reportversion nicht lesen"
 
 #: lr_const.suntitled
 msgid "Untitled"
-msgstr "Unbenannt"
+msgstr "Ohne Titel"
 
 #: lr_const.susefixedfontsettings
 msgid "Use fixed font settings"
@@ -2819,7 +2824,7 @@ msgstr "Bänder"
 
 #: lr_const.svbandeditorformcapt
 msgid "Band data sources"
-msgstr "Band-Datasourcen"
+msgstr "Band-Datenquellen"
 
 #: lr_const.svbandeditorformdatasource
 msgctxt "lr_const.svbandeditorformdatasource"
@@ -2833,7 +2838,7 @@ msgstr "&Anzahl Datensätze"
 
 #: lr_const.svirtualdataset
 msgid "Virtual Dataset"
-msgstr "Virtuelles Dataset"
+msgstr "Virtueller Datasatz"
 
 #: lr_const.swordbreak
 msgid "Word break"

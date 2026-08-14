@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-07-21 22:58+0200\n"
+"PO-Revision-Date: 2026-08-14 19:57+0200\n"
 "Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Language: de\n"
@@ -156,7 +156,7 @@ msgstr "Dies wird alle Spalten löschen. Fortfahren?"
 
 #: objinspstrconsts.dcewillreplacecontinue
 msgid "This will replace all captions from dataset. Continue?"
-msgstr "Dies wird alle Titel aus dem Dataset ersetzen. Fortfahren?"
+msgstr "Dies wird alle Titel aus dem Datensatz ersetzen. Fortfahren?"
 
 #: objinspstrconsts.dpeunabletoretrievefieldsdefinitions
 msgid "Unable to retrieve fields definition from dataset."
@@ -173,7 +173,7 @@ msgstr "Abbrechen"
 
 #: objinspstrconsts.fescheckdset
 msgid "Check dataset settings."
-msgstr "Prüfe Dataset-Einstellungen."
+msgstr "Prüfe Datensatz-Einstellungen."
 
 #: objinspstrconsts.fesdata
 msgid "&Data"
@@ -181,7 +181,7 @@ msgstr "&Daten"
 
 #: objinspstrconsts.fesdataset
 msgid "&Dataset:"
-msgstr "&Dataset:"
+msgstr "&Datensatz:"
 
 #: objinspstrconsts.feserrormessage
 #, object-pascal-format
@@ -240,7 +240,7 @@ msgstr "&Name:"
 
 #: objinspstrconsts.fesnofields
 msgid "It was not possible to get the dataset fields list."
-msgstr "Es war nicht möglich, die Liste der Felder des Datasets zu lesen."
+msgstr "Es war nicht möglich, die Liste der Felder des Datensatzes zu lesen."
 
 #: objinspstrconsts.fesnofieldsnote
 msgid "Fields list is not available, can't check for duplicates."
@@ -249,7 +249,7 @@ msgstr "Feldliste ist nicht verfügbar, kann nicht auf Duplikate prüfen."
 #: objinspstrconsts.fesokbtn
 msgctxt "objinspstrconsts.fesokbtn"
 msgid "OK"
-msgstr "Ok"
+msgstr "OK"
 
 #: objinspstrconsts.fespersistentcompname
 msgid "Co&mponent Name:"
@@ -314,15 +314,15 @@ msgstr "XML-Dateien|*.xml|Binär-Dateien|*.dat"
 
 #: objinspstrconsts.lrscopyfromdataset
 msgid "Copy data from other dataset"
-msgstr "Daten aus anderer Datenmenge kopieren"
+msgstr "Daten aus anderem Datensatz kopieren"
 
 #: objinspstrconsts.lrscreatedataset
 msgid "Create dataset"
-msgstr "Datenmenge erzeugen"
+msgstr "Datensatz erzeugen"
 
 #: objinspstrconsts.lrsdatasetactive
 msgid "Dataset is already active, close it first."
-msgstr "Datenmenge ist bereits aktive. Zuerst schließen."
+msgstr "Datensatz ist bereits aktiv. Zuerst schließen."
 
 #: objinspstrconsts.lrsloadfromfile
 msgid "Load data from file"
@@ -330,7 +330,7 @@ msgstr "Daten aus Datei laden"
 
 #: objinspstrconsts.lrsnodatasetsavailableforcopy
 msgid "No dataset available to copy data from."
-msgstr "Keine Datenmenge zum Kopieren verfügbar."
+msgstr "Keine Datensatz zum Kopieren verfügbar."
 
 #: objinspstrconsts.lrsprovidedatafilename
 msgid "Select a data file to save data to"
@@ -342,7 +342,7 @@ msgstr "Daten in Datei speichern"
 
 #: objinspstrconsts.lrsselectdatafilename
 msgid "Select a file with data to load into dataset"
-msgstr "Datei auswählen, deren Daten in die Datenmenge geladen werden sollen"
+msgstr "Datei auswählen, deren Daten in den Datensatz geladen werden sollen"
 
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
@@ -759,11 +759,11 @@ msgstr "Objektinspektor"
 
 #: objinspstrconsts.oisok
 msgid "&OK"
-msgstr "&Ok"
+msgstr "&OK"
 
 #: objinspstrconsts.oisok2
 msgid "Ok"
-msgstr "Ok"
+msgstr "OK"
 
 #: objinspstrconsts.oisonlyonefile
 msgid "Only one file can be opened."
@@ -1393,7 +1393,7 @@ msgstr "Nach oben bewegen"
 #: objinspstrconsts.rscdok
 msgctxt "objinspstrconsts.rscdok"
 msgid "OK"
-msgstr "Ok"
+msgstr "OK"
 
 #: objinspstrconsts.rscdright
 msgctxt "objinspstrconsts.rscdright"

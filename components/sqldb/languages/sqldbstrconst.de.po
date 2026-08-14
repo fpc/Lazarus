@@ -18,7 +18,7 @@ msgstr "SQL-Anweisungen bearbeiten/erzeugen"
 #: sqldbstrconst.lrssqldatasetopen
 #, object-pascal-format
 msgid "Dataset not open: %s"
-msgstr "Datenmenge nicht offen: %s"
+msgstr "Datensatz nicht offen: %s"
 
 #: sqldbstrconst.lrssqlgenselect
 msgid "You must select fields to be updated and key fields."

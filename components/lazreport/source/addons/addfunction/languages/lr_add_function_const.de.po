@@ -29,15 +29,15 @@ msgstr "COMPARESTR(<String1>,<String2>)/Vergleicht zwei Zeichenketten. Gibt die 
 
 #: lr_add_function_const.sdescriptioncreatedate
 msgid "CREATEDATE(<String>)/Converts <String> string to string that contains date to use it in SQL clause. To use this function put the string with desired date format to TfrAddFunctionLibrary.FormatDate property."
-msgstr ""
+msgstr "CREATEDATE(<String>)/Konvertiert die Zeichenkette <String> in eine mit Datum für eine SQL-Anweisung. Tragen Sie dazu die Zeichenkette im gewünschten Datumsformat in die Eigenschaft TfrAddFunctionLibrary.FormatDate ein."
 
 #: lr_add_function_const.sdescriptioncreatenum
 msgid "CREATENUM(<String>)/Converts <String> string to string that contains numeric value to use it in SQL clause."
-msgstr ""
+msgstr "CREATENUM(<String>)/Konvertiert die Zeichenkette <String> in eine mit numerischen Werten für eine SQL-Anweisung."
 
 #: lr_add_function_const.sdescriptioncreatestr
 msgid "CREATESTR(<String>)/Adds quotes to the <String> string to use it in SQL clause."
-msgstr "CREATESTR(<String>)/Fügt Anführungszeichen zur <String> Zeichenkette hinzu zur Verwendung in SQL-Anweisung."
+msgstr "CREATESTR(<String>)/Fügt Anführungszeichen zur <String> Zeichenkette hinzu zur Verwendung in einer SQL-Anweisung."
 
 #: lr_add_function_const.sdescriptiondatediff
 msgid "DATEDIFF(<Date1>,<Date2>,<var String>)/Returns the difference between two dates <Date1> and <Date2>. Result is in the string <String> in format \"days;months;years\"."
@@ -57,11 +57,11 @@ msgstr "DELETE(<String>,<DelFrom>,<DelCount>)/Löscht <DelCount> Symbole beginne
 
 #: lr_add_function_const.sdescriptionendpos
 msgid "ENDPOS(<String>,<SubStr>)/Returns position of substring <SubStr> in the string <String> starting at the end of the string."
-msgstr ""
+msgstr "ENDPOS(<String>,<SubStr>)/Gibt die Position der Teilzeichenkette <SubStr> in der Zeichenkette <String> zurück beginnend vom Ende der Zeichenkette."
 
 #: lr_add_function_const.sdescriptionextractword
 msgid "EXTRACTWORD(<WordNo>,<String>,<Delimiters>)/Returns word number <WordNo> from the string <String>.<Delimiters> is the list of word delimiters."
-msgstr ""
+msgstr "EXTRACTWORD(<WordNo>,<String>,<Delimiters>)/Gibt die Anzahl der Worte <WordNo> in der Zeichenkette <String> zurück.<Delimiters> ist die Liste der Worttrennzeichen."
 
 #: lr_add_function_const.sdescriptionfirstdayofnextmonth
 msgid "FIRSTDAYOFNEXTMONTH(<Date>)/Returns the date of first day of the next month of date <Date>."
@@ -93,7 +93,7 @@ msgstr "INCYEAR(<Date>,<Number>)/Erhöht das Datum <Date> um die in <Number> ang
 
 #: lr_add_function_const.sdescriptioninsert
 msgid "INSERT(<SubStr>,<String>,<InsertFrom>)/Inserts <SubStr> substring into <String> string starting at position <InsertFrom> and returns the result."
-msgstr ""
+msgstr "INSERT(<SubStr>,<String>,<InsertFrom>)/Fügt die Teilzeichenkette <SubStr> in die Zeichenkette <String> ein beginnend an Position <InsertFrom> und gibt das Ergebnis zurück."
 
 #: lr_add_function_const.sdescriptionisleapyear
 msgid "ISLEAPYEAR(<Year>)/Returns True if <Year> year is leap year."
@@ -109,7 +109,7 @@ msgstr "ISRANGENUM(<Number1>,<Number2>,<Number3>)/Gibt True zurück, wenn sich <
 
 #: lr_add_function_const.sdescriptioniswordpresent
 msgid "ISWORDPRESENT(<Word>,<String>,<Delimiters>)/Determines if word <Word> is present in the string <String>.<Delimiters> is the list of word delimiters."
-msgstr ""
+msgstr "ISWORDPRESENT(<Word>,<String>,<Delimiters>)/Bestimmt, ob das Wort <Word> in der Zeichenkette <String> vorhanden ist. <Delimiters> ist die Liste der Worttrennzeichen."
 
 #: lr_add_function_const.sdescriptionlastdayofprevmonth
 msgid "LASTDAYOFPREVMONTH(<Date>)/Returns the date of last day of the previous month of date <Date>."
@@ -121,27 +121,27 @@ msgstr "LEFTCOPY(<String>,<Count>)/Kopiert die Anzahl Zeichen von <Count> aus de
 
 #: lr_add_function_const.sdescriptionnpos
 msgid "NPOS(<SubStr>,<String>,<SubStrNo>)/Returns position of <SubStrNo>-th substring <SubStr> inclusion in the string <String>."
-msgstr ""
+msgstr "NPOS(<SubStr>,<String>,<SubStrNo>)/Gibt die Position des <SubStrNo>-ten Vorkommens der Teilzeichenkette <SubStr> in der Zeichenkette <String> zurück."
 
 #: lr_add_function_const.sdescriptionpadcenter
 msgid "PADCENTER(<String>,<Length>,<Symbol>)/Adds symbols <Symbol> to begin and end of the string <String> to make it as long as stated in the <Length> parameter and returns result string."
-msgstr ""
+msgstr "PADCENTER(<String>,<Length>,<Symbol>)/Fügt der Zeichenkette <String> das Zeichen <Symbol> am Anfang und Ende hinzu, um sie auf die im Parameter <Length> angegebene Länge zu bringen, und gibt die resultierende Zeichenkette zurück."
 
 #: lr_add_function_const.sdescriptionpadleft
 msgid "PADLEFT(<String>,<Length>,<Symbol>)/Adds symbols <Symbol> to begin of the string <String> to make it as long as stated in the <Length> parameter and returns result string."
-msgstr ""
+msgstr "PADLEFT(<String>,<Length>,<Symbol>)/Fügt der Zeichenkette <String> das Zeichen <Symbol> am Anfang hinzu, um sie auf die im Parameter <Length> angegebene Länge zu bringen, und gibt die resultierende Zeichenkette zurück."
 
 #: lr_add_function_const.sdescriptionpadright
 msgid "PADRIGHT(<String>,<Length>,<Symbol>)/Adds symbols <Symbol> to end of the string <String> to make it as long as stated in the <Length> parameter and returns result string."
-msgstr ""
+msgstr "PADRIGHT(<String>,<Length>,<Symbol>)/Fügt der Zeichenkette <String> das Zeichen <Symbol> am Ende hinzu, um sie auf die im Parameter <Length> angegebene Länge zu bringen, und gibt die resultierende Zeichenkette zurück."
 
 #: lr_add_function_const.sdescriptionreplacestr
 msgid "REPLACESTR(<String>,<SubStr1>,<SubStr2>)/Replaces all inclusions of <SubStr1> string to the <SubStr2> string in the string <String> and returns the result."
-msgstr ""
+msgstr "REPLACESTR(<String>,<SubStr1>,<SubStr2>)/Ersetzt alle Vorkommen der Zeichenkette <SubStr1> durch die Zeichenkette <SubStr2> in der Zeichenkette <String> und gibt das Ergebnis zurück."
 
 #: lr_add_function_const.sdescriptionreplicate
 msgid "REPLICATE(<Symbol>,<Length>)/Returns the string with length <Length> that consists of symbols <Symbol>."
-msgstr ""
+msgstr "REPLICATE(<Symbol>,<Length>)/Gibt eine Zeichenkette mit der Länge <Length> zurück, die aus den Zeichen <Symbol> besteht."
 
 #: lr_add_function_const.sdescriptionrightcopy
 msgid "RIGHTCOPY(<String>,<Count>)/Copies number of symbols <Count> from the string <String> starting at the end of the string."
@@ -177,19 +177,19 @@ msgstr "TIMETOSTR(<Time>)/Wandelt die Zeit <Time> in eine Zeichenkette um und gi
 
 #: lr_add_function_const.sdescriptiontrimleft
 msgid "TRIMLEFT(<String>)/Trims all left spaces from the string <String> and returns the result."
-msgstr ""
+msgstr "TRIMLEFT(<String>)/Entfernt alle führenden Leerzeichen aus der Zeichenkette <String> und gibt das Ergebnis zurück."
 
 #: lr_add_function_const.sdescriptiontrimright
 msgid "TRIMRIGHT(<String>)/Trims all right spaces from the string <String> and returns the result."
-msgstr ""
+msgstr "TRIMRIGHT(<String>)/Entfernt alle nachgestellten Leerzeichen aus der Zeichenkette <String> und gibt das Ergebnis zurück."
 
 #: lr_add_function_const.sdescriptionvaliddate
 msgid "VALIDDATE(<String>)/Returns True if <String> string is valid date."
-msgstr "VALIDDATE(<String>)/Gibt True zurück, falls die <String> Zeichenkette ein gültiges Datum ist."
+msgstr "VALIDDATE(<String>)/Gibt True zurück, falls die Zeichenkette <String> ein gültiges Datum ist."
 
 #: lr_add_function_const.sdescriptionvalidfloat
 msgid "VALIDFLOAT(<String>)/Returns True if <String> is valid float value."
-msgstr "VALIDFLOAT(<String>)/Gibt True zurück, wenn <String> ein gültiger Gleitkomme-Wert ist."
+msgstr "VALIDFLOAT(<String>)/Gibt True zurück, wenn <String> ein gültiger Gleitkomma-Wert ist."
 
 #: lr_add_function_const.sdescriptionvalidint
 msgid "VALIDINT(<String>)/Returns True if <String> is valid integer value."
@@ -197,11 +197,11 @@ msgstr "VALIDINT(<String>)/Gibt True zurück, wenn <String> ein gültiger Ganzza
 
 #: lr_add_function_const.sdescriptionwordcount
 msgid "WORDCOUNT(<String>,<Delimiters>)/Returns number of words in the string <String>.<Delimiters> is the list of word delimiters."
-msgstr "WORDCOUNT(<String>,<Delimiters>)/Gibt die Anzahl der Wörter in Zeichenkette <String> zurück.<Delimiters> ist eine Liste von Trennzeichen."
+msgstr "WORDCOUNT(<String>,<Delimiters>)/Gibt die Anzahl der Wörter in der Zeichenkette <String> zurück. <Delimiters> ist eine Liste von Worttrennzeichen."
 
 #: lr_add_function_const.sdescriptionwordposition
 msgid "WORDPOSITION(<WordNo>,<String>,<Delimiters>)/Returns position of word number <WordNo> in the string <String>.<Delimiters> is the list of word delimiters."
-msgstr ""
+msgstr "WORDPOSITION(<WordNo>,<String>,<Delimiters>)/Gibt die Position des Wortes Nummer <WordNo> in der Zeichenkette <String> zurück. <Delimiters> ist die Liste der Worttrennzeichen."
 
 #: lr_add_function_const.smathcategory
 msgid "Math"

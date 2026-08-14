@@ -172,7 +172,7 @@ msgstr "Der Faktor des Maus-Zeigers wird genutzt, um kleine Werte der Eigenschaf
 
 #: dockedstrconsts.snoanchorsforcomponent
 msgid "No anchors for this component"
-msgstr ""
+msgstr "Keine Anker für diese Komponente"
 
 #: dockedstrconsts.sresizercolorcaption
 msgid "Resizer Color"
