@@ -61,6 +61,8 @@ type
     actGroupSetNone: TAction;
     actGroupSetNew: TAction;
     actAddException: TAction;
+    actPowerExcept: TAction;
+    actPowerBreak: TAction;
     actShow: TAction;
     actProperties: TAction;
     actToggleCurrentEnable: TAction;
@@ -336,8 +338,8 @@ var
   VNode: PVirtualNode;
 begin
   if BreakPoints <> nil then begin
-    tbBreakIgnoreAll.Down := not BreakPoints.IgnoreAll;
-    tbBreakIgnoreAll.ImageIndex  := FBreakPowerImgIdx[tbBreakIgnoreAll.Down];
+    actPowerBreak.Checked := not BreakPoints.IgnoreAll;
+    tbBreakIgnoreAll.ImageIndex  := FBreakPowerImgIdx[actPowerBreak.Checked];
   end;
 
   if ABreakpoint = nil then begin
@@ -416,8 +418,8 @@ var
   VNode: PVirtualNode;
 begin
   if Exceptions <> nil then begin
-    tbExceptIgnoreAll.Down := not Exceptions.IgnoreAll;
-    tbExceptIgnoreAll.ImageIndex := FExceptPowerImgIdx[tbExceptIgnoreAll.Down];
+    actPowerExcept.Checked := not Exceptions.IgnoreAll;
+    tbExceptIgnoreAll.ImageIndex := FExceptPowerImgIdx[actPowerExcept.Checked];
   end;
 
   if AnException = nil then Exit;
@@ -729,6 +731,12 @@ begin
     bstNone:     tbGroupByBrkGroup.Down := False;
     bstBrkGroup: tbGroupByBrkGroup.Down := True;
   end;
+
+  actPowerBreak.Hint  := brkHandleIgnoreBreakpoints;
+  actPowerExcept.Hint := brkHandleIgnoreExceptions;
+  tbShowBreakPoints.Hint    := brkShowBreakpointsAndWatchpo;
+  tbShowException.Hint      := brkShowExceptionFilter;
+  tbShowBreakAndExcept.Hint := brkShowBreakWatchpointsAndEx;
 
   tbShowBreakPoints.ImageIndex := IDEImages.LoadImage('ActiveBreakPoint');
   tbShowException.ImageIndex   := IDEImages.LoadImage('ExceptActive');
@@ -1120,14 +1128,14 @@ end;
 
 procedure TBreakPointsDlg.tbBreakIgnoreAllClick(Sender: TObject);
 begin
-  BreakPoints.IgnoreAll := not tbBreakIgnoreAll.Down;
-  tbBreakIgnoreAll.ImageIndex  := FBreakPowerImgIdx[tbBreakIgnoreAll.Down];
+  BreakPoints.IgnoreAll := not actPowerBreak.Checked;
+  tbBreakIgnoreAll.ImageIndex  := FBreakPowerImgIdx[actPowerBreak.Checked];
 end;
 
 procedure TBreakPointsDlg.tbExceptIgnoreAllClick(Sender: TObject);
 begin
-  Exceptions.IgnoreAll := not tbExceptIgnoreAll.Down;
-  tbExceptIgnoreAll.ImageIndex := FExceptPowerImgIdx[tbExceptIgnoreAll.Down];
+  Exceptions.IgnoreAll := not actPowerExcept.Checked;
+  tbExceptIgnoreAll.ImageIndex := FExceptPowerImgIdx[actPowerExcept.Checked];
 end;
 
 procedure TBreakPointsDlg.tbGroupByBrkGroupClick(Sender: TObject);
@@ -1662,7 +1670,10 @@ var
   i: Integer;
 begin
   for i := 0 to ActionList1.ActionCount - 1 do
-    (ActionList1.Actions[i] as TAction).Enabled := False;
+    if (ActionList1.Actions[i] <> actPowerBreak) and
+       (ActionList1.Actions[i] <> actPowerExcept)
+    then
+      (ActionList1.Actions[i] as TAction).Enabled := False;
   actAddSourceBP.Enabled := True;
   actAddAddressBP.Enabled := True;
   actAddWatchPoint.Enabled := True;
@@ -1900,8 +1911,8 @@ var
   VNode: PVirtualNode;
 begin
   if BreakPoints <> nil then
-    tbBreakIgnoreAll.Down := not BreakPoints.IgnoreAll;
-  tbBreakIgnoreAll.ImageIndex  := FBreakPowerImgIdx[tbBreakIgnoreAll.Down];
+    actPowerBreak.Checked := not BreakPoints.IgnoreAll;
+  tbBreakIgnoreAll.ImageIndex  := FBreakPowerImgIdx[actPowerBreak.Checked];
 
   if not (tbShowBreakPoints.Down or tbShowBreakAndExcept.Down) then exit;
   BeginUpdate;
@@ -1928,8 +1939,8 @@ var
   VNode: PVirtualNode;
 begin
   if Exceptions <> nil then
-    tbExceptIgnoreAll.Down := not Exceptions.IgnoreAll;
-  tbExceptIgnoreAll.ImageIndex := FExceptPowerImgIdx[tbExceptIgnoreAll.Down];
+    actPowerExcept.Checked := not Exceptions.IgnoreAll;
+  tbExceptIgnoreAll.ImageIndex := FExceptPowerImgIdx[actPowerExcept.Checked];
 
   if not (tbShowException.Down or tbShowBreakAndExcept.Down) then exit;
   BeginUpdate;

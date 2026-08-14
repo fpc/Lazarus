@@ -640,6 +640,11 @@ resourcestring
   DbgValueNotEvaluated = 'Not evaluated';
   DbgValueInvalid = 'Invalid';
   DbgValueError = 'Error: %s';
+  brkHandleIgnoreBreakpoints = 'Handle/Ignore breakpoints';
+  brkHandleIgnoreExceptions = 'Handle/Ignore exceptions';
+  brkShowBreakpointsAndWatchpo = 'Show breakpoints and watchpoints';
+  brkShowExceptionFilter = 'Show exception-filter';
+  brkShowBreakWatchpointsAndEx = 'Show break/watchpoints and exception-filter';
 
 implementation
 

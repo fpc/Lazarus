@@ -34,18 +34,16 @@ object BreakpointsDlg: TBreakpointsDlg
     object tbBreakIgnoreAll: TToolButton
       Left = 1
       Top = 2
-      Caption = 'tbBreakIgnoreAll'
-      Down = True
+      Action = actPowerBreak
+      AllowAllUp = True
       Style = tbsCheck
-      OnClick = tbBreakIgnoreAllClick
     end
     object tbExceptIgnoreAll: TToolButton
       Left = 24
       Top = 2
-      Caption = 'tbExceptIgnoreAll'
-      Down = True
+      Action = actPowerExcept
+      AllowAllUp = True
       Style = tbsCheck
-      OnClick = tbExceptIgnoreAllClick
     end
     object tbIgnoreDivider: TToolButton
       Left = 55
@@ -417,6 +415,20 @@ object BreakpointsDlg: TBreakpointsDlg
       Category = 'Add'
       Caption = 'actAddException'
       OnExecute = actAddExceptionExecute
+    end
+    object actPowerBreak: TAction
+      AutoCheck = True
+      Caption = 'actPowerBreak'
+      Checked = True
+      GroupIndex = 4440
+      OnExecute = tbBreakIgnoreAllClick
+    end
+    object actPowerExcept: TAction
+      AutoCheck = True
+      Caption = 'actPowerExcept'
+      Checked = True
+      GroupIndex = 4441
+      OnExecute = tbExceptIgnoreAllClick
     end
   end
 end

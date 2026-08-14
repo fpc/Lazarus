@@ -2677,6 +2677,15 @@ begin
     if (cmd <> nil) then
       TAssemblerDlg(FDialogs[ddtAssembler]).actStepOverInstr.ShortCut := cmd.AsShortCut;
   end;
+
+  if FDialogs[ddtBreakpoints] <> nil  then begin
+    cmd := EditorOpts.KeyMap.FindByCommand(ecBreakIgnoreToggle);
+    if (cmd <> nil) then
+      TBreakPointsDlg(FDialogs[ddtBreakpoints]).actPowerBreak.ShortCut := cmd.AsShortCut;
+    cmd := EditorOpts.KeyMap.FindByCommand(ecExceptIgnoreToggle);
+    if (cmd <> nil) then
+      TBreakPointsDlg(FDialogs[ddtBreakpoints]).actPowerExcept.ShortCut := cmd.AsShortCut;
+  end;
 end;
 
 procedure TDebugManager.ClearDebugOutputLog;
