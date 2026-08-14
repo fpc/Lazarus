@@ -10132,6 +10132,8 @@ var
 begin
   if not Assigned(FWidget) then
     Exit;
+  if not Gtk3WidgetIsA(FWidget, gtk_menu_item_get_type) then
+    Exit;
 
   OldWidget := FWidget;
   AParent := PGtkMenuShell(OldWidget^.get_parent);
