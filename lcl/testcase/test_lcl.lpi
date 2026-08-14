@@ -112,9 +112,9 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="test_childsizing.pas"/>
+        <Filename Value="testbase.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="Test_ChildSizing"/>
+        <UnitName Value="TestBase"/>
       </Unit>
       <Unit>
         <Filename Value="test_dpiscaling.pas"/>
@@ -122,14 +122,24 @@
         <UnitName Value="Test_DpiScaling"/>
       </Unit>
       <Unit>
-        <Filename Value="testnotebook.pas"/>
+        <Filename Value="test_childsizing.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TestNotebook"/>
+        <UnitName Value="Test_ChildSizing"/>
+      </Unit>
+      <Unit>
+        <Filename Value="test_anchors.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Test_Anchors"/>
       </Unit>
       <Unit>
         <Filename Value="test_parentsizing.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Test_ParentSizing"/>
+      </Unit>
+      <Unit>
+        <Filename Value="testnotebook.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestNotebook"/>
       </Unit>
     </Units>
   </ProjectOptions>

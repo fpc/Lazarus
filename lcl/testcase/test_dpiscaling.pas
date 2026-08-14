@@ -11,7 +11,9 @@ uses
   // LCL
   Forms, Controls, StdCtrls, ExtCtrls, LResources, LMessages,
   // LazUtils
-  LazLoggerBase, ProjResConvert;
+  LazLoggerBase, ProjResConvert,
+  // LclTest
+  TestBase;
 
 type
 
@@ -148,15 +150,6 @@ function DecodePos(APos: Integer): integer; inline;
 var IsRight, IsCenter, IsApprox, IsUnknown: boolean;
 begin
   Result := DecodePos(APos, IsRight, IsCenter, IsApprox, IsUnknown);
-end;
-
-function ToAnchors(i: integer): TAnchors;
-begin
-  Result := [];
-  if (i and 1) <> 0 then Result := Result + [akLeft];
-  if (i and 2) <> 0 then Result := Result + [akTop];
-  if (i and 4) <> 0 then Result := Result + [akRight];
-  if (i and 8) <> 0 then Result := Result + [akBottom];
 end;
 
 function ToSameAnchors(i: integer): TAnchors;
