@@ -1464,6 +1464,7 @@ begin
 
   ReadListOfMessageFlags(p+'CompilerMessages/IgnoredMessages',cfvHide);
   ReadListOfMessageFlags(p+'CompilerMessages/NonIgnoredMessages',cfvShow);
+  TranslateMessages := aXMLConfig.GetValue(p+'TranslateMessages/Value', false);
 
   { Other }
   p:=Path+'Other/';
@@ -1662,6 +1663,7 @@ begin
 
   WriteListOfMessageFlags(p+'CompilerMessages/IgnoredMessages',cfvHide);
   WriteListOfMessageFlags(p+'CompilerMessages/NonIgnoredMessages',cfvShow);
+  aXMLConfig.SetDeleteValue(p+'TranslateMessages/Value', TranslateMessages,false);
 
   { Other }
   p:=Path+'Other/';

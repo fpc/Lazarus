@@ -38,6 +38,7 @@ type
     function CheckItem(Item: TObject): Boolean;
   private
     TempMessages: TCompilerMsgIDFlags;
+    FTranslationFN: string;
     FMsgFile: TFPCMsgFilePoolItem;
     FTransFile: TFPCMsgFilePoolItem;
     procedure UpdateMessages;
@@ -88,9 +89,24 @@ begin
 end;
 
 constructor TCompilerMessagesOptionsFrame.Create(TheOwner: TComponent);
+var
+  EnglishFN: string;
 begin
   inherited Create(TheOwner);
   TempMessages:=TCompilerMsgIDFlags.Create;
+  FPCMsgFilePool.GetMsgFileNames(EnvironmentOptions.GetParsedCompilerFilename,
+                                 '','', EnglishFN, FTranslationFN);
+  //debugln(['TCompilerMessagesOptionsFrame.Create EnglishFN=', EnglishFN,
+  //         ', TranslationFN=', FTranslationFN]);
+  try
+    FMsgFile:=FPCMsgFilePool.LoadFile(EnglishFN,true,nil);
+    if FTranslationFN<>'' then
+      FTransFile:=FPCMsgFilePool.LoadFile(FTranslationFN,true,nil);
+  except
+    on E: Exception do
+      debugln(['WARNING: TCompilerMessagesOptionsFrame.ReadSettings failed to load file: '
+               + E.Message]);
+  end;
 end;
 
 destructor TCompilerMessagesOptionsFrame.Destroy;
@@ -116,35 +132,16 @@ end;
 procedure TCompilerMessagesOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   CompOpts: TBaseCompilerOptions;
-  EnglishFN, TranslationFN: string;
 begin
   CompOpts:=AOptions as TBaseCompilerOptions;
   TempMessages.Assign(CompOpts.MessageFlags);
-  cbTranslate.Checked:=CompOpts.TranslateMessages;
-
-  //FMsgFile:=FPCMsgFilePool.LoadCurrentEnglishFile(true,nil);
-  //cbTranslate.Enabled:=EnvironmentOptions.CompilerMessagesFilename<>'';
-  //lisTranslateTheEnglishMessages;
-  FPCMsgFilePool.GetMsgFileNames(EnvironmentOptions.GetParsedCompilerFilename,
-                                 '','', EnglishFN, TranslationFN);
-  //debugln(['TCompilerMessagesOptionsFrame.ReadSettings EnglishFN=', EnglishFN,
-  //         ', TranslationFN=', TranslationFN]);
-  try
-    FMsgFile:=FPCMsgFilePool.LoadFile(EnglishFN,true,nil);
-    if TranslationFN<>'' then begin
-      FTransFile:=FPCMsgFilePool.LoadFile(TranslationFN,true,nil);
-      cbTranslate.Caption:=Format(dlgTranslateUsing,[ExtractFileName(TranslationFN)])
-    end
-    else begin
-      cbTranslate.Checked:=False;
-      cbTranslate.Enabled:=False;
-      cbTranslate.Caption:=dlgTranslateWithHint;
-    end;
-  except
-    on E: Exception do
-      debugln(['WARNING: TCompilerMessagesOptionsFrame.ReadSettings failed to load file: '
-               + E.Message]);
+  if FTranslationFN<>'' then
+    cbTranslate.Caption:=Format(dlgTranslateUsing,[ExtractFileName(FTranslationFN)])
+  else begin
+    cbTranslate.Caption:=dlgTranslateWithHint;
+    cbTranslate.Enabled:=False;
   end;
+  cbTranslate.Checked:=CompOpts.TranslateMessages;
   UpdateMessages;
 end;
 
@@ -153,9 +150,9 @@ var
   CompOpts: TBaseCompilerOptions;
 begin
   CompOpts:=AOptions as TBaseCompilerOptions;
+  CompOpts.TranslateMessages:=cbTranslate.Checked;
   // Typecast here ensures the correct Assign methow is called.
   (CompOpts.MessageFlags as TCompilerMsgIDFlags).Assign(TempMessages);
-  CompOpts.TranslateMessages:=cbTranslate.Checked;
 end;
 
 procedure TCompilerMessagesOptionsFrame.UpdateMessages;
