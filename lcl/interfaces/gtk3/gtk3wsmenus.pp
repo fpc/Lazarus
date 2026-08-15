@@ -591,6 +591,11 @@ begin
   if (ASourceWin = nil) or not ASourceWin.HandleAllocated then
     ASourceWin := FindLCLWindow(Point(X, Y));
 
+  if ARightDown and (ASourceWin <> nil) and ASourceWin.HandleAllocated and
+    (TGtk3Widget(ASourceWin.Handle) is TGtk3NoteBook) and
+    TGtk3NoteBook(ASourceWin.Handle).RightClickUpPending then
+    ARightDown := False;
+
   {$IFDEF GTK3DEBUGMENUS}
   DebugLn('TGtk3WSPopupMenu.Popup X=',dbgs(X),' Y=',dbgs(Y));
   {$ENDIF}

@@ -552,6 +552,7 @@ type
     procedure SetTabLabelText(AChild: TCustomPage; const AText: String);
     function GetTabLabelText(AChild: TCustomPage): String;
     property DefaultClientRect: TRect read FDefaultClientRect write FDefaultClientRect; //measured in gtk3wscomctrls.getDefaultClientRect
+    property RightClickUpPending: Boolean read FRightClickUpPending;
   end;
 
   { TGtk3Bin }
