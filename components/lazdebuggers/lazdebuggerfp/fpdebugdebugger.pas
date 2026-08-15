@@ -4917,7 +4917,12 @@ end;
 
 procedure TFpDebugDebugger.DoAddBreakFuncLib;
 begin
-  FCacheBreakpoint := FDbgController.CurrentProcess.AddBreak(FCacheFileName, FCacheBoolean, FCacheLib, True);
+  (* Link tables only: these are the debugger's own breakpoints on RTL and
+     kernel entry points, by linker name. A user routine can carry the same
+     source level name, and must not capture them.
+     NOTE: the direct path in AddBreak() does not ask for ignore-case, so the
+     two routes to the same call differ. Kept as it was. *)
+  FCacheBreakpoint := FDbgController.CurrentProcess.AddBreak(FCacheFileName, FCacheBoolean, FCacheLib, [psfLinkTableSym, psfIgnoreCase]);
 end;
 
 procedure TFpDebugDebugger.DoAddBreakLocation;
@@ -4972,7 +4977,8 @@ function TFpDebugDebugger.AddBreak(const AFuncName: String; ALib: TDbgLibrary;
 begin
   // Shortcut, if in debug-thread / do not use Self.F*
   if ThreadID = FWorkerThreadId then
-    exit(FDbgController.CurrentProcess.AddBreak(AFuncName, AnEnabled, ALib));
+    // Link tables only - see DoAddBreakFuncLib
+    exit(FDbgController.CurrentProcess.AddBreak(AFuncName, AnEnabled, ALib, [psfLinkTableSym]));
 
   FCacheFileName:=AFuncName;
   FCacheLib:=ALib;

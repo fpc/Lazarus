@@ -119,8 +119,34 @@ type
 
   TFpFloatPrecission = (fpSingle, fpDouble, fpExtended);
 
-  TFindExportedSymbolsFlag = (fsfIgnoreEnumVals, fsfMatchUnitName);
+  TFindExportedSymbolsFlag = (
+    fsfIgnoreEnumVals,
+    fsfMatchUnitName,
+    (* Do not check DW_AT_start_scope against the context address. For a search
+       that has no location at all (e.g. a breakpoint set by name before the
+       target runs). An address of 0 can not be used to mean "no location":
+       on some targets 0 is a usable code address. *)
+    fsfNoAddressCheck,
+    (* Only match subroutines. Must be honoured INSIDE the per-unit search:
+       the scan stops at the first entry with a matching name, so filtering the
+       result can not recover a procedure the search already passed. Also
+       suppresses matching the unit name itself. *)
+    fsfOnlySubroutines
+  );
   TFindExportedSymbolsFlags = set of TFindExportedSymbolsFlag;
+
+  (* Which namespaces a by-name procedure search may look in.
+     A set containing NO namespace member means ALL namespaces. psfIgnoreCase
+     is not a namespace and is never implied: case-insensitivity is opt-in.
+     The order of the search is fixed - debug info readable names, then debug
+     info linker names (not parsed yet), then the link tables. A caller that
+     needs a particular order makes one call per namespace. *)
+  TFpProcSearchFlag = (
+    psfDwarfName,     // readable, source level names out of the debug info
+    psfLinkTableSym,  // the linker symbol tables; what is searched today
+    psfIgnoreCase
+  );
+  TFpProcSearchFlags = set of TFpProcSearchFlag;
 
   TDbgInfo = class;
   TFpDbgSimpleLocationContext = class;
@@ -821,7 +847,10 @@ type
     *)
     function FindSymbolScope(ALocationContext: TFpDbgSimpleLocationContext; {%H-}AAddress: TDbgPtr = 0): TFpDbgSymbolScope; virtual;
     function FindProcSymbol(AAddress: TDbgPtr): TFpSymbol; virtual; overload;
-    function FindProcSymbol(const {%H-}AName: String; AIgnoreCase: Boolean = False): TFpSymbol; virtual; overload;
+    function FindProcSymbol(const AName: String; AIgnoreCase: Boolean = False): TFpSymbol; overload; deprecated 'use FindNamedProcSymbol';
+    (* Each TDbgInfo IS one namespace and answers only for its own: a caller
+       may pass the full set and let each instance decide. *)
+    function FindNamedProcSymbol(const {%H-}AName: String; {%H-}AFlags: TFpProcSearchFlags = []): TFpSymbol; virtual;
     function FindLineInfo(AAddress: TDbgPtr): TFpSymbol; virtual;
 
     function  FindProcStartEndPC(const AAddress: TDbgPtr; out AStartPC, AEndPC: TDBGPtr): boolean; virtual;
@@ -836,12 +865,26 @@ type
     property MemModel: TFpDbgMemModel read FMemModel;
   end;
 
+const
+  (* The namespace members of TFpProcSearchFlag. A search set that contains
+     none of these searches all of them. *)
+  FpProcSearchNameSpaces = [psfDwarfName, psfLinkTableSym];
+
 function dbgs(ADbgSymbolKind: TDbgSymbolKind): String; overload;
+(* True if AFlags asks for ANameSpace, either by naming it or by naming no
+   namespace at all. *)
+function ProcSearchIncludes(AFlags: TFpProcSearchFlags; ANameSpace: TFpProcSearchFlag): Boolean; inline;
 
 implementation
 
 var
   FPDBG_FUNCCALL: PLazLoggerLogGroup;
+
+function ProcSearchIncludes(AFlags: TFpProcSearchFlags;
+  ANameSpace: TFpProcSearchFlag): Boolean;
+begin
+  Result := (ANameSpace in AFlags) or (AFlags * FpProcSearchNameSpaces = []);
+end;
 
 function dbgs(ADbgSymbolKind: TDbgSymbolKind): String;
 begin
@@ -2505,6 +2548,18 @@ end;
 
 function TDbgInfo.FindProcSymbol(const AName: String; AIgnoreCase: Boolean
   ): TFpSymbol;
+var
+  Flags: TFpProcSearchFlags;
+begin
+  (* The old name keeps the old behaviour: link tables only. *)
+  Flags := [psfLinkTableSym];
+  if AIgnoreCase then
+    Include(Flags, psfIgnoreCase);
+  Result := FindNamedProcSymbol(AName, Flags);
+end;
+
+function TDbgInfo.FindNamedProcSymbol(const AName: String;
+  AFlags: TFpProcSearchFlags): TFpSymbol;
 begin
   Result := nil;
 end;

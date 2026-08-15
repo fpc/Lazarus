@@ -1399,7 +1399,8 @@ begin
     if n <> '' then begin
       SymTbl := Context.SymbolTableInfo;
       if SymTbl <> nil then begin
-        SymProc := SymTbl.FindProcSymbol(n, True);
+        // n is the linkage name
+        SymProc := SymTbl.FindNamedProcSymbol(n, [psfLinkTableSym, psfIgnoreCase]);
         if SymProc <> nil then begin
           Result := SymProc.Address;
           SymProc.ReleaseReference;
@@ -1604,6 +1605,7 @@ var
   ExtVal: Integer;
   InfoEntry: TDwarfInformationEntry;
   s: String;
+  ChildFlags: TGoNamedChildFlags;
 begin
   Result := False;
 
@@ -1621,8 +1623,16 @@ begin
   end;
   // compile_unit can not have startscope
 
+  ChildFlags := [gncSkipScopedEnumMembers];
+  if fsfIgnoreEnumVals in AFindFlags then
+    Include(ChildFlags, gncSkipEnumMembers);
+  if fsfOnlySubroutines in AFindFlags then
+    Include(ChildFlags, gncOnlySubroutines);
+
   s := CU.UnitName;
-  if (fsfMatchUnitName in AFindFlags) and
+  (* A unit of that name is not a subroutine. Without this, a search for a proc
+     whose name matches its own unit returns the unit and stops there. *)
+  if (fsfMatchUnitName in AFindFlags) and not(fsfOnlySubroutines in AFindFlags) and
      (s <> '') and (CompareUtf8BothCase(PChar(ANameInfo.NameUpper), PChar(ANameInfo.NameLower), @s[1]))
   then begin
     Result := True;
@@ -1631,8 +1641,8 @@ begin
   end
 
   else
-  if InfoEntry.GoNamedChildEx(ANameInfo, False, fsfIgnoreEnumVals in AFindFlags, True) then begin
-    if InfoEntry.IsAddressInStartScope(FAddress) then begin
+  if InfoEntry.GoNamedChildEx(ANameInfo, ChildFlags) then begin
+    if (fsfNoAddressCheck in AFindFlags) or InfoEntry.IsAddressInStartScope(FAddress) then begin
       // only variables are marked "external", but types not / so we may need all top level
       Result := True;
       AnInfoEntry := InfoEntry;

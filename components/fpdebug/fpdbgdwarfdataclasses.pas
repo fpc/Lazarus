@@ -353,6 +353,18 @@ type
   { TDwarfInformationEntry }
   TDwarfInformationEntry = class;
 
+  (* Search options for TDwarfInformationEntry.GoNamedChildEx.
+     gncOnlySubroutines must be applied while scanning: the scan stops at the
+     first entry whose name matches, so a procedure that sits behind a variable
+     or a type of the same name can not be recovered by filtering the result. *)
+  TGoNamedChildFlag = (
+    gncSkipArtificial,
+    gncSkipEnumMembers,
+    gncSkipScopedEnumMembers,
+    gncOnlySubroutines
+  );
+  TGoNamedChildFlags = set of TGoNamedChildFlag;
+
   TDwarfAttribData = record
     Idx: Integer;
     InfoPointer: pointer;
@@ -399,8 +411,9 @@ type
     procedure ComputeKnownHashes(AKNownHashes: PKnownNameHashesArray);
 
     function GoNamedChild(const ANameInfo: TNameSearchInfo): Boolean;
-    // find in enum too // TODO: control search with a flags param, if needed
-    function GoNamedChildEx(const ANameInfo: TNameSearchInfo; ASkipArtificial: Boolean = False; ASkipEnumMembers: Boolean = False; ASkipScopedEnumMembers: Boolean = False): Boolean;
+    // find in enum too
+    function GoNamedChildEx(const ANameInfo: TNameSearchInfo; ASkipArtificial: Boolean = False; ASkipEnumMembers: Boolean = False; ASkipScopedEnumMembers: Boolean = False): Boolean; overload; inline;
+    function GoNamedChildEx(const ANameInfo: TNameSearchInfo; AFlags: TGoNamedChildFlags): Boolean; overload;
     // GoNamedChildMatchCaseEx will use
     // - UpperName for Hash
     // - LowerName for compare
@@ -899,6 +912,7 @@ type
     function FindSymbolScope(ALocationContext: TFpDbgSimpleLocationContext; AAddress: TDbgPtr = 0): TFpDbgSymbolScope; override;
     function FindDwarfProcSymbol(AAddress: TDbgPtr): TDbgDwarfSymbolBase; inline;
     function FindProcSymbol(AAddress: TDbgPtr): TFpSymbol; override; overload;
+    function FindNamedProcSymbol(const AName: String; AFlags: TFpProcSearchFlags = []): TFpSymbol; override;
     function FindProcStartEndPC(const AAddress: TDbgPtr; out AStartPC, AEndPC: TDBGPtr): boolean; override;
     function FindLineInfo(AAddress: TDbgPtr): TFpSymbol; override;
     function FindCallFrameInfo(AnAddress: TDBGPtr; out CIE: TDwarfCIE; out Row: TDwarfCallFrameInformationRow): Boolean; virtual;
@@ -3148,12 +3162,31 @@ end;
 function TDwarfInformationEntry.GoNamedChildEx(const ANameInfo: TNameSearchInfo;
   ASkipArtificial: Boolean; ASkipEnumMembers: Boolean; ASkipScopedEnumMembers: Boolean): Boolean;
 var
+  Flags: TGoNamedChildFlags;
+begin
+  Flags := [];
+  if ASkipArtificial then
+    Include(Flags, gncSkipArtificial);
+  if ASkipEnumMembers then
+    Include(Flags, gncSkipEnumMembers);
+  if ASkipScopedEnumMembers then
+    Include(Flags, gncSkipScopedEnumMembers);
+  Result := GoNamedChildEx(ANameInfo, Flags);
+end;
+
+function TDwarfInformationEntry.GoNamedChildEx(const ANameInfo: TNameSearchInfo;
+  AFlags: TGoNamedChildFlags): Boolean;
+var
   Val: Integer;
   EntryName: PChar;
   InEnum: Boolean;
   ParentScopIdx: Integer;
   sc: PDwarfScopeInfoRec;
+  ASkipArtificial, ASkipEnumMembers, ASkipScopedEnumMembers: Boolean;
 begin
+  ASkipArtificial := gncSkipArtificial in AFlags;
+  ASkipEnumMembers := gncSkipEnumMembers in AFlags;
+  ASkipScopedEnumMembers := gncSkipScopedEnumMembers in AFlags;
   Result := False;
   InEnum := False;
   if ANameInfo.NameUpper = '' then
@@ -3174,6 +3207,13 @@ begin
       PrepareAbbrev;
       if (FAbbrev = nil) then begin
         assert(false);
+        GoNextFast;
+        Continue;
+      end;
+
+      (* Only DW_TAG_subprogram is mapped to a proc symbol. DW_TAG_entry_point
+         and DW_TAG_inlined_subroutine are not currently handled. *)
+      if (gncOnlySubroutines in AFlags) and (FAbbrev^.tag <> DW_TAG_subprogram) then begin
         GoNextFast;
         Continue;
       end;
@@ -4381,6 +4421,56 @@ begin
     finally
       Iter.Free;
     end;
+  end;
+end;
+
+function TFpDwarfInfo.FindNamedProcSymbol(const AName: String;
+  AFlags: TFpProcSearchFlags): TFpSymbol;
+var
+  Ctx: TFpDbgSimpleLocationContext;
+  Scope: TFpDbgSymbolScope;
+  Val: TFpValue;
+  Addr: TFpDbgMemLocation;
+begin
+  Result := nil;
+  (* Each TDbgInfo answers for its own namespace only. This one is the
+     readable, source level names in the debug info. *)
+  if not ProcSearchIncludes(AFlags, psfDwarfName) then
+    exit;
+  if (AName = '') or (CompilationUnitsCount = 0) then
+    exit;
+
+  (* A scope built with no symbol searches the compilation units directly: no
+     locals and no class fields, which is what a procedure lookup wants. The
+     context still carries an address and that address means nothing here, so
+     the search must not filter on it. 0 can NOT be used to say "no location" -
+     it is a usable code address on some targets - hence fsfNoAddressCheck.
+
+     The unit search compares names case insensitively either way, so
+     psfIgnoreCase makes no difference on this path. *)
+  Ctx := TFpDbgSimpleLocationContext.Create(MemManager, 0,
+    CompilationUnits[0].AddressSize, 0, 0);
+  Scope := CompilationUnits[0].DwarfSymbolClassMap.CreateScopeForSymbol(Ctx, nil, Self);
+  try
+    if Scope = nil then
+      exit;
+    Val := Scope.FindSymbol(AName, '', [fsfNoAddressCheck, fsfOnlySubroutines]);
+    if Val = nil then
+      exit;
+
+    (* The entry PC is on the VALUE, not on the symbol: a symbol built straight
+       from the DIE has no address of its own, and the value is also what falls
+       back to the linkage name in the link table. Take the address, then let
+       the existing by-address lookup build the symbol, so that a caller gets
+       the same object it would get from FindProcSymbol(Address) - line info
+       and all. *)
+    Addr := Val.DataAddress;
+    Val.ReleaseReference;
+    if IsValidLoc(Addr) then
+      Result := FindProcSymbol(Addr.Address);
+  finally
+    Scope.ReleaseReference;
+    Ctx.ReleaseReference;
   end;
 end;
 
