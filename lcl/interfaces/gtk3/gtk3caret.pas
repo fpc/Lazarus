@@ -54,6 +54,7 @@ type
     procedure RedrawCaret;
     property PosX: integer read FPos.X;
     property PosY: integer read FPos.Y;
+    property Height: integer read FHeight;
     property RespondToFocus: boolean read FRespondToFocus write SetRespondToFocus;
     property Visible: boolean read FVisible;
   end;

@@ -4749,6 +4749,7 @@ var
   Caret: TGtk3Caret;
   Widget: TGtk3Widget;
   GtkWidget: PGtkWidget;
+  ACursorRect: TGdkRectangle;
 begin
   Result := False;
   if Handle = 0 then
@@ -4761,6 +4762,14 @@ begin
   if Assigned(Caret) then
   begin
     Caret.SetPosition(X, Y);
+    if Assigned(FIMContext) and (FIMTarget = TObject(Widget)) then
+    begin
+      ACursorRect.x := X;
+      ACursorRect.y := Y;
+      ACursorRect.width := 0;
+      ACursorRect.height := Caret.Height;
+      gtk_im_context_set_cursor_location(FIMContext, @ACursorRect);
+    end;
     Result := True;
   end;
 end;
