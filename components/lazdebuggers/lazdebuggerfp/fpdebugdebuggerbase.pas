@@ -108,7 +108,8 @@ begin
   if Result <> 0 then
     exit;
 
-  FunctSymbol := DbgController.CurrentProcess.FindProcSymbol(AName);
+  // Link tables only: AName is an RTL linker name, e.g. FPC_ANSISTR_DECR_REF
+  FunctSymbol := DbgController.CurrentProcess.FindNamedProcSymbol(AName, [psfLinkTableSym]);
 
   if (FunctSymbol <> nil) and (IsTargetNotNil(FunctSymbol.Address)) then
     ACacheVar := FunctSymbol.Address.Address;
