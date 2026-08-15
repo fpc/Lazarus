@@ -2032,11 +2032,11 @@ var
 begin
   i := FTextViewsList.IndexOf(aTextView);
   if i >= 0 then begin
-    aTextView.SetManager(nil);
-    if aDestroy then
-      TSynEditStringsLinked(FTextViewsList[i]).Free;
     FTextViewsList.Delete(i);
-    ReconnectViews
+    ReconnectViews;
+    aTextView.SetManager(nil); // TODO: this should be before ReconnectViews. But its needed to forward event-handle registration to the manager.
+    if aDestroy then
+      aTextView.Free;
   end;
 end;
 
