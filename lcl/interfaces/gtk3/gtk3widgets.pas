@@ -6566,7 +6566,6 @@ var
 begin
   if not IsWidgetOk then
     exit;
-  PGtkEntry(Widget)^.set_has_frame(aborder);
   AProvider := PGtkCssProvider(g_object_get_data(PGObject(Widget), 'lcl-noframe-css'));
   if aborder then
   begin
