@@ -328,7 +328,7 @@ resourcestring
   lisGroupSetNone = 'Clear group(s)';
   lisGroupEmptyDelete = 'No more breakpoints are assigned to group "%s", delete it?';
   lisGroupEmptyDeleteMore = '%sThere are %d more empty groups, delete all?';
-  lisMenuViewBreakPointsAndExceptions = 'BreakPoints/Exceptions';
+  lisMenuViewBreakPointsAndExceptions = 'Breakpoints/Exceptions';
   lisBrkPointState = 'State';
   lisBrkPointAction = 'Action';
 
