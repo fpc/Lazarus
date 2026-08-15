@@ -2587,6 +2587,7 @@ procedure TGtk3Widget.DeliverIMCommit(const AStr: string);
 var
   UTF8Char: TUTF8Char;
   CharMsg: TLMChar;
+  APos, ALen, CharLen: Integer;
 begin
   if (AStr = '') or not Assigned(LCLObject) then
     exit;
@@ -2595,21 +2596,33 @@ begin
   writeln('TGtk3Widget.DeliverIMCommit ', dbgsName(LCLObject), ' str="', AStr, '"');
   {$ENDIF}
 
-  UTF8Char := AStr;
-  if LCLObject.IntfUTF8KeyPress(UTF8Char, 1, False) then
-    exit;
+  ALen := Length(AStr);
+  APos := 1;
+  while APos <= ALen do
+  begin
+    CharLen := UTF8CodepointSize(@AStr[APos]);
+    if (CharLen <= 0) or (APos + CharLen - 1 > ALen) then
+      exit;
+    UTF8Char := Copy(AStr, APos, CharLen);
+    Inc(APos, CharLen);
 
-  FillChar(CharMsg{%H-}, SizeOf(CharMsg), 0);
-  CharMsg.Msg := CN_CHAR;
-  CharMsg.CharCode := Word(AStr[1]);
-  NotifyApplicationUserInput(LCLObject, PLMessage(@CharMsg)^);
+    if not Assigned(LCLObject) then
+      exit;
+    if LCLObject.IntfUTF8KeyPress(UTF8Char, 1, False) then
+      continue;
 
-  if DeliverMessage(CharMsg, True) <> 0 then
-    exit;
+    FillChar(CharMsg{%H-}, SizeOf(CharMsg), 0);
+    CharMsg.Msg := CN_CHAR;
+    CharMsg.CharCode := Word(UTF8Char[1]);
+    NotifyApplicationUserInput(LCLObject, PLMessage(@CharMsg)^);
 
-  CharMsg.Msg := LM_CHAR;
-  NotifyApplicationUserInput(LCLObject, PLMessage(@CharMsg)^);
-  DeliverMessage(CharMsg, True);
+    if DeliverMessage(CharMsg, True) <> 0 then
+      continue;
+
+    CharMsg.Msg := LM_CHAR;
+    NotifyApplicationUserInput(LCLObject, PLMessage(@CharMsg)^);
+    DeliverMessage(CharMsg, True);
+  end;
 end;
 
 function TGtk3Widget.GtkEventKey(Sender: PGtkWidget; Event: PGdkEvent; AKeyPress: Boolean): Boolean;
@@ -2668,8 +2681,14 @@ begin
     {$ENDIF}
     Gtk3WidgetSet.IMInFilter := False;
     if Gtk3WidgetSet.IMCommitStr <> '' then
-      AEventString := Gtk3WidgetSet.IMCommitStr
-    else
+    begin
+      AEventString := Gtk3WidgetSet.IMCommitStr;
+      if Length(AEventString) > UTF8CodepointSize(PChar(AEventString)) then
+      begin
+        DeliverIMCommit(AEventString);
+        exit(True);
+      end;
+    end else
     if AFiltered then
       exit(True);
   end;
