@@ -1190,6 +1190,23 @@ end;
 class procedure TGtk3WSHintWindow.ShowHide(const AWinControl: TWinControl);
 var
   AWidget: PGtkWidget;
+  AGrabWidget: PGtkWidget;
+  ATransient: PGtkWindow;
+
+  function NonPopupToplevel(AWin: PGtkWindow): PGtkWindow;
+  begin
+    Result := AWin;
+    while (Result <> nil) and
+      (Result^.get_window_type = GTK_WINDOW_POPUP) and
+      (Result^.get_transient_for <> nil) do
+      Result := Result^.get_transient_for;
+    if (Result <> nil) and
+      ((Result^.get_window_type = GTK_WINDOW_POPUP) or
+       (PGtkWidget(Result) = AWidget) or
+       not PGtkWidget(Result)^.get_mapped) then
+      Result := nil;
+  end;
+
   procedure SetPassThroughRecursive(AGdkWindow: PGdkWindow);
   var
     AChildren: PGList;
@@ -1212,7 +1229,15 @@ begin
   begin
     AWidget := TGtk3HintWindow(AWinControl.Handle).Widget;
     if GTK3WidgetSet.IsWayland then // ref.to #42033, X11 not need this (it lead to incorrect positioning)
-      PGtkWindow(AWidget)^.set_transient_for(GetActiveGtkWindow);
+    begin
+      ATransient := nil;
+      AGrabWidget := gtk_grab_get_current;
+      if (AGrabWidget <> nil) and AGrabWidget^.get_toplevel^.is_toplevel then
+        ATransient := NonPopupToplevel(PGtkWindow(AGrabWidget^.get_toplevel));
+      if ATransient = nil then
+        ATransient := NonPopupToplevel(GetActiveGtkWindow);
+      PGtkWindow(AWidget)^.set_transient_for(ATransient);
+    end;
 
     AWidget^.show_all;
 
