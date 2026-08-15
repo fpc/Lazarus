@@ -81,9 +81,20 @@ procedure TGtk3WidgetSet.Gtk3Create;
 var
   AGtkThread: PGThread;
   AId: String;
+  ASettings: PGtkSettings;
+  AValue: TGValue;
 begin
   g_type_init;
   gtk_init(@argc, @argv);
+  ASettings := gtk_settings_get_default;
+  if Assigned(ASettings) then
+  begin
+    FillByte(AValue{%H-}, SizeOf(AValue), 0);
+    AValue.init(G_TYPE_BOOLEAN);
+    AValue.set_boolean(False);
+    ASettings^.set_property('gtk-entry-select-on-focus', @AValue);
+    AValue.unset;
+  end;
   AGtkThread := g_thread_self();
   if not IsLibrary then
   begin

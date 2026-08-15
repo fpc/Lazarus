@@ -2280,6 +2280,18 @@ begin
   end;
 end;
 
+function Gtk3DeferredEntryUnselect(AData: gpointer): gboolean; cdecl;
+var
+  AWidget: PGtkWidget;
+begin
+  Result := gtk_false;
+  AWidget := PGtkWidget(AData);
+  if Gtk3IsWidget(AWidget) and not AWidget^.has_focus and
+    Gtk3IsEditable(PGObject(AWidget)) then
+    PGtkEditable(AWidget)^.select_region(0, 0);
+  g_object_unref(PGObject(AData));
+end;
+
 procedure TGtk3Widget.GtkEventFocus(Sender: PGtkWidget; Event: PGdkEvent);
   cdecl;
 var
@@ -2366,13 +2378,18 @@ begin
     if ([wtEntry, wtSpinEdit] * LWidgetType <> []) and
        Gtk3IsWidget(LContainer) and
        Gtk3IsEditable(PGObject(LContainer)) then
-        PGtkEditable(LContainer)^.select_region(0, 0)
-    else
+    begin
+      PGObject(LContainer)^.ref;
+      g_idle_add(@Gtk3DeferredEntryUnselect, LContainer);
+    end else
     if (wtComboBox in LWidgetType) and LIsCombo and
        Gtk3IsWidget(LWidget) and
        PGtkComboBox(LWidget)^.has_entry and
        Gtk3IsEditable(PGObject(PGtkComboBox(LWidget)^.get_child)) then
-         PGtkEditable(PGtkComboBox(LWidget)^.get_child)^.select_region(0, 0);
+    begin
+      PGObject(PGtkComboBox(LWidget)^.get_child)^.ref;
+      g_idle_add(@Gtk3DeferredEntryUnselect, PGtkComboBox(LWidget)^.get_child);
+    end;
   end;
 end;
 
@@ -2961,6 +2978,8 @@ var
   MousePos: TPoint;
   MButton: guint;
   AParentControl: TWinControl;
+  AClip: PGtkClipboard;
+  AClipText: string;
 
   function CheckWidget: boolean;
   begin
@@ -3080,6 +3099,26 @@ begin
   DebugLn('TGtk3Widget.GtkEventMouse ',dbgsName(LCLObject),
     ' msg=',dbgs(msg.Msg), ' point=',dbgs(Msg.XPos),',',dbgs(Msg.YPos));
   {$ENDIF}
+
+  if ((Msg.Msg = LM_LBUTTONDOWN) or (Msg.Msg = LM_MBUTTONDOWN)) and
+    Assigned(LCLObject) and
+    ((LCLObject is TCustomEdit) or (LCLObject is TCustomComboBox)) and
+    not LCLObject.Focused and LCLObject.CanFocus and
+    not (csDesigning in LCLObject.ComponentState) then
+  begin
+    AClipText := '';
+    AClip := gtk_clipboard_get(gdk_atom_intern('PRIMARY', False));
+    if (AClip <> nil) and gtk_clipboard_wait_is_text_available(AClip) then
+      AClipText := gtk_clipboard_wait_for_text(AClip)
+    else
+      AClip := nil;
+    LCLIntf.SetFocus(LCLObject.Handle);
+    if AClip <> nil then
+      gtk_clipboard_set_text(AClip, PgChar(AClipText), Length(AClipText));
+    if not CheckWidget then
+      exit;
+  end;
+
   NotifyApplicationUserInput(LCLObject, PLMessage(@Msg)^);
   Event^.button.send_event := NO_PROPAGATION_TO_PARENT;
 
