@@ -83,6 +83,7 @@ type
     procedure MenuItemImportClick(Sender: TObject);
     procedure RemoveButtonClick(Sender: TObject);
     procedure EditButtonClick(Sender: TObject);
+    procedure Move(aOld, aNew: integer);
     procedure MoveUpButtonClick(Sender: TObject);
     procedure MoveDownButtonClick(Sender: TObject);
     procedure lvToolsSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
@@ -339,28 +340,25 @@ begin
   end;
 end;
 
-procedure TExternalToolDialog.MoveUpButtonClick(Sender: TObject);
-var
-  i: integer;
+procedure TExternalToolDialog.Move(aOld, aNew: integer);
 begin
-  i:=lvTools.ItemIndex;
-  if i<1 then exit;
-  fExtToolList.Move(i,i-1);
-  lvTools.Items.Move(i,i-1);
-  lvTools.ItemIndex:=i-1;
+  if aOld < 0 then exit;
+  if aNew < 0 then exit;
+  if aNew >= lvTools.Items.Count then exit;
+  fExtToolList.Move(aOld, aNew);
+  lvTools.Items.Move(aOld, aNew);
+  lvTools.ItemIndex := aNew;
   EnableButtons;
 end;
 
-procedure TExternalToolDialog.MoveDownButtonClick(Sender: TObject);
-var
-  i: integer;
+procedure TExternalToolDialog.MoveUpButtonClick(Sender: TObject);
 begin
-  i:=lvTools.ItemIndex;
-  if (i<0) or (i>=lvTools.Items.Count-1) then exit;
-  fExtToolList.Move(i,i+1);
-  lvTools.Items.Move(i,i+1);
-  lvTools.ItemIndex:=i+1;
-  EnableButtons;
+  Move(lvTools.ItemIndex, lvTools.ItemIndex - 1);
+end;
+
+procedure TExternalToolDialog.MoveDownButtonClick(Sender: TObject);
+begin
+  Move(lvTools.ItemIndex, lvTools.ItemIndex + 1);
 end;
 
 procedure TExternalToolDialog.EnableButtons;
