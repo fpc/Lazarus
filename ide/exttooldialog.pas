@@ -90,6 +90,7 @@ type
     procedure lvToolsDblClick(Sender: TObject);
   private
     fExtToolList: TExternalUserTools;
+    procedure SelectItem(i: integer);
     procedure AddTool(aTool: TExternalUserTool; aIndex: integer = -1);
     procedure Load;
     procedure SetExtToolList(NewExtToolList: TExternalUserTools);
@@ -180,6 +181,13 @@ begin
   EnableButtons;
 end;
 
+procedure TExternalToolDialog.SelectItem(i: integer);
+begin
+  lvTools.ItemIndex:=i;
+  lvTools.ItemFocused:=lvTools.Selected;
+  lvTools.Selected.MakeVisible(false);
+end;
+
 procedure TExternalToolDialog.AddTool(aTool: TExternalUserTool; aIndex: integer = -1);
 var
   lItem: TListItem;
@@ -193,9 +201,7 @@ begin
   if aIndex>=0 then
     Move(lvTools.Items.Count-1,aIndex);
   // select
-  lvTools.ItemIndex:=lItem.Index;
-  lvTools.ItemFocused:=lvTools.Selected;
-  lvTools.Selected.MakeVisible(false);
+  SelectItem(lItem.Index);
 end;
 
 procedure TExternalToolDialog.AddButtonClick(Sender: TObject);
@@ -320,16 +326,25 @@ begin
 end;
 
 procedure TExternalToolDialog.RemoveButtonClick(Sender: TObject);
+var
+  i: integer;
 begin
-  if lvTools.ItemIndex<0 then
-    exit;
-  if IDEMessageDialog(rsMtConfirmation, Format(lisExtToolConfirmRemoving, [lvTools.Items[lvTools.ItemIndex].Caption]),
+  i := lvTools.ItemIndex;
+  if i < 0 then exit;
+  // confirm
+  if IDEMessageDialog(rsMtConfirmation, Format(lisExtToolConfirmRemoving, [lvTools.Items[i].Caption]),
     mtConfirmation, mbYesNoCancel) <> mrYes
   then
     exit;
-
-  fExtToolList.Delete(lvTools.ItemIndex);
-  lvTools.Items.Delete(lvTools.ItemIndex);
+  // delete
+  fExtToolList.Delete(i);
+  lvTools.Items.Delete(i);
+  // select
+  if i < lvTools.Items.Count then
+    SelectItem(i)
+  else if lvTools.Items.Count > 0 then
+    SelectItem(lvTools.Items.Count - 1);
+  // update buttons
   EnableButtons;
 end;
 
