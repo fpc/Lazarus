@@ -134,6 +134,7 @@ resourcestring
 
   // command line help
   lisThisHelpMessage = 'This help message.';
+  lisParameters = 'Parameters:';
   lisPrimaryConfigDirectoryWhereLazarusStoresItsConfig = 'Primary config '+
     'directory where Lazarus stores its config files. Default is "%s".';
   lisLazarusOptionsProjectFilename = 'lazarus [options] <project-filename>';
@@ -2669,7 +2670,7 @@ resourcestring
 
   dlgPOSaveSession = 'Session';
   dlgApplicationSettings = 'Application settings';
-  dlgPOTitle = 'Title:';
+  dlgPOTitle = 'Title';
   lisHint = 'Hint';
   lisNote = 'Note';
   dlgPOUseLCLScaling = 'Use LCL scaling (Hi-DPI)';
@@ -4140,9 +4141,9 @@ resourcestring
 
   // edit external tools
   lisEdtExtToolEditTool = 'Edit Tool';
-  lisEdtExtToolProgramfilename = 'Program Filename:';
-  lisEdtExtToolParameters = 'Parameters:';
-  lisEdtExtToolWorkingDirectory = 'Working Directory:';
+  lisEdtExtToolProgramExecutable = 'Program Executable';
+  lisEdtExtToolParameters = 'Parameters';
+  lisEdtExtToolWorkingDirectory = 'Working Directory';
   lisShowConsole = 'Show console';
   lisOnlyAvailableOnWindowsRunToolInANewConsole = 'Only available on Windows. '
     +'Run tool in a new console.';

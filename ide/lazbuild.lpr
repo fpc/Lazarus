@@ -1992,7 +1992,7 @@ begin
   writeln('');
   writeln(lisLazbuildOptionsSyntax);
   writeln('');
-  writeln(lisEdtExtToolParameters);
+  writeln(lisParameters);
   writeln('');
   writeln('-?, -h, --help');
   w(lisThisHelpMessage);

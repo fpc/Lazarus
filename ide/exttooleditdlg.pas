@@ -844,7 +844,7 @@ procedure TExternalToolOptionDlg.FormCreate(Sender: TObject);
 begin
   Caption:=lisEdtExtToolEditTool;
   TitleLabel.Caption:=dlgPOTitle;
-  FilenameLabel.Caption:=lisEdtExtToolProgramfilename;
+  FilenameLabel.Caption:=lisEdtExtToolProgramExecutable;
   FilenameEdit.ButtonHint:=lisClickHereToBrowseTheFileHint;
 
   FilenameEdit.DialogTitle:=lisSelectFile;
