@@ -3,7 +3,7 @@ object ExternalToolDialog: TExternalToolDialog
   Height = 347
   Top = 226
   Width = 451
-  ActiveControl = ListBox
+  ActiveControl = lvTools
   BorderIcons = [biSystemMenu]
   Caption = 'ExternalToolDialog'
   ClientHeight = 347
@@ -83,7 +83,7 @@ object ExternalToolDialog: TExternalToolDialog
       DropdownMenu = PopupDropdownMenu
     end
   end
-  object ListBox: TListView
+  object lvTools: TListView
     Left = 0
     Height = 215
     Top = 94
@@ -92,7 +92,7 @@ object ExternalToolDialog: TExternalToolDialog
     BorderSpacing.Bottom = 6
     Columns = <>
     ReadOnly = True
-    OnSelectItem = ListBoxSelectItem
+    OnSelectItem = lvToolsSelectItem
     TabOrder = 1
   end
   object ButtonPanel: TButtonPanel
