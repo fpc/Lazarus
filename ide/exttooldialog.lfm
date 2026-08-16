@@ -83,15 +83,16 @@ object ExternalToolDialog: TExternalToolDialog
       DropdownMenu = PopupDropdownMenu
     end
   end
-  object ListBox: TListBox
+  object ListBox: TListView
     Left = 0
     Height = 215
     Top = 94
     Width = 451
     Align = alClient
     BorderSpacing.Bottom = 6
-    ItemHeight = 0
-    OnClick = ListboxClick
+    Columns = <>
+    ReadOnly = True
+    OnSelectItem = ListBoxSelectItem
     TabOrder = 1
   end
   object ButtonPanel: TButtonPanel

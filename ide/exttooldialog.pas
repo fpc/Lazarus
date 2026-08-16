@@ -59,7 +59,7 @@ type
 
   TExternalToolDialog = class(TForm)
     ButtonPanel: TButtonPanel;
-    ListBox: TListBox;
+    ListBox: TListView;
     MenuItemImport: TMenuItem;
     MenuItemExport: TMenuItem;
     MenuItemSeparator: TMenuItem;
@@ -85,7 +85,7 @@ type
     procedure EditButtonClick(Sender: TObject);
     procedure MoveUpButtonClick(Sender: TObject);
     procedure MoveDownButtonClick(Sender: TObject);
-    procedure ListboxClick(Sender: TObject);
+    procedure ListBoxSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
   private
     fExtToolList: TExternalUserTools;
     procedure Load;
@@ -181,7 +181,7 @@ begin
   Listbox.Items.BeginUpdate;
   Listbox.Items.Clear;
   for i:=0 to fExtToolList.Count-1 do 
-    Listbox.Items.Add(ToolDescription(i));
+    Listbox.Items.Add.Caption:=ToolDescription(i);
   Listbox.Items.EndUpdate;
   EnableButtons;
 end;
@@ -203,7 +203,7 @@ begin
   if MsgResult=mrOk then
   begin
     fExtToolList.Add(NewTool);
-    Listbox.Items.Add(ToolDescription(fExtToolList.Count-1));
+    Listbox.Items.Add.Caption:=ToolDescription(fExtToolList.Count-1);
   end else begin
     NewTool.Free;
   end;
@@ -268,7 +268,7 @@ begin
       NewTool:=TExternalUserTool.Create(nil);
       NewTool.Assign(OldTool);
       fExtToolList.Add(NewTool);
-      Listbox.Items.Add(ToolDescription(fExtToolList.Count-1));
+      Listbox.Items.Add.Caption:=ToolDescription(fExtToolList.Count-1);
     end;
   end;
 end;
@@ -309,7 +309,7 @@ procedure TExternalToolDialog.RemoveButtonClick(Sender: TObject);
 begin
   if Listbox.ItemIndex<0 then
     exit;
-  if IDEMessageDialog(rsMtConfirmation, Format(lisExtToolConfirmRemoving, [Listbox.Items[Listbox.ItemIndex]]),
+  if IDEMessageDialog(rsMtConfirmation, Format(lisExtToolConfirmRemoving, [Listbox.Items[Listbox.ItemIndex].Caption]),
     mtConfirmation, mbYesNoCancel) <> mrYes
   then
     exit;
@@ -327,7 +327,7 @@ begin
   if i<0 then exit;
   if ShowExtToolOptionDlg(fExtToolList[i])=mrOk
   then begin
-    Listbox.Items[i]:=ToolDescription(i);
+    Listbox.Items[i].Caption:=ToolDescription(i);
     EnableButtons;
   end;
 end;
@@ -368,7 +368,7 @@ begin
   MoveDownButton.Enabled:=(i>=0) and (i<fExtToolList.Count-1);
 end;
 
-procedure TExternalToolDialog.ListboxClick(Sender: TObject);
+procedure TExternalToolDialog.ListBoxSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
 begin
   EnableButtons;
 end;
