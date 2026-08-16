@@ -40,7 +40,7 @@ uses
   {$ENDIF}
   Classes, SysUtils,
   // LCL
-  Controls, Forms, StdCtrls, ComCtrls, Dialogs, ButtonPanel, Menus, LCLStrConsts, LCLType,
+  Controls, Forms, StdCtrls, ComCtrls, Dialogs, ButtonPanel, Menus, LCLStrConsts, LCLType, LCLProc,
   // LazUtils
   FileUtil,
   // IdeIntf
@@ -91,6 +91,7 @@ type
   private
     fExtToolList: TExternalUserTools;
     procedure SelectItem(i: integer);
+    procedure SetItem(aItem: TListItem; aTool: TExternalUserTool);
     procedure AddTool(aTool: TExternalUserTool; aIndex: integer = -1);
     procedure Load;
     procedure SetExtToolList(NewExtToolList: TExternalUserTools);
@@ -131,6 +132,11 @@ begin
   Name:='ExternalToolDialog';
   Caption:=lisExtToolExternalTools;
   ToolBar.Images := IDEImages.Images_16;
+
+  lvTools.Columns[0].Caption:=dlgPOTitle;
+  lvTools.Columns[1].Caption:=lisEdtExtToolProgramExecutable;
+  lvTools.Columns[2].Caption:=lisEdtExtToolParameters;
+  lvTools.Columns[3].Caption:=lisEdtExtToolKey;
 
   AddButton.Caption:=lisAdd;
   RemoveButton.Caption:=lisRemove;
@@ -176,7 +182,7 @@ begin
   lvTools.Items.BeginUpdate;
   lvTools.Items.Clear;
   for i:=0 to fExtToolList.Count-1 do 
-    lvTools.Items.Add.Caption:=fExtToolList[i].Title;
+    SetItem(lvTools.Items.Add,fExtToolList[i]);
   lvTools.Items.EndUpdate;
   EnableButtons;
 end;
@@ -188,6 +194,16 @@ begin
   lvTools.Selected.MakeVisible(false);
 end;
 
+procedure TExternalToolDialog.SetItem(aItem: TListItem; aTool: TExternalUserTool);
+begin
+  aItem.Caption:=aTool.Title;
+  aItem.SubItems.Clear;
+  aItem.SubItems.Add(aTool.Filename);
+  aItem.SubItems.Add(aTool.CmdLineParams);
+  if aTool.Key<>0 then
+    aItem.SubItems.Add(ShortCutToText(ShortCut(aTool.Key,aTool.Shift)));
+end;
+
 procedure TExternalToolDialog.AddTool(aTool: TExternalUserTool; aIndex: integer = -1);
 var
   lItem: TListItem;
@@ -196,7 +212,7 @@ begin
   fExtToolList.Add(aTool);
   lItem:=lvTools.Items.Add;
   // caption
-  lItem.Caption:=aTool.Title;
+  SetItem(lItem,aTool);
   // move next to original
   if aIndex>=0 then
     Move(lvTools.Items.Count-1,aIndex);
@@ -356,7 +372,7 @@ begin
   if i<0 then exit;
   if ShowExtToolOptionDlg(fExtToolList[i])=mrOk
   then begin
-    lvTools.Items[i].Caption:=fExtToolList[i].Title;
+    SetItem(lvTools.Items[i],fExtToolList[i]);
     EnableButtons;
   end;
 end;
