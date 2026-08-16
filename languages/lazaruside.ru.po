@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-08-12 22:59+0300\n"
+"PO-Revision-Date: 2026-08-16 22:51+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -3870,8 +3870,8 @@ msgid "Session"
 msgstr "Сеанс работы"
 
 #: lazarusidestrconsts.dlgpotitle
-msgid "Title:"
-msgstr "Заголовок:"
+msgid "Title"
+msgstr "Заголовок"
 
 #: lazarusidestrconsts.dlgpouiaccess
 msgid "UI Access (uiAccess)"
@@ -9230,20 +9230,21 @@ msgid "Macros"
 msgstr "Макросы"
 
 #: lazarusidestrconsts.lisedtexttoolparameters
-msgid "Parameters:"
-msgstr "Параметры:"
+msgctxt "lazarusidestrconsts.lisedtexttoolparameters"
+msgid "Parameters"
+msgstr "Параметры"
 
-#: lazarusidestrconsts.lisedtexttoolprogramfilename
-msgid "Program Filename:"
-msgstr "Имя файла программы:"
+#: lazarusidestrconsts.lisedtexttoolprogramexecutable
+msgid "Program Executable"
+msgstr "Исполнимый файл программы"
 
 #: lazarusidestrconsts.lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"
 msgstr "Требуются заголовок и имя файла"
 
 #: lazarusidestrconsts.lisedtexttoolworkingdirectory
-msgid "Working Directory:"
-msgstr "Рабочий каталог:"
+msgid "Working Directory"
+msgstr "Рабочий каталог"
 
 #: lazarusidestrconsts.liselevatethemessageprioritytoalwaysshowitbydefaultit
 msgid "Elevate the message priority to always show it (by default it has low priority \"verbose\")"
@@ -14384,6 +14385,11 @@ msgstr "Вкладка с именем \"%s\" уже имеется. Добав�
 msgctxt "lazarusidestrconsts.lispanic"
 msgid "Panic"
 msgstr "Чрезвычайное"
+
+#: lazarusidestrconsts.lisparameters
+msgctxt "lazarusidestrconsts.lisparameters"
+msgid "Parameters:"
+msgstr "Параметры:"
 
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "

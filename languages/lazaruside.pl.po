@@ -4015,7 +4015,9 @@ msgid "Session"
 msgstr "Sesja"
 
 #: lazarusidestrconsts.dlgpotitle
-msgid "Title:"
+#, fuzzy
+#| msgid "Title:"
+msgid "Title"
 msgstr "Nazwa:"
 
 #: lazarusidestrconsts.dlgpouiaccess
@@ -9471,19 +9473,24 @@ msgid "Macros"
 msgstr "Makra"
 
 #: lazarusidestrconsts.lisedtexttoolparameters
-msgid "Parameters:"
+#, fuzzy
+#| msgid "Parameters:"
+msgctxt "lazarusidestrconsts.lisedtexttoolparameters"
+msgid "Parameters"
 msgstr "Parametry:"
 
-#: lazarusidestrconsts.lisedtexttoolprogramfilename
-msgid "Program Filename:"
-msgstr "Nazwa pliku programu:"
+#: lazarusidestrconsts.lisedtexttoolprogramexecutable
+msgid "Program Executable"
+msgstr ""
 
 #: lazarusidestrconsts.lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"
 msgstr "Wymagana nazwa i nazwa pliku"
 
 #: lazarusidestrconsts.lisedtexttoolworkingdirectory
-msgid "Working Directory:"
+#, fuzzy
+#| msgid "Working Directory:"
+msgid "Working Directory"
 msgstr "Katalog roboczy:"
 
 #: lazarusidestrconsts.liselevatethemessageprioritytoalwaysshowitbydefaultit
@@ -14666,6 +14673,11 @@ msgstr "Nazwa zakładki \"%s\" już istnieje. Nie dodano."
 #: lazarusidestrconsts.lispanic
 msgctxt "lazarusidestrconsts.lispanic"
 msgid "Panic"
+msgstr ""
+
+#: lazarusidestrconsts.lisparameters
+msgctxt "lazarusidestrconsts.lisparameters"
+msgid "Parameters:"
 msgstr ""
 
 #: lazarusidestrconsts.lisparsed

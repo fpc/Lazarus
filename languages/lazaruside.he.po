@@ -4079,7 +4079,9 @@ msgid "Session"
 msgstr "הפעלה"
 
 #: lazarusidestrconsts.dlgpotitle
-msgid "Title:"
+#, fuzzy
+#| msgid "Title:"
+msgid "Title"
 msgstr "כותרת:"
 
 #: lazarusidestrconsts.dlgpouiaccess
@@ -9690,19 +9692,24 @@ msgid "Macros"
 msgstr "מאקרויים"
 
 #: lazarusidestrconsts.lisedtexttoolparameters
-msgid "Parameters:"
+#, fuzzy
+#| msgid "Parameters:"
+msgctxt "lazarusidestrconsts.lisedtexttoolparameters"
+msgid "Parameters"
 msgstr "פרמטרים:"
 
-#: lazarusidestrconsts.lisedtexttoolprogramfilename
-msgid "Program Filename:"
-msgstr "שם התוכנית:"
+#: lazarusidestrconsts.lisedtexttoolprogramexecutable
+msgid "Program Executable"
+msgstr ""
 
 #: lazarusidestrconsts.lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"
 msgstr "כותרת ושם קובץ נדרשים"
 
 #: lazarusidestrconsts.lisedtexttoolworkingdirectory
-msgid "Working Directory:"
+#, fuzzy
+#| msgid "Working Directory:"
+msgid "Working Directory"
 msgstr "ספריית העבודה:"
 
 #: lazarusidestrconsts.liselevatethemessageprioritytoalwaysshowitbydefaultit
@@ -15165,6 +15172,11 @@ msgstr ""
 #: lazarusidestrconsts.lispanic
 msgctxt "lazarusidestrconsts.lispanic"
 msgid "Panic"
+msgstr ""
+
+#: lazarusidestrconsts.lisparameters
+msgctxt "lazarusidestrconsts.lisparameters"
+msgid "Parameters:"
 msgstr ""
 
 #: lazarusidestrconsts.lisparsed

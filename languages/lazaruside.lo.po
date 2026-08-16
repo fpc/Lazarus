@@ -3879,7 +3879,9 @@ msgid "Session"
 msgstr "ເຊດຊັນ"
 
 #: lazarusidestrconsts.dlgpotitle
-msgid "Title:"
+#, fuzzy
+#| msgid "Title:"
+msgid "Title"
 msgstr "ຫົວຂໍ້:"
 
 #: lazarusidestrconsts.dlgpouiaccess
@@ -9247,19 +9249,24 @@ msgid "Macros"
 msgstr "Macros"
 
 #: lazarusidestrconsts.lisedtexttoolparameters
-msgid "Parameters:"
+#, fuzzy
+#| msgid "Parameters:"
+msgctxt "lazarusidestrconsts.lisedtexttoolparameters"
+msgid "Parameters"
 msgstr "Parameters:"
 
-#: lazarusidestrconsts.lisedtexttoolprogramfilename
-msgid "Program Filename:"
-msgstr "ຊື່ໄຟລ໌ໂປຣແກຣມ:"
+#: lazarusidestrconsts.lisedtexttoolprogramexecutable
+msgid "Program Executable"
+msgstr ""
 
 #: lazarusidestrconsts.lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"
 msgstr "ຕ້ອງການຫົວຂໍ້ ແລະ ຊື່ໄຟລ໌"
 
 #: lazarusidestrconsts.lisedtexttoolworkingdirectory
-msgid "Working Directory:"
+#, fuzzy
+#| msgid "Working Directory:"
+msgid "Working Directory"
 msgstr "ໄດເຣັກທໍຣີເຮັດວຽກ:"
 
 #: lazarusidestrconsts.liselevatethemessageprioritytoalwaysshowitbydefaultit
@@ -14402,6 +14409,11 @@ msgstr "ຊື່ໜ້າ \"%s\" ມີຢູ່ແລ້ວ. ບໍ່ໄດ�
 msgctxt "lazarusidestrconsts.lispanic"
 msgid "Panic"
 msgstr "Panic"
+
+#: lazarusidestrconsts.lisparameters
+msgctxt "lazarusidestrconsts.lisparameters"
+msgid "Parameters:"
+msgstr ""
 
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "

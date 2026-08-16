@@ -3881,7 +3881,7 @@ msgid "Session"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpotitle
-msgid "Title:"
+msgid "Title"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpouiaccess
@@ -9265,11 +9265,12 @@ msgid "Macros"
 msgstr ""
 
 #: lazarusidestrconsts.lisedtexttoolparameters
-msgid "Parameters:"
+msgctxt "lazarusidestrconsts.lisedtexttoolparameters"
+msgid "Parameters"
 msgstr ""
 
-#: lazarusidestrconsts.lisedtexttoolprogramfilename
-msgid "Program Filename:"
+#: lazarusidestrconsts.lisedtexttoolprogramexecutable
+msgid "Program Executable"
 msgstr ""
 
 #: lazarusidestrconsts.lisedtexttooltitleandfilenamerequired
@@ -9277,7 +9278,7 @@ msgid "Title and Filename required"
 msgstr ""
 
 #: lazarusidestrconsts.lisedtexttoolworkingdirectory
-msgid "Working Directory:"
+msgid "Working Directory"
 msgstr ""
 
 #: lazarusidestrconsts.liselevatethemessageprioritytoalwaysshowitbydefaultit
@@ -14364,6 +14365,11 @@ msgstr ""
 #: lazarusidestrconsts.lispanic
 msgctxt "lazarusidestrconsts.lispanic"
 msgid "Panic"
+msgstr ""
+
+#: lazarusidestrconsts.lisparameters
+msgctxt "lazarusidestrconsts.lisparameters"
+msgid "Parameters:"
 msgstr ""
 
 #: lazarusidestrconsts.lisparsed
