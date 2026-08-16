@@ -1318,6 +1318,7 @@ begin
      assigned(TComponent(Owner).Owner) and
      (csLoading in TComponent(Owner).Owner.ComponentState)
   then begin
+    if LCL_SaveBackwardCompatibleLfm then exit;
     if not IsModified then
       FForceSaveToLfm := True;
   end;

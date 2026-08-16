@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, System.UITypes,
   // LCL
-  Forms,
+  Forms, LCLClasses,
   // LazUtils
   FileUtil, LazFileUtils, LazFileCache, LazUtilities, Maps, Laz2_XMLCfg, LazLoggerBase,
   // CodeTools
@@ -193,6 +193,7 @@ type
     procedure LoadDefaultSession; override;
     procedure SaveSessionInfo(const Path: string); override;
     procedure SaveToSession; override;
+    procedure SetFlags(const AValue: TProjectFlags); override;
   public
     constructor Create(ProjectDescription: TProjectDescriptor); override;
     destructor Destroy; override;
@@ -1018,6 +1019,12 @@ begin
   // Notifiy hooks
   if Assigned(OnSaveProjectInfo) then
     OnSaveProjectInfo(Self,FXMLConfig,FProjectWriteFlags+[pwfSkipProjectInfo]);
+end;
+
+procedure TEditableProject.SetFlags(const AValue: TProjectFlags);
+begin
+  inherited SetFlags(AValue);
+  LCL_SaveBackwardCompatibleLfm := pfCompatibilityMode in Flags;
 end;
 
 function TEditableProject.AllEditorsInfoCount: Integer;

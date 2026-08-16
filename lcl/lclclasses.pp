@@ -99,6 +99,7 @@ type
 
 var
   OnDecLCLRefcountToZero: TNotifyEvent;
+  LCL_SaveBackwardCompatibleLfm: boolean = False;
 
 implementation
 
