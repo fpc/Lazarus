@@ -1,17 +1,17 @@
 Special comments in the Jedi Code Formatter
 ===========================================
 
-The code formatter now  recognizes certain comments  to disable and enable formatting options around blocks of code.
+The code formatter nowÂ  recognizes certain commentsÂ  to disable and enable formatting options around blocks of code.
 
-Since the earliest versions, the comments `{(*}` and `{*)}` could be used to disable and reenable formatting respectively, in order to exclude a block of code from formatting. 
+Since the earliest versions, the comments `{(*}` and `{*)}` could be used to disable and reenable formatting respectively, in order to exclude a block of code from formatting.Â 
 
-From version 0.52, a more extensive syntax has been implemented to allow for fine-grained control over which formatting options are temporarily disabled. The original special comments `{(*}` and `{*)}` are retained as synonymns for `//jcf:format=off` and `//jcf:format=on`  respectively.
+From version 0.52, a more extensive syntax has been implemented to allow for fine-grained control over which formatting options are temporarily disabled. The original special comments `{(*}` and `{*)}` are retained as synonymns for `//jcf:format=off` and `//jcf:format=on` Â respectively.
 
 For instance, in the following line of code, the formatter will not alter the spacing
 
 ```
 //jcf:space=off
-  a   :=     a     +     1   ;
+Â  a Â  := Â  Â  a Â  Â  + Â  Â  1 Â  ;
 //jcf:space=on
 ```
 
