@@ -1918,7 +1918,7 @@ msgid "Assembler"
 msgstr "汇编(&A)"
 
 #: idedebuggerstringconstants.lismenuviewbreakpointsandexceptions
-msgid "BreakPoints/Exceptions"
+msgid "Breakpoints/Exceptions"
 msgstr ""
 
 #: idedebuggerstringconstants.lismenuviewcallstack

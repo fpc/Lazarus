@@ -1919,7 +1919,7 @@ msgid "Assembler"
 msgstr "Ассемблер"
 
 #: idedebuggerstringconstants.lismenuviewbreakpointsandexceptions
-msgid "BreakPoints/Exceptions"
+msgid "Breakpoints/Exceptions"
 msgstr "Точки останова и исключения"
 
 #: idedebuggerstringconstants.lismenuviewcallstack

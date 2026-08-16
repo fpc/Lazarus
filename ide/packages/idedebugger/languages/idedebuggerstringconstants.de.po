@@ -1913,7 +1913,9 @@ msgid "Assembler"
 msgstr "Assembler"
 
 #: idedebuggerstringconstants.lismenuviewbreakpointsandexceptions
-msgid "BreakPoints/Exceptions"
+#, fuzzy
+#| msgid "BreakPoints/Exceptions"
+msgid "Breakpoints/Exceptions"
 msgstr "Haltepunkte/Exceptions"
 
 #: idedebuggerstringconstants.lismenuviewcallstack
