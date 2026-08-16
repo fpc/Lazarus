@@ -91,7 +91,6 @@ type
     fExtToolList: TExternalUserTools;
     procedure Load;
     procedure SetExtToolList(NewExtToolList: TExternalUserTools);
-    function ToolDescription(Index: integer): string;
     procedure EnableButtons;
   public
     constructor Create(AnOwner: TComponent); override;
@@ -167,14 +166,6 @@ begin
   Load;
 end;
 
-function TExternalToolDialog.ToolDescription(Index: integer): string;
-begin
-  Result:=fExtToolList[Index].Title;
-  if Result='' then
-    Result:=ExtractFilename(fExtToolList[Index].Filename);
-  //DebugLn(['TExternalToolDialog.ToolDescription Index=',Index,' Result=',Result,' Cmd="',fExtToolList[Index].Filename,' ',fExtToolList[Index].CmdLineParams,'"']);
-end;
-
 procedure TExternalToolDialog.Load;
 var
   i: integer;
@@ -182,7 +173,7 @@ begin
   lvTools.Items.BeginUpdate;
   lvTools.Items.Clear;
   for i:=0 to fExtToolList.Count-1 do 
-    lvTools.Items.Add.Caption:=ToolDescription(i);
+    lvTools.Items.Add.Caption:=fExtToolList[i].Title;
   lvTools.Items.EndUpdate;
   EnableButtons;
 end;
@@ -204,7 +195,7 @@ begin
   if MsgResult=mrOk then
   begin
     fExtToolList.Add(NewTool);
-    lvTools.Items.Add.Caption:=ToolDescription(fExtToolList.Count-1);
+    lvTools.Items.Add.Caption:=NewTool.Title;
   end else begin
     NewTool.Free;
   end;
@@ -274,7 +265,7 @@ begin
       NewTool:=TExternalUserTool.Create(nil);
       NewTool.Assign(OldTool);
       fExtToolList.Add(NewTool);
-      lvTools.Items.Add.Caption:=ToolDescription(fExtToolList.Count-1);
+      lvTools.Items.Add.Caption:=NewTool.Title;
     end;
   end;
 end;
@@ -333,7 +324,7 @@ begin
   if i<0 then exit;
   if ShowExtToolOptionDlg(fExtToolList[i])=mrOk
   then begin
-    lvTools.Items[i].Caption:=ToolDescription(i);
+    lvTools.Items[i].Caption:=fExtToolList[i].Title;
     EnableButtons;
   end;
 end;
