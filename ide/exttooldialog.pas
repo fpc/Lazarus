@@ -86,6 +86,7 @@ type
     procedure MoveUpButtonClick(Sender: TObject);
     procedure MoveDownButtonClick(Sender: TObject);
     procedure lvToolsSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
+    procedure lvToolsDblClick(Sender: TObject);
   private
     fExtToolList: TExternalUserTools;
     procedure Load;
@@ -371,6 +372,11 @@ end;
 procedure TExternalToolDialog.lvToolsSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
 begin
   EnableButtons;
+end;
+
+procedure TExternalToolDialog.lvToolsDblClick(Sender: TObject);
+begin
+  EditButtonClick(Sender);
 end;
 
 end.

@@ -92,6 +92,7 @@ object ExternalToolDialog: TExternalToolDialog
     BorderSpacing.Bottom = 6
     Columns = <>
     ReadOnly = True
+    OnDblClick = lvToolsDblClick
     OnSelectItem = lvToolsSelectItem
     TabOrder = 1
   end
