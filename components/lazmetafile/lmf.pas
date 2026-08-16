@@ -429,9 +429,9 @@ var
   item:TlmfGraph;
 begin
   //RequiredState([csFontValid,csBrushValid]);
-  item:=TlmfGraph.Create(nil);
+  item := TlmfGraph.Create(nil);
   fImage.fList.InsertComponent(item);
-  item.Graph.Assign(SrcGraphic);
+  item.Picture.Assign(SrcGraphic);
   item.Clip := DestRect;
 end;
 

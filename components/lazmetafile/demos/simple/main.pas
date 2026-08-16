@@ -39,6 +39,7 @@ var
   ts: TTextStyle;
   penPattern: TPenPattern = nil;
   bmp: TCustomBitmap;
+  ico: TIcon;
 begin
   Width := 610;
   Height := 410;
@@ -104,16 +105,33 @@ begin
     LmfCanvas.Pen.Width := 3;
     LmfCanvas.RoundRect(260, 40, 340, 80, 40, 40);
     LmfCanvas.RoundRect(Rect(270, 50, 350, 90), 40, 40);
-               (*
-    // Draw an alpha-transparent bitmap
+
+    // Draw an alpha-transparent bitmap --> no transparency yet...
     bmp := TPortableNetworkGraphic.Create;
     try
       bmp.LoadFromFile('../../../../images/general_purpose/Bag_01_48.png');
-      LmfCanvas.Draw(200, 0, bmp);
+      LmfCanvas.Draw(200, 5, bmp);
     finally
       bmp.Free;
     end;
-    *)
+
+    bmp := TBitmap.Create;
+    try
+      bmp.LoadFromFile('../../../../images/LazarusForm.bmp');
+      bmp.Transparent := true;
+      LmfCanvas.Draw(300, 5, bmp);
+    finally
+      bmp.Free;
+    end;
+
+    ico := TIcon.Create;
+    try
+      ico.LoadFromFile('../../../../images/includefile.ico');
+      ico.Transparent := true;
+      LmfCanvas.Draw(500, 150, ico);
+    finally
+      ico.Free;
+    end;
 
     // Ellipse
     LmfCanvas.Brush.Style := bsHorizontal;

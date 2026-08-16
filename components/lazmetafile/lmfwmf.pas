@@ -290,6 +290,19 @@ type
   end;
   PWMFStretchDIBRecord = ^TWMFStretchDIBRecord;
 
+  TWMFDIBStretchBltRecord = packed record
+    RasterOperation: DWord;
+    SrcHeight: SmallInt;
+    SrcWidth: SmallInt;
+    SrcY: SmallInt;
+    SrcX: SmallInt;
+    DestHeight: SmallInt;
+    DestWidth: SmallInt;
+    DestY: SmallInt;
+    DestX: SmallInt;
+    // Following: BitmapInfoHeader plus pixel data.
+  end;
+
   TWMFBitmapCoreHeader = packed record
     HeaderSize: DWord;
     Width: Word;

@@ -33,6 +33,7 @@ type
     procedure WriteEllipse(AStream: TStream; AItem: TlmfEllipse);
     procedure WriteEOF(AStream: TStream);
     procedure WriteFont(AStream: TStream; AItem: TlmfFont);
+    procedure WriteGraph(AStream: TStream; AItem: TlmfGraph);
     procedure WriteLineTo(AStream: TStream; AItem: TlmfLineTo);
     procedure WriteLine(AStream: TStream; AItem: TlmfLine);
     procedure WriteMapMode(AStream: TStream; AMode: Word);
@@ -77,6 +78,9 @@ function WMF_GetRecordTypeName(ARecordType: Word): String;
 
 
 implementation
+
+uses
+  bmpcomn;
 
 const
   ONE_INCH = 25.4;     // 1 inch = 25.4 mm
@@ -806,6 +810,41 @@ begin
   FCurrFont := AItem.Font;
 end;
 
+procedure TWMFWriter.WriteGraph(AStream: TStream; AItem: TlmfGraph);
+var
+  rec: TWMFDIBStretchBltRecord;
+  ms: TMemoryStream;
+  dibImgSize: Int64;
+  bmpFileHdr: TBitmapFileHeader;
+begin
+  ms := TMemoryStream.Create;
+  try
+    AItem.Picture.Bitmap.SaveToStream(ms);      // Convert image to TBitmap and save to stream
+    dibImgSize := ms.Size - SizeOf(bmpFileHdr); // = bmp info header + pixel data
+    ms.Position := 0;                           // Rewind stream
+    ms.Read(bmpFileHdr, SizeOf(bmpFileHdr));    // Jump over bmp file header
+    // The memory stream now is at begin of BitmapInfoHeader + PixelData
+
+    rec.RasterOperation := SRCCOPY;  // -- generalization should be possible using CopyMode
+    rec.SrcHeight := AItem.Picture.Height;
+    rec.SrcWidth := AItem.Picture.Width;
+    rec.SrcX := 0;
+    rec.SrcY := 0;
+    rec.DestHeight := ScaleY(AItem.Bottom) - ScaleY(AItem.Top);
+    rec.DestWidth := ScaleX(AItem.Right) - ScaleX(AItem.Left);
+    rec.DestY := ScaleY(AItem.Top);
+    rec.DestX := ScaleX(AItem.Left);
+
+    WriteWMFRecord(AStream, META_DIBSTRETCHBLT, SizeOf(TWMFDIBStretchBltRecord) + dibImgSize);
+    AStream.Write(rec, SizeOf(TWMFDIBStretchBltRecord));
+    AStream.CopyFrom(ms, dibImgSize);
+
+  finally
+    ms.Free;
+  end;
+end;
+
+
 procedure TWMFWriter.WriteLineTo(AStream: TStream; AItem: TlmfLineTo);
 var
   rec: TWMFPointRecord;
@@ -968,6 +1007,9 @@ begin
   begin
     item := TlmfObject(FImage.List.Components[i]);
     // most specialized objects at top, least specialized objects at bottom!
+    if item is TlmfGraph then
+      WriteGraph(AStream, TlmfGraph(item))
+    else
     if item is TlmfPolygon then
       WritePolygon(AStream, TlmfPolygon(item))
     else

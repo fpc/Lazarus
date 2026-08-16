@@ -245,13 +245,13 @@ type
 
   TlmfGraph=class(TlmfClip)
   private
-    fGraph:TPicture;
+    fPicture: TPicture;
   public
     constructor Create(AnOwner:TComponent);override;
     destructor Destroy;override;
-    procedure Action(fImage:TlmfImage;ACanvas:TCanvas);override;
+    procedure Action(fImage: TlmfImage; ACanvas: TCanvas);override;
   published
-    property Graph:TPicture read fGraph write fGraph;
+    property Picture:TPicture read fPicture write fPicture;
   end;
 
   TlmfPolyline=class(TlmfRect)
@@ -795,12 +795,12 @@ end;
 constructor TlmfGraph.Create(AnOwner:TComponent);
 begin
   inherited Create(AnOwner);
-  fGraph := TPicture.Create;
+  fPicture := TPicture.Create;
 end;
 
 destructor TlmfGraph.Destroy;
 begin
-  fGraph.Free;
+  fPicture.Free;
   inherited Destroy;
 end;
 
@@ -813,7 +813,7 @@ begin
       fImage.ScaleX(fClip.Right),
       fImage.ScaleY(fClip.Bottom)
     ),
-    fGraph.Graphic
+    fPicture.Graphic
   );
 end;
 
