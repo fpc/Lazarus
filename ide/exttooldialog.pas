@@ -89,6 +89,7 @@ type
     procedure lvToolsDblClick(Sender: TObject);
   private
     fExtToolList: TExternalUserTools;
+    procedure AddTool(aTool: TExternalUserTool);
     procedure Load;
     procedure SetExtToolList(NewExtToolList: TExternalUserTools);
     procedure EnableButtons;
@@ -178,6 +179,18 @@ begin
   EnableButtons;
 end;
 
+procedure TExternalToolDialog.AddTool(aTool: TExternalUserTool);
+var
+  lItem: TListItem;
+begin
+  fExtToolList.Add(aTool);
+  lItem:=lvTools.Items.Add;
+  lItem.Caption:=aTool.Title;
+  lvTools.ItemIndex:=lItem.Index;
+  lvTools.ItemFocused:=lvTools.Selected;
+  lvTools.Selected.MakeVisible(false);
+end;
+
 procedure TExternalToolDialog.AddButtonClick(Sender: TObject);
 var
   MsgResult: TModalResult;
@@ -193,12 +206,9 @@ begin
   NewTool.HasParser[SubToolDefault]:=True;
   MsgResult:=ShowExtToolOptionDlg(NewTool);
   if MsgResult=mrOk then
-  begin
-    fExtToolList.Add(NewTool);
-    lvTools.Items.Add.Caption:=NewTool.Title;
-  end else begin
+    AddTool(NewTool)
+  else
     NewTool.Free;
-  end;
   EnableButtons;
 end;
 
@@ -264,10 +274,10 @@ begin
     If Assigned(OldTool) Then Begin
       NewTool:=TExternalUserTool.Create(nil);
       NewTool.Assign(OldTool);
-      fExtToolList.Add(NewTool);
-      lvTools.Items.Add.Caption:=NewTool.Title;
+      AddTool(NewTool);
     end;
   end;
+  EnableButtons;
 end;
 
 procedure TExternalToolDialog.MenuItemExportClick(Sender: TObject);
