@@ -368,10 +368,12 @@ var
 begin
   i:=lvTools.ItemIndex;
   AddButton.Enabled:=fExtToolList.Count<MaxExtTools;
+  MenuItemClone.Enabled:=(i>=0) and (fExtToolList.Count<MaxExtTools);
   RemoveButton.Enabled:=(i>=0);
   EditButton.Enabled:=(i>=0);
   MoveUpButton.Enabled:=(i>0);
   MoveDownButton.Enabled:=(i>=0) and (i<fExtToolList.Count-1);
+  MenuItemExport.Enabled:=(fExtToolList.Count>0);
 end;
 
 procedure TExternalToolDialog.lvToolsSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
