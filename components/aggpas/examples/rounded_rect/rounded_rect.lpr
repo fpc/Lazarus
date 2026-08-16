@@ -264,15 +264,15 @@ begin
   message_(
    'Yet another example dedicated to Gamma Correction. If you have a CRT monitor: '#13 +
    'The rectangle looks bad - the rounded corners are thicker than its side lines. '#13 +
-   'First try to drag the "subpixel offset" control — it simply adds some fractional '#13 +
+   'First try to drag the "subpixel offset" control, it simply adds some fractional '#13 +
    'value to the coordinates. When dragging you will see that the rectangle is'#13 +
    '"blinking". Then increase "Gamma" to about 1.5. The result will look almost '#13 +
-   'perfect — the visual thickness of the rectangle remains the same. That''s good, '#13 +
-   'but turn the checkbox "White on black" on — what do we see ? Our rounded '#13 +
-   'rectangle looks terrible. Drag the "subpixel offset" slider — it''s blinking as hell. '#13 +
+   'perfect, the visual thickness of the rectangle remains the same. That''s good, '#13 +
+   'but turn the checkbox "White on black" on, what do we see ? Our rounded '#13 +
+   'rectangle looks terrible. Drag the "subpixel offset" slider, it''s blinking as hell. '#13 +
    'Now decrease "Gamma" to about 0.6. What do we see now ? Perfect result ! '#13 +
    'If you use an LCD monitor, the good value of gamma will be closer to 1.0 in both '#13 +
-   'cases — black on white or white on black. There''s no perfection in this world, but '#13 +
+   'cases, black on white or white on black. There''s no perfection in this world, but '#13 +
    'at least you can control Gamma in Anti-Grain Geometry :-)' +
    #13#13'Note: F2 key saves current "screenshot" file in this demo''s directory.  ' );
 

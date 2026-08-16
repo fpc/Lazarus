@@ -389,7 +389,7 @@ begin
    'possible to write a special version of the rasterizer that will work faster, but '#13 +
    'won''t calculate the pixel coverage values. But on the other hand, the existing '#13 +
    'version of the rasterizer_scanline_aa allows you to change gamma, and to "dilate" '#13 +
-   'or "shrink" the polygons in range of ± 1 pixel.'#13#13 +
+   'or "shrink" the polygons in range of +/- 1 pixel.'#13#13 +
    'How to play with:'#13#13 +
    'As usual, you can drag the triangles as well as the vertices of them. '#13 +
    'Compare the performance with different shapes and opacity.' +
