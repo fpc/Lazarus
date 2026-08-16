@@ -953,6 +953,7 @@ function dbgs(aType: TUnitCompDependencyType): string; overload;
 function dbgs(Types: TUnitCompDependencyTypes): string; overload;
 function dbgs(Flag: TUnitInfoFlag): string; overload;
 function dbgs(Flags: TUnitInfoFlags): string; overload;
+function LazGetProjectCompatibleMode: Boolean;
 
 
 implementation
@@ -1011,6 +1012,11 @@ begin
       Result:=Result+dbgs(f);
     end;
   Result:='['+Result+']';
+end;
+
+function LazGetProjectCompatibleMode: Boolean;
+begin
+  Result := (LazProject1 <> nil) and (pfCompatibilityMode in LazProject1.Flags);
 end;
 
 {------------------------------------------------------------------------------

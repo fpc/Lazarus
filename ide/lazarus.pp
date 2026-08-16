@@ -59,8 +59,8 @@ uses
   SysUtils,
   Interfaces,
   IDEInstances,//keep IDEInstances up so that it will be initialized soon
-  Forms, LazUtilities, LazLoggerBase, ColorTTY,
-  IDEOptionsIntf,
+  Forms, LCLClasses, LazUtilities, LazLoggerBase, ColorTTY,
+  IDEOptionsIntf, Project,
   LazConf, IDEGuiCmdLine,
   Splash,
   Main,
@@ -110,6 +110,7 @@ begin
   LazarusRevisionStr:=RevisionStr;
   LazarusBuildDateStr:={$I %date%};
   LazarusBuildTimeStr:={$I %time%};
+  GetProjectCompatibleMode:=@LazGetProjectCompatibleMode;
   {$IFDEF EnableWriteLazRev}
   writeln('[20180608074905] lazarus.pp ide/revision.inc: ',LazarusRevisionStr);
   {$ENDIF}

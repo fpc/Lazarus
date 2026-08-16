@@ -97,8 +97,13 @@ type
     procedure BeginUpdate; override;
   end;
 
+// Determine if current project should be saved in compatible mode (available only in design-time)
+//   - use in LFM saving to fallback to compatible LFM with legacy Lazarus versions
+function ProjectCompatibleMode: Boolean;
+
 var
   OnDecLCLRefcountToZero: TNotifyEvent;
+  GetProjectCompatibleMode: function: Boolean;
 
 implementation
 
@@ -109,6 +114,14 @@ function WSRegisterLCLComponent: boolean;
 begin
   RegisterWSComponent(TLCLComponent, TWSLCLComponent);
   Result := True;
+end;
+
+function ProjectCompatibleMode: Boolean;
+begin
+  if Assigned(GetProjectCompatibleMode) then
+    Result := GetProjectCompatibleMode()
+  else
+    Result := False;
 end;
 
 class procedure TLCLComponent.WSRegisterClass;
