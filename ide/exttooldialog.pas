@@ -90,7 +90,7 @@ type
     procedure lvToolsDblClick(Sender: TObject);
   private
     fExtToolList: TExternalUserTools;
-    procedure AddTool(aTool: TExternalUserTool);
+    procedure AddTool(aTool: TExternalUserTool; aIndex: integer = -1);
     procedure Load;
     procedure SetExtToolList(NewExtToolList: TExternalUserTools);
     procedure EnableButtons;
@@ -180,13 +180,19 @@ begin
   EnableButtons;
 end;
 
-procedure TExternalToolDialog.AddTool(aTool: TExternalUserTool);
+procedure TExternalToolDialog.AddTool(aTool: TExternalUserTool; aIndex: integer = -1);
 var
   lItem: TListItem;
 begin
+  // add
   fExtToolList.Add(aTool);
   lItem:=lvTools.Items.Add;
+  // caption
   lItem.Caption:=aTool.Title;
+  // move next to original
+  if aIndex>=0 then
+    Move(lvTools.Items.Count-1,aIndex);
+  // select
   lvTools.ItemIndex:=lItem.Index;
   lvTools.ItemFocused:=lvTools.Selected;
   lvTools.Selected.MakeVisible(false);
@@ -275,7 +281,7 @@ begin
     If Assigned(OldTool) Then Begin
       NewTool:=TExternalUserTool.Create(nil);
       NewTool.Assign(OldTool);
-      AddTool(NewTool);
+      AddTool(NewTool,lvTools.ItemIndex+1); // paste next to original
     end;
   end;
   EnableButtons;
