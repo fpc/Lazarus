@@ -264,6 +264,11 @@ var
   NewTool, OldTool: TExternalUserTool;
 begin
   If lvTools.ItemIndex <> -1 Then Begin
+    if fExtToolList.Count>=MaxExtTools then begin
+      IDEMessageDialog(lisExtToolMaximumToolsReached,Format(lisExtToolThereIsAMaximumOfTools,
+        [IntToStr(MaxExtTools)]),mtInformation,[mbCancel]);
+      exit;
+    end;
     OldTool := fExtToolList.Items[lvTools.ItemIndex];
     If Assigned(OldTool) Then Begin
       NewTool:=TExternalUserTool.Create(nil);
