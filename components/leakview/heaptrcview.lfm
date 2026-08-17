@@ -117,8 +117,9 @@ object HeapTrcViewForm: THeapTrcViewForm
       BorderSpacing.Top = 6
       HideSelection = False
       ReadOnly = True
+      RowSelect = True
       TabOrder = 0
-      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
       OnDblClick = trvTraceInfoDblClick
       OnKeyDown = trvTraceInfoKeyDown
     end
