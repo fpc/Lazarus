@@ -478,7 +478,7 @@ resourcestring
   lisKMConfigureCustomComponents = 'Configure Custom Components';
   lisMenuConfigCustomComps = 'Configure Custom Components ...';
 
-  lisMenuConfigExternalTools = 'Configure External Tools ...';
+  lisMenuConfigExternalTools = 'Configure &External Tools ...';
   lisMenuQuickSyntaxCheck = 'Quick Syntax Check';
   lisMenuQuickSyntaxCheckOk = 'Quick syntax check OK';
   lisMenuGuessUnclosedBlock = 'Guess Unclosed Block';
