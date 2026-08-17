@@ -12,6 +12,8 @@ uses
   FileUtil, LazFileUtils,
   // IDEIntf
   LazIDEIntf, MenuIntf, ToolBarIntf, IDECommands,
+  // BuildIntf
+  ProjectIntf,
   // LeakView
   LeakInfo;
 
@@ -399,6 +401,11 @@ end;
 
 procedure THeapTrcViewForm.DoUpdateLeaksFromFile(aFileName: string);
 begin
+  // resolve paths relative to executable file location
+  // TODO: maybe take into account the work dir from the "Menu > Run > Run Parameters" dialog
+  if (aFileName <> '') and not FilenameIsAbsolute(aFileName) then
+    aFileName := CreateAbsolutePath(aFileName, ExtractFileDir(LazProject1.LazCompilerOptions.CreateTargetFilename));
+
   if FileExistsUTF8(aFileName) then
     DoUpdateLeaks(AllocHeapTraceInfoFromFile(aFileName))
   else
