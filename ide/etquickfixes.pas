@@ -62,7 +62,7 @@ uses
   CodeToolManager, CodeCache, CodeTree, CodeAtom, BasicCodeTools, KeywordFuncLists,
   // IdeIntf
   IDEExternToolIntf, IDEMsgIntf, LazIDEIntf, IDEDialogs, MenuIntf,
-  ProjectIntf, PackageIntf, CompOptsIntf,
+  ProjectIntf, PackageIntf, CompOptsIntf, MacroIntf,
   // IDE
   LazarusIDEStrConsts, etFPCMsgParser, AbstractsMethodsDlg, QFInitLocalVarDlg;
 
@@ -146,7 +146,7 @@ type
     function IsApplicable(Msg: TMessageLine; out ToolData: TIDEExternalToolData;
       out IDETool: TObject): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
-    procedure QuickFix({%H-}Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
 
   { TQuickFix_HideWithCompilerDirective - hide with compiler directive $warn <id> off }
@@ -850,6 +850,34 @@ end;
 
 { TQuickFix_HideWithCompilerOption }
 
+function GetFPCFullVersionNumber: integer;
+// e.g. 30301 for FPC 3.3.1, 0 if unknown
+var
+  s: String;
+begin
+  Result:=0;
+  if IDEMacros=nil then exit;
+  s:='$(FPC_FULLVERSION)';
+  if not IDEMacros.SubstituteMacros(s) then exit;
+  Result:=StrToIntDef(s,0);
+end;
+
+function CreateHideMsgConditional(FPCFullVersion, MsgID: integer;
+  const aComment: string): string;
+// conditionals script statement to hide a message for new FPC versions
+begin
+  Result:=Format('if GetProjValue(''FPC_FULLVERSION'')>=%d then'+LineEnding
+                +'  CustomOptions+='' -vm%d'';',[FPCFullVersion,MsgID]);
+  if aComment<>'' then
+    Result:=Result+' // '+SpecialCharsToSpaces(aComment,true);
+end;
+
+function ConditionalsHideMsg(const Conditionals: string; MsgID: integer): boolean;
+// check if the conditionals script already adds -vm<MsgID>
+begin
+  Result:=Pos(Format('-vm%d''',[MsgID]),Conditionals)>0;
+end;
+
 function TQuickFix_HideWithCompilerOption.IsApplicable(Msg: TMessageLine; out
   ToolData: TIDEExternalToolData; out IDETool: TObject): boolean;
 begin
@@ -874,21 +902,32 @@ var
   s: String;
   ToolData: TIDEExternalToolData;
   CompOpts: TLazCompilerOptions;
+  FPCFullVersion: Integer;
 begin
   for i:=0 to Fixes.LineCount-1 do begin
     Msg:=Fixes.Lines[i];
     if not IsApplicable(Msg,ToolData,IDETool) then continue;
     if IDETool is TLazProject then begin
       CompOpts:=TLazProject(IDETool).LazCompilerOptions;
-      if CompOpts.MessageFlags[Msg.MsgID]=cfvHide then exit;
-      s:=Format(lisHideWithProjectOptionVm, [IntToStr(Msg.MsgID)])
+      if CompOpts.MessageFlags[Msg.MsgID]=cfvHide then continue;
+      s:=Format(lisHideWithProjectOptionVm, [IntToStr(Msg.MsgID)]);
+      Fixes.AddMenuItem(Self,Msg,s);
     end else if IDETool is TIDEPackage then begin
       CompOpts:=TIDEPackage(IDETool).LazCompilerOptions;
-      if CompOpts.MessageFlags[Msg.MsgID]=cfvHide then exit;
+      if CompOpts.MessageFlags[Msg.MsgID]=cfvHide then continue;
       s:=Format(lisHideWithPackageOptionVm, [IntToStr(Msg.MsgID)]);
+      Fixes.AddMenuItem(Self,Msg,s);
+      // hide it only for the current and newer FPC versions
+      // Note: only packages can use GetProjValue in their conditionals
+      FPCFullVersion:=GetFPCFullVersionNumber;
+      if (FPCFullVersion>0)
+      and not ConditionalsHideMsg(CompOpts.Conditionals,Msg.MsgID) then begin
+        s:=Format(lisHideWithPackageOptionIfFPCFullVersion,
+                  [IntToStr(FPCFullVersion),IntToStr(Msg.MsgID)]);
+        Fixes.AddMenuItem(Self,Msg,s,1);
+      end;
     end else
       continue;
-    Fixes.AddMenuItem(Self,Msg,s);
   end;
   inherited CreateMenuItems(Fixes);
 end;
@@ -900,8 +939,9 @@ var
   CompOpts: TLazCompilerOptions;
   Pkg: TIDEPackage;
   ToolData: TIDEExternalToolData;
-  i: Integer;
+  i, FPCFullVersion: Integer;
   CurMsg: TMessageLine;
+  s, Comment: String;
 begin
   if not IsApplicable(Msg,ToolData,IDETool) then exit;
   if IDETool is TLazProject then begin
@@ -913,7 +953,24 @@ begin
     Pkg:=PackageEditingInterface.FindPackageWithName(ToolData.ModuleName);
     if Pkg=nil then exit;
     CompOpts:=Pkg.LazCompilerOptions;
-    CompOpts.MessageFlags[Msg.MsgID]:=cfvHide;
+    if (Fixes.CurrentCommand<>nil) and (Fixes.CurrentCommand.Tag=1) then begin
+      // add to the conditionals script: hide it for the current and newer FPC
+      FPCFullVersion:=GetFPCFullVersionNumber;
+      if FPCFullVersion<=0 then begin
+        DebugLn(['TQuickFix_HideWithCompilerOption unknown FPC_FULLVERSION']);
+        exit;
+      end;
+      if ConditionalsHideMsg(CompOpts.Conditionals,Msg.MsgID) then exit;
+      Comment:=TIDEFPCParser.GetFPCMsgPattern(Msg);
+      if Comment='' then
+        Comment:=Msg.Msg;
+      s:=TrimRight(CompOpts.Conditionals);
+      if s<>'' then
+        s:=s+LineEnding;
+      CompOpts.Conditionals:=s
+        +CreateHideMsgConditional(FPCFullVersion,Msg.MsgID,Comment);
+    end else
+      CompOpts.MessageFlags[Msg.MsgID]:=cfvHide;
   end else
     exit;
   Msg.MarkFixed;

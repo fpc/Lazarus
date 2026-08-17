@@ -5971,6 +5971,8 @@ resourcestring
   lisChangeMethodVisibilityTo = 'Change method visibility to "%s"';
   lisHideWithProjectOptionVm = 'Hide with project option (-vm%s)';
   lisHideWithPackageOptionVm = 'Hide with package option (-vm%s)';
+  lisHideWithPackageOptionIfFPCFullVersion = 'Hide with package option IF '
+    +'FPC_FULLVERSION>=%s THEN CustomOptions+='' -vm%s''';
   lisRemoveLocalVariable3 = 'Remove local variable "%s"';
   lisShowAbstractMethodsOf = 'Show abstract methods of "%s"';
   lisCopyMoveFileToDirectory = 'Copy/Move File to Directory';
