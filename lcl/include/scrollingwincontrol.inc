@@ -201,10 +201,16 @@ end;
 
 procedure TScrollingWinControl.ComputeScrollbars;
   procedure UpdateBar(aBar: TControlScrollBar; aClientSize: integer);
+  var
+    NewPage, NewRange: Integer;
   begin
     // page (must be smaller than Range but at least 1)
-    aBar.FPage := Max(1,Min(Min(aBar.Range,aClientSize), High(HorzScrollbar.FPage)));
-    aBar.FAutoRange := Max(0, aBar.Range - aClientSize);
+    NewPage := Max(1,Min(Min(aBar.Range,aClientSize), High(HorzScrollbar.FPage)));
+    NewRange := Max(0, aBar.Range - aClientSize);
+    if (aBar.FPage <> NewPage) or (aBar.FAutoRange <> NewRange) then
+      Exclude(FWinControlFlags,wcfAdjustedLogicalClientRectValid);
+    aBar.FPage := NewPage;
+    aBar.FAutoRange := NewRange;
     {$IFDEF VerboseScrollingWinControl}
     debugln(['TScrollingWinControl.ComputeScrollbars ',DbgSName(Self),' ',dbgs(aBar.Kind),' Page=',aBar.Page,' Range=',aBar.Range,' ClientSize=',aClientSize]);
     {$ENDIF}
