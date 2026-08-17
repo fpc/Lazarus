@@ -627,6 +627,7 @@ type
     function GetUseManifest: boolean; virtual; abstract;
     procedure SetActiveBuildModeID(AValue: string); virtual; abstract;
     procedure SetExecutableType(const AValue: TProjectExecutableType); virtual;
+    procedure DoFlagsChanged; virtual;
     procedure SetFlags(const AValue: TProjectFlags); virtual;
     procedure SetMainFileID(const AValue: Integer); virtual; abstract;
     procedure SetModified(const AValue: boolean); virtual; abstract;
@@ -1572,6 +1573,7 @@ begin
   if FFlags=AValue then exit;
   FFlags:=AValue;
   Modified:=true;
+  DoFlagsChanged;
 end;
 
 procedure TLazProject.SetSessionStorage(const AValue: TProjectSessionStorage);
@@ -1648,6 +1650,11 @@ begin
   if FExecutableType=AValue then exit;
   FExecutableType:=AValue;
   // not saved to lpi, so do not set Modified
+end;
+
+procedure TLazProject.DoFlagsChanged;
+begin
+  //
 end;
 
 procedure TLazProject.SetTitle(const AValue: String);

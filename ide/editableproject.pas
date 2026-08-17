@@ -193,7 +193,7 @@ type
     procedure LoadDefaultSession; override;
     procedure SaveSessionInfo(const Path: string); override;
     procedure SaveToSession; override;
-    procedure SetFlags(const AValue: TProjectFlags); override;
+    procedure DoFlagsChanged; override;
   public
     constructor Create(ProjectDescription: TProjectDescriptor); override;
     destructor Destroy; override;
@@ -233,6 +233,22 @@ procedure SetEditableProject1(AProject: TEditableProject); inline;
 property EditableProject1: TEditableProject read GetEditableProject1 write SetEditableProject1;// the main project
 
 implementation
+
+type
+
+  { TProjectModifiedCallback }
+
+  TProjectModifiedCallback = class
+  public
+    procedure DoNewProject(ASender: TLazProject);
+  end;
+
+{ TProjectModifiedCallback }
+
+procedure TProjectModifiedCallback.DoNewProject(ASender: TLazProject);
+begin
+  LCL_SaveBackwardCompatibleLfm := (LazProject1 <> nil) and (pfCompatibilityMode in LazProject1.Flags);
+end;
 
 function GetEditableProject1: TEditableProject;
 begin
@@ -1035,10 +1051,10 @@ begin
     OnSaveProjectInfo(Self,FXMLConfig,FProjectWriteFlags+[pwfSkipProjectInfo]);
 end;
 
-procedure TEditableProject.SetFlags(const AValue: TProjectFlags);
+procedure TEditableProject.DoFlagsChanged;
 begin
-  inherited SetFlags(AValue);
-  LCL_SaveBackwardCompatibleLfm := pfCompatibilityMode in Flags;
+  inherited DoFlagsChanged;
+  TProjectModifiedCallback(nil).DoNewProject(nil);
 end;
 
 function TEditableProject.AllEditorsInfoCount: Integer;
@@ -1173,5 +1189,6 @@ initialization
   RegisterIDEOptionsGroup(GroupProject, TProjectIDEOptions);
   RegisterIDEOptionsGroup(GroupCompiler, TProjectCompilerOptions);
 
+  GlobalLazProjectHooks.RegisterNewProjectHandler(@TProjectModifiedCallback(nil).DoNewProject);
 end.
 
