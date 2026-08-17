@@ -7,7 +7,7 @@ interface
 uses
   SysUtils, Classes, Types,
   LCLType, LCLIntf,
-  FPCanvas, FPImage, GraphMath, GraphType, Graphics, syncobjs;
+  FPCanvas, FPImage, GraphMath, GraphType, IntfGraphics, Graphics, syncobjs;
 
 type
   TlmfList = class;
@@ -424,15 +424,66 @@ begin
   fImage.fList.InsertComponent(item);
 end;
 
+function UniqueColor(ABitmap: TCustomBitmap): TColor;
+var
+  img: TLazIntfImage;
+  x, y: Integer;
+  found: Boolean;
+  testColor: TFPColor;
+begin
+  found := false;
+  img := ABitmap.CreateIntfImage;
+  try
+    repeat
+      Result := RGBToColor(Random(255), Random(255), Random(255));;
+      testColor := TColorToFPColor(Result);
+      found := false;
+      for y := 0 to img.Height-1 do
+      begin
+        for x := 0 to img.Width-1 do
+          if img.Colors[x, y] = testColor then
+          begin
+            found := true;
+            break;
+          end;
+        if found then break;
+      end;
+    until not found;
+  finally
+    img.Free;
+  end;
+end;
+
 procedure TlmfCanvas.StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic);
 var
   item: TlmfPicture;
+  bmp: TBitmap = nil;
 begin
-  //RequiredState([csFontValid,csBrushValid]);
+  if (SrcGraphic = nil) or SrcGraphic.Empty then
+    exit;
+  if (SrcGraphic is TCustomBitmap) and (TCustomBitmap(SrcGraphic).PixelFormat = pf32bit) then
+  begin
+    // Convert to 24 bbpp bitmap and switch to mask-transparency because wmf
+    // does not support alpha channel.
+    bmp := TBitmap.Create;
+    bmp.PixelFormat := pf24bit;
+    bmp.Transparent := true;
+    bmp.TransparentColor := UniqueColor(TCustomBitmap(SrcGraphic));
+    bmp.SetSize(SrcGraphic.Width, SrcGraphic.Height);
+    bmp.Canvas.Brush.Color := bmp.TransparentColor;
+    bmp.Canvas.FillRect(0, 0, bmp.Width, bmp.Height);
+    bmp.Canvas.Draw(0, 0, SrcGraphic);
+  end;
+
   item := TlmfPicture.Create(nil);
   fImage.fList.InsertComponent(item);
-  item.Picture.Assign(SrcGraphic);
+  if Assigned(bmp) then
+    item.Picture.Assign(bmp)
+  else
+    item.Picture.Assign(SrcGraphic);
   item.Clip := DestRect;
+
+  bmp.Free;
 end;
 
 procedure TlmfCanvas.SetColor(x,y:integer; const Value:TFPColor);

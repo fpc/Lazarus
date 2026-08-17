@@ -106,25 +106,29 @@ begin
     LmfCanvas.RoundRect(260, 40, 340, 80, 40, 40);
     LmfCanvas.RoundRect(Rect(270, 50, 350, 90), 40, 40);
 
-    // Draw an alpha-transparent bitmap --> no transparency yet...
+    // Draw an alpha-transparent bitmap (32bpp) --> not supported, converted
+    // to mask transparency
     bmp := TPortableNetworkGraphic.Create;
     try
+      bmp.PixelFormat := pf32bit;
       bmp.LoadFromFile('../../../../images/general_purpose/Bag_01_48.png');
       LmfCanvas.Draw(200, 5, bmp);
     finally
       bmp.Free;
     end;
 
+    // Draw a 24-bpp mask-transparent image
     bmp := TBitmap.Create;
     try
-      bmp.LoadFromFile('../../../../images/LazarusForm.bmp');
-//      bmp.LoadFromFile('favorites_48.bmp');
+//      bmp.LoadFromFile('../../../../images/LazarusForm.bmp');
+      bmp.LoadFromFile('Help_02_48.bmp');
       bmp.Transparent := true;
       LmfCanvas.Draw(300, 5, bmp);
     finally
       bmp.Free;
     end;
 
+    // Draw an icon
     ico := TIcon.Create;
     try
       ico.LoadFromFile('../../../../images/includefile.ico');

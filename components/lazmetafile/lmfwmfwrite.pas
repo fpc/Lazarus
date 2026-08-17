@@ -770,7 +770,8 @@ begin
     fntName := UTF8ToISO_8859_1(AItem.Font.Name) + #0;
     if odd(Length(fntName)) then
       fntName := fntName + #0;
-    if Length(fntName) > 32 then begin
+    if Length(fntName) > 32 then
+    begin
       SetLength(fntName, 32);
       fntName[32] := #0;
     end;
@@ -801,21 +802,22 @@ begin
   WriteWMFRecord(AStream, META_SELECTOBJECT, idxObj, SizeOf(Word));
 
   // Write text color
-  colorRec.ColorRED := Red(AItem.Font.Color);
-  colorRec.ColorGREEN := Green(AItem.Font.Color);
-  colorRec.ColorBLUE := Blue(AItem.Font.Color);
-  colorRec.Reserved := 0;
-  WriteWMFRecord(AStream, META_SETTEXTCOLOR, colorRec, SizeOf(TWMFColorRecord));
+  colorRec := MakeWMFColorRecord(AItem.Font.Color);
+  WriteWMFRecord(AStream, META_SETTEXTCOLOR, colorRec, SizeOf(colorRec));
 
   // Store font for text layout for TlmfTextInRect records
   FCurrFont := AItem.Font;
 end;
 
-procedure ExtractMask(ABitmap: TBitmap; out AMaskedBitmap, AMaskOnly: TBitmap);
+{ Extracts the mask from the input bitmap (ABitmap) as AMaskOnly.
+  Applies the mask to itself and returns the result as AMaskedBitmap.
+  Return value is false, when the input bitmap is not masked. }
+function ExtractMask(ABitmap: TBitmap; out AMaskedBitmap, AMaskOnly: TBitmap): Boolean;
 var
   img, mask: TLazIntfImage;
   x, y: Integer;
 begin
+  Result := false;
   AMaskedBitmap := nil;
   AMaskOnly := nil;
 
@@ -840,6 +842,7 @@ begin
     AMaskOnly := TBitmap.Create;
     AMaskOnly.LoadFromIntfImage(mask);
 
+    Result := true;
   finally
     img.Free;
     mask.Free;
@@ -891,50 +894,17 @@ var
 begin
   if AItem.Picture.Bitmap.Masked then
   begin
-    ExtractMask(AItem.Picture.Bitmap, bmp, mask);
-    WriteBitmap(AStream, mask, AItem.Clip, SRCAND);
-    WriteBitmap(AStream, bmp, AItem.Clip, SRCPAINT);
-    mask.Free;
-    bmp.Free;
+    try
+      ExtractMask(AItem.Picture.Bitmap, bmp, mask);
+      WriteBitmap(AStream, mask, AItem.Clip, SRCAND);
+      WriteBitmap(AStream, bmp, AItem.Clip, SRCPAINT);
+    finally
+      mask.Free;
+      bmp.Free;
+    end;
   end else
     WriteBitmap(AStream, AItem.Picture.Bitmap, AItem.Clip, SRCCOPY);
 end;
-
-(*
-procedure TWMFWriter.WriteGraph(AStream: TStream; AItem: TlmfGraph);
-var
-  rec: TWMFDIBStretchBltRecord;
-  ms: TMemoryStream;
-  dibImgSize: Int64;
-  bmpFileHdr: TBitmapFileHeader;
-begin
-  ms := TMemoryStream.Create;
-  try
-    AItem.Picture.Bitmap.SaveToStream(ms);      // Convert image to TBitmap and save to stream
-    dibImgSize := ms.Size - SizeOf(bmpFileHdr); // = bmp info header + pixel data
-    ms.Position := 0;                           // Rewind stream
-    ms.Read(bmpFileHdr, SizeOf(bmpFileHdr));    // Jump over bmp file header
-    // The memory stream now is at begin of BitmapInfoHeader + PixelData
-
-    rec.RasterOperation := SRCCOPY;  // -- generalization should be possible using CopyMode
-    rec.SrcHeight := AItem.Picture.Height;
-    rec.SrcWidth := AItem.Picture.Width;
-    rec.SrcX := 0;
-    rec.SrcY := 0;
-    rec.DestHeight := ScaleY(AItem.Bottom) - ScaleY(AItem.Top);
-    rec.DestWidth := ScaleX(AItem.Right) - ScaleX(AItem.Left);
-    rec.DestY := ScaleY(AItem.Top);
-    rec.DestX := ScaleX(AItem.Left);
-
-    WriteWMFRecord(AStream, META_DIBSTRETCHBLT, SizeOf(TWMFDIBStretchBltRecord) + dibImgSize);
-    AStream.Write(rec, SizeOf(TWMFDIBStretchBltRecord));
-    AStream.CopyFrom(ms, dibImgSize);
-
-  finally
-    ms.Free;
-  end;
-end;
-  *)
 
 procedure TWMFWriter.WriteLineTo(AStream: TStream; AItem: TlmfLineTo);
 var
