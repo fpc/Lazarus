@@ -34,7 +34,7 @@ type
     procedure WriteEllipse(AStream: TStream; AItem: TlmfEllipse);
     procedure WriteEOF(AStream: TStream);
     procedure WriteFont(AStream: TStream; AItem: TlmfFont);
-    procedure WriteGraph(AStream: TStream; AItem: TlmfGraph);
+    procedure WritePicture(AStream: TStream; AItem: TlmfPicture);
     procedure WriteLineTo(AStream: TStream; AItem: TlmfLineTo);
     procedure WriteLine(AStream: TStream; AItem: TlmfLine);
     procedure WriteMapMode(AStream: TStream; AMode: Word);
@@ -859,11 +859,11 @@ begin
 
   ms := TMemoryStream.Create;
   try
-    ABitmap.SaveToStream(ms);      // Convert image to TBitmap and save to stream
+    ABitmap.SaveToStream(ms);                   // Save bitmap to stream
     dibImgSize := ms.Size - SizeOf(bmpFileHdr); // = bmp info header + pixel data
     ms.Position := 0;                           // Rewind stream
     ms.Read(bmpFileHdr, SizeOf(bmpFileHdr));    // Jump over bmp file header
-    // The memory stream now is at begin of BitmapInfoHeader + PixelData
+    // The memory stream now is at beginning of BitmapInfoHeader + PixelData
 
     rec.RasterOperation := AOperation;
     rec.SrcHeight := ABitmap.Height;
@@ -877,14 +877,14 @@ begin
 
     WriteWMFRecord(AStream, META_DIBSTRETCHBLT, SizeOf(TWMFDIBStretchBltRecord) + dibImgSize);
     AStream.Write(rec, SizeOf(TWMFDIBStretchBltRecord));
+    // Write DIB
     AStream.CopyFrom(ms, dibImgSize);
-
   finally
     ms.Free;
   end;
 end;
 
-procedure TWMFWriter.WriteGraph(AStream: TStream; AItem: TlmfGraph);
+procedure TWMFWriter.WritePicture(AStream: TStream; AItem: TlmfPicture);
 var
   bmp: TBitmap = nil;
   mask: TBitmap = nil;
@@ -1098,8 +1098,8 @@ begin
   begin
     item := TlmfObject(FImage.List.Components[i]);
     // most specialized objects at top, least specialized objects at bottom!
-    if item is TlmfGraph then
-      WriteGraph(AStream, TlmfGraph(item))
+    if item is TlmfPicture then
+      WritePicture(AStream, TlmfPicture(item))
     else
     if item is TlmfPolygon then
       WritePolygon(AStream, TlmfPolygon(item))

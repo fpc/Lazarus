@@ -243,11 +243,11 @@ type
     property Pen: TPen read fPen write fPen;
   end;
 
-  TlmfGraph=class(TlmfClip)
+  TlmfPicture = class(TlmfClip)
   private
     fPicture: TPicture;
   public
-    constructor Create(AnOwner:TComponent);override;
+    constructor Create(AnOwner: TComponent); override;
     destructor Destroy;override;
     procedure Action(fImage: TlmfImage; ACanvas: TCanvas);override;
   published
@@ -790,21 +790,21 @@ begin
 end;
 
 
-{ TlmfGraph }
+{ TlmfPicture }
 
-constructor TlmfGraph.Create(AnOwner:TComponent);
+constructor TlmfPicture.Create(AnOwner:TComponent);
 begin
   inherited Create(AnOwner);
   fPicture := TPicture.Create;
 end;
 
-destructor TlmfGraph.Destroy;
+destructor TlmfPicture.Destroy;
 begin
   fPicture.Free;
   inherited Destroy;
 end;
 
-procedure TlmfGraph.Action(fImage:TlmfImage;ACanvas:TCanvas);
+procedure TlmfPicture.Action(fImage: TlmfImage; ACanvas: TCanvas);
 begin
   ACanvas.StretchDraw(
     Rect(
@@ -905,7 +905,7 @@ initialization
   RegisterClasses([TlmfAnchor,
     TlmfMoveTo, TlmfLineTo, TlmfLine, TlmfText, TlmfTextInRect, TlmfColor,
     TlmfClip, TlmfRect, TlmfRoundRect, TlmfEllipse, TlmfArc, TlmfChord, TlmfPie,
-    TlmfGraph, TlmfPolyLine, TlmfPolygon,
+    TlmfPicture, TlmfPolyLine, TlmfPolygon,
     TlmfFont, TlmfBrush, TlmfPen
   ]);
 

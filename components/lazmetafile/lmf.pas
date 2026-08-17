@@ -426,10 +426,10 @@ end;
 
 procedure TlmfCanvas.StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic);
 var
-  item:TlmfGraph;
+  item: TlmfPicture;
 begin
   //RequiredState([csFontValid,csBrushValid]);
-  item := TlmfGraph.Create(nil);
+  item := TlmfPicture.Create(nil);
   fImage.fList.InsertComponent(item);
   item.Picture.Assign(SrcGraphic);
   item.Clip := DestRect;
