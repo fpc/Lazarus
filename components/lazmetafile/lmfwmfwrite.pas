@@ -5,8 +5,8 @@ unit lmfWMFWrite;
 interface
 
 uses
-  Classes, SysUtils, Math, Types,
-  GraphUtil, Graphics, LCLType, LConvEncoding,
+  Classes, SysUtils, Math, Types, FPImage,
+  GraphType, GraphUtil, Graphics, IntfGraphics, LCLType, LConvEncoding,
   lmf, lmfObj, lmfWMF;
 
 type
@@ -24,6 +24,7 @@ type
 
     // Specific WMF records
     procedure WriteArc(AStream: TStream; AItem: TlmfArc);
+    procedure WriteBitmap(AStream: TStream; ABitmap: TBitmap; ARect: TRect; AOperation: Integer);
     procedure WriteBkColor(AStream: TStream; AColor: TColor);
     procedure WriteBkColor(AStream: TStream; AItem: TlmfBkColor);
     procedure WriteBkMode(AStream: TStream; AMode: Word);
@@ -810,6 +811,96 @@ begin
   FCurrFont := AItem.Font;
 end;
 
+procedure ExtractMask(ABitmap: TBitmap; out AMaskedBitmap, AMaskOnly: TBitmap);
+var
+  img, mask: TLazIntfImage;
+  x, y: Integer;
+begin
+  AMaskedBitmap := nil;
+  AMaskOnly := nil;
+
+  if not ABitmap.RawImage.IsMasked(true) then
+    exit;
+
+  img := ABitmap.CreateIntfImage;
+  mask := ABitmap.CreateIntfImage;
+  try
+    for y := 0 to img.Height-1 do
+      for x := 0 to img.Width-1 do
+        if img.Masked[x, y] then
+        begin
+          mask.Colors[x, y] := colWhite;
+          img.Colors[x, y] := colBlack;
+        end else
+          mask.Colors[x, y] := colBlack;
+
+    AMaskedBitmap := TBitmap.Create;
+    AMaskedBitmap.LoadFromIntfImage(img);
+
+    AMaskOnly := TBitmap.Create;
+    AMaskOnly.LoadFromIntfImage(mask);
+
+  finally
+    img.Free;
+    mask.Free;
+  end;
+end;
+
+procedure TWMFWriter.WriteBitmap(AStream: TStream; ABitmap: TBitmap;
+  ARect: TRect; AOperation: Integer);
+var
+  rec: TWMFDIBStretchBltRecord;
+  ms: TMemoryStream;
+  dibImgSize: Int64;
+  bmpFileHdr: TBitmapFileHeader;
+begin
+  if ABitmap = nil then
+    exit;
+
+  ms := TMemoryStream.Create;
+  try
+    ABitmap.SaveToStream(ms);      // Convert image to TBitmap and save to stream
+    dibImgSize := ms.Size - SizeOf(bmpFileHdr); // = bmp info header + pixel data
+    ms.Position := 0;                           // Rewind stream
+    ms.Read(bmpFileHdr, SizeOf(bmpFileHdr));    // Jump over bmp file header
+    // The memory stream now is at begin of BitmapInfoHeader + PixelData
+
+    rec.RasterOperation := AOperation;
+    rec.SrcHeight := ABitmap.Height;
+    rec.SrcWidth := ABitmap.Width;
+    rec.SrcX := 0;
+    rec.SrcY := 0;
+    rec.DestHeight := ScaleY(ARect.Bottom) - ScaleY(ARect.Top);
+    rec.DestWidth := ScaleX(ARect.Right) - ScaleX(ARect.Left);
+    rec.DestY := ScaleY(ARect.Top);
+    rec.DestX := ScaleX(ARect.Left);
+
+    WriteWMFRecord(AStream, META_DIBSTRETCHBLT, SizeOf(TWMFDIBStretchBltRecord) + dibImgSize);
+    AStream.Write(rec, SizeOf(TWMFDIBStretchBltRecord));
+    AStream.CopyFrom(ms, dibImgSize);
+
+  finally
+    ms.Free;
+  end;
+end;
+
+procedure TWMFWriter.WriteGraph(AStream: TStream; AItem: TlmfGraph);
+var
+  bmp: TBitmap = nil;
+  mask: TBitmap = nil;
+begin
+  if AItem.Picture.Bitmap.Masked then
+  begin
+    ExtractMask(AItem.Picture.Bitmap, bmp, mask);
+    WriteBitmap(AStream, mask, AItem.Clip, SRCAND);
+    WriteBitmap(AStream, bmp, AItem.Clip, SRCPAINT);
+    mask.Free;
+    bmp.Free;
+  end else
+    WriteBitmap(AStream, AItem.Picture.Bitmap, AItem.Clip, SRCCOPY);
+end;
+
+(*
 procedure TWMFWriter.WriteGraph(AStream: TStream; AItem: TlmfGraph);
 var
   rec: TWMFDIBStretchBltRecord;
@@ -843,7 +934,7 @@ begin
     ms.Free;
   end;
 end;
-
+  *)
 
 procedure TWMFWriter.WriteLineTo(AStream: TStream; AItem: TlmfLineTo);
 var
