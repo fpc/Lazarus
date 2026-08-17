@@ -12026,7 +12026,9 @@ msgid "Configure Custom Components ..."
 msgstr "ກຳນົດຄ່າ ອົງປະກອບທີ່ກຳນົດເອງ..."
 
 #: lazarusidestrconsts.lismenuconfigexternaltools
-msgid "Configure External Tools ..."
+#, fuzzy
+#| msgid "Configure External Tools ..."
+msgid "Configure &External Tools ..."
 msgstr "ກຳນົດຄ່າ ເຄື່ອງມືພາຍນອກ..."
 
 #: lazarusidestrconsts.lismenuconfigurebuildlazarus

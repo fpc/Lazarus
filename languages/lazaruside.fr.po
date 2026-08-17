@@ -12100,7 +12100,9 @@ msgid "Configure Custom Components ..."
 msgstr "Configurer les composants personnalisés..."
 
 #: lazarusidestrconsts.lismenuconfigexternaltools
-msgid "Configure External Tools ..."
+#, fuzzy
+#| msgid "Configure External Tools ..."
+msgid "Configure &External Tools ..."
 msgstr "Configurer les outils externes..."
 
 #: lazarusidestrconsts.lismenuconfigurebuildlazarus

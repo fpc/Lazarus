@@ -11998,7 +11998,7 @@ msgid "Configure Custom Components ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuconfigexternaltools
-msgid "Configure External Tools ..."
+msgid "Configure &External Tools ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuconfigurebuildlazarus

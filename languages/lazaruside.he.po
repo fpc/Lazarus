@@ -12609,7 +12609,7 @@ msgstr "מגדיר רכיבים מותאמים אישית ..."
 #: lazarusidestrconsts.lismenuconfigexternaltools
 #, fuzzy
 #| msgid "Configure external tools ..."
-msgid "Configure External Tools ..."
+msgid "Configure &External Tools ..."
 msgstr "הגדר כלים חיצוניים"
 
 #: lazarusidestrconsts.lismenuconfigurebuildlazarus

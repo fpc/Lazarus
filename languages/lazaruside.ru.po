@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-08-16 22:51+0300\n"
+"PO-Revision-Date: 2026-08-17 23:20+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -12003,8 +12003,8 @@ msgid "Configure Custom Components ..."
 msgstr "Настройка пользовательских компонентов ..."
 
 #: lazarusidestrconsts.lismenuconfigexternaltools
-msgid "Configure External Tools ..."
-msgstr "Настроить внешние средства ..."
+msgid "Configure &External Tools ..."
+msgstr "Настроить вне&шние средства ..."
 
 #: lazarusidestrconsts.lismenuconfigurebuildlazarus
 msgid "Configure \"Build Lazarus\" ..."
