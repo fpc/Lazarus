@@ -942,8 +942,11 @@ const
   ProjectInfoFileVersion = 13;
   mbAbortRetryIgnore = [mbAbort, mbRetry, mbIgnore];  // Same as in LCL Dialogs.
 
+function GetProject1: TProject; inline;
+procedure SetProject1(AProject: TProject); inline;
+property Project1: TProject read GetProject1 write SetProject1;// the main project
+
 var
-  Project1: TProject absolute LazProject1;// the main project
   OnHasDesigner: THasDesignerEvent;
   UnitInfoClass: TUnitInfoClass;
 
@@ -960,6 +963,15 @@ implementation
 const
   ProjOptionsPath = 'ProjectOptions/';
 
+function GetProject1: TProject;
+begin
+  Result := TProject(LazProject1);
+end;
+
+procedure SetProject1(AProject: TProject);
+begin
+  LazProject1 := AProject;
+end;
 
 function AddCompileReasonsDiff(const PropertyName: string;
   const Old, New: TCompileReasons; Tool: TCompilerDiffTool): boolean;
@@ -2214,6 +2226,8 @@ end;
  ------------------------------------------------------------------------------}
 destructor TProject.Destroy;
 begin
+  if LazProject1 = Self then
+    LazProject1 := nil;
   FDestroying := True;
   FDefineTemplates.Active := False;
   ActiveBuildMode:=nil;

@@ -227,10 +227,22 @@ type
     property Units[Index: integer]: TEditableUnitInfo read GetUnits;
   end;
 
-var
-  EditableProject1: TEditableProject absolute LazProject1;// the main project
+
+function GetEditableProject1: TEditableProject; inline;
+procedure SetEditableProject1(AProject: TEditableProject); inline;
+property EditableProject1: TEditableProject read GetEditableProject1 write SetEditableProject1;// the main project
 
 implementation
+
+function GetEditableProject1: TEditableProject;
+begin
+  Result := TEditableProject(LazProject1);
+end;
+
+procedure SetEditableProject1(AProject: TEditableProject);
+begin
+  LazProject1 := AProject;
+end;
 
 { TUnitEditorInfo }
 
@@ -808,6 +820,8 @@ end;
 
 destructor TEditableProject.Destroy;
 begin
+  if LazProject1 = Self then
+    LazProject1 := nil;
   FreeAndNil(FAllEditorsInfoMap);
   inherited Destroy;
   FreeAndNil(FAllEditorsInfoList);

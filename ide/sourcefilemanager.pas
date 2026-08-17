@@ -4649,7 +4649,7 @@ begin
   // close Project
   if ProjInspector<>nil then
     ProjInspector.LazProject:=nil;
-  FreeThenNil(Project1);
+  Project1.Free;
   EnvironmentOptions.ClearSessionTrustedCompilers; // forget "Trust this time" choices
   EnvironmentOptions.ClearSessionTrustedCommands;
   if IDEMessagesWindow<>nil then IDEMessagesWindow.Clear;
