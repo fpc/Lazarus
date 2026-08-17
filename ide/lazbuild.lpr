@@ -147,7 +147,7 @@ type
     // projects
     function BuildProject(const AFilename: string): boolean;
     function LoadProject(const AFilename: string): TProject;
-    procedure CloseProject(var AProject: TProject);
+    procedure CloseProject(AProject: TProject);
 
     // with --mistrust: abort if compiler path or before/after command is not whitelisted
     procedure CheckMistrust(AProject: TProject; APackage: TLazPackage);
@@ -1150,10 +1150,10 @@ begin
   IncreaseCompilerParseStamp;
 end;
 
-procedure TLazBuildApplication.CloseProject(var AProject: TProject);
+procedure TLazBuildApplication.CloseProject(AProject: TProject);
 begin
   // free project, if it is still there
-  FreeThenNil(AProject);
+  AProject.Free;
 end;
 
 procedure TLazBuildApplication.CheckMistrust(AProject: TProject;
