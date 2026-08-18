@@ -283,7 +283,7 @@ type
     function GetUsesUnitName: string;
     function CreateUnitName: string;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-                                Merge, IsPartOfProjectDefValue: boolean;
+                                FromLPI, NewFile, IsPartOfProjectDefValue: boolean;
                                 FileVersion: integer); virtual;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                               SaveData, SaveSession, IsPartOfProjectDefValue: boolean;
@@ -705,7 +705,7 @@ type
     procedure SaveSessionInfo(const Path: string); virtual;
     procedure SaveOtherDefines(const Path: string);
     procedure SaveToSession; virtual;
-    procedure SaveUnits(const Path: string; SaveSession, IsPartOfProjectDefValue: boolean);
+    procedure SaveUnits(const Path: string; SaveData, SaveSession, IsPartOfProjectDefValue: boolean);
   public
     constructor Create(ProjectDescription: TProjectDescriptor); override;
     destructor Destroy; override;
@@ -1315,12 +1315,13 @@ end;
 {------------------------------------------------------------------------------
   TUnitInfo LoadFromXMLConfig
  ------------------------------------------------------------------------------}
-procedure TUnitInfo.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string; Merge, IsPartOfProjectDefValue: Boolean; FileVersion: integer);
+procedure TUnitInfo.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string; FromLPI, NewFile,
+  IsPartOfProjectDefValue: boolean; FileVersion: integer);
 var
   AFilename: string;
 begin
   // project data
-  if not Merge then begin
+  if NewFile then begin
   
     AFilename:=XMLConfig.GetValue(Path+'Filename/Value','');
     if Assigned(fOnLoadSaveFilename) then
@@ -1336,7 +1337,8 @@ begin
                          XMLConfig.GetValue(Path+'ResourceBaseClass/Value',''));
     FResourceBaseClassname:=XMLConfig.GetValue(Path+'ResourceBaseClassname/Value',
                           DefaultResourceBaseClassnames[FResourceBaseClass]);
-    IsPartOfProject:=XMLConfig.GetValue(Path+'IsPartOfProject/Value',IsPartOfProjectDefValue);
+    if FromLPI then
+      IsPartOfProject:=XMLConfig.GetValue(Path+'IsPartOfProject/Value',IsPartOfProjectDefValue);
     AFilename:=XMLConfig.GetValue(Path+'ResourceFilename/Value','');
     if (AFilename<>'') and Assigned(fOnLoadSaveFilename) then
       fOnLoadSaveFilename(AFilename,true);
@@ -1641,6 +1643,7 @@ procedure TUnitInfo.SetSourceText(const SourceText: string; Beautify: boolean);
 begin
   // Ignore Beautify here. Inherited class TEditableUnitInfo implements it.
   Source.Source:=SourceText;
+  if Beautify then ;
 end;
 
 function TUnitInfo.GetSourceText: string;
@@ -2334,13 +2337,12 @@ begin
 end;
 
 procedure TProject.LoadUnits(const Path: string; Merge: boolean);
-// Note: the session can be stored in the lpi as well
-// So this method is used for loading the lpi units as well
+// This method is used for loading the lpi and lps units, note that the session can be in the lpi
 var
   OldUnitInfo, NewUnitInfo: TUnitInfo;
   NewUnitCount, i: integer;
   SubPath, NewUnitFilename: String;
-  MergeUnitInfo, LegacyList, IsPartOfProjectDefValue: Boolean;
+  NewFile, LegacyList, IsPartOfProjectDefValue: Boolean;
 begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject D reading units');{$ENDIF}
   LegacyList:=(FFileVersion<=11) or FXMLConfig.IsLegacyList(Path+'Units/');
@@ -2356,7 +2358,7 @@ begin
       // unit already exists
       if Merge then begin
         NewUnitInfo:=OldUnitInfo;
-        MergeUnitInfo:=true;
+        NewFile:=false;
       end else begin
         // Doppelganger -> inconsistency found, ignore this file
         debugln('TProject.ReadProject file exists twice in lpi file: ignoring "'+NewUnitFilename+'"');
@@ -2365,10 +2367,10 @@ begin
     end else begin
       NewUnitInfo:=UnitInfoClass.Create(nil);
       AddFile(NewUnitInfo,false);
-      MergeUnitInfo:=false;
+      NewFile:=true;
     end;
 
-    NewUnitInfo.LoadFromXMLConfig(FXMLConfig,SubPath,MergeUnitInfo,IsPartOfProjectDefValue,FFileVersion);
+    NewUnitInfo.LoadFromXMLConfig(FXMLConfig,SubPath,not Merge,NewFile,IsPartOfProjectDefValue,FFileVersion);
     if i=FNewMainUnitID then begin
       MainUnitID:=IndexOf(NewUnitInfo);
       FNewMainUnitID:=-1;
@@ -2670,7 +2672,8 @@ begin
   end;
 end;
 
-procedure TProject.SaveUnits(const Path: string; SaveSession,IsPartOfProjectDefValue: boolean);
+procedure TProject.SaveUnits(const Path: string; SaveData, SaveSession,
+  IsPartOfProjectDefValue: boolean);
 var
   i, SaveUnitCount: integer;
 begin
@@ -2680,7 +2683,7 @@ begin
     if UnitMustBeSaved(Units[i],FProjectWriteFlags,SaveSession) then begin
       Units[i].SaveToXMLConfig(FXMLConfig,
         Path+'Units/'+FXMLConfig.GetListItemXPath('Unit',SaveUnitCount)+'/',
-                                                  True,SaveSession,IsPartOfProjectDefValue,FCurStorePathDelim);
+                                   SaveData,SaveSession,IsPartOfProjectDefValue,FCurStorePathDelim);
       inc(SaveUnitCount);
     end;
 end;
@@ -2718,6 +2721,7 @@ end;
 procedure TProject.SaveSessionInfo(const Path: string);
 begin
   ; // Do nothing
+  if Path='' then ;
 end;
 
 procedure TProject.SaveToLPI;
@@ -2777,7 +2781,7 @@ begin
   SavePkgDependencyList(FXMLConfig,Path+'RequiredPackages/',
     FFirstRequiredDependency,pddRequires,FCurStorePathDelim);
   // save units
-  SaveUnits(Path,FSaveSessionInLPI,not(pfCompatibilityMode in Flags));
+  SaveUnits(Path,True,FSaveSessionInLPI,not(pfCompatibilityMode in Flags));
 
   if Assigned(FDebuggerLink) then
     FDebuggerLink.SaveToLPI(FXMLConfig, Path);

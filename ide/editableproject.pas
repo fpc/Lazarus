@@ -153,7 +153,7 @@ type
     procedure DeleteBookmark(ID: integer);
     //
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-        Merge, IsPartOfProjectDefValue: boolean; FileVersion: integer); override;
+        FromLPI, NewFile, IsPartOfProjectDefValue: boolean; FileVersion: integer); override;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
         SaveData, SaveSession, IsPartOfProjectDefValue: boolean; UsePathDelim: TPathDelimSwitch); override;
     procedure SetSourceText(const SourceText: string; Beautify: boolean = false); override;
@@ -757,12 +757,12 @@ begin
   EditableProject1.DeleteBookmark(ID);
 end;
 
-procedure TEditableUnitInfo.LoadFromXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string; Merge, IsPartOfProjectDefValue: boolean; FileVersion: integer);
+procedure TEditableUnitInfo.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string; FromLPI,
+  NewFile, IsPartOfProjectDefValue: boolean; FileVersion: integer);
 var
   c, i: Integer;
 begin
-  inherited LoadFromXMLConfig(XMLConfig, Path, Merge, IsPartOfProjectDefValue, FileVersion);
+  inherited LoadFromXMLConfig(XMLConfig, Path, FromLPI, NewFile, IsPartOfProjectDefValue, FileVersion);
   FComponentState := TWindowState(XMLConfig.GetValue(Path+'ComponentState/Value',0));
   FEditorInfoList.Clear;
   FEditorInfoList.NewEditorInfo;
@@ -1032,7 +1032,7 @@ begin
   BuildModes.SaveSessionOptsToXMLConfig(FXMLConfig, Path, True);
   BuildModes.SaveSessionData(Path);
   // save all units
-  SaveUnits(Path,true,false);
+  SaveUnits(Path,false,true,false);
 
   if Assigned(FDebuggerLink) then
     FDebuggerLink.SaveToSession(FXMLConfig, Path);
