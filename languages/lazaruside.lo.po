@@ -10391,6 +10391,11 @@ msgctxt "lazarusidestrconsts.lishidewindow"
 msgid "Hide window"
 msgstr "ເຊື່ອງໜ້າຕ່າງ"
 
+#: lazarusidestrconsts.lishidewithpackageoptioniffpcfullversion
+#, object-pascal-format
+msgid "Hide with package option IF FPC_FULLVERSION>=%s THEN CustomOptions+=' -vm%s'"
+msgstr ""
+
 #: lazarusidestrconsts.lishidewithpackageoptionvm
 #, object-pascal-format
 msgid "Hide with package option (-vm%s)"

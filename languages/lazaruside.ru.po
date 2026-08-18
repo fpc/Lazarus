@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-08-17 23:20+0300\n"
+"PO-Revision-Date: 2026-08-18 22:50+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -10370,6 +10370,11 @@ msgstr "Скрыть средство поиска"
 msgctxt "lazarusidestrconsts.lishidewindow"
 msgid "Hide window"
 msgstr "Скрывать окно"
+
+#: lazarusidestrconsts.lishidewithpackageoptioniffpcfullversion
+#, object-pascal-format
+msgid "Hide with package option IF FPC_FULLVERSION>=%s THEN CustomOptions+=' -vm%s'"
+msgstr "Скрыть с помощью параметра пакета IF FPC_FULLVERSION>=%s THEN CustomOptions+=' -vm%s'"
 
 #: lazarusidestrconsts.lishidewithpackageoptionvm
 #, object-pascal-format

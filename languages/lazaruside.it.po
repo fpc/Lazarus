@@ -10666,6 +10666,11 @@ msgctxt "lazarusidestrconsts.lishidewindow"
 msgid "Hide window"
 msgstr "Nascondi la finestra"
 
+#: lazarusidestrconsts.lishidewithpackageoptioniffpcfullversion
+#, object-pascal-format
+msgid "Hide with package option IF FPC_FULLVERSION>=%s THEN CustomOptions+=' -vm%s'"
+msgstr ""
+
 #: lazarusidestrconsts.lishidewithpackageoptionvm
 #, object-pascal-format
 msgid "Hide with package option (-vm%s)"
