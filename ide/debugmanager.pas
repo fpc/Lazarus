@@ -165,6 +165,7 @@ type
        Created on demand from the registry; the built-in is the fallback, so
        this is never nil while there is any registered plug-in. *)
     function ConsolePlugIn: ILazDbgIdeConsoleWindowPlugIn;
+    procedure DoIDERestoreWindows(Sender: TObject);
     // ILazDbgIdeTargetIoHook -- what the plug-in is given to talk back with
     procedure SendInput(const AText: String);
     procedure NotifyDidAutoShow;
@@ -1120,6 +1121,23 @@ begin
     end;
   end;
   Result := FConsolePlugIn;
+end;
+
+(* Reconcile before the IDE restores its windows.
+
+   Resolving the selected plug-in here, rather than leaving it until the first
+   line of output, is what lets its window take part in the layout restore at
+   all: RestoreSimpleLayout asks the registered creator for the window, and a
+   plug-in that has not been told it is active has no business building one.
+   Wait for output and the restore has already been and gone, so the window
+   comes back at its default size in the middle of the screen.
+
+   This handler runs before Desktop.RestoreDesktop, from
+   TMainIDE.RestoreIDEWindows, and after all packages have registered -- so
+   there is no dependency on the order packages happen to load in. *)
+procedure TDebugManager.DoIDERestoreWindows(Sender: TObject);
+begin
+  ConsolePlugIn;
 end;
 
 procedure TDebugManager.SendInput(const AText: String);
@@ -2326,6 +2344,7 @@ begin
   FIsInitializingDebugger:= False;
 
   LazarusIDE.AddHandlerOnProjectClose(@DoProjectClose);
+  LazarusIDE.AddHandlerOnIDERestoreWindows(@DoIDERestoreWindows);
 
   FEventLogManager := TDebugEventLogManager.Create;
   FIdeExceptions.EventLogHandler := FEventLogManager;
@@ -2365,6 +2384,7 @@ begin
   end;
 
   LazarusIDE.RemoveHandlerOnProjectClose(@DoProjectClose);
+  LazarusIDE.RemoveHandlerOnIDERestoreWindows(@DoIDERestoreWindows);
   FreeAndNil(FAutoContinueTimer);
 
   (* Detached, not freed: the instance belongs to the options store, which
