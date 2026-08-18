@@ -1091,6 +1091,7 @@ end;
 function TDebugManager.ConsolePlugIn: ILazDbgIdeConsoleWindowPlugIn;
 var
   Entry: TLazDbgIdeConsoleWindowPlugInRegistryEntryClass;
+  Obj: ILazDbgIdePlugIn;
 begin
   if FConsolePlugIn = nil then begin
     (* The user's choice, then the built-in, then whatever is registered. The
@@ -1106,7 +1107,15 @@ begin
     if (Entry = nil) and (ConsoleWindowPlugIns.Count > 0) then
       Entry := ConsoleWindowPlugIns[0];
     if Entry <> nil then begin
-      FConsolePlugIn := Entry.CreateIdeConsoleWindowPlugIn;
+      (* The instance comes from the options store, which is what holds the
+         user's settings for it. Creating one here instead would give a plug-in
+         with default settings and no way to reach the configured ones. *)
+      Obj := DebuggerOptions.ConsoleWindowPlugIns.PlugInById(Entry.GetPlugInId);
+      if (Obj = nil) or
+         (not Obj.GetInterface(ILazDbgIdeConsoleWindowPlugIn, FConsolePlugIn))
+      then
+        exit(nil);
+      FConsolePlugIn.HandleUserSelectedAsActive;
       FConsolePlugIn.ProcessAddedToPlugInHook(Self);
     end;
   end;
@@ -2358,11 +2367,12 @@ begin
   LazarusIDE.RemoveHandlerOnProjectClose(@DoProjectClose);
   FreeAndNil(FAutoContinueTimer);
 
-  (* CORBA interfaces are not reference counted, so the plug-in is disposed of
-     here, before the windows it may be driving. *)
+  (* Detached, not freed: the instance belongs to the options store, which
+     outlives this manager and holds the user's settings for it. Detaching here
+     rather than at shutdown is what lets a plug-in take its window down while
+     the LCL is still in a fit state to do it. *)
   if FConsolePlugIn <> nil then begin
     FConsolePlugIn.ProcessRemovedFromPlugInHook;
-    FConsolePlugIn.Free;
     FConsolePlugIn := nil;
   end;
 

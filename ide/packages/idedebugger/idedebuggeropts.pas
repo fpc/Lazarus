@@ -11,6 +11,8 @@ uses
   Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
   // BuildIntf
   IDEOptionsIntf,
+  // IdeIntf
+  IdeDebuggerConsolePlugInIntf,
   // IdeConfig
   EnvironmentOpts,
   // DebuggerIntf
@@ -20,6 +22,39 @@ uses
   IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats, IdeDebuggerExcludedRoutines;
 
 type
+
+  (* TIdeDbgConsoleWindowPlugInList
+
+     One live plug-in instance per registered console window, holding that
+     plug-in's settings. The IDE owns them; the options dialog edits a copy and
+     assigns it back, which is what makes Cancel work.
+
+     Stored as numbered items with the id as a value, not as a path built from
+     the id. Ids are "package/class" and would otherwise become XmlConfig path
+     separators, turning one plug-in's settings into two levels of nesting. *)
+
+  TIdeDbgConsoleWindowPlugInList = class
+  private
+    FIds: TStringList;
+    FPlugIns: array of ILazDbgIdePlugIn;
+    FChanged: Boolean;
+    function GetPlugIn(AIndex: Integer): ILazDbgIdePlugIn;
+    function GetCount: Integer;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    procedure Assign(ASource: TIdeDbgConsoleWindowPlugInList);
+    (* The instance for AId, created from the registry on first ask. Nil if no
+       such plug-in is registered in this IDE. *)
+    function  PlugInById(const AId: String): ILazDbgIdePlugIn;
+    procedure LoadDataFromXMLConfig(const AConfig: TRttiXMLConfig; const APath: string);
+    procedure SaveDataToXMLConfig(const AConfig: TRttiXMLConfig; const APath: string);
+    property Count: Integer read GetCount;
+    property Ids: TStringList read FIds;
+    property PlugIns[AIndex: Integer]: ILazDbgIdePlugIn read GetPlugIn;
+    property Changed: Boolean read FChanged write FChanged;
+  end;
 
   { TDebuggerPropertiesConfig }
 
@@ -140,6 +175,7 @@ type
     FFileVersion: integer;
 
     FBackendConverterConfig: TIdeDbgValueConvertSelectorList;
+    FConsoleWindowPlugIns: TIdeDbgConsoleWindowPlugInList;
     FConsoleWindowPlugInId: String;
     FHasActiveDebuggerEntry: Boolean;
     FPrimaryConfigPath: String;
@@ -179,6 +215,7 @@ type
     property BackendConverterConfig: TIdeDbgValueConvertSelectorList read FBackendConverterConfig write FBackendConverterConfig;
     property ValueFormatterConfig: TIdeDbgValueFormatterSelectorList read FValueFormatterConfig write FValueFormatterConfig;
     property ExcludeRoutineEntryConfig: TIdeDebuggerExcludeRoutineConfList read FExcludeRoutineEntryConfig write FExcludeRoutineEntryConfig;
+    property ConsoleWindowPlugIns: TIdeDbgConsoleWindowPlugInList read FConsoleWindowPlugIns;
 
     function DebuggerFilename: string;
     function GetParsedDebuggerFilename(AProjectDbgFileName: String = ''): string;
@@ -227,6 +264,126 @@ const
   DebuggerOptsConfFileName = 'debuggeroptions.xml';
 var
   TheDebuggerOptions: TDebuggerOptions = nil;
+
+{ TIdeDbgConsoleWindowPlugInList }
+
+constructor TIdeDbgConsoleWindowPlugInList.Create;
+begin
+  inherited Create;
+  FIds := TStringList.Create;
+  FIds.CaseSensitive := False;
+end;
+
+destructor TIdeDbgConsoleWindowPlugInList.Destroy;
+begin
+  Clear;
+  FIds.Free;
+  inherited Destroy;
+end;
+
+procedure TIdeDbgConsoleWindowPlugInList.Clear;
+var
+  i: Integer;
+begin
+  for i := 0 to Length(FPlugIns) - 1 do
+    if FPlugIns[i] <> nil then
+      FPlugIns[i].Free;   // corba: not reference counted
+  SetLength(FPlugIns, 0);
+  FIds.Clear;
+end;
+
+function TIdeDbgConsoleWindowPlugInList.GetCount: Integer;
+begin
+  Result := FIds.Count;
+end;
+
+function TIdeDbgConsoleWindowPlugInList.GetPlugIn(AIndex: Integer): ILazDbgIdePlugIn;
+begin
+  Result := FPlugIns[AIndex];
+end;
+
+function TIdeDbgConsoleWindowPlugInList.PlugInById(const AId: String): ILazDbgIdePlugIn;
+var
+  Entry: TLazDbgIdeConsoleWindowPlugInRegistryEntryClass;
+  i: Integer;
+begin
+  i := FIds.IndexOf(AId);
+  if i >= 0 then
+    exit(FPlugIns[i]);
+
+  Entry := ConsoleWindowPlugIns.FindByPlugInId(AId);
+  if Entry = nil then
+    exit(nil);
+
+  Result := Entry.CreateIdeConsoleWindowPlugIn;
+  i := FIds.Add(Entry.GetPlugInId);   // the registry's spelling, not the caller's
+  SetLength(FPlugIns, FIds.Count);
+  FPlugIns[i] := Result;
+end;
+
+procedure TIdeDbgConsoleWindowPlugInList.Assign(ASource: TIdeDbgConsoleWindowPlugInList);
+var
+  i: Integer;
+  Src, Dst: TObject;
+begin
+  for i := 0 to ASource.Count - 1 do begin
+    Dst := nil;
+    Src := ASource.PlugIns[i].GetConfigObject;
+    if Src is TPersistent then
+      Dst := PlugInById(ASource.Ids[i]).GetConfigObject;
+    if (Dst is TPersistent) and (Src is TPersistent) then
+      TPersistent(Dst).Assign(TPersistent(Src));
+  end;
+end;
+
+procedure TIdeDbgConsoleWindowPlugInList.LoadDataFromXMLConfig(
+  const AConfig: TRttiXMLConfig; const APath: string);
+var
+  i, c: Integer;
+  Id, p: String;
+  Obj: TObject;
+  P2: ILazDbgIdePlugIn;
+begin
+  Clear;
+  c := AConfig.GetValue(APath + 'Count', 0);
+  for i := 0 to c - 1 do begin
+    p := APath + 'Item' + IntToStr(i + 1) + '/';
+    Id := AConfig.GetValue(p + 'Id', '');
+    if Id = '' then
+      Continue;
+    (* A plug-in whose package is not installed here simply has no instance to
+       read into. Its stored settings stay in the file untouched, so moving a
+       config between installations does not quietly empty it. *)
+    P2 := PlugInById(Id);
+    if P2 = nil then
+      Continue;
+    Obj := P2.GetConfigObject;
+    if Obj <> nil then
+      AConfig.ReadObject(p + 'Config/', Obj);
+  end;
+  FChanged := False;
+end;
+
+procedure TIdeDbgConsoleWindowPlugInList.SaveDataToXMLConfig(
+  const AConfig: TRttiXMLConfig; const APath: string);
+var
+  i, n: Integer;
+  p: String;
+  Obj: TObject;
+begin
+  AConfig.DeletePath(APath);
+  n := 0;
+  for i := 0 to Count - 1 do begin
+    Obj := FPlugIns[i].GetConfigObject;
+    if Obj = nil then
+      Continue;   // a plug-in with no settings writes no entry at all
+    inc(n);
+    p := APath + 'Item' + IntToStr(n) + '/';
+    AConfig.SetValue(p + 'Id', FIds[i]);
+    AConfig.WriteObject(p + 'Config/', Obj);
+  end;
+  AConfig.SetDeleteValue(APath + 'Count', n, 0);
+end;
 
 function CheckCurrentDebuggerSetup: TCurrentDebuggerSetupResult;
 var
@@ -852,6 +1009,7 @@ begin
   BackendConverterConfig := TIdeDbgValueConvertSelectorList.Create;
   FValueFormatterConfig := TIdeDbgValueFormatterSelectorList.Create;
   FExcludeRoutineEntryConfig := TIdeDebuggerExcludeRoutineConfList.Create;
+  FConsoleWindowPlugIns := TIdeDbgConsoleWindowPlugInList.Create;
   Init;
 end;
 
@@ -868,6 +1026,7 @@ begin
   FDisplayFormatConfigs.Free;
   FValueFormatterConfig.Free;
   FExcludeRoutineEntryConfig.Free;
+  FConsoleWindowPlugIns.Free;
   FDebuggerConfigList.Free;
 
   FXMLCfg.Free;
@@ -899,6 +1058,7 @@ begin
   FBackendConverterConfig.LoadDataFromXMLConfig(FXMLCfg, Path + 'FpDebug/ValueConvert/');
   FValueFormatterConfig.LoadDataFromXMLConfig(FXMLCfg, Path + 'FpDebug/ValueFormatter/');
   FExcludeRoutineEntryConfig.LoadDataFromXMLConfig(FXMLCfg, Path + 'FpDebug/ExcludeRoutineEntries/');
+  FConsoleWindowPlugIns.LoadDataFromXMLConfig(FXMLCfg, Path + 'ConsoleWindowPlugIns/');
 end;
 
 procedure TDebuggerOptions.Save;
@@ -924,6 +1084,10 @@ begin
 
 // TODO: changed since loaded?
   FExcludeRoutineEntryConfig.SaveDataToXMLConfig(FXMLCfg, Path + 'FpDebug/ExcludeRoutineEntries/');
+
+  if FConsoleWindowPlugIns.Changed then
+    FConsoleWindowPlugIns.SaveDataToXMLConfig(FXMLCfg, Path + 'ConsoleWindowPlugIns/');
+  FConsoleWindowPlugIns.Changed := False;
 
   SaveDebuggerPropertiesList;
 

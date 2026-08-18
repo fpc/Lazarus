@@ -14,7 +14,7 @@ unit IdeDebugger_ConsoleWindow_Options;
 interface
 
 uses
-  SysUtils, Forms, Controls, StdCtrls,
+  SysUtils, Forms, Controls, StdCtrls, ExtCtrls,
   // IdeIntf
   IDEOptEditorIntf, IDEOptionsIntf, IdeDebuggerConsolePlugInIntf,
   // IdeDebugger
@@ -28,11 +28,19 @@ type
     cbPlugIn: TComboBox;
     lblDescription: TLabel;
     lblPlugIn: TLabel;
+    pnlSettings: TPanel;
+    pnlTop: TPanel;
     procedure cbPlugInChange(Sender: TObject);
   private
+    FPlugIns: TIdeDbgConsoleWindowPlugInList;   // the working copy
+    FFrame: TFrame;
+    FFramePlugIn: ILazDbgIdePlugIn;
     procedure UpdateDescription;
     function  SelectedPlugInId: String;
+    procedure ShowSettingsFrame;
+    procedure SaveSettingsFrame;
   public
+    destructor Destroy; override;
     function GetTitle: String; override;
     procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings({%H-}AOptions: TAbstractIDEOptions); override;
@@ -46,6 +54,11 @@ implementation
 
 {$R *.lfm}
 
+type
+  { The LCL has no TFrameClass; GetSettingsFrameClass returns a plain TClass so
+    that the interface unit needs no LCL dependency. }
+  TSettingsFrameClass = class of TFrame;
+
 procedure Register;
 begin
   RegisterIDEOptionsEditor(GroupDebugger, TIdeDbgConsoleWindowOptionsFrame,
@@ -54,9 +67,63 @@ end;
 
 { TIdeDbgConsoleWindowOptionsFrame }
 
+destructor TIdeDbgConsoleWindowOptionsFrame.Destroy;
+begin
+  inherited Destroy;
+  FPlugIns.Free;
+end;
+
 function TIdeDbgConsoleWindowOptionsFrame.GetTitle: String;
 begin
   Result := dlgDebugConsoleWindowOptions;
+end;
+
+(* Build the selected plug-in's own settings frame, if it has one. The frame
+   class comes from the plug-in's package and is rendered here without this
+   page knowing anything about what it contains. *)
+procedure TIdeDbgConsoleWindowOptionsFrame.ShowSettingsFrame;
+var
+  Entry: TLazDbgIdeConsoleWindowPlugInRegistryEntryClass;
+  FrameClass: TClass;
+  Intf: ILazDbgIdePlugInSettingsFrameIntf;
+  Id: String;
+begin
+  SaveSettingsFrame;
+  FreeAndNil(FFrame);
+  FFramePlugIn := nil;
+
+  Id := SelectedPlugInId;
+  if Id = '' then
+    exit;
+  Entry := ConsoleWindowPlugIns.FindByPlugInId(Id);
+  if Entry = nil then
+    exit;
+  FrameClass := Entry.GetSettingsFrameClass;
+  if (FrameClass = nil) or (not FrameClass.InheritsFrom(TFrame)) then
+    exit;
+
+  FFramePlugIn := FPlugIns.PlugInById(Id);
+  if FFramePlugIn = nil then
+    exit;
+
+  (* Into its own panel, not straight onto this frame: alClient on the page
+     itself covers the chooser rather than sitting under it. *)
+  FFrame := TSettingsFrameClass(FrameClass).Create(Self);
+  FFrame.Parent := pnlSettings;
+  FFrame.Align := alClient;
+  if FFrame.GetInterface(ILazDbgIdePlugInSettingsFrameIntf, Intf) then
+    Intf.ReadFrom(FFramePlugIn);
+end;
+
+procedure TIdeDbgConsoleWindowOptionsFrame.SaveSettingsFrame;
+var
+  Intf: ILazDbgIdePlugInSettingsFrameIntf;
+begin
+  if (FFrame = nil) or (FFramePlugIn = nil) then
+    exit;
+  if FFrame.GetInterface(ILazDbgIdePlugInSettingsFrameIntf, Intf) then
+    if Intf.WriteTo(FFramePlugIn) then
+      FPlugIns.Changed := True;
 end;
 
 procedure TIdeDbgConsoleWindowOptionsFrame.Setup(
@@ -88,7 +155,16 @@ begin
        config between installations does not silently discard it. *)
     i := 0;
   cbPlugIn.ItemIndex := i;
+
+  (* Edit a copy. Cancel then costs nothing, which is the whole reason the
+     plug-in interface carries CreateCopy. *)
+  if FPlugIns = nil then
+    FPlugIns := TIdeDbgConsoleWindowPlugInList.Create;
+  FPlugIns.Assign(DebuggerOptions.ConsoleWindowPlugIns);
+  FPlugIns.Changed := False;
+
   UpdateDescription;
+  ShowSettingsFrame;
 end;
 
 procedure TIdeDbgConsoleWindowOptionsFrame.WriteSettings(
@@ -96,9 +172,14 @@ procedure TIdeDbgConsoleWindowOptionsFrame.WriteSettings(
 var
   s: String;
 begin
+  SaveSettingsFrame;
   s := SelectedPlugInId;
   if s <> '' then
     DebuggerOptions.ConsoleWindowPlugInId := s;
+  if FPlugIns.Changed then begin
+    DebuggerOptions.ConsoleWindowPlugIns.Assign(FPlugIns);
+    DebuggerOptions.ConsoleWindowPlugIns.Changed := True;
+  end;
 end;
 
 function TIdeDbgConsoleWindowOptionsFrame.SelectedPlugInId: String;
@@ -122,6 +203,7 @@ end;
 procedure TIdeDbgConsoleWindowOptionsFrame.cbPlugInChange(Sender: TObject);
 begin
   UpdateDescription;
+  ShowSettingsFrame;
 end;
 
 class function TIdeDbgConsoleWindowOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
