@@ -2022,10 +2022,13 @@ begin
   if FSymbol = nil then begin
     // FSymbol has no refcount of tis own.
     FSymbol := GetOrigProcSymbol;
-    if (FSymbol <> nil) and (FSymbol is TFpSymbolDwarfDataProc) then begin
-      FSymbol := TFpSymbolDwarfDataProc(FSymbol).ResolveInternalFinallySymbol(FThread.Process);
-      if FSymbol = nil then
-        FSymbol := FOrigProcSymbol;
+    if (FSymbol <> nil) then begin
+      if (FSymbol is TFpSymbolDwarfDataProc) then begin
+        FSymbol := TFpSymbolDwarfDataProc(FSymbol).ResolveInternalFinallySymbol(FThread.Process);
+        if FSymbol = nil then
+          FSymbol := FOrigProcSymbol;
+      end;
+      FOrigProcSymbol.AddReference; // we lost our reference to FSymbol.FOrigSymbol // or we have 2 refs to the same sym now
     end;
   end;
   result := FSymbol;
@@ -2137,7 +2140,7 @@ end;
 destructor TDbgCallstackEntry.Destroy;
 begin
   FreeAndNil(FRegisterValueList);
-  FSymbol := nil;
+  ReleaseRefAndNil(FSymbol);
   ReleaseRefAndNil(FOrigProcSymbol);
   FContext.ReleaseReference;
   inherited Destroy;
