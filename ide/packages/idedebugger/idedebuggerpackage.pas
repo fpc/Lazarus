@@ -8,7 +8,8 @@ unit idedebuggerpackage;
 interface
 
 uses
-  IdeDebuggerBase, Debugger, ProcessDebugger, ProcessList, DebuggerTreeView, IdeDebuggerUtils, 
+  IdeDebuggerBase, IdeDebuggerBuiltInConsolePlugIn, Debugger, ProcessDebugger, 
+  ProcessList, DebuggerTreeView, IdeDebuggerUtils, 
   IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter, IdeDebuggerWatchResUtils, 
   ArrayNavigationFrame, IdeDebuggerStringConstants, IdeDebuggerBackendValueConv, 
   IdeDbgValueConverterSettingsFrame, IdeDebugger_ValConv_Options, IdeDebuggerOpts, 

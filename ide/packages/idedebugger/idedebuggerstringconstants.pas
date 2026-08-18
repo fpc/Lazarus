@@ -379,6 +379,9 @@ resourcestring
   lisDisAssGotoAddressHint = 'Goto Address';
   lisDisAssGotoAddrEditTextHint = '($address)';
 
+  // Debug console window plug-ins
+  lisDebugConsoleBuiltInName = 'IDE Debug Console';
+
   // Feedback
   lisDebuggerFeedbackInformation = 'Debugger Information';
   lisDebuggerFeedbackWarning = 'Debugger Warning';

@@ -28,6 +28,10 @@
         <UnitName Value="IdeDebuggerBase"/>
       </Item>
       <Item>
+        <Filename Value="idedebuggerbuiltinconsoleplugin.pas"/>
+        <UnitName Value="IdeDebuggerBuiltInConsolePlugIn"/>
+      </Item>
+      <Item>
         <Filename Value="idedebuggerpackage.pas"/>
         <Type Value="Main Unit"/>
         <UnitName Value="idedebuggerpackage"/>

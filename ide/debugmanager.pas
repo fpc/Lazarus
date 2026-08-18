@@ -53,7 +53,7 @@ uses
   ProjectIntf, CompOptsIntf,
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf, IdeIntfStrConsts, IDEDialogs,
-  ToolBarIntf, IdeDebuggerWatchValueIntf,
+  ToolBarIntf, IdeDebuggerWatchValueIntf, IdeDebuggerConsolePlugInIntf,
   {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
   IdeDebuggerValueFormatterIntf,
   {$ENDIF}
@@ -72,6 +72,7 @@ uses
   RegistersDlg, AssemblerDlg, DebugOutputForm, ExceptionDlg, InspectDlg,
   PseudoTerminalDlg, FeedbackDlg, ThreadDlg, HistoryDlg, ProcessDebugger,
   IdeDebuggerBase, IdeDebuggerOpts, EnvDebuggerOptions,
+  IdeDebuggerBuiltInConsolePlugIn,
   IdeDebuggerBackendValueConv, Debugger, BaseDebugManager,
   IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats,
   // IdeConfig
@@ -116,7 +117,7 @@ type
 
   { TDebugManager }
 
-  TDebugManager = class(TBaseDebugManager)
+  TDebugManager = class(TBaseDebugManager, ILazDbgIdeTargetIoHook)
     procedure DebuggerIdle(Sender: TObject);
     function DoProjectClose(Sender: TObject; AProject: TLazProject): TModalResult;
     procedure DoProjectModified(Sender: TObject);
@@ -159,12 +160,21 @@ type
 
     // Dialog events
     procedure DebugDialogDestroy(Sender: TObject);
+
+    (* The console window the debuggee's captured output currently goes to.
+       Created on demand from the registry; the built-in is the fallback, so
+       this is never nil while there is any registered plug-in. *)
+    function ConsolePlugIn: ILazDbgIdeConsoleWindowPlugIn;
+    // ILazDbgIdeTargetIoHook -- what the plug-in is given to talk back with
+    procedure SendInput(const AText: String);
+    procedure NotifyDidAutoShow;
   private
     FDebugger: TDebuggerIntf;
     FIdeExceptions: TIdeExceptions;
     FEventLogManager: TDebugEventLogManager;
     FUnitInfoProvider: TDebuggerUnitInfoProvider;
     FDialogs: array[TDebugDialogType] of TDebuggerDlg;
+    FConsolePlugIn: ILazDbgIdeConsoleWindowPlugIn;
     FDidShowConsoleForSession: Boolean;
     FInStateChange: Boolean;
     FPrevShownWindow: HWND;
@@ -270,6 +280,9 @@ type
     function DoStopProject: TModalResult; override;
     procedure DoToggleCallStack; override;
     procedure DoSendConsoleInput(AText: String); override;
+    procedure ConsoleWindowShow(ABringToFront: Boolean); override;
+    procedure ConsoleWindowAddOutput(const AText: String); override;
+    procedure ConsoleWindowClear; override;
     function ConsoleIsCaptured(AConsoleMode: TRunParamsConsoleMode): Boolean; override;
     procedure ProcessCommand(Command: word; var Handled: boolean); override;
 
@@ -1075,25 +1088,77 @@ begin
   end;
 end;
 
+function TDebugManager.ConsolePlugIn: ILazDbgIdeConsoleWindowPlugIn;
+var
+  Entry: TLazDbgIdeConsoleWindowPlugInRegistryEntryClass;
+begin
+  if FConsolePlugIn = nil then begin
+    (* No user selection exists yet -- that arrives with the options page. The
+       built-in is looked up by id rather than assumed to be first in the list,
+       because registration order is not ours to depend on. *)
+    Entry := ConsoleWindowPlugIns.FindByPlugInId(BuiltInConsolePlugInId);
+    if (Entry = nil) and (ConsoleWindowPlugIns.Count > 0) then
+      Entry := ConsoleWindowPlugIns[0];
+    if Entry <> nil then begin
+      FConsolePlugIn := Entry.CreateIdeConsoleWindowPlugIn;
+      FConsolePlugIn.ProcessAddedToPlugInHook(Self);
+    end;
+  end;
+  Result := FConsolePlugIn;
+end;
+
+procedure TDebugManager.SendInput(const AText: String);
+begin
+  DoSendConsoleInput(AText);
+end;
+
+procedure TDebugManager.NotifyDidAutoShow;
+begin
+  (* The plug-in showed itself. The IDE keeps the "already shown this session"
+     flag rather than asking per chunk of output: a debuggee can produce a very
+     great deal of it, and nothing on that path should cost a call. *)
+  FDidShowConsoleForSession := True;
+end;
+
+procedure TDebugManager.ConsoleWindowShow(ABringToFront: Boolean);
+begin
+  ViewDebugDialog(ddtPseudoTerminal, ABringToFront, True);
+end;
+
+procedure TDebugManager.ConsoleWindowAddOutput(const AText: String);
+begin
+  if FDialogs[ddtPseudoTerminal] = nil then
+    ViewDebugDialog(ddtPseudoTerminal, False, False);
+  TPseudoConsoleDlg(FDialogs[ddtPseudoTerminal]).AddOutput(AText);
+end;
+
+procedure TDebugManager.ConsoleWindowClear;
+begin
+  if FDialogs[ddtPseudoTerminal] <> nil then
+    TPseudoConsoleDlg(FDialogs[ddtPseudoTerminal]).Clear;
+end;
+
 procedure TDebugManager.DebuggerConsoleOutput(Sender: TObject;
   const AText: String);
 var
   f: Boolean;
+  P: ILazDbgIdeConsoleWindowPlugIn;
 begin
   if (not HasConsoleSupport) or (AText = '') then exit;
+  P := ConsolePlugIn;
+  if P = nil then exit;
 
   f := FDidShowConsoleForSession;
   FDidShowConsoleForSession := True;
 
   case EnvironmentDebugOpts.AutoOpenConsoleWin of
-    ocOnceOnOutput:   if not f then ViewDebugDialog(ddtPseudoTerminal, False, True);
-    ocAlwaysOnOutput:               ViewDebugDialog(ddtPseudoTerminal, False, True);
+    ocOnceOnOutput:   if not f then P.BringToFront;
+    ocAlwaysOnOutput:               P.BringToFront;
   end;
 
-  if FDialogs[ddtPseudoTerminal] = nil then
-    ViewDebugDialog(ddtPseudoTerminal, False, False);
-
-  TPseudoConsoleDlg(FDialogs[ddtPseudoTerminal]).AddOutput(AText);
+  (* dtcUnknown until a backend reports which stream this came from. Capture is
+     poStderrToOutPut today, so the two arrive merged and in write order. *)
+  P.AddOutput(dtcUnknown, AText);
 end;
 
 function TDebugManager.DebuggerFeedback(Sender: TObject; const AText, AInfo: String;
@@ -1670,8 +1735,11 @@ begin
     end;
     dsInit: begin
       Exceptions.ResetHitCounts;
-      if FDialogs[ddtPseudoTerminal] <> nil then
-        TPseudoConsoleDlg(FDialogs[ddtPseudoTerminal]).Clear;
+      (* Only clear a console that already exists. Asking the registry here
+         would construct the plug-in -- and with it, for some plug-ins, a
+         window -- for a session that may never produce any output. *)
+      if FConsolePlugIn <> nil then
+        FConsolePlugIn.Clear;
     end;
   end;
 end;
@@ -2283,6 +2351,14 @@ begin
 
   LazarusIDE.RemoveHandlerOnProjectClose(@DoProjectClose);
   FreeAndNil(FAutoContinueTimer);
+
+  (* CORBA interfaces are not reference counted, so the plug-in is disposed of
+     here, before the windows it may be driving. *)
+  if FConsolePlugIn <> nil then begin
+    FConsolePlugIn.ProcessRemovedFromPlugInHook;
+    FConsolePlugIn.Free;
+    FConsolePlugIn := nil;
+  end;
 
   for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do
     DestroyDebugDialog(DialogType);
