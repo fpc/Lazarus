@@ -1,0 +1,98 @@
+object MainForm: TMainForm
+  Left = 302
+  Height = 449
+  Top = 124
+  Width = 612
+  Caption = 'WMF File Reader'
+  ClientHeight = 449
+  ClientWidth = 612
+  LCLVersion = '4.99.0.0'
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  object PaintBox: TPaintBox
+    Left = 0
+    Height = 408
+    Top = 41
+    Width = 612
+    Align = alClient
+    OnPaint = PaintBoxPaint
+  end
+  object FileSelectorPanel: TPanel
+    Left = 8
+    Height = 25
+    Top = 8
+    Width = 596
+    Align = alTop
+    AutoSize = True
+    BorderSpacing.Around = 8
+    BevelOuter = bvNone
+    ClientHeight = 25
+    ClientWidth = 596
+    TabOrder = 0
+    object lblFileName: TLabel
+      AnchorSideLeft.Control = FileSelectorPanel
+      AnchorSideTop.Control = FileSelectorPanel
+      AnchorSideTop.Side = asrCenter
+      Left = 0
+      Height = 15
+      Top = 5
+      Width = 21
+      Caption = 'File:'
+    end
+    object cmbFileName: TComboBox
+      AnchorSideLeft.Control = lblFileName
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = FileSelectorPanel
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = sbBrowse
+      Left = 33
+      Height = 21
+      Top = 2
+      Width = 490
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 12
+      BorderSpacing.Right = 2
+      ItemHeight = 15
+      Style = csOwnerDrawEditableFixed
+      TabOrder = 0
+      TextHint = 'Enter file name or select from list'
+      OnDrawItem = cmbFileNameDrawItem
+      OnSelect = cmbFileNameSelect
+    end
+    object sbBrowse: TSpeedButton
+      AnchorSideTop.Control = FileSelectorPanel
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = sbOpenFile
+      Left = 525
+      Height = 22
+      Hint = 'Browse'
+      Top = 1
+      Width = 23
+      Anchors = [akTop, akRight]
+      Caption = '...'
+      OnClick = sbBrowseClick
+    end
+    object sbOpenFile: TSpeedButton
+      AnchorSideTop.Control = FileSelectorPanel
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = FileSelectorPanel
+      AnchorSideRight.Side = asrBottom
+      Left = 548
+      Height = 25
+      Top = 0
+      Width = 48
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      Caption = 'Open...'
+      OnClick = sbOpenFileClick
+    end
+  end
+  object OpenDialog: TOpenDialog
+    DefaultExt = '.wmf'
+    Filter = 'Windows metafiles (*.wmf)|*.wmf|All files (*.*)|*.*'
+    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
+    Left = 328
+    Top = 58
+  end
+end

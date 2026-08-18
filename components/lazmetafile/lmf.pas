@@ -10,8 +10,20 @@ uses
   FPCanvas, FPImage, GraphMath, GraphType, IntfGraphics, Graphics, syncobjs;
 
 type
-  TlmfList = class;
+  // Exception types
+  ElmfImage = class(Exception);
+  ElmfReader = class(ElmfImage);
+  ElmfWriter = class(ElmfImage);
+
+  // forward declarations
   TlmfImage = class;
+  TlmfList = class;
+
+  // abstract reader/writer classes
+  TlmfReader = class
+  public
+    procedure ReadFromStream(AStream: TStream; AImage: TlmfImage); virtual; abstract;
+  end;
 
   TlmfWriter = class
   public
@@ -39,9 +51,9 @@ type
     procedure SetTransparent(Value: Boolean); override;
       //procedure Erase;override;
   public
-    constructor Create;override;
-    destructor Destroy;override;
-    procedure Clear;override;
+    constructor Create; override;
+    destructor Destroy; override;
+    procedure Clear; override;
     procedure Draw(ACanvas: TCanvas; const Rect: TRect); override;
 
     function ScaleSizeX(ax: Integer): Integer;
@@ -52,6 +64,8 @@ type
     procedure SaveToLMFFile(AFileName: String);
     procedure SaveToLMFStream(Stream: TStream);
     procedure SaveToStream(Stream: TStream); override;
+    procedure LoadFromLMFFile(AFileName: String);
+    procedure LoadFromLMFStream(AStream: TStream; IsEnhanced: Boolean);
     procedure LoadFromStream(Stream: TStream); override;
 
     property Enhanced: Boolean read FEnhanced write FEnhanced;  // Write WMF or EMF stream
@@ -97,7 +111,7 @@ type
     procedure RequiredState(ReqState: TCanvasState); override;
 
   public
-    constructor Create(Almf:TlmfImage);
+    constructor Create(Almf: TlmfImage);
 
     procedure StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic); override;
 
@@ -135,7 +149,7 @@ type
 implementation
 
 uses
-  lmfObj, lmfWMFWrite;
+  lmfObj, lmfWMFWrite, lmfWMFRead;
 
 constructor TlmfImage.Create;
 begin
@@ -303,6 +317,34 @@ begin
     writer.WriteToStream(Stream, self);
   finally
     writer.Free;
+  end;
+end;
+
+procedure TlmfImage.LoadFromLMFFile(AFileName: String);
+var
+  stream: TFileStream;
+  isWMF: Boolean;
+begin
+  stream := TFileStream.Create(AFileName, fmOpenRead or fmShareDenyWrite);
+  try
+    LoadFromLMFStream(stream, false);
+  finally
+    stream.Free;
+  end;
+end;
+
+procedure TlmfImage.LoadFromLMFStream(AStream: TStream; IsEnhanced: Boolean);
+var
+  reader: TlmfReader;
+begin
+  if IsEnhanced then
+    //reader := TEMFReader.Create  // to be completed...
+  else
+    reader := TlmfWMFReader.Create;
+  try
+    reader.ReadFromStream(AStream, self);
+  finally
+    reader.Free;
   end;
 end;
 

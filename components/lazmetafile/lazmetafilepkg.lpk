@@ -31,6 +31,10 @@
         <Filename Value="lmfwmfwrite.pas"/>
         <UnitName Value="lmfWMFWrite"/>
       </Item>
+      <Item>
+        <Filename Value="lmfwmfread.pas"/>
+        <UnitName Value="lmfwmfread"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>

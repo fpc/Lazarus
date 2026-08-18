@@ -778,10 +778,8 @@ begin
 
     rec.Height := abs(ScaleSizeY(AItem.Font.Height));
     rec.Width := 0;
-    rec.Orientation := round(AItem.Font.Orientation * 10);
-    rec.Escapement := round(AItem.Font.Orientation * 10); // 0;
-      // strange: must use "Escapement" here, not "Orientation".
-      // Otherwise MS software will not show the rotated font.
+    rec.Orientation := AItem.Font.Orientation;
+    rec.Escapement := AItem.Font.Orientation;
     rec.Weight := IfThen(fsBold in AItem.Font.Style, 700, 400);
     rec.Italic := ZERO_OR_ONE[fsItalic in AItem.Font.Style];
     rec.Underline := ZERO_OR_ONE[fsUnderline in AItem.Font.Style];

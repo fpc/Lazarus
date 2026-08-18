@@ -302,6 +302,7 @@ type
     DestX: SmallInt;
     // Following: BitmapInfoHeader plus pixel data.
   end;
+  PWMFDIBStretchBltRecord = ^TWMFDIBStretchBltRecord;
 
   TWMFBitmapCoreHeader = packed record
     HeaderSize: DWord;

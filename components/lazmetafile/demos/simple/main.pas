@@ -106,8 +106,8 @@ begin
     LmfCanvas.RoundRect(260, 40, 340, 80, 40, 40);
     LmfCanvas.RoundRect(Rect(270, 50, 350, 90), 40, 40);
 
-    // Draw an alpha-transparent bitmap (32bpp) --> not supported, converted
-    // to mask transparency
+    // Draw an alpha-transparent bitmap (32bpp) --> not supported, convert to
+    // 24 bpp and apply mask transparency.
     bmp := TPortableNetworkGraphic.Create;
     try
       bmp.PixelFormat := pf32bit;
@@ -122,13 +122,13 @@ begin
     try
 //      bmp.LoadFromFile('../../../../images/LazarusForm.bmp');
       bmp.LoadFromFile('Help_02_48.bmp');
-      bmp.Transparent := true;
+//      bmp.Transparent := true;
       LmfCanvas.Draw(300, 5, bmp);
     finally
       bmp.Free;
     end;
 
-    // Draw an icon
+    // Draw an icon      // Strange: Powerpoint is not able to display this...
     ico := TIcon.Create;
     try
       ico.LoadFromFile('../../../../images/includefile.ico');

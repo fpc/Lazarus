@@ -225,11 +225,11 @@ type
   private
     fBrush: TBrush;
   public
-    constructor Create(AnOwner:TComponent);override;
-    destructor Destroy;override;
-    procedure Action({%H-}fImage: TlmfImage; ACanvas: TCanvas);override;
+    constructor Create(AnOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Action({%H-}fImage: TlmfImage; ACanvas: TCanvas); override;
   published
-    property Brush:TBrush read fBrush write fBrush;
+    property Brush: TBrush read fBrush write fBrush;
   end;
 
   TlmfPen=class(TlmfObject)
@@ -248,10 +248,10 @@ type
     fPicture: TPicture;
   public
     constructor Create(AnOwner: TComponent); override;
-    destructor Destroy;override;
+    destructor Destroy; override;
     procedure Action(fImage: TlmfImage; ACanvas: TCanvas);override;
   published
-    property Picture:TPicture read fPicture write fPicture;
+    property Picture: TPicture read fPicture write fPicture;
   end;
 
   TlmfPolyline=class(TlmfRect)
@@ -524,7 +524,8 @@ begin
     fImage.ScaleY(fClip.Top),
     fImage.ScaleX(fClip.Right),
     fImage.ScaleY(fClip.Bottom),
-    frx, fry
+    FImage.ScaleSizeX(frx),
+    FImage.ScaleSizeY(fry)
   );
 end;
 
@@ -763,7 +764,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TlmfBrush.Action(fImage:TlmfImage;ACanvas:TCanvas);
+procedure TlmfBrush.Action(fImage: TlmfImage; ACanvas: TCanvas);
 begin
   ACanvas.Brush.Assign(fBrush);
 end;
