@@ -1093,10 +1093,16 @@ var
   Entry: TLazDbgIdeConsoleWindowPlugInRegistryEntryClass;
 begin
   if FConsolePlugIn = nil then begin
-    (* No user selection exists yet -- that arrives with the options page. The
+    (* The user's choice, then the built-in, then whatever is registered. The
        built-in is looked up by id rather than assumed to be first in the list,
-       because registration order is not ours to depend on. *)
-    Entry := ConsoleWindowPlugIns.FindByPlugInId(BuiltInConsolePlugInId);
+       because registration order is not ours to depend on.
+
+       Resolved once, when output first needs somewhere to go. Changing the
+       selection therefore takes effect on the next debug session -- switching
+       a live one is a separate matter. *)
+    Entry := ConsoleWindowPlugIns.FindByPlugInId(DebuggerOptions.ConsoleWindowPlugInId);
+    if Entry = nil then
+      Entry := ConsoleWindowPlugIns.FindByPlugInId(BuiltInConsolePlugInId);
     if (Entry = nil) and (ConsoleWindowPlugIns.Count > 0) then
       Entry := ConsoleWindowPlugIns[0];
     if Entry <> nil then begin

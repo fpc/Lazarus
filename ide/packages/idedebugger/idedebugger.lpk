@@ -32,6 +32,12 @@
         <UnitName Value="IdeDebuggerBuiltInConsolePlugIn"/>
       </Item>
       <Item>
+        <Filename Value="frames\idedebugger_consolewindow_options.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="IdeDebugger_ConsoleWindow_Options"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Item>
+      <Item>
         <Filename Value="idedebuggerpackage.pas"/>
         <Type Value="Main Unit"/>
         <UnitName Value="idedebuggerpackage"/>

@@ -213,6 +213,7 @@ const
     DbgOptionsDispFormat         = 600;
     DbgOptionsValFormatter       = 700;
     DbgOptionsBackConverter      = 800;
+    DbgOptionsConsoleWindow      = 900;
 
   GroupHelp         = 500;
     HlpOptionsGeneral = 100;

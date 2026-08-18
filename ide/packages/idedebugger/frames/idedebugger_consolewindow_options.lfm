@@ -1,0 +1,56 @@
+object IdeDbgConsoleWindowOptionsFrame: TIdeDbgConsoleWindowOptionsFrame
+  Left = 0
+  Height = 300
+  Top = 0
+  Width = 500
+  ClientHeight = 300
+  ClientWidth = 500
+  TabOrder = 0
+  DesignLeft = 400
+  DesignTop = 200
+  object lblPlugIn: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 15
+    Top = 6
+    Width = 100
+    BorderSpacing.Around = 6
+    Caption = 'lblPlugIn'
+    ParentColor = False
+  end
+  object cbPlugIn: TComboBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblPlugIn
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 23
+    Top = 27
+    Width = 488
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    ItemHeight = 15
+    OnChange = cbPlugInChange
+    ReadOnly = True
+    Style = csDropDownList
+    TabOrder = 0
+  end
+  object lblDescription: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbPlugIn
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 56
+    Width = 488
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    Caption = 'lblDescription'
+    ParentColor = False
+    WordWrap = True
+  end
+end

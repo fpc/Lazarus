@@ -140,6 +140,7 @@ type
     FFileVersion: integer;
 
     FBackendConverterConfig: TIdeDbgValueConvertSelectorList;
+    FConsoleWindowPlugInId: String;
     FHasActiveDebuggerEntry: Boolean;
     FPrimaryConfigPath: String;
     FSetupCheckIgnoreNoDefault: Boolean;
@@ -198,6 +199,11 @@ type
     property WatchesDetailPaneWordWrap: boolean read FWatchesDetailPaneWordWrap write FWatchesDetailPaneWordWrap default False;
     property EvaluateWordWrap: boolean read FEvaluateWordWrap write FEvaluateWordWrap default False;
     property ShowHintForWatches: boolean read FShowHintForWatches write FShowHintForWatches default True;
+    (* Which registered console window plug-in shows the debuggee's captured
+       output. Empty means "whatever the IDE falls back to", which is how an
+       existing config file reads and why it is the default: an installation
+       that never opens this page must not have a value written for it. *)
+    property ConsoleWindowPlugInId: String read FConsoleWindowPlugInId write FConsoleWindowPlugInId;
   end;
 
   TCurrentDebuggerSetupResult = (

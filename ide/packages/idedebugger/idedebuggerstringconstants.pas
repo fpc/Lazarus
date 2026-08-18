@@ -381,6 +381,10 @@ resourcestring
 
   // Debug console window plug-ins
   lisDebugConsoleBuiltInName = 'IDE Debug Console';
+  dlgDebugConsoleWindowOptions = 'Debug Console Window';
+  dlgDebugConsoleWindowSelect = 'Show the debugged program''s console output in:';
+  dlgDebugConsoleWindowNone = 'No console window is available.';
+  dlgDebugConsoleWindowChangeTakesEffect = 'A change takes effect when the next debug session starts. (%s)';
 
   // Feedback
   lisDebuggerFeedbackInformation = 'Debugger Information';
