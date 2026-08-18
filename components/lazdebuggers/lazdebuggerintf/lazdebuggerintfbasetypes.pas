@@ -67,6 +67,17 @@ type
 
   TDbgThreadState = (dtsUnknown, dtsRunning, dtsPaused, dtsSuspended);
 
+  (* Which of the debuggee's standard streams a piece of captured output came
+     from.
+
+     dtcUnknown is not an error case. It means the backend did not tell us:
+     either the streams were captured merged (which is the only form that
+     preserves the order the program wrote in), or the backend does not
+     distinguish them at all. A display may colour dtcStdErr differently; it
+     cannot do anything useful with the distinction between "merged" and "not
+     supported", so there is deliberately only the one value for both. *)
+  TLzDbgTargetIoChannel = (dtcUnknown, dtcStdOut, dtcStdErr);
+
 implementation
 
 end.

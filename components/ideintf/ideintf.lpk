@@ -159,6 +159,10 @@
         <UnitName Value="IDECommands"/>
       </Item>
       <Item>
+        <Filename Value="idedebuggerconsolepluginintf.pas"/>
+        <UnitName Value="IdeDebuggerConsolePlugInIntf"/>
+      </Item>
+      <Item>
         <Filename Value="idedebuggervalueformatterintf.pas"/>
         <UnitName Value="IdeDebuggerValueFormatterIntf"/>
       </Item>
