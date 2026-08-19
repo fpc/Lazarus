@@ -35,15 +35,12 @@ type
     FMapMode: Word;
     FWindowOrigin: TPoint;
     FWindowExtent: TPoint;
-    FScalingFactorX: Double;
-    FScalingFactorY: Double;
-    FPageWidth: Integer;
-    FPageHeight: Integer;
 
     function CreateBrush(const AParams: TWMFParamArray): Integer;
     function CreateFont(const AParams: TWMFParamArray): Integer;
     function CreatePen(const AParams: TWMFParamArray): Integer;
     procedure DeleteObj(const AParams: TWMFParamArray);
+    procedure MeasureWindowExtent;
     procedure ReadArc(const AParams: TWMFParamArray);
     procedure ReadBkColor(const AParams: TWMFParamArray);
     procedure ReadBkMode(const AParams: TWMFParamArray);
@@ -72,7 +69,6 @@ type
     procedure SelectObj(const AParams: TWMFParamArray);
 
   protected
-    procedure CalcScalingFactors(out fx, fy: Double);
     procedure LogError(const AMsg: String);
     procedure ReadHeader(AStream: TStream);
     procedure ReadRecords(AStream: TStream);
@@ -81,11 +77,6 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure ReadFromStream(AStream: TStream; AImage: TlmfImage); override;
-
-    function ScaleX(x: Integer): Integer;
-    function ScaleY(y: Integer): Integer;
-    function ScaleSizeX(x: Integer): Integer;
-    function ScaleSizeY(y: Integer): Integer;
 
   end;
 
@@ -144,76 +135,6 @@ begin
   FObjTable.Free;
   FErrMsg.Free;
   inherited;
-end;
-
-procedure TlmfWMFReader.CalcScalingFactors(out fx, fy: Double);
-var
-  screenDpiX, screenDpiY: Integer;
-begin
-  screenDpiX := ScreenInfo.PixelsPerInchX;
-  screenDpiY := ScreenInfo.PixelsPerInchY;
-
-  // Convert to pixels
-  case FMapMode of
-    MM_TEXT:         // 1 log unit = 1 pixel
-      begin
-        fx := 1.0;
-        fy := 1.0;
-      end;
-    MM_LOMETRIC:     // 1 log unit = 1/10 mm
-      begin
-        fx := 0.1 * MM2INCH * screenDpiX;
-        fy := 0.1 * MM2INCH * screenDpiY;
-      end;
-    MM_HIMETRIC:     // 1 log unit = 1/100 mm
-      begin
-        fx := 0.01 * MM2INCH * screenDpiX;
-        fy := 0.01 * MM2INCH * screenDpiY;
-      end;
-    MM_LOENGLISH:    // 1 log unit = 1/100"
-      begin
-        fx := 0.1 * screenDpiX;
-        fy := 0.1 * screenDpiY;
-      end;
-    MM_HIENGLISH:    // 1 log unit = 1/1000"
-      begin
-        fx := 0.01 * screenDpiX;
-        fy := 0.01 * screenDpiY;
-      end;
-    MM_TWIPS:        // 1 log unit = 1 twip = 1/1440 inch
-      begin
-        fx := 1.0 / 1440 * INCH2MM;
-        fy := fx;
-      end;
-    else
-      if (FWindowExtent.X = 0) or (FWindowExtent.Y = 0) then
-        exit;
-      if FHasPlaceableMetaHeader then begin
-        FPageWidth := round((FBBox.Right - FBBox.Left) / FUnitsPerInch * screenDpiX);
-        FPageHeight := round((FBBox.Bottom - FBBox.Top) / FUnitsPerInch * screenDpiY);
-      end else
-      if FWindowExtent.X > FWindowExtent.Y then begin
-        FPageWidth := round(DEFAULT_SIZE * MM2INCH * screenDpiX);
-        FPageHeight := round(FPageWidth * FWindowExtent.Y / FWindowExtent.X);
-      end else begin
-        FPageHeight := round(DEFAULT_SIZE * MM2INCH * screenDpiY);
-        FPageWidth := round(FPageHeight * FWindowExtent.X / FWindowExtent.Y);
-      end;
-      fx := FPageWidth / FWindowExtent.X;
-      fy := FPageHeight / FWindowExtent.Y;
-  end;
-                        (*
-  // If required convert to mm
-  // The nominal fpv units are mm, but the svg reader converts to pixels.
-  if FPV_UNIT = fuMM then begin
-    fx := fx / screenDpiX * INCH2MM;
-    fy := fy / screenDpiY * INCH2MM;
-    if FMapMode in [MM_ISOTROPIC, MM_ANISOTROPIC]  then begin
-      FPageWidth := FPageWidth / screenDpiX * INCH2MM;
-      FPageHeight := FPageHeight / screenDpiY * INCH2MM;
-    end;
-  end;
-  *)
 end;
 
 function TlmfWMFReader.CreateBrush(const AParams: TWMFParamArray): Integer;
@@ -277,7 +198,7 @@ begin
   fntname := StrPas(PChar(@AParams[idx]));   // string is 0-terminated
 
   lmfFont.Font.Name := ISO_8859_1ToUTF8(fntName);
-  lmfFont.Font.Height := round(ScaleSizeY(SmallInt(LEToN(fontRec^.Height))));
+  lmfFont.Font.Height := round(SmallInt(LEToN(fontRec^.Height)));
   lmfFont.Font.Color := FCurrTextColor;
   lmfFont.Font.Bold := LEToN(fontRec^.Weight) >= 700;
   lmfFont.Font.Italic := fontRec^.Italic <> 0;
@@ -324,11 +245,7 @@ begin
   end;
 
   // Pen width
-  lmfPen.Pen.Width := round(ScaleSizeX(LEToN(penRec^.Width)));
-  { wp: No - pen.Width=0 means an unscaled 1-px width !
-  if penRec^.Width = 0 then
-    lmfPen.Pen.Width := 1;
-  }
+  lmfPen.Pen.Width := round(LEToN(penRec^.Width));
 
   // Pen color
   lmfPen.Pen.Color := RGBToColor(penRec^.ColorRED, penRec^.ColorGREEN, penRec^.ColorBLUE);
@@ -360,6 +277,17 @@ begin
   FErrMsg.Add(AMsg);
 end;
 
+{ If the wfm has no placeable metaheader, and if it contains no
+  META_SETWINDOWEXTENT record, the size of FImage is still zero, which will
+  later crash drawing. In this case, iterate over all records and try to
+  measure the size of the window.
+  TO BE IMPLEMENTED. }
+procedure TlmfWMFReader.MeasureWindowExtent;
+begin
+  FImage.Width := 5000;    // just using dummy values so far.
+  FImage.Height := 5000;
+end;
+
 procedure TlmfWMFReader.ReadArc(const AParams: TWMFParamArray);
 var
   item: TlmfObject;
@@ -369,18 +297,18 @@ var
 begin
   arcRec := PWMFArcRecord(@AParams[0]);
   startPt := Point(
-    ScaleX(SmallInt(LEToN(arcRec^.XStartArc))),
-    ScaleY(SmallInt(LEToN(arcRec^.YStartArc)))
+    SmallInt(LEToN(arcRec^.XStartArc)),
+    SmallInt(LEToN(arcRec^.YStartArc))
   );
   endPt := Point(
-    ScaleX(SmallInt(LEToN(arcRec^.XEndArc))),
-    ScaleY(SmallInt(LEToN(arcRec^.YEndArc)))
+    SmallInt(LEToN(arcRec^.XEndArc)),
+    SmallInt(LEToN(arcRec^.YEndArc))
   );
   R := Rect(
-    ScaleX(SmallInt(LEToN(arcRec^.Left))),
-    ScaleY(SmallInt(LEToN(arcRec^.Top))),
-    ScaleX(SmallInt(LEToN(arcRec^.Right))),
-    ScaleY(SmallInt(LEToN(arcRec^.Bottom)))
+    SmallInt(LEToN(arcRec^.Left)),
+    SmallInt(LEToN(arcRec^.Top)),
+    SmallInt(LEToN(arcRec^.Right)),
+    SmallInt(LEToN(arcRec^.Bottom))
   );
   item := TlmfArc.Create(R, startPt, endPt);
   FImage.List.InsertComponent(item);
@@ -405,18 +333,18 @@ var
 begin
   arcRec := PWMFArcRecord(@AParams[0]);
   startPt := Point(
-    ScaleX(SmallInt(LEToN(arcRec^.XStartArc))),
-    ScaleY(SmallInt(LEToN(arcRec^.YStartArc)))
+    SmallInt(LEToN(arcRec^.XStartArc)),
+    SmallInt(LEToN(arcRec^.YStartArc))
   );
   endPt := Point(
-    ScaleX(SmallInt(LEToN(arcRec^.XEndArc))),
-    ScaleY(SmallInt(LEToN(arcRec^.YEndArc)))
+    SmallInt(LEToN(arcRec^.XEndArc)),
+    SmallInt(LEToN(arcRec^.YEndArc))
   );
   R := Rect(
-    ScaleX(SmallInt(LEToN(arcRec^.Left))),
-    ScaleY(SmallInt(LEToN(arcRec^.Top))),
-    ScaleX(SmallInt(LEToN(arcRec^.Right))),
-    ScaleY(SmallInt(LEToN(arcRec^.Bottom)))
+    SmallInt(LEToN(arcRec^.Left)),
+    SmallInt(LEToN(arcRec^.Top)),
+    SmallInt(LEToN(arcRec^.Right)),
+    SmallInt(LEToN(arcRec^.Bottom))
   );
   item := TlmfChord.Create(R, startPt, endPt);
   FImage.List.InsertComponent(item);
@@ -444,16 +372,20 @@ begin
   dibRec := PWMFDIBStretchBltRecord(@AParams[0]);
   lmfPic := TlmfPicture.Create(nil);
   try
-    w := ScaleSizeX(SmallInt(LEToN(dibRec^.DestWidth)));
-    h := ScaleSizeY(SmallInt(LEToN(dibRec^.DestHeight)));
-    R.Left := ScaleX(SmallInt(LEToN(dibRec^.DestX)));
-    R.Top := ScaleY(SmallInt(LEToN(dibRec^.DestY)));
+    w := SmallInt(LEToN(dibRec^.DestWidth));
+    h := SmallInt(LEToN(dibRec^.DestHeight));
+    R.Left := SmallInt(LEToN(dibRec^.DestX));
+    R.Top := SmallInt(LEToN(dibRec^.DestY));
     R.Right := R.Left + w;
     R.Bottom := R.Top + h;
-    // SrcRec not needed ...
+    // SrcRect not needed, it is derived from the picture ...
     lmfPic.Clip := R;
     if not ReadImage(AParams, SizeOf(TWMFDIBStretchBltRecord) div SIZE_OF_WORD, lmfPic.Picture) then
+    begin
+      LogError('Streaming error of DIB image.');
+      lmfPic.Free;
       exit;
+    end;
     FImage.List.InsertComponent(lmfPic);
   except
     on E:Exception do begin
@@ -471,10 +403,10 @@ var
 begin
   rectRec := PWMFRectRecord(@AParams[0]);
   R := Rect(
-    ScaleX(LEToN(rectRec^.Left)),
-    ScaleY(LEToN(rectRec^.Top)),
-    ScaleX(LEToN(rectRec^.Right)),
-    ScaleY(LEToN(rectRec^.Bottom))
+    SmallInt(LEToN(rectRec^.Left)),
+    SmallInt(LEToN(rectRec^.Top)),
+    SmallInt(LEToN(rectRec^.Right)),
+    SmallInt(LEToN(rectRec^.Bottom))
   );
 
   lmfEllipse := TlmfEllipse.Create(R);
@@ -489,15 +421,15 @@ var
   txtStyle: TTextStyle;
   item: TlmfObject;
 begin
-  y := ScaleY(SmallInt(LEToN(AParams[0])));   // signed int
-  x := ScaleX(SmallInt(LEToN(AParams[1])));
+  y := SmallInt(LEToN(AParams[0]));
+  x := SmallInt(LEToN(AParams[1]));
   len := SmallInt(LEToN(AParams[2]));
-  opts := LEToN(AParams[3]);         // unsigned int
+  opts := LEToN(AParams[3]);
   if opts <> 0 then begin
-    R.Bottom := ScaleY(SmallInt(LEToN(AParams[4])));
-    R.Right := ScaleX(SmallInt(LEToN(AParams[5])));
-    R.Top := ScaleY(SmallInt(LEToN(AParams[6])));
-    R.Left := ScaleX(SmallInt(LEToN(AParams[7])));
+    R.Bottom := SmallInt(LEToN(AParams[4]));
+    R.Right := SmallInt(LEToN(AParams[5]));
+    R.Top := SmallInt(LEToN(AParams[6]));
+    R.Left := SmallInt(LEToN(AParams[7]));
     txt := ReadString(AParams, 8, len);
   end else
     txt := ReadString(AParams, 4, len);
@@ -561,6 +493,8 @@ begin
     FBBox.Right := LEToN(placeableMetaHdr.Right);
     FBBox.Bottom := LEToN(placeableMetaHdr.Bottom);
     FUnitsPerInch := LEToN(placeableMetaHdr.Inch);
+    FImage.Width := FBBox.Right - FBBox.Left;
+    FImage.Height := FBBox.Bottom - FBBox.Top;
   end else
   begin
     // Is it the wmf header?
@@ -581,9 +515,7 @@ end;
 function TlmfWMFReader.ReadImage(const AParams: TWMFParamArray;
   AIndex: Integer; APicture: TPicture): Boolean;
 var
-  bmpCoreHdr: PWMFBitmapCoreHeader = nil;
   bmpInfoHdr: PWMFBitmapInfoHeader = nil;
-  hasCoreHdr: Boolean;
   bmpFileHdr: TBitmapFileHeader;
   w, h: Integer;
   memstream: TMemoryStream;
@@ -592,12 +524,7 @@ var
 begin
   Result := false;
 
-  bmpCoreHdr := PWMFBitmapCoreHeader(@AParams[AIndex]);
   bmpInfoHdr := PWMFBitmapInfoHeader(@AParams[AIndex]);
-  hasCoreHdr := bmpInfoHdr^.HeaderSize = SizeOf(TWMFBitmapCoreHeader);
-  if hasCoreHdr then
-    exit;
-
   w := LEToN(bmpInfoHdr^.Width);
   h := LEToN(bmpInfoHdr^.Height);
   if (w = 0) or (h = 0) then
@@ -637,8 +564,8 @@ var
   item: TlmfObject;
 begin
   item := TlmfLineTo.Create(
-    ScaleX(LEToN(AParams[1])),
-    ScaleY(LEToN(AParams[0]))
+    SmallInt(LEToN(AParams[1])),
+    SmallInt(LEToN(AParams[0]))
   );
   FImage.List.InsertComponent(item);
 end;
@@ -646,7 +573,6 @@ end;
 procedure TlmfWMFReader.ReadMapMode(const AParams: TWMFParamArray);
 begin
   FMapMode := LEToN(AParams[0]);
-  CalcScalingFactors(FScalingFactorX, FScalingFactorY);
 end;
 
 procedure TlmfWMFReader.ReadMoveTo(const AParams: TWMFParamArray);
@@ -654,8 +580,8 @@ var
   item: TlmfObject;
 begin
   item := TlmfMoveTo.Create(
-    ScaleX(LEToN(AParams[1])),
-    ScaleY(LEToN(AParams[0]))
+    SmallInt(LEToN(AParams[1])),
+    SmallInt(LEToN(AParams[0]))
   );
   FImage.List.InsertComponent(item);
 end;
@@ -675,18 +601,18 @@ var
 begin
   arcRec := PWMFArcRecord(@AParams[0]);
   startPt := Point(
-    ScaleX(SmallInt(LEToN(arcRec^.XStartArc))),
-    ScaleY(SmallInt(LEToN(arcRec^.YStartArc)))
+    SmallInt(LEToN(arcRec^.XStartArc)),
+    SmallInt(LEToN(arcRec^.YStartArc))
   );
   endPt := Point(
-    ScaleX(SmallInt(LEToN(arcRec^.XEndArc))),
-    ScaleY(SmallInt(LEToN(arcRec^.YEndArc)))
+    SmallInt(LEToN(arcRec^.XEndArc)),
+    SmallInt(LEToN(arcRec^.YEndArc))
   );
   R := Rect(
-    ScaleX(SmallInt(LEToN(arcRec^.Left))),
-    ScaleY(SmallInt(LEToN(arcRec^.Top))),
-    ScaleX(SmallInt(LEToN(arcRec^.Right))),
-    ScaleY(SmallInt(LEToN(arcRec^.Bottom)))
+    SmallInt(LEToN(arcRec^.Left)),
+    SmallInt(LEToN(arcRec^.Top)),
+    SmallInt(LEToN(arcRec^.Right)),
+    SmallInt(LEToN(arcRec^.Bottom))
   );
   item := TlmfPie.Create(R, startPt, endPt);
   FImage.List.InsertComponent(item);
@@ -714,8 +640,8 @@ begin
   SetLength(pts, n);
   j := 1;
   for i:= 0 to n-1 do begin
-    pts[i].X := ScaleX(SmallInt(LEToN(AParams[j])));
-    pts[i].Y := ScaleY(SmallInt(LEToN(AParams[j+1])));
+    pts[i].X := SmallInt(LEToN(AParams[j]));
+    pts[i].Y := SmallInt(LEToN(AParams[j+1]));
     inc(j, 2);
   end;
   if Filled then
@@ -922,18 +848,12 @@ begin
         ReadWindowExt(params);
       META_SETWINDOWORG:
         ReadWindowOrg(params);
-
     end;
     AStream.Position := recordStartPos + Int64(wmfRec.Size) * SIZE_OF_WORD;
   end;
 
-  if FHasPlaceableMetaHeader then begin
-    FImage.Width := FPageWidth;
-    FImage.Height := FPageHeight;
-  end else begin
-    FImage.Width := ScaleSizeX(FWindowExtent.X);
-    FImage.Height := ScaleSizeY(FWindowExtent.Y);
-  end;
+  if (FImage.Width = 0) and (FImage.Height = 0) then
+    MeasureWindowExtent;
 end;
 
 procedure TlmfWMFReader.ReadRectangle(const AParams: TWMFParamArray);
@@ -944,10 +864,10 @@ var
 begin
   rectRec := PWMFRectRecord(@AParams[0]);
   R := Rect(
-    ScaleX(SmallInt(LEToN(rectRec^.Left))),
-    ScaleY(SmallInt(LEToN(rectRec^.Top))),
-    ScaleX(SmallInt(LEToN(rectRec^.Right))),
-    Scaley(SmallInt(LEToN(rectRec^.Bottom)))
+    SmallInt(LEToN(rectRec^.Left)),
+    SmallInt(LEToN(rectRec^.Top)),
+    SmallInt(LEToN(rectRec^.Right)),
+    SmallInt(LEToN(rectRec^.Bottom))
   );
   lmfItem := TlmfRect.Create(R);
   FImage.List.InsertComponent(lmfItem);
@@ -962,13 +882,13 @@ var
 begin
   roundRectRec := PWMFRoundRectRecord(@AParams[0]);
   R := Rect(
-    ScaleX(SmallInt(LEToN(roundRectRec^.Left))),
-    ScaleY(SmallInt(LEToN(roundRectRec^.Top))),
-    ScaleX(SmallInt(LEToN(roundRectRec^.Right))),
-    ScaleY(SmallInt(LEToN(roundRectRec^.Bottom)))
+    SmallInt(LEToN(roundRectRec^.Left)),
+    SmallInt(LEToN(roundRectRec^.Top)),
+    SmallInt(LEToN(roundRectRec^.Right)),
+    SmallInt(LEToN(roundRectRec^.Bottom))
   );
-  RX := ScaleX(SmallInt(LEToN(roundRectRec^.RX)));
-  RY := ScaleY(SmallInt(LEToN(roundRectRec^.RY)));
+  RX := SmallInt(LEToN(roundRectRec^.RX));
+  RY := SmallInt(LEToN(roundRectRec^.RY));
   lmfItem := TlmfRoundRect.Create(R, RX, RY);
   FImage.List.InsertComponent(lmfItem);
 end;
@@ -983,10 +903,10 @@ begin
   dibRec := PWMFStretchDIBRecord(@AParams[0]);
   lmfPic := TlmfPicture.Create(nil);
   try
-    w := ScaleSizeX(SmallInt(LEToN(dibRec^.DestWidth)));
-    h := ScaleSizeY(SmallInt(LEToN(dibRec^.DestHeight)));
-    R.Left := ScaleX(SmallInt(LEToN(dibRec^.DestX)));
-    R.Top := ScaleY(SmallInt(LEToN(dibRec^.DestY)));
+    w := SmallInt(LEToN(dibRec^.DestWidth));
+    h := SmallInt(LEToN(dibRec^.DestHeight));
+    R.Left := SmallInt(LEToN(dibRec^.DestX));
+    R.Top := SmallInt(LEToN(dibRec^.DestY));
     R.Right := R.Left + w;
     R.Bottom := R.Top + h;
     // SrcRec not needed ...
@@ -1030,18 +950,18 @@ var
   item: TlmfText;
 begin
   { Record layout:
-    word - String length
-    even number of bytes - String, no trailing zero, but padded to even length
-    smallInt - yStart
-    smallInt - xStart }
+    - word - String length
+    - even number of bytes - String, no trailing zero, but padded to even length
+    - smallInt - yStart
+    - smallInt - xStart }
 
   len := LEToN(AParams[0]);
   i := 1;
   txt := ReadString(AParams, i, len);
   if txt[Length(txt)] = #0 then SetLength(txt, length(txt)-1);
   inc(i, len div 2);
-  y := ScaleX(SmallInt((LEToN(AParams[i]))));      // signed int!
-  x := ScaleY(SmallInt(LEToN(AParams[i + 1])));
+  y := SmallInt((LEToN(AParams[i])));
+  x := SmallInt(LEToN(AParams[i + 1]));
 
   item := TlmfText.Create(x, y, txt);
   FImage.List.InsertComponent(item);
@@ -1051,36 +971,14 @@ procedure TlmfWMFReader.ReadWindowExt(const AParams: TWMFParamArray);
 begin
   FWindowExtent.Y := SmallInt(LEToN(AParams[0]));
   FWindowExtent.X := SmallInt(LEToN(AParams[1]));
-  CalcScalingFactors(FScalingFactorX, FScalingFactorY);
+  FImage.Width := FWindowExtent.X;
+  FImage.Height := FWindowExtent.Y;
 end;
 
 procedure TlmfWMFReader.ReadWindowOrg(const AParams: TWMFParamArray);
 begin
   FWindowOrigin.Y := SmallInt(LEToN(AParams[0]));
   FWindowOrigin.X := SmallInt(LEToN(AParams[1]));
-end;
-
-{ Scale horizontal logical units (x) to millimeters }
-function TlmfWMFReader.ScaleX(x: Integer): Integer;
-begin
-  Result := ScaleSizeX(x - FWindowOrigin.X);
-end;
-
-{ Scale vertical logical units (y) to millimeters.        // ???? mm, really?
-  Coordinates will be increasing downwards }
-function TlmfWMFReader.ScaleY(y: Integer): Integer;
-begin
-  Result := ScaleSizeY(y - FWindowOrigin.Y);
-end;
-
-function TlmfWMFReader.ScaleSizeX(x: Integer): Integer;
-begin
-  Result := Round(FScalingFactorX * x);
-end;
-
-function TlmfWMFReader.ScaleSizeY(y: Integer): Integer;
-begin
-  Result := Round(FScalingFactorY * y);
 end;
 
 procedure TlmfWMFReader.SelectObj(const AParams: TWMFParamArray);
