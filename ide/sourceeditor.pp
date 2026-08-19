@@ -1535,6 +1535,8 @@ function dbgSourceNoteBook(snb: TSourceNotebook): string;
 function CompareSrcEditIntfWithFilename(SrcEdit1, SrcEdit2: Pointer): integer;
 function CompareFilenameWithSrcEditIntf(FilenameStr, SrcEdit: Pointer): integer;
 function FilenameToLazSyntaxHighlighter(Filename: String): TIdeSyntaxHighlighterID;
+function CompilerModeToPascal(CompilerMode: TCompilerMode): TPascalCompilerMode;
+function CompilerModeSwitchesToPascal(CompilerModeSwitches: TCompilerModeSwitches): TPascalCompilerModeSwitches;
 
 var
   EnglishGPLNotice: string;
@@ -2002,6 +2004,29 @@ begin
     else
       Result := IdeSyntaxHighlighters.GetIdForLazSyntaxHighlighter(lshFreePascal);
   end;
+end;
+
+function CompilerModeToPascal(CompilerMode: TCompilerMode): TPascalCompilerMode;
+const
+  C: array[TCompilerMode] of TPascalCompilerMode = (
+    //cmFPC, cmDELPHI, cmDELPHIUNICODE, cmTP, cmOBJFPC, cmMacPas, cmISO, cmExtPas
+    pcmFPC, pcmDelphi, pcmDelphiUnicode, pcmTP, pcmObjFPC, pcmMacPas, pcmIso, pcmExtPas);
+begin
+  Result := C[CompilerMode];
+end;
+
+function CompilerModeSwitchesToPascal(CompilerModeSwitches: TCompilerModeSwitches): TPascalCompilerModeSwitches;
+const
+  C: array[TPascalCompilerModeSwitch] of TCompilerModeSwitch = (
+    // pcsNestedComments, pcsTypeHelpers, pcsObjectiveC1, pcsObjectiveC2, pcsFunctionReferences, pcsAnonymousFunctions
+    cmsNested_comment, cmsTypeHelpers, cmsObjectiveC1, cmsObjectiveC2, cmsFunctionReferences, cmsAnonymousFunctions);
+var
+  P: TPascalCompilerModeSwitch;
+begin
+  Result := [];
+  for P in TPascalCompilerModeSwitch do
+    if C[P] in CompilerModeSwitches then
+      Result := Result + [P];
 end;
 
 { TToolButton_GotoBookmarks }
@@ -6737,6 +6762,7 @@ var
   ActiveCnt: Integer;
   InactiveCnt: Integer;
   SkippedCnt: Integer;
+  PasSyn: TSynPasSyn;
 begin
   //debugln(['TSourceEditor.UpdateIfDefNodeStates START ',Filename]);
   if not EditorComponent.IsIfdefMarkupActive then
@@ -6804,6 +6830,14 @@ begin
         debugln(['TSourceEditor.UpdateIfDefNodeStates y=',y,' x=',x,' Counts:Inactive=',InactiveCnt,' Active=',ActiveCnt,' Skipped=',SkippedCnt,' SET SynState=',dbgs(SynState)]);
       {$ENDIF}
       EditorComponent.SetIfdefNodeState(Y,X,SynState);
+    end;
+
+    if EditorComponent.Highlighter is TSynPasSyn then
+    begin
+      PasSyn := TSynPasSyn(EditorComponent.Highlighter);
+      // todo: you probably want to set different CompilerMode/ModeSwitches in PasSyn or change the PasSyn code to allow external CompilerMode override
+      PasSyn.CompilerMode := CompilerModeToPascal(Scanner.CompilerMode);
+      PasSyn.ModeSwitches := CompilerModeSwitchesToPascal(Scanner.CompilerModeSwitches);
     end;
   finally
     EditorComponent.EndUpdate;
