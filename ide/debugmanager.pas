@@ -1384,7 +1384,13 @@ begin
     ecToggleDebugEvents : ViewDebugDialog(ddtEvents);
     ecEvaluate          : ViewDebugDialog(ddtEvaluate);
     ecInspect           : ViewDebugDialog(ddtInspect);
-    ecViewPseudoTerminal: ViewDebugDialog(ddtPseudoTerminal);
+    (* One menu entry, whichever console window is selected. Opening the
+       built-in here regardless would give the user a menu item that shows a
+       window their output is not going to. *)
+    ecViewPseudoTerminal: if ConsolePlugIn <> nil then
+                            ConsolePlugIn.HandleUserShow
+                          else
+                            ViewDebugDialog(ddtPseudoTerminal);
     ecViewThreads       : ViewDebugDialog(ddtThreads);
     ecViewHistory       : ViewDebugDialog(ddtHistory);
   else
