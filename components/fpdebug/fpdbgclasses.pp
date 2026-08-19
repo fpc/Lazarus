@@ -1097,7 +1097,7 @@ type
          Search ONLY the program.
        FindProcSymbol(Name, ASymInstance)
          Search ASymInstance (process or lib) / if nil, search all
-         Names can be ambigious, as dll can have the same names.
+         Names can be ambiguous, as dll can have the same names.
     *)
     function  FindProcSymbol(const AName: String): TFpSymbol; overload; deprecated 'use FindNamedProcSymbol';
     function  FindProcSymbol(const AName: String; ASymInstance: TDbgInstance): TFpSymbol; overload; deprecated 'use FindNamedProcSymbol';

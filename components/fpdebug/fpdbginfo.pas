@@ -865,10 +865,6 @@ type
     property MemModel: TFpDbgMemModel read FMemModel;
   end;
 
-const
-  (* The namespace members of TFpProcSearchFlag. A search set that contains
-     none of these searches all of them. *)
-  FpProcSearchNameSpaces = [psfDwarfName, psfLinkTableSym];
 
 function dbgs(ADbgSymbolKind: TDbgSymbolKind): String; overload;
 (* True if AFlags asks for ANameSpace, either by naming it or by naming no
@@ -882,6 +878,8 @@ var
 
 function ProcSearchIncludes(AFlags: TFpProcSearchFlags;
   ANameSpace: TFpProcSearchFlag): Boolean;
+const
+  FpProcSearchNameSpaces = [psfDwarfName, psfLinkTableSym]; // The namespace members of TFpProcSearchFlag. None is treated as all
 begin
   Result := (ANameSpace in AFlags) or (AFlags * FpProcSearchNameSpaces = []);
 end;
