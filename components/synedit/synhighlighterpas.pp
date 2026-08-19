@@ -526,7 +526,8 @@ type
     //pcsAdvancedRecords,
     pcsObjectiveC1,
     pcsObjectiveC2,
-    pcsFunctionReferences
+    pcsFunctionReferences,
+    pcsAnonymousFunctions
   );
   TPascalCompilerModeSwitches = set of TPascalCompilerModeSwitch;
 
@@ -604,6 +605,7 @@ type
 
   TSynPasSynRange = class(TSynCustomHighlighterRange)
   private
+    FDirectiveModeSwitches: TPascalCompilerModeSwitches;
     FMode: TPascalCompilerMode;
     FBracketNestLevel, FRoundBracketNestLevel : Integer;
     FLastLineCodeFoldLevelFix: integer;
@@ -629,6 +631,7 @@ type
     procedure DecLastLinePasFoldFix;
     property Mode: TPascalCompilerMode read FMode write FMode;
     property ModeSwitches: TPascalCompilerModeSwitches read FModeSwitches write FModeSwitches;
+    property DirectiveModeSwitches: TPascalCompilerModeSwitches read FDirectiveModeSwitches write FDirectiveModeSwitches;
     (* BracketNestLevel counts only within the current "fold" (or expression).
        It is reset for
        - RecordCaseSection
@@ -783,7 +786,7 @@ type
     FOldRange: TRangeStates;
     FTokenState, FNextTokenState: TTokenState;
     FRangeCompilerMode: TPascalCompilerMode;
-    FRangeModeSwitches: TPascalCompilerModeSwitches;
+    FRangeModeSwitches, FDirectiveModeSwitches: TPascalCompilerModeSwitches;
     FRequiredStates, FRequiredStatesAtLastLineInit: TRequiredStates;
     FStringKeywordMode: TSynPasStringMode;
     FStringMultilineMode: TSynPasMultilineStringModes;
@@ -1632,7 +1635,7 @@ begin
     pcmFPC,
     pcmObjFPC:        Result := [pcsNestedComments];
     pcmDelphi,
-    pcmDelphiUnicode: Result := [pcsTypeHelpers, pcsFunctionReferences];
+    pcmDelphiUnicode: Result := [pcsTypeHelpers, pcsFunctionReferences, pcsAnonymousFunctions];
     pcmTP:            Result := [];
     pcmGPC:           Result := [pcsNestedComments];
     pcmMacPas:        Result := [pcsObjectiveC1, pcsObjectiveC2];
@@ -4587,11 +4590,15 @@ procedure TSynPasSyn.DirectiveProc;
   begin
     // skip space
     while (LinePtr[Run] in [' ',#9,#10,#13]) do inc(Run);
-    if LinePtr[Run] in ['+', '}'] then
-      FRangeModeSwitches := FRangeModeSwitches + [ASwitch]
+    if LinePtr[Run] in ['+', '}'] then begin
+      FRangeModeSwitches := FRangeModeSwitches + [ASwitch];
+      FDirectiveModeSwitches := FDirectiveModeSwitches + [ASwitch];
+    end
     else
-    if LinePtr[Run] = '-' then
+    if LinePtr[Run] = '-' then begin
       FRangeModeSwitches := FRangeModeSwitches - [ASwitch];
+      FDirectiveModeSwitches := FDirectiveModeSwitches + [ASwitch];
+    end;
   end;
 begin
   fTokenID := tkDirective;
@@ -4630,6 +4637,12 @@ begin
     begin
       inc(Run,18);
       ApplyModeSwitch(pcsFunctionReferences);
+    end
+    else
+    if TextComp('anonymousfunctions') then
+    begin
+      inc(Run,18);
+      ApplyModeSwitch(pcsAnonymousFunctions);
     end;
   end;
   if TextComp('mode') then begin
@@ -4675,6 +4688,9 @@ begin
     end
     else
       FRangeCompilerMode := pcmUnknown; // don't reset switches
+    // all switches are set by the mode
+    if FRangeCompilerMode <> pcmUnknown then
+      FDirectiveModeSwitches := [low(TPascalCompilerModeSwitches)..high(TPascalCompilerModeSwitches)]
   end;
   repeat
     case LinePtr[Run] of
@@ -6740,6 +6756,7 @@ begin
   PasCodeFoldRange.TokenState := FTokenState;
   PasCodeFoldRange.Mode := FRangeCompilerMode;
   PasCodeFoldRange.ModeSwitches := FRangeModeSwitches;
+  PasCodeFoldRange.DirectiveModeSwitches := FDirectiveModeSwitches;
   // return a fixed copy of the current CodeFoldRange instance
   Result := inherited GetRange;
 end;
@@ -6750,6 +6767,7 @@ begin
   inherited SetRange(Value);
   FRangeCompilerMode := PasCodeFoldRange.Mode;
   FRangeModeSwitches := PasCodeFoldRange.ModeSwitches;
+  FDirectiveModeSwitches := PasCodeFoldRange.DirectiveModeSwitches;
   FTokenState := PasCodeFoldRange.TokenState;
   fRange := TRangeStates(Integer(PtrUInt(CodeFoldRange.RangeType)));
   FSynPasRangeInfo := TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[LineIndex-1];
@@ -6979,6 +6997,7 @@ begin
   Inherited ResetRange;
   FRangeCompilerMode := CompilerMode;
   FRangeModeSwitches := ModeSwitches;
+  FDirectiveModeSwitches := [];
 end;
 
 procedure TSynPasSyn.EnumUserSettings(settings: TStrings);
@@ -7379,11 +7398,21 @@ function TSynPasSyn.IsAnonymousFunc(RunOffs: Integer; AnIsFunction: boolean
   ): Boolean;
 var
   FndLine: String;
-  FndPos, FndLen: integer;
+  FndPos, FndLen, i: integer;
 begin
-  Result := ScanAheadForNextToken(RunOffs, FndLine, FndPos, FndLen, 0);
+  i := 1;
+  if (pcsAnonymousFunctions in FDirectiveModeSwitches) and
+     not(pcsAnonymousFunctions in FRangeModeSwitches)
+  then
+    i := 0;  // explicitly switched off
+  Result := ScanAheadForNextToken(RunOffs, FndLine, FndPos, FndLen, i);
   if not Result then
-    exit;
+    exit(pcsAnonymousFunctions in FRangeModeSwitches);
+
+  if FndLine[FndPos] in ['a'..'z', 'A'..'Z', '_'] then
+    Result := False // we found a name. Exceptions below
+  else
+    Result := pcsAnonymousFunctions in FRangeModeSwitches;
 
   case FndLine[FndPos] of
     ':':      Result := AnIsFunction;
@@ -8468,6 +8497,9 @@ begin
   FLastLineCodeFoldLevelFix := 0;
   FPasFoldFixLevel := 0;
   FTokenState := tsNone;
+  FMode := pcmUnknown;
+  FModeSwitches := [];
+  FDirectiveModeSwitches := [];
 end;
 
 function TSynPasSynRange.Compare(Range: TLazHighlighterRange): integer;
@@ -8482,6 +8514,7 @@ begin
     FTokenState:=TSynPasSynRange(Src).FTokenState;
     FMode:=TSynPasSynRange(Src).FMode;
     FModeSwitches:=TSynPasSynRange(Src).FModeSwitches;
+    FDirectiveModeSwitches:=TSynPasSynRange(Src).FDirectiveModeSwitches;
     FBracketNestLevel:=TSynPasSynRange(Src).FBracketNestLevel;
     FRoundBracketNestLevel:=TSynPasSynRange(Src).FRoundBracketNestLevel;
     FSpecializeBracketNestLevel:=TSynPasSynRange(Src).FSpecializeBracketNestLevel;
