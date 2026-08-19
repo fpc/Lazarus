@@ -57,6 +57,7 @@ uses
   BaseIDEIntf, ProjectIntf, MacroIntf,
   // IdeIntf
   IdeIntfStrConsts, IDEDialogs, IDEImagesIntf, IDEWindowIntf,
+  IdeDebuggerConsolePlugInIntf,
   // IdeProject
   RunParamOptions,
   // IdeUtils
@@ -201,16 +202,12 @@ const
   hlCmdLineParameters = 'CommandLineParameters';
   hlWorkingDirectory = 'WorkingDirectory';
 
-  (* The consoles cbConsole offers, in the order its items are added -- which
-     the radio group has already narrowed to "not the OS one". The captions are
-     separate because they are translated; only these ids are written to the
-     project. Once terminals can be registered this list becomes the built-in
-     head of a longer one, which is why the code below looks a value up rather
-     than casting an index as the three redirect combos do. *)
-  ConsoleIds: array[0..1] of String = (
-    RunParamsConsoleIdDefault,
-    RunParamsConsoleIdIdeWindow
-  );
+  (* Index 0 of cbConsole is always "use the IDE default"; the registered
+     console window plug-ins follow it, in registry order. Only ids are written
+     to the project -- the captions are display names and are the plug-in's to
+     choose -- which is why the code below looks a value up rather than casting
+     an index as the three redirect combos do. *)
+  IdxConsoleDefault = 0;
 
 function ShowRunParamsOptsDlg(RunParamsOptions: TRunParamsOptions;
   HistoryLists: THistoryLists): TModalResult;
@@ -272,16 +269,22 @@ end;
 
 procedure TRunParamsOptsDlg.LoadConsoleId(const AConsoleId: String);
 var
-  i: Integer;
+  i, ListedCount: Integer;
 begin
+  ListedCount := 1 + ConsoleWindowPlugIns.Count;
   // Discard any unlisted item left over from the mode shown before this one.
-  while cbConsole.Items.Count > Length(ConsoleIds) do
+  while cbConsole.Items.Count > ListedCount do
     cbConsole.Items.Delete(cbConsole.Items.Count - 1);
   fUnlistedConsoleId := '';
 
-  for i := Low(ConsoleIds) to High(ConsoleIds) do
-    if ConsoleIds[i] = AConsoleId then begin
-      cbConsole.ItemIndex := i;
+  if AConsoleId = RunParamsConsoleIdDefault then begin
+    cbConsole.ItemIndex := IdxConsoleDefault;
+    exit;
+  end;
+
+  for i := 0 to ConsoleWindowPlugIns.Count - 1 do
+    if SameText(ConsoleWindowPlugIns[i].GetPlugInId, AConsoleId) then begin
+      cbConsole.ItemIndex := IdxConsoleDefault + 1 + i;
       exit;
     end;
 
@@ -295,11 +298,15 @@ begin
 end;
 
 function TRunParamsOptsDlg.SelectedConsoleId: String;
+var
+  i: Integer;
 begin
-  if (cbConsole.ItemIndex >= Low(ConsoleIds)) and
-     (cbConsole.ItemIndex <= High(ConsoleIds))
-  then
-    Result := ConsoleIds[cbConsole.ItemIndex]
+  i := cbConsole.ItemIndex;
+  if i = IdxConsoleDefault then
+    Result := RunParamsConsoleIdDefault
+  else
+  if (i > IdxConsoleDefault) and (i - IdxConsoleDefault - 1 < ConsoleWindowPlugIns.Count) then
+    Result := ConsoleWindowPlugIns[i - IdxConsoleDefault - 1].GetPlugInId
   else
     Result := fUnlistedConsoleId;
 end;
@@ -411,6 +418,8 @@ begin
 end;
 
 procedure TRunParamsOptsDlg.SetupLocalPage;
+var
+  i: Integer;
 begin
   HostApplicationGroupBox.Caption   := dlgHostApplication;
   HostApplicationBrowseBtn.Caption  := '...';
@@ -435,9 +444,15 @@ begin
   rgConsole.Items[ord(rpcmIdeConsole)] := dlgConsoleModeIde;
   rgConsole.ItemIndex := ord(rpcmOsConsole);
 
+  (* Filled from the registry rather than hard-coded, so a package that
+     registers a console window appears here without this dialog knowing
+     anything about it. Index 0 defers to the IDE-wide setting on
+     Tools > Options > Debugger > Debug Console Window. *)
   cbConsole.Items.Add(dlgConsoleUseIdeDefault);
-  cbConsole.Items.Add(dlgConsoleIdeWindow);
-  cbConsole.ItemIndex := 0;
+  for i := 0 to ConsoleWindowPlugIns.Count - 1 do
+    cbConsole.Items.Add(ConsoleWindowPlugIns[i].GetDisplayName);
+  cbConsole.ItemIndex := IdxConsoleDefault;
+  cbConsole.Visible := ConsoleWindowPlugIns.Count > 1;
   (* Where the selected backend cannot capture, only the OS console can serve
      and there is nothing to choose between. The controls are left in place and
      merely disabled: they still show and write back whatever the project

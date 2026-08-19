@@ -1092,12 +1092,31 @@ begin
   end;
 end;
 
-(* The user's choice, then the built-in, then whatever is registered. The
-   built-in is looked up by id rather than assumed to be first in the list,
+(* Which console window the debuggee's output goes to.
+
+   The project's Run Parameters win, then the IDE-wide setting, then the
+   built-in, then whatever is registered. An empty id in Run Parameters is the
+   sentinel meaning "whatever the IDE is set to" -- it is what every project
+   written before any of this existed contains, so it must not resolve to
+   anything of its own.
+
+   The built-in is looked up by id rather than assumed to be first in the list,
    because registration order is not ours to depend on. *)
 function TDebugManager.ResolveConsoleEntry: TLazDbgIdeConsoleWindowPlugInRegistryEntryClass;
+var
+  AMode: TAbstractRunParamsOptionsMode;
+  Id: String;
 begin
-  Result := ConsoleWindowPlugIns.FindByPlugInId(DebuggerOptions.ConsoleWindowPlugInId);
+  Id := '';
+  if Project1 <> nil then begin
+    AMode := Project1.RunParameterOptions.GetActiveMode;
+    if AMode <> nil then
+      Id := AMode.IdeDbgConsoleId;
+  end;
+
+  Result := ConsoleWindowPlugIns.FindByPlugInId(Id);
+  if Result = nil then
+    Result := ConsoleWindowPlugIns.FindByPlugInId(DebuggerOptions.ConsoleWindowPlugInId);
   if Result = nil then
     Result := ConsoleWindowPlugIns.FindByPlugInId(BuiltInConsolePlugInId);
   if (Result = nil) and (ConsoleWindowPlugIns.Count > 0) then

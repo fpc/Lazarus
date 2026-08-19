@@ -363,17 +363,17 @@ type
 
 const
   (* Which console serves, once rpcmIdeConsole says it is not the OS. Held as a
-     string, not an enum, because terminal providers are to be registered at run
-     time and identified by an id; the built-in window is merely the first of
-     them.
+     string, not an enum, because console windows are registered at run time
+     and identified by an id; the built-in window is merely one of them, and
+     has no privileged spelling here.
 
      An empty string means "follow the IDE-wide default" rather than any
      particular console, the same sentinel role '' plays for
      TProjectDebugLink.DebuggerBackend. Keeping it matters: without it every
      project saved by this version would record an explicit choice and would go
-     on ignoring the IDE-wide setting once that setting exists. *)
-  RunParamsConsoleIdDefault   = '';
-  RunParamsConsoleIdIdeWindow = 'IDEConsole';
+     on ignoring the IDE-wide setting. It is the only reserved value; anything
+     else is a plug-in id. *)
+  RunParamsConsoleIdDefault = '';
 
 type
 
