@@ -16,11 +16,9 @@ type
   private
     FImage: TlmfImage;
     FMaxRecordSize: Int64;
-    FLogicalMaxX: Word;        // Max x coordinate used for scaling, in logical units
-    FLogicalMaxY: Word;        // Max y coordinate used for scaling, in logical units
-    FScalingFactor: Double;    // Conversion to logical units
     FObjTable: TFPList;        // List with WMF objects (pen, brush, ...)
     FCurrFont: TFont;
+    FLogUnitsPerInch: Integer;
 
     // Specific WMF records
     procedure WriteArc(AStream: TStream; AItem: TlmfArc);
@@ -59,11 +57,6 @@ type
     function CalcChecksum(P: PWord; ASize: Word): Word;
     function FindInObjTable(AItem: TComponent): Integer;
     function MakeWMFColorRecord(AColor: TColor): TWMFColorRecord;
-    procedure PrepareScaling;
-    function ScaleX(x: Double): Integer;
-    function ScaleY(y: Double): Integer;
-    function ScaleSizeX(x: Double): Integer;
-    function ScaleSizeY(y: Double): Integer;
     // General WMF record writing
     procedure WriteRecords(AStream: TStream);
     procedure WriteWMFRecord(AStream: TStream; AFunc: word; ASize: Integer);
@@ -73,9 +66,8 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure WriteToStream(AStream: TStream; AImage: TlmfImage); override;
+    property LogicalUnitsPerInch: Integer read FLogUnitsPerInch write FLogUnitsPerInch;
   end;
-
-function WMF_GetRecordTypeName(ARecordType: Word): String;
 
 
 implementation
@@ -84,7 +76,7 @@ uses
   bmpcomn;
 
 const
-  ONE_INCH = 25.4;     // 1 inch = 25.4 mm
+  ONE_INCH_IN_TWIPS = 1440;     // 1 twip = 1/20 pt = 1/(20*72) inch = 1/1440 inch
   SIZE_OF_WORD = 2;
 
   (*
@@ -383,89 +375,13 @@ const
   AD_CLOCKWISE = $00000002;
                   *)
 
-function WMF_GetRecordTypeName(ARecordType: Word): String;
-begin
-  Result := '';
-  case ARecordType of
-    META_EOF : Result := 'META_EOF';
-    META_REALIZEPALETTE: Result := 'META_REALIZEPALETTE';
-    META_SETPALENTRIES: Result := 'META_SETPALENTRIES';
-    META_SETBKMODE: Result := 'META_SETBKMODE';
-    META_SETMAPMODE: Result := 'META_SETMAPMODE';
-    META_SETROP2: Result := 'META_SETROP2';
-    META_SETRELABS: Result := 'META_SETRELABS';
-    META_SETPOLYFILLMODE: Result := 'META_SETPOLYFILLMODE';
-    META_SETSTRETCHBLTMODE: Result := 'META_SETSTRETCHBLTMODE';
-    META_SETTEXTCHAREXTRA: Result := 'META_SETTEXTCHAREXTRA';
-    META_RESTOREDC: Result := 'META_RESTOREDC';
-    META_RESIZEPALETTE: Result := 'META_RESIZEPALETTE';
-    META_DIBCREATEPATTERNBRUSH: Result := 'META_DIBCREATEPATTERNBRUSH';
-    META_SETLAYOUT: Result := 'META_SETLAYOUT';
-    META_SETBKCOLOR: Result := 'META_SETBKCOLOR';
-    META_SETTEXTCOLOR: Result := 'META_SETTEXTCOLOR';
-    META_OFFSETVIEWPORTORG: Result := 'META_OFFSETVIEWPORTORG';
-    META_LINETO: Result := 'META_LINETO';
-    META_MOVETO: Result := 'META_MOVETO';
-    META_OFFSETCLIPRGN: Result := 'META_OFFSETCLIPRGN';
-    META_FILLREGION: Result := 'META_FILLREGION';
-    META_SETMAPPERFLAGS: Result := 'META_SETMAPPERFLAGS';
-    META_SELECTPALETTE: Result := 'META_SELECTPALETTE';
-    META_POLYGON: Result := 'META_POLYGON';
-    META_POLYLINE: Result := 'META_POLYLINE';
-    META_SETTEXTJUSTIFICATION: Result := 'META_SETTEXTJUSTIFICATION';
-    META_SETWINDOWORG: Result := 'META_SETWINDOWORG';
-    META_SETWINDOWEXT: Result := 'META_SETWINDOWEXT';
-    META_SETVIEWPORTORG: Result := 'META_SETVIEWPORTORG';
-    META_SETVIEWPORTEXT: Result := 'META_SETVIEWPORTEXT';
-    META_OFFSETWINDOWORG: Result := 'META_OFFSETWINDOWORG';
-    META_SCALEWINDOWEXT: Result := 'META_SCALEWINDOWEXT';
-    META_SCALEVIEWPORTEXT: Result := 'META_SCALEVIEWPORTEXT';
-    META_EXCLUDECLIPRECT: Result := 'META_EXCLUDECLIPRECT';
-    META_INTERSECTCLIPRECT: Result := 'META_INTERSECTCLIPRECT';
-    META_ELLIPSE: Result := 'META_ELLIPSE';
-    META_FLOODFILL: Result := 'META_FLOODFILL';
-    META_FRAMEREGION: Result := 'META_FRAMEREGION';
-    META_ANIMATEPALETTE: Result := 'META_ANIMATEPALETTE';
-    META_TEXTOUT: Result := 'META_TEXTOUT';
-    META_POLYPOLYGON: Result := 'META_POLYPOLYGON';
-    META_EXTFLOODFILL: Result := 'META_EXTFLOODFILL';
-    META_RECTANGLE: Result := 'META_RECTANGLE';
-    META_SETPIXEL: Result := 'META_SETPIXEL';
-    META_ROUNDRECT: Result := 'META_ROUNDRECT';
-    META_PATBLT: Result := 'META_PATBLT';
-    META_SAVEDC: Result := 'META_SAVEDC';
-    META_PIE: Result := 'META_PIE';
-    META_STRETCHBLT: Result := 'META_STRETCHBLT';
-    META_ESCAPE: Result := 'META_ESCAPE';
-    META_INVERTREGION: Result := 'META_INVERTREGION';
-    META_PAINTREGION: Result := 'META_PAINTREGION';
-    META_SELECTCLIPREGION: Result := 'META_SELECTCLIPREGION';
-    META_SELECTOBJECT: Result := 'META_SELECTOBJECT';
-    META_SETTEXTALIGN: Result := 'META_SETTEXTALIGN';
-    META_ARC: Result := 'META_ARC';
-    META_CHORD: Result := 'META_CHORD';
-    META_BITBLT: Result := 'META_BITBLT';
-    META_EXTTEXTOUT: Result := 'META_EXTTEXTOUT';
-    META_SETDIBTODEV: Result := 'META_SETDIBTODEV';
-    META_DIBBITBLT: Result := 'META_DIBBITBLT';
-    META_DIBSTRETCHBLT: Result := 'META_DIBSTRETCHBLT';
-    META_STRETCHDIB: Result := 'META_STRETCHDIB';
-    META_DELETEOBJECT: Result := 'META_DELETEOBJECT';
-    META_CREATEPALETTE: Result := 'META_CREATEPALETTE';
-    META_CREATEPATTERNBRUSH: Result := 'META_CREATEPATTERNBRUSH';
-    META_CREATEPENINDIRECT: Result := 'META_CREATEPENINDIRECT';
-    META_CREATEFONTINDIRECT: Result := 'META_CREATEFONTINDIRECT';
-    META_CREATEBRUSHINDIRECT: Result := 'META_CREATEBRUSHINDIRECT';
-    META_CREATEREGION: Result := 'META_CREATEREGION';
-  end;
-end;
-
 { TWMFWriter }
 
 constructor TWMFWriter.Create;
 begin
   inherited Create;
   FObjTable := TFPList.Create;
+  FLogUnitsPerInch := ONE_INCH_IN_TWIPS;
 end;
 
 destructor TWMFWriter.Destroy;
@@ -504,32 +420,6 @@ begin
   Result.ColorGREEN := Green(AColor);
   Result.ColorBLUE := Blue(AColor);
   Result.Reserved := 0;
-end;
-
-procedure TWMFWriter.PrepareScaling;
-const
-  MAXINT16 = 30000;   // should be 32767, but reduce to avoid overflows...
-var
-  maxx, maxy: Double;
-  w, h: Double;
-begin
-  w := FImage.Width;
-  h := FImage.Height;
-
-  // wmf stores coordinates in "logical units" where 1 logical unit is
-  // 1/100 mm = 10 microns (in MM_HIMETRIC mode)
-  FScalingFactor := ONE_INCH * 100;
-  maxx := FScalingFactor * w;
-  maxy := FScalingFactor * h;
-  // wmf is 16 bit only! --> reduce magnification if numbers get too big
-  if Max(maxx, maxy) > MAXINT16 then
-  begin
-    FScalingFactor := trunc(MAXINT16 / Max(w, h));
-    maxx := FImage.Width * FScalingFactor;
-    maxy := FImage.Height * FScalingFactor;
-  end;
-  FLogicalMaxX := trunc(maxx);
-  FLogicalMaxY := trunc(maxy);
 end;
 
 { The META_EXTTEXTOUT function which is called by WriteWMFTextInRect is rather
@@ -617,41 +507,18 @@ begin
   end;
 end;
 
-{ Scaling routines which convert to wmf-specific units ("logical units").
-  We silently assume that there is no offset in origin. }
-function TWMFWriter.ScaleSizeX(x: Double): Integer;
-begin
-  Result := Round(x * FScalingFactor);
-end;
-
-function TWMFWriter.ScaleSizeY(y: Double): Integer;
-begin
-  Result := Round(y * FScalingFactor);
-end;
-
-function TWMFWriter.ScaleX(x: Double): Integer;
-begin
-  Result := ScaleSizeX(x);
-end;
-
-// Assuming that the y origin is at the top of the page.
-function TWMFWriter.ScaleY(y: Double): Integer;
-begin
-  Result := ScaleSizeY(y);
-end;
-
 procedure TWMFWriter.WriteArc(AStream: TStream; AItem: TlmfArc);
 var
   rec: TWMFArcRecord;
 begin
-  rec.Left := ScaleX(AItem.Left);
-  rec.Top := ScaleY(AItem.Top);
-  rec.Right := ScaleX(AItem.Right);
-  rec.Bottom := ScaleY(AItem.Bottom);
-  rec.XStartArc := ScaleX(AItem.StartPtX);
-  rec.YStartArc := ScaleY(AItem.StartPtY);
-  rec.XEndArc := ScaleX(AItem.EndPtX);
-  rec.YEndArc := ScaleY(AItem.EndPtY);
+  rec.Left := AItem.Left;
+  rec.Top := AItem.Top;
+  rec.Right := AItem.Right;
+  rec.Bottom := AItem.Bottom;
+  rec.XStartArc := AItem.StartPtX;
+  rec.YStartArc := AItem.StartPtY;
+  rec.XEndArc := AItem.EndPtX;
+  rec.YEndArc := AItem.EndPtY;
 
   // WMF record header + parameters
   WriteWMFRecord(AStream, META_ARC, rec, SizeOf(TWMFArcRecord));
@@ -719,14 +586,14 @@ procedure TWMFWriter.WriteChord(AStream: TStream; AItem: TlmfChord);
 var
   rec: TWMFArcRecord;  // same structure for both arc, chord and pie
 begin
-  rec.Left := ScaleX(AItem.Left);
-  rec.Top := ScaleY(AItem.Top);
-  rec.Right := ScaleX(AItem.Right);
-  rec.Bottom := ScaleY(AItem.Bottom);
-  rec.XStartArc := ScaleX(AItem.StartPtX);
-  rec.YStartArc := ScaleY(AItem.StartPtY);
-  rec.XEndArc := ScaleX(AItem.EndPtX);
-  rec.YEndArc := ScaleY(AItem.EndPtY);
+  rec.Left := AItem.Left;
+  rec.Top := AItem.Top;
+  rec.Right := AItem.Right;
+  rec.Bottom := AItem.Bottom;
+  rec.XStartArc := AItem.StartPtX;
+  rec.YStartArc := AItem.StartPtY;
+  rec.XEndArc := AItem.EndPtX;
+  rec.YEndArc := AItem.EndPtY;
 
   // WMF record header + parameters
   WriteWMFRecord(AStream, META_CHORD, rec, SizeOf(TWMFArcRecord));
@@ -736,10 +603,10 @@ procedure TWMFWriter.WriteEllipse(AStream: TStream; AItem: TlmfEllipse);
 var
   rec: TWMFRectRecord;
 begin
-  rec.Left := ScaleX(AItem.Left);
-  rec.Top := ScaleY(AItem.Top);
-  rec.Right := ScaleX(AItem.Right);
-  rec.Bottom := ScaleY(AItem.Bottom);
+  rec.Left := AItem.Left;
+  rec.Top := AItem.Top;
+  rec.Right := AItem.Right;
+  rec.Bottom := AItem.Bottom;
 
   // WMF record header + parameters
   WriteWMFRecord(AStream, META_ELLIPSE, rec, SizeOf(TWMFRectRecord));
@@ -776,7 +643,7 @@ begin
       fntName[32] := #0;
     end;
 
-    rec.Height := abs(ScaleSizeY(AItem.Font.Height));
+    rec.Height := abs(AItem.Font.Height);
     rec.Width := 0;
     rec.Orientation := AItem.Font.Orientation;
     rec.Escapement := AItem.Font.Orientation;
@@ -871,10 +738,10 @@ begin
     rec.SrcWidth := ABitmap.Width;
     rec.SrcX := 0;
     rec.SrcY := 0;
-    rec.DestHeight := ScaleY(ARect.Bottom) - ScaleY(ARect.Top);
-    rec.DestWidth := ScaleX(ARect.Right) - ScaleX(ARect.Left);
-    rec.DestY := ScaleY(ARect.Top);
-    rec.DestX := ScaleX(ARect.Left);
+    rec.DestHeight := ARect.Bottom - ARect.Top;
+    rec.DestWidth := ARect.Right - ARect.Left;
+    rec.DestY := ARect.Top;
+    rec.DestX := ARect.Left;
 
     WriteWMFRecord(AStream, META_DIBSTRETCHBLT, SizeOf(TWMFDIBStretchBltRecord) + dibImgSize);
     AStream.Write(rec, SizeOf(TWMFDIBStretchBltRecord));
@@ -908,8 +775,8 @@ procedure TWMFWriter.WriteLineTo(AStream: TStream; AItem: TlmfLineTo);
 var
   rec: TWMFPointRecord;
 begin
-  rec.X := ScaleX(AItem.PX);
-  rec.Y := ScaleY(AItem.PY);
+  rec.X := AItem.PX;
+  rec.Y := AItem.PY;
   WriteWMFRecord(AStream, META_LINETO, rec, SizeOf(TWMFPointRecord));
 end;
 
@@ -918,10 +785,10 @@ var
   rec: TWMFLineRecord;
 begin
   rec.NumPts := 2;
-  rec.P1.X := ScaleX(AItem.PX);
-  rec.P1.Y := ScaleY(AItem.PY);
-  rec.P2.X := ScaleX(AItem.PX1);
-  rec.P2.Y := ScaleY(AItem.PY1);
+  rec.P1.X := AItem.PX;
+  rec.P1.Y := AItem.PY;
+  rec.P2.X := AItem.PX1;
+  rec.P2.Y := AItem.PY1;
   WriteWMFRecord(AStream, META_POLYLINE, rec, SizeOf(TWMFLineRecord));
 end;
 
@@ -934,8 +801,8 @@ procedure TWMFWriter.WriteMoveTo(AStream: TStream; AItem: TlmfMoveTo);
 var
   rec: TWMFPointRecord;
 begin
-  rec.X := ScaleX(AItem.PX);
-  rec.Y := ScaleY(AItem.PY);
+  rec.X := AItem.PX;
+  rec.Y := AItem.PY;
   WriteWMFRecord(AStream, META_MOVETO, rec, SizeOf(TWMFPointRecord));
 end;
 
@@ -972,7 +839,7 @@ begin
       pecSquare: rec.Style := rec.Style or PS_ENDCAP_SQUARE;
       pecFlat: rec.Style := rec.Style or PS_ENDCAP_FLAT;
     end;
-    rec.Width := ScaleSizeX(AItem.Pen.Width);
+    rec.Width := AItem.Pen.Width;
     rec.Ignored1 := 0;
     rec.ColorRED := Red(AItem.Pen.Color);
     rec.ColorGREEN := Green(AItem.Pen.Color);
@@ -991,14 +858,14 @@ procedure TWMFWriter.WritePie(AStream: TStream; AItem: TlmfPie);
 var
   rec: TWMFArcRecord;  // same structure for both arc, chord and pie
 begin
-  rec.Left := ScaleX(AItem.Left);
-  rec.Top := ScaleY(AItem.Top);
-  rec.Right := ScaleX(AItem.Right);
-  rec.Bottom := ScaleY(AItem.Bottom);
-  rec.XStartArc := ScaleX(AItem.StartPtX);
-  rec.YStartArc := ScaleY(AItem.StartPtY);
-  rec.XEndArc := ScaleX(AItem.EndPtX);
-  rec.YEndArc := ScaleY(AItem.EndPtY);
+  rec.Left := AItem.Left;
+  rec.Top := AItem.Top;
+  rec.Right := AItem.Right;
+  rec.Bottom := AItem.Bottom;
+  rec.XStartArc := AItem.StartPtX;
+  rec.YStartArc := AItem.StartPtY;
+  rec.XEndArc := AItem.EndPtX;
+  rec.YEndArc := AItem.EndPtY;
 
   // WMF record header + parameters
   WriteWMFRecord(AStream, META_PIE, rec, SizeOf(TWMFArcRecord));
@@ -1015,8 +882,8 @@ begin
   SetLength(recPts, numPts);
   for i := 0 to numPts-1 do
   begin
-    recPts[i].X := ScaleX(AItem.Points[i].X);
-    recPts[i].Y := ScaleY(AItem.Points[i].Y);
+    recPts[i].X := AItem.Points[i].X;
+    recPts[i].Y := AItem.Points[i].Y;
   end;
 
   fillModeRec.PolyFillMode := IfThen(AItem.Winding, LCLType.WINDING, LCLType.ALTERNATE);
@@ -1038,8 +905,8 @@ begin
   SetLength(recPts, numPts);
   for i := 0 to numPts-1 do
   begin
-    recPts[i].X := ScaleX(AItem.Points[i].X);
-    recPts[i].Y := ScaleY(AItem.Points[i].Y);
+    recPts[i].X := AItem.Points[i].X;
+    recPts[i].Y := AItem.Points[i].Y;
   end;
 
   // WMF record header + parameters
@@ -1132,10 +999,10 @@ procedure TWMFWriter.WriteRect(AStream: TStream; AItem: TlmfRect);
 var
   rec: TWMFRectRecord;
 begin
-  rec.Left := ScaleX(AItem.Left);
-  rec.Top := ScaleY(AItem.Top);
-  rec.Right := ScaleX(AItem.Right);
-  rec.Bottom := ScaleY(AItem.Bottom);
+  rec.Left := AItem.Left;
+  rec.Top := AItem.Top;
+  rec.Right := AItem.Right;
+  rec.Bottom := AItem.Bottom;
 
   // WMF record header + parameters
   WriteWMFRecord(AStream, META_RECTANGLE, rec, SizeOf(TWMFRectRecord));
@@ -1145,12 +1012,12 @@ procedure TWMFWriter.WriteRoundRect(AStream: TStream; AItem: TlmfRoundRect);
 var
   rec: TWMFRoundRectRecord;
 begin
-  rec.Left := ScaleX(AItem.Left);
-  rec.Top := ScaleY(AItem.Top);
-  rec.Right := ScaleX(AItem.Right);
-  rec.Bottom := ScaleY(AItem.Bottom);
-  rec.RX := ScaleX(AItem.Rx);
-  rec.RY := ScaleY(AItem.Ry);
+  rec.Left := AItem.Left;
+  rec.Top := AItem.Top;
+  rec.Right := AItem.Right;
+  rec.Bottom := AItem.Bottom;
+  rec.RX := AItem.Rx;
+  rec.RY := AItem.Ry;
 
   // WMF record header + parameters
   WriteWMFRecord(AStream, META_ROUNDRECT, rec, SizeOf(TWMFRoundRectRecord));
@@ -1185,8 +1052,8 @@ begin
   // String
   WriteWMFParams(AStream, s[1], len);
   // String position
-  ptRec.X := ScaleX(AItem.PX);
-  ptRec.Y := ScaleY(AItem.PY);
+  ptRec.X := AItem.PX;
+  ptRec.Y := AItem.PY;
   WriteWMFParams(AStream, ptRec, SizeOf(TWMFPointRecord));
 end;
 
@@ -1216,8 +1083,8 @@ begin
   end;
 
   rec := Default(TWMFExtTextOutRecord);
-  rec.X := ScaleX(AItem.PX);
-  rec.Y := ScaleY(AItem.PY);
+  rec.X := AItem.PX;
+  rec.Y := AItem.PY;
   rec.Len := strLen;
   if AItem.TextStyle.Opaque then rec.Options := rec.Options or ETO_OPAQUE;
   if AItem.TextStyle.Clipping then rec.Options := rec.Options or ETO_CLIPPED;
@@ -1226,10 +1093,10 @@ begin
   begin
     // The entire rectangle is filled here. Note that this is in addition to
     // SetBkMode which fill only the background of the text itself.
-    R[0] := ScaleX(AItem.Left);
-    R[1] := ScaleY(AItem.Top);
-    R[2] := ScaleX(AItem.Right);
-    R[3] := ScaleY(AItem.Bottom);
+    R[0] := AItem.Left;
+    R[1] := AItem.Top;
+    R[2] := AItem.Right;
+    R[3] := AItem.Bottom;
     nR := SizeOf(R);
   end else
     nR := 0;
@@ -1250,8 +1117,7 @@ begin
   FImage := AImage;
   startPos := AStream.Position;
 
-  //MakeObjTable;
-  PrepareScaling;
+  FObjTable.Clear;
 
   // Write placeholder for WMF header and placeable header (because we don't
   // know FMaxRecordSize yet), will be rewritten with correct values later.
@@ -1270,7 +1136,7 @@ begin
     Key := WMF_MAGIC_NUMBER;
     Handle := 0;
     Reserved := 0;
-    Inch := ScaleX(ONE_INCH);
+    Inch := FLogUnitsPerInch;
     Left := 0;
     Top := 0;
     Right := FImage.Width;
@@ -1297,8 +1163,8 @@ procedure TWMFWriter.WriteWindowExt(AStream: TStream);
 var
   params: Array[0..1] of word;
 begin
-  params[0] := FLogicalMaxY;
-  params[1] := FLogicalMaxX;
+  params[0] := FImage.Height;
+  params[1] := FImage.Width;
   WriteWMFRecord(AStream, META_SETWINDOWEXT, params, SizeOf(params));
 end;
 
