@@ -164,7 +164,9 @@ type
     (* The console window the debuggee's captured output currently goes to.
        Created on demand from the registry; the built-in is the fallback, so
        this is never nil while there is any registered plug-in. *)
+    function ResolveConsoleEntry: TLazDbgIdeConsoleWindowPlugInRegistryEntryClass;
     function ConsolePlugIn: ILazDbgIdeConsoleWindowPlugIn;
+    procedure ReconcileConsolePlugIn;
     procedure DoIDERestoreWindows(Sender: TObject);
     // ILazDbgIdeTargetIoHook -- what the plug-in is given to talk back with
     procedure SendInput(const AText: String);
@@ -176,6 +178,7 @@ type
     FUnitInfoProvider: TDebuggerUnitInfoProvider;
     FDialogs: array[TDebugDialogType] of TDebuggerDlg;
     FConsolePlugIn: ILazDbgIdeConsoleWindowPlugIn;
+    FConsolePlugInId: String;
     FDidShowConsoleForSession: Boolean;
     FInStateChange: Boolean;
     FPrevShownWindow: HWND;
@@ -1089,24 +1092,25 @@ begin
   end;
 end;
 
+(* The user's choice, then the built-in, then whatever is registered. The
+   built-in is looked up by id rather than assumed to be first in the list,
+   because registration order is not ours to depend on. *)
+function TDebugManager.ResolveConsoleEntry: TLazDbgIdeConsoleWindowPlugInRegistryEntryClass;
+begin
+  Result := ConsoleWindowPlugIns.FindByPlugInId(DebuggerOptions.ConsoleWindowPlugInId);
+  if Result = nil then
+    Result := ConsoleWindowPlugIns.FindByPlugInId(BuiltInConsolePlugInId);
+  if (Result = nil) and (ConsoleWindowPlugIns.Count > 0) then
+    Result := ConsoleWindowPlugIns[0];
+end;
+
 function TDebugManager.ConsolePlugIn: ILazDbgIdeConsoleWindowPlugIn;
 var
   Entry: TLazDbgIdeConsoleWindowPlugInRegistryEntryClass;
   Obj: ILazDbgIdePlugIn;
 begin
   if FConsolePlugIn = nil then begin
-    (* The user's choice, then the built-in, then whatever is registered. The
-       built-in is looked up by id rather than assumed to be first in the list,
-       because registration order is not ours to depend on.
-
-       Resolved once, when output first needs somewhere to go. Changing the
-       selection therefore takes effect on the next debug session -- switching
-       a live one is a separate matter. *)
-    Entry := ConsoleWindowPlugIns.FindByPlugInId(DebuggerOptions.ConsoleWindowPlugInId);
-    if Entry = nil then
-      Entry := ConsoleWindowPlugIns.FindByPlugInId(BuiltInConsolePlugInId);
-    if (Entry = nil) and (ConsoleWindowPlugIns.Count > 0) then
-      Entry := ConsoleWindowPlugIns[0];
+    Entry := ResolveConsoleEntry;
     if Entry <> nil then begin
       (* The instance comes from the options store, which is what holds the
          user's settings for it. Creating one here instead would give a plug-in
@@ -1116,11 +1120,43 @@ begin
          (not Obj.GetInterface(ILazDbgIdeConsoleWindowPlugIn, FConsolePlugIn))
       then
         exit(nil);
+      FConsolePlugInId := Entry.GetPlugInId;
       FConsolePlugIn.HandleUserSelectedAsActive;
       FConsolePlugIn.ProcessAddedToPlugInHook(Self);
     end;
   end;
   Result := FConsolePlugIn;
+end;
+
+(* Take account of a selection the user has changed since the last session.
+
+   Called at dsInit, which is one of the points where the IDE is about to lay
+   out windows anyway, and -- because the state notification list runs before
+   UpdateToolStatus -- happens before the debug desktop is applied. So the
+   outgoing window is gone before the desktop restore looks for it.
+
+   This is also the moment the outgoing plug-in is told it is deselected, and
+   the only one: a plug-in that keeps its window after a run, so the user can
+   still read what the program printed, has to be left alone until a new run is
+   actually starting. *)
+procedure TDebugManager.ReconcileConsolePlugIn;
+var
+  Entry: TLazDbgIdeConsoleWindowPlugInRegistryEntryClass;
+begin
+  Entry := ResolveConsoleEntry;
+  if (Entry = nil) or
+     ((FConsolePlugIn <> nil) and SameText(Entry.GetPlugInId, FConsolePlugInId))
+  then
+    exit;
+
+  if FConsolePlugIn <> nil then begin
+    FConsolePlugIn.ProcessRemovedFromPlugInHook;
+    FConsolePlugIn.HandleUserDeselectedFromActive;
+    FConsolePlugIn := nil;
+    FConsolePlugInId := '';
+  end;
+
+  ConsolePlugIn;   // resolves and attaches the newly selected one
 end;
 
 (* Reconcile before the IDE restores its windows.
@@ -1774,6 +1810,7 @@ begin
     end;
     dsInit: begin
       Exceptions.ResetHitCounts;
+      ReconcileConsolePlugIn;
       (* Only clear a console that already exists. Asking the registry here
          would construct the plug-in -- and with it, for some plug-ins, a
          window -- for a session that may never produce any output. *)
