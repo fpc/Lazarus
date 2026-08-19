@@ -3,7 +3,7 @@
 
    fpmake.pp for LazUtils 1.0
 
-   This file was generated on 28.07.2026
+   This file was generated on 19.08.2026
 }
 
 {$ifndef ALLPACKAGES} 
@@ -47,7 +47,6 @@ begin
     t.Dependencies.AddUnit('avglvltree');
     t.Dependencies.AddUnit('codepagesasian');
     t.Dependencies.AddUnit('codepagescommon');
-    t.Dependencies.AddUnit('colortty');
     t.Dependencies.AddUnit('compwriterpas');
     t.Dependencies.AddUnit('dynamicarray');
     t.Dependencies.AddUnit('dynhasharray');
@@ -116,7 +115,6 @@ begin
     T:=P.Targets.AddUnit('avglvltree.pas');
     T:=P.Targets.AddUnit('codepagesasian.pas');
     T:=P.Targets.AddUnit('codepagescommon.pas');
-    T:=P.Targets.AddUnit('colortty.pas');
     T:=P.Targets.AddUnit('compwriterpas.pas');
     T:=P.Targets.AddUnit('dynamicarray.pas');
     T:=P.Targets.AddUnit('dynhasharray.pp');

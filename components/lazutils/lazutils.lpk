@@ -63,10 +63,6 @@
         <UnitName Value="CodepagesCommon"/>
       </Item>
       <Item>
-        <Filename Value="colortty.pas"/>
-        <UnitName Value="ColorTTY"/>
-      </Item>
-      <Item>
         <Filename Value="commoncodepages.inc"/>
         <Type Value="Include"/>
       </Item>
