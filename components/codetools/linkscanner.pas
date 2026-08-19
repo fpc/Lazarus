@@ -3537,22 +3537,24 @@ begin
       case ModeSwitch of
       cmsObjectiveC2: Include(Switches,cmsObjectiveC1);
       end;
-      if Enable then begin
-        FCompilerModeSwitches:=FCompilerModeSwitches+Switches;
-        case ModeSwitch of
-        cmsDefault_unicodestring:
-          begin
-            Values.Variables['FPC_UNICODESTRINGS'] := '1';
-            Values.Variables['UNICODE'] := '1';
+      if ScannedRange<lsrMainUsesSectionStart then begin // ModeSwitches are allowed/applied only before the main uses section
+        if Enable then begin
+          FCompilerModeSwitches:=FCompilerModeSwitches+Switches;
+          case ModeSwitch of
+          cmsDefault_unicodestring:
+            begin
+              Values.Variables['FPC_UNICODESTRINGS'] := '1';
+              Values.Variables['UNICODE'] := '1';
+            end;
           end;
-        end;
-      end else begin
-        FCompilerModeSwitches:=FCompilerModeSwitches-Switches;
-        case ModeSwitch of
-        cmsDefault_unicodestring:
-          begin
-            Values.Undefine('FPC_UNICODESTRINGS');
-            Values.Undefine('UNICODE');
+        end else begin
+          FCompilerModeSwitches:=FCompilerModeSwitches-Switches;
+          case ModeSwitch of
+          cmsDefault_unicodestring:
+            begin
+              Values.Undefine('FPC_UNICODESTRINGS');
+              Values.Undefine('UNICODE');
+            end;
           end;
         end;
       end;
