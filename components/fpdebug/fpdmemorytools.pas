@@ -2128,6 +2128,8 @@ begin
             end;
             // ReadData is now a pointer to the FULL data. Either in ADest or FTmpMem
 
+            if (not result) and not IsError(FLastError) then
+              FLastError := CreateError(fpErrCanNotReadMemAtAddr, [ASourceLocation.Address]);
           end;
         mlfSelfMem: begin // Can be cached TargetMem, or can be constant data from dwarf
             try // accessinge SelfMem can fail, because there is on SelfmMem.Length that can be checked
