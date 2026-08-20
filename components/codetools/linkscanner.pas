@@ -2086,7 +2086,6 @@ begin
   CommentLevel:=0;
   FPascalCompiler:=pcFPC;
   CompilerMode:=cmFPC;
-  FNestedComments:=cmsNested_comment in DefaultCompilerModeSwitches[CompilerMode];
   IfLevel:=0;
   FSkippingDirectives:=lssdNone;
   FDirectivesStored:=StoreDirectives;
@@ -4671,7 +4670,9 @@ var
   OldModeSwitches, EnabledModeSwitches,
     DisabledModeSwitches: TCompilerModeSwitches;
 begin
-  if FCompilerMode=AValue then exit;
+  // force SetCompilerMode - if {$MODE} is in the source code then all ModeSwitches have to be reassigned from the mode
+  // even if the implicit mode is the same and the compiler switches have been altered before
+  // if FCompilerMode=AValue then exit;
   Values.Undefine(CompilerModeVars[FCompilerMode]);
   FCompilerMode:=AValue;
   OldModeSwitches:=FCompilerModeSwitches;
