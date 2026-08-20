@@ -347,7 +347,7 @@ type
     property HighlightUserWords[AIndex: Integer]: TSourceSynEditMarkupHighlightAllMulti read GetHighlightUserWords;
     property MarkupMgr;
     function  IsIfdefMarkupActive: Boolean;
-    procedure InvalidateAllIfdefNodes;
+    procedure InvalidateCodeToolsProperties;
     procedure SetIfdefNodeState(ALinePos, AstartPos: Integer; AState: TSynMarkupIfdefNodeState);
     property  OnIfdefNodeStateRequest: TSynMarkupIfdefStateRequest read FOnIfdefNodeStateRequest write FOnIfdefNodeStateRequest;
     property  MarkupIfDef: TSourceSynEditMarkupIfDef read FMarkupIfDef;
@@ -404,6 +404,9 @@ type
   TIDESynPasSyn = class(TSynPasSyn)
   private
     FCustomAttribs: array[0..9] of TSynHighlighterLazCustomPasAttribute;
+    FCodeToolsCompilerMode: TPascalCompilerMode;
+    FCodeToolsModeSwitches: TPascalCompilerModeSwitches;
+    FCodeToolsValid: Boolean;
 
     procedure DoBuildCustomPasAttr(Sender: TObject);
     function GetFinalizationLine: Integer;
@@ -415,16 +418,23 @@ type
     function StartCodeFoldBlock(ABlockType: Pointer = nil;
       IncreaseLevel: Boolean = true; ForceDisabled: Boolean = False
       ): Boolean; override;
+
+    // override RangeCompilerMode* with CodeToolsMode*
+    function GetRangeCompilerMode: TPascalCompilerMode; override;
+    function GetRangeCompilerModeSwitches: TPascalCompilerModeSwitches; override;
   public
     constructor Create(AOwner: TComponent); override;
     //procedure DefHighlightChange(Sender: TObject);
-
 
     procedure InitForScanningLine; override;
     property InterfaceLine: Integer read GetInterfaceLine;
     property ImplementationLine: Integer read GetImplementationLine;
     property InitializationLine: Integer read GetInitializationLine;
     property FinalizationLine: Integer read GetFinalizationLine;
+
+    property CodeToolsCompilerMode: TPascalCompilerMode read FCodeToolsCompilerMode write FCodeToolsCompilerMode;
+    property CodeToolsModeSwitches: TPascalCompilerModeSwitches read FCodeToolsModeSwitches write FCodeToolsModeSwitches;
+    property CodeToolsValid: Boolean read FCodeToolsValid write FCodeToolsValid;
   end;
 
   { TIDESynFreePasSyn }
@@ -2000,9 +2010,11 @@ begin
   CaretXY := Point(p.X, l);
 end;
 
-procedure TIDESynEditor.InvalidateAllIfdefNodes;
+procedure TIDESynEditor.InvalidateCodeToolsProperties;
 begin
   FMarkupIfDef.InvalidateAll;
+  if Highlighter is TIDESynPasSyn then
+    TIDESynPasSyn(Highlighter).CodeToolsValid := False;
 end;
 
 procedure TIDESynEditor.SetIfdefNodeState(ALinePos, AstartPos: Integer;
@@ -2296,6 +2308,22 @@ end;
 function TIDESynPasSyn.GetInterfaceLine: Integer;
 begin
   Result := TIDESynHighlighterPasRangeList(CurrentRanges).FInterfaceLine;
+end;
+
+function TIDESynPasSyn.GetRangeCompilerMode: TPascalCompilerMode;
+begin
+  if FCodeToolsValid then
+    Result := FCodeToolsCompilerMode
+  else
+    Result := inherited GetRangeCompilerMode;
+end;
+
+function TIDESynPasSyn.GetRangeCompilerModeSwitches: TPascalCompilerModeSwitches;
+begin
+  if FCodeToolsValid then
+    Result := FCodeToolsModeSwitches
+  else
+    Result := inherited GetRangeCompilerModeSwitches;
 end;
 
 function TIDESynPasSyn.CreateRangeList(ALines: TSynEditStringsBase): TLazHighlighterLineRangeList;

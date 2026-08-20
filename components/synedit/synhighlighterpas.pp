@@ -1055,6 +1055,8 @@ type
     property PasCodeFoldRange: TSynPasSynRange read GetPasCodeFoldRange;
     function TopPascalCodeFoldBlockType
              (DownIndex: Integer = 0): TPascalCodeFoldBlockType;
+    function GetRangeCompilerMode: TPascalCompilerMode; virtual;
+    function GetRangeCompilerModeSwitches: TPascalCompilerModeSwitches; virtual;
     function HasRangeCompilerModeswitch(AModeSwitch: TPascalCompilerModeSwitch): Boolean; inline;
     function HasRangeCompilerModeswitch(AModeSwitches: TPascalCompilerModeSwitches): Boolean; inline;
 
@@ -2708,7 +2710,7 @@ begin
   end
   else
   if KeyCompU('GENERIC') and
-    (FRangeCompilerMode in [pcmObjFPC, pcmUnknown]) and
+    (GetRangeCompilerMode in [pcmObjFPC, pcmUnknown]) and
     (not(TopPascalCodeFoldBlockType in PascalStatementBlocks+[cfbtUses])) and
     (FTokenState in tsAnyAtBeginOfStatement + [tsAfterClass])
   then begin
@@ -3398,7 +3400,7 @@ begin
             So even in "$mode delphi" this is not available.
             If this is needed, then we need a "property compiler"
   *)
-  //if (FRangeCompilerMode = pcmDelphi) and  IsClassSection('AUTOMATED') then
+  //if (GetRangeCompilerMode = pcmDelphi) and  IsClassSection('AUTOMATED') then
   //  Result := DoClassSection
   //else
   if (rsInProcHeader in fRange) and KeyCompU('CONSTREF') and
@@ -3514,7 +3516,7 @@ begin
     FOldRange := FOldRange - [rsInProcName];
     Result := tkKey;
   end
-  else if KeyCompU('SPECIALIZE') and (FRangeCompilerMode in [pcmObjFPC, pcmUnknown])
+  else if KeyCompU('SPECIALIZE') and (GetRangeCompilerMode in [pcmObjFPC, pcmUnknown])
   then begin
     Result := tkKey;
     if rsProperty in fRange then begin
@@ -4051,7 +4053,7 @@ begin
   case TopPascalCodeFoldBlockType of
     cfbtClass, cfbtClassSection:
       if (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader, rsAfterClassMembers] = [rsWasInProcHeader, rsAfterClassMembers]) and
-         (FRangeCompilerMode in [pcmDelphi, pcmDelphiUnicode])
+         (GetRangeCompilerMode in [pcmDelphi, pcmDelphiUnicode])
       then
         FRange := FRange + [rsInProcHeader]; // virtual reintroduce overload can be after virtual
     cfbtTypeBlock, cfbtLocalTypeBlock, cfbtClassTypeBlock:
@@ -4708,7 +4710,7 @@ begin
         break;
       end;
     '{':
-      if pcsNestedComments in FRangeModeSwitches then begin
+      if HasRangeCompilerModeswitch(pcsNestedComments) then begin
         fStringLen := 1;
         StartPascalCodeFoldBlock(cfbtNestedComment);
       end;
@@ -6754,8 +6756,8 @@ begin
   // -> update now
   CodeFoldRange.RangeType:=Pointer(PtrUInt(Integer(fRange)));
   PasCodeFoldRange.TokenState := FTokenState;
-  PasCodeFoldRange.Mode := FRangeCompilerMode;
-  PasCodeFoldRange.ModeSwitches := FRangeModeSwitches;
+  PasCodeFoldRange.Mode := GetRangeCompilerMode;
+  PasCodeFoldRange.ModeSwitches := GetRangeCompilerModeSwitches;
   PasCodeFoldRange.DirectiveModeSwitches := FDirectiveModeSwitches;
   // return a fixed copy of the current CodeFoldRange instance
   Result := inherited GetRange;
@@ -7239,12 +7241,12 @@ end;
 
 function TSynPasSyn.HasRangeCompilerModeswitch(AModeSwitch: TPascalCompilerModeSwitch): Boolean;
 begin
-  Result := (AModeSwitch in FRangeModeSwitches);
+  Result := (AModeSwitch in GetRangeCompilerModeSwitches);
 end;
 
 function TSynPasSyn.HasRangeCompilerModeswitch(AModeSwitches: TPascalCompilerModeSwitches): Boolean;
 begin
-  Result := (AModeSwitches * FRangeModeSwitches <> []);
+  Result := (AModeSwitches * GetRangeCompilerModeSwitches <> []);
 end;
 
 procedure TSynPasSyn.GetTokenBounds(out LogX1, LogX2: Integer);
@@ -7402,17 +7404,17 @@ var
 begin
   i := 1;
   if (pcsAnonymousFunctions in FDirectiveModeSwitches) and
-     not(pcsAnonymousFunctions in FRangeModeSwitches)
+     not HasRangeCompilerModeswitch(pcsAnonymousFunctions)
   then
     i := 0;  // explicitly switched off
   Result := ScanAheadForNextToken(RunOffs, FndLine, FndPos, FndLen, i);
   if not Result then
-    exit(pcsAnonymousFunctions in FRangeModeSwitches);
+    exit(HasRangeCompilerModeswitch(pcsAnonymousFunctions));
 
   if FndLine[FndPos] in ['a'..'z', 'A'..'Z', '_'] then
     Result := False // we found a name. Exceptions below
   else
-    Result := pcsAnonymousFunctions in FRangeModeSwitches;
+    Result := HasRangeCompilerModeswitch(pcsAnonymousFunctions);
 
   case FndLine[FndPos] of
     ':':      Result := AnIsFunction;
@@ -8200,6 +8202,16 @@ end;
 function TSynPasSyn.GetRangeClass: TLazHighlighterRangeClass;
 begin
   Result:=TSynPasSynRange;
+end;
+
+function TSynPasSyn.GetRangeCompilerMode: TPascalCompilerMode;
+begin
+  Result := FRangeCompilerMode;
+end;
+
+function TSynPasSyn.GetRangeCompilerModeSwitches: TPascalCompilerModeSwitches;
+begin
+  Result := FRangeModeSwitches;
 end;
 
 function TSynPasSyn.UseUserSettings(settingIndex: integer): boolean;

@@ -545,7 +545,7 @@ type
     function  SourceToDebugLine(aLinePos: Integer): Integer;
     function  DebugToSourceLine(aLinePos: Integer): Integer; override;
 
-    procedure InvalidateAllIfdefNodes;
+    procedure InvalidateCodeToolsProperties;
     procedure SetIfdefNodeState(ALinePos, AstartPos: Integer; AState: TSynMarkupIfdefNodeState);
     property OnIfdefNodeStateRequest: TSynMarkupIfdefStateRequest read FOnIfdefNodeStateRequest write FOnIfdefNodeStateRequest;
   public
@@ -3304,7 +3304,7 @@ begin
             SharedEdit.FEditPlugin.Enabled := False;
         end;
         SynEditor.BeginUpdate;
-        SynEditor.InvalidateAllIfdefNodes;
+        SynEditor.InvalidateCodeToolsProperties;
         FCodeBuffer.AssignTo(SynEditor.Lines, false);
         FEditorStampCommitedToCodetools:=(SynEditor.Lines as TSynEditLines).TextChangeStamp;
         SynEditor.EndUpdate;
@@ -3450,7 +3450,7 @@ begin
       for i := 0 to SharedEditorCount-1 do
         SharedEditors[i].BeforeCodeBufferReplace;
 
-      SynEditor.InvalidateAllIfdefNodes;
+      SynEditor.InvalidateCodeToolsProperties;
       Sender.AssignTo(SynEditor.Lines,false);
 
       for i := 0 to SharedEditorCount-1 do
@@ -6731,9 +6731,9 @@ begin
   Result := FEditor.IDEGutterMarks.DebugLineToSourceLine(aLinePos);
 end;
 
-procedure TSourceEditor.InvalidateAllIfdefNodes;
+procedure TSourceEditor.InvalidateCodeToolsProperties;
 begin
-  FEditor.InvalidateAllIfdefNodes;
+  FEditor.InvalidateCodeToolsProperties;
 end;
 
 procedure TSourceEditor.SetIfdefNodeState(ALinePos, AstartPos: Integer;
@@ -6762,10 +6762,12 @@ var
   ActiveCnt: Integer;
   InactiveCnt: Integer;
   SkippedCnt: Integer;
-  PasSyn: TSynPasSyn;
+  PasSyn: TIDESynPasSyn;
+  CompilerMode: TPascalCompilerMode;
+  ModeSwitches: TPascalCompilerModeSwitches;
 begin
   //debugln(['TSourceEditor.UpdateEditorFromCodeTools START ',Filename]);
-  if not EditorComponent.IsIfdefMarkupActive then
+  if not EditorComponent.IsIfdefMarkupActive and not (EditorComponent.Highlighter is TIDESynPasSyn) then
     exit;
   //debugln(['TSourceEditor.UpdateEditorFromCodeTools CHECK ',Filename]);
   UpdateCodeBuffer;
@@ -6776,68 +6778,83 @@ begin
   FLastIfDefNodeScannerStep:=Scanner.ChangeStep;
   EditorComponent.BeginUpdate;
   try
-    //EditorComponent.InvalidateAllIfdefNodes;
-    Code:=CodeBuffer;
-    i:=0;
-    while i<Scanner.DirectiveCount do
+    //EditorComponent.InvalidateCodeToolsProperties;
+
+    if EditorComponent.Highlighter is TIDESynPasSyn then
     begin
-      aDirective:=Scanner.DirectivesSorted[i];
-      //if (Pos(VFilePattern,Code.Filename)>0) then
-      //  debugln(['TSourceEditor.UpdateEditorFromCodeTools ',i+1,'/',Scanner.DirectiveCount,' ',dbgs(aDirective^.Kind)]);
-      inc(i);
-      if TCodeBuffer(aDirective^.Code)<>Code then continue;
-      if not (aDirective^.Kind in (lsdkAllIf+lsdkAllElse)) then continue;
-      Code.AbsoluteToLineCol(aDirective^.SrcPos,Y,X);
-      if Y<1 then continue;
-      SynState:=idnInvalid;
-      // a directive can be scanned multiple times (multi included include files)
-      // => show it enabled if it was active at least once
-      {$IFDEF VerboseUpdateEditorFromCodeTools}
-      if (Pos(VFilePattern,Code.Filename)>0) and (Y>=VMinY) and (Y<=VMaxY) then
-        debugln(['TSourceEditor.UpdateEditorFromCodeTools ',i,'/',Scanner.DirectiveCount,' ',dbgs(Pointer(Code)),' ',Code.Filename,' X=',X,' Y=',Y,' SrcPos=',aDirective^.SrcPos,' State=',dbgs(aDirective^.State)]);
-      {$ENDIF}
-      SrcPos:=aDirective^.SrcPos;
-      ActiveCnt:=0;
-      InactiveCnt:=0;
-      SkippedCnt:=0;
-      repeat
-        case aDirective^.State of
-        lsdsActive: inc(ActiveCnt);
-        lsdsInactive: inc(InactiveCnt);
-        lsdsSkipped: inc(SkippedCnt);
-        end;
-        if i < Scanner.DirectiveCount then begin
-          ADirective:=Scanner.DirectivesSorted[i];
-          {$IFDEF VerboseUpdateEditorFromCodeTools}
-          if (Pos(VFilePattern,Code.Filename)>0) and (Y>=VMinY) and (Y<=VMaxY) and (ADirective^.SrcPos=SrcPos) then
-            debugln(['TSourceEditor.UpdateEditorFromCodeTools ',i,'/',Scanner.DirectiveCount,' MERGING ',dbgs(ADirective^.Code),' ',Code.Filename,' X=',X,' Y=',Y,' SrcPos=',aDirective^.SrcPos,' State=',dbgs(aDirective^.State)]);
-          {$ENDIF}
-        end;
-        inc(i);
-      until (ADirective^.SrcPos<>SrcPos) or (TCodeBuffer(ADirective^.Code)<>Code)
-        or (i > Scanner.DirectiveCount);
-      dec(i);
-      if (ActiveCnt>0) and (InactiveCnt=0) and (SkippedCnt=0) then
-        SynState:=idnEnabled
-      else if (ActiveCnt=0) and (InactiveCnt+SkippedCnt>0) then
-        SynState:=idnDisabled
-      else if (ActiveCnt>0) then
-        SynState:=idnTempEnabled
-      else
-        SynState:=idnInvalid;
-      {$IFDEF VerboseUpdateEditorFromCodeTools}
-      if (Pos(VFilePattern,Code.Filename)>0) and (Y>=VMinY) and (Y<=VMaxY) then
-        debugln(['TSourceEditor.UpdateEditorFromCodeTools y=',y,' x=',x,' Counts:Inactive=',InactiveCnt,' Active=',ActiveCnt,' Skipped=',SkippedCnt,' SET SynState=',dbgs(SynState)]);
-      {$ENDIF}
-      EditorComponent.SetIfdefNodeState(Y,X,SynState);
+      PasSyn := TIDESynPasSyn(EditorComponent.Highlighter);
+      CompilerMode := CompilerModeToPascal(Scanner.CompilerMode);
+      ModeSwitches := CompilerModeSwitchesToPascal(Scanner.CompilerModeSwitches);
+      if PasSyn.CodeToolsModeSwitches<>ModeSwitches then
+      begin
+        PasSyn.CodeToolsCompilerMode := CompilerMode;
+        PasSyn.CodeToolsModeSwitches := ModeSwitches;
+        PasSyn.CodeToolsValid := True;
+        { OP: strangely EditorComponent.InvalidateLines doesn't invalidate nested comments, maybe there is some cache that must be cleared (?). I don't know...
+              Therefore I use the unset/set Highlighter workaround hack
+          ToDo: do it without the hack }
+        //EditorComponent.InvalidateLines(-1, -1);
+        EditorComponent.Highlighter := nil;
+        EditorComponent.Highlighter := PasSyn;
+      end;
     end;
 
-    if EditorComponent.Highlighter is TSynPasSyn then
+    if EditorComponent.IsIfdefMarkupActive then
     begin
-      PasSyn := TSynPasSyn(EditorComponent.Highlighter);
-      // todo: you probably want to set different CompilerMode/ModeSwitches in PasSyn or change the PasSyn code to allow external CompilerMode override
-      PasSyn.CompilerMode := CompilerModeToPascal(Scanner.CompilerMode);
-      PasSyn.ModeSwitches := CompilerModeSwitchesToPascal(Scanner.CompilerModeSwitches);
+      Code:=CodeBuffer;
+      i:=0;
+      while i<Scanner.DirectiveCount do
+      begin
+        aDirective:=Scanner.DirectivesSorted[i];
+        //if (Pos(VFilePattern,Code.Filename)>0) then
+        //  debugln(['TSourceEditor.UpdateEditorFromCodeTools ',i+1,'/',Scanner.DirectiveCount,' ',dbgs(aDirective^.Kind)]);
+        inc(i);
+        if TCodeBuffer(aDirective^.Code)<>Code then continue;
+        if not (aDirective^.Kind in (lsdkAllIf+lsdkAllElse)) then continue;
+        Code.AbsoluteToLineCol(aDirective^.SrcPos,Y,X);
+        if Y<1 then continue;
+        SynState:=idnInvalid;
+        // a directive can be scanned multiple times (multi included include files)
+        // => show it enabled if it was active at least once
+        {$IFDEF VerboseUpdateEditorFromCodeTools}
+        if (Pos(VFilePattern,Code.Filename)>0) and (Y>=VMinY) and (Y<=VMaxY) then
+          debugln(['TSourceEditor.UpdateEditorFromCodeTools ',i,'/',Scanner.DirectiveCount,' ',dbgs(Pointer(Code)),' ',Code.Filename,' X=',X,' Y=',Y,' SrcPos=',aDirective^.SrcPos,' State=',dbgs(aDirective^.State)]);
+        {$ENDIF}
+        SrcPos:=aDirective^.SrcPos;
+        ActiveCnt:=0;
+        InactiveCnt:=0;
+        SkippedCnt:=0;
+        repeat
+          case aDirective^.State of
+          lsdsActive: inc(ActiveCnt);
+          lsdsInactive: inc(InactiveCnt);
+          lsdsSkipped: inc(SkippedCnt);
+          end;
+          if i < Scanner.DirectiveCount then begin
+            ADirective:=Scanner.DirectivesSorted[i];
+            {$IFDEF VerboseUpdateEditorFromCodeTools}
+            if (Pos(VFilePattern,Code.Filename)>0) and (Y>=VMinY) and (Y<=VMaxY) and (ADirective^.SrcPos=SrcPos) then
+              debugln(['TSourceEditor.UpdateEditorFromCodeTools ',i,'/',Scanner.DirectiveCount,' MERGING ',dbgs(ADirective^.Code),' ',Code.Filename,' X=',X,' Y=',Y,' SrcPos=',aDirective^.SrcPos,' State=',dbgs(aDirective^.State)]);
+            {$ENDIF}
+          end;
+          inc(i);
+        until (ADirective^.SrcPos<>SrcPos) or (TCodeBuffer(ADirective^.Code)<>Code)
+          or (i > Scanner.DirectiveCount);
+        dec(i);
+        if (ActiveCnt>0) and (InactiveCnt=0) and (SkippedCnt=0) then
+          SynState:=idnEnabled
+        else if (ActiveCnt=0) and (InactiveCnt+SkippedCnt>0) then
+          SynState:=idnDisabled
+        else if (ActiveCnt>0) then
+          SynState:=idnTempEnabled
+        else
+          SynState:=idnInvalid;
+        {$IFDEF VerboseUpdateEditorFromCodeTools}
+        if (Pos(VFilePattern,Code.Filename)>0) and (Y>=VMinY) and (Y<=VMaxY) then
+          debugln(['TSourceEditor.UpdateEditorFromCodeTools y=',y,' x=',x,' Counts:Inactive=',InactiveCnt,' Active=',ActiveCnt,' Skipped=',SkippedCnt,' SET SynState=',dbgs(SynState)]);
+        {$ENDIF}
+        EditorComponent.SetIfdefNodeState(Y,X,SynState);
+      end;
     end;
   finally
     EditorComponent.EndUpdate;
