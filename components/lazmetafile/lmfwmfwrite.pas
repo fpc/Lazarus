@@ -18,7 +18,6 @@ type
     FMaxRecordSize: Int64;
     FObjTable: TFPList;        // List with WMF objects (pen, brush, ...)
     FCurrFont: TFont;
-    FLogUnitsPerInch: Integer;
 
     // Specific WMF records
     procedure WriteArc(AStream: TStream; AItem: TlmfArc);
@@ -66,7 +65,6 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure WriteToStream(AStream: TStream; AImage: TlmfImage); override;
-    property LogicalUnitsPerInch: Integer read FLogUnitsPerInch write FLogUnitsPerInch;
   end;
 
 
@@ -76,7 +74,6 @@ uses
   bmpcomn;
 
 const
-  ONE_INCH_IN_TWIPS = 1440;     // 1 twip = 1/20 pt = 1/(20*72) inch = 1/1440 inch
   SIZE_OF_WORD = 2;
 
   (*
@@ -381,7 +378,6 @@ constructor TWMFWriter.Create;
 begin
   inherited Create;
   FObjTable := TFPList.Create;
-  FLogUnitsPerInch := ONE_INCH_IN_TWIPS;
 end;
 
 destructor TWMFWriter.Destroy;
@@ -1136,7 +1132,7 @@ begin
     Key := WMF_MAGIC_NUMBER;
     Handle := 0;
     Reserved := 0;
-    Inch := FLogUnitsPerInch;
+    Inch := FImage.LogUnitsPerInch;
     Left := 0;
     Top := 0;
     Right := FImage.Width;

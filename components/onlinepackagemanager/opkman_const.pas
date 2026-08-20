@@ -151,6 +151,7 @@ resourcestring
   rsMainFrm_VSTText_Open_Error = 'Cannot open package file.';
   rsMainFrm_VSTText_ComDesc = 'Community description for metapackage';
   rsMainFrm_VSTText_ExternalMetaPackageDeps = 'External dependencies for metapackage';
+  rsMainFrm_VSTText_VersionError = '(Version error)';
   rsMainFrm_cbAll_Caption = 'All/None';
   rsMainFrm_cbAll_Hint = 'Check/Uncheck packages';
   rsMainFrm_lbFilter_Caption = 'Filter by:';

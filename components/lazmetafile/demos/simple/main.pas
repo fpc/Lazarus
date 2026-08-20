@@ -108,6 +108,9 @@ begin
 
     // Draw an alpha-transparent bitmap (32bpp) --> not supported, convert to
     // 24 bpp and apply mask transparency.
+    LmfCanvas.Pen.Width := 0;
+    LmfCanvas.Brush.Style := bsClear;
+    Lmfcanvas.Rectangle(2000, 50, 2000 + 480, 50 + 480);
     bmp := TPortableNetworkGraphic.Create;
     try
       bmp.PixelFormat := pf32bit;
@@ -118,12 +121,14 @@ begin
     end;
 
     // Draw a 24-bpp mask-transparent image
+    Lmfcanvas.Rectangle(3000, 50, 3000 + 480, 50 + 480);
     bmp := TBitmap.Create;
     try
 //      bmp.LoadFromFile('../../../../images/LazarusForm.bmp');
       bmp.LoadFromFile('Help_02_48.bmp');
       bmp.Transparent := true;
-      LmfCanvas.Draw(3000, 50, bmp);
+//      LmfCanvas.Draw(3000, 50, bmp);
+      LmfCanvas.StretchDraw(Rect(3000, 50, 3000+480, 50+480), bmp);
     finally
       bmp.Free;
     end;

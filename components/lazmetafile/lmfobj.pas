@@ -246,10 +246,12 @@ type
   TlmfPicture = class(TlmfClip)
   private
     fPicture: TPicture;
+    fPixelsPerInch: Integer;
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
     procedure Action(fImage: TlmfImage; ACanvas: TCanvas);override;
+    property PixelsPerInch: Integer read FPixelsPerInch write FPixelsPerInch;
   published
     property Picture: TPicture read fPicture write fPicture;
   end;
@@ -797,6 +799,7 @@ constructor TlmfPicture.Create(AnOwner:TComponent);
 begin
   inherited Create(AnOwner);
   fPicture := TPicture.Create;
+  fPixelsPerInch := 96;  // will updated when image is read
 end;
 
 destructor TlmfPicture.Destroy;

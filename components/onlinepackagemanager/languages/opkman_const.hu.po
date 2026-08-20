@@ -1389,6 +1389,10 @@ msgctxt "opkman_const.rsmainfrm_vsttext_version"
 msgid "Version"
 msgstr "Változat"
 
+#: opkman_const.rsmainfrm_vsttext_versionerror
+msgid "(Version error)"
+msgstr ""
+
 #: opkman_const.rsmenulazaruspackagemanager
 msgid "Online Package Manager ..."
 msgstr ""

@@ -9,6 +9,9 @@ uses
   LCLType, LCLIntf,
   FPCanvas, FPImage, GraphMath, GraphType, IntfGraphics, Graphics, syncobjs;
 
+const
+  ONE_INCH_IN_TWIPS = 1440;    // 1 twip = 1/20 pt = 1/(20*72) inch = 1/1440 inch
+
 type
   // Exception types
   ElmfImage = class(Exception);
@@ -40,6 +43,7 @@ type
     fList: TlmfList;
     fCrs:TCriticalSection;
     fEnhanced: Boolean;
+    fLogUnitsPerInch: Integer;
   protected
     procedure AssignTo(Dest:TPersistent);override;
     function GetWidth:integer;override;
@@ -70,6 +74,8 @@ type
 
     property Enhanced: Boolean read FEnhanced write FEnhanced;  // Write WMF or EMF stream
     property List: TlmfList read fList;
+
+    property LogUnitsPerInch: Integer read fLogUnitsPerInch write fLogUnitsPerInch;
   end;
 
   TlmfList = class(TComponent)
@@ -113,6 +119,7 @@ type
   public
     constructor Create(Almf: TlmfImage);
 
+    procedure Draw(X, Y: Integer; SrcGraphic: TGraphic); override;
     procedure StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic); override;
 
     procedure Ellipse (x1,y1,x2,y2:integer); override; overload;
@@ -156,6 +163,7 @@ begin
   inherited Create;
   fCrs:=syncobjs.TCriticalSection.Create;
   fList:=TlmfList.Create(nil);
+  fLogUnitsPerInch := ONE_INCH_IN_TWIPS;
 end;
 
 destructor TlmfImage.Destroy;
@@ -496,6 +504,18 @@ begin
   end;
 end;
 
+procedure TlmfCanvas.Draw(X, Y: Integer; SrcGraphic: TGraphic);
+var
+  R: TRect;
+  ppi: Integer = 96;  // Pixels per inch of SrcGraphic -- to do: should be extracted from file
+begin
+  R.Left := X;
+  R.Top := Y;
+  R.Right := round(X + SrcGraphic.Width / ppi * fImage.LogUnitsPerInch);
+  R.Bottom := round(Y + SrcGraphic.Height / ppi * fImage.LogUnitsPerInch);
+  StretchDraw(R, SrcGraphic);
+end;
+
 procedure TlmfCanvas.StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic);
 var
   item: TlmfPicture;
@@ -505,7 +525,7 @@ begin
     exit;
   if (SrcGraphic is TCustomBitmap) and (TCustomBitmap(SrcGraphic).PixelFormat = pf32bit) then
   begin
-    // Convert to 24 bbpp bitmap and switch to mask-transparency because wmf
+    // Convert to 24 bpp bitmap and switch to mask-transparency because wmf
     // does not support alpha channel.
     bmp := TBitmap.Create;
     bmp.PixelFormat := pf24bit;

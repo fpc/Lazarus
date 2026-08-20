@@ -1531,6 +1531,7 @@ procedure TVisualTree.VSTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
   Column: TColumnIndex; TextType: TVSTTextType; var CellText: String);
 var
   Data: PData;
+  ver, installedVer, updateVer: Double;
 begin
   Data := FVST.GetNodeData(Node);
   if TextType = ttStatic then
@@ -1628,34 +1629,46 @@ begin
              1: CellText := rsMainFrm_VSTText_PackageState1;
              2: CellText := rsMainFrm_VSTText_PackageState2;
              3: begin
+                  ver := VersionAsNumber(Data^.Version);
+                  installedVer := VersionAsNumber(Data^.InstalledVersion);
+                  updateVer := VersionAsNumber(Data^.UpdateVersion);
                   if not Data^.HasUpdate then
                   begin
                     if (Data^.UpdateVersion = '') then
                     begin
-                      if Data^.InstalledVersion < Data^.Version then
+                      if (installedVer = -1) or (ver = -1) then
+                        CellText := rsMainFrm_VSTText_VersionError
+                      else
+                      if installedVer < ver then
                         CellText := rsMainFrm_VSTText_PackageState6
-                      else if Data^.InstalledVersion = Data^.Version then
+                      else if installedVer = ver then
                         CellText := rsMainFrm_VSTText_PackageState4
-                      else if Data^.InstalledVersion > Data^.Version then
+                      else if installedVer > ver then
                         CellText := rsMainFrm_VSTText_PackageState7
                     end
                     else
                     begin
-                      if Data^.InstalledVersion < Data^.UpdateVersion then
+                      if (installedVer = -1) or (updateVer = -1) then
+                        CellText := rsMainFrm_VSTText_VersionError
+                      else
+                      if installedVer < updateVer then
                         CellText := rsMainFrm_VSTText_PackageState6
-                      else if (Data^.InstalledVersion = Data^.UpdateVersion) then
+                      else if (installedVer = updateVer) then
                         CellText := rsMainFrm_VSTText_PackageState4
-                      else if (Data^.InstalledVersion > Data^.UpdateVersion) then
+                      else if (installedVer > updateVer) then
                         CellText := rsMainFrm_VSTText_PackageState7
                     end;
                   end
                   else
                   begin
-                    if Data^.InstalledVersion < Data^.UpdateVersion then
+                    if (installedVer = -1) or (updateVer = -1) then
+                      CellText := rsMainFrm_VSTText_VersionError
+                    else
+                    if installedVer < updateVer then
                       CellText := rsMainFrm_VSTText_PackageState6
-                    else if Data^.InstalledVersion = Data^.UpdateVersion then
+                    else if installedVer = updateVer then
                       CellText := rsMainFrm_VSTText_PackageState4
-                    else if Data^.InstalledVersion > Data^.UpdateVersion then
+                    else if installedVer > updateVer then
                       CellText := rsMainFrm_VSTText_PackageState7
                   end;
                   Data^.IsUpdated := CellText = rsMainFrm_VSTText_PackageState4;

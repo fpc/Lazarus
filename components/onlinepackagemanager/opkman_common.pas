@@ -155,6 +155,7 @@ function FixProtocol(const AURL: String): String;
 function IsDirectoryEmpty(const ADirectory: String): Boolean;
 function CleanDirectory(const ADirectory: String): Boolean;
 function CreateDisabledImageList(AImageList: TCustomImageList; AOwner: TComponent): TImageList;
+function VersionAsNumber(AVersion: String): Double;
 
 implementation
 
@@ -595,6 +596,40 @@ begin
   finally
     Result.EndUpdate;
   end;
+end;
+
+function VersionAsNumber(AVersion: String): Double;
+var
+  sa: TStringArray;
+  i, d: Integer;
+  factor: Double;
+begin
+  if AVersion = '' then
+  begin
+    Result := 0.0;
+    exit;
+  end;
+
+  sa := AVersion.Split('.');
+  Result := 0.0;
+  for i := 0 to 3 do
+  begin
+    Result := Result * 100;
+    if (i < Length(sa)) then
+      if TryStrToInt(sa[i], d) and (d >= 0) and (d < 100) then
+        Result := Result + d
+      else
+        exit(-1);
+  end;
+  factor := 0.01;
+  if Length(sa) > 4 then
+    for i := 4 to High(sa) do begin
+      if TryStrToInt(sa[i], d) and (d >= 0) and (d < 100) then
+        Result := Result + factor * d
+      else
+        exit(-1);
+      factor := factor * 0.01;
+    end;
 end;
 
 end.
