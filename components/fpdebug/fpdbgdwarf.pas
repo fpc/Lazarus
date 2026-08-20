@@ -1225,6 +1225,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     property DbgInfo: TFpDwarfInfo read FDwarf;
     property ProcAddress: TDBGPtr read FAddress;
     property AddressInfo: PDwarfAddressInfo read FAddressInfo;
+    procedure AddressNeeded; override;
   public
     constructor Create(ACompilationUnit: TDwarfCompilationUnit; AInfo: PDwarfAddressInfo; AAddress: TDbgPtr; ADbgInfo: TFpDwarfInfo = nil); overload;
     destructor Destroy; override;
@@ -7775,6 +7776,23 @@ begin
 end;
 
 { TDbgDwarfSymbol }
+
+procedure TFpSymbolDwarfDataProc.AddressNeeded;
+var
+  t: TFpDbgMemLocation;
+begin
+  if (FDwarf = nil) then begin
+    // created without address
+
+    // NOTE: Only read address from DW_AT_low_pc in DWARF, no value needed
+    if GetValueAddress(nil, t) then
+      SetAddress(t)
+    else
+      SetAddress(InvalidLoc);
+  end
+  else
+  inherited AddressNeeded;
+end;
 
 constructor TFpSymbolDwarfDataProc.Create(
   ACompilationUnit: TDwarfCompilationUnit; AInfo: PDwarfAddressInfo;

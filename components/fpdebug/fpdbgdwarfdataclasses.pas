@@ -4428,9 +4428,7 @@ function TFpDwarfInfo.FindNamedProcSymbol(const AName: String;
   AFlags: TFpProcSearchFlags): TFpSymbol;
 var
   Ctx: TFpDbgSimpleLocationContext;
-  Scope: TFpDbgSymbolScope;
-  Val: TFpValue;
-  Addr: TFpDbgMemLocation;
+  Scope: TFpDwarfInfoSymbolScopeBase;
 begin
   Result := nil;
   (* Each TDbgInfo answers for its own namespace only. This one is the
@@ -4440,34 +4438,18 @@ begin
   if (AName = '') or (CompilationUnitsCount = 0) then
     exit;
 
-  (* A scope built with no symbol searches the compilation units directly: no
-     locals and no class fields, which is what a procedure lookup wants. The
-     context still carries an address and that address means nothing here, so
-     the search must not filter on it. 0 can NOT be used to say "no location" -
-     it is a usable code address on some targets - hence fsfNoAddressCheck.
-
-     The unit search compares names case insensitively either way, so
-     psfIgnoreCase makes no difference on this path. *)
+  (* NOTE: Warning, the context does not have a valid ThreadId.
+     Only search for TFpSymbol, so Scope.ApplyContext will not be called.
+  *)
   Ctx := TFpDbgSimpleLocationContext.Create(MemManager, 0,
     CompilationUnits[0].AddressSize, 0, 0);
   Scope := CompilationUnits[0].DwarfSymbolClassMap.CreateScopeForSymbol(Ctx, nil, Self);
   try
     if Scope = nil then
       exit;
-    Val := Scope.FindSymbol(AName, '', [fsfNoAddressCheck, fsfOnlySubroutines]);
-    if Val = nil then
+    if not Scope.FindExportedSymbolInUnits(AName, NameInfoForSearch(AName), nil, Result, '', [fsfNoAddressCheck, fsfOnlySubroutines])
+    then
       exit;
-
-    (* The entry PC is on the VALUE, not on the symbol: a symbol built straight
-       from the DIE has no address of its own, and the value is also what falls
-       back to the linkage name in the link table. Take the address, then let
-       the existing by-address lookup build the symbol, so that a caller gets
-       the same object it would get from FindProcSymbol(Address) - line info
-       and all. *)
-    Addr := Val.DataAddress;
-    Val.ReleaseReference;
-    if IsValidLoc(Addr) then
-      Result := FindProcSymbol(Addr.Address);
   finally
     Scope.ReleaseReference;
     Ctx.ReleaseReference;
