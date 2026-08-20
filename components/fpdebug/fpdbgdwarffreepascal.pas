@@ -34,6 +34,7 @@ type
     class function GetInstanceForDbgInfo(ADbgInfo: TDbgInfo):TFpDwarfFreePascalSymbolClassMap;
   public
     constructor Create(ACU: TDwarfCompilationUnit; AHelperData: Pointer); override;
+    procedure InitCompUnit(ACU: TDwarfCompilationUnit; var AClassMapInfo: TFpSymbolDwarfClassMapCuInfo); override;
     function IgnoreCfiStackEnd: boolean; override;
     function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
     function CreateScopeForSymbol(ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol;
@@ -87,6 +88,17 @@ type
     //  AInfo: PDwarfAddressInfo; AAddress: TDbgPtr): TDbgDwarfSymbolBase; override;
   end;
 
+  { TFpDwarfFreePascalSymbolDwarfClassMapCuInfo }
+
+  TFpDwarfFreePascalSymbolDwarfClassMapCuInfo = class(TFpSymbolDwarfClassMapCuInfo)
+  protected type
+    TFpDwarfFreePascalKnowUnit = (fpcUNotKnown, fpcUSystem, fpcUSysUtils, fpcUTypInfo);
+  private
+    FFpcKnownUnit: TFpDwarfFreePascalKnowUnit;
+  public
+    property FpcKnownUnit: TFpDwarfFreePascalKnowUnit read FFpcKnownUnit write FFpcKnownUnit;
+  end;
+
   {%EndRegion }
 
   {%Region * ***** Context ***** *}
@@ -99,9 +111,8 @@ type
     FOuterNotFound: Boolean;
     FClassVarStaticPrefix: String;
 
-    FSystemCU, FSysUtilsCU, FTypInfoCU: TDwarfCompilationUnit;
     FFoundSystemInfoEntry: TDwarfInformationEntry;
-    FInAllUnitSearch, FSearchSpecialCuDone: boolean;
+    FInAllUnitSearch: boolean;
   protected
     function FindExportedSymbolInUnit(CU: TDwarfCompilationUnit;
       const ANameInfo: TNameSearchInfo; out
@@ -635,6 +646,25 @@ begin
   inherited Create(ACU, AHelperData);
 end;
 
+procedure TFpDwarfFreePascalSymbolClassMap.InitCompUnit(ACU: TDwarfCompilationUnit;
+  var AClassMapInfo: TFpSymbolDwarfClassMapCuInfo);
+var
+  FpcClassMapInfo: TFpDwarfFreePascalSymbolDwarfClassMapCuInfo absolute AClassMapInfo;
+  s: String;
+begin
+  AClassMapInfo := TFpDwarfFreePascalSymbolDwarfClassMapCuInfo.Create;
+
+  s := LowerCase(ACU.UnitName);
+  if (s = 'system') then
+    FpcClassMapInfo.FpcKnownUnit := fpcUSystem
+  else
+  if (s = 'sysutils') then
+    FpcClassMapInfo.FpcKnownUnit := fpcUSysUtils
+  else
+  if (s = 'typinfo') and (pos('objpas', LowerCase(ACU.FileName)) > 0) then
+    FpcClassMapInfo.FpcKnownUnit := fpcUTypInfo;
+end;
+
 function TFpDwarfFreePascalSymbolClassMap.IgnoreCfiStackEnd: boolean;
 begin
   Result := FCompilerVersion < $030301;
@@ -819,15 +849,21 @@ function TFpDwarfFreePascalSymbolScope.FindExportedSymbolInUnit(
   CU: TDwarfCompilationUnit; const ANameInfo: TNameSearchInfo; out
   AnInfoEntry: TDwarfInformationEntry; out AnIsExternal: Boolean;
   AFindFlags: TFindExportedSymbolsFlags): Boolean;
+var
+  u: TFpDwarfFreePascalSymbolDwarfClassMapCuInfo.TFpDwarfFreePascalKnowUnit;
 begin
   // those units have scoped enums, that conflict with common types
-  if (CU = FSysUtilsCU) or (CU = FTypInfoCU) then
+  u := fpcUNotKnown;
+  if (CU.ClassMapInfo <> nil) and (CU.ClassMapInfo is TFpDwarfFreePascalSymbolDwarfClassMapCuInfo) then
+    u := TFpDwarfFreePascalSymbolDwarfClassMapCuInfo(CU.ClassMapInfo).FpcKnownUnit;
+
+  if u in [fpcUSysUtils, fpcUTypInfo] then
     Include(AFindFlags, fsfIgnoreEnumVals);
 
   Result := inherited FindExportedSymbolInUnit(CU, ANameInfo, AnInfoEntry,
     AnIsExternal, AFindFlags);
 
-  if Result and FInAllUnitSearch and (CU = FSystemCU) then begin
+  if Result and FInAllUnitSearch and (u = fpcUSystem) then begin
     FFoundSystemInfoEntry := AnInfoEntry;
     AnInfoEntry := nil;
     Result := False;
@@ -838,24 +874,8 @@ function TFpDwarfFreePascalSymbolScope.FindExportedSymbolInUnits(const AName: St
   const ANameInfo: TNameSearchInfo; SkipCompUnit: TDwarfCompilationUnit; out ADbgValue: TFpValue;
   const OnlyUnitNameLower: String; AFindFlags: TFindExportedSymbolsFlags): Boolean;
 var
-  i: Integer;
   CU: TDwarfCompilationUnit;
-  s: String;
 begin
-  if not FSearchSpecialCuDone then begin
-    for i := 0 to Dwarf.CompilationUnitsCount - 1 do begin
-      CU := Dwarf.CompilationUnits[i];
-      s := LowerCase(CU.UnitName);
-      if (s = 'system') then
-        FSystemCU := CU;
-      if (s = 'sysutils') then
-        FSysUtilsCU := CU;
-      if (s = 'typinfo') and (pos('objpas', LowerCase(CU.FileName)) > 0) then
-        FTypInfoCU := CU;
-    end;
-    FSearchSpecialCuDone := True;
-  end;
-
   FInAllUnitSearch := True;
   FFoundSystemInfoEntry := nil;
   Result := inherited FindExportedSymbolInUnits(AName, ANameInfo, SkipCompUnit,

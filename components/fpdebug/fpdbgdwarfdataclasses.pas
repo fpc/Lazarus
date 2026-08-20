@@ -612,6 +612,9 @@ type
     Provides Symbol and VAlue evaluation classes depending on the compiler
   }
 
+  TFpSymbolDwarfClassMapCuInfo = class
+  end;
+
   PFpDwarfSymbolClassMap = ^TFpSymbolDwarfClassMap;
 
   TFpSymbolDwarfClassMap = class
@@ -627,6 +630,7 @@ type
     class function ClassCanHandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; virtual; abstract;
   public
     constructor Create(ACU: TDwarfCompilationUnit; AHelperData: Pointer); virtual;
+    procedure InitCompUnit(ACU: TDwarfCompilationUnit; var AClassMapInfo: TFpSymbolDwarfClassMapCuInfo); virtual;
     function IgnoreCfiStackEnd: boolean; virtual;
     function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; virtual; abstract;
     function CreateScopeForSymbol(ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol;
@@ -709,6 +713,7 @@ type
     FWaitForComputeHashesSection: TWaitableSection;
     FBuildAddressMapSection: TWaitableSection;
   private
+    FClassMapInfo: TFpSymbolDwarfClassMapCuInfo;
     FOwner: TFpDwarfInfo;
     FDebugFile: PDwarfDebugFile;
     FDwarfSymbolClassMap: TFpSymbolDwarfClassMap;
@@ -843,6 +848,7 @@ type
     property DebugFile: PDwarfDebugFile read FDebugFile;
 
     property DwarfSymbolClassMap: TFpSymbolDwarfClassMap read FDwarfSymbolClassMap;
+    property ClassMapInfo: TFpSymbolDwarfClassMapCuInfo read FClassMapInfo;
     property FirstScope: TDwarfScopeInfo read GetFirstScope;
 
     // public for FpDbgDwarfVerbosePrinter
@@ -1195,6 +1201,12 @@ constructor TFpSymbolDwarfClassMap.Create(ACU: TDwarfCompilationUnit;
   AHelperData: Pointer);
 begin
   inherited Create;
+end;
+
+procedure TFpSymbolDwarfClassMap.InitCompUnit(ACU: TDwarfCompilationUnit;
+  var AClassMapInfo: TFpSymbolDwarfClassMapCuInfo);
+begin
+  //
 end;
 
 function TFpSymbolDwarfClassMap.CanHandleCompUnit(ACU: TDwarfCompilationUnit;
@@ -6001,6 +6013,7 @@ begin
 
   if not FAbbrevList.Valid then begin
     FDwarfSymbolClassMap := DwarfSymbolClassMapList.FDefaultMap.GetInstanceForCompUnit(Self);
+    FDwarfSymbolClassMap.InitCompUnit(Self, FClassMapInfo);
     exit;
   end;
 
@@ -6013,6 +6026,7 @@ begin
   if not Scope.IsValid then begin
     DebugLn(FPDBG_DWARF_WARNINGS, ['WARNING compilation unit has no compile_unit tag']);
     FDwarfSymbolClassMap := DwarfSymbolClassMapList.FDefaultMap.GetInstanceForCompUnit(Self);
+    FDwarfSymbolClassMap.InitCompUnit(Self, FClassMapInfo);
     Exit;
   end;
   FValid := True;
@@ -6034,6 +6048,7 @@ begin
 
   FDwarfSymbolClassMap := DwarfSymbolClassMapList.FindMapForCompUnit(Self);
   assert(FDwarfSymbolClassMap <> nil, 'TDwarfCompilationUnit.Create: FDwarfSymbolClassMap <> nil');
+  FDwarfSymbolClassMap.InitCompUnit(Self, FClassMapInfo);
 
   if not LocateAttribute(Scope.Entry, DW_AT_identifier_case, AttribList, Attrib, Form)
   and not ReadValue(Attrib, Form, FIdentifierCase)
@@ -6097,6 +6112,7 @@ begin
   FreeAndNil(FLineInfo.FileNames);
 
   inherited Destroy;
+  FClassMapInfo.Free;
 end;
 
 function TDwarfCompilationUnit.InitLocateAttributeList(AEntry: Pointer;
