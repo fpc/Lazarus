@@ -3557,6 +3557,7 @@ begin
             end;
           end;
         end;
+        FNestedComments:=cmsNested_comment in FCompilerModeSwitches; // need to refresh FNestedComments value
       end;
       exit;
     end;
