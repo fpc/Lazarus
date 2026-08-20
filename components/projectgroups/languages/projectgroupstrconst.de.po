@@ -28,12 +28,12 @@ msgstr "Ziel: %s"
 #: projectgroupstrconst.lisaddallfromdirectorycaption
 msgctxt "projectgroupstrconst.lisaddallfromdirectorycaption"
 msgid "Add all from directory recursively"
-msgstr ""
+msgstr "Alles aus dem Verzeichnis rekursiv hinzufügen"
 
 #: projectgroupstrconst.lisaddallfromdirectoryhint
 msgctxt "projectgroupstrconst.lisaddallfromdirectoryhint"
 msgid "Add all existing targets from directory and its subdirectories to project group"
-msgstr ""
+msgstr "Alle vorhandenen Ziele aus dem Verzeichnis und den Unterverzeichnissen zur Projektgruppe hinzufügen"
 
 #: projectgroupstrconst.lisallfiles
 msgid "All files"
@@ -64,11 +64,11 @@ msgstr "Erstellmodus \"%s\" nicht gefunden."
 
 #: projectgroupstrconst.lischangesgetlostatreload
 msgid "There are unsaved changes that get lost if you reload the project group. Do you really want to reload?"
-msgstr ""
+msgstr "Es gibt nicht gesicherte Änderungen, die verloren gehen, wenn Sie die Projektgruppe neu laden. Möchten Sie wirklich neu laden?"
 
 #: projectgroupstrconst.liscompileandbuildcompiletarget
 msgid "\"Compile\" and \"Build\" compile target"
-msgstr ""
+msgstr "\"Kompilieren\" und \"Erstellen\" des Kompilier-Ziels"
 
 #: projectgroupstrconst.liscompilepackage
 #, object-pascal-format
@@ -86,14 +86,10 @@ msgstr "Änderungen verwerfen"
 
 #: projectgroupstrconst.lisenabletoshowtargetfilenameswithpaths
 msgid "Enable to show target filenames with paths."
-msgstr ""
+msgstr "Ziel-Dateinamen mit Pfad anzeigen."
 
 #: projectgroupstrconst.liserrnosuchfile
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Could not find target file\n"
-#| "\"%s\"\n"
-#| "What do you want to do?\n"
+#, object-pascal-format
 msgid ""
 "Could not find target file\n"
 "\"%s\"\n"
@@ -101,11 +97,11 @@ msgid ""
 msgstr ""
 "Kann Zieldatei nicht finden\n"
 "\"%s\"\n"
-"Was wollen Sie tun?\n"
+"Was wollen Sie tun?"
 
 #: projectgroupstrconst.liserronlyprojectgroupallowed
 msgid "Only target type \"projectgroup\" is allowed for root project group."
-msgstr ""
+msgstr "Nur der Zieltyp \"projectgroup\" ist für die Root-Projektgruppe erlaubt."
 
 #: projectgroupstrconst.liserrorreadingprojectgroupfile
 #, object-pascal-format
@@ -118,16 +114,16 @@ msgstr "Das Ziel existiert nicht. Entfernen?"
 
 #: projectgroupstrconst.lisidecommandscompileandbuildinvokecompilebuildselect
 msgid "IDE commands \"Compile\" and \"Build\" invoke compile/build selected target in project group editor"
-msgstr ""
+msgstr "Die IDE-Kommandos \"Kompilieren\" und \"Erstellen\" rufen kompilieren/erstellen für das Ziel im Projektgruppen-Editor auf"
 
 #: projectgroupstrconst.lisinfo
 msgctxt "projectgroupstrconst.lisinfo"
 msgid "Info"
-msgstr ""
+msgstr "Informationen"
 
 #: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
 msgid "Invalid cycle. A project group cannot have itself as target."
-msgstr ""
+msgstr "Ungültiger Zyklus. Eine Projektgruppe kann sich nicht selbst als Ziel enthalten."
 
 #: projectgroupstrconst.lisinvalidfile
 msgid "Invalid File"
@@ -136,7 +132,7 @@ msgstr "Ungültige Datei"
 #: projectgroupstrconst.lisinvalidxmlfilename
 #, object-pascal-format
 msgid "Invalid XML file name \"%s\"."
-msgstr "Ungültiger XML-Dateiname \"%s\""
+msgstr "Ungültiger XML-Dateiname \"%s\"."
 
 #: projectgroupstrconst.lislazaruspackageslpk
 msgid "Lazarus packages (*.lpk)"
@@ -152,7 +148,7 @@ msgstr "Lazarus-Projekte (*.lpi)"
 
 #: projectgroupstrconst.lislazarussupportedinprojectgroups
 msgid "Lazarus files (*.lpi;*.lpk;*.lpg;*.pas;*.pp;*.p)"
-msgstr ""
+msgstr "Lazarus-Dateien (*.lpi;*.lpk;*.lpg;*.pas;*.pp;*.p)"
 
 #: projectgroupstrconst.lislazbuildnotfound
 msgid "lazbuild not found"
@@ -201,11 +197,11 @@ msgstr "Ziele"
 
 #: projectgroupstrconst.lisonidestartreopenlastopengroup
 msgid "On IDE start reopen last open group."
-msgstr ""
+msgstr "Zuletzt offene Gruppe beim IDE-Start erneut öffnen."
 
 #: projectgroupstrconst.lisopenlastgrouponstart
 msgid "Open last group on start"
-msgstr ""
+msgstr "Letzte Gruppe beim Neustart öffnen"
 
 #: projectgroupstrconst.lisopenprojectgroup
 msgid "Open Project Group ..."
@@ -217,7 +213,7 @@ msgstr "Aktuelle Projektgruppe öffnen"
 
 #: projectgroupstrconst.lisoptions
 msgid "Options"
-msgstr ""
+msgstr "Einstellungen"
 
 #: projectgroupstrconst.lisotherproject
 msgid "Other Project"
@@ -258,11 +254,11 @@ msgstr "Hinzufügen"
 
 #: projectgroupstrconst.lisprojectgroupaddcurrentprojectcaption
 msgid "Add current project"
-msgstr ""
+msgstr "Aktuelles Projekt hinzufügen"
 
 #: projectgroupstrconst.lisprojectgroupaddcurrentprojecthint
 msgid "Add current project to project group"
-msgstr ""
+msgstr "Aktuelles Projekt zu Projektgruppe hinzufügen"
 
 #: projectgroupstrconst.lisprojectgroupaddexistingcaption
 #, fuzzy
@@ -277,7 +273,7 @@ msgstr "Vorhandenes Ziel zur Projektgruppe hinzufügen"
 
 #: projectgroupstrconst.lisprojectgroupaddhint
 msgid "Add targets to project group"
-msgstr ""
+msgstr "Ziele zu Projektgruppe hinzufügen"
 
 #: projectgroupstrconst.lisprojectgroupaddnewcaption
 msgctxt "projectgroupstrconst.lisprojectgroupaddnewcaption"
@@ -301,16 +297,13 @@ msgid "Project group modified"
 msgstr "Projektgruppe verändert"
 
 #: projectgroupstrconst.lisprojectgroupmodifiedconfirm
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Project group \"%s\" is modified.\n"
-#| "What do you want to do?\n"
+#, object-pascal-format
 msgid ""
 "Project group \"%s\" is modified.\n"
 "What do you want to do?"
 msgstr ""
 "Projektgruppe \"%s\" wurde verändert.\n"
-"Was wollen Sie tun?\n"
+"Was wollen Sie tun?"
 
 #: projectgroupstrconst.lisprojectgroupnewcaption
 #, fuzzy
@@ -332,7 +325,7 @@ msgstr "Öffnen"
 
 #: projectgroupstrconst.lisprojectgroupopenhint
 msgid "Open project group"
-msgstr ""
+msgstr "Projektgruppe öffnen"
 
 #: projectgroupstrconst.lisprojectgroupreload
 msgid "Reload"
@@ -344,24 +337,24 @@ msgstr "Projektgruppen"
 
 #: projectgroupstrconst.lisprojectgroupsaveascaption
 msgid "Save As ..."
-msgstr "Speichern unter ..."
+msgstr "Sichern unter ..."
 
 #: projectgroupstrconst.lisprojectgroupsaveashint
 msgid "Save project group with a new name"
-msgstr "Projektgruppe unter neuem Namen speichern"
+msgstr "Projektgruppe unter neuem Namen sichern"
 
 #: projectgroupstrconst.lisprojectgroupsavecaption
 msgid "Save"
-msgstr "Speichern"
+msgstr "Sichern"
 
 #: projectgroupstrconst.lisprojectgroupsavehint
 msgctxt "projectgroupstrconst.lisprojectgroupsavehint"
 msgid "Save project group"
-msgstr "Projektgruppe speichern"
+msgstr "Projektgruppe sichern"
 
 #: projectgroupstrconst.lisprojectgroupssourcepaths
 msgid "Project group's source paths"
-msgstr ""
+msgstr "Quellcode-Pfad der Projektgruppe"
 
 #: projectgroupstrconst.lisreaderror
 msgid "Read error"
@@ -369,7 +362,7 @@ msgstr "Lesefehler"
 
 #: projectgroupstrconst.lisredo
 msgid "Redo"
-msgstr ""
+msgstr "Wiederholen"
 
 #: projectgroupstrconst.lisremovetarget
 msgctxt "projectgroupstrconst.lisremovetarget"
@@ -379,20 +372,20 @@ msgstr "Ziel entfernen"
 #: projectgroupstrconst.lissavepg
 msgctxt "projectgroupstrconst.lissavepg"
 msgid "Save project group"
-msgstr "Projektgruppe speichern"
+msgstr "Projektgruppe sichern"
 
 #: projectgroupstrconst.lissaveprojectgroup
 msgctxt "projectgroupstrconst.lissaveprojectgroup"
 msgid "Save Project Group"
-msgstr "Projektgruppe speichern"
+msgstr "Projektgruppe sichern"
 
 #: projectgroupstrconst.lissaveprojectgroupas
 msgid "Save Project Group As ..."
-msgstr "Projektgruppe speichern unter ..."
+msgstr "Projektgruppe sichern unter ..."
 
 #: projectgroupstrconst.lisshowtargetpaths
 msgid "Show target paths"
-msgstr ""
+msgstr "Ziel-Pfade anzeigen"
 
 #: projectgroupstrconst.lisskipalltargets
 msgid "Remove all invalid targets"
@@ -400,7 +393,7 @@ msgstr "Alle ungültigen Ziele entfernen"
 
 #: projectgroupstrconst.lissourcedirectoriesofprojectgroup
 msgid "Source directories of project group:"
-msgstr ""
+msgstr "Quellcode-Verzeichnis der Projektgruppe:"
 
 #: projectgroupstrconst.listargetactivate
 msgid "Activate target"
@@ -440,7 +433,7 @@ msgstr "Sauber rekompilieren"
 
 #: projectgroupstrconst.listargetcompilecleanfromhere
 msgid "Compile clean from here"
-msgstr ""
+msgstr "Von hier sauber rekompilieren"
 
 #: projectgroupstrconst.listargetcompilecleanhint
 msgid "Compile selected target clean"
@@ -448,7 +441,7 @@ msgstr "Ausgewähltes Ziel sauber rekompilieren"
 
 #: projectgroupstrconst.listargetcompilefromhere
 msgid "Compile from here"
-msgstr ""
+msgstr "Von hier kompilieren"
 
 #: projectgroupstrconst.listargetcompilehint
 msgid "Compile selected target"
@@ -480,7 +473,7 @@ msgstr "Ziel früher erstellen"
 #: projectgroupstrconst.listargetinfocaption
 msgctxt "projectgroupstrconst.listargetinfocaption"
 msgid "Info ..."
-msgstr ""
+msgstr "Informationen ..."
 
 #: projectgroupstrconst.listargetinstall
 msgctxt "projectgroupstrconst.listargetinstall"
@@ -540,15 +533,15 @@ msgstr "Ziel entfernen"
 
 #: projectgroupstrconst.listargetrun
 msgid "Run Target"
-msgstr "Ziel starten"
+msgstr "Ziel ausführen"
 
 #: projectgroupstrconst.listargetruncaption
 msgid "Run"
-msgstr ""
+msgstr "Ausführen"
 
 #: projectgroupstrconst.listargetrunhint
 msgid "Run selected target"
-msgstr "Ausgewähltes Ziel starten"
+msgstr "Ausgewähltes Ziel ausführen"
 
 #: projectgroupstrconst.listargetuninstall
 msgctxt "projectgroupstrconst.listargetuninstall"
@@ -590,7 +583,7 @@ msgstr "Kann Projektgruppen-Datei \"%s\"%s%s nicht schreiben"
 
 #: projectgroupstrconst.lisundo
 msgid "Undo"
-msgstr ""
+msgstr "Rückgängig"
 
 #: projectgroupstrconst.liswriteerror
 msgid "Write error"

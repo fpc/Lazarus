@@ -1,0 +1,41 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: strminimap.sinitialfontsize
+msgid "Initial font size"
+msgstr "Anfängliche Schriftgröße"
+
+#: strminimap.smapwidth
+msgid "Minimap width"
+msgstr "Minimap-Breite"
+
+#: strminimap.sminimapconfigtitle
+msgid "Minimap"
+msgstr "Minimap"
+
+#: strminimap.sputmapleftofeditorre
+msgid "Put minimap left of editor (requires IDE restart for existing tabs)"
+msgstr "Minimap links neben dem Editor anzeigen (erfordert IDE-Neustart für vorhandene Tabs)"
+
+#: strminimap.sshowminimap
+msgid "Show minimap"
+msgstr "Minimap anzeigen"
+
+#: strminimap.sviewwindowcolor
+msgid "View window color"
+msgstr "Fensterfarbe anzeigen"
+
+#: strminimap.sviewwindowtextcolor
+msgid "View window text color"
+msgstr "Fenstertextfarbe anzeigen"
+

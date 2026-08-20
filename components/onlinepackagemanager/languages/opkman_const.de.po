@@ -18,7 +18,7 @@ msgstr "Abbrechen"
 
 #: opkman_const.rsaddrepositorypackagefrm_bcancel_hint
 msgid "Close the dialog"
-msgstr "Den Dialog schließen"
+msgstr "Dialog schließen"
 
 #: opkman_const.rsaddrepositorypackagefrm_bok_caption
 msgctxt "opkman_const.rsaddrepositorypackagefrm_bok_caption"
@@ -27,7 +27,7 @@ msgstr "OK"
 
 #: opkman_const.rsaddrepositorypackagefrm_bok_hint
 msgid "Close the dialog and create the package"
-msgstr "Den Dialog schließen und das Package erzeugen"
+msgstr "Dialog schließen und Package erzeugen"
 
 #: opkman_const.rsaddrepositorypackagefrm_caption
 msgid "Add repository package"
@@ -225,7 +225,7 @@ msgid ""
 "Cannot save private repository: \"%s\". Error message: \n"
 "\"%s\""
 msgstr ""
-"Kann privates Repository \"%s\" nicht speichern. Fehlermeldung: \n"
+"Kann privates Repository \"%s\" nicht sichern. Fehlermeldung: \n"
 "\"%s\""
 
 #: opkman_const.rscreaterepositoryfrm_error4
@@ -244,7 +244,7 @@ msgid ""
 "It's recommended to save the repository to an empty directory. Continue?"
 msgstr ""
 "Das Verzeichnis \"%s\" ist nicht leer.\n"
-"Es wird empfohlen, das Repository in ein leeres Verzeichnis zu speichern. Fortfahren?"
+"Es wird empfohlen, das Repository in einem leeren Verzeichnis zu sichern. Fortfahren?"
 
 #: opkman_const.rscreaterepositoryfrm_info3
 #, object-pascal-format
@@ -453,7 +453,7 @@ msgstr "Dateien an den externen Server abschicken"
 #: opkman_const.rscreaterepositorypackagefrm_caption
 msgctxt "opkman_const.rscreaterepositorypackagefrm_caption"
 msgid "Create repository package"
-msgstr "Erzeuge Repository-Package"
+msgstr "Repository-Package erzeugen"
 
 #: opkman_const.rscreaterepositorypackagefrm_error0
 msgid "Error reading package"
@@ -584,7 +584,7 @@ msgstr "Bitte warten..."
 
 #: opkman_const.rscreaterepositorypackagefrm_sddtitledst
 msgid "Save repository package to..."
-msgstr "Repository-Package speichern als..."
+msgstr "Repository-Package sichern als..."
 
 #: opkman_const.rscreaterepositorypackagefrm_sddtitlesrc
 msgid "Select package directory"
@@ -636,7 +636,7 @@ msgstr "In Zwischenablage kopieren"
 
 #: opkman_const.rsmainfrm_micreatejsonforupdates
 msgid "Create JSON for updates"
-msgstr "Erzeuge JSON für Aktualisierungen"
+msgstr "JSON für Aktualisierungen erzeugen"
 
 #: opkman_const.rsmainfrm_micreaterepository
 msgctxt "opkman_const.rsmainfrm_micreaterepository"
@@ -687,7 +687,7 @@ msgstr "Bewertung zurücksetzen"
 
 #: opkman_const.rsmainfrm_misave
 msgid "Save packages"
-msgstr "Packages speichern"
+msgstr "Packages sichern"
 
 #: opkman_const.rsmainfrm_misavechecked
 msgid "Checked"
@@ -695,7 +695,7 @@ msgstr "Ausgewählt"
 
 #: opkman_const.rsmainfrm_misavetofile
 msgid "Save to file"
-msgstr "In Datei speichern"
+msgstr "In Datei sichern"
 
 #: opkman_const.rsmainfrm_packagealreadydownloaded
 msgid "The following repository packages already exist in the target folder. Continue?"
@@ -722,8 +722,8 @@ msgid ""
 "None of the checked repository packages are available externally. Please make sure that package updates are enabled by default:\n"
 "Options->General->Check for package updates."
 msgstr ""
-"Keines der ausgewählten Repository-Packages ist extern vorhanden. Stellen Sie sicher, dass Package-Update standardmäßig aktiviert sind:\n"
-"Optionen -> Allgemein > Package-Updates prüfen."
+"Keines der ausgewählten Repository-Packages ist extern vorhanden. Stellen Sie sicher, dass Package-Updates standardmäßig aktiviert sind:\n"
+"Optionen -> Allgemein -> Package-Updates prüfen."
 
 #: opkman_const.rsmainfrm_packageupdatewarning
 msgid ""
@@ -741,7 +741,7 @@ msgstr "%s Packages erfolgreich aus Datei geladen!"
 #: opkman_const.rsmainfrm_resmessagecheckssaved
 #, object-pascal-format
 msgid "%s packages successfully saved to file!"
-msgstr "%s Packages erfolgreich in Datei gespeichert!"
+msgstr "%s Packages erfolgreich in Datei gesichert!"
 
 #: opkman_const.rsmainfrm_rsdestdirerror
 #, object-pascal-format
@@ -799,7 +799,7 @@ msgstr "Bitte ein oder mehrere Packages prüfen!"
 #: opkman_const.rsmainfrm_rspackagedependency0
 #, object-pascal-format
 msgid "Package \"%s\" depends on package \"%s\". Resolve dependency?"
-msgstr "Package \"%s\" hängt ab von Package \"%s\". Abhängigkeit auflösen?"
+msgstr "Package \"%s\" hängt von Package \"%s\" ab. Abhängigkeit auflösen?"
 
 #: opkman_const.rsmainfrm_rspackagedependency1
 msgid "Not resolving dependencies might lead to install failure! Continue?"
@@ -991,7 +991,7 @@ msgstr "Kategorie"
 
 #: opkman_const.rsmainfrm_vsttext_comdesc
 msgid "Community description for metapackage"
-msgstr "Community-Beschreibung des Meta-Packages"
+msgstr "Community-Beschreibung des Meta-Package"
 
 #: opkman_const.rsmainfrm_vsttext_communitydescription
 msgid "Community description"
@@ -1334,7 +1334,7 @@ msgstr "Version"
 
 #: opkman_const.rsmainfrm_vsttext_versionerror
 msgid "(Version error)"
-msgstr ""
+msgstr "(Versionsfehler)"
 
 #: opkman_const.rsmenulazaruspackagemanager
 msgid "Online Package Manager ..."
@@ -1376,7 +1376,7 @@ msgstr "Online-Packages installieren"
 
 #: opkman_const.rsopmintfpackagelistfrm_pninfo
 msgid "Please check before install: Lazarus/FPC compatibility, widgetset support, license and version info"
-msgstr "Bitte vor der Installation: prüfen Lazarus/FPC-Kompatibilität, Widgetset-Unterstützung, Lizenz und Versions-Information"
+msgstr "Bitte vor der Installation prüfen: Lazarus/FPC-Kompatibilität, Widgetset-Unterstützung, Lizenz und Versions-Information"
 
 #: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data
 msgctxt "opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data"
@@ -1409,7 +1409,7 @@ msgstr "Bearbeiten"
 
 #: opkman_const.rsoptions_bpoptions_bhelp
 msgid "Restore defaults"
-msgstr "Standard wiederherstellen"
+msgstr "Standards wiederherstellen"
 
 #: opkman_const.rsoptions_cbcheckforupdates_item0
 msgid "Every few minutes"
@@ -1484,11 +1484,11 @@ msgstr "Package-Betreuer"
 
 #: opkman_const.rsoptions_cbusedefaulttheme_caption
 msgid "Use default theme manager"
-msgstr "Den Standard-Themenmanager verwenden"
+msgstr "Standard-Themenmanager verwenden"
 
 #: opkman_const.rsoptions_edlocalrepositoryarchive_hint
 msgid "The folder where the zip files are downloaded from the remote repository"
-msgstr "Verzeichnis, in dem die aus dem externen Repository heruntergeladenen Zip-Dateien gespeichert werden"
+msgstr "Verzeichnis, in dem die aus dem externen Repository heruntergeladenen Zip-Dateien gesichert werden"
 
 #: opkman_const.rsoptions_edlocalrepositorypackages_hint
 msgid "The folder where the repository packages are extracted/installed"
@@ -1496,7 +1496,7 @@ msgstr "Verzeichnis, in dem die Repository-Packages extrahiert/installiert werde
 
 #: opkman_const.rsoptions_edlocalrepositoryupdate_hint
 msgid "The folder where the zip files are downloaded from the package maintainer webpage"
-msgstr "Verzeichnis, in dem die von der Internetseite des Package-Betreuers heruntergeladenen Zip-Dateien gespeichert werden"
+msgstr "Verzeichnis, in dem die von der Internetseite des Package-Betreuers heruntergeladenen Zip-Dateien gesichert werden"
 
 #: opkman_const.rsoptions_frmcaption
 msgctxt "opkman_const.rsoptions_frmcaption"
@@ -1544,7 +1544,7 @@ msgstr "Bitte ein gültiges Verzeichnis eingeben!"
 #: opkman_const.rsoptions_lastupdate_never
 msgctxt "opkman_const.rsoptions_lastupdate_never"
 msgid "never"
-msgstr "Niemals"
+msgstr "niemals"
 
 #: opkman_const.rsoptions_lbcheckforupdates_caption
 msgid "Check external repositories for package updates"
@@ -1638,7 +1638,7 @@ msgstr "Verhält sich wie ein normales Hint-Fenster"
 
 #: opkman_const.rsoptions_rbhintformoptions_item1
 msgid "It's triggered by SHIFT, moves with the mouse"
-msgstr "Wird mit SHIFT und Maus-Bewegung getriggert"
+msgstr "Wird mit SHIFT und Maus-Bewegung ausgelöst"
 
 #: opkman_const.rsoptions_rbhintformoptions_item2
 msgid "Off"
@@ -1662,7 +1662,7 @@ msgstr "Dateien nie herunterladen"
 
 #: opkman_const.rsoptions_remoterepository_information
 msgid "Please enter the remote repository address!"
-msgstr "Adresse des externen Repositoriums eingeben!"
+msgstr "Adresse des externen Repository eingeben!"
 
 #: opkman_const.rsoptions_restoredefaults_conf
 msgid "This will restore the default settings. Continue?"
@@ -1717,19 +1717,19 @@ msgstr "Ja"
 
 #: opkman_const.rspackagelistfrm_caption0
 msgid "Installed package list"
-msgstr "Installierte-Packages-Liste"
+msgstr "Liste installierter Packages"
 
 #: opkman_const.rspackagelistfrm_caption1
 msgid "Downloaded package list"
-msgstr "Heruntergeladene-Packages-Liste"
+msgstr "Liste heruntergeladener Packages"
 
 #: opkman_const.rspackagelistfrm_caption2
 msgid "Update package list"
-msgstr "Aktualisierte-Packages-Liste"
+msgstr "Liste aktualisierter Packages"
 
 #: opkman_const.rspackagelistfrm_caption3
 msgid "Incompatible package list"
-msgstr "Inkompatible Package-Liste"
+msgstr "Liste inkompatibler Packages"
 
 #: opkman_const.rspackagelistfrm_curfpcver
 msgid "Current FPC version: "
@@ -1737,7 +1737,7 @@ msgstr "Aktuelle FPC-Version: "
 
 #: opkman_const.rspackagelistfrm_curlazver
 msgid "Current Lazarus version: "
-msgstr "Aktuelle FPC-Version: "
+msgstr "Aktuelle Lazarus-Version: "
 
 #: opkman_const.rspackagelistfrm_curws
 msgid "Current widgetset: "
@@ -1770,23 +1770,23 @@ msgstr "(%s Repository-Packages gefunden, mit %s lpk-Dateien, Gesamtgröße %s)"
 
 #: opkman_const.rsprogressfrm_caption0
 msgid "Downloading packages"
-msgstr "Lade Packages herunter"
+msgstr "Packages herunterladen"
 
 #: opkman_const.rsprogressfrm_caption1
 msgid "Extracting packages"
-msgstr "Extrahiere Packages"
+msgstr "Packages extrahieren"
 
 #: opkman_const.rsprogressfrm_caption2
 msgid "Installing packages"
-msgstr "Installiere Packages"
+msgstr "Packages installieren"
 
 #: opkman_const.rsprogressfrm_caption3
 msgid "Updating packages"
-msgstr "Aktualisiere Packages"
+msgstr "Packages aktualisieren"
 
 #: opkman_const.rsprogressfrm_caption4
 msgid ". Please wait..."
-msgstr ". Bitte warten..."
+msgstr ". Bitte warten ..."
 
 #: opkman_const.rsprogressfrm_caption5
 msgid "Unknown"
@@ -1833,7 +1833,7 @@ msgstr "Kann Download-Seite nicht kontaktieren"
 
 #: opkman_const.rsprogressfrm_error6
 msgid "No valid download link found."
-msgstr "Kein gültiger Download-Link gefunden."
+msgstr "Keinen gültigen Download-Link gefunden."
 
 #: opkman_const.rsprogressfrm_error7
 msgctxt "opkman_const.rsprogressfrm_error7"
@@ -1865,11 +1865,11 @@ msgstr "Kontaktiere Download-Seite für \"%s\" (%s)"
 
 #: opkman_const.rsprogressfrm_info3
 msgid "Preparing to download. Please wait..."
-msgstr "Bereite Download vor. Bitte warten..."
+msgstr "Bereite Download vor. Bitte warten ..."
 
 #: opkman_const.rsprogressfrm_info4
 msgid "Canceling. Please wait..."
-msgstr "Breche ab. Bitte warten..."
+msgstr "Breche ab. Bitte warten ..."
 
 #: opkman_const.rsprogressfrm_info5
 msgid "Opening package:"
@@ -1910,7 +1910,7 @@ msgstr "Verbleibend:"
 
 #: opkman_const.rsprogressfrm_lbspeedcalc_caption
 msgid "Estimating. Please wait..."
-msgstr "Kalkuliere. Bitte warten..."
+msgstr "Kalkuliere. Bitte warten ..."
 
 #: opkman_const.rsprogressfrm_lbspeed_caption
 msgid "Speed:"
@@ -1979,7 +1979,7 @@ msgstr "Abbrechen"
 #: opkman_const.rsrepositorydetailsfrm_bcancel_hint
 msgctxt "opkman_const.rsrepositorydetailsfrm_bcancel_hint"
 msgid "Close the dialog without saving"
-msgstr "Den Dialog schließen ohne Speichern"
+msgstr "Den Dialog schließen ohne Sichern"
 
 #: opkman_const.rsrepositorydetailsfrm_bok_caption
 msgctxt "opkman_const.rsrepositorydetailsfrm_bok_caption"
@@ -1989,7 +1989,7 @@ msgstr "OK"
 #: opkman_const.rsrepositorydetailsfrm_bok_hint
 msgctxt "opkman_const.rsrepositorydetailsfrm_bok_hint"
 msgid "Save and close the dialog"
-msgstr "Speichern und den Dialog schließen"
+msgstr "Sichern und den Dialog schließen"
 
 #: opkman_const.rsrepositorydetailsfrm_caption
 msgctxt "opkman_const.rsrepositorydetailsfrm_caption"

@@ -1,0 +1,59 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: emsstrings.emsactive
+msgid "Scripting active."
+msgstr "Skripting aktiv."
+
+#: emsstrings.emsbtntestagain
+msgid "Test again"
+msgstr "Test wiederholen"
+
+#: emsstrings.emseditormacrotitle
+msgid "Editor Macro Script"
+msgstr "Editor Makro Skript"
+
+#: emsstrings.emsnotactive
+msgid "Scripting not active. Selftest failed."
+msgstr "Skripting nicht aktiv. Selbsttest fehlgeschlagen."
+
+#: emsstrings.emsnotactiveverbose
+msgid "EditorMacroScript failed its self-test and is not active. Some macros may not work."
+msgstr "EditorMakroSkripts: Selbsttest fehlgeschlagen und nicht aktiv. Einige Makros funktionieren möglicherweise nicht."
+
+#: emsstrings.emsnotsupported
+msgid "Scripting not active. Not supported on this platform or CPU."
+msgstr "Skripting nicht aktiv. Auf dieser Plattform oder CPU nicht unterstützt."
+
+#: emsstrings.emspending
+msgid "Scripting not active. Selftest will run next time the IDE is started."
+msgstr "Skripting nicht aktiv. Selbsttest wird beim nächsten Start der IDE gestartet."
+
+#: emsstrings.emsselftesterrcaption
+msgid "Error in EditorMacroScript"
+msgstr "Fehler im EditorMakroSkript"
+
+#: emsstrings.emsselftestfailed
+#, object-pascal-format
+msgid "The package EditorMacroScript (pascalscript macros) has detected a problem and was deactivated.%0:sThe package failed its selftest with the message:%0:s\"%1:s\""
+msgstr "Das Package EditorMakroSkript (pascalscript macros) hat ein Problem festgestellt und wurde deaktiviert.%0:sDer Selbsttest des Package schlug mit folgender Meldung fehl:%0:s\"%1:s\""
+
+#: emsstrings.emsselftestfailedlasttime
+#, object-pascal-format
+msgid "The package EditorMacroScript (pascalscript macros) has detected a problem and was deactivated.%0:sThe package selftest was not completed during the last start of the IDE."
+msgstr "Das Package EditorMakroSkript (pascalscript macros) hat ein Problem festgestellt und wurde deaktiviert.%0:sDer Selbsttest des Package wurde beim letzten Start der IDE nicht abgeschlossen."
+
+#: emsstrings.emsstatustitle
+msgid "Status"
+msgstr "Status"
+

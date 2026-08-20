@@ -30,11 +30,11 @@ msgstr "Hinzufügen"
 
 #: messagecomposer.sbuttonsarrayofconst
 msgid "Buttons (array of const)"
-msgstr ""
+msgstr "Buttons (array of const)"
 
 #: messagecomposer.sbuttonstmsgdlgbuttons
 msgid "Buttons (TMsgDlgButtons)"
-msgstr ""
+msgstr "Buttons (TMsgDlgButtons)"
 
 #: messagecomposer.scaseresult
 msgid "\"Case\" result"
@@ -74,7 +74,7 @@ msgstr "\"If\" Ergebnis"
 
 #: messagecomposer.skindofmessage
 msgid "Kind of message"
-msgstr "Art der Meldung"
+msgstr "Art der Message"
 
 #: messagecomposer.smaskinput
 #, fuzzy
@@ -96,11 +96,11 @@ msgstr "Message-Composer ..."
 
 #: messagecomposer.smodalresult
 msgid "Modal result"
-msgstr ""
+msgstr "Modales Ergebnis"
 
 #: messagecomposer.smsgcaption
 msgid "The message to be shown"
-msgstr "Die anzuzeigende Meldung"
+msgstr "Anzuzeigende Message"
 
 #: messagecomposer.snotimplementedyet
 msgid "Not implemented yet"
@@ -111,12 +111,10 @@ msgid "Text asking the user for input"
 msgstr "Text um nach einer Eingabe zu fragen"
 
 #: messagecomposer.ssourcewrapper
-#, fuzzy
-#| msgid "SOURCE WRAPPER"
 msgid "Source wrapper"
-msgstr "QUELL-MANTEL"
+msgstr "Quellcode-Wrapper"
 
 #: messagecomposer.svaluevar
 msgid "Value (var)"
-msgstr ""
+msgstr "Wert (Variable)"
 

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-06-24 12:39+0200\n"
+"PO-Revision-Date: 2026-08-20 21:11+0200\n"
 "Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Language: de_DE\n"
@@ -18,7 +18,7 @@ msgstr "Abbrechen"
 
 #: frmselectdataset.scaption
 msgid "Select dataset to copy from"
-msgstr ""
+msgstr "Datensatz zum Kopieren auswählen"
 
 #: frmselectdataset.scopymeta
 msgid "Copy only metadata"
@@ -26,24 +26,24 @@ msgstr "Nur Metadaten kopieren"
 
 #: frmselectdataset.sdataset
 msgid "&Dataset to copy from:"
-msgstr ""
+msgstr "&Datensatz zum Kopieren auswählen:"
 
 #: frmselectdataset.serrcomponentnotfound
 #, object-pascal-format
 msgid "Error: Component \"%s\" not found"
-msgstr "Fehler: Komponente »%s« nicht gefunden"
+msgstr "Fehler: Komponente »%s« nicht vorgefunden"
 
 #: frmselectdataset.serrselectdataset
 msgid "Please select a dataset first"
-msgstr "Bitte zuerst ein Dataset auswählen"
+msgstr "Bitte zuerst einen Datensatz auswählen"
 
 #: frmselectdataset.smenucopydataset
 msgid "Copy data from Dataset"
-msgstr "Daten aus Dataset kopieren"
+msgstr "Daten aus Datensatzkopieren"
 
 #: frmselectdataset.smenucreatedataset
 msgid "Create dataset"
-msgstr "Dataset erzeugen"
+msgstr "Datensatz erzeugen"
 
 #: frmselectdataset.sokbtn
 msgid "OK"

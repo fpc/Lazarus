@@ -31,23 +31,23 @@ msgstr "Keine Gruppe"
 
 #: idedebuggerstringconstants.brkhandleignorebreakpoints
 msgid "Handle/Ignore breakpoints"
-msgstr ""
+msgstr "Haltepunkte verarbeiten/ignorieren"
 
 #: idedebuggerstringconstants.brkhandleignoreexceptions
 msgid "Handle/Ignore exceptions"
-msgstr ""
+msgstr "Exceptions verarbeiten/ignorieren"
 
 #: idedebuggerstringconstants.brkshowbreakpointsandwatchpo
 msgid "Show breakpoints and watchpoints"
-msgstr ""
+msgstr "Halte- und Überwachungspunkte anzeigen"
 
 #: idedebuggerstringconstants.brkshowbreakwatchpointsandex
 msgid "Show break/watchpoints and exception-filter"
-msgstr ""
+msgstr "Halte-, Überwachungspunkte und Exception-Filter anzeigen"
 
 #: idedebuggerstringconstants.brkshowexceptionfilter
 msgid "Show exception-filter"
-msgstr ""
+msgstr "Exception-Filter anzeigen"
 
 #: idedebuggerstringconstants.dbgasmwindowlinktarget
 msgid "Link target line"
@@ -1913,8 +1913,6 @@ msgid "Assembler"
 msgstr "Assembler"
 
 #: idedebuggerstringconstants.lismenuviewbreakpointsandexceptions
-#, fuzzy
-#| msgid "BreakPoints/Exceptions"
 msgid "Breakpoints/Exceptions"
 msgstr "Haltepunkte/Exceptions"
 

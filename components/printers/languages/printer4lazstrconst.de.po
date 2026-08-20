@@ -1,24 +1,24 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Swen Heinig <swen@heinig.email>\n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.4\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.9\n"
 
 #: printer4lazstrconst.p4lrsabbrevunitsinches
 msgid "\""
-msgstr ""
+msgstr "\""
 
 #: printer4lazstrconst.p4lrsabbrevunitsmm
 msgid "mm"
-msgstr ""
+msgstr "mm"
 
 #: printer4lazstrconst.p4lrsadvanced
 msgid "Advanced"
@@ -26,7 +26,7 @@ msgstr "Erweitert"
 
 #: printer4lazstrconst.p4lrsallpages
 msgid "All"
-msgstr ""
+msgstr "Alles"
 
 #: printer4lazstrconst.p4lrsbanners
 msgid "Banners"
@@ -34,11 +34,11 @@ msgstr "Banner"
 
 #: printer4lazstrconst.p4lrsbuttonlessarrow
 msgid "<< Less"
-msgstr ""
+msgstr "<< Weniger"
 
 #: printer4lazstrconst.p4lrsbuttonmorearrow
 msgid "More >>"
-msgstr ""
+msgstr "Mehr >>"
 
 #: printer4lazstrconst.p4lrscancel
 msgid "Cancel"
@@ -54,23 +54,23 @@ msgstr "Allgemein"
 
 #: printer4lazstrconst.p4lrsjobstateaccepting
 msgid "(Accepting jobs)"
-msgstr ""
+msgstr "(Jobs annehmen)"
 
 #: printer4lazstrconst.p4lrsjobstateprinting
 msgid "Printing"
-msgstr ""
+msgstr "Drucken"
 
 #: printer4lazstrconst.p4lrsjobstateready
 msgid "Ready"
-msgstr ""
+msgstr "Bereit"
 
 #: printer4lazstrconst.p4lrsjobstaterejecting
 msgid "(Rejecting jobs)"
-msgstr ""
+msgstr "(Jobs ablehnen)"
 
 #: printer4lazstrconst.p4lrsjobstatestopped
 msgid "Stopped"
-msgstr ""
+msgstr "Angehalten"
 
 #: printer4lazstrconst.p4lrslandscape
 msgid "Landscape"
@@ -82,11 +82,11 @@ msgstr "Ränder"
 
 #: printer4lazstrconst.p4lrsnodefaultprinter
 msgid "No default printer found."
-msgstr ""
+msgstr "Kein Standarddrucker gefunden."
 
 #: printer4lazstrconst.p4lrsnotavailable
 msgid "Not available"
-msgstr ""
+msgstr "Nicht verfügbar"
 
 #: printer4lazstrconst.p4lrsok
 msgid "Ok"
@@ -98,11 +98,11 @@ msgstr "Ausrichtung"
 
 #: printer4lazstrconst.p4lrspageeven
 msgid "Even"
-msgstr ""
+msgstr "Gerade"
 
 #: printer4lazstrconst.p4lrspageodd
 msgid "Odd"
-msgstr ""
+msgstr "Ungerade"
 
 #: printer4lazstrconst.p4lrspagespersheet
 msgid "Pages per sheet"
@@ -142,11 +142,11 @@ msgstr "Hochformat gedreht"
 
 #: printer4lazstrconst.p4lrsshortunitsinches
 msgid "(inches)"
-msgstr ""
+msgstr "(Zoll)"
 
 #: printer4lazstrconst.p4lrsshortunitsmm
 msgid "(mm)"
-msgstr ""
+msgstr "(mm)"
 
 #: printer4lazstrconst.p4lrsstart
 msgid "Start"
