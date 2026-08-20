@@ -4263,15 +4263,16 @@ begin
   end;
   ParentRectValid:=false;
   ChainLength:=0;
-  MaxChainLength:=OwnerParent.ControlCount;
+  MaxChainLength:=OwnerParent.ControlCount*2; // for both sides
   Found:=false;
   CurReferenceControl:=NewControl;
   CurReferenceSide:=NewSide;
   while CurReferenceControl<>nil do begin
 
     // check for circles
-    if CurReferenceControl=Owner then begin
+    if (CurReferenceControl=Owner) and (CurReferenceSide = ReferenceSide) then begin
       // circle
+      // Note: It is allowed to anchor the right side indirectly to the left side
       {$IFNDEF VerboseAnchorSide}
       DebugLn(['TAnchorSide.CheckSidePosition Circle, ',DbgSName(Owner),' ',dbgs(Kind)]);
       {$ENDIF}
