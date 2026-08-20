@@ -38,7 +38,7 @@ type
     function IgnoreCfiStackEnd: boolean; override;
     function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
     function CreateScopeForSymbol(ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol;
-      ADwarf: TFpDwarfInfo): TFpDbgSymbolScope; override;
+      ADwarf: TFpDwarfInfo): TFpDwarfInfoSymbolScopeBase; override;
     function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
       AInfo: PDwarfAddressInfo; AAddress: TDbgPtr; ADbgInfo: TFpDwarfInfo
       ): TDbgDwarfSymbolBase; override;
@@ -81,7 +81,7 @@ type
   public
     function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
     function CreateScopeForSymbol(ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol;
-      ADwarf: TFpDwarfInfo): TFpDbgSymbolScope; override;
+      ADwarf: TFpDwarfInfo): TFpDwarfInfoSymbolScopeBase; override;
     //class function CreateSymbolScope(AThreadId, AStackFrame: Integer; AnAddress: TDBGPtr; ASymbol: TFpSymbol;
     //  ADwarf: TFpDwarfInfo): TFpDbgSymbolScope; override;
     //class function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
@@ -687,8 +687,8 @@ begin
 end;
 
 function TFpDwarfFreePascalSymbolClassMap.CreateScopeForSymbol(
-  ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol;
-  ADwarf: TFpDwarfInfo): TFpDbgSymbolScope;
+  ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol; ADwarf: TFpDwarfInfo
+  ): TFpDwarfInfoSymbolScopeBase;
 begin
   Result := TFpDwarfFreePascalSymbolScope.Create(ALocationContext, ASymbol, ADwarf);
 end;
@@ -805,8 +805,8 @@ begin
 end;
 
 function TFpDwarfFreePascalSymbolClassMapDwarf3.CreateScopeForSymbol(
-  ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol;
-  ADwarf: TFpDwarfInfo): TFpDbgSymbolScope;
+  ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol; ADwarf: TFpDwarfInfo
+  ): TFpDwarfInfoSymbolScopeBase;
 begin
   Result := TFpDwarfFreePascalSymbolScopeDwarf3.Create(ALocationContext, ASymbol, ADwarf);
 end;

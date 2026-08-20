@@ -69,7 +69,7 @@ type
   public
     //function CanHandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; override;
     function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
-    function CreateScopeForSymbol(ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol; ADwarf: TFpDwarfInfo): TFpDbgSymbolScope; override;
+    function CreateScopeForSymbol(ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol; ADwarf: TFpDwarfInfo): TFpDwarfInfoSymbolScopeBase; override;
     function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
       AInfo: PDwarfAddressInfo; AAddress: TDbgPtr; ADbgInfo: TFpDwarfInfo): TDbgDwarfSymbolBase; override;
     function CreateUnitSymbol(ACompilationUnit: TDwarfCompilationUnit;
@@ -103,7 +103,7 @@ type
 
   { TFpDwarfInfoSymbolScope }
 
-  TFpDwarfInfoSymbolScope = class(TFpDbgSymbolScope)
+  TFpDwarfInfoSymbolScope = class(TFpDwarfInfoSymbolScopeBase)
   private
     FSymbol: TFpSymbolDwarf;
     FSelfParameter: TFpValueDwarf;
@@ -129,7 +129,7 @@ type
       AFindFlags: TFindExportedSymbolsFlags = []): Boolean; virtual;
     function FindExportedSymbolInUnits(const AName: String; const ANameInfo: TNameSearchInfo;
       SkipCompUnit: TDwarfCompilationUnit; out ADbgSymbol: TFpSymbol; const OnlyUnitNameLower: String = '';
-      AFindFlags: TFindExportedSymbolsFlags = []): Boolean; inline;
+      AFindFlags: TFindExportedSymbolsFlags = []): Boolean; override;
     function FindExportedSymbolInUnits(const AName: String; const ANameInfo: TNameSearchInfo;
       SkipCompUnit: TDwarfCompilationUnit; out ADbgValue: TFpValue; const OnlyUnitNameLower: String = '';
       AFindFlags: TFindExportedSymbolsFlags = []): Boolean; inline;
@@ -1473,7 +1473,7 @@ end;
 
 function TFpDwarfDefaultSymbolClassMap.CreateScopeForSymbol(
   ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol;
-  ADwarf: TFpDwarfInfo): TFpDbgSymbolScope;
+  ADwarf: TFpDwarfInfo): TFpDwarfInfoSymbolScopeBase;
 begin
   Result := TFpDwarfInfoSymbolScope.Create(ALocationContext,ASymbol, ADwarf);
 end;

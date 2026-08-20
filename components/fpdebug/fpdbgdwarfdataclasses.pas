@@ -608,6 +608,13 @@ type
     constructor Create(AnAddress: TDbgPtr; AStateMachine: TDwarfLineInfoStateMachine; ACU: TDwarfCompilationUnit);
   end;
 
+  TFpDwarfInfoSymbolScopeBase = class(TFpDbgSymbolScope)
+  protected
+    function FindExportedSymbolInUnits(const AName: String; const ANameInfo: TNameSearchInfo;
+      SkipCompUnit: TDwarfCompilationUnit; out ADbgSymbol: TFpSymbol; const OnlyUnitNameLower: String = '';
+      AFindFlags: TFindExportedSymbolsFlags = []): Boolean; virtual; abstract;
+  end;
+
   { TFpSymbolDwarfClassMap
     Provides Symbol and VAlue evaluation classes depending on the compiler
   }
@@ -634,7 +641,7 @@ type
     function IgnoreCfiStackEnd: boolean; virtual;
     function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; virtual; abstract;
     function CreateScopeForSymbol(ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol;
-                                 ADwarf: TFpDwarfInfo): TFpDbgSymbolScope; virtual; abstract;
+                                 ADwarf: TFpDwarfInfo): TFpDwarfInfoSymbolScopeBase; virtual; abstract;
     function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
                                     AInfo: PDwarfAddressInfo; AAddress: TDbgPtr; ADbgInfo: TFpDwarfInfo): TDbgDwarfSymbolBase; virtual; abstract;
     function CreateUnitSymbol(ACompilationUnit: TDwarfCompilationUnit;
