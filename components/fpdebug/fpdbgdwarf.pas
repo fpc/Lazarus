@@ -1633,7 +1633,7 @@ begin
   s := CU.UnitName;
   (* A unit of that name is not a subroutine. Without this, a search for a proc
      whose name matches its own unit returns the unit and stops there. *)
-  if (fsfMatchUnitName in AFindFlags) and not(fsfOnlySubroutines in AFindFlags) and
+  if (fsfMatchUnitName in AFindFlags) and
      (s <> '') and (CompareUtf8BothCase(PChar(ANameInfo.NameUpper), PChar(ANameInfo.NameLower), @s[1]))
   then begin
     Result := True;
@@ -1678,7 +1678,8 @@ begin
   AnInfoEntry := nil;
   PrevWorkItem := nil;
   IsExt := False;
-  if OnlyUnitNameLower = '' then
+  // TODO: move to caller
+  if (OnlyUnitNameLower = '') and not(fsfOnlySubroutines in AFindFlags) then
     AFindFlags := AFindFlags + [fsfMatchUnitName];
 
   i := FDwarf.CompilationUnitsCount;
