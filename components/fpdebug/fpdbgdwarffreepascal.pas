@@ -120,7 +120,7 @@ type
       AFindFlags: TFindExportedSymbolsFlags = []): Boolean; override;
     function FindExportedSymbolInUnits(const AName: String;
       const ANameInfo: TNameSearchInfo; SkipCompUnit: TDwarfCompilationUnit;
-      out ADbgValue: TFpValue; const OnlyUnitNameLower: String = '';
+      out AnInfoEntry: TDwarfInformationEntry; const OnlyUnitNameLower: String = '';
       AFindFlags: TFindExportedSymbolsFlags = []): Boolean;
       override;
     function FindLocalSymbol(const AName: String; const ANameInfo: TNameSearchInfo;
@@ -871,21 +871,22 @@ begin
 end;
 
 function TFpDwarfFreePascalSymbolScope.FindExportedSymbolInUnits(const AName: String;
-  const ANameInfo: TNameSearchInfo; SkipCompUnit: TDwarfCompilationUnit; out ADbgValue: TFpValue;
-  const OnlyUnitNameLower: String; AFindFlags: TFindExportedSymbolsFlags): Boolean;
+  const ANameInfo: TNameSearchInfo; SkipCompUnit: TDwarfCompilationUnit; out
+  AnInfoEntry: TDwarfInformationEntry; const OnlyUnitNameLower: String;
+  AFindFlags: TFindExportedSymbolsFlags): Boolean;
 var
   CU: TDwarfCompilationUnit;
 begin
   FInAllUnitSearch := True;
   FFoundSystemInfoEntry := nil;
   Result := inherited FindExportedSymbolInUnits(AName, ANameInfo, SkipCompUnit,
-    ADbgValue, OnlyUnitNameLower, AFindFlags);
+    AnInfoEntry, OnlyUnitNameLower, AFindFlags);
   FInAllUnitSearch := False;
 
   if (not Result) and (FFoundSystemInfoEntry <> nil) then
-    ADbgValue := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, FFoundSystemInfoEntry));
-
-  FFoundSystemInfoEntry.ReleaseReference;
+    AnInfoEntry := FFoundSystemInfoEntry
+  else
+    FFoundSystemInfoEntry.ReleaseReference;
 end;
 
 function TFpDwarfFreePascalSymbolScope.FindLocalSymbol(const AName: String;

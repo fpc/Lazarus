@@ -125,8 +125,14 @@ type
     function FindExportedSymbolInUnit(CU: TDwarfCompilationUnit; const ANameInfo: TNameSearchInfo;
       out AnInfoEntry: TDwarfInformationEntry; out AnIsExternal: Boolean; AFindFlags: TFindExportedSymbolsFlags = []): Boolean; virtual;
     function FindExportedSymbolInUnits(const AName: String; const ANameInfo: TNameSearchInfo;
-      SkipCompUnit: TDwarfCompilationUnit; out ADbgValue: TFpValue; const OnlyUnitNameLower: String = '';
+      SkipCompUnit: TDwarfCompilationUnit; out AnInfoEntry: TDwarfInformationEntry; const OnlyUnitNameLower: String = '';
       AFindFlags: TFindExportedSymbolsFlags = []): Boolean; virtual;
+    function FindExportedSymbolInUnits(const AName: String; const ANameInfo: TNameSearchInfo;
+      SkipCompUnit: TDwarfCompilationUnit; out ADbgSymbol: TFpSymbol; const OnlyUnitNameLower: String = '';
+      AFindFlags: TFindExportedSymbolsFlags = []): Boolean; inline;
+    function FindExportedSymbolInUnits(const AName: String; const ANameInfo: TNameSearchInfo;
+      SkipCompUnit: TDwarfCompilationUnit; out ADbgValue: TFpValue; const OnlyUnitNameLower: String = '';
+      AFindFlags: TFindExportedSymbolsFlags = []): Boolean; inline;
     function FindSymbolInStructure(const AName: String; const ANameInfo: TNameSearchInfo;
       InfoEntry: TDwarfInformationEntry; out ADbgValue: TFpValue): Boolean; virtual;
     function FindSymbolInStructureRecursive(const AName: String; const ANameInfo: TNameSearchInfo;
@@ -1644,22 +1650,21 @@ begin
 end;
 
 function TFpDwarfInfoSymbolScope.FindExportedSymbolInUnits(const AName: String;
-  const ANameInfo: TNameSearchInfo; SkipCompUnit: TDwarfCompilationUnit; out ADbgValue: TFpValue;
-  const OnlyUnitNameLower: String; AFindFlags: TFindExportedSymbolsFlags): Boolean;
+  const ANameInfo: TNameSearchInfo; SkipCompUnit: TDwarfCompilationUnit; out
+  AnInfoEntry: TDwarfInformationEntry; const OnlyUnitNameLower: String;
+  AFindFlags: TFindExportedSymbolsFlags): Boolean;
 const
   PER_WORKER_CNT = 20;
 var
   i, j: Integer;
   CU: TDwarfCompilationUnit;
   CUList: TDwarfCompilationUnitArray;
-  FoundInfoEntry: TDwarfInformationEntry;
   IsExt: Boolean;
   WorkItem, PrevWorkItem: TFpThreadWorkerFindSymbolInUnits;
 begin
   Result := False;
 
-  ADbgValue := nil;
-  FoundInfoEntry := nil;
+  AnInfoEntry := nil;
   PrevWorkItem := nil;
   IsExt := False;
   if OnlyUnitNameLower = '' then
@@ -1713,9 +1718,9 @@ begin
         assert(PrevWorkItem.IsDone, 'TFpDwarfInfoSymbolScope.FindExportedSymbolInUnits: PrevWorkItem.IsDone');
         ReadBarrier;
         if PrevWorkItem.FFoundInfoEntry <> nil then begin
-          FoundInfoEntry.ReleaseReference;
-          FoundInfoEntry := PrevWorkItem.FFoundInfoEntry;
-          FoundInfoEntry.AddReference;
+          AnInfoEntry.ReleaseReference;
+          AnInfoEntry := PrevWorkItem.FFoundInfoEntry;
+          AnInfoEntry.AddReference;
           IsExt := PrevWorkItem.FIsExt;
         end;
         PrevWorkItem.DecRef;
@@ -1746,20 +1751,48 @@ begin
       if not PrevWorkItem.IsDone then
         Dwarf.WorkQueue.WaitForItem(PrevWorkItem);
       if PrevWorkItem.FFoundInfoEntry <> nil then begin
-        FoundInfoEntry.ReleaseReference;
-        FoundInfoEntry := PrevWorkItem.FFoundInfoEntry;
-        FoundInfoEntry.AddReference
+        AnInfoEntry.ReleaseReference;
+        AnInfoEntry := PrevWorkItem.FFoundInfoEntry;
+        AnInfoEntry.AddReference
       end;
     end;
     PrevWorkItem.DecRef;
   end;
 
-  if FoundInfoEntry <> nil then begin
+  Result := AnInfoEntry <> nil;
+end;
+
+function TFpDwarfInfoSymbolScope.FindExportedSymbolInUnits(const AName: String;
+  const ANameInfo: TNameSearchInfo; SkipCompUnit: TDwarfCompilationUnit; out
+  ADbgSymbol: TFpSymbol; const OnlyUnitNameLower: String; AFindFlags: TFindExportedSymbolsFlags
+  ): Boolean;
+var
+  FoundInfoEntry: TDwarfInformationEntry;
+begin
+  ADbgSymbol := nil;
+  Result := FindExportedSymbolInUnits(AName, ANameInfo, SkipCompUnit, FoundInfoEntry,
+      OnlyUnitNameLower, AFindFlags);
+  if Result then begin
+    ADbgSymbol := TFpSymbolDwarf.CreateSubClass(AName, FoundInfoEntry);
+    FoundInfoEntry.ReleaseReference;
+    Result := ADbgSymbol <> nil;
+  end;
+end;
+
+function TFpDwarfInfoSymbolScope.FindExportedSymbolInUnits(const AName: String;
+  const ANameInfo: TNameSearchInfo; SkipCompUnit: TDwarfCompilationUnit; out ADbgValue: TFpValue;
+  const OnlyUnitNameLower: String; AFindFlags: TFindExportedSymbolsFlags): Boolean;
+var
+  FoundInfoEntry: TDwarfInformationEntry;
+begin
+  ADbgValue := nil;
+  Result := FindExportedSymbolInUnits(AName, ANameInfo, SkipCompUnit, FoundInfoEntry,
+      OnlyUnitNameLower, AFindFlags);
+  if Result then begin
     ADbgValue := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, FoundInfoEntry));
     FoundInfoEntry.ReleaseReference;
+    Result := ADbgValue <> nil;
   end;
-
-  Result := ADbgValue <> nil;
 end;
 
 function TFpDwarfInfoSymbolScope.FindSymbolInStructure(const AName: String;
