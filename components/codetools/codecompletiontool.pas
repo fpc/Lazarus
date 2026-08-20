@@ -1232,6 +1232,7 @@ var
   HeaderNode: TCodeTreeNode;
   Beauty: TBeautifyCodeOptions;
   VarTypeNode: TCodeTreeNode;
+  BeginBlockNode: TCodeTreeNode;
   InsertVarLineStart: integer;
   InsertVarLineEnd: integer;
   InsertAsNewLine: Boolean;
@@ -1260,7 +1261,10 @@ begin
     else if Node.Desc=ctnVarSection then
       VarSectionNode:=Node
     else if Node.Desc in AllDefinitionSections then
-      OtherSectionNode:=Node;
+      OtherSectionNode:=Node
+    else if (Node.Desc in [ctnBeginBlock,ctnAsmBlock]) and (Node.Parent<>nil) and (Node.Parent=ParentNode) then
+      BeginBlockNode:=Node;
+
     if (Node.StartPos<=CleanLevelPos)
     and ((Node.EndPos>CleanLevelPos)
       or ((Node.EndPos=CleanLevelPos)
@@ -1273,6 +1277,7 @@ begin
         VarSectionNode:=nil;
         OtherSectionNode:=nil;
         HeaderNode:=nil;
+        BeginBlockNode:=nil;
         ParentNode:=Node;
       end else if Node.Desc in [ctnUnit,ctnInitialization,ctnFinalization] then begin
         // the grand children can have a var section
@@ -1284,7 +1289,8 @@ begin
             break;
           ParentNode:=Node;
         end;
-      end else begin
+      end else
+      if not(cmsAnonymousFunctions in FLastCompilerModeSwitches) then begin // do not break if cmsAnonymousFunctions is enabled - keep searching for a valid Anonymous Function in the function block
         break;
       end;
       Node:=Node.FirstChild;
@@ -1398,10 +1404,10 @@ begin
       if (HeaderNode=nil) then
         HeaderNode:=FindUsesNode(ParentNode);
 
-      if CursorNode.Desc in [ctnBeginBlock,ctnAsmBlock] then begin
+      if BeginBlockNode<>nil then begin
         // add the var section directly in front of the begin
         //debugln(['TCodeCompletionCodeTool.AddLocalVariable start a new var section in front of begin block']);
-        InsertPos:=CursorNode.StartPos;
+        InsertPos:=BeginBlockNode.StartPos;
         Indent:=Beauty.GetLineIndent(Src,InsertPos);
       end else if HeaderNode<>nil then begin
         // put the var section below the header
