@@ -3,10 +3,9 @@ object MainForm: TMainForm
   Height = 534
   Top = 259
   Width = 520
-  Caption = 'MainForm [Press F2 to save as wmf file]'
+  Caption = 'MainForm'
   ClientHeight = 534
   ClientWidth = 520
-  KeyPreview = True
   LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -61,11 +60,11 @@ object MainForm: TMainForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Button2
       AnchorSideTop.Side = asrCenter
-      Left = 310
+      Left = 306
       Height = 15
       Top = 13
       Width = 34
-      BorderSpacing.Left = 8
+      BorderSpacing.Left = 4
       Caption = 'Label1'
     end
   end

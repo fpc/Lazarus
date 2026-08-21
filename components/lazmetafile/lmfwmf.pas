@@ -304,30 +304,6 @@ type
   end;
   PWMFDIBStretchBltRecord = ^TWMFDIBStretchBltRecord;
 
-  TWMFBitmapCoreHeader = packed record
-    HeaderSize: DWord;
-    Width: Word;
-    Height: Word;
-    Planes: Word;
-    BitCount: Word;
-  end;
-  PWMFBitmapCoreHeader = ^TWMFBitmapCoreHeader;
-
-  TWMFBitmapInfoHeader = packed record
-    HeaderSize: DWord;
-    Width: LongInt;
-    Height: LongInt;
-    Planes: Word;
-    BitCount: Word;
-    Compression: DWord;
-    ImageSize: DWord;
-    XPelsPerMeter: DWord;
-    YPelsPerMeter: DWord;
-    ColorsUsed: DWord;
-    ColorImporant: DWord;
-  end;
-  PWMFBitmapInfoHeader = ^TWMFBitmapInfoHeader;
-
  function WMF_GetRecordTypeName(ARecordType: Word): String;
 
  implementation

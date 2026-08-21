@@ -5,8 +5,9 @@ unit main;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LCLType, ExtCtrls,
-  StdCtrls, lmf;
+  SysUtils, Classes,
+  Forms, Controls, Graphics, Dialogs, LCLType, StdCtrls, ExtCtrls,
+  lmf;
 
 type
 
@@ -49,7 +50,7 @@ var
   ico: TIcon;
 begin
   Width := 610;
-  Height := 410;
+  Height := 410 + Panel1.Height;
 
   FLmfImg := TlmfImage.Create;
   FLmfImg.LogUnitsPerInch := Screen.PixelsPerInch * 10;  // Logical units as 1/10 pixel
@@ -116,9 +117,9 @@ begin
 
     // Draw an alpha-transparent bitmap (32bpp) --> not supported, convert to
     // 24 bpp and apply mask transparency.
-    LmfCanvas.Pen.Width := 0;
-    LmfCanvas.Brush.Style := bsClear;
-    Lmfcanvas.Rectangle(200*10, 5*10, 200*10 + 48*10, 5*10 + 48*10);
+    //LmfCanvas.Pen.Width := 0;
+    //LmfCanvas.Brush.Style := bsClear;
+    //Lmfcanvas.Rectangle(200*10, 5*10, 200*10 + 48*10, 5*10 + 48*10);
     bmp := TPortableNetworkGraphic.Create;
     try
       bmp.PixelFormat := pf32bit;
@@ -129,12 +130,12 @@ begin
     end;
 
     // Draw a 24-bpp mask-transparent image
-    Lmfcanvas.Rectangle(300*10, 5*10, 300*10 + 48*10, 5*10 + 48*10);
+    //Lmfcanvas.Rectangle(300*10, 5*10, 300*10 + 48*10, 5*10 + 48*10);
     bmp := TBitmap.Create;
     try
 //      bmp.LoadFromFile('../../../../images/LazarusForm.bmp');
       bmp.LoadFromFile('Help_02_48.bmp');
-      bmp.Transparent := true;
+    //bmp.Transparent := true;
 //      LmfCanvas.Draw(3000, 50, bmp);
       LmfCanvas.StretchDraw(Rect(300*10, 5*10, 300*10+48*10, 50+48*10), bmp);
     finally
@@ -312,7 +313,6 @@ begin
     LmfCanvas.Pen.Style := psPattern;     // Incorrect wmf output
     LmfCanvas.Pen.SetPattern(penPattern);
     LmfCanvas.Line(10*10, 345*10, 110*10, 345*10);
-
   finally
     LmfCanvas.Free;
   end;
@@ -348,7 +348,7 @@ var
 begin
   if Assigned(FLmfImg) then
   begin
-    R := Rect( 5, 5, ClientWidth-5, ClientHeight-5);
+    R := Rect( 5, 5, Paintbox1.ClientWidth - 5, Paintbox1.ClientHeight - 5);
     Paintbox1.Canvas.StretchDraw(R, FLmfImg);
   end;
 end;

@@ -5,8 +5,8 @@ unit lmfWMFRead;
 interface
 
 uses
-  Classes, SysUtils,
-  LConvEncoding, LCLIntf, LCLType, Graphics,
+  Classes, SysUtils, FPImage,
+  LConvEncoding, LCLIntf, LCLType, Graphics, IntfGraphics,
   lmf, lmfObj, lmfWMF;
 
 type
@@ -34,6 +34,7 @@ type
     FMapMode: Word;
     FWindowOrigin: TPoint;
     FWindowExtent: TPoint;
+    FMaskBmp: TBitmap;
 
     function CreateBrush(const AParams: TWMFParamArray): Integer;
     function CreateFont(const AParams: TWMFParamArray): Integer;
@@ -124,6 +125,7 @@ end;
 
 destructor TlmfWMFReader.Destroy;
 begin
+  FMaskBmp.Free;
   FCurrFont.Free;
   FCurrBrush.Free;
   FCurrPen.Free;
@@ -512,16 +514,19 @@ end;
 function TlmfWMFReader.ReadImage(const AParams: TWMFParamArray;
   AIndex: Integer; APicture: TPicture): Boolean;
 var
-  bmpInfoHdr: PWMFBitmapInfoHeader = nil;
+  bmpInfoHdr: PBitmapInfoHeader = nil;
   bmpFileHdr: TBitmapFileHeader;
   w, h: Integer;
   memstream: TMemoryStream;
-  imgSize: Int64;
   dataSize: Integer;
+  bmp: TBitmap;
+  img: TLazIntfImage;
+  maskImg: TLazIntfImage;
+  x, y: Integer;
 begin
   Result := false;
 
-  bmpInfoHdr := PWMFBitmapInfoHeader(@AParams[AIndex]);
+  bmpInfoHdr := PBitmapInfoHeader(@AParams[AIndex]);
   w := LEToN(bmpInfoHdr^.Width);
   h := LEToN(bmpInfoHdr^.Height);
   if (w = 0) or (h = 0) then
@@ -534,20 +539,51 @@ begin
     // Put a bitmap file header in front of the bitmap info header and the data
     bmpFileHdr.bfType := BMmagic;
     bmpFileHdr.bfSize := SizeOf(bmpFileHdr) + datasize;
-    if bmpInfoHdr^.Compression in [BI_RGB, BI_BITFIELDS{, BI_CMYK}] then
-      imgSize := (w + Int64(bmpInfoHdr^.Planes) * bmpInfoHdr^.BitCount + 31) div 32 * abs(h)
-    else
-      imgSize := bmpInfoHdr^.ImageSize;
-    bmpFileHdr.bfOffset := bmpFileHdr.bfSize - imgSize;
+    bmpFileHdr.bfOffset := SizeOf(bmpFileHdr) + bmpInfoHdr^.Size;
     bmpFileHdr.bfReserved := 0;
     // Write the file header to the memory stream
     memstream.WriteBuffer(bmpFileHdr, SizeOf(bmpFileHdr));
     // Now write the DIB to the memory stream
     memstream.WriteBuffer(AParams[AIndex], (Length(AParams) - AIndex) * SIZE_OF_WORD);
-
-    // Read bitmap to image using the standard Picture routines.
     memstream.Position := 0;
-    APicture.LoadFromStream(memstream);
+    case PDWord(@AParams[0])^ of
+      SRCCOPY:  // There is no mask --> read full image
+        APicture.LoadFromStream(memstream);
+      SRCAND:  // Extract the mask
+        begin
+          FMaskBmp := TBitmap.Create;
+          FMaskBmp.LoadFromStream(memStream);
+          // Will be destroyed when the following record with SRCPAINT is read.
+        end;
+      SRCPAINT:  // Extract the masked bitmap and combine it with the extracted mask.
+        if FMaskBmp <> nil then
+        begin
+          bmp := TBitmap.Create;
+          try
+            bmp.LoadFromStream(memStream);
+            img := TLazIntfImage.Create(0, 0);
+            try
+              img.LoadFromBitmap(bmp.Handle, FMaskBmp.Handle);
+              maskImg := FMaskBmp.CreateIntfImage;
+              try
+                for y := 0 to img.Height-1 do
+                  for x := 0 to img.Width-1 do
+                    img.Masked[x, y] := (maskImg.Colors[x, y] = colWhite);
+                APicture.Bitmap.LoadFromIntfImage(img);
+                APicture.Bitmap.Transparent := true;
+              finally
+                maskImg.Free;
+              end;
+            finally
+              img.Free;
+            end;
+          finally
+            bmp.Free;
+            FreeAndNil(FMaskBmp);
+          end;
+        end else
+          APicture.LoadFromStream(memstream);
+    end;
     Result := true;
 
   finally

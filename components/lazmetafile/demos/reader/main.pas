@@ -5,9 +5,9 @@ unit main;
 interface
 
 uses
-  Classes, SysUtils, IniFiles,
+  Classes, SysUtils, IniFiles, Types,
   Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, Buttons, FileCtrl,
-  lmf, Types;
+  lmf;
 
 type
 
