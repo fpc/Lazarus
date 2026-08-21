@@ -6785,11 +6785,12 @@ begin
       PasSyn := TIDESynPasSyn(EditorComponent.Highlighter);
       CompilerMode := CompilerModeToPascal(Scanner.CompilerMode);
       ModeSwitches := CompilerModeSwitchesToPascal(Scanner.CompilerModeSwitches);
-      if PasSyn.CodeToolsModeSwitches<>ModeSwitches then
+      EditorComponent.CodeToolsModeSwitches.Valid := True;
+      if (EditorComponent.CodeToolsModeSwitches.ModeSwitches<>ModeSwitches)
+      or (EditorComponent.CodeToolsModeSwitches.CompilerMode<>CompilerMode) then
       begin
-        PasSyn.CodeToolsCompilerMode := CompilerMode;
-        PasSyn.CodeToolsModeSwitches := ModeSwitches;
-        PasSyn.CodeToolsValid := True;
+        EditorComponent.CodeToolsModeSwitches.CompilerMode := CompilerMode;
+        EditorComponent.CodeToolsModeSwitches.ModeSwitches := ModeSwitches;
         { OP: strangely EditorComponent.InvalidateLines doesn't invalidate nested comments, maybe there is some cache that must be cleared (?). I don't know...
               Therefore I use the unset/set Highlighter workaround hack
           ToDo: do it without the hack }

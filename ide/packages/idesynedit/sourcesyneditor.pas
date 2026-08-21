@@ -256,6 +256,17 @@ type
     Line, Subline: IntIdx;
   end;
 
+  TIDESynEditorCompilerModeSwitches = class(TObject)
+  private
+    FCompilerMode: TPascalCompilerMode;
+    FModeSwitches: TPascalCompilerModeSwitches;
+    FValid: Boolean;
+  public
+    property CompilerMode: TPascalCompilerMode read FCompilerMode write FCompilerMode;
+    property ModeSwitches: TPascalCompilerModeSwitches read FModeSwitches write FModeSwitches;
+    property Valid: Boolean read FValid write FValid;
+  end;
+
   { TIDESynEditor }
 
   TIDESynEditor = class(TSynEdit)
@@ -275,6 +286,7 @@ type
     FMarkupForGutterMark: TSynEditMarkupGutterMark;
     FOnIfdefNodeStateRequest: TSynMarkupIfdefStateRequest;
     FMarkupIfDef: TSourceSynEditMarkupIfDef;
+    FCodeToolsModeSwitches: TIDESynEditorCompilerModeSwitches;
     FTopInfoDisplay: TSourceLazSynTopInfoView;
     FMouseTopLineDownPos: TPoint;
     FTopInfoLastTopLine: Integer;
@@ -355,6 +367,7 @@ type
     property  IsInMultiCaretMainExecution: Boolean read GetIsInMultiCaretMainExecution;
     property  IsInMultiCaretRepeatExecution: Boolean read GetIsInMultiCaretRepeatExecution;
     property  OnMultiCaretBeforeCommand: TSynMultiCaretBeforeCommand read GetOnMultiCaretBeforeCommand write SetOnMultiCaretBeforeCommand;
+    property CodeToolsModeSwitches: TIDESynEditorCompilerModeSwitches read FCodeToolsModeSwitches;
     property CaretStamp: Int64 read FCaretStamp;
     property CaretColor: TColor read FCaretColor write SetCaretColor;
 
@@ -404,15 +417,14 @@ type
   TIDESynPasSyn = class(TSynPasSyn)
   private
     FCustomAttribs: array[0..9] of TSynHighlighterLazCustomPasAttribute;
-    FCodeToolsCompilerMode: TPascalCompilerMode;
-    FCodeToolsModeSwitches: TPascalCompilerModeSwitches;
-    FCodeToolsValid: Boolean;
 
     procedure DoBuildCustomPasAttr(Sender: TObject);
     function GetFinalizationLine: Integer;
     function GetImplementationLine: Integer;
     function GetInitializationLine: Integer;
     function GetInterfaceLine: Integer;
+
+    function GetSynEdit: TIDESynEditor;
   protected
     function CreateRangeList({%H-}ALines: TSynEditStringsBase): TLazHighlighterLineRangeList; override;
     function StartCodeFoldBlock(ABlockType: Pointer = nil;
@@ -431,10 +443,6 @@ type
     property ImplementationLine: Integer read GetImplementationLine;
     property InitializationLine: Integer read GetInitializationLine;
     property FinalizationLine: Integer read GetFinalizationLine;
-
-    property CodeToolsCompilerMode: TPascalCompilerMode read FCodeToolsCompilerMode write FCodeToolsCompilerMode;
-    property CodeToolsModeSwitches: TPascalCompilerModeSwitches read FCodeToolsModeSwitches write FCodeToolsModeSwitches;
-    property CodeToolsValid: Boolean read FCodeToolsValid write FCodeToolsValid;
   end;
 
   { TIDESynFreePasSyn }
@@ -2013,8 +2021,7 @@ end;
 procedure TIDESynEditor.InvalidateCodeToolsProperties;
 begin
   FMarkupIfDef.InvalidateAll;
-  if Highlighter is TIDESynPasSyn then
-    TIDESynPasSyn(Highlighter).CodeToolsValid := False;
+  FCodeToolsModeSwitches.Valid := False;
 end;
 
 procedure TIDESynEditor.SetIfdefNodeState(ALinePos, AstartPos: Integer;
@@ -2120,6 +2127,8 @@ begin
   //FMarkupIfDef.OnNodeStateRequest := @DoIfDefNodeStateRequest;
   TSynEditMarkupManager(MarkupMgr).AddMarkUp(FMarkupIfDef);
 
+  FCodeToolsModeSwitches := TIDESynEditorCompilerModeSwitches.Create;
+
   FMarkupIdentComplWindow := TSynMarkupIdentComplWindow.Create;
 
   FPaintArea := TSourceLazSynSurfaceManager.Create(Self, FPaintArea);
@@ -2181,6 +2190,7 @@ begin
   FreeAndNil(FTopInfoMarkup);
   FreeAndNil(FTopInfoNestList);
   FreeAndNil(FMarkupIdentComplWindow);
+  FreeAndNil(FCodeToolsModeSwitches);
   inherited Destroy;
 end;
 
@@ -2311,19 +2321,46 @@ begin
 end;
 
 function TIDESynPasSyn.GetRangeCompilerMode: TPascalCompilerMode;
+var
+  LSynEdit: TIDESynEditor;
 begin
-  if FCodeToolsValid then
-    Result := FCodeToolsCompilerMode
+  LSynEdit := GetSynEdit;
+  if Assigned(LSynEdit) and LSynEdit.CodeToolsModeSwitches.Valid then
+    Result := LSynEdit.CodeToolsModeSwitches.CompilerMode
   else
     Result := inherited GetRangeCompilerMode;
 end;
 
 function TIDESynPasSyn.GetRangeCompilerModeSwitches: TPascalCompilerModeSwitches;
+var
+  LSynEdit: TIDESynEditor;
 begin
-  if FCodeToolsValid then
-    Result := FCodeToolsModeSwitches
-  else
+  LSynEdit := GetSynEdit;
+  {$IFDEF VerboseTIDESynPasSyn}
+  DebugLn(['GetRangeCompilerModeSwitches: Assigned(LSynEdit)=', Assigned(LSynEdit), '; CodeToolsModeSwitches.Valid=', Assigned(LSynEdit) and LSynEdit.CodeToolsModeSwitches.Valid]);
+  {$ENDIF}
+  if Assigned(LSynEdit) and LSynEdit.CodeToolsModeSwitches.Valid then
+  begin
+    Result := LSynEdit.CodeToolsModeSwitches.ModeSwitches;
+    {$IFDEF VerboseTIDESynPasSyn}
+    DebugLn(['  NestedComments = ', pcsNestedComments in Result]);
+    {$ENDIF}
+  end else
     Result := inherited GetRangeCompilerModeSwitches;
+end;
+
+function TIDESynPasSyn.GetSynEdit: TIDESynEditor;
+var
+  Lines: TLazEditStringsBase;
+begin
+  Lines := CurrentLines;
+  while Lines is TSynEditStringsLinked do
+    Lines := TSynEditStringsLinked(Lines).NextLines;
+  if (Lines is TSynEditStringList) and (TSynEditStringList(Lines).AttachedSynEditCount>0)
+  and (TSynEditStringList(Lines).AttachedSynEdits[0] is TIDESynEditor) then
+    Result := TIDESynEditor(TSynEditStringList(Lines).AttachedSynEdits[0])
+  else
+    Result := nil;
 end;
 
 function TIDESynPasSyn.CreateRangeList(ALines: TSynEditStringsBase): TLazHighlighterLineRangeList;
