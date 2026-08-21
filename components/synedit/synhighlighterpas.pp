@@ -611,7 +611,6 @@ type
 
   TSynPasSynRange = class(TSynCustomHighlighterRange)
   private
-    FDirectiveModeSwitches: TPascalCompilerModeSwitches;
     FMode: TPascalCompilerMode;
     FBracketNestLevel, FRoundBracketNestLevel : Integer;
     FLastLineCodeFoldLevelFix: integer;
@@ -637,7 +636,6 @@ type
     procedure DecLastLinePasFoldFix;
     property Mode: TPascalCompilerMode read FMode write FMode;
     property ModeSwitches: TPascalCompilerModeSwitches read FModeSwitches write FModeSwitches;
-    property DirectiveModeSwitches: TPascalCompilerModeSwitches read FDirectiveModeSwitches write FDirectiveModeSwitches;
     (* BracketNestLevel counts only within the current "fold" (or expression).
        It is reset for
        - RecordCaseSection
@@ -792,7 +790,7 @@ type
     FOldRange: TRangeStates;
     FTokenState, FNextTokenState, FLastTokenState: TTokenState;
     FRangeCompilerMode: TPascalCompilerMode;
-    FRangeModeSwitches, FDirectiveModeSwitches: TPascalCompilerModeSwitches;
+    FRangeModeSwitches: TPascalCompilerModeSwitches;
     FRequiredStates, FRequiredStatesAtLastLineInit: TRequiredStates;
     FStringKeywordMode: TSynPasStringMode;
     FStringMultilineMode: TSynPasMultilineStringModes;
@@ -4632,14 +4630,12 @@ procedure TSynPasSyn.DirectiveProc;
        ((LinePtr[Run] in ['o','O']) and (LinePtr[Run+1] in ['n','N']) and (LinePtr[Run+2] in [#0, #9, #10, #13, ' ', '}']) )
     then begin
       FRangeModeSwitches := FRangeModeSwitches + [ASwitch];
-      FDirectiveModeSwitches := FDirectiveModeSwitches + [ASwitch];
     end
     else
     if (LinePtr[Run] = '-') or
        ((LinePtr[Run] in ['o','O']) and (LinePtr[Run+1] in ['f','F']) and (LinePtr[Run+2] in ['f','F']) and (LinePtr[Run+3] in [#0, #9, #10, #13, ' ', '}']) )
     then begin
       FRangeModeSwitches := FRangeModeSwitches - [ASwitch];
-      FDirectiveModeSwitches := FDirectiveModeSwitches + [ASwitch];
     end;
   end;
 begin
@@ -4735,9 +4731,6 @@ begin
     end
     else
       FRangeCompilerMode := pcmUnknown; // don't reset switches
-    // all switches are set by the mode
-    if FRangeCompilerMode <> pcmUnknown then
-      FDirectiveModeSwitches := [low(TPascalCompilerModeSwitches)..high(TPascalCompilerModeSwitches)]
   end;
   repeat
     case LinePtr[Run] of
@@ -6811,7 +6804,6 @@ begin
   PasCodeFoldRange.TokenState := FTokenState;
   PasCodeFoldRange.Mode := FRangeCompilerMode;
   PasCodeFoldRange.ModeSwitches := FRangeModeSwitches;
-  PasCodeFoldRange.DirectiveModeSwitches := FDirectiveModeSwitches;
   // return a fixed copy of the current CodeFoldRange instance
   Result := inherited GetRange;
 end;
@@ -6822,7 +6814,6 @@ begin
   inherited SetRange(Value);
   FRangeCompilerMode := PasCodeFoldRange.Mode;
   FRangeModeSwitches := PasCodeFoldRange.ModeSwitches;
-  FDirectiveModeSwitches := PasCodeFoldRange.DirectiveModeSwitches;
   FTokenState := PasCodeFoldRange.TokenState;
   fRange := TRangeStates(Integer(PtrUInt(CodeFoldRange.RangeType)));
   FSynPasRangeInfo := TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[LineIndex-1];
@@ -7052,7 +7043,6 @@ begin
   Inherited ResetRange;
   FRangeCompilerMode := CompilerMode;
   FRangeModeSwitches := ModeSwitches;
-  FDirectiveModeSwitches := [];
 end;
 
 procedure TSynPasSyn.EnumUserSettings(settings: TStrings);
@@ -7453,14 +7443,9 @@ function TSynPasSyn.IsAnonymousFunc(RunOffs: Integer; AnIsFunction: boolean
   ): Boolean;
 var
   FndLine: String;
-  FndPos, FndLen, i: integer;
+  FndPos, FndLen: integer;
 begin
-  i := 1;
-  if (pcsAnonymousFunctions in FDirectiveModeSwitches) and
-     not(pcsAnonymousFunctions in FRangeModeSwitches)
-  then
-    i := 0;  // explicitly switched off
-  Result := ScanAheadForNextToken(RunOffs, FndLine, FndPos, FndLen, i);
+  Result := ScanAheadForNextToken(RunOffs, FndLine, FndPos, FndLen, 1);
   if not Result then
     exit(pcsAnonymousFunctions in FRangeModeSwitches);
 
@@ -8577,7 +8562,6 @@ begin
   FTokenState := tsNone;
   FMode := pcmUnknown;
   FModeSwitches := [];
-  FDirectiveModeSwitches := [];
 end;
 
 function TSynPasSynRange.Compare(Range: TLazHighlighterRange): integer;
@@ -8592,7 +8576,6 @@ begin
     FTokenState:=TSynPasSynRange(Src).FTokenState;
     FMode:=TSynPasSynRange(Src).FMode;
     FModeSwitches:=TSynPasSynRange(Src).FModeSwitches;
-    FDirectiveModeSwitches:=TSynPasSynRange(Src).FDirectiveModeSwitches;
     FBracketNestLevel:=TSynPasSynRange(Src).FBracketNestLevel;
     FRoundBracketNestLevel:=TSynPasSynRange(Src).FRoundBracketNestLevel;
     FSpecializeBracketNestLevel:=TSynPasSynRange(Src).FSpecializeBracketNestLevel;
