@@ -5,17 +5,24 @@ unit main;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LCLType, lmf;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LCLType, ExtCtrls,
+  StdCtrls, lmf;
 
 type
 
   { TMainForm }
 
   TMainForm = class(TForm)
+    Button1: TButton;
+    Button2: TButton;
+    Label1: TLabel;
+    PaintBox1: TPaintBox;
+    Panel1: TPanel;
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure FormPaint(Sender: TObject);
+    procedure PaintBox1Paint(Sender: TObject);
   private
     FLmfImg: TLmfImage;
 
@@ -249,7 +256,8 @@ begin
     // Text
     LmfCanvas.SetBkMode(OPAQUE);
     LmfCanvas.SetBkColor(clYellow);
-    LmfCanvas.Font.Height := -10*10;
+//    LmfCanvas.Font.Height := -10*10;
+    LmfCanvas.Font.Size := 10*10;
     LmfCanvas.Font.Color := clOlive;
     LmfCanvas.TextOut(20*10, 20*10, 'Text drawn by TextOut');
 
@@ -263,12 +271,14 @@ begin
     LmfCanvas.SetBkMode(TRANSPARENT);
     LmfCanvas.Font.Color := clBlue;
     LmfCanvas.Font.Style := [fsBold, fsItalic];
-    LmfCanvas.Font.Height := -16*10;
+//    LmfCanvas.Font.Height := -16*10;
+    LmfCanvas.Font.Size := 16*10;
     LmfCanvas.TextRect(R, 0, 0, 'Text drawn by TextRect' + LineEnding + 'Centered in blue rectangle', ts);
 
     // Rotated text
     LmfCanvas.SetBkMode(TRANSPARENT);
-    LmfCanvas.Font.Height := -12*10;
+//    LmfCanvas.Font.Height := -12*10;
+    LmfCanvas.Font.Size := 12*10;
     LmfCanvas.Font.Color := clRed;
     LmfCanvas.Font.Style := [];
     while LmfCanvas.Font.Orientation < 3600 do
@@ -306,6 +316,25 @@ begin
   finally
     LmfCanvas.Free;
   end;
+
+  Label1.Caption := IntToStr(FLmfImg.LogUnitsPerInch);
+end;
+
+procedure TMainForm.Button1Click(Sender: TObject);
+begin
+  FLmfImg.SaveToLMFFile('test.wmf');
+end;
+
+procedure TMainForm.Button2Click(Sender: TObject);
+var
+  ppi: Integer;
+begin
+  ppi := Screen.PixelsPerInch * 10;
+  if FLmfImg.LogUnitsPerInch = ppi then
+    FLmfImg.LogUnitsPerInch := 2 * ppi
+  else
+    FLmfImg.LogUnitsPerInch := ppI;
+  Label1.Caption := IntToStr(FLmfImg.LogUnitsPerInch);
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -313,22 +342,14 @@ begin
   FLmfImg.Free;
 end;
 
-procedure TMainForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-  case Key of
-    VK_F2:
-      FLmfImg.SaveToLMFFile('test.wmf');
-  end;
-end;
-
-procedure TMainForm.FormPaint(Sender: TObject);
+procedure TMainForm.PaintBox1Paint(Sender: TObject);
+var
+  R: TRect;
 begin
   if Assigned(FLmfImg) then
   begin
-    // Paint metafile image on the canvas of the form
-    // !!! Activate one of the two next lines !!!
-//    Canvas.Draw(10, 10, FLmfImg);
-    Canvas.StretchDraw(Rect(5, 5, ClientWidth-5, ClientHeight-5), FLmfImg);
+    R := Rect( 5, 5, ClientWidth-5, ClientHeight-5);
+    Paintbox1.Canvas.StretchDraw(R, FLmfImg);
   end;
 end;
 

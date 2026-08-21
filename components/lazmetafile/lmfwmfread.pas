@@ -193,7 +193,9 @@ begin
   fntname := StrPas(PChar(@AParams[idx]));   // string is 0-terminated
 
   lmfFont.Font.Name := ISO_8859_1ToUTF8(fntName);
-  lmfFont.Font.Height := round(SmallInt(LEToN(fontRec^.Height)));
+  lmfFont.Height := abs(round(SmallInt(LEToN(fontRec^.Height))));
+  lmfFont.Font.Height := -FImage.ScaleSizeY(lmfFont.Height);
+//  lmfFont.Font.Height := round(SmallInt(LEToN(fontRec^.Height)));
   lmfFont.Font.Color := FCurrTextColor;
   lmfFont.Font.Bold := LEToN(fontRec^.Weight) >= 700;
   lmfFont.Font.Italic := fontRec^.Italic <> 0;

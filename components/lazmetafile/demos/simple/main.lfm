@@ -1,13 +1,72 @@
 object MainForm: TMainForm
-  Left = 813
+  Left = 583
   Height = 534
-  Top = 393
+  Top = 259
   Width = 520
   Caption = 'MainForm [Press F2 to save as wmf file]'
+  ClientHeight = 534
+  ClientWidth = 520
   KeyPreview = True
   LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  OnKeyUp = FormKeyUp
-  OnPaint = FormPaint
+  object PaintBox1: TPaintBox
+    Left = 0
+    Height = 493
+    Top = 0
+    Width = 520
+    Align = alClient
+    OnPaint = PaintBox1Paint
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 41
+    Top = 493
+    Width = 520
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 41
+    ClientWidth = 520
+    TabOrder = 0
+    object Button1: TButton
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      Left = 8
+      Height = 25
+      Top = 8
+      Width = 110
+      AutoSize = True
+      BorderSpacing.Around = 8
+      Caption = 'Save as wmf file'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
+    object Button2: TButton
+      AnchorSideLeft.Control = Button1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Button1
+      Left = 126
+      Height = 25
+      Top = 8
+      Width = 176
+      AutoSize = True
+      BorderSpacing.Left = 8
+      Caption = 'Toggle logical units per inch'
+      TabOrder = 1
+      OnClick = Button2Click
+    end
+    object Label1: TLabel
+      AnchorSideLeft.Control = Button2
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Button2
+      AnchorSideTop.Side = asrCenter
+      Left = 310
+      Height = 15
+      Top = 13
+      Width = 34
+      BorderSpacing.Left = 8
+      Caption = 'Label1'
+    end
+  end
 end
