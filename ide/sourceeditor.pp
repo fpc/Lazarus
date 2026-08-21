@@ -6835,9 +6835,14 @@ begin
     if EditorComponent.Highlighter is TSynPasSyn then
     begin
       PasSyn := TSynPasSyn(EditorComponent.Highlighter);
-      // todo: you probably want to set different CompilerMode/ModeSwitches in PasSyn or change the PasSyn code to allow external CompilerMode override
+
+      PasSyn.BeginUpdate;
+      PasSyn.CurrentLines := EditorComponent.ViewedTextBuffer;
+      PasSyn.CompilerModeLocked := true;
+      PasSyn.ModeSwitchesLocked := [Low(TPascalCompilerModeSwitches)..High(TPascalCompilerModeSwitches)];
       PasSyn.CompilerMode := CompilerModeToPascal(Scanner.CompilerMode);
       PasSyn.ModeSwitches := CompilerModeSwitchesToPascal(Scanner.CompilerModeSwitches);
+      PasSyn.EndUpdate;
     end;
   finally
     EditorComponent.EndUpdate;
