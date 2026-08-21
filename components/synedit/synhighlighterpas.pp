@@ -4594,12 +4594,16 @@ procedure TSynPasSyn.DirectiveProc;
   begin
     // skip space
     while (LinePtr[Run] in [' ',#9,#10,#13]) do inc(Run);
-    if LinePtr[Run] in ['+', '}'] then begin
+    if (LinePtr[Run] in ['+', '}']) or
+       ((LinePtr[Run] in ['o','O']) and (LinePtr[Run+1] in ['n','N']) and (LinePtr[Run+2] in [#0, #9, #10, #13, ' ', '}']) )
+    then begin
       FRangeModeSwitches := FRangeModeSwitches + [ASwitch];
       FDirectiveModeSwitches := FDirectiveModeSwitches + [ASwitch];
     end
     else
-    if LinePtr[Run] = '-' then begin
+    if (LinePtr[Run] = '-') or
+       ((LinePtr[Run] in ['o','O']) and (LinePtr[Run+1] in ['f','F']) and (LinePtr[Run+2] in ['f','F']) and (LinePtr[Run+3] in [#0, #9, #10, #13, ' ', '}']) )
+    then begin
       FRangeModeSwitches := FRangeModeSwitches - [ASwitch];
       FDirectiveModeSwitches := FDirectiveModeSwitches + [ASwitch];
     end;
