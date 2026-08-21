@@ -597,7 +597,9 @@ type
   TSynHighlighterPasRangeList = class(specialize TGenLazHighlighterLineRangeShiftList<TSynPasFullRangeInfo>)
   private
     FCompilerMode: TPascalCompilerMode;
+    FCompilerModeLocked: Boolean;
     FModeSwitches: TPascalCompilerModeSwitches;
+    FModeSwitchesLocked: TPascalCompilerModeSwitches;
     function GetTSynPasRangeInfo(Index: Integer): TSynPasRangeInfo;
     procedure SetTSynPasRangeInfo(Index: Integer; const AValue: TSynPasRangeInfo);
   public
@@ -605,6 +607,8 @@ type
       read GetTSynPasRangeInfo write SetTSynPasRangeInfo;
     property CompilerMode: TPascalCompilerMode read FCompilerMode write FCompilerMode;
     property ModeSwitches: TPascalCompilerModeSwitches read FModeSwitches write FModeSwitches;
+    property CompilerModeLocked: Boolean read FCompilerModeLocked write FCompilerModeLocked;
+    property ModeSwitchesLocked: TPascalCompilerModeSwitches read FModeSwitchesLocked write FModeSwitchesLocked;
   end;
 
   { TSynPasSynRange }
@@ -761,6 +765,8 @@ type
     PSynPasSynCustomTokenInfoListEx = ^TSynPasSynCustomTokenInfoListEx;
   private
     FCaseLabelAttriMatchesElseOtherwise: Boolean;
+    FCompilerModeLocked: Boolean;
+    FModeSwitchesLocked: TPascalCompilerModeSwitches;
     FPasAttributes: array [TSynPasAttribute] of TLazEditHighlighterAttributes;
     FPasAttributesMod: array [TSynPasAttributeMod] of TLazEditHighlighterAttributesModifier;
     FNestedBracketAttribs: TLazEditTextAttributeModifierCollection;
@@ -845,6 +851,8 @@ type
     procedure PasDocAttrChanged(Sender: TObject);
     procedure SetStoreModesPerFile(AValue: boolean);
     function  SwitchesForMode(const AValue: TPascalCompilerMode):TPascalCompilerModeSwitches;
+    procedure SetCompilerModeLocked(AValue: Boolean);
+    procedure SetModeSwitchesLocked(AValue: TPascalCompilerModeSwitches);
     procedure SetCompilerMode(const AValue: TPascalCompilerMode);
     procedure SetGenericConstraintAttributeMode(AValue: TSynPasTypeAttributeMode);
     procedure SetProcNameImplAttributeMode(AValue: TProcNameAttrbuteModes);
@@ -1217,6 +1225,8 @@ type
 
     property CompilerMode: TPascalCompilerMode read FCompilerMode write SetCompilerMode default pcmDelphi;
     property ModeSwitches: TPascalCompilerModeSwitches read FModeSwitches write SetModeSwitches stored GetModeSwitchesStored;
+    property CompilerModeLocked: Boolean read FCompilerModeLocked write SetCompilerModeLocked default False;
+    property ModeSwitchesLocked: TPascalCompilerModeSwitches read FModeSwitchesLocked write SetModeSwitchesLocked default [];
     property StoreModesPerFile: boolean read FStoreModesPerFile write SetStoreModesPerFile default False;
 
     property D4syntax: boolean read FD4syntax write SetD4syntax default true;
@@ -1651,6 +1661,28 @@ begin
     pcmIso:           Result := [];
     pcmExtPas:        Result := [];
   end;
+end;
+
+procedure TSynPasSyn.SetCompilerModeLocked(AValue: Boolean);
+begin
+  if FCompilerModeLocked = AValue then Exit;
+  FCompilerModeLocked := AValue;
+
+  if (CurrentRanges <> nil) then begin
+    TSynHighlighterPasRangeList(CurrentRanges).CompilerModeLocked := FCompilerModeLocked;
+  end;
+  RequestFullRescan;
+end;
+
+procedure TSynPasSyn.SetModeSwitchesLocked(AValue: TPascalCompilerModeSwitches);
+begin
+  if FModeSwitchesLocked = AValue then Exit;
+  FModeSwitchesLocked := AValue;
+
+  if (CurrentRanges <> nil) then begin
+    TSynHighlighterPasRangeList(CurrentRanges).ModeSwitchesLocked := FModeSwitchesLocked;
+  end;
+  RequestFullRescan;
 end;
 
 procedure TSynPasSyn.SetCompilerMode(const AValue: TPascalCompilerMode);
@@ -4624,6 +4656,8 @@ end;
 procedure TSynPasSyn.DirectiveProc;
   procedure ApplyModeSwitch(ASwitch: TPascalCompilerModeSwitch);
   begin
+    if ASwitch in FModeSwitchesLocked then
+      exit;
     // skip space
     while (LinePtr[Run] in [' ',#9,#10,#13]) do inc(Run);
     if (LinePtr[Run] in ['+', '}']) or
@@ -4686,6 +4720,7 @@ begin
     end;
   end;
   if (fRange * [rsModeByDirectiveSet, rsModeByDirectiveLocked] = []) and
+     (not FCompilerModeLocked) and
      TextComp('mode')
   then begin
     Include(fRange, rsModeByDirectiveSet);
@@ -8185,11 +8220,15 @@ begin
     if FStoreModesPerFile then begin
       FCompilerMode := TSynHighlighterPasRangeList(CurrentRanges).CompilerMode;
       FModeSwitches := TSynHighlighterPasRangeList(CurrentRanges).ModeSwitches;
+      FModeSwitchesLocked := TSynHighlighterPasRangeList(CurrentRanges).ModeSwitchesLocked;
+      FModeSwitchesLocked := TSynHighlighterPasRangeList(CurrentRanges).ModeSwitchesLocked;
     end
     else begin
       // always keep synced, if later enabled
       TSynHighlighterPasRangeList(CurrentRanges).CompilerMode := FDefaultCompilerMode;
       TSynHighlighterPasRangeList(CurrentRanges).ModeSwitches := FDefaultModeSwitches;
+      TSynHighlighterPasRangeList(CurrentRanges).ModeSwitchesLocked := FModeSwitchesLocked;
+      TSynHighlighterPasRangeList(CurrentRanges).ModeSwitchesLocked := FModeSwitchesLocked;
     end;
   end;
 end;
