@@ -2157,6 +2157,7 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TLinkScanner.Scan F ',dbgs(SrcLen));
   {$ENDIF}
+  RegisterNestedCommentsChange; // need to store original starting NestedComments value
   ScannedRange:=lsrInit;
   if ScanTill=lsrInit then exit;
   try
