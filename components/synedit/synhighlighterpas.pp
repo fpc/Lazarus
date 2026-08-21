@@ -1649,9 +1649,10 @@ end;
 procedure TSynPasSyn.SetCompilerMode(const AValue: TPascalCompilerMode);
 begin
   if (not FModeSwitchesLoaded) or not(csLoading in ComponentState) then
-    ModeSwitches := SwitchesForMode(AValue);
+    FModeSwitches := SwitchesForMode(AValue);
   //if FCompilerMode=AValue then exit;
   FCompilerMode:=AValue;
+  RequestFullRescan;
 end;
 
 procedure TSynPasSyn.SetGenericConstraintAttributeMode(AValue: TSynPasTypeAttributeMode);
@@ -1681,6 +1682,7 @@ begin
     FModeSwitchesLoaded := True;
 
   FModeSwitches := AValue;
+  RequestFullRescan;
 end;
 
 procedure TSynPasSyn.SetDeclaredTypeAttributeMode(AValue: TSynPasTypeAttributeMode);
