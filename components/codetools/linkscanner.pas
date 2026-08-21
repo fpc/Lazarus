@@ -92,6 +92,65 @@ type
   TLinkScannerProgress = function(Sender: TLinkScanner): boolean of object;
   TOnFindIncFileInFPCSrc = function(Sender: TLinkScanner; const IncName: string; out ExpFilename: string): boolean of object;
 
+  { TSourceLink is used to map between the codefiles and the cleaned source }
+  TSourceLinkKind = (
+    slkCode,
+    slkMissingIncludeFile,
+    slkSkipStart,  // start of skipped code due to IFDEFs {#3
+    slkSkipEnd,    // end of skipped code due to IFDEFs #3}
+    slkCompilerString // e.g. {$I %FPCVERSION%}
+    );
+  TSourceLinkKinds = set of TSourceLinkKind;
+  PSourceLink = ^TSourceLink;
+  TSourceLink = record
+    CleanedPos: integer;
+    SrcPos: integer;
+    Code: TSourceLog;
+    Kind: TSourceLinkKind;
+    Next: PSourceLink;
+  end;
+
+  TSourceLinkMacro = record
+    Name: PChar;
+    Code: TSourceLog;
+    Src: string;
+    SrcFilename: string;
+    StartPos, EndPos: integer;
+  end;
+  PSourceLinkMacro = ^TSourceLinkMacro;
+
+  { TSourceChangeStep is used to save the ChangeStep of every used file
+    A ChangeStep is switching to or from an include file }
+  PSourceChangeStep = ^TSourceChangeStep;
+  TSourceChangeStep = record
+    Code: TSourceLog;
+    ChangeStep: integer;
+    Next: PSourceChangeStep;
+  end;
+  
+  TLinkScannerRange = (
+    lsrNone, // undefined
+    lsrInit, // init, but do not scan any code
+    lsrSourceType, // read till source type (e.g. keyword program or unit)
+    lsrSourceName, // read till source name
+    lsrInterfaceStart, // read till keyword interface
+    lsrMainUsesSectionStart, // uses section of interface/program
+    lsrMainUsesSectionEnd, // uses section of interface/program
+    lsrImplementationStart, // scan at least to interface end (e.g. till implementation keyword)
+    lsrImplementationUsesSectionStart, // uses section of implementation
+    lsrImplementationUsesSectionEnd, // uses section of implementation
+    lsrInitializationStart,
+    lsrFinalizationStart,
+    lsrEnd // scan till 'end.'
+    );
+
+  TCommentStyle = (
+    CommentNone,
+    CommentCurly,  // {}
+    CommentRound,  // (* *)
+    CommentLine    // //
+    );
+
   TCompilerMode = (
     cmFPC,
     cmDELPHI,
@@ -114,7 +173,6 @@ const
     'ISO',
     'EXTENDEDPASCAL'
     );
-
 type
 
   { TCompilerModeSwitch - see fpc/compiler/globtype.pas  tmodeswitch }
@@ -271,6 +329,27 @@ const
     );
 
 type
+  TPascalCompiler = (
+    pcFPC,
+    pcDelphi,
+    pcPas2js);
+const  
+  // upper case
+  PascalCompilerNames: array[TPascalCompiler] of string=(
+    'FPC', 'DELPHI', 'PAS2JS'
+    );
+  PascalCompilerUnitExt: array[TPascalCompiler] of string = (
+    'pp;pas;ppu', // + p  if TCompilerMode=cmMacPas
+    'pas;dcu',
+    'pas;pp;pcu;pju'
+    );
+  PascalCompilerSrcExt: array[TPascalCompiler] of string = (
+    'pp;pas', // + p  if TCompilerMode=cmMacPas
+    'pas',
+    'pas;pp'
+    );
+
+type
   TLSSkippingDirective = (
     lssdNone,
     lssdTillElse,
@@ -341,87 +420,6 @@ type
     NestedComments: Boolean;
   end;
   PLSNestedCommentsChange = ^TLSNestedCommentsChange;
-
-  { TSourceLink is used to map between the codefiles and the cleaned source }
-  TSourceLinkKind = (
-    slkCode,
-    slkMissingIncludeFile,
-    slkSkipStart,  // start of skipped code due to IFDEFs {#3
-    slkSkipEnd,    // end of skipped code due to IFDEFs #3}
-    slkCompilerString // e.g. {$I %FPCVERSION%}
-    );
-  TSourceLinkKinds = set of TSourceLinkKind;
-  PSourceLink = ^TSourceLink;
-  TSourceLink = record
-    CleanedPos: integer;
-    SrcPos: integer;
-    Code: TSourceLog;
-    Directive: PLSDirective;
-    Kind: TSourceLinkKind;
-    Next: PSourceLink;
-  end;
-
-  TSourceLinkMacro = record
-    Name: PChar;
-    Code: TSourceLog;
-    Src: string;
-    SrcFilename: string;
-    StartPos, EndPos: integer;
-  end;
-  PSourceLinkMacro = ^TSourceLinkMacro;
-
-  { TSourceChangeStep is used to save the ChangeStep of every used file
-    A ChangeStep is switching to or from an include file }
-  PSourceChangeStep = ^TSourceChangeStep;
-  TSourceChangeStep = record
-    Code: TSourceLog;
-    ChangeStep: integer;
-    Next: PSourceChangeStep;
-  end;
-  
-  TLinkScannerRange = (
-    lsrNone, // undefined
-    lsrInit, // init, but do not scan any code
-    lsrSourceType, // read till source type (e.g. keyword program or unit)
-    lsrSourceName, // read till source name
-    lsrInterfaceStart, // read till keyword interface
-    lsrMainUsesSectionStart, // uses section of interface/program
-    lsrMainUsesSectionEnd, // uses section of interface/program
-    lsrImplementationStart, // scan at least to interface end (e.g. till implementation keyword)
-    lsrImplementationUsesSectionStart, // uses section of implementation
-    lsrImplementationUsesSectionEnd, // uses section of implementation
-    lsrInitializationStart,
-    lsrFinalizationStart,
-    lsrEnd // scan till 'end.'
-    );
-
-  TCommentStyle = (
-    CommentNone,
-    CommentCurly,  // {}
-    CommentRound,  // (* *)
-    CommentLine    // //
-    );
-
-type
-  TPascalCompiler = (
-    pcFPC,
-    pcDelphi,
-    pcPas2js);
-const  
-  // upper case
-  PascalCompilerNames: array[TPascalCompiler] of string=(
-    'FPC', 'DELPHI', 'PAS2JS'
-    );
-  PascalCompilerUnitExt: array[TPascalCompiler] of string = (
-    'pp;pas;ppu', // + p  if TCompilerMode=cmMacPas
-    'pas;dcu',
-    'pas;pp;pcu;pju'
-    );
-  PascalCompilerSrcExt: array[TPascalCompiler] of string = (
-    'pp;pas', // + p  if TCompilerMode=cmMacPas
-    'pas',
-    'pas;pp'
-    );
 
 type
   { TMissingIncludeFile is a missing include file together with all
@@ -677,7 +675,7 @@ type
     function DoDirective(StartPos, DirLen: integer): boolean;
     
     function IncludeFile(const AFilename: string): boolean;
-    procedure PushIncludeLink(ACleanedPos, ASrcPos: integer; ACode: TSourceLog; ADirective: PLSDirective);
+    procedure PushIncludeLink(ACleanedPos, ASrcPos: integer; ACode: TSourceLog);
     function PopIncludeLink: TSourceLink;
     function GetIncludeFileIsMissing: boolean;
     function MissingIncludeFilesNeedsUpdate: boolean;
@@ -839,7 +837,7 @@ type
     property NestedComments: boolean read FNestedComments;
     property CompilerMode: TCompilerMode read FCompilerMode write SetCompilerMode;
     property CompilerModeSwitches: TCompilerModeSwitches
-                         read FCompilerModeSwitches;
+                         read FCompilerModeSwitches write FCompilerModeSwitches;
     property PascalCompiler: TPascalCompiler read FPascalCompiler write SetPascalCompiler;
     property IsDelphiMode: boolean read FIsDelphiMode;
     property ScanTill: TLinkScannerRange read FScanTill write SetScanTill;
@@ -3971,15 +3969,10 @@ function TLinkScanner.IncludeDirective: boolean;
 var
   IncFilename: string;
   c: Char;
-  Directive: PLSDirective;
 begin
   Result:=false;
   if StoreDirectives then
-  begin
     FDirectives[FDirectivesCount-1].Kind:=lsdkInclude;
-    Directive := @FDirectives[FDirectivesCount-1];
-  end else
-    Directive := nil;
   inc(SrcPos);
   if (Src[SrcPos]='%') then begin
     UpdateCleanedSource(CommentStartPos-1);
@@ -4013,7 +4006,7 @@ begin
     {$ENDIF}
     UpdateCleanedSource(CommentEndPos-1);
     // put old position on stack
-    PushIncludeLink(CleanedLen,CommentEndPos,Code,Directive);
+    PushIncludeLink(CleanedLen,CommentEndPos,Code);
     // load include file
     Result:=IncludeFile(IncFilename);
     if Result then begin
@@ -4299,7 +4292,8 @@ begin
     Exclude(FStates,lssIgnoreMissingIncludeFiles);
 end;
 
-procedure TLinkScanner.PushIncludeLink(ACleanedPos, ASrcPos: integer; ACode: TSourceLog; ADirective: PLSDirective);
+procedure TLinkScanner.PushIncludeLink(ACleanedPos, ASrcPos: integer;
+  ACode: TSourceLog);
   
   procedure RaiseIncludeCircleDetected;
   begin
@@ -4317,7 +4311,6 @@ begin
     CleanedPos:=ACleanedPos;
     SrcPos:=ASrcPos;
     Code:=ACode;
-    Directive:=ADirective;
   end;
   FIncludeStack.Add(NewLink);
 end;
