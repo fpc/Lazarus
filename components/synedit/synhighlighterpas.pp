@@ -6969,7 +6969,7 @@ begin
        end;
     8: begin // ` backtick
          if (FTokenID = tkString) and (FLastTokenState = tsInMultiLineStingTick) then begin
-           AFlags := AFlags + [bfNotNestable, bfSingleLine] - [bfNoLanguageContext, bfUnknownNestLevel, bfUniform];
+           AFlags := AFlags + [bfNotNestable] - [bfNoLanguageContext, bfUnknownNestLevel, bfUniform];
            AContext := KIND_BACKTICK_STRING_BOUND;
            if  IsOpeningString(LogIdx) then
              AFlags := AFlags + [bfOpen]  // string start
