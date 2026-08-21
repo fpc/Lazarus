@@ -6763,6 +6763,7 @@ var
   InactiveCnt: Integer;
   SkippedCnt: Integer;
   PasSyn: TSynPasSyn;
+  aNestedCommentsChange: PLSNestedCommentsChange;
 begin
   //debugln(['TSourceEditor.UpdateIfDefNodeStates START ',Filename]);
   UpdateCodeBuffer;
@@ -6774,7 +6775,7 @@ begin
   EditorComponent.BeginUpdate;
   try
     //EditorComponent.InvalidateAllIfdefNodes;
-    EditorComponent.ClearModeSwitchChanges;
+    EditorComponent.ClearNestedCommentsChanges;
     Code:=CodeBuffer;
     i:=0;
     while i<Scanner.DirectiveCount do
@@ -6831,18 +6832,15 @@ begin
           debugln(['TSourceEditor.UpdateIfDefNodeStates y=',y,' x=',x,' Counts:Inactive=',InactiveCnt,' Active=',ActiveCnt,' Skipped=',SkippedCnt,' SET SynState=',dbgs(SynState)]);
         {$ENDIF}
         EditorComponent.SetIfdefNodeState(Y,X,SynState);
-      end else
-      if (aDirective^.Kind in [lsdkMode,lsdkModeSwitch,lsdkInclude]) then
-      begin
-        {$IFDEF VerboseUpdateIfDefNodeStates}
-        debugln(['TSourceEditor.UpdateIfDefNodeStates ',i,'/',Scanner.DirectiveCount,' ',dbgs(Pointer(Code)),' ',Code.Filename,' X=',X,' Y=',Y,' SrcPos=',aDirective^.SrcPos,' State=',dbgs(aDirective^.State)]);
-        {$ENDIF}
-
-        Code.AbsoluteToLineCol(aDirective^.SrcPosEnd,Y,X);
-        if Y<1 then continue;
-
-        EditorComponent.AddModeSwitchChange(Y,X,CompilerModeSwitchesToPascal(aDirective^.CompilerModeSwitches));
       end;
+    end;
+
+    for i:=0 to Scanner.NestedCommentsChangesCount-1 do
+    begin
+      aNestedCommentsChange:=Scanner.NestedCommentsChanges[i];
+      if TCodeBuffer(aNestedCommentsChange^.Code)<>Code then continue;
+      Code.AbsoluteToLineCol(aNestedCommentsChange^.SrcPos,Y,X);
+      EditorComponent.AddNestedCommentsChange(Y,X,aNestedCommentsChange^.NestedComments);
     end;
   finally
     EditorComponent.EndUpdate;

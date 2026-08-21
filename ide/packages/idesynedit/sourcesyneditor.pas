@@ -345,8 +345,8 @@ type
     {$ENDIF}
     property HighlightUserWordCount: Integer read GetHighlightUserWordCount write SetHighlightUserWordCount;
     property HighlightUserWords[AIndex: Integer]: TSourceSynEditMarkupHighlightAllMulti read GetHighlightUserWords;
-    procedure ClearModeSwitchChanges;
-    procedure AddModeSwitchChange(ALinePos, AStartPos: Integer; AModeSwitches: TPascalCompilerModeSwitches);
+    procedure ClearNestedCommentsChanges;
+    procedure AddNestedCommentsChange(ALinePos, AStartPos: Integer; ANestedComments: Boolean);
     property MarkupMgr;
     function  IsIfdefMarkupActive: Boolean;
     procedure InvalidateAllIfdefNodes;
@@ -2002,7 +2002,7 @@ begin
   CaretXY := Point(p.X, l);
 end;
 
-procedure TIDESynEditor.ClearModeSwitchChanges;
+procedure TIDESynEditor.ClearNestedCommentsChanges;
 begin
   // ToDo
 end;
@@ -2080,7 +2080,7 @@ begin
   FWrapView := TLazSynEditLineWrapPlugin.Create(Self);
 end;
 
-procedure TIDESynEditor.AddModeSwitchChange(ALinePos, AStartPos: Integer; AModeSwitches: TPascalCompilerModeSwitches);
+procedure TIDESynEditor.AddNestedCommentsChange(ALinePos, AStartPos: Integer; ANestedComments: Boolean);
 begin
   // ToDo
 end;

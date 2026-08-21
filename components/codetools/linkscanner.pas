@@ -327,12 +327,20 @@ type
     State: TLSDirectiveState;
     Code: Pointer; // TCodeBuffer
     SrcPos: integer; // 1-based position in Code
-    SrcPosEnd: integer; // end-position (after the ending '}')
     Kind: TLSDirectiveKind;
-    CompilerModeSwitches: TCompilerModeSwitches;
   end;
   PLSDirective = ^TLSDirective;
   PPLSDirective = ^PLSDirective;
+
+  // track NestedComments ModeSwitch changes
+  // we don't need to track any other ModeSwitches because they are not effective when they can be changed
+  // Comments can be written at the very top of the unit, so there can be effectively ranges with different NestedComments value
+  TLSNestedCommentsChange = record
+    Code: Pointer; // TCodeBuffer
+    SrcPos: integer; // 1-based position in Code
+    NestedComments: Boolean;
+  end;
+  PLSNestedCommentsChange = ^TLSNestedCommentsChange;
 
   { TSourceLink is used to map between the codefiles and the cleaned source }
   TSourceLinkKind = (
@@ -612,6 +620,7 @@ type
     FDirectivesStored: boolean;
     FDirectoryCachePool: TCTDirectoryCachePool;
     FIsDelphiMode: boolean;
+    FNestedCommentsChanges: array of TLSNestedCommentsChange;
     FMacrosOn: boolean;
     FMissingIncludeFiles: TMissingIncludeFiles;
     FIncludeStack: TFPList; // list of TSourceLink
@@ -628,6 +637,8 @@ type
     FDirectiveSequence: TDirectiveSequence;
     function GetDirectives(Index: integer): PLSDirective; inline;
     function GetDirectivesSorted(Index: integer): PLSDirective; inline;
+    function GetNestedCommentsChanges(Index: integer): PLSNestedCommentsChange;
+    function GetNestedCommentsChangesCount: integer;
     procedure SetCompilerMode(const AValue: TCompilerMode);
     procedure SetPascalCompiler(const AValue: TPascalCompiler);
     procedure SkipTillEndifElse(SkippingUntil: TLSSkippingDirective);
@@ -671,6 +682,7 @@ type
     function GetIncludeFileIsMissing: boolean;
     function MissingIncludeFilesNeedsUpdate: boolean;
     procedure ClearMissingIncludeFiles;
+    procedure RegisterNestedCommentsChange;
 
     // code macros
     procedure AddMacroValue(MacroName: PChar; ValueStart, ValueEnd: integer);
@@ -747,6 +759,10 @@ type
     function FindFirstDirective(aCode: Pointer; aSrcPos: integer;
       const AllowedStates: TLSDirectiveStates): PLSDirective;
     function GetDirectiveValueAt(ADirective: TSequenceDirective; ACleanPos: integer): string;
+    // NestedCommentsChanges are bound to StoreDirectives
+    // but the changes are tracked only for the main file (code)
+    property NestedCommentsChanges[Index: integer]: PLSNestedCommentsChange read GetNestedCommentsChanges;
+    property NestedCommentsChangesCount: integer read GetNestedCommentsChangesCount;
 
     // source mapping (Cleaned <-> Original)
     function CleanedSrc: string;
@@ -1183,6 +1199,16 @@ begin
   Result:=FLinks[Index];
 end;
 
+function TLinkScanner.GetNestedCommentsChanges(Index: integer): PLSNestedCommentsChange;
+begin
+  Result := @FNestedCommentsChanges[Index];
+end;
+
+function TLinkScanner.GetNestedCommentsChangesCount: integer;
+begin
+  Result := Length(FNestedCommentsChanges);
+end;
+
 // inline
 function TLinkScanner.GetLinkP(Index: integer): PSourceLink;
 begin
@@ -1605,6 +1631,7 @@ begin
       FDirectivesSorted[0]:=nil;
   end;
   FDirectiveSequence.Clear(FreeMemory);
+  FNestedCommentsChanges:=nil;
 end;
 
 procedure TLinkScanner.DemandStoreDirectives;
@@ -1783,10 +1810,7 @@ begin
   FDirectiveName:=UpperCase(Copy(Src,DirStart,DirLen));
   DoDirective(DirStart,DirLen);
   SrcPos:=CommentEndPos;
-  if StoreDirectives then begin
-    CurDirective^.CompilerModeSwitches:=CompilerModeSwitches;
-    CurDirective^.SrcPosEnd:=SrcPos;
-  end;
+  RegisterNestedCommentsChange;
 end;
 
 function TLinkScanner.ReturnFromIncludeFileAndIsEnd: boolean;
@@ -3660,6 +3684,19 @@ begin
     Result:='';
 end;
 
+procedure TLinkScanner.RegisterNestedCommentsChange;
+begin
+  if StoreDirectives
+  and (FIncludeStack.Count=0) // register nested comments change only for main file
+  and ((FNestedCommentsChanges=nil) or (FNestedCommentsChanges[High(FNestedCommentsChanges)].NestedComments<>NestedComments)) then
+  begin
+    SetLength(FNestedCommentsChanges, Length(FNestedCommentsChanges)+1);
+    FNestedCommentsChanges[High(FNestedCommentsChanges)].Code:=Code;
+    FNestedCommentsChanges[High(FNestedCommentsChanges)].SrcPos:=SrcPos;
+    FNestedCommentsChanges[High(FNestedCommentsChanges)].NestedComments:=NestedComments;
+  end;
+end;
+
 function TLinkScanner.IfndefDirective: boolean;
 // {$ifndef name comment}
 var VariableName: string;
@@ -4292,11 +4329,7 @@ begin
   Result:=PLink^;
   PSourceLinkMemManager.DisposePSourceLink(PLink);
   FIncludeStack.Delete(FIncludeStack.Count-1);
-  if Assigned(Result.Directive) then
-  begin
-    Result.Directive^.CompilerModeSwitches:=CompilerModeSwitches;
-    Result.Directive^.SrcPosEnd:=Result.SrcPos;
-  end;
+  RegisterNestedCommentsChange;
 end;
 
 function TLinkScanner.GetIncludeFileIsMissing: boolean;
