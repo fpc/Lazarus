@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
   <package name="LazEdit">
     <module name="LazEditHighlighter">
@@ -81,16 +81,11 @@ The highlighter will remove any storage like "Ranges" that it had added.</p>
       </element>
       <element name="TLazEditCustomHighlighter.CurrentLines">
         <short>Set Textbuffer for scanning, getting highlight (Token) info, fold or other info.</short>
-        <descr>
-          <p>As a highlighter can be used by any amount of SynEdits, any of those edits must always set its own lines to the highlighter before performing any tasks.
+        <descr><p>As a highlighter can be used by any amount of SynEdits, any of those edits must always set its own lines to the highlighter before performing any tasks.
 A highlighter will then be able to access the "Ranges" storage that it may have added to those lines. After setting CurrentLines they will be available via <link id="TLazEditCustomRangesHighlighter.CurrentRanges"/><p>A SynEdit must <link id="TLazEditCustomHighlighter.AttachToLines"/> once before it uses the highlighter for the first time.</p><p>Then set its textbuffer to <link id="TLazEditCustomHighlighter.CurrentLines"/> each time it is going to use the highlighter. This is valid until another SynEdit will set its textbuffer, so it should be done whenever other SynEdits may have had a chance to run.</p><p>When a SynEdit will no longer use the highlighter at all, then it must call once <link id="TLazEditCustomHighlighter.DetachFromLines"/>.</p>
           </p>
         </descr>
-        <seealso>
-          <link id="TLazEditCustomHighlighter.AttachToLines"/>
-          <link id="TLazEditCustomHighlighter.DetachFromLines"/>
-          <link id="TLazEditCustomRangesHighlighter.CurrentRanges"/>
-          <link id="TLazEditStringsBase.Ranges"/>
+        <seealso><link id="TLazEditCustomHighlighter.AttachToLines"/><link id="TLazEditCustomHighlighter.DetachFromLines"/><link id="TLazEditCustomRangesHighlighter.CurrentRanges"/><link id="TLazEditStringsBase.Ranges"/>
         </seealso>
       </element>
       <element name="TLazEditCustomHighlighter.StartAtLineIndex">

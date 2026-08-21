@@ -596,11 +596,15 @@ type
 
   TSynHighlighterPasRangeList = class(specialize TGenLazHighlighterLineRangeShiftList<TSynPasFullRangeInfo>)
   private
+    FCompilerMode: TPascalCompilerMode;
+    FModeSwitches: TPascalCompilerModeSwitches;
     function GetTSynPasRangeInfo(Index: Integer): TSynPasRangeInfo;
     procedure SetTSynPasRangeInfo(Index: Integer; const AValue: TSynPasRangeInfo);
   public
     property PasRangeInfo[Index: Integer]: TSynPasRangeInfo
       read GetTSynPasRangeInfo write SetTSynPasRangeInfo;
+    property CompilerMode: TPascalCompilerMode read FCompilerMode write FCompilerMode;
+    property ModeSwitches: TPascalCompilerModeSwitches read FModeSwitches write FModeSwitches;
   end;
 
   { TSynPasSynRange }
@@ -808,12 +812,13 @@ type
     FTokenTypeDeclExtraAttrib, FLastTokenTypeDeclExtraAttrib: TTokenTypeDeclExtraAttrib;
     FTokenIsCaseLabel: Boolean;
     FTokenIsValueOrTypeName: Boolean;
-    FCompilerMode: TPascalCompilerMode;
-    FModeSwitches: TPascalCompilerModeSwitches;
-    FModeSwitchesLoaded: Boolean;
+    FCompilerMode, FDefaultCompilerMode: TPascalCompilerMode;
+    FModeSwitches, FDefaultModeSwitches: TPascalCompilerModeSwitches;
+    FModeSwitchesLoaded, FDefaultModeSet: Boolean;
     fD4syntax: boolean;
     // Divider
     FDividerDrawConfig: Array [TSynPasDividerDrawLocation] of TLazEditDividerDrawConfig;
+    FStoreModesPerFile: boolean;
 
     procedure DoCustomTokenChanged(Sender: TObject);
     procedure DoReadLfmNestedComments(Reader: TReader);
@@ -840,6 +845,7 @@ type
     function  GetCustomTokens(AnIndex: integer): TSynPasSynCustomToken;
     function GetPasCodeFoldRange: TSynPasSynRange; inline;
     procedure PasDocAttrChanged(Sender: TObject);
+    procedure SetStoreModesPerFile(AValue: boolean);
     function  SwitchesForMode(const AValue: TPascalCompilerMode):TPascalCompilerModeSwitches;
     procedure SetCompilerMode(const AValue: TPascalCompilerMode);
     procedure SetGenericConstraintAttributeMode(AValue: TSynPasTypeAttributeMode);
@@ -1051,6 +1057,7 @@ type
     function GetRangeClass: TLazHighlighterRangeClass; override;
     procedure CreateRootCodeFoldBlock; override;
     function CreateRangeList(ALines: TLazEditStringsBase): TLazHighlighterLineRangeList; override;
+    procedure DoCurrentLinesChanged; override;
     function UpdateRangeInfoAtEOL: Boolean; override; // Returns true if range changed
     function DoPrepareLines(AFirstLineIdx: IntIdx; AMinimumRequiredLineIdx: IntIdx = - 1; AMaxTime: integer = 0): integer; override;
 
@@ -1212,6 +1219,8 @@ type
 
     property CompilerMode: TPascalCompilerMode read FCompilerMode write SetCompilerMode default pcmDelphi;
     property ModeSwitches: TPascalCompilerModeSwitches read FModeSwitches write SetModeSwitches stored GetModeSwitchesStored;
+    property StoreModesPerFile: boolean read FStoreModesPerFile write SetStoreModesPerFile default False;
+
     property D4syntax: boolean read FD4syntax write SetD4syntax default true;
     property ExtendedKeywordsMode: Boolean
              read FExtendedKeywordsMode write SetExtendedKeywordsMode default False;
@@ -1647,12 +1656,24 @@ begin
 end;
 
 procedure TSynPasSyn.SetCompilerMode(const AValue: TPascalCompilerMode);
+var
+  rescan: Boolean;
+  ms: TPascalCompilerModeSwitches;
 begin
-  if (not FModeSwitchesLoaded) or not(csLoading in ComponentState) then
-    FModeSwitches := SwitchesForMode(AValue);
+  if (not FModeSwitchesLoaded) or not(csLoading in ComponentState) then begin
+    ms := SwitchesForMode(AValue);
+    rescan := FModeSwitches <> ms;
+    FModeSwitches := ms;
+  end;
   //if FCompilerMode=AValue then exit;
+  rescan := rescan or (FCompilerMode <> AValue);
   FCompilerMode:=AValue;
-  RequestFullRescan;
+  if (CurrentRanges <> nil) then begin
+    TSynHighlighterPasRangeList(CurrentRanges).CompilerMode := FCompilerMode;
+    TSynHighlighterPasRangeList(CurrentRanges).ModeSwitches := FModeSwitches;
+  end;
+  if rescan then
+    RequestFullRescan;
 end;
 
 procedure TSynPasSyn.SetGenericConstraintAttributeMode(AValue: TSynPasTypeAttributeMode);
@@ -1677,12 +1698,19 @@ begin
 end;
 
 procedure TSynPasSyn.SetModeSwitches(AValue: TPascalCompilerModeSwitches);
+var
+  rescan: Boolean;
 begin
   if (csLoading in ComponentState) then
     FModeSwitchesLoaded := True;
 
+  rescan := FModeSwitches <> AValue;
   FModeSwitches := AValue;
-  RequestFullRescan;
+  if (CurrentRanges <> nil) then begin
+    TSynHighlighterPasRangeList(CurrentRanges).ModeSwitches := FModeSwitches;
+  end;
+  if rescan then
+    RequestFullRescan;
 end;
 
 procedure TSynPasSyn.SetDeclaredTypeAttributeMode(AValue: TSynPasTypeAttributeMode);
@@ -1983,6 +2011,12 @@ begin
                 FPasAttributesMod[attribPasDocSymbol].IsEnabled or
                 FPasAttributesMod[attribPasDocUnknown].IsEnabled;
   DefHighlightChange(Sender);
+end;
+
+procedure TSynPasSyn.SetStoreModesPerFile(AValue: boolean);
+begin
+  if FStoreModesPerFile = AValue then Exit;
+  FStoreModesPerFile := AValue;
 end;
 
 function TSynPasSyn.Func15: TtkTokenKind;
@@ -8150,6 +8184,29 @@ end;
 function TSynPasSyn.CreateRangeList(ALines: TLazEditStringsBase): TLazHighlighterLineRangeList;
 begin
   Result := TSynHighlighterPasRangeList.Create;
+  if not FDefaultModeSet then begin
+    FDefaultCompilerMode := FCompilerMode;
+    FDefaultModeSwitches := FModeSwitches;
+    FDefaultModeSet := True;
+  end;
+  TSynHighlighterPasRangeList(Result).CompilerMode := FDefaultCompilerMode;
+  TSynHighlighterPasRangeList(Result).ModeSwitches := FDefaultModeSwitches;
+end;
+
+procedure TSynPasSyn.DoCurrentLinesChanged;
+begin
+  inherited DoCurrentLinesChanged;
+  if CurrentRanges <> nil then begin
+    if FStoreModesPerFile then begin
+      FCompilerMode := TSynHighlighterPasRangeList(CurrentRanges).CompilerMode;
+      FModeSwitches := TSynHighlighterPasRangeList(CurrentRanges).ModeSwitches;
+    end
+    else begin
+      // always keep synced, if later enabled
+      TSynHighlighterPasRangeList(CurrentRanges).CompilerMode := FDefaultCompilerMode;
+      TSynHighlighterPasRangeList(CurrentRanges).ModeSwitches := FDefaultModeSwitches;
+    end;
+  end;
 end;
 
 function TSynPasSyn.UpdateRangeInfoAtEOL: Boolean;
