@@ -90,6 +90,8 @@ type
     rsInParamDeclaration, // [OPT] Either in property-index "foo[AIndex:int]" or in procedure param declaration
     rsInterface,
     rsImplementation,   // Program or Implementation
+    rsModeByDirectiveSet,     // A source may only have one $mode directive
+    rsModeByDirectiveLocked,  // All mode/modeswitches must be before the first code statement
 
     // we need to detect:    type TFoo = procedure; // must not fold
     //                       var  foo: procedure;   // must not fold
@@ -4604,7 +4606,9 @@ begin
   fTokenID := tkDirective;
   Include(FTokenExtraAttribs, eaPartTokenNotAtEnd); // BorProc will clear this, if it reaches the end
 
-  if TextComp('modeswitch') then begin
+  if (not (rsModeByDirectiveLocked in fRange)) and
+     TextComp('modeswitch')
+  then begin
     // modeswitch directive
     inc(Run,10);
     // skip space
@@ -4645,7 +4649,10 @@ begin
       ApplyModeSwitch(pcsAnonymousFunctions);
     end;
   end;
-  if TextComp('mode') then begin
+  if (fRange * [rsModeByDirectiveSet, rsModeByDirectiveLocked] = []) and
+     TextComp('mode')
+  then begin
+    Include(fRange, rsModeByDirectiveSet);
     // $mode directive
     inc(Run,4);
     // skip space
@@ -6339,6 +6346,9 @@ begin
 
 
         if not (FTokenID in [tkSpace, tkComment, tkIDEDirective, tkDirective, tkNull]) then begin
+          if (FTokenID = tkKey) and (rsInterface in FOldRange) then
+            fRange := fRange + [rsModeByDirectiveLocked];
+
           if (FNextTokenState = tsNone) and (FTokenState in [tsAfterExternal, tsAfterExternalName]) and
              (FTokenID in [tkIdentifier, tkString, tkKey])
           then
