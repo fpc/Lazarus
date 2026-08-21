@@ -105,6 +105,7 @@ type
     FImageIdxFunction: Integer;
     FImageIdxConstructor: Integer;
     FImageIdxDestructor: Integer;
+    FImageIdxOperator: Integer;
     iconBmp: TBitmap;
     function GetCodeTreeNode(out lCodeTool: TCodeTool): TCodeTreeNode;
     { Move editors focus to selected method. }
@@ -267,6 +268,7 @@ begin
   FImageIdxFunction        := IDEImages.LoadImage('cc_function');
   FImageIdxConstructor     := IDEImages.LoadImage('cc_constructor');
   FImageIdxDestructor      := IDEImages.LoadImage('cc_destructor');
+  FImageIdxOperator        := IDEImages.LoadImage('cc_operator');
 
   SG.FocusRectVisible := false;
 
@@ -559,6 +561,7 @@ begin
   if      aTool.NodeIsConstructor(aNode) then result := FImageIdxConstructor
   else if aTool.NodeIsDestructor (aNode) then result := FImageIdxDestructor
   else if aTool.NodeIsFunction   (aNode) then result := FImageIdxFunction
+  else if aTool.NodeIsOperator   (aNode) then result := FImageIdxOperator
   else                                        result := FImageIdxProcedure;
 end;
 

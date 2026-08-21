@@ -206,6 +206,7 @@ type
     ImgIDDestructor: Integer;
     ImgIDProgram: Integer;
     ImgIDProperty: Integer;
+    ImgIDOperator: Integer;
     ImgIDPropertyReadOnly: Integer;
     ImgIDType: Integer;
     ImgIDUnit: Integer;
@@ -771,6 +772,7 @@ begin
   ImgIDConstructor := IDEImages.GetImageIndex('cc_constructor');
   ImgIDDestructor := IDEImages.GetImageIndex('cc_destructor');
   ImgIDLabel := IDEImages.GetImageIndex('cc_label');
+  ImgIDOperator := IDEImages.GetImageIndex('cc_operator');
   ImgIDProperty := IDEImages.GetImageIndex('cc_property');
   ImgIDPropertyReadOnly := IDEImages.GetImageIndex('cc_property_ro');
   // sections
@@ -951,6 +953,9 @@ begin
                                       else
                                       if Tool.NodeIsFunction(CodeNode) then
                                         Result:=ImgIDFunction
+                                      else
+                                      if Tool.NodeIsOperator(CodeNode) then
+                                        Result:=ImgIDOperator
                                       else
                                         Result:=ImgIDProcedure;
     ctnProperty:                      Result:=ImgIDProperty;

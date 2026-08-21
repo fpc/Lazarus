@@ -148,6 +148,9 @@ codecompletion/cc_label_200.png
 codecompletion/cc_namespace.png
 codecompletion/cc_namespace_150.png
 codecompletion/cc_namespace_200.png
+codecompletion/cc_operator.png
+codecompletion/cc_operator_150.png
+codecompletion/cc_operator_200.png
 codecompletion/cc_procedure.png
 codecompletion/cc_procedure_150.png
 codecompletion/cc_procedure_200.png

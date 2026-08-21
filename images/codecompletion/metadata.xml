@@ -394,5 +394,29 @@
         <keyword>variable</keyword>
       </keywords>
     </icon>
+    <icon filename="cc_operator.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>operator</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_operator_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>operator</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_operator_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>operator</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
   </icons>
 </metadata>
