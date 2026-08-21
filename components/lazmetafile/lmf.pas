@@ -10,7 +10,8 @@ uses
   FPCanvas, FPImage, GraphMath, GraphType, IntfGraphics, Graphics, syncobjs;
 
 const
-  ONE_INCH_IN_TWIPS = 1440;    // 1 twip = 1/20 pt = 1/(20*72) inch = 1/1440 inch
+  PTS_PER_INCH = 72;          // 1 pt = 1/72 inch
+  TWIPS_PER_INCH = 1440;      // 1 twip = 1/20 pt = 1/1440 inch
 
 type
   // Exception types
@@ -43,7 +44,9 @@ type
     fList: TlmfList;
     fCrs:TCriticalSection;
     fEnhanced: Boolean;
-    fLogUnitsPerInch: Integer;
+  private
+    function GetLogUnitsPerInch: Integer;
+    procedure SetLogUnitsPerInch(AValue: Integer);
   protected
     procedure AssignTo(Dest:TPersistent);override;
     function GetWidth:integer;override;
@@ -75,18 +78,21 @@ type
     property Enhanced: Boolean read FEnhanced write FEnhanced;  // Write WMF or EMF stream
     property List: TlmfList read fList;
 
-    property LogUnitsPerInch: Integer read fLogUnitsPerInch write fLogUnitsPerInch;
+    property LogUnitsPerInch: Integer read GetLogUnitsPerInch write SetLogUnitsPerInch;
   end;
 
   TlmfList = class(TComponent)
   private
     fWidth, fHeight:integer;
+    fLogUnitsPerInch: Integer;
   public
+    constructor Create(AOwner: TComponent); override;
     procedure GetChildren(Proc: TGetChildProc; {%H-}Root: TComponent); override;
     function GetChildOwner: TComponent; override;
   published
     property Width:integer read fWidth write fWidth;
     property Height:integer read fHeight write fHeight;
+    property LogUnitsPerInch: Integer read FLogUnitsPerInch write FLogUnitsPerInch;
   end;
 
   TlmfCanvas = class(TCanvas)
@@ -163,7 +169,6 @@ begin
   inherited Create;
   fCrs:=syncobjs.TCriticalSection.Create;
   fList:=TlmfList.Create(nil);
-  fLogUnitsPerInch := ONE_INCH_IN_TWIPS;
 end;
 
 destructor TlmfImage.Destroy;
@@ -187,6 +192,7 @@ begin
       mf.ReadComponent(TlmfImage(Dest).fList);
       TlmfImage(Dest).fWidth:=fWidth;
       TlmfImage(Dest).fHeight:=fHeight;
+      TlmfImage(Dest).LogUnitsPerInch := LogUnitsPerInch;
     finally
       mf.Free;
     end;
@@ -198,6 +204,16 @@ end;
 procedure TlmfImage.Clear;
 begin
   fList.DestroyComponents;
+end;
+
+function TlmfImage.GetLogUnitsPerInch: Integer;
+begin
+  Result := fList.LogUnitsPerInch;
+end;
+
+procedure TlmfImage.SetLogUnitsPerInch(AValue: Integer);
+begin
+  fList.LogUnitsPerInch := AValue;
 end;
 
 function TlmfImage.GetWidth: integer;
@@ -908,6 +924,12 @@ end;
 
 
 { LMF list }
+
+constructor TlmfList.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FLogUnitsPerInch := TWIPS_PER_INCH;
+end;
 
 procedure TlmfList.GetChildren(Proc: TGetChildProc; Root: TComponent);
 var

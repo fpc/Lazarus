@@ -21,7 +21,6 @@ type
     FErrMsg: TStrings;
     // info from header
     FBBox: TRect;  // in metafile units as specified by UnitsPerInch. NOTE: "logical" units can be different!
-    FUnitsPerInch: Integer;
     FHasPlaceableMetaHeader: Boolean;
     // state
     FCurrPen: TPen;
@@ -87,9 +86,6 @@ uses
   BMPcomn;
 
 const
-  INCH2MM = 25.4;      // 1 inch = 25.4 mm
-  MM2INCH = 1.0/INCH2MM;
-  DEFAULT_SIZE = 100;  // size of image (in mm) if scaling info is not available
   SIZE_OF_WORD = 2;
 
 constructor TlmfWMFReader.Create;
@@ -124,7 +120,6 @@ begin
   FCurrTextAlign := 0;  // Left + Top
   FCurrPolyFillMode := ALTERNATE;
   FMapMode := MM_ANISOTROPIC;
-  FUnitsPerInch := 96;
 end;
 
 destructor TlmfWMFReader.Destroy;
@@ -492,9 +487,9 @@ begin
     FBBox.Top := LEToN(placeableMetaHdr.Top);
     FBBox.Right := LEToN(placeableMetaHdr.Right);
     FBBox.Bottom := LEToN(placeableMetaHdr.Bottom);
-    FUnitsPerInch := LEToN(placeableMetaHdr.Inch);
     FImage.Width := FBBox.Right - FBBox.Left;
     FImage.Height := FBBox.Bottom - FBBox.Top;
+    FImage.LogUnitsPerInch := LEToN(placeableMetaHdr.Inch);
   end else
   begin
     // Is it the wmf header?
