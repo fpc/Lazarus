@@ -77,15 +77,12 @@ type
   TtkTokenKinds= set of TtkTokenKind;
 
   TRangeState = (
-    rsAnsiMultiDQ,  // Multi line double quoted string
-
     // rsAnsi, rsBor, rsDirective are exclusive to each other
     rsAnsi,         // *) comment
     rsBor,          // { comment
     rsSlash,        // // : Only if it's from the "start of line" (ignore lead whitespace). Used for calling SlashCommentProc 
     rsIDEDirective, // {%
     rsDirective,    // {$
-    rsBacktickString,
     rsAsm,          // assembler block
     rsProperty,
     rsInPropertyNameOrIndex, // Set by "property" kept until "read/write/...": property NAME [IDX: TTYPE]: TTYPE read ...
@@ -174,7 +171,10 @@ type
                              var foo: byte cvar;
                           *)
     tsAfterRaise,         // After the raise keyword (or "." or operator inside rsInRaise)
-    tsAfterDot            // [OPT] In Code. For member detection
+    tsAfterDot,            // [OPT] In Code. For member detection
+
+    tsInMultiLineStingDQ,   //  Multi line double quoted string
+    tsInMultiLineStingTick  //  Multi line backtick string
   );
 
   TTokenStates = set of TTokenState;
@@ -784,7 +784,7 @@ type
     FPasStartLevel: Smallint;
     fRange: TRangeStates;
     FOldRange: TRangeStates;
-    FTokenState, FNextTokenState: TTokenState;
+    FTokenState, FNextTokenState, FLastTokenState: TTokenState;
     FRangeCompilerMode: TPascalCompilerMode;
     FRangeModeSwitches, FDirectiveModeSwitches: TPascalCompilerModeSwitches;
     FRequiredStates, FRequiredStatesAtLastLineInit: TRequiredStates;
@@ -4887,7 +4887,8 @@ end;
 procedure TSynPasSyn.BacktickProc;
 begin
   FTokenID := tkString;
-  Include(fRange, rsBacktickString);
+  FNextTokenState := tsInMultiLineStingTick;
+  FLastTokenState := tsInMultiLineStingTick;
   if reStringBacktick in FRequiredStates then
     FCustomCommentTokenMarkup := FPasAttributesMod[attribStringBacktick];
 
@@ -4908,7 +4909,6 @@ var
   IsInWord, WasInWord, ct: Boolean;
 begin
   fTokenID := tkString;
-  Include(FOldRange, rsBacktickString); // for the closing tick
   if reStringBacktick in FRequiredStates then
     FCustomCommentTokenMarkup := FPasAttributesMod[attribStringBacktick];
 
@@ -4951,7 +4951,8 @@ begin
           end;
         end;
         Inc(Run);
-        Exclude(fRange, rsBacktickString);
+        FNextTokenState := tsNone;
+        FTokenState := tsNone;
 
         // modifiers like "alias" take a string as argument
         if (PasCodeFoldRange.BracketNestLevel = 0) then begin
@@ -5906,7 +5907,8 @@ end;
 procedure TSynPasSyn.StringProc_MultiLineDQ;
 begin
   fTokenID := tkString;
-  fRange := fRange + [rsAnsiMultiDQ];
+  FNextTokenState := tsInMultiLineStingDQ;
+  FLastTokenState := tsInMultiLineStingDQ;
 
   while (LinePtr[Run] <> #0) do
   begin
@@ -5915,7 +5917,8 @@ begin
       Inc(Run);
       if (LinePtr[Run] <> '"') then
       begin
-        fRange := fRange - [rsAnsiMultiDQ];
+        FTokenState := tsNone;
+        FNextTokenState := tsNone;
         Break;
       end;
     end;
@@ -6260,13 +6263,15 @@ begin
   fTokenPos := Run;
   FCustomTokenMarkup := nil;
   FTokenExtraKind := tkeUnknown;
+  FLastTokenState := FTokenState;
   if Run>=fLineLen then begin
     NullProc;
     exit;
   end;
-  if rsAnsiMultiDQ in fRange then
-    StringProc_MultiLineDQ()
-  else if (rsBacktickString in fRange) then
+  if (FTokenState = tsInMultiLineStingDQ) then
+    StringProc_MultiLineDQ
+  else
+  if (FTokenState = tsInMultiLineStingTick) then
     BacktickContinueProc
   else
   case LinePtr[Run] of
@@ -6503,7 +6508,7 @@ begin
          (lafPastEOL in FPasAttributes[attribComment].Features)
       then
         x2 := MaxInt;
-      if (Result = FPasAttributes[attribString]) and (rsAnsiMultiDQ in fRange) and
+      if (Result = FPasAttributes[attribString]) and (FLastTokenState = tsInMultiLineStingDQ) and
          (lafPastEOL in FPasAttributes[attribString].Features)
       then
         x2 := MaxInt;
@@ -6819,12 +6824,12 @@ begin
     end;
   end
   else
-  if fRange * [rsBacktickString] <> [] then begin
+  if FLastTokenState = tsInMultiLineStingTick then begin
     if lafPastEOL in FPasAttributesMod[attribStringBacktick].Features then
       Result := Merge(FPasAttributes[attribString], FPasAttributesMod[attribStringBacktick]);
   end
   else
-  if fRange * [rsAnsiMultiDQ] <> [] then begin
+  if FLastTokenState = tsInMultiLineStingDQ then begin
     if lafPastEOL in FPasAttributes[attribString].Features then
       Result := FPasAttributes[attribString];
   end
@@ -6936,7 +6941,7 @@ begin
          AFlags := AFlags + [bfUnknownNestLevel];
        end;
     5: begin // ''
-         if (FTokenID = tkString) and not (rsBacktickString in (FOldRange+fRange)) then begin
+         if (FTokenID = tkString) and not (FLastTokenState = tsInMultiLineStingTick) then begin
            AFlags := AFlags + [bfNotNestable, bfSingleLine] - [bfNoLanguageContext, bfUnknownNestLevel, bfUniform];
            AContext := KIND_STRING_BOUND;
            if  IsOpeningString(LogIdx) then
@@ -6963,7 +6968,7 @@ begin
          AFlags := AFlags + [bfUniform, bfNotNestable, bfNoLanguageContext] - [bfOpen, bfSingleLine];
        end;
     8: begin // ` backtick
-         if (FTokenID = tkString) and (rsBacktickString in (FOldRange+fRange)) then begin
+         if (FTokenID = tkString) and (FLastTokenState = tsInMultiLineStingTick) then begin
            AFlags := AFlags + [bfNotNestable, bfSingleLine] - [bfNoLanguageContext, bfUnknownNestLevel, bfUniform];
            AContext := KIND_BACKTICK_STRING_BOUND;
            if  IsOpeningString(LogIdx) then
