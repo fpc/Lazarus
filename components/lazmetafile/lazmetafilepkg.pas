@@ -8,7 +8,7 @@ unit LazMetafilePkg;
 interface
 
 uses
-  lmf, lmfObj, lmfWMF, lmfWMFWrite, lmfWMFRead;
+  lmf, lmfObj, lmfWMF, lmfWMFRead, lmfWMFWrite, lmfEMF;
 
 implementation
 

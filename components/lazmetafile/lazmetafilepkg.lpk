@@ -28,12 +28,16 @@
         <UnitName Value="lmfWMF"/>
       </Item>
       <Item>
+        <Filename Value="lmfwmfread.pas"/>
+        <UnitName Value="lmfWMFRead"/>
+      </Item>
+      <Item>
         <Filename Value="lmfwmfwrite.pas"/>
         <UnitName Value="lmfWMFWrite"/>
       </Item>
       <Item>
-        <Filename Value="lmfwmfread.pas"/>
-        <UnitName Value="lmfwmfread"/>
+        <Filename Value="lmfemf.pas"/>
+        <UnitName Value="lmfEMF"/>
       </Item>
     </Files>
     <RequiredPkgs>

@@ -1,0 +1,168 @@
+{ Declarations for Windows enhanced metafiles
+
+  Infos taken from
+  - https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-emf
+}
+
+unit lmfEMF;
+
+{$mode objfpc}{$H+}
+
+interface
+
+uses
+  Classes, SysUtils;
+
+const
+  // EMF record types
+  EMR_HEADER = $00000001;
+  EMR_POLYBEZIER = $00000002;
+  EMR_POLYGON = $00000003;
+  EMR_POLYLINE = $00000004;
+  EMR_POLYBEZIERTO = $00000005;
+  EMR_POLYLINETO = $00000006;
+  EMR_POLYPOLYLINE = $00000007;
+  EMR_POLYPOLYGON = $00000008;
+  EMR_SETWINDOWEXTEX = $00000009;
+  EMR_SETWINDOWORGEX = $000000A;
+  EMR_SETVIEWPORTEXTEX = $0000000B;
+  EMR_SETVIEWPORTORGEX = $0000000C;
+  EMR_SETBRUSHORGEX = $0000000D;
+  EMR_EOF = $0000000E;
+  EMR_SETPIXELV = $0000000F;
+  EMR_SETMAPPERFLAGS = $00000010;
+  EMR_SETMAPMODE = $00000011;
+  EMR_SETBKMODE = $00000012;
+  EMR_SETPOLYFILLMODE = $00000013;
+  EMR_SETROP2 = $00000014;
+  EMR_SETSTRETCHBLTMODE = $00000015;
+  EMR_SETTEXTALIGN = $00000016;
+  EMR_SETCOLORADJUSTMENT = $00000017;
+  EMR_SETTEXTCOLOR = $00000018;
+  EMR_SETBKCOLOR = $00000019;
+  EMR_OFFSETCLIPRGN = $0000001A;
+  EMR_MOVETOEX = $0000001B;
+  EMR_SETMETARGN = $0000001C;
+  EMR_EXCLUDECLIPRECT = $0000001D;
+  EMR_INTERSECTCLIPRECT = $0000001E;
+  EMR_SCALEVIEWPORTEXTEX = $0000001F;
+  EMR_SCALEWINDOWEXTEX = $00000020;
+  EMR_SAVEDC = $00000021;
+  EMR_RESTOREDC = $00000022;
+  EMR_SETWORLDTRANSFORM = $00000023;
+  EMR_MODIFYWORLDTRANSFORM = $00000024;
+  EMR_SELECTOBJECT = $00000025;
+  EMR_CREATEPEN = $00000026;
+  EMR_CREATEBRUSHINDIRECT = $00000027;
+  EMR_DELETEOBJECT = $00000028;
+  EMR_ANGLEARC = $00000029;
+  EMR_ELLIPSE = $0000002A;
+  EMR_RECTANGLE = $0000002B;
+  EMR_ROUNDRECT = $0000002C;
+  EMR_ARC = $0000002D;
+  EMR_CHORD = $0000002E;
+  EMR_PIE = $0000002F;
+  EMR_SELECTPALETTE = $00000030;
+  EMR_CREATEPALETTE = $00000031;
+  EMR_SETPALETTEENTRIES = $00000032;
+  EMR_RESIZEPALETTE = $00000033;
+  EMR_REALIZEPALETTE = $00000034;
+  EMR_EXTFLOODFILL = $00000035;
+  EMR_LINETO = $00000036;
+  EMR_ARCTO = $00000037;
+  EMR_POLYDRAW = $00000038;
+  EMR_SETARCDIRECTION = $00000039;
+  EMR_SETMITERLIMIT = $0000003A;
+  EMR_BEGINPATH = $0000003B;
+  EMR_ENDPATH = $0000003C;
+  EMR_CLOSEFIGURE = $0000003D;
+  EMR_FILLPATH = $0000003E;
+  EMR_STROKEANDFILLPATH = $0000003F;
+  EMR_STROKEPATH = $00000040;
+  EMR_FLATTENPATH = $00000041;
+  EMR_WIDENPATH = $00000042;
+  EMR_SELECTCLIPPATH = $00000043;
+  EMR_ABORTPATH = $00000044;
+  EMR_COMMENT = $00000046;
+  EMR_FILLRGN = $00000047;
+  EMR_FRAMERGN = $00000048;
+  EMR_INVERTRGN = $00000049;
+  EMR_PAINTRGN = $0000004A;
+  EMR_EXTSELECTCLIPRGN = $0000004B;
+  EMR_BITBLT = $0000004C;
+  EMR_STRETCHBLT = $0000004D;
+  EMR_MASKBLT = $0000004E;
+  EMR_PLGBLT = $0000004F;
+  EMR_SETDIBITSTODEVICE = $00000050;
+  EMR_STRETCHDIBITS = $00000051;
+  EMR_EXTCREATEFONTINDIRECTW = $00000052;
+  EMR_EXTTEXTOUTA = $00000053;
+  EMR_EXTTEXTOUTW = $00000054;
+  EMR_POLYBEZIER16 = $00000055;
+  EMR_POLYGON16 = $00000056;
+  EMR_POLYLINE16 = $00000057;
+  EMR_POLYBEZIERTO16 = $00000058;
+  EMR_POLYLINETO16 = $00000059;
+  EMR_POLYPOLYLINE16 = $0000005A;
+  EMR_POLYPOLYGON16 = $0000005B;
+  EMR_POLYDRAW16 = $0000005C;
+  EMR_CREATEMONOBRUSH = $0000005D;
+  EMR_CREATEDIBPATTERNBRUSHPT = $0000005E;
+  EMR_EXTCREATEPEN = $0000005F;
+  EMR_POLYTEXTOUTA = $00000060;
+  EMR_POLYTEXTOUTW = $00000061;
+  EMR_SETICMMODE = $00000062;
+  EMR_CREATECOLORSPACE = $00000063;
+  EMR_SETCOLORSPACE = $00000064;
+  EMR_DELETECOLORSPACE = $00000065;
+  EMR_GLSRECORD = $00000066;
+  EMR_GLSBOUNDEDRECORD = $00000067;
+  EMR_PIXELFORMAT = $00000068;
+  EMR_DRAWESCAPE = $00000069;
+  EMR_EXTESCAPE = $0000006A;
+  EMR_SMALLTEXTOUT = $0000006C;
+  EMR_FORCEUFIMAPPING = $0000006D;
+  EMR_NAMEDESCAPE = $0000006E;
+  EMR_COLORCORRECTPALETTE = $0000006F;
+  EMR_SETICMPROFILEA = $00000070;
+  EMR_SETICMPROFILEW = $00000071;
+  EMR_ALPHABLEND = $00000072;
+  EMR_SETLAYOUT = $00000073;
+  EMR_TRANSPARENTBLT = $00000074;
+  EMR_GRADIENTFILL = $00000076;
+  EMR_SETLINKEDUFIS = $00000077;
+  EMR_SETTEXTJUSTIFICATION = $00000078;
+  EMR_COLORMATCHTOTARGETW = $00000079;
+  EMR_CREATECOLORSPACEW = $0000007A;
+
+type
+  TEnhancedMetaHeader = packed record      // 80 bytes
+    RecordType: DWord;        // Record type, must be 00000001h for EMF
+    RecordSize: DWord;        // Size of the record in bytes
+    BoundsLeft: LongInt;      // Left inclusive bounds
+    BoundsRight: LongInt;     // Right inclusive bounds
+    BoundsTop: LongInt;       // Top inclusive bounds
+    BoundsBottom: LongInt;    // Bottom inclusive bounds
+    FrameLeft: LongInt;       // Left side of inclusive picture frame
+    FrameRight: LongInt;      // Right side of inclusive picture frame
+    FrameTop: LongInt;        // Top side of inclusive picture frame
+    FrameBottom: LongInt;     // Bottom side of inclusive picture frame
+    Signature: DWord;         // Signature ID (always $464D4520)
+    Version: DWord;           // Version of the metafile, always $00000100
+    Size: DWord;              // Size of the metafile in bytes
+    NumOfRecords: DWord;      // Number of records in the metafile
+    NumOfHandles: Word;       // Number of handles in the handle table
+    Reserved: Word;           // Not used (always 0)
+    SizeOfDescrip: DWord;     // Length of description string (16-bit chars) in WORDs, incl zero
+    OffsOfDescrip: DWord;     // Offset of description string in metafile (from beginning)
+    NumPalEntries: DWord;     // Number of color palette entries
+    WidthDevPixels: LongInt;  // Width of display device in pixels
+    HeightDevPixels: LongInt; // Height of display device in pixels
+    WidthDevMM: LongInt;      // Width of display device in millimeters
+    HeightDevMM: LongInt;     // Height of display device in millimeters
+  end;
+
+implementation
+
+end.
+

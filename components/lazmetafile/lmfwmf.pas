@@ -1,4 +1,4 @@
-{ Declarations for Windows meta files
+{ Declarations for Windows metafiles
 
   Infos taken from
   - http://msdn.microsoft.com/en-us/library/cc250370.aspx
