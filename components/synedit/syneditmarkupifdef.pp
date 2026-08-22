@@ -3743,7 +3743,11 @@ begin
       end;
 
       if EntryFound then begin
-        FindNextScanPos(NodeInfo, FirstEntryIdx);     Node := NodeInfo.Node; CurLine := NodeInfo.StartLine;
+        FindNextScanPos(NodeInfo, FirstEntryIdx);
+        Node := NodeInfo.Node;
+        CurLine := NodeInfo.StartLine;
+        if Node = nil then
+          break;
       end;
     end; // while FirstEntryIdx < Node.EntryCount do
 

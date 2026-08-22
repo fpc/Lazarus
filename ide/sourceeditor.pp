@@ -7877,6 +7877,8 @@ begin
 end;
 
 procedure TSourceNotebook.SetPageIndex(AValue: Integer);
+var
+  Editor: TSourceEditorInterface;
 begin
   if (fPageIndex = AValue) and (FNotebook.PageIndex = AValue) then begin
     //debugln(['>> TSourceNotebook.SetPageIndex PageIndex=', PageIndex, ' FPageIndex=', FPageIndex, ' Value=', AValue, ' FUpdateLock=', FUpdateLock]);
@@ -7886,6 +7888,9 @@ begin
   DebugLnEnter(SRCED_PAGES, ['>> TSourceNotebook.SetPageIndex Cur-PgIdx=', PageIndex, ' FPageIndex=', FPageIndex, ' Value=', AValue, ' FUpdateLock=', FUpdateLock]);
   //debugln(['>> TSourceNotebook.SetPageIndex CHANGE PageIndex=', PageIndex, ' FPageIndex=', FPageIndex, ' Value=', AValue, ' FUpdateLock=', FUpdateLock]);
   FPageIndex := AValue;
+  Editor := GetActiveEditor;
+  if Editor<>nil then // force UpdateCodeBuffer on editor leave (in case CodeTools timer doesn't catch up with the PageIndex change)
+    Editor.UpdateCodeBuffer;
   if FUpdateLock = 0 then
     ApplyPageIndex
   else
