@@ -53,7 +53,7 @@ begin
   Height := 410 + Panel1.Height;
 
   FLmfImg := TlmfImage.Create;
-  FLmfImg.LogUnitsPerInch := Screen.PixelsPerInch * 10;  // Logical units as 1/10 pixel
+  FLmfImg.LogUnitsPerInch := Screen.PixelsPerInch * 10;  // Logical units are assumed to be 1/10 pixel
   FLmfImg.Width := 600*10;
   FLmfImg.Height := 400*10;
 
@@ -313,6 +313,7 @@ begin
     LmfCanvas.Pen.Style := psPattern;     // Incorrect wmf output
     LmfCanvas.Pen.SetPattern(penPattern);
     LmfCanvas.Line(10*10, 345*10, 110*10, 345*10);
+
   finally
     LmfCanvas.Free;
   end;

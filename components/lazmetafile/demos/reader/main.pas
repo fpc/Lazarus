@@ -121,6 +121,7 @@ begin
 
   AddToHistory(AFileName);
   Caption := 'WMF File Reader [' + ExtractfileName(AFileName) + ']';
+  Paintbox.Invalidate;
 end;
 
 procedure TMainForm.PaintBoxPaint(Sender: TObject);

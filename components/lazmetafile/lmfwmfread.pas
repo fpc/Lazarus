@@ -69,6 +69,9 @@ type
     procedure SelectObj(const AParams: TWMFParamArray);
 
   protected
+    function AddToObjTable(AItem: TlmfObject): Integer;
+    procedure DeleteFromObjTable(AIndex: Integer);
+
     procedure LogError(const AMsg: String);
     procedure ReadHeader(AStream: TStream);
     procedure ReadRecords(AStream: TStream);
@@ -88,6 +91,8 @@ uses
 
 const
   SIZE_OF_WORD = 2;
+
+{ TlmfWMFReader}
 
 constructor TlmfWMFReader.Create;
 begin
@@ -117,7 +122,7 @@ begin
     StrikeThrough := false;
   end;
   FCurrBkColor := clWhite;
-  FCurrTextColor := clBlack;
+//  FCurrTextColor := clBlack;
   FCurrTextAlign := 0;  // Left + Top
   FCurrPolyFillMode := ALTERNATE;
   FMapMode := MM_ANISOTROPIC;
@@ -132,6 +137,21 @@ begin
   FObjTable.Free;
   FErrMsg.Free;
   inherited;
+end;
+
+// Occupy the first empty place, or add at end
+function TlmfWMFReader.AddToObjTable(AItem: TlmfObject): Integer;
+var
+  idx: Integer;
+  item: TlmfObject;
+begin
+  for Result := 0 to FObjTable.Count-1 do
+    if FObjTable[Result] = nil then
+    begin
+      FObjTable[Result] := AItem;
+      exit;
+    end;
+  Result := FObjTable.Add(AItem);
 end;
 
 function TlmfWMFReader.CreateBrush(const AParams: TWMFParamArray): Integer;
@@ -256,19 +276,23 @@ begin
   FImage.List.InsertComponent(lmfPen);
 end;
 
+procedure TlmfWMFReader.DeleteFromObjTable(AIndex: Integer);
+begin
+  if (AIndex >= 0) and (AIndex < FObjTable.Count) then
+  begin
+    FObjTable[AIndex] := nil;
+    // Do not delete from ObjTable's list because this will confuse the obj indexes.
+    // Only mark the deleted obj item as nil so that the index can be re-used.
+    // Also: Do not delete from FImage.List.
+  end;
+end;
+
 procedure TlmfWMFReader.DeleteObj(const AParams: TWMFParamArray);
 var
-  item: TlmfObject;
   idx: Integer;
 begin
   idx := LEToN(AParams[0]);
-  if idx < FObjTable.Count then begin
-    item := TlmfObject(FObjTable[idx]);
-    FObjTable[idx] := nil;
-    // Do not delete from list because this will confuse the obj indexes.
-    // Only mark the deleted obj item as nil so that the index can be re-used.
-    // Also: Do not delete from FImage.
-  end;
+  DeleteFromObjTable(idx);
 end;
 
 procedure TlmfWMFReader.LogError(const AMsg: String);
@@ -314,13 +338,21 @@ begin
 end;
 
 procedure TlmfWMFReader.ReadBkColor(const AParams: TWMFParamArray);
+var
+  item: TlmfBkColor;
 begin
   FCurrBkColor := ReadColor(AParams, 0);
+  item := TlmfBkColor.Create(FCurrBkColor);
+  FImage.List.InsertComponent(item);
 end;
 
 procedure TlmfWMFReader.ReadBkMode(const AParams: TWMFParamArray);
+var
+  item: TlmfBkMode;
 begin
   FCurrBkMode := LEToN(AParams[0]);
+  item := TlmfBkMode.Create(FCurrBkMode);
+  FImage.List.InsertComponent(item);
 end;
 
 procedure TlmfWMFReader.ReadChord(const AParams: TWMFParamArray);
@@ -972,8 +1004,12 @@ begin
 end;
 
 procedure TlmfWMFReader.ReadTextColor(const AParams: TWMFParamArray);
+var
+  item: TlmfTextColor;
 begin
   FCurrTextColor := ReadColor(AParams, 0);
+  item := TlmfTextColor.Create(FCurrTextColor);
+  FImage.List.InsertComponent(item);
 end;
 
 procedure TlmfWMFReader.ReadTextOut(const AParams: TWMFParamArray);

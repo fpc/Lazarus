@@ -568,7 +568,7 @@ procedure TlmfCanvas.SetColor(x,y:integer; const Value:TFPColor);
 var
   item:TlmfAnchor;
 begin
-  item:=TlmfColor.Create(x,y,Value);
+  item := TlmfColor.Create(x,y,Value);
   fImage.fList.InsertComponent(item);
 end;
 

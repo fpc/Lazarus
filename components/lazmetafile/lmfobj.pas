@@ -100,7 +100,17 @@ type
     property TextStyle: TTextStyle read fStyle write fStyle;
   end;
 
-  TlmfColor=class(TlmfAnchor)
+  TlmfTextColor = class(TlmfObject)
+  private
+    fColor: TColor;
+  public
+    constructor Create(AColor: TColor); overload;
+    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+  published
+    property Color: TColor read FColor write FColor;
+  end;
+
+  TlmfColor = class(TlmfAnchor)
   private
     fColor: TFPColor;
   public
@@ -435,20 +445,38 @@ begin
 end;
 
 
+{ TlmfTextColor
+
+  Text color normally is included in the font. But WMF has a separate record
+  for it. To simplify reading, a TlmfTextColor class has been added. }
+constructor TlmfTextColor.Create(AColor: TColor);
+begin
+  inherited Create(nil);
+  FColor := AColor;
+end;
+
+procedure TlmfTextColor.Action(fImage: TlmfImage; ACanvas: TCanvas);
+begin
+  ACanvas.Font.Color := FColor;
+end;
+
+
 { TlmfColor (pixel mode) }
 
 constructor TlmfColor.Create(x,y:integer; AColor:TfpColor);
 begin
   inherited Create(x,y);
-  fColor:=AColor;
+  fColor := AColor;
 end;
 
-procedure TlmfColor.Action(fImage:TlmfImage;ACanvas:TCanvas);
+procedure TlmfColor.Action(fImage: TlmfImage; ACanvas: TCanvas);
 begin
   ACanvas.Colors[fImage.ScaleX(fpos.x), fImage.ScaleY(fpos.y)] := fColor;
 end;
 
-// cliprect
+
+{ TlmfClip (cliprect) }
+
 constructor TlmfClip.Create(AClip:TRect);
 begin
   inherited Create(nil);
@@ -907,9 +935,10 @@ end;
 
 initialization
   RegisterClasses([TlmfAnchor,
-    TlmfMoveTo, TlmfLineTo, TlmfLine, TlmfText, TlmfTextInRect, TlmfColor,
+    TlmfMoveTo, TlmfLineTo, TlmfLine, TlmfText, TlmfTextInRect,
     TlmfClip, TlmfRect, TlmfRoundRect, TlmfEllipse, TlmfArc, TlmfChord, TlmfPie,
     TlmfPicture, TlmfPolyLine, TlmfPolygon,
+    TlmfBkMode, TlmfBkColor, TlmfTextColor, TlmfColor,
     TlmfFont, TlmfBrush, TlmfPen
   ]);
 
