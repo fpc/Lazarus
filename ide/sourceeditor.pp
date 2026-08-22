@@ -545,7 +545,6 @@ type
     function  SourceToDebugLine(aLinePos: Integer): Integer;
     function  DebugToSourceLine(aLinePos: Integer): Integer; override;
 
-    procedure InvalidateAllIfdefNodes;
     procedure SetIfdefNodeState(ALinePos, AstartPos: Integer; AState: TSynMarkupIfdefNodeState);
     property OnIfdefNodeStateRequest: TSynMarkupIfdefStateRequest read FOnIfdefNodeStateRequest write FOnIfdefNodeStateRequest;
   public
@@ -6729,11 +6728,6 @@ end;
 function TSourceEditor.DebugToSourceLine(aLinePos: Integer): Integer;
 begin
   Result := FEditor.IDEGutterMarks.DebugLineToSourceLine(aLinePos);
-end;
-
-procedure TSourceEditor.InvalidateAllIfdefNodes;
-begin
-  FEditor.InvalidateAllIfdefNodes;
 end;
 
 procedure TSourceEditor.SetIfdefNodeState(ALinePos, AstartPos: Integer;
