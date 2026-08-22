@@ -1920,8 +1920,8 @@ var
   Params: TFindDeclarationParams;
   ExprType: TExpressionType;
   MissingUnit, NewName: String;
-  ResExprContext, OrigExprContext : TFindContext;
-  ProcNode, ClassNode: TCodeTreeNode;
+  ResExprContext, OrigExprContext, EntryContext: TFindContext;
+  ProcNode, ClassNode, FuncResultNode: TCodeTreeNode;
   CCOptions: TCodeCreationDlgResult;
   AddSourceName: boolean;
 
@@ -2059,7 +2059,13 @@ begin
     NewType:=FindTermTypeAsString(TermAtom,Params,ExprType);
     if NewType='' then
       RaiseException(20170421201534,'CompleteLocalVariableAssignment Internal error: NewType=""');
+    EntryContext.Node:=Params.NewNode;
+    EntryContext.Tool:=Params.NewCodeTool;
 
+    if NodeIsFunction(EntryContext.Node) then
+      FuncResultNode:=GetProcResultNode(EntryContext.Node)
+    else
+      FuncResultNode:=nil;
     // check if there is another NewType in context of CursorNode
     if (ExprType.Desc = xtContext) and (ExprType.Context.Tool <> nil) then
     begin
@@ -2085,7 +2091,17 @@ begin
           or
           ((Params.NewNode.Desc=ctnTypeDefinition) and
           (ExprType.Context.Node.Desc in AllClasses) and
-          (Params.NewNode.FirstChild=ExprType.Context.Node)) then
+          (Params.NewNode.FirstChild=ExprType.Context.Node))
+          or // declaration is within class/object/ ..
+          ((Params.NewNode.Desc=ctnTypeDefinition) and
+          (EntryContext.Node.HasAsParent(Params.NewNode)))
+          or // declaration is function result type (and fits to EntryContext.Node)
+          ((Params.NewNode.Desc=ctnTypeDefinition) and
+          (FuncResultNode<>nil) and
+          (FuncResultNode.Desc=ctnIdentifier) and
+          (CompareDottedIdentifiers(Pchar(NewType),
+            PChar(@EntryContext.Tool.Src[FuncResultNode.StartPos]))=0)) // simplified
+          then
           // the same decl nodes =  not shadowed, may be located in other unit
             AddSourceName:=false;
         end else

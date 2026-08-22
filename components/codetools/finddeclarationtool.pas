@@ -11862,12 +11862,12 @@ var
     end;
 
     if (ExprType.Desc=xtContext)
-    and (ExprType.Context.Node.Desc=ctnProperty) then begin
+    and (ExprType.Context.Node.Desc in [ctnProperty, ctnGlobalProperty]) then begin
       // [] behind a property
       // -> Check if this property has parameters
       ResolveTypeLessProperty;
       if (ExprType.Desc=xtContext)
-      and (ExprType.Context.Node.Desc=ctnProperty)
+      and (ExprType.Context.Node.Desc in [ctnProperty, ctnGlobalProperty])
       and ExprType.Context.Tool.PropertyNodeHasParamList(ExprType.Context.Node)
       then begin
         // use the property type
@@ -14926,10 +14926,11 @@ function TFindDeclarationTool.FindTermTypeAsString(TermPos: TAtomPosition;
   Params: TFindDeclarationParams;
   out ExprType: TExpressionType): string;
 var
-  EdgedBracketsStartPos : integer;
+  EdgedBracketsStartPos, i : integer;
   SetNode, ClassNode, ExprClassNode: TCodeTreeNode;
   SetTool: TFindDeclarationTool;
   AliasType, ProcContext: TFindContext;
+  Node: TCodeTreeNode;
 begin
   //debugln(['TFindDeclarationTool.FindTermTypeAsString START']);
   {$IFDEF CheckNodeTool}CheckNodeTool(Params.ContextNode);{$ENDIF}
@@ -15025,6 +15026,32 @@ begin
     ExprClassNode:= FindClassNode(Params.StartNode);
     if ExprClassNode = ClassNode then exit; // inside a class no full path needed
     Result:=ExtractClassName(ClassNode, false)+'.'+Result;
+  end else
+  if Params.NewNode<>nil then begin
+    i:=0;
+    repeat
+      if Params.NewNode.HasParentOfType(AllClassObjectsArray[i]) then begin
+        i:=-1; // mark as found in AllClassObjects
+        break;
+      end;
+      inc(i);
+    until  i>high(AllClassObjectsArray);
+    if i<0 then begin
+      // find type definition node
+      Node:=Params.NewNode;
+      while (Node<>nil) do begin
+        if Node.Desc=ctnTypeDefinition then break;
+        Node:=Node.Parent;
+      end;
+      if (Node<>nil) then begin
+        // find node of class of definition and check if it is parent of StartNode
+        ClassNode:= FindClassNode(Node);
+        ExprClassNode:= FindClassNode(Params.StartNode);
+        if (ClassNode<>nil) and
+        ((ExprClassNode=nil) or not ExprClassNode.HasAsParent(ClassNode)) then
+          Result:=ExtractClassName(ClassNode, false)+'.'+Result;
+      end;
+    end;
   end;
 end;
 

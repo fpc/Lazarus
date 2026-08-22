@@ -8171,6 +8171,9 @@ begin
         if Attri <> nil
           then Attri.ApplyTo(MarkupIfDef.MarkupInfoTempEnabled )
           else MarkupIfDef.MarkupInfoTempEnabled.Clear;
+        if Attri <> nil
+          then Attri.ApplyTo(MarkupIfDef.MarkupInfoTempDisabled )
+          else MarkupIfDef.MarkupInfoTempDisabled.Clear;
         Attri := AttributeByEnum[ahaIfDefNodeInactive];
         if Attri <> nil
           then Attri.ApplyTo(MarkupIfDef.MarkupInfoNodeDisabled )
@@ -8183,6 +8186,9 @@ begin
         if Attri <> nil
           then Attri.ApplyTo(MarkupIfDef.MarkupInfoTempNodeEnabled )
           else MarkupIfDef.MarkupInfoTempNodeEnabled.Clear;
+        if Attri <> nil
+          then Attri.ApplyTo(MarkupIfDef.MarkupInfoTempNodeDisabled )
+          else MarkupIfDef.MarkupInfoTempNodeDisabled.Clear;
       end;
     end;
     SetGutterColorByClass(ahaLineNumber,      TSynGutterLineNumber);
