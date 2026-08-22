@@ -6766,6 +6766,11 @@ var
   ApplyModeSwitches: Boolean;
 begin
   ApplyModeSwitches := EditorOpts.ResolveCompilerModeSwitchesWithCodeTools and (EditorComponent.Highlighter is TSynPasSyn);
+
+  // reset CompilerModeLocked
+  if not ApplyModeSwitches and (EditorComponent.Highlighter is TSynPasSyn) and TSynPasSyn(EditorComponent.Highlighter).CompilerModeLocked then
+    TSynPasSyn(EditorComponent.Highlighter).CompilerModeLocked := False;
+
   //debugln(['TSourceEditor.UpdateEditorFromCodeTools START ',Filename]);
   if not (EditorComponent.IsIfdefMarkupActive or ApplyModeSwitches) then
     exit;
