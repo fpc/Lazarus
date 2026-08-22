@@ -34,7 +34,7 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     Left = 6
     Height = 19
     Top = 27
-    Width = 122
+    Width = 121
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'chkExtPasKeywords'
@@ -102,13 +102,13 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
   end
   object divParamTypes: TDividerBevel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = cbCaseLabelColorForOtherwise
+    AnchorSideTop.Control = chkResolveCompilerModeSwitchesWithCodeTools
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 15
-    Top = 106
+    Top = 131
     Width = 772
     Caption = 'divParamTypes'
     Anchors = [akTop, akLeft, akRight]
@@ -122,13 +122,13 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 127
+    Top = 152
     Width = 220
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     ItemHeight = 15
     Style = csDropDownList
-    TabOrder = 3
+    TabOrder = 4
     OnChange = dropPasStringKeywordsChange
   end
   object lblDeclaredTypeAttrMode: TLabel
@@ -138,8 +138,8 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 232
     Height = 15
-    Top = 131
-    Width = 134
+    Top = 156
+    Width = 135
     BorderSpacing.Left = 6
     Caption = 'lblDeclaredTypeAttrMode'
     ParentColor = False
@@ -150,10 +150,10 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     AnchorSideTop.Control = lblDeclaredTypeAttrMode
     AnchorSideTop.Side = asrCenter
     Cursor = crHandPoint
-    Left = 372
+    Left = 373
     Height = 15
-    Top = 131
-    Width = 69
+    Top = 156
+    Width = 70
     BorderSpacing.Around = 6
     Caption = 'LinkDeclType'
     Font.Color = clBlue
@@ -169,10 +169,10 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     AnchorSideTop.Control = lblDeclaredTypeAttrMode
     AnchorSideTop.Side = asrCenter
     Cursor = crHandPoint
-    Left = 447
+    Left = 449
     Height = 15
-    Top = 131
-    Width = 75
+    Top = 156
+    Width = 76
     BorderSpacing.Around = 6
     Caption = 'LinkDeclType2'
     Font.Color = clBlue
@@ -188,10 +188,10 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     AnchorSideTop.Control = lblDeclaredTypeAttrMode
     AnchorSideTop.Side = asrCenter
     Cursor = crHandPoint
-    Left = 528
+    Left = 531
     Height = 15
-    Top = 131
-    Width = 75
+    Top = 156
+    Width = 76
     BorderSpacing.Around = 6
     Caption = 'LinkDeclType3'
     Font.Color = clBlue
@@ -207,13 +207,13 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 156
+    Top = 181
     Width = 220
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     ItemHeight = 15
     Style = csDropDownList
-    TabOrder = 4
+    TabOrder = 5
     OnChange = dropPasStringKeywordsChange
   end
   object lblDeclaredValueAttrMode: TLabel
@@ -223,7 +223,7 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 232
     Height = 15
-    Top = 160
+    Top = 185
     Width = 138
     BorderSpacing.Left = 6
     Caption = 'lblDeclaredValueAttrMode'
@@ -237,7 +237,7 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     Cursor = crHandPoint
     Left = 376
     Height = 15
-    Top = 160
+    Top = 185
     Width = 73
     BorderSpacing.Around = 6
     Caption = 'LinkDeclValue'
@@ -256,7 +256,7 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     Cursor = crHandPoint
     Left = 455
     Height = 15
-    Top = 160
+    Top = 185
     Width = 79
     BorderSpacing.Around = 6
     Caption = 'LinkDeclValue2'
@@ -273,7 +273,7 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 185
+    Top = 210
     Width = 220
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -289,7 +289,7 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 232
     Height = 15
-    Top = 189
+    Top = 214
     Width = 138
     BorderSpacing.Left = 6
     Caption = 'lblGenericParamAttrMode'
@@ -303,7 +303,7 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     Cursor = crHandPoint
     Left = 376
     Height = 15
-    Top = 189
+    Top = 214
     Width = 100
     BorderSpacing.Around = 6
     Caption = 'LinkDeclGenParam'
@@ -322,7 +322,7 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     Cursor = crHandPoint
     Left = 482
     Height = 15
-    Top = 189
+    Top = 214
     Width = 106
     BorderSpacing.Around = 6
     Caption = 'LinkDeclGenParam2'
@@ -339,7 +339,7 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 214
+    Top = 239
     Width = 220
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -355,7 +355,7 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 232
     Height = 15
-    Top = 218
+    Top = 243
     Width = 143
     BorderSpacing.Left = 6
     Caption = 'lblProcNameDeclAttrMode'
@@ -367,7 +367,7 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 243
+    Top = 268
     Width = 220
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -383,7 +383,7 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 232
     Height = 15
-    Top = 247
+    Top = 272
     Width = 144
     BorderSpacing.Left = 6
     Caption = 'lblProcNameImplAttrMode'
@@ -395,10 +395,22 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 19
-    Top = 272
+    Top = 297
     Width = 201
     BorderSpacing.Around = 6
     Caption = 'cbDeclaredValueAttrForNumString'
-    TabOrder = 5
+    TabOrder = 9
+  end
+  object chkResolveCompilerModeSwitchesWithCodeTools: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbCaseLabelColorForOtherwise
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 106
+    Width = 285
+    BorderSpacing.Around = 6
+    Caption = 'chkResolveCompilerModeSwitchesWithCodeTools'
+    TabOrder = 3
   end
 end

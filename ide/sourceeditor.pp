@@ -6763,9 +6763,11 @@ var
   InactiveCnt: Integer;
   SkippedCnt: Integer;
   PasSyn: TSynPasSyn;
+  ApplyModeSwitches: Boolean;
 begin
+  ApplyModeSwitches := EditorOpts.ResolveCompilerModeSwitchesWithCodeTools and (EditorComponent.Highlighter is TSynPasSyn);
   //debugln(['TSourceEditor.UpdateEditorFromCodeTools START ',Filename]);
-  if not EditorComponent.IsIfdefMarkupActive then
+  if not (EditorComponent.IsIfdefMarkupActive or ApplyModeSwitches) then
     exit;
   //debugln(['TSourceEditor.UpdateEditorFromCodeTools CHECK ',Filename]);
   UpdateCodeBuffer;
@@ -6832,7 +6834,7 @@ begin
       EditorComponent.SetIfdefNodeState(Y,X,SynState);
     end;
 
-    if EditorComponent.Highlighter is TSynPasSyn then
+    if ApplyModeSwitches then
     begin
       PasSyn := TSynPasSyn(EditorComponent.Highlighter);
 

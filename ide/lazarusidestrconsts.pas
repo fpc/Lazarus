@@ -1940,6 +1940,7 @@ resourcestring
   dlgMarkupOutlineWarnNoColor = 'Warning: There are no colors configured for the selected language';
   dlgPasExtKeywords = 'Highlight flow control statements (break, continue, exit) as keywords';
   dlgPasCaseLabelForOtherwise = 'Color otherwise/else as case-label';
+  dlgPasResolveCompilerModeSwitchesWithCodeTools = 'Resolve compiler mode switches with CodeTools';
   dlgPasDeclaredTypeAttrMode = 'Extent of type-highlight in declarations';
   dlgPasDeclaredTypeValueMode = 'Extent of initial-value-highlight in declarations';
   dlgPasGenericParamAttrMode = 'Extent of highlight in Generic-Constraint and Specialize-param';
