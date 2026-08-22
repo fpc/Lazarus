@@ -1670,8 +1670,11 @@ begin
 
   if (CurrentRanges <> nil) then begin
     TSynHighlighterPasRangeList(CurrentRanges).CompilerModeLocked := FCompilerModeLocked;
+    CurrentRanges.InvalidateAll;
+    CurrentLines.SendHighlightRescanNeeded;
   end;
-  RequestFullRescan;
+  if not StoreModesPerFile then
+    RequestFullRescan;
 end;
 
 procedure TSynPasSyn.SetModeSwitchesLocked(AValue: TPascalCompilerModeSwitches);
@@ -1681,8 +1684,11 @@ begin
 
   if (CurrentRanges <> nil) then begin
     TSynHighlighterPasRangeList(CurrentRanges).ModeSwitchesLocked := FModeSwitchesLocked;
+    CurrentRanges.InvalidateAll;
+    CurrentLines.SendHighlightRescanNeeded;
   end;
-  RequestFullRescan;
+  if not StoreModesPerFile then
+    RequestFullRescan;
 end;
 
 procedure TSynPasSyn.SetCompilerMode(const AValue: TPascalCompilerMode);
@@ -1701,8 +1707,12 @@ begin
   if (CurrentRanges <> nil) then begin
     TSynHighlighterPasRangeList(CurrentRanges).CompilerMode := FCompilerMode;
     TSynHighlighterPasRangeList(CurrentRanges).ModeSwitches := FModeSwitches;
+    if rescan then begin
+      CurrentRanges.InvalidateAll;
+      CurrentLines.SendHighlightRescanNeeded;
+    end;
   end;
-  if rescan then
+  if rescan and not StoreModesPerFile then
     RequestFullRescan;
 end;
 
@@ -1738,8 +1748,12 @@ begin
   FModeSwitches := AValue;
   if (CurrentRanges <> nil) then begin
     TSynHighlighterPasRangeList(CurrentRanges).ModeSwitches := FModeSwitches;
+    if rescan then begin
+      CurrentRanges.InvalidateAll;
+      CurrentLines.SendHighlightRescanNeeded;
+    end;
   end;
-  if rescan then
+  if rescan and not StoreModesPerFile then
     RequestFullRescan;
 end;
 
