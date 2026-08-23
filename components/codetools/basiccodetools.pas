@@ -203,6 +203,16 @@ function DottedIdentifierStartsWith(Identifier, StartsWithIdent: PChar): boolean
 function DottedIdentifierEndsWith(Identifier, EndsWithIdent: PChar): boolean; // true if equal or longer
 function SplitDottedIdentifier(const Dotted: string; out Arr: TStringArray; SkipAmps: boolean = false): boolean;
 
+// identifier paths, e.g. 'name<T>.name<S,U>.name'
+type
+  TIdentifierPathItem = record
+    Name: string; // without the '&'
+    GenParamCount: integer; // -1 = no '<>' given
+  end;
+  TIdentifierPath = array of TIdentifierPathItem;
+
+function SplitIdentifierPath(const aPath: string; out Path: TIdentifierPath): boolean;
+
 // space and special chars
 function TrimCodeSpace(const ACode: string): string;
 function CodeIsOnlySpace(const ACode: string; FromPos, ToPos: integer): boolean;
@@ -5568,6 +5578,77 @@ begin
     Insert(copy(Dotted,StartP,p-StartP),Arr,length(Arr));
     if p>l then exit(true);
     if Dotted[p]<>'.' then exit;
+    inc(p);
+  until false;
+end;
+
+function SplitIdentifierPath(const aPath: string; out Path: TIdentifierPath): boolean;
+// e.g. 'ns.unitname.TBird<T>.TWing<S,U>.Size'
+// Note: the generic parameters are not resolved, only counted.
+var
+  p, l, StartP, Lvl, Cnt: integer;
+  HasContent: boolean;
+  Item: TIdentifierPathItem;
+begin
+  Path:=[];
+  Result:=false;
+  p:=1;
+  l:=length(aPath);
+  repeat
+    // read identifier
+    if p>l then exit;
+    if aPath[p]='&' then
+      inc(p);
+    if p>l then exit;
+    if not IsIdentStartChar[aPath[p]] then exit;
+    StartP:=p;
+    inc(p);
+    while (p<=l) and IsIdentChar[aPath[p]] do inc(p);
+    Item.Name:=copy(aPath,StartP,p-StartP);
+    Item.GenParamCount:=-1;
+
+    // read optional generic parameters
+    if (p<=l) and (aPath[p]='<') then begin
+      inc(p);
+      Lvl:=1;
+      Cnt:=1;
+      HasContent:=false;
+      while p<=l do begin
+        case aPath[p] of
+        '<':
+          begin
+            inc(Lvl);
+            HasContent:=true;
+          end;
+        '>':
+          begin
+            dec(Lvl);
+            if Lvl=0 then break;
+            HasContent:=true;
+          end;
+        ',':
+          if Lvl=1 then begin
+            if not HasContent then exit; // empty parameter
+            inc(Cnt);
+            HasContent:=false;
+          end else
+            HasContent:=true;
+        ' ',#9: ;
+        else
+          HasContent:=true;
+        end;
+        inc(p);
+      end;
+      if Lvl>0 then exit; // missing '>'
+      if not HasContent then exit; // empty parameter, e.g. '<>'
+      Item.GenParamCount:=Cnt;
+      inc(p); // skip '>'
+    end;
+
+    SetLength(Path,length(Path)+1);
+    Path[high(Path)]:=Item;
+    if p>l then exit(true);
+    if aPath[p]<>'.' then exit;
     inc(p);
   until false;
 end;

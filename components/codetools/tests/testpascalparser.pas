@@ -77,6 +77,7 @@ type
     procedure TestParseObjectSealedAbstract;
     procedure TestParseProcType_OfObjectDeprecated;
     procedure TestGetProcResultNode;
+    procedure TestBuildSubTreeForProcHead_GenericProc;
     procedure TestVarTypeSectionEndAtGenericProc;
     procedure TestVarWithClassOf;
   end;
@@ -871,6 +872,69 @@ begin
   'end;',
   'begin']);
   ParseModule;
+end;
+
+procedure TTestPascalParser.TestBuildSubTreeForProcHead_GenericProc;
+// the generic parameters must not be mistaken for the function result
+
+  function NodeAsStr(Tool: TCodeTool; Node: TCodeTreeNode): string;
+  begin
+    if Node=nil then
+      Result:=''
+    else
+      Result:=Tool.ExtractNode(Node,[]);
+  end;
+
+var
+  Tool: TCodeTool;
+  Node, ResultNode: TCodeTreeNode;
+  ProcName, ResultStr: string;
+  Cnt: integer;
+begin
+  StartProgram;
+  Add([
+  '{$mode delphi}',
+  'procedure Run<T>;',
+  'begin',
+  'end;',
+  'function Fly<T>: word;',
+  'begin',
+  'end;',
+  'procedure Walk;',
+  'begin',
+  'end;',
+  'function Swim: boolean;',
+  'begin',
+  'end;',
+  'begin',
+  'end.']);
+  DoParseModule(Code,Tool);
+
+  Cnt:=0;
+  Node:=Tool.Tree.Root;
+  while Node<>nil do begin
+    if Node.Desc=ctnProcedure then begin
+      inc(Cnt);
+      ProcName:=Tool.ExtractProcName(Node,[phpWithoutGenericParams]);
+      Tool.BuildSubTreeForProcHead(Node,ResultNode);
+      ResultStr:=NodeAsStr(Tool,ResultNode);
+      if ProcName='Run' then
+        AssertEquals('result of "procedure Run<T>"','',ResultStr)
+      else if ProcName='Fly' then
+        AssertEquals('result of "function Fly<T>: word"','word',ResultStr)
+      else if ProcName='Walk' then
+        AssertEquals('result of "procedure Walk"','',ResultStr)
+      else if ProcName='Swim' then
+        AssertEquals('result of "function Swim: boolean"','boolean',ResultStr)
+      else
+        Fail('unexpected procedure "'+ProcName+'"');
+      // GetProcResultNode must return the same
+      AssertEquals('GetProcResultNode of "'+ProcName+'"',ResultStr,
+                   NodeAsStr(Tool,Tool.GetProcResultNode(Node)));
+    end;
+    Node:=Node.Next;
+  end;
+  AssertEquals('number of procedures',4,Cnt);
 end;
 
 procedure TTestPascalParser.TestGetProcResultNode;

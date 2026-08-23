@@ -6640,8 +6640,14 @@ begin
   if not (ProcNode.Desc in [ctnProcedure,ctnProcedureType]) then
     RaiseException(20170421195932,
       'INTERNAL ERROR: TPascalParserTool.BuildSubTreeForProcHead with FunctionResult');
+  FunctionResult:=nil;
+  if ProcNode.FirstChild=nil then exit;
+  // skip the ctnParameterList and the ctnGenericParams of a generic procedure
+  // see TPascalReaderTool.GetProcResultNode
   FunctionResult:=ProcNode.FirstChild.FirstChild;
-  if (FunctionResult<>nil) and (FunctionResult.Desc=ctnParameterList) then
+  while (FunctionResult<>nil)
+  and not (FunctionResult.Desc in [ctnVarDefinition,ctnIdentifier,ctnSpecialize])
+  do
     FunctionResult:=FunctionResult.NextBrother;
 end;
 
