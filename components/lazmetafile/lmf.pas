@@ -708,10 +708,7 @@ begin
   item.Rotation:=TFont(Font).Orientation;
   item.Font.Assign(Font);
   item.Height:=Font.Height;
-//  item.Name:=Font.Name;
   item.Rotation:=TFont(item.Font).Orientation;
-
-  //writems('Created font "%s" size=%d rot=%d',[item.Font.Name,item.Font.Size,TrotFont(item.Font).Rotation]);
   fImage.fList.InsertComponent(item);
 end;
 

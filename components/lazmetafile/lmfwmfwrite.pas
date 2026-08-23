@@ -221,6 +221,26 @@ const
   AD_CLOCKWISE = $00000002;
                   *)
 
+function SameFont(Font1, Font2: TFont): Boolean;
+begin
+  Result := Font1.IsEqual(Font2);
+end;
+
+function SameBrush(Brush1, Brush2: TBrush): Boolean;
+begin
+  Result := Brush1.EqualsBrush(Brush2);
+end;
+
+function SamePen(Pen1, Pen2: TPen): Boolean;
+begin
+  Result := (Pen1.Style = Pen2.Style) and
+            (Pen1.Width = Pen2.Width) and
+            (Pen1.Color = Pen2.Color) and
+            (Pen1.Cosmetic = Pen2.Cosmetic) and
+            (Pen1.EndCap = Pen2.EndCap) and
+            (Pen1.JoinStyle = Pen2.JoinStyle);
+end;
+
 { TWMFWriter }
 
 constructor TWMFWriter.Create;
@@ -255,8 +275,34 @@ begin
 end;
 
 function TWMFWriter.FindInObjTable(AItem: TComponent): Integer;
+var
+  i: Integer;
+  item: TlmfObject;
 begin
-  Result := FObjTable.IndexOf(AItem);
+  for i := FObjTable.Count-1 downto 0 do  // or the other direction?
+  begin
+    item := TlmfObject(FObjTable[i]);
+    if (item.ClassType = AItem.ClassType) then
+    begin
+      if (AItem is TlmfFont) and SameFont(TlmfFont(AItem).Font, TlmfFont(item).Font) then
+      begin
+        Result := i;
+        exit;
+      end else
+      if (AItem is TlmfPen) and SamePen(tlmfPen(AItem).Pen, TlmfPen(item).Pen) then
+      begin
+        Result := i;
+        exit;
+      end else
+      if (AItem is TlmfBrush) and SameBrush(tlmfBrush(AItem).Brush, TlmfBrush(item).Brush) then
+      begin
+        Result := i;
+        exit;
+      end;
+    end;
+  end;
+  Result := -1;
+// was:  Result := FObjTable.IndexOf(AItem);
 end;
 
 function TWMFWriter.MakeWMFColorRecord(AColor: TColor): TWMFColorRecord;

@@ -196,7 +196,7 @@ begin
   FImage.List.InsertComponent(lmfBrush);
 
   // Add to WMF object list
-  Result := FObjTable.Add(lmfBrush);
+  Result := AddToObjTable(lmfBrush);
 end;
 
 function TlmfWMFReader.CreateFont(const AParams: TWMFParamArray): Integer;
@@ -225,11 +225,11 @@ begin
   lmfFont.Font.StrikeThrough := fontRec^.Strikeout <> 0;
   lmfFont.Font.Orientation := LEToN(fontRec^.Escapement);  // Do not use fontRec^.Orientation here!
 
-  // Add to WMF object list
-  Result := FObjTable.Add(lmfFont);
-
   // Add to metafile list
   FImage.List.InsertComponent(lmfFont);
+
+  // Add to WMF object list
+  Result := AddToObjTable(lmfFont);
 end;
 
 function TlmfWMFReader.CreatePen(const AParams: TWMFParamArray): Integer;
@@ -269,11 +269,11 @@ begin
   // Pen color
   lmfPen.Pen.Color := RGBToColor(penRec^.ColorRED, penRec^.ColorGREEN, penRec^.ColorBLUE);
 
-  // Add to WMF object list
-  Result := FObjTable.Add(lmfPen);
-
   // Add to metafile image
   FImage.List.InsertComponent(lmfPen);
+
+  // Add to WMF object list
+  Result := AddToObjTable(lmfPen);
 end;
 
 procedure TlmfWMFReader.DeleteFromObjTable(AIndex: Integer);
