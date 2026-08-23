@@ -5084,6 +5084,7 @@ begin
         for i:=0 to PackageGraph.Count-1 do
         begin
           CurPackage:=PackageGraph[i];
+          Assert(Assigned(CurPackage), 'TPkgManager.GetUnitsOfOwners: CurPackage=Nil');
           if OwnerList.IndexOf(CurPackage)>=0 then continue;
           for j:=0 to CurPackage.FileCount-1 do
           begin
