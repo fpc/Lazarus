@@ -478,6 +478,8 @@ type
                                  SkipAbstractsInStartClass: boolean = false): boolean;
     function GetValuesOfCaseVariable(const CursorPos: TCodeXYPosition;
                                      List: TStrings; WithTypeDefIfScoped: boolean = true): boolean;
+    function CreateDeclarationPathAt(StartNode: TCodeTreeNode;
+      TargetTool: TFindDeclarationTool; TargetNode: TCodeTreeNode): string;
     property Beautifier: TBeautifyCodeOptions read FBeautifier write FBeautifier;
 
     procedure CalcMemSize(Stats: TCTMemStats); override;
@@ -4298,6 +4300,132 @@ begin
     Params.Free;
     DeactivateGlobalWriteLock;
   end;
+end;
+
+function TIdentCompletionTool.CreateDeclarationPathAt(StartNode: TCodeTreeNode;
+  TargetTool: TFindDeclarationTool; TargetNode: TCodeTreeNode): string;
+{ Create the shortest identifier path, that FindDeclarationPathAt resolves at
+  StartNode to TargetTool+TargetNode.
+  For example, if TargetNode is the ctnTypeDefinition of a class TBird, it first
+  tries 'TBird'. If that finds another declaration, e.g. because a local
+  variable hides the type, the parent type is prepended, e.g. 'TWing.TBird',
+  and finally the namespace and unit name, e.g. 'ns1.unit2.TBird'.
+  Returns '' if no path was found.
+
+  Note: the trees must already be built, StartNode must belong to this tool and
+  TargetNode to TargetTool.
+  Note: TargetNode must be the declaration node itself, as returned by
+  FindDeclarationPathAt with Flags=[]. For example the ctnProcedure of a method
+  body in the implementation section gives '', because 'TBird.Fly' finds the
+  ctnProcedure in the class. The same applies to a forward class declaration and
+  to the ctnSrcName of a unit, whose path finds the ctnUnit.
+}
+var
+  StrictGenParams: boolean;
+
+  function NodeName(Node: TCodeTreeNode): string;
+  // the name of a declaration node, in mode delphi with the generic parameters
+  var
+    Cnt, i: integer;
+  begin
+    Result:='';
+    if Node=nil then exit;
+    case Node.Desc of
+    ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnEnumIdentifier,
+    ctnLabel:
+      Result:=GetIdentifier(@TargetTool.Src[Node.StartPos],false);
+    ctnGenericType:
+      if Node.FirstChild<>nil then
+        Result:=GetIdentifier(@TargetTool.Src[Node.FirstChild.StartPos],false);
+    ctnProcedure,ctnProcedureHead:
+      Result:=TargetTool.ExtractProcName(Node,
+                            [phpWithoutClassName,phpWithoutGenericParams]);
+    ctnProperty,ctnGlobalProperty:
+      Result:=TargetTool.ExtractPropName(Node,false);
+    ctnProgram,ctnPackage,ctnLibrary,ctnUnit,ctnSrcName:
+      Result:=TargetTool.GetSourceName(false);
+    end;
+    if Result='' then exit;
+    if not StrictGenParams then exit;
+    // in mode delphi the number of generic parameters must match, the types are
+    // irrelevant, so use 'T' for every parameter
+    Cnt:=TargetTool.GetNodeGenericParamCount(Node);
+    if Cnt<=0 then exit;
+    Result:=Result+'<T';
+    for i:=2 to Cnt do
+      Result:=Result+',T';
+    Result:=Result+'>';
+  end;
+
+  function FindQualifierNode(Node: TCodeTreeNode;
+    out AtUnitLevel: boolean): TCodeTreeNode;
+  // Search the type declaration owning Node, e.g. the TBird of a member.
+  // Returns nil if there is none. Then AtUnitLevel tells, if the unit name can
+  // be prepended, or if Node is local and can not be qualified at all.
+  begin
+    Result:=nil;
+    AtUnitLevel:=false;
+    Node:=Node.Parent;
+    while Node<>nil do begin
+      if Node.Desc in (AllClasses+[ctnEnumerationType]) then begin
+        // a member of a class, record, interface, helper or enumeration
+        Node:=Node.Parent;
+        if (Node<>nil) and (Node.Desc in [ctnTypeDefinition,ctnGenericType]) then
+          Result:=Node;
+        exit;
+      end;
+      if Node.Desc=ctnProcedure then
+        exit; // a local declaration can not be qualified
+      if Node.Desc in AllCodeSections then begin
+        AtUnitLevel:=true;
+        exit;
+      end;
+      Node:=Node.Parent;
+    end;
+  end;
+
+var
+  PathNode, QualNode: TCodeTreeNode;
+  Ctx: TFindContext;
+  UnitPrefixed, AtUnitLevel: boolean;
+  s: string;
+begin
+  Result:='';
+  if (StartNode=nil) or (TargetTool=nil) or (TargetNode=nil) then exit;
+  {$IFDEF CheckNodeTool}CheckNodeTool(StartNode);{$ENDIF}
+  if (Scanner=nil) then exit;
+
+  // the mode of this tool decides, how the path is parsed
+  StrictGenParams:=Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE];
+
+  PathNode:=TargetNode;
+  Result:=NodeName(PathNode);
+  if Result='' then exit;
+  UnitPrefixed:=false;
+  repeat
+    Ctx:=FindDeclarationPathAt(StartNode,Result,[]);
+    if (Ctx.Tool=TargetTool) and (Ctx.Node=TargetNode) then
+      exit; // found the shortest path
+    if UnitPrefixed then
+      exit(''); // there is nothing longer to try
+    QualNode:=FindQualifierNode(PathNode,AtUnitLevel);
+    if QualNode<>nil then begin
+      // a nested declaration -> prepend the parent type
+      s:=NodeName(QualNode);
+      if s='' then
+        exit('');
+      Result:=s+'.'+Result;
+      PathNode:=QualNode;
+    end else if AtUnitLevel then begin
+      // a top level declaration -> prepend the namespace and unit name
+      s:=TargetTool.GetSourceName(false);
+      if s='' then
+        exit('');
+      Result:=s+'.'+Result;
+      UnitPrefixed:=true;
+    end else
+      exit(''); // a local declaration, can not be qualified
+  until false;
 end;
 
 procedure TIdentCompletionTool.CalcMemSize(Stats: TCTMemStats);
