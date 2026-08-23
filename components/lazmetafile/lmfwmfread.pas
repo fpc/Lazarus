@@ -463,7 +463,10 @@ begin
     R.Left := SmallInt(LEToN(AParams[7]));
     txt := ReadString(AParams, 8, len);
   end else
+  begin
     txt := ReadString(AParams, 4, len);
+    R := Rect(x, y, x, y);
+  end;
   // We ignore the Dx fields
 
   txtStyle := Default(TTextStyle);
