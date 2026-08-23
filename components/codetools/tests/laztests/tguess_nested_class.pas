@@ -76,45 +76,45 @@ var
   foo: TFoo; nest: TFoo.TNest;
 
 begin
-  i{guesstype:integer} := 1;
-  x{guesstype:TFoo.TBar} := a;
-  y{guesstype:TFoo.TNest.TNestBar} := c;
-  z{TODO: guesstype:TNotNestBar} := e;
-  xx{guesstype:TFoo.TBarX} := xa;
-  xy{guesstype:TFoo.TNest.TBarX} := xc;
+  i{anytype:integer} := 1;
+  x{anytype:TFoo.TBar} := a;
+  y{anytype:TFoo.TNest.TNestBar} := c;
+  z{TODO: anytype:TNotNestBar} := e;
+  xx{anytype:TFoo.TBarX} := xa;
+  xy{anytype:TFoo.TNest.TBarX} := xc;
 
-  x1{guesstype:TOuter} := foo.f1;
-  x2{guesstype:TFoo.TBar} := foo.f2;
+  x1{anytype:TOuter} := foo.f1;
+  x2{anytype:TFoo.TBar} := foo.f2;
   //x3 := foo.f3;
-  x4{guesstype:TFoo.TBar} := foo.f4;
-  x5{guesstype:TFoo.TNest.TNestBar} := foo.f5;
-  x6{guesstype:TFoo.TNest.TNestBar} := foo.f6;
-  x7{guesstype:TRec.TRecType} := foo.f7;
-  x8{guesstype:TObj.TObjType} := foo.f8;
-  x9{guesstype:TFoo.TBarX} := foo.f9;
-  x11{guesstype:TFoo.TBarX} := foo.fa;
-  x12{guesstype:TFoo.TNest.TBarX} := foo.fb;
+  x4{anytype:TFoo.TBar} := foo.f4;
+  x5{anytype:TFoo.TNest.TNestBar} := foo.f5;
+  x6{anytype:TFoo.TNest.TNestBar} := foo.f6;
+  x7{anytype:TRec.TRecType} := foo.f7;
+  x8{anytype:TObj.TObjType} := foo.f8;
+  x9{anytype:TFoo.TBarX} := foo.f9;
+  x11{anytype:TFoo.TBarX} := foo.fa;
+  x12{anytype:TFoo.TNest.TBarX} := foo.fb;
 
-  y1{guesstype:TOuter} := nest.f1;
-  y2{guesstype:TFoo.TBar} := nest.f2;
-  y3{guesstype:TFoo.TNest.TNestBar} := nest.f3;
-  y4{guesstype:TFoo.TBar} := nest.f4;
-  y5{guesstype:TFoo.TNest.TNestBar} := nest.f5;
-  y6{guesstype:TFoo.TNest.TNestBar} := nest.f6;
-  y7{guesstype:TRec.TRecType} := nest.f7;
-  y8{guesstype:TObj.TObjType} := nest.f8;
-  y9{guesstype:TFoo.TNest.TBarX} := nest.f9;
-  y11{guesstype:TFoo.TBarX} := nest.fa;
-  y12{guesstype:TFoo.TNest.TBarX} := nest.fb;
+  y1{anytype:TOuter} := nest.f1;
+  y2{anytype:TFoo.TBar} := nest.f2;
+  y3{anytype:TFoo.TNest.TNestBar} := nest.f3;
+  y4{anytype:TFoo.TBar} := nest.f4;
+  y5{anytype:TFoo.TNest.TNestBar} := nest.f5;
+  y6{anytype:TFoo.TNest.TNestBar} := nest.f6;
+  y7{anytype:TRec.TRecType} := nest.f7;
+  y8{anytype:TObj.TObjType} := nest.f8;
+  y9{anytype:TFoo.TNest.TBarX} := nest.f9;
+  y11{anytype:TFoo.TBarX} := nest.fa;
+  y12{anytype:TFoo.TNest.TBarX} := nest.fb;
 
-  z1{guesstype:TOuter} := f1;
+  z1{anytype:TOuter} := f1;
   //z2 := f2;
   //z3 := f3;
-  z4{guesstype:TFoo.TBar} := f4;
+  z4{anytype:TFoo.TBar} := f4;
   //z5 := f5;
-  z6{guesstype:TFoo.TNest.TNestBar} := f6;
-  z7{guesstype:TRec.TRecType} := f7;
-  z8{guesstype:TObj.TObjType} := f8;
+  z6{anytype:TFoo.TNest.TNestBar} := f6;
+  z7{anytype:TRec.TRecType} := f7;
+  z8{anytype:TObj.TObjType} := f8;
 
 end;
 
@@ -125,45 +125,45 @@ var
   foo: TFoo;   nest: TFoo.TNest;
 
 begin
-  i{guesstype:integer} := 1;
-  x{guesstype:TBar} := a;
-  y{TODO: guesstype:TNestBar} := c;
-  z{guesstype:TNest.TNotNestBar} := e;
-  xx{TODO: guesstype:TFoo.TBarX} := xa;
-  xy{TODO: guesstype:TBarX} := xc;
+  i{anytype:integer} := 1;
+  x{anytype:TBar} := a;
+  y{TODO: anytype:TNestBar} := c;
+  z{guesstype:TNest.TNotNestBar} := e;  // TOOD: vartype => this wrongly has a unit name prefix
+  xx{TODO: anytype:TFoo.TBarX} := xa;
+  xy{TODO: anytype:TBarX} := xc;
 
-  x1{guesstype:TOuter} := foo.f1;
-  x2{guesstype:TFoo.TBar} := foo.f2;
+  x1{anytype:TOuter} := foo.f1;
+  x2{anytype:TFoo.TBar} := foo.f2;
   //x3 := foo.f3;
-  x4{guesstype:TFoo.TBar} := foo.f4;
-  x5{guesstype:TNestBar} := foo.f5;
-  x6{guesstype:TNestBar} := foo.f6;
-  x7{guesstype:TRec.TRecType} := foo.f7;
-  x8{guesstype:TObj.TObjType} := foo.f8;
-  x9{guesstype:TFoo.TBarX} := foo.f9;
-  x11{guesstype:TFoo.TBarX} := foo.fa;
-  x12{guesstype:TBarX} := foo.fb;
+  x4{anytype:TFoo.TBar} := foo.f4;
+  x5{anytype:TNestBar} := foo.f5;
+  x6{anytype:TNestBar} := foo.f6;
+  x7{anytype:TRec.TRecType} := foo.f7;
+  x8{anytype:TObj.TObjType} := foo.f8;
+  x9{anytype:TFoo.TBarX} := foo.f9;
+  x11{anytype:TFoo.TBarX} := foo.fa;
+  x12{anytype:TBarX} := foo.fb;
 
-  y1{guesstype:TOuter} := nest.f1;
-  y2{guesstype:TFoo.TBar} := nest.f2;
-  y3{guesstype:TNestBar} := nest.f3;
-  y4{guesstype:TFoo.TBar} := nest.f4;
-  y5{guesstype:TNestBar} := nest.f5;
-  y6{guesstype:TNestBar} := nest.f6;
-  y7{guesstype:TRec.TRecType} := nest.f7;
-  y8{guesstype:TObj.TObjType} := nest.f8;
-  y9{guesstype:TBarX} := nest.f9;
-  y11{guesstype:TFoo.TBarX} := nest.fa;
-  y12{guesstype:TBarX} := nest.fb;
+  y1{anytype:TOuter} := nest.f1;
+  y2{anytype:TFoo.TBar} := nest.f2;
+  y3{anytype:TNestBar} := nest.f3;
+  y4{anytype:TFoo.TBar} := nest.f4;
+  y5{anytype:TNestBar} := nest.f5;
+  y6{anytype:TNestBar} := nest.f6;
+  y7{anytype:TRec.TRecType} := nest.f7;
+  y8{anytype:TObj.TObjType} := nest.f8;
+  y9{anytype:TBarX} := nest.f9;
+  y11{anytype:TFoo.TBarX} := nest.fa;
+  y12{anytype:TBarX} := nest.fb;
 
-  z1{guesstype:TOuter} := f1;
+  z1{anytype:TOuter} := f1;
   //z2 := f2;
   //z3 := f3;
-  z4{guesstype:TFoo.TBar} := f4;
+  z4{anytype:TFoo.TBar} := f4;
   //z5 := f5;
-  z6{guesstype:TNestBar} := f6;
-  z7{guesstype:TRec.TRecType} := f7;
-  z8{guesstype:TObj.TObjType} := f8;
+  z6{anytype:TNestBar} := f6;
+  z7{anytype:TRec.TRecType} := f7;
+  z8{anytype:TObj.TObjType} := f8;
 
 end;
 
@@ -173,45 +173,46 @@ procedure TFoo.func;
 var
   foo: TFoo;   nest: TFoo.TNest;
 begin
-  i{guesstype:integer} := 1;
-  x{TODO: guesstype:TBar} := a;
-  y{TODO: guesstype:TNest.TNestBar} := c;
-  z{TODO:  guesstype:tguess_nested_class.TNest.TNotNestBar} := e;  // works, but test can't test for project name
-  xx{TODO: guesstype:TBarX} := xa;
-  xy{TODO: guesstype:TNest.TBarX} := xc;
+  i{anytype:integer} := 1;
+  x{TODO: anytype:TBar} := a;
+  y{TODO: anytype:TNest.TNestBar} := c;
+  z{vartype:tguess_nested_class.TNest.TNotNestBar} := e;
+  //z{ vartype:TNest.TNotNestBar} := e;  // works, but test can't test for project name
+  xx{TODO: anytype:TBarX} := xa;
+  xy{TODO: anytype:TNest.TBarX} := xc;
 
-  x1{guesstype:TOuter} := foo.f1;
-  x2{guesstype:TBar} := foo.f2;
+  x1{anytype:TOuter} := foo.f1;
+  x2{anytype:TBar} := foo.f2;
   //x3 := foo.f3;
-  x4{guesstype:TBar} := foo.f4;
-  x5{TODO: guesstype:TNest.TNestBar} := foo.f5;
-  x6{TODO: guesstype:TNest.TNestBar} := foo.f6;
-  x7{guesstype:TRec.TRecType} := foo.f7;
-  x8{guesstype:TObj.TObjType} := foo.f8;
-  x9{guesstype:TBarX} := foo.f9;
-  x11{guesstype:TBarX} := foo.fa;
-  x12{TODO: guesstype:TNest.TBarX} := foo.fb;
+  x4{anytype:TBar} := foo.f4;
+  x5{TODO: anytype:TNest.TNestBar} := foo.f5;
+  x6{TODO: anytype:TNest.TNestBar} := foo.f6;
+  x7{anytype:TRec.TRecType} := foo.f7;
+  x8{anytype:TObj.TObjType} := foo.f8;
+  x9{anytype:TBarX} := foo.f9;
+  x11{anytype:TBarX} := foo.fa;
+  x12{TODO: anytype:TNest.TBarX} := foo.fb;
 
-  y1{guesstype:TOuter} := nest.f1;
-  y2{guesstype:TBar} := nest.f2;
-  y3{TODO: guesstype:TNest.TNestBar} := nest.f3;
-  y4{guesstype:TBar} := nest.f4;
-  y5{TODO: guesstype:TNest.TNestBar} := nest.f5;
-  y6{TODO: guesstype:TNest.TNestBar} := nest.f6;
-  y7{guesstype:TRec.TRecType} := nest.f7;
-  y8{guesstype:TObj.TObjType} := nest.f8;
-  y9{TODO: guesstype:TNest.TBarX} := nest.f9;
-  y11{guesstype:TBarX} := nest.fa;
-  y12{TODO: guesstype:TNest.TBarX} := nest.fb;
+  y1{anytype:TOuter} := nest.f1;
+  y2{anytype:TBar} := nest.f2;
+  y3{TODO: anytype:TNest.TNestBar} := nest.f3;
+  y4{anytype:TBar} := nest.f4;
+  y5{TODO: anytype:TNest.TNestBar} := nest.f5;
+  y6{TODO: anytype:TNest.TNestBar} := nest.f6;
+  y7{anytype:TRec.TRecType} := nest.f7;
+  y8{anytype:TObj.TObjType} := nest.f8;
+  y9{TODO: anytype:TNest.TBarX} := nest.f9;
+  y11{anytype:TBarX} := nest.fa;
+  y12{TODO: anytype:TNest.TBarX} := nest.fb;
 
-  z1{guesstype:TOuter} := f1;
+  z1{anytype:TOuter} := f1;
   z2 := f2;
   //z3 := f3;
-  z4{guesstype:TBar} := f4;
+  z4{anytype:TBar} := f4;
   z5 := f5;
-  z6{TODO: guesstype:TNest.TNestBar} := f6;
-  z7{guesstype:TRec.TRecType} := f7;
-  z8{guesstype:TObj.TObjType} := f8;
+  z6{TODO: anytype:TNest.TNestBar} := f6;
+  z7{anytype:TRec.TRecType} := f7;
+  z8{anytype:TObj.TObjType} := f8;
 
 end;
 
@@ -220,47 +221,47 @@ var
   nest: TFoo.TNest;
 
 begin
-  i{guesstype:integer} := 1;
-  x{guesstype:TFoo.TBar} := a;
-  y{guesstype:TFoo.TNest.TNestBar} := c;
-  z{guesstype:TNest.TNotNestBar} := e;
-  xx{guesstype:TFoo.TBarX} := xa;
-  xy{guesstype:TFoo.TNest.TBarX} := xc;
+  i{anytype:integer} := 1;
+  x{anytype:TFoo.TBar} := a;
+  y{anytype:TFoo.TNest.TNestBar} := c;
+  z{anytype:TNest.TNotNestBar} := e;
+  xx{anytype:TFoo.TBarX} := xa;
+  xy{anytype:TFoo.TNest.TBarX} := xc;
 
-  x1{guesstype:TOuter} := foo.f1;
-  x2{guesstype:TFoo.TBar} := foo.f2;
+  x1{anytype:TOuter} := foo.f1;
+  x2{anytype:TFoo.TBar} := foo.f2;
   //x3 := foo.f3;
-  x4{guesstype:TFoo.TBar} := foo.f4;
-  x5{guesstype:TFoo.TNest.TNestBar} := foo.f5;
-  x6{guesstype:TFoo.TNest.TNestBar} := foo.f6;
-  x7{guesstype:TRec.TRecType} := foo.f7;
-  x8{guesstype:TObj.TObjType} := foo.f8;
-  x9{guesstype:TFoo.TBarX} := foo.f9;
-  x11{guesstype:TFoo.TBarX} := foo.fa;
-  x12{guesstype:TFoo.TNest.TBarX} := foo.fb;
+  x4{anytype:TFoo.TBar} := foo.f4;
+  x5{anytype:TFoo.TNest.TNestBar} := foo.f5;
+  x6{anytype:TFoo.TNest.TNestBar} := foo.f6;
+  x7{anytype:TRec.TRecType} := foo.f7;
+  x8{anytype:TObj.TObjType} := foo.f8;
+  x9{anytype:TFoo.TBarX} := foo.f9;
+  x11{anytype:TFoo.TBarX} := foo.fa;
+  x12{anytype:TFoo.TNest.TBarX} := foo.fb;
 
-  y1{guesstype:TOuter} := nest.f1;
-  y2{guesstype:TFoo.TBar} := nest.f2;
-  y3{guesstype:TFoo.TNest.TNestBar} := nest.f3;
-  y4{guesstype:TFoo.TBar} := nest.f4;
-  y5{guesstype:TFoo.TNest.TNestBar} := nest.f5;
-  y6{guesstype:TFoo.TNest.TNestBar} := nest.f6;
-  y7{guesstype:TRec.TRecType} := nest.f7;
-  y8{guesstype:TObj.TObjType} := nest.f8;
-  y9{guesstype:TFoo.TNest.TBarX} := nest.f9;
-  y11{guesstype:TFoo.TBarX} := nest.fa;
-  y12{guesstype:TFoo.TNest.TBarX} := nest.fb;
+  y1{anytype:TOuter} := nest.f1;
+  y2{anytype:TFoo.TBar} := nest.f2;
+  y3{anytype:TFoo.TNest.TNestBar} := nest.f3;
+  y4{anytype:TFoo.TBar} := nest.f4;
+  y5{anytype:TFoo.TNest.TNestBar} := nest.f5;
+  y6{anytype:TFoo.TNest.TNestBar} := nest.f6;
+  y7{anytype:TRec.TRecType} := nest.f7;
+  y8{anytype:TObj.TObjType} := nest.f8;
+  y9{anytype:TFoo.TNest.TBarX} := nest.f9;
+  y11{anytype:TFoo.TBarX} := nest.fa;
+  y12{anytype:TFoo.TNest.TBarX} := nest.fb;
 
-  z1{guesstype:TOuter} := f1;
+  z1{anytype:TOuter} := f1;
   //z2 := f2;
   //z3 := f3;
-  z4{guesstype:TFoo.TBar} := f4;
+  z4{anytype:TFoo.TBar} := f4;
   //z5 := f5;
-  z6{guesstype:TFoo.TNest.TNestBar} := f6;
-  z7{guesstype:TRec.TRecType} := f7;
-  z8{guesstype:TObj.TObjType} := f8;
+  z6{anytype:TFoo.TNest.TNestBar} := f6;
+  z7{anytype:TRec.TRecType} := f7;
+  z8{anytype:TObj.TObjType} := f8;
 
-  r{guesstype:TRec.TRecType} := a1;
-  o{guesstype:TObj.TObjType} := b1;
+  r{anytype:TRec.TRecType} := a1;
+  o{anytype:TObj.TObjType} := b1;
 end.
 

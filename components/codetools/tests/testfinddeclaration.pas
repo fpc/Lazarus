@@ -51,6 +51,12 @@
     {guesstype:
       Tests: CodeToolBoss.GuessTypeOfIdentifier
 
+    {vartype:
+      Tests: CodeToolBoss.CompletCode - what will be inserted for a new var
+
+    {anytype:
+      Tests: guesstype and vartype / both for the same expectation
+
     {findrefs:XYLIST
       XYLIST=x,y;x,y;...
       Tests: CodeToolBoss.FindReferences
@@ -89,7 +95,7 @@ uses
   // CodeTools
   CodeToolManager, ExprEval, CodeCache, BasicCodeTools, FileProcs,
   CustomCodeTool, CodeTree, FindDeclarationTool, KeywordFuncLists,
-  IdentCompletionTool, DefineTemplates, DirectoryCacher, CTUnitGraph,
+  IdentCompletionTool, DefineTemplates, DirectoryCacher, CTUnitGraph, SourceLog,
   // (project)
   TestPascalParser, TestGlobals;
 
@@ -127,6 +133,8 @@ type
     FMainCode: TCodeBuffer;
     FMarkers: TObjectList;// list of TFDMarker
     FMainTool: TCodeTool;
+    FTestBufferAdded: string;
+    FTestBufferAddedPos: integer;
     function GetMarkers(Index: integer): TFDMarker;
   protected
     procedure SetUp; override;
@@ -142,6 +150,7 @@ type
     procedure ParseSimpleMarkers(aCode: TCodeBuffer);
     function FindMarker(const aName: string; Kind: char): TFDMarker;
     procedure CheckReferenceMarkers;
+    procedure OnBufferChanged(Sender: TSourceLog; SrcLogEntry: TSourceLogEntry);
     procedure FindDeclarations(Filename: string; ExpandFile: boolean = true);
     procedure FindDeclarations(aCode: TCodeBuffer);
     procedure TestFiles(Directory: string; ADefaultFileMask: String = '');
@@ -437,6 +446,37 @@ begin
   inherited ClearNodeCaches;
 end;
 
+procedure TCustomTestFindDeclaration.OnBufferChanged(Sender: TSourceLog;
+  SrcLogEntry: TSourceLogEntry);
+var
+  s: String;
+begin
+  if SrcLogEntry = nil then begin
+    writeln('NO LOG');
+    exit;
+  end;
+
+  case SrcLogEntry.Operation of
+    sleoInsert:
+      begin
+        FTestBufferAddedPos := SrcLogEntry.Position;
+        s := Trim(SrcLogEntry.Txt);
+        if (Length(s) >= 3) and
+           (StrLIComp(pchar(s), pchar('var'), 3) = 0) and
+           ( (Length(s) = 3) or (s[4] in [#9..#32]) )
+        then
+          Delete(s,1,4);
+        s := Trim(s);
+        if FTestBufferAdded <> '' then
+          s := ' ' + s;
+        FTestBufferAdded := FTestBufferAdded + s;
+      end;
+    sleoDelete: ;
+    sleoMove: ;
+  end;
+
+end;
+
 procedure TCustomTestFindDeclaration.FindDeclarations(aCode: TCodeBuffer);
 
   procedure PrependPath(Prefix: string; var Path: string);
@@ -511,9 +551,54 @@ var
   ListOfPCodeXYPosition: TFPList;
   Cache: TFindIdentifierReferenceCache;
   SearchFlags: TFindRefsFlags;
+
+  function TestCompleteCode: String;
+  var
+    NewCode: TCodeBuffer;
+    NewX, NewY, NewTL, NewBlock, NewBL, i, i2: integer;
+    CurSrc: String;
+  begin
+    Result := '';
+    FTestBufferAdded := '';
+    FTestBufferAddedPos := -1;
+    CurSrc := CursorPos.Code.Source;
+    CursorPos.Code.AddChangeHook(@OnBufferChanged);
+    CodeToolBoss.CompleteCode(CursorPos.Code, CursorPos.X, CursorPos.Y,
+      1, NewCode, NewX, NewY, NewTL, NewBlock, NewBL, False);
+    CursorPos.Code.RemoveChangeHook(@OnBufferChanged);
+    Result := FTestBufferAdded;
+    i := pos(':', Result);
+    if i > 0 then begin
+      delete(Result, 1,i);
+      Result := trim(Result);
+    end;
+    if (Result<>'') and (Result[Length(Result)] = ';') then
+      Delete(Result, Length(Result), 1);
+
+    if (Result <> '') and (Result[1] = ',') and (FTestBufferAddedPos > 0) then begin
+      // inserted into existing declaration for the same type
+      Result := '';
+      i := PosEx(':', NewCode.Source, FTestBufferAddedPos);
+      i2 := PosEx('{', NewCode.Source, FTestBufferAddedPos);
+      while (i2 > 0) and (i2 < i) do begin
+        i := PosEx(':', NewCode.Source, i2);
+        i2 := PosEx('{', NewCode.Source, FTestBufferAddedPos);
+      end;
+
+      if i > 0 then begin
+        i2 := PosEx(';', NewCode.Source, i);
+        if i2 > 0 then
+          Result := trim(copy(NewCode.Source, i+1, i2-i-1));
+      end;
+    end;
+
+    CursorPos.Code.Source := CurSrc;
+  end;
+
 begin
   FMainCode:=aCode;
   DoParseModule(MainCode,FMainTool);
+
   DoCheckNode := pos('{%skipnodechecks}', FMainTool.Src) < 1;
   if DoCheckNode then CheckNodeTree('StartA: '+FMainTool.Scanner.MainFilename, FMainTool, Self);
   Src:=MainTool.Src;
@@ -788,7 +873,7 @@ begin
               end;
             end;
           end
-        end else if Marker='guesstype' then begin
+        end else if (Marker='guesstype') or (Marker='anytype') then begin
           ExpectedType:=copy(Src,PathPos,CommentP-1-PathPos);
           {$IFDEF VerboseFindDeclarationTests}
           debugln(['TTestFindDeclaration.FindDeclarations "',Marker,'" at ',MainTool.CleanPosToStr(NameStartPos-1),' ExpectedType=',ExpectedType]);
@@ -819,6 +904,25 @@ begin
             end;
           finally
             FreeListOfPFindContext(ListOfPFindContext);
+          end;
+          if (TestLoop = 2) and (Marker='anytype') then begin
+            MainTool.CleanPosToCaret(IdentifierStartPos,CursorPos);
+            NewType := TestCompleteCode;
+            if LowerCase(ExpectedType)<>LowerCase(NewType) then begin
+              WriteSource(IdentifierStartPos,MainTool);
+              AssertEquals('VarTypeOfIdentifier (Loop: '+IntToStr(TestLoop)+') wrong at '+MainTool.CleanPosToStr(IdentifierStartPos,true),LowerCase(ExpectedType),LowerCase(NewType));
+            end;
+          end;
+        end else if (Marker='vartype') then begin
+          // only in the last loop, as source is reset after each run
+          if TestLoop = 2 then begin
+            ExpectedType:=copy(Src,PathPos,CommentP-1-PathPos);
+            MainTool.CleanPosToCaret(IdentifierStartPos,CursorPos);
+            NewType := TestCompleteCode;
+            if LowerCase(ExpectedType)<>LowerCase(NewType) then begin
+              WriteSource(IdentifierStartPos,MainTool);
+              AssertEquals('VarTypeOfIdentifier (Loop: '+IntToStr(TestLoop)+') wrong at '+MainTool.CleanPosToStr(IdentifierStartPos,true),LowerCase(ExpectedType),LowerCase(NewType));
+            end;
           end;
 
         end else if Marker='findrefs' then begin
