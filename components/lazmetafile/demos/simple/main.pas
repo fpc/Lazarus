@@ -117,6 +117,7 @@ begin
 
     // Draw an alpha-transparent bitmap (32bpp) --> not supported, convert to
     // 24 bpp and apply mask transparency.
+    // Optional: first draw the bounding box for verification of size
     //LmfCanvas.Pen.Width := 0;
     //LmfCanvas.Brush.Style := bsClear;
     //Lmfcanvas.Rectangle(200*10, 5*10, 200*10 + 48*10, 5*10 + 48*10);

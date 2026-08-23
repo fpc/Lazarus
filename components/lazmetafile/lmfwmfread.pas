@@ -162,6 +162,9 @@ begin
   lmfBrush := TlmfBrush.Create(nil);
   brushRec := PWMFBrushRecord(@AParams[0]);
 
+  // Brush color (must be set before Style, otherwise style would be reset to solid)
+  lmfBrush.Brush.Color := RGBToColor(brushRec^.ColorRED, brushRec^.ColorGREEN, brushRec^.ColorBLUE);
+
   // Brush style
   case LEToN(brushRec^.Style) of
     BS_SOLID:
@@ -188,9 +191,6 @@ begin
     else
       lmfBrush.Brush.Style := bsSolid;
   end;
-
-  // Brush color
-  lmfBrush.Brush.Color := RGBToColor(brushRec^.ColorRED, brushRec^.ColorGREEN, brushRec^.ColorBLUE);
 
   // Add to meta file
   FImage.List.InsertComponent(lmfBrush);
