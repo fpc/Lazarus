@@ -190,6 +190,9 @@ const
                       mcoSrcEditPopupSelect];
   MsgPointDefault: TMsgPoint = (View: nil; LineNumber: 0);
 
+  // maximum number of cached ComputeRowBreaks results
+  MsgRowBreaksCacheMaxCount = 1024;
+
 type
 
   // Cached wrapped-row counts for a contiguous range of message lines of one
@@ -200,6 +203,14 @@ type
     View: TLMsgWndView;
     FirstLine, LastLine: integer;    // inclusive message-line range within View
     RowCounts: array of integer;     // one visual-row count per line FirstLine..LastLine
+  end;
+
+  TMsgRowBreaksCacheItem = class
+    Text: string;
+    HasIcon: boolean;
+    RowStarts: TIntegerDynArray;
+    RowCount: integer;
+    Older, Newer: TMsgRowBreaksCacheItem;
   end;
 
   { TMessagesCtrl }
@@ -224,32 +235,32 @@ type
     FWordWrap: boolean;          // wrap long message lines into several visual rows
     fWrapStamp: int64;           // bumped whenever width/font/options/content change
     fWrapChunks: TAVLTree;       // of TWrapChunk, sorted by View.Index then FirstLine, ascending left to right
-    fWrapWinStamp: int64;        // state for which fWrapChunks was last built...
-    fWrapWinScrollTop: integer;  // ...so EnsureWrapWindows can skip redundant rebuilds
+    fWrapWinStamp: int64;        // for which fWrapChunks was last built
+    fWrapWinScrollTop: integer;
     fWrapWinWidth, fWrapWinHeight: integer;
-    fArrowWidth: integer;        // Canvas.TextWidth(MsgWndWrapArrow)
-    fIconWidth: integer;         // horizontal space a message icon takes (0 if none), also the continuation row indent
+    fArrowWidth: integer;
+    fIconWidth: integer;
+    fRowBreaksCache: TAVLTree;   // of TMsgRowBreaksCacheItem, sorted by HasIcon then Text
+    fRowBreaksOldest: TMsgRowBreaksCacheItem;
+    fRowBreaksNewest: TMsgRowBreaksCacheItem;
+    fRowBreaksSearchItem: TMsgRowBreaksCacheItem; // reused search key, never in the tree
+    fRowBreaksFirstWidth: integer;
+    fRowBreaksContWidth: integer;
     FSourceMarks: TETMarks;
     FTextColor: TColor;
     fUpdateLock: integer;
     FUpdateTimer: TTimer;
     fSomeViewsRunning: boolean;
     fHasHeaderHint: boolean;
-    // The View whose header is painted as hint over the first visual row.
-    fHeaderHintView: TLMsgWndView;
+    fHeaderHintView: TLMsgWndView; // The View whose header is painted as hint over the first visual row.
     fUrgencyStyles: array[TMessageLineUrgency] of TMsgCtrlUrgencyStyle;
     // The View with the first selected line (property SelLineFirst).
     // Extending selection is done relative to this.
     FStartSelectionView: TLMsgWndView;
-    // View/Line of the text cursor. Typically the last selected line but not necessarily.
-    FTextCursorPoint: TMsgPoint;
-    // A tool has failed: the error was made visible, stop auto scrolling.
-    // The user can scroll themselves.
-    fAutoScrollStopped: boolean;
+    FTextCursorPoint: TMsgPoint; // View/Line of the text cursor
+    fAutoScrollStopped: boolean; // A tool has failed: the error was made visible, stop auto scrolling. User can scroll.
     fFailedView: TLMsgWndView; // the first view whose tool failed
-    // True if the user selected a message, false if there is no selection or
-    // the message was selected automatically (e.g. the first error).
-    fUserSelectedMsg: boolean;
+    fUserSelectedMsg: boolean; // True if the user selected a message
     FHintLast: TMsgPoint;
     FLastSearchStart: TMsgPoint;
     FSearchText: string;
@@ -315,9 +326,14 @@ type
     function ViewShownRows(View: TLMsgWndView): integer; // logical rows of a view (header+lines+progress)
     procedure MsgLineRowWidths(IconW: integer; out FirstRowWidth, ContRowWidth: integer);
     function FindRowBreak(const aText: string; StartByte, RowWidth: integer): integer;
-    function ComputeRowBreaks(const aText: string; FirstRowWidth, ContRowWidth: integer;
+    function ComputeRowBreaksUncached(const aText: string; FirstRowWidth,
+      ContRowWidth: integer; out RowStarts: TIntegerDynArray): integer;
+    function ComputeRowBreaks(const aText: string; HasIcon: boolean;
       out RowStarts: TIntegerDynArray): integer;
-    function MeasureRowCount(const aText: string; FirstRowWidth, ContRowWidth: integer): integer;
+    function MeasureRowCount(const aText: string; HasIcon: boolean): integer;
+    procedure ClearRowBreaksCache;
+    procedure RowBreaksCacheUnlink(Item: TMsgRowBreaksCacheItem); // remove from LRU chain
+    procedure RowBreaksCacheTouch(Item: TMsgRowBreaksCacheItem); // move to newest
     function LineRowCount(View: TLMsgWndView; MsgLine: integer): integer; // measured, else 1
     function FindWrapChunk(View: TLMsgWndView; MsgLine: integer): TWrapChunk; // chunk covering the line, else nil
     function FirstWrapChunkNode(View: TLMsgWndView): TAVLTreeNode; // node of view's chunk with lowest FirstLine, else nil
@@ -411,7 +427,6 @@ type
     property Images: TCustomImageList read FImages write SetImages;
     property ItemHeight: integer read FItemHeight write SetItemHeight;
     property OnAllViewsStopped: TNotifyEvent read FOnAllViewsStopped write FOnAllViewsStopped;
-    // called when the number of shown messages may have changed
     property OnMsgCountsChanged: TNotifyEvent read FOnMsgCountsChanged write FOnMsgCountsChanged;
     property OnOpenMessage: TOnOpenMessageLine read FOnOpenMessage write FOnOpenMessage;
     Property OnOptionsChanged: TNotifyEvent read FOnOptionsChanged write FOnOptionsChanged;
@@ -421,8 +436,6 @@ type
     property SourceMarks: TETMarks read FSourceMarks write SetSourceMarks;
     property TextColor: TColor read FTextColor write SetTextColor default MsgWndDefTextColor;
     property UrgencyStyles[Urgency: TMessageLineUrgency]: TMsgCtrlUrgencyStyle read GetUrgencyStyles write SetUrgencyStyles;
-    // When false a message line is shown in a single, clipped visual row and a
-    // hint shows the full text when hovering it.
     property WordWrap: boolean read FWordWrap write SetWordWrap default true;
   end;
 
@@ -642,6 +655,21 @@ begin
     else
       Result:=0;
   end;
+end;
+
+function CompareMsgRowBreaksCacheItems(Item1, Item2: Pointer): integer;
+// sort by HasIcon, then Text (the cheap compare first)
+var
+  Cache1: TMsgRowBreaksCacheItem absolute Item1;
+  Cache2: TMsgRowBreaksCacheItem absolute Item2;
+begin
+  if Cache1.HasIcon<>Cache2.HasIcon then begin
+    if Cache1.HasIcon then
+      Result:=1
+    else
+      Result:=-1;
+  end else
+    Result:=CompareStr(Cache1.Text,Cache2.Text);
 end;
 
 procedure RegisterStandardMessagesViewMenuItems;
@@ -936,8 +964,6 @@ begin
 end;
 
 procedure TLMsgWndView.SelectAll(Forward: boolean);
-// Direction of selection matters because the last selected line
-// is considered the current selection point.
 var
   i: Integer;
 begin
@@ -967,28 +993,28 @@ procedure TLMsgWndView.ToggleCursorLine(CursorLine: integer);
 var
   i: Integer;
 begin
-  if FSelectedLines.Count=0 then       // No existing selection.
+  if FSelectedLines.Count=0 then
     i:=-1
   else
     i:=FSelectedLines.IndexOf(CursorLine);
   if i=-1 then
     FSelectedLines.Add(CursorLine)
   else
-    FSelectedLines.Delete(i);          // Was already selected -> toggle.
+    FSelectedLines.Delete(i);
 end;
 
 procedure TLMsgWndView.ToggleSelectedLine(LineNumber: integer);
 var
   i: Integer;
 begin
-  if FSelectedLines.Count=0 then       // No existing selection.
+  if FSelectedLines.Count=0 then
     i:=-1
   else
     i:=FSelectedLines.IndexOf(LineNumber);
   if i=-1 then
     FSelectedLines.Add(LineNumber)
   else
-    FSelectedLines.Delete(i);          // Was already selected -> toggle.
+    FSelectedLines.Delete(i);
 end;
 
 procedure TLMsgWndView.FetchAllPending;
@@ -1412,6 +1438,8 @@ begin
   FViews:=TFPList.Create;
   FWordWrap:=true;
   fWrapChunks:=TAVLTree.Create(@CompareMsgWrapChunks);
+  fRowBreaksCache:=TAVLTree.Create(@CompareMsgRowBreaksCacheItems);
+  fRowBreaksSearchItem:=TMsgRowBreaksCacheItem.Create;
   FUpdateTimer:=TTimer.Create(Self);
   FUpdateTimer.Name:='MsgUpdateTimer';
   FUpdateTimer.Interval:=200;
@@ -1449,6 +1477,9 @@ begin
     fWrapChunks.FreeAndClear;
     FreeAndNil(fWrapChunks);
   end;
+  ClearRowBreaksCache;
+  FreeAndNil(fRowBreaksCache);
+  FreeAndNil(fRowBreaksSearchItem);
   FreeAndNil(FUpdateTimer);
   FreeAndNil(FImageChangeLink);
   for u:=Low(TMessageLineUrgency) to high(TMessageLineUrgency) do
@@ -1865,7 +1896,6 @@ procedure TMessagesCtrl.SetWordWrap(AValue: boolean);
 begin
   if FWordWrap=AValue then Exit;
   FWordWrap:=AValue;
-  // without wrapping long lines are clipped -> let a hint show the full text
   InvalidateWrapCache;
   UpdateScrollBar(true);
   Invalidate;
@@ -2071,8 +2101,8 @@ begin
 end;
 
 procedure TMessagesCtrl.CheckFirstFailedView;
-// If a tool has stopped with an error, show its first error and stop auto
-// scrolling. The other tools are still running and their messages must no
+// If a tool has stopped with an error, show its first error and stop auto scrolling.
+// The other tools are still running and their messages must no
 // longer scroll the error out of sight. The user can scroll themselves.
 var
   i: Integer;
@@ -2327,8 +2357,9 @@ begin
   Result:=best;
 end;
 
-function TMessagesCtrl.ComputeRowBreaks(const aText: string; FirstRowWidth,
-  ContRowWidth: integer; out RowStarts: TIntegerDynArray): integer;
+function TMessagesCtrl.ComputeRowBreaksUncached(const aText: string;
+  FirstRowWidth, ContRowWidth: integer; out RowStarts: TIntegerDynArray
+  ): integer;
 // RowStarts[r] = 1-based byte index where visual row r starts. Returns row count.
 var
   Len, p, w: integer;
@@ -2353,23 +2384,110 @@ begin
   SetLength(RowStarts,Result);
 end;
 
-function TMessagesCtrl.MeasureRowCount(const aText: string; FirstRowWidth,
-  ContRowWidth: integer): integer;
+function TMessagesCtrl.ComputeRowBreaks(const aText: string; HasIcon: boolean;
+  out RowStarts: TIntegerDynArray): integer;
+// Wraps aText into visual rows, HasIcon tells whether the first row is indented
+// by a message icon. RowStarts[r] = 1-based byte index where visual row r
+// starts. Returns the row count.
+// The measuring needs many Canvas.TextWidth calls, so the results are cached in
+// fRowBreaksCache. RowStarts belongs to the cache, the caller must only read it.
 var
-  Len, p, w: integer;
+  IconW, FirstRowWidth, ContRowWidth: integer;
+  Node: TAVLTreeNode;
+  Item: TMsgRowBreaksCacheItem;
 begin
-  if not FWordWrap then exit(1); // one clipped row
-  Len:=length(aText);
-  Result:=0;
-  p:=1;
-  repeat
-    if Result=0 then
-      w:=FirstRowWidth
-    else
-      w:=ContRowWidth;
-    inc(Result);
-    p:=FindRowBreak(aText,p,w);
-  until p>Len;
+  if not FWordWrap then begin
+    // one clipped row, too cheap to cache
+    SetLength(RowStarts,1);
+    RowStarts[0]:=1;
+    exit(1);
+  end;
+
+  if HasIcon then
+    IconW:=fIconWidth
+  else
+    IconW:=0;
+  MsgLineRowWidths(IconW,FirstRowWidth,ContRowWidth);
+
+  // The widths are the same for all entries. When they change, e.g. because the
+  // control was resized or the icons were switched off, all entries are invalid.
+  if (FirstRowWidth+IconW<>fRowBreaksFirstWidth)
+  or (ContRowWidth<>fRowBreaksContWidth) then begin
+    ClearRowBreaksCache;
+    fRowBreaksFirstWidth:=FirstRowWidth+IconW;
+    fRowBreaksContWidth:=ContRowWidth;
+  end;
+
+  fRowBreaksSearchItem.Text:=aText;
+  fRowBreaksSearchItem.HasIcon:=HasIcon;
+  Node:=fRowBreaksCache.Find(fRowBreaksSearchItem);
+  fRowBreaksSearchItem.Text:=''; // do not keep a reference to aText
+  if Node<>nil then begin
+    Item:=TMsgRowBreaksCacheItem(Node.Data);
+    RowBreaksCacheTouch(Item);
+    RowStarts:=Item.RowStarts;
+    exit(Item.RowCount);
+  end;
+
+  Result:=ComputeRowBreaksUncached(aText,FirstRowWidth,ContRowWidth,RowStarts);
+
+  Item:=TMsgRowBreaksCacheItem.Create;
+  Item.Text:=aText;
+  Item.HasIcon:=HasIcon;
+  Item.RowStarts:=RowStarts;
+  Item.RowCount:=Result;
+  fRowBreaksCache.Add(Item);
+  RowBreaksCacheTouch(Item);
+  // when the cache is full, delete the oldest not used entry
+  while (fRowBreaksCache.Count>MsgRowBreaksCacheMaxCount)
+  and (fRowBreaksOldest<>nil) do begin
+    Item:=fRowBreaksOldest;
+    RowBreaksCacheUnlink(Item);
+    fRowBreaksCache.Remove(Item);
+    Item.Free;
+  end;
+end;
+
+function TMessagesCtrl.MeasureRowCount(const aText: string; HasIcon: boolean
+  ): integer;
+var
+  RowStarts: TIntegerDynArray;
+begin
+  Result:=ComputeRowBreaks(aText,HasIcon,RowStarts);
+end;
+
+procedure TMessagesCtrl.ClearRowBreaksCache;
+begin
+  if fRowBreaksCache<>nil then
+    fRowBreaksCache.FreeAndClear;
+  fRowBreaksOldest:=nil;
+  fRowBreaksNewest:=nil;
+end;
+
+procedure TMessagesCtrl.RowBreaksCacheUnlink(Item: TMsgRowBreaksCacheItem);
+begin
+  if Item.Older<>nil then
+    Item.Older.Newer:=Item.Newer
+  else if fRowBreaksOldest=Item then
+    fRowBreaksOldest:=Item.Newer;
+  if Item.Newer<>nil then
+    Item.Newer.Older:=Item.Older
+  else if fRowBreaksNewest=Item then
+    fRowBreaksNewest:=Item.Older;
+  Item.Older:=nil;
+  Item.Newer:=nil;
+end;
+
+procedure TMessagesCtrl.RowBreaksCacheTouch(Item: TMsgRowBreaksCacheItem);
+begin
+  if fRowBreaksNewest=Item then exit;
+  RowBreaksCacheUnlink(Item);
+  Item.Older:=fRowBreaksNewest;
+  if fRowBreaksNewest<>nil then
+    fRowBreaksNewest.Newer:=Item;
+  fRowBreaksNewest:=Item;
+  if fRowBreaksOldest=nil then
+    fRowBreaksOldest:=Item;
 end;
 
 function TMessagesCtrl.FindWrapChunk(View: TLMsgWndView; MsgLine: integer): TWrapChunk;
@@ -2614,7 +2732,8 @@ end;
 procedure TMessagesCtrl.EnsureWrapWindows;
 // (Re)measures the wrapped row-counts of the heuristic windows and caches them.
 var
-  n, TotalLog, TopLog, IconW, FirstW, ContW: integer;
+  n, TotalLog, TopLog: integer;
+  HasIcon: boolean;
   // desired (disjoint) per-view message-line ranges
   MViews: array of TLMsgWndView;
   MStarts, MEnds: array of integer;
@@ -2778,14 +2897,10 @@ begin
         if not Found then begin
           Line:=MViews[i].Lines[msg];
           // same icon budget as the Paint would use for this line
-          if (fIconWidth>0)
-          and (fUrgencyStyles[Line.Urgency].ImageIndex>=0)
-          and (fUrgencyStyles[Line.Urgency].ImageIndex<Images.Count) then
-            IconW:=fIconWidth
-          else
-            IconW:=0;
-          MsgLineRowWidths(IconW,FirstW,ContW);
-          Chunk.RowCounts[k]:=MeasureRowCount(GetLineText(Line),FirstW,ContW);
+          HasIcon:=(fIconWidth>0)
+                   and (fUrgencyStyles[Line.Urgency].ImageIndex>=0)
+                   and (fUrgencyStyles[Line.Urgency].ImageIndex<Images.Count);
+          Chunk.RowCounts[k]:=MeasureRowCount(GetLineText(Line),HasIcon);
         end;
       end;
       NewChunks.Add(Chunk);
@@ -2947,7 +3062,7 @@ var
 var
   i, y: Integer;
   MaxScrollTop, OldScrollTop: Integer;
-  Indent, ImgIndex, IconW, FirstW, ContW: Integer;
+  Indent, ImgIndex, IconW: Integer;
   FirstViewIdx, FirstInternal, FirstSub: Integer;
   Internal, Shown, Cnt, Msg, Rows, r, RowLeft, yTop, RowEnd: Integer;
   RowStarts: TIntegerDynArray;
@@ -3046,9 +3161,8 @@ begin
         HasIcon:=(Images<>nil) and (mcoShowMsgIcons in Options)
                  and (ImgIndex>=0) and (ImgIndex<Images.Count);
         if HasIcon then IconW:=fIconWidth else IconW:=0;
-        MsgLineRowWidths(IconW,FirstW,ContW);
         Txt:=GetLineText(Line);
-        Rows:=ComputeRowBreaks(Txt,FirstW,ContW,RowStarts);
+        Rows:=ComputeRowBreaks(Txt,HasIcon,RowStarts);
         Col:=UrgencyStyles[Line.Urgency].Color;
         if Col=clDefault then
           Col:=TextColor;
@@ -3179,6 +3293,8 @@ begin
   UpdateItemHeight;
   RefreshWrapMetrics;
   InvalidateWrapCache;
+  // measurements done before the handle existed used a provisional canvas font
+  ClearRowBreaksCache;
   UpdateScrollBar(false);
 end;
 
@@ -3213,6 +3329,8 @@ begin
   // the row height and all text widths depend on the font
   UpdateItemHeight;
   RefreshWrapMetrics;
+  // the glyph widths can change without changing the row widths
+  ClearRowBreaksCache;
   UpdateScrollBar(true);
   Invalidate;
 end;
