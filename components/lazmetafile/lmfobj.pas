@@ -153,6 +153,18 @@ type
     property Ry: Integer read fry write fry;
   end;
 
+  TlmfFloodFill = class(TlmfAnchor)
+  private
+    fFillColor: TColor;
+    fFillStyle: TFillStyle;
+  public
+    constructor Create(AX, AY: integer; AFillColor: TColor; AFillStyle: TFillStyle); overload;
+    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+  published
+    property FillColor: TColor read fFillColor write fFillColor;
+    property FillStyle: TFillStyle read fFillStyle write fFillStyle;
+  end;
+
   TlmfGradientFill = class(TlmfClip)
   private
     fStartColor: TColor;
@@ -536,6 +548,22 @@ begin
 end;
 
 
+{ TlmfFloodFill }
+
+constructor TlmfFloodFill.Create(AX, AY: Integer; AFillColor: TColor;
+  AFillStyle: TFillStyle);
+begin
+  inherited Create(AX, AY);
+  fFillColor := AFillColor;
+  fFillStyle := AFillStyle;
+end;
+
+procedure TlmfFloodFill.Action(fImage: TlmfImage; ACanvas: TCanvas);
+begin
+  ACanvas.FloodFill(fImage.ScaleX(pX), fImage.ScaleY(pY), fFillColor, fFillStyle)
+end;
+
+
 { TlmfGradientFill }
 
 constructor TlmfGradientFill.Create(ARect: TRect; AStartColor, AEndColor: TColor;
@@ -891,6 +919,7 @@ initialization
     TlmfClip, TlmfRect, TlmfRoundRect, TlmfEllipse,
     TlmfArc, TlmfChord, TlmfPie,
     TlmfPicture, TlmfPolyLine, TlmfPolygon,
+    TlmfFloodFill, TlmfGradientFill,
     TlmfBkMode, TlmfBkColor, TlmfTextColor, TlmfColor,
     TlmfFont, TlmfBrush, TlmfPen,
     TlmfSelectObject

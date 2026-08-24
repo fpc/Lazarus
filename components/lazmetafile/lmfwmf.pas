@@ -232,6 +232,25 @@ type
     Reserved: word;
   end;
 
+  TWMFFloodFillRecord = packed record
+    ColorRed: byte;
+    ColorGreen: byte;
+    ColorBlue: byte;
+    Reserved: byte;
+    YStart: SmallInt;
+    XStart: SmallInt;
+  end;
+
+  TWMFExtFloodFillRecord = packed record
+    Mode: Word;
+    ColorRed: Byte;
+    ColorGreen: Byte;
+    ColorBlue: Byte;
+    Reserved: Byte;
+    YStart: SmallInt;
+    XStart: SmallInt;
+  end;
+
   TWMFExtTextOutRecord = packed record
     Y: SmallInt;
     X: SmallInt;

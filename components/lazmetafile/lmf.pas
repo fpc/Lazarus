@@ -139,8 +139,9 @@ type
     procedure RoundRect(X1, Y1, X2, Y2, Rx, Ry: Integer); override; overload;
 
     procedure Polyline(Points: PPoint; NumPts: Integer);override;
-    procedure Polygon(Points: PPoint; NumPts: Integer;  Winding: boolean = False); override;
+    procedure Polygon(Points: PPoint; NumPts: Integer;  Winding: boolean = False); override; overload;
 
+    procedure FloodFill(x, y: Integer; AFillColor: TColor; AFillStyle: TFillStyle); override;
     procedure GradientFill(const ARect: TRect; AStartColor, AEndColor: TColor; ADirection: TGradientDirection);
 
     procedure TextOut(x, y: integer; const AText: string); override; // already in fpcanvas
@@ -924,6 +925,15 @@ begin
     SX, SY, EX, EY
   );
   Pie(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY);
+end;
+
+procedure TlmfCanvas.FloodFill(x, y: Integer; AFillColor: TColor; AFillStyle: TFillStyle);
+var
+  item: TlmfObject;
+begin
+  RequiredState([csBrushValid]);
+  item := TlmfFloodFill.Create(x, y, AFillColor, AFillStyle);
+  fImage.List.InsertComponent(item);
 end;
 
 procedure TlmfCanvas.GradientFill(const ARect: TRect;

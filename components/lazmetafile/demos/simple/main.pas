@@ -220,7 +220,8 @@ begin
     LmfCanvas.Brush.Style := bsSolid;
     LmfCanvas.Brush.Color := clMoneygreen;
     Lmfcanvas.Pen.Color := clGreen;
-    LmfCanvas.Polygon(@P[0], 5, false);
+    LmfCanvas.Polygon(P, false);
+//    LmfCanvas.Polygon(@P[0], 5, false);
     inc(P[0].Y, 75*10);
     inc(P[1].Y, 75*10);
     inc(P[2].Y, 75*10);
@@ -247,6 +248,37 @@ begin
     R := Rect(270*10, 290*10, 350*10, 330*10);
     LmfCanvas.GradientFill(R, clRed, clYellow, gdHorizontal);
     LmfCanvas.Frame(R);
+
+    // FloodFill
+    R := Rect(270*10, 340*10, 360*10, 390*10);
+    LmfCanvas.Brush.Color := clWhite;
+    LmfCanvas.Pen.Color := clBlack;
+    LmfCanvas.Ellipse(R);
+    P[0] := Point(270*10, 365*10);
+    P[1] := Point(300*10, 380*10);
+    P[2] := Point(330*10, 350*10);
+    P[3] := Point(360*10, 365*10);
+    LmfCanvas.Pen.Width := 3*10;
+    LmfCanvas.PolyLine(@P[0], 4);
+    LmfCanvas.Brush.Color := clBlue;
+    LmfCanvas.Brush.Style := bsDiagCross;
+    LmfCanvas.FloodFill(300*10, 365*10, clBlack, fsBorder);
+
+    R := Rect(370*10, 340*10, 460*10, 390*10);
+    LmfCanvas.Brush.Style := bsSolid;
+    LmfCanvas.Brush.Color := clWhite;
+    LmfCanvas.Pen.Color := clBlack;
+    LmfCanvas.Pen.Width := 1*10;
+    LmfCanvas.Ellipse(R);
+    P[0] := Point(370*10, 365*10);
+    P[1] := Point(400*10, 380*10);
+    P[2] := Point(430*10, 350*10);
+    P[3] := Point(460*10, 365*10);
+    LmfCanvas.Pen.Width := 3*10;
+    LmfCanvas.PolyLine(@P[0], 4);
+    LmfCanvas.Brush.Color := clBlue;
+    LmfCanvas.Brush.Style := bsDiagCross;
+    LmfCanvas.FloodFill(400*10, 365*10, clWhite, fsSurface);
 
     // Text
     LmfCanvas.SetBkMode(OPAQUE);

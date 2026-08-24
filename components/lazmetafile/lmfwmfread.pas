@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FPImage,
-  LConvEncoding, LCLIntf, LCLType, Graphics, IntfGraphics,
+  LConvEncoding, LCLIntf, LCLType, GraphType, Graphics, IntfGraphics,
   lmf, lmfObj, lmfWMF;
 
 type
@@ -48,7 +48,9 @@ type
     function  ReadColor(const AParams: TWMFParamArray; AIndex: Integer): TColor;
     procedure ReadDIBStretchBlt(const AParams: TWMFParamArray);
     procedure ReadEllipse(const AParams: TWMFParamArray);
+    procedure ReadExtFloodFill(const AParams: TWMFParamArray);
     procedure ReadExtTextOut(const AParams: TWMFParamArray);
+    procedure ReadFloodFill(const AParams: TWMFParamArray);
     function ReadImage(const AParams: TWMFParamArray; AIndex: Integer; APicture: TPicture): Boolean;
     procedure ReadLineTo(const AParams: TWMFParamArray);
     procedure ReadMapMode(const AParams: TWMFParamArray);
@@ -444,6 +446,22 @@ begin
   FImage.List.InsertComponent(lmfEllipse);
 end;
 
+procedure TlmfWMFReader.ReadExtFloodFill(const AParams: TWMFParamArray);
+var
+  x, y: Integer;
+  fillStyle: TFillStyle;
+  fillColor: TColor;
+  lmfFloodFill: TlmfFloodFill;
+begin
+  fillStyle := TFillStyle(1 - LEToN(AParams[0]));
+  fillColor := ReadColor(AParams, 1);
+  y := SmallInt(LEToN(AParams[3]));
+  x := SmallInt(LEToN(AParams[4]));
+
+  lmfFloodFill := TlmfFloodFill.Create(x, y, fillColor, fillStyle);
+  FImage.List.InsertComponent(lmfFloodFill);
+end;
+
 procedure TlmfWMFReader.ReadExtTextOut(const AParams: TWMFParamArray);
 var
   x, y, len, opts: Integer;
@@ -486,6 +504,22 @@ begin
 
   item := TlmfTextInRect.Create(R, x, y, txt, txtStyle);
   FImage.List.InsertComponent(item);
+end;
+
+procedure TlmfWMFReader.ReadFloodFill(const AParams: TWMFParamArray);
+var
+  x, y: Integer;
+  fillStyle: TFillStyle;
+  fillColor: TColor;
+  lmfFloodFill: TlmfFloodFill;
+begin
+  fillStyle := fsBorder;
+  fillColor := ReadColor(AParams, 0);
+  y := SmallInt(LEToN(AParams[2]));
+  x := SmallInt(LEToN(AParams[3]));
+
+  lmfFloodFill := TlmfFloodFill.Create(x, y, fillColor, fillStyle);
+  FImage.List.InsertComponent(lmfFloodFill);
 end;
 
 procedure TlmfWMFReader.ReadFromStream(AStream: TStream; AImage: TlmfImage);
@@ -788,7 +822,7 @@ begin
       META_ELLIPSE:
         ReadEllipse(params);
       META_EXTFLOODFILL:
-        ;
+        ReadExtFloodFill(params);
       META_EXTTEXTOUT:
         ReadExtTextOut(params);
       META_FILLREGION:

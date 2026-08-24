@@ -32,8 +32,8 @@ type
     procedure WriteChord(AStream: TStream; AItem: TlmfChord);
     procedure WriteEllipse(AStream: TStream; AItem: TlmfEllipse);
     procedure WriteEOF(AStream: TStream);
+    procedure WriteExtFloodFill(AStream: TStream; AItem: TlmfFloodFill);
     procedure WriteFont(AStream: TStream; AItem: TlmfFont);
-//    procedure WriteFrame3D(AStream: TStream; AItem: TlmfFrame3D);
     procedure WritePicture(AStream: TStream; AItem: TlmfPicture);
     procedure WriteLineTo(AStream: TStream; AItem: TlmfLineTo);
     procedure WriteLine(AStream: TStream; AItem: TlmfLine);
@@ -514,6 +514,22 @@ begin
   WriteWMFRecord(AStream, META_EOF, 0);
 end;
 
+{ NOTE: The flood fill records are not displayed correctly by Powerpoint and by
+  LibreOffice Draw (correctly by Paint and IrfanView). }
+procedure TWMFWriter.WriteExtFloodFill(AStream: TStream; AItem: TlmfFloodFill);
+var
+  rec: TWMFExtFloodFillRecord;
+begin
+  rec.Mode := 1 - ord(AItem.FillStyle);
+  rec.ColorRED := Red(AItem.FillColor);
+  rec.ColorGREEN := Green(AItem.FillColor);
+  rec.ColorBLUE := Blue(AItem.FillColor);
+  rec.XStart := AItem.px;
+  rec.YStart := AItem.py;
+  // WMF record header + parameters
+  WriteWMFRecord(AStream, META_EXTFLOODFILL, rec, SizeOf(TWMFExtFloodFillRecord));
+end;
+
 procedure TWMFWriter.WriteFont(AStream: TStream; AItem: TlmfFont);
 const
   ZERO_OR_ONE: array[boolean] of byte = (0, 1);
@@ -871,6 +887,9 @@ begin
     if item is TlmfPicture then
       WritePicture(AStream, TlmfPicture(item))
     else
+    if item is TlmfFloodFill then
+      WriteExtFloodFill(AStream, TlmfFloodFill(item))
+    else
     if item is TlmfPolygon then
       WritePolygon(AStream, TlmfPolygon(item))
     else
@@ -889,11 +908,6 @@ begin
     if item is TlmfEllipse then
       WriteEllipse(AStream, TlmfEllipse(item))
     else
-    {
-    if item is TlmfFrame3D then
-      WriteFrame3D(AStream, TlmfFrame3D(item))
-    else
-    }
     if item is TlmfRoundRect then
       WriteRoundRect(AStream, TlmfRoundRect(item))
     else
