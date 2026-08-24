@@ -334,6 +334,13 @@ begin
   case ACapability of
   lcTextHint: Result := LCL_CAPABILITY_YES;
   lcCanDrawOutsideOnPaint: Result := LCL_CAPABILITY_NO;
+  lcNeedMininimizeAppWithMainForm:
+    begin
+      if IsWayland then
+        Result := LCL_CAPABILITY_NO
+      else
+        Result := LCL_CAPABILITY_YES;
+    end;
   else
     Result := inherited GetLCLCapability(ACapability);
   end;

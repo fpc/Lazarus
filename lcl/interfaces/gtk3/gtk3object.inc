@@ -911,7 +911,12 @@ begin
       (TGtk3Widget(AForm.Handle).Visible) and
       not (AForm.FormStyle in [fsMDIChild, fsSplash]) and
       not (AForm.BorderStyle in [bsNone]) then
+    begin
+      if IsWayland then
+        PGtkWindow(TGtk3Window(AForm.Handle).Widget)^.present
+      else
         PGtkWindow(TGtk3Window(AForm.Handle).Widget)^.deiconify;
+    end;
   end;
 end;
 
