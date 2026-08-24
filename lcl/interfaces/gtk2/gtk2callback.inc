@@ -1177,19 +1177,22 @@ begin
           ' SizeType=',SizeMsg.SizeType-Size_SourceIsInterface,'+Size_SourceIsInterface'
           ]);
         {$ENDIF}
+        if (TheForm = Application.MainForm)
+        and ((GDK_WINDOW_STATE_ICONIFIED or GDK_WINDOW_STATE_MAXIMIZED or GDK_WINDOW_STATE_FULLSCREEN)
+          and state^.changed_mask <> 0)
+        and (GDK_WINDOW_STATE_ICONIFIED and state^.new_window_state = 0)
+        and ((GDK_WINDOW_STATE_ICONIFIED or GDK_WINDOW_STATE_MAXIMIZED or GDK_WINDOW_STATE_FULLSCREEN)
+          and (state^.new_window_state xor state^.changed_mask) <> 0) then
+          Application.IntfAppRestore;
         DeliverMessage(TheForm, SizeMsg);
         if (gtk_major_version = 2) and (gtk_minor_version <= 8) and
           (TheForm.WindowState = wsMaximized) then
             gtk_widget_queue_draw({%H-}PGtkWidget(TheForm.Handle));
 
         if (TheForm = Application.MainForm)
-        and (GDK_WINDOW_STATE_ICONIFIED and state^.changed_mask <> 0) then
-        begin
-          if GDK_WINDOW_STATE_ICONIFIED and state^.new_window_state <> 0 then
-            Application.IntfAppMinimize
-          else
-            Application.IntfAppRestore;
-        end;
+        and (GDK_WINDOW_STATE_ICONIFIED and state^.changed_mask <> 0)
+        and (GDK_WINDOW_STATE_ICONIFIED and state^.new_window_state <> 0) then
+          Application.IntfAppMinimize;
       end;
     end;
   end;
