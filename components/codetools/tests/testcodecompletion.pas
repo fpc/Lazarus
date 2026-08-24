@@ -80,6 +80,10 @@ type
 
     // declare local variable
     procedure TestCompleteVariableWithSpecializedType;
+    procedure TestCompleteLocalVarForLoop;
+    procedure TestCompleteLocalVarForLoopInProc;
+    procedure TestCompleteLocalVarForEnum;
+    procedure TestCompleteLocalVarForEnumUsedUnit;
 
     // complete event assignment
     procedure TestCompleteEventAssignmentDelphi;
@@ -1953,6 +1957,114 @@ begin
     'begin',
     '  List := TClass(Base).List;',
     'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteLocalVarForLoop;
+begin
+  Test('TestCompleteLocalVarForLoop',
+    ['program Project1;',
+    '{$mode objfpc}{$H+}',
+    'begin',
+    '  for i:=1 to 3 do ;',
+    'end.'],
+    4,7,
+    ['program Project1;',
+    '{$mode objfpc}{$H+}',
+    'var',
+    '  i: Integer;',
+    'begin',
+    '  for i:=1 to 3 do ;',
+    'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteLocalVarForLoopInProc;
+begin
+  Test('TestCompleteLocalVarForLoopInProc',
+    ['program Project1;',
+    '{$mode objfpc}{$H+}',
+    'procedure Fly;',
+    'begin',
+    '  for i:=1 to 3 do ;',
+    'end;',
+    'begin',
+    'end.'],
+    5,7,
+    ['program Project1;',
+    '{$mode objfpc}{$H+}',
+    'procedure Fly;',
+    'var',
+    '  i: Integer;',
+    'begin',
+    '  for i:=1 to 3 do ;',
+    'end;',
+    'begin',
+    'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteLocalVarForEnum;
+begin
+  Test('TestCompleteLocalVarForEnum',
+    ['program Project1;',
+    '{$mode objfpc}{$H+}',
+    'type TColor = (red,blue);',
+    'procedure Fly;',
+    'begin',
+    '  c:=Red;',
+    'end;',
+    'begin',
+    'end.'],
+    6,3,
+    ['program Project1;',
+    '{$mode objfpc}{$H+}',
+    'type TColor = (red,blue);',
+    'procedure Fly;',
+    'var',
+    '  c: TColor;',
+    'begin',
+    '  c:=Red;',
+    'end;',
+    'begin',
+    'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteLocalVarForEnumUsedUnit;
+var
+  RedUnit: TCodeBuffer;
+begin
+  RedUnit:=CodeToolBoss.CreateFile('unit1.pas');
+  try
+    RedUnit.Source:=
+      'unit unit1;'+LineEnding
+      +'interface'+LineEnding
+      +'type TColor = (red,blue);'+LineEnding
+      +'implementation'+LineEnding
+      +'end.'+LineEnding;
+
+  Test('TestCompleteLocalVarForEnumUsedUnit',
+    ['program Project1;',
+    '{$mode objfpc}{$H+}',
+    'uses Unit1;',
+    'procedure Fly;',
+    'begin',
+    '  c:=Red;',
+    'end;',
+    'begin',
+    'end.'],
+    6,3,
+    ['program Project1;',
+    '{$mode objfpc}{$H+}',
+    'uses Unit1;',
+    'procedure Fly;',
+    'var',
+    '  c: TColor;',
+    'begin',
+    '  c:=Red;',
+    'end;',
+    'begin',
+    'end.']);
+  finally
+    RedUnit.IsDeleted:=true;
+  end;
 end;
 
 procedure TTestCodeCompletion.TestCompleteMethodSignature_Empty_Parentheses;

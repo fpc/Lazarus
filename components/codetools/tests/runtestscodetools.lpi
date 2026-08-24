@@ -7,7 +7,6 @@
         <MainUnitHasCreateFormStatements Value="False"/>
         <MainUnitHasTitleStatement Value="False"/>
         <MainUnitHasScaledStatement Value="False"/>
-        <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InIDEConfig"/>
       <Title Value="runtestscodetools"/>
@@ -17,9 +16,9 @@
     <i18n>
       <EnableI18N LFM="False"/>
     </i18n>
-    <BuildModes Count="3">
-      <Item1 Name="Default" Default="True"/>
-      <Item2 Name="Debug">
+    <BuildModes>
+      <Item Name="Default" Default="True"/>
+      <Item Name="Debug">
         <CompilerOptions>
           <Version Value="11"/>
           <Target>
@@ -52,8 +51,8 @@
             </Debugging>
           </Linking>
         </CompilerOptions>
-      </Item2>
-      <Item3 Name="Release">
+      </Item>
+      <Item Name="Release">
         <CompilerOptions>
           <Version Value="11"/>
           <Target>
@@ -79,130 +78,130 @@
             <LinkSmart Value="True"/>
           </Linking>
         </CompilerOptions>
-      </Item3>
+      </Item>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
     </PublishOptions>
     <RunParams>
       <FormatVersion Value="2"/>
-      <Modes Count="1">
-        <Mode0 Name="default"/>
+      <Modes>
+        <Mode Name="default"/>
       </Modes>
     </RunParams>
-    <RequiredPackages Count="3">
-      <Item1>
+    <RequiredPackages>
+      <Item>
         <PackageName Value="CodeTools"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <PackageName Value="fpcunitconsolerunner"/>
-      </Item2>
-      <Item3>
+      </Item>
+      <Item>
         <PackageName Value="IdeConfig"/>
-      </Item3>
+      </Item>
     </RequiredPackages>
-    <Units Count="21">
-      <Unit0>
+    <Units>
+      <Unit>
         <Filename Value="runtestscodetools.lpr"/>
         <IsPartOfProject Value="True"/>
-      </Unit0>
-      <Unit1>
+      </Unit>
+      <Unit>
         <Filename Value="testfinddeclaration.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestFindDeclaration"/>
-      </Unit1>
-      <Unit2>
+      </Unit>
+      <Unit>
         <Filename Value="testrefactoring.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestRefactoring"/>
-      </Unit2>
-      <Unit3>
+      </Unit>
+      <Unit>
         <Filename Value="testglobals.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestGlobals"/>
-      </Unit3>
-      <Unit4>
+      </Unit>
+      <Unit>
         <Filename Value="testpascalparser.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestPascalParser"/>
-      </Unit4>
-      <Unit5>
+      </Unit>
+      <Unit>
         <Filename Value="moduletests/fdt_proc_basetypes.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit5>
-      <Unit6>
+      </Unit>
+      <Unit>
         <Filename Value="moduletests/fdt_for_in.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit6>
-      <Unit7>
+      </Unit>
+      <Unit>
         <Filename Value="testmethodjumptool.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestMethodJumpTool"/>
-      </Unit7>
-      <Unit8>
+      </Unit>
+      <Unit>
         <Filename Value="teststdcodetools.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestStdCodetools"/>
-      </Unit8>
-      <Unit9>
+      </Unit>
+      <Unit>
         <Filename Value="testcth2pas.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestCTH2Pas"/>
-      </Unit9>
-      <Unit10>
+      </Unit>
+      <Unit>
         <Filename Value="moduletests/fdt_arrays.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit10>
-      <Unit11>
+      </Unit>
+      <Unit>
         <Filename Value="testcodecompletion.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestCodeCompletion"/>
-      </Unit11>
-      <Unit12>
+      </Unit>
+      <Unit>
         <Filename Value="testcompreaderwriterpas.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestCompReaderWriterPas"/>
-      </Unit12>
-      <Unit13>
+      </Unit>
+      <Unit>
         <Filename Value="testidentcompletion.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestIdentCompletion"/>
-      </Unit13>
-      <Unit14>
+      </Unit>
+      <Unit>
         <Filename Value="testctpas2js.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestCTPas2js"/>
-      </Unit14>
-      <Unit15>
+      </Unit>
+      <Unit>
         <Filename Value="testchangedeclaration.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestChangeDeclaration"/>
-      </Unit15>
-      <Unit16>
+      </Unit>
+      <Unit>
         <Filename Value="testlfmtrees.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestLFMTrees"/>
-      </Unit16>
-      <Unit17>
+      </Unit>
+      <Unit>
         <Filename Value="testdesignerformtools.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestDesignerFormTools"/>
-      </Unit17>
-      <Unit18>
+      </Unit>
+      <Unit>
         <Filename Value="moduletests/dsgn_bearcontrols.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Dsgn_BearControls"/>
-      </Unit18>
-      <Unit19>
+      </Unit>
+      <Unit>
         <Filename Value="moduletests/dsgn_bearbuttons.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Dsgn_BearButtons"/>
-      </Unit19>
-      <Unit20>
+      </Unit>
+      <Unit>
         <Filename Value="moduletests/dsgn_ambigbearbtn.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Dsgn_AmbigBearBtn"/>
-      </Unit20>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -217,16 +216,16 @@
     </SearchPaths>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="3">
-      <Item1>
+    <Exceptions>
+      <Item>
         <Name Value="EAbort"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <Name Value="ECodetoolError"/>
-      </Item2>
-      <Item3>
+      </Item>
+      <Item>
         <Name Value="EFOpenError"/>
-      </Item3>
+      </Item>
     </Exceptions>
   </Debugging>
 </CONFIG>
