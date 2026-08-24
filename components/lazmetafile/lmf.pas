@@ -633,6 +633,7 @@ begin
   Pen.Style := ps;
 end;
 
+{ Draws a frame using the pen settings. }
 procedure TlmfCanvas.Frame(const ARect: TRect);
 var
   item: TlmfObject;
@@ -648,30 +649,64 @@ begin
   Brush.Style := bs;
 end;
 
+{ Draws a frame using the brush settings. BUT: This implementation ignores the
+  brush style (is always bsSolid, other styles don't make sense anyway) }
 procedure TlmfCanvas.FrameRect(const ARect: TRect);
 var
-  item: TlmfObject;
   ps: TPenStyle;
+  pc: TColor;
 begin
+  pc := Brush.Color;
   ps := Pen.Style;
-  Pen.Style := psClear;
 
-  RequiredState([csPenValid, csBrushValid]);
-  item := TlmfFrameRect.Create(ARect);
-  fImage.fList.InsertComponent(item);
+  Pen.Color := Brush.Color;
+  Pen.Style := psSolid;
+  Frame(ARect);
 
   Pen.Style := ps;
+  Pen.Color := pc;
 end;
 
 procedure TlmfCanvas.Frame3D(var ARect: TRect; TopColor, BottomColor: TColor;
   const Framewidth: Integer);
 var
   item: TlmfObject;
+  savedPenStyle: TPenStyle;
+  savedBrushStyle: TBrushStyle;
+  savedBrushColor: TColor;
+  pTL: array[0..6] of TPoint;
+  pBR: array[0..6] of TPoint;
 begin
-  RequiredState([csPenValid]);
-  item := TlmfFrame3d.Create(ARect, TopColor, BottomColor, FrameWidth);
-  fImage.fList.InsertComponent(item);
-  InflateRect(ARect, FrameWidth, FrameWidth);
+  savedPenStyle := Pen.Style;
+  savedBrushStyle := Brush.Style;
+  savedBrushColor := Brush.Color;
+
+  Brush.Style := bsSolid;
+  Pen.Style := psClear;
+
+  // Top/left edges, drawn as polygon
+  Brush.Color := ColorToRGB(TopColor);
+  pTL[0] := ARect.TopLeft;
+  pTL[1] := Point(ARect.Right, ARect.Top);
+  pTL[2] := Point(ARect.Right + FrameWidth, ARect.Top - FrameWidth);
+  pTL[3] := Point(ARect.Left - FrameWidth, pTL[2].Y);
+  pTL[4] := Point(pTL[3].X, ARect.Bottom + FrameWidth);
+  pTL[5] := Point(ARect.Left, ARect.Bottom);
+  Polygon(@pTL[0], 6);
+
+  // Bottom/right edges, drawn as polygon
+  Brush.Color := ColorToRGB(BottomColor);
+  pBR[0] := pTL[5];
+  pBR[1] := Point(ARect.Right, ARect.Bottom);
+  pBR[2] := pTL[1];
+  pBR[3] := pTL[2];
+  pBR[4] := Point(ARect.Right + FrameWidth, ARect.Bottom + FrameWidth);
+  pBR[5] := pTL[4];
+  Polygon(@pBR[0], 6);
+
+  Brush.Color := savedBrushColor;
+  Brush.Style := savedBrushStyle;
+  Pen.Style := savedPenStyle;
 end;
 
 procedure TlmfCanvas.Frame3D(var ARect: TRect; const FrameWidth: integer;

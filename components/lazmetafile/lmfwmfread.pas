@@ -175,7 +175,7 @@ begin
       case brushRec^.Hatch of
         HS_HORIZONTAL : lmfBrush.Brush.Style := bsHorizontal;
         HS_VERTICAL   : lmfBrush.Brush.Style := bsVertical;
-        HS_FDIAGONAL  : lmfBrush.brush.Style := bsFDiagonal;
+        HS_FDIAGONAL  : lmfBrush.Brush.Style := bsFDiagonal;
         HS_BDIAGONAL  : lmfBrush.Brush.Style := bsBDiagonal;
         HS_CROSS      : lmfBrush.Brush.Style := bsCross;
         HS_DIAGCROSS  : lmfBrush.Brush.Style := bsDiagCross;
@@ -1056,7 +1056,7 @@ end;
 procedure TlmfWMFReader.SelectObj(const AParams: TWMFParamArray);
 var
   idx: Integer;
-  item: TlmfObject;
+  item, newItem: TlmfObject;
 begin
   idx := LEToN(AParams[0]);
   if (idx < 0) or (idx >= FObjTable.Count) then
@@ -1077,6 +1077,8 @@ begin
   if obj is TFPPalette then
     FCurrPalette := TFPPalette(obj);
     };
+  newItem := TlmfSelectObject.Create(item);
+  FImage.List.InsertComponent(newItem);
 end;
 
 end.

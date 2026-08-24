@@ -137,28 +137,9 @@ type
     property Bottom:integer read fClip.Bottom write fClip.Bottom;
   end;
 
-  TlmfRect=class(TlmfClip)
+  TlmfRect = class(TlmfClip)
   public
     procedure Action(fImage: TlmfImage; ACanvas: TCanvas);override;
-  end;
-
-  TlmfFrameRect = class(TlmfRect)
-  public
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas);override;
-  end;
-
-  TlmfFrame3D = class(TlmfRect)
-  private
-    fTopColor: TColor;
-    fBottomColor: TColor;
-    fFrameWidth: Integer;
-  public
-    constructor Create(ARect:TRect; ATopColor, ABottomColor: TColor; AFrameWidth: Integer); overload;
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
-  published
-    property TopColor: TColor read fTopColor write fTopColor;
-    property BottomColor: TColor read fBottomColor write fBottomColor;
-    property FrameWidth: Integer read fFrameWidth write fFrameWidth;
   end;
 
   TlmfRoundRect = class(TlmfRect)
@@ -251,6 +232,14 @@ type
     procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
   published
     property Pen: TPen read fPen write fPen;
+  end;
+
+  TlmfSelectObject = class(TlmfObject)
+  private
+    fCurrObj: TlmfObject;
+  public
+    constructor Create(ACurrObj: TlmfObject); overload;
+    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
   end;
 
   TlmfPicture = class(TlmfClip)
@@ -525,19 +514,6 @@ begin
 end;
 
 
-{ TlmfFrameRect (rectangle drawn with brush settings) }
-
-procedure TlmfFrameRect.Action(fImage:TlmfImage; ACanvas:TCanvas);
-begin
-  ACanvas.FrameRect(
-    fImage.ScaleX(fClip.Left),
-    fImage.ScaleY(fClip.Top),
-    fImage.ScaleX(fClip.Right),
-    fImage.ScaleY(fClip.Bottom)
-  );
-end;
-
-
 { TlmfRoundRect }
 
 constructor TlmfRoundRect.Create(ARect: TRect; ARx, ARy: Integer);
@@ -557,61 +533,6 @@ begin
     FImage.ScaleSizeX(frx),
     FImage.ScaleSizeY(fry)
   );
-end;
-
-
-{ TlmfFrame3d }
-
-constructor TlmfFrame3d.Create(ARect: TRect; ATopColor, ABottomColor: TColor;
-  AFrameWidth: Integer);
-begin
-  inherited Create(ARect);
-  fTopColor := ATopColor;
-  fBottomColor := ABottomColor;
-  fFrameWidth := AFrameWidth;
-end;
-
-procedure TlmfFrame3d.Action(fImage: TlmfImage; ACanvas: TCanvas);
-var
-  xL, xR, yT, yB: Integer;
-  W, wFrame, i : Integer;
-begin
-  xL := fImage.ScaleX(Left);
-  xR := fImage.ScaleX(Right);
-  yT := fImage.ScaleY(Top);
-  yB := fImage.ScaleY(Bottom);
-
-  if yB - yT > xR - xL then
-  begin
-    W := xR - xL + 1;
-    wFrame := fImage.ScaleSizeX(fFrameWidth);
-  end else
-  begin
-    W := yB - yT + 1;
-    wFrame := fImage.ScaleSizeY(fFrameWidth);
-  end;
-
-  if wFrame > W then
-    W := W-1
-  else
-    W := wFrame;
-
-  for i := 1 to W do
-  begin
-    ACanvas.Pen.Color := fTopColor;
-    ACanvas.MoveTo(xL, yB-1);
-    ACanvas.LineTo(xL, yT);
-    ACanvas.LineTo(xR-1, yT);
-
-    ACanvas.Pen.Color := fBottomColor;
-    ACanvas.LineTo(xR-1, yB-1);
-    ACanvas.LineTo(xL, yB-1);
-
-    inc(xL);
-    inc(yT);
-    dec(xR);
-    dec(yB);
-  end;
 end;
 
 
@@ -821,6 +742,36 @@ begin
 end;
 
 
+{ TlmfSelectObject }
+
+constructor TlmfSelectObject.Create(ACurrObj: TlmfObject);
+begin
+  inherited Create(nil);
+  FCurrObj := ACurrObj;
+end;
+
+procedure TlmfSelectObject.Action(fImage: TlmfImage; ACanvas: TCanvas);
+var
+  ht: Integer;
+begin
+  if FCurrObj is TlmfBrush then
+    ACanvas.Brush.Assign(TlmfBrush(FCurrObj).Brush)
+  else
+  if FCurrObj is TlmfPen then
+  begin
+    ACanvas.Pen.Assign(TlmfPen(FCurrObj).Pen);
+    ACanvas.Pen.Width := fImage.ScaleSizeY(TlmfPen(FCurrObj).Pen.Width);
+  end else
+  if FCurrObj is TlmfFont then
+  begin
+    ACanvas.Font.Assign(TlmfFont(FCurrObj).Font);
+    ht := abs(fImage.ScaleSizeY(TlmfFont(FCurrObj).Height));
+    if ht <= 0 then ht := 1;
+    ACanvas.Font.Height := -ht;
+  end;
+end;
+
+
 { TlmfPicture }
 
 constructor TlmfPicture.Create(AnOwner:TComponent);
@@ -935,11 +886,14 @@ end;
 
 initialization
   RegisterClasses([TlmfAnchor,
-    TlmfMoveTo, TlmfLineTo, TlmfLine, TlmfText, TlmfTextInRect,
-    TlmfClip, TlmfRect, TlmfRoundRect, TlmfEllipse, TlmfArc, TlmfChord, TlmfPie,
+    TlmfMoveTo, TlmfLineTo, TlmfLine,
+    TlmfText, TlmfTextInRect,
+    TlmfClip, TlmfRect, TlmfRoundRect, TlmfEllipse,
+    TlmfArc, TlmfChord, TlmfPie,
     TlmfPicture, TlmfPolyLine, TlmfPolygon,
     TlmfBkMode, TlmfBkColor, TlmfTextColor, TlmfColor,
-    TlmfFont, TlmfBrush, TlmfPen
+    TlmfFont, TlmfBrush, TlmfPen,
+    TlmfSelectObject
   ]);
 
 end.

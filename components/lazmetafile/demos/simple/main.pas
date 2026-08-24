@@ -88,27 +88,20 @@ begin
     LmfCanvas.Frame(25*10, 165*10, 75*10, 185*10);
 
     // FrameRect (border using brush)
-    // Incorrect wmf output (won't fix)
     LmfCanvas.Brush.Color := clRed;
-    LmfCanvas.Brush.Style := bsVertical;
+    LmfCanvas.Brush.Style := bsSolid; // other brush styles are ignored.
     LmfCanvas.FrameRect(Rect(90*10, 165*10, 140*10, 185*10));
     LmfCanvas.FrameRect(95*10, 170*10, 145*10, 190*10);
 
     //Frame3D
-    // Incorrect wmf output (won't fix)
     R := Rect(270*10, 100*10, 310*10, 130*10);
-    lmfCanvas.Brush.Style := bsSolid;
-    lmfCanvas.Brush.Color := clWhite;
-    lmfCanvas.FillRect(R);
-    LmfCanvas.Pen.Style := psSolid;
     LmfCanvas.Frame3d(R, cl3DLight, cl3DShadow, 3*10);
     R := Rect(320*10, 100*10, 360*10, 130*10);
-    lmfCanvas.Brush.Color := clWhite;
-    lmfCanvas.FillRect(R);
     LmfCanvas.Frame3D(R, 3*10, bvLowered);
 
     // RoundRect
     LmfCanvas.Brush.Color := clYellow;
+    lmfCanvas.Brush.Style := bsSolid;
     LmfCanvas.Pen.Color := clOlive;
     LmfCanvas.Pen.Style := psSolid;
     LmfCanvas.Pen.Width := 3*10;

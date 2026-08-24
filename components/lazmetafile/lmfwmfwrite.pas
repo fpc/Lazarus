@@ -17,7 +17,9 @@ type
     FImage: TlmfImage;
     FMaxRecordSize: Int64;
     FObjTable: TFPList;        // List with WMF objects (pen, brush, ...)
+    FCurrBrush: TBrush;
     FCurrFont: TFont;
+    FCurrPen: TPen;
 
     // Specific WMF records
     procedure WriteArc(AStream: TStream; AItem: TlmfArc);
@@ -31,6 +33,7 @@ type
     procedure WriteEllipse(AStream: TStream; AItem: TlmfEllipse);
     procedure WriteEOF(AStream: TStream);
     procedure WriteFont(AStream: TStream; AItem: TlmfFont);
+//    procedure WriteFrame3D(AStream: TStream; AItem: TlmfFrame3D);
     procedure WritePicture(AStream: TStream; AItem: TlmfPicture);
     procedure WriteLineTo(AStream: TStream; AItem: TlmfLineTo);
     procedure WriteLine(AStream: TStream; AItem: TlmfLine);
@@ -471,6 +474,9 @@ begin
   // Write the object table index of the brush to the SelectObject WMF record:
   idxObj := word(idx);
   WriteWMFRecord(AStream, META_SELECTOBJECT, idxObj, SizeOf(Word));
+
+  // Store current brush for cases where brush must be changed temporarily
+  FCurrBrush := AItem.Brush;
 end;
 
 procedure TWMFWriter.WriteChord(AStream: TStream; AItem: TlmfChord);
@@ -564,6 +570,41 @@ begin
   // Store font for text layout for TlmfTextInRect records
   FCurrFont := AItem.Font;
 end;
+                 (*
+procedure TWMFWriter.WriteFrame3D(AStream: TStream; AItem: TlmfFrame3D);
+var
+  rec: TWMFRectRecord;
+  penRec: TWMFPenRecord;
+  currBrushIdx, currPenIdx: Integer;
+  tmpItem: TlmfObject;
+  itemIdx: Integer;
+begin
+  itemIdx := FImage.List.IndexOfComponent(AItem);
+
+  currBrushIdx := FindInObjTable(FCurrBrush);
+  currPenIdx := FindInObjTable(FCurrPen);
+
+  // 1) We don't need the pen --> Style = psClear
+  tmpItem := TlmfPen.Create(nil);
+  tmpItem.Pen.Style := psClear;
+
+
+  penRec := Default(TWMFPenRecord);
+  penRec.Style := PS_NONE;
+  WriteWMFRecord(AStream, META_CREATEPENINDIRECT, penRec, SizeOf(penRec));
+  WriteWMFRecord(AStream,
+
+
+
+  rec.Left := AItem.Left;
+  rec.Top := AItem.Top;
+  rec.Right := AItem.Right;
+  rec.Bottom := AItem.Bottom;
+
+  // WMF record header + parameters
+  WriteWMFRecord(AStream, META_RECTANGLE, rec, SizeOf(TWMFRectRecord));
+end;
+*)
 
 { Extracts the mask from the input bitmap (ABitmap) as AMaskOnly.
   Applies the mask to itself and returns the result as AMaskedBitmap.
@@ -743,6 +784,9 @@ begin
   // Write the object table index of the pen to the SelectObject WMF record.
   idxObj := word(idx);
   WriteWMFRecord(AStream, META_SELECTOBJECT, idxObj, SizeOf(Word));
+
+  // Store current pen for cases where pen must be changed temporarily
+  FCurrPen := AItem.Pen;
 end;
 
 procedure TWMFWriter.WritePie(AStream: TStream; AItem: TlmfPie);
@@ -845,6 +889,11 @@ begin
     if item is TlmfEllipse then
       WriteEllipse(AStream, TlmfEllipse(item))
     else
+    {
+    if item is TlmfFrame3D then
+      WriteFrame3D(AStream, TlmfFrame3D(item))
+    else
+    }
     if item is TlmfRoundRect then
       WriteRoundRect(AStream, TlmfRoundRect(item))
     else
