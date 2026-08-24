@@ -2651,7 +2651,7 @@ end;
 
 procedure TTestCodeCompletion.TestCompleteLocalVarForAnonymousFunction1;
 begin
-  Test('CompleteLocalVarForAnonymousFunction',
+  Test('CompleteLocalVarForAnonymousFunction1',
   ['unit Unit1;',
   '{$mode objfpc}',
   '{$modeswitch anonymousfunctions}',
@@ -2693,7 +2693,7 @@ end;
 
 procedure TTestCodeCompletion.TestCompleteLocalVarForAnonymousFunction2;
 begin
-  Test('CompleteLocalVarForAnonymousFunction',
+  Test('CompleteLocalVarForAnonymousFunction2',
   ['unit Unit1;',
   '{$mode objfpc}',
   '{$modeswitch anonymousfunctions}',
