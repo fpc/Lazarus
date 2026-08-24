@@ -4009,7 +4009,7 @@ var
   end;
 
 var
-  i, j: integer;
+  i: integer;
   Key: TSynEditKeyStroke;
   KeyStrokesByCmds: TAvlTree;
   KeyList: TKeyStrokeList;
