@@ -1,3 +1,10 @@
+{
+ Test with:
+     ./runtests --format=plain --suite=TTestCodeCompletion
+     ./runtests --format=plain --suite=TTestCodeCompletion.TestCompleteLocalVarForLoop
+
+}
+
 unit TestCodeCompletion;
 
 {$mode objfpc}{$H+}
@@ -87,6 +94,8 @@ type
     procedure TestCompleteLocalVar_EnumUsedUnitOverload;
     procedure TestCompleteLocalVar_EnumInClass;
     procedure TestCompleteLocalVar_EnumInClass2;
+    procedure TestCompleteLocalVarForAnonymousFunction1;
+    procedure TestCompleteLocalVarForAnonymousFunction2;
 
     // complete event assignment
     procedure TestCompleteEventAssignmentDelphi;
@@ -2636,6 +2645,98 @@ begin
   '',
   'end;',
   '',
+  'end.'
+  ]);
+end;
+
+procedure TTestCodeCompletion.TestCompleteLocalVarForAnonymousFunction1;
+begin
+  Test('CompleteLocalVarForAnonymousFunction',
+  ['unit Unit1;',
+  '{$mode objfpc}',
+  '{$modeswitch anonymousfunctions}',
+  '{$modeswitch functionreferences}',
+  'interface',
+  'type',
+  'TProc = reference to procedure;',
+  'procedure DoSomething(aProc: TProc);',
+  'implementation',
+  'begin',
+  '  DoSomething(',
+  '    procedure',
+  '    begin',
+  '      I := 1;',
+  '    end);',
+  'end.'
+  ],
+  14,6,
+  ['unit Unit1;',
+  '{$mode objfpc}',
+  '{$modeswitch anonymousfunctions}',
+  '{$modeswitch functionreferences}',
+  'interface',
+  'type',
+  'TProc = reference to procedure;',
+  'procedure DoSomething(aProc: TProc);',
+  'implementation',
+  'begin',
+  '  DoSomething(',
+  '    procedure',
+  '    var',
+  '      I: Integer;',
+  '    begin',
+  '      I := 1;',
+  '    end);',
+  'end.'
+  ]);
+end;
+
+procedure TTestCodeCompletion.TestCompleteLocalVarForAnonymousFunction2;
+begin
+  Test('CompleteLocalVarForAnonymousFunction',
+  ['unit Unit1;',
+  '{$mode objfpc}',
+  '{$modeswitch anonymousfunctions}',
+  '{$modeswitch functionreferences}',
+  'interface',
+  'type',
+  'TProc = reference to procedure;',
+  'procedure DoSomething(aProc: TProc);',
+  'implementation',
+  'begin',
+  '  DoSomething(',
+  '    procedure',
+  '    begin',
+  '      DoSomething(',
+  '        procedure',
+  '        begin',
+  '          I := 1;',
+  '        end);',
+  '    end);',
+  'end.'
+  ],
+  17,11,
+  ['unit Unit1;',
+  '{$mode objfpc}',
+  '{$modeswitch anonymousfunctions}',
+  '{$modeswitch functionreferences}',
+  'interface',
+  'type',
+  'TProc = reference to procedure;',
+  'procedure DoSomething(aProc: TProc);',
+  'implementation',
+  'begin',
+  '  DoSomething(',
+  '    procedure',
+  '    begin',
+  '      DoSomething(',
+  '        procedure',
+  '        var',
+  '          I: Integer;',
+  '        begin',
+  '          I := 1;',
+  '        end);',
+  '    end);',
   'end.'
   ]);
 end;
