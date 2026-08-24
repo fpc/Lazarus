@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-08-18 22:50+0300\n"
+"PO-Revision-Date: 2026-08-24 22:19+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -3718,6 +3718,10 @@ msgstr "Подсветка Generic в именах процедур (объяв�
 #: lazarusidestrconsts.dlgpasprocnameimplattrmode
 msgid "Generic highlight in procedure names (implementation)"
 msgstr "Подсветка Generic в именах процедур (реализация)"
+
+#: lazarusidestrconsts.dlgpasresolvecompilermodeswitcheswithcodetools
+msgid "Resolve compiler mode switches with CodeTools"
+msgstr "Определять значения режимов компилятора с помощью CodeTools"
 
 #: lazarusidestrconsts.dlgpassoptslinker
 msgid "Pass options to linker with \"-k\", delimiter is space"
