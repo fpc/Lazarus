@@ -80,6 +80,7 @@ type
 
     // declare local variable
     procedure TestCompleteVariableWithSpecializedType;
+
     // complete event assignment
     procedure TestCompleteEventAssignmentDelphi;
     procedure TestCompleteEventAssignmentObjFPC;

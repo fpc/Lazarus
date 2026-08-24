@@ -2,31 +2,6 @@
  Test with:
    ./testcodetools --suite=TTestIdentCompletion
    ./testcodetools --suite=Test_CreateDeclarationPathAt_Basic
-   ./testcodetools --suite=Test_CreateDeclarationPathAt_Shadowed
-   ./testcodetools --suite=Test_CreateDeclarationPathAt_Generics
-   ./testcodetools --suite=Test_CreateDeclarationPathAt_GenericsObjFPC
-   ./testcodetools --suite=Test_CreateDeclarationPathAt_UnitPrefix
-
-   ./testcodetools --suite=TTestFindDeclaration
-   ./testcodetools --suite=TestFindDeclaration_Basic
-   ./testcodetools --suite=TestFindDeclaration_ClassOf
-   ./testcodetools --suite=TestFindDeclaration_With
-   ./testcodetools --suite=TestFindDeclaration_NestedClasses
-   ./testcodetools --suite=TestFindDeclaration_ClassHelper
-   ./testcodetools --suite=TestFindDeclaration_TypeHelper
-   ./testcodetools --suite=TestFindDeclaration_ObjCClass
-   ./testcodetools --suite=TestFindDeclaration_ObjCCategory
-   ./testcodetools --suite=TestFindDeclaration_Generics
-   ./testcodetools --suite=TestFindDeclaration_FileAtCursor
-
- FPC tests:
-   ./testcodetools --suite=TestFindDeclaration_FPCTests
-   ./testcodetools --suite=TestFindDeclaration_FPCTests --filemask=t*.pp
-   ./testcodetools --suite=TestFindDeclaration_FPCTests --filemask=tchlp41.pp
- Laz tests:
-   ./testcodetools --suite=TestFindDeclaration_LazTests
-   ./testcodetools --suite=TestFindDeclaration_LazTests --filemask=t*.pp
-   ./testcodetools --suite=TestFindDeclaration_LazTests --filemask=tdefaultproperty1.pp
 }
 unit TestIdentCompletion;
 
@@ -52,8 +27,7 @@ type
 
   TTestIdentCompletion = class(TCustomTestFindDeclaration)
   private
-    procedure CheckCodeContext(Context: TCodeContextInfoItem; MarkerName: string
-      );
+    procedure CheckCodeContext(Context: TCodeContextInfoItem; MarkerName: string);
     procedure CheckCreateDeclarationPath(const MarkerName, TargetPath,
       ExpectedPath: string; const TargetMarkerName: string = '');
   published

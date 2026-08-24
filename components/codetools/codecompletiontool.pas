@@ -1222,7 +1222,7 @@ function TCodeCompletionCodeTool.AddLocalVariable(CleanCursorPos: integer;
   end;
 
 var
-  CursorNode, VarSectionNode, VarNode: TCodeTreeNode;
+  VarSectionNode, VarNode: TCodeTreeNode;
   Indent, InsertPos: integer;
   InsertTxt: string;
   OldCodePos: TCodePosition;
@@ -1248,14 +1248,12 @@ begin
 
   // find the level and find sections in front
   Node:=Tree.Root;
-  CursorNode:=nil;
   VarSectionNode:=nil;
   OtherSectionNode:=nil;
   HeaderNode:=nil;
   ParentNode:=nil;
   while Node<>nil do begin
     if Node.StartPos>CleanCursorPos then break;
-    CursorNode:=Node;
     if Node.Desc in [ctnProcedureHead,ctnUsesSection] then
       HeaderNode:=Node
     else if Node.Desc=ctnVarSection then
