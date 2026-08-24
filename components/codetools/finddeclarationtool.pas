@@ -15371,7 +15371,7 @@ begin
         // find node of class of definition and check if it is parent of StartNode
         ClassNode:= FindClassNode(Node);
         ExprClassNode:= FindClassNode(Params.StartNode);
-        if (ClassNode<>nil) and
+        if (ClassNode<>nil) and (ExprClassNode<>ClassNode) and
         ((ExprClassNode=nil) or not ExprClassNode.HasAsParent(ClassNode)) then
           Result:=ExtractClassName(ClassNode, false)+'.'+Result;
       end;
