@@ -957,6 +957,8 @@ type
   TGtk3ComboBox = class(TGtk3Bin)
   private
     FCellView: PGtkCellView;
+    FDropDownRePopup: Boolean;
+    FDropDownModelChanged: Boolean;
     function GetItemIndex: Integer;
     procedure SetDroppedDown(AValue: boolean);
     procedure SetItemIndex(AValue: Integer);
@@ -967,6 +969,7 @@ type
     class procedure EntryChanged({%H-}AEntry: PGtkEntry; AData: gpointer); cdecl; static;
     class function EntryFocusIn(AEntry: PGtkWidget; Event: PGdkEventFocus; AData: gpointer): gboolean; cdecl; static;
     class procedure NotifySignal(AObject: PGObject; pspec: PGParamSpec; AData: GPointer); cdecl; static;
+    class procedure ModelChangedSignal(AData: GPointer); cdecl; static;
   protected
     procedure ConnectSizeAllocateSignal(ToWidget:PGtkWidget);override;
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
@@ -13578,10 +13581,16 @@ begin
   Result := False;// stop the timer
 end;
 
+class procedure TGtk3ComboBox.ModelChangedSignal(AData: GPointer); cdecl;
+begin
+  TGtk3ComboBox(AData).FDropDownModelChanged := True;
+end;
+
 class procedure TGtk3ComboBox.NotifySignal(AObject: PGObject; pspec: PGParamSpec; AData: GPointer); cdecl;
 var
   AValue: TGValue;
   ComboBox: TCustomComboBox;
+  APopup: PGtkWidget;
 begin
   if pspec^.name = 'popup-shown' then
   begin
@@ -13589,11 +13598,32 @@ begin
     AValue.g_type := G_TYPE_BOOLEAN;
     g_object_get_property(AObject, pspec^.name, @AValue); // get property value
     if AValue.data[0].v_int = 0 then // if 0 = False then it is close up
-      g_idle_add(@GtkPopupCloseUp, AData)
+    begin
+      if TGtk3ComboBox(AData).FDropDownRePopup then
+        TGtk3ComboBox(AData).FDropDownRePopup := False
+      else
+        g_idle_add(@GtkPopupCloseUp, AData);
+    end
     else // in other case it is drop down
     begin
+      if TGtk3ComboBox(AData).FDropDownRePopup then
+      begin
+        TGtk3ComboBox(AData).FDropDownRePopup := False;
+        exit;
+      end;
+      TGtk3ComboBox(AData).FDropDownModelChanged := False;
       ComboBox.IntfGetItems;
       LCLSendDropDownMsg(ComboBox);
+      if TGtk3ComboBox(AData).FDropDownModelChanged then
+      begin
+        APopup := PGtkComboBoxPrivate(PGtkComboBox(AObject)^.priv3)^.popup_widget;
+        if Gtk3IsMenu(PGObject(APopup)) then
+        begin
+          TGtk3ComboBox(AData).FDropDownRePopup := True;
+          PGtkComboBox(AObject)^.popdown;
+          PGtkComboBox(AObject)^.popup;
+        end;
+      end;
     end;
   end;
 end;
@@ -13614,6 +13644,16 @@ begin
   g_signal_connect_data(GetContainerWidget, 'changed', TGCallback(@ComboBoxChanged), Self, nil, G_CONNECT_DEFAULT);
   //OnCloseUp
   g_signal_connect_data(GetContainerWidget, 'notify', TGCallback(@NotifySignal), Self, nil, G_CONNECT_DEFAULT);
+
+  if Gtk3IsComboBox(GetContainerWidget) then
+  begin
+    g_signal_connect_data(PGObject(PGtkComboBox(GetContainerWidget)^.get_model), 'row-inserted',
+      TGCallback(@ModelChangedSignal), Self, nil, [G_CONNECT_SWAPPED]);
+    g_signal_connect_data(PGObject(PGtkComboBox(GetContainerWidget)^.get_model), 'row-deleted',
+      TGCallback(@ModelChangedSignal), Self, nil, [G_CONNECT_SWAPPED]);
+    g_signal_connect_data(PGObject(PGtkComboBox(GetContainerWidget)^.get_model), 'row-changed',
+      TGCallback(@ModelChangedSignal), Self, nil, [G_CONNECT_SWAPPED]);
+  end;
 
   //TODO: if we have an entry then use CreateFrom() to create TGtk3Entry
   if Gtk3IsEntry(PGtkComboBox(FWidget)^.get_child) then
