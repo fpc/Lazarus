@@ -7867,6 +7867,7 @@ var
   AState: QtWindowStates;
   AOldState: QtWindowStates;
   CanSendEvent: Boolean;
+  AAppMinimize: Boolean;
   {$IFDEF MSWINDOWS}
   i: Integer;
   AForm: TCustomForm;
@@ -8004,6 +8005,7 @@ begin
         end;
 
         CanSendEvent := True;
+        AAppMinimize := False;
         {$warning fixme Qt6}
         {$IFDEF HASX11}
         // for X11 we must ask state of each modified window.
@@ -8048,7 +8050,7 @@ begin
               end;
             end;
             {$ENDIF}
-            Application.IntfAppMinimize;
+            AAppMinimize := True;
           end
           else
           if (AOldState and QtWindowMinimized <> 0) or
@@ -8113,6 +8115,8 @@ begin
           {$ENDIF}
           SlotWindowStateChange;
         end;
+        if AAppMinimize then
+          Application.IntfAppMinimize;
       end;
       QEventDrop,
       QEventDragMove,
