@@ -2341,6 +2341,8 @@ begin
   NestedBracketAttribs.BaseStoredName := NESTED_BRACKET_STOREDNAME;
   for i := 0 to 9 do
     NestedBracketAttribs.Add;
+
+  StoreModesPerFile := True;
 end;
 
 procedure TIDESynPasSyn.InitForScanningLine;

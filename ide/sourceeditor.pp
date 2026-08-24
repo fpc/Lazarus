@@ -330,7 +330,7 @@ type
     procedure SetVisible(Value: boolean);
     procedure UnbindEditor;
 
-    procedure UpdateIfDefNodeStates(Force: Boolean = False);
+    procedure UpdateEditorFromCodeTools(Force: Boolean = False);
   protected
     function GetPageCaption: string; override;
     function GetPageName: string; override;
@@ -545,7 +545,6 @@ type
     function  SourceToDebugLine(aLinePos: Integer): Integer;
     function  DebugToSourceLine(aLinePos: Integer): Integer; override;
 
-    procedure InvalidateAllIfdefNodes;
     procedure SetIfdefNodeState(ALinePos, AstartPos: Integer; AState: TSynMarkupIfdefNodeState);
     property OnIfdefNodeStateRequest: TSynMarkupIfdefStateRequest read FOnIfdefNodeStateRequest write FOnIfdefNodeStateRequest;
   public
@@ -1535,6 +1534,8 @@ function dbgSourceNoteBook(snb: TSourceNotebook): string;
 function CompareSrcEditIntfWithFilename(SrcEdit1, SrcEdit2: Pointer): integer;
 function CompareFilenameWithSrcEditIntf(FilenameStr, SrcEdit: Pointer): integer;
 function FilenameToLazSyntaxHighlighter(Filename: String): TIdeSyntaxHighlighterID;
+function CompilerModeToPascal(CompilerMode: TCompilerMode): TPascalCompilerMode;
+function CompilerModeSwitchesToPascal(CompilerModeSwitches: TCompilerModeSwitches): TPascalCompilerModeSwitches;
 
 var
   EnglishGPLNotice: string;
@@ -2002,6 +2003,29 @@ begin
     else
       Result := IdeSyntaxHighlighters.GetIdForLazSyntaxHighlighter(lshFreePascal);
   end;
+end;
+
+function CompilerModeToPascal(CompilerMode: TCompilerMode): TPascalCompilerMode;
+const
+  C: array[TCompilerMode] of TPascalCompilerMode = (
+    //cmFPC, cmDELPHI, cmDELPHIUNICODE, cmTP, cmOBJFPC, cmMacPas, cmISO, cmExtPas
+    pcmFPC, pcmDelphi, pcmDelphiUnicode, pcmTP, pcmObjFPC, pcmMacPas, pcmIso, pcmExtPas);
+begin
+  Result := C[CompilerMode];
+end;
+
+function CompilerModeSwitchesToPascal(CompilerModeSwitches: TCompilerModeSwitches): TPascalCompilerModeSwitches;
+const
+  C: array[TPascalCompilerModeSwitch] of TCompilerModeSwitch = (
+    // pcsNestedComments, pcsTypeHelpers, pcsObjectiveC1, pcsObjectiveC2, pcsFunctionReferences, pcsAnonymousFunctions
+    cmsNested_comment, cmsTypeHelpers, cmsObjectiveC1, cmsObjectiveC2, cmsFunctionReferences, cmsAnonymousFunctions);
+var
+  P: TPascalCompilerModeSwitch;
+begin
+  Result := [];
+  for P in TPascalCompilerModeSwitch do
+    if C[P] in CompilerModeSwitches then
+      Result := Result + [P];
 end;
 
 { TToolButton_GotoBookmarks }
@@ -3288,7 +3312,7 @@ begin
           if assigned(SharedEdit.FEditPlugin) then
             SharedEdit.FEditPlugin.Enabled := True;
           if SharedEdit.Visible then
-            SharedEdit.UpdateIfDefNodeStates(True);
+            SharedEdit.UpdateEditorFromCodeTools(True);
         end;
       end;
       for i := 0 to FSharedEditorList.Count - 1 do begin
@@ -3439,7 +3463,7 @@ begin
       for i := 0 to FSharedEditorList.Count - 1 do begin
         SharedEditors[i].FillExecutionMarks;
         if SharedEditors[i].Visible then
-          SharedEditors[i].UpdateIfDefNodeStates(True);
+          SharedEditors[i].UpdateEditorFromCodeTools(True);
       end;
     end;
     if CodeToolsInSync then begin
@@ -5185,7 +5209,7 @@ begin
 
       EditorOpts.GetSynEditSettings(FEditor, SimilarEditor, ActiveSyntaxHighlighterId);
       if Visible then
-        UpdateIfDefNodeStates(True);
+        UpdateEditorFromCodeTools(True);
     end
     else if ASkipEditorOpts then
       exit
@@ -5266,7 +5290,7 @@ Begin
 
     SourceNotebook.UpdateActiveEditColors(FEditor);
     if Visible then
-      UpdateIfDefNodeStates(True);
+      UpdateEditorFromCodeTools(True);
   finally
     FEditor.EndUpdate;
     FEditor.RestoreTopLineAfterFold(tl);
@@ -6706,20 +6730,15 @@ begin
   Result := FEditor.IDEGutterMarks.DebugLineToSourceLine(aLinePos);
 end;
 
-procedure TSourceEditor.InvalidateAllIfdefNodes;
-begin
-  FEditor.InvalidateAllIfdefNodes;
-end;
-
 procedure TSourceEditor.SetIfdefNodeState(ALinePos, AstartPos: Integer;
   AState: TSynMarkupIfdefNodeState);
 begin
   FEditor.SetIfdefNodeState(ALinePos, AstartPos, AState);
 end;
 
-procedure TSourceEditor.UpdateIfDefNodeStates(Force: Boolean = False);
-{off $DEFINE VerboseUpdateIfDefNodeStates}
-{$IFDEF VerboseUpdateIfDefNodeStates}
+procedure TSourceEditor.UpdateEditorFromCodeTools(Force: Boolean = False);
+{off $DEFINE VerboseUpdateEditorFromCodeTools}
+{$IFDEF VerboseUpdateEditorFromCodeTools}
 const
   VFilePattern='blaunit';
   VMinY=1;
@@ -6737,16 +6756,24 @@ var
   ActiveCnt: Integer;
   InactiveCnt: Integer;
   SkippedCnt: Integer;
+  PasSyn: TSynPasSyn;
+  ApplyModeSwitches: Boolean;
 begin
-  //debugln(['TSourceEditor.UpdateIfDefNodeStates START ',Filename]);
-  if not EditorComponent.IsIfdefMarkupActive then
+  ApplyModeSwitches := EditorOpts.ResolveCompilerModeSwitchesWithCodeTools and (EditorComponent.Highlighter is TSynPasSyn);
+
+  // reset CompilerModeLocked
+  if not ApplyModeSwitches and (EditorComponent.Highlighter is TSynPasSyn) and TSynPasSyn(EditorComponent.Highlighter).CompilerModeLocked then
+    TSynPasSyn(EditorComponent.Highlighter).CompilerModeLocked := False;
+
+  //debugln(['TSourceEditor.UpdateEditorFromCodeTools START ',Filename]);
+  if not (EditorComponent.IsIfdefMarkupActive or ApplyModeSwitches) then
     exit;
-  //debugln(['TSourceEditor.UpdateIfDefNodeStates CHECK ',Filename]);
+  //debugln(['TSourceEditor.UpdateEditorFromCodeTools CHECK ',Filename]);
   UpdateCodeBuffer;
   Scanner:=SharedValues.GetMainLinkScanner(true);
   if Scanner=nil then exit;
   if (Scanner.ChangeStep=FLastIfDefNodeScannerStep) and (not Force) then exit;
-  //debugln(['TSourceEditor.UpdateIfDefNodeStates UPDATING ',Filename]);
+  //debugln(['TSourceEditor.UpdateEditorFromCodeTools UPDATING ',Filename]);
   FLastIfDefNodeScannerStep:=Scanner.ChangeStep;
   EditorComponent.BeginUpdate;
   try
@@ -6757,7 +6784,7 @@ begin
     begin
       aDirective:=Scanner.DirectivesSorted[i];
       //if (Pos(VFilePattern,Code.Filename)>0) then
-      //  debugln(['TSourceEditor.UpdateIfDefNodeStates ',i+1,'/',Scanner.DirectiveCount,' ',dbgs(aDirective^.Kind)]);
+      //  debugln(['TSourceEditor.UpdateEditorFromCodeTools ',i+1,'/',Scanner.DirectiveCount,' ',dbgs(aDirective^.Kind)]);
       inc(i);
       if TCodeBuffer(aDirective^.Code)<>Code then continue;
       if not (aDirective^.Kind in (lsdkAllIf+lsdkAllElse)) then continue;
@@ -6766,9 +6793,9 @@ begin
       SynState:=idnInvalid;
       // a directive can be scanned multiple times (multi included include files)
       // => show it enabled if it was active at least once
-      {$IFDEF VerboseUpdateIfDefNodeStates}
+      {$IFDEF VerboseUpdateEditorFromCodeTools}
       if (Pos(VFilePattern,Code.Filename)>0) and (Y>=VMinY) and (Y<=VMaxY) then
-        debugln(['TSourceEditor.UpdateIfDefNodeStates ',i,'/',Scanner.DirectiveCount,' ',dbgs(Pointer(Code)),' ',Code.Filename,' X=',X,' Y=',Y,' SrcPos=',aDirective^.SrcPos,' State=',dbgs(aDirective^.State)]);
+        debugln(['TSourceEditor.UpdateEditorFromCodeTools ',i,'/',Scanner.DirectiveCount,' ',dbgs(Pointer(Code)),' ',Code.Filename,' X=',X,' Y=',Y,' SrcPos=',aDirective^.SrcPos,' State=',dbgs(aDirective^.State)]);
       {$ENDIF}
       SrcPos:=aDirective^.SrcPos;
       ActiveCnt:=0;
@@ -6782,9 +6809,9 @@ begin
         end;
         if i < Scanner.DirectiveCount then begin
           ADirective:=Scanner.DirectivesSorted[i];
-          {$IFDEF VerboseUpdateIfDefNodeStates}
+          {$IFDEF VerboseUpdateEditorFromCodeTools}
           if (Pos(VFilePattern,Code.Filename)>0) and (Y>=VMinY) and (Y<=VMaxY) and (ADirective^.SrcPos=SrcPos) then
-            debugln(['TSourceEditor.UpdateIfDefNodeStates ',i,'/',Scanner.DirectiveCount,' MERGING ',dbgs(ADirective^.Code),' ',Code.Filename,' X=',X,' Y=',Y,' SrcPos=',aDirective^.SrcPos,' State=',dbgs(aDirective^.State)]);
+            debugln(['TSourceEditor.UpdateEditorFromCodeTools ',i,'/',Scanner.DirectiveCount,' MERGING ',dbgs(ADirective^.Code),' ',Code.Filename,' X=',X,' Y=',Y,' SrcPos=',aDirective^.SrcPos,' State=',dbgs(aDirective^.State)]);
           {$ENDIF}
         end;
         inc(i);
@@ -6799,11 +6826,24 @@ begin
         SynState:=idnTempEnabled
       else
         SynState:=idnInvalid;
-      {$IFDEF VerboseUpdateIfDefNodeStates}
+      {$IFDEF VerboseUpdateEditorFromCodeTools}
       if (Pos(VFilePattern,Code.Filename)>0) and (Y>=VMinY) and (Y<=VMaxY) then
-        debugln(['TSourceEditor.UpdateIfDefNodeStates y=',y,' x=',x,' Counts:Inactive=',InactiveCnt,' Active=',ActiveCnt,' Skipped=',SkippedCnt,' SET SynState=',dbgs(SynState)]);
+        debugln(['TSourceEditor.UpdateEditorFromCodeTools y=',y,' x=',x,' Counts:Inactive=',InactiveCnt,' Active=',ActiveCnt,' Skipped=',SkippedCnt,' SET SynState=',dbgs(SynState)]);
       {$ENDIF}
       EditorComponent.SetIfdefNodeState(Y,X,SynState);
+    end;
+
+    if ApplyModeSwitches then
+    begin
+      PasSyn := TSynPasSyn(EditorComponent.Highlighter);
+
+      PasSyn.BeginUpdate;
+      PasSyn.CurrentLines := EditorComponent.ViewedTextBuffer;
+      PasSyn.CompilerModeLocked := true;
+      PasSyn.ModeSwitchesLocked := [Low(TPascalCompilerModeSwitches)..High(TPascalCompilerModeSwitches)];
+      PasSyn.CompilerMode := CompilerModeToPascal(Scanner.CompilerMode);
+      PasSyn.ModeSwitches := CompilerModeSwitchesToPascal(Scanner.CompilerModeSwitches);
+      PasSyn.EndUpdate;
     end;
   finally
     EditorComponent.EndUpdate;
@@ -8808,7 +8848,7 @@ begin
   SourceEditorManager.SendEditorCloned(NewEdit);
   // Creating a shared edit invalidates the tree in SynMarkup. Force setting it for all editors
   for i := 0 to SrcEdit.SharedEditorCount - 1 do
-    SrcEdit.SharedEditors[i].UpdateIfDefNodeStates(True);
+    SrcEdit.SharedEditors[i].UpdateEditorFromCodeTools(True);
   // Update IsVisibleTab; needs UnitEditorInfo created in DestWin.UpdateProjectFiles
   if Focus then begin
     Manager.ActiveEditor := NewEdit;
@@ -9785,7 +9825,7 @@ Begin
         SrcEdit.EditorComponent.CaretXY := CaretXY;
         SrcEdit.EditorComponent.TopLine := TopLine;
         TSynEditMarkupManager(SrcEdit.EditorComponent.MarkupMgr).DecPaintLock;
-        SrcEdit.UpdateIfDefNodeStates; // after editor is initialized
+        SrcEdit.UpdateEditorFromCodeTools; // after editor is initialized
       end;
       if (fAutoFocusLock=0) and (Screen.ActiveCustomForm=GetParentForm(Self)) and
          not(Manager.HasAutoFocusLock)
@@ -12110,7 +12150,7 @@ begin
   for i:=0 to SourceEditorCount-1 do begin
     SrcEdit:=SourceEditors[i];
     if not SrcEdit.EditorComponent.IsVisible then continue;
-    SrcEdit.UpdateIfDefNodeStates;
+    SrcEdit.UpdateEditorFromCodeTools;
   end;
 end;
 

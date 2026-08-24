@@ -1738,6 +1738,7 @@ type
     fPasExtendedKeywordsMode: Boolean;
     fPasStringKeywordMode: TSynPasStringMode;
     FCaseLabelAttriMatchesElseOtherwise: Boolean;
+    FResolveCompilerModeSwitchesWithCodeTools: Boolean;
     FDeclaredTypeAttributeMode: TSynPasTypeAttributeMode;
     FDeclaredValueAttributeMachesStringNum: Boolean;
     FDeclaredValueAttributeMode: TSynPasTypeAttributeMode;
@@ -1851,6 +1852,8 @@ type
       read fPasStringKeywordMode write fPasStringKeywordMode default spsmDefault;
     property CaseLabelAttriMatchesElseOtherwise: Boolean
        read FCaseLabelAttriMatchesElseOtherwise write FCaseLabelAttriMatchesElseOtherwise default True;
+    property ResolveCompilerModeSwitchesWithCodeTools: Boolean
+       read FResolveCompilerModeSwitchesWithCodeTools write FResolveCompilerModeSwitchesWithCodeTools default True;
     property DeclaredTypeAttributeMode: TSynPasTypeAttributeMode
        read FDeclaredTypeAttributeMode write FDeclaredTypeAttributeMode default tamIdentifierOnly;
     property DeclaredValueAttributeMode: TSynPasTypeAttributeMode
@@ -5733,6 +5736,7 @@ begin
   fPasExtendedKeywordsMode := False;
   fPasStringKeywordMode := spsmDefault;
   FCaseLabelAttriMatchesElseOtherwise := True;
+  FResolveCompilerModeSwitchesWithCodeTools := True;
   FDeclaredTypeAttributeMode := tamIdentifierOnly;
   FDeclaredValueAttributeMode := tamIdentifierOnly;
   FGenericParamAttrMode := tamIdentifierOnly;

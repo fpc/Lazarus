@@ -41,6 +41,7 @@ type
 
   TEditorPascalOptionsFrame = class(TAbstractIDEOptionsEditor)
     CaseLabelLink: TLabel;
+    chkResolveCompilerModeSwitchesWithCodeTools: TCheckBox;
     LinkDeclGenParam2: TLabel;
     LinkDeclType: TLabel;
     cbCaseLabelColorForOtherwise: TCheckBox;
@@ -200,6 +201,7 @@ begin
   dropPasStringKeywords.Items.Add(dlgPasStringKeywordsOptDefault);
   dropPasStringKeywords.Items.Add(dlgPasStringKeywordsOptString);
   cbCaseLabelColorForOtherwise.Caption := dlgPasCaseLabelForOtherwise;
+  chkResolveCompilerModeSwitchesWithCodeTools.Caption := dlgPasResolveCompilerModeSwitchesWithCodeTools;
 
   CaseLabelLink.Caption := dlgColorLink;
   LinkDeclType.Caption := dlgColorLink;
@@ -257,6 +259,7 @@ begin
     chkExtPasKeywords.Checked := PasExtendedKeywordsMode;
     dropPasStringKeywords.ItemIndex          := ord(PasStringKeywordMode);
     cbCaseLabelColorForOtherwise.Checked     := CaseLabelAttriMatchesElseOtherwise;
+    chkResolveCompilerModeSwitchesWithCodeTools.Checked := ResolveCompilerModeSwitchesWithCodeTools;
     dropDeclaredTypeAttrMode.ItemIndex       := ord(DeclaredTypeAttributeMode);
     dropDeclaredValueAttrMode.ItemIndex      := ord(DeclaredValueAttributeMode);
     dropGenericParamAttrMode.ItemIndex       := ord(GenericParamAttrMode);
@@ -273,6 +276,7 @@ begin
     PasExtendedKeywordsMode               := chkExtPasKeywords.Checked;
     PasStringKeywordMode                  := TSynPasStringMode(dropPasStringKeywords.ItemIndex);
     CaseLabelAttriMatchesElseOtherwise    := cbCaseLabelColorForOtherwise.Checked;
+    ResolveCompilerModeSwitchesWithCodeTools := chkResolveCompilerModeSwitchesWithCodeTools.Checked;
     DeclaredTypeAttributeMode             := TSynPasTypeAttributeMode(dropDeclaredTypeAttrMode.ItemIndex);
     DeclaredValueAttributeMode            := TSynPasTypeAttributeMode(dropDeclaredValueAttrMode.ItemIndex);
     GenericParamAttrMode                  := TSynPasTypeAttributeMode(dropGenericParamAttrMode.ItemIndex);
