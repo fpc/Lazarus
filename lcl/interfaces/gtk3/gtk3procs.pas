@@ -339,6 +339,7 @@ function Gtk3ScrollTypeToScrollCode(ScrollType: TGtkScrollType): LongWord;
 
 function TGdkRGBAToTColor(const value : TGdkRGBA; IgnoreAlpha: Boolean = True) : TColor;
 function TColortoTGdkRGBA(const value : TColor; IgnoreAlpha: Boolean = True) : TGdkRGBA;
+function CompositeRGBAOverBg(const AFg, ABg: TGdkRGBA): TColor;
 function ColorToCairoRGB(AColor: TColor; out ARed, AGreen, ABlue: Double): Boolean;
 function RectFromGtkAllocation(AGtkAllocation: TGtkAllocation): TRect;
 function RectFromGdkRect(AGdkRect: TGdkRectangle): TRect;

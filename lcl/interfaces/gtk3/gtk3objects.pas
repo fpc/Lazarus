@@ -101,6 +101,7 @@ type
     function Get(szbuf:integer;pbuf:pointer):integer; override;
     destructor Destroy; override;
     procedure UpdatePattern(const aColor: TColorRef);
+    procedure SetSharedColor(AValue: TColor);
     property Color: TColor read FColor write SetColor;
     property Context: TGtk3DeviceContext read FContext write FContext;
     property Style: LongWord read FStyle write SetStyle;
@@ -1689,6 +1690,11 @@ begin
 end;
 
 { TGtk3Brush }
+
+procedure TGtk3Brush.SetSharedColor(AValue: TColor);
+begin
+  FColor := AValue;
+end;
 
 procedure TGtk3Brush.SetColor(AValue: TColor);
 var
