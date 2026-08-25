@@ -23,7 +23,7 @@ msgstr ""
 
 #: heaptrcview.brkfailedtoopensjumptocurren
 #, object-pascal-format
-msgid "Failed to open \"%s\". Jump to current editor instead"
+msgid "Failed to open \"%s\". Jump to current editor instead?"
 msgstr ""
 
 #: heaptrcview.rsdtimes
