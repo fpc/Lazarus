@@ -12,6 +12,20 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 
+#: heaptrcview.brkfailedtoopenfile
+msgid "Failed to open file"
+msgstr ""
+
+#: heaptrcview.brkfailedtoopens
+#, object-pascal-format
+msgid "Failed to open \"%s\"."
+msgstr ""
+
+#: heaptrcview.brkfailedtoopensjumptocurren
+#, object-pascal-format
+msgid "Failed to open \"%s\". Jump to current editor instead"
+msgstr ""
+
 #: heaptrcview.rsdtimes
 #, object-pascal-format
 msgid " (%d times)"

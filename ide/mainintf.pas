@@ -109,15 +109,6 @@ type
     );
   TCodeToolsFlags = set of TCodeToolsFlag;
 
-  TJumpToCodePosFlag = (
-    jfAddJumpPoint,
-    jfFocusEditor,
-    jfMarkLine,
-    jfMapLineFromDebug,
-    jfSearchVirtualFullPath
-  );
-  TJumpToCodePosFlags = set of TJumpToCodePosFlag;
-
   { TMainIDEInterface }
 
   TMainIDEInterface = class(TLazIDEInterface)

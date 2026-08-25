@@ -57,6 +57,16 @@ type
     idedrfMessages // show output in Messages window
     );
   TIDEDirRunFlags = set of TIDEDirRunFlag;
+
+  TJumpToCodePosFlag = (
+    jfAddJumpPoint,
+    jfFocusEditor,
+    jfMarkLine,
+    jfMapLineFromDebug,
+    jfSearchVirtualFullPath
+  );
+  TJumpToCodePosFlags = set of TJumpToCodePosFlag;
+
 const
   IDEDirectiveNames: array[TIDEDirective] of string = (
     '',
@@ -347,6 +357,11 @@ type
                               Flags: TOpenFlags): TModalResult; virtual; abstract;
     function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
                        PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract;
+    function DoJumpToCodePosition(
+                        ActiveSrcEdit: TSourceEditorInterface;
+                        NewX, NewY, NewTopLine,
+                        BlockTopLine, BlockBottomLine: integer;
+                        Flags: TJumpToCodePosFlags = [jfFocusEditor]): TModalResult; virtual; abstract;
     function DoOpenFileAndJumpToPos(const AFilename: string;
                        const CursorPosition: TPoint; TopLine: integer;
                        PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult; overload;

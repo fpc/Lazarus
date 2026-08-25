@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="5">
+  <Package Version="6">
     <PathDelim Value="\"/>
     <Name Value="leakview"/>
     <Type Value="RunAndDesignTime"/>
@@ -24,43 +24,45 @@
     </CompilerOptions>
     <Description Value="Leak View. allows fast navigation trough HeapTrc (and other?) leaks."/>
     <Version Major="1"/>
-    <Files Count="4">
-      <Item1>
+    <Files>
+      <Item>
         <Filename Value="heaptrcview.lfm"/>
         <Type Value="LFM"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <Filename Value="heaptrcview.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="HeapTrcView"/>
-      </Item2>
-      <Item3>
+      </Item>
+      <Item>
         <Filename Value="leakinfo.pas"/>
         <UnitName Value="leakinfo"/>
-      </Item3>
-      <Item4>
+      </Item>
+      <Item>
         <Filename Value="dbginforeader.pas"/>
         <UnitName Value="DbgInfoReader"/>
-      </Item4>
+      </Item>
     </Files>
-    <CompatibilityMode Value="True"/>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <RequiredPkgs Count="4">
-      <Item1>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="SynEdit"/>
+      </Item>
+      <Item>
         <PackageName Value="fpdebug"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <PackageName Value="LazDebuggerLldb"/>
-      </Item2>
-      <Item3>
+      </Item>
+      <Item>
         <PackageName Value="CodeTools"/>
-      </Item3>
-      <Item4>
+      </Item>
+      <Item>
         <PackageName Value="IDEIntf"/>
-      </Item4>
+      </Item>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

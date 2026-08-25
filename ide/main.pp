@@ -943,6 +943,11 @@ type
                                Flags: TJumpToCodePosFlags = [jfFocusEditor]): TModalResult; override;
     function DoJumpToCodePosition(
                         ActiveSrcEdit: TSourceEditorInterface;
+                        NewX, NewY, NewTopLine,
+                        BlockTopLine, BlockBottomLine: integer;
+                        Flags: TJumpToCodePosFlags = [jfFocusEditor]): TModalResult; override;
+    function DoJumpToCodePosition(
+                        ActiveSrcEdit: TSourceEditorInterface;
                         ActiveUnitInfo: TEditableUnitInfo;
                         NewSource: TCodeBuffer; NewX, NewY, NewTopLine,
                         BlockTopLine, BlockBottomLine: integer;
@@ -10330,6 +10335,68 @@ begin
   CodeBuffer:=CodeToolBoss.LoadFile(aFilename,true,false);
   if CodeBuffer=nil then exit;
   Result:=DoJumpToCodePosition(nil,nil,CodeBuffer,NewX,NewY,NewTopLine, Flags);
+end;
+
+function TMainIDE.DoJumpToCodePosition(ActiveSrcEdit: TSourceEditorInterface; NewX, NewY,
+  NewTopLine, BlockTopLine, BlockBottomLine: integer; Flags: TJumpToCodePosFlags): TModalResult;
+var
+  SrcEdit: TSourceEditor;
+  STB, FNStart: String;
+begin
+  Result:=mrCancel;
+
+  if ActiveSrcEdit = nil then
+    SrcEdit := SourceEditorManager.ActiveEditor
+  else
+    SrcEdit := ActiveSrcEdit as TSourceEditor;
+  if (SrcEdit = nil) or ((SrcEdit.EditorComponent = nil)) then
+    exit;
+
+  SourceEditorManager.BeginAutoFocusLock;
+  try
+    if (jfAddJumpPoint in Flags) and
+       ( (SrcEdit.EditorComponent.CaretX<>NewX) or
+         (SrcEdit.EditorComponent.CaretY<>NewY) )
+    then
+      SourceEditorManager.AddJumpPointClicked(Self);
+
+    if NewX<1 then NewX:=1;
+    if NewY<1 then NewY:=1;
+    if jfMapLineFromDebug in Flags then
+      NewY := SrcEdit.DebugToSourceLine(NewY);
+
+    try
+      SrcEdit.BeginUpdate;
+      SrcEdit.EditorComponent.MoveLogicalCaretIgnoreEOL(Point(NewX,NewY));
+      if not SrcEdit.IsLocked then begin
+        if NewTopLine < 1 then
+          SrcEdit.CenterCursor(True)
+        else
+        begin
+          if not(
+            CodeToolsOpts.AvoidUnnecessaryJumps and
+            (BlockTopLine>=SrcEdit.TopLine) and
+            (BlockBottomLine<=SrcEdit.EditorComponent.BottomLine)
+          )
+          then
+            SrcEdit.TopLine:=NewTopLine;
+        end;
+      end;
+      //DebugLn('TMainIDE.DoJumpToCodePosition NewY=',dbgs(NewY),' ',dbgs(TopLine),' ',dbgs(NewTopLine));
+      SrcEdit.CenterCursorHoriz(hcmSoftKeepEOL);
+    finally
+      SrcEdit.EndUpdate;
+    end;
+    if jfMarkLine in Flags then
+      SrcEdit.ErrorLine := NewY;
+
+    if jfFocusEditor in Flags then
+      SourceEditorManager.ShowActiveWindowOnTop(True);
+    UpdateSourceNames;
+    Result:=mrOk;
+  finally
+    SourceEditorManager.EndAutoFocusLock;
+  end;
 end;
 
 function TMainIDE.DoJumpToCodePosition(ActiveSrcEdit: TSourceEditorInterface;
