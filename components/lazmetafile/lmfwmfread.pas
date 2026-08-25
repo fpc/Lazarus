@@ -51,7 +51,8 @@ type
     procedure ReadExtFloodFill(const AParams: TWMFParamArray);
     procedure ReadExtTextOut(const AParams: TWMFParamArray);
     procedure ReadFloodFill(const AParams: TWMFParamArray);
-    function ReadImage(const AParams: TWMFParamArray; AIndex: Integer; APicture: TPicture): Boolean;
+    function ReadImage(const AParams: TWMFParamArray; AIndex: Integer; APicture: TPicture;
+      AlwaysLoadImage: Boolean = false): Boolean;
     procedure ReadLineTo(const AParams: TWMFParamArray);
     procedure ReadMapMode(const AParams: TWMFParamArray);
     procedure ReadMoveTo(const AParams: TWMFParamArray);
@@ -61,6 +62,7 @@ type
     procedure ReadPolygon(const AParams: TWMFParamArray; Filled: Boolean);
     procedure ReadRectangle(const AParams: TWMFParamArray);
     procedure ReadRoundRect(const AParams: TWMFParamArray);
+    procedure ReadSetDIBtoDEV(const AParams: TWMFParamArray);
     procedure ReadStretchDIB(const AParams: TWMFParamArray);
     function ReadString(const AParams: TWMFParamArray; AStartIndex, ALength: Integer): String;
     procedure ReadTextAlign(const AParams: TWMFParamArray);
@@ -581,7 +583,7 @@ begin
 end;
 
 function TlmfWMFReader.ReadImage(const AParams: TWMFParamArray;
-  AIndex: Integer; APicture: TPicture): Boolean;
+  AIndex: Integer; APicture: TPicture; AlwaysLoadImage: Boolean = false): Boolean;
 var
   bmpInfoHdr: PBitmapInfoHeader = nil;
   bmpFileHdr: TBitmapFileHeader;
@@ -651,6 +653,10 @@ begin
             FreeAndNil(FMaskBmp);
           end;
         end else
+          APicture.LoadFromStream(memstream);
+
+      otherwise
+        if AlwaysLoadImage then // in case of META_SetDIBtoDEVRecord:
           APicture.LoadFromStream(memstream);
     end;
     Result := true;
@@ -804,11 +810,11 @@ begin
         ;
       META_DIBSTRETCHBLT:
         ;
-      META_SETDIBTODEV:
-        ;
       META_STRETCHBLT:
         ;
       }
+      META_SETDIBTODEV:
+        ReadSetDIBtoDEV(params);
       META_STRETCHDIB:
         ReadStretchDIB(params);
       META_DIBSTRETCHBLT:
@@ -995,6 +1001,34 @@ begin
   RY := SmallInt(LEToN(roundRectRec^.RY));
   lmfItem := TlmfRoundRect.Create(R, RX, RY);
   FImage.List.InsertComponent(lmfItem);
+end;
+
+procedure TlmfWMFReader.ReadSetDIBtoDEV(const AParams: TWMFParamArray);
+var
+  rec: PWMFSetDIBtoDEVRecord;
+  lmfPic: TlmfPicture;
+  w, h: Word;
+  R: TRect;
+begin
+  rec := PWMFSetDIBToDEVRecord(@AParams[0]);
+  lmfPic := TlmfPicture.Create(nil);
+  try
+    w := LEToN(rec^.Width);
+    h := LEToN(rec^.Height);
+    R.Left := LEToN(rec^.xDIB);
+    R.Top := LEToN(rec^.yDIB);
+    R.Right := R.Left + w;
+    R.Bottom := R.Top + h;
+    lmfPic.Clip := R;
+    if not ReadImage(AParams, SizeOf(TWMFSetDIBtoDEVRecord) div SIZE_OF_WORD, lmfPic.Picture, true) then
+      exit;
+    FImage.List.InsertComponent(lmfPic);
+  except
+    on E:Exception do begin
+      FreeAndNil(lmfPic);
+      LogError('Image reading error: ' + E.Message);
+    end;
+  end;
 end;
 
 procedure TlmfWMFReader.ReadStretchDIB(const AParams: TWMFParamArray);

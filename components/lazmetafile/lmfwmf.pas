@@ -323,6 +323,21 @@ type
   end;
   PWMFDIBStretchBltRecord = ^TWMFDIBStretchBltRecord;
 
+  TWMFSetDIBtoDEVRecord = packed record
+    ColorUsage: Word;
+    ScanCount: Word;
+    StartScan: Word;
+    yDib: Word;
+    xDib: Word;
+    Height: Word;
+    Width: Word;
+    yDest: Word;
+    xDest: Word;
+    // Following BitmapCoreHeader or BitmapInfoHeader
+  end;
+  PWMFSetDIBtoDEVRecord = ^TWMFSetDIBToDEVRecord;
+
+
  function WMF_GetRecordTypeName(ARecordType: Word): String;
 
  implementation
