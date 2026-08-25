@@ -105,7 +105,7 @@ resourcestring
   sfrmSelectFileWithDebugInfo = 'Select file with debug info';
   sfrmSelectTrcFile = 'Select file with trace log';
   brkFailedToOpenFile = 'Failed to open file';
-  brkFailedToOpenSJumpToCurren = 'Failed to open "%s". Jump to current editor instead';
+  brkFailedToOpenSJumpToCurren = 'Failed to open "%s". Jump to current editor instead?';
   brkFailedToOpenS = 'Failed to open "%s".';
 
 var
