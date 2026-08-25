@@ -177,6 +177,7 @@ type
     procedure TestFindDeclaration_Proc_BaseTypes;
     procedure TestFindDeclaration_ProcNested;
     procedure TestFindDeclaration_ExceptOnDotted;
+    procedure TestFindDeclaration_DereferencedProperty;
 
     // function Result variable
     procedure TestFindDeclaration_ResultType;
@@ -1444,6 +1445,27 @@ begin
   'end;',
   'end.',
   '']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_DereferencedProperty;
+begin
+  StartProgram;
+  Add([
+    '{$ModeSwitch AUTODEREF+}',
+    'type',
+    '  TRec = record',
+    '    one: Boolean;',
+    '  end;',
+    '  PRec = ^TRec;',
+    '  TTest = class',
+    '    function GetMyRec(const aIndex: Integer): PRec;',
+    '    property MyRec[const aIndex: Integer]: PRec read GetMyRec;',
+    '  end;',
+    'var t: TTest;',
+    'begin',
+    '  p := t.MyRec[1].one{declaration:trec.one};',
+    'end.']);
   FindDeclarations(Code);
 end;
 

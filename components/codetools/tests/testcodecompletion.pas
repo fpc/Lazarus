@@ -60,6 +60,7 @@ type
     procedure TestCompleteProperty_TypeGenericDelphi;
     procedure TestCompleteProperty_GenericObjFPC;
     procedure TestCompleteProperty_GenericDelphi;
+    procedure TestCompleteProperty_Pointer;
     // class completion: insert first method body between other classes
     procedure TestCompleteClass_Unit_NewClass;
     procedure TestCompleteClass_Unit_NewClass_BehindOldClass;
@@ -1887,6 +1888,37 @@ begin
     '  if fWing=AValue then Exit;',
     '  fWing:=AValue;',
     'end;',
+    'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteProperty_Pointer;
+begin
+  Test('TestCompleteProperty_Pointer',
+    ['program test1;',
+    '{$mode delphi}{$H+}',
+    '{$ModeSwitch AUTODEREF+}',
+    'type',
+    '  TTest = class',
+    '    function GetMyInt(const aIndex: Integer): PInteger;',
+    '    property MyInt[const aIndex: Integer]: PInteger read GetMyInt;',
+    '  end;',
+    'var t: TTest;',
+    'begin',
+    '  p := t.MyInt[1];',
+    'end.'],
+    11,3,
+    ['program test1;',
+    '{$mode delphi}{$H+}',
+    '{$ModeSwitch AUTODEREF+}',
+    'type',
+    '  TTest = class',
+    '    function GetMyInt(const aIndex: Integer): PInteger;',
+    '    property MyInt[const aIndex: Integer]: PInteger read GetMyInt;',
+    '  end;',
+    'var t: TTest;',
+    '  p: PInteger;',
+    'begin',
+    '  p := t.MyInt[1];',
     'end.']);
 end;
 

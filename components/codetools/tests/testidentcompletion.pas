@@ -41,6 +41,7 @@ type
     procedure Test_GatherIdentifiers_ProcParams_String1;
     procedure Test_GatherIdentifiers_ProcParams_String2;
     procedure Test_GatherIdentifiers_ProcParams_String3;
+    procedure Test_GatherIdentifiers_DereferencedProperty;
 
     // CreateDeclarationPathAt
     procedure Test_CreateDeclarationPathAt_Basic;
@@ -308,6 +309,42 @@ begin
     //for i:=0 to CodeContexts.Count-1 do
     //  debugln(['TTestIdentCompletion.Test_FindCodeContext_ProcParams ',i,' ',CodeContexts[i].AsDebugString(true)]);
     CheckCodeContext(CodeContexts[0],'p');
+  finally
+    CodeContexts.Free;
+  end;
+end;
+
+procedure TTestIdentCompletion.Test_GatherIdentifiers_DereferencedProperty;
+var
+  SrcMark: TFDMarker;
+  CursorPos: TCodeXYPosition;
+  CodeContexts: TCodeContextInfo;
+begin
+  StartProgram;
+  Add([
+    '{$ModeSwitch AUTODEREF+}',
+    'type',
+    '  TRec = record',
+    '    one: Boolean;',
+    '  end;',
+    '  PRec = ^TRec;',
+    '  TTest = class',
+    '    function GetMyRec(const aIndex: Integer): PRec;',
+    '    property MyRec[const aIndex: Integer]: PRec read GetMyRec;',
+    '  end;',
+    'var t: TTest;',
+    'begin',
+    '  p := t.MyRec[1].{#c};',
+    'end.']);
+  ParseSimpleMarkers(Code);
+  SrcMark:=FindMarker('c','#');
+  AssertNotNull('missing src marker #c',SrcMark);
+  MainTool.CleanPosToCaret(SrcMark.CleanPos,CursorPos);
+  CodeContexts:=nil;
+  try
+    CodeToolBoss.GatherIdentifiers(Code,CursorPos.X,CursorPos.Y);
+    AssertTrue('CodeToolBoss.GatherIdentifiers: '+CodeToolBoss.ErrorMessage,CodeToolBoss.ErrorId=0);
+    AssertEquals(CodeToolBoss.IdentifierList.GetFilteredCount, 1);
   finally
     CodeContexts.Free;
   end;

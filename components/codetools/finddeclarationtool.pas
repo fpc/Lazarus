@@ -12041,7 +12041,7 @@ var
       PointedNode:=FindPointedTypeBehind(NewTool,NewNode);
       if PointedNode<>nil then begin
         ExprType.Context:=NewTool.FindBaseTypeOfNode(Params,PointedNode);
-      end else begin
+      end else if CurAtomType=vatPoint then begin
         ExprType.Context:=NewTool.FindBaseTypeOfNode(Params,NewNode.FirstChild);
       end;
     end;
