@@ -79,7 +79,7 @@ begin
   i{anytype:integer} := 1;
   x{anytype:TFoo.TBar} := a;
   y{anytype:TFoo.TNest.TNestBar} := c;
-  z{TODO: anytype:TNotNestBar} := e;
+  z{anytype:TNotNestBar} := e;
   xx{anytype:TFoo.TBarX} := xa;
   xy{anytype:TFoo.TNest.TBarX} := xc;
 
@@ -127,10 +127,10 @@ var
 begin
   i{anytype:integer} := 1;
   x{anytype:TBar} := a;
-  y{TODO: anytype:TNestBar} := c;
-  z{guesstype:TNest.TNotNestBar} := e;  // TOOD: vartype => this wrongly has a unit name prefix
-  xx{TODO: anytype:TFoo.TBarX} := xa;
-  xy{TODO: anytype:TBarX} := xc;
+  y{anytype:TNestBar} := c;
+  z{guesstype:TNest.TNotNestBar}{TODO: vartype:TNest.TNotNestBar} := e;  // TOOD: vartype => this wrongly has a unit name prefix
+  xx{TODO: guesstype:TFoo.TBarX}{vartype:TFoo.TBarX} := xa;
+  xy{anytype:TBarX} := xc;
 
   x1{anytype:TOuter} := foo.f1;
   x2{anytype:TFoo.TBar} := foo.f2;
@@ -174,11 +174,11 @@ var
   foo: TFoo;   nest: TFoo.TNest;
 begin
   i{anytype:integer} := 1;
-  x{TODO: anytype:TBar} := a;
+  x{anytype:TBar} := a;
   y{TODO: anytype:TNest.TNestBar} := c;
   z{vartype:tguess_nested_class.TNest.TNotNestBar} := e;
   //z{ vartype:TNest.TNotNestBar} := e;  // works, but test can't test for project name
-  xx{TODO: anytype:TBarX} := xa;
+  xx{anytype:TBarX} := xa;
   xy{TODO: anytype:TNest.TBarX} := xc;
 
   x1{anytype:TOuter} := foo.f1;

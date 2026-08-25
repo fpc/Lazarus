@@ -2083,25 +2083,37 @@ begin
         if FindIdentifierInContext(Params) then begin
           AddSourceName:= (ResExprContext.Node<>ExprType.Context.Node) or
                           (ResExprContext.Tool<>OrigExprContext.Tool);
-          if ((Params.NewNode.Desc=ctnTypeDefinition) and
-          (ExprType.Context.Node.Desc=ctnTypeDefinition) and
-          (Params.NewNode=ExprType.Context.Node))
-          or
-          ((Params.NewNode.Desc=ctnTypeDefinition) and
-          (ExprType.Context.Node.Desc in AllClasses) and
-          (Params.NewNode.FirstChild=ExprType.Context.Node))
-          or // declaration is within class/object/ ..
-          ((Params.NewNode.Desc=ctnTypeDefinition) and
-          (EntryContext.Node.HasAsParent(Params.NewNode)))
-          or // declaration is function result type (and fits to EntryContext.Node)
-          ((Params.NewNode.Desc=ctnTypeDefinition) and
-          (FuncResultNode<>nil) and
-          (FuncResultNode.Desc=ctnIdentifier) and
-          (CompareDottedIdentifiers(Pchar(NewType),
-            PChar(@EntryContext.Tool.Src[FuncResultNode.StartPos]))=0)) // simplified
-          then
-          // the same decl nodes =  not shadowed, may be located in other unit
-            AddSourceName:=false;
+          if AddSourceName then begin
+          // check if found now declaration is within nested class => class path is enough
+          // but must be used declaration from the outer class
+            if not OrigExprContext.Node.HasAsParent(FindClassNode(Params.NewNode)) and
+            Params.NewNode.HasAsParent(FindClassNode(OrigExprContext.Node))
+            then begin
+              // declaration is shadowed by that in nested class => use type from other class
+              AddSourceName:=false;
+              NewType:=ExtractClassPath(FindClassNode(OrigExprContext.Node))+'.'+NewType;
+            end;
+            if AddSourceName then
+            if ((Params.NewNode.Desc=ctnTypeDefinition) and
+            (ExprType.Context.Node.Desc=ctnTypeDefinition) and
+            (Params.NewNode=ExprType.Context.Node))
+            or
+            ((Params.NewNode.Desc=ctnTypeDefinition) and
+            (ExprType.Context.Node.Desc in AllClasses) and
+            (Params.NewNode.FirstChild=ExprType.Context.Node))
+            or // declaration is within class/object/ ..
+            ((Params.NewNode.Desc=ctnTypeDefinition) and
+            (EntryContext.Node.HasAsParent(Params.NewNode)))
+            or // declaration is function result type (and fits to EntryContext.Node)
+            ((Params.NewNode.Desc=ctnTypeDefinition) and
+            (FuncResultNode<>nil) and
+            (FuncResultNode.Desc=ctnIdentifier) and
+            (CompareDottedIdentifiers(Pchar(NewType),
+              PChar(@EntryContext.Tool.Src[FuncResultNode.StartPos]))=0)) // simplified
+            then
+            // the same decl nodes =  not shadowed, may be located in other unit
+              AddSourceName:=false;
+          end;
         end else
           AddSourceName:=false;
         if AddSourceName and (self=ResExprContext.Tool) then begin
