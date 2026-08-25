@@ -38,13 +38,15 @@ type
 
   TlmfImage = class(TGraphic)
   private
-    forgX,forgY,
-    fWidth,fHeight:integer;
-    kx,ky:double;
+    fLogOrgX, fLogOrgY, fLogWidth, fLogHeight: integer;  // logical units
+    fScrOrgX, fScrOrgY: Integer;  // pixels on output device
+    kx, ky: double;
     fList: TlmfList;
-    fCrs:TCriticalSection;
+    fCrs: TCriticalSection;
     fEnhanced: Boolean;
   private
+    procedure SetLogOrgX(AValue: Integer);
+    procedure SetLogOrgY(AValue: Integer);
     function GetLogUnitsPerInch: Integer;
     procedure SetLogUnitsPerInch(AValue: Integer);
   protected
@@ -63,10 +65,11 @@ type
     procedure Clear; override;
     procedure Draw(ACanvas: TCanvas; const Rect: TRect); override;
 
-    function ScaleSizeX(ax: Integer): Integer;
-    function ScaleSizeY(ay: Integer): Integer;
-    function ScaleX(ax: Integer): Integer;
-    function ScaleY(ay:Integer): Integer;
+    function ScaleSizeX(dX: Integer): Integer;
+    function ScaleSizeY(dY: Integer): Integer;
+    function ScaleX(X: Integer): Integer;
+    function ScaleY(Y:Integer): Integer;
+    procedure SetLogBounds(AOrgX, AOrgY, AWidth, AHeight: Integer);
 
     procedure SaveToLMFFile(AFileName: String);
     procedure SaveToLMFStream(Stream: TStream);
@@ -78,12 +81,14 @@ type
     property Enhanced: Boolean read FEnhanced write FEnhanced;  // Write WMF or EMF stream
     property List: TlmfList read fList;
 
+    property LogOriginX: Integer read FLogOrgX write SetLogOrgX;
+    property LogOriginY: Integer read FLogOrgY write SetLogOrgY;
     property LogUnitsPerInch: Integer read GetLogUnitsPerInch write SetLogUnitsPerInch;
   end;
 
   TlmfList = class(TComponent)
   private
-    fWidth, fHeight:integer;
+    fWidth, fHeight:integer;   // Image size in logical units
     fLogUnitsPerInch: Integer;
   public
     constructor Create(AOwner: TComponent); override;
@@ -191,8 +196,10 @@ begin
       mf.WriteComponent(fList);
       mf.Position := 0;
       mf.ReadComponent(TlmfImage(Dest).fList);
-      TlmfImage(Dest).fWidth:=fWidth;
-      TlmfImage(Dest).fHeight:=fHeight;
+      TlmfImage(Dest).fLogOrgX := fLogOrgX;
+      TlmfImage(Dest).fLogOrgY := fLogOrgY;
+      TlmfImage(Dest).fLogWidth := fLogWidth;
+      TlmfImage(Dest).fLogHeight := fLogHeight;
       TlmfImage(Dest).LogUnitsPerInch := LogUnitsPerInch;
     finally
       mf.Free;
@@ -212,6 +219,7 @@ begin
   Result := fList.LogUnitsPerInch;
 end;
 
+{ Defines the size of a logical unit in the metafile. By default 1 twip = 1/1440 inch }
 procedure TlmfImage.SetLogUnitsPerInch(AValue: Integer);
 begin
   fList.LogUnitsPerInch := AValue;
@@ -222,12 +230,13 @@ begin
   Result := flist.fWidth;
 end;
 
+{ Sets the width of the metafile image in logical units. }
 procedure TlmfImage.SetWidth(AVal: integer);
 begin
-  if (AVal=fWidth) then exit;
-  fWidth:=AVal;
-  fList.fWidth:=fWidth;
-  Self.Modified:=true;
+  if (AVal = fLogWidth) then exit;
+  fLogWidth := AVal;
+  fList.fWidth := fLogWidth;
+  Self.Modified := true;
 end;
 
 function TlmfImage.GetHeight:integer;
@@ -235,34 +244,66 @@ begin
   Result:=fList.fHeight;
 end;
 
-function TlmfImage.ScaleSizeX(ax: Integer): Integer;
+// x coordinate of the the image origin in logical units
+procedure TlmfImage.SetLogOrgX(AValue: Integer);
 begin
-  Result := round(ax * kx);
+  if FLogOrgX = AValue then exit;
+  FLogOrgX := AValue;
+  Self.Modified := true;
 end;
 
-function TlmfImage.ScaleSizeY(ay: Integer): Integer;
+// y coordinate of the the image origin in logical units
+procedure TlmfImage.SetLogOrgY(AValue: Integer);
 begin
-  Result := round(ay * ky);
+  if FLogOrgY >= AValue then exit;
+  FLogOrgY := AValue;
+  Self.Modified := true;
 end;
 
-function TlmfImage.ScaleX(ax: Integer):integer;
+// dX is a length in logical units
+function TlmfImage.ScaleSizeX(dX: Integer): Integer;
 begin
-  Result := fOrgX + trunc(ax * kx);
+  Result := round(dX * kx);
+end;
+
+// dY is a length in logical units
+function TlmfImage.ScaleSizeY(dY: Integer): Integer;
+begin
+  Result := round(dY * ky);
+end;
+
+// X is in logical coordinates
+function TlmfImage.ScaleX(X: Integer):integer;
+begin
+  Result := fScrOrgX + trunc((X - FLogOrgX) * kx);
   //if Result>Width then Result:=width;
 end;
 
-function TlmfImage.ScaleY(ay: Integer):integer;
+// Y is in logical coordinates
+function TlmfImage.ScaleY(Y: Integer):integer;
 begin
-  Result := fOrgY + trunc(ay * ky);
+  Result := fScrOrgY + trunc((Y - FLogOrgY) * ky);
   //if Result>height then Result:=height;
+end;
+
+{ Sets the size of the image in logical units. }
+procedure TlmfImage.SetLogBounds(AOrgX, AOrgY, AWidth, AHeight: Integer);
+begin
+  fLogOrgX := AOrgX;
+  fLogOrgY := AOrgY;
+  fLogWidth := AWidth;
+  fLogHeight := AHeight;
+  fList.fWidth := fLogWidth;
+  fList.fHeight := fLogHeight;
+  Modified := true;
 end;
 
 procedure TlmfImage.SetHeight(AVal:integer);
 begin
-  if (AVal=fHeight) then exit;
-  fHeight:=AVal;
-  fList.fHeight:=fHeight;
-  Modified:=true;
+  if (AVal = fLogHeight) then exit;
+  fLogHeight := AVal;
+  fList.fHeight := fLogHeight;
+  Modified := true;
 end;
 
 function TlmfImage.GetEmpty:boolean;
@@ -279,16 +320,16 @@ begin
   fCrs.Acquire;
   try
     bkMode := 1;  // Transparent
-    fOrgX:=Rect.Left;
-    fOrgY:=Rect.Top;
-    kx:=(Rect.Right-Rect.Left)/Width;
-    ky:=(Rect.Bottom-Rect.Top)/Height;
+    fScrOrgX := Rect.Left;
+    fScrOrgY := Rect.Top;
+    kx := (Rect.Right-Rect.Left) / fLogWidth;
+    ky := (Rect.Bottom-Rect.Top) / fLogHeight;
     ACanvas.MoveTo(ScaleX(Rect.Left), ScaleY(Rect.Top));
     for i:=0 to fList.ComponentCount-1 do
     begin
       item := TlmfObject(fList.Components[i]);
-      // It seems that SetBkMode must be executed immediately before a command
-      // which depends on it (text, patterned line) is drawn.
+      // It seems that SetBkMode must be executed immediately before a command,
+      // which depends on it (text, patterned line), is executed.
       if (item is TlmfBkMode) then
         bkMode := TlmfBkMode(item).Mode
       else

@@ -22,6 +22,7 @@ type
     // info from header
     FBBox: TRect;  // in metafile units as specified by UnitsPerInch. NOTE: "logical" units can be different!
     FHasPlaceableMetaHeader: Boolean;
+    FLogOrgX, FLogOrgY, FLogWidth, FLogHeight: Integer;
     // state
     FCurrPen: TPen;
     FCurrBrush: TBrush;
@@ -32,15 +33,14 @@ type
     FCurrTextColor: TColor;
     FCurrPolyFillMode: Word;
     FMapMode: Word;
-    FWindowOrigin: TPoint;
-    FWindowExtent: TPoint;
+    // Bitmap transparency mask
     FMaskBmp: TBitmap;
 
     function CreateBrush(const AParams: TWMFParamArray): Integer;
     function CreateFont(const AParams: TWMFParamArray): Integer;
     function CreatePen(const AParams: TWMFParamArray): Integer;
     procedure DeleteObj(const AParams: TWMFParamArray);
-    procedure MeasureWindowExtent;
+    procedure MeasureLogExtent;
     procedure ReadArc(const AParams: TWMFParamArray);
     procedure ReadBkColor(const AParams: TWMFParamArray);
     procedure ReadBkMode(const AParams: TWMFParamArray);
@@ -307,10 +307,10 @@ end;
   later crash drawing. In this case, iterate over all records and try to
   measure the size of the window.
   TO BE IMPLEMENTED. }
-procedure TlmfWMFReader.MeasureWindowExtent;
+procedure TlmfWMFReader.MeasureLogExtent;
 begin
-  FImage.Width := 5000;    // just using dummy values so far.
-  FImage.Height := 5000;
+  FLogWidth := 5000;    // just using dummy values so far.
+  FLogHeight := 5000;
 end;
 
 procedure TlmfWMFReader.ReadArc(const AParams: TWMFParamArray);
@@ -690,8 +690,8 @@ end;
 
 procedure TlmfWMFReader.ReadOffsetWindowOrg(const AParams: TWMFParamArray);
 begin
-  FWindowOrigin.Y := FWindowOrigin.Y + SmallInt(LEToN(AParams[0]));
-  FWindowOrigin.X := FWindowOrigin.X + SmallInt(LEToN(AParams[1]));
+  FImage.LogOriginY := FImage.LogOriginY + SmallInt(LEToN(AParams[0]));
+  FImage.LogOriginX := FImage.LogOriginX + SmallInt(LEToN(AParams[1]));
 end;
 
 procedure TlmfWMFReader.ReadPie(const AParams: TWMFParamArray);
@@ -954,8 +954,10 @@ begin
     AStream.Position := recordStartPos + Int64(wmfRec.Size) * SIZE_OF_WORD;
   end;
 
-  if (FImage.Width = 0) and (FImage.Height = 0) then
-    MeasureWindowExtent;
+  if (FLogWidth = 0) and (FLogHeight = 0) then
+    MeasureLogExtent;
+
+  FImage.SetLogBounds(FLogOrgX, FLogOrgY, FLogWidth, FLogHeight);
 end;
 
 procedure TlmfWMFReader.ReadRectangle(const AParams: TWMFParamArray);
@@ -1075,16 +1077,14 @@ end;
 
 procedure TlmfWMFReader.ReadWindowExt(const AParams: TWMFParamArray);
 begin
-  FWindowExtent.Y := SmallInt(LEToN(AParams[0]));
-  FWindowExtent.X := SmallInt(LEToN(AParams[1]));
-  FImage.Width := FWindowExtent.X;
-  FImage.Height := FWindowExtent.Y;
+  FLogHeight := SmallInt(LEToN(AParams[0]));
+  FLogWidth := SmallInt(LEToN(AParams[1]));
 end;
 
 procedure TlmfWMFReader.ReadWindowOrg(const AParams: TWMFParamArray);
 begin
-  FWindowOrigin.Y := SmallInt(LEToN(AParams[0]));
-  FWindowOrigin.X := SmallInt(LEToN(AParams[1]));
+  FLogOrgY := SmallInt(LEToN(AParams[0]));
+  FLogOrgX := SmallInt(LEToN(AParams[1]));
 end;
 
 procedure TlmfWMFReader.SelectObj(const AParams: TWMFParamArray);

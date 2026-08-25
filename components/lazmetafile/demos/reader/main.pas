@@ -164,6 +164,7 @@ begin
   if OpenDialog.Execute then
   begin
     cmbFileName.Text := OpenDialog.FileName;
+    OpenFile(cmbFilename.Text);
   end;
 end;
 
