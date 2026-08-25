@@ -174,7 +174,7 @@ begin
     if (FindData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY = 0)
     and FileTimeToSystemtime(FindData.ftLastWriteTime, SysTime) then
       exit(DateTimeToUnix(EncodeDate(SysTime.Year, SysTime.Month, SysTime.Day) +
-                          EncodeTime(SysTime.Hour, SysTime.Minute, SysTime.Second, 0));
+                          EncodeTime(SysTime.Hour, SysTime.Minute, SysTime.Second, 0)));
   end;
   Result := -1;
 end;
