@@ -5,7 +5,14 @@ unit TestGlobals;
 interface
 
 uses
-  SysUtils;
+  SysUtils, fpcunit;
+
+type
+  TAssertHelper = class helper for TAssert
+  public
+    class procedure AssertEqualsFileName(const AMessage: string; Expected, Actual: string);
+  end;
+
 
 function LinesToStr(Args: array of const): string;
 
@@ -29,6 +36,13 @@ begin
       vtUnicodeString:s += AnsiString(UnicodeString(Args[i].VUnicodeString))+LineEnding;
     end;
   Result:=s;
+end;
+
+{ TAssertHelper }
+
+class procedure TAssertHelper.AssertEqualsFileName(const AMessage: string; Expected, Actual: string);
+begin
+  AssertTrue(ComparisonMsg(AMessage ,Expected, Actual), SameFileName(Expected,Actual),CallerAddr);
 end;
 
 end.

@@ -2965,19 +2965,19 @@ begin
   IncDef:=CodeToolBoss.AddIncludePath('TestFindDeclaration_IncludeSearch_FileWithPath',Dir,IncDir);
   try
     IncPath:=CodeToolBoss.GetIncludePathForDirectory(Dir,true);
-    AssertEquals('include path',';'+IncDir,IncPath);
+    AssertEqualsFileName('include path',';'+IncDir,IncPath);
 
     // test searching an include file with path relative to module directory
     IncFile:=SetDirSeparators('inc/sub/IncFileWithPath.inc');
     Found:=CodeToolBoss.DirectoryCachePool.FindIncludeFileInCompletePath(Dir,IncFile);
     ExpFile:=Dir+IncFile;
-    AssertEquals('20260123150229 include file with path relative to folder',ExpFile,Found);
+    AssertEqualsFileName('20260123150229 include file with path relative to folder',ExpFile,Found);
 
     // test searching an include file with path relative to include path
     IncFile:=SetDirSeparators('sub/IncFileWithPath.inc');
     Found:=CodeToolBoss.DirectoryCachePool.FindIncludeFileInCompletePath(Dir,IncFile);
     ExpFile:=IncDir+IncFile;
-    AssertEquals('20260123150232 include file with path relative to include path',ExpFile,Found);
+    AssertEqualsFileName('20260123150232 include file with path relative to include path',ExpFile,Found);
   finally
     CodeToolBoss.DefineTree.RemoveDefineTemplate(IncDef);
   end;
