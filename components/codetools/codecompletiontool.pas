@@ -2084,15 +2084,15 @@ begin
           AddSourceName:= (ResExprContext.Node<>ExprType.Context.Node) or
                           (ResExprContext.Tool<>OrigExprContext.Tool);
           if AddSourceName then begin
-          // check if found now declaration is within nested class => class path is enough
-          // but must be used declaration from the outer class
+          // check if found now declaration is within nested classes => class path is enough
             if not OrigExprContext.Node.HasAsParent(FindClassNode(Params.NewNode)) and
             Params.NewNode.HasAsParent(FindClassNode(OrigExprContext.Node))
             then begin
-              // declaration is shadowed by that in nested class => use type from other class
+              // declaration is shadowed by that in nested class => use type from outer class
               AddSourceName:=false;
               NewType:=ExtractClassPath(FindClassNode(OrigExprContext.Node))+'.'+NewType;
             end;
+
             if AddSourceName then
             if ((Params.NewNode.Desc=ctnTypeDefinition) and
             (ExprType.Context.Node.Desc=ctnTypeDefinition) and

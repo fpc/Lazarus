@@ -128,7 +128,7 @@ begin
   i{anytype:integer} := 1;
   x{anytype:TBar} := a;
   y{anytype:TNestBar} := c;
-  z{guesstype:TNest.TNotNestBar}{TODO: vartype:TNest.TNotNestBar} := e;  // TOOD: vartype => this wrongly has a unit name prefix
+  z{guesstype:TNest.TNotNestBar}{vartype:tguess_nested_class.TNest.TNotNestBar} := e;
   xx{TODO: guesstype:TFoo.TBarX}{vartype:TFoo.TBarX} := xa;
   xy{anytype:TBarX} := xc;
 

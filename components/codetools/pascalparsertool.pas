@@ -5392,7 +5392,7 @@ begin
     if CurPos.Flag in AllCommonAtomWords then begin
       AtomIsIdentifierSaveE(20180411194224);
       ReadTypeReference(true);
-      if CurNode.LastChild.Desc=ctnIdentifier then begin
+      if (CurNode.LastChild<>nil) and (CurNode.LastChild.Desc=ctnIdentifier) then begin
         while (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]) do begin
           // e.g. string[expr]
           ReadTilBracketClose(true);
