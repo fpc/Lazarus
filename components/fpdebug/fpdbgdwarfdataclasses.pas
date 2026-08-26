@@ -841,6 +841,7 @@ type
     // the debug-info is loaded.
     function CalculateRelocatedAddress(AValue: QWord): QWord; inline;
     // Get start/end addresses of proc
+    function GetDwarfAddressInfo(AnAddress: TDBGPtr; out AnDwarfAddressInfoPtr: PDwarfAddressInfo): boolean; inline;
     function GetProcStartEnd(const AAddress: TDBGPtr; out AStartPC, AEndPC: TDBGPtr): boolean;
 
     function HasAddress(AAddress: TDbgPtr; AWaitFor: TWaitRequirements = []): Boolean; inline;
@@ -4380,7 +4381,6 @@ function TFpDwarfInfo.FindProcSymbol(AAddress: TDbgPtr): TFpSymbol;
 var
   n: Integer;
   CU: TDwarfCompilationUnit;
-  Iter: TLockedMapIterator;
   Info: PDwarfAddressInfo;
 begin
   Result := nil;
@@ -4398,29 +4398,13 @@ begin
     if not CU.HasAddress(AAddress, [wrAddrMap]) then
       Continue;
 
-    Iter := TLockedMapIterator.Create(CU.FAddressMap);
-    try
-      if not Iter.Locate(AAddress)
-      then begin
-        if not Iter.BOM
-        then Iter.Previous;
+    if not CU.GetDwarfAddressInfo(AAddress, Info) then
+      continue;
 
-        if Iter.BOM
-        then Continue;
-      end;
-
-      // iter is at the closest defined address before AAddress
-      Info := Iter.DataPtr;
-      if AAddress > Info^.EndPC
-      then Continue;
-
-      // TDbgDwarfProcSymbol
-      Result := Cu.DwarfSymbolClassMap.CreateProcSymbol(CU, Iter.DataPtr, AAddress, Self);
-      if Result<>nil then
-        break;
-    finally
-      Iter.Free;
-    end;
+    // TDbgDwarfProcSymbol
+    Result := Cu.DwarfSymbolClassMap.CreateProcSymbol(CU, info, AAddress, Self);
+    if Result<>nil then
+      break;
   end;
 end;
 
@@ -6381,8 +6365,8 @@ begin
   {$pop}
 end;
 
-function TDwarfCompilationUnit.GetProcStartEnd(const AAddress: TDBGPtr; out
-  AStartPC, AEndPC: TDBGPtr): boolean;
+function TDwarfCompilationUnit.GetDwarfAddressInfo(AnAddress: TDBGPtr; out
+  AnDwarfAddressInfoPtr: PDwarfAddressInfo): boolean;
 var
   Iter: TLockedMapIterator;
   Info: PDwarfAddressInfo;
@@ -6393,7 +6377,7 @@ begin
   Result := false;
   Iter := TLockedMapIterator.Create(FAddressMap);
   try
-    if not Iter.Locate(AAddress) then
+    if not Iter.Locate(AnAddress) then
     begin
       if not Iter.BOM then
         Iter.Previous;
@@ -6402,17 +6386,31 @@ begin
         Exit;
     end;
 
-    // iter is at the closest defined address before AAddress
-    Info := Iter.DataPtr;
-    result := (AAddress >= Info^.StartPC) and (AAddress <= Info^.EndPC);
-    if Result then
-    begin
-      AStartPC := Info^.StartPC;
-      AEndPC := Info^.EndPC;
-    end;
-
+    // iter is at the closest defined address before AnAddress
+    AnDwarfAddressInfoPtr := Iter.DataPtr;
+    result := (AnAddress <= AnDwarfAddressInfoPtr^.EndPC);
   finally
     Iter.Free;
+  end;
+end;
+
+function TDwarfCompilationUnit.GetProcStartEnd(const AAddress: TDBGPtr; out
+  AStartPC, AEndPC: TDBGPtr): boolean;
+var
+  Info: PDwarfAddressInfo;
+begin
+  if not FAddressMapBuild then
+    BuildAddressMap;
+
+  Result := GetDwarfAddressInfo(AAddress, Info);
+  if not Result then
+    exit;
+  Result := AAddress >= Info^.StartPC;
+
+  if Result then
+  begin
+    AStartPC := Info^.StartPC;
+    AEndPC := Info^.EndPC;
   end;
 end;
 

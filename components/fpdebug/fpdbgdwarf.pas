@@ -1197,6 +1197,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     FAddress: TDbgPtr;
     FAddressInfo: PDwarfAddressInfo;
     FStateMachine: TDwarfLineInfoStateMachine;
+    FAddressFlags: set of (afDoneInfo, afDoneBuild);
     FFrameBaseParser: TDwarfLocationExpression;
     FDwarf: TFpDwarfInfo;
     FProcTypeInfo: TFpSymbolDwarfType;
@@ -8013,16 +8014,39 @@ function TFpSymbolDwarfDataProc.StateMachineValid: Boolean;
 var
   SM1, SM2: TDwarfLineInfoStateMachine;
   SM2val: Boolean;
+  addr: TFpDbgMemLocation;
 begin
   Result := FStateMachine <> nil;
   if Result then Exit;
 
   Result := FAddressInfo <> nil;
-  if not result then exit;
+  if not result then begin
+    if afDoneInfo in FAddressFlags then
+      exit;
+    Include(FAddressFlags, afDoneInfo);
+    addr := Address;
+    if not IsValidLoc(addr) then
+      exit;
+    // Address would be the address of the line within the proc, but if AddressInfo in not set, then that wasn't either;
+    // FAddress should be >= Address / so if it was explicitly at nil, then Address should be nil too
+    if FAddress = 0 then
+      FAddress := addr.Address;
+
+    if not CompilationUnit.GetDwarfAddressInfo(FAddress, FAddressInfo) then
+      exit;
+    if FAddress > FAddressInfo^.EndPC then
+      FAddressInfo := nil;
+
+    if FAddressInfo = nil then
+      exit;
+  end;
 
   Result := False;
   if FAddressInfo^.StateMachine = nil
   then begin
+    if afDoneBuild in FAddressFlags then
+      exit;
+    Include(FAddressFlags, afDoneBuild);
     CompilationUnit.BuildLineInfo(FAddressInfo, False);
     if FAddressInfo^.StateMachine = nil then Exit;
   end;
