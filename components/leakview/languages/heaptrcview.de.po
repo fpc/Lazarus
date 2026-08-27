@@ -13,17 +13,17 @@ msgstr ""
 
 #: heaptrcview.brkfailedtoopenfile
 msgid "Failed to open file"
-msgstr ""
+msgstr "Öffnen der Datei fehlgeschlagen"
 
 #: heaptrcview.brkfailedtoopens
 #, object-pascal-format
 msgid "Failed to open \"%s\"."
-msgstr ""
+msgstr "Öffnen von \"%s\" fehlgeschlagen."
 
 #: heaptrcview.brkfailedtoopensjumptocurren
 #, object-pascal-format
 msgid "Failed to open \"%s\". Jump to current editor instead?"
-msgstr ""
+msgstr "Öffnen von \"%s\" fehlgeschlagen. Zum aktuellen Editor springen?"
 
 #: heaptrcview.rsdtimes
 #, object-pascal-format
