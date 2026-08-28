@@ -284,8 +284,10 @@ type
   TlmfPolygon=class(TlmfPolyline)
   private
     fWinding: boolean;
+    fBorderPts: Integer;
   public
-    constructor Create(APoints: PPoint; NumPts: integer; Winding: boolean = false); overload;
+    constructor Create(APoints: PPoint; ANumPts: integer; AWinding: boolean = false;
+      ABorderPts: Integer = -1); overload;
     procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
   published
     property Winding:boolean read fWinding write fWinding;
@@ -890,18 +892,32 @@ end;
 
 { TlmfPolygon }
 
-constructor TlmfPolygon.Create(APoints: PPoint; NumPts: integer;
-  Winding: boolean = false);
+{ Covers also the case of multiple polygons; in this case ABorderPts is the
+  number of "real" polygon points without the "retreat" points needed to close
+  the overall shape properly.
+  See https://wiki.freepascal.org/Developing_with_Graphics#Polygon_with_a_hole
+}
+constructor TlmfPolygon.Create(APoints: PPoint; ANumPts: integer;
+  AWinding: boolean = false; ABorderPts: Integer = -1);
 begin
-  inherited Create(APoints, NumPts);
-  fWinding := Winding;
+  inherited Create(APoints, ANumPts);
+  fWinding := AWinding;
+  fBorderPts := ABorderPts;
 end;
 
-procedure TlmfPolygon.Action(fImage:TlmfImage;ACanvas:TCanvas);
+procedure TlmfPolygon.Action(fImage: TlmfImage; ACanvas: TCanvas);
 var
   i: longint;
   npts: array of TPoint = nil;
+  ps: TPenStyle;
 begin
+  if fBorderPts > -1 then
+  begin
+    // Poly-Polygon
+    ps := ACanvas.Pen.Style;
+    ACanvas.Pen.Style := psClear;
+  end;
+
   Setlength(npts, Length(pts));
   for i:=0 to High(pts) do
   begin
@@ -909,6 +925,12 @@ begin
     npts[i].y:=fImage.ScaleY(pts[i].y);
   end;
   ACanvas.Polygon(npts,fWinding,0,length(npts));
+
+  if fBorderPts > -1 then
+  begin
+    ACanvas.Pen.Style := ps;
+    ACanvas.PolyLine(@pts[0], FBorderPts);
+  end;
 end;
 
 

@@ -64,6 +64,7 @@ type
     procedure ReadRectangle(const AParams: TWMFParamArray);
     procedure ReadRoundRect(const AParams: TWMFParamArray);
     procedure ReadSetDIBtoDEV(const AParams: TWMFParamArray);
+    procedure ReadSetPixel(const AParams: TWMFParamArray);
     procedure ReadStretchDIB(const AParams: TWMFParamArray);
     function ReadString(const AParams: TWMFParamArray; AStartIndex, ALength: Integer): String;
     procedure ReadTextAlign(const AParams: TWMFParamArray);
@@ -817,7 +818,7 @@ begin
   // Now define the "retreat" back to the very start point.
   // See wiki article https://wiki.freepascal.org/Developing_with_Graphics#Polygon_with_a_hole
   // why this is needed.
-  for i := Length(startPts)-2 downto 1 do
+  for i := Length(startPts)-2 downto 0 do
   begin
     pts[numPts] := startPts[i];
     inc(numPts);
@@ -827,7 +828,7 @@ begin
   SetLength(pts, numPts);
 
   // Add the polygon to the metafile image.
-  item := TlmfPolygon.Create(@pts[0], numPts, false);
+  item := TlmfPolygon.Create(@pts[0], numPts, false, numPolygons-1);
   FImage.List.InsertComponent(item);
 end;
 
@@ -906,7 +907,7 @@ begin
       META_FILLREGION:
         ;
       META_FLOODFILL:
-        ;
+        ReadFloodFill(params);
       META_FRAMEREGION:
         ;
       META_INVERTREGION:
@@ -932,7 +933,7 @@ begin
       META_ROUNDRECT:
         ReadRoundRect(params);
       META_SETPIXEL:
-        ;
+        ReadSetPixel(params);
       META_TEXTOUT:
         ReadTextOut(params);
 
@@ -1099,6 +1100,23 @@ begin
       LogError('Image reading error: ' + E.Message);
     end;
   end;
+end;
+
+procedure TlmfWMFReader.ReadSetPixel(const AParams: TWMFParamArray);
+var
+  ptRec: PWMFPointRecord;
+  clrRec: PWMFColorRecord;
+  item: TlmfColor;
+begin
+  clrRec := PWMFColorRecord(@AParams[0]);
+  ptRec := PWMFPointRecord(@AParams[2]);
+
+  item := TlmfColor.Create(LEToN(ptRec^.X), LEToN(ptRec^.Y), colBlack);
+  item.r := clrRec^.ColorRED shl 8;
+  item.g := clrRec^.ColorGREEN shl 8;
+  item.b := clrRec^.ColorBLUE shl 8;
+  item.a := clrRec^.Reserved shl 8;
+  FImage.List.InsertComponent(item);
 end;
 
 procedure TlmfWMFReader.ReadStretchDIB(const AParams: TWMFParamArray);
