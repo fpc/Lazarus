@@ -15,6 +15,8 @@ interface
 
 uses
   SysUtils, Forms, Controls, StdCtrls, ExtCtrls,
+  // LazControls
+  DividerBevel,
   // IdeIntf
   IDEOptEditorIntf, IDEOptionsIntf, IdeDebuggerConsolePlugInIntf,
   // IdeDebugger
@@ -26,10 +28,11 @@ type
 
   TIdeDbgConsoleWindowOptionsFrame = class(TAbstractIDEOptionsEditor)
     cbPlugIn: TComboBox;
+    divEditPlugIn: TDividerBevel;
+    divSelectPlugIn: TDividerBevel;
     lblDescription: TLabel;
-    lblPlugIn: TLabel;
+    lblEditing: TLabel;
     pnlSettings: TPanel;
-    pnlTop: TPanel;
     procedure cbPlugInChange(Sender: TObject);
   private
     FPlugIns: TIdeDbgConsoleWindowPlugInList;   // the working copy
@@ -131,7 +134,13 @@ procedure TIdeDbgConsoleWindowOptionsFrame.Setup(
 var
   i: Integer;
 begin
-  lblPlugIn.Caption := dlgDebugConsoleWindowSelect;
+  divSelectPlugIn.Caption := dlgDebugConsoleWindowSelectDiv;
+  divEditPlugIn.Caption := dlgDebugConsoleWindowEditDiv;
+  (* Where the per-project override lives is a hint rather than a label: it
+     answers a question the user only asks once, and the page already carries
+     as much standing text as it can afford. *)
+  cbPlugIn.Hint := dlgDebugConsoleWindowRunParamsHint;
+  cbPlugIn.ShowHint := True;
   cbPlugIn.Clear;
   for i := 0 to ConsoleWindowPlugIns.Count - 1 do
     cbPlugIn.Items.Add(ConsoleWindowPlugIns[i].GetDisplayName);
@@ -191,13 +200,25 @@ end;
 
 procedure TIdeDbgConsoleWindowOptionsFrame.UpdateDescription;
 var
-  s: String;
+  i: Integer;
 begin
-  s := SelectedPlugInId;
-  if s = '' then
-    lblDescription.Caption := dlgDebugConsoleWindowNone
-  else
-    lblDescription.Caption := Format(dlgDebugConsoleWindowChangeTakesEffect, [s]);
+  i := cbPlugIn.ItemIndex;
+  if (i < 0) or (i >= ConsoleWindowPlugIns.Count) then begin
+    lblDescription.Caption := dlgDebugConsoleWindowNone;
+    lblEditing.Caption := '';
+    divEditPlugIn.Visible := False;
+    lblEditing.Visible := False;
+    exit;
+  end;
+
+  lblDescription.Caption := dlgDebugConsoleWindowChangeTakesEffect;
+  (* The display name, not the id. The id is "package/class" and says nothing
+     to the user; this names the same plug-in the drop-down is showing, so the
+     settings below are attributable without reading the combo again. *)
+  lblEditing.Caption := Format(dlgDebugConsoleWindowEditing,
+    [ConsoleWindowPlugIns[i].GetDisplayName]);
+  divEditPlugIn.Visible := True;
+  lblEditing.Visible := True;
 end;
 
 procedure TIdeDbgConsoleWindowOptionsFrame.cbPlugInChange(Sender: TObject);

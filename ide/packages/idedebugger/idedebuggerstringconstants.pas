@@ -382,9 +382,12 @@ resourcestring
   // Debug console window plug-ins
   lisDebugConsoleBuiltInName = 'IDE Debug Console';
   dlgDebugConsoleWindowOptions = 'Debug Console Window';
-  dlgDebugConsoleWindowSelect = 'Default console window, and the one these settings apply to:';
+  dlgDebugConsoleWindowSelectDiv = 'Select provider for IDE console window';
+  dlgDebugConsoleWindowEditDiv = 'Edit IDE console provider';
   dlgDebugConsoleWindowNone = 'No console window is available.';
-  dlgDebugConsoleWindowChangeTakesEffect = 'Used by projects whose Run Parameters leave the console at "use IDE default". A change takes effect when the next debug session starts. (%s)';
+  dlgDebugConsoleWindowChangeTakesEffect = 'A change takes effect when the next debug session starts.';
+  dlgDebugConsoleWindowRunParamsHint = 'Used by projects whose Run Parameters leave the console at "use IDE default".'#13#10'This setting can be overridden in "Run parameters".';
+  dlgDebugConsoleWindowEditing = 'Currently editing %s';
 
   // Feedback
   lisDebuggerFeedbackInformation = 'Debugger Information';
