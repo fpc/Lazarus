@@ -1308,6 +1308,12 @@ resourcestring
   dlgRecentProjectsCaption = 'Projects';
   dlgRecentPackagesCaption = 'Packages';
   dlgMaxRecentHint = 'Value 0 means unlimited.';
+  // Headers for the drop-down list of the "Open" toolbar button. Packages may
+  // display favorites in this list, so need to clarify that these are recent items.
+  dlgRecentProjectsHeader = 'Recent Projects:';
+  dlgRecentPackagesHeader = 'Recent Packages:';
+  dlgRecentFilesHeader = 'Recent Files:';
+
   dlgLazarusDir = 'Lazarus directory (default for all projects)';
   lisLazarusDirHint = 'Lazarus sources. This path is relative to primary config directory (%s).';
   dlgFpcExecutable = 'Compiler executable (e.g. %s)';

@@ -530,12 +530,31 @@ procedure TOpenFileToolButton.RefreshMenu(Sender: TObject);
       AMenuItem.ImageIndex := LoadProjectIconIntoImages(AFileName, DropdownMenu.Images, FIndex);
   end;
 
-  procedure AddFiles(List: TStringList; MaxCount: integer; const AOnClick: TNotifyEvent);
+  procedure AddHeader(const ACaption: string);
+  var
+    AMenuItem: TOpenFileMenuItem;
+  begin
+    AMenuItem := TOpenFileMenuItem.Create(DropdownMenu);
+    AMenuItem.Caption := ACaption;
+    AMenuItem.Enabled := false;
+    DropdownMenu.Items.Add(AMenuItem);
+  end;
+
+  procedure AddRecentItemsGroup(List: TStringList; MaxCount: integer; const AOnClick: TNotifyEvent; const AHeader: string);
   var
     i: integer;
   begin
+    if List.Count <= 0 then
+      exit;
+    // separator
+    if DropdownMenu.Items.Count > 0 then
+      DropdownMenu.Items.AddSeparator;
+    // header
+    AddHeader(AHeader);
+    // value 0 means unlimited
     if MaxCount <= 0 then
       MaxCount := List.Count;
+    // files
     for i := 0 to Min(MaxCount, List.Count) - 1 do
       AddFile(List[i], AOnClick);
   end;
@@ -544,11 +563,9 @@ var
   EO: TEnvironmentOptions absolute EnvironmentOptions; // short alias
 begin
   DropdownMenu.Items.Clear;
-  AddFiles(EO.RecentProjectFiles, EO.MaxRecentProjectFiles, @mnuProjectFile);
-  DropdownMenu.Items.AddSeparator;
-  AddFiles(EO.RecentPackageFiles, EO.MaxRecentPackageFiles, @mnuPackageFile);
-  DropdownMenu.Items.AddSeparator;
-  AddFiles(EO.RecentOpenFiles, EO.MaxRecentOpenFiles, @mnuOpenFile);
+  AddRecentItemsGroup(EO.RecentProjectFiles, EO.MaxRecentProjectFiles, @mnuProjectFile, dlgRecentProjectsHeader);
+  AddRecentItemsGroup(EO.RecentPackageFiles, EO.MaxRecentPackageFiles, @mnuPackageFile, dlgRecentPackagesHeader);
+  AddRecentItemsGroup(EO.RecentOpenFiles   , EO.MaxRecentOpenFiles   , @mnuOpenFile   , dlgRecentFilesHeader   );
 end;
 
 // Variables and functions used by TMainIDEBase
