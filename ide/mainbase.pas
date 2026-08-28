@@ -79,6 +79,8 @@ uses
   LazConf, EnvironmentOpts, CompilerOptions,
   // IdeProject
   Project,
+  // IdePackager
+  BasePkgManager,
   // IDE
   LazarusIDEStrConsts, EditorOptions, EnvGuiOptions, EditableProject,
   SourceEditor, SourceSynEditor, FindInFilesDlg, Splash, MainBar, MainIntf,
@@ -231,6 +233,7 @@ type
     procedure RefreshMenu(Sender: TObject);
     procedure mnuOpenFile(Sender: TObject);
     procedure mnuProjectFile(Sender: TObject);
+    procedure mnuPackageFile(Sender: TObject);
   public
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
@@ -506,6 +509,11 @@ begin
   MainIDE.DoOpenProjectFile((Sender as TOpenFileMenuItem).Hint, [ofAddToRecent]);
 end;
 
+procedure TOpenFileToolButton.mnuPackageFile(Sender: TObject);
+begin
+  PkgBoss.DoOpenPackageFile((Sender as TOpenFileMenuItem).Hint, [pofAddToRecent], false);
+end;
+
 procedure TOpenFileToolButton.RefreshMenu(Sender: TObject);
 
   procedure AddFile(const AFileName: string; const AOnClick: TNotifyEvent);
@@ -532,17 +540,15 @@ procedure TOpenFileToolButton.RefreshMenu(Sender: TObject);
       AddFile(List[i], AOnClick);
   end;
 
+var
+  EO: TEnvironmentOptions absolute EnvironmentOptions; // short alias
 begin
   DropdownMenu.Items.Clear;
-
-  // first add recent projects
-  AddFiles(EnvironmentOptions.RecentProjectFiles, EnvironmentOptions.MaxRecentProjectFiles,
-           @mnuProjectFile);
-  // add a separator
+  AddFiles(EO.RecentProjectFiles, EO.MaxRecentProjectFiles, @mnuProjectFile);
   DropdownMenu.Items.AddSeparator;
-  // then add recent files
-  AddFiles(EnvironmentOptions.RecentOpenFiles, EnvironmentOptions.MaxRecentOpenFiles,
-           @mnuOpenFile);
+  AddFiles(EO.RecentPackageFiles, EO.MaxRecentPackageFiles, @mnuPackageFile);
+  DropdownMenu.Items.AddSeparator;
+  AddFiles(EO.RecentOpenFiles, EO.MaxRecentOpenFiles, @mnuOpenFile);
 end;
 
 // Variables and functions used by TMainIDEBase
