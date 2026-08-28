@@ -77,6 +77,10 @@ type
     spnMaxRecentPackageFiles: TSpinEdit;
     lblMaxRecentOpenFiles: TLabel;
     spnMaxRecentOpenFiles: TSpinEdit;
+    grpToolbarButton: TGroupBox;
+    chkProjectsInToolbarButton: TCheckBox;
+    chkPackagesInToolbarButton: TCheckBox;
+    chkFilesInToolbarButton: TCheckBox;
     TestBuildDirButton:TButton;
     TestBuildDirComboBox:TComboBox;
     TestBuildDirLabel:TLabel;
@@ -104,6 +108,9 @@ type
     FOldMaxRecentOpenFiles: integer;
     FOldMaxRecentProjectFiles: integer;
     FOldMaxRecentPackageFiles: integer;
+    FOldProjectsInOpenToolbarButton: boolean;
+    FOldPackagesInOpenToolbarButton: boolean;
+    FOldFilesInOpenToolbarButton: boolean;
     function CheckLazarusDir(Buttons: TMsgDlgButtons): boolean;
     function CheckCompiler(Buttons: TMsgDlgButtons): boolean;
     function CheckFPCSourceDir(Buttons: TMsgDlgButtons): boolean;
@@ -364,6 +371,12 @@ begin
   lblMaxRecentProjectFiles.Hint := dlgMaxRecentHint;
   lblMaxRecentPackageFiles.Hint := dlgMaxRecentHint;
   lblMaxRecentOpenFiles   .Hint := dlgMaxRecentHint;
+
+  grpToolbarButton.Caption := dlgShowInOpenCoolbarButton;
+
+  chkProjectsInToolbarButton.Caption := dlgRecentProjectsCaption;
+  chkPackagesInToolbarButton.Caption := dlgRecentPackagesCaption;
+  chkFilesInToolbarButton   .Caption := dlgRecentFilesCaption;
 end;
 
 function TFilesOptionsFrame.GetTitle: String;
@@ -479,6 +492,12 @@ begin
     spnMaxRecentProjectFiles.Value := MaxRecentProjectFiles;
     FOldMaxRecentPackageFiles := MaxRecentPackageFiles;
     spnMaxRecentPackageFiles.Value := MaxRecentPackageFiles;
+    FOldProjectsInOpenToolbarButton := ProjectsInOpenToolbarButton;
+    chkProjectsInToolbarButton.Checked := ProjectsInOpenToolbarButton;
+    FOldPackagesInOpenToolbarButton := PackagesInOpenToolbarButton;
+    chkPackagesInToolbarButton.Checked := PackagesInOpenToolbarButton;
+    FOldFilesInOpenToolbarButton := FilesInOpenToolbarButton;
+    chkFilesInToolbarButton.Checked := FilesInOpenToolbarButton;
   end;
 end;
 
@@ -505,6 +524,9 @@ begin
     MaxRecentOpenFiles := spnMaxRecentOpenFiles.Value;
     MaxRecentProjectFiles := spnMaxRecentProjectFiles.Value;
     MaxRecentPackageFiles := spnMaxRecentPackageFiles.Value;
+    ProjectsInOpenToolbarButton := chkProjectsInToolbarButton.Checked;
+    PackagesInOpenToolbarButton := chkPackagesInToolbarButton.Checked;
+    FilesInOpenToolbarButton := chkFilesInToolbarButton.Checked;
   end;
 end;
 
@@ -525,6 +547,9 @@ begin
     MaxRecentOpenFiles := FOldMaxRecentOpenFiles;
     MaxRecentProjectFiles := FOldMaxRecentProjectFiles;
     MaxRecentPackageFiles := FOldMaxRecentPackageFiles;
+    ProjectsInOpenToolbarButton := FOldProjectsInOpenToolbarButton;
+    PackagesInOpenToolbarButton := FOldPackagesInOpenToolbarButton;
+    FilesInOpenToolbarButton := FOldFilesInOpenToolbarButton;
   end;
 end;
 

@@ -563,9 +563,12 @@ var
   EO: TEnvironmentOptions absolute EnvironmentOptions; // short alias
 begin
   DropdownMenu.Items.Clear;
-  AddRecentItemsGroup(EO.RecentProjectFiles, EO.MaxRecentProjectFiles, @mnuProjectFile, dlgRecentProjectsHeader);
-  AddRecentItemsGroup(EO.RecentPackageFiles, EO.MaxRecentPackageFiles, @mnuPackageFile, dlgRecentPackagesHeader);
-  AddRecentItemsGroup(EO.RecentOpenFiles   , EO.MaxRecentOpenFiles   , @mnuOpenFile   , dlgRecentFilesHeader   );
+  if EO.ProjectsInOpenToolbarButton then
+    AddRecentItemsGroup(EO.RecentProjectFiles, EO.MaxRecentProjectFiles, @mnuProjectFile, dlgRecentProjectsHeader);
+  if EO.PackagesInOpenToolbarButton then
+    AddRecentItemsGroup(EO.RecentPackageFiles, EO.MaxRecentPackageFiles, @mnuPackageFile, dlgRecentPackagesHeader);
+  if EO.FilesInOpenToolbarButton then
+    AddRecentItemsGroup(EO.RecentOpenFiles   , EO.MaxRecentOpenFiles   , @mnuOpenFile   , dlgRecentFilesHeader   );
 end;
 
 // Variables and functions used by TMainIDEBase

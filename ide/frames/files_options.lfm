@@ -419,4 +419,60 @@ object FilesOptionsFrame: TFilesOptionsFrame
       TabOrder = 2
     end
   end
+  object grpToolbarButton: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = RecentMaxCountGroupBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 51
+    Top = 407
+    Width = 610
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'grpToolbarButton'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.HorizontalSpacing = 6
+    ChildSizing.VerticalSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsSameSize
+    ChildSizing.EnlargeVertical = crsSameSize
+    ChildSizing.Layout = cclTopToBottomThenLeftToRight
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 31
+    ClientWidth = 606
+    TabOrder = 15
+    object chkProjectsInToolbarButton: TCheckBox
+      Left = 6
+      Height = 19
+      Top = 6
+      Width = 194
+      Caption = 'chkProjectsInToolbarButton'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+    end
+    object chkPackagesInToolbarButton: TCheckBox
+      Left = 206
+      Height = 19
+      Top = 6
+      Width = 194
+      Caption = 'chkPackagesInToolbarButton'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+    end
+    object chkFilesInToolbarButton: TCheckBox
+      Left = 406
+      Height = 19
+      Top = 6
+      Width = 194
+      Caption = 'chkFilesInToolbarButton'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+    end
+  end
 end

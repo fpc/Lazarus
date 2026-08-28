@@ -312,6 +312,9 @@ type
     FMaxRecentProjectFiles: integer;
     FRecentPackageFiles: TStringList;
     FMaxRecentPackageFiles: integer;
+    FProjectsInOpenToolbarButton: boolean;
+    FPackagesInOpenToolbarButton: boolean;
+    FFilesInOpenToolbarButton: boolean;
     FOpenLastProjectAtStart: boolean;
     FNewProjectTemplateAtStart: string;
     FMultipleInstances: TIDEMultipleInstancesOption;
@@ -496,6 +499,10 @@ type
                                          write FMaxRecentPackageFiles;
     procedure AddToRecentPackageFiles(const AFilename: string); override;
     procedure RemoveFromRecentPackageFiles(const AFilename: string); override;
+    // show recent items in "Open" drop-down toolbar button
+    property ProjectsInOpenToolbarButton: boolean read FProjectsInOpenToolbarButton write FProjectsInOpenToolbarButton;
+    property PackagesInOpenToolbarButton: boolean read FPackagesInOpenToolbarButton write FPackagesInOpenToolbarButton;
+    property FilesInOpenToolbarButton   : boolean read FFilesInOpenToolbarButton    write FFilesInOpenToolbarButton   ;
     property LastSavedProjectFile: string read FLastSavedProjectFile
                      write FLastSavedProjectFile; { if empty then create new project,
                                                     if '-' then do not load/create any project }
@@ -771,6 +778,9 @@ begin
   FMaxRecentProjectFiles:=DefaultMaxRecentProjectFiles;
   FRecentPackageFiles:=TStringList.Create;
   FMaxRecentPackageFiles:=DefaultMaxRecentPackageFiles;
+  FProjectsInOpenToolbarButton:=true;
+  FPackagesInOpenToolbarButton:=true;
+  FFilesInOpenToolbarButton:=true;
   FOpenLastProjectAtStart:=true;
   FMultipleInstances:=DefaultIDEMultipleInstancesOption;
 
@@ -1100,6 +1110,9 @@ begin
     LoadRecentList(FXMLCfg,FRecentProjectFiles,Path+'Recent/ProjectFiles/',rltFile);
     FMaxRecentPackageFiles:=FXMLCfg.GetValue(Path+'Recent/PackageFiles/Max',DefaultMaxRecentPackageFiles);
     LoadRecentList(FXMLCfg,FRecentPackageFiles,Path+'Recent/PackageFiles/',rltFile);
+    FProjectsInOpenToolbarButton:=FXMLCfg.GetValue(Path+'Recent/ProjectFiles/ShowInOpenToolbarButton',true);
+    FPackagesInOpenToolbarButton:=FXMLCfg.GetValue(Path+'Recent/PackageFiles/ShowInOpenToolbarButton',true);
+    FFilesInOpenToolbarButton:=FXMLCfg.GetValue(Path+'Recent/OpenFiles/ShowInOpenToolbarButton',true);
     FNewProjectTemplateAtStart:=FXMLCfg.GetValue(Path+'NewProjectTemplateAtStart/Value','Application');
     FMultipleInstances:=StrToIDEMultipleInstancesOption(FXMLCfg.GetValue(Path+'MultipleInstances/Value',''));
     FAlreadyPopulatedRecentFiles := FXMLCfg.GetValue(Path+'Recent/AlreadyPopulated', false);
@@ -1307,6 +1320,9 @@ begin
     SaveRecentList(FXMLCfg,FRecentProjectFiles,Path+'Recent/ProjectFiles/',FMaxRecentProjectFiles);
     FXMLCfg.SetDeleteValue(Path+'Recent/PackageFiles/Max',FMaxRecentPackageFiles,DefaultMaxRecentPackageFiles);
     SaveRecentList(FXMLCfg,FRecentPackageFiles,Path+'Recent/PackageFiles/',FMaxRecentPackageFiles);
+    FXMLCfg.SetDeleteValue(Path+'Recent/ProjectFiles/ShowInOpenToolbarButton',FProjectsInOpenToolbarButton,true);
+    FXMLCfg.SetDeleteValue(Path+'Recent/PackageFiles/ShowInOpenToolbarButton',FPackagesInOpenToolbarButton,true);
+    FXMLCfg.SetDeleteValue(Path+'Recent/OpenFiles/ShowInOpenToolbarButton',FFilesInOpenToolbarButton,true);
     FXMLCfg.SetDeleteValue(Path+'NewProjectTemplateAtStart/Value',FNewProjectTemplateAtStart,'Application');
     FXMLCfg.SetDeleteValue(Path+'MultipleInstances/Value',
         IDEMultipleInstancesOptionNames[FMultipleInstances],
