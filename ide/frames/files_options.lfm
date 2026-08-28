@@ -372,6 +372,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
       Hint = 'Value 0 means unlimited.'
       Top = 19
       Width = 197
+      MaxValue = 100
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
@@ -391,6 +392,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
       Hint = 'Value 0 means unlimited.'
       Top = 19
       Width = 196
+      MaxValue = 100
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
@@ -411,6 +413,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
       Hint = 'Value 0 means unlimited.'
       Top = 19
       Width = 197
+      MaxValue = 100
       ParentShowHint = False
       ShowHint = True
       TabOrder = 2
