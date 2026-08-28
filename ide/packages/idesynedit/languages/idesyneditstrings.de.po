@@ -1,19 +1,25 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
+"Language-Team: \n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
 
 #: idesyneditstrings.dlgaddhiattrcustom
-#, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid "Custom %d"
-msgstr ""
+msgstr "Benutzerdefiniert %d"
 
 #: idesyneditstrings.dlgaddhiattrnestedbracket
 #, object-pascal-format
 msgid "Nested bracket %d"
-msgstr ""
+msgstr "Geschachtelte Klammer %d"
 
 #: idesyneditstrings.synffoldcomments
 msgid "Fold comments"
@@ -21,23 +27,25 @@ msgstr "Kommentare falten"
 
 #: idesyneditstrings.synffoldcommentsinselection
 msgid "Fold comments in selection"
-msgstr "Kommentare in Auswahl falten"
+msgstr "Ausgewählte Kommentare falten"
 
 #: idesyneditstrings.synffoldinactiveifdef
 msgid "Fold inactive Ifdef"
 msgstr "Inaktive Ifdef falten"
 
 #: idesyneditstrings.synffoldinactiveifdefexcludemixedstate
+#, fuzzy
 msgid "Fold inactive Ifdef (exclude mixed state)"
-msgstr ""
+msgstr "Inaktive Ifdef falten (außer bei gemischtem Status)"
 
 #: idesyneditstrings.synffoldinactiveifdefinselection
 msgid "Fold inactive Ifdef in selection"
-msgstr "Inaktive Ifdef in Auswahl falten"
+msgstr "Ausgewählte inaktive Ifdef falten"
 
 #: idesyneditstrings.synffoldinactiveifdefinselectionexcludemixedstate
+#, fuzzy
 msgid "Fold inactive Ifdef in selection (exclude mixed state)"
-msgstr ""
+msgstr "Ausgewählte inaktive Ifdef falten (außer bei gemischtem Status)"
 
 #: idesyneditstrings.synfhidecomments
 msgid "Hide comments"
@@ -45,7 +53,7 @@ msgstr "Kommentare verbergen"
 
 #: idesyneditstrings.synfhidecommentsinselection
 msgid "Hide comments in selection"
-msgstr "Kommentare in Auswahl verbergen"
+msgstr "Ausgewählte Kommentare verbergen"
 
 #: idesyneditstrings.synfunfoldactiveifdef
 msgid "Unfold active Ifdef"
@@ -53,7 +61,7 @@ msgstr "Aktive Ifdef entfalten"
 
 #: idesyneditstrings.synfunfoldactiveifdefinselection
 msgid "Unfold active Ifdef in selection"
-msgstr "Aktive Ifdef in Auswahl entfalten"
+msgstr "Ausgewählte aktive Ifdef entfalten"
 
 #: idesyneditstrings.synfunfoldall
 msgid "Unfold all"
@@ -65,11 +73,11 @@ msgstr "Alle Ifdef entfalten"
 
 #: idesyneditstrings.synfunfoldallifdefinselection
 msgid "Unfold all Ifdef in selection"
-msgstr "Alle Ifdef in Auswahl entfalten"
+msgstr "Alle ausgewählten Ifdef entfalten"
 
 #: idesyneditstrings.synfunfoldallinselection
 msgid "Unfold all in selection"
-msgstr "Alles in Auswahl entfalten"
+msgstr "Alles ausgewählte entfalten"
 
 #: idesyneditstrings.synfunfoldcomments
 msgid "Unfold comments"
@@ -77,7 +85,7 @@ msgstr "Kommentare entfalten"
 
 #: idesyneditstrings.synfunfoldcommentsinselection
 msgid "Unfold comments in selection"
-msgstr "Kommentare in Auswahl entfalten"
+msgstr "Ausgewählte Kommentare entfalten"
 
 #: idesyneditstrings.synfunfoldinactiveifdef
 msgid "Unfold inactive Ifdef"
@@ -85,5 +93,5 @@ msgstr "Inaktive Ifdef entfalten"
 
 #: idesyneditstrings.synfunfoldinactiveifdefinselection
 msgid "Unfold inactive Ifdef in selection"
-msgstr "Inaktive Ifdef in Auswahl entfalten"
+msgstr "Ausgewählte inaktive Ifdef entfalten"
 

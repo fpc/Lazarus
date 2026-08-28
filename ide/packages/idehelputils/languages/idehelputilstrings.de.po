@@ -1,9 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
+"Language-Team: \n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
 
 #: idehelputilstrings.dlgccotest
 msgid "Test"
@@ -23,6 +29,8 @@ msgid ""
 "%s already contains the help:\n"
 "%s"
 msgstr ""
+"%s enthält schon die Hilfe:\n"
+"%s"
 
 #: idehelputilstrings.lisceisarootcontrol
 msgid "Is a root control"
@@ -258,7 +266,7 @@ msgstr "Pfad"
 
 #: idehelputilstrings.lispleaseplacetheeditorcaretonanidentifierifthisisane
 msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
-msgstr ""
+msgstr "Bitte bewegen sie die Maus über einen Bezeichner. Ist dies eine neue Unit, speichern Sie die Datei zuerst."
 
 #: idehelputilstrings.lisprojaddpackagenotfound
 msgid "Package not found"
@@ -283,7 +291,7 @@ msgstr "Kurz:"
 #: idehelputilstrings.listheunitispartofthefpcsourcesbutthecorrespondingfpd
 #, object-pascal-format
 msgid "The unit %s is part of the FPC sources but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
-msgstr ""
+msgstr "Die Unit %s ist Teil des FPC-Quellcodes, aber die entsprechende fpdoc-XML-Datei wurde nicht gefunden.%sEntweder haben Sie das fpcdoc-Verzeichnis noch nicht zum Suchpfad hinzugefügt oder die Unit ist noch nicht dokumentiert.%sDie fpdoc-Dateien für den FPC-Quellcode können hier heruntergeladen werden: %s%sBitte fügen Sie das Verzeichnis in den fpdoc-Editor-Einstellungen hinzu.%sDas Verzeichnis muss beschreibbar sein, um eine neue Datei zu erzeugen."
 
 #: idehelputilstrings.listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
