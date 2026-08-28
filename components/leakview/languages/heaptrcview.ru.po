@@ -22,8 +22,8 @@ msgstr "Невозможно открыть \"%s\"."
 
 #: heaptrcview.brkfailedtoopensjumptocurren
 #, object-pascal-format
-msgid "Failed to open \"%s\". Jump to current editor instead?"
-msgstr "Невозможно открыть \"%s\". Перейти вместо этого в текущий редактор исходного кода?"
+msgid "Failed to open \"%s\". Jump to appropriate line in current editor instead?"
+msgstr "Невозможно открыть \"%s\". Перейти к соответствующей строке в текущем редакторе исходного кода?"
 
 #: heaptrcview.rsdtimes
 #, object-pascal-format

@@ -21,8 +21,9 @@ msgid "Failed to open \"%s\"."
 msgstr "Öffnen von \"%s\" fehlgeschlagen."
 
 #: heaptrcview.brkfailedtoopensjumptocurren
-#, object-pascal-format
-msgid "Failed to open \"%s\". Jump to current editor instead?"
+#, object-pascal-format, fuzzy
+#| msgid "Failed to open \"%s\". Jump to current editor instead?"
+msgid "Failed to open \"%s\". Jump to appropriate line in current editor instead?"
 msgstr "Öffnen von \"%s\" fehlgeschlagen. Zum aktuellen Editor springen?"
 
 #: heaptrcview.rsdtimes
