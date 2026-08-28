@@ -390,6 +390,11 @@ begin
   finally
     trvTraceInfo.EndUpdate;
   end;
+  if trvTraceInfo.Items.Count <> 0 then
+  begin
+    trvTraceInfo.SetFocus;
+    trvTraceInfo.Items.GetFirstNode.Selected := true;
+  end;
   if trvTraceInfo.Items.TopLvlCount = 1 then
     trvTraceInfo.Items.TopLvlItems[0].Expand(False);
 end;
