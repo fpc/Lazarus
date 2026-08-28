@@ -166,7 +166,10 @@ type
        this is never nil while there is any registered plug-in. *)
     function ResolveConsoleEntry: TLazDbgIdeConsoleWindowPlugInRegistryEntryClass;
     function ConsolePlugIn: ILazDbgIdeConsoleWindowPlugIn;
-    procedure ReconcileConsolePlugIn;
+    (* The two halves of resolving the selected console plug-in:
+       DoIDERestoreWindows at IDE startup, ReconcileConsolePlugInForNewSession
+       at the start of each debug session. Neither replaces the other. *)
+    procedure ReconcileConsolePlugInForNewSession;
     procedure DoIDERestoreWindows(Sender: TObject);
     // ILazDbgIdeTargetIoHook -- what the plug-in is given to talk back with
     procedure SendInput(const AText: String);
@@ -1114,7 +1117,13 @@ begin
       Id := AMode.IdeDbgConsoleId;
   end;
 
-  Result := ConsoleWindowPlugIns.FindByPlugInId(Id);
+  (* The sentinel is tested here rather than left to miss in the registry.
+     Nothing rejects an empty id at registration, so a plug-in that registered
+     one would otherwise become the choice for every project that has none. *)
+  if Id <> '' then
+    Result := ConsoleWindowPlugIns.FindByPlugInId(Id)
+  else
+    Result := nil;
   if Result = nil then
     Result := ConsoleWindowPlugIns.FindByPlugInId(DebuggerOptions.ConsoleWindowPlugInId);
   if Result = nil then
@@ -1147,7 +1156,11 @@ begin
   Result := FConsolePlugIn;
 end;
 
-(* Take account of a selection the user has changed since the last session.
+(* Session start -- the second half of the pair. Takes account of a selection
+   the user has changed since the last run. In a fresh IDE the plug-in has
+   already been resolved by DoIDERestoreWindows, so this usually finds nothing
+   to do; it earns its keep only when the selection changed mid-session, which
+   nothing re-fires the restore handler for.
 
    Called at dsInit, which is one of the points where the IDE is about to lay
    out windows anyway, and -- because the state notification list runs before
@@ -1158,7 +1171,7 @@ end;
    the only one: a plug-in that keeps its window after a run, so the user can
    still read what the program printed, has to be left alone until a new run is
    actually starting. *)
-procedure TDebugManager.ReconcileConsolePlugIn;
+procedure TDebugManager.ReconcileConsolePlugInForNewSession;
 var
   Entry: TLazDbgIdeConsoleWindowPlugInRegistryEntryClass;
 begin
@@ -1178,7 +1191,12 @@ begin
   ConsolePlugIn;   // resolves and attaches the newly selected one
 end;
 
-(* Reconcile before the IDE restores its windows.
+(* IDE startup -- the first half of the pair, and the one that does the work in
+   a fresh IDE. It runs before any debug session has existed, so FConsolePlugIn
+   is still nil here and this is the call that creates it;
+   ReconcileConsolePlugInForNewSession cannot stand in for it, because the
+   first run may come hours after the layout has been restored. On any later
+   restore this is a no-op, which is intended.
 
    Resolving the selected plug-in here, rather than leaving it until the first
    line of output, is what lets its window take part in the layout restore at
@@ -1829,7 +1847,7 @@ begin
     end;
     dsInit: begin
       Exceptions.ResetHitCounts;
-      ReconcileConsolePlugIn;
+      ReconcileConsolePlugInForNewSession;
       (* Only clear a console that already exists. Asking the registry here
          would construct the plug-in -- and with it, for some plug-ins, a
          window -- for a session that may never produce any output. *)
