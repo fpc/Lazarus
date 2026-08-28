@@ -30,32 +30,9 @@ unit IdeDebuggerConsolePlugInIntf;
 interface
 
 uses
-  fgl, SysUtils, LazDebuggerIntfBaseTypes;
+  fgl, SysUtils, IdeDebuggerPlugInIntf, LazDebuggerIntfBaseTypes;
 
 type
-
-  (* ILazDbgIdePlugIn
-     Base for anything registered as a user-selectable IDE debugger plug-in.
-     Carries only what the options dialog needs: the config object, a copy for
-     Cancel, and disposal. CORBA interfaces are not reference counted, so Free
-     is explicit. *)
-
-  ILazDbgIdePlugIn = interface ['{7A1C4E9D-2B85-4F31-9C0E-3D6A85B41E27}']
-    // for TXmlConfig.WriteObject / must have all config in published fields
-    function  GetConfigObject: TObject;
-    // the options dialog edits a copy, so Cancel can discard it untouched
-    function  CreateCopy: ILazDbgIdePlugIn;
-    procedure Free;
-    function  GetInterface(const iidstr: shortstring; out obj): boolean; // provided by TObject
-  end;
-
-  (* ILazDbgIdePlugInSettingsFrameIntf
-     Implemented by the TFrame class returned from GetSettingsFrameClass. *)
-
-  ILazDbgIdePlugInSettingsFrameIntf = interface ['{1F4B93A6-58C7-40D2-B1E5-9A2C6F0D7B34}']
-    procedure ReadFrom(APlugIn: ILazDbgIdePlugIn);
-    function  WriteTo(APlugIn: ILazDbgIdePlugIn): Boolean;
-  end;
 
   (* ILazDbgIdeTargetIoHook
      Handed to the plug-in when it is added to the IDE's hook, and the only way
@@ -97,41 +74,21 @@ type
     procedure SetAutoShowState(AShowOnInput: Boolean);
   end;
 
-  (* TLazDbgIdePlugInRegistryEntry
-     Class-level identity and metadata, so the options dialog can list and
-     describe a plug-in without constructing one. *)
-
-  TLazDbgIdePlugInRegistryEntry = class
-  public
-    class function CreateIdePlugIn: ILazDbgIdePlugIn; virtual; abstract;
-    class function GetSettingsFrameClass: TClass; virtual; // class(TFrame, ILazDbgIdePlugInSettingsFrameIntf)
-    class function GetDisplayName: String; virtual; abstract;
-    (* Stable id, persisted in XmlConfig and in project files. "package/class",
-       optionally with a third part; see IsValidLazDbgIdePlugInId. A bare class
-       name would collide between two packages that happened to choose the
-       same one, which is what the package part is for. *)
-    class function GetPlugInId: String; virtual; abstract;
-  end;
-
   { TLazDbgIdeConsoleWindowPlugInRegistryEntry }
 
   TLazDbgIdeConsoleWindowPlugInRegistryEntry = class(TLazDbgIdePlugInRegistryEntry)
-  public
+  protected
     class function CreateIdeConsoleWindowPlugIn: ILazDbgIdeConsoleWindowPlugIn; virtual; abstract;
-    class function CreateIdePlugIn: ILazDbgIdePlugIn; override;
+  public
+    class function CreateIdePlugIn: ILazDbgIdeConsoleWindowPlugIn; override; final;
   end;
   TLazDbgIdeConsoleWindowPlugInRegistryEntryClass = class of TLazDbgIdeConsoleWindowPlugInRegistryEntry;
 
   { TLazDbgIdeConsoleWindowPlugInRegistry }
 
-  TLazDbgIdeConsoleWindowPlugInRegistry = class(specialize TFPGList<TLazDbgIdeConsoleWindowPlugInRegistryEntryClass>)
-  public
-    procedure RegisterPlugIn(AEntry: TLazDbgIdeConsoleWindowPlugInRegistryEntryClass);
-    procedure UnregisterPlugIn(AEntry: TLazDbgIdeConsoleWindowPlugInRegistryEntryClass);
-    // ids are compared case-insensitively: differing only in case must not be
-    // able to pass itself off as another plug-in
-    function  IndexOfPlugInId(const AId: String): Integer;
-    function  FindByPlugInId(const AId: String): TLazDbgIdeConsoleWindowPlugInRegistryEntryClass;
+  TLazDbgIdeConsoleWindowPlugInRegistry = class(specialize TGenLazDbgIdeConsoleWindowPlugInRegistry<TLazDbgIdeConsoleWindowPlugInRegistryEntry>)
+  protected
+    function CanRegister(AnEntry: TRegistrationEntryClass): Boolean; override;
   end;
 
 function ConsoleWindowPlugIns: TLazDbgIdeConsoleWindowPlugInRegistry;
@@ -190,63 +147,24 @@ begin
         and (Pos('/', AId, p2 + 1) = 0);
 end;
 
-{ TLazDbgIdePlugInRegistryEntry }
-
-class function TLazDbgIdePlugInRegistryEntry.GetSettingsFrameClass: TClass;
-begin
-  Result := nil;
-end;
-
 { TLazDbgIdeConsoleWindowPlugInRegistryEntry }
 
-class function TLazDbgIdeConsoleWindowPlugInRegistryEntry.CreateIdePlugIn: ILazDbgIdePlugIn;
+class function TLazDbgIdeConsoleWindowPlugInRegistryEntry.CreateIdePlugIn: ILazDbgIdeConsoleWindowPlugIn;
 begin
   Result := CreateIdeConsoleWindowPlugIn;
 end;
 
 { TLazDbgIdeConsoleWindowPlugInRegistry }
 
-procedure TLazDbgIdeConsoleWindowPlugInRegistry.RegisterPlugIn(
-  AEntry: TLazDbgIdeConsoleWindowPlugInRegistryEntryClass);
+function TLazDbgIdeConsoleWindowPlugInRegistry.CanRegister(AnEntry: TRegistrationEntryClass
+  ): Boolean;
 begin
-  if AEntry = nil then
+  Result := inherited CanRegister(AnEntry);
+  if not Result then
     exit;
-  Assert(IsValidLazDbgIdePlugInId(AEntry.GetPlugInId),
-    'TLazDbgIdeConsoleWindowPlugInRegistry.RegisterPlugIn: bad id "' + AEntry.GetPlugInId + '"');
-  Assert(IndexOfPlugInId(AEntry.GetPlugInId) < 0,
-    'TLazDbgIdeConsoleWindowPlugInRegistry.RegisterPlugIn: duplicate id "' + AEntry.GetPlugInId + '"');
-  if IndexOf(AEntry) < 0 then
-    Add(AEntry);
-end;
-
-procedure TLazDbgIdeConsoleWindowPlugInRegistry.UnregisterPlugIn(
-  AEntry: TLazDbgIdeConsoleWindowPlugInRegistryEntryClass);
-var
-  i: Integer;
-begin
-  i := IndexOf(AEntry);
-  if i >= 0 then
-    Delete(i);
-end;
-
-function TLazDbgIdeConsoleWindowPlugInRegistry.IndexOfPlugInId(const AId: String): Integer;
-begin
-  for Result := 0 to Count - 1 do
-    if SameText(Items[Result].GetPlugInId, AId) then
-      exit;
-  Result := -1;
-end;
-
-function TLazDbgIdeConsoleWindowPlugInRegistry.FindByPlugInId(const AId: String
-  ): TLazDbgIdeConsoleWindowPlugInRegistryEntryClass;
-var
-  i: Integer;
-begin
-  i := IndexOfPlugInId(AId);
-  if i >= 0 then
-    Result := Items[i]
-  else
-    Result := nil;
+  Result := IsValidLazDbgIdePlugInId(AnEntry.GetPlugInId);
+  if not Result then
+    AddRegistrationError('Invalid PluginId: ' + AnEntry.GetPlugInId);
 end;
 
 finalization

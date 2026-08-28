@@ -18,7 +18,7 @@ uses
   // LazControls
   DividerBevel,
   // IdeIntf
-  IDEOptEditorIntf, IDEOptionsIntf, IdeDebuggerConsolePlugInIntf,
+  IDEOptEditorIntf, IDEOptionsIntf, IdeDebuggerConsolePlugInIntf, IdeDebuggerPlugInIntf,
   // IdeDebugger
   IdeDebuggerStringConstants, IdeDebuggerOpts;
 
@@ -37,7 +37,7 @@ type
   private
     FPlugIns: TIdeDbgConsoleWindowPlugInList;   // the working copy
     FFrame: TFrame;
-    FFramePlugIn: ILazDbgIdePlugIn;
+    FFramePlugIn: ILazDbgIdeConsoleWindowPlugIn;
     procedure UpdateDescription;
     function  SelectedPlugInId: String;
     procedure ShowSettingsFrame;
@@ -86,27 +86,26 @@ end;
    page knowing anything about what it contains. *)
 procedure TIdeDbgConsoleWindowOptionsFrame.ShowSettingsFrame;
 var
-  Entry: TLazDbgIdeConsoleWindowPlugInRegistryEntryClass;
+  Cfg: ILazDbgIdePlugInConfiguration;
   FrameClass: TClass;
   Intf: ILazDbgIdePlugInSettingsFrameIntf;
-  Id: String;
 begin
   SaveSettingsFrame;
   FreeAndNil(FFrame);
   FFramePlugIn := nil;
 
-  Id := SelectedPlugInId;
-  if Id = '' then
+  if cbPlugIn.ItemIndex < 0 then
     exit;
-  Entry := ConsoleWindowPlugIns.FindByPlugInId(Id);
-  if Entry = nil then
-    exit;
-  FrameClass := Entry.GetSettingsFrameClass;
-  if (FrameClass = nil) or (not FrameClass.InheritsFrom(TFrame)) then
+  FFramePlugIn := FPlugIns.PlugIns[cbPlugIn.ItemIndex];
+  if FFramePlugIn = nil then
     exit;
 
-  FFramePlugIn := FPlugIns.PlugInById(Id);
-  if FFramePlugIn = nil then
+  Cfg := FFramePlugIn.GetConfiguration;
+  if Cfg = nil then
+    exit;
+
+  FrameClass := Cfg.GetSettingsFrameClass;
+  if (FrameClass = nil) or (not FrameClass.InheritsFrom(TFrame)) then
     exit;
 
   (* Into its own panel, not straight onto this frame: alClient on the page
@@ -115,24 +114,26 @@ begin
   FFrame.Parent := pnlSettings;
   FFrame.Align := alClient;
   if FFrame.GetInterface(ILazDbgIdePlugInSettingsFrameIntf, Intf) then
-    Intf.ReadFrom(FFramePlugIn);
+    Intf.ReadFrom(Cfg);
 end;
 
 procedure TIdeDbgConsoleWindowOptionsFrame.SaveSettingsFrame;
 var
+  Cfg: ILazDbgIdePlugInConfiguration;
   Intf: ILazDbgIdePlugInSettingsFrameIntf;
 begin
   if (FFrame = nil) or (FFramePlugIn = nil) then
     exit;
+  Cfg := FFramePlugIn.GetConfiguration;
+  if Cfg = nil then
+    exit;
   if FFrame.GetInterface(ILazDbgIdePlugInSettingsFrameIntf, Intf) then
-    if Intf.WriteTo(FFramePlugIn) then
+    if Intf.WriteTo(Cfg) then
       FPlugIns.Changed := True;
 end;
 
 procedure TIdeDbgConsoleWindowOptionsFrame.Setup(
   ADialog: TAbstractOptionsEditorDialog);
-var
-  i: Integer;
 begin
   divSelectPlugIn.Caption := dlgDebugConsoleWindowSelectDiv;
   divEditPlugIn.Caption := dlgDebugConsoleWindowEditDiv;
@@ -141,36 +142,28 @@ begin
      as much standing text as it can afford. *)
   cbPlugIn.Hint := dlgDebugConsoleWindowRunParamsHint;
   cbPlugIn.ShowHint := True;
-  cbPlugIn.Clear;
-  for i := 0 to ConsoleWindowPlugIns.Count - 1 do
-    cbPlugIn.Items.Add(ConsoleWindowPlugIns[i].GetDisplayName);
 end;
 
 procedure TIdeDbgConsoleWindowOptionsFrame.ReadSettings(
   AOptions: TAbstractIDEOptions);
 var
-  Entry: TLazDbgIdeConsoleWindowPlugInRegistryEntryClass;
-  i: Integer;
+  i, c: Integer;
 begin
-  i := -1;
-  Entry := ConsoleWindowPlugIns.FindByPlugInId(DebuggerOptions.ConsoleWindowPlugInId);
-  if Entry <> nil then
-    i := ConsoleWindowPlugIns.IndexOf(Entry)
-  else
-  if ConsoleWindowPlugIns.Count > 0 then
-    (* Either nothing was ever chosen, or the chosen plug-in's package is not
-       installed in this IDE. Both show the fallback rather than an empty box;
-       the stored id is left alone until the user picks something, so moving a
-       config between installations does not silently discard it. *)
-    i := 0;
-  cbPlugIn.ItemIndex := i;
-
   (* Edit a copy. Cancel then costs nothing, which is the whole reason the
      plug-in interface carries CreateCopy. *)
   if FPlugIns = nil then
     FPlugIns := TIdeDbgConsoleWindowPlugInList.Create;
   FPlugIns.Assign(DebuggerOptions.ConsoleWindowPlugIns);
   FPlugIns.Changed := False;
+
+  cbPlugIn.Clear;
+  c := 0;
+  for i := 0 to FPlugIns.Count - 1 do begin
+    cbPlugIn.Items.Add(FPlugIns.PlugIns[i].GetDisplayName);
+    if SameText(FPlugIns.Ids[i], DebuggerOptions.ConsoleWindowPlugInId) then
+      c := i;
+  end;
+  cbPlugIn.ItemIndex := c;
 
   UpdateDescription;
   ShowSettingsFrame;
@@ -194,8 +187,10 @@ end;
 function TIdeDbgConsoleWindowOptionsFrame.SelectedPlugInId: String;
 begin
   Result := '';
-  if (cbPlugIn.ItemIndex >= 0) and (cbPlugIn.ItemIndex < ConsoleWindowPlugIns.Count) then
-    Result := ConsoleWindowPlugIns[cbPlugIn.ItemIndex].GetPlugInId;
+  if FPlugIns = nil then
+    exit;
+  if (cbPlugIn.ItemIndex >= 0) and (cbPlugIn.ItemIndex < FPlugIns.Count) then
+    Result := FPlugIns.Ids[cbPlugIn.ItemIndex];
 end;
 
 procedure TIdeDbgConsoleWindowOptionsFrame.UpdateDescription;

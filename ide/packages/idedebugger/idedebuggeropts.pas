@@ -12,7 +12,7 @@ uses
   // BuildIntf
   IDEOptionsIntf,
   // IdeIntf
-  IdeDebuggerConsolePlugInIntf,
+  IdeDebuggerConsolePlugInIntf, IdeDebuggerPlugInIntf,
   // IdeConfig
   EnvironmentOpts,
   // DebuggerIntf
@@ -36,9 +36,9 @@ type
   TIdeDbgConsoleWindowPlugInList = class
   private
     FIds: TStringList;
-    FPlugIns: array of ILazDbgIdePlugIn;
+    FPlugIns: array of ILazDbgIdeConsoleWindowPlugIn;
     FChanged: Boolean;
-    function GetPlugIn(AIndex: Integer): ILazDbgIdePlugIn;
+    function GetPlugIn(AIndex: Integer): ILazDbgIdeConsoleWindowPlugIn;
     function GetCount: Integer;
   public
     constructor Create;
@@ -47,12 +47,12 @@ type
     procedure Assign(ASource: TIdeDbgConsoleWindowPlugInList);
     (* The instance for AId, created from the registry on first ask. Nil if no
        such plug-in is registered in this IDE. *)
-    function  PlugInById(const AId: String): ILazDbgIdePlugIn;
+    function  PlugInById(const AId: String): ILazDbgIdeConsoleWindowPlugIn;
     procedure LoadDataFromXMLConfig(const AConfig: TRttiXMLConfig; const APath: string);
     procedure SaveDataToXMLConfig(const AConfig: TRttiXMLConfig; const APath: string);
     property Count: Integer read GetCount;
     property Ids: TStringList read FIds;
-    property PlugIns[AIndex: Integer]: ILazDbgIdePlugIn read GetPlugIn;
+    property PlugIns[AIndex: Integer]: ILazDbgIdeConsoleWindowPlugIn read GetPlugIn;
     property Changed: Boolean read FChanged write FChanged;
   end;
 
@@ -297,12 +297,12 @@ begin
   Result := FIds.Count;
 end;
 
-function TIdeDbgConsoleWindowPlugInList.GetPlugIn(AIndex: Integer): ILazDbgIdePlugIn;
+function TIdeDbgConsoleWindowPlugInList.GetPlugIn(AIndex: Integer): ILazDbgIdeConsoleWindowPlugIn;
 begin
   Result := FPlugIns[AIndex];
 end;
 
-function TIdeDbgConsoleWindowPlugInList.PlugInById(const AId: String): ILazDbgIdePlugIn;
+function TIdeDbgConsoleWindowPlugInList.PlugInById(const AId: String): ILazDbgIdeConsoleWindowPlugIn;
 var
   Entry: TLazDbgIdeConsoleWindowPlugInRegistryEntryClass;
   i: Integer;
@@ -311,11 +311,11 @@ begin
   if i >= 0 then
     exit(FPlugIns[i]);
 
-  Entry := ConsoleWindowPlugIns.FindByPlugInId(AId);
+  Entry := ConsoleWindowPlugIns.IdePluginById[AId];
   if Entry = nil then
     exit(nil);
 
-  Result := Entry.CreateIdeConsoleWindowPlugIn;
+  Result := Entry.CreateIdePlugIn;
   i := FIds.Add(Entry.GetPlugInId);   // the registry's spelling, not the caller's
   SetLength(FPlugIns, FIds.Count);
   FPlugIns[i] := Result;
@@ -324,15 +324,15 @@ end;
 procedure TIdeDbgConsoleWindowPlugInList.Assign(ASource: TIdeDbgConsoleWindowPlugInList);
 var
   i: Integer;
-  Src, Dst: TObject;
+  Src, Dst: ILazDbgIdePlugInConfiguration;
 begin
   for i := 0 to ASource.Count - 1 do begin
-    Dst := nil;
-    Src := ASource.PlugIns[i].GetConfigObject;
-    if Src is TPersistent then
-      Dst := PlugInById(ASource.Ids[i]).GetConfigObject;
-    if (Dst is TPersistent) and (Src is TPersistent) then
-      TPersistent(Dst).Assign(TPersistent(Src));
+    Dst := PlugInById(ASource.Ids[i]).GetConfiguration;
+    if Dst = nil then
+      Continue;
+    Src := ASource.PlugIns[i].GetConfiguration;
+    if (Src <> nil) then
+      Dst.AssignOptions(Src);
   end;
 end;
 
@@ -342,7 +342,7 @@ var
   i, c: Integer;
   Id, p: String;
   Obj: TObject;
-  P2: ILazDbgIdePlugIn;
+  P2: ILazDbgIdeConsoleWindowPlugIn;
 begin
   Clear;
   c := AConfig.GetValue(APath + 'Count', 0);

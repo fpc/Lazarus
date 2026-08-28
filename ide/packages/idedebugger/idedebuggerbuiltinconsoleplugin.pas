@@ -28,7 +28,7 @@ interface
 uses
   Classes, SysUtils,
   // IdeIntf
-  IdeDebuggerConsolePlugInIntf,
+  IdeDebuggerConsolePlugInIntf, IdeDebuggerPlugInIntf,
   // LazDebuggerIntf
   LazDebuggerIntfBaseTypes,
   // IdeDebugger
@@ -40,21 +40,36 @@ const
 
 type
 
+  { TLazDbgIdeBuiltInConsolePlugInRegistryEntry }
+
+  TLazDbgIdeBuiltInConsolePlugInRegistryEntry = class(TLazDbgIdeConsoleWindowPlugInRegistryEntry)
+  public
+    class function CreateIdeConsoleWindowPlugIn: ILazDbgIdeConsoleWindowPlugIn; override;
+    class function GetDisplayName: String; override;
+    class function GetPlugInId: String; override;
+  end;
+
   { TLazDbgIdeBuiltInConsolePlugIn }
 
-  TLazDbgIdeBuiltInConsolePlugIn = class(TObject, ILazDbgIdePlugIn,
-                                                 ILazDbgIdeConsoleWindowPlugIn)
+  TLazDbgIdeBuiltInConsolePlugIn = class(
+    specialize TGenLazDbgIdePlugIn<
+      specialize TGenLazDbgIdePlugInConfiguration<TObject>,
+      TLazDbgIdeBuiltInConsolePlugInRegistryEntry>,
+    ILazDbgIdeConsoleWindowPlugIn, ILazDbgIdePlugInConfiguration)
   private
     FHook: ILazDbgIdeTargetIoHook;
-  public
-    // ILazDbgIdePlugIn
-    function  GetConfigObject: TObject;
-    function  CreateCopy: ILazDbgIdePlugIn;
+  protected
     procedure DoFree;
-    procedure ILazDbgIdePlugIn.Free = DoFree;
-    procedure ILazDbgIdeConsoleWindowPlugIn.Free = DoFree;
+    function GetSettingsFrameClass: TFrameClass; virtual;
+  public
+    // ILazDbgIdePlugInConfiguration
+    function  GetConfigObject: TObject; reintroduce;
+    function  CreateCopy: ILazDbgIdePlugInConfiguration; reintroduce;
+    procedure AssignOptions(ASource: ILazDbgIdePlugInConfiguration); reintroduce;
+    procedure ILazDbgIdePlugInConfiguration.FreeCopy = DoFree;
 
     // ILazDbgIdeConsoleWindowPlugIn
+    procedure ILazDbgIdeConsoleWindowPlugIn.Free = DoFree;
     procedure HandleUserSelectedAsActive;
     procedure HandleUserDeselectedFromActive;
     procedure ProcessAddedToPlugInHook(AHook: ILazDbgIdeTargetIoHook);
@@ -64,15 +79,6 @@ type
     procedure AddOutput(AChannel: TLzDbgTargetIoChannel; const AText: String);
     procedure BringToFront;
     procedure SetAutoShowState(AShowOnInput: Boolean);
-  end;
-
-  { TLazDbgIdeBuiltInConsolePlugInRegistryEntry }
-
-  TLazDbgIdeBuiltInConsolePlugInRegistryEntry = class(TLazDbgIdeConsoleWindowPlugInRegistryEntry)
-  public
-    class function CreateIdeConsoleWindowPlugIn: ILazDbgIdeConsoleWindowPlugIn; override;
-    class function GetDisplayName: String; override;
-    class function GetPlugInId: String; override;
   end;
 
 implementation
@@ -87,14 +93,29 @@ begin
   Result := nil;
 end;
 
-function TLazDbgIdeBuiltInConsolePlugIn.CreateCopy: ILazDbgIdePlugIn;
+function TLazDbgIdeBuiltInConsolePlugIn.CreateCopy: ILazDbgIdePlugInConfiguration;
 begin
   Result := TLazDbgIdeBuiltInConsolePlugIn.Create;
+end;
+
+procedure TLazDbgIdeBuiltInConsolePlugIn.AssignOptions(ASource: ILazDbgIdePlugInConfiguration);
+//var
+//  o: TObject;
+begin
+  //o := ASource.GetConfigObject;
+  //if not (o is TDebugTerminalConfig) then
+  //  exit;
+  //FConfig.Assign(TDebugTerminalConfig(o));
 end;
 
 procedure TLazDbgIdeBuiltInConsolePlugIn.DoFree;
 begin
   Destroy;
+end;
+
+function TLazDbgIdeBuiltInConsolePlugIn.GetSettingsFrameClass: TFrameClass;
+begin
+  Result := nil;
 end;
 
 procedure TLazDbgIdeBuiltInConsolePlugIn.HandleUserSelectedAsActive;

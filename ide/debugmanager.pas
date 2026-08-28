@@ -51,7 +51,7 @@ uses
   CodeCache, CodeToolManager, PascalParserTool, CodeTree,
   // BuildIntf
   ProjectIntf, CompOptsIntf,
-  // IDEIntf
+  // IDEIntftb
   IDEWindowIntf, SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf, IdeIntfStrConsts, IDEDialogs,
   ToolBarIntf, IdeDebuggerWatchValueIntf, IdeDebuggerConsolePlugInIntf,
   {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
@@ -1121,13 +1121,13 @@ begin
      Nothing rejects an empty id at registration, so a plug-in that registered
      one would otherwise become the choice for every project that has none. *)
   if Id <> '' then
-    Result := ConsoleWindowPlugIns.FindByPlugInId(Id)
+    Result := ConsoleWindowPlugIns.IdePluginById[Id]
   else
     Result := nil;
   if Result = nil then
-    Result := ConsoleWindowPlugIns.FindByPlugInId(DebuggerOptions.ConsoleWindowPlugInId);
+    Result := ConsoleWindowPlugIns.IdePluginById[DebuggerOptions.ConsoleWindowPlugInId];
   if Result = nil then
-    Result := ConsoleWindowPlugIns.FindByPlugInId(BuiltInConsolePlugInId);
+    Result := ConsoleWindowPlugIns.IdePluginById[BuiltInConsolePlugInId];
   if (Result = nil) and (ConsoleWindowPlugIns.Count > 0) then
     Result := ConsoleWindowPlugIns[0];
 end;
@@ -1135,7 +1135,7 @@ end;
 function TDebugManager.ConsolePlugIn: ILazDbgIdeConsoleWindowPlugIn;
 var
   Entry: TLazDbgIdeConsoleWindowPlugInRegistryEntryClass;
-  Obj: ILazDbgIdePlugIn;
+  Obj: ILazDbgIdeConsoleWindowPlugIn;
 begin
   if FConsolePlugIn = nil then begin
     Entry := ResolveConsoleEntry;
@@ -1143,10 +1143,8 @@ begin
       (* The instance comes from the options store, which is what holds the
          user's settings for it. Creating one here instead would give a plug-in
          with default settings and no way to reach the configured ones. *)
-      Obj := DebuggerOptions.ConsoleWindowPlugIns.PlugInById(Entry.GetPlugInId);
-      if (Obj = nil) or
-         (not Obj.GetInterface(ILazDbgIdeConsoleWindowPlugIn, FConsolePlugIn))
-      then
+      FConsolePlugIn := DebuggerOptions.ConsoleWindowPlugIns.PlugInById(Entry.GetPlugInId);
+      if FConsolePlugIn = nil then
         exit(nil);
       FConsolePlugInId := Entry.GetPlugInId;
       FConsolePlugIn.HandleUserSelectedAsActive;
