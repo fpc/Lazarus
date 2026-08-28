@@ -31,7 +31,9 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  StdCtrls, Dialogs, Controls, Spin,
+  StdCtrls, Dialogs, Controls, Spin, ExtCtrls,
+  // LazControls
+  DividerBevel,
   // LazUtils
   FileUtil, LazFileUtils, LazStringUtils,
   // CodeTools
@@ -61,17 +63,20 @@ type
     FPCSourceDirButton:TButton;
     FPCSourceDirComboBox:TComboBox;
     FPCSourceDirLabel:TLabel;
-    lblCenter: TLabel;
     LazarusDirButton:TButton;
     LazarusDirComboBox:TComboBox;
     LazarusDirLabel:TLabel;
     MakePathButton:TButton;
     MakePathComboBox:TComboBox;
     MakePathLabel:TLabel;
-    MaxRecentOpenFilesSpin: TSpinEdit;
-    MaxRecentOpenFilesLabel: TLabel;
-    MaxRecentProjectFilesSpin: TSpinEdit;
-    MaxRecentProjectFilesLabel: TLabel;
+    RecentDividerBevel: TDividerBevel;
+    grpRecentMaxCount: TGroupBox;
+    lblMaxRecentProjectFiles: TLabel;
+    spnMaxRecentProjectFiles: TSpinEdit;
+    lblMaxRecentPackageFiles: TLabel;
+    spnMaxRecentPackageFiles: TSpinEdit;
+    lblMaxRecentOpenFiles: TLabel;
+    spnMaxRecentOpenFiles: TSpinEdit;
     TestBuildDirButton:TButton;
     TestBuildDirComboBox:TComboBox;
     TestBuildDirLabel:TLabel;
@@ -98,6 +103,7 @@ type
     fOldFppkgConfigurationFilename: string;
     FOldMaxRecentOpenFiles: integer;
     FOldMaxRecentProjectFiles: integer;
+    FOldMaxRecentPackageFiles: integer;
     function CheckLazarusDir(Buttons: TMsgDlgButtons): boolean;
     function CheckCompiler(Buttons: TMsgDlgButtons): boolean;
     function CheckFPCSourceDir(Buttons: TMsgDlgButtons): boolean;
@@ -298,10 +304,6 @@ end;
 
 procedure TFilesOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  MaxRecentOpenFilesLabel.Caption:=dlgMaxRecentFiles;
-  MaxRecentOpenFilesLabel.Hint:=dlgMaxRecentHint;
-  MaxRecentProjectFilesLabel.Caption:=dlgMaxRecentProjs;
-  MaxRecentProjectFilesLabel.Hint:=dlgMaxRecentHint;
   LazarusDirLabel.Caption:=dlgLazarusDir;
   LazarusDirLabel.Hint:=Format(lisLazarusDirHint,[GetPrimaryConfigPath]);
   LazarusDirComboBox.Hint:=LazarusDirLabel.Hint;
@@ -349,6 +351,19 @@ begin
   begin
     Add(GetForcedPathDelims('$(FPCSrcDir)/compiler/msg/errordu.msg'));
   end;
+
+  { Recent }
+
+  RecentDividerBevel.Caption := dlgRecent;
+  grpRecentMaxCount.Caption := dlgMaxRecentCount;
+
+  lblMaxRecentProjectFiles.Caption := dlgRecentProjectsCaption;
+  lblMaxRecentPackageFiles.Caption := dlgRecentPackagesCaption;
+  lblMaxRecentOpenFiles   .Caption := dlgRecentFilesCaption;
+
+  lblMaxRecentProjectFiles.Hint := dlgMaxRecentHint;
+  lblMaxRecentPackageFiles.Hint := dlgMaxRecentHint;
+  lblMaxRecentOpenFiles   .Hint := dlgMaxRecentHint;
 end;
 
 function TFilesOptionsFrame.GetTitle: String;
@@ -459,9 +474,11 @@ begin
 
     // recent files and directories
     FOldMaxRecentOpenFiles := MaxRecentOpenFiles;
-    MaxRecentOpenFilesSpin.Value := MaxRecentOpenFiles;
+    spnMaxRecentOpenFiles.Value := MaxRecentOpenFiles;
     FOldMaxRecentProjectFiles := MaxRecentProjectFiles;
-    MaxRecentProjectFilesSpin.Value := MaxRecentProjectFiles;
+    spnMaxRecentProjectFiles.Value := MaxRecentProjectFiles;
+    FOldMaxRecentPackageFiles := MaxRecentPackageFiles;
+    spnMaxRecentPackageFiles.Value := MaxRecentPackageFiles;
   end;
 end;
 
@@ -485,8 +502,9 @@ begin
     FppkgConfigFile:=FppkgConfigurationFileComboBox.Text;
 
     // recent files and directories
-    MaxRecentOpenFiles := MaxRecentOpenFilesSpin.Value;
-    MaxRecentProjectFiles := MaxRecentProjectFilesSpin.Value;
+    MaxRecentOpenFiles := spnMaxRecentOpenFiles.Value;
+    MaxRecentProjectFiles := spnMaxRecentProjectFiles.Value;
+    MaxRecentPackageFiles := spnMaxRecentPackageFiles.Value;
   end;
 end;
 
@@ -506,6 +524,7 @@ begin
     // recent files and directories
     MaxRecentOpenFiles := FOldMaxRecentOpenFiles;
     MaxRecentProjectFiles := FOldMaxRecentProjectFiles;
+    MaxRecentPackageFiles := FOldMaxRecentPackageFiles;
   end;
 end;
 
