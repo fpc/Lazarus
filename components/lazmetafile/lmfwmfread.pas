@@ -478,7 +478,7 @@ begin
   x := SmallInt(LEToN(AParams[1]));
   len := SmallInt(LEToN(AParams[2]));
   opts := LEToN(AParams[3]);
-  if opts <> 0 then begin
+  if opts and (ETO_OPAQUE or ETO_CLIPPED) <> 0 then begin
     R.Bottom := SmallInt(LEToN(AParams[4]));
     R.Right := SmallInt(LEToN(AParams[5]));
     R.Top := SmallInt(LEToN(AParams[6]));
