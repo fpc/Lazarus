@@ -28,9 +28,12 @@ interface
 {$ASSERTIONS ON}
 {$endif}
  
-uses 
+uses
   {$IFDEF MSWINDOWS}
   Windows, // used to retrieve correct caption color values
+  {$ENDIF}
+  {$IFDEF UNIX}
+  BaseUnix, Unix, termio,
   {$ENDIF}
   // Bindings - qt5 must come first to avoid type redefinition problems
   qt5,
@@ -49,6 +52,17 @@ uses
   qtproc;
 
 type
+  {$IFDEF UNIX}
+  PChildSignalEventHandler = ^TChildSignalEventHandler;
+  TChildSignalEventHandler = record
+    PID: TPid;
+    UserData: PtrInt;
+    OnEvent: TChildExitEvent;
+    PrevHandler: PChildSignalEventHandler;
+    NextHandler: PChildSignalEventHandler;
+  end;
+  {$ENDIF}
+
   { TQtWidgetSet }
 
   TQtWidgetSet = Class(TWidgetSet)
@@ -71,6 +85,10 @@ type
     CriticalSection: TRTLCriticalSection;
     SavedHandlesList: TMap;
     FSocketEventMap: TMap;
+    {$IFDEF UNIX}
+    FChildSignalHandlers: PChildSignalEventHandler;
+    FChildSigPipeHandler: PEventHandler;
+    {$ENDIF}
     StayOnTopList: TMap;
     SysTrayIconsList: TFPList;
     // global hooks
@@ -107,6 +125,13 @@ type
     procedure QtRemoveStayOnTop(const ASystemTopAlso: Boolean = False);
     procedure QtRestoreStayOnTop(const ASystemTopAlso: Boolean = False);
     procedure SetDefaultAppFontName;
+    procedure DoDestroySocketNotifiers(AWheh: PWaitHandleEventHandler);
+    {$IFDEF UNIX}
+    procedure HandlePipeEvent(AData: PtrInt; AFlags: dword);
+    procedure ChildSignalPipeEvent({%H-}AData: PtrInt; {%H-}AFlags: dword);
+    procedure ProcessChildSignal;
+    procedure InstallChildSignalHandler;
+    {$ENDIF}
   protected
     FPenForSetPixel: QPenH;
     FInGetPixel: boolean;
@@ -331,6 +356,7 @@ const
    // combobox OnCloseUp should be in order OnChange->OnSelect->OnCloseUp
    LCLQt_ComboBoxCloseUp = QEventType(Ord(QEventUser) + $1012);
    LCLQt_DestroyWidget = QEventType(Ord(QEventUser) + $1013);
+   LCLQt_DestroySocketNotifiers = QEventType(Ord(QEventUser) + $1014);
    LCLQt_DesignerUpdate = QEventType(Ord(QEventUser) + $1014);
 
 

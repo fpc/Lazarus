@@ -133,19 +133,169 @@ begin
   FSocketEventMap.Add(AHandle, Result);
 end;
 
+{$IFDEF UNIX}
+type
+  PPipeEventInfo = ^TPipeEventInfo;
+  TPipeEventInfo = record
+    Handler: PEventHandler;
+    Handle: TLCLHandle;
+    UserData: PtrInt;
+    OnEvent: TPipeEvent;
+  end;
+
+var
+  QtChildSigPipeIn: cint = -1;
+  QtChildSigPipeOut: cint = -1;
+  QtChildSigInstalled: Boolean = False;
+
+procedure QtChildSignalHandler({%H-}sig: longint; {%H-}siginfo: psiginfo;
+  {%H-}sigcontext: psigcontext); cdecl;
+var
+  b: char;
+begin
+  b := 'c';
+  fpwrite(QtChildSigPipeOut, b, 1);
+end;
+{$ENDIF}
+
 function TQtWidgetSet.AddPipeEventHandler(AHandle: TLCLHandle;
   AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler;
+{$IFDEF UNIX}
+var
+  lPipeEventInfo: PPipeEventInfo;
 begin
-  // todo
+  Result := nil;
+  if AEventHandler = nil then
+    exit;
+  New(lPipeEventInfo);
+  lPipeEventInfo^.Handle := AHandle;
+  lPipeEventInfo^.UserData := AData;
+  lPipeEventInfo^.OnEvent := AEventHandler;
+  lPipeEventInfo^.Handler := AddEventHandler(AHandle,
+    EVE_IO_READ or EVE_IO_WRITE or EVE_IO_ERROR,
+    @HandlePipeEvent, {%H-}PtrInt(lPipeEventInfo));
+  Result := lPipeEventInfo;
+end;
+{$ELSE}
+begin
+  // todo: Windows
   Result := nil;
 end;
+{$ENDIF}
+
+{$IFDEF UNIX}
+procedure TQtWidgetSet.HandlePipeEvent(AData: PtrInt; AFlags: dword);
+var
+  lPipeEventInfo: PPipeEventInfo absolute AData;
+  lReasons: TPipeReasons;
+  lAvailable: cint;
+begin
+  lReasons := [];
+  if AFlags and EVE_IO_READ <> 0 then
+  begin
+    lAvailable := 0;
+    if (FpIOCtl(cint(lPipeEventInfo^.Handle), FIONREAD, @lAvailable) = 0) and
+       (lAvailable = 0) then
+      Include(lReasons, prBroken)
+    else
+      Include(lReasons, prDataAvailable);
+  end;
+  if AFlags and EVE_IO_WRITE <> 0 then
+    Include(lReasons, prCanWrite);
+  if AFlags and EVE_IO_ERROR <> 0 then
+    Include(lReasons, prBroken);
+
+  lPipeEventInfo^.OnEvent(lPipeEventInfo^.UserData, lReasons);
+end;
+
+procedure TQtWidgetSet.ChildSignalPipeEvent({%H-}AData: PtrInt; {%H-}AFlags: dword);
+var
+  thrash: char;
+begin
+  fpread(QtChildSigPipeIn, thrash{%H-}, 1);
+  ProcessChildSignal;
+end;
+
+procedure TQtWidgetSet.ProcessChildSignal;
+var
+  pid: tpid;
+  reason: TChildExitReason;
+  status: integer;
+  info: dword;
+  handler, nextHandler: PChildSignalEventHandler;
+begin
+  handler := FChildSignalHandlers;
+  while handler <> nil do
+  begin
+    nextHandler := handler^.NextHandler;
+    status := 0;
+    pid := fpwaitpid(handler^.pid, status, WNOHANG);
+    if (pid = handler^.pid) and (wifexited(status) or wifsignaled(status)) then
+    begin
+      if wifexited(status) then
+      begin
+        reason := cerExit;
+        info := wexitstatus(status);
+      end
+      else
+      begin
+        reason := cerSignal;
+        info := wtermsig(status);
+      end;
+      handler^.OnEvent(handler^.UserData, reason, info);
+    end;
+    handler := nextHandler;
+  end;
+end;
+
+procedure TQtWidgetSet.InstallChildSignalHandler;
+var
+  child_action: sigactionrec;
+  fds: TFilDes;
+begin
+  if QtChildSigInstalled then
+    exit;
+  if FpPipe(fds{%H-}) <> 0 then
+    exit;
+  QtChildSigPipeIn := fds[0];
+  QtChildSigPipeOut := fds[1];
+  FChildSigPipeHandler := AddEventHandler(QtChildSigPipeIn, EVE_IO_READ,
+    @ChildSignalPipeEvent, 0);
+  child_action.sa_handler := @QtChildSignalHandler;
+  fpsigemptyset(child_action.sa_mask);
+  child_action.sa_flags := 0;
+  fpsigaction(SIGCHLD, @child_action, nil);
+  QtChildSigInstalled := True;
+end;
+{$ENDIF}
 
 function TQtWidgetSet.AddProcessEventHandler(AHandle: TLCLHandle;
   AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler;
+{$IFDEF UNIX}
+var
+  lHandler: PChildSignalEventHandler;
 begin
-  // todo
+  Result := nil;
+  if AEventHandler = nil then
+    exit;
+  InstallChildSignalHandler;
+  New(lHandler);
+  lHandler^.PID := TPid(AHandle);
+  lHandler^.UserData := AData;
+  lHandler^.OnEvent := AEventHandler;
+  lHandler^.PrevHandler := nil;
+  lHandler^.NextHandler := FChildSignalHandlers;
+  if FChildSignalHandlers <> nil then
+    FChildSignalHandlers^.PrevHandler := lHandler;
+  FChildSignalHandlers := lHandler;
+  Result := lHandler;
+end;
+{$ELSE}
+begin
+  // todo: Windows
   Result := nil;
 end;
+{$ENDIF}
 
 function TQtWidgetSet.AskUser(const DialogCaption, DialogMessage: string;
   DialogType: LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt;
@@ -852,28 +1002,73 @@ procedure TQtWidgetSet.RemoveEventHandler(var AHandler: PEventHandler);
 var
   wheh: PWaitHandleEventHandler;
   i: QSocketNotifierType;
+  Event: QLCLMessageEventH;
 begin
   wheh := PWaitHandleEventHandler(aHandler);
   FSocketEventMap.Delete(wheh^.socket); // delete from the map
 
+  // issue #42551: destroy deferred, can be called from notifier callback
   for i := QSocketNotifierRead to QSocketNotifierException do
-    if Assigned(wheh^.qsn[i]) then begin
-      QSocketNotifier_destroy(wheh^.qsn[i]);
-      QSocketNotifier_hook_destroy(wheh^.qsn_hook[i]);
-    end;
-  dispose(wheh);
+    if Assigned(wheh^.qsn[i]) then
+      QSocketNotifier_setEnabled(wheh^.qsn[i], False);
+  Event := QLCLMessageEvent_create(LCLQt_DestroySocketNotifiers, 0, {%H-}PtrUInt(wheh), 0, 0);
+  QCoreApplication_postEvent(QCoreApplication_instance(), Event);
   aHandler := nil;
 end;
 
-procedure TQtWidgetSet.RemovePipeEventHandler(var AHandler: PPipeEventHandler);
+procedure TQtWidgetSet.DoDestroySocketNotifiers(AWheh: PWaitHandleEventHandler);
+var
+  i: QSocketNotifierType;
 begin
-  // todo
+  if AWheh = nil then
+    exit;
+  for i := QSocketNotifierRead to QSocketNotifierException do
+    if Assigned(AWheh^.qsn[i]) then
+    begin
+      QSocketNotifier_destroy(AWheh^.qsn[i]);
+      QSocketNotifier_hook_destroy(AWheh^.qsn_hook[i]);
+    end;
+  dispose(AWheh);
 end;
 
-procedure TQtWidgetSet.RemoveProcessEventHandler(var AHandler: PProcessEventHandler);
+procedure TQtWidgetSet.RemovePipeEventHandler(var AHandler: PPipeEventHandler);
+{$IFDEF UNIX}
+var
+  lPipeEventInfo: PPipeEventInfo absolute AHandler;
 begin
-  // todo
+  if AHandler = nil then
+    exit;
+  RemoveEventHandler(lPipeEventInfo^.Handler);
+  Dispose(lPipeEventInfo);
+  AHandler := nil;
 end;
+{$ELSE}
+begin
+  // todo: Windows
+end;
+{$ENDIF}
+
+procedure TQtWidgetSet.RemoveProcessEventHandler(var AHandler: PProcessEventHandler);
+{$IFDEF UNIX}
+var
+  lHandler: PChildSignalEventHandler absolute AHandler;
+begin
+  if AHandler = nil then
+    exit;
+  if lHandler^.PrevHandler = nil then
+    FChildSignalHandlers := lHandler^.NextHandler
+  else
+    lHandler^.PrevHandler^.NextHandler := lHandler^.NextHandler;
+  if lHandler^.NextHandler <> nil then
+    lHandler^.NextHandler^.PrevHandler := lHandler^.PrevHandler;
+  Dispose(lHandler);
+  AHandler := nil;
+end;
+{$ELSE}
+begin
+  // todo: Windows
+end;
+{$ENDIF}
 
 procedure TQtWidgetSet.SetCanvasScaleFactor(DC: HDC; const AScaleFactor: double);
 var
