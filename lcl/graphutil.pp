@@ -520,13 +520,16 @@ var
   dr, dg, db: integer;
 
  function GetColor(pos, total: integer): TColor;
+ var
+   factor: Double;
 
    function GetComponent(c1, dc: integer): integer; inline;
    begin
-     Result := Round(dc / sqr(total) * sqr(pos) + c1);
+     Result := Round(factor * dc + c1);
    end;
 
  begin
+   factor := sqr(pos / total);
    Result :=
      GetComponent(r1, dr) or
      (GetComponent(g1, dg) shl 8) or
