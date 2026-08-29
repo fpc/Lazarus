@@ -363,33 +363,36 @@ begin //FloodFill
   if (lHt < 1) or (lWid < 1) then exit;
   getmem(lQra,lQSz*sizeof(longint)); //very wasteful -
   getmem(lMaskRA,lHt*lWid*sizeof(byte));
-  for lPos := 1 to (lHt*lWid) do
-      lMaskRA^[lPos] := lDefaultVal; //assume all voxels are non targets
-  lPos := 0;
-  // MG: it is very slow to access the whole (!) canvas with pixels
-  for lY := 0 to (lHt-1) do
-      for lX := 0 to (lWid-1) do begin
-          lPos := lPos + 1;
-          if Canvas.Pixels[lX,lY] = lColor then
-             lMaskRA^[lPos] := lTargetColorVal;
-      end;
-  lQHead := 2;
-  lQTail := 1;
-  lQra^[lQTail] := ((Y * lWid)+X+1); //NOTE: both X and Y start from 0 not 1
-  lMaskRA^[lQra^[lQTail]] := kFill;
-  RetirePixel;
-  while lQHead <> lQTail do
-        RetirePixel;
-  lBrushColor := Canvas.Brush.Color;
-  lPos := 0;
-  for lY := 0 to (lHt-1) do
-      for lX := 0 to (lWid-1) do begin
-          lPos := lPos + 1;
-          if lMaskRA^[lPos] = kFill then
-             Canvas.Pixels[lX,lY] := lBrushColor;
-      end;
-  freemem(lMaskRA);
-  freemem(lQra);
+  try
+    for lPos := 1 to (lHt*lWid) do
+        lMaskRA^[lPos] := lDefaultVal; //assume all voxels are non targets
+    lPos := 0;
+    // MG: it is very slow to access the whole (!) canvas with pixels
+    for lY := 0 to (lHt-1) do
+        for lX := 0 to (lWid-1) do begin
+            lPos := lPos + 1;
+            if Canvas.Pixels[lX,lY] = lColor then
+               lMaskRA^[lPos] := lTargetColorVal;
+        end;
+    lQHead := 2;
+    lQTail := 1;
+    lQra^[lQTail] := ((Y * lWid)+X+1); //NOTE: both X and Y start from 0 not 1
+    lMaskRA^[lQra^[lQTail]] := kFill;
+    RetirePixel;
+    while lQHead <> lQTail do
+          RetirePixel;
+    lBrushColor := Canvas.Brush.Color;
+    lPos := 0;
+    for lY := 0 to (lHt-1) do
+        for lX := 0 to (lWid-1) do begin
+            lPos := lPos + 1;
+            if lMaskRA^[lPos] = kFill then
+               Canvas.Pixels[lX,lY] := lBrushColor;
+        end;
+  finally
+    freemem(lMaskRA);
+    freemem(lQra);
+  end;
 end;
 
 procedure ScaleImg(AImage: TCustomBitmap; AWidth, AHeight: Integer);
@@ -501,6 +504,8 @@ var
  end;
 
 begin
+  if ARect.Top = ARect.Bottom then
+    exit;
   ExtractRGB(ColorToRGB(TopColor), r1, g1, b1);
   ExtractRGB(ColorToRGB(BottomColor), r2, g2, b2);
   dr := r2 - r1;
@@ -807,7 +812,7 @@ const
 var
   f, hTemp, p, q, t, VS: integer;
 begin
-  if H > 360 then H := H - 360;
+  H := H mod 360;
   if H < 0 then H := H + 360;
   if s = 0 then
     Result := RGBtoRGBTriple(V, V, V)
@@ -838,7 +843,7 @@ const
 var
   f, hTemp, p, q, t, VS: integer;
 begin
-  if H > 360 then H := H - 360;
+  H := H mod 360;
   if H < 0 then H := H + 360;
   if s = 0 then
     Result := RGBtoRGBQuad(V, V, V)

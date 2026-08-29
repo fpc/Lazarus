@@ -230,6 +230,7 @@ begin
   lmfFont.Font.Underline := fontRec^.UnderLine <> 0;
   lmfFont.Font.StrikeThrough := fontRec^.Strikeout <> 0;
   lmfFont.Font.Orientation := LEToN(fontRec^.Escapement);  // Do not use fontRec^.Orientation here!
+  lmfFont.Font.CharSet := fontrec^.CharSet;
 
   // Add to metafile list
   FImage.List.InsertComponent(lmfFont);

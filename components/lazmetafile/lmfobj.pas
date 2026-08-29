@@ -75,10 +75,10 @@ type
   private
     fText: string;
   public
-    constructor Create(x,y:integer; const AText:string);overload;
-    procedure Action(fImage:TlmfImage;ACanvas:TCanvas);override;
+    constructor Create(x, y: integer; const AText: string); overload;
+    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
   published
-    property Text:string read fText write fText;
+    property Text: string read fText write fText;
   end;
 
   TlmfTextInRect = class(TlmfText)
