@@ -1187,6 +1187,31 @@ begin
   Result := TLCLHandle(TGtk3HintWindow.Create(AWinControl, AParams));
 end;
 
+// issue #42541
+procedure Gtk3HintWindowCheckResizeAfter(AContainer: PGtkContainer; AData: gpointer); cdecl;
+var
+  AWidget: PGtkWidget;
+  AWinControl: TWinControl;
+  AAnchorRect: TGdkRectangle;
+begin
+  AWidget := PGtkWidget(AContainer);
+  if AWidget^.get_mapped or
+    not GTK3WidgetSet.IsWayland or
+    (gtk_grab_get_current <> nil) or
+    (PGtkWindow(AWidget)^.get_transient_for = nil) or
+    not Gtk3IsGdkWindow(AWidget^.window) then
+    exit;
+  AWinControl := TWinControl(TGtk3Widget(AData).LCLObject);
+  if AWinControl = nil then
+    exit;
+  AAnchorRect.x := AWinControl.Left;
+  AAnchorRect.y := AWinControl.Top;
+  AAnchorRect.width := 1;
+  AAnchorRect.height := 1;
+  AWidget^.window^.move_to_rect(@AAnchorRect, GDK_GRAVITY_NORTH_WEST,
+    GDK_GRAVITY_NORTH_WEST, GDK_ANCHOR_SLIDE, 0, 0);
+end;
+
 class procedure TGtk3WSHintWindow.ShowHide(const AWinControl: TWinControl);
 var
   AWidget: PGtkWidget;
@@ -1237,6 +1262,17 @@ begin
       if ATransient = nil then
         ATransient := NonPopupToplevel(GetActiveGtkWindow);
       PGtkWindow(AWidget)^.set_transient_for(ATransient);
+
+      // issue #42541
+      if g_object_get_data(PGObject(AWidget), 'lcl_hint_move_to_rect') = nil then
+      begin
+        g_object_set_data(PGObject(AWidget), 'lcl_hint_move_to_rect', AWidget);
+        g_signal_connect_data(AWidget, 'check-resize',
+          TGCallback(@Gtk3HintWindowCheckResizeAfter),
+          TGtk3HintWindow(AWinControl.Handle), nil, [G_CONNECT_AFTER]);
+      end;
+      if (AGrabWidget <> nil) and Gtk3IsGdkWindow(AWidget^.window) then
+        AWidget^.window^.move(AWinControl.Left, AWinControl.Top);
     end;
 
     AWidget^.show_all;
