@@ -695,13 +695,15 @@ end;
 { Assumes R, G, B to be in range 0..255. Calculates H, S, V in range 0..1
   From: http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c }
 procedure RGBToHSV(R, G, B: Integer; out H, S, V: Double);
+const
+  inv255 = double(1.0 / 255);
 var
   rr, gg, bb: Double;
   cmax, cmin, delta: Double;
 begin
-  rr := R / 255;
-  gg := G / 255;
-  bb := B / 255;
+  rr := inv255 * R;   // = R / 255
+  gg := inv255 * G;
+  bb := inv255 * B;
   cmax := MaxValue([rr, gg, bb]);
   cmin := MinValue([rr, gg, bb]);
   delta := cmax - cmin;
