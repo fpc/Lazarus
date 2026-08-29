@@ -4228,6 +4228,7 @@ var
   i: integer;
   WStr: WideString;
   AFormats: QStringListH;
+  ASubstituted: Boolean;
   {$ENDIF}
 begin
   Result := False;
@@ -4237,6 +4238,7 @@ begin
   MimeType := UTF8ToUTF16(FormatToMimeType(FormatID));
 
   {$IF DEFINED(UNIX) AND NOT DEFINED(DARWIN)}
+  ASubstituted := False;
   //issue #40423
   if (MimeType = 'text/plain') then // do not translate
   begin
@@ -4252,6 +4254,7 @@ begin
         if WStr = 'text/plain;charset=utf-8' then // do not translate
         begin
           MimeType := WStr;
+          ASubstituted := True;
           break;
         end;
       end;
@@ -4262,6 +4265,18 @@ begin
   Data := QByteArray_create();
   QMimeData_data(QtMimeData, Data, @MimeType);
   s := QByteArray_size(Data);
+  {$IF DEFINED(UNIX) AND NOT DEFINED(DARWIN)}
+  //issue #42542: owner advertises the substituted format but refuses to serve
+  //it, retry with original text/plain so Qt converts from UTF8_STRING/STRING.
+  if ASubstituted and (s = 0) then
+  begin
+    QByteArray_destroy(Data);
+    MimeType := 'text/plain'; // do not translate
+    Data := QByteArray_create();
+    QMimeData_data(QtMimeData, Data, @MimeType);
+    s := QByteArray_size(Data);
+  end;
+  {$ENDIF}
   p := QByteArray_constData(Data);
   Stream.Write(p^, s);
   // what to do with p? FreeMem or nothing?
