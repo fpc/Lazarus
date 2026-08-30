@@ -368,9 +368,9 @@ begin
   lblMaxRecentPackageFiles.Caption := dlgRecentPackagesCaption;
   lblMaxRecentOpenFiles   .Caption := dlgRecentFilesCaption;
 
-  lblMaxRecentProjectFiles.Hint := dlgMaxRecentHint;
-  lblMaxRecentPackageFiles.Hint := dlgMaxRecentHint;
-  lblMaxRecentOpenFiles   .Hint := dlgMaxRecentHint;
+  spnMaxRecentProjectFiles.Hint := dlgMaxRecentHint;
+  spnMaxRecentPackageFiles.Hint := dlgMaxRecentHint;
+  spnMaxRecentOpenFiles   .Hint := dlgMaxRecentHint;
 
   grpToolbarButton.Caption := dlgShowInOpenCoolbarButton;
 
