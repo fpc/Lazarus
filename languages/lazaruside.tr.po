@@ -1850,6 +1850,7 @@ msgid "Backup"
 msgstr "Yedek"
 
 #: lazarusidestrconsts.dlgenvfiles
+msgctxt "lazarusidestrconsts.dlgenvfiles"
 msgid "Files"
 msgstr "Dosyalar"
 
@@ -3101,17 +3102,13 @@ msgstr "Maksimum sayaç"
 msgid "Max line length:"
 msgstr "Maks. Satır uzunluğu:"
 
-#: lazarusidestrconsts.dlgmaxrecentfiles
-msgid "Max recent files"
-msgstr "Son güncellenen dosyalar"
+#: lazarusidestrconsts.dlgmaxrecentcount
+msgid "Max count of recent items"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmaxrecenthint
 msgid "Value 0 means unlimited."
 msgstr "0 değeri sınırsız demektir."
-
-#: lazarusidestrconsts.dlgmaxrecentprojs
-msgid "Max recent project files"
-msgstr "Maksimum yeni proje dosyaları"
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -4085,6 +4082,36 @@ msgstr "Izgaraya yapış"
 msgid "Really delete desktop \"%s\"?"
 msgstr "Masaüstünü gerçekten silmek istiyormusunuz \"%s\"?"
 
+#: lazarusidestrconsts.dlgrecent
+msgid "Recent"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrecentfilescaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgrecentfilescaption"
+msgid "Files"
+msgstr "Dosyalar"
+
+#: lazarusidestrconsts.dlgrecentfilesheader
+msgid "Recent Files:"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrecentpackagescaption
+msgid "Packages"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrecentpackagesheader
+msgid "Recent Packages:"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrecentprojectscaption
+msgid "Projects"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrecentprojectsheader
+msgid "Recent Projects:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgredirappend
 msgid "To file (append)"
 msgstr "Dosyaya (ekleme)"
@@ -4458,6 +4485,10 @@ msgstr "İpuçlarını göster"
 #: lazarusidestrconsts.dlgshowingwindows
 msgid "Showing Windows"
 msgstr "Gösterilen Pencereler"
+
+#: lazarusidestrconsts.dlgshowinopencoolbarbutton
+msgid "Show in \"Open\" drop-down toolbar button"
+msgstr ""
 
 #: lazarusidestrconsts.dlgshowlinenumbers
 msgctxt "lazarusidestrconsts.dlgshowlinenumbers"

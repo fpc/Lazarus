@@ -1856,6 +1856,7 @@ msgid "Backup"
 msgstr "Cópia de segurança"
 
 #: lazarusidestrconsts.dlgenvfiles
+msgctxt "lazarusidestrconsts.dlgenvfiles"
 msgid "Files"
 msgstr "Arquivos"
 
@@ -3129,17 +3130,13 @@ msgstr "Contador Máximo"
 msgid "Max line length:"
 msgstr "Comprimento máximo da linha:"
 
-#: lazarusidestrconsts.dlgmaxrecentfiles
-msgid "Max recent files"
-msgstr "Máximo de arquivos recentes"
+#: lazarusidestrconsts.dlgmaxrecentcount
+msgid "Max count of recent items"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmaxrecenthint
 msgid "Value 0 means unlimited."
 msgstr "Valor 0 significa ilimitado."
-
-#: lazarusidestrconsts.dlgmaxrecentprojs
-msgid "Max recent project files"
-msgstr "Máximo de arquivos de projeto recentes"
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -4119,6 +4116,36 @@ msgstr "Ajustar à grade"
 msgid "Really delete desktop \"%s\"?"
 msgstr "Excluir realmente a área de trabalho \"%s\"?"
 
+#: lazarusidestrconsts.dlgrecent
+msgid "Recent"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrecentfilescaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgrecentfilescaption"
+msgid "Files"
+msgstr "Arquivos"
+
+#: lazarusidestrconsts.dlgrecentfilesheader
+msgid "Recent Files:"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrecentpackagescaption
+msgid "Packages"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrecentpackagesheader
+msgid "Recent Packages:"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrecentprojectscaption
+msgid "Projects"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrecentprojectsheader
+msgid "Recent Projects:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgredirappend
 msgid "To file (append)"
 msgstr ""
@@ -4495,6 +4522,10 @@ msgstr "Exibir dicas"
 #: lazarusidestrconsts.dlgshowingwindows
 msgid "Showing Windows"
 msgstr "Janelas exibidas"
+
+#: lazarusidestrconsts.dlgshowinopencoolbarbutton
+msgid "Show in \"Open\" drop-down toolbar button"
+msgstr ""
 
 #: lazarusidestrconsts.dlgshowlinenumbers
 msgctxt "lazarusidestrconsts.dlgshowlinenumbers"

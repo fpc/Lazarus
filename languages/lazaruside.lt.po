@@ -1906,6 +1906,7 @@ msgid "Backup"
 msgstr "Atsarginė kopija"
 
 #: lazarusidestrconsts.dlgenvfiles
+msgctxt "lazarusidestrconsts.dlgenvfiles"
 msgid "Files"
 msgstr "Failai"
 
@@ -3203,17 +3204,13 @@ msgstr "Skaitliuko riba"
 msgid "Max line length:"
 msgstr "Maksimalus eilutės ilgis:"
 
-#: lazarusidestrconsts.dlgmaxrecentfiles
-msgid "Max recent files"
-msgstr "Maksimalus atvertų failų sąrašo ilgis"
+#: lazarusidestrconsts.dlgmaxrecentcount
+msgid "Max count of recent items"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmaxrecenthint
 msgid "Value 0 means unlimited."
 msgstr ""
-
-#: lazarusidestrconsts.dlgmaxrecentprojs
-msgid "Max recent project files"
-msgstr "Maksimalus atvertų projektų sąrašo ilgis"
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -4204,6 +4201,36 @@ msgstr "Pritraukti prie tinklelio taškų"
 msgid "Really delete desktop \"%s\"?"
 msgstr "Ar tikrai šalinti darbalaukį „%s“?"
 
+#: lazarusidestrconsts.dlgrecent
+msgid "Recent"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrecentfilescaption
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgrecentfilescaption"
+msgid "Files"
+msgstr "Failai"
+
+#: lazarusidestrconsts.dlgrecentfilesheader
+msgid "Recent Files:"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrecentpackagescaption
+msgid "Packages"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrecentpackagesheader
+msgid "Recent Packages:"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrecentprojectscaption
+msgid "Projects"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrecentprojectsheader
+msgid "Recent Projects:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgredirappend
 msgid "To file (append)"
 msgstr ""
@@ -4593,6 +4620,10 @@ msgstr "Rodyti užuominas"
 #: lazarusidestrconsts.dlgshowingwindows
 msgid "Showing Windows"
 msgstr "Rodomi langai"
+
+#: lazarusidestrconsts.dlgshowinopencoolbarbutton
+msgid "Show in \"Open\" drop-down toolbar button"
+msgstr ""
 
 #: lazarusidestrconsts.dlgshowlinenumbers
 msgctxt "lazarusidestrconsts.dlgshowlinenumbers"
