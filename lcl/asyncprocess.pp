@@ -97,6 +97,10 @@ procedure TAsyncProcess.HandleProcessTermination(AData: PtrInt; AReason: TChildE
 begin
   UnhookProcessHandle;
   UnhookPipeHandle;
+  {$IFDEF UNIX}
+  //issue #42551
+  FRunning := False;
+  {$ENDIF}
   if FOnTerminate <> nil then
     FOnTerminate(Self);
 end;
