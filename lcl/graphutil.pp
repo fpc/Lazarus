@@ -961,7 +961,7 @@ begin
     PWordStart := P;               // points to start of current word
     while P < PTextEnd do
     begin
-      if P^ in ['-'] then
+      if P^ = '-' then
       begin
         if TextIsTooWide(PLineStart, P - PLineStart + 1) then
         begin
