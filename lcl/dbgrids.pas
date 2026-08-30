@@ -2778,14 +2778,14 @@ begin
           doMouseDown;
       end;
 
-    gzFixedCells, gzFixedRows:
+    gzFixedCells, gzFixedCols:
       doInherited;
     else
       begin
 
 
         P:=MouseToCell(Point(X,Y));
-        if Gz=gzFixedCols then
+        if Gz=gzFixedRows then
           P.X := Col;
 
         if P.Y=Row then begin      // The current active row was clicked again.
@@ -3926,10 +3926,10 @@ begin
 
   MouseToCell(x, y, aCol, aRow);
 
-  if (Result=gzFixedCols) or (Result=gzNormal) then
+  if (Result=gzFixedRows) or (Result=gzNormal) then
     RecordOffset := aRow - Row;
 
-  if (Result=gzFixedRows) or (Result=gzNormal) then begin
+  if (Result=gzFixedCols) or (Result=gzNormal) then begin
     aRow := ColumnIndexFromGridColumn(aCol);
     if aRow>=0 then
       Column := Columns[aRow];
