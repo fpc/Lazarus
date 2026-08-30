@@ -6555,7 +6555,7 @@ begin
       Result:= gzFixedCells
     else begin
       OffsetToColRow(True, True, X, aCol, aRow);
-      if (aCol<0) {or (ColCount<=FixedCols)} then  // Issue #41700.
+      if (aCol<0) or (ColCount<=FixedCols) then
         Result := gzInvalid
       else begin
         if AllowOutboundEvents then
@@ -6576,7 +6576,7 @@ begin
       Result:=gzFixedCells
     else begin
       OffsetToColRow(False, True, Y, aRow, aCol);
-      if (aRow<0) {or (RowCount<=FixedRows)} then // Issue #41700.
+      if (aRow<0) or (RowCount<=FixedRows) then
         Result := gzInvalid
       else begin
         if AllowOutboundEvents then
