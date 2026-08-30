@@ -42,6 +42,15 @@ type
     procedure Foo;
     procedure Bar;
   end;
+  TIntf1v = class(TInterfacedObject, IIntf1)
+    procedure Foo; virtual;
+    procedure Bar; virtual;
+  end;
+  TIntf1vx = class(TIntf1v)
+    a,b,c: integer;
+    procedure Foo; override;
+    procedure Bar; override;
+  end;
 
 type
 {$Interfaces CORBA}
@@ -53,6 +62,23 @@ type
     x,y,c: integer;
     procedure Foo;
     procedure Bar;
+  end;
+  TIntf2v = class(TObject, IIntf2)
+    procedure Foo; virtual;
+    procedure Bar; virtual;
+  end;
+  TIntf2vx = class(TIntf2v)
+    x,y,c: integer;
+    procedure Foo; override;
+    procedure Bar; override;
+  end;
+
+  IIntf3 = interface ['{F14143AC-4984-4675-B6FD-99710BEFD4D7}']
+    function Foo: TDummy1;
+  end;
+  TIntf3 = class(TObject, IIntf3)
+    x,y,c: integer;
+    function Foo: TDummy1;
   end;
 
 { TFoo }
@@ -67,14 +93,23 @@ begin
   for i := 0 to 4 do MoreIdx[i] := i;
 end;
 
-procedure TIntf2.Foo; begin  WriteLn(5); end;
-procedure TIntf2.Bar; begin  WriteLn(6); end;
 procedure TIntf1.Foo; begin  WriteLn(1); end;
 procedure TIntf1.Bar; begin  WriteLn(2); end;
+procedure TIntf1v.Foo; begin  WriteLn(1); end;
+procedure TIntf1v.Bar; begin  WriteLn(2); end;
+procedure TIntf1vx.Foo; begin  WriteLn(1); end;
+procedure TIntf1vx.Bar; begin  WriteLn(2); end;
+procedure TIntf2.Foo; begin  WriteLn(5); end;
+procedure TIntf2.Bar; begin  WriteLn(6); end;
+procedure TIntf2v.Foo; begin  WriteLn(5); end;
+procedure TIntf2v.Bar; begin  WriteLn(6); end;
+procedure TIntf2vx.Foo; begin  WriteLn(5); end;
+procedure TIntf2vx.Bar; begin  WriteLn(6); end;
+function TIntf3.Foo: TDummy1; begin  WriteLn(5); end;
 
 var
-  AnIntf1: IIntf1;  AnIntf2: IIntf2;
-  AnObj1:  TIntf1;  AnObj2:  TIntf2;
+  AnIntf1: IIntf1;  AnIntf2: IIntf2; AnIntf3: IIntf1;   AnIntf4: IIntf2;   AnIntf5: IIntf3;
+  AnObj1:  TIntf1;  AnObj2:  TIntf2; AnObj3:  TIntf1vx; AnObj4:  TIntf2vx; AnObj5:  TIntf3;
   i: Integer;
   o: TObject;
 
@@ -158,9 +193,14 @@ begin
 
   AnObj1 := TIntf1.Create; AnObj1.a := 123; AnObj1.b := 987; AnObj1.c := 551177;
   AnObj2 := TIntf2.Create; AnObj2.x := 321; AnObj2.y := 789; AnObj2.c := 441188;
+  AnObj3 := TIntf1vx.Create; AnObj3.a := 142; AnObj3.b := 12; AnObj3.c := 1;
+  AnObj4 := TIntf2vx.Create; AnObj4.x := 242; AnObj4.y := 21;  AnObj4.c := 2;
+  AnObj5 := TIntf3.Create;   AnObj5.x := 17;  AnObj5.y :=  11; AnObj5.c := -2;
   AnIntf1 := AnObj1;
   AnIntf2 := AnObj2;
-
+  AnIntf3 := AnObj3;
+  AnIntf4 := AnObj4;
+  AnIntf5 := AnObj5;
 
 
   fa[9] := fa[8]; // TEST_BREAKPOINT=Prg

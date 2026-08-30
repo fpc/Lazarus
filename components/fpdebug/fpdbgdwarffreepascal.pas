@@ -2924,7 +2924,16 @@ begin
 
     OpVal := ValueFromMem((instr.CodeMem + O2.CodeIndex)^, O2.ByteCount, O2.FormatFlags);
 
-    instr := TX86AsmInstruction(FDisAssembler.GetInstructionInfo(CodeAddr + instr.InstructionLength));
+    CodeAddr := CodeAddr + instr.InstructionLength;
+    instr := TX86AsmInstruction(FDisAssembler.GetInstructionInfo(CodeAddr));
+    if (instr.X86OpCode = OPmov) and (instr.X86Instruction.OperCnt = 2) then begin
+      O1 := instr.X86Instruction.Operand[1];
+      O2 := instr.X86Instruction.Operand[2];
+      // this may be a jump-pad to a virtual method
+      if (not (ofMemory in O1.Flags)) and (ofMemory in O2.Flags) then
+        instr := TX86AsmInstruction(FDisAssembler.GetInstructionInfo(CodeAddr + instr.InstructionLength));
+    end;
+
     if instr.X86OpCode <> OPjmp then begin
       SetError('Unknown asm code');
       exit;
