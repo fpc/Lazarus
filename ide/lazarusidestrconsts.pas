@@ -6214,8 +6214,8 @@ resourcestring
   dlgFoldSqlCreateTable = 'Create Table';
   dlgFoldSqlAlterTable = 'Alter Table';
   dlgFoldSqlDropTable = 'Drop Table';
-  dlgFoldSqlCreateDb = 'Create Db';
-  dlgFoldSqlDropDb = 'Drop Db';
+  dlgFoldSqlCreateDb = 'Create Database';
+  dlgFoldSqlDropDb = 'Drop Database';
   dlgFoldSqlCreateProcedure = 'Create Procedure';
   dlgFoldSqlBegin = 'Begin';
   dlgFoldSqlUpdate = 'Update';
