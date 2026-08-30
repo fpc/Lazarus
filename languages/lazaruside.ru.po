@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-08-30 21:50+0300\n"
+"PO-Revision-Date: 2026-08-30 22:24+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -1838,6 +1838,7 @@ msgid "Backup"
 msgstr "Резервные копии"
 
 #: lazarusidestrconsts.dlgenvfiles
+msgctxt "lazarusidestrconsts.dlgenvfiles"
 msgid "Files"
 msgstr "Файлы"
 
@@ -3080,17 +3081,13 @@ msgstr "Максимум счетчика"
 msgid "Max line length:"
 msgstr "max длина строки:"
 
-#: lazarusidestrconsts.dlgmaxrecentfiles
-msgid "Max recent files"
-msgstr "Максимальное количество недавних файлов"
+#: lazarusidestrconsts.dlgmaxrecentcount
+msgid "Max count of recent items"
+msgstr "Максимальное количество недавних элементов"
 
 #: lazarusidestrconsts.dlgmaxrecenthint
 msgid "Value 0 means unlimited."
 msgstr "Значение \"0\" соответствует неограниченному количеству."
-
-#: lazarusidestrconsts.dlgmaxrecentprojs
-msgid "Max recent project files"
-msgstr "Максимальное количество недавних проектов"
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -4059,6 +4056,35 @@ msgstr "Выравнивать по сетке"
 msgid "Really delete desktop \"%s\"?"
 msgstr "Вы действительно хотите удалить рабочий стол \"%s\"?"
 
+#: lazarusidestrconsts.dlgrecent
+msgid "Recent"
+msgstr "Недавние"
+
+#: lazarusidestrconsts.dlgrecentfilescaption
+msgctxt "lazarusidestrconsts.dlgrecentfilescaption"
+msgid "Files"
+msgstr "Файлы"
+
+#: lazarusidestrconsts.dlgrecentfilesheader
+msgid "Recent Files:"
+msgstr "Недавние файлы:"
+
+#: lazarusidestrconsts.dlgrecentpackagescaption
+msgid "Packages"
+msgstr "Пакеты"
+
+#: lazarusidestrconsts.dlgrecentpackagesheader
+msgid "Recent Packages:"
+msgstr "Недавние пакеты:"
+
+#: lazarusidestrconsts.dlgrecentprojectscaption
+msgid "Projects"
+msgstr "Проекты"
+
+#: lazarusidestrconsts.dlgrecentprojectsheader
+msgid "Recent Projects:"
+msgstr "Недавние проекты:"
+
 #: lazarusidestrconsts.dlgredirappend
 msgid "To file (append)"
 msgstr "В файл (добавить)"
@@ -4433,6 +4459,10 @@ msgstr "Показывать подсказки"
 #: lazarusidestrconsts.dlgshowingwindows
 msgid "Showing Windows"
 msgstr "Отображение окон"
+
+#: lazarusidestrconsts.dlgshowinopencoolbarbutton
+msgid "Show in \"Open\" drop-down toolbar button"
+msgstr "Показывать в раскрывающемся списке кнопки \"Открыть\""
 
 #: lazarusidestrconsts.dlgshowlinenumbers
 msgctxt "lazarusidestrconsts.dlgshowlinenumbers"
