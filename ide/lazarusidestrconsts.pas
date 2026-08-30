@@ -2810,7 +2810,7 @@ resourcestring
   dlgRedirStdNotSupported = 'Current debugger does not support redirection.';
   dlgConsoleGroup = 'Console';
   dlgConsoleModeOs = 'OS console';
-  dlgConsoleModeIde = 'Internal IDE consoles';
+  dlgConsoleModeIde = 'Internal IDE console';
   dlgConsoleUseIdeDefault = '-- Use IDE default console --';
   dlgConsoleIdeWindow = 'IDE internal window';
   dlgConsoleUnknown = 'Unknown console "%s"';

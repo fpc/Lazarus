@@ -51,7 +51,7 @@ uses
   CodeCache, CodeToolManager, PascalParserTool, CodeTree,
   // BuildIntf
   ProjectIntf, CompOptsIntf,
-  // IDEIntftb
+  // IDEIntf
   IDEWindowIntf, SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf, IdeIntfStrConsts, IDEDialogs,
   ToolBarIntf, IdeDebuggerWatchValueIntf, IdeDebuggerConsolePlugInIntf,
   {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
@@ -171,8 +171,8 @@ type
     procedure ReconcileConsolePlugInForNewSession;
     procedure DoIDERestoreWindows(Sender: TObject);
     // ILazDbgIdeTargetIoHook -- what the plug-in is given to talk back with
-    procedure SendInput(const AText: String);
-    procedure NotifyDidAutoShow;
+    procedure SendInputToTargetConsole(Sender: ILazDbgIdeConsoleWindowPlugIn; AText: String);
+    procedure NotifyDidAutoShow(Sender: ILazDbgIdeConsoleWindowPlugIn);
   private
     FDebugger: TDebuggerIntf;
     FIdeExceptions: TIdeExceptions;
@@ -1095,15 +1095,12 @@ begin
 end;
 
 (* Which console window the debuggee's output goes to.
-
-   The project's Run Parameters win, then the IDE-wide setting, then the
-   built-in, then whatever is registered. An empty id in Run Parameters is the
-   sentinel meaning "whatever the IDE is set to" -- it is what every project
-   written before any of this existed contains, so it must not resolve to
-   anything of its own.
-
-   The built-in is looked up by id rather than assumed to be first in the list,
-   because registration order is not ours to depend on. *)
+   In order of priority
+   - Run Parameters mode
+     empty string means: Ide default
+   - IDE default / DebuggerOptions
+   - build in console
+*)
 function TDebugManager.ResolveConsoleId: String;
 var
   AMode: TAbstractRunParamsOptionsMode;
@@ -1150,21 +1147,14 @@ begin
   Result := FConsolePlugIn;
 end;
 
-(* Session start -- the second half of the pair. Takes account of a selection
-   the user has changed since the last run. In a fresh IDE the plug-in has
-   already been resolved by DoIDERestoreWindows, so this usually finds nothing
-   to do; it earns its keep only when the selection changed mid-session, which
-   nothing re-fires the restore handler for.
+(* Debug-Session start --
+   Takes account of a selection the user has changed since the last run.
+   Currently called at dsInit.
 
-   Called at dsInit, which is one of the points where the IDE is about to lay
-   out windows anyway, and -- because the state notification list runs before
-   UpdateToolStatus -- happens before the debug desktop is applied. So the
-   outgoing window is gone before the desktop restore looks for it.
-
-   This is also the moment the outgoing plug-in is told it is deselected, and
-   the only one: a plug-in that keeps its window after a run, so the user can
-   still read what the program printed, has to be left alone until a new run is
-   actually starting. *)
+   The plugins are notified of their selection state change with
+   HandleUserDeselectedFromActive
+   HandleUserSelectedAsActive
+*)
 procedure TDebugManager.ReconcileConsolePlugInForNewSession;
 var
   EntryId: String;
@@ -1185,19 +1175,16 @@ begin
   ConsolePlugIn;   // resolves and attaches the newly selected one
 end;
 
-(* IDE startup -- the first half of the pair, and the one that does the work in
-   a fresh IDE. It runs before any debug session has existed, so FConsolePlugIn
-   is still nil here and this is the call that creates it;
-   ReconcileConsolePlugInForNewSession cannot stand in for it, because the
-   first run may come hours after the layout has been restored. On any later
-   restore this is a no-op, which is intended.
+(* IDE startup --
+   With the start of the IDE some plugin will be selected. Either default, or
+   whatever settings where loaded at startup.
 
-   Resolving the selected plug-in here, rather than leaving it until the first
-   line of output, is what lets its window take part in the layout restore at
-   all: RestoreSimpleLayout asks the registered creator for the window, and a
+   This constitutes setting the plugin to be selected.
+   Send the required HandleUserSelectedAsActive to the plugin.
+
+   This also may let the window take part in the layout restore:
+   RestoreSimpleLayout asks the registered creator for the window, and a
    plug-in that has not been told it is active has no business building one.
-   Wait for output and the restore has already been and gone, so the window
-   comes back at its default size in the middle of the screen.
 
    This handler runs before Desktop.RestoreDesktop, from
    TMainIDE.RestoreIDEWindows, and after all packages have registered -- so
@@ -1207,12 +1194,13 @@ begin
   ConsolePlugIn;
 end;
 
-procedure TDebugManager.SendInput(const AText: String);
+procedure TDebugManager.SendInputToTargetConsole(Sender: ILazDbgIdeConsoleWindowPlugIn;
+  AText: String);
 begin
   DoSendConsoleInput(AText);
 end;
 
-procedure TDebugManager.NotifyDidAutoShow;
+procedure TDebugManager.NotifyDidAutoShow(Sender: ILazDbgIdeConsoleWindowPlugIn);
 begin
   (* The plug-in showed itself. The IDE keeps the "already shown this session"
      flag rather than asking per chunk of output: a debuggee can produce a very
@@ -1258,7 +1246,7 @@ begin
 
   (* dtcUnknown until a backend reports which stream this came from. Capture is
      poStderrToOutPut today, so the two arrive merged and in write order. *)
-  P.AddOutput(dtcUnknown, AText);
+  P.AddOutputFromTargetConsole(dtcUnknown, AText);
 end;
 
 function TDebugManager.DebuggerFeedback(Sender: TObject; const AText, AInfo: String;
@@ -1451,9 +1439,7 @@ begin
     ecToggleDebugEvents : ViewDebugDialog(ddtEvents);
     ecEvaluate          : ViewDebugDialog(ddtEvaluate);
     ecInspect           : ViewDebugDialog(ddtInspect);
-    (* One menu entry, whichever console window is selected. Opening the
-       built-in here regardless would give the user a menu item that shows a
-       window their output is not going to. *)
+    (* ecViewPseudoTerminal: ALways open the selected console. *)
     ecViewPseudoTerminal: if ConsolePlugIn <> nil then
                             ConsolePlugIn.HandleUserShow
                           else
@@ -1842,11 +1828,8 @@ begin
     dsInit: begin
       Exceptions.ResetHitCounts;
       ReconcileConsolePlugInForNewSession;
-      (* Only clear a console that already exists. Asking the registry here
-         would construct the plug-in -- and with it, for some plug-ins, a
-         window -- for a session that may never produce any output. *)
       if FConsolePlugIn <> nil then
-        FConsolePlugIn.Clear;
+        FConsolePlugIn.StartNewDebugSession;
     end;
   end;
 end;
@@ -2461,10 +2444,6 @@ begin
   LazarusIDE.RemoveHandlerOnIDERestoreWindows(@DoIDERestoreWindows);
   FreeAndNil(FAutoContinueTimer);
 
-  (* Detached, not freed: the instance belongs to the options store, which
-     outlives this manager and holds the user's settings for it. Detaching here
-     rather than at shutdown is what lets a plug-in take its window down while
-     the LCL is still in a fit state to do it. *)
   if FConsolePlugIn <> nil then begin
     FConsolePlugIn.ProcessRemovedFromPlugInHook;
     FConsolePlugIn := nil;

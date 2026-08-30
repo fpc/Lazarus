@@ -202,12 +202,11 @@ const
   hlCmdLineParameters = 'CommandLineParameters';
   hlWorkingDirectory = 'WorkingDirectory';
 
-  (* Index 0 of cbConsole is always "use the IDE default"; the registered
-     console window plug-ins follow it, in registry order. Only ids are written
-     to the project -- the captions are display names and are the plug-in's to
-     choose -- which is why the code below looks a value up rather than casting
-     an index as the three redirect combos do. *)
-  IdxConsoleDefault = 0;
+  (* Index 0 of cbConsole is always "use the IDE default";
+     Only ids are written to the project -- the captions are display names.
+     Mapping happens via  DebuggerOptions.ConsoleWindowPlugIns, which holds the info in the same order  *)
+  DEFAULT_CONSOLE_IDX = 0;
+  INTERN_CONSOLE_CNT = 1; // number of internal indexes used (currently 1 for the default)
 
 function ShowRunParamsOptsDlg(RunParamsOptions: TRunParamsOptions;
   HistoryLists: THistoryLists): TModalResult;
@@ -278,15 +277,17 @@ begin
   fUnlistedConsoleId := '';
 
   if AConsoleId = RunParamsConsoleIdDefault then begin
-    cbConsole.ItemIndex := IdxConsoleDefault;
+    cbConsole.ItemIndex := DEFAULT_CONSOLE_IDX;
+    cbConsole.Visible := DebuggerOptions.ConsoleWindowPlugIns.Count > 1;
     exit;
   end;
 
-  for i := 0 to DebuggerOptions.ConsoleWindowPlugIns.Count - 1 do
-    if SameText(DebuggerOptions.ConsoleWindowPlugIns.Ids[i], AConsoleId) then begin
-      cbConsole.ItemIndex := IdxConsoleDefault + 1 + i;
-      exit;
-    end;
+  i := DebuggerOptions.ConsoleWindowPlugIns.IndexOfId(AConsoleId);
+  if i >= 0 then begin
+    cbConsole.ItemIndex := INTERN_CONSOLE_CNT + i;
+    cbConsole.Visible := DebuggerOptions.ConsoleWindowPlugIns.Count > 1;
+    exit;
+  end;
 
   (* A console this IDE has no item for: written by a build with a terminal
      registered that this one does not have, or by one that has since been
@@ -295,6 +296,7 @@ begin
   cbConsole.Items.Add(Format(dlgConsoleUnknown, [AConsoleId]));
   cbConsole.ItemIndex := cbConsole.Items.Count - 1;
   fUnlistedConsoleId := AConsoleId;
+  cbConsole.Visible := True;
 end;
 
 function TRunParamsOptsDlg.SelectedConsoleId: String;
@@ -302,11 +304,11 @@ var
   i: Integer;
 begin
   i := cbConsole.ItemIndex;
-  if i = IdxConsoleDefault then
+  if i = DEFAULT_CONSOLE_IDX then
     Result := RunParamsConsoleIdDefault
   else
-  if (i > IdxConsoleDefault) and (i - IdxConsoleDefault - 1 < DebuggerOptions.ConsoleWindowPlugIns.Count) then
-    Result := DebuggerOptions.ConsoleWindowPlugIns.Ids[i - IdxConsoleDefault - 1]
+  if (i >= INTERN_CONSOLE_CNT) and (i - INTERN_CONSOLE_CNT < DebuggerOptions.ConsoleWindowPlugIns.Count) then
+    Result := DebuggerOptions.ConsoleWindowPlugIns.Ids[i - INTERN_CONSOLE_CNT]
   else
     Result := fUnlistedConsoleId;
 end;
@@ -323,15 +325,8 @@ procedure TRunParamsOptsDlg.rgConsoleSelectionChanged(Sender: TObject);
 var
   RedirectsApply: Boolean;
 begin
-  (* The drop-down answers "which internal console", so it has nothing to say
-     while the OS one is serving. *)
   cbConsole.Enabled := rgConsole.Enabled and (SelectedConsoleMode = rpcmIdeConsole);
 
-  (* Where the console is served by capturing the debuggee's streams, all three
-     are captured or none -- Windows hands a pipe to CreateProcess for the whole
-     set of standard handles at once -- so a per-stream file has nowhere to go.
-     The controls are disabled rather than cleared: whatever was configured
-     survives in the project, and returning to the OS console brings it back. *)
   RedirectsApply := not DebugBoss.ConsoleIsCaptured(SelectedConsoleMode);
   cbRedirStdIn.Enabled   := RedirectsApply;
   cbRedirStdOut.Enabled  := RedirectsApply;
@@ -444,20 +439,13 @@ begin
   rgConsole.Items[ord(rpcmIdeConsole)] := dlgConsoleModeIde;
   rgConsole.ItemIndex := ord(rpcmOsConsole);
 
-  (* Filled from the registry rather than hard-coded, so a package that
-     registers a console window appears here without this dialog knowing
-     anything about it. Index 0 defers to the IDE-wide setting on
+  (* Index 0 defers to the IDE-wide setting on
      Tools > Options > Debugger > Debug Console Window. *)
   cbConsole.Items.Add(dlgConsoleUseIdeDefault);
   for i := 0 to DebuggerOptions.ConsoleWindowPlugIns.Count - 1 do
     cbConsole.Items.Add(DebuggerOptions.ConsoleWindowPlugIns.DisplayName[i]);
-  cbConsole.ItemIndex := IdxConsoleDefault;
+  cbConsole.ItemIndex := DEFAULT_CONSOLE_IDX;
   cbConsole.Visible := DebuggerOptions.ConsoleWindowPlugIns.Count > 1;
-  (* Where the selected backend cannot capture, only the OS console can serve
-     and there is nothing to choose between. The controls are left in place and
-     merely disabled: they still show and write back whatever the project
-     selected, so opening it under a backend that cannot capture -- or on
-     another platform -- does not quietly discard the setting. *)
   rgConsole.Enabled := dfStdInOutCapture in DebugBoss.DebuggerClass.SupportedFeatures;
 
   cbRedirStdIn.Items.Add (dlgRedirOff);

@@ -386,7 +386,8 @@ resourcestring
   dlgDebugConsoleWindowEditDiv = 'Edit IDE console provider';
   dlgDebugConsoleWindowNone = 'No console window is available.';
   dlgDebugConsoleWindowChangeTakesEffect = 'A change takes effect when the next debug session starts.';
-  dlgDebugConsoleWindowRunParamsHint = 'Used by projects whose Run Parameters leave the console at "use IDE default".'#13#10'This setting can be overridden in "Run parameters".';
+  dlgDebugConsoleWindowRunParamsHint = 'Selects the default Console for showing the targets StdIn/Out in the IDE. ' + LineEnding +
+                                       'Project can override this in their "Run Parameters". The default there is "use IDE default".';
   dlgDebugConsoleWindowEditing = 'Currently editing %s';
 
   // Feedback

@@ -71,8 +71,8 @@ type
     procedure ProcessAddedToPlugInHook(AHook: ILazDbgIdeTargetIoHook);
     procedure ProcessRemovedFromPlugInHook;
     procedure HandleUserShow;
-    procedure Clear;
-    procedure AddOutput(AChannel: TLzDbgTargetIoChannel; const AText: String);
+    procedure StartNewDebugSession;
+    procedure AddOutputFromTargetConsole(AChannel: TLzDbgTargetIoChannel; AText: String);
     procedure BringToFront;
     procedure SetAutoShowState(AShowOnInput: Boolean);
   end;
@@ -140,13 +140,13 @@ begin
   DebugBoss.ConsoleWindowShow(True);
 end;
 
-procedure TLazDbgIdeBuiltInConsolePlugIn.Clear;
+procedure TLazDbgIdeBuiltInConsolePlugIn.StartNewDebugSession;
 begin
   DebugBoss.ConsoleWindowClear;
 end;
 
-procedure TLazDbgIdeBuiltInConsolePlugIn.AddOutput(
-  AChannel: TLzDbgTargetIoChannel; const AText: String);
+procedure TLazDbgIdeBuiltInConsolePlugIn.AddOutputFromTargetConsole(
+  AChannel: TLzDbgTargetIoChannel; AText: String);
 begin
   (* The built-in window shows one stream. Until a backend reports the channel
      it is always dtcUnknown, and even then this window has nothing to do with

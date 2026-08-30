@@ -33,6 +33,7 @@ uses
   fgl, SysUtils, IdeDebuggerPlugInIntf, LazDebuggerIntfBaseTypes;
 
 type
+  ILazDbgIdeConsoleWindowPlugIn = interface;
 
   (* ILazDbgIdeTargetIoHook
      Handed to the plug-in when it is added to the IDE's hook, and the only way
@@ -45,8 +46,8 @@ type
      output, because a debuggee can produce a great deal of it. *)
 
   ILazDbgIdeTargetIoHook = interface ['{63D0A72E-1948-4C5B-8E7F-2A9B4D31C6F8}']
-    procedure SendInput(const AText: String);
-    procedure NotifyDidAutoShow;
+    procedure SendInputToTargetConsole(Sender: ILazDbgIdeConsoleWindowPlugIn; AText: String);
+    procedure NotifyDidAutoShow(Sender: ILazDbgIdeConsoleWindowPlugIn);
   end;
 
   (* ILazDbgIdeConsoleWindowPlugIn
@@ -68,8 +69,8 @@ type
     procedure HandleUserShow;
     // called at session init; separate from the lifecycle pairs on purpose, so
     // "empty the display" does not imply a state change
-    procedure Clear;
-    procedure AddOutput(AChannel: TLzDbgTargetIoChannel; const AText: String);
+    procedure StartNewDebugSession  ;
+    procedure AddOutputFromTargetConsole(AChannel: TLzDbgTargetIoChannel;  AText: String);
     procedure BringToFront;
     procedure SetAutoShowState(AShowOnInput: Boolean);
   end;

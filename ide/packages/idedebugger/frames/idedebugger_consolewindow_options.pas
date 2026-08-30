@@ -57,11 +57,6 @@ implementation
 
 {$R *.lfm}
 
-type
-  { The LCL has no TFrameClass; GetSettingsFrameClass returns a plain TClass so
-    that the interface unit needs no LCL dependency. }
-  TSettingsFrameClass = class of TFrame;
-
 procedure Register;
 begin
   RegisterIDEOptionsEditor(GroupDebugger, TIdeDbgConsoleWindowOptionsFrame,
@@ -87,7 +82,7 @@ end;
 procedure TIdeDbgConsoleWindowOptionsFrame.ShowSettingsFrame;
 var
   Cfg: ILazDbgIdePlugInConfiguration;
-  FrameClass: TClass;
+  FrameClass: TFrameClass;
   Intf: ILazDbgIdePlugInSettingsFrameIntf;
 begin
   SaveSettingsFrame;
@@ -105,12 +100,12 @@ begin
   end;
 
   FrameClass := Cfg.GetSettingsFrameClass;
-  if (FrameClass = nil) or (not FrameClass.InheritsFrom(TFrame)) then
+  if (FrameClass = nil) then
     exit;
 
   (* Into its own panel, not straight onto this frame: alClient on the page
      itself covers the chooser rather than sitting under it. *)
-  FFrame := TSettingsFrameClass(FrameClass).Create(Self);
+  FFrame := FrameClass.Create(Self);
   FFrame.Parent := pnlSettings;
   FFrame.Align := alClient;
   if FFrame.GetInterface(ILazDbgIdePlugInSettingsFrameIntf, Intf) then
@@ -137,9 +132,6 @@ procedure TIdeDbgConsoleWindowOptionsFrame.Setup(
 begin
   divSelectPlugIn.Caption := dlgDebugConsoleWindowSelectDiv;
   divEditPlugIn.Caption := dlgDebugConsoleWindowEditDiv;
-  (* Where the per-project override lives is a hint rather than a label: it
-     answers a question the user only asks once, and the page already carries
-     as much standing text as it can afford. *)
   cbPlugIn.Hint := dlgDebugConsoleWindowRunParamsHint;
   cbPlugIn.ShowHint := True;
 end;
@@ -207,9 +199,6 @@ begin
   end;
 
   lblDescription.Caption := dlgDebugConsoleWindowChangeTakesEffect;
-  (* The display name, not the id. The id is "package/class" and says nothing
-     to the user; this names the same plug-in the drop-down is showing, so the
-     settings below are attributable without reading the combo again. *)
   lblEditing.Caption := Format(dlgDebugConsoleWindowEditing,
     [FPlugIns.DisplayName[i]]);
   divEditPlugIn.Visible := True;
