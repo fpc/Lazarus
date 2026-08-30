@@ -10265,6 +10265,10 @@ begin
     g_list_free(AChildren);
   end;
 
+  //issue #42555
+  g_signal_handlers_disconnect_matched(PGObject(OldWidget), [G_SIGNAL_MATCH_DATA], 0, 0, nil, nil, Self);
+  Gtk3ClearLCLWidgetData(PGObject(OldWidget));
+
   g_object_ref(PGObject(OldWidget));
   try
     if Assigned(AParent) then
