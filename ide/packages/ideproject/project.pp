@@ -3757,21 +3757,24 @@ begin
   ForcePathDelims(NewProjectInfoFile);
   if fProjectInfoFile=NewProjectInfoFile then exit;
   BeginUpdate(true);
-  TitleWasDefault:=(Title<>'') and TitleIsDefault(true);
-  fProjectInfoFile:=NewProjectInfoFile;
-  if TitleWasDefault then
-    Title:=GetDefaultTitle;
-  UpdateProjectDirectory;
-  UpdateSessionFilename;
-  if Assigned(OnChangeProjectInfoFile) then
-    OnChangeProjectInfoFile(Self);
-  FDefineTemplates.SourceDirectoriesChanged;
-  {$IFDEF VerboseIDEModified}
-  debugln(['TProject.SetProjectInfoFile ',NewFilename]);
-  {$ENDIF}
-  Modified:=true;
-  EndUpdate;
-  //DebugLn('TProject.SetProjectInfoFile FDefineTemplates.FUpdateLock=',dbgs(FDefineTemplates.FUpdateLock));
+  try
+    TitleWasDefault:=(Title<>'') and TitleIsDefault(true);
+    fProjectInfoFile:=NewProjectInfoFile;
+    if TitleWasDefault then
+      Title:=GetDefaultTitle;
+    UpdateProjectDirectory;
+    UpdateSessionFilename;
+    if Assigned(OnChangeProjectInfoFile) then
+      OnChangeProjectInfoFile(Self);
+    FDefineTemplates.SourceDirectoriesChanged;
+  finally
+    {$IFDEF VerboseIDEModified}
+    debugln(['TProject.SetProjectInfoFile ',NewFilename]);
+    {$ENDIF}
+    Modified:=true;
+    EndUpdate;
+    //DebugLn('TProject.SetProjectInfoFile FDefineTemplates.FUpdateLock=',dbgs(FDefineTemplates.FUpdateLock));
+  end;
 end;
 
 procedure TProject.SetSessionStorage(const AValue: TProjectSessionStorage);
