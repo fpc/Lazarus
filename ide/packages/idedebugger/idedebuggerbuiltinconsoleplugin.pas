@@ -189,6 +189,6 @@ begin
 end;
 
 initialization
-  ConsoleWindowPlugIns.RegisterPlugIn(TLazDbgIdeBuiltInConsolePlugInRegistryEntry);
+  ConsoleWindowPlugInRegistry.RegisterPlugIn(TLazDbgIdeBuiltInConsolePlugInRegistryEntry);
 
 end.

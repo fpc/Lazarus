@@ -287,11 +287,11 @@ var
   i: Integer;
 begin
   inherited Create;
-  i := ConsoleWindowPlugIns.Count;
+  i := ConsoleWindowPlugInRegistry.Count;
   SetLength(FList, i);
   while i > 0 do begin
     dec(i);
-    FList[i].RegClass := ConsoleWindowPlugIns.IdePlugin[i];
+    FList[i].RegClass := ConsoleWindowPlugInRegistry.IdePlugin[i];
   end;
 end;
 

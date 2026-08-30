@@ -91,7 +91,7 @@ type
     function CanRegister(AnEntry: TRegistrationEntryClass): Boolean; override;
   end;
 
-function ConsoleWindowPlugIns: TLazDbgIdeConsoleWindowPlugInRegistry;
+function ConsoleWindowPlugInRegistry: TLazDbgIdeConsoleWindowPlugInRegistry;
 
 (* "package/class", or "package/class/part3". Each part a Pascal identifier.
    Restrictions can be relaxed later, but not tightened, so this is the widest
@@ -101,13 +101,13 @@ function IsValidLazDbgIdePlugInId(const AId: String): Boolean;
 implementation
 
 var
-  TheConsoleWindowPlugIns: TLazDbgIdeConsoleWindowPlugInRegistry = nil;
+  TheConsoleWindowPlugInRegistry: TLazDbgIdeConsoleWindowPlugInRegistry = nil;
 
-function ConsoleWindowPlugIns: TLazDbgIdeConsoleWindowPlugInRegistry;
+function ConsoleWindowPlugInRegistry: TLazDbgIdeConsoleWindowPlugInRegistry;
 begin
-  if TheConsoleWindowPlugIns = nil then
-    TheConsoleWindowPlugIns := TLazDbgIdeConsoleWindowPlugInRegistry.Create;
-  Result := TheConsoleWindowPlugIns;
+  if TheConsoleWindowPlugInRegistry = nil then
+    TheConsoleWindowPlugInRegistry := TLazDbgIdeConsoleWindowPlugInRegistry.Create;
+  Result := TheConsoleWindowPlugInRegistry;
 end;
 
 function IsValidLazDbgIdePlugInIdPart(const APart: String): Boolean;
@@ -168,5 +168,5 @@ begin
 end;
 
 finalization
-  FreeAndNil(TheConsoleWindowPlugIns);
+  FreeAndNil(TheConsoleWindowPlugInRegistry);
 end.
