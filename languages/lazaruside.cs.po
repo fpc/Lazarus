@@ -2249,6 +2249,120 @@ msgstr "While/Do"
 msgid "With/Do"
 msgstr "With/Do"
 
+#: lazarusidestrconsts.dlgfoldsqlaltertable
+msgid "Alter Table"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlbegin
+msgid "Begin"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlcreatedb
+msgid "Create Database"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlcreateprocedure
+msgid "Create Procedure"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlcreatetable
+msgid "Create Table"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqldelete
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfoldsqldelete"
+msgid "Delete"
+msgstr "Odstranit"
+
+#: lazarusidestrconsts.dlgfoldsqldropdb
+msgid "Drop Database"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqldroptable
+msgid "Drop Table"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlfrom
+msgid "From"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlgroup
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfoldsqlgroup"
+msgid "Group"
+msgstr "Skupina"
+
+#: lazarusidestrconsts.dlgfoldsqlhaving
+msgid "Having"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlinsert
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfoldsqlinsert"
+msgid "Insert"
+msgstr "Vložit"
+
+#: lazarusidestrconsts.dlgfoldsqlinsertselect
+msgid "Insert-Select"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlinto
+msgid "Into"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqljoin
+msgid "Join"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqljoinon
+msgid "Join-On"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqllimit
+msgid "Limit"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlorder
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfoldsqlorder"
+msgid "Order"
+msgstr "Řadit"
+
+#: lazarusidestrconsts.dlgfoldsqlselect
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfoldsqlselect"
+msgid "Select"
+msgstr "Vybrat"
+
+#: lazarusidestrconsts.dlgfoldsqlset
+msgid "Set"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlsubselect
+msgid "Sub-Select"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlupdate
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfoldsqlupdate"
+msgid "Update"
+msgstr "Aktualizovat"
+
+#: lazarusidestrconsts.dlgfoldsqlupdateselect
+msgid "Update-Select"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlvalues
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfoldsqlvalues"
+msgid "Values"
+msgstr "Hodnoty"
+
+#: lazarusidestrconsts.dlgfoldsqlwhere
+msgid "Where"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldxmlcdata
 msgid "CData"
 msgstr "CData"
@@ -6451,6 +6565,7 @@ msgid "Other"
 msgstr "Jiné"
 
 #: lazarusidestrconsts.lisceoupdate
+msgctxt "lazarusidestrconsts.lisceoupdate"
 msgid "Update"
 msgstr "Aktualizovat"
 
@@ -10512,6 +10627,7 @@ msgstr ""
 "Kopie GNU Všeobecné Veřejné Licence je dostupná přes World Wide Web na <http://www.gnu.org/copyleft/gpl.html>. Můžete ji získat také napsáním do Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 
 #: lazarusidestrconsts.lisgroup
+msgctxt "lazarusidestrconsts.lisgroup"
 msgid "Group"
 msgstr "Skupina"
 
@@ -13348,6 +13464,7 @@ msgid "&Search"
 msgstr "&Hledat"
 
 #: lazarusidestrconsts.lismenuselect
+msgctxt "lazarusidestrconsts.lismenuselect"
 msgid "Select"
 msgstr "Vybrat"
 
@@ -19036,6 +19153,7 @@ msgid "Value: "
 msgstr "Hodnota: "
 
 #: lazarusidestrconsts.lisvalues
+msgctxt "lazarusidestrconsts.lisvalues"
 msgid "Values"
 msgstr "Hodnoty"
 

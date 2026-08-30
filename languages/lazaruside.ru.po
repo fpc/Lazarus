@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-08-24 22:19+0300\n"
+"PO-Revision-Date: 2026-08-30 21:50+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -2210,6 +2210,113 @@ msgstr "While/Do"
 #: lazarusidestrconsts.dlgfoldpaswithdo
 msgid "With/Do"
 msgstr "With/Do"
+
+#: lazarusidestrconsts.dlgfoldsqlaltertable
+msgid "Alter Table"
+msgstr "Alter Table"
+
+#: lazarusidestrconsts.dlgfoldsqlbegin
+msgid "Begin"
+msgstr "Begin"
+
+#: lazarusidestrconsts.dlgfoldsqlcreatedb
+msgid "Create Database"
+msgstr "Create Database"
+
+#: lazarusidestrconsts.dlgfoldsqlcreateprocedure
+msgid "Create Procedure"
+msgstr "Create Procedure"
+
+#: lazarusidestrconsts.dlgfoldsqlcreatetable
+msgid "Create Table"
+msgstr "Create Table"
+
+#: lazarusidestrconsts.dlgfoldsqldelete
+msgctxt "lazarusidestrconsts.dlgfoldsqldelete"
+msgid "Delete"
+msgstr "Delete"
+
+#: lazarusidestrconsts.dlgfoldsqldropdb
+msgid "Drop Database"
+msgstr "Drop Database"
+
+#: lazarusidestrconsts.dlgfoldsqldroptable
+msgid "Drop Table"
+msgstr "Drop Table"
+
+#: lazarusidestrconsts.dlgfoldsqlfrom
+msgid "From"
+msgstr "From"
+
+#: lazarusidestrconsts.dlgfoldsqlgroup
+msgctxt "lazarusidestrconsts.dlgfoldsqlgroup"
+msgid "Group"
+msgstr "Group"
+
+#: lazarusidestrconsts.dlgfoldsqlhaving
+msgid "Having"
+msgstr "Having"
+
+#: lazarusidestrconsts.dlgfoldsqlinsert
+msgctxt "lazarusidestrconsts.dlgfoldsqlinsert"
+msgid "Insert"
+msgstr "Insert"
+
+#: lazarusidestrconsts.dlgfoldsqlinsertselect
+msgid "Insert-Select"
+msgstr "Insert-Select"
+
+#: lazarusidestrconsts.dlgfoldsqlinto
+msgid "Into"
+msgstr "Into"
+
+#: lazarusidestrconsts.dlgfoldsqljoin
+msgid "Join"
+msgstr "Join"
+
+#: lazarusidestrconsts.dlgfoldsqljoinon
+msgid "Join-On"
+msgstr "Join-On"
+
+#: lazarusidestrconsts.dlgfoldsqllimit
+msgid "Limit"
+msgstr "Limit"
+
+#: lazarusidestrconsts.dlgfoldsqlorder
+msgctxt "lazarusidestrconsts.dlgfoldsqlorder"
+msgid "Order"
+msgstr "Order"
+
+#: lazarusidestrconsts.dlgfoldsqlselect
+msgctxt "lazarusidestrconsts.dlgfoldsqlselect"
+msgid "Select"
+msgstr "Select"
+
+#: lazarusidestrconsts.dlgfoldsqlset
+msgid "Set"
+msgstr "Set"
+
+#: lazarusidestrconsts.dlgfoldsqlsubselect
+msgid "Sub-Select"
+msgstr "Вложенный Select"
+
+#: lazarusidestrconsts.dlgfoldsqlupdate
+msgctxt "lazarusidestrconsts.dlgfoldsqlupdate"
+msgid "Update"
+msgstr "Update"
+
+#: lazarusidestrconsts.dlgfoldsqlupdateselect
+msgid "Update-Select"
+msgstr "Update-Select"
+
+#: lazarusidestrconsts.dlgfoldsqlvalues
+msgctxt "lazarusidestrconsts.dlgfoldsqlvalues"
+msgid "Values"
+msgstr "Values"
+
+#: lazarusidestrconsts.dlgfoldsqlwhere
+msgid "Where"
+msgstr "Where"
 
 #: lazarusidestrconsts.dlgfoldxmlcdata
 msgid "CData"
@@ -6317,6 +6424,7 @@ msgid "Other"
 msgstr "Другое"
 
 #: lazarusidestrconsts.lisceoupdate
+msgctxt "lazarusidestrconsts.lisceoupdate"
 msgid "Update"
 msgstr "Обновление"
 
@@ -10306,6 +10414,7 @@ msgstr ""
 "Копия Стандартной Общественной Лицензии GNU доступна в Интернете по адресу <http://www.gnu.org/copyleft/gpl.html>. Вы также можете получить экземпляр в Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
 
 #: lazarusidestrconsts.lisgroup
+msgctxt "lazarusidestrconsts.lisgroup"
 msgid "Group"
 msgstr "Группа"
 
@@ -13101,6 +13210,7 @@ msgid "&Search"
 msgstr "П&оиск"
 
 #: lazarusidestrconsts.lismenuselect
+msgctxt "lazarusidestrconsts.lismenuselect"
 msgid "Select"
 msgstr "Выделить"
 
@@ -18740,6 +18850,7 @@ msgid "Value: "
 msgstr "Значение: "
 
 #: lazarusidestrconsts.lisvalues
+msgctxt "lazarusidestrconsts.lisvalues"
 msgid "Values"
 msgstr "Значения"
 

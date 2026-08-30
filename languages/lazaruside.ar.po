@@ -2222,6 +2222,115 @@ msgstr ""
 msgid "With/Do"
 msgstr ""
 
+#: lazarusidestrconsts.dlgfoldsqlaltertable
+msgid "Alter Table"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlbegin
+msgid "Begin"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlcreatedb
+msgid "Create Database"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlcreateprocedure
+msgid "Create Procedure"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlcreatetable
+msgid "Create Table"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqldelete
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfoldsqldelete"
+msgid "Delete"
+msgstr "إمح"
+
+#: lazarusidestrconsts.dlgfoldsqldropdb
+msgid "Drop Database"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqldroptable
+msgid "Drop Table"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlfrom
+msgid "From"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlgroup
+msgctxt "lazarusidestrconsts.dlgfoldsqlgroup"
+msgid "Group"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlhaving
+msgid "Having"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlinsert
+msgctxt "lazarusidestrconsts.dlgfoldsqlinsert"
+msgid "Insert"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlinsertselect
+msgid "Insert-Select"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlinto
+msgid "Into"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqljoin
+msgid "Join"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqljoinon
+msgid "Join-On"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqllimit
+msgid "Limit"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlorder
+msgctxt "lazarusidestrconsts.dlgfoldsqlorder"
+msgid "Order"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlselect
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfoldsqlselect"
+msgid "Select"
+msgstr "عيّن"
+
+#: lazarusidestrconsts.dlgfoldsqlset
+msgid "Set"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlsubselect
+msgid "Sub-Select"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlupdate
+msgctxt "lazarusidestrconsts.dlgfoldsqlupdate"
+msgid "Update"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlupdateselect
+msgid "Update-Select"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlvalues
+msgctxt "lazarusidestrconsts.dlgfoldsqlvalues"
+msgid "Values"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlwhere
+msgid "Where"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldxmlcdata
 msgid "CData"
 msgstr ""
@@ -6337,6 +6446,7 @@ msgid "Other"
 msgstr "الأخرى"
 
 #: lazarusidestrconsts.lisceoupdate
+msgctxt "lazarusidestrconsts.lisceoupdate"
 msgid "Update"
 msgstr ""
 
@@ -10329,6 +10439,7 @@ msgid ""
 msgstr ""
 
 #: lazarusidestrconsts.lisgroup
+msgctxt "lazarusidestrconsts.lisgroup"
 msgid "Group"
 msgstr ""
 
@@ -13094,6 +13205,7 @@ msgid "&Search"
 msgstr "بحث"
 
 #: lazarusidestrconsts.lismenuselect
+msgctxt "lazarusidestrconsts.lismenuselect"
 msgid "Select"
 msgstr "عيّن"
 
@@ -18714,6 +18826,7 @@ msgid "Value: "
 msgstr ""
 
 #: lazarusidestrconsts.lisvalues
+msgctxt "lazarusidestrconsts.lisvalues"
 msgid "Values"
 msgstr ""
 

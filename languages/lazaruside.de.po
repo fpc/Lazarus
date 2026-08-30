@@ -2215,6 +2215,120 @@ msgstr "While/Do"
 msgid "With/Do"
 msgstr "With/Do"
 
+#: lazarusidestrconsts.dlgfoldsqlaltertable
+msgid "Alter Table"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlbegin
+msgid "Begin"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlcreatedb
+msgid "Create Database"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlcreateprocedure
+msgid "Create Procedure"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlcreatetable
+msgid "Create Table"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqldelete
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfoldsqldelete"
+msgid "Delete"
+msgstr "Löschen"
+
+#: lazarusidestrconsts.dlgfoldsqldropdb
+msgid "Drop Database"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqldroptable
+msgid "Drop Table"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlfrom
+msgid "From"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlgroup
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfoldsqlgroup"
+msgid "Group"
+msgstr "Gruppe"
+
+#: lazarusidestrconsts.dlgfoldsqlhaving
+msgid "Having"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlinsert
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfoldsqlinsert"
+msgid "Insert"
+msgstr "Einfügen"
+
+#: lazarusidestrconsts.dlgfoldsqlinsertselect
+msgid "Insert-Select"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlinto
+msgid "Into"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqljoin
+msgid "Join"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqljoinon
+msgid "Join-On"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqllimit
+msgid "Limit"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlorder
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfoldsqlorder"
+msgid "Order"
+msgstr "Reihenfolge"
+
+#: lazarusidestrconsts.dlgfoldsqlselect
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfoldsqlselect"
+msgid "Select"
+msgstr "Auswählen"
+
+#: lazarusidestrconsts.dlgfoldsqlset
+msgid "Set"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlsubselect
+msgid "Sub-Select"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlupdate
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfoldsqlupdate"
+msgid "Update"
+msgstr "Aktualisierung"
+
+#: lazarusidestrconsts.dlgfoldsqlupdateselect
+msgid "Update-Select"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldsqlvalues
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgfoldsqlvalues"
+msgid "Values"
+msgstr "Werte"
+
+#: lazarusidestrconsts.dlgfoldsqlwhere
+msgid "Where"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldxmlcdata
 msgid "CData"
 msgstr "CData-Abschnitt"
@@ -6335,6 +6449,7 @@ msgid "Other"
 msgstr "Andere"
 
 #: lazarusidestrconsts.lisceoupdate
+msgctxt "lazarusidestrconsts.lisceoupdate"
 msgid "Update"
 msgstr "Aktualisierung"
 
@@ -10329,6 +10444,7 @@ msgstr ""
 "A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts.lisgroup
+msgctxt "lazarusidestrconsts.lisgroup"
 msgid "Group"
 msgstr "Gruppe"
 
@@ -13105,6 +13221,7 @@ msgid "&Search"
 msgstr "&Suchen"
 
 #: lazarusidestrconsts.lismenuselect
+msgctxt "lazarusidestrconsts.lismenuselect"
 msgid "Select"
 msgstr "Auswählen"
 
@@ -18723,6 +18840,7 @@ msgid "Value: "
 msgstr "Wert: "
 
 #: lazarusidestrconsts.lisvalues
+msgctxt "lazarusidestrconsts.lisvalues"
 msgid "Values"
 msgstr "Werte"
 
