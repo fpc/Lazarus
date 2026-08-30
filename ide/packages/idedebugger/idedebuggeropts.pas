@@ -456,7 +456,10 @@ var
   Obj: TObject;
   P2: ILazDbgIdeConsoleWindowPlugIn;
   Xml: ILazDbgIdePlugInXmlConfiguration;
+  def: Boolean;
 begin
+  def := AConfig.CheckPropertyDefault;
+  AConfig.CheckPropertyDefault := True;
   AConfig.ReadObject(APath, Self);
   c := AConfig.GetChildCount(APath);
   for i := 1 to c do begin
@@ -482,20 +485,32 @@ begin
       Xml.LoadDataFromXMLConfig(AConfig, p + 'Config/');
   end;
   FChanged := False;
+  AConfig.CheckPropertyDefault := def;
 end;
 
 procedure TIdeDbgConsoleWindowPlugInList.SaveDataToXMLConfig(
   const AConfig: TRttiXMLConfig; const APath: string);
 var
   i, n: Integer;
-  p: String;
+  Id, p: String;
   Cfg: ILazDbgIdePlugInConfiguration;
   Obj: TObject;
   Xml: ILazDbgIdePlugInXmlConfiguration;
+  def: Boolean;
 begin
-  AConfig.DeletePath(APath);
+  def := AConfig.CheckPropertyDefault;
+  AConfig.CheckPropertyDefault := True;
+  n := AConfig.GetChildCount(APath);
+  while n > 0 do begin
+    p := APath + 'Item[' + IntToStr(n) + ']/';
+    Id := AConfig.GetValue(p + 'Id', '');
+    if IndexOfId(Id) >= 0 then
+      AConfig.DeletePath(p);
+    dec(n);
+  end;
+
   AConfig.WriteObject(APath, Self);
-  n := 1;
+  n := AConfig.GetChildCount(APath) + 1;
   for i := 0 to Count - 1 do begin
     if FList[i].Intf = nil then
       continue;
@@ -508,12 +523,20 @@ begin
       Continue;
     p := APath + 'Item[' + IntToStr(n) + ']/';
     inc(n);
-    AConfig.SetValue(p + 'Id', FList[i].RegClass.GetPlugInId);
     if Obj <> nil then
       AConfig.WriteObject(p + 'Config/', Obj);
     if Xml <> nil then
       Xml.SaveDataToXMLConfig(AConfig, p + 'Config/');
+
+    if AConfig.FindNode(p + 'Config/', False) = nil then begin
+      if AConfig.FindNode(p, False) = nil then
+        AConfig.DeletePath(p);
+      dec(n);
+    end
+    else
+      AConfig.SetValue(p + 'Id', FList[i].RegClass.GetPlugInId);
   end;
+  AConfig.CheckPropertyDefault := def;
 end;
 
 function CheckCurrentDebuggerSetup: TCurrentDebuggerSetupResult;
