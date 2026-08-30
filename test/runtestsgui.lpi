@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="12"/>
+    <Version Value="13"/>
     <PathDelim Value="\"/>
     <General>
       <Flags>
         <LRSInOutputDirectory Value="False"/>
-        <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InIDEConfig"/>
       <Title Value="Run Lazarus tests"/>
       <ResourceType Value="res"/>
     </General>
-    <BuildModes Count="1">
-      <Item1 Name="default" Default="True"/>
+    <BuildModes>
+      <Item Name="default" Default="True"/>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
@@ -23,103 +22,112 @@
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T &apos;Lazarus Run Output&apos; -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
       <FormatVersion Value="2"/>
-      <Modes Count="1">
-        <Mode0 Name="default">
+      <Modes>
+        <Mode Name="default">
           <local>
             <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T &apos;Lazarus Run Output&apos; -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
           </local>
-        </Mode0>
+        </Mode>
       </Modes>
     </RunParams>
-    <RequiredPackages Count="6">
-      <Item1>
+    <RequiredPackages>
+      <Item>
         <PackageName Value="IDEIntf"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <PackageName Value="LazMouseAndKeyInput"/>
-      </Item2>
-      <Item3>
+      </Item>
+      <Item>
         <PackageName Value="LCL"/>
-      </Item3>
-      <Item4>
+      </Item>
+      <Item>
         <PackageName Value="FPCUnitTestRunner"/>
-      </Item4>
-      <Item5>
+      </Item>
+      <Item>
         <PackageName Value="FCL"/>
-      </Item5>
-      <Item6>
+      </Item>
+      <Item>
         <PackageName Value="CodeTools"/>
-      </Item6>
+      </Item>
     </RequiredPackages>
-    <Units Count="15">
-      <Unit0>
+    <Units>
+      <Unit>
         <Filename Value="runtestsgui.lpr"/>
         <IsPartOfProject Value="True"/>
-      </Unit0>
-      <Unit1>
+        <UnitName Value="RunTestsGui"/>
+      </Unit>
+      <Unit>
         <Filename Value="testlpi.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestLpi"/>
-      </Unit1>
-      <Unit2>
+      </Unit>
+      <Unit>
         <Filename Value="testglobals.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit2>
-      <Unit3>
+        <UnitName Value="TestGlobals"/>
+      </Unit>
+      <Unit>
         <Filename Value="bugs\bug8432.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit3>
-      <Unit4>
+      </Unit>
+      <Unit>
         <Filename Value="bugs\testfileutil.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit4>
-      <Unit5>
+      </Unit>
+      <Unit>
         <Filename Value="testunits.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit5>
-      <Unit6>
+        <UnitName Value="TestUnits"/>
+      </Unit>
+      <Unit>
         <Filename Value="bugtestcase.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="BugTestCase"/>
-      </Unit6>
-      <Unit7>
+      </Unit>
+      <Unit>
         <Filename Value="lcltests\testpen.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit7>
-      <Unit8>
+      </Unit>
+      <Unit>
         <Filename Value="semiauto\semiautotest.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit8>
-      <Unit9>
+      </Unit>
+      <Unit>
         <Filename Value="semiauto\idesemiautotests.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit9>
-      <Unit10>
+      </Unit>
+      <Unit>
         <Filename Value="semiauto\lclsemiautotests.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit10>
-      <Unit11>
+      </Unit>
+      <Unit>
         <Filename Value="lazutils\testlazutils.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit11>
-      <Unit12>
+        <UnitName Value="TestLazUtils"/>
+      </Unit>
+      <Unit>
         <Filename Value="lcltests\testpagecontrol.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestPageControl"/>
-      </Unit12>
-      <Unit13>
+      </Unit>
+      <Unit>
         <Filename Value="ideintf\testmenuintf.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="TestMenuIntfDlg"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="TestMenuIntf"/>
-      </Unit13>
-      <Unit14>
+      </Unit>
+      <Unit>
         <Filename Value="lcltests\testlistview.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestListView"/>
-      </Unit14>
+      </Unit>
+      <Unit>
+        <Filename Value="lcltests\testgraphutil.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestGraphUtil"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -139,6 +147,7 @@
     </Parsing>
     <Linking>
       <Debugging>
+        <DebugInfoType Value="dsDwarf3"/>
         <UseHeaptrc Value="True"/>
       </Debugging>
       <Options>
@@ -149,10 +158,10 @@
     </Linking>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="1">
-      <Item1>
+    <Exceptions>
+      <Item>
         <Name Value="EAssertionFailedError"/>
-      </Item1>
+      </Item>
     </Exceptions>
   </Debugging>
 </CONFIG>
