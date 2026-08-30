@@ -428,8 +428,10 @@ procedure TIdeDbgConsoleWindowPlugInList.LoadDataFromXMLConfig(
 var
   i, c: Integer;
   Id, p: String;
+  Cfg: ILazDbgIdePlugInConfiguration;
   Obj: TObject;
   P2: ILazDbgIdeConsoleWindowPlugIn;
+  Xml: ILazDbgIdePlugInXmlConfiguration;
 begin
   c := AConfig.GetChildCount(APath);
   for i := 1 to c do begin
@@ -443,9 +445,16 @@ begin
     P2 := PlugInById(Id);
     if P2 = nil then
       Continue;
-    Obj := P2.GetConfigObject;
+    Cfg := P2.GetConfiguration;
+    if Cfg = nil then
+      continue;
+    Cfg.ResetOptions;
+    Obj := Cfg.GetConfigObject;
     if Obj <> nil then
       AConfig.ReadObject(p + 'Config/', Obj);
+    Xml := Cfg.GetXmlConfiguration;
+    if Xml <> nil then
+      Xml.LoadDataFromXMLConfig(AConfig, p + 'Config/');
   end;
   FChanged := False;
 end;
@@ -455,20 +464,29 @@ procedure TIdeDbgConsoleWindowPlugInList.SaveDataToXMLConfig(
 var
   i, n: Integer;
   p: String;
+  Cfg: ILazDbgIdePlugInConfiguration;
   Obj: TObject;
+  Xml: ILazDbgIdePlugInXmlConfiguration;
 begin
   AConfig.DeletePath(APath);
-  n := 0;
+  n := 1;
   for i := 0 to Count - 1 do begin
     if FList[i].Intf = nil then
       continue;
-    Obj := FList[i].Intf.GetConfigObject;
-    if Obj = nil then
-      Continue;   // a plug-in with no settings writes no entry at all
-    inc(n);
+    Cfg := FList[i].Intf.GetConfiguration;
+    if (Cfg = nil) or (Cfg.CompareOptions(nil) = nbTrue) then
+      continue;
+    Obj := Cfg.GetConfigObject;
+    Xml := FList[i].Intf.GetXmlConfiguration;
+    if (Obj=nil) and (Xml=nil) then
+      Continue;
     p := APath + 'Item[' + IntToStr(n) + ']/';
+    inc(n);
     AConfig.SetValue(p + 'Id', FList[i].RegClass.GetPlugInId);
-    AConfig.WriteObject(p + 'Config/', Obj);
+    if Obj <> nil then
+      AConfig.WriteObject(p + 'Config/', Obj);
+    if Xml <> nil then
+      Xml.SaveDataToXMLConfig(AConfig, p + 'Config/');
   end;
 end;
 
