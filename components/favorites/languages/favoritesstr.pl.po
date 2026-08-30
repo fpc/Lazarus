@@ -17,6 +17,10 @@ msgstr ""
 msgid "Add to favorites: %s"
 msgstr "Dodaj do ulubionych: %s"
 
+#: favoritesstr.sfavoritesheaders
+msgid "Favorites:"
+msgstr ""
+
 #: favoritesstr.sremovefromfavoritess
 #, object-pascal-format
 msgid "Remove from favorites: %s"
