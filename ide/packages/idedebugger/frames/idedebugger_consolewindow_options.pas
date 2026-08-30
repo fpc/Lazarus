@@ -37,7 +37,7 @@ type
   private
     FPlugIns: TIdeDbgConsoleWindowPlugInList;   // the working copy
     FFrame: TFrame;
-    FFramePlugIn: ILazDbgIdeConsoleWindowPlugIn;
+    FCurrentIdx: integer;
     procedure UpdateDescription;
     function  SelectedPlugInId: String;
     procedure ShowSettingsFrame;
@@ -92,17 +92,17 @@ var
 begin
   SaveSettingsFrame;
   FreeAndNil(FFrame);
-  FFramePlugIn := nil;
+  FCurrentIdx := -1;
 
   if cbPlugIn.ItemIndex < 0 then
     exit;
-  FFramePlugIn := FPlugIns.PlugIns[cbPlugIn.ItemIndex];
-  if FFramePlugIn = nil then
-    exit;
+  FCurrentIdx := cbPlugIn.ItemIndex;
 
-  Cfg := FFramePlugIn.GetConfiguration;
-  if Cfg = nil then
+  Cfg := FPlugIns.CopiedConf[FCurrentIdx];
+  if Cfg = nil then begin
+    FCurrentIdx := -1;
     exit;
+  end;
 
   FrameClass := Cfg.GetSettingsFrameClass;
   if (FrameClass = nil) or (not FrameClass.InheritsFrom(TFrame)) then
@@ -122,9 +122,9 @@ var
   Cfg: ILazDbgIdePlugInConfiguration;
   Intf: ILazDbgIdePlugInSettingsFrameIntf;
 begin
-  if (FFrame = nil) or (FFramePlugIn = nil) then
+  if (FFrame = nil) or (FCurrentIdx < 0) then
     exit;
-  Cfg := FFramePlugIn.GetConfiguration;
+  Cfg := FPlugIns.CopiedConf[FCurrentIdx];
   if Cfg = nil then
     exit;
   if FFrame.GetInterface(ILazDbgIdePlugInSettingsFrameIntf, Intf) then
@@ -152,8 +152,7 @@ begin
   (* Edit a copy. Cancel then costs nothing, which is the whole reason the
      plug-in interface carries CreateCopy. *)
   if FPlugIns = nil then
-    FPlugIns := TIdeDbgConsoleWindowPlugInList.Create;
-  FPlugIns.Assign(DebuggerOptions.ConsoleWindowPlugIns);
+    FPlugIns := TIdeDbgConsoleWindowPlugInList.CreateFrom(DebuggerOptions.ConsoleWindowPlugIns);
   FPlugIns.Changed := False;
 
   cbPlugIn.Clear;
@@ -164,6 +163,7 @@ begin
       c := i;
   end;
   cbPlugIn.ItemIndex := c;
+  FCurrentIdx := -1;
 
   UpdateDescription;
   ShowSettingsFrame;
@@ -179,7 +179,7 @@ begin
   if s <> '' then
     DebuggerOptions.ConsoleWindowPlugInId := s;
   if FPlugIns.Changed then begin
-    DebuggerOptions.ConsoleWindowPlugIns.Assign(FPlugIns);
+    DebuggerOptions.ConsoleWindowPlugIns.AssignConf(FPlugIns);
     DebuggerOptions.ConsoleWindowPlugIns.Changed := True;
   end;
 end;
@@ -198,7 +198,7 @@ var
   i: Integer;
 begin
   i := cbPlugIn.ItemIndex;
-  if (i < 0) or (i >= ConsoleWindowPlugIns.Count) then begin
+  if (i < 0) or (i >= FPlugIns.Count) then begin
     lblDescription.Caption := dlgDebugConsoleWindowNone;
     lblEditing.Caption := '';
     divEditPlugIn.Visible := False;
@@ -211,7 +211,7 @@ begin
      to the user; this names the same plug-in the drop-down is showing, so the
      settings below are attributable without reading the combo again. *)
   lblEditing.Caption := Format(dlgDebugConsoleWindowEditing,
-    [ConsoleWindowPlugIns[i].GetDisplayName]);
+    [FPlugIns.DisplayName[i]]);
   divEditPlugIn.Visible := True;
   lblEditing.Visible := True;
 end;

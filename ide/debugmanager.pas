@@ -164,7 +164,7 @@ type
     (* The console window the debuggee's captured output currently goes to.
        Created on demand from the registry; the built-in is the fallback, so
        this is never nil while there is any registered plug-in. *)
-    function ResolveConsoleEntry: TLazDbgIdeConsoleWindowPlugInRegistryEntryClass;
+    function ResolveConsoleId: String;
     function ConsolePlugIn: ILazDbgIdeConsoleWindowPlugIn;
     (* The two halves of resolving the selected console plug-in:
        DoIDERestoreWindows at IDE startup, ReconcileConsolePlugInForNewSession
@@ -1105,51 +1105,48 @@ end;
 
    The built-in is looked up by id rather than assumed to be first in the list,
    because registration order is not ours to depend on. *)
-function TDebugManager.ResolveConsoleEntry: TLazDbgIdeConsoleWindowPlugInRegistryEntryClass;
+function TDebugManager.ResolveConsoleId: String;
 var
   AMode: TAbstractRunParamsOptionsMode;
-  Id: String;
 begin
-  Id := '';
+  Result := '';
   if Project1 <> nil then begin
     AMode := Project1.RunParameterOptions.GetActiveMode;
-    if AMode <> nil then
-      Id := AMode.IdeDbgConsoleId;
+    if AMode <> nil then begin
+      Result := AMode.IdeDbgConsoleId;
+      if (Result <> '') and (DebuggerOptions.ConsoleWindowPlugIns.IndexOfId(Result) >=0) then
+        exit;
+    end;
   end;
 
-  (* The sentinel is tested here rather than left to miss in the registry.
-     Nothing rejects an empty id at registration, so a plug-in that registered
-     one would otherwise become the choice for every project that has none. *)
-  if Id <> '' then
-    Result := ConsoleWindowPlugIns.IdePluginById[Id]
-  else
-    Result := nil;
-  if Result = nil then
-    Result := ConsoleWindowPlugIns.IdePluginById[DebuggerOptions.ConsoleWindowPlugInId];
-  if Result = nil then
-    Result := ConsoleWindowPlugIns.IdePluginById[BuiltInConsolePlugInId];
-  if (Result = nil) and (ConsoleWindowPlugIns.Count > 0) then
-    Result := ConsoleWindowPlugIns[0];
+  Result := DebuggerOptions.ConsoleWindowPlugInId;
+  if (Result <> '') and (DebuggerOptions.ConsoleWindowPlugIns.IndexOfId(Result) >=0) then
+    exit;
+  Result := BuiltInConsolePlugInId;
+  if (Result <> '') and (DebuggerOptions.ConsoleWindowPlugIns.IndexOfId(Result) >=0) then
+    exit;
+  if DebuggerOptions.ConsoleWindowPlugIns.Count > 0 then begin
+    Result := DebuggerOptions.ConsoleWindowPlugIns.Ids[0];
+    if (Result <> '') and (DebuggerOptions.ConsoleWindowPlugIns.IndexOfId(Result) >=0) then
+      exit;
+  end;
+
+  Result := '';
 end;
 
 function TDebugManager.ConsolePlugIn: ILazDbgIdeConsoleWindowPlugIn;
 var
-  Entry: TLazDbgIdeConsoleWindowPlugInRegistryEntryClass;
+  EntryId: String;
   Obj: ILazDbgIdeConsoleWindowPlugIn;
 begin
   if FConsolePlugIn = nil then begin
-    Entry := ResolveConsoleEntry;
-    if Entry <> nil then begin
-      (* The instance comes from the options store, which is what holds the
-         user's settings for it. Creating one here instead would give a plug-in
-         with default settings and no way to reach the configured ones. *)
-      FConsolePlugIn := DebuggerOptions.ConsoleWindowPlugIns.PlugInById(Entry.GetPlugInId);
-      if FConsolePlugIn = nil then
-        exit(nil);
-      FConsolePlugInId := Entry.GetPlugInId;
-      FConsolePlugIn.HandleUserSelectedAsActive;
-      FConsolePlugIn.ProcessAddedToPlugInHook(Self);
-    end;
+    EntryId := ResolveConsoleId;
+    FConsolePlugIn := DebuggerOptions.ConsoleWindowPlugIns.PlugInById(EntryId);
+    if FConsolePlugIn = nil then
+      exit(nil);
+    FConsolePlugInId := EntryId;
+    FConsolePlugIn.HandleUserSelectedAsActive;
+    FConsolePlugIn.ProcessAddedToPlugInHook(Self);
   end;
   Result := FConsolePlugIn;
 end;
@@ -1171,11 +1168,11 @@ end;
    actually starting. *)
 procedure TDebugManager.ReconcileConsolePlugInForNewSession;
 var
-  Entry: TLazDbgIdeConsoleWindowPlugInRegistryEntryClass;
+  EntryId: String;
 begin
-  Entry := ResolveConsoleEntry;
-  if (Entry = nil) or
-     ((FConsolePlugIn <> nil) and SameText(Entry.GetPlugInId, FConsolePlugInId))
+  EntryId := ResolveConsoleId;
+  if (EntryId = '') or
+     ((FConsolePlugIn <> nil) and SameText(EntryId, FConsolePlugInId))
   then
     exit;
 

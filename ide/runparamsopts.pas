@@ -65,7 +65,7 @@ uses
   // IdeConfig
   EnvironmentOpts, RecentListProcs, MiscOptions,
   // IdeDebugger
-  BaseDebugManager,
+  BaseDebugManager, IdeDebuggerOpts,
   // IDE
   SysVarUserOverrideDlg, LazarusIDEStrConsts;
 
@@ -271,7 +271,7 @@ procedure TRunParamsOptsDlg.LoadConsoleId(const AConsoleId: String);
 var
   i, ListedCount: Integer;
 begin
-  ListedCount := 1 + ConsoleWindowPlugIns.Count;
+  ListedCount := 1 + DebuggerOptions.ConsoleWindowPlugIns.Count;
   // Discard any unlisted item left over from the mode shown before this one.
   while cbConsole.Items.Count > ListedCount do
     cbConsole.Items.Delete(cbConsole.Items.Count - 1);
@@ -282,8 +282,8 @@ begin
     exit;
   end;
 
-  for i := 0 to ConsoleWindowPlugIns.Count - 1 do
-    if SameText(ConsoleWindowPlugIns[i].GetPlugInId, AConsoleId) then begin
+  for i := 0 to DebuggerOptions.ConsoleWindowPlugIns.Count - 1 do
+    if SameText(DebuggerOptions.ConsoleWindowPlugIns.Ids[i], AConsoleId) then begin
       cbConsole.ItemIndex := IdxConsoleDefault + 1 + i;
       exit;
     end;
@@ -305,8 +305,8 @@ begin
   if i = IdxConsoleDefault then
     Result := RunParamsConsoleIdDefault
   else
-  if (i > IdxConsoleDefault) and (i - IdxConsoleDefault - 1 < ConsoleWindowPlugIns.Count) then
-    Result := ConsoleWindowPlugIns[i - IdxConsoleDefault - 1].GetPlugInId
+  if (i > IdxConsoleDefault) and (i - IdxConsoleDefault - 1 < DebuggerOptions.ConsoleWindowPlugIns.Count) then
+    Result := DebuggerOptions.ConsoleWindowPlugIns.Ids[i - IdxConsoleDefault - 1]
   else
     Result := fUnlistedConsoleId;
 end;
@@ -449,10 +449,10 @@ begin
      anything about it. Index 0 defers to the IDE-wide setting on
      Tools > Options > Debugger > Debug Console Window. *)
   cbConsole.Items.Add(dlgConsoleUseIdeDefault);
-  for i := 0 to ConsoleWindowPlugIns.Count - 1 do
-    cbConsole.Items.Add(ConsoleWindowPlugIns[i].GetDisplayName);
+  for i := 0 to DebuggerOptions.ConsoleWindowPlugIns.Count - 1 do
+    cbConsole.Items.Add(DebuggerOptions.ConsoleWindowPlugIns.DisplayName[i]);
   cbConsole.ItemIndex := IdxConsoleDefault;
-  cbConsole.Visible := ConsoleWindowPlugIns.Count > 1;
+  cbConsole.Visible := DebuggerOptions.ConsoleWindowPlugIns.Count > 1;
   (* Where the selected backend cannot capture, only the OS console can serve
      and there is nothing to choose between. The controls are left in place and
      merely disabled: they still show and write back whatever the project
