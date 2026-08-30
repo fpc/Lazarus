@@ -21,6 +21,10 @@ uses
   IdeDebuggerStringConstants, IdeDebuggerBackendValueConv,
   IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats, IdeDebuggerExcludedRoutines;
 
+const
+  { "package/class". Stored in the IDE config and in project files. }
+  BuiltInConsolePlugInId = 'IdeDebugger/IdeDbgConsole';
+
 type
 
   (* TIdeDbgConsoleWindowPlugInList
@@ -43,12 +47,15 @@ type
     end;
   private
     FList: array of TPluginData;
+    FConsoleWindowPlugInId: String;
     FChanged: Boolean;
+    function GetConsoleWindowPlugInId: String;
     function GetCopiedConf(AIndex: Integer): ILazDbgIdePlugInConfiguration;
     function GetDisplayName(AIndex: Integer): String;
     function GetIds(AIndex: Integer): String;
     function GetPlugIn(AIndex: Integer): ILazDbgIdeConsoleWindowPlugIn;
     function GetCount: Integer;
+    procedure SetConsoleWindowPlugInId(AValue: String);
   public
     constructor Create;
     constructor CreateFrom(ASourceList: TIdeDbgConsoleWindowPlugInList);
@@ -68,6 +75,8 @@ type
     property DisplayName[AIndex: Integer]: String read GetDisplayName;
     property CopiedConf[AIndex: Integer]: ILazDbgIdePlugInConfiguration read GetCopiedConf;
     property Changed: Boolean read FChanged write FChanged;
+  published
+    property ConsoleWindowPlugInId: String read GetConsoleWindowPlugInId write SetConsoleWindowPlugInId;
   end;
 
   { TDebuggerPropertiesConfig }
@@ -190,7 +199,6 @@ type
 
     FBackendConverterConfig: TIdeDbgValueConvertSelectorList;
     FConsoleWindowPlugIns: TIdeDbgConsoleWindowPlugInList;
-    FConsoleWindowPlugInId: String;
     FHasActiveDebuggerEntry: Boolean;
     FPrimaryConfigPath: String;
     FSetupCheckIgnoreNoDefault: Boolean;
@@ -202,8 +210,10 @@ type
 
     FDebuggerConfigList: TDebuggerPropertiesConfigList; // named entries
 
+    function GetConsoleWindowPlugInId: String;
     function GetConsoleWindowPlugIns: TIdeDbgConsoleWindowPlugInList;
     function GetCurrentDebuggerPropertiesConfig: TDebuggerPropertiesConfig;
+    procedure SetConsoleWindowPlugInId(AValue: String);
     procedure SetCurrentDebuggerPropertiesOpt(AValue: TDebuggerPropertiesConfig);
     procedure LoadDebuggerProperties;
   protected
@@ -255,7 +265,7 @@ type
        output. Empty means "whatever the IDE falls back to", which is how an
        existing config file reads and why it is the default: an installation
        that never opens this page must not have a value written for it. *)
-    property ConsoleWindowPlugInId: String read FConsoleWindowPlugInId write FConsoleWindowPlugInId;
+    property ConsoleWindowPlugInId: String read GetConsoleWindowPlugInId write SetConsoleWindowPlugInId;
   end;
 
   TCurrentDebuggerSetupResult = (
@@ -349,6 +359,13 @@ begin
   Result := Length(FList);
 end;
 
+procedure TIdeDbgConsoleWindowPlugInList.SetConsoleWindowPlugInId(AValue: String);
+begin
+  if SameText(AValue, BuiltInConsolePlugInId) then
+    AValue := '';
+  FConsoleWindowPlugInId := AValue;
+end;
+
 function TIdeDbgConsoleWindowPlugInList.GetPlugIn(AIndex: Integer): ILazDbgIdeConsoleWindowPlugIn;
 begin
   Result := FList[AIndex].Intf;
@@ -371,6 +388,13 @@ begin
   if c <> nil then
     FList[AIndex].CopyConf := c.CreateCopy;
   Result := FList[AIndex].CopyConf;
+end;
+
+function TIdeDbgConsoleWindowPlugInList.GetConsoleWindowPlugInId: String;
+begin
+  Result := FConsoleWindowPlugInId;
+  if Result = '' then
+    Result := BuiltInConsolePlugInId;
 end;
 
 function TIdeDbgConsoleWindowPlugInList.GetDisplayName(AIndex: Integer
@@ -433,6 +457,7 @@ var
   P2: ILazDbgIdeConsoleWindowPlugIn;
   Xml: ILazDbgIdePlugInXmlConfiguration;
 begin
+  AConfig.ReadObject(APath, Self);
   c := AConfig.GetChildCount(APath);
   for i := 1 to c do begin
     p := APath + 'Item[' + IntToStr(i) + ']/';
@@ -469,6 +494,7 @@ var
   Xml: ILazDbgIdePlugInXmlConfiguration;
 begin
   AConfig.DeletePath(APath);
+  AConfig.WriteObject(APath, Self);
   n := 1;
   for i := 0 to Count - 1 do begin
     if FList[i].Intf = nil then
@@ -1234,11 +1260,21 @@ begin
   Result := FDebuggerConfigList.CurrentDebuggerPropertiesConfig;
 end;
 
+procedure TDebuggerOptions.SetConsoleWindowPlugInId(AValue: String);
+begin
+  ConsoleWindowPlugIns.ConsoleWindowPlugInId := AValue;
+end;
+
 function TDebuggerOptions.GetConsoleWindowPlugIns: TIdeDbgConsoleWindowPlugInList;
 begin
   if FConsoleWindowPlugIns = nil then
     FConsoleWindowPlugIns := TIdeDbgConsoleWindowPlugInList.Create;
   Result := FConsoleWindowPlugIns;
+end;
+
+function TDebuggerOptions.GetConsoleWindowPlugInId: String;
+begin
+  Result := ConsoleWindowPlugIns.ConsoleWindowPlugInId;
 end;
 
 procedure TDebuggerOptions.SetCurrentDebuggerPropertiesOpt(

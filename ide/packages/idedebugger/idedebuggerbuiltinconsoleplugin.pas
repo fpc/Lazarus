@@ -32,11 +32,7 @@ uses
   // LazDebuggerIntf
   LazDebuggerIntfBaseTypes,
   // IdeDebugger
-  BaseDebugManager, IdeDebuggerStringConstants;
-
-const
-  { "package/class". Stored in the IDE config and in project files. }
-  BuiltInConsolePlugInId = 'IdeDebugger/IdeDbgConsole';
+  BaseDebugManager, IdeDebuggerStringConstants, IdeDebuggerOpts;
 
 type
 

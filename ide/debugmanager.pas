@@ -72,7 +72,6 @@ uses
   RegistersDlg, AssemblerDlg, DebugOutputForm, ExceptionDlg, InspectDlg,
   PseudoTerminalDlg, FeedbackDlg, ThreadDlg, HistoryDlg, ProcessDebugger,
   IdeDebuggerBase, IdeDebuggerOpts, EnvDebuggerOptions,
-  IdeDebuggerBuiltInConsolePlugIn,
   IdeDebuggerBackendValueConv, Debugger, BaseDebugManager,
   IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats,
   // IdeConfig
