@@ -2375,7 +2375,8 @@ begin
   begin
     if Sender^.get_toplevel^.is_toplevel then
     begin
-      if not PGtkWindow(Sender^.get_toplevel)^.is_active then
+      if not PGtkWindow(Sender^.get_toplevel)^.is_active and
+        Sender^.get_mapped and Sender^.get_toplevel^.get_mapped then
         Exit;
       if PGtkWindow(Sender^.get_toplevel)^.get_focus = Sender then
         Exit;
