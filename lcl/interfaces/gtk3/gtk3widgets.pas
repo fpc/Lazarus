@@ -15269,8 +15269,12 @@ var
         (OldShadowH <> TGtk3Window(ACtl).FResizeState.ShadowH)) and
        Assigned(ACtl.LCLObject) and (ACtl.LCLObject is TCustomForm) then
     begin
-      with TCustomForm(ACtl.LCLObject).Constraints do
-        if (MinWidth > 0) or (MaxWidth > 0) or (MinHeight > 0) or (MaxHeight > 0) then
+      with TCustomForm(ACtl.LCLObject) do
+        //issue #42460
+        if (Constraints.MinWidth > 0) or (Constraints.MaxWidth > 0) or
+           (Constraints.MinHeight > 0) or (Constraints.MaxHeight > 0) or
+           (Gtk3WidgetSet.IsWayland and
+            (BorderStyle in [bsDialog, bsSingle, bsToolWindow])) then
         begin
           {$IFDEF GTK3DEBUGSIZE}
           writeln(Format('[%d] WindowSizeAllocate %s shadow changed %dx%d -> %dx%d, refire constraint hints',

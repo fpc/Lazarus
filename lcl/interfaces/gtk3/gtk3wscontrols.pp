@@ -218,9 +218,14 @@ begin
     begin
       if Gtk3WidgetSet.IsWayland then
       begin
+        //issue #42460
         Geometry.min_width := PGtkWidget(AWidget.Widget)^.get_allocated_width;
+        if Geometry.min_width < AForm.Width + AShadowW then
+          Geometry.min_width := AForm.Width + AShadowW;
         Geometry.max_width := Geometry.min_width;
         Geometry.min_height := PGtkWidget(AWidget.Widget)^.get_allocated_height;
+        if Geometry.min_height < AForm.Height + MenuH + AShadowH then
+          Geometry.min_height := AForm.Height + MenuH + AShadowH;
         Geometry.max_height := Geometry.min_height;
         Geometry.base_width := Geometry.min_width;
         Geometry.base_height := Geometry.min_height;
