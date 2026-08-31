@@ -8627,8 +8627,6 @@ end;
 
 constructor TColorSchemeFromFile.CreateFrom(aXMLConfig: TRttiXMLConfig; const AFileName, AName,
   aPath: String);
-var
-  XmlConf: TRttiXMLConfig;
 begin
   FFileName := AFileName;
   CreateFromXml(aXMLConfig, AName, aPath);

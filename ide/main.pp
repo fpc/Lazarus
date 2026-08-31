@@ -10341,7 +10341,6 @@ function TMainIDE.DoJumpToCodePosition(ActiveSrcEdit: TSourceEditorInterface; Ne
   NewTopLine, BlockTopLine, BlockBottomLine: integer; Flags: TJumpToCodePosFlags): TModalResult;
 var
   SrcEdit: TSourceEditor;
-  STB, FNStart: String;
 begin
   Result:=mrCancel;
 
