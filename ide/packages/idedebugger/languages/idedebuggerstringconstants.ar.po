@@ -2227,6 +2227,10 @@ msgstr ""
 msgid "Word (Little Endian)"
 msgstr ""
 
+#: idedebuggerstringconstants.mnuconsoleinoutputwindow
+msgid "Console In/Output (Lazarus)"
+msgstr ""
+
 #: idedebuggerstringconstants.optdispguttercustomdisplayformat
 msgid "Custom Display Format"
 msgstr ""

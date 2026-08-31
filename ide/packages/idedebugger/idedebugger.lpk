@@ -160,6 +160,7 @@
       </Item>
       <Item>
         <Filename Value="pseudoterminaldlg.pp"/>
+        <HasRegisterProc Value="True"/>
         <UnitName Value="PseudoTerminalDlg"/>
         <ResourceBaseClass Value="Form"/>
         <ResourceBaseClassname Value=""/>

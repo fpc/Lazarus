@@ -656,6 +656,7 @@ resourcestring
   brkShowBreakpointsAndWatchpo = 'Show breakpoints and watchpoints';
   brkShowExceptionFilter = 'Show exception-filter';
   brkShowBreakWatchpointsAndEx = 'Show break/watchpoints and exception-filter';
+  mnuConsoleInOutputWindow = 'Console In/Output (Lazarus)';
 
 implementation
 

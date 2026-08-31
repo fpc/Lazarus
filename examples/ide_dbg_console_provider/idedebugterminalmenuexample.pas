@@ -52,7 +52,7 @@ begin
     GHandler := TDebugTerminalMenuHandler.Create;
   { arg 4 is the method form of the click handler; arg 5 takes a plain
     procedure, which is what a method reference will not fit. }
-  RegisterIDEMenuCommand(itmViewDebugWindows, 'ViewDebugTerminal',
+  RegisterIDEMenuCommand(itmViewDebugConsoleWindows, 'ViewDebugTerminal',
     'Debug Terminal', @GHandler.ShowClick);
 end;
 

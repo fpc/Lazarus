@@ -44,7 +44,7 @@ uses
   // LazDebuggerIntf
   LazDebuggerIntfBaseTypes,
   // IdeIntf
-  IDEWindowIntf, IdeDebuggerPlugInIntf, IdeDebuggerConsolePlugInIntf,
+  IDEWindowIntf, IdeDebuggerPlugInIntf, IdeDebuggerConsolePlugInIntf, MenuIntf,
   // IDE
   DebuggerDlg, BaseDebugManager, IdeDebuggerStringConstants, EnvDebuggerOptions, IdeDebuggerOpts,
   EnvironmentOpts;
@@ -184,6 +184,8 @@ type
     function GetBuiltInConsoleIntf: ILazDbgIdeBuiltInConsolePlugIn; inline;
     function GetConsoleForm(DoDisableAutoSizing: boolean): TPseudoConsoleDlg; inline;
   end;
+
+  procedure Register;
 
 implementation
 
@@ -1231,6 +1233,27 @@ end;
 class function TLazDbgIdeBuiltInConsolePlugInRegistryEntry.GetPlugInId: String;
 begin
   Result := BUILDIN_CONSOLE_PLUGING_ID;
+end;
+
+type
+
+  TClickHandler = class
+    procedure DoConsoleMenuClick(Sender: TObject);
+  end;
+
+procedure TClickHandler.DoConsoleMenuClick(Sender: TObject);
+var
+  Plg: ILazDbgIdeConsoleWindowPlugIn;
+begin
+  if DebuggerOptions = nil then exit;
+  Plg := DebuggerOptions.ConsoleWindowPlugIns.PlugInById(BUILDIN_CONSOLE_PLUGING_ID);
+  if Plg = nil then exit;
+  Plg.HandleUserShow;
+end;
+
+procedure Register;
+begin
+  RegisterIDEMenuCommand(itmViewDebugConsoleWindows, 'ViewPseudoTerminal', mnuConsoleInOutputWindow, @TClickHandler(nil).DoConsoleMenuClick);
 end;
 
 initialization

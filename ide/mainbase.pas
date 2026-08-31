@@ -84,7 +84,7 @@ uses
   // IDE
   LazarusIDEStrConsts, EditorOptions, EnvGuiOptions, EditableProject,
   SourceEditor, SourceSynEditor, FindInFilesDlg, Splash, MainBar, MainIntf,
-  Designer, Debugger, FindInFilesWnd, RunParamOptions;
+  Designer, Debugger, IdeDebuggerOpts, FindInFilesWnd, RunParamOptions;
 
 type
   TResetToolFlag = (
@@ -111,6 +111,7 @@ type
     FWindowMenuActiveForm: TCustomForm;
     FDisplayState: TDisplayState;
     function CodeToolBossCheckAbort: boolean;
+    procedure DoUpdateSubMenuViewDebugWindows(Sender: TObject);
     procedure SetDisplayState(AValue: TDisplayState);
     procedure UpdateWindowMenu;
   protected
@@ -870,6 +871,11 @@ begin
   Result:=ToolStatus<>itCodeTools;
 end;
 
+procedure TMainIDEBase.DoUpdateSubMenuViewDebugWindows(Sender: TObject);
+begin
+  itmViewDebugConsoleWindows.Visible := HasConsoleSupport and (itmViewDebugConsoleWindows.Count > 1);
+end;
+
 procedure TMainIDEBase.DoMergeDefaultProjectOptions;
 var
   AFilename: String;
@@ -1225,7 +1231,8 @@ begin
     CreateMenuSeparatorSection(mnuView,itmViewSecondaryWindows,'itmViewSecondaryWindows');
     ParentMI:=itmViewSecondaryWindows;
     CreateMenuItem(ParentMI,itmViewSearchResults,'itmViewSearchResults',lisMenuViewSearchResults, 'menu_view_search_results');
-    CreateMenuSubSection(ParentMI,itmViewDebugWindows,'itmViewDebugWindows',lisMenuDebugWindows,'debugger');
+    CreateMenuSubSection(ParentMI,itmViewDebugWindowsMenu,'itmViewDebugWindowsMenu',lisMenuDebugWindows,'debugger');
+    CreateMenuSeparatorSection(itmViewDebugWindowsMenu,itmViewDebugWindows,'itmViewDebugWindows');
     begin
       CreateMenuItem(itmViewDebugWindows,itmViewWatches,'itmViewWatches',lisMenuViewWatches,'debugger_watches');
       CreateMenuItem(itmViewDebugWindows,itmViewBreakPoints,'itmViewBreakPoints',lisMenuViewBreakPointsAndExceptions,'debugger_breakpoints');
@@ -1242,6 +1249,11 @@ begin
       CreateMenuItem(itmViewDebugWindows,itmViewMemViewer,'itmViewMemViewer',lisMenuViewMemViewer, 'debugger_mem_viewer');
       CreateMenuItem(itmViewDebugWindows,itmViewDebugEvents,'itmViewDebugEvents',lisMenuViewDebugEvents,'debugger_event_log');
       CreateMenuItem(itmViewDebugWindows,itmViewDbgHistory,'itmViewDbgHistory',lisMenuViewHistory, 'debugger_historie');
+
+      CreateMenuSubSection(itmViewDebugWindows, itmViewDebugConsoleWindows, 'itmViewDebugConsoleWindows', lisMenuViewPseudoTerminal);
+      if not HasConsoleSupport then
+        itmViewDebugWindows.Visible := False;
+      mnuView.AddHandlerOnShow(@DoUpdateSubMenuViewDebugWindows);
     end;
     CreateMenuSubSection(ParentMI, itmViewIDEInternalsWindows, 'itmViewIDEInternalsWindows', lisMenuIDEInternals);
     begin

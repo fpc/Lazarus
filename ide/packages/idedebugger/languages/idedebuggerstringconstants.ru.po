@@ -2261,6 +2261,10 @@ msgstr "Word (от старшего байта к младшему)"
 msgid "Word (Little Endian)"
 msgstr "Word (от младшего байта к старшему)"
 
+#: idedebuggerstringconstants.mnuconsoleinoutputwindow
+msgid "Console In/Output (Lazarus)"
+msgstr ""
+
 #: idedebuggerstringconstants.optdispguttercustomdisplayformat
 msgid "Custom Display Format"
 msgstr "Пользовательский формат отображения"
