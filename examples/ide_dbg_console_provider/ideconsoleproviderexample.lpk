@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="6">
+    <PathDelim Value="\"/>
+    <Name Value="IdeConsoleProviderExample"/>
+    <Type Value="DesignTime"/>
+    <Author Value="Mathew Bradford"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Description Value="EXAMPLE for Pluggable in-IDE debug terminal: 
+
+Registers a dockable SynEdit terminal window as a selectable debug console window plug-in (IdeDebuggerConsolePlugInIntf). Depends on LCL, SynEdit and IDEIntf only, with nothing IDE-private and no project-specific coupling. It exists to be a second entry in the chooser, which is the case the selection design is for.
+
+Display handling is deliberately minimal: 
+BS/DEL do a destructive backspace,
+FF clears, everything else is appended verbatim. 
+There is no ANSI/VT
+interpretation -- it is a character terminal on a SynEdit, not a full one.
+
+Line ending, local echo and backspace-key behaviour are configurable on its
+settings frame. 
+"/>
+    <License Value="MIT. SPDX headers in each unit.
+"/>
+    <Version Major="1"/>
+    <Files>
+      <Item>
+        <Filename Value="idedebugterminaloptionsexample.pas"/>
+        <UnitName Value="IdeDebugTerminalOptionsExample"/>
+      </Item>
+      <Item>
+        <Filename Value="idedebugterminalpanelexample.pas"/>
+        <UnitName Value="IdeDebugTerminalPanelExample"/>
+      </Item>
+      <Item>
+        <Filename Value="idedebugterminalmenuexample.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="IdeDebugTerminalMenuExample"/>
+      </Item>
+      <Item>
+        <Filename Value="idedebugterminalsettingsframeexamle.pas"/>
+        <UnitName Value="IdeDebugTerminalSettingsFrameExamle"/>
+      </Item>
+      <Item>
+        <Filename Value="idedebugterminalpluginexample.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="IdeDebugTerminalPluginExample"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="IDEIntf"/>
+      </Item>
+      <Item>
+        <PackageName Value="SynEdit"/>
+      </Item>
+      <Item>
+        <PackageName Value="LCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

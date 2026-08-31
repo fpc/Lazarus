@@ -181,6 +181,7 @@
 ./examples/propstorage/propstorage.ex-meta
 ./examples/comdialogs/comdialogs.ex-meta
 ./examples/icons/icons.ex-meta
+./examples/ide_dbg_console_provider/ide_dbg_console_provider.ex-meta
 ./examples/bitbtn/bitbtn.ex-meta
 ./examples/turbopower_ipro/turbopower_ipro.ex-meta
 ./examples/treeview/add_remove_nodes/treeview.ex-meta

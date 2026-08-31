@@ -1,0 +1,15 @@
+{
+  "Ide_Dbg_Console_Provider" : {
+    "Category" : "General",
+    "Keywords" : [
+      "IDE",
+      "Package",
+      "Debugger",
+      "Extension",
+      "Plugin",
+      "Terminal",
+      "Console"
+    ],
+    "Description" : "This is an example of how to make an IDE Package to extend the debugger with a different console for the target StdIn/Out. License: MIT. SPDX headers in each unit."
+  }
+}
