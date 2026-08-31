@@ -1028,6 +1028,8 @@ const
 
 implementation
 
+uses ProjResProc;
+
 
 var
   ParamBaseDirectory: string = '';
@@ -9729,7 +9731,7 @@ begin
     DebugLn('Hint: (lazarus) TMainIDE.DesignerPasteComponent A');
 
   // check the class of the new component
-  NewClassName:=FindLFMClassName(TxtCompStream);
+  NewClassName:=ProjResProc.FindLFMClassName(TxtCompStream);
 
   // check if component class is registered
   ARegComp:=IDEComponentPalette.FindRegComponent(NewClassName);
