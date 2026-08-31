@@ -1698,8 +1698,8 @@ type
     FVisible: boolean;
     FWidth: integer;
   protected
-    constructor DoCreate(AIdx: Integer; AGClass: TSynGutterPartBaseClass);
   public
+    constructor DoCreate(AIdx: Integer; AGClass: TSynGutterPartBaseClass);
     constructor Create(AIdx: Integer; AGClass: TSynGutterPartBaseClass);
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
