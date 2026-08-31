@@ -3,6 +3,7 @@ object HeapTrcViewForm: THeapTrcViewForm
   Height = 444
   Top = 164
   Width = 637
+  AllowDropFiles = True
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'HeapTrcViewForm'
   ClientHeight = 444
@@ -13,6 +14,7 @@ object HeapTrcViewForm: THeapTrcViewForm
   LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnDropFiles = FormDropFiles
   OnKeyDown = FormKeyDown
   object lblTrcFile: TLabel
     AnchorSideLeft.Control = Owner
