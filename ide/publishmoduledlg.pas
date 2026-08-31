@@ -115,7 +115,7 @@ type
     procedure DoFileFound; override;    // Called by TFileSearcher.Search.
     procedure DoDirectoryFound; override;
   public
-    constructor Create(AOptions: TPublishModuleOptions);
+    constructor Create(AOptions: TPublishModuleOptions); reintroduce;
     destructor Destroy; override;
     function Run: TModalResult;
   end;
