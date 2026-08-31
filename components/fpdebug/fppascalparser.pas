@@ -2718,6 +2718,10 @@ begin
   else
     Result := ExpressionData.GetDbgSymbolForIdentifier(s);
   if Result = nil then begin
+    if (s <> '') and (s[1] = '$') then begin
+      SetError(fpErrPasParserExpectedNumber_p, [s], CreateError(fpErrPasParser_Position, [ExpressionData.PosFromPChar(FStartChar) ]), dekParser );
+    end
+    else
     if CompareText(s, 'nil') = 0 then begin
       tmp := TFpValueConstAddress.Create(NilLoc);
       Result := TFpPasParserValueAddressOf.Create(tmp, Self);
@@ -4736,7 +4740,10 @@ var
     if (TokenEndPtr < EndPtr) and (TokenEndPtr^ in ['0'..'9', 'a'..'z', 'A'..'Z']) or
        (TokenEndPtr[-1] in ['x', '$', '&', '%'])
     then begin
-      SetError(fpErrPasParserExpectedNumber_p, [GetFirstToken(CurPtr+1)], CreateError(fpErrPasParser_PositionAfter, [FSharedData.PosFromPChar(CurPtr+1), '#']), dekParser );
+      if CurPtr^ = '$' then
+        AddIdentifier
+      else
+        SetError(fpErrPasParserExpectedNumber_p, [GetFirstToken(CurPtr+1)], CreateError(fpErrPasParser_PositionAfter, [FSharedData.PosFromPChar(CurPtr+1), '#']), dekParser );
       exit;
     end
     else
