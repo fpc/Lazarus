@@ -1992,9 +1992,12 @@ begin
   if ListPropertyEditors=nil then exit;
   for i:=0 to ListPropertyEditors.Count-1 do begin
     Editor:=TListPropertyEditor(ListPropertyEditors[i]);
-    if (Editor.GetComponent(0)=AnObject)
-    and (Editor.OnSubPropertiesChanged<>nil) then
-      Editor.UpdateSubProperties;
+    if (Editor.GetComponent(0)=AnObject) then begin
+      if (Editor.OnSubPropertiesChanged<>nil) then
+        Editor.UpdateSubProperties
+      else if Editor.SubPropertiesNeedsUpdate then
+        Editor.SaveElements;
+    end;
   end;
 end;
 
