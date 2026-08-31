@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Types, XMLConf, DOM, Contnrs,
   // LCL
-  Forms, Controls, Dialogs, StdCtrls, ComCtrls, ExtCtrls, LCLType, Clipbrd, LResources, LCLStrConsts,
+  Forms, Controls, Dialogs, StdCtrls, ComCtrls, ExtCtrls, LCLType, Clipbrd, LResources, LCLStrConsts, LCLProc,
   // LazUtils
   FileUtil, LazFileUtils,
   // IDEIntf
@@ -213,6 +213,11 @@ begin
   BtnResolve.Caption:=sbtnResolve;
   chkUseRaw.Caption:=schkRaw;
   chkStayOnTop.Caption:=schkTop;
+
+  edtTrcFileName.Hint:='['+ShortCutToText(KeyToShortCut(VK_L ,[ssCtrl        ]))+']';
+  btnBrowse     .Hint:='['+ShortCutToText(KeyToShortCut(VK_O ,[ssCtrl        ]))+']';
+  btnUpdate     .Hint:='['+ShortCutToText(KeyToShortCut(VK_F5,[              ]))+']';
+  btnClipboard  .Hint:='['+ShortCutToText(KeyToShortCut(VK_V ,[ssCtrl,ssShift]))+']';
 
   SetSummaryInfo(0,0,0);
 
