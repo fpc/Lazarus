@@ -63,7 +63,6 @@ type
     ddtAssembler,
     ddtMemViewer,
     ddtInspect,
-    ddtPseudoTerminal,
     ddtThreads,
     ddtHistory
     );
@@ -83,7 +82,6 @@ const
     'Assembler',
     'MemViewer',
     'Inspect',
-    'PseudoTerminal',
     'Threads',
     'DbgHistory'
     );
@@ -157,15 +155,6 @@ type
     function DoStopProject: TModalResult; virtual; abstract;
     procedure DoToggleCallStack; virtual; abstract;
     procedure DoSendConsoleInput(AText: String); virtual; abstract;
-
-    (* The IDE's own console window, reached without knowing the dialog class.
-       These exist so the built-in window can be driven through the same
-       plug-in contract as any registered alternative: the plug-in that wraps
-       it lives in this package and must not reach into the IDE's dialog
-       array. *)
-    procedure ConsoleWindowShow(ABringToFront: Boolean); virtual; abstract;
-    procedure ConsoleWindowAddOutput(const AText: String); virtual; abstract;
-    procedure ConsoleWindowClear; virtual; abstract;
 
     (* Whether a console selection means the debuggee's streams are captured
        into the IDE, rather than served by a console of the OS.

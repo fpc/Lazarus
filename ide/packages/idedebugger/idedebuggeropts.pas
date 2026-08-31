@@ -23,7 +23,7 @@ uses
 
 const
   { "package/class". Stored in the IDE config and in project files. }
-  BuiltInConsolePlugInId = 'IdeDebugger/IdeDbgConsole';
+  BUILDIN_CONSOLE_PLUGING_ID = 'IdeDebugger/IdeDbgConsole';
 
 type
 
@@ -361,7 +361,7 @@ end;
 
 procedure TIdeDbgConsoleWindowPlugInList.SetConsoleWindowPlugInId(AValue: String);
 begin
-  if SameText(AValue, BuiltInConsolePlugInId) then
+  if SameText(AValue, BUILDIN_CONSOLE_PLUGING_ID) then
     AValue := '';
   FConsoleWindowPlugInId := AValue;
 end;
@@ -394,7 +394,7 @@ function TIdeDbgConsoleWindowPlugInList.GetConsoleWindowPlugInId: String;
 begin
   Result := FConsoleWindowPlugInId;
   if Result = '' then
-    Result := BuiltInConsolePlugInId;
+    Result := BUILDIN_CONSOLE_PLUGING_ID;
 end;
 
 function TIdeDbgConsoleWindowPlugInList.GetDisplayName(AIndex: Integer

@@ -28,10 +28,6 @@
         <UnitName Value="IdeDebuggerBase"/>
       </Item>
       <Item>
-        <Filename Value="idedebuggerbuiltinconsoleplugin.pas"/>
-        <UnitName Value="IdeDebuggerBuiltInConsolePlugIn"/>
-      </Item>
-      <Item>
         <Filename Value="frames\idedebugger_consolewindow_options.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="IdeDebugger_ConsoleWindow_Options"/>

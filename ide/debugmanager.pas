@@ -133,6 +133,7 @@ type
     procedure RunTimer(Sender: TObject);
     // Menu events
     procedure mnuViewDebugDialogClick(Sender: TObject);
+    procedure mnuViewDebugConsoleClick(Sender: TObject);
     procedure mnuResetDebuggerClicked(Sender: TObject);
     procedure mnuAddWatchClicked(Sender: TObject);
     procedure mnuAddBpAddress(Sender: TObject);
@@ -218,7 +219,6 @@ type
     procedure InitBreakPointDlg;
     procedure InitWatchesDlg;
     procedure InitThreadsDlg;
-    procedure InitPseudoTerminal;
     procedure InitLocalsDlg;
     procedure InitCallStackDlg;
     procedure InitEvaluateDlg;
@@ -286,9 +286,6 @@ type
     function DoStopProject: TModalResult; override;
     procedure DoToggleCallStack; override;
     procedure DoSendConsoleInput(AText: String); override;
-    procedure ConsoleWindowShow(ABringToFront: Boolean); override;
-    procedure ConsoleWindowAddOutput(const AText: String); override;
-    procedure ConsoleWindowClear; override;
     function ConsoleIsCaptured(AConsoleMode: TRunParamsConsoleMode): Boolean; override;
     procedure ProcessCommand(Command: word; var Handled: boolean); override;
 
@@ -1118,7 +1115,7 @@ begin
   Result := DebuggerOptions.ConsoleWindowPlugInId;
   if (Result <> '') and (DebuggerOptions.ConsoleWindowPlugIns.IndexOfId(Result) >=0) then
     exit;
-  Result := BuiltInConsolePlugInId;
+  Result := BUILDIN_CONSOLE_PLUGING_ID;
   if (Result <> '') and (DebuggerOptions.ConsoleWindowPlugIns.IndexOfId(Result) >=0) then
     exit;
   if DebuggerOptions.ConsoleWindowPlugIns.Count > 0 then begin
@@ -1206,24 +1203,6 @@ begin
      flag rather than asking per chunk of output: a debuggee can produce a very
      great deal of it, and nothing on that path should cost a call. *)
   FDidShowConsoleForSession := True;
-end;
-
-procedure TDebugManager.ConsoleWindowShow(ABringToFront: Boolean);
-begin
-  ViewDebugDialog(ddtPseudoTerminal, ABringToFront, True);
-end;
-
-procedure TDebugManager.ConsoleWindowAddOutput(const AText: String);
-begin
-  if FDialogs[ddtPseudoTerminal] = nil then
-    ViewDebugDialog(ddtPseudoTerminal, False, False);
-  TPseudoConsoleDlg(FDialogs[ddtPseudoTerminal]).AddOutput(AText);
-end;
-
-procedure TDebugManager.ConsoleWindowClear;
-begin
-  if FDialogs[ddtPseudoTerminal] <> nil then
-    TPseudoConsoleDlg(FDialogs[ddtPseudoTerminal]).Clear;
 end;
 
 procedure TDebugManager.DebuggerConsoleOutput(Sender: TObject;
@@ -1441,14 +1420,17 @@ begin
     ecInspect           : ViewDebugDialog(ddtInspect);
     (* ecViewPseudoTerminal: ALways open the selected console. *)
     ecViewPseudoTerminal: if ConsolePlugIn <> nil then
-                            ConsolePlugIn.HandleUserShow
-                          else
-                            ViewDebugDialog(ddtPseudoTerminal);
+                            ConsolePlugIn.HandleUserShow;
     ecViewThreads       : ViewDebugDialog(ddtThreads);
     ecViewHistory       : ViewDebugDialog(ddtHistory);
   else
     raise Exception.CreateFmt('IDE Internal error: TDebugManager.mnuViewDebugDialogClick, wrong command parameter %d.', [xCommand]);
   end;
+end;
+
+procedure TDebugManager.mnuViewDebugConsoleClick(Sender: TObject);
+begin
+
 end;
 
 procedure TDebugManager.mnuResetDebuggerClicked(Sender: TObject);
@@ -2052,7 +2034,7 @@ const
   DEBUGDIALOGCLASS: array[TDebugDialogType] of TDebuggerDlgClass = (
     TDbgOutputForm, TDbgEventsForm, TBreakPointsDlg, TWatchesDlg, TLocalsDlg,
     TCallStackDlg, TEvaluateDlg, TRegistersDlg, TAssemblerDlg, TMemViewDlg, TIDEInspectDlg,
-    TPseudoConsoleDlg, TThreadsDlg, THistoryDialog
+    TThreadsDlg, THistoryDialog
   );
 var
   CurDialog: TDebuggerDlg;
@@ -2060,8 +2042,6 @@ var
   ForceFront: Boolean;
 begin
   if Destroying then exit;
-  if (ADialogType = ddtPseudoTerminal) and not HasConsoleSupport
-  then exit;
   if ADialogType = ddtAssembler then
     FAsmWindowShouldAutoClose := False;
   if FDialogs[ADialogType] = nil
@@ -2085,7 +2065,6 @@ begin
       ddtEvaluate:    InitEvaluateDlg;
       ddtAssembler:   InitAssemblerDlg;
       ddtInspect:     InitInspectDlg;
-      ddtPseudoTerminal: InitPseudoTerminal;
       ddtThreads:     InitThreadsDlg;
       ddtHistory:     InitHistoryDlg;
     end;
@@ -2237,14 +2216,6 @@ begin
   TheDialog.ThreadsMonitor := FThreads;
   TheDialog.SnapshotManager := FSnapshots;
   TheDialog.EndUpdate;
-end;
-
-procedure TDebugManager.InitPseudoTerminal;
-//var
-//  TheDialog: TPseudoConsoleDlg;
-begin
-  if not HasConsoleSupport then exit;
-  //TheDialog := TPseudoConsoleDlg(FDialogs[ddtPseudoTerminal]);
 end;
 
 procedure TDebugManager.InitLocalsDlg;
@@ -2501,38 +2472,23 @@ procedure TDebugManager.ConnectMainBarEvents;
 begin
   with MainIDEBar do begin
     itmViewWatches.OnClick := @mnuViewDebugDialogClick;
-    itmViewWatches.Tag := Ord(ddtWatches);
     itmViewBreakPoints.OnClick := @mnuViewDebugDialogClick;
-    itmViewBreakPoints.Tag := Ord(ddtBreakPoints);
     itmViewLocals.OnClick := @mnuViewDebugDialogClick;
-    itmViewLocals.Tag := Ord(ddtLocals);
     itmViewRegisters.OnClick := @mnuViewDebugDialogClick;
-    itmViewRegisters.Tag := Ord(ddtRegisters);
     itmViewCallStack.OnClick := @mnuViewDebugDialogClick;
-    itmViewCallStack.Tag := Ord(ddtCallStack);
     itmViewThreads.OnClick := @mnuViewDebugDialogClick;
-    itmViewThreads.Tag := Ord(ddtThreads);
     itmViewAssembler.OnClick := @mnuViewDebugDialogClick;
-    itmViewAssembler.Tag := Ord(ddtAssembler);
     itmViewMemViewer.OnClick := @mnuViewDebugDialogClick;
-    itmViewMemViewer.Tag := Ord(ddtMemViewer);
     itmViewDebugOutput.OnClick := @mnuViewDebugDialogClick;
-    itmViewDebugOutput.Tag := Ord(ddtOutput);
     itmViewDebugEvents.OnClick := @mnuViewDebugDialogClick;
-    itmViewDebugEvents.Tag := Ord(ddtEvents);
-    if itmViewPseudoTerminal <> nil then begin
+    if itmViewPseudoTerminal <> nil then
       itmViewPseudoTerminal.OnClick := @mnuViewDebugDialogClick;
-      itmViewPseudoTerminal.Tag := Ord(ddtPseudoTerminal);
-    end;
     itmViewDbgHistory.OnClick := @mnuViewDebugDialogClick;
-    itmViewDbgHistory.Tag := Ord(ddtHistory);
 
     itmRunMenuResetDebugger.OnClick := @mnuResetDebuggerClicked;
 
     itmRunMenuInspect.OnClick := @mnuViewDebugDialogClick;
-    itmRunMenuInspect.Tag := Ord(ddtInspect);
     itmRunMenuEvaluate.OnClick := @mnuViewDebugDialogClick;
-    itmRunMenuEvaluate.Tag := Ord(ddtEvaluate);
     itmRunMenuAddWatch.OnClick := @mnuAddWatchClicked;
 
     itmRunMenuAddBpSource.OnClick  := @mnuAddBpSource;
@@ -2540,7 +2496,7 @@ begin
     itmRunMenuAddBpWatchPoint.OnClick := @mnuAddBpData;
 
     // TODO: add capacibilities to DebuggerClass
-    // and disable unsuported items
+    // and disable unsupported items
   end;
 end;
 
@@ -2549,9 +2505,7 @@ begin
   SrcEditMenuAddWatchAtCursor.OnClick:=@mnuAddWatchClicked;
   SrcEditMenuAddWatchPointAtCursor.OnClick:=@mnuAddBpDataAtCursor;
   SrcEditMenuEvaluateModify.OnClick:=@mnuViewDebugDialogClick;
-  SrcEditMenuEvaluateModify.Tag := Ord(ddtEvaluate);
   SrcEditMenuInspect.OnClick:=@mnuViewDebugDialogClick;
-  SrcEditMenuInspect.Tag := Ord(ddtInspect);
 end;
 
 function GetCommand(ACommand: word): TIDECommand;
@@ -3510,7 +3464,8 @@ begin
     ecToggleDebuggerOut: ViewDebugDialog(ddtOutput);
     ecToggleDebugEvents: ViewDebugDialog(ddtEvents);
     ecToggleLocals:      ViewDebugDialog(ddtLocals);
-    ecViewPseudoTerminal: ViewDebugDialog(ddtPseudoTerminal);
+    ecViewPseudoTerminal: if ConsolePlugIn <> nil then
+                            ConsolePlugIn.HandleUserShow;
     ecViewThreads:       ViewDebugDialog(ddtThreads);
     ecViewHistory:       ViewDebugDialog(ddtHistory);
   else
