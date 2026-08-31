@@ -229,37 +229,57 @@ var
   bmp: TBitmap;
   w: Integer;
 begin
-  bmp := TBitmap.Create;
+  bmp := TBitmap.Create; // Just to have a valid canvas for text width measuring...
   try
     bmp.SetSize(10, 10);
     L := TStringList.Create;
     try
+      // Single line
       WordWrap(bmp.Canvas.Font, 'abc', 1000, L);
       AssertEquals('Single line mismatch', 'abc', L[0]);
 
       L.Clear;
+      // 2 lines with linebreak
       WordWrap(bmp.Canvas.Font, 'abc'+LineEnding+'def', 1000, L);
-      AssertEquals('1st line mismatch', 'abc', L[0]);
-      AssertEquals('2nd line mismatch', 'def', L[1]);
+      AssertEquals('Two lines with linebreak: 1st line mismatch', 'abc', L[0]);
+      AssertEquals('Two lines with linebreak: 2nd line mismatch', 'def', L[1]);
 
       L.Clear;
+      // Nothing after linebreak
       WordWrap(bmp.Canvas.Font, 'abc'+LineEnding, 1000, L);
-      AssertEquals('1st line mismatch', 'abc', L[0]);
-      AssertEquals('empty 2nd line mismatch', '', L[1]);
+      AssertEquals('Nothing after linebreak: 1st line mismatch', 'abc', L[0]);
+      AssertEquals('Nothing after linebreak: empty 2nd line mismatch', '', L[1]);
 
       L.Clear;
+      // Wordwrap at space
       w := bmp.Canvas.TextWidth('abc-'); // + 1;
       WordWrap(bmp.Canvas.Font, 'abc def', w, L);
-      AssertEquals('Wordwrap 1st line mismatch', 'abc', L[0]);
-      AssertEquals('Wordwrap 2nd line mismatch', 'def', L[1]);
+      AssertEquals('Wordwrap at space: 1st line mismatch', 'abc', L[0]);
+      AssertEquals('Wordwrap at space: 2nd line mismatch', 'def', L[1]);
 
       L.Clear;
+      // Wordwrap at tab
+      WordWrap(bmp.Canvas.Font, 'abc'#9'def', w, L);
+      AssertEquals('Wordwrap at tab: 1st line mismatch', 'abc', L[0]);
+      AssertEquals('Wordwrap at tab: 2nd line mismatch', 'def', L[1]);
+
+      L.Clear;
+      // Wordwrap at hyphen
       WordWrap(bmp.Canvas.Font, 'abc-def', w, L);
-      AssertEquals('Wordwrap 1st line mismatch', 'abc-', L[0]);
-      AssertEquals('Wordwrap 2nd line mismatch', 'def', L[1]);
+      AssertEquals('Wordwrap at hyphen: 1st line mismatch', 'abc-', L[0]);
+      AssertEquals('Wordwrap at hyphen: 2nd line mismatch', 'def', L[1]);
+
+      L.Clear;
+      // Wordwrap and linebreak
+      WordWrap(bmp.Canvas.Font, 'abc def'+LineEnding+'g', w, L);
+      AssertEquals('Wordwrap and linebreak: 1st line mismatch', 'abc', L[0]);
+      AssertEquals('Wordwrap and linebreak: 2nd line mismatch', 'def', L[1]);
+      AssertEquals('Wordwrap and linebreak: 2nd line mismatch', 'g', L[2]);
+
     finally
       L.Free;
     end;
+
   finally
     bmp.Free;
   end;

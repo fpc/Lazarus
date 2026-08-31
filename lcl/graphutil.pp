@@ -938,7 +938,8 @@ var
     begin
       SetLength(sLine, len);
       Move(ALineStart^, sLine[1], len);
-      while sLine[Length(sLine)] = ' ' do SetLength(sLine, Length(sLine)-1);  // Trim trailing spaces
+      while (sLine <> '') and (sLine[Length(sLine)] in [' ', #9]) do
+        SetLength(sLine, Length(sLine)-1);  // Trim trailing white-space
       ALines.Add(sLine);
     end else
       // This case happens for empty line after line-break.
@@ -946,7 +947,7 @@ var
   end;
 
 var
-  P, PTextEnd, PLineStart, PWordStart: PChar;
+  P, PTextEnd, PLineStart, PWordStart, PWordEnd: PChar;
 begin
   Assert(ALines <> nil);
 
@@ -965,18 +966,14 @@ begin
     PWordStart := P;               // points to start of current word
     while P < PTextEnd do
     begin
-      if P^ = '-' then
+      if P^ in [' ', #9, '-'] then
       begin
-        if TextIsTooWide(PLineStart, P - PLineStart + 1) then
-        begin
-          AddLineToList(PLineStart, PWordStart);
-          PLineStart := PWordStart;
-        end;
-        PWordStart := P + 1;
-      end else
-      if P^ in [' ', #9] then
-      begin
-        if TextIsTooWide(PLineStart, P - PLineStart) then
+        // PWordEnd points to last character of word
+        if P = '-' then
+          PWordEnd := P
+        else
+          PWordEnd := P - 1;
+        if TextIsTooWide(PLineStart, PWordEnd - PLineStart + 1) then
         begin
           AddLineToList(PLineStart, PWordStart);
           PLineStart := PWordStart; // Next line begins at position of previous word
