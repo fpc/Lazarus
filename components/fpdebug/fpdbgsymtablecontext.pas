@@ -63,7 +63,7 @@ type
     constructor Create(ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager; ALibName: String; AMemModel: TFpDbgMemModel); overload;
     destructor Destroy; override;
     function FindSymbolScope(ALocationContext: TFpDbgSimpleLocationContext; AAddress: TDbgPtr = 0): TFpDbgSymbolScope; override;
-    function FindProcSymbol(const AName: String; AIgnoreCase: Boolean = False): TFpSymbol; override; overload;
+    function FindNamedProcSymbol(const AName: String; AFlags: TFpProcSearchFlags = []): TFpSymbol; override;
     function FindProcSymbol(AnAdress: TDbgPtr): TFpSymbol; overload;
 
     // for debugdump
@@ -212,16 +212,19 @@ begin
   Result := TFpSymbolContext.Create(ALocationContext, Self);
 end;
 
-function TFpSymbolInfo.FindProcSymbol(const AName: String; AIgnoreCase: Boolean
-  ): TFpSymbol;
+function TFpSymbolInfo.FindNamedProcSymbol(const AName: String;
+  AFlags: TFpProcSearchFlags): TFpSymbol;
 var
   a: TDBGPtr;
   n: string;
 begin
-  if FSymbolList.GetInfo(AName, a, n, not AIgnoreCase) then
-    Result := TFpSymbolTableProc.Create(n, a)
-  else
-    result := nil;
+  Result := nil;
+  (* This TDbgInfo IS the link table namespace, and answers for no other. *)
+  if not ProcSearchIncludes(AFlags, psfLinkTableSym) then
+    exit;
+
+  if FSymbolList.GetInfo(AName, a, n, not(psfIgnoreCase in AFlags)) then
+    Result := TFpSymbolTableProc.Create(n, a);
 end;
 
 function TFpSymbolInfo.FindProcSymbol(AnAdress: TDbgPtr): TFpSymbol;
