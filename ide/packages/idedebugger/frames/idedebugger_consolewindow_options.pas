@@ -57,10 +57,26 @@ implementation
 
 {$R *.lfm}
 
+type
+
+  THandler = class
+    procedure DoPluginRegistered(Sender: TObject);
+  end;
+
+procedure THandler.DoPluginRegistered(Sender: TObject);
+begin
+  Register;
+end;
+
 procedure Register;
 begin
-  RegisterIDEOptionsEditor(GroupDebugger, TIdeDbgConsoleWindowOptionsFrame,
-    DbgOptionsConsoleWindow);
+  if ConsoleWindowPlugInRegistry.Count > 1 then begin
+    RegisterIDEOptionsEditor(GroupDebugger, TIdeDbgConsoleWindowOptionsFrame,
+      DbgOptionsConsoleWindow);
+    ConsoleWindowPlugInRegistry.RemoveNotificationHandler(nrAdded, @THandler(nil).DoPluginRegistered);
+    exit;
+  end;
+  ConsoleWindowPlugInRegistry.AddNotificationHandler(nrAdded, @THandler(nil).DoPluginRegistered);
 end;
 
 { TIdeDbgConsoleWindowOptionsFrame }

@@ -40,7 +40,7 @@ unit IdeDebuggerPlugInIntf;
 interface
 
 uses
-  Classes, SysUtils, fgl, Laz2_XMLCfg, Forms;
+  Classes, SysUtils, fgl, Laz2_XMLCfg, LazMethodList, Forms;
 
 type
 
@@ -119,9 +119,12 @@ type
     TRegistrationEntryClass = class of ENTRY_C;
   private type
     TEntryList = specialize TFPGList<TRegistrationEntryClass>;
+  public type
+    TNotificationReason = (nrAdded, nrRemoved);
   private
     FEntries: TEntryList;
     FRegistrationErrors: String;
+    FNotifications: array [TNotificationReason] of TMethodList;
   protected
     procedure AddRegistrationError(AnError: string);
     function CanRegister(AnEntry: TRegistrationEntryClass): Boolean; virtual;
@@ -130,10 +133,13 @@ type
     function GetSpecializedIdePluginById(AnId: string): TRegistrationEntryClass; virtual;
     function GetIdePlugin(AnIndex: integer): TLazDbgIdePlugInRegistryEntryClass; override; final;
     function GetIdePluginById(const AnId: String): TLazDbgIdePlugInRegistryEntryClass; override; final;
+    procedure SendNotification(AReason: TNotificationReason);
   public
     destructor Destroy; override;
     procedure RegisterPlugIn(AnEntry: TRegistrationEntryClass); virtual;
     procedure UnregisterPlugIn(AnEntry: TRegistrationEntryClass); virtual;
+    procedure AddNotificationHandler(AReason: TNotificationReason; AnHandler: TNotifyEvent);
+    procedure RemoveNotificationHandler(AReason: TNotificationReason; AnHandler: TNotifyEvent);
 
     function IndexOfPlugInId(const AnId: String): Integer; override;
     function Count: integer; override;
@@ -315,10 +321,21 @@ begin
   Result := GetSpecializedIdePluginById(AnId);
 end;
 
+procedure TGenLazDbgIdeConsoleWindowPlugInRegistry.SendNotification(AReason: TNotificationReason);
+begin
+  if FNotifications[AReason] = nil then
+    exit;
+  FNotifications[AReason].CallNotifyEvents(Self);
+end;
+
 destructor TGenLazDbgIdeConsoleWindowPlugInRegistry.Destroy;
+var
+  n: TNotificationReason;
 begin
   inherited Destroy;
   FEntries.Free;
+  for n in TNotificationReason do
+    FNotifications[n].Free;
 end;
 
 procedure TGenLazDbgIdeConsoleWindowPlugInRegistry.RegisterPlugIn(AnEntry: TRegistrationEntryClass);
@@ -328,12 +345,31 @@ begin
   if FEntries = nil then
     FEntries := TEntryList.Create;
   FEntries.Add(AnEntry);
+  SendNotification(nrAdded);
 end;
 
 procedure TGenLazDbgIdeConsoleWindowPlugInRegistry.UnregisterPlugIn(AnEntry: TRegistrationEntryClass);
 begin
-  if FEntries <> nil then
+  if FEntries <> nil then begin
     FEntries.Remove(AnEntry);
+    SendNotification(nrRemoved);
+  end;
+end;
+
+procedure TGenLazDbgIdeConsoleWindowPlugInRegistry.AddNotificationHandler(
+  AReason: TNotificationReason; AnHandler: TNotifyEvent);
+begin
+  if FNotifications[AReason] = nil then
+    FNotifications[AReason] := TMethodList.Create;
+  FNotifications[AReason].Add(TMethod(AnHandler));
+end;
+
+procedure TGenLazDbgIdeConsoleWindowPlugInRegistry.RemoveNotificationHandler(
+  AReason: TNotificationReason; AnHandler: TNotifyEvent);
+begin
+  if FNotifications[AReason] = nil then
+    exit;
+  FNotifications[AReason].Remove(TMethod(AnHandler));
 end;
 
 function TGenLazDbgIdeConsoleWindowPlugInRegistry.IndexOfPlugInId(const AnId: String): Integer;
