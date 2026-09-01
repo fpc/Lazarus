@@ -352,7 +352,7 @@ begin
   until false;
 
   // convert $$ chars
-  MacroStart:=2;
+  MacroStart:=1;
   while (MacroStart<sLen) do begin
     if (s[MacroStart]='$') and (s[MacroStart+1]='$') then begin
       System.Delete(s,MacroStart,1);
