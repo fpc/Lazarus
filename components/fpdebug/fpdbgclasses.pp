@@ -577,6 +577,18 @@ type
 
   TFpDbgBreakpointState = (bksUnknown, bksOk, bksFailed, bksPending);
   TFpDbgBreakpointStateChangeEvent = procedure(Sender: TFpDbgBreakpoint; ANewState: TFpDbgBreakpointState) of object;
+  (* Runs in dbg-thread, when the breakpoint would pause the process, and only
+     after its Condition has already evaluated to True. AIsValidHit is therefore
+     always True on entry: a hit rejected by the condition never reaches here.
+     Set AIsValidHit to False to suppress this hit. The breakpoint is then left
+     out of the pause set, and the process continues unless some other
+     breakpoint at the same address still pauses it.
+     Intended for state a consumer must keep per breakpoint and per hit -- hit
+     counts, ignore counts -- without the cost of a real pause per hit.
+     Note that on a breakpoint that has a Condition, the condition is parsed and
+     evaluated before every call to this event. *)
+  TFpDbgBreakpointCheckHitEvent = procedure(Sender: TFpDbgBreakpoint;
+    const AThreadID: Integer; var AIsValidHit: Boolean) of object;
 
   TFpDbgBreakpoint = interface ['{B044A854-79AE-4289-B905-9A4E6D19FA0A}']
     function __FpDbgBrk: TFpDbgBreakpointBase;
@@ -586,6 +598,8 @@ type
     function GetCondition: String;
     function GetOn_Thread_StateChange: TFpDbgBreakpointStateChangeEvent;
     procedure SetOn_Thread_StateChange(AValue: TFpDbgBreakpointStateChangeEvent);
+    function GetOn_Thread_CheckHit: TFpDbgBreakpointCheckHitEvent;
+    procedure SetOn_Thread_CheckHit(AValue: TFpDbgBreakpointCheckHitEvent);
     procedure SetFreeByDbgProcess(AValue: Boolean); virtual;
 
     procedure SetAutoDisable;
@@ -607,6 +621,8 @@ type
     property FreeByDbgProcess: Boolean write SetFreeByDbgProcess;
     // Event runs in dbg-thread
     property On_Thread_StateChange: TFpDbgBreakpointStateChangeEvent read GetOn_Thread_StateChange write SetOn_Thread_StateChange;
+    // Event runs in dbg-thread, after the Condition passed
+    property On_Thread_CheckHit: TFpDbgBreakpointCheckHitEvent read GetOn_Thread_CheckHit write SetOn_Thread_CheckHit;
   end;
 
   { TFpDbgBreakpointBase }
@@ -629,9 +645,12 @@ type
     FEnabled: boolean;
     FCondition: String;
     FOn_Thread_StateChange: TFpDbgBreakpointStateChangeEvent;
+    FOn_Thread_CheckHit: TFpDbgBreakpointCheckHitEvent;
 
     function GetOn_Thread_StateChange: TFpDbgBreakpointStateChangeEvent;
     procedure SetOn_Thread_StateChange(AValue: TFpDbgBreakpointStateChangeEvent);
+    function GetOn_Thread_CheckHit: TFpDbgBreakpointCheckHitEvent;
+    procedure SetOn_Thread_CheckHit(AValue: TFpDbgBreakpointCheckHitEvent);
     function __FpDbgBrk: TFpDbgBreakpointBase;
     function GetEnabled: boolean;
     function GetCondition: String;
@@ -676,6 +695,8 @@ type
     property State: TFpDbgBreakpointState read GetState;
     // Event runs in dbg-thread
     property On_Thread_StateChange: TFpDbgBreakpointStateChangeEvent read FOn_Thread_StateChange write FOn_Thread_StateChange;
+    // Event runs in dbg-thread, after the Condition passed
+    property On_Thread_CheckHit: TFpDbgBreakpointCheckHitEvent read FOn_Thread_CheckHit write FOn_Thread_CheckHit;
   end;
 
   TFpInternalBreakpointList = specialize TFPGObjectList<TFpDbgBreakpointBase>;
@@ -4601,6 +4622,13 @@ begin
       end;
     end;
   end;
+
+  (* Only reached if the condition passed (or there was none), so a consumer
+     counting hits here counts condition-true hits, and composes with the
+     condition rather than replacing it. The handler may clear Result to
+     suppress the hit; it is never called with Result already False. *)
+  if Result and (FOn_Thread_CheckHit <> nil) then
+    FOn_Thread_CheckHit(Self, AThreadID, Result);
 end;
 
 procedure TFpDbgBreakpointBase.SetCondition(ANewCondition: String);
@@ -4632,6 +4660,16 @@ end;
 procedure TFpDbgBreakpointBase.SetOn_Thread_StateChange(AValue: TFpDbgBreakpointStateChangeEvent);
 begin
   FOn_Thread_StateChange := AValue;
+end;
+
+function TFpDbgBreakpointBase.GetOn_Thread_CheckHit: TFpDbgBreakpointCheckHitEvent;
+begin
+  Result := FOn_Thread_CheckHit;
+end;
+
+procedure TFpDbgBreakpointBase.SetOn_Thread_CheckHit(AValue: TFpDbgBreakpointCheckHitEvent);
+begin
+  FOn_Thread_CheckHit := AValue;
 end;
 
 function TFpDbgBreakpointBase.GetEnabled: boolean;
