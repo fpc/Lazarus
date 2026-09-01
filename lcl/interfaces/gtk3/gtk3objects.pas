@@ -421,6 +421,7 @@ procedure Gtk3WordWrap(DC: HDC; AText: PChar;
 function Gtk3DefaultContext: TGtk3DeviceContext;
 function Gtk3ScreenContext: TGtk3DeviceContext;
 function Gtk3IsValidGDIObject(const AGDIObj: PtrUInt): Boolean;
+function Gtk3IsValidDeviceContext(const ADC: PtrUInt): Boolean;
 
 function ReplaceAmpersandsWithUnderscores(const S: string): string; inline;
 function ReplaceUnderscoresWithAmpersands(const S: string): string; inline;
@@ -434,6 +435,34 @@ const
 
 var
   FGDIHandles: TMap;
+  FDCHandles: TMap;
+
+procedure Gtk3AddDeviceContext(AObject: TObject);
+var
+  Key: PtrUInt;
+begin
+  if (AObject = nil) or (FDCHandles = nil) then
+    exit;
+  Key := PtrUInt(AObject);
+  if not FDCHandles.HasId(Key) then
+    FDCHandles.Add(Key, AObject);
+end;
+
+procedure Gtk3RemoveDeviceContext(AObject: TObject);
+var
+  Key: PtrUInt;
+begin
+  if (AObject = nil) or (FDCHandles = nil) then
+    exit;
+  Key := PtrUInt(AObject);
+  if FDCHandles.HasId(Key) then
+    FDCHandles.Delete(Key);
+end;
+
+function Gtk3IsValidDeviceContext(const ADC: PtrUInt): Boolean;
+begin
+  Result := (ADC <> 0) and (FDCHandles <> nil) and FDCHandles.HasId(ADC);
+end;
 
 procedure Gtk3AddGDIObject(AObject: TObject);
 var
@@ -2686,6 +2715,7 @@ begin
      ' FromPaintEvent:',BoolToStr(APaintEvent),' )');
   {$endif}
   inherited Create;
+  Gtk3AddDeviceContext(Self);
   FXorSurface := nil;
   FXorSnapshot := nil;
   FCanvasScaleFactor := 1;
@@ -2744,6 +2774,7 @@ begin
      ' FromPaintEvent:',BoolToStr(APaintEvent),' )');
   {$endif}
   inherited Create;
+  Gtk3AddDeviceContext(Self);
   FDCSaveCounter := 0;
   FXorSurface := nil;
   FXorSnapshot := nil;
@@ -2780,6 +2811,7 @@ begin
      ' FromPaintEvent:',BoolToStr(True),' )');
   {$endif}
   inherited Create;
+  Gtk3AddDeviceContext(Self);
   FDCSaveCounter := 0;
   FXorSurface := nil;
   FXorSnapshot := nil;
@@ -2828,6 +2860,7 @@ begin
   {$ifdef VerboseGtk3DeviceContext}
     DebugLn('TGtk3DeviceContext.Destroy ',dbgHex(PtrUInt(Self)));
   {$endif}
+  Gtk3RemoveDeviceContext(Self);
   DeleteObjects;
 
   if FXorMode then
@@ -4935,8 +4968,10 @@ end;
 
 initialization
   FGDIHandles := TMap.Create(TMapIdType(ituPtrSize), SizeOf(TObject));
+  FDCHandles := TMap.Create(TMapIdType(ituPtrSize), SizeOf(TObject));
 
 finalization
   FreeAndNil(FGDIHandles);
+  FreeAndNil(FDCHandles);
 
 end.

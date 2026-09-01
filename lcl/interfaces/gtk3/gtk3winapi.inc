@@ -2656,6 +2656,7 @@ var
   ARect: TGdkRectangle;
 begin
   Result := False;
+  p := Point(0, 0);
   if not IsValidDC(DC) then
     exit;
   if TGtk3DeviceContext(DC).Parent <> nil then

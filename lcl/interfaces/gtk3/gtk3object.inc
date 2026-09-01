@@ -1313,7 +1313,7 @@ end;
 
 function TGtk3WidgetSet.IsValidDC(const DC: HDC): Boolean;
 begin
-  Result := DC <> 0;
+  Result := Gtk3IsValidDeviceContext(DC);
   if Result then
     Result := TGtk3DeviceContext(DC).pcr <> nil;
 end;
