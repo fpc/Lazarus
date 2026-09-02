@@ -59,7 +59,7 @@ type
     TabSheet3: TTabSheet;
     procedure FormCreate(Sender: TObject);
   private
-    { private declarations }
+
   public
     function HtmlText:string;
   end; 

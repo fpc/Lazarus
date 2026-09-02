@@ -59,7 +59,7 @@ type
     procedure edtFileNameAcceptFileName(Sender: TObject; var Value: String);
     procedure FormCreate(Sender: TObject);
   private
-    { private declarations }
+
   public
     function HtmlText:string;
   end;

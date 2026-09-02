@@ -52,7 +52,7 @@ type
     TabSheet2: TTabSheet;
     TabSheet3: TTabSheet;
   private
-    { private declarations }
+
   public
     function HtmlText(const S:string):string;
   end;

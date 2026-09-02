@@ -69,7 +69,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure SECountChange(Sender: TObject);
   private
-    { private declarations }
+
   public
     function HtmlText:string;
   end;

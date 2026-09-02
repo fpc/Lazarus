@@ -49,7 +49,7 @@ type
     Label1: TLabel;
     Label2: TLabel;
   private
-    { private declarations }
+
   public
     function HtmlText:string;
   end;
