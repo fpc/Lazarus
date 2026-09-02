@@ -4564,6 +4564,8 @@ resourcestring
     +'po file. For this you must enable I18N for this package, provide a po '
     +'output directory and leave this option unchecked.';
   lisPkgMangUseUnit = 'Use unit';
+  lisPkgMangVirtualUnit = 'Virtual unit';
+  lisPkgMangVirtualUnitHint = 'Package has only a unit''s name. The unit itself is found elsewhere.';
   lisPckEditMinimumVersion = 'Minimum Version:';
   lisPckEditMaximumVersion = 'Maximum Version:';
   lisPckEditApplyChanges = 'Apply changes';
