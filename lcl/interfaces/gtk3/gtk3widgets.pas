@@ -2820,6 +2820,13 @@ begin
     Gtk3WidgetSet.FGtk3KeyStates[VK_LMENU] := False;
     Gtk3WidgetSet.FGtk3KeyStates[VK_RMENU] := False;
   end;
+  if not (ACharCode in [VK_LWIN, VK_RWIN]) and
+     not (GDK_SUPER_MASK in AEvent.state) and not (GDK_MOD4_MASK in AEvent.state) and
+     not (GDK_META_MASK in AEvent.state) and not (GDK_HYPER_MASK in AEvent.state) then
+  begin
+    Gtk3WidgetSet.FGtk3KeyStates[VK_LWIN] := False;
+    Gtk3WidgetSet.FGtk3KeyStates[VK_RWIN] := False;
+  end;
 
   if (KeyValue >= GDK_KEY_exclam) and (KeyValue <= GDK_KEY_parenleft) and
      (ACharCode >= VK_0) and (ACharCode <= VK_9) and
