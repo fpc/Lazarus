@@ -630,7 +630,13 @@ end;
 
 function TEditableUnitInfo.GetEditorInfo(Index: Integer): TUnitEditorInfo;
 begin
-  Result := FEditorInfoList[Index];
+  try
+    Result := FEditorInfoList[Index];
+  except
+    on E: Exception do
+      debugln(['TEditableUnitInfo.GetEditorInfo: FEditorInfoList.Count=',
+                                   FEditorInfoList.Count, ', Error ', E.Message]);
+  end;
 end;
 
 function TEditableUnitInfo.GetOpenEditorInfo(Index: Integer): TUnitEditorInfo;
