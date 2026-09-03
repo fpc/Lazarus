@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-08-30 22:24+0300\n"
+"PO-Revision-Date: 2026-09-03 03:22+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -15528,6 +15528,14 @@ msgstr "Несохранённый пакет"
 #: lazarusidestrconsts.lispkgmanguseunit
 msgid "Use unit"
 msgstr "Использовать модуль"
+
+#: lazarusidestrconsts.lispkgmangvirtualunit
+msgid "Virtual unit"
+msgstr "Виртуальный модуль"
+
+#: lazarusidestrconsts.lispkgmangvirtualunithint
+msgid "Package has only a unit's name. The unit itself is found elsewhere."
+msgstr "В пакете имеется только имя модуля. Сам он расположен в ином месте."
 
 #: lazarusidestrconsts.lispkgmangwarningthefilebelongstothecurrentproject
 #, object-pascal-format

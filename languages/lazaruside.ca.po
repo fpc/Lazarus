@@ -15967,6 +15967,14 @@ msgstr "No s'ha desat el paquet"
 msgid "Use unit"
 msgstr "Utilitza Unitat"
 
+#: lazarusidestrconsts.lispkgmangvirtualunit
+msgid "Virtual unit"
+msgstr ""
+
+#: lazarusidestrconsts.lispkgmangvirtualunithint
+msgid "Package has only a unit's name. The unit itself is found elsewhere."
+msgstr ""
+
 #: lazarusidestrconsts.lispkgmangwarningthefilebelongstothecurrentproject
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Warning: The file %s%s%s%sbelongs to the current project."
