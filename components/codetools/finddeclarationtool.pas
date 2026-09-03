@@ -2526,7 +2526,7 @@ begin
       exit;
     end else begin
       if (cmsResult in Scanner.CompilerModeSwitches) and  // self.Scanner includes *.inc file
-      (CursorNode.Desc  = ctnVarDefinition) and
+      (CursorNode.Desc = ctnVarDefinition) and
       (CursorNode.FirstChild<>nil) and
       not CursorNode.HasParentOfType(ctnParameterList) and
       NodeIsInsideFunction(CursorNode) and
@@ -12531,7 +12531,7 @@ begin
     vatINHERITED:         ResolveINHERITED;
     end;
     ReadNextExpressionAtom;
-  until CurAtom.EndPos>EndPos;
+  until (CurAtom.EndPos>EndPos) or (CurAtom.StartPos=CurAtom.EndPos);
 
   if (fdfFunctionResult in StartFlags)
   and ( ((Params.NewNode = nil) or (Params.NewNode.Desc <> ctnTypeDefinition))
