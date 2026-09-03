@@ -4541,6 +4541,10 @@ msgstr "Espaço"
 msgid "Hints for main speed buttons (open, save, ...)"
 msgstr "Dicas para os botões de acesso rápido (abrir, gravar, ...)"
 
+#: lazarusidestrconsts.dlgsqlexthighlightgroup
+msgid "Extended SQL Highlight Options"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsrcedcolorlabelinthesourceareonlyco
 msgid "Label in the source are only colored if the colon \":\" is placed immediately after the label."
 msgstr "Rótulos na fonte só são coloridos se \":\" forem colocados imediatamente a seguir ao rótulo."
@@ -17204,6 +17208,14 @@ msgstr "Caminhos da fonte"
 #: lazarusidestrconsts.lisspaceequally
 msgid "Space equally"
 msgstr "Espaçar igualmente"
+
+#: lazarusidestrconsts.lissqlhighlighterdialect
+msgid "Override dialect for SQL highlighter"
+msgstr ""
+
+#: lazarusidestrconsts.lissqlhighlightopts
+msgid "SQL highlight"
+msgstr ""
 
 #: lazarusidestrconsts.lisssearching
 msgid "Searching"

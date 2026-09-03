@@ -4695,6 +4695,10 @@ msgstr "Tarpo simbolis"
 msgid "Hints for main speed buttons (open, save, ...)"
 msgstr "Sufleriai pagrindiniams spartos mygtukams („Atverti“, „Įrašyti“, …)"
 
+#: lazarusidestrconsts.dlgsqlexthighlightgroup
+msgid "Extended SQL Highlight Options"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsrcedcolorlabelinthesourceareonlyco
 msgid "Label in the source are only colored if the colon \":\" is placed immediately after the label."
 msgstr ""
@@ -17646,6 +17650,14 @@ msgstr "Keliai iki pirminio kodo"
 #: lazarusidestrconsts.lisspaceequally
 msgid "Space equally"
 msgstr "Vienodais tarpais tarp elementu"
+
+#: lazarusidestrconsts.lissqlhighlighterdialect
+msgid "Override dialect for SQL highlighter"
+msgstr ""
+
+#: lazarusidestrconsts.lissqlhighlightopts
+msgid "SQL highlight"
+msgstr ""
 
 #: lazarusidestrconsts.lisssearching
 msgid "Searching"

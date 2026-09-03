@@ -4558,6 +4558,10 @@ msgstr "空格"
 msgid "Hints for main speed buttons (open, save, ...)"
 msgstr "主快速按钮提示 (打开, 保存, ...)"
 
+#: lazarusidestrconsts.dlgsqlexthighlightgroup
+msgid "Extended SQL Highlight Options"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsrcedcolorlabelinthesourceareonlyco
 msgid "Label in the source are only colored if the colon \":\" is placed immediately after the label."
 msgstr "源代码中的标签只有在冒号 \":\" 紧跟在标签后面时才会被着色。"
@@ -17246,6 +17250,14 @@ msgstr "源代码路径"
 #: lazarusidestrconsts.lisspaceequally
 msgid "Space equally"
 msgstr "空间相等"
+
+#: lazarusidestrconsts.lissqlhighlighterdialect
+msgid "Override dialect for SQL highlighter"
+msgstr ""
+
+#: lazarusidestrconsts.lissqlhighlightopts
+msgid "SQL highlight"
+msgstr ""
 
 #: lazarusidestrconsts.lisssearching
 msgid "Searching"

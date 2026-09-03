@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-09-03 03:22+0300\n"
+"PO-Revision-Date: 2026-09-04 01:57+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -4533,6 +4533,10 @@ msgstr "Пробел"
 #: lazarusidestrconsts.dlgspbhints
 msgid "Hints for main speed buttons (open, save, ...)"
 msgstr "Подсказки командных кнопок (открыть, сохранить и т.д.)"
+
+#: lazarusidestrconsts.dlgsqlexthighlightgroup
+msgid "Extended SQL Highlight Options"
+msgstr "Расширенные параметры подсветки SQL"
 
 #: lazarusidestrconsts.dlgsrcedcolorlabelinthesourceareonlyco
 msgid "Label in the source are only colored if the colon \":\" is placed immediately after the label."
@@ -17187,6 +17191,14 @@ msgstr "Пути к исходному коду"
 #: lazarusidestrconsts.lisspaceequally
 msgid "Space equally"
 msgstr "Равномерно"
+
+#: lazarusidestrconsts.lissqlhighlighterdialect
+msgid "Override dialect for SQL highlighter"
+msgstr "Перекрыть диалект средства подсветки SQL"
+
+#: lazarusidestrconsts.lissqlhighlightopts
+msgid "SQL highlight"
+msgstr "Подсветка SQL"
 
 #: lazarusidestrconsts.lisssearching
 msgid "Searching"

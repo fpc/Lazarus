@@ -4696,6 +4696,10 @@ msgstr "Odstęp"
 msgid "Hints for main speed buttons (open, save, ...)"
 msgstr "Podpowiedzi dla głównych przycisków (otwórz, zapisz...)"
 
+#: lazarusidestrconsts.dlgsqlexthighlightgroup
+msgid "Extended SQL Highlight Options"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsrcedcolorlabelinthesourceareonlyco
 msgid "Label in the source are only colored if the colon \":\" is placed immediately after the label."
 msgstr ""
@@ -17524,6 +17528,14 @@ msgstr "Ścieżki do źródeł"
 #: lazarusidestrconsts.lisspaceequally
 msgid "Space equally"
 msgstr "Rozmieść równomiernie"
+
+#: lazarusidestrconsts.lissqlhighlighterdialect
+msgid "Override dialect for SQL highlighter"
+msgstr ""
+
+#: lazarusidestrconsts.lissqlhighlightopts
+msgid "SQL highlight"
+msgstr ""
 
 #: lazarusidestrconsts.lisssearching
 msgid "Searching"

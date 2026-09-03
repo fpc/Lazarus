@@ -4679,6 +4679,10 @@ msgstr "Spasi"
 msgid "Hints for main speed buttons (open, save, ...)"
 msgstr "Petunjuk untuk tombol cepat utama (buka, simpan, ...)"
 
+#: lazarusidestrconsts.dlgsqlexthighlightgroup
+msgid "Extended SQL Highlight Options"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsrcedcolorlabelinthesourceareonlyco
 msgid "Label in the source are only colored if the colon \":\" is placed immediately after the label."
 msgstr ""
@@ -17814,6 +17818,14 @@ msgstr "Path sumber"
 #: lazarusidestrconsts.lisspaceequally
 msgid "Space equally"
 msgstr "Spasi secara sama"
+
+#: lazarusidestrconsts.lissqlhighlighterdialect
+msgid "Override dialect for SQL highlighter"
+msgstr ""
+
+#: lazarusidestrconsts.lissqlhighlightopts
+msgid "SQL highlight"
+msgstr ""
 
 #: lazarusidestrconsts.lisssearching
 msgid "Searching"
