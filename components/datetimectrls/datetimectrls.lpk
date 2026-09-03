@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="5">
+  <Package Version="6">
     <PathDelim Value="\"/>
     <Name Value="DateTimeCtrls"/>
     <Type Value="RunAndDesignTime"/>
@@ -24,30 +24,37 @@
     <Description Value="TDateTimePicker - the cross-platform control behaving much like VCL&apos;s TDateTimePicker. TDBDateTimePicker - the data-aware version of TDateTimePicker"/>
     <License Value="Modified LGPL"/>
     <Version Major="1" Minor="5" Release="1"/>
-    <Files Count="4">
-      <Item1>
+    <Files>
+      <Item>
         <Filename Value="datetimepicker.pas"/>
         <UnitName Value="DateTimePicker"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <Filename Value="dbdatetimepicker.pas"/>
         <UnitName Value="DBDateTimePicker"/>
-      </Item2>
-      <Item3>
+      </Item>
+      <Item>
         <Filename Value="calcontrolwrapper.pas"/>
         <UnitName Value="calcontrolwrapper"/>
-      </Item3>
-      <Item4>
+      </Item>
+      <Item>
         <Filename Value="lclcalwrapper.pas"/>
         <UnitName Value="lclcalwrapper"/>
-      </Item4>
+      </Item>
+      <Item>
+        <Filename Value="dtctrlsstrconsts.pas"/>
+        <UnitName Value="dtctrlsstrconsts"/>
+      </Item>
     </Files>
-    <CompatibilityMode Value="True"/>
-    <LazDoc Paths="$(LazarusDir)/components/datetimectrls/docs" PackageName="DateTimeCtrls"/>
-    <RequiredPkgs Count="1">
-      <Item1>
+    <LazDoc Paths="$(LazarusDir)\components\datetimectrls\docs" PackageName="DateTimeCtrls"/>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
+    <RequiredPkgs>
+      <Item>
         <PackageName Value="LCLBase"/>
-      </Item1>
+      </Item>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

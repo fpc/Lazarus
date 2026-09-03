@@ -9,7 +9,7 @@ interface
 
 uses
   DateTimePicker, DBDateTimePicker, calcontrolwrapper, lclcalwrapper, 
-  LazarusPackageIntf;
+  DTCtrlsStrConsts, LazarusPackageIntf;
 
 implementation
 

@@ -1,0 +1,15 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: dtctrlsstrconsts.lisdatetime
+msgid "Date / Time:"
+msgstr ""
+
+#: dtctrlsstrconsts.lisdatetimepickereditor
+msgid "DateTimePicker Editor"
+msgstr ""
+
+#: dtctrlsstrconsts.lispressntosettonull
+msgid "(Press N to set to NULL)"
+msgstr ""
+
