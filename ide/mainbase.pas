@@ -1777,8 +1777,6 @@ var
   i: Integer;
   AnEditorInfo: TUnitEditorInfo;
   h: TSrcIDEHighlighter;
-  sd: TSQLDialect;
-  b: Boolean;
 begin
   if Immediately then begin
     Exclude(FIdleIdeActions, iiaUpdateHighlighters);
@@ -1787,13 +1785,8 @@ begin
       if h<>nil then begin
         h.BeginUpdate;
         EditorOpts.GetHighlighterSettings(h);
-        if (h is TSynSQLSyn) and (Project1<>nil) and Project1.OverrideGlobalSqlDialect then begin
-          sd := NameToSQLDialect(Project1.SQLDialectName, b);
-          if b then
-            TSynSQLSyn(h).SQLDialect := sd
-          else
-            Project1.OverrideGlobalSqlDialect := b;
-        end;
+        if (h is TSynSQLSyn) and (EditableProject1<>nil) and EditableProject1.OverrideGlobalSqlDialect then
+          TSynSQLSyn(h).SQLDialect := EditableProject1.SQLDialect;
         h.EndUpdate;
       end;
     end;

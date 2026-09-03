@@ -156,6 +156,15 @@ type
   TSQLDialect = (sqlStandard, sqlInterbase6, sqlMSSQL7, sqlMySQL, sqlMySQL5, sqlMySQL8, sqlOracle,
     sqlSybase, sqlIngres, sqlMSSQL2K, sqlPostgres, sqlSQLite,                                           // JJV 2000-11-16
     sqlFirebird25, sqlFirebird30, sqlFirebird40, sqlMSSQL2022);
+const
+  {$PUSH}{$WriteableConst off}
+  SQLDialectNames: array [TSQLDialect] of string =
+  ( 'Standard',
+    'Interbase 6', 'MSSQL 7', 'MySQL', 'MySQL 5', 'MySQL 8',
+    'Oracle','  sqlSybase', 'Ingres',
+    'MSSQL 2K', 'Postgres', 'SQLite',
+    'Firebird 2.5', 'Firebird 3.0', 'Firebird 4.0', 'MSSQL 2022');
+  {$POP}
 
 type
   PIdentifierTable = ^TIdentifierTable;
@@ -410,8 +419,7 @@ type
     property SQLDialect: TSQLDialect read fDialect write SetDialect;
   end;
 
-  function SQLDialectToName(Asd: TSQLDialect; Areadable: Boolean = False): String;
-  function NameToSQLDialect(const Aname: String; out Aexist: Boolean): TSQLDialect;
+  function SQLDialectToName(Asd: TSQLDialect): String;
 
 implementation
 
@@ -1558,43 +1566,9 @@ begin
   mHashTableMSSQL7['@'] := mHashTableMSSQL7['Z'] + 1;
 end;
 
-function SQLDialectToName(Asd: TSQLDialect; Areadable: Boolean): String;
-var
-  i: Integer;
+function SQLDialectToName(Asd: TSQLDialect): String;
 begin
-  Str(Asd, Result);
-  if Areadable then
-  begin
-    if (Result[1] = 's') and (Result[2] = 'q') and (Result[3] = 'l') then
-      Delete(Result, 1, 3);
-    for i := 1 to Length(Result) do
-    begin
-      if Result[i] in ['0'..'9'] then
-      begin
-        Result := Copy(Result, 1, i - 1) + ' ' + Copy(Result, i);
-        exit;
-      end;
-    end;
-  end;
-end;
-
-function NameToSQLDialect(const Aname: String; out Aexist: Boolean): TSQLDialect;
-var
-  sd: TSQLDialect;
-begin
-  Aexist := False;
-  Result := sqlStandard;
-  if Aname = '' then
-    exit;
-  for sd in TSQLDialect do
-  begin
-    if CompareText(Aname, SQLDialectToName(sd)) = 0 then
-    begin
-      Aexist := True;
-      Result := sd;
-      exit;
-    end;
-  end;
+  Result := SQLDialectNames[Asd];
 end;
 
 { TSynSQLSynRange }

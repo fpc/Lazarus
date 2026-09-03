@@ -2771,7 +2771,7 @@ resourcestring
   lisFPCResources = 'FPC resources (.res)';
   lisDelphiCompatibleResources = 'Delphi compatible resources. Recommended.';
   lisStorePathDelimitersAndAs = 'Store path delimiters \ and / as';
-  lisSQLHighlighterDialect = 'Ovveride dialect for SQL highlighter';
+  lisSQLHighlighterDialect = 'Override dialect for SQL highlighter';
   lisDoNotChange = 'Do not change';
   lisChangeToUnix = 'Change to Unix /';
   lisChangeToWindows = 'Change to Windows \';

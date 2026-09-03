@@ -104,7 +104,7 @@ begin
   dropSqlDialect.Items.Clear;
   dropSqlDialect.Sorted := True;
   for sd := Low(TSQLDialect) to High(TSQLDialect) do
-    dropSqlDialect.Items.AddObject(SQLDialectToName(sd, True), TObject(PtrInt(Ord(sd))));
+    dropSqlDialect.Items.AddObject(SQLDialectToName(sd), TObject(PtrInt(Ord(sd))));
   dropSqlDialect.ItemIndex := dropSqlDialect.Items.IndexOfObject(TObject(PtrInt(Ord(sqlStandard))));
 end;
 
@@ -112,7 +112,7 @@ procedure TEditorSqlOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   with AOptions as TEditorOptions do
   begin
-    dropSqlDialect.Text := SQLDialectToName(SQLDialect, True);
+    dropSqlDialect.Text := SQLDialectToName(SQLDialect);
   end;
 end;
 

@@ -15,7 +15,7 @@ uses
   // IdeIntf
   IDEOptEditorIntf,
   // IDE
-  Project, LazarusIDEStrConsts, SynHighlighterSQL;
+  Project, LazarusIDEStrConsts, EditableProject, SynHighlighterSQL;
 
 type
 
@@ -108,7 +108,7 @@ begin
   SQLDialectComboBox.Items.Clear;
   SQLDialectComboBox.Sorted := True;
   for sd := Low(TSQLDialect) to High(TSQLDialect) do
-    SQLDialectComboBox.Items.AddObject(SQLDialectToName(sd, True), TObject(PtrInt(Ord(sd))));
+    SQLDialectComboBox.Items.AddObject(SQLDialectToName(sd), TObject(PtrInt(Ord(sd))));
   SQLDialectComboBox.ItemIndex := 0;
 end;
 
@@ -117,7 +117,7 @@ var
   idx: Integer;
   b: Boolean;
 begin
-  with (AOptions as TProjectIDEOptions).Project do
+  with (AOptions as TProjectIDEOptions).Project as TEditableProject do
   begin
     MainUnitIsPascalSourceCheckBox.Checked := (pfMainUnitIsPascalSource in Flags);
     MainUnitHasUsesSectionForAllUnitsCheckBox.Checked := (pfMainUnitHasUsesSectionForAllUnits in Flags);
@@ -147,13 +147,8 @@ begin
     pdsUnix: PathDelimComboBox.ItemIndex:=1;
     pdsWindows: PathDelimComboBox.ItemIndex:=2;
     end;
-    idx := -1;
-    b := False;
     if OverrideGlobalSqlDialect then
-      idx := SQLDialectComboBox.Items.IndexOfObject(TObject(PtrInt(Ord(NameToSqlDialect(SQLDialectName, b)))));
-    OverrideGlobalSqlDialect := b;
-    if OverrideGlobalSqlDialect and (idx >= 0) then
-      SQLDialectComboBox.ItemIndex := idx
+      SQLDialectComboBox.ItemIndex := SQLDialectComboBox.Items.IndexOfObject(TObject(PtrInt(Ord(SQLDialect))))
     else
       SQLDialectComboBox.ItemIndex := SQLDialectComboBox.Items.IndexOfObject(TObject(PtrInt(Ord(sqlStandard))));
     OverrideGlobalSQLDialectCheckBox.Checked := OverrideGlobalSqlDialect;
@@ -162,7 +157,7 @@ end;
 
 procedure TProjectMiscOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
-  Project: TProject;
+  Project: TEditableProject;
   NewFlags: TProjectFlags;
 
   procedure SetProjectFlag(AFlag: TProjectFlag; AValue: Boolean);
@@ -174,7 +169,7 @@ var
   end;
 
 begin
-  Project := (AOptions as TProjectIDEOptions).Project;
+  Project := (AOptions as TProjectIDEOptions).Project as TEditableProject;
   NewFlags := Project.Flags;
   SetProjectFlag(pfMainUnitIsPascalSource,
                  MainUnitIsPascalSourceCheckBox.Checked);
@@ -204,9 +199,9 @@ begin
   end;
   Project.OverrideGlobalSqlDialect := OverrideGlobalSQLDialectCheckBox.Checked;
   if OverrideGlobalSQLDialectCheckBox.Checked then
-    Project.SQLDialectName := SQLDialectToName(TSQLDialect(PtrInt(SQLDialectComboBox.Items.Objects[SQLDialectComboBox.ItemIndex])))
+    Project.SQLDialect := TSQLDialect(PtrInt(SQLDialectComboBox.Items.Objects[SQLDialectComboBox.ItemIndex]))
   else
-    Project.SQLDialectName := 'sqlStandard';
+    Project.SQLDialect := sqlStandard;
 end;
 
 class function TProjectMiscOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
