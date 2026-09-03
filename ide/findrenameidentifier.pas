@@ -138,7 +138,7 @@ function GatherIdentifierReferences(Files: TStringList;
   DeclNode: TCodeTreeNode; // can be nil
   SearchInComments: boolean;
   out ListOfSrcNameRefs: TObjectList; const Flags: TFindRefsFlags;
-  out ModifiedDesigners: TArrayOfTEditableUnitInfo): boolean;
+  out ModifiedDesigners: TArrayOfEditableUnitInfo): boolean;
 function ShowIdentifierReferences(
   DeclFilename: string;
   ListOfSrcNameRefs: TObjectList;
@@ -601,7 +601,7 @@ var
   end;
 
   function UnitIsModefiedByDesigner(AUnitInfo:TEditableUnitInfo;
-      SrcIfcs: TArrayOfTEditableUnitInfo): boolean;
+      SrcIfcs: TArrayOfEditableUnitInfo): boolean;
   var i: integer;
   begin
     Result:=false;
@@ -631,7 +631,8 @@ var
   TreeOfPCodeXYPosition, LFMTreeOfPCodeXYPosition: TAVLTree;
   Refs, OldRefs: TSrcNameRefs;
   AUnitInfo: TEditableUnitInfo;
-  SrcIfcsAtStart, SrcIfcs: TArrayOfTEditableUnitInfo;
+  SrcIfcsAtStart, SrcIfcs: TArrayOfEditableUnitInfo;
+  ei: TUnitEditorInfo;
 begin
   Result:=mrCancel;
   if not LazarusIDE.BeginCodeTools then exit(mrCancel);
@@ -851,8 +852,20 @@ begin
     end;
 
     if SrcIfcsAtStart<> nil then begin // pending changes in designers detected
-      for i:= 0 to high(SrcIfcsAtStart) do
-        SaveEditorFile(SrcIfcsAtStart[i].EditorInfo[0].EditorComponent, []);
+      for i:= 0 to high(SrcIfcsAtStart) do begin
+        AUnitInfo := SrcIfcsAtStart[i];
+        debugln(['DoFindRenameIdentifier AUnitInfo=', AUnitInfo]);
+        if Assigned(AUnitInfo) then begin
+          j := AUnitInfo.EditorInfoCount;
+          debugln(['DoFindRenameIdentifier i=', i, ', EditorInfoCount=', j]);
+          if j > 0 then begin
+            ei := SrcIfcsAtStart[i].EditorInfo[0];
+            debugln(['DoFindRenameIdentifier Editor PageIndex=', ei.PageIndex,
+                     ', FileName=', ei.EditorComponent.FileName]);
+            SaveEditorFile(ei.EditorComponent, []);
+          end;
+        end;
+      end;
 
       // code is modified, previous  gathering not reliable, must be repeated
       PascalReferences.Free;
@@ -1028,7 +1041,7 @@ end;
 function GatherIdentifierReferences(Files: TStringList; const DeclCodeXY: TCodeXYPosition;
   DeclTool: TCodeTool; DeclNode: TCodeTreeNode; SearchInComments: boolean; out
   ListOfSrcNameRefs: TObjectList; const Flags: TFindRefsFlags;
-  out ModifiedDesigners: TArrayOfTEditableUnitInfo): boolean;
+  out ModifiedDesigners: TArrayOfEditableUnitInfo): boolean;
 var
   i, DeclCleanPos: Integer;
   LoadResult: TModalResult;

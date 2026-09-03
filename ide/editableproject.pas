@@ -165,7 +165,7 @@ type
     property EditableProject: TEditableProject read GetEditableProject;
   end;
 
-  TArrayOfTEditableUnitInfo = array of TEditableUnitInfo;
+  TArrayOfEditableUnitInfo = array of TEditableUnitInfo;
 
   { TEditableProject }
 
@@ -630,13 +630,7 @@ end;
 
 function TEditableUnitInfo.GetEditorInfo(Index: Integer): TUnitEditorInfo;
 begin
-  try
-    Result := FEditorInfoList[Index];
-  except
-    on E: Exception do
-      debugln(['TEditableUnitInfo.GetEditorInfo: FEditorInfoList.Count=',
-                                   FEditorInfoList.Count, ', Error ', E.Message]);
-  end;
+  Result := FEditorInfoList[Index];
 end;
 
 function TEditableUnitInfo.GetOpenEditorInfo(Index: Integer): TUnitEditorInfo;
