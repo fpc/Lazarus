@@ -729,6 +729,26 @@ begin
   SetFormShowInTaskbar(AForm,AValue);
 end;
 
+procedure Gtk2SuspendModalGrab(AEnable: Boolean);
+var
+  I: Integer;
+  W: PGtkWidget;
+begin
+  if ModalWindows = nil then
+    Exit;
+  for I := 0 to ModalWindows.Count - 1 do
+  begin
+    W := PGtkWidget(ModalWindows[I]);
+    if GTK_IS_WINDOW(W) then
+    begin
+      if AEnable then
+        gtk_grab_add(W)
+      else
+        gtk_grab_remove(W);
+    end;
+  end;
+end;
+
 class procedure TGtk2WSCustomForm.ShowHide(const AWinControl: TWinControl);
 var
   {$IFDEF HASX}
@@ -846,6 +866,17 @@ begin
     {$ENDIF}
 
     Gtk2WidgetSet.SetVisible(AWinControl, AForm.HandleObjectShouldBeVisible);
+
+    if (AForm.BorderStyle = bsNone) and not (csNoFocus in AForm.ControlStyle) then
+    begin
+      if AForm.HandleObjectShouldBeVisible then
+      begin
+        if (ModalWindows <> nil) and (ModalWindows.Count > 0) then
+          Gtk2SuspendModalGrab(False);
+      end
+      else
+        Gtk2SuspendModalGrab(True);
+    end;
   end;
 
   if not (csDesigning in AForm.ComponentState) and
