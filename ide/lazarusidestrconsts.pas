@@ -1941,6 +1941,7 @@ resourcestring
   dlgMarkupGroup = 'Highlight all occurrences of Word under Caret';
   dlgBracketMatchGroup = 'Matching bracket and quote pairs';
   dlgPasExtHighlightGroup = 'Extended Pascal Highlight Options';
+  dlgSqlExtHighlightGroup = 'Extended SQL Highlight Options';
   dlgPasParamTypes = 'Types and values in declarations and params';
   dlgPasKeywordsMatches = 'Matching Keywords';
   dlgPasKeywordsMarkup = 'Markup (on caret)';
@@ -1991,6 +1992,7 @@ resourcestring
   dlgIncludeIdentifiersContainingPrefix = 'Include identifiers containing prefix';
   lisAutomaticFeatures = 'Completion and Hints';
   lisPascalHighlightOpts = 'Pascal highlight';
+  lisSqlHighlightOpts = 'SQL highlight';
   lisAutoMarkup = 'Pairs/Matches and Structure';
   dlgUseIconsInCompletionBox = 'Icons in code completion box';
   dlgIncludeWordsToIdentCompl = 'Include words';
@@ -2769,6 +2771,7 @@ resourcestring
   lisFPCResources = 'FPC resources (.res)';
   lisDelphiCompatibleResources = 'Delphi compatible resources. Recommended.';
   lisStorePathDelimitersAndAs = 'Store path delimiters \ and / as';
+  lisSQLHighlighterDialect = 'Override dialect for SQL highlighter';
   lisDoNotChange = 'Do not change';
   lisChangeToUnix = 'Change to Unix /';
   lisChangeToWindows = 'Change to Windows \';

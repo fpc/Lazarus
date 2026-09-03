@@ -2543,6 +2543,8 @@ begin
 
   try
     // get format
+    FXMLConfig.CheckPropertyDefault := True;
+    FXMLConfig.ReadObject(ProjOptionsPath + 'Misc/', Self);
     fStorePathDelim:=CheckPathDelim(FXMLConfig.GetValue(ProjOptionsPath+'PathDelim/Value','/'),
                                     FPathDelimChanged);
     FCurStorePathDelim:=StorePathDelim;
@@ -2731,6 +2733,8 @@ var
   CurFlags: TProjectWriteFlags;
 begin
   FFileVersion:=ProjectInfoFileVersion;
+  FXMLConfig.CheckPropertyDefault := True;
+  FXMLConfig.WriteObject(Path + 'Misc/', Self);
   // format
   FXMLConfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
   FXMLConfig.SetDeleteValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[FCurStorePathDelim],'/');

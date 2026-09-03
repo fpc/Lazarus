@@ -156,6 +156,15 @@ type
   TSQLDialect = (sqlStandard, sqlInterbase6, sqlMSSQL7, sqlMySQL, sqlMySQL5, sqlMySQL8, sqlOracle,
     sqlSybase, sqlIngres, sqlMSSQL2K, sqlPostgres, sqlSQLite,                                           // JJV 2000-11-16
     sqlFirebird25, sqlFirebird30, sqlFirebird40, sqlMSSQL2022);
+const
+  {$PUSH}{$WriteableConst off}
+  SQLDialectNames: array [TSQLDialect] of string =
+  ( 'Standard',
+    'Interbase 6', 'MSSQL 7', 'MySQL', 'MySQL 5', 'MySQL 8',
+    'Oracle','  sqlSybase', 'Ingres',
+    'MSSQL 2K', 'Postgres', 'SQLite',
+    'Firebird 2.5', 'Firebird 3.0', 'Firebird 4.0', 'MSSQL 2022');
+  {$POP}
 
 type
   PIdentifierTable = ^TIdentifierTable;
@@ -409,6 +418,8 @@ type
     property CollationAttri: TLazEditHighlighterAttributesModifier index attribCollation read fCollationAttri write SetAttribute;
     property SQLDialect: TSQLDialect read fDialect write SetDialect;
   end;
+
+  function SQLDialectToName(Asd: TSQLDialect): String;
 
 implementation
 
@@ -1553,6 +1564,11 @@ begin
   Move(mHashTable, mHashTableMSSQL7, SizeOf(mHashTable));
   IdentifiersMSSQL7['@'] := TRUE;
   mHashTableMSSQL7['@'] := mHashTableMSSQL7['Z'] + 1;
+end;
+
+function SQLDialectToName(Asd: TSQLDialect): String;
+begin
+  Result := SQLDialectNames[Asd];
 end;
 
 { TSynSQLSynRange }

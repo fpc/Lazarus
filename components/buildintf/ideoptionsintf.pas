@@ -179,6 +179,7 @@ const
       EdtOptionsPascal      = 502;
       EdtOptionsMarkup      = 503;
       EdtOptionsUserDefined = 504;
+      EdtOptionsSQL         = 505;
     EdtOptionsKeys        = 300;
     EdtOptionsMouse       = 400;
     EdtOptionsMouseAdv    = 401;

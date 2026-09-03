@@ -64,7 +64,7 @@ uses
   // Codetools
   CodeToolManager,
   // SynEdit
-  SynEditKeyCmds,
+  SynEditKeyCmds, SynHighlighterSQL,
   // BuildIntf
   ProjectIntf,
   // IDEIntf
@@ -1785,6 +1785,8 @@ begin
       if h<>nil then begin
         h.BeginUpdate;
         EditorOpts.GetHighlighterSettings(h);
+        if (h is TSynSQLSyn) and (EditableProject1<>nil) and EditableProject1.OverrideGlobalSqlDialect then
+          TSynSQLSyn(h).SQLDialect := EditableProject1.SQLDialect;
         h.EndUpdate;
       end;
     end;

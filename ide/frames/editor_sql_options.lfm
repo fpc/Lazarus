@@ -1,0 +1,44 @@
+object EditorSqlOptionsFrame: TEditorSqlOptionsFrame
+  Left = 0
+  Height = 677
+  Top = 0
+  Width = 772
+  HorzScrollBar.Page = 1
+  VertScrollBar.Page = 1
+  AutoScroll = True
+  ClientHeight = 677
+  ClientWidth = 772
+  LCLVersion = '4.99.0.0'
+  TabOrder = 0
+  DesignLeft = 484
+  DesignTop = 27
+  object divSqlDialect: TDividerBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 15
+    Top = 6
+    Width = 772
+    Caption = 'divSqlDialect'
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object dropSqlDialect: TComboBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 23
+    Top = 32
+    Width = 220
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    ItemHeight = 15
+    Style = csDropDownList
+    TabOrder = 0
+    OnChange = dropSqlDialectChange
+  end
+end
