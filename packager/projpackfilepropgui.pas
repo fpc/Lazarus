@@ -34,7 +34,7 @@ interface
 uses
   Classes, SysUtils, System.UITypes,
   // LCL
-  LResources, Forms, Controls, StdCtrls, ComCtrls, Dialogs,
+  LResources, Forms, Controls, Graphics, StdCtrls, ComCtrls, Dialogs,
   // LazControls
   TreeFilterEdit,
   // LazUtils
