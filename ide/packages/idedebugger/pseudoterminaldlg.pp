@@ -119,6 +119,8 @@ type
   { TLazDbgIdeBuiltInConsolePlugInConfig }
 
   TLazDbgIdeBuiltInConsolePlugInConfig = class(specialize TGenLazDbgIdePlugInConfiguration<TObject>, ILazDbgIdePlugInConfiguration)
+  private const
+    ECHO_INPUT_DEF = True;
   private
     FEchoInput: boolean;
     FOnChange: TNotifyEvent;
@@ -128,11 +130,13 @@ type
     function  CreateCopy: ILazDbgIdePlugInConfiguration; reintroduce;
     procedure FreeCopy; reintroduce;
     procedure AssignOptions(ASource: ILazDbgIdePlugInConfiguration); reintroduce;
+    procedure ResetOptions;
     function  CompareOptions(AnOther: ILazDbgIdePlugInConfiguration): TNullableBool;
   public
+    constructor Create;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
-    property EchoInput: boolean read FEchoInput write FEchoInput default False;
+    property EchoInput: boolean read FEchoInput write FEchoInput default ECHO_INPUT_DEF;
   end;
 
   { TLazDbgIdeBuiltInConsolePlugInRegistryEntry }
@@ -373,6 +377,8 @@ begin
   GroupBoxRight.Caption := lisLineLimit;
   TabSheetRaw.Caption := lisRawOutput;
   cbLocalEcho.Caption := lisConsoleLocalEcho;
+  {TODO: need feedback from debugger backend}
+  cbLocalEcho.Visible:= {$IFDEF WINDOWS}not{$ENDIF} False;
 
   lbAutoOpenConsole.Caption := DbgWatchColorAutoOpenConsoleWindowLinu;
   cbAutoOpenConsole.AddItem(DbgWatchColorNever, nil);
@@ -1074,6 +1080,11 @@ begin
     FOnChange(Self);
 end;
 
+procedure TLazDbgIdeBuiltInConsolePlugInConfig.ResetOptions;
+begin
+  FEchoInput := ECHO_INPUT_DEF;
+end;
+
 function TLazDbgIdeBuiltInConsolePlugInConfig.CompareOptions(AnOther: ILazDbgIdePlugInConfiguration
   ): TNullableBool;
 var
@@ -1082,7 +1093,7 @@ var
 begin
   Result := nbUnknown;
   if AnOther = nil then begin
-    if (FEchoInput = False)
+    if (FEchoInput = ECHO_INPUT_DEF)
     then Result := nbTrue
     else Result := nbFalse;
   end
@@ -1094,6 +1105,12 @@ begin
     then Result := nbTrue
     else Result := nbFalse;
   end;
+end;
+
+constructor TLazDbgIdeBuiltInConsolePlugInConfig.Create;
+begin
+  inherited Create;
+  ResetOptions;
 end;
 
 procedure TLazDbgIdeBuiltInConsolePlugInConfig.FreeCopy;
