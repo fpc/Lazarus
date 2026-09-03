@@ -138,7 +138,7 @@ function GatherIdentifierReferences(Files: TStringList;
   DeclNode: TCodeTreeNode; // can be nil
   SearchInComments: boolean;
   out ListOfSrcNameRefs: TObjectList; const Flags: TFindRefsFlags;
-  out ModifiedDesigners: TArrayOfEditableUnitInfo): boolean;
+  ModifiedDesigners: TFPList): boolean;
 function ShowIdentifierReferences(
   DeclFilename: string;
   ListOfSrcNameRefs: TObjectList;
@@ -600,15 +600,14 @@ var
     Result:=true;
   end;
 
-  function UnitIsModefiedByDesigner(AUnitInfo:TEditableUnitInfo;
-      SrcIfcs: TArrayOfEditableUnitInfo): boolean;
-  var i: integer;
+  function UnitIsModefiedByDesigner(SE: TSourceEditorInterface; SrcEds: TFPList): boolean;
+  var
+    i: integer;
   begin
     Result:=false;
-    if AUnitInfo=nil then exit;
-    if SrcIfcs=nil then exit;
-    for i:=0 to high(SrcIfcs) do
-      if SrcIfcs[i]=AUnitInfo then exit(true);
+    Assert(Assigned(SE), 'UnitIsModefiedByDesigner: SE=Nil');
+    for i:=0 to SrcEds.Count-1 do
+      if TSourceEditorInterface(SrcEds[i])=SE then exit(true);
   end;
 
 var
@@ -630,9 +629,7 @@ var
   FindRefFlags: TFindRefsFlags;
   TreeOfPCodeXYPosition, LFMTreeOfPCodeXYPosition: TAVLTree;
   Refs, OldRefs: TSrcNameRefs;
-  AUnitInfo: TEditableUnitInfo;
-  SrcIfcsAtStart, SrcIfcs: TArrayOfEditableUnitInfo;
-  ei: TUnitEditorInfo;
+  SrcEds: TFPList;  // List of TSourceEditorInterface
 begin
   Result:=mrCancel;
   if not LazarusIDE.BeginCodeTools then exit(mrCancel);
@@ -684,8 +681,6 @@ begin
   NewFilename:='';
   NewFileCreated:=false;
   OldRefs:=nil;
-  SrcIfcs:=nil;
-  SrcIfcsAtStart:=nil;
 
   try
     // let user choose the search scope
@@ -844,39 +839,31 @@ begin
       Include(FindRefFlags,frfMethodOverrides);
     if Options.IncludeLFMs then
       Include(FindRefFlags,frfIncludingLFM);
-    if not GatherIdentifierReferences(Files,DeclCodeXY,DeclTool,DeclNode,
-      Options.SearchInComments,PascalReferences,FindRefFlags, SrcIfcsAtStart) then
-    begin
-      debugln('Error: 20250206162727 DoFindRenameIdentifier GatherIdentifierReferences failed');
-      exit(mrCancel);
-    end;
-
-    if SrcIfcsAtStart<> nil then begin // pending changes in designers detected
-      for i:= 0 to high(SrcIfcsAtStart) do begin
-        AUnitInfo := SrcIfcsAtStart[i];
-        debugln(['DoFindRenameIdentifier AUnitInfo=', AUnitInfo]);
-        if Assigned(AUnitInfo) then begin
-          j := AUnitInfo.EditorInfoCount;
-          debugln(['DoFindRenameIdentifier i=', i, ', EditorInfoCount=', j]);
-          if j > 0 then begin
-            ei := SrcIfcsAtStart[i].EditorInfo[0];
-            debugln(['DoFindRenameIdentifier Editor PageIndex=', ei.PageIndex,
-                     ', FileName=', ei.EditorComponent.FileName]);
-            SaveEditorFile(ei.EditorComponent, []);
-          end;
-        end;
-      end;
-
-      // code is modified, previous  gathering not reliable, must be repeated
-      PascalReferences.Free;
-      PascalReferences:=nil;
-
+    SrcEds:=TFPList.Create;
+    try
       if not GatherIdentifierReferences(Files,DeclCodeXY,DeclTool,DeclNode,
-      Options.SearchInComments,PascalReferences,FindRefFlags, SrcIfcs) then
+        Options.SearchInComments,PascalReferences,FindRefFlags,SrcEds) then
       begin
         debugln('Error: 20250206162727 DoFindRenameIdentifier GatherIdentifierReferences failed');
         exit(mrCancel);
       end;
+      if SrcEds.Count>0 then    // pending changes in designers detected
+      begin
+        for i:=0 to SrcEds.Count-1 do
+          SaveEditorFile(TSourceEditorInterface(SrcEds[i]), []);
+        // code is modified, previous  gathering not reliable, must be repeated
+        PascalReferences.Free;
+        PascalReferences:=nil;
+
+        if not GatherIdentifierReferences(Files,DeclCodeXY,DeclTool,DeclNode,
+                Options.SearchInComments,PascalReferences,FindRefFlags,SrcEds) then
+        begin                                               // Is SrcEds OK here?
+          debugln('Error: 20250206162727 DoFindRenameIdentifier GatherIdentifierReferences failed');
+          exit(mrCancel);
+        end;
+      end;
+    finally
+      SrcEds.Free;
     end;
 
     // search references in lfm files
@@ -974,7 +961,8 @@ begin
           LastCode:=nil;
           for i:=0 to LFMReferences.Count-1 do begin
             Code:=LFMReferences.Items[i]^.Code;
-            if (Code<>LastCode) then begin
+{ ToDo: Remove AUnitInfo, use source editor interface
+              if (Code<>LastCode) then begin
               LastCode:=Code;
               // hack LastCode related designers
               AUnitInfo:=nil;
@@ -995,7 +983,7 @@ begin
                     [cfQuiet, cfCloseDependencies]);
               end;
               ReloadUnitComponent(AUnitInfo);
-            end;
+            end; }
           end;
         end;
 
@@ -1040,9 +1028,8 @@ end;
 
 function GatherIdentifierReferences(Files: TStringList; const DeclCodeXY: TCodeXYPosition;
   DeclTool: TCodeTool; DeclNode: TCodeTreeNode; SearchInComments: boolean; out
-  ListOfSrcNameRefs: TObjectList; const Flags: TFindRefsFlags;
-  out ModifiedDesigners: TArrayOfEditableUnitInfo): boolean;
-var
+  ListOfSrcNameRefs: TObjectList; const Flags: TFindRefsFlags; ModifiedDesigners: TFPList): boolean;
+var             // Add to ModifiedDesigners SourceEditors which have modified designer.
   i, DeclCleanPos: Integer;
   LoadResult: TModalResult;
   Code: TCodeBuffer;
@@ -1050,7 +1037,7 @@ var
   Cache: TFindIdentifierReferenceCache;
   TreeOfPCodeXYPosition: TAVLTree;
   Refs: TSrcNameRefs;
-  Filename: String;
+  FileN: String;
   SrcEditor: TSourceEditorInterface;
 begin
   Result:=false;
@@ -1058,12 +1045,11 @@ begin
   ListOfPCodeXYPosition:=nil;
   TreeOfPCodeXYPosition:=nil;
   Cache:=nil;
-  ModifiedDesigners:=nil;
   try
     CleanUpFileList(Files);
     for i:=Files.Count-1 downto 0 do begin
-      Filename:=Files[i];
-      if FilenameIsAbsolute(Filename) and not FileExistsCached(Filename) then
+      FileN:=Files[i];
+      if FilenameIsAbsolute(FileN) and not FileExistsCached(FileN) then
         Files.Delete(i);
     end;
 
@@ -1087,8 +1073,8 @@ begin
       // search identifier in every file
       for i:=0 to Files.Count-1 do begin
         //debugln(['GatherIdentifierReferences ',Files[i]]);
-        LoadResult:=
-            LoadCodeBuffer(Code,Files[i],[lbfCheckIfText,lbfUpdateFromDisk,lbfIgnoreMissing],true);
+        LoadResult:=LoadCodeBuffer(Code,Files[i],
+                        [lbfCheckIfText,lbfUpdateFromDisk,lbfIgnoreMissing],true);
         if LoadResult=mrAbort then begin
           debugln('GatherIdentifierReferences unable to load "',Files[i],'"');
           exit;
@@ -1115,17 +1101,12 @@ begin
             TreeOfPCodeXYPosition:=CodeToolBoss.CreateTreeOfPCodeXYPosition;
           CodeToolBoss.AddListToTreeOfPCodeXYPosition(ListOfPCodeXYPosition,
                                                 TreeOfPCodeXYPosition,true,false);
-
-          SrcEditor:=
-            SourceEditorManagerIntf.SourceEditorIntfWithFilename(Files[i]);
-
-          if (SrcEditor<>nil) and (SrcEditor.ModifiedDesign) then begin
-            if (frfIncludingLFM in Flags) and (frfRename in Flags) then begin
-              setlength(ModifiedDesigners, length(ModifiedDesigners)+1);
-              ModifiedDesigners[high(ModifiedDesigners)]:=
-               TEditableUnitInfo(Project1.ProjectUnitWithFilename(Files[i]));
-              debugln(['Added a unit modified by designer: ', Code.Scanner.SourceName]);
-            end;
+          SrcEditor:=SourceEditorManagerIntf.SourceEditorIntfWithFilename(Files[i]);
+          if (SrcEditor<>nil) and (SrcEditor.ModifiedDesign)
+          and (frfIncludingLFM in Flags) and (frfRename in Flags) then
+          begin
+            ModifiedDesigners.Add(SrcEditor);
+            debugln(['Added a unit modified by designer: ', Code.Scanner.SourceName]);
           end;
         end;
       end;

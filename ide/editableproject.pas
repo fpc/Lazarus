@@ -165,8 +165,6 @@ type
     property EditableProject: TEditableProject read GetEditableProject;
   end;
 
-  TArrayOfEditableUnitInfo = array of TEditableUnitInfo;
-
   { TEditableProject }
 
   TEditableProject = class(TProject)
