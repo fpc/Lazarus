@@ -1171,7 +1171,8 @@ type
        - The function may or may not return after the timeout, and may have to be called again to continue
     *)
     function CheckForConsoleOutput(ATimeOutMs: integer): integer; virtual;
-    procedure SetCheckingForConsoleOutputThread(AThread: TThread);
+    {TODO: SetCheckingForConsoleOutputThread - create thread inside the relevant sub-classes / remove this setter}
+    procedure SetCheckingForConsoleOutputThread(AThread: TThread); experimental;
     procedure StopCheckingForConsoleOutput; virtual;
     procedure ClearStopCheckingForConsoleOutputRequested;
     function GetConsoleOutput: string; virtual;
