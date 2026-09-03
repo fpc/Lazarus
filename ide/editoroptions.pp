@@ -1063,7 +1063,7 @@ type
 
     function GetNewSynInstance(AnID: TIdeSyntaxHighlighterID): TSrcIDEHighlighter;
     function FindByName(const Name: String): Integer;
-    function GetDefaultFilextension(AnId: TIdeSyntaxHighlighterID): String;
+    function GetDefaultFileExtension(AnId: TIdeSyntaxHighlighterID): String;
     property Items[Index: Integer]: TEditOptLanguageInfo read GetInfos; default;
 
     property Captions       [AnID: TIdeSyntaxHighlighterID]: String  read GetCaptions;
@@ -4490,7 +4490,7 @@ begin
     dec(Result);
 end;
 
-function TEditOptLangList.GetDefaultFilextension(AnId: TIdeSyntaxHighlighterID
+function TEditOptLangList.GetDefaultFileExtension(AnId: TIdeSyntaxHighlighterID
   ): String;
 begin
   if AnId >= 0 then
