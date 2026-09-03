@@ -1799,6 +1799,8 @@ type
     FGenericParamAttrMode: TSynPasTypeAttributeMode;
     FProcHeaderNameDeclMode: TProcHeaderNameMode;
     FProcHeaderNameImplMode: TProcHeaderNameMode;
+    // Highlighter SQL
+    FSQLDialect: TSQLDialect;
     // Multi window
     fCtrlMiddleTabClickClosesOthers: Boolean;
     fMiddleTabClickClosesOthersModifier: TShiftState;
@@ -1920,6 +1922,9 @@ type
        read FProcHeaderNameDeclMode write FProcHeaderNameDeclMode default pnmGenericOnly;
     property ProcHeaderNameImplMode: TProcHeaderNameMode
        read FProcHeaderNameImplMode write FProcHeaderNameImplMode default pnmProcNameOnly;
+    // Highlighter SQL
+    property SQLDialect: TSQLDialect
+      read FSQLDialect write FSQLDialect default sqlStandard;
     // Multi window
     property CtrlMiddleTabClickClosesOthers: Boolean
       read fCtrlMiddleTabClickClosesOthers write fCtrlMiddleTabClickClosesOthers stored False default True;
@@ -5823,6 +5828,8 @@ begin
   FDeclaredValueAttributeMachesStringNum := False;
   FProcHeaderNameDeclMode := pnmGenericOnly;
   FProcHeaderNameImplMode := pnmProcNameOnly;
+  // sql highlighter
+  FSQLDialect := sqlStandard;
   // Multi window
   fCtrlMiddleTabClickClosesOthers := True;
   fMiddleTabClickClosesOthersModifier := [ssCtrl];
@@ -6948,6 +6955,8 @@ begin
         pnmPlain:              TSynPasSyn(Syn).ProcNameImplAttributeMode := [pamSupressGenParamAttr, pamDots];
       end;
     end;
+    if Syn is TSynSQLSyn then
+      TSynSQLSyn(Syn).SQLDialect := FSQLDialect;
   finally
     Syn.EndUpdate;
   end;

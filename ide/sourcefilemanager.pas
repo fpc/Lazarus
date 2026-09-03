@@ -4371,6 +4371,9 @@ begin
       IDETabMaster.EndUpdate;
   end;
   if Result=mrAbort then exit;
+  if Result=mrOk then
+    // apply project specific highlighter settings (e.g. SQL dialect) to the shared highlighter instances
+    MainIDE.UpdateHighlighters(True);
   //debugln('InitOpenedProjectFile end  CodeToolBoss.ConsistencyCheck=',IntToStr(CodeToolBoss.ConsistencyCheck));
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('InitOpenedProjectFile end');{$ENDIF}
 end;

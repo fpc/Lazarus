@@ -15,7 +15,7 @@ uses
   // IdeIntf
   IDEOptEditorIntf,
   // IDE
-  Project, LazarusIDEStrConsts;
+  Project, LazarusIDEStrConsts, SynHighlighterSQL;
 
 type
 
@@ -25,6 +25,7 @@ type
     AlwaysBuildCheckBox: TCheckBox;
     Bevel1: TBevel;
     Bevel2: TBevel;
+    Bevel3: TBevel;
     LRSInOutputDirCheckBox: TCheckBox;
     MainUnitHasCreateFormStatementsCheckBox: TCheckBox;
     CompatibilityModeCheckBox: TCheckBox;
@@ -35,10 +36,13 @@ type
     PathDelimComboBox: TComboBox;
     PathDelimLabel: TLabel;
     ResourceGroupBox: TGroupBox;
+    SQLDialectComboBox: TComboBox;
+    OverrideGlobalSQLDialectCheckBox: TCheckBox;
     RunnableCheckBox: TCheckBox;
     UseDesignTimePkgsCheckBox: TCheckBox;
     UseFPCResourcesRadioButton: TRadioButton;
     UseLRSFilesRadioButton: TRadioButton;
+    procedure OverrideGlobalSQLDialectCheckBoxChange(Sender: TObject);
   private
   public
     function GetTitle: string; override;
@@ -54,12 +58,19 @@ implementation
 
 { TProjectMiscOptionsFrame }
 
+procedure TProjectMiscOptionsFrame.OverrideGlobalSQLDialectCheckBoxChange(Sender: TObject);
+begin
+  SQLDialectComboBox.Enabled := OverrideGlobalSQLDialectCheckBox.Checked;
+end;
+
 function TProjectMiscOptionsFrame.GetTitle: string;
 begin
   Result := dlgPOMisc;
 end;
 
 procedure TProjectMiscOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
+var
+  sd: TSQLDialect;
 begin
   MainUnitIsPascalSourceCheckBox.Caption := lisMainUnitIsPascalSource;
   MainUnitIsPascalSourceCheckBox.Hint := lisMainUnitIsPascalSourceHint;
@@ -91,9 +102,20 @@ begin
   PathDelimComboBox.Items.Text:=lisDoNotChange+LineEnding
                                +lisChangeToUnix+LineEnding
                                +lisChangeToWindows;
+  OverrideGlobalSQLDialectCheckBox.Checked := False;
+  OverrideGlobalSQLDialectCheckBox.Caption := lisSQLHighlighterDialect;
+  SQLDialectComboBox.Enabled := False;
+  SQLDialectComboBox.Items.Clear;
+  SQLDialectComboBox.Sorted := True;
+  for sd := Low(TSQLDialect) to High(TSQLDialect) do
+    SQLDialectComboBox.Items.AddObject(SQLDialectToName(sd, True), TObject(PtrInt(Ord(sd))));
+  SQLDialectComboBox.ItemIndex := 0;
 end;
 
 procedure TProjectMiscOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+var
+  idx: Integer;
+  b: Boolean;
 begin
   with (AOptions as TProjectIDEOptions).Project do
   begin
@@ -125,6 +147,16 @@ begin
     pdsUnix: PathDelimComboBox.ItemIndex:=1;
     pdsWindows: PathDelimComboBox.ItemIndex:=2;
     end;
+    idx := -1;
+    b := False;
+    if OverrideGlobalSqlDialect then
+      idx := SQLDialectComboBox.Items.IndexOfObject(TObject(PtrInt(Ord(NameToSqlDialect(SQLDialectName, b)))));
+    OverrideGlobalSqlDialect := b;
+    if OverrideGlobalSqlDialect and (idx >= 0) then
+      SQLDialectComboBox.ItemIndex := idx
+    else
+      SQLDialectComboBox.ItemIndex := SQLDialectComboBox.Items.IndexOfObject(TObject(PtrInt(Ord(sqlStandard))));
+    OverrideGlobalSQLDialectCheckBox.Checked := OverrideGlobalSqlDialect;
   end;
 end;
 
@@ -170,6 +202,11 @@ begin
   1: Project.StorePathDelim:=pdsUnix;
   2: Project.StorePathDelim:=pdsWindows;
   end;
+  Project.OverrideGlobalSqlDialect := OverrideGlobalSQLDialectCheckBox.Checked;
+  if OverrideGlobalSQLDialectCheckBox.Checked then
+    Project.SQLDialectName := SQLDialectToName(TSQLDialect(PtrInt(SQLDialectComboBox.Items.Objects[SQLDialectComboBox.ItemIndex])))
+  else
+    Project.SQLDialectName := 'sqlStandard';
 end;
 
 class function TProjectMiscOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

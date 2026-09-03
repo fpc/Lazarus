@@ -584,6 +584,8 @@ type
     FRevertLockCount: integer;
     FSessionModifiedBackup: boolean;
     FSessionStorePathDelim: TPathDelimSwitch;
+    FOverrideGlobalSqlDialect: Boolean;
+    FSQLDialectName: String;
     FSourceDirectories: TFileReferenceList;
     FStateFileDate: int64;
     FStateFlags: TLazProjectStateFlags;
@@ -918,6 +920,8 @@ type
     property StateFileDate: int64 read FStateFileDate write FStateFileDate;
     property StateFlags: TLazProjectStateFlags read FStateFlags write FStateFlags;
     property SessionStorePathDelim: TPathDelimSwitch read FSessionStorePathDelim write FSessionStorePathDelim;
+    property OverrideGlobalSqlDialect: Boolean read FOverrideGlobalSqlDialect write FOverrideGlobalSqlDialect;
+    property SQLDialectName: String read FSQLDialectName write FSQLDialectName;
     property StorePathDelim: TPathDelimSwitch read FStorePathDelim write SetStorePathDelim;
     property TargetFilename: string read GetTargetFilename write SetTargetFilename;
     property Units[Index: integer]: TUnitInfo read GetUnits;
@@ -2545,6 +2549,8 @@ begin
     // get format
     fStorePathDelim:=CheckPathDelim(FXMLConfig.GetValue(ProjOptionsPath+'PathDelim/Value','/'),
                                     FPathDelimChanged);
+    FOverrideGlobalSqlDialect:=FXMLConfig.GetValue(ProjOptionsPath+'SQLDialect/Selected', False);
+    FSQLDialectName:=FXMLConfig.GetValue(ProjOptionsPath+'SQLDialect/Value', 'sqlStandard');
     FCurStorePathDelim:=StorePathDelim;
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
     FFileVersion:= FXMLConfig.GetValue(ProjOptionsPath+'Version/Value',0);
@@ -2735,6 +2741,11 @@ begin
   FXMLConfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
   FXMLConfig.SetDeleteValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[FCurStorePathDelim],'/');
   SaveFlags(Path);
+  FXMLConfig.SetDeleteValue(Path+'SQLDialect/Selected', FOverrideGlobalSqlDialect, False);
+  if FOverrideGlobalSqlDialect then
+    FXMLConfig.SetValue(Path+'SQLDialect/Value', FSQLDialectName)
+  else
+    FXMLConfig.DeleteValue(Path+'SQLDialect/Value');
   FXMLConfig.SetDeleteValue(Path+'General/SessionStorage/Value',
                            ProjectSessionStorageNames[SessionStorage],
                            ProjectSessionStorageNames[DefaultProjectSessionStorage]);
@@ -3190,6 +3201,8 @@ begin
   RunParameters.Clear;
   FAutoOpenDesignerFormsDisabled := false;
   FSkipCheckLCLInterfaces:=false;
+  FOverrideGlobalSqlDialect := False;
+  FSQLDialectName := 'sqlStandard';
   FEnableI18N:=false;
   FEnableI18NForLFM:=true;
   FI18NExcludedOriginals.Clear;

@@ -245,4 +245,47 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     Style = csDropDownList
     TabOrder = 11
   end
+  object OverrideGlobalSQLDialectCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = SQLDialectComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 0
+    Height = 15
+    Top = 394
+    Width = 85
+    BorderSpacing.Top = 6
+    Caption = 'OverrideGlobalSQLDialectCheckBox'
+    ParentColor = False
+    OnChange = OverrideGlobalSQLDialectCheckBoxChange
+  end
+  object SQLDialectComboBox: TComboBox
+    AnchorSideLeft.Control = OverrideGlobalSQLDialectCheckBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Bevel3
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Enabled = False
+    Left = 91
+    Height = 23
+    Top = 390
+    Width = 259
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    ItemHeight = 15
+    Style = csDropDownList
+    TabOrder = 12
+  end
+  object Bevel3: TBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = PathDelimComboBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 3
+    Top = 381
+    Width = 536
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+  end
 end
