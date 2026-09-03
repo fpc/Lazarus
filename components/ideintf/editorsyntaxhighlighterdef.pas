@@ -95,10 +95,6 @@ const
     'MarkDown'
   ) deprecated 'Use IdeSyntaxHighlighters (to be removed in 4.99)';
 
-function GetSyntaxHighlighterCaption(h: TLazSyntaxHighlighter): string;     deprecated 'Use IdeSyntaxHighlighters (to be removed in 4.99)';
-function StrToLazSyntaxHighlighter(const s: String): TLazSyntaxHighlighter; deprecated 'Use IdeSyntaxHighlighters (to be removed in 4.99)';
-
-
 type
   TColorSchemeAttributeFeature =
     ( hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior,
@@ -174,16 +170,6 @@ procedure _IDE_CallOnIdeColorSchemeListCreated;  deprecated 'AddAttribute can be
 
 
 implementation
-
-function GetSyntaxHighlighterCaption(h: TLazSyntaxHighlighter): string;
-begin
-  Result:=IdeSyntaxHighlighters.Captions[IdeSyntaxHighlighters.GetIdForLazSyntaxHighlighter(h)];
-end;
-
-function StrToLazSyntaxHighlighter(const s: String): TLazSyntaxHighlighter;
-begin
-  Result := IdeSyntaxHighlighters.GetLazSyntaxHighlighterType(IdeSyntaxHighlighters.GetIdForName(s)){%H-};
-end;
 
 var
   OnIdeColorSchemeListCreated: TMethodList;
