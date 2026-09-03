@@ -2875,6 +2875,7 @@ begin
   begin
     fDialect := Value;
     InitializeKeywordLists;
+    RequestFullRescan;
   end;
 end;
 
