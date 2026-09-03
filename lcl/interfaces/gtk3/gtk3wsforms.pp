@@ -366,6 +366,43 @@ begin
     Result := GDK_FILTER_CONTINUE;
 end;
 
+procedure Gtk3SetModalFormsNativeModality(AEnable: Boolean);
+var
+  I: Integer;
+  F: TCustomForm;
+  W: PGtkWindow;
+begin
+  if Screen = nil then
+    Exit;
+  for I := 0 to Screen.CustomFormCount - 1 do
+  begin
+    F := Screen.CustomForms[I];
+    if (fsModal in F.FormState) and F.HandleAllocated then
+    begin
+      W := PGtkWindow(TGtk3Window(F.Handle).Widget);
+      if Gtk3IsGtkWindow(W) then
+      begin
+        if Gtk3WidgetSet.IsWayland then
+        begin
+          W^.set_modal(AEnable);
+          if Gtk3IsGdkWindow(W^.window) then
+            W^.window^.set_modal_hint(AEnable);
+        end
+        else
+        if AEnable then
+          gtk_grab_add(PGtkWidget(W))
+        else
+          gtk_grab_remove(PGtkWidget(W));
+      end;
+    end;
+  end;
+end;
+
+procedure Gtk3WaylandGrabPrepare(seat: PGdkSeat; window: PGdkWindow; user_data: gpointer); cdecl;
+begin
+  gtk_widget_show(PGtkWidget(user_data));
+end;
+
 class procedure TGtk3WSCustomForm.ShowHide(const AWinControl: TWinControl);
 const
   SplashPaintTimeoutMs = 120;
@@ -385,6 +422,7 @@ var
   SplashClock: PGdkFrameClock;
   SplashFrame: gint64;
   SplashDeadline: QWord;
+  ASeat: PGdkSeat;
 
   procedure CheckAndFixGeometry;
   const
@@ -657,6 +695,23 @@ begin
     AWindow^.window^.set_events(GDK_ALL_EVENTS_MASK);
     if not IsFormDesign(AForm) then
     begin
+      if (AForm.BorderStyle = bsNone) and LCLCanFocus and (Application.ModalLevel > 0) then
+      begin
+        Gtk3SetModalFormsNativeModality(False);
+        if Gtk3WidgetSet.IsWayland and (AWindow^.get_window_type = GTK_WINDOW_POPUP)
+          and AWindow^.get_accept_focus and Gtk3IsGdkWindow(AWindow^.window) then
+        begin
+          ASeat := gdk_display_get_default_seat(gdk_window_get_display(AWindow^.window));
+          if Assigned(ASeat) then
+          begin
+            gtk_widget_hide(PGtkWidget(AWindow));
+            gdk_seat_grab(ASeat, AWindow^.window,
+              [GDK_SEAT_CAPABILITY_POINTER, GDK_SEAT_CAPABILITY_TABLET_STYLUS,
+               GDK_SEAT_CAPABILITY_KEYBOARD], True, nil, nil,
+              @Gtk3WaylandGrabPrepare, AWindow);
+          end;
+        end;
+      end;
       //If LM_NCHITTEST=true, do not attack WM
       if not AWindow^.window^.get_pass_through and (AForm.BorderStyle <> bsNone) then
       begin
@@ -713,6 +768,16 @@ begin
         if Gtk3WidgetSet.IsWayland and (AWindow^.get_window_type = GTK_WINDOW_POPUP) and AWindow^.get_accept_focus
           and not AWindow^.window^.get_pass_through and LCLCanFocus then
             gtk_grab_remove(PGtkWidget(AWindow));
+        if (AForm.BorderStyle = bsNone) and LCLCanFocus then
+        begin
+          if Gtk3WidgetSet.IsWayland and Gtk3IsGdkWindow(AWindow^.window) then
+          begin
+            ASeat := gdk_display_get_default_seat(gdk_window_get_display(AWindow^.window));
+            if Assigned(ASeat) then
+              gdk_seat_ungrab(ASeat);
+          end;
+          Gtk3SetModalFormsNativeModality(True);
+        end;
         if AWindow^.transient_for <> nil then
         begin
           if (fsModal in AForm.FormState) and Gtk3IsGdkWindow(AWindow^.transient_for^.window) then
