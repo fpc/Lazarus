@@ -9,13 +9,13 @@ object MainForm: TMainForm
   LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  object PaintBox1: TPaintBox
+  object PaintBox: TPaintBox
     Left = 0
     Height = 493
     Top = 0
     Width = 520
     Align = alClient
-    OnPaint = PaintBox1Paint
+    OnPaint = PaintBoxPaint
   end
   object Panel1: TPanel
     Left = 0
@@ -42,10 +42,11 @@ object MainForm: TMainForm
       OnClick = Button1Click
     end
     object Button2: TButton
-      AnchorSideLeft.Control = Button1
+      AnchorSideLeft.Control = ComboBox1
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = Button1
-      Left = 126
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 274
       Height = 25
       Top = 8
       Width = 176
@@ -60,12 +61,38 @@ object MainForm: TMainForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Button2
       AnchorSideTop.Side = asrCenter
-      Left = 306
+      Left = 454
       Height = 15
       Top = 13
       Width = 34
       BorderSpacing.Left = 4
       Caption = 'Label1'
+    end
+    object ComboBox1: TComboBox
+      AnchorSideLeft.Control = Button1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 126
+      Height = 23
+      Top = 9
+      Width = 140
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'Anisotropic'
+        'HiEnglish'
+        'HiMetric'
+        'Isotropic'
+        'LoEnglish'
+        'LoMetric'
+        'Text'
+        'Twips'
+      )
+      Style = csDropDownList
+      TabOrder = 2
+      Text = 'Anisotropic'
+      OnChange = ComboBox1Change
     end
   end
 end

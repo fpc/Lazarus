@@ -404,7 +404,7 @@ begin
     ACanvas.TextOut(fImage.ScaleX(fPos.X),fImage.ScaleY(fPos.Y),fText);
   end;
 }
-  ACanvas.TextOut(fImage.ScaleX(fPos.X),fImage.ScaleY(fPos.Y),fText);
+  ACanvas.TextOut(fImage.ScaleX(fPos.X), fImage.ScaleY(fPos.Y),fText);
 end;
 
 
@@ -428,7 +428,10 @@ begin
     fImage.ScaleX(fRect.Right),
     fImage.ScaleY(fRect.bottom)
   );
-  ACanvas.TextRect(R, R.Left, R.Top, fText, fStyle);
+  if fImage.YAxisDown then
+    ACanvas.TextRect(R, R.Left, R.Top, fText, fStyle)
+  else
+    ACanvas.TextRect(R, R.Left, R.Bottom, fText, fStyle);
 end;
 
 procedure TlmfTextInRect.DefineProperties(Filer: TFiler);
@@ -606,8 +609,15 @@ begin
 
   xL := fImage.ScaleX(Left);
   xR := fImage.ScaleX(Right);
-  yT := fImage.ScaleY(Top);
-  yB := fImage.ScaleY(Bottom);
+  if fImage.YAxisDown then
+  begin
+    yT := fImage.ScaleY(Top);
+    yB := fImage.ScaleY(Bottom);
+  end else
+  begin
+    yT := fImage.ScaleY(Bottom);
+    yB := fImage.ScaleY(Top);
+  end;
   if fDirection = gdVertical then
   begin
     n := yB - yT;
@@ -663,11 +673,21 @@ begin
 end;
 
 procedure TlmfArc.Action(fImage: TlmfImage; ACanvas: TCanvas);
+var
+  ptStart, ptEnd: TPoint;
 begin
+  if fImage.YAxisDown then begin
+    ptStart := Point(fImage.ScaleX(fStartPt.X), fImage.ScaleY(fStartPt.Y));
+    ptEnd := Point(fImage.ScaleX(fEndPt.X), fImage.ScaleY(fEndPt.Y));
+  end else
+  begin
+    ptStart := Point(fImage.ScaleX(fEndPt.X), fImage.ScaleY(fEndPt.Y));
+    ptEnd := Point(fImage.ScaleX(fStartPt.X), fImage.ScaleY(fStartPt.Y));
+  end;
   ACanvas.Arc(
     fImage.ScaleX(fClip.Left), fImage.ScaleY(fClip.Top), fImage.ScaleX(fClip.Right), fImage.ScaleY(fClip.Bottom),
-    fImage.ScaleX(fStartPt.X), fImage.ScaleY(fStartPt.Y),
-    fImage.ScaleX(fEndPt.X), fImage.ScaleY(fEndPt.Y)
+    ptStart.X, ptStart.Y,
+    ptEnd.X, ptEnd.Y
   );
 end;
 
@@ -675,11 +695,22 @@ end;
 { TlmfChord }
 
 procedure TlmfChord.Action(fImage: TlmfImage; ACanvas: TCanvas);
+var
+  ptStart, ptEnd: TPoint;
 begin
+  if fImage.YAxisDown then begin
+    ptStart := Point(fImage.ScaleX(fStartPt.X), fImage.ScaleY(fStartPt.Y));
+    ptEnd := Point(fImage.ScaleX(fEndPt.X), fImage.ScaleY(fEndPt.Y));
+  end else
+  begin
+    ptStart := Point(fImage.ScaleX(fEndPt.X), fImage.ScaleY(fEndPt.Y));
+    ptEnd := Point(fImage.ScaleX(fStartPt.X), fImage.ScaleY(fStartPt.Y));
+  end;
+
   ACanvas.Chord(
     fImage.ScaleX(fClip.Left), fImage.ScaleY(fClip.Top), fImage.ScaleX(fClip.Right), fImage.ScaleY(fClip.Bottom),
-    fImage.ScaleX(fStartPt.X), fImage.ScaleY(fStartPt.Y),
-    fImage.ScaleX(fEndPt.X), fImage.ScaleY(fEndPt.Y)
+    ptStart.X, ptStart.Y,
+    ptEnd.X, ptEnd.Y
   );
 end;
 
@@ -687,11 +718,21 @@ end;
 { TlmfPie }
 
 procedure TlmfPie.Action(fImage: TlmfImage; ACanvas: TCanvas);
+var
+  ptStart, ptEnd: TPoint;
 begin
+  if fImage.YAxisDown then begin
+    ptStart := Point(fImage.ScaleX(fStartPt.X), fImage.ScaleY(fStartPt.Y));
+    ptEnd := Point(fImage.ScaleX(fEndPt.X), fImage.ScaleY(fEndPt.Y));
+  end else
+  begin
+    ptStart := Point(fImage.ScaleX(fEndPt.X), fImage.ScaleY(fEndPt.Y));
+    ptEnd := Point(fImage.ScaleX(fStartPt.X), fImage.ScaleY(fStartPt.Y));
+  end;
   ACanvas.Pie(
     fImage.ScaleX(fClip.Left), fImage.ScaleY(fClip.Top), fImage.ScaleX(fClip.Right), fImage.ScaleY(fClip.Bottom),
-    fImage.ScaleX(fStartPt.X), fImage.ScaleY(fStartPt.Y),
-    fImage.ScaleX(fEndPt.X), fImage.ScaleY(fEndPt.Y)
+    ptStart.X, ptStart.Y,
+    ptEnd.X, ptEnd.Y
   );
 end;
 
@@ -808,7 +849,7 @@ constructor TlmfPicture.Create(AnOwner:TComponent);
 begin
   inherited Create(AnOwner);
   fPicture := TPicture.Create;
-  fPixelsPerInch := 96;  // will updated when image is read
+  fPixelsPerInch := 96;  // needs to be updated when image is read
 end;
 
 destructor TlmfPicture.Destroy;

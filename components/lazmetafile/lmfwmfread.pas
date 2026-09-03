@@ -32,7 +32,6 @@ type
     FCurrTextAlign: Word;
     FCurrTextColor: TColor;
     FCurrPolyFillMode: Word;
-    FMapMode: Word;
     // Bitmap transparency mask
     FMaskBmp: TBitmap;
 
@@ -131,7 +130,6 @@ begin
 //  FCurrTextColor := clBlack;
   FCurrTextAlign := 0;  // Left + Top
   FCurrPolyFillMode := ALTERNATE;
-  FMapMode := MM_ANISOTROPIC;
 end;
 
 destructor TlmfWMFReader.Destroy;
@@ -530,6 +528,8 @@ end;
 procedure TlmfWMFReader.ReadFromStream(AStream: TStream; AImage: TlmfImage);
 begin
   FImage := AImage;
+  FImage.MapMode := mmAnisotropic;
+
   FObjTable.Clear;
   FErrMsg.Clear;
 
@@ -683,7 +683,7 @@ end;
 
 procedure TlmfWMFReader.ReadMapMode(const AParams: TWMFParamArray);
 begin
-  FMapMode := LEToN(AParams[0]);
+  FImage.MapMode := TlmfMapMode(LEToN(AParams[0]));
 end;
 
 procedure TlmfWMFReader.ReadMoveTo(const AParams: TWMFParamArray);

@@ -874,7 +874,7 @@ begin
   // Setup defaults
   WriteWindowExt(AStream);
   WriteWindowOrg(AStream);
-  WriteMapMode(AStream, MM_ANISOTROPIC);
+  WriteMapMode(AStream, ord(FImage.MapMode));  // MM_ANISOTROPIC);
   WriteBkColor(AStream, clWhite);
   WriteBkMode(AStream, TRANSPARENT);
   WriteTextAlign(AStream, TA_TOP or TA_LEFT);
@@ -1117,7 +1117,7 @@ procedure TWMFWriter.WriteWindowExt(AStream: TStream);
 var
   params: Array[0..1] of word;
 begin
-  params[0] := FImage.Height;
+  params[0] := FImage.Height;  // Use negative value when y runs upwards.
   params[1] := FImage.Width;
   WriteWMFRecord(AStream, META_SETWINDOWEXT, params, SizeOf(params));
 end;

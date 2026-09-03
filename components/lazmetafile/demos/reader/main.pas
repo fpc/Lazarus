@@ -15,15 +15,20 @@ type
 
   TMainForm = class(TForm)
     cmbFileName: TComboBox;
+    cmbMapMode: TComboBox;
+    Label1: TLabel;
+    lblInfo: TLabel;
     lblFileName: TLabel;
     OpenDialog: TOpenDialog;
     PaintBox: TPaintBox;
     FileSelectorPanel: TPanel;
+    Panel1: TPanel;
     sbBrowse: TSpeedButton;
     sbOpenFile: TSpeedButton;
     procedure cmbFileNameDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
     procedure cmbFileNameSelect(Sender: TObject);
+    procedure cmbMapModeChange(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -33,6 +38,7 @@ type
   private
     FLmfImg: TlmfImage;
     procedure AddToHistory(const AFileName: String);
+    procedure ImageChanged(Sender: TObject);
 
     function CreateIni: TCustomIniFile;
     procedure ReadIni;
@@ -80,6 +86,11 @@ begin
   OpenFile(cmbFileName.Text);
 end;
 
+procedure TMainForm.cmbMapModeChange(Sender: TObject);
+begin
+  FLmfImg.MapMode := TlmfMapMode(cmbMapMode.ItemIndex);
+end;
+
 procedure TMainForm.cmbFileNameDrawItem(Control: TWinControl; Index: Integer;
   ARect: TRect; State: TOwnerDrawState);
 var
@@ -101,6 +112,11 @@ begin
   Result := TIniFile.Create(ChangeFileExt(Application.ExeName, '.ini'));
 end;
 
+procedure TMainForm.ImageChanged(Sender: TObject);
+begin
+  Paintbox.Invalidate;
+end;
+
 procedure TMainForm.OpenFile(const AFileName: String);
 begin
   if AFileName = '' then
@@ -118,16 +134,20 @@ begin
 
   FLmfImg := TlmfImage.Create;
   FLmfImg.LoadFromLMFFile(AFileName);
+  FLmfImg.MapMode := TlmfMapMode(cmbMapMode.ItemIndex);
+  FLmfImg.OnChange := @ImageChanged;
+  Paintbox.Invalidate;
 
   AddToHistory(AFileName);
   Caption := 'WMF File Reader [' + ExtractfileName(AFileName) + ']';
-  Paintbox.Invalidate;
+  lblInfo.Caption := Format('Width: %d; Height = %d', [FLmfImg.Width, FLmfImg.Height]);
 end;
 
 procedure TMainForm.PaintBoxPaint(Sender: TObject);
 begin
   if (FLmfImg = nil) then //or FLmfImg.Empty then
     exit;
+//  PaintBox.Canvas.Draw(0, 0, FLmfImg);
   PaintBox.Canvas.StretchDraw(Rect(0, 0, PaintBox.Width, PaintBox.Height), FLmfImg);
 end;
 

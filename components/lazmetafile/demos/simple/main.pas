@@ -16,16 +16,19 @@ type
   TMainForm = class(TForm)
     Button1: TButton;
     Button2: TButton;
+    ComboBox1: TComboBox;
     Label1: TLabel;
-    PaintBox1: TPaintBox;
+    PaintBox: TPaintBox;
     Panel1: TPanel;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure ComboBox1Change(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure PaintBox1Paint(Sender: TObject);
+    procedure PaintBoxPaint(Sender: TObject);
   private
     FLmfImg: TLmfImage;
+    procedure ImageChanged(Sender: TObject);
 
   public
 
@@ -53,15 +56,17 @@ begin
   Height := 410 + Panel1.Height;
 
   FLmfImg := TlmfImage.Create;
-  FLmfImg.LogUnitsPerInch := Screen.PixelsPerInch * 10;  // Logical units are assumed to be 1/10 pixel
+  //FLmfImg.LogUnitsPerInch := Screen.PixelsPerInch * 10;  // Logical units are assumed to be 1/10 pixel
   FLmfImg.Width := 600*10;
   FLmfImg.Height := 400*10;
+  FLmfImg.OnChange := @ImageChanged;
 
   LmfCanvas := TlmfCanvas.Create(FLmfImg);
   try
     // Rectangle
     LmfCanvas.Brush.Color := clSkyBlue;
     LmfCanvas.Rectangle(0, 0, FlmfImg.Width, FLmfImg.Height);
+//    LmfCanvas.Rectangle(0, 0, 1000, 1000);
 
     // Line
     LmfCanvas.Pen.Width := 1*10;
@@ -364,19 +369,31 @@ begin
   Label1.Caption := IntToStr(FLmfImg.LogUnitsPerInch);
 end;
 
+procedure TMainForm.ComboBox1Change(Sender: TObject);
+begin
+  FLmfImg.MapMode := TlmfMapMode(Combobox1.ItemIndex);
+//  PaintBox.Invalidate;
+end;
+
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   FLmfImg.Free;
 end;
 
-procedure TMainForm.PaintBox1Paint(Sender: TObject);
+procedure TMainForm.ImageChanged(Sender: TObject);
+begin
+  PaintBox.Invalidate;
+end;
+
+procedure TMainForm.PaintBoxPaint(Sender: TObject);
 var
   R: TRect;
 begin
   if Assigned(FLmfImg) then
   begin
-    R := Rect( 5, 5, Paintbox1.ClientWidth - 5, Paintbox1.ClientHeight - 5);
-    Paintbox1.Canvas.StretchDraw(R, FLmfImg);
+    //PaintBox.Canvas.Draw(0, 0, FLmfImg);
+    R := Rect( 5, 5, PaintBox.ClientWidth - 5, PaintBox.ClientHeight - 5);
+    PaintBox.Canvas.StretchDraw(R, FLmfImg);
   end;
 end;
 
