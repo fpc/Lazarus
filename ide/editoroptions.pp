@@ -1064,9 +1064,6 @@ type
     function GetNewSynInstance(AnID: TIdeSyntaxHighlighterID): TSrcIDEHighlighter;
     function FindByName(const Name: String): Integer;
     function GetDefaultFilextension(AnId: TIdeSyntaxHighlighterID): String;
-    function FindByType(AType: TLazSyntaxHighlighter): Integer;                 deprecated '(to be removed in 4.99)';
-    function GetDefaultFilextension(AType: TLazSyntaxHighlighter): String;      deprecated '(to be removed in 4.99)';
-    function GetInfoByType(AType: TLazSyntaxHighlighter): TEditOptLanguageInfo; deprecated '(to be removed in 4.99)';
     property Items[Index: Integer]: TEditOptLanguageInfo read GetInfos; default;
 
     property Captions       [AnID: TIdeSyntaxHighlighterID]: String  read GetCaptions;
@@ -4500,36 +4497,6 @@ begin
     Result := Items[AnId].GetDefaultFilextension
   else
     Result := '';
-end;
-
-function TEditOptLangList.FindByType(AType: TLazSyntaxHighlighter): Integer;
-begin
-  Result := Count - 1;
-  while (Result >= 0) and (Items[Result].TheType <> AType) do
-    dec(Result);
-end;
-
-function TEditOptLangList.GetDefaultFilextension(
-  AType: TLazSyntaxHighlighter): String;
-var
-  i: Integer;
-begin
-  i := FindByType(AType){%H-};
-  if i >= 0 then
-    Result := Items[i].GetDefaultFilextension
-  else
-    Result := '';
-end;
-
-function TEditOptLangList.GetInfoByType(AType: TLazSyntaxHighlighter): TEditOptLanguageInfo;
-var
-  i: LongInt;
-begin
-  i:=FindByType(AType){%H-};
-  if i>=0 then
-    Result:=Items[i]
-  else
-    Result:=nil;
 end;
 
 { TEditorMouseOptions }
