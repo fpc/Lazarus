@@ -58,7 +58,6 @@ resourcestring
   SmiHTMLInsertSub          = 'Insert Subscript';
   SmiHTMLInsertSuper        = 'Insert Superscript';
 
-
   SmiHTMLInsertForm         = 'Insert HTML Form';
   SmiHTMLFormSelect         = 'Insert Select control';
   SmiHTMLFormSelectOpt      = 'Insert Select options';
@@ -122,14 +121,13 @@ resourcestring
   sNoFiles = 'Do not serve files';
   sDefaultRouteServesFiles = 'Serve files from default location';
 
-
   sCaption = 'Create a new JSON-RPC module';
   sRegisterJSON = 'Register JSON-RPC handlers in factory';
   sJSONClass = 'JSON-RPC class';
   sRegisterWebM = 'Register web module';
   sHTTPPath = 'HTTP Path';
   sStandardModule = 'Web module to create:';
-  rsNoModule = 'Do not create a web module';
+  rsNoModule = 'No module, use HTTPRoute instead';
 
   rsCGIApplicati = 'CGI Application';
   rsCGIApplicati2 = 'A CGI (Common Gateway Interface) program in Free Pascal using webmodules.';
@@ -140,13 +138,11 @@ resourcestring
   rsHTMLWebModul = 'HTML Web Module';
   rsHTMLWEBModul2 = 'A Web datamodule for producing strict HTML.';
   rsApacheModule = 'Apache Module';
-  rsApacheModule2 = 'An Apache loadable module in Free Pascal using webmodules. '
-    +'The main library file is automatically maintained by Lazarus.';
+  rsApacheModule2 = 'An Apache loadable module in Free Pascal using webmodules.';
   rsCustomFastCG = 'Custom FastCGI Application';
   rsCustomFastCG2 = 'A FastCGI (Common Gateway Interface) program in Free Pascal.';
   rsFastCGIAppli = 'FastCGI Application';
-  rsFastCGIAppli2 = 'A FastCGI (Common Gateway Interface) '
-    +'program in Free Pascal using webmodules.';
+  rsFastCGIAppli2 = 'A FastCGI (Common Gateway Interface) program in Free Pascal using webmodules.';
   rsWebDataProvi = 'Web DataProvider Module';
   rsWEBDataProvi2 = 'A datamodule to handle data requests for WEB (HTTP) '
     +'applications using WebDataProvider components.';

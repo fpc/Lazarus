@@ -2375,7 +2375,8 @@ begin
   begin
     if Sender^.get_toplevel^.is_toplevel then
     begin
-      if not PGtkWindow(Sender^.get_toplevel)^.is_active then
+      if not PGtkWindow(Sender^.get_toplevel)^.is_active and
+        Sender^.get_mapped and Sender^.get_toplevel^.get_mapped then
         Exit;
       if PGtkWindow(Sender^.get_toplevel)^.get_focus = Sender then
         Exit;
@@ -2818,6 +2819,13 @@ begin
     Gtk3WidgetSet.FGtk3KeyStates[VK_MENU] := False;
     Gtk3WidgetSet.FGtk3KeyStates[VK_LMENU] := False;
     Gtk3WidgetSet.FGtk3KeyStates[VK_RMENU] := False;
+  end;
+  if not (ACharCode in [VK_LWIN, VK_RWIN]) and
+     not (GDK_SUPER_MASK in AEvent.state) and not (GDK_MOD4_MASK in AEvent.state) and
+     not (GDK_META_MASK in AEvent.state) and not (GDK_HYPER_MASK in AEvent.state) then
+  begin
+    Gtk3WidgetSet.FGtk3KeyStates[VK_LWIN] := False;
+    Gtk3WidgetSet.FGtk3KeyStates[VK_RWIN] := False;
   end;
 
   if (KeyValue >= GDK_KEY_exclam) and (KeyValue <= GDK_KEY_parenleft) and
@@ -10265,6 +10273,10 @@ begin
     g_list_free(AChildren);
   end;
 
+  //issue #42555
+  g_signal_handlers_disconnect_matched(PGObject(OldWidget), [G_SIGNAL_MATCH_DATA], 0, 0, nil, nil, Self);
+  Gtk3ClearLCLWidgetData(PGObject(OldWidget));
+
   g_object_ref(PGObject(OldWidget));
   try
     if Assigned(AParent) then
@@ -15265,8 +15277,12 @@ var
         (OldShadowH <> TGtk3Window(ACtl).FResizeState.ShadowH)) and
        Assigned(ACtl.LCLObject) and (ACtl.LCLObject is TCustomForm) then
     begin
-      with TCustomForm(ACtl.LCLObject).Constraints do
-        if (MinWidth > 0) or (MaxWidth > 0) or (MinHeight > 0) or (MaxHeight > 0) then
+      with TCustomForm(ACtl.LCLObject) do
+        //issue #42460
+        if (Constraints.MinWidth > 0) or (Constraints.MaxWidth > 0) or
+           (Constraints.MinHeight > 0) or (Constraints.MaxHeight > 0) or
+           (Gtk3WidgetSet.IsWayland and
+            (BorderStyle in [bsDialog, bsSingle, bsToolWindow])) then
         begin
           {$IFDEF GTK3DEBUGSIZE}
           writeln(Format('[%d] WindowSizeAllocate %s shadow changed %dx%d -> %dx%d, refire constraint hints',

@@ -751,8 +751,8 @@ begin
       H := (gg - bb) / delta + IfThen(gg < bb, 6, 0)
     else if cmax = gg then
       H := (bb - rr) / delta + 2
-    else if (cmax = bb) then
-      H := (rr -gg) / delta + 4;
+    else  // cmax = bb here
+      H := (rr - gg) / delta + 4;
     H := H / 6;
     S := delta / cmax;
   end;
@@ -783,7 +783,9 @@ var
   end;
 
 begin
-  Assert((H >= 0.0) and (H <= 1.0) and (S >= 0.0) and (S <= 1.0) and (V >= 0.0) and (V <= 1.0));
+  H := EnsureRange(H, 0.0, 1.0);
+  S := EnsureRange(S, 0.0, 1.0);
+  V := EnsureRange(V, 0.0, 1.0);
 
   i := trunc(H * 6);
   f := H * 6 - i;
@@ -797,7 +799,6 @@ begin
     3: MakeRGB(p, q, V);
     4: MakeRGB(t, p, V);
     5: MakeRGB(V, p, q);
-    else MakeRGB(0, 0, 0);
   end;
 end;
 
@@ -849,7 +850,7 @@ function HSVtoRGBTriple(H, S, V: integer): TRGBTriple;
 const
   divisor: integer = 255*60;
 var
-  f, hTemp, p, q, t, VS: integer;
+  f, p, q, t, VS: integer;
 begin
   H := H mod 360;
   if H < 0 then H := H + 360;
@@ -857,21 +858,18 @@ begin
     Result := RGBtoRGBTriple(V, V, V)
   else
   begin
-    if H = 360 then hTemp := 0 else hTemp := H;
-    f := hTemp mod 60;
-    hTemp := hTemp div 60;
+    f := H mod 60;
     VS := V*S;
     p := V - VS div 255;
     q := V - (VS*f) div divisor;
     t := V - (VS*(60 - f)) div divisor;
-    case hTemp of
+    case H div 60 of
       0: Result := RGBtoRGBTriple(V, t, p);
       1: Result := RGBtoRGBTriple(q, V, p);
       2: Result := RGBtoRGBTriple(p, V, t);
       3: Result := RGBtoRGBTriple(p, q, V);
       4: Result := RGBtoRGBTriple(t, p, V);
       5: Result := RGBtoRGBTriple(V, p, q);
-    else Result := RGBtoRGBTriple(0,0,0)
     end;
   end;
 end;
@@ -927,7 +925,7 @@ var
   begin
     R := Rect(0, 0, AMaxWidth, 9999);
     DrawText(bmp.Canvas.Handle, P, ALength, R, DT_CALCRECT);
-    Result := R.Right >= AMaxWidth;
+    Result := R.Right > AMaxWidth;
   end;
 
   procedure AddLineToList(ALineStart, ALineEnd: PChar);
@@ -935,14 +933,21 @@ var
     len: Integer;
     sLine: String = '';
   begin
-    len := ALineEnd - ALineStart; // - 1;
-    SetLength(sLine, len);
-    Move(ALineStart^, sLine[1], len);
-    ALines.Add(sLine);
+    len := ALineEnd - ALineStart;
+    if len > 0 then
+    begin
+      SetLength(sLine, len);
+      Move(ALineStart^, sLine[1], len);
+      while (sLine <> '') and (sLine[Length(sLine)] in [' ', #9]) do
+        SetLength(sLine, Length(sLine)-1);  // Trim trailing white-space
+      ALines.Add(sLine);
+    end else
+      // This case happens for empty line after line-break.
+      ALines.Add('');
   end;
 
 var
-  P, PTextEnd, PLineStart, PWordStart: PChar;
+  P, PTextEnd, PLineStart, PWordStart, PWordEnd: PChar;
 begin
   Assert(ALines <> nil);
 
@@ -961,18 +966,14 @@ begin
     PWordStart := P;               // points to start of current word
     while P < PTextEnd do
     begin
-      if P^ = '-' then
+      if P^ in [' ', #9, '-'] then
       begin
-        if TextIsTooWide(PLineStart, P - PLineStart + 1) then
-        begin
-          AddLineToList(PLineStart, PWordStart);
-          PLineStart := PWordStart;
-        end;
-        PWordStart := P + 1;
-      end else
-      if P^ in [' ', #9] then
-      begin
-        if TextIsTooWide(PLineStart, P - PLineStart) then
+        // PWordEnd points to last character of word
+        if P = '-' then
+          PWordEnd := P
+        else
+          PWordEnd := P - 1;
+        if TextIsTooWide(PLineStart, PWordEnd - PLineStart + 1) then
         begin
           AddLineToList(PLineStart, PWordStart);
           PLineStart := PWordStart; // Next line begins at position of previous word

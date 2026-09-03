@@ -47,7 +47,7 @@ type
     RGStyle: TRadioGroup;
     SERows: TSpinEdit;
   private
-    { private declarations }
+
   public
     function HtmlText:string;
   end; 

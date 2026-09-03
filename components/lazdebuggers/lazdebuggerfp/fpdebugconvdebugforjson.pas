@@ -162,7 +162,12 @@ begin
     Result := ProcSymVal.DataAddress.Address;
   end;
 
-  ProcSym := CurProc.FindProcSymbol(FFunctionName);
+  (* All namespaces, deliberately, and the only caller in the tree that gets
+     them. FFunctionName is user supplied, so it is usually a source level
+     name; the scope search above is location relative and can miss one that
+     the debug info does hold. The other callers here pass linker names and
+     ask for [psfLinkTableSym]. *)
+  ProcSym := CurProc.FindNamedProcSymbol(FFunctionName);
   if (ProcSym <> nil) and (ProcSym.Kind = skProcedure) and
      (IsTargetAddr(ProcSym.Address))
   then begin

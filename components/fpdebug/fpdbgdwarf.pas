@@ -69,7 +69,7 @@ type
   public
     //function CanHandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; override;
     function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
-    function CreateScopeForSymbol(ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol; ADwarf: TFpDwarfInfo): TFpDbgSymbolScope; override;
+    function CreateScopeForSymbol(ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol; ADwarf: TFpDwarfInfo): TFpDwarfInfoSymbolScopeBase; override;
     function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
       AInfo: PDwarfAddressInfo; AAddress: TDbgPtr; ADbgInfo: TFpDwarfInfo): TDbgDwarfSymbolBase; override;
     function CreateUnitSymbol(ACompilationUnit: TDwarfCompilationUnit;
@@ -103,7 +103,7 @@ type
 
   { TFpDwarfInfoSymbolScope }
 
-  TFpDwarfInfoSymbolScope = class(TFpDbgSymbolScope)
+  TFpDwarfInfoSymbolScope = class(TFpDwarfInfoSymbolScopeBase)
   private
     FSymbol: TFpSymbolDwarf;
     FSelfParameter: TFpValueDwarf;
@@ -125,8 +125,14 @@ type
     function FindExportedSymbolInUnit(CU: TDwarfCompilationUnit; const ANameInfo: TNameSearchInfo;
       out AnInfoEntry: TDwarfInformationEntry; out AnIsExternal: Boolean; AFindFlags: TFindExportedSymbolsFlags = []): Boolean; virtual;
     function FindExportedSymbolInUnits(const AName: String; const ANameInfo: TNameSearchInfo;
-      SkipCompUnit: TDwarfCompilationUnit; out ADbgValue: TFpValue; const OnlyUnitNameLower: String = '';
+      SkipCompUnit: TDwarfCompilationUnit; out AnInfoEntry: TDwarfInformationEntry; const OnlyUnitNameLower: String = '';
       AFindFlags: TFindExportedSymbolsFlags = []): Boolean; virtual;
+    function FindExportedSymbolInUnits(const AName: String; const ANameInfo: TNameSearchInfo;
+      SkipCompUnit: TDwarfCompilationUnit; out ADbgSymbol: TFpSymbol; const OnlyUnitNameLower: String = '';
+      AFindFlags: TFindExportedSymbolsFlags = []): Boolean; override;
+    function FindExportedSymbolInUnits(const AName: String; const ANameInfo: TNameSearchInfo;
+      SkipCompUnit: TDwarfCompilationUnit; out ADbgValue: TFpValue; const OnlyUnitNameLower: String = '';
+      AFindFlags: TFindExportedSymbolsFlags = []): Boolean; inline;
     function FindSymbolInStructure(const AName: String; const ANameInfo: TNameSearchInfo;
       InfoEntry: TDwarfInformationEntry; out ADbgValue: TFpValue): Boolean; virtual;
     function FindSymbolInStructureRecursive(const AName: String; const ANameInfo: TNameSearchInfo;
@@ -1191,6 +1197,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     FAddress: TDbgPtr;
     FAddressInfo: PDwarfAddressInfo;
     FStateMachine: TDwarfLineInfoStateMachine;
+    FAddressFlags: set of (afDoneInfo, afDoneBuild);
     FFrameBaseParser: TDwarfLocationExpression;
     FDwarf: TFpDwarfInfo;
     FProcTypeInfo: TFpSymbolDwarfType;
@@ -1219,6 +1226,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     property DbgInfo: TFpDwarfInfo read FDwarf;
     property ProcAddress: TDBGPtr read FAddress;
     property AddressInfo: PDwarfAddressInfo read FAddressInfo;
+    procedure AddressNeeded; override;
   public
     constructor Create(ACompilationUnit: TDwarfCompilationUnit; AInfo: PDwarfAddressInfo; AAddress: TDbgPtr; ADbgInfo: TFpDwarfInfo = nil); overload;
     destructor Destroy; override;
@@ -1393,7 +1401,8 @@ begin
     if n <> '' then begin
       SymTbl := Context.SymbolTableInfo;
       if SymTbl <> nil then begin
-        SymProc := SymTbl.FindProcSymbol(n, True);
+        // n is the linkage name
+        SymProc := SymTbl.FindNamedProcSymbol(n, [psfLinkTableSym, psfIgnoreCase]);
         if SymProc <> nil then begin
           Result := SymProc.Address;
           SymProc.ReleaseReference;
@@ -1467,7 +1476,7 @@ end;
 
 function TFpDwarfDefaultSymbolClassMap.CreateScopeForSymbol(
   ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol;
-  ADwarf: TFpDwarfInfo): TFpDbgSymbolScope;
+  ADwarf: TFpDwarfInfo): TFpDwarfInfoSymbolScopeBase;
 begin
   Result := TFpDwarfInfoSymbolScope.Create(ALocationContext,ASymbol, ADwarf);
 end;
@@ -1598,6 +1607,7 @@ var
   ExtVal: Integer;
   InfoEntry: TDwarfInformationEntry;
   s: String;
+  ChildFlags: TGoNamedChildFlags;
 begin
   Result := False;
 
@@ -1615,7 +1625,15 @@ begin
   end;
   // compile_unit can not have startscope
 
+  ChildFlags := [gncSkipScopedEnumMembers];
+  if fsfIgnoreEnumVals in AFindFlags then
+    Include(ChildFlags, gncSkipEnumMembers);
+  if fsfOnlySubroutines in AFindFlags then
+    Include(ChildFlags, gncOnlySubroutines);
+
   s := CU.UnitName;
+  (* A unit of that name is not a subroutine. Without this, a search for a proc
+     whose name matches its own unit returns the unit and stops there. *)
   if (fsfMatchUnitName in AFindFlags) and
      (s <> '') and (CompareUtf8BothCase(PChar(ANameInfo.NameUpper), PChar(ANameInfo.NameLower), @s[1]))
   then begin
@@ -1625,8 +1643,8 @@ begin
   end
 
   else
-  if InfoEntry.GoNamedChildEx(ANameInfo, False, fsfIgnoreEnumVals in AFindFlags, True) then begin
-    if InfoEntry.IsAddressInStartScope(FAddress) then begin
+  if InfoEntry.GoNamedChildEx(ANameInfo, ChildFlags) then begin
+    if (fsfNoAddressCheck in AFindFlags) or InfoEntry.IsAddressInStartScope(FAddress) then begin
       // only variables are marked "external", but types not / so we may need all top level
       Result := True;
       AnInfoEntry := InfoEntry;
@@ -1644,25 +1662,25 @@ begin
 end;
 
 function TFpDwarfInfoSymbolScope.FindExportedSymbolInUnits(const AName: String;
-  const ANameInfo: TNameSearchInfo; SkipCompUnit: TDwarfCompilationUnit; out ADbgValue: TFpValue;
-  const OnlyUnitNameLower: String; AFindFlags: TFindExportedSymbolsFlags): Boolean;
+  const ANameInfo: TNameSearchInfo; SkipCompUnit: TDwarfCompilationUnit; out
+  AnInfoEntry: TDwarfInformationEntry; const OnlyUnitNameLower: String;
+  AFindFlags: TFindExportedSymbolsFlags): Boolean;
 const
   PER_WORKER_CNT = 20;
 var
   i, j: Integer;
   CU: TDwarfCompilationUnit;
   CUList: TDwarfCompilationUnitArray;
-  FoundInfoEntry: TDwarfInformationEntry;
   IsExt: Boolean;
   WorkItem, PrevWorkItem: TFpThreadWorkerFindSymbolInUnits;
 begin
   Result := False;
 
-  ADbgValue := nil;
-  FoundInfoEntry := nil;
+  AnInfoEntry := nil;
   PrevWorkItem := nil;
   IsExt := False;
-  if OnlyUnitNameLower = '' then
+  // TODO: move to caller
+  if (OnlyUnitNameLower = '') and not(fsfOnlySubroutines in AFindFlags) then
     AFindFlags := AFindFlags + [fsfMatchUnitName];
 
   i := FDwarf.CompilationUnitsCount;
@@ -1713,9 +1731,9 @@ begin
         assert(PrevWorkItem.IsDone, 'TFpDwarfInfoSymbolScope.FindExportedSymbolInUnits: PrevWorkItem.IsDone');
         ReadBarrier;
         if PrevWorkItem.FFoundInfoEntry <> nil then begin
-          FoundInfoEntry.ReleaseReference;
-          FoundInfoEntry := PrevWorkItem.FFoundInfoEntry;
-          FoundInfoEntry.AddReference;
+          AnInfoEntry.ReleaseReference;
+          AnInfoEntry := PrevWorkItem.FFoundInfoEntry;
+          AnInfoEntry.AddReference;
           IsExt := PrevWorkItem.FIsExt;
         end;
         PrevWorkItem.DecRef;
@@ -1746,20 +1764,48 @@ begin
       if not PrevWorkItem.IsDone then
         Dwarf.WorkQueue.WaitForItem(PrevWorkItem);
       if PrevWorkItem.FFoundInfoEntry <> nil then begin
-        FoundInfoEntry.ReleaseReference;
-        FoundInfoEntry := PrevWorkItem.FFoundInfoEntry;
-        FoundInfoEntry.AddReference
+        AnInfoEntry.ReleaseReference;
+        AnInfoEntry := PrevWorkItem.FFoundInfoEntry;
+        AnInfoEntry.AddReference
       end;
     end;
     PrevWorkItem.DecRef;
   end;
 
-  if FoundInfoEntry <> nil then begin
+  Result := AnInfoEntry <> nil;
+end;
+
+function TFpDwarfInfoSymbolScope.FindExportedSymbolInUnits(const AName: String;
+  const ANameInfo: TNameSearchInfo; SkipCompUnit: TDwarfCompilationUnit; out
+  ADbgSymbol: TFpSymbol; const OnlyUnitNameLower: String; AFindFlags: TFindExportedSymbolsFlags
+  ): Boolean;
+var
+  FoundInfoEntry: TDwarfInformationEntry;
+begin
+  ADbgSymbol := nil;
+  Result := FindExportedSymbolInUnits(AName, ANameInfo, SkipCompUnit, FoundInfoEntry,
+      OnlyUnitNameLower, AFindFlags);
+  if Result then begin
+    ADbgSymbol := TFpSymbolDwarf.CreateSubClass(AName, FoundInfoEntry);
+    FoundInfoEntry.ReleaseReference;
+    Result := ADbgSymbol <> nil;
+  end;
+end;
+
+function TFpDwarfInfoSymbolScope.FindExportedSymbolInUnits(const AName: String;
+  const ANameInfo: TNameSearchInfo; SkipCompUnit: TDwarfCompilationUnit; out ADbgValue: TFpValue;
+  const OnlyUnitNameLower: String; AFindFlags: TFindExportedSymbolsFlags): Boolean;
+var
+  FoundInfoEntry: TDwarfInformationEntry;
+begin
+  ADbgValue := nil;
+  Result := FindExportedSymbolInUnits(AName, ANameInfo, SkipCompUnit, FoundInfoEntry,
+      OnlyUnitNameLower, AFindFlags);
+  if Result then begin
     ADbgValue := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, FoundInfoEntry));
     FoundInfoEntry.ReleaseReference;
+    Result := ADbgValue <> nil;
   end;
-
-  Result := ADbgValue <> nil;
 end;
 
 function TFpDwarfInfoSymbolScope.FindSymbolInStructure(const AName: String;
@@ -7733,6 +7779,23 @@ end;
 
 { TDbgDwarfSymbol }
 
+procedure TFpSymbolDwarfDataProc.AddressNeeded;
+var
+  t: TFpDbgMemLocation;
+begin
+  if (FDwarf = nil) then begin
+    // created without address
+
+    // NOTE: Only read address from DW_AT_low_pc in DWARF, no value needed
+    if GetValueAddress(nil, t) then
+      SetAddress(t)
+    else
+      SetAddress(InvalidLoc);
+  end
+  else
+  inherited AddressNeeded;
+end;
+
 constructor TFpSymbolDwarfDataProc.Create(
   ACompilationUnit: TDwarfCompilationUnit; AInfo: PDwarfAddressInfo;
   AAddress: TDbgPtr; ADbgInfo: TFpDwarfInfo);
@@ -7951,16 +8014,39 @@ function TFpSymbolDwarfDataProc.StateMachineValid: Boolean;
 var
   SM1, SM2: TDwarfLineInfoStateMachine;
   SM2val: Boolean;
+  addr: TFpDbgMemLocation;
 begin
   Result := FStateMachine <> nil;
   if Result then Exit;
 
   Result := FAddressInfo <> nil;
-  if not result then exit;
+  if not result then begin
+    if afDoneInfo in FAddressFlags then
+      exit;
+    Include(FAddressFlags, afDoneInfo);
+    addr := Address;
+    if not IsValidLoc(addr) then
+      exit;
+    // Address would be the address of the line within the proc, but if AddressInfo in not set, then that wasn't either;
+    // FAddress should be >= Address / so if it was explicitly at nil, then Address should be nil too
+    if FAddress = 0 then
+      FAddress := addr.Address;
+
+    if not CompilationUnit.GetDwarfAddressInfo(FAddress, FAddressInfo) then
+      exit;
+    if FAddress > FAddressInfo^.EndPC then
+      FAddressInfo := nil;
+
+    if FAddressInfo = nil then
+      exit;
+  end;
 
   Result := False;
   if FAddressInfo^.StateMachine = nil
   then begin
+    if afDoneBuild in FAddressFlags then
+      exit;
+    Include(FAddressFlags, afDoneBuild);
     CompilationUnit.BuildLineInfo(FAddressInfo, False);
     if FAddressInfo^.StateMachine = nil then Exit;
   end;

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-08-24 22:19+0300\n"
+"PO-Revision-Date: 2026-09-03 03:22+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -1838,6 +1838,7 @@ msgid "Backup"
 msgstr "Резервные копии"
 
 #: lazarusidestrconsts.dlgenvfiles
+msgctxt "lazarusidestrconsts.dlgenvfiles"
 msgid "Files"
 msgstr "Файлы"
 
@@ -2210,6 +2211,113 @@ msgstr "While/Do"
 #: lazarusidestrconsts.dlgfoldpaswithdo
 msgid "With/Do"
 msgstr "With/Do"
+
+#: lazarusidestrconsts.dlgfoldsqlaltertable
+msgid "Alter Table"
+msgstr "Alter Table"
+
+#: lazarusidestrconsts.dlgfoldsqlbegin
+msgid "Begin"
+msgstr "Begin"
+
+#: lazarusidestrconsts.dlgfoldsqlcreatedb
+msgid "Create Database"
+msgstr "Create Database"
+
+#: lazarusidestrconsts.dlgfoldsqlcreateprocedure
+msgid "Create Procedure"
+msgstr "Create Procedure"
+
+#: lazarusidestrconsts.dlgfoldsqlcreatetable
+msgid "Create Table"
+msgstr "Create Table"
+
+#: lazarusidestrconsts.dlgfoldsqldelete
+msgctxt "lazarusidestrconsts.dlgfoldsqldelete"
+msgid "Delete"
+msgstr "Delete"
+
+#: lazarusidestrconsts.dlgfoldsqldropdb
+msgid "Drop Database"
+msgstr "Drop Database"
+
+#: lazarusidestrconsts.dlgfoldsqldroptable
+msgid "Drop Table"
+msgstr "Drop Table"
+
+#: lazarusidestrconsts.dlgfoldsqlfrom
+msgid "From"
+msgstr "From"
+
+#: lazarusidestrconsts.dlgfoldsqlgroup
+msgctxt "lazarusidestrconsts.dlgfoldsqlgroup"
+msgid "Group"
+msgstr "Group"
+
+#: lazarusidestrconsts.dlgfoldsqlhaving
+msgid "Having"
+msgstr "Having"
+
+#: lazarusidestrconsts.dlgfoldsqlinsert
+msgctxt "lazarusidestrconsts.dlgfoldsqlinsert"
+msgid "Insert"
+msgstr "Insert"
+
+#: lazarusidestrconsts.dlgfoldsqlinsertselect
+msgid "Insert-Select"
+msgstr "Insert-Select"
+
+#: lazarusidestrconsts.dlgfoldsqlinto
+msgid "Into"
+msgstr "Into"
+
+#: lazarusidestrconsts.dlgfoldsqljoin
+msgid "Join"
+msgstr "Join"
+
+#: lazarusidestrconsts.dlgfoldsqljoinon
+msgid "Join-On"
+msgstr "Join-On"
+
+#: lazarusidestrconsts.dlgfoldsqllimit
+msgid "Limit"
+msgstr "Limit"
+
+#: lazarusidestrconsts.dlgfoldsqlorder
+msgctxt "lazarusidestrconsts.dlgfoldsqlorder"
+msgid "Order"
+msgstr "Order"
+
+#: lazarusidestrconsts.dlgfoldsqlselect
+msgctxt "lazarusidestrconsts.dlgfoldsqlselect"
+msgid "Select"
+msgstr "Select"
+
+#: lazarusidestrconsts.dlgfoldsqlset
+msgid "Set"
+msgstr "Set"
+
+#: lazarusidestrconsts.dlgfoldsqlsubselect
+msgid "Sub-Select"
+msgstr "Вложенный Select"
+
+#: lazarusidestrconsts.dlgfoldsqlupdate
+msgctxt "lazarusidestrconsts.dlgfoldsqlupdate"
+msgid "Update"
+msgstr "Update"
+
+#: lazarusidestrconsts.dlgfoldsqlupdateselect
+msgid "Update-Select"
+msgstr "Update-Select"
+
+#: lazarusidestrconsts.dlgfoldsqlvalues
+msgctxt "lazarusidestrconsts.dlgfoldsqlvalues"
+msgid "Values"
+msgstr "Values"
+
+#: lazarusidestrconsts.dlgfoldsqlwhere
+msgid "Where"
+msgstr "Where"
 
 #: lazarusidestrconsts.dlgfoldxmlcdata
 msgid "CData"
@@ -2973,17 +3081,13 @@ msgstr "Максимум счетчика"
 msgid "Max line length:"
 msgstr "max длина строки:"
 
-#: lazarusidestrconsts.dlgmaxrecentfiles
-msgid "Max recent files"
-msgstr "Максимальное количество недавних файлов"
+#: lazarusidestrconsts.dlgmaxrecentcount
+msgid "Max count of recent items"
+msgstr "Максимальное количество недавних элементов"
 
 #: lazarusidestrconsts.dlgmaxrecenthint
 msgid "Value 0 means unlimited."
 msgstr "Значение \"0\" соответствует неограниченному количеству."
-
-#: lazarusidestrconsts.dlgmaxrecentprojs
-msgid "Max recent project files"
-msgstr "Максимальное количество недавних проектов"
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -3952,6 +4056,35 @@ msgstr "Выравнивать по сетке"
 msgid "Really delete desktop \"%s\"?"
 msgstr "Вы действительно хотите удалить рабочий стол \"%s\"?"
 
+#: lazarusidestrconsts.dlgrecent
+msgid "Recent"
+msgstr "Недавние"
+
+#: lazarusidestrconsts.dlgrecentfilescaption
+msgctxt "lazarusidestrconsts.dlgrecentfilescaption"
+msgid "Files"
+msgstr "Файлы"
+
+#: lazarusidestrconsts.dlgrecentfilesheader
+msgid "Recent Files:"
+msgstr "Недавние файлы:"
+
+#: lazarusidestrconsts.dlgrecentpackagescaption
+msgid "Packages"
+msgstr "Пакеты"
+
+#: lazarusidestrconsts.dlgrecentpackagesheader
+msgid "Recent Packages:"
+msgstr "Недавние пакеты:"
+
+#: lazarusidestrconsts.dlgrecentprojectscaption
+msgid "Projects"
+msgstr "Проекты"
+
+#: lazarusidestrconsts.dlgrecentprojectsheader
+msgid "Recent Projects:"
+msgstr "Недавние проекты:"
+
 #: lazarusidestrconsts.dlgredirappend
 msgid "To file (append)"
 msgstr "В файл (добавить)"
@@ -4326,6 +4459,10 @@ msgstr "Показывать подсказки"
 #: lazarusidestrconsts.dlgshowingwindows
 msgid "Showing Windows"
 msgstr "Отображение окон"
+
+#: lazarusidestrconsts.dlgshowinopencoolbarbutton
+msgid "Show in \"Open\" drop-down toolbar button"
+msgstr "Показывать в раскрывающемся списке кнопки \"Открыть\""
 
 #: lazarusidestrconsts.dlgshowlinenumbers
 msgctxt "lazarusidestrconsts.dlgshowlinenumbers"
@@ -6317,6 +6454,7 @@ msgid "Other"
 msgstr "Другое"
 
 #: lazarusidestrconsts.lisceoupdate
+msgctxt "lazarusidestrconsts.lisceoupdate"
 msgid "Update"
 msgstr "Обновление"
 
@@ -10306,6 +10444,7 @@ msgstr ""
 "Копия Стандартной Общественной Лицензии GNU доступна в Интернете по адресу <http://www.gnu.org/copyleft/gpl.html>. Вы также можете получить экземпляр в Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
 
 #: lazarusidestrconsts.lisgroup
+msgctxt "lazarusidestrconsts.lisgroup"
 msgid "Group"
 msgstr "Группа"
 
@@ -13101,6 +13240,7 @@ msgid "&Search"
 msgstr "П&оиск"
 
 #: lazarusidestrconsts.lismenuselect
+msgctxt "lazarusidestrconsts.lismenuselect"
 msgid "Select"
 msgstr "Выделить"
 
@@ -15388,6 +15528,14 @@ msgstr "Несохранённый пакет"
 #: lazarusidestrconsts.lispkgmanguseunit
 msgid "Use unit"
 msgstr "Использовать модуль"
+
+#: lazarusidestrconsts.lispkgmangvirtualunit
+msgid "Virtual unit"
+msgstr "Виртуальный модуль"
+
+#: lazarusidestrconsts.lispkgmangvirtualunithint
+msgid "Package has only a unit's name. The unit itself is found elsewhere."
+msgstr "В пакете имеется только имя модуля. Сам он расположен в ином месте."
 
 #: lazarusidestrconsts.lispkgmangwarningthefilebelongstothecurrentproject
 #, object-pascal-format
@@ -18740,6 +18888,7 @@ msgid "Value: "
 msgstr "Значение: "
 
 #: lazarusidestrconsts.lisvalues
+msgctxt "lazarusidestrconsts.lisvalues"
 msgid "Values"
 msgstr "Значения"
 

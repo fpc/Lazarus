@@ -18,7 +18,7 @@ msgstr "Apache modulis"
 #: fpwebstrconsts.rsapachemodule2
 #, fuzzy
 #| msgid "Apache module%sAn Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
-msgid "An Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
+msgid "An Apache loadable module in Free Pascal using webmodules."
 msgstr "Apache modulis%sĮkeliamasis Apache modulis Free Pascal-yje, naudojantis „webmodules“. Lazarus automatiškai rūpinsis programos pirminiu kodu."
 
 #: fpwebstrconsts.rscgiapplicati
@@ -90,7 +90,7 @@ msgid "Complete HTTP Server program in Free Pascal using webmodules."
 msgstr "HTTP serverio programa. „Free Pascal“ aplinkoje naudojant saityno modulius sukurti HTTP serverio programą. Programos pirminį kodą automatiškai prižiūrės „Lazarus“."
 
 #: fpwebstrconsts.rsnomodule
-msgid "Do not create a web module"
+msgid "No module, use HTTPRoute instead"
 msgstr ""
 
 #: fpwebstrconsts.rswebdataprovi

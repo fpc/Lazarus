@@ -1698,8 +1698,8 @@ type
     FVisible: boolean;
     FWidth: integer;
   protected
-    constructor DoCreate(AIdx: Integer; AGClass: TSynGutterPartBaseClass);
   public
+    constructor DoCreate(AIdx: Integer; AGClass: TSynGutterPartBaseClass);
     constructor Create(AIdx: Integer; AGClass: TSynGutterPartBaseClass);
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
@@ -8627,8 +8627,6 @@ end;
 
 constructor TColorSchemeFromFile.CreateFrom(aXMLConfig: TRttiXMLConfig; const AFileName, AName,
   aPath: String);
-var
-  XmlConf: TRttiXMLConfig;
 begin
   FFileName := AFileName;
   CreateFromXml(aXMLConfig, AName, aPath);

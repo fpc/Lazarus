@@ -1302,9 +1302,19 @@ resourcestring
   dlgMaxCntr = 'Maximum counter';
   dlgEdBSubDir = 'Sub directory';
   dlgEnvOtherFiles = 'Other Files';
-  dlgMaxRecentFiles = 'Max recent files';
-  dlgMaxRecentProjs = 'Max recent project files';
+  dlgRecent = 'Recent';
+  dlgMaxRecentCount = 'Max count of recent items';
+  dlgRecentFilesCaption = 'Files';
+  dlgRecentProjectsCaption = 'Projects';
+  dlgRecentPackagesCaption = 'Packages';
   dlgMaxRecentHint = 'Value 0 means unlimited.';
+  dlgShowInOpenCoolbarButton = 'Show in "Open" drop-down toolbar button';
+  // Headers for the drop-down list of the "Open" toolbar button. Packages may
+  // display favorites in this list, so need to clarify that these are recent items.
+  dlgRecentProjectsHeader = 'Recent Projects:';
+  dlgRecentPackagesHeader = 'Recent Packages:';
+  dlgRecentFilesHeader = 'Recent Files:';
+
   dlgLazarusDir = 'Lazarus directory (default for all projects)';
   lisLazarusDirHint = 'Lazarus sources. This path is relative to primary config directory (%s).';
   dlgFpcExecutable = 'Compiler executable (e.g. %s)';
@@ -4554,6 +4564,8 @@ resourcestring
     +'po file. For this you must enable I18N for this package, provide a po '
     +'output directory and leave this option unchecked.';
   lisPkgMangUseUnit = 'Use unit';
+  lisPkgMangVirtualUnit = 'Virtual unit';
+  lisPkgMangVirtualUnitHint = 'Package has only a unit''s name. The unit itself is found elsewhere.';
   lisPckEditMinimumVersion = 'Minimum Version:';
   lisPckEditMaximumVersion = 'Maximum Version:';
   lisPckEditApplyChanges = 'Apply changes';
@@ -6214,8 +6226,8 @@ resourcestring
   dlgFoldSqlCreateTable = 'Create Table';
   dlgFoldSqlAlterTable = 'Alter Table';
   dlgFoldSqlDropTable = 'Drop Table';
-  dlgFoldSqlCreateDb = 'Create Db';
-  dlgFoldSqlDropDb = 'Drop Db';
+  dlgFoldSqlCreateDb = 'Create Database';
+  dlgFoldSqlDropDb = 'Drop Database';
   dlgFoldSqlCreateProcedure = 'Create Procedure';
   dlgFoldSqlBegin = 'Begin';
   dlgFoldSqlUpdate = 'Update';

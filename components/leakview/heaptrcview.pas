@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Types, XMLConf, DOM, Contnrs,
   // LCL
-  Forms, Controls, Dialogs, StdCtrls, ComCtrls, ExtCtrls, LCLType, Clipbrd, LResources, LCLStrConsts,
+  Forms, Controls, Dialogs, StdCtrls, ComCtrls, ExtCtrls, LCLType, Clipbrd, LResources, LCLStrConsts, LCLProc,
   // LazUtils
   FileUtil, LazFileUtils,
   // IDEIntf
@@ -47,6 +47,7 @@ type
     procedure chkUseRawChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure trvTraceInfoDblClick(Sender: TObject);
     procedure trvTraceInfoKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -214,6 +215,11 @@ begin
   chkUseRaw.Caption:=schkRaw;
   chkStayOnTop.Caption:=schkTop;
 
+  edtTrcFileName.Hint:='['+ShortCutToText(KeyToShortCut(VK_L ,[ssCtrl        ]))+']';
+  btnBrowse     .Hint:='['+ShortCutToText(KeyToShortCut(VK_O ,[ssCtrl        ]))+']';
+  btnUpdate     .Hint:='['+ShortCutToText(KeyToShortCut(VK_F5,[              ]))+']';
+  btnClipboard  .Hint:='['+ShortCutToText(KeyToShortCut(VK_V ,[ssCtrl,ssShift]))+']';
+
   SetSummaryInfo(0,0,0);
 
   fItems:=TStackTraceList.Create;
@@ -244,6 +250,18 @@ begin
   except
   end;
   HeapTrcViewForm:=nil;
+end;
+
+procedure THeapTrcViewForm.FormDropFiles(Sender: TObject; const FileNames: array of string);
+var
+  i: integer;
+begin
+  // open the first file immediately
+  edtTrcFileName.Text := FileNames[0];
+  btnUpdateClick(Sender);
+  // add the remaining files to the drop-down list (but only within the maximum count)
+  for i := 1 to high(FileNames) do
+    AddFileToList(FileNames[i]);
 end;
 
 procedure THeapTrcViewForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);

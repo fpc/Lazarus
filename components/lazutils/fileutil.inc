@@ -100,13 +100,14 @@ end;
 
 function DeleteDirectory(const DirectoryName: string; OnlyChildren: boolean): boolean;
 const
-  //Don't follow symlinks on *nix, just delete them
-  DeleteMask = faAnyFile {$ifdef unix} or faSymLink{%H-} {$endif unix};
+  //Don't follow symlinks just delete them (note: Windows has symlinks too (and junctions): issue #42561
+  DeleteMask = faAnyFile or faSymLink{%H-};
 var
   FileInfo: TSearchRec;
   CurSrcDir: String;
   CurFilename: String;
 begin
+  //writeln('DeleteDirectory: ',DirectoryName);
   Result:=false;
   CurSrcDir:=CleanAndExpandDirectory(DirectoryName);
   if FindFirstUTF8(CurSrcDir+GetAllFilesMask,DeleteMask,FileInfo)=0 then begin
@@ -116,11 +117,23 @@ begin
         if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
           continue;
         CurFilename:=CurSrcDir+FileInfo.Name;
-        if ((FileInfo.Attr and faDirectory)>0)
-           {$ifdef unix} and ((FileInfo.Attr and faSymLink{%H-})=0) {$endif unix} then begin
-          if not DeleteDirectory(CurFilename,false) then exit;
+        if ((FileInfo.Attr and faDirectory)>0) then begin
+          if ((FileInfo.Attr and faSymLink{%H-})=0) then begin
+            //regular directory
+            if not DeleteDirectory(CurFilename,false) then exit;
+          end else begin
+            //symlink to directory
+            //writeln('Remove SymLinkToDir: ',CurFileName);
+            {$ifdef unix}
+            if not DeleteFileUtf8(CurFilename) then exit;
+            {$else}
+            if not RemoveDirUtf8(CurFilename) then exit;
+            {$endif}
+          end;
         end else begin
-          if not DeleteFileUTF8(CurFilename) then exit;
+            //file or symlink to a file
+            //writeln('Delete File: ',CurFilename);
+            if not DeleteFileUTF8(CurFilename) then exit;
         end;
       until FindNextUTF8(FileInfo)<>0;
     finally

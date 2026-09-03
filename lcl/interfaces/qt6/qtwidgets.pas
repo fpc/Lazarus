@@ -18972,6 +18972,8 @@ var
   Pt: TQtPoint;
   ScreenNumber: integer;
   ASibling: QScreenH;
+  AWindow: QWindowH;
+  AActiveWidget: QWidgetH;
 begin
   // must use ClassType comparision here since qt is buggy about hints.#16551
   if AVisible and
@@ -19021,6 +19023,15 @@ begin
       Types.OffsetRect(R, D.Right-R.Right, 0);
     if (R.Bottom > D.Bottom) then
       Types.OffsetRect(R, 0, D.Bottom-R.Bottom);
+
+    AActiveWidget := QApplication_activeWindow;
+    if (AActiveWidget <> nil) and (AActiveWidget <> Widget) then
+    begin
+      QWidget_createWinId(Widget);
+      AWindow := QWidget_windowHandle(Widget);
+      if (AWindow <> nil) and (QWindow_transientParent(AWindow) = nil) then
+        QWindow_setTransientParent(AWindow, QWidget_windowHandle(AActiveWidget));
+    end;
 
     move(R.Left, R.Top);
   end;

@@ -2598,6 +2598,13 @@ begin
         weInteger(123).N('a'), weInteger(987).N('b'), weInteger(551177).N('c') ], 'TIntf1'));
     t.Add('i2o', ':i2o(AnIntf2)', weClass([
         weInteger(321).N('x'), weInteger(789).N('y'), weInteger(441188).N('c') ], 'TIntf2'));
+    t.Add('i2o', ':i2o(AnIntf3)', weClass([
+        weInteger(142).N('a'), weInteger(12).N('b'), weInteger(1).N('c') ], 'TIntf1vx'));
+    t.Add('i2o', ':i2o(AnIntf4)', weClass([
+        weInteger(242).N('x'), weInteger(21).N('y'), weInteger(2).N('c') ], 'TIntf2vx'))
+    .IgnAll([], Compiler.Version < 030000);
+    t.Add('i2o', ':i2o(AnIntf5)', weClass([
+        weInteger(17).N('x'), weInteger(11).N('y'), weInteger(-2).N('c') ], 'TIntf3'));
 
     t.EvaluateWatches;
     t.CheckResults;

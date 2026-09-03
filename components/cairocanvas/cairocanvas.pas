@@ -60,6 +60,9 @@ type
   private
     FUserClipRect: Pcairo_rectangle_t;
     FLazClipRect: TRect;
+    {$IFDEF LCLGtk3}
+    FGtk3DC: TObject;
+    {$ENDIF}
     {$ifdef pangocairo}
     fFontDesc: PPangoFontDescription;
     fFontDescStr: string;
@@ -164,6 +167,8 @@ type
     procedure DestroyCairoHandle; override;
     procedure UpdatePageTransform;
     procedure SetHandle(NewHandle: HDC); override;
+    function GetWidth: Integer; override;
+    function GetHeight: Integer; override;
   public
     function GetPageProperties(out aWidth, aHeight: double):String;
     property Stream: TStream read fStream write fStream;
@@ -208,7 +213,10 @@ type
 implementation
 
 uses
-  IntfGraphics, GraphType, FPimage, LazUTF8;
+  IntfGraphics, GraphType, FPimage, LazUTF8
+  {$IFDEF LCLGtk3}
+  , gtk3objects
+  {$ENDIF};
 
 const
   Dash_Dash:        array [0..1] of double = (18, 6);             //____ ____
@@ -355,6 +363,11 @@ procedure TCairoPrinterCanvas.SetHandle(NewHandle: HDC);
 begin
   if  NewHandle = {%H-}HDC(cr)   then exit;
   if (NewHandle=0) and (cr<>nil) then DestroyHandle;
+  {$IFDEF LCLGtk3}
+  if (NewHandle <> 0) and (NewHandle = {%H-}HDC(PtrUInt(FGtk3DC))) then
+    cr := TGtk3DeviceContext(NewHandle).pcr
+  else
+  {$ENDIF}
   cr := {%H-}Pcairo_t(NewHandle); //Set CairoRecord Handle
   inherited SetHandle(NewHandle);
 end;
@@ -415,10 +428,24 @@ begin
 end;
 
 procedure TCairoPrinterCanvas.CreateHandle;
+{$IFDEF LCLGtk3}
+var
+  ACairoHandle: HDC;
+{$ENDIF}
 begin
   ScaleX := SurfaceXDPI/XDPI;
   ScaleY := SurfaceYDPI/YDPI;
+  {$IFDEF LCLGtk3}
+  ACairoHandle := CreateCairoHandle;
+  if ACairoHandle <> 0 then
+  begin
+    FGtk3DC := TGtk3DeviceContext.CreateFromCairo(nil, {%H-}Pcairo_t(ACairoHandle));
+    Handle := {%H-}HDC(PtrUInt(FGtk3DC));
+  end else
+    Handle := ACairoHandle;
+  {$ELSE}
   Handle := CreateCairoHandle;
+  {$ENDIF}
 end;
 
 procedure TCairoPrinterCanvas.CreatePen;
@@ -438,6 +465,13 @@ end;
 
 procedure TCairoPrinterCanvas.DestroyHandle;
 begin
+  {$IFDEF LCLGtk3}
+  if FGtk3DC <> nil then
+  begin
+    FGtk3DC.Free;
+    FGtk3DC := nil;
+  end;
+  {$ENDIF}
   cairo_destroy(cr);
   cr := nil;
   DestroyCairoHandle;
@@ -1420,6 +1454,16 @@ begin
   cairo_surface_finish(sf);
   cairo_surface_destroy(sf);
   sf := nil;
+end;
+
+function TCairoFileCanvas.GetWidth: Integer;
+begin
+  Result := PageWidth;
+end;
+
+function TCairoFileCanvas.GetHeight: Integer;
+begin
+  Result := PageHeight;
 end;
 
 procedure TCairoFileCanvas.UpdatePageTransform;

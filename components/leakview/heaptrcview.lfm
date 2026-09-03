@@ -3,6 +3,7 @@ object HeapTrcViewForm: THeapTrcViewForm
   Height = 444
   Top = 164
   Width = 637
+  AllowDropFiles = True
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'HeapTrcViewForm'
   ClientHeight = 444
@@ -13,6 +14,7 @@ object HeapTrcViewForm: THeapTrcViewForm
   LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnDropFiles = FormDropFiles
   OnKeyDown = FormKeyDown
   object lblTrcFile: TLabel
     AnchorSideLeft.Control = Owner
@@ -38,6 +40,8 @@ object HeapTrcViewForm: THeapTrcViewForm
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'Update'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 2
     OnClick = btnUpdateClick
   end
@@ -70,6 +74,8 @@ object HeapTrcViewForm: THeapTrcViewForm
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     Caption = '...'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 1
     OnClick = btnBrowseClick
   end
@@ -173,6 +179,8 @@ object HeapTrcViewForm: THeapTrcViewForm
     AutoSize = True
     BorderSpacing.Left = 6
     Caption = 'Paste Clipboard'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 3
     OnClick = btnClipboardClick
   end
@@ -187,6 +195,8 @@ object HeapTrcViewForm: THeapTrcViewForm
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
     ItemHeight = 15
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 0
   end
   object BtnResolve: TButton

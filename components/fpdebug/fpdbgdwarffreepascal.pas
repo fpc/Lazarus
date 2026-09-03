@@ -38,7 +38,7 @@ type
     function IgnoreCfiStackEnd: boolean; override;
     function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
     function CreateScopeForSymbol(ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol;
-      ADwarf: TFpDwarfInfo): TFpDbgSymbolScope; override;
+      ADwarf: TFpDwarfInfo): TFpDwarfInfoSymbolScopeBase; override;
     function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
       AInfo: PDwarfAddressInfo; AAddress: TDbgPtr; ADbgInfo: TFpDwarfInfo
       ): TDbgDwarfSymbolBase; override;
@@ -81,7 +81,7 @@ type
   public
     function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
     function CreateScopeForSymbol(ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol;
-      ADwarf: TFpDwarfInfo): TFpDbgSymbolScope; override;
+      ADwarf: TFpDwarfInfo): TFpDwarfInfoSymbolScopeBase; override;
     //class function CreateSymbolScope(AThreadId, AStackFrame: Integer; AnAddress: TDBGPtr; ASymbol: TFpSymbol;
     //  ADwarf: TFpDwarfInfo): TFpDbgSymbolScope; override;
     //class function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
@@ -120,7 +120,7 @@ type
       AFindFlags: TFindExportedSymbolsFlags = []): Boolean; override;
     function FindExportedSymbolInUnits(const AName: String;
       const ANameInfo: TNameSearchInfo; SkipCompUnit: TDwarfCompilationUnit;
-      out ADbgValue: TFpValue; const OnlyUnitNameLower: String = '';
+      out AnInfoEntry: TDwarfInformationEntry; const OnlyUnitNameLower: String = '';
       AFindFlags: TFindExportedSymbolsFlags = []): Boolean;
       override;
     function FindLocalSymbol(const AName: String; const ANameInfo: TNameSearchInfo;
@@ -687,8 +687,8 @@ begin
 end;
 
 function TFpDwarfFreePascalSymbolClassMap.CreateScopeForSymbol(
-  ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol;
-  ADwarf: TFpDwarfInfo): TFpDbgSymbolScope;
+  ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol; ADwarf: TFpDwarfInfo
+  ): TFpDwarfInfoSymbolScopeBase;
 begin
   Result := TFpDwarfFreePascalSymbolScope.Create(ALocationContext, ASymbol, ADwarf);
 end;
@@ -805,8 +805,8 @@ begin
 end;
 
 function TFpDwarfFreePascalSymbolClassMapDwarf3.CreateScopeForSymbol(
-  ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol;
-  ADwarf: TFpDwarfInfo): TFpDbgSymbolScope;
+  ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol; ADwarf: TFpDwarfInfo
+  ): TFpDwarfInfoSymbolScopeBase;
 begin
   Result := TFpDwarfFreePascalSymbolScopeDwarf3.Create(ALocationContext, ASymbol, ADwarf);
 end;
@@ -871,21 +871,22 @@ begin
 end;
 
 function TFpDwarfFreePascalSymbolScope.FindExportedSymbolInUnits(const AName: String;
-  const ANameInfo: TNameSearchInfo; SkipCompUnit: TDwarfCompilationUnit; out ADbgValue: TFpValue;
-  const OnlyUnitNameLower: String; AFindFlags: TFindExportedSymbolsFlags): Boolean;
+  const ANameInfo: TNameSearchInfo; SkipCompUnit: TDwarfCompilationUnit; out
+  AnInfoEntry: TDwarfInformationEntry; const OnlyUnitNameLower: String;
+  AFindFlags: TFindExportedSymbolsFlags): Boolean;
 var
   CU: TDwarfCompilationUnit;
 begin
   FInAllUnitSearch := True;
   FFoundSystemInfoEntry := nil;
   Result := inherited FindExportedSymbolInUnits(AName, ANameInfo, SkipCompUnit,
-    ADbgValue, OnlyUnitNameLower, AFindFlags);
+    AnInfoEntry, OnlyUnitNameLower, AFindFlags);
   FInAllUnitSearch := False;
 
   if (not Result) and (FFoundSystemInfoEntry <> nil) then
-    ADbgValue := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, FFoundSystemInfoEntry));
-
-  FFoundSystemInfoEntry.ReleaseReference;
+    AnInfoEntry := FFoundSystemInfoEntry
+  else
+    FFoundSystemInfoEntry.ReleaseReference;
 end;
 
 function TFpDwarfFreePascalSymbolScope.FindLocalSymbol(const AName: String;
@@ -2924,7 +2925,16 @@ begin
 
     OpVal := ValueFromMem((instr.CodeMem + O2.CodeIndex)^, O2.ByteCount, O2.FormatFlags);
 
-    instr := TX86AsmInstruction(FDisAssembler.GetInstructionInfo(CodeAddr + instr.InstructionLength));
+    CodeAddr := CodeAddr + instr.InstructionLength;
+    instr := TX86AsmInstruction(FDisAssembler.GetInstructionInfo(CodeAddr));
+    if (instr.X86OpCode = OPmov) and (instr.X86Instruction.OperCnt = 2) then begin
+      O1 := instr.X86Instruction.Operand[1];
+      O2 := instr.X86Instruction.Operand[2];
+      // this may be a jump-pad to a virtual method
+      if (not (ofMemory in O1.Flags)) and (ofMemory in O2.Flags) then
+        instr := TX86AsmInstruction(FDisAssembler.GetInstructionInfo(CodeAddr + instr.InstructionLength));
+    end;
+
     if instr.X86OpCode <> OPjmp then begin
       SetError('Unknown asm code');
       exit;

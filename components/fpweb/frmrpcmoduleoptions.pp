@@ -30,9 +30,7 @@ type
     function GetRM: Boolean;
     procedure SetHP(const AValue: String);
     procedure SetJC(const AValue: String);
-    { private declarations }
   public
-    { public declarations }
     Property RegisterHandlers : Boolean Read GetRH;
     Property RegisterModule  : Boolean Read GetRM;
     Property JSONRPCClass : String Read GetJC Write SetJC;

@@ -69,7 +69,7 @@ uses
   StdCodeTools, EventCodeTool, CodeCreationDlg, IdentCompletionTool,
   // LazUtils
   // use lazutf8, lazfileutils and lazfilecache after FileProcs and FileUtil
-  FileUtil, LazFileUtils, LazUtilities, LazUTF8, UTF8Process, ProjResConvert,
+  FileUtil, LazFileUtils, LazUtilities, LazUTF8, UTF8Process, ProjResConvert, ProjResProc,
   LConvEncoding, Laz2_XMLCfg, LazLoggerBase, LazLogger, LazFileCache, AvgLvlTree,
   GraphType, LazStringUtils, LazVersion, LazTracer,
   LCLExceptionStacktrace,
@@ -1027,7 +1027,6 @@ const
   CodeToolsIncludeLinkFile = 'includelinks.xml';
 
 implementation
-
 
 var
   ParamBaseDirectory: string = '';
@@ -9729,7 +9728,7 @@ begin
     DebugLn('Hint: (lazarus) TMainIDE.DesignerPasteComponent A');
 
   // check the class of the new component
-  NewClassName:=FindLFMClassName(TxtCompStream);
+  NewClassName:=ProjResProc.FindLFMClassName(TxtCompStream);
 
   // check if component class is registered
   ARegComp:=IDEComponentPalette.FindRegComponent(NewClassName);
@@ -10341,7 +10340,6 @@ function TMainIDE.DoJumpToCodePosition(ActiveSrcEdit: TSourceEditorInterface; Ne
   NewTopLine, BlockTopLine, BlockBottomLine: integer; Flags: TJumpToCodePosFlags): TModalResult;
 var
   SrcEdit: TSourceEditor;
-  STB, FNStart: String;
 begin
   Result:=mrCancel;
 

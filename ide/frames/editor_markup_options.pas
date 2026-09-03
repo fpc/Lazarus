@@ -447,7 +447,6 @@ end;
 procedure TEditorMarkupOptionsFrame.UpdatePreviews;
 var
   a: Integer;
-  Syn: TSynPasSyn;
 begin
   with GeneralPage do
     for a := Low(PreviewEdits) to High(PreviewEdits) do

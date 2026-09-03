@@ -721,10 +721,23 @@ end;
 procedure TComponentTreeView.OnCollectionChanged(Sender: TObject; aColl: TCollection);
 var
   Node: TTreeNode;
+  Found: Boolean;
 begin
-  Node:=IterateTree(Items.GetFirstNode,aColl);
-  if Node=nil then exit;
-  IdleBuildNodes:=true;
+  // Look for the collection node WITHOUT moving/altering any node.
+  // Do not use IterateTree here: it applies the pending ZOrder command via
+  // ChangeNode -> MoveTo -> Unbind, which collapses the parent node and wrongly
+  // adds it to FCollapsedComps (making e.g. a DBGrid collapse on column changes).
+  Found := False;
+  Node := Items.GetFirstNode;
+  while Node <> nil do begin
+    if TObject(Node.Data) = aColl then begin
+      Found := True;
+      Break;
+    end;
+    Node := Node.GetNext;
+  end;
+  if not Found then exit;
+  IdleBuildNodes := true;
 end;
 
 procedure TComponentTreeView.OnIdle(Sender: TObject; var Done: Boolean);

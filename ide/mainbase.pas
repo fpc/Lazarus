@@ -79,6 +79,8 @@ uses
   LazConf, EnvironmentOpts, CompilerOptions,
   // IdeProject
   Project,
+  // IdePackager
+  BasePkgManager,
   // IDE
   LazarusIDEStrConsts, EditorOptions, EnvGuiOptions, EditableProject,
   SourceEditor, SourceSynEditor, FindInFilesDlg, Splash, MainBar, MainIntf,
@@ -231,6 +233,7 @@ type
     procedure RefreshMenu(Sender: TObject);
     procedure mnuOpenFile(Sender: TObject);
     procedure mnuProjectFile(Sender: TObject);
+    procedure mnuPackageFile(Sender: TObject);
   public
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
@@ -506,6 +509,11 @@ begin
   MainIDE.DoOpenProjectFile((Sender as TOpenFileMenuItem).Hint, [ofAddToRecent]);
 end;
 
+procedure TOpenFileToolButton.mnuPackageFile(Sender: TObject);
+begin
+  PkgBoss.DoOpenPackageFile((Sender as TOpenFileMenuItem).Hint, [pofAddToRecent], false);
+end;
+
 procedure TOpenFileToolButton.RefreshMenu(Sender: TObject);
 
   procedure AddFile(const AFileName: string; const AOnClick: TNotifyEvent);
@@ -522,27 +530,45 @@ procedure TOpenFileToolButton.RefreshMenu(Sender: TObject);
       AMenuItem.ImageIndex := LoadProjectIconIntoImages(AFileName, DropdownMenu.Images, FIndex);
   end;
 
-  procedure AddFiles(List: TStringList; MaxCount: integer; const AOnClick: TNotifyEvent);
+  procedure AddHeader(const ACaption: string);
+  var
+    AMenuItem: TOpenFileMenuItem;
+  begin
+    AMenuItem := TOpenFileMenuItem.Create(DropdownMenu);
+    AMenuItem.Caption := ACaption;
+    AMenuItem.Enabled := false;
+    DropdownMenu.Items.Add(AMenuItem);
+  end;
+
+  procedure AddRecentItemsGroup(List: TStringList; MaxCount: integer; const AOnClick: TNotifyEvent; const AHeader: string);
   var
     i: integer;
   begin
+    if List.Count <= 0 then
+      exit;
+    // separator
+    if DropdownMenu.Items.Count > 0 then
+      DropdownMenu.Items.AddSeparator;
+    // header
+    AddHeader(AHeader);
+    // value 0 means unlimited
     if MaxCount <= 0 then
       MaxCount := List.Count;
+    // files
     for i := 0 to Min(MaxCount, List.Count) - 1 do
       AddFile(List[i], AOnClick);
   end;
 
+var
+  EO: TEnvironmentOptions absolute EnvironmentOptions; // short alias
 begin
   DropdownMenu.Items.Clear;
-
-  // first add recent projects
-  AddFiles(EnvironmentOptions.RecentProjectFiles, EnvironmentOptions.MaxRecentProjectFiles,
-           @mnuProjectFile);
-  // add a separator
-  DropdownMenu.Items.AddSeparator;
-  // then add recent files
-  AddFiles(EnvironmentOptions.RecentOpenFiles, EnvironmentOptions.MaxRecentOpenFiles,
-           @mnuOpenFile);
+  if EO.ProjectsInOpenToolbarButton then
+    AddRecentItemsGroup(EO.RecentProjectFiles, EO.MaxRecentProjectFiles, @mnuProjectFile, dlgRecentProjectsHeader);
+  if EO.PackagesInOpenToolbarButton then
+    AddRecentItemsGroup(EO.RecentPackageFiles, EO.MaxRecentPackageFiles, @mnuPackageFile, dlgRecentPackagesHeader);
+  if EO.FilesInOpenToolbarButton then
+    AddRecentItemsGroup(EO.RecentOpenFiles   , EO.MaxRecentOpenFiles   , @mnuOpenFile   , dlgRecentFilesHeader   );
 end;
 
 // Variables and functions used by TMainIDEBase
@@ -1023,7 +1049,6 @@ begin
     CreateMainMenuItem(mnuProject,'Project',lisMenuProject);
     CreateMainMenuItem(mnuRun,'Run',lisMenuRun);
     CreateMainMenuItem(mnuPackage,'Package',lisMenuPackage);
-    mnuComponent:=mnuPackage;
     CreateMainMenuItem(mnuTools,'Tools',lisMenuTools);
     CreateMainMenuItem(mnuWindow,'Window',lisMenuWindow);
     mnuWindow.OnClick  := @DoMnuWindowClicked;
@@ -1416,7 +1441,7 @@ var
   ParentMI: TIDEMenuSection;
 begin
   with MainIDEBar do begin
-    CreateMenuSeparatorSection(mnuComponent,itmPkgOpening,'itmPkgOpening');
+    CreateMenuSeparatorSection(mnuPackage,itmPkgOpening,'itmPkgOpening');
     ParentMI:=itmPkgOpening;
     CreateMenuItem(ParentMI,itmPkgNewPackage,'itmPkgNewPackage',lisMenuNewPackage, 'pkg_add');
     CreateMenuItem(ParentMI,itmPkgOpenLoadedPackage,'itmPkgOpenPackage',lisMenuOpenPackage,'pkg_installed');
@@ -1424,12 +1449,12 @@ begin
     CreateMenuItem(ParentMI,itmPkgOpenPackageOfCurUnit,'itmPkgOpenPackageOfCurUnit',lisMenuOpenPackageOfCurUnit,'pkg_open_packageofcurunit');
     CreateMenuSubSection(ParentMI,itmPkgOpenRecent,'itmPkgOpenRecent',lisMenuOpenRecentPkg, 'pkg_open_recent');
 
-    CreateMenuSeparatorSection(mnuComponent,itmPkgUnits,'itmPkgUnits');
+    CreateMenuSeparatorSection(mnuPackage,itmPkgUnits,'itmPkgUnits');
     ParentMI:=itmPkgUnits;
     CreateMenuItem(ParentMI,itmPkgAddCurFileToPkg,'itmPkgAddCurFileToPkg',lisMenuAddCurFileToPkg,'pkg_new');
     CreateMenuItem(ParentMI, itmPkgAddNewComponentToPkg, 'itmPkgAddNewComponentToPkg', lisMenuNewComponent+' ...', 'pkg_comp_new');
 
-    CreateMenuSeparatorSection(mnuComponent,itmPkgGraphSection,'itmPkgGraphSection');
+    CreateMenuSeparatorSection(mnuPackage,itmPkgGraphSection,'itmPkgGraphSection');
     ParentMI:=itmPkgGraphSection;
     CreateMenuItem(ParentMI,itmPkgPkgGraph,'itmPkgPkgGraph',lisMenuPackageGraph+' ...','pkg_graph');
     CreateMenuItem(ParentMI,itmPkgPackageLinks,'itmPkgPackageLinks',lisMenuPackageLinks, 'pkg_links');

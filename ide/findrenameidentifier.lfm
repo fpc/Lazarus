@@ -10,6 +10,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
   ClientWidth = 460
   Constraints.MinHeight = 450
   Constraints.MinWidth = 460
+  Position = poWorkAreaCenter
   LCLVersion = '4.99.0.0'
   OnClose = FindRenameIdentifierDialogClose
   OnCreate = FindRenameIdentifierDialogCreate

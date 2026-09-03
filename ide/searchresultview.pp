@@ -852,11 +852,12 @@ function TSearchResultsView.BeautifyPageName(const APageName: string; out
 const
   MaxPageName = 25;
 begin
+  result := APageName;
   aoTabEllipsed := UTF8Length(result) > MaxPageName;
   if aoTabEllipsed then
     result := UTF8Copy(result, 1, MaxPageName - 5) + '...';
   // escape special chars after trimming to avoid cutting off special sequences
-  result := Utf8EscapeControlChars(APageName, emHexPascal);
+  result := Utf8EscapeControlChars(result, emHexPascal);
   result := StringReplace(result, '&', '&&', [rfReplaceAll]); // escape key accel
 end;
 

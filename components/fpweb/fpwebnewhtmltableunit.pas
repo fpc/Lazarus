@@ -64,7 +64,7 @@ type
     procedure edtColCountChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
-    { private declarations }
+
   public
     function HtmlText:string;
   end; 
