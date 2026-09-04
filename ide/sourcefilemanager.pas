@@ -5162,7 +5162,7 @@ begin
     if (IdeSyntaxHighlighters.GetLazSyntaxHighlighterType(SrcEdit.SyntaxHighlighterId) {%H-}in [lshFreePascal, lshDelphi]) then
       SaveAsFileExt:=PascalExtension[EnvironmentOptions.PascalFileExtension]
     else
-      SaveAsFileExt:=EditorOpts.HighlighterList.GetDefaultFilextension(
+      SaveAsFileExt:=EditorOpts.HighlighterList.GetDefaultFileExtension(
                          SrcEdit.SyntaxHighlighterId);
   end;
   if FilenameIsPascalSource(AFilename) then begin
