@@ -48,8 +48,6 @@ uses
   //LazUtils
   AvgLvlTree, LazUtilities, LazStringUtils, LazMemManager, ProjResConvert,
   LazLoggerBase, LazTracer,
-  // CodeTools
-  BasicCodeTools,
   // BuildIntf
   UnitResourceIntf, PackageDependencyIntf,
   // IdePackager

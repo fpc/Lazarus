@@ -41,7 +41,7 @@ uses
   Types, Classes, Math, SysUtils, Variants, TypInfo,
   // LCL
   LCLType, LResources, LCLIntf, LMessages, InterfaceBase,
-  Forms, Controls, Graphics, Dialogs, ExtCtrls, Menus, ClipBrd,
+  Forms, Controls, Graphics, Dialogs, ExtCtrls, Menus, ClipBrd, ImgList,
   // LazUtils
   GraphType, GraphMath, LazFileUtils, LazFileCache, LazLoggerBase, LazUtilities,
   ProjResConvert,
@@ -55,7 +55,7 @@ uses
   LazarusIDEStrConsts, EnvGuiOptions, EditorOptions, SourceEditor,
   // Designer
   AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, DesignerProcs, CustomFormEditor,
-  AskCompNameDlg, ControlSelection, ChangeClassDialog, ImgList;
+  AskCompNameDlg, ControlSelection, ChangeClassDialog;
 
 type
   TDesigner = class;
