@@ -438,17 +438,6 @@ begin
   Result:=true;
 end;
 
-function UnitIsModifiedByDesigner(AUnitInfo: TUnitInfo; ModUnits: TFPList): boolean;
-var
-  i: integer;
-begin
-  Result:=false;
-  if AUnitInfo=nil then exit;
-  for i:=0 to ModUnits.Count-1 do
-    if TUnitInfo(ModUnits[i])=AUnitInfo then
-      exit(true);
-end;
-
 function DoFindRenameIdentifier(AllowRename: boolean; SetRenameActive: boolean;
   Options: TFindRenameIdentifierOptions): TModalResult;
 var
@@ -972,8 +961,7 @@ begin
               end;
               if AUnitInfo=nil then
                 continue;
-              SrcIfcs.Clear;
-              if UnitIsModifiedByDesigner(AUnitInfo, SrcIfcs) then begin
+              if SrcIfcs.IndexOf(AUnitInfo)>=0 then begin
                 if AUnitInfo.EditorInfoCount>1 then
                   for j:= AUnitInfo.EditorInfoCount-1 downto 1 do
                     CloseEditorFile(AUnitInfo.EditorInfo[j].EditorComponent,
