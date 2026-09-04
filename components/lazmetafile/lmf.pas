@@ -35,7 +35,7 @@ type
   end;
 
   TlmfMapMode = (mmAnisotropic, mmHiEnglish, mmHiMetric, mmIsotropic, mmLoEnglish,
-    mmLoMetric, mmText, mmTwips);
+    mmLoMetric, mmText, mmTwips, mmLogUnitsPerInch);
 
   { TlmfImage }
 
@@ -431,6 +431,15 @@ begin
         kx := PixelsPerInch / 1440;
         ky := -Sign(fLogHeight) * kx;
         fDevOrgY := Rect.Bottom;
+      end;
+    mmLogUnitsPerInch:
+      // NOTE: Not a Windows MapMode!
+      // Each logical units is mapped to the size of the LogUnitsPerInch
+      // specification. Positive y is down unless when fLogHeight is negative
+      begin
+        kx := PixelsPerInch / LogUnitsPerInch;
+        ky := Sign(fLogHeight) * kx;
+        fDevOrgY := Rect.Top;
       end;
     else
       // Anisotropic:

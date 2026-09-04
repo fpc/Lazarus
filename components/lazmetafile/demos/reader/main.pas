@@ -140,13 +140,16 @@ begin
 
   AddToHistory(AFileName);
   Caption := 'WMF File Reader [' + ExtractfileName(AFileName) + ']';
-  lblInfo.Caption := Format('Width: %d; Height = %d', [FLmfImg.Width, FLmfImg.Height]);
+  lblInfo.Caption := Format('Width: %d; Height = %d; LogUnitsPerInch = %d', [
+    FLmfImg.Width, FLmfImg.Height, FLmfImg.LogUnitsPerInch
+  ]);
 end;
 
 procedure TMainForm.PaintBoxPaint(Sender: TObject);
 begin
   if (FLmfImg = nil) then //or FLmfImg.Empty then
     exit;
+  FLmfImg.PixelsPerInch := PixelsPerInch;
 //  PaintBox.Canvas.Draw(0, 0, FLmfImg);
   PaintBox.Canvas.StretchDraw(Rect(0, 0, PaintBox.Width, PaintBox.Height), FLmfImg);
 end;

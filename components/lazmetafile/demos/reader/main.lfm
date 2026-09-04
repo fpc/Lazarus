@@ -120,10 +120,11 @@ object MainForm: TMainForm
       Left = 82
       Height = 23
       Top = 9
-      Width = 125
+      Width = 158
       BorderSpacing.Left = 12
       BorderSpacing.Top = 8
       BorderSpacing.Bottom = 8
+      DropDownCount = 16
       ItemHeight = 15
       ItemIndex = 0
       Items.Strings = (
@@ -135,6 +136,7 @@ object MainForm: TMainForm
         'mmLoMetric'
         'mmText'
         'mmTwips'
+        'mmLogUnitsPerInch'
       )
       Style = csDropDownList
       TabOrder = 0
@@ -146,7 +148,7 @@ object MainForm: TMainForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = cmbMapMode
       AnchorSideTop.Side = asrCenter
-      Left = 219
+      Left = 252
       Height = 15
       Top = 13
       Width = 34
