@@ -161,7 +161,7 @@ const
   SQLDialectNames: array [TSQLDialect] of string =
   ( 'Standard',
     'Interbase 6', 'MSSQL 7', 'MySQL', 'MySQL 5', 'MySQL 8',
-    'Oracle','  Sybase', 'Ingres',
+    'Oracle', 'Sybase', 'Ingres',
     'MSSQL 2K', 'Postgres', 'SQLite',
     'Firebird 2.5', 'Firebird 3.0', 'Firebird 4.0', 'MSSQL 2022');
   {$POP}
