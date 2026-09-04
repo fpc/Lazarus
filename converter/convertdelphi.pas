@@ -1346,7 +1346,7 @@ begin
   end
   else begin
     // Check unitname and create UnitInfo.
-    OutUnitInfo:=LazProject.UnitInfoWithFilename(AFileName);
+    OutUnitInfo:=LazProject.UnitWithFilename(AFileName);
     if OutUnitInfo=nil then begin
       if FilenameHasPascalExt(AFileName) then begin
         OutUnitInfo:=LazProject.UnitWithUnitname(PureUnitName);
@@ -1533,7 +1533,7 @@ end;
 
 function TConvertDelphiProject.ContainsFile(const aFileName: string): Boolean;
 begin
-  Result:=Assigned(LazProject.UnitInfoWithFilename(aFileName));
+  Result:=Assigned(LazProject.UnitWithFilename(aFileName));
 end;
 
 function TConvertDelphiProject.FindDependencyByName(const PackageName: string): TPkgDependency;

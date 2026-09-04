@@ -2581,7 +2581,7 @@ var
         exit(true);
       end;
     end else if SrcProject<>nil then begin
-      OldProjFile:=TUnitInfo(SrcProject.UnitInfoWithFilename(OldFilename,[pfsfOnlyProjectFiles]));
+      OldProjFile:=TUnitInfo(SrcProject.UnitWithFilename(OldFilename,[pfsfOnlyProjectFiles]));
       if OldProjFile=nil then begin
         {$IFDEF VerbosePkgEditDrag}
         debugln(['MoveOrCopyFile old file not in lpi: "',OldFilename,'"']);
@@ -2646,7 +2646,7 @@ var
     end else if TargetProject<>nil then begin
       // create new TUnitInfo
 
-      NewProjFile:=TargetProject.UnitInfoWithFilename(NewFilename);
+      NewProjFile:=TargetProject.UnitWithFilename(NewFilename);
       if NewProjFile=nil then begin
         NewProjFile:=TEditableUnitInfo.Create(nil);
         NewProjFile.Filename:=NewFilename;
@@ -5136,7 +5136,7 @@ var
     if not (piosfExcludeOwned in Flags) then begin
       //DebugLn(['SearchInProject ',AProject.ProjectInfoFile,' UnitFilename=',UnitFilename]);
       if (CompareFilenames(UnitFilename,AProject.ProjectInfoFile)=0)
-      or (AProject.UnitInfoWithFilename(UnitFilename,[pfsfOnlyProjectFiles])<>nil)
+      or (AProject.UnitWithFilename(UnitFilename,[pfsfOnlyProjectFiles])<>nil)
       then
         Add:=true;
     end;

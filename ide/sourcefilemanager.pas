@@ -2291,7 +2291,7 @@ function FileExistsInIDE(const Filename: string;
   SearchFlags: TProjectFileSearchFlags): boolean;
 begin
   Result:=FileExistsCached(Filename)
-    or ((Project1<>nil) and (Project1.UnitInfoWithFilename(Filename,SearchFlags)<>nil));
+    or ((Project1<>nil) and (Project1.UnitWithFilename(Filename,SearchFlags)<>nil));
 end;
 
 function BeautifySrc(const s: string): string;
@@ -2480,7 +2480,7 @@ begin
       Include(SearchFlags,pfsfOnlyProjectFiles);
     if NewUnitInfo.IsVirtual then
       Include(SearchFlags,pfsfOnlyVirtualFiles);
-    if (AProject.UnitInfoWithFilename(LFMFilename,SearchFlags)<>nil) then begin
+    if (AProject.UnitWithFilename(LFMFilename,SearchFlags)<>nil) then begin
       //debugln('NewFile no HasResources ',NewUnitInfo.Filename,' ResourceFile exists');
       NewUnitInfo.HasResources:=true;
     end;
@@ -3055,7 +3055,7 @@ begin
   end;
 
   // rename in the project
-  AnUnitInfo:=Project1.UnitInfoWithFilename(OldFilename);
+  AnUnitInfo:=Project1.UnitWithFilename(OldFilename);
   IsPartOfProject:=(AnUnitInfo<>nil) and AnUnitInfo.IsPartOfProject;
   if AnUnitInfo<>nil then begin
     AnUnitInfo.Filename:=NewFilename;
@@ -3363,7 +3363,7 @@ begin
     and FileIsInPath(AFilename,BaseDir) then
     begin
       Result:=CreateRelativePath(AFilename,BaseDir);
-      if (Project1<>nil) and (Project1.UnitInfoWithFilename(Result)<>nil) then
+      if (Project1<>nil) and (Project1.UnitWithFilename(Result)<>nil) then
         exit;
     end;
   end;
@@ -6340,7 +6340,7 @@ begin
     and (SourceEditorManager.ActiveEditor<>nil)
     then begin
       SrcEdit:=SourceEditorManager.ActiveEditor;
-      LFMUnitInfo:=Project1.UnitInfoWithFilename(SrcEdit.FileName);
+      LFMUnitInfo:=Project1.UnitWithFilename(SrcEdit.FileName);
     end;
   end;
 
@@ -7138,7 +7138,7 @@ begin
   // try to find a unit name without expanding the path. this is required if unit is virtual
   // in other case file name will be expanded with the wrong path
   AFilename:=UnitFilename;
-  AnUnitInfo:=TEditableUnitInfo(Project1.UnitInfoWithFilename(AFilename));
+  AnUnitInfo:=TEditableUnitInfo(Project1.UnitWithFilename(AFilename));
   if AnUnitInfo = nil then
   begin
     AFilename:=TrimAndExpandFilename(UnitFilename);
@@ -7146,7 +7146,7 @@ begin
       DebugLn(['OpenComponent file not found ',AFilename]);
       exit(mrCancel);
     end;
-    AnUnitInfo:=TEditableUnitInfo(Project1.UnitInfoWithFilename(AFilename));
+    AnUnitInfo:=TEditableUnitInfo(Project1.UnitWithFilename(AFilename));
   end;
   if (not (ofRevert in OpenFlags))
   and (AnUnitInfo<>nil) and (AnUnitInfo.Component<>nil) then begin
@@ -7409,7 +7409,7 @@ var
     TheModalResult:=mrCancel;
     if not FilenameIsPascalUnit(UnitFilename) then exit;
 
-    CurUnitInfo:=TEditableUnitInfo(Project1.UnitInfoWithFilename(UnitFilename));
+    CurUnitInfo:=TEditableUnitInfo(Project1.UnitWithFilename(UnitFilename));
     if (CurUnitInfo=nil) or (CurUnitInfo.Component=nil) then exit;
     // unit with loaded component found -> check if it is the right one
     //DebugLn(['SearchComponentClass unit with a component found CurUnitInfo=',CurUnitInfo.Filename,' ',dbgsName(CurUnitInfo.Component)]);
@@ -7521,7 +7521,7 @@ var
   procedure StoreComponentClassDeclaration(UnitFilename: string);
   begin
     // The Unit declaring AComponentClassName was located, save UnitInfo for return regardless of AComponentClass instance
-    ComponentUnitInfo:= TEditableUnitInfo(Project1.UnitInfoWithFilename(UnitFilename));
+    ComponentUnitInfo:= TEditableUnitInfo(Project1.UnitWithFilename(UnitFilename));
     if not Assigned(ComponentUnitInfo) then begin
       // File was not previously loaded, add reference to project (without loading source for now)
       ComponentUnitInfo:=TEditableUnitInfo.Create(nil);
@@ -7838,10 +7838,10 @@ function LoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
     end;
     // check if the unit component is already loaded
     UnitFilename:=ChangeFileExt(LFMFilename,'.pas');
-    CurUnitInfo:=TEditableUnitInfo(Project1.UnitInfoWithFilename(UnitFilename));
+    CurUnitInfo:=TEditableUnitInfo(Project1.UnitWithFilename(UnitFilename));
     if CurUnitInfo=nil then begin
       UnitFilename:=ChangeFileExt(LFMFilename,'.pp');
-      CurUnitInfo:=TEditableUnitInfo(Project1.UnitInfoWithFilename(UnitFilename));
+      CurUnitInfo:=TEditableUnitInfo(Project1.UnitWithFilename(UnitFilename));
     end;
     ReadLFMHeader(LFMCode.Source,LFMClassName,LFMType);
     if CurUnitInfo=nil then
@@ -7972,7 +7972,7 @@ function LoadIDECodeBuffer(var ACodeBuffer: TCodeBuffer;
   const AFilename: string; Flags: TLoadBufferFlags; ShowAbort: boolean): TModalResult;
 begin
   if (Project1<>nil)
-  and (Project1.UnitInfoWithFilename(AFilename,[pfsfOnlyEditorFiles])<>nil) then
+  and (Project1.UnitWithFilename(AFilename,[pfsfOnlyEditorFiles])<>nil) then
     Exclude(Flags,lbfUpdateFromDisk);
   Result:=LoadCodeBuffer(ACodeBuffer,AFilename,Flags,ShowAbort);
 end;

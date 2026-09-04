@@ -781,8 +781,8 @@ function TProjectInspectorForm.AddOneFile(aFilename: string): TModalResult;
 var
   NewUnit: TUnitInfo;
 begin
-  Result := mrOK;
-  NewUnit:=LazProject.UnitInfoWithFilename(aFilename);
+  Result:=mrOK;
+  NewUnit:=LazProject.UnitWithFilename(aFilename);
   if NewUnit<>nil then begin
     if NewUnit.IsPartOfProject then Exit(mrIgnore);
   end else begin
@@ -2085,7 +2085,7 @@ begin
     if NodeData.Removed then
       Result:=nil
     else
-      Result:=LazProject.UnitInfoWithFilename(NodeData.Name,[pfsfOnlyProjectFiles]);
+      Result:=LazProject.UnitWithFilename(NodeData.Name,[pfsfOnlyProjectFiles]);
   penDependency:
     if NodeData.Removed then
       Result:=LazProject.FindRemovedDependencyByName(NodeData.Name)

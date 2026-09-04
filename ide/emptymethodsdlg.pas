@@ -287,7 +287,7 @@ begin
       CurClassName:=ExtractClassName;
       if (CurClassName<>'') and (Project1<>nil) then
       begin
-        AnUnitInfo:=Project1.UnitInfoWithFilename(Code.Filename);
+        AnUnitInfo:=Project1.UnitWithFilename(Code.Filename);
         if AnUnitInfo<>nil then
         begin
           // fix events of designer components

@@ -768,22 +768,29 @@ type
     function ProjectUnitWithFilename(const AFilename: string): TUnitInfo;
     function ProjectUnitWithShortFilename(const ShortFilename: string): TUnitInfo;
     function ProjectUnitWithUnitname(const AnUnitName: string): TUnitInfo;
-    function UnitWithComponent(AComponent: TComponent): TUnitInfo;
-    function UnitWithComponentClass(AClass: TComponentClass): TUnitInfo;
-    function UnitWithComponentClassName(const AClassName: string): TUnitInfo;
-    function UnitWithComponentName(AComponentName: String;
-                                   OnlyPartOfProject: boolean): TUnitInfo;
     function UnitComponentInheritingFrom(AClass: TComponentClass;
                                          Ignore: TUnitInfo): TUnitInfo;
     function UnitUsingComponentUnit(ComponentUnit: TUnitInfo;
                                     Types: TUnitCompDependencyTypes): TUnitInfo;
     function UnitComponentIsUsed(ComponentUnit: TUnitInfo;
                                  CheckHasDesigner: boolean): boolean;
-    function UnitInfoWithFilename(const AFilename: string): TUnitInfo;
-    function UnitInfoWithFilename(const AFilename: string;
-                    SearchFlags: TProjectFileSearchFlags): TLazProjectFile; override; //TUnitInfo;
+
+    function UnitWithComponent(AComponent: TComponent): TUnitInfo;
+    function UnitWithComponentClass(AClass: TComponentClass): TUnitInfo;
+    function UnitWithComponentClassName(const AClassName: string): TUnitInfo;
+    function UnitWithComponentName(AComponentName: String;
+                                   OnlyPartOfProject: boolean): TUnitInfo;
+    function UnitWithFilename(const AFilename: string): TUnitInfo;
+    function UnitWithFilename(const AFilename: string;
+               SearchFlags: TProjectFileSearchFlags): TLazProjectFile; override; //TUnitInfo;
+    function UnitWithLFMFilename(const AFilename: string): TUnitInfo; // only currently open lfm (SourceLFM<>nil)
     function UnitWithUnitname(const AnUnitname: string): TUnitInfo;
-    function UnitInfoWithLFMFilename(const AFilename: string): TUnitInfo; // only currently open lfm (SourceLFM<>nil)
+    // Deprecated in Lazarus 4.99 in September 2026
+    function UnitInfoWithFilename(const AFilename: string): TUnitInfo; deprecated 'Use UnitWithFilename instead';
+    function UnitInfoWithFilename(const AFilename: string;
+                    SearchFlags: TProjectFileSearchFlags): TLazProjectFile; deprecated 'Use UnitWithFilename instead';
+    function UnitInfoWithLFMFilename(const AFilename: string): TUnitInfo; deprecated 'Use UnitWithLFMFilename instead';
+
     function SearchFile(const ShortFilename: string;
                         SearchFlags: TSearchIDEFileFlags): TUnitInfo;
     function FindFile(const AFilename: string;
@@ -2353,7 +2360,7 @@ begin
     NewUnitFilename:=FXMLConfig.GetValue(SubPath+'Filename/Value','');
     LoadSaveFilenameHandler(NewUnitFilename,true);
     // load unit and add it
-    OldUnitInfo:=UnitInfoWithFilename(NewUnitFilename);
+    OldUnitInfo:=UnitWithFilename(NewUnitFilename);
     if OldUnitInfo<>nil then begin
       // unit already exists
       if Merge then begin
@@ -3073,7 +3080,7 @@ var
 begin
   AnUnit:=ProjectFile as TUnitInfo;
   //debugln('TProject.AddFile A ',AnUnit.Filename,' AddToProjectFile=',dbgs(AddToProjectFile));
-  if (UnitInfoWithFilename(AnUnit.Filename)<>nil) and (AnUnit.FileName <> '') then
+  if (UnitWithFilename(AnUnit.Filename)<>nil) and (AnUnit.FileName <> '') then
     debugln(['TProject.AddFile WARNING: file already in unit list: ',AnUnit.Filename]);
   BeginUpdate(true);
   NewIndex:=UnitCount;
@@ -4864,6 +4871,95 @@ begin
   end;
 end;
 
+function TProject.UnitWithFilename(const AFilename: string): TUnitInfo;
+var
+  i: Integer;
+begin
+  i:=IndexOfFilename(AFilename);
+  if i>=0 then
+    Result:=Units[i]
+  else
+    Result:=nil;
+end;
+
+function TProject.UnitWithFilename(const AFilename: string;
+  SearchFlags: TProjectFileSearchFlags): TLazProjectFile; //TUnitInfo;
+
+  function MakeFilenameComparable(const TheFilename: string): string;
+  begin
+    Result:=TheFilename;
+    if (pfsfResolveFileLinks in SearchFlags)
+    and FilenameIsAbsolute(Result) then
+      Result:=GetPhysicalFilenameCached(Result,false);
+  end;
+
+  function FindFileInList(ListType: TUnitInfoList): TUnitInfo;
+  var
+    BaseFilename: String;
+    CurBaseFilename: String;
+  begin
+    BaseFilename:=MakeFilenameComparable(AFilename);
+    Result:=fFirst[ListType];
+    while Result<>nil do begin
+      CurBaseFilename:=MakeFilenameComparable(Result.Filename);
+      if CompareFilenames(BaseFilename,CurBaseFilename)=0 then exit;
+      Result:=Result.fNext[ListType];
+    end;
+  end;
+
+begin
+  if (SearchFlags-[pfsfResolveFileLinks]=[pfsfOnlyEditorFiles]) then
+    // search only in list of Files with EditorIndex
+    // There is a list, so we can search much faster
+    Result:=FindFileInList(uilWithEditorIndex)
+  else if (SearchFlags-[pfsfResolveFileLinks]=[pfsfOnlyProjectFiles]) then
+    // search only in list of project files
+    // There is a list, so we can search much faster
+    Result:=FindFileInList(uilPartOfProject)
+  else
+    Result:=UnitWithFilename(AFilename);  // slow search
+end;
+
+function TProject.UnitWithLFMFilename(const AFilename: string): TUnitInfo;
+var
+  i: Integer;
+begin
+  i:=IndexOfLFMFilename(AFilename);
+  if i>=0 then
+    Result:=Units[i]
+  else
+    Result:=nil;
+end;
+
+function TProject.UnitWithUnitname(const AnUnitname: string): TUnitInfo;
+var
+  i: Integer;
+begin
+  i:=IndexOfUnitWithName(AnUnitName,true,nil);
+  if i>=0 then
+    Result:=Units[i]
+  else
+    Result:=nil;
+end;
+
+/// These 3 are deprecated and will be removed.
+function TProject.UnitInfoWithFilename(const AFilename: string): TUnitInfo;
+begin
+  Result:=UnitWithFilename(AFilename);
+end;
+
+function TProject.UnitInfoWithFilename(const AFilename: string;
+  SearchFlags: TProjectFileSearchFlags): TLazProjectFile;
+begin
+  Result:=UnitWithFilename(AFilename, SearchFlags);
+end;
+
+function TProject.UnitInfoWithLFMFilename(const AFilename: string): TUnitInfo;
+begin
+  Result:=UnitWithLFMFilename(AFilename);
+end;
+///
+
 function TProject.UnitComponentInheritingFrom(AClass: TComponentClass;
   Ignore: TUnitInfo): TUnitInfo;
 begin
@@ -4899,77 +4995,6 @@ begin
   if ComponentUnit.FindUsedByComponentDependency([ucdtInlineClass])<>nil then
     exit(true);
   Result:=false;
-end;
-
-function TProject.UnitInfoWithFilename(const AFilename: string): TUnitInfo;
-var
-  i: Integer;
-begin
-  i:=IndexOfFilename(AFilename);
-  if i>=0 then
-    Result:=Units[i]
-  else
-    Result:=nil;
-end;
-
-function TProject.UnitInfoWithFilename(const AFilename: string;
-  SearchFlags: TProjectFileSearchFlags): TLazProjectFile; //TUnitInfo;
-
-  function MakeFilenameComparable(const TheFilename: string): string;
-  begin
-    Result:=TheFilename;
-    if (pfsfResolveFileLinks in SearchFlags)
-    and FilenameIsAbsolute(Result) then
-      Result:=GetPhysicalFilenameCached(Result,false);
-  end;
-
-  function FindFileInList(ListType: TUnitInfoList): TUnitInfo;
-  var
-    BaseFilename: String;
-    CurBaseFilename: String;
-  begin
-    BaseFilename:=MakeFilenameComparable(AFilename);
-    Result:=fFirst[ListType];
-    while Result<>nil do begin
-      CurBaseFilename:=MakeFilenameComparable(Result.Filename);
-      if CompareFilenames(BaseFilename,CurBaseFilename)=0 then exit;
-      Result:=Result.fNext[ListType];
-    end;
-  end;
-
-begin
-  if (SearchFlags-[pfsfResolveFileLinks]=[pfsfOnlyEditorFiles]) then
-    // search only in list of Files with EditorIndex
-    // There is a list, so we can search much faster
-    Result:=FindFileInList(uilWithEditorIndex)
-  else if (SearchFlags-[pfsfResolveFileLinks]=[pfsfOnlyProjectFiles]) then
-    // search only in list of project files
-    // There is a list, so we can search much faster
-    Result:=FindFileInList(uilPartOfProject)
-  else
-    Result:=UnitInfoWithFilename(AFilename);  // slow search
-end;
-
-function TProject.UnitWithUnitname(const AnUnitname: string): TUnitInfo;
-var
-  i: Integer;
-begin
-  i:=IndexOfUnitWithName(AnUnitName,true,nil);
-  if i>=0 then
-    Result:=Units[i]
-  else
-    Result:=nil;
-end;
-
-function TProject.UnitInfoWithLFMFilename(const AFilename: string): TUnitInfo;
-var
-  i: Integer;
-begin
-  i:=IndexOfLFMFilename(AFilename);
-  if i>=0 then
-    Result:=Units[i]
-  else
-    Result:=nil;
 end;
 
 procedure TProject.MacroEngineSubstitution(TheMacro: TTransferMacro;
@@ -5051,7 +5076,7 @@ end;
 function TProject.FindFile(const AFilename: string;
   SearchFlags: TProjectFileSearchFlags): TLazProjectFile;
 begin
-  Result:=UnitInfoWithFilename(AFilename, SearchFlags);
+  Result:=UnitWithFilename(AFilename, SearchFlags);
 end;
 
 function TProject.UpdateIsPartOfProjectFromMainUnit: TModalResult;
@@ -5078,7 +5103,7 @@ begin
       for i:=0 to FoundInUnits.Count-1 do begin
         Code:=FoundInUnits.Objects[i] as TCodeBuffer;
         CurFilename:=Code.Filename;
-        AnUnitInfo:=UnitInfoWithFilename(CurFilename);
+        AnUnitInfo:=UnitWithFilename(CurFilename);
         if (AnUnitInfo<>nil) and AnUnitInfo.IsPartOfProject then continue;
         if ConsoleVerbosity>=0 then
           debugln(['Note: (lazarus) [TProject.UpdateIsPartOfProjectFromMainUnit] used unit ',FoundInUnits[i],' not marked in lpi. Setting IsPartOfProject flag.']);

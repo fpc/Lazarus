@@ -309,9 +309,9 @@ begin
       aCode:=TCodeBuffer(CodeList[i]);
       if IgnoreList.IndexOf(aCode)>=0 then continue;
       aFilename:=aCode.Filename;
-      CurUnit:=Project1.UnitInfoWithFilename(aFilename);
+      CurUnit:=Project1.UnitWithFilename(aFilename);
       if CurUnit=nil then
-        CurUnit:=Project1.UnitInfoWithLFMFilename(aFilename);
+        CurUnit:=Project1.UnitWithLFMFilename(aFilename);
       CurModified:=(CurUnit<>nil) and CurUnit.Modified;
       AddFile2Box(aCode, ShortenFilename(aFilename), CurModified);
       if (not FHasExistingFiles) and FileExistsCached(aFilename) then

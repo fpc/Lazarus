@@ -42,7 +42,7 @@ function FindProjPackUnitFile(const AFilename: string; TheOwner: TIDEProjPackBas
     BaseDir, AnUnitName, UnitInFilename: String;
   begin
     // search in virtual (unsaved) files
-    AnUnitInfo:=AProject.UnitInfoWithFilename(AFilename,
+    AnUnitInfo:=AProject.UnitWithFilename(AFilename,
                                      [pfsfOnlyProjectFiles,pfsfOnlyVirtualFiles]);
     if AnUnitInfo<>nil then
       exit(AnUnitInfo.Filename);

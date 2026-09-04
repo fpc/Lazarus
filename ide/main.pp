@@ -5569,7 +5569,7 @@ var
       exit(mrCancel);
     end;
 
-    RefUnitInfo:=TEditableUnitInfo(Project1.UnitInfoWithFilename(UnitFilename));
+    RefUnitInfo:=TEditableUnitInfo(Project1.UnitWithFilename(UnitFilename));
     // create unit info
     if RefUnitInfo=nil then begin
       RefUnitInfo:=TEditableUnitInfo.Create(nil);
@@ -6451,7 +6451,7 @@ var
 begin
   Result:=mrCancel;
   if (Project1=nil) then exit;
-  AnUnitInfo:=TEditableUnitInfo(Project1.UnitInfoWithFilename(Filename,[]));
+  AnUnitInfo:=TEditableUnitInfo(Project1.UnitWithFilename(Filename,[]));
   if (AnUnitInfo<>nil) and (AnUnitInfo.OpenEditorInfoCount > 0) then
     Result:=OpenEditorFile(AnUnitInfo.Filename,
                            AnUnitInfo.OpenEditorInfo[0].PageIndex,
@@ -8592,7 +8592,7 @@ begin
       exit;
     end;
   end else if Project1<>nil then begin
-    AnUnitInfo:=Project1.UnitInfoWithFilename(aFilename);
+    AnUnitInfo:=Project1.UnitWithFilename(aFilename);
     if AnUnitInfo=nil then exit;
     StringToStringList(AnUnitInfo.CustomData['IDEDirectives'],DirectiveList);
     //DebugLn(['TMainIDE.GetIDEDirectives ',dbgstr(DirectiveList.Text)]);
@@ -8886,7 +8886,7 @@ begin
       for i:=0 to BufferList.Count-1 do begin
         CurCode:=TCodeBuffer(BufferList[i]);
 
-        CurUnit:=TEditableUnitInfo(Project1.UnitInfoWithFilename(CurCode.Filename));
+        CurUnit:=TEditableUnitInfo(Project1.UnitWithFilename(CurCode.Filename));
         if CurUnit=nil then continue;
 
         if (Reload=mrOk)
@@ -8926,7 +8926,7 @@ begin
       for i:=0 to BufferList.Count-1 do begin
         CurCode:=TCodeBuffer(BufferList[i]);
         if LFMLoaded.IndexOf(CurCode)>=0 then continue;
-        CurUnit:=TEditableUnitInfo(Project1.UnitInfoWithLFMFilename(CurCode.Filename));
+        CurUnit:=TEditableUnitInfo(Project1.UnitWithLFMFilename(CurCode.Filename));
         if (CurUnit=nil) or (CurUnit.Component=nil) then continue;
         // designer form
         if (Reload=mrOk)
@@ -9397,7 +9397,7 @@ begin
   ResultFlags:=[];
   AnUnitInfo:=nil;
   if Project1<>nil then
-    AnUnitInfo:=Project1.UnitInfoWithFilename(AFilename);
+    AnUnitInfo:=Project1.UnitWithFilename(AFilename);
   if AnUnitInfo<>nil then begin
     // readonly
     if (ifsReadOnly in NeededFlags) and AnUnitInfo.ReadOnly then
@@ -9468,7 +9468,7 @@ begin
     // open the file in the source editor
     AnUnitInfo := nil;
     if Project1<>nil then
-      AnUnitInfo:=TEditableUnitInfo(Project1.UnitInfoWithFilename(SearchedFilename));
+      AnUnitInfo:=TEditableUnitInfo(Project1.UnitWithFilename(SearchedFilename));
     AnEditorInfo := nil;
     if AnUnitInfo <> nil then
       AnEditorInfo := GetAvailableUnitEditorInfo(AnUnitInfo, LogCaretXY);
@@ -9557,7 +9557,7 @@ begin
       // open the file in the source editor
       AnUnitInfo := nil;
       if Project1<>nil then
-        AnUnitInfo := TEditableUnitInfo(Project1.UnitInfoWithFilename(SearchedFilename));
+        AnUnitInfo := TEditableUnitInfo(Project1.UnitWithFilename(SearchedFilename));
       AnEditorInfo := nil;
       if AnUnitInfo <> nil then
         AnEditorInfo := GetAvailableUnitEditorInfo(AnUnitInfo, LogCaretXY);
@@ -10046,7 +10046,7 @@ begin
     SrcBuf:=CodeToolBoss.SourceChangeCache.BuffersToModify[i];
     AnUnitInfo:=nil;
     if Project1<>nil then
-      AnUnitInfo:=TEditableUnitInfo(Project1.UnitInfoWithFilename(SrcBuf.Filename));
+      AnUnitInfo:=TEditableUnitInfo(Project1.UnitWithFilename(SrcBuf.Filename));
     if AnUnitInfo<>nil then
       AnUnitInfo.Modified:=true;
 
@@ -10435,13 +10435,13 @@ begin
     if (ActiveUnitInfo = nil) or (NewSource<>ActiveUnitInfo.Source)
     then begin
       // jump to other file -> open it
-      ActiveUnitInfo := TEditableUnitInfo(Project1.UnitInfoWithFilename(NewSource.Filename));
+      ActiveUnitInfo := TEditableUnitInfo(Project1.UnitWithFilename(NewSource.Filename));
       if (ActiveUnitInfo = nil) and (Project1.IsVirtual) and (jfSearchVirtualFullPath in Flags)
       then begin
         STB := AppendPathDelim(GetTestBuildDirectory);
         FNStart := copy(NewSource.Filename, 1, length(STB));
         if AnsiCompareText(FNStart, STB) = 0 then
-          ActiveUnitInfo := TEditableUnitInfo(Project1.UnitInfoWithFilename(
+          ActiveUnitInfo := TEditableUnitInfo(Project1.UnitWithFilename(
             copy(NewSource.Filename, 1+length(STB), MaxInt), [pfsfOnlyVirtualFiles]));
       end;
 
@@ -10654,7 +10654,7 @@ begin
     if CodeToolBoss.ErrorCode.IsVirtual then
       Include(OpenFlags,ofVirtualFile);
 
-    AnUnitInfo := TEditableUnitInfo(Project1.UnitInfoWithFilename(ErrorFilename));
+    AnUnitInfo := TEditableUnitInfo(Project1.UnitWithFilename(ErrorFilename));
     AnEditorInfo := nil;
     ActiveSrcEdit := nil;
     if AnUnitInfo <> nil then
@@ -12633,7 +12633,7 @@ begin
   if Assigned(FDesignerToBeFreed) then begin
     for FileItem in FDesignerToBeFreed do begin
       if Project1=nil then break;
-      AnUnitInfo:=TEditableUnitInfo(Project1.UnitInfoWithFilename(FileItem^.Name));
+      AnUnitInfo:=TEditableUnitInfo(Project1.UnitWithFilename(FileItem^.Name));
       if AnUnitInfo=nil then continue;
       if AnUnitInfo.Component=nil then continue;
       CloseUnitComponent(AnUnitInfo,[]);
