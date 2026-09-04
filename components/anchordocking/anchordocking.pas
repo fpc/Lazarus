@@ -7021,6 +7021,7 @@ begin
     PreferredWidth := max(R.Bottom - R.Top, PreferredWidth);
     PreferredHeight:=PreferredWidth;
   finally
+    ReleaseDC(Handle, LCanvas.Handle);
     LCanvas.Handle:= 0;
     LCanvas.Free;
   end;
