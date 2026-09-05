@@ -98,7 +98,7 @@ begin
   Result:=false;
 end;
 
-function DeleteDirectory(const DirectoryName: string; OnlyChildren: boolean): boolean;
+function DeleteDirectory(const DirectoryName: string; OnlyChildren: boolean; out Culprit: String): boolean;
 const
   //Don't follow symlinks just delete them (note: Windows has symlinks too (and junctions): issue #42561
   DeleteMask = faAnyFile or faSymLink{%H-};
@@ -109,6 +109,7 @@ var
 begin
   //writeln('DeleteDirectory: ',DirectoryName);
   Result:=false;
+  Culprit := '';
   CurSrcDir:=CleanAndExpandDirectory(DirectoryName);
   if FindFirstUTF8(CurSrcDir+GetAllFilesMask,DeleteMask,FileInfo)=0 then begin
     try
@@ -120,28 +121,47 @@ begin
         if ((FileInfo.Attr and faDirectory)>0) then begin
           if ((FileInfo.Attr and faSymLink{%H-})=0) then begin
             //regular directory
-            if not DeleteDirectory(CurFilename,false) then exit;
+            if not DeleteDirectory(CurFilename,false, Culprit) then exit;
           end else begin
             //symlink to directory
             //writeln('Remove SymLinkToDir: ',CurFileName);
             {$ifdef unix}
-            if not DeleteFileUtf8(CurFilename) then exit;
+            if not DeleteFileUtf8(CurFilename) then begin
+              Culprit := CurFileName;
+              exit;
+            end;
             {$else}
-            if not RemoveDirUtf8(CurFilename) then exit;
+            if not RemoveDirUtf8(CurFilename) then begin
+              Culprit := CurFileName;
+              exit;
+            end;
             {$endif}
           end;
         end else begin
             //file or symlink to a file
             //writeln('Delete File: ',CurFilename);
-            if not DeleteFileUTF8(CurFilename) then exit;
+            if not DeleteFileUTF8(CurFilename) then begin
+              Culprit := CurFileName;
+              exit;
+            end;
         end;
       until FindNextUTF8(FileInfo)<>0;
     finally
       FindCloseUTF8(FileInfo);
     end;
   end;
-  if (not OnlyChildren) and (not RemoveDirUTF8(CurSrcDir)) then exit;
+  if (not OnlyChildren) and (not RemoveDirUTF8(CurSrcDir)) then begin
+    Culprit := CurSrcDir;
+    exit;
+  end;
   Result:=true;
+end;
+
+function DeleteDirectory(const DirectoryName: string; OnlyChildren: boolean): boolean;
+var
+  Dummy: String;
+begin
+  Result := DeleteDirectory(DirectoryName, OnlyChildren, Dummy);
 end;
 
 function ProgramDirectory: string;

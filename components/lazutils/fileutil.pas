@@ -56,6 +56,7 @@ function ComparePhysicalFilenames(const Filename1, Filename2: string): integer;
 function CompareFilenames(Filename1: PChar; Len1: integer;
   Filename2: PChar; Len2: integer; ResolveLinks: boolean): integer; overload;
 function ExtractShortPathNameUTF8(Const FileName : String) : String;
+function DeleteDirectory(const DirectoryName: string; OnlyChildren: boolean; out Culprit: String): boolean;
 function DeleteDirectory(const DirectoryName: string; OnlyChildren: boolean): boolean;
 function ProgramDirectory: string;
 function ProgramDirectoryWithBundle: string;
