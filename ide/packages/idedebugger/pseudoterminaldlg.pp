@@ -90,6 +90,7 @@ type
     fFirstLine: integer;
     FMemoEndsInEOL: Boolean;
     FMemoEndsInCR: Boolean;
+    FOwnerRef: PPointer; // issue 42568
     procedure DoConfigChanged(Sender: TObject);
     procedure getCharHeightAndWidth(consoleFont: TFont; out h, w: word);
     procedure consoleSizeChanged;
@@ -393,6 +394,7 @@ end { TPseudoConsoleDlg.Create } ;
 
 destructor TPseudoConsoleDlg.Destroy;
 begin
+  if FOwnerRef <> nil then FOwnerRef^ := nil; // issue 42568
   inherited Destroy;
   if FConfig <> nil then
     FConfig.OnChange := nil;
@@ -1137,6 +1139,7 @@ begin
     FPseudoConsoleDlg.FConfig := FConfig;
     FPseudoConsoleDlg.FConfig.OnChange := @FPseudoConsoleDlg.DoConfigChanged;
     FPseudoConsoleDlg.DoConfigChanged(FConfig);
+    FPseudoConsoleDlg.FOwnerRef := @FPseudoConsoleDlg; // issue 42568
   end
   else
   if DoDisableAutoSizing then
