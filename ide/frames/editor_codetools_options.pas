@@ -48,6 +48,8 @@ type
     AutoHintDelayLabel: TLabel;
     cbAutoBraceOpen: TCheckBox;
     cbAutoBraceClose: TCheckBox;
+    lbCompletionBackspace: TLabel;
+    dropCompletionBackspace: TComboBox;
     DbgToolTipAutoCastClass: TCheckBox;
     CompletionDropDownHintLabel: TLabel;
     CompletionDropDownHint: TComboBox;
@@ -117,6 +119,17 @@ begin
   CompletionDropDownHint.Items.Add(lisCompletionLongLineHintTypeLittleLeft);
   CompletionDropDownHint.Items.Add(lisCompletionLongLineHintTypeFullLeft);
 
+  lbCompletionBackspace.Caption := optEdCompleteBackspaceBehaviour;
+  dropCompletionBackspace.Clear;
+  dropCompletionBackspace.Items.Add(optEdCompleteOnlyDeletePreviousChar);
+  dropCompletionBackspace.Items.Add(optEdCompleteCancelIfCompletionWasJust);
+  dropCompletionBackspace.Items.Add(optEdCompleteCancelIfCompletionWasJust2);
+  dropCompletionBackspace.Items.Add(optEdCompleteCancelIfCaretAtStart);
+  dropCompletionBackspace.Items.Add(optEdCompleteCancelIfCaretAtStartSingl);
+  dropCompletionBackspace.Items.Add(optEdCompleteCancelIfJustOpenedOrCaret);
+  dropCompletionBackspace.Items.Add(optEdCompleteCancelIfOpenedByDot);
+  dropCompletionBackspace.ItemIndex := -1;
+
   AutoBracketBevel.Caption := dlgOptAutoBraceBevel;
   cbAutoBraceOpen.Caption := dlgOptAutoBraceOpen;
   cbAutoBraceClose.Caption := dlgOptAutoBraceClose;
@@ -142,6 +155,8 @@ begin
 
     CompletionDropDownHintTrackBar.Position := CompletionLongLineHintInMSec;
     CompletionDropDownHint.ItemIndex := ord(CompletionLongLineHintType);
+
+    dropCompletionBackspace.ItemIndex := ord(CompleteBackSpaceAction);
 
     cbAutoBraceOpen.Checked := abInsertClose in AutoBraceModes;
     cbAutoBraceClose.Checked := abSkipClose in AutoBraceModes;
@@ -169,6 +184,8 @@ begin
 
     CompletionLongLineHintInMSec := CompletionDropDownHintTrackBar.Position;
     CompletionLongLineHintType := TSynCompletionLongHintType(CompletionDropDownHint.ItemIndex);
+
+    CompleteBackSpaceAction := TIdeCompletionBackSpaceAction(dropCompletionBackspace.ItemIndex);
 
     abm := [];
     if cbAutoBraceOpen.Checked  then abm := abm + [abInsertClose];

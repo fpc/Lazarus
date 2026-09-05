@@ -200,6 +200,23 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Caption = 'CompletionDropDownHintLabel'
     ParentColor = False
   end
+  object dropCompletionBackspace: TComboBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = CompletionDropDownHint
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 23
+    Top = 352
+    Width = 220
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 2
+    ItemHeight = 15
+    ItemWidth = 550
+    Style = csDropDownList
+    TabOrder = 12
+  end
   object DbgToolTipAutoCastClass: TCheckBox
     AnchorSideLeft.Control = AutoToolTipExprEvalCheckBox
     AnchorSideTop.Control = AutoToolTipExprEvalCheckBox
@@ -285,13 +302,13 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
   end
   object AutoBracketBevel: TDividerBevel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = CompletionDropDownHint
+    AnchorSideTop.Control = dropCompletionBackspace
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 15
-    Top = 356
+    Top = 381
     Width = 634
     Caption = 'AutoBracketBevel'
     Anchors = [akTop, akLeft, akRight]
@@ -308,7 +325,7 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 64
-    Top = 377
+    Top = 402
     Width = 634
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -386,5 +403,18 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
       ShowHint = True
       TabOrder = 3
     end
+  end
+  object lbCompletionBackspace: TLabel
+    AnchorSideLeft.Control = CompletionDropDownHint
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = dropCompletionBackspace
+    AnchorSideTop.Side = asrCenter
+    Left = 232
+    Height = 15
+    Top = 356
+    Width = 128
+    BorderSpacing.Around = 6
+    Caption = 'lbCompletionBackspace'
+    ParentColor = False
   end
 end

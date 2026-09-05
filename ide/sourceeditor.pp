@@ -257,6 +257,7 @@ type
     FCodeCompletionState: record
       State: (ccsReady, ccsCancelled, ccsDot, ccsOnTyping, ccsOnTypingScheduled);
       LastTokenStartPos: TPoint;
+      WasDot: Boolean;
     end;
 
     FSyncroLockCount: Integer;
@@ -4300,6 +4301,7 @@ begin
   ecChar:
     begin
       AddChar:=true;
+      FCodeCompletionState.WasDot := False;
       IsIdent:=FEditor.IsIdentChar(aChar);
       //debugln(['TSourceEditor.ProcessCommand AChar="',AChar,'" AutoIdentifierCompletion=',dbgs(EditorOpts.AutoIdentifierCompletion),' Interval=',AutoStartCompletionBoxTimer.Interval,' ',Dbgs(FEditor.CaretXY),' ',FEditor.IsIdentChar(aChar)]);
       if (aChar=' ') and AutoCompleteChar(aChar,AddChar,acoSpace) then begin
@@ -4343,6 +4345,7 @@ begin
         if ok then begin
           if CodeToolsOpts.IdentComplOnTypeUseTimer then begin
             AutoStartCompletionBoxTimer.AutoEnabled:=true;
+            FCodeCompletionState.WasDot := AChar = '.';
             FCodeCompletionState.State := ccsOnTyping;
           end
           else begin
@@ -4359,6 +4362,7 @@ begin
         inc(SourceCompletionCaretXY.x,length(AChar));
         AutoStartCompletionBoxTimer.AutoEnabled:=true;
         FCodeCompletionState.State := ccsDot;
+        FCodeCompletionState.WasDot := AChar = '.';
       end;
       //DebugLn(['TSourceEditor.ProcessCommand ecChar AddChar=',AddChar]);
       if not AddChar then Command:=ecNone;
@@ -4537,6 +4541,7 @@ begin
 
       if FCodeCompletionState.State = ccsOnTypingScheduled then begin
         FCodeCompletionState.State := ccsOnTyping;
+        FCodeCompletionState.WasDot := AChar = '.';
         StartIdentCompletionBox(False, False, True);
       end;
     end;
@@ -5647,6 +5652,15 @@ begin
     exit;
   if UseWordCompletion then
     Completion.CurrentCompletionType:=ctWordCompletion;
+
+  if EditorOpts.CompleteBackSpaceAction = ibsCancelAfterDot then begin
+    if FCodeCompletionState.WasDot then
+      Completion.BackSpaceAction := Ide2SynCompletionBackSpaceAction[EditorOpts.CompleteBackSpaceAction]
+    else
+      Completion.BackSpaceAction := cbsOnlyDelete;
+  end
+  else
+    Completion.BackSpaceAction := Ide2SynCompletionBackSpaceAction[EditorOpts.CompleteBackSpaceAction];
 
   Completion.AutoUseSingleIdent := CanAutoComplete and
     (FCodeCompletionState.State = ccsDot) and

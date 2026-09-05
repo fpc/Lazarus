@@ -6236,6 +6236,17 @@ resourcestring
   dlgFoldSqlUpdate = 'Update';
   dlgFoldSqlInsert = 'Insert';
   dlgFoldSqlDelete = 'Delete';
+  optEdCompleteBackspaceBehaviour = 'Backspace behaviour';
+  optEdCompleteOnlyDeletePreviousChar = 'Only delete previous char';
+  optEdCompleteCancelIfCompletionWasJust = 'Cancel, if completion was just opened';
+  optEdCompleteCancelIfCompletionWasJust2 = 'Cancel, if completion was just opened, and caret at '
+    +'start';
+  optEdCompleteCancelIfCaretAtStart = 'Cancel, if caret at start';
+  optEdCompleteCancelIfCaretAtStartSingl = 'Cancel, if caret at start (single press, not on '
+    +'repeat key)';
+  optEdCompleteCancelIfJustOpenedOrCaret = 'Cancel, if just opened, or caret at start (not on '
+    +'repeat key)';
+  optEdCompleteCancelIfOpenedByDot = 'Cancel, if opened by dot';
 
 implementation
 
