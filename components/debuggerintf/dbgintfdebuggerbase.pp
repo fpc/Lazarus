@@ -74,6 +74,7 @@ type
     driving an external debugger may not. The frontend must ask rather than
     assume, or it will select a destination that silently receives nothing. *)
     dfStdInOutCapture,
+    dfStdInOutCaptureDefault, // There is no other default console, capture is on, even without diomCaptureInternal
 
     (* dfNotSuitableForOsArch:
        If this is set, then this debugger can not be used on the current

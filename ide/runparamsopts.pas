@@ -325,7 +325,8 @@ procedure TRunParamsOptsDlg.rgConsoleSelectionChanged(Sender: TObject);
 var
   RedirectsApply: Boolean;
 begin
-  cbConsole.Enabled := rgConsole.Enabled and (SelectedConsoleMode = rpcmIdeConsole);
+  cbConsole.Enabled := (rgConsole.Enabled and (SelectedConsoleMode = rpcmIdeConsole)) or
+                       (dfStdInOutCaptureDefault in DebugBoss.DebuggerClass.SupportedFeatures);
 
   RedirectsApply := not DebugBoss.ConsoleIsCaptured(SelectedConsoleMode);
   cbRedirStdIn.Enabled   := RedirectsApply;
