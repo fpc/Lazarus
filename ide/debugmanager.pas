@@ -53,7 +53,7 @@ uses
   ProjectIntf, CompOptsIntf,
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf, IdeIntfStrConsts, IDEDialogs,
-  ToolBarIntf, IdeDebuggerWatchValueIntf,
+  ToolBarIntf, IdeDebuggerWatchValueIntf, IdeDebuggerConsolePlugInIntf,
   {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
   IdeDebuggerValueFormatterIntf,
   {$ENDIF}
@@ -116,7 +116,7 @@ type
 
   { TDebugManager }
 
-  TDebugManager = class(TBaseDebugManager)
+  TDebugManager = class(TBaseDebugManager, ILazDbgIdeTargetIoHook)
     procedure DebuggerIdle(Sender: TObject);
     function DoProjectClose(Sender: TObject; AProject: TLazProject): TModalResult;
     procedure DoProjectModified(Sender: TObject);
@@ -133,6 +133,7 @@ type
     procedure RunTimer(Sender: TObject);
     // Menu events
     procedure mnuViewDebugDialogClick(Sender: TObject);
+    procedure mnuViewDebugConsoleClick(Sender: TObject);
     procedure mnuResetDebuggerClicked(Sender: TObject);
     procedure mnuAddWatchClicked(Sender: TObject);
     procedure mnuAddBpAddress(Sender: TObject);
@@ -159,12 +160,28 @@ type
 
     // Dialog events
     procedure DebugDialogDestroy(Sender: TObject);
+
+    (* The console window the debuggee's captured output currently goes to.
+       Created on demand from the registry; the built-in is the fallback, so
+       this is never nil while there is any registered plug-in. *)
+    function ResolveConsoleId: String;
+    function ConsolePlugIn: ILazDbgIdeConsoleWindowPlugIn;
+    (* The two halves of resolving the selected console plug-in:
+       DoIDERestoreWindows at IDE startup, ReconcileConsolePlugInForNewSession
+       at the start of each debug session. Neither replaces the other. *)
+    procedure ReconcileConsolePlugInForNewSession;
+    procedure DoIDERestoreWindows(Sender: TObject);
+    // ILazDbgIdeTargetIoHook -- what the plug-in is given to talk back with
+    procedure SendInputToTargetConsole(Sender: ILazDbgIdeConsoleWindowPlugIn; AText: String);
+    procedure NotifyDidAutoShow(Sender: ILazDbgIdeConsoleWindowPlugIn);
   private
     FDebugger: TDebuggerIntf;
     FIdeExceptions: TIdeExceptions;
     FEventLogManager: TDebugEventLogManager;
     FUnitInfoProvider: TDebuggerUnitInfoProvider;
     FDialogs: array[TDebugDialogType] of TDebuggerDlg;
+    FConsolePlugIn: ILazDbgIdeConsoleWindowPlugIn;
+    FConsolePlugInId: String;
     FDidShowConsoleForSession: Boolean;
     FInStateChange: Boolean;
     FPrevShownWindow: HWND;
@@ -202,7 +219,6 @@ type
     procedure InitBreakPointDlg;
     procedure InitWatchesDlg;
     procedure InitThreadsDlg;
-    procedure InitPseudoTerminal;
     procedure InitLocalsDlg;
     procedure InitCallStackDlg;
     procedure InitEvaluateDlg;
@@ -1075,25 +1091,141 @@ begin
   end;
 end;
 
+(* Which console window the debuggee's output goes to.
+   In order of priority
+   - Run Parameters mode
+     empty string means: Ide default
+   - IDE default / DebuggerOptions
+   - build in console
+*)
+function TDebugManager.ResolveConsoleId: String;
+var
+  AMode: TAbstractRunParamsOptionsMode;
+begin
+  Result := '';
+  if Project1 <> nil then begin
+    AMode := Project1.RunParameterOptions.GetActiveMode;
+    if AMode <> nil then begin
+      Result := AMode.IdeDbgConsoleId;
+      if (Result <> '') and (DebuggerOptions.ConsoleWindowPlugIns.IndexOfId(Result) >=0) then
+        exit;
+    end;
+  end;
+
+  Result := DebuggerOptions.ConsoleWindowPlugInId;
+  if (Result <> '') and (DebuggerOptions.ConsoleWindowPlugIns.IndexOfId(Result) >=0) then
+    exit;
+  Result := BUILDIN_CONSOLE_PLUGING_ID;
+  if (Result <> '') and (DebuggerOptions.ConsoleWindowPlugIns.IndexOfId(Result) >=0) then
+    exit;
+  if DebuggerOptions.ConsoleWindowPlugIns.Count > 0 then begin
+    Result := DebuggerOptions.ConsoleWindowPlugIns.Ids[0];
+    if (Result <> '') and (DebuggerOptions.ConsoleWindowPlugIns.IndexOfId(Result) >=0) then
+      exit;
+  end;
+
+  Result := '';
+end;
+
+function TDebugManager.ConsolePlugIn: ILazDbgIdeConsoleWindowPlugIn;
+var
+  EntryId: String;
+  Obj: ILazDbgIdeConsoleWindowPlugIn;
+begin
+  if FConsolePlugIn = nil then begin
+    EntryId := ResolveConsoleId;
+    FConsolePlugIn := DebuggerOptions.ConsoleWindowPlugIns.PlugInById(EntryId);
+    if FConsolePlugIn = nil then
+      exit(nil);
+    FConsolePlugInId := EntryId;
+    FConsolePlugIn.HandleUserSelectedAsActive;
+    FConsolePlugIn.ProcessAddedToPlugInHook(Self);
+  end;
+  Result := FConsolePlugIn;
+end;
+
+(* Debug-Session start --
+   Takes account of a selection the user has changed since the last run.
+   Currently called at dsInit.
+
+   The plugins are notified of their selection state change with
+   HandleUserDeselectedFromActive
+   HandleUserSelectedAsActive
+*)
+procedure TDebugManager.ReconcileConsolePlugInForNewSession;
+var
+  EntryId: String;
+begin
+  EntryId := ResolveConsoleId;
+  if (EntryId = '') or
+     ((FConsolePlugIn <> nil) and SameText(EntryId, FConsolePlugInId))
+  then
+    exit;
+
+  if FConsolePlugIn <> nil then begin
+    FConsolePlugIn.ProcessRemovedFromPlugInHook;
+    FConsolePlugIn.HandleUserDeselectedFromActive;
+    FConsolePlugIn := nil;
+    FConsolePlugInId := '';
+  end;
+
+  ConsolePlugIn;   // resolves and attaches the newly selected one
+end;
+
+(* IDE startup --
+   With the start of the IDE some plugin will be selected. Either default, or
+   whatever settings where loaded at startup.
+
+   This constitutes setting the plugin to be selected.
+   Send the required HandleUserSelectedAsActive to the plugin.
+
+   This also may let the window take part in the layout restore:
+   RestoreSimpleLayout asks the registered creator for the window, and a
+   plug-in that has not been told it is active has no business building one.
+
+   This handler runs before Desktop.RestoreDesktop, from
+   TMainIDE.RestoreIDEWindows, and after all packages have registered -- so
+   there is no dependency on the order packages happen to load in. *)
+procedure TDebugManager.DoIDERestoreWindows(Sender: TObject);
+begin
+  ConsolePlugIn;
+end;
+
+procedure TDebugManager.SendInputToTargetConsole(Sender: ILazDbgIdeConsoleWindowPlugIn;
+  AText: String);
+begin
+  DoSendConsoleInput(AText);
+end;
+
+procedure TDebugManager.NotifyDidAutoShow(Sender: ILazDbgIdeConsoleWindowPlugIn);
+begin
+  (* The plug-in showed itself. The IDE keeps the "already shown this session"
+     flag rather than asking per chunk of output: a debuggee can produce a very
+     great deal of it, and nothing on that path should cost a call. *)
+  FDidShowConsoleForSession := True;
+end;
+
 procedure TDebugManager.DebuggerConsoleOutput(Sender: TObject;
   const AText: String);
 var
   f: Boolean;
+  P: ILazDbgIdeConsoleWindowPlugIn;
 begin
   if (not HasConsoleSupport) or (AText = '') then exit;
+  P := ConsolePlugIn;
+  if P = nil then exit;
 
   f := FDidShowConsoleForSession;
   FDidShowConsoleForSession := True;
 
   case EnvironmentDebugOpts.AutoOpenConsoleWin of
-    ocOnceOnOutput:   if not f then ViewDebugDialog(ddtPseudoTerminal, False, True);
-    ocAlwaysOnOutput:               ViewDebugDialog(ddtPseudoTerminal, False, True);
+    ocOnceOnOutput:   if not f then P.BringToFront;
+    ocAlwaysOnOutput:               P.BringToFront;
   end;
 
-  if FDialogs[ddtPseudoTerminal] = nil then
-    ViewDebugDialog(ddtPseudoTerminal, False, False);
-
-  TPseudoConsoleDlg(FDialogs[ddtPseudoTerminal]).AddOutput(AText);
+  (* dtcUnknown until a backend reports which stream this came from. Capture is
+     poStderrToOutPut today, so the two arrive merged and in write order. *)
+  P.AddOutputFromTargetConsole(dtcUnknown, AText);
 end;
 
 function TDebugManager.DebuggerFeedback(Sender: TObject; const AText, AInfo: String;
@@ -1286,12 +1418,19 @@ begin
     ecToggleDebugEvents : ViewDebugDialog(ddtEvents);
     ecEvaluate          : ViewDebugDialog(ddtEvaluate);
     ecInspect           : ViewDebugDialog(ddtInspect);
-    ecViewPseudoTerminal: ViewDebugDialog(ddtPseudoTerminal);
+    (* ecViewPseudoTerminal: ALways open the selected console. *)
+    ecViewPseudoTerminal: if ConsolePlugIn <> nil then
+                            ConsolePlugIn.HandleUserShow;
     ecViewThreads       : ViewDebugDialog(ddtThreads);
     ecViewHistory       : ViewDebugDialog(ddtHistory);
   else
     raise Exception.CreateFmt('IDE Internal error: TDebugManager.mnuViewDebugDialogClick, wrong command parameter %d.', [xCommand]);
   end;
+end;
+
+procedure TDebugManager.mnuViewDebugConsoleClick(Sender: TObject);
+begin
+
 end;
 
 procedure TDebugManager.mnuResetDebuggerClicked(Sender: TObject);
@@ -1670,8 +1809,9 @@ begin
     end;
     dsInit: begin
       Exceptions.ResetHitCounts;
-      if FDialogs[ddtPseudoTerminal] <> nil then
-        TPseudoConsoleDlg(FDialogs[ddtPseudoTerminal]).Clear;
+      ReconcileConsolePlugInForNewSession;
+      if FConsolePlugIn <> nil then
+        FConsolePlugIn.StartNewDebugSession;
     end;
   end;
 end;
@@ -1894,7 +2034,7 @@ const
   DEBUGDIALOGCLASS: array[TDebugDialogType] of TDebuggerDlgClass = (
     TDbgOutputForm, TDbgEventsForm, TBreakPointsDlg, TWatchesDlg, TLocalsDlg,
     TCallStackDlg, TEvaluateDlg, TRegistersDlg, TAssemblerDlg, TMemViewDlg, TIDEInspectDlg,
-    TPseudoConsoleDlg, TThreadsDlg, THistoryDialog
+    TThreadsDlg, THistoryDialog
   );
 var
   CurDialog: TDebuggerDlg;
@@ -1902,8 +2042,6 @@ var
   ForceFront: Boolean;
 begin
   if Destroying then exit;
-  if (ADialogType = ddtPseudoTerminal) and not HasConsoleSupport
-  then exit;
   if ADialogType = ddtAssembler then
     FAsmWindowShouldAutoClose := False;
   if FDialogs[ADialogType] = nil
@@ -1927,7 +2065,6 @@ begin
       ddtEvaluate:    InitEvaluateDlg;
       ddtAssembler:   InitAssemblerDlg;
       ddtInspect:     InitInspectDlg;
-      ddtPseudoTerminal: InitPseudoTerminal;
       ddtThreads:     InitThreadsDlg;
       ddtHistory:     InitHistoryDlg;
     end;
@@ -2079,14 +2216,6 @@ begin
   TheDialog.ThreadsMonitor := FThreads;
   TheDialog.SnapshotManager := FSnapshots;
   TheDialog.EndUpdate;
-end;
-
-procedure TDebugManager.InitPseudoTerminal;
-//var
-//  TheDialog: TPseudoConsoleDlg;
-begin
-  if not HasConsoleSupport then exit;
-  //TheDialog := TPseudoConsoleDlg(FDialogs[ddtPseudoTerminal]);
 end;
 
 procedure TDebugManager.InitLocalsDlg;
@@ -2243,6 +2372,7 @@ begin
   FIsInitializingDebugger:= False;
 
   LazarusIDE.AddHandlerOnProjectClose(@DoProjectClose);
+  LazarusIDE.AddHandlerOnIDERestoreWindows(@DoIDERestoreWindows);
 
   FEventLogManager := TDebugEventLogManager.Create;
   FIdeExceptions.EventLogHandler := FEventLogManager;
@@ -2282,7 +2412,13 @@ begin
   end;
 
   LazarusIDE.RemoveHandlerOnProjectClose(@DoProjectClose);
+  LazarusIDE.RemoveHandlerOnIDERestoreWindows(@DoIDERestoreWindows);
   FreeAndNil(FAutoContinueTimer);
+
+  if FConsolePlugIn <> nil then begin
+    FConsolePlugIn.ProcessRemovedFromPlugInHook;
+    FConsolePlugIn := nil;
+  end;
 
   for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do
     DestroyDebugDialog(DialogType);
@@ -2336,38 +2472,23 @@ procedure TDebugManager.ConnectMainBarEvents;
 begin
   with MainIDEBar do begin
     itmViewWatches.OnClick := @mnuViewDebugDialogClick;
-    itmViewWatches.Tag := Ord(ddtWatches);
     itmViewBreakPoints.OnClick := @mnuViewDebugDialogClick;
-    itmViewBreakPoints.Tag := Ord(ddtBreakPoints);
     itmViewLocals.OnClick := @mnuViewDebugDialogClick;
-    itmViewLocals.Tag := Ord(ddtLocals);
     itmViewRegisters.OnClick := @mnuViewDebugDialogClick;
-    itmViewRegisters.Tag := Ord(ddtRegisters);
     itmViewCallStack.OnClick := @mnuViewDebugDialogClick;
-    itmViewCallStack.Tag := Ord(ddtCallStack);
     itmViewThreads.OnClick := @mnuViewDebugDialogClick;
-    itmViewThreads.Tag := Ord(ddtThreads);
     itmViewAssembler.OnClick := @mnuViewDebugDialogClick;
-    itmViewAssembler.Tag := Ord(ddtAssembler);
     itmViewMemViewer.OnClick := @mnuViewDebugDialogClick;
-    itmViewMemViewer.Tag := Ord(ddtMemViewer);
     itmViewDebugOutput.OnClick := @mnuViewDebugDialogClick;
-    itmViewDebugOutput.Tag := Ord(ddtOutput);
     itmViewDebugEvents.OnClick := @mnuViewDebugDialogClick;
-    itmViewDebugEvents.Tag := Ord(ddtEvents);
-    if itmViewPseudoTerminal <> nil then begin
+    if itmViewPseudoTerminal <> nil then
       itmViewPseudoTerminal.OnClick := @mnuViewDebugDialogClick;
-      itmViewPseudoTerminal.Tag := Ord(ddtPseudoTerminal);
-    end;
     itmViewDbgHistory.OnClick := @mnuViewDebugDialogClick;
-    itmViewDbgHistory.Tag := Ord(ddtHistory);
 
     itmRunMenuResetDebugger.OnClick := @mnuResetDebuggerClicked;
 
     itmRunMenuInspect.OnClick := @mnuViewDebugDialogClick;
-    itmRunMenuInspect.Tag := Ord(ddtInspect);
     itmRunMenuEvaluate.OnClick := @mnuViewDebugDialogClick;
-    itmRunMenuEvaluate.Tag := Ord(ddtEvaluate);
     itmRunMenuAddWatch.OnClick := @mnuAddWatchClicked;
 
     itmRunMenuAddBpSource.OnClick  := @mnuAddBpSource;
@@ -2375,7 +2496,7 @@ begin
     itmRunMenuAddBpWatchPoint.OnClick := @mnuAddBpData;
 
     // TODO: add capacibilities to DebuggerClass
-    // and disable unsuported items
+    // and disable unsupported items
   end;
 end;
 
@@ -2384,9 +2505,7 @@ begin
   SrcEditMenuAddWatchAtCursor.OnClick:=@mnuAddWatchClicked;
   SrcEditMenuAddWatchPointAtCursor.OnClick:=@mnuAddBpDataAtCursor;
   SrcEditMenuEvaluateModify.OnClick:=@mnuViewDebugDialogClick;
-  SrcEditMenuEvaluateModify.Tag := Ord(ddtEvaluate);
   SrcEditMenuInspect.OnClick:=@mnuViewDebugDialogClick;
-  SrcEditMenuInspect.Tag := Ord(ddtInspect);
 end;
 
 function GetCommand(ACommand: word): TIDECommand;
@@ -3294,7 +3413,7 @@ function TDebugManager.ConsoleIsCaptured(AConsoleMode: TRunParamsConsoleMode
 begin
   Result := (AConsoleMode = rpcmIdeConsole) and
             (DebuggerClass <> nil) and
-            (dfStdInOutCapture in DebuggerClass.SupportedFeatures);
+            (DebuggerClass.SupportedFeatures * [dfStdInOutCapture {, dfStdInOutCaptureDefault}] <> []);
 end;
 
 procedure TDebugManager.ProcessCommand(Command: word; var Handled: boolean);
@@ -3345,7 +3464,8 @@ begin
     ecToggleDebuggerOut: ViewDebugDialog(ddtOutput);
     ecToggleDebugEvents: ViewDebugDialog(ddtEvents);
     ecToggleLocals:      ViewDebugDialog(ddtLocals);
-    ecViewPseudoTerminal: ViewDebugDialog(ddtPseudoTerminal);
+    ecViewPseudoTerminal: if ConsolePlugIn <> nil then
+                            ConsolePlugIn.HandleUserShow;
     ecViewThreads:       ViewDebugDialog(ddtThreads);
     ecViewHistory:       ViewDebugDialog(ddtHistory);
   else

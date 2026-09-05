@@ -379,6 +379,17 @@ resourcestring
   lisDisAssGotoAddressHint = 'Goto Address';
   lisDisAssGotoAddrEditTextHint = '($address)';
 
+  // Debug console window plug-ins
+  lisDebugConsoleBuiltInName = 'IDE Debug Console';
+  dlgDebugConsoleWindowOptions = 'Debug Console Window';
+  dlgDebugConsoleWindowSelectDiv = 'Select provider for IDE console window';
+  dlgDebugConsoleWindowEditDiv = 'Edit IDE console provider';
+  dlgDebugConsoleWindowNone = 'No console window is available.';
+  dlgDebugConsoleWindowChangeTakesEffect = 'A change takes effect when the next debug session starts.';
+  dlgDebugConsoleWindowRunParamsHint = 'Selects the default Console for showing the targets StdIn/Out in the IDE. ' + LineEnding +
+                                       'Project can override this in their "Run Parameters". The default there is "use IDE default".';
+  dlgDebugConsoleWindowEditing = 'Currently editing %s';
+
   // Feedback
   lisDebuggerFeedbackInformation = 'Debugger Information';
   lisDebuggerFeedbackWarning = 'Debugger Warning';
@@ -645,6 +656,7 @@ resourcestring
   brkShowBreakpointsAndWatchpo = 'Show breakpoints and watchpoints';
   brkShowExceptionFilter = 'Show exception-filter';
   brkShowBreakWatchpointsAndEx = 'Show break/watchpoints and exception-filter';
+  mnuConsoleInOutputWindow = 'Console In/Output (Lazarus)';
 
 implementation
 

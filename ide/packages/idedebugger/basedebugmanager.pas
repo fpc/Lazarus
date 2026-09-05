@@ -63,7 +63,6 @@ type
     ddtAssembler,
     ddtMemViewer,
     ddtInspect,
-    ddtPseudoTerminal,
     ddtThreads,
     ddtHistory
     );
@@ -83,7 +82,6 @@ const
     'Assembler',
     'MemViewer',
     'Inspect',
-    'PseudoTerminal',
     'Threads',
     'DbgHistory'
     );

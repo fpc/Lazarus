@@ -30,6 +30,8 @@ unit PseudoTerminalDlg;
 {$IFDEF linux} {$DEFINE DBG_ENABLE_TERMINAL} {$ENDIF}
 
 {$mode objfpc}{$H+}
+{$Interfaces CORBA}
+{$ModeSwitch typehelpers}
 
 interface
 
@@ -39,12 +41,20 @@ uses
   Graphics, Forms, StdCtrls, LCLType, ComCtrls, ExtCtrls, MaskEdit,
   // LazUtils
   LazStringUtils, LazLoggerBase,
+  // LazDebuggerIntf
+  LazDebuggerIntfBaseTypes,
   // IdeIntf
-  IDEWindowIntf,
+  IDEWindowIntf, IdeDebuggerPlugInIntf, IdeDebuggerConsolePlugInIntf, MenuIntf,
   // IDE
-  DebuggerDlg, BaseDebugManager, IdeDebuggerStringConstants, EnvDebuggerOptions, EnvironmentOpts;
+  DebuggerDlg, BaseDebugManager, IdeDebuggerStringConstants, EnvDebuggerOptions, IdeDebuggerOpts,
+  EnvironmentOpts;
+
+const
+  IDE_DEBUGGER_CONSOLE_WIN_NAME = 'PseudoTerminal';
 
 type
+
+  TLazDbgIdeBuiltInConsolePlugInConfig = class;
 
   { TPseudoConsoleDlg }
 
@@ -64,12 +74,14 @@ type
     StatusBar1: TStatusBar;
     TabSheetRaw: TTabSheet;
     procedure cbAutoOpenConsoleChange(Sender: TObject);
+    procedure cbLocalEchoChange(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure Memo1UTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
     procedure PairSplitterRawRightResize(Sender: TObject);
     procedure RadioGroupRightSelectionChanged(Sender: TObject);
   private
+    FConfig: TLazDbgIdeBuiltInConsolePlugInConfig;
     ttyHandle: System.THandle;         (* Used only by unix for console size tracking  *)
     fCharHeight: word;
     fCharWidth: word;
@@ -78,12 +90,15 @@ type
     fFirstLine: integer;
     FMemoEndsInEOL: Boolean;
     FMemoEndsInCR: Boolean;
+    FOwnerRef: PPointer; // issue 42568
+    procedure DoConfigChanged(Sender: TObject);
     procedure getCharHeightAndWidth(consoleFont: TFont; out h, w: word);
     procedure consoleSizeChanged;
   protected
     procedure DoClose(var CloseAction: TCloseAction); override;
   public
     constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
     procedure AddOutput(const AText: String);
     procedure Clear;
     property CharHeight: word read fCharHeight;
@@ -97,9 +112,85 @@ type
     procedure SetTextStr(const Value: string); override;
   end;
 
-var
-  PseudoConsoleDlg: TPseudoConsoleDlg;
+  ILazDbgIdeBuiltInConsolePlugIn = interface ['{C66A1611-5C38-4710-B01D-9EBD85FE57FD}']
+    function GetConsoleForm(DoDisableAutoSizing: boolean): TPseudoConsoleDlg;
+  end;
 
+
+  { TLazDbgIdeBuiltInConsolePlugInConfig }
+
+  TLazDbgIdeBuiltInConsolePlugInConfig = class(specialize TGenLazDbgIdePlugInConfiguration<TObject>, ILazDbgIdePlugInConfiguration)
+  private const
+    ECHO_INPUT_DEF = True;
+  private
+    FEchoInput: boolean;
+    FOnChange: TNotifyEvent;
+  public
+    function  GetSettingsFrameClass: TFrameClass; reintroduce;
+    function  GetConfigObject: TObject; reintroduce;
+    function  CreateCopy: ILazDbgIdePlugInConfiguration; reintroduce;
+    procedure FreeCopy; reintroduce;
+    procedure AssignOptions(ASource: ILazDbgIdePlugInConfiguration); reintroduce;
+    procedure ResetOptions;
+    function  CompareOptions(AnOther: ILazDbgIdePlugInConfiguration): TNullableBool;
+  public
+    constructor Create;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  published
+    property EchoInput: boolean read FEchoInput write FEchoInput default ECHO_INPUT_DEF;
+  end;
+
+  { TLazDbgIdeBuiltInConsolePlugInRegistryEntry }
+
+  TLazDbgIdeBuiltInConsolePlugInRegistryEntry = class(TLazDbgIdeConsoleWindowPlugInRegistryEntry)
+  public
+    class function CreateIdeConsoleWindowPlugIn: ILazDbgIdeConsoleWindowPlugIn; override;
+    class function GetDisplayName: String; override;
+    class function GetPlugInId: String; override;
+  end;
+
+  { TLazDbgIdeBuiltInConsolePlugIn }
+
+  TLazDbgIdeBuiltInConsolePlugIn = class(
+    specialize TGenLazDbgIdePlugIn<TObject, TLazDbgIdeBuiltInConsolePlugInRegistryEntry>,
+    ILazDbgIdeConsoleWindowPlugIn, ILazDbgIdePlugInConfiguration,
+    ILazDbgIdeBuiltInConsolePlugIn)
+  private
+    FHook: ILazDbgIdeTargetIoHook;
+    FConfig: TLazDbgIdeBuiltInConsolePlugInConfig;
+    FPseudoConsoleDlg: TPseudoConsoleDlg;
+  protected
+    procedure DoFree;
+    //ILazDbgIdeBuiltInConsolePlugIn
+    function GetConsoleForm(DoDisableAutoSizing: boolean): TPseudoConsoleDlg;
+
+    property Config: TLazDbgIdeBuiltInConsolePlugInConfig read FConfig implements ILazDbgIdePlugInConfiguration;
+  public
+    constructor Create;
+    destructor Destroy; override;
+
+    // ILazDbgIdeConsoleWindowPlugIn
+    procedure ILazDbgIdeConsoleWindowPlugIn.Free = DoFree;
+    procedure HandleUserSelectedAsActive;
+    procedure HandleUserDeselectedFromActive;
+    procedure ProcessAddedToPlugInHook(AHook: ILazDbgIdeTargetIoHook);
+    procedure ProcessRemovedFromPlugInHook;
+    procedure HandleUserShow;
+    procedure StartNewDebugSession;
+    procedure AddOutputFromTargetConsole(AChannel: TLzDbgTargetIoChannel; AText: String);
+    procedure BringToFront;
+    procedure SetAutoShowState(AShowOnInput: Boolean);
+  end;
+
+  { TLazDbgIdeBuiltInConsolePlugInHelper }
+
+  //TLazDbgIdeBuiltInConsolePlugInHelper = type helper for ILazDbgIdePlugIn
+  TLazDbgIdeBuiltInConsolePlugInHelper = type helper for ILazDbgIdeConsoleWindowPlugIn
+    function GetBuiltInConsoleIntf: ILazDbgIdeBuiltInConsolePlugIn; inline;
+    function GetConsoleForm(DoDisableAutoSizing: boolean): TPseudoConsoleDlg; inline;
+  end;
+
+  procedure Register;
 
 implementation
 
@@ -115,6 +206,19 @@ var
   //DBG_VERBOSE,
   DBG_WARNINGS: PLazLoggerLogGroup;
   PseudoTerminalDlgWindowCreator: TIDEWindowCreator;
+
+procedure CreateDebugDialog(Sender: TObject; aFormName: string;
+                            var AForm: TCustomForm; DoDisableAutoSizing: boolean);
+var
+  PlgIn: ILazDbgIdeConsoleWindowPlugIn;
+begin
+  AForm := nil;
+  PlgIn := DebuggerOptions.ConsoleWindowPlugIns.PlugInById(BUILDIN_CONSOLE_PLUGING_ID);
+  if PlgIn = nil then
+    exit;
+  AForm := PlgIn.GetConsoleForm(DoDisableAutoSizing);
+end;
+
 
 { TPseudoConsoleDlg }
 
@@ -234,6 +338,14 @@ begin
   EnvironmentOptions.Save(False);
 end;
 
+procedure TPseudoConsoleDlg.cbLocalEchoChange(Sender: TObject);
+begin
+  if FConfig <> nil then begin
+    FConfig.EchoInput := cbLocalEcho.Checked;
+    DebuggerOptions.ConsoleWindowPlugIns.Changed := True;
+  end;
+end;
+
 
 procedure TPseudoConsoleDlg.DoClose(var CloseAction: TCloseAction);
 
@@ -266,6 +378,8 @@ begin
   GroupBoxRight.Caption := lisLineLimit;
   TabSheetRaw.Caption := lisRawOutput;
   cbLocalEcho.Caption := lisConsoleLocalEcho;
+  {TODO: need feedback from debugger backend}
+  cbLocalEcho.Visible:= {$IFDEF WINDOWS}not{$ENDIF} False;
 
   lbAutoOpenConsole.Caption := DbgWatchColorAutoOpenConsoleWindowLinu;
   cbAutoOpenConsole.AddItem(DbgWatchColorNever, nil);
@@ -277,6 +391,14 @@ begin
   fColsPerRow := -1;
   fFirstLine := 1
 end { TPseudoConsoleDlg.Create } ;
+
+destructor TPseudoConsoleDlg.Destroy;
+begin
+  if FOwnerRef <> nil then FOwnerRef^ := nil; // issue 42568
+  inherited Destroy;
+  if FConfig <> nil then
+    FConfig.OnChange := nil;
+end;
 
 
 (* Get the height and width for characters described by the fount specified by
@@ -300,6 +422,11 @@ begin
     bm.Free
   end
 end { TPseudoConsoleDlg.getCharHeightAndWidth } ;
+
+procedure TPseudoConsoleDlg.DoConfigChanged(Sender: TObject);
+begin
+  cbLocalEcho.Checked := FConfig.EchoInput;
+end;
 
 
 (* Assume that the console size has changed, either because it's just starting
@@ -922,11 +1049,240 @@ procedure TTerminalStringList.SetTextStr(const Value: string);
     end;
 end;
 
+{ TLazDbgIdeBuiltInConsolePlugInConfig }
+
+function TLazDbgIdeBuiltInConsolePlugInConfig.GetSettingsFrameClass: TFrameClass;
+begin
+  Result := nil;
+end;
+
+function TLazDbgIdeBuiltInConsolePlugInConfig.GetConfigObject: TObject;
+begin
+  Result := Self;
+end;
+
+function TLazDbgIdeBuiltInConsolePlugInConfig.CreateCopy: ILazDbgIdePlugInConfiguration;
+begin
+  Result := TLazDbgIdeBuiltInConsolePlugInConfig.Create;
+  Result.AssignOptions(Self);
+end;
+
+procedure TLazDbgIdeBuiltInConsolePlugInConfig.AssignOptions(ASource: ILazDbgIdePlugInConfiguration
+  );
+var
+  Src: TObject;
+  TheSrc: TLazDbgIdeBuiltInConsolePlugInConfig absolute Src;
+begin
+  Src := ASource.GetConfigObject;
+  if not (Src is TLazDbgIdeBuiltInConsolePlugInConfig) then
+    exit;
+  FEchoInput := TheSrc.FEchoInput;
+
+  if Assigned(FOnChange) then
+    FOnChange(Self);
+end;
+
+procedure TLazDbgIdeBuiltInConsolePlugInConfig.ResetOptions;
+begin
+  FEchoInput := ECHO_INPUT_DEF;
+end;
+
+function TLazDbgIdeBuiltInConsolePlugInConfig.CompareOptions(AnOther: ILazDbgIdePlugInConfiguration
+  ): TNullableBool;
+var
+  Src: TObject;
+  TheSrc: TLazDbgIdeBuiltInConsolePlugInConfig absolute Src;
+begin
+  Result := nbUnknown;
+  if AnOther = nil then begin
+    if (FEchoInput = ECHO_INPUT_DEF)
+    then Result := nbTrue
+    else Result := nbFalse;
+  end
+  else begin
+    Src := AnOther.GetConfigObject;
+    if not (Src is TLazDbgIdeBuiltInConsolePlugInConfig) then
+      exit;
+    if (FEchoInput = TheSrc.FEchoInput)
+    then Result := nbTrue
+    else Result := nbFalse;
+  end;
+end;
+
+constructor TLazDbgIdeBuiltInConsolePlugInConfig.Create;
+begin
+  inherited Create;
+  ResetOptions;
+end;
+
+procedure TLazDbgIdeBuiltInConsolePlugInConfig.FreeCopy;
+begin
+  Destroy;
+end;
+
+{ TLazDbgIdeBuiltInConsolePlugIn }
+
+procedure TLazDbgIdeBuiltInConsolePlugIn.DoFree;
+begin
+  Destroy;
+end;
+
+function TLazDbgIdeBuiltInConsolePlugIn.GetConsoleForm(DoDisableAutoSizing: boolean
+  ): TPseudoConsoleDlg;
+begin
+  if FPseudoConsoleDlg = nil then begin
+    FPseudoConsoleDlg := TPseudoConsoleDlg(TPseudoConsoleDlg.NewInstance);
+    if DoDisableAutoSizing then
+      FPseudoConsoleDlg.DisableAutoSizing;
+    FPseudoConsoleDlg.Create(nil);
+    FPseudoConsoleDlg.Name := IDE_DEBUGGER_CONSOLE_WIN_NAME;
+    FPseudoConsoleDlg.FConfig := FConfig;
+    FPseudoConsoleDlg.FConfig.OnChange := @FPseudoConsoleDlg.DoConfigChanged;
+    FPseudoConsoleDlg.DoConfigChanged(FConfig);
+    FPseudoConsoleDlg.FOwnerRef := @FPseudoConsoleDlg; // issue 42568
+  end
+  else
+  if DoDisableAutoSizing then
+    FPseudoConsoleDlg.DisableAutoSizing;
+  Result := FPseudoConsoleDlg;
+end;
+
+constructor TLazDbgIdeBuiltInConsolePlugIn.Create;
+begin
+  inherited Create;
+  FConfig := TLazDbgIdeBuiltInConsolePlugInConfig.Create;
+end;
+
+destructor TLazDbgIdeBuiltInConsolePlugIn.Destroy;
+begin
+  inherited Destroy;
+  FPseudoConsoleDlg.Free;
+  FConfig.Free;
+end;
+
+procedure TLazDbgIdeBuiltInConsolePlugIn.HandleUserSelectedAsActive;
+begin
+  //
+end;
+
+procedure TLazDbgIdeBuiltInConsolePlugIn.HandleUserDeselectedFromActive;
+begin
+  //
+end;
+
+procedure TLazDbgIdeBuiltInConsolePlugIn.ProcessAddedToPlugInHook(
+  AHook: ILazDbgIdeTargetIoHook);
+begin
+  FHook := AHook;
+end;
+
+procedure TLazDbgIdeBuiltInConsolePlugIn.ProcessRemovedFromPlugInHook;
+begin
+  FHook := nil;
+end;
+
+procedure TLazDbgIdeBuiltInConsolePlugIn.HandleUserShow;
+var
+  Dlg: TPseudoConsoleDlg;
+begin
+  Dlg := GetConsoleForm(False);
+  Dlg.BeginUpdate;
+  IDEWindowCreators.ShowForm(Dlg, True, vmOnlyMoveOffScreenToVisible);
+  Dlg.EndUpdate;
+end;
+
+procedure TLazDbgIdeBuiltInConsolePlugIn.StartNewDebugSession;
+begin
+  if FPseudoConsoleDlg <> nil then
+    FPseudoConsoleDlg.Clear;
+end;
+
+procedure TLazDbgIdeBuiltInConsolePlugIn.AddOutputFromTargetConsole(
+  AChannel: TLzDbgTargetIoChannel; AText: String);
+begin
+  GetConsoleForm(False).AddOutput(AText);
+end;
+
+procedure TLazDbgIdeBuiltInConsolePlugIn.BringToFront;
+var
+  Dlg: TPseudoConsoleDlg;
+begin
+  Dlg := GetConsoleForm(False);
+  Dlg.BeginUpdate;
+  IDEWindowCreators.ShowForm(Dlg, True, vmOnlyMoveOffScreenToVisible);
+  Dlg.EndUpdate;
+end;
+
+procedure TLazDbgIdeBuiltInConsolePlugIn.SetAutoShowState(AShowOnInput: Boolean);
+begin
+  (* Ignored on purpose. For the built-in the IDE still applies the auto-open
+     environment option itself, exactly as before this interface existed. A
+     plug-in that owns its own window is the case this call is for. *)
+end;
+
+{ TLazDbgIdeBuiltInConsolePlugInHelper }
+
+function TLazDbgIdeBuiltInConsolePlugInHelper.GetBuiltInConsoleIntf: ILazDbgIdeBuiltInConsolePlugIn;
+begin
+  if not Self.GetInterface(ILazDbgIdeBuiltInConsolePlugIn, Result) then
+    Result := nil;
+end;
+
+function TLazDbgIdeBuiltInConsolePlugInHelper.GetConsoleForm(DoDisableAutoSizing: boolean
+  ): TPseudoConsoleDlg;
+var
+  intf: ILazDbgIdeBuiltInConsolePlugIn;
+begin
+  intf := GetBuiltInConsoleIntf;
+  if intf <> nil then
+    Result := Intf.GetConsoleForm(DoDisableAutoSizing);
+end;
+
+{ TLazDbgIdeBuiltInConsolePlugInRegistryEntry }
+
+class function TLazDbgIdeBuiltInConsolePlugInRegistryEntry.CreateIdeConsoleWindowPlugIn: ILazDbgIdeConsoleWindowPlugIn;
+begin
+  Result := TLazDbgIdeBuiltInConsolePlugIn.Create;
+end;
+
+class function TLazDbgIdeBuiltInConsolePlugInRegistryEntry.GetDisplayName: String;
+begin
+  Result := lisDebugConsoleBuiltInName;
+end;
+
+class function TLazDbgIdeBuiltInConsolePlugInRegistryEntry.GetPlugInId: String;
+begin
+  Result := BUILDIN_CONSOLE_PLUGING_ID;
+end;
+
+type
+
+  TClickHandler = class
+    procedure DoConsoleMenuClick(Sender: TObject);
+  end;
+
+procedure TClickHandler.DoConsoleMenuClick(Sender: TObject);
+var
+  Plg: ILazDbgIdeConsoleWindowPlugIn;
+begin
+  if DebuggerOptions = nil then exit;
+  Plg := DebuggerOptions.ConsoleWindowPlugIns.PlugInById(BUILDIN_CONSOLE_PLUGING_ID);
+  if Plg = nil then exit;
+  Plg.HandleUserShow;
+end;
+
+procedure Register;
+begin
+  RegisterIDEMenuCommand(itmViewDebugConsoleWindows, 'ViewPseudoTerminal', mnuConsoleInOutputWindow, @TClickHandler(nil).DoConsoleMenuClick);
+end;
+
 initialization
+  ConsoleWindowPlugInRegistry.RegisterPlugIn(TLazDbgIdeBuiltInConsolePlugInRegistryEntry);
+
   //DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
   DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
 
-  PseudoTerminalDlgWindowCreator := IDEWindowCreators.Add(DebugDialogNames[ddtPseudoTerminal]);
+  PseudoTerminalDlgWindowCreator := IDEWindowCreators.Add(IDE_DEBUGGER_CONSOLE_WIN_NAME);
   PseudoTerminalDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
   PseudoTerminalDlgWindowCreator.CreateSimpleLayout;
 

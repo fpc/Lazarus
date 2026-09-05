@@ -1,0 +1,100 @@
+object IdeDbgConsoleWindowOptionsFrame: TIdeDbgConsoleWindowOptionsFrame
+  Left = 0
+  Height = 300
+  Top = 0
+  Width = 500
+  ClientHeight = 300
+  ClientWidth = 500
+  TabOrder = 0
+  DesignLeft = 400
+  DesignTop = 200
+  object divSelectPlugIn: TDividerBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 15
+    Top = 0
+    Width = 500
+    Caption = 'divSelectPlugIn'
+    Anchors = [akTop, akLeft, akRight]
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object cbPlugIn: TComboBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = divSelectPlugIn
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 23
+    Top = 21
+    Width = 488
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    ItemHeight = 15
+    OnChange = cbPlugInChange
+    ReadOnly = True
+    Style = csDropDownList
+    TabOrder = 0
+  end
+  object lblDescription: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbPlugIn
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 50
+    Width = 200
+    BorderSpacing.Around = 6
+    Caption = 'lblDescription'
+    ParentColor = False
+  end
+  object divEditPlugIn: TDividerBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblDescription
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 15
+    Top = 71
+    Width = 500
+    Caption = 'divEditPlugIn'
+    Anchors = [akTop, akLeft, akRight]
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object lblEditing: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = divEditPlugIn
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 92
+    Width = 200
+    BorderSpacing.Around = 6
+    Caption = 'lblEditing'
+    ParentColor = False
+  end
+  object pnlSettings: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblEditing
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 187
+    Top = 113
+    Width = 500
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BevelOuter = bvNone
+    ClientHeight = 187
+    ClientWidth = 500
+    TabOrder = 1
+  end
+end

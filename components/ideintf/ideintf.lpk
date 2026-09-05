@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="5">
+  <Package Version="6">
     <Name Value="IDEIntf"/>
     <Type Value="RunAndDesignTime"/>
     <Author Value="Lazarus"/>
@@ -159,6 +159,10 @@
         <UnitName Value="IDECommands"/>
       </Item>
       <Item>
+        <Filename Value="idedebuggerconsolepluginintf.pas"/>
+        <UnitName Value="IdeDebuggerConsolePlugInIntf"/>
+      </Item>
+      <Item>
         <Filename Value="idedebuggervalueformatterintf.pas"/>
         <UnitName Value="IdeDebuggerValueFormatterIntf"/>
       </Item>
@@ -184,7 +188,7 @@
       </Item>
       <Item>
         <Filename Value="ideintfutils.pas"/>
-        <UnitName Value="IdeIntfUtils"/>
+        <UnitName Value="IDEIntfUtils"/>
       </Item>
       <Item>
         <Filename Value="idemsgintf.pas"/>
@@ -200,7 +204,7 @@
       </Item>
       <Item>
         <Filename Value="ideutils.pas"/>
-        <UnitName Value="ideutils"/>
+        <UnitName Value="IDEUtils"/>
       </Item>
       <Item>
         <Filename Value="idewindowintf.pas"/>
@@ -335,6 +339,10 @@
       <Item>
         <Filename Value="unitresources.pas"/>
         <UnitName Value="UnitResources"/>
+      </Item>
+      <Item>
+        <Filename Value="idedebuggerpluginintf.pas"/>
+        <UnitName Value="IdeDebuggerPlugInIntf"/>
       </Item>
     </Files>
     <LazDoc Paths="docs"/>

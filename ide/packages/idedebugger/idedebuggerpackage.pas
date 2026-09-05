@@ -8,15 +8,15 @@ unit idedebuggerpackage;
 interface
 
 uses
-  IdeDebuggerBase, Debugger, ProcessDebugger, ProcessList, DebuggerTreeView, IdeDebuggerUtils, 
-  IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter, IdeDebuggerWatchResUtils, 
-  ArrayNavigationFrame, IdeDebuggerStringConstants, IdeDebuggerBackendValueConv, 
-  IdeDbgValueConverterSettingsFrame, IdeDebugger_ValConv_Options, IdeDebuggerOpts, 
-  IdeDebuggerWatchResultJSon, WatchInspectToolbar, BaseDebugManager, WatchPropertyDlg, 
-  DebuggerDlg, WatchesDlg, CallStackDlg, LocalsDlg, ThreadDlg, BreakPropertyDlgGroups, 
-  HistoryDlg, PseudoTerminalDlg, RegistersDlg, DebugOutputForm, ExceptionDlg, FeedbackDlg, 
-  DebugAttachDialog, BreakPropertyDlg, EvaluateDlg, InspectDlg, BreakPointsDlg, AssemblerDlg, 
-  DbgTreeViewWatchData, EnvDebuggerOptions, BreakpointGroupFrame, 
+  IdeDebuggerBase, IdeDebugger_ConsoleWindow_Options, Debugger, ProcessDebugger, ProcessList, 
+  DebuggerTreeView, IdeDebuggerUtils, IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter, 
+  IdeDebuggerWatchResUtils, ArrayNavigationFrame, IdeDebuggerStringConstants, 
+  IdeDebuggerBackendValueConv, IdeDbgValueConverterSettingsFrame, IdeDebugger_ValConv_Options, 
+  IdeDebuggerOpts, IdeDebuggerWatchResultJSon, WatchInspectToolbar, BaseDebugManager, 
+  WatchPropertyDlg, DebuggerDlg, WatchesDlg, CallStackDlg, LocalsDlg, ThreadDlg, 
+  BreakPropertyDlgGroups, HistoryDlg, PseudoTerminalDlg, RegistersDlg, DebugOutputForm, 
+  ExceptionDlg, FeedbackDlg, DebugAttachDialog, BreakPropertyDlg, EvaluateDlg, InspectDlg, 
+  BreakPointsDlg, AssemblerDlg, DbgTreeViewWatchData, EnvDebuggerOptions, BreakpointGroupFrame, 
   IdeDbgValueFormatterSettingsFrame, IdeDebuggerValueFormatter, IdeDebugger_ValFormatter_Options, 
   IdeDebuggerValueFormatterDateTime, IdeDebuggerValueFormatterColor, 
   IdeDebuggerValueFormatterSetup, IdeDebuggerValueFormatterCurrency, DisplayFormatConfigFrame, 
@@ -30,8 +30,10 @@ implementation
 
 procedure Register;
 begin
+  RegisterUnit('IdeDebugger_ConsoleWindow_Options', @IdeDebugger_ConsoleWindow_Options.Register);
   RegisterUnit('IdeDebuggerUtils', @IdeDebuggerUtils.Register);
   RegisterUnit('IdeDebugger_ValConv_Options', @IdeDebugger_ValConv_Options.Register);
+  RegisterUnit('PseudoTerminalDlg', @PseudoTerminalDlg.Register);
   RegisterUnit('AssemblerDlg', @AssemblerDlg.Register);
   RegisterUnit('IdeDebugger_ValFormatter_Options', @IdeDebugger_ValFormatter_Options.Register);
   RegisterUnit('IdeDebugger_DisplayFormat_Options', @IdeDebugger_DisplayFormat_Options.Register);

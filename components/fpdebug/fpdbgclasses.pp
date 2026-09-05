@@ -1165,8 +1165,14 @@ type
     // library are cleared.
     procedure RemoveAllBreakPoints;
 
+    (* CheckForConsoleOutput: ATimeOutMs must be supplied, but may or may not be used by the function
+       Experimental: The function may instead (or additionally) react to "StopCheckingForConsoleOutput".
+       - A timeout must always be provided. And the function may (or may not) be blocking for up to that amount of time.
+       - The function may or may not return after the timeout, and may have to be called again to continue
+    *)
     function CheckForConsoleOutput(ATimeOutMs: integer): integer; virtual;
-    procedure SetCheckingForConsoleOutputThread(AThread: TThread);
+    {TODO: SetCheckingForConsoleOutputThread - create thread inside the relevant sub-classes / remove this setter}
+    procedure SetCheckingForConsoleOutputThread(AThread: TThread); experimental;
     procedure StopCheckingForConsoleOutput; virtual;
     procedure ClearStopCheckingForConsoleOutputRequested;
     function GetConsoleOutput: string; virtual;

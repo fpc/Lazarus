@@ -143,6 +143,7 @@ object PseudoConsoleDlg: TPseudoConsoleDlg
             BorderSpacing.Around = 6
             Caption = 'cbLocalEcho'
             TabOrder = 2
+            OnChange = cbLocalEchoChange
           end
           object lbAutoOpenConsole: TLabel
             AnchorSideLeft.Control = PanelRightBelowCG

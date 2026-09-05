@@ -969,8 +969,6 @@ begin
     exit;
   end;
 
-  // Launched without pipe capture -> report "no console" (< 0 stops the IDE
-  // reader thread; fpdmcp's pull just returns empty).
   Deadline := SysUtils.GetTickCount64 + QWord(ATimeOutMs);
   repeat
     try

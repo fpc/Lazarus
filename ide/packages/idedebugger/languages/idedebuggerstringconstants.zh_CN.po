@@ -836,6 +836,37 @@ msgstr "- 默认 -"
 msgid "- Disabled -"
 msgstr "- 禁用 -"
 
+#: idedebuggerstringconstants.dlgdebugconsolewindowchangetakeseffect
+msgid "A change takes effect when the next debug session starts."
+msgstr ""
+
+#: idedebuggerstringconstants.dlgdebugconsolewindoweditdiv
+msgid "Edit IDE console provider"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgdebugconsolewindowediting
+#, object-pascal-format
+msgid "Currently editing %s"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgdebugconsolewindownone
+msgid "No console window is available."
+msgstr ""
+
+#: idedebuggerstringconstants.dlgdebugconsolewindowoptions
+msgid "Debug Console Window"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgdebugconsolewindowrunparamshint
+msgid ""
+"Selects the default Console for showing the targets StdIn/Out in the IDE. \n"
+"Project can override this in their \"Run Parameters\". The default there is \"use IDE default\"."
+msgstr ""
+
+#: idedebuggerstringconstants.dlgdebugconsolewindowselectdiv
+msgid "Select provider for IDE console window"
+msgstr ""
+
 #: idedebuggerstringconstants.dlgdisplayformatdebugoptions
 msgid "Display Format"
 msgstr "显示格式"
@@ -1434,6 +1465,10 @@ msgstr "开/关"
 msgctxt "idedebuggerstringconstants.lisdbgwinpowerhint"
 msgid "Disable/Enable updates for the entire window"
 msgstr "禁用/启用整个窗口的更新"
+
+#: idedebuggerstringconstants.lisdebugconsolebuiltinname
+msgid "IDE Debug Console"
+msgstr ""
 
 #: idedebuggerstringconstants.lisdebuggerfeedbackerror
 msgid "Debugger Error"
@@ -2226,6 +2261,10 @@ msgstr "Word (Big Endian)"
 #: idedebuggerstringconstants.memviewgroupwordlittleendian
 msgid "Word (Little Endian)"
 msgstr "Word (Little Endian)"
+
+#: idedebuggerstringconstants.mnuconsoleinoutputwindow
+msgid "Console In/Output (Lazarus)"
+msgstr ""
 
 #: idedebuggerstringconstants.optdispguttercustomdisplayformat
 msgid "Custom Display Format"

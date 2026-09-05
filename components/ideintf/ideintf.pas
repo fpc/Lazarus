@@ -14,7 +14,8 @@ uses
   DBPropEdits, EditorOptionsIntf, EditorSyntaxHighlighterDef, FieldsEditor, 
   FieldsList, FileFilterPropEditor, FormEditingIntf, frmSelectProps, 
   GraphicPropEdit, GraphPropEdits, HeaderControlPropEdit, HelpFPDoc, 
-  IDECommands, IdeDebuggerValueFormatterIntf, IdeDebuggerWatchValueIntf, 
+  IDECommands, IdeDebuggerConsolePlugInIntf, IdeDebuggerValueFormatterIntf, 
+  IdeDebuggerWatchValueIntf, 
   IDEDialogs, IDEHelpIntf, IDEImagesIntf, IdeIntfStrConsts, IDEIntfUtils, 
   IDEMsgIntf, IDEOptEditorIntf, IDETextConverter, IDEUtils, IDEWindowIntf, 
   ImageListEditor, KeyValPropEditDlg, LazIDEIntf, LazStringGridEdit, 
@@ -22,7 +23,7 @@ uses
   ObjInspStrConsts, OIFavoriteProperties, PropEditConfig, PropEdits, 
   PropEditUtils, selectdatasetdlg, SelEdits, SrcEditorIntf, StatusBarPropEdit, 
   StringsPropEditDlg, ToolBarIntf, TreeViewPropEdit, UnitResources, 
-  LazarusPackageIntf;
+  IdeDebuggerPlugInIntf, LazarusPackageIntf;
 
 implementation
 

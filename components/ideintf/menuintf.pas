@@ -280,8 +280,10 @@ var
       itmViewMainWindows: TIDEMenuSection;
       itmViewDesignerWindows: TIDEMenuSection;
       itmViewSecondaryWindows: TIDEMenuSection;
-        itmViewDebugWindows: TIDEMenuSection;
-        itmViewIDEInternalsWindows: TIDEMenuSection;
+        itmViewDebugWindowsMenu: TIDEMenuSection;
+          itmViewDebugWindows: TIDEMenuSection;
+          itmViewDebugConsoleWindows: TIDEMenuSection;
+      itmViewIDEInternalsWindows: TIDEMenuSection;
 
     // source menu
     mnuSource: TIDEMenuSection;

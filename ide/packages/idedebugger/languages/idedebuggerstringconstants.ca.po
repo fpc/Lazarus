@@ -832,6 +832,37 @@ msgstr ""
 msgid "- Disabled -"
 msgstr ""
 
+#: idedebuggerstringconstants.dlgdebugconsolewindowchangetakeseffect
+msgid "A change takes effect when the next debug session starts."
+msgstr ""
+
+#: idedebuggerstringconstants.dlgdebugconsolewindoweditdiv
+msgid "Edit IDE console provider"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgdebugconsolewindowediting
+#, object-pascal-format
+msgid "Currently editing %s"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgdebugconsolewindownone
+msgid "No console window is available."
+msgstr ""
+
+#: idedebuggerstringconstants.dlgdebugconsolewindowoptions
+msgid "Debug Console Window"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgdebugconsolewindowrunparamshint
+msgid ""
+"Selects the default Console for showing the targets StdIn/Out in the IDE. \n"
+"Project can override this in their \"Run Parameters\". The default there is \"use IDE default\"."
+msgstr ""
+
+#: idedebuggerstringconstants.dlgdebugconsolewindowselectdiv
+msgid "Select provider for IDE console window"
+msgstr ""
+
 #: idedebuggerstringconstants.dlgdisplayformatdebugoptions
 msgid "Display Format"
 msgstr ""
@@ -1424,6 +1455,10 @@ msgstr ""
 #: idedebuggerstringconstants.lisdbgwinpowerhint
 msgctxt "idedebuggerstringconstants.lisdbgwinpowerhint"
 msgid "Disable/Enable updates for the entire window"
+msgstr ""
+
+#: idedebuggerstringconstants.lisdebugconsolebuiltinname
+msgid "IDE Debug Console"
 msgstr ""
 
 #: idedebuggerstringconstants.lisdebuggerfeedbackerror
@@ -2213,6 +2248,10 @@ msgstr ""
 
 #: idedebuggerstringconstants.memviewgroupwordlittleendian
 msgid "Word (Little Endian)"
+msgstr ""
+
+#: idedebuggerstringconstants.mnuconsoleinoutputwindow
+msgid "Console In/Output (Lazarus)"
 msgstr ""
 
 #: idedebuggerstringconstants.optdispguttercustomdisplayformat
