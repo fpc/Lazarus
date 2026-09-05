@@ -577,18 +577,8 @@ type
 
   TFpDbgBreakpointState = (bksUnknown, bksOk, bksFailed, bksPending);
   TFpDbgBreakpointStateChangeEvent = procedure(Sender: TFpDbgBreakpoint; ANewState: TFpDbgBreakpointState) of object;
-  (* Runs in dbg-thread, when the breakpoint would pause the process, and only
-     after its Condition has already evaluated to True. AIsValidHit is therefore
-     always True on entry: a hit rejected by the condition never reaches here.
-     Set AIsValidHit to False to suppress this hit. The breakpoint is then left
-     out of the pause set, and the process continues unless some other
-     breakpoint at the same address still pauses it.
-     Intended for state a consumer must keep per breakpoint and per hit -- hit
-     counts, ignore counts -- without the cost of a real pause per hit.
-     Note that on a breakpoint that has a Condition, the condition is parsed and
-     evaluated before every call to this event. *)
   TFpDbgBreakpointCheckHitEvent = procedure(Sender: TFpDbgBreakpoint;
-    const AThreadID: Integer; var AIsValidHit: Boolean) of object;
+    AThread: TDbgThread; var AIsValidHit: Boolean) of object;
 
   TFpDbgBreakpoint = interface ['{B044A854-79AE-4289-B905-9A4E6D19FA0A}']
     function __FpDbgBrk: TFpDbgBreakpointBase;
@@ -600,6 +590,8 @@ type
     procedure SetOn_Thread_StateChange(AValue: TFpDbgBreakpointStateChangeEvent);
     function GetOn_Thread_CheckHit: TFpDbgBreakpointCheckHitEvent;
     procedure SetOn_Thread_CheckHit(AValue: TFpDbgBreakpointCheckHitEvent);
+    function GetOwnerData: Pointer;
+    procedure SetOwnerData(AValue: Pointer);
     procedure SetFreeByDbgProcess(AValue: Boolean); virtual;
 
     procedure SetAutoDisable;
@@ -621,8 +613,14 @@ type
     property FreeByDbgProcess: Boolean write SetFreeByDbgProcess;
     // Event runs in dbg-thread
     property On_Thread_StateChange: TFpDbgBreakpointStateChangeEvent read GetOn_Thread_StateChange write SetOn_Thread_StateChange;
-    // Event runs in dbg-thread, after the Condition passed
+    // Event runs in dbg-thread, when the breakpoint is hit and its Condition
+    // (if any) passed. Set AIsValidHit to False to ignore the hit for this
+    // breakpoint; the process still pauses if another breakpoint at the same
+    // address admits it.
     property On_Thread_CheckHit: TFpDbgBreakpointCheckHitEvent read GetOn_Thread_CheckHit write SetOn_Thread_CheckHit;
+    // For the owner of the breakpoint. Never read, written, copied or freed by
+    // FpDebug, and not cleared when the breakpoint is removed or destroyed.
+    property OwnerData: Pointer read GetOwnerData write SetOwnerData;
   end;
 
   { TFpDbgBreakpointBase }
@@ -646,11 +644,14 @@ type
     FCondition: String;
     FOn_Thread_StateChange: TFpDbgBreakpointStateChangeEvent;
     FOn_Thread_CheckHit: TFpDbgBreakpointCheckHitEvent;
+    FOwnerData: Pointer;
 
     function GetOn_Thread_StateChange: TFpDbgBreakpointStateChangeEvent;
     procedure SetOn_Thread_StateChange(AValue: TFpDbgBreakpointStateChangeEvent);
     function GetOn_Thread_CheckHit: TFpDbgBreakpointCheckHitEvent;
     procedure SetOn_Thread_CheckHit(AValue: TFpDbgBreakpointCheckHitEvent);
+    function GetOwnerData: Pointer;
+    procedure SetOwnerData(AValue: Pointer);
     function __FpDbgBrk: TFpDbgBreakpointBase;
     function GetEnabled: boolean;
     function GetCondition: String;
@@ -674,7 +675,7 @@ type
     constructor Create(const AProcess: TDbgProcess); virtual;
     destructor Destroy; override;
 
-    function IsValidHit(const AThreadID: Integer): Boolean; virtual;
+    function IsValidHit(AThread: TDbgThread): Boolean; virtual;
     function HasLocation(const ALocation: TDBGPtr): Boolean; virtual; abstract;
     // A breakpoint could also be inside/part of a library.
 
@@ -695,8 +696,9 @@ type
     property State: TFpDbgBreakpointState read GetState;
     // Event runs in dbg-thread
     property On_Thread_StateChange: TFpDbgBreakpointStateChangeEvent read FOn_Thread_StateChange write FOn_Thread_StateChange;
-    // Event runs in dbg-thread, after the Condition passed
+    // Documented on TFpDbgBreakpoint
     property On_Thread_CheckHit: TFpDbgBreakpointCheckHitEvent read FOn_Thread_CheckHit write FOn_Thread_CheckHit;
+    property OwnerData: Pointer read FOwnerData write FOwnerData;
   end;
 
   TFpInternalBreakpointList = specialize TFPGObjectList<TFpDbgBreakpointBase>;
@@ -820,7 +822,7 @@ type
     constructor Create(const AProcess: TDbgProcess; const ALocation: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind;
                       AScope: TDBGWatchPointScope); virtual;
     destructor Destroy; override;
-    function IsValidHit(const AThreadID: Integer): Boolean; override;
+    function IsValidHit(AThread: TDbgThread): Boolean; override;
 
     procedure SetBreak; override;
     procedure ResetBreak; override;
@@ -1063,7 +1065,7 @@ type
     procedure SetThreadId(AThreadId: Integer);
     procedure SetExitCode(AValue: DWord);
     function GetLastEventProcessIdentifier: THandle; virtual;
-    function DoBreak(BreakpointAddress: TDBGPtr; AThreadID: integer): Boolean;
+    function DoBreak(BreakpointAddress: TDBGPtr; AThread: TDbgThread): Boolean;
     procedure SetLastLibraryUnloaded(ALib: TDbgLibrary);
     procedure SetLastLibraryUnloadedNil(ALib: TDbgLibrary);
     procedure AddLibrary(ALib: TDbgLibrary; AnID: TDbgPtr);
@@ -3313,7 +3315,7 @@ begin
     FCurrentWatchpoint:=AThread.DetectHardwareWatchpoint;
     if (FCurrentWatchpoint <> nil) and
        ( (FWatchPointList.IndexOf(TFpInternalWatchpoint(FCurrentWatchpoint)) < 0) or
-         (not FCurrentWatchpoint.IsValidHit(AThread.ID))
+         (not FCurrentWatchpoint.IsValidHit(AThread))
        )
     then begin
       FCurrentWatchpoint := nil;
@@ -3333,7 +3335,7 @@ begin
 
     // Whatever reason there was to change the result to deInternalContinue,
     // if a breakpoint has been hit, always trigger it...
-    if DoBreak(CurrentAddr, AThread.ID) then
+    if DoBreak(CurrentAddr, AThread) then
       result := deBreakpoint;
   end
 end;
@@ -3659,7 +3661,7 @@ begin
   result := 0;
 end;
 
-function TDbgProcess.DoBreak(BreakpointAddress: TDBGPtr; AThreadID: integer): Boolean;
+function TDbgProcess.DoBreak(BreakpointAddress: TDBGPtr; AThread: TDbgThread): Boolean;
 var
   BList: TFpInternalBreakpointArray;
   i, xtra: Integer;
@@ -3674,7 +3676,7 @@ begin
   xtra := 0;
   for i := 0 to Length(BList) - 1 do begin
     if (not BList[i].FInternal) and
-       (BList[i]).IsValidHit(AThreadID)
+       (BList[i]).IsValidHit(AThread)
     then begin
       if (FCurrentBreakpoint = nil) then begin
         FCurrentBreakpoint := BList[i];
@@ -4598,7 +4600,7 @@ begin
   inherited Destroy;
 end;
 
-function TFpDbgBreakpointBase.IsValidHit(const AThreadID: Integer): Boolean;
+function TFpDbgBreakpointBase.IsValidHit(AThread: TDbgThread): Boolean;
 var
   Context: TFpDbgSymbolScope;
   PasExpr: TFpPascalExpression;
@@ -4606,7 +4608,7 @@ begin
   Result := True;
   if FCondition <> '' then begin
     // TODO: parse expression when breakpoint is created
-    Context := Process.FindSymbolScope(AThreadID, 0);
+    Context := Process.FindSymbolScope(AThread.ID, 0);
     if Context <> nil then begin
       PasExpr := nil;
       try
@@ -4623,12 +4625,8 @@ begin
     end;
   end;
 
-  (* Only reached if the condition passed (or there was none), so a consumer
-     counting hits here counts condition-true hits, and composes with the
-     condition rather than replacing it. The handler may clear Result to
-     suppress the hit; it is never called with Result already False. *)
   if Result and (FOn_Thread_CheckHit <> nil) then
-    FOn_Thread_CheckHit(Self, AThreadID, Result);
+    FOn_Thread_CheckHit(Self, AThread, Result);
 end;
 
 procedure TFpDbgBreakpointBase.SetCondition(ANewCondition: String);
@@ -4670,6 +4668,16 @@ end;
 procedure TFpDbgBreakpointBase.SetOn_Thread_CheckHit(AValue: TFpDbgBreakpointCheckHitEvent);
 begin
   FOn_Thread_CheckHit := AValue;
+end;
+
+function TFpDbgBreakpointBase.GetOwnerData: Pointer;
+begin
+  Result := FOwnerData;
+end;
+
+procedure TFpDbgBreakpointBase.SetOwnerData(AValue: Pointer);
+begin
+  FOwnerData := AValue;
 end;
 
 function TFpDbgBreakpointBase.GetEnabled: boolean;
@@ -5274,7 +5282,7 @@ begin
   inherited Destroy;
 end;
 
-function TFpInternalWatchpoint.IsValidHit(const AThreadID: Integer): Boolean;
+function TFpInternalWatchpoint.IsValidHit(AThread: TDbgThread): Boolean;
 var
   buf: array of byte;
 begin
@@ -5288,7 +5296,7 @@ begin
   end;
 
   if Result then
-    Result := inherited IsValidHit(AThreadID);
+    Result := inherited IsValidHit(AThread);
 end;
 
 procedure TFpInternalWatchpoint.SetBreak;
