@@ -135,11 +135,8 @@ begin
 end;
 
 procedure TMsgWndOptionsFrame.cbShowAutomaticallyChange(Sender: TObject);
-var
-  SA: TMsgWndShowAutomatically;
 begin
-  SA := TMsgWndShowAutomatically((Sender as TComboBox).ItemIndex);
-  lbWarning.Visible := SA = mwsaNever;
+  lbWarning.Visible := (Sender as TComboBox).ItemIndex = ord(mwsaNever);
 end;
 
 procedure TMsgWndOptionsFrame.MsgColorListBoxGetColors(Sender: TCustomColorListBox;
@@ -230,6 +227,8 @@ begin
 end;
 
 constructor TMsgWndOptionsFrame.Create(AOwner: TComponent);
+var
+  e: TMsgWndShowAutomatically;
 begin
   inherited Create(AOwner);
   OptionsBevel.Caption := lisOptions;
@@ -254,10 +253,15 @@ begin
   lbMaxProcs.Caption := Format(lisMaximumParallelProcesses0MeansDefault,
                                [IntToStr(DefaultMaxProcessCount)]);
   lbOpenAutomatically.Caption := lisOpenAutomatically;
-  cbShowAutomatically.Items.Add(lisOpenAutoWhenCompiling);
-  cbShowAutomatically.Items.Add(lisOpenAutoOnlyWhenErrorsOccur);
-  cbShowAutomatically.Items.Add(lisOpenAutoNever);
-  cbShowAutomatically.ItemIndex := 0;
+  for e in TMsgWndShowAutomatically do
+    case e of
+      mwsaDefault : cbShowAutomatically.Items.Add(lisOpenAutoWhenCompiling);
+      mwsaError   : cbShowAutomatically.Items.Add(lisOpenAutoOnlyWhenErrorsOccur);
+      mwsaNever   : cbShowAutomatically.Items.Add(lisOpenAutoNever);
+    else
+      raise Exception.Create('TMsgWndShowAutomatically element not have a resource string');
+    end;
+  cbShowAutomatically.ItemIndex := ord(mwsaDefault);
   cbFocusWhenGettingMessages.Caption := lisFocusWindow;
   lbWarning.Caption := lisMustBeOpenedManually;
 end;
@@ -295,7 +299,7 @@ begin
     cbAlwaysDrawFocused.Checked := MsgViewAlwaysDrawFocused;
     cbWordWrap.Checked := MsgViewWordWrap;
     cbFocusWhenGettingMessages.Checked := MsgViewFocus;
-    cbShowAutomatically.ItemIndex := Integer(MsgViewShowAutomatically);
+    cbShowAutomatically.ItemIndex := ord(MsgViewShowAutomatically);
     cbShowAutomaticallyChange(cbShowAutomatically); // Update the warning.
   end;
   cbShowFPCLinesCompiled.Checked := EnvOpt.MsgViewShowFPCMsgLinesCompiled;
