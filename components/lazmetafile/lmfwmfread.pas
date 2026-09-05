@@ -610,7 +610,7 @@ begin
   try
     datasize := (Length(AParams) - AIndex) * SIZE_OF_WORD;
 
-    // Put a bitmap file header in front of the bitmap info header and the data
+    // Put a bitmap file header in front of the bitmap info header and data
     bmpFileHdr.bfType := BMmagic;
     bmpFileHdr.bfSize := SizeOf(bmpFileHdr) + datasize;
     bmpFileHdr.bfOffset := SizeOf(bmpFileHdr) + bmpInfoHdr^.Size;

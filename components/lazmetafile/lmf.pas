@@ -23,19 +23,22 @@ type
   TlmfImage = class;
   TlmfList = class;
 
-  // abstract reader/writer classes
+  // abstract reader class
   TlmfReader = class
   public
     procedure ReadFromStream(AStream: TStream; AImage: TlmfImage); virtual; abstract;
   end;
 
+  // abstract writer class
   TlmfWriter = class
   public
     procedure WriteToStream(AStream: TStream; AImage: TlmfImage); virtual; abstract;
   end;
 
-  TlmfMapMode = (mmAnisotropic, mmHiEnglish, mmHiMetric, mmIsotropic, mmLoEnglish,
-    mmLoMetric, mmText, mmTwips, mmLogUnitsPerInch);
+  TlmfMapMode = (mmLogUnitsPerInch,
+    { 1..8 }mmText, mmLoMetric, mmHiMetric, mmLoEnglish, mmHiEnglish,
+    mmTwips, mmIsotropic, mmAnisotropic);
+
 
   { TlmfImage }
 
@@ -58,12 +61,12 @@ type
     procedure SetMapMode(AValue: TlmfMapMode);
     procedure SetPixelsPerInch(AValue: Integer);
   protected
-    procedure AssignTo(Dest:TPersistent);override;
-    function GetWidth:integer;override;
-    procedure SetWidth(AVal:integer);override;
-    function GetHeight:integer;override;
-    procedure SetHeight(AVal:integer);override;
-    function GetEmpty:boolean;override;
+    procedure AssignTo(Dest: TPersistent);override;
+    function GetWidth: integer; override;
+    procedure SetWidth(AValue: integer); override;
+    function GetHeight: integer; override;
+    procedure SetHeight(AValue: integer); override;
+    function GetEmpty: boolean; override;
     function GetTransparent: Boolean; override;
     procedure SetTransparent(Value: Boolean); override;
     procedure CalcScaling(const Rect: TRect);
@@ -230,6 +233,10 @@ begin
       TlmfImage(Dest).fLogWidth := fLogWidth;
       TlmfImage(Dest).fLogHeight := fLogHeight;
       TlmfImage(Dest).LogUnitsPerInch := LogUnitsPerInch;
+      TlmfImage(Dest).fDevOrgX := fDevOrgX;
+      TlmfImage(Dest).fDevOrgY := fDevOrgY;
+      TlmfImage(Dest).fDevWidth := fDevWidth;
+      TlmfImage(Dest).fDevHeight := fDevHeight;
     finally
       mf.Free;
     end;
@@ -275,10 +282,10 @@ begin
 end;
 
 { Sets the width of the metafile image in logical units. }
-procedure TlmfImage.SetWidth(AVal: integer);
+procedure TlmfImage.SetWidth(AValue: integer);
 begin
-  if (AVal = fLogWidth) then exit;
-  fLogWidth := AVal;
+  if (AValue = fLogWidth) then exit;
+  fLogWidth := AValue;
   fList.fWidth := fLogWidth;
   Self.Modified := true;
 end;
@@ -286,6 +293,14 @@ end;
 function TlmfImage.GetHeight:integer;
 begin
   Result:=fList.fHeight;
+end;
+
+procedure TlmfImage.SetHeight(AValue: integer);
+begin
+  if (AValue = fLogHeight) then exit;
+  fLogHeight := AValue;
+  fList.fHeight := fLogHeight;
+  Modified := true;
 end;
 
 // x coordinate of the the image origin in logical units
@@ -338,14 +353,6 @@ begin
   fLogWidth := AWidth;
   fLogHeight := AHeight;
   fList.fWidth := fLogWidth;
-  fList.fHeight := fLogHeight;
-  Modified := true;
-end;
-
-procedure TlmfImage.SetHeight(AVal:integer);
-begin
-  if (AVal = fLogHeight) then exit;
-  fLogHeight := AVal;
   fList.fHeight := fLogHeight;
   Modified := true;
 end;

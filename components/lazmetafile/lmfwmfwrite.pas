@@ -1,3 +1,12 @@
+{ Writer for WMF files.
+
+  A good description of the WMF (and EMF) file format is
+    https://wvware.sourceforge.net/caolan/ora-wmf.html
+
+  The official Microsoft documentation is at
+    https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-wmf/4813e7fd-52d0-4f42-965f-228c8b7488d2
+}
+
 unit lmfWMFWrite;
 
 {$mode objfpc}{$H+}
@@ -30,6 +39,7 @@ type
     procedure WriteBkMode(AStream: TStream; AItem: TlmfBkMode);
     procedure WriteBrush(AStream: TStream; AItem: TlmfBrush);
     procedure WriteChord(AStream: TStream; AItem: TlmfChord);
+    procedure WriteDeleteObject(AStream: TStream; AIndex: Integer);
     procedure WriteEllipse(AStream: TStream; AItem: TlmfEllipse);
     procedure WriteEOF(AStream: TStream);
     procedure WriteExtFloodFill(AStream: TStream; AItem: TlmfFloodFill);
@@ -57,6 +67,7 @@ type
     // General routines
     function AddToObjTable(AItem: TComponent): Integer;
     function CalcChecksum(P: PWord; ASize: Word): Word;
+    procedure DeleteObjTable(AStream: TStream);
     function FindInObjTable(AItem: TComponent): Integer;
     function MakeWMFColorRecord(AColor: TColor): TWMFColorRecord;
     // General WMF record writing
@@ -277,6 +288,18 @@ begin
   Result := FObjTable.Add(AItem);
 end;
 
+procedure TWMFWriter.DeleteObjTable(AStream: TStream);
+var
+  i: Integer;
+begin
+  for i := FObjTable.Count-1 downto 0 do
+    if FObjTable[i] <> nil then
+    begin
+      WriteDeleteObject(AStream, NToLE(i));
+      FObjTable[i] := nil;
+    end;
+end;
+
 function TWMFWriter.FindInObjTable(AItem: TComponent): Integer;
 var
   i: Integer;
@@ -330,7 +353,6 @@ var
   P: TPoint;
   i: Integer;
   s: String;
-  ext: TSize;
   lineHeight, totalHeight: Integer;
   txtAlign: Word;
 begin
@@ -405,14 +427,14 @@ procedure TWMFWriter.WriteArc(AStream: TStream; AItem: TlmfArc);
 var
   rec: TWMFArcRecord;
 begin
-  rec.Left := AItem.Left;
-  rec.Top := AItem.Top;
-  rec.Right := AItem.Right;
-  rec.Bottom := AItem.Bottom;
-  rec.XStartArc := AItem.StartPtX;
-  rec.YStartArc := AItem.StartPtY;
-  rec.XEndArc := AItem.EndPtX;
-  rec.YEndArc := AItem.EndPtY;
+  rec.Left := NToLE(AItem.Left);
+  rec.Top := NToLE(AItem.Top);
+  rec.Right := NToLE(AItem.Right);
+  rec.Bottom := NToLE(AItem.Bottom);
+  rec.XStartArc := NToLE(AItem.StartPtX);
+  rec.YStartArc := NToLE(AItem.StartPtY);
+  rec.XEndArc := NToLE(AItem.EndPtX);
+  rec.YEndArc := NToLE(AItem.EndPtY);
 
   // WMF record header + parameters
   WriteWMFRecord(AStream, META_ARC, rec, SizeOf(TWMFArcRecord));
@@ -428,12 +450,12 @@ end;
 
 procedure TWMFWriter.WriteBkColor(AStream: TStream; AItem: TlmfBkColor);
 begin
-  WriteBkColor(AStream, AItem.Color);
+  WriteBkColor(AStream, NToLE(AItem.Color));
 end;
 
 procedure TWMFWriter.WriteBkMode(AStream: TStream; AMode: Word);
 begin
-  WriteWMFRecord(AStream, META_SETBKMODE, AMode, SizeOf(AMode));
+  WriteWMFRecord(AStream, META_SETBKMODE, NToLE(AMode), SizeOf(AMode));
 end;
 
 procedure TWMFWriter.WriteBkMode(AStream: TStream; AItem: TlmfBkMode);
@@ -446,23 +468,27 @@ var
   rec: TWMFBrushRecord;
   idx: Integer;
   idxObj: Word;
+  style, hatch: Word;
 begin
   idx := FindInObjTable(AItem);
   if idx = -1 then
   begin
     // Brush not found in object table --> create new brush
     rec := Default(TWMFBrushRecord);
+    hatch := 0;
     case AItem.Brush.Style of
-      bsClear      : rec.Style := BS_NULL;
-      bsSolid      : rec.Style := BS_SOLID;
-      bsHorizontal : begin rec.Style := BS_HATCHED; rec.Hatch := HS_HORIZONTAL; end;
-      bsVertical   : begin rec.Style := BS_HATCHED; rec.Hatch := HS_VERTICAL; end;
-      bsFDiagonal  : begin rec.Style := BS_HATCHED; rec.Hatch := HS_FDIAGONAL; end;
-      bsBDiagonal  : begin rec.Style := BS_HATCHED; rec.Hatch := HS_BDIAGONAL; end;
-      bsCross      : begin rec.Style := BS_HATCHED; rec.Hatch := HS_CROSS; end;
-      bsDiagCross  : begin rec.Style := BS_HATCHED; rec.Hatch := HS_DIAGCROSS; end;
-      else           rec.Style := BS_SOLID;
+      bsClear      : style := BS_NULL;
+      bsSolid      : style := BS_SOLID;
+      bsHorizontal : begin style := BS_HATCHED; hatch := HS_HORIZONTAL; end;
+      bsVertical   : begin style := BS_HATCHED; hatch := HS_VERTICAL; end;
+      bsFDiagonal  : begin style := BS_HATCHED; hatch := HS_FDIAGONAL; end;
+      bsBDiagonal  : begin style := BS_HATCHED; hatch := HS_BDIAGONAL; end;
+      bsCross      : begin style := BS_HATCHED; hatch := HS_CROSS; end;
+      bsDiagCross  : begin style := BS_HATCHED; hatch := HS_DIAGCROSS; end;
+      else           style := BS_SOLID;
     end;
+    rec.Style := NtoLE(style);
+    rec.Hatch := NtoLE(hatch);
     rec.ColorRED := Red(AItem.Brush.Color);
     rec.ColorGREEN := Green(AItem.Brush.Color);
     rec.ColorBLUE := Blue(AItem.Brush.Color);
@@ -473,7 +499,7 @@ begin
 
   // Write the object table index of the brush to the SelectObject WMF record:
   idxObj := word(idx);
-  WriteWMFRecord(AStream, META_SELECTOBJECT, idxObj, SizeOf(Word));
+  WriteWMFRecord(AStream, META_SELECTOBJECT, NtoLE(idxObj), SizeOf(Word));
 
   // Store current brush for cases where brush must be changed temporarily
   FCurrBrush := AItem.Brush;
@@ -483,27 +509,35 @@ procedure TWMFWriter.WriteChord(AStream: TStream; AItem: TlmfChord);
 var
   rec: TWMFArcRecord;  // same structure for both arc, chord and pie
 begin
-  rec.Left := AItem.Left;
-  rec.Top := AItem.Top;
-  rec.Right := AItem.Right;
-  rec.Bottom := AItem.Bottom;
-  rec.XStartArc := AItem.StartPtX;
-  rec.YStartArc := AItem.StartPtY;
-  rec.XEndArc := AItem.EndPtX;
-  rec.YEndArc := AItem.EndPtY;
+  rec.Left := NToLE(AItem.Left);
+  rec.Top := NToLE(AItem.Top);
+  rec.Right := NToLE(AItem.Right);
+  rec.Bottom := NToLE(AItem.Bottom);
+  rec.XStartArc := NToLE(AItem.StartPtX);
+  rec.YStartArc := NToLE(AItem.StartPtY);
+  rec.XEndArc := NToLE(AItem.EndPtX);
+  rec.YEndArc := NToLE(AItem.EndPtY);
 
   // WMF record header + parameters
   WriteWMFRecord(AStream, META_CHORD, rec, SizeOf(TWMFArcRecord));
+end;
+
+procedure TWMFWriter.WriteDeleteObject(AStream: TStream; AIndex: Integer);
+var
+  objIndex: Word;
+begin
+  objIndex := AIndex;
+  WriteWMFRecord(AStream, META_DELETEOBJECT, NtoLE(objIndex), SIZE_OF_WORD);
 end;
 
 procedure TWMFWriter.WriteEllipse(AStream: TStream; AItem: TlmfEllipse);
 var
   rec: TWMFRectRecord;
 begin
-  rec.Left := AItem.Left;
-  rec.Top := AItem.Top;
-  rec.Right := AItem.Right;
-  rec.Bottom := AItem.Bottom;
+  rec.Left := NToLE(AItem.Left);
+  rec.Top := NToLE(AItem.Top);
+  rec.Right := NToLE(AItem.Right);
+  rec.Bottom := NToLE(AItem.Bottom);
 
   // WMF record header + parameters
   WriteWMFRecord(AStream, META_ELLIPSE, rec, SizeOf(TWMFRectRecord));
@@ -520,12 +554,12 @@ procedure TWMFWriter.WriteExtFloodFill(AStream: TStream; AItem: TlmfFloodFill);
 var
   rec: TWMFExtFloodFillRecord;
 begin
-  rec.Mode := 1 - ord(AItem.FillStyle);
+  rec.Mode := NToLE(1 - ord(AItem.FillStyle));
   rec.ColorRED := Red(AItem.FillColor);
   rec.ColorGREEN := Green(AItem.FillColor);
   rec.ColorBLUE := Blue(AItem.FillColor);
-  rec.XStart := AItem.px;
-  rec.YStart := AItem.py;
+  rec.XStart :=NToLE(AItem.px);
+  rec.YStart := NToLE(AItem.py);
   // WMF record header + parameters
   WriteWMFRecord(AStream, META_EXTFLOODFILL, rec, SizeOf(TWMFExtFloodFillRecord));
 end;
@@ -556,15 +590,15 @@ begin
       fntName[32] := #0;
     end;
 
-    rec.Height := abs(AItem.Font.Height);
+    rec.Height := NToLE(abs(AItem.Font.Height));
     rec.Width := 0;
-    rec.Orientation := AItem.Font.Orientation;
-    rec.Escapement := AItem.Font.Orientation;
-    rec.Weight := IfThen(fsBold in AItem.Font.Style, 700, 400);
-    rec.Italic := ZERO_OR_ONE[fsItalic in AItem.Font.Style];
-    rec.Underline := ZERO_OR_ONE[fsUnderline in AItem.Font.Style];
-    rec.Strikeout := ZERO_OR_ONE[fsStrikeOut in AItem.Font.Style];
-    rec.Charset := DEFAULT_CHARSET;
+    rec.Orientation := NToLE(AItem.Font.Orientation);
+    rec.Escapement := NToLE(AItem.Font.Orientation);
+    rec.Weight := NToLE(IfThen(fsBold in AItem.Font.Style, 700, 400));
+    rec.Italic := NToLE(ZERO_OR_ONE[fsItalic in AItem.Font.Style]);
+    rec.Underline := NToLE(ZERO_OR_ONE[fsUnderline in AItem.Font.Style]);
+    rec.Strikeout := NToLE(ZERO_OR_ONE[fsStrikeOut in AItem.Font.Style]);
+    rec.Charset := NToLE(DEFAULT_CHARSET);
     rec.OutPrecision := 0;  // default
     rec.ClipPrecision := 0; // default
     rec.Quality := 0; // default
@@ -577,7 +611,7 @@ begin
 
   // Write the index of the font to the SelectObject WMF record:
   idxObj := word(idx);
-  WriteWMFRecord(AStream, META_SELECTOBJECT, idxObj, SizeOf(Word));
+  WriteWMFRecord(AStream, META_SELECTOBJECT, NToLE(idxObj), SizeOf(Word));
 
   // Write text color
   colorRec := MakeWMFColorRecord(AItem.Font.Color);
@@ -586,41 +620,6 @@ begin
   // Store font for text layout for TlmfTextInRect records
   FCurrFont := AItem.Font;
 end;
-                 (*
-procedure TWMFWriter.WriteFrame3D(AStream: TStream; AItem: TlmfFrame3D);
-var
-  rec: TWMFRectRecord;
-  penRec: TWMFPenRecord;
-  currBrushIdx, currPenIdx: Integer;
-  tmpItem: TlmfObject;
-  itemIdx: Integer;
-begin
-  itemIdx := FImage.List.IndexOfComponent(AItem);
-
-  currBrushIdx := FindInObjTable(FCurrBrush);
-  currPenIdx := FindInObjTable(FCurrPen);
-
-  // 1) We don't need the pen --> Style = psClear
-  tmpItem := TlmfPen.Create(nil);
-  tmpItem.Pen.Style := psClear;
-
-
-  penRec := Default(TWMFPenRecord);
-  penRec.Style := PS_NONE;
-  WriteWMFRecord(AStream, META_CREATEPENINDIRECT, penRec, SizeOf(penRec));
-  WriteWMFRecord(AStream,
-
-
-
-  rec.Left := AItem.Left;
-  rec.Top := AItem.Top;
-  rec.Right := AItem.Right;
-  rec.Bottom := AItem.Bottom;
-
-  // WMF record header + parameters
-  WriteWMFRecord(AStream, META_RECTANGLE, rec, SizeOf(TWMFRectRecord));
-end;
-*)
 
 { Extracts the mask from the input bitmap (ABitmap) as AMaskOnly.
   Applies the mask to itself and returns the result as AMaskedBitmap.
@@ -681,15 +680,15 @@ begin
     ms.Read(bmpFileHdr, SizeOf(bmpFileHdr));    // Jump over bmp file header
     // The memory stream now is at beginning of BitmapInfoHeader + PixelData
 
-    rec.RasterOperation := AOperation;
-    rec.SrcHeight := ABitmap.Height;
-    rec.SrcWidth := ABitmap.Width;
+    rec.RasterOperation := NToLE(AOperation);
+    rec.SrcHeight := NToLE(ABitmap.Height);
+    rec.SrcWidth := NToLE(ABitmap.Width);
     rec.SrcX := 0;
     rec.SrcY := 0;
-    rec.DestHeight := ARect.Bottom - ARect.Top;
-    rec.DestWidth := ARect.Right - ARect.Left;
-    rec.DestY := ARect.Top;
-    rec.DestX := ARect.Left;
+    rec.DestHeight := NToLE(ARect.Bottom - ARect.Top);
+    rec.DestWidth := NToLE(ARect.Right - ARect.Left);
+    rec.DestY := NToLE(ARect.Top);
+    rec.DestX := NToLE(ARect.Left);
 
     WriteWMFRecord(AStream, META_DIBSTRETCHBLT, SizeOf(TWMFDIBStretchBltRecord) + dibImgSize);
     AStream.Write(rec, SizeOf(TWMFDIBStretchBltRecord));
@@ -723,8 +722,8 @@ procedure TWMFWriter.WriteLineTo(AStream: TStream; AItem: TlmfLineTo);
 var
   rec: TWMFPointRecord;
 begin
-  rec.X := AItem.PX;
-  rec.Y := AItem.PY;
+  rec.X := NToLE(AItem.PX);
+  rec.Y := NToLE(AItem.PY);
   WriteWMFRecord(AStream, META_LINETO, rec, SizeOf(TWMFPointRecord));
 end;
 
@@ -733,24 +732,25 @@ var
   rec: TWMFLineRecord;
 begin
   rec.NumPts := 2;
-  rec.P1.X := AItem.PX;
-  rec.P1.Y := AItem.PY;
-  rec.P2.X := AItem.PX1;
-  rec.P2.Y := AItem.PY1;
+  rec.P1.X := NToLE(AItem.PX);
+  rec.P1.Y := NToLE(AItem.PY);
+  rec.P2.X := NToLE(AItem.PX1);
+  rec.P2.Y := NToLE(AItem.PY1);
   WriteWMFRecord(AStream, META_POLYLINE, rec, SizeOf(TWMFLineRecord));
 end;
 
 procedure TWMFWriter.WriteMapMode(AStream: TStream; AMode: Word);
 begin
-  WriteWMFRecord(AStream, META_SETMAPMODE, AMode, SizeOf(AMode));
+  if TlmfMapMode(AMode) <> mmLogUnitsPerInch then
+    WriteWMFRecord(AStream, META_SETMAPMODE, NToLE(AMode), SizeOf(AMode));
 end;
 
 procedure TWMFWriter.WriteMoveTo(AStream: TStream; AItem: TlmfMoveTo);
 var
   rec: TWMFPointRecord;
 begin
-  rec.X := AItem.PX;
-  rec.Y := AItem.PY;
+  rec.X := NToLE(AItem.PX);
+  rec.Y := NToLE(AItem.PY);
   WriteWMFRecord(AStream, META_MOVETO, rec, SizeOf(TWMFPointRecord));
 end;
 
@@ -759,6 +759,7 @@ var
   rec: TWMFPenRecord;
   idx: Integer;
   idxObj: Word;
+  style: Word;
 begin
   // Searches the object list for the first usage of this pen and returns its index
   idx := FindInObjTable(AItem);
@@ -767,27 +768,28 @@ begin
   if idx = -1 then
   begin
     case AItem.Pen.Style of
-      psDash       : rec.Style := PS_DASH;
-      psDot        : rec.Style := PS_DOT;
-      psDashDot    : rec.Style := PS_DASHDOT;
-      psDashDotDot : rec.Style := PS_DASHDOTDOT;
-      psClear      : rec.Style := PS_NULL;
-      psInsideFrame: rec.Style := PS_INSIDEFRAME;
-      else           rec.Style := PS_SOLID;
+      psDash       : style := PS_DASH;
+      psDot        : style := PS_DOT;
+      psDashDot    : style := PS_DASHDOT;
+      psDashDotDot : style := PS_DASHDOTDOT;
+      psClear      : style := PS_NULL;
+      psInsideFrame: style := PS_INSIDEFRAME;
+      else           style := PS_SOLID;
     end;
     if AItem.Pen.Cosmetic then
-      rec.Style := rec.Style or PS_COSMETIC;
+      style := style or PS_COSMETIC;
     case AItem.Pen.JoinStyle of
-      pjsRound: rec.Style := rec.Style or PS_JOIN_ROUND;
-      pjsBevel: rec.Style := rec.Style or PS_JOIN_BEVEL;
-      pjsMiter: rec.Style := rec.Style or PS_JOIN_MITER;
+      pjsRound: style := style or PS_JOIN_ROUND;
+      pjsBevel: style := style or PS_JOIN_BEVEL;
+      pjsMiter: style := style or PS_JOIN_MITER;
     end;
     case AItem.Pen.EndCap of
-      pecRound: rec.Style := rec.Style or PS_ENDCAP_ROUND;
-      pecSquare: rec.Style := rec.Style or PS_ENDCAP_SQUARE;
-      pecFlat: rec.Style := rec.Style or PS_ENDCAP_FLAT;
+      pecRound: style := style or PS_ENDCAP_ROUND;
+      pecSquare: style := style or PS_ENDCAP_SQUARE;
+      pecFlat: style := style or PS_ENDCAP_FLAT;
     end;
-    rec.Width := AItem.Pen.Width;
+    rec.Style := NToLE(style);
+    rec.Width := NToLE(AItem.Pen.Width);
     rec.Ignored1 := 0;
     rec.ColorRED := Red(AItem.Pen.Color);
     rec.ColorGREEN := Green(AItem.Pen.Color);
@@ -799,7 +801,7 @@ begin
 
   // Write the object table index of the pen to the SelectObject WMF record.
   idxObj := word(idx);
-  WriteWMFRecord(AStream, META_SELECTOBJECT, idxObj, SizeOf(Word));
+  WriteWMFRecord(AStream, META_SELECTOBJECT, NtoLE(idxObj), SizeOf(Word));
 
   // Store current pen for cases where pen must be changed temporarily
   FCurrPen := AItem.Pen;
@@ -809,14 +811,14 @@ procedure TWMFWriter.WritePie(AStream: TStream; AItem: TlmfPie);
 var
   rec: TWMFArcRecord;  // same structure for both arc, chord and pie
 begin
-  rec.Left := AItem.Left;
-  rec.Top := AItem.Top;
-  rec.Right := AItem.Right;
-  rec.Bottom := AItem.Bottom;
-  rec.XStartArc := AItem.StartPtX;
-  rec.YStartArc := AItem.StartPtY;
-  rec.XEndArc := AItem.EndPtX;
-  rec.YEndArc := AItem.EndPtY;
+  rec.Left := NToLE(AItem.Left);
+  rec.Top := NToLE(AItem.Top);
+  rec.Right := NToLE(AItem.Right);
+  rec.Bottom := NToLE(AItem.Bottom);
+  rec.XStartArc := NToLE(AItem.StartPtX);
+  rec.YStartArc := NToLE(AItem.StartPtY);
+  rec.XEndArc := NToLE(AItem.EndPtX);
+  rec.YEndArc := NToLE(AItem.EndPtY);
 
   // WMF record header + parameters
   WriteWMFRecord(AStream, META_PIE, rec, SizeOf(TWMFArcRecord));
@@ -833,16 +835,16 @@ begin
   SetLength(recPts, numPts);
   for i := 0 to numPts-1 do
   begin
-    recPts[i].X := AItem.Points[i].X;
-    recPts[i].Y := AItem.Points[i].Y;
+    recPts[i].X := NToLE(AItem.Points[i].X);
+    recPts[i].Y := NToLE(AItem.Points[i].Y);
   end;
 
-  fillModeRec.PolyFillMode := IfThen(AItem.Winding, LCLType.WINDING, LCLType.ALTERNATE);
+  fillModeRec.PolyFillMode := NToLE(IfThen(AItem.Winding, LCLType.WINDING, LCLType.ALTERNATE));
   fillModeRec.Reserved := 0;
 
   WriteWMFRecord(AStream, META_SETPOLYFILLMODE, fillModeRec, SizeOf(TWmfSetPolyFillModeRecord));
   WriteWMFRecord(AStream, META_POLYGON, SizeOf(word) + numPts * SizeOf(TWMFPointXYRecord));
-  WriteWMFParams(AStream, numPts, SizeOf(Word));
+  WriteWMFParams(AStream, NToLE(numPts), SizeOf(Word));
   WriteWMFParams(AStream, recPts[0], numPts * SizeOf(TWMFPointXYRecord));
 end;
 
@@ -856,13 +858,13 @@ begin
   SetLength(recPts, numPts);
   for i := 0 to numPts-1 do
   begin
-    recPts[i].X := AItem.Points[i].X;
-    recPts[i].Y := AItem.Points[i].Y;
+    recPts[i].X := NToLE(AItem.Points[i].X);
+    recPts[i].Y := NToLE(AItem.Points[i].Y);
   end;
 
   // WMF record header + parameters
   WriteWMFRecord(AStream, META_POLYLINE, SizeOf(word) + numPts * SizeOf(TWMFPointXYRecord));
-  WriteWMFParams(AStream, numPts, SizeOf(Word));
+  WriteWMFParams(AStream, NToLE(numPts), SizeOf(Word));
   WriteWMFParams(AStream, recPts[0], numPts * SizeOf(TWMFPointXYRecord));
 end;
 
@@ -874,7 +876,7 @@ begin
   // Setup defaults
   WriteWindowExt(AStream);
   WriteWindowOrg(AStream);
-  WriteMapMode(AStream, ord(FImage.MapMode));  // MM_ANISOTROPIC);
+  WriteMapMode(AStream, MM_ANISOTROPIC);  // all programs which write wmf do this...
   WriteBkColor(AStream, clWhite);
   WriteBkMode(AStream, TRANSPARENT);
   WriteTextAlign(AStream, TA_TOP or TA_LEFT);
@@ -945,6 +947,8 @@ begin
       WriteBkMode(AStream, TlmfBkMode(item));
   end;
 
+  DeleteObjTable(AStream);
+
   // Last record must be an EOF record.
   WriteEOF(AStream);
 end;
@@ -953,10 +957,10 @@ procedure TWMFWriter.WriteRect(AStream: TStream; AItem: TlmfRect);
 var
   rec: TWMFRectRecord;
 begin
-  rec.Left := AItem.Left;
-  rec.Top := AItem.Top;
-  rec.Right := AItem.Right;
-  rec.Bottom := AItem.Bottom;
+  rec.Left := NToLE(AItem.Left);
+  rec.Top := NToLE(AItem.Top);
+  rec.Right := NToLE(AItem.Right);
+  rec.Bottom := NToLE(AItem.Bottom);
 
   // WMF record header + parameters
   WriteWMFRecord(AStream, META_RECTANGLE, rec, SizeOf(TWMFRectRecord));
@@ -966,12 +970,12 @@ procedure TWMFWriter.WriteRoundRect(AStream: TStream; AItem: TlmfRoundRect);
 var
   rec: TWMFRoundRectRecord;
 begin
-  rec.Left := AItem.Left;
-  rec.Top := AItem.Top;
-  rec.Right := AItem.Right;
-  rec.Bottom := AItem.Bottom;
-  rec.RX := AItem.Rx;
-  rec.RY := AItem.Ry;
+  rec.Left := NToLE(AItem.Left);
+  rec.Top := NToLE(AItem.Top);
+  rec.Right := NToLE(AItem.Right);
+  rec.Bottom := NToLE(AItem.Bottom);
+  rec.RX := NToLE(AItem.Rx);
+  rec.RY := NToLE(AItem.Ry);
 
   // WMF record header + parameters
   WriteWMFRecord(AStream, META_ROUNDRECT, rec, SizeOf(TWMFRoundRectRecord));
@@ -1002,25 +1006,25 @@ begin
   // Record header
   WriteWMFRecord(AStream, META_TEXTOUT, len + 3*SizeOf(word));
   // String length
-  WriteWMFParams(AStream, len, SizeOf(word));
+  WriteWMFParams(AStream, NToLE(len), SizeOf(word));
   // String
   WriteWMFParams(AStream, s[1], len);
   // String position
-  ptRec.X := AItem.PX;
-  ptRec.Y := AItem.PY;
+  ptRec.X := NToLE(AItem.PX);
+  ptRec.Y := NToLE(AItem.PY);
   WriteWMFParams(AStream, ptRec, SizeOf(TWMFPointRecord));
 end;
 
 procedure TWMFWriter.WriteTextAlign(AStream: TStream; AValue: word);
 begin
-  WriteWMFRecord(AStream, META_SETTEXTALIGN, AValue, SizeOf(AValue));
+  WriteWMFRecord(AStream, META_SETTEXTALIGN, NToLE(AValue), SizeOf(AValue));
 end;
 
 procedure TWMFWriter.WriteTextInRect(AStream: TStream; AItem: TlmfTextInRect);
 var
   rec: TWMFExtTextOutRecord;
   R: packed array[0..3] of SmallInt;
-  strLen, adjLen: Word;
+  strLen, adjLen, optns: Word;
   s: AnsiString;
   nR: Integer;
 begin
@@ -1036,21 +1040,24 @@ begin
     inc(adjLen);
   end;
 
+  optns := 0;
+  if AItem.TextStyle.Opaque then optns := optns or ETO_OPAQUE;
+  if AItem.TextStyle.Clipping then optns := optns or ETO_CLIPPED;
+  if AItem.TextStyle.RightToLeft then optns := optns or ETO_RTLREADING;
+
   rec := Default(TWMFExtTextOutRecord);
-  rec.X := AItem.PX;
-  rec.Y := AItem.PY;
-  rec.Len := strLen;
-  if AItem.TextStyle.Opaque then rec.Options := rec.Options or ETO_OPAQUE;
-  if AItem.TextStyle.Clipping then rec.Options := rec.Options or ETO_CLIPPED;
-  if AItem.TextStyle.RightToLeft then rec.Options := rec.Options or ETO_RTLREADING;
-  if (rec.Options and (ETO_OPAQUE or ETO_CLIPPED) <> 0) then
+  rec.X := NToLE(AItem.PX);
+  rec.Y := NToLE(AItem.PY);
+  rec.Len := NToLE(strLen);
+  rec.Options := NToLE(optns);
+  if AItem.TextStyle.Opaque or AItem.TextStyle.Clipping then
   begin
     // The entire rectangle is filled here. Note that this is in addition to
     // SetBkMode which fill only the background of the text itself.
-    R[0] := AItem.Left;
-    R[1] := AItem.Top;
-    R[2] := AItem.Right;
-    R[3] := AItem.Bottom;
+    R[0] := NToLE(AItem.Left);
+    R[1] := NToLE(AItem.Top);
+    R[2] := NToLE(AItem.Right);
+    R[3] := NToLE(AItem.Bottom);
     nR := SizeOf(R);
   end else
     nR := 0;
@@ -1087,27 +1094,27 @@ begin
   // header fields now.
   placeableHeader := Default(TPlaceableMetaHeader);
   with placeableHeader do begin
-    Key := WMF_MAGIC_NUMBER;
+    Key := NToLE(WMF_MAGIC_NUMBER);
     Handle := 0;
     Reserved := 0;
-    Inch := FImage.LogUnitsPerInch;
+    Inch := NToLE(FImage.LogUnitsPerInch);
     Left := 0;
     Top := 0;
-    Right := FImage.Width;
-    Bottom := FImage.Height;
-    Checksum := CalcChecksum(@placeableHeader, SizeOf(TPlaceableMetaHeader));
+    Right := NToLE(FImage.Width);
+    Bottom := NToLE(FImage.Height);
+    Checksum := NToLE(CalcChecksum(@placeableHeader, SizeOf(TPlaceableMetaHeader)));
   end;
   AStream.Position := startPos;
   AStream.WriteBuffer(placeableHeader, SizeOf(TPlaceableMetaHeader));
 
   wmfHeader := Default(TWMFHeader);
   with wmfHeader do begin
-    FileType := 1;
-    HeaderSize := 9;
-    Version := $0300;
-    NumOfObjects := FImage.List.ComponentCount;
-    MaxRecordSize := FMaxRecordSize;
-    FileSize := AStream.Size div SIZE_OF_WORD;
+    FileType := NToLE(1);
+    HeaderSize := NToLE(9);
+    Version := NToLE($0300);
+    NumOfObjects := NToLE(FImage.List.ComponentCount);
+    MaxRecordSize := NToLE(FMaxRecordSize);
+    FileSize := NToLE(AStream.Size div SIZE_OF_WORD);
     NumOfParams := 0;
   end;
   AStream.WriteBuffer(wmfHeader, SizeOf(TWMFHeader));
@@ -1117,8 +1124,8 @@ procedure TWMFWriter.WriteWindowExt(AStream: TStream);
 var
   params: Array[0..1] of word;
 begin
-  params[0] := FImage.Height;  // Use negative value when y runs upwards.
-  params[1] := FImage.Width;
+  params[0] := NToLE(FImage.Height);  // Use negative value when y runs upwards.
+  params[1] := NToLE(FImage.Width);
   WriteWMFRecord(AStream, META_SETWINDOWEXT, params, SizeOf(params));
 end;
 
@@ -1139,8 +1146,8 @@ procedure TWMFWriter.WriteWMFRecord(AStream: TStream;
 var
   rec: TWMFRecord;
 begin
-  rec.Size := (SizeOf(TWMFRecord) + ASize) div SIZE_OF_WORD;
-  rec.Func := AFunc;
+  rec.Size := NToLE((SizeOf(TWMFRecord) + ASize) div SIZE_OF_WORD);
+  rec.Func := NToLE(AFunc);
   AStream.WriteBuffer(rec, SizeOf(TWMFRecord));
   FMaxRecordSize := Max(FMaxRecordSize, rec.Size);
 end;
@@ -1154,8 +1161,8 @@ procedure TWMFWriter.WriteWMFRecord(AStream: TStream;
 var
   rec: TWMFRecord;
 begin
-  rec.Size := (SizeOf(TWMFRecord) + ASize) div SIZE_OF_WORD;
-  rec.Func := AFunc;
+  rec.Size := NToLE((SizeOf(TWMFRecord) + ASize) div SIZE_OF_WORD);
+  rec.Func := NToLE(AFunc);
   AStream.WriteBuffer(rec, SizeOf(TWMFRecord));
   AStream.WriteBuffer(AParams, ASize);
   FMaxRecordSize := Max(FMaxRecordSize, rec.Size);

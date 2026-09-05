@@ -81,19 +81,19 @@ object MainForm: TMainForm
       ItemHeight = 15
       ItemIndex = 0
       Items.Strings = (
-        'Anisotropic'
-        'HiEnglish'
-        'HiMetric'
-        'Isotropic'
-        'LoEnglish'
-        'LoMetric'
-        'Text'
-        'Twips'
-        'Logical units per inch'
+        'mmLogUnitsPerInch,'
+        'mmText'
+        'mmLoMetric'
+        'mmHiMetric'
+        'mmLoEnglish'
+        'mmHiEnglish'
+        'mmTwips'
+        'mmIsotropic'
+        'mmAnisotropic'
       )
       Style = csDropDownList
       TabOrder = 2
-      Text = 'Anisotropic'
+      Text = 'mmLogUnitsPerInch,'
       OnChange = ComboBox1Change
     end
   end

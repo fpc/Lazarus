@@ -128,19 +128,19 @@ object MainForm: TMainForm
       ItemHeight = 15
       ItemIndex = 0
       Items.Strings = (
-        'mmAnisotropic'
-        'mmHiEnglish'
-        'mmHiMetric'
-        'mmIsotropic'
-        'mmLoEnglish'
-        'mmLoMetric'
+        'mmLogUnitsPerInch,'
         'mmText'
+        'mmLoMetric'
+        'mmHiMetric'
+        'mmLoEnglish'
+        'mmHiEnglish'
         'mmTwips'
-        'mmLogUnitsPerInch'
+        'mmIsotropic'
+        'mmAnisotropic'
       )
       Style = csDropDownList
       TabOrder = 0
-      Text = 'mmAnisotropic'
+      Text = 'mmLogUnitsPerInch,'
       OnChange = cmbMapModeChange
     end
     object lblInfo: TLabel

@@ -132,9 +132,9 @@ begin
     //Lmfcanvas.Rectangle(300*10, 5*10, 300*10 + 48*10, 5*10 + 48*10);
     bmp := TBitmap.Create;
     try
-//      bmp.LoadFromFile('../../../../images/LazarusForm.bmp');
+//      bmp.LoadFromFile('../../../../images/general_purpose/Help_02_48.bmp');
       bmp.LoadFromFile('Help_02_48.bmp');
-    //bmp.Transparent := true;
+//      bmp.Transparent := true;
 //      LmfCanvas.Draw(3000, 50, bmp);
       LmfCanvas.StretchDraw(Rect(300*10, 5*10, 300*10+48*10, 50+48*10), bmp);
     finally
@@ -165,7 +165,7 @@ begin
 
     // Arc
     P1 := Point(250*10, 260*10);  // Point on x axis
-    P2 := Point(150*10, 0);    // Point on y axis
+    P2 := Point(150*10, 0);       // Point on y axis
     LmfCanvas.Pen.Color := clRed;
     LmfCanvas.Pen.Width := 3*10;
     LmfCanvas.Arc(50*10, 210*10, 250*10, 310*10, P1.X, P1.Y, P2.X, P2.Y);

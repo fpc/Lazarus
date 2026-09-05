@@ -85,6 +85,18 @@ type
   private
     fRect: TRect;
     fStyle: TTextStyle;
+    function GetAlignment: TAlignment;
+    function GetClipping: Boolean;
+    function GetLayout: TTextLayout;
+    function GetOpaque: Boolean;
+    function GetSingleLine: Boolean;
+    function GetWordBreak: Boolean;
+    procedure SetAlignment(AValue: TAlignment);
+    procedure SetClipping(AValue: Boolean);
+    procedure SetLayout(AValue: TTextLayout);
+    procedure SetOpaque(AValue: Boolean);
+    procedure SetSingleLine(AValue: Boolean);
+    procedure SetWordBreak(AValue: Boolean);
     procedure ReadTextStyle(Reader: TReader);
     procedure WriteTextStyle(Writer: TWriter);
   protected
@@ -93,11 +105,18 @@ type
     constructor Create(const ARect: TRect; x, y: Integer; const AText: String;
       const AStyle: TTextStyle); overload;
     procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    property TextStyle: TTextStyle read fStyle write fStyle;
+  published
     property Left: Integer read fRect.Left write fRect.Left;
     property Top: Integer read fRect.Top write fRect.Top;
     property Right: Integer read fRect.Right write fRect.Right;
     property Bottom: Integer read fRect.Bottom write fRect.Bottom;
-    property TextStyle: TTextStyle read fStyle write fStyle;
+    property Alignment: TAlignment read GetAlignment write SetAlignment default taLeftJustify;
+    property Clipping: Boolean read GetClipping write SetClipping default false;
+    property Layout: TTextLayout read GetLayout write SetLayout default tlTop;
+    property Opaque: Boolean read GetOpaque write SetOpaque default false;
+    property SingleLine: Boolean read GetSingleLine write SetSingleLine default false;
+    property WordBreak: Boolean read GetWordBreak write SetWordBreak default false;
   end;
 
   TlmfTextColor = class(TlmfObject)
@@ -448,6 +467,66 @@ end;
 procedure TlmfTextInRect.WriteTextStyle(Writer: TWriter);
 begin
   Writer.Write(fStyle, SizeOf(fStyle));
+end;
+
+function TlmfTextInRect.GetAlignment: TAlignment;
+begin
+  Result := fStyle.Alignment;
+end;
+
+function TlmfTextInRect.GetClipping: Boolean;
+begin
+  Result := fStyle.Clipping;
+end;
+
+function TlmfTextInRect.GetLayout: TTextLayout;
+begin
+  Result := fStyle.Layout;
+end;
+
+function TlmfTextInRect.GetOpaque: Boolean;
+begin
+  Result := fStyle.Opaque;
+end;
+
+function TlmfTextInRect.GetSingleLine: Boolean;
+begin
+  Result := fStyle.SingleLine;
+end;
+
+function TlmfTextInRect.GetWordBreak: Boolean;
+begin
+  Result := fStyle.WordBreak;
+end;
+
+procedure TlmfTextInRect.SetAlignment(AValue: TAlignment);
+begin
+  fStyle.Alignment := AValue;
+end;
+
+procedure TlmfTextInRect.SetClipping(AValue: Boolean);
+begin
+  fStyle.Clipping := AValue;
+end;
+
+procedure TlmfTextInRect.SetLayout(AValue: TTextLayout);
+begin
+  fStyle.Layout := AValue;
+end;
+
+procedure TlmfTextInRect.SetOpaque(AValue: Boolean);
+begin
+  fStyle.Opaque := AValue;
+end;
+
+procedure TlmfTextInRect.SetSingleLine(AValue: Boolean);
+begin
+  fStyle.SingleLine := AValue;
+end;
+
+procedure TlmfTextInRect.SetWordBreak(AValue: Boolean);
+begin
+  fStyle.WordBreak := AValue;
 end;
 
 
