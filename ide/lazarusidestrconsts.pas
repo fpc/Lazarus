@@ -1326,6 +1326,11 @@ resourcestring
     +'translate the compiler messages to another language (i.e. not English). '
     +'For example: German: $(FPCSrcDir)/compiler/msg/errordu.msg.';
 
+  dlgNewDebuggerBackend = 'New debugger backend';
+  dlgPleaseChooseTheDebuggerBackend = 'Please choose the debugger backend to '
+    +'add.';
+  dlgClass = 'Class:';
+
   dlgDebugType = 'Debugger type and path';
   dlgTestPrjDir = 'Directory for building test projects';
 
