@@ -243,7 +243,7 @@ begin
      program's own output and shares its partial-line state -- typing halfway
      through an unterminated line then continues that line rather than starting
      a new one. *)
-  if cbLocalEcho.Checked then
+  if cbLocalEcho.Checked {TODO: Win only} and cbLocalEcho.Visible {End TODO} then
     AddOutput(KeyText);
   DebugBoss.DoSendConsoleInput(KeyText);
   Utf8Key := '';
