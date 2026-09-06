@@ -641,6 +641,10 @@ begin
   Result:=false;
   if (CurPos.StartPos<=SrcLen) and (CurPos.EndPos<=SrcLen+1)
   and (CurPos.StartPos>=1) then begin
+    if ((CurPos.Flag = cafEdgedBracketOpen) and ((AnAtom ='[') or (AnAtom ='(.'))) or
+    ((CurPos.Flag = cafEdgedBracketClose) and ((AnAtom =']') or (AnAtom ='.)')))
+    then
+      exit(true); // accepted alternative range specifiers
     AnAtomLen:=length(AnAtom);
     if AnAtomLen=CurPos.EndPos-CurPos.StartPos then begin
       for i:=1 to AnAtomLen do
@@ -658,6 +662,10 @@ begin
   Result:=false;
   AnAtomLen:=length(AnAtom);
   if AnAtomLen<>CurPos.EndPos-CurPos.StartPos then exit;
+  if ((CurPos.Flag = cafEdgedBracketOpen) and ((AnAtom ='[') or (AnAtom ='(.'))) or
+    ((CurPos.Flag = cafEdgedBracketClose) and ((AnAtom =']') or (AnAtom ='.)')))
+    then
+      exit(true); // accepted alternative range specifiers
   if (CurPos.EndPos<=SrcLen+1) and (CurPos.StartPos>=1) then begin
     p:=@Src[CurPos.StartPos];
     for i:=1 to AnAtomLen do begin
@@ -678,6 +686,10 @@ begin
   AnAtomLen:=length(AnAtom);
   if AnAtomLen<>AtomPos.EndPos-AtomPos.StartPos then exit;
   if (AtomPos.EndPos<=SrcLen+1) and (AtomPos.StartPos>=1) then begin
+    if ((AtomPos.Flag = cafEdgedBracketOpen) and ((AnAtom ='[') or (AnAtom ='(.'))) or
+    ((AtomPos.Flag = cafEdgedBracketClose) and ((AnAtom =']') or (AnAtom ='.)')))
+    then
+      exit(true); // accepted alternative range specifiers
     p:=@Src[AtomPos.StartPos];
     for i:=1 to AnAtomLen do begin
       if AnAtom[i]<>UpChars[p^] then exit;
@@ -789,6 +801,10 @@ end;
 
 function TCustomCodeTool.AtomIsChar(const c: char): boolean;
 begin
+  if (CurPos.Flag = cafEdgedBracketOpen) and (c ='[') or
+  (CurPos.Flag = cafEdgedBracketClose) and (c =']') then
+    exit(true); // accepted alternative range specifiers
+
   Result:=(CurPos.StartPos<=SrcLen)
       and (CurPos.EndPos-CurPos.StartPos=1)
       and (Src[CurPos.StartPos]=c);
@@ -1373,7 +1389,11 @@ begin
   '(':
     begin
       inc(CurPos.EndPos);
-      CurPos.Flag:=cafRoundBracketOpen;
+      if Src[CurPos.EndPos]='.' then begin
+        inc(CurPos.EndPos);
+        CurPos.Flag:=cafEdgedBracketOpen;
+      end else
+        CurPos.Flag:=cafRoundBracketOpen;
     end;
   ')':
     begin
@@ -1404,6 +1424,10 @@ begin
   '.':
     begin
       inc(CurPos.EndPos);
+      if (Src[CurPos.EndPos]=')') then begin
+        inc(CurPos.EndPos);
+        CurPos.Flag:=cafEdgedBracketClose;
+      end else
       if (Src[CurPos.EndPos]<>'.') then begin
         // '.'
         CurPos.Flag:=cafPoint;
@@ -1835,7 +1859,12 @@ begin
     ':': CurPos.Flag:=cafColon;
     ',': CurPos.Flag:=cafComma;
     '(': CurPos.Flag:=cafRoundBracketOpen;
-    ')': CurPos.Flag:=cafRoundBracketClose;
+    ')':
+      if Src[CurPos.StartPos-1]='.' then begin // alternative range bracket  .)
+        CurPos.Flag:=cafEdgedBracketClose;
+        dec(CurPos.StartPos);
+      end else
+        CurPos.Flag:=cafRoundBracketClose;
     '[': CurPos.Flag:=cafEdgedBracketOpen;
     ']': CurPos.Flag:=cafEdgedBracketClose;
 
@@ -1844,6 +1873,7 @@ begin
         if CurPos.StartPos>1 then begin
           c1:=Src[CurPos.StartPos-1];
           // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **, ><
+          // and alternative range bracket  (.
           if ((c2='=') and (c1=':')) then
           begin
             dec(CurPos.StartPos);
@@ -1858,7 +1888,12 @@ begin
           then begin
             dec(CurPos.StartPos);
             CurPos.Flag:=cafOtherOperator;
-          end else begin
+          end else
+          if (c1='(') and (c2='.') then begin  // accepted alternative range specifier
+            dec(CurPos.StartPos);
+            CurPos.Flag:=cafEdgedBracketOpen;
+          end else
+          begin
             case c2 of
             '=': CurPos.Flag:=cafEqual;
             '.': CurPos.Flag:=cafPoint;

@@ -1584,7 +1584,7 @@ begin
     until false;
   end;
   if (CloseBracket<>#0) then begin
-    if Src[CurPos.StartPos]<>CloseBracket then begin
+    if not AtomIsChar(CloseBracket) then begin // accepts also '.)' bracket
       if ExceptionOnError then
         SaveRaiseCharExpectedButAtomFound(20170421195435,CloseBracket)
       else
@@ -2673,7 +2673,7 @@ begin
     if IsIdentStartChar[c] then
       Result:=KeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
                                                   CurPos.EndPos-CurPos.StartPos)
-    else if c='[' then begin
+    else if CurPos.Flag=cafEdgedBracketOpen then begin // also accepts '(.'
       if AllowAttributes then begin
         ReadAttribute;
         Result:=true;
