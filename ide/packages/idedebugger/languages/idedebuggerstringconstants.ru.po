@@ -839,34 +839,36 @@ msgstr "- Отключено -"
 
 #: idedebuggerstringconstants.dlgdebugconsolewindowchangetakeseffect
 msgid "A change takes effect when the next debug session starts."
-msgstr ""
+msgstr "Изменение вступает в силу с началом следующего сеанса отладки."
 
 #: idedebuggerstringconstants.dlgdebugconsolewindoweditdiv
 msgid "Edit IDE console provider"
-msgstr ""
+msgstr "Редактирование поставщика консоли IDE"
 
 #: idedebuggerstringconstants.dlgdebugconsolewindowediting
 #, object-pascal-format
 msgid "Currently editing %s"
-msgstr ""
+msgstr "Сейчас редактируется %s"
 
 #: idedebuggerstringconstants.dlgdebugconsolewindownone
 msgid "No console window is available."
-msgstr ""
+msgstr "Доступные окна консолей отсутствуют."
 
 #: idedebuggerstringconstants.dlgdebugconsolewindowoptions
 msgid "Debug Console Window"
-msgstr ""
+msgstr "Окно отладочной консоли"
 
 #: idedebuggerstringconstants.dlgdebugconsolewindowrunparamshint
 msgid ""
-"Selects the default Console for showing the targets StdIn/Out in the IDE. \n"
+"Selects the default Console for showing the target StdIn/Out in the IDE.\n"
 "Project can override this in their \"Run Parameters\". The default there is \"use IDE default\"."
 msgstr ""
+"Позволяет выбрать консоль по умолчанию для отображения стандартного ввода/вывода цели в IDE.\n"
+"Проект может перекрыть это значение в диалоге \"Параметры запуска\". По умолчанию используется значение, заданное в параметрах IDE."
 
 #: idedebuggerstringconstants.dlgdebugconsolewindowselectdiv
 msgid "Select provider for IDE console window"
-msgstr ""
+msgstr "Выбор поставщика консоли IDE"
 
 #: idedebuggerstringconstants.dlgdisplayformatdebugoptions
 msgid "Display Format"
@@ -1469,7 +1471,7 @@ msgstr "Отключить/включить обновления для всег
 
 #: idedebuggerstringconstants.lisdebugconsolebuiltinname
 msgid "IDE Debug Console"
-msgstr ""
+msgstr "Отладочная консоль IDE"
 
 #: idedebuggerstringconstants.lisdebuggerfeedbackerror
 msgid "Debugger Error"
@@ -2263,7 +2265,7 @@ msgstr "Word (от младшего байта к старшему)"
 
 #: idedebuggerstringconstants.mnuconsoleinoutputwindow
 msgid "Console In/Output (Lazarus)"
-msgstr ""
+msgstr "Ввод/вывод в консоли (Lazarus)"
 
 #: idedebuggerstringconstants.optdispguttercustomdisplayformat
 msgid "Custom Display Format"

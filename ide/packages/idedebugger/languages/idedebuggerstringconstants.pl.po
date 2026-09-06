@@ -864,7 +864,7 @@ msgstr ""
 
 #: idedebuggerstringconstants.dlgdebugconsolewindowrunparamshint
 msgid ""
-"Selects the default Console for showing the targets StdIn/Out in the IDE. \n"
+"Selects the default Console for showing the target StdIn/Out in the IDE.\n"
 "Project can override this in their \"Run Parameters\". The default there is \"use IDE default\"."
 msgstr ""
 
