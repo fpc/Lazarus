@@ -545,6 +545,12 @@ begin
   // Affected captions are in `Messages popup`->`Copy`, `Messages popup`->`Help`.
   TranslateUnitResourceStrings('IdeIntfStrConsts',
     Dir+'components/ideintf/languages/ideintfstrconsts'+Ext,Lang,FallbackLang);
+  // Anchordocking package (needed to translate `IDE Layout` page in Lazarus Initial Setup dialog)
+  TranslateUnitResourceStrings('AnchorDockStr',
+    Dir+'components/anchordocking/languages/anchordockstr'+Ext,Lang,FallbackLang);
+  // DockedFormEditor package (needed to translate `IDE Layout` page in Lazarus Initial Setup dialog)
+  TranslateUnitResourceStrings('DockedStrConsts',
+    Dir+'components/dockedformeditor/languages/dockedstrconsts'+Ext,Lang,FallbackLang);
   // LCL (needed to translate button captions in a dialog about config directory belonging to another Lazarus instance)
   TranslateUnitResourceStrings('LCLStrConsts',
     Dir+'lcl/languages/lclstrconsts'+Ext,Lang,FallbackLang);
