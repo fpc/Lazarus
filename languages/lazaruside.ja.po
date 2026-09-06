@@ -1080,6 +1080,10 @@ msgstr "フォームが動作するにはパッケージを必要とします。
 msgid "Choose code template file (*.dci)"
 msgstr "コードテンプテートファイル(*.dpi)を選択してください"
 
+#: lazarusidestrconsts.dlgclass
+msgid "Class:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "ノートブックの[閉じる]ボタンを表示"
@@ -3641,6 +3645,10 @@ msgstr "ノートブックのタブ"
 msgid "Naming"
 msgstr "ネーミング"
 
+#: lazarusidestrconsts.dlgnewdebuggerbackend
+msgid "New debugger backend"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
 msgstr "新しいデスクトップ ..."
@@ -3998,6 +4006,10 @@ msgstr "固着カーソル"
 
 #: lazarusidestrconsts.dlgpersistentcursornoblink
 msgid "Caret in unfocused editor does not blink"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpleasechoosethedebuggerbackend
+msgid "Please choose the debugger backend to add."
 msgstr ""
 
 #: lazarusidestrconsts.dlgpoansiutf8

@@ -1069,6 +1069,10 @@ msgstr "Формі для роботи може знадобитись паку�
 msgid "Choose code template file (*.dci)"
 msgstr "Виберіть файл шаблонів коду (*.dci)"
 
+#: lazarusidestrconsts.dlgclass
+msgid "Class:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Кнопки закриття в записнику"
@@ -3559,6 +3563,10 @@ msgstr "Вкладки Блокноту"
 msgid "Naming"
 msgstr "Надання назви"
 
+#: lazarusidestrconsts.dlgnewdebuggerbackend
+msgid "New debugger backend"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
 msgstr "Нова стільниця ..."
@@ -3911,6 +3919,10 @@ msgstr "Показувати курсор, якщо редактор не у ф�
 #: lazarusidestrconsts.dlgpersistentcursornoblink
 msgid "Caret in unfocused editor does not blink"
 msgstr "Курсор, якщо редактор не у фокусі, не блимає"
+
+#: lazarusidestrconsts.dlgpleasechoosethedebuggerbackend
+msgid "Please choose the debugger backend to add."
+msgstr ""
 
 #: lazarusidestrconsts.dlgpoansiutf8
 msgid "ANSI codepage is UTF-8 (Windows 10 1903+)"

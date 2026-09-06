@@ -1068,6 +1068,10 @@ msgstr "La fiche peut nécessiter l'utilisation d'un paquet. Installer automatiq
 msgid "Choose code template file (*.dci)"
 msgstr "Choisir le fichier de modèle de code (*.dci)"
 
+#: lazarusidestrconsts.dlgclass
+msgid "Class:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Afficher les boutons de fermeture dans l'éditeur"
@@ -3552,6 +3556,10 @@ msgstr "Position des onglets de l'éditeur de source"
 msgid "Naming"
 msgstr "Nommage"
 
+#: lazarusidestrconsts.dlgnewdebuggerbackend
+msgid "New debugger backend"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
 msgstr "Nouveau bureau..."
@@ -3904,6 +3912,10 @@ msgstr "Curseur visible dans un éditeur non actif"
 #: lazarusidestrconsts.dlgpersistentcursornoblink
 msgid "Caret in unfocused editor does not blink"
 msgstr "Le curseur dans un éditeur inactif ne clignote pas"
+
+#: lazarusidestrconsts.dlgpleasechoosethedebuggerbackend
+msgid "Please choose the debugger backend to add."
+msgstr ""
 
 #: lazarusidestrconsts.dlgpoansiutf8
 msgid "ANSI codepage is UTF-8 (Windows 10 1903+)"

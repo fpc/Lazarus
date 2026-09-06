@@ -1094,6 +1094,10 @@ msgstr ""
 msgid "Choose code template file (*.dci)"
 msgstr "Wybierz szablon źródła (*.dci)"
 
+#: lazarusidestrconsts.dlgclass
+msgid "Class:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Pokaż przyciski zamykania w zakładkach"
@@ -3655,6 +3659,10 @@ msgstr "Zakładki karty"
 msgid "Naming"
 msgstr "Nazewnictwo"
 
+#: lazarusidestrconsts.dlgnewdebuggerbackend
+msgid "New debugger backend"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
 msgstr "Nowy pulpit..."
@@ -4010,6 +4018,10 @@ msgstr "Kursor widoczny w edytorze bez fokusa"
 #: lazarusidestrconsts.dlgpersistentcursornoblink
 msgid "Caret in unfocused editor does not blink"
 msgstr "Kursor w edytorze bez fokusa nie miga"
+
+#: lazarusidestrconsts.dlgpleasechoosethedebuggerbackend
+msgid "Please choose the debugger backend to add."
+msgstr ""
 
 #: lazarusidestrconsts.dlgpoansiutf8
 msgid "ANSI codepage is UTF-8 (Windows 10 1903+)"

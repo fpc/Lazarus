@@ -1081,6 +1081,10 @@ msgstr "Formulář může vyžaduje balíček pro práci. Instalovat takový bal
 msgid "Choose code template file (*.dci)"
 msgstr "Vyberte šablonu kódu (*.dci)"
 
+#: lazarusidestrconsts.dlgclass
+msgid "Class:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Ukázat tlačítka pro zavření v zápisníku"
@@ -3592,6 +3596,10 @@ msgstr "Záložky zápisníku"
 msgid "Naming"
 msgstr "Pojmenování"
 
+#: lazarusidestrconsts.dlgnewdebuggerbackend
+msgid "New debugger backend"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
 msgstr "Nová plocha ..."
@@ -3948,6 +3956,10 @@ msgstr "Viditelný kurzor v neaktivním editoru"
 #: lazarusidestrconsts.dlgpersistentcursornoblink
 msgid "Caret in unfocused editor does not blink"
 msgstr "Kurzor nebliká v neaktivním okně"
+
+#: lazarusidestrconsts.dlgpleasechoosethedebuggerbackend
+msgid "Please choose the debugger backend to add."
+msgstr ""
 
 #: lazarusidestrconsts.dlgpoansiutf8
 msgid "ANSI codepage is UTF-8 (Windows 10 1903+)"

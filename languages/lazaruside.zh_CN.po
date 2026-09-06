@@ -1057,6 +1057,10 @@ msgstr "窗体可能需要一个软件包来工作.自动安装这样一个软�
 msgid "Choose code template file (*.dci)"
 msgstr "选择代码模板文件 (*.dci)"
 
+#: lazarusidestrconsts.dlgclass
+msgid "Class:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "在 notebook 中显示关闭按钮"
@@ -3530,6 +3534,10 @@ msgstr "源文件笔记本标签页(Notebook Tabs)"
 msgid "Naming"
 msgstr "命名"
 
+#: lazarusidestrconsts.dlgnewdebuggerbackend
+msgid "New debugger backend"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
 msgstr "新建桌面..."
@@ -3881,6 +3889,10 @@ msgstr "非聚焦编辑器中显示光标"
 #: lazarusidestrconsts.dlgpersistentcursornoblink
 msgid "Caret in unfocused editor does not blink"
 msgstr "非聚焦编辑器中的光标不闪烁"
+
+#: lazarusidestrconsts.dlgpleasechoosethedebuggerbackend
+msgid "Please choose the debugger backend to add."
+msgstr ""
 
 #: lazarusidestrconsts.dlgpoansiutf8
 msgid "ANSI codepage is UTF-8 (Windows 10 1903+)"

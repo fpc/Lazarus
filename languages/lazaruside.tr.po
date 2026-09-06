@@ -1069,6 +1069,10 @@ msgstr "Formun çalışması için bir paket gerekebilir. Böyle bir paketi otom
 msgid "Choose code template file (*.dci)"
 msgstr "Kod şablon dosyası (* .dci) seç"
 
+#: lazarusidestrconsts.dlgclass
+msgid "Class:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Not defterinde kapat düğmelerini göster"
@@ -3533,6 +3537,10 @@ msgstr "Editör Sekmeleri"
 msgid "Naming"
 msgstr "Adlandırma"
 
+#: lazarusidestrconsts.dlgnewdebuggerbackend
+msgid "New debugger backend"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
 msgstr "Yeni masaüstü ..."
@@ -3885,6 +3893,10 @@ msgstr "Odaklanmamış düzenleyicide imleci göster"
 #: lazarusidestrconsts.dlgpersistentcursornoblink
 msgid "Caret in unfocused editor does not blink"
 msgstr "Odaklanmamış düzenleyicideki imleç yanıp sönsün"
+
+#: lazarusidestrconsts.dlgpleasechoosethedebuggerbackend
+msgid "Please choose the debugger backend to add."
+msgstr ""
 
 #: lazarusidestrconsts.dlgpoansiutf8
 msgid "ANSI codepage is UTF-8 (Windows 10 1903+)"

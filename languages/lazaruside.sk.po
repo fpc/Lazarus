@@ -1061,6 +1061,10 @@ msgstr ""
 msgid "Choose code template file (*.dci)"
 msgstr "Zvoľte súbor šablón kódu (*.dci)"
 
+#: lazarusidestrconsts.dlgclass
+msgid "Class:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Zobraziť zatváracie tlačítka v poznámkovom bloku"
@@ -3530,6 +3534,10 @@ msgstr ""
 msgid "Naming"
 msgstr "Pomenovanie"
 
+#: lazarusidestrconsts.dlgnewdebuggerbackend
+msgid "New debugger backend"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
 msgstr "Nová pracovná plocha ..."
@@ -3877,6 +3885,10 @@ msgstr "Trvylý kurzor"
 
 #: lazarusidestrconsts.dlgpersistentcursornoblink
 msgid "Caret in unfocused editor does not blink"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpleasechoosethedebuggerbackend
+msgid "Please choose the debugger backend to add."
 msgstr ""
 
 #: lazarusidestrconsts.dlgpoansiutf8

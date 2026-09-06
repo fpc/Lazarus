@@ -1056,6 +1056,10 @@ msgstr "O formulário pode necessitar de um pacote para funcionar. Instale o pac
 msgid "Choose code template file (*.dci)"
 msgstr "Escolha o ficheiro de modelo de código (*.dci)"
 
+#: lazarusidestrconsts.dlgclass
+msgid "Class:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Mostrar botões de fecho no bloco de notas"
@@ -3518,6 +3522,10 @@ msgstr "Separadores do bloco de notas"
 msgid "Naming"
 msgstr "Nomeação"
 
+#: lazarusidestrconsts.dlgnewdebuggerbackend
+msgid "New debugger backend"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
 msgstr "Novo ambiente..."
@@ -3864,6 +3872,10 @@ msgstr "Cursor visível no editor sem foco"
 #: lazarusidestrconsts.dlgpersistentcursornoblink
 msgid "Caret in unfocused editor does not blink"
 msgstr "O cursor num editor sem foco não pisca"
+
+#: lazarusidestrconsts.dlgpleasechoosethedebuggerbackend
+msgid "Please choose the debugger backend to add."
+msgstr ""
 
 #: lazarusidestrconsts.dlgpoansiutf8
 msgid "ANSI codepage is UTF-8 (Windows 10 1903+)"

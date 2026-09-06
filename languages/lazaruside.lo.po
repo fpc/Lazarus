@@ -1057,6 +1057,10 @@ msgstr "ຟອມອາດຈະຕ້ອງການແພັກເກັດເ
 msgid "Choose code template file (*.dci)"
 msgstr "ເລືອກໄຟລ໌ແມ່ແບບໂຄ້ດ (*.dci)"
 
+#: lazarusidestrconsts.dlgclass
+msgid "Class:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "ສະແດງປຸ່ມປິດໃນ notebook"
@@ -3524,6 +3528,10 @@ msgstr "ແຖບສະໝຸດບັນທຶກ"
 msgid "Naming"
 msgstr "ການຕັ້ງຊື່"
 
+#: lazarusidestrconsts.dlgnewdebuggerbackend
+msgid "New debugger backend"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
 msgstr "ເດັສທັອບໃໝ່ ..."
@@ -3876,6 +3884,10 @@ msgstr "ເຄີເຊີເບິ່ງເຫັນໄດ້ໃນຕົວແ
 #: lazarusidestrconsts.dlgpersistentcursornoblink
 msgid "Caret in unfocused editor does not blink"
 msgstr "ເຄີເຊີໃນຕົວແກ້ໄຂທີ່ບໍ່ໄດ້ໂຟກັດບໍ່ກະພິບ"
+
+#: lazarusidestrconsts.dlgpleasechoosethedebuggerbackend
+msgid "Please choose the debugger backend to add."
+msgstr ""
 
 #: lazarusidestrconsts.dlgpoansiutf8
 msgid "ANSI codepage is UTF-8 (Windows 10 1903+)"

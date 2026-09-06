@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-09-06 21:50+0300\n"
+"PO-Revision-Date: 2026-09-06 22:39+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -1057,6 +1057,10 @@ msgstr "Форма может требовать пакета для корре�
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr "Выберите файл шаблонов кода (*.dci)"
+
+#: lazarusidestrconsts.dlgclass
+msgid "Class:"
+msgstr "Класс:"
 
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
@@ -3513,6 +3517,10 @@ msgstr "Вкладки редакторов"
 msgid "Naming"
 msgstr "Именование"
 
+#: lazarusidestrconsts.dlgnewdebuggerbackend
+msgid "New debugger backend"
+msgstr "Новый механизм отладки"
+
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
 msgstr "Новый рабочий стол ..."
@@ -3860,6 +3868,10 @@ msgstr "Показывать курсор в неактивном редакто
 #: lazarusidestrconsts.dlgpersistentcursornoblink
 msgid "Caret in unfocused editor does not blink"
 msgstr "Не мигать курсором в неактивном редакторе"
+
+#: lazarusidestrconsts.dlgpleasechoosethedebuggerbackend
+msgid "Please choose the debugger backend to add."
+msgstr "Выберите механизм отладки для добавления."
 
 #: lazarusidestrconsts.dlgpoansiutf8
 msgid "ANSI codepage is UTF-8 (Windows 10 1903+)"
@@ -13893,7 +13905,7 @@ msgstr "Создать"
 
 #: lazarusidestrconsts.lisnewclass
 msgid "New Class"
-msgstr "Новый Класс"
+msgstr "Новый класс"
 
 #: lazarusidestrconsts.lisnewconsoleapplication
 msgid "New console application"

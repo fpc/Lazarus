@@ -1085,6 +1085,10 @@ msgstr "Kad forma veiktų gali reikėti paketo. Pastarąjį įdiegti automatišk
 msgid "Choose code template file (*.dci)"
 msgstr "Rinkitės kodo šablono failą (*.dci)"
 
+#: lazarusidestrconsts.dlgclass
+msgid "Class:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Rengyklės kortelėse rodyti „Užverti“ mygtukus"
@@ -3644,6 +3648,10 @@ msgstr "Rengyklės kortelės"
 msgid "Naming"
 msgstr "Pavadinimų suteikimas"
 
+#: lazarusidestrconsts.dlgnewdebuggerbackend
+msgid "New debugger backend"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
 msgstr "Naujas darbalaukis…"
@@ -4001,6 +4009,10 @@ msgstr "Nuolatinis žymeklis"
 
 #: lazarusidestrconsts.dlgpersistentcursornoblink
 msgid "Caret in unfocused editor does not blink"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpleasechoosethedebuggerbackend
+msgid "Please choose the debugger backend to add."
 msgstr ""
 
 #: lazarusidestrconsts.dlgpoansiutf8
