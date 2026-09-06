@@ -1355,7 +1355,7 @@ msgid "IDE internal window"
 msgstr ""
 
 #: lazarusidestrconsts.dlgconsolemodeide
-msgid "Internal IDE consoles"
+msgid "Internal IDE console"
 msgstr ""
 
 #: lazarusidestrconsts.dlgconsolemodeos
@@ -19391,6 +19391,38 @@ msgstr ""
 
 #: lazarusidestrconsts.optdispgutterusecurrentlinenumbercolor
 msgid "Use current line number color (gutter: number)"
+msgstr ""
+
+#: lazarusidestrconsts.optedcompletebackspacebehaviour
+msgid "Backspace behaviour"
+msgstr ""
+
+#: lazarusidestrconsts.optedcompletecancelifcaretatstart
+msgid "Cancel, if caret at start"
+msgstr ""
+
+#: lazarusidestrconsts.optedcompletecancelifcaretatstartsingl
+msgid "Cancel, if caret at start (single press, not on repeat key)"
+msgstr ""
+
+#: lazarusidestrconsts.optedcompletecancelifcompletionwasjust
+msgid "Cancel, if completion was just opened"
+msgstr ""
+
+#: lazarusidestrconsts.optedcompletecancelifcompletionwasjust2
+msgid "Cancel, if completion was just opened, and caret at start"
+msgstr ""
+
+#: lazarusidestrconsts.optedcompletecancelifjustopenedorcaret
+msgid "Cancel, if just opened, or caret at start (not on repeat key)"
+msgstr ""
+
+#: lazarusidestrconsts.optedcompletecancelifopenedbydot
+msgid "Cancel, if opened by dot"
+msgstr ""
+
+#: lazarusidestrconsts.optedcompleteonlydeletepreviouschar
+msgid "Only delete previous char"
 msgstr ""
 
 #: lazarusidestrconsts.podaddpackageunittousessection

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-09-04 01:57+0300\n"
+"PO-Revision-Date: 2026-09-06 21:50+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -1342,8 +1342,8 @@ msgid "IDE internal window"
 msgstr "Внутреннее окно IDE"
 
 #: lazarusidestrconsts.dlgconsolemodeide
-msgid "Internal IDE consoles"
-msgstr "Внутренние консоли IDE"
+msgid "Internal IDE console"
+msgstr "Внутренняя консоль IDE"
 
 #: lazarusidestrconsts.dlgconsolemodeos
 msgid "OS console"
@@ -19274,6 +19274,38 @@ msgstr "Использовать цвет текущей строки (боко�
 #: lazarusidestrconsts.optdispgutterusecurrentlinenumbercolor
 msgid "Use current line number color (gutter: number)"
 msgstr "Использовать цвет номера текущей строки (боковое поле: номер)"
+
+#: lazarusidestrconsts.optedcompletebackspacebehaviour
+msgid "Backspace behaviour"
+msgstr "Поведение при нажатии забоя"
+
+#: lazarusidestrconsts.optedcompletecancelifcaretatstart
+msgid "Cancel, if caret at start"
+msgstr "Отменить, если курсор в начале"
+
+#: lazarusidestrconsts.optedcompletecancelifcaretatstartsingl
+msgid "Cancel, if caret at start (single press, not on repeat key)"
+msgstr "Отменить, если курсор в начале (нажатие без удержания)"
+
+#: lazarusidestrconsts.optedcompletecancelifcompletionwasjust
+msgid "Cancel, if completion was just opened"
+msgstr "Отменить, если окно только что открыто"
+
+#: lazarusidestrconsts.optedcompletecancelifcompletionwasjust2
+msgid "Cancel, if completion was just opened, and caret at start"
+msgstr "Отменить, если окно только что открыто и курсор в начале"
+
+#: lazarusidestrconsts.optedcompletecancelifjustopenedorcaret
+msgid "Cancel, if just opened, or caret at start (not on repeat key)"
+msgstr "Отменить, если окно только что открыто либо курсор в начале (нажатие без удержания)"
+
+#: lazarusidestrconsts.optedcompletecancelifopenedbydot
+msgid "Cancel, if opened by dot"
+msgstr "Отменить, если окно открыто нажатием точки"
+
+#: lazarusidestrconsts.optedcompleteonlydeletepreviouschar
+msgid "Only delete previous char"
+msgstr "Только удалить предыдущий символ"
 
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"
