@@ -14040,7 +14040,12 @@ begin
     end
     else
       exit(vatIdentifier);
-  end else if (CurPos.StartPos=CurPos.EndPos-1) then begin
+  end else
+  if (CurPos.Flag= cafEdgedBracketOpen) then
+    exit(vatEdgedBracketOpen) else
+  if (CurPos.Flag= cafEdgedBracketClose) then
+    exit(vatEdgedBracketClose)
+  else if (CurPos.StartPos=CurPos.EndPos-1) then begin
     case c of
     '.': exit(vatPoint);
     '^': exit(vatUp);
