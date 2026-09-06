@@ -234,9 +234,8 @@ type
     function StartInstance(AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
                       AFlags: TStartInstanceFlags; out AnError: TFpError): boolean; override;
     function AttachToInstance(APid: Integer; out AnError: TFpError): boolean; override;
-    { Program-I/O capture (RedirectConsoleOutput). Served from the launch
-      TProcess's pipes when siRediretOutput was requested at StartInstance;
-      the base no-ops apply otherwise. }
+    // CheckForConsoleOutput: Waits for Target-App Stdin/Out capture (RedirectConsoleOutput).
+    // ATimeOutMs may only be honoured by some implementation. The function may or may not return after the timeout.
     function CheckForConsoleOutput(ATimeOutMs: integer): integer; override;
     procedure StopCheckingForConsoleOutput; override;
     function GetConsoleOutput: string; override;
