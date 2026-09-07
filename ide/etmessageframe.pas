@@ -46,7 +46,7 @@ uses
   ProjectIntf, PackageIntf, CompOptsIntf, IDEExternToolIntf,
   // IDEIntf
   IDEImagesIntf, MenuIntf, IDECommands, IDEDialogs, LazIDEIntf, IdeIntfStrConsts,
-  IDEMsgIntf,
+  IDEMsgIntf, IDEWindowIntf,
   // IdeConfig
   EnvironmentOpts, IDEOptionDefs, CompilerOptions, ExtTools, IdeConfStrConsts,
   // IDE
@@ -5556,6 +5556,10 @@ begin
   View.Lines.Add(Result);
   FMessagesCtrl.UpdateScrollBar(true);
   FMessagesCtrl.Invalidate;
+  if (TheUrgency in [mluError, mluFatal, mluPanic]) and
+     (EnvironmentGuiOpts.MsgViewShowAutomatically in [mwsaDefault, mwsaError])
+  then
+    LazarusIDE.DoShowMessagesView;
 end;
 
 end.
