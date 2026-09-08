@@ -52,7 +52,7 @@ interface
 uses
   Classes, SysUtils, types, math, FpDbgInfo, FpDbgDwarfDataClasses, FpdMemoryTools,
   FpErrorMessages, FpDbgUtil, FpDbgDwarfConst, FpDbgCommon, DbgIntfBaseTypes, LazUTF8,
-  LazLoggerBase, LazClasses, LazDebuggerIntfFloatTypes;
+  LazLoggerBase, LazClasses, LazFileUtils, LazDebuggerIntfFloatTypes;
 
 type
   TFpDwarfInfo = FpDbgDwarfDataClasses.TFpDwarfInfo;
@@ -1299,6 +1299,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     FDwarf: TFpDwarfInfo;
   protected
     procedure Init; override;
+    procedure NameNeeded; override;
     function GetNestedSymbolExByName(const AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
   public
     constructor Create(const AName: String; AnInformationEntry: TDwarfInformationEntry; ADbgInfo: TFpDwarfInfo = nil); overload;
@@ -1786,7 +1787,7 @@ begin
   Result := FindExportedSymbolInUnits(AName, ANameInfo, SkipCompUnit, FoundInfoEntry,
       OnlyUnitNameLower, AFindFlags);
   if Result then begin
-    ADbgSymbol := TFpSymbolDwarf.CreateSubClass(AName, FoundInfoEntry);
+    ADbgSymbol := TFpSymbolDwarf.CreateSubClass('', FoundInfoEntry);
     FoundInfoEntry.ReleaseReference;
     Result := ADbgSymbol <> nil;
   end;
@@ -1802,7 +1803,7 @@ begin
   Result := FindExportedSymbolInUnits(AName, ANameInfo, SkipCompUnit, FoundInfoEntry,
       OnlyUnitNameLower, AFindFlags);
   if Result then begin
-    ADbgValue := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, FoundInfoEntry));
+    ADbgValue := SymbolToValue(TFpSymbolDwarf.CreateSubClass('', FoundInfoEntry));
     FoundInfoEntry.ReleaseReference;
     Result := ADbgValue <> nil;
   end;
@@ -8418,6 +8419,19 @@ begin
   inherited Init;
   SetSymbolType(stNone);
   SetKind(skUnit);
+end;
+
+procedure TFpSymbolDwarfUnit.NameNeeded;
+var
+  AName: String;
+begin
+  if CompilationUnit <> nil then
+    SetName(CompilationUnit.UnitName)
+  else
+  if InformationEntry.ReadName(AName) then
+    SetName(LazFileUtils.ExtractFileNameOnly(AName))
+  else
+    inherited NameNeeded;
 end;
 
 function TFpSymbolDwarfUnit.GetNestedSymbolExByName(const AIndex: String; out
