@@ -28,7 +28,6 @@ unit Grids;
 
 {$mode objfpc}{$H+}
 {$modeswitch nestedprocvars}
-{$define NewCols}
 
 interface
 
@@ -9211,15 +9210,9 @@ end;
 
 function TCustomGrid.GridColumnFromColumnIndex(ColumnIndex: Integer): Integer;
 begin
-  {$ifdef NewCols}
   result := ColumnIndex + FirstGridColumn;
   if Result>ColCount-1 then
     Result := -1;
-  {$else}
-  result := Columns.VisibleIndex(ColumnIndex);
-  if result>=0 then
-    result := result + FixedCols;
-  {$endif}
 end;
 
 procedure TCustomGrid.GridMouseWheel(Shift: TShiftState; Delta: Integer);
@@ -12814,10 +12807,8 @@ function TGridColumn.GetWidth: Integer;
 var
   tmpGrid: TCustomGrid;
 begin
-  {$ifdef newcols}
   if not Visible then
     exit(0);
-  {$endif}
   if FWidth=nil then
     result := GetDefaultWidth
   else
@@ -13300,19 +13291,8 @@ begin
 end;
 
 function TGridColumns.GetVisibleCount: Integer;
-{$ifNdef newcols}
-var
-  i: Integer;
-{$endif}
 begin
-  {$ifdef newcols}
   result := Count;
-  {$else}
-  result := 0;
-  for i:=0 to Count-1 do
-    if Items[i].Visible then
-      inc(result);
-  {$endif}
 end;
 
 function TGridColumns.GetOwner: TPersistent;
@@ -13432,29 +13412,11 @@ begin
 end;
 
 function TGridColumns.RealIndex(Index: Integer): Integer;
-{$ifNdef NewCols}
-var
-  i: Integer;
-{$endif}
 begin
-  {$ifdef NewCols}
   if Index>Count-1 then
     result := -1
   else
     result := Index;
-  {$else}
-  result := -1;
-  if Index>=0 then
-    for i:=0 to Count-1 do begin
-      if Items[i].Visible then begin
-        Dec(index);
-        if Index<0 then begin
-          result := i;
-          exit;
-        end;
-      end;
-    end;
-  {$endif}
 end;
 
 function TGridColumns.IndexOf(Column: TGridColumn): Integer;
