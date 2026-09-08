@@ -14313,7 +14313,7 @@ begin
               ExprParams.SetIdentifier(Self,nil,nil);
               ExprParams.ContextNode:= TargetNode;
               ExprOfElement:=
-                FindExpressionTypeOfTerm(TargetNode.FirstChild.StartPos,-1,ExprParams,false);
+                TargetType.Context.Tool.FindExpressionTypeOfTerm(TargetNode.FirstChild.StartPos,-1,ExprParams,false);
               if ExprOfElement.Desc=xtContext then
                 TargetNode:=ExprOfElement.Context.Node
               else
