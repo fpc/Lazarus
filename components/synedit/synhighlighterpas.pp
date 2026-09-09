@@ -8203,6 +8203,9 @@ begin
 
   if (TPascalCodeFoldBlockType(Index) in [cfbtIfThen, cfbtForDo, cfbtWhileDo, cfbtWithDo, cfbtIfElse]) then
     m := [];
+  if TPascalCodeFoldBlockType(Index) in [cfbtCaseElse] then
+    m := m - [fmMarkup];
+
   if TPascalCodeFoldBlockType(Index) in [cfbtSlashComment] then
     Result.Modes := [fmFold, fmHide] + m
   else
