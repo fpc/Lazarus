@@ -4001,7 +4001,7 @@ begin
     exit;
 
   PasExpr := nil;
-  FExceptionStepper.FState := ExceptionState;
+  st :=  FExceptionStepper.FState;
   if AnAtException then
     FExceptionStepper.FState := esStoppedAtRaise;
   try
