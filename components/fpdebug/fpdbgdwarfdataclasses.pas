@@ -6369,7 +6369,6 @@ function TDwarfCompilationUnit.GetDwarfAddressInfo(AnAddress: TDBGPtr; out
   AnDwarfAddressInfoPtr: PDwarfAddressInfo): boolean;
 var
   Iter: TLockedMapIterator;
-  Info: PDwarfAddressInfo;
 begin
   if not FAddressMapBuild then
     BuildAddressMap;

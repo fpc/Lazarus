@@ -874,8 +874,6 @@ function TFpDwarfFreePascalSymbolScope.FindExportedSymbolInUnits(const AName: St
   const ANameInfo: TNameSearchInfo; SkipCompUnit: TDwarfCompilationUnit; out
   AnInfoEntry: TDwarfInformationEntry; const OnlyUnitNameLower: String;
   AFindFlags: TFindExportedSymbolsFlags): Boolean;
-var
-  CU: TDwarfCompilationUnit;
 begin
   FInAllUnitSearch := True;
   FFoundSystemInfoEntry := nil;

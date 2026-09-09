@@ -1130,7 +1130,6 @@ end;
 function TDebugManager.ConsolePlugIn: ILazDbgIdeConsoleWindowPlugIn;
 var
   EntryId: String;
-  Obj: ILazDbgIdeConsoleWindowPlugIn;
 begin
   if FConsolePlugIn = nil then begin
     EntryId := ResolveConsoleId;
@@ -2263,10 +2262,10 @@ begin
 end;
 
 procedure TDebugManager.InitMemViewerDlg;
-var
-  TheDialog: TMemViewDlg;
+//var
+//  TheDialog: TMemViewDlg;
 begin
-  TheDialog := TMemViewDlg(FDialogs[ddtMemViewer]);
+  //TheDialog := TMemViewDlg(FDialogs[ddtMemViewer]);
   //TheDialog.BeginUpdate;
 //  TheDialog.DebugManager := Self;
   //TheDialog.EndUpdate;
@@ -2955,13 +2954,16 @@ const
   DbgTargetStarterApplication = '$(LazarusDir)/tools/lazdebugtargetstarter';
   LauncherApplication = '$(LazarusDir)/tools/runwait.sh';
 var
-  LaunchingCmdLine, LaunchingApplication, LaunchingParams, LaunchApp, StarterApp, s: String;
-  l: TStringList;
+  LaunchingCmdLine, LaunchingApplication, LaunchingParams: String;
   NewWorkingDir: String;
   NewDebuggerClass: TDebuggerClass;
   DbgCfg: TDebuggerPropertiesConfig;
   AMode: TAbstractRunParamsOptionsMode;
+  {$IFDEF WITH_DBG_STARTER_APP}
+  LaunchApp, StarterApp, s: String;
+  l: TStringList;
   i: SizeInt;
+  {$ENDIF}
 begin
 {$ifdef VerboseDebugger}
   DebugLn('[TDebugManager.DoInitDebugger] A');
@@ -3495,10 +3497,12 @@ function TDebugManager.StartDebugging: TModalResult;
     FDebugTargetStarterPipe := '';
   end;
 {$ENDIF}
+{$IFDEF WITH_DBG_STARTER_APP}
 var
   p: TProcess;
   pid, fd, i, j: Integer;
   s: string;
+{$ENDIF}
 begin
   {$ifdef VerboseDebugger}
   DebugLn('TDebugManager.StartDebugging A ',DbgS(FDebugger<>nil),' Destroying=',DbgS(Destroying));

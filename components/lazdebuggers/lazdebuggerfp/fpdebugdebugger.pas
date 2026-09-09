@@ -610,8 +610,6 @@ type
     procedure ThreadLogExpression;
     procedure ThreadLogCallStack;
   protected
-    procedure DoLogExpression(const AnExpression: String); override;
-    procedure DoLogCallStack(const Limit: Integer); override;
     procedure DoStateChange(const AOldState: TDBGState); override;
     procedure DoPropertiesChanged(AChanged: TDbgBpChangeIndicators); override;
     procedure DoChanged; override;
@@ -620,6 +618,8 @@ type
     property  Validity: TValidState write SetValid;
   public
     destructor Destroy; override;
+    procedure DoLogExpression(const AnExpression: String); override;
+    procedure DoLogCallStack(const Limit: Integer); override;
   end;
 
   { TFPBreakpoints }
@@ -4251,8 +4251,6 @@ procedure TFpDebugDebugger.FDbgControllerHitBreakpointEvent(
 var
   ABreakPoint: TDBGBreakPoint;
   ALocationAddr: TDBGLocationRec;
-  Context: TFpDbgSymbolScope;
-  PasExpr: TFpPascalExpression;
   Opts: TFpInt3DebugBreakOptions;
   NeedInternalPause, IsDBrk: Boolean;
   b: Integer;

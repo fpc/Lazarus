@@ -101,7 +101,7 @@ type
       FResValueInFormatter: TWatchResultData;
     end;
   protected
-    procedure StoreSetting(var AStorage: TWatchResStoredSettings); inline;
+    procedure StoreSetting(out AStorage: TWatchResStoredSettings); inline;
     procedure RestoreSetting(const AStorage: TWatchResStoredSettings); inline;
     function PrintNumber(AUnsignedValue: QWord; ASignedValue: Int64;
                          AByteSize: Integer;
@@ -512,7 +512,7 @@ end;
 
 { TWatchResultPrinter }
 
-procedure TWatchResultPrinter.StoreSetting(var AStorage: TWatchResStoredSettings);
+procedure TWatchResultPrinter.StoreSetting(out AStorage: TWatchResStoredSettings);
 begin
   AStorage.FFormatFlags           := FFormatFlags;
   AStorage.FCurrentValueFormatter := FCurrentValueFormatter;

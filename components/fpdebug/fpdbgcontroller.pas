@@ -272,7 +272,6 @@ type
     FMemModel: TFpDbgMemModel;
     FDefaultContext: TFpDbgLocationContext;
     FOnThreadCheckStepForIgnoredRoutine: TOnCheckExcludedRoutine;
-    FPreAttach: boolean;
     FStoredDefaultContext: TFpDbgLocationContext; // while function eval calling
     FOnLibraryLoadedEvent: TOnLibraryLoadedEvent;
     FOnLibraryUnloadedEvent: TOnLibraryUnloadedEvent;

@@ -37,8 +37,6 @@ type
   { TWatchDisplayFormatPresetList }
 
   TWatchDisplayFormatPresetList = class(specialize TFPGList<TWatchDisplayFormatPreset>)
-  private
-    FNoDefaultOnEmpty: boolean;
   protected
     FDisplayFormatPresetsDefaults: TWatchDisplayFormatPresetList; // pointer to global list
   public

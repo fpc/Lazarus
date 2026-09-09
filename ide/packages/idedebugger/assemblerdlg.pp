@@ -17,7 +17,7 @@ uses
   // LazEdit
   LazEditTextAttributes, LazEditHighlighter,
   // SynEdit
-  SynEdit, SynEditMiscClasses, SynHighlighterPosition,
+  SynEdit, SynEditMiscClasses,
   // IdeIntf
   IDEWindowIntf, IDECommands, IDEImagesIntf, SrcEditorIntf, EditorOptionsIntf,
   IdeIntfStrConsts, EditorSyntaxHighlighterDef,

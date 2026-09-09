@@ -411,7 +411,6 @@ end;
 function TIdeDbgConsoleWindowPlugInList.PlugInById(const AnId: String
   ): ILazDbgIdeConsoleWindowPlugIn;
 var
-  Entry: TLazDbgIdeConsoleWindowPlugInRegistryEntryClass;
   i: Integer;
 begin
   i := IndexOfId(AnId);
@@ -424,7 +423,7 @@ end;
 procedure TIdeDbgConsoleWindowPlugInList.AssignConf(ASource: TIdeDbgConsoleWindowPlugInList);
 var
   i, j: Integer;
-  Src, Dst: ILazDbgIdePlugInConfiguration;
+  Dst: ILazDbgIdePlugInConfiguration;
   p: ILazDbgIdeConsoleWindowPlugIn;
 begin
   for i := 0 to ASource.Count - 1 do

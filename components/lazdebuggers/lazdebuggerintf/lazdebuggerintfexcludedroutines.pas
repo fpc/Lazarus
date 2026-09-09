@@ -21,7 +21,7 @@ unit LazDebuggerIntfExcludedRoutines;
 interface
 
 uses
-  Classes, fgl, SysUtils, LazClasses, LazDebuggerIntfSynchronizedList;
+  Classes, fgl, SysUtils, LazDebuggerIntfSynchronizedList;
 
 type
 

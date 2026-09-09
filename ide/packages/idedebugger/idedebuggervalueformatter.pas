@@ -6,10 +6,10 @@ unit IdeDebuggerValueFormatter;
 interface
 
 uses
-  Classes, SysUtils, fgl, StrUtils,
+  Classes, SysUtils, fgl,
   Laz2_XMLCfg, LazClasses,
   // LazDebuggerIntf
-  LazDebuggerIntf, DbgUtilsTypePatternList,
+  DbgUtilsTypePatternList,
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // IdeIntf
