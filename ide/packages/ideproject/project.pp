@@ -1840,7 +1840,7 @@ end;
 function TUnitInfo.GetModified: boolean;
 begin
   Result:=(uifModified in FFlags)
-    or ((Source<>nil) and (Source.ChangeStep<>fSourceChangeStep));
+    or ((Source<>nil) and (Source.Modified or (Source.ChangeStep<>fSourceChangeStep)));
 end;
 
 function TUnitInfo.GetRunFileIfActive: boolean;

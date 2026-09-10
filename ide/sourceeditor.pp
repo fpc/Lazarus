@@ -7345,7 +7345,7 @@ begin
   if SrcEdit=nil then exit;
   if Sender is TIDEMenuItem then begin
     IDEMenuItem:=TIDEMenuItem(Sender);
-    NewEncoding:=IDEMenuItem.Caption;
+    NewEncoding:=NormalizeEncoding(IDEMenuItem.Caption);
     if SysUtils.CompareText(copy(NewEncoding,1,length(EncodingAnsi)+2),EncodingAnsi+' (')=0
     then begin
       // the ansi encoding is shown as 'ansi (system encoding)' -> cut
@@ -7353,7 +7353,7 @@ begin
     end else if NewEncoding=lisUtf8WithBOM then begin
       NewEncoding:=EncodingUTF8BOM;
     end;
-    DebugLn(['Hint: (lazarus) TSourceNotebook.EncodingClicked NewEncoding=',NewEncoding]);
+    //DebugLn(['Hint: (lazarus) TSourceNotebook.EncodingClicked NewEncoding=',NewEncoding]);
     if SrcEdit.CodeBuffer<>nil then begin
       OldEncoding:=NormalizeEncoding(SrcEdit.CodeBuffer.DiskEncoding);
       if OldEncoding='' then
