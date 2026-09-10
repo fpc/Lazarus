@@ -2063,7 +2063,7 @@ function TPascalParserTool.ReadConstant(ExceptionOnError, Extract: boolean;
 var
   BracketType: TCommonAtomFlag;
   p: PChar;
-  first: Boolean;
+  first, IsNotOperator: Boolean;
 begin
   Result:=false;
   repeat
@@ -2173,7 +2173,12 @@ begin
       break;
     end;
     // operator => read further
+    IsNotOperator:=UpAtomIs('NOT');
     if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+    if IsNotOperator and UpAtomIs('IN') then begin
+      // "not in"
+      if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+    end;
   until false;
   Result:=true;
 end;

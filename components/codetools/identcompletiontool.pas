@@ -2505,6 +2505,14 @@ begin
             if not NotStartOfOp then begin
               MoveCursorToAtomPos(CurrentIdentifierList.StartAtomInFront);
               NotStartOfOp := AtomIsNumber or AtomIsRealNumber;
+              if UpAtomIs('NOT') then begin
+                // "operand not |" -> "not in"
+                ReadPriorAtom;
+                if AtomIsIdentifier or AtomIsNumber or AtomIsRealNumber
+                or AtomIsStringConstant
+                or (CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose]) then
+                  Add('in');
+              end;
             end;
             if NotStartOfOp then
             begin

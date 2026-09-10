@@ -212,6 +212,7 @@ type
     procedure TestFindDeclaration_NameOf;
     procedure TestFindDeclaration_IsNot;
     procedure TestFindDeclaration_IsNotDelphi;
+    procedure TestFindDeclaration_NotIn;
     procedure TestFindDeclaration_Attributes;
     procedure TestFindDeclaration_BracketOpen;
     procedure TestFindDeclaration_AnonymProc;
@@ -2174,6 +2175,30 @@ begin
   '  b1{guesstype:Boolean} := o is not TBird;',
   '  b2{guesstype:Boolean} := (o is not TBird) or b;',
   '  if TBird(o).Next{declaration:TBird.Next} is not TEagle{declaration:TEagle} then ;',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_NotIn;
+begin
+  StartProgram;
+  Add([
+  'type',
+  '  TColor = (red,green,blue);',
+  '  TColors = set of TColor;',
+  'const',
+  '  NotInC = 3 not in [1,2];',
+  'var',
+  '  c: TColor;',
+  '  s: TColors;',
+  '  b: boolean;',
+  'begin',
+  '  if c{declaration:c} not in s{declaration:s} then ;',
+  '  if (c not in s) and b{declaration:b} then ;',
+  '  b1{guesstype:Boolean} := c not in s;',
+  '  b2{guesstype:Boolean} := (c not in s) or b;',
+  '  b3{guesstype:Boolean} := 3 not in [1,2];',
+  '  b4{guesstype:Boolean} := not b and (c not in s);',
   'end.']);
   FindDeclarations(Code);
 end;

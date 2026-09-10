@@ -10165,6 +10165,12 @@ begin
       StackEntry^.Operand.AliasType:=CleanFindContext;
     StackEntry^.theOperator.StartPos:=-1;
     StackEntry^.OperatorLvl:=5;
+    if (CurPos.EndPos<=EndPos) and UpAtomIs('NOT') then begin
+      // a "not" after an operand can only be the start of "not in"
+      ReadNextAtom;
+      if not UpAtomIs('IN') then
+        UndoReadNextAtom;
+    end;
     // check operator
     {$IFDEF ShowExprEval}
     DebugLn('[TFindDeclarationTool.FindExpressionResultType] Operator: ',
