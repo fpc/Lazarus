@@ -535,6 +535,8 @@ function TQtWidgetSet.CreateFontIndirectEx(const LogFont: TLogFont; const LongFo
 var
   QtFont: TQtFont;
   FamilyName: string;
+  AFontInfo: QFontInfoH;
+  AResolvedFamily: WideString;
 const
   QStyleStategy: array [DEFAULT_QUALITY..CLEARTYPE_NATURAL_QUALITY] of QFontStyleStrategy = (
  { DEFAULT_QUALITY           } QFontPreferDefault,
@@ -590,6 +592,11 @@ begin
 
     if LogFont.lfQuality <= High(QStyleStategy) then
       QtFont.setStyleStrategy(QStyleStategy[LogFont.lfQuality]);
+    AFontInfo := QFontInfo_Create(QtFont.FHandle);
+    QFontInfo_family(AFontInfo, @AResolvedFamily);
+    QFontInfo_Destroy(AFontInfo);
+    if (AResolvedFamily <> '') and (UTF16ToUTF8(AResolvedFamily) <> FamilyName) then
+      QFont_setFamily(QtFont.FHandle, @AResolvedFamily);
     Result := HFONT(QtFont);
   except
     Result := 0;
