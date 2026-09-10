@@ -22,7 +22,7 @@ interface
 
 uses
   // RTL, FCL, libs
-  Types, Classes, Sysutils, Math, GLib2, Gtk2, Gdk2, Gdk2pixbuf,
+  Types, Classes, Sysutils, Math, GLib2, Gtk2, Gdk2, Gdk2pixbuf, Pango,
   // LazUtils
   LazTracer,
   // LCL
