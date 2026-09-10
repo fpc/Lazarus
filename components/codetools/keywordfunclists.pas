@@ -1402,6 +1402,7 @@ begin
     Add('LENGTH'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LO'          ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LOW'         ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NAMEOF'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NEW'         ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('OBJCSELECTOR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ORD'         ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1902,6 +1903,7 @@ begin
     Add('LONGINT'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LONGWORD'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LOW'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NAMEOF'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NATIVEINT'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NATIVEUINT' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NIL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1950,6 +1952,7 @@ begin
     Add('LONGINT'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LONGWORD'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LOW'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NAMEOF'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NATIVEINT'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NATIVEUINT' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NIL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);

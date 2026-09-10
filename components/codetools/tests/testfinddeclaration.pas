@@ -209,6 +209,7 @@ type
     procedure TestFindDeclaration_ArrayMultiDimDot;
     procedure TestFindDeclaration_GuessType;
     procedure TestFindDeclaration_GuessType_Set;
+    procedure TestFindDeclaration_NameOf;
     procedure TestFindDeclaration_Attributes;
     procedure TestFindDeclaration_BracketOpen;
     procedure TestFindDeclaration_AnonymProc;
@@ -2128,6 +2129,26 @@ begin
   '  TomatoSalad = Tomato+[green];',
   'begin',
   '  Bla{guesstype:TColors} := TomatoSalad+[blue];',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_NameOf;
+begin
+  StartProgram;
+  Add([
+  'type',
+  '  TBird = class',
+  '    procedure Fly;',
+  '  end;',
+  'procedure TBird.Fly;',
+  'begin',
+  'end;',
+  'var i: longint;',
+  'begin',
+  '  s1{guesstype:String} := NameOf(i{declaration:i});',
+  '  NameOf(TBird.Fly{declaration!:TBird.Fly});',
+  '  s2{guesstype:String} := NameOf(TBird{declaration:TBird}.Fly{declaration!:TBird.Fly});',
   'end.']);
   FindDeclarations(Code);
 end;

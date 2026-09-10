@@ -1473,6 +1473,8 @@ begin
     Result:=xtText
   else if CompareIdentifiers(Identifier,'SIZEOF')=0 then
     Result:=xtConstOrdInteger
+  else if CompareIdentifiers(Identifier,'NAMEOF')=0 then
+    Result:=xtConstString
   else if CompareIdentifiers(Identifier,'ORD')=0 then
     Result:=xtConstOrdInteger
   else if CompareIdentifiers(Identifier,'ASSIGNED')=0 then

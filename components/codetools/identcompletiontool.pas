@@ -1872,6 +1872,7 @@ begin
     AddCompilerFunction('GetTypeKind','Identifier', 'TTypeKind');
     AddCompilerFunction('IsManagedType','Identifier', 'Boolean');
     AddCompilerFunction('IsConstValue','const Value', 'Boolean');
+    AddCompilerFunction('NameOf','Identifier', 'string');
     AddCompilerFunction('TypeOf','Identifier', 'Pointer');
     AddCompilerProcedure('Val','S:String;var V;var Code:Integer');
     AddCompilerFunction('Unaligned','var X','var'); // Florian declaration :)
@@ -3781,6 +3782,7 @@ var
       AddCompilerProc('GetTypeKind','Identifier', 'TTypeKind');
       AddCompilerProc('IsManagedType','Identifier', 'Boolean');
       AddCompilerProc('IsConstValue','const Value', 'Boolean');
+      AddCompilerProc('NameOf','Identifier', 'string');
       AddCompilerProc('TypeOf','Identifier', 'Pointer');
       AddCompilerProc('Val','S:String;var V;var Code:Integer');
       AddCompilerProc('Unaligned','var X','var');
