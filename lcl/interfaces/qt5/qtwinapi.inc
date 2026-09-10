@@ -2192,8 +2192,16 @@ var
     W: WideString;
 
     function IsRegionalIndicator(P: PChar; Len: Integer): Boolean;
+    var
+      cp, cpLen: Integer;
     begin
-      Result := (Len = 4) and (P[0] = #$F0) and (P[1] = #$9F) and (P[2] = #$87);
+      if Len <> 4 then
+        Result := False
+      else
+      begin
+        cp := UTF8CodepointToUnicode(P, cpLen);
+        Result := LazCpIsRegionalIndicator(cp);
+      end;
     end;
 
   begin

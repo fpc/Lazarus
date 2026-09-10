@@ -845,6 +845,8 @@ function QtScreenContext: TQtDeviceContext;
 procedure AssignQtFont(FromFont: QFontH; ToFont: QFontH);
 function IsFontEqual(AFont1, AFont2: TQtFont): Boolean;
 
+function LazCpIsRegionalIndicator(cp: Integer): Boolean;
+
 var
   QtGDIObjects: TQtGDIObjects = nil;
 
@@ -2869,22 +2871,96 @@ begin
   cuCount := 1;
 end;
 
-function LazStrHasSupplementaryChar(s: PWideString): Boolean;
+function LazCpIsRegionalIndicator(cp: Integer): Boolean;
+begin
+  Result := (cp >= $1F1E6) and (cp <= $1F1FF);
+end;
+
+function LazCpHasEmojiPresentation(cp: Integer): Boolean;
+begin
+  if (cp < $231A) or ((cp > $2B55) and (cp < $1F000)) then
+    Result := False
+  else if cp < $10000 then
+    Result :=
+      ((cp >= $231A) and (cp <= $231B)) or
+      ((cp >= $23E9) and (cp <= $23EC)) or (cp = $23F0) or (cp = $23F3) or
+      ((cp >= $25FD) and (cp <= $25FE)) or
+      ((cp >= $2614) and (cp <= $2615)) or
+      ((cp >= $2648) and (cp <= $2653)) or (cp = $267F) or (cp = $2693) or
+      (cp = $26A1) or ((cp >= $26AA) and (cp <= $26AB)) or
+      ((cp >= $26BD) and (cp <= $26BE)) or ((cp >= $26C4) and (cp <= $26C5)) or
+      (cp = $26CE) or (cp = $26D4) or (cp = $26EA) or
+      ((cp >= $26F2) and (cp <= $26F3)) or (cp = $26F5) or (cp = $26FA) or
+      (cp = $26FD) or (cp = $2705) or ((cp >= $270A) and (cp <= $270B)) or
+      (cp = $2728) or (cp = $274C) or (cp = $274E) or
+      ((cp >= $2753) and (cp <= $2755)) or (cp = $2757) or
+      ((cp >= $2795) and (cp <= $2797)) or (cp = $27B0) or (cp = $27BF) or
+      ((cp >= $2B1B) and (cp <= $2B1C)) or (cp = $2B50) or (cp = $2B55)
+  else
+    Result :=
+      (cp = $1F004) or (cp = $1F0CF) or (cp = $1F18E) or
+      ((cp >= $1F191) and (cp <= $1F19A)) or
+      (cp = $1F201) or (cp = $1F21A) or (cp = $1F22F) or
+      ((cp >= $1F232) and (cp <= $1F236)) or
+      ((cp >= $1F238) and (cp <= $1F23A)) or
+      ((cp >= $1F250) and (cp <= $1F251)) or
+      ((cp >= $1F300) and (cp <= $1F320)) or
+      ((cp >= $1F32D) and (cp <= $1F335)) or
+      ((cp >= $1F337) and (cp <= $1F37C)) or
+      ((cp >= $1F37E) and (cp <= $1F393)) or
+      ((cp >= $1F3A0) and (cp <= $1F3CA)) or
+      ((cp >= $1F3CF) and (cp <= $1F3D3)) or
+      ((cp >= $1F3E0) and (cp <= $1F3F0)) or (cp = $1F3F4) or
+      ((cp >= $1F3F8) and (cp <= $1F43E)) or (cp = $1F440) or
+      ((cp >= $1F442) and (cp <= $1F4FC)) or
+      ((cp >= $1F4FF) and (cp <= $1F53D)) or
+      ((cp >= $1F54B) and (cp <= $1F54E)) or
+      ((cp >= $1F550) and (cp <= $1F567)) or (cp = $1F57A) or
+      ((cp >= $1F595) and (cp <= $1F596)) or (cp = $1F5A4) or
+      ((cp >= $1F5FB) and (cp <= $1F64F)) or
+      ((cp >= $1F680) and (cp <= $1F6C5)) or (cp = $1F6CC) or
+      ((cp >= $1F6D0) and (cp <= $1F6D2)) or
+      ((cp >= $1F6D5) and (cp <= $1F6D7)) or
+      ((cp >= $1F6DC) and (cp <= $1F6DF)) or
+      ((cp >= $1F6EB) and (cp <= $1F6EC)) or
+      ((cp >= $1F6F4) and (cp <= $1F6FC)) or
+      ((cp >= $1F7E0) and (cp <= $1F7EB)) or (cp = $1F7F0) or
+      ((cp >= $1F90C) and (cp <= $1F93A)) or
+      ((cp >= $1F93C) and (cp <= $1F945)) or
+      ((cp >= $1F947) and (cp <= $1F9FF)) or
+      ((cp >= $1FA70) and (cp <= $1FA7C)) or
+      ((cp >= $1FA80) and (cp <= $1FA88)) or
+      ((cp >= $1FA90) and (cp <= $1FABD)) or
+      ((cp >= $1FABF) and (cp <= $1FAC5)) or
+      ((cp >= $1FACE) and (cp <= $1FADB)) or
+      ((cp >= $1FAE0) and (cp <= $1FAE8)) or
+      ((cp >= $1FAF0) and (cp <= $1FAF8));
+end;
+
+function LazCpWantsEmojiFont(cp: Integer; AEmojiFM: QFontMetricsH): Boolean;
+begin
+  Result := LazCpHasEmojiPresentation(cp) and QFontMetrics_inFontUcs4(AEmojiFM, cp);
+end;
+
+function LazStrHasEmojiChar(s: PWideString): Boolean;
 var
-  i: Integer;
-  w: Word;
+  ws: WideString;
+  i, cp, cuCount: Integer;
 begin
   Result := False;
   if s = nil then
     Exit;
-  for i := 1 to Length(s^) do
+  ws := s^;
+  i := 1;
+  while i <= Length(ws) do
   begin
-    w := Word(s^[i]);
-    if (w >= $D800) and (w <= $DBFF) then
+    LazDecodeCodepoint(ws, i, cp, cuCount);
+    if LazCpIsRegionalIndicator(cp) or LazCpHasEmojiPresentation(cp) then
     begin
       Result := True;
       Exit;
     end;
+    inc(i, cuCount);
   end;
 end;
 
@@ -2919,34 +2995,61 @@ begin
   end;
 end;
 
-function LazCpNeedsEmoji(ABaseFM: QFontMetricsH; cp: Integer): Boolean;
-begin
-  Result := ((cp >= $1F1E6) and (cp <= $1F1FF)) or not QFontMetrics_inFontUcs4(ABaseFM, cp);
-end;
-
-function LazStrIsAllUncoveredSupplementary(APainter: QPainterH; s: PWideString): Boolean;
+function LazStrIsLoneRegionalIndicator(s: PWideString): Boolean;
 var
   ws: WideString;
-  baseFM: QFontMetricsH;
-  i, cp, cuCount: Integer;
+  cp, cuCount: Integer;
+begin
+  Result := False;
+  if s = nil then
+    Exit;
+  ws := s^;
+  if Length(ws) <> 2 then
+    Exit;
+  LazDecodeCodepoint(ws, 1, cp, cuCount);
+  Result := (cuCount = 2) and LazCpIsRegionalIndicator(cp);
+end;
+
+function LazStrIsAllEmoji(APainter: QPainterH; s: PWideString): Boolean;
+var
+  ws: WideString;
+  emojiFont: QFontH;
+  emojiFM: QFontMetricsH;
+  i, cp, cuCount, cp2, cu2: Integer;
+  prevWasRI, chIsEmoji: Boolean;
 begin
   Result := False;
   ws := s^;
   if ws = '' then
     Exit;
-  baseFM := QFontMetrics_Create(QPainter_font(APainter));
+  emojiFont := LazMakeEmojiFont(APainter);
+  emojiFM := QFontMetrics_Create(emojiFont);
   try
     i := 1;
+    prevWasRI := False;
     while i <= Length(ws) do
     begin
       LazDecodeCodepoint(ws, i, cp, cuCount);
-      if (cuCount <> 2) or not LazCpNeedsEmoji(baseFM, cp) then
+      if LazCpIsRegionalIndicator(cp) then
+      begin
+        chIsEmoji := prevWasRI;
+        if (not chIsEmoji) and (i + cuCount <= Length(ws)) then
+        begin
+          LazDecodeCodepoint(ws, i + cuCount, cp2, cu2);
+          chIsEmoji := LazCpIsRegionalIndicator(cp2);
+        end;
+      end
+      else
+        chIsEmoji := LazCpWantsEmojiFont(cp, emojiFM);
+      if not chIsEmoji then
         Exit;
+      prevWasRI := LazCpIsRegionalIndicator(cp);
       inc(i, cuCount);
     end;
     Result := True;
   finally
-    QFontMetrics_Destroy(baseFM);
+    QFontMetrics_Destroy(emojiFM);
+    QFont_Destroy(emojiFont);
   end;
 end;
 
@@ -2955,8 +3058,8 @@ var
   ws: WideString;
   baseFont, emojiFont: QFontH;
   baseFM, emojiFM: QFontMetricsH;
-  i, runStart, cp, cuCount, curX: Integer;
-  chIsEmoji, runIsEmoji, haveRun: Boolean;
+  i, runStart, cp, cuCount, curX, cp2, cu2: Integer;
+  chIsEmoji, runIsEmoji, haveRun, prevWasRI: Boolean;
 
   procedure FlushRun(AEndExcl: Integer);
   var
@@ -2991,11 +3094,22 @@ begin
     runStart := 1;
     runIsEmoji := False;
     haveRun := False;
+    prevWasRI := False;
     i := 1;
     while i <= Length(ws) do
     begin
       LazDecodeCodepoint(ws, i, cp, cuCount);
-      chIsEmoji := (cuCount = 2) and LazCpNeedsEmoji(baseFM, cp);
+      if LazCpIsRegionalIndicator(cp) then
+      begin
+        chIsEmoji := prevWasRI;
+        if (not chIsEmoji) and (i + cuCount <= Length(ws)) then
+        begin
+          LazDecodeCodepoint(ws, i + cuCount, cp2, cu2);
+          chIsEmoji := LazCpIsRegionalIndicator(cp2);
+        end;
+      end
+      else
+        chIsEmoji := LazCpWantsEmojiFont(cp, emojiFM);
       if not haveRun then
       begin
         runIsEmoji := chIsEmoji;
@@ -3007,6 +3121,7 @@ begin
         FlushRun(i);
         runIsEmoji := chIsEmoji;
       end;
+      prevWasRI := LazCpIsRegionalIndicator(cp);
       inc(i, cuCount);
     end;
     if haveRun then
@@ -3049,10 +3164,13 @@ begin
   if Font.Angle <> 0 then
     QPainter_drawText(Widget, 0, Metrics.ascent, s)
   else
-  if LazStrHasSupplementaryChar(s) then
-    LazDrawTextEmojiFallback(Widget, x, y, s)
-  else
-    QPainter_drawText(Widget, x, y, s);
+  if not LazStrIsLoneRegionalIndicator(s) then
+  begin
+    if LazStrHasEmojiChar(s) then
+      LazDrawTextEmojiFallback(Widget, x, y, s)
+    else
+      QPainter_drawText(Widget, x, y, s);
+  end;
 
   if FPenTextInternal then
   begin
@@ -3104,7 +3222,7 @@ begin
   end;
 
   emojiFont := nil;
-  useEmoji := (Font.Angle = 0) and LazStrHasSupplementaryChar(s) and LazStrIsAllUncoveredSupplementary(Widget, s);
+  useEmoji := (Font.Angle = 0) and LazStrIsAllEmoji(Widget, s);
   if useEmoji then
   begin
     emojiFont := LazMakeEmojiFont(Widget);
@@ -3112,10 +3230,13 @@ begin
     QPainter_setFont(Widget, emojiFont);
   end;
 
-  if Font.Angle <> 0 then
-    QPainter_DrawText(Widget, 0, 0, w, h, Flags, s)
-  else
-    QPainter_DrawText(Widget, x, y, w, h, Flags, s);
+  if not ((Font.Angle = 0) and LazStrIsLoneRegionalIndicator(s)) then
+  begin
+    if Font.Angle <> 0 then
+      QPainter_DrawText(Widget, 0, 0, w, h, Flags, s)
+    else
+      QPainter_DrawText(Widget, x, y, w, h, Flags, s);
+  end;
 
   if useEmoji then
   begin
