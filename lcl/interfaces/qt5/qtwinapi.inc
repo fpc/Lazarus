@@ -2185,11 +2185,17 @@ var
 
   procedure DoDrawCharByChar(const AClipped: Boolean);
   var
-    CurX, CharLen: Integer;
+    CurX, CharLen, ClusterBytes, ClusterDx, NextLen: Integer;
     CurCount: LongInt;
     CurDx: PInteger;
     CurStr: PChar;
     W: WideString;
+
+    function IsRegionalIndicator(P: PChar; Len: Integer): Boolean;
+    begin
+      Result := (Len = 4) and (P[0] = #$F0) and (P[1] = #$9F) and (P[2] = #$87);
+    end;
+
   begin
     CurDx := Dx;
     CurStr := Str;
@@ -2198,16 +2204,28 @@ var
     while CurCount > 0 do
     begin
       CharLen := UTF8CodepointSize(CurStr);
-      W := {%H-}Copy(CurStr, 1, CharLen);
+      ClusterBytes := CharLen;
+      ClusterDx := CurDx^;
+      if IsRegionalIndicator(CurStr, CharLen) then
+        while ClusterBytes < CurCount do
+        begin
+          NextLen := UTF8CodepointSize(CurStr + ClusterBytes);
+          if not IsRegionalIndicator(CurStr + ClusterBytes, NextLen) then
+            Break;
+          inc(CurDx);
+          inc(ClusterDx, CurDx^);
+          inc(ClusterBytes, NextLen);
+        end;
+      W := {%H-}Copy(CurStr, 1, ClusterBytes);
       if AClipped then
         QtDC.drawText(CurX, Y, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top,
           QtTextDontClip, @W)
       else
         QtDC.drawText(CurX, Y, @W);
-      inc(CurX, CurDx^);
+      inc(CurX, ClusterDx);
       inc(CurDx);
-      inc(CurStr, CharLen);
-      dec(CurCount, CharLen);
+      inc(CurStr, ClusterBytes);
+      dec(CurCount, ClusterBytes);
     end;
   end;
 

@@ -2903,6 +2903,187 @@ end;
   
   To get a correct behavior we need to sum the text's height to the Y coordinate.
  ------------------------------------------------------------------------------}
+const
+  {$IFDEF MSWINDOWS}
+  cLazEmojiFamily: WideString = 'Segoe UI Emoji';
+  {$ELSE}
+  {$IFDEF DARWIN}
+  cLazEmojiFamily: WideString = 'Apple Color Emoji';
+  {$ELSE}
+  cLazEmojiFamily: WideString = 'emoji';
+  {$ENDIF}
+  {$ENDIF}
+
+procedure LazDecodeCodepoint(const ws: WideString; i: Integer; out cp, cuCount: Integer);
+var
+  w1, w2: Word;
+begin
+  w1 := Word(ws[i]);
+  if (w1 >= $D800) and (w1 <= $DBFF) and (i < Length(ws)) then
+  begin
+    w2 := Word(ws[i + 1]);
+    if (w2 >= $DC00) and (w2 <= $DFFF) then
+    begin
+      cp := $10000 + ((w1 - $D800) shl 10) + (w2 - $DC00);
+      cuCount := 2;
+      Exit;
+    end;
+  end;
+  cp := w1;
+  cuCount := 1;
+end;
+
+function LazStrHasSupplementaryChar(s: PWideString): Boolean;
+var
+  i: Integer;
+  w: Word;
+begin
+  Result := False;
+  if s = nil then
+    Exit;
+  for i := 1 to Length(s^) do
+  begin
+    w := Word(s^[i]);
+    if (w >= $D800) and (w <= $DBFF) then
+    begin
+      Result := True;
+      Exit;
+    end;
+  end;
+end;
+
+function LazMakeEmojiFont(APainter: QPainterH): QFontH;
+var
+  fam, resolvedFam: WideString;
+  probe, base: QFontH;
+  fi: QFontInfoH;
+  aPixel: Integer;
+  aPoint: qreal;
+begin
+  fam := cLazEmojiFamily;
+  probe := QFont_Create();
+  QFont_setFamily(probe, @fam);
+  fi := QFontInfo_Create(probe);
+  QFontInfo_family(fi, @resolvedFam);
+  QFontInfo_Destroy(fi);
+  QFont_Destroy(probe);
+  if resolvedFam = '' then
+    resolvedFam := fam;
+  Result := QFont_Create();
+  QFont_setFamily(Result, @resolvedFam);
+  base := QPainter_font(APainter);
+  aPixel := QFont_pixelSize(base);
+  if aPixel > 0 then
+    QFont_setPixelSize(Result, aPixel)
+  else
+  begin
+    aPoint := QFont_pointSizeF(base);
+    if aPoint > 0 then
+      QFont_setPointSizeF(Result, aPoint);
+  end;
+end;
+
+function LazCpNeedsEmoji(ABaseFM: QFontMetricsH; cp: Integer): Boolean;
+begin
+  Result := ((cp >= $1F1E6) and (cp <= $1F1FF)) or not QFontMetrics_inFontUcs4(ABaseFM, cp);
+end;
+
+function LazStrIsAllUncoveredSupplementary(APainter: QPainterH; s: PWideString): Boolean;
+var
+  ws: WideString;
+  baseFM: QFontMetricsH;
+  i, cp, cuCount: Integer;
+begin
+  Result := False;
+  ws := s^;
+  if ws = '' then
+    Exit;
+  baseFM := QFontMetrics_Create(QPainter_font(APainter));
+  try
+    i := 1;
+    while i <= Length(ws) do
+    begin
+      LazDecodeCodepoint(ws, i, cp, cuCount);
+      if (cuCount <> 2) or not LazCpNeedsEmoji(baseFM, cp) then
+        Exit;
+      inc(i, cuCount);
+    end;
+    Result := True;
+  finally
+    QFontMetrics_Destroy(baseFM);
+  end;
+end;
+
+procedure LazDrawTextEmojiFallback(APainter: QPainterH; x, y: Integer; s: PWideString);
+var
+  ws: WideString;
+  baseFont, emojiFont: QFontH;
+  baseFM, emojiFM: QFontMetricsH;
+  i, runStart, cp, cuCount, curX: Integer;
+  chIsEmoji, runIsEmoji, haveRun: Boolean;
+
+  procedure FlushRun(AEndExcl: Integer);
+  var
+    rs: WideString;
+  begin
+    if AEndExcl <= runStart then
+      Exit;
+    rs := Copy(ws, runStart, AEndExcl - runStart);
+    if runIsEmoji then
+    begin
+      QPainter_setFont(APainter, emojiFont);
+      QPainter_drawText(APainter, curX, y, @rs);
+      QPainter_setFont(APainter, baseFont);
+      curX := curX + QFontMetrics_horizontalAdvance(emojiFM, @rs, -1);
+    end else
+    begin
+      QPainter_drawText(APainter, curX, y, @rs);
+      curX := curX + QFontMetrics_horizontalAdvance(baseFM, @rs, -1);
+    end;
+    runStart := AEndExcl;
+  end;
+
+begin
+  ws := s^;
+  baseFont := QFont_Create(QPainter_font(APainter));
+  emojiFont := LazMakeEmojiFont(APainter);
+  baseFM := QFontMetrics_Create(baseFont);
+  emojiFM := QFontMetrics_Create(emojiFont);
+  QPainter_save(APainter);
+  try
+    curX := x;
+    runStart := 1;
+    runIsEmoji := False;
+    haveRun := False;
+    i := 1;
+    while i <= Length(ws) do
+    begin
+      LazDecodeCodepoint(ws, i, cp, cuCount);
+      chIsEmoji := (cuCount = 2) and LazCpNeedsEmoji(baseFM, cp);
+      if not haveRun then
+      begin
+        runIsEmoji := chIsEmoji;
+        runStart := i;
+        haveRun := True;
+      end else
+      if chIsEmoji <> runIsEmoji then
+      begin
+        FlushRun(i);
+        runIsEmoji := chIsEmoji;
+      end;
+      inc(i, cuCount);
+    end;
+    if haveRun then
+      FlushRun(i);
+  finally
+    QPainter_restore(APainter);
+    QFontMetrics_Destroy(emojiFM);
+    QFontMetrics_Destroy(baseFM);
+    QFont_Destroy(emojiFont);
+    QFont_Destroy(baseFont);
+  end;
+end;
+
 procedure TQtDeviceContext.drawText(x: Integer; y: Integer; s: PWideString);
 var
   APen: QPenH;
@@ -2931,6 +3112,9 @@ begin
   // to be rotated
   if Font.Angle <> 0 then
     QPainter_drawText(Widget, 0, Metrics.ascent, s)
+  else
+  if LazStrHasSupplementaryChar(s) then
+    LazDrawTextEmojiFallback(Widget, x, y, s)
   else
     QPainter_drawText(Widget, x, y, s);
 
@@ -2961,6 +3145,8 @@ end;
 procedure TQtDeviceContext.drawText(x, y, w, h, flags: Integer; s: PWideString);
 var
   APen: QPenH;
+  emojiFont: QFontH;
+  useEmoji: Boolean;
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.drawText x: ', X, ' Y: ', Y,' w: ',w,' h: ',h);
@@ -2980,10 +3166,25 @@ begin
     SetTextPen;
   end;
 
+  emojiFont := nil;
+  useEmoji := (Font.Angle = 0) and LazStrHasSupplementaryChar(s) and LazStrIsAllUncoveredSupplementary(Widget, s);
+  if useEmoji then
+  begin
+    emojiFont := LazMakeEmojiFont(Widget);
+    QPainter_save(Widget);
+    QPainter_setFont(Widget, emojiFont);
+  end;
+
   if Font.Angle <> 0 then
     QPainter_DrawText(Widget, 0, 0, w, h, Flags, s)
   else
     QPainter_DrawText(Widget, x, y, w, h, Flags, s);
+
+  if useEmoji then
+  begin
+    QPainter_restore(Widget);
+    QFont_Destroy(emojiFont);
+  end;
 
   if FPenTextInternal then
   begin
