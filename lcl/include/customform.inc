@@ -2238,7 +2238,7 @@ begin
     // Query children forms whether we can close
     if not Check(Self) then exit(False);
     for I := 0 to MDIChildCount - 1 do
-      if not MDIChildren[I].CloseQuery then Exit(False);
+      if Assigned(MDIChildren[I]) and not MDIChildren[I].CloseQuery then Exit(False);
   end;
   Result := True;
   if Assigned(FOnCloseQuery) then
