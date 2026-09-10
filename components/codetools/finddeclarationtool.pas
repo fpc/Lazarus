@@ -889,6 +889,10 @@ type
     function CalculateBinaryOperator(LeftOperand, RightOperand: TOperand;
       BinaryOperator: TAtomPosition;
       Params: TFindDeclarationParams): TOperand;
+    function CombineIfExprOperands(ThenOperand, ElseOperand: TOperand;
+      Params: TFindDeclarationParams; CleanPos: integer): TOperand;
+    function FindCommonAncestorClass(const Context1, Context2: TFindContext;
+      Params: TFindDeclarationParams): TFindContext;
     function GetParameterNode(Node: TCodeTreeNode): TCodeTreeNode;
     function GetExpressionTypeOfTypeIdentifier(
       Params: TFindDeclarationParams): TExpressionType;
@@ -12563,11 +12567,12 @@ end;
 
 function TFindDeclarationTool.FindEndOfExpression(StartPos: integer): integer;
 var
-  First: Integer;
+  First, IfLevel: Integer;
 begin
   MoveCursorToCleanPos(StartPos);
   Result:=CurPos.StartPos;
   First:=0;
+  IfLevel:=0;
   repeat
     ReadNextAtom;
     if First=0 then begin
@@ -12581,9 +12586,18 @@ begin
     if (CurPos.StartPos>SrcLen)
     or (CurPos.Flag in [cafSemicolon,cafComma,cafEnd,
                         cafRoundBracketClose,cafEdgedBracketClose])
-    or (AtomIsKeyWord
+    then
+      break;
+    if UpAtomIs('IF')
+    and (cmsStatementExpressions in Scanner.CompilerModeSwitches) then
+      // if-expression: if Cond then A else B
+      inc(IfLevel)
+    else if (IfLevel>0) and UpAtomIs('THEN') then
+    else if (IfLevel>0) and UpAtomIs('ELSE') then
+      dec(IfLevel)
+    else if AtomIsKeyWord
       and not IsKeyWordInConstAllowed.DoItCaseInsensitive(Src,
-                                 CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
+                                 CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
     then begin
       break;
     end
@@ -12779,6 +12793,67 @@ var EndPos, SubStartPos: integer;
     RaiseExceptionFmt(20170421200609,ctsStrExpectedButAtomFound,[ctsIdentifier,GetAtom]);
   end;
 
+  function FindIfExprKeyword(const UpKeyWord: string): boolean;
+  // cursor is on the IF or THEN of an if-expression,
+  // moves the cursor to the THEN or ELSE of the same level
+  var
+    Level: Integer;
+  begin
+    Result:=false;
+    Level:=0;
+    repeat
+      ReadNextAtom;
+      if (CurPos.EndPos>MaxEndPos) or (CurPos.StartPos>SrcLen)
+      or (CurPos.Flag in [cafSemicolon,cafEnd,cafRoundBracketClose,
+                          cafEdgedBracketClose])
+      then
+        exit;
+      if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then
+        ReadTilBracketClose(true)
+      else if UpAtomIs('IF') then
+        inc(Level)
+      else if UpAtomIs('ELSE') then begin
+        if Level=0 then
+          exit(UpKeyWord='ELSE');
+        dec(Level);
+      end else if (Level=0) and UpAtomIs(UpKeyWord) then
+        exit(true);
+    until false;
+  end;
+
+  procedure ReadIfExprOperand;
+  // if-expression: if Cond then A else B
+  var
+    ThenStartPos, ThenEndPos, ElseStartPos, ElseEndPos: integer;
+    ThenOperand, ElseOperand, IfOperand: TOperand;
+  begin
+    if not FindIfExprKeyword('THEN') then
+      RaiseExceptionFmt(20260910190100,ctsStrExpectedButAtomFound,['then',GetAtom]);
+    ThenStartPos:=CurPos.EndPos;
+    if not FindIfExprKeyword('ELSE') then
+      RaiseExceptionFmt(20260910190101,ctsStrExpectedButAtomFound,['else',GetAtom]);
+    ThenEndPos:=CurPos.StartPos;
+    ElseStartPos:=CurPos.EndPos;
+    // lowest precedence: the else-part extends as far as possible
+    ElseEndPos:=FindEndOfExpression(ElseStartPos);
+    if ElseEndPos>MaxEndPos then
+      ElseEndPos:=MaxEndPos;
+
+    ThenOperand.AliasType:=CleanFindContext;
+    ThenOperand.Expr:=FindExpressionResultType(Params,ThenStartPos,ThenEndPos,
+                                               @ThenOperand.AliasType);
+    ElseOperand.AliasType:=CleanFindContext;
+    ElseOperand.Expr:=FindExpressionResultType(Params,ElseStartPos,ElseEndPos,
+                                               @ElseOperand.AliasType);
+    IfOperand:=CombineIfExprOperands(ThenOperand,ElseOperand,Params,ElseEndPos);
+    Result:=IfOperand.Expr;
+    if AliasType<>nil then
+      AliasType^:=IfOperand.AliasType;
+
+    MoveCursorToCleanPos(ElseEndPos);
+    ReadNextAtom;
+  end;
+
 var
   OldFlags: TFindDeclarationFlags;
   MaybeFuncAtCursor: Boolean;
@@ -12874,6 +12949,8 @@ begin
       Result.Desc:=xtPointer;
     end;
   end
+  else if UpAtomIs('IF') then
+    ReadIfExprOperand
   else
     RaiseIdentExpected;
 
@@ -13194,6 +13271,102 @@ begin
     debugln(['TFindDeclarationTool.CalculateBinaryOperator unknown operator: ',GetAtom(BinaryOperator)]);
     {$ENDIF}
     Result:=RightOperand;
+  end;
+end;
+
+function TFindDeclarationTool.CombineIfExprOperands(ThenOperand,
+  ElseOperand: TOperand; Params: TFindDeclarationParams; CleanPos: integer
+  ): TOperand;
+// returns the type of the if-expression "if Cond then ThenOperand else ElseOperand"
+const
+  xtAllChars = [xtChar,xtAnsiChar,xtWideChar];
+  xtAllStrings = xtAllStringTypes+xtAllWideStringTypes;
+var
+  OrigThen, OrigElse: TOperand;
+  CommonContext: TFindContext;
+  ThenDesc, ElseDesc: TExpressionTypeDesc;
+begin
+  if ElseOperand.Expr.Desc in [xtNone,xtNil] then
+    exit(ThenOperand);
+  if ThenOperand.Expr.Desc in [xtNone,xtNil] then
+    exit(ElseOperand);
+
+  if (ThenOperand.Expr.Desc=xtContext) and (ElseOperand.Expr.Desc=xtContext) then
+  begin
+    if FindContextAreEqual(ThenOperand.Expr.Context,ElseOperand.Expr.Context) then
+      exit(ThenOperand);
+    if (ThenOperand.Expr.Context.Node.Desc in AllClasses)
+    and (ElseOperand.Expr.Context.Node.Desc in AllClasses) then begin
+      // e.g. TAnimal and TDog -> TAnimal, TAnt and TBird -> TAnimal
+      CommonContext:=FindCommonAncestorClass(ThenOperand.Expr.Context,
+                                             ElseOperand.Expr.Context,Params);
+      if CommonContext.Node=nil then
+        exit(ThenOperand);
+      if FindContextAreEqual(CommonContext,ThenOperand.Expr.Context) then
+        exit(ThenOperand);
+      if FindContextAreEqual(CommonContext,ElseOperand.Expr.Context) then
+        exit(ElseOperand);
+      Result:=ThenOperand;
+      Result.Expr.Context:=CommonContext;
+      Result.AliasType:=CleanFindContext;
+      exit;
+    end;
+  end;
+
+  // convert contexts to base types, e.g. an alias of longint
+  OrigThen:=ThenOperand;
+  OrigElse:=ElseOperand;
+  if ThenOperand.Expr.Desc=xtContext then
+    ThenOperand.Expr:=ThenOperand.Expr.Context.Tool.ConvertNodeToExpressionType(
+                      ThenOperand.Expr.Context.Node,Params);
+  if ElseOperand.Expr.Desc=xtContext then
+    ElseOperand.Expr:=ElseOperand.Expr.Context.Tool.ConvertNodeToExpressionType(
+                      ElseOperand.Expr.Context.Node,Params);
+  ThenDesc:=ThenOperand.Expr.Desc;
+  ElseDesc:=ElseOperand.Expr.Desc;
+  if (ThenDesc in xtAllRealConvertibles) and (ElseDesc in xtAllRealConvertibles) then
+  begin
+    // e.g. byte and int64 -> int64, longint and double -> double
+    if (ThenDesc in xtAllRealTypes) or (ElseDesc in xtAllRealTypes) then
+      Result:=RealTypesOrderList.Compare(ThenOperand,ElseOperand,Self,CleanPos)
+    else
+      Result:=IntegerTypesOrderList.Compare(ThenOperand,ElseOperand,Self,CleanPos);
+  end
+  else if (ThenDesc in xtAllChars) and (ElseDesc in xtAllStrings) then
+    // e.g. char and string -> string
+    Result:=OrigElse
+  else if (ElseDesc in xtAllChars) and (ThenDesc in xtAllStrings) then
+    Result:=OrigThen
+  else if (ThenDesc in xtAllStringCompatibleTypes)
+      and (ElseDesc in xtAllStringCompatibleTypes) then
+    Result:=StringTypesOrderList.Compare(ThenOperand,ElseOperand,Self,CleanPos)
+  else if (ThenDesc in xtAllBooleanConvertibles)
+      and (ElseDesc in xtAllBooleanConvertibles) then
+    Result:=BooleanTypesOrderList.Compare(ThenOperand,ElseOperand,Self,CleanPos)
+  else
+    Result:=OrigThen;
+end;
+
+function TFindDeclarationTool.FindCommonAncestorClass(const Context1,
+  Context2: TFindContext; Params: TFindDeclarationParams): TFindContext;
+// returns the first of Context1 and its ancestors, that Context2 descends from
+var
+  OldInput: TFindDeclarationInput;
+begin
+  Result:=Context1;
+  Params.Save(OldInput);
+  try
+    repeat
+      if FindContextAreEqual(Result,Context2)
+      or ContextIsDescendOf(Context2,Result,Params) then
+        exit;
+      if not Result.Tool.FindAncestorOfClass(Result.Node,Params,true) then
+        break;
+      Result:=CreateFindContext(Params);
+    until false;
+    Result:=CleanFindContext;
+  finally
+    Params.Load(OldInput,true);
   end;
 end;
 

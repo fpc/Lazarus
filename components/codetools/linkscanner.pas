@@ -225,12 +225,12 @@ type
     cmsImplicitFunctionSpecialization, { infer types on calls of generic functions }
     cmsFunctionReferences, { allow "reference to" function types }
     cmsAnonymousFunctions, { allow anonymous functions }
+    cmsMultiLineStrings,   { Multiline strings }
+    cmsStatementExpressions, { allow if-expressions }
 
-    // not yet in FPC, supported by pas2js:
     cmsExternalClass,      { pas2js: allow  class external [pkgname] name [symbol] }
     cmsIgnoreAttributes,   { pas2js: ignore attributes }
-    cmsOmitRTTI,           { pas2js: treat class section 'published' as 'public' and typeinfo does not work on symbols declared with this switch }
-    cmsMultiLineStrings    { pas2js: Multiline strings }
+    cmsOmitRTTI            { pas2js: treat class section 'published' as 'public' and typeinfo does not work on symbols declared with this switch }
     );
   TCompilerModeSwitches = set of TCompilerModeSwitch;
 const
@@ -245,7 +245,7 @@ const
      cmsOut,cmsDefault_para,cmsDuplicate_names,cmsHintdirective,
      cmsProperty,cmsDefault_inline,cmsExcept,cmsAdvancedRecords,
      cmsPrefixedAttributes,cmsArrayOperators,cmsUnderscoreIsSeparator,
-     cmsFunctionReferences,cmsAnonymousFunctions],
+     cmsFunctionReferences,cmsAnonymousFunctions,cmsStatementExpressions],
     // cmDELPHIUNICODE
     [cmsClass,cmsObjpas,cmsResult,cmsString_pchar,
      cmsPointer_2_procedure,cmsAutoderef,cmsTp_procvar,cmsInitfinal,
@@ -253,7 +253,7 @@ const
      cmsProperty,cmsDefault_inline,cmsExcept,cmsAdvancedRecords,
      cmsSystemcodepage,cmsDefault_unicodestring,
      cmsPrefixedAttributes,cmsArrayOperators,cmsUnderscoreIsSeparator,
-     cmsFunctionReferences,cmsAnonymousFunctions],
+     cmsFunctionReferences,cmsAnonymousFunctions,cmsStatementExpressions],
     // cmTP
     [cmsTp_procvar,cmsDuplicate_names],
     // cmOBJFPC
@@ -321,11 +321,11 @@ const
     'IMPLICITFUNCTIONSPECIALIZATION',
     'FUNCTIONREFERENCES',
     'ANONYMOUSFUNCTIONS',
-    // not yet in FPC, supported by pas2js:
+    'MULTILINESTRINGS',
+    'STATEMENTEXPRESSIONS',
     'EXTERNALCLASS',
     'IGNOREATTRIBUTES',
-    'OMITRTTI',
-    'MULTILINESTRINGS'
+    'OMITRTTI'
     );
 
 type
@@ -4543,7 +4543,7 @@ procedure TLinkScanner.SkipTillEndifElse(SkippingUntil: TLSSkippingDirective);
     end;
     if (lvl and 1=1) then begin
       if (p^ in [#10,#13]) then begin
-        // delphi 12 multiline string literal
+        // delphi multiline string literal
         while p^<>#0 do begin
           if (p^='''') and (p[1]='''') then begin
             i:=2;

@@ -42,6 +42,7 @@ type
     procedure Test_GatherIdentifiers_ProcParams_String2;
     procedure Test_GatherIdentifiers_ProcParams_String3;
     procedure Test_GatherIdentifiers_DereferencedProperty;
+    procedure Test_GatherIdentifiers_IfExpr;
 
     // CreateDeclarationPathAt
     procedure Test_CreateDeclarationPathAt_Basic;
@@ -348,6 +349,51 @@ begin
   finally
     CodeContexts.Free;
   end;
+end;
+
+procedure TTestIdentCompletion.Test_GatherIdentifiers_IfExpr;
+
+  function HasIdentifier(const aName: string): boolean;
+  var
+    i: Integer;
+  begin
+    for i:=0 to CodeToolBoss.IdentifierList.GetFilteredCount-1 do
+      if CompareText(CodeToolBoss.IdentifierList.FilteredItems[i].Identifier,aName)=0 then
+        exit(true);
+    Result:=false;
+  end;
+
+  procedure GatherAt(const MarkerName: string);
+  var
+    SrcMark: TFDMarker;
+    CursorPos: TCodeXYPosition;
+  begin
+    SrcMark:=FindMarker(MarkerName,'#');
+    AssertNotNull('missing src marker #'+MarkerName,SrcMark);
+    MainTool.CleanPosToCaret(SrcMark.CleanPos,CursorPos);
+    CodeToolBoss.GatherIdentifiers(Code,CursorPos.X,CursorPos.Y);
+    AssertTrue('CodeToolBoss.GatherIdentifiers: '+CodeToolBoss.ErrorMessage,CodeToolBoss.ErrorId=0);
+  end;
+
+begin
+  StartProgram;
+  Add([
+    '{$modeswitch statementexpressions}',
+    'var',
+    '  i: integer;',
+    '  b: boolean;',
+    'begin',
+    '  i:={#a};',
+    '  i:=if b then {#b} else 2;',
+    'end.']);
+  ParseSimpleMarkers(Code);
+  // at start of an expression
+  GatherAt('a');
+  AssertFalse('while after :=',HasIdentifier('while'));
+  // in the then-part of an if-expression: expression, not a statement
+  GatherAt('b');
+  AssertTrue('variable i in then-part',HasIdentifier('i'));
+  AssertFalse('while in then-part',HasIdentifier('while'));
 end;
 
 procedure TTestIdentCompletion.Test_FindCodeContext_AttributeParams;

@@ -54,6 +54,7 @@ type
     procedure TestCompleteBlockTry_OpenIf_AtEnd; // issue 28048
     procedure TestCompleteBlockAsm;
     procedure TestCompleteBlockIf;
+    procedure TestCompleteBlockIfExpr;
   end;
 
 implementation
@@ -504,6 +505,29 @@ begin
                    +'  finally'+LineEnding
                    +'  end;'+LineEnding
                    +'end.');
+end;
+
+procedure TTestCodetoolsCompleteBlock.TestCompleteBlockIfExpr;
+begin
+  // if-expression in brackets
+  CompleteBlock('begin'+LineEnding
+               +'  DoIt(if a then b else c);'+LineEnding
+               +'  if a then begin|'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+               +'  DoIt(if a then b else c);'+LineEnding
+               +'  if a then begin|'+LineEnding
+               +'  end;'+LineEnding
+               +'end.');
+  CompleteBlock('begin'+LineEnding
+               +'  x:=[if a then b else c];'+LineEnding
+               +'  if a then begin|'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+               +'  x:=[if a then b else c];'+LineEnding
+               +'  if a then begin|'+LineEnding
+               +'  end;'+LineEnding
+               +'end.');
 end;
 
 initialization

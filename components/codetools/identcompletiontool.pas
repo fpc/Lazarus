@@ -478,6 +478,7 @@ type
                                  SkipAbstractsInStartClass: boolean = false): boolean;
     function GetValuesOfCaseVariable(const CursorPos: TCodeXYPosition;
                                      List: TStrings; WithTypeDefIfScoped: boolean = true): boolean;
+    function IsIfExpressionKeyword(KeyWordPos: integer): boolean;
     function CreateDeclarationPathAt(StartNode: TCodeTreeNode;
       TargetTool: TFindDeclarationTool; TargetNode: TCodeTreeNode): string;
     property Beautifier: TBeautifyCodeOptions read FBeautifier write FBeautifier;
@@ -2480,6 +2481,12 @@ begin
             Add('while');
             Add('with');
           end;
+          if (cmsStatementExpressions in Scanner.CompilerModeSwitches)
+          and (CurrentIdentifierList.ContextFlags
+               * [ilcfStartInStatement, ilcfStartOfOperand, ilcfStartOfStatement]
+               = [ilcfStartInStatement, ilcfStartOfOperand])
+          then
+            Add('if'); // if-expression, e.g. x := if a then b else c
           if (ilcfStartInStatement in CurrentIdentifierList.ContextFlags)
           and not (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags)
           and (CurrentIdentifierList.StartBracketLvl = 0)
@@ -3507,7 +3514,12 @@ begin
             if (ilcfStartInStatement in CurrentIdentifierList.ContextFlags)
             then begin
               // check if LValue
-              if (CurPos.Flag in [cafSemicolon,cafEnd,cafColon])
+              if (UpAtomIs('THEN') or UpAtomIs('ELSE'))
+              and IsIfExpressionKeyword(CurPos.StartPos) then begin
+                // in an if-expression, e.g. x := if a then |
+                CurrentIdentifierList.ContextFlags:=
+                  CurrentIdentifierList.ContextFlags+[ilcfIsExpression, ilcfDontAllowProcedures];
+              end else if (CurPos.Flag in [cafSemicolon,cafEnd,cafColon])
               or UpAtomIs('BEGIN')
               or UpAtomIs('TRY') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT')
               or UpAtomIs('FOR') or UpAtomIs('DO') or UpAtomIs('THEN')
@@ -4436,6 +4448,70 @@ begin
     end else
       exit(''); // a local declaration, can not be qualified
   until false;
+end;
+
+function TIdentCompletionTool.IsIfExpressionKeyword(KeyWordPos: integer
+  ): boolean;
+// Checks if the IF, THEN or ELSE at KeyWordPos belongs to an if-expression,
+// e.g. "x := if a then b else c". The cursor position is kept.
+var
+  OldPos: TAtomPosition;
+  Level: Integer;
+begin
+  Result:=false;
+  if not (cmsStatementExpressions in Scanner.CompilerModeSwitches) then exit;
+  OldPos:=CurPos;
+  try
+    MoveCursorToCleanPos(KeyWordPos);
+    ReadNextAtom;
+    // find the IF
+    Level:=0;
+    if not UpAtomIs('IF') then begin
+      repeat
+        if CurPos.StartPos<=1 then exit;
+        ReadPriorAtom;
+        if CurPos.StartPos<1 then exit;
+        if CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose] then begin
+          if not ReadBackTilBracketOpen(false) then exit;
+        end else if CurPos.Flag in [cafSemicolon,cafColon,cafAssignment,
+          cafRoundBracketOpen,cafEdgedBracketOpen]
+        then
+          // an if-expression cannot contain these
+          exit
+        else if UpAtomIs('ELSE') then
+          // skip nested if-expression
+          inc(Level)
+        else if UpAtomIs('IF') then begin
+          if Level=0 then break;
+          dec(Level);
+        end else if UpAtomIs('THEN') then
+        else if AtomIsKeyWord
+        and not IsKeyWordInConstAllowed.DoItCaseInsensitive(Src,
+                                   CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+        then
+          // e.g. begin, do, of
+          exit;
+      until false;
+    end;
+    // check what is in front of the IF
+    if CurPos.StartPos<=1 then exit;
+    ReadPriorAtom;
+    if CurPos.StartPos<1 then exit;
+    if CurPos.Flag in [cafAssignment,cafEqual,cafComma,cafRoundBracketOpen,
+      cafEdgedBracketOpen,cafOtherOperator]
+    then
+      Result:=true
+    else if UpAtomIs('NOT')
+    or WordIsBinaryOperator.DoItCaseInsensitive(Src,CurPos.StartPos,
+                                               CurPos.EndPos-CurPos.StartPos)
+    then
+      Result:=true
+    else if UpAtomIs('THEN') or UpAtomIs('ELSE') then
+      // e.g. x := if a then if b then 1 else 2 else 3
+      Result:=IsIfExpressionKeyword(CurPos.StartPos);
+  finally
+    MoveCursorToAtomPos(OldPos);
+  end;
 end;
 
 procedure TIdentCompletionTool.CalcMemSize(Stats: TCTMemStats);

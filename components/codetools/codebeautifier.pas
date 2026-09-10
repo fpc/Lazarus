@@ -752,6 +752,7 @@ var
   Block: PBlock;
   CommentStartPos: LongInt;
   CommentEndPos: LongInt;
+  i: Integer;
 begin
   p:=StartPos;
   if EndPos>length(Src) then EndPos:=length(Src)+1;
@@ -874,6 +875,16 @@ begin
           if Stack.TopType=bbtStatement then
             EndBlock;
           while Stack.TopType in [bbtFor,bbtForDo] do EndBlock;
+          if Stack.TopType=bbtIfElse then begin
+            // a nested if with else-part, e.g. an if-expression in the then-part:
+            //   if c then x := if a then 1 else 2 else y := 3
+            i:=Stack.Top-1;
+            while (i>=0) and (Stack.Stack[i].Typ in [bbtIf,bbtIfElse,bbtStatement]) do
+              dec(i);
+            if (i>=0) and (Stack.Stack[i].Typ=bbtIfThen) then
+              while Stack.Top>i do
+                EndBlock;
+          end;
           case Stack.TopType of
           bbtIfThen:
             begin

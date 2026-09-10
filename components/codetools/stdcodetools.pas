@@ -7551,20 +7551,30 @@ var
       cafEdgedBracketOpen:
         BeginBlock(Stack,btEdgedBracket,CurPos.StartPos);
       cafEdgedBracketClose:
-        if TopBlockType(Stack)=btEdgedBracket then begin
-          if not EndBlockIsOk then exit;
-        end else begin
-          // missing [
-          exit;
+        begin
+          // close if-expressions in brackets, e.g. [if a then b else c]
+          while TopBlockType(Stack) in [btIf,btIfElse] do
+            if not EndBlockIsOk then exit;
+          if TopBlockType(Stack)=btEdgedBracket then begin
+            if not EndBlockIsOk then exit;
+          end else begin
+            // missing [
+            exit;
+          end;
         end;
       cafRoundBracketOpen:
         BeginBlock(Stack,btRoundBracket,CurPos.StartPos);
       cafRoundBracketClose:
-        if TopBlockType(Stack)=btRoundBracket then begin
-          if not EndBlockIsOk then exit;
-        end else begin
-          // missing (
-          exit;
+        begin
+          // close if-expressions in brackets, e.g. f(if a then b else c)
+          while TopBlockType(Stack) in [btIf,btIfElse] do
+            if not EndBlockIsOk then exit;
+          if TopBlockType(Stack)=btRoundBracket then begin
+            if not EndBlockIsOk then exit;
+          end else begin
+            // missing (
+            exit;
+          end;
         end;
       cafColon:
         if TopBlockType(Stack)=btCaseOf then

@@ -67,6 +67,9 @@ type
     procedure TestParseModeTP;
     procedure TestParseIFOpt;
     procedure TestParseProcAnoAssign;
+    procedure TestParseIfExpr;
+    procedure TestParseIfExprModeSwitch;
+    procedure TestParseIfExprObjFPCFail;
     procedure TestParseProcAnoArg;
     procedure TestParseProcAnoArgSubFunc;
     procedure TestParseThreadVar;
@@ -675,6 +678,57 @@ begin
   '{$ENDIF}',
   'begin']);
   ParseModule;
+end;
+
+procedure TTestPascalParser.TestParseIfExpr;
+begin
+  Add([
+  'program test1;',
+  '{$mode delphi}',
+  'const',
+  '  c = if 3>2 then 1 else 0;',
+  '  d: word = if c>0 then 1 else if c<0 then 2 else 3;',
+  '  e = 1 + if c>0 then 2 else 3 + 4;',
+  '  f = (if c>0 then 2 else 3) * 4;',
+  'type',
+  '  TEnum = (a = if c>0 then 1 else 2, b);',
+  'var',
+  '  v: integer = if c>0 then 1 else 2;',
+  'procedure DoIt(i: integer = if c>0 then 1 else 2; j: word = 3);',
+  'begin',
+  '  i:=if c>0 then 1 else 2;',
+  '  if c>0 then i:=if c>1 then 1 else 2 else i:=3;',
+  'end;',
+  'begin',
+  '  DoIt(if c>0 then 1 else 2);',
+  '']);
+  ParseModule;
+end;
+
+procedure TTestPascalParser.TestParseIfExprModeSwitch;
+begin
+  StartProgram;
+  Add([
+  '{$modeswitch statementexpressions}',
+  'const',
+  '  c = if 3>2 then 1 else 0;',
+  'procedure DoIt(i: integer = if c>0 then 1 else 2);',
+  'begin',
+  'end;',
+  'begin',
+  '']);
+  ParseModule;
+end;
+
+procedure TTestPascalParser.TestParseIfExprObjFPCFail;
+begin
+  StartProgram;
+  Add([
+  'const',
+  '  c = if true then 1 else 0;',
+  'begin',
+  'end.']);
+  CheckParseError(CodeXYPosition(7,6,Code),'expected constant, but if found');
 end;
 
 procedure TTestPascalParser.TestParseProcAnoAssign;

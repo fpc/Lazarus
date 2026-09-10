@@ -213,6 +213,7 @@ type
     procedure TestFindDeclaration_IsNot;
     procedure TestFindDeclaration_IsNotDelphi;
     procedure TestFindDeclaration_NotIn;
+    procedure TestFindDeclaration_IfExpr;
     procedure TestFindDeclaration_Attributes;
     procedure TestFindDeclaration_BracketOpen;
     procedure TestFindDeclaration_AnonymProc;
@@ -2199,6 +2200,51 @@ begin
   '  b2{guesstype:Boolean} := (c not in s) or b;',
   '  b3{guesstype:Boolean} := 3 not in [1,2];',
   '  b4{guesstype:Boolean} := not b and (c not in s);',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_IfExpr;
+begin
+  StartProgram;
+  Add([
+  '{$modeswitch statementexpressions}',
+  'type',
+  '  TAnimal = class',
+  '  end;',
+  '  TAnt = class(TAnimal)',
+  '  end;',
+  '  TBird = class(TAnimal)',
+  '  end;',
+  'var',
+  '  b: boolean;',
+  '  i: longint;',
+  '  by: byte;',
+  '  i64: int64;',
+  '  si: single;',
+  '  d: double;',
+  '  c: char;',
+  '  s: string;',
+  '  Animal: TAnimal;',
+  '  Ant: TAnt;',
+  '  Bird: TBird;',
+  'begin',
+  '  v1{guesstype:LongInt} := if b{declaration:b} then i{declaration:i} else by{declaration:by};',
+  '  v2{guesstype:Int64} := if b then by else i64;',
+  '  v3{guesstype:Double} := if b then si else d;',
+  '  v4{guesstype:String} := if b then c else s;',
+  '  v5{guesstype:String} := if b then s else c;',
+  '  v6{guesstype:LongInt} := if b then 1 else if b then i else 3;',
+  '  v7{guesstype:LongInt} := 1 + if b then i else 3;',
+  '  v8{guesstype:LongInt} := if b then if b then i else 2 else 3;',
+  '  v9{guesstype:Boolean} := if i>2 then b else false;',
+  '  a1{guesstype:TAnimal} := if b then Ant{declaration:Ant} else Bird{declaration:Bird};',
+  '  a2{guesstype:TAnimal} := if b then Animal else Ant;',
+  '  a3{guesstype:TAnimal} := if b then Ant else Animal;',
+  '  a4{guesstype:TAnt} := if b then nil else Ant;',
+  '  a5{guesstype:TAnt} := if b then Ant else nil;',
+  '  if (if b then i else by)>3 then ;',
+  '  Ant{declaration:Ant}:=nil;',
   'end.']);
   FindDeclarations(Code);
 end;

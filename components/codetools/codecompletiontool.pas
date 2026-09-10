@@ -10108,8 +10108,12 @@ function TCodeCompletionCodeTool.CompleteCode(CursorPos: TCodeXYPosition;
           or UpAtomIs('TRY') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT')
           or UpAtomIs('FOR') or UpAtomIs('TO') or UpAtomIs('DO')
           or UpAtomIs('REPEAT') or UpAtomIs('UNTIL') or UpAtomIs('WHILE')
-          or UpAtomIs('IF') or UpAtomIs('THEN') or UpAtomIs('CASE') or UpAtomIs('ELSE')
+          or UpAtomIs('CASE')
           then
+            break
+          else if (UpAtomIs('IF') or UpAtomIs('THEN') or UpAtomIs('ELSE'))
+          and not IsIfExpressionKeyword(CurPos.StartPos) then
+            // statement if, not an if-expression
             break;
         cafSemicolon:
           break; // stop on semicolon
