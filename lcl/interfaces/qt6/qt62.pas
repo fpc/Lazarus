@@ -5485,7 +5485,6 @@ type
   QDrag_targetChanged_Event = procedure (newTarget: QObjectH) of object cdecl;
   QInputMethodAction = (QInputMethodClick, QInputMethodContextMenu);
 
-{$IFDEF HASQINPUTMETHOD}
 procedure QInputMethod_anchorRectangle(handle: QInputMethodH; retval: QRectFH); cdecl; external Qt6PasLib name 'QInputMethod_anchorRectangle';
 procedure QInputMethod_cursorRectangle(handle: QInputMethodH; retval: QRectFH); cdecl; external Qt6PasLib name 'QInputMethod_cursorRectangle';
 function QInputMethod_inputDirection(handle: QInputMethodH): QtLayoutDirection; cdecl; external Qt6PasLib name 'QInputMethod_inputDirection';
@@ -5505,7 +5504,6 @@ procedure QInputMethod_invokeAction(handle: QInputMethodH; action: QInputMethodA
 procedure QInputMethod_reset(handle: QInputMethodH); external Qt6PasLib name 'QInputMethod_reset';
 procedure QInputMethod_show(handle: QInputMethodH); external Qt6PasLib name 'QInputMethod_show';
 procedure QInputMethod_update(handle: QInputMethodH; queries: QtInputMethodQueries); external Qt6PasLib name 'QInputMethod_update';
-{$ENDIF}
 
 {$ifndef QT_NO_SESSIONMANAGER}
 type

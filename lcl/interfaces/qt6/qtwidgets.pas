@@ -3737,10 +3737,22 @@ begin
       ' UnicodeLen ',UnicodeOutLen);
     writeln('   sending QEventKeyPress');
     {$ENDIF}
-    for i:=1 to Length(WStr) do
+    i:=1;
+    while i<=Length(WStr) do
     begin
-      UnicodeChar := PWord(@WStr[i])^;
-      temps:=WStr[i];
+      if (i<Length(WStr)) and
+        (Word(WStr[i]) >= $D800) and (Word(WStr[i]) <= $DBFF) and
+        (Word(WStr[i+1]) >= $DC00) and (Word(WStr[i+1]) <= $DFFF) then
+      begin
+        UnicodeChar := $10000 + ((Word(WStr[i]) - $D800) shl 10) + (Word(WStr[i+1]) - $DC00);
+        temps:=Copy(WStr, i, 2);
+        inc(i, 2);
+      end else
+      begin
+        UnicodeChar := PWord(@WStr[i])^;
+        temps:=WStr[i];
+        inc(i);
+      end;
       KeyEvent := QKeyEvent_create(QEventKeyPress, PtrInt(UnicodeChar), QGUIApplication_keyboardModifiers, @temps);
       try
         // do not send it to queue, just pass it to SlotKey

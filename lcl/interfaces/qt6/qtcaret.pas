@@ -439,6 +439,17 @@ begin
   begin
     FWidget.LastCaretPos := FPos;
     FPos := Value;
+    if FWidget is TQtCustomControl then
+    begin
+      TQtCustomControl(FWidget).IMCaretPos := Point(Value.x, Value.y);
+      QInputMethod_update(QGuiApplication_inputMethod, QtImCursorRectangle);
+    end
+    else
+    if (FWidget is TQtViewPort) and (FWidget.getOwner is TQtCustomControl) then
+    begin
+      TQtCustomControl(FWidget.getOwner).IMCaretPos := Point(Value.x, Value.y);
+      QInputMethod_update(QGuiApplication_inputMethod, QtImCursorRectangle);
+    end;
     FTimer.Enabled := False;
     FVisibleState := FWidget.Context = 0;
     {$note remove complete property RespondToFocus after testing}
