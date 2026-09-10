@@ -210,6 +210,7 @@ end;
 procedure TGtk3Caret.CairoDrawCaret(cr: Pcairo_t);
 begin
   cairo_save(cr);
+  cairo_reset_clip(cr);
   cairo_move_to(cr, FPos.X, FPos.Y);
   cairo_set_operator(cr, CAIRO_OPERATOR_DIFFERENCE);
   if FBlinkState then
