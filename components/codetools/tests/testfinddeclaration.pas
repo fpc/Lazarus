@@ -210,6 +210,8 @@ type
     procedure TestFindDeclaration_GuessType;
     procedure TestFindDeclaration_GuessType_Set;
     procedure TestFindDeclaration_NameOf;
+    procedure TestFindDeclaration_IsNot;
+    procedure TestFindDeclaration_IsNotDelphi;
     procedure TestFindDeclaration_Attributes;
     procedure TestFindDeclaration_BracketOpen;
     procedure TestFindDeclaration_AnonymProc;
@@ -2149,6 +2151,53 @@ begin
   '  s1{guesstype:String} := NameOf(i{declaration:i});',
   '  NameOf(TBird.Fly{declaration!:TBird.Fly});',
   '  s2{guesstype:String} := NameOf(TBird{declaration:TBird}.Fly{declaration!:TBird.Fly});',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_IsNot;
+begin
+  StartProgram;
+  Add([
+  'type',
+  '  TBird = class',
+  '    Next: TObject;',
+  '  end;',
+  '  TEagle = class(TBird)',
+  '  end;',
+  'var',
+  '  o: TObject;',
+  '  b: boolean;',
+  'begin',
+  '  if o{declaration:o} is not TBird{declaration:TBird} then ;',
+  '  if (o is not TEagle{declaration:TEagle}) and b{declaration:b} then ;',
+  '  b1{guesstype:Boolean} := o is not TBird;',
+  '  b2{guesstype:Boolean} := (o is not TBird) or b;',
+  '  if TBird(o).Next{declaration:TBird.Next} is not TEagle{declaration:TEagle} then ;',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_IsNotDelphi;
+begin
+  StartProgram;
+  Add([
+  '{$mode delphi}',
+  'type',
+  '  TBird = class',
+  '    Next: TObject;',
+  '  end;',
+  '  TEagle = class(TBird)',
+  '  end;',
+  'var',
+  '  o: TObject;',
+  '  b: boolean;',
+  'begin',
+  '  if o{declaration:o} is not TBird{declaration:TBird} then ;',
+  '  if (o is not TEagle{declaration:TEagle}) and b{declaration:b} then ;',
+  '  b1{guesstype:Boolean} := o is not TBird;',
+  '  b2{guesstype:Boolean} := (o is not TBird) or b;',
+  '  if TBird(o).Next{declaration:TBird.Next} is not TEagle{declaration:TEagle} then ;',
   'end.']);
   FindDeclarations(Code);
 end;

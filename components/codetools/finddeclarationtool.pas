@@ -10009,7 +10009,7 @@ function TFindDeclarationTool.FindExpressionResultType(
         2. not @ sign
         3. * / div mod and shl shr as
         4. + - or xor
-        5. < <> > <= >= in is
+        5. < <> > <= >= in is, is not
     - nil is compatible to pointers and classes
     
 
@@ -10127,7 +10127,7 @@ var
 var
   OldFlags: TFindDeclarationFlags;
   StackEntry: POperandAndOperator;
-  IsEnd, IsBinOpMissing: Boolean;
+  IsEnd, IsBinOpMissing, IsOperatorIs: Boolean;
 begin
   {$IFDEF ShowExprEval}
   DebugLn(['[TFindDeclarationTool.FindExpressionResultType] Start',
@@ -10210,10 +10210,15 @@ begin
       ExprStack[StackPtr].OperatorLvl:=4
     else
       RaiseInternalError;
+    IsOperatorIs:=UpAtomIs('IS');
     // execute stack if possible
     ExecuteStack(false);
     // move cursor to next atom (= next operand start)
     ReadNextAtom;
+    if IsOperatorIs and UpAtomIs('NOT') then begin
+      // "is not": the "not" belongs to the "is", not to the right operand
+      ReadNextAtom;
+    end;
   until false;
 end;
 
