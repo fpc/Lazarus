@@ -110,7 +110,7 @@ function DeleteDirectory(const DirectoryName: string; OnlyChildren, Force: boole
     //you cannot list the contents of a no-read directory
     //you cannot delete files in a no-write directory
     //you can however delete files/empty directories that are no-read/no-write
-    if ((SR.Attr and faDirecory)<>0) and ((SR.Mode and (STAT_IRUSR or STAT_IWUSR)) = 0) then
+    if ((SR.Attr and faDirectory)<>0) and ((SR.Mode and (STAT_IRUSR or STAT_IWUSR)) = 0) then
     begin
       //writeln('MakeRW: ',Fn,' is NOT Read+Write');
       BaseUnix.fpChMod(Fn, SR.Mode or (STAT_IRUSR or STAT_IWUSR)); //ignore the result, deleting will trigger an error later
