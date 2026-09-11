@@ -1,10 +1,21 @@
 (* Tests for the FpDebug by-name procedure lookup, FindNamedProcSymbol.
 
-   Nothing inside the Lazarus tree exercised this path before: there was no
-   testcase, and LazDebuggerFp does not call it. The fixtures it runs against
-   are in lazdebugtestbase/testapps/WatchesScopePrg.pas, and each of them is a
-   deliberate name collision - the interesting question is not whether a name
-   can be found, but which of two things answering to that name comes back.
+   No testcase covered this path before. It is not uncalled, though: there are
+   three callers in LazDebuggerFp, and they do not agree on the namespaces.
+
+     fpdebugdebuggerbase.pas    [psfLinkTableSym] - RTL linker names
+     fpdebugvalueconvertors.pas [psfLinkTableSym] - a mangled name
+     fpdebugconvdebugforjson.pas  no flags        - ALL namespaces, and the
+                                                   only caller in the tree
+                                                   that gets them
+
+   So the DWARF-side behaviour these assertions pin has exactly one in-tree
+   consumer, and it is the one taking a user-supplied, source-level name.
+
+   The fixtures are in lazdebugtestbase/testapps/WatchesScopePrg.pas, and each
+   of them is a deliberate name collision - the interesting question is not
+   whether a name can be found, but which of two things answering to that name
+   comes back.
 *)
 unit TestFpDebugApi;
 
