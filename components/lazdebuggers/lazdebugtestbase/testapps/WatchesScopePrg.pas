@@ -263,10 +263,15 @@ begin
   BreakDummy := AValue;
 end;
 
-(* 2. Case matching. Findable as "FooBar" and as "FOOBAR", and NOT findable as
-      "fOobAR". Under DWARF 2 FPC stores the name uppercased, so the expected
-      answers differ by DWARF version and the test conditions on the version
-      under test rather than assuming one. *)
+(* 2. Case matching. The DWARF by-name lookup compares with
+      CompareUtf8BothCase, which accepts each character of the STORED name
+      against either the upper or the lower form of the REQUESTED one - so this
+      is findable as "FooBar", "FOOBAR" and "fOobAR" alike, which is correct
+      for Pascal. The link table is the opposite and is case sensitive; both
+      are asserted, and the asymmetry is the point.
+      Under DWARF 2 FPC stores the name uppercased, so what the symbol REPORTS
+      differs by DWARF version, and the test conditions on the version under
+      test rather than assuming one. *)
 procedure FooBar;
 begin
   BreakDummy := 2;
@@ -343,10 +348,15 @@ begin
   BreakDummy := 1; // TEST_BREAKPOINT=Prg
 
   // By-name lookup fixtures. The guard is never True (Int_GlobalPrg is 101 by
-  // now), so none of these runs; the calls exist only so the procedures are
-  // linked and carry debug info.
-  ScopedEnumForNameLookupVal := TScopedEnumForNameLookup.bar;
+  // now), so NOTHING below this line runs. The calls exist only so the
+  // procedures are linked and carry debug info, and the assignment only so the
+  // scoped enum type is emitted.
+  // Everything is inside the guard deliberately: the statement after
+  // TEST_BREAKPOINT=Prg is the one a stepping test lands on next, so an
+  // unguarded statement here would change what every other suite using this
+  // testapp observes.
   if Int_GlobalPrg = 0 then begin
+    ScopedEnumForNameLookupVal := TScopedEnumForNameLookup.bar;
     WatchesScopePrg(4321);
     FooBar;
     FPC_BREAK_ERROR;
