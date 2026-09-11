@@ -56,8 +56,10 @@ function ComparePhysicalFilenames(const Filename1, Filename2: string): integer;
 function CompareFilenames(Filename1: PChar; Len1: integer;
   Filename2: PChar; Len2: integer; ResolveLinks: boolean): integer; overload;
 function ExtractShortPathNameUTF8(Const FileName : String) : String;
-function DeleteDirectory(const DirectoryName: string; OnlyChildren: boolean; out Culprit: String): boolean;
-function DeleteDirectory(const DirectoryName: string; OnlyChildren: boolean): boolean;
+function DeleteDirectory(const DirectoryName: string; OnlyChildren, Force: boolean; out Culprit: String): boolean;
+function DeleteDirectory(const DirectoryName: string; OnlyChildren, Force: boolean): boolean;
+function DeleteDirectory(const DirectoryName: string; OnlyChildren: boolean; out Culprit: String): boolean; deprecated 'use the overload with Force parameter'; //remove in 6.99?
+function DeleteDirectory(const DirectoryName: string; OnlyChildren: boolean): boolean; deprecated 'use the overload with Force parameter'; //remove in 6.99?
 function ProgramDirectory: string;
 function ProgramDirectoryWithBundle: string;
 
@@ -233,7 +235,7 @@ uses
   {$IFDEF HASAMIGA}
   AmigaDOS;
   {$ELSE}
-  Unix;
+  Unix, BaseUnix;
   {$ENDIF}
 {$ENDIF}
 
