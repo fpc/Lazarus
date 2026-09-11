@@ -7342,81 +7342,73 @@ var
   CurResult: TModalResult;
 begin
   SrcEdit:=GetActiveSE;
-  if SrcEdit=nil then exit;
-  if Sender is TIDEMenuItem then begin
-    IDEMenuItem:=TIDEMenuItem(Sender);
-    NewEncoding:=NormalizeEncoding(IDEMenuItem.Caption);
-    if SysUtils.CompareText(copy(NewEncoding,1,length(EncodingAnsi)+2),EncodingAnsi+' (')=0
-    then begin
-      // the ansi encoding is shown as 'ansi (system encoding)' -> cut
-      NewEncoding:=EncodingAnsi;
-    end else if NewEncoding=lisUtf8WithBOM then begin
-      NewEncoding:=EncodingUTF8BOM;
+  if (SrcEdit=nil) or not (Sender is TIDEMenuItem) then exit;
+  IDEMenuItem:=TIDEMenuItem(Sender);
+  NewEncoding:=NormalizeEncoding(IDEMenuItem.Caption);
+  if SysUtils.CompareText(copy(NewEncoding,1,length(EncodingAnsi)+2),EncodingAnsi+' (')=0
+  then      // the ansi encoding is shown as 'ansi (system encoding)' -> cut
+    NewEncoding:=EncodingAnsi
+  else if NewEncoding=lisUtf8WithBOM then
+    NewEncoding:=EncodingUTF8BOM;
+  //DebugLn(['Hint: (lazarus) TSourceNotebook.EncodingClicked NewEncoding=',NewEncoding]);
+  if SrcEdit.CodeBuffer=nil then exit;
+  OldEncoding:=NormalizeEncoding(SrcEdit.CodeBuffer.DiskEncoding);
+  if OldEncoding='' then
+    OldEncoding:=GetDefaultTextEncoding;
+  if NewEncoding=SrcEdit.CodeBuffer.DiskEncoding then exit;
+  DebugLn(['Hint: (lazarus) TSourceNotebook.EncodingClicked Old=',OldEncoding,' New=',NewEncoding]);
+  if SrcEdit.ReadOnly then begin
+    if SrcEdit.CodeBuffer.IsVirtual then
+      CurResult:=mrCancel
+    else
+      CurResult:=IDEQuestionDialog(lisChangeEncoding,
+        Format(lisEncodingOfFileOnDiskIsNewEncodingIs,
+               [SrcEdit.CodeBuffer.Filename, LineEnding, OldEncoding, NewEncoding]),
+        mtConfirmation, [mrOk, lisReopenWithAnotherEncoding, mrCancel]);
+  end else begin
+    if SrcEdit.CodeBuffer.IsVirtual then
+      CurResult:=IDEQuestionDialog(lisChangeEncoding,
+        Format(lisEncodingOfFileOnDiskIsNewEncodingIs,
+               [SrcEdit.CodeBuffer.Filename, LineEnding, OldEncoding, NewEncoding]),
+        mtConfirmation, [mrYes, lisChangeFile, mrCancel])
+    else
+      CurResult:=IDEQuestionDialog(lisChangeEncoding,
+        Format(lisEncodingOfFileOnDiskIsNewEncodingIs,
+               [SrcEdit.CodeBuffer.Filename, LineEnding, OldEncoding, NewEncoding]),
+        mtConfirmation, [mrYes,lisChangeFile,mrOk,lisReopenWithAnotherEncoding,mrCancel]);
+  end;
+  if CurResult=mrYes then begin
+    // change file
+    SrcEdit.CodeBuffer.DiskEncoding:=NewEncoding;
+    SrcEdit.CodeBuffer.Modified:=true;
+    // set override
+    InputHistoriesSO.FileEncodings[SrcEdit.CodeBuffer.Filename]:=NewEncoding;
+    DebugLn(['Hint: (lazarus) TSourceNotebook.EncodingClicked Change file to ',SrcEdit.CodeBuffer.DiskEncoding]);
+    if (not SrcEdit.CodeBuffer.IsVirtual)
+    and (LazarusIDE.DoSaveEditorFile(SrcEdit, []) <> mrOk)
+    then
+      DebugLn(['Hint: (lazarus) TSourceNotebook.EncodingClicked LazarusIDE.DoSaveEditorFile failed']);
+  end else if CurResult=mrOK then begin
+    // reopen with another encoding
+    if SrcEdit.Modified then begin
+      if IDEQuestionDialog(lisAbandonChanges,
+        Format(lisAllYourModificationsToWillBeLostAndTheFileReopened,
+               [SrcEdit.CodeBuffer.Filename, LineEnding]),
+        mtConfirmation,[mbOk,mbAbort],'')<>mrOk
+      then
+        exit;
     end;
-    //DebugLn(['Hint: (lazarus) TSourceNotebook.EncodingClicked NewEncoding=',NewEncoding]);
-    if SrcEdit.CodeBuffer<>nil then begin
-      OldEncoding:=NormalizeEncoding(SrcEdit.CodeBuffer.DiskEncoding);
-      if OldEncoding='' then
-        OldEncoding:=GetDefaultTextEncoding;
-      if NewEncoding<>SrcEdit.CodeBuffer.DiskEncoding then begin
-        DebugLn(['Hint: (lazarus) TSourceNotebook.EncodingClicked Old=',OldEncoding,' New=',NewEncoding]);
-        if SrcEdit.ReadOnly then begin
-          if SrcEdit.CodeBuffer.IsVirtual then
-            CurResult:=mrCancel
-          else
-            CurResult:=IDEQuestionDialog(lisChangeEncoding,
-              Format(lisEncodingOfFileOnDiskIsNewEncodingIs,
-                     [SrcEdit.CodeBuffer.Filename, LineEnding, OldEncoding, NewEncoding]),
-              mtConfirmation, [mrOk, lisReopenWithAnotherEncoding, mrCancel]);
-        end else begin
-          if SrcEdit.CodeBuffer.IsVirtual then
-            CurResult:=IDEQuestionDialog(lisChangeEncoding,
-              Format(lisEncodingOfFileOnDiskIsNewEncodingIs,
-                     [SrcEdit.CodeBuffer.Filename, LineEnding, OldEncoding, NewEncoding]),
-              mtConfirmation, [mrYes, lisChangeFile, mrCancel])
-          else
-            CurResult:=IDEQuestionDialog(lisChangeEncoding,
-              Format(lisEncodingOfFileOnDiskIsNewEncodingIs,
-                     [SrcEdit.CodeBuffer.Filename, LineEnding, OldEncoding, NewEncoding]),
-              mtConfirmation, [mrYes,lisChangeFile,mrOk,lisReopenWithAnotherEncoding,mrCancel]);
-        end;
-        if CurResult=mrYes then begin
-          // change file
-          SrcEdit.CodeBuffer.DiskEncoding:=NewEncoding;
-          SrcEdit.CodeBuffer.Modified:=true;
-          // set override
-          InputHistoriesSO.FileEncodings[SrcEdit.CodeBuffer.Filename]:=NewEncoding;
-          DebugLn(['Hint: (lazarus) TSourceNotebook.EncodingClicked Change file to ',SrcEdit.CodeBuffer.DiskEncoding]);
-          if (not SrcEdit.CodeBuffer.IsVirtual)
-          and (LazarusIDE.DoSaveEditorFile(SrcEdit, []) <> mrOk)
-          then begin
-            DebugLn(['Hint: (lazarus) TSourceNotebook.EncodingClicked LazarusIDE.DoSaveEditorFile failed']);
-          end;
-        end else if CurResult=mrOK then begin
-          // reopen with another encoding
-          if SrcEdit.Modified then begin
-            if IDEQuestionDialog(lisAbandonChanges,
-              Format(lisAllYourModificationsToWillBeLostAndTheFileReopened,
-                     [SrcEdit.CodeBuffer.Filename, LineEnding]),
-              mtConfirmation,[mbOk,mbAbort],'')<>mrOk
-            then begin
-              exit;
-            end;
-          end;
-          // set override
-          InputHistoriesSO.FileEncodings[SrcEdit.CodeBuffer.Filename]:=NewEncoding;
-          if not SrcEdit.CodeBuffer.Revert then begin
-            IDEMessageDialog(lisCodeToolsDefsReadError,
-              Format(lisUnableToRead, [SrcEdit.CodeBuffer.Filename]),
-              mtError,[mbCancel],'');
-            exit;
-          end;
-          SrcEdit.EditorComponent.BeginUpdate;
-          SrcEdit.CodeBuffer.AssignTo(SrcEdit.EditorComponent.Lines,False);
-          SrcEdit.EditorComponent.EndUpdate;
-        end;
-      end;
+    // set override
+    InputHistoriesSO.FileEncodings[SrcEdit.CodeBuffer.Filename]:=NewEncoding;
+    if not SrcEdit.CodeBuffer.Revert then begin
+      IDEMessageDialog(lisCodeToolsDefsReadError,
+        Format(lisUnableToRead, [SrcEdit.CodeBuffer.Filename]),
+        mtError,[mbCancel],'');
+      exit;
     end;
+    SrcEdit.EditorComponent.BeginUpdate;
+    SrcEdit.CodeBuffer.AssignTo(SrcEdit.EditorComponent.Lines,False);
+    SrcEdit.EditorComponent.EndUpdate;
   end;
 end;
 
