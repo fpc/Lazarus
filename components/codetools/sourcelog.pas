@@ -131,6 +131,7 @@ type
     procedure DecodeLoaded(const AFilename: string;
                         var ASource, ADiskEncoding, AMemEncoding: string); virtual;
     procedure EncodeSaving(const AFilename: string; var ASource: string); virtual;
+    procedure RevertChangeStep(AChangeStep: integer);
   public
     Data: Pointer;
     LastError: string;
@@ -1065,6 +1066,11 @@ procedure TSourceLog.EncodeSaving(const AFilename: string; var ASource: string);
 begin
   if Assigned(OnEncodeSaving) then
     OnEncodeSaving(Self,AFilename,ASource);
+end;
+
+procedure TSourceLog.RevertChangeStep(AChangeStep: integer);
+begin
+  FChangeStep:=AChangeStep;
 end;
 
 procedure TSourceLog.AddChangeHook(AnOnSourceChange: TOnSourceChange);
