@@ -210,6 +210,7 @@ type
     procedure TestFindDeclaration_GuessType;
     procedure TestFindDeclaration_GuessType_Set;
     procedure TestFindDeclaration_NameOf;
+    procedure TestFindDeclaration_IsConstValue;
     procedure TestFindDeclaration_IsNot;
     procedure TestFindDeclaration_IsNotDelphi;
     procedure TestFindDeclaration_NotIn;
@@ -2153,6 +2154,20 @@ begin
   '  s1{guesstype:String} := NameOf(i{declaration:i});',
   '  NameOf(TBird.Fly{declaration!:TBird.Fly});',
   '  s2{guesstype:String} := NameOf(TBird{declaration:TBird}.Fly{declaration!:TBird.Fly});',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_IsConstValue;
+begin
+  StartProgram;
+  Add([
+  'const c = 3;',
+  'var i: longint;',
+  'begin',
+  '  b1{guesstype:Boolean} := IsConstValue(i{declaration:i});',
+  '  b2{guesstype:Boolean} := IsConstValue(c{declaration:c}) or IsConstValue(2);',
+  '  if IsConstValue(c{declaration:c}) then ;',
   'end.']);
   FindDeclarations(Code);
 end;

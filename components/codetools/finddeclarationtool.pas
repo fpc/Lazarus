@@ -1483,6 +1483,8 @@ begin
     Result:=xtConstOrdInteger
   else if CompareIdentifiers(Identifier,'ASSIGNED')=0 then
     Result:=xtConstBoolean
+  else if CompareIdentifiers(Identifier,'ISCONSTVALUE')=0 then
+    Result:=xtConstBoolean
   else if CompareIdentifiers(Identifier,'VARIANT')=0 then
     Result:=xtVariant
   else if CompareIdentifiers(Identifier,'OLEVARIANT')=0 then

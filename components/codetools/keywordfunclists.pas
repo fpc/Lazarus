@@ -1400,6 +1400,7 @@ begin
     Add('INCLUDE'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INITIALIZE'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INSERT'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ISCONSTVALUE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LENGTH'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LO'          ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LOW'         ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1899,6 +1900,7 @@ begin
     Add('HIGH'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INT64'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INTEGER'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ISCONSTVALUE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LENGTH'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LONGBOOL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LONGINT'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1947,6 +1949,7 @@ begin
     Add('EXIT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FALSE'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('HIGH'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ISCONSTVALUE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('JSVALUE'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LENGTH'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LONGBOOL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
