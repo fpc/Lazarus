@@ -1469,13 +1469,9 @@ end;
 
 function TCodeBuffer.Revert: boolean;
 // ignore changes and reload source
-var
-  cs: Integer;
 begin
   if not IsVirtual then begin
-    cs:=ChangeStep;
     Result:=inherited LoadFromFile(Filename);
-    RevertChangeStep(cs);  // No need to save the file later.
     if Result then
       MakeFileDateValid;
   end else

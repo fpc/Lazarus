@@ -7366,7 +7366,8 @@ begin
         Format(lisEncodingOfFileOnDiskIsNewEncodingIs,
                [SrcEdit.CodeBuffer.Filename, LineEnding, OldEncoding, NewEncoding]),
         mtConfirmation, [mrOk, lisReopenWithAnotherEncoding, mrCancel]);
-  end else begin
+  end
+  else begin
     if SrcEdit.CodeBuffer.IsVirtual then
       CurResult:=IDEQuestionDialog(lisChangeEncoding,
         Format(lisEncodingOfFileOnDiskIsNewEncodingIs,
@@ -7389,18 +7390,16 @@ begin
     and (LazarusIDE.DoSaveEditorFile(SrcEdit, []) <> mrOk)
     then
       DebugLn(['Hint: (lazarus) TSourceNotebook.EncodingClicked LazarusIDE.DoSaveEditorFile failed']);
-  end else if CurResult=mrOK then begin
+  end
+  else if CurResult=mrOK then begin
     // reopen with another encoding
     if SrcEdit.Modified then begin
       if IDEQuestionDialog(lisAbandonChanges,
         Format(lisAllYourModificationsToWillBeLostAndTheFileReopened,
                [SrcEdit.CodeBuffer.Filename, LineEnding]),
-        mtConfirmation,[mrOk,mrAbort],'') = mrOk
-      then begin
-        SrcEdit.Modified:=false;
-        UEI:=EditableProject1.EditorInfoWithEditorComponent(SrcEdit);
-        UEI.UnitInfo.Modified:=false;
-      end
+        mtConfirmation,[mrOk,mrCancel],'') = mrOk
+      then
+        SrcEdit.Modified:=false
       else
         exit;
     end;
@@ -7415,6 +7414,8 @@ begin
     SrcEdit.EditorComponent.BeginUpdate;
     SrcEdit.CodeBuffer.AssignTo(SrcEdit.EditorComponent.Lines,False);
     SrcEdit.EditorComponent.EndUpdate;
+    UEI:=EditableProject1.EditorInfoWithEditorComponent(SrcEdit);
+    UEI.UnitInfo.Modified:=false;
   end;
 end;
 
