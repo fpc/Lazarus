@@ -1034,6 +1034,7 @@ type
     FConfig: TDbgConfig;
     FGlobalCache: TFpDbgDataCache;
     FHandleUserDebugEvents: TFpHandleUserDebugEvents;
+    FNeedInternalThreadsClearCallStack: Boolean;
     function DoGetCfiFrameBase(AContext: TFpDbgLocationContext; out AnError: TFpError): TDBGPtr;
     function DoGetFrameBase(AContext: TFpDbgLocationContext; out AnError: TFpError): TDBGPtr;
     function GetDisassembler: TDbgAsmDecoder;
@@ -1207,6 +1208,8 @@ type
     function AddThread(AThreadIdentifier: THandle): TDbgThread;
     function GetThreadArray: TFPDThreadArray;
     procedure ThreadsBeforeContinue;
+    procedure ClearNeedThreadsClearCallStack; inline;
+    procedure MaybeThreadsClearCallStack; inline;
     procedure ThreadsClearCallStack;
     procedure LoadInfo; override;
 
@@ -3451,11 +3454,23 @@ begin
   FWatchPointData.Changed := False;
 end;
 
+procedure TDbgProcess.ClearNeedThreadsClearCallStack;
+begin
+  FNeedInternalThreadsClearCallStack := False;
+end;
+
+procedure TDbgProcess.MaybeThreadsClearCallStack;
+begin
+  if FNeedInternalThreadsClearCallStack then
+    ThreadsClearCallStack;
+end;
+
 procedure TDbgProcess.ThreadsClearCallStack;
 var
   Iterator: TMapIterator;
   Thread: TDbgThread;
 begin
+  FNeedInternalThreadsClearCallStack := False;
   GlobalCache.Clear;
   Iterator := TLockedMapIterator.Create(FThreadMap);
   try
@@ -4608,6 +4623,7 @@ begin
   Result := True;
   if FCondition <> '' then begin
     // TODO: parse expression when breakpoint is created
+    Process.FNeedInternalThreadsClearCallStack := True;
     Context := Process.FindSymbolScope(AThread.ID, 0);
     if Context <> nil then begin
       PasExpr := nil;
