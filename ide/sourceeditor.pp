@@ -78,7 +78,7 @@ uses
   // IdeProject
   IdeProjectStrConsts,
   // IDE units
-  LazarusIDEStrConsts, EditorOptions, EnvGuiOptions,
+  LazarusIDEStrConsts, EditorOptions, EnvGuiOptions, EditableProject,
   WordCompletion, FindReplaceDialog, IDEHelpManager, MacroPromptDlg, CodeContextForm,
   SrcEditHintFrm, etMessagesWnd, etSrcEditMarks, CodeMacroPrompt,
   CodeTemplatesDlg, CodeToolsOptions, SortSelectionDlg,
@@ -7337,6 +7337,7 @@ procedure TSourceNotebook.EncodingClicked(Sender: TObject);
 var
   IDEMenuItem: TIDEMenuItem;
   SrcEdit: TSourceEditor;
+  UEI: TUnitEditorInfo;
   NewEncoding: String;
   OldEncoding: String;
   CurResult: TModalResult;
@@ -7394,8 +7395,13 @@ begin
       if IDEQuestionDialog(lisAbandonChanges,
         Format(lisAllYourModificationsToWillBeLostAndTheFileReopened,
                [SrcEdit.CodeBuffer.Filename, LineEnding]),
-        mtConfirmation,[mbOk,mbAbort],'')<>mrOk
-      then
+        mtConfirmation,[mrOk,mrAbort],'') = mrOk
+      then begin
+        SrcEdit.Modified:=false;
+        UEI:=EditableProject1.EditorInfoWithEditorComponent(SrcEdit);
+        UEI.UnitInfo.Modified:=false;
+      end
+      else
         exit;
     end;
     // set override

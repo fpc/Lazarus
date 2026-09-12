@@ -952,15 +952,11 @@ begin
     i := Low(Buttons);
     while i <= High(Buttons) do
     begin
-      if Buttons[i].VType <> vtInteger then
-        raise Exception.Create('TQuestionDlg.CreateQuestionDlg integer expected at '
-          +IntToStr(i)+' but VType='+IntToStr(ord(Buttons[i].VType))+' found.');
       if Buttons[i].VType = vtInteger then
       begin
         // get TModalResult
         CurBtnValue := Buttons[i].VInteger;
         inc(i);
-
         // get button caption and flags
         BtnCaption := '';
         UseDefaultCaption := true;
@@ -1015,7 +1011,8 @@ begin
           DialogButtons.CancelButton := NewButton;
       end
       else
-        raise Exception.Create('TQuestionDlg.Create: invalid Buttons parameter '+dbgs(i));
+        raise Exception.Create('TQuestionDlg.CreateQuestionDlg integer expected at '
+          +IntToStr(i)+' but VType='+IntToStr(ord(Buttons[i].VType))+' found.');
     end;
     if DialogButtons.DefaultButton = nil then
       DialogButtons.DefaultButton := DialogButtons.FindButton([mrYes, mrOk, mrYesToAll, mrAll, mrRetry, mrCancel, mrNo, mrNoToAll, mrAbort, mrIgnore]);

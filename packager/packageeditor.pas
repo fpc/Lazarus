@@ -3165,10 +3165,10 @@ begin
       and (LazPackage.PackageType=lptDesignTime) then
   begin
     MsgResult:=IDEQuestionDialog(dlgMsgWinColorUrgentWarning,
-        Format(lisPackageIsDesigntimeOnlySoItShouldOnlyBeCompiledInt, [
-          LazPackage.Name, #13]),
-        mtWarning, [mrYes, lisCompileWithProjectSettings,
-        mrYesToAll, lisCompileAndDoNotAskAgain, mrCancel]);
+        Format(lisPackageIsDesigntimeOnlySoItShouldOnlyBeCompiledInt,
+          [LazPackage.Name, #13]),
+          mtWarning, [mrYes, lisCompileWithProjectSettings,
+                      mrYesToAll, lisCompileAndDoNotAskAgain, mrCancel]);
     case MsgResult of
     mrYes: ;
     mrYesToAll:
