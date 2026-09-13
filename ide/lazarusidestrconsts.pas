@@ -2480,7 +2480,6 @@ resourcestring
   lisDoNotTrustCompiler = 'Do not trust';
   lisUseDefaultCompiler = 'Use default compiler';
   lisTrustedCompilers = 'Trusted compilers';
-  lisDeleteSelectedTrustedCompilers = 'Delete selected';
   lisTrustedCommands = 'Trusted commands';
   lisTheProjectWantsToUseTheCompilerBuild = 'The project "%s" wants to use the compiler:%s%s%s'
     +'This is not the default compiler configured in the IDE. Building with a custom '
