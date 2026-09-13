@@ -1830,9 +1830,10 @@ resourcestring
   dlgKeyLink = '(Edit Key)';
   dlgBracketHighlight = 'Bracket highlight';
   dlgNoBracketHighlight = 'No Highlight';
-  dlgHighlightLeftOfCursor = 'Left Of Caret';
-  dlgHighlightRightOfCursor = 'Right Of Caret';
-  gldHighlightBothSidesOfCursor = 'On Both Sides';
+  dlgHighlightLeftOfCursor = 'Left of Caret';
+  dlgHighlightRightOfCursor = 'Right of Caret';
+  gldHighlightBothSidesOfCursorLeft = 'On both sides (left first)';
+  gldHighlightBothSidesOfCursorRight = 'On both sides (right first)';
   dlgTrimSpaceTypeCaption = 'Trim spaces style';
   dlgTrimSpaceTypeLeaveLine = 'Leave line';
   dlgTrimSpaceTypeEditLine = 'Line Edited';
