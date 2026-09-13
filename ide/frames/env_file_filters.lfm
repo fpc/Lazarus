@@ -25,7 +25,7 @@ object FileFiltersOptionsFrame: TFileFiltersOptionsFrame
     ChildSizing.ControlsPerLine = 1
     ClientHeight = 162
     ClientWidth = 455
-    Constraints.MinHeight = 80
+    Constraints.MinHeight = 100
     TabOrder = 0
     object pnlTrustedCompilers: TPanel
       Left = 0
@@ -47,7 +47,7 @@ object FileFiltersOptionsFrame: TFileFiltersOptionsFrame
       end
       object lstTrustedCompilers: TListBox
         Left = 0
-        Height = 110
+        Height = 79
         Top = 21
         Width = 224
         Align = alClient
@@ -58,7 +58,7 @@ object FileFiltersOptionsFrame: TFileFiltersOptionsFrame
       object btnDeleteTrustedCompiler: TButton
         Left = 0
         Height = 25
-        Top = 137
+        Top = 106
         Width = 224
         Align = alBottom
         AutoSize = True
@@ -66,6 +66,18 @@ object FileFiltersOptionsFrame: TFileFiltersOptionsFrame
         Caption = 'btnDeleteTrustedCompiler'
         TabOrder = 1
         OnClick = btnDeleteTrustedCompilerClick
+      end
+      object btnAddTrustedCompiler: TButton
+        Left = 0
+        Height = 25
+        Top = 137
+        Width = 224
+        Align = alBottom
+        AutoSize = True
+        BorderSpacing.Top = 6
+        Caption = 'btnAddTrustedCompiler'
+        TabOrder = 2
+        OnClick = btnAddTrustedCompilerClick
       end
     end
     object pnlTrustedCommands: TPanel
@@ -88,7 +100,7 @@ object FileFiltersOptionsFrame: TFileFiltersOptionsFrame
       end
       object lstTrustedCommands: TListBox
         Left = 0
-        Height = 110
+        Height = 79
         Top = 21
         Width = 225
         Align = alClient
@@ -99,7 +111,7 @@ object FileFiltersOptionsFrame: TFileFiltersOptionsFrame
       object btnDeleteTrustedCommand: TButton
         Left = 0
         Height = 25
-        Top = 137
+        Top = 106
         Width = 225
         Align = alBottom
         AutoSize = True
@@ -107,6 +119,18 @@ object FileFiltersOptionsFrame: TFileFiltersOptionsFrame
         Caption = 'btnDeleteTrustedCommand'
         TabOrder = 1
         OnClick = btnDeleteTrustedCommandClick
+      end
+      object btnAddTrustedCommand: TButton
+        Left = 0
+        Height = 25
+        Top = 137
+        Width = 225
+        Align = alBottom
+        AutoSize = True
+        BorderSpacing.Top = 6
+        Caption = 'btnAddTrustedCommand'
+        TabOrder = 2
+        OnClick = btnAddTrustedCommandClick
       end
     end
   end

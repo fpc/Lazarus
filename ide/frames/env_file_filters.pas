@@ -13,9 +13,9 @@ uses
   // LazUtils
   LazFileUtils, LazConfigStorage,
   // LCL
-  LCLType, Grids, Dialogs, Controls, StdCtrls, CheckLst, Menus, ExtCtrls,
+  LCLType, Grids, Dialogs, Controls, StdCtrls, CheckLst, Menus, ExtCtrls, LCLStrConsts,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, BaseIDEIntf, IDEDialogs,
+  IDEOptionsIntf, IDEOptEditorIntf, BaseIDEIntf, IDEDialogs, IdeIntfStrConsts,
   // IDE
   EnvironmentOpts, LazarusIDEStrConsts;
 
@@ -30,6 +30,8 @@ type
     pnlTrustedLists: TPanel;
     pnlTrustedCompilers: TPanel;
     pnlTrustedCommands: TPanel;
+    btnAddTrustedCompiler: TButton;
+    btnAddTrustedCommand: TButton;
     btnDeleteTrustedCompiler: TButton;
     btnDeleteTrustedCommand: TButton;
     lstTrustedCommands: TListBox;
@@ -47,6 +49,9 @@ type
     pmiDelRow: TMenuItem;
     pmiInsRow: TMenuItem;
     lblFileDlgFilters: TLabel;
+    procedure AddNewTrustPath(AList: TStrings);
+    procedure btnAddTrustedCommandClick(Sender: TObject);
+    procedure btnAddTrustedCompilerClick(Sender: TObject);
     procedure btnDeleteTrustedCompilerClick(Sender: TObject);
     procedure btnDeleteTrustedCommandClick(Sender: TObject);
     procedure grdFileFiltersKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
@@ -258,9 +263,36 @@ end;
 
 { TFileFiltersOptionsFrame }
 
+procedure TFileFiltersOptionsFrame.AddNewTrustPath(AList: TStrings);
+var
+  APath, s: string;
+begin
+  APath := InputBox(lisAdd, lisAddPathToTrustedExe, '');
+  if APath = '' then exit;
+  // check existence
+  for s in AList do
+    if CompareFilenames(APath, s) = 0 then
+    begin
+      IDEMessageDialog(lisInformation, lisPathAlreadyExists, mtInformation, [mbOK]);
+      exit;
+    end;
+  // add in list
+  AList.Add(APath);
+end;
+
+procedure TFileFiltersOptionsFrame.btnAddTrustedCompilerClick(Sender: TObject);
+begin
+  AddNewTrustPath(lstTrustedCompilers.Items);
+end;
+
 procedure TFileFiltersOptionsFrame.btnDeleteTrustedCompilerClick(Sender: TObject);
 begin
   lstTrustedCompilers.DeleteSelected;
+end;
+
+procedure TFileFiltersOptionsFrame.btnAddTrustedCommandClick(Sender: TObject);
+begin
+  AddNewTrustPath(lstTrustedCommands.Items);
 end;
 
 procedure TFileFiltersOptionsFrame.btnDeleteTrustedCommandClick(Sender: TObject);
@@ -321,9 +353,11 @@ begin
   lblStarDirExcludes.Caption:=lisExcludesForStars;
 
   lblTrustedCompilers.Caption:=lisTrustedCompilers;
+  btnAddTrustedCompiler.Caption:=lisAdd;
   btnDeleteTrustedCompiler.Caption:=lisRemove;
 
   lblTrustedCommands.Caption:=lisTrustedCommands;
+  btnAddTrustedCommand.Caption:=lisAdd;
   btnDeleteTrustedCommand.Caption:=lisRemove;
 end;
 

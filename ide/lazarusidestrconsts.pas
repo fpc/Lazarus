@@ -2481,6 +2481,8 @@ resourcestring
   lisUseDefaultCompiler = 'Use default compiler';
   lisTrustedCompilers = 'Trusted compilers';
   lisTrustedCommands = 'Trusted commands';
+  lisAddPathToTrustedExe = 'Add path to trusted executable';
+  lisPathAlreadyExists = 'The path already exists';
   lisTheProjectWantsToUseTheCompilerBuild = 'The project "%s" wants to use the compiler:%s%s%s'
     +'This is not the default compiler configured in the IDE. Building with a custom '
     +'compiler can run arbitrary programs.%sDo you want to trust and use this compiler?';
