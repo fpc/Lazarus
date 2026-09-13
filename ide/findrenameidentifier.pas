@@ -441,11 +441,15 @@ end;
 function DoFindRenameIdentifier(AllowRename: boolean; SetRenameActive: boolean;
   Options: TFindRenameIdentifierOptions): TModalResult;
 var
+  DeclXY: TPoint;
   DeclCleanPos: integer;
   DeclTool: TCodeTool;
   DeclNode: TCodeTreeNode;
   DeclCodeXY: TCodeXYPosition;
+  SrcIfcs: TFPList;  // List of TEditableUnitInfo
   Kind: TFRIdentifierKind;
+  RenamingFile: Boolean;
+  OldFileName, NewFilename: string;
 
   procedure Err(id: int64; Msg: string);
   begin
@@ -517,8 +521,8 @@ var
     Result:=true;
   end;
 
-  function AddExtraFiles(Files: TStrings): boolean;
-  // TODO: replace Files: TStringsList with a AVL tree
+  function AddExtraFiles(aFiles: TStrings): boolean;
+  // TODO: replace TStringsList with a AVL tree
   var
     i: Integer;
     CurFileMask: string;
@@ -555,7 +559,7 @@ var
               if not FilenameIsPascalSource(FTItem^.Name) then
                 continue;
               if FileIsText(FTItem^.Name) then
-                Files.Add(FTItem^.Name);
+                aFiles.Add(FTItem^.Name);
             end;
           finally
             FilesTree.Free;
@@ -570,7 +574,7 @@ var
           CurFileMask:=AppendPathDelim(CurFileMask)+AllFilesMask;
         end else if FileExistsCached(CurFileMask) then begin
           // single file
-          Files.Add(CurFileMask);
+          aFiles.Add(CurFileMask);
           continue;
         end else begin
           // a mask
@@ -589,7 +593,7 @@ var
             CurFilename:=CurDirectory+FileInfo.Name;
             //debugln(['AddExtraFiles ',CurFilename]);
             if FileIsText(CurFilename) then
-              Files.Add(CurFilename);
+              aFiles.Add(CurFilename);
           until FindNextUTF8(FileInfo)<>0;
         end;
         FindCloseUTF8(FileInfo);
@@ -598,27 +602,191 @@ var
     Result:=true;
   end;
 
+  function RenameProgram(const aIdentifier: string): TModalResult;
+  // rename unit/program
+  var
+    MovingFile, DoLowercase: Boolean;
+    OldPath, OldFN, RenE: string;
+  begin
+    Result:=mrOK;
+    OldFileName:=DeclCodeXY.Code.Filename;
+    OldPath:=ExtractFilePath(OldFileName);
+    OldFN:=ExtractFileName(OldFileName);
+    RenE:=RemoveAmpersands(Options.RenameTo)+ExtractFileExt(OldFileName);
+    DoLowercase:=false;
+    if Options.RenameTo<>lowercase(Options.RenameTo) then begin
+      // new identifier is not lowercase
+      case EnvironmentOptions.CharcaseFileAction of
+      ccfaAsk:
+        begin
+          // If old unitname is mixed case and old file lowercase, no need to ask
+          if IsLower(aIdentifier) or not IsLower(OldFN) then
+          begin
+            Result:=IDEQuestionDialog(lisFileNotLowercase,
+              Format(lisTheUnitIsNotLowercaseTheFreePascalCompiler,
+                     [RenE, LineEnding, LineEnding+LineEnding]),
+              mtConfirmation,[mrYes,mrNo,mrCancel],'');
+            case Result of
+            mrYes: DoLowercase:=true;
+            mrNo: ;
+            else
+              exit(mrCancel);
+            end;
+          end;
+        end;
+      ccfaAutoRename:
+        // always lower case
+        DoLowercase:=true;
+      else
+        // use mixed case for filename
+      end;
+    end;
+    if DoLowercase then
+      RenE:=LowerCase(RenE);
+    NewFilename:=OldPath+RenE;
+    // Check if new file already exists (change in case is silently done)
+    MovingFile:=CompareFilenames(OldPath,ExtractFilePath(NewFilename))<>0;
+    RenamingFile:=MovingFile or (RenE<>OldFN);
+    if (MovingFile or not SameText(RenE,OldFN))
+    and CodeToolBoss.DirectoryCachePool.FileExists(NewFilename,ctsfcAllCase)
+    then begin
+      IDEMessageDialog(lisRenamingAborted,
+        Format(lisFileAlreadyExists,[FindDiskFilename(NewFilename)]),
+        mtError,[mbOK]);
+      exit(mrCancel);
+    end;
+  end;
+
+  procedure AddOwnerFiles(aOwnerList: TFPList; aFiles: TStrings);
+  var
+    ExtraFiles: TStrings;
+    Graph: TUsesGraph;
+    UGUnit: TUGUnit;
+    AVLNode: TAVLTreeNode;
+    Completed: Boolean;
+    i: Integer;
+  begin
+    // start in all listed Files of the package(s)
+    ExtraFiles:=PackageEditingInterface.GetSourceFilesOfOwners(aOwnerList);
+    if ExtraFiles<>nil then
+    begin
+      // parse all used units
+      Graph:=CodeToolBoss.CreateUsesGraph;
+      try
+        for i:=0 to ExtraFiles.Count-1 do
+          Graph.AddStartUnit(ExtraFiles[i]);
+        Graph.AddTargetUnit(DeclCodeXY.Code.Filename);
+        Graph.Parse(true,Completed);
+        AVLNode:=Graph.FilesTree.FindLowest;
+        while AVLNode<>nil do begin
+          UGUnit:=TUGUnit(AVLNode.Data);
+          aFiles.Add(UGUnit.Filename);
+          AVLNode:=AVLNode.Successor;
+        end;
+      finally
+        ExtraFiles.Free;
+        Graph.Free;
+      end;
+    end;
+  end;
+
+  function RenameAll(const aIdentifier: string; LFMReferences: TCodeXYPositions): TModalResult;
+  var
+    PascalReferences: TObjectList; // list of TSrcNameRefs
+    Refs: TSrcNameRefs;
+    TreeOfPCodeXYPosition, LFMTreeOfPCodeXYPosition: TAVLTree;
+    Code, LastCode: TCodeBuffer;
+    AUnitInfo: TEditableUnitInfo;
+    PasFilename: string;
+    IsConflicted: Boolean;
+    i, j: Integer;
+  begin
+    // todo: check for conflicts and show user list (some checking already done)
+    IsConflicted:=false;
+    Result:=mrOk;
+    if Kind=friSourceName then begin
+      if not CodeToolBoss.RenameSourceNameReferences(OldFileName,NewFilename,
+          Options.RenameTo,PascalReferences) then
+        Result:=mrCancel;
+    end else begin
+      if (PascalReferences<>nil) and (PascalReferences.Count>0) then begin
+        Refs:=TSrcNameRefs(PascalReferences[0]);
+        TreeOfPCodeXYPosition:=Refs.TreeOfPCodeXYPosition;
+        if not CodeToolBoss.RenameIdentifier(TreeOfPCodeXYPosition,
+            aIdentifier, Options.RenameTo, DeclCodeXY.Code, @DeclXY) then
+          Result:=mrCancel;
+      end;
+      LFMTreeOfPCodeXYPosition:=nil;
+      if (LFMReferences<>nil) and (LFMReferences.Count>0) then begin
+        try
+          LFMTreeOfPCodeXYPosition:=CreateTreeOfPCodeXYPosition;
+          for i:=0 to LFMReferences.Count-1 do
+            LFMTreeOfPCodeXYPosition.Add(LFMReferences.Items[i]);
+
+          if not CodeToolBoss.RenameIdentifierInLFMs(LFMTreeOfPCodeXYPosition,
+            aIdentifier, Options.RenameTo) then begin
+            // error occured, show something
+            Result:=mrCancel;
+          end;
+        finally
+          LFMTreeOfPCodeXYPosition.Free;
+        end;
+      end;
+    end;
+    if Result<>mrOk then begin
+      if IsConflicted then
+        IDEMessageDialog(lisRenamingConflict,
+          Format(lisIdentifierIsAlreadyUsed2,[Options.RenameTo]),
+          mtError,[mbOK])
+      else
+        LazarusIDE.DoJumpToCodeToolBossError;
+        debugln('Error: (lazarus) DoFindRenameIdentifier unable to commit');
+      exit(mrCancel);
+    end;
+    // ToDo: rename fpdoc references
+    // hack designers
+    if LFMReferences<>nil then begin
+      LastCode:=nil;
+      for i:=0 to LFMReferences.Count-1 do begin
+        Code:=LFMReferences.Items[i]^.Code;
+        if (Code<>LastCode) then begin
+          LastCode:=Code;
+          // hack LastCode related designers
+          AUnitInfo:=nil;
+          for j:=low(PascalSourceExt) to high(PascalSourceExt) do begin
+            PasFilename:=ExtractFileNameWithoutExt(Code.Filename)+PascalSourceExt[j];
+            AUnitInfo:=TEditableUnitInfo(Project1.UnitWithFilename(PasFilename));
+            if AUnitInfo<>nil then
+              break;
+          end;
+          if AUnitInfo=nil then
+            continue;
+          if SrcIfcs.IndexOf(AUnitInfo)>=0 then begin
+            if AUnitInfo.EditorInfoCount>1 then
+              for j:= AUnitInfo.EditorInfoCount-1 downto 1 do
+                CloseEditorFile(AUnitInfo.EditorInfo[j].EditorComponent,
+                                [cfQuiet, cfCloseDependencies]);
+          end;
+          ReloadUnitComponent(AUnitInfo);
+        end;
+      end;
+    end;
+  end;
+
 var
-  StartSrcCode, LastCode, Code: TCodeBuffer;
-  StartCaretXY, DeclXY: TPoint;
+  StartSrcCode: TCodeBuffer;
+  StartCaretXY: TPoint;
   StartSrcEdit: TSourceEditorInterface;
-  DeclTopLine, StartTopLine, i, j: integer;
+  DeclTopLine, StartTopLine, i: integer;
   OwnerList, ListOfLazFPDocNode: TFPList;
-  ExtraFiles: TStrings;
-  Files: TStringList;
+  TheFiles: TStringList;
   PascalReferences: TObjectList; // list of TSrcNameRefs
   LFMReferences: TCodeXYPositions;
-  OldChange, Completed, MovingFile, RenamingFile, IsConflicted, DoLowercase, Confirm,
-    NewFileCreated: Boolean;
-  Graph: TUsesGraph;
-  AVLNode: TAVLTreeNode;
-  UGUnit: TUGUnit;
-  Identifier, NewFilename, OldFileName, PasFilename, s: string;
+  OldChange, NewFileCreated: Boolean;
+  Identifier: string;
   FindRefFlags: TFindRefsFlags;
-  TreeOfPCodeXYPosition, LFMTreeOfPCodeXYPosition: TAVLTree;
-  Refs, OldRefs: TSrcNameRefs;
+  OldRefs: TSrcNameRefs;
   AUnitInfo: TEditableUnitInfo;
-  SrcIfcs: TFPList;  // List of TEditableUnitInfo
 begin
   Result:=mrCancel;
   if not LazarusIDE.BeginCodeTools then exit(mrCancel);
@@ -662,7 +830,7 @@ begin
   if Result<>mrOk then
     exit;
 
-  Files:=nil;
+  TheFiles:=nil;
   OwnerList:=nil;
   PascalReferences:=nil;
   LFMReferences:=nil;
@@ -681,76 +849,21 @@ begin
     end;
 
     Options:=MiscellaneousOptions.FindRenameIdentifierOptions;
-    if Options.Rename then begin
-      OldFileName:=DeclCodeXY.Code.Filename;
-      if Kind=friSourceName then
-      begin
-        // rename unit/program
-        DoLowercase:=false;
-        if Options.RenameTo<>lowercase(Options.RenameTo) then begin
-          // new identifier is not lowercase
-          case EnvironmentOptions.CharcaseFileAction of
-          ccfaAsk:
-            begin
-              Confirm:=true;
-              s:=ExtractFileName(OldFileName);
-              if (s=lowercase(s)) and (Identifier<>lowercase(Identifier)) then begin
-                // old unitname was mixed case and old file was lowercase -> keep policy, no need to ask
-                Confirm:=false;
-              end;
-              if Confirm then begin
-                s:=RemoveAmpersands(Options.RenameTo)+ExtractFileExt(OldFileName);
-                Result:=IDEQuestionDialog(lisFileNotLowercase,
-                  Format(lisTheUnitIsNotLowercaseTheFreePascalCompiler,
-                         [s, LineEnding, LineEnding+LineEnding]),
-                  mtConfirmation,[mrYes,mrNo,mrCancel],'');
-                case Result of
-                mrYes: DoLowercase:=true;
-                mrNo: ;
-                else
-                  exit(mrCancel);
-                end;
-              end;
-            end;
-          ccfaAutoRename:
-            // always lower case
-            DoLowercase:=true;
-          else
-            // use mixed case for filename
-          end;
-        end;
-        if DoLowercase then
-          NewFilename:=ExtractFilePath(OldFileName)+
-            lowercase(RemoveAmpersands(Options.RenameTo)+ExtractFileExt(OldFileName))
-        else
-          NewFilename:=ExtractFilePath(OldFileName)+
-            RemoveAmpersands(Options.RenameTo)+
-            ExtractFileExt(OldFileName);
-
-        // Check if new file already exists (change in case is silently done)
-        MovingFile:=CompareFilenames(ExtractFilePath(OldFileName),ExtractFilePath(NewFilename))<>0;
-        RenamingFile:=MovingFile or (ExtractFileName(NewFilename)<>ExtractFileName(OldFileName));
-        if (MovingFile or not SameText(ExtractFileName(NewFilename),ExtractFileName(OldFileName)))
-            and CodeToolBoss.DirectoryCachePool.FileExists(NewFilename,ctsfcAllCase)
-        then begin
-          IDEMessageDialog(lisRenamingAborted,
-            Format(lisFileAlreadyExists,[FindDiskFilename(NewFilename)]),
-            mtError,[mbOK]);
-          exit(mrCancel);
-        end;
-      end;
+    if Options.Rename and (Kind=friSourceName) then begin
+      Result:=RenameProgram(Identifier);  // rename unit/program
+      if Result<>mrOK then exit;
     end;
 
     if not UpdateCodeNode then exit(mrCancel);
 
     // create the file list
-    Files:=TStringList.Create;
+    TheFiles:=TStringList.Create;
     if (Options.Scope = frCurrentUnit) then begin
-      Files.Add(StartSrcCode.Filename);
+      TheFiles.Add(StartSrcCode.Filename);
     end else begin
-      Files.Add(DeclCodeXY.Code.Filename);
+      TheFiles.Add(DeclCodeXY.Code.Filename);
       if CompareFilenames(DeclCodeXY.Code.Filename,StartSrcCode.Filename)<>0 then
-        Files.Add(StartSrcCode.Filename);
+        TheFiles.Add(StartSrcCode.Filename);
     end;
 
     // add packages, projects
@@ -787,35 +900,12 @@ begin
     end;
 
     // get source files of packages and projects
-    if OwnerList<>nil then begin
-      // start in all listed files of the package(s)
-      ExtraFiles:=PackageEditingInterface.GetSourceFilesOfOwners(OwnerList);
-      if ExtraFiles<>nil then
-      begin
-        // parse all used units
-        Graph:=CodeToolBoss.CreateUsesGraph;
-        try
-          for i:=0 to ExtraFiles.Count-1 do
-            Graph.AddStartUnit(ExtraFiles[i]);
-          Graph.AddTargetUnit(DeclCodeXY.Code.Filename);
-          Graph.Parse(true,Completed);
-          AVLNode:=Graph.FilesTree.FindLowest;
-          while AVLNode<>nil do begin
-            UGUnit:=TUGUnit(AVLNode.Data);
-            Files.Add(UGUnit.Filename);
-            AVLNode:=AVLNode.Successor;
-          end;
-        finally
-          ExtraFiles.Free;
-          Graph.Free;
-        end;
-      end;
-    end;
-
-    //debugln(['DoFindRenameIdentifier ',Files.Text]);
+    if OwnerList<>nil then
+      AddOwnerFiles(OwnerList, TheFiles);
+    //debugln(['DoFindRenameIdentifier ',TheFiles.Text]);
 
     // add user defined extra files
-    if not AddExtraFiles(Files) then
+    if not AddExtraFiles(TheFiles) then
       exit(mrCancel);
 
     // search pascal source references
@@ -829,7 +919,7 @@ begin
     if Options.IncludeLFMs then
       Include(FindRefFlags,frfIncludingLFM);
 
-    if not GatherIdentifierReferences(Files,DeclCodeXY,DeclTool,DeclNode,
+    if not GatherIdentifierReferences(TheFiles,DeclCodeXY,DeclTool,DeclNode,
              Options.SearchInComments,PascalReferences,FindRefFlags,SrcIfcs) then
     begin
       debugln('Error: 20250206162727 DoFindRenameIdentifier GatherIdentifierReferences failed');
@@ -846,7 +936,7 @@ begin
       // code is modified, previous  gathering not reliable, must be repeated
       FreeAndNil(PascalReferences);
       SrcIfcs.Clear;
-      if not GatherIdentifierReferences(Files,DeclCodeXY,DeclTool,DeclNode,
+      if not GatherIdentifierReferences(TheFiles,DeclCodeXY,DeclTool,DeclNode,
               Options.SearchInComments,PascalReferences,FindRefFlags,SrcIfcs) then
       begin
         debugln('Error: 20250206162727 DoFindRenameIdentifier GatherIdentifierReferences failed');
@@ -856,7 +946,7 @@ begin
 
     // search references in lfm files
     if (frfIncludingLFM in FindRefFlags)
-    and (GatherLFMsReferences(Files, Identifier, DeclTool, DeclNode,
+    and (GatherLFMsReferences(TheFiles, Identifier, DeclTool, DeclNode,
                               LFMReferences, FindRefFlags) <> mrOk) then
     begin
       debugln('Error: 20250506120810 DoFindRenameIdentifier GatherLFMsReferences failed');
@@ -897,81 +987,8 @@ begin
       OldChange:=LazarusIDE.OpenEditorsOnCodeToolChange;
       LazarusIDE.OpenEditorsOnCodeToolChange:=true;
       try
-        // todo: check for conflicts and show user list (some checking already done)
-
-        IsConflicted:=false;
-        Result:=mrOk;
-        if Kind=friSourceName then begin
-          if not CodeToolBoss.RenameSourceNameReferences(OldFileName,NewFilename,
-              Options.RenameTo,PascalReferences) then
-            Result:=mrCancel;
-        end else begin
-          if (PascalReferences<>nil) and (PascalReferences.Count>0) then begin
-            Refs:=TSrcNameRefs(PascalReferences[0]);
-            TreeOfPCodeXYPosition:=Refs.TreeOfPCodeXYPosition;
-            if not CodeToolBoss.RenameIdentifier(TreeOfPCodeXYPosition,
-                Identifier, Options.RenameTo, DeclCodeXY.Code, @DeclXY) then
-              Result:=mrCancel;
-          end;
-          LFMTreeOfPCodeXYPosition:=nil;
-          if (LFMReferences<>nil) and (LFMReferences.Count>0) then begin
-            try
-              LFMTreeOfPCodeXYPosition:=CreateTreeOfPCodeXYPosition;
-              for i:=0 to LFMReferences.Count-1 do
-                LFMTreeOfPCodeXYPosition.Add(LFMReferences.Items[i]);
-
-              if not CodeToolBoss.RenameIdentifierInLFMs(LFMTreeOfPCodeXYPosition,
-                Identifier, Options.RenameTo) then begin
-                // error occured, show something
-                Result:=mrCancel;
-              end;
-            finally
-              LFMTreeOfPCodeXYPosition.Free;
-            end;
-          end;
-        end;
-
-        if Result<>mrOk then begin
-          if IsConflicted then
-            IDEMessageDialog(lisRenamingConflict,
-              Format(lisIdentifierIsAlreadyUsed2,[Options.RenameTo]),
-              mtError,[mbOK])
-          else
-            LazarusIDE.DoJumpToCodeToolBossError;
-            debugln('Error: (lazarus) DoFindRenameIdentifier unable to commit');
-          exit(mrCancel);
-        end;
-
-        // ToDo: rename fpdoc references
-
-        // hack designers
-        if LFMReferences<>nil then begin
-          LastCode:=nil;
-          for i:=0 to LFMReferences.Count-1 do begin
-            Code:=LFMReferences.Items[i]^.Code;
-            if (Code<>LastCode) then begin
-              LastCode:=Code;
-              // hack LastCode related designers
-              AUnitInfo:=nil;
-              for j:=low(PascalSourceExt) to high(PascalSourceExt) do begin
-                PasFilename:=ExtractFileNameWithoutExt(Code.Filename)+PascalSourceExt[j];
-                AUnitInfo:=TEditableUnitInfo(Project1.UnitWithFilename(PasFilename));
-                if AUnitInfo<>nil then
-                  break;
-              end;
-              if AUnitInfo=nil then
-                continue;
-              if SrcIfcs.IndexOf(AUnitInfo)>=0 then begin
-                if AUnitInfo.EditorInfoCount>1 then
-                  for j:= AUnitInfo.EditorInfoCount-1 downto 1 do
-                    CloseEditorFile(AUnitInfo.EditorInfo[j].EditorComponent,
-                                    [cfQuiet, cfCloseDependencies]);
-              end;
-              ReloadUnitComponent(AUnitInfo);
-            end;
-          end;
-        end;
-
+        Result:=RenameAll(Identifier, LFMReferences);
+        if Result<>mrOk then exit;
       finally
         LazarusIDE.OpenEditorsOnCodeToolChange:=OldChange;
       end;
@@ -995,7 +1012,7 @@ begin
   finally
     SrcIfcs.Free;
     OldRefs.Free;
-    Files.Free;
+    TheFiles.Free;
     OwnerList.Free;
     PascalReferences.Free;
     LFMReferences.Free;
