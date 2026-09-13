@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-09-06 22:39+0300\n"
+"PO-Revision-Date: 2026-09-13 22:21+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -2546,6 +2546,16 @@ msgstr "Не показывать IDE во время исполнения пр�
 msgid "Hide tab in single page windows"
 msgstr "Скрывать заголовок одиночной вкладки"
 
+#: lazarusidestrconsts.dlghighlightbothsidesofcursorleft
+msgctxt "lazarusidestrconsts.dlghighlightbothsidesofcursorleft"
+msgid "On both sides (left first)"
+msgstr "С обеих сторон (сначала слева)"
+
+#: lazarusidestrconsts.dlghighlightbothsidesofcursorright
+msgctxt "lazarusidestrconsts.dlghighlightbothsidesofcursorright"
+msgid "On both sides (right first)"
+msgstr "С обеих сторон (сначала справа)"
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr "Выделение"
@@ -2555,11 +2565,11 @@ msgid "Highlight Font Color"
 msgstr "Шрифт выделенного"
 
 #: lazarusidestrconsts.dlghighlightleftofcursor
-msgid "Left Of Caret"
+msgid "Left of Caret"
 msgstr "Слева от курсора"
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
-msgid "Right Of Caret"
+msgid "Right of Caret"
 msgstr "Справа от курсора"
 
 #: lazarusidestrconsts.dlghintsparametersendernotused
@@ -4999,10 +5009,6 @@ msgstr "Параметр: Выровнять по линиям позицион�
 msgid "Z-order"
 msgstr "Z-порядок"
 
-#: lazarusidestrconsts.gldhighlightbothsidesofcursor
-msgid "On Both Sides"
-msgstr "С обеих сторон"
-
 #: lazarusidestrconsts.initdlgdebugchangepath
 msgid "Change path"
 msgstr "Изменить путь"
@@ -5652,7 +5658,7 @@ msgstr "Все файлы .pas, .pp, .p, .inc, найденные в катал�
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
 #, object-pascal-format
 msgid "All your modifications to \"%s\"%swill be lost and the file reopened."
-msgstr "Все изменения в \"%s\"%sбудут утеряны и файл откроется повторно."
+msgstr "Все изменения в \"%s\"%sбудут утеряны и файл откроется заново."
 
 #: lazarusidestrconsts.lisalpha
 msgid "Alpha"
@@ -6645,10 +6651,6 @@ msgstr "Изменена координата %s компонента %s с \"%d
 #: lazarusidestrconsts.lischangeencoding
 msgid "Change Encoding"
 msgstr "Смена кодировки"
-
-#: lazarusidestrconsts.lischangefile
-msgid "Change file"
-msgstr "Изменить файл"
 
 #: lazarusidestrconsts.lischangemethodvisibilityto
 #, object-pascal-format
@@ -16321,11 +16323,11 @@ msgstr "Конфликт при переименовании"
 
 #: lazarusidestrconsts.lisreopenproject
 msgid "Reopen project"
-msgstr "Переоткрыть проект"
+msgstr "Открыть проект заново"
 
-#: lazarusidestrconsts.lisreopenwithanotherencoding
-msgid "Reopen with another encoding"
-msgstr "Открыть с другой кодировкой"
+#: lazarusidestrconsts.lisreopenwithnewencoding
+msgid "Reopen with new encoding"
+msgstr "Открыть заново в новой кодировке"
 
 #: lazarusidestrconsts.lisrepeat
 msgctxt "lazarusidestrconsts.lisrepeat"
@@ -16695,6 +16697,10 @@ msgstr "Сохранить показанные сообщения в файл .
 #: lazarusidestrconsts.lissavespace
 msgid "Save "
 msgstr "Сохранить "
+
+#: lazarusidestrconsts.lissavewithnewencoding
+msgid "Save with new encoding"
+msgstr "Сохранить в новой кодировке"
 
 #: lazarusidestrconsts.lissavingfileasloosescharactersatlinecolumn
 #, object-pascal-format

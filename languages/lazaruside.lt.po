@@ -2632,6 +2632,16 @@ msgstr "Kai programa vykdoma, tai IKA bus slepiamas."
 msgid "Hide tab in single page windows"
 msgstr "Slėpti kortelę, jei langas su vienu lapu"
 
+#: lazarusidestrconsts.dlghighlightbothsidesofcursorleft
+msgctxt "lazarusidestrconsts.dlghighlightbothsidesofcursorleft"
+msgid "On both sides (left first)"
+msgstr ""
+
+#: lazarusidestrconsts.dlghighlightbothsidesofcursorright
+msgctxt "lazarusidestrconsts.dlghighlightbothsidesofcursorright"
+msgid "On both sides (right first)"
+msgstr ""
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr "Paryškinimo spalva"
@@ -2643,13 +2653,13 @@ msgstr "Paryškinto šrifto spalva"
 #: lazarusidestrconsts.dlghighlightleftofcursor
 #, fuzzy
 #| msgid "Left Of Cursor"
-msgid "Left Of Caret"
+msgid "Left of Caret"
 msgstr "Žymeklio kairėje"
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
 #, fuzzy
 #| msgid "Right Of Cursor"
-msgid "Right Of Caret"
+msgid "Right of Caret"
 msgstr "Žymeklio dešinėje"
 
 #: lazarusidestrconsts.dlghintsparametersendernotused
@@ -5168,10 +5178,6 @@ msgstr "Parinktis: pritraukti prie orientavimo linijų"
 msgid "Z-order"
 msgstr "Z eilė"
 
-#: lazarusidestrconsts.gldhighlightbothsidesofcursor
-msgid "On Both Sides"
-msgstr "Abiejose pusėse"
-
 #: lazarusidestrconsts.initdlgdebugchangepath
 msgid "Change path"
 msgstr ""
@@ -6856,10 +6862,6 @@ msgstr "„%4:s“ viduje „%1:s“ koordinatė „%0:s“ pakeista iš „%2:d
 #: lazarusidestrconsts.lischangeencoding
 msgid "Change Encoding"
 msgstr "Keisti koduotę"
-
-#: lazarusidestrconsts.lischangefile
-msgid "Change file"
-msgstr "Keisti failą"
 
 #: lazarusidestrconsts.lischangemethodvisibilityto
 #, object-pascal-format
@@ -16739,9 +16741,9 @@ msgstr ""
 msgid "Reopen project"
 msgstr "Projektą atverti iš naujo"
 
-#: lazarusidestrconsts.lisreopenwithanotherencoding
-msgid "Reopen with another encoding"
-msgstr "Atveri iš naujo kitoje koduotėje"
+#: lazarusidestrconsts.lisreopenwithnewencoding
+msgid "Reopen with new encoding"
+msgstr ""
 
 #: lazarusidestrconsts.lisrepeat
 msgctxt "lazarusidestrconsts.lisrepeat"
@@ -17141,6 +17143,10 @@ msgstr "Rodomą pranešimą įrašyti failan…"
 #: lazarusidestrconsts.lissavespace
 msgid "Save "
 msgstr "Įrašyti "
+
+#: lazarusidestrconsts.lissavewithnewencoding
+msgid "Save with new encoding"
+msgstr ""
 
 #: lazarusidestrconsts.lissavingfileasloosescharactersatlinecolumn
 #, object-pascal-format

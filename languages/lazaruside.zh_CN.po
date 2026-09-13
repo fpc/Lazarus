@@ -2561,6 +2561,16 @@ msgstr "完全不显示IDE 当程序运行时."
 msgid "Hide tab in single page windows"
 msgstr "隐藏标签页在单页窗口"
 
+#: lazarusidestrconsts.dlghighlightbothsidesofcursorleft
+msgctxt "lazarusidestrconsts.dlghighlightbothsidesofcursorleft"
+msgid "On both sides (left first)"
+msgstr ""
+
+#: lazarusidestrconsts.dlghighlightbothsidesofcursorright
+msgctxt "lazarusidestrconsts.dlghighlightbothsidesofcursorright"
+msgid "On both sides (right first)"
+msgstr ""
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr "高亮颜色"
@@ -2570,11 +2580,15 @@ msgid "Highlight Font Color"
 msgstr "高亮字体颜色"
 
 #: lazarusidestrconsts.dlghighlightleftofcursor
-msgid "Left Of Caret"
+#, fuzzy
+#| msgid "Left Of Caret"
+msgid "Left of Caret"
 msgstr "光标的左侧"
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
-msgid "Right Of Caret"
+#, fuzzy
+#| msgid "Right Of Caret"
+msgid "Right of Caret"
 msgstr "光标的右侧"
 
 #: lazarusidestrconsts.dlghintsparametersendernotused
@@ -5025,10 +5039,6 @@ msgstr "选项：对齐到网格指示线(&Y)"
 msgid "Z-order"
 msgstr "层叠顺序(&Z)"
 
-#: lazarusidestrconsts.gldhighlightbothsidesofcursor
-msgid "On Both Sides"
-msgstr "关于两侧"
-
 #: lazarusidestrconsts.initdlgdebugchangepath
 msgid "Change path"
 msgstr "修改路径"
@@ -6677,10 +6687,6 @@ msgstr "将 %s 的 %s 坐标从 \"%d\" 更改为 \"%d\" 在 %s 中。"
 #: lazarusidestrconsts.lischangeencoding
 msgid "Change Encoding"
 msgstr "更改编码"
-
-#: lazarusidestrconsts.lischangefile
-msgid "Change file"
-msgstr "改变文件"
 
 #: lazarusidestrconsts.lischangemethodvisibilityto
 #, object-pascal-format
@@ -16383,9 +16389,9 @@ msgstr "重命名冲突"
 msgid "Reopen project"
 msgstr "重新打开项目"
 
-#: lazarusidestrconsts.lisreopenwithanotherencoding
-msgid "Reopen with another encoding"
-msgstr "使用另一个编码重新打开"
+#: lazarusidestrconsts.lisreopenwithnewencoding
+msgid "Reopen with new encoding"
+msgstr ""
 
 #: lazarusidestrconsts.lisrepeat
 msgctxt "lazarusidestrconsts.lisrepeat"
@@ -16754,6 +16760,10 @@ msgstr "保存显示信息到文件 ..."
 #: lazarusidestrconsts.lissavespace
 msgid "Save "
 msgstr "保存 "
+
+#: lazarusidestrconsts.lissavewithnewencoding
+msgid "Save with new encoding"
+msgstr ""
 
 #: lazarusidestrconsts.lissavingfileasloosescharactersatlinecolumn
 #, object-pascal-format

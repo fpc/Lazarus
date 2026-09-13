@@ -2629,6 +2629,16 @@ msgstr "プログラムの実行中にはIDEを全く表示させない"
 msgid "Hide tab in single page windows"
 msgstr "単一のページウィンドウのタブを隠す"
 
+#: lazarusidestrconsts.dlghighlightbothsidesofcursorleft
+msgctxt "lazarusidestrconsts.dlghighlightbothsidesofcursorleft"
+msgid "On both sides (left first)"
+msgstr ""
+
+#: lazarusidestrconsts.dlghighlightbothsidesofcursorright
+msgctxt "lazarusidestrconsts.dlghighlightbothsidesofcursorright"
+msgid "On both sides (right first)"
+msgstr ""
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr "強調色"
@@ -2640,13 +2650,13 @@ msgstr "強調フォント色"
 #: lazarusidestrconsts.dlghighlightleftofcursor
 #, fuzzy
 #| msgid "Left Of Cursor"
-msgid "Left Of Caret"
+msgid "Left of Caret"
 msgstr "カーソルの左"
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
 #, fuzzy
 #| msgid "Right Of Cursor"
-msgid "Right Of Caret"
+msgid "Right of Caret"
 msgstr "カーソルの右"
 
 #: lazarusidestrconsts.dlghintsparametersendernotused
@@ -5165,10 +5175,6 @@ msgstr "オプション：ガイドラインに留まる"
 msgid "Z-order"
 msgstr "Z 順序"
 
-#: lazarusidestrconsts.gldhighlightbothsidesofcursor
-msgid "On Both Sides"
-msgstr "両側に"
-
 #: lazarusidestrconsts.initdlgdebugchangepath
 msgid "Change path"
 msgstr ""
@@ -6850,10 +6856,6 @@ msgstr "%1:sの%0:s座標を%4:sの内側になるよう%2:dから%3:dに変更�
 #: lazarusidestrconsts.lischangeencoding
 msgid "Change Encoding"
 msgstr "エンコーディングを変更"
-
-#: lazarusidestrconsts.lischangefile
-msgid "Change file"
-msgstr "ファイルを変更"
 
 #: lazarusidestrconsts.lischangemethodvisibilityto
 #, object-pascal-format
@@ -16702,9 +16704,9 @@ msgstr ""
 msgid "Reopen project"
 msgstr "プロジェクトを再読込"
 
-#: lazarusidestrconsts.lisreopenwithanotherencoding
-msgid "Reopen with another encoding"
-msgstr "他のエンコーディングで開き直す"
+#: lazarusidestrconsts.lisreopenwithnewencoding
+msgid "Reopen with new encoding"
+msgstr ""
 
 #: lazarusidestrconsts.lisrepeat
 msgctxt "lazarusidestrconsts.lisrepeat"
@@ -17100,6 +17102,10 @@ msgstr "表示されているメッセージをファイルに保存 ..."
 #: lazarusidestrconsts.lissavespace
 msgid "Save "
 msgstr "保存 "
+
+#: lazarusidestrconsts.lissavewithnewencoding
+msgid "Save with new encoding"
+msgstr ""
 
 #: lazarusidestrconsts.lissavingfileasloosescharactersatlinecolumn
 #, object-pascal-format

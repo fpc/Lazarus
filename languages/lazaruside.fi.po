@@ -2556,6 +2556,16 @@ msgstr "Älä näytä IDE:ä lainkaan kun ohjelma on käynnissä."
 msgid "Hide tab in single page windows"
 msgstr "Piilota välilehti yksisivuisista ikkunoista"
 
+#: lazarusidestrconsts.dlghighlightbothsidesofcursorleft
+msgctxt "lazarusidestrconsts.dlghighlightbothsidesofcursorleft"
+msgid "On both sides (left first)"
+msgstr ""
+
+#: lazarusidestrconsts.dlghighlightbothsidesofcursorright
+msgctxt "lazarusidestrconsts.dlghighlightbothsidesofcursorright"
+msgid "On both sides (right first)"
+msgstr ""
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr "Korostusväri"
@@ -2565,11 +2575,15 @@ msgid "Highlight Font Color"
 msgstr "Korostuksen fontin väri"
 
 #: lazarusidestrconsts.dlghighlightleftofcursor
-msgid "Left Of Caret"
+#, fuzzy
+#| msgid "Left Of Caret"
+msgid "Left of Caret"
 msgstr "Vasemmalla kursorista"
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
-msgid "Right Of Caret"
+#, fuzzy
+#| msgid "Right Of Caret"
+msgid "Right of Caret"
 msgstr "Oikealla kursorista"
 
 #: lazarusidestrconsts.dlghintsparametersendernotused
@@ -5063,10 +5077,6 @@ msgstr "Sijoita kohdistusviivojen mukaan"
 msgid "Z-order"
 msgstr "Z-järjestys"
 
-#: lazarusidestrconsts.gldhighlightbothsidesofcursor
-msgid "On Both Sides"
-msgstr "Molemmin puolin"
-
 #: lazarusidestrconsts.initdlgdebugchangepath
 msgid "Change path"
 msgstr ""
@@ -6737,10 +6747,6 @@ msgstr "Muutettu %s koordinaatti (%s) arvosta \"%d\" arvoon \"%d\" %s:n sisäll�
 #: lazarusidestrconsts.lischangeencoding
 msgid "Change Encoding"
 msgstr "Vaihda merkkikoodaus"
-
-#: lazarusidestrconsts.lischangefile
-msgid "Change file"
-msgstr "Muuta tiedosto"
 
 #: lazarusidestrconsts.lischangemethodvisibilityto
 #, object-pascal-format
@@ -16430,9 +16436,9 @@ msgstr ""
 msgid "Reopen project"
 msgstr "Avaa projekti uudestaan"
 
-#: lazarusidestrconsts.lisreopenwithanotherencoding
-msgid "Reopen with another encoding"
-msgstr "Avaa uudestaan toisella merkkikoodauksella"
+#: lazarusidestrconsts.lisreopenwithnewencoding
+msgid "Reopen with new encoding"
+msgstr ""
 
 #: lazarusidestrconsts.lisrepeat
 msgctxt "lazarusidestrconsts.lisrepeat"
@@ -16801,6 +16807,10 @@ msgstr "Tallenna  näkyvät viestit tiedostoon ..."
 #: lazarusidestrconsts.lissavespace
 msgid "Save "
 msgstr "Tallenna "
+
+#: lazarusidestrconsts.lissavewithnewencoding
+msgid "Save with new encoding"
+msgstr ""
 
 #: lazarusidestrconsts.lissavingfileasloosescharactersatlinecolumn
 #, object-pascal-format

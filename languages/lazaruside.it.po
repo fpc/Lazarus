@@ -2650,6 +2650,16 @@ msgstr "Non mostrare del tutto l'IDE quando il programma è in esecuzione."
 msgid "Hide tab in single page windows"
 msgstr "Nascondi tab in finestre monopagina"
 
+#: lazarusidestrconsts.dlghighlightbothsidesofcursorleft
+msgctxt "lazarusidestrconsts.dlghighlightbothsidesofcursorleft"
+msgid "On both sides (left first)"
+msgstr ""
+
+#: lazarusidestrconsts.dlghighlightbothsidesofcursorright
+msgctxt "lazarusidestrconsts.dlghighlightbothsidesofcursorright"
+msgid "On both sides (right first)"
+msgstr ""
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr "Marca il colore"
@@ -2661,13 +2671,13 @@ msgstr "Marca il colore del font"
 #: lazarusidestrconsts.dlghighlightleftofcursor
 #, fuzzy
 #| msgid "Left Of Cursor"
-msgid "Left Of Caret"
+msgid "Left of Caret"
 msgstr "A sinistra del cursore"
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
 #, fuzzy
 #| msgid "Right Of Cursor"
-msgid "Right Of Caret"
+msgid "Right of Caret"
 msgstr "Alla destra del cursore"
 
 #: lazarusidestrconsts.dlghintsparametersendernotused
@@ -5179,10 +5189,6 @@ msgstr "Opzione: linee guida magnetiche"
 msgid "Z-order"
 msgstr "Ordine Z"
 
-#: lazarusidestrconsts.gldhighlightbothsidesofcursor
-msgid "On Both Sides"
-msgstr "Su ambo i lati"
-
 #: lazarusidestrconsts.initdlgdebugchangepath
 msgid "Change path"
 msgstr ""
@@ -6861,10 +6867,6 @@ msgstr "Modificate %s coordinate di %s da \"%d\" a \"%d\" in %s."
 #: lazarusidestrconsts.lischangeencoding
 msgid "Change Encoding"
 msgstr "Cambia codifica"
-
-#: lazarusidestrconsts.lischangefile
-msgid "Change file"
-msgstr "Cambia file"
 
 #: lazarusidestrconsts.lischangemethodvisibilityto
 #, object-pascal-format
@@ -16728,9 +16730,9 @@ msgstr ""
 msgid "Reopen project"
 msgstr "Riapri il progetto"
 
-#: lazarusidestrconsts.lisreopenwithanotherencoding
-msgid "Reopen with another encoding"
-msgstr "Riaprire con altra codifica"
+#: lazarusidestrconsts.lisreopenwithnewencoding
+msgid "Reopen with new encoding"
+msgstr ""
 
 #: lazarusidestrconsts.lisrepeat
 msgctxt "lazarusidestrconsts.lisrepeat"
@@ -17102,6 +17104,10 @@ msgstr "Salva i messaggi mostrati nel file ..."
 #: lazarusidestrconsts.lissavespace
 msgid "Save "
 msgstr "Salva "
+
+#: lazarusidestrconsts.lissavewithnewencoding
+msgid "Save with new encoding"
+msgstr ""
 
 #: lazarusidestrconsts.lissavingfileasloosescharactersatlinecolumn
 #, object-pascal-format

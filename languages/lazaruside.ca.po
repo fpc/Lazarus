@@ -2612,6 +2612,16 @@ msgstr ""
 msgid "Hide tab in single page windows"
 msgstr ""
 
+#: lazarusidestrconsts.dlghighlightbothsidesofcursorleft
+msgctxt "lazarusidestrconsts.dlghighlightbothsidesofcursorleft"
+msgid "On both sides (left first)"
+msgstr ""
+
+#: lazarusidestrconsts.dlghighlightbothsidesofcursorright
+msgctxt "lazarusidestrconsts.dlghighlightbothsidesofcursorright"
+msgid "On both sides (right first)"
+msgstr ""
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr ""
@@ -2621,11 +2631,11 @@ msgid "Highlight Font Color"
 msgstr ""
 
 #: lazarusidestrconsts.dlghighlightleftofcursor
-msgid "Left Of Caret"
+msgid "Left of Caret"
 msgstr ""
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
-msgid "Right Of Caret"
+msgid "Right of Caret"
 msgstr ""
 
 #: lazarusidestrconsts.dlghintsparametersendernotused
@@ -5152,10 +5162,6 @@ msgstr "Opció: Desplaça a línies de la guia"
 msgid "Z-order"
 msgstr ""
 
-#: lazarusidestrconsts.gldhighlightbothsidesofcursor
-msgid "On Both Sides"
-msgstr ""
-
 #: lazarusidestrconsts.initdlgdebugchangepath
 msgid "Change path"
 msgstr ""
@@ -6848,10 +6854,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lischangeencoding
 msgid "Change Encoding"
-msgstr ""
-
-#: lazarusidestrconsts.lischangefile
-msgid "Change file"
 msgstr ""
 
 #: lazarusidestrconsts.lischangemethodvisibilityto
@@ -16778,8 +16780,8 @@ msgstr ""
 msgid "Reopen project"
 msgstr ""
 
-#: lazarusidestrconsts.lisreopenwithanotherencoding
-msgid "Reopen with another encoding"
+#: lazarusidestrconsts.lisreopenwithnewencoding
+msgid "Reopen with new encoding"
 msgstr ""
 
 #: lazarusidestrconsts.lisrepeat
@@ -17146,6 +17148,10 @@ msgstr ""
 #: lazarusidestrconsts.lissavespace
 msgid "Save "
 msgstr "Desa "
+
+#: lazarusidestrconsts.lissavewithnewencoding
+msgid "Save with new encoding"
+msgstr ""
 
 #: lazarusidestrconsts.lissavingfileasloosescharactersatlinecolumn
 #, object-pascal-format

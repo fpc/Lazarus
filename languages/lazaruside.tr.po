@@ -2551,6 +2551,16 @@ msgstr "Program çalışırken IDE 'yi hiç gösterme."
 msgid "Hide tab in single page windows"
 msgstr "Tek sayfa ise sekmeyi gizle"
 
+#: lazarusidestrconsts.dlghighlightbothsidesofcursorleft
+msgctxt "lazarusidestrconsts.dlghighlightbothsidesofcursorleft"
+msgid "On both sides (left first)"
+msgstr ""
+
+#: lazarusidestrconsts.dlghighlightbothsidesofcursorright
+msgctxt "lazarusidestrconsts.dlghighlightbothsidesofcursorright"
+msgid "On both sides (right first)"
+msgstr ""
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr "Rengi Vurgula"
@@ -2560,11 +2570,15 @@ msgid "Highlight Font Color"
 msgstr "Yazı tipi rengini vurgula"
 
 #: lazarusidestrconsts.dlghighlightleftofcursor
-msgid "Left Of Caret"
+#, fuzzy
+#| msgid "Left Of Caret"
+msgid "Left of Caret"
 msgstr "İmleç solu"
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
-msgid "Right Of Caret"
+#, fuzzy
+#| msgid "Right Of Caret"
+msgid "Right of Caret"
 msgstr "İmleç sağı"
 
 #: lazarusidestrconsts.dlghintsparametersendernotused
@@ -5024,10 +5038,6 @@ msgstr "Opsiyon: Kılavuz çizgilerine sabitler"
 msgid "Z-order"
 msgstr "Z-sırası"
 
-#: lazarusidestrconsts.gldhighlightbothsidesofcursor
-msgid "On Both Sides"
-msgstr "İki tarafta da"
-
 #: lazarusidestrconsts.initdlgdebugchangepath
 msgid "Change path"
 msgstr "Yolu değiştir"
@@ -6681,10 +6691,6 @@ msgstr "%s, %s \"%d\" den \"%d\" ye %s içindeki koordinatını değiştirildi."
 #: lazarusidestrconsts.lischangeencoding
 msgid "Change Encoding"
 msgstr "Kodlamayı Değiştir"
-
-#: lazarusidestrconsts.lischangefile
-msgid "Change file"
-msgstr "Dosyayı değiştir"
 
 #: lazarusidestrconsts.lischangemethodvisibilityto
 #, object-pascal-format
@@ -16366,9 +16372,9 @@ msgstr ""
 msgid "Reopen project"
 msgstr "Projeyi tekrar aç"
 
-#: lazarusidestrconsts.lisreopenwithanotherencoding
-msgid "Reopen with another encoding"
-msgstr "Başka bir kodlamayla tekrar aç"
+#: lazarusidestrconsts.lisreopenwithnewencoding
+msgid "Reopen with new encoding"
+msgstr ""
 
 #: lazarusidestrconsts.lisrepeat
 msgctxt "lazarusidestrconsts.lisrepeat"
@@ -16736,6 +16742,10 @@ msgstr "Gösterilen Mesajları Dosyaya Kaydet ..."
 #: lazarusidestrconsts.lissavespace
 msgid "Save "
 msgstr "Kaydet "
+
+#: lazarusidestrconsts.lissavewithnewencoding
+msgid "Save with new encoding"
+msgstr ""
 
 #: lazarusidestrconsts.lissavingfileasloosescharactersatlinecolumn
 #, object-pascal-format

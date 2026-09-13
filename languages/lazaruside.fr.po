@@ -2574,6 +2574,16 @@ msgstr "Ne pas du tout montrer l'EDI pendant l'exécution du programme."
 msgid "Hide tab in single page windows"
 msgstr "Cacher l'onglet dans les fenêtres d'une seule page"
 
+#: lazarusidestrconsts.dlghighlightbothsidesofcursorleft
+msgctxt "lazarusidestrconsts.dlghighlightbothsidesofcursorleft"
+msgid "On both sides (left first)"
+msgstr ""
+
+#: lazarusidestrconsts.dlghighlightbothsidesofcursorright
+msgctxt "lazarusidestrconsts.dlghighlightbothsidesofcursorright"
+msgid "On both sides (right first)"
+msgstr ""
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr "Couleur de surlignage"
@@ -2583,11 +2593,15 @@ msgid "Highlight Font Color"
 msgstr "Couleur de surlignage de la police"
 
 #: lazarusidestrconsts.dlghighlightleftofcursor
-msgid "Left Of Caret"
+#, fuzzy
+#| msgid "Left Of Caret"
+msgid "Left of Caret"
 msgstr "Gauche du curseur"
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
-msgid "Right Of Caret"
+#, fuzzy
+#| msgid "Right Of Caret"
+msgid "Right of Caret"
 msgstr "Droite du curseur"
 
 #: lazarusidestrconsts.dlghintsparametersendernotused
@@ -5048,10 +5062,6 @@ msgstr "Option : aligner sur les lignes directrices"
 msgid "Z-order"
 msgstr "Ordre Z"
 
-#: lazarusidestrconsts.gldhighlightbothsidesofcursor
-msgid "On Both Sides"
-msgstr "Des deux côtés"
-
 #: lazarusidestrconsts.initdlgdebugchangepath
 msgid "Change path"
 msgstr "Changer de chemin"
@@ -6702,10 +6712,6 @@ msgstr "%s coordonnées %s de \"%d\" changées en \"%d\" dans %s."
 #: lazarusidestrconsts.lischangeencoding
 msgid "Change Encoding"
 msgstr "Changer l'encodage"
-
-#: lazarusidestrconsts.lischangefile
-msgid "Change file"
-msgstr "Changer de fichier"
 
 #: lazarusidestrconsts.lischangemethodvisibilityto
 #, object-pascal-format
@@ -16426,9 +16432,9 @@ msgstr ""
 msgid "Reopen project"
 msgstr "Rouvrir le projet"
 
-#: lazarusidestrconsts.lisreopenwithanotherencoding
-msgid "Reopen with another encoding"
-msgstr "Rouvrir avec un autre encodage"
+#: lazarusidestrconsts.lisreopenwithnewencoding
+msgid "Reopen with new encoding"
+msgstr ""
 
 #: lazarusidestrconsts.lisrepeat
 msgctxt "lazarusidestrconsts.lisrepeat"
@@ -16800,6 +16806,10 @@ msgstr "Enregistrer les messages visibles dans le fichier..."
 #: lazarusidestrconsts.lissavespace
 msgid "Save "
 msgstr "Enregistrer "
+
+#: lazarusidestrconsts.lissavewithnewencoding
+msgid "Save with new encoding"
+msgstr ""
 
 #: lazarusidestrconsts.lissavingfileasloosescharactersatlinecolumn
 #, object-pascal-format

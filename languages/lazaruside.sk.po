@@ -2562,6 +2562,16 @@ msgstr ""
 msgid "Hide tab in single page windows"
 msgstr ""
 
+#: lazarusidestrconsts.dlghighlightbothsidesofcursorleft
+msgctxt "lazarusidestrconsts.dlghighlightbothsidesofcursorleft"
+msgid "On both sides (left first)"
+msgstr ""
+
+#: lazarusidestrconsts.dlghighlightbothsidesofcursorright
+msgctxt "lazarusidestrconsts.dlghighlightbothsidesofcursorright"
+msgid "On both sides (right first)"
+msgstr ""
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr "Zvýrazniť"
@@ -2571,11 +2581,11 @@ msgid "Highlight Font Color"
 msgstr "Font zvýraznenia"
 
 #: lazarusidestrconsts.dlghighlightleftofcursor
-msgid "Left Of Caret"
+msgid "Left of Caret"
 msgstr ""
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
-msgid "Right Of Caret"
+msgid "Right of Caret"
 msgstr ""
 
 #: lazarusidestrconsts.dlghintsparametersendernotused
@@ -5030,10 +5040,6 @@ msgstr "Voľba: Prichytiť k pomocným čiaram"
 msgid "Z-order"
 msgstr ""
 
-#: lazarusidestrconsts.gldhighlightbothsidesofcursor
-msgid "On Both Sides"
-msgstr "Na oboch stranách"
-
 #: lazarusidestrconsts.initdlgdebugchangepath
 msgid "Change path"
 msgstr ""
@@ -6709,10 +6715,6 @@ msgstr ""
 #: lazarusidestrconsts.lischangeencoding
 msgid "Change Encoding"
 msgstr "Zmeniť kódovanie"
-
-#: lazarusidestrconsts.lischangefile
-msgid "Change file"
-msgstr "Zmeniť súbor"
 
 #: lazarusidestrconsts.lischangemethodvisibilityto
 #, object-pascal-format
@@ -16421,9 +16423,9 @@ msgstr ""
 msgid "Reopen project"
 msgstr "Znova otvoriť projekt"
 
-#: lazarusidestrconsts.lisreopenwithanotherencoding
-msgid "Reopen with another encoding"
-msgstr "Znova otvoriť s iným kódovaním"
+#: lazarusidestrconsts.lisreopenwithnewencoding
+msgid "Reopen with new encoding"
+msgstr ""
 
 #: lazarusidestrconsts.lisrepeat
 msgctxt "lazarusidestrconsts.lisrepeat"
@@ -16781,6 +16783,10 @@ msgstr ""
 #: lazarusidestrconsts.lissavespace
 msgid "Save "
 msgstr "Uložiť "
+
+#: lazarusidestrconsts.lissavewithnewencoding
+msgid "Save with new encoding"
+msgstr ""
 
 #: lazarusidestrconsts.lissavingfileasloosescharactersatlinecolumn
 #, object-pascal-format

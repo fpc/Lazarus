@@ -2573,6 +2573,16 @@ msgstr "Зовсім не показувати ІСР при запущеній 
 msgid "Hide tab in single page windows"
 msgstr "Ховати заголовок одиничної вкладки"
 
+#: lazarusidestrconsts.dlghighlightbothsidesofcursorleft
+msgctxt "lazarusidestrconsts.dlghighlightbothsidesofcursorleft"
+msgid "On both sides (left first)"
+msgstr ""
+
+#: lazarusidestrconsts.dlghighlightbothsidesofcursorright
+msgctxt "lazarusidestrconsts.dlghighlightbothsidesofcursorright"
+msgid "On both sides (right first)"
+msgstr ""
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr "Підсвічувати Колір"
@@ -2582,11 +2592,15 @@ msgid "Highlight Font Color"
 msgstr "Підсвічувати Колір Шрифту"
 
 #: lazarusidestrconsts.dlghighlightleftofcursor
-msgid "Left Of Caret"
+#, fuzzy
+#| msgid "Left Of Caret"
+msgid "Left of Caret"
 msgstr "Ліворуч від курсора"
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
-msgid "Right Of Caret"
+#, fuzzy
+#| msgid "Right Of Caret"
+msgid "Right of Caret"
 msgstr "Праворуч від курсора"
 
 #: lazarusidestrconsts.dlghintsparametersendernotused
@@ -5061,10 +5075,6 @@ msgstr "Параметр: Прилипання до напрямних"
 msgid "Z-order"
 msgstr "Z-порядок"
 
-#: lazarusidestrconsts.gldhighlightbothsidesofcursor
-msgid "On Both Sides"
-msgstr "На обох сторонах"
-
 #: lazarusidestrconsts.initdlgdebugchangepath
 msgid "Change path"
 msgstr "Змінити шлях"
@@ -6736,10 +6746,6 @@ msgstr "Змінено координату %s %s з \"%d\" на \"%d\" у %s."
 #: lazarusidestrconsts.lischangeencoding
 msgid "Change Encoding"
 msgstr "Змінити кодування"
-
-#: lazarusidestrconsts.lischangefile
-msgid "Change file"
-msgstr "Змінити файл"
 
 #: lazarusidestrconsts.lischangemethodvisibilityto
 #, object-pascal-format
@@ -16502,9 +16508,9 @@ msgstr ""
 msgid "Reopen project"
 msgstr "Перевідкрити проєкт"
 
-#: lazarusidestrconsts.lisreopenwithanotherencoding
-msgid "Reopen with another encoding"
-msgstr "Перевідкрити з іншим кодуванням"
+#: lazarusidestrconsts.lisreopenwithnewencoding
+msgid "Reopen with new encoding"
+msgstr ""
 
 #: lazarusidestrconsts.lisrepeat
 msgctxt "lazarusidestrconsts.lisrepeat"
@@ -16881,6 +16887,10 @@ msgstr "Записати показані повідомлення до файл
 #: lazarusidestrconsts.lissavespace
 msgid "Save "
 msgstr "Зберегти "
+
+#: lazarusidestrconsts.lissavewithnewencoding
+msgid "Save with new encoding"
+msgstr ""
 
 #: lazarusidestrconsts.lissavingfileasloosescharactersatlinecolumn
 #, object-pascal-format
