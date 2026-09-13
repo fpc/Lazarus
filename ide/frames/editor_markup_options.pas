@@ -484,8 +484,8 @@ begin
   BracketCombo.Items.Add(dlgNoBracketHighlight);
   BracketCombo.Items.Add(dlgHighlightLeftOfCursor);
   BracketCombo.Items.Add(dlgHighlightRightOfCursor);
-  BracketCombo.Items.Add(gldHighlightBothSidesOfCursorLeft);
-  BracketCombo.Items.Add(gldHighlightBothSidesOfCursorRight);
+  BracketCombo.Items.Add(dlgHighlightBothSidesOfCursorLeft);
+  BracketCombo.Items.Add(dlgHighlightBothSidesOfCursorRight);
 
   LanguageLabel.Caption := dlgLang;
   divKeyWordGroups.Caption := dlgPasKeywordsMatches;

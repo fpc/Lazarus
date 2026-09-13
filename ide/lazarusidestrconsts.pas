@@ -1832,8 +1832,8 @@ resourcestring
   dlgNoBracketHighlight = 'No Highlight';
   dlgHighlightLeftOfCursor = 'Left of Caret';
   dlgHighlightRightOfCursor = 'Right of Caret';
-  gldHighlightBothSidesOfCursorLeft = 'On both sides (left first)';
-  gldHighlightBothSidesOfCursorRight = 'On both sides (right first)';
+  dlgHighlightBothSidesOfCursorLeft = 'On both sides (left first)';
+  dlgHighlightBothSidesOfCursorRight = 'On both sides (right first)';
   dlgTrimSpaceTypeCaption = 'Trim spaces style';
   dlgTrimSpaceTypeLeaveLine = 'Leave line';
   dlgTrimSpaceTypeEditLine = 'Line Edited';
