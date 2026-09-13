@@ -557,8 +557,11 @@ begin
 end;
 
 procedure THeapTrcViewForm.LoadState(cfg:TXMLConfig);
+const
+  // with several monitors negative coordinates can be valid, so something further from zero is needed
+  InvalidCoord = LongInt.MaxValue;
 var
-  b     : TRect;
+  b     : TRect = (Left: InvalidCoord{%H-});
   isTop : Boolean;
   st    : TStringList;
   s     : WideString;
@@ -567,31 +570,32 @@ const
   InitFormStyle: array [Boolean] of TFormStyle = (fsNormal, fsStayOnTop);
 begin
   isTop:=True;
-  b:=BoundsRect;
   st:=TStringList.Create;
   try
     istop:=cfg.GetValue('isStayOnTop',isTop);
     cfg.OpenKey('bounds');
-    b.Left:=cfg.GetValue('left', b.Left);
-    b.Top:=cfg.GetValue('top', b.Top);
-    b.Right:=cfg.GetValue('right', b.Right);
-    b.Bottom:=cfg.GetValue('bottom', b.Bottom);
+    b.Left   := cfg.GetValue('left'  , InvalidCoord);
+    b.Top    := cfg.GetValue('top'   , InvalidCoord);
+    b.Right  := cfg.GetValue('right' , InvalidCoord);
+    b.Bottom := cfg.GetValue('bottom', InvalidCoord);
     cfg.CloseKey;
-
-    if b.Right-b.Left<=0 then b.Right:=b.Left+40;
-    if b.Bottom-b.Top<=0 then b.Bottom:=b.Top+40;
-
     for i:=0 to 7 do begin
       s:=cfg.GetValue(DOMString('path'+IntToStr(i)), '');
       if s<>'' then st.Add(UTF8Encode(s));
     end;
-
   except
   end;
-  inAnyMonitor(b);
 
+  if (b.Left = InvalidCoord) or (b.Top = InvalidCoord) then
+  begin
+    Position := poWorkAreaCenter;
+    MoveToDefaultPosition; // apply immediately
+    Position := poDesigned; // to save previous coords when calling "Show" after closing (hiding)
+  end else begin
+    inAnyMonitor(b);
+    BoundsRect := b; // Position=poDesigned already in LFM
+  end;
   FormStyle:=InitFormStyle[isTop];
-  BoundsRect:=b;
   chkStayOnTop.Checked := isTop;
   if st.Count>0 then begin
     edtTrcFileName.Items.AddStrings(st);
