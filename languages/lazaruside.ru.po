@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-09-13 22:21+0300\n"
+"PO-Revision-Date: 2026-09-13 23:06+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -16327,7 +16327,7 @@ msgstr "Открыть проект заново"
 
 #: lazarusidestrconsts.lisreopenwithnewencoding
 msgid "Reopen with new encoding"
-msgstr "Открыть заново в новой кодировке"
+msgstr "Заново открыть в новой кодировке"
 
 #: lazarusidestrconsts.lisrepeat
 msgctxt "lazarusidestrconsts.lisrepeat"
