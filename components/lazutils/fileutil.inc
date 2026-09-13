@@ -133,6 +133,10 @@ var
 begin
   Result:=false;
   Culprit := '';
+  if not DirectoryExistsUtf8(DirectoryName) then begin  //analogous to (Delphi's) TDirectory.Delete()
+    Culprit := DirectoryName;
+    exit;
+  end;
   CurSrcDir:=CleanAndExpandDirectory(DirectoryName);
   if FindFirstUTF8(CurSrcDir+GetAllFilesMask,DeleteMask,FileInfo)=0 then begin
     try
