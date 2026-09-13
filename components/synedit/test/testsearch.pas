@@ -5,8 +5,8 @@ unit TestSearch;
 interface
 
 uses
-  Classes, SysUtils, testregistry, TestBase,
-  SynEdit, SynEditSearch, SynHighlighterPas, SynEditTypes;
+  Classes, SysUtils, testregistry, TestBase, SynEdit, SynEditSearch, SynHighlighterPas,
+  SynEditTypes, SynEditMarkupBracket, LazEditMatchingBracketUtils, LazEditTypes;
 
 type
 
@@ -409,6 +409,123 @@ DoTestRepl('', 11,4,  '()', '',    4, 5, []);
 end;
 
 procedure TTestSynSearch.FindMatchingBracket;
+  procedure TestBoth(AName: String; X,Y: integer;
+    ExpLeftX, ExpLeftY, ExpLeftLen: Integer;
+    ExpRightX, ExpRightY, ExpRightLen: Integer;
+    ExpLeftStartX: integer = 0;
+    ExpRightStartX: integer = 0);
+  var
+    FndStart, FndEnd: TLogTokenPos;
+    ExpLeftStartLen, ExpRightStartLen: integer;
+  begin
+    ExpLeftStartLen := ExpLeftLen;
+    ExpRightStartLen := ExpRightLen;
+    if ExpLeftStartX  = 0 then ExpLeftStartX  := ExpLeftStartX - ExpLeftStartLen; // open has same len as close
+    if ExpRightStartX = 0 then ExpRightStartX := ExpRightStartX;
+
+    // find left
+    FndStart := Point(x,y);
+    FndEnd := SynEdit.FindMatchingBracketLogical(FndStart, bsdLeft, False, False, False);
+    AssertEquals(AName+': X', ExpLeftX, FndEnd.x);
+    if ExpLeftX <> -1 then begin
+      AssertEquals(AName+': Y', ExpLeftY, FndEnd.y);
+      AssertEquals(AName+': L', ExpLeftLen, FndEnd.Len);
+      if ExpLeftStartX > 0 then begin
+        AssertEquals(AName+': Start',     ExpLeftStartX, FndStart.X);
+        AssertEquals(AName+': Start Len', ExpLeftStartLen, FndStart.Len);
+      end;
+    end;
+
+    // find left in both
+    if (ExpLeftX <> -1) or (ExpRightX = -1) then begin
+      FndStart := Point(x,y);
+      FndEnd := SynEdit.FindMatchingBracketLogical(FndStart, bsdLeftThenRight, False, False, False);
+      AssertEquals(AName+': X', ExpLeftX, FndEnd.x);
+      if ExpLeftX <> -1 then begin
+        AssertEquals(AName+': Y', ExpLeftY, FndEnd.y);
+        AssertEquals(AName+': L', ExpLeftLen, FndEnd.Len);
+        if ExpLeftStartX > 0 then begin
+          AssertEquals(AName+': Start',     ExpLeftStartX, FndStart.X);
+          AssertEquals(AName+': Start Len', ExpLeftStartLen, FndStart.Len);
+        end;
+      end;
+    end;
+
+    // find left, as fallback from right
+    if (ExpRightX = -1) then begin
+      FndStart := Point(x,y);
+      FndEnd := SynEdit.FindMatchingBracketLogical(FndStart, bsdRightThenLeft, False, False, False);
+      AssertEquals(AName+': X', ExpLeftX, FndEnd.x);
+      if ExpLeftX <> -1 then begin
+        AssertEquals(AName+': Y', ExpLeftY, FndEnd.y);
+        AssertEquals(AName+': L', ExpLeftLen, FndEnd.Len);
+        if ExpLeftStartX > 0 then begin
+          AssertEquals(AName+': Start',     ExpLeftStartX, FndStart.X);
+          AssertEquals(AName+': Start Len', ExpLeftStartLen, FndStart.Len);
+        end;
+      end;
+    end;
+
+
+    // find right
+    FndStart := Point(x,y);
+    FndEnd := SynEdit.FindMatchingBracketLogical(FndStart, bsdRight, False, False, False);
+    AssertEquals(AName+': X', ExpRightX, FndEnd.x);
+    if ExpRightX <> -1 then begin
+      AssertEquals(AName+': Y', ExpRightY, FndEnd.y);
+      AssertEquals(AName+': L', ExpRightLen, FndEnd.Len);
+      if ExpRightStartX > 0 then begin
+        AssertEquals(AName+': Start',     ExpRightStartX, FndStart.X);
+        AssertEquals(AName+': Start Len', ExpRightStartLen, FndStart.Len);
+      end;
+    end;
+
+    // find right in both
+    if (ExpRightX <> -1) or (ExpLeftX = -1) then begin
+      FndStart := Point(x,y);
+      FndEnd := SynEdit.FindMatchingBracketLogical(FndStart, bsdRightThenLeft, False, False, False);
+      AssertEquals(AName+': X', ExpRightX, FndEnd.x);
+      if ExpRightX <> -1 then begin
+        AssertEquals(AName+': Y', ExpRightY, FndEnd.y);
+        AssertEquals(AName+': L', ExpRightLen, FndEnd.Len);
+        if ExpRightStartX > 0 then begin
+          AssertEquals(AName+': Start',     ExpRightStartX, FndStart.X);
+          AssertEquals(AName+': Start Len', ExpRightStartLen, FndStart.Len);
+        end;
+      end;
+    end;
+
+    // find right, as fallback from left
+    if (ExpLeftX = -1) then begin
+      FndStart := Point(x,y);
+      FndEnd := SynEdit.FindMatchingBracketLogical(FndStart, bsdLeftThenRight, False, False, False);
+      AssertEquals(AName+': X', ExpRightX, FndEnd.x);
+      if ExpRightX <> -1 then begin
+        AssertEquals(AName+': Y', ExpRightY, FndEnd.y);
+        AssertEquals(AName+': L', ExpRightLen, FndEnd.Len);
+        if ExpRightStartX > 0 then begin
+          AssertEquals(AName+': Start',     ExpRightStartX, FndStart.X);
+          AssertEquals(AName+': Start Len', ExpRightStartLen, FndStart.Len);
+        end;
+      end;
+    end;
+
+  end;
+
+  procedure OnlyLeft(AName: String; X,Y: integer;
+    ExpLeftX, ExpLeftY, ExpLeftLen: Integer;
+    ExpLeftStartX: integer = 0);
+  begin
+    TestBoth(AName, X, Y,  ExpLeftX, ExpLeftY, ExpLeftLen,  -1,-1,-1,  ExpLeftStartX, -1);
+  end;
+
+  procedure OnlyRight(AName: String; X,Y: integer;
+    ExpRightX, ExpRightY, ExpRightLen: Integer;
+    ExpRightStartX: integer = 0);
+  begin
+    TestBoth(AName, X, Y, -1,-1,-1,  ExpRightX, ExpRightY, ExpRightLen,  -1, ExpRightStartX);
+  end;
+
 var
   p: TPoint;
   y,a : Integer;
@@ -416,9 +533,12 @@ var
 begin
   ReCreateEdit;
   SetLines(['program a; begin',
-            ' if (A or (B> 0)) and (C > length(L)) then ;',
-           'a:=''(A or (B> 0)) and (C > length(L)) then '';',
-           '  a := ('')'');',
+            ' if (A or (B> 0)) and (C > length(L)) then ;',    // 2
+           'a:=''(A or (B> 0)) and (C > length(L)) then '';',  // 3
+           '  a := ('')'');',               // 4
+           'a:=b((( 1+2 )))[(({}0))]',      // 5
+           '  =(b[(0)]);',                   // 6
+           'a:=b(((**) 1+2 ))(**){};{}',       // 7
             'end.',
             '']);
 
@@ -472,6 +592,62 @@ begin
       AssertEquals('', 4, p.y);
       AssertEquals('',12, p.x);
     end;
+
+    //  1   5    A    5    X
+    // 'a:=b((( 1+2 )))[(({}0))]',      // 5
+    OnlyRight('Before 1st (',    5, 5,   15, 5, 1);
+    TestBoth('Between ((',       6, 5,   15, 5, 1,   14, 5, 1 );
+    TestBoth('Between (((',      7, 5,   14, 5, 1,   13, 5, 1 );
+    OnlyLeft('After (((',        8, 5,   13, 5, 1 );
+    OnlyRight('Before )',       13, 5,    7, 5, 1 );
+    TestBoth('Between ))',      14, 5,    7, 5, 1,    6, 5, 1 );
+    TestBoth('Between )))',     15, 5,    6, 5, 1,    5, 5, 1 );
+    TestBoth('Between )[',      16, 5,    5, 5, 1,   24, 5, 1 );
+    TestBoth('Between [(',      17, 5,   24, 5, 1,   23, 5, 1 );
+    TestBoth('Between [((',     18, 5,   23, 5, 1,   22, 5, 1 );
+    TestBoth('Between ({',      19, 5,   22, 5, 1,   20, 5, 1 );
+    TestBoth('Between {}',      20, 5,   20, 5, 1,   19, 5, 1 );
+    OnlyLeft('After }',         21, 5,   19, 5, 1 );
+    OnlyRight('Before ))]',     22, 5,   18, 5, 1 );
+    TestBoth('Between ))]',     23, 5,   18, 5, 1,   17, 5, 1 );
+    TestBoth('Between )]',      24, 5,   17, 5, 1,   16, 5, 1 );
+    OnlyLeft('After ]',         25, 5,   16, 5, 1 );
+
+    // '  =(b[(0)]);',                   // 6
+    OnlyRight('Before 1st (',    4, 6,   11, 6, 1);
+    OnlyLeft('After (',          5, 6,   11, 6, 1 );
+    OnlyRight('Before 1st [',    6, 6,   10, 6, 1);
+    TestBoth('Between [(',       7, 6,   10, 6, 1,   9, 6, 1 );
+    OnlyLeft('After [(',         8, 6,    9, 6, 1 );
+    OnlyRight('Before )',        9, 6,    7, 6, 1);
+    TestBoth('Between )]',      10, 6,    7, 6, 1,   6, 6, 1 );
+    TestBoth('Between ])',      11, 6,    6, 6, 1,   4, 6, 1 );
+    OnlyLeft('After ])',        12, 6,    4, 6, 1 );
+
+    // 'a:=b(((**) 1+2 ))(**){};{}',       // 7
+    OnlyRight('Before 1st (',    5, 7,   17, 7, 1);
+    TestBoth('Between ((',       6, 7,   17, 7, 1,  16, 7, 1 );
+    if a = 0 then begin // no Pas HL
+    TestBoth('Between (((*',     7, 7,   16, 7, 1,  10, 7, 1 );
+    OnlyLeft('On (*',            8, 7,   10, 7, 1 );
+    OnlyRight('On *)',          10, 7,    7, 7, 1 );
+    end else begin // with Pas HL
+    TestBoth('Between (((*',     7, 7,   16, 7, 1,   9, 7, 2 );
+    OnlyLeft('On (*',            8, 7,    9, 7, 2,   7);
+    //TestBoth('On (*',            8, 7,    9, 7, 2,   9, 7, 2,   7, 7);
+    TestBoth('Between (**)',     9, 7,    9, 7, 2,   7, 7, 2 );
+    OnlyLeft('On *)',           10, 7,    7, 7, 2,   9);
+    //TestBoth('On *)',           10, 7,    7, 7, 2,   7, 7, 2,   9, 9);
+    OnlyLeft('After *)',        11, 7,    7, 7, 2,   9);
+    end;
+    OnlyRight('Before )',        16, 7,    6, 7, 1 );
+    TestBoth('Between ))',      17, 7,    6, 7, 1,   5, 7, 1 );
+    if a = 0 then begin // no Pas HL
+    end else begin // with Pas HL
+    TestBoth('Between )(*',     18, 7,    5, 7, 1,   20, 7, 2 );
+    end;
+
+
 
     SynEdit.Highlighter := nil;
   end;

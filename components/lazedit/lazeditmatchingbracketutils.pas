@@ -160,6 +160,7 @@ var
   BracketKindCount, BracketIdx: Integer;
   BracketOpen, HasTxtToken: Boolean;
   x1, x2: IntPos;
+  c: Char;
 begin
   Result := False;
   AFoundBracketInfo := default(TLazEditBracketInfo);
@@ -175,98 +176,102 @@ begin
   else
     BracketKindCount := AnHighlighter.BracketKindCount;
 
+  if (ASearchDirection = bsdRightThenLeft) and (ALogX > Length(Line)) then // nothing on the right
+    ASearchDirection := bsdLeft
+  else
+  if (ASearchDirection = bsdLeftThenRight) and (ALogX <= 1) then // nothing on the left
+    ASearchDirection := bsdRight;
+
   BracketToken := '';
   HasTxtToken := True;
   x2 := ALogX;
-  if ASearchDirection = bsdLeft then  x2 := ALogX-1;
-  for BracketIdx := 0 to BracketKindCount - 1 do
-  for BracketOpen := False to true do begin
-    PrevBracketToken := BracketToken;
-    if AnHighlighter = nil then
-      BracketToken := BRACKET_KIND_TOKENS[BracketOpen, BracketIdx]
-    else
-      BracketToken := AnHighlighter.BracketKinds[BracketIdx, BracketOpen];
+  if ASearchDirection in [bsdLeft, bsdLeftThenRight] then  x2 := ALogX-1;
+  repeat
+    for BracketIdx := 0 to BracketKindCount - 1 do
+    for BracketOpen := False to true do begin
+      PrevBracketToken := BracketToken;
+      if AnHighlighter = nil then
+        BracketToken := BRACKET_KIND_TOKENS[BracketOpen, BracketIdx]
+      else
+        BracketToken := AnHighlighter.BracketKinds[BracketIdx, BracketOpen];
 
-    // if closing equal open, and the token does not appear in the line, then skip
-    if (BracketToken = PrevBracketToken) and (not HasTxtToken) then
-      continue;
+      // if closing equal open, and the token does not appear in the line, then skip
+      if (BracketToken = PrevBracketToken) and (not HasTxtToken) then
+        continue;
 
-    case ASearchDirection of
-      bsdRightOrPartRight: x1 := ALogX-length(BracketToken)+1;
-      bsdRight:            x1 := ALogX;
-      bsdLeft:             x1 := ALogX-length(BracketToken);
-      bsdRightThenLeft:  if ALogX > Length(Line) then begin
-                           // At eol, do left only
-                           x1 := ALogX-length(BracketToken);
-                         end
-                         else begin
-                           x1 := ALogX;
-                           x2 := ALogX;
-                         end;
-      bsdLeftThenRight:    x1 := ALogX-length(BracketToken);
-    end;
+      case ASearchDirection of
+        bsdLeft, bsdLeftThenRight:    x1 := ALogX-length(BracketToken);
+        bsdRightOrPartRight:          x1 := ALogX-length(BracketToken)+1; // aka partially left, but not all left
+        bsdRight, bsdRightThenLeft:   x1 := ALogX;
+      end;
 
-    if x1 < 1 then x1 := 1;
-    if x2 > Length(Line) then x2 := Length(Line);
+      if x1 < 1 then x1 := 1;
+      if x2 > Length(Line) then x2 := Length(Line);
 
-    HasTxtToken := False;
-    repeat
-      while (x1 <= x2 ) and (Line[x1] <> BracketToken[1]) do
-        inc(x1);
-      if x1 <= x2 then begin
-        HasTxtToken := True;
+      HasTxtToken := False;
+      repeat
+        c := BracketToken[1];
+        while (x1 <= x2 ) and (Line[x1] <> c) do
+          inc(x1);
+        if x1 <= x2 then begin
+          HasTxtToken := True;
 
-        if strlcomp(pchar(BracketToken), @Line[x1], Length(BracketToken)) = 0 then begin
-          if (AnHighlighter <> nil) and (ALines <> nil) then
-            AnHighlighter.CurrentLines := ALines;
-          AFoundBracketInfo.BracketLogStartX := x1;
-          AFoundBracketInfo.BracketLogLength := Length(BracketToken);
-          AFoundBracketInfo.BracketKind      := BracketIdx;
-          if BracketOpen
-          then Include(AFoundBracketInfo.BracketFlags, bfOpen)
-          else Exclude(AFoundBracketInfo.BracketFlags, bfOpen);
+          if strlcomp(pchar(BracketToken), @Line[x1], Length(BracketToken)) = 0 then begin
+            if (AnHighlighter <> nil) and (ALines <> nil) then
+              AnHighlighter.CurrentLines := ALines;
+            AFoundBracketInfo.BracketLogStartX := x1;
+            AFoundBracketInfo.BracketLogLength := Length(BracketToken);
+            AFoundBracketInfo.BracketKind      := BracketIdx;
+            if BracketOpen
+            then Include(AFoundBracketInfo.BracketFlags, bfOpen)
+            else Exclude(AFoundBracketInfo.BracketFlags, bfOpen);
 
-          if (AnHighlighter = nil) then begin
-            // found
-            if BracketIdx >= BRACKET_KIND_TOKEN_QUOTE_START then
-              AFoundBracketInfo.BracketFlags := AFoundBracketInfo.BracketFlags + [bfUniform, bfNotNestable, bfSingleLine]
+            if (AnHighlighter = nil) then begin
+              // found
+              if BracketIdx >= BRACKET_KIND_TOKEN_QUOTE_START then
+                AFoundBracketInfo.BracketFlags := AFoundBracketInfo.BracketFlags + [bfUniform, bfNotNestable, bfSingleLine]
+              else
+                AFoundBracketInfo.BracketFlags := AFoundBracketInfo.BracketFlags + [bfUnknownNestLevel];
+              Result := True;
+              exit;
+            end
             else
-              AFoundBracketInfo.BracketFlags := AFoundBracketInfo.BracketFlags + [bfUnknownNestLevel];
-            Result := True;
-            exit;
-          end
-          else
-          if AnHighlighter.GetBracketContextAt(ALineIdx,
-              AFoundBracketInfo.BracketLogStartX,
-              AFoundBracketInfo.BracketLogLength,
-              AFoundBracketInfo.BracketKind,
-              AFoundBracketInfo.BracketFlags,
-              AFoundBracketInfo.BracketContext,
-              AFoundBracketInfo.BracketNestLevel,
-              AFoundBracketInfo.InternalInfo
-             )
-          then begin
-            // found
-            Result := True;
-            exit;
+            if AnHighlighter.GetBracketContextAt(ALineIdx,
+                AFoundBracketInfo.BracketLogStartX,
+                AFoundBracketInfo.BracketLogLength,
+                AFoundBracketInfo.BracketKind,
+                AFoundBracketInfo.BracketFlags,
+                AFoundBracketInfo.BracketContext,
+                AFoundBracketInfo.BracketNestLevel,
+                AFoundBracketInfo.InternalInfo
+               )
+            then begin
+              // found
+              Result := True;
+              exit;
+            end;
           end;
         end;
-      end;
 
-      inc(x1);
-      if x1 <= x2 then
-        continue;
+        inc(x1);
+        if x1 > x2 then
+          break;
+      until False;
+    end;
 
-      if (ASearchDirection = bsdRightThenLeft) and (x2 = ALogX) then begin
-        x1 := ALogX-length(BracketToken);
-        if x1 < 1 then x1 := 1;
-        x2 := ALogX-1;
-        continue;
-      end;
+  if (ASearchDirection = bsdRightThenLeft) then begin
+    ASearchDirection := bsdLeft;
+    x2 := ALogX-1;
+  end
+  else
+  if (ASearchDirection = bsdLeftThenRight) then begin
+    ASearchDirection := bsdRight;
+    x2 := ALogX;
+  end
+  else
+    break;
 
-      break;
-    until False;
-  end;
+  until False;
 end;
 
 function FindBracketPos(ALineIdx: TLineIdx; ALogStartX: IntPos; ASearchBackward: Boolean;

@@ -44,6 +44,7 @@ operator := (p: TPoint): TLogTokenPos;
 begin
   Result.X := p.X;
   Result.Y := p.Y;
+  Result.Len := 0;
 end;
 
 operator := (p: TLogTokenPos): TPoint;
