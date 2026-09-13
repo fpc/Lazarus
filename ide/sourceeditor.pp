@@ -7365,19 +7365,19 @@ begin
       CurResult:=IDEQuestionDialog(lisChangeEncoding,
         Format(lisEncodingOfFileOnDiskIsNewEncodingIs,
                [SrcEdit.CodeBuffer.Filename, LineEnding, OldEncoding, NewEncoding]),
-        mtConfirmation, [mrOk, lisReopenWithAnotherEncoding, mrCancel]);
+        mtConfirmation, [mrOk, lisReopenWithNewEncoding, mrCancel]);
   end
   else begin
     if SrcEdit.CodeBuffer.IsVirtual then
       CurResult:=IDEQuestionDialog(lisChangeEncoding,
         Format(lisEncodingOfFileOnDiskIsNewEncodingIs,
                [SrcEdit.CodeBuffer.Filename, LineEnding, OldEncoding, NewEncoding]),
-        mtConfirmation, [mrYes, lisChangeFile, mrCancel])
+        mtConfirmation, [mrYes, lisSaveWithNewEncoding, mrCancel])
     else
       CurResult:=IDEQuestionDialog(lisChangeEncoding,
         Format(lisEncodingOfFileOnDiskIsNewEncodingIs,
                [SrcEdit.CodeBuffer.Filename, LineEnding, OldEncoding, NewEncoding]),
-        mtConfirmation, [mrYes,lisChangeFile,mrOk,lisReopenWithAnotherEncoding,mrCancel]);
+        mtConfirmation, [mrYes,lisSaveWithNewEncoding,mrOk,lisReopenWithNewEncoding,mrCancel]);
   end;
   if CurResult=mrYes then begin
     // change file

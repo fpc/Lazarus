@@ -2944,12 +2944,13 @@ resourcestring
   uemBookmarkNUnSet = 'Bookmark &%s';
   uemBookmarkNSet   = 'Bookmark &%s: %s';
   lisChangeEncoding = 'Change Encoding';
-  lisChangeFile = 'Change file';
-  lisEncodingOfFileOnDiskIsNewEncodingIs = 'Encoding of file "%s"%son disk is %s. New encoding is %s.';
-  lisReopenWithAnotherEncoding = 'Reopen with another encoding';
+  lisEncodingOfFileOnDiskIsNewEncodingIs = 'Encoding of file "%s"'
+    +'%son disk is %s. New encoding is %s.';
+  lisSaveWithNewEncoding = 'Save with new encoding';
+  lisReopenWithNewEncoding = 'Reopen with new encoding';
   lisAbandonChanges = 'Abandon changes?';
-  lisAllYourModificationsToWillBeLostAndTheFileReopened = 'All your modifications '
-    +'to "%s"%swill be lost and the file reopened.';
+  lisAllYourModificationsToWillBeLostAndTheFileReopened = 'All your modifications to "%s"'
+    +'%swill be lost and the file reopened.';
   lisOpenLfm = 'Open %s';
   lisUtf8WithBOM = 'UTF-8 with BOM';
   uemToggleBookmark = '&Toggle Bookmark';
