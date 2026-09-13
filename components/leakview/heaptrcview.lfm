@@ -10,7 +10,6 @@ object HeapTrcViewForm: THeapTrcViewForm
   ClientWidth = 637
   FormStyle = fsStayOnTop
   KeyPreview = True
-  Position = poScreenCenter
   LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
