@@ -2029,6 +2029,18 @@ begin
       Result := Result + [P];
 end;
 
+function FindReadableEncoding: string;
+// Menuitems under SrcEditSubMenuEncoding have the readable names
+// of supported encodings instead of normalized lowercase names.
+var
+  i: Integer;
+begin
+  for i:=0 to SrcEditSubMenuEncoding.Count-1 do
+    if SrcEditSubMenuEncoding.Items[i].Checked then
+      exit(SrcEditSubMenuEncoding.Items[i].Caption);
+  Result:='';
+end;
+
 { TToolButton_GotoBookmarks }
 
 procedure TToolButton_GotoBookmarks.RefreshMenu;
@@ -7343,21 +7355,19 @@ var
   CurResult: TModalResult;
 begin
   SrcEdit:=GetActiveSE;
-  if (SrcEdit=nil) or not (Sender is TIDEMenuItem) then exit;
+  if (SrcEdit=nil) or (SrcEdit.CodeBuffer=nil) or not (Sender is TIDEMenuItem) then
+    exit;
   IDEMenuItem:=TIDEMenuItem(Sender);
-  NewEncoding:=NormalizeEncoding(IDEMenuItem.Caption);
+  NewEncoding:=IDEMenuItem.Caption;
   if SysUtils.CompareText(copy(NewEncoding,1,length(EncodingAnsi)+2),EncodingAnsi+' (')=0
   then      // the ansi encoding is shown as 'ansi (system encoding)' -> cut
-    NewEncoding:=EncodingAnsi
+    NewEncoding:='Ansi' //EncodingAnsi      Match with MenuItem captions
   else if NewEncoding=lisUtf8WithBOM then
-    NewEncoding:=EncodingUTF8BOM;
+    NewEncoding:='UTF-8BOM'; //EncodingUTF8BOM;
   //DebugLn(['Hint: (lazarus) TSourceNotebook.EncodingClicked NewEncoding=',NewEncoding]);
-  if SrcEdit.CodeBuffer=nil then exit;
-  OldEncoding:=NormalizeEncoding(SrcEdit.CodeBuffer.DiskEncoding);
-  if OldEncoding='' then
-    OldEncoding:=GetDefaultTextEncoding;
-  if NewEncoding=SrcEdit.CodeBuffer.DiskEncoding then exit;
-  DebugLn(['Hint: (lazarus) TSourceNotebook.EncodingClicked Old=',OldEncoding,' New=',NewEncoding]);
+  OldEncoding:=FindReadableEncoding;  // A pleasantly formatted encoding name
+  Assert(OldEncoding<>'', 'TSourceNotebook.EncodingClicked: OldEncoding is empty.');
+  if NewEncoding=OldEncoding then exit;
   if SrcEdit.ReadOnly then begin
     if SrcEdit.CodeBuffer.IsVirtual then
       CurResult:=mrCancel
@@ -8067,8 +8077,7 @@ begin
       IDEMenuItem.OnClick:=@EncodingClicked;
     end;
     if IDEMenuItem is TIDEMenuCommand then
-      TIDEMenuCommand(IDEMenuItem).Checked:=
-        Encoding=NormalizeEncoding(CurEncoding);
+      TIDEMenuCommand(IDEMenuItem).Checked:=Encoding=NormalizeEncoding(CurEncoding);
   end;
   List.Free;
 end;
