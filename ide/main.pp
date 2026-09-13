@@ -10898,6 +10898,59 @@ var
   ActiveUnitInfo: TEditableUnitInfo;
   LogCaretXY: TPoint;
   CodePos:integer;
+
+  procedure PreCheckAlternativeEdgedBracketEnd;
+  var
+    i,j: integer;
+    valid: boolean;
+    BracketEnd, BracketStart: Char;
+    nestLevel:integer;
+    s: string;
+  begin
+    if CodePos < 3 then exit;
+    s:=ActiveSrcEdit.GetLineText;
+    j:=LogCaretXY.X;
+    if (j>2) and (s[j]=')') and (s[j-1]='.') then begin
+      valid:=false;
+      i:=j-2;
+      nestLevel:=0;
+      // simplified, code is prone to comments presence
+      while (i>1) and  (s[i]=' ') do dec(i);
+      if (s[i]=']') or (s[i]=')')  then begin
+        BracketEnd:=s[i];
+        if BracketEnd=']' then BracketStart:='[' else
+          BracketStart:='(';
+        inc(nestLevel);
+        repeat
+          dec(i);
+          if s[i]=BracketStart then begin
+            dec(nestLevel);
+            if nestLevel=0 then break;
+          end  else
+          if s[i]=BracketEnd then
+            inc(nestLevel);
+          if s[i]=';' then break;
+        until i=1;
+        if s[i]<>BracketStart then exit;
+        dec(i);
+      end;
+      while (i>1) and (s[i]=' ') do dec(i);
+      // expected here to be validated e.g.  ident1.|) ,  ident2[func()].|) , func([id1..id2]).|)
+      while (i>1) and IsIdentChar[s[i]] do begin
+        dec(i);
+        if not IsIdentChar[s[i]] and IsIdentStartChar[s[i+1]] then begin
+          valid:=true;
+          break;
+        end;
+      end;
+      if not valid then exit;
+      ActiveSrcEdit.BeginUpdate;
+      ActiveSrcEdit.CodeBuffer.Replace(CodePos-1,2,'. )'); // '.)' --> '. )' - replace false alternative right edged bracket
+      ActiveSrcEdit.UpdateCodeBuffer;
+      ActiveSrcEdit.SetCursorTextXY(LogCaretXY); // back to start
+      ActiveSrcEdit.EndUpdate;
+    end;
+  end;
 begin
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit(false);
@@ -10913,7 +10966,10 @@ begin
   if (CodePos>1) and (CodePos<=ActiveSrcEdit.CodeBuffer.SourceLength)
   and (ActiveSrcEdit.CodeBuffer.Source[CodePos-1]='&')
   and not IsIdentStartChar[ActiveSrcEdit.CodeBuffer.Source[CodePos]] then
-    Result:=False;
+    Result:=False
+  else
+    PreCheckAlternativeEdgedBracketEnd;
+
   if Result then
     Result:=CodeToolBoss.GatherIdentifiers(ActiveUnitInfo.Source,
                                          LogCaretXY.X,LogCaretXY.Y);
