@@ -207,11 +207,21 @@ begin
     if Item = nil then
     begin
       Item := FItems.GetNew;
-      Item^.FImageList := GetImageListFor(ABitmap.Width div ABitmapCount, ABitmap.Height);
+      if ABitmap.Width > ABitmap.Height then
+        // Horizontal strip
+        Item^.FImageList := GetImageListFor(ABitmap.Width div ABitmapCount, ABitmap.Height)
+      else
+        // Vertical strip
+        Item^.FImageList := GetImageListFor(ABitmap.Width, ABitmap.Height div ABitmapCount);
       Item^.FListener := AListener;
     end;
 
-    AStart := Item^.FImageList.AddSliced(ABitmap, ABitmapCount, 1);
+    if ABitmap.Width > ABitmap.Height then
+      // Horizontal strip
+      AStart := Item^.FImageList.AddSliced(ABitmap, ABitmapCount, 1)
+    else
+      // Vertical strip
+      AStart := Item^.FImageList.AddSliced(ABitmap, 1, ABitmapCount);
     AListener.CacheSetImageList(Item^.FImageList);
     OldLen := Length(Item^.FImageIndexes);
     SetLength(Item^.FImageIndexes, OldLen + Item^.FImageList.Count - AStart);

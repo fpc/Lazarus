@@ -181,6 +181,7 @@ end;
 procedure TButtonGlyph.SetGlyph(Value : TBitmap);
 var
   GlyphCount : integer;
+  longSide, shortSide: Integer;
 begin
   if FOriginal = Value then
     exit;
@@ -197,15 +198,14 @@ begin
   FNumGlyphs := 1;
   if not FOriginal.Empty then
     ClearLCLGlyph;
-  if FOriginal.Height > 0 then
+  longSide := IfThen(FOriginal.Width > FOriginal.Height, FOriginal.Width, FOriginal.Height);
+  shortSide := IfThen(FOriginal.Height > FOriginal.Width, FOriginal.Height, FOriginal.Width);
+  if (shortSide <> 0) and (longside mod shortside = 0) then
   begin
-    if FOriginal.Width mod FOriginal.Height = 0 then
-    begin
-      GlyphCount := FOriginal.Width div FOriginal.Height;
-      if GlyphCount > High(TNumGlyphs) then
-        GlyphCount := Low(TNumGlyphs);
-      FNumGlyphs := TNumGlyphs(GlyphCount);
-    end;
+    GlyphCount := longside div shortside;
+    if GlyphCount > High(TNumGlyphs) then
+      GlyphCount := Low(TNumGlyphs);
+    FNumGlyphs := TNumGlyphs(GlyphCount);
   end;
   Refresh;
 end;
