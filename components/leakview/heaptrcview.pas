@@ -17,6 +17,9 @@ uses
   // LeakView
   LeakInfo, SynEdit;
 
+const
+  CMaxRecentFiles = 8;
+
 type
   TJumpProc = procedure (Sender: TObject; const SourceName: string;
                          Line, Column: integer) of object;
@@ -579,7 +582,7 @@ begin
     b.Right  := cfg.GetValue('right' , InvalidCoord);
     b.Bottom := cfg.GetValue('bottom', InvalidCoord);
     cfg.CloseKey;
-    for i:=0 to 7 do begin
+    for i:=0 to CMaxRecentFiles-1 do begin
       s:=cfg.GetValue(DOMString('path'+IntToStr(i)), '');
       if s<>'' then st.Add(UTF8Encode(s));
     end;
@@ -613,8 +616,8 @@ begin
   s := edtTrcFileName.Text; // store current text
   i:=edtTrcFileName.Items.IndexOf(FileName);
   if (i<0) then begin
-    if edtTrcFileName.Items.Count=8 then
-      edtTrcFileName.Items.Delete(7);
+    if edtTrcFileName.Items.Count=CMaxRecentFiles then
+      edtTrcFileName.Items.Delete(CMaxRecentFiles-1);
   end else
     edtTrcFileName.Items.Delete(i);
   edtTrcFileName.Items.Insert(0, FileName);
