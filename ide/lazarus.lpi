@@ -1376,6 +1376,11 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
       </Unit>
+      <Unit>
+        <Filename Value="findrenameidentexec.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="FindRenameIdentExec"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

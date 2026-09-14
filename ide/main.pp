@@ -172,7 +172,7 @@ uses
   IdeDebuggerWatchResult, InitialSetupDlgs, NewDialog,
   MakeResStrDlg, DialogProcs, FindReplaceDialog, FindInFilesDlg,
   CodeExplorer, BuildFileDlg, ProcedureList, ExtractProcDlg,
-  FindRenameIdentifier, AbstractsMethodsDlg, EmptyMethodsDlg, UnusedUnitsDlg,
+  FindRenameIdentExec, AbstractsMethodsDlg, EmptyMethodsDlg, UnusedUnitsDlg,
   UseUnitDlg, FindOverloadsDlg, EditorFileManager, CleanDirDlg, CodeContextForm,
   AboutFrm, CompatibilityRestrictions, RestrictionBrowser, ProjectWizardDlg,
   CodeExplOpts, EditorMacroListViewer, EditableProject,
@@ -10778,7 +10778,7 @@ end;
 
 function TMainIDE.DoFindRenameIdentifier(Rename: boolean): TModalResult;
 begin
-  Result:=FindRenameIdentifier.DoFindRenameIdentifier(true,Rename,nil);
+  Result:=FindRenameIdentExec.DoFindRenameIdentifier(true,Rename,nil);
 end;
 
 function TMainIDE.DoFindUsedUnitReferences: boolean;
@@ -10813,7 +10813,7 @@ begin
 
     DoShowSearchResultsView(iwgfShow);
     // create a search result page
-    //debugln(['ShowIdentifierReferences ',DbgSName(SearchResultsView)]);
+    //debugln(['DoFindUsedUnitReferences ',DbgSName(SearchResultsView)]);
     SearchPageIndex:=SearchResultsView.AddSearch(
       UsedUnitFilename,
       '',
