@@ -705,6 +705,7 @@ var
     IsConflicted:=false;
     Result:=mrOk;
     if Kind=friSourceName then begin
+      PascalReferences:=nil;
       if not CodeToolBoss.RenameSourceNameReferences(OldFileName,NewFilename,
           Options.RenameTo,PascalReferences) then
         Result:=mrCancel;

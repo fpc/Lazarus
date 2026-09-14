@@ -117,8 +117,6 @@ begin
 end;
 
 procedure TEditorSqlOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
-var
-  b: Boolean;
 begin
   with AOptions as TEditorOptions do
   begin

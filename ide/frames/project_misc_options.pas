@@ -113,9 +113,6 @@ begin
 end;
 
 procedure TProjectMiscOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
-var
-  idx: Integer;
-  b: Boolean;
 begin
   with (AOptions as TProjectIDEOptions).Project as TEditableProject do
   begin

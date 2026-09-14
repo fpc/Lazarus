@@ -574,7 +574,7 @@ var
     lf=  #$240a;                        // ␊
     vt=  #$240b;                        // ␋
     ff=  #$240c;                        // ␌
-    cr=  #$240d;                        // ␍
+    //cr=  #$240d;                        // ␍
     so=  #$240e;                        // ␎
     si=  #$240f;                        // ␏
     dle= #$2410;                        // ␐
@@ -632,7 +632,7 @@ var
         $0a: u[i] := lf;
         $0b: u[i] := vt;
         $0c: u[i] := ff;
-        //$0d: u[i] := cr; // carrige return resets the cursor to line beginning for rewrite (both Linux and Windows)
+        // $0d: u[i] := cr; // carrige return resets the cursor to line beginning for rewrite (both Linux and Windows)
         $0e: u[i] := so;
         $0f: u[i] := si;
         $10: u[i] := dle;
@@ -1042,6 +1042,7 @@ procedure TTerminalStringList.SetTextStr(const Value: string);
       TextLineBreakStyle := tlbsLF; // keep CR
       Clear;
       P:=1;
+      S:='';
       While GetNextLineBreak (Value,S,P) do
         Add(S);
     finally
