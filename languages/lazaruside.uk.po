@@ -5611,6 +5611,10 @@ msgstr "Додати пакунок до проєкту"
 msgid "Add parameter brackets"
 msgstr "Додати параметричні дужки"
 
+#: lazarusidestrconsts.lisaddpathtotrustedexe
+msgid "Add path to trusted executable"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddthefollowingfiles
 msgid "Add the following files:"
 msgstr ""
@@ -9006,12 +9010,6 @@ msgstr "Видалити старий файл \"%s\"?"
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
 msgstr "Видалити вибраний макрос?"
-
-#: lazarusidestrconsts.lisdeleteselectedtrustedcompilers
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisdeleteselectedtrustedcompilers"
-msgid "Delete selected"
-msgstr "Видалити вибране"
 
 #: lazarusidestrconsts.lisdeletethisaddition
 msgid "Delete this addition"
@@ -14769,6 +14767,10 @@ msgstr "Вставити з буфера обміну."
 msgid "Pastel Colors"
 msgstr "Пастельні кольори"
 
+#: lazarusidestrconsts.lispathalreadyexists
+msgid "The path already exists."
+msgstr ""
+
 #: lazarusidestrconsts.lispatheditbrowse
 msgctxt "lazarusidestrconsts.lispatheditbrowse"
 msgid "Browse"
@@ -18359,7 +18361,7 @@ msgid "Trust project compiler?"
 msgstr ""
 
 #: lazarusidestrconsts.listrustcompilerthistime
-msgid "Trust this time"
+msgid "Trust until project closes"
 msgstr ""
 
 #: lazarusidestrconsts.listrustedcommands

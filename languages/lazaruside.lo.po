@@ -5562,6 +5562,10 @@ msgstr "ເພີ່ມແພັກເກັດໃສ່ໂປຣເຈັກ"
 msgid "Add parameter brackets"
 msgstr "ເພີ່ມວົງເລັບພາຣາມິເຕີ"
 
+#: lazarusidestrconsts.lisaddpathtotrustedexe
+msgid "Add path to trusted executable"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddthefollowingfiles
 msgid "Add the following files:"
 msgstr "ເພີ່ມໄຟລ໌ຕໍ່ໄປນີ້:"
@@ -8926,12 +8930,6 @@ msgstr "ລົບໄຟລ໌ເກົ່າ \"%s\" ບໍ່?"
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
 msgstr "ລົບ Macro ທີ່ເລືອກບໍ່?"
-
-#: lazarusidestrconsts.lisdeleteselectedtrustedcompilers
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisdeleteselectedtrustedcompilers"
-msgid "Delete selected"
-msgstr "ລຶບທີ່ເລືອກ"
 
 #: lazarusidestrconsts.lisdeletethisaddition
 msgid "Delete this addition"
@@ -14625,6 +14623,10 @@ msgstr "ວາງຈາກ clipboard."
 msgid "Pastel Colors"
 msgstr "ສີພາສເທວ"
 
+#: lazarusidestrconsts.lispathalreadyexists
+msgid "The path already exists."
+msgstr ""
+
 #: lazarusidestrconsts.lispatheditbrowse
 msgctxt "lazarusidestrconsts.lispatheditbrowse"
 msgid "Browse"
@@ -18192,7 +18194,7 @@ msgid "Trust project compiler?"
 msgstr ""
 
 #: lazarusidestrconsts.listrustcompilerthistime
-msgid "Trust this time"
+msgid "Trust until project closes"
 msgstr ""
 
 #: lazarusidestrconsts.listrustedcommands

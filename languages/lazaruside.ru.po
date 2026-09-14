@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-09-13 23:06+0300\n"
+"PO-Revision-Date: 2026-09-14 23:16+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -5539,6 +5539,10 @@ msgstr "Добавить пакет к проекту"
 msgid "Add parameter brackets"
 msgstr "Добавлять скобки для параметров"
 
+#: lazarusidestrconsts.lisaddpathtotrustedexe
+msgid "Add path to trusted executable"
+msgstr "Добавить путь к доверенному исполнимому файлу"
+
 #: lazarusidestrconsts.lisaddthefollowingfiles
 msgid "Add the following files:"
 msgstr "Добавить следующие файлы:"
@@ -8896,11 +8900,6 @@ msgstr "Удалить старый файл \"%s\"?"
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
 msgstr "Удалить выделенный макрос?"
-
-#: lazarusidestrconsts.lisdeleteselectedtrustedcompilers
-msgctxt "lazarusidestrconsts.lisdeleteselectedtrustedcompilers"
-msgid "Delete selected"
-msgstr "Удалить выбранные"
 
 #: lazarusidestrconsts.lisdeletethisaddition
 msgid "Delete this addition"
@@ -14587,6 +14586,10 @@ msgstr "Вставить из буфера обмена."
 msgid "Pastel Colors"
 msgstr "Пастельные цвета"
 
+#: lazarusidestrconsts.lispathalreadyexists
+msgid "The path already exists."
+msgstr "Путь уже имеется."
+
 #: lazarusidestrconsts.lispatheditbrowse
 msgctxt "lazarusidestrconsts.lispatheditbrowse"
 msgid "Browse"
@@ -18154,8 +18157,8 @@ msgid "Trust project compiler?"
 msgstr "Доверять компилятору проекта?"
 
 #: lazarusidestrconsts.listrustcompilerthistime
-msgid "Trust this time"
-msgstr "Доверять в этот раз"
+msgid "Trust until project closes"
+msgstr "Доверять до закрытия проекта"
 
 #: lazarusidestrconsts.listrustedcommands
 msgid "Trusted commands"

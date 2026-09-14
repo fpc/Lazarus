@@ -5592,6 +5592,10 @@ msgstr "Ajouter un paquet au projet"
 msgid "Add parameter brackets"
 msgstr "Ajouter un paramètre entre parenthèses"
 
+#: lazarusidestrconsts.lisaddpathtotrustedexe
+msgid "Add path to trusted executable"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddthefollowingfiles
 msgid "Add the following files:"
 msgstr "Ajoutez les fichiers suivants :"
@@ -8972,12 +8976,6 @@ msgstr "Voulez-vous supprimer l'ancien fichier \"%s\" ?"
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
 msgstr "Voulez-vous supprimer la macro choisie ?"
-
-#: lazarusidestrconsts.lisdeleteselectedtrustedcompilers
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisdeleteselectedtrustedcompilers"
-msgid "Delete selected"
-msgstr "Supprimer si sélectionné"
 
 #: lazarusidestrconsts.lisdeletethisaddition
 msgid "Delete this addition"
@@ -14694,6 +14692,10 @@ msgstr "Coller depuis le presse-papiers."
 msgid "Pastel Colors"
 msgstr "Couleurs pastel"
 
+#: lazarusidestrconsts.lispathalreadyexists
+msgid "The path already exists."
+msgstr ""
+
 #: lazarusidestrconsts.lispatheditbrowse
 msgctxt "lazarusidestrconsts.lispatheditbrowse"
 msgid "Browse"
@@ -18267,7 +18269,7 @@ msgid "Trust project compiler?"
 msgstr ""
 
 #: lazarusidestrconsts.listrustcompilerthistime
-msgid "Trust this time"
+msgid "Trust until project closes"
 msgstr ""
 
 #: lazarusidestrconsts.listrustedcommands
