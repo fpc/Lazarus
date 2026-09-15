@@ -98,6 +98,7 @@ type
     procedure TestCompleteLocalVar_IfExpr;
     procedure TestCompleteLocalVar_IfExprCommonAncestor;
     procedure TestCompleteLocalVar_CaseExpr;
+    procedure TestCompleteLocalVar_TryExpr;
     procedure TestCompleteLocalVarForAnonymousFunction1;
     procedure TestCompleteLocalVarForAnonymousFunction2;
 
@@ -2153,6 +2154,32 @@ begin
     '  c: TColor;',
     'begin',
     '  c:=case i of 1: red; 2: green; else blue end;',
+    'end;',
+    'begin',
+    'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteLocalVar_TryExpr;
+begin
+  Test('TestCompleteLocalVar_TryExpr',
+    ['program Project1;',
+    '{$mode delphi}',
+    'type TColor = (red,green,blue);',
+    'procedure Fly(i: integer);',
+    'begin',
+    '  c:=try red except on E: TObject do green; else blue end;',
+    'end;',
+    'begin',
+    'end.'],
+    6,3,
+    ['program Project1;',
+    '{$mode delphi}',
+    'type TColor = (red,green,blue);',
+    'procedure Fly(i: integer);',
+    'var',
+    '  c: TColor;',
+    'begin',
+    '  c:=try red except on E: TObject do green; else blue end;',
     'end;',
     'begin',
     'end.']);

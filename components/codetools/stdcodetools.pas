@@ -7333,9 +7333,10 @@ var
         Result:=true;
     end;
 
-    function CloseIfExprsInCaseExpr: boolean;
-    // closes if-expressions at the end of a case-expression,
+    function CloseIfExprsInStatementExpr: boolean;
+    // closes if-expressions at the end of a case- or try-except-expression,
     // e.g. case a of 1: 2 else if b then 3 else 4 end
+    // e.g. try a except if b then 3 else 4 end
     var
       i: Integer;
     begin
@@ -7343,7 +7344,8 @@ var
       i:=Stack.Top;
       while (i>=0) and (Stack.Stack[i].Typ in [btIf,btIfElse]) do
         dec(i);
-      if (i<0) or (i=Stack.Top) or (Stack.Stack[i].Typ<>btCaseExpr) then exit;
+      if (i<0) or (i=Stack.Top)
+      or not (Stack.Stack[i].Typ in [btCaseExpr,btExcept]) then exit;
       while Stack.Top>i do
         if not EndBlockIsOk then exit(false);
     end;
@@ -7543,7 +7545,7 @@ var
           end;
           break;
         end else begin
-          if not CloseIfExprsInCaseExpr then exit;
+          if not CloseIfExprsInStatementExpr then exit;
           case TopBlockType(Stack) of
           btCaseOf,btCaseElse:
             begin

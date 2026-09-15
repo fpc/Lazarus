@@ -2437,7 +2437,8 @@ type
     siRoundBracketOpen,
     siEdgedBracketOpen,
     siRecord,
-    siCaseExpr
+    siCaseExpr,
+    siTryExpr
     );
   TStackItem = record
     Typ: TStackItemType;
@@ -2514,7 +2515,7 @@ var
     siRoundBracketOpen: Msg:=crsBracketNotFound;
     siEdgedBracketOpen: Msg:=crsBracketNotFound2;
     siRecord: Msg:=crsRecordEndNotFound;
-    siCaseExpr: Msg:=crsClosingBracketNotFound;
+    siCaseExpr,siTryExpr: Msg:=crsClosingBracketNotFound;
     end;
     if CurPos.StartPos<=SrcLen then begin
       if ErrorNicePosition.Code<>nil then
@@ -2547,7 +2548,8 @@ begin
         if CurPos.StartPos>SrcLen then Unexpected;
 
       cafSemicolon:
-        if (sbcStopOnSemicolon in Flags) and (Top<>siCaseExpr) then Unexpected;
+        if (sbcStopOnSemicolon in Flags) and not (Top in [siCaseExpr,siTryExpr]) then
+          Unexpected;
 
       cafRoundBracketOpen:
         Push(siRoundBracketOpen);
@@ -2594,18 +2596,20 @@ begin
             case UpChars[p[1]] of
             'A':
               if UpAtomIs('CASE') and AllowStatementExpressions
-              and (Top in [siRoundBracketOpen,siEdgedBracketOpen,siCaseExpr]) then
+              and (Top in [siRoundBracketOpen,siEdgedBracketOpen,siCaseExpr,siTryExpr]) then
                 // case-expression, e.g. (case a of 1: b; else c end)
                 Push(siCaseExpr);
             'O': if UpAtomIs('CONST') then Unexpected;
             end;
           'D':
             case UpChars[p[1]] of
-            'O': if UpAtomIs('DO') then Unexpected;
+            'O':
+              // on-branch of a try-except-expression: on E: T do Value
+              if UpAtomIs('DO') and (Top<>siTryExpr) then Unexpected;
             end;
           'E':
             if UpAtomIs('END') then begin
-              if Top in [siRecord,siCaseExpr] then
+              if Top in [siRecord,siCaseExpr,siTryExpr] then
                 Pop
               else
                 Unexpected;
@@ -2662,7 +2666,15 @@ begin
             end;
           'T':
             case UpChars[p[1]] of
-            'R': if UpAtomIs('TRY') then Unexpected;
+            'R':
+              if UpAtomIs('TRY') then begin
+                if AllowStatementExpressions
+                and (Top in [siRoundBracketOpen,siEdgedBracketOpen,siCaseExpr,siTryExpr]) then
+                  // try-except-expression, e.g. (try a except on E: T do b; else c end)
+                  Push(siTryExpr)
+                else
+                  Unexpected;
+              end;
             end;
           'V':
             case UpChars[p[1]] of
@@ -5882,7 +5894,7 @@ begin
       ReadTilBracketClose(true)
     else if AllowStatementExpressions and UpAtomIs('CASE') then begin
       // case-expression: skip its semicolons
-      if not ReadTilCaseExprEnd then
+      if not ReadTilStatementExprEnd then
         SaveRaiseStringExpectedButAtomFound(20260915120010,'end');
     end else if (CurPos.Flag in AllCommonAtomWords)
     and (not IsKeyWordInConstAllowed.DoIdentifier(@Src[CurPos.StartPos]))

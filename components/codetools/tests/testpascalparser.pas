@@ -73,6 +73,7 @@ type
     procedure TestParseCaseExpr;
     procedure TestParseCaseExprModeSwitch;
     procedure TestParseCaseExprObjFPCFail;
+    procedure TestParseTryExpr;
     procedure TestParseProcAnoArg;
     procedure TestParseProcAnoArgSubFunc;
     procedure TestParseThreadVar;
@@ -789,6 +790,32 @@ begin
   'begin',
   'end.']);
   CheckParseError(CodeXYPosition(7,6,Code),'expected constant, but case found');
+end;
+
+procedure TTestPascalParser.TestParseTryExpr;
+begin
+  Add([
+  'program test1;',
+  '{$mode delphi}',
+  'var',
+  '  b: boolean;',
+  '  i: integer;',
+  'procedure DoIt(j: integer);',
+  'begin',
+  '  i:=try j except 2 end;',
+  '  i:=try j except on E: TObject do 1; on EAbort do 2; else 3; end;',
+  '  DoIt(try j except on E: TObject do 1 else 2 end);',
+  '  i:=1+try j except 2 end*3;',
+  '  i:=try if b then 1 else 2 except case i of 1: 3; else 4 end end;',
+  '  if try b except false end then ;',
+  '  case i of',
+  '  0: i:=try j except on E: TObject do 1; else 2 end;',
+  '  end;',
+  'end;',
+  'begin',
+  '  DoIt(try i except on E: TObject do 1; else 2 end);',
+  '']);
+  ParseModule;
 end;
 
 procedure TTestPascalParser.TestParseProcAnoAssign;

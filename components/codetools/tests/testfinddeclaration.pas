@@ -216,6 +216,7 @@ type
     procedure TestFindDeclaration_NotIn;
     procedure TestFindDeclaration_IfExpr;
     procedure TestFindDeclaration_CaseExpr;
+    procedure TestFindDeclaration_TryExpr;
     procedure TestFindDeclaration_Attributes;
     procedure TestFindDeclaration_BracketOpen;
     procedure TestFindDeclaration_AnonymProc;
@@ -2304,6 +2305,43 @@ begin
   '  a1{guesstype:TAnimal} := case i of 1: Ant{declaration:Ant}; 2: Bird{declaration:Bird} else Animal end;',
   '  a2{guesstype:TAnt} := case i of 1: nil else Ant end;',
   '  if case i of 1: b else false end then ;',
+  '  Ant{declaration:Ant}:=nil;',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_TryExpr;
+begin
+  StartProgram;
+  Add([
+  '{$modeswitch statementexpressions}',
+  'type',
+  '  TAnimal = class',
+  '    Name: string;',
+  '  end;',
+  '  TAnt = class(TAnimal)',
+  '  end;',
+  '  TBird = class(TAnimal)',
+  '  end;',
+  'function Get: string;',
+  'begin',
+  'end;',
+  'var',
+  '  b: boolean;',
+  '  i: longint;',
+  '  i64: int64;',
+  '  s: string;',
+  '  Ant: TAnt;',
+  '  Bird: TBird;',
+  'begin',
+  '  v1{guesstype:String} := try Get{declaration:Get} except ''Error'' end;',
+  '  v2{guesstype:String} := try Get except on E: TAnimal{declaration:TAnimal} do E.Name{declaration:TAnimal.Name}; else s{declaration:s} end;',
+  '  v3{guesstype:Int64} := try i except on TAnimal do i64; else 3 end;',
+  '  v4{guesstype:LongInt} := 1 + try i except 2 end * 3;',
+  '  v5{guesstype:LongInt} := try if b then i else 2 except case i of 1: 3; else 4 end end;',
+  '  a1{guesstype:TAnimal} := try Ant{declaration:Ant} except on TAnimal do Bird{declaration:Bird}; else nil end;',
+  '  a2{guesstype:TAnt} := try nil except Ant end;',
+  '  if try b except false end then ;',
   '  Ant{declaration:Ant}:=nil;',
   'end.']);
   FindDeclarations(Code);

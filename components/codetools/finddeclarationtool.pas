@@ -12590,14 +12590,12 @@ begin
                         cafRoundBracketClose,cafEdgedBracketClose])
     then
       break;
-    if UpAtomIs('CASE')
+    if (UpAtomIs('CASE') or UpAtomIs('TRY'))
     and (cmsStatementExpressions in Scanner.CompilerModeSwitches) then begin
-      // case-expression: case Expr of Label: Value; else Value end
-      if not ReadTilCaseExprEnd then
+      if not ReadTilStatementExprEnd then
         break;
     end else if UpAtomIs('IF')
     and (cmsStatementExpressions in Scanner.CompilerModeSwitches) then
-      // if-expression: if Cond then A else B
       inc(IfLevel)
     else if (IfLevel>0) and UpAtomIs('THEN') then
     else if (IfLevel>0) and UpAtomIs('ELSE') then
@@ -12817,9 +12815,8 @@ var EndPos, SubStartPos: integer;
         exit;
       if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then
         ReadTilBracketClose(true)
-      else if UpAtomIs('CASE') then begin
-        // skip case-expression
-        if not ReadTilCaseExprEnd then
+      else if UpAtomIs('CASE') or UpAtomIs('TRY') then begin
+        if not ReadTilStatementExprEnd then
           exit;
       end else if UpAtomIs('IF') then
         inc(Level)
@@ -12935,6 +12932,89 @@ var EndPos, SubStartPos: integer;
       ReadNextAtom;
   end;
 
+  procedure ReadTryExprOperand;
+  // try-except-expression:
+  //   try Expr except Value end
+  //   try Expr except on E: Type do Value1; on Type do Value2; else Value3 end
+  var
+    TryStartPos, ValueEndPos: integer;
+    ValueOperand, TryOperand: TOperand;
+
+    procedure ReadValue(ValueStartPos: integer; InOnBlock: boolean);
+    var
+      OldContextNode, OnNode: TCodeTreeNode;
+    begin
+      ValueEndPos:=FindEndOfExpression(ValueStartPos);
+      if ValueEndPos>MaxEndPos then
+        ValueEndPos:=MaxEndPos;
+      OldContextNode:=Params.ContextNode;
+      try
+        if InOnBlock then begin
+          // the variable of "on E: T do Value" is only visible in the on-block
+          OnNode:=FindDeepestNodeAtPos(ValueStartPos,false);
+          if OnNode<>nil then
+            Params.ContextNode:=OnNode;
+        end;
+        ValueOperand.AliasType:=CleanFindContext;
+        ValueOperand.Expr:=FindExpressionResultType(Params,ValueStartPos,ValueEndPos,
+                                                    @ValueOperand.AliasType);
+      finally
+        Params.ContextNode:=OldContextNode;
+      end;
+      TryOperand:=CombineStatementExprOperands(TryOperand,ValueOperand,
+                                               Params,ValueEndPos);
+      MoveCursorToCleanPos(ValueEndPos);
+      ReadNextAtom;
+    end;
+
+  begin
+    // try value
+    TryStartPos:=CurPos.EndPos;
+    ValueEndPos:=FindEndOfExpression(TryStartPos);
+    if ValueEndPos>MaxEndPos then
+      ValueEndPos:=MaxEndPos;
+    TryOperand.AliasType:=CleanFindContext;
+    TryOperand.Expr:=FindExpressionResultType(Params,TryStartPos,ValueEndPos,
+                                              @TryOperand.AliasType);
+    MoveCursorToCleanPos(ValueEndPos);
+    ReadNextAtom;
+    if not UpAtomIs('EXCEPT') then
+      RaiseExceptionFmt(20260916100000,ctsStrExpectedButAtomFound,['except',GetAtom]);
+    ReadNextAtom;
+    repeat
+      if (CurPos.EndPos>MaxEndPos) or (CurPos.StartPos>SrcLen)
+      or (CurPos.Flag=cafEND) then
+        break;
+      if UpAtomIs('ON') then begin
+        // skip "on E: Type do"
+        repeat
+          ReadNextAtom;
+          if (CurPos.EndPos>MaxEndPos) or (CurPos.StartPos>SrcLen)
+          or (CurPos.Flag in [cafSemicolon,cafEND]) then
+            RaiseExceptionFmt(20260916100001,ctsStrExpectedButAtomFound,['do',GetAtom]);
+          if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then
+            ReadTilBracketClose(true);
+        until UpAtomIs('DO');
+        ReadValue(CurPos.EndPos,true);
+      end else if UpAtomIs('ELSE') then
+        ReadValue(CurPos.EndPos,false)
+      else
+        // try Expr except Value end
+        ReadValue(CurPos.StartPos,false);
+      if CurPos.Flag=cafSemicolon then
+        ReadNextAtom
+      else if not UpAtomIs('ELSE') then
+        break;
+    until false;
+
+    Result:=TryOperand.Expr;
+    if AliasType<>nil then
+      AliasType^:=TryOperand.AliasType;
+    if CurPos.Flag=cafEND then
+      // operators can follow the end
+      ReadNextAtom;
+  end;
+
 var
   OldFlags: TFindDeclarationFlags;
   MaybeFuncAtCursor: Boolean;
@@ -13034,6 +13114,8 @@ begin
     ReadIfExprOperand
   else if UpAtomIs('CASE') then
     ReadCaseExprOperand
+  else if UpAtomIs('TRY') then
+    ReadTryExprOperand
   else
     RaiseIdentExpected;
 

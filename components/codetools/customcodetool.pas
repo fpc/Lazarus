@@ -233,7 +233,7 @@ type
     // read blocks
     function ReadTilBracketClose(ExceptionOnNotFound: boolean): boolean;
     function ReadBackTilBracketOpen(ExceptionOnNotFound: boolean): boolean;
-    function ReadTilCaseExprEnd: boolean;
+    function ReadTilStatementExprEnd: boolean;
     procedure ReadTillCommentEnd;
     
     // read atoms
@@ -2046,11 +2046,12 @@ begin
   repeat
     ReadNextAtom;
     if (CurPos.Flag=CloseBracket) then break;
-    if (CurPos.Flag=cafWord) and UpAtomIs('CASE') and (Scanner<>nil)
+    if (CurPos.Flag=cafWord) and (UpAtomIs('CASE') or UpAtomIs('TRY'))
+    and (Scanner<>nil)
     and (cmsStatementExpressions in Scanner.CompilerModeSwitches) then begin
-      // skip case-expression, e.g. (case a of 1: b; else c end)
+      // skip case- or try-except-expression
       CaseAtom:=CurPos;
-      if not ReadTilCaseExprEnd then
+      if not ReadTilStatementExprEnd then
         // not a case-expression, e.g. a variant record
         MoveCursorToAtomPos(CaseAtom);
       continue;
@@ -2080,9 +2081,9 @@ begin
   Result:=true;
 end;
 
-function TCustomCodeTool.ReadTilCaseExprEnd: boolean;
-// cursor is on the CASE of a case-expression,
-// moves the cursor to the END of the case-expression.
+function TCustomCodeTool.ReadTilStatementExprEnd: boolean;
+// cursor is on the CASE of a case-expression or the TRY of a
+// try-except-expression, moves the cursor to the END of the expression.
 // Returns false if there is no END, e.g. a variant record in brackets.
 var
   Level: Integer;

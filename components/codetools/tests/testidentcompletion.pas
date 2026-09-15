@@ -44,6 +44,7 @@ type
     procedure Test_GatherIdentifiers_DereferencedProperty;
     procedure Test_GatherIdentifiers_IfExpr;
     procedure Test_GatherIdentifiers_CaseExpr;
+    procedure Test_GatherIdentifiers_TryExpr;
 
     // CreateDeclarationPathAt
     procedure Test_CreateDeclarationPathAt_Basic;
@@ -439,6 +440,57 @@ begin
   AssertFalse('while in branch',HasIdentifier('while'));
   // in the else-part of a case-expression
   GatherAt('b');
+  AssertTrue('variable i in else-part',HasIdentifier('i'));
+  AssertFalse('while in else-part',HasIdentifier('while'));
+end;
+
+procedure TTestIdentCompletion.Test_GatherIdentifiers_TryExpr;
+
+  function HasIdentifier(const aName: string): boolean;
+  var
+    i: Integer;
+  begin
+    for i:=0 to CodeToolBoss.IdentifierList.GetFilteredCount-1 do
+      if CompareText(CodeToolBoss.IdentifierList.FilteredItems[i].Identifier,aName)=0 then
+        exit(true);
+    Result:=false;
+  end;
+
+  procedure GatherAt(const MarkerName: string);
+  var
+    SrcMark: TFDMarker;
+    CursorPos: TCodeXYPosition;
+  begin
+    SrcMark:=FindMarker(MarkerName,'#');
+    AssertNotNull('missing src marker #'+MarkerName,SrcMark);
+    MainTool.CleanPosToCaret(SrcMark.CleanPos,CursorPos);
+    CodeToolBoss.GatherIdentifiers(Code,CursorPos.X,CursorPos.Y);
+    AssertTrue('CodeToolBoss.GatherIdentifiers: '+CodeToolBoss.ErrorMessage,CodeToolBoss.ErrorId=0);
+  end;
+
+begin
+  StartProgram;
+  Add([
+    '{$modeswitch statementexpressions}',
+    'var',
+    '  i: integer;',
+    '  b: boolean;',
+    'begin',
+    '  i:=try {#a} except 2 end;',
+    '  i:=try 1 except on E: TObject do {#b}; else 2 end;',
+    '  i:=try 1 except on E: TObject do 2; else {#c} end;',
+    'end.']);
+  ParseSimpleMarkers(Code);
+  // in the try-part of a try-except-expression: expression, not a statement
+  GatherAt('a');
+  AssertTrue('variable i in try-part',HasIdentifier('i'));
+  AssertFalse('while in try-part',HasIdentifier('while'));
+  // in an on-branch
+  GatherAt('b');
+  AssertTrue('variable i in on-branch',HasIdentifier('i'));
+  AssertFalse('while in on-branch',HasIdentifier('while'));
+  // in the else-part
+  GatherAt('c');
   AssertTrue('variable i in else-part',HasIdentifier('i'));
   AssertFalse('while in else-part',HasIdentifier('while'));
 end;

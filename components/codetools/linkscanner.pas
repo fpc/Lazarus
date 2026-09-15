@@ -226,7 +226,7 @@ type
     cmsFunctionReferences, { allow "reference to" function types }
     cmsAnonymousFunctions, { allow anonymous functions }
     cmsMultiLineStrings,   { Multiline strings }
-    cmsStatementExpressions, { allow if- and case-expressions }
+    cmsStatementExpressions, { allow if-, case- and try-except-expressions }
 
     cmsExternalClass,      { pas2js: allow  class external [pkgname] name [symbol] }
     cmsIgnoreAttributes,   { pas2js: ignore attributes }

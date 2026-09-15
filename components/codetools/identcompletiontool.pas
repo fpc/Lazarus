@@ -480,6 +480,7 @@ type
                                      List: TStrings; WithTypeDefIfScoped: boolean = true): boolean;
     function IsIfExpressionKeyword(KeyWordPos: integer): boolean;
     function IsCaseExpressionAtom(AtomPos: integer): boolean;
+    function IsTryExpressionAtom(AtomPos: integer): boolean;
     function IsExpressionStartInFront(KeyWordPos: integer): boolean;
     function ReadBackTilBlockStart: boolean;
     function CreateDeclarationPathAt(StartNode: TCodeTreeNode;
@@ -2489,9 +2490,9 @@ begin
                * [ilcfStartInStatement, ilcfStartOfOperand, ilcfStartOfStatement]
                = [ilcfStartInStatement, ilcfStartOfOperand])
           then begin
-            // if- and case-expression, e.g. x := if a then b else c
             Add('if');
             Add('case');
+            Add('try');
           end;
           if (ilcfStartInStatement in CurrentIdentifierList.ContextFlags)
           and not (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags)
@@ -3524,8 +3525,11 @@ begin
                   and IsIfExpressionKeyword(CurPos.StartPos))
               or (((CurPos.Flag=cafColon) or UpAtomIs('ELSE') or UpAtomIs('OTHERWISE'))
                   and IsCaseExpressionAtom(CurPos.StartPos))
+              or ((UpAtomIs('TRY') or UpAtomIs('EXCEPT') or UpAtomIs('DO')
+                   or UpAtomIs('ELSE'))
+                  and IsTryExpressionAtom(CurPos.StartPos))
               then begin
-                // in an if- or case-expression, e.g. x := if a then |
+                // in an if-, case- or try-except-expression, e.g. x := if a then |
                 CurrentIdentifierList.ContextFlags:=
                   CurrentIdentifierList.ContextFlags+[ilcfIsExpression, ilcfDontAllowProcedures];
               end else if (CurPos.Flag in [cafSemicolon,cafEnd,cafColon])
@@ -4561,6 +4565,55 @@ begin
   end;
 end;
 
+function TIdentCompletionTool.IsTryExpressionAtom(AtomPos: integer): boolean;
+// Checks if the TRY, EXCEPT, DO, ELSE, semicolon or END at AtomPos belongs to
+// a try-except-expression, e.g. "x := try a except on E: T do b; else c end".
+// The cursor position is kept.
+var
+  OldPos: TAtomPosition;
+begin
+  Result:=false;
+  if not (cmsStatementExpressions in Scanner.CompilerModeSwitches) then exit;
+  OldPos:=CurPos;
+  try
+    MoveCursorToCleanPos(AtomPos);
+    ReadNextAtom;
+    if CurPos.Flag=cafEND then begin
+      if not ReadBackTilBlockStart then exit;
+      if not UpAtomIs('TRY') then exit;
+    end else if not UpAtomIs('TRY') then begin
+      // find the TRY
+      repeat
+        if CurPos.StartPos<=1 then exit;
+        ReadPriorAtom;
+        if CurPos.StartPos<1 then exit;
+        if CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose] then begin
+          if not ReadBackTilBracketOpen(false) then exit;
+        end else if CurPos.Flag=cafEND then begin
+          // skip nested block, e.g. a case-expression
+          if not ReadBackTilBlockStart then exit;
+        end else if CurPos.Flag in [cafAssignment,cafRoundBracketOpen,
+          cafEdgedBracketOpen]
+        then
+          // a try-except-expression cannot contain these
+          exit
+        else if UpAtomIs('TRY') then
+          break
+        else if UpAtomIs('BEGIN') or UpAtomIs('CASE') or UpAtomIs('FINALLY')
+        or UpAtomIs('REPEAT') or UpAtomIs('UNTIL') or UpAtomIs('WHILE')
+        or UpAtomIs('FOR') or UpAtomIs('WITH') or UpAtomIs('ASM')
+        or UpAtomIs('RECORD') then
+          // statement
+          exit;
+      until false;
+    end;
+    // check what is in front of the TRY
+    Result:=IsExpressionStartInFront(CurPos.StartPos);
+  finally
+    MoveCursorToAtomPos(OldPos);
+  end;
+end;
+
 function TIdentCompletionTool.IsExpressionStartInFront(KeyWordPos: integer
   ): boolean;
 // Checks if the atom in front of KeyWordPos is followed by an expression,
@@ -4590,9 +4643,13 @@ begin
     else if UpAtomIs('ELSE') then
       Result:=IsIfExpressionKeyword(CurPos.StartPos)
               or IsCaseExpressionAtom(CurPos.StartPos)
+              or IsTryExpressionAtom(CurPos.StartPos)
     else if (CurPos.Flag=cafColon) or UpAtomIs('OTHERWISE') then
       // e.g. x := case a of 1: if b then 2 else 3 end
-      Result:=IsCaseExpressionAtom(CurPos.StartPos);
+      Result:=IsCaseExpressionAtom(CurPos.StartPos)
+    else if UpAtomIs('TRY') or UpAtomIs('EXCEPT') or UpAtomIs('DO') then
+      // e.g. x := try if b then 2 else 3 except 4 end
+      Result:=IsTryExpressionAtom(CurPos.StartPos);
   finally
     MoveCursorToAtomPos(OldPos);
   end;

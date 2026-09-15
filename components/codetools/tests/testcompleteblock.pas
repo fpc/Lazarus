@@ -56,6 +56,7 @@ type
     procedure TestCompleteBlockIf;
     procedure TestCompleteBlockIfExpr;
     procedure TestCompleteBlockCaseExpr;
+    procedure TestCompleteBlockTryExpr;
   end;
 
 implementation
@@ -550,6 +551,30 @@ begin
                +'end.',
                 'begin'+LineEnding
                +'  x:=case a of 1: b else if c then d else e end;'+LineEnding
+               +'  if a then begin|'+LineEnding
+               +'  end;'+LineEnding
+               +'end.');
+end;
+
+procedure TTestCodetoolsCompleteBlock.TestCompleteBlockTryExpr;
+begin
+  // try-except-expression in brackets
+  CompleteBlock('begin'+LineEnding
+               +'  DoIt(try a except on E: T do b; else c end);'+LineEnding
+               +'  if a then begin|'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+               +'  DoIt(try a except on E: T do b; else c end);'+LineEnding
+               +'  if a then begin|'+LineEnding
+               +'  end;'+LineEnding
+               +'end.');
+  // try-except-expression with if-expression
+  CompleteBlock('begin'+LineEnding
+               +'  x:=try a except if c then d else e end;'+LineEnding
+               +'  if a then begin|'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+               +'  x:=try a except if c then d else e end;'+LineEnding
                +'  if a then begin|'+LineEnding
                +'  end;'+LineEnding
                +'end.');
