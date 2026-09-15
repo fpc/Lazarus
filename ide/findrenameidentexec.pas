@@ -43,8 +43,11 @@ type
     FDeclCodeXY: TCodeXYPosition;
     FDeclTopLine: integer;
     FIdentifier: string;
-    FModifiedDesigners: TFPList;  // List of TEditableUnitInfo
     FKind: TFRIdentifierKind;
+    {$IFDEF EnableFPDocRename}
+    FListOfLazFPDocNode: TFPList;
+    {$ENDIF}
+    FModifiedDesigners: TFPList;  // List of TEditableUnitInfo
     FPascalReferences: TObjectList; // list of TSrcNameRefs
     FLfmReferences: TCodeXYPositions;
     FRenamingFile: Boolean;
@@ -64,11 +67,9 @@ type
     function GatherIdentifierReferences(Flags: TFindRefsFlags): boolean;
     function GatherLFMsReferences(Flags: TFindRefsFlags): TModalResult;
     {$IFDEF EnableFPDocRename}
-    function GatherFPDocReferencesForPascalFiles(DeclarationCode: TCodeBuffer;
-      DeclarationCaretXY: TPoint; var ListOfLazFPDocNode: TFPList): TModalResult;
-    function GatherReferencesInFPDocFile(
-      const OldPackageName, OldModuleName, OldElementName, FPDocFilename: string;
-      var ListOfLazFPDocNode: TFPList): TModalResult;
+    function GatherFPDocReferencesForPascal: TModalResult;
+    function GatherReferencesInFPDocFile(const OldPackageName, OldModuleName,
+      OldElementName, FPDocFilename: string): TModalResult;
     {$ENDIF}
     function Initialize: TModalResult;
     function NodeIsRootClassComponent(aNode: TCodeTreeNode; RootComp: TComponent): boolean;
@@ -638,9 +639,7 @@ begin
 end;
 
 {$IFDEF EnableFPDocRename}
-function TFindRenameIdentSeeker.GatherFPDocReferencesForPascalFiles(
-  DeclarationCode: TCodeBuffer; DeclarationCaretXY: TPoint;
-  var ListOfLazFPDocNode: TFPList): TModalResult;
+function TFindRenameIdentSeeker.GatherFPDocReferencesForPascal: TModalResult;
 var
   PascalFilenames, FPDocFilenames: TFilenameToStringTree;
   CacheWasUsed: boolean;
@@ -666,22 +665,21 @@ begin
     end;
 
     // get codehelp element
-    CHResult:=CodeHelpBoss.GetElementChain(DeclarationCode,
-             DeclarationCaretXY.X,DeclarationCaretXY.Y,true,Chain,CacheWasUsed);
+    CHResult:=CodeHelpBoss.GetElementChain(TCodeBuffer(FDeclTool.Scanner.Code),
+             FDeclXY.X,FDeclXY.Y,true,Chain,CacheWasUsed);
     if CHResult<>chprSuccess then begin
       DebugLn(['GatherFPDocReferences CodeHelpBoss.GetElementChain failed']);
       exit;
     end;
     CHElement:=Chain[0];
-    DebugLn(['GatherFPDocReferences OwnerName=',CHElement.ElementOwnerName,' FPDocPkg=',CHElement.ElementFPDocPackageName,' Name=',CHElement.ElementName]);
+    DebugLn(['GatherFPDocReferences OwnerName=',CHElement.ElementOwnerName,
+      ' FPDocPkg=',CHElement.ElementFPDocPackageName,' Name=',CHElement.ElementName]);
 
     // search FPDoc files
     for S2SItem in FPDocFilenames do begin
       FPDocFilename:=S2SItem^.Name;
-      Result:=GatherReferencesInFPDocFile(
-                CHElement.ElementFPDocPackageName,CHElement.ElementUnitName,
-                CHElement.ElementName,
-                FPDocFilename,ListOfLazFPDocNode);
+      Result:=GatherReferencesInFPDocFile(CHElement.ElementFPDocPackageName,
+               CHElement.ElementUnitName, CHElement.ElementName, FPDocFilename);
       if Result<>mrOk then exit;
     end;
 
@@ -690,15 +688,14 @@ begin
     PascalFilenames.Free;
     FPDocFilenames.Free;
     if Result<>mrOk then begin
-      FreeListObjects(ListOfLazFPDocNode,true);
-      ListOfLazFPDocNode:=nil;
+      FreeListObjects(FListOfLazFPDocNode,true);
+      FListOfLazFPDocNode:=nil;
     end;
   end;
 end;
 
 function TFindRenameIdentSeeker.GatherReferencesInFPDocFile(const OldPackageName,
-  OldModuleName, OldElementName, FPDocFilename: string;
-  var ListOfLazFPDocNode: TFPList): TModalResult;
+  OldModuleName, OldElementName, FPDocFilename: string): TModalResult;
 var
   DocFile: TLazFPDocFile;
   IsSamePackage: Boolean;
@@ -721,9 +718,9 @@ var
     or (SysUtils.CompareText(Link,OldModuleName+'.'+OldElementName)=0) then
     begin
       DebugLn(['CheckLink Found: ',Link]);
-      if ListOfLazFPDocNode=nil then
-        ListOfLazFPDocNode:=TFPList.Create;
-      ListOfLazFPDocNode.Add(TLazFPDocNode.Create(DocFile,Node));
+      if FListOfLazFPDocNode=nil then
+        FListOfLazFPDocNode:=TFPList.Create;
+      FListOfLazFPDocNode.Add(TLazFPDocNode.Create(DocFile,Node));
     end;
   end;
 
@@ -771,9 +768,9 @@ begin
       then begin
         // this is the element itself
         DebugLn(['GatherReferencesInFPDocFile Element itself found: ',Node.NodeName,' ',Node.NodeValue]);
-        if ListOfLazFPDocNode=nil then
-          ListOfLazFPDocNode:=TFPList.Create;
-        ListOfLazFPDocNode.Add(TLazFPDocNode.Create(DocFile,Node));
+        if FListOfLazFPDocNode=nil then
+          FListOfLazFPDocNode:=TFPList.Create;
+        FListOfLazFPDocNode.Add(TLazFPDocNode.Create(DocFile,Node));
       end;
       CheckLink(Node,TDomElement(Node).GetAttribute('link'));
       SearchLinksInChildNodes(Node);
@@ -1093,7 +1090,7 @@ end;
 function TFindRenameIdentSeeker.Execute(AllowRename, SetRenameActive: boolean): TModalResult;
 var
   StartTopLine, i: integer;
-  OwnerList, ListOfLazFPDocNode: TFPList;
+  OwnerList: TFPList;
   OldChange, NewFileCreated: Boolean;
   FindRefFlags: TFindRefsFlags;
   OldRefs: TSrcNameRefs;
@@ -1104,7 +1101,9 @@ begin
   OwnerList:=nil;
   FPascalReferences:=nil;
   FLfmReferences:=nil;
-  ListOfLazFPDocNode:=nil;
+  {$IFDEF EnableFPDocRename}
+  FListOfLazFPDocNode:=nil;
+  {$ENDIF}
   FNewFilename:='';
   NewFileCreated:=false;
   OldRefs:=nil;
@@ -1221,8 +1220,7 @@ begin
 
     {$IFDEF EnableFPDocRename}
     // search fpdoc references
-    Result:=GatherFPDocReferencesForPascalFiles(FTheFiles,DeclarationUnitInfo.Source,
-                                  DeclarationCaretXY,ListOfLazFPDocNode);
+    Result:=GatherFPDocReferencesForPascal;
     if Result<>mrOk then begin
       debugln('Error: (lazarus) DoFindRenameIdentifier GatherFPDocReferences failed');
       exit;
@@ -1278,7 +1276,9 @@ begin
     OwnerList.Free;
     FPascalReferences.Free;
     FLfmReferences.Free;
-    FreeListObjects(ListOfLazFPDocNode,true);
+    {$IFDEF EnableFPDocRename}
+    FreeListObjects(FListOfLazFPDocNode,true);
+    {$ENDIF}
 
     if FRenamingFile and NewFileCreated then
       // source renamed -> jump to new file
