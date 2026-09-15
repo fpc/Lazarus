@@ -70,6 +70,9 @@ type
     procedure TestParseIfExpr;
     procedure TestParseIfExprModeSwitch;
     procedure TestParseIfExprObjFPCFail;
+    procedure TestParseCaseExpr;
+    procedure TestParseCaseExprModeSwitch;
+    procedure TestParseCaseExprObjFPCFail;
     procedure TestParseProcAnoArg;
     procedure TestParseProcAnoArgSubFunc;
     procedure TestParseThreadVar;
@@ -729,6 +732,63 @@ begin
   'begin',
   'end.']);
   CheckParseError(CodeXYPosition(7,6,Code),'expected constant, but if found');
+end;
+
+procedure TTestPascalParser.TestParseCaseExpr;
+begin
+  Add([
+  'program test1;',
+  '{$mode delphi}',
+  'const',
+  '  c = case 3 of 1: 0; 2..4: 1; else 0 end;',
+  '  d: word = case c of 0: 1; 1, 2: 2 otherwise 3; end;',
+  '  e = 1 + case c of 0: 2 else 3 end * 4;',
+  '  f = (case c of 0: 2 else 3 end) * 4;',
+  '  g = case c of 0: if c>0 then 1 else 2; else case c of 1: 3 else 4 end end;',
+  'type',
+  '  TEnum = (a = case c of 0: 1 else 2 end, b);',
+  'var',
+  '  v: integer = case c of 0: 1 else 2 end;',
+  '  w: boolean = case c>0 of false: false; true: true end;',
+  'procedure DoIt(i: integer = case c of 0: 1; else 2 end; j: word = 3);',
+  'begin',
+  '  i:=case c of 0: 1; else 2 end;',
+  '  if c>0 then i:=case c of 1: 1 else 2 end else i:=3;',
+  '  case c of',
+  '  0: i:=case c of 0: 1 else 2 end;',
+  '  else i:=case c of 0: 1 else 2 end;',
+  '  end;',
+  'end;',
+  'begin',
+  '  DoIt(case c of 0: 1 else 2 end);',
+  '']);
+  ParseModule;
+end;
+
+procedure TTestPascalParser.TestParseCaseExprModeSwitch;
+begin
+  StartProgram;
+  Add([
+  '{$modeswitch statementexpressions}',
+  'const',
+  '  c = case 3 of 1: 0; else 1 end;',
+  'procedure DoIt(i: integer = case c of 0: 1 else 2 end);',
+  'begin',
+  'end;',
+  'begin',
+  '']);
+  ParseModule;
+end;
+
+procedure TTestPascalParser.TestParseCaseExprObjFPCFail;
+begin
+  StartProgram;
+  Add([
+  'const',
+  '  c = case 1 of 1: 0 else 1 end;',
+  'begin',
+  'end.']);
+  CheckParseError(CodeXYPosition(7,6,Code),'expected constant, but case found');
 end;
 
 procedure TTestPascalParser.TestParseProcAnoAssign;

@@ -215,6 +215,7 @@ type
     procedure TestFindDeclaration_IsNotDelphi;
     procedure TestFindDeclaration_NotIn;
     procedure TestFindDeclaration_IfExpr;
+    procedure TestFindDeclaration_CaseExpr;
     procedure TestFindDeclaration_Attributes;
     procedure TestFindDeclaration_BracketOpen;
     procedure TestFindDeclaration_AnonymProc;
@@ -2259,6 +2260,50 @@ begin
   '  a4{guesstype:TAnt} := if b then nil else Ant;',
   '  a5{guesstype:TAnt} := if b then Ant else nil;',
   '  if (if b then i else by)>3 then ;',
+  '  Ant{declaration:Ant}:=nil;',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_CaseExpr;
+begin
+  StartProgram;
+  Add([
+  '{$modeswitch statementexpressions}',
+  'type',
+  '  TAnimal = class',
+  '  end;',
+  '  TAnt = class(TAnimal)',
+  '  end;',
+  '  TBird = class(TAnimal)',
+  '  end;',
+  '  TColor = (red, green, blue);',
+  'var',
+  '  b: boolean;',
+  '  i: longint;',
+  '  by: byte;',
+  '  i64: int64;',
+  '  si: single;',
+  '  d: double;',
+  '  c: char;',
+  '  s: string;',
+  '  col: TColor;',
+  '  Animal: TAnimal;',
+  '  Ant: TAnt;',
+  '  Bird: TBird;',
+  'begin',
+  '  v1{guesstype:LongInt} := case col{declaration:col} of red{declaration:TColor}: i{declaration:i}; green, blue: by{declaration:by} end;',
+  '  v2{guesstype:Int64} := case i of 1: by; 2..3: i64; else i end;',
+  '  v3{guesstype:Double} := case i of 1: si; otherwise d end;',
+  '  v4{guesstype:String} := case b of false: c; true: s end;',
+  '  v5{guesstype:LongInt} := case i of 1: 2; else if b then i else 3 end;',
+  '  v6{guesstype:LongInt} := 1 + case i of 1: i else 3 end * 2;',
+  '  v7{guesstype:LongInt} := if b then case i of 1: i else 2 end else 3;',
+  '  v8{guesstype:LongInt} := case i of 1: case b of true: i; false: by end; else 3 end;',
+  '  v9{guesstype:Boolean} := case i of 1: b; else i>2 end;',
+  '  a1{guesstype:TAnimal} := case i of 1: Ant{declaration:Ant}; 2: Bird{declaration:Bird} else Animal end;',
+  '  a2{guesstype:TAnt} := case i of 1: nil else Ant end;',
+  '  if case i of 1: b else false end then ;',
   '  Ant{declaration:Ant}:=nil;',
   'end.']);
   FindDeclarations(Code);

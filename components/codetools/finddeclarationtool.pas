@@ -889,7 +889,7 @@ type
     function CalculateBinaryOperator(LeftOperand, RightOperand: TOperand;
       BinaryOperator: TAtomPosition;
       Params: TFindDeclarationParams): TOperand;
-    function CombineIfExprOperands(ThenOperand, ElseOperand: TOperand;
+    function CombineStatementExprOperands(ThenOperand, ElseOperand: TOperand;
       Params: TFindDeclarationParams; CleanPos: integer): TOperand;
     function FindCommonAncestorClass(const Context1, Context2: TFindContext;
       Params: TFindDeclarationParams): TFindContext;
@@ -12590,7 +12590,12 @@ begin
                         cafRoundBracketClose,cafEdgedBracketClose])
     then
       break;
-    if UpAtomIs('IF')
+    if UpAtomIs('CASE')
+    and (cmsStatementExpressions in Scanner.CompilerModeSwitches) then begin
+      // case-expression: case Expr of Label: Value; else Value end
+      if not ReadTilCaseExprEnd then
+        break;
+    end else if UpAtomIs('IF')
     and (cmsStatementExpressions in Scanner.CompilerModeSwitches) then
       // if-expression: if Cond then A else B
       inc(IfLevel)
@@ -12812,7 +12817,11 @@ var EndPos, SubStartPos: integer;
         exit;
       if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then
         ReadTilBracketClose(true)
-      else if UpAtomIs('IF') then
+      else if UpAtomIs('CASE') then begin
+        // skip case-expression
+        if not ReadTilCaseExprEnd then
+          exit;
+      end else if UpAtomIs('IF') then
         inc(Level)
       else if UpAtomIs('ELSE') then begin
         if Level=0 then
@@ -12847,13 +12856,83 @@ var EndPos, SubStartPos: integer;
     ElseOperand.AliasType:=CleanFindContext;
     ElseOperand.Expr:=FindExpressionResultType(Params,ElseStartPos,ElseEndPos,
                                                @ElseOperand.AliasType);
-    IfOperand:=CombineIfExprOperands(ThenOperand,ElseOperand,Params,ElseEndPos);
+    IfOperand:=CombineStatementExprOperands(ThenOperand,ElseOperand,Params,ElseEndPos);
     Result:=IfOperand.Expr;
     if AliasType<>nil then
       AliasType^:=IfOperand.AliasType;
 
     MoveCursorToCleanPos(ElseEndPos);
     ReadNextAtom;
+  end;
+
+  procedure ReadCaseExprOperand;
+  // case-expression: case Expr of Label1, Label2..Label3: Value1; else Value2 end
+  var
+    ValueStartPos, ValueEndPos: integer;
+    ValueOperand, CaseOperand: TOperand;
+    HasValue: Boolean;
+
+    procedure ReadValue;
+    begin
+      ValueStartPos:=CurPos.EndPos;
+      ValueEndPos:=FindEndOfExpression(ValueStartPos);
+      if ValueEndPos>MaxEndPos then
+        ValueEndPos:=MaxEndPos;
+      ValueOperand.AliasType:=CleanFindContext;
+      ValueOperand.Expr:=FindExpressionResultType(Params,ValueStartPos,ValueEndPos,
+                                                  @ValueOperand.AliasType);
+      if HasValue then
+        CaseOperand:=CombineStatementExprOperands(CaseOperand,ValueOperand,
+                                                  Params,ValueEndPos)
+      else
+        CaseOperand:=ValueOperand;
+      HasValue:=true;
+      MoveCursorToCleanPos(ValueEndPos);
+      ReadNextAtom;
+    end;
+
+  begin
+    HasValue:=false;
+    CaseOperand.Expr:=CleanExpressionType;
+    CaseOperand.AliasType:=CleanFindContext;
+    // skip case value
+    ValueEndPos:=FindEndOfExpression(CurPos.EndPos);
+    MoveCursorToCleanPos(ValueEndPos);
+    ReadNextAtom;
+    if not UpAtomIs('OF') then
+      RaiseExceptionFmt(20260915120100,ctsStrExpectedButAtomFound,['of',GetAtom]);
+    ReadNextAtom;
+    repeat
+      if (CurPos.EndPos>MaxEndPos) or (CurPos.StartPos>SrcLen)
+      or (CurPos.Flag=cafEND) then
+        break;
+      if UpAtomIs('ELSE') or UpAtomIs('OTHERWISE') then begin
+        ReadValue;
+        if CurPos.Flag=cafSemicolon then
+          ReadNextAtom;
+        break;
+      end;
+      // skip labels, e.g. 1, 3..4:
+      while not (CurPos.Flag in [cafColon,cafSemicolon,cafEND]) do begin
+        if (CurPos.EndPos>MaxEndPos) or (CurPos.StartPos>SrcLen) then
+          RaiseExceptionFmt(20260915120101,ctsStrExpectedButAtomFound,[':',GetAtom]);
+        if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then
+          ReadTilBracketClose(true);
+        ReadNextAtom;
+      end;
+      if CurPos.Flag<>cafColon then
+        RaiseExceptionFmt(20260915120102,ctsStrExpectedButAtomFound,[':',GetAtom]);
+      ReadValue;
+      if CurPos.Flag=cafSemicolon then
+        ReadNextAtom;
+    until false;
+
+    Result:=CaseOperand.Expr;
+    if AliasType<>nil then
+      AliasType^:=CaseOperand.AliasType;
+    if CurPos.Flag=cafEND then
+      // operators can follow the end
+      ReadNextAtom;
   end;
 
 var
@@ -12953,6 +13032,8 @@ begin
   end
   else if UpAtomIs('IF') then
     ReadIfExprOperand
+  else if UpAtomIs('CASE') then
+    ReadCaseExprOperand
   else
     RaiseIdentExpected;
 
@@ -13276,10 +13357,11 @@ begin
   end;
 end;
 
-function TFindDeclarationTool.CombineIfExprOperands(ThenOperand,
+function TFindDeclarationTool.CombineStatementExprOperands(ThenOperand,
   ElseOperand: TOperand; Params: TFindDeclarationParams; CleanPos: integer
   ): TOperand;
-// returns the type of the if-expression "if Cond then ThenOperand else ElseOperand"
+// returns the type of the if-expression "if Cond then ThenOperand else ElseOperand",
+// or of two values of a case-expression
 const
   xtAllChars = [xtChar,xtAnsiChar,xtWideChar];
   xtAllStrings = xtAllStringTypes+xtAllWideStringTypes;
@@ -15441,7 +15523,7 @@ var
   EdgedBracketsStartPos, i : integer;
   SetNode, ClassNode, ExprClassNode: TCodeTreeNode;
   SetTool: TFindDeclarationTool;
-  AliasType, ProcContext: TFindContext;
+  AliasType: TFindContext;
   Node: TCodeTreeNode;
 begin
   //debugln(['TFindDeclarationTool.FindTermTypeAsString START']);
@@ -15481,8 +15563,6 @@ begin
     end;
   end;
 
-  ProcContext:=CleanFindContext;
-
   // check if TermPos is @Name and a pointer (= ^Name) can be found
   if IsTermNamedPointer(TermPos,ExprType) then begin
     // pointer type
@@ -15497,9 +15577,6 @@ begin
     if (Params.NewNode<>nil) and (Params.NewNode.Desc=ctnProcedure)  then begin
       // a type (in parameters or result) known at proc header can be redeclared,
       // needed checking if not
-
-      ProcContext.Node:=Params.NewNode;
-      ProcContext.Tool:=Params.NewCodeTool;
 
       DebugLn(['proc header start = ',Params.NewNode.FirstChild.StartPos]);
       if AliasType.Node<>nil then

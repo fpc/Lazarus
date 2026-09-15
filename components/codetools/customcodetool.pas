@@ -233,6 +233,7 @@ type
     // read blocks
     function ReadTilBracketClose(ExceptionOnNotFound: boolean): boolean;
     function ReadBackTilBracketOpen(ExceptionOnNotFound: boolean): boolean;
+    function ReadTilCaseExprEnd: boolean;
     procedure ReadTillCommentEnd;
     
     // read atoms
@@ -2010,7 +2011,7 @@ function TCustomCodeTool.ReadTilBracketClose(
 // reads code brackets (not comment brackets)
 // after call cursor is on the closing bracket
 var CloseBracket, AntiCloseBracket: TCommonAtomFlag;
-  Start: TAtomPosition;
+  Start, CaseAtom: TAtomPosition;
   Node: TCodeTreeNode;
   
   procedure RaiseBracketNotFound;
@@ -2045,6 +2046,15 @@ begin
   repeat
     ReadNextAtom;
     if (CurPos.Flag=CloseBracket) then break;
+    if (CurPos.Flag=cafWord) and UpAtomIs('CASE') and (Scanner<>nil)
+    and (cmsStatementExpressions in Scanner.CompilerModeSwitches) then begin
+      // skip case-expression, e.g. (case a of 1: b; else c end)
+      CaseAtom:=CurPos;
+      if not ReadTilCaseExprEnd then
+        // not a case-expression, e.g. a variant record
+        MoveCursorToAtomPos(CaseAtom);
+      continue;
+    end;
     if (CurPos.StartPos>SrcLen)
     or (CurPos.Flag in [cafEnd,AntiCloseBracket])
     then begin
@@ -2068,6 +2078,32 @@ begin
     end;
   until false;
   Result:=true;
+end;
+
+function TCustomCodeTool.ReadTilCaseExprEnd: boolean;
+// cursor is on the CASE of a case-expression,
+// moves the cursor to the END of the case-expression.
+// Returns false if there is no END, e.g. a variant record in brackets.
+var
+  Level: Integer;
+begin
+  Result:=false;
+  Level:=0;
+  repeat
+    ReadNextAtom;
+    if CurPos.StartPos>SrcLen then exit;
+    if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then begin
+      if not ReadTilBracketClose(false) then exit;
+    end else if CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose] then
+      // e.g. variant record: (case b: byte of 0: (c: word))
+      exit
+    else if CurPos.Flag=cafEND then begin
+      if Level=0 then exit(true);
+      dec(Level);
+    end else if UpAtomIs('CASE') or UpAtomIs('BEGIN') or UpAtomIs('TRY')
+    or UpAtomIs('ASM') then
+      inc(Level);
+  until false;
 end;
 
 function TCustomCodeTool.ReadBackTilBracketOpen(

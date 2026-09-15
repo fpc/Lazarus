@@ -97,6 +97,7 @@ type
     procedure TestCompleteLocalVar_EnumInClass2;
     procedure TestCompleteLocalVar_IfExpr;
     procedure TestCompleteLocalVar_IfExprCommonAncestor;
+    procedure TestCompleteLocalVar_CaseExpr;
     procedure TestCompleteLocalVarForAnonymousFunction1;
     procedure TestCompleteLocalVarForAnonymousFunction2;
 
@@ -2126,6 +2127,32 @@ begin
     '  a: TAnimal;',
     'begin',
     '  a:=if b then Ant else Bird;',
+    'end;',
+    'begin',
+    'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteLocalVar_CaseExpr;
+begin
+  Test('TestCompleteLocalVar_CaseExpr',
+    ['program Project1;',
+    '{$mode delphi}',
+    'type TColor = (red,green,blue);',
+    'procedure Fly(i: integer);',
+    'begin',
+    '  c:=case i of 1: red; 2: green; else blue end;',
+    'end;',
+    'begin',
+    'end.'],
+    6,3,
+    ['program Project1;',
+    '{$mode delphi}',
+    'type TColor = (red,green,blue);',
+    'procedure Fly(i: integer);',
+    'var',
+    '  c: TColor;',
+    'begin',
+    '  c:=case i of 1: red; 2: green; else blue end;',
     'end;',
     'begin',
     'end.']);

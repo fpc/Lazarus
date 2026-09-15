@@ -10108,15 +10108,21 @@ function TCodeCompletionCodeTool.CompleteCode(CursorPos: TCodeXYPosition;
           or UpAtomIs('TRY') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT')
           or UpAtomIs('FOR') or UpAtomIs('TO') or UpAtomIs('DO')
           or UpAtomIs('REPEAT') or UpAtomIs('UNTIL') or UpAtomIs('WHILE')
-          or UpAtomIs('CASE')
+          or (UpAtomIs('CASE') and not IsCaseExpressionAtom(CurPos.StartPos))
           then
             break
           else if (UpAtomIs('IF') or UpAtomIs('THEN') or UpAtomIs('ELSE'))
-          and not IsIfExpressionKeyword(CurPos.StartPos) then
-            // statement if, not an if-expression
+          and not IsIfExpressionKeyword(CurPos.StartPos)
+          and not (UpAtomIs('ELSE') and IsCaseExpressionAtom(CurPos.StartPos)) then
+            // statement if, not an if- or case-expression
             break;
+        cafEND:
+          // skip case-expression, e.g. v := case a of 1: 2 else 3 end + 4
+          if IsCaseExpressionAtom(CurPos.StartPos) then
+            ReadBackTilBlockStart;
         cafSemicolon:
-          break; // stop on semicolon
+          if not IsCaseExpressionAtom(CurPos.StartPos) then
+            break; // stop on semicolon
       end;
     end;
   end;

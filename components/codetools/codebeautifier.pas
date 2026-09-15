@@ -825,7 +825,11 @@ begin
       case UpChars[r[1]] of
       'A': // CA
         if CompareIdentifiers('CASE',r)=0 then begin
-          if Stack.TopType in bbtAllStatements then
+          if (Stack.TopType in bbtAllStatements)
+          or ((Stack.TopType=bbtDefinition) and (Stack.Top>0)
+            and (Stack.Stack[Stack.Top-1].Typ in [bbtConstSection,bbtVarSection]))
+          then
+            // case statement or case-expression, e.g. const c = case a of 1: 2 else 3 end;
             BeginBlock(bbtCase);
         end;
       'L': // CL

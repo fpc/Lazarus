@@ -1380,6 +1380,7 @@ begin
     ReadGenericParamList(IsGeneric,true);
   if (CurPos.Flag<>cafPoint) or (pphIsOperator in ParseAttr) then begin
     // read rest
+    IsExternal:=false;
     ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier,IsExternal);
   end else begin
     // Method resolution clause (e.g. function Intf.Method = Method_Name)
@@ -2125,6 +2126,64 @@ begin
       if not ReadIfExprPart then exit;
       // lowest precedence: the else-part has read all following operators
       break;
+    end else if UpAtomIs('CASE') and AllowStatementExpressions then begin
+      // case-expression: case Expr of Label1, Label2..Label3: Value1; else Value2 end
+      if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+      if not ReadIfExprPart then exit;
+      if not UpAtomIs('OF') then begin
+        if ExceptionOnError then
+          SaveRaiseStringExpectedButAtomFound(20260915120000,'of')
+        else exit;
+      end;
+      if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+      if UpAtomIs('ELSE') or UpAtomIs('OTHERWISE') or (CurPos.Flag=cafEND) then begin
+        // at least one branch needed
+        if ExceptionOnError then
+          SaveRaiseStringExpectedButAtomFound(20260915120001,ctsConstant)
+        else exit;
+      end;
+      repeat
+        // read labels
+        repeat
+          if not ReadIfExprPart then exit;
+          if AtomIs('..') then begin
+            if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+            if not ReadIfExprPart then exit;
+          end;
+          if CurPos.Flag<>cafComma then break;
+          if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+        until false;
+        if CurPos.Flag<>cafColon then begin
+          if ExceptionOnError then
+            SaveRaiseCharExpectedButAtomFound(20260915120002,':')
+          else exit;
+        end;
+        if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+        // read value
+        if not ReadIfExprPart then exit;
+        if CurPos.Flag=cafSemicolon then begin
+          if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+        end else if not (UpAtomIs('ELSE') or UpAtomIs('OTHERWISE')
+          or (CurPos.Flag=cafEND)) then begin
+          if ExceptionOnError then
+            SaveRaiseCharExpectedButAtomFound(20260915120003,';')
+          else exit;
+        end;
+      until UpAtomIs('ELSE') or UpAtomIs('OTHERWISE') or (CurPos.Flag=cafEND);
+      if UpAtomIs('ELSE') or UpAtomIs('OTHERWISE') then begin
+        if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+        if not ReadIfExprPart then exit;
+        if CurPos.Flag=cafSemicolon then begin
+          if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+        end;
+      end;
+      if CurPos.Flag<>cafEND then begin
+        if ExceptionOnError then
+          SaveRaiseStringExpectedButAtomFound(20260915120004,'end')
+        else exit;
+      end;
+      // operators can follow the end
+      if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
     end else if CurPos.Flag in AllCommonAtomWords then begin
       // word (identifier or keyword)
       if AtomIsKeyWord
@@ -2377,7 +2436,8 @@ type
     siNone,
     siRoundBracketOpen,
     siEdgedBracketOpen,
-    siRecord
+    siRecord,
+    siCaseExpr
     );
   TStackItem = record
     Typ: TStackItemType;
@@ -2454,6 +2514,7 @@ var
     siRoundBracketOpen: Msg:=crsBracketNotFound;
     siEdgedBracketOpen: Msg:=crsBracketNotFound2;
     siRecord: Msg:=crsRecordEndNotFound;
+    siCaseExpr: Msg:=crsClosingBracketNotFound;
     end;
     if CurPos.StartPos<=SrcLen then begin
       if ErrorNicePosition.Code<>nil then
@@ -2486,27 +2547,36 @@ begin
         if CurPos.StartPos>SrcLen then Unexpected;
 
       cafSemicolon:
-        if sbcStopOnSemicolon in Flags then Unexpected;
+        if (sbcStopOnSemicolon in Flags) and (Top<>siCaseExpr) then Unexpected;
 
       cafRoundBracketOpen:
         Push(siRoundBracketOpen);
 
       cafRoundBracketClose:
-        if Top=siRoundBracketOpen then begin
-          if Ptr=0 then exit(true);
-          Pop;
-        end else
-          Unexpected;
+        begin
+          // a case without end is a variant record, e.g. (case b: byte of 0: (c: word))
+          while Top=siCaseExpr do
+            Pop;
+          if Top=siRoundBracketOpen then begin
+            if Ptr=0 then exit(true);
+            Pop;
+          end else
+            Unexpected;
+        end;
 
       cafEdgedBracketOpen:
         Push(siEdgedBracketOpen);
 
       cafEdgedBracketClose:
-        if Top=siEdgedBracketOpen then begin
-          if Ptr=0 then exit(true);
-          Pop;
-        end else
-          Unexpected;
+        begin
+          while Top=siCaseExpr do
+            Pop;
+          if Top=siEdgedBracketOpen then begin
+            if Ptr=0 then exit(true);
+            Pop;
+          end else
+            Unexpected;
+        end;
 
       cafWord:
         begin
@@ -2522,6 +2592,11 @@ begin
             end;
           'C':
             case UpChars[p[1]] of
+            'A':
+              if UpAtomIs('CASE') and AllowStatementExpressions
+              and (Top in [siRoundBracketOpen,siEdgedBracketOpen,siCaseExpr]) then
+                // case-expression, e.g. (case a of 1: b; else c end)
+                Push(siCaseExpr);
             'O': if UpAtomIs('CONST') then Unexpected;
             end;
           'D':
@@ -2530,7 +2605,7 @@ begin
             end;
           'E':
             if UpAtomIs('END') then begin
-              if Top=siRecord then
+              if Top in [siRecord,siCaseExpr] then
                 Pop
               else
                 Unexpected;
@@ -2936,6 +3011,7 @@ begin
   end;
   // read rest of procedure head
   HasForwardModifier:=false;
+  IsExternal:=false;
   ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier,IsExternal);
   if HasForwardModifier then
     ProcNode.SubDesc:=ctnsForwardDeclaration;
@@ -5803,8 +5879,12 @@ begin
   CurNode.Desc := ctnConstant;
   repeat
     if (CurPos.Flag in [cafRoundBracketOpen, cafEdgedBracketOpen]) then
-      ReadTilBracketClose(true);
-    if (CurPos.Flag in AllCommonAtomWords)
+      ReadTilBracketClose(true)
+    else if AllowStatementExpressions and UpAtomIs('CASE') then begin
+      // case-expression: skip its semicolons
+      if not ReadTilCaseExprEnd then
+        SaveRaiseStringExpectedButAtomFound(20260915120010,'end');
+    end else if (CurPos.Flag in AllCommonAtomWords)
     and (not IsKeyWordInConstAllowed.DoIdentifier(@Src[CurPos.StartPos]))
     and AtomIsKeyWord
     and not (AllowStatementExpressions

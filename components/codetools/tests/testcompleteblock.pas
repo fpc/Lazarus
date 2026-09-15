@@ -55,6 +55,7 @@ type
     procedure TestCompleteBlockAsm;
     procedure TestCompleteBlockIf;
     procedure TestCompleteBlockIfExpr;
+    procedure TestCompleteBlockCaseExpr;
   end;
 
 implementation
@@ -525,6 +526,30 @@ begin
                +'end.',
                 'begin'+LineEnding
                +'  x:=[if a then b else c];'+LineEnding
+               +'  if a then begin|'+LineEnding
+               +'  end;'+LineEnding
+               +'end.');
+end;
+
+procedure TTestCodetoolsCompleteBlock.TestCompleteBlockCaseExpr;
+begin
+  // case-expression in brackets
+  CompleteBlock('begin'+LineEnding
+               +'  DoIt(case a of 1: b; else c end);'+LineEnding
+               +'  if a then begin|'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+               +'  DoIt(case a of 1: b; else c end);'+LineEnding
+               +'  if a then begin|'+LineEnding
+               +'  end;'+LineEnding
+               +'end.');
+  // case-expression without semicolons, with if-expression
+  CompleteBlock('begin'+LineEnding
+               +'  x:=case a of 1: b else if c then d else e end;'+LineEnding
+               +'  if a then begin|'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+               +'  x:=case a of 1: b else if c then d else e end;'+LineEnding
                +'  if a then begin|'+LineEnding
                +'  end;'+LineEnding
                +'end.');

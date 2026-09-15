@@ -479,6 +479,9 @@ type
     function GetValuesOfCaseVariable(const CursorPos: TCodeXYPosition;
                                      List: TStrings; WithTypeDefIfScoped: boolean = true): boolean;
     function IsIfExpressionKeyword(KeyWordPos: integer): boolean;
+    function IsCaseExpressionAtom(AtomPos: integer): boolean;
+    function IsExpressionStartInFront(KeyWordPos: integer): boolean;
+    function ReadBackTilBlockStart: boolean;
     function CreateDeclarationPathAt(StartNode: TCodeTreeNode;
       TargetTool: TFindDeclarationTool; TargetNode: TCodeTreeNode): string;
     property Beautifier: TBeautifyCodeOptions read FBeautifier write FBeautifier;
@@ -2485,8 +2488,11 @@ begin
           and (CurrentIdentifierList.ContextFlags
                * [ilcfStartInStatement, ilcfStartOfOperand, ilcfStartOfStatement]
                = [ilcfStartInStatement, ilcfStartOfOperand])
-          then
-            Add('if'); // if-expression, e.g. x := if a then b else c
+          then begin
+            // if- and case-expression, e.g. x := if a then b else c
+            Add('if');
+            Add('case');
+          end;
           if (ilcfStartInStatement in CurrentIdentifierList.ContextFlags)
           and not (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags)
           and (CurrentIdentifierList.StartBracketLvl = 0)
@@ -3514,9 +3520,12 @@ begin
             if (ilcfStartInStatement in CurrentIdentifierList.ContextFlags)
             then begin
               // check if LValue
-              if (UpAtomIs('THEN') or UpAtomIs('ELSE'))
-              and IsIfExpressionKeyword(CurPos.StartPos) then begin
-                // in an if-expression, e.g. x := if a then |
+              if ((UpAtomIs('THEN') or UpAtomIs('ELSE'))
+                  and IsIfExpressionKeyword(CurPos.StartPos))
+              or (((CurPos.Flag=cafColon) or UpAtomIs('ELSE') or UpAtomIs('OTHERWISE'))
+                  and IsCaseExpressionAtom(CurPos.StartPos))
+              then begin
+                // in an if- or case-expression, e.g. x := if a then |
                 CurrentIdentifierList.ContextFlags:=
                   CurrentIdentifierList.ContextFlags+[ilcfIsExpression, ilcfDontAllowProcedures];
               end else if (CurPos.Flag in [cafSemicolon,cafEnd,cafColon])
@@ -4473,6 +4482,9 @@ begin
         if CurPos.StartPos<1 then exit;
         if CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose] then begin
           if not ReadBackTilBracketOpen(false) then exit;
+        end else if CurPos.Flag=cafEND then begin
+          // skip case-expression
+          if not ReadBackTilBlockStart then exit;
         end else if CurPos.Flag in [cafSemicolon,cafColon,cafAssignment,
           cafRoundBracketOpen,cafEdgedBracketOpen]
         then
@@ -4494,7 +4506,73 @@ begin
       until false;
     end;
     // check what is in front of the IF
-    if CurPos.StartPos<=1 then exit;
+    Result:=IsExpressionStartInFront(CurPos.StartPos);
+  finally
+    MoveCursorToAtomPos(OldPos);
+  end;
+end;
+
+function TIdentCompletionTool.IsCaseExpressionAtom(AtomPos: integer): boolean;
+// Checks if the CASE, colon, semicolon, ELSE, OTHERWISE or END at AtomPos
+// belongs to a case-expression, e.g. "x := case a of 1: b; else c end".
+// The cursor position is kept.
+var
+  OldPos: TAtomPosition;
+begin
+  Result:=false;
+  if not (cmsStatementExpressions in Scanner.CompilerModeSwitches) then exit;
+  OldPos:=CurPos;
+  try
+    MoveCursorToCleanPos(AtomPos);
+    ReadNextAtom;
+    if CurPos.Flag=cafEND then begin
+      if not ReadBackTilBlockStart then exit;
+      if not UpAtomIs('CASE') then exit;
+    end else if not UpAtomIs('CASE') then begin
+      // find the CASE
+      repeat
+        if CurPos.StartPos<=1 then exit;
+        ReadPriorAtom;
+        if CurPos.StartPos<1 then exit;
+        if CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose] then begin
+          if not ReadBackTilBracketOpen(false) then exit;
+        end else if CurPos.Flag=cafEND then begin
+          // skip nested block, e.g. a case-expression
+          if not ReadBackTilBlockStart then exit;
+        end else if CurPos.Flag in [cafAssignment,cafRoundBracketOpen,
+          cafEdgedBracketOpen]
+        then
+          // a case-expression cannot contain these
+          exit
+        else if UpAtomIs('CASE') then
+          break
+        else if UpAtomIs('BEGIN') or UpAtomIs('TRY') or UpAtomIs('FINALLY')
+        or UpAtomIs('EXCEPT') or UpAtomIs('REPEAT') or UpAtomIs('UNTIL')
+        or UpAtomIs('DO') or UpAtomIs('WHILE') or UpAtomIs('FOR')
+        or UpAtomIs('WITH') or UpAtomIs('ASM') or UpAtomIs('RECORD') then
+          // statement
+          exit;
+      until false;
+    end;
+    // check what is in front of the CASE
+    Result:=IsExpressionStartInFront(CurPos.StartPos);
+  finally
+    MoveCursorToAtomPos(OldPos);
+  end;
+end;
+
+function TIdentCompletionTool.IsExpressionStartInFront(KeyWordPos: integer
+  ): boolean;
+// Checks if the atom in front of KeyWordPos is followed by an expression,
+// e.g. "x := |if" or "x := case a of 1: |if". The cursor position is kept.
+var
+  OldPos: TAtomPosition;
+begin
+  Result:=false;
+  if KeyWordPos<=1 then exit;
+  OldPos:=CurPos;
+  try
+    MoveCursorToCleanPos(KeyWordPos);
     ReadPriorAtom;
     if CurPos.StartPos<1 then exit;
     if CurPos.Flag in [cafAssignment,cafEqual,cafComma,cafRoundBracketOpen,
@@ -4506,12 +4584,40 @@ begin
                                                CurPos.EndPos-CurPos.StartPos)
     then
       Result:=true
-    else if UpAtomIs('THEN') or UpAtomIs('ELSE') then
+    else if UpAtomIs('THEN') then
       // e.g. x := if a then if b then 1 else 2 else 3
-      Result:=IsIfExpressionKeyword(CurPos.StartPos);
+      Result:=IsIfExpressionKeyword(CurPos.StartPos)
+    else if UpAtomIs('ELSE') then
+      Result:=IsIfExpressionKeyword(CurPos.StartPos)
+              or IsCaseExpressionAtom(CurPos.StartPos)
+    else if (CurPos.Flag=cafColon) or UpAtomIs('OTHERWISE') then
+      // e.g. x := case a of 1: if b then 2 else 3 end
+      Result:=IsCaseExpressionAtom(CurPos.StartPos);
   finally
     MoveCursorToAtomPos(OldPos);
   end;
+end;
+
+function TIdentCompletionTool.ReadBackTilBlockStart: boolean;
+// cursor is on an END, moves the cursor back to the start of the block,
+// e.g. BEGIN, CASE, TRY. Does not raise exceptions.
+var
+  Level: Integer;
+begin
+  Result:=false;
+  Level:=0;
+  repeat
+    if CurPos.StartPos<=1 then exit;
+    ReadPriorAtom;
+    if CurPos.StartPos<1 then exit;
+    if CurPos.Flag=cafEND then
+      inc(Level)
+    else if UpAtomIs('BEGIN') or UpAtomIs('CASE') or UpAtomIs('TRY')
+    or UpAtomIs('ASM') or UpAtomIs('RECORD') then begin
+      if Level=0 then exit(true);
+      dec(Level);
+    end;
+  until false;
 end;
 
 procedure TIdentCompletionTool.CalcMemSize(Stats: TCTMemStats);
