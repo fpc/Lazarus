@@ -1797,7 +1797,7 @@ begin
         end;
         {$IFDEF VerboseExtToolThread}
         if Tool.ExitStatus<>0 then
-          DebuglnThreadLog(['TExternalToolThread.Execute ',Title,' exit status=',Tool.ExitStatus,' ExitCode=',Tool.ExitCode]);
+          DebuglnThreadLog(['TExternalToolThread.Execute ',Title,' exit status=',IntToStr(Tool.ExitStatus),' ExitCode=',IntToStr(Tool.ExitCode)]);
         {$ENDIF}
       except
         Tool.ErrorMessage:=lisUnableToReadProcessExitStatus;
@@ -1805,7 +1805,7 @@ begin
     except
       on E: Exception do begin
         {$IFDEF VerboseExtToolThread}
-        DebuglnThreadLog(['TExternalToolThread.Execute ',Title,' run: ',E.Message]);
+        DebuglnThreadLog(['TExternalToolThread.Execute Exception ',Title,' run: ',E.Message]);
         {$ENDIF}
         if (Tool<>nil) and (Tool.ErrorMessage='') then begin
           Tool.ErrorMessage:=E.Message;
