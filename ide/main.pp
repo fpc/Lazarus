@@ -8869,7 +8869,6 @@ begin
         DoOpenProjectFile(Project1.ProjectInfoFile,[ofRevert])
       else
         Project1.IgnoreProjectInfoFileOnDisk;
-      exit(mrOk);
     end;
 
     AIgnoreList := TFPList.Create;
