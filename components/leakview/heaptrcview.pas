@@ -177,8 +177,10 @@ end;
 
 procedure THeapTrcViewForm.chkStayOnTopChange(Sender: TObject);
 begin
-  if chkStayOnTop.Checked then Self.formStyle := fsStayOnTop
-  else Self.formStyle := fsNormal;
+  if chkStayOnTop.Checked then
+    FormStyle := fsStayOnTop
+  else
+    FormStyle := fsNormal;
 end;
 
 procedure THeapTrcViewForm.chkUseRawChange(Sender: TObject);
@@ -569,8 +571,6 @@ var
   st    : TStringList;
   s     : WideString;
   i     : Integer;
-const
-  InitFormStyle: array [Boolean] of TFormStyle = (fsNormal, fsStayOnTop);
 begin
   isTop:=True;
   st:=TStringList.Create;
@@ -598,8 +598,8 @@ begin
     inAnyMonitor(b);
     BoundsRect := b; // Position=poDesigned already in LFM
   end;
-  FormStyle:=InitFormStyle[isTop];
   chkStayOnTop.Checked := isTop;
+  chkStayOnTopChange(nil);
   if st.Count>0 then begin
     edtTrcFileName.Items.AddStrings(st);
     edtTrcFileName.ItemIndex:=0;
