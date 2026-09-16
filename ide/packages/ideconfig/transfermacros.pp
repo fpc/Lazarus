@@ -191,7 +191,6 @@ end;
 
 procedure TTransferMacroList.SetMarkUnhandledMacros(const AValue: boolean);
 begin
-  if FMarkUnhandledMacros=AValue then exit;
   FMarkUnhandledMacros:=AValue;
 end;
 
