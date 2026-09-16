@@ -100,8 +100,10 @@ const
   lisMsgExpectedAsmParam = 'Expected asm param';
   lisMsgExpectedClassProcedureOrClassFunction = 'Expected class procedure or class function';
   lisMsgExpectedConstTypeVarProcedureOrFunction = 'Expected const, type, var, procedure or function';
+  lisMsgExpectedElseOrEnd = 'Expected else or end';
   lisMsgExpectedEqualsOrColon = 'Expected equals or colon';
   lisMsgExpectedExceptOrFinally = 'Expected except or finally';
+  lisMsgExpectedExcept = 'Expected except';
   lisMsgExpectedExportDirective = 'Expected export directive';
   lisMsgExpectedIdentifier = 'Expected identifier';
   lisMsgExpectedInitializationBeginOrEnd = 'Expected initialization, begin or end';

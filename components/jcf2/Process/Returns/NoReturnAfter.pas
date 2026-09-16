@@ -88,8 +88,19 @@ begin
   if pt = nil then
     exit;
 
+  // x:= case of a: 1; b: 2; end
+  if (pt.TokenType = ttEnd) and pt.HasParentNode(nCaseStatement) and pt.HasParentNode(nExpression) then
+    exit(true);
+
   if pt.HasParentNode(nAsm) then
     exit;
+
+  if (pt.TokenType = ttSemicolon) then
+  begin
+    lcNext := pt.NextTokenWithExclusions([ttWhiteSpace, ttReturn]);
+    if (lcNext <> nil) and (lcNext.TokenType = ttMultiWordOperator) then
+      exit(true);
+  end;
 
   { after record ... end align XX; }
   if (pt.TokenType = ttAlign) and pt.HasParentNode(nRecordType, 1) then

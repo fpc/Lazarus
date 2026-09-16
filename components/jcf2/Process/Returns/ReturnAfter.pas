@@ -79,6 +79,9 @@ var
   lcN:TSourceToken;
 begin
   Result := True;
+  if (ptNext<>nil) and (ptNext.TokenType = ttMultiWordOperator) then
+    exit(false);
+
   {before compiler directive }
   lcN:=pt.NextTokenWithExclusions([ttWhiteSpace]); // include comments.
   if (lcN<>nil) and (lcN.TokenType=ttComment) and (lcN.CommentStyle=eCompilerDirective)then
@@ -193,6 +196,9 @@ begin
   if (pt.TokenType = ttSemiColon) and NextTokenIsCommentInNewLine(pt) then
     Exit(False);
 
+  if (pt.TokenType = ttSemiColon) and (pt.NextSolidTokenType = ttMultiWordOperator) then
+    Exit(False);
+
   lcPt := pt;
   if (pt.TokenType = ttComment) and (pt.PriorTokenTypeWithExclusions([ttWhiteSpace])=ttSemiColon) then
     lcPt:= pt.PriorTokenWithExclusions([ttWhiteSpace]);  // use the ';' token before the comment for tests.
@@ -250,6 +256,10 @@ begin
 
   if (pt.TokenType in WordsJustReturnAfter) then
     exit(True);
+
+  // x:= case of a: 1; b: 2; end
+  if (pt.TokenType = ttEnd) and pt.HasParentNode(nCaseStatement) and pt.HasParentNode(nExpression) then
+    exit(false);
 
   { return after 'type' unless it's the second type in "type foo = type integer;"
     but what about }
