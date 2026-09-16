@@ -10935,6 +10935,7 @@ var
 begin
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit(false);
+  if (ActiveSrcEdit=nil) or not ActiveSrcEdit.CanShowCodeContext then exit(false);
   {$IFDEF IDE_DEBUG}
   debugln('');
   debugln('[TMainIDE.DoShowCodeContext] ************');

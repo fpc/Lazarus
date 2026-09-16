@@ -531,6 +531,8 @@ type
     function GetProjectFile: TLazProjectFile; override;
     procedure UpdateProjectFile(AnUpdates: TSrcEditProjectUpdatesNeeded = []); override;
     function GetDesigner(LoadForm: boolean): TIDesigner; override;
+    function CanShowCodeContext: boolean;
+    procedure SetIfdefNodeState(ALinePos, AstartPos: Integer; AState: TSynMarkupIfdefNodeState);
 
     // notebook
     procedure Activate;
@@ -546,7 +548,6 @@ type
     function  SourceToDebugLine(aLinePos: Integer): Integer;
     function  DebugToSourceLine(aLinePos: Integer): Integer; override;
 
-    procedure SetIfdefNodeState(ALinePos, AstartPos: Integer; AState: TSynMarkupIfdefNodeState);
     property OnIfdefNodeStateRequest: TSynMarkupIfdefStateRequest read FOnIfdefNodeStateRequest write FOnIfdefNodeStateRequest;
   public
     // properties
@@ -4548,7 +4549,7 @@ begin
       if AutoBlockCompleteChar(AChar) then
         Handled:=true;
       if EditorOpts.AutoDisplayFunctionPrototypes then
-         if (aChar = '(') or (aChar = ',') then
+         if (aChar = '(') or (aChar = ',') and CanShowCodeContext then
             SourceNotebook.StartShowCodeContext(False);
 
       if FCodeCompletionState.State = ccsOnTypingScheduled then begin
@@ -6754,6 +6755,17 @@ end;
 function TSourceEditor.DebugToSourceLine(aLinePos: Integer): Integer;
 begin
   Result := FEditor.IDEGutterMarks.DebugLineToSourceLine(aLinePos);
+end;
+
+function TSourceEditor.CanShowCodeContext: boolean;
+var
+  MainCode: TCodeBuffer;
+begin
+  if CodeBuffer = nil then exit(false);
+  if CodeBuffer.IsVirtual then
+    exit(FEditor.Highlighter is TSynPasSyn);
+  MainCode := CodeToolBoss.GetMainCode(CodeBuffer);
+  Result := (MainCode <> nil) and (MainCode.Scanner <> nil);
 end;
 
 procedure TSourceEditor.SetIfdefNodeState(ALinePos, AstartPos: Integer;
