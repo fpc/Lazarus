@@ -112,6 +112,11 @@ begin
   Result := FButtonGlyph.Glyph;
 end;
 
+function TCustomBitBtn.GetGlyphImageLayout: TGlyphImageLayout;
+begin
+  Result := FButtonGlyph.GlyphImageLayout;
+end;
+
 function TCustomBitBtn.GetGlyphShowMode: TGlyphShowMode;
 begin
   Result := FButtonGlyph.ShowMode;
@@ -166,6 +171,12 @@ begin
   FButtonGlyph.Glyph := AValue;
   InvalidatePreferredSize;
   AdjustSize;
+end;
+
+procedure TCustomBitBtn.SetGlyphImageLayout(AValue: TGlyphImageLayout);
+begin
+  if FButtonGlyph.GlyphImageLayout <> AValue then
+    FButtonGlyph.GlyphImageLayout := AValue;
 end;
 
 procedure TCustomBitBtn.SetGlyphShowMode(const AValue: TGlyphShowMode);

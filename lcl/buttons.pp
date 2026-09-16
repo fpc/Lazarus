@@ -79,11 +79,17 @@ type
     deeApplication   // ... as defined by Application.GlyphDrawEffectsEnabled
   );
 
+  TGlyphImageLayout = (
+    gilHorizontal,   // individual glyph images are arranged horizontally
+    gilVertical      // ... vertically
+  );
+
   TButtonGlyph = class(TObject, IUnknown, IImageCacheListener)
   private
     FIsDesigning: Boolean;
     FShowMode: TGlyphShowMode;
     FImageIndexes: array[TButtonState] of Integer;
+    FImageLayout: TGlyphImageLayout;
     FImages: TCustomImageList;
     FExternalImages: TCustomImageList;
     FExternalImageIndexes: array[TButtonState] of Integer;
@@ -105,6 +111,7 @@ type
     procedure SetExternalImages(const AExternalImages: TCustomImageList);
     procedure SetExternalImageWidth(const AExternalImageWidth: Integer);
     procedure SetGlyph(Value: TBitmap);
+    procedure SetImageLayout(Value: TGlyphImageLayout);
     procedure SetNumGlyphs(Value: TNumGlyphs);
     procedure SetShowMode(const AValue: TGlyphShowMode);
     procedure ClearImages;
@@ -142,6 +149,7 @@ type
     procedure Refresh;
     property DrawEffectsEnabled: TGlyphDrawEffectsEnabled read FDrawEffectsEnabled write FDrawEffectsEnabled default deeApplication;
     property Glyph: TBitmap read FOriginal write SetGlyph;
+    property GlyphImageLayout: TGlyphImageLayout read FImageLayout write SetImagelayout;
     property IsDesigning: Boolean read FIsDesigning write FIsDesigning;
     property NumGlyphs: TNumGlyphs read GetNumGlyphs write SetNumGlyphs;
     property Images: TCustomImageList read FImages;
@@ -180,12 +188,14 @@ type
     FDrawEffectsEnabled: TGlyphDrawEffectsEnabled;
     function GetDrawEffectsEnabled: TGlyphDrawEffectsEnabled;
     function GetGlyph: TBitmap;
+    function GetGlyphImageLayout: TGlyphImageLayout;
     function GetGlyphShowMode: TGlyphShowMode;
     function GetNumGlyphs: Integer;
     procedure ImageListChange(Sender: TObject);
     function IsGlyphStored: Boolean;
     procedure SetDrawEffectsEnabled(AValue: TGlyphDrawEffectsEnabled);
     procedure SetGlyph(AValue: TBitmap);
+    procedure SetGlyphImageLayout(AValue: TGlyphImageLayout);
     procedure SetGlyphShowMode(const AValue: TGlyphShowMode);
     procedure SetKind(AValue: TBitBtnKind);
     procedure SetLayout(AValue: TButtonLayout);
@@ -230,6 +240,7 @@ type
     property DisabledImageIndex: TImageIndex index bsDisabled read GetImageIndex write SetImageIndex default -1;
     property DrawEffectsEnabled: TGlyphDrawEffectsEnabled read GetDrawEffectsEnabled write SetDrawEffectsEnabled default deeApplication;
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
+    property GlyphImageLayout: TGlyphImageLayout read GetGlyphImageLayout write SetGlyphImageLayout default gilHorizontal;
     property NumGlyphs: Integer read GetNumGlyphs write SetNumGlyphs default 1;
     property HotImageIndex: TImageIndex index bsHot read GetImageIndex write SetImageIndex default -1;
     property Images: TCustomImageList read GetImages write SetImages;
@@ -270,6 +281,7 @@ type
     property Enabled;
     property Font;
     property Glyph;
+    property GlyphImageLayout;
     property GlyphShowMode;
     property HotImageIndex;
     property Kind;
@@ -353,6 +365,7 @@ type
     FMouseInControl: Boolean;
     FAlignment: TAlignment;
     function GetGlyph: TBitmap;
+    function GetGlyphImageLayout: TGlyphImageLayout;
     procedure ImageListChange(Sender: TObject);
     function IsGlyphStored: Boolean;
     function GetDrawEffectsEnabled: TGlyphDrawEffectsEnabled;
@@ -363,6 +376,7 @@ type
     procedure SetAlignment(Value: TAlignment);
     procedure SetAllowAllUp(Value: Boolean);
     procedure SetGlyph(Value: TBitmap);
+    procedure SetGlyphImageLayout(Value: TGlyphImageLayout);
     procedure SetLayout(const Value: TButtonLayout);
     procedure SetShowAccelChar(Value: boolean);
     procedure SetTransparent(const AValue: boolean);
@@ -435,6 +449,7 @@ type
     property DrawEffectsEnabled: TGlyphDrawEffectsEnabled read GetDrawEffectsEnabled write SetDrawEffectsEnabled default deeApplication;
     property Flat: Boolean read FFlat write SetFlat default false;
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
+    property GlyphImageLayout: TGlyphImageLayout read GetGlyphImageLayout write SetGlyphImageLayout default gilHorizontal;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
     property HotImageIndex: TImageIndex index bsHot read GetImageIndex write SetImageIndex default -1;
     property Images: TCustomImageList read GetImages write SetImages;
@@ -477,6 +492,7 @@ type
     property Flat;
     property Font;
     property Glyph;
+    property GlyphImageLayout;
     property GroupIndex;
     property HotImageIndex;
     property Images;

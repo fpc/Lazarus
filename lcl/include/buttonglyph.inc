@@ -181,7 +181,6 @@ end;
 procedure TButtonGlyph.SetGlyph(Value : TBitmap);
 var
   GlyphCount : integer;
-  longSide, shortSide: Integer;
 begin
   if FOriginal = Value then
     exit;
@@ -195,19 +194,18 @@ begin
   FOriginal.OnChange := nil;
   FOriginal.Assign(Value);
   FOriginal.OnChange := @GlyphChanged;
-  FNumGlyphs := 1;
   if not FOriginal.Empty then
     ClearLCLGlyph;
-  longSide := IfThen(FOriginal.Width > FOriginal.Height, FOriginal.Width, FOriginal.Height);
-  shortSide := IfThen(FOriginal.Height > FOriginal.Width, FOriginal.Height, FOriginal.Width);
-  if (shortSide <> 0) and (longside mod shortside = 0) then
-  begin
-    GlyphCount := longside div shortside;
-    if GlyphCount > High(TNumGlyphs) then
-      GlyphCount := Low(TNumGlyphs);
-    FNumGlyphs := TNumGlyphs(GlyphCount);
-  end;
   Refresh;
+end;
+
+procedure TButtonGlyph.SetImageLayout(Value: TGlyphImageLayout);
+begin
+  if FImageLayout <> Value then
+  begin
+    FImageLayout := Value;
+    Refresh;
+  end;
 end;
 
 procedure TButtonGlyph.SetLCLGlyphName(const ALCLGlyphName: string);
@@ -274,7 +272,7 @@ begin
   begin
     FImagesCache := GetImageListCache;
     FImagesCache.RegisterListener(Self);
-    FImagesCache.RegisterBitmap(Self, FOriginal, NumGlyphs);
+    FImagesCache.RegisterBitmap(Self, FOriginal, NumGlyphs, FImageLayout=gilHorizontal);
     //ResetExternalImageIndexes;
     FExternalImages := nil;
     ClearLCLGlyph;
