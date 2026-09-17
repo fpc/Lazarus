@@ -1229,6 +1229,8 @@ procedure TUnitInfo.ClearModifieds;
 begin
   Modified:=false;
   SessionModified:=false;
+  if Assigned(Source) then
+    Source.Modified:=false;
 end;
 
 procedure TUnitInfo.ClearComponentDependencies;
