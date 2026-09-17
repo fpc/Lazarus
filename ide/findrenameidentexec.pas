@@ -9,10 +9,9 @@ uses
   // RTL + FCL
   Classes, SysUtils, AVL_Tree, Contnrs,
   // LCL
-  Forms, Controls, Dialogs, StdCtrls, ExtCtrls, ComCtrls, LclIntf,
+  Forms, Controls, Dialogs, ComCtrls,
   // CodeTools
-  KeywordFuncLists, CTUnitGraph, CodeTree, CodeAtom, LinkScanner,
-  CustomCodeTool, CodeCache, FileProcs, BasicCodeTools, CodeToolManager,
+  CTUnitGraph, CodeTree, CustomCodeTool, CodeCache, FileProcs, BasicCodeTools, CodeToolManager,
   CodeToolsStructs, FindDeclarationTool, ChangeDeclarationTool,
   // LazUtils
   LazFileUtils, FileUtil, LazFileCache, LazStringUtils, AvgLvlTree, LazLoggerBase,
@@ -28,8 +27,7 @@ uses
   // IdeProject
   Project,
   // IDE
-  LazarusIDEStrConsts, SearchResultView, FindRenameIdentifier,
-  CodeHelp, SourceFileManager, EditableProject;
+  LazarusIDEStrConsts, SearchResultView, FindRenameIdentifier, SourceFileManager, EditableProject;
 
 type
   { TFindRenameIdentSeeker }
