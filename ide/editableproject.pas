@@ -141,6 +141,7 @@ type
     constructor Create(ACodeBuffer: TCodeBuffer); override;
     destructor Destroy; override;
     procedure Clear; override;
+    procedure ClearModifieds; override;
     function HasOpenEditors: boolean; override;
     // At any time, any TEditableUnitInfo has at least one EditorInfo
     function EditorInfoCount: Integer;
@@ -629,6 +630,18 @@ begin
   FBookmarks.Clear;
   FComponentState := wsNormal;
   FEditorInfoList.ClearEachInfo;
+end;
+
+procedure TEditableUnitInfo.ClearModifieds;
+var
+  SE: TSourceEditorInterface;
+begin
+  inherited ClearModifieds;
+  if EditorInfoCount > 0 then begin
+    SE := EditorInfo[0].FEditorComponent;
+    if Assigned(SE) then
+      SE.Modified:=false;
+  end;
 end;
 
 function TEditableUnitInfo.GetEditorInfo(Index: Integer): TUnitEditorInfo;
