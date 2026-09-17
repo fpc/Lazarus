@@ -4123,12 +4123,12 @@ begin
     Project1.BeginUpdate(true);
     try
       // create files
-      if ProjectDesc.CreateStartFiles(Project1)<>mrOk then begin
+      if ProjectDesc.CreateStartFiles(Project1)<>mrOk then
         debugln('InitNewProject ProjectDesc.CreateStartFiles failed');
-      end;
       if (Project1.MainUnitInfo<>nil)
-      and ((EditableProject1.FirstUnitWithEditorIndex=nil)
-       or ([pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement,pfMainUnitHasScaledStatement]*Project1.Flags=[]))
+      and ( (EditableProject1.FirstUnitWithEditorIndex=nil)
+         or ([pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement,
+              pfMainUnitHasScaledStatement]*Project1.Flags=[]) )
       then begin
         // the project has not created any secondary files
         // or the project main source is not auto updated by the IDE

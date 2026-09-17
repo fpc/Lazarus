@@ -323,9 +323,13 @@ type
     function GetLocalizedDescription: string; virtual;
     procedure Release;
     procedure Reference;
-    function InitDescriptor: TModalResult; // called while old project is still there, you can start a dialog to ask for settings
-    function InitProject(AProject: TLazProject): TModalResult; virtual; // called after old project was closed and new was created, you must now setup global flags and compiler options
-    function CreateStartFiles({%H-}AProject: TLazProject): TModalResult; virtual; // called after all global settings are done, you can now create and open files
+    // called while old project is still there, you can start a dialog to ask for settings
+    function InitDescriptor: TModalResult;
+    // called after old project was closed and new was created,
+    // you must now setup global flags and compiler options
+    function InitProject(AProject: TLazProject): TModalResult; virtual;
+    // called after all global settings are done, you can now create and open files
+    function CreateStartFiles({%H-}AProject: TLazProject): TModalResult; virtual;
   public
     property Name: string read FName write SetName;
     property VisibleInNewDialog: boolean read FVisibleInNewDialog
