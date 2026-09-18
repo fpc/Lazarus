@@ -31,27 +31,24 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils, AVL_Tree, Contnrs,
+  Classes, SysUtils, AVL_Tree,
   // LCL
   Forms, Controls, Dialogs, StdCtrls, ExtCtrls, ComCtrls, ButtonPanel, LclIntf, Graphics,
   // CodeTools
-  KeywordFuncLists, CTUnitGraph, CodeTree, CodeAtom, LinkScanner,
-  CustomCodeTool, CodeCache, FileProcs, BasicCodeTools, IdentCompletionTool, CodeToolManager,
-  CodeToolsStructs, FindDeclarationTool,
+  CTUnitGraph, CodeTree, CodeAtom, LinkScanner, CustomCodeTool, CodeCache, BasicCodeTools,
+  IdentCompletionTool, CodeToolManager,
   // LazUtils
-  LazFileUtils, FileUtil, LazFileCache, laz2_DOM, LazStringUtils, AvgLvlTree, LazLoggerBase,
+  LazFileUtils, LazStringUtils, LazLoggerBase,
   // BuildIntf
-  PackageIntf, ProjectIntf,
+  PackageIntf,
   // IdeIntf
   IdeIntfStrConsts, LazIDEIntf, IDEWindowIntf, SrcEditorIntf, IDEDialogs,
-  // IdeUtils
-  InputHistory,
   // IdeConfig
-  IDEProcs, DialogProcs, SearchPathProcs, EnvironmentOpts, MiscOptions,
+  DialogProcs, MiscOptions,
   // IdeProject
   Project,
   // IDE
-  LazarusIDEStrConsts, CustomFormEditor, CodeToolsOptions, CodeHelp, SourceFileManager;
+  LazarusIDEStrConsts, CodeToolsOptions;
 
 type
   TFRIdentifierKind = (
