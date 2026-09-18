@@ -4449,8 +4449,10 @@ begin
       {$ENDIF}
       if (LinkCount>0) and (FLinks[FLinkCount-1].Kind=slkSkipStart) then begin
         // remove unneeded SkipStart
+        // undo the '{'#3 inserted by AddSkipComment(true): the skip start link
+        // CleanedPos points AT the '{', so roll back one char further
         dec(FLinkCount);
-        CleanedLen:=FLinks[FLinkCount].CleanedPos;
+        CleanedLen:=FLinks[FLinkCount].CleanedPos-1;
         exit;
       end;
     end;
