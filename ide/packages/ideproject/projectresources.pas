@@ -86,6 +86,7 @@ type
 
     procedure ResourceModified(Sender: TObject);
   protected
+    procedure SetOnLoadSaveFilename(const AValue: TProjResLoadSaveFilenameEvent); override;
     procedure SetResourceType(const AValue: TProjResourceType); override;
     function GetProjectResource(AIndex: TAbstractProjectResourceClass): TAbstractProjectResource; override;
     function GetUserResources: TAbstractProjectUserResources; override;
@@ -406,6 +407,16 @@ end;
 function TProjectResources.GetXPManifest: TProjectXPManifest;
 begin
   Result := TProjectXPManifest(GetProjectResource(TProjectXPManifest));
+end;
+
+procedure TProjectResources.SetOnLoadSaveFilename(
+  const AValue: TProjResLoadSaveFilenameEvent);
+var
+  i: Integer;
+begin
+  inherited SetOnLoadSaveFilename(AValue);
+  for i := 0 to FResources.Count - 1 do
+    FResources[i].OnLoadSaveFilename := AValue;
 end;
 
 procedure TProjectResources.SetResourceType(const AValue: TProjResourceType);

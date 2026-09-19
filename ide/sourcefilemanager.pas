@@ -2976,13 +2976,10 @@ var
 begin
   UserResources:=Project1.ProjResources.UserResources;
   for i:=0 to UserResources.Count-1 do
-    if CompareFilenames(UserResources.GetRealFileName(i),OldFilename)=0 then begin
-      // keep the stored path relative if it was relative
-      if FilenameIsAbsolute(UserResources[i].FileName) then
-        UserResources.SetFileName(i,NewFilename)
-      else
-        UserResources.SetFileName(i,CreateRelativePath(NewFilename,Project1.Directory));
-    end;
+    if CompareFilenames(UserResources.GetRealFileName(i),OldFilename)=0 then
+      // Names are kept absolute and are made relative again when the lpi is
+      // written. Note: an entry written with IDE macros loses them here.
+      UserResources.SetFileName(i,NewFilename);
 end;
 
 function RenameIDEFile(OldFilename, NewFilename: string; Flags: TSaveFlags): TModalResult;

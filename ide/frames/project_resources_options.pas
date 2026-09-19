@@ -51,6 +51,9 @@ type
     FAddResourceItemDuplicates: integer;
     FResourceNameList: TStringListUTF8Fast;     // to keep resource names unique
     FResourceFileNameList: TStringListUTF8Fast; // to keep resource file names unique
+    // The list view shows the file names shortened for display, so the full
+    // names are kept here, index parallel with lbResources.Items.
+    FResourceAbsFileNames: TStringListUTF8Fast;
     // Used to know what was resource name before editing.
     FCurrentResName: string;
     // Reload the list view from the project model.
@@ -89,20 +92,15 @@ const
 procedure TResourcesOptionsFrame.btnAddClick(Sender: TObject);
 var
   FileName: String;
-  aFilename: String;
 begin
   if dlgOpen.Execute() and (dlgOpen.Files.Count <> 0) then
   begin
     AddResourceBegin;
     try
+      // Names are kept absolute. They are made relative to the project
+      // directory when the lpi is written.
       for FileName in dlgOpen.Files do
-      begin
-        aFilename := Filename;
-        if not FProject.IsVirtual then
-          aFileName := CreateRelativePath(aFileName, FProject.Directory);
-
-        AddResource(aFileName);
-      end;
+        AddResource(FileName);
     finally
       AddResourceEnd;
     end;
@@ -116,6 +114,7 @@ begin
     lbResources.Items.Clear;
     FResourceNameList.Clear;
     FResourceFileNameList.Clear;
+    FResourceAbsFileNames.Clear;
     FModified := True;
   end;
   btnClear.Enabled := lbResources.Items.Count > 0;
@@ -123,17 +122,20 @@ end;
 
 procedure TResourcesOptionsFrame.btnDeleteClick(Sender: TObject);
 var
-  resName, resFileName: String;
+  ResName, ResFileName: String;
+  Index: Integer;
 begin
   if Assigned(lbResources.Selected) then
   begin
-    resName := lbResources.Selected.SubItems[LVSUBITEM_NAME];
-    resFileName := lbResources.Selected.Caption;
+    Index := lbResources.Selected.Index;
+    ResName := lbResources.Selected.SubItems[LVSUBITEM_NAME];
+    ResFileName := FResourceAbsFileNames[Index];
 
-    FResourceNameList.Delete(FResourceNameList.IndexOf(resName));
-    FResourceFileNameList.Delete(FResourceFileNameList.IndexOf(resFileName));
+    FResourceNameList.Delete(FResourceNameList.IndexOf(ResName));
+    FResourceFileNameList.Delete(FResourceFileNameList.IndexOf(ResFileName));
+    FResourceAbsFileNames.Delete(Index);
 
-    lbResources.Items.Delete(lbResources.Selected.Index);
+    lbResources.Items.Delete(Index);
     FModified := True;
   end;
   btnClear.Enabled := lbResources.Items.Count > 0;
@@ -151,16 +153,16 @@ end;
 
 procedure TResourcesOptionsFrame.edResourceNameEditingDone(Sender: TObject);
 var
-  newResName: string;
+  NewResName: string;
 begin
   if Assigned(lbResources.Selected) then
   begin
-    newResName := edResourceName.Text;
+    NewResName := edResourceName.Text;
     // Exit if resName wasn't changed.
-    if newResName = FCurrentResName then
+    if NewResName = FCurrentResName then
       exit;
     // Check if new name is unique.
-    if FResourceNameList.IndexOf(newResName) <> -1 then
+    if FResourceNameList.IndexOf(NewResName) <> -1 then
     begin
       // If new name is not unique show message and restore edited name.
       ShowMessage(lisResourceNameMustBeUnique);
@@ -171,11 +173,11 @@ begin
     // Remove old name.
     FResourceNameList.Delete(FResourceNameList.IndexOf(FCurrentResName));
     // Add new name.
-    FResourceNameList.Add(newResName);
+    FResourceNameList.Add(NewResName);
     // Update in list view.
-    lbResources.Selected.SubItems[LVSUBITEM_NAME] := newResName;
+    lbResources.Selected.SubItems[LVSUBITEM_NAME] := NewResName;
     // Update current name.
-    FCurrentResName := newResName;
+    FCurrentResName := NewResName;
     // Resource has been changed
     FModified := True;
   end;
@@ -281,10 +283,13 @@ begin
   end;
 
   Item := lbResources.Items.Add;
-  Item.Caption := ResFile;                       // path
+  // Show the path shortened relative to the project directory, but keep the
+  // full name in FResourceAbsFileNames.
+  Item.Caption := FProject.GetShortFilename(ResFile, true);
   Item.SubItems.Add(ResourceTypeToStr[ResType]); // type
   Item.SubItems.Add(ResName);                    // name
 
+  FResourceAbsFileNames.Add(ResFile);
   FResourceFileNameList.Add(ResFile);
   FResourceNameList.Add(ResName);
   FModified := True;
@@ -302,6 +307,8 @@ begin
   FResourceFileNameList := TStringListUTF8Fast.Create;
   FResourceFileNameList.Sorted := True;
   FResourceFileNameList.Duplicates := dupError;
+
+  FResourceAbsFileNames := TStringListUTF8Fast.Create;
 end;
 
 destructor TResourcesOptionsFrame.Destroy;
@@ -310,6 +317,7 @@ begin
     FSubscribed.RemoveChangeHandler(@OnResourcesChanged);
   FResourceNameList.Free;
   FResourceFileNameList.Free;
+  FResourceAbsFileNames.Free;
   inherited Destroy;
 end;
 
@@ -352,6 +360,7 @@ begin
   lbResources.Items.Clear;
   FResourceNameList.Clear;
   FResourceFileNameList.Clear;
+  FResourceAbsFileNames.Clear;
   Res := FProject.ProjResources.UserResources;
   AddResourceBegin;
   try
@@ -409,6 +418,8 @@ var
   aResType: TUserResourceType;
 begin
   if not FModified then Exit;
+  Assert(FResourceAbsFileNames.Count = lbResources.Items.Count,
+         'TResourcesOptionsFrame.WriteSettings: FResourceAbsFileNames out of sync');
   Project := (AOptions as TProjectIDEOptions).Project;
   List := Project.ProjResources.UserResources.List;
 
@@ -418,7 +429,7 @@ begin
   try
     for I := 0 to lbResources.Items.Count - 1 do
     begin
-      aFileName := lbResources.Items[I].Caption;
+      aFileName := FResourceAbsFileNames[I];   // Caption is only the short form
       aResType := StrToResourceType(lbResources.Items[I].SubItems[LVSUBITEM_TYPE]);
       aResName := lbResources.Items[I].SubItems[LVSUBITEM_NAME];
 

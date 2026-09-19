@@ -31,8 +31,14 @@ type
     rtRCData   // maps to RT_RCDATA
   );
 
+  // Converts a filename between its in memory form (absolute) and its form in
+  // the lpi (relative to the project directory if possible, path delimiters
+  // switched to the ones stored in the lpi). Load=true: lpi -> memory.
+  TProjResLoadSaveFilenameEvent = procedure(var AFilename: string; Load: boolean) of object;
+
   TProjectUserResourceInfo = record
-    FileName: string;            // may contain IDE macros / be project-relative
+    // Absolute, unless it contains IDE macros or the project has no directory yet.
+    FileName: string;
     ResType: TUserResourceType;
     ResName: string;
   end;
@@ -47,11 +53,13 @@ type
   TAbstractProjectResource = class
   private
     FModified: boolean;
+    FOnLoadSaveFilename: TProjResLoadSaveFilenameEvent;
     FOnModified: TNotifyEvent;
     procedure SetModified(const AValue: boolean);
   protected
     // This resource is used when reading project default options.
     FIsDefaultOption: Boolean;
+    procedure LoadSaveFilename(var AFilename: string; Load: boolean);
   public
     constructor Create; virtual;
 
@@ -62,6 +70,8 @@ type
     procedure ReadFromProjectFile(AConfig: TXMLConfig; const Path: String); virtual; abstract;
 
     property Modified: boolean read FModified write SetModified;
+    property OnLoadSaveFilename: TProjResLoadSaveFilenameEvent
+                             read FOnLoadSaveFilename write FOnLoadSaveFilename;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
     property IsDefaultOption: Boolean read FIsDefaultOption;
   end;
@@ -72,9 +82,11 @@ type
 
   TAbstractProjectResources = class
   private
+    FOnLoadSaveFilename: TProjResLoadSaveFilenameEvent;
     FResourceType: TProjResourceType;
   protected
     FMessages: TStringList;
+    procedure SetOnLoadSaveFilename(const AValue: TProjResLoadSaveFilenameEvent); virtual;
     procedure SetResourceType(const AValue: TProjResourceType); virtual;
     function GetProjectResource(AIndex: TAbstractProjectResourceClass): TAbstractProjectResource; virtual; abstract;
     function GetUserResources: TAbstractProjectUserResources; virtual; abstract;
@@ -90,6 +102,8 @@ type
                    const AResourceName, AResourceType: String); virtual; abstract;
 
     property Messages: TStringList read FMessages;
+    property OnLoadSaveFilename: TProjResLoadSaveFilenameEvent
+                             read FOnLoadSaveFilename write SetOnLoadSaveFilename;
     property ResourceType: TProjResourceType read FResourceType write SetResourceType;
     property Resource[AIndex: TAbstractProjectResourceClass]: TAbstractProjectResource
                                                       read GetProjectResource; default;
@@ -100,7 +114,9 @@ type
   { TAbstractProjectUserResources
     Public interface to the project's user resource *files* - the list edited
     under Project Options > Resources. Designtime packages reach it via
-    LazarusIDE.ActiveProject.Resources.UserResources. }
+    LazarusIDE.ActiveProject.Resources.UserResources.
+    File names are kept absolute in memory and are stored in the lpi relative to
+    the project directory. Names containing IDE macros are kept as written. }
   TAbstractProjectUserResources = class(TAbstractProjectResource)
   private
     FUpdateCount: integer;
@@ -132,10 +148,10 @@ type
     property Items[AIndex: integer]: TProjectUserResourceInfo read GetInfo; default;
     function IndexOfFileName(const AFileName: string): integer; virtual; abstract;
     function IndexOfResName(const AResName: string): integer; virtual; abstract;
-    // Resolve item AIndex's stored file name (which may be project-relative or
-    // contain IDE macros) to an absolute path, mirroring how the file is located
-    // at build time. The user resources always belong to the active project,
-    // whose directory is used to expand relative names.
+    // Resolve item AIndex's stored file name (which may contain IDE macros) to
+    // an absolute path, mirroring how the file is located at build time. The
+    // user resources always belong to the active project, whose directory is
+    // used to expand names that are still relative.
     function GetRealFileName(AIndex: integer): string; virtual; abstract;
 
     // Add / remove.
@@ -196,6 +212,13 @@ begin
   if Assigned(OnModified) then OnModified(Self);
 end;
 
+procedure TAbstractProjectResource.LoadSaveFilename(var AFilename: string;
+  Load: boolean);
+begin
+  if Assigned(FOnLoadSaveFilename) then
+    FOnLoadSaveFilename(AFilename,Load);
+end;
+
 constructor TAbstractProjectResource.Create;
 begin
   FModified := False;
@@ -214,6 +237,12 @@ begin
 end;
 
 { TAbstractProjectResources }
+
+procedure TAbstractProjectResources.SetOnLoadSaveFilename(
+  const AValue: TProjResLoadSaveFilenameEvent);
+begin
+  FOnLoadSaveFilename := AValue;
+end;
 
 procedure TAbstractProjectResources.SetResourceType(const AValue: TProjResourceType);
 begin

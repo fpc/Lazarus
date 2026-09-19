@@ -2229,6 +2229,7 @@ begin
   FI18NExcludedOriginals := TStringList.Create;
   FResources := TProjectResources.Create;
   ProjResources.OnModified := @EmbeddedObjectModified;
+  ProjResources.OnLoadSaveFilename := @LoadSaveFilenameHandler;
   FLastCompilerParams := TStringListUTF8Fast.Create;
 end;
 
