@@ -1227,11 +1227,14 @@ resourcestring
   dlgResetActiveDesktopBtnHint = 'Restore window layout of active desktop';
   dlgToggleDebugDesktopBtnCaption = 'Toggle as debug desktop';
   dlgToggleDebugDesktopBtnHint = 'Toggle as debug desktop';
+  dlgToggleDesignDesktopBtnCaption = 'Toggle as design desktop';
+  dlgToggleDesignDesktopBtnHint = 'Activate this desktop while the form designer is shown (Toggle Form/Unit)';
   dlgDesktopName = 'Desktop name';
   dlgOverwriteDesktop = 'Desktop with the name "%s" was found.'+sLineBreak+'Should the old desktop be overwritten?';
   dlgDebugDesktop = 'debug';
+  dlgDesignDesktop = 'design';
   dlgActiveDesktop = 'active';
-  dlgImportDesktopExists = 'A desktop with the same name already exists.'+sLineBreak+'Please confirm the desktop name:';
+  dlgImportDesktopExists = 'A desktop with the same name already exists.'+sLineBreak+'Please confirm or change the desktop name:';
   dlgDesktopsImported = '%d desktop(s) successfully imported from "%s"';
   dlgDesktopsExported = '%d desktop(s) successfully exported to "%s"';
   lisExportSelected = 'Export selected';
@@ -1242,6 +1245,8 @@ resourcestring
   dlgAutoSaveActiveDesktopHint = 'Save active desktop on IDE close'+sLineBreak+'Save debug desktop on IDE close and debug end';
   dlgAssociatedDebugDesktop = 'Associated debug desktop for "%s"';
   dlgAssociatedDebugDesktopHint = 'If you select the desktop, the associated debug desktop will be selected as well.';
+  dlgAssociatedDesignDesktop = 'Associated design desktop for "%s"';
+  dlgAssociatedDesignDesktopHint = 'If you select the desktop, the associated design desktop will be selected as well.';
 
   // Window options
   dlgShowingWindows = 'Showing Windows';

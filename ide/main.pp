@@ -3253,11 +3253,31 @@ end;
 {------------------------------------------------------------------------------}
 
 procedure TMainIDE.mnuToggleFormUnitClicked(Sender: TObject);
+var
+  ShowTheForm: Boolean;
 begin
   if IDETabMaster <> nil then
-    IDETabMaster.ToggleFormUnit
-  else
-    DoBringToFrontFormOrUnit;
+  begin
+    // the designer is docked into the source editor, there is no layout to switch
+    IDETabMaster.ToggleFormUnit;
+    exit;
+  end;
+
+  // Set the ShowTheForm before switching the desktop
+  ShowTheForm := DisplayState = dsSource;
+
+  if ShowTheForm then
+  begin
+    // Desktop first, form second: RestoreSimpleLayout raises every registered IDE window
+    EnvironmentGuiOpts.EnableDesignDesktop;
+    DoShowDesignerFormOfCurrentSrc(false);
+    if DisplayState <> dsForm then
+      EnvironmentGuiOpts.DisableDesignDesktop;  // there was no designer form
+  end else
+  begin
+    EnvironmentGuiOpts.DisableDesignDesktop;
+    DoShowSourceOfActiveDesignerForm;
+  end;
 end;
 
 procedure TMainIDE.mnuViewAnchorEditorClicked(Sender: TObject);
@@ -4018,7 +4038,12 @@ begin
   if (MainIDEBar <> nil) and not IDEIsClosing and MainIDEBar.HandleAllocated then
   begin
     if (ToolStatus = itDebugger) then
-      EnvironmentGuiOpts.EnableDebugDesktop
+    begin
+      // leave the design desktop first, so that LastDesktopBeforeDebug gets the
+      // desktop the user really works with
+      EnvironmentGuiOpts.DisableDesignDesktop;
+      EnvironmentGuiOpts.EnableDebugDesktop;
+    end
     else if (ToolStatus <> itExiting) then
       EnvironmentGuiOpts.DisableDebugDesktop;
   end;

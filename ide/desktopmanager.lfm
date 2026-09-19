@@ -1,13 +1,13 @@
 object DesktopForm: TDesktopForm
   Left = 334
-  Height = 310
+  Height = 352
   Top = 319
   Width = 450
   BorderIcons = [biSystemMenu]
   Caption = 'DesktopForm'
-  ClientHeight = 310
+  ClientHeight = 352
   ClientWidth = 450
-  Constraints.MinHeight = 310
+  Constraints.MinHeight = 352
   Constraints.MinWidth = 350
   OnClose = FormClose
   OnCreate = FormCreate
@@ -17,7 +17,7 @@ object DesktopForm: TDesktopForm
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 34
-    Top = 270
+    Top = 312
     Width = 438
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -89,14 +89,14 @@ object DesktopForm: TDesktopForm
     AnchorSideBottom.Control = LblGrayedInfo
     Left = 6
     Height = 17
-    Top = 230
+    Top = 272
     Width = 140
     Anchors = [akLeft, akBottom]
     BorderSpacing.Bottom = 6
     Caption = 'Auto save active desktop'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 2
+    TabOrder = 3
   end
   object LblGrayedInfo: TLabel
     AnchorSideLeft.Control = DesktopListBox
@@ -106,7 +106,7 @@ object DesktopForm: TDesktopForm
     AnchorSideBottom.Control = ButtonPanel1
     Left = 6
     Height = 13
-    Top = 253
+    Top = 295
     Width = 438
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Bottom = 4
@@ -118,7 +118,7 @@ object DesktopForm: TDesktopForm
     AnchorSideLeft.Control = DesktopListBox
     AnchorSideRight.Control = DesktopListBox
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = AutoSaveActiveDesktopCheckBox
+    AnchorSideBottom.Control = AssociatedDesignDesktopLabel
     Left = 6
     Height = 21
     Top = 203
@@ -148,13 +148,47 @@ object DesktopForm: TDesktopForm
     ShowHint = True
     WordWrap = True
   end
+  object AssociatedDesignDesktopLabel: TLabel
+    AnchorSideLeft.Control = DesktopListBox
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = DesktopListBox
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = AssociatedDesignDesktopComboBox
+    Left = 6
+    Height = 13
+    Top = 230
+    Width = 290
+    Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.Bottom = 2
+    Caption = 'AssociatedDesignDesktopLabel'
+    ParentColor = False
+    ParentShowHint = False
+    ShowHint = True
+    WordWrap = True
+  end
+  object AssociatedDesignDesktopComboBox: TComboBox
+    AnchorSideLeft.Control = DesktopListBox
+    AnchorSideRight.Control = DesktopListBox
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = AutoSaveActiveDesktopCheckBox
+    Left = 6
+    Height = 21
+    Top = 245
+    Width = 290
+    Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.Bottom = 6
+    ItemHeight = 13
+    OnChange = AssociatedDesignDesktopComboBoxChange
+    Style = csDropDownList
+    TabOrder = 2
+  end
   object Panel1: TPanel
     AnchorSideTop.Control = DesktopListBox
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = LblGrayedInfo
     Left = 302
-    Height = 247
+    Height = 289
     Top = 6
     Width = 142
     Anchors = [akTop, akRight, akBottom]
@@ -164,9 +198,9 @@ object DesktopForm: TDesktopForm
     ChildSizing.VerticalSpacing = 2
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 247
+    ClientHeight = 289
     ClientWidth = 142
-    TabOrder = 3
+    TabOrder = 4
     object SaveAsButton: TBitBtn
       Left = 0
       Height = 24
@@ -206,12 +240,12 @@ object DesktopForm: TDesktopForm
       ShowHint = True
       TabOrder = 2
     end
-    object RenameButton: TBitBtn
+    object SetDesignDesktopButton: TBitBtn
       Left = 0
       Height = 24
       Top = 78
       Width = 142
-      Action = RenameAction
+      Action = SetDesignDesktopAction
       AutoSize = True
       Constraints.MinHeight = 24
       Constraints.MinWidth = 24
@@ -219,12 +253,12 @@ object DesktopForm: TDesktopForm
       ShowHint = True
       TabOrder = 3
     end
-    object DeleteButton: TBitBtn
+    object RenameButton: TBitBtn
       Left = 0
       Height = 24
       Top = 104
       Width = 142
-      Action = DeleteAction
+      Action = RenameAction
       AutoSize = True
       Constraints.MinHeight = 24
       Constraints.MinWidth = 24
@@ -232,13 +266,12 @@ object DesktopForm: TDesktopForm
       ShowHint = True
       TabOrder = 4
     end
-    object MoveUpButton: TBitBtn
-      Tag = -1
+    object DeleteButton: TBitBtn
       Left = 0
       Height = 24
       Top = 130
       Width = 142
-      Action = MoveUpAction
+      Action = DeleteAction
       AutoSize = True
       Constraints.MinHeight = 24
       Constraints.MinWidth = 24
@@ -246,11 +279,25 @@ object DesktopForm: TDesktopForm
       ShowHint = True
       TabOrder = 5
     end
+    object MoveUpButton: TBitBtn
+      Tag = -1
+      Left = 0
+      Height = 24
+      Top = 156
+      Width = 142
+      Action = MoveUpAction
+      AutoSize = True
+      Constraints.MinHeight = 24
+      Constraints.MinWidth = 24
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 6
+    end
     object MoveDownButton: TBitBtn
       Tag = 1
       Left = 0
       Height = 24
-      Top = 156
+      Top = 182
       Width = 142
       Action = MoveDownAction
       AutoSize = True
@@ -258,7 +305,7 @@ object DesktopForm: TDesktopForm
       Constraints.MinWidth = 24
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 6
+      TabOrder = 7
     end
   end
   object ExportMenu: TPopupMenu
@@ -290,6 +337,11 @@ object DesktopForm: TDesktopForm
       Caption = 'SetDebugDesktopAction'
       OnExecute = SetDebugDesktopActionClick
       ShortCut = 16452
+    end
+    object SetDesignDesktopAction: TAction
+      Caption = 'SetDesignDesktopAction'
+      OnExecute = SetDesignDesktopActionClick
+      ShortCut = 16454
     end
     object RenameAction: TAction
       Caption = 'RenameAction'
