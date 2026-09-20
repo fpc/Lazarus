@@ -786,6 +786,15 @@ msgstr "Susietatasis derinimo darbalaukis"
 msgid "If you select the desktop, the associated debug desktop will be selected as well."
 msgstr "Parinkus darbalaukį taip pat bus parinktas ir susietasis derinimo darbalaukis."
 
+#: lazarusidestrconsts.dlgassociateddesigndesktop
+#, object-pascal-format
+msgid "Associated design desktop for \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgassociateddesigndesktophint
+msgid "If you select the desktop, the associated design desktop will be selected as well."
+msgstr ""
+
 #: lazarusidestrconsts.dlgautocreateforms
 msgid "Auto-create forms:"
 msgstr "Automatiškai kuriamos formos:"
@@ -1606,6 +1615,10 @@ msgstr ""
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
 msgstr "Pašalinti šabloną"
+
+#: lazarusidestrconsts.dlgdesigndesktop
+msgid "design"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdesktopbuttons
 msgid "Buttons - "
@@ -2806,7 +2819,7 @@ msgstr "Įterptas mišros būseno „$IFDEF“ mazgas"
 #| "Please confirm the desktop name:\n"
 msgid ""
 "A desktop with the same name already exists.\n"
-"Please confirm the desktop name:"
+"Please confirm or change the desktop name:"
 msgstr ""
 "Egzistuoja darbalaukis tokiu pat pavadinimu.\n"
 "Patvirkinte darbalaukio pavadinimą:\n"
@@ -4845,6 +4858,14 @@ msgstr "Perjungti į derinimo darbalaukį"
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
 msgstr "Perjungti į derinimo darbalaukį"
+
+#: lazarusidestrconsts.dlgtoggledesigndesktopbtncaption
+msgid "Toggle as design desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgtoggledesigndesktopbtnhint
+msgid "Activate this desktop while the form designer is shown (Toggle Form/Unit)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-09-14 23:16+0300\n"
+"PO-Revision-Date: 2026-09-20 22:41+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -770,6 +770,15 @@ msgstr "Связанный отладочный рабочий стол для \
 #: lazarusidestrconsts.dlgassociateddebugdesktophint
 msgid "If you select the desktop, the associated debug desktop will be selected as well."
 msgstr "При выборе рабочего стола также будет выбран связанный с ним отладочный рабочий стол."
+
+#: lazarusidestrconsts.dlgassociateddesigndesktop
+#, object-pascal-format
+msgid "Associated design desktop for \"%s\""
+msgstr "Связанный рабочий стол редактирования форм для \"%s\""
+
+#: lazarusidestrconsts.dlgassociateddesigndesktophint
+msgid "If you select the desktop, the associated design desktop will be selected as well."
+msgstr "При выборе рабочего стола также будет выбран связанный с ним рабочий стол редактирования форм."
 
 #: lazarusidestrconsts.dlgautocreateforms
 msgid "Auto-create forms:"
@@ -1548,6 +1557,10 @@ msgstr "Удалить выбранный рабочий стол"
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
 msgstr "Удалить шаблон "
+
+#: lazarusidestrconsts.dlgdesigndesktop
+msgid "design"
+msgstr "редактирование форм"
 
 #: lazarusidestrconsts.dlgdesktopbuttons
 msgid "Buttons - "
@@ -2704,10 +2717,10 @@ msgstr "Директива $IFDEF подключаемого условно ак
 #: lazarusidestrconsts.dlgimportdesktopexists
 msgid ""
 "A desktop with the same name already exists.\n"
-"Please confirm the desktop name:"
+"Please confirm or change the desktop name:"
 msgstr ""
 "Рабочий стол с таким именем уже имеется.\n"
-"Подтвердите это имя:"
+"Подтвердите либо измените это имя:"
 
 #: lazarusidestrconsts.dlgincludecodetemplatestoidentcompl
 msgid "Include code templates"
@@ -4680,6 +4693,14 @@ msgstr "Режим отладочного"
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
 msgstr "Переключить режим отладочного рабочего стола"
+
+#: lazarusidestrconsts.dlgtoggledesigndesktopbtncaption
+msgid "Toggle as design desktop"
+msgstr "Режим редактирования форм"
+
+#: lazarusidestrconsts.dlgtoggledesigndesktopbtnhint
+msgid "Activate this desktop while the form designer is shown (Toggle Form/Unit)"
+msgstr "Переключаться на этот рабочий стол при отображении редактора форм (Вид -> Переключить форму/модуль)"
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"

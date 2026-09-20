@@ -784,6 +784,15 @@ msgstr "İlişkili hata ayıklama masaüstü \"%s\""
 msgid "If you select the desktop, the associated debug desktop will be selected as well."
 msgstr "Masaüstünü seçerseniz, ilişkili hata ayıklama masaüstü de seçilecektir."
 
+#: lazarusidestrconsts.dlgassociateddesigndesktop
+#, object-pascal-format
+msgid "Associated design desktop for \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgassociateddesigndesktophint
+msgid "If you select the desktop, the associated design desktop will be selected as well."
+msgstr ""
+
 #: lazarusidestrconsts.dlgautocreateforms
 msgid "Auto-create forms:"
 msgstr "Otomatik oluşturulacak formlar:"
@@ -1560,6 +1569,10 @@ msgstr "Seçili masaüstünü Sil"
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
 msgstr "Şablonu sil "
+
+#: lazarusidestrconsts.dlgdesigndesktop
+msgid "design"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdesktopbuttons
 msgid "Buttons - "
@@ -2718,9 +2731,13 @@ msgid "Included mixed state $IFDEF node"
 msgstr "Dahil edilen karma durum $IFDEF node"
 
 #: lazarusidestrconsts.dlgimportdesktopexists
+#, fuzzy
+#| msgid ""
+#| "A desktop with the same name already exists.\n"
+#| "Please confirm the desktop name:"
 msgid ""
 "A desktop with the same name already exists.\n"
-"Please confirm the desktop name:"
+"Please confirm or change the desktop name:"
 msgstr ""
 "Aynı ada sahip bir masaüstü zaten var.\n"
 "Lütfen masaüstü adını doğrulayın:"
@@ -4710,6 +4727,14 @@ msgstr "Hata ayıklama masaüstü olarak aç / kapat"
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
 msgstr "Hata ayıklama masaüstü olarak aç / kapat"
+
+#: lazarusidestrconsts.dlgtoggledesigndesktopbtncaption
+msgid "Toggle as design desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgtoggledesigndesktopbtnhint
+msgid "Activate this desktop while the form designer is shown (Toggle Form/Unit)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"

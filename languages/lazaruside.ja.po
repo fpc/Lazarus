@@ -781,6 +781,15 @@ msgstr ""
 msgid "If you select the desktop, the associated debug desktop will be selected as well."
 msgstr ""
 
+#: lazarusidestrconsts.dlgassociateddesigndesktop
+#, object-pascal-format
+msgid "Associated design desktop for \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgassociateddesigndesktophint
+msgid "If you select the desktop, the associated design desktop will be selected as well."
+msgstr ""
+
 #: lazarusidestrconsts.dlgautocreateforms
 msgid "Auto-create forms:"
 msgstr "自動生成フォーム:"
@@ -1601,6 +1610,10 @@ msgstr ""
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
 msgstr "テンプレートを削除"
+
+#: lazarusidestrconsts.dlgdesigndesktop
+msgid "design"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdesktopbuttons
 msgid "Buttons - "
@@ -2803,7 +2816,7 @@ msgstr "インクルードされた混合状態の$IFDEFコード"
 #| "Please confirm the desktop name:\n"
 msgid ""
 "A desktop with the same name already exists.\n"
-"Please confirm the desktop name:"
+"Please confirm or change the desktop name:"
 msgstr ""
 "同じ名前のデスクトップが既に存在しています。\n"
 "デスクトップ名を確認して下さい:\n"
@@ -4842,6 +4855,14 @@ msgstr "デバッグデスクトップを切り替え"
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
 msgstr "デバッグデスクトップを切り替え"
+
+#: lazarusidestrconsts.dlgtoggledesigndesktopbtncaption
+msgid "Toggle as design desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgtoggledesigndesktopbtnhint
+msgid "Activate this desktop while the form designer is shown (Toggle Form/Unit)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"

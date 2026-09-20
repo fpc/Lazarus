@@ -781,6 +781,15 @@ msgstr "Escritorio de depuración asociado para \"%s\""
 msgid "If you select the desktop, the associated debug desktop will be selected as well."
 msgstr "Si seleccionas un escritorio, el escritorio de depuración asociado será seleccionado también."
 
+#: lazarusidestrconsts.dlgassociateddesigndesktop
+#, object-pascal-format
+msgid "Associated design desktop for \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgassociateddesigndesktophint
+msgid "If you select the desktop, the associated design desktop will be selected as well."
+msgstr ""
+
 #: lazarusidestrconsts.dlgautocreateforms
 msgid "Auto-create forms:"
 msgstr "Crear formularios automáticamente:"
@@ -1591,6 +1600,10 @@ msgstr "Borrar escritorio seleccionado"
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
 msgstr "Borrar plantilla "
+
+#: lazarusidestrconsts.dlgdesigndesktop
+msgid "design"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdesktopbuttons
 msgid "Buttons - "
@@ -2810,7 +2823,7 @@ msgstr "Inclusión de nodo de estado $IFDEF mixto"
 #| "Please confirm the desktop name:\n"
 msgid ""
 "A desktop with the same name already exists.\n"
-"Please confirm the desktop name:"
+"Please confirm or change the desktop name:"
 msgstr ""
 "Existe un escritorio con el mismo nombre.\n"
 "Por favor, confirme el nombre del escritorio:"
@@ -4863,6 +4876,14 @@ msgstr "Cambiar como escritorio de depuración"
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
 msgstr "Cambiar como escritorio de depuración"
+
+#: lazarusidestrconsts.dlgtoggledesigndesktopbtncaption
+msgid "Toggle as design desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgtoggledesigndesktopbtnhint
+msgid "Activate this desktop while the form designer is shown (Toggle Form/Unit)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"

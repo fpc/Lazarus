@@ -770,6 +770,15 @@ msgstr "相关联的调试桌面针对\"%s\""
 msgid "If you select the desktop, the associated debug desktop will be selected as well."
 msgstr "如果您选择桌面,关联的调试桌面也将被选择."
 
+#: lazarusidestrconsts.dlgassociateddesigndesktop
+#, object-pascal-format
+msgid "Associated design desktop for \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgassociateddesigndesktophint
+msgid "If you select the desktop, the associated design desktop will be selected as well."
+msgstr ""
+
 #: lazarusidestrconsts.dlgautocreateforms
 msgid "Auto-create forms:"
 msgstr "自动创建窗体:"
@@ -1551,6 +1560,10 @@ msgstr "删除选择的桌面"
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
 msgstr "删除模板 "
+
+#: lazarusidestrconsts.dlgdesigndesktop
+msgid "design"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdesktopbuttons
 msgid "Buttons - "
@@ -2721,9 +2734,13 @@ msgid "Included mixed state $IFDEF node"
 msgstr "包含混合状态的 $IFDEF 节点"
 
 #: lazarusidestrconsts.dlgimportdesktopexists
+#, fuzzy
+#| msgid ""
+#| "A desktop with the same name already exists.\n"
+#| "Please confirm the desktop name:"
 msgid ""
 "A desktop with the same name already exists.\n"
-"Please confirm the desktop name:"
+"Please confirm or change the desktop name:"
 msgstr ""
 "一个带有相同名称的桌面已经存在.\n"
 "请确认桌面名称:"
@@ -4710,6 +4727,14 @@ msgstr "切换为调试桌面"
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
 msgstr "切换为调试桌面"
+
+#: lazarusidestrconsts.dlgtoggledesigndesktopbtncaption
+msgid "Toggle as design desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgtoggledesigndesktopbtnhint
+msgid "Activate this desktop while the form designer is shown (Toggle Form/Unit)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"

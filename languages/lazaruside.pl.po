@@ -796,6 +796,15 @@ msgstr "Skojarzony pulpit odpluskwiania"
 msgid "If you select the desktop, the associated debug desktop will be selected as well."
 msgstr ""
 
+#: lazarusidestrconsts.dlgassociateddesigndesktop
+#, object-pascal-format
+msgid "Associated design desktop for \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgassociateddesigndesktophint
+msgid "If you select the desktop, the associated design desktop will be selected as well."
+msgstr ""
+
 #: lazarusidestrconsts.dlgautocreateforms
 msgid "Auto-create forms:"
 msgstr "Automatycznie twórz:"
@@ -1592,6 +1601,10 @@ msgstr "Usuń wybrany pulpit"
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
 msgstr "Usuń szablon "
+
+#: lazarusidestrconsts.dlgdesigndesktop
+msgid "design"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdesktopbuttons
 msgid "Buttons - "
@@ -2810,7 +2823,7 @@ msgstr ""
 #| "Please confirm the desktop name:\n"
 msgid ""
 "A desktop with the same name already exists.\n"
-"Please confirm the desktop name:"
+"Please confirm or change the desktop name:"
 msgstr ""
 "Pulpit o takiej samej nazwie już istnieje.\n"
 "Proszę potwierdzić nazwę pulpitu:\n"
@@ -4851,6 +4864,14 @@ msgstr "Przełącz jako pulpit odpluskwiania"
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
 msgstr "Przełącz jako pulpit odpluskwiania"
+
+#: lazarusidestrconsts.dlgtoggledesigndesktopbtncaption
+msgid "Toggle as design desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgtoggledesigndesktopbtnhint
+msgid "Activate this desktop while the form designer is shown (Toggle Form/Unit)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint
 #, fuzzy

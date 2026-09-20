@@ -763,6 +763,15 @@ msgstr ""
 msgid "If you select the desktop, the associated debug desktop will be selected as well."
 msgstr ""
 
+#: lazarusidestrconsts.dlgassociateddesigndesktop
+#, object-pascal-format
+msgid "Associated design desktop for \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgassociateddesigndesktophint
+msgid "If you select the desktop, the associated design desktop will be selected as well."
+msgstr ""
+
 #: lazarusidestrconsts.dlgautocreateforms
 msgid "Auto-create forms:"
 msgstr ""
@@ -1537,6 +1546,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
+msgstr ""
+
+#: lazarusidestrconsts.dlgdesigndesktop
+msgid "design"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdesktopbuttons
@@ -2694,7 +2707,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgimportdesktopexists
 msgid ""
 "A desktop with the same name already exists.\n"
-"Please confirm the desktop name:"
+"Please confirm or change the desktop name:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgincludecodetemplatestoidentcompl
@@ -4661,6 +4674,14 @@ msgstr ""
 #: lazarusidestrconsts.dlgtoggledebugdesktopbtnhint
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgtoggledesigndesktopbtncaption
+msgid "Toggle as design desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgtoggledesigndesktopbtnhint
+msgid "Activate this desktop while the form designer is shown (Toggle Form/Unit)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint

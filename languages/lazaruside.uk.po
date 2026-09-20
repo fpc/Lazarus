@@ -782,6 +782,15 @@ msgstr "Пов'язана стільниця зневадження для \"%s\
 msgid "If you select the desktop, the associated debug desktop will be selected as well."
 msgstr "Якщо вибрати стільницю, пов'язана стільниця зневадження також буде вибрана."
 
+#: lazarusidestrconsts.dlgassociateddesigndesktop
+#, object-pascal-format
+msgid "Associated design desktop for \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgassociateddesigndesktophint
+msgid "If you select the desktop, the associated design desktop will be selected as well."
+msgstr ""
+
 #: lazarusidestrconsts.dlgautocreateforms
 msgid "Auto-create forms:"
 msgstr "Автостворювані форми:"
@@ -1563,6 +1572,10 @@ msgstr "Видалити вибрану стільницю"
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
 msgstr "Видалити шаблон "
+
+#: lazarusidestrconsts.dlgdesigndesktop
+msgid "design"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdesktopbuttons
 msgid "Buttons - "
@@ -2741,9 +2754,13 @@ msgid "Included mixed state $IFDEF node"
 msgstr "Включений умовно активний вузол $IFDEF"
 
 #: lazarusidestrconsts.dlgimportdesktopexists
+#, fuzzy
+#| msgid ""
+#| "A desktop with the same name already exists.\n"
+#| "Please confirm the desktop name:"
 msgid ""
 "A desktop with the same name already exists.\n"
-"Please confirm the desktop name:"
+"Please confirm or change the desktop name:"
 msgstr ""
 "Стільниця з такою назвою вже існує.\n"
 "Підтвердьте назву стільниці:"
@@ -4744,6 +4761,14 @@ msgstr "Перемкнути як стільницю зневадження"
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
 msgstr "Перемкнути як стільницю зневадження"
+
+#: lazarusidestrconsts.dlgtoggledesigndesktopbtncaption
+msgid "Toggle as design desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgtoggledesigndesktopbtnhint
+msgid "Activate this desktop while the form designer is shown (Toggle Form/Unit)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"
