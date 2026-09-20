@@ -43,6 +43,8 @@ type
   published
     procedure TestCompleteBlock_ProgamBeginEnd;
     procedure TestCompleteBlock_ProgamBeginMissingEnd;
+    procedure TestCompleteBlock_ProgamBeginMissingEnd2;
+    procedure TestCompleteBlock_ProgamBeginMissingEnd3;
     procedure TestCompleteBlockClassStart;
     procedure TestCompleteBlockBegin;
     procedure TestCompleteBlockProcBegin; // todo
@@ -219,6 +221,32 @@ begin
   'program '+DefUnitName+';',
   'begin',
   '  |',
+  'end.'
+  ]));
+end;
+
+procedure TTestCodetoolsCompleteBlock.TestCompleteBlock_ProgamBeginMissingEnd2;
+begin
+  CompleteBlock(LinesToStr([
+  'program '+DefUnitName+';',
+  'begin',
+  '  |']),
+  LinesToStr([
+  'program '+DefUnitName+';',
+  'begin',
+  '  |',
+  'end.'
+  ]));
+end;
+
+procedure TTestCodetoolsCompleteBlock.TestCompleteBlock_ProgamBeginMissingEnd3;
+begin
+  CompleteBlock(LinesToStr([
+  'program '+DefUnitName+';',
+  'begin|']),
+  LinesToStr([
+  'program '+DefUnitName+';',
+  'begin|',
   'end.'
   ]));
 end;

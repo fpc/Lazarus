@@ -716,6 +716,7 @@ var
   p: pointer;
   IsDirectChange: boolean;
   IntersectionEntry: TSourceChangeCacheEntry;
+  CleanFromPos: integer;
 begin
   {$IFDEF VerboseSrcChanger}
   DebugLn('TSourceChangeCache.ReplaceEx FrontGap=',dbgs(FrontGap),
@@ -779,13 +780,19 @@ begin
     if not MainScanner.WholeRangeIsWritable(FromPos,ToPos,true) then exit;
   end;
   if not IsDirectChange then begin
-    if not MainScanner.CleanedPosToCursor(FromPos,FromDirectPos,p) then begin
+    // Note: FromPos can be CleanedLen+1, i.e. inserting behind the last parsed
+    // char. Then use the position behind the last char of the last link.
+    CleanFromPos:=FromPos;
+    if CleanFromPos>MainScanner.CleanedLen then
+      CleanFromPos:=MainScanner.CleanedLen;
+    if not MainScanner.CleanedPosToCursor(CleanFromPos,FromDirectPos,p) then begin
       {$IFDEF VerboseSrcChanger}
       DebugLn('TSourceChangeCache.ReplaceEx IGNORED, because not in clean pos');
       {$ENDIF}
       RaiseNotInCleanCode;
       exit;
     end;
+    inc(FromDirectPos,FromPos-CleanFromPos);
     DirectCode:=TCodeBuffer(p);
     ToDirectPos:=0;
   end;

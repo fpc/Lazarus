@@ -5004,6 +5004,8 @@ var
 begin
   if (CleanStartPos<1) or (CleanStartPos>CleanEndPos)
   or (CleanEndPos>CleanedLen+1) or (UniqueSortedCodeList=nil) then exit;
+  if CleanStartPos>CleanedLen then
+    CleanStartPos:=CleanedLen; // e.g. inserting behind the last parsed char
   LinkIndex:=LinkIndexAtCleanPos(CleanStartPos);
   if LinkIndex<0 then exit;
   ACode:=FLinks[LinkIndex].Code;
