@@ -43,6 +43,9 @@ type
     procedure TestMethodJump_IntfToImplSingleProcWrongParam;
     procedure TestMethodJump_SingleMethod;
     procedure TestMethodJump_MultiMethodWrongName;
+    procedure TestMethodJump_InlineRecordToIntf;
+    procedure TestMethodJump_InlineRecordProcToIntf;
+    procedure TestMethodJump_InlineVarRecordToIntf;
 
     // generic in delphi:
     //  - generic param names in impl must match decl
@@ -275,6 +278,69 @@ begin
   'end;',
   'end.']);
   TestJumpToMethod('a',false,'b',false,2);
+end;
+
+procedure TTestMethodJumpTool.TestMethodJump_InlineRecordToIntf;
+begin
+  Add([
+  'unit Test1;',
+  '{$mode objfpc}{$H+}',
+  'interface',
+  'type',
+  '  TBird = class',
+  '    procedure {a}DoIt;',
+  '  end;',
+  'implementation',
+  'procedure TBird.DoIt;',
+  'type',
+  '  TWing = record',
+  '    {b}Size: word;',
+  '  end;',
+  'begin',
+  'end;',
+  'end.']);
+  TestJumpToMethod('b',false,'a',false,0);
+end;
+
+procedure TTestMethodJumpTool.TestMethodJump_InlineRecordProcToIntf;
+begin
+  Add([
+  'unit Test1;',
+  '{$mode objfpc}{$H+}',
+  'interface',
+  'procedure {a}DoIt;',
+  'implementation',
+  'procedure DoIt;',
+  'type',
+  '  TWing = record',
+  '    {b}Size: word;',
+  '  end;',
+  'begin',
+  'end;',
+  'end.']);
+  TestJumpToMethod('b',false,'a',false,0);
+end;
+
+procedure TTestMethodJumpTool.TestMethodJump_InlineVarRecordToIntf;
+begin
+  Add([
+  'unit Test1;',
+  '{$mode objfpc}{$H+}',
+  'interface',
+  'type',
+  '  TBird = class',
+  '    procedure {a}DoIt;',
+  '  end;',
+  'implementation',
+  'procedure TBird.DoIt;',
+  'var',
+  '  w: record',
+  '    {b}Size: word;',
+  '  end;',
+  'begin',
+  'end;',
+  'end.']);
+  TestJumpToMethod('b',false,'a',false,0);
 end;
 
 procedure TTestMethodJumpTool.TestMethodJump_DelphiGenericClass;

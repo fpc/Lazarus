@@ -200,8 +200,10 @@ end;
 
 {$IF FPC_FULLVERSION < 30301}
 procedure TCTTestRunner.ReadDefaults;
+{$IF FPC_FULLVERSION < 30204}
 const
   CDefaultsFileIniSection = 'defaults';
+{$ENDIF}
 var
   lFileName: string;
   lConf: TMemIniFile = nil;

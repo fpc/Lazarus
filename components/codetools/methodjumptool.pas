@@ -325,7 +325,7 @@ const
   end;
   
   
-var CursorNode, ClassNode, ProcNode, StartNode, TypeSectionNode,
+var CursorNode, ClassNode, CursorProcNode, ProcNode, StartNode, TypeSectionNode,
   ANode: TCodeTreeNode;
   CleanCursorPos, LineStart, LineEnd, FirstAtomStart, LastAtomEnd: integer;
   SearchedClassname, SearchedProcName, SearchedParamList: string;
@@ -362,11 +362,15 @@ begin
   DebugLn('TMethodJumpingCodeTool.FindJumpPoint CursorNode=',CursorNode.DescAsString);
   {$ENDIF}
   // first test if in a class
-  ClassNode:=CursorNode.GetNodeOfTypes([ctnClass,ctnClassInterface,
-      ctnDispinterface,ctnObject,ctnRecordType,
-      ctnClassHelper,ctnRecordHelper,ctnTypeHelper,
-      ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,
-      ctnCPPClass]);
+  ClassNode:=FindClassOrInterfaceNode(CursorNode,false);
+  if ClassNode<>nil then begin
+    // The class/record can be declared inside a procedure, e.g. a local record
+    // type or the anonymous record type of a local variable.
+    // Then the cursor does not belong to the class, but to the procedure.
+    CursorProcNode:=CursorNode.GetNodeOfType(ctnProcedure);
+    if (CursorProcNode<>nil) and (not CursorProcNode.HasAsParent(ClassNode)) then
+      ClassNode:=FindClassOrInterfaceNode(CursorProcNode,false);
+  end;
   if ClassNode<>nil then begin
     // cursor is in class/object/interface definition
     // Interfaces have no method bodies, but if the class was refactored it has
