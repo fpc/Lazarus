@@ -287,11 +287,6 @@ var
 begin
   l := TStringList.Create;
   try
-    l.Add('procedure '+TestCaseName+'.TestHookUp;');
-    l.Add('begin');
-    l.Add('  Fail('''+sWriteYourOwnTest+''');');
-    l.Add('end;');
-    l.Add('');
     if CreateSetup then
     begin
       l.Add('procedure '+TestCaseName+'.SetUp;');
@@ -308,6 +303,11 @@ begin
       l.Add('end;');
       l.Add('');
     end;
+    l.Add('procedure '+TestCaseName+'.TestHookUp;');
+    l.Add('begin');
+    l.Add('  Fail('''+sWriteYourOwnTest+''');');
+    l.Add('end;');
+    l.Add('');
     l.Add('initialization');
     l.Add('  RegisterTest('+TestCaseName+');');
     result := l.Text;
