@@ -161,6 +161,7 @@ begin
     l.Add('  Application.CreateForm(TGuiTestRunner, TestRunner);');
     l.Add('  Application.Run;');
     l.Add('end.');
+    l.Add('');
     AProject.MainFile.SetSourceText(l.Text);
   finally
     FreeAndNil(l);
@@ -237,6 +238,7 @@ begin
     l.Add('implementation');
     l.Add('');
     l.Add(GetImplementationSource(Filename,SourceName,ResourceName)+'end.'); // no need for extra LE
+    l.Add('');
     result := l.Text;
   finally
     FreeAndNil(l);
@@ -439,6 +441,7 @@ begin
       Add('  Application.Run;');
       Add('  Application.Free;');
       Add('end.');
+      Add('');
       end;
     Result:=S.Text;
   finally
