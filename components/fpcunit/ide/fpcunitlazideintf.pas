@@ -133,9 +133,8 @@ end;
 
 function TFPCUnitApplicationDescriptor.InitProject(AProject: TLazProject): TModalResult;
 var
-  le: string;
-  NewSource: String;
   MainFile: TLazProjectFile;
+  l: TStringList;
 begin
   inherited InitProject(AProject);
 
@@ -148,21 +147,24 @@ begin
   AProject.LoadDefaultIcon;
 
   // create program source
-  le:=LineEnding;
-  NewSource:='program FPCUnitProject1;'+le
-    +le
-    +'{$mode objfpc}{$H+}'+le
-    +le
-    +'uses'+le
-    +'  Interfaces, Forms, GuiTestRunner;'+le
-    +le
-    +'begin'+le
-    +'  Application.Initialize;'+le
-    +'  Application.CreateForm(TGuiTestRunner, TestRunner);'+le
-    +'  Application.Run;'+le
-    +'end.'+le
-    +le;
-  AProject.MainFile.SetSourceText(NewSource);
+  l := TStringList.Create;
+  try
+    l.Add('program FPCUnitProject1;');
+    l.Add('');
+    l.Add('{$mode objfpc}{$H+}');
+    l.Add('');
+    l.Add('uses');
+    l.Add('  Interfaces, Forms, GuiTestRunner;');
+    l.Add('');
+    l.Add('begin');
+    l.Add('  Application.Initialize;');
+    l.Add('  Application.CreateForm(TGuiTestRunner, TestRunner);');
+    l.Add('  Application.Run;');
+    l.Add('end.');
+    AProject.MainFile.SetSourceText(l.Text);
+  finally
+    FreeAndNil(l);
+  end;
 
   // add
   AProject.AddPackageDependency('FCL');
@@ -197,11 +199,10 @@ end;
 function TFileDescPascalUnitFPCUnitTestCase.CreateSource(const Filename,
   SourceName, ResourceName: string): string;
 var
-  LE: string;
+  l: TStringList;
 begin
   CreateSetup := false;
   CreateTeardown := false;
-  LE:=LineEnding;
   with TTestCaseOptionsForm.Create(nil) do
   try
     edDefaultName.Text := 'T' + SourceName;
@@ -221,22 +222,25 @@ begin
   finally
     Free;
   end;
-  Result:=
-     'unit '+SourceName+';'+LE
-    +LE
-    +'{$mode objfpc}{$H+}'+LE
-    +LE
-    +'interface'+LE
-    +LE
-    +'uses'+LE
-    +'  '+GetInterfaceUsesSection+';'+LE
-    +LE
-    +GetInterfaceSource(Filename,SourceName,ResourceName)
-    +'implementation'+LE
-    +LE
-    +GetImplementationSource(Filename,SourceName,ResourceName)
-    +'end.'+LE
-    +LE;
+  l := TStringList.Create;
+  try
+    l.Add('unit '+SourceName+';');
+    l.Add('');
+    l.Add('{$mode objfpc}{$H+}');
+    l.Add('');
+    l.Add('interface');
+    l.Add('');
+    l.Add('uses');
+    l.Add('  '+GetInterfaceUsesSection+';');
+    l.Add('');
+    l.Add(GetInterfaceSource(Filename,SourceName,ResourceName)); // already includes LE
+    l.Add('implementation');
+    l.Add('');
+    l.Add(GetImplementationSource(Filename,SourceName,ResourceName)+'end.'); // no need for extra LE
+    result := l.Text;
+  finally
+    FreeAndNil(l);
+  end;
 end;
 
 function TFileDescPascalUnitFPCUnitTestCase.GetInterfaceUsesSection: string;
@@ -273,7 +277,6 @@ begin
     l.Add('  published');
     l.Add('    procedure TestHookUp;');
     l.Add('  end;');
-    l.Add('');
     result := l.Text;
   finally
     FreeAndNil(l);
