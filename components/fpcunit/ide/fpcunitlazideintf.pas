@@ -275,7 +275,7 @@ begin
     if CreateTeardown then
       l.Add('    procedure TearDown; override;');
     l.Add('  published');
-    l.Add('    procedure TestHookUp;');
+    l.Add('    procedure Test1;');
     l.Add('  end;');
     result := l.Text;
   finally
@@ -306,7 +306,7 @@ begin
       l.Add('end;');
       l.Add('');
     end;
-    l.Add('procedure '+TestCaseName+'.TestHookUp;');
+    l.Add('procedure '+TestCaseName+'.Test1;');
     l.Add('begin');
     l.Add('  Fail('''+sWriteYourOwnTest+''');');
     l.Add('end;');
