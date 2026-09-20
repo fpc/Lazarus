@@ -410,7 +410,7 @@ begin
       Add('uses');
       Line:='Classes, ConsoleTestRunner';
       if (coTestInsight in FOptions) then
-        Line:=Line+', FPCUnitTestInsight';
+        Line:=Line+', FPCUnitTestInsight, JsonParser';
       Add('  '+Line+';');
       Add('');
       Add('type');
