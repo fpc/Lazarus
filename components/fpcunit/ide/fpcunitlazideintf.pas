@@ -245,8 +245,7 @@ end;
 
 function TFileDescPascalUnitFPCUnitTestCase.GetInterfaceUsesSection: string;
 begin
-  Result:=inherited GetInterfaceUsesSection;
-  Result:=Result+', fpcunit, testregistry';
+  Result:=inherited+', FPCUnit, TestRegistry';
 end;
 
 function TFileDescPascalUnitFPCUnitTestCase.GetLocalizedName: string;
@@ -407,9 +406,9 @@ begin
       Add('{$mode objfpc}{$H+}');
       Add('');
       Add('uses');
-      Line:='Classes, consoletestrunner';
+      Line:='Classes, ConsoleTestRunner';
       if (coTestInsight in FOptions) then
-        Line:=Line+', fpcunittestinsight';
+        Line:=Line+', FPCUnitTestInsight';
       Add('  '+Line+';');
       Add('');
       Add('type');
@@ -441,7 +440,7 @@ begin
         Add(Prefix+GetDefaultformatSource+';');
       Add(Prefix+'Application := TMyTestRunner.Create(nil);');
       Add(Prefix+'Application.Initialize;');
-      Add(Prefix+'Application.Title := ''FPCUnit Console test runner'';');
+      Add(Prefix+'Application.Title := ''FPCUnit console test runner'';');
       Add(Prefix+'Application.Run;');
       Add(Prefix+'Application.Free;');
       if (coTestInsight in FOptions) then
