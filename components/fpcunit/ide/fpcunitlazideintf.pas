@@ -258,60 +258,62 @@ end;
 function TFileDescPascalUnitFPCUnitTestCase.GetInterfaceSource(const Filename,
   SourceName, ResourceName: string): string;
 var
-  le: string;
-  setupMethod: string;
-  teardownMethod: string;
-  protectedSection: string;
+  l: TStringList;
 begin
-  le:=System.LineEnding;
-  if CreateSetup or CreateTeardown then
-    protectedSection := '  protected' + le;
-  if CreateSetup then
-    setupMethod := '    procedure SetUp; override;' + le;
-  if CreateTeardown then
-    teardownMethod := '    procedure TearDown; override;' + le;
-  Result := 'type' + le
-    + le
-    +'  '+TestCaseName+'= class(TTestCase)'+le
-    + protectedSection
-    + setupMethod
-    + teardownMethod
-    +'  published'+le
-    +'    procedure TestHookUp;'+le
-    +'  end;'+le+le;
+  l := TStringList.Create;
+  try
+    l.Add('type');
+    l.Add('  '+TestCaseName+' = class(TTestCase)');
+    if CreateSetup or CreateTeardown then
+      l.Add('  protected');
+    if CreateSetup then
+      l.Add('    procedure SetUp; override;');
+    if CreateTeardown then
+      l.Add('    procedure TearDown; override;');
+    l.Add('  published');
+    l.Add('    procedure TestHookUp;');
+    l.Add('  end;');
+    l.Add('');
+    result := l.Text;
+  finally
+    FreeAndNil(l);
+  end;
 end;
 
 function TFileDescPascalUnitFPCUnitTestCase.GetImplementationSource(
   const Filename, SourceName, ResourceName: string): string;
 var
-  le: string;
-  setupMethod: string;
-  teardownMethod: string;
+  l: TStringList;
 begin
-  le:=System.LineEnding;
-  if CreateSetup then
-  setupMethod :=  'procedure '+TestCaseName+'.SetUp;'+le
-                  +'begin'+le
-                  +le
-                  +'end;'+le;
-  if CreateTeardown then
-  teardownMethod := 'procedure '+TestCaseName+'.TearDown;'+le
-                   +'begin'+le
-                   +le
-                   +'end;'+le;
-  Result:='procedure '+TestCaseName+'.TestHookUp;'+le
-    +'begin'+le
-    +'  Fail('+QuotedStr(sWriteYourOwnTest)+');'+le
-    +'end;'+le
-    +le
-    +setupMethod
-    +le
-    +teardownMethod
-    +le
-    +'Initialization'+le
-    +le
-    +'  RegisterTest('+TestCaseName+');'
-    +le;
+  l := TStringList.Create;
+  try
+    l.Add('procedure '+TestCaseName+'.TestHookUp;');
+    l.Add('begin');
+    l.Add('  Fail('''+sWriteYourOwnTest+''');');
+    l.Add('end;');
+    l.Add('');
+    if CreateSetup then
+    begin
+      l.Add('procedure '+TestCaseName+'.SetUp;');
+      l.Add('begin');
+      l.Add('');
+      l.Add('end;');
+      l.Add('');
+    end;
+    if CreateTeardown then
+    begin
+      l.Add('procedure '+TestCaseName+'.TearDown;');
+      l.Add('begin');
+      l.Add('');
+      l.Add('end;');
+      l.Add('');
+    end;
+    l.Add('initialization');
+    l.Add('  RegisterTest('+TestCaseName+');');
+    result := l.Text;
+  finally
+    FreeAndNil(l);
+  end;
 end;
 
 { TFPCUnitConsoleApplicationDescriptor }
