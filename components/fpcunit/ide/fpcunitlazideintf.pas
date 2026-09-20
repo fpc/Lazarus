@@ -386,14 +386,14 @@ begin
   else
     Exit;
   end;
-  Result:='DefaultFormat:='+Result;
+  Result:='DefaultFormat := '+Result;
 end;
 
 function TFPCUnitConsoleApplicationDescriptor.CreateSource : String;
 
 var
   S : TStrings;
-  Prefix,Line : String;
+  Line : String;
 
 
 begin
@@ -412,12 +412,9 @@ begin
       Add('  '+Line+';');
       Add('');
       Add('type');
-      Add('');
-      Add('  { TMyTestRunner }');
-      Add('');
       Add('  TMyTestRunner = class(TTestRunner)');
       Add('  protected');
-      Add('  // override the protected methods of TTestRunner to customize its behavior');
+      Add('    // override protected methods for customization');
       Add('  end;');
       Add('');
       Add('var');
@@ -426,25 +423,21 @@ begin
       Add('begin');
       if (coTestInsight in FOptions) then
         begin
-        add('  if IsTestInsightListening() then');
-        add('    RunRegisteredTests('''','''')');
-        add('  else');
-        add('    begin');
-        Prefix:='    ';
-        end
-      else
-        Prefix:='  ';
+        Add('  if IsTestInsightListening() then');
+        Add('  begin');
+        Add('    RunRegisteredTests();');
+        Add('    exit;');
+        Add('  end;');
+        end;
       if coRunAllTests in FOptions then
-        Add(Prefix+'DefaultRunAllTests:=True;');
+        Add('  DefaultRunAllTests := true;');
       if FDefaultFormat<>dfDefault  then
-        Add(Prefix+GetDefaultformatSource+';');
-      Add(Prefix+'Application := TMyTestRunner.Create(nil);');
-      Add(Prefix+'Application.Initialize;');
-      Add(Prefix+'Application.Title := ''FPCUnit console test runner'';');
-      Add(Prefix+'Application.Run;');
-      Add(Prefix+'Application.Free;');
-      if (coTestInsight in FOptions) then
-        Add(Prefix+'end;');
+        Add('  '+GetDefaultformatSource+';');
+      Add('  Application := TMyTestRunner.Create(nil);');
+      Add('  Application.Initialize;');
+      Add('  Application.Title := ''FPCUnit console test runner'';');
+      Add('  Application.Run;');
+      Add('  Application.Free;');
       Add('end.');
       end;
     Result:=S.Text;
