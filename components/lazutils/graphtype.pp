@@ -995,7 +995,7 @@ begin
   Result:=
      ' Format='+EnumToString(Format)
     +' HasPalette->'+dbgs(PaletteColorCount <> 0)
-    +' HasMask->'+dbgs(PaletteColorCount <> 0)
+    +' HasMask->'+dbgs(MaskBitsPerPixel>0)
     +' Depth='+IntToStr(Depth)
     +' Width='+IntToStr(Width)
     +' Height='+IntToStr(Height)

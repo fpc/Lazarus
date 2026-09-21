@@ -3784,7 +3784,10 @@ var
   SrcHasMask, DstHasMask, SrcMaskPix: Boolean;
   x, y, xStart, yStart, xStop, yStop: Integer;
   c: TFPColor;
+  cBytes: TFPColorBytes absolute c;
   Position: TRawImagePosition;
+  DstIsRGBA32: Boolean;
+  DstPixel: PFourBytes;
 begin
 {
   if (Src.Width<>Width) or (Src.Height<>Height) then
@@ -3808,42 +3811,110 @@ begin
   XStop := IfThen(Width - XDst < ASource.Width, Width - XDst, ASource.Width) - 1;
   YStop := IfTHen(Height - YDst < ASource.Height, Height - YDst, ASource.Height) - 1;
 
+  // Check if a destination pixel is simply the four bytes R,G,B,A in memory order.
+  // Then the pixel can be written directly, without FSetInternalColorProc.
+  // Note: BitOrder, LineEnd and BytesPerLine are irrelevant here, because all
+  // channels are byte aligned and the line starts are taken from FLineStarts.
+  with FRawImage.Description do
+    DstIsRGBA32 := (not AlphaMask)
+      and (FRawImage.Data <> nil)
+      and (Format = ricfRGBA)
+      and (PaletteColorCount = 0)
+      and (Depth = 32)
+      and (BitsPerPixel = 32)
+      and (LineOrder = riloTopToBottom)
+      and (ByteOrder = riboLSBFirst)
+      and (RedPrec = 8)
+      and (RedShift = 0)
+      and (GreenPrec = 8)
+      and (GreenShift = 8)
+      and (BluePrec = 8)
+      and (BlueShift = 16)
+      and (AlphaPrec = 8)
+      and (AlphaShift = 24);
+
   if ASource is TLazIntfImage then
   begin
     SrcHasMask := SrcImg.FRawImage.Description.MaskBitsPerPixel > 0;
     DstHasMask := FRawImage.Description.MaskBitsPerPixel > 0;
     // Optimization for common case. Inner loop is called millions of times in a big app.
-    for y:=yStart to yStop do
-      for x:=xStart to xStop do
+    if DstIsRGBA32 then
+    begin
+      for y:=yStart to yStop do
       begin
-        SrcImg.FGetInternalColorProc(x,y,c);       // c := SrcImg.Colors[x,y];
-        if DstHasMask then                    // This can be optimized if needed.
-          Masked[x+XDst,y+YDst] := SrcHasMask and SrcImg.Masked[x,y]
-        else
-        if SrcHasMask and (c.alpha = $FFFF) then
-        begin                                      // copy mask to alpha channel
-          SrcImg.GetXYMaskPosition(x,y,Position);  //if SrcImg.Masked[x,y] then
-          SrcImg.FRawimage.ReadMask(Position, SrcMaskPix);
-          if SrcMaskPix then
-            c.alpha := 0;
-        end;
-        FSetInternalColorProc(x+XDst, y+YDst, c);  // Colors[x+XDst,y+YDst] := c;
-        if AlphaMask and DstHasMask and (c.alpha < AlphaTreshold) then begin
-          GetXYMaskPosition(x+XDst, y+YDst, Position); // Masked[x+XDst,y+YDst]:=True;
-          FRawImage.WriteMask(Position, True);
-          FMaskSet := True;
+        DstPixel := PFourBytes(FRawImage.Data
+          +FLineStarts^.Positions[y+YDst].Byte+((xStart+XDst) shl 2));
+        for x:=xStart to xStop do
+        begin
+          SrcImg.FGetInternalColorProc(x,y,c);     // c := SrcImg.Colors[x,y];
+          if DstHasMask then                  // This can be optimized if needed.
+            Masked[x+XDst,y+YDst] := SrcHasMask and SrcImg.Masked[x,y]
+          else
+          if SrcHasMask and (c.alpha = $FFFF) then
+          begin                                    // copy mask to alpha channel
+            SrcImg.GetXYMaskPosition(x,y,Position);//if SrcImg.Masked[x,y] then
+            SrcImg.FRawimage.ReadMask(Position, SrcMaskPix);
+            if SrcMaskPix then
+              c.alpha := 0;
+          end;
+          DstPixel^.B0 := cBytes.Rh;          // Colors[x+XDst,y+YDst] := c;
+          DstPixel^.B1 := cBytes.Gh;
+          DstPixel^.B2 := cBytes.Bh;
+          DstPixel^.B3 := cBytes.Ah;
+          inc(DstPixel);
         end;
       end;
+    end
+    else
+      for y:=yStart to yStop do
+        for x:=xStart to xStop do
+        begin
+          SrcImg.FGetInternalColorProc(x,y,c);     // c := SrcImg.Colors[x,y];
+          if DstHasMask then                  // This can be optimized if needed.
+            Masked[x+XDst,y+YDst] := SrcHasMask and SrcImg.Masked[x,y]
+          else
+          if SrcHasMask and (c.alpha = $FFFF) then
+          begin                                    // copy mask to alpha channel
+            SrcImg.GetXYMaskPosition(x,y,Position);//if SrcImg.Masked[x,y] then
+            SrcImg.FRawimage.ReadMask(Position, SrcMaskPix);
+            if SrcMaskPix then
+              c.alpha := 0;
+          end;
+          FSetInternalColorProc(x+XDst, y+YDst, c);// Colors[x+XDst,y+YDst] := c;
+          if AlphaMask and DstHasMask and (c.alpha < AlphaTreshold) then begin
+            GetXYMaskPosition(x+XDst, y+YDst, Position);//Masked[x+XDst,y+YDst]:=True;
+            FRawImage.WriteMask(Position, True);
+            FMaskSet := True;
+          end;
+        end;
   end
   else begin
-    for y:=yStart to yStop do
-      for x:=xStart to xStop do
+    if DstIsRGBA32 then
+    begin
+      for y:=yStart to yStop do
       begin
-        c := ASource.Colors[x,y];
-        Colors[x+XDst,y+YDst] := c;
-        if AlphaMask and (c.alpha < AlphaTreshold) then
-          Masked[x+XDst,y+YDst] := True;
+        DstPixel := PFourBytes(FRawImage.Data
+          +FLineStarts^.Positions[y+YDst].Byte+((xStart+XDst) shl 2));
+        for x:=xStart to xStop do
+        begin
+          c := ASource.Colors[x,y];
+          DstPixel^.B0 := cBytes.Rh;          // Colors[x+XDst,y+YDst] := c;
+          DstPixel^.B1 := cBytes.Gh;
+          DstPixel^.B2 := cBytes.Bh;
+          DstPixel^.B3 := cBytes.Ah;
+          inc(DstPixel);
+        end;
       end;
+    end
+    else
+      for y:=yStart to yStop do
+        for x:=xStart to xStop do
+        begin
+          c := ASource.Colors[x,y];
+          Colors[x+XDst,y+YDst] := c;
+          if AlphaMask and (c.alpha < AlphaTreshold) then
+            Masked[x+XDst,y+YDst] := True;
+        end;
   end;
 end;
 
