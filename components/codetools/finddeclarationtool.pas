@@ -15692,11 +15692,11 @@ begin
 
   if Result='' then exit;
   if AliasType.Node<>nil then begin
-    ClassNode:=FindClassNode(AliasType.Node);
+    ClassNode:=AliasType.Tool.FindClassNode(AliasType.Node);
     if ClassNode=nil then exit;
-    ExprClassNode:= FindClassNode(Params.StartNode);
+    ExprClassNode:= Params.StartTool.FindClassNode(Params.StartNode);
     if ExprClassNode = ClassNode then exit; // inside a class no full path needed
-    Result:=ExtractClassName(ClassNode, false)+'.'+Result;
+    Result:=AliasType.Tool.ExtractClassName(ClassNode, false)+'.'+Result;
   end else
   if Params.NewNode<>nil then begin
     i:=0;
@@ -16554,8 +16554,7 @@ begin
         case FindContext.Node.Desc of
 
         ctnTypeDefinition:
-          Result:=GetIdentifier(
-                              @FindContext.Tool.Src[FindContext.Node.StartPos]);
+          Result:=GetIdentifier(@FindContext.Tool.Src[FindContext.Node.StartPos]);
 
         ctnVarDefinition,ctnConstDefinition:
           begin
