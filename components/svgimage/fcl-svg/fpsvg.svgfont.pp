@@ -208,6 +208,9 @@ type
     FBase: ISVGFontProvider;
     FFaces: array of TSVGFontFace;
     FCount: Integer;
+    // The fonts handed out by ResolveFont, owned: these interfaces are
+    // not reference counted.
+    FFonts: TFPList;
     function IndexOfFace(const aFamily: TSVGString; aWeight: Integer;
       aStyle: TSVGFontStyle; aVariant: TSVGFontVariant): Integer;
     function NearestFace(const aFamily: TSVGString; aWeight: Integer;
@@ -378,6 +381,7 @@ constructor TSVGDocumentFontProvider.Create(aBase: ISVGFontProvider);
 begin
   inherited Create;
   FBase := aBase;
+  FFonts := TFPList.Create;
 end;
 
 
@@ -387,6 +391,9 @@ var
   I: Integer;
 
 begin
+  for I := 0 to FFonts.Count - 1 do
+    TSVGDocumentFont(FFonts[I]).Free;
+  FreeAndNil(FFonts);
   for I := 0 to FCount - 1 do
     FFaces[I].Free;
   FFaces := nil;
@@ -536,6 +543,7 @@ var
   lFamily: TSVGString;
   lProbe: TSVGFontRequest;
   lOne: ISVGFont;
+  lNew: TSVGDocumentFont;
 
 begin
   Result := nil;
@@ -555,7 +563,11 @@ begin
     // it can fail on, and a family that fails it is skipped for the next
     // in the list.
     if lIndex >= 0 then
-      Exit(TSVGDocumentFont.Create(FFaces[lIndex], aRequest.Size));
+      begin
+      lNew := TSVGDocumentFont.Create(FFaces[lIndex], aRequest.Size);
+      FFonts.Add(lNew);
+      Exit(lNew);
+      end;
     if lLoose < 0 then
       lLoose := NearestFace(lFamily, aRequest.Weight, aRequest.Style,
         aRequest.Variant, False);
@@ -577,7 +589,11 @@ begin
   // face at all, so a drawing with no other family to try and no fonts
   // below it keeps a declared face of another slant.
   if (Result = nil) and (lLoose >= 0) then
-    Result := TSVGDocumentFont.Create(FFaces[lLoose], aRequest.Size);
+    begin
+    lNew := TSVGDocumentFont.Create(FFaces[lLoose], aRequest.Size);
+    FFonts.Add(lNew);
+    Result := lNew;
+    end;
 end;
 
 

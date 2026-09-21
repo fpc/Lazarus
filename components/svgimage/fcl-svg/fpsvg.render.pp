@@ -162,6 +162,8 @@ type
     FBaseURI       : String;
     FStyleSheets   : ISVGStyleSheetResolver;
     FDocumentFonts : ISVGFontProvider;
+    // The provider above, owned: these interfaces are not reference counted.
+    FDocumentFontOwner : TSVGDocumentFontProvider;
     function ContextOf(const aState: TSVGRenderState): TSVGLengthContext;
     function TransformOf(aElement: TSVGElement): TSVGMatrix;
     function LengthOf(aElement: TSVGElement; const aName: String;
@@ -1116,6 +1118,8 @@ end;
 destructor TSVGRenderer.Destroy;
 
 begin
+  FDocumentFonts := nil;
+  FreeAndNil(FDocumentFontOwner);
   FreeAndNil(FExpander);
   FreeAndNil(FLayout);
   FreeAndNil(FOpenDocuments);
@@ -1397,6 +1401,7 @@ begin
     FStyles.Unload;
     FreeAndNil(FExpander);
     FDocumentFonts := nil;
+    FreeAndNil(FDocumentFontOwner);
     FBackend := nil;
     FDocument := nil;
   end;
@@ -1410,16 +1415,17 @@ var
   lRule: TSVGFontFaceRule;
   lFile: String;
   lFonts: TSVGDocumentFontProvider;
-  lHeld: ISVGFontProvider;
 
 begin
   FFontsLoaded := 0;
+  FDocumentFonts := nil;
+  FreeAndNil(FDocumentFontOwner);
   lFonts := TSVGDocumentFontProvider.Create(FFonts);
-  lHeld := lFonts;
+  FDocumentFontOwner := lFonts;
   lFonts.AddDocument(aDocument);
   LoadNamedFonts(aDocument.Root, lFonts);
   if lFonts.FaceCount > 0 then
-    FDocumentFonts := lHeld
+    FDocumentFonts := lFonts
   else
     FDocumentFonts := nil;
   if (FFonts = nil) or (FFontFiles = nil) then

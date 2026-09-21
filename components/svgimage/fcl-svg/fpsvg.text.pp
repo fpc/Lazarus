@@ -438,6 +438,7 @@ begin
     FRuns[I].Glyphs := nil;
     end;
   FRunCount := 0;
+  FFonts := nil;
   FPathCount := 0;
   FBandCount := 0;
   FSpanPath := -1;
