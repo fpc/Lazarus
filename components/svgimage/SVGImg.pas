@@ -508,8 +508,6 @@ procedure TSVGGraphic.RenderToCache(AWidth, AHeight: Integer);
 var
   IntfImg: TLazIntfImage;
   Img: TFPCustomImage;
-  x: Integer;
-  y: Integer;
 begin
   FreeAndNil(FCache);
   FCacheWidth := 0;
@@ -528,14 +526,12 @@ begin
   Img := FBackend.Image;
   if Img = nil then
     exit;
-  IntfImg := TLazIntfImage.Create(AWidth, AHeight, [riqfRGB, riqfAlpha]);
+  IntfImg := TLazIntfImage.Create(0,0);
   try
-    for y := 0 to AHeight - 1 do
-      for x := 0 to AWidth - 1 do
-        IntfImg.Colors[x, y] := Img.Colors[x, y];
+    IntfImg.DataDescription := GetDescriptionFromDevice(0, 0, 0);
+    IntfImg.SetSize(AWidth,AHeight);
+    IntfImg.CopyPixels(FBackend.Image);
     FCache := TBitmap.Create;
-    FCache.PixelFormat := pf32bit;
-    FCache.SetSize(AWidth, AHeight);
     FCache.LoadFromIntfImage(IntfImg);
     FCacheWidth := AWidth;
     FCacheHeight := AHeight;
