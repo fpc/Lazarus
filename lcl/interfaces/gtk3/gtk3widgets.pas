@@ -3395,6 +3395,29 @@ begin
   end;
 end;
 
+procedure Gtk3SetBgCssProvider(ATarget: PGtkWidget; const ACss: String; APriority: guint);
+const
+  LCL_BG_CSS = 'lcl-bg-css';
+var
+  AOld, ANew: PGtkCssProvider;
+begin
+  if ATarget = nil then
+    exit;
+  AOld := PGtkCssProvider(g_object_get_data(PGObject(ATarget), LCL_BG_CSS));
+  if Assigned(AOld) then
+  begin
+    gtk_style_context_remove_provider(gtk_widget_get_style_context(ATarget), PGtkStyleProvider(AOld));
+    g_object_unref(gpointer(AOld));
+    g_object_set_data(PGObject(ATarget), LCL_BG_CSS, nil);
+  end;
+  if ACss = '' then
+    exit;
+  ANew := gtk_css_provider_new;
+  gtk_css_provider_load_from_data(ANew, PChar(ACss), -1, nil);
+  gtk_style_context_add_provider(gtk_widget_get_style_context(ATarget), PGtkStyleProvider(ANew), APriority);
+  g_object_set_data(PGObject(ATarget), LCL_BG_CSS, ANew);
+end;
+
 procedure TGtk3Widget.SetColor(AValue: TColor);
 var
   AColor: TGdkRGBA;
@@ -3416,19 +3439,14 @@ begin
   if [wtEntry, wtSpinEdit] * WidgetType <> [] then
   begin
     if AValue = clDefault then
-      CSSData := 'entry { background-color: initial; background-image: none; }'
+      CSSData := ''
     else
     begin
       RGBA := ColorToRGB(AValue);
       CSSData := Format('entry { background-color: #%.2x%.2x%.2x; background-image: none; }',
                  [Red(RGBA), Green(RGBA), Blue(RGBA)]);
     end;
-    Provider := gtk_css_provider_new();
-    gtk_css_provider_load_from_data(Provider, PChar(CSSData), -1, nil);
-    gtk_style_context_add_provider(gtk_widget_get_style_context(FWidget),
-                                   PGtkStyleProvider(Provider),
-                                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-    g_object_unref(Provider);
+    Gtk3SetBgCssProvider(FWidget, CSSData, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
   end else
   if wtMemo in WidgetType then
   begin
@@ -3464,52 +3482,32 @@ begin
   end else
   if (wtComboBox in WidgetType) then
   begin
-    if PGtkComboBox(FWidget)^.has_entry then
+    ATargetWidget := PGtkComboBox(FWidget)^.get_child;
+    if AValue = clDefault then
+      CSSData := ''
+    else
     begin
-      ATargetWidget := PGtkComboBox(FWidget)^.get_child;
-      if AValue = clDefault then
-        CSSData := 'entry { background-color: initial; background-image: none; }'
-      else
-      begin
-        RGBA := ColorToRGB(AValue);
+      RGBA := ColorToRGB(AValue);
+      if PGtkComboBox(FWidget)^.has_entry then
         CSSData := Format('entry { background-color: #%.2x%.2x%.2x; background-image: none; }',
-                   [Red(RGBA), Green(RGBA), Blue(RGBA)]);
-      end;
-    end else
-    begin
-      ATargetWidget := PGtkComboBox(FWidget)^.get_child;
-      if AValue = clDefault then
-        CSSData := 'combobox button.combo cellview { background-color: initial; background-image: none; }'
+                   [Red(RGBA), Green(RGBA), Blue(RGBA)])
       else
-      begin
-        RGBA := ColorToRGB(AValue);
         CSSData := Format('combobox button.combo cellview { background-color: #%.2x%.2x%.2x; background-image: none; }',
                    [Red(RGBA), Green(RGBA), Blue(RGBA)]);
-      end;
     end;
-    Provider := gtk_css_provider_new();
-    gtk_css_provider_load_from_data(Provider, PChar(CSSData), -1, nil);
-    gtk_style_context_add_provider(gtk_widget_get_style_context(ATargetWidget),
-                                   PGtkStyleProvider(Provider),
-                                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-    g_object_unref(Provider);
+    Gtk3SetBgCssProvider(ATargetWidget, CSSData, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
   end else
   if wtTrackBar in WidgetType then
   begin
     if AValue = clDefault then
-      CSSData := 'trough { background: initial; }'
+      CSSData := ''
     else
     begin
       RGBA := ColorToRGB(AValue);
       CSSData := Format('trough { background: #%.2x%.2x%.2x; }',
         [Red(RGBA), Green(RGBA), Blue(RGBA)]);
     end;
-    Provider := gtk_css_provider_new();
-    gtk_css_provider_load_from_data(Provider, PChar(CSSData), -1, nil);
-    gtk_style_context_add_provider(gtk_widget_get_style_context(FWidget),
-                                   PGtkStyleProvider(Provider),
-                                   GTK_STYLE_PROVIDER_PRIORITY_USER);
-    g_object_unref(Provider);
+    Gtk3SetBgCssProvider(FWidget, CSSData, GTK_STYLE_PROVIDER_PRIORITY_USER);
   end else
   if Self is TGtk3CheckBox then
   begin
