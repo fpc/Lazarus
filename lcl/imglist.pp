@@ -398,6 +398,7 @@ type
     procedure RegisterResolutions(const AResolutionWidths: array of Integer); virtual;
     procedure DeleteResolution(const AWidth: Integer);
     function FindResolution(AImageWidth: Integer; out AResolution: TCustomImageListResolution): Boolean;
+    procedure SetSize(AWidth, AHeight: Integer);
   public
     property AllocBy: Integer read FAllocBy write FAllocBy default 4;
     property BlendColor: TColor read FBlendColor write FBlendColor default clNone;
