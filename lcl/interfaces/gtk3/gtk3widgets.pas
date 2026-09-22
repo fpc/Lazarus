@@ -15128,6 +15128,7 @@ var
   msk: TGdkWindowState;
   MenuH: gint;
   AMainForm: Boolean;
+  AContentW, AContentH: gint;
 begin
   Result := False;
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
@@ -15201,8 +15202,18 @@ begin
      (not (TGtk3Window(AData).LCLObject is TCustomForm) or
       (TCustomForm(TGtk3Window(AData).LCLObject).FormStyle <> fsMDIChild)) then
     MenuH := TGtk3Window(AData).GetMenuBarHeight;
-  Msg.Width := Word(AWidget^.window^.get_width);
-  Msg.Height := Word(Max(0, AWidget^.window^.get_height - MenuH));
+  if Gtk3WidgetSet.IsWayland and Gtk3IsGtkWindow(AWidget) then
+  begin
+    AContentW := 0;
+    AContentH := 0;
+    PGtkWindow(AWidget)^.get_size(@AContentW, @AContentH);
+    Msg.Width := Word(AContentW);
+    Msg.Height := Word(Max(0, AContentH - MenuH));
+  end else
+  begin
+    Msg.Width := Word(AWidget^.window^.get_width);
+    Msg.Height := Word(Max(0, AWidget^.window^.get_height - MenuH));
+  end;
   {$IFDEF GTK3DEBUGWINDOWSTATE}
   DebugLn('GetWindowState SizeType=',dbgs(Msg.SizeType),' realized ',dbgs(AWidget^.get_realized));
   {$ENDIF}
@@ -15622,6 +15633,13 @@ var
 begin
   if Gtk3IsGtkWindow(aWidget) then
   begin
+    if Gtk3WidgetSet.IsWayland and
+      (TGtk3Window(aData).GetWindowState * [GDK_WINDOW_STATE_MAXIMIZED,
+        GDK_WINDOW_STATE_FULLSCREEN, GDK_WINDOW_STATE_TILED] <> []) then
+    begin
+      Result := gtk_false;
+      exit;
+    end;
     MoveMsg.Result := 0;
     MoveMsg.Msg := LM_MOVE;
     MoveMsg.MoveType := Move_SourceIsInterface;
@@ -16384,6 +16402,7 @@ var
   x, y: gint;
   WSAInterval: Int64;
   MenuH: gint;
+  AShadowW, AShadowH: gint;
 begin
   AForm := TCustomForm(LCLObject);
   BeginUpdate;
@@ -16398,6 +16417,15 @@ begin
   ARect.width := AWidth;
   ARect.Height := AHeight;
   AIsWayland := Gtk3WidgetSet.IsWayland;
+  AShadowW := FResizeState.ShadowW;
+  AShadowH := FResizeState.ShadowH;
+  if AIsWayland and Gtk3IsGtkWindow(fWidget) and
+    (GetWindowState * [GDK_WINDOW_STATE_MAXIMIZED, GDK_WINDOW_STATE_FULLSCREEN,
+      GDK_WINDOW_STATE_TILED] <> []) then
+  begin
+    AShadowW := 0;
+    AShadowH := 0;
+  end;
   try
     Widget^.get_allocation(@Alloc);
     {$IF DEFINED(GTK3DEBUGFORMS) OR DEFINED(GTK3DEBUGSIZE)}
@@ -16430,8 +16458,8 @@ begin
       begin
         if AIsWayland and Gtk3IsGtkWindow(fWidget) then
         begin
-          ARect.width := ARect.width + FResizeState.ShadowW;
-          ARect.height := ARect.height + FResizeState.ShadowH;
+          ARect.width := ARect.width + AShadowW;
+          ARect.height := ARect.height + AShadowH;
         end;
         Widget^.size_allocate(@ARect);
       end;
@@ -16442,25 +16470,25 @@ begin
       with Geometry do
       begin
         if not AFixedWidthHeight and (AForm.Constraints.MinWidth > 0) then
-          min_width := AForm.Constraints.MinWidth + FResizeState.ShadowW
+          min_width := AForm.Constraints.MinWidth + AShadowW
         else if AFixedWidthHeight then
           min_width := AForm.Width
         else
           min_width := 1;
         if not AFixedWidthHeight and (AForm.Constraints.MaxWidth > 0) then
-          max_width := AForm.Constraints.MaxWidth + FResizeState.ShadowW
+          max_width := AForm.Constraints.MaxWidth + AShadowW
         else if AFixedWidthHeight then
           max_width := AForm.Width
         else
           max_width := 32767;
         if not AFixedWidthHeight and (AForm.Constraints.MinHeight > 0) then
-          min_height := AForm.Constraints.MinHeight + FResizeState.ShadowH + MenuH
+          min_height := AForm.Constraints.MinHeight + AShadowH + MenuH
         else if AFixedWidthHeight then
           min_height := AForm.Height + MenuH
         else
           min_height := 1;
         if not AFixedWidthHeight and (AForm.Constraints.MaxHeight > 0) then
-          max_height := AForm.Constraints.MaxHeight + FResizeState.ShadowH + MenuH
+          max_height := AForm.Constraints.MaxHeight + AShadowH + MenuH
         else if AFixedWidthHeight then
           max_height := AForm.Height + MenuH
         else

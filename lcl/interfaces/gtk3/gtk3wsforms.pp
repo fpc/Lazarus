@@ -718,7 +718,7 @@ begin
         ATime := gtk_get_current_event_time;
         if ATime = 0 then
           ATime := Gtk3WidgetSet.LastUserEventTime;
-        if ATime <> 0 then
+        if (ATime <> 0) or not Gtk3WidgetSet.IsWayland then
           AWindow^.present_with_time(ATime);
       end;
 
