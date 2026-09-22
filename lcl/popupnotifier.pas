@@ -331,12 +331,7 @@ begin
     IconAdjust := 0;
 
   if (BtnX <> nil) then
-  begin
-    BtnX.Left := Width - (btnSize + Scale96ToForm(5));
-    BtnX.Top := spc;
-    BtnX.Width := btnSize;
-    BtnX.Height := btnSize;
-  end;
+    BtnX.SetBounds(Width - (btnSize + Scale96ToForm(5)), spc, btnSize, btnSize);
 
   if (lblTitle <> nil) then
   begin
@@ -348,12 +343,12 @@ begin
   end;
 
   if (lblText <> nil) then
-  begin
-    lblText.Left := IconAdjust + Scale96ToForm(20);
-    lblText.Top := LblTitle.Top + LblTitle.Height + spc;
-    lblText.Width := Width - (lblText.Left + spc);
-    lblText.Height := Height - (lblText.Top + spc);
-  end;
+    lblText.SetBounds(
+      IconAdjust + Scale96ToForm(20),
+      LblTitle.Top + LblTitle.Height + spc,
+      Width - (lblText.Left + spc),
+      Height - (lblText.Top + spc)
+    );
 end;
 
 { TPopupNotifier }

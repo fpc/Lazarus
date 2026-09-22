@@ -271,10 +271,12 @@ begin
       else if Kind in [cbSgn..cbCancel] then
         Caption:=CalcBtnCaptions[Kind];
 
-      Left:=CalcBtnPos[ALayout, Kind].X;
-      Top:=CalcBtnPos[ALayout, Kind].Y;
-      Width:=CalcBtnSizes[ALayout,1];
-      Height:=CalcBtnSizes[ALayout,2];
+      SetBounds(
+        CalcBtnPos[ALayout, Kind].X,
+        CalcBtnPos[ALayout, Kind].Y,
+        CalcBtnSizes[ALayout, 1],
+        CalcBtnSizes[ALayout, 2]
+      );
       OnClick:=AOnClick;
       ParentFont:=True;
       Parent:=AParent;

@@ -50,20 +50,14 @@ begin
   inherited CreateNew(aOwner);
   Layout := frButtonsAtBottom in Options;
   if Layout then begin
-    Left := 415;
-    Height := 220;
-    Top := 391;
-    Width := 530;
+    SetBounds(415, 391, 530, 220);
     ClientHeight := 220;
     ClientWidth := 530;
     Constraints.MinHeight := 220;
     Constraints.MinWidth := 530;
     end
   else begin
-    Left := 415;
-    Height := 184;
-    Top := 333;
-    Width := 480;
+    SetBounds(415, 333, 480, 184);
     ClientHeight := 140;
     ClientWidth := 480;
     Constraints.MinHeight := 184;
@@ -78,10 +72,7 @@ begin
 
   TextLabel := TLabel.Create(Self);
   with TextLabel do begin
-    Left := 4;
-    Height := 17;
-    Top := 14;
-    Width := 77;
+    SetBounds(4, 14, 77, 17);
     BorderSpacing.Left := 8;
     BorderSpacing.Right := 8;
     BorderSpacing.Top := 14;
@@ -92,10 +83,7 @@ begin
   end;
   ReplaceLabel := TLabel.Create(Self);
   with ReplaceLabel do begin
-    Left := 4;
-    Height := 17;
-    Top := 45;
-    Width := 87;
+    SetBounds(4, 45, 87, 17);
     BorderSpacing.Top := 14;
     BorderSpacing.Right := 8;
     Caption := 'Replace with';
@@ -105,20 +93,14 @@ begin
   end;
   EditFind := TEdit.Create(Self);
   with EditFind do begin
-    Left := 89;
-    Height := 27;
-    Top := 9;
-    Width := 288;
+    SetBounds(89, 9, 288, 27);
     TabOrder := 0;
     Text := 'EditFind';
     Parent := Self;
   end;
   EditReplace := TEdit.Create(Self);
   with EditReplace do begin
-    Left := 99;
-    Height := 27;
-    Top := 40;
-    Width := 278;
+    SetBounds(99, 40, 278, 27);
     BorderSpacing.Left := 8;
     TabOrder := 1;
     Text := 'EditReplace';
@@ -127,10 +109,7 @@ begin
   {
   DirectionRadioGroup := TRadioGroup.Create(Self);
   with DirectionRadioGroup do begin
-    Left := 155;
-    Height := 60;
-    Top := 62;
-    Width := 222;
+    SetBounds(155, 62, 222, 60);
     AutoFill := True;
     AutoSize := True;
     BorderSpacing.Left := 12;
@@ -156,10 +135,7 @@ begin
   }
   FlagPanel := TPanel.Create(Self);
   With FlagPanel do begin
-    Left := 4;
-    Height := 114;
-    Top := 62;
-    Width := 151;
+    SetBounds(4, 62, 151, 114);
     AutoSize := True;
     BorderSpacing.Around := 6;
     BorderSpacing.Top := 16;
@@ -176,40 +152,28 @@ begin
   // Flags Panel Objects
     WholeWordsOnlyCheckBox := TCheckBox.Create(Self);
     with WholeWordsOnlyCheckBox do begin
-      Left := 0;
-      Height := 23;
-      Top := 0;
-      Width := 142;
+      SetBounds(0, 0, 142, 23);
       Caption := 'Whole words only';
       TabOrder := 0;
       Parent := FlagPanel;
     end;
     CaseSensitiveCheckBox := TCheckBox.Create(Self);
     with CaseSensitiveCheckBox do begin
-      Left := 0;
-      Height := 23;
-      Top := 29;
-      Width := 142;
+      SetBounds(0, 29, 142, 23);
       Caption := 'Case sensitive';
       TabOrder := 1;
       Parent := FlagPanel;
     end;
     EntireScopeCheckBox := TCheckBox.Create(Self);
     with EntireScopeCheckBox do begin
-      Left := 0;
-      Height := 23;
-      Top := 58;
-      Width := 142;
+      SetBounds(0, 58, 142, 23);
       Caption := 'Search entire file';
       TabOrder := 2;
       Parent := FlagPanel;
     end;
     PromptOnReplaceCheckBox := TCheckBox.Create(Self);
     with PromptOnReplaceCheckBox do begin
-      Left := 0;
-      Height := 23;
-      Top := 89;
-      Width := 151;
+      SetBounds(0, 89, 151, 23);
       Caption := 'Prompt on replace';
       TabOrder := 3;
       Parent := FlagPanel;
@@ -218,10 +182,7 @@ begin
 
   DirectionRadioGroup := TRadioGroup.Create(Self);
   with DirectionRadioGroup do begin
-    Left := 155;
-    Height := 60;
-    Top := 62;
-    Width := 222;
+    SetBounds(155, 62, 222, 60);
     AutoFill := True;
     AutoSize := True;
     BorderSpacing.Left := 12;
@@ -248,10 +209,7 @@ begin
   PanelButtons := TPanel.Create(Self);
   with PanelButtons do begin
     if Layout then begin
-      Left := 0;
-      Height := 29;
-      Top := 191;
-      Width := 530;
+      SetBounds(0, 191, 530, 29);
       Align := alBottom;
       BevelOuter := bvNone;
       ClientHeight := 29;
@@ -259,10 +217,7 @@ begin
       TabOrder := 4;
       end
     else begin
-      Left := 388;
-      Height := 132;
-      Top := 0;
-      Width := 92;
+      SetBounds(388, 0, 92, 132);
       Align := alRight;
       BevelOuter := bvNone;
       ChildSizing.LeftRightSpacing := 6;
@@ -278,10 +233,7 @@ begin
     FindMoreButton := TButton.Create(Self);
     with FindMoreButton do begin
       Tag := 1;
-      Left := 12;
-      Height := 26;
-      Top := 10;
-      Width := 91;
+      SetBounds(12, 10, 91, 26);
       AutoSize := True;
       Caption := 'Find more';
       Constraints.MinWidth := 91;
@@ -292,10 +244,7 @@ begin
     ReplaceButton := TButton.Create(Self);
     with ReplaceButton do begin
       Tag := 2;
-      Left := 12;
-      Height := 26;
-      Top := 46;
-      Width := 91;
+      SetBounds(12, 46, 91, 26);
       AutoSize := True;
       Caption := 'Replace';
       Constraints.MinWidth := 91;
@@ -306,10 +255,7 @@ begin
     ReplaceAllButton := TButton.Create(Self);
     with ReplaceAllButton do begin
       Tag := 3;
-      Left := 12;
-      Height := 26;
-      Top := 82;
-      Width := 91;
+      SetBounds(12, 82, 91, 26);
       AutoSize := True;
       Caption := 'Replace all';
       Constraints.MinWidth := 91;
@@ -319,10 +265,7 @@ begin
     end;
     CancelButton := TButton.Create(Self);
     with CancelButton do begin
-      Left := 12;
-      Height := 26;
-      Top := 122;
-      Width := 91;
+      SetBounds(12, 122, 91, 26);
       AutoSize := True;
       Cancel := True;
       Caption := 'Cancel';
@@ -333,10 +276,7 @@ begin
     end;
     HelpButton := TButton.Create(Self);
     with HelpButton do begin
-      Left := 12;
-      Height := 26;
-      Top := 158;
-      Width := 91;
+      SetBounds(12, 158, 91, 26);
       AutoSize := True;
       Caption := 'Help';
       Constraints.MinWidth := 91;
@@ -362,10 +302,7 @@ begin
     ClientWidth := dlgWidth;
     AutoSize := True;
     with PanelButtons do begin
-      Left := 0;
-      Height := 29;
-      Top := 191;
-      Width := dlgWidth;
+      SetBounds(0, 191, dlgWidth, 29);
       ClientHeight := 29;
       ClientWidth := dlgWidth;
       Align := alBottom;
