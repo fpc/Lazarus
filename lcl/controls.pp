@@ -41,6 +41,7 @@ uses
   // LCL
   LCLStrConsts, LCLType, LCLProc, Graphics, LMessages, LCLIntf, InterfaceBase,
   ImgList, PropertyStorage, Menus, ActnList, LCLClasses, LResources, LCLPlatformDef,
+  CustomTimer,
   // LazUtils
   GraphType, GraphMath, LazMethodList, LazLoggerBase, LazTracer, LazUtilities;
 
@@ -640,7 +641,8 @@ type
     function Dragging(AControl: TControl): Boolean; virtual;abstract;
     procedure RegisterDockSite(Site: TWinControl; DoRegister: Boolean); virtual;abstract;
 
-    procedure DragStart(AControl: TControl; AImmediate: Boolean; AThreshold: Integer; StartFromCurrentMouse:Boolean=False); virtual;abstract;
+    procedure DragStart(AControl: TControl; AImmediate: Boolean; AThreshold: Integer;
+      StartFromCurrentMouse:Boolean=False; ADelay:Integer=0); virtual;abstract;
     procedure DragMove(APosition: TPoint); virtual;abstract;
     procedure DragStop(ADrop: Boolean); virtual;abstract;
 

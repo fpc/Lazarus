@@ -78,6 +78,10 @@ type
     FThresholdValue: Integer;//treshold before the drag becomes activated
     FWaitForTreshold: boolean;//are we waiting on the treshold activation?
     FInDragStop: Boolean; // semaphore to prevent second execution of dragStop
+    FDelay: Integer;//<>0 delay before the drag becomes activated if mouse
+                    //not moved (taking into account FThresholdValue)
+                    //=0 old mechanism based on FThresholdValue
+    FDelayTimer: TCustomTimer;
   protected
     //Support input capture
     procedure KeyUp(var Key: Word; Shift : TShiftState); override;
@@ -97,11 +101,13 @@ type
     procedure RegisterDockSite(Site: TWinControl; DoRegister: Boolean); override;
 
     //The Drag and Drop routines
-    procedure DragStart(AControl: TControl; AImmediate: Boolean; AThreshold: Integer; StartFromCurrentMouse:Boolean=False); override;
+    procedure DragStart(AControl: TControl; AImmediate: Boolean; AThreshold: Integer;
+      StartFromCurrentMouse:Boolean=False; ADelay:Integer=0); override;
     procedure DragMove(APosition: TPoint); override;
     procedure DragStop(ADropped: Boolean); override;
 
     function CanStartDragging(Site: TWinControl;  AThreshold: Integer; X,Y:Integer): boolean; override;
+    procedure DelayExpired(Sender: TObject);
 
     property StartPosition: TPoint read FStartPosition;
   end;
@@ -684,6 +690,7 @@ end;
 destructor TDragManagerDefault.Destroy;
 begin
   FreeAndNil(FDockSites);
+  FreeAndNil(FDelayTimer);
   inherited Destroy;
 end;
 
@@ -702,11 +709,37 @@ begin
     Result := FPerformer.Dragging(AControl)
 end;
 
-procedure TDragManagerDefault.DragStart(AControl: TControl; AImmediate: Boolean; AThreshold: Integer; StartFromCurrentMouse:Boolean=False);
+procedure TDragManagerDefault.DelayExpired(Sender: TObject);
+begin
+  FDelayTimer.Enabled := False;
+  FWaitForTreshold := false;
+  if FPerformer <> nil then
+  begin
+    FPerformer.DragStarted(FStartPosition);
+    DragMove(FStartPosition);
+  end;
+end;
+
+procedure TDragManagerDefault.DragStart(AControl: TControl; AImmediate: Boolean; AThreshold: Integer;
+  StartFromCurrentMouse:Boolean=False; ADelay:Integer=0);
 //Start a drag operation
 begin
   if FPerformer = nil then
   begin
+    FDelay := ADelay;
+    if (ADelay <> 0) and not AImmediate then
+    begin
+      FDelay := ADelay;
+      if FDelayTimer = nil then
+      begin
+        FDelayTimer := TCustomTimer.Create(nil);
+        FDelayTimer.OnTimer := @DelayExpired;
+      end;
+      FDelayTimer.Interval := ADelay;
+      FDelayTimer.Enabled := True;
+    end
+    else
+      FDelay := 0;
     if AThreshold >= 0 then
       FThresholdValue := AThreshold
     else
@@ -747,7 +780,10 @@ begin
         FWaitForTreshold := false
       else
         exit;
-      FPerformer.DragStarted(APosition);
+      if FDelay = 0 then
+        FPerformer.DragStarted(APosition)
+      else
+        DragStop(False);
     end;
     if FPerformer<>nil then
       FPerformer.DragMove(APosition);
@@ -757,6 +793,8 @@ end;
 procedure TDragManagerDefault.DragStop(ADropped : Boolean);
 //End the drag operation
 begin
+  if FDelayTimer <> nil then
+    FDelayTimer.Enabled := False;
   if Assigned(FPerformer) and not FInDragStop then
   begin
     FInDragStop := True;
