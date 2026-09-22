@@ -36,7 +36,11 @@ uses
   opkman_const;
 
 const
-  OpkVersion = 1;
+  OpkVersion = 2;
+  // version 2: address of the central repository was changed from
+  // http to https. Older configurations are upgraded once, see
+  // TOptions.UpgradeRemoteRepositories
+  OpkVersionHTTPS = 2;
   HintColCnt = 3;
 
 type
@@ -89,6 +93,7 @@ type
     FExcludedFolders: String;
     FOpenSSLDownloadType: Integer;
     procedure CheckColors;
+    procedure UpgradeRemoteRepositories;
     function IsDarkTheme: Boolean;
     function GetLocalRepositoryArchiveExpanded:string;
     function GetLocalRepositoryPackagesExpanded:string;
@@ -192,6 +197,72 @@ begin
   inherited Destroy;
 end;
 
+{ Returns true if both addresses point to the same repository. The comparison
+  ignores the case and a trailing path delimiter. }
+function SameRepositoryAddress(const AAddress1, AAddress2: String): Boolean;
+
+  function Normalize(const AAddress: String): String;
+  begin
+    Result := Trim(AAddress);
+    if (Result <> '') and (Result[Length(Result)] = '/') then
+      System.Delete(Result, Length(Result), 1);
+  end;
+
+begin
+  Result := CompareText(Normalize(AAddress1), Normalize(AAddress2)) = 0;
+end;
+
+{ Replaces the old http address of the central repository with the https one.
+  This runs only once per configuration, so an address the user enters later on
+  purpose is kept. Repositories added by the user are not touched. }
+procedure TOptions.UpgradeRemoteRepositories;
+
+  function IndexOfNewAddress: Integer;
+  var
+    j: Integer;
+  begin
+    for j := 0 to FRemoteRepository.Count - 1 do
+    begin
+      if SameRepositoryAddress(FRemoteRepository[j], cRemoteRepository) then
+        Exit(j);
+    end;
+    Result := -1;
+  end;
+
+var
+  i: Integer;
+  NewIndex: Integer;
+  Upgraded: Boolean;
+begin
+  Upgraded := False;
+  for i := FRemoteRepository.Count - 1 downto 0 do
+  begin
+    if not SameRepositoryAddress(FRemoteRepository[i], cRemoteRepositoryOld) then
+      Continue;
+    NewIndex := IndexOfNewAddress;
+    if NewIndex < 0 then
+      FRemoteRepository[i] := cRemoteRepository
+    else
+    begin
+      // the https address is already in the list, drop the duplicate
+      if NewIndex > i then
+        Dec(NewIndex);
+      FRemoteRepository.Delete(i);
+      if FActiveRepositoryIndex = i then
+        FActiveRepositoryIndex := NewIndex
+      else if FActiveRepositoryIndex > i then
+        Dec(FActiveRepositoryIndex);
+    end;
+    Upgraded := True;
+  end;
+  if Upgraded then
+  begin
+    FVersion := OpkVersion;
+    // make sure the upgraded address is written back on exit
+    FChanged := True;
+  end;
+end;
+
 procedure TOptions.Load;
 begin
   FVersion := FXML.GetValue('Version/Value', 0);
@@ -202,6 +273,8 @@ begin
   if Trim(FRemoteRepository.Text) = '' then
     FRemoteRepository.Add(cRemoteRepository);
   FActiveRepositoryIndex := FXML.GetValue('General/ActiveRepositoryIndex/Value', 0);
+  if FVersion < OpkVersionHTTPS then
+    UpgradeRemoteRepositories;
   FLoadJsonLocally := FXML.GetValue('General/LoadJsonLocally/Value', False);
   FLoadJsonLocallyCnt := FXML.GetValue('General/LoadJsonLocallyCnt/Value', 0);
   FForceDownloadAndExtract := FXML.GetValue('General/ForceDownloadAndExtract/Value', True);

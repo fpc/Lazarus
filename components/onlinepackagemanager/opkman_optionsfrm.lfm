@@ -456,7 +456,7 @@ object OptionsFrm: TOptionsFrm
             Width = 304
             BorderSpacing.Top = 4
             TabOrder = 0
-            Text = 'http://localhost/packages/'
+            Text = 'https://example-repo.tld/packages/'
             OnKeyPress = edRemoteRepositoryKeyPress
           end
           object lbServer: TLabel

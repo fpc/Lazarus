@@ -2055,8 +2055,8 @@ msgid "Repository details"
 msgstr "Tároló részletei"
 
 #: opkman_const.rsrepositorydetailsfrm_edaddress_hint
-msgid "Enter the repository address (e.g.: \"http://localhost/packages/\")"
-msgstr "Adja meg a tároló címét (pl. \"http://localhost/packages/\")"
+msgid "Enter the repository address (e.g.: \"https://example-repo.tld/packages/\")"
+msgstr "Adja meg a tároló címét (pl. \"https://example-repo.tld/packages/\")"
 
 #: opkman_const.rsrepositorydetailsfrm_edname_hint
 msgid "Enter the repository name"

@@ -34,7 +34,7 @@ uses
   // LCL
   Controls, Graphics, Menus, Dialogs, Forms, LCLType, Buttons,
   // LazUtils
-  LazStringUtils, LazUTF8,
+  LazUTF8,
   // IDEIntf
   LCLIntf, PackageIntf,
   // OpkMan

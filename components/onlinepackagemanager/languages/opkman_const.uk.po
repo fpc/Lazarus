@@ -2049,8 +2049,8 @@ msgid "Repository details"
 msgstr "Подробиці сховища"
 
 #: opkman_const.rsrepositorydetailsfrm_edaddress_hint
-msgid "Enter the repository address (e.g.: \"http://localhost/packages/\")"
-msgstr "Введіть адресу сховища (наприклад, \"http://localhost/packages/\")"
+msgid "Enter the repository address (e.g.: \"https://example-repo.tld/packages/\")"
+msgstr "Введіть адресу сховища (наприклад, \"https://example-repo.tld/packages/\")"
 
 #: opkman_const.rsrepositorydetailsfrm_edname_hint
 msgid "Enter the repository name"

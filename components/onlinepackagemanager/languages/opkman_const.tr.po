@@ -2055,8 +2055,8 @@ msgstr "Depo detayları"
 
 #: opkman_const.rsrepositorydetailsfrm_edaddress_hint
 msgctxt "opkman_const.rsrepositorydetailsfrm_edaddress_hint"
-msgid "Enter the repository address (e.g.: \"http://localhost/packages/\")"
-msgstr "Depo adresini girin (örn.: \"http://localhost/packages/\")"
+msgid "Enter the repository address (e.g.: \"https://example-repo.tld/packages/\")"
+msgstr "Depo adresini girin (örn.: \"https://example-repo.tld/packages/\")"
 
 #: opkman_const.rsrepositorydetailsfrm_edname_hint
 msgctxt "opkman_const.rsrepositorydetailsfrm_edname_hint"
