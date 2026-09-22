@@ -22,7 +22,7 @@ uses                        lazloggerbase,
   // RTL, FCL
   Classes, SysUtils, Types, Math, FPCanvas,
   // LCL
-  Controls, CustomTimer, Forms, LCLPlatformDef, InterfaceBase,
+  Controls, CustomTimer, Forms, InterfaceBase,
   // TAChart
   TAChartUtils, TADrawUtils, TAChartAxis, TALegend, TACustomSeries, TAGraph,
   TATypes, TATextElements;
@@ -890,7 +890,7 @@ function TChartTool.EffectiveDrawingMode: TChartToolEffectiveDrawingMode;
 begin
   if DrawingMode <> tdmDefault then
     Result := DrawingMode
-  else if WidgetSet.LCLPlatform in [lpGtk, lpGtk2, lpWin32] then
+  else if WidgetSet.GetLCLCapability(lcCanDrawOutsideOnPaint) = LCL_CAPABILITY_YES then
     Result := tdmXor
   else
     Result := tdmNormal;
@@ -1489,13 +1489,33 @@ begin
 end;
 
 procedure TZoomDragTool.Draw(AChart: TChart; ADrawer: IChartDrawer);
+var
+  r: TRect;
 begin
   if not IsActive or IsAnimating then exit;
   inherited;
+  r := CalculateDrawRect;
+  if (DrawingMode = tdmDefault) and (EffectiveDrawingMode = tdmNormal) then begin
+    if Brush.Style <> bsClear then begin
+      StartTransparency(ADrawer);
+      ADrawer.SetPenParams(psClear, Frame.Color);
+      ADrawer.SetBrush(Brush);
+      ADrawer.Rectangle(r);
+      ADrawer.SetTransparency(0);
+    end;
+    if Frame.EffVisible then begin
+      ADrawer.SetXor(true);
+      ADrawer.Pen := Frame;
+      ADrawer.SetBrushParams(bsClear, Frame.Color);
+      ADrawer.Rectangle(r);
+      ADrawer.SetXor(false);
+    end;
+    exit;
+  end;
   StartTransparency(ADrawer);
   PrepareDrawingModePen(ADrawer, Frame);
   ADrawer.SetBrush(Brush);
-  ADrawer.Rectangle(CalculateDrawRect);
+  ADrawer.Rectangle(r);
   ADrawer.SetXor(false);
   ADrawer.SetTransparency(0);
 end;
