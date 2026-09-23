@@ -724,7 +724,7 @@ position for the scroll bar on the associated control.
 </p>
 <p>
 If the associated control is a <var>TScrollingWinControl</var> instance, 
-<var>TScrollInfo</var> is captured using the Range, Position, and Page  
+<var>TScrollInfo</var> is captured using the Range, Position, and Page 
 properties. The scroll bar information is applied to the associated control by 
 calling SetScrollInfo. The visibility for the scroll bar is updated by calling 
 ShowScrollBar.
@@ -3452,7 +3452,7 @@ behavior is applied.
 <p>
 On the Windows platform the Desktop Window Manager API is called to adjust the 
 dimensions for the form instance using the shadow offsets returned by the 
-Compositor. For other platforms (which do not lie about the size of the form  
+Compositor. For other platforms (which do not lie about the size of the form 
 instance), this step is not needed.
 </p>
 <p>
@@ -5239,9 +5239,9 @@ Signals the OnActivate event handler when a form is focused in an application.
 <descr>
 <p>
 <var>Activate</var> is a procedure used to signal the <var>OnActivate</var> 
-event handler (if assigned) when the form is focused in an application.  
-Activate is called when the <b>CM_Activate</b> message is handled for the form. 
-It is called after the OnShow event is signalled in the DoShow method.
+event handler (if assigned) when the form is focused in an application. 
+Activate is called when the <b>CM_Activate</b> message is handled for the 
+form. It is called after the OnShow event is signalled in the DoShow method.
 </p>
 <p>
 Activate uses an internal member to determine whether the form is being 
@@ -7403,7 +7403,7 @@ pressed, the form was closed using a window decoration, or the application
 was Terminated while ShowModal was running.
 </p>
 <p>
-Any value in ModalResult other than mrNone causes DoClose to be called where  
+Any value in ModalResult other than mrNone causes DoClose to be called where 
 CloseQuery / OnCloseQuery / OnClose are used to determine whether the dialog 
 can be closed and the close action performed for the form instance. If the 
 close action is caNone, ModalResult is set to mrNone to continue the message 
@@ -9318,7 +9318,7 @@ Disable the request when not supported in the widgetset or the display
 protocol (like X-11, Wayland).
 </li>
 <li>
-Update other properties which control the feature (GTK2 and GTK use their  
+Update other properties which control the feature (GTK2 and GTK use their 
 SkipTaskBarHint properties).
 </li>
 </ul>
@@ -12088,7 +12088,7 @@ class instance.
 when a component is added to or removed from the class instance. It calls the 
 inherited method on entry to remove the free notification for the component 
 and to signal the Notification method for any child components. In TScreen, it 
-ensures that an internal member used to track the value in ActiveControl or  
+ensures that an internal member used to track the value in ActiveControl or 
 ActiveCustomForm is <b>Nil</b>'d when AComponent is removed and it is stored 
 in one of the members.
 </p>
@@ -14183,21 +14183,37 @@ to the current application.
 <p>
 <var>TOnUserInputEvent</var> is the type used for the <var>OnUserInput</var> 
 event handler in <var>TApplication</var> and 
-<var>TApplicationProperties</var>.
+<var>TApplicationProperties</var>. It is also passed as an argument to methods 
+like <var>AddOnUserInputHandler</var> and <var>RemoveOnUserInputHandler</var> 
+in TApplication.
+</p>
+<p>
+An application must implement and assign a handler routine using the signature 
+for the object procedure type to respond to the notification. Some components  (like TCustomIdleTimer) provide an implementation for the event handler which is assigned to the application.
 </p>
 </descr>
+<version>
+Modified in LCL version 5.0 to use TLMessage in the Msg argument instead of 
+the cardinal value for the notification message.
+</version>
 <seealso>
 <link id="TApplication.OnUserInput"/>
 <link id="TApplicationProperties.OnUserInput"/>
 <link id="TApplication.AddOnUserInputHandler"/>
 <link id="TApplication.RemoveOnUserInputHandler"/>
+<link id="#lcl.extctrls.TCustomIdleTimer.DoOnUserInput">TCustomIdleTimer.DoOnUserInput</link>
 </seealso>
 </element>
 <element name="TOnUserInputEvent.Sender">
-<short>Object for the event notification.</short>
+<short>
+TObject instance for the event notification.
+</short>
 </element>
 <element name="TOnUserInputEvent.Msg">
-<short>Message with the user input for the event.</short>
+<short>
+Message structure with the message code, parameters, and result for the user 
+input event.
+</short>
 </element>
 
 <element name="TDataEvent">
@@ -14211,6 +14227,74 @@ Specifies the type used for an asynchronous callback method.
 </element>
 <element name="TDataEvent.Data">
 <short>PtrInt type with the argument passed to the method.</short>
+</element>
+
+<element name="TLogMessageEvent">
+<short>
+Defines an event handler signalled to handle log messages written using the 
+TApplication.Log method.
+</short>
+<descr>
+<p>
+<var>TLogMessageEvent</var> is an object procedure type which defines an event 
+handler signalled when a log message is written in <var>TApplication</var>. 
+TLogMessageEvent allows an application to perform actions needed to format and 
+store a log message using the logging mechanism implemented for the 
+application.
+</p>
+<p>
+<var>Sender</var> is the <var>TObject</var> instance which generated the event 
+notification. It can be used to access to properties and methods in the class 
+when cast to the type needed. For example:
+</p>
+<ul>
+<li>TApplication(Sender).ApplicationType</li>
+<li>TApplication(Sender).ExeName</li>
+<li>TApplication(Sender).Location</li>
+<li>TApplication(Sender).Title</li>
+</ul>
+<p>
+<var>EventType</var> identifies the event type for the log event. It contains 
+one of the values from the <var>TEventType</var> enumeration.
+</p>
+<p>
+<var>Msg</var> contains the message text which can be formatted and stored for 
+the log event.
+</p>
+<p>
+TLogMessageEvent is the type used to implement the <var>OnLog</var> event 
+handler property in TApplication. An application must implement and assign a 
+handler routine using the signature in TLogMessageEvent to respond to event 
+notifications. The handler routine is responsible for all actions needed to 
+write a message to the log storage mechanism.
+</p>
+</descr>
+<version>
+Added in LCL version 5.0.
+</version>
+<seealso>
+<link id="TApplication.OnLog"/>
+<link id="TApplication.DoLog"/>
+<link id="#fcl.custapp.TCustomApplication.Log">TCustomApplication.Log</link>
+<link id="#fcl.custapp.TCustomApplication.EventLogFilter">TCustomApplication.EventLogFilter</link>
+<link id="#rtl.sysutils.TEventType">TEventType</link>
+<link id="#rtl.sysutils.TEventTypes">TEventTypes</link>
+</seealso>
+</element>
+<element name="TLogMessageEvent.Sender">
+<short>
+TObject instance which generated the event notification.
+</short>
+</element>
+<element name="TLogMessageEvent.EventType">
+<short>
+Identifies the event type for the notification.
+</short>
+</element>
+<element name="TLogMessageEvent.Msg">
+<short>
+Contains text with the log message for the notification.
+</short>
 </element>
 
 <element name="TCMHintShow">
@@ -14501,11 +14585,6 @@ Default handler for KeyDown events, invoked after interface and LCL handlers.
 </element>
 <element name="TApplicationHandlerType.ahtUserInput">
 <short>Handler invoked on user input.</short>
-<notes>
-<note>
-Used in NotifyUserInputHandler; implemented in Sparta MDI package
-</note>
-</notes>
 </element>
 <element name="TApplicationHandlerType.ahtException">
 <short>Handler invoked on handled exception.</short>
@@ -14747,7 +14826,7 @@ glyph on a button control.
 </p>
 </descr>
 <version>
-Added in LCL version 5.0.	
+Added in LCL version 5.0.
 </version>
 <seealso>
 <link id="TApplication.GlyphDrawEffectsEnabled"/>
@@ -14976,6 +15055,7 @@ Counter for nested Idle locks, preventing execution of OnIdle handlers.
 <element name="TApplication.FOnShortcut" link="#lcl.forms.TApplication.OnShortcut"/>
 <element name="TApplication.FOnShowHint" link="#lcl.forms.TApplication.OnShowHint"/>
 <element name="TApplication.FOnUserInput" link="#lcl.forms.TApplication.OnUserInput"/>
+<element name="TApplication.FOnLog" link="#lcl.forms.TApplication.OnLog"/>
 <element name="TApplication.FAsyncCall" link="#lcl.forms.TApplication.QueueAsyncCall">
 <short>Queues for asynchronous calls.</short>
 </element>
@@ -15714,7 +15794,7 @@ has not been enabled, or a valid hint control cannot be determined for the
 application.
 </p>
 <p>
-ShowHintWindow maintains an internal THintInfo structure used to store  
+ShowHintWindow maintains an internal THintInfo structure used to store 
 information with the text for the hint, configuration information about its 
 display window, and the control for the hint.
 </p>
@@ -16001,9 +16081,9 @@ value.
 <p>
 In most cases, the parameter at position <b>0</b> contains the name and 
 optional path to the executable file for the application. For cross-platform 
-compatibility, use the ExeName property to get the path and name for the binary 
-instead. Subsequent index positions contain any command line arguments passed 
-to the executable.
+compatibility, use the ExeName property to get the path and name for the 
+binary instead. Subsequent index positions contain any command line arguments 
+passed to the executable.
 </p>
 <p>
 The return value contains the UTF-8-encoded string with the value for the 
@@ -16027,6 +16107,54 @@ String with the requested parameter value, or an empty string when not found.
 <element name="TApplication.GetParams.Index">
 <short>
 Ordinal position for the requested parameter value.
+</short>
+</element>
+
+<element name="TApplication.DoLog">
+<short>
+Performs actions needed to implement the Log method.
+</short>
+<descr>
+<p>
+<var>DoLog</var> is an overridden method in <var>TApplication</var>. It 
+implements the virtual method introduced in the <var>TCustomApplication</var> 
+ancestor class. DoLog signals the <var>OnLog</var> event handler (when 
+assigned) to perform actions needed to format and store the specified log 
+message to the log storage mechanism used in the application.
+</p>
+<p>
+<var>EventType</var> identifies the event type for the log event. It contains 
+one of the values from the <var>TEventType</var> enumeration.
+</p>
+<p>
+<var>Message</var> contains the message text for the log event.
+</p>
+<p>
+DoLog is called from the <var>Log</var> method when the EventType value is one 
+of the events types allowed in the <var>EventLogFilter</var> property, or when 
+EventLogFilter is an empty set (not filtered).
+</p>
+</descr>
+<version>
+Added in LCL version 5.0.
+</version>
+<seealso>
+<link id="TApplication.OnLog"/>
+<link id="TLogMessageEvent"/>
+<link id="#fcl.custapp.TCustomApplication.Log">TCustomApplication.Log</link>
+<link id="#fcl.custapp.TCustomApplication.EventLogFilter">TCustomApplication.EventLogFilter</link>
+<link id="#rtl.sysutils.TEventType">TEventType</link>
+<link id="#rtl.sysutils.TEventTypes">TEventTypes</link>
+</seealso>
+</element>
+<element name="TApplication.DoLog.EventType">
+<short>
+Identifies the event type for the log message.
+</short>
+</element>
+<element name="TApplication.DoLog.Msg">
+<short>
+Contains the message text for the log message.
 </short>
 </element>
 
@@ -16130,7 +16258,7 @@ If hint text is not available for the specified control and mouse position, the
 <var>CancelHint</var> method is called instead.
 </p>
 <p>
-Use the following properties to control the interval for the timer which  
+Use the following properties to control the interval for the timer which 
 displays or hides a hint window in the application:
 </p>
 <ul>
@@ -17374,32 +17502,46 @@ disabled.
 </element>
 
 <element name="TApplication.NotifyUserInputHandler">
-<short>Notifies all user input handlers of the specified message.</short>
+<short>
+Notifies all user input handlers of the specified message.
+</short>
 <descr>
 <p>
-Ensures that ActivateHint or CancelHint is called for a mouse message in the 
-Msg argument.
-</p>
-<p>
-Signals the OnUserInput event handler when assigned to allow filtering 
-messages at the application level. Signals each of the user input handlers 
-for the application using the Sender object instance and Msg as arguments. 
-Sender defaults to the application instance when unassigned.
-</p>
-<p>
-<var>NotifyUserInputHandler</var> is used to pass mouse and character events 
+<var>NotifyUserInputHandler</var> is used to pass mouse or character events 
 between a widgetset class instance and the forms and controls in an 
 application. It is called from the message processing mechanism that is part 
 of the LCL interface.
 </p>
+<p>
+It signals the OnUserInput event handler (when assigned) to allow handling of 
+messages at the application level. It signals each of the handlers for the 
+ahtUserInput type in the application using the Sender object instance and Msg 
+as arguments.
+</p>
+<p>
+Sender defaults to the application instance when unassigned.
+</p>
+<p>
+NotifyUserInputHandler ensures that ActivateHint or CancelHint is called for a 
+mouse message in the Msg argument.
+</p>
 </descr>
+<version>
+Modified in LCL version 5.0 to use TLMessage in the Msg argument instead of 
+the cardinal value for the notification message.
+</version>
 <seealso>
+<link id="TApplication.OnUserInput"/>
 <link id="TApplicationHandlerType"/>
+<link id="TApplication.DoOnMouseMove"/>
+<link id="TApplication.CancelHint"/>
+<link id="TApplicationHandlerType"/>
+<link id="Application"/>
 </seealso>
 </element>
 <element name="TApplication.NotifyUserInputHandler.Msg">
 <short>
-Message examined in the method for mouse or character events.
+Message structure with the code, parameters, and result for the message notification.
 </short>
 </element>
 
@@ -19706,6 +19848,58 @@ handlers using the <var>ahtUserInput</var> type are notified.
 </seealso>
 </element>
 
+<element name="TApplication.OnLog">
+<short>
+Event handler signalled for log messages written by the application.
+</short>
+<descr>
+<p>
+<var>OnLog</var> is a <var>TLogMessageEvent</var> property with the event 
+handler signalled when a log message is written using the application. OnLog 
+is signalled (when assigned) from the <var>Log</var> method, and allows an 
+application to perform actions needed to format and store a log message using 
+the log storage mechanism implemented for the application.
+</p>
+<p>
+An application must implement and assign a handler routine using the signature 
+in TLogMessageEvent to respond to event notifications. The handler routine is 
+responsible for all actions needed to write the message to the log storage 
+mechanism. Arguments passed to the handler routine identify the TApplication 
+instance for the log message (Sender), the log event type (EventType), and the 
+message text (Msg). See <link id="TLogMessageEvent">TLogMessageEvent</link> 
+for more information.
+</p>
+<p>
+TApplication makes no assumptions about the log storage mechanism used in the 
+application; it is the programmer responsibility to initialize the mechanism 
+on application start-up, and to finalize the mechanism on application 
+shut-down. Some common logging mechanisms include: TEventLog (in FCL), 
+TLazLogger (in LazUtils), and third party offerings like MultiLog, Log4Delphi, 
+ExceptionLogger, or TMSLogger.
+</p>
+<p>
+Use the <link id="#fcl.custapp.TCustomApplication.Log">Log</link> method to 
+write a log message handled by the event handler.
+</p>
+<p>
+Use the <link id="#fcl.custapp.TCustomApplication.EventLogFilter">
+EventLogFilter</link> property to specify which log event types are forwarded 
+to and handled by the event handler.
+</p>
+</descr>
+<version>
+Added in LCL version 5.0.
+</version>
+<seealso>
+<link id="TApplication.DoLog"/>
+<link id="TLogMessageEvent"/>
+<link id="#fcl.custapp.TCustomApplication.Log">TCustomApplication.Log</link>
+<link id="#fcl.custapp.TCustomApplication.EventLogFilter">TCustomApplication.EventLogFilter</link>
+<link id="#rtl.sysutils.TEventType">TEventType</link>
+<link id="#rtl.sysutils.TEventTypes">TEventTypes</link>
+</seealso>
+</element>
+
 <element name="TApplication.OnDestroy">
 <short>Event handler signalled when the application is freed.</short>
 <descr>
@@ -20477,8 +20671,8 @@ applied to TApplication at design-time.
 Added in LCL version 5.0.
 </version>
 <seealso>
-<link id="TApplication.GlyphDrawEffectsEnabled"/>	
-<link id="TApplicationGlyphDrawEffectsEnabled"/>	
+<link id="TApplication.GlyphDrawEffectsEnabled"/>
+<link id="TApplicationGlyphDrawEffectsEnabled"/>
 </seealso>
 </element>
 
@@ -21494,15 +21688,19 @@ message.
 </short>
 <descr>
 <p>
-Calls the NotifyUserInputHandler method in the Application singleton when it 
-has been assigned using Msg as an argument.
+Calls the NotifyUserInputHandler method in the Application singleton (when 
+assigned) using Msg as an argument.
 </p>
 <p>
 NotifyApplicationUserInput is used as a callback routine in widgetset 
-classes. It allows the widget to notify the application when a mouse or a 
-keyboard event is pending in the LCL interface.
+classes. It allows a widget to notify the application when a mouse or a 
+keyboard event is pending for the LCL interface.
 </p>
 </descr>
+<version>
+Modified in LCL version 5.0 to use TLMessage in the Msg argument instead of 
+the cardinal value for the notification message.
+</version>
 <seealso>
 <link id="TApplication.NotifyUserInputHandler"/>
 <link id="TApplication.OnUserInput"/>
@@ -21512,7 +21710,10 @@ keyboard event is pending in the LCL interface.
 </seealso>
 </element>
 <element name="NotifyApplicationUserInput.Msg">
-<short>The message to process.</short>
+<short>
+The message structure with the code, parameters, and result for the 
+notification message.
+</short>
 </element>
 
 <element name="GetShortHint">

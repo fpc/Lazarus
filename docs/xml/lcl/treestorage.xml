@@ -140,6 +140,60 @@ See TTreeItemStorageOption for the values in the enumeration and their usage.
 </seealso>
 </element>
 
+<element name="TTreeStorageCallback">
+<short>
+Specifies a callback routine used to perform actions needed when a tree node 
+is read from or written to an XML DOM node.	
+</short>
+<descr>
+<p>
+<var>TTreeStorageCallback</var> is an object procedure type which defines a 
+callback used to read or write a tree node to or from an XML DOM node. 
+TTreeStorageCallback allows arbitrary data in the specified tree or XML nodes 
+to be handled properly.
+</p>
+<p>
+An example usage:
+</p>
+<p>
+As a save callback, it can be used to convert / format / cast untyped content 
+in the TTreeNode.Data property before it is stored to the specified tree node. 
+As a load callback, the content in an XML node can be converted / formatted / 
+cast before it is stored to the TTreeNode.Data property.
+</p>
+<p>
+Routines using the TTreeStorageCallback signature are passed as an argument to 
+TreeSaveToXML and TreeLoadFromXML routines. The callback routine is executed 
+for each tree node processed in the tree view. The callback occurs after typed 
+members in TTreeItemStorageOption for a given tree node have been read or 
+written. An application must implement a routine using the signature to 
+perform actions needed.
+</p>
+</descr>
+<version>
+Added in LCL version 5.0.
+</version>
+<seealso>
+<link id="TreeLoadFromXML"/>
+<link id="TreeSaveToXML"/>
+<link id="TTreeItemStorageOption"/>
+<link id="TTreeItemStorageOptions"/>
+<link id="#lcl.comctrls.TTreeNode.Data">TTreeNode.Data</link>
+<link id="#lazutils.laz2_dom.TDOMNode">TDOMNode</link>
+<link id="#lazutils.laz2_dom.TDOMNode">TDOMElement</link>
+</seealso>
+</element>
+<element name="TTreeStorageCallback.ATreeNode">
+<short>
+TTreeNode instance used in the routine.
+</short>
+</element>
+<element name="TTreeStorageCallback.ADomNode">
+<short>
+TDOMNode instance used in the routine.
+</short>
+</element>
+
 <element name="TreeItemStorageDefaultOptions">
 <short>
 Set with all of the available TTreeItemStorageOption values.
@@ -193,6 +247,12 @@ stream where the XML representation for the hierarchical tree structure is
 stored.
 </p>
 <p>
+OnCallback is an optional routine used to format / convert / cast arbitrary 
+data in a tree node when it is written to the specified XML file. OnCallback 
+is called (when assigned) for each TTreeNode instance processed for the tree 
+view control.
+</p>
+<p>
 TreeSaveToXML creates a TXMLDocument used to store the hierarchy of tree nodes 
 found on the tree view control. The root node is always give the element name 
 "Treeview". The element used to store the hierarchy of tree nodes is given the 
@@ -230,7 +290,9 @@ attribute name and value pair when the property is <b>True</b> and tsoExpanded
 has been included in the Options argument. The attribute is omitted if the 
 property is <b>False</b> or the storage setting is not included in Options. 
 The same logic applies to other TreeNode property values and the corresponding 
-storage settings in Options.
+storage settings in Options. Use the OnCallBack argument to handle untyped 
+data in a TTree node (like the Data property), or any tree node property not 
+explicitly handled using Options.
 </p>
 </descr>
 <seealso>
@@ -257,6 +319,12 @@ Options which control the tree node values written in the routine.
 <element name="TreeSaveToXML.St">
 <short>
 TStream instance where where the hierarchical tree structure is stored.
+</short>
+</element>
+<element name="TreeSaveToXML.OnCallback">
+<short>
+Callback routine executed for each tree node written to the specified XML 
+file. Default is <b>Nil</b>.
 </short>
 </element>
 
@@ -287,6 +355,12 @@ information about Options values and their meanings.
 Use the <var>Fn</var> or <var>St</var> arguments to specify the file name or 
 stream where the XML representation for the hierarchical tree structure was 
 stored.
+</p>
+<p>
+OnCallback is an optional routine used to format / convert / cast arbitrary 
+data in a tree node when it is read from DOM nodes in the specified XML file. 
+OnCallback is called (when assigned) for each TTreeNode instance processed for 
+the tree view control.
 </p>
 <p>
 TreeLoadFromXML creates a TXMLDocument with the hierarchy of tree nodes found 
@@ -329,11 +403,11 @@ Expanded attribute is stored in the Expanded property for the TTreeNode
 instance. When tsoVisible has been include in Option, the Visible attribute is 
 used to set the value in the Visible property for the TTreeNode instance. Only 
 those values specified in Options are applied to the TTreeNode instances 
-created in the routine; other properties have their default values.
+created in the routine; other properties have their default values. Use the 
+OnCallback routine to performs actions needed for untyped property values 
+(like Data) or any tree node property not explicitly supported in Options.
 </p>
 </descr>
-<errors>
-</errors>
 <seealso>
 <link id="TreeSaveToXML"/>
 <link id="TTreeItemStorageOption"/>
@@ -358,6 +432,12 @@ Storage options enabled for the tree nodes loaded in the routine.
 <element name="TreeLoadFromXML.St">
 <short>
 TStream instance with the XML content loaded in the routine.
+</short>
+</element>
+<element name="TreeLoadFromXML.OnCallback">
+<short>
+Callback routine executed for each tree node read from the specified XML file. 
+Default is <b>Nil</b>.
 </short>
 </element>
 

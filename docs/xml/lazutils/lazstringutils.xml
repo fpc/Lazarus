@@ -689,6 +689,132 @@ value.
 </short>
 </element>
 
+<element name="IntToStrWithSuffix">
+<short>
+Converts the specified Integer value to a formatted String with a suffix for 
+large values.
+</short>
+<descr>
+<p>
+<var>IntToStrWithSuffix</var> is a <var>String</var> function	used to convert 
+the <var>Integer</var> in <var>Value</var> to a formatted String.
+</p>
+<p>
+IntToStrWithSuffix converts Integers in Value starting at 100,000 to a 
+representation with a suffix like:
+</p>
+<ul>
+<li>'k' (kilo-) (divisible by 1,000)</li>
+<li>'M' (Milli-) (divisible by 100,000,000)</li>
+<li>'G' (Giga-) (divisible by 100,000,000,000)</li>
+<li>'T' (Tera-) (divisible by 100,000,000,000,000)</li>
+</ul>
+<p>
+The suffix is omitted if Value is smaller than 100,000.
+</p>
+<p>
+Negative Integer values are also handled in the routine.
+</p>
+<p>
+Please note that IntToStrWithSuffix does <b>not</b> take into account any 
+remainder after the suffix is applied. For example: 199999 results in '199k'.
+</p>
+<p>
+For example:
+</p>
+<code>
+// uses LazStringUtils, Math;
+
+procedure TForm1.FormCreate(Sender: TObject);
+var
+  nBase, nExp:  Integer;
+  nResult: Int64;
+begin
+  Memo1.Clear;
+
+  nBase := 1000;
+  for nExp := 0 to 11 do
+  begin
+    nResult := nBase * (10**nExp);
+    Memo1.Lines.Add(nResult.ToString + ' = ' + IntToStrWithSuffix(nResult));
+  end;
+
+  nBase := 1000;
+  for nExp := 0 to 11 do
+  begin
+    nResult := -1 * nBase * (10**nExp);
+    Memo1.Lines.Add(nResult.ToString + ' = ' + IntToStrWithSuffix(nResult));
+  end;
+
+  nBase := 1024;
+  for nExp := 0 to 11 do
+  begin
+    nResult := nBase * (10**nExp);
+    Memo1.Lines.Add(nResult.ToString + ' = ' + IntToStrWithSuffix(nResult));
+  end;
+
+  Memo1.Lines.Add('199999 = ' + IntToStrWithSuffix(199999));
+end;
+</code>
+<p>
+Results in the following output for the en_US locale:
+</p>
+<code>
+1000 = 1000
+10000 = 10000
+100000 = 100k
+1000000 = 1000k
+10000000 = 10000k
+100000000 = 100M
+1000000000 = 1000M
+10000000000 = 10000M
+100000000000 = 100G
+1000000000000 = 1000G
+10000000000000 = 10000G
+100000000000000 = 100T
+-1000 = -1000
+-10000 = -10000
+-100000 = -100k
+-1000000 = -1000k
+-10000000 = -10000k
+-100000000 = -100M
+-1000000000 = -1000M
+-10000000000 = -10000M
+-100000000000 = -100G
+-1000000000000 = -1000G
+-10000000000000 = -10000G
+-100000000000000 = -100T
+1024 = 1024
+10240 = 10240
+102400 = 102k
+1024000 = 1024k
+10240000 = 10240k
+102400000 = 102M
+1024000000 = 1024M
+10240000000 = 10240M
+102400000000 = 102G
+1024000000000 = 1024G
+10240000000000 = 10240G
+102400000000000 = 102T
+199999 = 199k
+</code>
+</descr>
+<seealso>
+<link id="#rtl.sysutils.DefaultFormatSettings">DefaultFormatSettings</link>
+</seealso>
+</element>
+<element name="IntToStrWithSuffix.Value">
+<short>
+Integer value examined in the routine.
+</short>
+</element>
+<element name="IntToStrWithSuffix.Result">
+<short>
+String with the formatted representation for the value including optional 
+thousands separators and divisibility suffix.
+</short>
+</element>
+
 <element name="SplitString">
 <short>
 Creates and populates a TStringList with lines determined using the specified 
