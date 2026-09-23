@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+Documentation for LCL (Lazarus Component Library) and LazUtils (Lazarus 
+Utilities) are published under the Creative Commons Attribution-ShareAlike 4.0 
+International public license.
+
+https://creativecommons.org/licenses/by-sa/4.0/legalcode.txt
+https://gitlab.com/freepascal.org/lazarus/lazarus/-/blob/main/docs/cc-by-sa-4-0.txt
+
+Copyright (c) 1997-2025, by the Lazarus Development Team.
+
+-->
+<fpdoc-descriptions>
+<package name="lazutils">
+<!--
+====================================================================
+LazListClassesBase
+====================================================================
+-->
+<!-- TODO: Topics need content. -->
+<module name="LazListClassesBase">
+<short>
+</short>
+<desc>
+</desc>
+
+<element name="TLazListAspectMemInitNone">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TLazListAspectMemInitNone.Init">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TLazListAspectMemInitNone.InitMem">
+<short>
+First initializer for a new instance of the object.
+</short>
+<descr>
+<p>
+Used for InsertRows.
+</p>
+<p>
+Used for the emptied Source area of move (old data is NOT finalized, since it 
+moved).
+</p>
+</descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectMemInitNone.InitMem.AMem">
+<short></short>
+</element>
+<element name="TLazListAspectMemInitNone.InitMem.AnItemCount">
+<short></short>
+</element>
+<element name="TLazListAspectMemInitNone.InitMem.AnItemSize">
+<short></short>
+</element>
+
+<element name="TLazListAspectMemInitNone.InitMemOnce">
+<short>
+Initializes an object instance once after allocation.
+</short>
+<descr>
+<p>
+Called for newly allocated memory. Used instead of Init; this memory will 
+receive a call to Init too.
+</p>
+</descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectMemInitNone.InitMemOnce.AMem">
+<short></short>
+</element>
+<element name="TLazListAspectMemInitNone.InitMemOnce.AnItemCount">
+<short></short>
+</element>
+<element name="TLazListAspectMemInitNone.InitMemOnce.AnItemSize">
+<short></short>
+</element>
+
+<element name="TLazListAspectMemInitNone.FinalizeMem">
+<short>
+Finalizes memory; e.g. decreases reference count.
+</short>
+<descr>
+<p>
+Used:
+</p>
+<ul>
+<li>Before DeleteRows.</li>
+<li>Before Move for Target area, finalize old data.</li>
+<li>NOT in Item[x] := / "Item[x]" uses a typed assignment of the data.</li>
+<li>No need to actually init/clean the underlaying memory.</li>
+</ul>
+</descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectMemInitNone.FinalizeMem.AMem">
+<short></short>
+</element>
+<element name="TLazListAspectMemInitNone.FinalizeMem.AnItemCount">
+<short></short>
+</element>
+<element name="TLazListAspectMemInitNone.FinalizeMem.AnItemSize">
+<short></short>
+</element>
+
+<element name="TLazListAspectCapacitySimple">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TLazListAspectCapacitySimple.Init">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TLazListAspectCapacitySimple.GrowCapacity">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectCapacitySimple.GrowCapacity.Result">
+<short></short>
+</element>
+<element name="TLazListAspectCapacitySimple.GrowCapacity.ARequired">
+<short></short>
+</element>
+<element name="TLazListAspectCapacitySimple.GrowCapacity.ACurrent">
+<short></short>
+</element>
+
+<element name="TLazListAspectCapacitySimple.ShrinkCapacity">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectCapacitySimple.ShrinkCapacity.Result">
+<short></short>
+</element>
+<element name="TLazListAspectCapacitySimple.ShrinkCapacity.ARequired">
+<short></short>
+</element>
+<element name="TLazListAspectCapacitySimple.ShrinkCapacity.ACurrent">
+<short></short>
+</element>
+
+<element name="TLazListAspectCapacityFieldMem">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TLazListAspectCapacityFieldMem.TCapacityOrdT"/>
+<element name="TLazListAspectCapacityFieldMem.TCAWrap"/>
+<element name="TLazListAspectCapacityFieldMem.TCAWrap.TCapacityAccessor"/>
+
+<element name="TLazListAspectRangeNoIndexCheck">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TLazListAspectRangeNoIndexCheck.CheckIndex">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckIndex.Result">
+<seealso></seealso>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckIndex.T">
+<short></short>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckIndex.AList">
+<short></short>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckIndex.AnIndex">
+<short></short>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckIndex.Res">
+<short></short>
+</element>
+
+<element name="TLazListAspectRangeNoIndexCheck.CheckInsert">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckInsert.Result">
+<short></short>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckInsert.T">
+<short></short>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckInsert.AList">
+<short></short>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckInsert.AnIndex">
+<short></short>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckInsert.Res">
+<short></short>
+</element>
+
+<element name="TLazListAspectRangeNoIndexCheck.CheckDelete">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckDelete.Result">
+<short></short>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckDelete.T">
+<short></short>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckDelete.AList">
+<short></short>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckDelete.AnIndex">
+<short></short>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckDelete.ACount">
+<short></short>
+</element>
+
+<element name="TLazListAspectRangeNoIndexCheck.CheckMove">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckMove.Result">
+<short></short>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckMove.T">
+<short></short>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckMove.AList">
+<short></short>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckMove.AFromIndex">
+<short></short>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckMove.AToIndex">
+<short></short>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckMove.ACount">
+<short></short>
+</element>
+
+<element name="TLazListAspectRangeNoIndexCheck.CheckSwap">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckSwap.Result">
+<short></short>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckSwap.T">
+<short></short>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckSwap.AList">
+<short></short>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckSwap.AnIndex1">
+<short></short>
+</element>
+<element name="TLazListAspectRangeNoIndexCheck.CheckSwap.AnIndex2">
+<short></short>
+</element>
+
+<element name="TLazListAspectPageSizeExp">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectPageSizeExp.FPageSizeMask">
+<short></short>
+</element>
+<element name="TLazListAspectPageSizeExp.FPageSizeExp">
+<short></short>
+</element>
+
+<element name="TLazListAspectPageSizeExp.Init">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectPageSizeExp.Init.APageSizeExp">
+<short></short>
+</element>
+
+<element name="__Internal__TMemRecord">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="__Internal__TMemRecord.TCapacityMemT">
+<short></short>
+</element>
+<element name="__Internal__TMemRecord.FirstItemIndex">
+<short></short>
+</element>
+<element name="__Internal__TMemRecord.Count">
+<short></short>
+</element>
+<element name="__Internal__TMemRecord.Capacity">
+<short></short>
+</element>
+<element name="__Internal__TMemRecord.Data">
+<short></short>
+</element>
+
+<element name="TGenListClassesInternalMem">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TGenListClassesInternalMem.TMemRecordT">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenListClassesInternalMem.TMemRecord">
+<short></short>
+</element>
+<element name="TGenListClassesInternalMem.PMemRecord">
+<short></short>
+</element>
+<element name="TGenListClassesInternalMem.FMem">
+<short></short>
+</element>
+
+<element name="TGenListClassesInternalMem.GetCount">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenListClassesInternalMem.GetCount.Result">
+<short></short>
+</element>
+
+<element name="TGenListClassesInternalMem.SetCount">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenListClassesInternalMem.SetCount.AValue">
+<short></short>
+</element>
+
+<element name="TGenListClassesInternalMem.Init">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TGenListClassesInternalMem.Alloc">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenListClassesInternalMem.Alloc.AByteSize">
+<short></short>
+</element>
+
+<element name="TGenListClassesInternalMem.Free">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TGenListClassesInternalMem.IsAllocated">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenListClassesInternalMem.IsAllocated.Result">
+<short></short>
+</element>
+
+<element name="TGenListClassesInternalMem.Count">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TLazListConfig">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListConfig.TSizeT"/>
+<element name="TLazListConfig.TSizeT.ItemSize"/>
+<element name="TLazListConfig.TInitMemT"/>
+<element name="TLazListConfig.TCapacityT"/>
+<element name="TLazListConfig.TCapacityFieldT"/>
+<element name="TLazListConfig.TIdxCheckT"/>
+
+<element name="__TGenLazListClassesInternalBase">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="__TGenLazListClassesInternalBase._CONF_"/>
+<element name="__TGenLazListClassesInternalBase._TCapacityOrdT"/>
+<element name="__TGenLazListClassesInternalBase.TMemHeaderT"/>
+<element name="__TGenLazListClassesInternalBase.PMemHeaderT"/>
+<element name="__TGenLazListClassesInternalBase.TSizeT"/>
+<element name="__TGenLazListClassesInternalBase.TInitMemT"/>
+<element name="__TGenLazListClassesInternalBase.TCapacityT"/>
+<element name="__TGenLazListClassesInternalBase.TCapacityAccessorT "/>
+<element name="__TGenLazListClassesInternalBase.TCapacityAccessor"/>
+<element name="__TGenLazListClassesInternalBase.TCapacityAccessor.TMemHeaderT"/>
+<element name="__TGenLazListClassesInternalBase.TCapacityAccessor._CONF_"/>
+<element name="__TGenLazListClassesInternalBase.TCapacityAccessor.TCapacityFieldT"/>
+<element name="__TGenLazListClassesInternalBase.TCapacityAccessor.TIdxCheckT"/>
+<element name="__TGenLazListClassesInternalBase.TCapacityAccessor.TLazListClassesInternalMem"/>
+
+<element name="TLazListPageConfig">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListPageConfig.TPageSizeT"/>
+<element name="TLazListPageConfig.TPageCapacityFieldT"/>
+
+<element name="__TGenLazPagedListInternalBase">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="__TGenLazPagedListInternalBase._TConfT"/>
+<element name="__TGenLazPagedListInternalBase._TPageConfT"/>
+<element name="__TGenLazPagedListInternalBase.TPageSizeT"/>
+<element name="__TGenLazPagedListInternalBase.TPageCapacityFieldT"/>
+
+</module>
+<!-- LazListClassesBase -->
+</package>
+</fpdoc-descriptions>

@@ -3996,17 +3996,54 @@ not wanted, please use explicitly pmAuto before calling ShowModal.
 </element>
 <element name="TPopupMode.pmAuto">
 <short>
-modal and non-modal: align to active form or main form.
+Modal and non-modal: align to active form or main form.
 </short>
 </element>
 <element name="TPopupMode.pmExplicit">
 <short>
-modal and non-modal: align to PopupParent or main form.
+Modal and non-modal: align to PopupParent or main form.
+</short>
+</element>
+
+<element name="TTileMode">
+<short>
+Values representing the arrangement order for tiled MDI child windows.
+</short>
+<descr>
+<p>
+<var>TTileMode</var> is an enumerated type with values which indicate the 
+order MDI child windows are arranged when a MDI form calls its Tile 
+method. TTileMode is the type used for the <var>TileMode</var> property in 
+<var>TCustomForm</var> and descendent classes.
+</p>
+<p>
+In LCL version 5.0, the type is used for the Windows widgetset only. Each  
+value causes the corresponding tile modifier to be included in a WM_MDITILE 
+message dispatched to the MDI client handle in the widgetset.
+</p>
+</descr>
+<version>
+Added in LCL version 5.0 for the Windows widgetset.
+</version>
+<seealso>
+<link id="TCustomForm.TileMode"/>
+</seealso>
+</element>
+<element name="TTileMode.tbHorizontal">
+<short>
+Causes MDI child windows to be arranged horizontally when tiled.
+</short>
+</element>
+<element name="TTileMode.tbVertical">
+<short>
+Causes MDI child windows to be arranged vertically when tiled.
 </short>
 </element>
 
 <element name="TCloseEvent">
-<short>Type used for an OnClose event handler in a form.</short>
+<short>
+Type used for an OnClose event handler in a form.
+</short>
 <descr>
 <p>Closing a form can have several meanings:</p>
 <dl>
@@ -9342,6 +9379,40 @@ For the macOS Carbon widgetset, ShowInTaskBar is not supported.
 </seealso>
 </element>
 
+<element name="TCustomForm.TileMode">
+<short>
+Controls the layout order for MDI child forms for a MDI form instance.
+</short>
+<descr>
+<p>
+<var>TileMode</var> is a <var>TTileMode</var> property used to control the 
+layout order for MDI child forms for a MDI form instance. The default value 
+for the property is <var>tbHorizontal</var> and causes MDI child forms to be 
+arranged horizontally (side-by-side). <var>tbVertical</var> causes MDI child 
+forms to be arranged vertically (top-to-bottom).
+</p>
+<p>
+TileMode is used when the Tile method is called to arrange the MDI child forms 
+for a form instance with FormStyle set to fsMDIForm. The value is used in the 
+widgetset class to include the corresponding tile modifier needed for a 
+message dispatched to a MDI client handle for the widget.
+</p>
+<p>
+In LCL version 5.0, TileMode is implemented for the Windows widgetset only.
+</p>
+</descr>
+<version>
+Added in LCL version 5.0 and implemented for the Windows widgetset.
+</version>
+<seealso>
+<link id="TCustomForm.MDIChildren"/>
+<link id="TCustomForm.MDIChildCount"/>
+<link id="TCustomForm.FormStyle"/>
+<link id="TForm.Tile"/>
+<link id="TTileMode"/>
+</seealso>
+</element>
+
 <element name="TCustomForm.Visible">
 <short>
 Indicates if the control is visible on its parent.
@@ -9532,22 +9603,64 @@ Use Tile to arrange MDI child forms in a grid format.
 
 <element name="TForm.Next">
 <short>
-Activates the next child MDI form (fsMDIChild) in the form sequence.
+Activates the next MDI child form (fsMDIChild) in the form sequence.
 </short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TForm.Previous">
-<short>Activates the previous MDI child form in the form sequence.</short>
+<short>
+Activates the previous MDI child form (fsMDIChild) in the form sequence.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TForm.Tile">
-<short>Arranges MDI child forms side-by-side in a grid format.</short>
-<descr/>
-<seealso/>
+<short>
+Arranges MDI child forms using the TileMode for the MDI form.
+</short>
+<descr>
+<p>
+<var>Tile</var> is a method used to layout / arrange MDI child forms for a 
+form instance with its <var>FormStyle</var> property set to 
+<var>fsMDIForm</var>. No actions are performed in the method when FormStyle is 
+set to another value.
+</p>
+<p>
+At run-time, the Tile method in the widgetset class is called to arrange the 
+MDI child forms when a handle has been allocated for the form. The widgetset 
+class is <b>NOT</b> notified if the Handle has not been allocated or at 
+design-time.
+</p>
+<p>
+Tile causes all MDI child forms to have the same size. Tiled forms are resized 
+to completely fill up the client area of the parent MDI form. A custom size 
+assigned to an individual child form will be overridden in the method.
+</p>
+<p>
+The value in the <var>TileMode</var> property is used to control the layout / 
+arrangement order for the MDI child forms. Set the value in TileMode prior to 
+calling the Tile method. In LCL version 5.0, TileMode is used for the Windows 
+widgetset only. For other widgetsets, horizontal alignment is used for MDI 
+child forms by default.
+</p>
+<p>
+Use Cascade to arrange MDI child forms in an overlapping manner cascaded 
+from top-to-bottom and left-to-right.
+</p>
+</descr>
+<seealso>
+<link id="TForm.Cascade"/>
+<link id="TCustomForm.TileMode"/>
+<link id="TCustomForm.FormStyle"/>
+<link id="TCustomForm.MDIChildren"/>
+<link id="TCustomForm.MDIChildCount"/>
+<link id="TTileMode"/>
+<link id="#lcl.controls.TFormStyle">TFormStyle</link>
+<link id="#rtl.classes.TComponent.ComponentState">TComponent.ComponentState</link>
+</seealso>
 </element>
 
 <element name="TForm.ArrangeIcons">
@@ -9690,7 +9803,7 @@ constant.
 </seealso>
 </element>
 
-<element name="TForm.Scaled" link="#lcl.forms.TCustomDesignControl.Scaled"/>
+<element name="TForm.TileMode" link="#lcl.forms.TCustomForm.TileMode"/>
 <element name="TForm.Visible" link="#lcl.forms.TCustomForm.Visible"/>
 <element name="TForm.WindowState" link="#lcl.forms.TCustomForm.WindowState"/>
 <element name="TForm.OnActivate" link="#lcl.forms.TCustomForm.OnActivate"/>

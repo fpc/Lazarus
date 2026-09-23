@@ -39,33 +39,14 @@ the Lazarus IDE Component Palette.
 <element name="Classes"/>
 <element name="SysUtils"/>
 <element name="Process"/>
-<element name="pipes"/>
 <element name="FileUtil"/>
 <element name="LazFileUtils"/>
-<element name="LazUTF8"/>
 <element name="LazUtilsStrConsts"/>
-
-<element name="SNoCommandLine">
-<descr>
-<p>
-Exception message raised when a process has no executable or command-line. 
-Present for the Microsoft Windows platform.
-</p>
-</descr>
-</element>
-
-<element name="SErrCannotExecute">
-<descr>
-<p>
-Exception message raised when a process cannot be created for the executable 
-or command-line. Present for the Microsoft Windows platform.
-</p>
-</descr>
-</element>
 
 <element name="TProcessUTF8">
 <short>
-Implements a version of the FCL TProcess that allows UTF-8-encoded arguments.
+Implements a version of the FCL TProcess class that allows UTF-8-encoded 
+arguments.
 </short>
 <descr>
 <p>
@@ -73,131 +54,37 @@ Implements a version of the FCL TProcess that allows UTF-8-encoded arguments.
 a version of TProcess that accepts and processes UTF-8-encoded arguments. It 
 includes a <var>ParseCmdLine</var> method used to separate a command line 
 into the <var>Executable</var> name and <var>Parameters</var> used in the 
-class instance.
+class instance. Other properties and methods are inherited from the FCL 
+TProcess ancestor. For example:
 </p>
+<ul>
+<li>ApplicationName</li>
+<li>CommandLine</li>
+<li>Executable</li>
+<li>Parameters</li>
+<li>CurrentDirectory</li>
+<li>Desktop</li>
+<li>Environment</li>
+<li>Options</li>
+<li>Priority</li>
+<li>Running</li>
+</ul>
 <p>
-The TProcessUTF8 interface includes additional methods for the Microsoft 
-Windows platform. An overridden <var>Execute</var> method is provided, and 
-protected methods to assign IDs and Handles for the process and its thread. 
-These methods handle Windows-specific nuances required for the CreateProcessW 
-API. This includes security and thread attributes, pipe creation, and any 
-quoting required for file names or parameters with space characters.
+See <link id="#fcl.process.TProcess">TProcess</link> for more information.
 </p>
 <p>
 TProcessUTF8 is used in the implementation of the Lazarus IDE and related 
-tools like the Debugger, HTML Help viewer, external tools, and the FP Doc 
-Editor. Use TAsyncProcess for a process which receives asynchronous 
+tools like the Debugger, HTML Help viewer, external tools, and the FPDoc 
+Editor.
+</p>
+<p>
+Use <var>TAsyncProcess</var> for a process which receives asynchronous 
 notifications during process execution.
 </p>
 </descr>
 <seealso>
 <link id="#fcl.process.TProcess">TProcess</link>
 <link id="#lcl.asyncprocess.TAsyncProcess">TAsyncProcess</link>
-</seealso>
-</element>
-
-<element name="TProcessUTF8.SetProcessHandle">
-<short>Updates the process handle for the class instance.</short>
-<descr>
-<p>
-Raises an Exception if the ProcessHandle property cannot be set to the value 
-specified in aProcessHandle.
-</p>
-</descr>
-<seealso>
-<link id="#fcl.process.TProcess.ProcessHandle">TProcess.ProcessHandle</link>
-</seealso>
-</element>
-<element name="TProcessUTF8.SetProcessHandle.aProcessHandle">
-<short>Process handle assigned to the ancestor class.</short>
-</element>
-
-<element name="TProcessUTF8.SetThreadHandle">
-<short>Sets ThreadHandle to the specified value.</short>
-<descr/>
-<seealso/>
-</element>
-<element name="TProcessUTF8.SetThreadHandle.aThreadHandle">
-<short>Thread handle assigned to the ancestor class.</short>
-</element>
-
-<element name="TProcessUTF8.SetProcessID">
-<short>Sets ProcessID to the specified value.</short>
-<descr/>
-<seealso/>
-</element>
-<element name="TProcessUTF8.SetProcessID.aProcessID">
-<short>Process ID assigned to the ancestor class.</short>
-</element>
-
-<element name="TProcessUTF8.Execute">
-<short>Starts execution of the process.</short>
-<descr>
-<p>
-<var>Execute</var> is an overridden method in <var>TProcessUTF8</var>, and is 
-defined only for the Microsoft Windows platforms where poDetached in not 
-available as a process option. Execute handles the nuances of configuring and 
-executing a call to CreateProcessW in the Windows API.
-</p>
-<p>
-The values in <var>ApplicationName</var>, <var>CommandLine</var>, and 
-<var>Executable</var> are checked to ensure that they contain non-empty 
-values. An <var>EProcess</var> exception is raised if any of these properties 
-contain an empty string (<b>''</b>).
-</p>
-<p>
-<var>UTF8Decode</var> is called to convert the property values to Unicode 
-strings, and ultimately the WideStr values passed to CreateProcessW. 
-Additional quoting may be applied to the values when the path to the file or 
-arguments contain a Space character. UTF8Decode is also called for the value 
-in the <var>CurrentDirectory</var> property. <var>StringsToWChars</var> is 
-called to convert values in <var>Environment</var>.
-</p>
-<p>
-Execute initializes the creation flags, process attributes, thread 
-attributes, and start-up information required for the CreateProcessW API 
-call. Values in the <var>Options</var> property determine whether 
-<var>CreatePipes</var> is called for the handles in the start-up information.
-</p>
-<p>
-Execute raises an EProcess exception if the CreateProcessW API call returns 
-<b>False</b>. Otherwise, the values in <var>ProcessID</var>, 
-<var>ProcessHandle</var>, and <var>ThreadHandle</var> are assigned for the 
-current class instance.
-</p>
-<p>
-When Options contains the value <var>poUsePipes</var>, the process will 
-redirect information on the standard input, output, and error handles 
-allocated in start-up information. Use the THandleStream instances used in 
-the Input, Output, and StdErr properties to access values for the API call.
-</p>
-<p>
-Executes sets the value in <var>Running</var> to <b>True</b>, and frees 
-memory allocated to the pointer for the <var>Environment</var> in the process.
-</p>
-<p>
-At run-time, Execute calls <var>WaitOnExit</var> to detect completion of the 
-process and to set values in the <var>ExitStatus</var> and 
-<var>ExitCode</var> properties. This occurs when <var>poWaitOnExit</var> is 
-included in the Options for the process, and <var>poRunSuspended</var> is 
-<b>not</b> included in the Options. WaitOnExit is never called at design-time 
-to prevent hanging the IDE.
-</p>
-<p>
-Please note: The overridden Execute method in TProcessUTF8 does not call the 
-inherited method.
-</p>
-</descr>
-<seealso>
-<link id="TProcessUTF8.ParseCmdLine"/>
-<link id="#fcl.process.TProcess.Executable">TProcess.Executable</link>
-<link id="#fcl.process.TProcess.Parameters">TProcess.Parameters</link>
-<link id="#fcl.process.TProcess.CommandLine">TProcess.CommandLine</link>
-<link id="#fcl.process.TProcess.Environment">TProcess.Environment</link>
-<link id="#fcl.process.TProcess.Execute">TProcess.Execute</link>
-<link id="#fcl.process.TProcess.Options">TProcess.Options</link>
-<link id="#fcl.process.TProcess.Input">TProcess.Input</link>
-<link id="#fcl.process.TProcess.Output">TProcess.Output</link>
 </seealso>
 </element>
 
@@ -304,8 +191,6 @@ Modified in LazUtils version 2.3.0 to wait for process exit during execution.
 Modified in LazUtils version 5.0 to accept process options as a parameter.
 </version>
 <seealso>
-<!-- not an error: {$IFDEF UseTProcessW} -->
-<!-- <link id="TProcessUTF8.Execute"/> -->
 <link id="#fcl.process.TProcess.Execute">TProcess.Execute</link>
 <link id="#fcl.process.TProcess.CommandLine">TProcess.CommandLine</link>
 <link id="#fcl.process.TProcess.Executable">TProcess.Executable</link>

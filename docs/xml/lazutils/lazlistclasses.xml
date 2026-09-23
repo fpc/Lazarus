@@ -30,12 +30,29 @@ can be specialized to hold either items of a given type (specialized to type
 at compile-time) or untyped data with the size specified as a run-time 
 argument to the constructor.
 </p>
-<remark>
-The current implementations for these list classes are not suitable for 
-managed types, such as String.
-</remark>
 <p>
-<b>TLazShiftBufferList</b>
+Note about "object" variants:
+</p>
+<ul>
+<li>
+Object instanes are stored on the stack, and as such the memory of the object 
+itself.
+</li>
+<li>
+An object instance is freed when the variable goes out of scope. The objects 
+do however allocate additional memory on the heap. So it is necessary to call 
+Destroy.
+</li>
+<li>
+It is also necessary to call Create. (Unless you can guarantee that the memory 
+of the object has been zero filled).
+</li>
+<li>
+To use the lists with managed types, the correct MemInit must be configured.
+</li>
+</ul>
+<p>
+<b>TGenLazShiftList</b>
 </p>
 <p>
 This list is designed for shift/unshift/pop/push operations. The first list 
@@ -45,7 +62,7 @@ first element. Therefore elements can be added/removed at either the begin or
 end of the list, without any need to move the other elements in the list.
 </p>
 <p>
-<b>TLazRoundBufferList</b>
+<b>TGenLazRoundList</b>
 </p>
 <p>
 The first element of the list can be anywhere within the allocated memory 
@@ -57,7 +74,7 @@ pushed/shifted from/to the list without any need to reallocate or move
 entries to new locations.
 </p>
 <p>
-<b>TLazPagedListMem</b>
+<b>TGenLazPagedList</b>
 </p>
 <p>
 This list organize its data into pages of fixed size. If the list grows or 
@@ -66,26 +83,30 @@ to reallocate its entire memory. This means that growing needs less extra
 memory than conventional lists. The page size is specified in the call to the 
 constructor. The size has to be a power of 2. The constructor takes the 
 exponent as argument. (e.g. an argument of "10" will give a size of 1024). 
+</p>
+<p>
 The list also acts like a TLazShiftBufferList.
 </p>
 <p>
 <b>Variants of the above lists</b>
 </p>
-<p>
-Noted about the "object" variants:
-</p>
-<p>
-"object"s are stored on the stack, as such the memory of the object itself
-is freed when the variable goes out of scope. The objects do however
-allocate additional memory on the heap.
-</p>
-<ul>
-<li>So it is necessary to call Destroy.</li>
-<li>
-It is also necessary to call Create. (Unless you can guarantee that the 
-memory for the object has been zero filled).
-</li>
-</ul>
+<dl>
+<dt>VarSize</dt>
+<dd>
+Lists take an "ItemSize" in the constructor. Elements are accessed via 
+ItemPointer (which may be a plain pointer or typed pointer).
+</dd>
+<dt>FixedSize</dt>
+<dd>
+Lists are compiled for a fixed itemsize (usually "SizeOf(type)".
+</dd>
+<dt>FixedType</dt>
+<dd>
+In addition to FixedSize there is an "Items" property and "IndexOf" can take 
+an item (instead of a pointer). For this, items need to have a compare 
+operator.
+</dd>
+</dl>
 <p>
 The samples below show the available variants of the above list. The 
 constructor for each sample is included.
@@ -98,7 +119,7 @@ Either of the following can be specified to generics that take a "TSizeT"
 </p>
 <code>
 type
-  generic TLazListClassesItemSize&lt;T&gt; = object
+  generic TLazListAspectItemSize&lt;T&gt; = object
 </code>
 <p>
 Used for specializing lists with a fixed item size. The size will be: 
@@ -106,118 +127,29 @@ sizeof(T).
 </p>
 <code>
 type
-  TLazListClassesVarItemSize = object
+  TLazListAspectVarItemSize = object
 </code>
 <p>
-Used for specializing list with a configurable item size. The size must be 
+Used for specializing a list with a configurable item size. The size must be 
 set in the constructor and can not be changed after this. When using this, 
 you need to add a constructor setting:
 </p>
 <code>
-          fItemSize.ItemSize := ASize; // "ASize" is your size
+fItemSize.ItemSize := ASize; // "ASize" is your size
 </code>
-
-<p>
-<b>Variants for TLazShiftBufferList</b>
-</p>
-<code>
-generic TLazShiftBufferListObjBase&lt;TPItemT, TSizeT&gt; = object
-  procedure Create;
-</code>
-<p>
-This is the base for all other variants. Usually you do not use this 
-directly, but use one of the other variants below.
-</p>
-<ul>
-<li>TSizeT: See above.</li>
-<li>TPItemT: The type of the item. Can be "Pointer" or any type. Must match 
-TSizeT.</li>
-</ul>
-<code>
-TLazShiftBufferListObj = object
-    procedure Create(AnItemSize: Integer);
-</code>
-<ul>
-<li>The list as an "object".</li>
-<li>
-Use the "ItemPointer" method to get a pointer to the item-data. The pointer 
-is only valid while there are no insert/delete/capacity operations.
-</li>
-</ul>
-<code>
-generic TLazShiftBufferListObjGen&lt;T&gt; = object
-  procedure Create;
-</code>
-<ul>
-<li>The list as a generic for a typed "object".</li>
-<li>This list an "Items" method to access the list entries.</li>
-</ul>
-<code>
-TLazShiftBufferList = class
-    procedure Create(AnItemSize: Integer);
-</code>
-<p>The pointer-list as an "class".</p>
-<code>
-generic TLazShiftBufferListGen&lt;T&gt; = class
-    procedure Create;
-</code>
-<p>The typed-list as an "class".</p>
-
-<p>
-<b>Variants for TLazRoundBufferList</b>
-</p>
-<code>
-generic TLazRoundBufferListObjBase&lt;TPItemT, TSizeT&gt; = object
-    procedure Create;
-    ...
-
-TLazRoundBufferListObj = object
-    procedure Create(AnItemSize: Integer);
-    ...
-
-generic TLazRoundBufferListObjGen&lt;T&gt; = object
-    procedure Create;
-    ...
-</code>
-
-<p>
-<b>Variants for TLazPagedListObj</b>
-</p>
-<code>
-generic TLazPagedListObjBase&lt;TPItemT, TSizeT&gt; = object
-    procedure Create(APageSizeExp: Integer);
-    // pagesize := 2 ^^ APageSizeExp
-    ...
-
-TLazPagedListObj = object
-    procedure Create(APageSizeExp: Integer; AnItemSize: Integer);
-    ...
-</code>
-
-<p>
-<b>Notes</b>
-</p>
-<code>
-        MoveRows(From, To, Cnt)
-</code>
-<ul>
-<li>Can handle overlaps in the "From" and "To" ranges.</li>
-<li>
-The data in the "From" block will be undefined afterwards (except for any 
-overlaps with "To").
-</li>
-</ul>
 <p>
 <file>lazlistclasses.pas</file> is part of the <file>LazUtils</file> package.
 </p>
 </descr>
-<version>Initial revision: May 2015</version>
 
 <!-- unresolved external references -->
 <element name="Classes"/>
 <element name="SysUtils"/>
 <element name="Math"/>
+<element name="LazListClassesBase"/>
 <element name="LazLoggerBase"/>
+
+<!-- TODO: Topics need content -->
 
 <element name="TLazStorageMemShrinkProc">
 <short/>
@@ -243,2445 +175,2413 @@ overlaps with "To").
 <short/>
 </element>
 
-<element name="TLazListClassesItemSize">
-<short>Helper to specialize lists for a give type.</short>
-<descr/>
-<seealso/>
+<element name="TLazListAspectItemSiz">
+<short>
+Helper to specialize lists for a given type.
+</short>
+</element>
+<element name="TLazListAspectItemSiz.T">
+<short></short>
+</element>
+<element name="TLazListAspectItemSiz.ItemSize">
+<short></short>
+<descr></descr>
 </element>
 
-<!-- element name="TLazListClassesItemSize.T" -->
-
-<element name="TLazListClassesItemSize.ItemSize">
-<short/>
-<descr/>
-<seealso/>
+<element name="TLazListAspectVarItemSize">
+<short>
+Helper to specialize lists for runtime specified size "TList.Create(ASize)".
+</short>
+</element>
+<element name="TLazListAspectVarItemSize.ItemSize">
+<short></short>
 </element>
 
-<element name="TLazListClassesVarItemSize">
-<short>Helper to specialize lists at run-time to a specified size.</short>
-<descr>
-<code>
-  AList := TList.Create(ASize);
-</code>
-</descr>
-<seealso/>
+<element name="TLazListAspectMemInitZero">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 
-<element name="TLazListClassesVarItemSize.ItemSize">
-<short/>
-<descr/>
-<seealso/>
+<element name="TLazListAspectMemInitZero.InitMem">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectMemInitZero.InitMem.AMem">
+<short></short>
+</element>
+<element name="TLazListAspectMemInitZero.InitMem.AnItemCount">
+<short></short>
+</element>
+<element name="TLazListAspectMemInitZero.InitMem.AnItemSize">
+<short></short>
 </element>
 
-<element name="TLazListClassesInternalMem">
-<short>Helper object used internally.</short>
-<descr/>
-<seealso/>
+<element name="TLazListAspectMemInitZero.FinalizeMem">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectMemInitZero.FinalizeMem.AMem">
+<short></short>
+</element>
+<element name="TLazListAspectMemInitZero.FinalizeMem.AnItemCount">
+<short></short>
+</element>
+<element name="TLazListAspectMemInitZero.FinalizeMem.AnItemSize">
+<short></short>
 </element>
 
-<element name="TLazListClassesInternalMem.TMemRecord">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazListClassesInternalMem.TMemRecord.FirstItem">
-<short/>
-</element>
-<element name="TLazListClassesInternalMem.TMemRecord.FirstItem">
-<short/>
-</element>
-<element name="TLazListClassesInternalMem.TMemRecord.FirstItem.Integer">
-<short/>
-</element>
-<element name="TLazListClassesInternalMem.TMemRecord.FirstItem.Ptr">
-<short/>
-</element>
-<element name="TLazListClassesInternalMem.TMemRecord.FirstItem.Idx">
-<short/>
+<element name="TLazListAspectMemAllocZero">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 
-<element name="TLazListClassesInternalMem.Count">
-<short/>
-<descr/>
-<seealso/>
+<element name="TLazListAspectMemAllocZero.InitMemOnce">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectMemAllocZero.InitMemOnce.AMem">
+<short></short>
+</element>
+<element name="TLazListAspectMemAllocZero.InitMemOnce.AnItemCount">
+<short></short>
+</element>
+<element name="TLazListAspectMemAllocZero.InitMemOnce.AnItemSize">
+<short></short>
 </element>
 
-<element name="TLazListClassesInternalMem.Capacity">
-<short/>
-<descr/>
-<seealso/>
+<element name="TLazListAspectMemInitManagedRefCnt">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectMemInitManagedRefCnt.TItemT">
+<short></short>
+</element>
+<element name="TLazListAspectMemInitManagedRefCnt.PItemT">
+<short></short>
 </element>
 
-<element name="TLazListClassesInternalMem.Data">
-<short/>
-<descr>
-The address for the first byte of data. This is a dummy field.
-</descr>
-<seealso/>
+<element name="TLazListAspectMemInitManagedRefCnt.InitMem">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectMemInitManagedRefCnt.InitMem.AMem">
+<short></short>
+</element>
+<element name="TLazListAspectMemInitManagedRefCnt.InitMem.AnItemCount">
+<short></short>
+</element>
+<element name="TLazListAspectMemInitManagedRefCnt.InitMem.AnItemSize">
+<short></short>
 </element>
 
-<element name="TLazListClassesInternalMem.PMemRecord">
-<short/>
-<descr/>
-<seealso/>
+<element name="TLazListAspectMemInitManagedRefCnt.FinalizeMem">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectMemInitManagedRefCnt.FinalizeMem.AMem">
+<short></short>
+</element>
+<element name="TLazListAspectMemInitManagedRefCnt.FinalizeMem.AnItemCount">
+<short></short>
+</element>
+<element name="TLazListAspectMemInitManagedRefCnt.FinalizeMem.AnItemSize">
+<short></short>
 </element>
 
-<element name="TLazListClassesInternalMem.FMem"/>
-
-<element name="TLazListClassesInternalMem.GetCapacityFast">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazListClassesInternalMem.GetCapacityFast.Result">
-<short/>
+<element name="TLazListAspectCapacityExp0x8000">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 
-<element name="TLazListClassesInternalMem.GetDataPointer">
-<short/>
-<descr/>
-<seealso/>
+<element name="TLazListAspectCapacityExp0x8000.GrowCapacity">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<element name="TLazListClassesInternalMem.GetDataPointer.Result">
-<short/>
+<element name="TLazListAspectCapacityExp0x8000.GrowCapacity.Result">
+<short></short>
 </element>
-
-<element name="TLazListClassesInternalMem.GetFirstItemIndex">
-<short/>
-<descr/>
-<seealso/>
+<element name="TLazListAspectCapacityExp0x8000.GrowCapacity.ARequired">
+<short></short>
 </element>
-<element name="TLazListClassesInternalMem.GetFirstItemIndex.Result">
-<short/>
+<element name="TLazListAspectCapacityExp0x8000.GrowCapacity.ACurrent">
+<short></short>
 </element>
 
-<element name="TLazListClassesInternalMem.GetFirstItemPointer">
-<short/>
-<descr/>
-<seealso/>
+<element name="TLazListAspectCapacityExp0x8000.ShrinkCapacity">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<element name="TLazListClassesInternalMem.GetFirstItemPointer.Result">
-<short/>
+<element name="TLazListAspectCapacityExp0x8000.ShrinkCapacity.Result">
+<short></short>
 </element>
-
-<element name="TLazListClassesInternalMem.SetCapacity">
-<short/>
-<descr/>
-<seealso/>
+<element name="TLazListAspectCapacityExp0x8000.ShrinkCapacity.ARequired">
+<short></short>
 </element>
-<element name="TLazListClassesInternalMem.SetCapacity.AValue">
-<short/>
+<element name="TLazListAspectCapacityExp0x8000.ShrinkCapacity.ACurrent">
+<short></short>
 </element>
 
-<element name="TLazListClassesInternalMem.GetCapacity">
-<short/>
-<descr/>
-<seealso/>
+<element name="TGenListAspectCapacityCallback">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<element name="TLazListClassesInternalMem.GetCapacity.Result">
-<short/>
+<element name="TGenListAspectCapacityCallback.TFALLBACK">
+<short></short>
 </element>
-
-<element name="TLazListClassesInternalMem.GetCount">
-<short/>
-<descr/>
-<seealso/>
+<element name="TGenListAspectCapacityCallback.FGrowProc">
+<short></short>
 </element>
-<element name="TLazListClassesInternalMem.GetCount.Result">
-<short/>
+<element name="TGenListAspectCapacityCallback.FShrinkProc">
+<short></short>
 </element>
-
-<element name="TLazListClassesInternalMem.SetCount">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazListClassesInternalMem.SetCount.AValue">
-<short/>
+<element name="TGenListAspectCapacityCallback.FFallBack">
+<short></short>
 </element>
 
-<element name="TLazListClassesInternalMem.SetFirstItemIndex">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazListClassesInternalMem.SetFirstItemIndex.AValue">
-<short/>
+<element name="TGenListAspectCapacityCallback.Init">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 
-<element name="TLazListClassesInternalMem.SetFirstItemPointer">
-<short/>
-<descr/>
-<seealso/>
+<element name="TGenListAspectCapacityCallback.GrowCapacity">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<element name="TLazListClassesInternalMem.SetFirstItemPointer.AValue">
-<short/>
+<element name="TGenListAspectCapacityCallback.GrowCapacity.Result">
+<short></short>
 </element>
-
-<element name="TLazListClassesInternalMem.CapacityFast">
-<short/>
-<descr/>
-<seealso/>
+<element name="TGenListAspectCapacityCallback.GrowCapacity.ARequired">
+<short></short>
 </element>
-
-<element name="TLazListClassesInternalMem.Init">
-<short/>
-<descr/>
-<seealso/>
+<element name="TGenListAspectCapacityCallback.GrowCapacity.ACurrent">
+<short></short>
 </element>
 
-<element name="TLazListClassesInternalMem.Alloc">
-<short/>
-<descr/>
-<seealso/>
+<element name="TGenListAspectCapacityCallback.ShrinkCapacity">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<element name="TLazListClassesInternalMem.Alloc.AByteSize">
-<short/>
+<element name="TGenListAspectCapacityCallback.ShrinkCapacity.Result">
+<short></short>
 </element>
-
-<element name="TLazListClassesInternalMem.Free">
-<short/>
-<descr/>
-<seealso/>
+<element name="TGenListAspectCapacityCallback.ShrinkCapacity.ARequired">
+<short></short>
 </element>
-
-<element name="TLazListClassesInternalMem.IsAllocated">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazListClassesInternalMem.IsAllocated.Result">
-<short/>
+<element name="TGenListAspectCapacityCallback.ShrinkCapacity.ACurrent">
+<short></short>
 </element>
 
-<element name="TLazListClassesInternalMem.Capacity">
-<short/>
-<descr/>
-<seealso/>
+<element name="TLazListAspectCapacityCallback">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 
-<element name="TLazListClassesInternalMem.Count">
-<short/>
-<descr/>
-<seealso/>
+<element name="TLazListAspectCapacityFixed">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 
-<element name="TLazListClassesInternalMem.DataPointer">
-<short/>
-<descr/>
-<seealso/>
+<element name="TLazListAspectCapacityFixed.GrowCapacity">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectCapacityFixed.GrowCapacity.Result">
+<short></short>
+</element>
+<element name="TLazListAspectCapacityFixed.GrowCapacity.ARequired">
+<short></short>
+</element>
+<element name="TLazListAspectCapacityFixed.GrowCapacity.ACurrent">
+<short></short>
 </element>
 
-<element name="TLazListClassesInternalMem.FirstItemPointer ">
-<short/>
-<descr>
-<p>
-Lists can use either FirstItemPointer or FirstItemIndex.
-Only RoundBuffer uses FirstItemIndex.
-</p>
-</descr>
-<seealso/>
+<element name="TLazListAspectCapacityFixed.ShrinkCapacity">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectCapacityFixed.ShrinkCapacity.Result">
+<short></short>
+</element>
+<element name="TLazListAspectCapacityFixed.ShrinkCapacity.ARequired">
+<short></short>
+</element>
+<element name="TLazListAspectCapacityFixed.ShrinkCapacity.ACurrent">
+<short></short>
 </element>
 
-<element name="TLazListClassesInternalMem.FirstItemIndex">
-<short/>
-<descr>
-<p>
-Lists can use either FirstItemPointer or FirstItemIndex.
-Only RoundBuffer uses FirstItemIndex.
-</p>
-</descr>
-<seealso/>
+<element name="TLazListAspectCapacityFieldConst">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectCapacityFieldConst.TCapacityOrdT">
+<short></short>
+</element>
+<element name="TLazListAspectCapacityFieldConst.TCAWrap">
+<short></short>
+</element>
+<element name="TLazListAspectCapacityFieldConst.TCAWrap.TCapacityAccessor">
+<short></short>
+</element>
+<element name="TLazListAspectCapacityFieldConst.TCAWrap.TCapacityAccessor.TMemHeaderT">
+<short></short>
+</element>
+<element name="TLazListAspectCapacityFieldConst.TCAWrap.TCapacityAccessor.TData">
+<short></short>
+</element>
+<element name="TLazListAspectCapacityFieldConst.TCAWrap.TCapacityAccessor.ReadCapacity">
+<short></short>
+</element>
+<element name="TLazListAspectCapacityFieldConst.TCAWrap.TCapacityAccessor.ReadCapacity.Result">
+<short></short>
 </element>
 
+<element name="TLazListAspectCapacityFieldConst.TCAWrap.TCapacityAccessor.ReadCapacity.AMem">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectCapacityFieldConst.TCAWrap.TCapacityAccessor.ReadCapacitySafe">
+<short></short>
+</element>
+<element name="TLazListAspectCapacityFieldConst.TCAWrap.TCapacityAccessor.ReadCapacitySafe.Result">
+<short></short>
+</element>
+<element name="TLazListAspectCapacityFieldConst.TCAWrap.TCapacityAccessor.ReadCapacitySafe.AMem">
+<short></short>
+</element>
+<element name="TLazListAspectCapacityFieldConst.TCAWrap.TCapacityAccessor.WriteCapacity">
+<short></short>
+</element>
+<element name="TLazListAspectCapacityFieldConst.TCAWrap.TCapacityAccessor.WriteCapacity.AMem">
+<short></short>
+</element>
+<element name="TLazListAspectCapacityFieldConst.TCAWrap.TCapacityAccessor.WriteCapacity.AValue">
+<short></short>
+</element>
+
+<element name="TGenListAspectCapacityFieldConst">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenListAspectCapacityFieldConst._CapVal">
+<short></short>
+</element>
+<element name="TGenListAspectCapacityFieldConst.CapValue">
+<short></short>
+</element>
+
+<element name="TLazListAspectRangeIndexCheckReturnNil">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckIndex">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckIndex.T">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckIndex.Result">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckIndex.AList">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckIndex.AnIndex">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckIndex.Res">
+<short></short>
+</element>
+
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckInsert">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckInsert.T">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckInsert.Result">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckInsert.AList">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckInsert.AnIndex">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckInsert.Res">
+<short></short>
+</element>
+
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckDelete">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckDelete.T">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckDelete.Result">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckDelete.AList">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckDelete.AnIndex">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckDelete.ACount">
+<short></short>
+</element>
+
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckMove">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckMove.T">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckMove.Result">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckMove.AList">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckMove.AFromIndex">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckMove.AToIndex">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckMove.ACount">
+<short></short>
+</element>
+
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckSwap">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckSwap.T">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckSwap.Result">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckSwap.AList">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckSwap.AnIndex1">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckReturnNil.CheckSwap.AnIndex2">
+<short></short>
+</element>
+
+<element name="TLazListAspectRangeIndexCheckExcept">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TLazListClassesIndexError">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TLazListAspectRangeIndexCheckExcept">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TLazListAspectRangeIndexCheckExcept.CheckIndex">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckIndex.T">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckIndex.Result">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckIndex.AList">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckIndex.AnIndex">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckIndex.Res">
+<short></short>
+</element>
+
+<element name="TLazListAspectRangeIndexCheckExcept.CheckInsert">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckInsert.T">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckInsert.Result">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckInsert.AList">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckInsert.AnIndex">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckInsert.Res">
+<short></short>
+</element>
+
+<element name="TLazListAspectRangeIndexCheckExcept.CheckDelete">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckDelete.T">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckDelete.Result">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckDelete.AList">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckDelete.AnIndex">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckDelete.ACount">
+<short></short>
+</element>
+
+<element name="TLazListAspectRangeIndexCheckExcept.CheckMove">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckMove.T">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckMove.Result">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckMove.AList">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckMove.AFromIndex">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckMove.AToIndex">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckMove.ACount">
+<short></short>
+</element>
+
+<element name="TLazListAspectRangeIndexCheckExcept.CheckSwap">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckSwap.T">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckSwap.Result">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckSwap.AList">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckSwap.AnIndex1">
+<short></short>
+</element>
+<element name="TLazListAspectRangeIndexCheckExcept.CheckSwap.AnIndex2">
+<short></short>
+</element>
+
+<!-- Config classes -->
+
+<element name="TGenListConfig_4">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenListConfig_4._TSizeT">
+<short></short>
+</element>
+<element name="TGenListConfig_4._TInitMemT">
+<short></short>
+</element>
+<element name="TGenListConfig_4._TCapacityT">
+<short></short>
+</element>
+<element name="TGenListConfig_4._TIdxCheckT">
+<short></short>
+</element>
+<element name="TGenListConfig_4.TSizeT">
+<short></short>
+</element>
+<element name="TGenListConfig_4.TInitMemT">
+<short></short>
+</element>
+<element name="TGenListConfig_4.TCapacityT">
+<short></short>
+</element>
+<element name="TGenListConfig_4.TIdxCheckT">
+<short></short>
+</element>
+
+<!-- Fixed size (only for generics expecting & wrapping this into _TC) -->
+<element name="TLazListConfigFixSize">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListConfigFixSize._TC">
+<short></short>
+</element>
+<element name="TLazListConfigFixSize._TC._T">
+<short></short>
+</element>
+<element name="TLazListConfigFixSize._TC._B">
+<short></short>
+</element>
+<element name="TLazListConfigFixSize._TC.TSizeT">
+<short></short>
+</element>
+
+<element name="TGenListConfigFixSize_3">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenListConfigFixSize_3._TInitMemT">
+<short></short>
+</element>
+<element name="TGenListConfigFixSize_3._TCapacityT">
+<short></short>
+</element>
+<element name="TGenListConfigFixSize_3._TIdxCheckT">
+<short></short>
+</element>
+<element name="TGenListConfigFixSize_3.TInitMemT">
+<short></short>
+</element>
+<element name="TGenListConfigFixSize_3.TCapacityT">
+<short></short>
+</element>
+<element name="TGenListConfigFixSize_3.TIdxCheckT">
+<short></short>
+</element>
+
+<!-- Var size -->
+
+<element name="TLazListConfigVarSize">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListConfigVarSize.TSizeT">
+<short></short>
+</element>
+
+<element name="TGenListConfigVarSize_3">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenListConfigVarSize_3._TInitMemT">
+<short></short>
+</element>
+<element name="TGenListConfigVarSize_3._TCapacityT">
+<short></short>
+</element>
+<element name="TGenListConfigVarSize_3._TIdxCheckT">
+<short></short>
+</element>
+<element name="TGenListConfigVarSize_3.TInitMemT">
+<short></short>
+</element>
+<element name="TGenListConfigVarSize_3.TCapacityT">
+<short></short>
+</element>
+<element name="TGenListConfigVarSize_3.TIdxCheckT">
+<short></short>
+</element>
+
+<!-- Presets -->
+<element name="TGenListConfigExp_3">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenListConfigExp_3._TSizeT">
+<short></short>
+</element>
+<element name="TGenListConfigExp_3._TInitMemT">
+<short></short>
+</element>
+<element name="TGenListConfigExp_3._TIdxCheckT">
+<short></short>
+</element>
+
+<element name="TGenListConfigVarSizeExp_2">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenListConfigVarSizeExp_2._TInitMemT">
+<short></short>
+</element>
+<element name="TGenListConfigVarSizeExp_2._TIdxCheckT">
+<short></short>
+</element>
+
+<element name="TGenListConfigFixSizeExp_2">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenListConfigFixSizeExp_2._TInitMemT">
+<short></short>
+</element>
+<element name="TGenListConfigFixSizeExp_2._TIdxCheckT">
+<short></short>
+</element>
+
+<element name="TGenListConfig_1">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenListConfig_1._TSizeT">
+<short></short>
+</element>
+
+<element name="TLazListConfigFixSize_0">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TLazListConfigVarSize_0">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TGenListConfigVarSizeNoIdx_2">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenListConfigVarSizeNoIdx_2._TInitMemT">
+<short></short>
+</element>
+<element name="TGenListConfigVarSizeNoIdx_2._TCapacityT">
+<short></short>
+</element>
+
+<element name="TGenListConfigFixSizeNoIdx_2">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenListConfigFixSizeNoIdx_2._TInitMemT">
+<short></short>
+</element>
+<element name="TGenListConfigFixSizeNoIdx_2._TCapacityT">
+<short></short>
+</element>
+
+<element name="TGenListClasses_CapacityFld">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenListClasses_CapacityFld.TConfT">
+<short></short>
+</element>
+<element name="TGenListClasses_CapacityFld._TCapacityFieldT">
+<short></short>
+</element>
+<element name="TGenListClasses_CapacityFld.TCapacityFieldT">
+<short></short>
+</element>
+
+<!--
+  TTypeToPointerGeneric
+  Inline pointer type for specializing base classes
+-->
+
+<element name="TTypeToPointerGeneric">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TTypeToPointerGeneric.T">
+<short></short>
+</element>
+<element name="TTypeToPointerGeneric.PT">
+<short></short>
+</element>
+
+<!-- TLazShiftList variants -->
+ 
+<element name="TGenLazShiftList">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazShiftList.TPItemT">
+<short></short>
+</element>
+<element name="TGenLazShiftList._TConfT">
+<short></short>
+</element>
+
+<!-- private -->
+<element name="TGenLazShiftList.FMem"/>
+<element name="TGenLazShiftList.GetItemPointer"/>
+<element name="TGenLazShiftList.GetItemPointer.Result"/>
+<element name="TGenLazShiftList.GetItemPointer.Index"/>
+<element name="TGenLazShiftList.GetItemPointerFast"/>
+<element name="TGenLazShiftList.GetItemPointerFast.Result"/>
+<element name="TGenLazShiftList.GetItemPointerFast.Index"/>
+<element name="TGenLazShiftList.GetFirstItemPointerFast"/>
+<element name="TGenLazShiftList.GetFirstItemPointerFast.Result"/>
+<element name="TGenLazShiftList.GetItemSize"/>
+<element name="TGenLazShiftList.GetItemSize.Result"/>
+<element name="TGenLazShiftList.SetCapacity"/>
+<element name="TGenLazShiftList.SetCapacity.AValue"/>
+<element name="TGenLazShiftList.GetCapacity"/>
+<element name="TGenLazShiftList.GetCapacity.Result"/>
+<element name="TGenLazShiftList.GetCount"/>
+<element name="TGenLazShiftList.GetCount.Result"/>
+
+<!-- protected -->
+<!-- For access by subclasses, if it contains fields -->
+<element name="TGenLazShiftList.FItemSize">
+<short></short>
+</element>
+<element name="TGenLazShiftList.FCapacity">
+<short></short>
+</element>
+<element name="TGenLazShiftList.FCapacityAccessor">
+<short></short>
+</element>
+<element name="TGenLazShiftList.FInitMem">
+<short></short>
+</element>
+<element name="TGenLazShiftList.FIndexChecker">
+<short></short>
+</element>
+
+<element name="TGenLazShiftList.SetCapacityEx">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazShiftList.SetCapacityEx.Result">
+<short></short>
+</element>
+<element name="TGenLazShiftList.SetCapacityEx.AValue">
+<short></short>
+</element>
+<element name="TGenLazShiftList.SetCapacityEx.AnInsertPos">
+<short></short>
+</element>
+<element name="TGenLazShiftList.SetCapacityEx.AnInsertSize">
+<short></short>
+</element>
+
+<element name="TGenLazShiftList.ItemPointerFast">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazShiftList.ItemPointerFast.Index">
+<short></short>
+</element>
+
+<!-- public -->
+
+<element name="TGenLazShiftList.Create">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TGenLazShiftList.Destroy">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TGenLazShiftList.InsertRows">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazShiftList.InsertRows.Result">
+<short></short>
+</element>
+<element name="TGenLazShiftList.InsertRows.AnIndex">
+<short></short>
+</element>
+<element name="TGenLazShiftList.InsertRows.ACount">
+<short></short>
+</element>
+
+<element name="TGenLazShiftList.DeleteRows">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazShiftList.DeleteRows.AnIndex">
+<short></short>
+</element>
+<element name="TGenLazShiftList.DeleteRows.ACount">
+<short></short>
+</element>
+
+<element name="TGenLazShiftList.MoveRows">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazShiftList.MoveRows.AFromIndex">
+<short></short>
+</element>
+<element name="TGenLazShiftList.MoveRows.AToIndex">
+<short></short>
+</element>
+<element name="TGenLazShiftList.MoveRows.ACount">
+<short></short>
+</element>
+
+<element name="TGenLazShiftList.SwapEntries">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazShiftList.SwapEntries.AnIndex1">
+<short></short>
+</element>
+<element name="TGenLazShiftList.SwapEntries.AnIndex2">
+<short></short>
+</element>
+
+<element name="TGenLazShiftList.DebugDump">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<!-- compare data pointed to -->
+<element name="TGenLazShiftList.IndexOf">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazShiftList.IndexOf.Result">
+<short></short>
+</element>
+<element name="TGenLazShiftList.IndexOf.AnItem">
+<short></short>
+</element>
+
+<element name="TGenLazShiftList.Capacity">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TGenLazShiftList.Count">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TGenLazShiftList.ItemSize">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TGenLazShiftList.ItemPointer">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazShiftList.ItemPointer.Index">
+<short></short>
+</element>
+
+<element name="TGenLazShiftListVarSize">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazShiftListVarSize.TPItemT">
+<short></short>
+</element>
+<element name="TGenLazShiftListVarSize._TConfT">
+<short></short>
+</element>
+<!-- public -->
+<element name="TGenLazShiftListVarSize.Create">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazShiftListVarSize.Create.AnItemSize">
+<short></short>
+</element>
+
+<!-- deprecated -->
 <element name="TLazShiftBufferListObjBase">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<!-- element name="TLazShiftBufferListObjBase.TPItemT" -->
-<!-- element name="TLazShiftBufferListObjBase.TSizeT" -->
-
-<element name="TLazShiftBufferListObjBase.FMem"/>
-<element name="TLazShiftBufferListObjBase.FItemSize">
-<short>May be 0 (zero).</short>
+<element name="TLazShiftBufferListObjBase.TPItemT">
+<short></short>
 </element>
-
-<element name="TLazShiftBufferListObjBase.GetItemPointer">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjBase.GetItemPointer.Result">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjBase.GetItemPointer.Index">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListObjBase.GetItemPointerFast">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjBase.GetItemPointerFast.Result">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjBase.GetItemPointerFast.Index">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListObjBase.SetCapacity">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjBase.SetCapacity.AValue">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListObjBase.GetCapacity">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjBase.GetCapacity.Result">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListObjBase.GetCount">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjBase.GetCount.Result">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListObjBase.GrowCapacity">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjBase.GrowCapacity.Result">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjBase.GrowCapacity.ARequired">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListObjBase.ShrinkCapacity">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjBase.ShrinkCapacity.Result">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjBase.ShrinkCapacity.ARequired">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListObjBase.SetCapacityEx">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjBase.SetCapacityEx.Result">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjBase.SetCapacityEx.AValue">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjBase.SetCapacityEx.AnInsertPos">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjBase.SetCapacityEx.AnInsertSize">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListObjBase.InsertRowsEx">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjBase.InsertRowsEx.Result">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjBase.InsertRowsEx.AIndex">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjBase.InsertRowsEx.ACount">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjBase.InsertRowsEx.AGrowProc">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListObjBase.DeleteRowsEx">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjBase.DeleteRowsEx.AIndex">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjBase.DeleteRowsEx.ACount">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjBase.DeleteRowsEx.AShrinkProc">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListObjBase.ItemPointerFast">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjBase.ItemPointerFast.Index">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListObjBase.Create">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TLazShiftBufferListObjBase.Destroy">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TLazShiftBufferListObjBase.InsertRows">
-<short/>
-<descr>
-Can be re-introduced to change GrowProc.
-</descr>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjBase.InsertRows.Result">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjBase.InsertRows.AIndex">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjBase.InsertRows.ACount">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListObjBase.DeleteRows">
-<short/>
-<descr>
-Can be re-introduced to change ShrinkProc.
-</descr>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjBase.DeleteRows.AIndex">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjBase.DeleteRows.ACount">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListObjBase.MoveRows">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjBase.MoveRows.AFromIndex">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjBase.MoveRows.AToIndex">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjBase.MoveRows.ACount">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListObjBase.SwapEntries">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjBase.SwapEntries.AIndex1">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjBase.SwapEntries.AIndex2">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListObjBase.DebugDump">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TLazShiftBufferListObjBase.Capacity">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TLazShiftBufferListObjBase.Count">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TLazShiftBufferListObjBase.ItemPointer">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjBase.ItemPointer.Index">
-<short/>
+<element name="TLazShiftBufferListObjBase._TSizeT">
+<short></short>
 </element>
 
 <element name="TLazShiftBufferListObj">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<!-- element name="TLazShiftBufferListObj.Pointer" -->
-<!-- element name="TLazShiftBufferListObj.TLazLisatClassesVarItemSize" -->
 
-<element name="TLazShiftBufferListObj.Create">
-<short/>
-<descr/>
-<seealso/>
+<element name="TGenLazShiftListFixedSize">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<element name="TLazShiftBufferListObj.Create.AnItemSize">
-<short/>
+<element name="TGenLazShiftListFixedSize.T">
+<short></short>
+</element>
+<element name="TGenLazShiftListFixedSize._TConfT">
+<short></short>
+</element>
+
+<element name="TGenLazShiftListFixedType">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazShiftListFixedType.T">
+<short></short>
+</element>
+<element name="TGenLazShiftListFixedType._TConfT">
+<short></short>
+</element>
+<!-- private -->
+<element name="TGenLazShiftListFixedType.PT"/>
+<element name="TGenLazShiftListFixedType.Get"/>
+<element name="TGenLazShiftListFixedType.Get.Result"/>
+<element name="TGenLazShiftListFixedType.Get.Index"/>
+<element name="TGenLazShiftListFixedType.Put"/>
+<element name="TGenLazShiftListFixedType.Put.Index"/>
+<element name="TGenLazShiftListFixedType.Put.AValue"/>
+<!-- public -->
+<element name="TGenLazShiftListFixedType.IndexOf">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazShiftListFixedType.IndexOf.Result">
+<short></short>
+</element>
+<element name="TGenLazShiftListFixedType.IndexOf.AnItem">
+<short></short>
+</element>
+
+<element name="TGenLazShiftListFixedType.Items">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazShiftListFixedType.Items.Index">
+<short></short>
 </element>
 
 <element name="TLazShiftBufferListObjGen">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<!-- element name="TLazShiftBufferListObjGen.T" -->
-
-<element name="TLazShiftBufferListObjGen.TItemSize">
-<short/>
-<descr/>
-<seealso/>
+<element name="TLazShiftBufferListObjGen.T">
+<short></short>
 </element>
 
-<element name="TLazShiftBufferListObjGen.PT">
-<short/>
-<descr/>
-<seealso/>
+<!-- TLazRoundList variants -->
+
+<element name="TGenLazRoundList">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazRoundList.TPItemT">
+<short></short>
+</element>
+<element name="TGenLazRoundList._TConfT">
+<short></short>
 </element>
 
-<element name="TLazShiftBufferListObjGen.TListType">
-<short/>
-<descr/>
-<seealso/>
-</element>
+<!-- private -->
+<element name="TGenLazRoundList.GetItemPointer"/>
+<element name="TGenLazRoundList.GetItemPointer.Result"/>
+<element name="TGenLazRoundList.GetItemPointer.Index"/>
+<element name="TGenLazRoundList.GetItemPointerFast"/>
+<element name="TGenLazRoundList.GetItemPointerFast.Result"/>
+<element name="TGenLazRoundList.GetItemPointerFast.Index"/>
+<element name="TGenLazRoundList.GetItemPointerFast.ACapacity"/>
+<element name="TGenLazRoundList.GetItemSize"/>
+<element name="TGenLazRoundList.GetItemSize.Result"/>
+<element name="TGenLazRoundList.SetCapacity"/>
+<element name="TGenLazRoundList.SetCapacity.AValue"/>
+<element name="TGenLazRoundList.GetCapacity"/>
+<element name="TGenLazRoundList.GetCapacity.Result"/>
+<element name="TGenLazRoundList.GetCount"/>
+<element name="TGenLazRoundList.GetCount.Result"/>
+<element name="TGenLazRoundList.IndexOf"/>
+<element name="TGenLazRoundList.IndexOf.Result"/>
+<element name="TGenLazRoundList.IndexOf.AnItem"/>
+<element name="TGenLazRoundList.IndexOf.AFirstIdx"/>
 
-<element name="TLazShiftBufferListObjGen.TListType">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TLazShiftBufferListObjGen.FList">
-<short/>
-</element>
-
-<!-- forwarded methods -->
-
-<element name="TLazShiftBufferListObjGen.GetCapacity">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjGen.GetCapacity.Result">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListObjGen.GetCount">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjGen.GetCount.Result">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListObjGen.GetItemPointer">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjGen.GetItemPointer.Result">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjGen.GetItemPointer.Index">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListObjGen.GetItemPointerFast">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjGen.GetItemPointerFast.Result">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjGen.GetItemPointerFast.Index">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListObjGen.SetCapacity">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjGen.SetCapacity.AValue">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListObjGen.InsertRowsEx">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjGen.InsertRowsEx.Result">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjGen.InsertRowsEx.AIndex">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjGen.InsertRowsEx.ACount">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjGen.InsertRowsEx.AGrowProc">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListObjGen.DeleteRowsEx">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjGen.DeleteRowsEx.AIndex">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjGen.DeleteRowsEx.ACount">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjGen.DeleteRowsEx.AShrinkProc">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListObjGen.ItemPointerFast">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjGen.ItemPointerFast.Index">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListObjGen.Create">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TLazShiftBufferListObjGen.Destroy">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TLazShiftBufferListObjGen.InsertRows">
-<short/>
+<!-- protected -->
+<!-- For access by subclasses, if it contains fields -->
+<element name="TGenLazRoundList.FItemSize">
+<short></short>
 <descr>
-Can be re-introduced to change GrowProc.
+May be zero size.
 </descr>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjGen.InsertRows.Result">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjGen.InsertRows.AIndex">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjGen.InsertRows.ACount">
-<short/>
+<seealso></seealso>
 </element>
 
-<element name="TLazShiftBufferListObjGen.DeleteRows">
-<short/>
-<descr>
-Can be re-introduced to change ShrinkProc.
-</descr>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjGen.DeleteRows.AIndex">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjGen.DeleteRows.ACount">
-<short/>
+<element name="TGenLazRoundList.FCapacity">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 
-<element name="TLazShiftBufferListObjGen.MoveRows">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjGen.MoveRows.AFromIndex">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjGen.MoveRows.AToIndex">
-<short/>
+<element name="TGenLazRoundList.FCapacityAccessor">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 
-<element name="TLazShiftBufferListObjGen.SwapEntries">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjGen.SwapEntries.AIndex1">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjGen.SwapEntries.AIndex2">
-<short/>
+<element name="TGenLazRoundList.FInitMem">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 
-<element name="TLazShiftBufferListObjGen.DebugDump">
-<short/>
-<descr/>
-<seealso/>
+<element name="TGenLazRoundList.FIndexChecker">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 
-<element name="TLazShiftBufferListObjGen.Capacity">
-<short/>
-<descr/>
-<seealso/>
+<element name="TGenLazRoundList.InternalMoveUp">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazRoundList.InternalMoveUp.AFromEnd">
+<short></short>
+</element>
+<element name="TGenLazRoundList.InternalMoveUp.AToEnd">
+<short></short>
+</element>
+<element name="TGenLazRoundList.InternalMoveUp.AByteCnt">
+<short></short>
+</element>
+<element name="TGenLazRoundList.InternalMoveUp.AByteCap">
+<short></short>
 </element>
 
-<element name="TLazShiftBufferListObjGen.Count">
-<short/>
-<descr/>
-<seealso/>
+<element name="TGenLazRoundList.InternalMoveDown">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazRoundList.InternalMoveDown.AFrom">
+<short></short>
+</element>
+<element name="TGenLazRoundList.InternalMoveDown.ATo">
+<short></short>
+</element>
+<element name="TGenLazRoundList.InternalMoveDown.AByteCnt">
+<short></short>
+</element>
+<element name="TGenLazRoundList.InternalMoveDown.AUpperBound">
+<short></short>
 </element>
 
-<element name="TLazShiftBufferListObjGen.ItemPointer">
-<short/>
-<descr/>
-<seealso/>
+<element name="TGenLazRoundList.MoveRowsUp">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<element name="TLazShiftBufferListObjGen.ItemPointer.Index">
-<short/>
+<element name="TGenLazRoundList.MoveRowsUp.AFromIndex">
+<short></short>
 </element>
-
-<!-- // new extra methods -->
-<element name="TLazShiftBufferListObjGen.Get">
-<short/>
-<descr/>
-<seealso/>
+<element name="TGenLazRoundList.MoveRowsUp.AToIndex">
+<short></short>
 </element>
-<element name="TLazShiftBufferListObjGen.Get.Result">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjGen.Get.Index">
-<short/>
+<element name="TGenLazRoundList.MoveRowsUp.ACount">
+<short></short>
 </element>
 
-<element name="TLazShiftBufferListObjGen.Put">
-<short/>
-<descr/>
-<seealso/>
+<element name="TGenLazRoundList.MoveRowsDown">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<element name="TLazShiftBufferListObjGen.Put.Index">
-<short/>
+<element name="TGenLazRoundList.MoveRowsDown.AFromIndex">
+<short></short>
 </element>
-<element name="TLazShiftBufferListObjGen.Put.AValue">
-<short/>
+<element name="TGenLazRoundList.MoveRowsDown.AToIndex">
+<short></short>
 </element>
-
-<element name="TLazShiftBufferListObjGen.IndexOf">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListObjGen.IndexOf.Result">
-<short/>
-</element>
-<element name="TLazShiftBufferListObjGen.IndexOf.AnItem">
-<short/>
+<element name="TGenLazRoundList.MoveRowsDown.ACount">
+<short></short>
 </element>
 
-<element name="TLazShiftBufferListObjGen.Items">
-<short/>
-<descr/>
-<seealso/>
+<element name="TGenLazRoundList.SetCapacityEx">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<element name="TLazShiftBufferListObjGen.Items.Index">
-<short/>
+<element name="TGenLazRoundList.SetCapacityEx.Result">
+<short></short>
+</element>
+<element name="TGenLazRoundList.SetCapacityEx.AValue">
+<short></short>
+</element>
+<element name="TGenLazRoundList.SetCapacityEx.AnInsertPos">
+<short></short>
+</element>
+<element name="TGenLazRoundList.SetCapacityEx.AnInsertSize">
+<short></short>
+</element>
+
+<element name="TGenLazRoundList.ItemPointerFast">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazRoundList.ItemPointerFast.Index">
+<short></short>
+</element>
+
+<!-- public -->
+
+<element name="TGenLazRoundList.Create">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TGenLazRoundList.Destroy">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TGenLazRoundList.InsertRows">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazRoundList.InsertRows.Result">
+<short></short>
+</element>
+<element name="TGenLazRoundList.InsertRows.AnIndex">
+<short></short>
+</element>
+<element name="TGenLazRoundList.InsertRows.ACount">
+<short></short>
+</element>
+
+<element name="TGenLazRoundList.DeleteRows">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazRoundList.DeleteRows.AnIndex">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazRoundList.DeleteRows.ACount">
+<short></short>
+</element>
+
+<element name="TGenLazRoundList.MoveRows">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazRoundList.MoveRows.AFromIndex">
+<short></short>
+</element>
+<element name="TGenLazRoundList.MoveRows.AToIndex">
+<short></short>
+</element>
+<element name="TGenLazRoundList.MoveRows.ACount">
+<short></short>
+</element>
+
+<element name="TGenLazRoundList.SwapEntries">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazRoundList.SwapEntries.AnIndex1">
+<short></short>
+</element>
+<element name="TGenLazRoundList.SwapEntries.AnIndex2">
+<short></short>
+</element>
+
+<element name="TGenLazRoundList.DebugDump">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TGenLazRoundList.IndexOf">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazRoundList.IndexOf.Result">
+<short></short>
+</element>
+<element name="TGenLazRoundList.IndexOf.AnItem">
+<short></short>
+</element>
+
+<element name="TGenLazRoundList.Capacity">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TGenLazRoundList.Count">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TGenLazRoundList.ItemSize">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TGenLazRoundList.ItemPointer">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazRoundList.ItemPointer.Index">
+<short></short>
+</element>
+
+<element name="TGenLazRoundListVarSize">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazRoundListVarSize.TPItemT">
+<short></short>
+</element>
+<element name="TGenLazRoundListVarSize._TConfT">
+<short></short>
+</element>
+
+<!-- public -->
+<element name="TGenLazRoundListVarSize.Create">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazRoundListVarSize.Create.AnItemSize">
+<short></short>
 </element>
 
 <element name="TLazRoundBufferListObjBase">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<!-- element name="TLazRoundBufferListObjBase.TPItemT" -->
-<!-- element name="TLazRoundBufferListObjBase.TSizeT" -->
-
-<element name="TLazRoundBufferListObjBase.FMem"/>
-<element name="TLazRoundBufferListObjBase.FItemSize">
-<short>
-May be 0 (zero).
-</short>
-</element>
-
-<element name="TLazRoundBufferListObjBase.GetItemPointer">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjBase.GetItemPointer.Result">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjBase.GetItemPointer.Index">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjBase.GetItemPointerFast">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjBase.GetItemPointerFast.Result">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjBase.GetItemPointerFast.Index">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjBase.SetCapacity">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjBase.SetCapacity.AValue">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjBase.GetCapacity">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjBase.GetCapacity.Result">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjBase.GetCount">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjBase.GetCount.Result">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjBase.InternalMoveUp">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjBase.InternalMoveUp.AFromEnd">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjBase.InternalMoveUp.AToEnd">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjBase.InternalMoveUp.AByteCnt">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjBase.InternalMoveUp.AByteCap">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjBase.InternalMoveDown">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjBase.InternalMoveDown.AFrom">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjBase.InternalMoveDown.ATo">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjBase.InternalMoveDown.AByteCnt">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjBase.InternalMoveDown.AUpperBound">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjBase.GrowCapacity">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjBase.GrowCapacity.Result">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjBase.GrowCapacity.ARequired">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjBase.ShrinkCapacity">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjBase.ShrinkCapacity.Result">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjBase.ShrinkCapacity.ARequired">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjBase.SetCapacityEx">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjBase.SetCapacityEx.Result">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjBase.SetCapacityEx.AValue">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjBase.SetCapacityEx.AnInsertPos">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjBase.SetCapacityEx.AnInsertSize">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjBase.InsertRowsEx">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjBase.InsertRowsEx.Result">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjBase.InsertRowsEx.AIndex">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjBase.InsertRowsEx.ACount">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjBase.InsertRowsEx.AGrowProc">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjBase.DeleteRowsEx">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjBase.DeleteRowsEx.AIndex">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjBase.DeleteRowsEx.ACount">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjBase.DeleteRowsEx.AShrinkProc">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjBase.ItemPointerFast">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjBase.ItemPointerFast.Index">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjBase.Create">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TLazRoundBufferListObjBase.Destroy">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TLazRoundBufferListObjBase.InsertRows">
-<short/>
-<descr>
-Can be re-introduced to change GrowProc.
-</descr>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjBase.InsertRows.Result">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjBase.InsertRows.AIndex">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjBase.InsertRows.ACount">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjBase.DeleteRows">
-<short/>
-<descr>
-Can be re-introduced to change ShrinkProc.
-</descr>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjBase.DeleteRows.AIndex">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjBase.DeleteRows.ACount">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjBase.MoveRows">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjBase.MoveRows.AFromIndex">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjBase.MoveRows.AToIndex">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjBase.MoveRows.ACount">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjBase.SwapEntries">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjBase.SwapEntries.AIndex1">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjBase.SwapEntries.AIndex2">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjBase.DebugDump">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TLazRoundBufferListObjBase.Capacity">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TLazRoundBufferListObjBase.Count">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TLazRoundBufferListObjBase.ItemPointer">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjBase.ItemPointer.Index">
-<short/>
+<short>Deprecated.</short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazRoundBufferListObjBase.TPItemT">
+<short></short>
+</element>
+<element name="TLazRoundBufferListObjBase._TSizeT">
+<short></short>
 </element>
 
 <element name="TLazRoundBufferListObj">
-<short/>
-<descr>
-<p>
-The first element of the list can be anywhere within the allocated memory 
-(capacity). If the elements of the list reach the end of the memory, the list 
-will wrap around and continues in the available memory at the start of the 
-allocation.
-</p>
-<p>
-This list can be used for a first-in, first-out queue. If the list does never 
-exceed the size set by its capacity, then elements can be pushed/shifted 
-from/to the list without any need to reallocate or move entries to new 
-locations.
-</p>
-</descr>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 
-<element name="TLazRoundBufferListObj.Create">
-<short/>
-<descr/>
-<seealso/>
+<element name="TGenLazRoundListFixedSize">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<element name="TLazRoundBufferListObj.Create.AnItemSize">
-<short/>
+<element name="TGenLazRoundListFixedSize.T">
+<short></short>
+</element>
+<element name="TGenLazRoundListFixedSize._TConfT">
+<short></short>
+</element>
+
+<element name="TGenLazRoundListFixedType">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazRoundListFixedType.T">
+<short></short>
+</element>
+<element name="TGenLazRoundListFixedType._TConfT">
+<short></short>
+</element>
+
+<!-- private -->
+<element name="TGenLazRoundListFixedType.PT"/>
+<element name="TGenLazRoundListFixedType.Get"/>
+<element name="TGenLazRoundListFixedType.Get.Result"/>
+<element name="TGenLazRoundListFixedType.Get.Index"/>
+<element name="TGenLazRoundListFixedType.Put"/>
+<element name="TGenLazRoundListFixedType.Put.Index"/>
+<element name="TGenLazRoundListFixedType.Put.AValue"/>
+
+<!-- public -->
+<element name="TGenLazRoundListFixedType.IndexOf">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazRoundListFixedType.IndexOf.Result">
+<short></short>
+</element>
+<element name="TGenLazRoundListFixedType.IndexOf.AnItem">
+<short></short>
+</element>
+
+<element name="TGenLazRoundListFixedType.Items">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazRoundListFixedType.Items.Index">
+<short></short>
 </element>
 
 <element name="TLazRoundBufferListObjGen">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<!-- element name="TLazRoundBufferListObjGen.T" -->
-
-<element name="TLazRoundBufferListObjGen.TItemSize">
-<short/>
-<descr/>
-<seealso/>
+<element name="TLazRoundBufferListObjGen.T">
+<short></short>
 </element>
 
-<element name="TLazRoundBufferListObjGen.PT">
-<short/>
-<descr/>
-<seealso/>
+<!-- TLazPagedList variants -->
+
+<element name="__TLazListAspectPageSizeExpConstBase">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 
-<element name="TLazRoundBufferListObjGen.TListType">
-<short/>
-<descr/>
-<seealso/>
+<element name="__TLazListAspectPageSizeExpConstBase.Init">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="__TLazListAspectPageSizeExpConstBase.Init.APageSizeExp">
+<short></short>
 </element>
 
-<element name="TLazRoundBufferListObjGen.FList"/>
-
-<element name="TLazRoundBufferListObjGen.GetCapacity">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjGen.GetCapacity.Result">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjGen.GetCount">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjGen.GetCount.Result">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjGen.GetItemPointer">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjGen.GetItemPointer.Result">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjGen.GetItemPointer.Index">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjGen.GetItemPointerFast">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjGen.GetItemPointerFast.Result">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjGen.GetItemPointerFast.Index">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjGen.SetCapacity">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjGen.SetCapacity.AValue">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjGen.InsertRowsEx">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjGen.InsertRowsEx.Result">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjGen.InsertRowsEx.AIndex">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjGen.InsertRowsEx.ACount">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjGen.InsertRowsEx.AGrowProc">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjGen.DeleteRowsEx">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjGen.DeleteRowsEx.AIndex">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjGen.DeleteRowsEx.ACount">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjGen.DeleteRowsEx.AShrinkProc">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjGen.ItemPointerFast">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjGen.ItemPointerFast.Index">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjGen.Create">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TLazRoundBufferListObjGen.Destroy">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TLazRoundBufferListObjGen.InsertRows">
-<short/>
+<element name="TLazListAspectPageSizeExpConst">
+<short></short>
 <descr>
-Can be re-introduced to change GrowProc.
+Defined for FPC version 3.3.0 and higher.
 </descr>
-<seealso/>
+<seealso></seealso>
 </element>
-<element name="TLazRoundBufferListObjGen.InsertRows.Result">
-<short/>
+<element name="TLazListAspectPageSizeExpConst.T">
+<short></short>
 </element>
-<element name="TLazRoundBufferListObjGen.InsertRows.AIndex">
-<short/>
+<element name="TLazListAspectPageSizeExpConst.FPageSizeExp">
+<short></short>
 </element>
-<element name="TLazRoundBufferListObjGen.InsertRows.ACount">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjGen.DeleteRows">
-<short/>
-<descr>
-Can be re-introduced to change ShrinkProc.
-</descr>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjGen.DeleteRows.AIndex">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjGen.DeleteRows.ACount">
-<short/>
+<element name="TLazListAspectPageSizeExpConst.FPageSizeMask">
+<short></short>
 </element>
 
-<element name="TLazRoundBufferListObjGen.MoveRows">
-<short/>
-<descr/>
-<seealso/>
+<element name="TLazListAspectPageSizeExpConst_8">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<element name="TLazRoundBufferListObjGen.MoveRows.AFromIndex">
-<short/>
+<element name="TLazListAspectPageSizeExpConst_8.FPageSizeExp">
+<short></short>
 </element>
-<element name="TLazRoundBufferListObjGen.MoveRows.AToIndex">
-<short/>
-</element>
-<element name="TLazRoundBufferListObjGen.MoveRows.ACount">
-<short/>
+<element name="TLazListAspectPageSizeExpConst_8.FPageSizeMask">
+<short></short>
 </element>
 
-<element name="TLazRoundBufferListObjGen.SwapEntries">
-<short/>
-<descr/>
-<seealso/>
+<element name="TLazListAspectPageSizeExpConst_10">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<element name="TLazRoundBufferListObjGen.SwapEntries.AIndex1">
-<short/>
+<element name="TLazListAspectPageSizeExpConst_10.FPageSizeExp">
+<short></short>
 </element>
-<element name="TLazRoundBufferListObjGen.SwapEntries.AIndex2">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjGen.DebugDump">
-<short/>
-<descr/>
-<seealso/>
+<element name="TLazListAspectPageSizeExpConst_10.FPageSizeMask">
+<short></short>
 </element>
 
-<element name="TLazRoundBufferListObjGen.Capacity">
-<short/>
-<descr/>
-<seealso/>
+<element name="TLazListAspectPageSizeExpConst_12">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazListAspectPageSizeExpConst_12.FPageSizeExp">
+<short></short>
+</element>
+<element name="TLazListAspectPageSizeExpConst_12.FPageSizeMask">
+<short></short>
 </element>
 
-<element name="TLazRoundBufferListObjGen.Count">
-<short/>
-<descr/>
-<seealso/>
+<element name="TGenListPageConfig">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenListPageConfig._TPageSizeT">
+<short></short>
+</element>
+<element name="TGenListPageConfig._TPageCapacityFieldT">
+<short></short>
+</element>
+<element name="TGenListPageConfig.TPageSizeT">
+<short></short>
+</element>
+<element name="TGenListPageConfig.TPageCapacityFieldT">
+<short></short>
 </element>
 
-<element name="TLazRoundBufferListObjGen.ItemPointer">
-<short/>
-<descr/>
-<seealso/>
+<element name="__Internal_LazListClassesPgConfConstCapFld">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<element name="TLazRoundBufferListObjGen.ItemPointer.Index">
-<short/>
+<element name="__Internal_LazListClassesPgConfConstCapFld.TCapacityAccessor">
+<short></short>
+</element>
+<element name="__Internal_LazListClassesPgConfConstCapFld.TCapacityAccessor.TMemHeaderT">
+<short></short>
+</element>
+<element name="__Internal_LazListClassesPgConfConstCapFld.TCapacityAccessor.TData">
+<short></short>
+</element>
+<element name="__Internal_LazListClassesPgConfConstCapFld.TCapacityAccessor.ReadCapacity">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="__Internal_LazListClassesPgConfConstCapFld.TCapacityAccessor.ReadCapacity.Result">
+<short></short>
+</element>
+<element name="__Internal_LazListClassesPgConfConstCapFld.TCapacityAccessor.ReadCapacity.AMem">
+<short></short>
+</element>
+<element name="__Internal_LazListClassesPgConfConstCapFld.TCapacityAccessor.ReadCapacitySafe">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="__Internal_LazListClassesPgConfConstCapFld.TCapacityAccessor.ReadCapacitySafe.Result">
+<short></short>
+</element>
+<element name="__Internal_LazListClassesPgConfConstCapFld.TCapacityAccessor.ReadCapacitySafe.AMem">
+<short></short>
+</element>
+<element name="__Internal_LazListClassesPgConfConstCapFld.TCapacityAccessor.WriteCapacity">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="__Internal_LazListClassesPgConfConstCapFld.TCapacityAccessor.WriteCapacity.AMem">
+<short></short>
+</element>
+<element name="__Internal_LazListClassesPgConfConstCapFld.TCapacityAccessor.WriteCapacity.AValue">
+<short></short>
 </element>
 
-<element name="TLazRoundBufferListObjGen.Get">
-<short/>
-<descr/>
-<seealso/>
+<element name="TGenListPageConfigConst">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<element name="TLazRoundBufferListObjGen.Get.Result">
-<short/>
+<element name="TGenListPageConfigConst._TPageSizeT">
+<short></short>
 </element>
-<element name="TLazRoundBufferListObjGen.Get.Index">
-<short/>
+<element name="TGenListPageConfigConst.TPageSizeT">
+<short></short>
 </element>
-
-<element name="TLazRoundBufferListObjGen.Put">
-<short/>
-<descr/>
-<seealso/>
+<element name="TGenListPageConfigConst.TPageCapacityFieldT">
+<short></short>
 </element>
-<element name="TLazRoundBufferListObjGen.Put.Index">
-<short/>
+<element name="TGenListPageConfigConst.TPageCapacityFieldT.TCapacityOrdT">
+<short></short>
 </element>
-
-<element name="TLazRoundBufferListObjGen.IndexOf">
-<short/>
-<descr/>
-<seealso/>
+<element name="TGenListPageConfigConst.TPageCapacityFieldT.TPageSizeT">
+<short></short>
 </element>
-<element name="TLazRoundBufferListObjGen.IndexOf.Result">
-<short/>
+<element name="TGenListPageConfigConst.TPageCapacityFieldT.TCAWrap">
+<short></short>
 </element>
-<element name="TLazRoundBufferListObjGen.IndexOf.AnItem">
-<short/>
-</element>
-
-<element name="TLazRoundBufferListObjGen.Items">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazRoundBufferListObjGen.Items.Index">
-<short/>
-</element>
+<!--
+TLazFixedRoundBufferListMemBase.
+For use as page in PageList.
+-->
 
 <element name="TLazFixedRoundBufferListMemBase">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<!-- element name="TLazFixedRoundBufferListMemBase.TPItemT" -->
-<!-- element name="TLazFixedRoundBufferListMemBase.TSizeT" -->
-
-<element name="TLazFixedRoundBufferListMemBase.GetItemPointerMasked">
-<short/>
-<descr/>
-<seealso/>
+<element name="TLazFixedRoundBufferListMemBase.TPItemT">
+<short></short>
 </element>
-<element name="TLazFixedRoundBufferListMemBase.GetItemPointerMasked.Result">
-<short/>
+<element name="TLazFixedRoundBufferListMemBase._TSizeT">
+<short></short>
 </element>
-<element name="TLazFixedRoundBufferListMemBase.GetItemPointerMasked.AnIndex">
-<short/>
-</element>
-<element name="TLazFixedRoundBufferListMemBase.GetItemPointerMasked.AMask">
-<short>Bitmask for Capacity.</short>
+<element name="TLazFixedRoundBufferListMemBase._TCapacityFieldT">
+<short></short>
 </element>
 
-<element name="TLazFixedRoundBufferListMemBase.GetItemByteOffsetMasked">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazFixedRoundBufferListMemBase.GetItemByteOffsetMasked.Result">
-<short/>
-</element>
-<element name="TLazFixedRoundBufferListMemBase.GetItemByteOffsetMasked.AnIndex">
-<short/>
-</element>
-<element name="TLazFixedRoundBufferListMemBase.GetItemByteOffsetMasked.AMask">
-<short>Bitmask for Capacity.</short>
-</element>
+<!-- private -->
+<element name="TLazFixedRoundBufferListMemBase.PLazFixedRoundBufferListMemBase"/>
+<element name="TLazFixedRoundBufferListMemBase.GetItemPointerMasked"/>
+<element name="TLazFixedRoundBufferListMemBase.GetItemPointerMasked.Result"/>
+<element name="TLazFixedRoundBufferListMemBase.GetItemPointerMasked.AnIndex"/>
+<element name="TLazFixedRoundBufferListMemBase.GetItemPointerMasked.AMask"/>
+<element name="TLazFixedRoundBufferListMemBase.GetItemByteOffsetMasked"/>
+<element name="TLazFixedRoundBufferListMemBase.GetItemByteOffsetMasked.Result"/>
+<element name="TLazFixedRoundBufferListMemBase.GetItemByteOffsetMasked.AnIndex"/>
+<element name="TLazFixedRoundBufferListMemBase.GetItemByteOffsetMasked.AMask"/>
+<element name="TLazFixedRoundBufferListMemBase.GetFirstItemByteOffset"/>
+<element name="TLazFixedRoundBufferListMemBase.GetFirstItemByteOffset.Result"/>
 
-<element name="TLazFixedRoundBufferListMemBase.GetFirstItemByteOffset">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazFixedRoundBufferListMemBase.GetFirstItemByteOffset.Result">
-<short/>
-</element>
-
-<element name="TLazFixedRoundBufferListMemBase.GrowCapacity">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazFixedRoundBufferListMemBase.GrowCapacity.Result">
-<short/>
-</element>
-<element name="TLazFixedRoundBufferListMemBase.GrowCapacity.ARequired">
-<short/>
-</element>
-
-<element name="TLazFixedRoundBufferListMemBase.ShrinkCapacity">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazFixedRoundBufferListMemBase.ShrinkCapacity.Result">
-<short/>
-</element>
-<element name="TLazFixedRoundBufferListMemBase.ShrinkCapacity.ARequired">
-<short/>
-</element>
-
+<!-- protected -->
 <element name="TLazFixedRoundBufferListMemBase.Mem">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 
+<!-- Special Methods for use with PagedList -->
 <element name="TLazFixedRoundBufferListMemBase.AdjustFirstItemOffset">
-<short/>
-<descr>
-For bubbling. Shifts the buffer.
-</descr>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.AdjustFirstItemOffset.ACount">
-<short/>
+<short></short>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.AdjustFirstItemOffset.AMask">
-<short/>
+<short></short>
 </element>
 
 <element name="TLazFixedRoundBufferListMemBase.InsertRowsAtStart">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.InsertRowsAtStart.ACount">
-<short/>
+<short></short>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.InsertRowsAtStart.AMask">
-<short/>
+<short></short>
 </element>
 
 <element name="TLazFixedRoundBufferListMemBase.InsertRowsAtEnd">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.InsertRowsAtEnd.ACount">
-<short/>
+<short></short>
 </element>
 
 <element name="TLazFixedRoundBufferListMemBase.InsertRowsAtBoundary">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.InsertRowsAtBoundary.AnAtStart">
-<short/>
+<short></short>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.InsertRowsAtBoundary.ACount">
-<short/>
+<short></short>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.InsertRowsAtBoundary.AMask">
-<short/>
+<short></short>
 </element>
 
 <element name="TLazFixedRoundBufferListMemBase.DeleteRowsAtStart">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.DeleteRowsAtStart.ACount">
-<short/>
+<short></short>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.DeleteRowsAtStart.AMask">
-<short/>
+<short></short>
 </element>
 
 <element name="TLazFixedRoundBufferListMemBase.DeleteRowsAtEnd">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.DeleteRowsAtEnd.ACount">
-<short/>
+<short></short>
 </element>
 
 <element name="TLazFixedRoundBufferListMemBase.DeleteRowsAtBoundary">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.DeleteRowsAtBoundary.AnAtStart">
-<short/>
+<short></short>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.DeleteRowsAtBoundary.ACount">
-<short/>
+<short></short>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.DeleteRowsAtBoundary.AMask">
-<short/>
+<short></short>
 </element>
 
 <element name="TLazFixedRoundBufferListMemBase.MoveRowsToOther">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.MoveRowsToOther.AFromOffset">
-<short/>
+<short></short>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.MoveRowsToOther.AToOffset">
-<short/>
+<short></short>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.MoveRowsToOther.ACount">
-<short/>
+<short></short>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.MoveRowsToOther.ACap">
-<short/>
+<short></short>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.MoveRowsToOther.AnOther">
-<short/>
+<short></short>
 </element>
 
 <element name="TLazFixedRoundBufferListMemBase.MoveBytesToOther">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.MoveBytesToOther.AFromByteOffset">
-<short/>
+<short></short>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.MoveBytesToOther.AToByteOffset">
-<short/>
+<short></short>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.MoveBytesToOther.AByteCount">
-<short/>
+<short></short>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.MoveBytesToOther.AByteCap">
-<short/>
+<short></short>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.MoveBytesToOther.AnOther">
-<short/>
+<short></short>
 </element>
 
 <element name="TLazFixedRoundBufferListMemBase.ItemPointerMasked">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<element name="TLazFixedRoundBufferListMemBase.ItemPointerMasked.AIndex">
-<short/>
+<element name="TLazFixedRoundBufferListMemBase.ItemPointerMasked.AnIndex">
+<short></short>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.ItemPointerMasked.AMask">
-<short/>
+<short></short>
 </element>
 
 <element name="TLazFixedRoundBufferListMemBase.Create">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.Create.AItemSize">
-<short/>
+<short></short>
 </element>
 <element name="TLazFixedRoundBufferListMemBase.Create.ACapacity">
-<short/>
+<short></short>
 </element>
 
-<element name="TLazFixedRoundBufferListMemBase.InsertRows">
-<short/>
-<descr/>
-<seealso/>
+<element name="TGenLazPagedList">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<element name="TLazFixedRoundBufferListMemBase.InsertRows.Result">
-<short/>
+<element name="TGenLazPagedList.TPItemT">
+<short></short>
 </element>
-<element name="TLazFixedRoundBufferListMemBase.InsertRows.AIndex">
-<short/>
+<element name="TGenLazPagedList._TConfT">
+<short></short>
 </element>
-<element name="TLazFixedRoundBufferListMemBase.InsertRows.ACount">
-<short/>
+<element name="TGenLazPagedList._TPageConfT">
+<short></short>
 </element>
 
-<element name="TLazFixedRoundBufferListMemBase.DeleteRows">
-<short/>
-<descr/>
-<seealso/>
+<!-- private -->
+<element name="TGenLazPagedList.TOuter_TInitMemT"/>
+<element name="TGenLazPagedList.TOuter_TSizeT"/>
+<element name="TGenLazPagedList.TOuter_TCapacityT"/>
+<element name="TGenLazPagedList.TOuter_TPageCapacityFieldT"/>
+<element name="TGenLazPagedList.TPageType"/>
+<element name="TGenLazPagedList.PPageType"/>
+<element name="TGenLazPagedList.TPageCapacityController"/>
+<element name="TGenLazPagedList.TPageListType"/>
+<element name="TGenLazPagedList._InsertRows"/>
+<element name="TGenLazPagedList._InsertRows.AnIndex"/>
+<element name="TGenLazPagedList._InsertRows.ACount"/>
+<element name="TGenLazPagedList._InsertRows.APageSizeMask"/>
+<element name="TGenLazPagedList.FPages"/>
+<element name="TGenLazPagedList.FFirstPageEmpty"/>
+<element name="TGenLazPagedList.FCount"/>
+<element name="TGenLazPagedList.GetItemSize"/>
+<element name="TGenLazPagedList.GetItemSize.Result"/>
+<element name="TGenLazPagedList.GetPagePointer"/>
+<element name="TGenLazPagedList.GetPagePointer.Result"/>
+<element name="TGenLazPagedList.GetPagePointer.PageIndex"/>
+<element name="TGenLazPagedList.GetItemPointer"/>
+<element name="TGenLazPagedList.GetItemPointer.Result"/>
+<element name="TGenLazPagedList.GetItemPointer.Index"/>
+<element name="TGenLazPagedList.SetCapacity"/>
+<element name="TGenLazPagedList.SetCapacity.AValue"/>
+<element name="TGenLazPagedList.GetCapacity"/>
+<element name="TGenLazPagedList.GetCapacity.Result"/>
+<element name="TGenLazPagedList.GetPageCount"/>
+<element name="TGenLazPagedList.GetPageCount.Result"/>
+<element name="TGenLazPagedList.JoinPageWithNext"/>
+<element name="TGenLazPagedList.JoinPageWithNext.APageIdx"/>
+<element name="TGenLazPagedList.JoinPageWithNext.AJoinEntryIdx"/>
+<element name="TGenLazPagedList.JoinPageWithNext.AnExtraDelPages"/>
+<element name="TGenLazPagedList.SplitPageToFront"/>
+<element name="TGenLazPagedList.SplitPageToFront.ASourcePageIdx"/>
+<element name="TGenLazPagedList.SplitPageToFront.ASplitAtIdx"/>
+<element name="TGenLazPagedList.SplitPageToFront.AnExtraPages"/>
+<element name="TGenLazPagedList.SplitPageToFront.AExtraCapacityNeeded"/>
+<element name="TGenLazPagedList.SplitPageToBack"/>
+<element name="TGenLazPagedList.SplitPageToBack.ASourcePageIdx"/>
+<element name="TGenLazPagedList.SplitPageToBack.ASplitAtIdx"/>
+<element name="TGenLazPagedList.SplitPageToBack.AnExtraPages"/>
+<element name="TGenLazPagedList.SplitPageToBack.AExtraCapacityNeeded"/>
+<element name="TGenLazPagedList.SplitPage"/>
+<element name="TGenLazPagedList.SplitPage.ASourcePageIdx"/>
+<element name="TGenLazPagedList.SplitPage.ASplitAtIdx"/>
+<element name="TGenLazPagedList.SplitPage.AnExtraPages"/>
+<element name="TGenLazPagedList.SplitPage.AExtraCapacityNeeded"/>
+<element name="TGenLazPagedList._DoInitMem"/>
+<element name="TGenLazPagedList._DoInitMem.AnIndex"/>
+<element name="TGenLazPagedList._DoInitMem.ACount"/>
+<element name="TGenLazPagedList._DoInitMem._ItemSize"/>
+<element name="TGenLazPagedList._DoInitMem._PageSize"/>
+<element name="TGenLazPagedList.DoInitMem"/>
+<element name="TGenLazPagedList.DoInitMem.AnIndex"/>
+<element name="TGenLazPagedList.DoInitMem.ACount"/>
+<element name="TGenLazPagedList.DoFinalizeMem"/>
+<element name="TGenLazPagedList.DoFinalizeMem.AnIndex"/>
+<element name="TGenLazPagedList.DoFinalizeMem.ACount"/>
+<element name="TGenLazPagedList.InternalBubbleEntriesDown"/>
+<element name="TGenLazPagedList.InternalBubbleEntriesDown.ASourceStartIdx"/>
+<element name="TGenLazPagedList.InternalBubbleEntriesDown.ATargetEndIdx"/>
+<element name="TGenLazPagedList.InternalBubbleEntriesDown.AnEntryCount"/>
+<element name="TGenLazPagedList.InternalBubbleEntriesUp"/>
+<element name="TGenLazPagedList.InternalBubbleEntriesUp.ASourceStartIdx"/>
+<element name="TGenLazPagedList.InternalBubbleEntriesUp.ATargetEndIdx"/>
+<element name="TGenLazPagedList.InternalBubbleEntriesUp.AnEntryCount"/>
+<element name="TGenLazPagedList.MovePagesUp"/>
+<element name="TGenLazPagedList.MovePagesUp.ASourceStartIndex"/>
+<element name="TGenLazPagedList.MovePagesUp.ATargetStartIndex"/>
+<element name="TGenLazPagedList.MovePagesUp.ATargetEndIndex"/>
+<element name="TGenLazPagedList.MovePagesDown"/>
+<element name="TGenLazPagedList.MovePagesDown.ASourceStartIndex"/>
+<element name="TGenLazPagedList.MovePagesDown.ATargetStartIndex"/>
+<element name="TGenLazPagedList.MovePagesDown.ATargetEndIndex"/>
+<element name="TGenLazPagedList.InternalMoveRowsDown"/>
+<element name="TGenLazPagedList.InternalMoveRowsDown.AFromIndex"/>
+<element name="TGenLazPagedList.InternalMoveRowsDown.AToIndex"/>
+<element name="TGenLazPagedList.InternalMoveRowsDown.ACount"/>
+<element name="TGenLazPagedList.InternalMoveRowsUp"/>
+<element name="TGenLazPagedList.InternalMoveRowsUp.AFromIndex"/>
+<element name="TGenLazPagedList.InternalMoveRowsUp.AToIndex"/>
+<element name="TGenLazPagedList.InternalMoveRowsUp.ACount"/>
+<element name="TGenLazPagedList.InsertFilledPages"/>
+<element name="TGenLazPagedList.InsertFilledPages.AnIndex"/>
+<element name="TGenLazPagedList.InsertFilledPages.ACount"/>
+<element name="TGenLazPagedList.InsertFilledPages.AExtraCapacityNeeded"/>
+<element name="TGenLazPagedList.DeletePages"/>
+<element name="TGenLazPagedList.DeletePages.AnIndex"/>
+<element name="TGenLazPagedList.DeletePages.ACount"/>
+<element name="TGenLazPagedList.MoveRowsQuick"/>
+<element name="TGenLazPagedList.MoveRowsQuick.AFromIndex"/>
+<element name="TGenLazPagedList.MoveRowsQuick.AToIndex"/>
+<element name="TGenLazPagedList.MoveRowsQuick.ACount"/>
+
+
+<!-- protected -->
+<element name="TGenLazPagedList.FItemSize">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<element name="TLazFixedRoundBufferListMemBase.DeleteRows.AIndex">
-<short/>
+<element name="TGenLazPagedList.FPageSize">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<element name="TLazFixedRoundBufferListMemBase.DeleteRows.ACount">
-<short/>
+<element name="TGenLazPagedList.FInitMem">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazPagedList.FIndexChecker">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazPagedList.FCapacity">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazPagedList.PagePointer">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazPagedList.PagePointer.PageIndex">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<!-- public -->
+<element name="TGenLazPagedList.Create">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazPagedList.Create.APageSizeExp">
+<short></short>
+</element>
+
+<element name="TGenLazPagedList.Destroy">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TGenLazPagedList.InsertRows">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazPagedList.InsertRows.AnIndex">
+<short></short>
+</element>
+<element name="TGenLazPagedList.InsertRows.ACount">
+<short></short>
+</element>
+
+<element name="TGenLazPagedList.DeleteRows">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazPagedList.DeleteRows.AnIndex">
+<short></short>
+</element>
+<element name="TGenLazPagedList.DeleteRows.ACount">
+<short></short>
+</element>
+
+<element name="TGenLazPagedList.MoveRows">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazPagedList.MoveRows.AFromIndex">
+<short></short>
+</element>
+<element name="TGenLazPagedList.MoveRows.AToIndex">
+<short></short>
+</element>
+<element name="TGenLazPagedList.MoveRows.ACount">
+<short></short>
+</element>
+
+<element name="TGenLazPagedList.DebugDump">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TGenLazPagedList.IndexOf">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazPagedList.IndexOf.Result">
+<short></short>
+</element>
+<element name="TGenLazPagedList.IndexOf.AnItem">
+<short></short>
+</element>
+
+<element name="TGenLazPagedList.Capacity">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TGenLazPagedList.Count">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TGenLazPagedList.PageCount">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TGenLazPagedList.ItemPointer">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazPagedList.ItemPointer.Index">
+<short></short>
+</element>
+
+<element name="TGenLazPagedList.GrowProc">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TGenLazPagedList.ShrinkProc">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TGenLazPagedList.ItemSize">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TGenLazPagedListVarSize">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazPagedListVarSize.TPItemT">
+<short></short>
+</element>
+<element name="TGenLazPagedListVarSize._TConfT">
+<short></short>
+</element>
+<element name="TGenLazPagedListVarSize._TPageConfT">
+<short></short>
+</element>
+
+<element name="TGenLazPagedListVarSize.Create">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TGenLazPagedListVarSize.Create.AnItemSize">
+<short></short>
+</element>
+<element name="TGenLazPagedListVarSize.Create.APageSizeExp">
+<short></short>
 </element>
 
 <element name="TLazPagedListObjBase">
-<short/>
-<descr/>
-<seealso/>
+<short>Deprecated.</short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<!-- element name="TLazPagedListObjBase.TPItemT" -->
-<!-- element name="TLazPagedListObjBase.TSizeT" -->
-
-<element name="TLazPagedListObjBase.TPageType">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.PPageType">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.TPageSize">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.TPageList">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TLazPagedListObjBase.FGrowProc"/>
-<element name="TLazPagedListObjBase.FShrinkProc"/>
-<element name="TLazPagedListObjBase.FExtraCapacityNeeded"/>
-<element name="TLazPagedListObjBase.FPages"/>
-<element name="TLazPagedListObjBase.FItemSize"/>
-<element name="TLazPagedListObjBase.FPageSizeMask"/>
-<element name="TLazPagedListObjBase.FPageSizeExp"/>
-<element name="TLazPagedListObjBase.FFirstPageEmpty"/>
-<element name="TLazPagedListObjBase.FCount"/>
-
-<element name="TLazPagedListObjBase.GetPagePointer">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.GetPagePointer.Result">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.GetPagePointer.PageIndex">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.GetPageSubIdx">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.GetPageSubIdx.Result">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.GetPageSubIdx.Index">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.GetItemPageIdx">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.GetItemPageIdx.Result">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.GetItemPageIdx.Index">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.GetItemPointer">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.GetItemPointer.Result">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.GetItemPointer.Index">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.SetCapacity">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.SetCapacity.AValue">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.GetCapacity">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.GetCapacity.Result">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.GetPageCount">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.GetPageCount.Result">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.JoinPageWithNext">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.JoinPageWithNext.APageIdx">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.JoinPageWithNext.AJoinEntryIdx">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.JoinPageWithNext.AnExtraDelPages">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.SplitPageToFront">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.SplitPageToFront.ASourcePageIdx">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.SplitPageToFront.ASplitAtIdx">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.SplitPageToFront.AnExtraPages">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.SplitPageToFront.AExtraCapacityNeeded">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.SplitPageToBack">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.SplitPageToBack.ASourcePageIdx">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.SplitPageToBack.ASplitAtIdx">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.SplitPageToBack.AnExtraPages">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.SplitPageToBack.AExtraCapacityNeeded">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.SplitPage">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.SplitPage.ASourcePageIdx">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.SplitPage.ASplitAtIdx">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.SplitPage.AnExtraPages">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.SplitPage.AExtraCapacityNeeded">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.BubbleEntriesDown">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.BubbleEntriesDown.ASourceStartIdx">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.BubbleEntriesDown.ATargetEndIdx">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.BubbleEntriesDown.AnEntryCount">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.BubbleEntriesUp">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.BubbleEntriesUp.ASourceStartIdx">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.BubbleEntriesUp.ATargetEndIdx">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.BubbleEntriesUp.AnEntryCount">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.InternalBubbleEntriesDown">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.InternalBubbleEntriesDown.ASourceStartIdx">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.InternalBubbleEntriesDown.ATargetEndIdx">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.InternalBubbleEntriesDown.AnEntryCount">
-<short/>
-</element>
-
-<element name="'TLazPagedListObjBase.InternalBubbleEntriesUp'">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.InternalBubbleEntriesUp.ASourceStartIdx">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.InternalBubbleEntriesUp.ATargetEndIdx">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.InternalBubbleEntriesUp.AnEntryCount">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.SwapPagesUp">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.SwapPagesUp.ASourceStartIdx">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.SwapPagesUp.ATargetStartIndex">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.SwapPagesUp.ATargetEndIdx">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.SwapPagesDown">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.SwapPagesDown.ASourceStartIdx">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.SwapPagesDown.ATargetStartIndex">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.SwapPagesDown.ATargetEndIndex">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.InternalMoveRowsDown">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.InternalMoveRowsDown.AFromIndex">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.InternalMoveRowsDown.AToIndex">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.InternalMoveRowsDown.ACount">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.InternalMoveRowsUp">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.InternalMoveRowsUp.AFromIndex">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.InternalMoveRowsUp.AToIndex">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.InternalMoveRowsUp.ACount">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.InsertFilledPages">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.InsertFilledPages.AIndex">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.InsertFilledPages.ACount">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.InsertFilledPages.AExtraCapacityNeeded">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.DeletePages">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.DeletePages.AIndex">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.DeletePages.ACount">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.GrowCapacity">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.GrowCapacity.Result">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.GrowCapacity.ARequired">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.ShrinkCapacity">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.ShrinkCapacity.Result">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.ShrinkCapacity.ARequired">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.PagePointer">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.PagePointer.PageIndex">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.Create">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.Create.APageSizeExp">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.Destroy">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TLazPagedListObjBase.InsertRows">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.InsertRows.AIndex">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.InsertRows.ACount">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.DeleteRows">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.DeleteRows.AIndex">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.DeleteRows.ACount">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.MoveRows">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.MoveRows.AFromIndex">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.MoveRows.AToIndex">
-<short/>
-</element>
-<element name="TLazPagedListObjBase.MoveRows.ACount">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.DebugDump">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TLazPagedListObjBase.Capacity">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TLazPagedListObjBase.Count">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TLazPagedListObjBase.PageCount">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TLazPagedListObjBase.ItemPointer">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazPagedListObjBase.ItemPointer.Index">
-<short/>
-</element>
-
-<element name="TLazPagedListObjBase.GrowProc">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TLazPagedListObjBase.ShrinkProc">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TLazPagedListObjParent">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
 
 <element name="TLazPagedListObj">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 
-<element name="TLazPagedListObj.Create">
-<short/>
-<descr/>
-<seealso/>
+<element name="TGenLazPagedListFixedSize">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<element name="TLazPagedListObj.Create.APageSizeExp">
-<short/>
+<element name="TGenLazPagedListFixedSize.T">
+<short></short>
 </element>
-<element name="TLazPagedListObj.Create.AnItemSize">
-<short/>
+<element name="TGenLazPagedListFixedSize._TConfT">
+<short></short>
 </element>
-
-<element name="TLazShiftBufferList">
-<short/>
-<descr>
-<p>
-This list is designed for shift/unshift/pop/push operations.
-</p>
-<p>
-The first list element is not forced to the start of the allocated memory. 
-Instead it allows a gap (some of the over-allocated memory / List.Capacity) 
-in front of the first element.
-</p>
-<p>
-Therefore elements can be added/removed at either the begin or end of the 
-list, without any need to move the other elements in the list.
-</p>
-</descr>
-<seealso/>
+<element name="TGenLazPagedListFixedSize._TPageConfT">
+<short></short>
 </element>
 
-<element name="TLazShiftBufferList.FListMem"/>
 
-<element name="TLazShiftBufferList.GetCapacity">
-<short/>
-<descr/>
-<seealso/>
+<element name="TGenLazPagedListFixedType">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<element name="TLazShiftBufferList.GetCapacity.Result">
-<short/>
+<element name="TGenLazPagedListFixedType.T">
+<short></short>
 </element>
-
-<element name="TLazShiftBufferList.GetCount">
-<short/>
-<descr/>
-<seealso/>
+<element name="TGenLazPagedListFixedType._TConfT">
+<short></short>
 </element>
-<element name="TLazShiftBufferList.GetCount.Result">
-<short/>
+<element name="TGenLazPagedListFixedType._TPageConfT">
+<short></short>
 </element>
 
-<element name="TLazShiftBufferList.GetItemPointer">
-<short/>
-<descr/>
-<seealso/>
+<!-- private -->
+<element name="TGenLazPagedListFixedType.PT"/>
+<element name="TGenLazPagedListFixedType.Get"/>
+<element name="TGenLazPagedListFixedType.Get.Result"/>
+<element name="TGenLazPagedListFixedType.Get.Index"/>
+<element name="TGenLazPagedListFixedType.Put"/>
+<element name="TGenLazPagedListFixedType.Put.Index"/>
+<element name="TGenLazPagedListFixedType.Put.AValue"/>
+
+<!-- public -->
+<element name="TGenLazPagedListFixedType.IndexOf">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<element name="TLazShiftBufferList.GetItemPointer.Result">
-<short/>
+<element name="TGenLazPagedListFixedType.IndexOf.Result">
+<short></short>
 </element>
-<element name="TLazShiftBufferList.GetItemPointer.Index">
-<short/>
+<element name="TGenLazPagedListFixedType.IndexOf.AnItem">
+<short></short>
 </element>
 
-<element name="TLazShiftBufferList.SetCapacity">
-<short/>
-<descr/>
-<seealso/>
+<element name="TGenLazPagedListFixedType.Items">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<element name="TLazShiftBufferList.SetCapacity.AValue">
-<short/>
-</element>
-
-<element name="TLazShiftBufferList.SetCount">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferList.SetCount.AValue">
-<short/>
+<element name="TGenLazPagedListFixedType.Items.Index">
+<short></short>
 </element>
 
-<element name="TLazShiftBufferList.Create">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferList.Create.AnItemSize">
-<short/>
+<element name="TLazShiftList">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 
-<element name="TLazShiftBufferList.Destroy">
-<short/>
-<descr/>
-<seealso/>
+<!-- private -->
+<element name="TLazShiftList.FListMem"/>
+<element name="TLazShiftList.GetCapacity"/>
+<element name="TLazShiftList.GetCapacity.Result"/>
+<element name="TLazShiftList.GetCount"/>
+<element name="TLazShiftList.GetCount.Result"/>
+<element name="TLazShiftList.GetItemPointer"/>
+<element name="TLazShiftList.GetItemPointer.Result"/>
+<element name="TLazShiftList.GetItemPointer.Index"/>
+<element name="TLazShiftList.SetCapacity"/>
+<element name="TLazShiftList.SetCapacity.AValue"/>
+<element name="TLazShiftList.SetCount"/>
+<element name="TLazShiftList.SetCount.AValue"/>
+
+<!-- public -->
+<element name="TLazShiftList.Create">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazShiftList.Create.AnItemSize">
+<short></short>
 </element>
 
-<element name="TLazShiftBufferList.Add">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferList.Add.Result">
-<short/>
-</element>
-<element name="TLazShiftBufferList.Add.ItemPointer">
-<short/>
+<element name="TLazShiftList.Destroy">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 
-<element name="TLazShiftBufferList.Clear">
-<short/>
-<descr/>
-<seealso/>
+<element name="TLazShiftList.Add">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazShiftList.Add.Result">
+<short></short>
+</element>
+<element name="TLazShiftList.Add.ItemPointer">
+<short></short>
 </element>
 
-<element name="TLazShiftBufferList.Delete">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferList.Delete.Index">
-<short/>
+<element name="TLazShiftList.Clear">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 
-<element name="TLazShiftBufferList.Insert">
-<short/>
-<descr/>
-<seealso/>
+<element name="TLazShiftList.Delete">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<element name="TLazShiftBufferList.Insert.Index">
-<short/>
-</element>
-<element name="TLazShiftBufferList.Insert.ItemPointer">
-<short/>
+<element name="TLazShiftList.Delete.Index">
+<short></short>
 </element>
 
-<element name="TLazShiftBufferList.Capacity">
-<short/>
-<descr/>
-<seealso/>
+<element name="TLazShiftList.Insert">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazShiftList.Insert.Index">
+<short></short>
+</element>
+<element name="TLazShiftList.Insert.ItemPointer">
+<short></short>
 </element>
 
-<element name="TLazShiftBufferList.Count">
-<short/>
-<descr/>
-<seealso/>
+<element name="TLazShiftList.Capacity">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 
-<element name="TLazShiftBufferList.ItemPointer">
-<short/>
-<descr/>
-<seealso/>
+<element name="TLazShiftList.Count">
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<element name="TLazShiftBufferList.ItemPointer.Index">
-<short/>
+
+<element name="TLazShiftList.ItemPointer">
+<short></short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TLazShiftList.ItemPointer.Index">
+<short></short>
 </element>
 
 <element name="TLazShiftBufferListGen">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
-<!-- element name="TLazShiftBufferListGen.T" -->
-
-<element name="TLazShiftBufferListGen.TListMem">
-<short/>
-<descr/>
-<seealso/>
+<element name="TLazShiftBufferListGen.T">
+<short></short>
 </element>
 
-<element name="TLazShiftBufferListGen.PT">
-<short/>
-<descr/>
-<seealso/>
-</element>
+<!-- private -->
+<element name="TLazShiftBufferListGen.TListMem"/>
+<element name="TLazShiftBufferListGen.PT"/>
+<element name="TLazShiftBufferListGen.FListMem"/>
+<element name="TLazShiftBufferListGen.Get"/>
+<element name="TLazShiftBufferListGen.Get.Result"/>
+<element name="TLazShiftBufferListGen.Get.Index"/>
+<element name="TLazShiftBufferListGen.GetCapacity"/>
+<element name="TLazShiftBufferListGen.GetCapacity.Result"/>
+<element name="TLazShiftBufferListGen.GetCount"/>
+<element name="TLazShiftBufferListGen.GetCount.Result"/>
+<element name="TLazShiftBufferListGen.GetItemPointer"/>
+<element name="TLazShiftBufferListGen.GetItemPointer.Result"/>
+<element name="TLazShiftBufferListGen.GetItemPointer.Index"/>
+<element name="TLazShiftBufferListGen.Put"/>
+<element name="TLazShiftBufferListGen.Put.Index"/>
+<element name="TLazShiftBufferListGen.Put.AValue"/>
+<element name="TLazShiftBufferListGen.SetCapacity"/>
+<element name="TLazShiftBufferListGen.SetCapacity.AValue"/>
+<element name="TLazShiftBufferListGen.SetCount"/>
+<element name="TLazShiftBufferListGen.SetCount.AValue"/>
 
-<element name="TLazShiftBufferListGen.FListMem">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-
-<element name="TLazShiftBufferListGen.Get">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListGen.Get.Result">
-<short/>
-</element>
-<element name="TLazShiftBufferListGen.Get.Index">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListGen.GetCapacity">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListGen.GetCapacity.Result">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListGen.GetCount">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListGen.GetCount.Result">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListGen.GetItemPointer">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListGen.GetItemPointer.Result">
-<short/>
-</element>
-<element name="TLazShiftBufferListGen.GetItemPointer.Index">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListGen.Put">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListGen.Put.Index">
-<short/>
-</element>
-<element name="TLazShiftBufferListGen.Put.AValue">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListGen.SetCapacity">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLazShiftBufferListGen.SetCapacity.AValue">
-<short/>
-</element>
-
-<element name="TLazShiftBufferListGen.SetCount">
-<short/>
-</element>
-<element name="TLazShiftBufferListGen.SetCount.AValue">
-<short/>
-</element>
-
+<!-- public -->
 <element name="TLazShiftBufferListGen.Create">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 
 <element name="TLazShiftBufferListGen.Destroy">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 
 <element name="TLazShiftBufferListGen.Add">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 <element name="TLazShiftBufferListGen.Add.Result">
-<short/>
+<short></short>
 </element>
 <element name="TLazShiftBufferListGen.Add.Item">
-<short/>
+<short></short>
 </element>
 
 <element name="TLazShiftBufferListGen.Clear">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 
 <element name="TLazShiftBufferListGen.Delete">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 <element name="TLazShiftBufferListGen.Delete.Index">
-<short/>
+<short></short>
 </element>
 
 <element name="TLazShiftBufferListGen.IndexOf">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 <element name="TLazShiftBufferListGen.IndexOf.Result">
-<short/>
+<short></short>
 </element>
 <element name="TLazShiftBufferListGen.IndexOf.Item">
-<short/>
+<short></short>
 </element>
 
 <element name="TLazShiftBufferListGen.Insert">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 <element name="TLazShiftBufferListGen.Insert.Index">
-<short/>
+<short></short>
 </element>
 <element name="TLazShiftBufferListGen.Insert.Item">
-<short/>
+<short></short>
 </element>
 
 <element name="TLazShiftBufferListGen.Remove">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 <element name="TLazShiftBufferListGen.Remove.Result">
-<short/>
+<short></short>
 </element>
 <element name="TLazShiftBufferListGen.Remove.Item">
-<short/>
+<short></short>
 </element>
 
 <element name="TLazShiftBufferListGen.Capacity">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 
 <element name="TLazShiftBufferListGen.Count">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 
 <element name="TLazShiftBufferListGen.ItemPointer">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 <element name="TLazShiftBufferListGen.ItemPointer.Index">
-<short/>
+<short></short>
 </element>
 
 <element name="TLazShiftBufferListGen.Items">
-<short/>
-<descr/>
-<seealso/>
+<short></short>
+<descr></descr>
+<seealso></seealso>
 </element>
 <element name="TLazShiftBufferListGen.Items.Index">
-<short/>
+<short></short>
 </element>
 
 </module>

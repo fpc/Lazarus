@@ -35,39 +35,35 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </descr>
 
 <!-- external references -->
-<element name="classes"/>
-<element name="sysutils"/>
+<element name="Classes"/>
+<element name="SysUtils"/>
 <element name="contnrs"/>
-<element name="math"/>
+<element name="Math"/>
 <element name="types"/>
-<element name="lazutf8"/>
-<element name="lcltype"/>
-<element name="lclproc"/>
-<element name="lclintf"/>
-<element name="lclmessageglue"/>
-<element name="lmessages"/>
-<element name="messages"/>
-<element name="forms"/>
-<element name="graphics"/>
-<element name="controls"/>
-<element name="stdctrls"/>
-<element name="extctrls"/>
-<element name="comctrls"/>
-<element name="buttons"/>
+<element name="LazUTF8"/>
+<element name="LCLType"/>
+<element name="LCLProc"/>
+<element name="LCLIntf"/>
+<element name="LCLMessageGlue"/>
+<element name="LMessages"/>
+<element name="Messages"/>
+<element name="Forms"/>
+<element name="Graphics"/>
+<element name="Controls"/>
+<element name="StdCtrls"/>
+<element name="ExtCtrls"/>
+<element name="ComCtrls"/>
+<element name="Buttons"/>
 <element name="customdrawndrawers"/>
 
-<!-- class Visibility: default -->
 <element name="TCDControl">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TCDControl.FDrawStyle">
 <short></short>
 <descr>
@@ -76,7 +72,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TCDControl.FDrawer">
 <short></short>
 <descr>
@@ -85,7 +80,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TCDControl.FState">
 <short></short>
 <descr>
@@ -94,7 +88,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TCDControl.FStateEx">
 <short></short>
 <descr>
@@ -103,216 +96,162 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDControl.CalculatePreferredSize">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDControl.CalculatePreferredSize.PreferredWidth">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDControl.CalculatePreferredSize.PreferredHeight">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDControl.CalculatePreferredSize.WithThemeSpace">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDControl.SetState">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDControl.SetState.AValue">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDControl.PrepareCurrentDrawer">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDControl.SetDrawStyle">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDControl.SetDrawStyle.AValue">
 <short></short>
 </element>
 
-<!-- function Visibility: protected -->
 <element name="TCDControl.GetClientRect">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDControl.GetClientRect.Result">
 <short></short>
 </element>
 
-<!-- function Visibility: protected -->
 <element name="TCDControl.GetControlId">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDControl.GetControlId.Result">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDControl.CreateControlStateEx">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDControl.PrepareControlState">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDControl.PrepareControlStateEx">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDControl.DoEnter">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDControl.DoExit">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDControl.MouseEnter">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDControl.MouseLeave">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDControl.MouseDown">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDControl.MouseDown.Button">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDControl.MouseDown.Shift">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDControl.MouseDown.X">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDControl.MouseDown.Y">
 <short></short>
 </element>
 
-<!-- property Visibility: protected -->
 <element name="TCDControl.DrawStyle">
 <short></short>
 <descr>
@@ -321,108 +260,86 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- constructor Visibility: public -->
 <element name="TCDControl.Create">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDControl.Create.AOwner">
 <short></short>
 </element>
 
-<!-- destructor Visibility: public -->
 <element name="TCDControl.Destroy">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TCDControl.LCLWSCalculatePreferredSize">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDControl.LCLWSCalculatePreferredSize.PreferredWidth">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDControl.LCLWSCalculatePreferredSize.PreferredHeight">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDControl.LCLWSCalculatePreferredSize.WithThemeSpace">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDControl.LCLWSCalculatePreferredSize.AAutoSize">
 <short></short>
 </element>
 
-<!-- procedure Visibility: public -->
+<element name="TCDControl.LCLWSCalculatePreferredSize.AAllowUseOfMeasuresEx">
+<short></short>
+</element>
+
 <element name="TCDControl.EraseBackground">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDControl.EraseBackground.DC">
 <short></short>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TCDControl.Paint">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TCDControl.DrawToCanvas">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDControl.DrawToCanvas.ACanvas">
 <short></short>
 </element>
 
-<!-- "class of" type Visibility: default -->
 <element name="TCDControlClass">
 <short></short>
 <descr>
@@ -431,108 +348,42 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- class Visibility: default -->
 <element name="TCDScrollBar">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- class Visibility: default -->
 <element name="TCDScrollableControl">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
-<element name="TCDScrollableControl.FRightScrollBar">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDScrollableControl.FBottomScrollBar">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDScrollableControl.FSpacer">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDScrollableControl.FScrollBars">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDScrollableControl.SetScrollBars">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDScrollableControl.SetScrollBars.AValue">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
 <element name="TCDScrollableControl.Create">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDScrollableControl.Create.AOwner">
 <short></short>
 </element>
 
-<!-- destructor Visibility: public -->
 <element name="TCDScrollableControl.Destroy">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TCDScrollableControl.ScrollBars">
 <short></short>
 <descr>
@@ -541,18 +392,14 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- class Visibility: default -->
 <element name="TCDButtonControl">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TCDButtonControl.FHasOnOffStates">
 <short></short>
 <descr>
@@ -561,7 +408,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TCDButtonControl.FIsGrouped">
 <short></short>
 <descr>
@@ -570,7 +416,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TCDButtonControl.FGroupIndex">
 <short></short>
 <descr>
@@ -579,7 +424,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TCDButtonControl.FAllowGrayed">
 <short></short>
 <descr>
@@ -588,257 +432,194 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDButtonControl.KeyDown">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDButtonControl.KeyDown.Key">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDButtonControl.KeyDown.Shift">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDButtonControl.KeyUp">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDButtonControl.KeyUp.Key">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDButtonControl.KeyUp.Shift">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDButtonControl.MouseDown">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDButtonControl.MouseDown.Button">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDButtonControl.MouseDown.Shift">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDButtonControl.MouseDown.X">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDButtonControl.MouseDown.Y">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDButtonControl.MouseUp">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDButtonControl.MouseUp.Button">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDButtonControl.MouseUp.Shift">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDButtonControl.MouseUp.X">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDButtonControl.MouseUp.Y">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDButtonControl.MouseEnter">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDButtonControl.MouseLeave">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDButtonControl.DoUncheckButton">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDButtonControl.DoCheckIfFirstButtonInGroup">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDButtonControl.DoButtonDown">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDButtonControl.DoButtonUp">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDButtonControl.RealSetText">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDButtonControl.RealSetText.Value">
 <short></short>
 </element>
 
-<!-- function Visibility: protected -->
 <element name="TCDButtonControl.GetChecked">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDButtonControl.GetChecked.Result">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDButtonControl.SetChecked">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDButtonControl.SetChecked.AValue">
 <short></short>
 </element>
 
-<!-- function Visibility: protected -->
 <element name="TCDButtonControl.GetCheckedState">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDButtonControl.GetCheckedState.Result">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDButtonControl.SetCheckedState">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDButtonControl.SetCheckedState.AValue">
 <short></short>
 </element>
 
-<!-- property Visibility: protected -->
 <element name="TCDButtonControl.AllowGrayed">
 <short></short>
 <descr>
@@ -847,7 +628,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: protected -->
 <element name="TCDButtonControl.Checked">
 <short></short>
 <descr>
@@ -856,7 +636,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: protected -->
 <element name="TCDButtonControl.State">
 <short></short>
 <descr>
@@ -865,43 +644,14 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- class Visibility: default -->
 <element name="TCDButton">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
-<element name="TCDButton.FGlyph">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDButton.SetGlyph">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDButton.SetGlyph.AValue">
-<short></short>
-</element>
-
-<!-- variable Visibility: protected -->
 <element name="TCDButton.FBState">
 <short></short>
 <descr>
@@ -910,72 +660,62 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- function Visibility: protected -->
+<element name="TCDButton.Click">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <element name="TCDButton.GetControlId">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDButton.GetControlId.Result">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDButton.CreateControlStateEx">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDButton.PrepareControlStateEx">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- constructor Visibility: public -->
 <element name="TCDButton.Create">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDButton.Create.AOwner">
 <short></short>
 </element>
 
-<!-- destructor Visibility: public -->
 <element name="TCDButton.Destroy">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.Action">
 <short></short>
 <descr>
@@ -984,7 +724,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.Align">
 <short></short>
 <descr>
@@ -993,7 +732,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.Anchors">
 <short></short>
 <descr>
@@ -1002,7 +740,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.AutoSize">
 <short></short>
 <descr>
@@ -1011,7 +748,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.Caption">
 <short></short>
 <descr>
@@ -1020,7 +756,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.Color">
 <short></short>
 <descr>
@@ -1029,7 +764,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.Constraints">
 <short></short>
 <descr>
@@ -1038,7 +772,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.DrawStyle">
 <short></short>
 <descr>
@@ -1047,7 +780,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.Enabled">
 <short></short>
 <descr>
@@ -1056,7 +788,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.Font">
 <short></short>
 <descr>
@@ -1065,7 +796,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.Glyph">
 <short></short>
 <descr>
@@ -1074,7 +804,22 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<element name="TCDButton.Kind">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDButton.ModalResult">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <element name="TCDButton.OnChangeBounds">
 <short></short>
 <descr>
@@ -1083,7 +828,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.OnClick">
 <short></short>
 <descr>
@@ -1092,7 +836,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.OnContextPopup">
 <short></short>
 <descr>
@@ -1101,7 +844,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.OnDragDrop">
 <short></short>
 <descr>
@@ -1110,7 +852,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.OnDragOver">
 <short></short>
 <descr>
@@ -1119,7 +860,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.OnEndDrag">
 <short></short>
 <descr>
@@ -1128,7 +868,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.OnEnter">
 <short></short>
 <descr>
@@ -1137,7 +876,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.OnExit">
 <short></short>
 <descr>
@@ -1146,7 +884,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.OnKeyDown">
 <short></short>
 <descr>
@@ -1155,7 +892,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.OnKeyPress">
 <short></short>
 <descr>
@@ -1164,7 +900,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.OnKeyUp">
 <short></short>
 <descr>
@@ -1173,7 +908,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.OnMouseDown">
 <short></short>
 <descr>
@@ -1182,7 +916,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.OnMouseEnter">
 <short></short>
 <descr>
@@ -1191,7 +924,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.OnMouseLeave">
 <short></short>
 <descr>
@@ -1200,7 +932,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.OnMouseMove">
 <short></short>
 <descr>
@@ -1209,7 +940,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.OnMouseUp">
 <short></short>
 <descr>
@@ -1218,7 +948,30 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<element name="TCDButton.OnMouseWheel">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDButton.OnMouseWheelDown">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDButton.OnMouseWheelUp">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <element name="TCDButton.OnResize">
 <short></short>
 <descr>
@@ -1227,7 +980,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.OnStartDrag">
 <short></short>
 <descr>
@@ -1236,7 +988,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.OnUTF8KeyPress">
 <short></short>
 <descr>
@@ -1245,7 +996,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.ParentFont">
 <short></short>
 <descr>
@@ -1254,7 +1004,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.ParentShowHint">
 <short></short>
 <descr>
@@ -1263,7 +1012,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.PopupMenu">
 <short></short>
 <descr>
@@ -1272,7 +1020,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.ShowHint">
 <short></short>
 <descr>
@@ -1281,7 +1028,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.TabOrder">
 <short></short>
 <descr>
@@ -1290,7 +1036,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.TabStop">
 <short></short>
 <descr>
@@ -1299,7 +1044,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDButton.Visible">
 <short></short>
 <descr>
@@ -1308,36 +1052,14 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- class Visibility: default -->
 <element name="TCDEdit">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
-<element name="TCDEdit.DragDropStarted">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDEdit.FCaretTimer">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
 <element name="TCDEdit.FEditState">
 <short></short>
 <descr>
@@ -1346,438 +1068,234 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- function Visibility: private -->
-<element name="TCDEdit.GetLeftTextMargin">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCDEdit.GetLeftTextMargin.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCDEdit.GetRightTextMargin">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCDEdit.GetRightTextMargin.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDEdit.HandleCaretTimer">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDEdit.HandleCaretTimer.Sender">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDEdit.DoDeleteSelection">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDEdit.DoClearSelection">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDEdit.DoManageVisibleTextStart">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCDEdit.GetText">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCDEdit.GetText.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDEdit.SetLeftTextMargin">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDEdit.SetLeftTextMargin.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDEdit.SetRightTextMargin">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDEdit.SetRightTextMargin.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDEdit.SetText">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDEdit.SetText.AValue">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCDEdit.MousePosToCaretPos">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCDEdit.MousePosToCaretPos.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDEdit.MousePosToCaretPos.X">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDEdit.MousePosToCaretPos.Y">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCDEdit.IsSomethingSelected">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCDEdit.IsSomethingSelected.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
 <element name="TCDEdit.GetControlId">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDEdit.GetControlId.Result">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDEdit.CreateControlStateEx">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
+<element name="TCDEdit.RealSetText">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDEdit.RealSetText.Value">
+<short></short>
+</element>
+
+<element name="TCDEdit.DoChange">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <element name="TCDEdit.DoEnter">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDEdit.DoExit">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDEdit.KeyDown">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDEdit.KeyDown.Key">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDEdit.KeyDown.Shift">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDEdit.KeyUp">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDEdit.KeyUp.Key">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDEdit.KeyUp.Shift">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDEdit.UTF8KeyPress">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDEdit.UTF8KeyPress.UTF8Key">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDEdit.MouseDown">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDEdit.MouseDown.Button">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDEdit.MouseDown.Shift">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDEdit.MouseDown.X">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDEdit.MouseDown.Y">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDEdit.MouseMove">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDEdit.MouseMove.Shift">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDEdit.MouseMove.X">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDEdit.MouseMove.Y">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDEdit.MouseUp">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDEdit.MouseUp.Button">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDEdit.MouseUp.Shift">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDEdit.MouseUp.X">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDEdit.MouseUp.Y">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDEdit.MouseEnter">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDEdit.MouseLeave">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- constructor Visibility: public -->
 <element name="TCDEdit.Create">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDEdit.Create.AOwner">
 <short></short>
 </element>
 
-<!-- destructor Visibility: public -->
 <element name="TCDEdit.Destroy">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
+<element name="TCDEdit.GetCurrentLine">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDEdit.GetCurrentLine.Result">
+<short></short>
+</element>
+
+<element name="TCDEdit.SetCurrentLine">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDEdit.SetCurrentLine.AStr">
+<short></short>
+</element>
+
 <element name="TCDEdit.LeftTextMargin">
 <short></short>
 <descr>
@@ -1786,7 +1304,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TCDEdit.RightTextMargin">
 <short></short>
 <descr>
@@ -1795,7 +1312,62 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<element name="TCDEdit.GetSelStartX">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDEdit.GetSelStartX.Result">
+<short></short>
+</element>
+
+<element name="TCDEdit.GetSelLength">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDEdit.GetSelLength.Result">
+<short></short>
+</element>
+
+<element name="TCDEdit.SetSelStartX">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDEdit.SetSelStartX.ANewX">
+<short></short>
+</element>
+
+<element name="TCDEdit.SetSelLength">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDEdit.SetSelLength.ANewLength">
+<short></short>
+</element>
+
+<element name="TCDEdit.CaretPos">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <element name="TCDEdit.Align">
 <short></short>
 <descr>
@@ -1804,7 +1376,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDEdit.Anchors">
 <short></short>
 <descr>
@@ -1813,7 +1384,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDEdit.AutoSize">
 <short></short>
 <descr>
@@ -1822,7 +1392,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDEdit.Color">
 <short></short>
 <descr>
@@ -1831,7 +1400,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDEdit.DrawStyle">
 <short></short>
 <descr>
@@ -1840,7 +1408,46 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<element name="TCDEdit.Enabled">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDEdit.Lines">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDEdit.MultiLine">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDEdit.PasswordChar">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDEdit.ReadOnly">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <element name="TCDEdit.TabStop">
 <short></short>
 <descr>
@@ -1849,7 +1456,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDEdit.Text">
 <short></short>
 <descr>
@@ -1858,61 +1464,54 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- class Visibility: default -->
+<element name="TCDEdit.OnChange">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <element name="TCDCheckBox">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function Visibility: protected -->
 <element name="TCDCheckBox.GetControlId">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDCheckBox.GetControlId.Result">
 <short></short>
 </element>
 
-<!-- constructor Visibility: public -->
 <element name="TCDCheckBox.Create">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDCheckBox.Create.AOwner">
 <short></short>
 </element>
 
-<!-- destructor Visibility: public -->
 <element name="TCDCheckBox.Destroy">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDCheckBox.AllowGrayed">
 <short></short>
 <descr>
@@ -1921,7 +1520,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDCheckBox.Checked">
 <short></short>
 <descr>
@@ -1930,7 +1528,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDCheckBox.DrawStyle">
 <short></short>
 <descr>
@@ -1939,7 +1536,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDCheckBox.Caption">
 <short></short>
 <descr>
@@ -1948,7 +1544,14 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<element name="TCDCheckBox.Enabled">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <element name="TCDCheckBox.TabStop">
 <short></short>
 <descr>
@@ -1957,7 +1560,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDCheckBox.State">
 <short></short>
 <descr>
@@ -1966,79 +1568,46 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- class Visibility: default -->
 <element name="TCDRadioButton">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function Visibility: protected -->
 <element name="TCDRadioButton.GetControlId">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDRadioButton.GetControlId.Result">
 <short></short>
 </element>
 
-<!-- constructor Visibility: public -->
 <element name="TCDRadioButton.Create">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDRadioButton.Create.AOwner">
 <short></short>
 </element>
 
-<!-- destructor Visibility: public -->
 <element name="TCDRadioButton.Destroy">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
-<element name="TCDRadioButton.Checked">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCDRadioButton.DrawStyle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
 <element name="TCDRadioButton.Caption">
 <short></short>
 <descr>
@@ -2047,7 +1616,30 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<element name="TCDRadioButton.Checked">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDRadioButton.DrawStyle">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDRadioButton.Enabled">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <element name="TCDRadioButton.TabStop">
 <short></short>
 <descr>
@@ -2056,209 +1648,146 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- class Visibility: default -->
+<element name="TKeyboardInputBehavior">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TKeyboardInputBehavior.kibAutomatic">
+<short></short>
+</element>
+
+<element name="TKeyboardInputBehavior.kibRequires">
+<short></short>
+</element>
+
+<element name="TKeyboardInputBehavior.kibDoesntRequire">
+<short></short>
+</element>
+
+<element name="TCDComboBox">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDComboBox.GetControlId">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDComboBox.GetControlId.Result">
+<short></short>
+</element>
+
+<element name="TCDComboBox.MouseDown">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDComboBox.MouseDown.Button">
+<short></short>
+</element>
+
+<element name="TCDComboBox.MouseDown.Shift">
+<short></short>
+</element>
+
+<element name="TCDComboBox.MouseDown.X">
+<short></short>
+</element>
+
+<element name="TCDComboBox.MouseDown.Y">
+<short></short>
+</element>
+
+<element name="TCDComboBox.MouseUp">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDComboBox.MouseUp.Button">
+<short></short>
+</element>
+
+<element name="TCDComboBox.MouseUp.Shift">
+<short></short>
+</element>
+
+<element name="TCDComboBox.MouseUp.X">
+<short></short>
+</element>
+
+<element name="TCDComboBox.MouseUp.Y">
+<short></short>
+</element>
+
+<element name="TCDComboBox.Create">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDComboBox.Create.AOwner">
+<short></short>
+</element>
+
+<element name="TCDComboBox.Destroy">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDComboBox.Items">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDComboBox.ItemIndex">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDComboBox.KeyboardInputBehavior">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <element name="TCDPositionedControl">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
-<element name="TCDPositionedControl.DragDropStarted">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDPositionedControl.FLastMouseDownPos">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDPositionedControl.FPositionAtMouseDown">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDPositionedControl.FButton">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDPositionedControl.FBtnClickTimer">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDPositionedControl.FMax">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDPositionedControl.FMin">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDPositionedControl.FOnChange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDPositionedControl.FPageSize">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDPositionedControl.FPosition">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDPositionedControl.SetMax">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDPositionedControl.SetMax.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDPositionedControl.SetMin">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDPositionedControl.SetMin.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDPositionedControl.SetPageSize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDPositionedControl.SetPageSize.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDPositionedControl.SetPosition">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDPositionedControl.SetPosition.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDPositionedControl.DoClickButton">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDPositionedControl.DoClickButton.AButton">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDPositionedControl.DoClickButton.ALargeChange">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDPositionedControl.HandleBtnClickTimer">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDPositionedControl.HandleBtnClickTimer.ASender">
-<short></short>
-</element>
-
-<!-- variable Visibility: protected -->
 <element name="TCDPositionedControl.FSmallChange">
 <short></short>
 <descr>
@@ -2267,7 +1796,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TCDPositionedControl.FLargeChange">
 <short></short>
 <descr>
@@ -2276,7 +1804,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TCDPositionedControl.FPCState">
 <short></short>
 <descr>
@@ -2285,7 +1812,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TCDPositionedControl.FMoveByDragging">
 <short></short>
 <descr>
@@ -2294,303 +1820,234 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- function Visibility: protected -->
 <element name="TCDPositionedControl.GetPositionFromMousePosWithMargins">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDPositionedControl.GetPositionFromMousePosWithMargins.Result">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.GetPositionFromMousePosWithMargins.X">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.GetPositionFromMousePosWithMargins.Y">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.GetPositionFromMousePosWithMargins.ALeftMargin">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.GetPositionFromMousePosWithMargins.ARightMargin">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.GetPositionFromMousePosWithMargins.AIsHorizontal">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.GetPositionFromMousePosWithMargins.AAcceptMouseOutsideStrictArea">
 <short></short>
 </element>
 
-<!-- function Visibility: protected -->
 <element name="TCDPositionedControl.GetPositionFromMousePos">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDPositionedControl.GetPositionFromMousePos.Result">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.GetPositionFromMousePos.X">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.GetPositionFromMousePos.Y">
 <short></short>
 </element>
 
-<!-- function Visibility: protected -->
 <element name="TCDPositionedControl.GetPositionDisplacementWithMargins">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDPositionedControl.GetPositionDisplacementWithMargins.Result">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.GetPositionDisplacementWithMargins.AOldMousePos">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.GetPositionDisplacementWithMargins.ANewMousePos">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.GetPositionDisplacementWithMargins.ALeftMargin">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.GetPositionDisplacementWithMargins.ARightMargin">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.GetPositionDisplacementWithMargins.AIsHorizontal">
 <short></short>
 </element>
 
-<!-- function Visibility: protected -->
 <element name="TCDPositionedControl.GetPositionDisplacement">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDPositionedControl.GetPositionDisplacement.Result">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.GetPositionDisplacement.AOldMousePos">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.GetPositionDisplacement.ANewMousePos">
 <short></short>
 </element>
 
-<!-- function Visibility: protected -->
 <element name="TCDPositionedControl.GetButtonFromMousePos">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDPositionedControl.GetButtonFromMousePos.Result">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.GetButtonFromMousePos.X">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.GetButtonFromMousePos.Y">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDPositionedControl.CreateControlStateEx">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDPositionedControl.PrepareControlStateEx">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDPositionedControl.KeyDown">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.KeyDown.Key">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.KeyDown.Shift">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDPositionedControl.MouseDown">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.MouseDown.Button">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.MouseDown.Shift">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.MouseDown.X">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.MouseDown.Y">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDPositionedControl.MouseMove">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.MouseMove.Shift">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.MouseMove.X">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.MouseMove.Y">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDPositionedControl.MouseUp">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.MouseUp.Button">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.MouseUp.Shift">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.MouseUp.X">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.MouseUp.Y">
 <short></short>
 </element>
 
-<!-- property Visibility: protected -->
 <element name="TCDPositionedControl.PageSize">
 <short></short>
 <descr>
@@ -2599,34 +2056,26 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- constructor Visibility: public -->
 <element name="TCDPositionedControl.Create">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPositionedControl.Create.AOwner">
 <short></short>
 </element>
 
-<!-- destructor Visibility: public -->
 <element name="TCDPositionedControl.Destroy">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDPositionedControl.Max">
 <short></short>
 <descr>
@@ -2635,7 +2084,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDPositionedControl.Min">
 <short></short>
 <descr>
@@ -2644,7 +2092,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDPositionedControl.OnChange">
 <short></short>
 <descr>
@@ -2653,7 +2100,14 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<element name="TCDPositionedControl.OnChangeByUser">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <element name="TCDPositionedControl.Position">
 <short></short>
 <descr>
@@ -2662,164 +2116,106 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
-<element name="TCDScrollBar.FKind">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDScrollBar.SetKind">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDScrollBar.SetKind.AValue">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
 <element name="TCDScrollBar.GetPositionFromMousePos">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDScrollBar.GetPositionFromMousePos.Result">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDScrollBar.GetPositionFromMousePos.X">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDScrollBar.GetPositionFromMousePos.Y">
 <short></short>
 </element>
 
-<!-- function Visibility: protected -->
 <element name="TCDScrollBar.GetButtonFromMousePos">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDScrollBar.GetButtonFromMousePos.Result">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDScrollBar.GetButtonFromMousePos.X">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDScrollBar.GetButtonFromMousePos.Y">
 <short></short>
 </element>
 
-<!-- function Visibility: protected -->
 <element name="TCDScrollBar.GetPositionDisplacement">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDScrollBar.GetPositionDisplacement.Result">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDScrollBar.GetPositionDisplacement.AOldMousePos">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDScrollBar.GetPositionDisplacement.ANewMousePos">
 <short></short>
 </element>
 
-<!-- function Visibility: protected -->
 <element name="TCDScrollBar.GetControlId">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDScrollBar.GetControlId.Result">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDScrollBar.PrepareControlState">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- constructor Visibility: public -->
 <element name="TCDScrollBar.Create">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDScrollBar.Create.AOwner">
 <short></short>
 </element>
 
-<!-- destructor Visibility: public -->
 <element name="TCDScrollBar.Destroy">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDScrollBar.DrawStyle">
 <short></short>
 <descr>
@@ -2828,7 +2224,14 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<element name="TCDScrollBar.Enabled">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <element name="TCDScrollBar.Kind">
 <short></short>
 <descr>
@@ -2837,7 +2240,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDScrollBar.PageSize">
 <short></short>
 <descr>
@@ -2846,7 +2248,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDScrollBar.TabStop">
 <short></short>
 <descr>
@@ -2855,77 +2256,58 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- class Visibility: default -->
 <element name="TCDGroupBox">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function Visibility: private -->
 <element name="TCDGroupBox.GetControlId">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDGroupBox.GetControlId.Result">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDGroupBox.RealSetText">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDGroupBox.RealSetText.Value">
 <short></short>
 </element>
 
-<!-- constructor Visibility: public -->
 <element name="TCDGroupBox.Create">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDGroupBox.Create.AOwner">
 <short></short>
 </element>
 
-<!-- destructor Visibility: public -->
 <element name="TCDGroupBox.Destroy">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDGroupBox.AutoSize">
 <short></short>
 <descr>
@@ -2934,16 +2316,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
-<element name="TCDGroupBox.DrawStyle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
 <element name="TCDGroupBox.Caption">
 <short></short>
 <descr>
@@ -2952,7 +2324,22 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<element name="TCDGroupBox.DrawStyle">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDGroupBox.Enabled">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <element name="TCDGroupBox.TabStop">
 <short></short>
 <descr>
@@ -2961,93 +2348,14 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- class Visibility: default -->
 <element name="TCDPanel">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
-<element name="TCDPanel.FBevelInner">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDPanel.FBevelOuter">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDPanel.FBevelWidth">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDPanel.SetBevelInner">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDPanel.SetBevelInner.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDPanel.SetBevelOuter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDPanel.SetBevelOuter.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDPanel.SetBevelWidth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDPanel.SetBevelWidth.AValue">
-<short></short>
-</element>
-
-<!-- variable Visibility: protected -->
 <element name="TCDPanel.FPState">
 <short></short>
 <descr>
@@ -3056,88 +2364,66 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- function Visibility: protected -->
 <element name="TCDPanel.GetControlId">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDPanel.GetControlId.Result">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDPanel.CreateControlStateEx">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDPanel.PrepareControlStateEx">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDPanel.RealSetText">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPanel.RealSetText.Value">
 <short></short>
 </element>
 
-<!-- constructor Visibility: public -->
 <element name="TCDPanel.Create">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPanel.Create.AOwner">
 <short></short>
 </element>
 
-<!-- destructor Visibility: public -->
 <element name="TCDPanel.Destroy">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDPanel.BevelInner">
 <short></short>
 <descr>
@@ -3146,7 +2432,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDPanel.BevelOuter">
 <short></short>
 <descr>
@@ -3155,7 +2440,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDPanel.BevelWidth">
 <short></short>
 <descr>
@@ -3164,16 +2448,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
-<element name="TCDPanel.DrawStyle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
 <element name="TCDPanel.Caption">
 <short></short>
 <descr>
@@ -3182,7 +2456,22 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<element name="TCDPanel.DrawStyle">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDPanel.Enabled">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <element name="TCDPanel.TabStop">
 <short></short>
 <descr>
@@ -3191,86 +2480,58 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- class Visibility: default -->
 <element name="TCDStaticText">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function Visibility: private -->
 <element name="TCDStaticText.GetControlId">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDStaticText.GetControlId.Result">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDStaticText.RealSetText">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDStaticText.RealSetText.Value">
 <short></short>
 </element>
 
-<!-- constructor Visibility: public -->
 <element name="TCDStaticText.Create">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDStaticText.Create.AOwner">
 <short></short>
 </element>
 
-<!-- destructor Visibility: public -->
 <element name="TCDStaticText.Destroy">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
-<element name="TCDStaticText.DrawStyle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
 <element name="TCDStaticText.Caption">
 <short></short>
 <descr>
@@ -3279,7 +2540,22 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<element name="TCDStaticText.DrawStyle">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDStaticText.Enabled">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <element name="TCDStaticText.TabStop">
 <short></short>
 <descr>
@@ -3288,149 +2564,102 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- class Visibility: default -->
 <element name="TCDTrackBar">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
-<element name="TCDTrackBar.FOrientation">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDTrackBar.SetOrientation">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDTrackBar.SetOrientation.AValue">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
 <element name="TCDTrackBar.GetPositionFromMousePos">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDTrackBar.GetPositionFromMousePos.Result">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDTrackBar.GetPositionFromMousePos.X">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDTrackBar.GetPositionFromMousePos.Y">
 <short></short>
 </element>
 
-<!-- function Visibility: protected -->
 <element name="TCDTrackBar.GetPositionDisplacement">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDTrackBar.GetPositionDisplacement.Result">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDTrackBar.GetPositionDisplacement.AOldMousePos">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDTrackBar.GetPositionDisplacement.ANewMousePos">
 <short></short>
 </element>
 
-<!-- function Visibility: protected -->
 <element name="TCDTrackBar.GetControlId">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDTrackBar.GetControlId.Result">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDTrackBar.PrepareControlState">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- constructor Visibility: public -->
 <element name="TCDTrackBar.Create">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDTrackBar.Create.AOwner">
 <short></short>
 </element>
 
-<!-- destructor Visibility: public -->
 <element name="TCDTrackBar.Destroy">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<element name="TCDTrackBar.Align">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <element name="TCDTrackBar.Color">
 <short></short>
 <descr>
@@ -3439,7 +2668,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDTrackBar.DrawStyle">
 <short></short>
 <descr>
@@ -3448,7 +2676,14 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<element name="TCDTrackBar.Enabled">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <element name="TCDTrackBar.Orientation">
 <short></short>
 <descr>
@@ -3457,7 +2692,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDTrackBar.TabStop">
 <short></short>
 <descr>
@@ -3466,211 +2700,14 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- class Visibility: default -->
 <element name="TCDProgressBar">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
-<element name="TCDProgressBar.DragDropStarted">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDProgressBar.FBarShowText">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDProgressBar.FMin">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDProgressBar.FMax">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDProgressBar.FOrientation">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDProgressBar.FPosition">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDProgressBar.FOnChange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDProgressBar.FSmooth">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDProgressBar.FStyle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDProgressBar.SetBarShowText">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDProgressBar.SetBarShowText.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDProgressBar.SetMax">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDProgressBar.SetMax.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDProgressBar.SetMin">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDProgressBar.SetMin.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDProgressBar.SetOrientation">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDProgressBar.SetOrientation.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDProgressBar.SetPosition">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDProgressBar.SetPosition.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDProgressBar.SetSmooth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDProgressBar.SetSmooth.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDProgressBar.SetStyle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDProgressBar.SetStyle.AValue">
-<short></short>
-</element>
-
-<!-- variable Visibility: protected -->
 <element name="TCDProgressBar.FPBState">
 <short></short>
 <descr>
@@ -3679,72 +2716,54 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- function Visibility: protected -->
 <element name="TCDProgressBar.GetControlId">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDProgressBar.GetControlId.Result">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDProgressBar.CreateControlStateEx">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDProgressBar.PrepareControlStateEx">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- constructor Visibility: public -->
 <element name="TCDProgressBar.Create">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDProgressBar.Create.AOwner">
 <short></short>
 </element>
 
-<!-- destructor Visibility: public -->
 <element name="TCDProgressBar.Destroy">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDProgressBar.BarShowText">
 <short></short>
 <descr>
@@ -3753,7 +2772,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDProgressBar.Color">
 <short></short>
 <descr>
@@ -3762,7 +2780,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDProgressBar.DrawStyle">
 <short></short>
 <descr>
@@ -3771,7 +2788,14 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<element name="TCDProgressBar.Enabled">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <element name="TCDProgressBar.Max">
 <short></short>
 <descr>
@@ -3780,7 +2804,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDProgressBar.Min">
 <short></short>
 <descr>
@@ -3789,7 +2812,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDProgressBar.OnChange">
 <short></short>
 <descr>
@@ -3798,7 +2820,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDProgressBar.Orientation">
 <short></short>
 <descr>
@@ -3807,7 +2828,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDProgressBar.Position">
 <short></short>
 <descr>
@@ -3816,7 +2836,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDProgressBar.Smooth">
 <short></short>
 <descr>
@@ -3825,7 +2844,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDProgressBar.Style">
 <short></short>
 <descr>
@@ -3834,171 +2852,14 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- class Visibility: default -->
 <element name="TCDListView">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
-<element name="TCDListView.DragDropStarted">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDListView.FColumns">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDListView.FIconOptions">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDListView.FListItems">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDListView.FProperties">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDListView.FShowColumnHeader">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDListView.FViewStyle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCDListView.GetProperty">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCDListView.GetProperty.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDListView.GetProperty.AIndex">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDListView.SetColumns">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDListView.SetColumns.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDListView.SetProperty">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDListView.SetProperty.AIndex">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDListView.SetProperty.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDListView.SetShowColumnHeader">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDListView.SetShowColumnHeader.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDListView.SetViewStyle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDListView.SetViewStyle.AValue">
-<short></short>
-</element>
-
-<!-- variable Visibility: protected -->
 <element name="TCDListView.FLVState">
 <short></short>
 <descr>
@@ -4007,72 +2868,54 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- function Visibility: protected -->
 <element name="TCDListView.GetControlId">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDListView.GetControlId.Result">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDListView.CreateControlStateEx">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDListView.PrepareControlStateEx">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- constructor Visibility: public -->
 <element name="TCDListView.Create">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDListView.Create.AOwner">
 <short></short>
 </element>
 
-<!-- destructor Visibility: public -->
 <element name="TCDListView.Destroy">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDListView.Color">
 <short></short>
 <descr>
@@ -4081,7 +2924,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDListView.TabStop">
 <short></short>
 <descr>
@@ -4090,7 +2932,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDListView.Columns">
 <short></short>
 <descr>
@@ -4099,7 +2940,14 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<element name="TCDListView.Enabled">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <element name="TCDListView.Items">
 <short></short>
 <descr>
@@ -4108,7 +2956,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDListView.ScrollBars">
 <short></short>
 <descr>
@@ -4117,7 +2964,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDListView.ShowColumnHeader">
 <short></short>
 <descr>
@@ -4126,7 +2972,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDListView.ViewStyle">
 <short></short>
 <descr>
@@ -4135,133 +2980,370 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- class Visibility: default -->
+<element name="TCDToolBar">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDToolBar.FTBState">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDToolBar.GetControlId">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDToolBar.GetControlId.Result">
+<short></short>
+</element>
+
+<element name="TCDToolBar.CreateControlStateEx">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDToolBar.PrepareControlStateEx">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDToolBar.MouseMove">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDToolBar.MouseMove.Shift">
+<short></short>
+</element>
+
+<element name="TCDToolBar.MouseMove.X">
+<short></short>
+</element>
+
+<element name="TCDToolBar.MouseMove.Y">
+<short></short>
+</element>
+
+<element name="TCDToolBar.MouseDown">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDToolBar.MouseDown.Button">
+<short></short>
+</element>
+
+<element name="TCDToolBar.MouseDown.Shift">
+<short></short>
+</element>
+
+<element name="TCDToolBar.MouseDown.X">
+<short></short>
+</element>
+
+<element name="TCDToolBar.MouseDown.Y">
+<short></short>
+</element>
+
+<element name="TCDToolBar.MouseUp">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDToolBar.MouseUp.Button">
+<short></short>
+</element>
+
+<element name="TCDToolBar.MouseUp.Shift">
+<short></short>
+</element>
+
+<element name="TCDToolBar.MouseUp.X">
+<short></short>
+</element>
+
+<element name="TCDToolBar.MouseUp.Y">
+<short></short>
+</element>
+
+<element name="TCDToolBar.MouseLeave">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDToolBar.Create">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDToolBar.Create.AOwner">
+<short></short>
+</element>
+
+<element name="TCDToolBar.Destroy">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDToolBar.InsertItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDToolBar.InsertItem.Result">
+<short></short>
+</element>
+
+<element name="TCDToolBar.InsertItem.AKind">
+<short></short>
+</element>
+
+<element name="TCDToolBar.InsertItem.AIndex">
+<short></short>
+</element>
+
+<element name="TCDToolBar.AddItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDToolBar.AddItem.Result">
+<short></short>
+</element>
+
+<element name="TCDToolBar.AddItem.AKind">
+<short></short>
+</element>
+
+<element name="TCDToolBar.DeleteItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDToolBar.DeleteItem.AIndex">
+<short></short>
+</element>
+
+<element name="TCDToolBar.GetItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDToolBar.GetItem.Result">
+<short></short>
+</element>
+
+<element name="TCDToolBar.GetItem.AIndex">
+<short></short>
+</element>
+
+<element name="TCDToolBar.GetItemCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDToolBar.GetItemCount.Result">
+<short></short>
+</element>
+
+<element name="TCDToolBar.GetItemWithMousePos">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDToolBar.GetItemWithMousePos.Result">
+<short></short>
+</element>
+
+<element name="TCDToolBar.GetItemWithMousePos.APosInControl">
+<short></short>
+</element>
+
+<element name="TCDToolBar.GetItemWithMousePos.OnArrow">
+<short></short>
+</element>
+
+<element name="TCDToolBar.IsPosInButton">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDToolBar.IsPosInButton.Result">
+<short></short>
+</element>
+
+<element name="TCDToolBar.IsPosInButton.APosInControl">
+<short></short>
+</element>
+
+<element name="TCDToolBar.IsPosInButton.AItem">
+<short></short>
+</element>
+
+<element name="TCDToolBar.IsPosInButton.AItemX">
+<short></short>
+</element>
+
+<element name="TCDToolBar.Flat">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDToolBar.ShowCaptions">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDToolBar.DrawStyle">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <element name="TCDCustomTabControl">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- class Visibility: default -->
 <element name="TCDTabSheet">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
-<element name="TCDTabSheet.CDTabControl">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDTabSheet.FTabVisible">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
 <element name="TCDTabSheet.RealSetText">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDTabSheet.RealSetText.Value">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDTabSheet.SetParent">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDTabSheet.SetParent.NewParent">
 <short></short>
 </element>
 
-<!-- constructor Visibility: public -->
 <element name="TCDTabSheet.Create">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDTabSheet.Create.AOwner">
 <short></short>
 </element>
 
-<!-- destructor Visibility: public -->
 <element name="TCDTabSheet.Destroy">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TCDTabSheet.EraseBackground">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDTabSheet.EraseBackground.DC">
 <short></short>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TCDTabSheet.Paint">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDTabSheet.Caption">
 <short></short>
 <descr>
@@ -4270,7 +3352,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDTabSheet.Color">
 <short></short>
 <descr>
@@ -4279,7 +3360,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDTabSheet.Font">
 <short></short>
 <descr>
@@ -4288,7 +3368,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDTabSheet.TabVisible">
 <short></short>
 <descr>
@@ -4297,7 +3376,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- procedure type Visibility: default -->
 <element name="TOnUserAddedPage">
 <short></short>
 <descr>
@@ -4306,207 +3384,14 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TOnUserAddedPage.Sender">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TOnUserAddedPage.APage">
 <short></short>
 </element>
 
-<!-- variable Visibility: private -->
-<element name="TCDCustomTabControl.FOnUserAddedPage">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDCustomTabControl.FTabIndex">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDCustomTabControl.FTabs">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDCustomTabControl.FOnChanging">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDCustomTabControl.FOnChange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCDCustomTabControl.FOptions">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDCustomTabControl.MouseDown">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDCustomTabControl.MouseDown.Button">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDCustomTabControl.MouseDown.Shift">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDCustomTabControl.MouseDown.X">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDCustomTabControl.MouseDown.Y">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDCustomTabControl.MouseUp">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDCustomTabControl.MouseUp.Button">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDCustomTabControl.MouseUp.Shift">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDCustomTabControl.MouseUp.X">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDCustomTabControl.MouseUp.Y">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDCustomTabControl.SetOptions">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDCustomTabControl.SetOptions.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDCustomTabControl.SetTabIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDCustomTabControl.SetTabIndex.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDCustomTabControl.SetTabs">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDCustomTabControl.SetTabs.AValue">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCDCustomTabControl.MousePosToTabIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCDCustomTabControl.MousePosToTabIndex.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDCustomTabControl.MousePosToTabIndex.X">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDCustomTabControl.MousePosToTabIndex.Y">
-<short></short>
-</element>
-
-<!-- variable Visibility: protected -->
 <element name="TCDCustomTabControl.FTabCState">
 <short></short>
 <descr>
@@ -4515,56 +3400,90 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- function Visibility: protected -->
 <element name="TCDCustomTabControl.GetControlId">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDCustomTabControl.GetControlId.Result">
 <short></short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDCustomTabControl.CreateControlStateEx">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDCustomTabControl.PrepareControlStateEx">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TCDCustomTabControl.CorrectTabIndex">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: protected -->
+<element name="TCDCustomTabControl.MouseDown">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDCustomTabControl.MouseDown.Button">
+<short></short>
+</element>
+
+<element name="TCDCustomTabControl.MouseDown.Shift">
+<short></short>
+</element>
+
+<element name="TCDCustomTabControl.MouseDown.X">
+<short></short>
+</element>
+
+<element name="TCDCustomTabControl.MouseDown.Y">
+<short></short>
+</element>
+
+<element name="TCDCustomTabControl.MouseUp">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDCustomTabControl.MouseUp.Button">
+<short></short>
+</element>
+
+<element name="TCDCustomTabControl.MouseUp.Shift">
+<short></short>
+</element>
+
+<element name="TCDCustomTabControl.MouseUp.X">
+<short></short>
+</element>
+
+<element name="TCDCustomTabControl.MouseUp.Y">
+<short></short>
+</element>
+
 <element name="TCDCustomTabControl.Options">
 <short></short>
 <descr>
@@ -4573,50 +3492,38 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- constructor Visibility: public -->
 <element name="TCDCustomTabControl.Create">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDCustomTabControl.Create.AOwner">
 <short></short>
 </element>
 
-<!-- destructor Visibility: public -->
 <element name="TCDCustomTabControl.Destroy">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function Visibility: public -->
 <element name="TCDCustomTabControl.GetTabCount">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDCustomTabControl.GetTabCount.Result">
 <short></short>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TCDCustomTabControl.Tabs">
 <short></short>
 <descr>
@@ -4625,7 +3532,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TCDCustomTabControl.OnChanging">
 <short></short>
 <descr>
@@ -4634,7 +3540,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TCDCustomTabControl.OnChange">
 <short></short>
 <descr>
@@ -4643,7 +3548,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TCDCustomTabControl.OnUserAddedPage">
 <short></short>
 <descr>
@@ -4652,7 +3556,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TCDCustomTabControl.TabIndex">
 <short></short>
 <descr>
@@ -4661,18 +3564,14 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- class Visibility: default -->
 <element name="TCDTabControl">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDTabControl.Color">
 <short></short>
 <descr>
@@ -4681,7 +3580,14 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<element name="TCDTabControl.Enabled">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <element name="TCDTabControl.Font">
 <short></short>
 <descr>
@@ -4690,7 +3596,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDTabControl.Tabs">
 <short></short>
 <descr>
@@ -4699,7 +3604,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDTabControl.TabIndex">
 <short></short>
 <descr>
@@ -4708,7 +3612,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDTabControl.OnChanging">
 <short></short>
 <descr>
@@ -4717,7 +3620,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDTabControl.OnChange">
 <short></short>
 <descr>
@@ -4726,7 +3628,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDTabControl.OnUserAddedPage">
 <short></short>
 <descr>
@@ -4735,257 +3636,102 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- class Visibility: default -->
 <element name="TCDPageControl">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function Visibility: private -->
-<element name="TCDPageControl.GetActivePage">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCDPageControl.GetActivePage.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCDPageControl.GetPageCount">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCDPageControl.GetPageCount.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCDPageControl.GetPageIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCDPageControl.GetPageIndex.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDPageControl.SetActivePage">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDPageControl.SetActivePage.Value">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDPageControl.SetPageIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDPageControl.SetPageIndex.Value">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDPageControl.UpdateAllDesignerFlags">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDPageControl.UpdateDesignerFlags">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDPageControl.UpdateDesignerFlags.APageIndex">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCDPageControl.PositionTabSheet">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCDPageControl.PositionTabSheet.ATabSheet">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
 <element name="TCDPageControl.Create">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPageControl.Create.AOwner">
 <short></short>
 </element>
 
-<!-- destructor Visibility: public -->
 <element name="TCDPageControl.Destroy">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function Visibility: public -->
 <element name="TCDPageControl.InsertPage">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDPageControl.InsertPage.Result">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPageControl.InsertPage.aIndex">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPageControl.InsertPage.S">
 <short></short>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TCDPageControl.RemovePage">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPageControl.RemovePage.aIndex">
 <short></short>
 </element>
 
-<!-- function Visibility: public -->
 <element name="TCDPageControl.AddPage">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDPageControl.AddPage.Result">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPageControl.AddPage.S">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPageControl.AddPage.APage">
 <short></short>
 </element>
 
-<!-- function Visibility: public -->
 <element name="TCDPageControl.GetPage">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDPageControl.GetPage.Result">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPageControl.GetPage.aIndex">
 <short></short>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TCDPageControl.PageCount">
 <short></short>
 <descr>
@@ -4994,59 +3740,46 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- function Visibility: public -->
 <element name="TCDPageControl.FindNextPage">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
 <element name="TCDPageControl.FindNextPage.Result">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPageControl.FindNextPage.CurPage">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPageControl.FindNextPage.GoForward">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPageControl.FindNextPage.CheckTabVisible">
 <short></short>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TCDPageControl.SelectNextPage">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPageControl.SelectNextPage.GoForward">
 <short></short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TCDPageControl.SelectNextPage.CheckTabVisible">
 <short></short>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDPageControl.Align">
 <short></short>
 <descr>
@@ -5055,7 +3788,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDPageControl.ActivePage">
 <short></short>
 <descr>
@@ -5064,7 +3796,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDPageControl.DrawStyle">
 <short></short>
 <descr>
@@ -5073,7 +3804,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDPageControl.Caption">
 <short></short>
 <descr>
@@ -5082,7 +3812,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDPageControl.Color">
 <short></short>
 <descr>
@@ -5091,7 +3820,14 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
+<element name="TCDPageControl.Enabled">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <element name="TCDPageControl.Font">
 <short></short>
 <descr>
@@ -5100,7 +3836,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDPageControl.PageIndex">
 <short></short>
 <descr>
@@ -5109,7 +3844,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDPageControl.Options">
 <short></short>
 <descr>
@@ -5118,7 +3852,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDPageControl.ParentColor">
 <short></short>
 <descr>
@@ -5127,7 +3860,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDPageControl.ParentFont">
 <short></short>
 <descr>
@@ -5136,7 +3868,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDPageControl.TabStop">
 <short></short>
 <descr>
@@ -5145,7 +3876,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDPageControl.TabIndex">
 <short></short>
 <descr>
@@ -5154,7 +3884,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDPageControl.OnChanging">
 <short></short>
 <descr>
@@ -5163,7 +3892,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDPageControl.OnChange">
 <short></short>
 <descr>
@@ -5172,7 +3900,6 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
 <element name="TCDPageControl.OnUserAddedPage">
 <short></short>
 <descr>
@@ -5181,7 +3908,84 @@ Copyright (C) 2011 Felipe Monteiro de Carvalho.
 </seealso>
 </element>
 
-</module> <!-- customdrawncontrols -->
+<element name="TCDSpinEdit">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDSpinEdit.DoChange">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDSpinEdit.Create">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDSpinEdit.Create.AOwner">
+<short></short>
+</element>
+
+<element name="TCDSpinEdit.Destroy">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDSpinEdit.DecimalPlaces">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDSpinEdit.Increment">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDSpinEdit.MinValue">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDSpinEdit.MaxValue">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<element name="TCDSpinEdit.Value">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+</module>
+<!-- customdrawncontrols -->
 
 </package>
 </fpdoc-descriptions>

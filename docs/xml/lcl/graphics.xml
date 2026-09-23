@@ -9263,16 +9263,56 @@ and end points, respectively.
 <short/>
 </element>
 <element name="TCanvas.Chord.x1">
-<short/>
+<short>
+Horizontal coordinate on the canvas where the Chord is located.
+</short>
 </element>
 <element name="TCanvas.Chord.y1">
-<short/>
+<short>
+Vertical coordinate on the canvas where the Chord is located.
+</short>
 </element>
 <element name="TCanvas.Chord.x2">
-<short/>
+<short>
+Horizontal coordinate on the canvas where the Chord is located.
+</short>
 </element>
 <element name="TCanvas.Chord.y2">
-<short/>
+<short>
+Vertical coordinate on the canvas where the Chord is located.
+</short>
+</element>
+<element name="TCanvas.Chord.Angle16Deg">
+<short>
+Ellipse parameter identifying where the chord begins (given in 1/16th of a 
+degree).
+</short>
+</element>
+<element name="TCanvas.Chord.Angle16DegLength">
+<short>
+Ellipse parameter identifying the length of the chord (given in 1/16th of a 
+degree).
+</short>
+</element>
+<element name="TCanvas.Chord.SX">
+<short>
+Horizontal coordinate which defines the radial starting point for the chord.
+</short>
+</element>
+<element name="TCanvas.Chord.SY">
+<short>
+Vertical coordinate which defines the radial starting point for the chord.
+</short>
+</element>
+<element name="TCanvas.Chord.EX">
+<short>
+Horizontal coordinate which defines the radial ending point for the chord.
+</short>
+</element>
+<element name="TCanvas.Chord.EY">
+<short>
+Vertical coordinate which defines the radial ending point for the chord.
+</short>
 </element>
 
 <element name="TCanvas.CopyRect">
