@@ -227,6 +227,7 @@ type
     cmsAnonymousFunctions, { allow anonymous functions }
     cmsMultiLineStrings,   { Multiline strings }
     cmsStatementExpressions, { allow if-, case- and try-except-expressions }
+    cmsTypeInquiry,        { allow "type of" operator }
 
     cmsExternalClass,      { pas2js: allow  class external [pkgname] name [symbol] }
     cmsIgnoreAttributes,   { pas2js: ignore attributes }
@@ -259,7 +260,7 @@ const
     // cmOBJFPC
     [cmsClass,cmsObjpas,cmsResult,cmsString_pchar,cmsNested_comment,
      cmsRepeat_forward,cmsCvar_support,cmsInitfinal,cmsOut,cmsDefault_para,
-     cmsHintdirective,cmsProperty,cmsDefault_inline,cmsExcept],
+     cmsHintdirective,cmsProperty,cmsDefault_inline,cmsExcept,cmsTypeInquiry],
     // cmMacPas
     [cmsCvar_support,cmsMac_procvar,cmsNestedProcVars,
      cmsNonLocalGoto,cmsISOLike_unary_minus,cmsDefault_inline],
@@ -270,7 +271,7 @@ const
     [cmsTp_procvar,cmsDuplicate_names,cmsNestedProcVars,cmsNonLocalGoto,
      cmsISOLike_unary_minus,cmsISOlike_IO,
      cmsISOLike_Program_Para,
-     cmsISOLike_Mod]
+     cmsISOLike_Mod,cmsTypeInquiry]
     );
   cmAllModesWithGeneric = [cmDELPHI,cmDELPHIUNICODE,cmOBJFPC];
   Pas2jsFixedModeswitches = [cmsArray2dynarray,cmsArrayOperators,
@@ -323,6 +324,7 @@ const
     'ANONYMOUSFUNCTIONS',
     'MULTILINESTRINGS',
     'STATEMENTEXPRESSIONS',
+    'TYPEINQUIRY',
     'EXTERNALCLASS',
     'IGNOREATTRIBUTES',
     'OMITRTTI'

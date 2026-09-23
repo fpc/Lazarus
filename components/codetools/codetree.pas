@@ -149,6 +149,7 @@ const
   ctnSpecializeType     = 94; // parent = ctnSpecialize
   ctnSpecializeParams   = 95; // list of ctnSpecializeParam, parent = ctnSpecialize
   ctnSpecializeParam    = 96; // parent = ctnSpecializeParams
+  ctnTypeOf             = 97; // type of <operand>
 
   ctnBeginBlock         =100;
   ctnAsmBlock           =101;
@@ -204,7 +205,7 @@ const
       ctnProcedureType,ctnReferenceTo,
       ctnSetType,ctnRangeType,ctnEnumerationType,
       ctnLabel,ctnTypeType,ctnFileType,ctnPointerType,
-      ctnClassOfType,ctnVariantType];
+      ctnClassOfType,ctnVariantType,ctnTypeOf];
   AllPascalTypeParts = AllPascalTypes
      +[ctnEnumIdentifier,ctnConstant,ctnRecordCase,ctnRecordVariant];
   AllProcTypes = [ctnProcedureType,ctnReferenceTo];
@@ -543,6 +544,7 @@ begin
   ctnSpecializeType: Result:='Specialize Typename';
   ctnSpecializeParams: Result:='Specialize Parameterlist';
   ctnSpecializeParam: Result:='Specialize Parameter';
+  ctnTypeOf: Result:='Type Of';
   ctnGenericType: Result:='Generic Type';
   ctnGenericName: Result:='Generic Type Name';
   ctnGenericParams: Result:='Generic Type Params';

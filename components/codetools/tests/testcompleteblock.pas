@@ -59,6 +59,7 @@ type
     procedure TestCompleteBlockIfExpr;
     procedure TestCompleteBlockCaseExpr;
     procedure TestCompleteBlockTryExpr;
+    procedure TestCompleteBlock_TypeOf;
   end;
 
 implementation
@@ -603,6 +604,24 @@ begin
                +'end.',
                 'begin'+LineEnding
                +'  x:=try a except if c then d else e end;'+LineEnding
+               +'  if a then begin|'+LineEnding
+               +'  end;'+LineEnding
+               +'end.');
+end;
+
+procedure TTestCodetoolsCompleteBlock.TestCompleteBlock_TypeOf;
+begin
+  // type of operator in statements
+  CompleteBlock('{$mode objfpc}'+LineEnding
+               +'begin'+LineEnding
+               +'  x:=SizeOf(type of b);'+LineEnding
+               +'  type of c(i):=7;'+LineEnding
+               +'  if a then begin|'+LineEnding
+               +'end.',
+                '{$mode objfpc}'+LineEnding
+               +'begin'+LineEnding
+               +'  x:=SizeOf(type of b);'+LineEnding
+               +'  type of c(i):=7;'+LineEnding
                +'  if a then begin|'+LineEnding
                +'  end;'+LineEnding
                +'end.');

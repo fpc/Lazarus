@@ -395,6 +395,19 @@ begin
   Result:=ComparePointers(Policies1.Code,Policies2.Code);
 end;
 
+function Is_TypeOf_Operator(const Src: string; TypeEndPos: integer;
+  NestedComments: boolean): boolean;
+// true if the 'type' in front of TypeEndPos is followed by 'of',
+// i.e. the 'type of' operator of modeswitch TypeInquiry
+var
+  p, AtomStart: integer;
+begin
+  p:=TypeEndPos;
+  ReadRawNextPascalAtom(Src,p,AtomStart,NestedComments);
+  Result:=(AtomStart<=length(Src))
+    and (CompareIdentifiers('OF',@Src[AtomStart])=0);
+end;
+
 function CompareCodeWithFABPolicy(Key, Data: Pointer): integer;
 var
   Policies: TFABPolicies absolute Data;
@@ -1131,7 +1144,8 @@ begin
             BeginBlock(bbtTry);
         end;
       'Y': // TY
-        if CompareIdentifiers('TYPE',r)=0 then begin
+        if (CompareIdentifiers('TYPE',r)=0)
+        and not Is_TypeOf_Operator(Src,p,NestedComments) then begin
           if Stack.TopType<>bbtDefinition then
             StartIdentifierSection(bbtTypeSection);
         end;
@@ -1672,7 +1686,8 @@ begin
   'T':
     case UpChars[r[1]] of
     'Y': // TY
-      if CompareIdentifiers('TYPE',r)=0 then begin
+      if (CompareIdentifiers('TYPE',r)=0)
+      and not Is_TypeOf_Operator(Source,p,NestedComments) then begin
         EndIdentifierSectionAndProc;
         if StackTopType=bbtProcedure then
           BeginBlock(bbtTypeSection);

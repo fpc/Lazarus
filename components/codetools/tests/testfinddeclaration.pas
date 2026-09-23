@@ -217,6 +217,15 @@ type
     procedure TestFindDeclaration_IfExpr;
     procedure TestFindDeclaration_CaseExpr;
     procedure TestFindDeclaration_TryExpr;
+    procedure TestFindDeclaration_TypeOf_Var;
+    procedure TestFindDeclaration_TypeOf_AliasAndTypeAlias;
+    procedure TestFindDeclaration_TypeOf_Derived;
+    procedure TestFindDeclaration_TypeOf_ArgResultProperty;
+    procedure TestFindDeclaration_TypeOf_Const;
+    procedure TestFindDeclaration_TypeOf_FuncResult;
+    procedure TestFindDeclaration_TypeOf_PostfixOperand;
+    procedure TestFindDeclaration_TypeOf_TypeCast;
+    procedure TestFindDeclaration_TypeOf_TypeCastParenthesized;
     procedure TestFindDeclaration_Attributes;
     procedure TestFindDeclaration_BracketOpen;
     procedure TestFindDeclaration_AnonymProc;
@@ -2367,6 +2376,238 @@ begin
   '  b1{guesstype:Boolean} := o is not TBird;',
   '  b2{guesstype:Boolean} := (o is not TBird) or b;',
   '  if TBird(o).Next{declaration:TBird.Next} is not TEagle{declaration:TEagle} then ;',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_TypeOf_Var;
+begin
+  StartProgram;
+  Add([
+  'type',
+  '  TRec = record',
+  '    b: byte;',
+  '    w: word;',
+  '  end;',
+  '  TEnum = (red, green);',
+  'var',
+  '  b: byte;',
+  '  w: word;',
+  '  s: string;',
+  '  r: TRec;',
+  '  e: TEnum;',
+  '  c: type of b{declaration:b};',
+  '  d: type of w{declaration:w} = 3;',
+  '  f: type of s;',
+  '  r2: type of r{declaration:r};',
+  '  e2: type of e;',
+  'begin',
+  '  v1{guesstype:Byte} := c;',
+  '  v2{guesstype:Word} := d;',
+  '  v3{guesstype:String} := f;',
+  '  v4{guesstype:TRec} := r2;',
+  '  v5{guesstype:TEnum} := e2;',
+  '  r2.w{declaration:TRec.w}:=3;',
+  '  c{declaration:c}:=b;',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_TypeOf_AliasAndTypeAlias;
+begin
+  StartProgram;
+  Add([
+  'var',
+  '  i: longint;',
+  'type',
+  '  TInt = type of i{declaration:i};',
+  '  TUniqueInt = type type of i{declaration:i};',
+  'var',
+  '  a: TInt{declaration:TInt};',
+  '  u: TUniqueInt{declaration:TUniqueInt};',
+  'begin',
+  '  v1{guesstype:TInt} := a;',
+  '  v2{guesstype:TUniqueInt} := u;',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_TypeOf_Derived;
+begin
+  StartProgram;
+  Add([
+  'type',
+  '  TObject = class end;',
+  '  generic TBird<T> = class',
+  '    Value: T;',
+  '  end;',
+  'var',
+  '  w: word;',
+  '  b: byte;',
+  '  Arr: array of type of w{declaration:w};',
+  '  StatArr: array[1..2] of type of w;',
+  '  p: ^type of w;',
+  '  bs: set of type of b{declaration:b};',
+  '  Gen: specialize TBird<type of w{declaration:w}>;',
+  'begin',
+  '  v1{guesstype:Word} := Arr[0];',
+  '  v2{guesstype:Word} := StatArr[1];',
+  '  p:=@w;',
+  '  v3{guesstype:Word} := p^;',
+  '  bs:=[b];',
+  '  v4{guesstype:Word} := Gen.Value{declaration:TBird.Value};',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_TypeOf_ArgResultProperty;
+begin
+  StartProgram;
+  Add([
+  'var',
+  '  w: word;',
+  '  b: byte;',
+  'type',
+  '  TObject = class',
+  '  private',
+  '    FVal: type of w{declaration:w};',
+  '  public',
+  '    property Val: type of w{declaration:w} read FVal write FVal;',
+  '  end;',
+  '  TRec = record',
+  '    f: type of b{declaration:b};',
+  '  end;',
+  'function Fly(a: type of b{declaration:b}; const Arr: array of type of w): type of w{declaration:w};',
+  'begin',
+  '  v1{guesstype:Byte} := a{declaration:Fly.a};',
+  '  v2{guesstype:Word} := Arr[0];',
+  '  Result:=a;',
+  'end;',
+  'procedure Run(x: word; y: type of x{declaration:Run.x});',
+  'begin',
+  '  v3{guesstype:Word} := y;',
+  'end;',
+  'var',
+  '  o: TObject;',
+  '  r: TRec;',
+  'begin',
+  '  v4{guesstype:Word} := Fly(b,[w]);',
+  '  v5{guesstype:Word} := o.Val{declaration:TObject.Val};',
+  '  v6{guesstype:Byte} := r.f{declaration:TRec.f};',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_TypeOf_Const;
+begin
+  StartProgram;
+  Add([
+  'const',
+  '  c = 5;',
+  '  t: word = 7;',
+  'var',
+  '  a: type of (1+2);',
+  '  b: type of int64(1);',
+  '  e: type of t{declaration:t};',
+  '  f: type of true;',
+  'begin',
+  '  v1{guesstype:LongInt} := a;',
+  '  v2{guesstype:Int64} := b;',
+  '  v3{guesstype:Word} := e;',
+  '  v4{guesstype:Boolean} := f;',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_TypeOf_FuncResult;
+begin
+  StartProgram;
+  Add([
+  'function GetWord: word;',
+  'begin',
+  '  Result:=1;',
+  'end;',
+  'var',
+  '  x: type of GetWord{declaration:GetWord};',
+  '  y: type of GetWord();',
+  'begin',
+  '  v1{guesstype:Word} := x;',
+  '  v2{guesstype:Word} := y;',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_TypeOf_PostfixOperand;
+begin
+  StartProgram;
+  Add([
+  'type',
+  '  TRec = record',
+  '    b: byte;',
+  '    w: word;',
+  '  end;',
+  '  PWord = ^word;',
+  'var',
+  '  r: TRec;',
+  '  Arr: array of byte;',
+  '  p: PWord;',
+  '  a: type of r{declaration:r}.w{declaration:TRec.w};',
+  '  b: type of Arr{declaration:Arr}[0];',
+  '  c: type of p{declaration:p}^;',
+  '  d: type of r.b{declaration:TRec.b};',
+  'begin',
+  '  v1{guesstype:Word} := a;',
+  '  v2{guesstype:Byte} := b;',
+  '  v3{guesstype:Word} := c;',
+  '  v4{guesstype:Byte} := d;',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_TypeOf_TypeCast;
+begin
+  StartProgram;
+  Add([
+  'type',
+  '  TObject = class end;',
+  '  TBird = class',
+  '    Value: word;',
+  '  end;',
+  '  TEnum = (red, green);',
+  '  PWord = ^word;',
+  'var',
+  '  b: byte;',
+  '  w: word;',
+  '  e: TEnum;',
+  '  Arr: array of byte;',
+  '  o: TObject;',
+  '  Bird: TBird;',
+  '  p: PWord;',
+  '  Ptr: pointer;',
+  'begin',
+  '  v1{guesstype:Byte} := type of b{declaration:b}(w{declaration:w});',
+  '  v2{guesstype:Word} := type of w(b);',
+  '  v3{guesstype:TEnum} := type of e(b);',
+  '  v4{guesstype:Byte} := type of Arr[0](w);',
+  '  v5{guesstype:Word} := type of w(type of b(w));',
+  '  v6{guesstype:Word} := type of Bird(o).Value{declaration:TBird.Value};',
+  '  v7{guesstype:Word} := type of p(Ptr)^;',
+  '  v8{guesstype:Byte} := High(type of b);',
+  '  v9{guesstype:TEnum} := High(type of e);',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_TypeOf_TypeCastParenthesized;
+begin
+  StartProgram;
+  Add([
+  'var',
+  '  b: byte;',
+  '  w: word;',
+  'begin',
+  '  v1{guesstype:Byte} := (type of b{declaration:b})(w);',
+  '  v2{guesstype:Word} := (type of w)(b);',
   'end.']);
   FindDeclarations(Code);
 end;

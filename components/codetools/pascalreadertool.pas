@@ -3334,7 +3334,7 @@ begin
     Exit;
   aNode:=ProcNode.LastChild;
   if aNode=nil then exit;
-  if aNode.Desc in [ctnIdentifier,ctnSpecialize] then begin
+  if aNode.Desc in [ctnIdentifier,ctnSpecialize,ctnTypeOf] then begin
     Result:=ExtractNode(aNode,Attr);
   end;
 end;
@@ -3858,7 +3858,7 @@ function TPascalReaderTool.GetProcResultNode(ProcNode: TCodeTreeNode
   ): TCodeTreeNode;
 // procedure: none
 // operator: ctnVarDefinition,ctnIdentifier
-// function: ctnIdentifier, ctnSpecialize
+// function: ctnIdentifier, ctnSpecialize, ctnTypeOf
 begin
   Result:=nil;
   if ProcNode=nil then exit;
@@ -3869,7 +3869,7 @@ begin
   if ProcNode.Desc<>ctnProcedureHead then exit;
   Result:=ProcNode.FirstChild;
   while Result<>nil do begin
-    if Result.Desc in [ctnVarDefinition,ctnIdentifier,ctnSpecialize] then exit;
+    if Result.Desc in [ctnVarDefinition,ctnIdentifier,ctnSpecialize,ctnTypeOf] then exit;
     Result:=Result.NextBrother;
   end;
 end;

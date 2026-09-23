@@ -481,6 +481,7 @@ type
     function IsIfExpressionKeyword(KeyWordPos: integer): boolean;
     function IsCaseExpressionAtom(AtomPos: integer): boolean;
     function IsTryExpressionAtom(AtomPos: integer): boolean;
+    function Is_TypeOf_Operand(OperandPos: integer): boolean;
     function IsExpressionStartInFront(KeyWordPos: integer): boolean;
     function ReadBackTilBlockStart: boolean;
     function CreateDeclarationPathAt(StartNode: TCodeTreeNode;
@@ -2219,7 +2220,14 @@ type
   end;
 
   procedure AddTypeKeywords;
+  var
+    OperandPos: Integer;
   begin
+    // no type keywords behind 'type of'
+    OperandPos:=CleanPos;
+    while (OperandPos>1) and IsIdentChar[Src[OperandPos-1]] do
+      dec(OperandPos);
+    if Is_TypeOf_Operand(OperandPos) then exit;
     if CurrentIdentifierList.IdentComplIncludeKeywords then begin
       Add('array');
       Add('set');
@@ -2494,6 +2502,12 @@ begin
             Add('case');
             Add('try');
           end;
+          if (cmsTypeInquiry in Scanner.CompilerModeSwitches)
+          and (CurrentIdentifierList.ContextFlags
+               * [ilcfStartInStatement, ilcfStartOfOperand, ilcfStartOfStatement]
+               = [ilcfStartInStatement, ilcfStartOfOperand])
+          then
+            Add('type'); // type of
           if (ilcfStartInStatement in CurrentIdentifierList.ContextFlags)
           and not (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags)
           and (CurrentIdentifierList.StartBracketLvl = 0)
@@ -3528,6 +3542,7 @@ begin
               or ((UpAtomIs('TRY') or UpAtomIs('EXCEPT') or UpAtomIs('DO')
                    or UpAtomIs('ELSE'))
                   and IsTryExpressionAtom(CurPos.StartPos))
+              or (UpAtomIs('OF') and Is_TypeOf_Operand(StartPosOfVariable))
               then begin
                 // in an if-, case- or try-except-expression, e.g. x := if a then |
                 CurrentIdentifierList.ContextFlags:=
@@ -4511,6 +4526,26 @@ begin
     end;
     // check what is in front of the IF
     Result:=IsExpressionStartInFront(CurPos.StartPos);
+  finally
+    MoveCursorToAtomPos(OldPos);
+  end;
+end;
+
+function TIdentCompletionTool.Is_TypeOf_Operand(OperandPos: integer): boolean;
+// Checks if the operand at OperandPos follows a 'type of',
+// e.g. "var a: type of b". The cursor position is kept.
+var
+  OldPos: TAtomPosition;
+begin
+  Result:=false;
+  if not (cmsTypeInquiry in Scanner.CompilerModeSwitches) then exit;
+  OldPos:=CurPos;
+  try
+    MoveCursorToCleanPos(OperandPos);
+    ReadPriorAtom;
+    if not UpAtomIs('OF') then exit;
+    ReadPriorAtom;
+    Result:=UpAtomIs('TYPE');
   finally
     MoveCursorToAtomPos(OldPos);
   end;

@@ -7714,6 +7714,9 @@ var
                 break;
               end;
             end;
+          end else if Is_TypeOf_Start then begin
+            // 'type of' operator
+            ReadNextAtom; // skip 'of'
           end else if UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION')
           or UpAtomIs('CONSTRUCTOR') or UpAtomIs('DESTRUCTOR')
           or UpAtomIs('VAR') or UpAtomIs('TYPE') or UpAtomIs('CONST')

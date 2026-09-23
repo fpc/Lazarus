@@ -45,6 +45,7 @@ type
     procedure Test_GatherIdentifiers_IfExpr;
     procedure Test_GatherIdentifiers_CaseExpr;
     procedure Test_GatherIdentifiers_TryExpr;
+    procedure Test_GatherIdentifiers_TypeOf;
 
     // CreateDeclarationPathAt
     procedure Test_CreateDeclarationPathAt_Basic;
@@ -605,6 +606,52 @@ begin
   finally
     CodeContexts.Free;
   end;
+end;
+
+procedure TTestIdentCompletion.Test_GatherIdentifiers_TypeOf;
+
+  function HasIdentifier(const aName: string): boolean;
+  var
+    i: Integer;
+  begin
+    for i:=0 to CodeToolBoss.IdentifierList.GetFilteredCount-1 do
+      if CompareText(CodeToolBoss.IdentifierList.FilteredItems[i].Identifier,aName)=0 then
+        exit(true);
+    Result:=false;
+  end;
+
+  procedure GatherAt(const MarkerName: string);
+  var
+    SrcMark: TFDMarker;
+    CursorPos: TCodeXYPosition;
+  begin
+    SrcMark:=FindMarker(MarkerName,'#');
+    AssertNotNull('missing src marker #'+MarkerName,SrcMark);
+    MainTool.CleanPosToCaret(SrcMark.CleanPos,CursorPos);
+    CodeToolBoss.GatherIdentifiers(Code,CursorPos.X,CursorPos.Y);
+    AssertTrue('CodeToolBoss.GatherIdentifiers: '+CodeToolBoss.ErrorMessage,CodeToolBoss.ErrorId=0);
+  end;
+
+begin
+  StartProgram;
+  Add([
+    'var',
+    '  i: integer;',
+    '  b: boolean;',
+    '  c: type of {#a}i;',
+    'begin',
+    '  i:=SizeOf(type of {#b}b);',
+    'end.']);
+  ParseSimpleMarkers(Code);
+  // operand of type of in a type
+  GatherAt('a');
+  AssertTrue('variable i behind type of',HasIdentifier('i'));
+  AssertTrue('variable b behind type of',HasIdentifier('b'));
+  AssertFalse('array behind type of',HasIdentifier('array'));
+  // operand of type of in a statement
+  GatherAt('b');
+  AssertTrue('variable i in type of operand',HasIdentifier('i'));
+  AssertFalse('while in type of operand',HasIdentifier('while'));
 end;
 
 procedure TTestIdentCompletion.Test_CreateDeclarationPathAt_Basic;
