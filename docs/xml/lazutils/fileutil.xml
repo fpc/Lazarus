@@ -638,62 +638,148 @@ Returns '.exe' on Windows, or an empty string for other platforms.
 </short>
 </element>
 
-<element name="ReadFileToString">
+<element name="ReadFileToBytes">
 <short>
-Returns a string with the contents of the named text file.
+Returns a TBytes value with the contents of the specified file.
 </short>
 <descr>
 <p>
-<var>ReadFileToString</var> opens the file specified in the <var>FileName</var> 
-argument, then reads its contents into the <var>Result</var> string.
+<var>ReadFileToBytes</var> is a <var>TBytes</var> function used to read and 
+return the content from the specified file.
 </p>
 <p>
 <var>FileName</var> can include a path to the file, but cannot include a value 
 which needs to be resolved (like '~' for the home directory on UNIX-like file 
-systems). Relative path notation can be used in FileName.
+systems). Use ExpandFileName(), ExpandFileNameUTF8(), or 
+CleanAndExpandFilename() to resolve a path which includes '~' notation. 
+Relative path notation can be used in FileName.
+</p>
+<p>
+ReadFileToBytes does not check whether FileName contains an expanded value or 
+whether it exists on the local file system. It does not complain if the file 
+does not exist or cannot be accessed; the return value is an empty array 
+for these conditions. FileExists() or FileExistsUTF8() can be used
+to verify whether the file path/name exists before ReadFileToBytes is called.
+</p>
+<p>
+FileSize is used to determine the storage size needed for the return value. 
+UNIX-like file systems usually return 0 as the file size if FileName is located
+on a virtual file system (like /proc). In this case, the return value is an 
+empty array. Another mechanism (like TStringList.LoadfromFile) should be used 
+for virtual files.
+</p>
+<p>
+For platforms which do not support 64-bit operations, a FileSize value larger 
+than MaxLongInt is invalid. In this case, ReadFileToBytes silently exits 
+with an empty array in the return value.
+</p>
+<p>
+ReadFileToString creates a temporary TFileStream instance used to read the 	
+content from the specified Filename. For FPC version 3.3.1 or higher, the 
+Read64 method in the stream is used to read the file content in a single pass. 
+For FPC versions prior to 3.3.1, the Read method is called repeatedly using 
+MaxLongInt-sized chunks until all of the content has been read into the return 
+value.
+</p>
+<p>
+An exception raised in the routine is caught and ignored. In this case the 
+return value is an empty array.
+</p>
+<p>
+Use ReadFileToString to get the contents of a file as a string value.
+</p>	
+</descr>
+<version>
+Added in LazUtils version 4.3.	
+</version>
+<seealso>
+<link id="ReadFileToString"/>
+<link id="FileSize"/>
+<link id="#lazutils.lazfileutils.FileExistsUTF8">FileExistsUTF8</link>
+<link id="#lazutils.lazfileutils.ExpandFileNameUTF8">ExpandFileNameUTF8</link>
+<link id="#lazutils.lazfileutils.CleanAndExpandFilename">CleanAndExpandFilename</link>
+<link id="#rtl.sysutils.FileExists">FileExists</link>
+<link id="#rtl.sysutils.ExpandFileName">ExpandFileName</link>
+<link id="#rtl.classes.TFileStream">TFileStream</link>
+</seealso>
+</element>
+<element name="ReadFileToBytes.Filename">
+<short>
+The qualified name for the file read in the routine.
+</short>
+</element>
+<element name="ReadFileToBytes.Result">
+<short>
+TBytes value with the contents of the file, or an empty array if the file does 
+not exist or an error occurs.
+</short>
+</element>
+
+<element name="ReadFileToString">
+<short>
+Returns a string with the contents of the specified file.
+</short>
+<descr>
+<p>
+<var>ReadFileToString</var> is a <var>String</var> function used to read the 
+content from the specified <var>Filename</var> and return its contents in the 
+<var>Result</var> string.
+</p>
+<p>
+<var>FileName</var> can include a path to the file, but cannot include a value 
+which needs to be resolved (like '~' for the home directory on UNIX-like file 
+systems). Use ExpandFileName(), ExpandFileNameUTF8(), or 
+CleanAndExpandFilename() to resolve a path which includes '~' notation. 
+Relative path notation can be used in FileName.
 </p>
 <p>
 ReadFileToString does not check whether FileName contains an expanded value or 
 whether it exists on the local file system. It does not complain if the file 
 does not exist or cannot be accessed; the return value is an empty string ('') 
-for these conditions. ExpandFileName() or ExpandFileNameUTF8() can be used to 
-resolve a path with '~' notation. FileExists() or FileExistsUTF8() can be used 
+for these conditions. FileExists() or FileExistsUTF8() can be used
 to verify whether the file path/name exists before ReadFileToString is called.
 </p>
 <p>
 FileSize is used to determine the storage size needed for the return value. 
-UNIX-like file systems usually return 0 as the file size if FileName is located 
+UNIX-like file systems usually return 0 as the file size if FileName is located
 on a virtual file system (like /proc). In this case, the return value is an 
 empty string. Another mechanism (like TStringList.LoadfromFile) should be used 
 for virtual files.
 </p>
 <p>
-FileOpenUTF8 is called to get a shared handle used to read from (but not write 
-to) the specified file name. If an invalid handle is returned, the routine 
-quietly exits with an empty return value.
+For platforms which do not support 64-bit operations, a FileSize value larger 
+than MaxLongInt is invalid. In this case, ReadFileToString silently exits with 
+an empty string ('') in the return value.
 </p>
 <p>
-FileRead is called for the handle to read the number of bytes in the file size 
-into the return value.
+ReadFileToString creates a temporary TFileStream instance used to read the 	
+content from the specified Filename. For FPC version 3.3.1 or higher, the 
+Read64 method in the stream is used to read the file content in a single pass. 
+For FPC versions prior to 3.3.1, the Read method is called repeatedly using 
+MaxLongInt-sized chunks until all of the content has been read into the return 
+value.
 </p>
 <p>
-FileClose is called to close the handle for the file when the operation has 
-been completed.
+An exception raised in the routine is caught and ignored. In this case the 
+return value is an empty string ('').
+</p>
+<p>
+Use ReadFileToBytes to get the contents of a file as an array of byte values.
 </p>
 </descr>
-<errors>
-If an error occurs while reading from or closing the file handle, the Exception 
-is handled in the routine and an empty string is returned.
-</errors>
+<version>
+Modified in LazUtils version 4.3 to handle file sizes larger than 2GB in FPC 
+version prior to 3.3.1.
+</version>
 <seealso>
+<link id="ReadFileToBytes"/>
 <link id="FileSize"/>
-<link id="#lazutils.lazfileutils.FileOpenUTF8">FileOpenUTF8</link>
 <link id="#lazutils.lazfileutils.FileExistsUTF8">FileExistsUTF8</link>
 <link id="#lazutils.lazfileutils.ExpandFileNameUTF8">ExpandFileNameUTF8</link>
-<link id="#rtl.sysutils.FileRead">FileRead</link>
-<link id="#rtl.sysutils.FileClose">FileClose</link>
+<link id="#lazutils.lazfileutils.CleanAndExpandFilename">CleanAndExpandFilename</link>
 <link id="#rtl.sysutils.FileExists">FileExists</link>
-<link id="#rtl.sysutils.feInvalidHandle">feInvalidHandle</link>
+<link id="#rtl.sysutils.ExpandFileName">ExpandFileName</link>
+<link id="#rtl.classes.TFileStream">TFileStream</link>
 </seealso>
 </element>
 <element name="ReadFileToString.Result">
@@ -2588,6 +2674,7 @@ performed.
 </short>
 </element>
 
+<!-- TODO: Modified in LazUtils 5.0. Commit 20d206d2. Issue #41883. -->
 <element name="CopyDirTree">
 <short>
 Copies all file system entries in a source directory to the destination 
@@ -2600,23 +2687,30 @@ system entries from the directory in <var>SourceDir</var> to the directory in
 <var>TargetDir</var>.
 </p>
 <p>
-Values in SourceDir and TargetDir are fully-qualified path names for the 
-directories. If a trailing path delimiter is omitted in SourceDir or 
-TargetDir, it is appended (when needed) to the values. TargetDir cannot be a 
-sub-directory located in SourceDir. No actions are performed in the routine 
-when TargetDir is located within the specified SourceDir.
+Values in <var>SourceDir</var> and <var>TargetDir</var> are fully-qualified 
+path names for the directories. If a trailing path delimiter is omitted in 
+SourceDir or TargetDir, it is appended (when needed) to the values. TargetDir 
+cannot be a sub-directory located in SourceDir. No actions are performed in 
+the routine when TargetDir is located within the specified SourceDir.
 </p>
 <p>
-Flags contains values representing the options enabled in the copy operation. 
-The default value for the parameters is an empty set (<b>[]</b>) and 
-indicates that none of the <var>TCopyFileFlag</var> options are enabled. The 
-value <var>cffCreateDestDirectory</var> is always added to the values in 
+<var>Flags</var> contains values representing the options enabled in the copy 
+operation. The default value for the parameters is an empty set (<b>[]</b>) 
+and indicates that none of the <var>TCopyFileFlag</var> options are enabled. 
+The value <var>cffCreateDestDirectory</var> is always added to the values in 
 Flags internally; CopyDirTree requires the destination directory to be 
 created if it does not already exist.
 </p>
 <p>
 See <link id="TCopyFileFlag">TCopyFileFlag</link> for more information about 
 the option values and their meanings.
+</p>
+<p>
+<var>CopyEmptyDirs</var> indicates whether an empty directory found in the 
+routine is automatically created in the destination directory. The default 
+value is <b>False</b> and prevents an empty directory in SourceDir from being 
+copied to DestDir. When set to <b>True</b>, the empty directory will be 
+created in DestDir.
 </p>
 <p>
 The return value is <b>True</b> when all file system entries in SourceDir are 
@@ -2629,6 +2723,9 @@ Use <var>CopyFile</var> to copy a single file with a given name to a new file
 name.
 </p>
 </descr>
+<version>
+Modified in LazUtils version 5.0 to incorporate the CopyEmptyDirs argument.
+</version>
 <seealso>
 <link id="CopyFile"/>
 <link id="TCopyFileFlags"/>
@@ -2652,6 +2749,12 @@ Directory where the copied files are stored.
 <element name="CopyDirTree.Flags">
 <short>
 Options enabled for the copy operation; default value is an empty set ([])
+</short>
+</element>
+<element name="CopyDirTree.CopyEmptyDirs">
+<short>
+Indicates whether directories which contain no files are processed in the copy 
+operation. Default value is <b>False</b>.
 </short>
 </element>
 

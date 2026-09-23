@@ -450,7 +450,11 @@ Modified in version 3.0 to include goEditorParentColor and goEditorParentFont
 options.
 </version>
 <version>
-Modified in version 4.0 to include the goCopyWithoutTrailingLinebreak options.
+Modified in version 4.0 to include the goCopyWithoutTrailingLinebreak option.
+</version>
+<version>
+Modified in version 5.0 to include the goFixedColClick and goFixedRowClick 
+options.
 </version>
 <seealso>
 <link id="TCustomGrid.Options2"/>
@@ -479,6 +483,16 @@ Sets the font in a cell editor to the font for the parent control.
 <element name="TGridOption2.goCopyWithoutTrailingLinebreak">
 <short>
 Copies cell(s) to the clipboard without trailing linebreak sequence.
+</short>
+</element>
+<element name="TGridOption2.goFixedColClick">
+<short>
+Enables an OnClick event when a fixed column is clicked.
+</short>
+</element>
+<element name="TGridOption2.goFixedRowClick">
+<short>
+Enables an OnClick event when a fixed row is clicked.
 </short>
 </element>
 
@@ -671,8 +685,19 @@ control.
 <p>
 <var>TGridZone</var> is an enumeration type with values representing zones in 
 a grid control which are monitored to determine activity and subsequent 
-changes in the control state.
+changes in the control state. It represents the area on a grid where the mouse 
+is located when a mouse move, mouse down, or mouse up event is handled for the 
+control.
 </p>
+<p>
+TGridZone is the type returned by TCustomGrid methods like:
+</p>
+<ul>
+<li>CellToGridZone</li>
+<li>MouseToGridZone</li>
+<li>MouseToLogcell</li>
+<li>CacheMouseDown</li>
+</ul>
 <p>
 Values from TGridZone are stored in the TGridZoneSet type, and used to 
 implement properties in TCustomGrid like:
@@ -682,12 +707,16 @@ implement properties in TCustomGrid like:
 <li>HeaderPushZones</li>
 </ul>
 <p>
-The type is also passed as an argument to the Clean method in 
+The TGridZoneSet type is also passed as an argument to the Clean method in 
 TCustomStringGrid.
 </p>
 </descr>
 <seealso>
 <link id="TGridZoneSet"/>
+<link id="TCustomGrid.CellToGridZone"/>
+<link id="TCustomGrid.MouseToGridZone"/>
+<link id="TCustomGrid.MouseToLogcell"/>
+<link id="TCustomGrid.CacheMouseDown"/>
 <link id="TCustomGrid.HeaderHotZones"/>
 <link id="TCustomGrid.HeaderPushZones"/>
 <link id="TCustomStringGrid.Clean"/>
@@ -699,10 +728,10 @@ Area normally used for cell data (not fixed row or column headers).
 </short>
 </element>
 <element name="TGridZone.gzFixedCols">
-<short>Area used for fixed column headers </short>
+<short>Area used for fixed column headers.</short>
 </element>
 <element name="TGridZone.gzFixedRows">
-<short>Area used for fixed row headers </short>
+<short>Area used for fixed row headers.</short>
 </element>
 <element name="TGridZone.gzFixedCells">
 <short>
@@ -710,7 +739,10 @@ Area for fixed cells (where both the column and the row are fixed).
 </short>
 </element>
 <element name="TGridZone.gzInvalid">
-<short>Area not valid for grid cells.</short>
+<short>
+Area not valid for grid cells. Used when outbound (or out-of-bounds) events 
+are enabled on a grid control.
+</short>
 </element>
 
 <element name="TGridZoneSet">
@@ -7261,8 +7293,9 @@ id="TCustomGrid.VisibleRowCount">VisibleRowCount</link> properties contain
 information about the visible area of the grid.
 </p>
 <p>
-The <link id="TCustomGrid.Options">Options</link> controls options for the 
-grid.
+The <link id="TCustomGrid.Options">Options</link> and 
+<link id="TCustomGrid.Options2">Options2</link> control the options enabled 
+for the grid.
 </p>
 <p>
 Please note that most of these properties are declared as protected members. 
@@ -7281,8 +7314,19 @@ the <link id="TCustomGrid.Col">Col</link> and <link
 id="TCustomGrid.Row">Row</link> property.
 </p>
 <p>
-The <link id="TCustomGrid.MouseToCell">MouseToCell</link> method calculates a 
-grid cell from a given screen position.
+The <link id="#lcl.controls.TControl.OnClick">OnClick</link> event is 
+signalled when a mouse down event is handled for the control, and when cell 
+navigation is performed using cursor keys on the keyboard. It is signalled 
+when for fixed cells on the grid when the row or column features are enabled 
+in Options2.
+</p>
+<p>
+The <link id="TCustomGrid.MouseToCell">MouseToCell</link> method gets the 
+column and row number for a grid cell at a given position on the screen.
+<link id="TCustomGrid.MouseToGridZone">MouseToGridZone</link> gets the grid 
+area where the mouse down event occurred. 
+<link id="TCustomGrid.CellToGridZone">CellToGridZone</link> gets the grid area 
+for the specified column and row number.
 </p>
 <p>
 Huge changes to the grid should be encapsulated in calls to <link 
@@ -14704,7 +14748,9 @@ context menu on the form design surface.
 </element>
 
 <element name="TCustomGrid.MouseDown">
-<short>Handles mouse down events for the grid control.</short>
+<short>
+Handles mouse down events for the grid control.
+</short>
 <descr>
 <p>
 <var>MouseDown</var> is overridden in <var>TCustomGrid</var> to ensure that 
@@ -14714,7 +14760,7 @@ events, and both GridState and GridFlags are updated for the control.
 <p>
 MouseDown calls the inherited method to handle focus changes for the control 
 and drag operations. The OnMouseDown event handler is signalled (when 
-assigned) by the ancestor.
+assigned) by the ancestor class.
 </p>
 <p>
 No additional actions are performed in the method at design-time, when the 
@@ -14744,13 +14790,15 @@ zone is in HeaderPushZones.
 <b>gzFixedCols</b>
 </p>
 <p>
-GridState is set to gsColSizing when goColSizing has been included in the 
-Options and the cursor state is gcsColWidthChanging.
+GridState is set to gsColSizing when goColSizing has been included in Options 
+and the cursor state is gcsColWidthChanging.
 </p>
 <p>
-Otherwise, GridState is set to gsColMoving. The cell is drawn in a "pushed" 
-state when goHeaderPushedLook is included in Options and the grid zone is in 
-HeaderPushZones.
+Otherwise, GridState is set to gsColMoving and the coordinates for the most 
+recent drag / move candidate are reset. The cell is drawn in a "pushed" state 
+when goHeaderPushedLook is included in Options and the grid zone is in 
+HeaderPushZones. If goFixedColClick has been included in Options2, the Click 
+method and OnClick event handler are enabled for the control.
 </p>
 <p>
 <b>gzFixedRows</b>
@@ -14760,25 +14808,41 @@ GridState is set to gsRowMoving when goRowSizing is included in Options and
 CursorState is gcsRowHeightChanging.
 </p>
 <p>
-Otherwise, GridState is set to gsRowMoving. The cell is drawn using the 
-"pushed" state when goHeaderPushedLook is included in Options and the grid 
-zone is in HeaderPushZones.
+Otherwise, GridState is set to gsRowMoving and the coordinates for the most 
+recent drag / move candidate are reset. The cell is drawn using the "pushed" 
+state when goHeaderPushedLook is included in Options and the grid zone is in 
+HeaderPushZones. If goFixedRowClick has been included in Options2, the Click 
+method and OnClick event handler are enabled for the control.
 </p>
 <p>
 <b>gzNormal</b>
 </p>
 <p>
 When the mouse down event is over a button-style cell, it is drawn in the 
-"pushed" state. No additional actions are needed for the event.
+"pushed" state. No additional actions are needed for the button event.
 </p>
 <p>
 Other cells use the values in Options and CursorState to determine whether 
 the mouse event is for column sizing, selection, or enabling/disabling the 
-cell editor. GridState is updated to the corresponding value.
+cell Editor. GridState is updated to the corresponding value.
 </p>
 </descr>
+<version>
+Modified in LCL version 5.0 to use Options2 to enable or disable Click / 
+OnClick for mouse down events in fixed columns or rows.
+</version>
 <seealso>
+<link id="TCustomGrid.Options2"/>
+<link id="TCustomGrid.Options"/>
+<link id="TCustomGrid.GridFlags"/>
+<link id="TCustomGrid.fGridState"/>
+<link id="TCustomGrid.CursorState"/>
+<link id="TCustomGrid.Editor"/>
+<link id="TGridDataCache"/>
+<link id="TGridZone"/>
 <link id="#lcl.controls.TControl.MouseDown">TControl.MouseDown</link>
+<link id="#lcl.controls.TControl.Click">TControl.Click</link>
+<link id="#lcl.controls.TControl.OnClick">TControl.OnClick</link>
 </seealso>
 </element>
 <element name="TCustomGrid.MouseDown.Button">
@@ -16803,12 +16867,20 @@ the nearest valid cell.
 <p>
 Normally, when a user clicks on a point over the empty space after cells (for 
 example if grid has three rows but user clicks on imaginary fourth row) the 
-current focused cell will move to the nearest cell to clicked point. We call 
-this an outbound event.
+current focused cell will move to the nearest cell to the point clicked on the 
+grid. We call this an outbound event.
 </p>
 <p>
-The default value or the property is <b>True</b>, as this has been the grid's 
-behavior since the beginning.
+AllowOutboundEvent affects actions performed when columns are resized, and 
+when the Row or Col number is changed for the grid control, and the grid zone 
+reported for a mouse click on a fixed grid cell. The value is temporarily 
+reset and restored during execution of the MouseDown, MouseMove, and 
+IsMouseOverCellButton methods.
+</p>
+<p>
+The default value for the property is <b>True</b>, as this has been the grid's 
+behavior since the beginning. It allows OnClick events to be signalled 
+for the corresponding actions and options enabled for the grid.
 </p>
 <p>
 This was added to mimic Delphi behavior where outbound events are not 
@@ -16816,7 +16888,20 @@ available; to enable Delphi compatibility, set AllowOutboundEvents to
 <b>False</b>.
 </p>
 </descr>
-<seealso/>
+<version>
+Published in TDrawGrid and TStringGrid descendants in LCL version 5.0.
+</version>
+<seealso>
+<link id="TCustomGrid.Col"/>
+<link id="TCustomGrid.Row"/>
+<link id="TCustomGrid.ColRow"/>
+<link id="TCustomGrid.Options2"/>
+<link id="TCustomGrid.MouseDown"/>
+<link id="TCustomGrid.MouseMove"/>
+<link id="TCustomGrid.IsMouseOverCellButton"/>
+<link id="TCustomGrid.OnButtonClick"/>
+<link id="#lcl.controls.TControl.OnClick">TControl.OnClick</link>
+</seealso>
 </element>
 
 <element name="TCustomGrid.AlternateColor">
@@ -17089,8 +17174,8 @@ editor.
 <link id="TCustomGrid.CheckLimitsWithError"/>
 <link id="TCustomGrid.MoveExtend"/>
 <link id="TCustomGrid.Click"/>
-<link id="#lcl.controls.TControl.Click"/>
-<link id="#lcl.controls.TControl.OnClick"/>
+<link id="#lcl.controls.TControl.Click">TControl.Click</link>
+<link id="#lcl.controls.TControl.OnClick">TControl.OnClick</link>
 </seealso>
 </element>
 
@@ -18578,6 +18663,16 @@ TCustomGrid instance). Changing the set member does not affect an existing
 cell editor already visible on the control. The change is applied when the 
 next cell editor is created, configured, and/or displayed.
 </dd>
+<dt>goFixedColClick</dt>
+<dd>
+Causes the Click method (and an assigned OnClick event handler) to be executed 
+when a fixed column cell is clicked on the control.	
+</dd>
+<dt>goFixedRowClick</dt>
+<dd>
+Causes the Click method (and an assigned OnClick event handler) to be executed 
+when a fixed row cell is clicked on the control.	
+</dd>
 </dl>
 <p>
 Use Options to control the primary features and behaviors in the grid 
@@ -18591,6 +18686,9 @@ Use MouseWheelOption to control the mouse wheel behavior in the control.
 Modified in version 3.0 to include goEditorParentColor and goEditorParentFont 
 options.
 </version>
+<version>
+Modified in version 5.0 to include goFixedColClick and goFixedRowClick options.
+</version>
 <seealso>
 <link id="TCustomGrid.Options"/>
 <link id="TCustomGrid.MouseWheelOption"/>
@@ -18603,6 +18701,8 @@ options.
 <link id="TGridOptions2"/>
 <link id="TGridOption2"/>
 <link id="DefaultGridOptions2"/>
+<link id="#lcl.controls.TControl.Click">TControl.Click</link>
+<link id="#lcl.controls.TControl.OnClick">TControl.OnClick</link>
 </seealso>
 </element>
 
@@ -18671,8 +18771,8 @@ grid control.
 <link id="TCustomGrid.CheckLimitsWithError"/>
 <link id="TCustomGrid.MoveExtend"/>
 <link id="TCustomGrid.Click"/>
-<link id="#lcl.controls.TControl.Click"/>
-<link id="#lcl.controls.TControl.OnClick"/>
+<link id="#lcl.controls.TControl.Click">TControl.Click</link>
+<link id="#lcl.controls.TControl.OnClick">TControl.OnClick</link>
 </seealso>
 </element>
 
@@ -20809,10 +20909,10 @@ coordinates are located.
 </short>
 <descr>
 <p>
-<var>MouseToGridZone</var> is a <var>TGridZone</var> function used to get the 
-grid zone where the specified mouse pointer coordinates are located. The 
-<var>X</var> and <var>Y</var> arguments contain the screen coordinates where 
-the mouse pointer is located.
+<var>MouseToGridZone</var> is a <var>TGridZone</var> function 
+which returns the grid zone where the specified mouse pointer coordinates are 
+located. The <var>X</var> and <var>Y</var> arguments contain the screen 
+coordinates where the mouse pointer is located.
 </p>
 <p>
 The return value is a <var>TGridZone</var> enumeration value determined by 
@@ -20824,19 +20924,23 @@ available, and used to the determine the return value.
 <dt>gzInvalid</dt>
 <dd>
 X and Y are located on the border or in a area not used for cells in the 
-client area for the control.
+client area for the control. Used when AllowOutboundEvents has been disabled 
+on the control.
 </dd>
 <dt>gzFixedCells</dt>
 <dd>
-X and Y are both located in a fixed header cell (located in column 0 row 0).
+X and Y are both located in a fixed header cell (located in column 0 row 0 - 
+or a cell where both the row and column are fixed).
 </dd>
 <dt>gzFixedRows</dt>
 <dd>
-X and Y are located in a fixed header cell for a row on the control.
+X and Y are located in a fixed header cell located in a fixed row on the 
+control.
 </dd>
 <dt>gzFixedCols</dt>
 <dd>
-X and Y are located in a fixed header cell for a column on the control.
+X and Y are located in a fixed header cell located in a fixed column on the 
+control.
 </dd>
 <dt>gzNormal</dt>
 <dd>
@@ -20854,15 +20958,16 @@ row number.
 </p>
 </descr>
 <seealso>
+<link id="TCustomGrid.AllowOutboundEvents"/>
 <link id="TCustomGrid.BorderStyle"/>
+<link id="TCustomGrid.CellToGridZone"/>
 <link id="TCustomGrid.Flat"/>
 <link id="TCustomGrid.FixedRows"/>
 <link id="TCustomGrid.FixedCols"/>
 <link id="TCustomGrid.GCache"/>
-<link id="TCustomGrid.OffsetToColRow"/>
 <link id="TCustomGrid.MouseToCell"/>
 <link id="TCustomGrid.MouseMove"/>
-<link id="TCustomGrid.CellToGridZone"/>
+<link id="TCustomGrid.OffsetToColRow"/>
 <link id="TGridZone"/>
 <link id="#lcl.controls.TControl.MouseMove">TControl.MouseMove</link>
 <link id="#lcl.controls.TControl.OnMouseMove">TControl.OnMouseMove</link>
@@ -23158,6 +23263,7 @@ TStringGrid
 
 <!-- published -->
 <element name="TDrawGrid.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TDrawGrid.AllowOutboundEvents" link="TCustomDrawGrid.AllowOutboundEvents"/>
 <element name="TDrawGrid.AlternateColor" link="#lcl.grids.TCustomGrid.AlternateColor"/>
 <element name="TDrawGrid.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TDrawGrid.AutoAdvance" link="#lcl.grids.TCustomGrid.AutoAdvance"/>
@@ -25506,6 +25612,7 @@ TStringGrid
 
 <!-- published -->
 <element name="TStringGrid.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TStringGrid.AllowOutboundEvents" link="TCustomDrawGrid.AllowOutboundEvents"/>
 <element name="TStringGrid.AlternateColor" link="#lcl.grids.TCustomGrid.AlternateColor"/>
 <element name="TStringGrid.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TStringGrid.AutoAdvance" link="#lcl.grids.TCustomGrid.AutoAdvance"/>

@@ -242,8 +242,6 @@ Forms, Grids, LCLProc, Controls, ComCtrls, ExtDlgs, EditBtn, MaskEdit
 <element name="rsCalculator"/>
 <element name="rsError"/>
 <element name="rsPickDate"/>
-<element name="rsSize"/>
-<element name="rsModified"/>
 <element name="rsDoCopy"/>
 <element name="rsDoPaste"/>
 

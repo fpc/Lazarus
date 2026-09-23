@@ -2423,79 +2423,223 @@ Represents styles used to escape control characters.
 <descr>
 <p>
 <var>TEscapeMode</var> is an enumerated type with values that determine the 
-output style for escaped characters in <var>Utf8EscapeControlChars</var>.
+output style for escaped control characters in 
+<var>Utf8EscapeControlChars</var>. A value from the enumeration is passed to 
+Utf8EscapeControlChars to control conversion of control characters to their 
+escaped equivalent. Use emCustom to perform custom encoding for control 
+characters using the fixed-size array passed as an argument to 
+Utf8EscapeControlChars.
 </p>
 </descr>
-<seealso/>
+<version>
+Enumeration values modified in LazUtils version 5.0. Ordinal positions for the 
+emHexC and emC enumeration values were swapped. Enumeration values emPercent 
+and emCustom were added.
+</version>
+<seealso>
+<link id="Utf8EscapeControlChars"/>
+<link id="TEscapedStrings"/>
+<link id="PEscapedStrings"/>
+</seealso>
 </element>
 <element name="TEscapeMode.emPascal">
-<short>Pascal-style escape characters '#27'</short>
+<short>Pascal-style escape characters. '#27'</short>
 </element>
 <element name="TEscapeMode.emHexPascal">
-<short>Pascal-style hexadecimal strings '#$1B'</short>
-</element>
-<element name="TEscapeMode.emHexC">
-<short>C-style hexadecimal strings '\0x1B'</short>
+<short>Pascal-style hexadecimal strings. '#$1B'</short>
 </element>
 <element name="TEscapeMode.emC">
-<short>C-style strings '\e'</short>
+<short>C-style strings. '\e'</short>
+</element>
+<element name="TEscapeMode.emHexC">
+<short>C-style hexadecimal strings. '\0x1B'</short>
 </element>
 <element name="TEscapeMode.emAsciiControlNames">
-<short>ASCII-style control names '[ESC]'</short>
+<short>ASCII-style control character names. '[ESC]'</short>
+</element>
+<element name="TEscapeMode.emPercent">
+<short>Percent encoding-style control characters. '%0D'</short>
+</element>
+<element name="TEscapeMode.emCustom">
+<short>
+User-defined encoding style. Passed as a TEscapedStrings argument in the 
+Utf8EscapeControlChars routine.
+</short>
+</element>
+
+<element name="TControlChars">
+<short>
+Specifies a range used to identify control characters.
+</short>
+<descr>
+<p>
+<var>TControlChars</var> is a range type which identifies the single-byte 
+values recognized as control characters. Used as an index into values in the 
+<var>TEscapedStrings</var> type, and in the implementation of the 
+<var>Utf8EscapeControlChars</var> routine.
+</p>
+</descr>
+<version>
+Added in LazUtils version 5.0.
+</version>
+<seealso>
+<link id="Utf8EscapeControlChars"/>
+<link id="TEscapedStrings"/>
+</seealso>
+</element>
+
+<element name="TEscapedStrings">
+<short>
+Fixed-length array of strings used to convert control characters to an escaped 
+encoding style.
+</short>
+<descr>
+<p>	
+<var>TEscapedStrings</var> is an array type used to represent the escaped 
+values for control characters using a specific encoding style. It is used for 
+character conversion tables needed in the <var>Utf8EscapeControlChars</var> 
+routine. Values in TEscapedStrings are indexed by <var>TControlChars</var> 
+enumeration values, and each element contains a String with the escaped 
+encoding for the corresponding control character.
+</p>
+<p>
+A pointer to a TEscapedStrings instance (PEscapedStrings) is passed as an argument to the Utf8EscapeControlChars routine for a custom encoding style.
+</p>
+</descr>
+<version>
+Added in LazUtils version 5.0.
+</version>
+<seealso>
+<link id="Utf8EscapeControlChars"/>
+<link id="TControlChars"/>
+<link id="TEscapeMode"/>
+<link id="PEscapedStrings"/>
+</seealso>
+</element>
+
+<element name="PEscapedStrings">
+<short>
+Pointer to a TEscapedStrings type.
+</short>
+<descr>
+<p>
+<var>PEscapedStrings</var> is pointer to a <var>TEscapedStrings</var> instance 
+with character conversions for control characters. A PEscapedStrings value is 
+passed as an argument to the <var>Utf8EscapeControlChars</var> routine to 
+represent the character encodings need in a custom encoding style.
+</p>
+</descr>
+<version>
+Added in LazUtils version 5.0.
+</version>
+<seealso>
+<link id="Utf8EscapeControlChars"/>
+<link id="TControlChars"/>
+<link id="TEscapeMode"/>
+<link id="TEscapedStrings"/>
+</seealso>
 </element>
 
 <element name="Utf8EscapeControlChars">
 <short>
-Translates control characters in a UTF-8-encoded string into human readable 
-format.
+Translates control characters in a UTF-8-encoded string into human-readable escaped format.
 </short>
 <descr>
 <p>
 <var>Utf8EscapeControlChars</var> translates control characters inside a 
-UTF-8-encoded string into human readable format. Characters in the range 
-#0..#31 are converted into the human-readable values for the control 
-characters in the format specified by <var>EscapeMode</var>, including:
+UTF-8-encoded string into human-readable escaped format. S is the 
+UTF-8-encoded string examined and converted in the routine. Characters in the 
+<var>TControlChars</var> range (#0..#31) are converted into the human-readable 
+values for the control characters in the format specified by 
+<var>EscapeMode</var>, including:
 </p>
 <dl>
 <dt>emPascal</dt>
 <dd>Pascal-style escape characters '#27'</dd>
 <dt>emHexPascal</dt>
 <dd>Pascal-style hexadecimal strings '#$1B'</dd>
-<dt>emHexC</dt>
-<dd>C-style hexadecimal strings '\0x1B'</dd>
 <dt>emC</dt>
 <dd>C-style strings '\e'</dd>
+<dt>emHexC</dt>
+<dd>C-style hexadecimal strings '\0x1B'</dd>
 <dt>emAsciiControlNames</dt>
 <dd>ASCII-style control names '[ESC]'</dd>
+<dt>emPercent</dt>
+<dd>Percent-encoded control characters '%0D'</dd>
+<dt>emCustom</dt>
+<dd>User-defined encoding style defined in the CustomStrings argument.</dd>
 </dl>
+<p>
+<var>CustomStrings</var> is a <var>PEscapedStrings</var> argument which 
+contains the replacement values for control characters when EscapeMode is set 
+to <var>emCustom</var>. It is a Pointer to the fixed-size 
+<var>TEscapedStrings</var> array where the custom encoding is defined for the 
+control characters. CustomStrings cannot be Nil (unassigned) when EscapeMode 
+is set to <var>emCustom</var>; an EInvalidOp exception is raised if 
+CustomStrings has not been assigned.
+</p>
+<p>
+<var>AMaxGrowFactor</var> specifies the maximum growth allowed when converting 
+S using the specified EscapeMode. Most escape encoding styles have a maximum 
+growth factor of 3, 4, or 5. emCustom does not specify a growth factor limit 
+(0 is used). The growth factor is calculated by examining each of the values 
+in the fixed-length CustomStrings array. As a result, emCustom can be the 
+slowest of the escape encoding styles.
+</p>
 <p>
 Utf8EscapeControlChars calls <var>FindInvalidUTF8Codepoint</var> to see if 
 <var>S</var> contains any invalid codepoints for the UTF-8 encoding. 
 <var>UTF8FixBroken</var> is called to repair the input value.
 </p>
 <p>
-Utf8EscapeControlChars iterates over the characters in S, and converts any 
-character value in the eligible range using an internal lookup table for the 
-value in EscapeMode. All other character values (or values in multi-byte 
-UTF-8 code points) are included in the return value in their unmodified form.
+Utf8EscapeControlChars iterates over the values in S, and converts any 
+control character value in the range #0..#31 using a conversion table 
+for the value in EscapeMode. All other character values (or byte values in a 
+multi-byte UTF-8 code point) are included in the return value in their 
+unmodified form.
 </p>
 <p>
 Mainly used as a diagnostic or logging tool.
 </p>
 </descr>
+<version>
+Modified in LazUtils version 5.0 to include new encoding styles in EscapeMode, 
+and use of the CustomStrings argument.
+</version>
 <seealso>
-<link id="UTF8FixBroken"/>
 <link id="TEscapeMode"/>
+<link id="TEscapedStrings"/>
+<link id="PEscapedStrings"/>
+<link id="UTF8FixBroken"/>
 </seealso>
 </element>
 <element name="Utf8EscapeControlChars.Result">
-<short>String with the escaped values for control characters in S.</short>
+<short>
+String with the escaped values for control characters found in S.
+</short>
 </element>
 <element name="Utf8EscapeControlChars.S">
-<short>UTF-8 encoded string with values converted in the routine.</short>
+<short>
+UTF-8-encoded string with control characters converted in the routine.
+</short>
 </element>
 <element name="Utf8EscapeControlChars.EscapeMode">
-<short>Controls the human readable format for escaped characters.</short>
+<short>
+Controls the human readable format for escaped control characters.
+</short>
+</element>
+<element name="Utf8EscapeControlChars.CustomStrings">
+<short>
+Pointer to an array with the custom encoding used for control characters. 
+Required for EscapeMode emCustom.
+</short>
+</element>
+<element name="Utf8EscapeControlChars.AMaxGrowFactor">
+<short>
+Maximum growth factor allowed for the specified EscapeMode. If non-zero, no 
+error checking is done on it's value. If set to zero (the default for 
+EmCustom), it will be calculated on the fly (which is time consuming).
+</short>
 </element>
 
 <element name="TUTF8TrimFlag">
