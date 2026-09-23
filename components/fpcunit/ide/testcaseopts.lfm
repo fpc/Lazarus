@@ -11,9 +11,11 @@ object TestCaseOptionsForm: TTestCaseOptionsForm
   ClientHeight = 240
   ClientWidth = 284
   Constraints.MinWidth = 280
+  KeyPreview = True
   Position = poScreenCenter
   LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   object gbNames: TGroupBox
     Left = 6
     Height = 70
@@ -62,6 +64,9 @@ object TestCaseOptionsForm: TTestCaseOptionsForm
     BorderSpacing.Bottom = 6
     BorderSpacing.Around = 6
     Caption = 'Create unit'
+    Default = True
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 2
     OnClick = btnAcceptClick
   end
