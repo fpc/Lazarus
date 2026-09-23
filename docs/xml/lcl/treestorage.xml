@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+Documentation for LCL (Lazarus Component Library) and LazUtils (Lazarus 
+Utilities) are published under the Creative Commons Attribution-ShareAlike 4.0 
+International public license.
+
+https://creativecommons.org/licenses/by-sa/4.0/legalcode.txt
+https://gitlab.com/freepascal.org/lazarus/lazarus/-/blob/main/docs/cc-by-sa-4-0.txt
+
+Copyright (c) 1997-2025, by the Lazarus Development Team.
+
+-->
+<fpdoc-descriptions>
+<package name="lcl">
+<!--
+====================================================================
+	TreeStorage
+====================================================================
+-->
+<module name="TreeStorage">
+<short>
+Contains utility routines used to save or load the tree nodes in a tree 
+view control using an XML storage format.
+</short>
+<descr/>
+<version>
+Added in LCL version 5.0.
+</version>
+
+<!-- used units -->
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="ComCtrls"/>
+<element name="Laz2_Dom"/>
+<element name="Laz2_XmlWrite"/>
+<element name="Laz2_XmlRead"/>
+<element name="LazLoggerBase"/>
+
+<element name="TTreeItemStorageOption">
+<short>
+Represents the options which determine the tree node values read or written in 
+load and save routines.
+</short>
+<descr>
+<p>
+Values from the enumeration are stored in the 
+<var>TTreeItemStorageOptions</var> set type. When a value is included in the 
+set, the corresponding property in the TTreeNode instance is included in the 
+data processed in the load and save routines. If a value is omitted from the 
+set, the corresponding property in the TTreeNode is ignored.
+</p>
+<p>
+The enumeration values are used in the TreeSaveToXML and TreeLoadFromXML 
+routines when properties for TTreeNodes are read from or written to an XML 
+storage format.
+</p>
+<p>
+Use the TTreeItemStorageOptions set type to store values from the 
+TTreeItemStorageOption enumeration.
+</p>
+</descr>
+<seealso>
+<link id="TTreeItemStorageOptions"/>
+<link id="TreeItemStorageDefaultOptions"/>
+<link id="TreeSaveToXML"/>
+<link id="TreeLoadFromXML"/>
+<link id="#lcl.comctrls.TTreeView.Items">TTreeView.Items</link>
+<link id="#lcl.comctrls.TTreeNode">TTreeNode</link>
+</seealso>
+</element>
+<element name="TTreeItemStorageOption.tsoExpanded">
+<short>
+Data about a tree node includes the setting in its Expanded property.
+</short>
+</element>
+<element name="TTreeItemStorageOption.tsoSelected">
+<short>
+Data about a tree node includes the setting in its Selected property.
+</short>
+</element>
+<element name="TTreeItemStorageOption.tsoFocused">
+<short>
+Data about a tree node includes the setting in its Focused property.
+</short>
+</element>
+<element name="TTreeItemStorageOption.tsoVisible">
+<short>
+Data about a tree node includes the setting in its Visible property.
+</short>
+</element>
+<element name="TTreeItemStorageOption.tsoEnabled">
+<short>
+Data about a tree node includes the setting in its Enabled property.
+</short>
+</element>
+<element name="TTreeItemStorageOption.tsoImageIndex">
+<short>
+Data about a tree node includes the setting in its ImageIndex property.
+</short>
+</element>
+<element name="TTreeItemStorageOption.tsoSelectedIndex">
+<short>
+Data about a tree node includes the setting in its SelectedIndex property.
+</short>
+</element>
+<element name="TTreeItemStorageOption.tsoStateIndex">
+<short>
+Data about a tree node includes the setting in its StateIndex property.
+</short>
+</element>
+<element name="TTreeItemStorageOption.tsoOverlayIndex">
+<short>
+Data about a tree node includes the setting in its OverlayIndex property.
+</short>
+</element>
+
+<element name="TTreeItemStorageOptions">
+<short>
+Set type used to store values from the TTreeItemStorageOption enumeration.
+</short>
+<descr>
+<p>
+<var>TTreeItemStorageOptions</var> is a set type used to store zero or more 
+values from the <var>TTreeItemStorageOption</var> enumeration. 
+TTreeItemStorageOptions is the type passed as an argument to routines like 
+TreeSaveToXMl and TreeLoadFromXML. It controls which property values in a 
+TTreeNode instance are read or written in the routines.
+</p>
+<p>
+See TTreeItemStorageOption for the values in the enumeration and their usage.
+</p>
+</descr>
+<seealso>
+<link id="TreeSaveToXML"/>
+<link id="TreeLoadFromXML"/>
+<link id="TreeItemStorageDefaultOptions"/>
+<link id="#lcl.comctrls.TTreeView.Items">TTreeView.Items</link>
+<link id="#lcl.comctrls.TTreeNode">TTreeNode</link>
+</seealso>
+</element>
+
+<element name="TreeItemStorageDefaultOptions">
+<short>
+Set with all of the available TTreeItemStorageOption values.
+</short>
+<descr>
+<p>
+<var>TreeItemStorageDefaultOptions</var> is a set constant which contains all 
+of the values from the TTreeItemStorageOption enumeration. 
+TreeItemStorageDefaultOptions is the default value used for arguments passed 
+to the TreeSaveToXML and TreeLoadFromXML routines. It ensures that all of the 
+relevant properties in a TTreeNode instance are processed in the corresponding 
+routine.
+</p>
+</descr>
+<seealso>
+<link id="TTreeItemStorageOption"/>
+<link id="TTreeItemStorageOptions"/>
+<link id="TreeSaveToXML"/>
+<link id="TreeLoadFromXML"/>
+<link id="#lcl.comctrls.TTreeView.Items">TTreeView.Items</link>
+<link id="#lcl.comctrls.TTreeNode">TTreeNode</link>
+</seealso>
+</element>
+
+<element name="TreeSaveToXML">
+<short>
+Saves tree nodes found in the specified tree view control using an XML storage 
+format.
+</short>
+<descr>
+<p>
+<var>TreeSaveToXML</var> is an overloaded routine used to write the nodes 
+found in a tree view control to an XML storage format. The overloaded variants 
+allow the XML content to be stored to either a file or a stream.
+</p>
+<p>
+Tree is the TCustomTreeView control with the tree nodes written in the 
+routine.
+</p>
+<p>
+<var>Options</var> is a <var>TTreeItemStorageOptions</var> set type which 
+controls the properties in a TTreeNode instance which are written to the XML 
+storage format. The default value for the parameter is 
+TreeItemStorageDefaultOptions and causes all of the relevant properties for a 
+given tree node to be written in the routine. See TTreeItemStorageOption for 
+information about Options values and their meanings.
+</p>
+<p>
+Use the <var>Fn</var> or <var>St</var> arguments to specify the file name or 
+stream where the XML representation for the hierarchical tree structure is 
+stored.
+</p>
+<p>
+TreeSaveToXML creates a TXMLDocument used to store the hierarchy of tree nodes 
+found on the tree view control. The root node is always give the element name 
+"Treeview". The element used to store the hierarchy of tree nodes is given the 
+name "Items". Each tree node is given the element name "Node". The XML content 
+generated in the routine looks like the following:
+</p>
+<code>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Treeview&gt;
+  &lt;Items&gt;
+    &lt;Node Caption="Item0" Expanded="True"&gt;
+      &lt;Node Caption="Item0_0"/&gt;
+      &lt;Node Caption="Item0_1"/&gt;
+    &lt;/Node&gt;
+    &lt;Node Caption="Item1" Expanded="True"&gt;
+      &lt;Node Caption="Item1_0"/&gt;
+      &lt;Node Caption="Item1_1"/&gt;
+    &lt;/Node&gt;
+    &lt;Node Caption="Item2" Expanded="True"&gt;
+      &lt;Node Caption="Item2_0" Expanded="True"&gt;
+        &lt;Node Caption="Item2_0_0"/&gt;
+      &lt;/Node&gt;
+    &lt;/Node&gt;
+    &lt;Node Caption="Item3"/&gt;
+    &lt;Node Caption="Item foo bar"/&gt;
+  &lt;/Items&gt;
+&lt;/Treeview>
+</code>
+<p>
+The Caption (or Text) for a given tree node is stored as the Caption attribute 
+in the Node element. Values in the Options argument control the other 
+TTreeNode properties which are stored as attributes in Node elements. For 
+example, a node where TTreeNode.Expanded is set will generated an Expanded 
+attribute name and value pair when the property is <b>True</b> and tsoExpanded 
+has been included in the Options argument. The attribute is omitted if the 
+property is <b>False</b> or the storage setting is not included in Options. 
+The same logic applies to other TreeNode property values and the corresponding 
+storage settings in Options.
+</p>
+</descr>
+<seealso>
+<link id="TreeLoadFromXML"/>
+<link id="TTreeItemStorageOption"/>
+<link id="TTreeItemStorageOptions"/>
+</seealso>
+</element>
+<element name="TreeSaveToXML.Tree">
+<short>
+TCustomTreeView control with the tree nodes written in the routine.
+</short>
+</element>
+<element name="TreeSaveToXML.Fn">
+<short>
+Name for the XML file where the hierarchical tree structure is stored.
+</short>
+</element>
+<element name="TreeSaveToXML.Options">
+<short>
+Options which control the tree node values written in the routine.
+</short>
+</element>
+<element name="TreeSaveToXML.St">
+<short>
+TStream instance where where the hierarchical tree structure is stored.
+</short>
+</element>
+
+<element name="TreeLoadFromXML">
+<short>
+Loads tree nodes stored in XML format to the specified tree view control.
+</short>
+<descr>
+<p>
+<var>TreeLoadFromXMl</var> is a an overloaded routine used to load the 
+hierarchical tree nodes stored in the Items property for the specified tree 
+view control from an XML storage format. The overloaded variants allow the XML 
+content to originate from either a file or a stream.
+</p>
+<p>
+<var>Tree</var> is the <var>TCustomTreeView</var> control where the tree nodes 
+are stored in the routine.
+</p>
+<p>
+<var>Options</var> is a <var>TTreeItemStorageOptions</var> set type which 
+controls the properties which are stored in TTreeNode instance which are read 
+from the XML storage format. The default value for the parameter is 
+TreeItemStorageDefaultOptions and causes all of the relevant properties for a 
+given tree node to be stored in the routine. See  TTreeItemStorageOption for 
+information about Options values and their meanings.
+</p>
+<p>
+Use the <var>Fn</var> or <var>St</var> arguments to specify the file name or 
+stream where the XML representation for the hierarchical tree structure was 
+stored.
+</p>
+<p>
+TreeLoadFromXML creates a TXMLDocument with the hierarchy of tree nodes found 
+in the file or stream. The XML document contains elements with names like 
+"Treeview", "Items", and "Node". For example:
+</p>
+<code>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Treeview&gt;
+  &lt;Items&gt;
+    &lt;Node Caption="Item0" Expanded="True"&gt;
+      &lt;Node Caption="Item0_0"/&gt;
+      &lt;Node Caption="Item0_1"/&gt;
+    &lt;/Node&gt;
+    &lt;Node Caption="Item1" Expanded="True"&gt;
+      &lt;Node Caption="Item1_0"/&gt;
+      &lt;Node Caption="Item1_1"/&gt;
+    &lt;/Node&gt;
+    &lt;Node Caption="Item2" Expanded="True"&gt;
+      &lt;Node Caption="Item2_0" Expanded="True"&gt;
+        &lt;Node Caption="Item2_0_0"/&gt;
+      &lt;/Node&gt;
+    &lt;/Node&gt;
+    &lt;Node Caption="Item3"/&gt;
+    &lt;Node Caption="Item foo bar"/&gt;
+  &lt;/Items&gt;
+&lt;/Treeview>
+</code>
+<p>
+TreeLoadFromXML updates the Items property in the tree view control. It clears 
+the Items collection on entry, and adds a TTreeNode to Items for each of the 
+Node elements in the XML content.
+</p>
+<p>
+The Caption attribute for a Node element is stored as the Text for a given 
+TTreeNode instance. Values in the Options argument control the other TTreeNode 
+properties updated from the attribute values provided in Node elements. For 
+example, when tsoExpanded has been included in Options the value for the 
+Expanded attribute is stored in the Expanded property for the TTreeNode 
+instance. When tsoVisible has been include in Option, the Visible attribute is 
+used to set the value in the Visible property for the TTreeNode instance. Only 
+those values specified in Options are applied to the TTreeNode instances 
+created in the routine; other properties have their default values.
+</p>
+</descr>
+<errors>
+</errors>
+<seealso>
+<link id="TreeSaveToXML"/>
+<link id="TTreeItemStorageOption"/>
+<link id="TTreeItemStorageOptions"/>
+</seealso>
+</element>
+<element name="TreeLoadFromXML.Tree">
+<short>
+TCustomTreeView control where the tree nodes are stored in the routine.
+</short>
+</element>
+<element name="TreeLoadFromXML.Fn">
+<short>
+Name for the XML file with the tree nodes loaded in the routine.
+</short>
+</element>
+<element name="TreeLoadFromXML.Options">
+<short>
+Storage options enabled for the tree nodes loaded in the routine.
+</short>
+</element>
+<element name="TreeLoadFromXML.St">
+<short>
+TStream instance with the XML content loaded in the routine.
+</short>
+</element>
+
+</module>
+<!-- TreeStorage -->
+</package>
+</fpdoc-descriptions>
