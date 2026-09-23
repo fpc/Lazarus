@@ -5141,7 +5141,7 @@ Enables display of tabs on the control when set to <b>True</b> (default).
 </short>
 <descr>
 <p>
-<var>ShowTabs</var> is a <var>Boolean</var>	 property which enables or 
+<var>ShowTabs</var> is a <var>Boolean</var> property which enables or 
 disables display of the tab captions specified in the Tabs property. The 
 default value for the property is <b>True</b> and enables captions to be drawn 
 along the control side indicated in <var>TabPosition</var>.
@@ -14684,6 +14684,44 @@ finalizes the items and columns for the control.
 <element name="TCustomListView.DestroyWnd" link="#lcl.controls.TWinControl.DestroyWnd"/>
 <element name="TCustomListView.BeginAutoDrag" link="#lcl.controls.TControl.BeginAutoDrag"/>
 
+<element name="TCustomListView.CreateListColumns">
+<short>
+Creates the collection used to store the columns definitions for the control.
+</short>
+<descr>
+<p>
+<var>CreateListColumns</var> is a <var>TListColumns</var> function which gets 
+the collection used to store the column definitions in the <var>Columns</var> 
+property. In TCustomListView, the collection stores TListColumn instances. 
+CreateListColumns is a virtual method and can be overridden / re-implemented 
+in descendent classes (like TCustomShellListView / TShellListView) to reflect 
+the collection and item class type needed for the Columns used in the 
+implementation.
+</p>
+<p>
+CreateListColumns is used in the Create constructor to initialize the internal 
+member for the Columns property.
+</p>
+</descr>
+<version>
+Added in LCL version 5.0.
+</version>
+<seealso>
+<link id="TCustomListView.Columns"/>
+<link id="TCustomListView.Create"/>
+<link id="TListColumns"/>
+<link id="TListColumn"/>
+<link id="#lcl.shellctrls.TCustomShellListView.CreateListColumns">TCustomShellListView.CreateListColumns</link>
+<link id="#lcl.shellctrls.TShellListView">TShellListView</link>
+<link id="#lcl.shellctrls.TShellListColumns">TShellListColumns</link>
+</seealso>
+</element>
+<element name="TCustomListView.CreateListColumns.Result">
+<short>
+TListColumns collection instance created in the method.
+</short>
+</element>
+
 <element name="TCustomListView.CreateListItem">
 <short>
 Signals the OnCreateItemClass event handler to get the class type used for 
@@ -17280,16 +17318,61 @@ control when the draw stage is cdPrePaint.
 </element>
 
 <element name="TCustomListView.Create">
-<short>Constructor for the class instance.</short>
+<short>
+Constructor for the class instance.
+</short>
 <descr>
 <p>
 <var>Create</var> is the overridden constructor for 
 <var>TCustomListView</var>. It calls the inherited <var>Create</var> method, 
-and allocates resources needed for the class instance.
+and allocates resources needed for the class instance. CreateListColumns is 
+called to initialize the Columns property. CreateListItems is called to 
+initialize the Items property.
 </p>
 <p>
-Create sets the default values for properties and control style flags. It 
-creates TChangeLink instances for the image lists in SmallImages, 
+Create sets the default values for properties and control style flags. 
+Properties and their default values include:
+</p>
+<ul>
+<li>
+AutoSort (True)
+</li>
+<li>
+AutoWidthLastColumn (False)
+</li>
+<li>
+SortType (stNone)
+</li>
+<li>
+SortColumn (-1 for no sort order)
+</li>
+<li>
+SortDirection (sdAscending)
+</li>
+<li>
+BorderStyle (bsSingle)
+</li>
+<li>
+ScrollBars (ssBoth)
+</li>
+<li>
+ViewStyle (vsList)
+</li>
+<li>
+TabStop (True)
+</li>
+<li>
+ParentColor (False)
+</li>
+<li>
+Color (clDefault if UseCLDefault has been defined, otherwise clWindow)
+</li>
+<li>
+Canvas (set to a TControlCanvas instance)
+</li>
+</ul>
+<p>
+It creates TChangeLink instances for the image lists in SmallImages, 
 LargeImages, and StateImages. The change links are configured to use the 
 ImageChange and ImageResolutionHandleDestroyed methods in their event 
 handlers. It also creates the TCustomListViewEditor instance used to edit 
@@ -17301,7 +17384,9 @@ values in the list view control.
 </seealso>
 </element>
 <element name="TCustomListView.Create.AOwner">
-<short>Owner of the class instance.</short>
+<short>
+Owner of the class instance.
+</short>
 </element>
 
 <element name="TCustomListView.Destroy">
@@ -35411,7 +35496,7 @@ included in Options.
 </li>
 <li>
 Drawing the insert mark for a tree node inserted in to the tree view control. 
-Use InsertMarkType to specify the position for the mark relative to the  
+Use InsertMarkType to specify the position for the mark relative to the 
 InsertMarkNode.
 </li>
 </ul>
@@ -39052,7 +39137,7 @@ Added in LCLversion 5.0.
 </seealso>
 </element>
 <element name="TCustomTreeView.SelectionIsHidden.Result">
-<short>	
+<short>
 Returns <b>True</b> if selection node(s) are available but not highlighted, 
 "grayed" or "dimmed".
 </short>

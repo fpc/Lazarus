@@ -41,16 +41,15 @@ components are added to the Lazarus IDE component palette:
 <!-- unresolved references -->
 <element name="Classes"/>
 <element name="SysUtils"/>
+<element name="Types"/>
 <element name="Math"/>
-<element name="Laz_AVL_Tree"/>
+<element name="AVL_Tree"/>
 <element name="Forms"/>
 <element name="Graphics"/>
+<element name="Controls"/>
 <element name="ComCtrls"/>
-<element name="LCLProc"/>
-<element name="LCLType"/>
 <element name="LCLStrConsts"/>
-<element name="Types"/>
-<element name="FileUtil"/>
+<element name="LCLProc"/>
 <element name="LazFileUtils"/>
 <element name="LazUTF8"/>
 <element name="Masks"/>
@@ -294,6 +293,28 @@ TSearchRec instance with the directory information for the file item.
 <short>
 Contains the path on the local file system where the file item is stored.
 </short>
+</element>
+
+<element name="TFileItem.FileName">
+<short>
+Returns the fully-qualified path and file name for the file item.
+</short>
+<descr>
+<p>
+FileName is a String function  used to get the fully-qualified path for the 
+file item. The return value contains the concatenated values from 
+<var>BasePath</var> and the name for the search item stored in 
+<var>FileInfo</var>. A path delimiter (DirectorySeparator) is used between the 
+concatenated values.
+</p>
+</descr>
+<version>
+Added in LCL version 5.0.
+</version>
+<seealso>
+<link id="TFileItem.BasePath"/>
+<link id="TFileItem.FileInfo"/>
+</seealso>
 </element>
 
 <element name="TFileItem.BasePath">
@@ -2249,39 +2270,6 @@ used for instance to quickly identify a component in an event handler.
 <element name="TShellTreeView.OnSortCompare" link="#lcl.shellctrls.TCustomShellTreeView.OnSortCompare"/>
 <element name="TShellTreeView.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
 
-<element name="TCSLVFileAddedEvent">
-<short>
-Specifies an event handler signalled when an item is added to 
-TCustomShellListView.
-</short>
-<descr>
-<p>
-<var>TCSLVFileAddedEvent</var> specifies the interface for an event handler 
-signalled when a <var>TListItem</var> instance is added to 
-<var>TCustomShellListView</var>. TCSLVFileAddedEvent is the type used to 
-implement the <var>OnAddItem</var> property in 
-<var>TCustomShellListView</var>.
-</p>
-<p>
-Applications must implement and assign an object procedure using the event 
-signature to respond to the notification. <var>Sender</var> must be cast to 
-the correct class type to access properties and methods in the control for 
-the notification. Or, use the <var>ListView</var> property in the 
-<var>Item</var> argument.
-</p>
-</descr>
-<seealso>
-<link id="TCustomShellListView.OnAddItem"/>
-<link id="#lcl.comctrls.TListItem">TListItem</link>
-</seealso>
-</element>
-<element name="TCSLVFileAddedEvent.Sender">
-<short>Object (control) generating the event notification.</short>
-</element>
-<element name="TCSLVFileAddedEvent.Item">
-<short>List item for the event notification.</short>
-</element>
-
 <element name="TShellListItem">
 <short>
 Implements the class used for list items maintained in TShelllListView.
@@ -2388,34 +2376,573 @@ Added in LCL version 3.0.
 </seealso>
 </element>
 
+<element name="TSLVColumnID">
+<short>
+Column identifiers used for column data displayed on a shell list view control.
+</short>
+<descr>
+<p>
+<var>TSLVColumnID</var> is an enumerated type which represents the identifiers 
+for columns defined on a shell list view control. TSLVColumnID is the type 
+used for the <var>ColumnID</var> property in <var>TShellListColumn</var>. The 
+value determines which file system information is displayed in the column for 
+the list items on the shell list view control.
+</p>
+</descr>
+<seealso>
+<link id="TShellListColumn.ColumnID"/>
+<link id="TShellListColumn.CustomID"/>
+<link id="TShellListColumns"/>
+<link id="TCustomShellListView.Items"/>
+<link id="#lcl.comctrls.TCustomListView.Columns">TCustomListView.Columns</link>
+</seealso>
+</element>
+<element name="TSLVColumnID.cidCustom">
+<short>
+Column contains custom data return by the OnGetCellText event handler in a 
+shell list view control.
+</short>
+</element>
+<element name="TSLVColumnID.cidFileName">
+<short>
+Column contains file or directory name information.
+</short>
+</element>
+<element name="TSLVColumnID.cidSize">
+<short>
+Column contains file size information.  
+</short>
+</element>
+<element name="TSLVColumnID.cidType">
+<short>
+Column contains the file or directory type information. 'Folder' for directory 
+names. The file extension for non-directory entries.
+</short>
+</element>
+<element name="TSLVColumnID.cidAttr">
+<short>
+Column contains attributes or permissions for a file or directory. Content 
+displayed is platform-specific. 'RHSA'-style attributes for Windows. File type 
+and permissions on Unix-like platforms.
+</short>
+</element>
+<element name="TSLVColumnID.cidDateModified">
+<short>
+Column contains the last modification date / time for a file or directory.
+</short>
+</element>
+
+<element name="TSLVSizeUnits">
+<short>
+Represents size units available for file size information displayed for a 
+column on a shell list view control.
+</short>
+<descr>
+<p>
+<var>TSLVSizeUnits</var> is an enumerated type with values that control the 
+formatting of file size information for a column on a shell list view control. 
+TSLVSizeUnits is the type used to implement the <var>SizeUnits</var> property 
+in <var>TShellListColumn</var>. The values cause format specifiers and 
+optional suffixes to be applied to the file size information displayed for a 
+column.
+</p>
+</descr>
+<seealso>
+<link id="TShellListColumn.SizeUnits"/>
+<link id="TShellListColumn.Format"/>
+<link id="TShellListColumn.GetSizeFormat"/>
+<link id="TCustomShellListView.UpdateColumn"/>
+<link id="TCustomShellListView.Create"/>
+</seealso>
+</element>
+<element name="TSLVSizeUnits.suDefault">
+<short>
+Size unit of measure is the default measure (bytes) but does not use a suffix 
+in the displayed value.
+</short>
+</element>
+<element name="TSLVSizeUnits.suBytes">
+<short>
+Size unit of measure is bytes. Causes ' bytes' to be appended to the end of a 
+size value.
+</short>
+</element>
+<element name="TSLVSizeUnits.suKB">
+<short>
+Size unit of measure is kilobytes. Causes ' kB' to be appended to the end of a 
+size value.
+</short>
+</element>
+<element name="TSLVSizeUnits.suMB">
+<short>
+Size unit of measure is megabytes. Causes ' MB' to be appended to the end of a 
+size value.
+</short>
+</element>
+<element name="TSLVSizeUnits.suGB">
+<short>
+Size unit of measure is gigabytes. Causes ' GB' to be appended to the end of a 
+size value.
+</short>
+</element>
+
+<element name="TShellListColumn">
+<short>
+Defines a column displayed on a shell list view control.
+</short>
+<descr>
+<p>
+<var>TShellListColumn</var> is a <var>TListColumn</var> descendant which 
+represents a column defined for a <var>TCustomShellListView</var> / 
+<var>TShellListView </var> control. TShellListColumn identifies the file 
+system information displayed in a given column on the control, and any 
+formatting needed for the values displayed in list view items.
+</p>
+<p>
+TShellListColumn is the type stored in the <var>TShellListColumns</var> 
+collection, and used to implement the <var>Columns</var> property in 
+<var>TCustomShellListView</var> / <var>TShellListView</var>. Values in the 
+class instance can be assigned at design-time using the property editor 
+registered for the TShellListColumns type.
+</p>  
+</descr>
+<seealso>
+<link id="TCustomShellListView.Items"/>
+<link id="TShellListColumns"/>
+<link id="#lcl.comctrls.TCustomListView.Columns">TCustomListView.Columns</link>
+</seealso>
+</element>
+
+<!-- private -->
+<element name="TShellListColumn.FColumnID"/>
+<element name="TShellListColumn.FCustomID"/>
+<element name="TShellListColumn.FFormat"/>
+<element name="TShellListColumn.FSizeUnits"/>
+<element name="TShellListColumn.SetColumnID"/>
+<element name="TShellListColumn.SetColumnID.AValue"/>
+<element name="TShellListColumn.SetCustomID"/>
+<element name="TShellListColumn.SetCustomID.AValue"/>
+<element name="TShellListColumn.SetFormat"/>
+<element name="TShellListColumn.SetFormat.AValue"/>
+<element name="TShellListColumn.SetSizeUnits"/>
+<element name="TShellListColumn.SetSizeUnits.AValue"/>
+<element name="TShellListColumn.Assign"/>
+<element name="TShellListColumn.Assign.ASource"/>
+
+<!-- protected -->
+<element name="TShellListColumn.GetListView">
+<short>
+Gets the shell list view control where the column is defined.
+</short>
+<descr>
+<p>
+The return value is derived by getting the <var>Owner</var> control for the 
+<var>Collection</var> where the collection item is stored. It is cast to the 
+<var>TCustomShellListView</var> type.
+</p>
+</descr>
+<seealso></seealso>
+</element>
+<element name="TShellListColumn.GetListView.Result">
+<short>
+Shell list view control where the column is defined.
+</short>
+</element>
+
+<element name="TShellListColumn.GetSizeFormat">
+<short>
+Gets formatted size information for a column using cidSize in its ColumnID.
+</short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TShellListColumn.GetSizeFormat.Result">
+<short>
+Formatted string with the size units and suffix needed for the column 
+definition.
+</short>
+</element>
+
+<!-- published -->
+
+<element name="TShellListColumn.ColumnID">
+<short>
+Column identifier which determines the file system information displayed in 
+the column for each of the list items on the control.
+</short>
+<descr>
+<p>
+<var>ColumnID</var> is a <var>TSLVColumnID</var> property which identifies the 
+type of file system information displayed for the column. The default value is 
+<var>cidCustom</var> and causes <var>CustomID</var> and the 
+<var>OnGetCellText</var> event (in the shell list view control) to be used to 
+get the content displayed in the column.
+</p>
+<p>
+See TSLVColumnID for the other values allowed in the property, and the data 
+which they cause to be displayed in the column.
+</p>
+<p>
+Changing the value for the property causes the Caption (used as the column 
+heading) for the list item to be changed to the LCL string constant needed for 
+the enumeration value in the property. The Changed method for the collection 
+item is called to force change notifications for all items in the collection.
+</p>
+<p>
+Use SizeUnits to control the content and formatting for file size information 
+in a column. Use Format to apply user-specified formatting to file size and 
+modification date columns.
+</p>
+</descr>
+<seealso>
+<link id="TShellListColumn.CustomID"/>
+<link id="TShellListColumn.Format"/>
+<link id="TShellListColumn.SizeUnits"/>
+<link id="TCustomShellListView.OnGetCellText"/>
+<link id="TSLVColumnID"/>
+<link id="#rtl.classes.TCollectionItem">TCollectionItem</link>
+</seealso>
+</element>
+
+<element name="TShellListColumn.CustomID">
+<short>
+Identifier used for a column containing custom information provided using the 
+OnGetCellText event handler in a shell list view control.
+</short>
+<descr>
+<p>
+<var>CustomID</var> is an <var>Integer</var> property used to uniquely 
+identify a custom column defined in the <var>Columns</var> property for a 
+shell list view control. CustomID is significant when ColumnID contains the 
+value <var>cidCustom</var>. If more than one custom column is defined for the 
+control, CustomID provides a unique identifier which can be used in the 
+OnGetCellText event handler to determine the content displayed for a given 
+custom column definition. If a single custom column is used on the control, 
+the value in the property is not needed as an identifier.
+</p>
+<p>
+The default value for the property is 0 (zero) and generally indicates that an 
+explicit value has not been assigned - but only by convention. Changing the 
+value for the property causes the Changed method to be called for the 
+collection item where a update notification is sent to all items in the 
+collection.
+</p>
+</descr>
+<seealso>
+<link id="TShellListColumn.ColumnID"/>
+<link id="TCustomShellListView.OnGetCellText"/>
+<link id="#lcl.comctrls.TCustomListView.Columns">TCustomListView.Columns</link>
+</seealso>
+</element>
+
+<element name="TShellListColumn.Format">
+<short>
+Specifies a user-defined format for file system information displayed in the 
+column. Relevant for columns using cidSize or cidDateModified in the ColumnID 
+property.
+</short>
+<descr>
+<p>
+<var>Format</var> is a <var>String</var> property which contains the 
+user-specified format applied to the value displayed for a list item in the 
+column. Format is relevant for columns using either <var>cidDateModified</var> 
+or <var>cidSize</var> in the <var>ColumnID</var> property. A non-empty value 
+in Format overrides any default formatting that would normally be applied to 
+values for those ColumnIDs. Format can be used in the <var>OnGetCellText</var> 
+event handler for a column using cidCustom in ColumnID.
+</p>  
+</descr>
+<seealso>
+<link id="TShellListColumn.ColumnID"/>
+<link id="TShellListColumn.CustomID"/>
+<link id="TShellListColumn.GetSizeFormat"/>
+<link id="TCustomShellListView.OnGetCellText"/>
+<link id="TCustomShellListView.GetCellText"/>
+<link id="#lcl.comctrls.TCustomListView.Columns">TCustomListView.Columns</link>
+</seealso>
+</element>
+
+<element name="TShellListColumn.SizeUnits">
+<short>
+Specifies the unit of measure (if any) displayed for a column with file size 
+information.
+</short>
+<descr>
+<p>
+<var>SizeUnits</var> is a <var>TSLVSizeUnits</var> property which controls the 
+content and formatting applied to a list view column which displays file size 
+information. The default value for the property is <var>suDefault</var> and 
+causes the unadorned number of bytes needed for a file to be displayed for 
+list items in the column. Other values for the property cause a format string 
+to be applied which results in more human-friendly values like '17 kB', 
+'1.25 MB', et. al.
+</p>
+<p>
+See TSLVSizeUnits for more information about the values allowed in the 
+property and the formatting and suffixes used for the corresponding values.
+</p>
+<p>
+Changing the value for the property causes the list view control to update the 
+column definition in its Columns collection. The Changed method is called to 
+generate and update notification for the list item.
+</p>
+<p>
+Use of the <var>Format</var> property take precedence over formatting which 
+might be applied by SizeUnits.
+</p>
+</descr>
+<seealso>
+<link id="TShellListColumn.Format"/>
+<link id="TSLVSizeUnits"/>
+</seealso>
+</element>
+
+<element name="TShellListColumns">
+<short>
+Collection type used to store column definitions in a shell list view control.
+</short>
+<descr>
+<p>
+<var>TShellListColumns</var> is a <var>TListColumns</var> descendant which 
+implements a container for column definitions used in 
+<var>TCustomShellListView</var> / <var>TShellListView</var>. It ensures that 
+items added to the collection uses the <var>TShellListColumn</var> class type; 
+it reimplements the <var>Add</var> method to return a TShellListColumn 
+instance, and redeclares the <var>Items</var> property to use TShellListColumn 
+for the indexed members in the collection.
+</p>
+<p>
+TShellListColumns is the type used to implement the <var>Columns</var> 
+property in <var>TCustomShellListView</var>.
+</p>  
+</descr>
+<seealso>
+<link id="TShellListColumn"/>
+<link id="TShellListColumns.Add"/>
+<link id="TShellListColumns.Items"/>
+<link id="#lcl.comctrls.TCustomListView.Columns">TCustomListView.Columns</link>
+</seealso>
+</element>
+
+<!-- private -->
+
+<element name="TShellListColumns.GetItem"/>
+<element name="TShellListColumns.GetItem.AIndex"/>
+<element name="TShellListColumns.GetItem.Result"/>
+<element name="TShellListColumns.SetItem"/>
+<element name="TShellListColumns.SetItem.AIndex"/>
+<element name="TShellListColumns.SetItem.AValue"/>
+
+<!-- public -->
+
+<element name="TShellListColumns.Add">
+<short>
+Adds a new column definition to the collection.
+</short>
+<descr>
+<p>
+The <var>Add</var> method is overridden in <var>TShellListColumns</var> to 
+create <var>TShellListColumn</var> (instead of <var>TListColumn</var>) 
+instances added to the collection. It calls the inherited method to create a 
+list item for the collection and casts the new item to the TShellListColumn 
+class type. At design-time, the form designer for the assigned collection 
+Owner is notified when the collection is modified in the method.
+</p>  
+</descr>
+<seealso></seealso>
+</element>
+<element name="TShellListColumns.Add.Result">
+<short>
+Collection item with the shell list view column created in the method.
+</short>
+</element>
+
+<element name="TShellListColumns.Items">
+<short>
+Provides indexed access to the TShellListColumn instances stored in the 
+collection.
+</short>
+<descr></descr>
+<seealso>
+<link id="TShellListColumn"/>
+<link id="#lcl.comctrls.TCustomListView.Columns">TCustomListView.Columns</link>
+</seealso>
+</element>
+<element name="TShellListColumns.Items.AIndex">
+<short>
+Ordinal position in the collection for the property value.
+</short>
+</element>
+
+<element name="TSLVSizeFunc">
+<short>
+String function used to format size information for a file displayed in a 
+column on a shell list view control.
+</short>
+<descr></descr>
+<seealso>
+<link id="TCustomShellListView.GetCellText"/>
+<link id="TCustomShellListView.UpdateColumn"/>
+</seealso>
+</element>
+<element name="TSLVSizeFunc.ASize">
+<short>
+64-bit Integer value with the size formatted in the routine.
+</short>
+</element>
+<element name="TSLVSizeFunc.AFormat">
+<short>
+Defines the format applied when converting the size to a String value.
+</short>
+</element>
+<element name="TSLVSizeFunc.Result">
+<short>
+Returns a String with the formatted value for the size information.
+</short>
+</element>
+
+<element name="TSLVFileAddedEvent">
+<short>
+Specifies an object procedure used to implement the OnFileAdded event handler in TCustomShellListView.
+</short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TSLVFileAddedEvent.Sender">
+<short>
+The shell list view control for the event notification. Must be cast to 
+TCustomShellListView to access properties or methods not present in TObject.
+</short>
+</element>
+<element name="TSLVFileAddedEvent.Item">
+<short>
+List item with the new file examined in the event handler. Must be cast to TShellListItem to access properties or methods not present in TListItem.
+</short>
+</element>
+
+<element name="TSLVGetCellTextEvent">
+<short>
+Specifies an object procedure used to implement an OnGetCellText event handler 
+in TCustomShellListView.
+</short>
+<descr></descr>
+<seealso></seealso>
+</element>
+<element name="TSLVGetCellTextEvent.Sender">
+<short></short>
+</element>
+<element name="TSLVGetCellTextEvent.Item">
+<short></short>
+</element>
+<element name="TSLVGetCellTextEvent.AColumn">
+<short></short>
+</element>
+<element name="TSLVGetCellTextEvent.AText">
+<short></short>
+</element>
+
+<element name="TCSLVFileAddedEvent">
+<short>
+Deprecated. Specifies an event handler signalled when an item is added to 
+TCustomShellListView.
+</short>
+<descr>
+<p>
+<var>TCSLVFileAddedEvent</var> specifies the interface for an event handler 
+signalled when a <var>TListItem</var> instance is added to 
+<var>TCustomShellListView</var>. TCSLVFileAddedEvent is the type used to 
+implement the <var>OnFileAdded</var> event handler property in 
+<var>TCustomShellListView</var>.
+</p>
+<p>
+Applications must implement and assign an object procedure using the event 
+signature to respond to the notification. <var>Sender</var> must be cast to 
+the correct class type to access properties and methods in the control for 
+the notification. Or, use the <var>ListView</var> property in the 
+<var>Item</var> argument.
+</p>
+</descr>
+<seealso>
+<link id="TCustomShellListView.OnFileAdded"/>
+<link id="#lcl.comctrls.TListItem">TListItem</link>
+</seealso>
+</element>
+<element name="TCSLVFileAddedEvent.Sender">
+<short>Object (control) generating the event notification.</short>
+</element>
+<element name="TCSLVFileAddedEvent.Item">
+<short>List item for the event notification.</short>
+</element>
+
 <element name="TCustomShellListView">
 <short>
-The base class that defines a list view control to display the files, 
-directories and other objects (such as devices) from the local file system.
+The base class that defines a list view control to display files or 
+directories found on the local file system.
 </short>
 <descr>
 <p>
 <var>TCustomShellListView</var> is a <var>TCustomListView</var> descendant 
 which defines a list view control for file system objects on the local file 
 system. <var>TCustomShellListView</var> extends the ancestor class with 
-properties, methods, and events needed to access and maintain items in the 
-control including:
+properties, methods, and events needed to access and maintain the items 
+displayed on the list view control. 
 </p>
-<ul>
-<li>Mask</li>
-<li>MaskCaseSensitivity</li>
-<li>ObjectTypes</li>
-<li>Root</li>
-<li>ShellTreeView</li>
-<li>Items</li>
-<li>GetPathFromItem</li>
-<li>OnAddItem</li>
-<li>OnFileAdded</li>
-</ul>
 <p>
-Application should not create instance of <var>TCustomShellListView</var>; 
+Use <var>ViewStyle</var> to control the layout used on the list view control. 
+The default setting is <var>vsReport</var>.
+</p>
+<p>
+Use <var>ObjectTypes</var> to specify which file system entries are visible on 
+the control. The default setting <var>[otNonFolders]</var> causes only files 
+to be displayed. <var>[otFolders, otNonFolders, otHidden]</var> causes all 
+directories and files to be displayed (including hidden files or folders).
+</p>
+<p>
+Use <var>Columns</var> to specify which file system information is displayed 
+on the list view control. By default, columns are created for file or 
+directory name, file size, and file type information. Additional columns can 
+be added to display attributes or permissions for the file system objects, or 
+their last modification date/time stamp. A custom column type is available 
+where the column content is provided by the <var>OnGetCellText</var> event 
+handler in the control.
+</p>
+<p>
+Use <var>Root</var> to specify the initial directory displayed on the list 
+view control. Or, use the <var>ShellTreeView</var> property to associate a 
+tree view control which can be used to navigate the directory structure on the 
+file system and to provide the current directory visible on the list view 
+control.
+</p>
+<p>
+Use <var>Mask</var> to specify which files or folders are displayed on the 
+control. Use <var>MaskCaseSensitivity</var> to control whether the file masks 
+case sensitive.
+</p>
+<p>
+Use <var>Items</var> to access the list of <var>TFileItem</var> instances 
+displayed on the control.
+</p>
+<p>
+Use the event handlers like <var>OnAddItem</var> and <var>OnFileAdded</var> to 
+examine or validate file system objects before and after they are added to 
+the Items collection.
+</p>
+<p>
+Use <var>FileSortType</var>, <var>SortType</var>, and <var>SortColumn</var> to 
+control sorting of the visible objects on the control. Use 
+<var>OnSortCompare</var> to implement a user-specified sort order.
+</p>
+<p>
+Use <var>Selected</var>, <var>LastSelected</var>, and <var>MultiSelect</var> 
+to access the selected items on the control. Use <var>RowSelect</var> to 
+control whether the entire row is selected or only the affected cell is 
+selected on the control.
+</p>
+<p>
+Applications should not create instance of <var>TCustomShellListView</var>; 
 use the <var>TShellListView</var> descendant which sets the scope for members 
-in the class.
+in the class. See <var>TListView</var> for more information about methods, 
+properties, and events introduced in the ancestor class.
 </p>
 </descr>
 <seealso>
@@ -2428,7 +2955,8 @@ in the class.
 <link id="TCustomShellListView.GetPathFromItem"/>
 <link id="TCustomShellListView.OnAddItem"/>
 <link id="TCustomShellListView.OnFileAdded"/>
-<link id="TShellListView"/>
+<link id="#lcl.comctrls.TCustomListView">TCustomListView</link>
+<link id="#lcl.comctrls.TListView">TListView</link>
 </seealso>
 </element>
 
@@ -2646,6 +3174,23 @@ is called for the class instance or its Parent.
 <link id="#lcl.controls.TWinControl.HandleNeeded">TWinControl.HandleNeeded</link>
 <link id="#lcl.controls.TWinControl.HandleAllocated">TWinControl.HandleAllocated</link>
 </seealso>
+</element>
+
+<element name="TCustomShellListView.CreateListColumns">
+<short>
+Creates the collection used in the Columns property in the shell control.
+</short>
+<descr></descr>
+<seealso>
+<link id="TCustomShellListView.Create"/>
+<link id="TShellListColumns"/>
+<link id="#lcl.comctrls.TCustomListView.Columns">TCustomListView.Columns</link>
+</seealso>
+</element>
+<element name="TCustomShellListView.CreateListColumns.Result">
+<short>
+TShellColumns instance used to implement the Columns property.
+</short>
 </element>
 
 <element name="TCustomShellListView.CreateListItem">
@@ -3314,34 +3859,119 @@ Added in LCL version 5.0.
 </seealso>
 </element>
 
-<element name="TCustomShellListView.Items" link="#lcl.comctrls.TCustomListView.Items"/>
+<element name="TCustomShellListView.Items">
+<short>
+Provides access to the list of items visible on the list view control.
+</short>
+<descr>
+<p>  
+<var>Items</var> is a public <var>TListItems</var> property which is a 
+container for the items displayed in the rows and columns on the list view 
+control. It provides indexed access to the TListItem instances stored in the 
+container using the <var>Item</var> property in the container.
+</p>
+<p>
+The entries in Items contain the values displayed for the file system objects  
+and their state. Values defined in Columns are mapped to the string values 
+found in the Items entries - where the Caption for an entry contains the name 
+of the file system object and SubItems in the entry contains string 
+representations of the other columns defined for the control.
+</p>
+<p>
+The entries stored in Items are maintained by the list view control. The 
+container is cleared and reloaded when properties are modified for the 
+control, including: ObjectTypes, FileSortType, Mask, OnSortCompare, 
+ShellTreeView, and Root.
+</p>
+<p>
+See TListItem for more information about the entries stored in the Items 
+container. See TListItems for more information about the properties and 
+methods for the container.
+</p>
+</descr>
+<seealso>
+<link id="TCustomShellListView.Root"/>
+<link id="TCustomShellListView.ObjectTypes"/>
+<link id="TCustomShellListView.FileSortType"/>
+<link id="TCustomShellListView.Mask"/>
+<link id="TCustomShellListView.OnSortCompare"/>
+<link id="TCustomShellListView.ShellTreeView"/>
+<link id="#lcl.comctrls.TCustomListView.Items">TCustomListView.Items</link>
+<link id="#lcl.comctrls.TListItems">TListItems</link>
+<link id="#lcl.comctrls.TListItem">TListItem</link>
+</seealso>
+</element>
 
 <element name="TShellListView">
 <short>
-Implements a list view control to display the files, directories and other 
-objects (such as devices) on the local file system.
+Implements a list view control to display files or directories found on the 
+local file system.
 </short>
 <descr>
 <p>
 <var>TShellListView</var> is a <var>TCustomShellListView</var> descendant 
-which implements a list view control for file system objects on the local 
-file system. <var>TShellListView</var> contains properties, methods, and 
-events needed to access and maintain items in the control including:
+which implements a list view control for file system objects on the local file 
+system. <var>TShellListView</var> extends the <var>TListView</var> ancestor 
+class with properties, methods, and events needed to access and maintain the 
+items displayed on the list view control. 
 </p>
-<ul>
-<li>Mask</li>
-<li>MaskCaseSensitivity</li>
-<li>ObjectTypes</li>
-<li>Root</li>
-<li>ShellTreeView</li>
-<li>Items</li>
-<li>GetPathFromItem</li>
-<li>OnAddItem</li>
-<li>OnFileAdded</li>
-</ul>
+<p>
+Use <var>ViewStyle</var> to control the layout used on the list view control. 
+The default setting is <var>vsReport</var>.
+</p>
+<p>
+Use <var>ObjectTypes</var> to specify which file system entries are visible on 
+the control. The default setting <var>[otNonFolders]</var> causes only files 
+to be displayed. <var>[otFolders, otNonFolders, otHidden]</var> causes all 
+directories and files to be displayed (including hidden files or folders).
+</p>
+<p>
+Use <var>Columns</var> to specify which file system information is displayed 
+on the list view control. By default, columns are created for file or 
+directory name, file size, and file type information. Additional columns can 
+be added to display attributes or permissions for the file system objects, or 
+their last modification date/time stamp. A custom column type is available 
+where the column content is provided by the <var>OnGetCellText</var> event 
+handler in the control.
+</p>
+<p>
+Use <var>Root</var> to specify the initial directory displayed on the list 
+view control. Or, use the <var>ShellTreeView</var> property to associate a 
+tree view control which can be used to navigate the directory structure on the 
+file system and to provide the current directory visible on the list view 
+control.
+</p>
+<p>
+Use <var>Mask</var> to specify which files or folders are displayed on the 
+control. Use <var>MaskCaseSensitivity</var> to control whether the file masks 
+case sensitive.
+</p>
+<p>
+Use <var>Items</var> to access the list of <var>TFileItem</var> instances 
+displayed on the control.
+</p>
+<p>
+Use the event handlers like <var>OnAddItem</var> and <var>OnFileAdded</var> to 
+examine or validate file system objects before and after they are added to 
+the Items collection.
+</p>
+<p>
+Use <var>FileSortType</var>, <var>SortType</var>, and <var>SortColumn</var> to 
+control sorting of the visible objects on the control. Use 
+<var>OnSortCompare</var> to implement a user-specified sort order.
+</p>
+<p>
+Use <var>Selected</var>, <var>LastSelected</var>, and <var>MultiSelect</var> 
+to access the selected items on the control. Use <var>RowSelect</var> to 
+control whether the entire row is selected or only the affected cell is 
+selected on the control.
+</p>
+<p>
+See <var>TListView</var> for more information about methods, properties, and 
+events introduced in the ancestor class.
+</p>
 </descr>
 <seealso>
-<link id="TCustomShellListView"/>
 <link id="TCustomShellListView.Mask"/>
 <link id="TCustomShellListView.MaskCaseSensitivity"/>
 <link id="TCustomShellListView.ObjectTypes"/>
@@ -3351,6 +3981,8 @@ events needed to access and maintain items in the control including:
 <link id="TCustomShellListView.GetPathFromItem"/>
 <link id="TCustomShellListView.OnAddItem"/>
 <link id="TCustomShellListView.OnFileAdded"/>
+<link id="#lcl.comctrls.TCustomListView">TCustomListView</link>
+<link id="#lcl.comctrls.TListView">TListView</link>
 </seealso>
 </element>
 
@@ -3477,6 +4109,7 @@ Modified in LCL version 4.0 to set the default value for the property to
 <element name="TShellListView.SmallImages" link="#lcl.comctrls.TCustomListView.SmallImages"/>
 <element name="TShellListView.SmallImagesWidth" link="#lcl.comctrls.TCustomListView.SmallImagesWidth"/>
 <element name="TShellListView.SortColumn" link="#lcl.comctrls.TCustomListView.SortColumn"/>
+<element name="TShellListView.SortDirection" link="#lcl.comctrls.TCustomListView.SortDirection"/>
 <element name="TShellListView.SortType" link="#lcl.comctrls.TCustomListView.SortType"/>
 <element name="TShellListView.StateImages" link="#lcl.comctrls.TCustomListView.StateImages"/>
 <element name="TShellListView.TabStop" link="#lcl.comctrls.TCustomListVIew.TabStop"/>

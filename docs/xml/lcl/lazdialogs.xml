@@ -66,13 +66,12 @@ Implements the form displayed for TLazOpenDialog descendants.
 <p>
 <var>TLazarusFileDialogForm</var> is a <var>TForm</var> descendant which 
 implements the form displayed for dialogs which are not wrappers for native 
-dialogs on a given platform. The form includes public members that are used 
+dialogs on a given platform. The form includes private members that are used 
 to store input or output values for the dialog, like:
 </p>
 <ul>
 <li>FileName</li>
 <li>Filter</li>
-<li>InitialDir</li>
 <li>Title</li>
 </ul>
 <p>
@@ -107,12 +106,17 @@ TLazOpenDialog component.
 </seealso>
 </element>
 
+<!-- private -->
 <element name="TLazarusFileDialogForm.FKind">
 <short>
 Member used to store the TLazFileDialogKind enumeration value for the dialog 
 form.
 </short>
 </element>
+
+<element name="TLazarusFileDialogForm.FFileName"/>
+<element name="TLazarusFileDialogForm.FFilter"/>
+<element name="TLazarusFileDialogForm.FTitle"/>
 
 <element name="TLazarusFileDialogForm.SetFilter">
 <short>
@@ -185,55 +189,6 @@ Shell list view control for the Lazarus dialog form.
 <element name="TLazarusFileDialogForm.FilterComboBox">
 <short>
 Combo box control used for the file mask filter in the Lazarus dialog form.
-</short>
-<descr></descr>
-<seealso></seealso>
-</element>
-
-<element name="TLazarusFileDialogForm.FileName">
-<short>
-File name for the selected file in the Lazarus dialog form.
-</short>
-<descr>
-<p>
-FileName is a String member which contains the full path and file name for 
-the item affected by the Lazarus dialog.
-</p>
-<p>
-For Open dialogs, it contains the path for the Selected item in the 
-ShellListView control. For Save dialogs, it contains the path for the 
-Selected directory in the ShellTreeView combined with the value from the 
-SaveEdit control. For other dialog types, it contains the path information 
-for the Selected item in the ShellTreeView control.
-</p>
-</descr>
-<seealso>
-<link id="TLazFileDialogKind"/>
-<link id="TLazarusFileDialogForm.ShellTreeView"/>
-<link id="TLazarusFileDialogForm.ShellListView"/>
-<link id="TLazarusFileDialogForm.SaveEdit"/>
-</seealso>
-</element>
-
-<element name="TLazarusFileDialogForm.Filter">
-<short>
-File mask filter for the Lazarus dialog form.
-</short>
-<descr></descr>
-<seealso></seealso>
-</element>
-
-<element name="TLazarusFileDialogForm.InitialDir">
-<short>
-Initial directory used in the Lazarus file dialog form.
-</short>
-<descr></descr>
-<seealso></seealso>
-</element>
-
-<element name="TLazarusFileDialogForm.Title">
-<short>
-Title displayed for the Lazarus dialog form.
 </short>
 <descr></descr>
 <seealso></seealso>
@@ -357,10 +312,10 @@ method.
 </p>
 <p>
 HandleCloseQuery ensures that the Lazarus dialog form can in fact be closed, 
-and updates the value in FileName when needed. It sets the value in the 
-CanClose parameter to <b>False</b> when the modal result for the dialog form 
-is mrCancel. No additional actions are performed in the method if the dialog 
-form cannot be closed.
+and updates the value in internal FileName when needed. It sets the value in 
+the CanClose parameter to <b>False</b> when the modal result for the dialog 
+form is mrCancel. No additional actions are performed in the method if the 
+dialog form cannot be closed.
 </p>
 <p>
 Additional actions are performed in the method to update FileName and 
@@ -499,15 +454,16 @@ Implements a Lazarus file open dialog.
 <seealso></seealso>
 </element>
 
+<!-- private -->
+<element name="TLazOpenDialog.GetInitialDir"/>
+<element name="TLazOpenDialog.GetInitialDir.Result"/>
+<element name="TLazOpenDialog.SetInitialDir"/>
+<element name="TLazOpenDialog.SetInitialDir.AValue"/>
+
+<!-- protected -->
 <element name="TLazOpenDialog.FForm">
 <short>
-Member used to store the form instance for the Lazarus dialog.
-</short>
-</element>
-
-<element name="TLazOpenDialog.WSRegisterClass">
-<short>
-An empty implementation; dialogs do not require a WS implementation.
+Form instance which implements the dialog.
 </short>
 </element>
 
@@ -526,7 +482,6 @@ the value returned on the dialog form.
 </descr>
 <seealso>
 <link id="TLazarusFileDialogForm"/>
-<!-- <link id="TLazarusFileDialogForm.FileName"/> -->
 <link id="#lcl.forms.TCustomForm.ShowModal">TCustomForm.ShowModal</link>
 </seealso>
 </element>
@@ -548,11 +503,48 @@ Performs actions needed to initialize the Lazarus dialog.
 <short>
 Constructor for the class instance.
 </short>
-<descr></descr>
-<seealso></seealso>
+<descr>
+<p>
+<var>Create</var> is	an overridden constructor for the class instance. It 
+calls the inherited constructor on entry to set the component style flags and 
+options needed for the dialog. The <var>TLazarusFileDialogForm</var> instance 
+is created and stored for use when the dialog is executed. Private members in 
+the form instance are set to the FileName, Filter, and Title used on the 
+dialog. Controls on the form instance are configured, and the form is hidden 
+until the dialog is executed.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.dialogs.TFileDialog.FileName">TFileDialog.FileName</link>
+<link id="#lcl.dialogs.TFileDialog.Filter">TFileDialog.Filter</link>
+<link id="#lcl.dialogs.TFileDialog.Title">TFileDialog.Title</link>
+<link id="TLazarusFileDialogForm"/>
+</seealso>
 </element>
 <element name="TLazOpenDialog.Create.TheOwner">
-<short>Owner of the Lazarus dialog.</short>
+<short>
+Component which is the owner of the Lazarus dialog.
+</short>
+</element>
+
+<element name="TLazOpenDialog.InitialDir">
+<short>
+Qualified path name with the initial directory displayed on the open dialog.
+</short>
+<descr/>
+<p>
+<var>InitialDir</var> is a <var>String</var> property which contains the 
+qualified path to the first directory displayed using the open dialog.
+</p>
+<p>
+The property value is read from the Root property in the shell tree view used 
+on the dialog form. Changing the property value causes the shell tree view 
+instance to be updated; the new value is assigned to the Root property for the 
+tree view. The PopulateWithBaseFiles method in the tree view is called to 
+ensure that the correct values are displayed in the control when the new 
+property value is an empty string ('').
+</p>
+<seealso/>
 </element>
 
 <element name="TLazSaveDialog">
