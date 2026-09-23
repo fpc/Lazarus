@@ -607,7 +607,7 @@ begin
   while ThisMenu^.get_visible do
   begin
     try
-      Application.ProcessMessages;
+      Gtk3WidgetSet.AppProcessMessages;
     except
       if Application.CaptureExceptions then
         Application.HandleException(APopupMenu)
