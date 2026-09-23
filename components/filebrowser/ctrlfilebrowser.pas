@@ -409,6 +409,11 @@ begin
   if (RootDir = rdProjectDir) and (LazarusIDE.ActiveProject = nil) then
     debugln(['TFileBrowserController.IndexRootDir: No Project loaded, using temp directory.']);
   lDir:=GetResolvedRootDir;
+  if lDir='' then
+    begin
+    AddIDEMessage(mluVerbose,SNotSearchingFiles,'',0,0,SViewFilebrowser);
+    exit;
+    end;
   Opt:=[];
   if HiddenFiles then
     Include(Opt, reoHiddenFiles);

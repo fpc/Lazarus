@@ -152,6 +152,7 @@ resourcestring
   SFilesCancelled = 'Cancelled after collecting %d files in directory "%s", in %s.';
   SErrSearching = 'Error searching for files in directory "%s": %s';
   SSearchingFiles = 'Start collecting files in directory "%s"';
+  SNotSearchingFiles = 'Cannot start collecting files, IDEFileBrowser package not configured.';
   // File Searcher
   SWarnTermTooShort = 'Search term too short (min %d characters)';
   SWarnControllerNotAssigned = 'Controller not assigned';
