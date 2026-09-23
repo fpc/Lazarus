@@ -170,8 +170,8 @@ control.
 <var>TListFilterEdit</var>, and calls the inherited method on entry. It 
 ensures that the <var>FilteredListbox</var> property is set to <b>Nil</b> 
 when the component is removed from the class instance. It also sets the value 
-for <var>IdleConnected</var> to <b>False</b>, and resets the internal update 
-flag for the control.
+for <var>IdleConnected</var> to <b>False</b>, and resets the internal flag 
+used to applying the Filter for the control.
 </p>
 </descr>
 <seealso>
@@ -696,6 +696,7 @@ from TCustomCheckListBox, the internal map used for checked items is created.
 <link id="TListFilterEdit.SelectionList"/>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.InternalSetFilter">TCustomControlFilterEdit.InternalSetFilter</link>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.ForceFilter">TCustomControlFilterEdit.ForceFilter</link>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.Text">TCustomControlFilterEdit.Text</link>
 <link id="#lcl.stdctrls.TCustomListBox">TCustomListBox</link>
 <link id="#lcl.stdctrls.TListBox">TListBox</link>

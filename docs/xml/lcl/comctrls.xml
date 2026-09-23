@@ -23325,7 +23325,7 @@ Indicates if the tool bar is oriented to display buttons and controls
 vertically.
 </short>
 <descr>
-<p>  
+<p>
 <var>IsVertical</var> is a <var>Boolean</var> function in <var>TToolBar</var> 
 used to determine if the tool bar displays its buttons or controls using a 
 vertical orientation. The return value is determined by the value in the 
@@ -33557,6 +33557,48 @@ Uses an insert mark for the root or first child node in a tree view.
 <short/>
 </element>
 
+<element name="THideSelectionMode">
+<short>
+Controls the display logic used when HideSelection is enabled for a tree view 
+control.
+</short>
+<descr>
+<p>
+Values in <var>THideSelectionMode</var> control how (or if) a selection node is highlighted when the tree view control loses focus. THideSelectionMode is 
+the type used to implement the HideSelectionMode property in TCustomTreeView. 
+The value is used when the Paint method in TCustomTreeView / TTreeView is 
+called to display the tree nodes on the control.
+</p>
+</descr>
+<version>
+Added in LCL version 5.0.
+</version>
+<seealso>
+<link id="TCustomTreeView.HideSelectionMode"/>
+<link id="TCustomTreeView.HideSelection"/>
+<link id="TCustomTreeView.SelectionIsHidden"/>
+<link id="TCustomTreeView.DoPaintNode"/>
+<link id="TCustomTreeView.DoPaint"/>
+<link id="TCustomTreeView.Paint"/>
+<link id="TCustomTreeView.Selected"/>
+<link id="TCustomTreeView.Selections"/>
+</seealso>
+</element>
+<element name="THideSelectionMode.hsmGray">
+<short>
+Draws a selection node using a "grayed" or "dimmed" state when the associated 
+control loses focus. The value in the HideSelection property in the tree view 
+control is ignored for this value.
+</short>
+</element>
+<element name="THideSelectionMode.hsmHide">
+<short>
+Causes a selection node to hide any highlighting when the associated control 
+loses focus. This is the Delphi VCL-compatible setting, and is enabled when 
+the HideSelection property for the associated control is <b>True</b>.
+</short>
+</element>
+
 <element name="TCustomTreeView">
 <short>
 The base class for <var>TTreeView</var>.
@@ -33700,6 +33742,7 @@ turn accessibility off for tree view items by setting the
 <element name="TCustomTreeView.FPrevToolTips"/>
 <element name="TCustomTreeView.FDragScrollMargin"/>
 <element name="TCustomTreeView.FDragScrollTimer"/>
+<element name="TCustomTreeView.FHideSelectionMode"/>
 
 <element name="TCustomTreeView.DragScrollTimerTick">
 <short>
@@ -35294,8 +35337,9 @@ hot-tracked state for the tree node. These may also be changed when theme
 drawing is enabled in Options (using <var>tvoThemedDraw</var>).
 </p>
 <p>
-SelectedColor and SelectedFontColor are used when the tree node is selected (
-or multi-selected) and theme drawing has <b>not</b> been enabled.
+SelectedColor and SelectedFontColor are used when the tree node is selected 
+(or multi-selected), selection highlighting is not hidden, and theme drawing 
+has <b>not</b> been enabled.
 </p>
 <p>
 DisabledFontColor is used when the tree node is not enabled and the property 
@@ -36404,25 +36448,58 @@ The default value for the property is bsSingle in TCustomTreeView.
 
 <element name="TCustomTreeView.HideSelection">
 <short>
-Indicates if the current selection is hidden when the control loses focus.
+Indicates if the highlighting for current selection(s) are hidden when the 
+control loses focus.
 </short>
 <descr>
 <p>
-<var>HideSelection</var> is a <var>Boolean</var> property which indicates if 
-the current selection is hidden when the control loses focus. The default 
-value for the property is <b>True</b>.
+<var>HideSelection</var> is a <var>Boolean</var> property which indicates 
+whether tree nodes in Selected or Selections are drawn in the selected 
+state when the control loses focus.
 </p>
 <p>
 The value for the property is <b>True</b> if <var>tvoHideSelection</var> has 
 been included in the <var>Options</var> for the control. Changing the value 
 in the property causes tvoHideSelection to be included in or excluded from 
 Options. The control is redrawn if <var>Selected</var> has an assigned tree 
-node when the property is changed.
+node when the property is changed. The default value for the property is 
+<b>True</b>.
+</p>
+<p>
+HideSelection is used in conjunction with the HideSelectionMode property which 
+controls whether unfocused selections use the native LCL behavior or the 
+behavior used in the Delphi VCL TTreeView control. HideSelection is not 
+relevant unless HideSelectionMode is set to the Delphi behavior. The native 
+LCL drawing style always draws selection nodes on the unfocused control using 
+the "grayed" or "dimmed" drawing state. In Delphi mode, the highlighting (not 
+the tree node) is hidden when HideSelection is <b>True</b>.
+</p>
+<p>
+The value in HideSelection is used in the SelectionIsHidden method called when 
+the DoPaintNode method is executed for the control.
+</p>
+<p>
+Use MultiSelect to enable or disable multi-selections on the control.
+</p>
+<p>
+Use RowSelect to highlight a selected tree node using the entire width for the 
+the tree view control.
 </p>
 </descr>
 <seealso>
 <link id="TCustomTreeView.Options"/>
 <link id="TCustomTreeView.Selected"/>
+<link id="TCustomTreeView.Selections"/>
+<link id="TCustomTreeView.HideSelectionMode"/>
+<link id="TCustomTreeView.SelectionIsHidden"/>
+<link id="TCustomTreeView.DoPaintNode"/>
+<link id="TCustomTreeView.DoPaint"/>
+<link id="TCustomTreeView.Paint"/>
+<link id="TCustomTreeView.MultiSelect"/>
+<link id="TCustomTreeView.RowSelect"/>
+<link id="THideSelectionMode"/>
+<link id="TTreeNode.Selected"/>
+<link id="TTreeNode.MultiSelected"/>
 </seealso>
 </element>
 
@@ -38939,18 +39016,60 @@ not been assigned.
 <seealso/>
 </element>
 
+<element name="TCustomTreeView.SelectionIsHidden">
+<short>
+Indicates whether the highlighting for a selection node is 
+actually hidden (not visually displayed) or displayed in a 
+"grayed" or "dim" state when the control loses focus.
+</short>
+<descr>
+<p>
+When HideSelection is <b>True</b> and the control is not focused, the 
+selection highlighting is really hidden only in Delphi mode. Lazarus mode 
+ignores the HideSelection setting.
+</p>
+<p>
+Use HideSelectionMode to control the behavior used for selection nodes when 
+the tree view control loses focus.
+</p>
+</descr>
+<version>
+Added in LCLversion 5.0.
+</version>
+<seealso>
+<link id="TCustomTreeView.HideSelection"/>
+<link id="TCustomTreeView.HideSelectionMode"/>
+<link id="TCustomTreeView.Selected"/>
+<link id="TCustomTreeView.Selections"/>
+<link id="TCustomTreeView.MultiSelectStyle"/>
+<link id="TCustomTreeView.MultiSelect"/>
+<link id="TCustomTreeView.DoPaintNode"/>
+<link id="TCustomTreeView.DoPaint"/>
+<link id="TCustomTreeView.Paint"/>
+<link id="TTreeNode.Selected"/>
+<link id="TTreeNode.MultiSelected"/>
+<link id="#lcl.controls.TWinControl.Focused">TWinControl.Focused</link>
+</seealso>
+</element>
+<element name="TCustomTreeView.SelectionIsHidden.Result">
+<short>	
+Returns <b>True</b> if selection node(s) are available but not highlighted, 
+"grayed" or "dimmed".
+</short>
+</element>
+
 <element name="TCustomTreeView.StoreCurrentSelection">
 <short>
-Creates and fills a TStringList with the text for each of the tree nodes in the 
-access path to the Selected node on the tree view control.
+Creates and fills a TStringList with the text for each of the tree nodes in 
+the access path to the Selected node on the tree view control.
 </short>
 <descr>
 <p>
 <var>StoreCurrentSelection</var> uses the Selected property to determine the 
-values returned in the TStringList instance. The Text for each of the TTreeNode 
-instances is inserted in the return value in the order the nodes were visited 
-to reach the Selected node. The Text for each of the tree nodes appears on a 
-separate line.
+values returned in the TStringList instance. The Text for each of the 
+TTreeNode instances is inserted in the return value in the order the nodes 
+were visited to reach the Selected node. The Text for each of the tree nodes 
+appears on a separate line.
 </p>
 <p>
 If multi-selection is enabled on the tree view control, the first node in 
@@ -38988,8 +39107,8 @@ to the selected node.
 </p>
 <p>
 ApplyStoredSelection searches the sibling and child nodes in Items to locate a 
-tree node which matches the specified values. When a node is found, Selected is 
-set to the TTreeNode instance located in the method. If a node is not found, 
+tree node which matches the specified values. When a node is found, Selected 
+is set to the TTreeNode instance located in the method. If a node is not found,
 Selected is set to <b>Nil</b>.
 </p>
 <p>
@@ -40073,6 +40192,57 @@ lines which connect the nodes in the tree hierarchy.
 </p>
 </descr>
 <seealso/>
+</element>
+
+<element name="TCustomTreeView.HideSelectionMode">
+<short>
+Deprecated; use the HideSelection property instead. 
+Controls the display mode used for selection node(s) when the control loses 
+focus.
+</short>
+<descr>
+<p>
+<var>HideSelectionMode</var> is a <var>THideSelectionMode</var> property which 
+determines the display mode used for node(s) in Selected or Selections when 
+the tree view control loses focus. It is used when HideSelection is 
+<b>False</b>, and switches between the Lazarus native mode (where selection
+node(s) are "grayed" or "dimmed") and Delphi mode (where no visual indicator 
+for selection node(s) is drawn).
+</p>
+<p>
+See THideSelectionMode for more information about the enumeration values and 
+their meanings.
+</p>
+<p>
+HideSelectionMode is used in methods like SelectionIsHidden and DoPaintNode to 
+determine the actions needed when drawing a selection node when the control 
+loses focus.
+</p>
+<p>
+Use HideSelection to enable (<b>True</b>) or disable (<b>False</b>) use of the 
+property when its value is set to hsmHide. The value in HideSelection is 
+ignored when HideSelectionMode is set to hsmGray.
+</p>
+</descr>
+<version>
+Added and deprecated in LCL version 5.0. Will be removed in LCL version 6.0.
+</version>
+<notes>
+<note>
+I'm confused. Why was this added and immediately deprecated before it has ever 
+been in a release?
+</note>
+</notes>
+<seealso>
+<link id="TCustomTreeview.HideSelection"/>
+<link id="TCustomTreeview.SelectionIsHidden"/>
+<link id="TCustomTreeview.DoPaintNode"/>
+<link id="TCustomTreeView.DoPaint"/>
+<link id="TCustomTreeview.Paint"/>
+<link id="TCustomTreeView.Selected"/>
+<link id="TCustomTreeView.Selections"/>
+<link id="THideSelectionMode"/>
+</seealso>
 </element>
 
 <element name="TCustomTreeView.TabStop">

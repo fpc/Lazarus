@@ -423,7 +423,8 @@ It uses the Visible property in the TTreeNode instances to show/hide it.
 <element name="TTreeFilterEdit.SetFilteredTreeview"/>
 <element name="TTreeFilterEdit.SetShowDirHierarchy"/>
 <element name="TTreeFilterEdit.FilterTree"/>
-<element name="TTreeFilterEdit.OnBeforeTreeDestroy"/>
+<element name="TTreeFilterEdit.BeforeTreeDestroy"/>
+<element name="TTreeFilterEdit.BeforeTreeDestroy.Sender"/>
 
 <!-- protected -->
 <element name="TTreeFilterEdit.Notification">
@@ -435,8 +436,9 @@ from the control.
 <p>
 <var>Notification</var> frees event handlers and other resources allocated for 
 the FilteredTreeview property when the TCustomTreeview component is removed 
-in the class instance. It also frees and <b>Nil</b>s resources allocated to 
-the internal TBranchList instance in the control.
+in the class instance. It frees and <b>Nil</b>s resources allocated to the 
+internal TBranchList instance in the control, and resets properties and flags 
+used in the class instance.
 </p>
 </descr>
 <seealso/>
@@ -1087,11 +1089,13 @@ The associated TTreeView with the filtered tree nodes for the control.
 <var>FilteredTreeview</var> is a <var>TCustomTreeview</var> property with the 
 associated tree view for the filter control. FilteredTreeview is used to 
 display the tree nodes which match the Filter for the control. Assigning a new 
-value to the property causes the InvalidateFilter method to be called to 
-reapply the text in Filter to the new tree view control.
+value to the property causes the text in Filter to be re-applied for the new 
+tree view control.
 </p>
 </descr>
 <seealso>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.ForceFilter">TCustomControlFilterEdit.ForceFilter</link>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.InvalidateFilter">TCustomControlFilterEdit.InvalidateFilter</link>
 </seealso>
 </element>

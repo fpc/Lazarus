@@ -215,7 +215,8 @@ removed from the control.
 <p>
 Overridden in <var>TListViewFilterEdit</var> to ensure that the 
 <var>FilteredListview</var> property is set to <b>Nil</b> when the component 
-is removed from the control.
+is removed from the control. It also resets the value in IdleConnected and an 
+internal flag used to apply the Filter for the control.
 </p>
 </descr>
 <seealso>
@@ -597,16 +598,15 @@ list view control which contains the list item data and selections filtered
 in the control.
 </p>
 <p>
-Applications must assign a value to the property to enable filtering in edit 
-control. No actions are performed in the control when FilteredListview has 
-not been assigned (contains Nil), or FilteredListView does not contain any 
+Applications must assign a value to the property to enable filtering using the 
+edit control. No actions are performed in the control when FilteredListview 
+has not been assigned (contains Nil), or FilteredListView does not contain any 
 list items in its Items property.
 </p>
 <p>
-Changing the value in the property causes the filter Text to be re-applied to 
-the control by calling the InternalSetFilter method. Values in the Items 
-property are updated to reflect the list Items in FilteredListView after the 
-filter has been applied.
+Changing the value in the property causes the Filter text to be re-applied to 
+the control. Values in the Items property are updated to reflect the list 
+Items in FilteredListView after the filter has been applied.
 </p>
 <p>
 Use the ByAllFields property to control whether SubItems in the list item data 
@@ -618,6 +618,7 @@ are included in the filtered values for the control.
 <link id="TListViewFilterEdit.Items"/>
 <link id="TListViewFilterEdit.ApplyFilterCore"/>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.ForceFilter">TCustomControlFilterEdit.ForceFilter</link>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.InternalSetFilter">TCustomControlFilterEdit.InternalSetFilter</link>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.Text">TCustomControlFilterEdit.Text</link>
 <link id="#lcl.comctrls.TCustomListView">TCustomListView</link>

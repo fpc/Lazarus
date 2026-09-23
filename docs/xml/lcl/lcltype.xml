@@ -1978,7 +1978,22 @@ BACK navigation key which is mapped to VK_ESCAPE.
 <short/>
 </element>
 <element name="VK_LCL_CAPSLOCK">
-<short/>
+<short>Alias for the VK_CAPTIAL constant.</short>
+</element>
+<element name="VK_LCL_PAGEDOWN">
+<short>Alias for the VK_NEXT constant.</short>
+</element>
+<element name="VK_LCL_PAGEUP">
+<short>Alias for the VK_PRIOR constant.</short>
+</element>
+<element name="VK_LCL_BACKSPACE">
+<short>
+Alias for the VK_BACK constant. 
+Do not confuse this with the Android BACK key which is mapped to VK_ESCAPE.
+</short>
+</element>
+<element name="VK_LCL_ENTER">
+<short>Alias for the VK_RETURN constant.</short>
 </element>
 
 <element name="VK_LCL_POWER">

@@ -2774,8 +2774,8 @@ the result from <var>ConvertUTF8ToUTF16</var> and
 </descr>
 <seealso/>
 </element>
-<element name="TConvertResult.trNoError">
-<short>No error in the conversion.</short>
+<element name="TConvertResult.trSuccess">
+<short>Indicates a successful conversion with no errors.</short>
 </element>
 <element name="TConvertResult.trNullSrc">
 <short>Source value is null.</short>
@@ -2835,6 +2835,18 @@ argument to <var>ConvertUTF8ToUTF16</var> and <var>ConvertUTF16ToUTF8</var>.
 </seealso>
 </element>
 
+<element name="trNoError">
+<short>
+Deprecated. Use trSuccess in TConvertResult instead.
+</short>
+<descr/>
+<version>
+Deprecated in LazUtils version 4.0. Replaced with the enumeration value 
+trSuccess in TConvertResult.
+</version>
+<seealso/>
+</element>
+
 <element name="ConvertUTF8ToUTF16">
 <short>
 Converts values from UTF-8 encoding to UTF-16 encoding.
@@ -2872,40 +2884,40 @@ including:
 </p>
 <dl>
 <dt>
-trNoError
+trSuccess
 </dt>
 <dd>
-The string was successfully converted without any error
+The string was successfully converted without any error.
 </dd>
 <dt>
 trNullSrc
 </dt>
 <dd>
-Pointer to source string is nil
+Pointer to source string is <b>Nil</b>.
 </dd>
 <dt>
 trNullDest
 </dt>
 <dd>
-Pointer to destination string is nil
+Pointer to destination string is <b>Nil</b>.
 </dd>
 <dt>
 trDestExhausted
 </dt>
 <dd>
-Destination buffer size is not big enough to hold converted string
+Destination buffer size is not big enough to hold converted string.
 </dd>
 <dt>
 trInvalidChar
 </dt>
 <dd>
-Invalid source char has occurred
+Invalid source char has occurred.
 </dd>
 <dt>
 trUnfinishedChar
 </dt>
 <dd>
-Unfinished source char has occurred
+Unfinished source char has occurred.
 </dd>
 </dl>
 </descr>
@@ -2971,40 +2983,40 @@ including:
 </p>
 <dl>
 <dt>
-trNoError
+trSuccess
 </dt>
 <dd>
-The string was successfully converted without any error
+The string was successfully converted without any error.
 </dd>
 <dt>
 trNullSrc
 </dt>
 <dd>
-Pointer to source string is nil
+Pointer to source string is <b>Nil</b>.
 </dd>
 <dt>
 trNullDest
 </dt>
 <dd>
-Pointer to destination string is nil
+Pointer to destination string is <b>Nil</b>.
 </dd>
 <dt>
 trDestExhausted
 </dt>
 <dd>
-Destination buffer size is not big enough to hold converted string
+Destination buffer size is not big enough to hold converted string.
 </dd>
 <dt>
 trInvalidChar
 </dt>
 <dd>
-Invalid source char has occurred
+Invalid source char has occurred.
 </dd>
 <dt>
 trUnfinishedChar
 </dt>
 <dd>
-Unfinished source char has occurred
+Unfinished source char has occurred.
 </dd>
 </dl>
 </descr>
@@ -3066,40 +3078,40 @@ includes:
 </p>
 <dl>
 <dt>
-trNoError
+trSuccess
 </dt>
 <dd>
-The string was successfully converted without any error
+The string was successfully converted without any error.
 </dd>
 <dt>
 trNullSrc
 </dt>
 <dd>
-Pointer to source string is Nil
+Pointer to source string is <b>Nil</b>.
 </dd>
 <dt>
 trNullDest
 </dt>
 <dd>
-Pointer to destination string is Nil
+Pointer to destination string is <b>Nil</b>.
 </dd>
 <dt>
 trDestExhausted
 </dt>
 <dd>
-Destination buffer size is not big enough to hold converted string
+Destination buffer size is not big enough to hold converted string.
 </dd>
 <dt>
 trInvalidChar
 </dt>
 <dd>
-Invalid source char has occurred
+Invalid source char has occurred.
 </dd>
 <dt>
 trUnfinishedChar
 </dt>
 <dd>
-Unfinished source char has occurred
+Unfinished source char has occurred.
 </dd>
 </dl>
 </descr>

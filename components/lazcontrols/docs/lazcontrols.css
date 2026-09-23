@@ -47,7 +47,7 @@ h3, td.h3 {
 /* source fragments */
 span.code {
   white-space: nowrap;
-  font-weight: bold;
+  /* font-weight: bold; */
   /* font-size: 1em; */
 }
 
@@ -58,7 +58,7 @@ span.sym {
 
 /* keywords in source fragments */
 span.kw {
-  font-weight: bold;
+  font-weight: bold; 
 }
 
 /* comments in source fragments */
