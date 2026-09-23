@@ -14,8 +14,8 @@ resourcestring
   sgrpNames = 'Names';
   slblDefault = 'Default Test Name';
   sgrpFixture = 'Fixture';
-  schkSetup = 'Create Setup Method';
-  schkTear = 'Create TearDown method';
+  schkSetup = 'Create "&Setup" method';
+  schkTear = 'Create "&TearDown" method';
   sbtnCreate = 'Create unit';
 
   sNewFPCUnitProgramToR = 'New FPCUnit console testrunner program';
