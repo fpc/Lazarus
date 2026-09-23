@@ -578,6 +578,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = ColorElementTree
       AnchorSideBottom.Side = asrBottom
+      Cursor = crHandPoint
       Left = 207
       Height = 181
       Top = 6
