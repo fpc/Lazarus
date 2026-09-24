@@ -331,10 +331,9 @@ begin
 
   // anchor edit controls to the right edge of the longest check box caption
   if Length(UseMinVersionCheckBox.Caption) > Length(UseMaxVersionCheckBox.Caption) then
-    MinVersionEdit.AnchorSideLeft.Control := UseMinVersionCheckBox
+    MinVersionEdit.AnchorToNeighbour(akLeft,6,UseMinVersionCheckBox)
   else
-    MinVersionEdit.AnchorSideLeft.Control := UseMaxVersionCheckBox;
-  MinVersionEdit.AnchorSideLeft.Side := asrRight;
+    MinVersionEdit.AnchorToNeighbour(akLeft,6,UseMaxVersionCheckBox);
 
   ApplyDependencyButton := TButton.Create(fOwner);
   ApplyDependencyButton.Parent := fOwner;
@@ -440,12 +439,15 @@ begin
 end;
 
 procedure TProjPackFilePropGui.SetMinMaxVisibility;
+var
+  Vis: Boolean;
 begin
-  UseMinVersionCheckBox.Visible := ControlVisible;
-  MinVersionEdit.Visible := ControlVisible;
-  UseMaxVersionCheckBox.Visible := ControlVisible;
-  MaxVersionEdit.Visible := ControlVisible;
-  ApplyDependencyButton.Visible := ControlVisible;
+  Vis:=ControlVisible;
+  UseMinVersionCheckBox.Visible := Vis;
+  MinVersionEdit.Visible := Vis;
+  UseMaxVersionCheckBox.Visible := Vis;
+  MaxVersionEdit.Visible := Vis;
+  ApplyDependencyButton.Visible := Vis;
 end;
 
 procedure TProjPackFilePropGui.SetMinMaxValues(aDep: TPkgDependencyID);
