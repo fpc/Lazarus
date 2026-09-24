@@ -6730,6 +6730,10 @@ msgstr "Verificar alterações em disco por conteúdo em vez de carimbo"
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "Verifica se o próximo símbolo na fonte é um \"end\" e, caso contrário, devolve \"LineEnding + end; + LineEnding\"."
 
+#: lazarusidestrconsts.lischeckingfiles
+msgid "Checking ..."
+msgstr ""
+
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
 msgstr "Verificar opções"

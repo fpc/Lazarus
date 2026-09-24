@@ -6921,6 +6921,10 @@ msgstr "タイムスタンプよりも中身によってディスクファイル
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "ソース内の次のトークンが \"end\" で lineend + end; + lineend を返さないかどうかチェックする。"
 
+#: lazarusidestrconsts.lischeckingfiles
+msgid "Checking ..."
+msgstr ""
+
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
 msgstr "オプションをチェック"

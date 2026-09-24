@@ -6814,6 +6814,10 @@ msgstr "Перевіряти зміни файлу на диску за вміс
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "Перевіряти, чи наступний елемент у джерелі є \"end\" і, якщо ні, то повернути \"КінецьРядка + end; + КінецьРядка\"."
 
+#: lazarusidestrconsts.lischeckingfiles
+msgid "Checking ..."
+msgstr ""
+
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
 msgstr "Перевірити параметри"

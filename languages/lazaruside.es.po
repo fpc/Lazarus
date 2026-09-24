@@ -6937,6 +6937,10 @@ msgstr "Compruebe si hay cambios en los archivos del disco a través de contenid
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "Verificar si el siguiente elemento en el fuente esta en un \"end\" y si no retornar un \"LineEnding +  end; + LineEnding\"."
 
+#: lazarusidestrconsts.lischeckingfiles
+msgid "Checking ..."
+msgstr ""
+
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
 msgstr "Comprobar opciones"

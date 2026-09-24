@@ -6926,6 +6926,10 @@ msgstr "Ar pakito failas diske spręsti pagal pakitusį jo turinį, o ne datą"
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "Tikrina ar tolimesnė leksema yra „end“, jei ne tai grąžina „LineEnding + end; + LineEnding“."
 
+#: lazarusidestrconsts.lischeckingfiles
+msgid "Checking ..."
+msgstr ""
+
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
 msgstr "Tikrinimo parinktys"

@@ -6744,6 +6744,10 @@ msgstr "ກວດສອບການປ່ຽນແປງຟາຍລ໌ໃນດ
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "ກວດສອບວ່າ token ຕໍ່ໄປໃນຊອດໂຄດແມ່ນ \"end\" ຫຼື ບໍ່ ແລະ ຖ້າບໍ່ແມ່ນ ໃຫ້ສົ່ງຄ່າ \"LineEnding + end; + LineEnding\"."
 
+#: lazarusidestrconsts.lischeckingfiles
+msgid "Checking ..."
+msgstr ""
+
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
 msgstr "ຕົວເລືອກການກວດສອບ"

@@ -6861,6 +6861,10 @@ msgstr "Kontrolovat změny v souborech na disku raději podle obsahu než podle 
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "Zkontrolovat zda další element ve zdrojovém kódu je \"end\". Pokud ne, vrať \"LineEnding + end; + LineEnding\"."
 
+#: lazarusidestrconsts.lischeckingfiles
+msgid "Checking ..."
+msgstr ""
+
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
 msgstr "Zkontrolovat nastavení"

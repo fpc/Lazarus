@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-09-20 22:41+0300\n"
+"PO-Revision-Date: 2026-09-24 23:38+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -6714,6 +6714,10 @@ msgstr "Проверять изменения в файлах на диске п
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "Проверить, что следующий элемент исходного кода - слово \"end\", и, если нет, возвратить \"<символы конца строки> + end; + <символы конца строки>\"."
+
+#: lazarusidestrconsts.lischeckingfiles
+msgid "Checking ..."
+msgstr "Проверка ..."
 
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"

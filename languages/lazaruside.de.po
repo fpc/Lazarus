@@ -6749,6 +6749,10 @@ msgstr "Dateiänderungen eher über den Inhalt als über den Zeitstempel ermitte
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "Prüfen, ob der nächste Token im Quelltext ein End ist und falls nicht, Zeilenende + End; + Zeilenende zurückgeben."
 
+#: lazarusidestrconsts.lischeckingfiles
+msgid "Checking ..."
+msgstr ""
+
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
 msgstr "Einstellungen prüfen"

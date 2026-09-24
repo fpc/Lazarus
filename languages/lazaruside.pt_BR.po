@@ -6849,6 +6849,10 @@ msgstr "Verificar por alterações de arquivo em disco via conteúdo ao invés d
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "Verificar se o próximo símbolo (token) no código é um fim e se não retorna fimlinha + fim; + fimlinha"
 
+#: lazarusidestrconsts.lischeckingfiles
+msgid "Checking ..."
+msgstr ""
+
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
 msgstr "Opções verificação"

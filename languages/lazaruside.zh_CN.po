@@ -6755,6 +6755,10 @@ msgstr "通过文件内容而不是时间戳来检查磁盘文件是否更改"
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "检查源中的下一个标记是否为“end”，如果不是，则返回“LineEnding + end; + LineEnding”。"
 
+#: lazarusidestrconsts.lischeckingfiles
+msgid "Checking ..."
+msgstr ""
+
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
 msgstr "检查选项"

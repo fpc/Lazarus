@@ -6810,6 +6810,10 @@ msgstr "Tarkista tiedoston muutos sisällön eikä aikaleiman perusteella"
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "tarkista onko lähdekoodin seuraava tunnus 'end'. Jos ei, palauta rivinloppu + end; + rivinloppu."
 
+#: lazarusidestrconsts.lischeckingfiles
+msgid "Checking ..."
+msgstr ""
+
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
 msgstr "Tarkista asetukset"

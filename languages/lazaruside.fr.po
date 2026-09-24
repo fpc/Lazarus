@@ -6780,6 +6780,10 @@ msgstr "Vérifier les modifications des fichiers sur le disque selon le contenu 
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "Vérifier que l'unité lexicale suivante dans le code source est \"end\" et sinon retourne \"LineEnding + end; + LineEnding\"."
 
+#: lazarusidestrconsts.lischeckingfiles
+msgid "Checking ..."
+msgstr ""
+
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
 msgstr "Vérifier les options"

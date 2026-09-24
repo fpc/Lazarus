@@ -6825,6 +6825,10 @@ msgstr "A fájlok megváltozását a lemezen inkább a tartalom, mint az időbé
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "Ellenőrizze, hogy a következő szimbólum a forrásban egy \"end\" és hogy nem ad-e vissza \"LineEnding + end; + LineEnding\" sorozatot."
 
+#: lazarusidestrconsts.lischeckingfiles
+msgid "Checking ..."
+msgstr ""
+
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
 msgstr "Beállítások ellenőrzése"

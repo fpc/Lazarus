@@ -6933,6 +6933,10 @@ msgstr "Controlla i cambiamenti dei file su disco dal contenuto invece che dal t
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "Controlla se il prossimo token nel sorgente è un END: se non lo è, mette un END su una nuova riga e va a capo"
 
+#: lazarusidestrconsts.lischeckingfiles
+msgid "Checking ..."
+msgstr ""
+
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
 msgstr "Controlla opzioni"

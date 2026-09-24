@@ -6759,6 +6759,10 @@ msgstr "Disk dosyası değişikliklerini zaman damgası yerine içerik aracılı
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "Kaynaktaki bir sonraki belirtecin \"end\" olup olmadığını ve \"LineEnding + end; + LineEnding \" döndürülmemesini sağlayın."
 
+#: lazarusidestrconsts.lischeckingfiles
+msgid "Checking ..."
+msgstr ""
+
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
 msgstr "Seçenekleri kontrol et"
