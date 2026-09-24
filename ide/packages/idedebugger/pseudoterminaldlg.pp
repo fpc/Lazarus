@@ -54,6 +54,11 @@ const
 
 type
 
+  TTerminalStringList = class(TStringList)
+  protected
+    procedure SetTextStr(const Value: string); override;
+  end;
+
   TLazDbgIdeBuiltInConsolePlugInConfig = class;
 
   { TPseudoConsoleDlg }
@@ -91,9 +96,14 @@ type
     FMemoEndsInEOL: Boolean;
     FMemoEndsInCR: Boolean;
     FOwnerRef: PPointer; // issue 42568
+    FBuffer: TTerminalStringList;
+    FLineNumberAsText: string;
+    FDataAsByteArray: TBytes;
     procedure DoConfigChanged(Sender: TObject);
+    procedure expandAsHex(currentLine, lineNumberLength: integer);
     procedure getCharHeightAndWidth(consoleFont: TFont; out h, w: word);
     procedure consoleSizeChanged;
+    procedure hexLines(currentLine, start, bytes: integer);
   protected
     procedure DoClose(var CloseAction: TCloseAction); override;
   public
@@ -105,11 +115,6 @@ type
     property CharWidth: word read fCharWidth;
     property RowsPerScreen: integer read fRowsPerScreen;
     property ColsPerRow: integer read fColsPerRow;
-  end;
-
-  TTerminalStringList = class(TStringList)
-  protected
-    procedure SetTextStr(const Value: string); override;
   end;
 
   ILazDbgIdeBuiltInConsolePlugIn = interface ['{C66A1611-5C38-4710-B01D-9EBD85FE57FD}']
@@ -201,6 +206,7 @@ uses
 
 const
   handleUnopened= System.THandle(-$80000000);
+  dot = #$C2#$B7;                        // ·
 
 var
   //DBG_VERBOSE,
@@ -250,10 +256,8 @@ begin
 end;
 
 procedure TPseudoConsoleDlg.PairSplitterRawRightResize(Sender: TObject);
-
 var
   ttyNotYetInitialised: boolean;
-
 begin
 
 (* These are not errors so much as conditions we will see while the IDE is      *)
@@ -297,12 +301,9 @@ end { TPseudoConsoleDlg.RadioGroupRightSelectionChanged } ;
   assuming that this works out the best control to track.
 *)
 procedure TPseudoConsoleDlg.FormResize(Sender: TObject);
-
 var
   ttyNotYetInitialised: boolean;
-
 begin
-
 (* These are not errors so much as conditions we will see while the IDE is      *)
 (* starting up.                                                                 *)
 
@@ -346,7 +347,6 @@ begin
   end;
 end;
 
-
 procedure TPseudoConsoleDlg.DoClose(var CloseAction: TCloseAction);
 
 begin
@@ -360,9 +360,7 @@ begin
   CloseAction := caHide;
 end { TPseudoConsoleDlg.DoClose } ;
 
-
 constructor TPseudoConsoleDlg.Create(TheOwner: TComponent);
-
 begin
   inherited Create(TheOwner);
 
@@ -408,10 +406,8 @@ end;
   errs on the side of fewer rather than more rows and columns.
 *)
 procedure TPseudoConsoleDlg.getCharHeightAndWidth(consoleFont: TFont; out h, w: word);
-
 var
   bm: TBitMap;
-
 begin
   bm := TBitmap.Create;
   try
@@ -544,368 +540,350 @@ begin
 end { TPseudoConsoleDlg.consoleSizeChanged } ;
 
 
-procedure TPseudoConsoleDlg.AddOutput(const AText: String);
+(* Translate C0 control codes to "control pictures", and optionally C1 codes
+  to the same glyph but with an underbar.
+*)
+function withControlPictures(const str: string; c1Underbar: boolean): string;
 const
-  dot = #$C2#$B7;                        // ·
+  nul= #$2400;                        // ␀
+  soh= #$2401;                        // ␁
+  stx= #$2402;                        // ␂
+  etx= #$2403;                        // ␃
+  eot= #$2404;                        // ␄
+  enq= #$2405;                        // ␅
+  ack= #$2406;                        // ␆
+  bel= #$2407;                        // ␇
+  bs=  #$2408;                        // ␈
+  ht=  #$2409;                        // ␉
+  lf=  #$240a;                        // ␊
+  vt=  #$240b;                        // ␋
+  ff=  #$240c;                        // ␌
+  //cr=  #$240d;                        // ␍
+  so=  #$240e;                        // ␎
+  si=  #$240f;                        // ␏
+  dle= #$2410;                        // ␐
+  dc1= #$2411;                        // ␑
+  dc2= #$2412;                        // ␒
+  dc3= #$2413;                        // ␓
+  dc4= #$2414;                        // ␔
+  nak= #$2415;                        // ␕
+  syn= #$2416;                        // ␖
+  etb= #$2417;                        // ␗
+  can= #$2418;                        // ␘
+  em=  #$2419;                        // ␙
+  sub= #$241a;                        // ␚
+  esc= #$241b;                        // ␛
+  fs=  #$241c;                        // ␜
+  gs=  #$241d;                        // ␝
+  rs=  #$241e;                        // ␞
+  us=  #$241f;                        // ␟
+  del= #$2420;                        // ␡
+  bar= #$033c;                        // ̼'
+
 var
-  lineLimit, numLength, i: integer;
-  buffer: TTerminalStringList;
-  TextEndsInEOL, AAppendText: Boolean;
-  ALine, AMemoLine, ASubLine: string;
-  CRPos: SizeInt;
+  i, test, masked: integer;
+  changed: boolean;
+  u: unicodestring;
+begin
+  SetLength(u{%H-}, Length(str));
 
+(* This should probably be recoded to use a persistent table, but doing it    *)
+(* this way results in no lookup for plain text which is likely to be the     *)
+(* bulk of the output. I'm not making any assumptions about the Unicode       *)
+(* characters being sequential so that this code can be used both for control *)
+(* pictures and ISO-2047 glyphs, and so that if somebody has (good) reason to *)
+(* want to adjust them he can do so.                                          *)
 
-  (* Translate C0 control codes to "control pictures", and optionally C1 codes
-    to the same glyph but with an underbar.
-  *)
-  function withControlPictures(const str: string; c1Underbar: boolean): string;
-
-  const
-    nul= #$2400;                        // ␀
-    soh= #$2401;                        // ␁
-    stx= #$2402;                        // ␂
-    etx= #$2403;                        // ␃
-    eot= #$2404;                        // ␄
-    enq= #$2405;                        // ␅
-    ack= #$2406;                        // ␆
-    bel= #$2407;                        // ␇
-    bs=  #$2408;                        // ␈
-    ht=  #$2409;                        // ␉
-    lf=  #$240a;                        // ␊
-    vt=  #$240b;                        // ␋
-    ff=  #$240c;                        // ␌
-    //cr=  #$240d;                        // ␍
-    so=  #$240e;                        // ␎
-    si=  #$240f;                        // ␏
-    dle= #$2410;                        // ␐
-    dc1= #$2411;                        // ␑
-    dc2= #$2412;                        // ␒
-    dc3= #$2413;                        // ␓
-    dc4= #$2414;                        // ␔
-    nak= #$2415;                        // ␕
-    syn= #$2416;                        // ␖
-    etb= #$2417;                        // ␗
-    can= #$2418;                        // ␘
-    em=  #$2419;                        // ␙
-    sub= #$241a;                        // ␚
-    esc= #$241b;                        // ␛
-    fs=  #$241c;                        // ␜
-    gs=  #$241d;                        // ␝
-    rs=  #$241e;                        // ␞
-    us=  #$241f;                        // ␟
-    del= #$2420;                        // ␡
-    bar= #$033c;                        // ̼'
-
-  var
-    i, test, masked: integer;
-    changed: boolean;
-    u: unicodestring;
-
-  begin
-    SetLength(u{%H-}, Length(str));
-
-  (* This should probably be recoded to use a persistent table, but doing it    *)
-  (* this way results in no lookup for plain text which is likely to be the     *)
-  (* bulk of the output. I'm not making any assumptions about the Unicode       *)
-  (* characters being sequential so that this code can be used both for control *)
-  (* pictures and ISO-2047 glyphs, and so that if somebody has (good) reason to *)
-  (* want to adjust them he can do so.                                          *)
-
-    for i := Length(str) downto 1 do begin
-      test := Ord(str[i]);
-      if c1Underbar then
-        masked := test and $7f          (* Handle both C0 and C1 in one operation *)
-      else
-        masked := test;
-      changed := true;
-      case masked of
-        $00: u[i] := nul;
-        $01: u[i] := soh;
-        $02: u[i] := stx;
-        $03: u[i] := etx;
-        $04: u[i] := eot;
-        $05: u[i] := enq;
-        $06: u[i] := ack;
-        $07: u[i] := bel;
-        $08: u[i] := bs;
-        $09: u[i] := ht;
-        $0a: u[i] := lf;
-        $0b: u[i] := vt;
-        $0c: u[i] := ff;
-        // $0d: u[i] := cr; // carrige return resets the cursor to line beginning for rewrite (both Linux and Windows)
-        $0e: u[i] := so;
-        $0f: u[i] := si;
-        $10: u[i] := dle;
-        $11: u[i] := dc1;
-        $12: u[i] := dc2;
-        $13: u[i] := dc3;
-        $14: u[i] := dc4;
-        $15: u[i] := nak;
-        $16: u[i] := syn;
-        $17: u[i] := etb;
-        $18: u[i] := can;
-        $19: u[i] := em;
-        $1a: u[i] := sub;
-        $1b: u[i] := esc;
-        $1c: u[i] := fs;
-        $1d: u[i] := gs;
-        $1e: u[i] := rs;
-        $1f: u[i] := us;
-        $7f: u[i] := del
-      otherwise
-        u[i] := Chr(test);
-        changed := false;
-      end;
-      if c1Underbar and changed and     (* Now fix changed C1 characters        *)
-                                (masked <> test) then
-        Insert(bar, u, i)
+  for i := Length(str) downto 1 do begin
+    test := Ord(str[i]);
+    if c1Underbar then
+      masked := test and $7f          (* Handle both C0 and C1 in one operation *)
+    else
+      masked := test;
+    changed := true;
+    case masked of
+      $00: u[i] := nul;
+      $01: u[i] := soh;
+      $02: u[i] := stx;
+      $03: u[i] := etx;
+      $04: u[i] := eot;
+      $05: u[i] := enq;
+      $06: u[i] := ack;
+      $07: u[i] := bel;
+      $08: u[i] := bs;
+      $09: u[i] := ht;
+      $0a: u[i] := lf;
+      $0b: u[i] := vt;
+      $0c: u[i] := ff;
+      // $0d: u[i] := cr; // carrige return resets the cursor to line beginning for rewrite (both Linux and Windows)
+      $0e: u[i] := so;
+      $0f: u[i] := si;
+      $10: u[i] := dle;
+      $11: u[i] := dc1;
+      $12: u[i] := dc2;
+      $13: u[i] := dc3;
+      $14: u[i] := dc4;
+      $15: u[i] := nak;
+      $16: u[i] := syn;
+      $17: u[i] := etb;
+      $18: u[i] := can;
+      $19: u[i] := em;
+      $1a: u[i] := sub;
+      $1b: u[i] := esc;
+      $1c: u[i] := fs;
+      $1d: u[i] := gs;
+      $1e: u[i] := rs;
+      $1f: u[i] := us;
+      $7f: u[i] := del
+    otherwise
+      u[i] := Chr(test);
+      changed := false;
     end;
-    Result:=string(u);
-  end { withControlPictures } ;
+    if c1Underbar and changed and     (* Now fix changed C1 characters        *)
+                              (masked <> test) then
+      Insert(bar, u, i)
+  end;
+  Result:=string(u);
+end { withControlPictures } ;
 
 
-  (* Translate C0 control codes to "pretty pictures", and optionally C1 codes
-    to the same glyph but with an underbar.
-  *)
-  function withIso2047(const str: string; c1Underbar: boolean): string;
+(* Translate C0 control codes to "pretty pictures", and optionally C1 codes
+  to the same glyph but with an underbar.
+*)
+function withIso2047(const str: string; c1Underbar: boolean): string;
 
-  (* I've not got access to a pukka copy of ISO-2047, so like (it appears)      *)
-  (* almost everybody else I'm assuming that the Wikipedia page is correct.     *)
-  (* this differs from the ECMA standard (only) in the backspace glyph, some    *)
-  (* terminals in particular the Burroughs TD730/830 range manufactured in the  *)
-  (* 1970s and 1980s depart slightly more. I've found limited open source       *)
-  (* projects that refer to this encoding, and those I've found have attempted  *)
-  (* to "correct" details like the "direction of rotation" of the glyphs for    *)
-  (* the DC1 through DC4 codes.                                                 *)
-  (*                                                                            *)
-  (* Suffixes W, E and B below refer to the variants found in the Wikipedia     *)
-  (* article, the ECMA standard and the Burroughs terminal documentation.       *)
+(* I've not got access to a pukka copy of ISO-2047, so like (it appears)      *)
+(* almost everybody else I'm assuming that the Wikipedia page is correct.     *)
+(* this differs from the ECMA standard (only) in the backspace glyph, some    *)
+(* terminals in particular the Burroughs TD730/830 range manufactured in the  *)
+(* 1970s and 1980s depart slightly more. I've found limited open source       *)
+(* projects that refer to this encoding, and those I've found have attempted  *)
+(* to "correct" details like the "direction of rotation" of the glyphs for    *)
+(* the DC1 through DC4 codes.                                                 *)
+(*                                                                            *)
+(* Suffixes W, E and B below refer to the variants found in the Wikipedia     *)
+(* article, the ECMA standard and the Burroughs terminal documentation.       *)
 
-  const
-    nul=  #$2395;                       // ⎕
-    soh=  #$2308;                       // ⌈
-    stx=  #$22A5;                       // ⊥
-    etx=  #$230B;                       // ⌋
-    eot=  #$2301;                       // ⌁
-    enq=  #$22A0;                       // ⊠
-    ack=  #$2713;                       // ✓
-    bel=  #$237E;                       // ⍾
-    //bsW=  #$232B;                       // ⌫
-    bsB=  #$2196;                       // ↖ The ECMA glyph is slightly curved
-    bs=   bsB;                          //   and has no Unicode representation.
-    ht=   #$2AAB;                       // ⪫
-    lf=   #$2261;                       // ≡
-    vt=   #$2A5B;                       // ⩛
-    ff=   #$21A1;                       // ↡
-    crW=  #$2aaa;                       // ⪪ ECMA the same
-    //crB=  #$25bf;                       // ▿
-    cr=   crW;
-    so=   #$2297;                       // ⊗
-    si=   #$2299;                       // ⊙
-    dle=  #$229F;                       // ⊟
-    dc1=  #$25F7;                       // ◷ Nota bene: these rotate deosil
-    dc2=  #$25F6;                       // ◶
-    dc3=  #$25F5;                       // ◵
-    dc4=  #$25F4;                       // ◴
-    nak=  #$237B;                       // ⍻
-    syn=  #$238D;                       // ⎍
-    etb=  #$22A3;                       // ⊣
-    can=  #$29D6;                       // ⧖
-    em=   #$237F;                       // ⍿
-    sub=  #$2426;                       // ␦
-    esc=  #$2296;                       // ⊖
-    fs=   #$25F0;                       // ◰ Nota bene: these rotate widdershins
-    gsW=  #$25F1;                       // ◱ ECMA the same
-    //gsB=  #$25b5;                       // ▵
-    gs=   gsW;
-    rsW=  #$25F2;                       // ◲ ECMA the same
-    //rsB=  #$25c3;                       // ◃
-    rs=   rsW;
-    usW=  #$25F3;                       // ◳ ECMA the same
-    //usB=  #$25b9;                       // ▹
-    us=   usW;
-    del=  #$2425;                       // ␥
-    bar=  #$033c;                       // ̼'
+const
+  nul=  #$2395;                       // ⎕
+  soh=  #$2308;                       // ⌈
+  stx=  #$22A5;                       // ⊥
+  etx=  #$230B;                       // ⌋
+  eot=  #$2301;                       // ⌁
+  enq=  #$22A0;                       // ⊠
+  ack=  #$2713;                       // ✓
+  bel=  #$237E;                       // ⍾
+  //bsW=  #$232B;                       // ⌫
+  bsB=  #$2196;                       // ↖ The ECMA glyph is slightly curved
+  bs=   bsB;                          //   and has no Unicode representation.
+  ht=   #$2AAB;                       // ⪫
+  lf=   #$2261;                       // ≡
+  vt=   #$2A5B;                       // ⩛
+  ff=   #$21A1;                       // ↡
+  crW=  #$2aaa;                       // ⪪ ECMA the same
+  //crB=  #$25bf;                       // ▿
+  cr=   crW;
+  so=   #$2297;                       // ⊗
+  si=   #$2299;                       // ⊙
+  dle=  #$229F;                       // ⊟
+  dc1=  #$25F7;                       // ◷ Nota bene: these rotate deosil
+  dc2=  #$25F6;                       // ◶
+  dc3=  #$25F5;                       // ◵
+  dc4=  #$25F4;                       // ◴
+  nak=  #$237B;                       // ⍻
+  syn=  #$238D;                       // ⎍
+  etb=  #$22A3;                       // ⊣
+  can=  #$29D6;                       // ⧖
+  em=   #$237F;                       // ⍿
+  sub=  #$2426;                       // ␦
+  esc=  #$2296;                       // ⊖
+  fs=   #$25F0;                       // ◰ Nota bene: these rotate widdershins
+  gsW=  #$25F1;                       // ◱ ECMA the same
+  //gsB=  #$25b5;                       // ▵
+  gs=   gsW;
+  rsW=  #$25F2;                       // ◲ ECMA the same
+  //rsB=  #$25c3;                       // ◃
+  rs=   rsW;
+  usW=  #$25F3;                       // ◳ ECMA the same
+  //usB=  #$25b9;                       // ▹
+  us=   usW;
+  del=  #$2425;                       // ␥
+  bar=  #$033c;                       // ̼'
 
 (* Not represented above is a Burroughs glyph for ETX, which in the material    *)
 (* available to me appears indistinguisable from CAN. If anybody has variant    *)
 (* glyphs from other manufacturers please contribute.                           *)
 
-  var
-    i, test, masked: integer;
-    changed: boolean;
-    u: unicodestring;
+var
+  i, test, masked: integer;
+  changed: boolean;
+  u: unicodestring;
 
-  begin
-    SetLength(u{%H-}, Length(str));
+begin
+  SetLength(u{%H-}, Length(str));
 
-  (* This should probably be recoded to use a persistent table, but doing it    *)
-  (* this way results in no lookup for plain text which is likely to be the     *)
-  (* bulk of the output. I'm not making any assumptions about the Unicode       *)
-  (* characters being sequential so that this code can be used both for control *)
-  (* pictures and ISO-2047 glyphs, and so that if somebody has (good) reason to *)
-  (* want to adjust them she can do so.                                         *)
+(* This should probably be recoded to use a persistent table, but doing it    *)
+(* this way results in no lookup for plain text which is likely to be the     *)
+(* bulk of the output. I'm not making any assumptions about the Unicode       *)
+(* characters being sequential so that this code can be used both for control *)
+(* pictures and ISO-2047 glyphs, and so that if somebody has (good) reason to *)
+(* want to adjust them she can do so.                                         *)
 
-    for i := Length(str) downto 1 do begin
-      test := Ord(str[i]);
-      if c1Underbar then
-        masked := test and $7f          (* Handle both C0 and C1 in one operation *)
-      else
-        masked := test;
-      changed := true;
-      case masked of
-        $00: u[i] := nul;
-        $01: u[i] := soh;
-        $02: u[i] := stx;
-        $03: u[i] := etx;
-        $04: u[i] := eot;
-        $05: u[i] := enq;
-        $06: u[i] := ack;
-        $07: u[i] := bel;
-        $08: u[i] := bs;
-        $09: u[i] := ht;
-        $0a: u[i] := lf;
-        $0b: u[i] := vt;
-        $0c: u[i] := ff;
-        $0d: u[i] := cr;
-        $0e: u[i] := so;
-        $0f: u[i] := si;
-        $10: u[i] := dle;
-        $11: u[i] := dc1;
-        $12: u[i] := dc2;
-        $13: u[i] := dc3;
-        $14: u[i] := dc4;
-        $15: u[i] := nak;
-        $16: u[i] := syn;
-        $17: u[i] := etb;
-        $18: u[i] := can;
-        $19: u[i] := em;
-        $1a: u[i] := sub;
-        $1b: u[i] := esc;
-        $1c: u[i] := fs;
-        $1d: u[i] := gs;
-        $1e: u[i] := rs;
-        $1f: u[i] := us;
-        $7f: u[i] := del
-      otherwise
-        u[i] := Chr(test);
-        changed := false;
-      end;
-      if c1Underbar and changed and     (* Now fix changed C1 characters        *)
-                                (masked <> test) then
-        Insert(bar, u, i)
-    end;
-    Result:=string(u);
-  end { withIso2047 } ;
-
-
-  (* Convert the string that's arrived from GDB etc. into UTF-8. In this case
-    it's mostly a dummy operation, except that there might be widget-set-specific
-    hacks.
-  *)
-  function widen(const str: string): string;
-  var
-    i, j: integer;
-
-  begin
-    Result:=str;
-    j:=length(result);
-    for i := Length(str) downto 1 do
-    begin
-      case str[i] of
-        ' ': result[j] := ' ';          (* Satisfy syntax requirement           *)
-        #$00:
-        //        #$01..#$0f,
-        //        #$10..#$1f,
-        //        #$7f,
-        //        #$80..#$ff,
-          begin
-          ReplaceSubstring(Result,j,1,dot); (* GTK2 really doesn't like seeing this *)
-          end;
-      end;
-      dec(j);
-    end;
-  end { widen } ;
-
-
-  (* Look at the line index cl in a TStringList. Assume that at the start there
-    will be a line number and padding occupying nl characters, after that will
-    be text. Convert the text to hex possibly inserting extra lines after the
-    one being processed, only the first (i.e. original) line has a line number.
-  *)
-  procedure expandAsHex(const stringList: TStringList; currentLine, lineNumberLength: integer);
-
-  var
-    lineNumberAsText: string;
-    dataAsByteArray: TBytes;
-    lengthLastBlock, startLastBlock: integer;
-
-
-    (* Recursively process the byte array from the end to the beginning. All
-      lines are inserted immediately after the original current line, except for
-      the final line processed which overwrites the original.
-    *)
-    procedure hexLines(start, bytes: integer);
-
-
-      (* The parameter is a line number as text or an equivalent run of spaces.
-        The result is a line of hex + ASCII data.
-      *)
-      function oneHexLine(const lineNum: string): string;
-
-      var
-        i: integer;
-
-      begin
-        result := lineNum;
-        for i := 0 to 15 do
-          if i < bytes then
-            result += LowerCase(HexStr(dataAsByteArray[start + i], 2)) + ' '
-          else
-            result += '   ';
-        result += ' ';                  (* Between hex and ASCII                *)
-        for i := 0 to 15 do
-          if i < bytes then
-            case dataAsByteArray[start + i] of
-              $20..$7e: result += Chr(dataAsByteArray[start + i])
-            otherwise
-              result += dot
-            end
-      end { oneHexLine } ;
-
-
-    begin
-      if start = 0 then
-        stringList[currentLine] := oneHexLine(lineNumberAsText)
-      else begin
-        stringList.insert(currentLine + 1, oneHexLine(PadLeft('', Length(lineNumberAsText))));
-        hexLines(start - 16, 16)
-      end
-    end { hexLines } ;
-
-
-  begin
-    if lineNumberLength = 0 then begin
-      lineNumberAsText := '';
-      // Was: Copy(stringList[currentLine], 1, Length(stringList[currentLine]))
-      dataAsByteArray := BytesOf(stringList[currentLine])
-    end else begin                      (* Remember one extra space after number *)
-      lineNumberAsText := Copy(stringList[currentLine], 1, lineNumberLength + 1);
-      dataAsByteArray := BytesOf(Copy(stringList[currentLine], lineNumberLength + 2,
-                                Length(stringList[currentLine]) - (lineNumberLength + 1)))
-    end;
-    if (Length(dataAsByteArray) > 0) and ((Length(dataAsByteArray) mod 16) = 0) then
-      lengthLastBlock := 16
+  for i := Length(str) downto 1 do begin
+    test := Ord(str[i]);
+    if c1Underbar then
+      masked := test and $7f          (* Handle both C0 and C1 in one operation *)
     else
-      lengthLastBlock := Length(dataAsByteArray) mod 16;
-    startLastBlock := Length(dataAsByteArray) - lengthLastBlock;
-    hexLines(startLastBlock, lengthLastBlock)
-  end { expandAsHex } ;
+      masked := test;
+    changed := true;
+    case masked of
+      $00: u[i] := nul;
+      $01: u[i] := soh;
+      $02: u[i] := stx;
+      $03: u[i] := etx;
+      $04: u[i] := eot;
+      $05: u[i] := enq;
+      $06: u[i] := ack;
+      $07: u[i] := bel;
+      $08: u[i] := bs;
+      $09: u[i] := ht;
+      $0a: u[i] := lf;
+      $0b: u[i] := vt;
+      $0c: u[i] := ff;
+      $0d: u[i] := cr;
+      $0e: u[i] := so;
+      $0f: u[i] := si;
+      $10: u[i] := dle;
+      $11: u[i] := dc1;
+      $12: u[i] := dc2;
+      $13: u[i] := dc3;
+      $14: u[i] := dc4;
+      $15: u[i] := nak;
+      $16: u[i] := syn;
+      $17: u[i] := etb;
+      $18: u[i] := can;
+      $19: u[i] := em;
+      $1a: u[i] := sub;
+      $1b: u[i] := esc;
+      $1c: u[i] := fs;
+      $1d: u[i] := gs;
+      $1e: u[i] := rs;
+      $1f: u[i] := us;
+      $7f: u[i] := del
+    otherwise
+      u[i] := Chr(test);
+      changed := false;
+    end;
+    if c1Underbar and changed and     (* Now fix changed C1 characters        *)
+                              (masked <> test) then
+      Insert(bar, u, i)
+  end;
+  Result:=string(u);
+end { withIso2047 } ;
 
+
+(* Convert the string that's arrived from GDB etc. into UTF-8. In this case
+  it's mostly a dummy operation, except that there might be widget-set-specific
+  hacks.
+*)
+function widen(const str: string): string;
+var
+  i, j: integer;
+begin
+  Result:=str;
+  j:=length(result);
+  for i := Length(str) downto 1 do
+  begin
+    case str[i] of
+      ' ': result[j] := ' ';          (* Satisfy syntax requirement           *)
+      #$00:
+      //        #$01..#$0f,
+      //        #$10..#$1f,
+      //        #$7f,
+      //        #$80..#$ff,
+        begin
+        ReplaceSubstring(Result,j,1,dot); (* GTK2 really doesn't like seeing this *)
+        end;
+    end;
+    dec(j);
+  end;
+end { widen } ;
+
+
+(* Look at the line index cl in a TStringList. Assume that at the start there
+  will be a line number and padding occupying nl characters, after that will
+  be text. Convert the text to hex possibly inserting extra lines after the
+  one being processed, only the first (i.e. original) line has a line number.
+*)
+procedure TPseudoConsoleDlg.expandAsHex(currentLine, lineNumberLength: integer);
+  (* Recursively process the byte array from the end to the beginning. All
+    lines are inserted immediately after the original current line, except for
+    the final line processed which overwrites the original.
+  *)
+var
+  lengthLastBlock, startLastBlock: integer;
+begin
+  if lineNumberLength = 0 then begin
+    FLineNumberAsText := '';
+    // Was: Copy(FBuffer[currentLine], 1, Length(FBuffer[currentLine]))
+    FDataAsByteArray := BytesOf(FBuffer[currentLine])
+  end else begin                      (* Remember one extra space after number *)
+    FLineNumberAsText := Copy(FBuffer[currentLine], 1, lineNumberLength + 1);
+    FDataAsByteArray := BytesOf(Copy(FBuffer[currentLine], lineNumberLength + 2,
+                              Length(FBuffer[currentLine]) - (lineNumberLength + 1)))
+  end;
+  if (Length(FDataAsByteArray) > 0) and ((Length(FDataAsByteArray) mod 16) = 0) then
+    lengthLastBlock := 16
+  else
+    lengthLastBlock := Length(FDataAsByteArray) mod 16;
+  startLastBlock := Length(FDataAsByteArray) - lengthLastBlock;
+  hexLines(currentLine, startLastBlock, lengthLastBlock)
+end { expandAsHex } ;
+
+
+procedure TPseudoConsoleDlg.hexLines(currentLine, start, bytes: integer);
+  (* The parameter is a line number as text or an equivalent run of spaces.
+    The result is a line of hex + ASCII data.
+  *)
+  function oneHexLine(const lineNum: string): string;
+  var
+    i: integer;
+  begin
+    result := lineNum;
+    for i := 0 to 15 do
+      if i < bytes then
+        result += LowerCase(HexStr(FDataAsByteArray[start + i], 2)) + ' '
+      else
+        result += '   ';
+    result += ' ';                  (* Between hex and ASCII                *)
+    for i := 0 to 15 do
+      if i < bytes then
+        case FDataAsByteArray[start + i] of
+          $20..$7e: result += Chr(FDataAsByteArray[start + i])
+        otherwise
+          result += dot
+        end
+  end { oneHexLine } ;
+
+begin
+  if start = 0 then
+    FBuffer[currentLine] := oneHexLine(FLineNumberAsText)
+  else begin
+    FBuffer.insert(currentLine + 1, oneHexLine(PadLeft('', Length(FLineNumberAsText))));
+    hexLines(currentLine, start - 16, 16)
+  end
+end { hexLines } ;
+
+
+procedure TPseudoConsoleDlg.AddOutput(const AText: String);
+var
+  i, lineLimit, numLength: integer;
+  TextEndsInEOL, AAppendText: Boolean;
+  ALine, AMemoLine, ASubLine: string;
+  CRPos: SizeInt;
 begin
   if (AText='') then
     Exit;
-
   if ttyHandle = handleUnopened then begin (* Do this at first output only      *)
     //DebugLn(DBG_VERBOSE, ['TPseudoConsoleDlg.AddOutput Calling consoleSizeChanged']);
     consoleSizeChanged
@@ -935,7 +913,7 @@ begin
   while Memo1.Lines.Count > lineLimit do
     Memo1.Lines.Delete(0);
 
-(* Use an intermediate buffer to process the line or potentially lines of text  *)
+(* Use an intermediate FBuffer to process the line or potentially lines of text  *)
 (* passed as the parameter; where formatting as hex breaks it up into multiple  *)
 (* lines, the line number is blanked on the synthetic ones. When lines or lists *)
 (* of lines are processed in reverse it is because an indeterminate number of   *)
@@ -947,35 +925,35 @@ begin
 (* so having an intermediate that can be inspected might be useful.             *)
 
   TextEndsInEOL := (AText[Length(AText)] in [#10]);
-  buffer := TTerminalStringList.Create;
+  FBuffer := TTerminalStringList.Create;
   try
-    buffer.Text := AText;     (* Decides what line breaks it wants to swallow   *)
+    FBuffer.Text := AText;     (* Decides what line breaks it wants to swallow   *)
     case RadioGroupRight.ItemIndex of
-      0: for i := 0 to buffer.Count - 1 do
-           buffer[i] := widen(buffer[i]);
-      1: for i := 0 to buffer.Count - 1 do
-           buffer[i] := withControlPictures(buffer[i], CheckGroupRight.Checked[1]);
-      2: for i := 0 to buffer.Count - 1 do
-           buffer[i] := withIso2047(buffer[i], CheckGroupRight.Checked[1])
+      0: for i := 0 to FBuffer.Count - 1 do
+           FBuffer[i] := widen(FBuffer[i]);
+      1: for i := 0 to FBuffer.Count - 1 do
+           FBuffer[i] := withControlPictures(FBuffer[i], CheckGroupRight.Checked[1]);
+      2: for i := 0 to FBuffer.Count - 1 do
+           FBuffer[i] := withIso2047(FBuffer[i], CheckGroupRight.Checked[1])
     otherwise
     end;
-    for i := 0 to buffer.Count - 1 do begin             (* Line numbers         *)
+    for i := 0 to FBuffer.Count - 1 do begin             (* Line numbers         *)
       if numLength > 0 then
-        buffer[i] := PadLeft(IntToStr(fFirstLine), numLength) + ' ' + buffer[i];
+        FBuffer[i] := PadLeft(IntToStr(fFirstLine), numLength) + ' ' + FBuffer[i];
       fFirstLine += 1
     end;
     if RadioGroupRight.ItemIndex = 3 then begin (* Expand hex line-by-line in reverse *)
-      for i := buffer.Count - 1 downto 0 do
-        expandAsHex(buffer, i, numLength);
+      for i := FBuffer.Count - 1 downto 0 do
+        expandAsHex(i, numLength);
       FMemoEndsInEOL := True;
     end;
 
 (* Add the buffered text to the visible control(s), and clean up.               *)
 
-    for i := 0 to buffer.Count-1 do
+    for i := 0 to FBuffer.Count-1 do
     begin
       // CR character = carrige return = overwrite the current line
-      ALine := buffer[i];
+      ALine := FBuffer[i];
       while ALine<>'' do
       begin
         // -> split the text by CR
@@ -993,7 +971,7 @@ begin
           AMemoLine := Memo1.Lines[Memo1.Lines.Count-1];
           if AAppendText then // append
             AMemoLine := AMemoLine + ASubLine
-          else // overwrite console buffer (do not clear the line but write over)
+          else // overwrite console FBuffer (do not clear the line but write over)
             AMemoLine := ASubLine + Copy(AMemoLine, Length(ASubLine)+1);
           Memo1.Lines[Memo1.Lines.Count-1] := AMemoLine;
         end else // add new line
@@ -1006,7 +984,7 @@ begin
     FMemoEndsInEOL := TextEndsInEOL;
     FMemoEndsInCR := (AText[Length(AText)] = #13);
   finally
-    buffer.Free;
+    FBuffer.Free;
     Memo1.Lines.EndUpdate;
   end;
   Memo1.SelStart := length(Memo1.Text)
@@ -1257,7 +1235,6 @@ begin
 end;
 
 type
-
   TClickHandler = class
     procedure DoConsoleMenuClick(Sender: TObject);
   end;
