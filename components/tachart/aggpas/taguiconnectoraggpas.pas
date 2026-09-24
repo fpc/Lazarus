@@ -77,6 +77,7 @@ procedure TChartGUIConnectorAggPas.CreateDrawer(
 begin
   AData.FDrawer := TAggPasOwnerDrawer.Create(TAggLCLCanvas.Create);
   AData.FDrawer.DoGetFontOrientation := @CanvasGetFontOrientationFunc;
+  AData.FDrawer.DoChartColorToFPColor := @ChartColorSysToFPColor;
   (AData.FDrawer as TAggPasOwnerDrawer).FontDir := FFontDir;
 end;
 
