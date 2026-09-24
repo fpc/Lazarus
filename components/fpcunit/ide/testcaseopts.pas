@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, Buttons, strtestcaseopts;
+  ExtCtrls, Buttons, LCLType, LCLProc, StrTestCaseOpts;
 
 type
 
@@ -22,6 +22,7 @@ type
     Label1: TLabel;
     procedure btnAcceptClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { private declarations }
   public
@@ -37,7 +38,7 @@ implementation
 
 procedure TTestCaseOptionsForm.btnAcceptClick(Sender: TObject);
 begin
-  Close;
+  ModalResult := mrOK;
 end;
 
 procedure TTestCaseOptionsForm.FormCreate(Sender: TObject);
@@ -49,6 +50,21 @@ begin
   cbSetup.Caption:= schkSetup;
   cbTeardown.Caption:= schkTear;
   btnAccept.Caption:= sbtnCreate;
+  btnAccept.Hint:= '['+ShortCutToText(KeyToShortCut(VK_RETURN, [ssCtrl]))+']';
+end;
+
+procedure TTestCaseOptionsForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_ESCAPE) and (Shift = []) then
+  begin
+    ModalResult := mrCancel;
+    Key := 0;
+  end
+  else if (Key = VK_RETURN) and (Shift = [ssCtrl]) then
+  begin
+    ModalResult := mrOK;
+    Key := 0;
+  end;
 end;
 
 end.
