@@ -14231,7 +14231,10 @@ begin
   Alloc.y := ATop;
   Alloc.width := AWidth;
   Alloc.height := AHeight;
-  Widget^.set_allocation(@Alloc);
+  // gtk only accepts allocations of visible widgets
+  if Widget^.get_visible then
+    Widget^.set_allocation(@Alloc);
+  Widget^.set_size_request(AWidth, AHeight);
   Move(ALeft, ATop);
 end;
 
