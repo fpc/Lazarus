@@ -9637,8 +9637,8 @@ end;
 procedure TMainIDE.DoShowMessagesView;
 begin
   //debugln('TMainIDE.DoShowMessagesView');
-  if not MessagesView.IsVisible then
-    MessagesView.ApplyIDEOptions;
+  MessagesView.ApplyIDEOptions;
+
   // don't move the messagesview, if it was already visible.
   IDEWindowCreators.ShowForm(MessagesView, EnvironmentGuiOpts.MsgViewFocus);
 end;
