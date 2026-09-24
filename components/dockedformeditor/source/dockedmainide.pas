@@ -598,8 +598,18 @@ begin
 
   LDesigner := LSourceWindowIntf.ActiveEditor.GetDesigner(True);
   LDesignForm := DesignForms.Find(LDesigner);
-  if LDesignForm = nil then Exit;
-  LSourceWindow := SourceWindows.SourceWindow[LSourceWindowIntf];
+  if LDesignForm = nil then
+  begin
+    // loading the form failed, e.g. a package is missing: show the code
+    // instead of an empty form page
+    if LPageCtrl.DesignerPageActive then
+    begin
+      LPageCtrl.ShowCode;
+      LSourceWindowIntf.ActiveEditor.EditorControl.SetFocus;
+    end;
+    Exit;
+  end;
+  LSourceWindow :=SourceWindows.SourceWindow[LSourceWindowIntf];
   if LSourceWindow = nil then Exit;
 
   if not LPageCtrl.DesignerPageActive then
