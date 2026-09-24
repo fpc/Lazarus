@@ -296,6 +296,7 @@ type
     procedure ScaleNodeDrawSizes(NodeGapAbove, NodeGapBelow,
       HardMaxTotal, HardMinOneNode, SoftMaxTotal, SoftMinOneNode: integer; out PixelPerWeight: single);
     procedure SetAllNodeDrawSizes(PixelPerWeight: single = 1.0; MinWeight: single = 0.0);
+    procedure FixBackEdges;
     procedure MarkBackEdges;
     procedure MinimizeCrossings; // permutate nodes to minimize crossings
     // MinimizeOverlappings: Adjust Node.DrawPosition to ensure all nodes have the required gaps between them.
@@ -2654,7 +2655,7 @@ begin
         Edge:=Node.OutEdges[k];
         TargetNode:=Edge.Target;
         if Edge.Highlighted<>Highlighted then continue;
-        // compare Level in case MarkBackEdges was skipped
+        // compare Level in case FixBackEdges was skipped
         if Edge.Highlighted then
           Canvas.Pen.Width:=EdgeStyle.HighlightWidth
         else
@@ -2813,7 +2814,7 @@ begin
           if not TargetNode.Visible then
             x2+=NodeStyle.Width div 2;
         end else begin
-          // This code is only reachable if MarkBackEdges was skipped
+          // This code is only reachable if FixBackEdges was skipped
           // cycle dependency
           // => draw line from left of Node to right of TargetNode
           if not Node.Visible then
@@ -3552,10 +3553,12 @@ begin
     // distribute the nodes on levels and mark back edges
     Graph.CreateTopologicalLevels(lgoHighLevels in Options, lgoReduceBackEdges in Options);
 
-    Graph.MarkBackEdges;
+    Graph.FixBackEdges;
 
     if lgoMinimizeEdgeLens in Options then
       Graph.MinimizeEdgeLens(lgoHighLevels in Options);
+
+    Graph.MarkBackEdges;
 
     if (Limits.MaxLevelHeightAbs > 0) or (Limits.MaxLevelHeightRel > 0) then
       Graph.LimitLevelHeights(Limits.MaxLevelHeightAbs, Limits.MaxLevelHeightRel);
@@ -4912,32 +4915,49 @@ begin
   end;
 end;
 
+procedure TLvlGraph.FixBackEdges;
+var
+  i: Integer;
+  Node: TLvlGraphNode;
+  j: Integer;
+  Edge: TLvlGraphEdge;
+begin
+  for i:=0 to NodeCount-1 do begin
+    Node:=Nodes[i];
+    for j := 0 to Nodes[i].OutEdgeCount-1 do
+      Node.OutEdges[j].FNoGapCircle := False;
+    for j:=Node.OutEdgeCount-1 downto 0 do begin // Edges may be removed/replaced
+      Edge:=Node.OutEdges[j];
+      //if Edge.IsBackEdge <> Edge.BackEdge then
+      if Edge.IsBackEdge then
+        Edge.RevertDirection;
+    end;
+  end;
+end;
+
 procedure TLvlGraph.MarkBackEdges;
 var
   i: Integer;
   Node, OtherNode: TLvlGraphNode;
-  j, k: Integer;
+  j, k, Lvl: Integer;
   Edge: TLvlGraphEdge;
 begin
-  for i:=0 to NodeCount-1 do
-    for j := 0 to Nodes[i].OutEdgeCount-1 do
-      Nodes[i].OutEdges[j].FNoGapCircle := False;
   for i:=0 to NodeCount-1 do begin
     Node:=Nodes[i];
-    for j:=Node.OutEdgeCount-1 downto 0 do begin // Edges may be removed/replaced
+    Lvl := Node.Level.Index;
+    for j:=Node.OutEdgeCount-1 downto 0 do begin
       Edge:=Node.OutEdges[j];
-      if Edge.IsBackEdge then
-        Edge.RevertDirection;
-      if Edge.Source.Level.Index = Edge.Target.Level.Index - 1 then begin
+      OtherNode := Edge.Target;
+      if Lvl = OtherNode.Level.Index - 1 then begin
         // check for circles of exactly 2 nodes, with no levels between
-        OtherNode := Edge.Source;
-        for k := 0 to OtherNode.OutEdgeCount - 1 do begin
-          if (OtherNode.OutEdges[k] <> Edge) and
-             (OtherNode.OutEdges[k].Target = Node) and
-             (not OtherNode.OutEdges[k].BackEdge)
+        for k := 0 to OtherNode.InEdgeCount - 1 do begin
+          if (OtherNode.InEdges[k] <> Edge) and
+             (OtherNode.InEdges[k].Source = Node)
+             //and
+             //(not OtherNode.InEdges[k].BackEdge)
           then begin
             Edge.FNoGapCircle := True;
-            OtherNode.OutEdges[k].FNoGapCircle := True;
+            OtherNode.InEdges[k].FNoGapCircle := True;
           end;
         end;
       end;
