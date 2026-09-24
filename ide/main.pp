@@ -8108,6 +8108,7 @@ var
   CompilerKind: TPascalCompiler;
   ErrMsg: String;
   r: integer;
+  CheckingView: TExtToolView;
 begin
   if ToolStatus<>itNone then begin
     IDEMessageDialog(lisNotNow,lisYouCanNotBuildLazarusWhileDebuggingOrCompiling,
@@ -8144,6 +8145,10 @@ begin
   fBuilder.ProfileChanged:=false;
   OldToolStatus:=ToolStatus;
   ToolStatus:=itBuilder;
+  // show "Checking ..." while the IDE checks files before starting the compiler
+  CheckingView:=MessagesView.GetView(lisCheckingFiles,true);
+  MessagesView.MessagesFrame1.MessagesCtrl.Invalidate;
+  Application.ProcessMessages;
   with MiscellaneousOptions do
   try
     if HasGUI then begin
@@ -8231,6 +8236,9 @@ begin
     end;
 
     // make lazarus ide
+    CheckingView:=MessagesView.GetView(lisCheckingFiles,false);
+    if CheckingView<>nil then
+      MessagesView.DeleteView(CheckingView);
     IDEBuildFlags:=IDEBuildFlags+[blfUseMakeIDECfg,blfDontClean];
     Result:=fBuilder.MakeLazarus(BuildLazProfiles.Current, IDEBuildFlags);
     if Result<>mrOk then exit;
@@ -8240,6 +8248,9 @@ begin
       MiscellaneousOptions.Save;
     end;
   finally
+    CheckingView:=MessagesView.GetView(lisCheckingFiles,false);
+    if CheckingView<>nil then
+      MessagesView.DeleteView(CheckingView);
     MainBuildBoss.SetBuildTargetProject1(true);
     ToolStatus:=OldToolStatus;
     DoCallBuildingFinishedHandler(lihtLazarusBuildingFinished, Self, Result=mrOk);

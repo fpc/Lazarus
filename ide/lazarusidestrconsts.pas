@@ -5350,6 +5350,7 @@ resourcestring
   lisConstructorCode = 'Constructor code';
   lisDestructorCode = 'Destructor code';
   lisCheckOptions = 'Check options';
+  lisCheckingFiles = 'Checking ...';
   lisNewConsoleApplication = 'New console application';
 
   // Messages Editor dialog (MsgViewEditor.pas)
