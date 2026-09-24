@@ -2123,6 +2123,9 @@ var
   X, Y, WX, WY: gint;
   AMask: TGdkModifierType;
   AParentWidget: PGtkWidget;
+  AParentGtk: TGtk3Widget;
+  AEvent: TGdkEvent;
+  P: TPoint;
   {$IFDEF GTK3DEBUGEVENTS}
   R: TRect;
   {$ENDIF}
@@ -2144,6 +2147,24 @@ begin
 
   if Event^.motion.send_event = NO_PROPAGATION_TO_PARENT then
     exit;
+
+  if CanSendLCLMessage and Assigned(LCLObject) and Assigned(LCLObject.Parent) and
+    LCLObject.Parent.HandleAllocated and
+    (LCLObject.Perform(LM_NCHITTEST, 0, 0) = HTTRANSPARENT) then
+  begin
+    AParentGtk := TGtk3Widget(LCLObject.Parent.Handle);
+    P := Point(Round(Event^.motion.x), Round(Event^.motion.y));
+    OffsetMousePos(Event^.motion.x_root, Event^.motion.y_root, @P);
+    P := LCLObject.ClientToParent(P, LCLObject.Parent);
+    AEvent := Event^;
+    AEvent.motion.x := P.X + AParentGtk.getClientOffset.X;
+    AEvent.motion.y := P.Y + AParentGtk.getClientOffset.Y;
+    AEvent.motion.is_hint := 0;
+    AEvent.motion.window := AParentGtk.GetContainerWidget^.window;
+    Result := AParentGtk.GtkEventMouseMove(AParentGtk.Widget, @AEvent);
+    Event^.motion.send_event := NO_PROPAGATION_TO_PARENT;
+    exit;
+  end;
 
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
@@ -3031,6 +3052,9 @@ var
   AParentControl: TWinControl;
   AClip: PGtkClipboard;
   AClipText: string;
+  AParentGtk: TGtk3Widget;
+  AEvent: TGdkEvent;
+  P: TPoint;
 
   function CheckWidget: boolean;
   begin
@@ -3046,6 +3070,22 @@ begin
   {$ENDIF}
   if Event^.button.send_event = NO_PROPAGATION_TO_PARENT then
     exit(gtk_true);
+
+  if CanSendLCLMessage and Assigned(LCLObject) and Assigned(LCLObject.Parent) and
+    LCLObject.Parent.HandleAllocated and
+    (LCLObject.Perform(LM_NCHITTEST, 0, 0) = HTTRANSPARENT) then
+  begin
+    AParentGtk := TGtk3Widget(LCLObject.Parent.Handle);
+    P := Point(Round(Event^.button.x), Round(Event^.button.y));
+    OffsetMousePos(Event^.button.x_root, Event^.button.y_root, @P);
+    P := LCLObject.ClientToParent(P, LCLObject.Parent);
+    AEvent := Event^;
+    AEvent.button.x := P.X + AParentGtk.getClientOffset.X;
+    AEvent.button.y := P.Y + AParentGtk.getClientOffset.Y;
+    Result := AParentGtk.GtkEventMouse(AParentGtk.Widget, @AEvent);
+    Event^.button.send_event := NO_PROPAGATION_TO_PARENT;
+    exit(gtk_true);
+  end;
 
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
