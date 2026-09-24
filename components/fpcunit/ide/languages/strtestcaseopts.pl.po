@@ -138,11 +138,11 @@ msgid "Create unit"
 msgstr "Twórz moduł"
 
 #: strtestcaseopts.schksetup
-msgid "Create Setup Method"
+msgid "Create \"&Setup\" method"
 msgstr ""
 
 #: strtestcaseopts.schktear
-msgid "Create TearDown method"
+msgid "Create \"&TearDown\" method"
 msgstr ""
 
 #: strtestcaseopts.screatefirsttestcase

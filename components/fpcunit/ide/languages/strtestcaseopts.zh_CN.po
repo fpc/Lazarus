@@ -138,11 +138,15 @@ msgid "Create unit"
 msgstr "创建单元"
 
 #: strtestcaseopts.schksetup
-msgid "Create Setup Method"
+#, fuzzy
+#| msgid "Create Setup Method"
+msgid "Create \"&Setup\" method"
 msgstr "创建 Setup 方法"
 
 #: strtestcaseopts.schktear
-msgid "Create TearDown method"
+#, fuzzy
+#| msgid "Create TearDown method"
+msgid "Create \"&TearDown\" method"
 msgstr "创建 TearDown 方法"
 
 #: strtestcaseopts.screatefirsttestcase

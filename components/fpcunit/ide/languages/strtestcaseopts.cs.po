@@ -136,11 +136,15 @@ msgid "Create unit"
 msgstr "Vytvořit jednotku"
 
 #: strtestcaseopts.schksetup
-msgid "Create Setup Method"
+#, fuzzy
+#| msgid "Create Setup Method"
+msgid "Create \"&Setup\" method"
 msgstr "Vytvořit \"Setup\" metodu"
 
 #: strtestcaseopts.schktear
-msgid "Create TearDown method"
+#, fuzzy
+#| msgid "Create TearDown method"
+msgid "Create \"&TearDown\" method"
 msgstr "Vytvořit \"TearDown\" metodu"
 
 #: strtestcaseopts.screatefirsttestcase
