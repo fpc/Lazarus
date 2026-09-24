@@ -283,6 +283,7 @@ var
 //==============================================================================
 // functions
 
+function IsNotNumeric(const s: String): Boolean;
 function RectFromGdkRect(const AGdkRect: TGdkRectangle): TRect;
 function GdkRectFromRect(const R: TRect): TGdkRectangle;
 function AlignToGtkAlign(Align: TAlignment): gfloat;

@@ -263,6 +263,11 @@ begin
   end;
 end;
 
+function IsNotNumeric(const s: String): Boolean;
+begin
+  Result := (s<>'') and not IsNumeric(s);
+end;
+
 function RectFromGdkRect(const AGdkRect: TGdkRectangle): TRect;
 begin
   with AGdkRect do
