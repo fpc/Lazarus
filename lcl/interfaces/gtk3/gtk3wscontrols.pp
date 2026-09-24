@@ -646,6 +646,7 @@ end;
 class procedure TGtk3WSWinControl.ShowHide(const AWinControl: TWinControl);
 var
   wgt:TGtk3Widget;
+  WasVisible: Boolean;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'ShowHide') then
     Exit;
@@ -653,6 +654,7 @@ begin
   DebugLn('TGtk3WSWinControl.ShowHide ',dbgsName(AWinControl));
   {$ENDIF}
   wgt:=TGtk3Widget(AWinControl.Handle);
+  WasVisible := wgt.Visible;
   wgt.BeginUpdate;
   wgt.Visible := AWinControl.HandleObjectShouldBeVisible;
   if wgt.Visible then
@@ -667,6 +669,13 @@ begin
     end;
   end;
   wgt.EndUpdate;
+  if wgt.Visible and not WasVisible then
+  begin
+    // gtk returns a preferred size of 0 for hidden widgets, so the LCL
+    // computed the bounds without it => compute again
+    AWinControl.InvalidatePreferredSize;
+    AWinControl.AdjustSize;
+  end;
 end;
 
 class procedure TGtk3WSWinControl.ScrollBy(const AWinControl: TWinControl;
