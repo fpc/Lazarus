@@ -33,7 +33,7 @@ interface
 
 uses
   // RTL, FCL
-  Classes, SysUtils, Contnrs,
+  Classes, SysUtils, Math, Contnrs,
   // LCL
   Forms, Controls, StdCtrls, ComCtrls, Buttons, Graphics, Menus, Dialogs,
   ExtCtrls, ImgList, LCLType, LCLIntf,
@@ -1507,8 +1507,8 @@ end;
 
 procedure TPackageEditorForm.FormResize(Sender: TObject);
 begin
-  PropsGroupBox.Constraints.MaxHeight := self.Height - ToolBar.Height - FilterPanel.Height
-    - StatusBar.Height - 20;
+  PropsGroupBox.Constraints.MaxHeight := max(0,
+    self.Height - ToolBar.Height - FilterPanel.Height - StatusBar.Height - 20);
 end;
 
 procedure TPackageEditorForm.RevertClick(Sender: TObject);
