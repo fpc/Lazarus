@@ -611,6 +611,19 @@ type
     property ModeSwitchesLocked: TPascalCompilerModeSwitches read FModeSwitchesLocked write FModeSwitchesLocked;
   end;
 
+  { TSynPasSynExprFold
+     A fold block (if/case/try) that was opened by a statement expression
+     e.g. "Foo(if a then b else c)" }
+  TSynPasSynExprFold = packed record
+    FoldDepth: SmallInt; // nest-level (CurrentCodeNestBlockLevel) of the fold block
+    BracketLevel: SmallInt; // BracketNestLevel at the start of the expression
+  end;
+
+const
+  MaxPasExprFoldNest = 16;
+
+type
+
   { TSynPasSynRange }
 
   TSynPasSynRange = class(TSynCustomHighlighterRange)
@@ -622,6 +635,9 @@ type
     FPasFoldFixLevel: Smallint;
     FSpecializeBracketNestLevel: integer;
     FTokenState: TTokenState;
+    FAtExpressionStart: Boolean;
+    FExprFoldCount: Byte;
+    FExprFolds: array[0..MaxPasExprFoldNest-1] of TSynPasSynExprFold;
     procedure SetBracketNestLevel(AValue: integer); inline;
   public
     procedure Clear; override;
@@ -638,6 +654,11 @@ type
     procedure DecSpecializeBracketNestLevel;
     procedure DecLastLineCodeFoldLevelFix;
     procedure DecLastLinePasFoldFix;
+    function PushExprFold(AFoldDepth, ABracketLevel: integer): boolean;
+    procedure PruneExprFolds(AMaxFoldDepth: integer);
+    function HasExprFoldAtDepth(AFoldDepth: integer): boolean;
+    function TopExprFold: TSynPasSynExprFold; inline;
+    property ExprFoldCount: Byte read FExprFoldCount;
     property Mode: TPascalCompilerMode read FMode write FMode;
     property ModeSwitches: TPascalCompilerModeSwitches read FModeSwitches write FModeSwitches;
     (* BracketNestLevel counts only within the current "fold" (or expression).
@@ -658,6 +679,7 @@ type
       read FLastLineCodeFoldLevelFix write FLastLineCodeFoldLevelFix;
     property PasFoldFixLevel: Smallint read FPasFoldFixLevel write FPasFoldFixLevel;
     property TokenState: TTokenState read FTokenState write FTokenState;
+    property AtExpressionStart: Boolean read FAtExpressionStart write FAtExpressionStart;
   end;
 
   TProcTableProc = procedure of object;
@@ -795,6 +817,8 @@ type
     fRange: TRangeStates;
     FOldRange: TRangeStates;
     FTokenState, FNextTokenState, FLastTokenState: TTokenState;
+    FAtExpressionStart: Boolean; // the last token (ignoring spaces/comments) was ":=", "(", ",", an operator
+    FNextAtExprStart: Boolean;
     FRangeCompilerMode: TPascalCompilerMode;
     FRangeModeSwitches: TPascalCompilerModeSwitches;
     FRequiredStates, FRequiredStatesAtLastLineInit: TRequiredStates;
@@ -1085,6 +1109,12 @@ type
              (ABlockType: TPascalCodeFoldBlockType; ForceDisabled: Boolean = False
               ): Boolean;
     procedure EndPascalCodeFoldBlock(NoMarkup: Boolean = False; UndoInvalidOpen: Boolean = False);
+    // Statement expressions: if-, case-, try-except-expression
+    function StartPascalExprFoldBlock(ABlockType: TPascalCodeFoldBlockType): Boolean;
+    function TopFoldIsExpression: Boolean;
+    procedure CloseExprIfElseFolds;
+    procedure CloseExprFoldsAtBracket(AIsComma: Boolean);
+    function DoEndOfExprFold: Boolean;
     procedure CloseBeginEndBlocksBeforeProc;
     procedure SmartCloseBeginEndBlocks(SearchFor: TPascalCodeFoldBlockType);
     procedure EndPascalCodeFoldBlockLastLine;
@@ -2066,10 +2096,12 @@ end;
 function TSynPasSyn.Func15: TtkTokenKind;
 begin
   if KeyCompU('IF') then begin
+    if not (FAtExpressionStart and StartPascalExprFoldBlock(cfbtIfThen)) then begin
 // Anything that may be nested in a "case", and does not have an end (like "end", "until",...)
-    DoCodeBlockStatement;
-    StartPascalCodeFoldBlock(cfbtIfThen,
-      TopPascalCodeFoldBlockType in [cfbtCase, cfbtIfThen, cfbtIfElse, cfbtForDo, cfbtWhileDo, cfbtWithDo]);
+      DoCodeBlockStatement;
+      StartPascalCodeFoldBlock(cfbtIfThen,
+        TopPascalCodeFoldBlockType in [cfbtCase, cfbtIfThen, cfbtIfElse, cfbtForDo, cfbtWhileDo, cfbtWithDo]);
+    end;
     Result := tkKey
   end
   else
@@ -2082,12 +2114,19 @@ begin
   if KeyCompU('DO') then begin
     Result := tkKey;
     FNextTokenState := tsAtBeginOfStatement;
+    CloseExprIfElseFolds;
     pas := TopPascalCodeFoldBlockType;
     if pas in [cfbtForDo, cfbtWhileDo, cfbtWithDo] then
     begin
       EndPascalCodeFoldBlock();
       StartPascalCodeFoldBlock(pas);
     end
+    else
+    if (pas = cfbtExcept) and TopFoldIsExpression then begin
+      // "on E: Exception do" in a try-expression
+      FNextTokenState := tsNone;
+      FNextAtExprStart := True;
+    end;
   end
   else
     if KeyCompU('AND') then begin
@@ -2111,10 +2150,13 @@ end;
 function TSynPasSyn.Func21: TtkTokenKind;
 var
   tfb: TPascalCodeFoldBlockType;
+  IsExpr: Boolean;
 begin
   tfb := TopPascalCodeFoldBlockType;
   if KeyCompU('OF') then begin
     Result := tkKey;
+    CloseExprIfElseFolds;
+    tfb := TopPascalCodeFoldBlockType;
     if (not (rsInProcHeader in fRange)) and
        (not (tfb in PascalStatementBlocks))
     then
@@ -2130,8 +2172,10 @@ begin
     end
     else
     if (tfb in [cfbtCase, cfbtRecordCase]) then begin
+      IsExpr := (tfb = cfbtCase) and TopFoldIsExpression;
       EndPascalCodeFoldBlock();
-      StartPascalCodeFoldBlock(tfb, True);
+      if not (IsExpr and StartPascalExprFoldBlock(tfb)) then
+        StartPascalCodeFoldBlock(tfb, True);
       fRange := fRange + [rsAtCaseLabel];
     end;
   end
@@ -2156,6 +2200,8 @@ begin
     if ((fToIdent<2) or (LinePtr[fToIdent-1]<>'@'))
     then begin
       Result := tkKey;
+      if DoEndOfExprFold then
+        exit;
       fRange := fRange - [rsAsm, rsInClassHeader, rsInTypeHelper, rsInObjcProtocol,
                           rsAfterClassMembers, rsProperty, rsInPropertyNameOrIndex,
                           rsInProcHeader, rsInProcName, rsInParamDeclaration, rsInGenericParams, rsInGenericConstraint,
@@ -2316,6 +2362,12 @@ begin
     Result := DoPropertyDefinitionKey;
   end
   else if KeyCompU('CASE') then begin
+    if FAtExpressionStart and
+       not (TopPascalCodeFoldBlockType in [cfbtRecord, cfbtRecordCase, cfbtRecordCaseSection]) and
+       StartPascalExprFoldBlock(cfbtCase)
+    then
+      // case-expression
+    else
     if TopPascalCodeFoldBlockType in PascalStatementBlocks + [cfbtUnitSection] then begin
       DoCodeBlockStatement;
       StartPascalCodeFoldBlock(cfbtCase, True);
@@ -2517,6 +2569,7 @@ end;
 function TSynPasSyn.Func41: TtkTokenKind;
 var
   tfb: TPascalCodeFoldBlockType;
+  IsExpr: Boolean;
 begin
   if KeyCompU('ELSE') then begin
     Result := tkKey;
@@ -2524,14 +2577,21 @@ begin
     // close all parent "else" and "do" // there can only be one else
     EndStatementLastLine(TopPascalCodeFoldBlockType, [cfbtForDo,cfbtWhileDo,cfbtWithDo,cfbtIfElse]);
     tfb := TopPascalCodeFoldBlockType;
+    IsExpr := TopFoldIsExpression;
     if (tfb in [cfbtIfThen]) then begin
       EndPascalCodeFoldBlock;
-      StartPascalCodeFoldBlock(cfbtIfElse);
+      if not (IsExpr and StartPascalExprFoldBlock(cfbtIfElse)) then
+        StartPascalCodeFoldBlock(cfbtIfElse);
     end else
     if tfb = cfbtCase then begin
       FTokenIsCaseLabel := True;
-      StartPascalCodeFoldBlock(cfbtCaseElse, True);
-    end
+      if not (IsExpr and StartPascalExprFoldBlock(cfbtCaseElse)) then
+        StartPascalCodeFoldBlock(cfbtCaseElse, True);
+    end;
+    if IsExpr then begin
+      FNextTokenState := tsNone;
+      FNextAtExprStart := True;
+    end;
   end
   else if KeyCompU('VAR') then begin
     if (PasCodeFoldRange.BracketNestLevel = 0) then begin
@@ -2633,15 +2693,26 @@ begin
 end;
 
 function TSynPasSyn.Func47: TtkTokenKind;
+var
+  IsExpr: Boolean;
 begin
   if KeyCompU('THEN') then begin
     Result := tkKey;
     FNextTokenState := tsAtBeginOfStatement;
+    CloseExprIfElseFolds;
+    IsExpr := False;
     // in a "case", we need to distinguish a possible follwing "else"
-    if (TopPascalCodeFoldBlockType = cfbtIfThen) then
+    if (TopPascalCodeFoldBlockType = cfbtIfThen) then begin
+      IsExpr := TopFoldIsExpression;
       EndPascalCodeFoldBlock;
-    StartPascalCodeFoldBlock(cfbtIfThen,
-      TopPascalCodeFoldBlockType in [cfbtCase, cfbtIfThen, cfbtIfElse, cfbtForDo, cfbtWhileDo, cfbtWithDo]);
+    end;
+    if not (IsExpr and StartPascalExprFoldBlock(cfbtIfThen)) then
+      StartPascalCodeFoldBlock(cfbtIfThen,
+        TopPascalCodeFoldBlockType in [cfbtCase, cfbtIfThen, cfbtIfElse, cfbtForDo, cfbtWhileDo, cfbtWithDo]);
+    if IsExpr then begin
+      FNextTokenState := tsNone;
+      FNextAtExprStart := True;
+    end;
   end
   else
     Result := tkIdentifier;
@@ -2849,12 +2920,18 @@ begin
   else if KeyCompU('ARRAY') then Result := tkKey
   else if KeyCompU('TRY') then
   begin
-    if TopPascalCodeFoldBlockType in PascalStatementBlocks + [cfbtUnitSection] then begin
-      DoCodeBlockStatement;
-      StartPascalCodeFoldBlock(cfbtTry);
-    end;
     Result := tkKey;
-    FNextTokenState := tsAtBeginOfStatement;
+    if FAtExpressionStart and StartPascalExprFoldBlock(cfbtTry) then begin
+      // try-expression
+      FNextAtExprStart := True;
+    end
+    else begin
+      if TopPascalCodeFoldBlockType in PascalStatementBlocks + [cfbtUnitSection] then begin
+        DoCodeBlockStatement;
+        StartPascalCodeFoldBlock(cfbtTry);
+      end;
+      FNextTokenState := tsAtBeginOfStatement;
+    end;
   end
   else
   if IsProcModifier and
@@ -3058,11 +3135,19 @@ begin
   if KeyCompU('EXCEPT') then begin
     Result := tkKey;
     // no semicolon before except
-    DoCodeBlockStatement;
     EndStatement(TopPascalCodeFoldBlockType, [cfbtForDo,cfbtWhileDo,cfbtWithDo,cfbtIfThen,cfbtIfElse]);
-    SmartCloseBeginEndBlocks(cfbtTry);
-    if TopPascalCodeFoldBlockType = cfbtTry then
-      StartPascalCodeFoldBlock(cfbtExcept);
+    if (TopPascalCodeFoldBlockType = cfbtTry) and TopFoldIsExpression and
+       StartPascalExprFoldBlock(cfbtExcept)
+    then begin
+      // try-expression
+      FNextAtExprStart := True;
+    end
+    else begin
+      DoCodeBlockStatement;
+      SmartCloseBeginEndBlocks(cfbtTry);
+      if TopPascalCodeFoldBlockType = cfbtTry then
+        StartPascalCodeFoldBlock(cfbtExcept);
+    end;
    end
    else Result := tkIdentifier;
 end;
@@ -3658,7 +3743,10 @@ begin
     //DebugLn('  ### Otherwise');
     EndStatementLastLine(TopPascalCodeFoldBlockType, [cfbtForDo,cfbtWhileDo,cfbtWithDo,cfbtIfThen,cfbtIfElse]);
     if TopPascalCodeFoldBlockType = cfbtCase then begin
-      StartPascalCodeFoldBlock(cfbtCaseElse, True);
+      if TopFoldIsExpression and StartPascalExprFoldBlock(cfbtCaseElse) then
+        FNextAtExprStart := True
+      else
+        StartPascalCodeFoldBlock(cfbtCaseElse, True);
       FTokenIsCaseLabel := True;
     end;
   end
@@ -5078,8 +5166,10 @@ var
 begin
   fTokenID := tkSymbol;
   inc(Run);
-  if LinePtr[Run] = '=' then
-    inc(Run) // ":="
+  if LinePtr[Run] = '=' then begin
+    inc(Run); // ":="
+    FNextAtExprStart := True;
+  end
   else begin
     fRange := fRange - [rsAtCaseLabel];
 
@@ -5092,6 +5182,12 @@ begin
     end;
 
     tfb := TopPascalCodeFoldBlockType;
+    if (tfb in [cfbtCase, cfbtExcept]) and TopFoldIsExpression then begin
+      // case-label or "on E: Exception do" in a statement expression
+      FNextAtExprStart := True;
+      fRange := fRange - [rsInProcName];
+      exit;
+    end;
     if (not (tfb in PascalStatementBlocks + [cfbtUnit, cfbtUses])) or
        (fRange * [rsInProcHeader, rsProperty] <> [])
     then
@@ -5487,6 +5583,7 @@ begin
 
       fRange := fRange - [rsInProcName];
       PasCodeFoldRange.IncRoundBracketNestLevel;
+      FNextAtExprStart := True;
     end;
     exit;
   end;
@@ -5529,6 +5626,7 @@ begin
         inc(Run);
         fTokenID := tkSymbol;
         PasCodeFoldRange.IncRoundBracketNestLevel;
+        FNextAtExprStart := True;
       end;
     else
   end;
@@ -5553,6 +5651,7 @@ begin
   if PasCodeFoldRange.RoundBracketNestLevel = 0 then
     Include(FTokenExtraAttribs, eaUnmatchedClosingBracket);
   PasCodeFoldRange.DecRoundBracketNestLevel;
+  CloseExprFoldsAtBracket(False);
 
   if (PasCodeFoldRange.BracketNestLevel = 0) then begin
     if rsInProcHeader in fRange then begin
@@ -5582,6 +5681,7 @@ begin
     fRange := fRange + [rsInParamDeclaration];
 
   PasCodeFoldRange.IncBracketNestLevel;
+  FNextAtExprStart := True;
 end;
 
 procedure TSynPasSyn.SquareCloseProc;
@@ -5591,6 +5691,7 @@ begin
   fRange := fRange + [rsAfterIdentifierOrValue];
   FOldRange := FOldRange - [rsAfterIdentifierOrValue];
   PasCodeFoldRange.DecBracketNestLevel;
+  CloseExprFoldsAtBracket(False);
 
   if (PasCodeFoldRange.BracketNestLevel = 0) then begin
     if fRange * [rsInProcHeader, rsInPropertyNameOrIndex] <> [] then
@@ -5644,6 +5745,8 @@ begin
   then begin
     FTokenExtraKind := tkeGenParamComma;
   end;
+  CloseExprFoldsAtBracket(True);
+  FNextAtExprStart := True;
 end;
 
 procedure TSynPasSyn.SemicolonProc;
@@ -5683,6 +5786,13 @@ begin
   tfb := TopPascalCodeFoldBlockType;
 
   Inc(Run);
+
+  if (tfb in [cfbtCase, cfbtCaseElse, cfbtExcept]) and TopFoldIsExpression then begin
+    // separator in a case- or try-expression
+    if tfb = cfbtCase then
+      fRange := fRange + [rsAtCaseLabel];
+    exit;
+  end;
 
   if (tfb in [cfbtCase, cfbtRecordCase]) then
     fRange := fRange + [rsAtCaseLabel];
@@ -6019,6 +6129,8 @@ procedure TSynPasSyn.SymbolProc;
 begin
   inc(Run);
   fTokenID := tkSymbol;
+  if LinePtr[Run-1] in ['+', '-', '*'] then
+    FNextAtExprStart := True;
   if rsProperty in fRange then begin
     fRange := fRange + [rsAtPropertyOrReadWrite];
     FOldRange := FOldRange - [rsAtPropertyOrReadWrite];
@@ -6390,6 +6502,7 @@ begin
       end
       else begin
         FNextTokenState := tsNone;
+        FNextAtExprStart := False;
         OldNestLevel := PasCodeFoldRange.BracketNestLevel;
         if (PasCodeFoldRange.BracketNestLevel = 1) then // procedure foo; [attr...]
           FOldRange := FOldRange - [rsWasInProcHeader];
@@ -6437,6 +6550,7 @@ begin
             FNextTokenState := FTokenState;
 
           FTokenState := FNextTokenState;
+          FAtExpressionStart := FNextAtExprStart;
 
           if (FTokenState = tsNone) then begin
             if ( (FTokenID = tkIdentifier) or FTokenIsValueOrTypeName )
@@ -6851,6 +6965,8 @@ begin
   // -> update now
   CodeFoldRange.RangeType:=Pointer(PtrUInt(Integer(fRange)));
   PasCodeFoldRange.TokenState := FTokenState;
+  PasCodeFoldRange.AtExpressionStart := FAtExpressionStart;
+  PasCodeFoldRange.PruneExprFolds(CurrentCodeNestBlockLevel);
   PasCodeFoldRange.Mode := FRangeCompilerMode;
   PasCodeFoldRange.ModeSwitches := FRangeModeSwitches;
   // return a fixed copy of the current CodeFoldRange instance
@@ -6864,6 +6980,7 @@ begin
   FRangeCompilerMode := PasCodeFoldRange.Mode;
   FRangeModeSwitches := PasCodeFoldRange.ModeSwitches;
   FTokenState := PasCodeFoldRange.TokenState;
+  FAtExpressionStart := PasCodeFoldRange.AtExpressionStart;
   fRange := TRangeStates(Integer(PtrUInt(CodeFoldRange.RangeType)));
   FSynPasRangeInfo := TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[LineIndex-1];
 end;
@@ -7081,6 +7198,7 @@ procedure TSynPasSyn.ResetRange;
 begin
   fRange := [];
   FTokenState := tsAtBeginOfStatement;
+  FAtExpressionStart := False;
   FStartCodeFoldBlockLevel:=0;
   FPasStartLevel := 0;
   with FSynPasRangeInfo do begin
@@ -7888,6 +8006,8 @@ var
   ConfigP: PSynCustomFoldConfig;
 begin
   if rsSkipAllPasBlocks in fRange then exit(False);
+  // any expression fold at the new nest-level (or deeper) is no longer open
+  PasCodeFoldRange.PruneExprFolds(CurrentCodeNestBlockLevel);
   ConfigP := @FFoldConfig[ord(PascalFoldTypeConfigMap[ABlockType])];
   BlockEnabled := ConfigP^.Enabled;
   if (not BlockEnabled) and (not ForceDisabled) and
@@ -7925,6 +8045,7 @@ begin
   BlockType := TopPascalCodeFoldBlockType;
   if not (BlockType in [cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment, cfbtNestedComment,
                         cfbtIfDef, cfbtRegion]) // cfbtAnonymousProcedure
+     and not TopFoldIsExpression
   then
     fRange := fRange - [rsAfterEqual, rsInTypeSpecification];
   DecreaseLevel := TopCodeFoldBlockType < CountPascalCodeFoldBlockOffset;
@@ -7945,6 +8066,105 @@ begin
     CollectingNodeInfoList.Add(nd);
   end;
   EndCodeFoldBlock(DecreaseLevel);
+end;
+
+function TSynPasSyn.StartPascalExprFoldBlock(ABlockType: TPascalCodeFoldBlockType): Boolean;
+begin
+  PasCodeFoldRange.PruneExprFolds(CurrentCodeNestBlockLevel);
+  Result := PasCodeFoldRange.ExprFoldCount < MaxPasExprFoldNest;
+  if not Result then
+    exit;
+  // always keep track of the block, even if disabled
+  Result := StartPascalCodeFoldBlock(ABlockType, True);
+  if Result then
+    PasCodeFoldRange.PushExprFold(CurrentCodeNestBlockLevel, PasCodeFoldRange.BracketNestLevel);
+end;
+
+function TSynPasSyn.TopFoldIsExpression: Boolean;
+var
+  Lvl: Integer;
+begin
+  Lvl := CurrentCodeNestBlockLevel;
+  PasCodeFoldRange.PruneExprFolds(Lvl);
+  Result := (PasCodeFoldRange.ExprFoldCount > 0) and
+            (PasCodeFoldRange.TopExprFold.FoldDepth = Lvl);
+end;
+
+procedure TSynPasSyn.CloseExprIfElseFolds;
+// Close if-expressions, before a keyword of the outer statement/expression
+//   e.g. the "then" in "if if a then b else c then"
+begin
+  while (TopPascalCodeFoldBlockType = cfbtIfElse) and TopFoldIsExpression and
+        (PasCodeFoldRange.TopExprFold.BracketLevel >= PasCodeFoldRange.BracketNestLevel)
+  do
+    EndPascalCodeFoldBlock(True);
+end;
+
+procedure TSynPasSyn.CloseExprFoldsAtBracket(AIsComma: Boolean);
+// Close statement expressions at ")", "]" or ","
+//   ")", "]": BracketNestLevel was already decreased, close all expressions inside the brackets
+//   ",": close if-expressions at the current bracket level
+var
+  tfb: TPascalCodeFoldBlockType;
+  sl: Integer;
+begin
+  sl := fStringLen;
+  fStringLen := 1;
+  while TopFoldIsExpression do begin
+    tfb := TopPascalCodeFoldBlockType;
+    if AIsComma then begin
+      if not (tfb in [cfbtIfThen, cfbtIfElse]) or
+         (PasCodeFoldRange.TopExprFold.BracketLevel < PasCodeFoldRange.BracketNestLevel)
+      then
+        break;
+    end
+    else
+    if PasCodeFoldRange.TopExprFold.BracketLevel <= PasCodeFoldRange.BracketNestLevel then
+      break;
+    EndPascalCodeFoldBlock(True);
+  end;
+  fStringLen := sl;
+end;
+
+function TSynPasSyn.DoEndOfExprFold: Boolean;
+// "end" of a case- or try-expression
+//   Returns false, if the "end" does not belong to a statement expression
+var
+  i: Integer;
+  tfb: TPascalCodeFoldBlockType;
+  sl: Integer;
+begin
+  PasCodeFoldRange.PruneExprFolds(CurrentCodeNestBlockLevel);
+  if PasCodeFoldRange.ExprFoldCount = 0 then
+    exit(False);
+  // skip completed if-expressions in the last branch
+  i := 0;
+  while TopPascalCodeFoldBlockType(i) in [cfbtIfThen, cfbtIfElse] do
+    inc(i);
+  tfb := TopPascalCodeFoldBlockType(i);
+  Result := (tfb in [cfbtCase, cfbtCaseElse, cfbtTry, cfbtExcept]) and
+            PasCodeFoldRange.HasExprFoldAtDepth(CurrentCodeNestBlockLevel - i);
+  if not Result then
+    exit;
+
+  sl := fStringLen;
+  fStringLen := 0;
+  EndStatement(TopPascalCodeFoldBlockType, [cfbtIfThen, cfbtIfElse]);
+  fStringLen := sl;
+  case tfb of
+    cfbtCaseElse: begin
+        EndPascalCodeFoldBlock;
+        EndPascalCodeFoldBlock; // must be cfbtCase
+      end;
+    cfbtExcept: begin
+        EndPascalCodeFoldBlock;
+        if TopPascalCodeFoldBlockType = cfbtTry then
+          EndPascalCodeFoldBlock;
+      end;
+    else
+      EndPascalCodeFoldBlock; // cfbtCase, cfbtTry
+  end;
+  fRange := fRange - [rsAtCaseLabel];
 end;
 
 procedure TSynPasSyn.CloseBeginEndBlocksBeforeProc;
@@ -8523,6 +8743,7 @@ end;
 
 procedure TSynPasSyn.DoAfterOperator;
 begin
+  FNextAtExprStart := True;
   if rsProperty in fRange then
     fRange := fRange + [rsAtPropertyOrReadWrite]
   else
@@ -8618,6 +8839,9 @@ begin
   FLastLineCodeFoldLevelFix := 0;
   FPasFoldFixLevel := 0;
   FTokenState := tsNone;
+  FAtExpressionStart := False;
+  FExprFoldCount := 0;
+  FillByte(FExprFolds, SizeOf(FExprFolds), 0);
   FMode := pcmUnknown;
   FModeSwitches := [];
 end;
@@ -8639,6 +8863,9 @@ begin
     FSpecializeBracketNestLevel:=TSynPasSynRange(Src).FSpecializeBracketNestLevel;
     FLastLineCodeFoldLevelFix := TSynPasSynRange(Src).FLastLineCodeFoldLevelFix;
     FPasFoldFixLevel := TSynPasSynRange(Src).FPasFoldFixLevel;
+    FAtExpressionStart := TSynPasSynRange(Src).FAtExpressionStart;
+    FExprFoldCount := TSynPasSynRange(Src).FExprFoldCount;
+    FExprFolds := TSynPasSynRange(Src).FExprFolds;
   end;
 end;
 
@@ -8703,6 +8930,44 @@ end;
 procedure TSynPasSynRange.DecLastLinePasFoldFix;
 begin
   dec(FPasFoldFixLevel);
+end;
+
+function TSynPasSynRange.PushExprFold(AFoldDepth, ABracketLevel: integer): boolean;
+begin
+  Result := FExprFoldCount < MaxPasExprFoldNest;
+  if not Result then
+    exit;
+  FExprFolds[FExprFoldCount].FoldDepth := AFoldDepth;
+  FExprFolds[FExprFoldCount].BracketLevel := ABracketLevel;
+  inc(FExprFoldCount);
+end;
+
+procedure TSynPasSynRange.PruneExprFolds(AMaxFoldDepth: integer);
+begin
+  while (FExprFoldCount > 0) and (FExprFolds[FExprFoldCount-1].FoldDepth > AMaxFoldDepth) do begin
+    dec(FExprFoldCount);
+    // keep unused entries zero, the range is compared byte-wise
+    FExprFolds[FExprFoldCount].FoldDepth := 0;
+    FExprFolds[FExprFoldCount].BracketLevel := 0;
+  end;
+end;
+
+function TSynPasSynRange.HasExprFoldAtDepth(AFoldDepth: integer): boolean;
+var
+  i: Integer;
+begin
+  Result := False;
+  i := FExprFoldCount - 1;
+  while (i >= 0) and (FExprFolds[i].FoldDepth >= AFoldDepth) do begin
+    if FExprFolds[i].FoldDepth = AFoldDepth then
+      exit(True);
+    dec(i);
+  end;
+end;
+
+function TSynPasSynRange.TopExprFold: TSynPasSynExprFold;
+begin
+  Result := FExprFolds[FExprFoldCount-1];
 end;
 
 { TSynPasSynCustomToken }

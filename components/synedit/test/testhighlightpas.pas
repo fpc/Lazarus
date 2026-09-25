@@ -83,6 +83,10 @@ type
     procedure TestContextForStatic;
     procedure TestContextForObjective;
     procedure TestCaseLabel;
+    procedure TestStatementExpression_If;
+    procedure TestStatementExpression_Case;
+    procedure TestStatementExpression_Try;
+    procedure TestStatementExpression_Const;
     procedure TestBreakKeyword;
     procedure TestModifierAttributesForProcedure;
     procedure TestModifierAttributesForProperty;
@@ -3852,6 +3856,125 @@ begin
   CheckTokensForLine('else foo;',  9, [tkKey, tkSpace, tkIdentifier, TK_Semi]);
   CheckTokensForLine('end;',  10, [tkKey, TK_Semi]);
 
+end;
+
+procedure TTestHighlighterPas.TestStatementExpression_If;
+begin
+  ReCreateEdit;
+  EnableFolds([cfbtBeginEnd..cfbtNone], []);
+  SetLines
+    ([ 'program a;',
+       'begin',
+         'x := foo(if a then 1 else 2,',  // 2
+           'if b then 3 else 4);',
+         'if c then',                     // 4
+         'begin',
+         'end;',
+       'end.',
+       ''
+    ]);
+
+  // if, then (close+open), else (close+open), and closed by "," / ")"
+  AssertEquals('if-expr closed by comma', 3, PasHighLighter.FoldNodeInfo[2].CountEx([sfaClose], 0));
+  AssertEquals('if-expr closed by bracket', 3, PasHighLighter.FoldNodeInfo[3].CountEx([sfaClose], 0));
+
+  CheckTokensForLine('x := foo(if a then 1 else 2,', 2,
+    [tkIdentifier, tkSpace, TK_Assign, tkSpace, tkIdentifier, TK_Bracket, tkKey, tkSpace, tkIdentifier, tkSpace,
+     tkKey, tkSpace, tkNumber, tkSpace, tkKey, tkSpace, tkNumber, TK_Comma]);
+
+  AssertEquals('Len begin', 6, PasHighLighter.FoldLineLength(1, 0));
+  AssertEquals('Len begin after if', 1, PasHighLighter.FoldLineLength(5, 0));
+end;
+
+procedure TTestHighlighterPas.TestStatementExpression_Case;
+begin
+  ReCreateEdit;
+  EnableFolds([cfbtBeginEnd..cfbtNone], []);
+  PasHighLighter.CaseLabelAttriMatchesElseOtherwise := True;
+  SetLines
+    ([ 'program a;',
+       'begin',
+         'x := case b of',                 // 2
+           '1: foo;',
+           '2, 3: if c then 1 else 2;',    // 4
+           'else bar',
+         'end;',                           // 6
+         'case b of',
+           '1: foo;',
+         'end;',                           // 9
+       'end.',
+       ''
+    ]);
+
+  AssertEquals('Len begin', 9, PasHighLighter.FoldLineLength(1, 0));
+  AssertEquals('Len case-expr', 4, PasHighLighter.FoldLineLength(2, 0));
+  AssertEquals('Len case', 2, PasHighLighter.FoldLineLength(7, 0));
+
+  CheckTokensForLine('x := case b of', 2,
+    [tkIdentifier, tkSpace, TK_Assign, tkSpace, tkKey, tkSpace, tkIdentifier, tkSpace, tkKey]);
+  CheckTokensForLine('1: foo;', 3, [tkNumber+FCaseLabelAttri, TK_Colon, tkSpace, tkIdentifier, TK_Semi]);
+  CheckTokensForLine('2, 3: if c then 1 else 2;', 4,
+    [tkNumber+FCaseLabelAttri, TK_Comma, tkSpace, tkNumber+FCaseLabelAttri, TK_Colon, tkSpace,
+     tkKey, tkSpace, tkIdentifier, tkSpace, tkKey, tkSpace, tkNumber, tkSpace, tkKey, tkSpace, tkNumber, TK_Semi]);
+  CheckTokensForLine('else bar', 5, [tkKey+FCaseLabelAttri, tkSpace, tkIdentifier]);
+  CheckTokensForLine('end;', 6, [tkKey, TK_Semi]);
+  CheckTokensForLine('1: foo;', 8, [tkNumber+FCaseLabelAttri, TK_Colon, tkSpace, tkIdentifier, TK_Semi]);
+end;
+
+procedure TTestHighlighterPas.TestStatementExpression_Try;
+begin
+  ReCreateEdit;
+  EnableFolds([cfbtBeginEnd..cfbtNone], []);
+  SetLines
+    ([ 'program a;',
+       'begin',
+         'x := foo(try',                   // 2
+           'bar(1)',
+         'except',                         // 4
+           'on E: Exception do 0;',
+           'else 1',
+         'end, case b of',                 // 7
+           '1: 2;',
+           'else 3 end);',
+         'case b of',                      // 10
+           '1: foo;',
+         'end;',
+       'end.',
+       ''
+    ]);
+
+  AssertEquals('Len begin', 12, PasHighLighter.FoldLineLength(1, 0));
+  // line 7 "end, case" opens a new fold => the try/except folds end one line earlier
+  AssertEquals('Len try-expr', 4, PasHighLighter.FoldLineLength(2, 0));
+  AssertEquals('Len except-expr', 2, PasHighLighter.FoldLineLength(4, 0));
+  AssertEquals('Len case-expr', 2, PasHighLighter.FoldLineLength(7, 0));
+  AssertEquals('Len case', 2, PasHighLighter.FoldLineLength(10, 0));
+
+  CheckTokensForLine('1: 2;', 8, [tkNumber+FCaseLabelAttri, TK_Colon, tkSpace, tkNumber, TK_Semi]);
+  CheckTokensForLine('1: foo;', 11, [tkNumber+FCaseLabelAttri, TK_Colon, tkSpace, tkIdentifier, TK_Semi]);
+end;
+
+procedure TTestHighlighterPas.TestStatementExpression_Const;
+begin
+  ReCreateEdit;
+  EnableFolds([cfbtBeginEnd..cfbtNone], []);
+  SetLines
+    ([ 'unit a; interface',
+       'const',
+         'c1 = if d then 1 else 2;',
+         'c2 = case d of 1: 2; else 3 end;',
+       'type',
+         'TFoo = class',                   // 5
+         'const',
+           'c3 = case d of 1: 2; else 3 end;',
+           'procedure Bar;',
+         'end;',                           // 9
+       'implementation',
+       'end.',
+       ''
+    ]);
+
+  AssertEquals('Len class', 4, PasHighLighter.FoldLineLength(5, 0));
 end;
 
 procedure TTestHighlighterPas.TestBreakKeyword;
