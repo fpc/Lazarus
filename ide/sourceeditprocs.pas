@@ -400,7 +400,7 @@ begin
         end;
       end;
 
-    ctnTypeDefinition, ctnEnumerationType:
+    ctnTypeDefinition, ctnEnumerationType, ctnGenericType, ctnGenericParameter:
       begin
         if UseImages then
         begin
@@ -425,7 +425,12 @@ begin
         begin
           if Colors <> nil then
             AColor:=Colors.Color[ahaIdentComplWindowEntryType].Foreground;
-          s:='type';
+          if IdentItem.GetDesc =ctnGenericType then
+            s:='type<>'
+          else if IdentItem.GetDesc =ctnGenericParameter then
+            s:='<type>'
+          else
+            s:='type';
         end;
       end;
 

@@ -623,6 +623,8 @@ type
     FKnownIdentifierSpecializeParamCnt: integer;
     FKnownIdentSpecializeParamCntValid: boolean;
     FIdentifierGenParamCount: integer; // -1 = derive from IdentifierNode
+    FSpecializedType: string;
+    FSpecializedClass: string;
     procedure ClearFoundProc;
     procedure FreeFoundProc(aFoundProc: PFoundProc; FreeNext: boolean);
     procedure RemoveFoundProcFromList(aFoundProc: PFoundProc);
@@ -690,6 +692,8 @@ type
     function GetHelpers(HelperKind: TFDHelpersListKind; CreateIfNotExists: boolean = false): TFDHelpersList;
     function IdentSpecializeNodeParamCount: integer;
     property KnownIdentifierLength: integer read FKnownIdentifierLength;
+    property SpecializedTypeName: string read FSpecializedType;
+    property SpecializedClassName: string read FSpecializedClass;
   end;
   
   
@@ -6258,6 +6262,8 @@ var
         end;
         SubParams.AppendGenericParamValues(Params.GenParams);
         Params.GenParams:=SubParams.GenParams;
+        Params.FSpecializedType:=SubParams.FSpecializedType;
+        Params.FSpecializedClass:=SubParams.FSpecializedClass;
         exit;
       end;
 
@@ -11679,13 +11685,23 @@ var
     debugln(['ResolveIdentifier "',GetAtom(CurAtom),'"']);
     {$ENDIF}
 
-    // check special identifier 'Self'
     IdentFound:=false;
     IsStart:=ExprType.Desc=xtNone;
     IsEnd:=IsIdentifierEndOfVariable;
-    if IsStart then begin
-      // start context
-      if (StartNode.Desc in AllPascalStatements) then begin
+    if IsStart then begin // start context
+      if (SpecializeNode<>nil) then begin
+      // specialized type is known, only first specialization is stored in Params
+        if  (Params.FSpecializedType<>'') then
+          debugln(['ResolveIdentifier: nested specializaton to ', Params.FSpecializedType]) else
+        begin
+          Params.FSpecializedType:=
+            GetIdentifier(PChar(@Src[SpecializeNode.Parent.StartPos]));
+          Params.FSpecializedClass:=ExtractCode(SpecializeNode.FirstChild.StartPos,
+            SpecializeNode.FirstChild.EndPos,[]);
+        end;
+      end
+      else if (StartNode.Desc in AllPascalStatements) then begin
+        // check special identifier 'Self'
         TrueSelf:=false;
         if CompareSrcIdentifiers(CurAtom.StartPos,'SELF') then begin
           // SELF in a method is the object itself
@@ -12112,8 +12128,9 @@ var
     end else if (ExprType.Context.Node.Desc=ctnEnumIdentifier) and
       (ExprType.Context.Node.Parent.Desc=ctnEnumerationType) then begin
       // enum can have a helper to type so "enum1. " is ok
-    end
-    else begin
+    end  else if Params.GenParams.SpecializeParamsNode<>nil then begin
+      //ok, specialized generics allowed
+    end else begin
       // not allowed
       //debugln(['ResolvePoint ',ExprTypeToString(ExprType)]);
       MoveCursorToCleanPos(CurAtom.StartPos);
@@ -17067,6 +17084,8 @@ begin
   FKnownIdentifierLength:=0;
   FKnownIdentifierSpecializeParamCnt := -1;
   FKnownIdentSpecializeParamCntValid := false;
+  FSpecializedType:='';
+  FSpecializedClass:='';
 end;
 
 constructor TFindDeclarationParams.Create(Tool: TFindDeclarationTool;

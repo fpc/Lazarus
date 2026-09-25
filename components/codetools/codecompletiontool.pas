@@ -1922,6 +1922,27 @@ var
   ProcNode, ClassNode, FuncResultNode: TCodeTreeNode;
   CCOptions: TCodeCreationDlgResult;
   AddSourceName: boolean;
+  ForceSpecialized: boolean;
+
+  procedure SubstituteGenericType(var AType: string; const SpecializedTypeName,
+    GenericClassName: string; ForceSpecialized: boolean);
+  var
+    i: integer;
+  begin
+     i:= Pos('.',AType)-1;
+     if ForceSpecialized then begin
+       if i<1 then exit;
+       delete(AType,1, i);
+       AType:=SpecializedTypeName+AType;
+     end else begin
+       // skip substituting for a type diffrent from GenericClass
+       if i<>length(GenericClassName) then exit;
+       if CompareIdentifiers(PChar(AType),PChar(GenericClassName))<>0 then exit;
+       // replace GenericClassName with SpecializedTypeName
+       delete(AType,1, i);
+       AType:=SpecializedTypeName+AType;
+     end;
+  end;
 
   function PositionForInsertion(): integer;
   var
@@ -2091,6 +2112,12 @@ begin
               // declaration is shadowed by that in nested class => use type from outer class
               AddSourceName:=false;
               NewType:=ExtractClassPath(FindClassNode(OrigExprContext.Node))+'.'+NewType;
+              if Params.SpecializedTypeName<>'' then begin
+                ClassNode:=OrigExprContext.Tool.FindClassNode(OrigExprContext.Node);
+                ForceSpecialized:= (ClassNode<>nil) and  (ClassNode.Parent.Desc=ctnGenericType);
+                SubstituteGenericType(NewType,Params.SpecializedTypeName,
+                  Params.SpecializedClassName, ForceSpecialized);
+              end;
             end;
 
             if AddSourceName then
@@ -2116,6 +2143,7 @@ begin
           end;
         end else
           AddSourceName:=false;
+
         if AddSourceName and (self=ResExprContext.Tool) then begin
           FindProcAndClassNode(CursorNode, ProcNode, ClassNode);
           if not Interactive or (ClassNode=nil) then begin
@@ -2126,12 +2154,18 @@ begin
             AddSourceName:=
               (ResExprContext.Node.EndPos < PositionForInsertion());
           end;
-        end else
+        end else begin
           AddSourceName:=false; // different units don't need a prefix
+          if Params.SpecializedTypeName<>'' then begin
+            ClassNode:=ResExprContext.Tool.FindClassNode(ResExprContext.Node);
+            ForceSpecialized:= (ClassNode<>nil) and (ClassNode.Parent.Desc=ctnGenericType);
+            SubstituteGenericType(NewType,Params.SpecializedTypeName,
+              Params.SpecializedClassName, ForceSpecialized);
+          end;
+        end;
 
-        if AddSourceName then // -> add unit to the type
-          NewType := ExprType.Context.Tool.ExtractSourceName + '.' + NewType
-        else
+        if AddSourceName then  // -> add unit to the type
+          NewType := ExprType.Context.Tool.ExtractSourceName + '.' + NewType else
         begin // the "source" types are the same -> set ExprType to found Params.New* so that unit adding is avoided (with MissingUnit)
           ExprType.Context.Tool:=Params.NewCodeTool;
           ExprType.Context.Node:=Params.NewNode;
