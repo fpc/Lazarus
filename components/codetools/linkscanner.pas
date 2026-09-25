@@ -227,6 +227,7 @@ type
     cmsAnonymousFunctions, { allow anonymous functions }
     cmsMultiLineStrings,   { Multiline strings }
     cmsStatementExpressions, { allow if-, case- and try-except-expressions }
+    cmsReorderedoperators, { allow "not in" and "is not" operators}
     cmsTypeInquiry,        { allow "type of" operator }
 
     cmsExternalClass,      { pas2js: allow  class external [pkgname] name [symbol] }
@@ -324,6 +325,7 @@ const
     'ANONYMOUSFUNCTIONS',
     'MULTILINESTRINGS',
     'STATEMENTEXPRESSIONS',
+    'REORDEREDOPERATORS',
     'TYPEINQUIRY',
     'EXTERNALCLASS',
     'IGNOREATTRIBUTES',
