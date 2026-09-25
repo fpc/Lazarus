@@ -4040,7 +4040,7 @@ begin
 
     if Node.Desc = ctnGenericName then
       Node := Node.Parent;
-    if Node.Desc in AllPascalTypes then
+    if Node.Desc in AllPascalTypes-[ctnGenericType] then
       Node := Node.Parent;
     case Node.Desc of
     ctnIdentifier:
