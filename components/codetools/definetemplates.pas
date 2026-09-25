@@ -1814,6 +1814,16 @@ function ParseFPCVerbose(List: TStrings; const WorkDir: string; out
       if len - CurPos < 6 then Exit; // shortest match
     end;
 
+    // skip message number e.g. (nnn)
+    if Line[CurPos] = '(' then begin
+      repeat
+        inc(CurPos);
+        if CurPos > len then Exit;
+      until line[CurPos] = ')';
+      Inc(CurPos, 2); // skip space too
+      if len - CurPos < 6 then Exit; // shortest match
+    end; 
+
     UpLine:=UpperCaseStr(Line);
     case UpLine[CurPos] of
     'I':
