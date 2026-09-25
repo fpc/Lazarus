@@ -870,6 +870,7 @@ procedure TClipboard.SetAsHtml(Html: String; const PlainText: String);
 var
   Stream: TStream;
   IsValid: Boolean;
+  TextLength: Integer;
 begin
   if CF_HTML = 0 then
     exit;
@@ -891,7 +892,14 @@ begin
     begin
       Stream.Size := 0;
       Stream.Position := 0;
-      Stream.WriteBuffer(Pointer(PlainText)^, Length(PlainText)+1); //Also write terminating zero
+      // Only Windows' CF_TEXT needs the terminating zero. Writing it
+      // unconditionally put a trailing #0 into the pasted text on widgetsets
+      // that copy the stream verbatim (Cocoa), which other applications
+      // reject. SetAsText above already consults this same predicate.
+      TextLength := Length(PlainText);
+      if ClipboardFormatNeedsNullByte(pcfText) then
+        Inc(TextLength);
+      Stream.WriteBuffer(Pointer(PlainText)^, TextLength);
       Stream.Position := 0;
       ClipBoard.AddFormat(CF_TEXT, Stream);
     end;
