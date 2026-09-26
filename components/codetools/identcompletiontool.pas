@@ -1745,7 +1745,7 @@ begin
   ctnProgram..ctnUnit:
     begin
       if (FoundContext.Tool=Self) then begin
-        if StartedAsFullyQualified and (FoundContext.Node.Desc in [ctnUnit,ctnLibrary]) then exit; // don't add yourself
+        if StartedAsFullyQualified and (FoundContext.Node.Desc = ctnUnit) then exit; // don't add yourself
         PlaceForDotted:=ExtractSourceName;  //can apply name from file name if empty program header
         if length(PlaceForDotted)>0 then begin
           Ident:=@PlaceForDotted[1];
@@ -3486,7 +3486,7 @@ begin
       FStartedAsFullyQualified:= IsSourceNameOfSelf(CursorPos) ;
       Params:=TFindDeclarationParams.Create(Self,CursorNode);
       try
-        if StartedAsFullyQualified and (CursorNode.GetRoot.Desc in [ctnUnit,ctnLibrary])
+        if StartedAsFullyQualified and (CursorNode.GetRoot.Desc = ctnUnit)
         then begin  // complete expression like "maybedotted.current.unit1."
           try
             CursorNode:=FindInterfaceNode;
