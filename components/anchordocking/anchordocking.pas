@@ -488,7 +488,6 @@ type
     procedure StoreConstraints;
     function GetSitePreferredClientSize: TPoint;
     function IsEnabledControl(Control: TControl):Boolean; override;
-    function CanBeDoubleDocked:Boolean; override;
 
     property Site: TWinControl read FSite; // the associated TControl (a TAnchorDockHostSite or a custom dock site)
     property DockSite: TAnchorDockHostSite read FDockSite; // if Site is a TAnchorDockHostSite, this is it
@@ -8058,11 +8057,6 @@ end;
 function TAnchorDockManager.IsEnabledControl(Control: TControl):Boolean;
 begin
   Result := (DockMaster <> nil) and DockMaster.IsSite(Control);
-end;
-
-function TAnchorDockManager.CanBeDoubleDocked:Boolean;
-begin
-  Result := False;
 end;
 
 { TAnchorDockSplitter }
