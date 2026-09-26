@@ -4734,6 +4734,7 @@ begin
         begin
           dec(NewBounds.Left,NewSite.Width+Splitter.Width);
           MoveAllControls(NewSite.Width+Splitter.Width,0);
+          Splitter.FPercentPosition := -1;
         end;
       alRight:
         inc(NewBounds.Right,NewSite.Width+Splitter.Width);
@@ -4741,6 +4742,7 @@ begin
         begin
           dec(NewBounds.Top,NewSite.Height+Splitter.Height);
           MoveAllControls(0,NewSite.Height+Splitter.Height);
+          Splitter.FPercentPosition := -1;
         end;
       alBottom:
         inc(NewBounds.Bottom,NewSite.Height+Splitter.Height);
@@ -4760,6 +4762,7 @@ begin
           dec(NewParentBounds.Left,i);
           dec(NewBounds.Left,i);
           MoveAllControls(i,0);
+          Splitter.FPercentPosition := -1;
         end;
       alRight:
         begin
@@ -4773,6 +4776,7 @@ begin
           dec(NewBounds.Top,i);
           dec(NewParentBounds.Top,i);
           MoveAllControls(0,i);
+          Splitter.FPercentPosition := -1;
         end;
       alBottom:
         begin
