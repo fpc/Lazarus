@@ -4760,7 +4760,7 @@ begin
         begin
           i:=NewSite.Width+Splitter.Width;
           dec(NewParentBounds.Left,i);
-          dec(NewBounds.Left,i);
+          inc(NewBounds.Right,i);
           MoveAllControls(i,0);
           Splitter.FPercentPosition := -1;
         end;
@@ -4773,8 +4773,8 @@ begin
       alTop:
         begin
           i:=NewSite.Height+Splitter.Height;
-          dec(NewBounds.Top,i);
           dec(NewParentBounds.Top,i);
+          inc(NewBounds.Bottom,i);
           MoveAllControls(0,i);
           Splitter.FPercentPosition := -1;
         end;
