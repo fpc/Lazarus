@@ -22,6 +22,9 @@ uses
   // DebuggerIntf
   DbgIntfBaseTypes;
 
+type
+  TLldbLineType = (lltUnknown, lltThread, lltCurThread, lltFrame, lltCurFrame);
+
 function LastPos(ASearch, AString: string): Integer;
 
 function StrStartsWith(AString, AStart: string; ACheckStartNotEmpty: Boolean = False): Boolean;
@@ -29,6 +32,7 @@ function StrContains(AString, AFind: string): Boolean;
 function StrMatches(AString: string; const AFind: array of string): Boolean;
 function StrMatches(AString: string; const AFind: array of string; out AGapsContent: TStringArray): Boolean;
 
+function ParseLineType(const AnInput: String): TLldbLineType;
 function ParseThreadLocation(AnInput: String; out AnId: Integer;
   out AnIsCurrent: Boolean; out AName: String; out AnAddr: TDBGPtr;
   out AFuncName: String; out AnArgs: TStringList; out AFile: String;
@@ -204,6 +208,44 @@ begin
   end;
 end;
 
+function ParseLineType(const AnInput: String): TLldbLineType;
+var
+  i, c: Integer;
+  cur: Boolean;
+begin
+  Result := lltUnknown;
+  i := 1;
+  while (i <= Length(AnInput)) and (AnInput[i] in [#9,#32]) do
+    inc(i);
+
+  if i > Length(AnInput) then
+    exit;
+
+  c := i;
+  cur := AnInput[i] = '*';
+  if cur then begin
+    inc(i);
+    while (i <= Length(AnInput)) and (AnInput[i] in [#9,#32]) do
+      inc(i);
+  end;
+
+  if StrLComp(PChar(@AnInput[i]), PChar('thread #'), 8) = 0 then begin
+    case cur of
+      False: Result := lltThread;
+      True:  Result := lltCurThread;
+    end;
+    exit;
+  end;
+  if (i >= 4) and (StrLComp(PChar(@AnInput[i]), PChar('frame '), 6) = 0) then begin
+    case cur of
+      False: Result := lltFrame;
+      True:  Result := lltCurFrame;
+    end;
+    exit;
+  end;
+
+end;
+
 function ParseThreadLocation(AnInput: String; out AnId: Integer; out
   AnIsCurrent: Boolean; out AName: String; out AnAddr: TDBGPtr; out
   AFuncName: String; out AnArgs: TStringList; out AFile: String; out
@@ -244,10 +286,14 @@ var
   found: TStringArray;
 begin
   Result := False;
-  AnIsCurrent := (Length(AnInput) > 3) and (AnInput[3] = '*');
-  if AnIsCurrent then AnInput[3] := ' ';
+  if (StrLComp(PChar(AnInput), PChar('  '), 2) <> 0) then // require at least 2 spaces
+    exit(False);
+  AnInput := TrimLeft(AnInput);
+  AnIsCurrent := StrLComp(PChar(AnInput), PChar('* '), 2) = 0;
+  if AnIsCurrent then
+    Delete(AnInput, 1, 2);
 
-  if not StrMatches(AnInput, ['    frame #'{id}, ': '{}, ''], found) then begin
+  if not StrMatches(AnInput, ['frame #'{id}, ': '{}, ''], found) then begin
     AnId := -1;
     ParseLocation('', AnAddr, AFuncName, AnArgs, AFile, ALine, AReminder);
     exit;
@@ -319,10 +365,14 @@ function ParseNewFrameLocation(AnInput: String; out AnId: Integer; out
 var
   found: TStringArray;
 begin
-  AnIsCurrent := (Length(AnInput) > 3) and (AnInput[3] = '*');
-  if AnIsCurrent then AnInput[3] := ' ';
+  if (StrLComp(PChar(AnInput), PChar('  '), 2) <> 0) then // require at least 2 spaces
+    exit(False);
+  AnInput := TrimLeft(AnInput);
+  AnIsCurrent := StrLComp(PChar(AnInput), PChar('* '), 2) = 0;
+  if AnIsCurrent then
+    Delete(AnInput, 1, 2);
 
-  if StrMatches(AnInput, ['    frame #'{id}, ': '{}, ''], found) then begin
+  if StrMatches(AnInput, ['frame #'{id}, ': '{}, ''], found) then begin
     AnId    := StrToIntDef(found[0], -1);
     AnInput := found[1];
   end

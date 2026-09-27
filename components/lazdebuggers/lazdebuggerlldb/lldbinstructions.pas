@@ -1325,7 +1325,7 @@ begin
     exit;
 
 
-  if StrStartsWith(AData, '* thread #') or StrStartsWith(AData, '  thread #') then begin
+  if ParseLineType(AData) in [lltThread, lltCurThread] then begin
     l := Length(FRes);
     SetLength(FRes, l+1);
     FRes[l] := AData;
@@ -1363,7 +1363,7 @@ end;
 function TLldbInstructionThreadListReader.ProcessInputFromDbg(
   const AData: String): Boolean;
 begin
-  if StrStartsWith(AData, '    frame ') then begin
+  if ParseLineType(AData) in [lltFrame] then begin
     MarkAsFailed;
     Result := False;
     exit;
@@ -1405,7 +1405,7 @@ begin
     exit;
 
 
-  if StrStartsWith(AData, '  * frame ') or StrStartsWith(AData, '    frame ') then begin
+  if ParseLineType(AData) in [lltFrame, lltCurFrame] then begin
     l := Length(FRes);
     SetLength(FRes, l+1);
     FRes[l] := AData;
