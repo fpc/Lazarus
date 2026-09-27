@@ -14768,6 +14768,9 @@ begin
           // different context type
           if (TargetNode.Desc=ctnOpenArrayType) and (ExprNode.Desc<>ctnOpenArrayType) then begin
           // switch TargetNode to node of declaration of an array element type
+            if TargetNode.FirstChild.Desc= ctnOfConstType then begin
+              Result:=tcCompatible;
+            end else
             try
               ExprParams:= TFindDeclarationParams.Create(Params);
               ExprParams.SetIdentifier(Self,nil,nil);
