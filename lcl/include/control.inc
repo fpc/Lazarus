@@ -3390,7 +3390,7 @@ begin
   else if csLoading    in ComponentState then Result:='csLoading'
   else if csDestroying in ComponentState then Result:='csDestroying'
   else if cfLoading    in FControlFlags  then Result:='cfLoading'
-  else if IsControlVisible               then Result:='not IsControlVisible'
+  else if not IsControlVisible           then Result:='not IsControlVisible'
   else if AutoSizeDelayedHandle          then Result:='AutoSizeDelayedHandle'
   else if Parent<>nil then
     Result:=Parent.AutoSizeDelayedReport
