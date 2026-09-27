@@ -41,14 +41,16 @@ type
   private
     fiIdentifierCount: integer;
     fiNonIdentifierCount: integer;
-    lsLastChange: string;
+    lsLastIdentifierChange: string;
+    lsLastNonIdentifierChange: string;
     TreeIdentifiers: TAvgLvlTree;
     TreeNotIdentifiers: TAvgLvlTree;
   protected
     function EnabledVisitSourceToken(const pcNode: TObject): boolean; override;
     // use the first ocurrence (declaration) of the identifier in the source as normalized capitalisation.
     function TreeGetNormalizedIdentifierCapitalisation(ATree:TAvgLvlTree; Aidentifier:string):string;
-    procedure UpdateToken(AToken: TSourceToken; AValue:string);
+    procedure UpdateIdentifierToken(AToken: TSourceToken; AValue: string);
+    procedure UpdateNonIdentifierToken(AToken: TSourceToken; AValue: string);
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -82,7 +84,7 @@ begin
   Result:=CompareStr(string(AIdentifier),TTreeNodeData(AData).lsIdentifierLowerCase);
 end;
 
-function TIdentifierCaps.TreeGetNormalizedIdentifierCapitalisation(ATree:TAvgLvlTree; AIdentifier:string):string;
+function TIdentifierCaps.TreeGetNormalizedIdentifierCapitalisation(ATree: TAvgLvlTree; Aidentifier: string): string;
 var
   Node:TAvgLvlTreeNode;
   NodeData: TTreeNodeData;
@@ -142,7 +144,8 @@ begin
   fiIdentifierCount  := 0;
   fiNonIdentifierCount := 0;
 
-  lsLastChange := '';
+  lsLastIdentifierChange := '';
+  lsLastNonIdentifierChange := '';
   FormatFlags  := FormatFlags + [eCapsSpecificWord];
   TreeIdentifiers := TAvgLvlTree.Create(@CompareTreeNodesCaseSensitive);
   TreeNotIdentifiers := TAvgLvlTree.Create(@CompareTreeNodesCaseSensitive);
@@ -167,7 +170,7 @@ begin
   begin
     Result := True;
     if fiIdentifierCount = 1 then
-      psMessage := Format(lisMsgOneChangeWasMade, [lisMsgIdentifierCaps, lsLastChange])
+      psMessage := Format(lisMsgOneChangeWasMade, [lisMsgIdentifierCaps, lsLastIdentifierChange])
     else
       psMessage := Format(lisMsgChangesWhereMade, [lisMsgIdentifierCaps, fiIdentifierCount]);
   end;
@@ -179,18 +182,28 @@ begin
       psMessage := psMessage + '.   ';
 
     if fiNonIdentifierCount = 1 then
-      psMessage := psMessage + Format(lisMsgOneChangeWasMade, [lisMsgNonIdentifierCaps, lsLastChange])
+      psMessage := psMessage + Format(lisMsgOneChangeWasMade, [lisMsgNonIdentifierCaps, lsLastNonIdentifierChange])
     else
       psMessage := psMessage + Format(lisMsgChangesWhereMade, [lisMsgNonIdentifierCaps, fiNonIdentifierCount]);
   end;
 
 end;
 
-procedure TIdentifierCaps.UpdateToken(AToken: TSourceToken; AValue:string);
+procedure TIdentifierCaps.UpdateIdentifierToken(AToken: TSourceToken; AValue: string);
 begin
   if AnsiCompareStr(AToken.SourceCode, AValue) <> 0 then
   begin
-    lsLastChange := Format(lisMsgTo, [AToken.SourceCode, AValue]);
+    lsLastIdentifierChange := Format(lisMsgTo, [AToken.SourceCode, AValue]);
+    AToken.SourceCode := AValue;
+    Inc(fiIdentifierCount);
+  end;
+end;
+
+procedure TIdentifierCaps.UpdateNonIdentifierToken(AToken: TSourceToken; AValue: string);
+begin
+  if AnsiCompareStr(AToken.SourceCode, AValue) <> 0 then
+  begin
+    lsLastNonIdentifierChange := Format(lisMsgTo, [AToken.SourceCode, AValue]);
     AToken.SourceCode := AValue;
     Inc(fiNonIdentifierCount);
   end;
@@ -226,17 +239,17 @@ begin
     if FormattingSettings.IdentifierCaps.Enabled then
     begin
       if FormattingSettings.IdentifierCaps.HasWord(lcSourceToken.SourceCode) then
-        UpdateToken(lcSourceToken, FormattingSettings.IdentifierCaps.CapitaliseWord(lcSourceToken.SourceCode))
+        UpdateIdentifierToken(lcSourceToken, FormattingSettings.IdentifierCaps.CapitaliseWord(lcSourceToken.SourceCode))
       else
       begin
         if FormattingSettings.Caps.Enabled and FormattingSettings.Caps.IdentifiersNormalizeCapitalisation then
-          UpdateToken(lcSourceToken, TreeGetNormalizedIdentifierCapitalisation(TreeIdentifiers, lcSourceToken.SourceCode));
+          UpdateIdentifierToken(lcSourceToken, TreeGetNormalizedIdentifierCapitalisation(TreeIdentifiers, lcSourceToken.SourceCode));
       end;
     end
     else
     begin
       if FormattingSettings.Caps.Enabled and FormattingSettings.Caps.IdentifiersNormalizeCapitalisation then
-        UpdateToken(lcSourceToken, TreeGetNormalizedIdentifierCapitalisation(TreeIdentifiers, lcSourceToken.SourceCode));
+        UpdateIdentifierToken(lcSourceToken, TreeGetNormalizedIdentifierCapitalisation(TreeIdentifiers, lcSourceToken.SourceCode));
     end;
   end
   else
@@ -245,17 +258,17 @@ begin
     if FormattingSettings.NotIdentifierCaps.Enabled then
     begin
       if FormattingSettings.NotIdentifierCaps.HasWord(lcSourceToken.SourceCode) then
-        UpdateToken(lcSourceToken, FormattingSettings.NotIdentifierCaps.CapitaliseWord(lcSourceToken.SourceCode))
+        UpdateNonIdentifierToken(lcSourceToken, FormattingSettings.NotIdentifierCaps.CapitaliseWord(lcSourceToken.SourceCode))
       else
       begin
         if FormattingSettings.Caps.Enabled and FormattingSettings.Caps.NotIdentifiersNormalizeCapitalisation then
-          UpdateToken(lcSourceToken, TreeGetNormalizedIdentifierCapitalisation(lcTreeNonIdentifiers, lcSourceToken.SourceCode));
+          UpdateNonIdentifierToken(lcSourceToken, TreeGetNormalizedIdentifierCapitalisation(lcTreeNonIdentifiers, lcSourceToken.SourceCode));
       end;
     end
     else
     begin
       if FormattingSettings.Caps.Enabled and FormattingSettings.Caps.NotIdentifiersNormalizeCapitalisation then
-        UpdateToken(lcSourceToken, TreeGetNormalizedIdentifierCapitalisation(lcTreeNonIdentifiers, lcSourceToken.SourceCode));
+        UpdateNonIdentifierToken(lcSourceToken, TreeGetNormalizedIdentifierCapitalisation(lcTreeNonIdentifiers, lcSourceToken.SourceCode));
     end;
   end;
 end;
