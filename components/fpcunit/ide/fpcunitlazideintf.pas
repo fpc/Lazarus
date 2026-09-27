@@ -32,8 +32,15 @@ unit FPCUnitLazIDEIntf;
 interface
 
 uses
-  Classes, SysUtils, LazIDEIntf, ProjectIntf, Controls, Forms, testcaseopts, frmConsoleOpts,
-  strtestcaseopts;
+  Classes, SysUtils,
+  // LCL
+  Controls, Forms,
+  // IdeIntf
+  LazIDEIntf,
+  // BuildIntf
+  ProjectIntf,
+  // package
+  TestCaseOpts, frmConsoleOpts, StrTestCaseOpts;
 
 type
   { TFPCUnitApplicationDescriptor }
@@ -346,7 +353,6 @@ end;
 function TFPCUnitConsoleApplicationDescriptor.ShowOptions: TModalResult;
 
   procedure IncOpt(DoInclude : Boolean; Option : TConsoleOption);
-
   begin
     If DoInclude then
       Include(FOptions,Option);
@@ -354,7 +360,6 @@ function TFPCUnitConsoleApplicationDescriptor.ShowOptions: TModalResult;
 
 var
   Frm : TConsoleTestRunnerOptionsForm;
-
 begin
   frm:=TConsoleTestRunnerOptionsForm.Create(Nil);
   try
@@ -373,7 +378,6 @@ begin
 end;
 
 function TFPCUnitConsoleApplicationDescriptor.GetDefaultformatSource : String;
-
 begin
   Result:='';
   Case FDefaultFormat of
@@ -392,12 +396,9 @@ begin
 end;
 
 function TFPCUnitConsoleApplicationDescriptor.CreateSource : String;
-
 var
   S : TStrings;
   Line : String;
-
-
 begin
   S:=TStringList.Create;
   try

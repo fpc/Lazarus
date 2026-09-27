@@ -1,17 +1,17 @@
-unit testcaseopts;
+unit TestCaseOpts;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, Buttons, LCLType, LCLProc, StrTestCaseOpts;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, Buttons, StdCtrls, ExtCtrls, LCLType, LCLProc,
+  // package
+  StrTestCaseOpts;
 
 type
-
-  { TTestCaseOptionsForm }
-
   TTestCaseOptionsForm = class(TForm)
     btnAccept: TButton;
     cbSetup: TCheckBox;
@@ -23,18 +23,11 @@ type
     procedure btnAcceptClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-  private
-    { private declarations }
-  public
-    { public declarations }
-  end; 
-
+  end;
 
 implementation
 
 {$R *.lfm}
-
-{ TTestCaseOptionsForm }
 
 procedure TTestCaseOptionsForm.btnAcceptClick(Sender: TObject);
 begin
@@ -43,14 +36,14 @@ end;
 
 procedure TTestCaseOptionsForm.FormCreate(Sender: TObject);
 begin
-  Caption := sfrmTest;
-  gbNames.Caption:= sgrpNames;
-  gbFixture.Caption:= sgrpFixture;
-  label1.Caption:= slblDefault;
-  cbSetup.Caption:= schkSetup;
-  cbTeardown.Caption:= schkTear;
-  btnAccept.Caption:= sbtnCreate;
-  btnAccept.Hint:= '['+ShortCutToText(KeyToShortCut(VK_RETURN, [ssCtrl]))+']';
+  self      .Caption := sfrmTest;
+  gbNames   .Caption := sgrpNames;
+  gbFixture .Caption := sgrpFixture;
+  label1    .Caption := slblDefault;
+  cbSetup   .Caption := schkSetup;
+  cbTeardown.Caption := schkTear;
+  btnAccept .Caption := sbtnCreate;
+  btnAccept.Hint := '[' + ShortCutToText(KeyToShortCut(VK_RETURN, [ssCtrl])) + ']';
 end;
 
 procedure TTestCaseOptionsForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
