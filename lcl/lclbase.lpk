@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="5">
+  <Package Version="6">
     <Name Value="LCLBase"/>
     <Type Value="RunAndDesignTime"/>
     <BuildMethod Value="Both"/>
@@ -26,7 +26,7 @@
 "/>
     <License Value="modified LGPL-2
 "/>
-    <Version Major="4" Minor="99"/>
+    <Version Major="5" Minor="99"/>
     <Files>
       <Item>
         <Filename Value="LAYOUT.txt"/>

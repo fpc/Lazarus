@@ -61,12 +61,12 @@ const
     'mui'
     );
 
-  laz_major = 4;
+  laz_major = 5;
   laz_minor = 99;
   laz_release = 0;
   laz_patch = 0;
   laz_fullversion = ((laz_major *  100 + laz_minor) * 100 + laz_release) * 100 + laz_patch;
-  laz_version = '4.99.0.0';
+  laz_version = '5.99.0.0';
 
 var
   OnLCLWidgetType: TLCLWidgetTypeEvent;  // Set by LCL
