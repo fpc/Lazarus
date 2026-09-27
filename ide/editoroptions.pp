@@ -3672,9 +3672,9 @@ begin
   'const BREAK_CHAR: char = ^C;'#13+
   'var  // Slash Comment'#13+
   '  Number, I, X: Integer;'#13+
-  '  MyVar: System.integer = 2 * (1 + 5);'#13+
+  '  MyVar: System.Integer = 2 * (1 + 5);'#13+
   '  Text: String; MoreText: AnsiString;'#13+
-  '  List: Array of record x,y: Byte; end;'#13+
+  '  List: array of record x, y: Byte; end;'#13+
   'begin'#13+
   '  Number := 12345 * (2 + 9); // << Brackets at caret'#13+
   '  Caption := ''The number is '' + IntToStr(Number);'#13+
@@ -3691,9 +3691,9 @@ begin
   '    Inc(X, 2); {$R+} { Enabled breakpoint }'#13+
   '    Dec(X, 3); {$R+} { Disabled breakpoint }'#13+
   '    {$R-} // { Invalid breakpoint }'#13+
-  '    WriteLN(X); {$R-} { Unknown breakpoint }'#13+
+  '    WriteLn(X); {$R-} { Unknown breakpoint }'#13+
   '    X := X + 1.0; {$R-} { Error line }'#13+
-  '    case ModalResult o'#13+
+  '    case ModalResult of'#13+
   '      mrOK: inc(X)'#13+
   '      mrCancel, mrIgnore: dec(X)'#13+
   '    end'#13+
@@ -3773,9 +3773,9 @@ begin
   'const BREAK_CHAR: char = ^C;'#13+
   'var  // Slash Comment'#13+
   '  Number, I, X: Integer;'#13+
-  '  MyVar: System.integer = 2 * (1 + 5);'#13+
+  '  MyVar: System.Integer = 2 * (1 + 5);'#13+
   '  Text: String; MoreText: AnsiString;'#13+
-  '  List: Array of record x,y: Byte; end;'#13+
+  '  List: array of record x, y: Byte; end;'#13+
   'begin'#13+
   '  Number := 12345 * (2 + 9); // << Brackets at caret'#13+
   '  Caption := ''The number is '' + IntToStr(Number);'#13+
@@ -3792,9 +3792,9 @@ begin
   '    Inc(X, 2); {$R+} { Enabled breakpoint }'#13+
   '    Dec(X, 3); {$R+} { Disabled breakpoint }'#13+
   '    {$R-} // { Invalid breakpoint }'#13+
-  '    WriteLN(X); {$R-} { Unknown breakpoint }'#13+
+  '    WriteLn(X); {$R-} { Unknown breakpoint }'#13+
   '    X := X + 1.0; {$R-} { Error line }'#13+
-  '    case ModalResult o'#13+
+  '    case ModalResult of'#13+
   '      mrOK: inc(X)'#13+
   '      mrCancel, mrIgnore: dec(X)'#13+
   '    end'#13+
