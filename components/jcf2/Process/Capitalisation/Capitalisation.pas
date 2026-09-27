@@ -67,6 +67,14 @@ begin
   and FormattingSettings.SpecificWordCaps.HasWord(pct.SourceCode) then
     exit;
 
+  if (FormattingSettings.IdentifierCaps.Enabled)
+  and FormattingSettings.IdentifierCaps.HasWord(pct.SourceCode) then
+    exit;
+
+  if (FormattingSettings.NotIdentifierCaps.Enabled)
+  and FormattingSettings.NotIdentifierCaps.HasWord(pct.SourceCode) then
+    exit;
+
   case caps of
     ctUpper:
       pct.SourceCode := AnsiUpperCase(pct.SourceCode);
