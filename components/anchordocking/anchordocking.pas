@@ -843,7 +843,7 @@ type
     property OnShowOptions: TADShowDockMasterOptionsEvent read FOnShowOptions write FOnShowOptions;
     property OnOptionsChanged: TNotifyEvent read FOnOptionsChanged write FOnOptionsChanged;
     property DragTreshold: integer read FDragTreshold write SetDragTreshold default 4;
-    property DragDelay: integer read FDragDelay write SetDragDelay default 500;
+    property DragDelay: integer read FDragDelay write SetDragDelay default 0;
     property DockOutsideMargin: integer read FDockOutsideMargin write SetDockOutsideMargin default 10; // max distance for outside mouse snapping
     property DockParentMargin: integer read FDockParentMargin write SetDockParentMargin default 10; // max distance for snap to parent
     property FloatingWindowsOnTop: boolean read FFloatingWindowsOnTop write SetFloatingWindowsOnTop default false;
@@ -1633,7 +1633,7 @@ begin
   DockSitesCanBeMinimized          := Config.GetValue('DockSitesCanBeMinimized',False);
   FlatHeadersButtons               := Config.GetValue('FlatHeadersButtons',False);
   DragTreshold                     := Config.GetValue('DragThreshold',4);
-  DragDelay                        := Config.GetValue('DragDelay',500);
+  DragDelay                        := Config.GetValue('DragDelay',0);
   FloatingWindowsOnTop             := Config.GetValue('FloatingWindowsOnTop',false);
   HeaderAlignLeft                  := Config.GetValue('HeaderAlignLeft',120);
   HeaderAlignTop                   := Config.GetValue('HeaderAlignTop',80);
@@ -1662,7 +1662,7 @@ begin
   Config.SetDeleteValue(Path+'DockSitesCanBeMinimized',DockSitesCanBeMinimized,False);
   Config.SetDeleteValue(Path+'FlatHeadersButtons',FlatHeadersButtons,False);
   Config.SetDeleteValue(Path+'DragThreshold',DragTreshold,4);
-  Config.SetDeleteValue(Path+'DragDelay',DragDelay,500);
+  Config.SetDeleteValue(Path+'DragDelay',DragDelay,0);
   Config.SetDeleteValue(Path+'FloatingWindowsOnTop',FloatingWindowsOnTop,false);
   Config.SetDeleteValue(Path+'HeaderAlignLeft',HeaderAlignLeft,120);
   Config.SetDeleteValue(Path+'HeaderAlignTop',HeaderAlignTop,80);
@@ -1691,7 +1691,7 @@ begin
   Config.SetDeleteValue('DockSitesCanBeMinimized',DockSitesCanBeMinimized,False);
   Config.SetDeleteValue('FlatHeadersButtons',FlatHeadersButtons,False);
   Config.SetDeleteValue('DragThreshold',DragTreshold,4);
-  Config.SetDeleteValue('DragDelay',DragDelay,500);
+  Config.SetDeleteValue('DragDelay',DragDelay,0);
   Config.SetDeleteValue('FloatingWindowsOnTop',FloatingWindowsOnTop,false);
   Config.SetDeleteValue('HeaderAlignLeft',HeaderAlignLeft,120);
   Config.SetDeleteValue('HeaderAlignTop',HeaderAlignTop,80);
@@ -1751,7 +1751,7 @@ begin
   DockSitesCanBeMinimized          := Config.GetValue(Path+'DockSitesCanBeMinimized',false);
   FlatHeadersButtons               := Config.GetValue(Path+'FlatHeadersButtons',false);
   DragTreshold                     := Config.GetValue(Path+'DragThreshold',4);
-  DragDelay                        := Config.GetValue(Path+'DragDelay',500);
+  DragDelay                        := Config.GetValue(Path+'DragDelay',0);
   FloatingWindowsOnTop             := Config.GetValue(Path+'FloatingWindowsOnTop',false);  ;
   HeaderAlignLeft                  := Config.GetValue(Path+'HeaderAlignLeft',120);
   HeaderAlignTop                   := Config.GetValue(Path+'HeaderAlignTop',80);
@@ -3309,7 +3309,7 @@ begin
   FControls:=TFPList.Create;
   FAllowDragging:=true;
   FDragTreshold:=4;
-  FDragDelay:=500;
+  FDragDelay:=0;
   FDockOutsideMargin:=10;
   FDockParentMargin:=10;
   FFloatingWindowsOnTop:=false;
