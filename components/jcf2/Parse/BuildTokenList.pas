@@ -58,6 +58,7 @@ type
     { woker procs }
     fiCurrentIndex: integer;
 
+    function LookAheadIndexFor(pcUpCaseText: string): integer;
     procedure SetSourceCode(const Value: String);
 
     function Current: Char;
@@ -621,7 +622,8 @@ begin
 end;
 
 function TBuildTokenList.TryWord(const pcToken: TSourceToken): boolean;
-
+var
+  liStart: integer;
 begin
   Result := False;
 
@@ -661,33 +663,57 @@ begin
     pcToken.TokenType := ttIdentifier
   else if pcToken.TokenType = ttNot then    // maybe "not in" delphi 13+ operator
   begin
-    if ForwardChar(0) = ' ' then  //I guess it only allow ONE space in between. ???
+    liStart := LookAheadIndexFor('IN');
+    if liStart > 0 then
     begin
-      if (UpCase(ForwardChar(1)) = 'I') and
-         (UpCase(ForwardChar(2)) = 'N') and
-         (not (CharIsWordChar(ForwardChar(3)) or CharIsDigit(ForwardChar(3)))) then
-      begin
-        pcToken.TokenType := ttIn;
-        pcToken.SourceCode := pcToken.SourceCode + ForwardChars(0,3);
-        Consume(3);
-      end;
+      pcToken.TokenType := ttIn;         //2 = length('IN')
+      pcToken.SourceCode := pcToken.SourceCode + ' ' + ForwardChars(liStart, 2);
+      Consume(liStart + 2);
     end;
   end
   else if pcToken.TokenType = ttIs then     // maybe "is not" delphi 13+ operator
   begin
-    if ForwardChar(0) = ' ' then  //I guess it only allow ONE space in between. ???
+    liStart := LookAheadIndexFor('NOT');
+    if liStart > 0 then
+    begin                            //3 = length('NOT')
+      pcToken.SourceCode := pcToken.SourceCode + ' ' + ForwardChars(liStart, 3);
+      Consume(liStart + 3);
+    end;
+  end
+  else if pcToken.TokenType = ttType then     // maybe "type of"
+  begin
+    liStart := LookAheadIndexFor('OF');
+    if liStart > 0 then
     begin
-      if (UpCase(ForwardChar(1)) = 'N') and
-         (UpCase(ForwardChar(2)) = 'O') and
-         (UpCase(ForwardChar(3)) = 'T') and
-         (not (CharIsWordChar(ForwardChar(4)) or CharIsDigit(ForwardChar(4)))) then
-      begin
-        pcToken.SourceCode := pcToken.SourceCode + ForwardChars(0,4);
-        Consume(4);
-      end;
+      pcToken.TokenType := ttTypeOf;     //2 = length('OF')
+      pcToken.SourceCode := pcToken.SourceCode + ' ' + ForwardChars(liStart, 2);
+      Consume(liStart + 2);
     end;
   end;
   Result := True;
+end;
+
+function TBuildTokenList.LookAheadIndexFor(pcUpCaseText: string): integer;
+var
+  liStart: integer;
+  liLn, liIdx: integer;
+begin
+  liStart := 0;
+  while CharIsWhiteSpace(ForwardChar(liStart)) do
+    Inc(liStart);
+  liLn := Length(pcUpCaseText);
+  if (liStart = 0) or (liLn = 0) then
+    Exit(-1);
+  liIdx := 0;
+  while liIdx < liLn do
+  begin
+    if UpCase(ForwardChar(liStart + liIdx)) <> pcUpCaseText[liIdx + 1] then
+      Exit(-1);
+    Inc(liIdx);
+  end;
+  if CharIsWordChar(ForwardChar(liStart + liIdx)) or CharIsDigit(ForwardChar(liStart + liIdx)) then
+    Exit(-1);
+  Result := liStart;
 end;
 
 function TBuildTokenList.TryWhiteSpace(const pcToken: TSourceToken): boolean;

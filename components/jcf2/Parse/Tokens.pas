@@ -329,7 +329,8 @@ type
     // If, Then, Else, ... in expressions have different formatting rules.
     // to not waste token type slots (we are near the 256 limit) put all in one token type.
     // type assigned on parsing, changing ttIf, ttThen, ttElse, ... to ttMultiWordOperator.
-    ttMultiWordOperator    // ternary operator. if then else,...
+    ttMultiWordOperator,    // ternary operator. if then else,...
+    ttTypeOf
     );
 
   TTokenTypeSet = set of TTokenType;
@@ -1088,7 +1089,12 @@ begin
     begin
       Result  := 'Cond compilation removed';
       lbFound := True;
-    end
+    end;
+    ttTypeOf:
+    begin
+      Result  := 'type of';
+      lbFound := True;
+    end;
     else
     begin
       for liLoop := Low(mrKeywordTextMap) to High(mrKeywordTextMap) do

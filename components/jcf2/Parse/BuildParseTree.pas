@@ -1349,6 +1349,15 @@ begin
       // should be id
       while true do   //Unit1.Id1.id2
       begin
+        if lcToken.TokenType = ttTypeOf then
+        begin
+          inc(liTokenIndex);
+          if liTokenIndex >= fcTokenList.Count then
+            exit;
+          lcToken:=fcTokenList.SolidToken(liTokenIndex);
+          if lcToken = nil then
+            exit;
+        end;
         if (lcToken.WordType <> wtBuiltInType) and (not IsIdentifierToken(lcToken, idAny)) and (not (lcToken.TokenType in CONST_GENERIC_TOKENS)) then
           break;
         lcToken:=fcTokenList.SolidToken(liTokenIndex+1);
@@ -1357,6 +1366,8 @@ begin
         if lcToken.TokenType=ttDot then
         begin
           inc(liTokenIndex,2);
+          if liTokenIndex >= fcTokenList.Count then
+            exit;
           lcToken := fcTokenList.SolidToken(liTokenIndex);
           if lcToken = nil then
             exit;
@@ -1376,6 +1387,8 @@ begin
         break;
     end;
     inc(liTokenIndex);
+    if liTokenIndex >= fcTokenList.Count then
+      exit;
     lbMustBeCommaOrGreaterThan:=not lbMustBeCommaOrGreaterThan;
   end; // while
 end;
@@ -1397,6 +1410,8 @@ var
       Recognise(ttConst);
       lbHasConst := True;
     end;
+    if fcTokenList.FirstSolidTokenType = ttTypeOf then
+      Recognise(ttTypeOf);
     if lbHasConst = False then //can be a expresion like    h: specialize TNames<[Blaise,Pascal]>;
     begin
       lbisGenericType:=(fcTokenList.FirstSolidTokenType=ttIdentifier) and (fcTokenList.SolidTokenType(2)=ttLessThan); //is generic type
@@ -1841,6 +1856,8 @@ begin
         RecogniseProcedureType;
       ttVariant, ttOleVariant:
         RecogniseVariantType; {VariantTypes}
+      ttTypeOf:
+        RecogniseExpr(True)
       else
         CheckNilInstance(lc2, fcRoot.LastLeaf);
 
@@ -2874,6 +2891,7 @@ begin
   else if lc.TokenType = wPlus then
     Recognise(wPlus);
  }
+
   RecogniseTerm;
   while fcTokenList.FirstSolidTokenType in AddOperators do
   begin
@@ -3000,6 +3018,11 @@ begin
   begin
     Recognise(ttNot);
     RecogniseFactor;
+  end
+  else if lt = ttTypeOf then
+  begin
+    Recognise(ttTypeOf);
+    RecogniseExpr(True);
   end
   else if lt in PossiblyUnarySymbolOperators then
   begin
@@ -3486,6 +3509,8 @@ begin
 }
 
   lt := fcTokenList.FirstSolidTokenType;
+  if lt = ttTypeOf then
+    Recognise(ttTypeOf);
   if lt = ttOpenBracket then
   begin
     RecogniseBracketedStatement;
@@ -5819,6 +5844,8 @@ begin
   }
   else if lc.TokenType = ttOpenBracket then
     RecogniseEnumeratedType
+  else if lc.TokenType = ttTypeOf then
+    RecogniseExpr(True)
   else
   begin
     { type can be prefixed with a unit name, e.g. Classes.TList;
