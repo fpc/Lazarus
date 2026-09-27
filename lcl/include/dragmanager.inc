@@ -82,6 +82,7 @@ type
                     //not moved (taking into account FThresholdValue)
                     //=0 old mechanism based on FThresholdValue
     FDelayTimer: TCustomTimer;
+    procedure DelayExpired(Sender: TObject);
   protected
     //Support input capture
     procedure KeyUp(var Key: Word; Shift : TShiftState); override;
@@ -107,7 +108,6 @@ type
     procedure DragStop(ADropped: Boolean); override;
 
     function CanStartDragging(Site: TWinControl;  AThreshold: Integer; X,Y:Integer): boolean; override;
-    procedure DelayExpired(Sender: TObject);
 
     property StartPosition: TPoint read FStartPosition;
   end;
