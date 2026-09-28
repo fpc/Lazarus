@@ -3372,11 +3372,11 @@ begin
   if Result {and AutoSize} then begin
     DbgOut('TControl.AutoSizeDelayed Self='+DbgSName(Self)+' ');
     if FAutoSizingLockCount>0 then debugln('FAutoSizingLockCount=',dbgs(FAutoSizingLockCount))
-    else if csLoading in ComponentState then debugln('csLoading')
+    else if csLoading    in ComponentState then debugln('csLoading')
     else if csDestroying in ComponentState then debugln('csDestroying')
-    else if cfLoading in FControlFlags then debugln('cfLoading')
-    else if not IsControlVisible then debugln('not IsControlVisible')
-    else if AutoSizeDelayedHandle then debugln('AutoSizeDelayedHandle')
+    else if cfLoading    in FControlFlags  then debugln('cfLoading')
+    else if not IsControlVisible           then debugln('not IsControlVisible')
+    else if AutoSizeDelayedHandle          then debugln('AutoSizeDelayedHandle')
     else if ((Parent<>nil) and Parent.AutoSizeDelayed) then debugln('Parent.AutoSizeDelayed')
     else debugln('?');
   end;
@@ -3387,16 +3387,11 @@ function TControl.AutoSizeDelayedReport: string;
 begin
   if (FAutoSizingLockCount>0) then
     Result:='FAutoSizingLockCount='+dbgs(FAutoSizingLockCount)
-  else if csLoading in ComponentState then
-    Result:='csLoading'
-  else if csDestroying in ComponentState then
-    Result:='csDestroying'
-  else if cfLoading in FControlFlags then
-    Result:='cfLoading'
-  else if IsControlVisible then
-    Result:='not IsControlVisible'
-  else if AutoSizeDelayedHandle then
-    Result:='AutoSizeDelayedHandle'
+  else if csLoading    in ComponentState then Result:='csLoading'
+  else if csDestroying in ComponentState then Result:='csDestroying'
+  else if cfLoading    in FControlFlags  then Result:='cfLoading'
+  else if not IsControlVisible           then Result:='not IsControlVisible'
+  else if AutoSizeDelayedHandle          then Result:='AutoSizeDelayedHandle'
   else if Parent<>nil then
     Result:=Parent.AutoSizeDelayedReport
   else
