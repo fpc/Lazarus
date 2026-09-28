@@ -63,13 +63,9 @@ type
     // ToDo: when fpc 3.2.4 is released, replace with FPC_FULLVERSION>=30203
     {$DEFINE HasTFPGradientDirection}
   {$endif}
-  {$IF DECLARED(TRectangleMode)}
+  {$IF FPC_FULLVERSION>30300}
     {$DEFINE HasTRectangleMode}
-  {$ENDIF}
-  {$IF DECLARED(TFPTextMetric)}
     {$DEFINE HasTFPTextMetric}
-  {$ENDIF}
-  {$IF DECLARED(TFPTextStyle)}
     {$DEFINE HasTFPTextStyle}
   {$ENDIF}
 

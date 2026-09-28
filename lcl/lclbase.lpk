@@ -13,7 +13,10 @@
         <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Conditionals Value="if SrcOS&lt;>&apos;win&apos; then
-  UnitPath := &apos;nonwin32&apos;;"/>
+  UnitPath := &apos;nonwin32&apos;;
+
+if GetProjValue(&apos;FPC_FULLVERSION&apos;)>30300 then
+  CustomOptions+=&apos; -vm6060&apos;; // case statement does not handle all possible cases"/>
       <Other>
         <Verbosity>
           <ShowNotes Value="False"/>
