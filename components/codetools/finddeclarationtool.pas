@@ -2802,6 +2802,7 @@ begin
     MoveCursorToCleanPos(CleanCursorPos);
     GetIdentStartEndAtPosition(Src,CleanCursorPos,
                                CurPos.StartPos,CurPos.EndPos);
+
     IdentStartPos:=CurPos.StartPos;
     CursorAtIdentifier:=CurPos.StartPos<CurPos.EndPos;
     if CursorAtIdentifier then
