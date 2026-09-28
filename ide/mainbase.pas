@@ -1252,7 +1252,7 @@ begin
 
       CreateMenuSubSection(itmViewDebugWindows, itmViewDebugConsoleWindows, 'itmViewDebugConsoleWindows', lisMenuViewPseudoTerminal);
       if not HasConsoleSupport then
-        itmViewPseudoTerminal.Visible := False;
+        itmViewDebugConsoleWindows.Visible := False;
       mnuView.AddHandlerOnShow(@DoUpdateSubMenuViewDebugWindows);
     end;
     CreateMenuSubSection(ParentMI, itmViewIDEInternalsWindows, 'itmViewIDEInternalsWindows', lisMenuIDEInternals);
