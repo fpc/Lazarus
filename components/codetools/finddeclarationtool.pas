@@ -11089,10 +11089,15 @@ begin
     ReadPriorAtom;
     CurAtom:=CurPos;
     CurAtomType:=GetCurrentAtomType;
+    if (NextAtomType in [vatAS,vatSpecialize,vatINHERITED,vatKeyword])
+        and (CurAtomType <> vatPoint) then
+    begin
+      Result:=NextAtom.StartPos;
+      exit;
+    end;
     if CurAtomType=vatNone then begin
-      if AtomIs('>') and (NextAtomType = vatPoint)
-      and ReadBackGenericParamList(False)
-      then begin // y.specialize Foo<x>.
+      if AtomIs('>') and (NextAtomType = vatPoint) and ReadBackGenericParamList(False) then
+      begin // y.specialize Foo<x>.
         ReadPriorAtom;
         CurAtom:=CurPos; // generic type name "Foo"
         CurAtomType:=GetCurrentAtomType; // vatIdentifier
