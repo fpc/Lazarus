@@ -21,8 +21,8 @@ msgstr "分隔器的自由边不得锚定：节点=\"%s\" 类型=%s 锚点[%s]=\
 msgid "Allow dock sites to be minimized"
 msgstr "允许停靠的站点最小化"
 
-#: anchordockstr.adrsamountofmilisecondshastodragbeforedragstarts
-msgid "Amount of miliseconds when lbm pressed has to drag before drag starts"
+#: anchordockstr.adrsamountofmillisecondsbeforedragstarts
+msgid "Amount of milliseconds the left mouse button should be kept pressed before drag starts"
 msgstr ""
 
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
