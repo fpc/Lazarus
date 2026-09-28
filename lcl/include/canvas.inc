@@ -478,12 +478,12 @@ begin
   Result:=TextWidth(Text);
 end;
 
-{ The Do* hooks of TFPCustomCanvas receive rectangles with Right and Bottom
-  included; LCL drawing excludes them. }
-function HookRectToLCL(const ARect: TRect): TRect; inline;
+{ The Do* hooks of TFPCustomCanvas receive rectangles with Right and Bottom included;
+  LCL drawing excludes them. }
+function FPRectToLCL(const ARect: TRect): TRect; inline;
 begin
   Result := ARect;
-  {$IF DECLARED(TRectangleMode)}
+  {$IFDEF HasTRectangleMode}
   Inc(Result.Right);
   Inc(Result.Bottom);
   {$ENDIF}
@@ -491,17 +491,17 @@ end;
 
 procedure TCanvas.DoRectangle(const Bounds: TRect);
 begin
-  Frame(HookRectToLCL(Bounds));
+  Frame(FPRectToLCL(Bounds));
 end;
 
 procedure TCanvas.DoRectangleFill(const Bounds: TRect);
 begin
-  FillRect(HookRectToLCL(Bounds));
+  FillRect(FPRectToLCL(Bounds));
 end;
 
 procedure TCanvas.DoRectangleAndFill(const Bounds: TRect);
 begin
-  Rectangle(HookRectToLCL(Bounds));
+  Rectangle(FPRectToLCL(Bounds));
 end;
 
 procedure TCanvas.DoEllipse(const Bounds: TRect);
@@ -512,7 +512,7 @@ var
   y2: Integer;
   R: TRect;
 begin
-  R := HookRectToLCL(Bounds);
+  R := FPRectToLCL(Bounds);
   if R.Left < R.Right then
   begin
     x1 := R.Left;
@@ -536,7 +536,7 @@ end;
 
 procedure TCanvas.DoEllipseFill(const Bounds: TRect);
 begin
-  Ellipse(HookRectToLCL(Bounds));
+  Ellipse(FPRectToLCL(Bounds));
 end;
 
 procedure TCanvas.DoEllipseAndFill(const Bounds: TRect);
@@ -612,7 +612,7 @@ var
 Begin
   if SrcCanvas=nil then exit;
   if SrcCanvas is TCanvas then begin
-    R := HookRectToLCL(SourceRect);
+    R := FPRectToLCL(SourceRect);
     SW := R.Right - R.Left;
     SH := R.Bottom - R.Top;
     if (SH=0) or (SW=0) then exit;
@@ -665,8 +665,7 @@ begin
   Result := clDefault;
 end;
 
-{$IF DECLARED(TRectangleMode)}
-{ The clip box with Right and Bottom included, as TFPCustomCanvas uses it. }
+{$IFDEF HasTRectangleMode}
 function TCanvas.GetDeviceClipRect: TRect;
 begin
   Result := ClipRect;
@@ -675,8 +674,7 @@ begin
 end;
 {$ENDIF}
 
-{$IF DECLARED(TFPTextMetric)}
-{ The font metrics TFPCustomCanvas uses for TextOrigin. }
+{$IFDEF HasTFPTextMetric}
 function TCanvas.DoGetTextMetrics(out aMetrics: TFPTextMetric): Boolean;
 var
   TM: TLCLTextMetric;
@@ -692,13 +690,12 @@ begin
 end;
 {$ENDIF}
 
-{$IF DECLARED(TFPTextStyle)}
-{ The chord, rounded rectangle and flood fill hooks of TFPCustomCanvas, drawn by the widgetset. }
+{$IFDEF HasTFPTextStyle}
 procedure TCanvas.DoChord(const Bounds: TRect; aStart16, aLength16: Integer);
 var
   R: TRect;
 begin
-  R := HookRectToLCL(Bounds);
+  R := FPRectToLCL(Bounds);
   Chord(R.Left, R.Top, R.Right, R.Bottom, aStart16, aLength16);
 end;
 
@@ -706,7 +703,7 @@ procedure TCanvas.DoRoundRect(const Bounds: TRect; RX, RY: Integer);
 var
   R: TRect;
 begin
-  R := HookRectToLCL(Bounds);
+  R := FPRectToLCL(Bounds);
   RoundRect(R.Left, R.Top, R.Right, R.Bottom, RX, RY);
 end;
 
@@ -1581,7 +1578,7 @@ begin
   FSavedRegionHandle := 0;
   FCopyMode := cmSrcCopy;
   FAntialiasingMode := amDontCare;
-  {$IF DECLARED(TRectangleMode)}
+  {$IFDEF HasTRectangleMode}
   RectangleMode := rmExclude;
   {$ENDIF}
   // FLock will be initialized on demand, because most canvas don't use it

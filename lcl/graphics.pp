@@ -54,9 +54,24 @@ uses
   // LazUtils
   GraphType, GraphMath, FPCAdds, LazLoggerBase, LazTracer, LazUtilities;
 
+
 type
   PColor = System.UITypes.PColor;
   TColor = TGraphicsColor;
+
+  {$if declared(TFPGradientDirection)} // introduced in 3.2.3 and 3.2.4-after-RC1
+    // ToDo: when fpc 3.2.4 is released, replace with FPC_FULLVERSION>=30203
+    {$DEFINE HasTFPGradientDirection}
+  {$endif}
+  {$IF DECLARED(TRectangleMode)}
+    {$DEFINE HasTRectangleMode}
+  {$ENDIF}
+  {$IF DECLARED(TFPTextMetric)}
+    {$DEFINE HasTFPTextMetric}
+  {$ENDIF}
+  {$IF DECLARED(TFPTextStyle)}
+    {$DEFINE HasTFPTextStyle}
+  {$ENDIF}
 
   {$IF FPC_FULLVERSION>=30203}
   TFontPitch = System.UITypes.TFontPitch;
@@ -957,7 +972,7 @@ type
   EInvalidGraphic = class(EGraphicException);
   EInvalidGraphicOperation = class(EGraphicException);
 
-{$if declared(TFPGradientDirection)} // introduced in 3.2.3 and 3.2.4-after-RC1
+{$ifdef HasTFPGradientDirection}
 type
   TGradientDirection = FPCanvas.TFPGradientDirection;
 const
@@ -1061,13 +1076,13 @@ type
     procedure DoDraw(x, y: integer; const Image: TFPCustomImage); override;
     procedure CheckHelper(AHelper: TFPCanvasHelper); override;
     function GetDefaultColor(const ADefaultColorType: TDefaultColorType): TColor; virtual;
-    {$IF DECLARED(TRectangleMode)}
-    function GetDeviceClipRect: TRect; override;
+    {$IFDEF HasTRectangleMode}
+    function GetDeviceClipRect: TRect; override; // including Right,Bottom
     {$ENDIF}
-    {$IF DECLARED(TFPTextMetric)}
+    {$IFDEF HasTFPTextMetric}
     function DoGetTextMetrics(out aMetrics: TFPTextMetric): Boolean; override;
     {$ENDIF}
-    {$IF DECLARED(TFPTextStyle)}
+    {$IFDEF HasTFPTextStyle}
     procedure DoChord(const Bounds: TRect; aStart16, aLength16: Integer); override;
     procedure DoRoundRect(const Bounds: TRect; RX, RY: Integer); override;
     procedure DoFloodFillStyle(x, y: Integer; const FillColor: TFPColor; FillStyle: TFPFloodFillStyle); override;
@@ -1110,7 +1125,7 @@ type
     // extra drawing methods (there are more in the ancestor TFPCustomCanvas)
     procedure Arc(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
-    procedure ArcTo(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); {$IF DECLARED(TFPTextStyle)}override{$ELSE}virtual{$ENDIF}; //As Arc(), but updates pen position
+    procedure ArcTo(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); {$IFDEF HasTFPTextStyle}override{$ELSE}virtual{$ENDIF}; //As Arc(), but updates pen position
     procedure AngleArc(X, Y: Integer; Radius: Longword; StartAngle, SweepAngle: Single);
     procedure BrushCopy(ADestRect: TRect; ABitmap: TBitmap; ASourceRect: TRect;
                         ATransparentColor: TColor); virtual;
@@ -1120,7 +1135,7 @@ type
     procedure CopyRect(const Dest: TRect; SrcCanvas: TCanvas;
                        const Source: TRect); virtual; reintroduce;
     procedure Draw(X,Y: Integer; SrcGraphic: TGraphic); virtual; reintroduce;
-    procedure DrawFocusRect(const ARect: TRect); {$IF DECLARED(TFPTextStyle)}override{$ELSE}virtual{$ENDIF};
+    procedure DrawFocusRect(const ARect: TRect); {$IFDEF HasTFPTextStyle}override{$ELSE}virtual{$ENDIF};
     procedure StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic); virtual; reintroduce;
     procedure Ellipse(const ARect: TRect); {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure Ellipse(x1, y1, x2, y2: Integer); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
@@ -1132,16 +1147,16 @@ type
                       const Style: TGraphicsBevelCut); virtual;
     procedure Frame3D(var ARect: TRect; TopColor, BottomColor: TColor;
                       const FrameWidth: integer); overload;
-    procedure Frame(const ARect: TRect); {$IF DECLARED(TFPTextStyle)}override{$ELSE}virtual{$ENDIF}; // border using pen
+    procedure Frame(const ARect: TRect); {$IFDEF HasTFPTextStyle}override{$ELSE}virtual{$ENDIF}; // border using pen
     procedure Frame(X1,Y1,X2,Y2: Integer);     // border using pen
-    procedure FrameRect(const ARect: TRect); {$IF DECLARED(TFPTextStyle)}override{$ELSE}virtual{$ENDIF}; // border using brush
+    procedure FrameRect(const ARect: TRect); {$IFDEF HasTFPTextStyle}override{$ELSE}virtual{$ENDIF}; // border using brush
     procedure FrameRect(X1,Y1,X2,Y2: Integer); // border using brush
     function  GetTextMetrics(out TM: TLCLTextMetric): boolean; virtual;
     procedure GradientFill(ARect: TRect; AStart, AStop: TColor; ADirection: TGradientDirection); {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure RadialPie(x1, y1, x2, y2,
                         StartAngle16Deg, Angle16DegLength: Integer); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure Pie(EllipseX1,EllipseY1,EllipseX2,EllipseY2,
-                  StartX,StartY,EndX,EndY: Integer); {$IF DECLARED(TFPTextStyle)}override{$ELSE}virtual{$ENDIF};
+                  StartX,StartY,EndX,EndY: Integer); {$IFDEF HasTFPTextStyle}override{$ELSE}virtual{$ENDIF};
     procedure PolyBezier(Points: PPoint; NumPts: Integer;
                          Filled: boolean = False;
                          Continuous: boolean = True); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
@@ -1153,16 +1168,16 @@ type
                       StartIndex: Integer = 0;
                       NumPts: Integer = -1);
     procedure Polygon(Points: PPoint; NumPts: Integer;
-                      Winding: boolean = False); {$IF DECLARED(TFPTextStyle)}override{$ELSE}virtual{$ENDIF};
+                      Winding: boolean = False); {$IFDEF HasTFPTextStyle}override{$ELSE}virtual{$ENDIF};
     procedure Polygon(const Points: array of TPoint); {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure Polyline(const Points: array of TPoint;
                        StartIndex: Integer;
                        NumPts: Integer = -1);
-    procedure Polyline(Points: PPoint; NumPts: Integer); {$IF DECLARED(TFPTextStyle)}override{$ELSE}virtual{$ENDIF};
+    procedure Polyline(Points: PPoint; NumPts: Integer); {$IFDEF HasTFPTextStyle}override{$ELSE}virtual{$ENDIF};
     procedure Polyline(const Points: array of TPoint); {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure Rectangle(X1,Y1,X2,Y2: Integer); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure Rectangle(const ARect: TRect); {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
-    procedure RoundRect(X1, Y1, X2, Y2: Integer; RX,RY: Integer); {$IF DECLARED(TFPTextStyle)}override{$ELSE}virtual{$ENDIF};
+    procedure RoundRect(X1, Y1, X2, Y2: Integer; RX,RY: Integer); {$IFDEF HasTFPTextStyle}override{$ELSE}virtual{$ENDIF};
     procedure RoundRect(const Rect: TRect; RX,RY: Integer);
     procedure TextOut(X,Y: Integer; const Text: String); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure TextRect(const ARect: TRect; X, Y: integer; const Text: string);
@@ -1171,7 +1186,7 @@ type
     function TextExtent(const Text: string): TSize; virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     function TextHeight(const Text: string): Integer; virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     function TextWidth(const Text: string): Integer; virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
-    function TextFitInfo(const Text: string; MaxWidth: Integer): Integer; {$IF DECLARED(TFPTextStyle)}override{$ELSE}virtual{$ENDIF};
+    function TextFitInfo(const Text: string; MaxWidth: Integer): Integer; {$IFDEF HasTFPTextStyle}override{$ELSE}virtual{$ENDIF};
     function HandleAllocated: boolean; virtual;
     function GetUpdatedHandle(ReqState: TCanvasState): HDC; virtual;
   public

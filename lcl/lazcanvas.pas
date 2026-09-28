@@ -47,6 +47,9 @@ uses
   ;
 
 type
+  {$IF DECLARED(TRectangleMode)}
+    {$DEFINE HasTRectangleMode}
+  {$ENDIF}
 
   TLazCanvasImageFormat = (
     clfOther,
@@ -269,7 +272,7 @@ var b : TRect;
 
 begin
   b := bounds;
-  {$IF NOT DECLARED(TRectangleMode)}
+  {$IFNDEF HasTRectangleMode}
   b.right := b.Right-1;
   b.bottom := b.bottom-1;
   {$ENDIF}
@@ -301,14 +304,15 @@ var
 begin
   b := Bounds;
   SortRect (b);
-  {$IF NOT DECLARED(TRectangleMode)}
+  {$IFNDEF HasTRectangleMode}
   dec(b.Right);
   dec(b.Bottom);
   {$ENDIF}
 
   // Optimize when filling everything
   if (b.Left = 0) and (b.Top = 0)
-     and (b.Right = Width{$IF DECLARED(TRectangleMode)}-1{$ENDIF}) and (b.Bottom = Height{$IF DECLARED(TRectangleMode)}-1{$ENDIF})
+     and (b.Right = Width{$IFDEF HasTRectangleMode}-1{$ENDIF})
+     and (b.Bottom = Height{$IFDEF HasTRectangleMode}-1{$ENDIF})
      and (Brush.Style = bsSolid) and (FWindowOrg.X = 0) and (FWindowOrg.Y = 0)
      and ((Clipping=False) {or cliprect=entire area}) then
   begin
@@ -537,8 +541,8 @@ procedure TLazCanvas.DoCopyRect(x, y: integer; canvas: TFPCustomCanvas;
   const SourceRect: TRect);
 begin
   CanvasCopyRect(canvas, X, Y, SourceRect.Left, SourceRect.Top,
-    SourceRect.right-SourceRect.Left{$IF DECLARED(TRectangleMode)}+1{$ENDIF},
-    SourceRect.Bottom-SourceRect.Top{$IF DECLARED(TRectangleMode)}+1{$ENDIF});
+    SourceRect.right-SourceRect.Left{$IFDEF HasTRectangleMode}+1{$ENDIF},
+    SourceRect.Bottom-SourceRect.Top{$IFDEF HasTRectangleMode}+1{$ENDIF});
 end;
 
 procedure TLazCanvas.DoDraw(x, y: integer; const AImage: TFPCustomImage);
@@ -549,7 +553,7 @@ end;
 constructor TLazCanvas.create(AnImage: TFPCustomImage);
 begin
   inherited Create(AnImage);
-  {$IF DECLARED(TRectangleMode)}
+  {$IFDEF HasTRectangleMode}
   RectangleMode := rmExclude;
   {$ENDIF}
   GraphicStateList := TFPList.Create;
@@ -623,7 +627,7 @@ begin
 
   Brush.FPColor := colWhite;
   Brush.Style := bsSolid;
-  {$IF DECLARED(TRectangleMode)}
+  {$IFDEF HasTRectangleMode}
   RectangleMode := rmExclude;
   {$ENDIF}
 end;
