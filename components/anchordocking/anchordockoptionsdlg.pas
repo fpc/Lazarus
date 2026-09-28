@@ -413,29 +413,34 @@ var
 begin
   DragThresholdTrackBar.Hint:=
     adrsAmountOfPixelTheMouseHasToDragBeforeDragStarts;
+  DragThresholdSpinEdit.Hint := DragThresholdTrackBar.Hint;
   DragThresholdTrackBar.Position:=TheSettings.DragTreshold;
   DragThresholdSpinEdit.Value:=TheSettings.DragTreshold;
   UpdateDragThresholdLabel;
 
   DragDelayTrackBar.Hint:=
     adrsAmountOfMillisecondsBeforeDragStarts;
+  DragDelaySpinEdit.Hint := DragDelayTrackBar.Hint;
   DragDelayTrackBar.Position:=TheSettings.DragDelay div 50;
   DragDelaySpinEdit.Value:=TheSettings.DragDelay;
   UpdateDragDelayLabel;
 
   HeaderAlignTopTrackBar.Hint:=
     adrsMoveHeaderToTopWhenWidthHeight100HeaderAlignTop;
+  HeaderAlignTopSpinEdit.Hint := HeaderAlignTopTrackBar.Hint;
   HeaderAlignTopTrackBar.Position:=TheSettings.HeaderAlignTop;
   HeaderAlignTopSpinEdit.Value:=TheSettings.HeaderAlignTop;
   UpdateHeaderAlignTopLabel;
 
   HeaderAlignLeftTrackBar.Hint:=
     adrsMoveHeaderToLeftWhenWidthHeight100HeaderAlignLeft;
+  HeaderAlignLeftSpinEdit.Hint := HeaderAlignLeftTrackBar.Hint;
   HeaderAlignLeftTrackBar.Position:=TheSettings.HeaderAlignLeft;
   HeaderAlignLeftSpinEdit.Value:=TheSettings.HeaderAlignLeft;
   UpdateHeaderAlignLeftLabel;
 
   SplitterWidthTrackBar.Hint:=adrsSplitterThickness;
+  SplitterWidthSpinEdit.Hint := SplitterWidthTrackBar.Hint;
   SplitterWidthTrackBar.Position:=TheSettings.SplitterWidth;
   SplitterWidthSpinEdit.Value:=TheSettings.SplitterWidth;
   UpdateSplitterWidthLabel;
