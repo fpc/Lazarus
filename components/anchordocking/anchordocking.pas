@@ -7122,7 +7122,12 @@ begin
           //if parent=DockMaster.FOverlappingForm.Panel then
             DockMaster.HideOverlappingForm(nil);
       if (Button=mbLeft) and (DockMaster.AllowDragging) and (DockMaster.FOverlappingForm=nil) then
-        DragManager.DragStart(Parent,false,DockMaster.DragTreshold,False,DockMaster.DragDelay);
+        begin
+          if DockMaster.DragDelay=0 then
+            DragManager.DragStart(Parent,false,DockMaster.DragTreshold)
+          else
+            DragManager.DragStartAfterDelay(Parent,DockMaster.DragTreshold,DockMaster.DragDelay);
+        end;
     end;
 end;
 
@@ -8430,7 +8435,10 @@ begin
     if (APage.ControlCount>0) and (APage.Controls[0] is TAnchorDockHostSite) then
     begin
       Site:=TAnchorDockHostSite(APage.Controls[0]);
-      DragManager.DragStart(Site,false,DockMaster.DragTreshold,False,DockMaster.DragDelay);
+      if DockMaster.DragDelay=0 then
+        DragManager.DragStart(Parent,false,DockMaster.DragTreshold)
+      else
+        DragManager.DragStartAfterDelay(Parent,DockMaster.DragTreshold,DockMaster.DragDelay);
     end;
   end;
   if (Button = mbRight) then

@@ -102,8 +102,8 @@ type
     procedure RegisterDockSite(Site: TWinControl; DoRegister: Boolean); override;
 
     //The Drag and Drop routines
-    procedure DragStart(AControl: TControl; AImmediate: Boolean; AThreshold: Integer;
-      StartFromCurrentMouse:Boolean=False; ADelay:Integer=0); override;
+    procedure DragStart(AControl: TControl; AImmediate: Boolean; AThreshold: Integer; StartFromCurrentMouse:Boolean=False); override;
+    procedure DragStartAfterDelay(AControl: TControl; AThreshold: Integer; ADelay:Integer); override;
     procedure DragMove(APosition: TPoint); override;
     procedure DragStop(ADropped: Boolean); override;
 
@@ -720,26 +720,12 @@ begin
   end;
 end;
 
-procedure TDragManagerDefault.DragStart(AControl: TControl; AImmediate: Boolean; AThreshold: Integer;
-  StartFromCurrentMouse:Boolean=False; ADelay:Integer=0);
+procedure TDragManagerDefault.DragStart(AControl: TControl; AImmediate: Boolean; AThreshold: Integer; StartFromCurrentMouse:Boolean=False);
 //Start a drag operation
 begin
   if FPerformer = nil then
   begin
-    FDelay := ADelay;
-    if (ADelay <> 0) and not AImmediate then
-    begin
-      FDelay := ADelay;
-      if FDelayTimer = nil then
-      begin
-        FDelayTimer := TCustomTimer.Create(nil);
-        FDelayTimer.OnTimer := @DelayExpired;
-      end;
-      FDelayTimer.Interval := ADelay;
-      FDelayTimer.Enabled := True;
-    end
-    else
-      FDelay := 0;
+    FDelay := 0;
     if AThreshold >= 0 then
       FThresholdValue := AThreshold
     else
@@ -761,6 +747,39 @@ begin
     begin
       FPerformer.DragStarted(FStartPosition);
       DragMove(FStartPosition);
+    end;
+  end;
+end;
+
+procedure TDragManagerDefault.DragStartAfterDelay(AControl: TControl; AThreshold: Integer; ADelay:Integer);
+begin
+  if FPerformer = nil then
+  begin
+    FDelay := ADelay;
+
+    if FDelayTimer = nil then
+    begin
+      FDelayTimer := TCustomTimer.Create(nil);
+      FDelayTimer.OnTimer := @DelayExpired;
+    end;
+
+    FDelayTimer.Interval := ADelay;
+    FDelayTimer.Enabled := True;
+
+    if AThreshold >= 0 then
+      FThresholdValue := AThreshold
+    else
+      FThresholdValue := DragThreshold;
+
+    FWaitForTreshold := true;
+
+    GetCursorPos(FStartPosition);
+
+    AControl.BeforeDragStart;
+
+    case AControl.DragKind of
+      dkDrag: FPerformer := TDragPerformer.Create(Self, AControl);
+      dkDock: FPerformer := TDockPerformer.Create(Self, AControl);
     end;
   end;
 end;
