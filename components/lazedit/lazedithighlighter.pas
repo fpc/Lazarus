@@ -232,6 +232,8 @@ type
     procedure InitForScanningLine; virtual;
     property  CurrentLineText: string read FLineText;
     property  LinePtr: Pchar read FLinePtr;
+
+    property FIsInNextToEOL: Boolean read F_IsInNextToEOL;  deprecated 'use IsInNextToEOL / to be removed in 5.99';
     property IsInNextToEOL: Boolean read F_IsInNextToEOL write F_IsInNextToEOL;
 
   protected
@@ -399,6 +401,7 @@ type
      * Scan               *
      * ------------------ *)
     function UpdateRangeInfoAtEOL: Boolean; virtual; // Returns true if range changed
+    function UpdateRangeInfoAtLine(Index: Integer): Boolean; virtual; deprecated 'use UpdateRangeInfoAtEOL / to be removed in 5.99';
     // DoPrepareLines: Result := LastScannedLine + 1 // aka next line to be scanned
     function DoPrepareLines(AFirstLineIdx: IntIdx; AMinimumRequiredLineIdx: IntIdx = -1; AMaxTime: integer = 0): integer; virtual;
   public
@@ -1024,6 +1027,16 @@ begin
   Result := NewRange <> CurrentRanges[LineIndex];
   if Result then
     CurrentRanges[LineIndex] := NewRange;
+end;
+
+function TLazEditCustomRangesHighlighter.UpdateRangeInfoAtLine(Index: Integer): Boolean;
+var
+  i: TLineIdx;
+begin
+  i := FLineIndex;
+  FLineIndex := Index;
+  Result := UpdateRangeInfoAtEOL;
+  FLineIndex := i;
 end;
 
 function TLazEditCustomRangesHighlighter.DoPrepareLines(AFirstLineIdx: IntIdx;

@@ -135,7 +135,7 @@ type
     FRightEdgeColor: TColor;
 
     FTextBounds: TRect;
-    FPadding: array [TLazTextAttrBorderSide] of Integer;
+    FPadding: array [TLazSynBorderSide] of Integer;
     FExtraCharSpacing: integer;
     FExtraLineSpacing, FCurrentExtraLineSpacing: integer;
     FVisibleSpecialChars: TSynVisibleSpecialChars;
@@ -146,11 +146,11 @@ type
     FLeftChar: Integer;
 
     function GetExtraCharSpacing: integer;
-    function GetPadding(Side: TLazTextAttrBorderSide): integer;
+    function GetPadding(Side: TLazSynBorderSide): integer;
     procedure SetExtraCharSpacing(AValue: integer);
     procedure SetExtraLineSpacing(AValue: integer);
     procedure SetLeftChar(AValue: Integer);
-    procedure SetPadding(Side: TLazTextAttrBorderSide; AValue: integer);
+    procedure SetPadding(Side: TLazSynBorderSide; AValue: integer);
     procedure SetViewedTopLine(AValue: TLinePos);
     procedure DoDrawerFontChanged(Sender: TObject; Changes: TSynStatusChanges);
   protected
@@ -174,7 +174,7 @@ type
     procedure RemoveTextSizeChangeHandler(AHandler: TNotifyEvent);
 
     // Settings controlled by SynEdit
-    property Padding[Side: TLazTextAttrBorderSide]: integer read GetPadding write SetPadding;
+    property Padding[Side: TLazSynBorderSide]: integer read GetPadding write SetPadding;
     property ForegroundColor: TColor read FForegroundColor write FForegroundColor;
     property BackgroundColor: TColor read FBackgroundColor write FBackgroundColor;
     property ExtraCharSpacing: integer read GetExtraCharSpacing write SetExtraCharSpacing;
@@ -185,6 +185,7 @@ type
     property RightEdgeColor: TColor    read FRightEdgeColor write FRightEdgeColor;
 
     property TopViewedLine: TLinePos read FViewedTopLine write SetViewedTopLine;
+    property TopLine: TLinePos read FViewedTopLine write SetViewedTopLine; deprecated 'Renamed to TopViewedLine - To be removed in 5.99';
     property LeftChar: Integer read FLeftChar write SetLeftChar;
 
     property TheLinesView:  TSynEditStrings       read FTheLinesView  write FTheLinesView;
@@ -237,7 +238,7 @@ type
     procedure SetExtraCharSpacing(AValue: integer); virtual;
     procedure SetExtraLineSpacing(AValue: integer); virtual;
     procedure SetForegroundColor(AValue: TColor); virtual;
-    procedure SetPadding(Side: TLazTextAttrBorderSide; AValue: integer); virtual;
+    procedure SetPadding(Side: TLazSynBorderSide; AValue: integer); virtual;
     procedure SetRightEdgeColor(AValue: TColor); virtual;
     procedure SetRightEdgeColumn(AValue: integer); virtual;
     procedure SetRightEdgeVisible(AValue: boolean); virtual;
@@ -259,7 +260,7 @@ type
     property RightGutterWidth: integer read FRightGutterWidth write SetRightGutterWidth;
   public
     // Settings forwarded to textarea
-    property Padding[Side: TLazTextAttrBorderSide]: integer write SetPadding;
+    property Padding[Side: TLazSynBorderSide]: integer write SetPadding;
     property ForegroundColor: TColor   write SetForegroundColor;
     property BackgroundColor: TColor   write SetBackgroundColor;
     property ExtraCharSpacing: integer write SetExtraCharSpacing;
@@ -1187,7 +1188,7 @@ begin
   BoundsChanged;
 end;
 
-procedure TLazSynSurfaceManager.SetPadding(Side: TLazTextAttrBorderSide; AValue: integer);
+procedure TLazSynSurfaceManager.SetPadding(Side: TLazSynBorderSide; AValue: integer);
 begin
   FTextArea.Padding[Side] := AValue;
 end;
@@ -1361,7 +1362,7 @@ end;
 
 { TLazSynTextArea }
 
-function TLazSynTextArea.GetPadding(Side: TLazTextAttrBorderSide): integer;
+function TLazSynTextArea.GetPadding(Side: TLazSynBorderSide): integer;
 begin
   Result := FPadding[Side];
 end;
@@ -1393,7 +1394,7 @@ begin
   FLeftChar := AValue;
 end;
 
-procedure TLazSynTextArea.SetPadding(Side: TLazTextAttrBorderSide; AValue: integer);
+procedure TLazSynTextArea.SetPadding(Side: TLazSynBorderSide; AValue: integer);
 begin
   FPadding[Side] := AValue;
   case Side of
@@ -1462,7 +1463,7 @@ end;
 
 constructor TLazSynTextArea.Create(AOwner: TSynEditBase; ATextDrawer: TLazEditTextGridPainter);
 var
-  i: TLazTextAttrBorderSide;
+  i: TLazSynBorderSide;
 begin
   inherited Create(AOwner);
   FTextSizeChangeList := TMethodList.Create;
@@ -1472,7 +1473,7 @@ begin
   Owner.RegisterStatusChangedHandler(@DoDrawerFontChanged, [scFontOrStyleChanged]);
   FPaintLineColor := TSynSelectedColor.Create;
   FPaintLineColor2 := TSynSelectedColor.Create;
-  for i := low(TLazTextAttrBorderSide) to high(TLazTextAttrBorderSide) do
+  for i := low(TLazSynBorderSide) to high(TLazSynBorderSide) do
     FPadding[i] := 0;
   FViewedTopLine := 1;
   FLeftChar := 1;
@@ -1494,7 +1495,7 @@ end;
 
 procedure TLazSynTextArea.Assign(Src: TLazSynSurface);
 var
-  i: TLazTextAttrBorderSide;
+  i: TLazSynBorderSide;
 begin
   inherited Assign(Src);
 
@@ -1514,7 +1515,7 @@ begin
   FRightEdgeColumn := TLazSynTextArea(Src).FRightEdgeColumn;
   FRightEdgeVisible := TLazSynTextArea(Src).FRightEdgeVisible;
 
-  for i := low(TLazTextAttrBorderSide) to high(TLazTextAttrBorderSide) do
+  for i := low(TLazSynBorderSide) to high(TLazSynBorderSide) do
     FPadding[i] := TLazSynTextArea(Src).FPadding[i];
 
   FViewedTopLine := TLazSynTextArea(Src).FViewedTopLine;
@@ -1683,7 +1684,7 @@ var
   procedure DrawHiLightMarkupToken(ATokenInfo: TLazSynDisplayTokenInfoEx);
   var
     HasFrame: Boolean;
-    s: TLazTextAttrBorderSide;
+    s: TLazSynBorderSide;
     Attr: TLazEditTextAttributeMergeResult;
     TxtFlags: Integer;
     tok: TRect;
@@ -1700,7 +1701,7 @@ var
     FTextDrawer.BackColor := cl;
     FTextDrawer.Style     := Attr.Style;
     HasFrame := False;
-    for s := low(TLazTextAttrBorderSide) to high(TLazTextAttrBorderSide) do begin
+    for s := low(TLazSynBorderSide) to high(TLazSynBorderSide) do begin
       HasFrame := HasFrame or
         ( (Attr.FrameSideColors[s] <> clNone) and (Attr.FrameSideColors[s] <> clDefault) );
       FTextDrawer.FrameColor[s] := Attr.FrameSideColors[s];

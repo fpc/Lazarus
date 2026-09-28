@@ -399,6 +399,7 @@ type
     property OldFullLogicalPos: TLogCaretPoint read GetOldFullLogicalPos;
     property OldViewedLineCharPos: TPoint read FOldViewedLineCharPos;
 
+    property AdjustToNextChar: Boolean read FAdjustToNextChar write FAdjustToNextChar; deprecated;
     property SkipTabs: Boolean read FSkipTabs write SetSkipTabs;
     property AllowPastEOL: Boolean read FAllowPastEOL write SetAllowPastEOL;
     property KeepCaretX: Boolean read FKeepCaretX write SetKeepCaretX;

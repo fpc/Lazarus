@@ -21,7 +21,7 @@ unit LazDebuggerTemplate;
 interface
 
 uses
-  Classes, SysUtils, fgl, LazDebuggerIntf, LazDebuggerIntfBaseTypes;
+  Classes, SysUtils, fgl, LazDebuggerIntf;
 
 type
 

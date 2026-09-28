@@ -308,6 +308,9 @@ const
   ecColumnBlockShiftLeft       = 655;  // Left Shift (Unindent) column selection and delete left side inside selectio
   ecColumnBlockMoveLeft        = 656;  // Left Shift (Unindent) column selection and overwrite text at start of it
 
+  ecGotFocus        = 700 deprecated 'Not used / To be removed in Lazarus 5.99';
+  ecLostFocus       = 701 deprecated 'Not used / To be removed in Lazarus 5.99';
+
   ecUserDefinedFirst  = 900;
   ecUserDefinedLast   = 999;
 

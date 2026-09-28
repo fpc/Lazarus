@@ -1009,6 +1009,10 @@ type
 
     property BlockBegin: TPoint read GetBlockBegin write SetBlockBegin;         // Set Blockbegin. For none persistent also sets Blockend. Setting Caret may undo this and should be done before setting block
     property BlockEnd: TPoint read GetBlockEnd write SetBlockEnd;
+    property SelStart: Integer read GetSelStart write SetSelStart;              // 1-based byte pos of first selected char
+      deprecated 'Use "BlockBegin" / SynMemo compatibility - very slow / SynEdit operates on x/y';
+    property SelEnd: Integer read GetSelEnd write SetSelEnd;                    // 1-based byte pos of first char after selction end
+      deprecated 'Use "BlockEnd" / SynMemo compatibility - very slow / SynEdit operates on x/y';
     property IsBackwardSel: Boolean read GetIsBackwardSel;
     property SelText: string read GetSelText write SetSelTextExternal;
 
@@ -1079,6 +1083,7 @@ type
     procedure CaretAtIdentOrString(XY: TPoint; out AtIdent, NearString: Boolean);
     procedure GetWordBoundsAtRowCol(const XY: TPoint; out StartX, EndX: integer); override;
     function GetWordAtRowCol(XY: TPoint): string; override;
+    function NextTokenPos: TPoint; virtual; deprecated; // use next word pos instead
     function NextWordPos: TPoint; virtual;
     function PrevWordPos: TPoint; virtual;
     function IdentChars: TSynIdentChars;
@@ -1112,10 +1117,12 @@ type
     // Pixel
     function ScreenColumnToXValue(Col: integer): integer;  // map screen column to screen pixel
     function ScreenXYToPixels(RowCol: TScreenPoint): TPoint; // converts screen position (1,1) based
-    function RowColumnToPixels(RowCol: TScreenPoint): TPoint;
-      deprecated 'use ScreenXYToPixels(TextXYToScreenXY(point))'; // Will be removed in 6.99
+    function RowColumnToPixels(RowCol: TScreenPoint): TPoint; deprecated 'use ScreenXYToPixels(TextXYToScreenXY(point))';
     function PixelsToRowColumn(Pixels: TPoint; aFlags: TSynCoordinateMappingFlags = [scmLimitToLines]): TPhysPoint;
     function PixelsToLogicalPos(const Pixels: TPoint): TLogPoint;
+    //
+    function ScreenRowToRow(ScreenRow: integer; LimitToLines: Boolean = True): integer; override; deprecated 'use ScreenXYToTextXY';
+    function RowToScreenRow(PhysicalRow: integer): integer; override; deprecated 'use TextXYToScreenXY';
     (* ScreenXY:
        First visible (scrolled in) screen line is 1
        First column is 1 => column does not take scrolling into account
@@ -1196,8 +1203,9 @@ type
                                         OnlyVisible: Boolean = False
                                        ): TLogTokenPos; override; // Returns Logical
     //code fold
-    procedure UnfoldAll; deprecated; // How to replace?
-    //procedure FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolean = False); deprecated;
+    procedure CodeFoldAction(iLine: integer); deprecated;
+    procedure UnfoldAll; deprecated;
+    procedure FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolean = False); deprecated;
     property FoldState: String read GetFoldState write SetFoldState;
 
     procedure AddKey(Command: TSynEditorCommand; Key1: word; SS1: TShiftState;
@@ -1211,7 +1219,7 @@ type
     property UseIncrementalColor : Boolean write SetUseIncrementalColor;
     property PaintLock: Integer read fPaintLock;
 
-    property UseUTF8: boolean read FUseUTF8; deprecated 'always true'; // Will be removed in 699
+    property UseUTF8: boolean read FUseUTF8; deprecated 'always true';
     procedure Invalidate; override;
     property ChangeStamp: int64 read GetChangeStamp;
     procedure ShareTextBufferFrom(AShareEditor: TCustomSynEdit);
@@ -1295,10 +1303,8 @@ type
     property OnProcessUserCommand: TProcessCommandEvent  read FOnProcessUserCommand write FOnProcessUserCommand;
     property OnCommandProcessed: TProcessCommandEvent read fOnCommandProcessed write fOnCommandProcessed;
     property OnReplaceText: TReplaceTextEvent read fOnReplaceText write fOnReplaceText;
-    property OnSpecialLineColors: TSpecialLineColorsEvent read FOnSpecialLineColors write SetSpecialLineColors;
-      deprecated; // Will be deleted in 6.99
-    property OnSpecialLineMarkup: TSpecialLineMarkupEvent read FOnSpecialLineMarkup write SetSpecialLineMarkup;
-      deprecated; // Will be deleted in 6.99
+    property OnSpecialLineColors: TSpecialLineColorsEvent read FOnSpecialLineColors write SetSpecialLineColors;  deprecated;
+    property OnSpecialLineMarkup: TSpecialLineMarkupEvent read FOnSpecialLineMarkup write SetSpecialLineMarkup; deprecated;
     property OnSpecialLineMarkupEx: TSpecialLineMarkupExEvent read GetOnSpecialLineMarkupEx write SetOnSpecialLineMarkupEx;
     property OnStatusChange: TStatusChangeEvent read fOnStatusChange write fOnStatusChange;
     property Font: TSynControlFont read GetFont write SetFont;
@@ -1419,7 +1425,7 @@ type
     property OnReplaceText;
     property OnShowHint;
     property OnSpecialLineColors; deprecated;
-    property OnSpecialLineMarkup; deprecated;
+    property OnSpecialLineMarkup;
     property OnStatusChange;
   end;
 
@@ -2194,6 +2200,28 @@ end;
 function TCustomSynEdit.PixelsToLogicalPos(const Pixels: TPoint): TLogPoint;
 begin
   Result:=PhysicalToLogicalPos(PixelsToRowColumn(Pixels));
+end;
+
+function TCustomSynEdit.ScreenRowToRow(ScreenRow: integer; LimitToLines: Boolean = True): integer;
+// ScreenRow is 0-base
+// result is 1-based
+begin
+  Result := ToPos(FTheLinesView.ViewToTextIndex(ToIdx(TopView + ScreenRow)));
+  if LimitToLines and (Result >= Lines.Count) then
+    Result := Lines.Count;
+//  DebugLn(['=== ScreenRow TO Row   In:',ScreenRow,'  out:',Result, ' topline=',TopLine, '  view topline=',FFoldedLinesView.TopLine]);
+end;
+
+function TCustomSynEdit.RowToScreenRow(PhysicalRow: integer): integer;
+// returns -1 for lines above visible screen (<TopLine)
+// 0 for the first line
+// 0 to LinesInWindow for visible lines (incl last partial visible line)
+// and returns LinesInWindow+1 for lines below visible screen
+begin
+  Result := ToPos(FTheLinesView.TextToViewIndex(ToIdx(PhysicalRow))) - TopView;
+  if Result < -1 then Result := -1;
+  if Result > LinesInWindow+1 then Result := LinesInWindow+1;
+//  DebugLn(['=== Row TO ScreenRow   In:',PhysicalRow,'  out:',Result]);
 end;
 
 function TCustomSynEdit.ScreenXYToTextXY(AScreenXY: TPhysScreenPoint;
@@ -4611,6 +4639,25 @@ begin
   end;
 end;
 
+procedure TCustomSynEdit.CodeFoldAction(iLine: integer);
+// iLine is 1 based as parameter
+var
+  ScrY: Integer;
+begin
+  if (iLine<=0) or (iLine>FTheLinesView.Count) then exit;
+  ScrY := ToIdx(TextXYToScreenXY(Point(1, iLine)).y);
+//DebugLn(['****** FoldAction at ',iLine,' scrline=',ScrY, ' type ', SynEditCodeFoldTypeNames[FFoldedLinesView.FoldType[ScrY]],  '  view topline=',FFoldedLinesView.TopLine  ]);
+  if FFoldedLinesView.FoldType[ScrY]
+     * [cfCollapsedFold, cfCollapsedHide] <> []
+  then
+    FFoldedLinesView.UnFoldAtTextIndex(iLine)
+  else
+  if FFoldedLinesView.FoldType[ScrY]
+     * [cfFoldStart] <> []
+  then
+    FFoldedLinesView.FoldAtTextIndex(iLine);
+end;
+
 function TCustomSynEdit.FindNextUnfoldedLine(iLine: integer; Down: boolean
   ): Integer;
 // iLine is 1 based
@@ -4644,13 +4691,13 @@ begin
   FFoldedLinesView.UnfoldAll;
   Invalidate;
 end;
-{
+
 procedure TCustomSynEdit.FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolean = False);
 begin
   FFoldedLinesView.FoldAll(StartLevel, IgnoreNested);
   Invalidate;
 end;
-}
+
 procedure TCustomSynEdit.StartPaintBuffer(const ClipRect: TRect);
 {$IFDEF EnableDoubleBuf}
 var
@@ -10479,6 +10526,74 @@ begin
   GetWordBoundsAtRowCol(XY, StartX, EndX);
   Line := FTheLinesView[XY.Y - 1];
   Result := Copy(Line, StartX, EndX - StartX);
+end;
+
+function TCustomSynEdit.NextTokenPos: TPoint;
+var
+  CX, CY, LineLen: integer;
+  Line: string;
+  CurIdentChars, WhiteChars: TSynIdentChars;
+  nTokenPos, nTokenLen: integer;
+  sToken: PChar;
+  LogCaret: TPoint;
+
+  procedure FindFirstNonWhiteSpaceCharInNextLine;
+  begin
+    if CY < FTheLinesView.Count then begin
+      Line := FTheLinesView[CY];
+      LineLen := Length(Line);
+      Inc(CY);
+      CX:=1;
+      while (CX<=LineLen) and (Line[CX] in WhiteChars) do inc(CX);
+      if CX>LineLen then CX:=1;
+    end;
+  end;
+
+begin
+  LogCaret:=LogicalCaretXY;
+  CX := LogCaret.X;
+  CY := LogCaret.Y;
+  // valid line?
+  if (CY >= 1) and (CY <= FTheLinesView.Count) then begin
+    Line := FTheLinesView[CY - 1];
+    LineLen := Length(Line);
+    WhiteChars := FWordBreaker.WhiteChars;
+    if CX > LineLen then begin
+      FindFirstNonWhiteSpaceCharInNextLine;
+    end else begin
+      if fHighlighter<>nil then begin
+        fHighlighter.CurrentLines := FTheLinesView;
+        fHighlighter.StartAtLineIndex(CY - 1);
+        while not fHighlighter.GetEol do begin
+          nTokenPos := fHighlighter.GetTokenPos; // zero-based
+          fHighlighter.GetTokenEx(sToken,nTokenLen);
+          if (CX>nTokenPos) and (CX<=nTokenPos+nTokenLen) then begin
+            CX:=nTokenPos+nTokenLen+1;
+            break;
+          end;
+          // Let the highlighter scan the next token.
+          fHighlighter.Next;
+        end;
+        if fHighlighter.GetEol then
+          FindFirstNonWhiteSpaceCharInNextLine;
+      end else begin
+        // no highlighter
+        CurIdentChars:=IdentChars;
+        // find first "whitespace" if next char is not a "whitespace"
+        if (Line[CX] in CurIdentChars) then begin
+          // in a word -> move to end of word
+          while (CX<=LineLen) and (Line[CX] in CurIdentChars) do inc(CX);
+        end;
+        if (Line[CX] in WhiteChars) then begin
+          // skip white space
+          while (CX<=LineLen) and (Line[CX] in WhiteChars) do inc(CX);
+        end;
+        // delete at least one char
+        if (CX=CaretX) then inc(CX);
+      end;
+    end;
+  end;
+  Result := LogicalToPhysicalPos(Point(CX, CY));
 end;
 
 function TCustomSynEdit.NextWordPos: TPoint;

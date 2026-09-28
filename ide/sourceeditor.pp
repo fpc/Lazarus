@@ -1065,6 +1065,7 @@ type
     function  SourceEditorCount: integer; override;
     function  UniqueSourceEditorCount: integer; override;
     // Settings
+    function  GetEditorControlSettings(EditControl: TControl): boolean; override;
     function GetHighlighterSettings(Highlighter: TLazEditCustomHighlighter
       ): boolean; override;
   private
@@ -4642,7 +4643,7 @@ begin
   if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
   FEditor.SetTextBetweenPoints(FEditor.BlockBegin, FEditor.BlockEnd,
-            TabsToSpaces(EditorComponent.SelText, EditorComponent.TabWidth, True),
+                               TabsToSpaces(EditorComponent.SelText, EditorComponent.TabWidth, FEditor.UseUTF8),
                                [setSelect], scamAdjust, smaKeep, smCurrent
                               );
 end;
@@ -10568,6 +10569,17 @@ begin
     SrcEdit := TSourceEditor(SourceEditors[i]);
     if (SrcEdit.SharedEditorCount = 0) or (SrcEdit.SharedEditors[0] = SrcEdit) then
       inc(Result);
+  end;
+end;
+
+function TSourceEditorManagerBase.GetEditorControlSettings(EditControl: TControl): boolean;
+begin
+  Result:=true;
+  if EditControl is TSynEdit then begin
+    EditorOpts.GetSynEditSettings(TSynEdit(EditControl));
+    Result:=true;
+  end else begin
+    Result:=false;
   end;
 end;
 

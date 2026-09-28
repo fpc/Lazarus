@@ -36,7 +36,7 @@ program FPDumpDwarf;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, Windows, SysUtils, maps, LazLogger, FpDbgPETypes, FpDbgDwarfConst, FpDbgSymbols,
+  Classes, Windows, SysUtils, maps, LazLogger, FpDbgPETypes, FpDbgDwarfConst,
   FpDbgLoader, FpDbgDwarf, FpDbgDwarfVerbosePrinter;
 
 var

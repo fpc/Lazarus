@@ -61,7 +61,9 @@ type
   TSynEditStringFlags = set of TSynEditStringFlag;
   PSynEditStringFlags = ^TSynEditStringFlags;
 
+  TStringListIndexEvent = procedure(Index: Integer) of object deprecated 'to be removed in 5.99';
   TSynOnBeforeDeleteLines = procedure(Sender: TObject; AnIndex, ACount: Integer) of object;
+
 
   TSynEditStringMemoryEntry = packed record
     Line: AnsiString;
@@ -124,7 +126,11 @@ type
     procedure SetRange(AnIndex: Pointer; AValue: TLazEditLineItems);
     procedure SetString(AnIndex: Integer; AValue: String);
   public
+    //procedure Insert(AnIndex, ACount: Integer); reintroduce; inline;
+    //procedure Delete(AnIndex, ACount: Integer); reintroduce; inline;
     // TODO: move => forward to rangelist
+    procedure InsertRows(AnIndex, ACount: Integer); // deprecated 'use insert / to be removed in 5.99'
+    procedure DeleteRows(AnIndex, ACount: Integer); // deprecated 'use delete / to be removed in 5.99'
     procedure SetLine(AnIndex: Integer; const AString: String; const AnObject: TObject; const AFlags: TSynEditStringFlags);
     function  GetPChar(ALineIndex: Integer; out ALen: Integer): PChar; // experimental
 
@@ -262,6 +268,7 @@ type
     procedure DetachSynEdit(AEdit: TSynEditBase);
     function  AttachedSynEditCount: Integer;
     property  AttachedSynEdits[Index: Integer]: TSynEditBase read GetAttachedSynEdits;
+    procedure CopyHanlders(OtherLines: TSynEditStringList; AOwner: TObject = nil); deprecated 'Use "CopyHandlers" / Will be removed in 4.99';
     procedure CopyHandlers(OtherLines: TSynEditStringList; AOwner: TObject = nil);
     procedure SendCachedNotify; // ToDO: review caching versus changes to topline and other values
   public
@@ -819,7 +826,7 @@ begin
   if Assigned(FOnBeforeDeleteLines) then
     FOnBeforeDeleteLines(PaintLockOwner, Index, 1);
   if FOwnObjects then FList.Objects[Index].Free;
-  FList.Delete(Index, 1);
+  FList.DeleteRows(Index, 1);
   IncreaseTextChangeStamp;
   fIndexOfLongestLine := -1;
   SendNotification(senrLineCount, self, Index, -1);
@@ -841,7 +848,7 @@ begin
       for i := Index to Index + NumLines - 1 do
         FList.Objects[i].Free;
     end;
-    FList.Delete(Index, NumLines);
+    FList.DeleteRows(Index, NumLines);
     IncreaseTextChangeStamp;
     SendNotification(senrLineCount, self, Index, -NumLines);
     EndUpdate;
@@ -1097,6 +1104,11 @@ begin
   Result := FAttachedSynEditList.Count;
 end;
 
+procedure TSynEditStringList.CopyHanlders(OtherLines: TSynEditStringList; AOwner: TObject);
+begin
+  CopyHandlers(OtherLines, AOwner);
+end;
+
 function TSynEditStringList.GetObject(Index: integer): TObject;
 begin
   if (Index >= 0) and (Index < Count) then
@@ -1142,7 +1154,7 @@ begin
   BeginUpdate;
   if Count = Capacity then
     Grow;
-  FList.Insert(Index, 1);
+  FList.InsertRows(Index, 1);
   IncreaseTextChangeStamp;
   fIndexOfLongestLine := -1;                                                    //mh 2000-10-19
   FList.SetLine(Index, S, nil, []);
@@ -1160,7 +1172,7 @@ begin
     try
       if Capacity<Count + NumLines then
         SetCapacity(Count + NumLines);
-      FList.Insert(Index, NumLines);
+      FList.InsertRows(Index, NumLines);
       IncreaseTextChangeStamp;
       SendNotification(senrLineCount, self, Index, NumLines);
     finally
@@ -1860,6 +1872,16 @@ procedure TSynEditStringMemory.SetString(AnIndex: Integer; AValue: String);
 begin
   PSynEditStringMemoryEntry(ItemPointer[AnIndex])^.Line := AValue;
   CallLineTextChanged(AnIndex, 1);
+end;
+
+procedure TSynEditStringMemory.InsertRows(AnIndex, ACount: Integer);
+begin
+  inherited Insert(AnIndex, ACount);
+end;
+
+procedure TSynEditStringMemory.DeleteRows(AnIndex, ACount: Integer);
+begin
+  inherited Delete(AnIndex, ACount);
 end;
 
 procedure TSynEditStringMemory.SetLine(AnIndex: Integer; const AString: String;

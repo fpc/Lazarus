@@ -9,7 +9,7 @@ uses
   DbgIntfBaseTypes, DbgIntfDebuggerBase, TestBase, FpGdbmiDebugger, LCLProc,
   IdeDebuggerBase, TestWatchUtils, GDBMIDebugger, FpErrorMessages,
   TestDbgControl, TestDbgConfig, TTestDbgExecuteables, TestDbgTestSuites,
-  LazDebuggerIntf, LazDebuggerIntfBaseTypes;
+  LazDebuggerIntf, LazDebuggerIntfBaseTypes, LazLoggerBase;
 
 const
   BREAK_COUNT_TestWatchesUnitSimple = 17;
@@ -183,7 +183,7 @@ begin
   OtherList := PWatchExpectationArray(AWatchExp^.UserData2);
   OtherWatchExp := OtherList^[PtrUInt(AWatchExp^.UserData)];
   if OtherWatchExp.TheWatch = nil then begin
-    debugln(['SKIPPING watch update']);
+    DebugLn(['SKIPPING watch update']);
     exit;
   end;
   s := OtherWatchExp.TheWatch.Values[1,0].Value;

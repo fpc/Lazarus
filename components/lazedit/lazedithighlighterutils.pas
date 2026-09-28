@@ -47,6 +47,9 @@ type
     constructor Create; virtual;
     destructor Destroy; override;
     function GetEqual(ARange: TLazHighlighterRange): TLazHighlighterRange; virtual; abstract;
+
+    procedure Allocate; deprecated 'use AddReference // will be removed in 5.99';
+    procedure Release; deprecated 'use ReleaseReference // will be removed in 5.99';
   end;
   TLazHighlighterRangesClass = class of TLazHighlighterRanges;
 
@@ -117,7 +120,15 @@ type
     property FirstInvalidLine: IntIdx read FFirstInvalidLine;
     property LastInvalidLine: IntIdx read FLastInvalidLine;
     property UnsentValidationStartLine: IntIdx read FUnsentValidationStartLine;
+
     property Range[AnIndex: Integer]: Pointer read GetRange write SetRange; default;
+  public
+    procedure ClearReScanNeeded;  deprecated 'Use ValidateAll / To be removed in 5.99';
+    procedure AdjustReScanStart(ANewStart: Integer);  deprecated 'Use UpdateFirstInvalidLine / To be removed in 5.99';
+
+    property NeedsReScanStartIndex: Integer read FFirstInvalidLine; deprecated 'Use FirstInvalidLine / To be removed in 5.99';
+    property NeedsReScanEndIndex: Integer read FLastInvalidLine; deprecated 'Use LastInvalidLine / To be removed in 5.99';
+    property NeedsReScanRealStartIndex: Integer read FUnsentValidationStartLine; deprecated 'Use UnsentValidationStartLine / To be removed in 5.99';
   end;
 
   { TGenLazHighlighterLineRangeShiftList
@@ -298,6 +309,16 @@ begin
       FreeAndNil(LazHighlighterRangesList);
   end;
   inherited Destroy;
+end;
+
+procedure TLazHighlighterRanges.Allocate;
+begin
+  AddReference;
+end;
+
+procedure TLazHighlighterRanges.Release;
+begin
+  ReleaseReference;
 end;
 
 { TLazHighlighterRangeForDictionary }
@@ -481,6 +502,16 @@ end;
 procedure TLazHighlighterLineRangeList.DecRefCount;
 begin
   dec(FRefCount);
+end;
+
+procedure TLazHighlighterLineRangeList.ClearReScanNeeded;
+begin
+  ValidateAll;
+end;
+
+procedure TLazHighlighterLineRangeList.AdjustReScanStart(ANewStart: Integer);
+begin
+  UpdateFirstInvalidLine(ANewStart);
 end;
 
 { TGenInitLazHighlighterLineRangeShiftList }

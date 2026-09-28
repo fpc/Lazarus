@@ -582,7 +582,7 @@ type
 
   { TDBGType }
 
-  TDBGType = class(TObject)
+  TDBGType = class(TDBGTypeBase)
   private
     function GetFields: TDBGFields;
   protected

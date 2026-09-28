@@ -64,8 +64,7 @@ type
 
     property ColorTillEol: boolean read FColorTillEol write SetColorTillEol;
     property UseIncrementalColor : Boolean read FUseIncrementalColor write SetUseIncrementalColor;
-    property MarkupInfoSeletion : TLazEditHighlighterAttributesModifier_Eol read FMarkupInfoSelection;
-      deprecated 'use MarkupInfoSelection'; // Will be removed in 6.99
+    property MarkupInfoSeletion : TLazEditHighlighterAttributesModifier_Eol read FMarkupInfoSelection; deprecated 'use MarkupInfoSelection';
     property MarkupInfoSelection : TLazEditHighlighterAttributesModifier_Eol read FMarkupInfoSelection;
     property MarkupInfoIncr : TLazEditHighlighterAttributesModifier_Eol read FMarkupInfoIncr;
   end;

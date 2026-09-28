@@ -103,16 +103,16 @@ type
     FOnChange: TNotifyEvent;
     FOnChanged: TNotifyEvent;
     FPriority: Integer;
-    FStyle: TLazTextAttrLineStyle;
+    FStyle: TSynLineStyle;
     procedure SetAlpha(AValue: Byte);
     procedure SetColor(AValue: TColor);
     procedure SetPriority(AValue: Integer);
-    procedure SetStyle(AValue: TLazTextAttrLineStyle);
+    procedure SetStyle(AValue: TSynLineStyle);
     procedure Changed;
   public
     constructor Create;
     property Color: TColor read FColor write SetColor; // clDefault will take Color[].Frame or Color[].Foreground
-    property Style: TLazTextAttrLineStyle read FStyle write SetStyle;
+    property Style: TSynLineStyle read FStyle write SetStyle;
     property Alpha: Byte read FAlpha write SetAlpha;
     property Priority: Integer read FPriority write SetPriority;
     property OnChange: TNotifyEvent read FOnChanged write FOnChanged;
@@ -227,7 +227,7 @@ begin
   Changed;
 end;
 
-procedure TMarkupFoldColorsLineColor.SetStyle(AValue: TLazTextAttrLineStyle);
+procedure TMarkupFoldColorsLineColor.SetStyle(AValue: TSynLineStyle);
 begin
   if FStyle = AValue then Exit;
   FStyle := AValue;

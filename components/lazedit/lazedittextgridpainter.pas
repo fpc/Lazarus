@@ -176,7 +176,7 @@ type
     procedure DrawFrame(const ARect: TRect);
 
     procedure ExtTextOut(X, Y: Integer; AnOptions: UINT; const ARect: TRect;
-      AText: PChar; ALength: Integer); deprecated; // Will be removed in 6.99
+      AText: PChar; ALength: Integer); deprecated;
     procedure NewTextOut(X, Y: Integer; AnOptions: UINT; const ARect: TRect;
       AText: PChar; ALength: Integer; AnEto: TEtoBuffer);
 

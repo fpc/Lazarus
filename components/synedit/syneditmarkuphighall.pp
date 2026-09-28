@@ -374,6 +374,7 @@ type
     procedure DoEnabledChanged(Sender: TObject); override;
     procedure DoTextChanged(StartLine, EndLine, ACountDiff: Integer); override; // 1 based
     procedure DoVisibleChanged(AVisible: Boolean); override;
+    function  HasVisibleMatch: Boolean; deprecated 'use HasDisplayAbleMatches / to be removed in 5.99';
     property  MatchCount: Integer read GetMatchCount;
     property  MarkupEnabled: Boolean read FMarkupEnabled;
     property AsyncEndTickTime: QWord read FAsyncEndTickTime;
@@ -3704,6 +3705,11 @@ begin
   inherited DoVisibleChanged(AVisible);
   if FNeedValidate and SynEdit.IsVisible then
     ValidateMatches(True);
+end;
+
+function TSynEditMarkupHighlightAllBase.HasVisibleMatch: Boolean;
+begin
+  Result := HasDisplayAbleMatches;
 end;
 
 procedure TSynEditMarkupHighlightAllBase.SendLineInvalidation(AFirstIndex: Integer;

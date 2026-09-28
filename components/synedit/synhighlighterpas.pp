@@ -312,6 +312,9 @@ const
   cfbtLastPublic = cfbtCaseElse;
   cfbtFirstPrivate = cfbtPackage;
 
+  cfbtVarType      = cfbtVarBlock      deprecated 'use cfbtVarBlock / To be removed in 5.99';
+  cfbtLocalVarType = cfbtLocalVarBlock deprecated 'use cfbtLocalVarBlock / To be removed in 5.99';
+
   CountPascalCodeFoldBlockOffset =
     Pointer(PtrInt(Integer(high(TPascalCodeFoldBlockType))+1));
 
@@ -849,7 +852,8 @@ type
     procedure DoReadLfmNestedComments(Reader: TReader);
     procedure DoReadLfmTypeHelpers(Reader: TReader);
     function GetModeSwitchesStored: Boolean;
-    function GetNestedComments: boolean;
+    function GetNestedComments: boolean; deprecated;
+    function GetTypeHelpers: boolean; deprecated;
     procedure RebuildCustomTokenInfo;
     function  GetCustomTokenCount: integer;
     procedure CreateAttribute(AnIndex: TSynPasAttribute; AClass: TLazEditHighlighterAttributesClass; ACaption: PString; AStoredName: String);
@@ -886,7 +890,8 @@ type
     procedure SetSpecializeParamAttributeMode(AValue: TSynPasTypeAttributeMode);
     procedure SetStringKeywordMode(const AValue: TSynPasStringMode);
     procedure SetStringMultilineMode(const AValue: TSynPasMultilineStringModes);
-    procedure SetNestedComments(AValue: boolean);
+    procedure SetNestedComments(AValue: boolean); deprecated;
+    procedure SetTypeHelpers(AValue: boolean); deprecated;
     function TextComp(aText: PChar): Boolean;
     function KeyHash: Integer; inline;
     function KeyHash(Start: PChar): Integer;
@@ -1198,14 +1203,17 @@ type
     function FoldBlockNestedTypes(ALineIndex: TLineIdx; ANestIndex: Integer; out
       AType: Pointer; const AFilter: TSynFoldBlockFilter): boolean; override; overload;
 
-    function FoldGroupCount: integer; override;
-    function FoldGroupAtNodeIndex(ALineIndex, FoldIndex: Integer;               // accesses FoldNodeInfo
+    function FoldTypeCount: integer; override;
+    function FoldTypeAtNodeIndex(ALineIndex, FoldIndex: Integer;                // accesses FoldNodeInfo
              UseCloseNodes: boolean = false): integer; override;
     function FoldLineLength(ALineIndex, FoldIndex: Integer): integer; override; // accesses FoldNodeInfo
     function FoldEndLine(ALineIndex, FoldIndex: Integer): integer; override;    // accesses FoldNodeInfo
+
     property CustomTokenCount: integer read GetCustomTokenCount write SetCustomTokenCount;
     property CustomTokens[AnIndex: integer]: TSynPasSynCustomToken read GetCustomTokens;
-    property NestedComments: boolean read GetNestedComments write SetNestedComments stored False;
+
+    property NestedComments: boolean read GetNestedComments write SetNestedComments stored False; deprecated 'Use ModeSwitches / Will be removed in 5.99';
+    property TypeHelpers: boolean read GetTypeHelpers write SetTypeHelpers stored False; deprecated 'Use ModeSwitches / Will be removed in 5.99';
   published
     property AsmAttri: TLazEditHighlighterAttributes                            index attribAsm                     read GetAttribute write SetAttribute;
     property CommentAttri: TLazEditHighlighterAttributes_Eol                    index attribComment                 read GetAttribute_Eol write SetAttribute;
@@ -1848,6 +1856,14 @@ begin
     ModeSwitches := ModeSwitches - [pcsNestedComments];
 end;
 
+procedure TSynPasSyn.SetTypeHelpers(AValue: boolean);
+begin
+  if AValue then
+    ModeSwitches := ModeSwitches + [pcsTypeHelpers]
+  else
+    ModeSwitches := ModeSwitches - [pcsTypeHelpers];
+end;
+
 function TSynPasSyn.GetPasCodeFoldRange: TSynPasSynRange;
 begin
   Result := TSynPasSynRange(CodeFoldRange);
@@ -1971,6 +1987,11 @@ end;
 function TSynPasSyn.GetNestedComments: boolean;
 begin
   Result := pcsNestedComments in FModeSwitches;
+end;
+
+function TSynPasSyn.GetTypeHelpers: boolean;
+begin
+  Result := pcsTypeHelpers in FModeSwitches;
 end;
 
 procedure TSynPasSyn.RebuildCustomTokenInfo;
@@ -7622,12 +7643,12 @@ begin
   end;
 end;
 
-function TSynPasSyn.FoldGroupCount: integer;
+function TSynPasSyn.FoldTypeCount: integer;
 begin
   Result := 3;
 end;
 
-function TSynPasSyn.FoldGroupAtNodeIndex(ALineIndex, FoldIndex: Integer;
+function TSynPasSyn.FoldTypeAtNodeIndex(ALineIndex, FoldIndex: Integer;
   UseCloseNodes: boolean): integer;
 var
   act: TSynFoldActions;

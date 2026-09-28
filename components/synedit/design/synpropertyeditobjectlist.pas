@@ -23,16 +23,11 @@ unit SynPropertyEditObjectList;
 interface
 
 uses
-  Classes, SysUtils, TypInfo,
-  // LCL
-  Forms, StdCtrls, ComCtrls, Dialogs, Controls,
-  // LazUtils
-  LazLoggerBase,
-  // IdeIntf
-  PropEdits, PropEditUtils, ComponentEditors, IDEImagesIntf, FormEditingIntf, ObjInspStrConsts,
-  // SynEdit
+  Classes, SysUtils, LCLProc,
   SynEdit, SynGutterBase, SynEditMiscClasses, SynEditMouseCmds, SynEditKeyCmds,
-  SynDesignStringConstants, SynEditTypes;
+  SynDesignStringConstants,
+  PropEdits, PropEditUtils, Forms, StdCtrls, ComCtrls, Dialogs, ComponentEditors,
+  ObjInspStrConsts, Controls, IDEImagesIntf, typinfo, FormEditingIntf, SynEditTypes, LazLoggerBase;
 
 type
 
@@ -461,7 +456,7 @@ var
   OldSynObjectPartList: TSynObjectList;
   I: Integer;
 begin
-  debugln(['TSynObjectPartListPropertyEditorForm.PersistentDeleting ']);
+  DebugLn(['TSynObjectPartListPropertyEditorForm.PersistentDeleting ']);
   if APersistent = OwnerPersistent then
   begin
     OldSynObjectPartList := SynObjectPartList;

@@ -25,6 +25,8 @@ uses
   LazDebuggerIntfFloatTypes;
 
 type
+  TDBGState = LazDebuggerIntfBaseTypes.TDBGState deprecated 'Use LazDebuggerIntfBaseTypes.TDBGState';
+
   {$REGION ***** Internal types ***** }
 
   IInternalDbgMonitorIntfType  = interface end;
@@ -123,6 +125,9 @@ type
     );
   TWatcheEvaluateFlags = set of TWatcheEvaluateFlag;
 
+  TDBGTypeBase = class(TObject)
+  end deprecated 'to be removed / use IDbgWatchDataIntf / to be removed in 5.99';
+
   TLzDbgToken = QWord;
   {$If SizeOf(TLzDbgToken) < SizeOf(Pointer)} {$Error 'TLzDbgToken must be able to store pointers'} {$EndIf}
 
@@ -177,6 +182,7 @@ type
     procedure CreateFloatValue(AFloatValue: Single);
     procedure CreateFloatValue(AFloatValue: Double);
     procedure CreateFloatValue(AFloatValue: TDbgExtended);
+    procedure CreateFloatValue(AFloatValue: Extended; APrecission: TLzDbgFloatPrecission); deprecated;
     procedure CreateBoolValue(AnOrdBoolValue: QWord; AByteSize: Integer = 0);
     procedure CreateEnumValue(ANumValue: QWord; AName: String; AByteSize: Integer = 0; AnIsEnumIdent: Boolean = False);
 //    //procedure CreateEnumValue(ANumValue: QWord; const ANames: TStringDynArray; const AOrdValues: TIntegerDynArray);
@@ -254,7 +260,7 @@ type
     function GetStackFrame: Integer;
     function GetThreadId: Integer;
     function GetValidity: TDebuggerDataState;
-    procedure SetTypeInfo(AValue: TObject); // Must not be used by MemDump
+    procedure SetTypeInfo(AValue: TDBGTypeBase); // Must not be used by MemDump
     procedure SetValidity(AValue: TDebuggerDataState);
     procedure SetSliceIndexPos(APos, ALen: Integer);
 
@@ -266,7 +272,7 @@ type
     property Expression: String read GetExpression;
 
     property Validity: TDebuggerDataState read GetValidity write SetValidity;
-    property TypeInfo: TObject {read GetTypeInfo} write SetTypeInfo; // Must not be used by MemDump
+    property TypeInfo: TDBGTypeBase {read GetTypeInfo} write SetTypeInfo; // Must not be used by MemDump
   end;
 
 

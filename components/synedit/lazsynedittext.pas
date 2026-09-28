@@ -522,6 +522,7 @@ type
     procedure AddEditHandler(AHandler: TStringListLineEditEvent);
     procedure RemoveEditHandler(AHandler: TStringListLineEditEvent);
 
+    procedure RemoveHanlders(AOwner: TObject); deprecated 'Use "RemoveHandlers" / Will be removed in 4.99';
     procedure RemoveHandlers(AOwner: TObject);
 
     //function GetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer): TPhysicalCharWidths; override;
@@ -1808,6 +1809,11 @@ procedure TSynEditStringsLinked.RemoveEditHandler(
   AHandler: TStringListLineEditEvent);
 begin
   RemoveGenericHandler(senrEditAction, TMethod(AHandler));
+end;
+
+procedure TSynEditStringsLinked.RemoveHanlders(AOwner: TObject);
+begin
+  RemoveHandlers(AOwner);
 end;
 
 procedure TSynEditStringsLinked.RemoveHandlers(AOwner: TObject);

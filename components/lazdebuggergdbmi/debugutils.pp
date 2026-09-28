@@ -59,6 +59,7 @@ function MakePrintable(const AString: String): String; // Make a pascal like str
 function UnEscapeBackslashed(const AValue: String; AFlags: TGdbUnEscapeFlags = [uefOctal]; ATabWidth: Integer = 0): String;
 function UnQuote(const AValue: String): String;
 function Quote(const AValue: String; AForce: Boolean=False): String;
+function ConvertGdbPathAndFile(const AValue: String): String; deprecated 'use ConvertPathFromGdbToLaz'; // fix path, delim, unescape, and to utf8
 function ParseGDBString(const AValue: String; KeepBackSlash: Boolean = False): String; // remove quotes(') and convert #dd chars: #9'ab'#9'x'
 function GetLeadingAddr(var AValue: String; out AnAddr: TDBGPtr; ARemoveFromValue: Boolean = False): Boolean;
 function UpperCaseSymbols(s: string): string;
@@ -356,6 +357,11 @@ begin
   if (pos(' ', AValue) < 1) and (pos(#9, AValue) < 1) and (not AForce) then
     exit(AValue);
   Result := '"' + StringReplace(AValue, '"', '\"', [rfReplaceAll]) + '"';
+end;
+
+function ConvertGdbPathAndFile(const AValue: String): String;
+begin
+  Result := AnsiToUtf8(ConvertPathDelims(UnEscapeBackslashed(AValue, [uefOctal])));
 end;
 
 function ParseGDBString(const AValue: String; KeepBackSlash: Boolean): String;

@@ -535,7 +535,7 @@ end;
 
 procedure TLocalsDlg.DoEditorOptsChanged(Sender: TObject);
 begin
-  IDEEditorOptions.GetHighlighterSettings(WatchesColorsHL);
+  IDEEditorOptions.GetHighlighterObjSettings(WatchesColorsHL);
   vtLocals.EllipsisColor := WatchesColorsHL.AttrEllipsis.Foreground;
   LocalsChanged(nil);
 end;

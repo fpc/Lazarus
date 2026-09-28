@@ -144,7 +144,19 @@ type
     property CurrentString: String read fCurrentString write SetCurrentString;
   end deprecated;
 
+function NewPluginCommand: TSynEditorCommand; deprecated; // Use AllocatePluginKeyRange
+procedure ReleasePluginCommand(aCmd: TSynEditorCommand); deprecated;
+
 implementation
+
+function NewPluginCommand: TSynEditorCommand;
+begin
+  Result := AllocatePluginKeyRange(1);
+end;
+
+procedure ReleasePluginCommand(aCmd: TSynEditorCommand);
+begin
+end;
 
 { TLazSynMultiEditPlugin }
 

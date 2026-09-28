@@ -5,7 +5,8 @@ unit TestGdbType;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testutils, testregistry, DebugUtils, GDBTypeInfo, strutils, LCLProc;
+  Classes, SysUtils, fpcunit, testutils, testregistry, DebugUtils, GDBTypeInfo, strutils, LCLProc,
+  LazLoggerBase;
 
 type
 
@@ -592,7 +593,7 @@ procedure DumpGExp(e: TGDBExpressionPart; pre: string = '');
 var
   i: Integer;
 begin
-  debugln([pre, e.ClassName, ' cnt=', e.PartCount, ' txt="', e.Text, '"']);
+  DebugLn([pre, e.ClassName, ' cnt=', e.PartCount, ' txt="', e.Text, '"']);
   for i := 0 to e.PartCount - 1 do
     DumpGExp(e.Parts[i], pre+'  ');
 end;

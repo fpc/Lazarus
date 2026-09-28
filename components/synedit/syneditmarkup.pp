@@ -56,7 +56,7 @@ type
     function GetEnabled: Boolean;
     function GetFGColor : TColor;
     function GetFrameColor: TColor;
-    function GetFrameStyle: TLazTextAttrLineStyle;
+    function GetFrameStyle: TSynLineStyle;
     function GetStyle : TFontStyles;
     procedure SetBGColor(const AValue : TColor);
     procedure SetEnabled(const AValue: Boolean);
@@ -141,7 +141,7 @@ type
     property FGColor : TColor read GetFGColor;
     property BGColor : TColor read GetBGColor;
     property FrameColor: TColor read GetFrameColor;
-    property FrameStyle: TLazTextAttrLineStyle read GetFrameStyle;
+    property FrameStyle: TSynLineStyle read GetFrameStyle;
     property Style : TFontStyles read GetStyle;
     property Enabled: Boolean read GetEnabled write SetEnabled;
     property Lines : TSynEditStringsLinked read fLines write SetLines;
@@ -233,7 +233,7 @@ begin
   Result := fMarkupInfo.FrameColor;
 end;
 
-function TSynEditMarkup.GetFrameStyle: TLazTextAttrLineStyle;
+function TSynEditMarkup.GetFrameStyle: TSynLineStyle;
 begin
   Result := FMarkupInfo.FrameStyle;
 end;
