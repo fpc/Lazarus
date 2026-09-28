@@ -165,13 +165,13 @@ type
                             PropInfo: Pointer; DefInstance: TObject = nil;
                             OnlyProperty: String = '');
     procedure WriteProperty(Path: String; Instance: TObject;
-                            PropInfo: Pointer; DefInstance: TObject = nil;
+                            PropInfo: Pointer; DefInstance: TObject;
                             const OnlyProperty: array of String);
     procedure ReadProperty(Path: String; Instance: TObject;
                             PropInfo: Pointer; DefInstance: TObject = nil;
                             OnlyProperty: String= '');
     procedure ReadProperty(Path: String; Instance: TObject;
-                            PropInfo: Pointer; DefInstance: TObject = nil;
+                            PropInfo: Pointer; DefInstance: TObject;
                             const OnlyProperty: array of String);
   public
     procedure WriteObject(Path: String; Obj: TObject;

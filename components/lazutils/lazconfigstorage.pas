@@ -364,7 +364,7 @@ end;
 procedure TConfigStorage.WriteProperty(Path: String; Instance: TPersistent; PropInfo: Pointer;
   DefInstance: TPersistent; OnlyProperty: String);
 // based on FPC TWriter
-// path is already extende
+// path is already extended
 type
   tset = set of 0..31;
 var
