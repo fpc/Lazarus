@@ -418,7 +418,7 @@ begin
   UpdateDragThresholdLabel;
 
   DragDelayTrackBar.Hint:=
-    adrsAmountOfMilisecondsHasToDragBeforeDragStarts;
+    adrsAmountOfMillisecondsBeforeDragStarts;
   DragDelayTrackBar.Position:=TheSettings.DragDelay div 50;
   DragDelaySpinEdit.Value:=TheSettings.DragDelay;
   UpdateDragDelayLabel;
