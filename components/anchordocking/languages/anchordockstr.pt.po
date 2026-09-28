@@ -20,8 +20,8 @@ msgstr "Um lado livre de um divisor não deve ser ancorado: Nó=\"%s\" Tipo=%s �
 msgid "Allow dock sites to be minimized"
 msgstr "Permitir que sítios ancorados sejam minimizados"
 
-#: anchordockstr.adrsamountofmilisecondshastodragbeforedragstarts
-msgid "Amount of miliseconds when lbm pressed has to drag before drag starts"
+#: anchordockstr.adrsamountofmillisecondsbeforedragstarts
+msgid "Amount of milliseconds the left mouse button should be kept pressed before drag starts"
 msgstr ""
 
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts

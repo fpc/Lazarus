@@ -22,8 +22,8 @@ msgstr "Laisvoji skyriklio kraštinė neturi būti pririšta: mazgas = „%0:s�
 msgid "Allow dock sites to be minimized"
 msgstr ""
 
-#: anchordockstr.adrsamountofmilisecondshastodragbeforedragstarts
-msgid "Amount of miliseconds when lbm pressed has to drag before drag starts"
+#: anchordockstr.adrsamountofmillisecondsbeforedragstarts
+msgid "Amount of milliseconds the left mouse button should be kept pressed before drag starts"
 msgstr ""
 
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
