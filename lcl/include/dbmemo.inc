@@ -262,7 +262,7 @@ begin
   if not FDBMemoLoaded and (FDataLink.Field<>nil)
   and FDataLink.Field.IsBlob then begin
     try
-      // issue #33598: Possibility to change field text in OnGetText
+      // issue #33498: possibility to change field text in OnGetText
       if Assigned(FDataLink.Field.OnGetText) then
         newText := FDataLink.Field.Text
       else 
