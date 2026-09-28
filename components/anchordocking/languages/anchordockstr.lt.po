@@ -22,6 +22,10 @@ msgstr "Laisvoji skyriklio kraštinė neturi būti pririšta: mazgas = „%0:s�
 msgid "Allow dock sites to be minimized"
 msgstr ""
 
+#: anchordockstr.adrsamountofmilisecondshastodragbeforedragstarts
+msgid "Amount of miliseconds when lbm pressed has to drag before drag starts"
+msgstr ""
+
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "Pelės judesio kelias pikseliais, po kurio pradedamas tempimo veiksmas"
@@ -118,6 +122,10 @@ msgstr "Pritvirtinimo parinktys"
 #, object-pascal-format
 msgid "Use the mouse to drag and dock window \"%s\""
 msgstr "Langas „%s“ tempiamas ir pritvirtinamas naudojant pelę"
+
+#: anchordockstr.adrsdragdelay
+msgid "Drag delay"
+msgstr ""
 
 #: anchordockstr.adrsdragthreshold
 msgid "Drag threshold"

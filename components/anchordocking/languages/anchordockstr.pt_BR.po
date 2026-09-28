@@ -20,6 +20,10 @@ msgstr "Um lado livre de um \"splitter\" não deve estar ancorado: Nó=\"%s\" Ti
 msgid "Allow dock sites to be minimized"
 msgstr "Permitir que locais de ancoragem sejam minimizados"
 
+#: anchordockstr.adrsamountofmilisecondshastodragbeforedragstarts
+msgid "Amount of miliseconds when lbm pressed has to drag before drag starts"
+msgstr ""
+
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "Quantidade de \"pixels\" que o mouse deve arrastar antes que arrastar se inicie"
@@ -116,6 +120,10 @@ msgstr "Opções Ancoragem"
 #, object-pascal-format
 msgid "Use the mouse to drag and dock window \"%s\""
 msgstr "Use o mouse para arrastar e ancorar a janela \"%s\""
+
+#: anchordockstr.adrsdragdelay
+msgid "Drag delay"
+msgstr ""
 
 #: anchordockstr.adrsdragthreshold
 msgid "Drag threshold"

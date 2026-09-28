@@ -8436,9 +8436,9 @@ begin
     begin
       Site:=TAnchorDockHostSite(APage.Controls[0]);
       if DockMaster.DragDelay=0 then
-        DragManager.DragStart(Parent,false,DockMaster.DragTreshold)
+        DragManager.DragStart(Site,false,DockMaster.DragTreshold)
       else
-        DragManager.DragStartAfterDelay(Parent,DockMaster.DragTreshold,DockMaster.DragDelay);
+        DragManager.DragStartAfterDelay(Site,DockMaster.DragTreshold,DockMaster.DragDelay);
     end;
   end;
   if (Button = mbRight) then

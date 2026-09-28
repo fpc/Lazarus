@@ -21,6 +21,10 @@ msgstr ""
 msgid "Allow dock sites to be minimized"
 msgstr ""
 
+#: anchordockstr.adrsamountofmilisecondshastodragbeforedragstarts
+msgid "Amount of miliseconds when lbm pressed has to drag before drag starts"
+msgstr ""
+
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr ""
@@ -116,6 +120,10 @@ msgstr "Opcje dokowania"
 #: anchordockstr.adrsdraganddockc
 #, object-pascal-format
 msgid "Use the mouse to drag and dock window \"%s\""
+msgstr ""
+
+#: anchordockstr.adrsdragdelay
+msgid "Drag delay"
 msgstr ""
 
 #: anchordockstr.adrsdragthreshold
