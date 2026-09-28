@@ -2613,6 +2613,7 @@ var
   IdentifierStart: PChar;
   LineRange: TLineRange;
   Params: TFindDeclarationParams;
+  CommentStart, CommentEnd: Integer;
 begin
   Result:=false;
   NewExprType:=CleanExpressionType;
@@ -2784,6 +2785,19 @@ begin
     MoveCursorToCleanPos(CleanCursorPos);
     GetIdentStartEndAtPosition(Src,CleanCursorPos,
                                CurPos.StartPos,CurPos.EndPos);
+
+    if AtomIsStringConstant or CleanPosIsInComment(CleanCursorPos, CursorNode.StartPos, CommentStart, CommentEnd)
+    then begin
+      Result := False;
+      Exit;
+    end;  
+                                 
+    if (CursorNode.Desc = ctnProperty) and 
+      (CompareIdentifiers(PChar('PROPERTY'),PChar(@Src[CurPos.StartPos]))=0) then begin
+      Result := False;
+      Exit;
+    end;
+                               
     IdentStartPos:=CurPos.StartPos;
     CursorAtIdentifier:=CurPos.StartPos<CurPos.EndPos;
     if CursorAtIdentifier then
@@ -14884,6 +14898,14 @@ begin
     else if WordIsKeyWord.DoItCaseInsensitive(Src,CurPos.StartPos,
              CurPos.EndPos-CurPos.StartPos) then
       exit(vatKeyWord)
+    else if IsKeyWordMethodSpecifier.DoItCaseInsensitive(Src,CurPos.StartPos,
+                CurPos.EndPos-CurPos.StartPos) then begin
+        Node:=FindDeepestNodeAtPos(CurPos.StartPos,false);
+        if (Node<>nil) and (Node.Desc=ctnProcedureHead) then
+          exit(vatKeyword)
+        else
+          exit(vatIdentifier)
+      end 
     else if UpAtomIs('PROPERTY') then begin
       Node:=FindDeepestNodeAtPos(CurPos.StartPos,false);
       if (Node<>nil) and (Node.Desc in [ctnProperty,ctnPropertySection]) then
@@ -14899,8 +14921,72 @@ begin
         exit(vatSpecialize)
       else
         exit(vatIdentifier);
-    end
-    else
+    end else
+    if UpAtomIs('PUBLIC') then begin
+      Node:=FindDeepestNodeAtPos(CurPos.StartPos,false);
+      if (Node<>nil) and (Node.Desc=ctnClassPublic) then
+        exit(vatKeyword)
+      else
+        exit(vatIdentifier);
+    end else
+    if UpAtomIs('PRIVATE') then begin
+      Node:=FindDeepestNodeAtPos(CurPos.StartPos,false);
+      if (Node<>nil) and (Node.Desc=ctnClassPrivate) then
+        exit(vatKeyword)
+      else
+        exit(vatIdentifier);
+    end else
+    if UpAtomIs('PUBLISHED') then begin
+      Node:=FindDeepestNodeAtPos(CurPos.StartPos,false);
+      if (Node<>nil) and (Node.Desc=ctnClassPublished) then
+        exit(vatKeyword)
+      else
+        exit(vatIdentifier);
+    end else
+    if UpAtomIs('PROTECTED') then begin
+      Node:=FindDeepestNodeAtPos(CurPos.StartPos,false);
+      if (Node<>nil) and (Node.Desc=ctnClassProtected) then
+        exit(vatKeyword)
+      else
+        exit(vatIdentifier);
+    end else
+    if UpAtomIs('DISPINTERFACE') then begin
+      Node:=FindDeepestNodeAtPos(CurPos.StartPos,false);
+      if (Node<>nil) and (Node.Desc=ctnDispinterface) then
+        exit(vatKeyword)
+      else
+        exit(vatIdentifier);
+    end else
+    if UpAtomIs('PACKAGE') then begin
+      Node:=FindDeepestNodeAtPos(CurPos.StartPos,false);
+      if (Node<>nil) and (Node.Desc=ctnPackage) then
+        exit(vatKeyword)
+      else
+        exit(vatIdentifier);
+    end else
+    if UpAtomIs('HELPER') then begin
+      Node:=FindDeepestNodeAtPos(CurPos.StartPos,false);
+      if (Node<>nil) and (Node.Desc in [ctnTypeHelper,ctnRecordHelper,ctnClassHelper]) then
+        exit(vatKeyword)
+      else
+        exit(vatIdentifier);
+    end else
+    if UpAtomIs('OUT') then begin
+      if (cmsOut in Scanner.CompilerModeSwitches) then
+        exit(vatKeyword)
+      else
+        exit(vatIdentifier);
+    end else
+    if UpAtomIs('ABSOLUTE') then begin
+      Node:=FindDeepestNodeAtPos(CurPos.StartPos,false);
+      if (Node<>nil) and (Node.Desc = ctnVarDefinition) then
+        exit(vatKeyword)
+      else
+        exit(vatIdentifier);
+    end else
+    if UpAtomIs('ON') then begin
+        exit(vatKeyword);
+    end else
       exit(vatIdentifier);
   end else if (CurPos.StartPos=CurPos.EndPos-1) then begin
     case c of
