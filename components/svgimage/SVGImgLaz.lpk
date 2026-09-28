@@ -4,26 +4,186 @@
     <CompatibilityMode Value="False"/>
     <Name Value="SVGImgLaz"/>
     <Type Value="RunAndDesignTime"/>
+    <Author Value="Mattias Gaertner"/>
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Conditionals Value="if GetProjValue(&apos;FPC_FULLVERSION&apos;)&lt;30301 then
   UnitPath+=&apos;;fcl-css;fcl-svg&apos;;"/>
     </CompilerOptions>
+    <Description Value="SVG support for the LCL"/>
+    <License Value="modified LGPL2"/>
+    <Version Major="1"/>
     <Files>
       <Item>
         <Filename Value="SVGImg.pas"/>
         <UnitName Value="SVGImg"/>
       </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.anim.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpsvg.anim"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.backend.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpsvg.backend"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.colors.inc"/>
+        <Type Value="Include"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.coretext.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpsvg.coretext"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.dom.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpsvg.dom"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.fonts.macos.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpsvg.fonts.macos"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.fonts.provider.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpsvg.fonts.provider"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.fonts.support.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpsvg.fonts.support"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.fonts.unix.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpsvg.fonts.unix"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.fonts.windows.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpsvg.fonts.windows"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.freetype.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpsvg.freetype"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.gdi.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpsvg.gdi"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.geom.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpsvg.geom"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.path.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpsvg.path"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.pdf.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpsvg.pdf"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpsvg"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.raster.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpsvg.raster"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.read.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpsvg.read"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.render.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpsvg.render"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.soft.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpsvg.soft"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.strings.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpsvg.strings"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.style.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpsvg.style"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.svgfont.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpsvg.svgfont"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.text.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpsvg.text"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.trace.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpsvg.trace"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-svg/fpsvg.types.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpsvg.types"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-css/fpcssparser.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpCSSParser"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-css/fpcssresolver.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpCSSResolver"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-css/fpcssresparser.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpCSSResParser"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-css/fpcssscanner.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpCSSScanner"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-css/fpcsstree.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="fpCSSTree"/>
+      </Item>
+      <Item>
+        <Filename Value="fcl-css/fpcssutils.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="FPCSSUtils"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>
         <PackageName Value="LCL"/>
-      </Item>
-      <Item>
-        <PackageName Value="FCL"/>
       </Item>
     </RequiredPkgs>
     <UsageOptions>

@@ -268,6 +268,7 @@ end;
 procedure TSVGGraphic.SetTransparent(AValue: Boolean);
 begin
   // A SVG is always drawn with alpha.
+  if AValue then ;
 end;
 
 function TSVGGraphic.GetMimeType: string;
@@ -366,6 +367,7 @@ var
   NewDoc: TSVGDocument;
 begin
   Count := AStream.Size - AStream.Position;
+  Src:='';
   SetLength(Src, Count);
   if Count > 0 then
     AStream.ReadBuffer(Src[1], Count);
@@ -476,7 +478,7 @@ begin
   Result := False;
   OldPos := AStream.Position;
   try
-    Count := AStream.Read(Buf, SizeOf(Buf));
+    Count := AStream.Read(Buf{%H-}, SizeOf(Buf));
     if Count < 4 then
       exit;
     if (Buf[0] = $1F) and (Buf[1] = $8B) then
@@ -485,6 +487,7 @@ begin
       Result := True;
       exit;
       end;
+    s:='';
     SetLength(s, Count);
     Move(Buf, s[1], Count);
     p := 1;
