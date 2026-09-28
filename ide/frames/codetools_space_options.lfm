@@ -69,6 +69,7 @@ inherited CodetoolsSpaceOptionsFrame: TCodetoolsSpaceOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
+    Cursor = crDefault
     Left = 0
     Height = 260
     Top = 123

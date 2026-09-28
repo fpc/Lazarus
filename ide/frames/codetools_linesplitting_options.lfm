@@ -93,6 +93,7 @@ inherited CodetoolsLineSplittingOptionsFrame: TCodetoolsLineSplittingOptionsFram
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
+    Cursor = crDefault
     Left = 206
     Height = 311
     Top = 33

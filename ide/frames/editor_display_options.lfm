@@ -556,6 +556,7 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
+    Cursor = crDefault
     Left = 0
     Height = 8
     Top = 488
