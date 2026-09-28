@@ -32,27 +32,16 @@ unit SynEditHighlighter deprecated 'Use LazEditHighlighter / this unit will be r
 interface
 
 uses
-  SysUtils, Classes, Registry, IniFiles, Contnrs,
+  SysUtils, Classes, Registry, IniFiles,
   // LCL
   LCLType, Graphics,
   // LazUtils
   LazUTF8, LazMethodList,
   // SynEdit
-  SynEditTypes, SynEditTextBase, SynEditMiscProcs, LazEditTextAttributes, LazEditHighlighterUtils,
+  SynEditTypes, LazEditTextAttributes, LazEditHighlighterUtils,
   LazEditHighlighter, LazEditFoldHighlighter;
 
 type
-  TSynHighlighterRangeList = TLazHighlighterLineRangeList deprecated 'use TLazHighlighterLineRangeList or TLazHighlighterLineRangeShiftList / to be removed in 5.99';
-
-  TLazSynCustomTextAttributes = TLazEditTextAttribute deprecated 'use TLazEditTextAttribute // to be removed in 5.99';
-  TSynHighlighterAttributes = TLazEditHighlighterAttributes deprecated 'use TLazEditTextAttribute // to be removed in 5.99';
-  TSynHighlighterAttributesModifier = TLazEditHighlighterAttributesModifier deprecated 'use TLazEditTextAttribute // to be removed in 5.99';
-  TSynHighlighterAttributes_Eol = TLazEditHighlighterAttributes_Eol deprecated 'use TLazEditTextAttribute // to be removed in 5.99';
-  TSynHighlighterAttributesModifier_Eol = TLazEditHighlighterAttributesModifier_Eol deprecated 'use TLazEditTextAttribute // to be removed in 5.99';
-
-  TLazEditCustomHighlighter = LazEditHighlighter.TLazEditCustomHighlighter deprecated 'Use LazEditHighlighter';
-  TLazEditCustomRangesHighlighter = LazEditHighlighter.TLazEditCustomRangesHighlighter deprecated 'Use LazEditHighlighter';
-
   { TSynHighlighterAttributesHelper }
 
   TSynHighlighterAttributesHelper = class helper for TLazEditTextAttribute
@@ -74,7 +63,6 @@ type
     property IntegerStyleMask: integer read GetStyleMaskFromInt write SetStyleMaskFromInt;
     property Name: string read GetConstName; deprecated 'use Caption'; // value of Caption at creation, use Caption instead, kept for compatibility
   end;
-
 
   TSynHighlighterCapability = (
     hcUserSettings, // supports Enum/UseUserSettings

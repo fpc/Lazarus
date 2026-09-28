@@ -16,7 +16,9 @@ unit IPIDEHTMLControl;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Graphics, Controls, Dialogs, ExtCtrls, Menus,
+  Classes, SysUtils,
+  Forms, Graphics, Controls, Dialogs, ExtCtrls, Menus,
+  LazLoggerBase,
   IpMsg, Ipfilebroker, IpHtml, IpHtmlNodes,
   IDEHelpIntf, LazHelpIntf, LazIDEIntf, ObjInspStrConsts;
 

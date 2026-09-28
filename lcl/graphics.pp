@@ -658,11 +658,9 @@ type
     FPenHandleCached: boolean;
     FReference: TWSPenReference;
     procedure FreeReference;
-    function GetHandle: HPEN;
     function GetReference: TWSPenReference;
     procedure ReferenceNeeded;
     procedure SetCosmetic(const AValue: Boolean);
-    procedure SetHandle(const Value: HPEN);
   protected
     procedure DoAllocateResources; override;
     procedure DoDeAllocateResources; override;
@@ -679,7 +677,6 @@ type
     constructor Create; override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-    property Handle: HPEN read GetHandle write SetHandle; deprecated;
     property Reference: TWSPenReference read GetReference;
 
     function GetPattern: TPenPattern;
@@ -773,12 +770,9 @@ type
     procedure AddOperation(AOp: TRegionOperation);
     procedure ClearSubRegions();
     procedure AddSubRegion(AHandle: HRGN);
-    //
     procedure FreeReference;
     function GetReference: TWSRegionReference;
-    function GetHandle: HRGN;
     procedure ReferenceNeeded;
-    procedure SetHandle(const Value: HRGN);
   protected
     procedure SetClipRect(value: TRect);
     function GetClipRect: TRect;
@@ -786,12 +780,10 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-
     // Convenience routines to add elements to the region
     procedure AddRectangle(X1, Y1, X2, Y2: Integer);
 
     property ClipRect: TRect read GetClipRect write SetClipRect;
-    property Handle: HRGN read GetHandle write SetHandle; deprecated;
     property Reference: TWSRegionReference read GetReference;
   end;
 
@@ -2016,8 +2008,6 @@ function LazResourceXPMToPPChar(const ResourceName: string): PPChar;
 function ReadXPMFromStream(Stream: TStream; Size: integer): PPChar;
 function ReadXPMSize(XPM: PPChar; var Width, Height, ColorCount: integer): boolean;
 function LoadCursorFromLazarusResource(ACursorName: String): HCursor;
-function LoadBitmapFromLazarusResource(const ResourceName: String): TBitmap; deprecated;
-function LoadBitmapFromLazarusResourceHandle(Handle: TLResource): TBitmap; deprecated;
 
 // technically a bitmap is created and not loaded
 function CreateGraphicFromResourceName(Instance: TLCLHandle; const ResName: String): TGraphic;
@@ -2242,39 +2232,6 @@ begin
   finally
     Stream.Free;
   end;
-end;
-
-function LoadBitmapFromLazarusResourceHandle(Handle: TLResource): TBitmap;
-var
-  CB: TCustomBitmap;
-begin
-  CB := CreateBitmapFromLazarusResource(Handle, TCustomBitmap);
-  if CB is TBitmap
-  then begin
-    Result := TBitmap(CB);
-    Exit;
-  end;
-  
-  Result := TBitmap.Create;
-  Result.Assign(CB);
-  CB.Free;
-end;
-
-function LoadBitmapFromLazarusResource(const ResourceName: String): TBitmap;
-var
-  CB: TCustomBitmap;
-begin
-  CB := CreateBitmapFromLazarusResource(ResourceName, TCustomBitmap);
-
-  if CB is TBitmap
-  then begin
-    Result := TBitmap(CB);
-    Exit;
-  end;
-
-  Result := TBitmap.Create;
-  Result.Assign(CB);
-  CB.Free;
 end;
 
 //TODO: publish ?? (as RawImage_CreateCompatibleBitmaps)

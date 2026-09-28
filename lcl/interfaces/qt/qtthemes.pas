@@ -12,7 +12,9 @@ uses
   // qt bindings
   qt4,
   // lcl
-  LCLType, LCLProc, LCLIntf, Graphics, Themes, TmSchema,
+  LCLType, LCLIntf, Graphics, Themes, TmSchema,
+  // LazUtils
+  LazLoggerBase,
   // widgetset
   InterfaceBase, QtObjects
   ;

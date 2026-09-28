@@ -4441,6 +4441,7 @@ begin
     lLogRadGrad.radStops[i].radPosition := Brush.Gradient_colors[i].Position;
   end;
 
+  // ToDo: Either implement this differently or remove "deprecated" from Brush.Handle property.
   lBrush := LCLIntf.CreateBrushWithRadialGradient(lLogRadGrad);
   lOldBrush := TCanvas(ADest).Brush.Handle;
   TCanvas(ADest).Brush.Handle := lBrush;

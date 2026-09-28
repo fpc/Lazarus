@@ -45,13 +45,6 @@ function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
 function UnicodeToUTF16(u: cardinal): UnicodeString;
 function IsUTF16CharValid(AChar, ANextChar: WideChar): Boolean;
 function IsUTF16StringValid(AStr: UnicodeString): Boolean;
-// Deprecated in Lazarus 3.99 in August 2024.
-function Utf16StringReplace(const S, OldPattern, NewPattern: UnicodeString;
-  Flags: TReplaceFlags): UnicodeString;
-  deprecated 'Use SysUtils.StringReplace or UnicodeStringReplace instead.';
-function Utf16StringReplace(const S, OldPattern, NewPattern: UnicodeString;
-  Flags: TReplaceFlags; out Count: Integer): UnicodeString;
-  deprecated 'Use SysUtils.StringReplace or UnicodeStringReplace instead.';
 
 // The following functions use UnicodeTables which are initialized
 //  only when the functions are called.
@@ -253,19 +246,6 @@ begin
     if not Result then Exit;
   end;
 end;
-
-function Utf16StringReplace(const S, OldPattern, NewPattern: UnicodeString;
-  Flags: TReplaceFlags): UnicodeString;
-begin
-  Result:=UnicodeStringReplace(S, OldPattern, NewPattern, Flags);
-end;
-
-function Utf16StringReplace(const S, OldPattern, NewPattern: UnicodeString;
-  Flags: TReplaceFlags; out Count: Integer): UnicodeString;
-begin
-  Result:=UnicodeStringReplace(S, OldPattern, NewPattern, Flags, Count);
-end;
-
 
 // Lowercase Unicode Tables which match UTF-16 but also UTF-32
 var

@@ -158,20 +158,12 @@ type
     *)
     function FoldBlockNestedTypes(ALineIndex: TLineIdx; ANestIndex: Integer; out AType: Pointer;
                                   const AFilter: TSynFoldBlockFilter): boolean; virtual; overload;
-
     function FoldBlockNestedTypes(const ALineIndex: TLineIdx; const ANestIndex: Integer; out AType: Pointer;
                                   const AFoldGroup: integer = 0;
                                   const AFlags: TSynFoldBlockFilterFlags = []): boolean; inline; overload;
-
-
     function FoldGroupCount: integer; virtual;
     function FoldGroupAtNodeIndex(ALineIndex, FoldIndex: Integer;
              UseCloseNodes: boolean = false): integer; virtual; // TODO: could be deprecated ./ only child-classes
-    function FoldTypeCount: integer; virtual; deprecated 'Misnomer: Use FoldGroupCount';
-    function FoldTypeAtNodeIndex(ALineIndex, FoldIndex: Integer;
-             UseCloseNodes: boolean = false): integer; virtual; // TODO: could be deprecated ./ only child-classes
-             deprecated 'Misnomer: Use FoldGroupAtNodeIndex';
-
 
     (* ***
        *** Config
@@ -552,26 +544,14 @@ end;
 
 function TLazEditCustomFoldHighlighter.FoldGroupCount: integer;
 begin
-  Result := FoldTypeCount;
+  Result := 1;
 end;
 
 function TLazEditCustomFoldHighlighter.FoldGroupAtNodeIndex(ALineIndex, FoldIndex: Integer;
   UseCloseNodes: boolean): integer;
 begin
-  Result := FoldTypeAtNodeIndex(ALineIndex, FoldIndex, UseCloseNodes);
-end;
-
-function TLazEditCustomFoldHighlighter.FoldTypeCount: integer;
-begin
-  Result := 1;
-end;
-
-function TLazEditCustomFoldHighlighter.FoldTypeAtNodeIndex(ALineIndex, FoldIndex: Integer;
-  UseCloseNodes: boolean): integer;
-begin
   Result := 0;
 end;
-
 
 { TLazEditNestedFoldsList }
 
@@ -639,7 +619,7 @@ begin
 
   if FFoldGroup = 0 then begin
     // special, join other groups
-    FGroupCount := FHighlighter.FoldTypeCount;
+    FGroupCount := FHighlighter.FoldGroupCount;
     // start at 1, so FoldGroup can be used as index
     SetLength(FGroupEndLevelsAtEval, FGroupCount + 1);
     for i := 1 to FGroupCount do
@@ -1128,7 +1108,7 @@ begin
     FFoldNodeInfoList.GroupFilter := 0;
 
     if FFoldGroup = 0 then begin
-      FGroupCount := FHighlighter.FoldTypeCount;
+      FGroupCount := FHighlighter.FoldGroupCount;
       GrpLow := 1;
       GrpHigh := FGroupCount;
     end

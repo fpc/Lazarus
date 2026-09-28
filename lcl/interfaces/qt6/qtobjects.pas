@@ -26,8 +26,10 @@ uses
   qt6,
   // Free Pascal
   Classes, SysUtils, Types,
+  // LazUtils
+  LazLoggerBase,
   // LCL
-  LCLType, LCLIntf, LCLProc, LazUTF8, Menus, Graphics, ClipBrd, ExtCtrls,
+  LCLType, LCLIntf, LazUTF8, Menus, Graphics, ClipBrd, ExtCtrls,
   Interfacebase, maps;
 
 type

@@ -92,8 +92,6 @@ type
   TPreviewPasSyn = TIDESynFreePasSyn;
   TSrcIDEHighlighter = TLazEditCustomHighlighter;
   // TSynPositionHighlighter - minimum implementation needed.
-
-  TSynHighlightElement = TLazEditTextAttribute deprecated 'use TLazEditTextAttribute // to be removed in 5.99';
   TCustomSynClass = class of TSrcIDEHighlighter;
 
   TLazSynPluginTemplateMultiCaret = class(TForm)   end;
@@ -343,7 +341,7 @@ type
     FRegisteredGroup: integer;
     FMarkupFoldLineAlpha: Byte;
     FMarkupFoldLineColor: TColor;
-    FMarkupFoldLineStyle: TSynLineStyle;
+    FMarkupFoldLineStyle: TLazTextAttrLineStyle;
     FMarkupAllOverviewColor: TColor;
     FOwner: TColorSchemeLanguage;
     FAlreadyGotSchemeGlobal: Boolean;
@@ -355,7 +353,7 @@ type
     procedure SetMarkupAllOverviewColor(AValue: TColor);
     procedure SetMarkupFoldLineAlpha(AValue: Byte);
     procedure SetMarkupFoldLineColor(AValue: TColor);
-    procedure SetMarkupFoldLineStyle(AValue: TSynLineStyle);
+    procedure SetMarkupFoldLineStyle(AValue: TLazTextAttrLineStyle);
     // IColorSchemeAttribute
     procedure ApplyTo(aDest: TObject);  deprecated 'Use ApplyTo(TLazEditTextAttribute) // to be removed in 5.99';
   protected
@@ -383,7 +381,7 @@ type
     property UseSchemeGlobals: Boolean read FUseSchemeGlobals write FUseSchemeGlobals;
     // For markup fold color
     property MarkupFoldLineColor: TColor read FMarkupFoldLineColor write SetMarkupFoldLineColor default clNone; // clDefault will take Color[].Frame or Color[].Foreground
-    property MarkupFoldLineStyle: TSynLineStyle read FMarkupFoldLineStyle write SetMarkupFoldLineStyle default slsSolid;
+    property MarkupFoldLineStyle: TLazTextAttrLineStyle read FMarkupFoldLineStyle write SetMarkupFoldLineStyle default slsSolid;
     property MarkupFoldLineAlpha: Byte read FMarkupFoldLineAlpha write SetMarkupFoldLineAlpha default 0;
     // For overview gutter (MarkupHighlightAll)
     property MarkupAllOverviewColor: TColor read FMarkupAllOverviewColor write SetMarkupAllOverviewColor default clNone;
@@ -686,7 +684,7 @@ const
       (Name:  dlgFoldPasAnonProcedure; Xml:     'AnonymousProcedure';
        Index: ord(cfbtAnonymousProcedure);    Enabled: True),
       (Name:  dlgFoldLocalPasVarType;  Xml:     'LocalVarType';
-       Index: ord(cfbtLocalVarType); Enabled: True),
+       Index: ord(cfbtLocalVarBlock); Enabled: True),
       (Name:  dlgFoldPasProcBeginEnd;  Xml:     'ProcBeginEnd';
        Index: ord(cfbtTopBeginEnd);  Enabled: True),
       (Name:  dlgFoldPasBeginEnd;      Xml:     'BeginEnd';
@@ -714,7 +712,7 @@ const
        Index: ord(cfbtUses);         Enabled: True),
 
       (Name:  dlgFoldPasVarType;       Xml:     'VarType';
-       Index: ord(cfbtVarType);      Enabled: False),
+       Index: ord(cfbtVarBlock);      Enabled: False),
       (Name:  dlgFoldPasClass;         Xml:     'Class';
        Index: ord(cfbtClass);        Enabled: True),
       (Name:  dlgFoldPasClassSection;  Xml:     'ClassSection';
@@ -2133,7 +2131,6 @@ type
     procedure ReadDefaultsForHighlighterDivDrawSettings(Syn: TSrcIDEHighlighter);
     procedure WriteHighlighterDivDrawSettings(Syn: TSrcIDEHighlighter);
     // read highlight settings from config file
-    procedure GetHighlighterObjSettings(ASynHL: TLazEditCustomHighlighter); override;  deprecated 'to be remove in 5.99';
     procedure GetHighlighterSettings(Syn: TSrcIDEHighlighter); override; // read highlight settings from config file
     procedure GetSynEditorSettings(ASynEdit: TCustomControl; SimilarEdit: TCustomControl = nil); override;
     procedure GetSynEditSettings(ASynEdit: TSynEdit; SimilarEdit: TSynEdit = nil; AHighlighterId: TIdeSyntaxHighlighterID = IdeHighlighterUnknownId); // read synedit settings from config file
@@ -6918,11 +6915,6 @@ begin
   end;
 end;
 
-procedure TEditorOptions.GetHighlighterObjSettings(ASynHL: TLazEditCustomHighlighter);
-begin
-  GetHighlighterSettings(TSrcIDEHighlighter(ASynHL));
-end;
-
 procedure TEditorOptions.GetHighlighterSettings(Syn: TSrcIDEHighlighter);
 // read highlight settings from config file
 begin
@@ -7429,7 +7421,7 @@ begin
   Changed;
 end;
 
-procedure TColorSchemeAttribute.SetMarkupFoldLineStyle(AValue: TSynLineStyle);
+procedure TColorSchemeAttribute.SetMarkupFoldLineStyle(AValue: TLazTextAttrLineStyle);
 begin
   if FMarkupFoldLineStyle = AValue then Exit;
   FMarkupFoldLineStyle := AValue;

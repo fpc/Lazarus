@@ -105,7 +105,7 @@ begin
   ReplaceAllButton.Caption:=lisReplaceRemoveUnknown;
   IDEImages.AssignImage(ReplaceAllButton, 'laz_refresh');
   // Get SynEdit options for LFM.
-  IDEEditorOptions.GetHighlighterObjSettings(SynLFMSyn1);
+  IDEEditorOptions.GetHighlighterSettings(SynLFMSyn1);
   IDEEditorOptions.GetSynEditorSettings(LFMSynEdit);
 end;
 

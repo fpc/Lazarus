@@ -784,7 +784,8 @@ type
     function FindUsedUnitNames(Code: TCodeBuffer; var MainUsesSection,
           ImplementationUsesSection: TStrings): boolean; // names in the uses section, ignoring 'in'
     function FindUsedDottedUnitNames(Code: TCodeBuffer; var MainUsesSection,
-          ImplementationUsesSection: TStrings): boolean; deprecated 'use FindUsedUnitNames instead'; // ignoring 'in'
+          ImplementationUsesSection: TStrings): boolean;
+      deprecated 'use FindUsedUnitNames instead'; // ignoring 'in'  // Will be removed in 6.99
     function FindMissingUnits(Code: TCodeBuffer; var MissingUnits: TStrings;
           FixCase: boolean = false; SearchImplementation: boolean = true): boolean;
     function FindDelphiProjectUnits(Code: TCodeBuffer;

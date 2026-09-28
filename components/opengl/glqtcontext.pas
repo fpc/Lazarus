@@ -17,20 +17,18 @@ unit GLQTContext;
 interface
 
 uses
-  //  Classes, SysUtils, ctypes, LCLProc, LCLType, X, XUtil, XLib, gl,
-  //InterfaceBase,
-  //glx,
-  //WSLCLClasses,
   {$IFDEF ModernGL} ctypes,{$ENDIF}
-  Classes, SysUtils, Types, Controls, LCLProc, LCLType, X, XUtil, XLib, gl,
-  InterfaceBase,
-  WSLCLClasses,glx,
+  Classes, SysUtils, Types, X, XUtil, XLib, gl, glx,
+  // LCL
+  Controls, LCLType, InterfaceBase,
+  WSLCLClasses,
+  // LazUtils
+  LazLoggerBase, LazTracer,
   // Bindings
   {$IFDEF LCLQt}qt4,{$ENDIF}
   {$IFDEF LCLQt5}qt5, qlclopenglwidget,{$ENDIF}
   {$IFDEF LCLQt6}qt6, qlclopenglwidget,{$ENDIF}
-  qtwidgets, qtobjects, qtproc, qtint,
-  QtWSControls;
+  qtwidgets, qtobjects, qtint;
 
 // gdkgl
 

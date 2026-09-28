@@ -18,8 +18,15 @@ unit EduOptions;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LazConfigStorage, Controls, Forms, BaseIDEIntf,
-  LazFileUtils, LazIDEIntf, IDEOptionsIntf, ProjectIntf;
+  Classes, SysUtils, //LCLProc,
+  // LCL
+  Controls, Forms,
+  // LazUtils
+  LazConfigStorage, LazFileUtils, LazLoggerBase,
+  // BuildIntf
+  BaseIDEIntf, IDEOptionsIntf, ProjectIntf,
+  // IdeIntf
+  LazIDEIntf;
 
 resourcestring
   EduRSEducation = 'Education';

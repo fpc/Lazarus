@@ -251,8 +251,10 @@ type
     function CaretXPix: Integer; virtual; abstract;
     function CaretYPix: Integer; virtual; abstract;
 
-    function ScreenRowToRow(ScreenRow: integer; LimitToLines: Boolean = True): integer; virtual; abstract; deprecated 'use ScreenXYToTextXY';
-    function RowToScreenRow(PhysicalRow: integer): integer; virtual; abstract; deprecated 'use TextXYToScreenXY';
+    function ScreenRowToRow(ScreenRow: integer; LimitToLines: Boolean = True): integer; virtual; abstract;
+        deprecated 'use ScreenXYToTextXY';  // How?
+    function RowToScreenRow(PhysicalRow: integer): integer; virtual; abstract;
+        deprecated 'use TextXYToScreenXY';  // How?
     (* ScreenXY:
        First visible (scrolled in) screen line is 1
        First column is 1 => column does not take scrolling into account
@@ -525,9 +527,6 @@ type
   TSynSelectedColorEnum = (
     sscBack, sscFore, sscFrameLeft, sscFrameRight, sscFrameTop, sscFrameBottom
   );
-
-  { TSynSelectedColorMergeResult }
-  TSynSelectedColorMergeResult = TLazEditTextAttributeMergeResult deprecated 'Use TLazEditTextAttributeMergeResult // To be removed in 5.99';
 
   { TLazSynSurface }
 

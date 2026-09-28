@@ -142,7 +142,7 @@ type
     property OnProcessCommand;
     property OnProcessUserCommand;
     property OnReplaceText;
-    property OnSpecialLineColors;
+    property OnSpecialLineColors; deprecated;
     property OnStatusChange;
   end;
 

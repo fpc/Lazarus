@@ -88,28 +88,25 @@ type
 
   {$ifndef WINDOWS}
   PInt = ^integer;
-  // Deprecated in Lazarus 3.99 July 2023.
-  THandle = type PtrUInt deprecated 'Use TLCLHandle instead of this redefined THandle';
-
   { Provided for compatibility with Windows registry ONLY }
-  HKEY  = Integer;
-  HDC   = type TLCLHandle;
-  HHOOK = type TLCLHandle;
-  HFONT = type TLCLHandle;
+  HKEY    = Integer;
+  HDC     = type TLCLHandle;
+  HHOOK   = type TLCLHandle;
+  HFONT   = type TLCLHandle;
   HGDIOBJ = type TLCLHandle;
-  HPEN  = type TLCLHandle;
-  HRGN  = type TLCLHandle;
-  HINST = type TLCLHandle;
-  HICON = type TLCLHandle;
+  HPEN    = type TLCLHandle;
+  HRGN    = type TLCLHandle;
+  HINST   = type TLCLHandle;
+  HICON   = type TLCLHandle;
   HIMAGELIST = type TLCLHandle;
   HCURSOR = HICON;
   HGLOBAL = type TLCLHandle;
   HWND    = type TLCLHandle;
   HMENU   = type TLCLHandle;
   HBITMAP = type TLCLHandle;
-  HPALETTE = type TLCLHandle;
-  HBRUSH = type TLCLHandle;
-  HMONITOR = type TLCLHandle;
+  HPALETTE= type TLCLHandle;
+  HBRUSH  = type TLCLHandle;
+  HMONITOR= type TLCLHandle;
 
   Bool    = LongBool;
   Short   = SmallInt;
@@ -118,9 +115,7 @@ type
   WPARAM = type PtrInt; //LongInt or Int64 on CPU64;
   LPARAM = type PtrInt; //LongInt or Int64 on CPU64;
   LRESULT = type PtrInt; //LongInt or Int64 on CPU64;
-
   ULONG_PTR = type PtrUInt;
-
 {$else}
   HKEY  = Windows.HKEY;
   HDC   = Windows.HDC;
@@ -146,12 +141,9 @@ type
   WPARAM = Windows.WPARAM;
   LPARAM = Windows.LPARAM;
   LRESULT = Windows.LRESULT;
-
 {$endif}
 
-  TLCLIntfHandle = WSReferences.TLCLHandle deprecated 'Use TLCLHandle instead';
   TLCLHandle = WSReferences.TLCLHandle;
-
   PHKEY = ^HKEY;
 
 const
@@ -649,8 +641,6 @@ const
   VK_LCL_SEMI_COMMA  = VK_OEM_1;     // The ";:" Key
   VK_LCL_MINUS       = VK_OEM_MINUS; // The "-_" Key
 
-  VK_LCL_OPEN_BRAKET = VK_OEM_4 deprecated 'Use VK_LCL_OPEN_BRACKET instead';
-  VK_LCL_CLOSE_BRAKET= VK_OEM_6 deprecated 'Use VK_LCL_CLOSE_BRACKET instead';
   VK_LCL_OPEN_BRACKET = VK_OEM_4;     // The "[{" Key
   VK_LCL_CLOSE_BRACKET= VK_OEM_6;     // The "]}" Key
 

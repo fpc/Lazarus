@@ -16,6 +16,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LCLType, gl, Forms,
+  LazLoggerBase,
   MacOSAll,
   AGL, CarbonProc, CarbonDef, CarbonPrivate,
   WSLCLClasses, CarbonUtils,

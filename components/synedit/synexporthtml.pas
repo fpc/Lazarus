@@ -68,8 +68,6 @@ type
     fOptions: TExportHtmlOptions;
     fFontSize: THTMLFontSize;
     procedure SetExportHtmlOptions(Value: TExportHtmlOptions);
-    function GetCreateHTMLFragment: Boolean;
-    procedure SetCreateHTMLFragment(Value: Boolean);
     function MakeFontSpan(FG, BG: TColor): String;
     function StyleToHtml(AStyle: TFontStyles; IsSpace, DoSet: Boolean): String;
   protected
@@ -96,8 +94,6 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property Color;
-    property CreateHTMLFragment: boolean read GetCreateHTMLFragment
-      write SetCreateHTMLFragment default FALSE; deprecated 'Use Options instead';
     property DefaultFilter;
     property Options: TExportHtmlOptions read fOptions write SetExportHtmlOptions default [heoDoctype, heoCharset];
     property Font;
@@ -559,22 +555,6 @@ begin
     begin
       fOptions := fOptions - [heoDoctype, heoCharSet];
     end;
-  end;
-end;
-
-function TSynExporterHTML.GetCreateHTMLFragment: Boolean;
-begin
-  Result := (heoFragmentOnly in fOptions);
-end;
-
-procedure TSynExporterHTML.SetCreateHTMLFragment(Value: Boolean);
-begin
-  if (GetCreateHTMLFragment <> Value) then
-  begin
-    if Value then
-      Options := Options + [heoFragmentOnly]
-    else
-      Options := Options - [heoFragmentOnly];
   end;
 end;
 

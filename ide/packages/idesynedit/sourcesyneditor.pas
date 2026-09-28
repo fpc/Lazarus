@@ -123,7 +123,7 @@ type
     procedure SetExtraCharSpacing(AValue: integer); override;
     procedure SetExtraLineSpacing(AValue: integer); override;
     procedure SetForegroundColor(AValue: TColor); override;
-    procedure SetPadding(Side: TLazSynBorderSide; AValue: integer); override;
+    procedure SetPadding(Side: TLazTextAttrBorderSide; AValue: integer); override;
     procedure SetRightEdgeColor(AValue: TColor); override;
     procedure SetRightEdgeColumn(AValue: integer); override;
     procedure SetRightEdgeVisible(AValue: boolean); override;
@@ -1461,7 +1461,7 @@ begin
   FExtraManager.ForegroundColor := AValue;
 end;
 
-procedure TSourceLazSynSurfaceManager.SetPadding(Side: TLazSynBorderSide; AValue: integer);
+procedure TSourceLazSynSurfaceManager.SetPadding(Side: TLazTextAttrBorderSide; AValue: integer);
 begin
   FOriginalManager.Padding[Side] := AValue;
   FExtraManager.Padding[Side] := AValue;

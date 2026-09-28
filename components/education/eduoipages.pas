@@ -22,7 +22,7 @@ uses
   // LCL
   LCLProc, Forms, StdCtrls, ExtCtrls,
   // LazUtils
-  LazConfigStorage,
+  LazConfigStorage, LazLoggerBase,
   // IdeIntf
   ObjectInspector, ObjInspStrConsts, IDEOptionsIntf, IDEOptEditorIntf, FormEditingIntf,
   // Education

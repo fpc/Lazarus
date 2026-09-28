@@ -15,7 +15,10 @@ interface
 uses
   System.UITypes,
   // LCL
-  LCLType, LCLStrConsts,LCLProc, InterfaceBase,
+  LCLType, LCLStrConsts, InterfaceBase,
+  // LazUtils
+  LazLoggerBase,
+  //
   LazGtk3, LazGLib2, LazGObject2, LazGdk3, gtk3objects;
 
 

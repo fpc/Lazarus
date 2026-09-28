@@ -14,7 +14,9 @@ unit GLWin32WGLContext;
 interface
 
 uses
-  Classes, SysUtils, LMessages, Windows, LCLProc, LCLType, gl, Forms, Controls, 
+  Classes, SysUtils, Windows, gl,
+  LMessages, LCLProc, LCLType, Forms, Controls,
+  LazLoggerBase,
   Win32Int, WSLCLClasses, WSControls, Win32WSControls, Win32Proc, LCLMessageGlue;
 
 procedure LOpenGLViewport(Handle: HWND; Left, Top, Width, Height: integer);

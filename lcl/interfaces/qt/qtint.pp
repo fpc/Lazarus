@@ -38,7 +38,7 @@ uses
   // FPC
   Classes, SysUtils, Math, Types,
   // LazUtils
-  GraphType, LazUTF8, Maps, LazUtilities, LazStringUtils,
+  GraphType, LazUTF8, Maps, LazUtilities, LazLoggerBase,
   // LCL
   LCLPlatformDef, InterfaceBase, LCLProc, LCLType, LCLIntf,
   LMessages, LCLMessageGlue, LCLStrConsts,

@@ -23,11 +23,16 @@ unit SynPropertyEditObjectList;
 interface
 
 uses
-  Classes, SysUtils, LCLProc,
+  Classes, SysUtils, TypInfo,
+  // LCL
+  Forms, StdCtrls, ComCtrls, Dialogs, Controls,
+  // LazUtils
+  LazLoggerBase,
+  // IdeIntf
+  PropEdits, PropEditUtils, ComponentEditors, IDEImagesIntf, FormEditingIntf, ObjInspStrConsts,
+  // SynEdit
   SynEdit, SynGutterBase, SynEditMiscClasses, SynEditMouseCmds, SynEditKeyCmds,
-  SynDesignStringConstants,
-  PropEdits, PropEditUtils, Forms, StdCtrls, ComCtrls, Dialogs, ComponentEditors,
-  ObjInspStrConsts, Controls, IDEImagesIntf, typinfo, FormEditingIntf, SynEditTypes;
+  SynDesignStringConstants, SynEditTypes;
 
 type
 

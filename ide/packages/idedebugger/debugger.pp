@@ -1096,7 +1096,7 @@ type
     function GetFirstIndexOffs: Int64;
     function GetRepeatCount: Integer;
     function GetValidity: TDebuggerDataState; override;
-    procedure SetTypeInfo(AValue: TDBGTypeBase);
+    procedure SetTypeInfo(AValue: TObject);
     procedure SetValidity(AValue: TDebuggerDataState);
     procedure SetValue(AValue: String);
 
@@ -8499,7 +8499,7 @@ begin
   Result := FValidity;
 end;
 
-procedure TSubLocalsValue.SetTypeInfo(AValue: TDBGTypeBase);
+procedure TSubLocalsValue.SetTypeInfo(AValue: TObject);
 begin
   //assert(False, 'TSubLocalsValue.SetTypeInfo: False');
 end;

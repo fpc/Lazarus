@@ -1204,7 +1204,7 @@ var
   i: Integer;
 begin
   FHighLigther := TLazEditCustomHighlighter(IdeSyntaxHighlighters.SharedInstances[IdeAsmWinHlId]);
-  IDEEditorOptions.GetHighlighterObjSettings(FHighLigther);
+  IDEEditorOptions.GetHighlighterSettings(FHighLigther);
 
   Syn := TSynEdit.Create(nil);
   IDEEditorOptions.GetSynEditorSettings(Syn);

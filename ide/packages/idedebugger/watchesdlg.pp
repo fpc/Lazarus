@@ -1312,7 +1312,7 @@ end;
 
 procedure TWatchesDlg.DoEditorOptsChanged(Sender: TObject);
 begin
-  IDEEditorOptions.GetHighlighterObjSettings(WatchesColorsHL);
+  IDEEditorOptions.GetHighlighterSettings(WatchesColorsHL);
   tvWatches.EllipsisColor := WatchesColorsHL.AttrEllipsis.Foreground;
   UpdateAll;
 end;

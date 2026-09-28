@@ -292,22 +292,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  Method: TPen.SetHandle
-  Params:   a pen handle
-  Returns:  nothing
-
-  sets the pen to an external created pen
- ------------------------------------------------------------------------------}
-procedure TPen.SetHandle(const Value: HPEN);
-begin
-  if HPEN(FReference.Handle) = Value then Exit;
-
-  FreeReference;
-  FReference._lclHandle := TLCLHandle(Value);
-  Changed;
-end;
-
 procedure TPen.SetJoinStyle(AValue: TPenJoinStyle);
 begin
   if JoinStyle <> AValue then
@@ -320,18 +304,6 @@ begin
     {$ENDIF}
     Changed;
   end;
-end;
-
-{------------------------------------------------------------------------------
-  Function: TPen.GetHandle
-  Params:   none
-  Returns:  a handle to a pen gdiobject
-
-  Creates a pen if needed
- ------------------------------------------------------------------------------}
-function TPen.GetHandle: HPEN;
-begin
-  Result := HPEN(Reference.Handle);
 end;
 
 function TPen.GetReference: TWSPenReference;

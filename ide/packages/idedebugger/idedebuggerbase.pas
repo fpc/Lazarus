@@ -91,7 +91,7 @@ type
     function GetParentFrameFound: integer;
     procedure SetValidity(AValue: TDebuggerDataState); virtual;
     procedure SetTypeInfo(AValue: TDBGType);
-    procedure SetTypeInfo(AValue: TDBGTypeBase);
+    procedure SetTypeInfo(AValue: TObject);
     procedure SetParentFrameFound(AValue: integer);
 
     function GetResultData: TWatchResultData; virtual;
@@ -613,7 +613,7 @@ begin
   FTypeInfo := AValue;
 end;
 
-procedure TWatchValue.SetTypeInfo(AValue: TDBGTypeBase);
+procedure TWatchValue.SetTypeInfo(AValue: TObject);
 begin
   SetTypeInfo(TDBGType(AValue));
 end;

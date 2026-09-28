@@ -24,8 +24,9 @@ uses
   // Bindings
   LazGlib2, LazGdk3, LazGtk3,
   // RTL, FCL, LCL
-  SysUtils, Types, Classes, Controls, Calendar, LCLType, LMessages,
-  InterfaceBase, LCLProc,
+  SysUtils, Types, Classes, Controls, Calendar, LCLType, LMessages, InterfaceBase,
+  // LazUtils
+  LazLoggerBase,
   // Widgetset
   WSCalendar, WSLCLClasses, WSProc;
 

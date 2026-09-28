@@ -21,11 +21,12 @@ unit Gtk3Objects;
 interface
 
 uses
-  Classes, SysUtils, Types, math, FPCanvas,
+  Classes, SysUtils, Types, Math, FPCanvas,
   // LazUtils
-  LazUTF8, IntegerList, LazStringUtils, Maps,
+  LazUTF8, IntegerList, LazStringUtils, LazTracer, Maps,
   // LCL
   LCLType, LCLProc, Graphics,
+  //
   LazGtk3, LazGdk3, LazGObject2, LazGLib2, LazGdkPixbuf2,
   LazPango1, LazPangoCairo1, LazCairo1, gtk3procs, LazLogger;
 
@@ -860,7 +861,7 @@ end;
 
 function TGtk3ContextObject.Select(ACtx:TGtk3DeviceContext): TGtk3ContextObject;
 begin
-  DbgS('Default context object selected, please implement');
+  DebugLn('Default context object selected, please implement');
   Result:=nil;
 end;
 

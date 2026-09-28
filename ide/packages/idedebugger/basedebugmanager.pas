@@ -45,7 +45,7 @@ uses
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfPseudoTerminal,
   // LazDebuggerIntf
-  LazDebuggerIntf,
+  LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   // IdeDebugger
   IdeDebuggerBase, IdeDebuggerOpts, Debugger, IdeDebuggerWatchResPrinter,
   IdeDebuggerExcludedRoutines;

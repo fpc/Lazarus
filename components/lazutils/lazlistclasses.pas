@@ -424,7 +424,7 @@ type
   generic TLazShiftBufferListObjBase<TPItemT, _TSizeT> = object(
     specialize TGenLazShiftList<TPItemT, specialize TGenListConfig_1<_TSizeT> >
   )
-  end deprecated;
+  end deprecated; // Will be removed in 6.99
 
   TLazShiftBufferListObj = object(
     specialize TGenLazShiftListVarSize<Pointer, TLazListConfigVarSize_0>
@@ -525,7 +525,7 @@ type
   generic TLazRoundBufferListObjBase<TPItemT, _TSizeT> = object(
     specialize TGenLazRoundList<TPItemT, specialize TGenListConfig_1<_TSizeT> >
   )
-  end deprecated;
+  end deprecated; // Will be removed in 6.99
 
   TLazRoundBufferListObj = object(specialize TGenLazRoundListVarSize<Pointer, TLazListConfigVarSize_0>)
   end;
@@ -759,7 +759,7 @@ type
   generic TLazPagedListObjBase<TPItemT, _TSizeT> = object(
     specialize TGenLazPagedList<TPItemT, specialize TGenListConfig_1<_TSizeT>, TLazListPageConfig>
   )
-  end deprecated;
+  end deprecated; // Will be removed in 6.99
 
   TLazPagedListObj = object(specialize TGenLazPagedListVarSize<Pointer, TLazListConfigVarSize_0, TLazListPageConfig>)
   end;

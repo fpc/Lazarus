@@ -207,16 +207,16 @@ begin
   end;
   if Sender = FrameEdgesBox then
   begin
-    FCurHighlightElement.FrameEdges := TSynFrameEdges(FrameEdgesBox.ItemIndex);
+    FCurHighlightElement.FrameEdges := TLazTextAttrFrameEdges(FrameEdgesBox.ItemIndex);
   end;
   if Sender = FrameStyleBox then
   begin
-    FCurHighlightElement.FrameStyle := TSynLineStyle(FrameStyleBox.ItemIndex);
+    FCurHighlightElement.FrameStyle := TLazTextAttrLineStyle(FrameStyleBox.ItemIndex);
   end;
   if Sender = MarkupFoldStyleBox then
   begin
     if hafMarkupFoldColor in FCurHighlightElement.AttrFeatures then
-      FCurHighlightElement.MarkupFoldLineStyle := TSynLineStyle(MarkupFoldStyleBox.ItemIndex);
+      FCurHighlightElement.MarkupFoldLineStyle := TLazTextAttrLineStyle(MarkupFoldStyleBox.ItemIndex);
   end;
 
   UpdatingColor := False;

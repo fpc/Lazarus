@@ -64,35 +64,6 @@ begin
   DeleteObject(lRGN);
 end;
 
-{------------------------------------------------------------------------------
-  Method: TRegion.SetHandle
-  Params:   a region handle
-  Returns:  nothing
-
-  sets the region to an external created region
- ------------------------------------------------------------------------------}
-procedure TRegion.SetHandle(const Value: HRGN);
-begin
-  if HRGN(FReference.Handle) = Value then Exit;
-
-  FreeReference;
-  FReference._lclHandle := TLCLHandle(Value);
-  //TODO: query region description data
-  Changed;
-end;
-
-{------------------------------------------------------------------------------
-  Function: TRegion.GetHandle
-  Params:   none
-  Returns:  a handle to a Region gdiobject
-
-  Creates a region if needed
- ------------------------------------------------------------------------------}
-function TRegion.GetHandle: HRGN;
-begin
-  Result := HRGN(Reference.Handle);
-end;
-
 function TRegion.GetReference: TWSRegionReference;
 begin
   ReferenceNeeded;

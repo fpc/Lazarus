@@ -21,10 +21,6 @@ unit WSReferences;
 
 interface
 
-//uses
-//  Types;
-
-
 type
   // use TLCLHandle instead of THandle since THandle = longint under 64bit linux
   TLCLHandle = PtrUInt;

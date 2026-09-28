@@ -1187,7 +1187,7 @@ procedure TCanvas.FrameRect(const ARect: TRect);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid]);
-  LCLIntf.FrameRect(FHandle, ARect, Brush.GetHandle);
+  LCLIntf.FrameRect(FHandle, ARect, Brush.Reference.Handle);
   Changed;
 end;
 

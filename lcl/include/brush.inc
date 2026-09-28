@@ -143,44 +143,22 @@ begin
     inherited Assign(Source);
 end;
 
-{------------------------------------------------------------------------------
-  Method: TBrush.SetHandle
-  Params:   a brush handle
-  Returns:  nothing
+function TBrush.GetHandle: HBRUSH;
+begin
+  Result := Reference.Handle;
+end;
 
-  sets the brush to an external created brush
- ------------------------------------------------------------------------------}
 procedure TBrush.SetHandle(const Value: HBRUSH);
 begin
-  if HBRUSH(FReference.Handle) = Value then Exit;
-
+  if FReference.Handle = Value then Exit;
   FreeReference;
-  FReference._lclHandle := TLCLHandle(Value);
+  FReference._lclHandle := Value;
   FInternalUpdateIndex := GraphicsUpdateCount;
   Changed;
 end;
 
-{------------------------------------------------------------------------------
-  Function: TBrush.GetHandle
-  Params:   none
-  Returns:  a handle to a brush gdiobject
-
-  Creates a brush if needed
- ------------------------------------------------------------------------------}
-function TBrush.GetHandle: HBRUSH;
-begin
-  Result := HBRUSH(Reference.Handle);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TBrush.FreeReference
-  Params:  none
-  Returns: Nothing
-
-  Frees a brush handle if needed
- ------------------------------------------------------------------------------}
-
 procedure TBrush.FreeReference;
+// Frees a brush handle if needed
 var
   CacheItem: TResourceCacheItem;
 begin

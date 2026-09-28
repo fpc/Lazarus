@@ -81,37 +81,6 @@ procedure InitFoldBlockFilter(out AFilter: TSynFoldBlockFilter;
                               AFoldGroup: Integer = 0; AFlag: TSynFoldBlockFilterFlags = []);
 
 type
-  TSynFoldNodeInfo = LazEditHighlighterFoldNodeHighlighter.TLazEditFoldNodeInfo deprecated 'use TLazEditFoldNodeInfo // will be removed in 5.99';
-  PSynFoldNodeInfo = LazEditHighlighterFoldNodeHighlighter.PLazEditFoldNodeInfo deprecated 'use PLazEditFoldNodeInfo // will be removed in 5.99';
-  TLazSynFoldNodeInfoList = LazEditHighlighterFoldNodeHighlighter.TLazEditFoldNodeInfoList deprecated 'use TLazEditFoldNodeInfoList // will be removed in 5.99';
-
-  TLazSynEditNestedFoldsListEntry = LazEditFoldHighlighter.TLazEditNestedFoldsListEntry deprecated 'use LazEditFoldHighlighter.TLazEditNestedFoldsListEntry // will be removed in 5.99';
-  TLazSynEditNestedFoldsList = LazEditFoldHighlighter.TLazEditNestedFoldsList deprecated 'use LazEditFoldHighlighter.TLazEditNestedFoldsList // will be removed in 5.99';
-
-const
-  sfaOpen               = LazEditFoldHighlighter.TSynFoldAction.sfaOpen               deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaOpen // will be removed in 5.99';
-  sfaClose              = LazEditFoldHighlighter.TSynFoldAction.sfaClose              deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaClose // will be removed in 5.99';
-  sfaFold               = LazEditFoldHighlighter.TSynFoldAction.sfaFold               deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaFold // will be removed in 5.99';
-  sfaFoldFold           = LazEditFoldHighlighter.TSynFoldAction.sfaFoldFold           deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaFoldFold // will be removed in 5.99';
-  sfaFoldHide           = LazEditFoldHighlighter.TSynFoldAction.sfaFoldHide           deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaFoldHide // will be removed in 5.99';
-  sfaMultiLine          = LazEditFoldHighlighter.TSynFoldAction.sfaMultiLine          deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaMultiLine // will be removed in 5.99';
-  sfaSingleLine         = LazEditFoldHighlighter.TSynFoldAction.sfaSingleLine         deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaSingleLine // will be removed in 5.99';
-  sfaCloseForNextLine   = LazEditFoldHighlighter.TSynFoldAction.sfaCloseForNextLine   deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaCloseForNextLine // will be removed in 5.99';
-  sfaLastLineClose      = LazEditFoldHighlighter.TSynFoldAction.sfaLastLineClose      deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaLastLineClose // will be removed in 5.99';
-  sfaCloseAndOpen       = LazEditFoldHighlighter.TSynFoldAction.sfaCloseAndOpen       deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaCloseAndOpen // will be removed in 5.99';
-  sfaDefaultCollapsed   = LazEditFoldHighlighter.TSynFoldAction.sfaDefaultCollapsed   deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaDefaultCollapsed // will be removed in 5.99';
-  sfaMarkup             = LazEditFoldHighlighter.TSynFoldAction.sfaMarkup             deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaMarkup // will be removed in 5.99';
-  sfaOutline            = LazEditFoldHighlighter.TSynFoldAction.sfaOutline            deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaOutline // will be removed in 5.99';
-  sfaOutlineKeepLevel   = LazEditFoldHighlighter.TSynFoldAction.sfaOutlineKeepLevel   deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaOutlineKeepLevel // will be removed in 5.99';
-  sfaOutlineMergeParent = LazEditFoldHighlighter.TSynFoldAction.sfaOutlineMergeParent deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaOutlineMergeParent // will be removed in 5.99';
-  sfaOutlineForceIndent = LazEditFoldHighlighter.TSynFoldAction.sfaOutlineForceIndent deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaOutlineForceIndent // will be removed in 5.99';
-  sfaInvalid            = LazEditFoldHighlighter.TSynFoldAction.sfaInvalid            deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaInvalid // will be removed in 5.99';
-  sfaOpenFold           = LazEditFoldHighlighter.TSynFoldAction.sfaOpenFold           deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaOpenFold // will be removed in 5.99';
-  sfaCloseFold          = LazEditFoldHighlighter.TSynFoldAction.sfaCloseFold          deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaCloseFold // will be removed in 5.99';
-  sfaOneLineOpen        = LazEditFoldHighlighter.TSynFoldAction.sfaOneLineOpen        deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaOneLineOpen // will be removed in 5.99';
-  sfaOneLineClose       = LazEditFoldHighlighter.TSynFoldAction.sfaOneLineClose       deprecated 'use LazEditFoldHighlighter.TSynFoldAction.sfaOneLineClose // will be removed in 5.99';
-
-type
   TSynCustomFoldConfigMode  = LazEditFoldHighlighter.TSynCustomFoldConfigMode;
   TSynCustomFoldConfigModes = LazEditFoldHighlighter.TSynCustomFoldConfigModes;
 
@@ -183,7 +152,6 @@ type
       read FMinimumNestFoldBlockLevel; // write FMinimumNestFoldBlockLevel;
     property Top: TSynCustomCodeFoldBlock read FTop;
   end;
-  TSynCustomHighlighterRangeClass = class of TSynCustomHighlighterRange deprecated 'use TLazHighlighterRangeClass // will be removed in 5.99';
 
   { TSynCustomFoldHighlighter }
 
@@ -232,11 +200,11 @@ type
     procedure EndCodeFoldBlock(DecreaseLevel: Boolean = True); virtual;
     procedure CollectNodeInfo(FinishingABlock : Boolean; ABlockType: Pointer;
               LevelChanged: Boolean); virtual;
-    procedure DoInitNode(var Node: TSynFoldNodeInfo;
+    procedure DoInitNode(var Node: TLazEditFoldNodeInfo;
                        FinishingABlock: Boolean;
                        ABlockType: Pointer; aActions: TSynFoldActions;
                        AIsFold: Boolean); virtual;
-    procedure RepairSingleLineNode(var Node: TSynFoldNodeInfo); virtual;
+    procedure RepairSingleLineNode(var Node: TLazEditFoldNodeInfo); virtual;
     procedure GetTokenBounds(out LogX1,LogX2: Integer); virtual;
 
     // Info about Folds
@@ -261,20 +229,13 @@ type
                                const AFilter: TSynFoldBlockFilter): integer; override; overload;
     function FoldBlockMinLevel(ALineIndex: TLineIdx;
                                const AFilter: TSynFoldBlockFilter): integer; override; overload;
-
-    function FoldOpenCount(ALineIndex: Integer; AType: Integer = 0): integer;  deprecated;
-    function FoldCloseCount(ALineIndex: Integer; AType: Integer = 0): integer; deprecated;
-    function FoldNestCount(ALineIndex: Integer; AType: Integer = 0): integer; deprecated;
-
     function FoldEndLine(ALineIndex, FoldIndex: Integer): integer; virtual; overload; // deprecate // fix inherited classes
-
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
     procedure InitForScanningLine; override;
     procedure DoCurrentLinesChanged; override;
     function DoPrepareLines(AFirstLineIdx: IntIdx; AMinimumRequiredLineIdx: IntIdx = - 1;
       AMaxTime: integer = 0): integer; override;
-
   public
     property FoldConfig[Index: Integer]: TSynCustomFoldConfig read GetFoldConfig write SetFoldConfig;
   end;
@@ -494,21 +455,6 @@ begin
   Result := FCodeFoldRange.NestFoldStackSize + FUncommittedFoldNestCount;
 end;
 
-function TSynCustomFoldHighlighter.FoldOpenCount(ALineIndex: Integer; AType: Integer = 0): integer;
-begin
-  result := FoldBlockOpeningCount(ALineIndex, AType);
-end;
-
-function TSynCustomFoldHighlighter.FoldCloseCount(ALineIndex: Integer; AType: Integer = 0): integer;
-begin
-  result := FoldBlockClosingCount(ALineIndex, AType);
-end;
-
-function TSynCustomFoldHighlighter.FoldNestCount(ALineIndex: Integer; AType: Integer = 0): integer;
-begin
-  Result := FoldBlockEndLevel(ALineIndex, AType);
-end;
-
 function TSynCustomFoldHighlighter.FoldEndLine(ALineIndex, FoldIndex: Integer): integer;
 begin
   Result := FoldEndLine(ALineIndex, FoldIndex, 0, []);
@@ -692,7 +638,7 @@ var
   //DecreaseLevel,
   BlockTypeEnabled, BlockConfExists: Boolean;
   act: TSynFoldActions;
-  nd: TSynFoldNodeInfo;
+  nd: TLazEditFoldNodeInfo;
 begin
   if not IsCollectingNodeInfo then exit;
 
@@ -728,7 +674,7 @@ begin
   FCollectingNodeInfoList.Add(nd);
 end;
 
-procedure TSynCustomFoldHighlighter.DoInitNode(var Node: TSynFoldNodeInfo;
+procedure TSynCustomFoldHighlighter.DoInitNode(var Node: TLazEditFoldNodeInfo;
   FinishingABlock: Boolean; ABlockType: Pointer;
   aActions: TSynFoldActions; AIsFold: Boolean);
 var
@@ -762,7 +708,7 @@ begin
     RepairSingleLineNode(Node);
 end;
 
-procedure TSynCustomFoldHighlighter.RepairSingleLineNode(var Node: TSynFoldNodeInfo);
+procedure TSynCustomFoldHighlighter.RepairSingleLineNode(var Node: TLazEditFoldNodeInfo);
 var
   nd: PLazEditFoldNodeInfo;
   i : integer;

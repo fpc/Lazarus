@@ -373,8 +373,6 @@ type
     property OnCancel: TNotifyEvent read GetOnCancel write SetOnCancel;
     property CurrentString: string read GetCurrentString write SetCurrentString;
     property FontHeight: integer read GetFontHeight;
-    property ClSelect: TColor read GetClSelect write SetClSelect; deprecated; // use SelectedColor
-    property NbLinesInWindow: Integer read GetNbLinesInWindow write SetNbLinesInWindow; deprecated;
   published
     property BackSpaceAction: TSynCompletionBackSpaceAction read GetBackSpaceAction write SetBackSpaceAction;
     property OnBeforeExecute: TOnBeforeExecuteEvent read FOnBeforeExecute write FOnBeforeExecute;
@@ -385,8 +383,7 @@ type
              write SetOnMeasureItem;
     property ItemList: TStrings read GetItemList write SetItemList;
     property Position: Integer read GetPosition write SetPosition;
-    property LinesInWindow: Integer read GetNbLinesInWindow
-                                      write SetNbLinesInWindow;
+    property LinesInWindow: Integer read GetNbLinesInWindow write SetNbLinesInWindow;
     property OnSearchPosition: TSynBaseCompletionSearchPosition
                              read GetOnSearchPosition write SetOnSearchPosition;
     property OnKeyCompletePrefix: TNotifyEvent read GetOnKeyCompletePrefix
@@ -437,7 +434,6 @@ type
     function GetCompletionFormClass: TSynBaseCompletionFormClass; override;
   public
     constructor Create(AOwner: TComponent); override;
-    function EditorsCount: integer; deprecated; // use EditorCount
     procedure AddCharAtCursor(AUtf8Char: TUTF8Char);
     procedure DeleteCharBeforeCursor;
   published
@@ -2088,11 +2084,6 @@ procedure TSynCompletion.SetEditor(const Value: TCustomSynEdit);
 begin
   inherited SetEditor(Value);
   Form.SetCurrentEditor(Value);
-end;
-
-function TSynCompletion.EditorsCount: integer;
-begin
-  result := EditorCount;
 end;
 
 procedure TSynCompletion.AddCharAtCursor(AUtf8Char: TUTF8Char);

@@ -18,9 +18,9 @@ interface
 {$I LR_Vers.inc}
 
 uses
-  SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Printers,LCLType,LCLProc,
-
+  SysUtils, Classes,
+  Graphics, Controls, Forms, Dialogs, Printers, LCLType,
+  LazLoggerBase,
   LR_Class, LR_Const;
 
 type

@@ -403,8 +403,6 @@ type
 
     function GetFoldClasifications(index : Integer): TFoldNodeClassifications;
     function GetHighLighter: TLazEditCustomHighlighter;
-    function GetDisplayNumber(index : Integer) : Integer; deprecated 'To be removed in 5.99 / Use DisplayView.ViewToTextIndex';
-    function GetTextIndex(index : Integer) : Integer; deprecated 'To be removed in 5.99 / Use ScreenLineToTextIndex';
     function GetFoldType(index : Integer) : TSynEditFoldLineCapabilities;
     function IsFolded(index : integer) : Boolean;  // TextIndex
     procedure ProcessMySynCommand(Sender: TObject; AfterProcessing: boolean;
@@ -457,21 +455,14 @@ type
     function InternViewToTextIndex(aViewIndex : TLineIdx) : TLineIdx;             (* Convert ViewIndex (0-based) to TextIndex (0-based) *)
     function InternViewToTextIndexOffest(aViewIndex : TLineIdx) : integer;      (* Offset (add) to Convert ViewIndex (0-based) to TextIndex (0-based) *)
 
-    function TextIndexToScreenLine(aTextIndex : Integer) : Integer; deprecated 'To be removed in 5.99 / Use TextToViewIndex(index)-TopView or TextXYToScreenXY / no support for use with wrap'; (* Convert TextIndex (0-based) to Screen (0-based) *)
-    function ScreenLineToTextIndex(aLine : Integer) : Integer; deprecated 'To be removed in 5.99 / Use ViewToTextIndex(index+TopView) or ScreenXYToTextXY / no support for use with wrap'; (* Convert Screen (0-based) to TextIndex (0-based) *)
-
     function AddVisibleOffsetToTextIndex(aTextIndex: TLineIdx; LineOffset: Integer): TLineIdx; override;
     function IsTextIdxVisible(aTextIndex: TLineIdx): Boolean; override;
 
     // Attributes for Visible-Lines-On-screen
-    property DisplayNumber[index : Integer] : Integer   (* LineNumber for display in Gutter / result is 1-based *)
-      read GetDisplayNumber; deprecated 'To be removed in 5.99 / Use DisplayView.ViewToTextIndex / no support for use with wrap';
     property FoldType[index : Integer] : TSynEditFoldLineCapabilities (* FoldIcon / State *)
       read GetFoldType;
     property FoldClasifications[index : Integer] : TFoldNodeClassifications (* FoldIcon / State *)
       read GetFoldClasifications;
-    property TextIndex[index : Integer] : Integer       (* Position in SynTextBuffer / result is 0-based *)
-      read GetTextIndex; deprecated 'To be removed in 5.99 / Use ViewToTextIndex(index+TopView) / no support for use with wrap';
 
     // Define Visible Area
     property TopViewPos : integer                          (* refers to visible (unfolded) lines / 1-based *)
@@ -3183,11 +3174,6 @@ begin
     aTextIndex := ToIdx(n.StartLine) - 1;
 end;
 
-function TSynEditFoldedView.TextIndexToScreenLine(aTextIndex : Integer) : Integer;
-begin
-  Result := InternTextToViewIndex(aTextIndex) - TopViewPos + 1;
-end;
-
 function TSynEditFoldedView.InternViewToTextIndex(aViewIndex: TLineIdx): TLineIdx;
 begin
   if (not (fvfNeedCalcMaps in FFlags)) and
@@ -3206,11 +3192,6 @@ begin
     Result := fFoldTypeList[aViewIndex-ToIdx(fTopViewPos)+1].FoldedBefore
   else
     result := fFoldTree.FindFoldForFoldedLine(ToPos(aViewIndex)).FoldedBefore;
-end;
-
-function TSynEditFoldedView.ScreenLineToTextIndex(aLine : Integer) : Integer;
-begin
-  Result := InternViewToTextIndex(aLine + TopViewPos - 1);
 end;
 
 function TSynEditFoldedView.TextIndexAddLines(aTextIndex, LineOffset : Integer) : Integer;
@@ -3430,7 +3411,7 @@ begin
        ((not FInTopLineChanged) or (fvfNeedCalcMaps in FFlags)) // TODO: Scan now, to avoid invalidate later
      ) or
      ( (HighLighter <> nil) and (HighLighter.FirstUnpreparedLine >= 0) ) // SynEdit.DoHighlightChanged will call FixFolding, which does CalculateMaps
-     // TODO: HighLighter.CurrentRanges.NeedsReScanStartIndex < "last line in windows"
+     // TODO: HighLighter.CurrentRanges.FirstInvalidLine < "last line in windows"
   then begin
     Include(FFlags, fvfNeedCalcMaps);
     exit;
@@ -3570,16 +3551,6 @@ end;
 function TSynEditFoldedView.GetViewedLines(index : Integer) : String;
 begin
   Result := NextLines.ViewedLines[InternViewToTextIndex(index)];
-end;
-
-function TSynEditFoldedView.GetDisplayNumber(index : Integer) : Integer;
-begin
-  Result := ToPos(ScreenLineToTextIndex(Index));
-end;
-
-function TSynEditFoldedView.GetTextIndex(index : Integer) : Integer;
-begin
-  Result := ScreenLineToTextIndex(Index);
 end;
 
 function TSynEditFoldedView.GetFoldType(index : Integer) : TSynEditFoldLineCapabilities;
@@ -4560,7 +4531,7 @@ begin
   if AType <> 0 then
     TypeCnt := 1
   else
-    TypeCnt := hl.FoldTypeCount;
+    TypeCnt := hl.FoldGroupCount;
   Lvl := hl.FoldBlockEndLevel(AStartIndex-1, AType);
   if ColIndex >= Lvl then begin
     n := ColIndex - Lvl;

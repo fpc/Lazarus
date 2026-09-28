@@ -155,8 +155,8 @@ type
                                 SourceChangeCache: TSourceChangeCache): boolean;
     function FindUsedUnitNames(var MainUsesSection,
                                ImplementationUsesSection: TStrings): boolean;
-    function FindUsedDottedUnitNames(var MainUsesSection,
-                               ImplementationUsesSection: TStrings): boolean; deprecated 'use FindUsedUnitNames instead';
+    function FindUsedDottedUnitNames(var MainUsesSection, ImplementationUsesSection: TStrings): boolean;
+      deprecated 'use FindUsedUnitNames instead'; // Will be removed in 6.99
     function FindUsedUnitNames(var List: TStringToStringTree): boolean;
     function FindUsedUnitFiles(var MainUsesSection: TStrings): boolean;
     function FindUsedUnitFiles(var MainUsesSection,
@@ -167,7 +167,8 @@ type
                                     IgnoreNormalUnits: boolean = false): boolean;
     function UsesSectionToFilenames(UsesNode: TCodeTreeNode): TStrings;
     function UsesSectionToUnitnames(UsesNode: TCodeTreeNode): TStrings; // as written in uses section
-    function UsesSectionToDottedUnitnames(UsesNode: TCodeTreeNode): TStrings; deprecated 'use UsesSectionToUnitnames instead';
+    function UsesSectionToDottedUnitnames(UsesNode: TCodeTreeNode): TStrings;
+      deprecated 'use UsesSectionToUnitnames instead'; // Will be removed in 6.99
 
     function FindMissingUnits(var MissingUnits: TStrings; FixCase: boolean;
                               SearchImplementation: boolean;

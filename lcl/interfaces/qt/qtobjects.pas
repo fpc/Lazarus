@@ -27,10 +27,9 @@ uses
   // Free Pascal
   Classes, SysUtils, Types,
   // LazUtils
-  Maps,
+  LazLoggerBase, Maps,
   // LCL
-  LCLType, LCLIntf, LCLProc, LazUTF8, Menus, Graphics, ClipBrd, ExtCtrls,
-  Interfacebase;
+  LCLType, LCLIntf, LazUTF8, Menus, Graphics, ClipBrd, ExtCtrls, Interfacebase;
 
 type
   // forward declarations

@@ -914,7 +914,6 @@ type
   TGDBMILocals = class(TLocalsSupplier)
   private
     FCommandList: TList;
-    procedure CancelEvaluation; deprecated;
     procedure DoEvaluationDestroyed(Sender: TObject);
   protected
     procedure CancelAllCommands;
@@ -11618,10 +11617,6 @@ end;
 procedure TGDBMILocals.DoEvaluationDestroyed(Sender: TObject);
 begin
   FCommandList.Remove(Sender);
-end;
-
-procedure TGDBMILocals.CancelEvaluation;
-begin
 end;
 
 { TGDBMIDebuggerCommandExcludedRoutineSet }

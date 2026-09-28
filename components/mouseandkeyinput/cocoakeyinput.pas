@@ -87,7 +87,7 @@ begin
     VK_OEM_6              : Result := kVK_ANSI_RightBracket;
     VK_O                  : Result := kVK_ANSI_O;
     VK_U                  : Result := kVK_ANSI_U;
-    VK_LCL_OPEN_BRAKET    : Result := kVK_ANSI_LeftBracket;
+    VK_LCL_OPEN_BRACKET   : Result := kVK_ANSI_LeftBracket;
     VK_I                  : Result := kVK_ANSI_I;
     VK_P                  : Result := kVK_ANSI_P;
 

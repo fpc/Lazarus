@@ -37,7 +37,7 @@ uses
   // LazControls
   CheckBoxThemed,
   // LazUtils
-  FileUtil, StringHashList, LazMethodList, LazLoggerBase, LazUtilities,
+  FileUtil, StringHashList, LazMethodList, LazLoggerBase, LazTracer, LazUtilities,
   GraphType, FPCAdds, // for StrToQWord in older fpc versions
   // IdeIntf
   ObjInspStrConsts, PropEditUtils,

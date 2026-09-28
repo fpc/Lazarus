@@ -119,9 +119,6 @@ type
                                          out   ANextPhys, ANextLog: Integer); override;
 
     procedure ClearShiftStateCache;
-    property CtrlMouseLine : Integer read FCurrentLink.StartPos.Y write FCurrentLink.StartPos.Y; deprecated 'use LinkStartPos or LinkEndPos / to be removed in 5.99';
-    property CtrlMouseX1 : Integer read FCurrentLink.StartPos.X write FCurrentLink.StartPos.X; deprecated 'use LinkStartPos / to be removed in 5.99';
-    property CtrlMouseX2 : Integer read FCurrentLink.EndPos.X write FCurrentLink.EndPos.X; deprecated 'use LinkEndPos / to be removed in 5.99';
     property LinkStartPos: TLogPoint read FCurrentLink.StartPos;
     property LinkEndPos: TLogPoint read FCurrentLink.EndPos;
     property IsMouseOverLink: Boolean read GetIsMouseOverLink;

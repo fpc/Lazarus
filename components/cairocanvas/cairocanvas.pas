@@ -29,9 +29,9 @@ interface
 uses
   Types, SysUtils, Classes, Math,
   // LCL
-  Printers, LCLType, LCLProc, Graphics,
+  Printers, LCLType, Graphics,
   // LazUtils
-  GraphMath
+  LazLoggerBase, GraphMath
   //CairoCanvas
   {$ifdef pangocairo}
   {$IFNDEF LCLGtk3}
