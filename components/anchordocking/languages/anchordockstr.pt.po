@@ -20,6 +20,10 @@ msgstr "Um lado livre de um divisor não deve ser ancorado: Nó=\"%s\" Tipo=%s �
 msgid "Allow dock sites to be minimized"
 msgstr "Permitir que sítios ancorados sejam minimizados"
 
+#: anchordockstr.adrsamountofmilisecondshastodragbeforedragstarts
+msgid "Amount of miliseconds when lbm pressed has to drag before drag starts"
+msgstr ""
+
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "Distância em pixels que o rato tem de percorrer antes de arrastar"
@@ -116,6 +120,10 @@ msgstr "Opções de ancoragem"
 #, object-pascal-format
 msgid "Use the mouse to drag and dock window \"%s\""
 msgstr "Use o rato para arrastar e ancorar a janela \"%s\""
+
+#: anchordockstr.adrsdragdelay
+msgid "Drag delay"
+msgstr ""
 
 #: anchordockstr.adrsdragthreshold
 msgid "Drag threshold"

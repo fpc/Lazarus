@@ -20,6 +20,10 @@ msgstr "Egy elválasztó szabad oldala nem rögzíthető: Csomópont=\"%s\" Típ
 msgid "Allow dock sites to be minimized"
 msgstr "A dokkterületek legyenek minimalizálhatók"
 
+#: anchordockstr.adrsamountofmilisecondshastodragbeforedragstarts
+msgid "Amount of miliseconds when lbm pressed has to drag before drag starts"
+msgstr ""
+
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "Ennyi képpontot kell mozdulnia az egérnek mielőtt a húzás elkezdődik"
@@ -116,6 +120,10 @@ msgstr "Dokkolás beállításai"
 #, object-pascal-format
 msgid "Use the mouse to drag and dock window \"%s\""
 msgstr "Használja az egeret a(z) \"%s\" ablak húzásához és dokkolásához"
+
+#: anchordockstr.adrsdragdelay
+msgid "Drag delay"
+msgstr ""
 
 #: anchordockstr.adrsdragthreshold
 msgid "Drag threshold"

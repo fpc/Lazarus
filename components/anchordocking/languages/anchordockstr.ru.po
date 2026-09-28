@@ -20,6 +20,10 @@ msgstr "Свободная сторона разделителя не должн
 msgid "Allow dock sites to be minimized"
 msgstr "Разрешать областям стыковки сворачиваться"
 
+#: anchordockstr.adrsamountofmilisecondshastodragbeforedragstarts
+msgid "Amount of miliseconds when lbm pressed has to drag before drag starts"
+msgstr ""
+
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "Число пикселов, на которые должна переместиться мышь для начала операции перетаскивания"
@@ -116,6 +120,10 @@ msgstr "Параметры стыковки"
 #, object-pascal-format
 msgid "Use the mouse to drag and dock window \"%s\""
 msgstr "Используйте мышь для перетаскивания и стыковки окна \"%s\""
+
+#: anchordockstr.adrsdragdelay
+msgid "Drag delay"
+msgstr ""
 
 #: anchordockstr.adrsdragthreshold
 msgid "Drag threshold"

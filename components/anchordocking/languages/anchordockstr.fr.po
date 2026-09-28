@@ -20,6 +20,10 @@ msgstr "Un côté libre du séparateur ne doit pas être ancré : Nœud = \"%s\"
 msgid "Allow dock sites to be minimized"
 msgstr "Autoriser les sites d'ancrage à être réduits"
 
+#: anchordockstr.adrsamountofmilisecondshastodragbeforedragstarts
+msgid "Amount of miliseconds when lbm pressed has to drag before drag starts"
+msgstr ""
+
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "Nombre de pixels que la souris doit déplacer avant que le déplacement ne commence"
@@ -116,6 +120,10 @@ msgstr "Options d'amarrage"
 #, object-pascal-format
 msgid "Use the mouse to drag and dock window \"%s\""
 msgstr "Utiliser la souris pour déplacer et amarrer la fenêtre \"%s\""
+
+#: anchordockstr.adrsdragdelay
+msgid "Drag delay"
+msgstr ""
 
 #: anchordockstr.adrsdragthreshold
 msgid "Drag threshold"
