@@ -1,7 +1,7 @@
 uses
   gtk2def, gdk2, GTK2Proc, Cairo, LCLVersion;
 
-function gdk_cairo_create(drawable: PGdkDrawable): Pcairo_t cdecl external gdklib;
+function gdk_cairo_create(drawable: PGdkDrawable): Pcairo_t; cdecl; external gdklib;
 
 {$MACRO ON}
 
