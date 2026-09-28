@@ -269,8 +269,10 @@ var b : TRect;
 
 begin
   b := bounds;
+  {$IF NOT DECLARED(TRectangleMode)}
   b.right := b.Right-1;
   b.bottom := b.bottom-1;
+  {$ENDIF}
   if pen.style = psSolid then
     for r := 1 to pen.width do
     begin
@@ -299,11 +301,14 @@ var
 begin
   b := Bounds;
   SortRect (b);
+  {$IF NOT DECLARED(TRectangleMode)}
   dec(b.Right);
   dec(b.Bottom);
+  {$ENDIF}
 
   // Optimize when filling everything
-  if (b.Left = 0) and (b.Top = 0) and (b.Right = Width) and (b.Bottom = Height)
+  if (b.Left = 0) and (b.Top = 0)
+     and (b.Right = Width{$IF DECLARED(TRectangleMode)}-1{$ENDIF}) and (b.Bottom = Height{$IF DECLARED(TRectangleMode)}-1{$ENDIF})
      and (Brush.Style = bsSolid) and (FWindowOrg.X = 0) and (FWindowOrg.Y = 0)
      and ((Clipping=False) {or cliprect=entire area}) then
   begin
@@ -532,7 +537,8 @@ procedure TLazCanvas.DoCopyRect(x, y: integer; canvas: TFPCustomCanvas;
   const SourceRect: TRect);
 begin
   CanvasCopyRect(canvas, X, Y, SourceRect.Left, SourceRect.Top,
-    SourceRect.right-SourceRect.Left, SourceRect.Bottom-SourceRect.Top);
+    SourceRect.right-SourceRect.Left{$IF DECLARED(TRectangleMode)}+1{$ENDIF},
+    SourceRect.Bottom-SourceRect.Top{$IF DECLARED(TRectangleMode)}+1{$ENDIF});
 end;
 
 procedure TLazCanvas.DoDraw(x, y: integer; const AImage: TFPCustomImage);
@@ -543,6 +549,9 @@ end;
 constructor TLazCanvas.create(AnImage: TFPCustomImage);
 begin
   inherited Create(AnImage);
+  {$IF DECLARED(TRectangleMode)}
+  RectangleMode := rmExclude;
+  {$ENDIF}
   GraphicStateList := TFPList.Create;
   HasNoImage := AnImage = nil;
 end;
@@ -614,6 +623,9 @@ begin
 
   Brush.FPColor := colWhite;
   Brush.Style := bsSolid;
+  {$IF DECLARED(TRectangleMode)}
+  RectangleMode := rmExclude;
+  {$ENDIF}
 end;
 
 procedure TLazCanvas.AlphaBlend(ASource: TLazCanvas;
