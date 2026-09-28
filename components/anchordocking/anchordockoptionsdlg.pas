@@ -22,6 +22,9 @@ type
   { TAnchorDockOptionsFrame }
 
   TAnchorDockOptionsFrame = class(TFrame)
+    DragDelayLabel: TLabel;
+    DragDelaySpinEdit: TSpinEdit;
+    DragDelayTrackBar: TTrackBar;
     FlatHeadersButtons: TCheckBox;
     DragThresholdLabel: TLabel;
     DragThresholdSpinEdit: TSpinEdit;
@@ -53,6 +56,7 @@ type
       ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure OkClick(Sender: TObject);
     procedure DragThresholdTrackBarChange(Sender: TObject);
+    procedure DragDelayTrackBarChange(Sender: TObject);
     procedure HeaderAlignLeftTrackBarChange(Sender: TObject);
     procedure HeaderAlignTopTrackBarChange(Sender: TObject);
     procedure ShowHeaderCheckBoxChange(Sender: TObject);
@@ -65,6 +69,7 @@ type
     procedure SetMaster(const AValue: TAnchorDockMaster);
     procedure SetSettings(AValue: TAnchorDockSettings);
     procedure UpdateDragThresholdLabel;
+    procedure UpdateDragDelayLabel;
     procedure UpdateHeaderAlignTopLabel;
     procedure UpdateHeaderAlignLeftLabel;
     procedure UpdateSplitterWidthLabel;
@@ -165,6 +170,11 @@ begin
   UpdateDragThresholdLabel;
 end;
 
+procedure TAnchorDockOptionsFrame.DragDelayTrackBarChange(Sender: TObject);
+begin
+  UpdateDragDelayLabel;
+end;
+
 procedure TAnchorDockOptionsFrame.SetMaster(const AValue: TAnchorDockMaster);
 begin
   if FMaster=AValue then exit;
@@ -197,9 +207,15 @@ begin
       DragThresholdLabel.AnchorVerticalCenterTo(DragThresholdSpinEdit);
       UpdateDragThresholdLabel;
 
+      DragDelaySpinEdit.Visible:=true;
+      DragDelayTrackBar.Visible:=false;
+      DragDelaySpinEdit.AnchorToNeighbour(akTop,6,DragThresholdSpinEdit);
+      DragDelayLabel.AnchorVerticalCenterTo(DragDelaySpinEdit);
+      UpdateDragDelayLabel;
+
       SplitterWidthSpinEdit.Visible:=true;
       SplitterWidthTrackBar.Visible:=false;
-      SplitterWidthSpinEdit.AnchorToNeighbour(akTop,6,DragThresholdSpinEdit);
+      SplitterWidthSpinEdit.AnchorToNeighbour(akTop,6,DragDelaySpinEdit);
       SplitterWidthLabel.AnchorVerticalCenterTo(SplitterWidthSpinEdit);
       UpdateSplitterWidthLabel;
 
@@ -223,9 +239,14 @@ begin
       DragThresholdLabel.AnchorParallel(akTop,10,Self);
       UpdateDragThresholdLabel;
 
+      DragDelaySpinEdit.Visible:=false;
+      DragDelayTrackBar.Visible:=true;
+      DragDelayLabel.AnchorToNeighbour(akTop,6,DragThresholdTrackBar);
+      UpdateDragDelayLabel;
+
       SplitterWidthSpinEdit.Visible:=false;
       SplitterWidthTrackBar.Visible:=true;
-      SplitterWidthLabel.AnchorToNeighbour(akTop,6,DragThresholdTrackBar);
+      SplitterWidthLabel.AnchorToNeighbour(akTop,6,DragDelayTrackBar);
       UpdateSplitterWidthLabel;
 
       HeaderAlignTopSpinEdit.Visible:=false;
@@ -261,6 +282,16 @@ begin
   if not (adofSpinEdits in Flags) then
     s+=' ('+IntToStr(DragThresholdTrackBar.Position)+')';
   DragThresholdLabel.Caption:=s;
+end;
+
+procedure TAnchorDockOptionsFrame.UpdateDragDelayLabel;
+var
+  s: String;
+begin
+  s:=adrsDragDelay;
+  if not (adofSpinEdits in Flags) then
+    s+=' ('+IntToStr(DragDelayTrackBar.Position*50)+')';
+  DragDelayLabel.Caption:=s;
 end;
 
 procedure TAnchorDockOptionsFrame.UpdateHeaderAlignTopLabel;
@@ -347,11 +378,13 @@ procedure TAnchorDockOptionsFrame.SaveToSettings(
 begin
   if adofSpinEdits in Flags then begin
     TheSettings.DragTreshold:=DragThresholdSpinEdit.Value;
+    TheSettings.DragDelay:=DragDelaySpinEdit.Value;
     TheSettings.HeaderAlignTop:=HeaderAlignTopSpinEdit.Value;
     TheSettings.HeaderAlignLeft:=HeaderAlignLeftSpinEdit.Value;
     TheSettings.SplitterWidth:=SplitterWidthSpinEdit.Value;
   end else begin
     TheSettings.DragTreshold:=DragThresholdTrackBar.Position;
+    TheSettings.DragDelay:=DragDelayTrackBar.Position*50;
     TheSettings.HeaderAlignTop:=HeaderAlignTopTrackBar.Position;
     TheSettings.HeaderAlignLeft:=HeaderAlignLeftTrackBar.Position;
     TheSettings.SplitterWidth:=SplitterWidthTrackBar.Position;
@@ -383,6 +416,12 @@ begin
   DragThresholdTrackBar.Position:=TheSettings.DragTreshold;
   DragThresholdSpinEdit.Value:=TheSettings.DragTreshold;
   UpdateDragThresholdLabel;
+
+  DragDelayTrackBar.Hint:=
+    adrsAmountOfMilisecondsHasToDragBeforeDragStarts;
+  DragDelayTrackBar.Position:=TheSettings.DragDelay div 50;
+  DragDelaySpinEdit.Value:=TheSettings.DragDelay;
+  UpdateDragDelayLabel;
 
   HeaderAlignTopTrackBar.Hint:=
     adrsMoveHeaderToTopWhenWidthHeight100HeaderAlignTop;
