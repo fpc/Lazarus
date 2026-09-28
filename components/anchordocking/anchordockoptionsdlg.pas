@@ -378,7 +378,7 @@ procedure TAnchorDockOptionsFrame.SaveToSettings(
 begin
   if adofSpinEdits in Flags then begin
     TheSettings.DragTreshold:=DragThresholdSpinEdit.Value;
-    TheSettings.DragDelay:=Round(DragDelaySpinEdit.Value/50)*50;
+    TheSettings.DragDelay:=DragDelaySpinEdit.Value;
     TheSettings.HeaderAlignTop:=HeaderAlignTopSpinEdit.Value;
     TheSettings.HeaderAlignLeft:=HeaderAlignLeftSpinEdit.Value;
     TheSettings.SplitterWidth:=SplitterWidthSpinEdit.Value;
