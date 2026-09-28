@@ -229,6 +229,7 @@ type
     cmsStatementExpressions, { allow if-, case- and try-except-expressions }
     cmsReorderedoperators, { allow "not in" and "is not" operators}
     cmsTypeInquiry,        { allow "type of" operator }
+    cmsRecordComposition,  { allow "contains" in records }
 
     cmsExternalClass,      { pas2js: allow  class external [pkgname] name [symbol] }
     cmsIgnoreAttributes,   { pas2js: ignore attributes }
@@ -327,6 +328,7 @@ const
     'STATEMENTEXPRESSIONS',
     'REORDEREDOPERATORS',
     'TYPEINQUIRY',
+    'RECORDCOMPOSITION',
     'EXTERNALCLASS',
     'IGNOREATTRIBUTES',
     'OMITRTTI'

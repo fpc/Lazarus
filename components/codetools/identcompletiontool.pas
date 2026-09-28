@@ -1532,6 +1532,8 @@ begin
     end;
 
     Node:=Node.Parent;
+    if (Node<>nil) and (Node.Desc=ctnRecordComposition) then
+      Node:=Node.Parent;
     if (Node<>nil) and (Node.Desc in AllClassSubSections) then
       Node:=Node.Parent;
 
@@ -1571,6 +1573,8 @@ begin
   begin
     // identifier is in another unit
     Node:=Node.Parent;
+    if (Node<>nil) and (Node.Desc=ctnRecordComposition) then
+      Node:=Node.Parent;
     if (Node<>nil) and (Node.Desc in AllClassSubSections) then
       Node:=Node.Parent;
     if (Node<>nil) and (Node.Desc in AllClassBaseSections) then begin
@@ -2356,6 +2360,8 @@ begin
         end;
         if (Node.Desc=ctnRecordType) or (Node.Parent.Desc=ctnRecordType) then begin
           Add('case');
+          if cmsRecordComposition in Scanner.CompilerModeSwitches then
+            Add('contains');
         end;
         AddTypeKeywords;
         LastChild:=Node.LastChild;
@@ -2467,6 +2473,8 @@ begin
         end;
         if (Node.Desc=ctnRecordType) or (Node.Parent.Desc=ctnRecordType) then begin
           Add('case');
+          if cmsRecordComposition in Scanner.CompilerModeSwitches then
+            Add('contains');
         end;
         AddTypeKeywords;
       end

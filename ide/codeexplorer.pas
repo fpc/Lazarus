@@ -1055,6 +1055,10 @@ begin
     if (CodeNode.Desc in AllClassSections) then
       ShowNode:=false;
 
+    // don't show record composition nodes, only the named field
+    if CodeNode.Desc=ctnRecordComposition then
+      ShowNode:=false;
+
     if Mode=cemCategory then begin
       // don't show method bodies
       if (CodeNode.Desc=ctnProcedure)

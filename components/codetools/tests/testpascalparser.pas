@@ -79,6 +79,9 @@ type
     procedure TestParse_TypeOf_ModeSwitch;
     procedure TestParse_TypeOf_ModeFPCFail;
     procedure TestParse_TypeOf_ModeDelphiFail;
+    procedure TestParse_RecordComposition;
+    procedure TestParse_RecordComposition_NoModeSwitch;
+    procedure TestParse_RecordComposition_FieldNameFail;
     procedure TestParseProcAnoArg;
     procedure TestParseProcAnoArgSubFunc;
     procedure TestParseThreadVar;
@@ -1029,6 +1032,83 @@ begin
   'begin',
   'end.']);
   CheckParseError(CodeXYPosition(11,5,Code),'identifier expected, but of found');
+end;
+
+procedure TTestPascalParser.TestParse_RecordComposition;
+begin
+  Add([
+  'program test1;',
+  '{$mode objfpc}',
+  '{$modeswitch advancedrecords}',
+  '{$modeswitch recordcomposition}',
+  'type',
+  '  TChildRec = record',
+  '    C: Integer;',
+  '  end;',
+  '  TChildRec2 = record',
+  '    D: Integer;',
+  '  end;',
+  '  generic TGenRec<T> = record',
+  '    contains T;',
+  '  end;',
+  '  TComposed = record',
+  '    A: Integer;',
+  '    contains child: TChildRec;',
+  '    contains test1.TChildRec2;',
+  '    contains record',
+  '      E: Integer;',
+  '    end;',
+  '    contains alias A;',
+  '    contains union: record',
+  '      case Boolean of',
+  '      True: (contains c1: TChildRec);',
+  '      False: (contains TChildRec2);',
+  '    end;',
+  '  strict private',
+  '    contains priv: TChildRec deprecated;',
+  '  public',
+  '    B: Integer;',
+  '    case Integer of',
+  '    0: (contains record',
+  '         F: Integer;',
+  '       end);',
+  '    1: (G: Integer);',
+  '  end;',
+  '  TBasic = record',
+  '    contains TChildRec',
+  '  end;',
+  'begin',
+  'end.']);
+  ParseModule;
+end;
+
+procedure TTestPascalParser.TestParse_RecordComposition_NoModeSwitch;
+begin
+  Add([
+  'program test1;',
+  '{$mode objfpc}',
+  'type',
+  '  TTest = record',
+  '    contains: Integer;',
+  '  end;',
+  'begin',
+  'end.']);
+  ParseModule;
+end;
+
+procedure TTestPascalParser.TestParse_RecordComposition_FieldNameFail;
+begin
+  Add([
+  'program test1;',
+  '{$mode objfpc}',
+  '{$modeswitch recordcomposition}',
+  'type',
+  '  TTest = record',
+  '    contains: Integer;',
+  '  end;',
+  'begin',
+  'end.']);
+  CheckParseError(CodeXYPosition(13,6,Code),'identifier expected, but : found');
 end;
 
 procedure TTestPascalParser.TestParseProcAnoArg;

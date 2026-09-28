@@ -804,6 +804,7 @@ type
     FDependentCodeTools: TAVLTree;// the codetools, that depend on this codetool
     FDependsOnCodeTools: TAVLTree;// the codetools, that this codetool depends on
     FTypeOfNodesInProgress: TFPList;// list of ctnTypeOf nodes, to detect cycles
+    FRecordCompositionsInProgress: array of TCodeTreeNode;// ctnRecordType nodes whose compositions are searched, to detect cycles
     FClearingDependentNodeCaches: boolean;
     FCheckingNodeCacheDependencies: boolean;
     FSourcesChangeStep, FFilesChangeStep: int64;
@@ -833,6 +834,8 @@ type
       Params: TFindDeclarationParams; var IdentFoundResult: TIdentifierFoundResult): boolean;
     function FindIdentifierInAncestors(ClassNode: TCodeTreeNode;
       Params: TFindDeclarationParams): boolean;
+    function FindIdentifierInRecordCompositions(RecordNode: TCodeTreeNode;
+      Params: TFindDeclarationParams; var IdentFoundResult: TIdentifierFoundResult): boolean;
     function FindIdentifierInUsesSection(UsesNode: TCodeTreeNode;
       Params: TFindDeclarationParams; FindMissingFPCUnits: Boolean): boolean;
     function FindIdentifierInHiddenUsedUnits(
@@ -5587,6 +5590,19 @@ var
           end;
         end;
 
+        if ContextNode.Desc=ctnRecordType then begin
+          // after searching the record members, search in the composed records
+          Result:=FindIdentifierInRecordCompositions(ContextNode,Params,IdentFoundResult);
+          if Result then begin
+            FindIdentifierInContext:=true;
+            {$IFDEF ShowCollect}
+            if fdfCollect in Flags then
+              raise Exception.Create('fdfCollect must never return true');
+            {$ENDIF}
+            exit(AbortNoCacheResult);
+          end;
+        end;
+
         //allow ctnRecordType and ctnTypeTypeBeforeHelper: they can have helpers!
         if (fdfSearchInAncestors in Flags) then begin
           // after searching in a class definition, search in its ancestors
@@ -5723,7 +5739,7 @@ var
         ctnInterface, ctnImplementation, ctnProgram, ctnLibrary,
         ctnClassPublished,ctnClassPublic,ctnClassProtected,ctnClassPrivate,
         ctnClassClassVar,
-        ctnRecordVariant,
+        ctnRecordVariant, ctnRecordComposition,
         ctnProcedureHead, ctnParameterList,
         ctnClassInheritance,ctnHelperFor:
           // these codetreenodes build a parent-child-relationship, but
@@ -6015,6 +6031,13 @@ begin
               // search in variable and variants
               MoveContextNodeToChildren;
             end;
+
+          ctnRecordComposition:
+            // named composition: search the field,
+            // the composed members are searched after the record members
+            if (ContextNode.FirstChild<>nil)
+            and (ContextNode.FirstChild.Desc=ctnVarDefinition) then
+              ContextNode:=ContextNode.FirstChild;
 
           end;
         end;
@@ -9557,8 +9580,11 @@ begin
   if aClassNode=nil then exit;
   Node:=aClassNode.LastChild;
   while Node<>nil do begin
-    if (Node.Desc in AllClassSections)
-    and (Node.FirstChild<>nil) then begin
+    if (Node.FirstChild<>nil)
+    and ((Node.Desc in AllClassSections)
+      or ((Node.Desc=ctnRecordComposition)
+        and (Node.FirstChild.Desc=ctnVarDefinition))) then begin
+      // class section or named record composition
       Node:=Node.LastChild;
       continue;
     end
@@ -10003,6 +10029,134 @@ begin
   finally
     if not Result then
       Params.GenParams := OldGenParam;
+  end;
+end;
+
+function TFindDeclarationTool.FindIdentifierInRecordCompositions(
+  RecordNode: TCodeTreeNode; Params: TFindDeclarationParams;
+  var IdentFoundResult: TIdentifierFoundResult): boolean;
+{ modeswitch RecordComposition: search in the records composed via 'contains'
+  This function is internally used by FindIdentifierInContext
+
+  examples:
+    contains Child: TChildRec;
+    contains TChildRec;
+    contains record a: word; end;
+    contains alias Child;
+}
+
+  function FindOwnField(ParentNode: TCodeTreeNode; Identifier: PChar): TCodeTreeNode;
+  var
+    Node: TCodeTreeNode;
+  begin
+    Node:=ParentNode.FirstChild;
+    while Node<>nil do begin
+      case Node.Desc of
+      ctnVarDefinition:
+        if CompareSrcIdentifiers(Node.StartPos,Identifier) then
+          exit(Node);
+      ctnRecordComposition:
+        if (Node.FirstChild<>nil) and (Node.FirstChild.Desc=ctnVarDefinition)
+        and CompareSrcIdentifiers(Node.FirstChild.StartPos,Identifier) then
+          exit(Node.FirstChild);
+      ctnClassPublic,ctnClassPublished,ctnClassPrivate,ctnClassProtected,
+      ctnVarSection,ctnClassClassVar,ctnRecordCase,ctnRecordVariant:
+        begin
+          Result:=FindOwnField(Node,Identifier);
+          if Result<>nil then exit;
+        end;
+      end;
+      Node:=Node.NextBrother;
+    end;
+    Result:=nil;
+  end;
+
+  function SearchInComposition(CompNode: TCodeTreeNode): boolean;
+  var
+    TypeNode: TCodeTreeNode;
+    TypeParams: TFindDeclarationParams;
+    Context: TFindContext;
+    OldInput: TFindDeclarationInput;
+  begin
+    Result:=false;
+    TypeNode:=CompNode.FirstChild;
+    if TypeNode=nil then exit;
+    if (CompNode.SubDesc and ctnsRecordCompositionAlias)>0 then begin
+      // contains alias <field>
+      TypeNode:=FindOwnField(RecordNode,@Src[TypeNode.StartPos]);
+      if TypeNode=nil then exit;
+    end;
+
+    // find the composed record
+    if TypeNode.Desc=ctnRecordType then
+      Context:=CreateFindContext(Self,TypeNode)
+    else begin
+      Context:=CleanFindContext;
+      TypeParams:=TFindDeclarationParams.Create(Params);
+      try
+        TypeParams.GenParams:=Params.GenParams;
+        TypeParams.ContextNode:=TypeNode;
+        TypeParams.Flags:=fdfDefaultForExpressions+[fdfFindChildren];
+        try
+          Context:=FindBaseTypeOfNode(TypeParams,TypeNode);
+        except
+          // ignore errors, e.g. unknown type
+          on E: ECodeToolError do ;
+        end;
+      finally
+        TypeParams.Free;
+      end;
+    end;
+    if (Context.Node=nil) or (Context.Node.Desc<>ctnRecordType) then exit;
+
+    // search in the composed record, including its compositions
+    Params.Save(OldInput);
+    Params.ContextNode:=Context.Node;
+    Params.Flags:=Params.Flags
+      -[fdfIgnoreCurContextNode,fdfSearchInParentNodes,fdfExceptionOnNotFound,
+        fdfSearchInHelpers,fdfSearchInHelpersInTheEnd];
+    Result:=Context.Tool.FindIdentifierInContext(Params,IdentFoundResult);
+    Params.Load(OldInput,true);
+  end;
+
+  function SearchInChildren(ParentNode: TCodeTreeNode): boolean;
+  var
+    Node: TCodeTreeNode;
+  begin
+    Node:=ParentNode.FirstChild;
+    while Node<>nil do begin
+      case Node.Desc of
+      ctnRecordComposition:
+        if SearchInComposition(Node) then exit(true);
+      ctnClassPublic,ctnClassPublished,ctnClassPrivate,ctnClassProtected,
+      ctnVarSection,ctnClassClassVar,ctnRecordCase,ctnRecordVariant:
+        if SearchInChildren(Node) then exit(true);
+      end;
+      Node:=Node.NextBrother;
+    end;
+    Result:=false;
+  end;
+
+var
+  i, Cnt: integer;
+begin
+  Result:=false;
+  {$IFDEF CheckNodeTool}CheckNodeTool(RecordNode);{$ENDIF}
+  if not (cmsRecordComposition in Scanner.CompilerModeSwitches) then exit;
+
+  // check for cycles
+  Cnt:=length(FRecordCompositionsInProgress);
+  for i:=0 to Cnt-1 do
+    if FRecordCompositionsInProgress[i]=RecordNode then exit;
+
+  SetLength(FRecordCompositionsInProgress,Cnt+1);
+  FRecordCompositionsInProgress[Cnt]:=RecordNode;
+  try
+    Result:=SearchInChildren(RecordNode);
+  finally
+    Cnt:=length(FRecordCompositionsInProgress);
+    if (Cnt>0) and (FRecordCompositionsInProgress[Cnt-1]=RecordNode) then
+      SetLength(FRecordCompositionsInProgress,Cnt-1);
   end;
 end;
 
@@ -15262,6 +15416,7 @@ begin
   FreeAndNil(FDependsOnCodeTools);
   FreeAndNil(FDependentCodeTools);
   FreeAndNil(FTypeOfNodesInProgress);
+  FRecordCompositionsInProgress:=nil;
   if FDirectoryCache<>nil then begin
     FDirectoryCache.Release;
     FDirectoryCache:=nil;
@@ -15302,6 +15457,7 @@ begin
     FRootNodeCache:=nil;
   end;
   FreeAndNil(FTypeOfNodesInProgress);
+  FRecordCompositionsInProgress:=nil;
 
   // clear dependent codetools
   ClearDependentNodeCaches;

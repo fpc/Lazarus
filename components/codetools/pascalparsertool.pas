@@ -210,6 +210,7 @@ type
     function KeyWordFuncTypePointer: boolean;
     function KeyWordFuncTypeRecordCase: boolean;
     function KeyWordFuncTypeDefault: boolean;
+    function KeyWordFuncRecordContains: boolean;
     // procedures/functions/methods
     function KeyWordFuncProc: boolean;
     function KeyWordFuncBeginEnd: boolean;
@@ -286,7 +287,9 @@ type
     function AllowAnonymousFunctions: boolean; inline;
     function AllowStatementExpressions: boolean; inline;
     function AllowTypeInquiry: boolean; inline;
+    function AllowRecordComposition: boolean; inline;
     function Is_TypeOf_Start: boolean;
+    procedure ReadRecordComposition;
   public
     CurSection: TCodeTreeNodeDesc;
 
@@ -555,7 +558,11 @@ begin
     'A': if (ClassDesc=ctnRecordType) and CompareSrcIdentifiers(p,'CASE') then exit(KeyWordFuncTypeRecordCase);
     'L': if CompareSrcIdentifiers(p,'CLASS') then exit(KeyWordFuncClassClass);
     'O': if CompareSrcIdentifiers(p,'CONSTRUCTOR') then exit(KeyWordFuncClassMethod)
-         else if CompareSrcIdentifiers(p,'CONST') then exit(KeyWordFuncClassConstSection);
+         else if CompareSrcIdentifiers(p,'CONST') then exit(KeyWordFuncClassConstSection)
+         else if (ClassDesc=ctnRecordType) and CompareSrcIdentifiers(p,'CONTAINS')
+           and AllowRecordComposition
+           and not (CurNode.Desc in [ctnTypeSection,ctnConstSection]) then
+           exit(KeyWordFuncRecordContains);
     end;
   'D':
     if CompareSrcIdentifiers(p,'DESTRUCTOR') then exit(KeyWordFuncClassMethod);
@@ -636,6 +643,8 @@ begin
   'C':
     case UpChars[p[1]] of
     'A': if CompareSrcIdentifiers(p,'CASE') then exit(KeyWordFuncTypeRecordCase);
+    'O': if CompareSrcIdentifiers(p,'CONTAINS') and AllowRecordComposition then
+           exit(KeyWordFuncRecordContains);
     end;
   'E':
     if CompareSrcIdentifiers(p,'END') then exit(false);
@@ -5593,6 +5602,18 @@ begin
   EndChildNode;
 end;
 
+function TPascalParserTool.KeyWordFuncRecordContains: boolean;
+// 'contains' in a record, modeswitch RecordComposition
+// after parsing CurPos is on the semicolon or in front of the 'end'
+begin
+  ReadRecordComposition;
+  if CurPos.Flag=cafEND then
+    UndoReadNextAtom
+  else if CurPos.Flag<>cafSemicolon then
+    SaveRaiseCharExpectedButAtomFound(20260928120100,';');
+  Result:=true;
+end;
+
 function TPascalParserTool.KeyWordFuncTypeDefault: boolean;
 { check for enumeration, subrange and identifier types
 
@@ -5852,6 +5873,9 @@ begin
         KeyWordFuncTypeRecordCase();
         if (CurPos.Flag<>cafRoundBracketClose) then
           SaveRaiseCharExpectedButAtomFound(20170421195851,')');
+      end else if UpAtomIs('CONTAINS') and AllowRecordComposition then begin
+        // record composition
+        ReadRecordComposition;
       end else begin
         // sub identifier
         repeat
@@ -6903,6 +6927,76 @@ end;
 function TPascalParserTool.AllowTypeInquiry: boolean;
 begin
   Result:=cmsTypeInquiry in Scanner.CompilerModeSwitches;
+end;
+
+function TPascalParserTool.AllowRecordComposition: boolean;
+begin
+  Result:=cmsRecordComposition in Scanner.CompilerModeSwitches;
+end;
+
+procedure TPascalParserTool.ReadRecordComposition;
+{ modeswitch RecordComposition
+  CurPos is on 'contains'.
+  After parsing CurPos is on the atom behind, e.g. the semicolon, 'end' or ')'
+
+  examples:
+    contains Child: TChildRec;
+    contains TChildRec;
+    contains record a: word; end;
+    contains alias Child;
+}
+var
+  IsNamed: Boolean;
+
+  procedure SetEndPos;
+  begin
+    if CurPos.Flag=cafSemicolon then
+      CurNode.EndPos:=CurPos.EndPos
+    else
+      CurNode.EndPos:=LastAtoms.GetPriorAtom.EndPos;
+  end;
+
+begin
+  CreateChildNode;
+  CurNode.Desc:=ctnRecordComposition;
+  ReadNextAtom;
+  if UpAtomIs('ALIAS') then begin
+    // contains alias <field>
+    CurNode.SubDesc:=CurNode.SubDesc or ctnsRecordCompositionAlias;
+    ReadNextAtom;
+    AtomIsIdentifierSaveE(20260928120000);
+    CreateChildNode;
+    CurNode.Desc:=ctnIdentifier;
+    CurNode.EndPos:=CurPos.EndPos;
+    EndChildNode;
+    ReadNextAtom;
+  end else begin
+    IsNamed:=false;
+    if AtomIsIdentifier then begin
+      ReadNextAtom;
+      IsNamed:=CurPos.Flag=cafColon;
+      UndoReadNextAtom;
+    end;
+    if IsNamed then begin
+      // contains <name>: <type>
+      CreateChildNode;
+      CurNode.Desc:=ctnVarDefinition;
+      ReadNextAtom; // colon
+      ReadNextAtom; // type
+      ParseType(CurPos.StartPos);
+      if CurPos.Flag=cafWord then
+        ReadHintModifiers(false);
+      SetEndPos;
+      EndChildNode;
+    end else begin
+      // contains <type>
+      if CurPos.Flag<>cafWord then
+        AtomIsIdentifierSaveE(20260928120200);
+      ParseType(CurPos.StartPos);
+    end;
+  end;
+  SetEndPos;
+  EndChildNode;
 end;
 
 function TPascalParserTool.Is_TypeOf_Start: boolean;

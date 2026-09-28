@@ -150,6 +150,7 @@ const
   ctnSpecializeParams   = 95; // list of ctnSpecializeParam, parent = ctnSpecialize
   ctnSpecializeParam    = 96; // parent = ctnSpecializeParams
   ctnTypeOf             = 97; // type of <operand>
+  ctnRecordComposition  = 98; // 'contains ...', parent: class section or ctnRecordVariant, child: ctnVarDefinition (named), type (unnamed) or ctnIdentifier (alias)
 
   ctnBeginBlock         =100;
   ctnAsmBlock           =101;
@@ -207,7 +208,8 @@ const
       ctnLabel,ctnTypeType,ctnFileType,ctnPointerType,
       ctnClassOfType,ctnVariantType,ctnTypeOf];
   AllPascalTypeParts = AllPascalTypes
-     +[ctnEnumIdentifier,ctnConstant,ctnRecordCase,ctnRecordVariant];
+     +[ctnEnumIdentifier,ctnConstant,ctnRecordCase,ctnRecordVariant,
+       ctnRecordComposition];
   AllProcTypes = [ctnProcedureType,ctnReferenceTo];
   AllPascalStatements = [ctnBeginBlock,ctnWithStatement,ctnWithVariable,
                          ctnOnBlock,ctnOnIdentifier,ctnOnStatement,
@@ -226,6 +228,7 @@ const
   ctnsHasDefaultValue     = 1 shl 4;
   ctnsHasStrictSpecifier  = 1 shl 5;
   ctnsIsExternal          = 1 shl 6;
+  ctnsRecordCompositionAlias = 1 shl 7; // ctnRecordComposition: 'contains alias <field>'
 
   ClassSectionNodeType: array[TPascalClassSection] of TCodeTreeNodeDesc = (
     ctnClassPrivate,
@@ -545,6 +548,7 @@ begin
   ctnSpecializeParams: Result:='Specialize Parameterlist';
   ctnSpecializeParam: Result:='Specialize Parameter';
   ctnTypeOf: Result:='Type Of';
+  ctnRecordComposition: Result:='Record Composition';
   ctnGenericType: Result:='Generic Type';
   ctnGenericName: Result:='Generic Type Name';
   ctnGenericParams: Result:='Generic Type Params';

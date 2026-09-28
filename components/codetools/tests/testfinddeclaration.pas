@@ -226,6 +226,7 @@ type
     procedure TestFindDeclaration_TypeOf_PostfixOperand;
     procedure TestFindDeclaration_TypeOf_TypeCast;
     procedure TestFindDeclaration_TypeOf_TypeCastParenthesized;
+    procedure TestFindDeclaration_RecordComposition;
     procedure TestFindDeclaration_Attributes;
     procedure TestFindDeclaration_BracketOpen;
     procedure TestFindDeclaration_AnonymProc;
@@ -2608,6 +2609,81 @@ begin
   'begin',
   '  v1{guesstype:Byte} := (type of b{declaration:b})(w);',
   '  v2{guesstype:Word} := (type of w)(b);',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_RecordComposition;
+begin
+  StartProgram;
+  Add([
+  '{$modeswitch advancedrecords}',
+  '{$modeswitch recordcomposition}',
+  'type',
+  '  TInnerRec = record',
+  '    I: Integer;',
+  '  end;',
+  '  TChildRec = record',
+  '    C: Integer;',
+  '    contains inner: TInnerRec;',
+  '    function CheckAddr(p: Pointer): Boolean;',
+  '  end;',
+  '  TChildRec2 = record',
+  '    D: Integer;',
+  '  end;',
+  '  TChildRec3 = record',
+  '    H: Integer;',
+  '    A: Integer;',
+  '  end;',
+  '  TComposed = record',
+  '    A: Integer;',
+  '    contains child: TChildRec{declaration:TChildRec};',
+  '    contains TChildRec2{declaration:TChildRec2};',
+  '    contains record',
+  '      E: Integer;',
+  '    end;',
+  '    FThird: TChildRec3;',
+  '    contains alias FThird{declaration:TComposed.FThird};',
+  '    procedure Test;',
+  '  end;',
+  '  TVarRec = record',
+  '    case Boolean of',
+  '    True: (contains TChildRec2);',
+  '    False: (contains v: TChildRec3);',
+  '  end;',
+  '',
+  'function TChildRec.CheckAddr(p: Pointer): Boolean;',
+  'begin',
+  '  Result:=p=@Self;',
+  'end;',
+  '',
+  'procedure TComposed.Test;',
+  'begin',
+  '  C{declaration:TChildRec.C}:=1;',
+  '  I{declaration:TInnerRec.I}:=2;',
+  '  D{declaration:TChildRec2.D}:=3;',
+  '  A{declaration:TComposed.A}:=4;',
+  '  H{declaration:TChildRec3.H}:=5;',
+  'end;',
+  '',
+  'var',
+  '  c: TComposed;',
+  '  v: TVarRec;',
+  'begin',
+  '  c.A{declaration:TComposed.A}:=1;',
+  '  c.child{declaration:TComposed.child}.C{declaration:TChildRec.C}:=2;',
+  '  c.C{declaration:TChildRec.C}:=3;',
+  '  c.inner{declaration:TChildRec.inner}.I:=4;',
+  '  c.I{declaration:TInnerRec.I}:=5;',
+  '  c.D{declaration:TChildRec2.D}:=6;',
+  '  c.E{declaration:TComposed.E}:=7;',
+  '  c.FThird{declaration:TComposed.FThird}.H:=8;',
+  '  c.H{declaration:TChildRec3.H}:=9;',
+  '  c.CheckAddr{declaration:TChildRec.CheckAddr}(nil);',
+  '  c.X{completion:A,child,C,inner,I,CheckAddr,D,E,FThird,H,Test}:=10;',
+  '  v.D{declaration:TChildRec2.D}:=11;',
+  '  v.v{declaration:TVarRec.v}.H:=12;',
+  '  v.H{declaration:TChildRec3.H}:=13;',
   'end.']);
   FindDeclarations(Code);
 end;
