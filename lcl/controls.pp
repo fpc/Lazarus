@@ -641,8 +641,8 @@ type
     function Dragging(AControl: TControl): Boolean; virtual;abstract;
     procedure RegisterDockSite(Site: TWinControl; DoRegister: Boolean); virtual;abstract;
 
-    procedure DragStart(AControl: TControl; AImmediate: Boolean; AThreshold: Integer;
-      StartFromCurrentMouse:Boolean=False; ADelay:Integer=0); virtual;abstract;
+    procedure DragStart(AControl: TControl; AImmediate: Boolean; AThreshold: Integer; StartFromCurrentMouse:Boolean=False); virtual;abstract;
+    procedure DragStartAfterDelay(AControl: TControl; AThreshold: Integer; ADelay:Integer); virtual;abstract;
     procedure DragMove(APosition: TPoint); virtual;abstract;
     procedure DragStop(ADrop: Boolean); virtual;abstract;
 
