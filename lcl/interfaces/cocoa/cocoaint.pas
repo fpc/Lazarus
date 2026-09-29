@@ -35,7 +35,7 @@ uses
   CocoaWSClipboard, CocoaTextEdits,
   LMessages, LCLProc, LCLIntf, LCLType,
   Controls, Forms, Themes, Menus, ExtCtrls,
-  IntfGraphics, Graphics,
+  IntfGraphics, Graphics, LazLoggerBase,
   dl, dynlibs;
 
 type

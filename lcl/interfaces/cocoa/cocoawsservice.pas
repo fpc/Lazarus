@@ -8,7 +8,7 @@ interface
 
 uses
   Classes, SysUtils, Types, LCLType, LCLProc,
-  Forms, Menus,
+  Forms, Menus, LazLoggerBase,
   MacOSAll, CocoaAll,
   CocoaGDIObjects, CocoaMenus, CocoaConst, CocoaUtils;
 

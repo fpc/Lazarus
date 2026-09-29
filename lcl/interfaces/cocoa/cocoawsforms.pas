@@ -35,7 +35,8 @@ uses
   CocoaCommonCallback, CocoaWSPrivate,
   CocoaGDIObjects, CocoaWindows, CocoaToolBar, CocoaCustomControl,
   CocoaScrolling,
-  CocoaUtils, CocoaMenus, Cocoa_Extra;
+  CocoaUtils, CocoaMenus, Cocoa_Extra,
+  LazLoggerBase;
 
 type
   { TLCLWindowCallback }

@@ -16,7 +16,8 @@ uses
   {$ifndef CocoaUseHITheme}
   customdrawndrawers, customdrawn_mac,
   {$endif}
-  SysUtils, Classes, Contnrs, Types, Math, GraphMath;
+  SysUtils, Classes, Contnrs, Types, Math, GraphMath,
+  LazLoggerBase;
 
 type
   TCocoaBitmapAlignment = (
