@@ -71,6 +71,9 @@ begin
   if pt.TokenType=ttReference then
     exit(true);
 
+  if (pt.TokenType = ttAlias) and pt.HasParentNode(nRecordType) then
+    exit(True);
+
   { after record ... end align XX; }
   if (pt.TokenType = ttAlign) and pt.HasParentNode(nRecordType, 1) then
     exit(true);

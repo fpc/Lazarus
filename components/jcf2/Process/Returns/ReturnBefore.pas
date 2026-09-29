@@ -235,6 +235,9 @@ begin
   if StartsAnonymousMethod(pt) then
     exit;
 
+  if (pt.TokenType = ttContains) and pt.HasParentNode(nRecordType) then
+    exit(True);
+
   if pt.TokenType = ttBegin then
   begin
     lcPrev:=pt.PriorSolidToken;

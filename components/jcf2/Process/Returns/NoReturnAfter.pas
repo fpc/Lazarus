@@ -92,6 +92,9 @@ begin
   if (pt.TokenType = ttEnd) and pt.HasParentNode(nCaseStatement) and pt.HasParentNode(nExpression) then
     exit(true);
 
+  if (pt.TokenType in [ttAlias, ttContains]) and pt.HasParentNode(nRecordType) then
+    exit(true);
+
   if pt.HasParentNode(nAsm) then
     exit;
 
