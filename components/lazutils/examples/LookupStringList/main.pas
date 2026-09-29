@@ -5,30 +5,37 @@ unit Main;
 interface
 
 uses
-  Classes, SysUtils, Math, Forms, Controls, Dialogs, StdCtrls, Spin, LookupStringList;
+  Classes, SysUtils, Math, Forms, Controls, Dialogs, StdCtrls, Spin, ComCtrls,
+  LookupStringList;
 
 type
 
   { TForm1 }
 
   TForm1 = class(TForm)
+    btnUseStringList: TButton;
     btnDedupeMemo: TButton;
     btnDedupeFile: TButton;
     btnGenerate: TButton;
-    Label1 :TLabel;
+    btnClear: TButton;
+    lblWarning: TLabel;
     lblLines: TLabel;
     lblTime: TLabel;
     Memo: TMemo;
     SpinEdit1: TSpinEdit;
+    StatusBar1: TStatusBar;
+    procedure btnClearClick(Sender: TObject);
     procedure btnDedupeFileClick(Sender: TObject);
     procedure btnGenerateClick(Sender: TObject);
     procedure btnDedupeMemoClick(Sender: TObject);
+    procedure btnUseStringListClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
     inList :TStringList;
-    procedure UpdateDuplicates(aDuplicateCount: string);
+    procedure PrepareDeDup;
+    procedure UpdateDuplicates(aDupCount: Integer);
     procedure UpdateTime(aTime: TDateTime);
   public
 
@@ -43,9 +50,9 @@ implementation
 
 { TForm1 }
 
-procedure TForm1.UpdateDuplicates(aDuplicateCount: string);
+procedure TForm1.UpdateDuplicates(aDupCount: Integer);
 begin
-  lblLines.Caption := 'Duplicated Lines: ' + aDuplicateCount;
+  lblLines.Caption := 'Duplicates: ' + IntToStr(aDupCount);
 end;
 
 procedure TForm1.UpdateTime(aTime: TDateTime);
@@ -55,11 +62,12 @@ end;
 
 procedure TForm1.btnGenerateClick(Sender: TObject);
 var
-  i, j: Integer;
-  s :string;
+  i, j : Integer;
+  s : string;
 begin
-  UpdateDuplicates('?');
-  UpdateTime(0);
+  lblTime.Caption := 'Time: 0';
+  lblLines.Caption := 'Duplicates: ?';
+  StatusBar1.SimpleText := 'Generating '+SpinEdit1.Value.ToString+' strings.';
   Memo.Clear;
   Application.ProcessMessages;
   Screen.BeginWaitCursor;
@@ -69,67 +77,108 @@ begin
     begin
       s := '';
       for j := 0 to 5 do
+        //s := s + chr(randomrange(33, 127));
         s := s + chr(randomrange(97, 123));
       InList.Add(s);
     end;
     Memo.Lines.Assign(inList);
   finally
     Screen.EndWaitCursor;
+    StatusBar1.SimpleText := 'Ready.';
   end;
+end;
+
+procedure TForm1.btnClearClick(Sender: TObject);
+begin
+  Memo.Clear;
+end;
+
+procedure TForm1.PrepareDedup;
+begin
+  if Trim(Memo.Text) = '' then
+    btnGenerateClick(nil);
+  lblTime.Caption := 'Time: 0';
+  lblLines.Caption := 'Duplicates: ?';
+  Application.ProcessMessages;
 end;
 
 procedure TForm1.btnDedupeMemoClick(Sender: TObject);
 var
-  DSL :TLookupStringList;
-  T :TDateTime;
+  T : TDateTime;
+  LSL : TLookupStringList;
 begin
+  PrepareDeDup;
+  StatusBar1.SimpleText:='Deduping by assigning Memo lines to TLookupStringList.';
+  Application.ProcessMessages;
   Screen.BeginWaitCursor;
+  LSL := TLookupStringList.Create;
   try
     T := Now;
-    DSL := TLookupStringList.Create;
-    try
-      DSL.Assign(Memo.Lines);
-      UpdateDuplicates(IntToStr(Memo.Lines.Count - DSL.Count));
-      Memo.Lines.Assign(DSL);
-    finally
-      DSL.Free;
-    end;
+    LSL.Assign(Memo.Lines);
+    UpdateDuplicates(Memo.Lines.Count - LSL.Count);
+    Memo.Lines.Assign(LSL);
     UpdateTime(Now - T);
   finally
+    LSL.Free;
     Screen.EndWaitCursor;
+    StatusBar1.SimpleText := 'Ready.';
   end;
 end;
 
 procedure TForm1.btnDedupeFileClick(Sender: TObject);
 var
-  T :TDateTime;
-  N :integer;
-  DSL :TLookupStringList;
+  T : TDateTime;
+  N : integer;
+  LSL : TLookupStringList;
 begin
-  lblTime.Caption := 'Time:';
-  lblLines.Caption := 'Duplicated lines:';
+  PrepareDeDup;
+  StatusBar1.SimpleText:='Deduping by saving Memo lines to a file, then reading to TLookupStringList.';
   Application.ProcessMessages;
-
-  if Trim(Memo.Text) = '' then
-  begin
-    btnGenerateClick(nil);
-    ShowMessage('Generated data.');
-  end;
-
-  Memo.Lines.SaveToFile('temp.txt');
-  ShowMessage('Saved memo to a file.');
-  T := Now;
-  N := Memo.Lines.Count;
-  DSL := TLookupStringList.Create;
+  Screen.BeginWaitCursor;
+  LSL := TLookupStringList.Create;
   try
-    DSL.LoadFromFile('temp.txt');
-    lblLines.Caption := 'Duplicated Lines: ' + IntToStr(N - DSL.Count);
-    DSL.SaveToFile('temp.txt');
-    lblTime.Caption := 'Time: ' + TimeToStr(Now - T);
-    ShowMessage('Dedupping the file. Will delete it.');
+    Memo.Lines.SaveToFile('temp.txt');
+    T := Now;
+    N := Memo.Lines.Count;
+    LSL.LoadFromFile('temp.txt');
+    UpdateDuplicates(N - LSL.Count);
+    LSL.SaveToFile('temp.txt');
+    UpdateTime(Now - T);
     DeleteFile('temp.txt');
   finally
-    DSL.Free;
+    LSL.Free;
+    Screen.EndWaitCursor;
+    StatusBar1.SimpleText := 'Ready.';
+  end;
+end;
+
+procedure TForm1.btnUseStringListClick(Sender: TObject);
+var
+  T : TDateTime;
+  SL : TStringList;
+  i: Integer;
+  s: String;
+begin
+  PrepareDeDup;
+  StatusBar1.SimpleText:='Deduping by using a normal TStringList.';
+  Application.ProcessMessages;
+  Screen.BeginWaitCursor;
+  SL := TStringList.Create;
+  try
+    T := Now;
+    // By default SL.Duplicate = dupIgnore but it works only with sorted list.
+    for i := 0 to Memo.Lines.Count-1 do begin             // Cannot use it here.
+      s := Memo.Lines[i];
+      if SL.IndexOf(S) < 0 then
+        SL.Add(s);
+    end;
+    UpdateDuplicates(Memo.Lines.Count - SL.Count);
+    Memo.Lines.Assign(SL);
+    UpdateTime(Now - T);
+  finally
+    SL.Free;
+    Screen.EndWaitCursor;
+    StatusBar1.SimpleText := 'Ready.';
   end;
 end;
 

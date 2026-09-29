@@ -1,49 +1,66 @@
 object Form1: TForm1
-  Left = 353
-  Height = 353
-  Top = 194
-  Width = 535
-  BorderStyle = bsSingle
+  Left = 368
+  Height = 360
+  Top = 198
+  Width = 539
   Caption = 'TLookupStringList Demo'
-  ClientHeight = 353
-  ClientWidth = 535
+  ClientHeight = 360
+  ClientWidth = 539
+  LCLVersion = '5.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
-  Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
   object btnDedupeMemo: TButton
-    Left = 346
+    AnchorSideLeft.Control = Memo
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Memo
+    Left = 239
     Height = 25
     Top = 72
-    Width = 183
-    Anchors = [akTop, akRight]
+    Width = 225
+    BorderSpacing.Left = 7
     Caption = 'Dedupe Memo'
-    OnClick = btnDedupeMemoClick
     TabOrder = 0
+    OnClick = btnDedupeMemoClick
   end
   object Memo: TMemo
-    Left = 0
-    Height = 281
+    AnchorSideTop.Control = SpinEdit1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = btnGenerate
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = StatusBar1
+    Left = 8
+    Height = 265
     Top = 72
-    Width = 336
+    Width = 224
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Top = 7
     ScrollBars = ssAutoBoth
     TabOrder = 1
   end
   object lblTime: TLabel
-    Left = 16
+    AnchorSideLeft.Control = btnGenerate
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = btnGenerate
+    AnchorSideTop.Side = asrCenter
+    Left = 267
     Height = 18
-    Top = 48
+    Top = 11
     Width = 34
+    BorderSpacing.Left = 35
     Caption = 'Time:'
     ParentColor = False
   end
   object lblLines: TLabel
-    Left = 130
+    AnchorSideLeft.Control = lblTime
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lblTime
+    Left = 312
     Height = 18
-    Top = 48
-    Width = 105
-    Caption = 'Duplicated Lines:'
+    Top = 11
+    Width = 68
+    BorderSpacing.Left = 11
+    Caption = 'Duplicates:'
     ParentColor = False
   end
   object SpinEdit1: TSpinEdit
@@ -56,40 +73,86 @@ object Form1: TForm1
     TabOrder = 2
   end
   object btnGenerate: TButton
-    Left = 112
+    AnchorSideLeft.Control = SpinEdit1
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = SpinEdit1
+    Left = 117
     Height = 25
     Top = 8
-    Width = 125
+    Width = 115
+    BorderSpacing.Left = 15
     Caption = 'Generate Data'
-    OnClick = btnGenerateClick
     TabOrder = 3
+    OnClick = btnGenerateClick
   end
   object btnDedupeFile: TButton
     AnchorSideLeft.Control = btnDedupeMemo
+    AnchorSideTop.Control = btnDedupeMemo
+    AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = btnDedupeMemo
     AnchorSideRight.Side = asrBottom
-    Left = 346
+    Left = 239
     Height = 32
-    Top = 232
-    Width = 183
+    Top = 104
+    Width = 225
     Anchors = [akTop, akLeft, akRight]
-    Caption = 'Create File and Dedupe it'
-    OnClick = btnDedupeFileClick
+    BorderSpacing.Top = 7
+    Caption = 'Dedupe through a file'
     TabOrder = 4
+    OnClick = btnDedupeFileClick
   end
-  object Label1: TLabel
-    AnchorSideLeft.Control = btnDedupeFile
-    AnchorSideRight.Control = btnDedupeFile
+  object StatusBar1: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 337
+    Width = 539
+    Panels = <>
+    SimpleText = 'Ready.'
+  end
+  object btnClear: TButton
+    AnchorSideLeft.Control = btnGenerate
+    AnchorSideTop.Control = btnGenerate
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = btnGenerate
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = btnDedupeFile
-    Left = 346
-    Height = 96
-    Top = 136
-    Width = 183
-    Anchors = [akLeft, akRight, akBottom]
-    AutoSize = False
-    Caption = 'Deduplicating from a file is much faster than using a GUI control. Use the button below to see the whole process.'
-    ParentColor = False
-    WordWrap = True
+    Left = 117
+    Height = 25
+    Top = 36
+    Width = 115
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 3
+    Caption = 'Clear Data'
+    TabOrder = 6
+    OnClick = btnClearClick
+  end
+  object btnUseStringList: TButton
+    AnchorSideLeft.Control = btnDedupeMemo
+    AnchorSideTop.Control = btnDedupeFile
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = btnDedupeMemo
+    AnchorSideRight.Side = asrBottom
+    Left = 239
+    Height = 32
+    Top = 166
+    Width = 225
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 30
+    Caption = 'Use normal StringList to dedupe'
+    TabOrder = 7
+    OnClick = btnUseStringListClick
+  end
+  object lblWarning: TLabel
+    AnchorSideLeft.Control = btnUseStringList
+    AnchorSideTop.Control = btnUseStringList
+    AnchorSideTop.Side = asrBottom
+    Left = 246
+    Height = 18
+    Top = 201
+    Width = 138
+    BorderSpacing.Left = 7
+    BorderSpacing.Top = 3
+    Caption = 'Warning: Much slower'
+    Font.Color = clPurple
+    ParentFont = False
   end
 end

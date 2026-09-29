@@ -10,7 +10,7 @@
 
   Abstract:
     This is an unsorted StringList with a fast lookup feature.
-     Internally it uses a map container to store the strings again
+     Internally it a hybrid using a map container to store the strings again
       which is then used for Contains, IndexOf and Find methods.
 
     The extra container does not reserve too much memory because the strings are
@@ -19,8 +19,9 @@
     All Duplicates property values are fully supported,
      including dupIgnore and dupError, unlike in unsorted StringList.
 
-    This class is useful only when you must preserve the order in list, but
-     also need to do fast lookups to see if a string exists, or must prevent duplicates.
+    This class is useful in these situations:
+     - You must preserve the order in list but also need fast lookup to see if a string exists
+     - You must prevent duplicates entering an unsorted list without making your code slow
 }
 unit LookupStringList;
 
