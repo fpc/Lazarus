@@ -101,8 +101,8 @@ type
   function CheckNoLeaks: boolean;
   function CheckAllHandlesFreed: boolean;
 
-  function IsMockHandle(AHandle: THandle; AClass: TTestMockHandleClass): boolean;
-  function IsMockHandleOrNIl(AHandle: THandle; AClass: TTestMockHandleClass): boolean;
+  function IsMockHandle(AHandle: HWND; AClass: TTestMockHandleClass): boolean;
+  function IsMockHandleOrNIl(AHandle: HWND; AClass: TTestMockHandleClass): boolean;
 
 const
   TestMockDefaultLogFontName = 'MyFont';
@@ -133,13 +133,13 @@ begin
   Result := TestMockHandleList.Count = 0;
 end;
 
-function IsMockHandle(AHandle: THandle; AClass: TTestMockHandleClass): boolean;
+function IsMockHandle(AHandle: HWND; AClass: TTestMockHandleClass): boolean;
 begin
   Result := (TObject(AHandle) is AClass) and
             (TTestMockHandle(AHandle).IsAlive);
 end;
 
-function IsMockHandleOrNIl(AHandle: THandle; AClass: TTestMockHandleClass): boolean;
+function IsMockHandleOrNIl(AHandle: HWND; AClass: TTestMockHandleClass): boolean;
 begin
   Result := (AHandle = 0) or IsMockHandle(AHandle, AClass);
 end;
