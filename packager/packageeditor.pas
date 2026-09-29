@@ -1719,6 +1719,9 @@ begin
           OtherFile.AddToUsesPkgSection:=false;
       end;
     end;
+    // the file list is unchanged -> no need to rebuild the tree
+    fForcedFlags:=[pefNeedUpdateTitle,pefNeedUpdateProperties,
+                   pefNeedUpdateButtons,pefNeedUpdateStatusBar];
     LazPackage.Modified:=True;
   end;
 end;
@@ -1758,8 +1761,12 @@ begin
     or CurFile.HasRegisterProc=FPropGui.CallRegisterProcCheckBox.Checked then
       continue;
     CurFile.HasRegisterProc:=FPropGui.CallRegisterProcCheckBox.Checked;
-    if not NodeData.Removed then
+    if not NodeData.Removed then begin
+      // the file list is unchanged -> no need to rebuild the tree
+      fForcedFlags:=[pefNeedUpdateTitle,pefNeedUpdateProperties,
+                     pefNeedUpdateButtons,pefNeedUpdateStatusBar];
       LazPackage.Modified:=True;
+    end;
   end;
 end;
 
@@ -1880,8 +1887,12 @@ begin
       or CurFile.DisableI18NForLFM=FPropGui.DisableI18NForLFMCheckBox.Checked then
         continue;
       CurFile.DisableI18NForLFM:=FPropGui.DisableI18NForLFMCheckBox.Checked;
-      if not NodeData.Removed then
+      if not NodeData.Removed then begin
+        // the file list is unchanged -> no need to rebuild the tree
+        fForcedFlags:=[pefNeedUpdateTitle,pefNeedUpdateProperties,
+                       pefNeedUpdateButtons,pefNeedUpdateStatusBar];
         LazPackage.Modified:=true;
+      end;
     end;
   finally
     EndUpdate;
