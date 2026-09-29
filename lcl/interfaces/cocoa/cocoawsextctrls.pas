@@ -26,7 +26,7 @@ uses
   // libs
   MacOSAll, CocoaAll,
   // LCL
-  Classes, Controls, ExtCtrls, LCLType, LCLProc, Graphics, SysUtils,
+  Classes, Controls, ExtCtrls, LCLType, Graphics, SysUtils,
   // widgetset
   WSExtCtrls, WSLCLClasses,
   // LCL Cocoa

@@ -20,7 +20,7 @@ uses
   // cocoa bindings
   CocoaAll,
   // lcl
-  LCLType, LCLProc, LCLIntf, Graphics, Themes, TmSchema,
+  LCLType, LCLIntf, Graphics, Themes, TmSchema,
   customdrawndrawers,
   // widgetset
   CocoaUtils, CocoaGDIObjects, CocoaConst;

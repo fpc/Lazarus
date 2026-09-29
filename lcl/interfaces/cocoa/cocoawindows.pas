@@ -24,7 +24,7 @@ interface
 
 uses
   Types, Classes, SysUtils,
-  LCLType, LCLProc,
+  LCLType,
   MacOSAll, CocoaAll,
   CocoaPrivate, CocoaWSService, Cocoa_Extra, CocoaUtils,
   CocoaCursor, CocoaCustomControl, CocoaTextEdits,

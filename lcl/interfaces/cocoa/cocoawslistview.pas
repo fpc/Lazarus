@@ -8,7 +8,7 @@ interface
 
 uses
   Classes, SysUtils, LCLType,
-  Controls, ComCtrls, Types, StdCtrls, LCLProc, Graphics, ImgList, Forms,
+  Controls, ComCtrls, Types, StdCtrls, Graphics, ImgList, Forms,
   WSComCtrls,
   CocoaAll,
   CocoaPrivate, CocoaScrolling, Cocoa_Extra,

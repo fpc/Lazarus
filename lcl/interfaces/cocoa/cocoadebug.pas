@@ -6,7 +6,7 @@ unit CocoaDebug;
 interface
 
 uses
-  Classes, SysUtils, Types, LCLType, LCLProc, Controls,
+  Classes, SysUtils, Types, LCLType, Controls,
   CocoaAll,
   CocoaPrivate, CocoaUtils, Cocoa_Extra;
 

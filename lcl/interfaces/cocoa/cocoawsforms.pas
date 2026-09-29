@@ -26,7 +26,7 @@ uses
   // RTL,FCL
   Classes, SysUtils,
   // LCL
-  Controls, Forms, Graphics, LCLType, Messages, LMessages, LCLProc, GraphMath,
+  Controls, Forms, Graphics, LCLType, Messages, LMessages, GraphMath,
   // Widgetset
   WSForms, WSLCLClasses, LCLMessageGlue,
   // LCL Cocoa

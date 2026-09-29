@@ -24,7 +24,7 @@ uses
   // libs
   MacOSAll, CocoaAll, SysUtils, Math,
   // LCL
-  Classes, Controls, Buttons, StdCtrls, LCLType, LCLProc, Graphics, GraphType, ImgList,
+  Classes, Controls, Buttons, StdCtrls, LCLType, Graphics, GraphType, ImgList,
   LCLMessageGlue, LMessages,
   // widgetset
   WSButtons, WSStdCtrls, WSLCLClasses,

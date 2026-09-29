@@ -8,7 +8,7 @@ interface
 
 uses
   Types, Classes, Controls, SysUtils, Math,
-  LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
+  LCLType, LCLMessageGlue, LMessages, LCLIntf, Graphics, Forms,
   CocoaAll,
   CocoaPrivate, CocoaWSService, CocoaWSModalService,
   CocoaWindows,  Cocoa_Extra, CocoaConfig, CocoaUtils,

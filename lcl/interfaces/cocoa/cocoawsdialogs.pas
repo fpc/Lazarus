@@ -29,7 +29,7 @@ uses
   CocoaAll, Classes,
   // LCL
   Controls, SysUtils, Forms, Dialogs, Graphics, Masks,
-  LCLType, LCLProc, LCLStrConsts,
+  LCLType, LCLStrConsts,
   // Widgetset
   WSLCLClasses, WSDialogs,
   // LCL Cocoa

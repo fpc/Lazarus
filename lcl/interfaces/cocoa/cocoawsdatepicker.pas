@@ -8,7 +8,7 @@ interface
 uses
   CocoaAll,
   Classes, SysUtils, Controls, Calendar,
-  LCLtype, LclProc, WSCalendar,
+  LCLtype, WSCalendar,
   CocoaWSModalService, CocoaCommonCallback, CocoaDatePicker, CocoaUtils, CocoaPrivate;
 
 type

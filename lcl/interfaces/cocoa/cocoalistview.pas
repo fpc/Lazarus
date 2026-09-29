@@ -10,7 +10,7 @@ uses
   // RTL, FCL, LCL
   CocoaAll,
   Classes, LCLType, SysUtils, LCLMessageGlue, LMessages,
-  Controls, ComCtrls, Types, StdCtrls, LCLProc, Graphics, ImgList, Forms,
+  Controls, ComCtrls, Types, StdCtrls, Graphics, ImgList, Forms,
   // Cocoa WS
   CocoaPrivate, CocoaListControl,
   CocoaScrolling, CocoaTextEdits, CocoaGDIObjects, CocoaUtils;

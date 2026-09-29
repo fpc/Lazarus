@@ -9,7 +9,7 @@ interface
 
 uses
   Classes, Controls, SysUtils,
-  WSControls, LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
+  WSControls, LCLType, LCLMessageGlue, LMessages, LCLIntf, Graphics, Forms,
   CocoaAll,
   CocoaConfig, CocoaPrivate,
   CocoaCustomControl, CocoaScrolling, CocoaWSScrolling,

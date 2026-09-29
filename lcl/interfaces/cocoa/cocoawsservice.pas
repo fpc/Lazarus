@@ -7,7 +7,7 @@ unit CocoaWSService;
 interface
 
 uses
-  Classes, SysUtils, Types, LCLType, LCLProc,
+  Classes, SysUtils, Types, LCLType,
   Forms, Menus, LazLoggerBase,
   MacOSAll, CocoaAll,
   CocoaGDIObjects, CocoaMenus, CocoaConst, CocoaUtils;
