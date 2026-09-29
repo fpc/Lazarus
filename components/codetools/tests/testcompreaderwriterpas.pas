@@ -1006,6 +1006,7 @@ end;
 procedure TTestCompReaderWriterPas.TestBaseTypesZeroes;
 var
   AComponent: TCompBaseTypesCustomStored;
+{$PUSH}{$R-}
 begin
   AComponent:=TCompBaseTypesCustomStored.Create(nil);
   try
@@ -1045,16 +1046,14 @@ begin
       SetOfEnum:=[];
       DefSetOfEnum:=[red];
       SetOfEnumRg:=[];
-      {$PUSH}{$R-}
-      DefSetOfEnumRg:=[red];
-      {$POP}
+      DefSetOfEnumRg:=[red]; // red is not in range
       SetOfBool:=[];
       DefSetOfBool:=[true];
-      MyInt:={%H-}TMyInt(0);
+      MyInt:={%H-}TMyInt(0); // 0 is outside range
       DefMyInt:=MyInt+1;
       SetOfMyInt:=[];
       DefSetOfMyInt:=[2];
-      MyChar:={%H-}TMyChar(0);
+      MyChar:={%H-}TMyChar(0); // 0 is outside range
       DefMyChar:=low(MyChar);
       SetOfMyChar:=[];
       DefSetOfMyChar:=[#4];
@@ -1088,6 +1087,7 @@ begin
     AComponent.Free;
   end;
 end;
+{$POP}
 
 procedure TTestCompReaderWriterPas.TestBaseTypesMinValues;
 var
