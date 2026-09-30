@@ -54,21 +54,17 @@ end;
 function TLazAccessibleObject.GetPosition: TPoint;
 begin
   if (OwnerControl <> nil) and (OwnerControl.GetAccessibleObject() = Self) then
-  begin
-    Result := Point(OwnerControl.Left, OwnerControl.Top);
-    Exit;
-  end;
-  Result := FPosition;
+    Result := Point(OwnerControl.Left, OwnerControl.Top)
+  else
+    Result := FPosition;
 end;
 
 function TLazAccessibleObject.GetSize: TSize;
 begin
   if (OwnerControl <> nil) and (OwnerControl.GetAccessibleObject() = Self) then
-  begin
-    Result := Types.Size(OwnerControl.Width, OwnerControl.Height);
-    Exit;
-  end;
-  Result := FSize;
+    Result := Types.Size(OwnerControl.Width, OwnerControl.Height)
+  else
+    Result := FSize;
 end;
 
 procedure TLazAccessibleObject.SetHandle(AValue: PtrInt);
@@ -570,13 +566,7 @@ begin
         WinDragTarget.DockManager.PositionDockRect(DragDockObject);
     end else
     begin
-      with FDockRect do
-      begin
-        Left := DragPos.X;
-        Top := DragPos.Y;
-        Right := Left + Control.UndockWidth;
-        Bottom := Top + Control.UndockHeight;
-      end;
+      FDockRect := Bounds(DragPos.X, DragPos.Y, Control.UndockWidth, Control.UndockHeight);
       // let user adjust dock rect
       AdjustDockRect(FDockRect);
     end;
@@ -916,16 +906,16 @@ begin
     if (Self is TCustomForm) and (GetParentForm(Self, True) = Self) then
     begin
       //Dont change Left,Top if this is the topmost form
-      R.Right := R.Left + MulDiv(R.Right-R.Left, Multiplier, Divider);
-      R.Bottom := R.Top + MulDiv(R.Bottom-R.Top, Multiplier, Divider);
+      R.Right  := R.Left + MulDiv(R.Width , Multiplier, Divider);
+      R.Bottom := R.Top  + MulDiv(R.Height, Multiplier, Divider);
     end
     else
-    begin
-      R.Left := MulDiv(R.Left, Multiplier, Divider);
-      R.Top := MulDiv(R.Top, Multiplier, Divider);
-      R.Right := MulDiv(R.Right, Multiplier, Divider);
-      R.Bottom := MulDiv(R.Bottom, Multiplier, Divider);
-    end;
+      R := Rect(
+        MulDiv(R.Left  , Multiplier, Divider),
+        MulDiv(R.Top   , Multiplier, Divider),
+        MulDiv(R.Right , Multiplier, Divider),
+        MulDiv(R.Bottom, Multiplier, Divider)
+      );
     BoundsRect := R;
   end;
 end;
@@ -1916,10 +1906,7 @@ end;
 ------------------------------------------------------------------------------}
 function TControl.GetBoundsRect: TRect;
 begin
-  Result.Left := FLeft;
-  Result.Top := FTop;
-  Result.Right := FLeft+FWidth;
-  Result.Bottom := FTop+FHeight;
+  Result := Bounds(FLeft, FTop, FWidth, FHeight);
 end;
 
 function TControl.GetClientHeight: Integer;
@@ -2169,10 +2156,7 @@ end;
 ------------------------------------------------------------------------------}
 function TControl.GetClientRect: TRect;
 begin
-  Result.Left := 0;
-  Result.Top := 0;
-  Result.Right := Width;
-  Result.Bottom := Height;
+  Result := Rect(0, 0, Width, Height);
 end;
 
 {------------------------------------------------------------------------------
@@ -3555,7 +3539,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.SetHint(const Value: TTranslateString);
 begin
-  if FHint = Value then exit;
   FHint := Value;
 end;
 
@@ -4764,32 +4747,21 @@ begin
   {$IFDEF VerboseLCLHelp}
   debugln(['TControl.ShowHelp ',DbgSName(Self)]);
   {$ENDIF}
-  if HelpType = htContext then
-  begin
-    if HelpContext <> 0 then
-    begin
-      Application.HelpContext(HelpContext);
-      Exit;
-    end;
-  end
-  else
-  begin
-    if HelpKeyword <> '' then
-    begin
-      Application.HelpKeyword(HelpKeyword);
-      Exit;
-    end;
-  end;
-  if Parent <> nil then
+  if HasHelp then
+    case HelpType of
+      htContext: Application.HelpContext(HelpContext);
+      htKeyword: Application.HelpKeyword(HelpKeyword);
+    end
+  else if Parent <> nil then
     Parent.ShowHelp;
 end;
 
 function TControl.HasHelp: Boolean;
 begin
-  if HelpType = htContext then
-    Result := HelpContext <> 0
-  else
-    Result := HelpKeyword <> '';
+  case HelpType of
+    htContext: Result := HelpContext <> 0;
+    htKeyword: Result := HelpKeyword <> '';
+  end;
 end;
 
 {------------------------------------------------------------------------------
