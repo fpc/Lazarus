@@ -407,7 +407,7 @@ begin
     FOnNavigated(Self);
 end;
 
-procedure TCustomTaskDialog.InternalSetDialogHandle(AHandle: THandle);
+procedure TCustomTaskDialog.InternalSetDialogHandle(AHandle: TLCLHandle);
 begin
   FHandle := AHandle;
 end;

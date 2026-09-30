@@ -5132,7 +5132,7 @@ var
   WidgetInfo: PWidgetInfo;
 begin
   Widget := GTKAPIWidget_New;
-  Result := THandle({%H-}PtrUInt(Widget));
+  Result := TLCLHandle(Widget);
   if Result = 0 then Exit;
   WidgetInfo := GetOrCreateWidgetInfo(Widget);
   WidgetInfo^.CoreWidget := PGTKAPIWidget(Widget)^.Client;
