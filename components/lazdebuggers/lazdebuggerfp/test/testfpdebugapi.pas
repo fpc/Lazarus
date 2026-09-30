@@ -1,17 +1,5 @@
 (* Tests for the FpDebug by-name procedure lookup, FindNamedProcSymbol.
 
-   No testcase covered this path before. It is not uncalled, though: there are
-   three callers in LazDebuggerFp, and they do not agree on the namespaces.
-
-     fpdebugdebuggerbase.pas    [psfLinkTableSym] - RTL linker names
-     fpdebugvalueconvertors.pas [psfLinkTableSym] - a mangled name
-     fpdebugconvdebugforjson.pas  no flags        - ALL namespaces, and the
-                                                   only caller in the tree
-                                                   that gets them
-
-   So the DWARF-side behaviour these assertions pin has exactly one in-tree
-   consumer, and it is the one taking a user-supplied, source-level name.
-
    The fixtures are in lazdebugtestbase/testapps/WatchesScopePrg.pas, and each
    of them is a deliberate name collision - the interesting question is not
    whether a name can be found, but which of two things answering to that name
@@ -127,12 +115,6 @@ begin
   if SkipTest then exit;
   if not TestControlCanTest(ControlTestFindNamedProcSymbol) then exit;
 
-  (* A BARE name, not AppDir + name. WatchesScopePrg is a SHARED testapp: it
-     lives in lazdebugtestbase and reaches the suite through that package's
-     embedded RCDATA resource, not from this suite's testapps directory, which
-     does not contain it. TestCommonSources takes the resource branch only when
-     the name has no path separator - a full path makes it read from disk and
-     fail here. testwatches.pas calls it exactly this way. *)
   Src := GetCommonSourceFor('WatchesScopePrg.pas');
   TestCompile(Src, ExeName);
 
@@ -166,12 +148,7 @@ begin
     (* 3b. A spelling that matches NEITHER the source form nor the stored one.
           Under DWARF 2 the stored name is FOOBAR and under later versions it
           is FooBar, so this request is wrong in both - which is the point.
-          The comparison is CompareUtf8BothCase (fpdbgutil.pp), reached on the
-          proc path through GoNamedChildEx and on the unit-name branch
-          directly: it accepts each character of the STORED name against
-          either the upper or the lower form of the REQUESTED one. So no
-          casing of an ASCII identifier can miss, whichever way FPC wrote it.
-          That is correct for Pascal, where identifiers are case-insensitive,
+          But it is correct for Pascal, where identifiers are case-insensitive,
           and it is what an exact-match "optimisation" here would break.
           ONLY the DWARF namespace behaves this way: the link table is a
           case-SENSITIVE dictionary, which is what psfIgnoreCase relaxes. *)
@@ -187,9 +164,10 @@ begin
              AddrOwnCuName <> AddrFooBar);
 
     (* 5. Round trip. The by-address lookup must come back to the same
-          procedure. Martin's caveat on the reverse direction - going from a
-          name to an address and back may not land on the same address for
-          every symbol - is why only this direction is asserted. *)
+          procedure.
+          The reverse direction - going from a name to an address and back
+          may not land on the same address for every symbol - is why only
+          this direction is asserted. *)
     AssertNameAtAddress('round trip', AddrFooBar, ExpFooBarName);
 
     (* 6. The two namespaces, on a name that exists in BOTH. The user's
@@ -206,27 +184,14 @@ begin
     AssertNotFound('link table has no source-level name', 'WatchesScopePrg',
                    [psfLinkTableSym]);
 
-    (* 6b. The link table is where case DOES matter, and it is the only place
-          in this test where it does. The lookup is TWO steps
-          (TfpSymbolList.GetInfo, fpdbgsymtable.pas):
-
-            1. the dictionary is keyed on UpperCase(name)  - case-INsensitive
-            2. the collision chain is then walked for p^.Name = AName, exactly
-
-          psfIgnoreCase skips step 2, NOT step 1. So the miss below and the hit
-          after it are the same lookup with one flag changed - which is what
-          stops the miss being a "there is no such symbol" artefact: the very
-          next assertion finds that same string.
-
-          The DWARF namespace behaves the opposite way (see 3b), so a caller
-          that gets case wrong is served by one namespace and not the other.
-          That asymmetry is the reason both halves are asserted here. *)
+    (* 6b. The link table is where psfIgnoreCase DOES matter, and it is the only place
+          in this test where it does.
+    *)
     AssertNotFound('link table case', 'fpc_break_error', [psfLinkTableSym]);
 
     (* And step 2 being the only thing relaxed means the symbol still reports
-       the spelling the TABLE holds - GetInfo assigns AFoundName from p^.Name
-       in both modes, never from the requested string. That is the link-table
-       counterpart of the by-name DWARF lookup echoing its caller. *)
+       the spelling the TABLE holds
+    *)
     AddrRtlBreakCi := AssertFoundProc('link table ignore case',
                                       'fpc_break_error',
                                       [psfLinkTableSym, psfIgnoreCase],
@@ -239,11 +204,7 @@ begin
           The lookup must return the procedure. *)
     AssertFoundProc('scoped enum', 'bar');
 
-    (* REQUIRED. TestTrue/TestEquals/TestFalse do NOT fail the test - they
-       accumulate into FTestErrors via AddTestError. AssertTestErrors is the
-       only thing that raises, and every other test in this suite calls it
-       (testbreakpoint 8 times, teststepping 5, testwatches 18). Without this
-       line the test passes no matter what the assertions saw. *)
+
     AssertTestErrors;
 
   finally

@@ -245,11 +245,6 @@ end;
 
 (* Fixtures for the FpDebug by-name procedure lookup (FindNamedProcSymbol).
 
-   They add no TEST_BREAKPOINT target and are never executed: each is called
-   only behind "if Int_GlobalPrg = 0", which is False by the time it is
-   reached (Int_GlobalPrg is set to 101 above). The calls exist only so the
-   procedures are linked and carry debug info.
-
    Every one of them is a deliberate name COLLISION. The by-name lookup has to
    pick a procedure out of a scope that also holds something else answering to
    that name, and that is the part no other testapp here exercises. *)
@@ -262,10 +257,8 @@ begin
   BreakDummy := AValue;
 end;
 
-(* 2. Case matching. The DWARF by-name lookup compares with
-      CompareUtf8BothCase, which accepts each character of the STORED name
-      against either the upper or the lower form of the REQUESTED one - so this
-      is findable as "FooBar", "FOOBAR" and "fOobAR" alike, which is correct
+(* 2. Case matching. The DWARF by-name lookup compares with case insensitive.
+      This is findable as "FooBar", "FOOBAR" and "fOobAR" alike, which is correct
       for Pascal. The link table is the opposite and is case sensitive; both
       are asserted, and the asymmetry is the point.
       Under DWARF 2 FPC stores the name uppercased, so what the symbol REPORTS
