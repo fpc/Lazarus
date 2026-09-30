@@ -2797,7 +2797,11 @@ begin
       Result := False;
       Exit;
     end;
-                               
+
+    // reset cursor on identifier after test CleanPosIsInComment
+    MoveCursorToCleanPos(CleanCursorPos);
+    GetIdentStartEndAtPosition(Src,CleanCursorPos,
+                               CurPos.StartPos,CurPos.EndPos);
     IdentStartPos:=CurPos.StartPos;
     CursorAtIdentifier:=CurPos.StartPos<CurPos.EndPos;
     if CursorAtIdentifier then
