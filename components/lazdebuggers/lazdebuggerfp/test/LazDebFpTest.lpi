@@ -413,7 +413,7 @@
         <PackageName Value="FCL"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="6">
+    <Units Count="7">
       <Unit0>
         <Filename Value="LazDebFpTest.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -443,6 +443,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestStepping"/>
       </Unit5>
+      <Unit6>
+        <Filename Value="testfpdebugapi.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestFpDebugApi"/>
+      </Unit6>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

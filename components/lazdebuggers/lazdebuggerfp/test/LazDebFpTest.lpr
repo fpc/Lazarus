@@ -11,7 +11,7 @@ uses
   Interfaces, Forms,
   {$ifdef NOGUI} consoletestrunner, {$ELSE}   GuiTestRunner, {$ENDIF}
   LazClasses, TestVarious,
-  TestWatches, TestBase, TestBreakPoint, TestStepping;
+  TestWatches, TestBase, TestBreakPoint, TestStepping, TestFpDebugApi;
 
 {$R *.res}
 

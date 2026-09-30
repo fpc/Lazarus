@@ -243,6 +243,62 @@ begin
   BreakDummy := 1; // TEST_BREAKPOINT=FuncFoo
 end;
 
+(* Fixtures for the FpDebug by-name procedure lookup (FindNamedProcSymbol).
+
+   Every one of them is a deliberate name COLLISION. The by-name lookup has to
+   pick a procedure out of a scope that also holds something else answering to
+   that name, and that is the part no other testapp here exercises. *)
+
+(* 1. A procedure whose name is the compilation unit's own name.
+      A lookup that does not pass fsfOnlySubroutines answers the UNIT here;
+      the procedure lookup must answer this procedure. *)
+procedure WatchesScopePrg(AValue: LongInt);
+begin
+  BreakDummy := AValue;
+end;
+
+(* 2. Case matching. The DWARF by-name lookup compares with case insensitive.
+      This is findable as "FooBar", "FOOBAR" and "fOobAR" alike, which is correct
+      for Pascal. The link table is the opposite and is case sensitive; both
+      are asserted, and the asymmetry is the point.
+      Under DWARF 2 FPC stores the name uppercased, so what the symbol REPORTS
+      differs by DWARF version, and the test conditions on the version under
+      test rather than assuming one. *)
+procedure FooBar;
+begin
+  BreakDummy := 2;
+end;
+
+(* 3. A user procedure shadowing an RTL link-table symbol of the same name.
+      The DWARF lookup must find THIS one; a lookup asking for the link-table
+      symbol must find the RTL's. This name is the one LazDebuggerFp itself
+      relies on, which is why it is the interesting collision rather than an
+      arbitrary one. *)
+procedure FPC_BREAK_ERROR;
+begin
+  BreakDummy := 3;
+end;
+
+(* 4. Scoped-enum collision - a different shadow from the unit-name one.
+      With SCOPEDENUMS on, "bar" is not introduced into the enclosing scope, so
+      a procedure may take the name; a by-name lookup must then return the
+      PROCEDURE and not the enumerator. PUSH/POP scopes the switch to this one
+      type declaration, so every unscoped enum elsewhere in this file keeps its
+      meaning. *)
+{$PUSH}
+{$SCOPEDENUMS ON}
+type
+  TScopedEnumForNameLookup = (bar, xyz);
+{$POP}
+
+var
+  ScopedEnumForNameLookupVal: TScopedEnumForNameLookup;
+
+procedure bar;
+begin
+  BreakDummy := 4;
+end;
+
 procedure TestFin;
 var
   FinFoo1, FinFoo2, FinFoo3: integer;
@@ -282,6 +338,22 @@ begin
   TestClassMainChild.MethodMainBaseBase();
 
   BreakDummy := 1; // TEST_BREAKPOINT=Prg
+
+  // By-name lookup fixtures. The guard is never True (Int_GlobalPrg is 101 by
+  // now), so NOTHING below this line runs. The calls exist only so the
+  // procedures are linked and carry debug info, and the assignment only so the
+  // scoped enum type is emitted.
+  // Everything is inside the guard deliberately: the statement after
+  // TEST_BREAKPOINT=Prg is the one a stepping test lands on next, so an
+  // unguarded statement here would change what every other suite using this
+  // testapp observes.
+  if Int_GlobalPrg = 0 then begin
+    ScopedEnumForNameLookupVal := TScopedEnumForNameLookup.bar;
+    WatchesScopePrg(4321);
+    FooBar;
+    FPC_BREAK_ERROR;
+    bar;
+  end;
 
   TestFin;
 end.
