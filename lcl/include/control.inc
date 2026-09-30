@@ -4308,10 +4308,10 @@ procedure TControl.SetWidth(Value: Integer);
   begin
     // the user changed the width
     if Value<0 then
-      raise ELayoutException.CreateFmt('TWinControl.SetBounds (%s): Negative width %d not allowed.',
+      raise ELayoutException.CreateFmt('TControl.SetWidth (%s): Negative width %d not allowed.',
                                        [DbgSName(Self), Value]);
     if Value>=10000 then
-      raise ELayoutException.CreateFmt('TWinControl.SetBounds (%s): Width %d not allowed.',
+      raise ELayoutException.CreateFmt('TControl.SetWidth (%s): Width %d not allowed.',
                                        [DbgSName(Self), Value]);
   end;
 
@@ -4364,10 +4364,10 @@ procedure TControl.SetHeight(Value: Integer);
   begin
     // the user changed the height
     if Value<0 then
-      raise ELayoutException.CreateFmt('TWinControl.SetHeight (%s): Negative height %d not allowed.',
+      raise ELayoutException.CreateFmt('TControl.SetHeight (%s): Negative height %d not allowed.',
                                        [DbgSName(Self), Value]);
     if Value>=10000 then
-      raise ELayoutException.CreateFmt('TWinControl.SetBounds (%s): Height %d not allowed.',
+      raise ELayoutException.CreateFmt('TControl.SetHeight (%s): Height %d not allowed.',
                                        [DbgSName(Self), Value]);
   end;
 
@@ -5824,7 +5824,7 @@ begin
     if (Parent<>nil) then
     begin
       //DebugLn([Space(FAutoSizingLockCount*2),'TControl.EnableAutoSizing ',DbgSName(Self),' enable Parent ',DbgSName(Parent)]);
-      Parent.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.DisableAutoSizing'){$ENDIF};
+      Parent.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.EnableAutoSizing'){$ENDIF};
     end else
       DoAllAutoSize;
   end;
