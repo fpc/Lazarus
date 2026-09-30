@@ -1415,17 +1415,14 @@ var
   P: TPoint;
   NewMouseControl: TControl;
 begin
-  if Assigned(Application) then
+  if Application = nil then exit;
+  NewMouseControl := GetCaptureControl;
+  if NewMouseControl = nil then
   begin
-    NewMouseControl := GetCaptureControl;
-    if NewMouseControl = nil then
-    begin
-      P := GetMousePosFromMessage(MouseMessage.Pos);
-      p := ClientToScreen(P);
-      NewMouseControl := Application.GetControlAtPos(P);
-    end;
-    Application.DoBeforeMouseMessage(NewMouseControl);
+    P := ClientToScreen(GetMousePosFromMessage(MouseMessage.Pos));
+    NewMouseControl := Application.GetControlAtPos(P);
   end;
+  Application.DoBeforeMouseMessage(NewMouseControl);
 end;
 
 {------------------------------------------------------------------------------
@@ -1602,21 +1599,19 @@ var
   H: Integer;
   OldParentFont: Boolean;
 begin
-  if AFont.PixelsPerInch <> ADesignTimePPI then
-  begin
-    OldParentFont := ParentFont;
+  if AFont.PixelsPerInch = ADesignTimePPI then exit;
+  OldParentFont := ParentFont;
+  try
+    H := AFont.Height;
+    AFont.BeginUpdate;
     try
-      H := AFont.Height;
-      AFont.BeginUpdate;
-      try
-        AFont.Height := MulDiv(H, AFont.PixelsPerInch, ADesignTimePPI);
-        AFont.PixelsPerInch := ADesignTimePPI;
-      finally
-        AFont.EndUpdate;
-      end;
+      AFont.Height := MulDiv(H, AFont.PixelsPerInch, ADesignTimePPI);
+      AFont.PixelsPerInch := ADesignTimePPI;
     finally
-      FParentFont := OldParentFont; // change ParentFont without triggering CM_PARENTFONTCHANGED
+      AFont.EndUpdate;
     end;
+  finally
+    FParentFont := OldParentFont; // change ParentFont without triggering CM_PARENTFONTCHANGED
   end;
 end;
 
@@ -1854,14 +1849,12 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.SetColor(Value: TColor);
 begin
-  if FColor <> Value then
-  begin
-    FColor := Value;
-    ParentColor := False;
-    ParentBackground := False;
-    Perform(CM_COLORCHANGED, 0, 0);
-    Invalidate;
-  end;
+  if FColor = Value then exit;
+  FColor := Value;
+  ParentColor := False;
+  ParentBackground := False;
+  Perform(CM_COLORCHANGED, 0, 0);
+  Invalidate;
 end;
 
 {------------------------------------------------------------------------------
@@ -3176,120 +3169,119 @@ var
     NewBaseLeft, NewBaseTop, NewBaseWidth, NewBaseHeight: Integer;
 begin
   // Apply the changes
-  if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
-  begin
-    // Dimensions
-    AAWidth := False;
-    AAHeight := False;
-    NewLeft := Left;
-    NewTop := Top;
-    NewWidth := Width;
-    NewHeight := Height;
-    OldWidth := Width;
-    OldHeight := Height;
+  if not (AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI]) then exit;
 
-    ShouldAutoAdjust(AAWidth, AAHeight);
-    //AAWidth := AAWidth and (Align in [alNone, alLeft, alRight]);
-    //AAHeight := AAHeight and (Align in [alNone, alTop, alBottom]);
+  // Dimensions
+  AAWidth := False;
+  AAHeight := False;
+  NewLeft := Left;
+  NewTop := Top;
+  NewWidth := Width;
+  NewHeight := Height;
+  OldWidth := Width;
+  OldHeight := Height;
 
-    NewLeft := Round(NewLeft * AXProportion);
-    if (not AAWidth) and (Parent<>nil) and (Align=alNone) then begin
-      if (Anchors * [akLeft, akRight] = [akRight]) and
-         (AnchorSideRight.Control=nil)
-      then begin
-        // Width is not scaled, make NewLeft follow the right side;
-        (* Right = Left + OldWidth;
-           NewRight = Right * AXProportion
-           NewLeft := NewLeft + (NewRight - Right); *)
-        NewLeft := Left;
-        NewLeft := NewLeft + Round((NewLeft + OldWidth) * (AXProportion - 1));
-      end;
-      if (Anchors * [akLeft, akRight] = []) then begin
-        (* Middle = Left + OldWidth / 2
-           NewMiddle = Middle * AXProportion
-           NewLeft := NewMiddle - Left + OldWidth / 2 *)
-        NewLeft := Left;
-        NewLeft := NewLeft + Round((NewLeft + OldWidth / 2) * (AXProportion - 1));
-      end
+  ShouldAutoAdjust(AAWidth, AAHeight);
+  //AAWidth := AAWidth and (Align in [alNone, alLeft, alRight]);
+  //AAHeight := AAHeight and (Align in [alNone, alTop, alBottom]);
+
+  NewLeft := Round(NewLeft * AXProportion);
+  if (not AAWidth) and (Parent<>nil) and (Align=alNone) then begin
+    if (Anchors * [akLeft, akRight] = [akRight]) and
+       (AnchorSideRight.Control=nil)
+    then begin
+      // Width is not scaled, make NewLeft follow the right side;
+      (* Right = Left + OldWidth;
+         NewRight = Right * AXProportion
+         NewLeft := NewLeft + (NewRight - Right); *)
+      NewLeft := Left;
+      NewLeft := NewLeft + Round((NewLeft + OldWidth) * (AXProportion - 1));
     end;
-
-    NewTop := Round(NewTop * AYProportion);
-    if (not AAHeight) and (Parent<>nil) and (Align=alNone) then begin
-      if (Anchors * [akTop, akBottom] = [akBottom]) and
-         (AnchorSideBottom.Control=nil)
-      then begin
-        NewTop := Top;
-        NewTop := NewTop + Round((NewTop + OldHeight) * (AYProportion - 1));
-      end;
-      if (Anchors * [akTop, akBottom] = []) then begin
-        NewTop := Top;
-        NewTop := NewTop + Round((NewTop + OldHeight / 2) * (AYProportion - 1));
-      end
-    end;
-
-    (* Scale Right/Bottom rather than Width/Height
-       - This avoids double rounding errors where the RIGHT can be
-         "round(left) + round(width)".
-         But an adjacent other left would be rounded only once.
-       - The result is then stored as The difference to the rounded left.
-    *)
-    if AAWidth then
-      NewWidth := Round((Width + Left) * AXProportion) - NewLeft;
-    if AAHeight then
-      NewHeight := Round((Height + Top) * AYProportion) - NewTop;
-
-    BorderSpacing.AutoAdjustLayout(AXProportion, AYProportion);
-    Constraints.AutoAdjustLayout(AXProportion, AYProportion);
-
-    NewBaseLeft := NewLeft;
-    NewBaseTop := NewTop;
-    NewBaseWidth := NewWidth;
-    NewBaseHeight := NewHeight;
-    NewWidth := Constraints.MinMaxWidth(NewWidth);
-    NewHeight := Constraints.MinMaxHeight(NewHeight);
-
-
-    FBaseBounds.Left:=NewBaseLeft;
-    FBaseBounds.Top:=NewBaseTop;
-    FBaseBounds.Right:=NewBaseLeft+NewBaseWidth;
-    FBaseBounds.Bottom:=NewBaseTop+NewBaseHeight;
-    if Parent<>nil then
-    begin
-      if AAWidth then
-        FBaseParentClientSize.cx:=Round(FBaseParentClientSize.cx * AXProportion)
-      else
-      if  (akRight in Anchors) then
-        (* Cound the parent size separately from our right.
-           Calculate the diff, between the 2 rounded values.
-           This avoids miscalculations, as the rounded parent size must later
-           match the size that the parent calculates itself.
-           (and that is rounded without taking our right into account)
-        *)
-        FBaseParentClientSize.cx:= (NewBaseLeft+NewBaseWidth) +
-          Round(FBaseParentClientSize.cx * AXProportion) -
-          Round((Left+Width) * AXProportion)
-      else
-      if (Anchors * [akLeft, akRight] = []) then
-        FBaseParentClientSize.cx:= Round(NewBaseLeft+NewBaseWidth / 2) +
-          Round(FBaseParentClientSize.cx * AXProportion) -
-          Round((Left+Width / 2) * AXProportion);
-
-      if AAHeight then
-        FBaseParentClientSize.cy:=Round(FBaseParentClientSize.cy * AYProportion)
-      else
-      if  (akBottom in Anchors) then
-        FBaseParentClientSize.cy:= (NewBaseTop+NewBaseHeight) +
-          Round(FBaseParentClientSize.cy * AYProportion) -
-          Round((Top+Height) * AYProportion)
-      else
-      if (Anchors * [akTop, akBottom] = []) then
-        FBaseParentClientSize.cy:= Round(NewBaseTop+NewBaseHeight / 2) +
-          Round(FBaseParentClientSize.cy * AYProportion) -
-          Round((Top+Height / 2) * AYProportion);
-    end;
-
-    SetBoundsKeepBase(NewLeft, NewTop, NewWidth, NewHeight);
+    if (Anchors * [akLeft, akRight] = []) then begin
+      (* Middle = Left + OldWidth / 2
+         NewMiddle = Middle * AXProportion
+         NewLeft := NewMiddle - Left + OldWidth / 2 *)
+      NewLeft := Left;
+      NewLeft := NewLeft + Round((NewLeft + OldWidth / 2) * (AXProportion - 1));
+    end
   end;
+
+  NewTop := Round(NewTop * AYProportion);
+  if (not AAHeight) and (Parent<>nil) and (Align=alNone) then begin
+    if (Anchors * [akTop, akBottom] = [akBottom]) and
+       (AnchorSideBottom.Control=nil)
+    then begin
+      NewTop := Top;
+      NewTop := NewTop + Round((NewTop + OldHeight) * (AYProportion - 1));
+    end;
+    if (Anchors * [akTop, akBottom] = []) then begin
+      NewTop := Top;
+      NewTop := NewTop + Round((NewTop + OldHeight / 2) * (AYProportion - 1));
+    end
+  end;
+
+  (* Scale Right/Bottom rather than Width/Height
+     - This avoids double rounding errors where the RIGHT can be
+       "round(left) + round(width)".
+       But an adjacent other left would be rounded only once.
+     - The result is then stored as The difference to the rounded left.
+  *)
+  if AAWidth then
+    NewWidth := Round((Width + Left) * AXProportion) - NewLeft;
+  if AAHeight then
+    NewHeight := Round((Height + Top) * AYProportion) - NewTop;
+
+  BorderSpacing.AutoAdjustLayout(AXProportion, AYProportion);
+  Constraints.AutoAdjustLayout(AXProportion, AYProportion);
+
+  NewBaseLeft := NewLeft;
+  NewBaseTop := NewTop;
+  NewBaseWidth := NewWidth;
+  NewBaseHeight := NewHeight;
+  NewWidth := Constraints.MinMaxWidth(NewWidth);
+  NewHeight := Constraints.MinMaxHeight(NewHeight);
+
+
+  FBaseBounds.Left:=NewBaseLeft;
+  FBaseBounds.Top:=NewBaseTop;
+  FBaseBounds.Right:=NewBaseLeft+NewBaseWidth;
+  FBaseBounds.Bottom:=NewBaseTop+NewBaseHeight;
+  if Parent<>nil then
+  begin
+    if AAWidth then
+      FBaseParentClientSize.cx:=Round(FBaseParentClientSize.cx * AXProportion)
+    else
+    if  (akRight in Anchors) then
+      (* Cound the parent size separately from our right.
+         Calculate the diff, between the 2 rounded values.
+         This avoids miscalculations, as the rounded parent size must later
+         match the size that the parent calculates itself.
+         (and that is rounded without taking our right into account)
+      *)
+      FBaseParentClientSize.cx:= (NewBaseLeft+NewBaseWidth) +
+        Round(FBaseParentClientSize.cx * AXProportion) -
+        Round((Left+Width) * AXProportion)
+    else
+    if (Anchors * [akLeft, akRight] = []) then
+      FBaseParentClientSize.cx:= Round(NewBaseLeft+NewBaseWidth / 2) +
+        Round(FBaseParentClientSize.cx * AXProportion) -
+        Round((Left+Width / 2) * AXProportion);
+
+    if AAHeight then
+      FBaseParentClientSize.cy:=Round(FBaseParentClientSize.cy * AYProportion)
+    else
+    if  (akBottom in Anchors) then
+      FBaseParentClientSize.cy:= (NewBaseTop+NewBaseHeight) +
+        Round(FBaseParentClientSize.cy * AYProportion) -
+        Round((Top+Height) * AYProportion)
+    else
+    if (Anchors * [akTop, akBottom] = []) then
+      FBaseParentClientSize.cy:= Round(NewBaseTop+NewBaseHeight / 2) +
+        Round(FBaseParentClientSize.cy * AYProportion) -
+        Round((Top+Height / 2) * AYProportion);
+  end;
+
+  SetBoundsKeepBase(NewLeft, NewTop, NewWidth, NewHeight);
 end;
 
 procedure TControl.AnchorSideChanged(TheAnchorSide: TAnchorSide);
@@ -3480,11 +3472,9 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.SetCursor(Value: TCursor);
 begin
-  if FCursor <> Value then 
-  begin
-    FCursor := Value;
-    Perform(CM_CURSORCHANGED, 0, 0);
-  end;
+  if FCursor = Value then exit;
+  FCursor := Value;
+  Perform(CM_CURSORCHANGED, 0, 0);
 end;
 
 procedure TControl.SetDragCursor(const AValue: TCursor);
@@ -3505,13 +3495,11 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.SetEnabled(Value: Boolean);
 begin
-  if FEnabled <> Value
-  then begin
-    EnabledChanging;
-    FEnabled := Value;
-    Perform(CM_ENABLEDCHANGED, 0, 0);
-    EnabledChanged;
-  end;
+  if FEnabled = Value then exit;
+  EnabledChanging;
+  FEnabled := Value;
+  Perform(CM_ENABLEDCHANGED, 0, 0);
+  EnabledChanged;
 end;
 
 {------------------------------------------------------------------------------
@@ -3519,15 +3507,13 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.SetMouseCapture(Value : Boolean);
 begin
-  if (MouseCapture <> Value) or (not Value and (CaptureControl=Self))
-  then begin
-    {$IFDEF VerboseMouseCapture}
-    DebugLn('TControl.SetMouseCapture ',DbgSName(Self),' NewValue=',DbgS(Value));
-    {$ENDIF}
-    if Value
-    then SetCaptureControl(Self)
-    else SetCaptureControl(nil);
-  end
+  if not ((MouseCapture <> Value) or (not Value and (CaptureControl=Self))) then exit;
+  {$IFDEF VerboseMouseCapture}
+  DebugLn('TControl.SetMouseCapture ',DbgSName(Self),' NewValue=',DbgS(Value));
+  {$ENDIF}
+  if Value
+  then SetCaptureControl(Self)
+  else SetCaptureControl(nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -3577,21 +3563,18 @@ var
   Kind: TAnchorKind;
 begin
   inherited Notification(AComponent, Operation);
-  if Operation = opRemove then
-  begin
-    if AComponent = PopupMenu then
-      PopupMenu := nil
-    else if AComponent = Action then
-      Action := nil
-    else if AComponent = FHostDockSite then
-      FHostDockSite := nil;
-    //debugln('TControl.Notification A ',DbgSName(Self),' ',DbgSName(AComponent));
-    for Kind := Low(TAnchorKind) to High(TAnchorKind) do
-    begin
-      if (FAnchorSides[Kind] <> nil) and (FAnchorSides[Kind].Control = AComponent) then
-        FAnchorSides[Kind].FControl := nil;
-    end;
-  end;
+  if Operation <> opRemove then exit;
+
+  if AComponent = PopupMenu then
+    PopupMenu := nil
+  else if AComponent = Action then
+    Action := nil
+  else if AComponent = FHostDockSite then
+    FHostDockSite := nil;
+  //debugln('TControl.Notification A ',DbgSName(Self),' ',DbgSName(AComponent));
+  for Kind := Low(TAnchorKind) to High(TAnchorKind) do
+    if (FAnchorSides[Kind] <> nil) and (FAnchorSides[Kind].Control = AComponent) then
+      FAnchorSides[Kind].FControl := nil;
 end;
 
 procedure TControl.DoFloatMsg(ADockSource: TDragDockObject);
@@ -3664,10 +3647,8 @@ end;
 
 function TControl.GetAction: TBasicAction;
 begin
-  if ActionLink <> nil then
-    Result := ActionLink.Action
-  else
-    Result := nil;
+  if ActionLink = nil then exit(nil);
+  Result := ActionLink.Action
 end;
 
 function TControl.GetActionLinkClass: TControlActionLinkClass;
@@ -4058,11 +4039,9 @@ end;
 
 procedure TControl.SetDesktopFont(const AValue: Boolean);
 begin
-  if FDesktopFont <> AValue then
-  begin
-    FDesktopFont := AValue;
-    Perform(CM_SYSFONTCHANGED, 0, 0);
-  end;
+  if FDesktopFont = AValue then exit;
+  FDesktopFont := AValue;
+  Perform(CM_SYSFONTCHANGED, 0, 0);
 end;
 
 {------------------------------------------------------------------------------
@@ -4482,22 +4461,18 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.SetParentColor(Value : Boolean);
 begin
-  if FParentColor <> Value then
-  begin
-    FParentColor := Value;
-    if Assigned(FParent) and not (csReading in ComponentState) then
-      Perform(CM_PARENTCOLORCHANGED, 0, 0);
-  end;
+  if FParentColor = Value then exit;
+  FParentColor := Value;
+  if Assigned(FParent) and not (csReading in ComponentState) then
+    Perform(CM_PARENTCOLORCHANGED, 0, 0);
 end;
 
 procedure TControl.SetParentFont(Value: Boolean);
 begin
-  if FParentFont <> Value then
-  begin
-    FParentFont := Value;
-    if Assigned(FParent) and not (csReading in ComponentState) then
-      Perform(CM_PARENTFONTCHANGED, 0, 0);
-  end;
+  if FParentFont = Value then exit;
+  FParentFont := Value;
+  if Assigned(FParent) and not (csReading in ComponentState) then
+    Perform(CM_PARENTFONTCHANGED, 0, 0);
 end;
 
 {------------------------------------------------------------------------------
@@ -4505,12 +4480,10 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.SetParentShowHint(Value : Boolean);
 begin
-  if FParentShowHint <> Value then
-  begin
-    FParentShowHint := Value;
-    if Assigned(FParent) and not (csReading in ComponentState) then
-      Perform(CM_PARENTSHOWHINTCHANGED, 0, 0);
-  end;
+  if FParentShowHint = Value then exit;
+  FParentShowHint := Value;
+  if Assigned(FParent) and not (csReading in ComponentState) then
+    Perform(CM_PARENTSHOWHINTCHANGED, 0, 0);
 end;
 
 {------------------------------------------------------------------------------
@@ -4617,12 +4590,10 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.SetShowHint(Value : Boolean);
 begin
-  if FShowHint <> Value then
-  begin
-    FShowHint := Value;
-    FParentShowHint := False;
-    Perform(CM_SHOWHINTCHANGED, 0, 0);
-  end;
+  if FShowHint = Value then exit;
+  FShowHint := Value;
+  FParentShowHint := False;
+  Perform(CM_SHOWHINTCHANGED, 0, 0);
 end;
 
 {------------------------------------------------------------------------------
@@ -5572,10 +5543,8 @@ end;
 
 function TControl.AnchoredControlCount: Integer;
 begin
-  if FAnchoredControls = nil then
-    Result := 0
-  else
-    Result := FAnchoredControls.Count;
+  if FAnchoredControls = nil then exit(0);
+  Result := FAnchoredControls.Count;
 end;
 
 procedure TControl.SetInitialBounds(aLeft, aTop, aWidth, aHeight: Integer);
@@ -5985,11 +5954,9 @@ end;
 
 procedure TControl.CMSysFontChanged(var Message: TLMessage);
 begin
-  if FDesktopFont then
-  begin
-    Font := Screen.SystemFont;
-    FDesktopFont := True;
-  end;
+  if not FDesktopFont then exit;
+  Font := Screen.SystemFont;
+  FDesktopFont := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -6001,12 +5968,9 @@ end;
 procedure TControl.CMParentBiDiModeChanged(var Message: TLMessage);
 begin
   if csLoading in ComponentState then exit;
-
-  if ParentBidiMode then
-  begin
-    BidiMode := FParent.BidiMode;
-    FParentBiDiMode := True;
-  end;
+  if not ParentBidiMode then exit;
+  BidiMode := FParent.BidiMode;
+  FParentBiDiMode := True;
 end;
 
 {------------------------------------------------------------------------------
