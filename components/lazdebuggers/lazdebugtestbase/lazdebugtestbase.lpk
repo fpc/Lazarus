@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="5">
+  <Package Version="6">
     <PathDelim Value="\"/>
     <Name Value="LazDebugTestBase"/>
     <Author Value="M Friebe"/>
@@ -15,91 +15,95 @@
       </Other>
     </CompilerOptions>
     <Description Value="Tools/Classes to implement test-cases for debugger backends. (based on DebuggerIntf)"/>
+    <License Value="modified LGPL-2 (version 2 or later version).
+
+&quot;modified&quot; as documented for the LCL:  See the file COPYING.modifiedLGPL.txt, included in the Lazarus distribution,
+  for details about the license.
+"/>
     <Version Minor="1"/>
-    <Files Count="15">
-      <Item1>
+    <Files>
+      <Item>
         <Filename Value="testdbgconfig.pas"/>
         <UnitName Value="TestDbgConfig"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <Filename Value="testdbgtestsuites.pas"/>
         <UnitName Value="TestDbgTestSuites"/>
-      </Item2>
-      <Item3>
+      </Item>
+      <Item>
         <Filename Value="ttestdbgexecuteables.pas"/>
         <UnitName Value="TTestDbgExecuteables"/>
-      </Item3>
-      <Item4>
+      </Item>
+      <Item>
         <Filename Value="testdbgcompilerprocess.pas"/>
         <UnitName Value="TestDbgCompilerProcess"/>
-      </Item4>
-      <Item5>
+      </Item>
+      <Item>
         <Filename Value="testdbgcontrolform.pas"/>
         <UnitName Value="TestDbgControlForm"/>
-      </Item5>
-      <Item6>
+      </Item>
+      <Item>
         <Filename Value="testdbgcontrol.pas"/>
         <UnitName Value="TestDbgControl"/>
-      </Item6>
-      <Item7>
+      </Item>
+      <Item>
         <Filename Value="testoutputlogger.pas"/>
         <UnitName Value="TestOutputLogger"/>
-      </Item7>
-      <Item8>
+      </Item>
+      <Item>
         <Filename Value="ttestdebuggerclasses.pas"/>
         <UnitName Value="TTestDebuggerClasses"/>
-      </Item8>
-      <Item9>
+      </Item>
+      <Item>
         <Filename Value="ttestwatchutilities.pas"/>
         <UnitName Value="TTestWatchUtilities"/>
-      </Item9>
-      <Item10>
+      </Item>
+      <Item>
         <Filename Value="testcommonsources.pas"/>
         <UnitName Value="TestCommonSources"/>
-      </Item10>
-      <Item11>
+      </Item>
+      <Item>
         <Filename Value="sources.rc"/>
         <Type Value="Text"/>
-      </Item11>
-      <Item12>
+      </Item>
+      <Item>
         <Filename Value="testapps\WatchesScopePrg.pas"/>
         <Type Value="Include"/>
-      </Item12>
-      <Item13>
+      </Item>
+      <Item>
         <Filename Value="testapps\WatchesScopeUnit1.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WatchesScopeUnit1"/>
-      </Item13>
-      <Item14>
+      </Item>
+      <Item>
         <Filename Value="testapps\WatchesScopeUnit2.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WatchesScopeUnit2"/>
-      </Item14>
-      <Item15>
+      </Item>
+      <Item>
         <Filename Value="testapps\WatchesValuePrg.pas"/>
         <Type Value="Include"/>
-      </Item15>
+      </Item>
     </Files>
-    <CompatibilityMode Value="True"/>
-    <RequiredPkgs Count="6">
-      <Item1>
+    <RequiredPkgs>
+      <Item>
         <PackageName Value="IdeDebugger"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <PackageName Value="fpdebug"/>
-      </Item2>
-      <Item3>
+      </Item>
+      <Item>
         <PackageName Value="DebuggerIntf"/>
-      </Item3>
-      <Item4>
+      </Item>
+      <Item>
         <PackageName Value="LCL"/>
-      </Item4>
-      <Item5>
+      </Item>
+      <Item>
         <PackageName Value="LCLBase"/>
-      </Item5>
-      <Item6>
+      </Item>
+      <Item>
         <PackageName Value="FCL"/>
-      </Item6>
+      </Item>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

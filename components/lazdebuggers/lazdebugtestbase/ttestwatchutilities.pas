@@ -1,3 +1,13 @@
+(* This file is part of the TestSuite for debuggers in Lazarus IDE
+
+  This file is licensed
+
+  modified LGPL-2 (version 2 or later version).
+
+  "modified" as documented for the LCL:
+  See the file COPYING.modifiedLGPL.txt, included in the Lazarus distribution,
+  for details about the license.
+*)
 unit TTestWatchUtilities;
 
 {$mode objfpc}{$H+}
