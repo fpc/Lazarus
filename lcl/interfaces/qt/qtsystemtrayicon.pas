@@ -20,7 +20,7 @@ interface
 {$i qtdefines.inc}
 
 uses
-  Classes, types, SysUtils, Controls, ExtCtrls, Graphics, Forms, LCLType, LCLProc, LazUTF8,
+  Classes, types, SysUtils, Controls, ExtCtrls, Graphics, Forms, LCLType, LazUTF8, LazLoggerBase,
   qtobjects, qt4, qtint;
 
 type
