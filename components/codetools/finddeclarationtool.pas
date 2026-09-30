@@ -14884,7 +14884,10 @@ begin
   if (ExpressionType.Desc=xtContext)
   and (ExpressionType.Context.Node.Desc=ctnGenericParameter) then
     exit(tcExact);
-  if (TargetType.Desc=ExpressionType.Desc) then begin
+  if (TargetType.Desc=ExpressionType.Desc) or
+    ((TargetType.Desc=xtContext) and (ExpressionType.Desc in xtAllConstTypes))
+  then begin
+
     case TargetType.Desc of
     
     xtNone: ;
@@ -14903,7 +14906,7 @@ begin
         if TargetNode=ExprNode then
           Result:=tcExact
         else
-        if ExprNode.Desc=TargetNode.Desc then begin
+        if (ExprNode<>nil) and (ExprNode.Desc=TargetNode.Desc) then begin
           // same context type
           case ExprNode.Desc of
           
@@ -14925,27 +14928,37 @@ begin
           end;
         end else begin
           // different context type
-          if (TargetNode.Desc=ctnOpenArrayType) and (ExprNode.Desc<>ctnOpenArrayType) then begin
-          // switch TargetNode to node of declaration of an array element type
-            if TargetNode.FirstChild.Desc= ctnOfConstType then begin
-              Result:=tcCompatible;
-            end else
-            try
-              ExprParams:= TFindDeclarationParams.Create(Params);
-              ExprParams.SetIdentifier(Self,nil,nil);
-              ExprParams.ContextNode:= TargetNode;
-              ExprOfElement:=
-                TargetType.Context.Tool.FindExpressionTypeOfTerm(TargetNode.FirstChild.StartPos,-1,ExprParams,false);
-              if ExprOfElement.Desc=xtContext then
-                TargetNode:=ExprOfElement.Context.Node
-              else
-                exit;
-            finally
-              ExprParams.Free;
-            end;
 
-            if TargetNode = ExprNode then
+          if (TargetNode.Desc = ctnVariantType) and (TargetNode.FirstChild=nil) then
+          begin // target is a typeless var, const, constref
+            if ExprNode.HasParentOfType(ctnVarDefinition) then
               Result:=tcExact;
+          end else
+          if (TargetNode.Desc = ctnOpenArrayType) and
+          ((ExprNode=nil) or (ExprNode.Desc <> ctnOpenArrayType))
+          then begin
+          // switch TargetNode to node of declaration of an array element type
+            if (TargetNode.FirstChild.Desc = ctnOfConstType) then begin
+              if (ExpressionType.Desc in xtAllConstTypes) then  // array of const
+                Result:=tcCompatible
+              else exit;
+            end else begin
+              try
+                ExprParams:= TFindDeclarationParams.Create(Params);
+                ExprParams.SetIdentifier(Self,nil,nil);
+                ExprParams.ContextNode:= TargetNode;
+                ExprOfElement:=
+                  TargetType.Context.Tool.FindExpressionTypeOfTerm(TargetNode.FirstChild.StartPos,-1,ExprParams,false);
+                if ExprOfElement.Desc=xtContext then
+                  TargetNode:=ExprOfElement.Context.Node
+                else
+                  exit;
+              finally
+                ExprParams.Free;
+              end;
+              if TargetNode = ExprNode then
+                Result:= tcCompatible;
+            end;
           end;
         end;
       end;
