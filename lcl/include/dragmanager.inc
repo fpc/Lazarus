@@ -727,9 +727,9 @@ begin
   begin
     FDelay := 0;
     if AThreshold >= 0 then
-      FThresholdValue := AThreshold
+      FThresholdValue := AControl.Scale96ToForm(AThreshold)
     else
-      FThresholdValue := DragThreshold;
+      FThresholdValue := AControl.Scale96ToForm(DragThreshold);
     FWaitForTreshold := not AImmediate;
     if StartFromCurrentMouse then
       FStartPosition:=AControl.ClientToScreen(point(0,0))
@@ -767,9 +767,9 @@ begin
     FDelayTimer.Enabled := True;
 
     if AThreshold >= 0 then
-      FThresholdValue := AThreshold
+      FThresholdValue := AControl.Scale96ToForm(AThreshold)
     else
-      FThresholdValue := DragThreshold;
+      FThresholdValue := AControl.Scale96ToForm(DragThreshold);
 
     FWaitForTreshold := true;
 
@@ -953,9 +953,9 @@ var
   aRect:TRect;
 begin
   if AThreshold<=0 then
-    Threshold:=DragThreshold
+    Threshold:=Site.Scale96ToForm(DragThreshold)
   else
-    Threshold:=AThreshold;
+    Threshold:=Site.Scale96ToForm(AThreshold);
   aRect := Site.ClientRect;
   InflateRect(aRect, Threshold, Threshold);
   Result := not PtInRect(aRect, Point(X, Y));
