@@ -120,6 +120,18 @@ function ComparePoints(p1, p2: TPoint): integer; deprecated 'Use LazUtilities.Co
 function CompareCaret(Caret1, Caret2: TPoint): integer; deprecated 'Use LazUtilities.CompareCaret instead';
 
 // Call debugging procedures in LazLoggerBase.
+// Deprecated in version 3.99, April 2024.
+procedure DebugLn(const s: string = ''); overload; deprecated 'Use DebugLogger.DebugLn instead';
+procedure DebugLn(Args: array of const); overload; deprecated 'Use DebugLogger.DebugLn instead';
+procedure DebugLn(const S: String; Args: array of const); overload; deprecated 'Use DebugLogger.DebugLn instead';
+procedure DebugLn(const s1, s2: string; const s3: string = '';
+                  const s4: string = ''; const s5: string = ''; const s6: string = '';
+                  const s7: string = ''; const s8: string = ''; const s9: string = '';
+                  const s10: string = ''; const s11: string = ''; const s12: string = '';
+                  const s13: string = ''; const s14: string = ''; const s15: string = '';
+                  const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
+   deprecated 'Use DebugLogger.DebugLn instead';
+
 function DbgSWindowPosFlags(Flags: UInt): String;
 function DbgsVKCode(c: word): string;
 function DbgS(const ATM: TTextMetric): string;
@@ -787,6 +799,29 @@ begin
 end;
 
 // Debug funcs :
+
+procedure DebugLn(const s: string);
+begin
+  DebugLogger.DebugLn(s);
+end;
+
+procedure DebugLn(Args: array of const);
+begin
+  DebugLogger.DebugLn(Args);
+end;
+
+procedure DebugLn(const S: String; Args: array of const);
+begin
+  DebugLogger.DebugLn(S, Args);
+end;
+
+procedure DebugLn(const s1, s2: string; const s3: string; const s4: string; const s5: string;
+  const s6: string; const s7: string; const s8: string; const s9: string; const s10: string;
+  const s11: string; const s12: string; const s13: string; const s14: string;
+  const s15: string; const s16: string; const s17: string; const s18: string);
+begin
+  DebugLogger.DebugLn(s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18);
+end;
 
 function DbgSWindowPosFlags(Flags: UInt): String;
 begin
