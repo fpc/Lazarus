@@ -11,9 +11,9 @@ uses
   // LazUtils
   FileUtil, LazFileUtils,
   // IDEIntf
-  LazIDEIntf, MenuIntf, ToolBarIntf, IDECommands, SrcEditorIntf,
+  LazIDEIntf, MenuIntf, ToolBarIntf, IDECommands, SrcEditorIntf, IDEDialogs,
   // BuildIntf
-  ProjectIntf,
+  ProjectIntf, MacroIntf,
   // LeakView
   LeakInfo, SynEdit;
 
@@ -96,6 +96,7 @@ resourcestring
   strLeakingBlocksCount = 'Leaking Blocks Count: %d';
   //
   rsErrorParse = 'Error while parsing trace file';
+  rsErrorMacroExpanding = 'Error expanding macros';
   rsDTimes = ' (%d times)';
   rsLeakView = 'Leaks and Traces';
   //
@@ -432,6 +433,12 @@ end;
 
 procedure THeapTrcViewForm.DoUpdateLeaksFromFile(aFileName: string);
 begin
+  if not IDEMacros.SubstituteMacros(aFileName) then
+  begin
+    IDEMessageDialog(rsError, rsErrorMacroExpanding, mtError, [mbCancel]);
+    exit;
+  end;
+
   // resolve paths relative to executable file location
   // TODO: maybe take into account the work dir from the "Menu > Run > Run Parameters" dialog
   if (aFileName <> '') and not FilenameIsAbsolute(aFileName) then
