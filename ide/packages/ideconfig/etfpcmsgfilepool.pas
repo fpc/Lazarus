@@ -354,6 +354,7 @@ var
   Item: TFPCMsgFilePoolItem;
   Keep: Boolean;
 begin
+  if aFile = nil then exit; // Workaround: this is sometimes incorrectly called with nil (test with win cross installers)
   EnterCriticalsection;
   try
     if aFile.fUseCount<=0 then
