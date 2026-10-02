@@ -7,9 +7,9 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  LazFileUtils, LazFileCache, LConvEncoding,
+  LazFileUtils, LazFileCache, LConvEncoding, LazLoggerBase,
   // CodeTools
-  KeywordFuncLists, CodeToolsFPCMsgs, FileProcs, LinkScanner, CodeToolManager,
+  KeywordFuncLists, CodeToolsFPCMsgs, LinkScanner, CodeToolManager,
   // BuildIntf
   IDEExternToolIntf,
   // IdeConfig
@@ -233,10 +233,11 @@ var
 begin
   Result:=nil;
   GetMsgFileNames(EnvironmentOptions.GetParsedCompilerFilename,'','',
-    anEnglishFile,aTranslationFile);
-  //writeln('TFPCMsgFilePool.LoadCurrentEnglishFile ',anEnglishFile);
-  if not FilenameIsAbsolute(anEnglishFile) then exit;
-  Result:=LoadFile(anEnglishFile,UpdateFromDisk,AThread);
+                  anEnglishFile,aTranslationFile);
+  if FilenameIsAbsolute(anEnglishFile) then
+    Result:=LoadFile(anEnglishFile,UpdateFromDisk,AThread)
+  else
+    DebugLn('TFPCMsgFilePool.LoadCurrentEnglishFile "',anEnglishFile,'" is not absolute')
 end;
 
 function TFPCMsgFilePool.LoadFile(aFilename: string; UpdateFromDisk: boolean;
@@ -354,7 +355,6 @@ var
   Item: TFPCMsgFilePoolItem;
   Keep: Boolean;
 begin
-  if aFile = nil then exit; // Workaround: this is sometimes incorrectly called with nil (test with win cross installers)
   EnterCriticalsection;
   try
     if aFile.fUseCount<=0 then
