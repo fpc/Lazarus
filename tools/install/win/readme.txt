@@ -86,6 +86,10 @@ Set the environment as in B.1
   SET LAZ_BITNESS=32
     for building cross addons for the 32 bit Lazarus IDE (adds the "(32 bit)" part to the version
 
+  SET LAZBUILD=.....
+    path to on uptodate lazbuild.exe (e.g. the lazbuild.exe that is included in the non-cross installer for the SAME version.
+    
+  
 Call the script:
 
   build-cross.bat   %FPC_GIT_BUILD_DIR%     %LAZ_GIT_BUILD_DIR%   %PPC_RELEASE_EXE%  %WANTCPU% %WANTOS% %LAZBIN_SVN_BUILD_DIR% %SKIPCROSS% %INSTPREFIX%

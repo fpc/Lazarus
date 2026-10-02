@@ -139,98 +139,102 @@ SET COMPILER=%INSTALL_BINDIR%\%PPCNAME%
 ::=====================================================================
 :: Build Lazarus
 
-gmkdir -p %BUILDDIR%\packager
-%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore packager\registration
 %BUILDDRIVE%
-cd %BUILDDIR%\packager\registration
-%MAKEEXE% FPC=%compiler%
+cd %BUILDDIR%
+
+gmkdir -p %BUILDDIR%\packager
+IF ERRORLEVEL 1 GOTO CLEANUP
+gmkdir -p %BUILDDIR%\components
+gmkdir -p %BUILDDIR%\components\lazdebuggers
+
+%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore packager\registration
+IF ERRORLEVEL 1 GOTO CLEANUP
+%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\lazutils
+IF ERRORLEVEL 1 GOTO CLEANUP
+%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\lazdebuggers\lazdebuggerintf
+IF ERRORLEVEL 1 GOTO CLEANUP
+%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\debuggerintf
+IF ERRORLEVEL 1 GOTO CLEANUP
+%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\freetype
+IF ERRORLEVEL 1 GOTO CLEANUP
+%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore lcl
+IF ERRORLEVEL 1 GOTO CLEANUP
+%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\lazcontrols
+IF ERRORLEVEL 1 GOTO CLEANUP
+%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\buildintf
+IF ERRORLEVEL 1 GOTO CLEANUP
+:: export images dir, the buildintf includes them
+%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore images
+IF ERRORLEVEL 1 GOTO CLEANUP
+%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\lazedit
+IF ERRORLEVEL 1 GOTO CLEANUP
+%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\ideintf
+IF ERRORLEVEL 1 GOTO CLEANUP
+%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\synedit
+IF ERRORLEVEL 1 GOTO CLEANUP
+
+gmkdir -p %BUILDDIR%\cfg
+
+%LAZBUILD% --pcp=%BUILDDIR%\cfg --compiler=%compiler% --pkg-release packager\registration\fcl.lpk
 IF ERRORLEVEL 1 GOTO CLEANUP
 gmkdir -p %BUILDDIR%\image\packager\units
 cp -pr %BUILDDIR%\packager\units\%FPCFULLTARGET% %BUILDDIR%\image\packager\units\%FPCFULLTARGET%
 
-gmkdir -p %BUILDDIR%\components
-gmkdir -p %BUILDDIR%\components\lazdebuggers
-%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\lazutils
-%BUILDDRIVE%
-cd %BUILDDIR%\components\lazutils
-%MAKEEXE% FPC=%compiler%
+%LAZBUILD% --pcp=%BUILDDIR%\cfg --compiler=%compiler% components\lazutils\lazutils.lpk
 IF ERRORLEVEL 1 GOTO CLEANUP
 gmkdir -p %BUILDDIR%\image\components\lazutils
 cp -pr %BUILDDIR%\components\lazutils\lib %BUILDDIR%\image\components\lazutils\lib
 
-%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\lazdebuggers\lazdebuggerintf
-%BUILDDRIVE%
-cd %BUILDDIR%\components\lazdebuggers\lazdebuggerintf
-%MAKEEXE% FPC=%compiler%
+%LAZBUILD% --pcp=%BUILDDIR%\cfg --compiler=%compiler% components\lazdebuggers\lazdebuggerintf\lazdebuggerintf.lpk
 IF ERRORLEVEL 1 GOTO CLEANUP
 gmkdir -p %BUILDDIR%\image\lazdebuggers\lazdebuggerintf
 cp -pr %BUILDDIR%\lazdebuggers\lazdebuggerintf\lib %BUILDDIR%\image\lazdebuggers\lazdebuggerintf\lib
 
-%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\debuggerintf
-%BUILDDRIVE%
-cd %BUILDDIR%\components\debuggerintf
-%MAKEEXE% FPC=%compiler%
+%LAZBUILD% --pcp=%BUILDDIR%\cfg --compiler=%compiler% components\debuggerintf\debuggerintf.lpk
 IF ERRORLEVEL 1 GOTO CLEANUP
 gmkdir -p %BUILDDIR%\image\components\debuggerintf
 cp -pr %BUILDDIR%\components\debuggerintf\lib %BUILDDIR%\image\components\debuggerintf\lib
 
-%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\freetype
-%BUILDDRIVE%
-cd %BUILDDIR%\components\freetype
-%MAKEEXE% FPC=%compiler%
+%LAZBUILD% --pcp=%BUILDDIR%\cfg --compiler=%compiler% components\freetype\freetypelaz.lpk
 IF ERRORLEVEL 1 GOTO CLEANUP
 gmkdir -p %BUILDDIR%\image\components\freetype
 cp -pr %BUILDDIR%\components\freetype\lib %BUILDDIR%\image\components\freetype\lib
 
-%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore lcl
-%BUILDDRIVE%
-cd %BUILDDIR%\lcl
-%MAKEEXE% FPC=%compiler%
+%LAZBUILD% --pcp=%BUILDDIR%\cfg --ws=%LCL_PLATFORM% --compiler=%compiler% lcl\lclbase.lpk
+IF ERRORLEVEL 1 GOTO CLEANUP
+%LAZBUILD% --pcp=%BUILDDIR%\cfg --ws=%LCL_PLATFORM% --compiler=%compiler% lcl\interfaces\lcl.lpk
 IF ERRORLEVEL 1 GOTO CLEANUP
 gmkdir -p %BUILDDIR%\image\lcl\units
 cp -pr %BUILDDIR%\lcl\units\%FPCFULLTARGET% %BUILDDIR%\image\lcl\units\%FPCFULLTARGET%
 
-%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\lazcontrols
-%BUILDDRIVE%
-cd %BUILDDIR%\components\lazcontrols
-%MAKEEXE% FPC=%compiler%
+%LAZBUILD% --pcp=%BUILDDIR%\cfg --ws=%LCL_PLATFORM% --compiler=%compiler% components\lazcontrols\lazcontrols.lpk
 IF ERRORLEVEL 1 GOTO CLEANUP
 gmkdir -p %BUILDDIR%\image\components\lazcontrols
 cp -pr %BUILDDIR%\components\lazcontrols\lib %BUILDDIR%\image\components\lazcontrols\lib
 
-gmkdir -p %BUILDDIR%\components
-%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\buildintf
-:: export images dir, the buildintf includes them
-%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore images
-cd %BUILDDIR%\components\buildintf
+%LAZBUILD% --pcp=%BUILDDIR%\cfg --ws=%LCL_PLATFORM% --compiler=%compiler% components\buildintf\buildintf.lpk
 IF ERRORLEVEL 1 GOTO CLEANUP
-%MAKEEXE% FPC=%compiler%
 gmkdir -p %BUILDDIR%\image\components\buildintf\units
 cp -pr %BUILDDIR%\components\buildintf\units\%FPCFULLTARGET% %BUILDDIR%\image\components\buildintf\units\%FPCFULLTARGET%
 
-%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\lazedit
-cd %BUILDDIR%\components\lazedit
+%LAZBUILD% --pcp=%BUILDDIR%\cfg --ws=%LCL_PLATFORM% --compiler=%compiler% components\lazedit\lazedit.lpk
 IF ERRORLEVEL 1 GOTO CLEANUP
-%MAKEEXE% FPC=%compiler%
 gmkdir -p %BUILDDIR%\image\components\lazedit\lib
 cp -pr %BUILDDIR%\components\lazedit\lib\%FPCFULLTARGET% %BUILDDIR%\image\components\lazedit\lib\%FPCFULLTARGET%
 
-gmkdir -p %BUILDDIR%\components
-%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\ideintf
-cd %BUILDDIR%\components\ideintf
+%LAZBUILD% --pcp=%BUILDDIR%\cfg --ws=%LCL_PLATFORM% --compiler=%compiler% components\ideintf\ideintf.lpk
 IF ERRORLEVEL 1 GOTO CLEANUP
-%MAKEEXE% FPC=%compiler%
 gmkdir -p %BUILDDIR%\image\components\ideintf\units
 cp -pr %BUILDDIR%\components\ideintf\units\%FPCFULLTARGET% %BUILDDIR%\image\components\ideintf\units\%FPCFULLTARGET%
 
-%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\synedit
-cd %BUILDDIR%\components\synedit
+%LAZBUILD% --pcp=%BUILDDIR%\cfg --ws=%LCL_PLATFORM% --compiler=%compiler% components\synedit\synedit.lpk
 IF ERRORLEVEL 1 GOTO CLEANUP
-%MAKEEXE% FPC=%compiler%
 gmkdir -p %BUILDDIR%\image\components\synedit\units
 cp -pr %BUILDDIR%\components\synedit\units\%FPCFULLTARGET% %BUILDDIR%\image\components\synedit\units\%FPCFULLTARGET%
 
+
 del %INSTALL_BINDIR%\fpc.cfg
+del /Q /F %BUILDDIR%\cfg
 
 %OLDCURDRIVE%
 cd %OLDCURDIR%
