@@ -11,14 +11,15 @@ object GenericCheckListForm: TGenericCheckListForm
   Constraints.MinWidth = 260
   KeyPreview = True
   Position = poScreenCenter
-  LCLVersion = '4.99.0.0'
+  LCLVersion = '5.99.0.0'
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 29
-    Top = 247
+    Height = 26
+    Top = 250
     Width = 339
+    AbortButton = pbCancel
     OKButton.Name = 'OKButton'
     OKButton.Hint = '[Ctrl+Enter]'
     OKButton.DefaultCaption = True
@@ -49,7 +50,6 @@ object GenericCheckListForm: TGenericCheckListForm
     BorderSpacing.Around = 6
     ItemHeight = 0
     TabOrder = 0
-    TopIndex = -1
     OnItemClick = CheckListBox1ItemClick
   end
   object InfoLabel: TLabel

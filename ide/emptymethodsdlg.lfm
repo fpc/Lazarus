@@ -8,14 +8,15 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
   Caption = 'EmptyMethodsDialog'
   ClientHeight = 429
   ClientWidth = 634
-  OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '5.99.0.0'
+  OnCreate = FormCreate
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 26
     Top = 397
     Width = 622
+    AbortButton = pbCancel
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     OKButton.OnClick = OKButtonClick
@@ -51,14 +52,10 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
       BorderSpacing.Around = 6
       Font.Height = -14
       Font.Name = 'courier'
-      Font.Pitch = fpFixed
       Font.Quality = fqNonAntialiased
-      ParentColor = False
-      ParentFont = False
       TabOrder = 0
       BookMarkOptions.Xoffset = -18
       Gutter.Visible = False
-      Gutter.Width = 59
       Gutter.MouseActions = <      
         item
           ClickCount = ccAny
@@ -69,7 +66,6 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
           Button = mbRight
           Command = emcContextMenu
         end>
-      RightGutter.Width = 0
       RightGutter.MouseActions = <      
         item
           ClickCount = ccAny
@@ -81,7 +77,7 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
           Command = emcContextMenu
         end>
       Highlighter = SynPasSyn1
-      Keystrokes = <      
+      KeyStrokes = <      
         item
           Command = ecUp
           ShortCut = 38
@@ -465,7 +461,6 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
           ShiftMask = [ssShift, ssAlt, ssCtrl]
           Command = emcMouseLink
         end>
-      MouseTextActions = <>
       MouseSelActions = <      
         item
           ClickDir = cdDown
@@ -474,83 +469,18 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
       Lines.Strings = (
         'MethodsSynEdit'
       )
-      VisibleSpecialChars = [vscSpace, vscTabAtLast]
       ReadOnly = True
-      SelectedColor.BackPriority = 50
-      SelectedColor.ForePriority = 50
-      SelectedColor.FramePriority = 50
-      SelectedColor.BoldPriority = 50
-      SelectedColor.ItalicPriority = 50
-      SelectedColor.UnderlinePriority = 50
-      SelectedColor.StrikeOutPriority = 50
-      BracketHighlightStyle = sbhsBoth
-      BracketMatchColor.Background = clNone
-      BracketMatchColor.Foreground = clNone
-      BracketMatchColor.Style = [fsBold]
-      FoldedCodeColor.Background = clNone
-      FoldedCodeColor.Foreground = clGray
-      FoldedCodeColor.FrameColor = clGray
-      MouseLinkColor.Background = clNone
-      MouseLinkColor.Foreground = clBlue
-      LineHighlightColor.Background = clNone
-      LineHighlightColor.Foreground = clNone
       WantTabs = False
       inline TSynGutterPartList
         object TSynGutterMarks
-          Width = 24
-          MouseActions = <>
         end
         object TSynGutterLineNumber
-          Width = 19
-          MouseActions = <>
-          MarkupInfo.Background = clBtnFace
-          MarkupInfo.Foreground = clNone
-          DigitCount = 2
-          ShowOnlyLineNumbersMultiplesOf = 1
-          ZeroStart = False
-          LeadingZeros = False
         end
         object TSynGutterChanges
-          Width = 4
-          MouseActions = <>
-          ModifiedColor = 59900
-          SavedColor = clGreen
         end
         object TSynGutterSeparator
-          Width = 2
-          MouseActions = <>
-          MarkupInfo.Background = clWhite
-          MarkupInfo.Foreground = clGray
         end
         object TSynGutterCodeFolding
-          MouseActions = <          
-            item
-              Button = mbRight
-              Command = emcCodeFoldContextMenu
-            end          
-            item
-              ShiftMask = [ssShift]
-              Button = mbMiddle
-              ClickCount = ccAny
-              ClickDir = cdDown
-              Command = emcCodeFoldCollaps
-            end          
-            item
-              Shift = [ssShift]
-              ShiftMask = [ssShift]
-              Button = mbMiddle
-              ClickCount = ccAny
-              ClickDir = cdDown
-              Command = emcCodeFoldCollaps
-              Option = 1
-            end          
-            item
-              ClickCount = ccAny
-              ClickDir = cdDown
-              Command = emcNone
-            end>
-          MarkupInfo.Background = clNone
-          MarkupInfo.Foreground = clGray
           MouseActionsExpanded = <          
             item
               ClickCount = ccAny
@@ -597,62 +527,61 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
       Left = 6
       Height = 25
       Top = 6
-      Width = 124
+      Width = 123
       Caption = 'PrivateCheckBox'
-      OnChange = PrivateCheckBoxChange
       TabOrder = 0
+      OnChange = PrivateCheckBoxChange
     end
     object ProtectedCheckBox: TCheckBox
       Left = 6
       Height = 25
       Top = 31
-      Width = 124
+      Width = 123
       Caption = 'ProtectedCheckBox'
-      OnChange = PrivateCheckBoxChange
       TabOrder = 1
+      OnChange = PrivateCheckBoxChange
     end
     object PublicCheckBox: TCheckBox
       Left = 6
       Height = 19
       Top = 56
-      Width = 124
+      Width = 123
       Caption = 'PublicCheckBox'
-      OnChange = PrivateCheckBoxChange
       TabOrder = 2
+      OnChange = PrivateCheckBoxChange
     end
     object PublishedCheckBox: TCheckBox
       Left = 6
       Height = 19
       Top = 75
-      Width = 124
+      Width = 123
       Caption = 'PublishedCheckBox'
-      OnChange = PrivateCheckBoxChange
       TabOrder = 3
+      OnChange = PrivateCheckBoxChange
     end
     object AllButton: TButton
-      Left = 145
+      Left = 144
       Height = 25
       Top = 6
       Width = 114
       Caption = 'AllButton'
-      OnClick = AllButtonClick
       TabOrder = 4
+      OnClick = AllButtonClick
     end
     object PublishedButton: TButton
-      Left = 145
+      Left = 144
       Height = 25
       Top = 31
       Width = 114
       Caption = 'PublishedButton'
-      OnClick = PublishedButtonClick
       TabOrder = 5
+      OnClick = PublishedButtonClick
     end
   end
   object SynPasSyn1: TSynPasSyn
-    Enabled = False
-    CompilerMode = pcmDelphi
-    NestedComments = False
-    left = 103
-    top = 199
+    StringMultilineMode = []
+    NestedBracketAttribs = <>
+    Left = 103
+    Top = 199
   end
 end

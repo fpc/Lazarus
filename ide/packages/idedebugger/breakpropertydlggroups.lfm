@@ -7,12 +7,13 @@ object BreakPointGroupDlg: TBreakPointGroupDlg
   ClientHeight = 261
   ClientWidth = 387
   Position = poScreenCenter
-  LCLVersion = '1.7'
+  LCLVersion = '5.99.0.0'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 29
-    Top = 226
+    Height = 26
+    Top = 229
     Width = 375
+    AbortButton = pbCancel
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -27,7 +28,7 @@ object BreakPointGroupDlg: TBreakPointGroupDlg
   end
   object Label1: TLabel
     Left = 6
-    Height = 17
+    Height = 15
     Top = 6
     Width = 375
     Align = alTop
@@ -38,13 +39,12 @@ object BreakPointGroupDlg: TBreakPointGroupDlg
   end
   object CheckListBox1: TCheckListBox
     Left = 6
-    Height = 191
-    Top = 29
+    Height = 196
+    Top = 27
     Width = 375
     Align = alClient
     BorderSpacing.Around = 6
     ItemHeight = 0
     TabOrder = 0
-    TopIndex = -1
   end
 end

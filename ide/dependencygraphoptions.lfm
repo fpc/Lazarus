@@ -9,13 +9,14 @@ object DependencyGraphOptDialog: TDependencyGraphOptDialog
   ClientWidth = 352
   Constraints.MinHeight = 100
   Constraints.MinWidth = 120
+  LCLVersion = '5.99.0.0'
   OnCreate = FormCreate
-  LCLVersion = '2.1.0.0'
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 34
     Top = 273
     Width = 340
+    AbortButton = pbCancel
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     OKButton.OnClick = OKButtonClick
@@ -23,7 +24,6 @@ object DependencyGraphOptDialog: TDependencyGraphOptDialog
     HelpButton.DefaultCaption = True
     CloseButton.Name = 'ApplyButton'
     CloseButton.Caption = '&Apply'
-    CloseButton.DefaultCaption = False
     CloseButton.OnClick = ApplyButtonClick
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
@@ -119,7 +119,7 @@ object DependencyGraphOptDialog: TDependencyGraphOptDialog
         ChildSizing.ControlsPerLine = 1
         ClientHeight = 38
         ClientWidth = 160
-        TabOrder = 6
+        TabOrder = 5
         object lblEdgeShape: TLabel
           Left = 0
           Height = 15
@@ -150,7 +150,7 @@ object DependencyGraphOptDialog: TDependencyGraphOptDialog
         ChildSizing.ControlsPerLine = 1
         ClientHeight = 38
         ClientWidth = 160
-        TabOrder = 7
+        TabOrder = 6
         object lblEdgeSplit: TLabel
           Left = 0
           Height = 15
@@ -220,11 +220,9 @@ object DependencyGraphOptDialog: TDependencyGraphOptDialog
             Constraints.MinWidth = 77
             Increment = 0.1
             MaxValue = 999
-            MinValue = 0
             ParentShowHint = False
             ShowHint = True
             TabOrder = 1
-            Value = 0
           end
         end
       end
@@ -238,7 +236,7 @@ object DependencyGraphOptDialog: TDependencyGraphOptDialog
         ChildSizing.ControlsPerLine = 1
         ClientHeight = 38
         ClientWidth = 160
-        TabOrder = 9
+        TabOrder = 7
         object lblExtraSpacing: TLabel
           Left = 0
           Height = 15

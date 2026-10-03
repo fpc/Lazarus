@@ -7,9 +7,9 @@ object CodeMacroSelectDlg: TCodeMacroSelectDlg
   Caption = 'CodeMacroSelectDlg'
   ClientHeight = 319
   ClientWidth = 561
+  LCLVersion = '5.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
-  LCLVersion = '0.9.27'
   object MacrosGroupBox: TGroupBox
     Left = 10
     Height = 210
@@ -17,18 +17,18 @@ object CodeMacroSelectDlg: TCodeMacroSelectDlg
     Width = 170
     Anchors = [akTop, akLeft, akBottom]
     Caption = 'MacrosGroupBox'
-    ClientHeight = 192
+    ClientHeight = 190
     ClientWidth = 166
     TabOrder = 0
     object MacrosListBox: TListBox
       Left = 0
-      Height = 192
+      Height = 190
       Top = 0
       Width = 166
       Align = alClient
       ItemHeight = 0
-      OnSelectionChange = MacrosListBoxSelectionChange
       TabOrder = 0
+      OnSelectionChange = MacrosListBoxSelectionChange
     end
   end
   object DescriptionGroupBox: TGroupBox
@@ -38,12 +38,12 @@ object CodeMacroSelectDlg: TCodeMacroSelectDlg
     Width = 361
     Anchors = [akTop, akLeft, akRight, akBottom]
     Caption = 'DescriptionGroupBox'
-    ClientHeight = 192
+    ClientHeight = 190
     ClientWidth = 357
     TabOrder = 1
     object DescriptionMemo: TMemo
       Left = 0
-      Height = 192
+      Height = 190
       Top = 0
       Width = 357
       Align = alClient
@@ -61,7 +61,7 @@ object CodeMacroSelectDlg: TCodeMacroSelectDlg
     Width = 541
     Anchors = [akLeft, akRight, akBottom]
     Caption = 'ParameterGroupBox'
-    ClientHeight = 31
+    ClientHeight = 29
     ClientWidth = 537
     TabOrder = 2
     object ParameterEdit: TEdit
@@ -79,6 +79,15 @@ object CodeMacroSelectDlg: TCodeMacroSelectDlg
     Height = 26
     Top = 287
     Width = 549
+    AbortButton = pbCancel
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 3
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False

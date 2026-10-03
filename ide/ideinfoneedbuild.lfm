@@ -8,7 +8,7 @@ object IDEInfoNeedBuildDlg: TIDEInfoNeedBuildDlg
   ClientHeight = 434
   ClientWidth = 655
   Position = poScreenCenter
-  LCLVersion = '4.99.0.0'
+  LCLVersion = '5.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -18,9 +18,9 @@ object IDEInfoNeedBuildDlg: TIDEInfoNeedBuildDlg
     AnchorSideTop.Control = TargetComboBox
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 18
-    Top = 13
-    Width = 72
+    Height = 15
+    Top = 10
+    Width = 60
     BorderSpacing.Around = 6
     Caption = 'TargetLabel'
     ParentColor = False
@@ -31,13 +31,13 @@ object IDEInfoNeedBuildDlg: TIDEInfoNeedBuildDlg
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 84
-    Height = 32
+    Left = 72
+    Height = 23
     Top = 6
-    Width = 565
+    Width = 577
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
-    ItemHeight = 24
+    ItemHeight = 15
     Style = csDropDownList
     TabOrder = 0
     OnChange = TargetComboBoxChange
@@ -46,8 +46,8 @@ object IDEInfoNeedBuildDlg: TIDEInfoNeedBuildDlg
     AnchorSideTop.Control = TargetComboBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 349
-    Top = 44
+    Height = 361
+    Top = 35
     Width = 643
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -61,9 +61,10 @@ object IDEInfoNeedBuildDlg: TIDEInfoNeedBuildDlg
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 29
-    Top = 399
+    Height = 26
+    Top = 402
     Width = 643
+    AbortButton = pbClose
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'

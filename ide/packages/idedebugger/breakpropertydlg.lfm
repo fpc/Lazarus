@@ -1,6 +1,6 @@
 object BreakPropertyDlg: TBreakPropertyDlg
   Left = 620
-  Height = 577
+  Height = 576
   Top = 132
   Width = 450
   HorzScrollBar.Page = 386
@@ -11,11 +11,11 @@ object BreakPropertyDlg: TBreakPropertyDlg
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Breakpoint Properties'
-  ClientHeight = 577
+  ClientHeight = 576
   ClientWidth = 450
   Constraints.MinWidth = 450
   Position = poScreenCenter
-  LCLVersion = '4.99.0.0'
+  LCLVersion = '5.99.0.0'
   OnCreate = FormCreate
   object lblFileName: TLabel
     AnchorSideLeft.Control = Owner
@@ -443,9 +443,10 @@ object BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideTop.Control = gbActions
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 24
+    Height = 23
     Top = 547
     Width = 438
+    AbortButton = pbCancel
     Anchors = [akTop, akLeft, akRight, akBottom]
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True

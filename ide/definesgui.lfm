@@ -7,14 +7,14 @@ object DefinesGuiForm: TDefinesGuiForm
   Caption = 'Defines'
   ClientHeight = 326
   ClientWidth = 341
+  Position = poScreenCenter
+  LCLVersion = '5.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
-  Position = poScreenCenter
-  LCLVersion = '1.5'
   object gbNewDefine: TGroupBox
     Left = 6
-    Height = 73
+    Height = 77
     Top = 6
     Width = 329
     Align = alTop
@@ -22,14 +22,14 @@ object DefinesGuiForm: TDefinesGuiForm
     BorderSpacing.Around = 6
     Caption = 'gbNewDefine'
     ClientHeight = 57
-    ClientWidth = 327
+    ClientWidth = 325
     TabOrder = 0
     object AddBtn: TBitBtn
       AnchorSideTop.Control = RemoveBtn
       AnchorSideRight.Control = RemoveBtn
-      Left = 165
-      Height = 27
-      Top = 27
+      Left = 163
+      Height = 25
+      Top = 29
       Width = 75
       Anchors = [akTop, akRight]
       AutoSize = True
@@ -37,8 +37,8 @@ object DefinesGuiForm: TDefinesGuiForm
       Caption = '&Add'
       Constraints.MinHeight = 25
       Constraints.MinWidth = 75
-      OnClick = AddBtnClick
       TabOrder = 0
+      OnClick = AddBtnClick
     end
     object RemoveBtn: TBitBtn
       AnchorSideLeft.Side = asrBottom
@@ -46,9 +46,9 @@ object DefinesGuiForm: TDefinesGuiForm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = edDefine
       AnchorSideRight.Side = asrBottom
-      Left = 246
-      Height = 27
-      Top = 27
+      Left = 244
+      Height = 25
+      Top = 29
       Width = 75
       Anchors = [akTop, akRight]
       AutoSize = True
@@ -57,43 +57,43 @@ object DefinesGuiForm: TDefinesGuiForm
       Caption = '&Remove'
       Constraints.MinHeight = 25
       Constraints.MinWidth = 75
-      OnClick = RemoveBtnClick
       TabOrder = 1
+      OnClick = RemoveBtnClick
     end
     object edDefine: TEdit
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 21
+      Height = 23
       Top = 0
-      Width = 315
+      Width = 313
       Align = alTop
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
-      OnChange = EditChange
       TabOrder = 2
+      OnChange = EditChange
     end
   end
   object DefinesCheckList: TCheckListBox
     Left = 6
-    Height = 187
-    Top = 85
+    Height = 191
+    Top = 89
     Width = 329
     Align = alClient
     Anchors = [akTop, akBottom]
     BorderSpacing.Around = 6
     ItemHeight = 0
+    TabOrder = 1
     OnClick = DefinesCheckListClick
     OnDblClick = DefinesCheckListDblClick
     OnKeyDown = DefinesCheckListKeyDown
-    TabOrder = 1
-    TopIndex = -1
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 42
-    Top = 278
+    Height = 34
+    Top = 286
     Width = 329
+    AbortButton = pbCancel
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'

@@ -11,7 +11,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
   Constraints.MinHeight = 450
   Constraints.MinWidth = 460
   Position = poWorkAreaCenter
-  LCLVersion = '4.99.0.0'
+  LCLVersion = '5.99.0.0'
   OnClose = FindRenameIdentifierDialogClose
   OnCreate = FindRenameIdentifierDialogCreate
   OnShow = FormShow
@@ -23,13 +23,13 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'CurrentGroupBox'
-    ClientHeight = 73
+    ClientHeight = 80
     ClientWidth = 444
     Constraints.MinHeight = 100
     TabOrder = 0
     object CurrentListBox: TListBox
       Left = 6
-      Height = 61
+      Height = 68
       Top = 6
       Width = 432
       Align = alClient
@@ -38,19 +38,18 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       ItemHeight = 0
       ScrollWidth = 430
       TabOrder = 0
-      TopIndex = -1
     end
   end
   object NewGroupBox: TGroupBox
     Left = 6
-    Height = 127
-    Top = 24
+    Height = 105
+    Top = 100
     Width = 448
     Align = alBottom
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'NewGroupBox'
-    ClientHeight = 100
+    ClientHeight = 85
     ClientWidth = 444
     TabOrder = 1
     object NewEdit: TEdit
@@ -60,8 +59,8 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       AnchorSideRight.Control = NewGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 32
-      Top = 62
+      Height = 23
+      Top = 56
       Width = 432
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
@@ -71,7 +70,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
     end
     object RenameCheckBox: TCheckBox
       Left = 6
-      Height = 22
+      Height = 19
       Top = 6
       Width = 432
       Align = alTop
@@ -87,8 +86,8 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       AnchorSideRight.Control = NewGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 22
-      Top = 34
+      Height = 19
+      Top = 31
       Width = 432
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
@@ -98,31 +97,31 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
   end
   object ScopeGroupBox: TGroupBox
     Left = 6
-    Height = 327
-    Top = 157
+    Height = 276
+    Top = 211
     Width = 448
     Align = alBottom
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'ScopeGroupBox'
-    ClientHeight = 300
+    ClientHeight = 256
     ClientWidth = 444
     TabOrder = 2
     object ExtraFilesGroupBox: TGroupBox
       Left = 6
-      Height = 71
-      Top = 139
+      Height = 55
+      Top = 120
       Width = 432
       Align = alTop
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'ExtraFilesGroupBox'
-      ClientHeight = 44
+      ClientHeight = 35
       ClientWidth = 428
       TabOrder = 1
       object ExtraFilesEdit: TEdit
         Left = 6
-        Height = 32
+        Height = 23
         Top = 6
         Width = 416
         Align = alTop
@@ -133,7 +132,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
     end
     object ScopeRadioGroup: TRadioGroup
       Left = 6
-      Height = 127
+      Height = 108
       Top = 6
       Width = 432
       Align = alTop
@@ -149,7 +148,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 100
+      ClientHeight = 88
       ClientWidth = 428
       Items.Strings = (
         'in current unit'
@@ -161,8 +160,8 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
     end
     object ScopeCommentsCheckBox: TCheckBox
       Left = 6
-      Height = 22
-      Top = 216
+      Height = 19
+      Top = 181
       Width = 432
       Align = alTop
       BorderSpacing.Around = 6
@@ -171,8 +170,8 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
     end
     object ScopeOverridesCheckBox: TCheckBox
       Left = 6
-      Height = 22
-      Top = 244
+      Height = 19
+      Top = 206
       Width = 432
       Align = alTop
       BorderSpacing.Around = 6
@@ -181,8 +180,8 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
     end
     object ScopeIncludeLFMs: TCheckBox
       Left = 6
-      Height = 22
-      Top = 272
+      Height = 19
+      Top = 231
       Width = 432
       Align = alTop
       BorderSpacing.Around = 6
@@ -192,9 +191,10 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 29
-    Top = 490
+    Height = 26
+    Top = 493
     Width = 448
+    AbortButton = pbCancel
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     OKButton.OnClick = FindOrRenameButtonClick

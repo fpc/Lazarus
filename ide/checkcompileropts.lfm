@@ -8,7 +8,7 @@ object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
   ClientHeight = 389
   ClientWidth = 624
   Position = poScreenCenter
-  LCLVersion = '4.99.0.0'
+  LCLVersion = '5.99.0.0'
   object Splitter1: TSplitter
     Cursor = crVSplit
     Left = 0
@@ -23,6 +23,7 @@ object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
     Height = 26
     Top = 357
     Width = 612
+    AbortButton = pbClose
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'

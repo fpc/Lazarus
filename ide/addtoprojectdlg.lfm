@@ -7,14 +7,15 @@ object AddToProjectDialog: TAddToProjectDialog
   Caption = 'AddToProjectDialog'
   ClientHeight = 358
   ClientWidth = 579
-  OnClose = AddToProjectDialogClose
   Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '5.99.0.0'
+  OnClose = AddToProjectDialogClose
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 29
-    Top = 323
+    Height = 26
+    Top = 326
     Width = 567
+    AbortButton = pbCancel
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -29,7 +30,7 @@ object AddToProjectDialog: TAddToProjectDialog
   end
   object AddFileListView: TListView
     Left = 6
-    Height = 311
+    Height = 314
     Top = 6
     Width = 567
     Align = alClient

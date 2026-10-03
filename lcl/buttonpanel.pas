@@ -57,6 +57,7 @@ type
 
   TCustomButtonPanel = class(TCustomPanel)
   private
+    FAbortButton: TPanelButtonEx;
     FShowBevel: Boolean;
     FShowButtons: TPanelButtons;
     FShowGlyphs: TPanelButtons;
@@ -69,8 +70,10 @@ type
     FSpacing: TSpacingSize;
     procedure CreateButton(AButton: TPanelButton);
     procedure DoDefaultButton;
+    procedure DoAbortButton;
     procedure DoShowButtons;
     procedure DoShowGlyphs;
+    procedure SetAbortButton(AValue: TPanelButtonEx);
     procedure SetButtonOrder(Value: TButtonOrder);
     procedure SetDefaultButton(Value: TPanelButtonEx);
     procedure SetShowBevel(AValue: Boolean);
@@ -84,6 +87,7 @@ type
     procedure UpdateButtonSize;
     function IsLastButton(AControl: TControl): boolean;
   protected
+    procedure Loaded; override;
     function CreateControlBorderSpacing: TControlBorderSpacing; override;
     function CustomAlignInsertBefore(AControl1, AControl2: TControl): Boolean; override;
     procedure CustomAlignPosition(AControl: TControl; var ANewLeft, ANewTop,
@@ -108,6 +112,7 @@ type
     property ButtonOrder: TButtonOrder read FButtonOrder write SetButtonOrder default boDefault;
 
     property DefaultButton: TPanelButtonEx read FDefaultButton write SetDefaultButton default pbOK;
+    property AbortButton: TPanelButtonEx read FAbortButton write SetAbortButton default pbNone;
     property ShowButtons: TPanelButtons read FShowButtons write SetShowButtons default DefShowButtons;
     property ShowGlyphs: TPanelButtons read FShowGlyphs write SetShowGlyphs default DefShowGlyphs;
     property ShowBevel: Boolean read FShowBevel write SetShowBevel default True;
@@ -120,6 +125,7 @@ type
   TButtonPanel = class(TCustomButtonPanel)
   published
     property Align;
+    property AbortButton;
     property Anchors;
     property AutoSize;
     property BorderSpacing;
@@ -243,6 +249,13 @@ begin
   EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomButtonPanel.DoShowGlyphs'){$ENDIF};
 end;
 
+procedure TCustomButtonPanel.SetAbortButton(AValue: TPanelButtonEx);
+begin
+  if FAbortButton = AValue then Exit;
+  FAbortButton := AValue;
+  DoAbortButton;
+end;
+
 procedure TCustomButtonPanel.SetShowGlyphs(Value: TPanelButtons);
 begin
   if FShowGlyphs = Value then Exit;
@@ -349,6 +362,12 @@ begin
   Result:=true;
 end;
 
+procedure TCustomButtonPanel.Loaded;
+begin
+  inherited Loaded;
+  DoAbortButton;
+end;
+
 procedure TCustomButtonPanel.UpdateButtonOrder;
 const
   TabOrders: array[TButtonOrder, 0..3] of TPanelButton = (
@@ -449,6 +468,17 @@ begin
   end;
 end;
 
+procedure TCustomButtonPanel.DoAbortButton;
+var
+  btn: TPanelButton;
+begin
+  for btn := Low(btn) to High(btn) do
+  begin
+    if FButtons[btn] = nil then Continue;
+    FButtons[btn].Cancel := FAbortButton = btn;
+  end;
+end;
+
 procedure TCustomButtonPanel.SetDefaultButton(Value: TPanelButtonEx);
 begin
   if FDefaultButton = Value then
@@ -518,6 +548,7 @@ begin
 
 
   FDefaultButton := pbOK;
+  FAbortButton   := pbNone;
   FButtonOrder   := boDefault;
   FShowButtons   := DefShowButtons;
   FShowGlyphs    := DefShowGlyphs;

@@ -8,14 +8,15 @@ object BuildModesForm: TBuildModesForm
   Caption = 'BuildModesForm'
   ClientHeight = 354
   ClientWidth = 612
-  OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '5.99.0.0'
+  OnShow = FormShow
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 26
     Top = 322
     Width = 600
+    AbortButton = pbCancel
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -125,19 +126,19 @@ object BuildModesForm: TBuildModesForm
         ButtonStyle = cbsCheckboxColumn
         MaxSize = 50
         Title.Caption = 'Active'
-        Width = 200
+        Width = 50
       end    
       item
         ButtonStyle = cbsCheckboxColumn
         MaxSize = 50
         Title.Caption = 'InSession'
-        Width = 200
+        Width = 50
       end    
       item
         MaxSize = 500
         SizePriority = 100
         Title.Caption = 'Title'
-        Width = 200
+        Width = 498
       end>
     FixedCols = 0
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goEditing, goRowSelect, goThumbTracking, goSmoothScroll]
@@ -148,9 +149,9 @@ object BuildModesForm: TBuildModesForm
     OnSelection = BuildModesStringGridSelection
     OnValidateEntry = BuildModesStringGridValidateEntry
     ColWidths = (
-      200
-      200
-      200
+      50
+      50
+      498
     )
   end
   object btnCreateDefaultModes: TButton
@@ -164,10 +165,10 @@ object BuildModesForm: TBuildModesForm
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'Create now for this project'
-    OnClick = btnCreateDefaultModesClick
     ParentShowHint = False
     ShowHint = True
     TabOrder = 0
+    OnClick = btnCreateDefaultModesClick
   end
   object RenameButton: TButton
     AnchorSideTop.Control = btnCreateDefaultModes
@@ -180,11 +181,11 @@ object BuildModesForm: TBuildModesForm
     Anchors = [akTop, akRight]
     AutoSize = True
     Caption = '&Rename'
-    OnClick = RenameButtonClick
     TabOrder = 2
+    OnClick = RenameButtonClick
   end
   object BuildModesPopupMenu: TPopupMenu
-    left = 168
-    top = 260
+    Left = 168
+    Top = 260
   end
 end

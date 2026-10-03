@@ -7,10 +7,10 @@ object BuildProfileManagerForm: TBuildProfileManagerForm
   Caption = 'Build Profiles'
   ClientHeight = 435
   ClientWidth = 360
-  LCLVersion = '4.99.0.0'
+  Position = poScreenCenter
+  LCLVersion = '5.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  Position = poScreenCenter
   object ProfilesPanel: TPanel
     Left = 0
     Height = 435
@@ -74,7 +74,6 @@ object BuildProfileManagerForm: TBuildProfileManagerForm
         Left = 218
         Height = 46
         Top = 0
-        Width = 5
         Caption = 'tbSeparator'
         Style = tbsDivider
       end
@@ -86,15 +85,16 @@ object BuildProfileManagerForm: TBuildProfileManagerForm
       Width = 360
       Align = alClient
       ItemHeight = 0
-      OnClick = ProfilesListboxClick
       ScrollWidth = 354
       TabOrder = 0
+      OnClick = ProfilesListboxClick
     end
     object ButtonPanel: TButtonPanel
       Left = 6
       Height = 26
       Top = 403
       Width = 348
+      AbortButton = pbCancel
       OKButton.Name = 'OKButton'
       OKButton.DefaultCaption = True
       HelpButton.Name = 'HelpButton'

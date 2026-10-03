@@ -7,7 +7,7 @@ object EditorFileManagerForm: TEditorFileManagerForm
   ClientHeight = 379
   ClientWidth = 680
   KeyPreview = True
-  LCLVersion = '4.99.0.0'
+  LCLVersion = '5.99.0.0'
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   object CheckListBox1: TCheckListBox
@@ -35,6 +35,7 @@ object EditorFileManagerForm: TEditorFileManagerForm
     Height = 34
     Top = 337
     Width = 664
+    AbortButton = pbClose
     BorderSpacing.Around = 8
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True

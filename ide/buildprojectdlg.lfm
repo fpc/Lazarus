@@ -8,7 +8,7 @@ object CleanBuildProjectDialog: TCleanBuildProjectDialog
   ClientHeight = 545
   ClientWidth = 537
   Position = poScreenCenter
-  LCLVersion = '4.99.0.0'
+  LCLVersion = '5.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -18,6 +18,7 @@ object CleanBuildProjectDialog: TCleanBuildProjectDialog
     Height = 34
     Top = 505
     Width = 525
+    AbortButton = pbCancel
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     OKButton.OnClick = ButtonPanel1OKButtonClick
@@ -38,7 +39,7 @@ object CleanBuildProjectDialog: TCleanBuildProjectDialog
     Left = 10
     Height = 19
     Top = 12
-    Width = 111
+    Width = 112
     BorderSpacing.Left = 10
     Caption = 'ProjOutCheckBox'
     Checked = True
@@ -53,7 +54,7 @@ object CleanBuildProjectDialog: TCleanBuildProjectDialog
     Left = 10
     Height = 19
     Top = 38
-    Width = 107
+    Width = 108
     Caption = 'ProjSrcCheckBox'
     Checked = True
     State = cbChecked
@@ -67,7 +68,7 @@ object CleanBuildProjectDialog: TCleanBuildProjectDialog
     Left = 10
     Height = 19
     Top = 64
-    Width = 110
+    Width = 111
     Caption = 'PkgOutCheckBox'
     Checked = True
     State = cbChecked
@@ -81,7 +82,7 @@ object CleanBuildProjectDialog: TCleanBuildProjectDialog
     Left = 10
     Height = 19
     Top = 90
-    Width = 106
+    Width = 107
     Caption = 'PkgSrcCheckBox'
     Checked = True
     State = cbChecked
