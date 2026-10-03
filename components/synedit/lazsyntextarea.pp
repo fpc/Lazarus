@@ -932,6 +932,8 @@ begin
               else
               if j > 1 then
                 HasDouble := True;
+              if ord(c) >= $F0 then // > U10000 - emoji may differ from expected width
+                NeedsEto := True;
               if c = ' ' then begin
                 inc(TabExtra, FSpaceExtraByteCount);
                 {$IfDef WINDOWS}
@@ -1065,6 +1067,8 @@ begin
               else
               if j > 1 then
                 HasDouble := True;
+              if ord(c) >= $F0 then // > U10000 - emoji may differ from expected width
+                NeedsEto := True;
               if c = ' ' then begin
                 inc(TabExtra, FSpaceExtraByteCount);
                 {$IfDef WINDOWS}
