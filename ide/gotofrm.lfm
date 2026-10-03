@@ -9,10 +9,10 @@ object frmGoto: TfrmGoto
   Caption = 'frmGoto'
   ClientHeight = 101
   ClientWidth = 250
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '5.99.0.0'
   object Label1: TLabel
     Left = 6
-    Height = 14
+    Height = 15
     Top = 6
     Width = 238
     Align = alTop
@@ -22,23 +22,24 @@ object frmGoto: TfrmGoto
   end
   object Edit1: TEdit
     Left = 6
-    Height = 21
-    Top = 26
+    Height = 23
+    Top = 27
     Width = 238
     Align = alTop
     BorderSpacing.Around = 6
     Constraints.MinWidth = 200
-    OnChange = Edit1Change
-    OnKeyPress = Edit1KeyPress
     TabOrder = 0
     Text = 'Edit1'
+    OnChange = Edit1Change
+    OnKeyPress = Edit1KeyPress
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 26
-    Top = 53
+    Top = 56
     Width = 238
     Align = alTop
+    AbortButton = pbCancel
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'

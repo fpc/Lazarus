@@ -10,7 +10,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
   KeyPreview = True
   Menu = MainMenu
   Position = poScreenCenter
-  LCLVersion = '4.99.0.0'
+  LCLVersion = '5.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   OnKeyDown = CodeToolsDefinesEditorKeyDown
@@ -109,14 +109,10 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           Align = alClient
           Font.Height = -16
           Font.Name = 'courier'
-          Font.Pitch = fpFixed
           Font.Quality = fqNonAntialiased
-          ParentColor = False
-          ParentFont = False
           TabOrder = 0
           BookMarkOptions.Xoffset = -18
           Gutter.Visible = False
-          Gutter.Width = 59
           Gutter.MouseActions = <          
             item
               ClickCount = ccAny
@@ -127,9 +123,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
               Button = mbRight
               Command = emcContextMenu
             end>
-          RightGutter.Width = 0
-          RightGutter.MouseActions = <>
-          Keystrokes = <          
+          KeyStrokes = <          
             item
               Command = ecUp
               ShortCut = 38
@@ -513,7 +507,6 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
               ShiftMask = [ssShift, ssAlt, ssCtrl]
               Command = emcMouseLink
             end>
-          MouseTextActions = <>
           MouseSelActions = <          
             item
               ClickDir = cdDown
@@ -528,83 +521,16 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           )
           Options = [eoBracketHighlight, eoHalfPageScroll, eoHideRightMargin, eoScrollByOneLess, eoScrollPastEol, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoDragDropEditing]
           MouseOptions = [emDragDropEditing]
-          VisibleSpecialChars = [vscSpace, vscTabAtLast]
-          SelectedColor.BackPriority = 50
-          SelectedColor.ForePriority = 50
-          SelectedColor.FramePriority = 50
-          SelectedColor.BoldPriority = 50
-          SelectedColor.ItalicPriority = 50
-          SelectedColor.UnderlinePriority = 50
-          SelectedColor.StrikeOutPriority = 50
-          BracketHighlightStyle = sbhsBoth
-          BracketMatchColor.Background = clNone
-          BracketMatchColor.Foreground = clNone
-          BracketMatchColor.Style = [fsBold]
-          FoldedCodeColor.Background = clNone
-          FoldedCodeColor.Foreground = clGray
-          FoldedCodeColor.FrameColor = clGray
-          MouseLinkColor.Background = clNone
-          MouseLinkColor.Foreground = clBlue
-          LineHighlightColor.Background = clNone
-          LineHighlightColor.Foreground = clNone
           inline TSynGutterPartList
             object TSynGutterMarks
-              Width = 24
-              MouseActions = <>
-              MaxExtraMarksColums = 0
-              Options = [sgmoDeDuplicateMarksOnOverflow]
             end
             object TSynGutterLineNumber
-              Width = 19
-              MouseActions = <>
-              MarkupInfo.Background = clBtnFace
-              MarkupInfo.Foreground = clNone
-              DigitCount = 2
-              ShowOnlyLineNumbersMultiplesOf = 1
-              ZeroStart = False
-              LeadingZeros = False
             end
             object TSynGutterChanges
-              Width = 4
-              MouseActions = <>
-              ModifiedColor = 59900
-              SavedColor = clGreen
             end
             object TSynGutterSeparator
-              Width = 2
-              MouseActions = <>
-              MarkupInfo.Background = clWhite
-              MarkupInfo.Foreground = clGray
             end
             object TSynGutterCodeFolding
-              MouseActions = <              
-                item
-                  Button = mbRight
-                  Command = emcCodeFoldContextMenu
-                end              
-                item
-                  ShiftMask = [ssShift]
-                  Button = mbMiddle
-                  ClickCount = ccAny
-                  ClickDir = cdDown
-                  Command = emcCodeFoldCollaps
-                end              
-                item
-                  Shift = [ssShift]
-                  ShiftMask = [ssShift]
-                  Button = mbMiddle
-                  ClickCount = ccAny
-                  ClickDir = cdDown
-                  Command = emcCodeFoldCollaps
-                  Option = 1
-                end              
-                item
-                  ClickCount = ccAny
-                  ClickDir = cdDown
-                  Command = emcNone
-                end>
-              MarkupInfo.Background = clNone
-              MarkupInfo.Foreground = clGray
               MouseActionsExpanded = <              
                 item
                   ClickCount = ccAny
@@ -645,14 +571,10 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           Anchors = [akTop, akLeft, akRight, akBottom]
           Font.Height = -16
           Font.Name = 'courier'
-          Font.Pitch = fpFixed
           Font.Quality = fqNonAntialiased
-          ParentColor = False
-          ParentFont = False
           TabOrder = 0
           BookMarkOptions.Xoffset = -18
           Gutter.Visible = False
-          Gutter.Width = 59
           Gutter.MouseActions = <          
             item
               ClickCount = ccAny
@@ -663,9 +585,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
               Button = mbRight
               Command = emcContextMenu
             end>
-          RightGutter.Width = 0
-          RightGutter.MouseActions = <>
-          Keystrokes = <          
+          KeyStrokes = <          
             item
               Command = ecUp
               ShortCut = 38
@@ -1049,7 +969,6 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
               ShiftMask = [ssShift, ssAlt, ssCtrl]
               Command = emcMouseLink
             end>
-          MouseTextActions = <>
           MouseSelActions = <          
             item
               ClickDir = cdDown
@@ -1064,83 +983,16 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           )
           Options = [eoBracketHighlight, eoHalfPageScroll, eoHideRightMargin, eoScrollByOneLess, eoScrollPastEol, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoDragDropEditing]
           MouseOptions = [emDragDropEditing]
-          VisibleSpecialChars = [vscSpace, vscTabAtLast]
-          SelectedColor.BackPriority = 50
-          SelectedColor.ForePriority = 50
-          SelectedColor.FramePriority = 50
-          SelectedColor.BoldPriority = 50
-          SelectedColor.ItalicPriority = 50
-          SelectedColor.UnderlinePriority = 50
-          SelectedColor.StrikeOutPriority = 50
-          BracketHighlightStyle = sbhsBoth
-          BracketMatchColor.Background = clNone
-          BracketMatchColor.Foreground = clNone
-          BracketMatchColor.Style = [fsBold]
-          FoldedCodeColor.Background = clNone
-          FoldedCodeColor.Foreground = clGray
-          FoldedCodeColor.FrameColor = clGray
-          MouseLinkColor.Background = clNone
-          MouseLinkColor.Foreground = clBlue
-          LineHighlightColor.Background = clNone
-          LineHighlightColor.Foreground = clNone
           inline TSynGutterPartList
             object TSynGutterMarks
-              Width = 24
-              MouseActions = <>
-              MaxExtraMarksColums = 0
-              Options = [sgmoDeDuplicateMarksOnOverflow]
             end
             object TSynGutterLineNumber
-              Width = 19
-              MouseActions = <>
-              MarkupInfo.Background = clBtnFace
-              MarkupInfo.Foreground = clNone
-              DigitCount = 2
-              ShowOnlyLineNumbersMultiplesOf = 1
-              ZeroStart = False
-              LeadingZeros = False
             end
             object TSynGutterChanges
-              Width = 4
-              MouseActions = <>
-              ModifiedColor = 59900
-              SavedColor = clGreen
             end
             object TSynGutterSeparator
-              Width = 2
-              MouseActions = <>
-              MarkupInfo.Background = clWhite
-              MarkupInfo.Foreground = clGray
             end
             object TSynGutterCodeFolding
-              MouseActions = <              
-                item
-                  Button = mbRight
-                  Command = emcCodeFoldContextMenu
-                end              
-                item
-                  ShiftMask = [ssShift]
-                  Button = mbMiddle
-                  ClickCount = ccAny
-                  ClickDir = cdDown
-                  Command = emcCodeFoldCollaps
-                end              
-                item
-                  Shift = [ssShift]
-                  ShiftMask = [ssShift]
-                  Button = mbMiddle
-                  ClickCount = ccAny
-                  ClickDir = cdDown
-                  Command = emcCodeFoldCollaps
-                  Option = 1
-                end              
-                item
-                  ClickCount = ccAny
-                  ClickDir = cdDown
-                  Command = emcNone
-                end>
-              MarkupInfo.Background = clNone
-              MarkupInfo.Foreground = clGray
               MouseActionsExpanded = <              
                 item
                   ClickCount = ccAny
@@ -1297,6 +1149,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
     Height = 26
     Top = 468
     Width = 532
+    AbortButton = pbCancel
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     OKButton.OnClick = OKButtonClick

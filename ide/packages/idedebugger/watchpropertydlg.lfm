@@ -9,12 +9,13 @@ object WatchPropertyDlg: TWatchPropertyDlg
   ClientWidth = 750
   Constraints.MinWidth = 500
   Position = poScreenCenter
-  LCLVersion = '4.99.0.0'
+  LCLVersion = '5.99.0.0'
   object ButtonPanel: TButtonPanel
     Left = 6
     Height = 26
     Top = 618
     Width = 738
+    AbortButton = pbCancel
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     OKButton.OnClick = btnOKClick
@@ -657,7 +658,6 @@ object WatchPropertyDlg: TWatchPropertyDlg
         end
         inherited rbENumChar: TRadioButton
           Left = 391
-          Width = 81
         end
         inherited cbEnumSign: TCheckBox
           Left = 489
@@ -732,7 +732,6 @@ object WatchPropertyDlg: TWatchPropertyDlg
         end
         inherited rbENumValChar: TRadioButton
           Left = 391
-          Width = 81
         end
         inherited cbEnumValSign: TCheckBox
           Left = 489
@@ -1021,6 +1020,260 @@ object WatchPropertyDlg: TWatchPropertyDlg
         inherited spinForceSingleLineLen: TSpinEdit
           Left = 540
           Width = 47
+        end
+      end
+    end
+    inherited PanelNumPrefix: TPanel
+      AnchorSideLeft.Control = DisplayFormatFrame1
+      AnchorSideRight.Control = DisplayFormatFrame1
+      Width = 721
+      ClientWidth = 721
+      inherited SpacerNPre1: TLabel
+        Width = 131
+      end
+      inherited SpacerNPre2: TLabel
+        Left = 131
+        Width = 590
+      end
+      inherited DividerBevelNumPrefix: TDividerBevel
+        Width = 721
+      end
+      inherited lbOverrideNumPrefix: TLabel
+        Width = 113
+      end
+      inherited PanelNumPrefixHex: TPanel
+        Left = 131
+        Width = 590
+        ClientWidth = 590
+        inherited rbNumPreHDollar: TRadioButton
+          Width = 65
+        end
+        inherited rbNumPreHZeroX: TRadioButton
+          Left = 138
+          Width = 64
+        end
+        inherited rbNumPreHZeroUpX: TRadioButton
+          Left = 202
+          Width = 65
+        end
+        inherited rbNumPreHHash: TRadioButton
+          Left = 267
+          Width = 64
+        end
+        inherited rbNumPreHAmpUpH: TRadioButton
+          Left = 331
+          Width = 65
+        end
+        inherited rbNumPreHUPlus: TRadioButton
+          Left = 396
+          Width = 65
+        end
+        inherited rbNumPreHPostH: TRadioButton
+          Left = 461
+          Width = 64
+        end
+        inherited rbNumPreHPost16: TRadioButton
+          Left = 525
+          Width = 65
+        end
+      end
+      inherited PanelNumPrefixOct: TPanel
+        Left = 131
+        Width = 590
+        ClientWidth = 590
+        inherited rbNumPreOAmp: TRadioButton
+          Width = 65
+        end
+        inherited rbNumPreOZeroO: TRadioButton
+          Left = 138
+          Width = 64
+        end
+        inherited rbNumPreOZeroUpO: TRadioButton
+          Left = 202
+          Width = 65
+        end
+        inherited rbNumPreOPostO: TRadioButton
+          Left = 267
+          Width = 64
+        end
+        inherited rbNumPreOPostQ: TRadioButton
+          Left = 331
+          Width = 65
+        end
+        inherited rbNumPreOPost8: TRadioButton
+          Left = 396
+          Width = 65
+        end
+        inherited spacer23: TLabel
+          Left = 461
+          Width = 64
+        end
+        inherited spacer25: TLabel
+          Left = 525
+          Width = 65
+        end
+      end
+      inherited PanelNumPrefixBin: TPanel
+        Left = 131
+        Width = 590
+        ClientWidth = 590
+        inherited rbNumPreBPercent: TRadioButton
+          Width = 65
+        end
+        inherited rbNumPreBZeroB: TRadioButton
+          Left = 138
+          Width = 64
+        end
+        inherited rbNumPreBZeroUpB: TRadioButton
+          Left = 202
+          Width = 65
+        end
+        inherited rbNumPreBPostB: TRadioButton
+          Left = 267
+          Width = 64
+        end
+        inherited rbNumPreBPost2: TRadioButton
+          Left = 331
+          Width = 65
+        end
+        inherited spacer24: TLabel
+          Left = 396
+          Width = 65
+        end
+        inherited spacer26: TLabel
+          Left = 461
+          Width = 64
+        end
+        inherited spacer27: TLabel
+          Left = 525
+          Width = 65
+        end
+      end
+    end
+    inherited PanelAddrPrefix: TPanel
+      AnchorSideLeft.Control = DisplayFormatFrame1
+      AnchorSideRight.Control = DisplayFormatFrame1
+      Width = 721
+      ClientWidth = 721
+      inherited SpacerNPre3: TLabel
+        Width = 131
+      end
+      inherited SpacerNPre4: TLabel
+        Left = 131
+        Width = 590
+      end
+      inherited DividerBevelAddrPrefix: TDividerBevel
+        Width = 721
+      end
+      inherited lbOverrideAddrPrefix: TLabel
+        Width = 113
+      end
+      inherited PanelAddrPrefixHex: TPanel
+        Left = 131
+        Width = 590
+        ClientWidth = 590
+        inherited rbAddrPreHDollar: TRadioButton
+          Width = 65
+        end
+        inherited rbAddrPreHZeroX: TRadioButton
+          Left = 138
+          Width = 64
+        end
+        inherited rbAddrPreHZeroUpX: TRadioButton
+          Left = 202
+          Width = 65
+        end
+        inherited rbAddrPreHAmpUpH: TRadioButton
+          Left = 267
+          Width = 64
+        end
+        inherited rbAddrPreHPostH: TRadioButton
+          Left = 331
+          Width = 65
+        end
+        inherited rbAddrPreHPost16: TRadioButton
+          Left = 396
+          Width = 65
+        end
+        inherited spacer33: TLabel
+          Left = 461
+          Width = 64
+        end
+        inherited spacer34: TLabel
+          Left = 525
+          Width = 65
+        end
+      end
+      inherited PanelAddrPrefixOct: TPanel
+        Left = 131
+        Width = 590
+        ClientWidth = 590
+        inherited rbAddrPreOAmp: TRadioButton
+          Width = 65
+        end
+        inherited rbAddrPreOZeroO: TRadioButton
+          Left = 138
+          Width = 64
+        end
+        inherited rbAddrPreOZeroUpO: TRadioButton
+          Left = 202
+          Width = 65
+        end
+        inherited rbAddrPreOPostO: TRadioButton
+          Left = 267
+          Width = 64
+        end
+        inherited rbAddrPreOPostQ: TRadioButton
+          Left = 331
+          Width = 65
+        end
+        inherited rbAddrPreOPost8: TRadioButton
+          Left = 396
+          Width = 65
+        end
+        inherited spacer28: TLabel
+          Left = 461
+          Width = 64
+        end
+        inherited spacer29: TLabel
+          Left = 525
+          Width = 65
+        end
+      end
+      inherited PanelAddrPrefixBin: TPanel
+        Left = 131
+        Width = 590
+        ClientWidth = 590
+        inherited rbAddrPreBPercent: TRadioButton
+          Width = 65
+        end
+        inherited rbAddrPreBZeroB: TRadioButton
+          Left = 138
+          Width = 64
+        end
+        inherited rbAddrPreBZeroUpB: TRadioButton
+          Left = 202
+          Width = 65
+        end
+        inherited rbAddrPreBPostB: TRadioButton
+          Left = 267
+          Width = 64
+        end
+        inherited rbAddrPreBPost2: TRadioButton
+          Left = 331
+          Width = 65
+        end
+        inherited spacer30: TLabel
+          Left = 396
+          Width = 65
+        end
+        inherited spacer31: TLabel
+          Left = 461
+          Width = 64
+        end
+        inherited spacer32: TLabel
+          Left = 525
+          Width = 65
         end
       end
     end

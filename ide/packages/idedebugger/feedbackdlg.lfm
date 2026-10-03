@@ -10,12 +10,13 @@ object DbgFeedbackDlg: TDbgFeedbackDlg
   ClientHeight = 212
   ClientWidth = 605
   Position = poScreenCenter
-  LCLVersion = '2.3.0.0'
+  LCLVersion = '5.99.0.0'
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 34
     Top = 172
     Width = 593
+    AbortButton = pbCancel
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'

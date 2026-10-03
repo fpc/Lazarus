@@ -8,7 +8,7 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
   ClientHeight = 581
   ClientWidth = 592
   Position = poScreenCenter
-  LCLVersion = '4.99.0.0'
+  LCLVersion = '5.99.0.0'
   OnClose = CodeToolsDefinesDialogCLOSE
   OnCreate = CodeToolsDefinesDialogCREATE
   OnDestroy = FormDestroy
@@ -106,14 +106,10 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
           BorderSpacing.Around = 6
           Font.Height = -15
           Font.Name = 'courier'
-          Font.Pitch = fpFixed
           Font.Quality = fqNonAntialiased
-          ParentColor = False
-          ParentFont = False
           TabOrder = 0
           BookMarkOptions.Xoffset = -18
           Gutter.Visible = False
-          Gutter.Width = 57
           Gutter.MouseActions = <          
             item
               ClickCount = ccAny
@@ -124,7 +120,6 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
               Button = mbRight
               Command = emcContextMenu
             end>
-          RightGutter.Width = 0
           RightGutter.MouseActions = <          
             item
               ClickCount = ccAny
@@ -135,7 +130,7 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
               Button = mbRight
               Command = emcContextMenu
             end>
-          Keystrokes = <          
+          KeyStrokes = <          
             item
               Command = ecUp
               ShortCut = 38
@@ -544,7 +539,6 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
               ShiftMask = [ssShift, ssAlt, ssCtrl]
               Command = emcMouseLink
             end>
-          MouseTextActions = <>
           MouseSelActions = <          
             item
               ClickDir = cdDown
@@ -572,85 +566,18 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
             end>
           Options = [eoAutoIndent, eoBracketHighlight, eoScrollPastEol, eoShowScrollHint, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoDragDropEditing, eoShowCtrlMouseLinks]
           MouseOptions = [emDragDropEditing, emShowCtrlMouseLinks]
-          VisibleSpecialChars = [vscSpace, vscTabAtLast]
           ReadOnly = True
-          SelectedColor.BackPriority = 50
-          SelectedColor.ForePriority = 50
-          SelectedColor.FramePriority = 50
-          SelectedColor.BoldPriority = 50
-          SelectedColor.ItalicPriority = 50
-          SelectedColor.UnderlinePriority = 50
-          SelectedColor.StrikeOutPriority = 50
-          BracketHighlightStyle = sbhsBoth
-          BracketMatchColor.Background = clNone
-          BracketMatchColor.Foreground = clNone
-          BracketMatchColor.Style = [fsBold]
-          FoldedCodeColor.Background = clNone
-          FoldedCodeColor.Foreground = clGray
-          FoldedCodeColor.FrameColor = clGray
-          MouseLinkColor.Background = clNone
-          MouseLinkColor.Foreground = clBlue
-          LineHighlightColor.Background = clNone
-          LineHighlightColor.Foreground = clNone
           WantTabs = False
           inline TSynGutterPartList
             object TSynGutterMarks
-              Width = 24
-              MouseActions = <>
-              MaxExtraMarksColums = 0
-              Options = [sgmoDeDuplicateMarksOnOverflow]
             end
             object TSynGutterLineNumber
-              Width = 17
-              MouseActions = <>
-              MarkupInfo.Background = clBtnFace
-              MarkupInfo.Foreground = clNone
-              DigitCount = 2
-              ShowOnlyLineNumbersMultiplesOf = 1
-              ZeroStart = False
-              LeadingZeros = False
             end
             object TSynGutterChanges
-              Width = 4
-              MouseActions = <>
-              ModifiedColor = 59900
-              SavedColor = clGreen
             end
             object TSynGutterSeparator
-              Width = 2
-              MouseActions = <>
-              MarkupInfo.Background = clWhite
-              MarkupInfo.Foreground = clGray
             end
             object TSynGutterCodeFolding
-              MouseActions = <              
-                item
-                  Button = mbRight
-                  Command = emcCodeFoldContextMenu
-                end              
-                item
-                  ShiftMask = [ssShift]
-                  Button = mbMiddle
-                  ClickCount = ccAny
-                  ClickDir = cdDown
-                  Command = emcCodeFoldCollaps
-                end              
-                item
-                  Shift = [ssShift]
-                  ShiftMask = [ssShift]
-                  Button = mbMiddle
-                  ClickCount = ccAny
-                  ClickDir = cdDown
-                  Command = emcCodeFoldCollaps
-                  Option = 1
-                end              
-                item
-                  ClickCount = ccAny
-                  ClickDir = cdDown
-                  Command = emcNone
-                end>
-              MarkupInfo.Background = clNone
-              MarkupInfo.Foreground = clGray
               MouseActionsExpanded = <              
                 item
                   ClickCount = ccAny
@@ -760,6 +687,7 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
     Height = 26
     Top = 549
     Width = 580
+    AbortButton = pbCancel
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'

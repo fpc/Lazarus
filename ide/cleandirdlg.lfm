@@ -7,10 +7,10 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
   Caption = 'Clean Directory'
   ClientHeight = 387
   ClientWidth = 583
+  Position = poScreenCenter
+  LCLVersion = '5.99.0.0'
   OnCreate = CleanDirectoryDialogCreate
   OnDestroy = FormDestroy
-  Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
   object DirGroupbox: TGroupBox
     Left = 6
     Height = 100
@@ -41,7 +41,7 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
       Left = 6
       Height = 19
       Top = 35
-      Width = 130
+      Width = 128
       BorderSpacing.Around = 6
       Caption = 'Clean sub directories'
       TabOrder = 2
@@ -61,8 +61,8 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
       Anchors = [akTop, akRight, akBottom]
       BorderSpacing.Right = 5
       Caption = '...'
-      OnClick = DirBrowseButtonClick
       TabOrder = 1
+      OnClick = DirBrowseButtonClick
     end
   end
   object RemoveGroupbox: TGroupBox
@@ -148,6 +148,7 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     Height = 26
     Top = 355
     Width = 571
+    AbortButton = pbCancel
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
