@@ -151,24 +151,13 @@ gmkdir -p %BUILDDIR%\components\lazdebuggers
 IF ERRORLEVEL 1 GOTO CLEANUP
 %GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\lazutils
 IF ERRORLEVEL 1 GOTO CLEANUP
-%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\lazdebuggers\lazdebuggerintf
-IF ERRORLEVEL 1 GOTO CLEANUP
-%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\debuggerintf
-IF ERRORLEVEL 1 GOTO CLEANUP
 %GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\freetype
 IF ERRORLEVEL 1 GOTO CLEANUP
 %GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore lcl
 IF ERRORLEVEL 1 GOTO CLEANUP
 %GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\lazcontrols
 IF ERRORLEVEL 1 GOTO CLEANUP
-%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\buildintf
-IF ERRORLEVEL 1 GOTO CLEANUP
-:: export images dir, the buildintf includes them
-%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore images
-IF ERRORLEVEL 1 GOTO CLEANUP
 %GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\lazedit
-IF ERRORLEVEL 1 GOTO CLEANUP
-%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\ideintf
 IF ERRORLEVEL 1 GOTO CLEANUP
 %GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\synedit
 IF ERRORLEVEL 1 GOTO CLEANUP
@@ -180,54 +169,34 @@ IF ERRORLEVEL 1 GOTO CLEANUP
 gmkdir -p %BUILDDIR%\image\packager\units
 cp -pr %BUILDDIR%\packager\units\%FPCFULLTARGET% %BUILDDIR%\image\packager\units\%FPCFULLTARGET%
 
-%LAZBUILD% --pcp=%BUILDDIR%\cfg --compiler=%compiler% components\lazutils\lazutils.lpk
+%LAZBUILD% --pcp=%BUILDDIR%\cfg --compiler=%compiler% --pkg-release components\lazutils\lazutils.lpk
 IF ERRORLEVEL 1 GOTO CLEANUP
 gmkdir -p %BUILDDIR%\image\components\lazutils
 cp -pr %BUILDDIR%\components\lazutils\lib %BUILDDIR%\image\components\lazutils\lib
 
-%LAZBUILD% --pcp=%BUILDDIR%\cfg --compiler=%compiler% components\lazdebuggers\lazdebuggerintf\lazdebuggerintf.lpk
-IF ERRORLEVEL 1 GOTO CLEANUP
-gmkdir -p %BUILDDIR%\image\lazdebuggers\lazdebuggerintf
-cp -pr %BUILDDIR%\lazdebuggers\lazdebuggerintf\lib %BUILDDIR%\image\lazdebuggers\lazdebuggerintf\lib
-
-%LAZBUILD% --pcp=%BUILDDIR%\cfg --compiler=%compiler% components\debuggerintf\debuggerintf.lpk
-IF ERRORLEVEL 1 GOTO CLEANUP
-gmkdir -p %BUILDDIR%\image\components\debuggerintf
-cp -pr %BUILDDIR%\components\debuggerintf\lib %BUILDDIR%\image\components\debuggerintf\lib
-
-%LAZBUILD% --pcp=%BUILDDIR%\cfg --compiler=%compiler% components\freetype\freetypelaz.lpk
+%LAZBUILD% --pcp=%BUILDDIR%\cfg --compiler=%compiler% --pkg-release components\freetype\freetypelaz.lpk
 IF ERRORLEVEL 1 GOTO CLEANUP
 gmkdir -p %BUILDDIR%\image\components\freetype
 cp -pr %BUILDDIR%\components\freetype\lib %BUILDDIR%\image\components\freetype\lib
 
-%LAZBUILD% --pcp=%BUILDDIR%\cfg --ws=%LCL_PLATFORM% --compiler=%compiler% lcl\lclbase.lpk
+%LAZBUILD% --pcp=%BUILDDIR%\cfg --ws=%LCL_PLATFORM% --compiler=%compiler% --pkg-release lcl\lclbase.lpk
 IF ERRORLEVEL 1 GOTO CLEANUP
-%LAZBUILD% --pcp=%BUILDDIR%\cfg --ws=%LCL_PLATFORM% --compiler=%compiler% lcl\interfaces\lcl.lpk
+%LAZBUILD% --pcp=%BUILDDIR%\cfg --ws=%LCL_PLATFORM% --compiler=%compiler% --pkg-release lcl\interfaces\lcl.lpk
 IF ERRORLEVEL 1 GOTO CLEANUP
 gmkdir -p %BUILDDIR%\image\lcl\units
 cp -pr %BUILDDIR%\lcl\units\%FPCFULLTARGET% %BUILDDIR%\image\lcl\units\%FPCFULLTARGET%
 
-%LAZBUILD% --pcp=%BUILDDIR%\cfg --ws=%LCL_PLATFORM% --compiler=%compiler% components\lazcontrols\lazcontrols.lpk
+%LAZBUILD% --pcp=%BUILDDIR%\cfg --ws=%LCL_PLATFORM% --compiler=%compiler% --pkg-release components\lazcontrols\lazcontrols.lpk
 IF ERRORLEVEL 1 GOTO CLEANUP
 gmkdir -p %BUILDDIR%\image\components\lazcontrols
 cp -pr %BUILDDIR%\components\lazcontrols\lib %BUILDDIR%\image\components\lazcontrols\lib
-
-%LAZBUILD% --pcp=%BUILDDIR%\cfg --ws=%LCL_PLATFORM% --compiler=%compiler% components\buildintf\buildintf.lpk
-IF ERRORLEVEL 1 GOTO CLEANUP
-gmkdir -p %BUILDDIR%\image\components\buildintf\units
-cp -pr %BUILDDIR%\components\buildintf\units\%FPCFULLTARGET% %BUILDDIR%\image\components\buildintf\units\%FPCFULLTARGET%
 
 %LAZBUILD% --pcp=%BUILDDIR%\cfg --ws=%LCL_PLATFORM% --compiler=%compiler% components\lazedit\lazedit.lpk
 IF ERRORLEVEL 1 GOTO CLEANUP
 gmkdir -p %BUILDDIR%\image\components\lazedit\lib
 cp -pr %BUILDDIR%\components\lazedit\lib\%FPCFULLTARGET% %BUILDDIR%\image\components\lazedit\lib\%FPCFULLTARGET%
 
-%LAZBUILD% --pcp=%BUILDDIR%\cfg --ws=%LCL_PLATFORM% --compiler=%compiler% components\ideintf\ideintf.lpk
-IF ERRORLEVEL 1 GOTO CLEANUP
-gmkdir -p %BUILDDIR%\image\components\ideintf\units
-cp -pr %BUILDDIR%\components\ideintf\units\%FPCFULLTARGET% %BUILDDIR%\image\components\ideintf\units\%FPCFULLTARGET%
-
-%LAZBUILD% --pcp=%BUILDDIR%\cfg --ws=%LCL_PLATFORM% --compiler=%compiler% components\synedit\synedit.lpk
+%LAZBUILD% --pcp=%BUILDDIR%\cfg --ws=%LCL_PLATFORM% --compiler=%compiler% --pkg-release components\synedit\synedit.lpk
 IF ERRORLEVEL 1 GOTO CLEANUP
 gmkdir -p %BUILDDIR%\image\components\synedit\units
 cp -pr %BUILDDIR%\components\synedit\units\%FPCFULLTARGET% %BUILDDIR%\image\components\synedit\units\%FPCFULLTARGET%
