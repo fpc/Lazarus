@@ -199,12 +199,16 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWin32ListStringList.Clear;
 begin
+  if (Count = 0) then
+    Exit;
   if IsVirtualListBox then
   begin
     debugln(['TWin32ListStringList.Clear: Virtual Mode']);
     Exit;
   end;
   Windows.SendMessage(FWin32List, FFlagResetContent, 0, 0);
+  if (UpdateCount = 0) then
+    FPONotifyObservers(Self, ooChange, nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -221,6 +225,8 @@ begin
     Exit;
   end;
   Windows.SendMessage(FWin32List, FFlagDeleteString, Index, 0);
+  if (UpdateCount = 0) then
+    FPONotifyObservers(Self, ooDeleteItem{ooChange}, nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -303,6 +309,9 @@ begin
 
   if (FFlagSetCaretIndex <> 0) and (GetCount = 1) then
     SendMessage(FWin32List, FFlagSetCaretIndex, lItemIndex, 0);
+  //writeln('TWin32ListStringList.Insert: UpdateCount=',UpdateCount);
+  if (UpdateCount = 0) then
+    FPONotifyObservers(Self, ooChange, nil);
 end;
 
 procedure TWin32ListStringList.Put(Index: integer; const S: string);
@@ -337,9 +346,14 @@ begin
 
   // preserve data
   AData := SaveData(Index);
-  
-  inherited;
- 
+
+  BeginUpdate; //suppress sending notifications
+  try
+    inherited;
+  finally
+    EndUpdate;
+  end;
+
   if AData <> nil then
     RestoreData(Index, AData);
 
@@ -362,6 +376,9 @@ begin
     Exit;
   end;
   Windows.SendMessage(FWin32List, FFlagSetItemData, Index, LPARAM(AObject));
+  //writeln('TWin32ListStringList.PutObject: UpdateCount=',UpdateCount);
+  if (UpdateCount = 0) then
+    FPONotifyObservers(Self, ooChange, nil);
 end;
 
 procedure TWin32ListStringList.SetCapacity(NewCapacity: Integer);
@@ -373,7 +390,10 @@ procedure TWin32ListStringList.SetUpdateState(Updating: Boolean);
 begin
   Windows.SendMessage(FWin32List, WM_SETREDRAW, WPARAM(not Updating), 0);
   if not Updating then
-    Windows.RedrawWindow(FWin32List, nil, 0, RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_ERASE)
+    Windows.RedrawWindow(FWin32List, nil, 0, RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_ERASE);
+  //calling inherited would also notify observes when updatecount = 0, which is the case after the first BeginUpdate
+  if not Updating then
+    FPONotifyObservers(Self, ooChange, nil);
 end;
 
 { TWin32ComboBoxStringList }
