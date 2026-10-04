@@ -74,14 +74,6 @@ if not exist %BUILDDIR%\lazarus.exe goto WARNING_NO_LAZARUS
 if not exist %BUILDDIR%\startlazarus.exe goto WARNING_NO_LAZARUS
 
 ::---------------------------------------------------------------------
-:: update fcl.compiled
-:: compiler with path / allow detection if changed (same version / dbg build)
-if  [%LAZBUILD_REPLACE_TEXT%]==[] GOTO NO_REPLACE_FCL
-%LAZBUILD_REPLACE_TEXT%  %BUILDDIR%\packager\units\%FPCFULLTARGET%\fcl.compiled "ppcx64.exe" "..\..\fpc\%FPCVERSION%\bin\%FPCFULLTARGET%\fpc.exe"
-%LAZBUILD_REPLACE_TEXT%  %BUILDDIR%\packager\units\%FPCFULLTARGET%\fcl.compiled "ppc386.exe" "..\..\fpc\%FPCVERSION%\bin\%FPCFULLTARGET%\fpc.exe"
-:NO_REPLACE_FCL
-
-::---------------------------------------------------------------------
 :: copy gdb into build dir
 if NOT exist %GDBDIR% goto NOGDB
 gmkdir -p %BUILDDIR%\mingw\%FPCFULLTARGET%

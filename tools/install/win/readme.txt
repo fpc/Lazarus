@@ -38,13 +38,9 @@ If you want to include CHM help files in the installer, you'll need a directory 
 B.1 Environment
 
 You should set the following environment before calling the script
-  SET GIT=C:\____\git.exe
-  SET ISCC="C:\Program Files (x86)\Inno Setup _____\iscc.exe"
-  SET LAZTEMPBUILDDIR=C:\temp\
-  
-  SET LAZBUILD_REPLACE_TEXT=C:\tools\ReplaceText.exe
-     the replace text utility / lpi in the Lazarus repository tools\install\win\ReplaceText\
-
+SET GIT=C:\____\git.exe
+SET ISCC="C:\Program Files (x86)\Inno Setup _____\iscc.exe"
+SET LAZTEMPBUILDDIR=C:\temp\
 
 Alternatively you can open the create_installer.bat in a text editor and check the variables, to see if the defaults match your system:
 ISCC: Path to the Inno Setup Compiler .exe file.
@@ -78,7 +74,7 @@ Set the environment as in B.1
      This can be found in the FPC-build gin "install\crossbinwce" "install\crossbinw64"
   
   
-  SET LAZBUILD_REPLACE_TEXT=C:\tools\ReplaceText.exe
+  SET LAZBUILD_REPLACE_TEXT=C:\temp\ReplaceText.exe
      the replace text utility / lpi in the Lazarus repository tools\install\win\ReplaceText\
 
 

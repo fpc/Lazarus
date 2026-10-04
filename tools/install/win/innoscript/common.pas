@@ -69,6 +69,47 @@ begin
   Result := def;
 end;
 
+type
+  TW32FileTime = record
+    LowDateTime: DWORD;
+    HighDateTime: DWORD;
+  end;
+  //PW32FileTime = ^TW32FileTime;
+
+function GetFileTime(hFile:THANDLE; var lpCreationTime, lpLastAccessTime, lpLastWriteTime:TW32FileTime):boolean; external 'GetFileTime@kernel32.dll stdcall';
+
+function SetFileTime(hFile: THandle; const lpCreationTime, lpLastAccessTime, lpLastWriteTime: TW32FileTime): Boolean;  external 'SetFileTime@kernel32.dll stdcall';
+
+procedure UpdateFclCompiled();
+// Change:   <Compiler Value="ppcx86.exe" Date="1784358943"/>
+// To:       <Compiler Value="..\..\fpc\3.2.4\bin\x86_64-win64\fpc.exe" Date="1784358943"/>
+var
+  FileName, Content: string;
+  s: Ansistring;
+  FileStream: TFileStream;
+  t1,t2,t3: TW32FileTime;
+begin
+  FileName := ExpandConstant('{app}\packager\units\{#FPCFullTarget}\fcl.compiled');
+  try
+    FileStream := TFileStream.Create(FileName, fmOpenReadWrite);
+    GetFileTime(FileStream.Handle, t1, t2, t3);
+    FileStream.Free;
+
+    LoadStringFromFile(FileName, s);
+    Content := s;
+    StringChange(Content, 'ppcx64.exe', ExpandConstant('..\..\fpc\{#FPCVersion}\bin\{#FPCFullTarget}\fpc.exe'));
+    StringChange(Content, 'ppc386.exe', ExpandConstant('..\..\fpc\{#FPCVersion}\bin\{#FPCFullTarget}\fpc.exe'));
+    StringChange(Content, ExpandConstant('Version="{#FPCVersion}"'), '');
+    StringChange(Content, 'Date=', 'IGND=');
+    SaveStringToFile(FileName, Content, False);
+ 
+    FileStream := TFileStream.Create(FileName, fmOpenReadWrite);
+    SetFileTime(FileStream.Handle, t1, t2, t3);
+    FileStream.Free;
+  except
+  end;
+end;
+
 procedure UpdateEnvironmentOptions();
 // used by [FILES]
 // Source: environmentoptions.xml; DestDir: {app}; AfterInstall: UpdateEnvironmentOptions; DestName: environmentoptions.xml
@@ -83,6 +124,8 @@ begin
   StringChange(Content, '%LazDir%', ExpandConstant('{app}'));
   StringChange(Content, '%FpcBinDir%', '$(Lazarusdir)'+ExpandConstant('\fpc\{#FPCVersion}\bin\{#FPCFullTarget}'));
   SaveStringToFile(FileName, Content, False);
+  
+  UpdateFclCompiled()
 end;
 
 function IsHKLMWriteable(): boolean;
