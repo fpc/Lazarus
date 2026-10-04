@@ -125,6 +125,7 @@ var
 begin
   lStartDir := SwitchPathDelims(aFileDirStr, True); // normalize
   Result := ExcludeTrailingBackslash(lStartDir);
+  lResLenNew := Length(Result); // in case of dir without filename
   repeat
     lResLen := Length(Result);
     if DirectoryExists(Result) then
