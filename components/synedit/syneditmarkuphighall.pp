@@ -2513,7 +2513,7 @@ begin
   fSearch.Backwards := ABackward;
   i := 0;
   While (true) do begin
-    if not fSearch.FindNextOne(Lines, AStartPoint, AnEndPoint, ptFoundStart, ptFoundEnd)
+    if not fSearch.FindNextOne(Lines, AStartPoint, AnEndPoint, ptFoundStart, ptFoundEnd, True)
     then break;
     i := i +  ptFoundEnd.Y - AStartPoint.Y;
     AStartPoint := ptFoundEnd;
