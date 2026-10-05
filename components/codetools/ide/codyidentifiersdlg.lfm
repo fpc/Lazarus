@@ -11,12 +11,13 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '5.99.0.0'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 30
-    Top = 368
+    Height = 34
+    Top = 364
     Width = 543
+    AbortButton = pbCancel
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -30,9 +31,9 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
   end
   object InfoLabel: TLabel
     Left = 8
-    Height = 16
+    Height = 15
     Top = 8
-    Width = 58
+    Width = 49
     Caption = 'InfoLabel'
     ParentColor = False
     WordWrap = True
@@ -43,15 +44,15 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = StartsRadioButton
     Left = 6
-    Height = 22
+    Height = 23
     Top = 58
-    Width = 371
+    Width = 393
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 10
+    TabOrder = 1
     OnChange = FilterEditChange
     OnKeyDown = FilterEditKeyDown
-    TabOrder = 1
   end
   object ItemsListBox: TListBox
     AnchorSideLeft.Control = Owner
@@ -61,8 +62,8 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = UnitLabel
     Left = 6
-    Height = 227
-    Top = 80
+    Height = 223
+    Top = 81
     Width = 543
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
@@ -70,21 +71,21 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     BorderSpacing.Bottom = 1
     ClickOnSelChange = False
     ItemHeight = 0
+    PopupMenu = PopupMenu1
+    TabOrder = 2
     OnClick = ItemsListBoxClick
     OnContextPopup = ItemsListBoxContextPopup
     OnDblClick = ItemsListBoxDblClick
     OnKeyDown = ItemsListBoxKeyDown
     OnSelectionChange = ItemsListBoxSelectionChange
-    PopupMenu = PopupMenu1
-    TabOrder = 2
   end
   object UnitLabel: TLabel
     AnchorSideLeft.Control = InfoLabel
     AnchorSideBottom.Control = PackageLabel
     Left = 8
-    Height = 16
-    Top = 308
-    Width = 59
+    Height = 15
+    Top = 305
+    Width = 50
     Anchors = [akLeft, akBottom]
     BorderSpacing.Bottom = 1
     Caption = 'UnitLabel'
@@ -94,9 +95,9 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideLeft.Control = InfoLabel
     AnchorSideBottom.Control = AddToImplementationUsesCheckBox
     Left = 8
-    Height = 16
-    Top = 325
-    Width = 84
+    Height = 15
+    Top = 321
+    Width = 72
     Anchors = [akLeft, akBottom]
     BorderSpacing.Bottom = 1
     Caption = 'PackageLabel'
@@ -107,21 +108,21 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideTop.Control = InfoLabel
     AnchorSideTop.Side = asrBottom
     Left = 8
-    Height = 18
-    Top = 30
-    Width = 193
+    Height = 19
+    Top = 29
+    Width = 168
     BorderSpacing.Top = 6
     Caption = 'HideOtherProjectsCheckBox'
-    OnChange = HideOtherProjectsCheckBoxChange
     TabOrder = 0
+    OnChange = HideOtherProjectsCheckBoxChange
   end
   object AddToImplementationUsesCheckBox: TCheckBox
     AnchorSideLeft.Control = PackageLabel
     AnchorSideBottom.Control = ButtonPanel1
     Left = 8
-    Height = 18
-    Top = 344
-    Width = 244
+    Height = 19
+    Top = 339
+    Width = 215
     Anchors = [akLeft, akBottom]
     BorderSpacing.Top = 3
     BorderSpacing.Bottom = 3
@@ -135,10 +136,10 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideRight.Control = ContainsRadioButton
     AnchorSideBottom.Control = FilterEdit
     AnchorSideBottom.Side = asrBottom
-    Left = 383
-    Height = 22
+    Left = 405
+    Height = 23
     Top = 58
-    Width = 86
+    Width = 73
     Anchors = [akTop, akRight, akBottom]
     BorderSpacing.Left = 6
     Caption = 'Starts with'
@@ -153,10 +154,10 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = FilterEdit
     AnchorSideBottom.Side = asrBottom
-    Left = 475
-    Height = 22
+    Left = 484
+    Height = 23
     Top = 58
-    Width = 74
+    Width = 65
     Anchors = [akTop, akRight, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -167,8 +168,8 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     TabOrder = 6
   end
   object PopupMenu1: TPopupMenu
-    left = 177
-    top = 133
+    Left = 177
+    Top = 133
     object JumpMenuItem: TMenuItem
       Caption = 'JumpMenuItem'
       OnClick = JumpButtonClick
