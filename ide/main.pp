@@ -1544,6 +1544,9 @@ begin
 
   // show setup dialog
   if ShowSetupDialog then begin
+    // hide splash, so it does not become the transient parent of the dialog
+    if SplashForm<>nil then
+      SplashForm.Hide;
     OldLazDir:=EnvironmentOptions.LazarusDirectory;
     if ShowInitialSetupDialog<>mrOk then begin
       Application.Terminate;
