@@ -108,7 +108,7 @@ resourcestring
 
 function TBreakPointIdMap.DoBreakPointCompare(Key1, Key2: Pointer): Integer;
 begin
-  Result := PPointer(Key1)^ - PPointer(Key1)^;
+  Result := PPointer(Key1)^ - PPointer(Key2)^;
 end;
 
 procedure HandleCommand(ACommand: String; out CallProcessLoop: boolean);
