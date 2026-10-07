@@ -112,7 +112,7 @@ type
     property ButtonOrder: TButtonOrder read FButtonOrder write SetButtonOrder default boDefault;
 
     property DefaultButton: TPanelButtonEx read FDefaultButton write SetDefaultButton default pbOK;
-    property AbortButton: TPanelButtonEx read FAbortButton write SetAbortButton default pbNone;
+    property AbortButton: TPanelButtonEx read FAbortButton write SetAbortButton default pbCancel;
     property ShowButtons: TPanelButtons read FShowButtons write SetShowButtons default DefShowButtons;
     property ShowGlyphs: TPanelButtons read FShowGlyphs write SetShowGlyphs default DefShowGlyphs;
     property ShowBevel: Boolean read FShowBevel write SetShowBevel default True;
@@ -548,7 +548,7 @@ begin
 
 
   FDefaultButton := pbOK;
-  FAbortButton   := pbNone;
+  FAbortButton   := pbCancel;
   FButtonOrder   := boDefault;
   FShowButtons   := DefShowButtons;
   FShowGlyphs    := DefShowGlyphs;
