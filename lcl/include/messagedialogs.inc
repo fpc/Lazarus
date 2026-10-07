@@ -30,45 +30,18 @@ begin
 end;
 
 function ModalDefaultButton(Buttons : TMsgDlgButtons) : TMsgDlgbtn;
+const
+  DefaultPriority: array of TMsgDlgBtn = (mbYes, mbOk, mbYesToAll, mbAll,
+    mbRetry, mbCancel, mbNo, mbNoToAll, mbAbort, mbIgnore);
 var
   b: TMsgDlgBtn;
 begin
-  Result := mbYes;               // Some default return value.
-  If mbYes in Buttons then
-    Result := mbYes
-  else
-    If mbOk in Buttons then
-      Result := mbOk
-  else
-    If mbYesToAll in Buttons then
-      Result := mbYesToAll
-  else
-    If mbAll in Buttons then
-      Result := mbAll
-  else
-    If mbRetry in Buttons then
-      Result := mbRetry
-  else
-    If mbCancel in Buttons then
-      Result := mbCancel
-  else
-    If mbNo in Buttons then
-      Result := mbNo
-  else
-    If mbNoToAll in Buttons then
-      Result := mbNoToAll
-  else
-    If mbAbort in Buttons then
-      Result := mbAbort
-  else
-    If mbIgnore in Buttons then
-      Result := mbIgnore
-  else
-  begin
-    for b := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do
-      if b in Buttons then
-        Result := b;
-  end;
+  for b in DefaultPriority do
+    if b in Buttons then
+      Exit(b);
+  for b in TMsgDlgBtn do
+    if b in Buttons then
+      Result := b;
 end;
 
 const
@@ -107,8 +80,7 @@ begin
   DefaultIndex := 0;
   ButtonCount := 0;
   Result := nil;
-  for CurBtn := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do
-  begin
+  for CurBtn in TMsgDlgBtn do
     if CurBtn in Buttons then
     begin
       ReallocMem(Result, (ButtonCount + 1) * SizeOf(Longint));
@@ -117,7 +89,6 @@ begin
         DefaultIndex := ButtonCount;
       Inc(ButtonCount)
     end;
-  end;
 end;
 
 function MessageDlg(const aMsg: string; DlgType: TMsgDlgType;
@@ -359,19 +330,18 @@ type
 
 procedure TDummyForInput.FOnClick(Sender: TObject);
 var
-  Cfm: boolean;
-  Str: array of string;
+  lCanClose: boolean = true;
+  lValues: array of string = nil;
   i: integer;
 begin
-  Cfm:= true;
   if Assigned(FOnCloseEvent) then
   begin
-    SetLength(Str, Length(FEditsPtr^));
-    for i:= 0 to Length(Str)-1 do
-      Str[i]:= FEditsPtr^[i].Text;
-    FOnCloseEvent(nil, Str, Cfm);
+    SetLength(lValues, Length(FEditsPtr^));
+    for i := 0 to High(lValues) do
+      lValues[i] := FEditsPtr^[i].Text;
+    FOnCloseEvent(Sender, lValues, lCanClose);
   end;
-  if Cfm then
+  if lCanClose then
     ModalResult:= mrOk;
 end;
 
