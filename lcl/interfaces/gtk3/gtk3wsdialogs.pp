@@ -1542,6 +1542,7 @@ class procedure TGtk3WSCommonDialog.ShowModal(const ACommonDialog: TCommonDialog
 var
   AGtkWindow: PGtkWidget;
   ATime: guint32;
+  ATransient: PGtkWindow;
 begin
   if not ACommonDialog.HandleAllocated then
     exit;
@@ -1552,7 +1553,11 @@ begin
   // ReleaseMouseCapture;
   // GtkWindow^.set_title(PChar(ACommonDialog.Title));
   PGtkDialog(AGtkWindow)^.set_position(GTK_WIN_POS_CENTER);
-  PGtkDialog(AGtkWindow)^.set_transient_for(Gtk3WidgetSet.Gtk3Application^.get_active_window);
+  // the transient parent must be mapped, some WMs crash otherwise, e.g. Cinnamon
+  ATransient := Gtk3WidgetSet.Gtk3Application^.get_active_window;
+  if (ATransient <> nil) and not ATransient^.get_mapped then
+    ATransient := GetActiveGtkWindow;
+  PGtkDialog(AGtkWindow)^.set_transient_for(ATransient);
   PGtkDialog(AGtkWindow)^.set_modal(True);
   PGtkDialog(AGtkWindow)^.set_type_hint(GDK_WINDOW_TYPE_HINT_DIALOG);
   PGtkDialog(AGtkWindow)^.show_all;
