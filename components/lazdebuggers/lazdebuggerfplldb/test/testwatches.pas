@@ -594,13 +594,13 @@ procedure TTestWatches.TestWatchesValue;
     t.Add(AName, p+'Byte'+e,       weCardinal(1+n,                    'Byte',     1));
     t.Add(AName, p+'Word'+e,       weCardinal(100+n,                  'Word',     2));
     t.Add(AName, p+'Longword'+e,   weCardinal(1000+n,                 'Longword', 4));
-    t.Add(AName, p+'QWord'+e,      weCardinal(10000+n,                'QWord',    5));
+    t.Add(AName, p+'QWord'+e,      weCardinal(10000+n,                'QWord',    8));
     t.Add(AName, p+'Shortint'+e,   weInteger (50+n,                   'Shortint', 1));
     t.Add(AName, p+'Smallint'+e,   weInteger (500+n,                  'Smallint', 2));
     t.Add(AName, p+'Longint'+e,    weInteger (5000+n,                 'Longint',  4));
     t.Add(AName, p+'Int64'+e,      weInteger (50000+n,                'Int64',    8));
-    t.Add(AName, p+'IntRange'+e,   weInteger (-50+n,                  'TIntRange',0));
-    t.Add(AName, p+'CardinalRange'+e, weInteger(50+n,                 'TCardinalRange',0));
+    t.Add(AName, p+'IntRange'+e,   weInteger (-50+n,                  'IntRange',0));
+    t.Add(AName, p+'CardinalRange'+e, weCardinal(50+n,                 'CardinalRange',0));
 
     t.Add(AName, p+'Byte_2'+e,     weCardinal(240+n,                  'Byte',     1));
     t.Add(AName, p+'Word_2'+e,     weCardinal(65501+n,                'Word',     2));
@@ -654,7 +654,7 @@ if not(ALoc in [tlConst]) then begin
 
 //TODO wePchar
     t.Add(AName, p+'PChar'+e,      wePointer(weAnsiStr(''), 'PChar'));
-    t.Add(AName, p+'PChar2'+e,     wePointer(weAnsiStr(AChr1+'abcd0123'), 'TPChr')).SkipIf(ALoc = tlConst);
+    t.Add(AName, p+'PChar2'+e,     wePointer(weAnsiStr(AChr1+'abcd0123', 'Char'), 'TPChr')).SkipIf(ALoc = tlConst);
 
     // char by index
     // TODO: no typename => calculated value ?
@@ -679,7 +679,7 @@ if not(ALoc in [tlConst]) then begin
 
 //TODO wePWidechar
     t.Add(AName, p+'PWideChar'+e,      wePointer(weWideStr(''), 'PWideChar'));
-    t.Add(AName, p+'PWideChar2'+e,     wePointer(weWideStr(AChr1+'abcX0123'), 'TPWChr')).SkipIf(ALoc = tlConst);
+    t.Add(AName, p+'PWideChar2'+e,     wePointer(weWideStr(AChr1+'abcX0123', 'WideChar'), 'TPWChr')).SkipIf(ALoc = tlConst);
 
 
     // TODO
@@ -788,7 +788,7 @@ begin
   t := nil;
 
   Src := GetCommonSourceFor('WatchesValuePrg.Pas');
-  TestCompile(Src, ExeName);
+  TestCompile(Src, ExeName, '', ' -dSINGLE_BIG_FUNC ');
 
   AssertTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
   dbg := Debugger.LazDebugger;
@@ -797,6 +797,7 @@ begin
     t := TWatchExpectationList.Create(Self);
     t.AcceptSkSimple := [skInteger, skCardinal, skBoolean, skChar, skFloat, skString, skAnsiString, skCurrency, skVariant, skWideString];
     t.AddTypeNameAlias('integer', 'integer|longint');
+    t.AddTypeNameAlias('Char', 'Char|AnsiChar');
     t.AddTypeNameAlias('ShortStr255', 'ShortStr255|ShortString');
     t.AddTypeNameAlias('TEnumSub', 'TEnum|TEnumSub');
 
