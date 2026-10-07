@@ -4508,10 +4508,13 @@ begin
     or (DevCtx.PaintRectangle.Bottom<>0) then
       lpRect^ := DevCtx.PaintRectangle
     else
-    begin
-      gdk_window_get_size(DevCtx.Drawable, @X, @Y);
-      lpRect^ := Rect(0,0,X,Y);
-    end;
+      if DevCtx.Drawable <> nil then
+      begin
+        X := 0;
+        Y := 0;
+        gdk_window_get_size(DevCtx.Drawable, @X, @Y);
+        lpRect^ := Rect(0,0,X,Y);
+      end;
     Result := SIMPLEREGION;
   end
   else
