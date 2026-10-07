@@ -424,6 +424,29 @@ var
   SplashDeadline: QWord;
   ASeat: PGdkSeat;
 
+  procedure UntransientChildren;
+  // a hidden window must not stay transient parent, some WMs crash, e.g. Cinnamon
+  var
+    Toplevels, Node: PGList;
+    ChildWin: PGtkWindow;
+  begin
+    Toplevels := gtk_window_list_toplevels;
+    Node := Toplevels;
+    while Node <> nil do
+    begin
+      ChildWin := PGtkWindow(Node^.data);
+      if (ChildWin <> AWindow) and (ChildWin^.get_transient_for = AWindow) then
+      begin
+        if Gtk3IsGdkWindow(AWindow^.window) then
+          gdk_window_remove_filter(AWindow^.window, TGdkFilterFunc(@ModalFilter),
+            Gtk3WidgetFromGtkWidget(PGtkWidget(ChildWin)));
+        ChildWin^.set_transient_for(nil);
+      end;
+      Node := Node^.next;
+    end;
+    g_list_free(Toplevels);
+  end;
+
   procedure CheckAndFixGeometry;
   const
     WaitDelay: gulong = 4000;
@@ -667,8 +690,11 @@ begin
       begin
         OtherForm:=Screen.CustomFormsZOrdered[i];
         // DebugLn('CustomFormZOrder[',dbgs(i),'].',dbgsName(OtherForm),' modal=',dbgs(fsModal in OtherForm.FormState));
+        // only visible non splash forms. A transient parent that is hidden
+        // later crashes some WMs, e.g. Cinnamon
         if (OtherForm <> AForm) and
-          OtherForm.HandleAllocated then
+          OtherForm.HandleAllocated and OtherForm.Visible and
+          (OtherForm.FormStyle <> fsSplash) then
         begin
           // DebugLn('TGtk3WSCustomForm.ShowHide setTransient for ',dbgsName(OtherForm));
           OtherGtk3Window:=TGtk3Window(OtherForm.Handle);
@@ -759,6 +785,9 @@ begin
     end;
   end else
   begin
+    if (not ShouldBeVisible) and (AWindow <> nil) and (AForm.Parent = nil)
+      and not IsFormDesign(AForm) then
+      UntransientChildren;
     if not IsFormDesign(AForm) and
       ((fsModal in AForm.FormState) or (AForm.BorderStyle = bsNone)) then
     begin
