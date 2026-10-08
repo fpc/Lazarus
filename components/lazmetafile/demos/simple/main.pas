@@ -14,13 +14,16 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
-    Button1: TButton;
+    btnSave: TButton;
     Button2: TButton;
     ComboBox1: TComboBox;
-    Label1: TLabel;
+    lblLogUnitsPerInchInfo: TLabel;
+    lblFileInfo: TLabel;
     PaintBox: TPaintBox;
     Panel1: TPanel;
-    procedure Button1Click(Sender: TObject);
+    rbWMF: TRadioButton;
+    rbEMF: TRadioButton;
+    procedure btnSaveClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -44,29 +47,32 @@ implementation
 procedure TMainForm.FormCreate(Sender: TObject);
 var
   LmfCanvas: TlmfCanvas;
-  P: array[0..5] of TPoint;
+  P: array of TPoint;
   P1, P2, C: TPoint;
   R: TRect;
   ts: TTextStyle;
   penPattern: TPenPattern = nil;
   bmp: TCustomBitmap;
   ico: TIcon;
+  i: Integer;
 begin
   Width := 610;
   Height := 410 + Panel1.Height;
 
   FLmfImg := TlmfImage.Create;
-  //FLmfImg.LogUnitsPerInch := Screen.PixelsPerInch * 10;  // Logical units are assumed to be 1/10 pixel
+//  FLmfImg.LogUnitsPerInch := Screen.PixelsPerInch * 10;  // Logical units are assumed to be 1/10 pixel
+  FLmfImg.LogUnitsPerInch := 2540;
   FLmfImg.Width := 600*10;
   FLmfImg.Height := 400*10;
   FLmfImg.OnChange := @ImageChanged;
+  //FLmfImg.MapMode := mmText; //Anisotropic;
 
   LmfCanvas := TlmfCanvas.Create(FLmfImg);
   try
     // Rectangle
     LmfCanvas.Brush.Color := clSkyBlue;
+    //LmfCanvas.Pen.Style := psClear;
     LmfCanvas.Rectangle(0, 0, FlmfImg.Width, FLmfImg.Height);
-//    LmfCanvas.Rectangle(0, 0, 1000, 1000);
 
     // Line
     LmfCanvas.Pen.Width := 1*10;
@@ -204,7 +210,7 @@ begin
     LmfCanvas.ArcTo(C.X-50*10, C.Y-30*10, C.X+50*10, C.Y+30*10, P1.X, P1.Y, P2.X, P2.Y);
     LmfCanvas.Pen.Width := 1*10;
     LmfCanvas.Frame(C.X-50*10, C.Y-30*10, C.X+50*10, C.Y+30*10);
-    LmfCanvas.Line(C, P2);
+    LmfCanvas.LineTo(C);
 
     // AngleArc
     C := Point(440*10, 280*10);
@@ -212,10 +218,11 @@ begin
     LmfCanvas.Pen.Width := 2*10;
     LmfCanvas.MoveTo(C.X, C.Y);
     LmfCanvas.AngleArc(C.X, C.Y, 50*10, 45.0, 90.0);
-    LmfCanvas.Pen.Width := 1;
+    LmfCanvas.Pen.Width := 0;
     LmfCanvas.Frame(C.X-50*10, C.Y-50*10, C.X+50*10, C.Y+50*10);
 
     // Polygon
+    SetLength(P, 6);
     P[0] := Point(400*10, 0);
     P[1] := Point(450*10, 70*10);
     P[2] := Point(380*10, 40*10);
@@ -224,7 +231,8 @@ begin
     P[5] := P[0];  // used only by PolyLine demo
     LmfCanvas.Brush.Style := bsSolid;
     LmfCanvas.Brush.Color := clMoneygreen;
-    Lmfcanvas.Pen.Color := clGreen;
+    LmfCanvas.Pen.Color := clGreen;
+    LmfCanvas.Pen.Width := 1*10;
     LmfCanvas.Polygon(P, false);
 //    LmfCanvas.Polygon(@P[0], 5, false);
     inc(P[0].Y, 75*10);
@@ -242,8 +250,38 @@ begin
     inc(P[5].Y, 75*10);
     LmfCanvas.PolyLine(@P[0], 6);
 
+    // PolyBezier (not supported by WMF)
+    SetLength(P, 13);
+    // Curve points
+    P[0] := Point(470*10, 150*10);
+    P[3] := Point(500*10, 120*10);
+    P[6] := Point(530*10, 150*10);
+    P[9] := Point(560*10, 180*10);
+    P[12] := Point(590*10, 150*10);
+    // Control points
+    P[1] := P[0] + Point(20*10, 0);
+    P[2] := P[3] + Point(-10*10, 0);
+    P[4] := P[3] + Point(10*10, 0);
+    P[5] := P[6] + Point(-20*10, 0);
+    P[7] := P[6] + Point(20*10, 0);
+    P[8] := P[9] + Point(-10*10, 0);
+    P[10] := P[9] + Point(10*10, 0);
+    P[11] := P[12] + Point(-20*10, 0);
+    LmfCanvas.Pen.Color := clRed;
+    LmfCanvas.Pen.Style := psSolid;
+    LmfCanvas.Pen.Width := 2*10;
+    LmfCanvas.PolyBezier(@P[0], 13);
+
+    // Filled Polybezier (not supported by WMF and EMF)
+    LmfCanvas.Pen.Width := 1*10;
+    LmfCanvas.Pen.Color := clBlack;
+    LmfCanvas.Brush.Color := clTeal;
+    for i:=0 to High(P) do
+      P[i] := P[i] + Point(0, 50*10);
+    LmfCanvas.PolyBezier(@P[0], 13, true);
+
     // GradientFill
-    // Incorrect wmf output (won't fix)
+    // Not supported by WMF (won't fix)
     R := Rect(270*10, 250*10, 350*10, 290*10);
     LmfCanvas.GradientFill(R, clRed, clYellow, gdVertical);
     LmfCanvas.Pen.Width := 1*10;
@@ -281,7 +319,7 @@ begin
     P[3] := Point(460*10, 365*10);
     LmfCanvas.Pen.Width := 3*10;
     LmfCanvas.PolyLine(@P[0], 4);
-    LmfCanvas.Brush.Color := clBlue;
+    LmfCanvas.Brush.Color := clRed;
     LmfCanvas.Brush.Style := bsDiagCross;
     LmfCanvas.FloodFill(400*10, 365*10, clWhite, fsSurface);
 
@@ -315,7 +353,7 @@ begin
     LmfCanvas.Font.Style := [];
     while LmfCanvas.Font.Orientation < 3600 do
     begin
-      LmfCanvas.TextOut(530*10, 80*10, 'abcdef');
+      LmfCanvas.TextOut(530*10, 60*10, 'abcdef');
       LmfCanvas.Font.Orientation := LmfCanvas.Font.Orientation + 45*10;
     end;
     LmfCanvas.Font.Orientation := 0;
@@ -323,6 +361,7 @@ begin
     // Pen styles
     //LmfCanvas.SetBkMode(OPAQUE);
     //LmfCanvas.SetBkColor(clRed);
+    //LmfCanvas.Pen.Cosmetic := false;
     LmfCanvas.Pen.Color := clGreen;
     LmfCanvas.Pen.Width := 1*10;
     LmfCanvas.Brush.Style := bsClear;  // Clear the gaps
@@ -337,24 +376,45 @@ begin
     LmfCanvas.Pen.Style := psDashDotDot;
     LmfCanvas.Line(10*10, 340*10, 110*10, 340*10);
     SetLength(PenPattern, 4);
-    penPattern[0] := 1;  // line
-    penPattern[1] := 1;  // space
-    penPattern[2] := 4;  // line
-    penPattern[3] := 4;  // space
-    LmfCanvas.Pen.Style := psPattern;     // Incorrect wmf output
+    // psPattern in EMF only working with Width = 1 and Cosmetic = true. Why?
+    Lmfcanvas.Pen.Width := 1;
+    if LmfCanvas.Pen.Cosmetic then
+    begin
+      // Cosmetic pen has pattern in device units
+      penPattern[0] := 1;  // line
+      penPattern[1] := 1;  // space
+      penPattern[2] := 4;  // line
+      penPattern[3] := 4;  // space
+    end else
+    begin
+      // Geometric pen has pattern in logical units
+      penPattern[0] := 1*10;
+      penPattern[1] := 1*10;
+      penPattern[2] := 4*10;
+      penPattern[3] := 4*10;
+    end;
     LmfCanvas.Pen.SetPattern(penPattern);
+    LmfCanvas.Pen.Style := psPattern;     // Incorrect wmf output
     LmfCanvas.Line(10*10, 345*10, 110*10, 345*10);
 
   finally
     LmfCanvas.Free;
   end;
 
-  Label1.Caption := IntToStr(FLmfImg.LogUnitsPerInch);
+  lblLogUnitsPerInchInfo.Caption := IntToStr(FLmfImg.LogUnitsPerInch);
 end;
 
-procedure TMainForm.Button1Click(Sender: TObject);
+procedure TMainForm.btnSaveClick(Sender: TObject);
+const
+  LMF_EXT: array[boolean] of string = ('wmf', 'emf');
+var
+  fn: String;
 begin
-  FLmfImg.SaveToLMFFile('test.wmf');
+  FLmfImg.Enhanced := rbEMF.Checked;
+  fn := Format('test.%s', [LMF_EXT[FLmfImg.Enhanced]]);
+  FLmfImg.SaveToLMFFile(fn);
+  lblFileInfo.Caption := Format('Saved to %s', [fn]);
+  lblFileInfo.Show;
 end;
 
 procedure TMainForm.Button2Click(Sender: TObject);
@@ -366,7 +426,7 @@ begin
     FLmfImg.LogUnitsPerInch := 2 * ppi
   else
     FLmfImg.LogUnitsPerInch := ppI;
-  Label1.Caption := IntToStr(FLmfImg.LogUnitsPerInch);
+  lblLogUnitsPerInchInfo.Caption := IntToStr(FLmfImg.LogUnitsPerInch);
 end;
 
 procedure TMainForm.ComboBox1Change(Sender: TObject);

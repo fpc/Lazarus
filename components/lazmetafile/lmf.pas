@@ -10,8 +10,9 @@ uses
   FPCanvas, FPImage, GraphMath, GraphType, IntfGraphics, Graphics, syncobjs;
 
 const
-  PTS_PER_INCH = 72;          // 1 pt = 1/72 inch
-  TWIPS_PER_INCH = 1440;      // 1 twip = 1/20 pt = 1/1440 inch
+  PTS_PER_INCH = 72;             // 1 pt = 1/72 inch
+  TWIPS_PER_INCH = 1440;         // 1 twip = 1/20 pt = 1/1440 inch
+  HUNDREDTHS_MM_PER_INCH = 2540; // 1 inch = 25.4 mm = 2540 * 0.01mm
 
 type
   // Exception types
@@ -25,8 +26,16 @@ type
 
   // abstract reader class
   TlmfReader = class
+  protected
+    FImage: TlmfImage;
+    FObjTable: TFPList;        // List with WMF/EMF objects (pen, brush, ...)
+    FErrMsg: TStrings;
+    procedure LogError(const AMsg: String);
+    procedure ReadRecords(AStream: TStream); virtual; abstract;
   public
-    procedure ReadFromStream(AStream: TStream; AImage: TlmfImage); virtual; abstract;
+    constructor Create;
+    destructor Destroy; override;
+    procedure ReadFromStream(AStream: TStream; AImage: TlmfImage); virtual;
   end;
 
   // abstract writer class
@@ -35,9 +44,11 @@ type
     procedure WriteToStream(AStream: TStream; AImage: TlmfImage); virtual; abstract;
   end;
 
-  TlmfMapMode = (mmLogUnitsPerInch,
+  TlmfMapMode = (
+    mmLogUnitsPerInch,  // this not Microsoft value!
     { 1..8 }mmText, mmLoMetric, mmHiMetric, mmLoEnglish, mmHiEnglish,
-    mmTwips, mmIsotropic, mmAnisotropic);
+    mmTwips, mmIsotropic, mmAnisotropic
+  );
 
 
   { TlmfImage }
@@ -46,20 +57,22 @@ type
   private
     fLogOrgX, fLogOrgY, fLogWidth, fLogHeight: integer;  // logical units used by metafile
     fDevOrgX, fDevOrgY, fDevWidth, fDevHeight: Integer;  // pixels on output device
+    fMMWidth, fMMHeight: Integer;                        // size in 0.01 mm
     kx, ky: double;
     fList: TlmfList;
     fCrs: TCriticalSection;
     fEnhanced: Boolean;
     fMapMode: TlmfMapMode;
-    fPixelsPerInch: Integer;
+    fDevPixelsPerInch: Integer;
     fYAxisDown: Boolean;
+    fBkMode: Integer;
   private
+    procedure SetDevPixelsPerInch(AValue: Integer);
     procedure SetLogOrgX(AValue: Integer);
     procedure SetLogOrgY(AValue: Integer);
     function GetLogUnitsPerInch: Integer;
     procedure SetLogUnitsPerInch(AValue: Integer);
     procedure SetMapMode(AValue: TlmfMapMode);
-    procedure SetPixelsPerInch(AValue: Integer);
   protected
     procedure AssignTo(Dest: TPersistent);override;
     function GetWidth: integer; override;
@@ -83,22 +96,27 @@ type
     function ScaleY(Y:Integer): Integer;
     procedure SetLogBounds(AOrgX, AOrgY, AWidth, AHeight: Integer);
 
-    procedure SaveToLMFFile(AFileName: String);
-    procedure SaveToLMFStream(Stream: TStream);
-    procedure SaveToStream(Stream: TStream); override;
     procedure LoadFromLMFFile(AFileName: String);
     procedure LoadFromLMFStream(AStream: TStream; IsEnhanced: Boolean);
     procedure LoadFromStream(Stream: TStream); override;
+    procedure SaveToLMFFile(AFileName: String);
+    procedure SaveToLMFStream(Stream: TStream);
+    procedure SaveToStream(Stream: TStream); override;
 
     property Enhanced: Boolean read FEnhanced write fEnhanced;  // Write WMF or EMF stream
     property List: TlmfList read fList;
 
+    property BkMode: Integer read FBkMode write FBkMode;
+    { PPI of the device where the LMF was created }
+    property DevPixelsPerInch: Integer read FDevPixelsPerInch write SetDevPixelsPerInch default 96;
     property LogOriginX: Integer read FLogOrgX write SetLogOrgX;
     property LogOriginY: Integer read FLogOrgY write SetLogOrgY;
     property LogUnitsPerInch: Integer read GetLogUnitsPerInch write SetLogUnitsPerInch;
     property MapMode: TlmfMapMode read FMapMode write SetMapMode default mmAnisotropic;
-    property PixelsPerInch: Integer read FPixelsPerInch write SetPixelsPerInch default 96;
     property YAxisDown: Boolean read FYAxisDown;
+
+    property DevWidth: Integer read FDevWidth write FDevHeight;
+    property DevHeight: Integer read FDevHeight write FDevHeight;
   end;
 
   TlmfList = class(TComponent)
@@ -120,6 +138,9 @@ type
     fClipRect: TRect;
     fState: TCanvasState;
     fImage: TlmfImage;
+  private
+    function GetCopyMode: TCopyMode;
+    procedure SetCopyMode(AValue: TCopyMode);
   protected
     procedure CreateFont;override;
     procedure CreateBrush;override;
@@ -158,8 +179,10 @@ type
     procedure Rectangle(X1,Y1,X2,Y2: Integer); override; overload; // already in fpcanvas
     procedure RoundRect(X1, Y1, X2, Y2, Rx, Ry: Integer); override; overload;
 
-    procedure Polyline(Points: PPoint; NumPts: Integer);override;
-    procedure Polygon(Points: PPoint; NumPts: Integer;  Winding: boolean = False); override; overload;
+    procedure PolyBezier(Points: PPoint; NumPts: Integer; Filled: Boolean = false;
+      Continuous: Boolean = true); override;
+    procedure PolyLine(Points: PPoint; NumPts: Integer); override;
+    procedure Polygon(Points: PPoint; NumPts: Integer; Winding: boolean = False); override; overload;
 
     procedure FloodFill(x, y: Integer; AFillColor: TColor; AFillStyle: TFillStyle); override;
     procedure GradientFill(const ARect: TRect; AStartColor, AEndColor: TColor; ADirection: TGradientDirection);
@@ -170,6 +193,7 @@ type
 
     procedure Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); override; overload;
     procedure Arc(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer); override; overload;
+    procedure ArcTo(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); override; overload;
     procedure Chord(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); override; overload;
     procedure Chord(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer); override; overload;
     procedure Pie(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); override;
@@ -177,13 +201,15 @@ type
 
     procedure SetBkColor(AColor: TColor);
     procedure SetBkMode(AMode: Word);  // 1 = TRANSPARENT, 2 = OPAQUE
+
+    property CopyMode: TCopyMode read GetCopyMode write SetCopyMode;
   end;
 
 
 implementation
 
 uses
-  lmfObj, lmfWMFWrite, lmfWMFRead;
+  lmfObj, lmfWMFWrite, lmfWMFRead, lmfEMFWrite, lmfEMFRead;
 
 function Sign(x: Integer): Integer;
 begin
@@ -199,6 +225,42 @@ begin
 end;
 
 
+{ TlmfReader }
+
+constructor TlmfReader.Create;
+begin
+  inherited Create;
+  FErrMsg := TStringList.Create;
+  FObjTable := TFPList.Create;
+end;
+
+destructor TlmfReader.Destroy;
+begin
+  FObjTable.Free;
+  FErrMsg.Free;
+  inherited Destroy;
+end;
+
+procedure TlmfReader.LogError(const AMsg: String);
+begin
+  FErrMsg.Add(AMsg);
+end;
+
+procedure TlmfReader.ReadFromStream(AStream: TStream; AImage: TlmfImage);
+begin
+  FImage := AImage;
+  FImage.MapMode := mmAnisotropic;
+
+  FObjTable.Clear;
+  FErrMsg.Clear;
+
+  ReadRecords(AStream);
+
+  if FErrMsg.Count > 0 then
+    raise ElmfReader.Create(FErrMsg.Text);
+end;
+
+
 { TlmfImage }
 
 constructor TlmfImage.Create;
@@ -206,7 +268,7 @@ begin
   inherited Create;
   fCrs := syncobjs.TCriticalSection.Create;
   fList := TlmfList.Create(nil);
-  fPixelsPerInch := 96;
+  fDevPixelsPerInch := ScreenInfo.PixelsPerInchX;
 end;
 
 destructor TlmfImage.Destroy;
@@ -269,10 +331,10 @@ begin
   Self.Modified := true;
 end;
 
-procedure TlmfImage.SetPixelsPerInch(AValue: Integer);
+procedure TlmfImage.SetDevPixelsPerInch(AValue: Integer);
 begin
-  if fPixelsPerInch = AValue then exit;
-  fPixelsPerInch := AValue;
+  if fDevPixelsPerInch = AValue then exit;
+  fDevPixelsPerInch := AValue;
   Self.Modified := true;
 end;
 
@@ -394,7 +456,7 @@ begin
       // Each logical unit is mapped to 0.001 inch.
       // Positive x is to the right; positive y is up.
       begin
-        kx := PixelsPerInch / 1000.0;
+        kx := fDevPixelsPerInch / 1000.0;
         ky := -Sign(fLogHeight) * kx;
         fDevOrgY := Rect.Bottom;
       end;
@@ -402,7 +464,7 @@ begin
       // Each logical unit is mapped to 0.01 millimeter.
       // Positive x is to the right; positive y is up.
       begin
-        kx := PixelsPerInch / 2540.0;
+        kx := fDevPixelsPerInch / 2540.0;
         ky := -Sign(fLogHeight) * kx;
         fDevOrgY := Rect.Bottom;
       end;
@@ -410,7 +472,7 @@ begin
       // Each logical unit is mapped to 0.01 inch.
       // Positive x is to the right; positive y is up.
       begin
-        kx := PixelsPerInch / 100.0;
+        kx := fDevPixelsPerInch / 100.0;
         ky := -Sign(fLogHeight) * kx;
         fDevOrgY := Rect.Bottom;
       end;
@@ -418,7 +480,7 @@ begin
       // Each logical unit is mapped to 0.1 millimeter.
       // Positive x is to the right; positive y is up.
       begin
-        kx := PixelsPerInch / 254.0;
+        kx := fDevPixelsPerInch / 254.0;
         ky := -Sign(fLogHeight) * kx;
         fDevOrgY := Rect.Bottom;
       end;
@@ -435,7 +497,7 @@ begin
       // (1/1440 inch, also called a twip).
       // Positive x is to the right; positive y is up.
       begin
-        kx := PixelsPerInch / 1440;
+        kx := fDevPixelsPerInch / 1440;
         ky := -Sign(fLogHeight) * kx;
         fDevOrgY := Rect.Bottom;
       end;
@@ -444,7 +506,7 @@ begin
       // Each logical units is mapped to the size of the LogUnitsPerInch
       // specification. Positive y is down unless when fLogHeight is negative
       begin
-        kx := PixelsPerInch / LogUnitsPerInch;
+        kx := fDevPixelsPerInch / LogUnitsPerInch;
         ky := Sign(fLogHeight) * kx;
         fDevOrgY := Rect.Top;
       end;
@@ -463,7 +525,6 @@ procedure TlmfImage.Draw(ACanvas: TCanvas; const Rect: TRect);
 var
   i:integer;
   item: TlmfObject;
-  bkMode: Word;
 begin
   fCrs.Acquire;
   try
@@ -474,12 +535,9 @@ begin
     begin
       item := TlmfObject(fList.Components[i]);
       // It seems that SetBkMode must be executed immediately before a command,
-      // which depends on it (text, patterned line), is executed.
+      // which depends on it (text, patterned line, filling commands), is executed.
       if (item is TlmfBkMode) then
-        bkMode := TlmfBkMode(item).Mode
-      else
-      if (item is TlmfLine) or (item is TlmfLineTo) or (item is TlmfText) then
-        SetBkMode(ACanvas.Handle, bkMode);
+        FBkMode := TlmfBkMode(item).Mode;
       item.Action(Self, ACanvas);
     end;
   finally
@@ -521,7 +579,7 @@ var
   writer: TlmfWriter;
 begin
   if FEnhanced then
-    //writer := TEMFWriter.Create  // to be completed...
+    writer := TEMFWriter.Create
   else
     writer := TWMFWriter.Create;
   try
@@ -534,11 +592,12 @@ end;
 procedure TlmfImage.LoadFromLMFFile(AFileName: String);
 var
   stream: TFileStream;
-  isWMF: Boolean;
+  isEMF: Boolean;
 begin
   stream := TFileStream.Create(AFileName, fmOpenRead or fmShareDenyWrite);
   try
-    LoadFromLMFStream(stream, false);
+    isEMF := Lowercase(ExtractFileExt(AFilename)) = '.emf';
+    LoadFromLMFStream(stream, isEMF);
   finally
     stream.Free;
   end;
@@ -549,7 +608,7 @@ var
   reader: TlmfReader;
 begin
   if IsEnhanced then
-    //reader := TEMFReader.Create  // to be completed...
+    reader := TlmfEMFReader.Create
   else
     reader := TlmfWMFReader.Create;
   try
@@ -770,6 +829,20 @@ begin
   Result.red:=0;
   Result.green:=0;
   Result.blue:=0;
+end;
+
+procedure TlmfCanvas.SetCopyMode(AValue: TCopyMode);
+var
+  item: TlmfObject;
+begin
+  item := TlmfCopyMode.Create(AValue);
+  fImage.fList.InsertComponent(item);
+  inherited CopyMode := AValue;
+end;
+
+function TlmfCanvas.GetCopyMode: TCopyMode;
+begin
+  Result := inherited CopyMode;
 end;
 
 procedure TlmfCanvas.SetClipRect(const AValue: TRect);
@@ -1007,6 +1080,23 @@ begin
   h:=sz.cy;
 end;
 
+procedure TlmfCanvas.PolyBezier(Points: PPoint; NumPts: Integer;
+  Filled: Boolean = false; Continuous: Boolean = true);
+var
+  item: TlmfPolyBezier;
+begin
+  Changing;
+  if Filled then
+    RequiredState([csHandleValid, csPenValid, csBrushValid])
+  else
+    RequiredState([csHandleValid, csPenValid]);
+  item := TlmfPolyBezier.Create(Points, NumPts);
+  item.Clip := Self.ClipRect;
+  item.Filled := Filled;
+  fImage.fList.InsertComponent(item);
+  Changed;
+end;
+
 procedure TlmfCanvas.Polyline(Points: PPoint; NumPts: Integer);
 var
   item:TlmfPolyLine;
@@ -1060,6 +1150,15 @@ begin
     SX, SY, EX, EY
   );
   Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY);
+end;
+
+procedure TlmfCanvas.ArcTo(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer);
+var
+  item: TlmfObject;
+begin
+  RequiredState([csPenValid]);
+  item := TlmfArcTo.Create(Rect(ALeft, ATop, ARight, ABottom), Point(SX, SY), Point(EX, EY));
+  fImage.fList.InsertComponent(item);
 end;
 
 procedure TlmfCanvas.Chord(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer);

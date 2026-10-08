@@ -7,8 +7,8 @@ unit lmfObj;
 interface
 
 uses
-  Classes, SysUtils, Types, Math,
-  FPImage, Graphics, //GraphMath,
+  Classes, SysUtils, Types, Math, Contnrs,
+  FPImage, Graphics, GraphMath,
   LCLType, LCLIntf, LConvEncoding,
   lmf, lmfWMF;
 
@@ -193,9 +193,39 @@ type
     constructor Create(ARect: TRect; AStartColor, AEndColor: TColor; ADirection: TGradientDirection); overload;
     procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
   published
+    property Direction: TGradientDirection read fDirection write fDirection;
     property StartColor: TColor read fStartColor write fStartColor;
     property EndColor: TColor read fEndColor write fEndColor;
-    property Direction: TGradientDirection read fDirection write fDirection;
+  end;
+
+  TlmfTriVertexArray = array of TTriVertex;
+  TlmfGradientRectArray = array of TGradientRect;
+  TlmfGradientTriangleArray = array of TGradientTriangle;
+  TlmfIndexArray = array of array[0..2] of Integer;
+
+  TlmfMultiGradientFill = class(TlmfObject)
+  private
+    fVertices: TlmfTriVertexArray;
+    fRectangles: TlmfGradientRectArray;
+    fTriangles: TlmfGradientTriangleArray;
+    fDirection: Integer;
+  protected
+    procedure DefineProperties(AFiler: TFiler); override;
+    procedure LoadRectangles(AStream: TStream); virtual;
+    procedure LoadTriangles(AStream: TStream); virtual;
+    procedure LoadVertices(AStream: TStream); virtual;
+    procedure StoreRectangles(AStream: TStream); virtual;
+    procedure StoreTriangles(AStream: TStream); virtual;
+    procedure StoreVertices(AStream: TStream); virtual;
+  public
+    constructor Create(AFirstVertex: PTriVertex; ANumVertices: Integer;
+      AFirstRect: PGradientRect; ANumRects: Integer; ADirection: Integer); overload;
+    constructor Create(AFirstVertex: PTriVertex; ANumVertices: Integer;
+      AFirstTriangle: PGradientTriangle; ANumTriangles: Integer); overload;
+    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    property Vertices: TlmfTriVertexArray read FVertices write FVertices;
+    property Rectangles: TlmfGradientRectArray read fRectangles write fRectangles;
+    property Triangles: TlmfGradientTriangleArray read fTriangles write fTriangles;
   end;
 
   TlmfEllipse = class(TlmfClip)
@@ -215,6 +245,11 @@ type
     property StartPtY: Integer read fStartPt.Y write fStartPt.Y;
     property EndPtX: Integer read fEndPt.X write fEndPt.X;
     property EndPtY: Integer read fEndPt.Y write fEndPt.Y;
+  end;
+
+  TlmfArcTo = class(TlmfArc)
+  public
+    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
   end;
 
   TlmfChord = class(TlmfArc)
@@ -258,11 +293,31 @@ type
   private
     fPen: TPen;
   public
-    constructor Create(AnOwner:TComponent); override;
+    constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
     procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
   published
     property Pen: TPen read fPen write fPen;
+  end;
+
+  TlmfPenMode = class(TlmfObject)
+  private
+    fMode: TPenMode;
+  public
+    constructor Create(AMode: TPenMode); overload;
+    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+  published
+    property PenMode: TPenMode read fMode write fMode;
+  end;
+
+  TlmfCopyMode = class(tlmfObject)
+  private
+    fMode: TCopyMode;
+  public
+    constructor Create(AMode: TCopyMode); overload;
+    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+  published
+    property CopyMode: TCopyMode read fMode write fMode;
   end;
 
   TlmfSelectObject = class(TlmfObject)
@@ -277,41 +332,130 @@ type
   private
     fPicture: TPicture;
     fPixelsPerInch: Integer;
+    fTransparentColor: TColor;
+    fSrcRect: TRect;
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas);override;
-    property PixelsPerInch: Integer read FPixelsPerInch write FPixelsPerInch;
+    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    property PixelsPerInch: Integer read fPixelsPerInch write fPixelsPerInch;
+    property SrcRect: TRect read fSrcRect write fSrcRect;
   published
     property Picture: TPicture read fPicture write fPicture;
+    property SrcLeft: Integer read fSrcRect.Left write fSrcRect.Left;
+    property SrcTop: Integer read fSrcRect.Top write fSrcRect.Top;
+    property SrcRight: Integer read fSrcRect.Right write fSrcRect.Right;
+    property SrcBottom: Integer read fSrcRect.Bottom write fSrcRect.Bottom;
+    property TransparentColor: TColor read fTransparentColor write fTransparentColor;
   end;
 
-  TlmfPolyline=class(TlmfRect)
+  TlmfBasicPolyLine = class(TlmfRect)
   private
-    pts: TPointArray;
+    FPoints: TPointArray;
+    FStartsAtPenPos: Boolean;
   protected
-    procedure StorePoints(AStream:TStream);virtual;
-    procedure LoadPoints(AStream:TStream);virtual;
-    procedure DefineProperties(Afiler:TFiler);override;
+    procedure StorePoints(AStream: TStream);virtual;
+    procedure LoadPoints(AStream: TStream);virtual;
+    procedure DefineProperties(AFiler: TFiler);override;
+    property StartsAtPenPos: Boolean read FStartsAtPenPos write FStartsAtPenPos;
   public
-    constructor Create(APoints:PPoint; NumPts:integer); overload;
-    destructor Destroy;override;
-    procedure Action(fImage:TlmfImage; ACanvas:TCanvas); override;
-    property Points: TPointArray read pts write pts;
+    constructor Create(APoints: PPoint; NumPts: integer); overload;
+    destructor Destroy; override;
+    property Points: TPointArray read FPoints write FPoints;
   end;
 
-  TlmfPolygon=class(TlmfPolyline)
+  TlmfPolyline = class(TlmfBasicPolyLine)
+  public
+    procedure Action(fImage:TlmfImage; ACanvas:TCanvas); override;
+  published
+    property StartsAtPenPos;
+  end;
+
+  TlmfPolyBezier = class(TlmfPolyLine)
+  private
+    fFilled: Boolean;
+  public
+    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+  published
+    property StartsAtPenPos;
+    property Filled: Boolean read fFilled write fFilled;
+  end;
+
+  TlmfPolygon = class(TlmfBasicPolyline)
   private
     fWinding: boolean;
-    fBorderPts: Integer;
+    fBorderPoints: Integer;
   public
     constructor Create(APoints: PPoint; ANumPts: integer; AWinding: boolean = false;
       ABorderPts: Integer = -1); overload;
     procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
   published
-    property Winding:boolean read fWinding write fWinding;
+    property BorderPoints: Integer read fBorderPoints write fBorderPoints;
+    property Winding: boolean read fWinding write fWinding;
   end;
 
+  TlmfPathItem = class
+  end;
+
+  TlmfPathPoint = class(TlmfPathItem)
+  private
+    FPt: TPoint;
+  public
+    constructor Create(APt: TPoint);
+    property Pt: TPoint read FPt;
+  end;
+
+  TlmfPathPoints = class(TlmfPathPoint)
+  private
+    FPoints: TPointArray;
+  public
+    constructor Create(APoints: PPoint; ANumPts: Integer);
+    property Points: TPointArray read FPoints;
+  end;
+
+  TlmfPathMoveTo = class(TlmfPathPoint);
+  TlmfPathLineTo = class(TlmfPathPoint);
+  TlmfPathPolyBezier = class(TlmfPathPoints);
+  TlmfPathPolyBezierTo = class(TlmfPathPoints);
+  TlmfPathPolyLine = class(TlmfPathPoints);
+  TlmfPathPolyLineTo = class(TlmfPathPoints);
+  TlmfPathPolygon = class(TlmfPathPoints);
+  TlmfPathEnd = class(TlmfPathItem);
+  TlmfPathClose = class(TlmfPathItem);
+
+  TlmfFillStrokeMode = (fsmFill, fsmStroke, fsmFillStroke);
+
+  TlmfPath = class(TlmfClip)
+  private
+    FList: TFPObjectList;
+    FFillStrokeMode: TlmfFillStrokeMode;
+    FStartPt: Integer;
+    FPolyFillMode: Integer;
+  public
+    constructor Create(AClip: TRect); override;
+    destructor Destroy; override;
+    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure AddMoveTo(APt: TPoint);
+    procedure AddLineTo(APt: TPoint);
+    procedure AddPolyBezier(APoints: PPoint; ANumPts: Integer);
+    procedure AddPolyBezierTo(APoints: PPoint; ANumPts: Integer);
+    procedure AddPolyLine(APoints: PPoint; ANumPts: Integer);
+    procedure AddPolyLineTo(APoints: PPoint; ANumPts: Integer);
+    procedure AddPolygon(APoints: PPoint; ANumPts: Integer);
+    procedure AbortPath;
+    procedure BeginPath;
+    procedure ClosePath;
+    procedure EndPath;
+    procedure FlattenPath;
+    procedure WidenPath;
+
+    procedure FillPath;
+    procedure StrokeAndFillPath;
+    procedure StrokePath;
+  published
+    property FillStrokeMode: TlmfFillStrokeMode read FFillStrokeMode write FFillStrokeMode;
+    property PolyFillMode: Integer read FPolyFillMode write FPolyFillMode;
+  end;
 
 implementation
 
@@ -382,6 +526,7 @@ end;
 
 procedure TlmfLine.Action(fImage: TlmfImage; ACanvas: TCanvas);
 begin
+  SetBkMode(ACanvas.Handle, fImage.BkMode);
   ACanvas.Line(
     fImage.ScaleX(fPos.X),
     fImage.ScaleY(fPos.Y),
@@ -423,6 +568,7 @@ begin
     ACanvas.TextOut(fImage.ScaleX(fPos.X),fImage.ScaleY(fPos.Y),fText);
   end;
 }
+  SetBkMode(ACanvas.Handle, fImage.BkMode);
   ACanvas.TextOut(fImage.ScaleX(fPos.X), fImage.ScaleY(fPos.Y),fText);
 end;
 
@@ -440,17 +586,23 @@ end;
 procedure TlmfTextInRect.Action(fImage: TlmfImage; ACanvas: TCanvas);
 var
   R: TRect;
+  P: TPoint;
 begin
-  R := Rect(
-    fImage.ScaleX(fRect.Left),
-    fImage.ScaleY(fRect.Top),
-    fImage.ScaleX(fRect.Right),
-    fImage.ScaleY(fRect.bottom)
-  );
-  if fImage.YAxisDown then
-    ACanvas.TextRect(R, R.Left, R.Top, fText, fStyle)
+  SetBkMode(ACanvas.Handle, fImage.BkMode);
+  P := Point(fImage.ScaleX(px), fImage.ScaleY(py));
+  if fRect = Rect(0, 0, -1, -1) then
+    R := Rect(P.X, P.Y, P.X, P.Y)
   else
-    ACanvas.TextRect(R, R.Left, R.Bottom, fText, fStyle);
+    R := Rect(
+      fImage.ScaleX(fRect.Left),
+      fImage.ScaleY(fRect.Top),
+      fImage.ScaleX(fRect.Right),
+      fImage.ScaleY(fRect.Bottom)
+    );
+//  if fImage.YAxisDown then
+//    ACanvas.TextRect(R, px, py, fText, fStyle)
+//  else
+  ACanvas.TextRect(R, P.X, P.Y, fText, fStyle);
 end;
 
 procedure TlmfTextInRect.DefineProperties(Filer: TFiler);
@@ -601,6 +753,7 @@ end;
 
 procedure TlmfRect.Action(fImage:TlmfImage; ACanvas:TCanvas);
 begin
+  SetBkMode(ACanvas.Handle, fImage.BkMode);
   ACanvas.Rectangle(
     fImage.ScaleX(fClip.Left),
     fImage.ScaleY(fClip.Top),
@@ -621,6 +774,7 @@ end;
 
 procedure TlmfRoundRect.Action(fImage: TlmfImage; ACanvas: TCanvas);
 begin
+  SetBkMode(ACanvas.Handle, fImage.BkMode);
   ACanvas.RoundRect(
     fImage.ScaleX(fClip.Left),
     fImage.ScaleY(fClip.Top),
@@ -654,78 +808,157 @@ constructor TlmfGradientFill.Create(ARect: TRect; AStartColor, AEndColor: TColor
   ADirection: TGradientDirection);
 begin
   inherited Create(ARect);
-  fStartColor := ColorToRGB(AStartColor);
-  fEndColor := ColorToRGB(AEndColor);
+  fStartColor := AStartColor;
+  fEndColor := AEndColor;
   fDirection := ADirection;
 end;
 
 procedure TlmfGradientFill.Action(fImage: TlmfImage; ACanvas: TCanvas);
-
-  function InterpolateColor(C1, C2: TColor; x, Total: Integer): TColor;
-  var
-    f1, f2: Double;
-  begin
-    f2 := x / Total;
-    f1 := 1.0 - f2;
-    TRgbQuad(Result).rgbRed := round(TRgbQuad(C1).rgbRed * f1 + TRgbQuad(C2).rgbRed * f2);
-    TRgbQuad(Result).rgbGreen := round(TRgbQuad(C1).rgbGreen * f1 + TRgbQuad(C2).rgbGreen * f2);
-    TRgbQuad(Result).rgbBlue := round(TRgbQuad(C1).rgbBlue * f1 + TRgbQuad(C2).rgbBlue * f2);
-    TRgbQuad(Result).rgbReserved := round(TRgbQuad(C1).rgbReserved * f1 + TRgbQuad(C2).rgbReserved * f2);
-  end;
-
 var
-  x, y, i, n: Integer;
-  xL, xR, yT, yB: Integer;
-  oldPenStyle: TPenStyle;
-  oldPenWidth: Integer;
-  oldPenColor: TColor;
+  R: TRect;
 begin
-  oldPenStyle := ACanvas.Pen.Style;
-  oldPenWidth := ACanvas.Pen.Width;
-  oldPenColor := ACanvas.Pen.Color;
-  ACanvas.Pen.Style := psSolid;
-  ACanvas.Pen.Width := 1;
+  R.Left := fImage.ScaleX(Left);
+  R.Top := fImage.ScaleY(Top);
+  R.Right := fImage.ScaleX(Right);
+  R.Bottom := fImage.ScaleY(Bottom);
+  ACanvas.GradientFill(R, ColorToRGB(fStartColor), ColorToRGB(fEndColor), fDirection);
+end;
 
-  xL := fImage.ScaleX(Left);
-  xR := fImage.ScaleX(Right);
-  if fImage.YAxisDown then
+
+{ TlmfMultiGradientFill }
+
+constructor TlmfMultiGradientFill.Create(AFirstVertex: PTriVertex; ANumVertices: Integer;
+  AFirstRect: PGradientRect; ANumRects: Integer; ADirection: Integer);
+var
+  i: Integer;
+begin
+  inherited Create(nil);
+  if not (fDirection in [GRADIENT_FILL_RECT_H, GRADIENT_FILL_RECT_V]) then
+    raise ElmfReader.CreateFmt('Gradient direction mode %d not supported.', [ADirection]);
+
+  fDirection := ADirection;
+  SetLength(fVertices, ANumVertices);
+  Move(AFirstVertex^, fVertices[0], SizeOf(TTriVertex) * ANumVertices);
+
+  SetLength(fRectangles, ANumRects);
+  Move(AFirstRect^, fRectangles[0], SizeOf(TGradientRect) * ANumRects);
+end;
+
+constructor TlmfMultiGradientFill.Create(AFirstVertex: PTriVertex; ANumVertices: Integer;
+  AFirstTriangle: PGradientTriangle; ANumTriangles: Integer);
+begin
+  inherited Create(nil);
+
+  fDirection := GRADIENT_FILL_TRIANGLE;
+  SetLength(fVertices, ANumVertices);
+  Move(AFirstVertex^, fVertices[0], SizeOf(TTriVertex) * ANumVertices);
+
+  SetLength(fTriangles, ANumTriangles);
+  Move(AFirstTriangle^, fTriangles[0], SizeOf(TGradientTriangle) * ANumTriangles);
+end;
+
+procedure TlmfMultiGradientFill.Action(fImage: TlmfImage; ACanvas: TCanvas);
+var
+  scaledVertices: array of TTriVertex;
+  i: Integer;
+begin
+  SetLength(scaledVertices, Length(fVertices));
+  for i := 0 to High(fVertices) do
   begin
-    yT := fImage.ScaleY(Top);
-    yB := fImage.ScaleY(Bottom);
-  end else
-  begin
-    yT := fImage.ScaleY(Bottom);
-    yB := fImage.ScaleY(Top);
-  end;
-  if fDirection = gdVertical then
-  begin
-    n := yB - yT;
-    if n = 0 then
-      exit;
-    i := 0;
-    for y := yT to yB - 1 do
-    begin
-      ACanvas.Pen.Color := InterpolateColor(fStartColor, fEndColor, i, n);
-      ACanvas.Line(xL, y, xR - 1, y);
-      inc(i);
-    end;
-  end else
-  begin
-    n := xR - xL;
-    if n = 0 then
-      exit;
-    i := 0;
-    for x := xL to xR - 1 do
-    begin
-      ACanvas.Pen.Color := InterpolateColor(fStartColor, fEndColor, i, n);
-      ACanvas.Line(x, yT, x, yB - 1);
-      inc(i);
-    end;
+    scaledVertices[i] := fVertices[i];
+    scaledVertices[i].X := fImage.ScaleX(fVertices[i].X);
+    scaledvertices[i].Y := fImage.ScaleY(fVertices[i].Y);
   end;
 
-  ACanvas.Pen.Style := oldPenStyle;
-  ACanvas.Pen.Width := oldPenWidth;
-  ACanvas.Pen.Color := oldPenColor;
+  case fDirection of
+    GRADIENT_FILL_RECT_H, GRADIENT_FILL_RECT_V:
+      GradientFill(ACanvas.Handle,
+        @scaledVertices[0], Length(scaledVertices),
+        @fRectangles[0], Length(fRectangles),
+        fDirection);
+    GRADIENT_FILL_TRIANGLE:
+      GradientFill(ACanvas.Handle,
+        @scaledVertices[0], Length(scaledVertices),
+        @fTriangles[0], Length(fTriangles),
+        fDirection);
+  end;
+end;
+
+procedure TlmfMultiGradientFill.DefineProperties(AFiler: TFiler);
+begin
+  inherited DefineProperties(AFiler);
+  AFiler.DefineBinaryProperty('Vertices', @LoadVertices, @StoreVertices, Length(fVertices) > 0);
+  AFiler.DefineBinaryProperty('Rectangles', @LoadRectangles, @StoreRectangles, Length(fRectangles) > 0);
+  AFiler.DefineBinaryProperty('Triangles', @LoadTriangles, @StoreTriangles, Length(fTriangles) > 0);
+end;
+
+procedure TlmfMultiGradientFill.LoadRectangles(AStream: TStream);
+var
+  len: longint = 0;
+begin
+  Setlength(fRectangles, 0);
+  if AStream.Read(len, SizeOf(len)) = SizeOf(len) then
+    if len > 0 then
+    begin
+      SetLength(fRectangles, len);
+      AStream.Read(fRectangles[0], len*SizeOf(fRectangles[0]));
+    end;
+end;
+
+procedure TlmfMultiGradientFill.LoadTriangles(AStream: TStream);
+var
+  len: longint = 0;
+begin
+  Setlength(fTriangles, 0);
+  if AStream.Read(len, SizeOf(len)) = SizeOf(len) then
+    if len > 0 then
+    begin
+      SetLength(fTriangles, len);
+      AStream.Read(fTriangles[0], len*SizeOf(fTriangles[0]));
+    end;
+end;
+
+procedure TlmfMultiGradientFill.LoadVertices(AStream: TStream);
+var
+  len: longint = 0;
+begin
+  Setlength(fVertices, 0);
+  if AStream.Read(len, SizeOf(len)) = SizeOf(len) then
+    if len > 0 then
+    begin
+      SetLength(fVertices, len);
+      AStream.Read(fVertices[0], len*SizeOf(fVertices[0]));
+    end;
+end;
+
+procedure TlmfMultiGradientFill.StoreRectangles(AStream: TStream);
+var
+  len: longint;
+begin
+  len := Length(fRectangles);
+  AStream.Write(len, sizeof(len));
+  if len > 0 then
+    AStream.Write(fRectangles[0], len*SizeOf(fRectangles[0]));
+end;
+
+procedure TlmfMultiGradientFill.StoreTriangles(AStream: TStream);
+var
+  len: longint;
+begin
+  len := Length(fTriangles);
+  AStream.Write(len, sizeof(len));
+  if len > 0 then
+    AStream.Write(fTriangles[0], len*SizeOf(fTriangles[0]));
+end;
+
+procedure TlmfMultiGradientFill.StoreVertices(AStream: TStream);
+var
+  len: longint;
+begin
+  len := Length(fVertices);
+  AStream.Write(len, sizeof(len));
+  if len > 0 then
+    AStream.Write(fVertices[0], len*SizeOf(fVertices[0]));
 end;
 
 
@@ -733,6 +966,7 @@ end;
 
 procedure TlmfEllipse.Action(fImage:TlmfImage;ACanvas:TCanvas);
 begin
+  SetBkMode(ACanvas.Handle, fImage.BkMode);
   ACanvas.Ellipse(
     fImage.ScaleX(fClip.Left),
     fImage.ScaleY(fClip.Top),
@@ -771,6 +1005,31 @@ begin
 end;
 
 
+{ TlmfArcTo }
+
+procedure TlmfArcTo.Action(fImage: TlmfImage; ACanvas: TCanvas);
+var
+  ptStart, ptEnd: TPoint;
+begin
+  ptStart := ACanvas.PenPos;
+  if fImage.YAxisDown then begin
+    ptStart := Point(fImage.ScaleX(fStartPt.X), fImage.ScaleY(fStartPt.Y));
+    ptEnd := Point(fImage.ScaleX(fEndPt.X), fImage.ScaleY(fEndPt.Y));
+  end else
+  begin
+    ptStart := Point(fImage.ScaleX(fEndPt.X), fImage.ScaleY(fEndPt.Y));
+    ptEnd := Point(fImage.ScaleX(fStartPt.X), fImage.ScaleY(fStartPt.Y));
+  end;
+  ACanvas.ArcTo(
+    fImage.ScaleX(fClip.Left), fImage.ScaleY(fClip.Top), fImage.ScaleX(fClip.Right), fImage.ScaleY(fClip.Bottom),
+    ptStart.X, ptStart.Y,
+    ptEnd.X, ptEnd.Y
+  );
+
+  ptEnd := ACanvas.PenPos;
+end;
+
+
 { TlmfChord }
 
 procedure TlmfChord.Action(fImage: TlmfImage; ACanvas: TCanvas);
@@ -786,6 +1045,7 @@ begin
     ptEnd := Point(fImage.ScaleX(fStartPt.X), fImage.ScaleY(fStartPt.Y));
   end;
 
+  SetBkMode(ACanvas.Handle, fImage.BkMode);
   ACanvas.Chord(
     fImage.ScaleX(fClip.Left), fImage.ScaleY(fClip.Top), fImage.ScaleX(fClip.Right), fImage.ScaleY(fClip.Bottom),
     ptStart.X, ptStart.Y,
@@ -808,6 +1068,8 @@ begin
     ptStart := Point(fImage.ScaleX(fEndPt.X), fImage.ScaleY(fEndPt.Y));
     ptEnd := Point(fImage.ScaleX(fStartPt.X), fImage.ScaleY(fStartPt.Y));
   end;
+
+  SetBkMode(ACanvas.Handle, fImage.BkMode);
   ACanvas.Pie(
     fImage.ScaleX(fClip.Left), fImage.ScaleY(fClip.Top), fImage.ScaleX(fClip.Right), fImage.ScaleY(fClip.Bottom),
     ptStart.X, ptStart.Y,
@@ -892,6 +1154,34 @@ begin
 end;
 
 
+{ TlmfPenMode }
+
+constructor TlmfPenMode.Create(AMode: TPenMode);
+begin
+  inherited Create(nil);
+  fMode := AMode;
+end;
+
+procedure TlmfPenMode.Action(fImage: TlmfImage; ACanvas: TCanvas);
+begin
+  ACanvas.Pen.Mode := fMode;
+end;
+
+
+{ TlmfCopyMode }
+
+constructor TlmfCopyMode.Create(AMode: TCopyMode);
+begin
+  inherited Create(nil);
+  fMode := AMode;
+end;
+
+procedure TlmfCopyMode.Action(fImage: TlmfImage; ACanvas: TCanvas);
+begin
+  ACanvas.CopyMode := fMode;
+end;
+
+
 { TlmfSelectObject }
 
 constructor TlmfSelectObject.Create(ACurrObj: TlmfObject);
@@ -929,6 +1219,8 @@ begin
   inherited Create(AnOwner);
   fPicture := TPicture.Create;
   fPixelsPerInch := 96;  // needs to be updated when image is read
+  fTransparentColor := clNone;   // clNone --> ignore
+  fSrcRect := Rect(0, 0, -1, -1);  // -1 mean: full size
 end;
 
 destructor TlmfPicture.Destroy;
@@ -938,75 +1230,138 @@ begin
 end;
 
 procedure TlmfPicture.Action(fImage: TlmfImage; ACanvas: TCanvas);
+var
+  destRect: TRect;
+  R: TRect;
+  bmpRect: TRect;
+  bmp: TBitmap;
 begin
-  ACanvas.StretchDraw(
-    Rect(
-      fImage.ScaleX(fClip.Left),
-      fImage.ScaleY(fClip.Top),
-      fImage.ScaleX(fClip.Right),
-      fImage.ScaleY(fClip.Bottom)
-    ),
-    fPicture.Graphic
+  if (fTransparentColor <> clNone) and (FPicture.Bitmap.PixelFormat <> pf32Bit) then
+    FPicture.Bitmap.TransparentColor := fTransparentColor;
+
+  destRect := Rect(
+    fImage.ScaleX(fClip.Left),
+    fImage.ScaleY(fClip.Top),
+    fImage.ScaleX(fClip.Right),
+    fImage.ScaleY(fClip.Bottom)
   );
+
+  if (fSrcRect = Rect(0, 0, -1, -1)) or (fSrcRect = Rect(0, 0, fPicture.Width, fPicture.Height)) then
+    ACanvas.StretchDraw(destRect, fPicture.Graphic)
+  else
+  begin
+    bmp := TBitmap.Create;
+    try
+      bmp.SetSize(abs(fSrcRect.Width), abs(fSrcRect.Height));
+      bmp.Canvas.Draw(-fSrcRect.Left, -fSrcRect.Top, fPicture.Bitmap);
+      ACanvas.StretchDraw(destRect, bmp);
+    finally
+      bmp.Free;
+    end;
+  end;
+end;
+
+
+{ TlmfBasicPolyLine }
+
+constructor TlmfBasicPolyLine.Create(APoints: PPoint; NumPts: integer);
+begin
+  inherited Create(nil);
+  SetLength(fPoints, numPts);
+  System.Move(APoints^, fPoints[0], NumPts*SizeOf(fPoints[0]));
+end;
+
+destructor TlmfBasicPolyLine.Destroy;
+begin
+  Setlength(fPoints, 0);
+  inherited Destroy;
+end;
+
+procedure TlmfBasicPolyLine.StorePoints(AStream: TStream);
+var
+  len: longint;
+begin
+  len := Length(fPoints);
+  AStream.Write(len, sizeof(len));
+  if len > 0 then
+    AStream.Write(fPoints[0], len*SizeOf(fPoints[0]));
+end;
+
+procedure TlmfBasicPolyLine.LoadPoints(AStream:TStream);
+var
+  len: longint = 0;
+begin
+  Setlength(fPoints, 0);
+  if AStream.Read(len, SizeOf(len)) = SizeOf(len) then
+    if len > 0 then
+    begin
+      SetLength(fPoints, len);
+      AStream.Read(fPoints[0], len*SizeOf(fPoints[0]));
+    end;
+end;
+
+procedure TlmfBasicPolyLine.DefineProperties(AFiler: TFiler);
+begin
+  inherited DefineProperties(AFiler);
+  AFiler.DefineBinaryProperty('Points', @LoadPoints, @StorePoints, Length(fPoints) > 0);
 end;
 
 
 { TlmfPolyLine }
 
-constructor TlmfPolyLine.Create(APoints: PPoint; NumPts: integer);
-begin
-  inherited Create(nil);
-  Setlength(pts, numPts);
-  System.Move(APoints^, pts[0], NumPts*SizeOf(pts[0]));
-end;
-
-destructor TlmfPolyLine.Destroy;
-begin
-  Setlength(pts,0);
-  inherited Destroy;
-end;
-
-procedure TlmfPolyLine.StorePoints(AStream:TStream);
+procedure TlmfPolyLine.Action(fImage: TlmfImage; ACanvas: TCanvas);
 var
-  len:longint;
+  i, j: Longint;
+  P: TPointArray = nil;
 begin
-  len:=length(pts);
-  AStream.Write(len,sizeof(len));
-  if len>0 then
-    AStream.Write(pts[0],len*sizeof(pts[0]));
-end;
+  SetBkMode(ACanvas.Handle, fImage.BkMode);
 
-procedure TlmfPolyLine.LoadPoints(AStream:TStream);
-var
-  len:longint = 0;
-begin
-  Setlength(pts,0);
-  if AStream.Read(len,sizeof(len))=sizeof(len) then
-    if len > 0 then
-    begin
-      setlength(pts,len);
-      AStream.Read(pts[0],len*sizeof(pts[0]));
-    end;
-end;
-
-procedure TlmfPolyLine.DefineProperties(Afiler:TFiler);
-begin
-  inherited DefineProperties(AFiler);
-  AFiler.DefineBinaryProperty('Points', @LoadPoints, @StorePoints, Length(pts) > 0);
-end;
-
-procedure TlmfPolyLine.Action(fImage:TlmfImage;ACanvas:TCanvas);
-var
-  i: Longint;
-  npts: array of TPoint = nil;
-begin
-  SetLength(npts, Length(pts));
-  for i:=0 to high(pts) do
+  if StartsAtPenPos then
   begin
-    npts[i].x:=fImage.ScaleX(pts[i].x);
-    npts[i].y:=fImage.ScaleY(pts[i].y);
+    SetLength(P, Length(Points) + 1);
+    P[0] := ACanvas.PenPos;
+    j := 1;
+  end else
+  begin
+    SetLength(P, Length(Points));
+    j := 0;
   end;
-  ACanvas.Polyline(npts);
+  for i:=0 to High(Points) do
+  begin
+    P[j].X := fImage.ScaleX(Points[i].x);
+    P[j].Y := fImage.ScaleY(Points[i].y);
+    inc(j);
+  end;
+  ACanvas.Polyline(P);
+end;
+
+
+{ TlmfPolyBezier }
+
+procedure TlmfPolyBezier.Action(fImage: TlmfImage; ACanvas: TCanvas);
+var
+  i, j: Longint;
+  P: array of TPoint = nil;
+begin
+  SetBkMode(ACanvas.Handle, fImage.BkMode);
+
+  if FStartsAtPenPos then
+  begin
+    SetLength(P, Length(Points) + 1);
+    P[0] := ACanvas.PenPos;
+    j := 1;
+  end else
+  begin
+    SetLength(P, Length(Points));
+    j := 0;
+  end;
+  for i:=0 to high(Points) do
+  begin
+    P[j].x := fImage.ScaleX(Points[i].x);
+    P[j].y := fImage.ScaleY(Points[i].y);
+    inc(j);
+  end;
+  ACanvas.PolyBezier(P, fFilled);
 end;
 
 
@@ -1022,48 +1377,333 @@ constructor TlmfPolygon.Create(APoints: PPoint; ANumPts: integer;
 begin
   inherited Create(APoints, ANumPts);
   fWinding := AWinding;
-  fBorderPts := ABorderPts;
+  fBorderPoints := ABorderPts;
 end;
 
 procedure TlmfPolygon.Action(fImage: TlmfImage; ACanvas: TCanvas);
 var
   i: longint;
-  npts: array of TPoint = nil;
+  P: TPointArray = nil;
   ps: TPenStyle;
 begin
-  if fBorderPts > -1 then
+  SetBkMode(ACanvas.Handle, fImage.BkMode);
+
+  if fBorderPoints > -1 then
   begin
-    // Poly-Polygon
+    // Poly-Polygon: fill only, border will be drawn at end
     ps := ACanvas.Pen.Style;
     ACanvas.Pen.Style := psClear;
   end;
 
-  Setlength(npts, Length(pts));
-  for i:=0 to High(pts) do
+  Setlength(P, Length(Points));
+  for i:=0 to High(Points) do
   begin
-    npts[i].x:=fImage.ScaleX(pts[i].x);
-    npts[i].y:=fImage.ScaleY(pts[i].y);
+    P[i].x := fImage.ScaleX(Points[i].x);
+    P[i].y := fImage.ScaleY(Points[i].y);
   end;
-  ACanvas.Polygon(npts,fWinding,0,length(npts));
+  ACanvas.Polygon(P, fWinding, 0, Length(P));
 
-  if fBorderPts > -1 then
+  if fBorderPoints > -1 then
   begin
+    // Poly-Polygon: draw border
     ACanvas.Pen.Style := ps;
-    ACanvas.PolyLine(@pts[0], FBorderPts);
+    ACanvas.PolyLine(@P[0], FBorderPoints);
   end;
 end;
 
+
+{ TlmfPathPoint }
+
+constructor TlmfPathPoint.Create(APt: TPoint);
+begin
+  inherited Create;
+  FPt := APt;
+end;
+
+
+{ TlmfPathPoints }
+
+constructor TlmfPathPoints.Create(APoints: PPoint; ANumPts: Integer);
+begin
+  inherited Create(APoints[0]);
+  SetLength(FPoints, ANumPts);
+  Move(APoints^, FPoints[0], ANumPts * SizeOf(TPoint));
+end;
+
+
+{ TlmfPath }
+
+constructor TlmfPath.Create(AClip: TRect);
+begin
+  inherited Create(AClip);
+  FList := TFPObjectList.Create;
+end;
+
+destructor TlmfPath.Destroy;
+begin
+  FList.Free;
+  inherited Destroy;
+end;
+
+procedure TlmfPath.Action(fImage: TlmfImage; ACanvas: TCanvas);
+const
+  BLOCK_SIZE = 1024;
+var
+  pts: TPointArray = nil;
+  nPts: Integer = 0;
+  i, j, k: Integer;
+  item: TObject;
+  oldPenStyle: TPenStyle;
+  B: TBezier;
+  bezPts: PPoint = nil;
+  nBezPts: Integer = 0;
+  startPt: Integer = 0;
+begin
+  for i := 0 to FList.Count-1 do
+  begin
+    item := FList[i];
+    { PathEnd }
+    if (item is TlmfPathEnd) then
+    begin
+      SetBkMode(ACanvas.Handle, fImage.BkMode);
+      SetLength(pts, nPts);
+      case FFillStrokeMode of
+        fsmFill:
+          begin
+            oldPenStyle := ACanvas.Pen.Style;
+            ACanvas.Pen.Style := psClear;
+            ACanvas.Polygon(pts, FPolyFillMode = WINDING);
+            ACanvas.Pen.Style := oldPenStyle;
+          end;
+        fsmStroke:
+          ACanvas.PolyLine(pts);
+        fsmFillStroke:
+          begin
+            ACanvas.Polygon(pts, FPolyFillMode = WINDING);
+            ACanvas.PolyLine(pts);
+          end;
+      end;
+      exit;
+    end
+    else
+    { Close Path }  // closes current polygon --> can be called several times per path. Not sure if this is correct...
+    if (item is TlmfPathClose) then
+    begin
+      if Length(pts) mod BLOCK_SIZE = 0 then
+        SetLength(pts, Length(pts) + BLOCK_SIZE);
+      pts[nPts] := pts[startPt];
+      inc(nPts);
+    end
+    else
+    { MoveTo }
+    if (item is TlmfPathMoveTo) then
+    begin
+      if Length(pts) > 0 then
+      begin
+        SetLength(pts, nPts);
+        ACanvas.Polyline(pts);
+      end;
+      SetLength(pts, BLOCK_SIZE);
+      pts[0].X := fImage.ScaleX(TLmfPathMoveTo(item).Pt.X);
+      pts[0].Y := fImage.ScaleY(TLmfPathMoveTo(item).Pt.Y);
+      ACanvas.MoveTo(pts[0]);
+      nPts := 1;
+    end
+    else
+    { LineTo }
+    if item is TlmfPathLineTo then
+    begin
+      if Length(pts) mod BLOCK_SIZE = 0 then
+        SetLength(pts, Length(pts) + BLOCK_SIZE);
+      pts[nPts].X := fImage.ScaleX(TlmfPathLineTo(item).Pt.X);
+      pts[nPts].Y := fImage.ScaleY(TlmfPathLineTo(item).Pt.Y);
+      ACanvas.MoveTo(pts[npts]);
+      inc(nPts);
+    end
+    else
+    { Polygon, PolyLine, PolyLineTo }
+    if (item is TlmfPathPolygon) or (item is TlmfPathPolyLine) or (item is TlmfPathPolyLineTo) then
+    begin
+      if nPts + Length(TlmfPathPoints(item).Points) >= Length(pts) then
+        SetLength(pts, nPts + Length(TlmfPathPoints(item).Points) + 1);  // +1 for start pt of PolyLineTo
+      startPt := nPts;
+      if (item is TlmfPathPolyLineTo) then
+      begin
+        pts[npts] := ACanvas.PenPos;
+        inc(npts);
+      end;
+      for j := 0 to Length(TlmfPathPoints(item).Points)-1 do
+      begin
+        pts[nPts].X := fImage.ScaleX(TlmfPathPoints(item).Points[j].X);
+        pts[nPts].Y := fImage.ScaleY(TlmfPathPoints(item).Points[j].Y);
+        inc(nPts);
+      end;
+      // Non-closed shapes must be closed in case of filling modes
+      if not (pts[0] = pts[nPts-1]) and (FFillStrokeMode <> fsmStroke) and
+        ((item is TlmfPathPolyLine) or (item is TlmfPathPolyLineTo)) then
+      begin
+        pts[nPts] := pts[0];
+        inc(nPts);
+        if (item is TlmfPathPolyLineTo) then
+          ACanvas.MoveTo(pts[npts-1]);
+      end;
+    end
+    else
+    { PolyBezier, PolyBezierTo --> convert to polyline }
+    if (item is TlmfPathPolyBezier) or (item is TlmfPathPolyBezierTo) then
+    begin
+      j := 0;
+      if (item is TlmfPathPolyBezierTo) then
+      begin
+        if (nPts > 0) then
+          B[0] := pts[nPts-1]
+        else
+          B[0] := ACanvas.PenPos;
+      end else
+      begin
+        B[0].X := fImage.ScaleX(TlmfPathPolyBezier(item).Points[0].X);
+        B[0].Y := fImage.ScaleY(TlmfPathPolyBezier(item).Points[0].Y);
+        j := 1;
+      end;
+      while (j < Length(TlmfPathPolyBezier(item).Points)) do
+      begin
+        B[1].X := fImage.ScaleX(TlmfPathPolyBezier(item).Points[j].X);
+        B[1].Y := fImage.ScaleY(TlmfPathPolyBezier(item).Points[j].Y);
+        B[2].X := fImage.ScaleX(TlmfPathPolyBezier(item).Points[j+1].X);
+        B[2].Y := fImage.ScaleY(TlmfPathPolyBezier(item).Points[j+1].Y);
+        B[3].X := fImage.ScaleX(TlmfPathPolyBezier(item).Points[j+2].X);
+        B[3].Y := fImage.ScaleY(TlmfPathPolyBezier(item).Points[j+2].Y);
+        Bezier2PolyLine(B, bezPts, nBezPts);
+        if nPts + Length(TlmfPathPolygon(item).Points) >= Length(pts) then
+          SetLength(pts, nPts + nBezPts);
+        for k := 0 to nBezPts-1 do
+        begin
+          pts[nPts] := bezPts^;
+          inc(bezPts);
+          inc(nPts);
+        end;
+        FreeMem(bezPts, 0);
+        bezPts := nil;
+        B[0] := B[3];
+        inc(j, 3);
+      end;
+    end;
+  end;
+end;
+
+procedure TlmfPath.AddLineTo(APt: TPoint);
+var
+  item: TlmfPathLineTo;
+begin
+  item := TlmfPathLineTo.Create(APt);
+  FList.Add(item);
+end;
+
+procedure TlmfPath.AddMoveTo(APt: TPoint);
+var
+  item: TlmfPathMoveTo;
+begin
+  item := TlmfPathMoveTo.Create(APt);
+  FList.Add(item);
+end;
+
+procedure TlmfPath.AddPolyBezier(APoints: PPoint; ANumPts: Integer);
+var
+  item: TlmfPathPolyBezier;
+begin
+  item := TlmfPathPolyBezier.Create(APoints, ANumPts);
+  FList.Add(item);
+end;
+
+procedure TlmfPath.AddPolyBezierTo(APoints: PPoint; ANumPts: Integer);
+var
+  item: TlmfPathPolyBezierTo;
+begin
+  item := TlmfPathPolyBezierTo.Create(APoints, ANumPts);
+  FList.Add(item);
+end;
+
+procedure TlmfPath.AddPolyLine(APoints: PPoint; ANumPts: Integer);
+var
+  item: TlmfPathPolyLine;
+begin
+  item := TlmfPathPolyLine.Create(APoints, ANumPts);
+  FList.Add(item);
+end;
+
+procedure TlmfPath.AddPolyLineTo(APoints: PPoint; ANumPts: Integer);
+var
+  item: TlmfPathPolyLineTo;
+begin
+  item := TlmfPathPolyLineTo.Create(APoints, ANumPts);
+  FList.Add(item);
+end;
+
+procedure TlmfPath.AddPolygon(APoints: PPoint; ANumPts: Integer);
+var
+  item: TlmfPathPolygon;
+begin
+  item := TlmfPathPolygon.Create(APoints, ANumPts);
+  FList.Add(item);
+end;
+
+procedure TlmfPath.AbortPath;
+begin
+  FList.Clear;
+end;
+
+procedure TlmfPath.BeginPath;
+begin
+  FList.Clear;
+end;
+
+procedure TlmfPath.EndPath;
+begin
+  FList.Add(TlmfPathEnd.Create);
+end;
+
+procedure TlmfPath.FlattenPath;
+begin
+  // Ignored for the moment. Later, when Bezier is implemented, must replace
+  // Bezier segments by straight lines.
+end;
+
+procedure TlmfPath.ClosePath;
+begin
+  FList.Add(TlmfPathClose.Create);
+end;
+
+procedure TlmfPath.FillPath;
+begin
+  FFillStrokeMode := fsmFill;
+end;
+
+procedure TlmfPath.StrokeAndFillPath;
+begin
+  FFillStrokeMode := fsmFillStroke;
+end;
+
+procedure TlmfPath.StrokePath;
+begin
+  FFillStrokeMode := fsmStroke;
+end;
+
+procedure TlmfPath.WidenPath;
+begin
+  // to do...
+end;
 
 initialization
   RegisterClasses([TlmfAnchor,
     TlmfMoveTo, TlmfLineTo, TlmfLine,
     TlmfText, TlmfTextInRect,
     TlmfClip, TlmfRect, TlmfRoundRect, TlmfEllipse,
-    TlmfArc, TlmfChord, TlmfPie,
-    TlmfPicture, TlmfPolyLine, TlmfPolygon,
+    TlmfArc, TlmfArcTo, TlmfChord, TlmfPie,
+    TlmfPicture, TlmfPolyLine, TlmfPolygon, TlmfPolyBezier,
     TlmfFloodFill, TlmfGradientFill,
     TlmfBkMode, TlmfBkColor, TlmfTextColor, TlmfColor,
-    TlmfFont, TlmfBrush, TlmfPen,
+    TlmfFont, TlmfBrush, TlmfPen, TlmfPenMode, TlmfCopyMode,
+    TlmfPath,
     TlmfSelectObject
   ]);
 

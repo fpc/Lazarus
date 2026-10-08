@@ -25,6 +25,7 @@ type
     Panel1: TPanel;
     sbBrowse: TSpeedButton;
     sbOpenFile: TSpeedButton;
+    ScrollBox1: TScrollBox;
     procedure cmbFileNameDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
     procedure cmbFileNameSelect(Sender: TObject);
@@ -58,6 +59,8 @@ implementation
 
 const
   MAX_HISTORY = 20;
+  CAPTION_BASE = 'Metafile Reader';
+  CAPTION_MASK = CAPTION_BASE + ' [%s]';
 
 { TMainForm }
 
@@ -136,10 +139,12 @@ begin
   FLmfImg.LoadFromLMFFile(AFileName);
   FLmfImg.MapMode := TlmfMapMode(cmbMapMode.ItemIndex);
   FLmfImg.OnChange := @ImageChanged;
+  Paintbox.Width := FLmfImg.Width;
+  Paintbox.Height := FLmfImg.Height;
   Paintbox.Invalidate;
 
   AddToHistory(AFileName);
-  Caption := 'WMF File Reader [' + ExtractfileName(AFileName) + ']';
+  Caption := Format(CAPTION_MASK, [ExtractfileName(AFileName)]);
   lblInfo.Caption := Format('Width: %d; Height = %d; LogUnitsPerInch = %d', [
     FLmfImg.Width, FLmfImg.Height, FLmfImg.LogUnitsPerInch
   ]);
@@ -149,8 +154,6 @@ procedure TMainForm.PaintBoxPaint(Sender: TObject);
 begin
   if (FLmfImg = nil) then //or FLmfImg.Empty then
     exit;
-  FLmfImg.PixelsPerInch := PixelsPerInch;
-//  PaintBox.Canvas.Draw(0, 0, FLmfImg);
   PaintBox.Canvas.StretchDraw(Rect(0, 0, PaintBox.Width, PaintBox.Height), FLmfImg);
 end;
 

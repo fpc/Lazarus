@@ -2,51 +2,54 @@ object MainForm: TMainForm
   Left = 558
   Height = 534
   Top = 212
-  Width = 520
+  Width = 536
   Caption = 'MainForm'
   ClientHeight = 534
-  ClientWidth = 520
-  LCLVersion = '4.99.0.0'
+  ClientWidth = 536
+  LCLVersion = '5.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   object PaintBox: TPaintBox
     Left = 0
-    Height = 493
+    Height = 472
     Top = 0
-    Width = 520
+    Width = 536
     Align = alClient
     OnPaint = PaintBoxPaint
   end
   object Panel1: TPanel
     Left = 0
-    Height = 41
-    Top = 493
-    Width = 520
+    Height = 62
+    Top = 472
+    Width = 536
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 41
-    ClientWidth = 520
+    ClientHeight = 62
+    ClientWidth = 536
     TabOrder = 0
-    object Button1: TButton
+    object btnSave: TButton
       AnchorSideLeft.Control = Panel1
       AnchorSideTop.Control = Panel1
       Left = 8
       Height = 25
       Top = 8
-      Width = 110
+      Width = 136
       AutoSize = True
-      BorderSpacing.Around = 8
-      Caption = 'Save as wmf file'
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 8
+      BorderSpacing.Right = 8
+      BorderSpacing.Bottom = 2
+      Caption = 'Save as wmf/emf file'
       TabOrder = 0
-      OnClick = Button1Click
+      OnClick = btnSaveClick
     end
     object Button2: TButton
       AnchorSideLeft.Control = ComboBox1
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Control = btnSave
       AnchorSideTop.Side = asrCenter
-      Left = 274
+      Left = 300
       Height = 25
       Top = 8
       Width = 176
@@ -56,24 +59,24 @@ object MainForm: TMainForm
       TabOrder = 1
       OnClick = Button2Click
     end
-    object Label1: TLabel
+    object lblLogUnitsPerInchInfo: TLabel
       AnchorSideLeft.Control = Button2
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Button2
       AnchorSideTop.Side = asrCenter
-      Left = 454
+      Left = 480
       Height = 15
       Top = 13
-      Width = 34
+      Width = 121
       BorderSpacing.Left = 4
-      Caption = 'Label1'
+      Caption = 'lblLogUnitsPerInchInfo'
     end
     object ComboBox1: TComboBox
-      AnchorSideLeft.Control = Button1
+      AnchorSideLeft.Control = btnSave
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Control = btnSave
       AnchorSideTop.Side = asrCenter
-      Left = 126
+      Left = 152
       Height = 23
       Top = 9
       Width = 140
@@ -81,7 +84,7 @@ object MainForm: TMainForm
       ItemHeight = 15
       ItemIndex = 0
       Items.Strings = (
-        'mmLogUnitsPerInch,'
+        'mmLogUnitsPerInch'
         'mmText'
         'mmLoMetric'
         'mmHiMetric'
@@ -93,8 +96,49 @@ object MainForm: TMainForm
       )
       Style = csDropDownList
       TabOrder = 2
-      Text = 'mmLogUnitsPerInch,'
+      Text = 'mmLogUnitsPerInch'
       OnChange = ComboBox1Change
+    end
+    object rbWMF: TRadioButton
+      AnchorSideLeft.Control = btnSave
+      AnchorSideTop.Control = btnSave
+      AnchorSideTop.Side = asrBottom
+      Left = 16
+      Height = 19
+      Top = 35
+      Width = 42
+      BorderSpacing.Left = 8
+      BorderSpacing.Bottom = 8
+      Caption = 'wmf'
+      Checked = True
+      TabOrder = 4
+      TabStop = True
+    end
+    object rbEMF: TRadioButton
+      AnchorSideLeft.Control = rbWMF
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = btnSave
+      AnchorSideTop.Side = asrBottom
+      Left = 68
+      Height = 19
+      Top = 35
+      Width = 39
+      BorderSpacing.Left = 10
+      Caption = 'emf'
+      TabOrder = 3
+    end
+    object lblFileInfo: TLabel
+      AnchorSideLeft.Control = rbEMF
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = rbWMF
+      AnchorSideTop.Side = asrCenter
+      Left = 131
+      Height = 15
+      Top = 37
+      Width = 52
+      BorderSpacing.Left = 24
+      Caption = 'lblFileInfo'
+      Visible = False
     end
   end
 end

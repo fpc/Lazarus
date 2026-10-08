@@ -16,9 +16,6 @@ type
 
   TlmfWMFReader = class(TlmfReader)
   private
-    FImage: TlmfImage;
-    FObjTable: TFPList;        // List with WMF objects (pen, brush, ...)
-    FErrMsg: TStrings;
     // info from header
     FBBox: TRect;  // in metafile units as specified by UnitsPerInch. NOTE: "logical" units can be different!
     FHasPlaceableMetaHeader: Boolean;
@@ -77,15 +74,12 @@ type
     function AddToObjTable(AItem: TlmfObject): Integer;
     procedure DeleteFromObjTable(AIndex: Integer);
 
-    procedure LogError(const AMsg: String);
     procedure ReadHeader(AStream: TStream);
-    procedure ReadRecords(AStream: TStream);
+    procedure ReadRecords(AStream: TStream); override;
 
   public
     constructor Create;
     destructor Destroy; override;
-    procedure ReadFromStream(AStream: TStream; AImage: TlmfImage); override;
-
   end;
 
 
@@ -102,8 +96,6 @@ const
 constructor TlmfWMFReader.Create;
 begin
   inherited;
-  FErrMsg := TStringList.Create;
-  FObjTable := TFPList.Create;
   FCurrPen := TPen.Create;
   with FCurrPen do begin
     Style := psSolid;
@@ -138,8 +130,6 @@ begin
   FCurrFont.Free;
   FCurrBrush.Free;
   FCurrPen.Free;
-  FObjTable.Free;
-  FErrMsg.Free;
   inherited;
 end;
 
@@ -220,7 +210,7 @@ begin
 
   lmfFont.Font.Name := ISO_8859_1ToUTF8(fntName);
   lmfFont.Height := abs(round(SmallInt(LEToN(fontRec^.Height))));
-  lmfFont.Font.Height := -FImage.ScaleSizeY(lmfFont.Height);
+//  lmfFont.Font.Height := -FImage.ScaleSizeY(lmfFont.Height);
 //  lmfFont.Font.Height := round(SmallInt(LEToN(fontRec^.Height)));
   lmfFont.Font.Color := FCurrTextColor;
   lmfFont.Font.Bold := LEToN(fontRec^.Weight) >= 700;
@@ -298,11 +288,6 @@ var
 begin
   idx := LEToN(AParams[0]);
   DeleteFromObjTable(idx);
-end;
-
-procedure TlmfWMFReader.LogError(const AMsg: String);
-begin
-  FErrMsg.Add(AMsg);
 end;
 
 { If the wfm has no placeable metaheader, and if it contains no
@@ -523,21 +508,6 @@ begin
 
   lmfFloodFill := TlmfFloodFill.Create(x, y, fillColor, fillStyle);
   FImage.List.InsertComponent(lmfFloodFill);
-end;
-
-procedure TlmfWMFReader.ReadFromStream(AStream: TStream; AImage: TlmfImage);
-begin
-  FImage := AImage;
-  FImage.MapMode := mmAnisotropic;
-
-  FObjTable.Clear;
-  FErrMsg.Clear;
-
-  ReadHeader(AStream);
-  ReadRecords(AStream);
-
-  if FErrMsg.Count > 0 then
-    raise ElmfReader.Create(FErrMsg.Text);
 end;
 
 procedure TlmfWMFReader.ReadHeader(AStream: TStream);
@@ -840,6 +810,8 @@ var
   params: TWMFParamArray = nil;
   n: Integer;
 begin
+  ReadHeader(AStream);
+
   wmfRec := Default(TWMFRecord);
   while AStream.Position < AStream.Size do begin
     // Store the stream position where the current record begins
