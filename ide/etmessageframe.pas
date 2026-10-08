@@ -2916,6 +2916,7 @@ end;
 procedure TMessagesCtrl.Paint;
 var
   LoSearchText: string;
+  OldBackgroundColor: TColor;
 
   procedure DrawText(ARect: TRect; aTxt: string; IsSelected: boolean;
     TxtColor: TColor);
@@ -2941,6 +2942,7 @@ var
     end else
       Details:=ThemeServices.GetElementDetails(ttItemNormal);
     if LoSearchText<>'' then begin
+      OldBackgroundColor:=Canvas.Brush.Color;
       LoTxt:=UTF8LowerCase(aTxt);
       p:=1;
       LastP:=1;
@@ -2953,7 +2955,7 @@ var
         Canvas.FillRect(aLeft,TextRect.Top+1,aRight,TextRect.Bottom-1);
         LastP:=p+length(LoSearchText);
       end;
-      Canvas.Brush.Color:=BackgroundColor;
+      Canvas.Brush.Color:=OldBackgroundColor;
     end;
     if TxtColor=clDefault then
       ThemeServices.DrawText(Canvas, Details, ATxt, TextRect,
@@ -2998,6 +3000,7 @@ var
     end else
       Details:=ThemeServices.GetElementDetails(ttItemNormal);
     if LoSearchText<>'' then begin
+      OldBackgroundColor:=Canvas.Brush.Color;
       LoTxt:=UTF8LowerCase(aTxt);
       p:=1;
       LastP:=1;
@@ -3010,7 +3013,7 @@ var
         Canvas.FillRect(aLeft,TextRect.Top+1,aRight,TextRect.Bottom-1);
         LastP:=p+length(LoSearchText);
       end;
-      Canvas.Brush.Color:=BackgroundColor;
+      Canvas.Brush.Color:=OldBackgroundColor;
     end;
     if TxtColor=clDefault then
       ThemeServices.DrawText(Canvas, Details, aTxt, TextRect,
