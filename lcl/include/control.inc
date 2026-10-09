@@ -3525,6 +3525,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.SetHint(const Value: TTranslateString);
 begin
+  if FHint = Value then exit;
   FHint := Value;
 end;
 
@@ -3563,18 +3564,21 @@ var
   Kind: TAnchorKind;
 begin
   inherited Notification(AComponent, Operation);
-  if Operation <> opRemove then exit;
-
-  if AComponent = PopupMenu then
-    PopupMenu := nil
-  else if AComponent = Action then
-    Action := nil
-  else if AComponent = FHostDockSite then
-    FHostDockSite := nil;
-  //debugln('TControl.Notification A ',DbgSName(Self),' ',DbgSName(AComponent));
-  for Kind := Low(TAnchorKind) to High(TAnchorKind) do
-    if (FAnchorSides[Kind] <> nil) and (FAnchorSides[Kind].Control = AComponent) then
-      FAnchorSides[Kind].FControl := nil;
+  if Operation = opRemove then
+  begin
+    if AComponent = PopupMenu then
+      PopupMenu := nil
+    else if AComponent = Action then
+      Action := nil
+    else if AComponent = FHostDockSite then
+      FHostDockSite := nil;
+    //debugln('TControl.Notification A ',DbgSName(Self),' ',DbgSName(AComponent));
+    for Kind := Low(TAnchorKind) to High(TAnchorKind) do
+    begin
+      if (FAnchorSides[Kind] <> nil) and (FAnchorSides[Kind].Control = AComponent) then
+        FAnchorSides[Kind].FControl := nil;
+    end;
+  end;
 end;
 
 procedure TControl.DoFloatMsg(ADockSource: TDragDockObject);
