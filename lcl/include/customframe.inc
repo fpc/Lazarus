@@ -228,10 +228,11 @@ end;
 
 procedure TCustomFrame.FixFrameFontsPPI(PPI: Integer);
 begin
+  if (not Application.Scaled) or (not Scaled) then exit;
+
   DisableAlign;
   try
-    if Application.Scaled and Scaled then
-      FixDesignFontsPPIWithChildren(PPI);
+    FixDesignFontsPPIWithChildren(PPI);
   finally
     EnableAlign;
   end;
