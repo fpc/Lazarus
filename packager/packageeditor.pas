@@ -541,8 +541,8 @@ begin
   PkgEditMenuAddDiskFile:=RegisterIDEMenuCommand(AParent,'Add disk file',lisPckEditAddFilesFromFileSystem);
   PkgEditMenuAddNewDiskFiles:=RegisterIDEMenuCommand(AParent,'Add new disk files',lisAddNewFilesFromFileSystem);
   PkgEditMenuAddNewFile:=RegisterIDEMenuCommand(AParent,'New file',lisA2PNewFile);
-  PkgEditMenuAddNewComp:=RegisterIDEMenuCommand(AParent,'New component',lisMenuNewComponent);
-  PkgEditMenuAddNewReqr:=RegisterIDEMenuCommand(AParent,'New requirement',lisProjAddNewRequirement);
+  PkgEditMenuAddNewComp:=RegisterIDEMenuCommand(AParent,'New component',lisMenuNewComponent + ' ...');
+  PkgEditMenuAddNewReqr:=RegisterIDEMenuCommand(AParent,'New requirement',lisProjAddNewRequirement + ' ...');
   PkgEditMenuAddNewFPMakeReqr:=RegisterIDEMenuCommand(AParent,'New FPMake requirement',lisProjAddNewFPMakeRequirement);
   //
   PkgEditMenuOpenFile:=RegisterIDEMenuCommand(AParent,'Open File',lisOpen);
@@ -1982,8 +1982,8 @@ begin
   mnuAddDiskFile.Caption := lisPckEditAddFilesFromFileSystem;
   mnuAddNewDiskFiles.Caption := lisAddNewFilesFromFileSystem;
   mnuAddNewFile.Caption := lisA2PNewFile;
-  mnuAddNewComp.Caption := lisMenuNewComponent;
-  mnuAddNewReqr.Caption := lisProjAddNewRequirement;
+  mnuAddNewComp.Caption := lisMenuNewComponent + ' ...';
+  mnuAddNewReqr.Caption := lisProjAddNewRequirement + ' ...';
   mnuAddFPMakeReq.Caption := lisProjAddNewFPMakeRequirement;
 
   // Buttons on FilterPanel
