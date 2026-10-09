@@ -266,6 +266,7 @@ end;
 constructor TlmfImage.Create;
 begin
   inherited Create;
+  fMapMode := mmAnisotropic;
   fCrs := syncobjs.TCriticalSection.Create;
   fList := TlmfList.Create(nil);
   fDevPixelsPerInch := ScreenInfo.PixelsPerInchX;
@@ -621,6 +622,8 @@ end;
 procedure TlmfImage.LoadFromStream(Stream: TStream);
 begin
   Stream.ReadComponent(fList);
+  fLogWidth := fList.fWidth;
+  fLogHeight := fList.fHeight;
 end;
 
 

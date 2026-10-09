@@ -226,6 +226,7 @@ var
   bmp:TBitmap;
 begin
   img:=TlmfImage.Create;
+  img.LogUnitsPerInch := ReportDPI;
   fImages.Add(img);
   // A4 with 1200 dpi resolution (see "reportDPI" at the top)
   img.Width:=mm(210);

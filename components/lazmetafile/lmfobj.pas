@@ -16,6 +16,9 @@ type
   TPointArray = array of TPoint;
 
   TlmfObject = class(TComponent)
+  protected
+    procedure SetBkColor(ACanvas: TCanvas; AColor: TColor);
+    procedure SetBkMode(ACanvas: TCanvas; AMode: byte);
   public
     procedure Action(fImage: TlmfImage; ACanvas:TCanvas); virtual; abstract;
   end;
@@ -32,12 +35,12 @@ type
 
   TlmfBkMode = class(TlmfObject)
   private
-    fMode: Word;
+    fMode: Byte;
   public
     constructor Create(AMode: Word); virtual; reintroduce;
     procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
   published
-    property Mode: Word read fMode write fMode;
+    property Mode: Byte read fMode write fMode;
   end;
 
   TlmfAnchor = class(TlmfObject)
@@ -459,6 +462,21 @@ type
 
 implementation
 
+{ TlmfObject }
+
+procedure TlmfObject.SetBkColor(ACanvas: TCanvas; AColor: TColor);
+begin
+  if ACanvas.HandleAllocated then
+    LCLIntf.SetBkColor(ACanvas.Handle, AColor);
+end;
+
+procedure TlmfObject.SetBkMode(ACanvas: TCanvas; AMode: Byte);
+begin
+  if ACanvas.HandleAllocated then
+    LCLIntf.SetBkMode(ACanvas.Handle, AMode);
+end;
+
+
 { TlmfBkColor (Text background color) }
 
 constructor TlmfBkColor.Create(AColor: TColor);
@@ -469,7 +487,7 @@ end;
 
 procedure TlmfBkColor.Action(fImage: TlmfImage; ACanvas: TCanvas);
 begin
-  SetBkColor(ACanvas.Handle, fColor);
+  SetBkColor(ACanvas, fColor);
 end;
 
 
@@ -485,7 +503,7 @@ end;
 
 procedure TlmfBkMode.Action(fImage: TlmfImage; ACanvas: TCanvas);
 begin
-  SetBkMode(ACanvas.Handle, fMode);
+  SetBkMode(ACanvas, fMode);
 end;
 
 
@@ -526,7 +544,7 @@ end;
 
 procedure TlmfLine.Action(fImage: TlmfImage; ACanvas: TCanvas);
 begin
-  SetBkMode(ACanvas.Handle, fImage.BkMode);
+  SetBkMode(ACanvas, fImage.BkMode);
   ACanvas.Line(
     fImage.ScaleX(fPos.X),
     fImage.ScaleY(fPos.Y),
@@ -568,7 +586,7 @@ begin
     ACanvas.TextOut(fImage.ScaleX(fPos.X),fImage.ScaleY(fPos.Y),fText);
   end;
 }
-  SetBkMode(ACanvas.Handle, fImage.BkMode);
+  SetBkMode(ACanvas, fImage.BkMode);
   ACanvas.TextOut(fImage.ScaleX(fPos.X), fImage.ScaleY(fPos.Y),fText);
 end;
 
@@ -588,7 +606,7 @@ var
   R: TRect;
   P: TPoint;
 begin
-  SetBkMode(ACanvas.Handle, fImage.BkMode);
+  SetBkMode(ACanvas, fImage.BkMode);
   P := Point(fImage.ScaleX(px), fImage.ScaleY(py));
   if fRect = Rect(0, 0, -1, -1) then
     R := Rect(P.X, P.Y, P.X, P.Y)
@@ -729,7 +747,7 @@ begin
   begin
     // this clip rect have not to scale
     ACanvas.ClipRect:=fClip; // actually does clipping through virtualization
-    SelectClipRgn(ACanvas.Handle,0)
+    SelectClipRgn(ACanvas.Handle, 0)
   end
   else
   begin
@@ -753,7 +771,7 @@ end;
 
 procedure TlmfRect.Action(fImage:TlmfImage; ACanvas:TCanvas);
 begin
-  SetBkMode(ACanvas.Handle, fImage.BkMode);
+  SetBkMode(ACanvas, fImage.BkMode);
   ACanvas.Rectangle(
     fImage.ScaleX(fClip.Left),
     fImage.ScaleY(fClip.Top),
@@ -774,7 +792,7 @@ end;
 
 procedure TlmfRoundRect.Action(fImage: TlmfImage; ACanvas: TCanvas);
 begin
-  SetBkMode(ACanvas.Handle, fImage.BkMode);
+  SetBkMode(ACanvas, fImage.BkMode);
   ACanvas.RoundRect(
     fImage.ScaleX(fClip.Left),
     fImage.ScaleY(fClip.Top),
@@ -966,7 +984,7 @@ end;
 
 procedure TlmfEllipse.Action(fImage:TlmfImage;ACanvas:TCanvas);
 begin
-  SetBkMode(ACanvas.Handle, fImage.BkMode);
+  SetBkMode(ACanvas, fImage.BkMode);
   ACanvas.Ellipse(
     fImage.ScaleX(fClip.Left),
     fImage.ScaleY(fClip.Top),
@@ -1045,7 +1063,7 @@ begin
     ptEnd := Point(fImage.ScaleX(fStartPt.X), fImage.ScaleY(fStartPt.Y));
   end;
 
-  SetBkMode(ACanvas.Handle, fImage.BkMode);
+  SetBkMode(ACanvas, fImage.BkMode);
   ACanvas.Chord(
     fImage.ScaleX(fClip.Left), fImage.ScaleY(fClip.Top), fImage.ScaleX(fClip.Right), fImage.ScaleY(fClip.Bottom),
     ptStart.X, ptStart.Y,
@@ -1069,7 +1087,7 @@ begin
     ptEnd := Point(fImage.ScaleX(fStartPt.X), fImage.ScaleY(fStartPt.Y));
   end;
 
-  SetBkMode(ACanvas.Handle, fImage.BkMode);
+  SetBkMode(ACanvas, fImage.BkMode);
   ACanvas.Pie(
     fImage.ScaleX(fClip.Left), fImage.ScaleY(fClip.Top), fImage.ScaleX(fClip.Right), fImage.ScaleY(fClip.Bottom),
     ptStart.X, ptStart.Y,
@@ -1314,7 +1332,7 @@ var
   i, j: Longint;
   P: TPointArray = nil;
 begin
-  SetBkMode(ACanvas.Handle, fImage.BkMode);
+  SetBkMode(ACanvas, fImage.BkMode);
 
   if StartsAtPenPos then
   begin
@@ -1343,7 +1361,7 @@ var
   i, j: Longint;
   P: array of TPoint = nil;
 begin
-  SetBkMode(ACanvas.Handle, fImage.BkMode);
+  SetBkMode(ACanvas, fImage.BkMode);
 
   if FStartsAtPenPos then
   begin
@@ -1386,7 +1404,7 @@ var
   P: TPointArray = nil;
   ps: TPenStyle;
 begin
-  SetBkMode(ACanvas.Handle, fImage.BkMode);
+  SetBkMode(ACanvas, fImage.BkMode);
 
   if fBorderPoints > -1 then
   begin
@@ -1465,7 +1483,7 @@ begin
     { PathEnd }
     if (item is TlmfPathEnd) then
     begin
-      SetBkMode(ACanvas.Handle, fImage.BkMode);
+      SetBkMode(ACanvas, fImage.BkMode);
       SetLength(pts, nPts);
       case FFillStrokeMode of
         fsmFill:
