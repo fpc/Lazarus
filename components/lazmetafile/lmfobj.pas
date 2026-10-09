@@ -20,7 +20,7 @@ type
     procedure SetBkColor(ACanvas: TCanvas; AColor: TColor);
     procedure SetBkMode(ACanvas: TCanvas; AMode: byte);
   public
-    procedure Action(fImage: TlmfImage; ACanvas:TCanvas); virtual; abstract;
+    procedure Render(fImage: TlmfImage; ACanvas:TCanvas); virtual; abstract;
   end;
 
   TlmfBkColor = class(TlmfObject)
@@ -28,7 +28,7 @@ type
     fColor: TColor;
   public
     constructor Create(AColor: TColor); virtual; reintroduce;
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Render(fImage: TlmfImage; ACanvas: TCanvas); override;
   published
     property Color: TColor read fColor write fColor;
   end;
@@ -38,7 +38,7 @@ type
     fMode: Byte;
   public
     constructor Create(AMode: Word); virtual; reintroduce;
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Render(fImage: TlmfImage; ACanvas: TCanvas); override;
   published
     property Mode: Byte read fMode write fMode;
   end;
@@ -55,12 +55,12 @@ type
 
   TlmfMoveTo = class(TlmfAnchor)
   public
-    procedure Action(fImage:TlmfImage; ACanvas:TCanvas); override;
+    procedure Render(fImage:TlmfImage; ACanvas:TCanvas); override;
   end;
 
   TlmfLineTo = class(TlmfAnchor)
   public
-    procedure Action(fImage:TlmfImage;ACanvas:TCanvas); override;
+    procedure Render(fImage:TlmfImage;ACanvas:TCanvas); override;
   end;
 
   TlmfLine = class(TlmfAnchor)
@@ -68,7 +68,7 @@ type
     fEndPos:TPoint;
   public
     constructor Create(x1,y1,x2,y2:integer);overload;
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Render(fImage: TlmfImage; ACanvas: TCanvas); override;
   published
     property px1:integer read fEndPos.x write fEndpos.x;
     property py1:integer read fEndPos.y write fEndpos.y;
@@ -79,7 +79,7 @@ type
     fText: string;
   public
     constructor Create(x, y: integer; const AText: string); overload;
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Render(fImage: TlmfImage; ACanvas: TCanvas); override;
   published
     property Text: string read fText write fText;
   end;
@@ -107,7 +107,7 @@ type
   public
     constructor Create(const ARect: TRect; x, y: Integer; const AText: String;
       const AStyle: TTextStyle); overload;
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Render(fImage: TlmfImage; ACanvas: TCanvas); override;
     property TextStyle: TTextStyle read fStyle write fStyle;
   published
     property Left: Integer read fRect.Left write fRect.Left;
@@ -127,7 +127,7 @@ type
     fColor: TColor;
   public
     constructor Create(AColor: TColor); overload;
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Render(fImage: TlmfImage; ACanvas: TCanvas); override;
   published
     property Color: TColor read FColor write FColor;
   end;
@@ -137,7 +137,7 @@ type
     fColor: TFPColor;
   public
     constructor Create(x,y:integer; AColor:TfpColor);overload;
-    procedure Action(fImage:TlmfImage;ACanvas:TCanvas);override;
+    procedure Render(fImage:TlmfImage;ACanvas:TCanvas);override;
   published
     property r:word read fColor.red write fColor.red;
     property g:word read fColor.green write fColor.green;
@@ -150,7 +150,7 @@ type
     fClip:TRect;
   public
     constructor Create(AClip: TRect); virtual; overload;
-    procedure Action(fImage:TlmfImage; ACanvas:TCanvas); override;
+    procedure Render(fImage:TlmfImage; ACanvas:TCanvas); override;
     property Clip: TRect read FClip write fClip;
   published
     property Left:integer read fClip.Left write fClip.Left;
@@ -161,7 +161,7 @@ type
 
   TlmfRect = class(TlmfClip)
   public
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas);override;
+    procedure Render(fImage: TlmfImage; ACanvas: TCanvas);override;
   end;
 
   TlmfRoundRect = class(TlmfRect)
@@ -169,7 +169,7 @@ type
     frx, fry: Integer;
   public
     constructor Create(ARect: TRect; ARx, ARy: Integer); overload;
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Render(fImage: TlmfImage; ACanvas: TCanvas); override;
   published
     property Rx: Integer read frx write frx;
     property Ry: Integer read fry write fry;
@@ -181,7 +181,7 @@ type
     fFillStyle: TFillStyle;
   public
     constructor Create(AX, AY: integer; AFillColor: TColor; AFillStyle: TFillStyle); overload;
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Render(fImage: TlmfImage; ACanvas: TCanvas); override;
   published
     property FillColor: TColor read fFillColor write fFillColor;
     property FillStyle: TFillStyle read fFillStyle write fFillStyle;
@@ -194,7 +194,7 @@ type
     fDirection: TGradientDirection;
   public
     constructor Create(ARect: TRect; AStartColor, AEndColor: TColor; ADirection: TGradientDirection); overload;
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Render(fImage: TlmfImage; ACanvas: TCanvas); override;
   published
     property Direction: TGradientDirection read fDirection write fDirection;
     property StartColor: TColor read fStartColor write fStartColor;
@@ -225,7 +225,7 @@ type
       AFirstRect: PGradientRect; ANumRects: Integer; ADirection: Integer); overload;
     constructor Create(AFirstVertex: PTriVertex; ANumVertices: Integer;
       AFirstTriangle: PGradientTriangle; ANumTriangles: Integer); overload;
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Render(fImage: TlmfImage; ACanvas: TCanvas); override;
     property Vertices: TlmfTriVertexArray read FVertices write FVertices;
     property Rectangles: TlmfGradientRectArray read fRectangles write fRectangles;
     property Triangles: TlmfGradientTriangleArray read fTriangles write fTriangles;
@@ -233,7 +233,7 @@ type
 
   TlmfEllipse = class(TlmfClip)
   public
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Render(fImage: TlmfImage; ACanvas: TCanvas); override;
   end;
 
   TlmfArc = class(TlmfEllipse)
@@ -242,7 +242,7 @@ type
     fEndPt: TPoint;
   public
     constructor Create(ARect: TRect; AStartPt, AEndPt: TPoint); overload;
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Render(fImage: TlmfImage; ACanvas: TCanvas); override;
   published
     property StartPtX: Integer read fStartPt.X write fStartPt.X;
     property StartPtY: Integer read fStartPt.Y write fStartPt.Y;
@@ -252,17 +252,17 @@ type
 
   TlmfArcTo = class(TlmfArc)
   public
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Render(fImage: TlmfImage; ACanvas: TCanvas); override;
   end;
 
   TlmfChord = class(TlmfArc)
   public
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Render(fImage: TlmfImage; ACanvas: TCanvas); override;
   end;
 
   TlmfPie = class(TlmfArc)
   public
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Render(fImage: TlmfImage; ACanvas: TCanvas); override;
   end;
 
   TlmfFont=class(TlmfObject)
@@ -274,7 +274,7 @@ type
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Render(fImage: TlmfImage; ACanvas: TCanvas); override;
   published
     property Font: TFont read fFont write fFont;
     property Height: integer read fHeight write fHeight;
@@ -287,7 +287,7 @@ type
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Action({%H-}fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Render({%H-}fImage: TlmfImage; ACanvas: TCanvas); override;
   published
     property Brush: TBrush read fBrush write fBrush;
   end;
@@ -298,7 +298,7 @@ type
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Render(fImage: TlmfImage; ACanvas: TCanvas); override;
   published
     property Pen: TPen read fPen write fPen;
   end;
@@ -308,7 +308,7 @@ type
     fMode: TPenMode;
   public
     constructor Create(AMode: TPenMode); overload;
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Render(fImage: TlmfImage; ACanvas: TCanvas); override;
   published
     property PenMode: TPenMode read fMode write fMode;
   end;
@@ -318,7 +318,7 @@ type
     fMode: TCopyMode;
   public
     constructor Create(AMode: TCopyMode); overload;
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Render(fImage: TlmfImage; ACanvas: TCanvas); override;
   published
     property CopyMode: TCopyMode read fMode write fMode;
   end;
@@ -328,7 +328,7 @@ type
     fCurrObj: TlmfObject;
   public
     constructor Create(ACurrObj: TlmfObject); overload;
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Render(fImage: TlmfImage; ACanvas: TCanvas); override;
   end;
 
   TlmfPicture = class(TlmfClip)
@@ -340,7 +340,7 @@ type
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Render(fImage: TlmfImage; ACanvas: TCanvas); override;
     property PixelsPerInch: Integer read fPixelsPerInch write fPixelsPerInch;
     property SrcRect: TRect read fSrcRect write fSrcRect;
   published
@@ -369,7 +369,7 @@ type
 
   TlmfPolyline = class(TlmfBasicPolyLine)
   public
-    procedure Action(fImage:TlmfImage; ACanvas:TCanvas); override;
+    procedure Render(fImage:TlmfImage; ACanvas:TCanvas); override;
   published
     property StartsAtPenPos;
   end;
@@ -378,7 +378,7 @@ type
   private
     fFilled: Boolean;
   public
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Render(fImage: TlmfImage; ACanvas: TCanvas); override;
   published
     property StartsAtPenPos;
     property Filled: Boolean read fFilled write fFilled;
@@ -391,7 +391,7 @@ type
   public
     constructor Create(APoints: PPoint; ANumPts: integer; AWinding: boolean = false;
       ABorderPts: Integer = -1); overload;
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Render(fImage: TlmfImage; ACanvas: TCanvas); override;
   published
     property BorderPoints: Integer read fBorderPoints write fBorderPoints;
     property Winding: boolean read fWinding write fWinding;
@@ -437,7 +437,8 @@ type
   public
     constructor Create(AClip: TRect); override;
     destructor Destroy; override;
-    procedure Action(fImage: TlmfImage; ACanvas: TCanvas); override;
+    procedure Render(fImage: TlmfImage; ACanvas: TCanvas); override;
+
     procedure AddMoveTo(APt: TPoint);
     procedure AddLineTo(APt: TPoint);
     procedure AddPolyBezier(APoints: PPoint; ANumPts: Integer);
@@ -449,10 +450,9 @@ type
     procedure BeginPath;
     procedure ClosePath;
     procedure EndPath;
+    procedure FillPath;
     procedure FlattenPath;
     procedure WidenPath;
-
-    procedure FillPath;
     procedure StrokeAndFillPath;
     procedure StrokePath;
   published
@@ -485,7 +485,7 @@ begin
   fColor := AColor;
 end;
 
-procedure TlmfBkColor.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfBkColor.Render(fImage: TlmfImage; ACanvas: TCanvas);
 begin
   SetBkColor(ACanvas, fColor);
 end;
@@ -501,7 +501,7 @@ begin
   fMode := AMode;
 end;
 
-procedure TlmfBkMode.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfBkMode.Render(fImage: TlmfImage; ACanvas: TCanvas);
 begin
   SetBkMode(ACanvas, fMode);
 end;
@@ -519,7 +519,7 @@ end;
 
 { TlmfMoveTo}
 
-procedure TlmfMoveTo.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfMoveTo.Render(fImage: TlmfImage; ACanvas: TCanvas);
 begin
   ACanvas.MoveTo(fImage.ScaleX(fPos.X), fImage.ScaleY(fPos.Y));
 end;
@@ -527,7 +527,7 @@ end;
 
 { TlmfLineTo }
 
-procedure TlmfLineTo.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfLineTo.Render(fImage: TlmfImage; ACanvas: TCanvas);
 begin
   ACanvas.LineTo(fImage.ScaleX(fPos.X), fImage.ScaleY(fPos.Y));
 end;
@@ -542,7 +542,7 @@ begin
   fEndPos.Y:=y2;
 end;
 
-procedure TlmfLine.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfLine.Render(fImage: TlmfImage; ACanvas: TCanvas);
 begin
   SetBkMode(ACanvas, fImage.BkMode);
   ACanvas.Line(
@@ -561,7 +561,7 @@ begin
   fText:=AText;
 end;
 
-procedure TlmfText.Action(fImage:TlmfImage;ACanvas:TCanvas);
+procedure TlmfText.Render(fImage:TlmfImage;ACanvas:TCanvas);
 {
 var
   fnt:TFont;
@@ -601,7 +601,7 @@ begin
   fStyle := AStyle;
 end;
 
-procedure TlmfTextInRect.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfTextInRect.Render(fImage: TlmfImage; ACanvas: TCanvas);
 var
   R: TRect;
   P: TPoint;
@@ -710,7 +710,7 @@ begin
   FColor := AColor;
 end;
 
-procedure TlmfTextColor.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfTextColor.Render(fImage: TlmfImage; ACanvas: TCanvas);
 begin
   ACanvas.Font.Color := FColor;
 end;
@@ -724,7 +724,7 @@ begin
   fColor := AColor;
 end;
 
-procedure TlmfColor.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfColor.Render(fImage: TlmfImage; ACanvas: TCanvas);
 begin
   ACanvas.Colors[fImage.ScaleX(fpos.x), fImage.ScaleY(fpos.y)] := fColor;
 end;
@@ -738,7 +738,7 @@ begin
   fClip:=AClip;
 end;
 
-procedure TlmfClip.Action(fImage:TlmfImage;ACanvas:TCanvas);
+procedure TlmfClip.Render(fImage:TlmfImage;ACanvas:TCanvas);
 var
   newClip:TRect;
 begin
@@ -769,7 +769,7 @@ end;
 
 { TlmfRect (rectangle) }
 
-procedure TlmfRect.Action(fImage:TlmfImage; ACanvas:TCanvas);
+procedure TlmfRect.Render(fImage:TlmfImage; ACanvas:TCanvas);
 begin
   SetBkMode(ACanvas, fImage.BkMode);
   ACanvas.Rectangle(
@@ -790,7 +790,7 @@ begin
   fry := ARy;
 end;
 
-procedure TlmfRoundRect.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfRoundRect.Render(fImage: TlmfImage; ACanvas: TCanvas);
 begin
   SetBkMode(ACanvas, fImage.BkMode);
   ACanvas.RoundRect(
@@ -814,7 +814,7 @@ begin
   fFillStyle := AFillStyle;
 end;
 
-procedure TlmfFloodFill.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfFloodFill.Render(fImage: TlmfImage; ACanvas: TCanvas);
 begin
   ACanvas.FloodFill(fImage.ScaleX(pX), fImage.ScaleY(pY), fFillColor, fFillStyle)
 end;
@@ -831,7 +831,7 @@ begin
   fDirection := ADirection;
 end;
 
-procedure TlmfGradientFill.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfGradientFill.Render(fImage: TlmfImage; ACanvas: TCanvas);
 var
   R: TRect;
 begin
@@ -875,7 +875,7 @@ begin
   Move(AFirstTriangle^, fTriangles[0], SizeOf(TGradientTriangle) * ANumTriangles);
 end;
 
-procedure TlmfMultiGradientFill.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfMultiGradientFill.Render(fImage: TlmfImage; ACanvas: TCanvas);
 var
   scaledVertices: array of TTriVertex;
   i: Integer;
@@ -982,7 +982,7 @@ end;
 
 { TlmfEllipse }
 
-procedure TlmfEllipse.Action(fImage:TlmfImage;ACanvas:TCanvas);
+procedure TlmfEllipse.Render(fImage:TlmfImage;ACanvas:TCanvas);
 begin
   SetBkMode(ACanvas, fImage.BkMode);
   ACanvas.Ellipse(
@@ -1003,7 +1003,7 @@ begin
   fEndPt := AEndPt;
 end;
 
-procedure TlmfArc.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfArc.Render(fImage: TlmfImage; ACanvas: TCanvas);
 var
   ptStart, ptEnd: TPoint;
 begin
@@ -1025,7 +1025,7 @@ end;
 
 { TlmfArcTo }
 
-procedure TlmfArcTo.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfArcTo.Render(fImage: TlmfImage; ACanvas: TCanvas);
 var
   ptStart, ptEnd: TPoint;
 begin
@@ -1050,7 +1050,7 @@ end;
 
 { TlmfChord }
 
-procedure TlmfChord.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfChord.Render(fImage: TlmfImage; ACanvas: TCanvas);
 var
   ptStart, ptEnd: TPoint;
 begin
@@ -1074,7 +1074,7 @@ end;
 
 { TlmfPie }
 
-procedure TlmfPie.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfPie.Render(fImage: TlmfImage; ACanvas: TCanvas);
 var
   ptStart, ptEnd: TPoint;
 begin
@@ -1110,7 +1110,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TlmfFont.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfFont.Render(fImage: TlmfImage; ACanvas: TCanvas);
 var
   ht: integer;
 begin
@@ -1145,7 +1145,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TlmfBrush.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfBrush.Render(fImage: TlmfImage; ACanvas: TCanvas);
 begin
   ACanvas.Brush.Assign(fBrush);
 end;
@@ -1165,7 +1165,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TlmfPen.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfPen.Render(fImage: TlmfImage; ACanvas: TCanvas);
 begin
   ACanvas.Pen.Assign(fPen);
   ACanvas.Pen.Width := fImage.ScaleSizeY(fPen.Width);
@@ -1180,7 +1180,7 @@ begin
   fMode := AMode;
 end;
 
-procedure TlmfPenMode.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfPenMode.Render(fImage: TlmfImage; ACanvas: TCanvas);
 begin
   ACanvas.Pen.Mode := fMode;
 end;
@@ -1194,7 +1194,7 @@ begin
   fMode := AMode;
 end;
 
-procedure TlmfCopyMode.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfCopyMode.Render(fImage: TlmfImage; ACanvas: TCanvas);
 begin
   ACanvas.CopyMode := fMode;
 end;
@@ -1208,7 +1208,7 @@ begin
   FCurrObj := ACurrObj;
 end;
 
-procedure TlmfSelectObject.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfSelectObject.Render(fImage: TlmfImage; ACanvas: TCanvas);
 var
   ht: Integer;
 begin
@@ -1247,7 +1247,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TlmfPicture.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfPicture.Render(fImage: TlmfImage; ACanvas: TCanvas);
 var
   destRect: TRect;
   R: TRect;
@@ -1327,7 +1327,7 @@ end;
 
 { TlmfPolyLine }
 
-procedure TlmfPolyLine.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfPolyLine.Render(fImage: TlmfImage; ACanvas: TCanvas);
 var
   i, j: Longint;
   P: TPointArray = nil;
@@ -1356,7 +1356,7 @@ end;
 
 { TlmfPolyBezier }
 
-procedure TlmfPolyBezier.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfPolyBezier.Render(fImage: TlmfImage; ACanvas: TCanvas);
 var
   i, j: Longint;
   P: array of TPoint = nil;
@@ -1398,7 +1398,7 @@ begin
   fBorderPoints := ABorderPts;
 end;
 
-procedure TlmfPolygon.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfPolygon.Render(fImage: TlmfImage; ACanvas: TCanvas);
 var
   i: longint;
   P: TPointArray = nil;
@@ -1463,7 +1463,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TlmfPath.Action(fImage: TlmfImage; ACanvas: TCanvas);
+procedure TlmfPath.Render(fImage: TlmfImage; ACanvas: TCanvas);
 const
   BLOCK_SIZE = 1024;
 var

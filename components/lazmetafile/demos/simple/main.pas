@@ -152,7 +152,7 @@ begin
     try
       ico.LoadFromFile('../../../../images/includefile.ico');
       ico.Transparent := true;
-      LmfCanvas.Draw(500*10, 150*10, ico);
+      LmfCanvas.Draw(500*10, 250*10, ico);
     finally
       ico.Free;
     end;

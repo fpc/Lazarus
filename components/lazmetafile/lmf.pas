@@ -539,7 +539,7 @@ begin
       // which depends on it (text, patterned line, filling commands), is executed.
       if (item is TlmfBkMode) then
         FBkMode := TlmfBkMode(item).Mode;
-      item.Action(Self, ACanvas);
+      item.Render(Self, ACanvas);
     end;
   finally
     kx := 1;
