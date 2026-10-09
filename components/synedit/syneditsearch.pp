@@ -873,7 +873,7 @@ begin
   end // fRegExpr
   else begin
     // ************ NOT RegExp ************
-    // prepare for firs iteration
+    // prepare for first iteration
     LineStr:=Lines[y];
     if ASupportUnicodeCase and (not fSensitive) then LineStr := UTF8LowerCase(LineStr);
     LineLen:=length(LineStr);

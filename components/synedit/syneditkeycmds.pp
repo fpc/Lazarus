@@ -251,7 +251,7 @@ const
   ecLineBreak       = 509;  // Break line at current position, move caret to new line
   ecInsertLine      = 510;  // Break line at current position, leave caret
   ecChar            = 511;  // Insert a character at current position
-  ecSmartUnindent   = 512;  // NOT regocniced as command, used for group-undo, set by beautifier
+  ecSmartUnindent   = 512;  // NOT recognized as command, used for group-undo, set by beautifier
   ecDeleteCharNoCrLf= 513;  // Delete char at cursor (i.e. delete key), but do not join lines
   ecDeleteLineKeepX = 514;  // Delete current line
   ecDeleteWordNoCrLf= 515;  // Delete word at cursor (i.e. ctrl+delete shourtcut), but do not join lines

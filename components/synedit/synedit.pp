@@ -6692,7 +6692,7 @@ begin
   FUndoList := NewBuffer.UndoList;
   FRedoList := NewBuffer.RedoList;
 
-  // Recreate te public access to FLines
+  // Recreate the public access to FLines
   FreeAndNil(FStrings);
   FStrings := TSynEditLines.Create(TSynEditStringList(FLines), @MarkTextAsSaved);
 

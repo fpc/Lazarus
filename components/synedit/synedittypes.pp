@@ -119,7 +119,7 @@ type
     scFocus,     // received or lost focus
     scHandleCreated,    // handle created
     scFontOrStyleChanged,
-    scOptions    // some Options were changed (only triggered by some optinos)
+    scOptions    // some Options were changed (only triggered by some options)
    );
   TSynStatusChanges = set of TSynStatusChange;
   TStatusChangeEvent = procedure(Sender: TObject; Changes: TSynStatusChanges)
@@ -166,7 +166,7 @@ type
                                // - MaxLeftChar
     eoScrollHintFollows,       // The hint, showing vertical scroll position, follows the mouse cursor
     eoShowScrollHint,          // Shows hint, with the current scroll position, when scrolling vertically by dragging the ScrollBar slider
-    eoShowSpecialChars,        // Shows non-printable characters (spaces, tabulations) with greyed symbols
+    eoShowSpecialChars,        // Shows non-printable characters (spaces, tabulations) with grayed symbols
     eoSmartTabs,               // When using <Tab> key, caret will go to the next non-space character of the previous line
     eoTabIndent,               // Allows keys <Tab> and <Shift+Tab> act as block-indent and block-unindent, for selected blocks
     eoTabsToSpaces,            // Converts tab characters to a specified number of space characters
@@ -206,7 +206,7 @@ type
     eoAutoHideCursor,          // Hide mouse cursor, when new text is typed
     eoColorSelectionTillEol,   // Colorize selection background only till EOL of each line, not till edge of control
     eoPersistentCaretStopBlink,// only if eoPersistentCaret > do not blink, draw fixed line
-    eoNoScrollOnSelectRange,   // SelectALl, SelectParagraph, SelectToBrace will not scroll
+    eoNoScrollOnSelectRange,   // SelectAll, SelectParagraph, SelectToBrace will not scroll
     eoAcceptDragDropEditing,   // Accept dropping text dragged from a SynEdit (self or other).
                                // OnDragOver: To use OnDragOver, this flag should NOT be set.
                                // WARNING: Currently OnDragOver also works, if drag-source is NOT TSynEdit, this may be change for other drag sources.
