@@ -1,11 +1,12 @@
 object AddFPMakeDependencyDialog: TAddFPMakeDependencyDialog
-  Left = 1470
+  Left = 400
   Height = 300
   Top = 366
   Width = 450
   Caption = 'AddFPMakeDependencyDialog'
   ClientHeight = 300
   ClientWidth = 450
+  Position = poWorkAreaCenter
   LCLVersion = '1.9.0.0'
   object BP: TButtonPanel
     Left = 6
