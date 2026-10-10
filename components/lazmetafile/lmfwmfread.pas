@@ -1005,7 +1005,16 @@ begin
   end;
 
   if (FLogWidth = 0) and (FLogHeight = 0) then
-    MeasureLogExtent;
+  begin
+    if FHasPlaceableMetaHeader then
+    begin
+      FLogOrgX := FBBox.Left;
+      FLogOrgY := FBBox.Top;
+      FLogWidth := FBBox.Right - FBBox.Left;
+      FLogHeight := FBBox.Bottom - FBBox.Top;
+    end else
+      MeasureLogExtent;
+  end;
 
   FImage.SetLogBounds(FLogOrgX, FLogOrgY, FLogWidth, FLogHeight);
 end;

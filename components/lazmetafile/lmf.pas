@@ -422,7 +422,7 @@ end;
 
 function TlmfImage.GetEmpty:boolean;
 begin
-  Result:=Assigned(fList) and (fList.ComponentCount>0);
+  Result:= (not Assigned(fList)) or (fList.ComponentCount = 0);
 end;
 
 procedure TlmfImage.CalcScaling(const Rect: TRect);

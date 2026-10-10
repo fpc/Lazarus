@@ -91,6 +91,8 @@ end;
 
 procedure TMainForm.cmbMapModeChange(Sender: TObject);
 begin
+  ScrollBox1.HorzScrollBar.Position := 0;
+  ScrollBox1.VertScrollBar.Position := 0;
   FLmfImg.MapMode := TlmfMapMode(cmbMapMode.ItemIndex);
 end;
 
@@ -148,6 +150,8 @@ begin
   lblInfo.Caption := Format('Width: %d; Height = %d; LogUnitsPerInch = %d', [
     FLmfImg.Width, FLmfImg.Height, FLmfImg.LogUnitsPerInch
   ]);
+  ScrollBox1.HorzScrollBar.Position := 0;
+  ScrollBox1.VertScrollBar.Position := 0;
 end;
 
 procedure TMainForm.PaintBoxPaint(Sender: TObject);
