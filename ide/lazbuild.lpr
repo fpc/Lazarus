@@ -990,11 +990,16 @@ var
 
       // get compiler parameters
       if CompilerOverride <> '' then
-        CompilerFilename := CompilerOverride
-      else
+      begin
+        CompilerFilename := EnvironmentOptions.GetParsedCompilerFilename;
+        if CompilerFilename='' then
+          PrintErrorAndHalt(ErrorBuildFailed, 'Invalid compiler "' + CompilerOverride + '"');
+      end
+      else begin
         CompilerFilename:=Project1.GetCompilerFilename;
-      if CompilerFilename='' then
-        PrintErrorAndHalt(ErrorBuildFailed, 'Invalid compiler "' + Project1.CompilerOptions.CompilerPath + '"');
+        if CompilerFilename='' then
+          PrintErrorAndHalt(ErrorBuildFailed, 'Invalid compiler "' + Project1.CompilerOptions.CompilerPath + '"');
+      end;
 
       //DebugLn(['TLazBuildApplication.BuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
       // CompileHint: use absolute paths, same as TBuildManager.DoCheckIfProjectNeedsCompilation
