@@ -30,6 +30,10 @@ msgstr ""
 msgid " (%d times)"
 msgstr " (%d vezes)"
 
+#: heaptrcview.rserrormacroexpanding
+msgid "Error expanding macros"
+msgstr ""
+
 #: heaptrcview.rserrorparse
 msgid "Error while parsing trace file"
 msgstr "Erro ao analisar o ficheiro de rastreio"

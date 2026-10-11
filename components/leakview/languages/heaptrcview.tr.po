@@ -31,6 +31,10 @@ msgstr ""
 msgid " (%d times)"
 msgstr " (%d kere)"
 
+#: heaptrcview.rserrormacroexpanding
+msgid "Error expanding macros"
+msgstr ""
+
 #: heaptrcview.rserrorparse
 msgid "Error while parsing trace file"
 msgstr "İzleme dosyası ayrıştırılırken hata oluştu"

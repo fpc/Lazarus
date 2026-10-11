@@ -31,6 +31,10 @@ msgstr ""
 msgid " (%d times)"
 msgstr " (kartai: %d)"
 
+#: heaptrcview.rserrormacroexpanding
+msgid "Error expanding macros"
+msgstr ""
+
 #: heaptrcview.rserrorparse
 msgid "Error while parsing trace file"
 msgstr "Analizuojant pėdsako failą įvyko klaida"

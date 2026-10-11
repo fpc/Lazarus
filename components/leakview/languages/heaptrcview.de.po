@@ -31,6 +31,10 @@ msgstr "Öffnen von \"%s\" fehlgeschlagen. Zum aktuellen Editor springen?"
 msgid " (%d times)"
 msgstr " (%d mal)"
 
+#: heaptrcview.rserrormacroexpanding
+msgid "Error expanding macros"
+msgstr ""
+
 #: heaptrcview.rserrorparse
 msgid "Error while parsing trace file"
 msgstr "Fehler beim Parsen der Trace-Datei"

@@ -30,6 +30,10 @@ msgstr "Невозможно открыть \"%s\". Перейти к соотв
 msgid " (%d times)"
 msgstr " (%d раз)"
 
+#: heaptrcview.rserrormacroexpanding
+msgid "Error expanding macros"
+msgstr ""
+
 #: heaptrcview.rserrorparse
 msgid "Error while parsing trace file"
 msgstr "Ошибка анализа файла стека вызовов"
