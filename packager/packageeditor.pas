@@ -574,9 +574,9 @@ begin
   // register the section for operations on all files
   PkgEditMenuSectionFiles:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Files');
   AParent:=PkgEditMenuSectionFiles;
-  PkgEditMenuFindInFiles:=RegisterIDEMenuCommand(AParent,'Find in files',srkmecFindInFiles + ' ...');
-  PkgEditMenuSortFiles:=RegisterIDEMenuCommand(AParent,'Sort Files Permanently',lisPESortFiles);
-  PkgEditMenuFixFilesCase:=RegisterIDEMenuCommand(AParent,'Fix Files Case',lisPEFixFilesCase);
+  PkgEditMenuFindInFiles:=RegisterIDEMenuCommand(AParent,'Find in files',srkmecFindInFiles+' ...',nil,nil,nil,'menu_search_files');
+  PkgEditMenuSortFiles:=RegisterIDEMenuCommand(AParent,'Sort Files Permanently',lisPESortFiles,nil,nil,nil,'menu_edit_sort');
+  PkgEditMenuFixFilesCase:=RegisterIDEMenuCommand(AParent,'Fix Files Case',lisPEFixFilesCase,nil,nil,nil,'menu_edit_swapcase');
   PkgEditMenuShowMissingFiles:=RegisterIDEMenuCommand(AParent, 'Show Missing Files', lisPEShowMissingFiles);
 
   // register the section for using the package
@@ -585,17 +585,17 @@ begin
   // register the section for saving the package
   PkgEditMenuSectionSave:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Save');
   AParent:=PkgEditMenuSectionSave;
-  PkgEditMenuSave:=RegisterIDEMenuCommand(AParent, 'Save', lisPckEditSavePackage);
-  PkgEditMenuSaveAs:=RegisterIDEMenuCommand(AParent, 'Save As', lisPESavePackageAs);
-  PkgEditMenuRevert:=RegisterIDEMenuCommand(AParent, 'Revert', lisPERevertPackage);
+  PkgEditMenuSave:=RegisterIDEMenuCommand(AParent,'Save',lisPckEditSavePackage,nil,nil,nil,'laz_save');
+  PkgEditMenuSaveAs:=RegisterIDEMenuCommand(AParent,'Save As',lisPESavePackageAs,nil,nil,nil,'menu_saveas');
+  PkgEditMenuRevert:=RegisterIDEMenuCommand(AParent,'Revert',lisPERevertPackage,nil,nil,nil,'menu_file_revert');
   PkgEditMenuPublish:=RegisterIDEMenuCommand(AParent,'Publish',lisPkgEditPublishPackage);
 
   // register the section for compiling the package
   PkgEditMenuSectionCompile:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Compile');
   AParent:=PkgEditMenuSectionCompile;
-  PkgEditMenuCompile:=RegisterIDEMenuCommand(AParent,'Compile',lisCompile);
-  PkgEditMenuRecompileClean:=RegisterIDEMenuCommand(AParent,'Recompile Clean',lisPckEditRecompileClean);
-  PkgEditMenuRecompileAllRequired:=RegisterIDEMenuCommand(AParent,'Recompile All Required',lisPckEditRecompileAllRequired);
+  PkgEditMenuCompile:=RegisterIDEMenuCommand(AParent,'Compile',lisCompile,nil,nil,nil,'menu_compile');
+  PkgEditMenuRecompileClean:=RegisterIDEMenuCommand(AParent,'Recompile Clean',lisPckEditRecompileClean,nil,nil,nil,'menu_recompile_clean');
+  PkgEditMenuRecompileAllRequired:=RegisterIDEMenuCommand(AParent,'Recompile All Required',lisPckEditRecompileAllRequired,nil,nil,nil,'menu_recompile_all_required');
   PkgEditMenuCreateFpmakeFile:=RegisterIDEMenuCommand(AParent,'Create fpmake.pp',lisPckEditCreateFpmakeFile);
   PkgEditMenuCreateMakefile:=RegisterIDEMenuCommand(AParent,'Create Makefile',lisPckEditCreateMakefile);
 
@@ -605,7 +605,7 @@ begin
   // register the section for other things
   PkgEditMenuSectionMisc:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Misc');
   AParent:=PkgEditMenuSectionMisc;
-  PkgEditMenuViewPackageSource:=RegisterIDEMenuCommand(AParent,'View Package Source',lisPckEditViewPackageSource);
+  PkgEditMenuViewPackageSource:=RegisterIDEMenuCommand(AParent,'View Package Source',lisPckEditViewPackageSource,nil,nil,nil,'item_project_source');
 end;
 
 { TPackageEditorForm }
@@ -1966,8 +1966,10 @@ begin
   ImageIndexBinary          := IDEImages.LoadImage('pkg_binary');
   ImageIndexDirectory       := IDEImages.LoadImage('pkg_files');
 
-  ItemsTreeView.Images := IDEImages.Images_16;
-  ToolBar.Images := IDEImages.Images_16;
+  ItemsTreeView .Images := IDEImages.Images_16;
+  ToolBar       .Images := IDEImages.Images_16;
+  MorePopupMenu .Images := IDEImages.Images_16;
+
   FilterEdit.OnGetImageIndex:=@TreeViewGetImageIndex;
 
   SaveBitBtn    := CreateToolButton('SaveBitBtn', lisMenuSave, lisPckEditSavePackage, 'laz_save', @SaveBitBtnClick);
