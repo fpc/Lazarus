@@ -40,6 +40,7 @@ uses
   Classes, SysUtils, AVL_Tree,
   // Codetools
   FileProcs, BasicCodeTools, CodeTree, LinkScanner,
+  PascalReaderTool,
   PascalParserTool, KeywordFuncLists, CodeToolMemManager;
 
 type
@@ -543,8 +544,19 @@ begin
         Result:=Result.Left
       else if comp>0 then
         Result:=Result.Right
-      else
+      else begin
+        // For ctnUnit entries, verify it's not a partial match (e.g., "namespace" vs "namespace.unit1")
+        if (Entry^.Node<>nil) and (Entry^.Node.Desc=ctnUnit) and
+           (not DottedIdentifierStartsWith(Identifier,PChar(TPascalReaderTool(FTool).ExtractSourceName))) then 
+          begin
+            // Partial match - skip this entry
+            Result:=Result.Right;
+            continue;
+          end;
+
+        // Simple identifier match found
         exit;
+      end;
     end;
   end else begin
     Result:=nil;
