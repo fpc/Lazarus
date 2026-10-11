@@ -31,8 +31,8 @@ msgid " (%d times)"
 msgstr " (%d раз)"
 
 #: heaptrcview.rserrormacroexpanding
-msgid "Error expanding macros"
-msgstr ""
+msgid "Failed to expand macros."
+msgstr "Невозможно раскрыть макросы."
 
 #: heaptrcview.rserrorparse
 msgid "Error while parsing trace file"

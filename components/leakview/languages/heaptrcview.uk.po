@@ -33,7 +33,7 @@ msgid " (%d times)"
 msgstr " (%d разів)"
 
 #: heaptrcview.rserrormacroexpanding
-msgid "Error expanding macros"
+msgid "Failed to expand macros."
 msgstr ""
 
 #: heaptrcview.rserrorparse
