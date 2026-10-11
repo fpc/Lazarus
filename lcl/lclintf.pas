@@ -104,6 +104,11 @@ var
 
 implementation
 
+{$IFDEF UNIX}
+uses
+  Process;
+{$ENDIF}
+
 type
   { TTimerID }
 
