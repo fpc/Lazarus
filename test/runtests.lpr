@@ -27,7 +27,8 @@ uses
   Classes, consoletestrunner,
   TestGlobals, TestUnits, DOM,
   {Unit needed to set the LCL version and widget set name}
-  LCLVersion, InterfaceBase, LCLPlatformDef, lazmouseandkeyinput, Interfaces,
+  LCLVersion, InterfaceBase, LCLPlatformDef, LazVersion,
+  lazmouseandkeyinput, Interfaces,
   TestLazXML, TestAvgLvlTree, TestLConvEncoding, TestLazFileUtils, TestLazUTF8,
   TestLazLoggerCase, TestSearchPathProcs;
   
