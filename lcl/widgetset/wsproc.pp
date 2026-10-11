@@ -24,56 +24,35 @@ unit WSProc;
 interface
 
 uses
-  LCLClasses, LCLProc, Controls, Menus, LazLoggerBase;
+  LCLClasses, Controls, Menus,
+  // LazUtils
+  LazLoggerBase;
 
-function WSCheckReferenceAllocated(const AComponent: TLCLReferenceComponent;
-                                   const AProcName: String): Boolean;
-
-function WSCheckHandleAllocated(const AWincontrol: TWinControl;
-                                const AProcName: String): Boolean;
-
-function WSCheckHandleAllocated(const AMenu: TMenu;
-                                const AProcName: String): Boolean;
+function WSCheckReferenceAllocated(const AComponent: TLCLReferenceComponent; const AProcName: String): Boolean;
+function WSCheckHandleAllocated(const AWincontrol: TWinControl; const AProcName: String): Boolean;
+function WSCheckHandleAllocated(const AMenu: TMenu; const AProcName: String): Boolean;
 
 implementation
 
-function WSCheckReferenceAllocated(const AComponent: TLCLReferenceComponent;
-  const AProcName: String): Boolean;
-
-  procedure Warn;
-  begin
-    LazLoggerBase.DebugLn('[WARNING] %s called without reference for %s(%s)', [AProcName, AComponent.Name, AComponent.ClassName]);
-  end;
+function WSCheckReferenceAllocated(const AComponent: TLCLReferenceComponent; const AProcName: String): Boolean;
 begin
   Result := AComponent.ReferenceAllocated;
   if Result then Exit;
-  Warn;
+  DebugLn('[WARNING] %s called without reference for %s (%s)', [AProcName, AComponent.Name, AComponent.ClassName]);
 end;
 
-function WSCheckHandleAllocated(const AWincontrol: TWinControl;
-  const AProcName: String): Boolean;
-
-  procedure Warn;
-  begin
-    LazLoggerBase.DebugLn('[WARNING] %s called without handle for %s(%s)', [AProcName, AWincontrol.Name, AWincontrol.ClassName]);
-  end;
+function WSCheckHandleAllocated(const AWincontrol: TWinControl; const AProcName: String): Boolean;
 begin
   Result := AWinControl.HandleAllocated;
   if Result then Exit;
-  Warn;
+  DebugLn('[WARNING] %s called without handle for %s (%s)', [AProcName, AWincontrol.Name, AWincontrol.ClassName]);
 end;
 
-function WSCheckHandleAllocated(const AMenu: TMenu;
-                                const AProcName: String): Boolean;
-  procedure Warn;
-  begin
-    LazLoggerBase.DebugLn('[WARNING] %s called without handle for %s(%s)', [AProcName, AMenu.Name, AMenu.ClassName]);
-  end;
+function WSCheckHandleAllocated(const AMenu: TMenu; const AProcName: String): Boolean;
 begin
   Result := AMenu.HandleAllocated;
   if Result then Exit;
-  Warn;
+  DebugLn('[WARNING] %s called without handle for %s (%s)', [AProcName, AMenu.Name, AMenu.ClassName]);
 end;
-
 
 end.
