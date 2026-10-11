@@ -33,6 +33,9 @@ uses
   TestLazUtils, TestLazFileUtils, TestLazUTF8, TestLazUTF16, TestLConvEncoding, TestAvgLvlTree,
   // lcltests
   TestPen, TestPreferredSize, TestTextStrings, TestListView, TestGraphUtil, TestLazCanvasCopyRect
+  {$IFDEF LCLCustomDrawn}
+  , TestCustomDrawnStretchMaskBlt
+  {$ENDIF}
   {$IFNDEF NoSemiAutomatedTests}
   // semi-automatic tests
   , testpagecontrol, idesemiautotests, lclsemiautotests
