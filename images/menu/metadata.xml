@@ -88,6 +88,7 @@
     <icon filename="menu_build.png" width="16" height="16" style="classic">
       <keywords>
         <keyword>build</keyword>
+        <keyword>compile</keyword>
         <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>ide</keyword>
@@ -101,6 +102,7 @@
     <icon filename="menu_build_150.png" width="24" height="24" style="classic">
       <keywords>
         <keyword>build</keyword>
+        <keyword>compile</keyword>
         <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>ide</keyword>
@@ -114,6 +116,7 @@
     <icon filename="menu_build_200.png" width="32" height="32" style="classic">
       <keywords>
         <keyword>build</keyword>
+        <keyword>compile</keyword>
         <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>ide</keyword>
@@ -126,6 +129,8 @@
     </icon>
     <icon filename="menu_build_all.png" width="16" height="16" style="classic">
       <keywords>
+        <keyword>all</keyword>
+        <keyword>compile</keyword>
         <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>ide</keyword>
@@ -138,6 +143,8 @@
     </icon>
     <icon filename="menu_build_all_150.png" width="24" height="24" style="classic">
       <keywords>
+        <keyword>all</keyword>
+        <keyword>compile</keyword>
         <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>ide</keyword>
@@ -150,6 +157,8 @@
     </icon>
     <icon filename="menu_build_all_200.png" width="32" height="32" style="classic">
       <keywords>
+        <keyword>all</keyword>
+        <keyword>compile</keyword>
         <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>ide</keyword>
@@ -612,6 +621,7 @@
     </icon>
     <icon filename="menu_compile.png" width="16" height="16" style="classic">
       <keywords>
+        <keyword>compile</keyword>
         <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>ide</keyword>
@@ -623,6 +633,7 @@
     </icon>
     <icon filename="menu_compiler_options.png" width="16" height="16" style="classic">
       <keywords>
+        <keyword>compile</keyword>
         <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>ide</keyword>
@@ -635,6 +646,7 @@
     </icon>
     <icon filename="menu_compiler_options_150.png" width="24" height="24" style="classic">
       <keywords>
+        <keyword>compile</keyword>
         <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>ide</keyword>
@@ -647,6 +659,7 @@
     </icon>
     <icon filename="menu_compiler_options_200.png" width="32" height="32" style="classic">
       <keywords>
+        <keyword>compile</keyword>
         <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>ide</keyword>
@@ -659,6 +672,7 @@
     </icon>
     <icon filename="menu_compile_150.png" width="24" height="24" style="classic">
       <keywords>
+        <keyword>compile</keyword>
         <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>ide</keyword>
@@ -670,6 +684,7 @@
     </icon>
     <icon filename="menu_compile_200.png" width="32" height="32" style="classic">
       <keywords>
+        <keyword>compile</keyword>
         <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>ide</keyword>
@@ -4688,6 +4703,99 @@
         <keyword>arrows</keyword>
         <keyword>down</keyword>
         <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_recompile_all_required.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>accept</keyword>
+        <keyword>build</keyword>
+        <keyword>check</keyword>
+        <keyword>compile</keyword>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>required</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_recompile_all_required_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>accept</keyword>
+        <keyword>build</keyword>
+        <keyword>check</keyword>
+        <keyword>compile</keyword>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>required</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_recompile_all_required_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>accept</keyword>
+        <keyword>build</keyword>
+        <keyword>check</keyword>
+        <keyword>compile</keyword>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>required</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_recompile_clean.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>build</keyword>
+        <keyword>clean</keyword>
+        <keyword>clear</keyword>
+        <keyword>compile</keyword>
+        <keyword>configuration</keyword>
+        <keyword>delete</keyword>
+        <keyword>erase</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_recompile_clean_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>build</keyword>
+        <keyword>clean</keyword>
+        <keyword>clear</keyword>
+        <keyword>compile</keyword>
+        <keyword>configuration</keyword>
+        <keyword>delete</keyword>
+        <keyword>erase</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_recompile_clean_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>build</keyword>
+        <keyword>clean</keyword>
+        <keyword>clear</keyword>
+        <keyword>compile</keyword>
+        <keyword>configuration</keyword>
+        <keyword>delete</keyword>
+        <keyword>erase</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
       </keywords>
     </icon>
   </icons>
