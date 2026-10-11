@@ -96,7 +96,7 @@ resourcestring
   strLeakingBlocksCount = 'Leaking Blocks Count: %d';
   //
   rsErrorParse = 'Error while parsing trace file';
-  rsErrorMacroExpanding = 'Error expanding macros';
+  rsErrorMacroExpanding = 'Failed to expand macros.';
   rsDTimes = ' (%d times)';
   rsLeakView = 'Leaks and Traces';
   //
