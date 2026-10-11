@@ -22,6 +22,7 @@ type
 
   TLazRegionPart = class
   public
+    function Clone: TLazRegionPart; virtual;
     function GetBoundingRect: TRect; virtual;
     function IsPointInPart(AX, AY: Integer): Boolean; virtual;
   end;
@@ -31,6 +32,7 @@ type
   TLazRegionRect = class(TLazRegionPart)
   public
     Rect: TRect;
+    function Clone: TLazRegionPart; override;
     function IsPointInPart(AX, AY: Integer): Boolean; override;
   end;
 
@@ -40,6 +42,7 @@ type
   public
     Points: array of TPoint;
     FillMode: TLazRegionFillMode;
+    function Clone: TLazRegionPart; override;
     function IsPointInPart(AX, AY: Integer): Boolean; override;
   end;
 
@@ -48,6 +51,7 @@ type
   TLazRegionEllipse = class(TLazRegionPart)
   public
     X1, Y1, X2, Y2: Integer;
+    function Clone: TLazRegionPart; override;
     function IsPointInPart(AX, AY: Integer): Boolean; override;
   end;
 
@@ -161,6 +165,18 @@ end;
 
 { TLazRegionEllipse }
 
+function TLazRegionEllipse.Clone: TLazRegionPart;
+var
+  Ellipse: TLazRegionEllipse;
+begin
+  Ellipse := TLazRegionEllipse.Create;
+  Ellipse.X1 := X1;
+  Ellipse.Y1 := Y1;
+  Ellipse.X2 := X2;
+  Ellipse.Y2 := Y2;
+  Result := Ellipse;
+end;
+
 {
   The equation of the inner area of an axis aligned ellipse:
 
@@ -189,6 +205,11 @@ end;
 
 { TLazRegionPart }
 
+function TLazRegionPart.Clone: TLazRegionPart;
+begin
+  Result := TLazRegionPart.Create;
+end;
+
 function TLazRegionPart.GetBoundingRect: TRect;
 begin
   Result := Bounds(0, 0, 0, 0);
@@ -201,6 +222,12 @@ end;
 
 { TLazRegionRect }
 
+function TLazRegionRect.Clone: TLazRegionPart;
+begin
+  Result := TLazRegionRect.Create;
+  TLazRegionRect(Result).Rect := Rect;
+end;
+
 function TLazRegionRect.IsPointInPart(AX, AY: Integer): Boolean;
 begin
   Result := (AX >= Rect.Left) and (AX <= Rect.Right) and
@@ -208,6 +235,13 @@ begin
 end;
 
 { TLazRegionPolygon }
+
+function TLazRegionPolygon.Clone: TLazRegionPart;
+begin
+  Result := TLazRegionPolygon.Create;
+  TLazRegionPolygon(Result).Points := Copy(Points);
+  TLazRegionPolygon(Result).FillMode := FillMode;
+end;
 
 function TLazRegionPolygon.IsPointInPart(AX, AY: Integer): Boolean;
 begin
@@ -232,6 +266,7 @@ end;
 
 procedure TLazRegion.Assign(ASrcRegion: TLazRegion);
 begin
+  if ASrcRegion = Self then Exit;
   Clear;
   AddPartsFromRegion(ASrcRegion);
 end;
@@ -324,6 +359,7 @@ procedure TLazRegion.AddPartsFromRegion(ASrcRegion: TLazRegion);
 var
   i: Integer;
 begin
+  if ASrcRegion = Self then Exit;
   if ASrcRegion.IsSimpleRectRegion then
   begin
     if IsSimpleRectRegion and IsSimpleRectEmpty() then
@@ -335,7 +371,7 @@ begin
   begin
     for i := 0 to ASrcRegion.Parts.Count-1 do
     begin
-      Parts.Add(ASrcRegion.Parts.Items[i]);
+      AddPart(TLazRegionPart(ASrcRegion.Parts.Items[i]).Clone);
     end;
     IsSimpleRectRegion := False;
   end;

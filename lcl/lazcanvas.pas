@@ -177,6 +177,7 @@ begin
   Brush.Free;
   Pen.Free;
   Font.Free;
+  ClipRegion.Free;
   inherited Destroy;
 end;
 
@@ -586,6 +587,7 @@ end;
 function TLazCanvas.SaveState: Integer;
 var
   lState: TLazCanvasState;
+  lChildRegion: TLazRegionWithChilds;
 begin
   lState := TLazCanvasState.Create;
 
@@ -595,6 +597,25 @@ begin
   lState.BaseWindowOrg := BaseWindowOrg;
   lState.WindowOrg := WindowOrg;
   lState.Clipping := Clipping;
+  if ClipRegion is TLazRegionWithChilds then
+  begin
+    lChildRegion := TLazRegionWithChilds.Create;
+    lChildRegion.Assign(TLazRegion(ClipRegion));
+    lChildRegion.Childs.Assign(TLazRegionWithChilds(ClipRegion).Childs);
+    lChildRegion.Parent := TLazRegionWithChilds(ClipRegion).Parent;
+    lChildRegion.UserData := TLazRegionWithChilds(ClipRegion).UserData;
+    lState.ClipRegion := lChildRegion;
+  end
+  else if ClipRegion is TLazRegion then
+  begin
+    lState.ClipRegion := TLazRegion.Create;
+    TLazRegion(lState.ClipRegion).Assign(TLazRegion(ClipRegion));
+  end
+  else if ClipRegion is TFPRectRegion then
+  begin
+    lState.ClipRegion := TFPRectRegion.Create;
+    TFPRectRegion(lState.ClipRegion).Rect := TFPRectRegion(ClipRegion).Rect;
+  end;
 
   Result := GraphicStateList.Add(lState);
 end;
@@ -615,6 +636,13 @@ begin
   AssignFontData(lState.Font);
   BaseWindowOrg := lState.BaseWindowOrg;
   WindowOrg := lState.WindowOrg;
+  {$if defined(ver2_6)}
+  FreeAndNil(FLazClipRegion);
+  {$else}
+  FreeAndNil(FClipRegion);
+  {$endif}
+  ClipRegion := lState.ClipRegion;
+  lState.ClipRegion := nil;
   Clipping := lState.Clipping;
 
   lState.Free;
