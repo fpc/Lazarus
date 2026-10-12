@@ -13,10 +13,19 @@ unit UTF8Process;
 
 {$mode objfpc}{$H+}
 
+{$IF defined(UNIX) and (FPC_FULLVERSION<30301)}
+  // FPC 3.2.x TProcess.Execute converts CurrentDirectory after fpFork, which
+  // can deadlock if another thread was converting strings (iconv lock)
+  {$DEFINE ForkChDirWorkaround}
+{$ENDIF}
+
 interface
 
 uses
   Classes, SysUtils, Process,
+  {$IFDEF ForkChDirWorkaround}
+  BaseUnix,
+  {$ENDIF}
   // LazUtils
   FileUtil, LazFileUtils, LazUtilsStrConsts;
 
@@ -24,7 +33,16 @@ uses
 
 type
   TProcessUTF8 = class(TProcess)
+  {$IFDEF ForkChDirWorkaround}
+  private
+    FSysCurrentDir: RawByteString;
+    FOrigForkEvent: TProcessForkEvent;
+    procedure ChDirForkEvent(Sender: TObject);
+  {$ENDIF}
   public
+    {$IFDEF ForkChDirWorkaround}
+    procedure Execute; override;
+    {$ENDIF}
     procedure ParseCmdLine(const CmdLine: string; ReadBackslash: boolean = false);
   end;
 
@@ -170,6 +188,44 @@ procedure Register;
 begin
   RegisterComponents('System',[TProcessUTF8]);
 end;
+
+{$IFDEF ForkChDirWorkaround}
+procedure TProcessUTF8.ChDirForkEvent(Sender: TObject);
+begin
+  // Note: this runs in the forked child, where only the forking thread exists.
+  // Do not convert strings or allocate memory here, the locks may be held by
+  // threads which do not exist in the child.
+  if FpChdir(PAnsiChar(FSysCurrentDir))<>0 then
+    FpExit(127);
+  if Assigned(FOrigForkEvent) then
+    FOrigForkEvent(Sender);
+end;
+
+procedure TProcessUTF8.Execute;
+var
+  OldCurrentDir: TProcessString;
+begin
+  if CurrentDirectory='' then begin
+    inherited Execute;
+    exit;
+  end;
+  // convert the directory before forking and change to it in the child
+  // via OnForkEvent without string conversion
+  OldCurrentDir:=CurrentDirectory;
+  FSysCurrentDir:=ToSingleByteFileSystemEncodedFileName(OldCurrentDir);
+  FOrigForkEvent:=OnForkEvent;
+  CurrentDirectory:='';
+  OnForkEvent:=@ChDirForkEvent;
+  try
+    inherited Execute;
+  finally
+    CurrentDirectory:=OldCurrentDir;
+    OnForkEvent:=FOrigForkEvent;
+    FOrigForkEvent:=nil;
+    FSysCurrentDir:='';
+  end;
+end;
+{$ENDIF}
 
 procedure TProcessUTF8.ParseCmdLine(const CmdLine: string; ReadBackslash: boolean);
 var
