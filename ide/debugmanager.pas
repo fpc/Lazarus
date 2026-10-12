@@ -1665,6 +1665,12 @@ begin
   for i := 0 to FStateNotificationList.Count-1 do
     TDebuggerStateChangeNotification(FStateNotificationList[i])(ADebugger, OldState);
 
+  if OldState = dsInit then begin
+    if FDialogs[ddtLocals]   <> nil then TLocalsDlg(FDialogs[ddtLocals]).WatchPrinter.TargetAddressSize      := FDebugger.TargetWidth;
+    if FDialogs[ddtWatches]  <> nil then TWatchesDlg(FDialogs[ddtWatches]).WatchPrinter.TargetAddressSize    := FDebugger.TargetWidth;
+    if FDialogs[ddtInspect]  <> nil then TIDEInspectDlg(FDialogs[ddtInspect]).WatchPrinter.TargetAddressSize := FDebugger.TargetWidth;
+    if FDialogs[ddtEvaluate] <> nil then TEvaluateDlg(FDialogs[ddtEvaluate]).WatchPrinter.TargetAddressSize  := FDebugger.TargetWidth;
+  end;
   UnlockDialogs;
 
   if FDebugger.State = dsInternalPause
