@@ -79,7 +79,7 @@ type
     FOnlyValueFormatter: IIdeDbgValueFormatterIntf;
     FDefaultValueFormatter, FCurrentValueFormatter, FNextValueFormatter: IIdeDbgValueFormatterIntf;
     FWatchedVarName: String;
-    FTargetAddressSize: integer;
+    FTargetAddrByteSize: integer;
     FDisplayFormatResolver: TDisplayFormatResolver;
     FNextCallIsValueFormatter: Boolean;
     FInValFormNestLevel: integer;
@@ -92,6 +92,8 @@ type
     FCurrentOuterMostArrayLvl, FOuterMostArrayCount, FCurrentArrayCombineLvl: integer;
     FCurrentArrayLenShown: boolean;
     FNumPrefixFormat: array [Boolean] of TWatchDisplayFormatNumPrefix;
+    function GetTargetAddressSize: integer;
+    procedure SetTargetAddressSize(AValue: integer);
   protected const
     MAX_ALLOWED_NEST_LVL = 100;
   protected type
@@ -126,7 +128,7 @@ type
     property FormatFlags: TWatchResultPrinterFormatFlags read FFormatFlags write FFormatFlags;
     property OnlyValueFormatter: IIdeDbgValueFormatterIntf read FOnlyValueFormatter write FOnlyValueFormatter;
 
-    property TargetAddressSize: integer read FTargetAddressSize write FTargetAddressSize;
+    property TargetAddressSize: integer read GetTargetAddressSize write SetTargetAddressSize; // Bits
     property DisplayFormatResolver: TDisplayFormatResolver read FDisplayFormatResolver;
   end;
 
@@ -512,6 +514,16 @@ end;
 
 { TWatchResultPrinter }
 
+function TWatchResultPrinter.GetTargetAddressSize: integer;
+begin
+  Result := FTargetAddrByteSize * 8;
+end;
+
+procedure TWatchResultPrinter.SetTargetAddressSize(AValue: integer);
+begin
+  FTargetAddrByteSize := AValue div 8;
+end;
+
 procedure TWatchResultPrinter.StoreSetting(out AStorage: TWatchResStoredSettings);
 begin
   AStorage.FFormatFlags           := FFormatFlags;
@@ -787,7 +799,7 @@ begin
 
     if (ADispFormat.Struct.ShowPointerFormat = vdfStructPointerOnly) then begin
       R2 := Result.RawAsStringPtr;
-      R2^ := PrintNumber(AResValue.DataAddress, Int64(AResValue.DataAddress), FTargetAddressSize, DefaultAddrNum, True, True);
+      R2^ := PrintNumber(AResValue.DataAddress, Int64(AResValue.DataAddress), FTargetAddrByteSize, DefaultAddrNum, True, True);
 
       if tn <> '' then
         R2^ := tn + '(' + R2^ + ')';
@@ -1021,7 +1033,7 @@ begin
   if (AResValue.StructType in [dstClass, dstInterface])
   then begin
     if (AResValue.DataAddress = 0) then begin
-      //Header := PrintNumber(0, 0, FTargetAddressSize, Resolved.Num2);
+      //Header := PrintNumber(0, 0, FTargetAddrByteSize, Resolved.Num2);
       if (Resolved.Address.TypeFormat = vdfAddressTyped) and (tn <> '') then
         Result.RawAsStringPtr^ := tn + '(nil)'
       else
@@ -1032,7 +1044,7 @@ begin
     if (Resolved.Struct.ShowPointerFormat <> vdfStructPointerOff) or (AResValue.FieldCount = 0)
     then begin
       // TODO: for 32 bit target, sign extend the 2nd argument
-      Header := PrintNumber(AResValue.DataAddress, Int64(AResValue.DataAddress), FTargetAddressSize, Resolved.Num2, True, True);
+      Header := PrintNumber(AResValue.DataAddress, Int64(AResValue.DataAddress), FTargetAddrByteSize, Resolved.Num2, True, True);
       if (Resolved.Address.TypeFormat = vdfAddressTyped) and (tn <> '') then begin
         Header := tn + '(' + Header + ')';
         tn := '';
@@ -1241,7 +1253,7 @@ var
   s, R: String;
 begin
   Resolved := DisplayFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
-  R := PrintNumber(AResValue.AsQWord, AResValue.AsInt64, TargetAddressSize, Resolved.Num2, True, True);
+  R := PrintNumber(AResValue.AsQWord, AResValue.AsInt64, FTargetAddrByteSize, Resolved.Num2, True, True);
 
   if AResValue.AsString <> '' then
     R := R + ' = ' + AResValue.AsString;
@@ -1280,12 +1292,12 @@ var
 begin
   m := AResValue.AsString;
   r := Result.RawAsStringPtr;
-  SetLength(r^, Length(m)*4 + Max(20, FTargetAddressSize*2+4));
+  SetLength(r^, Length(m)*4 + Max(20, FTargetAddrByteSize*2+4));
 
   i := 1;
   l := 0;
   if AResValue.DataAddress <> 0 then begin
-    s := IntToHex(AResValue.DataAddress, FTargetAddressSize*2)+':';
+    s := IntToHex(AResValue.DataAddress, FTargetAddrByteSize*2)+':';
     move(s[1], r^[i], Length(s));
     inc(i, Length(s));
     if (rpfMultiLine in FFormatFlags) and (Length(FLineSeparator) > 0) then begin
@@ -1509,7 +1521,7 @@ begin
           dec(FElementCount);
         if (Resolved.Pointer.DerefFormat <> vdfPointerDerefOnly) or (PtrDeref = nil) then begin
           n := AResValue.ByteSize;
-          if n = 0 then n := FTargetAddressSize;
+          if n = 0 then n := FTargetAddrByteSize;
           R := PrintNumber(AResValue.AsQWord, AResValue.AsInt64, n, Resolved.Num2, True, Resolved.Pointer.DerefFormat <> vdfPointerDerefOff );
           if Resolved.Pointer.Address.TypeFormat = vdfAddressTyped then begin
             ResTypeName := AResValue.TypeName;
@@ -1605,7 +1617,7 @@ begin
   FFormatFlags := [rpfMultiLine, rpfIndent];
   FCurrentMultilineLvl    := 0;
   FIndentString := '';
-  FTargetAddressSize := SizeOf(Pointer); // TODO: ask debugger
+  TargetAddressSize := SizeOf(Pointer); // TODO: ask debugger
   FDisplayFormatResolver := TDisplayFormatResolver.Create;
 end;
 
@@ -1659,7 +1671,7 @@ function TWatchResultPrinter.PrintWatchValueDataAddress(AResValue: TWatchResultD
   const ADispFormat: TWatchDisplayFormat): String;
 begin
   FNumPrefixFormat[True] := FDisplayFormatResolver.ResolveAddrPrefix(ADispFormat);
-  Result := PrintNumber(AResValue.DataAddress, Int64(AResValue.DataAddress), FTargetAddressSize, FDisplayFormatResolver.ResolveDataAddr(ADispFormat), True, True);
+  Result := PrintNumber(AResValue.DataAddress, Int64(AResValue.DataAddress), FTargetAddrByteSize, FDisplayFormatResolver.ResolveDataAddr(ADispFormat), True, True);
 end;
 
 function TWatchResultPrinter.PrintWatchValueIntf(AResValue: IWatchResultDataIntf;
