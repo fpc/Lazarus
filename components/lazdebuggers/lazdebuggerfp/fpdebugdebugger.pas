@@ -427,6 +427,7 @@ type
     procedure DoState(const OldState: TDBGState); override;
     function GetIsIdle: Boolean; override;
     function GetCommands: TDBGCommands; override;
+    function GetTargetWidth: Byte; override;
 
   protected
     // Helper vars to run in debug-thread
@@ -5372,6 +5373,17 @@ begin
     Result := Result - [dcStepOut, dcStepIntoInstr, dcStepOverInstr];
   if (FDbgController = nil) or not(FDbgController.CanContinueStep) then
     Result := Result - [dcContinueLastStep];
+end;
+
+function TFpDebugDebugger.GetTargetWidth: Byte;
+begin
+  if (DbgController <> nil) and (DbgController.CurrentProcess <> nil) then
+  case DbgController.CurrentProcess.Mode of
+    dm32: Result := 32;
+    dm64: Result := 64;
+  end
+  else
+    Result := inherited GetTargetWidth;
 end;
 
 procedure TFpDebugDebugger.LockCommandProcessing;
