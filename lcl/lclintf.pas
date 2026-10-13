@@ -48,7 +48,7 @@ interface
 
 uses
   {$IFDEF Windows}Windows, ShellApi, LazUtf16,{$ENDIF}
-  {$IFDEF UNIX}Unix, {$ENDIF}
+  {$IFDEF UNIX}Unix, Process,{$ENDIF}
   {$IFDEF Darwin}MacOSAll, CocoaAll,{$ENDIF}
   Math, Classes, SysUtils, Types,
   // LCL
@@ -103,11 +103,6 @@ var
   OpenDocumentWidgetsetImplementation: TOpenParamStringProc = nil;
 
 implementation
-
-{$IFDEF UNIX}
-uses
-  Process;
-{$ENDIF}
 
 type
   { TTimerID }
