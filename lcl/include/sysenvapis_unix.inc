@@ -24,6 +24,7 @@ end;
 function OpenDocument(APath: String): Boolean;
 var
   lApp: string;
+  DocumentProcess: TProcessUTF8;
 begin
   // Android uses this
   if Assigned(OpenDocumentWidgetsetImplementation) then
@@ -43,9 +44,16 @@ begin
   if lApp='' then
     Exit(False);
 
-  if (APath<>'') and (APath[1]<>'"') then
-    APath:=APath.QuotedString('"');
-  RunCmdFromPath(lApp,APath);
+  DocumentProcess := TProcessUTF8.Create(nil);
+  try
+    DocumentProcess.InheritHandles := False;
+    DocumentProcess.Options := [poWaitOnExit];
+    DocumentProcess.Executable := lApp;
+    DocumentProcess.Parameters.Add(APath);
+    DocumentProcess.Execute;
+  finally
+    DocumentProcess.Free;
+  end;
 end;
 
 function SelectInFolder(AFullPath: String): Boolean;
