@@ -604,7 +604,7 @@ var
   i: Integer;
   lBuf: array [0..15] of byte; // to hold timer message
   LRecTime: Integer absolute lBuf;
-  lTimeoutInterval: Integer; // miliseconds
+  lTimeoutInterval: Integer; // milliseconds
 begin
   lTimeoutInterval:= -1; // Wait Forever for an event
   xconnnum := XConnectionNumber(FDisplay);
@@ -658,7 +658,7 @@ var
   {$else}
   lTimer: TCDTimer;
   {$endif}
-  lTimeoutInterval: Integer; // miliseconds
+  lTimeoutInterval: Integer; // milliseconds
   i: Integer;
 begin
   IsFirstTimeout := True;
