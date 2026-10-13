@@ -1121,7 +1121,7 @@ end;
 { TRttiXMLConfig }
 
 procedure TRttiXMLConfig.WriteProperty(Path: String; Instance: TObject; PropInfo: Pointer;
-  DefInstance: TObject; OnlyProperty: String);
+  DefInstance: TObject; OnlyProperty: String = '');
 begin
   if OnlyProperty = '' then
     WriteProperty(Path, Instance, PropInfo, DefInstance, [])
@@ -1329,7 +1329,7 @@ begin
 end;
 
 procedure TRttiXMLConfig.ReadProperty(Path: String; Instance: TObject; PropInfo: Pointer;
-  DefInstance: TObject; OnlyProperty: String);
+  DefInstance: TObject; OnlyProperty: String = '');
 begin
   if OnlyProperty = '' then
     ReadProperty(Path, Instance, PropInfo, DefInstance, [])
@@ -1491,7 +1491,7 @@ begin
 end;
 
 procedure TRttiXMLConfig.WriteObject(Path: String; Obj: TObject; DefObject: TObject;
-  OnlyProperty: String);
+  OnlyProperty: String = '');
 begin
   if OnlyProperty = '' then
     WriteObject(Path, Obj, DefObject, [])
@@ -1517,7 +1517,7 @@ begin
 end;
 
 procedure TRttiXMLConfig.ReadObject(Path: String; Obj: TObject; DefObject: TObject;
-  OnlyProperty: String);
+  OnlyProperty: String = '');
 begin
   if OnlyProperty = '' then
     ReadObject(Path, Obj, DefObject, [])
