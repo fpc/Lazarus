@@ -68,7 +68,7 @@ var
   LastWFPResult: HWND;
 
 const
-  DblClickTime = 250;// 250 miliseconds or less between clicks is a double click
+  DblClickTime = 250;// 250 milliseconds or less between clicks is a double click
   DblClickThreshold = 3;// max Movement between two clicks of a DblClick
 
 type

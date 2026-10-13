@@ -82,7 +82,7 @@ type
 
     procedure DoItSoon;
 
-    { how long to delay in Miliseconds}
+    { how long to delay in Milliseconds }
     property Delay: integer Read fiDelay Write fiDelay;
 
     { done yet? }
