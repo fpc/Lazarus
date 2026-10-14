@@ -951,7 +951,7 @@ end;
 
 procedure TFontPanelDelegate.selectFont;
 begin
-  FontDialog.UserChoice := mrCancel;
+  FontDialog.UserChoice := mrOk;
   DontSelectFontOnClose := True;
   doSelectFont();
   exit();
@@ -959,7 +959,6 @@ end;
 
 procedure TFontPanelDelegate.exit;
 begin
-  FontDialog.UserChoice := mrOk;
   DontSelectFontOnClose := True;
   FontPanel.close();
 end;
