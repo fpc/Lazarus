@@ -152,6 +152,7 @@ type
     DefaultDesc: TCodeTreeNodeDesc;
     Flags: TIdentListItemFlags;
     BaseExprType: TExpressionType;
+    Specialized: TSpecializeParamsDictionary;
     function AsString: string;
     procedure BeautifyIdentifier({%H-}IdentList: TIdentifierList); virtual;
     function GetDesc: TCodeTreeNodeDesc;
@@ -160,7 +161,8 @@ type
                        NewIdentifier: PChar; NewLevel: integer;
                        NewNode: TCodeTreeNode; NewTool: TFindDeclarationTool;
                        NewDefaultDesc: TCodeTreeNodeDesc;
-                       IsDottedIdent: boolean=false);
+                       IsDottedIdent: boolean=false;
+                       GenEntry: PTGenericParams=nil);
     function IsProcNodeWithParams: boolean;
     function IsPropertyWithParams: boolean;
     function IsPropertyReadOnly: boolean;
@@ -386,6 +388,7 @@ type
     FProcNameAtom: TAtomPosition;
     FStartPos: integer;
     FTool: TFindDeclarationTool;
+    FSpecialized: TSpecializeParamsDictionary;
     function GetItems(Index: integer): TCodeContextInfoItem;
   public
     constructor Create;
@@ -401,7 +404,7 @@ type
     property ProcNameAtom: TAtomPosition read FProcNameAtom write FProcNameAtom;
     property StartPos: integer read FStartPos write FStartPos;// context is valid from StartPos to EndPos
     property EndPos: integer read FEndPos write FEndPos;
-
+    property Specialized: TSpecializeParamsDictionary read FSpecialized write FSpecialized;
     function CalcMemSize: PtrUInt;
   end;
 
@@ -1265,9 +1268,9 @@ end;
 
 function TIdentCompletionTool.IsSourceNameOfSelf(const CursorPos: TCodeXYPosition
   ): boolean;
-var Tool: TFindDeclarationTool;
-    p: integer;
-    s: string;
+var
+  p: integer;
+  s: string;
 begin
   result:=false;
   if (CursorPos.Code = FindUnitSource(ExtractSourceName,'',false)) or
@@ -1422,7 +1425,8 @@ var
   Lvl: LongInt;
   HasLowerVisibility: Boolean;
   IsDottedIdent, IsStrict, IsHelper: Boolean;
-  PlaceForDotted: string;
+  PlaceForDotted : string;
+  i: integer;
 begin
   // proceed searching ...
   Result:=ifrProceedSearch;
@@ -1446,6 +1450,13 @@ begin
 
   ProtectedForeignClass:=false;
   Node:=FoundContext.Node;
+
+  if (Node<>nil) and ((Node.Desc=ctnGenericType) or Node.HasParentOfType(ctnGenericType)) and
+    Node.HasAsParent(Params.GenParams.GenericNode) then
+  begin // specialized type params update
+    if Node.Desc=ctnSpecialize then exit; // don't show specialization itself
+  end;
+
   if FoundContext.Tool=Self then begin
     // identifier is in the same unit
     if FStartAtProc then begin // add result & self if applicable
@@ -1477,8 +1488,16 @@ begin
               1,
               nil,
               nil,
-              ctnVarDefinition);
+              ctnVarDefinition,
+              false,
+              @Params.GenParams);
           NewItem.ResultType:= FoundContext.Tool.ExtractClassNameOfProcNode(FuncNode,false);
+          if Params.GenParams.SpecializeParamsNode<>nil then begin
+            i:=Params.GenParams.SpecializeDictionary.GetVerse(NewItem.ResultType);
+            if i>=0 then // replace generic param with specialized type
+              NewItem.ResultType:=
+                Params.GenParams.SpecializeDictionary.ParamTypes[i].SpecializedType;
+          end;
           CurrentIdentifierList.Add(NewItem);
         end;
 
@@ -1507,11 +1526,21 @@ begin
                 1,
                 nil,
                 nil,
-                ctnVarDefinition);
+                ctnVarDefinition,
+                false,
+                @Params.GenParams);
 
-            if FuncNode<>nil then
+            if FuncNode<>nil then begin
               NewItem.ResultType:=
-                CurrentIdentifierList.StartContext.Tool.ExtractIdentifier(FuncNode.StartPos,false); // allow &type
+                CurrentIdentifierList.StartContext.Tool.ExtractIdentifier(FuncNode.StartPos,false);
+              if Params.GenParams.SpecializeParamsNode<>nil then begin
+                i:=Params.GenParams.SpecializeDictionary.GetVerse(NewItem.ResultType);
+                if i>=0 then // replace generic param with specialized type
+                  NewItem.ResultType:=
+                Params.GenParams.SpecializeDictionary.ParamTypes[i].SpecializedType;
+              end;
+            end;
+
             CurrentIdentifierList.Add(NewItem);
           end;
         end;
@@ -1658,8 +1687,15 @@ begin
       end;
     end;
 
-  ctnGenericParameter:
+  ctnGenericParameter:  begin
     Ident:=@FoundContext.Tool.Src[FoundContext.Node.StartPos];
+    if Params.GenParams.SpecializeParamsNode<>nil then begin
+      i:=Params.GenParams.SpecializeDictionary.GetVerse(GetIdentifier(Ident));
+      if i>=0 then // replace generic param with specialized type
+        Ident:=
+      PChar(Params.GenParams.SpecializeDictionary.ParamTypes[i].SpecializedType);
+    end;
+  end;
   
   ctnVarDefinition,ctnConstDefinition,ctnEnumIdentifier,ctnLabel,ctnGlobalProperty:
     Ident:=@FoundContext.Tool.Src[FoundContext.Node.StartPos];
@@ -1770,7 +1806,8 @@ begin
                             Node,
                             FoundContext.Tool,
                             ctnNone,
-                            IsDottedIdent);
+                            IsDottedIdent,
+                            @Params.GenParams);
 
   // '&' prefixed identifiers
   if (Ident^='&') and (IsIdentStartChar[Ident[1]]) then
@@ -4069,6 +4106,7 @@ begin
       Result:=true;
     finally
       if Result then begin
+        CurrentIdentifierContexts.FSpecialized.ApplyFrom(Params.GenParams.SpecializeDictionary);
         CodeContexts:=CurrentIdentifierContexts;
         CurrentIdentifierContexts:=nil;
       end else begin
@@ -4974,7 +5012,8 @@ constructor TIdentifierListItem.Create(
   NewCompatibility: TIdentifierCompatibility; NewHasChilds: boolean;
   NewHistoryIndex: integer; NewIdentifier: PChar; NewLevel: integer;
   NewNode: TCodeTreeNode; NewTool: TFindDeclarationTool;
-  NewDefaultDesc: TCodeTreeNodeDesc; IsDottedIdent: boolean);
+  NewDefaultDesc: TCodeTreeNodeDesc; IsDottedIdent: boolean;
+  GenEntry: PTGenericParams=nil);
 begin
   Compatibility:=NewCompatibility;
   if NewHasChilds then Include(FLags,iliHasChilds);
@@ -4985,6 +5024,10 @@ begin
   Node:=NewNode;
   DefaultDesc:=NewDefaultDesc;
   BaseExprType:=CleanExpressionType;
+  if (GenEntry = nil) or (Node=nil) then
+    Specialized.ParamTypes:=nil
+  else
+    Specialized.ApplyFrom(GenEntry^.SpecializeDictionary);
 end;
 
 function TIdentifierListItem.IsProcNodeWithParams: boolean;

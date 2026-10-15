@@ -1922,27 +1922,6 @@ var
   ProcNode, ClassNode, FuncResultNode: TCodeTreeNode;
   CCOptions: TCodeCreationDlgResult;
   AddSourceName: boolean;
-  ForceSpecialized: boolean;
-
-  procedure SubstituteGenericType(var AType: string; const SpecializedTypeName,
-    GenericClassName: string; ForceSpecialized: boolean);
-  var
-    i: integer;
-  begin
-     i:= Pos('.',AType)-1;
-     if ForceSpecialized then begin
-       if i<1 then exit;
-       delete(AType,1, i);
-       AType:=SpecializedTypeName+AType;
-     end else begin
-       // skip substituting for a type diffrent from GenericClass
-       if i<>length(GenericClassName) then exit;
-       if CompareIdentifiers(PChar(AType),PChar(GenericClassName))<>0 then exit;
-       // replace GenericClassName with SpecializedTypeName
-       delete(AType,1, i);
-       AType:=SpecializedTypeName+AType;
-     end;
-  end;
 
   function PositionForInsertion(): integer;
   var
@@ -2104,6 +2083,10 @@ begin
         if FindIdentifierInContext(Params) then begin
           AddSourceName:= (ResExprContext.Node<>ExprType.Context.Node) or
                           (ResExprContext.Tool<>OrigExprContext.Tool);
+          if AddSourceName and (ResExprContext.Node.Desc in AllClasses) and
+            (ExprType.Context.Node.Desc=ctnTypeDefinition) then // type in class doesn't need source name prefix
+            AddSourceName:= not (ExprType.Context.Node.HasAsParent(ResExprContext.Node));
+
           if AddSourceName then begin
           // check if found now declaration is within nested classes => class path is enough
             if not OrigExprContext.Node.HasAsParent(FindClassNode(Params.NewNode)) and
@@ -2112,11 +2095,19 @@ begin
               // declaration is shadowed by that in nested class => use type from outer class
               AddSourceName:=false;
               NewType:=ExtractClassPath(FindClassNode(OrigExprContext.Node))+'.'+NewType;
-              if Params.SpecializedTypeName<>'' then begin
+
+              if Params.GenParams.SpecializeDictionary.Used then begin
                 ClassNode:=OrigExprContext.Tool.FindClassNode(OrigExprContext.Node);
-                ForceSpecialized:= (ClassNode<>nil) and  (ClassNode.Parent.Desc=ctnGenericType);
-                SubstituteGenericType(NewType,Params.SpecializedTypeName,
-                  Params.SpecializedClassName, ForceSpecialized);
+                if (ClassNode<>nil) and (ClassNode.Parent.Desc=ctnGenericType) then
+                begin
+                  NewType:=
+                  Params.GenParams.SpecializeDictionary.SubstituteGenericItems(
+                    NewType,Params.SpecializedTypeName);
+                  if Scanner.CompilerMode in [cmDELPHI, cmDELPHIUNICODE] then // current source matters
+                    {OK}
+                  else if (Scanner.CompilerMode=cmOBJFPC) and (Pos('<',NewType)>1) then
+                    NewType:= 'specialize '+NewType;
+                end;
               end;
             end;
 
@@ -2156,11 +2147,18 @@ begin
           end;
         end else begin
           AddSourceName:=false; // different units don't need a prefix
-          if Params.SpecializedTypeName<>'' then begin
+          if Params.GenParams.SpecializeDictionary.Used then begin
             ClassNode:=ResExprContext.Tool.FindClassNode(ResExprContext.Node);
-            ForceSpecialized:= (ClassNode<>nil) and (ClassNode.Parent.Desc=ctnGenericType);
-            SubstituteGenericType(NewType,Params.SpecializedTypeName,
-              Params.SpecializedClassName, ForceSpecialized);
+            if (ClassNode<>nil) and (ClassNode.Parent.Desc=ctnGenericType) then
+            begin
+              NewType:=
+              Params.GenParams.SpecializeDictionary.SubstituteGenericItems(
+                NewType,Params.SpecializedTypeName);
+              if Scanner.CompilerMode in [cmDELPHI, cmDELPHIUNICODE] then // current source matters
+                {OK}
+              else if (Scanner.CompilerMode=cmOBJFPC) and (Pos('<',NewType)>1) then
+                NewType:= 'specialize '+NewType;
+            end;
           end;
         end;
 

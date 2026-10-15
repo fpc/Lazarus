@@ -474,6 +474,8 @@ begin
           Code:=CodeTool.ExtractProcHead(CodeNode,
               [phpWithVarModifiers,phpWithParameterNames,phpWithDefaultValues,
                phpWithResultType]);
+          if CodeContexts.Specialized.Used then
+            Code:= CodeContexts.Specialized.SubstituteGenericItems(Code,'');
         end;
       ctnProperty:
         begin
@@ -481,6 +483,8 @@ begin
             Code:=CodeTool.ExtractProperty(CodeNode,
                 [phpWithVarModifiers,phpWithParameterNames,phpWithDefaultValues,
                  phpWithResultType]);
+            if CodeContexts.Specialized.Used then
+              Code:= CodeContexts.Specialized.SubstituteGenericItems(Code,'');
           end else if not CodeTool.PropNodeIsTypeLess(CodeNode) then begin
             Code:=CodeTool.ExtractPropName(CodeNode,false);
             if not FindBaseType(CodeTool,CodeNode,Code) then

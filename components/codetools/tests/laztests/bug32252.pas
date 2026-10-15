@@ -28,9 +28,8 @@ var
   TestVar: TestType;
   TestVar2: TestType2;
 begin
-// TODO: TKey should not be in Gather...
-  TestVar:=TestType.a{completion:Create;Bar;Foo;TKey;TValue;THashFactory} Bar;
-  TestVar2:=TestType2.a{completion:Create;Bar;Foo;TKey;TValue;THashFactory} Bar;
+  TestVar:=TestType.{completion:Create;Bar,Foo,!TKey,!TValue};
+  TestVar2:=TestType2.{completion:Create;Bar,Foo,!TKey,!TValue};
 end.
 
 
