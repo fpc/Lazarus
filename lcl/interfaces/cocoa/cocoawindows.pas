@@ -1035,12 +1035,12 @@ end;
 
 function TCocoaWindow.makeFirstResponderFromLCL(aResponder: NSResponder): ObjCBOOL;
 begin
+  cancelPreviousPerformRequestsWithTarget(Self);
   if makeFirstResponderCount=0 then begin
     // not in makeFirstResponder processing, call makeFirstResponder directly
     Result:= makeFirstResponder( aResponder );
   end else begin
     // otherwise, delay processing after makeFirstResponder
-    aResponder.retain;
     performSelector_withObject_afterDelay( ObjCSelector('DoMakeFirstResponder:'), aResponder, 0 );
     Result:= true;
   end;
@@ -1049,7 +1049,6 @@ end;
 procedure TCocoaWindow.DoMakeFirstResponder(aResponder: NSResponder);
 begin
   makeFirstResponder( aResponder );
-  aResponder.release;
 end;
 
 function TCocoaWindow.window_willUseFullScreenPresentationOptions(
