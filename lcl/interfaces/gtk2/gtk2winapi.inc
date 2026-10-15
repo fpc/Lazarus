@@ -8310,7 +8310,11 @@ begin
   MouseCaptureWidget := nil;
 
   if Widget = nil then
-    exit;
+  begin
+    // we need only `Down`, issue #42651
+    LastMouse.Down := False;
+    Exit;
+  end;
 
   CaptureWidget := GetDefaultMouseCaptureWidget(Widget);
   if CaptureWidget = nil then begin
