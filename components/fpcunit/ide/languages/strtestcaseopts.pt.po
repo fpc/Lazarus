@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.9\n"
+"X-Generator: Poedit 3.10\n"
 
 #: strtestcaseopts.rsalltests
 msgid "All Tests"
@@ -137,16 +137,12 @@ msgid "Create unit"
 msgstr "Criar unidade"
 
 #: strtestcaseopts.schksetup
-#, fuzzy
-#| msgid "Create Setup Method"
 msgid "Create \"&Setup\" method"
-msgstr "Criar método de configuração"
+msgstr "Criar método \"&Setup\""
 
 #: strtestcaseopts.schktear
-#, fuzzy
-#| msgid "Create TearDown method"
 msgid "Create \"&TearDown\" method"
-msgstr "Criar método TearDown"
+msgstr "Criar método \"&TearDown\""
 
 #: strtestcaseopts.screatefirsttestcase
 msgid "&Create first test case"
