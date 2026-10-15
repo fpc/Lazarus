@@ -411,7 +411,7 @@ begin
   {$endif}
 
   lIsTab := AKey = VK_TAB;
-  LCLSendKeyDownEvent(lTarget, AKey, 0, True, False);
+  if LCLSendKeyDownEvent(lTarget, AKey, 0, True, False) <> 0 then Exit;
 
   // If this is a interface control, send the message to the main LCL control too
   if IsIntfControl(lTarget) then
@@ -421,7 +421,7 @@ begin
     {$ifdef VerboseCDEvents}
      DebugLn(Format('CallbackKeyDown IsIntfControl, sending msg to Parent=%s:%s', [lTarget.Name, lTarget.ClassName]));
     {$endif}
-    LCLSendKeyDownEvent(lTarget, AKey, 0, True, False);
+    if LCLSendKeyDownEvent(lTarget, AKey, 0, True, False) <> 0 then Exit;
     { Customdrawn owns the edit surface, so the default clipboard
       shortcuts must run here. This is after both KeyDown deliveries so
       application handlers can still consume the key first. }
@@ -446,7 +446,7 @@ begin
     lBubble := lTarget.Parent;
     while (lBubble <> nil) and (AKey <> 0) do
     begin
-      LCLSendKeyDownEvent(lBubble, AKey, 0, True, False);
+      if LCLSendKeyDownEvent(lBubble, AKey, 0, True, False) <> 0 then Exit;
       lBubble := lBubble.Parent;
     end;
   end;
