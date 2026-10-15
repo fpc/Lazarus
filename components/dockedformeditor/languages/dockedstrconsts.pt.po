@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.9\n"
+"X-Generator: Poedit 3.10\n"
 
 #: dockedstrconsts.sallowsizingcaption
 msgid "Allow size changing"
@@ -172,7 +172,7 @@ msgstr "O factor do cursor do rato é utilizado para definir valores pequenos da
 
 #: dockedstrconsts.snoanchorsforcomponent
 msgid "No anchors for this component"
-msgstr ""
+msgstr "Sem âncoras para este componente"
 
 #: dockedstrconsts.sresizercolorcaption
 msgid "Resizer Color"

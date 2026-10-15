@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.9\n"
+"X-Generator: Poedit 3.10\n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
 #, object-pascal-format
@@ -22,7 +22,7 @@ msgstr "Permitir que sítios ancorados sejam minimizados"
 
 #: anchordockstr.adrsamountofmillisecondsbeforedragstarts
 msgid "Amount of milliseconds the left mouse button should be kept pressed before drag starts"
-msgstr ""
+msgstr "Tempo, em milissegundos, para o botão esquerdo do rato estar premido antes de arrastar"
 
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
@@ -123,7 +123,7 @@ msgstr "Use o rato para arrastar e ancorar a janela \"%s\""
 
 #: anchordockstr.adrsdragdelay
 msgid "Drag delay"
-msgstr ""
+msgstr "Atraso no arrasto"
 
 #: anchordockstr.adrsdragthreshold
 msgid "Drag threshold"

@@ -9,21 +9,21 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.9\n"
+"X-Generator: Poedit 3.10\n"
 
 #: heaptrcview.brkfailedtoopenfile
 msgid "Failed to open file"
-msgstr ""
+msgstr "Falha ao abrir o ficheiro"
 
 #: heaptrcview.brkfailedtoopens
 #, object-pascal-format
 msgid "Failed to open \"%s\"."
-msgstr ""
+msgstr "Falha ao abrir \"%s\"."
 
 #: heaptrcview.brkfailedtoopensjumptocurren
 #, object-pascal-format
 msgid "Failed to open \"%s\". Jump to appropriate line in current editor instead?"
-msgstr ""
+msgstr "Falha ao abrir \"%s\". Ir antes para a linha apropriada no editor actual?"
 
 #: heaptrcview.rsdtimes
 #, object-pascal-format
@@ -71,10 +71,8 @@ msgid "Select file with trace log"
 msgstr "Seleccione o ficheiro com o diário de rastreio"
 
 #: heaptrcview.slbltrace
-#, fuzzy
-#| msgid ".trc file"
 msgid "Trace file"
-msgstr "Ficheiro .trc"
+msgstr "Ficheiro-rastreio"
 
 #: heaptrcview.stacklineformatwithfile
 #, object-pascal-format

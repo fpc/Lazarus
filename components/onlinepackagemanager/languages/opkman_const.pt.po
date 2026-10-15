@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.9\n"
+"X-Generator: Poedit 3.10\n"
 
 #: opkman_const.rsaddrepositorypackagefrm_bcancel_caption
 msgctxt "opkman_const.rsaddrepositorypackagefrm_bcancel_caption"
@@ -1334,7 +1334,7 @@ msgstr "Versão"
 
 #: opkman_const.rsmainfrm_vsttext_versionerror
 msgid "(Version error)"
-msgstr ""
+msgstr "(erro de versão)"
 
 #: opkman_const.rsmenulazaruspackagemanager
 msgid "Online Package Manager ..."
