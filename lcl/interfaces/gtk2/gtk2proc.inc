@@ -2383,11 +2383,12 @@ begin
       PassUTF8AsKeyPress := False;
       if ABeforeEvent then
       begin
+        repeat
         // try to get the UTF8 representation of the key
         if im_context_string <> '' then
         begin
           Character := UTF8Copy(im_context_string,1,1);
-          im_context_string:='';// clear, to avoid sending again
+          UTF8Delete(im_context_string,1,1);
         end
         else
         begin
@@ -2447,6 +2448,7 @@ begin
           end;
           PassUTF8AsKeyPress := not Result;
         end;
+        until im_context_string='';
       end;
 
       //  send a normal KeyPress Event for Delphi compatibility

@@ -10,6 +10,8 @@ unit Gtk2Globals;
 
 {$mode objfpc}{$H+}
 
+{$I gtk2defines.inc}
+
 interface
 
 uses
@@ -68,6 +70,8 @@ var
   im_context_string: string = '';
   im_context_string_commit: string = '';
   im_context_string_preedit: string = '';
+  im_context_PangoAttrList: PPangoAttrList = nil;
+  im_context_curpos: gint = 0;
 
 procedure ResetDefaultIMContext;
 {$IFDEF WITH_GTK2_IM}
@@ -427,11 +431,16 @@ begin
     gtk_im_context_reset(im_context);
     gtk_im_context_set_client_window(im_context,nil);
   end;
-  im_context_widget:=nil;
   im_context_use:=False;
   im_context_skipdelete:=True;
   im_context_string:='';
   im_context_string_commit:='';
+  im_context_curpos:=0;
+  if im_context_PangoAttrList<>nil then
+  begin
+    pango_attr_list_unref(im_context_PangoAttrList);
+    im_context_PangoAttrList:= nil;
+  end;
 end;
 
 {$IFDEF WITH_GTK2_IM}

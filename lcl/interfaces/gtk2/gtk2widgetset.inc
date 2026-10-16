@@ -252,7 +252,7 @@ begin
   UseCommitPath := im_context_use or (Length(Str) > 1);
 
   if not UseCommitPath then
-    im_context_string := Str  // normal key: consumed by keypress handler
+    im_context_string := im_context_string + Str  // normal key: consumed by keypress handler
   else
   begin
     im_context_string_commit := Str;  // IME commit: send full string
@@ -260,9 +260,9 @@ begin
     begin
       im_context_skipdelete := True;
       Control := TWinControl(GetNearestLCLObject(im_context_widget));
-      SendMessage(Control.Handle, LM_IM_COMPOSITION, GTK_IM_FLAG_COMMIT,
-                  LPARAM(PChar(im_context_string_commit)));
-      im_context_string_commit := '';
+      if SendMessage(Control.Handle, LM_IM_COMPOSITION, GTK_IM_FLAG_COMMIT,
+                  LPARAM(PChar(im_context_string_commit)))=0 then
+        im_context_string:=im_context_string_commit;
     end;
   end;
   {$ELSE}
@@ -295,6 +295,11 @@ begin
      (GetNearestLCLObject(im_context_widget) is TCustomControl) then
   begin
     im_context_use:=False;
+    if im_context_PangoAttrList<>nil then
+    begin
+      pango_attr_list_unref(im_context_PangoAttrList);
+      im_context_PangoAttrList:=nil;
+    end;
     control:=TWinControl(GetNearestLCLObject(im_context_widget));
     SendMessage(control.Handle,LM_IM_COMPOSITION,GTK_IM_FLAG_END,LPARAM(context));
   end;
@@ -311,10 +316,16 @@ begin
   if (im_context_widget<>nil) then
   begin
     im_context_use:=True;
+    if im_context_PangoAttrList<>nil then
+    begin
+      pango_attr_list_unref(im_context_PangoAttrList);
+      im_context_PangoAttrList:=nil;
+    end;
     gtk_im_context_get_preedit_string(context,@str,pangoattr,@curpos);
     im_context_string_preedit:=str;
     g_free(str);
-    pango_attr_list_unref(pangoattr);
+    im_context_PangoAttrList:=pangoattr;
+    im_context_curpos:=curpos;
     control:=TWinControl(GetNearestLCLObject(im_context_widget));
     Flag:=GTK_IM_FLAG_PREEDIT;
     if (not im_context_skipDelete) then begin
@@ -1106,6 +1117,8 @@ begin
   g_object_unref(im_context);
   im_context:=nil;
   im_context_widget:=nil;
+  if im_context_PangoAttrList<>nil then
+    pango_attr_list_unref(im_context_PangoAttrList);
   FreeAndNil(StayOnTopList);
   Gtk2Destroy;
   {$IFDEF HASX}
