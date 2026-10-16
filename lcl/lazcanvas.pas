@@ -782,7 +782,7 @@ begin
 
   {$ifdef lazcanvas_new_fast_copy}
   // If the formats match, make a fast copy of the data itself, without pixel conversion
-  if (ASource is TLazCanvas) and
+  if not Clipping and (ASource is TLazCanvas) and
      (Image is TLazIntfImage) and (ALazSource.Image is TLazIntfImage) and
      (ImageFormat in [clfRGB24, clfRGB24UpsideDown, clfBGR24, clfBGRA32, clfRGBA32, clfARGB32]) and
      (ImageFormat = ALazSource.ImageFormat) then
