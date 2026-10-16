@@ -4408,6 +4408,7 @@ end;
 function TMessagesCtrl.GetView(aCaption: string; CreateIfNotExist: boolean): TLMsgWndView;
 var
   i: Integer;
+  CheckingView: TLMsgWndView;
 begin
   Result:=nil;
   for i:=0 to ViewCount-1 do begin
@@ -4416,6 +4417,10 @@ begin
   end;
   if not CreateIfNotExist then
     exit(nil);
+  // a new item replaces the "Checking ..." placeholder
+  CheckingView:=GetView(lisCheckingFiles,false);
+  if CheckingView<>nil then
+    CheckingView.Free;
   Result:=TLMsgWndView.Create(Self);
   Result.FControl:=Self;
   Result.Caption:=aCaption;
