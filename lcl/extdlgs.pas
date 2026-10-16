@@ -758,43 +758,47 @@ begin
 end;
 
 procedure TCalendarDialog.DialogShow(Sender: TObject);
+const
+  cSpace = 8;
+  cDefBtnWidth = 75;
 var
   frm: TForm;
-  NBtnSize, NSpace, NCalSize: integer;
-const
-  cSpace = 16; // space between 2 buttons
+  NBtnSize, NSpace, wCal, hCal: integer;
+  scaledSpace, scaledDefBtnWidth: Integer;
 begin
+  frm := TForm(Sender);
+  scaledSpace := frm.Scale96ToFont(cSpace);
+  scaledDefBtnWidth := frm.Scale96ToFont(cDefBtnWidth);
+  okButton.AutoSize := true;
+  cancelButton.AutoSize := true;
+  NBtnSize := MaxIntValue([scaledDefBtnWidth, okButton.Width, cancelButton.Width]);
+  okButton.AutoSize := false;
+  cancelButton.AutoSize := false;
+
   // Calendar form size for Cocoa cannot be fixed on WS level
   // see issue 35336
   if WidgetSet.LCLPlatform = lpCocoa then begin
-    frm := TForm(Sender);
-
-    okButton.Constraints.MinWidth := 0;
-    okButton.Constraints.MaxWidth := 0;
-    cancelButton.Constraints.MinWidth := 0;
-    cancelButton.Constraints.MaxWidth := 0;
-    okButton.AutoSize := true;
-    cancelButton.AutoSize := true;
-    FCalendar.AutoSize := true;
-
-    NBtnSize := Max(okButton.Width, cancelButton.Width);
-    NCalSize := FCalendar.Width;
-    NSpace := NBtnSize * 2 + cSpace;
-    NSpace := Max(NCalSize, NSpace);
-
-    frm.AutoSize := false;
-    okButton.AutoSize := false;
-    cancelButton.AutoSize := false;
-
-    frm.ClientWidth := NSpace;
-    panel.Anchors := [];
+    NSpace := (NBtnSize + scaledSpace + okButton.BorderSpacing.Around) * 2;
     FCalendar.Align := alNone;
-    FCalendar.Left := (NSpace-NCalSize) div 2;
-    okButton.Width := NBtnSize;
-    cancelButton.Width := NBtnSize;
-    cancelButton.Left := 0;
-    okButton.Left := frm.ClientWidth - okButton.Width;
+    FCalendar.GetPreferredSize(wCal, hCal);
+    FCalendar.AutoSize := false;
+    FCalendar.Width := NSpace;
+    FCalendar.Height := NSpace * hCal div wCal;
+    frm.AutoSize := false;
+    frm.ClientWidth := FCalendar.Width;
+    frm.ClientHeight := FCalendar.Height + panel.Height;
   end;
+
+  NBtnSize := Min(NBtnSize, (FCalendar.Width - scaledSpace) div 2 - okButton.BorderSpacing.Around);
+  okButton.Width := NBtnSize;
+  cancelButton.Width := NBtnSize;
+ {$IFDEF MSWINDOWS}
+  okButton.Left := okButton.BorderSpacing.Around;
+  cancelButton.Left := frm.ClientWidth - cancelButton.BorderSpacing.Around - NBtnSize;
+ {$ELSE}
+  cancelButton.Left := cancelButton.BorderSpacing.Around;
+  okButton.Left := frm.ClientWidth - okButton.Borderspacing.Around - NBtnSize;
+ {$ENDIF}
 
   DoShow;
 end;
@@ -832,11 +836,14 @@ end;
 
 function TCalendarDialog.Execute:boolean;
 const
-  dw=8;
   bbs=2;
+var
+  scaledBBS: Integer;
 begin
   DlgForm:=TForm.CreateNew(Application, 0);
   try
+    scaledBBS := DlgForm.Scale96ToFont(bbs);
+
     ResetShowCloseFlags;
     DlgForm.DisableAlign;
     DlgForm.Caption:=Title;
@@ -877,25 +884,18 @@ begin
     with panel do begin
       Parent:=DlgForm;
       Caption:='';
-      Height:=32;
+      Height := DlgForm.Scale96ToFont(32);
       AnchorToCompanion(akTop, 0, FCalendar);
-      BevelOuter:=bvLowered;
+      BevelOuter:=bvNone;
     end;
 
     okButton:=TButton.Create(DlgForm);
     with okButton do begin
       Parent:=panel;
       Caption:=OKCaption;
-      Constraints.MinWidth:=75;
-      Constraints.MaxWidth:=FCalendar.Width div 2 - bbs;
-      Width:=DlgForm.Canvas.TextWidth(OKCaption)+2*dw;
       ModalResult:=mrOK;
       OnClick:=@GetNewDate;
-      //Align:=alRight;
-      Anchors := [akTop,akRight];
-      BorderSpacing.Right:=bbs;
-      AnchorSide[akRight].Side:=asrRight;
-      AnchorSide[akRight].Control:=panel;
+      BorderSpacing.Around:=scaledBBS;
       AnchorVerticalCenterTo(panel);
       Default:=True;
     end;
@@ -904,22 +904,14 @@ begin
     with cancelButton do begin
       Parent:=panel;
       Caption:=CancelCaption;
-      Constraints.MinWidth:=75;
-      Constraints.MaxWidth:=FCalendar.Width div 2;
-      Width:=DlgForm.Canvas.TextWidth(CancelCaption)+2*dw;;
       ModalResult:=mrCancel;
-      //Align:=alLeft;
-      BorderSpacing.Left:=bbs;
-      Anchors:=[akLeft,akTop];
-      AnchorSide[akLeft].Side:=asrLeft;
-      AnchorSide[akLeft].Control:=panel;
+      BorderSpacing.Around:=scaledBBS;
       AnchorVerticalCenterTo(panel);
       Cancel:=True;
     end;
-    DlgForm.ClientWidth := FCalendar.Width;
-    DlgForm.ClientHeight := panel.Top+panel.Height;
 
     DlgForm.EnableAlign;
+
     Result:=DlgForm.ShowModal=mrOK;
     FLeft:=DlgForm.Left;
     FTop:=DlgForm.Top;
