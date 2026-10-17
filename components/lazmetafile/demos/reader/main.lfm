@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 302
+  Left = 392
   Height = 449
-  Top = 124
+  Top = 127
   Width = 612
   Caption = 'Metafile Reader'
   ClientHeight = 449

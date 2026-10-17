@@ -67,6 +67,8 @@ type
     fYAxisDown: Boolean;
     fBkMode: Integer;
   private
+    function GetMMWidth: Integer;
+    function GetMMHeight: Integer;
     procedure SetDevPixelsPerInch(AValue: Integer);
     procedure SetLogOrgX(AValue: Integer);
     procedure SetLogOrgY(AValue: Integer);
@@ -117,6 +119,10 @@ type
 
     property DevWidth: Integer read FDevWidth write FDevHeight;
     property DevHeight: Integer read FDevHeight write FDevHeight;
+
+    // Assuming 1 logUnit = 0.01 mm
+    property MMWidth: Integer read GetMMWidth;
+    property MMHeight: Integer read GetMMHeight;
   end;
 
   TlmfList = class(TComponent)
@@ -339,6 +345,16 @@ begin
   Self.Modified := true;
 end;
 
+function TlmfImage.GetMMWidth: Integer;
+begin
+  Result := round(fList.Width / HUNDREDTHS_MM_PER_INCH * DevPixelsPerInch);
+end;
+
+function TlmfImage.GetMMHeight: Integer;
+begin
+  Result := round(fList.Height / HUNDREDTHS_MM_PER_INCH * DevPixelsPerInch);
+end;
+
 function TlmfImage.GetWidth: integer;
 begin
   Result := flist.fWidth;
@@ -394,14 +410,14 @@ begin
   Result := round(dY * ky);
 end;
 
-// X is in logical coordinates
+// X is in logical coordinates and is mapped to the units of the display device.
 function TlmfImage.ScaleX(X: Integer):integer;
 begin
   Result := fDevOrgX + trunc((X - FLogOrgX) * kx);
   //if Result>Width then Result:=width;
 end;
 
-// Y is in logical coordinates
+// Y is in logical coordinates and is mapped to the units of the display device.
 function TlmfImage.ScaleY(Y: Integer):integer;
 begin
   Result := fDevOrgY + trunc((Y - FLogOrgY) * ky);
@@ -529,14 +545,14 @@ var
 begin
   fCrs.Acquire;
   try
-    bkMode := 1;  // Transparent
+    BkMode := 1;  // Transparent
     CalcScaling(Rect);
     ACanvas.MoveTo(ScaleX(Rect.Left), ScaleY(Rect.Top));
     for i:=0 to fList.ComponentCount-1 do
     begin
       item := TlmfObject(fList.Components[i]);
-      // It seems that SetBkMode must be executed immediately before a command,
-      // which depends on it (text, patterned line, filling commands), is executed.
+      // It seems that SetBkMode must be executed immediately before executing a
+      // background-dependant command (text, patterned line, filling).
       if (item is TlmfBkMode) then
         FBkMode := TlmfBkMode(item).Mode;
       item.Render(Self, ACanvas);

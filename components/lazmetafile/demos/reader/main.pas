@@ -90,10 +90,51 @@ begin
 end;
 
 procedure TMainForm.cmbMapModeChange(Sender: TObject);
+var
+  mapMode: TlmfMapMode;
 begin
+  mapMode := TlmfMapMode(cmbMapMode.ItemIndex);
+  case mapMode of
+    mmIsotropic, mmAnisotropic:
+      Paintbox.Align := alClient;
+    mmHiMetric:
+      begin
+        Paintbox.Align := alNone;
+        Paintbox.Width := FlmfImg.Width * PixelsPerInch div HUNDREDTHS_MM_PER_INCH;
+        Paintbox.Height := FlmfImg.Height * PixelsPerInch div HUNDREDTHS_MM_PER_INCH;
+      end;
+    mmLoMetric:
+      begin
+        Paintbox.Align := alNone;
+        Paintbox.Width := FLmfImg.MMWidth * 10;
+        Paintbox.Height := FlmfImg.MMHeight * 10;
+      end;
+    mmHiEnglish:
+      begin
+        Paintbox.Align := alNone;
+        Paintbox.Width := FlmfImg.Width * PixelsPerInch div 1000;
+        Paintbox.Height := FlmfImg.Height * PixelsPerInch div 1000;
+      end;
+    mmLoEnglish:
+      begin
+        Paintbox.Align := alNone;
+        Paintbox.Width := FlmfImg.Width * PixelsPerInch div 100;
+        Paintbox.Height := FlmfImg.Height * PixelsPerInch div 100;
+      end;
+    mmTwips:
+      begin
+        Paintbox.Align := alNone;
+        Paintbox.Width := FlmfImg.Width * PixelsPerInch div TWIPS_PER_INCH;
+        Paintbox.Height := FlmfImg.Height * PixelsPerInch div TWIPS_PER_INCH;
+      end;
+    else
+      Paintbox.Align := alNone;
+      Paintbox.Width := FLmfImg.Width;
+      Paintbox.Height := FLmfImg.Height;
+  end;
   ScrollBox1.HorzScrollBar.Position := 0;
   ScrollBox1.VertScrollBar.Position := 0;
-  FLmfImg.MapMode := TlmfMapMode(cmbMapMode.ItemIndex);
+  FLmfImg.MapMode := mapMode;
 end;
 
 procedure TMainForm.cmbFileNameDrawItem(Control: TWinControl; Index: Integer;
@@ -141,17 +182,15 @@ begin
   FLmfImg.LoadFromLMFFile(AFileName);
   FLmfImg.MapMode := TlmfMapMode(cmbMapMode.ItemIndex);
   FLmfImg.OnChange := @ImageChanged;
-  Paintbox.Width := FLmfImg.Width;
-  Paintbox.Height := FLmfImg.Height;
-  Paintbox.Invalidate;
 
   AddToHistory(AFileName);
   Caption := Format(CAPTION_MASK, [ExtractfileName(AFileName)]);
   lblInfo.Caption := Format('Width: %d; Height = %d; LogUnitsPerInch = %d', [
     FLmfImg.Width, FLmfImg.Height, FLmfImg.LogUnitsPerInch
   ]);
-  ScrollBox1.HorzScrollBar.Position := 0;
-  ScrollBox1.VertScrollBar.Position := 0;
+
+  cmbMapModeChange(nil);
+  Paintbox.Invalidate;
 end;
 
 procedure TMainForm.PaintBoxPaint(Sender: TObject);
@@ -159,6 +198,7 @@ begin
   if (FLmfImg = nil) then //or FLmfImg.Empty then
     exit;
   PaintBox.Canvas.StretchDraw(Rect(0, 0, PaintBox.Width, PaintBox.Height), FLmfImg);
+//  PaintBox.Canvas.Draw(0, 0, FLmfImg);
 end;
 
 procedure TMainForm.ReadIni;
