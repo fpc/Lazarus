@@ -546,6 +546,9 @@ resourcestring
   rsOpenSSLFrm_chPermanent_Caption = 'Do not ask this question again';
   rsOpenSSLFrm_lbMessage1_Caption = 'In order to work properly, OPM needs the OpenSSL libraries.';
   rsOpenSSLFrm_lbMessage2_Caption = 'Download these files from "https://packages.lazarus-ide.org/"?';
+  rsOpenSSLFrm_Error1 = 'Cannot download the OpenSSL libraries from "%s". Error message:';
+  rsOpenSSLFrm_Error2 = 'Cannot unzip the OpenSSL libraries "%s". Error message:';
+  rsOpenSSLFrm_Error3 = 'The OpenSSL libraries were extracted to "%s", but they cannot be loaded.';
 
 
 implementation

@@ -29,7 +29,7 @@ interface
 
 uses
   {$IFDEF MSWINDOWS}windows, opkman_const,{$ENDIF}
-  Classes, SysUtils, Controls, fpjson, fpjsonrtti, jsonparser, dateutils,
+  Classes, SysUtils, Controls, Dialogs, fpjson, fpjsonrtti, jsonparser, dateutils,
   fphttpclient, opensslsockets, openssl,
   // LazUtils
   LazIDEIntf, LazFileUtils,
@@ -317,7 +317,7 @@ procedure TUpdates.CheckForOpenSSL;
 var
   ZipFile: String;
   UnZipper: TUnZipper;
-  CanDownload: Boolean;
+  CanDownload, Downloaded, Unzipped: Boolean;
 {$ENDIF}
 begin
   {$IFDEF MSWINDOWS}
@@ -349,19 +349,34 @@ begin
     if CanDownload then
     begin
       ZipFile := ExtractFilePath(ParamStr(0)) + ExtractFileName(cOpenSSLURL);
+      Downloaded := False;
       try
         FHTTPClient.Get(cOpenSSLURL, ZipFile);
+        Downloaded := True;
       except
+        on E: Exception do
+        begin
+          if FileExists(ZipFile) then
+            DeleteFile(ZipFile);
+          MessageDlgEx(Format(rsOpenSSLFrm_Error1, [cOpenSSLURL]) + sLineBreak + '"' + E.Message + '"',
+            mtError, [mbOk], MainFrm);
+        end;
       end;
-      if FileExists(ZipFile) then
+      if Downloaded and FileExists(ZipFile) then
       begin
+        Unzipped := False;
         UnZipper := TUnZipper.Create;
         try
           try
             UnZipper.FileName := ZipFile;
+            UnZipper.OutputPath := ExtractFilePath(ZipFile);
             UnZipper.Examine;
             UnZipper.UnZipAllFiles;
+            Unzipped := True;
           except
+            on E: Exception do
+              MessageDlgEx(Format(rsOpenSSLFrm_Error2, [ZipFile]) + sLineBreak + '"' + E.Message + '"',
+                mtError, [mbOk], MainFrm);
           end;
         finally
           UnZipper.Free;
@@ -369,6 +384,8 @@ begin
         DeleteFile(ZipFile);
         InitSSLInterface;
         FOpenSSLAvailable := IsSSLloaded;
+        if Unzipped and not FOpenSSLAvailable then
+          MessageDlgEx(Format(rsOpenSSLFrm_Error3, [ExtractFilePath(ZipFile)]), mtError, [mbOk], MainFrm);
       end;
     end;
   end;

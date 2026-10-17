@@ -1413,6 +1413,21 @@ msgstr "OpenSSL kitaplıklarını indirin"
 msgid "Do not ask this question again"
 msgstr "Bu soruyu bir daha sorma"
 
+#: opkman_const.rsopensslfrm_error1
+#, object-pascal-format
+msgid "Cannot download the OpenSSL libraries from \"%s\". Error message:"
+msgstr ""
+
+#: opkman_const.rsopensslfrm_error2
+#, object-pascal-format
+msgid "Cannot unzip the OpenSSL libraries \"%s\". Error message:"
+msgstr ""
+
+#: opkman_const.rsopensslfrm_error3
+#, object-pascal-format
+msgid "The OpenSSL libraries were extracted to \"%s\", but they cannot be loaded."
+msgstr ""
+
 #: opkman_const.rsopensslfrm_lbmessage1_caption
 #, fuzzy
 #| msgid "In order to work properly, OPM needs the OpenSSL libraries: \"libeay32.dll\" and \"ssleay32.dll\""
