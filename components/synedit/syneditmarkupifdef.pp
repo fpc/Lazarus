@@ -3267,23 +3267,23 @@ procedure TSynEditMarkupIfDef.DoTreeUnlocked(Sender: TObject);
 var
   LastLine: Integer;
 
-  function IndexOfLastNodeAtLevel(ALevel: Integer; ANode: TSynMarkupHighIfDefLinesNode;
-    ADownFromIndex: Integer; var ADownFromLevel: Integer): Integer;
-  begin
-    Result := ADownFromIndex;
-    repeat
-      case ANode.Entry[Result].NodeType of
-        idnIfdef: dec(ADownFromLevel);
-        idnEndIf: inc(ADownFromLevel);
-        idnElse, idnElseIf:
-          if ADownFromLevel <= ALevel + 1 then
-            dec(ADownFromLevel);
-      end;
-      if (ADownFromLevel <= ALevel) then
-        exit;
-      dec(Result);
-    until (Result < 0);
-  end;
+  //function IndexOfLastNodeAtLevel(ALevel: Integer; ANode: TSynMarkupHighIfDefLinesNode;
+  //  ADownFromIndex: Integer; var ADownFromLevel: Integer): Integer;
+  //begin
+  //  Result := ADownFromIndex;
+  //  repeat
+  //    case ANode.Entry[Result].NodeType of
+  //      idnIfdef: dec(ADownFromLevel);
+  //      idnEndIf: inc(ADownFromLevel);
+  //      idnElse, idnElseIf:
+  //        if ADownFromLevel <= ALevel + 1 then
+  //          dec(ADownFromLevel);
+  //    end;
+  //    if (ADownFromLevel <= ALevel) then
+  //      exit;
+  //    dec(Result);
+  //  until (Result < 0);
+  //end;
 
   function GetValidClosingPeer(AEntry: TSynMarkupHighIfDefEntry): TSynMarkupHighIfDefEntry;
   begin
@@ -3291,6 +3291,20 @@ var
     // if the Result line is not valid, then it ends after the visible area (otherwise it would have a valid line)
     If (Result <> nil) and not(idlValid in Result.Line.LineFlags) then
       Result := nil;
+  end;
+
+  function GetValidClosingPeer(AEntry: TSynMarkupHighIfDefEntry; out APeerLine: integer; AEntryLine: integer): TSynMarkupHighIfDefEntry;
+  begin
+    APeerLine := -1;
+    Result := AEntry.ClosingPeer;
+    // if the Result line is not valid, then it ends after the visible area (otherwise it would have a valid line)
+    If (Result <> nil) and not(idlValid in Result.Line.LineFlags) then
+      Result := nil;
+    if Result <> nil then begin
+      if Result.Line = AEntry.Line
+      then APeerLine := AEntryLine
+      else APeerLine := Result.Line.GetPosition;
+    end;
   end;
 
   function EntryToPointAtBegin(Entry: TSynMarkupHighIfDefEntry; Line: Integer): TPoint;
@@ -3545,8 +3559,8 @@ var
   end;
 
 var
-  NestLvl, NestLvlLow, FoundLvl, CurLine, EndLvl, FirstEntryIdx: Integer;
-  j: Integer;
+  NestLvl, NestLvlLow, CurLine, FirstEntryIdx: Integer;
+  j,l, tpl: Integer;
   NodeInfo: TSynMarkupHighIfDefLinesNodeInfo;
   Node: TSynMarkupHighIfDefLinesNode;
   Entry: TSynMarkupHighIfDefEntry;
@@ -3609,7 +3623,10 @@ begin
   TmpDisabledCloseEntry := nil;
   TmpEnableCloseEntry := nil;
 
+  NodeInfo.ClearInfo;
   NestLvl := -1;
+  tpl := TopLine;
+  // OuterLines.Line := ToIdx(TopLine);
   while (NestLvl < FOuterLines.Count - 1) and
         (NeedDisableOpen or NeedEnableOpen or NeedTmpDisableOpen or NeedTmpDisableOpen)
   do begin
@@ -3627,12 +3644,15 @@ begin
     //if NodeInfo.Node.DisabledEntryOpenCount <= NodeInfo.Node.DisabledEntryCloseCount then
     //  continue;
 
-    EndLvl := NodeInfo.NestDepthAtNodeEnd;
-    FoundLvl := NestLvl;
-    j := IndexOfLastNodeAtLevel(FoundLvl, Node, Node.EntryCount - 1, EndLvl);
-    while (j >= 0) do begin
+    j := 0;
+    while (j < Node.EntryCount) do begin
       Entry := Node.Entry[j];
-      dec(FoundLvl);
+      inc(j);
+      if not Entry.IsOpening then
+        continue;
+      GetValidClosingPeer(Entry, l, CurLine);
+      if l < tpl then
+        continue;
       if Entry.IsTempOpening then begin
         if Entry.IsDisabledOpening and NeedTmpDisableOpen then TmpDisableOpenEntry := Entry;
         if Entry.IsEnabled         and NeedTmpEnableOpen  then TmpEnableOpenEntry := Entry;
@@ -3640,9 +3660,6 @@ begin
         if Entry.IsDisabledOpening and NeedDisableOpen then DisableOpenEntry := Entry;
         if Entry.IsEnabled         and NeedEnableOpen  then EnableOpenEntry := Entry;
       end;
-      if FoundLvl < NestLvlLow then
-        break;
-       j := IndexOfLastNodeAtLevel(FoundLvl, Node, j, EndLvl);
     end;
   end; // while
 
@@ -3666,13 +3683,11 @@ begin
   end
   else begin
     // Not scanning nodes
-    NodeInfo.ClearInfo;
-    FindNextScanPos(NodeInfo, FirstEntryIdx);
-    if (not NodeInfo.HasNode) and (NodeInfo.StartLine = 0) then begin
-      NodeInfo := FIfDefTree.FindNodeAtPosition(TopLine, afmNext);
-      Node := NodeInfo.Node;
-      FirstEntryIdx := 0;
-    end;
+    //NodeInfo.ClearInfo;
+    //FindNextScanPos(NodeInfo, FirstEntryIdx);
+    NodeInfo := FIfDefTree.FindNodeAtPosition(TopLine, afmNext);
+    Node := NodeInfo.Node;
+    FirstEntryIdx := 0;
     Node := NodeInfo.Node;
   end;
   CurLine := NodeInfo.StartLine;
@@ -3742,13 +3757,13 @@ begin
         EntryFound := True;
       end;
 
-      if EntryFound then begin
-        FindNextScanPos(NodeInfo, FirstEntryIdx);
-        Node := NodeInfo.Node;
-        CurLine := NodeInfo.StartLine;
-        if Node = nil then
-          break;
-      end;
+//      if EntryFound then begin
+//        FindNextScanPos(NodeInfo, FirstEntryIdx);
+//        Node := NodeInfo.Node;
+//        CurLine := NodeInfo.StartLine;
+//        if Node = nil then
+//          break;
+//      end;
     end; // while FirstEntryIdx < Node.EntryCount do
 
     NodeInfo := NodeInfo.Successor;
