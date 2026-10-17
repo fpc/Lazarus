@@ -1358,6 +1358,21 @@ msgstr "下载 OpenSSL 库"
 msgid "Do not ask this question again"
 msgstr "不要再问这个问题了"
 
+#: opkman_const.rsopensslfrm_error1
+#, object-pascal-format
+msgid "Cannot download the OpenSSL libraries from \"%s\". Error message:"
+msgstr ""
+
+#: opkman_const.rsopensslfrm_error2
+#, object-pascal-format
+msgid "Cannot unzip the OpenSSL libraries \"%s\". Error message:"
+msgstr ""
+
+#: opkman_const.rsopensslfrm_error3
+#, object-pascal-format
+msgid "The OpenSSL libraries were extracted to \"%s\", but they cannot be loaded."
+msgstr ""
+
 #: opkman_const.rsopensslfrm_lbmessage1_caption
 msgid "In order to work properly, OPM needs the OpenSSL libraries."
 msgstr "为了正常工作，在线软件包管理器需要 OpenSSL 库。"
