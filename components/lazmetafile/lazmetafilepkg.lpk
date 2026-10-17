@@ -43,6 +43,10 @@
         <Filename Value="lmfemfread.pas"/>
         <UnitName Value="lmfemfread"/>
       </Item>
+      <Item>
+        <Filename Value="lmfemfwrite.pas"/>
+        <UnitName Value="lmfEMFWrite"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>
