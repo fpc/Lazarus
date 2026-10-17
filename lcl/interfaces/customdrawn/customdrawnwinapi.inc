@@ -6281,6 +6281,90 @@ begin
                           ROp);
 end;
 
+{ Copies unscaled pixels for SRCCOPY while honoring the monochrome mask and
+  source alpha. Zero alpha throughout the source rectangle is treated as an
+  opaque image, matching the existing CustomDrawn image convention. }
+function CDMaskedAlphaCopy(ADest, ASource: TLazCanvas; AMask: HBITMAP;
+  X, Y, XSrc, YSrc, XMask, YMask, Width, Height: Integer): Boolean;
+var
+  SrcImage, DestImage, MaskImage: TLazIntfImage;
+  SrcPixels: array of TFPColor;
+  DestOrg: TPoint;
+  UseAlpha: Boolean;
+  I, J, DestX, DestY: Integer;
+  Alpha, InvAlpha: Cardinal;
+  SrcColor, DestColor: TFPColor;
+begin
+  Result := False;
+  if not (ASource.Image is TLazIntfImage) or not (ADest.Image is TLazIntfImage) then Exit;
+  SrcImage := TLazIntfImage(ASource.Image);
+  DestImage := TLazIntfImage(ADest.Image);
+  MaskImage := nil;
+  if (AMask <> 0) and (TCDBitmap(AMask).Image <> nil) and
+    (TCDBitmap(AMask).Image.PixelData <> nil) then
+    MaskImage := TCDBitmap(AMask).Image;
+
+  UseAlpha := False;
+  if SrcImage.DataDescription.AlphaPrec > 0 then
+    for J := Max(0, YSrc) to Min(SrcImage.Height, YSrc + Height) - 1 do
+    begin
+      for I := Max(0, XSrc) to Min(SrcImage.Width, XSrc + Width) - 1 do
+        if SrcImage.Colors[I, J].Alpha <> alphaTransparent then
+        begin
+          UseAlpha := True;
+          Break;
+        end;
+      if UseAlpha then Break;
+    end;
+  if not UseAlpha and (MaskImage = nil) then Exit;
+  Result := True;
+  DestOrg := ADest.BaseWindowOrg;
+  Inc(DestOrg.X, ADest.WindowOrg.X);
+  Inc(DestOrg.Y, ADest.WindowOrg.Y);
+
+  // Read from a snapshot when copying within one image.
+  if (ASource.Image = ADest.Image) and (Width > 0) and (Height > 0) then
+  begin
+    SetLength(SrcPixels, Width * Height);
+    for J := 0 to Height - 1 do
+      for I := 0 to Width - 1 do
+        if (XSrc + I >= 0) and (YSrc + J >= 0) and
+          (XSrc + I < SrcImage.Width) and (YSrc + J < SrcImage.Height) then
+          SrcPixels[J * Width + I] := SrcImage.Colors[XSrc + I, YSrc + J];
+  end;
+
+  for J := 0 to Height - 1 do
+    for I := 0 to Width - 1 do
+    begin
+      if (XSrc + I < 0) or (YSrc + J < 0) or (XSrc + I >= SrcImage.Width)
+        or (YSrc + J >= SrcImage.Height) then Continue;
+      if (MaskImage <> nil) and (XMask + I >= 0) and (YMask + J >= 0)
+        and (XMask + I < MaskImage.Width) and (YMask + J < MaskImage.Height)
+        and (MaskImage.Colors[XMask + I, YMask + J].Red >= $8000) then Continue;
+      if Length(SrcPixels) > 0 then
+        SrcColor := SrcPixels[J * Width + I]
+      else
+        SrcColor := SrcImage.Colors[XSrc + I, YSrc + J];
+      Alpha := $FFFF;
+      if UseAlpha then Alpha := SrcColor.Alpha;
+      if Alpha = 0 then Continue;
+      if Alpha < $FFFF then
+      begin
+        DestX := X + I + DestOrg.X;
+        DestY := Y + J + DestOrg.Y;
+        if (DestX < 0) or (DestY < 0) or (DestX >= DestImage.Width)
+          or (DestY >= DestImage.Height) then Continue;
+        DestColor := DestImage.Colors[DestX, DestY];
+        InvAlpha := $FFFF - Alpha;
+        SrcColor.Red := (DestColor.Red * InvAlpha + SrcColor.Red * Alpha + $7FFF) div $FFFF;
+        SrcColor.Green := (DestColor.Green * InvAlpha + SrcColor.Green * Alpha + $7FFF) div $FFFF;
+        SrcColor.Blue := (DestColor.Blue * InvAlpha + SrcColor.Blue * Alpha + $7FFF) div $FFFF;
+      end;
+      SrcColor.Alpha := alphaOpaque;
+      ADest.Colors[X + I, Y + J] := SrcColor;
+    end;
+end;
+
 {------------------------------------------------------------------------------
   Function: StretchMaskBlt
   Params:  DestDC:                The destination devicecontext
@@ -6326,7 +6410,12 @@ begin
   // Optimization if no stretch is desired
   if (SrcWidth = Width) and (SrcHeight = Height) then
   begin
+    if (Rop = SRCCOPY) and
+      CDMaskedAlphaCopy(DstLazDC, SrcLazDC, Mask, X, Y, XSrc, YSrc,
+        XMask, YMask, Width, Height) then
+      Exit(True);
     DstLazDC.CanvasCopyRect(SrcLazDC, X, Y, XSrc, YSrc, SrcWidth, SrcHeight);
+    Result := Rop = SRCCOPY;
     Exit;
   end;
 
