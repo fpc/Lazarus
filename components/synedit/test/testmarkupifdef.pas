@@ -5,9 +5,10 @@ unit TestMarkupIfDef;
 interface
 
 uses
-  Classes, SysUtils, testregistry, TestBase, TestHighlightFoldBase, LazLoggerBase,
-  SynEdit, SynEditMarkupIfDef, SynHighlighterPas, SynEditHighlighterFoldBase,
-  SynEditMiscClasses, SynEditFoldedView, LazEditFoldHighlighter;
+lazlogger,
+  Classes, SysUtils, testregistry, TestBase, TestHighlightFoldBase, LazLoggerBase, SynEdit,
+  SynEditMarkupIfDef, SynHighlighterPas, SynEditHighlighterFoldBase, SynEditMiscClasses,
+  SynEditFoldedView, SynEditMarkup, LazEditFoldHighlighter, LazEditTextAttributes, Graphics;
 
 type
 
@@ -35,11 +36,14 @@ type
     OpenPeer, ClosePeer: TPeerExpect;
   end;
 
+  TSynMarkupIfdefNodeStateExs = set of TSynMarkupIfdefNodeStateEx;
+
   { TTestMarkupIfDef }
 
   TTestMarkupIfDef = class(TTestBaseHighlighterFoldBase)
   private
     FTestTree: TSynMarkupHighIfDefLinesTree;
+    FTestMarkup: TSynEditMarkupIfDef;
     FNodeStateResponses, FNodeStateRequests: TStringList;
     FOpenings: TLazEditNestedFoldsList;
     FUseNestedComments: Boolean;
@@ -60,6 +64,7 @@ type
     function TestText11: TStringArray;
     function TestText11a: TStringArray;
     function TestText12: TStringArray;
+    function TestText13: TStringArray;
 
     procedure CheckOpenCloseCount(AName: String; ALine: Integer;
       AExpOpenCnt, AExpCloseCnt: Integer);
@@ -78,10 +83,14 @@ type
     //procedure SetUp; override;
     //procedure TearDown; override;
     procedure ReCreateEditForTreeTest(const Lines: Array of String); reintroduce;
+    procedure ReCreateEditForMarkupTest(const Lines: Array of String;
+      AColors: TSynMarkupIfdefNodeStateExs = [idnDisabled];
+      ANodeColors: TSynMarkupIfdefNodeStateExs = []); reintroduce;
   published
     procedure TestIfDefTreeMoveOnEdit;
     procedure TestIfDefTreePeerConnect;
     procedure TestIfDefTreeNodeState;
+    procedure TestIfDefMarkup;
   end;
 
 implementation
@@ -786,6 +795,50 @@ begin
   AddLine('');
 end;
 
+function TTestMarkupIfDef.TestText13: TStringArray;
+  procedure AddLine(s: String);
+  begin
+    SetLength(Result, Length(Result)+1);
+    Result[Length(Result)-1] := s;
+  end;
+var
+  i: Integer;
+begin
+  // 1
+  AddLine('//'                                                    );
+  AddLine(''                                                    );
+  // L:3  |  3                         29           42                     65                                 100           114
+  AddLine('  {$if defined(cpu86)} foo; {$else} foo; {$if defined(a1)} foo; {$elseif defined(cpupowerpc)} foo; {$endif} foo; {$endif} foo;');
+  AddLine(''                                                    );
+  // 5    |  3          14 17     24         35
+  AddLine('  {$if defined(DEF_1)} foo; ');
+  AddLine('  {$else}  foo; {$if defined(D2)} foo;  ');
+  AddLine('    {$elseif defined(cpupowerpc)} foo;  ');
+  AddLine('    {$endif} foo;  ');
+  AddLine('  {$endif} foo;  ');
+  AddLine(''                                                    );
+  // L:11 |  3          14             29    35   40      48
+  AddLine('{$IFDEF B}AA;{$if defined(DEF_3)} foo; {$else} foo;  ');   // IDX 4, 5
+  AddLine('    {$if defined(A1)} foo;  ');                            // IDX 6
+  AddLine('    {$elseif defined(DEF_X)} foo;  {$endif}  ');
+  AddLine('    {$if defined(B2)} foo; {$elseif defined(cpupowerpc)} foo; '); // IDX 7
+  // 15
+  AddLine('      {$if defined(C3)} foo;  ');  // IDX 8
+  AddLine('foo;');
+  AddLine('      {$else}  foo; {$if defined(D4)} foo;  '); // 17:
+  AddLine('foo;');
+  AddLine('        {$endif} foo;  '); // 19: closes 15..17..19 "if D4"
+  // 20
+  AddLine('      {$endif} foo;  '); // 20: closes 15..17..20 "if C3 else"
+  AddLine('    {$endif} foo;  ');   // 21: closes 14..14..21 "if B2 else"
+  AddLine('  {$endif} foo;  ');     // 22: closes 11..11..22 "if DEF_3 else"
+  AddLine('{$endif} foo;  ');       // 23: closes 11..23     IFDEF
+  AddLine(''                                                    );
+
+  for i := 1 to 200 do
+    AddLine(''                                                      );
+end;
+
 procedure TTestMarkupIfDef.CheckOpenCloseCount(AName: String; ALine: Integer; AExpOpenCnt,
   AExpCloseCnt: Integer);
 var
@@ -820,6 +873,77 @@ begin
   FTestTree.Highlighter := TSynPasSyn(SynEdit.Highlighter);
 
   FOpenings := FTestTree.CreateOpeningList;
+end;
+
+procedure TTestMarkupIfDef.ReCreateEditForMarkupTest(const Lines: array of String;
+  AColors: TSynMarkupIfdefNodeStateExs; ANodeColors: TSynMarkupIfdefNodeStateExs);
+begin
+  if SynEdit <> nil then
+    SynEdit.MarkupMgr.RemoveMarkUp(FTestMarkup);
+  FreeAndNil(FTestMarkup);
+
+  ReCreateEdit;
+  FSynEdit.Height := 2500; // FSynEdit.Font.Height * 50 + 2;
+  TSynPasSyn(SynEdit.Highlighter).NestedComments := FUseNestedComments;
+
+  FTestMarkup := TSynEditMarkupIfDef.Create(SynEdit);
+  SynEdit.MarkupMgr.AddMarkUp(FTestMarkup);
+  FTestMarkup.Lines       := SynEdit.ViewedTextBuffer;
+  FTestMarkup.Highlighter := TSynPasSyn(SynEdit.Highlighter);
+
+  FTestMarkup.MarkupInfoEnabled.Clear;
+  if idnEnabled in AColors then begin
+    FTestMarkup.MarkupInfoEnabled.Style     := [fsBold]; // 1 enabled
+    FTestMarkup.MarkupInfoEnabled.StyleMask := [fsBold];
+    FTestMarkup.MarkupInfoEnabled.SetAllPriorities(10);
+  end;
+
+  FTestMarkup.MarkupInfoDisabled.Clear;
+  if idnDisabled in AColors then begin
+    FTestMarkup.MarkupInfoDisabled.Style     := [fsItalic]; // 2 disabled
+    FTestMarkup.MarkupInfoDisabled.StyleMask := [fsItalic];
+    FTestMarkup.MarkupInfoDisabled.SetAllPriorities(10);
+  end;
+
+  FTestMarkup.MarkupInfoTempEnabled.Clear;
+  if idnTempEnabled in AColors then begin
+    FTestMarkup.MarkupInfoTempEnabled.Style     := [fsUnderline]; // 4
+    FTestMarkup.MarkupInfoTempEnabled.StyleMask := [fsUnderline];
+    FTestMarkup.MarkupInfoTempEnabled.SetAllPriorities(10);
+  end;
+
+  FTestMarkup.MarkupInfoTempDisabled.Clear;
+  if idnTempDisabled in AColors then begin
+    FTestMarkup.MarkupInfoTempDisabled.Style     := [fsStrikeOut]; // 8
+    FTestMarkup.MarkupInfoTempDisabled.StyleMask := [fsStrikeOut];
+    FTestMarkup.MarkupInfoTempDisabled.SetAllPriorities(10);
+  end;
+
+  FTestMarkup.MarkupInfoNodeEnabled.Clear;
+  if idnEnabled in ANodeColors then begin
+    FTestMarkup.MarkupInfoNodeEnabled.Foreground := TColor(1);
+    FTestMarkup.MarkupInfoNodeEnabled.SetAllPriorities(10);
+  end;
+
+  FTestMarkup.MarkupInfoNodeDisabled.Clear;
+  if idnDisabled in ANodeColors then begin
+    FTestMarkup.MarkupInfoNodeDisabled.Background := TColor(1);
+    FTestMarkup.MarkupInfoNodeDisabled.SetAllPriorities(10);
+  end;
+
+  FTestMarkup.MarkupInfoTempNodeEnabled.Clear;
+  if idnTempEnabled in ANodeColors then begin
+    FTestMarkup.MarkupInfoTempNodeEnabled.Foreground := TColor(256);
+    FTestMarkup.MarkupInfoTempNodeEnabled.SetAllPriorities(10);
+  end;
+
+  FTestMarkup.MarkupInfoTempNodeDisabled.Clear;
+  if idnTempDisabled in ANodeColors then begin
+    FTestMarkup.MarkupInfoTempNodeDisabled.Background := TColor(256);
+    FTestMarkup.MarkupInfoTempNodeDisabled.SetAllPriorities(10);
+  end;
+
+  SetLines(Lines);
 end;
 
 procedure TTestMarkupIfDef.TestIfDefTreeMoveOnEdit;
@@ -2434,6 +2558,382 @@ DebugLn('----- disabled');FTestTree.DebugPrint(true);DebugLn('-----');
   FTestTree.Free;
   FreeAndNil(FNodeStateResponses);
   FreeAndNil(FNodeStateRequests);
+end;
+
+procedure TTestMarkupIfDef.TestIfDefMarkup;
+type
+  // C1/2: Points(y,x) to check for markup
+  TIfDef = record y, x, y2, x2, ye, xe: integer; C1, C2: array of integer; end;
+const
+  IFLIST: array [0..9] of TIfDef = (
+    (y: 3; x: 3;  y2: 3; x2: 29;  ye: 3; xe: 114;  C1: (3,27);   C2: (3,40, 3,111) ),
+    (y: 3; x:42;  y2: 3; x2: 65;  ye: 3; xe: 100;  C1: (3,63);   C2: (3,98) ),
+
+    (y: 5; x: 3;  y2: 6; x2: 3;  ye: 9; xe: 3;  C1: (5,24);   C2: (6,13, 8,14) ),     // DEF_1
+    (y: 6; x:17;  y2: 7; x2: 5;  ye: 8; xe: 5;  C1: (6,36);   C2: (7,36) ),             // D2
+
+    (y:11; x: 1;  y2:-1; x2:-1;  ye:23; xe: 1;  C1: (11,11, 22,14);   C2: () ),       // IFDEF B
+    (y:11; x:14;  y2:11; x2:40;  ye:22; xe: 3;  C1: (11,35);   C2: (11,48,  21,15) ),   // DEF_3
+    (y:12; x: 5;  y2:13; x2: 5;  ye:13; xe:36;  C1: (12,24);   C2: (13,31) ),            // A1 elseif DEF_X
+    (y:14; x: 5;  y2:14; x2:28;  ye:21; xe: 5;  C1: (14,24);   C2: (14,59, 20,17) ),     // B2
+    (y:15; x: 7;  y2:17; x2: 7;  ye:20; xe: 7;  C1: (15,26, 16,2);   C2: (17,17, 19,19) ), // C3
+    (y:17; x:21;  y2:-1; x2:-1;  ye:19; xe: 9;  C1: (17,40, 18,2);   C2: () )               // D4
+  );
+  C_Ena    = fsBold; // 1
+  C_Dis    = fsItalic; // 2
+  C_TmpEna = fsUnderline; // 4
+  C_TmpDis = fsStrikeOut; // 8
+var
+  m: TLazEditTextAttributeMergeResult;
+
+  procedure SetNdState(Idx: integer; AState, AElseState: TSynMarkupIfdefNodeState);
+  begin
+    SynEdit.BeginUpdate;
+    FTestMarkup.SetNodeState( IFLIST[Idx].y, IFLIST[Idx].x, AState);
+    if IFLIST[Idx].y2 > 0 then
+    FTestMarkup.SetNodeState( IFLIST[Idx].y2, IFLIST[Idx].x2, AElseState);
+    SynEdit.EndUpdate;
+  end;
+
+  var TestTopLine: integer;
+  procedure SetTopLine(tl: integer);
+  begin
+    if tl = TestTopLine then exit;
+    TestTopLine := tl;
+    SynEdit.TopLine := tl;
+  end;
+
+  // sets outer variable "m"
+  var LastY: integer;
+  procedure GetMarkupAt(ey,ex: integer);
+  const AnRtlInfo: TLazSynDisplayRtlInfo = (IsRtl: False; PhysLeft: 1; PhysRight: 200; LogFirst: 1; LogLast: 200);
+  var
+    b, b2: TLazEditDisplayTokenBound;
+    NP, NL: Integer;
+  begin
+    if ey < TestTopLine then // only visible markup can be checked
+      exit;
+
+    if LastY <> ey then begin
+      if LastY <> -1 then
+        FTestMarkup.FinishMarkupForRow(LastY);
+      FTestMarkup.PrepareMarkupForRow(ey);
+    end;
+    LastY := ey;
+    b.Init(1,1);
+    FTestMarkup.GetNextMarkupColAfterRowCol(ey, b, AnRtlInfo, NP, NL);
+    b.Init(ex,ex);
+    b2.Init(ex+1,ex+1);
+    m.Clear;
+    m.Foreground := 0;
+    FTestMarkup.MergeMarkupAttributeAtRowCol(ey, b, b2, AnRtlInfo, m);
+    m.FinishMerge;
+  end;
+
+  var CheckMarkupStarted: integer;
+  procedure StartCheckMarkup;
+  begin
+    inc(CheckMarkupStarted);
+    if CheckMarkupStarted > 1 then
+      exit;
+    LastY := -1;
+    FTestMarkup.BeginMarkup;
+  end;
+  procedure FinishCheckMarkup;
+  begin
+    assert(CheckMarkupStarted > 0, 'FinishCheckMarkup: CheckMarkupStarted > 0');
+    dec(CheckMarkupStarted);
+    if CheckMarkupStarted > 0 then
+      exit;
+    if LastY <> -1 then
+      FTestMarkup.FinishMarkupForRow(LastY);
+    FTestMarkup.EndMarkup;
+  end;
+
+  procedure CheckNodeMarkupAtPos(AName: String; AnNodeExp: TSynMarkupIfdefNodeStateExs; ey, ex: integer);
+  begin
+    StartCheckMarkup;
+    if ey < TestTopLine then // only visible markup can be checked
+      exit;
+
+    GetMarkupAt(ey, ex);
+    AssertTrue(AName, m <> nil);
+    if m <> nil then begin
+      if idnEnabled in AnNodeExp then
+        AssertEquals(AName, TColor(1), m.Foreground)
+      else
+      if idnTempEnabled in AnNodeExp then
+        AssertEquals(AName, TColor(256), m.Foreground);
+      if idnDisabled in AnNodeExp then
+        AssertEquals(AName, TColor(1), m.Background)
+      else
+      if idnTempEnabled in AnNodeExp then
+        AssertEquals(AName, TColor(256), m.Background);
+    end;
+    FinishCheckMarkup;
+  end;
+  procedure CheckNodeMarkupAtPos(AName: String; AnNodeExp: TSynMarkupIfdefNodeStateExs; ey, ex: integer; AnCodeExp: TFontStyles);
+  begin
+    StartCheckMarkup;
+    if ey < TestTopLine then // only visible markup can be checked
+      exit;
+    CheckNodeMarkupAtPos(AName, AnNodeExp, ey, ex);
+    AssertEquals(AName, integer(AnCodeExp), integer(m.Style));
+
+    FinishCheckMarkup;
+  end;
+
+  procedure CheckMarkupAt(AName: String; AnExp: TFontStyles; APos: array of integer);
+  var
+    i, ey, ex: integer;
+  begin
+    i := 0;
+    StartCheckMarkup;
+    while i < Length(APos) do begin
+      ey := APos[i];
+      ex := APos[i+1];
+      inc(i,2);
+      if ey < TestTopLine then // only visible markup can be checked
+        continue;
+
+      GetMarkupAt(ey, ex);
+      AssertTrue(AName, m <> nil);
+      if m <> nil then
+        AssertEquals(AName, integer(AnExp), integer(m.Style));
+    end;
+    FinishCheckMarkup;
+  end;
+
+  procedure CheckNodeMarkupAt(AName: String; AnIdx: integer; AnNodeExp, AnNodeExpElse: TSynMarkupIfdefNodeStateExs);
+  begin
+    StartCheckMarkup;
+    CheckNodeMarkupAtPos(AName, AnNodeExp,     IFLIST[AnIdx].y, IFLIST[AnIdx].x);
+    if IFLIST[AnIdx].y2 >= 0 then begin
+      CheckNodeMarkupAtPos(AName, AnNodeExp + AnNodeExpElse,     IFLIST[AnIdx].y2, IFLIST[AnIdx].x2);
+      CheckNodeMarkupAtPos(AName, AnNodeExpElse,     IFLIST[AnIdx].ye, IFLIST[AnIdx].xe);
+    end
+    else
+      CheckNodeMarkupAtPos(AName, AnNodeExp,     IFLIST[AnIdx].ye, IFLIST[AnIdx].xe);
+    FinishCheckMarkup;
+  end;
+  procedure CheckNodeMarkupAt(AName: String; AnIdx: integer; AnNodeExp, AnNodeExpElse: TSynMarkupIfdefNodeStateExs;
+    AnCodeExp: TFontStyles);
+  begin
+    StartCheckMarkup;
+    CheckNodeMarkupAtPos(AName, AnNodeExp,     IFLIST[AnIdx].y, IFLIST[AnIdx].x, AnCodeExp);
+    if IFLIST[AnIdx].y2 >= 0 then begin
+      CheckNodeMarkupAtPos(AName, AnNodeExp + AnNodeExpElse,     IFLIST[AnIdx].y2, IFLIST[AnIdx].x2, AnCodeExp);
+      CheckNodeMarkupAtPos(AName, AnNodeExpElse,     IFLIST[AnIdx].ye, IFLIST[AnIdx].xe, AnCodeExp);
+    end
+    else begin
+      CheckNodeMarkupAtPos(AName, AnNodeExp,     IFLIST[AnIdx].ye, IFLIST[AnIdx].xe, AnCodeExp);
+    end;
+    FinishCheckMarkup;
+  end;
+
+  procedure CheckMarkupAt(AName: String; AnIdx: Integer; AnExp: TFontStyles; AnIsElse: boolean = False);
+  begin
+    if AnIsElse then
+      CheckMarkupAt(AName, AnExp, IFLIST[AnIdx].C2)
+    else
+      CheckMarkupAt(AName, AnExp, IFLIST[AnIdx].C1);
+  end;
+  procedure CheckMarkupAt(AName: String; AnIdx: Integer; AnExp, AnExpElse: TFontStyles);
+  begin
+    StartCheckMarkup;
+    CheckMarkupAt(AName, AnExp,     IFLIST[AnIdx].C1);
+    CheckMarkupAt(AName, AnExpElse, IFLIST[AnIdx].C2);
+    FinishCheckMarkup;
+  end;
+
+  function IntToStates(i: integer): TSynMarkupIfdefNodeStateExs;
+  begin
+    Result := [];
+    if (i and 1) <> 0 then Include(Result, idnDisabled);
+    if (i and 2) <> 0 then Include(Result, idnEnabled);
+    if (i and 4) <> 0 then Include(Result, idnTempDisabled);
+    if (i and 8) <> 0 then Include(Result, idnTempEnabled);
+  end;
+
+  procedure Dbg;
+  var i: integer;
+  begin
+    //writeln('#################');
+    //FTestMarkup.IfDefTree.DebugPrint(true);
+    //write('#D: ');
+    //for i := 0 to FTestMarkup.Matches.Count-1 do
+    //  write(dbgs(FTestMarkup.Matches.StartPoint[i]),'..',dbgs(FTestMarkup.Matches.EndPoint[i]),', ');
+    //writeln;
+    //write('#E: ');
+    //for i := 0 to FTestMarkup.FMarkupEnabled.Matches.Count-1 do
+    //  write(dbgs(FTestMarkup.FMarkupEnabled.Matches.StartPoint[i]),'..',dbgs(FTestMarkup.FMarkupEnabled.Matches.EndPoint[i]),', ');
+    //writeln;
+    //write('#N: ');
+    //for i := 0 to FTestMarkup.FMarkupNodes.Matches.Count-1 do
+    //  write(dbgs(FTestMarkup.FMarkupNodes.Matches.StartPoint[i]),'..',dbgs(FTestMarkup.FMarkupNodes.Matches.EndPoint[i]),', ');
+    //writeln;
+  end;
+
+var
+  CodeColor, NodeColor, TestTop: Integer;
+  CodeStates, NodeStates: TSynMarkupIfdefNodeStateExs;
+  ExpE, ExpD: TFontStyles;
+  ExpNdE, ExpNdD: TSynMarkupIfdefNodeStateExs;
+begin
+  m := TLazEditTextAttributeMergeResult.Create;
+  CheckMarkupStarted := 0;
+  try
+
+    for CodeColor := 0 to 15 do
+    for NodeColor := 0 to 15 do begin
+      CodeStates := IntToStates(CodeColor);
+      NodeStates := IntToStates(NodeColor);
+      ReCreateEditForMarkupTest(TestText13, CodeStates, NodeStates);
+      TestTopLine := 1;
+      ExpE := [];
+      ExpD := [];
+      ExpNdE := [];
+      ExpNdD := [];
+      if idnEnabled  in CodeStates then ExpE := [C_Ena];
+      if idnDisabled in CodeStates then ExpD := [C_Dis];
+      if idnEnabled      in NodeStates then ExpNdE := [idnEnabled];
+      if idnDisabled     in NodeStates then ExpNdD := [idnDisabled];
+
+      SynEdit.BeginUpdate;
+        SetNdState(0, idnDisabled, idnEnabled);
+        SetNdState(1, idnEnabled, idnDisabled);
+        SetNdState(2, idnDisabled, idnEnabled);  // DEF_1
+        SetNdState(3, idnEnabled, idnDisabled);  // D2
+      SynEdit.EndUpdate;
+
+      for TestTop := 1 to 8 do begin
+        SetTopLine(TestTop);
+        CheckMarkupAt('', 0, ExpD, ExpE);
+        CheckMarkupAt('', 1, ExpE, ExpE+ExpD);
+        CheckMarkupAt('', 2, ExpD, ExpE);
+        CheckMarkupAt('', 3, ExpE, ExpE+ExpD);
+        CheckNodeMarkupAt('node', 0, ExpNdD, ExpNdE, []);
+        CheckNodeMarkupAt('node', 1, ExpNdE, ExpNdD, ExpE);
+        CheckNodeMarkupAt('node', 2, ExpNdD, ExpNdE, []);
+        CheckNodeMarkupAt('node', 3, ExpNdE, ExpNdD, ExpE);
+      end;
+      for TestTop := 7 downto 1 do begin
+        SetTopLine(TestTop);
+        CheckMarkupAt('', 0, ExpD, ExpE);
+        CheckMarkupAt('', 1, ExpE, ExpE+ExpD);
+        CheckMarkupAt('', 2, ExpD, ExpE);
+        CheckMarkupAt('', 3, ExpE, ExpE+ExpD);
+        CheckNodeMarkupAt('node', 0, ExpNdD, ExpNdE, []);
+        CheckNodeMarkupAt('node', 1, ExpNdE, ExpNdD, ExpE);
+        CheckNodeMarkupAt('node', 2, ExpNdD, ExpNdE, []);
+        CheckNodeMarkupAt('node', 3, ExpNdE, ExpNdD, ExpE);
+      end;
+
+      // start at "bottom"
+      ReCreateEditForMarkupTest(TestText13, CodeStates, NodeStates);
+      TestTopLine := 1;
+      SynEdit.BeginUpdate;
+        SetTopLine(7);
+        SetNdState(0, idnDisabled, idnEnabled);
+        SetNdState(1, idnEnabled, idnDisabled);
+        SetNdState(2, idnDisabled, idnEnabled);  // DEF_1
+        SetNdState(3, idnEnabled, idnDisabled);  // D2
+      SynEdit.EndUpdate;
+      for TestTop := 6 downto 1 do begin
+        SetTopLine(TestTop);
+        CheckMarkupAt('', 0, ExpD, ExpE);
+        CheckMarkupAt('', 1, ExpE, ExpE+ExpD);
+        CheckMarkupAt('', 2, ExpD, ExpE);
+        CheckMarkupAt('', 3, ExpE, ExpE+ExpD);
+      end;
+
+      // switch enabled
+      ReCreateEditForMarkupTest(TestText13, CodeStates, NodeStates);
+      TestTopLine := 1;
+      SynEdit.BeginUpdate;
+        SetTopLine(7);
+        SetNdState(0, idnEnabled, idnDisabled);
+        SetNdState(1, idnEnabled, idnDisabled);
+        SetNdState(2, idnDisabled, idnEnabled);  // DEF_1
+        SetNdState(3, idnDisabled, idnEnabled);  // D2
+      SynEdit.EndUpdate;
+      for TestTop := 1 to 8 do begin
+        SetTopLine(TestTop);
+        CheckMarkupAt('', 0, ExpE, ExpD);
+        // if outer disabled is painted, then inner enabled is hidden, otherwise it shows
+        if idnDisabled in CodeStates
+        then CheckMarkupAt('', 1, ExpD, ExpD)  // outer disabled forces inner too
+        else CheckMarkupAt('', 1, ExpE, ExpD); // inner shows its own state
+        CheckMarkupAt('', 2, ExpD, ExpE);
+        CheckMarkupAt('', 3, ExpE+ExpD, ExpE);
+      end;
+
+      // switch enabled
+      ReCreateEditForMarkupTest(TestText13, CodeStates, NodeStates);
+      TestTopLine := 1;
+      SynEdit.BeginUpdate;
+        SetNdState(0, idnDisabled, idnEnabled);
+        SetNdState(1, idnDisabled, idnEnabled);
+        SetNdState(2, idnEnabled, idnDisabled);  // DEF_1
+        SetNdState(3, idnDisabled, idnEnabled);  // D2
+      SynEdit.EndUpdate;
+      for TestTop := 6 downto 1 do begin
+        SetTopLine(TestTop);
+        CheckMarkupAt('', 0, ExpD, ExpE);
+        CheckMarkupAt('', 1, ExpE+ExpD, ExpE);
+        CheckMarkupAt('', 2, ExpE, ExpD);
+        if idnDisabled in CodeStates
+        then CheckMarkupAt('', 3, ExpD, ExpD)
+        else CheckMarkupAt('', 3, ExpD, ExpE);
+      end;
+
+    end;
+
+    for CodeColor := 0 to 15 do begin
+      CodeStates := IntToStates(CodeColor);
+      ReCreateEditForMarkupTest(TestText13, CodeStates);
+      TestTopLine := 1;
+      ExpE := [];
+      ExpD := [];
+      if idnEnabled  in CodeStates then ExpE := [C_Ena];
+      if idnDisabled in CodeStates then ExpD := [C_Dis];
+
+      SynEdit.BeginUpdate;
+        SetNdState(0, idnDisabled, idnEnabled);
+        SetNdState(1, idnEnabled, idnDisabled);
+        SetNdState(2, idnDisabled, idnEnabled);  // DEF_1
+        SetNdState(3, idnEnabled, idnDisabled);  // D2
+
+        SetNdState(4, idnEnabled, idnInvalid);   // IFDEF B
+        SetNdState(5, idnDisabled, idnEnabled);  //   DEF_3
+        SetNdState(6, idnDisabled, idnEnabled);  //     A1
+        SetNdState(7, idnDisabled, idnEnabled);  //     B2
+        SetNdState(7, idnDisabled, idnEnabled);  //       C3
+        SetNdState(8, idnEnabled, idnInvalid);   //         D4
+      SynEdit.EndUpdate;
+
+
+        CheckMarkupAt('', 0, ExpD, ExpE);
+        CheckMarkupAt('', 1, ExpE, ExpE+ExpD);
+        CheckMarkupAt('', 2, ExpD, ExpE);
+        CheckMarkupAt('', 3, ExpE, ExpE+ExpD);
+
+        CheckMarkupAt('', 4, ExpE, False);
+        CheckMarkupAt('', 5, ExpD+ExpE, ExpE);
+        CheckMarkupAt('', 6, ExpD+ExpE, ExpE);
+        CheckMarkupAt('', 7, ExpD+ExpE, ExpE);
+        CheckMarkupAt('', 8, ExpE, False);
+
+    end;
+
+
+
+    // TODO: edit text
+  finally
+    SynEdit.MarkupMgr.RemoveMarkUp(FTestMarkup);
+    FreeAndNil(FTestMarkup);
+    m.Free;
+  end;
 end;
 
 initialization
