@@ -189,6 +189,7 @@ var
   Editor : TSourceEditorInterface absolute Sender;
   EditorWindow : TSourceEditorWindowInterface;
   Panel : TMiniMapControl;
+  Splitter: TSplitter;
 
 begin
   if FindMiniMapForEditor(Editor)<>Nil then
@@ -200,6 +201,8 @@ begin
   Panel.SourceEditor:=Editor;
   ConfigPanel(Panel,True);
   EditorWindow.AddControlToEditor(Editor,Panel,Aligns[AlignLeft]);
+  Splitter:=TSplitter.Create(EditorWindow);
+  EditorWindow.AddControlToEditor(Editor,Splitter,Aligns[AlignLeft]);
 end;
 
 procedure TMinimapController.EditorDestroyed(Sender: TObject);
