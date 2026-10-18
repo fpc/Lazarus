@@ -167,7 +167,7 @@ begin
     try
       Application.Run;
     except
-      debugln('lazarus.pp - unhandled exception');
+      Application.HandleException(MainIDE);
       CleanUpPIDFile;
       Halt;
     end;
