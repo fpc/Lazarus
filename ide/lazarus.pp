@@ -159,12 +159,7 @@ begin
   begin
     try
       MainIDE.StartIDE;
-    except
-      Application.HandleException(MainIDE);
-    end;
-    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('lazarus.pp: TMainIDE created');{$ENDIF}
-
-    try
+      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('lazarus.pp: TMainIDE created');{$ENDIF}
       Application.Run;
     except
       Application.HandleException(MainIDE);
