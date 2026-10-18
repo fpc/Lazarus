@@ -222,6 +222,7 @@ type
     procedure PrefixChanged(const NewPrefix: string; var NewIndex: integer;
                             var s: TStrings); virtual; abstract;
     procedure CompletePrefix(var Prefix: string); virtual; abstract;
+    function IsIdentChar(const {%H-}UTF8Char: TUTF8Char): boolean; virtual; // true = typing it extends the prefix instead of completing, e.g. '-' in CSS
 
     function HasCustomPaint: boolean; virtual;
     procedure PaintItem(const {%H-}AKey: string; {%H-}ACanvas: TCanvas;
@@ -953,6 +954,12 @@ begin
 end;
 
 { TSourceEditorCompletionPlugin }
+
+function TSourceEditorCompletionPlugin.IsIdentChar(const UTF8Char: TUTF8Char
+  ): boolean;
+begin
+  Result:=false;
+end;
 
 function TSourceEditorCompletionPlugin.HasCustomPaint: boolean;
 begin

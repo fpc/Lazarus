@@ -2863,7 +2863,9 @@ begin
 
     FColors.UseRecent :=
        (CurrentCompletionType = ctIdentCompletion) and
+       (Manager.ActiveCompletionPlugin = nil) and
        (CodeToolBoss.IdentifierList.SortForHistory) and
+       (CodeToolBoss.IdentifierList.FilteredItems[Index] <> nil) and
        (iliIsRecentItem in CodeToolBoss.IdentifierList.FilteredItems[Index].Flags) and
        (FColors[ahaIdentComplRecent].Foreground <> clNone);
 
@@ -3108,6 +3110,9 @@ end;
 procedure TSourceEditCompletion.SynCompletionKeyPress(Sender: TObject;
   var Key: Char);
 begin
+  if (Manager.ActiveCompletionPlugin<>nil)
+  and Manager.ActiveCompletionPlugin.IsIdentChar(Key) then
+    exit;
   if (System.Pos(Key,EndOfTokenChr)>0) then begin
     // identifier completed
     //debugln('TSourceNotebook.OnSynCompletionKeyPress A');
@@ -3120,6 +3125,13 @@ end;
 procedure TSourceEditCompletion.SynCompletionUTF8KeyPress(Sender: TObject;
   var UTF8Key: TUTF8Char);
 begin
+  if (UTF8Key<>'') and (Manager.ActiveCompletionPlugin<>nil)
+  and Manager.ActiveCompletionPlugin.IsIdentChar(UTF8Key) then begin
+    // the plugin extends the prefix, e.g. '-' in CSS
+    AddCharAtCursor(UTF8Key);
+    UTF8Key:='';
+    exit;
+  end;
   if (length(UTF8Key)=1)
   and (System.Pos(UTF8Key[1],EndOfTokenChr)>0) then begin
     // identifier completed
