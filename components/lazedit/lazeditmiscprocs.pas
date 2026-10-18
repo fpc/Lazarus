@@ -60,7 +60,7 @@ begin
   Result := False;
   case AChar[0] of
     #$CC:
-      Result := True;
+       Result := True;
     #$CD:
       if (AChar[1] <= #$AF) then Result := True;                              // 0340..036F
     #$D2:
@@ -68,7 +68,7 @@ begin
     #$D6:
       if (AChar[1] in [#$91..#$BD, #$BF]) then Result := True;                // 0591..05BD, 05BF
     #$D7:
-      if (AChar[1] in [#$81..#$82, #$84..#$85, #$87]) then Result := True;    // 05C1..05C2, 05C4..05C5, 05C7
+      if (AChar[1] in [#$81..#$82, #$84..#$85, #$87..#$89]) then Result := True;   // 05C1..05C2, 05C4..05C5, 05C7..05C9
     #$D8:
       if (AChar[1] in [#$90..#$9A]) then Result := True;                      // 0610..061A
     #$D9:
@@ -167,7 +167,7 @@ begin
         #$AA:
           if (AChar[2] >= #$B0) then Result := True;                          // 1AB0..1ABF
         #$AB:
-          Result := True;
+           Result := True;
         #$AC:
           if (AChar[2] in [#$B4]) then Result := True;                        // 1B34
         #$AD:
@@ -181,18 +181,18 @@ begin
         #$B3:
           if (AChar[2] in [#$90..#$92, #$94..#$A0, #$A2..#$A8, #$AD, #$B4, #$B8..#$B9]) then Result := True;   // 1CD0..1CD2, 1CD4..1CE0, 1CE2..1CE8, 1CED, 1CF4, 1CF8..1CF9
         #$B7:
-          Result := True;                                                    // 1DC0..1DFF
+           Result := True;
       end;
     #$E2:
       case AChar[1] of
         #$83:
-          if (AChar[2] in [#$90..#$BF]) then Result := True;                  // 20D0..20FF
+          if (AChar[2] >= #$90) then Result := True;                          // 20D0..20FF
         #$B3:
           if (AChar[2] in [#$AF..#$B1]) then Result := True;                  // 2CEF..2CF1
         #$B5:
-          if (AChar[2] in [#$BF]) then Result := True;                        // 2D7F
+          if (AChar[2] >= #$BF) then Result := True;                          // 2D7F
         #$B7:
-          if (AChar[2] in [#$A0..#$BF]) then Result := True;                  // 2DE0..2DFF
+          if (AChar[2] >= #$A0) then Result := True;                          // 2DE0..2DFF
       end;
     #$E3:
       case AChar[1] of
@@ -220,7 +220,7 @@ begin
         #$A6:
           if (AChar[2] in [#$B3]) then Result := True;                        // A9B3
         #$A7:
-          if (AChar[2] in [#$80]) then Result := True;                        // A9C0
+          if (AChar[2] <= #$80) then Result := True;                          // A9C0
         #$AA:
           if (AChar[2] in [#$B0, #$B2..#$B4, #$B7..#$B8, #$BE..#$BF]) then Result := True;   // AAB0, AAB2..AAB4, AAB7..AAB8, AABE..AABF
         #$AB:
@@ -256,7 +256,7 @@ begin
             #$BA:
               if (AChar[3] in [#$AB..#$AC]) then Result := True;              // 10EAB..10EAC
             #$BB:
-              if (AChar[3] in [#$BD..#$BF]) then Result := True;              // 10EFD..10EFF
+              if (AChar[3] in [#$8B..#$8F, #$B0..#$BB, #$BD..#$BF]) then Result := True;   // 10ECB..10ECF, 10EF0..10EFB, 10EFD..10EFF
             #$BD:
               if (AChar[3] in [#$86..#$90]) then Result := True;              // 10F46..10F50
             #$BE:
@@ -293,7 +293,7 @@ begin
             #$97:
               if (AChar[3] <= #$80) then Result := True;                      // 115C0
             #$98:
-              if (AChar[3] in [#$BF]) then Result := True;                    // 1163F
+              if (AChar[3] >= #$BF) then Result := True;                      // 1163F
             #$9A:
               if (AChar[3] in [#$B6..#$B7]) then Result := True;              // 116B6..116B7
             #$9C:
@@ -313,7 +313,7 @@ begin
             #$AA:
               if (AChar[3] in [#$99]) then Result := True;                    // 11A99
             #$B0:
-              if (AChar[3] in [#$BF]) then Result := True;                    // 11C3F
+              if (AChar[3] >= #$BF) then Result := True;                      // 11C3F
             #$B5:
               if (AChar[3] in [#$82, #$84..#$85]) then Result := True;        // 11D42, 11D44..11D45
             #$B6:
@@ -339,12 +339,16 @@ begin
           end;
         #$9D:
           case AChar[2] of
+            #$84:
+              if (AChar[3] in [#$A7..#$A8]) then Result := True;              // 1D127..1D128
             #$85:
               if (AChar[3] in [#$A5..#$A9, #$AD..#$B2, #$BB..#$BF]) then Result := True;   // 1D165..1D169, 1D16D..1D172, 1D17B..1D17F
             #$86:
               if (AChar[3] in [#$80..#$82, #$85..#$8B, #$AA..#$AD]) then Result := True;   // 1D180..1D182, 1D185..1D18B, 1D1AA..1D1AD
             #$89:
-              if (AChar[3] in [#$82..#$84]) then Result := True;              // 1D242..1D244
+              if (AChar[3] in [#$82..#$84, #$90..#$92, #$9B..#$9C, #$9F]) then Result := True;   // 1D242..1D244, 1D250..1D252, 1D25B..1D25C, 1D25F
+            #$8A:
+              if (AChar[3] <= #$81) then Result := True;                      // 1D280..1D281
           end;
         #$9E:
           case AChar[2] of
@@ -362,6 +366,8 @@ begin
               if (AChar[3] in [#$AC..#$AF]) then Result := True;              // 1E4EC..1E4EF
             #$97:
               if (AChar[3] in [#$AE..#$AF]) then Result := True;              // 1E5EE..1E5EF
+            #$9B:
+              if (AChar[3] in [#$A3, #$A6, #$AE..#$AF, #$B5]) then Result := True;   // 1E6E3, 1E6E6, 1E6EE..1E6EF, 1E6F5
             #$A3:
               if (AChar[3] in [#$90..#$96]) then Result := True;              // 1E8D0..1E8D6
             #$A5:
@@ -370,10 +376,10 @@ begin
         #$9F:
           case AChar[2] of
             #$8F:
-              if (AChar[3] in [#$BB..#$BF]) then Result := True;              // 1F3FB..1F3FF // EMOJI modifier
+              if (AChar[3] >= #$BB) then Result := True;                      // 1F3FB..1F3FF
           end;
       end;
-  end;
+    end;
 end;
 
 function IsSpaceChar(AText: PChar): Boolean;

@@ -481,18 +481,18 @@ begin
     if Line^ < #$e1 then continue;
     if PWidths^ = 0 then continue;
     case Line^ of
-      #$e1:
+      #$E1:
         case Line[1] of
           #$84:
-            PWidths^ := 2;
+             PWidths^ := 2;
           #$85:
             if (Line[2] <= #$9F) then PWidths^ := 2;                           // 1140..115F
         end;
-      #$e2:
+      #$E2:
         case Line[1] of
-          #$8c:
+          #$8C:
             if (Line[2] in [#$9A..#$9B, #$A9..#$AA]) then PWidths^ := 2;       // 231A..231B, 2329..232A
-          #$8f:
+          #$8F:
             if (Line[2] in [#$A9..#$AC, #$B0, #$B3]) then PWidths^ := 2;       // 23E9..23EC, 23F0, 23F3
           #$97:
             if (Line[2] in [#$BD..#$BE]) then PWidths^ := 2;                   // 25FD..25FE
@@ -500,90 +500,101 @@ begin
             if (Line[2] in [#$94..#$95, #$B0..#$B7]) then PWidths^ := 2;       // 2614..2615, 2630..2637
           #$99:
             if (Line[2] in [#$88..#$93, #$BF]) then PWidths^ := 2;             // 2648..2653, 267F
-          #$9a:
+          #$9A:
             if (Line[2] in [#$8A..#$8F, #$93, #$A1, #$AA..#$AB, #$BD..#$BE]) then PWidths^ := 2;   // 268A..268F, 2693, 26A1, 26AA..26AB, 26BD..26BE
-          #$9b:
+          #$9B:
             if (Line[2] in [#$84..#$85, #$8E, #$94, #$AA, #$B2..#$B3, #$B5, #$BA, #$BD]) then PWidths^ := 2;   // 26C4..26C5, 26CE, 26D4, 26EA, 26F2..26F3, 26F5, 26FA, 26FD
-          #$9c:
+          #$9C:
             if (Line[2] in [#$85, #$8A..#$8B, #$A8]) then PWidths^ := 2;       // 2705, 270A..270B, 2728
-          #$9d:
+          #$9D:
             if (Line[2] in [#$8C, #$8E, #$93..#$95, #$97]) then PWidths^ := 2;   // 274C, 274E, 2753..2755, 2757
-          #$9e:
+          #$9E:
             if (Line[2] in [#$95..#$97, #$B0, #$BF]) then PWidths^ := 2;       // 2795..2797, 27B0, 27BF
-          #$ac:
+          #$AC:
             if (Line[2] in [#$9B..#$9C]) then PWidths^ := 2;                   // 2B1B..2B1C
-          #$ad:
+          #$AD:
             if (Line[2] in [#$90, #$95]) then PWidths^ := 2;                   // 2B50, 2B55
           #$BA..#$BF:
-            PWidths^ := 2;
+             PWidths^ := 2;
         end;
-      #$e3:
+      #$E3:
         case Line[1] of
           #$80:
             if (Line[2] <= #$BE) then PWidths^ := 2;                           // 3000..303E
           #$81:
             if (Line[2] >= #$81) then PWidths^ := 2;                           // 3041..307F
           #$82..#$BF:
-            PWidths^ := 2;
+             PWidths^ := 2;
         end;
       #$E4..#$E9:
-        PWidths^ := 2;
-      #$ea:
+         PWidths^ := 2;
+      #$EA:
         case Line[1] of
           #$80..#$92:
-            PWidths^ := 2;
+             PWidths^ := 2;
           #$93:
             if (Line[2] <= #$86) then PWidths^ := 2;                           // A4C0..A4C6
           #$A5:
             if (Line[2] in [#$A0..#$BC]) then PWidths^ := 2;                   // A960..A97C
-          #$b0..#$bf:
-            PWidths^ := 2;
+          #$B0..#$BF:
+             PWidths^ := 2;
         end;
-      #$eb..#$ec:
-        PWidths^ := 2;
-      #$ed:
+      #$EB..#$EC:
+         PWidths^ := 2;
+      #$ED:
         case Line[1] of
           #$80..#$9D:
-            PWidths^ := 2;
+             PWidths^ := 2;
           #$9E:
             if (Line[2] <= #$A3) then PWidths^ := 2;                           // D780..D7A3
         end;
-      #$ef:
+      #$EF:
         case Line[1] of
-          #$a4..#$ab:
-            PWidths^ := 2;
-          #$b8:
+          #$A4..#$AB:
+             PWidths^ := 2;
+          #$B8:
             if (Line[2] in [#$90..#$99, #$B0..#$BF]) then PWidths^ := 2;       // FE10..FE19, FE30..FE3F
-          #$b9:
+          #$B9:
             if (Line[2] <= #$AB) then PWidths^ := 2;                           // FE40..FE6B
-          #$bc:
+          #$BC:
             if (Line[2] >= #$81) then PWidths^ := 2;                           // FF01..FF3F
-          #$bd:
+          #$BD:
             if (Line[2] <= #$A0) then PWidths^ := 2;                           // FF40..FF60
-          #$bf:
+          #$BF:
             if (Line[2] in [#$A0..#$A6]) then PWidths^ := 2;                   // FFE0..FFE6
         end;
-      #$f0:
+      #$F0:
         case Line[1] of
           #$96:
             case Line[2] of
               #$BF:
-                if (Line[3] in [#$A0..#$A4, #$B0..#$B1]) then PWidths^ := 2;   // 16FE0..16FE4, 16FF0..16FF1
+                if (Line[3] in [#$A0..#$A4, #$B0..#$B6]) then PWidths^ := 2;   // 16FE0..16FE4, 16FF0..16FF6
             end;
           #$97:
-            PWidths^ := 2;
+             PWidths^ := 2;
           #$98:
             case Line[2] of
-              #$80..#$9E:
-                PWidths^ := 2;
-              #$9f:
-                if (Line[3] <= #$B7) then PWidths^ := 2;                       // 187C0..187F7
-              #$a0..#$b2:
-                PWidths^ := 2;
-              #$b3:
-                if (Line[3] in [#$80..#$95, #$BF]) then PWidths^ := 2;         // 18CC0..18CD5, 18CFF
-              #$b4:
-                if (Line[3] <= #$88) then PWidths^ := 2;                       // 18D00..18D08
+              #$80..#$B2:
+                 PWidths^ := 2;
+              #$B3:
+                if (Line[3] in [#$80..#$9A, #$BF]) then PWidths^ := 2;         // 18CC0..18CDA, 18CFF
+              #$B4:
+                if (Line[3] <= #$A0) then PWidths^ := 2;                       // 18D00..18D20
+              #$B6:
+                 PWidths^ := 2;
+              #$B7:
+                if (Line[3] <= #$B2) then PWidths^ := 2;                       // 18DC0..18DF2
+              #$B8..#$BF:
+                 PWidths^ := 2;
+            end;
+          #$99:
+            case Line[2] of
+              #$80..#$85:
+                 PWidths^ := 2;
+              #$86:
+                if (Line[3] in [#$80..#$91, #$A0..#$BF]) then PWidths^ := 2;   // 19180..19191, 191A0..191BF
+              #$87:
+                if (Line[3] <= #$92) then PWidths^ := 2;                       // 191C0..191D2
             end;
           #$9A:
             case Line[2] of
@@ -593,20 +604,20 @@ begin
           #$9B:
             case Line[2] of
               #$80..#$83:
-                PWidths^ := 2;
+                 PWidths^ := 2;
               #$84:
-                if (Line[3] in [#$80..#$A2, #$B2]) then PWidths^ := 2;         // 1B100..1B122, 1B132
+                if (Line[3] in [#$80..#$A8, #$B2]) then PWidths^ := 2;         // 1B100..1B128, 1B132
               #$85:
-                if (Line[3] in [#$90..#$92, #$95, #$A4..#$A7, #$B0..#$BF]) then PWidths^ := 2;   // 1B150..1B152, 1B155, 1B164..1B167, 1B170..1B17F
-              #$86..#$8a:
-                PWidths^ := 2;
-              #$8b:
+                if (Line[3] in [#$90..#$92, #$95, #$A4..#$A8, #$B0..#$BF]) then PWidths^ := 2;   // 1B150..1B152, 1B155, 1B164..1B168, 1B170..1B17F
+              #$86..#$8A:
+                 PWidths^ := 2;
+              #$8B:
                 if (Line[3] <= #$BB) then PWidths^ := 2;                       // 1B2C0..1B2FB
             end;
           #$9D:
             case Line[2] of
               #$8C:
-                PWidths^ := 2;
+                 PWidths^ := 2;
               #$8D:
                 if (Line[3] in [#$80..#$96, #$A0..#$B6]) then PWidths^ := 2;   // 1D340..1D356, 1D360..1D376
             end;
@@ -617,25 +628,25 @@ begin
               #$83:
                 if (Line[3] in [#$8F]) then PWidths^ := 2;                     // 1F0CF
               #$86:
-                if (Line[3] in [#$8E, #$91..#$9A]) then PWidths^ := 2;         // 1F18E, 1F191..1F19A
+                if (Line[3] in [#$8E, #$91..#$9A, #$AE]) then PWidths^ := 2;   // 1F18E, 1F191..1F19A, 1F1AE
               #$88:
                 if (Line[3] in [#$80..#$82, #$90..#$BB]) then PWidths^ := 2;   // 1F200..1F202, 1F210..1F23B
               #$89:
                 if (Line[3] in [#$80..#$88, #$90..#$91, #$A0..#$A5]) then PWidths^ := 2;   // 1F240..1F248, 1F250..1F251, 1F260..1F265
-              #$8c:
+              #$8C:
                 if (Line[3] in [#$80..#$A0, #$AD..#$B5, #$B7..#$BF]) then PWidths^ := 2;   // 1F300..1F320, 1F32D..1F335, 1F337..1F33F
-              #$8d:
+              #$8D:
                 if (Line[3] in [#$80..#$BC, #$BE..#$BF]) then PWidths^ := 2;   // 1F340..1F37C, 1F37E..1F37F
-              #$8e:
+              #$8E:
                 if (Line[3] in [#$80..#$93, #$A0..#$BF]) then PWidths^ := 2;   // 1F380..1F393, 1F3A0..1F3BF
-              #$8f:
+              #$8F:
                 if (Line[3] in [#$80..#$8A, #$8F..#$93, #$A0..#$B0, #$B4, #$B8..#$BF]) then PWidths^ := 2;   // 1F3C0..1F3CA, 1F3CF..1F3D3, 1F3E0..1F3F0, 1F3F4, 1F3F8..1F3FF
               #$90:
                 if (Line[3] <= #$BE) then PWidths^ := 2;                       // 1F400..1F43E
               #$91:
                 if (Line[3] in [#$80, #$82..#$BF]) then PWidths^ := 2;         // 1F440, 1F442..1F47F
               #$92:
-                PWidths^ := 2;
+                 PWidths^ := 2;
               #$93:
                 if (Line[3] in [#$80..#$BC, #$BF]) then PWidths^ := 2;         // 1F4C0..1F4FC, 1F4FF
               #$94:
@@ -647,48 +658,48 @@ begin
               #$97:
                 if (Line[3] >= #$BB) then PWidths^ := 2;                       // 1F5FB..1F5FF
               #$98:
-                PWidths^ := 2;
+                 PWidths^ := 2;
               #$99:
                 if (Line[3] <= #$8F) then PWidths^ := 2;                       // 1F640..1F64F
-              #$9a:
-                PWidths^ := 2;
-              #$9b:
-                if (Line[3] in [#$80..#$85, #$8C, #$90..#$92, #$95..#$97, #$9C..#$9F, #$AB..#$AC, #$B4..#$BC]) then PWidths^ := 2;   // 1F6C0..1F6C5, 1F6CC, 1F6D0..1F6D2, 1F6D5..1F6D7, 1F6DC..1F6DF, 1F6EB..1F6EC, 1F6F4..1F6FC
-              #$9f:
-                if (Line[3] in [#$A0..#$AB, #$B0]) then PWidths^ := 2;         // 1F7E0..1F7EB, 1F7F0
-              #$a4:
+              #$9A:
+                 PWidths^ := 2;
+              #$9B:
+                if (Line[3] in [#$80..#$85, #$8C, #$90..#$92, #$95..#$99, #$9C..#$9F, #$AB..#$AC, #$B4..#$BC]) then PWidths^ := 2;   // 1F6C0..1F6C5, 1F6CC, 1F6D0..1F6D2, 1F6D5..1F6D9, 1F6DC..1F6DF, 1F6EB..1F6EC, 1F6F4..1F6FC
+              #$9F:
+                if (Line[3] in [#$9A, #$A0..#$AB, #$B0]) then PWidths^ := 2;   // 1F7DA, 1F7E0..1F7EB, 1F7F0
+              #$A4:
                 if (Line[3] in [#$8C..#$BA, #$BC..#$BF]) then PWidths^ := 2;   // 1F90C..1F93A, 1F93C..1F93F
-              #$a5:
+              #$A5:
                 if (Line[3] in [#$80..#$85, #$87..#$BF]) then PWidths^ := 2;   // 1F940..1F945, 1F947..1F97F
               #$A6..#$A7:
-                PWidths^ := 2;
-              #$a9:
+                 PWidths^ := 2;
+              #$A9:
                 if (Line[3] in [#$B0..#$BC]) then PWidths^ := 2;               // 1FA70..1FA7C
-              #$aa:
-                if (Line[3] in [#$80..#$89, #$8F..#$BF]) then PWidths^ := 2;   // 1FA80..1FA89, 1FA8F..1FABF
-              #$ab:
-                if (Line[3] in [#$80..#$86, #$8E..#$9C, #$9F..#$A9, #$B0..#$B8]) then PWidths^ := 2;   // 1FAC0..1FAC6, 1FACE..1FADC, 1FADF..1FAE9, 1FAF0..1FAF8
+              #$AA:
+                 PWidths^ := 2;
+              #$AB:
+                if (Line[3] in [#$80..#$86, #$88, #$8C..#$9D, #$9F..#$AB, #$AF..#$BA]) then PWidths^ := 2;   // 1FAC0..1FAC6, 1FAC8, 1FACC..1FADD, 1FADF..1FAEB, 1FAEF..1FAFA
             end;
           #$A0..#$AE:
-            PWidths^ := 2;
+             PWidths^ := 2;
           #$AF:
             case Line[2] of
               #$80..#$BE:
-                PWidths^ := 2;
+                 PWidths^ := 2;
               #$BF:
                 if (Line[3] <= #$BD) then PWidths^ := 2;                       // 2FFC0..2FFFD
             end;
           #$B0..#$BE:
-            PWidths^ := 2;
+             PWidths^ := 2;
           #$BF:
             case Line[2] of
               #$80..#$BE:
-                PWidths^ := 2;
-              #$bf:
+                 PWidths^ := 2;
+              #$BF:
                 if (Line[3] <= #$BD) then PWidths^ := 2;                       // 3FFC0..3FFFD
             end;
-        end
-    end;
+        end;
+      end;
   end
 end;
 
