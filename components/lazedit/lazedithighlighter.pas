@@ -309,6 +309,7 @@ type
     function PrepareLines(AMinimumRequiredLineIdx: IntIdx = -1; AMaxTime: integer = 0): boolean; virtual; // true = all done
     procedure MarkUnprepared(AFirstLineIdx: IntIdx = 0; ALastLineIdx: IntIdx = -1); virtual;
     function FirstUnpreparedLine: IntIdx; virtual;
+    function FirstUnpreparedLineFor(ALines: TLazEditStringsBase): IntIdx; virtual;
 
     (* ------------------ *
      * Token / Attributes *
@@ -416,6 +417,7 @@ type
     function PrepareLines(AMinimumRequiredLineIdx: IntIdx = -1; AMaxTime: integer = 0): boolean; override;
     procedure MarkUnprepared(AFirstLineIdx: IntIdx = 0; ALastLineIdx: IntIdx = - 1); override;
     function FirstUnpreparedLine: IntIdx; override;
+    function FirstUnpreparedLineFor(ALines: TLazEditStringsBase): IntIdx; override;
     property IsScanning: Boolean read FIsScanning;
 
     (* ------------------ *
@@ -844,6 +846,11 @@ begin
   Result := -1;
 end;
 
+function TLazEditCustomHighlighter.FirstUnpreparedLineFor(ALines: TLazEditStringsBase): IntIdx;
+begin
+  Result := -1;
+end;
+
 function TLazEditCustomHighlighter.GetTokenLen: Integer;
 var
   p: PChar;
@@ -1118,6 +1125,22 @@ end;
 function TLazEditCustomRangesHighlighter.FirstUnpreparedLine: IntIdx;
 begin
   Result := CurrentRanges.FirstInvalidLine;
+end;
+
+function TLazEditCustomRangesHighlighter.FirstUnpreparedLineFor(ALines: TLazEditStringsBase
+  ): IntIdx;
+var
+  ARanges: TLazHighlighterLineRangeList;
+begin
+  Result := -1;
+  if ALines = nil then
+    exit;
+
+  ARanges := TLazHighlighterLineRangeList(ALines.Ranges[GetRangeIdentifier]);
+  if ARanges <> nil then begin
+    ARanges.ValidatedChangeStamp := FRangesChangeStamp;
+    Result := ARanges.FirstInvalidLine;
+  end;
 end;
 
 procedure TLazEditCustomRangesHighlighter.AttachToLines(ALines: TLazEditStringsBase);
