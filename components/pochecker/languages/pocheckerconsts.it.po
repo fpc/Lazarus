@@ -47,6 +47,10 @@ msgstr "Ceco"
 msgid "German"
 msgstr "Tedesco"
 
+#: pocheckerconsts.rs_lang_el
+msgid "Greek"
+msgstr ""
+
 #: pocheckerconsts.rs_lang_en
 msgid "English"
 msgstr "Inglese"

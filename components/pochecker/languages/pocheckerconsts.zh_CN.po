@@ -44,6 +44,10 @@ msgstr "捷克语"
 msgid "German"
 msgstr "德语"
 
+#: pocheckerconsts.rs_lang_el
+msgid "Greek"
+msgstr ""
+
 #: pocheckerconsts.rs_lang_en
 msgid "English"
 msgstr "英语"
