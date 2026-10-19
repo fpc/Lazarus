@@ -214,6 +214,7 @@ end;
 class procedure TWin32WSCustomCalendar.SetDisplaySettings(const ACalendar: TCustomCalendar; const ASettings: TDisplaySettings);
 var
   Style: LongInt;
+  R: TRect;
 begin
   if not WSCheckHandleAllocated(ACalendar, 'TWin32WSCustomCalendar.SetDisplaySettings') then
     Exit;
@@ -223,6 +224,7 @@ begin
   else
     Style := Style and not MCS_WEEKNUMBERS;
   SetWindowLongPtrW(ACalendar.Handle, GWL_STYLE, Style);
+  RecreateWnd(ACalendar);
 end;
 
 class procedure TWin32WSCustomCalendar.SetFirstDayOfWeek(const ACalendar: TCustomCalendar; const ADayOfWeek: TCalDayOfWeek);
