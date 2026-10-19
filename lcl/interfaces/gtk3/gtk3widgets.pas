@@ -17575,22 +17575,27 @@ begin
     fnt:=TFontDialog(CommonDialog).Font;
     pch:=PGtkFontChooser(fWidget);
     pfc:=pch^.get_font_face();
-    pfd:=pfc^.describe;
-    { this stuff is implemened in gtk3objects.Tgtk3Font.UpdateLogFont
-      so this is backward mapping of properties }
+    if pfc <> nil then
+    begin
+      pfd:=pfc^.describe;
+      { this stuff is implemened in gtk3objects.Tgtk3Font.UpdateLogFont
+        so this is backward mapping of properties }
 
-    family := pfd^.get_family();
-    fnt.Name:=AppendPangoFontFaceSuffixes(family, pfd^.get_stretch, pfd^.get_weight);
-    fnt.Size:=pch^.get_font_size() div PANGO_SCALE;
+      family := pfd^.get_family();
+      fnt.Name:=AppendPangoFontFaceSuffixes(family, pfd^.get_stretch, pfd^.get_weight);
+      fnt.Size:=pch^.get_font_size() div PANGO_SCALE;
 
-    fnts:=[];
-    if pfd^.get_weight >= PANGO_WEIGHT_SEMIBOLD then
-     include(fnts,fsBold);
+      fnts:=[];
+      if pfd^.get_weight >= PANGO_WEIGHT_SEMIBOLD then
+       include(fnts,fsBold);
 
-    // do not differentiate oblique and italic
-    if (pfd^.get_style >= PANGO_STYLE_OBLIQUE) then
-      include(fnts,fsItalic);
-    fnt.Style:=fnts;
+      // do not differentiate oblique and italic
+      if (pfd^.get_style >= PANGO_STYLE_OBLIQUE) then
+        include(fnts,fsItalic);
+      fnt.Style:=fnts;
+      // pango_font_face_describe returns a new description (transfer full)
+      pango_font_description_free(pfd);
+    end;
   end;
   Result:=inherited response_handler(resp_id);
 end;

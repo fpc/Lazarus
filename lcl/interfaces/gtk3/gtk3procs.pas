@@ -614,11 +614,10 @@ begin
       for j := 0 to num_faces - 1 do
       begin
         desc := faces[j]^.describe;
-        if desc^.get_style = PANGO_STYLE_ITALIC then
-        begin
-          Result := True;
+        Result := desc^.get_style = PANGO_STYLE_ITALIC;
+        pango_font_description_free(desc);
+        if Result then
           Break;
-        end;
       end;
       g_free(faces);
     end;
