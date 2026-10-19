@@ -1361,17 +1361,17 @@ msgstr "Не спрашивать в следующий раз"
 #: opkman_const.rsopensslfrm_error1
 #, object-pascal-format
 msgid "Cannot download the OpenSSL libraries from \"%s\". Error message:"
-msgstr ""
+msgstr "Невозможно загрузить библиотеки OpenSSL с адреса \"%s\". Сообщение об ошибке:"
 
 #: opkman_const.rsopensslfrm_error2
 #, object-pascal-format
 msgid "Cannot unzip the OpenSSL libraries \"%s\". Error message:"
-msgstr ""
+msgstr "Невозможно распаковать файл библиотек OpenSSL \"%s\". Сообщение об ошибке:"
 
 #: opkman_const.rsopensslfrm_error3
 #, object-pascal-format
 msgid "The OpenSSL libraries were extracted to \"%s\", but they cannot be loaded."
-msgstr ""
+msgstr "Библиотеки OpenSSL были распакованы в \"%s\", но их не удалось загрузить."
 
 #: opkman_const.rsopensslfrm_lbmessage1_caption
 msgid "In order to work properly, OPM needs the OpenSSL libraries."
