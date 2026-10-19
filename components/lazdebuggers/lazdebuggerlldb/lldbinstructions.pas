@@ -412,6 +412,20 @@ implementation
 var
   DBG_VERBOSE: PLazLoggerLogGroup;
 
+function QuotePath(const AValue: String; AForce: Boolean = False): String;
+begin
+  if (pos(' ', AValue) < 1) and (pos(#9, AValue) < 1) and
+     (pos('\', AValue) < 1) and (pos('''', AValue) < 1) and
+     (pos('"', AValue) < 1) and
+     (not AForce)
+  then
+    exit(AValue);
+  Result := StringReplace(AValue, '\', '\\', [rfReplaceAll]);
+  Result := StringReplace(AValue, '"', '\"', [rfReplaceAll]);
+  Result := '"' + Result + '"';
+end;
+
+
 { TLldbInstructionValueBase }
 
 function TLldbInstructionValueBase.ParseStruct(ALine: string): Boolean;
@@ -684,9 +698,7 @@ end;
 
 constructor TLldbInstructionTargetCreate.Create(AFile: String);
 begin
-  if pos(' ', AFile) > 0 then
-    AFile := ''''+AFile+'''';
-  inherited Create('target create '+AFile);
+  inherited Create('target create '+QuotePath(AFile));
 end;
 
 { TLldbInstructionTargetDelete }
@@ -750,7 +762,7 @@ begin
   else
     s := 'process launch -n';
   if AWorkingDir <> '' then
-    s := s + ' -w ' + AWorkingDir;
+    s := s + ' -w ' + QuotePath(AWorkingDir);
   inherited Create(s);
 end;
 
