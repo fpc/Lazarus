@@ -300,6 +300,7 @@ resourcestring
   rsLanguageSinhala      = 'Sinhala';
   rsLanguageKorean       = 'Korean';
   rsLanguageLao          = 'Lao';
+  rsLanguageGreek        = 'Greek';
 
 implementation
 
