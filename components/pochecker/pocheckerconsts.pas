@@ -126,6 +126,7 @@ type
     lang_co,     {Corsican}
     lang_cs,     {Czech}
     lang_de,     {German}
+    lang_el,     {Greek}
     lang_en,     {English}
     lang_es,     {Spanish}
     lang_fi,     {Finnish}
@@ -158,6 +159,7 @@ resourcestring
   rs_lang_co =     'Corsican';
   rs_lang_cs =     'Czech';
   rs_lang_de =     'German';
+  rs_lang_el =     'Greek';
   rs_lang_en =     'English';
   rs_lang_es =     'Spanish';
   rs_lang_fi =     'Finnish';
@@ -190,6 +192,7 @@ const
     rs_lang_co ,
     rs_lang_cs ,
     rs_lang_de ,
+    rs_lang_el ,
     rs_lang_en ,
     rs_lang_es ,
     rs_lang_fi ,
@@ -222,6 +225,7 @@ const
      'co',     {Corsican}
      'cs',     {Czech}
      'de',     {German}
+     'el',     {Greek}
      'en',     {English}
      'es',     {Spanish}
      'fi',     {Finnish}
@@ -272,6 +276,7 @@ begin
   LanguageNames[lang_co]:=rs_lang_co;
   LanguageNames[lang_cs]:=rs_lang_cs;
   LanguageNames[lang_de]:=rs_lang_de;
+  LanguageNames[lang_el]:=rs_lang_el;
   LanguageNames[lang_en]:=rs_lang_en;
   LanguageNames[lang_es]:=rs_lang_es;
   LanguageNames[lang_fi]:=rs_lang_fi;
