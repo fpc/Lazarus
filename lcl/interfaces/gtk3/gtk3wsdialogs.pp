@@ -721,6 +721,7 @@ var
   // filedialog
   rowNum   : gint;
   fileInfo : PGChar;
+  pch : PGChar;
 
   fileList : PGSList;
   FontDesc: PPangoFontDescription;
@@ -768,7 +769,9 @@ begin
 
   if theDialog is TFileDialog then
   begin
-    FileName := gtk_file_chooser_get_filename(PGtkFileChooser(FPointer));
+    pch := gtk_file_chooser_get_filename(PGtkFileChooser(FPointer));
+    FileName := pch;
+    g_free(pch);
 
     if theDialog is TOpenDialog then
     begin
@@ -798,14 +801,18 @@ begin
           begin
             CurFilename:=DirName+fileInfo;
             Result:=CheckOpenedFilename(CurFilename);
-            if not Result then exit;
+            if not Result then
+            begin
+              g_slist_free_full(FileList, TGDestroyNotify(@g_free));
+              exit;
+            end;
             Files.Add(CurFilename);
           end;
           // inc(FileList);
           inc(rowNum);
         end;
         // Dec(FileList, rowNum);
-        g_slist_free(FileList);
+        g_slist_free_full(FileList, TGDestroyNotify(@g_free));
         // g_strfreev(fileList);
       end
       else
@@ -836,7 +843,9 @@ begin
   if theDialog is TFontDialog then
   begin
     //DebugLn('Trace:Pressed OK in FontDialog');
-    FontName := gtk_font_chooser_get_font(PGtkFontChooser(FPointer));
+    pch := gtk_font_chooser_get_font(PGtkFontChooser(FPointer));
+    FontName := pch;
+    g_free(pch);
     // FontName := gtk_font_selection_dialog_get_font_name(
     //                                         pgtkfontselectiondialog(FPointer));
     //DebugLn('gtkDialogOKclickedCB FontName=',FontName);
