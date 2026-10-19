@@ -512,7 +512,9 @@ end;
 class procedure TGtk3WSCustomListBox.SetScrollWidth(
   const ACustomListBox: TCustomListBox; const AScrollWidth: Integer);
 begin
-
+  if not WSCheckHandleAllocated(ACustomListBox, 'SetScrollWidth') then
+    Exit;
+  TGtk3ListBox(ACustomListBox.Handle).SetScrollWidth(AScrollWidth);
 end;
 
 class procedure TGtk3WSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox;

@@ -742,6 +742,7 @@ type
     function GetIndexAtXY(const X, Y: integer): integer;
     function GetItemSelected(const AIndex: Integer): Boolean;
     function GetScrollWidth: integer;
+    procedure SetScrollWidth(const AValue: integer);
     procedure SelectItem(const AIndex: Integer; ASelected: Boolean);
     procedure SetTopIndex(const AIndex: Integer);
     property ItemIndex: Integer read GetItemIndex write SetItemIndex;
@@ -11584,7 +11585,7 @@ begin
 
   PGtkScrolledWindow(Result)^.get_vscrollbar^.set_can_focus(False);
   PGtkScrolledWindow(Result)^.get_hscrollbar^.set_can_focus(False);
-  PGtkScrolledWindow(Result)^.set_policy(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+  PGtkScrolledWindow(Result)^.set_policy(GTK_POLICY_EXTERNAL, GTK_POLICY_AUTOMATIC);
 
   FListBoxStyle := AListBox.Style;
   if FListBoxStyle <> lbOwnerDrawVariable then
@@ -11827,6 +11828,26 @@ end;
 function TGtk3ListBox.GetScrollWidth: integer;
 begin
   Result := Round(getHorizontalScrollbar^.get_adjustment^.get_upper);
+end;
+
+procedure TGtk3ListBox.SetScrollWidth(const AValue: integer);
+var
+  AColumn: PGtkTreeViewColumn;
+begin
+  if not IsWidgetOk then
+    exit;
+  AColumn := gtk_tree_view_get_column(PGtkTreeView(GetContainerWidget), 0);
+  if AValue > Widget^.get_allocated_width then
+  begin
+    if Assigned(AColumn) then
+      gtk_tree_view_column_set_min_width(AColumn, AValue);
+    HScrollBarPolicy := GTK_POLICY_AUTOMATIC;
+  end else
+  begin
+    if Assigned(AColumn) then
+      gtk_tree_view_column_set_min_width(AColumn, -1);
+    HScrollBarPolicy := GTK_POLICY_EXTERNAL;
+  end;
 end;
 
 procedure TGtk3ListBox.SelectItem(const AIndex: Integer; ASelected: Boolean);
