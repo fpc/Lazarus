@@ -981,6 +981,10 @@ msgstr "Français"
 msgid "German"
 msgstr "Allemand"
 
+#: ideconfstrconsts.rslanguagegreek
+msgid "Greek"
+msgstr ""
+
 #: ideconfstrconsts.rslanguagehebrew
 msgid "Hebrew"
 msgstr "Hébreu"
