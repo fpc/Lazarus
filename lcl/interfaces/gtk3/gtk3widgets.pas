@@ -11654,6 +11654,7 @@ begin
         if not Selection^.path_is_selected(Path) then
           Result := -1;
       end;
+      gtk_tree_path_free(Path);
     end;
   end;
 end;
@@ -11763,7 +11764,8 @@ var
   AModel: PGtkTreeModel;
   Iter: TGtkTreeIter;
   AGdkRect: TGdkRectangle;
-  ACol: TGtkTreeViewColumn;
+  ACol: PGtkTreeViewColumn;
+  APath: PGtkTreePath;
 begin
   Result := Rect(0, 0, 0, 0);
   AModel := PGtkTreeView(getContainerWidget)^.model;
@@ -11771,8 +11773,10 @@ begin
     exit;
   if AModel^.iter_nth_child(@Iter, nil, AIndex) then
   begin
-    ACol := gtk_tree_view_get_column(PGtkTreeView(getContainerWidget), 0)^;
-    gtk_tree_view_get_cell_area(PGtkTreeView(getContainerWidget), AModel^.get_path(@Iter), @ACol, @AGdkRect);
+    ACol := gtk_tree_view_get_column(PGtkTreeView(getContainerWidget), 0);
+    APath := AModel^.get_path(@Iter);
+    gtk_tree_view_get_cell_area(PGtkTreeView(getContainerWidget), APath, ACol, @AGdkRect);
+    gtk_tree_path_free(APath);
     Result := RectFromGdkRect(AGdkRect);
   end;
 end;
