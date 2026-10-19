@@ -47,6 +47,10 @@ msgstr "Çek"
 msgid "German"
 msgstr "Almanca"
 
+#: pocheckerconsts.rs_lang_el
+msgid "Greek"
+msgstr ""
+
 #: pocheckerconsts.rs_lang_en
 msgid "English"
 msgstr "İngilizce"

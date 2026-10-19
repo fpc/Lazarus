@@ -43,6 +43,10 @@ msgstr "Tschechisch"
 msgid "German"
 msgstr "Deutsch"
 
+#: pocheckerconsts.rs_lang_el
+msgid "Greek"
+msgstr ""
+
 #: pocheckerconsts.rs_lang_en
 msgid "English"
 msgstr "Englisch"

@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.6\n"
 
 #: pocheckerconsts.rspochecker
 msgid "Check PO Files ..."
@@ -42,6 +42,10 @@ msgstr "Чешский"
 #: pocheckerconsts.rs_lang_de
 msgid "German"
 msgstr "Немецкий"
+
+#: pocheckerconsts.rs_lang_el
+msgid "Greek"
+msgstr "Греческий"
 
 #: pocheckerconsts.rs_lang_en
 msgid "English"
