@@ -759,6 +759,7 @@ var
   ASettings: PGtkSettings;
   AValue: TGValue;
   EnvTheme: string;
+  ACSSText: Pgchar;
 begin
   ACSSProvider := nil;
   EnvTheme := GetEnvironmentVariable('GTK_THEME');
@@ -789,7 +790,9 @@ begin
     exit;
   end;
 
-  FCSSTheme.Text := gtk_css_provider_to_string(ACSSProvider);
+  ACSSText := gtk_css_provider_to_string(ACSSProvider);
+  FCSSTheme.Text := ACSSText;
+  g_free(ACSSText);
 end;
 
 procedure TGtk3WidgetSet.ClearCSSTheme;

@@ -1301,9 +1301,12 @@ function TGTK3ThemeServices.IsDarkTheme: boolean;
 var
  sett: PGSettings;
  bs: string;
+ pbs: Pgchar;
 begin
   sett := g_settings_new('org.gnome.desktop.interface');
-  bs := sett^.get_string('color-scheme');
+  pbs := sett^.get_string('color-scheme');
+  bs := pbs;
+  g_free(pbs);
   sett^.unref;
   if bs <> '' then
     if Pos('prefer-dark', bs) > 0 then
