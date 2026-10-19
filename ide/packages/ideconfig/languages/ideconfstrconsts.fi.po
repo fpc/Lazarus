@@ -981,6 +981,10 @@ msgstr "ranska"
 msgid "German"
 msgstr "saksa"
 
+#: ideconfstrconsts.rslanguagegreek
+msgid "Greek"
+msgstr ""
+
 #: ideconfstrconsts.rslanguagehebrew
 msgid "Hebrew"
 msgstr "heprea"

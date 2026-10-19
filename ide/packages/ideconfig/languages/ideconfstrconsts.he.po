@@ -1017,6 +1017,10 @@ msgstr "צרפתית"
 msgid "German"
 msgstr "גרמנית"
 
+#: ideconfstrconsts.rslanguagegreek
+msgid "Greek"
+msgstr ""
+
 #: ideconfstrconsts.rslanguagehebrew
 msgid "Hebrew"
 msgstr "עברית"

@@ -1007,6 +1007,10 @@ msgstr "Perancis"
 msgid "German"
 msgstr "Jerman"
 
+#: ideconfstrconsts.rslanguagegreek
+msgid "Greek"
+msgstr ""
+
 #: ideconfstrconsts.rslanguagehebrew
 msgid "Hebrew"
 msgstr "Hebrew"
