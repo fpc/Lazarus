@@ -2236,25 +2236,30 @@ begin
   AWindow := gdk_screen_get_active_window(gdk_screen_get_default);
   if AWindow <> nil then
   begin
-    gdk_window_get_user_data(AWindow,@AWidget);
-    if AWidget <> nil then
-    begin
-      AData := g_object_get_data(AWidget, 'lclwidget');
-      // DebugLn('TGtk3WidgetSet.GetActiveWindow found window from data ...',dbgsName(TGtk3Widget(AData).LCLObject));
-      exit({%H-}HWND(AData));
-    end;
-    for i := 0 to Screen.FormCount - 1 do
-    begin
-      if Screen.Forms[i].HandleAllocated then
+    //gdk_screen_get_active_window returns a new reference !
+    try
+      gdk_window_get_user_data(AWindow,@AWidget);
+      if AWidget <> nil then
       begin
-        Hndl := Screen.Forms[i].Handle;
-        AGtkWin := PGtkWindow(TGtk3Window(Hndl).Widget);
-        if AGtkWin^.get_window = AWindow then
+        AData := g_object_get_data(AWidget, 'lclwidget');
+        // DebugLn('TGtk3WidgetSet.GetActiveWindow found window from data ...',dbgsName(TGtk3Widget(AData).LCLObject));
+        exit({%H-}HWND(AData));
+      end;
+      for i := 0 to Screen.FormCount - 1 do
+      begin
+        if Screen.Forms[i].HandleAllocated then
         begin
-          AGtkWin^.get_focus;
-          Result := Hndl;
+          Hndl := Screen.Forms[i].Handle;
+          AGtkWin := PGtkWindow(TGtk3Window(Hndl).Widget);
+          if AGtkWin^.get_window = AWindow then
+          begin
+            AGtkWin^.get_focus;
+            Result := Hndl;
+          end;
         end;
       end;
+    finally
+      g_object_unref(PGObject(AWindow));
     end;
   end else
   if IsWayland then
@@ -2900,6 +2905,7 @@ var
   device: PGdkDevice;
   window: PGdkWindow;
   windowWidget: PGtkWindow;
+  AUnrefWindow: Boolean;
 begin
   Result := 0;
 
@@ -2925,16 +2931,27 @@ begin
     if device = nil then
       exit;
 
-    window := gdk_screen_get_active_window(gdk_screen_get_default);
-    if window = nil then // gdk_screen_get_active_window may not be implemented
+    window := nil;
+    AUnrefWindow := False;
+    //gdk_screen_get_active_window is X11 only and returns a new reference !
+    if not IsWayland then
+    begin
+      window := gdk_screen_get_active_window(gdk_screen_get_default);
+      AUnrefWindow := window <> nil;
+    end;
+    if window = nil then
     begin
       windowWidget := GetActiveGtkWindow;
       if windowWidget <> nil then
-        window := windowWidget^.window;
+        window := gtk_widget_get_window(PGtkWidget(windowWidget));
     end;
     if window = nil then
+      window := gdk_device_get_window_at_position(device, nil, nil);
+    if window = nil then
       Exit;
-    device^.get_state(window, nil, @AModifiers);
+    gdk_device_get_state(device, window, nil, @AModifiers);
+    if AUnrefWindow then
+      g_object_unref(PGObject(window));
   end else
   begin
     AKeyMap := gdk_keymap_get_for_display(display);
