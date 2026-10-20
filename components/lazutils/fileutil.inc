@@ -490,7 +490,7 @@ begin
     Bytes:=nil;
     SetLength(Bytes, len);
     if Length(Bytes) = 0 then exit;
-    InStream := TFileStream.Create(Filename, fmOpenRead);
+    InStream := TFileStream.Create(Filename, fmOpenRead or fmShareDenyWrite);
     try
       {$IF FPC_FULLVERSION>30300}
       InStream.Read64(Bytes, 0, Length(Bytes));
@@ -538,7 +538,7 @@ begin
     s:='';
     Setlength(s, len);
     if Length(s) = 0 then exit;
-    InStream := TFileStream.Create(Filename, fmOpenRead);
+    InStream := TFileStream.Create(Filename, fmOpenRead or fmShareDenyWrite);
     try
       {$IF FPC_FULLVERSION>30300}
       InStream.Read64(TBytes(s), 0, Length(s));
