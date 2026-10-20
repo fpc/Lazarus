@@ -978,6 +978,7 @@ type
     FAsyncModeEnabled: Boolean;
     FWasDisableLoadSymbolsForLibraries: Boolean;
     FMirroredExcludedRoutines: TDbgExeProcSelectorSyncTargetList;
+    FHasAnyExcludedRoutines: boolean;
 
 
     // Internal Current values
@@ -9642,6 +9643,8 @@ procedure TGDBMIDebuggerBase.ClearExcludedRoutines;
 var
   CmdClr: TGDBMIDebuggerCommandExcludedRoutineClearAll;
 begin
+  if not FHasAnyExcludedRoutines then exit;
+  FHasAnyExcludedRoutines := False;
   CmdClr := TGDBMIDebuggerCommandExcludedRoutineClearAll.Create(Self);
   CmdClr.AddReference;
   QueueCommand(CmdClr);
@@ -9659,11 +9662,19 @@ begin
 
   c := FMirroredExcludedRoutines.ChangeStamp;
   n := FMirroredExcludedRoutines.Count;
+
   FMirroredExcludedRoutines.Update;
+  if (not AForce) and
+     (c = FMirroredExcludedRoutines.ChangeStamp) and
+     (not FHasAnyExcludedRoutines) and
+     (n = 0) and (FMirroredExcludedRoutines.Count = 0)
+  then exit;
+
   if AForce or (c <> FMirroredExcludedRoutines.ChangeStamp) then begin
     if n > 0 then
       ClearExcludedRoutines;
 
+    FHasAnyExcludedRoutines := FMirroredExcludedRoutines.Count > 0;
     for i := 0 to FMirroredExcludedRoutines.Count - 1 do begin
       CmdSet := TGDBMIDebuggerCommandExcludedRoutineSet.Create(Self, FMirroredExcludedRoutines[i]);
       CmdSet.AddReference;
