@@ -61,7 +61,7 @@ type
     kx, ky: double;
     fList: TlmfList;
     fCrs: TCriticalSection;
-    fEnhanced: Boolean;
+//    fEnhanced: Boolean;
     fMapMode: TlmfMapMode;
     fDevPixelsPerInch: Integer;
     fYAxisDown: Boolean;
@@ -99,13 +99,13 @@ type
     procedure SetLogBounds(AOrgX, AOrgY, AWidth, AHeight: Integer);
 
     procedure LoadFromLMFFile(AFileName: String);
-    procedure LoadFromLMFStream(AStream: TStream; IsEnhanced: Boolean);
+    procedure LoadFromLMFStream(AStream: TStream; AEnhanced: Boolean);
     procedure LoadFromStream(Stream: TStream); override;
     procedure SaveToLMFFile(AFileName: String);
-    procedure SaveToLMFStream(Stream: TStream);
+    procedure SaveToLMFStream(Stream: TStream; AEnhanced: Boolean);
     procedure SaveToStream(Stream: TStream); override;
 
-    property Enhanced: Boolean read FEnhanced write fEnhanced;  // Write WMF or EMF stream
+//    property Enhanced: Boolean read FEnhanced write fEnhanced;  // Write WMF or EMF stream
     property List: TlmfList read fList;
 
     property BkMode: Integer read FBkMode write FBkMode;
@@ -582,20 +582,22 @@ end;
 procedure TlmfImage.SaveToLMFFile(AFileName: String);
 var
   stream: TFileStream;
+  isEnhanced: Boolean;
 begin
+  isEnhanced := Lowercase(ExtractFileExt(AFilename)) = '.emf';
   stream := TFileStream.Create(AFileName, fmCreate or fmShareDenyWrite);
   try
-    SaveToLMFStream(stream);
+    SaveToLMFStream(stream, isEnhanced);
   finally
     stream.Free;
   end;
 end;
 
-procedure TlmfImage.SaveToLMFStream(Stream: TStream);
+procedure TlmfImage.SaveToLMFStream(Stream: TStream; AEnhanced: Boolean);
 var
   writer: TlmfWriter;
 begin
-  if FEnhanced then
+  if AEnhanced then
     writer := TEMFWriter.Create
   else
     writer := TWMFWriter.Create;
@@ -620,11 +622,11 @@ begin
   end;
 end;
 
-procedure TlmfImage.LoadFromLMFStream(AStream: TStream; IsEnhanced: Boolean);
+procedure TlmfImage.LoadFromLMFStream(AStream: TStream; AEnhanced: Boolean);
 var
   reader: TlmfReader;
 begin
-  if IsEnhanced then
+  if AEnhanced then
     reader := TlmfEMFReader.Create
   else
     reader := TlmfWMFReader.Create;
