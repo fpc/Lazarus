@@ -1234,6 +1234,19 @@ begin
         if VKey <> VK_UNKNOWN then Break;
       end;
 
+      if VKey = VK_UNKNOWN then
+        for m := 0 to KeySymCount - 1 do
+        begin
+          if KeyVals[m] = 0 then
+            continue;
+          if KeymapKeys[m].level <> 1 then
+            continue;
+          VKey := Gtk3FindVKeyForKeySym(KeyVals[m]);
+          if (VKey <> VK_UNKNOWN) and not VKeyInUse(VKey) then
+            break;
+          VKey := VK_UNKNOWN;
+        end;
+
       //no known VK: assign a free OEM slot unless it is a numpad/modifier keysym
       //that the fallback GdkKeyToLCLKey handles correctly via the keyval.
       if (VKey = VK_UNKNOWN) and (KeyVals[0] <> 0) and
