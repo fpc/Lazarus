@@ -268,6 +268,13 @@ type
 implementation
 
 type
+  { TCocoaTableColumn }
+
+  TCocoaTableColumn = objcclass(NSTableColumn)
+  public
+    procedure setWidth(newValue: CGFloat); override;
+  end;
+
   { TCocoaTableRowView }
 
   TCocoaTableRowView = objcclass(NSTableRowView)
@@ -333,6 +340,18 @@ begin
     visRange := tbl.rowsInRect(tbl.visibleRect());
     Result := visRange.location;
   end;
+end;
+
+{ TCocoaTableColumn }
+
+procedure TCocoaTableColumn.setWidth(newValue: CGFloat);
+begin
+  inherited setWidth(newValue);
+  // the vertical grid lines are separate views of the table view, they are
+  // only moved to the new column positions by a layout pass. This is also
+  // called while the user drags a column divider
+  if Assigned(self.tableView) then
+    self.tableView.setNeedsLayout( True );
 end;
 
 procedure TCocoaTableRowView.drawRect(dirtyRect: NSRect);
@@ -1553,7 +1572,7 @@ begin
   if (AIndex < 0) or (AIndex > _tableView.tableColumns.count) then
     Exit;
   cocoaTitle := NSStringUTF8(AColumn.Caption);
-  cocoaColumn := NSTableColumn.alloc.initWithIdentifier(cocoaTitle);
+  cocoaColumn := TCocoaTableColumn.alloc.initWithIdentifier(cocoaTitle);
   cocoaColumn.headerCell.setStringValue(cocoaTitle);
   cocoaColumn.setResizingMask(NSTableColumnUserResizingMask);
   _tableView.addTableColumn(cocoaColumn);
