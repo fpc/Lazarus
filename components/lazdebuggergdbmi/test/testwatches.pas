@@ -97,7 +97,7 @@ const
   RNoPreQuote  = '(^|[^''])'; // No open qoute (Either at start, or other char)
   RNoPostQuote = '($|[^''])'; // No close qoute (Either at end, or other char)
   Match_Pointer = '\$[0-9A-F]+';
-  M_Int = 'Integer|LongInt';
+  M_Int = 'Integer|LongInt|int';
 
   {%region    * Classes * }
   // _vptr$TOBJECt on older gdb e.g. mac 6.3.50
@@ -245,6 +245,7 @@ end;
 procedure TTestWatches.AddExpectBreakFooAll;
 var
   r: PWatchExpectation;
+  ign: TWatchExpectationFlags;
 begin
   if not TestControlCanTest(ControlTestWatchAll) then exit;
   FCurrentExpArray := @ExpectBreakFoo;
@@ -263,7 +264,7 @@ begin
   AddFmtDef('ArgTRec.ValInt',    '-1',                                   skSimple,    M_Int, [fTpMtch]);
   AddFmtDef('ArgPRec^.ValInt',   '1',                                    skSimple,    M_Int, [fTpMtch]);
   AddFmtDef('ArgPPRec^^.ValInt', '2',                                    skSimple,    M_Int, [fTpMtch]);
-  AddFmtDef('ArgPRec^.ValFoo',   MatchClass('TFoo'),                     skClass,     'TFoo', []);
+  AddFmtDef('ArgPRec^.ValFoo',   MatchClass('TFoo'),                     skClass,     'TFoo', [IgnDwrf3]); // fails with 9.* and 12.*
 
   AddFmtDef('ArgTRecSelf',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', []);
   AddFmtDef('ArgTRecSelf.ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]);
@@ -275,17 +276,17 @@ begin
 
   AddFmtDef('ArgTRecSelfDArray',  '.',                                   skSimple,    'TRecSelfDArray', []);
   //ArgTRecSelf
-  AddFmtDef('ArgTRecSelfDArray[0]',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', []);
-  AddFmtDef('ArgTRecSelfDArray[0].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]);
-  AddFmtDef('ArgTRecSelfDArray[0].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('ArgTRecSelfDArray[0]',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', [IgnDwrf3]);
+  AddFmtDef('ArgTRecSelfDArray[0].ValInt',   '100',                               skSimple,    M_Int, [IgnDwrf3,fTpMtch]);
+  AddFmtDef('ArgTRecSelfDArray[0].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnDwrf3]);
   AddFmtDef('ArgTRecSelfDArray[0].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf3]);
-  AddFmtDef('ArgTRecSelfDArray[0].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTRecSelfDArray[0].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [IgnDwrf3,fTpMtch]);
   //VArgTRecSelf
-  AddFmtDef('ArgTRecSelfDArray[1]',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', []);
-  AddFmtDef('ArgTRecSelfDArray[1].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
-  AddFmtDef('ArgTRecSelfDArray[1].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('ArgTRecSelfDArray[1]',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', [IgnDwrf3]);
+  AddFmtDef('ArgTRecSelfDArray[1].ValInt',   '102',                               skSimple,    M_Int, [IgnDwrf3,fTpMtch]);
+  AddFmtDef('ArgTRecSelfDArray[1].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnDwrf3]);
   AddFmtDef('ArgTRecSelfDArray[1].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf3]);
-  AddFmtDef('ArgTRecSelfDArray[1].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTRecSelfDArray[1].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [IgnDwrf3,fTpMtch]);
 
   AddFmtDef('ArgTRecSelfS0Array',  '.',                                   skSimple,    'TRecSelfS0Array', []);
   //ArgTRecSelf
@@ -303,31 +304,33 @@ begin
 
   AddFmtDef('ArgTRecSelfS3Array',  '.',                                   skSimple,    'TRecSelfS3Array', []);
   //ArgTRecSelf
+  ign := []; if (DebuggerInfo.Version >= 090000) AND (DebuggerInfo.Version < 130000) then ign := [IgnDwrf3];
   AddFmtDef('ArgTRecSelfS3Array[3]',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', []);
-  AddFmtDef('ArgTRecSelfS3Array[3].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]);
-  AddFmtDef('ArgTRecSelfS3Array[3].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('ArgTRecSelfS3Array[3].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]+ign);
+  AddFmtDef('ArgTRecSelfS3Array[3].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', ign);
   AddFmtDef('ArgTRecSelfS3Array[3].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf3]);
-  AddFmtDef('ArgTRecSelfS3Array[3].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTRecSelfS3Array[3].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]+ign);
   //VArgTRecSelf
-  AddFmtDef('ArgTRecSelfS3Array[4]',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', []);
-  AddFmtDef('ArgTRecSelfS3Array[4].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTRecSelfS3Array[4]',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', ign);
+  AddFmtDef('ArgTRecSelfS3Array[4].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]+ign);
   AddFmtDef('ArgTRecSelfS3Array[4].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnDwrf3]);
-  AddFmtDef('ArgTRecSelfS3Array[4].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
-  AddFmtDef('ArgTRecSelfS3Array[4].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTRecSelfS3Array[4].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', ign);
+  AddFmtDef('ArgTRecSelfS3Array[4].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]+ign);
 
+  ign := []; if (DebuggerInfo.Version >= 150000) then ign := [IgnDwrf3];
   AddFmtDef('ArgTPRecSelfDArray',  '.',                                   skSimple,    'TPRecSelfDArray', []);
   //ArgTRecSelf
   AddFmtDef('ArgTPRecSelfDArray[0]^',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', [IgnDwrf3]);
   AddFmtDef('ArgTPRecSelfDArray[0]^.ValInt',   '100',                               skSimple,    M_Int, [fTpMtch, IgnDwrf3]);
-  AddFmtDef('ArgTPRecSelfDArray[0]^.ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('ArgTPRecSelfDArray[0]^.ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', ign);
   AddFmtDef('ArgTPRecSelfDArray[0]^.ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf3]);
-  AddFmtDef('ArgTPRecSelfDArray[0]^.ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTPRecSelfDArray[0]^.ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]+ign);
   //VArgTRecSelf
   AddFmtDef('ArgTPRecSelfDArray[1]^',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', [IgnDwrf3]);
   AddFmtDef('ArgTPRecSelfDArray[1]^.ValInt',   '102',                               skSimple,    M_Int, [fTpMtch, IgnDwrf3]);
-  AddFmtDef('ArgTPRecSelfDArray[1]^.ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('ArgTPRecSelfDArray[1]^.ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', ign);
   AddFmtDef('ArgTPRecSelfDArray[1]^.ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf3]);
-  AddFmtDef('ArgTPRecSelfDArray[1]^.ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTPRecSelfDArray[1]^.ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]+ign);
 
 
 
@@ -345,7 +348,7 @@ begin
   AddFmtDef('VArgTRec.ValInt',    '-1',                                   skSimple,    M_Int, [fTpMtch]);
   AddFmtDef('VArgPRec^.ValInt',   '1',                                    skSimple,    M_Int, [fTpMtch]);
   AddFmtDef('VArgPPRec^^.ValInt', '2',                                    skSimple,    M_Int, [fTpMtch]);
-  AddFmtDef('VArgPRec^.ValFoo',   MatchClass('TFoo'),                      skClass,     'TFoo', []);
+  AddFmtDef('VArgPRec^.ValFoo',   MatchClass('TFoo'),                      skClass,     'TFoo', [IgnDwrf3]);  // fails with 9.* and 12.*
 
   AddFmtDef('VArgTRecSelf',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', []);
   AddFmtDef('VArgTRecSelf.ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
@@ -382,34 +385,36 @@ begin
   AddFmtDef('VArgTRecSelfS0Array[1].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf3]);
   AddFmtDef('VArgTRecSelfS0Array[1].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
 
+  ign := []; if (DebuggerInfo.Version >= 090000) AND (DebuggerInfo.Version < 130000) then ign := [IgnDwrf3];
   AddFmtDef('VArgTRecSelfS3Array',  '.',                                   skSimple,    'TRecSelfS3Array', []);
   //ArgTRecSelf
-  AddFmtDef('VArgTRecSelfS3Array[3]',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', []);
-  AddFmtDef('VArgTRecSelfS3Array[3].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]);
-  AddFmtDef('VArgTRecSelfS3Array[3].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('VArgTRecSelfS3Array[3]',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', ign);
+  AddFmtDef('VArgTRecSelfS3Array[3].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]+ign);
+  AddFmtDef('VArgTRecSelfS3Array[3].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', ign);
   AddFmtDef('VArgTRecSelfS3Array[3].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf3]);
-  AddFmtDef('VArgTRecSelfS3Array[3].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgTRecSelfS3Array[3].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]+ign);
   //VArgTRecSelf
-  AddFmtDef('VArgTRecSelfS3Array[4]',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', []);
-  AddFmtDef('VArgTRecSelfS3Array[4].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
-  AddFmtDef('VArgTRecSelfS3Array[4].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('VArgTRecSelfS3Array[4]',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', ign);
+  AddFmtDef('VArgTRecSelfS3Array[4].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]+ign);
+  AddFmtDef('VArgTRecSelfS3Array[4].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []+ign);
   AddFmtDef('VArgTRecSelfS3Array[4].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf3]);
-  AddFmtDef('VArgTRecSelfS3Array[4].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgTRecSelfS3Array[4].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]+ign);
 
+  ign := []; if (DebuggerInfo.Version >= 150000) then ign := [IgnDwrf3];
   r := AddFmtDef('VArgTPRecSelfDArray',  '.',                                   skSimple,    'TPRecSelfDArray', []);
      UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
   //ArgTRecSelf
   AddFmtDef('VArgTPRecSelfDArray[0]^',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', [IgnDwrf3]);
-  AddFmtDef('VArgTPRecSelfDArray[0]^.ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]);
-  AddFmtDef('VArgTPRecSelfDArray[0]^.ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('VArgTPRecSelfDArray[0]^.ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]+ign);
+  AddFmtDef('VArgTPRecSelfDArray[0]^.ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', ign);
   AddFmtDef('VArgTPRecSelfDArray[0]^.ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf3]);
-  AddFmtDef('VArgTPRecSelfDArray[0]^.ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgTPRecSelfDArray[0]^.ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]+ign);
   //VArgTRecSelf
   AddFmtDef('VArgTPRecSelfDArray[1]^',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', [IgnDwrf3]);
-  AddFmtDef('VArgTPRecSelfDArray[1]^.ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
-  AddFmtDef('VArgTPRecSelfDArray[1]^.ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('VArgTPRecSelfDArray[1]^.ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]+ign);
+  AddFmtDef('VArgTPRecSelfDArray[1]^.ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', ign);
   AddFmtDef('VArgTPRecSelfDArray[1]^.ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf3]);
-  AddFmtDef('VArgTPRecSelfDArray[1]^.ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgTPRecSelfDArray[1]^.ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]+ign);
 
 
   // LOCAL var (global type)
@@ -468,21 +473,22 @@ begin
      UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
 
 
-  AddFmtDef('ArgTFoo.ValueInt',       '^-11$',             skSimple,   'Integer|LongInt',  [fTpMtch]);
-  AddFmtDef('ArgPFoo^.ValueInt',      '^31$',             skSimple,   'Integer|LongInt',  [fTpMtch]);
+  AddFmtDef('ArgTFoo.ValueInt',       '^-11$',             skSimple,   'Integer|LongInt|int',  [fTpMtch]);
+  AddFmtDef('ArgPFoo^.ValueInt',      '^31$',             skSimple,   'Integer|LongInt|int',  [fTpMtch]);
   // GDB automatically derefs the pointer
   //AddFmtDef('ArgPFoo.ValueInt',       'error',            skSimple,   '',  []);
-  AddFmtDef('ArgPPFoo^^.ValueInt',    '^31$',             skSimple,   'Integer|LongInt',  [fTpMtch]);
+  AddFmtDef('ArgPPFoo^^.ValueInt',    '^31$',             skSimple,   'Integer|LongInt|int',  [fTpMtch]);
   //AddFmtDef('ArgPPFoo.ValueInt',       'error',            skSimple,   '',  []);
 
-  AddFmtDef('VArgTFoo.ValueInt',      '^-11$',             skSimple,   'Integer|LongInt',  [fTpMtch]);
-  AddFmtDef('VArgPFoo^.ValueInt',     '^31$',             skSimple,   'Integer|LongInt',  [fTpMtch]);
+  AddFmtDef('VArgTFoo.ValueInt',      '^-11$',             skSimple,   'Integer|LongInt|int',  [fTpMtch]);
+  AddFmtDef('VArgPFoo^.ValueInt',     '^31$',             skSimple,   'Integer|LongInt|int',  [fTpMtch]);
   //AddFmtDef('VArgPFoo.ValueInt',      'error',            skSimple,   '',  []);
-  AddFmtDef('VArgPPFoo^^.ValueInt',   '^31$',             skSimple,   'Integer|LongInt',  [fTpMtch]);
+  AddFmtDef('VArgPPFoo^^.ValueInt',   '^31$',             skSimple,   'Integer|LongInt|int',  [fTpMtch]);
   //AddFmtDef('VArgPPFoo.ValueInt',      'error',            skSimple,   '',  []);
 
 
-  Add('ArgTFoo',  [defMemDump],  ':.*?6D 65 6D 20 6F 66 20 54 46 6F 6F',  skClass,   'TFoo',  []);
+  if (Compiler.CpuBitType = cpu32) or (SymbolType = stStabs) then
+    Add('ArgTFoo',  [defMemDump],  '6D *65 *6D *20 *6F *66 *20 *54 *46 *6F *6F',  skClass,   'TFoo',  []);
 
   {%region    * Classes * typecasts }
   // typecast does not change class
@@ -547,65 +553,67 @@ begin
 
   {%region    * Classes * typecasts }
   { gdb below 6.7.50 with stabs may fail }
+  ign := []; if (DebuggerInfo.Version < 100000) and (SymbolType = stStabs) then ign := [IgnStabs];
   r := AddFmtDef('VarOTestTCast2', [defFullTypeInfo],
-               MatchClass('TObject'),          skClass,      'TObject', []);
+               MatchClass('TObject'),          skClass,      'TObject', []+ign);
   if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
   r := AddFmtDef('VarOTestTCast2', [],
-               MatchClass('TObject'),          skClass,      'TObject', []);
+               MatchClass('TObject'),          skClass,      'TObject', []+ign);
   if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
 
   r := AddFmtDef('TObject(VarOTestTCast2)', [defFullTypeInfo],
-               MatchClass('TObject'),          skClass,      'TObject', []);
+               MatchClass('TObject'),          skClass,      'TObject', []+ign);
   if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
   r := AddFmtDef('TObject(VarOTestTCast2)', [],
-               MatchClass('TObject'),          skClass,      'TObject', []);
+               MatchClass('TObject'),          skClass,      'TObject', []+ign);
   if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
 
   r := AddFmtDef('TClassTCast(VarOTestTCast2)', [defFullTypeInfo],
-                 MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []);
+                 MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []+ign);
   if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
   r := AddFmtDef('TClassTCast(VarOTestTCast2)', [],
-               MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []);
+               MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []+ign);
   if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
 
+  ign := []; if (DebuggerInfo.Version < 100000) and (SymbolType = stStabs) then ign := [IgnStabs];
 
   { UseInstanceClass }
   { gdb below 6.7.50 with stabs may fail }
   r := AddFmtDef('VarOTestTCast2', [defFullTypeInfo, defClassAutoCast],
-                 MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []);
+                 MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []+ign);
   if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
   r := AddFmtDef('VarOTestTCast2', [defClassAutoCast],
-               MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []);
+               MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []+ign);
   if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
 
   r := AddFmtDef('TObject(VarOTestTCast2)', [defFullTypeInfo, defClassAutoCast],
-                 MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []);
+                 MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []+ign);
   //if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then
   UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
   r := AddFmtDef('TObject(VarOTestTCast2)', [defClassAutoCast],
-               MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []);
+               MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []+ign);
   //if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then
   UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
 
   r := AddFmtDef('TClassTCast(VarOTestTCast2)', [defFullTypeInfo, defClassAutoCast],
-                 MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []);
+                 MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []+ign);
   //if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then
   UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
   r := AddFmtDef('TClassTCast(VarOTestTCast2)', [defClassAutoCast],
-               MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []);
+               MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []+ign);
   //if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then
   UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
 
   // access dyn array in casted object
 
   {%endregion * Classes * typecasts}
-  r := AddFmtDef('TClassTCastObject(VarOTestTCastObj).l[1]', [], '1144', skSimple, 'Integer|LongInt', [fTpMtch]);
+  r := AddFmtDef('TClassTCastObject(VarOTestTCastObj).l[1]', [], '1144', skSimple, 'Integer|LongInt|int', [fTpMtch]);
 //  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdExpRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
 
 
   // Full type info
   r := AddFmtDef('ArgTFoo', [defFullTypeInfo],   Match_ArgTFoo,     skClass,   'TFoo',  []);
-  AddMemberExpect(r, 'ValueInt', 'Integer|LongInt', [fTpMtch], skSimple);
+  AddMemberExpect(r, 'ValueInt', 'Integer|LongInt|int', [fTpMtch], skSimple);
   AddMemberExpect(r, 'a1', 'TFooStatArray', [], skSimple);
   AddMemberExpect(r, 'a2', 'TFooDynArray', [], skSimple);
   AddMemberExpect(r, 'a3', 'array', [fTpMtch], skSimple);
@@ -683,7 +691,7 @@ begin
 
 
   r:=AddFmtDef('PChar(ArgTMyAnsiString)',
-                                               '''MyAnsi''$',      skPOINTER,   '(\^|p)char', [fTpMtch]);
+                                               '''MyAnsi''$',      skPOINTER,   '(\^|p)(ansi)?char', [fTpMtch]);
                     UpdExpRes(r, stStabs,    '''MyAnsi''$',      skPOINTER,   'pchar|AnsiString', [fTpMtch]);
                          //UpdExpRes(r, stDwarf3,   '''MyAnsi''$',      skSimple,    'AnsiString', []);
 
@@ -890,7 +898,7 @@ begin
   *)
 
 
-  Add('ArgTMyAnsiString',      [defMemDump],  ': 4d 79 41 6e 73 69 00',      skPOINTER,      '^(TMy)?AnsiString$', [fTpMtch]);
+  Add('ArgTMyAnsiString',      [defMemDump],  '4d *79 *41 *6e *73 *69 *00',      skPOINTER,      '^(TMy)?AnsiString$', [fTpMtch]);
 
   // Utf8
   // a single ', must appear double ''
@@ -933,8 +941,8 @@ begin
   AddFmtDef('VArgShortInt',   '^35$',      skSimple,      'ShortInt', []);
   AddFmtDef('ArgSmallInt',    '^36$',      skSimple,      'SmallInt', []);
   AddFmtDef('VArgSmallInt',   '^36$',      skSimple,      'SmallInt', []);
-  AddFmtDef('ArgInt',         '^37$',      skSimple,      'Integer|LongInt', [fTpMtch]);
-  AddFmtDef('VArgInt',        '^37$',      skSimple,      'Integer|LongInt', [fTpMtch]);
+  AddFmtDef('ArgInt',         '^37$',      skSimple,      'Integer|LongInt|int', [fTpMtch]);
+  AddFmtDef('VArgInt',        '^37$',      skSimple,      'Integer|LongInt|int', [fTpMtch]);
   AddFmtDef('ArgInt64',       '^38$',      skSimple,      'Int64', []);
   AddFmtDef('VArgInt64',      '^38$',      skSimple,      'Int64', []);
 
@@ -971,9 +979,9 @@ begin
   *)
 
   // spaces
-  AddFmtDef('ArgWord + 1',        '^27$',      skSimple,      'Word|long', [fTpMtch]);
-  AddFmtDef('ArgWord or 64',      '^90$',      skSimple,      'Word|long', [fTpMtch]);
-  AddFmtDef('ArgWord and 67',     '^2$',       skSimple,      'Word|long', [fTpMtch]);
+  AddFmtDef('ArgWord + 1',        '^27$',      skSimple,      'Word|long|int', [fTpMtch]);
+  AddFmtDef('ArgWord or 64',      '^90$',      skSimple,      'Word|long|int', [fTpMtch]);
+  AddFmtDef('ArgWord and 67',     '^2$',       skSimple,      'Word|long|int', [fTpMtch]);
 
   {%endregion    * Simple * }
 
@@ -1077,6 +1085,7 @@ var
   r: PWatchExpectation;
   v: string;
   i: integer;
+  ign: TWatchExpectationFlags;
 begin
   if not TestControlCanTest(ControlTestWatchAll) then exit;
   FCurrentExpArray := @ExpectBreakFooArray;
@@ -1107,51 +1116,51 @@ begin
                                 []);
 
   AddFmtDef('VarDynIntArray[1]',          '2',
-                                skSimple,       'Integer|LongInt',
+                                skSimple,       'Integer|LongInt|int',
                                 [fTpMtch]);
   AddFmtDef('VarDynIntArray[18]',          '36',
-                                skSimple,       'Integer|LongInt',
+                                skSimple,       'Integer|LongInt|int',
                                 [fTpMtch]);
   // index in hex
   AddFmtDef('VarDynIntArray[$1]',          '2',
-                                skSimple,       'Integer|LongInt',
+                                skSimple,       'Integer|LongInt|int',
                                 [fTpMtch]);
   AddFmtDef('VarDynIntArray[$12]',          '36',
-                                skSimple,       'Integer|LongInt',
+                                skSimple,       'Integer|LongInt|int',
                                 [fTpMtch]);
   AddFmtDef('VarDynIntArray[&1]',          '2',
-                                skSimple,       'Integer|LongInt',
+                                skSimple,       'Integer|LongInt|int',
                                 [fTpMtch]);
   AddFmtDef('VarDynIntArray[&22]',          '36',
-                                skSimple,       'Integer|LongInt',
+                                skSimple,       'Integer|LongInt|int',
                                 [fTpMtch]);
   AddFmtDef('VarDynIntArray[%1]',          '2',
-                                skSimple,       'Integer|LongInt',
+                                skSimple,       'Integer|LongInt|int',
                                 [fTpMtch]);
   AddFmtDef('VarDynIntArray[%10010]',          '36',
-                                skSimple,       'Integer|LongInt',
+                                skSimple,       'Integer|LongInt|int',
                                 [fTpMtch]);
   AddFmtDef('VarDynIntArray[0x1]',          '2',
-                                skSimple,       'Integer|LongInt',
+                                skSimple,       'Integer|LongInt|int',
                                 [fTpMtch]);
   AddFmtDef('VarDynIntArray[0x12]',          '36',
-                                skSimple,       'Integer|LongInt',
+                                skSimple,       'Integer|LongInt|int',
                                 [fTpMtch]);
 
   AddFmtDef('VarStatIntArray[6]',         '12',
-                                skSimple,       'Integer|LongInt',
+                                skSimple,       'Integer|LongInt|int',
                                 [fTpMtch]);
   AddFmtDef('VarPDynIntArray^[1]',        '2',
-                                skSimple,       'Integer|LongInt',
+                                skSimple,       'Integer|LongInt|int',
                                 [fTpMtch]);
   AddFmtDef('VarPStatIntArray^[6]',       '12',
-                                skSimple,       'Integer|LongInt',
+                                skSimple,       'Integer|LongInt|int',
                                 [fTpMtch]);
   AddFmtDef('VarDynIntArrayA[1]',         '2',
-                                skSimple,       'Integer|LongInt',
+                                skSimple,       'Integer|LongInt|int',
                                 [fTpMtch]);
   AddFmtDef('VarStatIntArrayA[6]',        '12',
-                                skSimple,       'Integer|LongInt',
+                                skSimple,       'Integer|LongInt|int',
                                 [fTpMtch]);
   {%endregion    * Array * }
 
@@ -1370,15 +1379,16 @@ begin
   r := AddPointerFmtDef  ('ArgTDynStatPRec1Array[1][4]', '\^TRecForArray3', '^TRecForArray3', []);
   r := AddRecForArrFmtDef('ArgTDynStatPRec1Array[1][4]^', 3, 76, []);
     //TDynPDynTRec1Array   = array of ^TDynArrayTRec1;
+  ign := []; if DebuggerInfo.Version >= 150000 then ign := [IgnDwrf, IgnDwrf2, IgnDwrf3];
   r := AddArrayFmtDef('ArgTDynPDynTRec1Array', '.', 'TDynPDynTRec1Array', []);
-  r := AddPointerFmtDef  ('ArgTDynPDynTRec1Array[0]', '(\^T|P)DynArrayTRec1', '^(\^T|P)DynArrayTRec1$', [fTpMtch]);
-  r := AddArrayFmtDef('ArgTDynPDynTRec1Array[0]^', '.', 'TDynArrayTRec1', []);
-  r := AddRecForArrFmtDef('ArgTDynPDynTRec1Array[0]^[0]', 3, 80, []);
-  r := AddRecForArrFmtDef('ArgTDynPDynTRec1Array[0]^[1]', 3, 81, []);
-  r := AddPointerFmtDef  ('ArgTDynPDynTRec1Array[1]', '(\^T|P)DynArrayTRec1', '^(\^T|P)DynArrayTRec1$', [fTpMtch]);
-  r := AddArrayFmtDef('ArgTDynPDynTRec1Array[1]^', '.', 'TDynArrayTRec1', []);
-  r := AddRecForArrFmtDef('ArgTDynPDynTRec1Array[1]^[0]', 3, 85, []);
-  r := AddRecForArrFmtDef('ArgTDynPDynTRec1Array[1]^[1]', 3, 86, []);
+  r := AddPointerFmtDef  ('ArgTDynPDynTRec1Array[0]', '(\^T|P)DynArrayTRec1', '^(\^T|P)DynArrayTRec1$', [fTpMtch]+ign);
+  r := AddArrayFmtDef('ArgTDynPDynTRec1Array[0]^', '.', 'TDynArrayTRec1', ign);
+  r := AddRecForArrFmtDef('ArgTDynPDynTRec1Array[0]^[0]', 3, 80, ign);
+  r := AddRecForArrFmtDef('ArgTDynPDynTRec1Array[0]^[1]', 3, 81, ign);
+  r := AddPointerFmtDef  ('ArgTDynPDynTRec1Array[1]', '(\^T|P)DynArrayTRec1', '^(\^T|P)DynArrayTRec1$', [fTpMtch]+ign);
+  r := AddArrayFmtDef('ArgTDynPDynTRec1Array[1]^', '.', 'TDynArrayTRec1', ign);
+  r := AddRecForArrFmtDef('ArgTDynPDynTRec1Array[1]^[0]', 3, 85, ign);
+  r := AddRecForArrFmtDef('ArgTDynPDynTRec1Array[1]^[1]', 3, 86, ign);
     //TDynPStatTRec1Array  = array of ^TStatArrayTRec1;
   r := AddArrayFmtDef('ArgTDynPStatTRec1Array', '.', 'TDynPStatTRec1Array', []);
   r := AddPointerFmtDef  ('ArgTDynPStatTRec1Array[0]', '(\^T|P)StatArrayTRec1', '(\^T|P)StatArrayTRec1$', [fTpMtch]);
@@ -1390,15 +1400,16 @@ begin
   r := AddRecForArrFmtDef('ArgTDynPStatTRec1Array[1]^[3]', 3, 75, []);
   r := AddRecForArrFmtDef('ArgTDynPStatTRec1Array[1]^[4]', 3, 76, []);
     //TDynPDynTRec1NPArray = array of ^TDynArrayTRec1NP;
+  ign := []; if DebuggerInfo.Version >= 150000 then ign := [IgnDwrf, IgnDwrf2, IgnDwrf3];
   r := AddArrayFmtDef('ArgTDynPDynTRec1NPArray', '.', 'TDynPDynTRec1NPArray', []);
-  r := AddPointerFmtDef  ('ArgTDynPDynTRec1NPArray[0]', '\^TDynArrayTRec1NP', '^TDynArrayTRec1NP', []);
-  r := AddArrayFmtDef('ArgTDynPDynTRec1NPArray[0]^', '.', 'TDynArrayTRec1NP', []);
-  r := AddRecForArrFmtDef('ArgTDynPDynTRec1NPArray[0]^[0]', 3, 500, []);
-  r := AddRecForArrFmtDef('ArgTDynPDynTRec1NPArray[0]^[1]', 3, 501, []);
-  r := AddPointerFmtDef  ('ArgTDynPDynTRec1NPArray[1]', '\^TDynArrayTRec1NP', '^TDynArrayTRec1NP', []);
-  r := AddArrayFmtDef('ArgTDynPDynTRec1NPArray[1]^', '.', 'TDynArrayTRec1NP', []);
-  r := AddRecForArrFmtDef('ArgTDynPDynTRec1NPArray[1]^[0]', 3, 505, []);
-  r := AddRecForArrFmtDef('ArgTDynPDynTRec1NPArray[1]^[1]', 3, 506, []);
+  r := AddPointerFmtDef  ('ArgTDynPDynTRec1NPArray[0]', '\^TDynArrayTRec1NP', '^TDynArrayTRec1NP', ign);
+  r := AddArrayFmtDef('ArgTDynPDynTRec1NPArray[0]^', '.', 'TDynArrayTRec1NP', ign);
+  r := AddRecForArrFmtDef('ArgTDynPDynTRec1NPArray[0]^[0]', 3, 500, ign);
+  r := AddRecForArrFmtDef('ArgTDynPDynTRec1NPArray[0]^[1]', 3, 501, ign);
+  r := AddPointerFmtDef  ('ArgTDynPDynTRec1NPArray[1]', '\^TDynArrayTRec1NP', '^TDynArrayTRec1NP', ign);
+  r := AddArrayFmtDef('ArgTDynPDynTRec1NPArray[1]^', '.', 'TDynArrayTRec1NP', ign);
+  r := AddRecForArrFmtDef('ArgTDynPDynTRec1NPArray[1]^[0]', 3, 505, ign);
+  r := AddRecForArrFmtDef('ArgTDynPDynTRec1NPArray[1]^[1]', 3, 506, ign);
     //TDynPStatTRec1NPArray= array of ^TStatArrayTRec1NP;
   r := AddArrayFmtDef('ArgTDynPStatTRec1NPArray', '.', 'TDynPStatTRec1NPArray', []);
   r := AddPointerFmtDef  ('ArgTDynPStatTRec1NPArray[0]', '\^TStatArrayTRec1NP', '^TStatArrayTRec1NP', []);
@@ -1465,18 +1476,19 @@ begin
   r := AddPointerFmtDef  ('VArgTDynStatPRec1Array[1][4]', '\^TRecForArray3', '^TRecForArray3', []);
   r := AddRecForArrFmtDef('VArgTDynStatPRec1Array[1][4]^', 3, 76, []);
     //TDynPDynTRec1Array   = array of ^TDynArrayTRec1;
+  ign := []; if DebuggerInfo.Version >= 150000 then ign := [IgnDwrf, IgnDwrf2, IgnDwrf3];
   r := AddArrayFmtDef('VArgTDynPDynTRec1Array', '.', 'TDynPDynTRec1Array', []);
      UpdResMinFpc(r, stDwarf2All, 020600);
-  r := AddPointerFmtDef  ('VArgTDynPDynTRec1Array[0]', '(\^T|P)DynArrayTRec1', '^(\^T|P)DynArrayTRec1$', [fTpMtch]);
+  r := AddPointerFmtDef  ('VArgTDynPDynTRec1Array[0]', '(\^T|P)DynArrayTRec1', '^(\^T|P)DynArrayTRec1$', [fTpMtch]+ign);
   if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 070000) then UpdResMinFpc(r, stDwarf2All, 020600);
-  r := AddArrayFmtDef('VArgTDynPDynTRec1Array[0]^', '.', 'TDynArrayTRec1', []);
-  r := AddRecForArrFmtDef('VArgTDynPDynTRec1Array[0]^[0]', 3, 80, []);
-  r := AddRecForArrFmtDef('VArgTDynPDynTRec1Array[0]^[1]', 3, 81, []);
-  r := AddPointerFmtDef  ('VArgTDynPDynTRec1Array[1]', '(\^T|P)DynArrayTRec1', '^(\^T|P)DynArrayTRec1$', [fTpMtch]);
+  r := AddArrayFmtDef('VArgTDynPDynTRec1Array[0]^', '.', 'TDynArrayTRec1', []+ign);
+  r := AddRecForArrFmtDef('VArgTDynPDynTRec1Array[0]^[0]', 3, 80, []+ign);
+  r := AddRecForArrFmtDef('VArgTDynPDynTRec1Array[0]^[1]', 3, 81, []+ign);
+  r := AddPointerFmtDef  ('VArgTDynPDynTRec1Array[1]', '(\^T|P)DynArrayTRec1', '^(\^T|P)DynArrayTRec1$', [fTpMtch]+ign);
   if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 070000) then UpdResMinFpc(r, stDwarf2All, 020600);
-  r := AddArrayFmtDef('VArgTDynPDynTRec1Array[1]^', '.', 'TDynArrayTRec1', []);
-  r := AddRecForArrFmtDef('VArgTDynPDynTRec1Array[1]^[0]', 3, 85, []);
-  r := AddRecForArrFmtDef('VArgTDynPDynTRec1Array[1]^[1]', 3, 86, []);
+  r := AddArrayFmtDef('VArgTDynPDynTRec1Array[1]^', '.', 'TDynArrayTRec1', ign);
+  r := AddRecForArrFmtDef('VArgTDynPDynTRec1Array[1]^[0]', 3, 85, ign);
+  r := AddRecForArrFmtDef('VArgTDynPDynTRec1Array[1]^[1]', 3, 86, ign);
     //TDynPStatTRec1Array  = array of ^TStatArrayTRec1;
   r := AddArrayFmtDef('VArgTDynPStatTRec1Array', '.', 'TDynPStatTRec1Array', []);
      UpdResMinFpc(r, stDwarf2All, 020600);
@@ -1489,18 +1501,19 @@ begin
   r := AddRecForArrFmtDef('VArgTDynPStatTRec1Array[1]^[3]', 3, 75, []);
   r := AddRecForArrFmtDef('VArgTDynPStatTRec1Array[1]^[4]', 3, 76, []);
     //TDynPDynTRec1NPArray = array of ^TDynArrayTRec1NP;
+  ign := []; if DebuggerInfo.Version >= 150000 then ign := [IgnDwrf, IgnDwrf2, IgnDwrf3];
   r := AddArrayFmtDef('VArgTDynPDynTRec1NPArray', '.', 'TDynPDynTRec1NPArray', []);
      UpdResMinFpc(r, stDwarf2All, 020600);
-  r := AddPointerFmtDef  ('VArgTDynPDynTRec1NPArray[0]', '\^TDynArrayTRec1NP', '^TDynArrayTRec1NP', []);
+  r := AddPointerFmtDef  ('VArgTDynPDynTRec1NPArray[0]', '\^TDynArrayTRec1NP', '^TDynArrayTRec1NP', ign);
   if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 070000) then UpdResMinFpc(r, stDwarf2All, 020600);
-  r := AddArrayFmtDef('VArgTDynPDynTRec1NPArray[0]^', '.', 'TDynArrayTRec1NP', []);
-  r := AddRecForArrFmtDef('VArgTDynPDynTRec1NPArray[0]^[0]', 3, 500, []);
-  r := AddRecForArrFmtDef('VArgTDynPDynTRec1NPArray[0]^[1]', 3, 501, []);
-  r := AddPointerFmtDef  ('VArgTDynPDynTRec1NPArray[1]', '\^TDynArrayTRec1NP', '^TDynArrayTRec1NP', []);
+  r := AddArrayFmtDef('VArgTDynPDynTRec1NPArray[0]^', '.', 'TDynArrayTRec1NP', ign);
+  r := AddRecForArrFmtDef('VArgTDynPDynTRec1NPArray[0]^[0]', 3, 500, ign);
+  r := AddRecForArrFmtDef('VArgTDynPDynTRec1NPArray[0]^[1]', 3, 501, ign);
+  r := AddPointerFmtDef  ('VArgTDynPDynTRec1NPArray[1]', '\^TDynArrayTRec1NP', '^TDynArrayTRec1NP', ign);
   if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 070000) then UpdResMinFpc(r, stDwarf2All, 020600);
-  r := AddArrayFmtDef('VArgTDynPDynTRec1NPArray[1]^', '.', 'TDynArrayTRec1NP', []);
-  r := AddRecForArrFmtDef('VArgTDynPDynTRec1NPArray[1]^[0]', 3, 505, []);
-  r := AddRecForArrFmtDef('VArgTDynPDynTRec1NPArray[1]^[1]', 3, 506, []);
+  r := AddArrayFmtDef('VArgTDynPDynTRec1NPArray[1]^', '.', 'TDynArrayTRec1NP', ign);
+  r := AddRecForArrFmtDef('VArgTDynPDynTRec1NPArray[1]^[0]', 3, 505, ign);
+  r := AddRecForArrFmtDef('VArgTDynPDynTRec1NPArray[1]^[1]', 3, 506, ign);
     //TDynPStatTRec1NPArray= array of ^TStatArrayTRec1NP;
   r := AddArrayFmtDef('VArgTDynPStatTRec1NPArray', '.', 'TDynPStatTRec1NPArray', []);
      UpdResMinFpc(r, stDwarf2All, 020600);
@@ -1560,6 +1573,9 @@ procedure TTestWatches.AddExpectBreakFooMixInfo;
 begin
   if not TestControlCanTest(ControlTestWatchMix) then exit;
   FCurrentExpArray := @ExpectBreakFoo;
+
+  if (DebuggerInfo.Version < 100000) and (SymbolType = stStabs)
+  then exit;
 
   // Type Casting objects with mixed symbol type
   AddTC('VarOTestTCast', '', 'TObject');
@@ -1670,13 +1686,13 @@ begin
   if not TestControlCanTest(ControlTestWatchAll) then exit;
   FCurrentExpArray := @ExpectBreakClassMeth1;
 
-  AddFmtDef('publMember1',  '^413$',    skSimple,   'Integer|LongInt',  [fTpMtch]);
-  AddFmtDef('protMember1',  '^412$',    skSimple,   'Integer|LongInt',  [fTpMtch]);
-  AddFmtDef('privMember1',  '^411$',    skSimple,   'Integer|LongInt',  [fTpMtch]);
+  AddFmtDef('publMember1',  '^413$',    skSimple,   'Integer|LongInt|int',  [fTpMtch]);
+  AddFmtDef('protMember1',  '^412$',    skSimple,   'Integer|LongInt|int',  [fTpMtch]);
+  AddFmtDef('privMember1',  '^411$',    skSimple,   'Integer|LongInt|int',  [fTpMtch]);
 
-  AddFmtDef('self.publMember1',  '^413$',    skSimple,   'Integer|LongInt',  [fTpMtch]);
-  AddFmtDef('self.protMember1',  '^412$',    skSimple,   'Integer|LongInt',  [fTpMtch]);
-  AddFmtDef('self.privMember1',  '^411$',    skSimple,   'Integer|LongInt',  [fTpMtch]);
+  AddFmtDef('self.publMember1',  '^413$',    skSimple,   'Integer|LongInt|int',  [fTpMtch]);
+  AddFmtDef('self.protMember1',  '^412$',    skSimple,   'Integer|LongInt|int',  [fTpMtch]);
+  AddFmtDef('self.privMember1',  '^411$',    skSimple,   'Integer|LongInt|int',  [fTpMtch]);
 
 end;
 

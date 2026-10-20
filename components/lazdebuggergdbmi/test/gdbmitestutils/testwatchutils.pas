@@ -382,6 +382,7 @@ end;
 var
   Frx: TRegExpr;
   TheWatchPrinter: TWatchResultPrinter;
+  DspFormat: TWatchDisplayFormat;
 
 { TTestWatchesBase }
 
@@ -450,6 +451,7 @@ begin
       if not TestTrue('Dbg did NOT enter dsError', ADbg.State <> dsError) then
         exit;
 
+      AWatch.DisplayFormat := DspFormat;
       s := TheWatchPrinter.PrintWatchValue(WV.ResultData, AWatch.DisplayFormat, '');
       IsValid := WV.Validity = ddsValid;
       HasTpInfo := IsValid and (
@@ -500,6 +502,7 @@ begin
         rdkEnum:           s := 'skEnum';
         rdkEnumVal:        s := 'skEnumValue';
         rdkBool:           s := 'skBoolean';
+        rdkMemDump: s := 'mem';
       end;
     end;
     WriteStr(s2, DataRes.ExpKind);
@@ -507,7 +510,10 @@ begin
     IgnoreText := '';    if IgnoreKind then IgnoreText := 'Ignored by flag';
     if IsValid and HasTpInfo then begin
       if (not IgnoreKind) and IgnoreKindPtr and (WV.TypeInfo.Kind = skPointer) then IgnoreText := 'Ignored by flag (Kind may be Ptr)';
-      f2 := TestEquals(Name + ' Kind',  s2, s, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+      if s = 'mem' then
+        f2 := True // don't have type
+      else
+        f2 := TestEquals(Name + ' Kind',  s2, s, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
       if ((s2='skClass') and (s = 'skRecord')) or ((s='skClass') and (s2 = 'skRecord')) then begin
         TotalClassVsRecord := TotalClassVsRecord + 1;
       end;
@@ -519,7 +525,9 @@ begin
 
     // Check TypeName
     IgnoreText := '';    if IgnoreTpName then IgnoreText := 'Ignored by flag';
-    if IsValid and HasTpInfo then begin
+    if IsValid and HasTpInfo
+    and (s <> 'mem') // TODO: should there be a typename?
+    then begin
       s := '';
       if WV.ResultData <> nil then
         s := WV.ResultData.TypeName;
@@ -539,7 +547,9 @@ begin
       //  FreeAndNil(rx);
       // end
       // else TestEquals(Name + ' TypeName',  LowerCase(DataRes.ExpTypeName), LowerCase(s), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
-    end else begin
+    end else
+    if (s <> 'mem') then // TODO: should there be a typename?
+    begin
         TestTrue(Name + ' TypeName matches '+DataRes.ExpTypeName+' but STATE was <'+dbgs(WV.Validity)+'> HasTypeInfo='+dbgs(HasTpInfo)+' Val="'+s+'"',  False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
     end;
 
@@ -650,6 +660,10 @@ end;
 initialization
   TheWatchPrinter := TWatchResultPrinter.Create;
   TheWatchPrinter.FormatFlags := [];
+
+  DspFormat := DefaultWatchDisplayFormat;
+  DspFormat.Pointer.UseInherited := False;
+  DspFormat.Pointer.Address.TypeFormat := vdfAddressTyped;
 
 finalization
   FreeAndNil(Frx);
