@@ -2109,6 +2109,10 @@ type
     function GetColorSchemeLanguage(aHighLighter: TLazEditCustomHighlighter;
                           SynColorSchemeName: String = ''): TColorSchemeLanguage;
   protected
+    function GetEditorFontName: string; override;
+    procedure SetEditorFontName(const AValue: string); override;
+    function GetEditorFontSize: Integer; override;
+    procedure SetEditorFontSize(AValue: Integer); override;
   public
     class function GetGroupCaption: string; override;
     class function GetInstance: TAbstractIDEOptions; override;
@@ -2125,6 +2129,8 @@ type
     function ReadColorScheme(const LanguageName: String): String; // TODO: rename ReadColorSchemeName
     function ReadPascalColorScheme: String;
     procedure WriteColorScheme(const LanguageName, SynColorScheme: String);
+    function GetColorSchemeName(const LanguageName: string): string; override;
+    procedure SetColorSchemeName(const LanguageName, SchemeName: string); override;
     procedure ReadHighlighterSettings(Syn: TSrcIDEHighlighter; SynColorScheme: String);
     procedure ReadHighlighterFoldSettings(Syn: TSrcIDEHighlighter; ReadForOptions: Boolean = False);
     procedure ReadDefaultsForHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
@@ -6727,6 +6733,40 @@ begin
   XMLConfig.SetValue('EditorOptions/Color/Lang' + StrToValidXMLName(LanguageName) +
                      '/ColorScheme/Value', SynColorScheme);
   XMLConfig.SetValue('EditorOptions/Color/Version', EditorOptsFormatVersion);
+end;
+
+function TEditorOptions.GetColorSchemeName(const LanguageName: string): string;
+begin
+  Result := ReadColorScheme(LanguageName);
+end;
+
+function TEditorOptions.GetEditorFontName: string;
+begin
+  Result := fEditorFont;
+end;
+
+procedure TEditorOptions.SetEditorFontName(const AValue: string);
+begin
+  if AValue <> '' then
+    fEditorFont := AValue;
+end;
+
+function TEditorOptions.GetEditorFontSize: Integer;
+begin
+  Result := fEditorFontSize;
+end;
+
+procedure TEditorOptions.SetEditorFontSize(AValue: Integer);
+begin
+  RepairEditorFontSize(AValue);
+  fEditorFontSize := AValue;
+end;
+
+procedure TEditorOptions.SetColorSchemeName(const LanguageName, SchemeName: string);
+begin
+  if ColorSchemeFactory.ColorSchemeGroup[SchemeName] = nil then
+    exit;
+  WriteColorScheme(LanguageName, SchemeName);
 end;
 
 procedure TEditorOptions.ReadHighlighterSettings(Syn: TSrcIDEHighlighter;
