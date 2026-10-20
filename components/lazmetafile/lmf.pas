@@ -191,7 +191,7 @@ type
     procedure Polygon(Points: PPoint; NumPts: Integer; Winding: boolean = False); override; overload;
 
     procedure FloodFill(x, y: Integer; AFillColor: TColor; AFillStyle: TFillStyle); override;
-    procedure GradientFill(const ARect: TRect; AStartColor, AEndColor: TColor; ADirection: TGradientDirection);
+    procedure GradientFill(ARect: TRect; AStartColor, AEndColor: TColor; ADirection: TGradientDirection); override;
 
     procedure TextOut(x, y: integer; const AText: string); override; // already in fpcanvas
     function  TextExtent(const Text: string): TSize; override;
@@ -1240,7 +1240,7 @@ begin
   fImage.List.InsertComponent(item);
 end;
 
-procedure TlmfCanvas.GradientFill(const ARect: TRect;
+procedure TlmfCanvas.GradientFill(ARect: TRect;
   AStartColor, AEndColor: TColor; ADirection: TGradientDirection);
 var
   item: TlmfObject;
