@@ -6877,6 +6877,8 @@ begin
       if IDETabMaster = nil then
         LCLIntf.ShowWindow(DesignerForm.Handle, ShowCommands[AnUnitInfo.ComponentState]);
     MainIDE.LastFormActivated := DesignerForm;
+    // update component palette filter
+    MainIDEBar.UpdateIDEComponentPalette(true);
   end;
 
   {$IFDEF IDE_DEBUG}
