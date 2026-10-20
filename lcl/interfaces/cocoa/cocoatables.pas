@@ -51,6 +51,7 @@ type
     function fittingSize: NSSize; override;
 
     procedure drawRect(dirtyRect: NSRect); override;
+    procedure resizeSubviewsWithOldSize(oldSize: NSSize); override;
 
     procedure loadView( row: Integer; col: Integer );
       message 'loadView:col:';
@@ -1168,6 +1169,24 @@ begin
       updateItemLayout( row, col );
     inherited drawRect(dirtyRect);
   end;
+end;
+
+procedure TCocoaTableListItem.resizeSubviewsWithOldSize(oldSize: NSSize);
+var
+  aFrame: NSRect;
+begin
+  inherited resizeSubviewsWithOldSize(oldSize);
+
+  // while a column is resized, NSTableView resizes the cell but the frame of
+  // the text field is only set again by updateItemLayout() when the rows are
+  // reloaded after the resize: let the text follow the cell until then
+  if NOT Assigned(self.textField) then
+    Exit;
+  aFrame:= self.textField.frame;
+  aFrame.size.width:= self.bounds.size.width - aFrame.origin.x;
+  if aFrame.size.width < CocoaConfigListView.vsReport.column.textFieldMinWidth then
+    aFrame.size.width:= CocoaConfigListView.vsReport.column.textFieldMinWidth;
+  self.textField.setFrame( aFrame );
 end;
 
 procedure TCocoaTableListItem.createTextField;
