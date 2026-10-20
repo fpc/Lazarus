@@ -131,6 +131,7 @@ type
     fLogUnitsPerInch: Integer;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure GetChildren(Proc: TGetChildProc; {%H-}Root: TComponent); override;
     function GetChildOwner: TComponent; override;
   published
@@ -1277,6 +1278,19 @@ constructor TlmfList.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FLogUnitsPerInch := TWIPS_PER_INCH;
+end;
+
+destructor TlmfList.Destroy;
+var
+  i: Integer;
+  item: TlmfObject;
+begin
+  for i := ComponentCount-1 downto 0 do
+  begin
+    item := TlmfObject(Components[i]);
+    FreeAndNil(item);
+  end;
+  inherited Destroy;
 end;
 
 procedure TlmfList.GetChildren(Proc: TGetChildProc; Root: TComponent);

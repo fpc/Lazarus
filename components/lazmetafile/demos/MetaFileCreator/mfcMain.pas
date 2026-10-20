@@ -13,6 +13,9 @@ uses
  {$ENDIF}
 
 type
+
+  { TForm1 }
+
   TForm1 = class(TForm)
     btnSave: TButton;
     PaintBox: TPaintBox;
@@ -21,6 +24,7 @@ type
     GroupBox1: TGroupBox;
     ListBox: TListBox;
     procedure btnSaveClick(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure PaintBoxPaint(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ListBoxClick(Sender: TObject);
@@ -232,6 +236,11 @@ end;
 procedure TForm1.btnSaveClick(Sender: TObject);
 begin
   SaveMetafile(Listbox.ItemIndex, rbEMF.Checked);
+end;
+
+procedure TForm1.FormDestroy(Sender: TObject);
+begin
+  FMetaFile.Free;
 end;
 
 procedure TForm1.CreateMetaFile(AIndex: Integer);

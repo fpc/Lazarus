@@ -1473,6 +1473,7 @@ var
   item: TObject;
   oldPenStyle: TPenStyle;
   B: TBezier;
+  P: PPoint;
   bezPts: PPoint = nil;
   nBezPts: Integer = 0;
   startPt: Integer = 0;
@@ -1594,13 +1595,14 @@ begin
         Bezier2PolyLine(B, bezPts, nBezPts);
         if nPts + Length(TlmfPathPolygon(item).Points) >= Length(pts) then
           SetLength(pts, nPts + nBezPts);
+        P := bezPts;
         for k := 0 to nBezPts-1 do
         begin
-          pts[nPts] := bezPts^;
-          inc(bezPts);
+          pts[nPts] := P^;
+          inc(P);
           inc(nPts);
         end;
-        FreeMem(bezPts, 0);
+        FreeMem(bezPts, nBezPts * SizeOf(TPoint));
         bezPts := nil;
         B[0] := B[3];
         inc(j, 3);
