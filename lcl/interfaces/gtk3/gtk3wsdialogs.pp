@@ -67,6 +67,7 @@ type
       Chooser: PGtkFileChooser); virtual;
   published
     class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
+    class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
   end;
 
   { TGtk3WSSaveDialog }
@@ -113,6 +114,8 @@ uses gtk3procs;
   { file dialog }
 
 type
+  TWinControlAccess = class(TWinControl);
+
   PFileSelHistoryEntry = ^TFileSelHistoryEntry;
   TFileSelHistoryEntry = record
       Filename: PChar;
@@ -1249,7 +1252,6 @@ begin
     SubWin := TWinControl(Win.Controls[0]);    // image
     AHnd1:=TGtk3Widget(Win.Handle);
     SubWidget:=AHnd1.Widget;
-    AHnd1.SetParent(Ahnd,0,0);
     gtk_widget_set_size_request({%H-}SubWidget, AControl.Width, AControl.Height);
     SubWin.width := AControl.Width-4;          // skip borders
     SubWin.height := AControl.Height-15;       //
@@ -1257,6 +1259,23 @@ begin
 
   gtk_file_chooser_set_preview_widget(Chooser, PreviewWidget);
   gtk_widget_show(PreviewWidget);
+end;
+
+class procedure TGtk3WSOpenDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
+var
+  AControl: TPreviewFileControl;
+begin
+  // the preview widget is a child of the GtkFileChooserDialog and gets destroyed
+  // with it -> destroy the LCL handles of the preview control first, otherwise
+  // they keep dangling pointers to the freed gtk widgets
+  if ACommonDialog.HandleAllocated and (ACommonDialog is TPreviewFileDialog) then
+  begin
+    AControl := TPreviewFileDialog(ACommonDialog).PreviewFileControl;
+    if (AControl <> nil) and AControl.HandleAllocated then
+      TWinControlAccess(AControl).DestroyHandle;
+  end;
+  // TGtk3WSOpenDialog does not descend from TGtk3WSCommonDialog
+  TGtk3WSCommonDialog.DestroyHandle(ACommonDialog);
 end;
 
 class function TGtk3WSOpenDialog.CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle;
