@@ -1,0 +1,233 @@
+object Form1: TForm1
+  Left = 328
+  Height = 483
+  Top = 158
+  Width = 634
+  ActiveControl = RichMemo1
+  Caption = 'Form1'
+  ClientHeight = 483
+  ClientWidth = 634
+  LCLVersion = '4.4.0.0'
+  OnCreate = FormCreate
+  object RichMemo1: TRichMemo
+    Left = 15
+    Height = 288
+    Top = 72
+    Width = 609
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Font.Height = -13
+    Font.Name = 'Tahoma'
+    HideSelection = False
+    Lines.Strings = (
+      'RichMemo1'
+    )
+    OnChange = RichMemo1Change
+    OnKeyUp = RichMemo1KeyUp
+    OnMouseUp = RichMemo1MouseUp
+    ParentFont = False
+    ScrollBars = ssVertical
+    TabOrder = 0
+    ZoomFactor = 1
+  end
+  object Button1: TButton
+    Left = 16
+    Height = 25
+    Top = 368
+    Width = 160
+    Anchors = [akLeft, akBottom]
+    Caption = 'Make Bold and Red'
+    TabOrder = 1
+    TabStop = False
+    OnClick = Button1Click
+  end
+  object Button2: TButton
+    Left = 192
+    Height = 25
+    Top = 368
+    Width = 97
+    Anchors = [akLeft, akBottom]
+    Caption = 'Get Attribs'
+    TabOrder = 2
+    TabStop = False
+    OnClick = Button2Click
+  end
+  object Button3: TButton
+    Left = 304
+    Height = 25
+    Top = 368
+    Width = 96
+    Anchors = [akLeft, akBottom]
+    Caption = 'Select Font'
+    TabOrder = 3
+    TabStop = False
+    OnClick = Button3Click
+  end
+  object Button4: TButton
+    Left = 528
+    Height = 25
+    Top = 368
+    Width = 75
+    Anchors = [akLeft, akBottom]
+    Caption = 'Save RTF'
+    TabOrder = 4
+    TabStop = False
+    OnClick = Button4Click
+  end
+  object Button5: TButton
+    Left = 440
+    Height = 25
+    Top = 368
+    Width = 75
+    Anchors = [akLeft, akBottom]
+    Caption = 'Load RTF'
+    TabOrder = 5
+    TabStop = False
+    OnClick = Button5Click
+  end
+  object Button6: TButton
+    Left = 16
+    Height = 25
+    Top = 400
+    Width = 160
+    Anchors = [akLeft, akBottom]
+    Caption = 'Next Style Range'
+    TabOrder = 6
+    TabStop = False
+    OnClick = Button6Click
+  end
+  object Button7: TButton
+    Left = 15
+    Height = 25
+    Top = 16
+    Width = 51
+    Caption = 'Left'
+    TabOrder = 7
+    OnClick = Button7Click
+  end
+  object Button8: TButton
+    Left = 72
+    Height = 25
+    Top = 16
+    Width = 53
+    Caption = 'Center'
+    TabOrder = 8
+    OnClick = Button8Click
+  end
+  object Button9: TButton
+    Left = 131
+    Height = 25
+    Top = 16
+    Width = 53
+    Caption = 'Right'
+    TabOrder = 9
+    OnClick = Button9Click
+  end
+  object Button10: TButton
+    Left = 192
+    Height = 25
+    Top = 16
+    Width = 53
+    Caption = 'Justify'
+    TabOrder = 10
+    OnClick = Button10Click
+  end
+  object StartIdent: TFloatSpinEdit
+    Left = 344
+    Height = 26
+    Top = 18
+    Width = 78
+    MaxValue = 100
+    MinValue = -100
+    TabOrder = 11
+    OnChange = StartIdentChange
+  end
+  object Label1: TLabel
+    Left = 304
+    Height = 17
+    Top = 18
+    Width = 38
+    Caption = 'Start '
+    ParentColor = False
+  end
+  object Label2: TLabel
+    Left = 304
+    Height = 17
+    Top = 48
+    Width = 45
+    Caption = 'Offset'
+    ParentColor = False
+  end
+  object OffsetIdent: TFloatSpinEdit
+    Left = 344
+    Height = 26
+    Top = 46
+    Width = 78
+    MaxValue = 100
+    MinValue = -100
+    TabOrder = 12
+    OnChange = StartIdentChange
+  end
+  object Label3: TLabel
+    Left = 16
+    Height = 17
+    Top = 434
+    Width = 46
+    Caption = 'Label3'
+    ParentColor = False
+  end
+  object Button11: TButton
+    Left = 192
+    Height = 25
+    Top = 400
+    Width = 151
+    Caption = 'BackGround Color'
+    TabOrder = 13
+    OnClick = Button11Click
+  end
+  object FontDialog1: TFontDialog
+    MinFontSize = 0
+    MaxFontSize = 0
+    Left = 363
+    Top = 439
+  end
+  object SaveDialog1: TSaveDialog
+    DefaultExt = '.rtf'
+    Filter = 'RichText file (*.rtf)|*.rtf'
+    Options = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
+    Left = 327
+    Top = 439
+  end
+  object OpenDialog1: TOpenDialog
+    DefaultExt = '.rtf'
+    Filter = 'RichText file (*.rtf)|*.rtf'
+    Left = 291
+    Top = 439
+  end
+  object ColorDialog1: TColorDialog
+    Color = clBlack
+    CustomColors.Strings = (
+      'ColorA=000000'
+      'ColorB=000080'
+      'ColorC=008000'
+      'ColorD=008080'
+      'ColorE=800000'
+      'ColorF=800080'
+      'ColorG=808000'
+      'ColorH=808080'
+      'ColorI=C0C0C0'
+      'ColorJ=0000FF'
+      'ColorK=00FF00'
+      'ColorL=00FFFF'
+      'ColorM=FF0000'
+      'ColorN=FF00FF'
+      'ColorO=FFFF00'
+      'ColorP=FFFFFF'
+      'ColorQ=C0DCC0'
+      'ColorR=F0CAA6'
+      'ColorS=F0FBFF'
+      'ColorT=A4A0A0'
+    )
+    Left = 400
+    Top = 439
+  end
+end

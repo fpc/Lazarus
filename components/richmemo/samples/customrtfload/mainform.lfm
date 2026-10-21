@@ -1,0 +1,128 @@
+object Form1: TForm1
+  Left = 353
+  Height = 435
+  Top = 267
+  Width = 615
+  Caption = 'Custom RTF Loader'
+  ClientHeight = 435
+  ClientWidth = 615
+  OnCreate = FormCreate
+  LCLVersion = '1.3'
+  object Panel1: TPanel
+    Left = 0
+    Height = 40
+    Top = 0
+    Width = 615
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 40
+    ClientWidth = 615
+    TabOrder = 0
+    object Button1: TButton
+      Left = 8
+      Height = 25
+      Top = 8
+      Width = 75
+      Anchors = [akTop, akRight]
+      Caption = 'Load from File'
+      OnClick = Button1Click
+      TabOrder = 0
+    end
+    object btnRTFtoMemo: TButton
+      Left = 88
+      Height = 25
+      Top = 8
+      Width = 128
+      Caption = 'RTF to Rich Memo'
+      OnClick = btnRTFtoMemoClick
+      TabOrder = 1
+    end
+  end
+  object Splitter1: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 40
+    Width = 615
+    Align = alTop
+    ResizeAnchor = akTop
+  end
+  object Memo1: TMemo
+    Left = 0
+    Height = 90
+    Top = 45
+    Width = 615
+    Align = alTop
+    Lines.Strings = (
+      'Raw RTF'
+    )
+    TabOrder = 2
+  end
+  object Splitter2: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 135
+    Width = 615
+    Align = alTop
+    ResizeAnchor = akTop
+  end
+  object RichMemo1: TRichMemo
+    Left = 0
+    Height = 165
+    Top = 140
+    Width = 615
+    Align = alClient
+    HideSelection = False
+    Lines.Strings = (
+      'RichMemo1'
+    )
+    TabOrder = 4
+  end
+  object Panel2: TPanel
+    Left = 0
+    Height = 40
+    Top = 305
+    Width = 615
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 40
+    ClientWidth = 615
+    TabOrder = 5
+    object Button2: TButton
+      Left = 8
+      Height = 25
+      Top = 8
+      Width = 136
+      Caption = 'Rich Memo to RTF'
+      OnClick = Button2Click
+      TabOrder = 0
+    end
+    object Button3: TButton
+      Left = 152
+      Height = 25
+      Top = 8
+      Width = 75
+      Caption = 'Save to File'
+      OnClick = Button3Click
+      TabOrder = 1
+    end
+  end
+  object Memo2: TMemo
+    Left = 0
+    Height = 90
+    Top = 345
+    Width = 615
+    Align = alBottom
+    Lines.Strings = (
+      'Memo2'
+    )
+    TabOrder = 6
+  end
+  object OpenDialog1: TOpenDialog
+    left = 240
+  end
+  object SaveDialog1: TSaveDialog
+    left = 288
+  end
+end
