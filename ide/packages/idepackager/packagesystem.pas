@@ -50,7 +50,7 @@ uses
   Laz2_XMLCfg, Laz2_XMLRead, LazStringUtils, LazTracer, AvgLvlTree, FPCAdds, UTF8Process,
   // codetools
   FileProcs, DefineTemplates, CodeToolManager, CodeCache, DirectoryCacher, CTFileChksums,
-  BasicCodeTools, NonPascalCodeTools, SourceChanger,
+  BasicCodeTools, NonPascalCodeTools, SourceChanger, LinkScanner,
   // BuildIntf
   IDEExternToolIntf, MacroDefIntf, MacroIntf, ProjectIntf, CompOptsIntf, LazMsgWorker,
   FppkgIntf, PackageDependencyIntf, PackageLinkIntf, PackageIntf, ComponentReg,
@@ -4540,6 +4540,8 @@ function TLazPackageGraph.CompilePackage(APackage: TLazPackage;
     Proc: TProcessUTF8;
     i: Integer;
     FPCParser: TFPCParser;
+    Kind: TPascalCompiler;
+    SubTool: String;
   begin
     ExtToolData:=TLazPkgGraphExtToolData.Create(IDEToolCompilePackage,
       APackage.Name,APackage.Filename);
@@ -4556,7 +4558,14 @@ function TLazPackageGraph.CompilePackage(APackage: TLazPackage;
       BuildItem.Add(PkgCompileTool)
     else
       PkgCompileTool.Reference(Self,Classname);
-    FPCParser:=TFPCParser(PkgCompileTool.AddParsers(SubToolFPC));
+    // pas2js message ids differ from fpc's -> use the right parser
+    SubTool:=SubToolFPC;
+    CodeToolBoss.CompilerDefinesCache.GetPCVersion(CompilerFilename,
+      APackage.CompilerOptions.GetEffectiveTargetOS,
+      APackage.CompilerOptions.GetEffectiveTargetCPU,false,Kind);
+    if Kind=pcPas2js then
+      SubTool:=SubToolPas2js;
+    FPCParser:=TFPCParser(PkgCompileTool.AddParsers(SubTool));
     //debugln(['TLazPackageGraph.CompilePackage ',APackage.Name,' ',APackage.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc,' ',APackage.MainUnit.Filename]);
     if (APackage.MainUnit<>nil)
     and (not APackage.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc) then
