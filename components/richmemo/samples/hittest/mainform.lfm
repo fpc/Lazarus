@@ -1,0 +1,32 @@
+object Form1: TForm1
+  Left = 457
+  Height = 240
+  Top = 261
+  Width = 320
+  Caption = 'Form1'
+  ClientHeight = 240
+  ClientWidth = 320
+  LCLVersion = '1.2.4.0'
+  object RichMemo1: TRichMemo
+    Left = 8
+    Height = 208
+    Top = 16
+    Width = 304
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    HideSelection = False
+    Lines.Strings = (
+      'Move mouse cursor over this Rich Memo. '
+      'Form caption should change to the result of '
+      'CharAtPos'
+      '123457890 123457890 123457890'
+      ''
+      ''
+      '123457890 123457890 123457890'
+    )
+    OnMouseMove = RichMemo1MouseMove
+    Rtf = '{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1033{\fonttbl{\f0\fnil\fcharset0 Segoe UI;}{\f1\fnil Segoe UI;}}'#13#10'{\*\generator Riched20 6.3.9600}\viewkind4\uc1 '#13#10'\pard\f0\fs18 Move mouse cursor over this Rich Memo. Form caption should change to the result of CharAtPos\par'#13#10'123457890 123457890 123457890\par'#13#10'\par'#13#10'\par'#13#10'123457890 123457890 123457890\f1\par'#13#10'\par'#13#10'}'#13#10#0
+    ScrollBars = ssVertical
+    TabOrder = 0
+    ZoomFactor = 1
+  end
+end

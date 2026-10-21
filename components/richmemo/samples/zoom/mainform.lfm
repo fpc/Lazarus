@@ -1,0 +1,63 @@
+object Form1: TForm1
+  Left = 457
+  Height = 338
+  Top = 213
+  Width = 615
+  Caption = 'Paragraph Demo'
+  ClientHeight = 338
+  ClientWidth = 615
+  OnCreate = FormCreate
+  LCLVersion = '1.2.4.0'
+  object Button1: TButton
+    Left = 532
+    Height = 25
+    Top = 16
+    Width = 75
+    Anchors = [akTop, akRight]
+    Caption = 'Load RTF'
+    OnClick = Button1Click
+    TabOrder = 1
+  end
+  object RichMemo1: TRichMemo
+    Left = 8
+    Height = 272
+    Top = 56
+    Width = 599
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    HideSelection = False
+    Lines.Strings = (
+      'Adjust selection in the combobox above'
+    )
+    OnClick = RichMemo1Click
+    OnKeyDown = RichMemo1KeyDown
+    ScrollBars = ssAutoBoth
+    TabOrder = 0
+  end
+  object ComboBox1: TComboBox
+    Left = 8
+    Height = 23
+    Top = 18
+    Width = 100
+    ItemHeight = 15
+    ItemIndex = 3
+    Items.Strings = (
+      '25%'
+      '50%'
+      '75%'
+      '100%'
+      '125%'
+      '150%'
+      '200%'
+      '300%'
+      '500%'
+    )
+    OnChange = ComboBox1Change
+    Style = csDropDownList
+    TabOrder = 2
+    Text = '100%'
+  end
+  object OpenDialog1: TOpenDialog
+    left = 488
+    top = 16
+  end
+end

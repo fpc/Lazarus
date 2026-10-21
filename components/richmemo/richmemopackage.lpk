@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <PathDelim Value="\"/>
+    <Name Value="richmemopackage"/>
+    <Author Value="Dmitry &apos;skalogryz&apos; Boyarintsev"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <IncludeFiles Value="cocoa;qt;qt5;qt6"/>
+        <OtherUnitFiles Value="win32;carbon;gtk2;cocoa;qt;qt5;qt6"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <IgnoredMessages idx5060="True" idx5057="True" idx5024="True" idx4055="True"/>
+        </CompilerMessages>
+        <OtherDefines Count="1">
+          <Define0 Value="RMLCLTRUNK"/>
+        </OtherDefines>
+      </Other>
+    </CompilerOptions>
+    <Description Value="RichMemo control. Implements cross-platfrom RichEdit control.
+"/>
+    <License Value="LGPL"/>
+    <Version Major="1"/>
+    <Files Count="17">
+      <Item1>
+        <Filename Value="wsrichmemo.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WSRichMemo"/>
+      </Item1>
+      <Item2>
+        <Filename Value="win32\win32richmemo.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32RichMemo"/>
+      </Item2>
+      <Item3>
+        <Filename Value="win32\win32richmemoproc.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32RichMemoProc"/>
+      </Item3>
+      <Item4>
+        <Filename Value="richmemofactory.pas"/>
+        <UnitName Value="RichMemoFactory"/>
+      </Item4>
+      <Item5>
+        <Filename Value="carbon\carbonrichmemo.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonRichMemo"/>
+      </Item5>
+      <Item6>
+        <Filename Value="richmemo.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="RichMemo"/>
+      </Item6>
+      <Item7>
+        <Filename Value="gtk2\gtk2richmemo.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="gtk2richmemo"/>
+      </Item7>
+      <Item8>
+        <Filename Value="richmemortf.pas"/>
+        <UnitName Value="RichMemoRTF"/>
+      </Item8>
+      <Item9>
+        <Filename Value="rtfdata.inc"/>
+        <Type Value="Include"/>
+      </Item9>
+      <Item10>
+        <Filename Value="cocoa\cocoarichmemo.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="cocoarichmemo"/>
+      </Item10>
+      <Item11>
+        <Filename Value="richmemoutils.pas"/>
+        <UnitName Value="RichMemoUtils"/>
+      </Item11>
+      <Item12>
+        <Filename Value="richmemohelpers.pas"/>
+        <UnitName Value="RichMemoHelpers"/>
+      </Item12>
+      <Item13>
+        <Filename Value="qt\qtrichmemo.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="qtrichmemo"/>
+      </Item13>
+      <Item14>
+        <Filename Value="rtfparspre211.pas"/>
+        <UnitName Value="RTFParsPre211"/>
+      </Item14>
+      <Item15>
+        <Filename Value="win32\win32richmemoole.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32RichMemoOle"/>
+      </Item15>
+      <Item16>
+        <Filename Value="qt5\qt5richmemo.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="qt5richmemo"/>
+      </Item16>
+      <Item17>
+        <Filename Value="qt6\qt6richmemo.pas"/>
+        <UnitName Value="qt6richmemo"/>
+      </Item17>
+    </Files>
+    <CompatibilityMode Value="True"/>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
+  </Package>
+</CONFIG>

@@ -1,0 +1,95 @@
+object Form1: TForm1
+  Left = 362
+  Height = 338
+  Top = 203
+  Width = 615
+  Caption = 'Ready to Search!'
+  ClientHeight = 338
+  ClientWidth = 615
+  LCLVersion = '1.0.10.0'
+  object Button1: TButton
+    Left = 532
+    Height = 25
+    Top = 16
+    Width = 75
+    Anchors = [akTop, akRight]
+    Caption = 'Load RTF'
+    OnClick = Button1Click
+    TabOrder = 3
+  end
+  object Button2: TButton
+    Left = 440
+    Height = 25
+    Top = 16
+    Width = 75
+    Anchors = [akTop, akRight]
+    Caption = 'Search'
+    OnClick = Button2Click
+    TabOrder = 1
+  end
+  object Edit1: TEdit
+    Left = 8
+    Height = 27
+    Top = 18
+    Width = 424
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 0
+    Text = 'search'
+  end
+  object RichMemo1: TRichMemo
+    Left = 8
+    Height = 240
+    Top = 88
+    Width = 599
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    HideSelection = False
+    Lines.Strings = (
+      'Please type in a word in the search field and hit "Search" to perform Search'
+    )
+    ScrollBars = ssAutoBoth
+    TabOrder = 2
+  end
+  object chkCaseSensitive: TCheckBox
+    Left = 9
+    Height = 24
+    Top = 48
+    Width = 121
+    Caption = 'Case Sensitive'
+    TabOrder = 4
+  end
+  object chkWholeWord: TCheckBox
+    AnchorSideLeft.Control = chkCaseSensitive
+    AnchorSideLeft.Side = asrBottom
+    Left = 135
+    Height = 24
+    Top = 48
+    Width = 110
+    BorderSpacing.Left = 5
+    Caption = 'Whole Word'
+    TabOrder = 5
+  end
+  object chkBackward: TCheckBox
+    AnchorSideLeft.Control = chkWholeWord
+    AnchorSideLeft.Side = asrBottom
+    Left = 250
+    Height = 24
+    Top = 48
+    Width = 92
+    BorderSpacing.Left = 5
+    Caption = 'Backward'
+    TabOrder = 6
+  end
+  object Button3: TButton
+    Left = 440
+    Height = 25
+    Top = 45
+    Width = 75
+    Caption = 'Reset'
+    OnClick = Button3Click
+    TabOrder = 7
+  end
+  object OpenDialog1: TOpenDialog
+    left = 368
+    top = 48
+  end
+end
