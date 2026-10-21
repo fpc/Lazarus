@@ -14975,8 +14975,17 @@ begin
       else
         exit(vatIdentifier);
     end else
+    if UpAtomIs('ON') then begin
+      Node:=FindDeepestNodeAtPos(CurPos.StartPos,false);
+      if (Node<>nil) and (Node.Desc=ctnOnBlock) then
+        exit(vatKeyword)
+      else
+        exit(vatIdentifier);
+    end else
     if UpAtomIs('OUT') then begin
-      if (cmsOut in Scanner.CompilerModeSwitches) then
+      Node:=FindDeepestNodeAtPos(CurPos.StartPos,false);
+      if (cmsOut in Scanner.CompilerModeSwitches) and (Node<>nil) and 
+        (Node.Desc=ctnParameterList) then
         exit(vatKeyword)
       else
         exit(vatIdentifier);
