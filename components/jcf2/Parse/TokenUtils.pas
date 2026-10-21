@@ -866,6 +866,15 @@ begin
   end;
 end;
 
+{ A directive that starts after a statement or declaration has ended, not
+  one in the middle of a statement or a constant's value }
+function DirectiveBetweenStatements(const pt: TSourceToken): Boolean;
+begin
+  Result := pt.PriorSolidTokenType in [ttSemicolon, ttBegin, ttThen, ttDo,
+    ttElse, ttRepeat, ttTry, ttFinally, ttExcept, ttOtherwise, ttConst,
+    ttVar, ttThreadVar, ttType];
+end;
+
 function CompilerDirectiveLineBreak(const pt: TSourceToken; const pbBefore: Boolean): TTriOptionStyle;
 begin
   if pt.HasParentNode(nUses)  then
@@ -877,10 +886,15 @@ begin
   end
   else if InStatements(pt) then
   begin
-    if pbBefore then
-      Result := FormattingSettings.Returns.BeforeCompilerDirectStatements
+    if DirectiveBetweenStatements(pt) then
+    begin
+      if pbBefore then
+        Result := FormattingSettings.Returns.BeforeCompilerDirectStatements
+      else
+        Result := FormattingSettings.Returns.AfterCompilerDirectStatements;
+    end
     else
-      Result := FormattingSettings.Returns.AfterCompilerDirectStatements;
+      Result := eLeave;
   end
   else
   begin
