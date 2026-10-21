@@ -47,6 +47,10 @@
         <Filename Value="lmfemfwrite.pas"/>
         <UnitName Value="lmfEMFWrite"/>
       </Item>
+      <Item>
+        <Filename Value="lmfcanvas.pas"/>
+        <UnitName Value="lmfcanvas"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>

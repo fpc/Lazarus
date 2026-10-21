@@ -4,9 +4,9 @@ interface
 
 uses
  {$IFDEF FPC}
-  SysUtils, Classes, Types, BMPcomn,
+  SysUtils, Classes, Types, //BMPcomn,
   LCLType, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
-  lmf;
+  lmf, lmfCanvas;
  {$ELSE} 
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, System.Types, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls;

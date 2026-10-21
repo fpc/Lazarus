@@ -7,7 +7,7 @@ interface
 uses
   SysUtils, Classes,
   Forms, Controls, Graphics, Dialogs, LCLType, StdCtrls, ExtCtrls,
-  lmf;
+  lmf, lmfCanvas;
 
 type
 
@@ -410,8 +410,7 @@ const
 var
   fn: String;
 begin
-  FLmfImg.Enhanced := rbEMF.Checked;
-  fn := Format('test.%s', [LMF_EXT[FLmfImg.Enhanced]]);
+  fn := Format('test.%s', [LMF_EXT[rbEMF.Checked]]);
   FLmfImg.SaveToLMFFile(fn);
   lblFileInfo.Caption := Format('Saved to %s', [fn]);
   lblFileInfo.Show;

@@ -101,7 +101,7 @@ implementation
 {$R *.lfm}
 
 uses
-  lresources, lmf;
+  lresources, lmf, lmfCanvas;
 
 
 const

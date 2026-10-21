@@ -1720,7 +1720,7 @@ initialization
     TlmfClip, TlmfRect, TlmfRoundRect, TlmfEllipse,
     TlmfArc, TlmfArcTo, TlmfChord, TlmfPie,
     TlmfPicture, TlmfPolyLine, TlmfPolygon, TlmfPolyBezier,
-    TlmfFloodFill, TlmfGradientFill,
+    TlmfFloodFill, TlmfGradientFill, TlmfMultiGradientFill,
     TlmfBkMode, TlmfBkColor, TlmfTextColor, TlmfColor,
     TlmfFont, TlmfBrush, TlmfPen, TlmfPenMode, TlmfCopyMode,
     TlmfPath,
