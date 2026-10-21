@@ -5,6 +5,7 @@ unit EditorOptionsIntf;
 interface
 
 uses
+  Classes,
   // LCL
   Controls, ComCtrls,
   // BuildIntf
@@ -35,6 +36,18 @@ type
     // Call DoAfterWrite(False) after setting, to save and apply to all editors.
     function GetColorSchemeName(const LanguageName: string): string; virtual; abstract;
     procedure SetColorSchemeName(const LanguageName, SchemeName: string); virtual; abstract;
+    // Color schemes of files in the userschemes folder of the configuration,
+    // added or removed while the IDE runs.
+    // AddColorSchemeFile registers the schemes of a scheme file, adding their
+    // names to Names (may be nil). Schemes which are registered already are
+    // skipped. Returns False if no scheme was registered.
+    // RemoveColorScheme takes away a scheme which was registered from a file.
+    // Returns False for the built-in schemes. A language using a removed scheme
+    // shows the default scheme, but keeps its choice, so it shows the scheme
+    // again once it is added back.
+    // Call DoAfterWrite(False) after either, to apply to all editors.
+    function AddColorSchemeFile(const FileName: string; Names: TStrings): Boolean; virtual; abstract;
+    function RemoveColorScheme(const SchemeName: string): Boolean; virtual; abstract;
   public
     // read-only access to options needed by external packages.
     // feel free to extend when needed

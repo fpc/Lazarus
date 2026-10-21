@@ -556,6 +556,7 @@ type
     procedure SaveToXml(aXMLConfig: TRttiXMLConfig; const aPath: String;
       Defaults: TColorSchemeFactory);
     procedure RegisterScheme(AColorScheme: TColorScheme);
+    function UnregisterScheme(const AName: String): Boolean;
     procedure GetRegisteredSchemes(AList: TStrings);
     procedure AddAttribAddedEvent(AnEvent: TColorSchemeAttribAddedEvent);
     procedure RemoveAttribAddedEvent(AnEvent: TColorSchemeAttribAddedEvent);
@@ -2131,6 +2132,8 @@ type
     procedure WriteColorScheme(const LanguageName, SynColorScheme: String);
     function GetColorSchemeName(const LanguageName: string): string; override;
     procedure SetColorSchemeName(const LanguageName, SchemeName: string); override;
+    function AddColorSchemeFile(const FileName: string; Names: TStrings): Boolean; override;
+    function RemoveColorScheme(const SchemeName: string): Boolean; override;
     procedure ReadHighlighterSettings(Syn: TSrcIDEHighlighter; SynColorScheme: String);
     procedure ReadHighlighterFoldSettings(Syn: TSrcIDEHighlighter; ReadForOptions: Boolean = False);
     procedure ReadDefaultsForHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
@@ -6769,6 +6772,58 @@ begin
   WriteColorScheme(LanguageName, SchemeName);
 end;
 
+function TEditorOptions.AddColorSchemeFile(const FileName: string;
+  Names: TStrings): Boolean;
+// Registers the schemes the same way as ColorSchemeFactory does at startup.
+// The global list and UserColorSchemeGroup are matched by position, so a
+// scheme is added to both.
+var
+  Conf: TRttiXMLConfig;
+  Scheme, UserScheme: TColorScheme;
+  i, c: Integer;
+  n: String;
+begin
+  Result := False;
+  Conf := nil;
+  try
+    Conf := TRttiXMLConfig.Create(FileName);
+    c := Conf.GetValue('Lazarus/ColorSchemes/Names/Count', 0);
+    for i := 1 to c do begin
+      n := Conf.GetValue('Lazarus/ColorSchemes/Names/Item'+IntToStr(i)+'/Value', '');
+      if (n = '') or (ColorSchemeFactory.ColorSchemeGroup[n] <> nil) then
+        continue;
+      Scheme := TColorSchemeFromFile.CreateFrom(Conf, FileName, n,
+        TColorSchemeFactory.XML_COL_PATH);
+      ColorSchemeFactory.RegisterScheme(Scheme);
+      // The changes the user made to the scheme, if it was registered in an
+      // earlier session, are still in the editor options
+      UserScheme := TColorScheme.Create(n);
+      UserScheme.Assign(Scheme);
+      if XMLConfig <> nil then
+        UserScheme.LoadFromXml(XMLConfig, 'EditorOptions/Color/', Scheme);
+      UserColorSchemeGroup.RegisterScheme(UserScheme);
+      if Names <> nil then
+        Names.Add(n);
+      Result := True;
+    end;
+  except
+    on E: Exception do
+      DebugLn(['TEditorOptions.AddColorSchemeFile: ', FileName, ' ', E.Message]);
+  end;
+  Conf.Free;
+end;
+
+function TEditorOptions.RemoveColorScheme(const SchemeName: string): Boolean;
+// The choices of the languages using the scheme are kept. ReadColorScheme
+// returns the default scheme while the scheme is missing.
+begin
+  Result := ColorSchemeFactory.ColorSchemeGroup[SchemeName] is TColorSchemeFromFile;
+  if not Result then
+    exit;
+  UserColorSchemeGroup.UnregisterScheme(SchemeName);
+  ColorSchemeFactory.UnregisterScheme(SchemeName);
+end;
+
 procedure TEditorOptions.ReadHighlighterSettings(Syn: TSrcIDEHighlighter;
   SynColorScheme: String);
 // if SynColorScheme='' then default ColorScheme will be used
@@ -9051,6 +9106,18 @@ begin
     //DebugLn(['TColorSchemeFactory.RegisterScheme: Adjusting AName to ', AName]);
   end;
   FMappings.AddObject(AName, AColorScheme);
+end;
+
+function TColorSchemeFactory.UnregisterScheme(const AName: String): Boolean;
+var
+  i: integer;
+begin
+  i := FMappings.IndexOf(AName);
+  Result := i <> -1;
+  if not Result then
+    exit;
+  FMappings.Objects[i].Free;
+  FMappings.Delete(i);
 end;
 
 procedure TColorSchemeFactory.GetRegisteredSchemes(AList: TStrings);
