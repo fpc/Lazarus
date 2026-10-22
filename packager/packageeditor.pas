@@ -588,7 +588,7 @@ begin
   PkgEditMenuSave:=RegisterIDEMenuCommand(AParent,'Save',lisPckEditSavePackage,nil,nil,nil,'laz_save');
   PkgEditMenuSaveAs:=RegisterIDEMenuCommand(AParent,'Save As',lisPESavePackageAs,nil,nil,nil,'menu_saveas');
   PkgEditMenuRevert:=RegisterIDEMenuCommand(AParent,'Revert',lisPERevertPackage,nil,nil,nil,'menu_file_revert');
-  PkgEditMenuPublish:=RegisterIDEMenuCommand(AParent,'Publish',lisPkgEditPublishPackage);
+  PkgEditMenuPublish:=RegisterIDEMenuCommand(AParent,'Publish',lisMenuPublishPackage);
 
   // register the section for compiling the package
   PkgEditMenuSectionCompile:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Compile');

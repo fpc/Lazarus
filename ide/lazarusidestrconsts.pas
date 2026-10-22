@@ -416,6 +416,7 @@ resourcestring
   lisMenuResaveFormsWithI18n = 'Resave forms with enabled i18n';
   lisMenuPublishProject = 'Publish Project ...';
   lisPublishProject = 'Publish Project';
+  lisMenuPublishPackage = 'Publish Package ...';
   lisMenuProjectInspector = 'Project Inspector';
   lisProject3 = 'project';
   lisKMRemoveActiveFileFromProject = 'Remove Active File from Project';
