@@ -517,12 +517,12 @@ begin
   ProjInspAddMenuSectionFiles:=RegisterIDEMenuSection(ProjectInspectorMenuAddRootName,'Files');
   AParent:=ProjInspAddMenuSectionFiles;
   ProjInspAddMenuDiskFile:=RegisterIDEMenuCommand(AParent,'Add disk file',lisBtnDlgAdd);
-  ProjInspAddMenuEditorFiles:=RegisterIDEMenuCommand(AParent,'Add editor files',lisProjAddEditorFile);
+  ProjInspAddMenuEditorFiles:=RegisterIDEMenuCommand(AParent,'Add editor files',lisProjAddEditorFile + ' ...');
 
   // register the section for adding dependency
   ProjInspAddMenuSectionDependencies:=RegisterIDEMenuSection(ProjectInspectorMenuAddRootName,'Dependencies');
   AParent:=ProjInspAddMenuSectionFiles;
-  ProjInspAddMenuDependency:=RegisterIDEMenuCommand(AParent,'Add dependency',lisProjAddNewRequirement);
+  ProjInspAddMenuDependency:=RegisterIDEMenuCommand(AParent,'Add dependency',lisProjAddNewRequirement + ' ...');
   ProjInspAddMenuFPMakeDependency:=RegisterIDEMenuCommand(AParent,'Add fpmake dependency',lisProjAddNewFPMakeRequirement);
 end;
 
