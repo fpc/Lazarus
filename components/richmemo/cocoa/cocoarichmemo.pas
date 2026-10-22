@@ -9,10 +9,8 @@ interface
 uses
   CocoaAll, Classes, SysUtils,
   LCLType, Graphics, Controls, StdCtrls,
-  CocoaPrivate, CocoaTextEdits, CocoaUtils, CocoaWSCommon, CocoaWSStdCtrls,
-  {$ifndef RMLCL18} // it can be defined in the package's CustomOptions -dRMLCL18
-  CocoaScrollers, // this unit was introduced in summer-fall 2018 with Lazarus 2.0 release
-  {$endif}
+  CocoaPrivate, CocoaScrolling, CocoaTextEdits, CocoaCommonCallback,
+  CocoaUtils, CocoaWSStdCtrls,
   WSRichMemo, RichMemo;
 
 type
@@ -25,7 +23,7 @@ type
 
   TCocoaWSCustomRichMemo = class(TWSCustomRichMemo)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
 
     class function GetTextAttributes(const AWinControl: TWinControl; TextStart: Integer;
       var Params: TIntFontParams): Boolean; override;
@@ -192,13 +190,13 @@ const
   );
 
 class function TCocoaWSCustomRichMemo.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
+
   txt: TCocoaRichView;
-  ns: NSString;
   scr: TCocoaScrollView;
   nr:NSRect;
-  r:TRect;
+  cb: TLCLCommonCallback;
 begin
   scr := TCocoaScrollView(NSView(TCocoaScrollView.alloc).lclInitWithCreateParams(AParams));
 
@@ -223,18 +221,19 @@ begin
   txt.setFrame(nr);
   txt.textContainer.setLineFragmentPadding(0);
 
-  txt.callback := TLCLCommonCallback.Create(txt, AWinControl, scr);
-  ns := NSStringUtf8(AParams.Caption);
-  txt.setString(ns);
-  ns.release;
-
-  scr.callback := txt.callback;
-  Result := TLCLIntfHandle(scr);
-
-  TextViewSetWordWrap(txt, scr, TCustomMemo(AWinControl).WordWrap);
-  TextViewSetAllignment(txt, TCustomMemo(AWinControl).Alignment);
+  TCocoaTextControlUtil.setStringValue(txt, AParams.Caption);
+  TCocoaTextControlUtil.setWordWrap(txt, scr, TCustomMemo(AWinControl).WordWrap);
+  TCocoaTextControlUtil.setAllignment(txt, TCustomMemo(AWinControl).Alignment);
   txt.wantReturns := TCustomMemo(AWinControl).WantReturns;
-  txt.callback.SetTabSuppress(not TCustomMemo(AWinControl).WantTabs);
+
+  cb := TLCLCommonCallback.Create(txt, AWinControl, scr);
+  cb.traits:= [TCocoaCbTrait.forceSendReturn];
+  if TCustomMemo(AWinControl).WantTabs then
+    Include(cb.traits, TCocoaCbTrait.treatTabAsChar);
+  txt.callback := cb;
+  scr.callback := cb;
+
+  Result := TLCLHandle(scr);
 end;
 
 class function TCocoaWSCustomRichMemo.GetTextAttributes(
@@ -278,10 +277,10 @@ begin
   if Assigned(prm.strStyle) and (prm.strStyle.integerValue <> NSUnderlineStyleNone) then
     Include(Params.Style, fsStrikeOut);
   if Assigned(prm.fontColor) then
-    Params.Color:=NSColorToColorRef(prm.fontColor);
+    Params.Color:= TCocoaColorUtil.toColorRefWithAnyColor(prm.fontColor);
   Params.HasBkClr:=Assigned(prm.backColor);
   if Params.HasBkClr then
-    Params.BkColor:=NSColorToColorRef(prm.backColor);
+    Params.BkColor:= TCocoaColorUtil.toColorRefWithAnyColor(prm.backColor);
   Result:=true;
 end;
 
@@ -327,7 +326,6 @@ function FindFont(const FamilyName: String; astyle: TFontStyles): NSFontDescript
 var
   fd  : NSFontDescriptor;
   cfd : NSFontDescriptor;
-  old : NSFontDescriptor;
   fdd : NSFontDescriptor;
   trt : NSFontSymbolicTraits;
   ns  : NSString;
@@ -373,7 +371,6 @@ var
   rng   : NSRange;
   clr   : NSColor;
   num   : NSNumber;
-  arr   : NSArray;
 
 begin
   view:=MemoTextView(AWinControl);
@@ -401,11 +398,11 @@ begin
   end else
     txt.removeAttribute_range(NSStrikethroughStyleAttributeName, rng);
 
-  clr:=ColorToNSColor(Params.Color);
+  clr:=TCocoaColorUtil.toColor(Params.Color);
   txt.addAttribute_value_range(NSForegroundColorAttributeName, clr, rng);
 
   if Params.HasBkClr then begin
-    clr:=ColorToNSColor(Params.BkColor);
+    clr:=TCocoaColorUtil.toColor(Params.BkColor);
     txt.addAttribute_value_range(NSBackgroundColorAttributeName, clr, rng);
   end else
     txt.removeAttribute_range(NSBackgroundColorAttributeName, rng);
@@ -446,10 +443,6 @@ var
   rng : NSRange;
   cur : NSRange;
   al  : NSTextAlignment;
-const
-  TxtAlign : array [TIntParaAlignment] of integer = (
-   NSLeftTextAlignment,  NSRightTextAlignment, NSCenterTextAlignment, NSJustifiedTextAlignment
-  );
 begin
   txt:=MemoTextView(AWinControl);
   if not Assigned(txt) then begin
@@ -538,7 +531,6 @@ var
   tabs  : NSMutableArray;
   tab   : NSTextTab;
   i     : Integer;
-  rng   : NSRange;
 const
   TabAlignMap : array [TTabAlignment] of NSTextTabType = (
     NSLeftTabStopType,    // tabLeft,
