@@ -79,7 +79,7 @@ var
 begin
   FS := TFileStream.Create(Fn, fmCreate);
   try
-    TreeSaveToXML(Tree, FS, Options);
+    TreeSaveToXML(Tree, FS, Options, OnCallBack);
   finally
     FS.Free;
   end;
@@ -163,7 +163,7 @@ var
 begin
   FS := TFileStream.Create(Fn, fmOpenRead or fmShareDenyWrite);
   try
-    TreeLoadFromXML(Tree, FS, Options);
+    TreeLoadFromXML(Tree, FS, Options, OnCallBack);
   finally
     FS.Free;
   end;
