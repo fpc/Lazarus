@@ -5439,7 +5439,9 @@ msgid "New class name:"
 msgstr "Nama class baru:"
 
 #: lazarusidestrconsts.lisa2pnewfile
-msgid "New File"
+#, fuzzy
+#| msgid "New File"
+msgid "New file ..."
 msgstr "File Baru"
 
 #: lazarusidestrconsts.lisa2pnopackagefoundfordependencypleasechooseanexisting
@@ -13630,6 +13632,10 @@ msgctxt "lazarusidestrconsts.lismenuprojectrun"
 msgid "&Run"
 msgstr "Jalankan"
 
+#: lazarusidestrconsts.lismenupublishpackage
+msgid "Publish Package ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenupublishproject
 msgid "Publish Project ..."
 msgstr "Publikasikan Proyek ..."
@@ -15695,7 +15701,7 @@ msgid "Show directory hierarchy"
 msgstr ""
 
 #: lazarusidestrconsts.lispeshowmissingfiles
-msgid "Show Missing Files"
+msgid "Show Missing Files ..."
 msgstr ""
 
 #: lazarusidestrconsts.lispeshowpropspanel
@@ -16456,7 +16462,7 @@ msgid "Minimum Version (optional):"
 msgstr "Versi Minimum (opsional):"
 
 #: lazarusidestrconsts.lisprojaddnewfpmakerequirement
-msgid "New FPMake Requirement"
+msgid "New FPMake requirement ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisprojaddnewrequirement

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-09-24 23:38+0300\n"
+"PO-Revision-Date: 2026-10-22 23:40+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -5261,8 +5261,8 @@ msgid "New class name:"
 msgstr "Новое имя класса:"
 
 #: lazarusidestrconsts.lisa2pnewfile
-msgid "New File"
-msgstr "Новый файл"
+msgid "New file ..."
+msgstr "Новый файл ..."
 
 #: lazarusidestrconsts.lisa2pnopackagefoundfordependencypleasechooseanexisting
 #, object-pascal-format
@@ -13172,6 +13172,10 @@ msgctxt "lazarusidestrconsts.lismenuprojectrun"
 msgid "&Run"
 msgstr "&Запустить"
 
+#: lazarusidestrconsts.lismenupublishpackage
+msgid "Publish Package ..."
+msgstr "Опубликовать пакет ..."
+
 #: lazarusidestrconsts.lismenupublishproject
 msgid "Publish Project ..."
 msgstr "Опубликовать проект ..."
@@ -15139,8 +15143,8 @@ msgid "Show directory hierarchy"
 msgstr "Показывать иерархию каталогов"
 
 #: lazarusidestrconsts.lispeshowmissingfiles
-msgid "Show Missing Files"
-msgstr "Показать отсутствующие файлы"
+msgid "Show Missing Files ..."
+msgstr "Показать отсутствующие файлы ..."
 
 #: lazarusidestrconsts.lispeshowpropspanel
 msgid "Show properties panel"
@@ -15857,8 +15861,8 @@ msgid "Minimum Version (optional):"
 msgstr "Минимальная версия (необязательна):"
 
 #: lazarusidestrconsts.lisprojaddnewfpmakerequirement
-msgid "New FPMake Requirement"
-msgstr "Новая зависимость FPMake"
+msgid "New FPMake requirement ..."
+msgstr "Новая зависимость FPMake ..."
 
 #: lazarusidestrconsts.lisprojaddnewrequirement
 msgid "New Requirement"

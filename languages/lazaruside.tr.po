@@ -5294,7 +5294,9 @@ msgid "New class name:"
 msgstr "Yeni sınıf adı:"
 
 #: lazarusidestrconsts.lisa2pnewfile
-msgid "New File"
+#, fuzzy
+#| msgid "New File"
+msgid "New file ..."
 msgstr "Yeni dosya"
 
 #: lazarusidestrconsts.lisa2pnopackagefoundfordependencypleasechooseanexisting
@@ -13253,6 +13255,10 @@ msgctxt "lazarusidestrconsts.lismenuprojectrun"
 msgid "&Run"
 msgstr "&Çalıştır"
 
+#: lazarusidestrconsts.lismenupublishpackage
+msgid "Publish Package ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenupublishproject
 msgid "Publish Project ..."
 msgstr "Projeyi Yayınla ..."
@@ -15200,7 +15206,9 @@ msgid "Show directory hierarchy"
 msgstr "Dizin hiyerarşisini göster"
 
 #: lazarusidestrconsts.lispeshowmissingfiles
-msgid "Show Missing Files"
+#, fuzzy
+#| msgid "Show Missing Files"
+msgid "Show Missing Files ..."
 msgstr "Eksik Dosyaları Göster"
 
 #: lazarusidestrconsts.lispeshowpropspanel
@@ -15914,7 +15922,9 @@ msgid "Minimum Version (optional):"
 msgstr "Minimum Sürüm (isteğe bağlı):"
 
 #: lazarusidestrconsts.lisprojaddnewfpmakerequirement
-msgid "New FPMake Requirement"
+#, fuzzy
+#| msgid "New FPMake Requirement"
+msgid "New FPMake requirement ..."
 msgstr "Yeni FPMake Gereksinimi"
 
 #: lazarusidestrconsts.lisprojaddnewrequirement

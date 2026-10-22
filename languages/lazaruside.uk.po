@@ -5335,7 +5335,9 @@ msgid "New class name:"
 msgstr "Нова назва класу"
 
 #: lazarusidestrconsts.lisa2pnewfile
-msgid "New File"
+#, fuzzy
+#| msgid "New File"
+msgid "New file ..."
 msgstr "Новий файл"
 
 #: lazarusidestrconsts.lisa2pnopackagefoundfordependencypleasechooseanexisting
@@ -13356,6 +13358,10 @@ msgctxt "lazarusidestrconsts.lismenuprojectrun"
 msgid "&Run"
 msgstr "Вико&нати"
 
+#: lazarusidestrconsts.lismenupublishpackage
+msgid "Publish Package ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenupublishproject
 msgid "Publish Project ..."
 msgstr "Опублікувати проєкт ..."
@@ -15324,7 +15330,9 @@ msgid "Show directory hierarchy"
 msgstr "Показати структуру тек"
 
 #: lazarusidestrconsts.lispeshowmissingfiles
-msgid "Show Missing Files"
+#, fuzzy
+#| msgid "Show Missing Files"
+msgid "Show Missing Files ..."
 msgstr "Показати загублені файли"
 
 #: lazarusidestrconsts.lispeshowpropspanel
@@ -16043,7 +16051,9 @@ msgid "Minimum Version (optional):"
 msgstr "Найнижча версія (не обов'язково)"
 
 #: lazarusidestrconsts.lisprojaddnewfpmakerequirement
-msgid "New FPMake Requirement"
+#, fuzzy
+#| msgid "New FPMake Requirement"
+msgid "New FPMake requirement ..."
 msgstr "Нова залежність FPMake"
 
 #: lazarusidestrconsts.lisprojaddnewrequirement

@@ -5446,7 +5446,9 @@ msgid "New class name:"
 msgstr "Nome nuova classe:"
 
 #: lazarusidestrconsts.lisa2pnewfile
-msgid "New File"
+#, fuzzy
+#| msgid "New File"
+msgid "New file ..."
 msgstr "Nuovo File"
 
 #: lazarusidestrconsts.lisa2pnopackagefoundfordependencypleasechooseanexisting
@@ -13526,6 +13528,10 @@ msgctxt "lazarusidestrconsts.lismenuprojectrun"
 msgid "&Run"
 msgstr "&Esegui"
 
+#: lazarusidestrconsts.lismenupublishpackage
+msgid "Publish Package ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenupublishproject
 msgid "Publish Project ..."
 msgstr "&Pubblica progetto ..."
@@ -15535,7 +15541,9 @@ msgid "Show directory hierarchy"
 msgstr "Mostra la gerarchia delle cartelle"
 
 #: lazarusidestrconsts.lispeshowmissingfiles
-msgid "Show Missing Files"
+#, fuzzy
+#| msgid "Show Missing Files"
+msgid "Show Missing Files ..."
 msgstr "Mostrare i file mancanti"
 
 #: lazarusidestrconsts.lispeshowpropspanel
@@ -16261,7 +16269,7 @@ msgid "Minimum Version (optional):"
 msgstr "Versione minima (opzionale):"
 
 #: lazarusidestrconsts.lisprojaddnewfpmakerequirement
-msgid "New FPMake Requirement"
+msgid "New FPMake requirement ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisprojaddnewrequirement

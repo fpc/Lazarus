@@ -5436,7 +5436,9 @@ msgid "New class name:"
 msgstr "Naujos klasės pavadinimas:"
 
 #: lazarusidestrconsts.lisa2pnewfile
-msgid "New File"
+#, fuzzy
+#| msgid "New File"
+msgid "New file ..."
 msgstr "Naujas failas"
 
 #: lazarusidestrconsts.lisa2pnopackagefoundfordependencypleasechooseanexisting
@@ -13538,6 +13540,10 @@ msgctxt "lazarusidestrconsts.lismenuprojectrun"
 msgid "&Run"
 msgstr "&Startuoti"
 
+#: lazarusidestrconsts.lismenupublishpackage
+msgid "Publish Package ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenupublishproject
 msgid "Publish Project ..."
 msgstr "Skelbti projektą…"
@@ -15542,7 +15548,9 @@ msgid "Show directory hierarchy"
 msgstr "Rodyti aplanko hierarchiją"
 
 #: lazarusidestrconsts.lispeshowmissingfiles
-msgid "Show Missing Files"
+#, fuzzy
+#| msgid "Show Missing Files"
+msgid "Show Missing Files ..."
 msgstr "Rodyti kokių failų trūksta"
 
 #: lazarusidestrconsts.lispeshowpropspanel
@@ -16272,7 +16280,7 @@ msgid "Minimum Version (optional):"
 msgstr "Minimali versija (nebūtina):"
 
 #: lazarusidestrconsts.lisprojaddnewfpmakerequirement
-msgid "New FPMake Requirement"
+msgid "New FPMake requirement ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisprojaddnewrequirement

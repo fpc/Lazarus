@@ -5543,7 +5543,9 @@ msgid "New class name:"
 msgstr "שם המחלקה החדשה:"
 
 #: lazarusidestrconsts.lisa2pnewfile
-msgid "New File"
+#, fuzzy
+#| msgid "New File"
+msgid "New file ..."
 msgstr "קובץ חדש"
 
 #: lazarusidestrconsts.lisa2pnopackagefoundfordependencypleasechooseanexisting
@@ -13885,6 +13887,10 @@ msgctxt "lazarusidestrconsts.lismenuprojectrun"
 msgid "&Run"
 msgstr "הרץ"
 
+#: lazarusidestrconsts.lismenupublishpackage
+msgid "Publish Package ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenupublishproject
 msgid "Publish Project ..."
 msgstr "פרסם פרויקט..."
@@ -15975,7 +15981,7 @@ msgstr "הראה מידרג תיקיות"
 #: lazarusidestrconsts.lispeshowmissingfiles
 #, fuzzy
 #| msgid "Show missing files"
-msgid "Show Missing Files"
+msgid "Show Missing Files ..."
 msgstr "הראה קבצים חסרים"
 
 #: lazarusidestrconsts.lispeshowpropspanel
@@ -16740,7 +16746,7 @@ msgid "Minimum Version (optional):"
 msgstr "גגירסה מינימלית (לא חובה):"
 
 #: lazarusidestrconsts.lisprojaddnewfpmakerequirement
-msgid "New FPMake Requirement"
+msgid "New FPMake requirement ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisprojaddnewrequirement

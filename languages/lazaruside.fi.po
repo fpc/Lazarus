@@ -5332,7 +5332,9 @@ msgid "New class name:"
 msgstr "Uusi luokan nimi:"
 
 #: lazarusidestrconsts.lisa2pnewfile
-msgid "New File"
+#, fuzzy
+#| msgid "New File"
+msgid "New file ..."
 msgstr "Uusi tiedosto"
 
 #: lazarusidestrconsts.lisa2pnopackagefoundfordependencypleasechooseanexisting
@@ -13303,6 +13305,10 @@ msgctxt "lazarusidestrconsts.lismenuprojectrun"
 msgid "&Run"
 msgstr "&Suorita"
 
+#: lazarusidestrconsts.lismenupublishpackage
+msgid "Publish Package ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenupublishproject
 msgid "Publish Project ..."
 msgstr "Julkaise projekti ..."
@@ -15250,7 +15256,9 @@ msgid "Show directory hierarchy"
 msgstr "Näytä hakemistorakenne"
 
 #: lazarusidestrconsts.lispeshowmissingfiles
-msgid "Show Missing Files"
+#, fuzzy
+#| msgid "Show Missing Files"
+msgid "Show Missing Files ..."
 msgstr "Näytä puuttuvat tiedostot"
 
 #: lazarusidestrconsts.lispeshowpropspanel
@@ -15972,7 +15980,9 @@ msgid "Minimum Version (optional):"
 msgstr "Pienin versio (valinnainen):"
 
 #: lazarusidestrconsts.lisprojaddnewfpmakerequirement
-msgid "New FPMake Requirement"
+#, fuzzy
+#| msgid "New FPMake Requirement"
+msgid "New FPMake requirement ..."
 msgstr "Uusi FPMake riippuvuus"
 
 #: lazarusidestrconsts.lisprojaddnewrequirement

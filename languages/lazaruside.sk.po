@@ -5292,7 +5292,9 @@ msgid "New class name:"
 msgstr "Meno novej triedy:"
 
 #: lazarusidestrconsts.lisa2pnewfile
-msgid "New File"
+#, fuzzy
+#| msgid "New File"
+msgid "New file ..."
 msgstr "Nový súbor"
 
 #: lazarusidestrconsts.lisa2pnopackagefoundfordependencypleasechooseanexisting
@@ -13247,6 +13249,10 @@ msgctxt "lazarusidestrconsts.lismenuprojectrun"
 msgid "&Run"
 msgstr "&Spustiť"
 
+#: lazarusidestrconsts.lismenupublishpackage
+msgid "Publish Package ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenupublishproject
 msgid "Publish Project ..."
 msgstr "Publikovať projekt ..."
@@ -15215,7 +15221,9 @@ msgid "Show directory hierarchy"
 msgstr "Zobraziť hierarchiu adresárov"
 
 #: lazarusidestrconsts.lispeshowmissingfiles
-msgid "Show Missing Files"
+#, fuzzy
+#| msgid "Show Missing Files"
+msgid "Show Missing Files ..."
 msgstr "Zobraziť chýbajúce súbory"
 
 #: lazarusidestrconsts.lispeshowpropspanel
@@ -15953,7 +15961,7 @@ msgid "Minimum Version (optional):"
 msgstr "Minimálna verzia (voliteľné)"
 
 #: lazarusidestrconsts.lisprojaddnewfpmakerequirement
-msgid "New FPMake Requirement"
+msgid "New FPMake requirement ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisprojaddnewrequirement
