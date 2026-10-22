@@ -5433,7 +5433,9 @@ msgid "New class name:"
 msgstr "新規クラス名:"
 
 #: lazarusidestrconsts.lisa2pnewfile
-msgid "New File"
+#, fuzzy
+#| msgid "New File"
+msgid "New file ..."
 msgstr "新規のファイル"
 
 #: lazarusidestrconsts.lisa2pnopackagefoundfordependencypleasechooseanexisting
@@ -13507,6 +13509,10 @@ msgctxt "lazarusidestrconsts.lismenuprojectrun"
 msgid "&Run"
 msgstr "実行(&R)"
 
+#: lazarusidestrconsts.lismenupublishpackage
+msgid "Publish Package ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenupublishproject
 msgid "Publish Project ..."
 msgstr "プロジェクトを発行 ..."
@@ -15505,7 +15511,9 @@ msgid "Show directory hierarchy"
 msgstr "ディレクトリ階層を表示"
 
 #: lazarusidestrconsts.lispeshowmissingfiles
-msgid "Show Missing Files"
+#, fuzzy
+#| msgid "Show Missing Files"
+msgid "Show Missing Files ..."
 msgstr "見つからないファイルを表示"
 
 #: lazarusidestrconsts.lispeshowpropspanel
@@ -16235,7 +16243,7 @@ msgid "Minimum Version (optional):"
 msgstr "バージョン番号の下限値（オプション）"
 
 #: lazarusidestrconsts.lisprojaddnewfpmakerequirement
-msgid "New FPMake Requirement"
+msgid "New FPMake requirement ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisprojaddnewrequirement

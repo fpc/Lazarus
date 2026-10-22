@@ -5381,7 +5381,9 @@ msgid "New class name:"
 msgstr "Nové jméno třídy:"
 
 #: lazarusidestrconsts.lisa2pnewfile
-msgid "New File"
+#, fuzzy
+#| msgid "New File"
+msgid "New file ..."
 msgstr "Nový soubor"
 
 #: lazarusidestrconsts.lisa2pnopackagefoundfordependencypleasechooseanexisting
@@ -13432,6 +13434,10 @@ msgctxt "lazarusidestrconsts.lismenuprojectrun"
 msgid "&Run"
 msgstr "Spustit"
 
+#: lazarusidestrconsts.lismenupublishpackage
+msgid "Publish Package ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenupublishproject
 msgid "Publish Project ..."
 msgstr "Vydat projekt..."
@@ -15427,7 +15433,9 @@ msgid "Show directory hierarchy"
 msgstr "Zobrazit adresářovou strukturu"
 
 #: lazarusidestrconsts.lispeshowmissingfiles
-msgid "Show Missing Files"
+#, fuzzy
+#| msgid "Show Missing Files"
+msgid "Show Missing Files ..."
 msgstr "Zobrazit chybějící soubory"
 
 #: lazarusidestrconsts.lispeshowpropspanel
@@ -16149,7 +16157,9 @@ msgid "Minimum Version (optional):"
 msgstr "Minimální verze (nepovinné):"
 
 #: lazarusidestrconsts.lisprojaddnewfpmakerequirement
-msgid "New FPMake Requirement"
+#, fuzzy
+#| msgid "New FPMake Requirement"
+msgid "New FPMake requirement ..."
 msgstr "Nový požadavek FPMake"
 
 #: lazarusidestrconsts.lisprojaddnewrequirement
