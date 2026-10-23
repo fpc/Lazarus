@@ -14998,9 +14998,6 @@ begin
       else
         exit(vatIdentifier);
     end else
-    if UpAtomIs('ON') then begin
-        exit(vatKeyword);
-    end else
       exit(vatIdentifier);
   end else if (CurPos.StartPos=CurPos.EndPos-1) then begin
     case c of
