@@ -879,10 +879,8 @@ begin
     {$IFDEF GTK3DEBUGCORE}
     AList := FGtk3Application^.get_windows;
     if Assigned(AList) then
-    begin
-      DebugLn('TGtk3WidgetSet.Gtk3Destroy app Windows list ',dbgs(g_list_length(AList)));
-      g_list_free(AList);
-    end else
+      DebugLn('TGtk3WidgetSet.Gtk3Destroy app Windows list ',dbgs(g_list_length(AList)))
+    else
       DebugLn('TGtk3WidgetSet.Gtk3Destroy app Windows list is null ');
     {$ENDIF}
     FGtk3Application^.unref;
