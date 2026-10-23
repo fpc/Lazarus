@@ -319,6 +319,22 @@ begin
         Result.Painter := gptComboBox;
       end;
     teHeader:
+      if Details.Part = HP_HEADERSORTARROW then
+      begin
+        Result.Widget := GetStyleWidget(lgsTreeView);
+        Result.Style := gtk_widget_get_style(Result.Widget);
+        Result.State := GTK_STATE_NORMAL;
+        Result.Shadow := GTK_SHADOW_NONE;
+        Result.IsHot := False;
+        if Details.State = HSAS_SORTEDDOWN then
+          Result.ArrowType := GTK_ARROW_DOWN
+        else
+          Result.ArrowType := GTK_ARROW_UP;
+        Result.Fill := True;
+        Result.Detail := 'button';
+        Result.Painter := gptArrow;
+      end
+      else
       begin
         Result.Widget := GetColumnButtonFromTreeView(GetStyleWidget(lgsTreeView), Details.Part);
         if Result.Widget = nil then
@@ -596,10 +612,7 @@ begin
         Result := inherited GetDetailSizeForPPI(Details, PPI);
     {$ENDIF}
     teHeader:
-      if Details.Part = HP_HEADERSORTARROW then
-        Result := Size(-1, -1) // not yet supported
-      else
-        Result := inherited GetDetailSizeForPPI(Details, PPI);
+      Result := inherited GetDetailSizeForPPI(Details, PPI);
     else
       Result := inherited GetDetailSizeForPPI(Details, PPI);
   end;
