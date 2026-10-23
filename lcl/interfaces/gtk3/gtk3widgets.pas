@@ -16068,6 +16068,9 @@ begin
       if FWidgetType = [wtHintWindow] then
         gtk_window_set_type_hint(PGtkWindow(Result), GDK_WINDOW_TYPE_HINT_TOOLTIP)
       else
+      if Assigned(Application) and (Application.MainForm = AForm) then
+        gtk_window_set_type_hint(PGtkWindow(Result), GDK_WINDOW_TYPE_HINT_NORMAL)
+      else
         gtk_window_set_type_hint(PGtkWindow(Result), GDK_WINDOW_TYPE_HINT_UTILITY);
     end;
     if FWidgetType = [wtHintWindow] then
