@@ -1996,7 +1996,10 @@ function TGtk3WidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
   GtkDC: TGtk3DeviceContext absolute DC;
-  ScrX, CharLen: LongInt;
+  ScrX, ScrY, CharLen: LongInt;
+  Orientation: LongInt;
+  Advance: Int64;
+  CosA, SinA: Double;
   IsVectorSurf: Boolean;
   ClipL, ClipT, ClipR, ClipB, Tmp: Integer;
 begin
@@ -2045,11 +2048,30 @@ begin
       else
       begin
         ScrX := X;
+        ScrY := Y;
+        Orientation := 0;
+        if Assigned(GtkDC.CurrentFont) then
+          Orientation := GtkDC.CurrentFont.LogFont.lfOrientation;
+        Advance := 0;
+        CosA := 1;
+        SinA := 0;
+        if Orientation <> 0 then
+        begin
+          CosA := Cos(Orientation * Pi / 1800);
+          SinA := Sin(Orientation * Pi / 1800);
+        end;
         while Count > 0 do
         begin
           CharLen := UTF8CodepointSize(Str);
-          GtkDC.drawText(ScrX,Y,Str,CharLen, (GtkDC.BkMode=OPAQUE) and Assigned(GtkDC.BgBrush));
-          inc(ScrX, Dx^);
+          GtkDC.drawText(ScrX,ScrY,Str,CharLen, (GtkDC.BkMode=OPAQUE) and Assigned(GtkDC.BgBrush));
+          if Orientation = 0 then
+            inc(ScrX, Dx^)
+          else
+          begin
+            inc(Advance, Dx^);
+            ScrX := X + Round(Advance * CosA);
+            ScrY := Y - Round(Advance * SinA);
+          end;
           inc(Dx);
           inc(Str, CharLen);
           dec(Count, CharLen);
