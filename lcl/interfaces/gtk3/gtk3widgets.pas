@@ -10198,9 +10198,13 @@ begin
     Exit;
   inc(GtkItem.Lock);
   try
-    FillChar(Msg{%H-}, SizeOf(Msg), #0);
-    Msg.Msg := LM_ACTIVATE;
-    GtkItem.MenuItem.Dispatch(Msg);
+    try
+      FillChar(Msg{%H-}, SizeOf(Msg), #0);
+      Msg.Msg := LM_ACTIVATE;
+      GtkItem.MenuItem.Dispatch(Msg);
+    except
+      Application.HandleException(nil);
+    end;
   finally
     dec(GtkItem.Lock);
   end;
