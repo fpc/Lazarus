@@ -111,6 +111,9 @@ type
     FOwner: PGtkWidget;
     FProps: TStringList;
     FPostMessages: TThreadList;
+    FSmoothScrollNative: Boolean; {last smooth scroll was not handled by LCL, let gtk scroll}
+    FSmoothScrollX: Double;
+    FSmoothScrollY: Double;
     FWidgetMapped: boolean;
     FWidgetRGBA: array [0{GTK_STATE_NORMAL}..4{GTK_STATE_INSENSITIVE}] of TDefaultRGBA;
     function CanSendLCLMessage: Boolean;
@@ -1827,6 +1830,9 @@ var
   MappedXY: TPoint;
   MessE : TLMMouseEvent;
   aDir: TGdkScrollDirection;
+  IsStop: Boolean;
+  Steps: Integer;
+  W: TGtk3Widget;
 begin
   Result := False;
   if AWidget=nil then ;
@@ -1857,31 +1863,31 @@ begin
     GDK_SCROLL_DOWN, GDK_SCROLL_LEFT {1}: MessE.WheelDelta := -120;
     GDK_SCROLL_SMOOTH:
       begin
-        if AEvent^.scroll.delta_y <> 0 then
+        //touchpads send many small deltas, 1.0 is one wheel notch.
+        //accumulate and send one LM_MOUSEWHEEL per whole notch. issue #42676
+        W := TGtk3Widget(AData);
+        IsStop := gdk_event_is_scroll_stop_event(AEvent);
+        if IsStop then
         begin
-          if AEvent^.scroll.delta_y > 0 then
-            MessE.WheelDelta := -120
-          else
-            MessE.WheelDelta := 120;
-          //TODO: find in settings default wheel scroll distance
-          //MessE.WheelDelta := -Round((120 * AEvent^.scroll.delta_y) / 10);
+          W.FSmoothScrollX := 0;
+          W.FSmoothScrollY := 0;
         end;
-        if AEvent^.scroll.delta_x <> 0 then
-        begin
-          if AEvent^.scroll.delta_x > 0 then
-            MessE.WheelDelta := -120
-          else
-            MessE.WheelDelta := 120;
-        end;
-        if (AEvent^.scroll.delta_x=0) and (AEvent^.scroll.delta_y=0) then
-        begin
-          // the initial wheel smooth scroll has no delta
-          MessE.WheelDelta := -120;
-          // gdk_event_get_scroll_direction does not help here
-        end;
-
-        if MessE.WheelDelta=0 then
+        Result := not W.FSmoothScrollNative;
+        if IsStop or ((AEvent^.scroll.delta_x = 0) and (AEvent^.scroll.delta_y = 0)) then
           exit;
+        W.FSmoothScrollX := W.FSmoothScrollX + AEvent^.scroll.delta_x;
+        W.FSmoothScrollY := W.FSmoothScrollY + AEvent^.scroll.delta_y;
+        Steps := Trunc(W.FSmoothScrollY);
+        if Steps <> 0 then
+          W.FSmoothScrollY := W.FSmoothScrollY - Steps
+        else
+        begin
+          Steps := Trunc(W.FSmoothScrollX);
+          if Steps = 0 then
+            exit;
+          W.FSmoothScrollX := W.FSmoothScrollX - Steps;
+        end;
+        MessE.WheelDelta := -120 * Steps;
       end;
   else
     DebugLn('WARNING: ',dbgsName(aWinControl),' unhandled scrollDirection event ',dbgs(Ord(AEvent^.scroll.direction)));
@@ -1896,6 +1902,8 @@ begin
 
   NotifyApplicationUserInput(AWinControl, PLMessage(@MessE)^);
   Result := TGtk3Widget(AData).DeliverMessage(MessE) <> 0;
+  if AEvent^.scroll.direction = GDK_SCROLL_SMOOTH then
+    TGtk3Widget(AData).FSmoothScrollNative := not Result;
   AEvent^.scroll.send_event := NO_PROPAGATION_TO_PARENT;
 
   //DebugLn('Gtk3ScrollEvent for ', dbgsName(TGtk3Widget(AData).LCLObject),' Result ',dbgs(Result));
