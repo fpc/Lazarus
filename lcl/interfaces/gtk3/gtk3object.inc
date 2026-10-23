@@ -944,12 +944,10 @@ var
 begin
   // DebugLn('TGtk3WidgetSet.AppSetIcon Small=',dbgHex(Small),' Big=',dbgHex(Big));
   DoDestroyIcon := Big = 0;
-  if DoDestroyIcon then
-  begin
-    if Assigned(FAppIcon) then
-      FAppIcon^.unref;
-    FAppIcon := nil;
-  end else
+  if Assigned(FAppIcon) then
+    FAppIcon^.unref;
+  FAppIcon := nil;
+  if not DoDestroyIcon then
   begin
     AIcon := TGtk3Image(Big).Handle;
     FAppIcon := PGdkPixbuf(AIcon)^.copy;
