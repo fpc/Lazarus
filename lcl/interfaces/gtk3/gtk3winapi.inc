@@ -2898,7 +2898,6 @@ var
   display: PGdkDisplay;
   seat: PGdkSeat;
   device: PGdkDevice;
-  x: gdouble;
   window: PGdkWindow;
   windowWidget: PGtkWindow;
 begin
@@ -2925,6 +2924,7 @@ begin
     device := gdk_seat_get_pointer(seat);
     if device = nil then
       exit;
+
     window := gdk_screen_get_active_window(gdk_screen_get_default);
     if window = nil then // gdk_screen_get_active_window may not be implemented
     begin
@@ -2934,7 +2934,7 @@ begin
     end;
     if window = nil then
       Exit;
-    device^.get_state(window, @x, @AModifiers);
+    device^.get_state(window, nil, @AModifiers);
   end else
   begin
     AKeyMap := gdk_keymap_get_for_display(display);
