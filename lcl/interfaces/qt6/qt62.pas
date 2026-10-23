@@ -9348,7 +9348,7 @@ procedure QIcon_detach(handle: QIconH); cdecl; external Qt6PasLib name 'QIcon_de
 function QIcon_cacheKey(handle: QIconH): int64; cdecl; external Qt6PasLib name 'QIcon_cacheKey';
 procedure QIcon_addPixmap(handle: QIconH; pixmap: QPixmapH; mode: QIconMode = QIconNormal; state: QIconState = QIconOff); cdecl; external Qt6PasLib name 'QIcon_addPixmap';
 procedure QIcon_addFile(handle: QIconH; fileName: PWideString; size: PSize = nil; mode: QIconMode = QIconNormal; state: QIconState = QIconOff); cdecl; external Qt6PasLib name 'QIcon_addFile';
-procedure QIcon_fromTheme(retval: QIconH; name: PWideString; fallback: QIconH = nil); cdecl; external Qt6PasLib name 'QIcon_fromTheme';
+procedure QIcon_fromTheme(retval: QIconH; name: PWideString; fallback: QIconH = nil);
 function QIcon_hasThemeIcon(name: PWideString): Boolean; cdecl; external Qt6PasLib name 'QIcon_hasThemeIcon';
 procedure QIcon_themeSearchPaths(retval: QStringListH); cdecl; external Qt6PasLib name 'QIcon_themeSearchPaths';
 procedure QIcon_setThemeSearchPaths(searchpath: QStringListH); cdecl; external Qt6PasLib name 'QIcon_setThemeSearchPaths';
@@ -15479,6 +15479,26 @@ procedure QPrinterInfo_supportedPaperSizes(Info: QPrinterInfoH; out APageSizes: 
 
 implementation
 uses SysUtils,Math;
+
+procedure QIcon_fromTheme_raw(retval: QIconH; name: PWideString; fallback: QIconH); cdecl; external Qt6PasLib name 'QIcon_fromTheme';
+
+// C binding dereferences fallback unconditionally, Qt reads it on a lookup miss, so never pass nil. issue #42661
+procedure QIcon_fromTheme(retval: QIconH; name: PWideString; fallback: QIconH = nil);
+var
+  AFallback: QIconH;
+begin
+  if fallback <> nil then
+    QIcon_fromTheme_raw(retval, name, fallback)
+  else
+  begin
+    AFallback := QIcon_Create();
+    try
+      QIcon_fromTheme_raw(retval, name, AFallback);
+    finally
+      QIcon_Destroy(AFallback);
+    end;
+  end;
+end;
 
 function QRegion_numRects(handle: QRegionH): Integer;
 begin
