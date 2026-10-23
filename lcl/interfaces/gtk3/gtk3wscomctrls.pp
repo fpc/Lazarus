@@ -590,7 +590,7 @@ begin
       Bmp.Free;
     end;
   end;
-  if (ImageIndex > -1) and (ImageIndex <= Images.Count-1) and (Images.Items[ImageIndex] <> nil) then
+  if Assigned(Images) and (ImageIndex > -1) and (ImageIndex <= Images.Count-1) and (Images.Items[ImageIndex] <> nil) then
   begin
     Pixbuf := PGdkPixbuf(Images.Items[ImageIndex]);
     if Assigned(pixBuf) then
