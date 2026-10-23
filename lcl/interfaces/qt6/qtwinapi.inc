@@ -2175,8 +2175,10 @@ var
 
   procedure DoDrawCharByChar(const AClipped: Boolean);
   var
-    CurX, CharLen, ClusterBytes, ClusterDx, NextLen: Integer;
+    CurX, CurY, CharLen, ClusterBytes, ClusterDx, NextLen: Integer;
     CurCount: LongInt;
+    Advance: Int64;
+    CosA, SinA: Double;
     CurDx: PInteger;
     CurStr: PChar;
     W: WideString;
@@ -2199,6 +2201,15 @@ var
     CurStr := Str;
     CurCount := Count;
     CurX := X;
+    CurY := Y;
+    Advance := 0;
+    CosA := 1;
+    SinA := 0;
+    if QtDC.Font.Angle <> 0 then
+    begin
+      CosA := Cos(QtDC.Font.Angle * Pi / 1800);
+      SinA := Sin(QtDC.Font.Angle * Pi / 1800);
+    end;
     while CurCount > 0 do
     begin
       CharLen := UTF8CodepointSize(CurStr);
@@ -2216,11 +2227,18 @@ var
         end;
       W := {%H-}Copy(CurStr, 1, ClusterBytes);
       if AClipped then
-        QtDC.drawText(CurX, Y, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top,
+        QtDC.drawText(CurX, CurY, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top,
           QtTextDontClip, @W)
       else
-        QtDC.drawText(CurX, Y, @W);
-      inc(CurX, ClusterDx);
+        QtDC.drawText(CurX, CurY, @W);
+      if QtDC.Font.Angle = 0 then
+        inc(CurX, ClusterDx)
+      else
+      begin
+        inc(Advance, ClusterDx);
+        CurX := X + Round(Advance * CosA);
+        CurY := Y - Round(Advance * SinA);
+      end;
       inc(CurDx);
       inc(CurStr, ClusterBytes);
       dec(CurCount, ClusterBytes);
