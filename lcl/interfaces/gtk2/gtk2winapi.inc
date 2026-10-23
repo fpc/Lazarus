@@ -3827,11 +3827,24 @@ var
 
   procedure DoTextOut(CurStr: Pchar; CurCount: Integer);
   var
-    ScrX, CharLen, i: LongInt;
+    ScrX, ScrY, CharLen, i: LongInt;
+    Escapement: LongInt;
+    Advance: Int64;
+    CosA, SinA: Double;
   begin
     if Dx <> nil then
     begin
       ScrX := X;
+      ScrY := Y;
+      Escapement := DevCtx.GetFont^.LogFont.lfEscapement;
+      Advance := 0;
+      CosA := 1;
+      SinA := 0;
+      if Escapement <> 0 then
+      begin
+        CosA := Cos(Escapement * Pi / 1800);
+        SinA := Sin(Escapement * Pi / 1800);
+      end;
       while CurCount > 0 do
       begin
         CharLen := 0;
@@ -3840,8 +3853,15 @@ var
           CharLen := CharLen + UTF8CodepointSize(CurStr + CharLen);
           inc(i);
         until (CharLen >= CurCount) or ((Dx+i)^ <> 0);
-        DevCtx.DrawTextWithColors(CurStr, CharLen, ScrX, Y, Foreground, Background);
-        inc(ScrX, Dx^);
+        DevCtx.DrawTextWithColors(CurStr, CharLen, ScrX, ScrY, Foreground, Background);
+        if Escapement = 0 then
+          inc(ScrX, Dx^)
+        else
+        begin
+          inc(Advance, Dx^);
+          ScrX := X + Round(Advance * CosA);
+          ScrY := Y - Round(Advance * SinA);
+        end;
         inc(Dx, i);
         inc(CurStr, CharLen);
         dec(CurCount, CharLen);
