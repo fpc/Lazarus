@@ -536,12 +536,17 @@ var
     '}';
 
 begin
+  Screen := gdk_screen_get_default();
+  if Screen = nil then
+    exit;
+  if g_object_get_data(PGObject(Screen), 'lcl-spinbutton-css') <> nil then
+    exit;
   CssProvider := gtk_css_provider_new();
   gtk_css_provider_load_from_data(CssProvider, CSSData, -1, nil);
-  Screen := gdk_screen_get_default();
   gtk_style_context_add_provider_for_screen(Screen,
     PGtkStyleProvider(CssProvider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-  g_object_unref(CssProvider);
+  g_object_set_data_full(PGObject(Screen), 'lcl-spinbutton-css', CssProvider,
+    TGDestroyNotify(@g_object_unref));
 end;
 
 function Gtk3RefreshThemeIdle(AData: gpointer): gboolean; cdecl;
