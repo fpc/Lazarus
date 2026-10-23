@@ -30,6 +30,8 @@ Type
   Public
     // Register commands in component menu.
     Procedure RegisterCommands;
+    // Show REST submenu only if a TSQLDBRestDataset is selected
+    Procedure CheckSectionVisible(Sender : TObject); virtual;
     // Check whether dataset is TSQLDBRestDataset
     Procedure CheckDataset(Sender : TObject); virtual;
     // Create HTML form
@@ -132,13 +134,18 @@ procedure TIDEPas2JSRestCommandHandler.RegisterCommands;
 begin
   // Form designer menu
   mnuCompRestSection:=RegisterIDESubMenu(DesignerMenuSectionCustomDynamic,'comPas2JSRest',rsPas2JSRest,Nil,Nil);
-//  DesignerMenuSectionCustomDynamic.AddHandlerOnShow(@CheckDataset);
+  DesignerMenuRoot.AddHandlerOnShow(@CheckSectionVisible);
   mnuCompRestSection.AddHandlerOnShow(@CheckDataset);
 //  RegisterIDEMenuCommand(mnuCompDDSection,'ddeditfields',SMenuDatadictApply,@IDEDDC.ApplyDD,Nil,Nil);
   CmdShowData:=RegisterIDEMenuCommand(mnuCompRestSection,'showData',rsMenuRestShowData,@ShowData,Nil,Nil);
   CmdGetFieldDefs:=RegisterIDEMenuCommand(mnuCompRestSection,'createFieldDefs',rsMenuRestCreateFieldDefs,@CreateFieldDefs,Nil,Nil);
   CmdGetParamDefs:=RegisterIDEMenuCommand(mnuCompRestSection,'createParamDefs',rsMenuRestCreateParamDefs,@CreateParams,Nil,Nil);
   CmdGenHTML:=RegisterIDEMenuCommand(mnuCompRestSection,'gendatahtml',rsMenuGenHTMLForm,@CreateHTML,Nil,Nil);
+end;
+
+procedure TIDEPas2JSRestCommandHandler.CheckSectionVisible(Sender: TObject);
+begin
+  mnuCompRestSection.Visible:=GetDataset<>Nil;
 end;
 
 procedure TIDEPas2JSRestCommandHandler.CheckDataset(Sender: TObject);
