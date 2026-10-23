@@ -4086,6 +4086,7 @@ var
   MultiCompsAreSelected: boolean;
   OneControlSelected: Boolean;
   SelectionVisible: Boolean;
+  IsLCLRoot: Boolean;
   SrcFile: TLazProjectFile;
   UnitIsVirtual, DesignerCanCopy, HasChangeParentCandidates,
     HasAncestorComponent: Boolean;
@@ -4142,6 +4143,11 @@ begin
   DesignerMenuSize.Enabled := CompsAreSelected and not OnlyNonVisualsAreSelected;
   DesignerMenuReset.Enabled := HasAncestorComponent;
 
+  // anchor editor, tab order and z-order only work for LCL forms and frames
+  IsLCLRoot := (FLookupRoot is TCustomForm) or (FLookupRoot is TCustomFrame);
+  DesignerMenuAnchorEditor.Visible := IsLCLRoot;
+  DesignerMenuTabOrder.Visible := IsLCLRoot;
+  DesignerMenuSectionZOrder.Visible := IsLCLRoot;
   DesignerMenuSectionZOrder.Enabled := CompsAreSelected and not OnlyNonVisualsAreSelected;
     DesignerMenuOrderMoveToFront.Enabled := OneControlSelected and not OnlyNonVisualsAreSelected;
     DesignerMenuOrderMoveToBack.Enabled := OneControlSelected and not OnlyNonVisualsAreSelected;
