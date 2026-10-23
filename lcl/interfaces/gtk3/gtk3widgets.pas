@@ -3123,6 +3123,18 @@ begin
         begin
           Msg.Msg := LM_MBUTTONDOWN;
           Msg.Keys := Msg.Keys or MK_MBUTTON;
+        end
+        else
+        if MButton = GTK3_BACK_BUTTON then
+        begin
+          Msg.Msg := LM_XBUTTONDOWN;
+          Msg.Keys := Msg.Keys or MK_XBUTTON1;
+        end
+        else
+        if MButton = GTK3_FORWARD_BUTTON then
+        begin
+          Msg.Msg := LM_XBUTTONDOWN;
+          Msg.Keys := Msg.Keys or MK_XBUTTON2;
         end;
       end;
     GDK_2BUTTON_PRESS: //-> double click GDK_DOUBLE_BUTTON_PRESS
@@ -3143,6 +3155,18 @@ begin
         begin
           Msg.Msg := LM_MBUTTONDBLCLK;
           Msg.Keys := Msg.Keys or MK_MBUTTON;
+        end
+        else
+        if MButton = GTK3_BACK_BUTTON then
+        begin
+          Msg.Msg := LM_XBUTTONDBLCLK;
+          Msg.Keys := Msg.Keys or MK_XBUTTON1;
+        end
+        else
+        if MButton = GTK3_FORWARD_BUTTON then
+        begin
+          Msg.Msg := LM_XBUTTONDBLCLK;
+          Msg.Keys := Msg.Keys or MK_XBUTTON2;
         end;
       end;
     GDK_3BUTTON_PRESS:
@@ -3163,6 +3187,18 @@ begin
         begin
           Msg.Msg := LM_MBUTTONDOWN;
           Msg.Keys := Msg.Keys or MK_MBUTTON;
+        end
+        else
+        if MButton = GTK3_BACK_BUTTON then
+        begin
+          Msg.Msg := LM_XBUTTONDOWN;
+          Msg.Keys := Msg.Keys or MK_XBUTTON1;
+        end
+        else
+        if MButton = GTK3_FORWARD_BUTTON then
+        begin
+          Msg.Msg := LM_XBUTTONDOWN;
+          Msg.Keys := Msg.Keys or MK_XBUTTON2;
         end;
       end;
     GDK_BUTTON_RELEASE:
@@ -3183,6 +3219,18 @@ begin
         begin
           Msg.Msg := LM_MBUTTONUP;
           Msg.Keys := Msg.Keys and not MK_MBUTTON;
+        end
+        else
+        if MButton = GTK3_BACK_BUTTON then
+        begin
+          Msg.Msg := LM_XBUTTONUP;
+          Msg.Keys := Msg.Keys or MK_XBUTTON1;
+        end
+        else
+        if MButton = GTK3_FORWARD_BUTTON then
+        begin
+          Msg.Msg := LM_XBUTTONUP;
+          Msg.Keys := Msg.Keys or MK_XBUTTON2;
         end;
       end;
     else
