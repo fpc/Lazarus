@@ -502,18 +502,27 @@ end;
 procedure ApplyCustomScrollbarStyles(const APixels: integer);
 var
   CssProvider: PGtkCssProvider;
+  AScreen: PGdkScreen;
 begin
-  CssProvider := gtk_css_provider_new();
+  AScreen := gdk_screen_get_default();
+  if AScreen = nil then
+    exit;
+  // one provider per screen, reloaded on theme change instead of adding a new one each time
+  CssProvider := PGtkCssProvider(g_object_get_data(PGObject(AScreen), 'lcl-scrollbar-css'));
+  if CssProvider = nil then
+  begin
+    CssProvider := gtk_css_provider_new();
+    gtk_style_context_add_provider_for_screen(AScreen,
+      PGtkStyleProvider(CssProvider),
+      GTK_STYLE_PROVIDER_PRIORITY_APPLICATION
+    );
+    g_object_set_data_full(PGObject(AScreen), 'lcl-scrollbar-css', CssProvider,
+      TGDestroyNotify(@g_object_unref));
+  end;
   gtk_css_provider_load_from_data(CssProvider,
     PgChar(Format('scrollbar.horizontal { margin-right: %dpx; }' +
     'scrollbar.vertical { margin-bottom: %dpx; }',[APixels, APixels])),
     -1, nil);
-
-  gtk_style_context_add_provider_for_screen(
-    gdk_screen_get_default(),
-    PGtkStyleProvider(CssProvider),
-    GTK_STYLE_PROVIDER_PRIORITY_APPLICATION
-  );
 end;
 
 procedure ApplyCustomSpinButtonCSS;
