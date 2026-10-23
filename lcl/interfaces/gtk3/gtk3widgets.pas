@@ -612,6 +612,7 @@ type
     procedure SetCaption(const AValue: string);
   strict private
     class procedure MenuItemActivated(AItem:PGtkMenuItem;AData:GPointer); cdecl; static;
+    class procedure MenuItemToggled(AItem:PGtkCheckMenuItem;AData:GPointer); cdecl; static;
     class procedure MenuItemSelect(AItem:PGtkMenuItem;AData:GPointer); cdecl; static;
     class procedure MenuItemDeselect(AItem:PGtkMenuItem;AData:GPointer); cdecl; static;
     class function MenuItemEvent(AWidget:PGtkWidget;event:PGdkEvent; data:GPointer):gboolean; cdecl; static;
@@ -10157,6 +10158,25 @@ begin
   end;
 end;
 
+class procedure TGtk3MenuItem.MenuItemToggled(AItem: PGtkCheckMenuItem; AData: GPointer); cdecl;
+var
+  GtkItem: TGtk3MenuItem;
+begin
+  GtkItem := TGtk3MenuItem(AData);
+  if not Assigned(GtkItem) or not Assigned(GtkItem.MenuItem) or (GtkItem.Lock > 0) then
+    Exit;
+  if GtkItem.MenuItem.AutoCheck or Gtk3IsRadioMenuItem(PGObject(AItem)) then
+    Exit;
+  if AItem^.active = GtkItem.MenuItem.Checked then
+    Exit;
+  inc(GtkItem.Lock);
+  try
+    AItem^.active := GtkItem.MenuItem.Checked;
+  finally
+    dec(GtkItem.Lock);
+  end;
+end;
+
 class procedure TGtk3MenuItem.MenuItemSelect({%H-}AItem: PGtkMenuItem; AData: GPointer); cdecl;
 var
   GtkItem: TGtk3MenuItem;
@@ -10244,6 +10264,8 @@ begin
   g_signal_connect_data(FWidget, 'destroy', TGCallback(@DestroyWidgetEvent), Self, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(FWidget, 'event', TGCallback(@MenuItemEvent), Self, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(FWidget, 'activate', TGCallback(@MenuItemActivated), Self, nil, G_CONNECT_DEFAULT);
+  if Gtk3WidgetIsA(FWidget, gtk_check_menu_item_get_type) then
+    g_signal_connect_data(FWidget, 'toggled', TGCallback(@MenuItemToggled), Self, nil, [G_CONNECT_AFTER]);
   g_signal_connect_data(FWidget, 'select', TGCallback(@MenuItemSelect), Self, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(FWidget, 'deselect', TGCallback(@MenuItemDeselect), Self, nil, G_CONNECT_DEFAULT);
 
@@ -10340,6 +10362,7 @@ begin
   if OldSubmenu <> nil then
   begin
     PGtkMenuItem(FWidget)^.set_submenu(PGtkMenu(OldSubmenu));
+    g_object_set_data(PGObject(FWidget), 'ContainerMenu', OldSubmenu);
     g_object_unref(PGObject(OldSubmenu));
   end;
 
