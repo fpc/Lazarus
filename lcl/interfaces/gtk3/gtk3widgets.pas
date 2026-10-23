@@ -12405,49 +12405,54 @@ var
 begin
   fillchar(gv{%H-},sizeof(gv),0);
   gv.init(G_TYPE_OBJECT);
-  gv.set_instance(nil);
-  PGtkCellRendererPixbuf(cell)^.set_property('pixbuf',@gv);
+  try
+    gv.set_instance(nil);
+    PGtkCellRendererPixbuf(cell)^.set_property('pixbuf',@gv);
 
-  gtk_tree_model_get(tree_model, iter, [0, @ListItem, -1]);
+    gtk_tree_model_get(tree_model, iter, [0, @ListItem, -1]);
 
-  ListColumn := TListColumn(g_object_get_data(tree_column, 'TListColumn'));
-  if ListColumn = nil then
-    Exit;
-  ColumnIndex := ListColumn.Index;
-  AImages := TGtk3ListView(AData).Images;
-  if AImages = nil then
-    Exit;
-  ImageIndex := -1;
+    ListColumn := TListColumn(g_object_get_data(tree_column, 'TListColumn'));
+    if ListColumn = nil then
+      Exit;
+    ColumnIndex := ListColumn.Index;
+    AImages := TGtk3ListView(AData).Images;
+    if AImages = nil then
+      Exit;
+    ImageIndex := -1;
 
-  if (ListItem = nil) and TCustomListView(TGtk3Widget(AData).LCLObject).OwnerData then
-  begin
-    APath := gtk_tree_model_get_path(tree_model,iter);
-    ListItem := TCustomListView(TGtk3Widget(AData).LCLObject).Items[gtk_tree_path_get_indices(APath)^];
-    gtk_tree_path_free(APath);
+    if (ListItem = nil) and TCustomListView(TGtk3Widget(AData).LCLObject).OwnerData then
+    begin
+      APath := gtk_tree_model_get_path(tree_model,iter);
+      ListItem := TCustomListView(TGtk3Widget(AData).LCLObject).Items[gtk_tree_path_get_indices(APath)^];
+      gtk_tree_path_free(APath);
+    end;
+
+    if ListItem = nil then
+      Exit;
+
+    if ColumnIndex = 0 then
+      ImageIndex := ListItem.ImageIndex
+    else
+      if ColumnIndex - 1 <= ListItem.SubItems.Count - 1 then
+        ImageIndex := ListItem.SubItemImages[ColumnIndex - 1];
+
+    if ImageIndex > AImages.Count - 1 then
+      TGtk3ListView(AData).SyncImages;
+
+    if (ImageIndex > -1) and (ImageIndex <= AImages.Count-1) then
+      pb := PGdkPixbuf(AImages.Items[ImageIndex])^.copy
+    else
+      pb := nil;
+
+    gv.set_instance(pb);
+    PGtkCellRendererPixbuf(cell)^.set_property('pixbuf',@gv);
+
+    if Assigned(pb) then
+      g_object_unref(pb);
+  finally
+    // GValue holds its own reference on the pixbuf
+    g_value_unset(@gv);
   end;
-
-  if ListItem = nil then
-    Exit;
-
-  if ColumnIndex = 0 then
-    ImageIndex := ListItem.ImageIndex
-  else
-    if ColumnIndex - 1 <= ListItem.SubItems.Count - 1 then
-      ImageIndex := ListItem.SubItemImages[ColumnIndex - 1];
-
-  if ImageIndex > AImages.Count - 1 then
-    TGtk3ListView(AData).SyncImages;
-
-  if (ImageIndex > -1) and (ImageIndex <= AImages.Count-1) then
-    pb := PGdkPixbuf(AImages.Items[ImageIndex])^.copy
-  else
-    pb := nil;
-
-  gv.set_instance(pb);
-  PGtkCellRendererPixbuf(cell)^.set_property('pixbuf',@gv);
-
-  if Assigned(pb) then
-    g_object_unref(pb);
 end;
 
 class procedure TGtk3ListView.ListViewColumnClicked(column: PGtkTreeViewColumn; AData: GPointer); cdecl;
