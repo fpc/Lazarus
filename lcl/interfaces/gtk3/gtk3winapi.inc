@@ -215,13 +215,20 @@ begin
   if FormatID = TClipboardFormat(TGdkAtom.intern('text/plain', true)) then
   begin
     pc:=pclp^.wait_for_text;
-    Stream.Write(pc^,strlen(pc));
+    if pc <> nil then
+    begin
+      Stream.Write(pc^,strlen(pc));
+      g_free(pc);
+    end;
   end
   else
   begin
     data:=pclp^.wait_for_contents(PGdkAtom(FormatID));
     if data <> nil then
+    begin
       Stream.Write(data^.get_data^, data^.get_length);
+      gtk_selection_data_free(data);
+    end;
   end;
   Result:=true;
 end;

@@ -3052,6 +3052,7 @@ var
   AParentControl: TWinControl;
   AClip: PGtkClipboard;
   AClipText: string;
+  AClipPChar: Pgchar;
   AParentGtk: TGtk3Widget;
   AEvent: TGdkEvent;
   P: TPoint;
@@ -3200,8 +3201,11 @@ begin
     AClipText := '';
     AClip := gtk_clipboard_get(gdk_atom_intern('PRIMARY', False));
     if (AClip <> nil) and gtk_clipboard_wait_is_text_available(AClip) then
-      AClipText := gtk_clipboard_wait_for_text(AClip)
-    else
+    begin
+      AClipPChar := gtk_clipboard_wait_for_text(AClip);
+      AClipText := AClipPChar;
+      g_free(AClipPChar);
+    end else
       AClip := nil;
     LCLIntf.SetFocus(LCLObject.Handle);
     if AClip <> nil then
