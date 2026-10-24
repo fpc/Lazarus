@@ -356,6 +356,10 @@ type
     FSliderReleasedHook: QAbstractSlider_hookH;
     FValueChangedHook: QAbstractSlider_hookH;
     FActionTriggeredHook: QAbstractSlider_hookH;
+    FInActionTriggered: Boolean;
+    FPosSetInAction: Boolean;
+    FEndScrollPending: Boolean;
+    procedure DoActionTriggered(action: Integer);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -398,6 +402,8 @@ type
     procedure setValue(p1: Integer); virtual;
     property SliderPressed: Boolean read FSliderPressed;
     property SliderReleased: Boolean read FSliderReleased;
+    property InActionTriggered: Boolean read FInActionTriggered;
+    property PosSetInAction: Boolean read FPosSetInAction write FPosSetInAction;
   end;
 
   { TQtScrollBar }
@@ -9567,6 +9573,22 @@ begin
 end;
 
 procedure TQtAbstractSlider.SlotActionTriggered(action: Integer); cdecl;
+var
+  AOldInAction, AOldPosSet: Boolean;
+begin
+  AOldInAction := FInActionTriggered;
+  AOldPosSet := FPosSetInAction;
+  FInActionTriggered := True;
+  FPosSetInAction := False;
+  try
+    DoActionTriggered(action);
+  finally
+    FInActionTriggered := AOldInAction;
+    FPosSetInAction := AOldPosSet;
+  end;
+end;
+
+procedure TQtAbstractSlider.DoActionTriggered(action: Integer);
 const
   SliderActions: Array[0..7] of QAbstractSliderSliderAction = (
     QAbstractSliderSliderNoAction, QAbstractSliderSliderSingleStepAdd,
@@ -9613,19 +9635,14 @@ begin
   case SliderAction of
     QAbstractSliderSliderNoAction:
     begin
-      exit; // issue #41566
-      // this is called from mouse release while qt still thinks that
-      // slider is pressed, we must update position.issue #14728, #21610
-      if getSliderDown then
-      begin
-        LMScroll.ScrollCode := SB_THUMBPOSITION;
-        DeliverMessage(LMScroll);
-      end;
-
+      if not FEndScrollPending then
+        exit; // issue #41566
+      FEndScrollPending := False;
       LMScroll.ScrollCode := SB_ENDSCROLL;
     end;
     QAbstractSliderSliderSingleStepAdd:
       begin
+        FEndScrollPending := True;
         if LMScroll.Msg = LM_HSCROLL then
           LMScroll.ScrollCode := SB_LINERIGHT
         else
@@ -9633,6 +9650,7 @@ begin
       end;
     QAbstractSliderSliderSingleStepSub:
       begin
+        FEndScrollPending := True;
         if LMScroll.Msg = LM_HSCROLL then
           LMScroll.ScrollCode := SB_LINELEFT
         else
@@ -9640,6 +9658,7 @@ begin
       end;
     QAbstractSliderSliderPageStepAdd:
       begin
+        FEndScrollPending := True;
         if LMScroll.Msg = LM_HSCROLL then
           LMScroll.ScrollCode := SB_PAGERIGHT
         else
@@ -9647,6 +9666,7 @@ begin
       end;
     QAbstractSliderSliderPageStepSub:
       begin
+        FEndScrollPending := True;
         if LMScroll.Msg = LM_HSCROLL then
           LMScroll.ScrollCode := SB_PAGELEFT
         else
@@ -9796,6 +9816,7 @@ begin
     LMScroll.Result := 0;
   end;
   FSliderReleased := False;
+  FEndScrollPending := False;
   LMScroll.ScrollCode := SB_ENDSCROLL;
   DeliverMessage(LMScroll);
 

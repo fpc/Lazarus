@@ -3643,7 +3643,8 @@ begin
     if (ScrollInfo.fMask and SIF_POS) <> 0 then
     begin
       // if QtScrollBar.ChildOfComplexWidget = ccwAbstractScrollArea then
-      if QtScrollBar.SliderPressed then
+      if QtScrollBar.SliderPressed or
+        (QtScrollBar.InActionTriggered and QtScrollBar.PosSetInAction) then
         ScrollInfo.nPos := QtScrollBar.getSliderPosition
       else
         ScrollInfo.nPos := QtScrollBar.getValue;
@@ -6572,6 +6573,8 @@ var
          Do not use ScrollBar.setValue here.}
         if (ScrollBar.getSliderPosition <> ScrollInfo.nPos) then
           ScrollBar.setSliderPosition(ScrollInfo.nPos);
+        if ScrollBar.InActionTriggered then
+          ScrollBar.PosSetInAction := True;
         // setValue(ScrollInfo.nPos);
       end;
     end;
