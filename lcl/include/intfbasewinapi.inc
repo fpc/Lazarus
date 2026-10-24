@@ -236,7 +236,7 @@ begin
 
     // Bottom-left corner
     RoundRgn := CreateEllipticRgn(X1, Y2 - nHeightEllipse, X1 + nWidthEllipse, Y2);
-    CornerSquareRgn := CreateRectRgn(X1, Y2 - nHalfX, X1 + nHalfY, Y2);
+    CornerSquareRgn := CreateRectRgn(X1, Y2 - nHalfY, X1 + nHalfX, Y2);
     CombineRgn(CornerCutRgn, RoundRgn, CornerSquareRgn, RGN_AND);
     CombineRgn(CornerCutRgn, CornerSquareRgn, CornerCutRgn, RGN_DIFF);
     CombineRgn(Result, Result, CornerCutRgn, RGN_DIFF);
