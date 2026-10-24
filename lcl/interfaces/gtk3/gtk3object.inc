@@ -209,6 +209,7 @@ function TGtk3WidgetSet.GetWMName: string;
 var
   AScreen: PGdkScreen;
   AName: Pgchar;
+  ADisplayType: string;
 {$ENDIF}
 begin
   if FWMNameCached then
@@ -224,8 +225,15 @@ begin
     Result := FWMName;
     exit;
   end;
+  ADisplayType := G_OBJECT_TYPE_NAME(gdk_display_get_default);
+  if CompareText(ADisplayType, 'GdkBroadwayDisplay') = 0 then
+  begin
+    FWMName := 'broadway';
+    Result := FWMName;
+    exit;
+  end;
   AScreen := gdk_screen_get_default;
-  if AScreen <> nil then
+  if (AScreen <> nil) and (CompareText(ADisplayType, 'GdkX11Display') = 0) then
   begin
     AName := gdk_x11_screen_get_window_manager_name(AScreen);
     if AName <> nil then
