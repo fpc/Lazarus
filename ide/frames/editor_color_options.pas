@@ -606,7 +606,11 @@ begin
 
   if FixedAttr <> nil then begin
     i := Length(AttriList) - 1;
-    while (i >= 0) and (AttriList[i] <> FixedAttr) do
+    while (i >= 0) and (
+            (not (AttriList[i] is TLazEditTextAttribute)) or
+            (TLazEditTextAttribute(AttriList[i]).StoredName <> FixedAttr.StoredName)
+          )
+    do
       dec(i);
     if i < 0 then begin
       i := Length(AttriList);
@@ -2042,6 +2046,7 @@ begin
     if e <> nil then begin
       Special := True;
       e.ApplyTo(aMarkup);
+      aMarkup.StoredName := e.StoredName;
     end;
   end;
 end;
