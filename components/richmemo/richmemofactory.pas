@@ -8,6 +8,7 @@ interface
 {$ifdef LCLWin32}{$undef NoRichMemo}{$endif}
 {$ifdef LCLCarbon}{$undef NoRichMemo}{$endif}
 {$ifdef LCLGtk2}{$undef NoRichMemo}{$endif}
+{$ifdef LCLGtk3}{$undef NoRichMemo}{$endif}
 {$ifdef LCLCocoa}{$undef NoRichMemo}{$endif}
 {$ifdef LCLQt}{$undef NoRichMemo}{$endif}
 {$ifdef LCLQt5}{$undef NoRichMemo}{$endif}
@@ -28,6 +29,14 @@ uses
   //or setting RTFLoadStream to nil (or any other routine) in runtime.
   ,RichMemoRTF, Gtk2RichMemo
   {$endif}
+  {$ifdef LCLGtk3}
+  //Since Gtk3 doesn't have a native RTF loader, RichMemo provides
+  //a widgetset independent loader. It's registered by default for
+  //Gtk. The registration can be prevented by compiling
+  //with RichMemoNoDefaultRTFLoader defined.
+  //or setting RTFLoadStream to nil (or any other routine) in runtime.
+  ,RichMemoRTF, gtk3richmemo
+  {$endif}
   {$ifdef LCLCocoa},CocoaRichMemo{$endif}
   {$ifdef LCLQt},QtRichMemo{$endif}
   {$ifdef LCLQt5},Qt5RichMemo{$endif}
@@ -45,6 +54,13 @@ begin
   {$ifdef LCLCarbon}RegisterWSComponent(TCustomRichMemo, TCarbonWSCustomRichMemo);{$endif}
   {$ifdef LCLGtk2}
   RegisterWSComponent(TCustomRichMemo, TGtk2WSCustomRichMemo);
+  {$ifndef RichMemoNoDefaultRTFLoader}
+  RegisterRTFLoader;
+  RegisterRTFSaver;
+  {$endif}
+  {$endif}
+  {$ifdef LCLGtk3}
+  RegisterWSComponent(TCustomRichMemo, TGtk3WSCustomRichMemo);
   {$ifndef RichMemoNoDefaultRTFLoader}
   RegisterRTFLoader;
   RegisterRTFSaver;
