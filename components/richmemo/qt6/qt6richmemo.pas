@@ -103,6 +103,8 @@ type
 implementation
 
 const
+  QTextFormatFontFamilies = $1FE7;
+
   WordWrapMap: array[Boolean] of QTextEditLineWrapMode =
   (
     QTextEditNoWrap,
@@ -926,7 +928,8 @@ begin
     CharFormatAt(w, TextStart, fmt);
 
     ws := '';
-    QTextCharFormat_fontFamily(fmt, @ws);
+    if QTextFormat_hasProperty(QTextFormatH(fmt), QTextFormatFontFamilies) then
+      QTextCharFormat_fontFamily(fmt, @ws);
     if ws = '' then
       ws := dfam;
     Params.Name := UTF8Encode(ws);
