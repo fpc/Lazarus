@@ -1781,6 +1781,9 @@ end;
 class procedure TGtk3Widget.UnMapWidget(AWidget: PGtkWidget; Data: gPointer); cdecl;
 begin
   TGtk3Widget(Data).WidgetMapped := False;
+  if (Gtk3WidgetSet.FLCLCaptureWidget <> nil) and
+     (AWidget = Gtk3WidgetSet.FLCLCaptureWidget) then
+    Gtk3WidgetSet.ReleaseCapture;
 end;
 
 procedure Gtk3DbgWidget(AWidget: PGtkWidget); cdecl;
