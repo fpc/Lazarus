@@ -1400,6 +1400,7 @@ begin
         DebugLn(['TGtk2WidgetSet.CreateFontIndirectEx Creating default font']);
         {$ENDIF}
         GdiObject := CreateDefaultFont;
+        CachedFont := FontCache.FindADescriptor(GdiObject^.GDIFontObject);
         exit;
       end;
 
