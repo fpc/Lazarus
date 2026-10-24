@@ -317,6 +317,7 @@ type
     procedure SetCanvasScaleFactor(const AValue: double);
     procedure SetXorMode(var xorSurface: Pcairo_surface_t; AMap: Tcairo_operator_t); // SetRasterOp
     procedure ApplyXorDrawing(xorSurface: Pcairo_surface_t; AMap: Tcairo_operator_t); // after each paint
+    procedure ForgetFont(const AFont: TGtk3Font);
   protected
     FCairo: Pcairo_t;
     FXorCairo: PCairo_t;
@@ -1339,7 +1340,25 @@ begin
 end;
 
 destructor TGtk3Font.Destroy;
+var
+  AIter: TMapIterator;
+  ADC: TGtk3DeviceContext;
 begin
+  if FDCHandles <> nil then
+  begin
+    AIter := TMapIterator.Create(FDCHandles);
+    try
+      AIter.First;
+      while not AIter.EOM do
+      begin
+        AIter.GetData(ADC);
+        ADC.ForgetFont(Self);
+        AIter.Next;
+      end;
+    finally
+      AIter.Free;
+    end;
+  end;
   if Assigned(fContext) and (fContext.CurrentFont = Self) then
     fContext.CurrentFont := nil;
   if Assigned(FLayout) then
@@ -2953,6 +2972,24 @@ begin
   cairo_get_matrix(FCairo, @Matrix);
   // widget with menu or other non-client exclusions have offset in trasform matrix
   fncOrigin:=Point(round(Matrix.x0),round(Matrix.y0));
+end;
+
+procedure TGtk3DeviceContext.ForgetFont(const AFont: TGtk3Font);
+var
+  i: Integer;
+  AReplacement: TGtk3Font;
+begin
+  if FFont <> AFont then
+    AReplacement := FFont
+  else
+    AReplacement := nil;
+  if FCurrentFont = AFont then
+    FCurrentFont := AReplacement;
+  if Assigned(FSavedStateStack) then
+    for i := 0 to FSavedStateStack.Count - 1 do
+      if (FSavedStateStack[i] <> nil) and
+        (PGtk3DCSavedState(FSavedStateStack[i])^.FontObj = AFont) then
+        PGtk3DCSavedState(FSavedStateStack[i])^.FontObj := AReplacement;
 end;
 
 procedure TGtk3DeviceContext.DeleteObjects;
