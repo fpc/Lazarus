@@ -27,10 +27,8 @@ type
 
 implementation
 
-{$ifdef DEBUG_VTV}
 uses
-  vtlogger;
-{$endif}
+  LCLIntf{$ifdef DEBUG_VTV}, vtlogger{$endif};
 
 { TVirtualPanningWindow }
 
@@ -52,6 +50,8 @@ end;
 procedure TVirtualPanningWindow.Show(ClipRegion: HRGN);
 begin
   {$ifdef DEBUG_VTV}Logger.SendBitmap([lcPanning],'Panning Image',FImage);{$endif}
+  if ClipRegion <> 0 then
+    DeleteObject(ClipRegion);
 end;
 
 end.
