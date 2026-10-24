@@ -85,6 +85,7 @@ type
     constructor CreateDefault(AGlobal: Boolean = False);
     constructor Create(const X1, Y1, X2, Y2: Integer);
     constructor Create(Points: PPoint; NumPts: Integer; isAlter: Boolean);
+    constructor CreateEllipse(X1, Y1, X2, Y2: Integer);
     destructor Destroy; override;
 
     procedure Apply(ADC: TCocoaContext);
@@ -3295,6 +3296,79 @@ begin
   finally
     System.FreeMem(Data);
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCocoaRegion.CreateEllipse
+  Params:  X1, Y1, X2, Y2 - Bounding rectangle of the ellipse
+
+  Creates a new elliptic Cocoa region, built per rows from rectangles
+ ------------------------------------------------------------------------------}
+constructor TCocoaRegion.CreateEllipse(X1, Y1, X2, Y2: Integer);
+var
+  Tmp, Y, L, R, LastL, LastR, LastY: Integer;
+  HalfW, HalfH, CenterX, CenterY, DY, T, HW: Double;
+
+  procedure AddPart(PartL, PartR, PartY1, PartY2: Integer);
+  var
+    Part: HIShapeRef;
+  begin
+    if (PartR <= PartL) or (PartY2 <= PartY1) then Exit;
+    Part := HIShapeCreateWithRect(TCocoaTypeUtil.toRect(Rect(PartL, PartY1, PartR, PartY2)));
+    HIShapeUnion(FShape, Part, FShape);
+    CFRelease(Part);
+  end;
+
+begin
+  inherited Create(False);
+
+  FShape := HIShapeCreateMutable;
+
+  if X1 > X2 then
+  begin
+    Tmp := X1;
+    X1 := X2;
+    X2 := Tmp;
+  end;
+  if Y1 > Y2 then
+  begin
+    Tmp := Y1;
+    Y1 := Y2;
+    Y2 := Tmp;
+  end;
+  if (X2 - X1 <= 0) or (Y2 - Y1 <= 0) then Exit;
+
+  HalfW := (X2 - X1) / 2;
+  HalfH := (Y2 - Y1) / 2;
+  CenterX := X1 + HalfW;
+  CenterY := Y1 + HalfH;
+
+  // consecutive rows with the same span are combined into one rectangle
+  LastL := 0;
+  LastR := 0;
+  LastY := Y1;
+  for Y := Y1 to Y2 - 1 do
+  begin
+    DY := (Y + 0.5 - CenterY) / HalfH;
+    T := 1 - DY * DY;
+    if T > 0 then
+    begin
+      HW := HalfW * Sqrt(T);
+      L := Round(CenterX - HW);
+      R := Round(CenterX + HW);
+    end else begin
+      L := 0;
+      R := 0;
+    end;
+    if (L <> LastL) or (R <> LastR) then
+    begin
+      AddPart(LastL, LastR, LastY, Y);
+      LastL := L;
+      LastR := R;
+      LastY := Y;
+    end;
+  end;
+  AddPart(LastL, LastR, LastY, Y2);
 end;
 
 {------------------------------------------------------------------------------

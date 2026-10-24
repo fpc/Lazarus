@@ -359,15 +359,29 @@ begin
 end;
 
 function TCocoaWidgetSet.CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;
+var
+  Src2Copy: TCocoaRegion;
 begin
   Result := LCLType.Error;
   if (Dest = 0) or (Src1 = 0) or (fnCombineMode<RGN_AND) or (fnCombineMode>RGN_COPY) then Exit;
   if (fnCombineMode <> RGN_COPY) and (Src2 = 0) then Exit;
 
-  Result := CocoaRegionTypeToWin32Map[TCocoaRegion(Dest).CombineWith(TCocoaRegion(Src1), cc_Copy)];
+  // Dest is overwritten with Src1 first, so keep a copy of Src2 if they are the same
+  Src2Copy := nil;
+  if (fnCombineMode <> RGN_COPY) and (Dest = Src2) and (Dest <> Src1) then
+  begin
+    Src2Copy := TCocoaRegion.CreateDefault;
+    Src2Copy.CombineWith(TCocoaRegion(Src2), cc_Copy);
+    Src2 := HRGN(Src2Copy);
+  end;
+  try
+    Result := CocoaRegionTypeToWin32Map[TCocoaRegion(Dest).CombineWith(TCocoaRegion(Src1), cc_Copy)];
 
-  if fnCombineMode <> RGN_COPY then
-    Result := CocoaRegionTypeToWin32Map[TCocoaRegion(Dest).CombineWith(TCocoaRegion(Src2), CocoaCombineMode(fnCombineMode))];
+    if fnCombineMode <> RGN_COPY then
+      Result := CocoaRegionTypeToWin32Map[TCocoaRegion(Dest).CombineWith(TCocoaRegion(Src2), CocoaCombineMode(fnCombineMode))];
+  finally
+    Src2Copy.Free;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -435,10 +449,19 @@ begin
   Result := HDC(TCocoaBitmapContext.Create);
 end;
 
-//todo:
-//function TCocoaWidgetSet.CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN;
-//begin
-//end;
+{------------------------------------------------------------------------------
+  Method:  CreateEllipticRgn
+  Params:  X1, Y1, X2, Y2 - Bounding rectangle of the ellipse
+  Returns: The new elliptic region
+ ------------------------------------------------------------------------------}
+function TCocoaWidgetSet.CreateEllipticRgn(X1, Y1, X2, Y2: Integer): HRGN;
+begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCocoaWidgetSet.CreateEllipticRgn R: ' + DbgS(Classes.Rect(X1, Y1, X2, Y2)));
+  {$ENDIF}
+
+  Result := HRGN(TCocoaRegion.CreateEllipse(X1, Y1, X2, Y2));
+end;
 
 function TCocoaWidgetSet.CreateFontIndirect(const LogFont: TLogFont): HFONT;
 begin
