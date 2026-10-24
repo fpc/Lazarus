@@ -1052,6 +1052,7 @@ var
   AFaceStr: string;
   SavedEscapement, SavedOrientation: Longint;
   SavedCharSet: Byte;
+  ADpi: gdouble;
 begin
   if not Assigned(fHandle) then exit;
   SavedEscapement := fLogFont.lfEscapement;
@@ -1109,7 +1110,10 @@ begin
     begin
       { in points }
       //sz:=round(96*sz/PANGO_SCALE/72);//round(2.03*sz/PANGO_SCALE);
-      sz := MulDiv(PANGO_PIXELS(sz), Round(gdk_screen_get_resolution(gdk_screen_get_default)), 72 );
+      ADpi := gdk_screen_get_resolution(gdk_screen_get_default);
+      if ADpi <= 0 then
+        ADpi := 96;
+      sz := MulDiv(PANGO_PIXELS(sz), Round(ADpi), 72 );
     end;
 
     fLogFont.lfHeight:=sz;//round(sz/PANGO_SCALE);

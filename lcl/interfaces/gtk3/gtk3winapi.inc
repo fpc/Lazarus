@@ -2679,6 +2679,8 @@ begin
       begin
         pscr := TGdkScreen.get_default;
         Result := round(pscr^.get_resolution);
+        if Result <= 0 then
+          Result := 96;
       end;
     end;
   end;

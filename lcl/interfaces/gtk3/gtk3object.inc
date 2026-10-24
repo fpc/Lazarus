@@ -752,6 +752,7 @@ procedure TGtk3WidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 
 var
   ScreenDC: HDC;
+  ADpi: gdouble;
 begin
   DisableContainerArrowBindings;
   {$IFDEF GTK3DEBUGCORE}
@@ -759,9 +760,12 @@ begin
   {$ENDIF}
   ScreenDC := GetDC(0);
   try
-    ScreenInfo.PixelsPerInchX := Round(gdk_screen_get_resolution(gdk_screen_get_default));
+    ADpi := gdk_screen_get_resolution(gdk_screen_get_default);
+    if ADpi <= 0 then
+      ADpi := 96;
+    ScreenInfo.PixelsPerInchX := Round(ADpi);
     // GetDeviceCaps(ScreenDC, LOGPIXELSX);
-    ScreenInfo.PixelsPerInchY := Round(gdk_screen_get_resolution(gdk_screen_get_default));
+    ScreenInfo.PixelsPerInchY := Round(ADpi);
     // GetDeviceCaps(ScreenDC, LOGPIXELSY);
     ScreenInfo.ColorDepth := GetDeviceCaps(ScreenDC, BITSPIXEL);
   finally
