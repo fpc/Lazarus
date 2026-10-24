@@ -1,0 +1,5 @@
+{ "richmemo" : {
+   "Category" : "General",
+   "Keywords" : ["TRichMemo", "RichMemo", "RTF", "TParaNumbering", "InsertImageFromFile"],
+   "Description" : "Simple rich text editor based on TRichMemo: fonts, colors, alignment, paragraph numbering, links, images, RTF load/save and printing."}
+}

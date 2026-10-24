@@ -1,0 +1,327 @@
+object Form1: TForm1
+  Left = 892
+  Height = 720
+  Top = 38
+  Width = 1182
+  Caption = 'RichMemo editor'
+  ClientHeight = 720
+  ClientWidth = 1182
+  DesignTimePPI = 144
+  Menu = MainMenu1
+  LCLVersion = '5.99.0.0'
+  OnCreate = FormCreate
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 42
+    Top = 0
+    Width = 1182
+    AutoSize = True
+    ButtonHeight = 40
+    ButtonWidth = 40
+    Caption = 'ToolBar1'
+    EdgeBorders = [ebBottom]
+    ParentShowHint = False
+    ShowCaptions = True
+    ShowHint = True
+    TabOrder = 0
+    object cbFontName: TComboBox
+      Left = 1
+      Height = 32
+      Hint = 'Font'
+      Top = 0
+      Width = 270
+      ItemHeight = 0
+      Sorted = True
+      TabOrder = 0
+      OnKeyDown = cbFontNameKeyDown
+      OnSelect = cbFontNameSelect
+    end
+    object cbFontSize: TComboBox
+      Left = 271
+      Height = 32
+      Hint = 'Font size'
+      Top = 0
+      Width = 90
+      ItemHeight = 0
+      TabOrder = 1
+      OnKeyDown = cbFontSizeKeyDown
+      OnSelect = cbFontSizeSelect
+    end
+    object tbSep1: TToolButton
+      Left = 361
+      Height = 40
+      Top = 0
+      Style = tbsSeparator
+    end
+    object sbBold: TSpeedButton
+      Left = 369
+      Height = 40
+      Hint = 'Bold'
+      Top = 0
+      Width = 40
+      AllowAllUp = True
+      Caption = 'B'
+      Flat = True
+      Font.Style = [fsBold]
+      GroupIndex = 1
+      ParentFont = False
+      OnClick = sbStyleClick
+    end
+    object sbItalic: TSpeedButton
+      Left = 409
+      Height = 40
+      Hint = 'Italic'
+      Top = 0
+      Width = 40
+      AllowAllUp = True
+      Caption = 'I'
+      Flat = True
+      Font.Style = [fsItalic]
+      GroupIndex = 2
+      ParentFont = False
+      OnClick = sbStyleClick
+    end
+    object sbUnderline: TSpeedButton
+      Left = 449
+      Height = 40
+      Hint = 'Underline'
+      Top = 0
+      Width = 40
+      AllowAllUp = True
+      Caption = 'U'
+      Flat = True
+      Font.Style = [fsUnderline]
+      GroupIndex = 3
+      ParentFont = False
+      OnClick = sbStyleClick
+    end
+    object sbStrike: TSpeedButton
+      Left = 489
+      Height = 40
+      Hint = 'Strikeout'
+      Top = 0
+      Width = 40
+      AllowAllUp = True
+      Caption = 'S'
+      Flat = True
+      Font.Style = [fsStrikeOut]
+      GroupIndex = 4
+      ParentFont = False
+      OnClick = sbStyleClick
+    end
+    object tbSep2: TToolButton
+      Left = 529
+      Height = 40
+      Top = 0
+      Style = tbsSeparator
+    end
+    object cbtnFontColor: TColorButton
+      Left = 537
+      Height = 40
+      Hint = 'Font color'
+      Top = 0
+      Width = 100
+      BorderWidth = 2
+      ButtonColorSize = 24
+      ButtonColor = clBlack
+      Caption = 'Text'
+      Flat = True
+      OnColorChanged = cbtnFontColorColorChanged
+    end
+    object cbtnBackColor: TColorButton
+      Left = 637
+      Height = 40
+      Hint = 'Background color'
+      Top = 0
+      Width = 150
+      BorderWidth = 2
+      ButtonColorSize = 24
+      ButtonColor = clWhite
+      Caption = 'Background'
+      Flat = True
+      OnColorChanged = cbtnBackColorColorChanged
+    end
+    object tbNoBackColor: TToolButton
+      Left = 787
+      Hint = 'Remove background color'
+      Top = 0
+      Caption = 'No background'
+      OnClick = tbNoBackColorClick
+    end
+    object tbSep3: TToolButton
+      Left = 929
+      Height = 40
+      Top = 0
+      Style = tbsSeparator
+    end
+    object tbAlignLeft: TToolButton
+      Left = 937
+      Hint = 'Align left'
+      Top = 0
+      Caption = 'Left'
+      Grouped = True
+      Style = tbsCheck
+      OnClick = tbAlignClick
+    end
+    object tbAlignCenter: TToolButton
+      Left = 978
+      Hint = 'Center'
+      Top = 0
+      Caption = 'Center'
+      Grouped = True
+      Style = tbsCheck
+      OnClick = tbAlignClick
+    end
+    object tbAlignRight: TToolButton
+      Left = 1043
+      Hint = 'Align right'
+      Top = 0
+      Caption = 'Right'
+      Grouped = True
+      Style = tbsCheck
+      OnClick = tbAlignClick
+    end
+    object tbAlignJustify: TToolButton
+      Left = 1097
+      Hint = 'Justify'
+      Top = 0
+      Caption = 'Justify'
+      Grouped = True
+      Style = tbsCheck
+      OnClick = tbAlignClick
+    end
+  end
+  object RichMemo1: TRichMemo
+    Left = 0
+    Height = 590
+    Top = 42
+    Width = 1182
+    Align = alClient
+    HideSelection = False
+    Lines.Strings = (
+      'RichMemo1'
+    )
+    ScrollBars = ssAutoBoth
+    TabOrder = 1
+    ZoomFactor = 1
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 88
+    Top = 632
+    Width = 1182
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 88
+    ClientWidth = 1182
+    TabOrder = 2
+    object btnOpen: TButton
+      Left = 24
+      Height = 38
+      Top = 24
+      Width = 113
+      Caption = 'Open'
+      TabOrder = 0
+      OnClick = miOpenClick
+    end
+    object btnSave: TButton
+      Left = 160
+      Height = 38
+      Top = 24
+      Width = 113
+      Caption = 'Save'
+      TabOrder = 1
+      OnClick = miSaveClick
+    end
+    object btnClose: TButton
+      Left = 1045
+      Height = 38
+      Top = 24
+      Width = 113
+      Anchors = [akTop, akRight]
+      Caption = 'Close'
+      TabOrder = 2
+      OnClick = miCloseClick
+    end
+  end
+  object MainMenu1: TMainMenu
+    Left = 96
+    Top = 144
+    object miFile: TMenuItem
+      Caption = '&File'
+      object miNew: TMenuItem
+        Caption = '&New'
+        ShortCut = 16462
+        OnClick = miNewClick
+      end
+      object miOpen: TMenuItem
+        Caption = '&Open...'
+        ShortCut = 16463
+        OnClick = miOpenClick
+      end
+      object miSave: TMenuItem
+        Caption = '&Save'
+        ShortCut = 16467
+        OnClick = miSaveClick
+      end
+      object miSaveAs: TMenuItem
+        Caption = 'Save &as...'
+        ShortCut = 24659
+        OnClick = miSaveAsClick
+      end
+      object miSepFile1: TMenuItem
+        Caption = '-'
+      end
+      object miPrint: TMenuItem
+        Caption = '&Print...'
+        ShortCut = 16464
+        OnClick = miPrintClick
+      end
+      object miSepFile2: TMenuItem
+        Caption = '-'
+      end
+      object miClose: TMenuItem
+        Caption = '&Close'
+        OnClick = miCloseClick
+      end
+    end
+    object miEdit: TMenuItem
+      Caption = '&Edit'
+      object miCut: TMenuItem
+        Caption = 'Cu&t'
+        ShortCut = 16472
+        OnClick = miCutClick
+      end
+      object miCopy: TMenuItem
+        Caption = '&Copy'
+        ShortCut = 16451
+        OnClick = miCopyClick
+      end
+      object miPaste: TMenuItem
+        Caption = '&Paste'
+        ShortCut = 16470
+        OnClick = miPasteClick
+      end
+      object miSepEdit1: TMenuItem
+        Caption = '-'
+      end
+      object miSelectAll: TMenuItem
+        Caption = 'Select &all'
+        ShortCut = 16449
+        OnClick = miSelectAllClick
+      end
+    end
+  end
+  object OpenDialog1: TOpenDialog
+    Filter = 'Rich Text (*.rtf)|*.rtf|Text (*.txt)|*.txt|All files|*'
+    Left = 224
+    Top = 144
+  end
+  object SaveDialog1: TSaveDialog
+    DefaultExt = '.rtf'
+    Filter = 'Rich Text (*.rtf)|*.rtf|Text (*.txt)|*.txt'
+    Options = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
+    Left = 352
+    Top = 144
+  end
+end
