@@ -5128,8 +5128,9 @@ begin
     gdk_display_flush(gdk_window_get_display(Win));
   end;
   //process only small amount of events, so our repaint triggers on time.
-  while g_main_context_iteration(g_main_context_default(), False) do
-    break;
+  if not (Assigned(DragManager) and DragManager.IsDragging) then
+    while g_main_context_iteration(g_main_context_default(), False) do
+      break;
 end;
 
 procedure TGtk3Widget.SetCursor(ACursor: HCURSOR);
