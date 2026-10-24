@@ -70,7 +70,7 @@ begin
 
   QtTextEdit.AttachEvents;
 
-  Result := TLCLIntfHandle(QtTextEdit);
+  Result := TLCLHandle(QtTextEdit);
 end;
 
 class procedure TQtWSCustomRichMemo.SetParaAlignment(
