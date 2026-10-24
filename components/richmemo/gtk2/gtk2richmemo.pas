@@ -39,7 +39,7 @@ uses
   // RTL/FCL
   Types, Classes, SysUtils,
   // LCL
-  LCLType, Controls, Graphics, LazUTF8, StdCtrls, LCLProc,
+  LCLType, Controls, Graphics, LazUTF8, LazTracer, StdCtrls, LCLProc,
   // Gtk2 widget
   Gtk2Int, Gtk2Def,
   GTK2WinApiWindow, Gtk2Globals, Gtk2Proc,
@@ -70,7 +70,7 @@ type
     class procedure FormatSubSuperScript(buffer: PGtkTextBuffer; vs: TVScriptPos; fontSizePts: Double; TextStart, TextLen: Integer);
 
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
 
     class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
@@ -757,7 +757,7 @@ begin
   gtk_text_buffer_apply_tag(abuffer, tag, @istart, @iend);
 end;
 
-class function TGtk2WSCustomRichMemo.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TGtk2WSCustomRichMemo.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   Widget,
   TempWidget: PGtkWidget;
@@ -770,7 +770,7 @@ const
   pu: array [Boolean] of gint = (PANGO_UNDERLINE_NONE, PANGO_UNDERLINE_SINGLE);
 begin
   Widget := gtk_scrolled_window_new(nil, nil);
-  Result := TLCLIntfHandle(PtrUInt(Widget));
+  Result := TLCLHandle(PtrUInt(Widget));
   if Result = 0 then Exit;
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Widget,dbgsName(AWinControl));
