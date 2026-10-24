@@ -153,6 +153,9 @@ type
       AEvent: QKeyEventH = nil): PtrInt;
     function QtKeyToLCLKey(AKey: Integer; AText: WideString;
       AEvent: QKeyEventH): Word;
+    {$IFDEF HASX11}
+    function QtScanCodeToLCLKey(AScanCode: LongWord): Word;
+    {$ENDIF}
     procedure SetLastCaretPos(const AValue: TQtPoint);
     procedure SetProps(const AnIndex: String; const AValue: pointer);
     procedure SetStyleSheet(const AValue: WideString);
@@ -3522,6 +3525,10 @@ begin
   begin
     {$IFDEF HASX11}
     //key is unicode char, nativeVirtualKey is XKey.
+    if (QKeyEvent_key(QKeyEventH(Event)) >= $100) and (QKeyEvent_key(QKeyEventH(Event)) < $01000000) and
+      (QtScanCodeToLCLKey(QKeyEvent_nativeScanCode(QKeyEventH(Event))) <> VK_UNKNOWN) then
+      ACharCode := QtScanCodeToLCLKey(QKeyEvent_nativeScanCode(QKeyEventH(Event)))
+    else
     if (QKeyEvent_key(QKeyEventH(Event)) >= $100) and (QKeyEvent_key(QKeyEventH(Event)) < $017f) then
       ACharCode := QtKeyToLCLKey((QKeyEvent_nativeVirtualKey(QKeyEventH(Event)) - $0100) or $0080, Text, QKeyEventH(Event))
     else
@@ -5646,6 +5653,56 @@ begin
     end;
   end;
 end;
+
+{$IFDEF HASX11}
+function TQtWidget.QtScanCodeToLCLKey(AScanCode: LongWord): Word;
+begin
+  case AScanCode of
+    10..18: Result := VK_1 + (AScanCode - 10);
+    19: Result := VK_0;
+    20: Result := VK_OEM_MINUS;
+    21: Result := VK_OEM_PLUS;
+    24: Result := VK_Q;
+    25: Result := VK_W;
+    26: Result := VK_E;
+    27: Result := VK_R;
+    28: Result := VK_T;
+    29: Result := VK_Y;
+    30: Result := VK_U;
+    31: Result := VK_I;
+    32: Result := VK_O;
+    33: Result := VK_P;
+    34: Result := VK_OEM_4;
+    35: Result := VK_OEM_6;
+    38: Result := VK_A;
+    39: Result := VK_S;
+    40: Result := VK_D;
+    41: Result := VK_F;
+    42: Result := VK_G;
+    43: Result := VK_H;
+    44: Result := VK_J;
+    45: Result := VK_K;
+    46: Result := VK_L;
+    47: Result := VK_OEM_1;
+    48: Result := VK_OEM_7;
+    49: Result := VK_OEM_3;
+    51: Result := VK_OEM_5;
+    52: Result := VK_Z;
+    53: Result := VK_X;
+    54: Result := VK_C;
+    55: Result := VK_V;
+    56: Result := VK_B;
+    57: Result := VK_N;
+    58: Result := VK_M;
+    59: Result := VK_OEM_COMMA;
+    60: Result := VK_OEM_PERIOD;
+    61: Result := VK_OEM_2;
+    94: Result := VK_OEM_102;
+  else
+    Result := VK_UNKNOWN;
+  end;
+end;
+{$ENDIF}
 
 procedure TQtWidget.SetLastCaretPos(const AValue: TQtPoint);
 begin
