@@ -167,48 +167,6 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     TabOrder = 8
     Visible = False
   end
-  object ImportDesktopButton: TButton
-    AnchorSideLeft.Control = ExportDesktopButton
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = ExportDesktopButton
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 334
-    Height = 30
-    Top = 450
-    Width = 327
-    Anchors = [akTop, akLeft, akRight]
-    AutoSize = True
-    BorderSpacing.Left = 6
-    BorderSpacing.Right = 6
-    Caption = 'Import desktop'
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 12
-    Visible = False
-    OnClick = ImportDesktopButtonClick
-  end
-  object ExportDesktopButton: TButton
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = lblImportExport
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = lblCenter
-    Left = 6
-    Height = 30
-    Top = 450
-    Width = 322
-    Anchors = [akTop, akLeft, akRight]
-    AutoSize = True
-    BorderSpacing.Left = 6
-    BorderSpacing.Top = 3
-    BorderSpacing.Right = 3
-    Caption = 'Export desktop'
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 11
-    Visible = False
-    OnClick = ExportDesktopButtonClick
-  end
   object PanelGlyphsButtonsOptions: TPanel
     AnchorSideLeft.Control = lblButtons
     AnchorSideLeft.Side = asrBottom
@@ -313,7 +271,6 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
   object lblCenter: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideLeft.Side = asrCenter
-    AnchorSideTop.Control = lblImportExport
     AnchorSideTop.Side = asrBottom
     Left = 331
     Height = 5
@@ -376,21 +333,6 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     ParentColor = False
     ParentFont = False
   end
-  object lblImportExport: TDividerBevel
-    AnchorSideTop.Control = AutoSaveIntervalInSecsComboBox
-    AnchorSideTop.Side = asrBottom
-    Left = 0
-    Height = 16
-    Top = 431
-    Width = 614
-    Caption = 'Import / Export'
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Top = 6
-    Font.Style = [fsBold]
-    ParentColor = False
-    ParentFont = False
-    Visible = False
-  end
   object lblGlyphs: TDividerBevel
     AnchorSideTop.Control = ShowHintsForComponentPaletteCheckBox
     AnchorSideTop.Side = asrBottom
@@ -434,7 +376,7 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     ParentFont = False
   end
   object lblComboBoxes: TDividerBevel
-    AnchorSideTop.Control = ExportDesktopButton
+    AnchorSideTop.Control = AutoSaveIntervalInSecsComboBox
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 16
@@ -474,7 +416,7 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     MinValue = 3
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 13
+    TabOrder = 11
     Value = 8
   end
   object lblLangChangeHint: TLabel
@@ -514,7 +456,7 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     Top = 555
     Width = 97
     Caption = 'checkWheel'
-    TabOrder = 14
+    TabOrder = 12
   end
   object lblOpenSymlinkPolicy: TLabel
     AnchorSideLeft.Control = Owner
@@ -544,7 +486,7 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     ClientWidth = 318
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 15
+    TabOrder = 13
     object rbOSPAsk: TRadioButton
       AnchorSideLeft.Control = pnlOpenSymlinkPolicy
       AnchorSideTop.Control = pnlOpenSymlinkPolicy

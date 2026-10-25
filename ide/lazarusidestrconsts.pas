@@ -1202,8 +1202,6 @@ resourcestring
   dlgPreferDoubleClickOverSingleClick = 'Prefer double-click over single-click';
   dlgCurrentlyRespectedByMessagesWindow = 'Currently respected by messages window, '
     +'jump history and search results.';
-  lisExportEnvironmentOptions = 'Export environment options';
-  lisImportEnvironmentOptions = 'Import environment options';
   lisComboBoxes = 'Combo Boxes';
   lisDropDownCount = 'Drop Down Count';
   lisDropDownCountHint = 'Used for all ComboBoxes in IDE dialogs';
