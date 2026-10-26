@@ -4563,12 +4563,6 @@ begin
     end;
   end;
   ChangeShowing(bShow);
-
-  //issue #42363
-  if not bShow and Assigned(FControls) then
-    for n := 0 to FControls.Count - 1 do
-      if TObject(FControls[n]) is TWinControl then
-        TWinControl(FControls[n]).UpdateShowing;
 end;
 
 procedure TWinControl.Update;
@@ -8568,8 +8562,7 @@ begin
     {$IF defined(VerboseNewAutoSize) or defined(VerboseIntfSizing) or defined(VerboseShowing)}
     DebugLn(['TWinControl.DoSendShowHideToInterface ',DbgSName(Self),' FBoundsRealized=',dbgs(FBoundsRealized),' New=',HandleObjectShouldBeVisible]);
     {$ENDIF}
-    if NewVisible or not IsControlVisible then //issue #42363
-      TWSWinControlClass(WidgetSetClass).ShowHide(Self);
+    TWSWinControlClass(WidgetSetClass).ShowHide(Self);
   end;
 end;
 
