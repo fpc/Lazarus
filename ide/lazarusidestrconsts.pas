@@ -4557,8 +4557,8 @@ resourcestring
   lisPckEditOptionsForPackage = 'Options for Package %s';
   lisPckEditSavePackage = 'Save Package';
   lisPckEditCompilePackage = 'Compile package';
-  lisPckEditAddFilesFromFileSystem = 'Add Files from File System';
-  lisAddNewFilesFromFileSystem = 'Add New Files from File System';
+  lisAddFilesFromFS = 'Add files from disk ...';
+  lisAddNewFilesFromFileSystem = 'Add missing files from search paths';
   lisPckEditRemoveSelectedItem = 'Remove selected item';
   lisUse = 'Use';
   lisClickToSeeTheChoices = 'Click to see the choices';
