@@ -5526,6 +5526,10 @@ msgstr "-FcUTF8 Ekle"
 msgid "May be needed if source files have non-ansistring literals."
 msgstr "Kaynak dosyalarda ansistring olmayan harfler varsa, gerekli olabilir."
 
+#: lazarusidestrconsts.lisaddfilesfromfs
+msgid "Add files from disk ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddfilter
 msgid "Add Filter ..."
 msgstr "Filtre Ekle ..."
@@ -5568,7 +5572,9 @@ msgid "Add new disk files?"
 msgstr "Yeni disk dosyaları eklensin mi?"
 
 #: lazarusidestrconsts.lisaddnewfilesfromfilesystem
-msgid "Add New Files from File System"
+#, fuzzy
+#| msgid "Add New Files from File System"
+msgid "Add missing files from search paths"
 msgstr "Dosya Sisteminden Yeni Dosyalar Ekle"
 
 #: lazarusidestrconsts.lisaddnewmacro
@@ -14741,10 +14747,6 @@ msgstr "Paket adını kullanmak için temizle"
 #: lazarusidestrconsts.lispckdisablei18noflfm
 msgid "Disable I18N of lfm"
 msgstr "Lfm'in I18N'sini devre dışı bırak"
-
-#: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
-msgid "Add Files from File System"
-msgstr "Dosyaları Dosya Sisteminden Ekle"
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 msgid "Add to Project"

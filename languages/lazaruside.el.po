@@ -5492,6 +5492,10 @@ msgstr "Προσθήκη -FcUTF8"
 msgid "May be needed if source files have non-ansistring literals."
 msgstr "Ενδέχεται να απαιτείται αν τα αρχεία πηγαίου κώδικα περιέχουν σταθερές συμβολοσειρών που δεν είναι AnsiString."
 
+#: lazarusidestrconsts.lisaddfilesfromfs
+msgid "Add files from disk ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddfilter
 msgid "Add Filter ..."
 msgstr "Προσθήκη φίλτρου..."
@@ -5534,7 +5538,9 @@ msgid "Add new disk files?"
 msgstr "Προσθήκη νέων αρχείων δίσκου;"
 
 #: lazarusidestrconsts.lisaddnewfilesfromfilesystem
-msgid "Add New Files from File System"
+#, fuzzy
+#| msgid "Add New Files from File System"
+msgid "Add missing files from search paths"
 msgstr "Προσθήκη νέων αρχείων από το σύστημα αρχείων"
 
 #: lazarusidestrconsts.lisaddnewmacro
@@ -14677,10 +14683,6 @@ msgstr "Απαλοιφή για χρήση του ονόματος πακέτο�
 #: lazarusidestrconsts.lispckdisablei18noflfm
 msgid "Disable I18N of lfm"
 msgstr "Απενεργοποιήστε το I18N του lfm"
-
-#: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
-msgid "Add Files from File System"
-msgstr "Προσθήκη αρχείων από το σύστημα αρχείων"
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"

@@ -5675,6 +5675,10 @@ msgstr "Pridėti „-FcUTF8“"
 msgid "May be needed if source files have non-ansistring literals."
 msgstr "Gali prireikti, kai piminio koduo tekstuose yra ne ANSI koduotės literalių."
 
+#: lazarusidestrconsts.lisaddfilesfromfs
+msgid "Add files from disk ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddfilter
 msgid "Add Filter ..."
 msgstr "Pridėti filtrą…"
@@ -5717,7 +5721,7 @@ msgid "Add new disk files?"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddnewfilesfromfilesystem
-msgid "Add New Files from File System"
+msgid "Add missing files from search paths"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddnewmacro
@@ -15079,10 +15083,6 @@ msgstr "Išvalius bus naudojamas paketo pavadinimas"
 #: lazarusidestrconsts.lispckdisablei18noflfm
 msgid "Disable I18N of lfm"
 msgstr "Nenaudoti LFM internacionalizacijos"
-
-#: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
-msgid "Add Files from File System"
-msgstr "Pridėti failų iš failų sistemos"
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"
