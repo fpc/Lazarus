@@ -924,6 +924,7 @@ begin
   {$else}
   setHidden(not AVisible);
   {$endif}
+  self.lclInvalidate;
   {$IFDEF COCOA_DEBUG_SETBOUNDS}
   WriteLn(Format('LCLViewExtension.lclSetVisible: %s AVisible=%d',
     [NSStringToString(Self.ClassName), Integer(AVisible)]));
