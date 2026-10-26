@@ -5578,6 +5578,10 @@ msgstr "-FcUTF8 hozzáadása"
 msgid "May be needed if source files have non-ansistring literals."
 msgstr "Szükséges lehet ha a forrásfájlok nem csak ansi karakterláncokat tartalmaznak."
 
+#: lazarusidestrconsts.lisaddfilesfromfs
+msgid "Add files from disk ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddfilter
 msgid "Add Filter ..."
 msgstr "Szűrő hozzáadása ..."
@@ -5620,7 +5624,7 @@ msgid "Add new disk files?"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddnewfilesfromfilesystem
-msgid "Add New Files from File System"
+msgid "Add missing files from search paths"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddnewmacro
@@ -14898,10 +14902,6 @@ msgstr "Törölje a csomag nevének használatához"
 #: lazarusidestrconsts.lispckdisablei18noflfm
 msgid "Disable I18N of lfm"
 msgstr "I18N kikapcsolása az lfm-ben"
-
-#: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
-msgid "Add Files from File System"
-msgstr "Fájlok hozzáadása a fájlrendszerből"
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"

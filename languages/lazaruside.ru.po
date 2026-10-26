@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-10-22 23:40+0300\n"
+"PO-Revision-Date: 2026-10-26 23:22+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -5491,6 +5491,10 @@ msgstr "Добавить -FcUTF8"
 msgid "May be needed if source files have non-ansistring literals."
 msgstr "Может понадобиться, если файлы исходного кода содержат литералы, не являющиеся Ansistring."
 
+#: lazarusidestrconsts.lisaddfilesfromfs
+msgid "Add files from disk ..."
+msgstr "Добавить файлы с диска ..."
+
 #: lazarusidestrconsts.lisaddfilter
 msgid "Add Filter ..."
 msgstr "Добавить фильтр ..."
@@ -5533,8 +5537,8 @@ msgid "Add new disk files?"
 msgstr "Добавить новые файлы с диска?"
 
 #: lazarusidestrconsts.lisaddnewfilesfromfilesystem
-msgid "Add New Files from File System"
-msgstr "Добавить новые файлы с диска"
+msgid "Add missing files from search paths"
+msgstr "Добавить недостающие файлы из путей поиска"
 
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
@@ -14674,10 +14678,6 @@ msgstr "Очистите это поле для использования им�
 #: lazarusidestrconsts.lispckdisablei18noflfm
 msgid "Disable I18N of lfm"
 msgstr "Отключить i18n для LFM"
-
-#: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
-msgid "Add Files from File System"
-msgstr "Добавить файлы с диска"
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"

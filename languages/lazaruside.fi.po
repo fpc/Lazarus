@@ -5565,6 +5565,10 @@ msgstr "Lisää -FcUTF8"
 msgid "May be needed if source files have non-ansistring literals."
 msgstr "Voidaan tarvita jos lähdekoodissa on muita kuin ansistring vakioita."
 
+#: lazarusidestrconsts.lisaddfilesfromfs
+msgid "Add files from disk ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddfilter
 msgid "Add Filter ..."
 msgstr "Lisää suodatin ..."
@@ -5607,7 +5611,7 @@ msgid "Add new disk files?"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddnewfilesfromfilesystem
-msgid "Add New Files from File System"
+msgid "Add missing files from search paths"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddnewmacro
@@ -14789,10 +14793,6 @@ msgstr "Tyhjennä käyttääksesi paketin nimeä"
 #: lazarusidestrconsts.lispckdisablei18noflfm
 msgid "Disable I18N of lfm"
 msgstr "Estä lfm:n I18N"
-
-#: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
-msgid "Add Files from File System"
-msgstr "Lisää tiedostoja tiedostojärjestelmästä"
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"

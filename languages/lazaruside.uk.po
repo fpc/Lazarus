@@ -5567,6 +5567,10 @@ msgstr "Додати -FcUTF8"
 msgid "May be needed if source files have non-ansistring literals."
 msgstr "Може знадобитись, якщо сирцеві файли містять не-ansistring літерали."
 
+#: lazarusidestrconsts.lisaddfilesfromfs
+msgid "Add files from disk ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddfilter
 msgid "Add Filter ..."
 msgstr "Додати фільтр ..."
@@ -5609,7 +5613,7 @@ msgid "Add new disk files?"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddnewfilesfromfilesystem
-msgid "Add New Files from File System"
+msgid "Add missing files from search paths"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddnewmacro
@@ -14861,10 +14865,6 @@ msgstr "Очистити для використання назви пакунк
 #: lazarusidestrconsts.lispckdisablei18noflfm
 msgid "Disable I18N of lfm"
 msgstr "Вимкнути I18N в lfm"
-
-#: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
-msgid "Add Files from File System"
-msgstr "Додати файли з файлової системи"
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"

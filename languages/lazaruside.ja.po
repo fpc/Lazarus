@@ -5672,6 +5672,10 @@ msgstr "-FcUTF8を追加"
 msgid "May be needed if source files have non-ansistring literals."
 msgstr "おそらくソースファイルが非ansistring文字を含む場合に必要です。"
 
+#: lazarusidestrconsts.lisaddfilesfromfs
+msgid "Add files from disk ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddfilter
 msgid "Add Filter ..."
 msgstr "フィルタを追加 ..."
@@ -5714,7 +5718,7 @@ msgid "Add new disk files?"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddnewfilesfromfilesystem
-msgid "Add New Files from File System"
+msgid "Add missing files from search paths"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddnewmacro
@@ -15042,10 +15046,6 @@ msgstr "パッケージ名を利用するためにクリア"
 #: lazarusidestrconsts.lispckdisablei18noflfm
 msgid "Disable I18N of lfm"
 msgstr "lfmの国際化を無効化"
-
-#: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
-msgid "Add Files from File System"
-msgstr "ファイルシステムからファイルを追加"
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"

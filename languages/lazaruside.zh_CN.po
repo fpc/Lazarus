@@ -5527,6 +5527,10 @@ msgstr "添加 -FcUTF8"
 msgid "May be needed if source files have non-ansistring literals."
 msgstr "如果源文件有非 AnsiString 字符，则可能需要使用。"
 
+#: lazarusidestrconsts.lisaddfilesfromfs
+msgid "Add files from disk ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddfilter
 msgid "Add Filter ..."
 msgstr "添加过滤器 ..."
@@ -5569,7 +5573,9 @@ msgid "Add new disk files?"
 msgstr "添加新的磁盘文件？"
 
 #: lazarusidestrconsts.lisaddnewfilesfromfilesystem
-msgid "Add New Files from File System"
+#, fuzzy
+#| msgid "Add New Files from File System"
+msgid "Add missing files from search paths"
 msgstr "从文件系统添加新文件"
 
 #: lazarusidestrconsts.lisaddnewmacro
@@ -14743,10 +14749,6 @@ msgstr "清理来使用use软件包名称(Clear to use the package name)"
 #: lazarusidestrconsts.lispckdisablei18noflfm
 msgid "Disable I18N of lfm"
 msgstr "禁用lfm的I18N(国际化)"
-
-#: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
-msgid "Add Files from File System"
-msgstr "添加文件从文件系统"
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"

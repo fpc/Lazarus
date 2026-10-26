@@ -5520,6 +5520,10 @@ msgstr "ເພີ່ມ -FcUTF8"
 msgid "May be needed if source files have non-ansistring literals."
 msgstr "ອາດຈະຈຳເປັນຖ້າໄຟລ໌ source ມີ literals ທີ່ບໍ່ແມ່ນ ansistring."
 
+#: lazarusidestrconsts.lisaddfilesfromfs
+msgid "Add files from disk ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddfilter
 msgid "Add Filter ..."
 msgstr "ເພີ່ມຕົວຄັດກອງ ..."
@@ -5562,7 +5566,9 @@ msgid "Add new disk files?"
 msgstr "ເພີ່ມໄຟລ໌ຈາກດິດໃໝ່ບໍ່?"
 
 #: lazarusidestrconsts.lisaddnewfilesfromfilesystem
-msgid "Add New Files from File System"
+#, fuzzy
+#| msgid "Add New Files from File System"
+msgid "Add missing files from search paths"
 msgstr "ເພີ່ມໄຟລ໌ໃໝ່ຈາກລະບົບໄຟລ໌"
 
 #: lazarusidestrconsts.lisaddnewmacro
@@ -14717,10 +14723,6 @@ msgstr "ລ້າງເພື່ອໃຊ້ຊື່ແພັກເກັດ"
 #: lazarusidestrconsts.lispckdisablei18noflfm
 msgid "Disable I18N of lfm"
 msgstr "ປິດການໃຊ້ງານ I18N ຂອງ lfm"
-
-#: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
-msgid "Add Files from File System"
-msgstr "ເພີ່ມໄຟລ໌ຈາກລະບົບໄຟລ໌"
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"

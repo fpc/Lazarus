@@ -5490,6 +5490,10 @@ msgstr "Adicionar -FcUTF8"
 msgid "May be needed if source files have non-ansistring literals."
 msgstr "Pode ser necessário se os ficheiros fonte tiverem literais não ansistring."
 
+#: lazarusidestrconsts.lisaddfilesfromfs
+msgid "Add files from disk ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddfilter
 msgid "Add Filter ..."
 msgstr "Adicionar filtro..."
@@ -5532,7 +5536,9 @@ msgid "Add new disk files?"
 msgstr "Adicionar novos ficheiros de disco?"
 
 #: lazarusidestrconsts.lisaddnewfilesfromfilesystem
-msgid "Add New Files from File System"
+#, fuzzy
+#| msgid "Add New Files from File System"
+msgid "Add missing files from search paths"
 msgstr "Adicionar novos ficheiros a partir do sistema de ficheiros"
 
 #: lazarusidestrconsts.lisaddnewmacro
@@ -14675,10 +14681,6 @@ msgstr "Limpar para usar o nome do pacote"
 #: lazarusidestrconsts.lispckdisablei18noflfm
 msgid "Disable I18N of lfm"
 msgstr "Desactivar I18N do lfm"
-
-#: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
-msgid "Add Files from File System"
-msgstr "Adicionar ficheiros do sistema de ficheiros"
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"
