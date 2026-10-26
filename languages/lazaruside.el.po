@@ -9802,11 +9802,6 @@ msgstr "Εξαγωγή όλων"
 msgid "Export All Items to File"
 msgstr "Εξαγωγή όλων των στοιχείων σε αρχείο"
 
-#: lazarusidestrconsts.lisexportenvironmentoptions
-msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
-msgid "Export environment options"
-msgstr "Εξαγωγή επιλογών περιβάλλοντος"
-
 #: lazarusidestrconsts.lisexporthtml
 msgid "Export as HTML ..."
 msgstr "Εξαγωγή ως HTML..."
@@ -10833,11 +10828,6 @@ msgstr "Εισαγωγή"
 msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr "Σημαντικό"
-
-#: lazarusidestrconsts.lisimportenvironmentoptions
-msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
-msgid "Import environment options"
-msgstr "Εισαγωγή επιλογών περιβάλλοντος"
 
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"

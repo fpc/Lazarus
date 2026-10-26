@@ -9883,11 +9883,6 @@ msgstr "Exportovať všetko"
 msgid "Export All Items to File"
 msgstr "Exportovať všetky položky do súboru"
 
-#: lazarusidestrconsts.lisexportenvironmentoptions
-msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
-msgid "Export environment options"
-msgstr ""
-
 #: lazarusidestrconsts.lisexporthtml
 #, fuzzy
 #| msgid "Export as HTML"
@@ -10916,11 +10911,6 @@ msgstr "Importovať"
 msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr ""
-
-#: lazarusidestrconsts.lisimportenvironmentoptions
-msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
-msgid "Import environment options"
-msgstr "Importovať voľby prostredia"
 
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"

@@ -9838,11 +9838,6 @@ msgstr "ສົ່ງອອກທັງໝົດ"
 msgid "Export All Items to File"
 msgstr "ສົ່ງອອກລາຍການທັງໝົດລົງໄຟລ໌"
 
-#: lazarusidestrconsts.lisexportenvironmentoptions
-msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
-msgid "Export environment options"
-msgstr "ສົ່ງອອກຕົວເລືອກສະພາບແວດລ້ອມ"
-
 #: lazarusidestrconsts.lisexporthtml
 #, fuzzy
 #| msgid "Export as HTML"
@@ -10866,11 +10861,6 @@ msgstr "ນຳເຂົ້າ"
 msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr "ສຳຄັນ"
-
-#: lazarusidestrconsts.lisimportenvironmentoptions
-msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
-msgid "Import environment options"
-msgstr "ນຳເຂົ້າຕົວເລືອກ environment"
 
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"

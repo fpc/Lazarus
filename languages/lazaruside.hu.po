@@ -9953,11 +9953,6 @@ msgstr "Összes exportálása"
 msgid "Export All Items to File"
 msgstr "Minden elem exportálása fájlba"
 
-#: lazarusidestrconsts.lisexportenvironmentoptions
-msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
-msgid "Export environment options"
-msgstr "Környezet beállításainak exportálása"
-
 #: lazarusidestrconsts.lisexporthtml
 #, fuzzy
 #| msgid "Export as HTML"
@@ -11003,11 +10998,6 @@ msgstr "Importálás"
 msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr "Fontos"
-
-#: lazarusidestrconsts.lisimportenvironmentoptions
-msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
-msgid "Import environment options"
-msgstr "Környezet beállításainak importálása"
 
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"

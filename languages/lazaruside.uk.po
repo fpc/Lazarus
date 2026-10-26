@@ -9927,11 +9927,6 @@ msgstr "Експортувати всі"
 msgid "Export All Items to File"
 msgstr "Експортувати всі елементи до файлу"
 
-#: lazarusidestrconsts.lisexportenvironmentoptions
-msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
-msgid "Export environment options"
-msgstr "Експортувати параметри оточення"
-
 #: lazarusidestrconsts.lisexporthtml
 #, fuzzy
 #| msgid "Export as HTML"
@@ -10977,11 +10972,6 @@ msgstr "Імпортувати"
 msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr "Важливо"
-
-#: lazarusidestrconsts.lisimportenvironmentoptions
-msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
-msgid "Import environment options"
-msgstr "Імпортувати параметри оточення"
 
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"
