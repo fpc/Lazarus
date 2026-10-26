@@ -9855,11 +9855,6 @@ msgstr "导出所有"
 msgid "Export All Items to File"
 msgstr "导出所有项目到文件"
 
-#: lazarusidestrconsts.lisexportenvironmentoptions
-msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
-msgid "Export environment options"
-msgstr "导出环境选项"
-
 #: lazarusidestrconsts.lisexporthtml
 #, fuzzy
 #| msgid "Export as HTML"
@@ -10885,11 +10880,6 @@ msgstr "导入"
 msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr "重要"
-
-#: lazarusidestrconsts.lisimportenvironmentoptions
-msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
-msgid "Import environment options"
-msgstr "导入环境选项"
 
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"

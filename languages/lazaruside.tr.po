@@ -9866,11 +9866,6 @@ msgstr "Tümünü dışa aktar"
 msgid "Export All Items to File"
 msgstr "Tüm Öğeleri Dosyaya Ver"
 
-#: lazarusidestrconsts.lisexportenvironmentoptions
-msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
-msgid "Export environment options"
-msgstr "Dışa aktarma ortamı seçenekleri"
-
 #: lazarusidestrconsts.lisexporthtml
 #, fuzzy
 #| msgid "Export as HTML"
@@ -10897,11 +10892,6 @@ msgstr "İçe aktar"
 msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr "Önemli"
-
-#: lazarusidestrconsts.lisimportenvironmentoptions
-msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
-msgid "Import environment options"
-msgstr "İçe aktarma ortamı seçenekleri"
 
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"

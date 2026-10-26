@@ -10087,11 +10087,6 @@ msgstr "Exportar todo"
 msgid "Export All Items to File"
 msgstr "Exportar todos los elementos a fichero"
 
-#: lazarusidestrconsts.lisexportenvironmentoptions
-msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
-msgid "Export environment options"
-msgstr "Exportar las opciones del entorno"
-
 #: lazarusidestrconsts.lisexporthtml
 #, fuzzy
 #| msgid "Export as HTML"
@@ -11135,11 +11130,6 @@ msgstr "Importar"
 msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr "Importante"
-
-#: lazarusidestrconsts.lisimportenvironmentoptions
-msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
-msgid "Import environment options"
-msgstr "Importar opciones del entorno"
 
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"

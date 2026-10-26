@@ -10062,11 +10062,6 @@ msgstr "Eksportuoti viską"
 msgid "Export All Items to File"
 msgstr "Visus elementus eksportuoti į failą"
 
-#: lazarusidestrconsts.lisexportenvironmentoptions
-msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
-msgid "Export environment options"
-msgstr "Eksportuoti aplinkos parinktis"
-
 #: lazarusidestrconsts.lisexporthtml
 #, fuzzy
 #| msgid "Export as HTML"
@@ -11122,11 +11117,6 @@ msgstr "Importuoti"
 msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr "Svarbi"
-
-#: lazarusidestrconsts.lisimportenvironmentoptions
-msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
-msgid "Import environment options"
-msgstr "Importuoti aplinkos parinktis"
 
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"

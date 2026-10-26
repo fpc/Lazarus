@@ -10075,11 +10075,6 @@ msgstr ""
 msgid "Export All Items to File"
 msgstr "Esporta tutte le voci nel file"
 
-#: lazarusidestrconsts.lisexportenvironmentoptions
-msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
-msgid "Export environment options"
-msgstr ""
-
 #: lazarusidestrconsts.lisexporthtml
 #, fuzzy
 #| msgid "Export as HTML"
@@ -11136,11 +11131,6 @@ msgstr "Importare"
 msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr "Importante"
-
-#: lazarusidestrconsts.lisimportenvironmentoptions
-msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
-msgid "Import environment options"
-msgstr ""
 
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"

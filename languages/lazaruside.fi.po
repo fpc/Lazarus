@@ -9924,11 +9924,6 @@ msgstr "Vie kaikki"
 msgid "Export All Items to File"
 msgstr "Vie kaikki kohdat tiedostoon"
 
-#: lazarusidestrconsts.lisexportenvironmentoptions
-msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
-msgid "Export environment options"
-msgstr "Vie ympäristön asetukset"
-
 #: lazarusidestrconsts.lisexporthtml
 #, fuzzy
 #| msgid "Export as HTML"
@@ -10962,11 +10957,6 @@ msgstr "Tuo"
 msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr "Tärkeä"
-
-#: lazarusidestrconsts.lisimportenvironmentoptions
-msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
-msgid "Import environment options"
-msgstr "Tuo ympäristön asetukset"
 
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"

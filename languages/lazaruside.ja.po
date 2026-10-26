@@ -10057,11 +10057,6 @@ msgstr "すべてエクスポート"
 msgid "Export All Items to File"
 msgstr "すべてのアイテムをファイルにエクスポート"
 
-#: lazarusidestrconsts.lisexportenvironmentoptions
-msgctxt "lazarusidestrconsts.lisexportenvironmentoptions"
-msgid "Export environment options"
-msgstr "環境オプションをエクスポート"
-
 #: lazarusidestrconsts.lisexporthtml
 #, fuzzy
 #| msgid "Export as HTML"
@@ -11118,11 +11113,6 @@ msgstr "インポート"
 msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr "重要"
-
-#: lazarusidestrconsts.lisimportenvironmentoptions
-msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
-msgid "Import environment options"
-msgstr "環境オプションをインポート"
 
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"
