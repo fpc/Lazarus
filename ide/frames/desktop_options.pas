@@ -59,7 +59,6 @@ type
     lblDropDownCount: TLabel;
     lblComboBoxes: TDividerBevel;
     lblCheckAndAutoSave: TDividerBevel;
-    lblImportExport: TDividerBevel;
     lblGlyphs: TDividerBevel;
     lblHints: TDividerBevel;
     lblLanguage: TDividerBevel;
@@ -72,7 +71,6 @@ type
     lblCenter: TLabel;
     lblMenus: TLabel;
     LanguageComboBox: TComboBox;
-    ImportDesktopButton: TButton;
     PanelGlyphsButtonsOptions: TPanel;
     PanelGlyphsMenusOptions: TPanel;
     rbMenuGlyphShowAlways: TRadioButton;
@@ -81,22 +79,17 @@ type
     rbBtnGlyphShowAlways: TRadioButton;
     rbBtnGlyphShowNever: TRadioButton;
     rbBtnGlyphShowSystem: TRadioButton;
-    ExportDesktopButton: TButton;
     rbOSPAsk: TRadioButton;
     rbOSPTarget: TRadioButton;
     rbOSPSymlink: TRadioButton;
     ShowHintsForComponentPaletteCheckBox: TCheckBox;
     ShowHintsForMainSpeedButtonsCheckBox: TCheckBox;
     spDropDownCount: TSpinEdit;
-    procedure ExportDesktopButtonClick(Sender: TObject);
-    procedure ImportDesktopButtonClick(Sender: TObject);
     procedure LanguageComboBoxChange(Sender: TObject);
   private
     fCurrentLang: TCaption;
     function LangIDToCaption(const LangID: string): string;
     function CaptionToLangID(const ACaption: string): string;
-    procedure DoLoadSettings(AOptions: TAbstractIDEOptions);
-    procedure DoSaveSettings(AOptions: TAbstractIDEOptions);
   public
     function GetTitle: String; override;
     procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
@@ -172,13 +165,6 @@ begin
   AutoSaveEditorFilesCheckBox.Caption := dlgEdFiles;
   AutoSaveProjectCheckBox.Caption := dlgProject;
   AutoSaveIntervalInSecsLabel.Caption := dlgIntvInSec;
-
-  // desktop files
-  lblImportExport.Caption := lisExportImport;
-  ExportDesktopButton.Caption := lisExport;
-  ImportDesktopButton.Caption := lisImport;
-  ExportDesktopButton.Hint := lisExportEnvironmentOptions;
-  ImportDesktopButton.Hint := lisImportEnvironmentOptions;
 
   // comboboxes
   lblComboBoxes.Caption := lisComboBoxes;
@@ -319,86 +305,6 @@ begin
   {$ENDIF}
 end;
 
-procedure TDesktopOptionsFrame.ExportDesktopButtonClick(Sender: TObject);
-var
-  AnEnvironmentOptions: TEnvironmentOptions;
-  SaveDialog: TSaveDialog;
-  AFilename: String;
-begin
-  //debugln('TDesktopOptionsFrame.ExportDesktopButtonClick A');
-  SaveDialog := IDESaveDialogClass.Create(nil);
-  try
-    try
-      InputHistories.ApplyFileDialogSettings(SaveDialog);
-      SaveDialog.Filter:=dlgFilterLazarusDesktopSettings+' (*.lds)|*.lds'
-           //+'|'+dlgFilterXML+' (*.xml)|*.xml'
-           +'|'+dlgFilterAll+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
-      if SaveDialog.Execute then
-      begin
-        AFilename:=SaveDialog.Filename;
-        if ExtractFileExt(AFilename)='' then
-          AFilename:=AFilename+'.lds';
-        AnEnvironmentOptions := TEnvironmentOptions.Create;
-        try
-          AnEnvironmentOptions.Filename := AFilename;
-          DoSaveSettings(AnEnvironmentOptions);
-          AnEnvironmentOptions.Save(true);
-          ShowMessageFmt(lisSuccessfullyExported, [SaveDialog.Filename]);
-        finally
-          AnEnvironmentOptions.Free;
-        end;
-      end;
-      InputHistories.StoreFileDialogSettings(SaveDialog);
-    except
-      on E: Exception do
-      begin
-        DebugLn('ERROR: [TDesktopOptionsFrame.ExportDesktopButtonClick] ', E.Message);
-      end;
-    end;
-  finally
-    SaveDialog.Free;
-  end;
-end;
-
-procedure TDesktopOptionsFrame.ImportDesktopButtonClick(Sender: TObject);
-var
-  AnEnvironmentOptions: TEnvironmentOptions;
-  OpenDialog: TOpenDialog;
-begin
-  //debugln('TDesktopOptionsFrame.ImportDesktopButtonClick A');
-  OpenDialog := IDEOpenDialogClass.Create(nil);
-  try
-    try
-      InputHistories.ApplyFileDialogSettings(OpenDialog);
-      OpenDialog.Filter:=dlgFilterLazarusDesktopSettings+' (*.lds)|*.lds'
-           //+'|'+dlgFilterXML+' (*.xml)|*.xml'
-           +'|'+dlgFilterAll+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
-      if OpenDialog.Execute then
-      begin
-        AnEnvironmentOptions := TEnvironmentOptions.Create;
-        try
-          AnEnvironmentOptions.Filename := OpenDialog.Filename;
-          AnEnvironmentOptions.Load(true);
-          DoLoadSettings(AnEnvironmentOptions);
-          IDEWindowCreators.RestoreSimpleLayout;
-          ShowMessageFmt(lisSuccessfullyImported, [OpenDialog.Filename]);
-        finally
-          AnEnvironmentOptions.Free;
-        end;
-      end;
-      InputHistories.StoreFileDialogSettings(OpenDialog);
-    except
-      on E: Exception do
-      begin
-        // ToDo
-        DebugLn('ERROR: [TDesktopOptionsFrame.ImportDesktopButtonClick] ', E.Message);
-      end;
-    end;
-  finally
-    OpenDialog.Free;
-  end;
-end;
-
 procedure TDesktopOptionsFrame.LanguageComboBoxChange(Sender: TObject);
 var
   po: TPOFile;
@@ -437,18 +343,6 @@ begin
       Exit;
   end;
   Result := '';
-end;
-
-procedure TDesktopOptionsFrame.DoLoadSettings(AOptions: TAbstractIDEOptions);
-begin
-  if Assigned(OnLoadIDEOptions) then
-    OnLoadIDEOptions(Self, AOptions);
-end;
-
-procedure TDesktopOptionsFrame.DoSaveSettings(AOptions: TAbstractIDEOptions);
-begin
-  if Assigned(OnSaveIDEOptions) then
-    OnSaveIDEOptions(Self, AOptions);
 end;
 
 class function TDesktopOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
