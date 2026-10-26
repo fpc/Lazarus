@@ -3626,19 +3626,24 @@ procedure TWinControl.DoAllAutoSize;
         ClearRequests(TWinControl(AControl).Controls[i]);
   end;
 
+  // previously, there was an issue with changing a control's visibility
+  // when its parent was invisible. it results in CM_ShowingChanged not being
+  // triggered, and the WidgetSet may not be synchronized.
+  // see also: https://gitlab.com/freepascal.org/lazarus/lazarus/-/work_items/42363
   procedure UpdateShowingRecursive(AWinControl: TWinControl;
     OnlyChildren: boolean);
   var
     i: Integer;
   begin
-    // first make the children visible
+    // first update the control, it ensures that the children get the
+    // correct value when calling HandleObjectShouldBeVisible()
+    if not OnlyChildren then
+      AWinControl.UpdateShowing;
+    // then update the children
     if AWinControl.FControls<>nil then
       for i:=0 to AWinControl.FControls.Count-1 do
         if TObject(AWinControl.FControls[i]) is TWinControl then
           UpdateShowingRecursive(TWinControl(AWinControl.FControls[i]),false);
-    // then make the control visible
-    if not OnlyChildren and AWinControl.HandleObjectShouldBeVisible and not AWinControl.Showing then
-      AWinControl.UpdateShowing;
   end;
 
 var
@@ -4531,12 +4536,6 @@ begin
   if bShow then
   begin
     if not HandleAllocated then CreateHandle;
-    if Assigned(FControls) then
-    begin
-      for n := 0 to FControls.Count - 1 do
-        if TObject(FControls[n]) is TWinControl then
-          TWinControl(FControls[n]).UpdateShowing;
-    end;
   end;
   if not HandleAllocated then
   begin
