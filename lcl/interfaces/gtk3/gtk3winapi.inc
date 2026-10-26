@@ -775,10 +775,7 @@ end;
 function TGtk3WidgetSet.CreatePolygonRgn(Points: PPoint; NumPts: Integer;
   FillMode: integer): HRGN;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.CreatePolygonRgn not implemented ...');
-  {$ENDIF}
-  Result:=inherited CreatePolygonRgn(Points, NumPts, FillMode);
+  Result:=HRGN(TGtk3Region.CreatePolygon(Points,NumPts,FillMode));
 end;
 
 function TGtk3WidgetSet.CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN;

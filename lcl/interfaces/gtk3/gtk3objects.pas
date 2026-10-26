@@ -154,6 +154,7 @@ type
     constructor Create({%H-}CreateHandle: Boolean; X1,Y1,X2,Y2: Integer); virtual; overload;
     constructor Create(X1,Y1,X2,Y2,nW,nH: Integer); virtual; overload;
     constructor CreateEllipse(X1,Y1,X2,Y2: Integer); virtual; overload;
+    constructor CreatePolygon(Points: PPoint; NumPts: Integer; FillMode: integer); virtual; overload;
     function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject; override;
     function Get(szbuf:integer;pbuf:pointer):integer; override;
     destructor Destroy; override;
@@ -976,6 +977,64 @@ begin
 
     FHandle := gdk_cairo_region_create_from_surface(ASurface);
     cairo_region_translate(FHandle, x1, y1);
+  finally
+    cairo_destroy(cr);
+    cairo_surface_destroy(ASurface);
+  end;
+end;
+
+constructor TGtk3Region.CreatePolygon(Points: PPoint; NumPts: Integer;
+  FillMode: integer);
+// Like CreateEllipse: the polygon is drawn in the scratch surface's local
+// coordinates, i.e. moved by -MinX,-MinY, and the resulting region is translated back.
+var
+  ASurface: pcairo_surface_t;
+  cr: Pcairo_t;
+  MinX, MinY, MaxX, MaxY, w, h, i: integer;
+begin
+  inherited Create;
+  if (Points=nil) or (NumPts<3) then
+  begin
+    FHandle := cairo_region_create;
+    exit;
+  end;
+  MinX:=Points[0].X;
+  MinY:=Points[0].Y;
+  MaxX:=MinX;
+  MaxY:=MinY;
+  for i:=1 to NumPts-1 do
+  begin
+    MinX:=Min(MinX,Points[i].X);
+    MinY:=Min(MinY,Points[i].Y);
+    MaxX:=Max(MaxX,Points[i].X);
+    MaxY:=Max(MaxY,Points[i].Y);
+  end;
+  w:=MaxX-MinX;
+  h:=MaxY-MinY;
+  if (w<=0) or (h<=0) then
+  begin
+    FHandle := cairo_region_create;
+    exit;
+  end;
+
+  FHandle := nil;
+  ASurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h);
+  cr:=cairo_create(ASurface);
+  try
+    if FillMode=WINDING then
+      cairo_set_fill_rule(cr,CAIRO_FILL_RULE_WINDING)
+    else
+      cairo_set_fill_rule(cr,CAIRO_FILL_RULE_EVEN_ODD);
+    cairo_new_path(cr);
+    cairo_move_to(cr,Points[0].X-MinX,Points[0].Y-MinY);
+    for i:=1 to NumPts-1 do
+      cairo_line_to(cr,Points[i].X-MinX,Points[i].Y-MinY);
+    cairo_close_path(cr);
+    cairo_set_source_rgba(cr,1,1,1,1);
+    cairo_fill(cr);
+
+    FHandle := gdk_cairo_region_create_from_surface(ASurface);
+    cairo_region_translate(FHandle, MinX, MinY);
   finally
     cairo_destroy(cr);
     cairo_surface_destroy(ASurface);
