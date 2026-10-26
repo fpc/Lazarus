@@ -490,7 +490,7 @@ begin
   // register the section for operations on selected files
   ProjInspMenuSectionFiles:=RegisterIDEMenuSection(ProjectInspectorMenuItemsRootName,'Files');
   AParent:=ProjInspMenuSectionFiles;
-  ProjInspMenuAddDiskFile:=RegisterIDEMenuCommand(AParent,'Add disk file',lisBtnDlgAdd);
+  ProjInspMenuAddDiskFile:=RegisterIDEMenuCommand(AParent,'Add disk file',lisAddFilesFromFS);
   ProjInspMenuRemoveNonExistingFiles:=RegisterIDEMenuCommand(AParent,'Remove non existing files',lisRemoveNonExistingFiles);
   ProjInspMenuOpenFolder:=RegisterIDEMenuCommand(AParent,'Open folder',lisMenuOpenFolder);
   ProjInspMenuAddDependency:=RegisterIDEMenuCommand(AParent,'Add dependency',lisBtnDlgAdd);
@@ -516,7 +516,7 @@ begin
   // register the section for adding files
   ProjInspAddMenuSectionFiles:=RegisterIDEMenuSection(ProjectInspectorMenuAddRootName,'Files');
   AParent:=ProjInspAddMenuSectionFiles;
-  ProjInspAddMenuDiskFile:=RegisterIDEMenuCommand(AParent,'Add disk file',lisBtnDlgAdd);
+  ProjInspAddMenuDiskFile:=RegisterIDEMenuCommand(AParent,'Add disk file',lisAddFilesFromFS);
   ProjInspAddMenuEditorFiles:=RegisterIDEMenuCommand(AParent,'Add editor files',lisProjAddEditorFile + ' ...');
 
   // register the section for adding dependency

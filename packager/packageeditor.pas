@@ -538,7 +538,7 @@ begin
   // register the section for operations on selected files
   PkgEditMenuSectionFile:=RegisterIDEMenuSection(PackageEditorMenuFilesRoot,'File');
   AParent:=PkgEditMenuSectionFile;
-  PkgEditMenuAddDiskFile:=RegisterIDEMenuCommand(AParent,'Add disk file',lisPckEditAddFilesFromFileSystem);
+  PkgEditMenuAddDiskFile:=RegisterIDEMenuCommand(AParent,'Add disk file',lisAddFilesFromFS);
   PkgEditMenuAddNewDiskFiles:=RegisterIDEMenuCommand(AParent,'Add new disk files',lisAddNewFilesFromFileSystem);
   PkgEditMenuAddNewFile:=RegisterIDEMenuCommand(AParent,'New file',lisA2PNewFile);
   PkgEditMenuAddNewComp:=RegisterIDEMenuCommand(AParent,'New component',lisMenuNewComponent + ' ...');
@@ -1979,7 +1979,7 @@ begin
   AddBitBtn.DropdownMenu := AddPopupMenu;
   MoreBitBtn.DropdownMenu := MorePopupMenu;
 
-  mnuAddDiskFile.Caption := lisPckEditAddFilesFromFileSystem;
+  mnuAddDiskFile.Caption := lisAddFilesFromFS;
   mnuAddNewDiskFiles.Caption := lisAddNewFilesFromFileSystem;
   mnuAddNewFile.Caption := lisA2PNewFile;
   mnuAddNewComp.Caption := lisMenuNewComponent + ' ...';
