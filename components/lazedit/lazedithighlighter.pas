@@ -336,6 +336,15 @@ type
     function GetTokenClassAttribute(ATkClass: TLazEditTokenClass; ATkDetails: TLazEditTokenDetails = []): TLazEditTextAttribute; virtual;
     function GetTokenClassAttributeEx(ATkClass: TLazEditTokenClass; ATkDetails: TLazEditTokenDetails = []): TLazCustomEditTextAttribute; virtual;
 
+    // Compatibility / deprecated
+    property CommentAttribute:    TLazEditTextAttribute index tcComment    read GetTokenClassAttribute; deprecated 'Use GetTokenClassAttribute / to be removed in 6.99';
+    property IdentifierAttribute: TLazEditTextAttribute index tcIdentifier read GetTokenClassAttribute; deprecated 'Use GetTokenClassAttribute / to be removed in 6.99';
+    property KeywordAttribute:    TLazEditTextAttribute index tcKeyword    read GetTokenClassAttribute; deprecated 'Use GetTokenClassAttribute / to be removed in 6.99';
+    property StringAttribute:     TLazEditTextAttribute index tcString     read GetTokenClassAttribute; deprecated 'Use GetTokenClassAttribute / to be removed in 6.99';
+    property SymbolAttribute:     TLazEditTextAttribute index tcSymbol     read GetTokenClassAttribute; deprecated 'Use GetTokenClassAttribute / to be removed in 6.99';
+    property WhitespaceAttribute: TLazEditTextAttribute index tcWhiteSpace read GetTokenClassAttribute; deprecated 'Use GetTokenClassAttribute / to be removed in 6.99';
+
+
     (* ------------------ *
      * Divider            *
      * ------------------ *)

@@ -25,7 +25,34 @@ located at http://SynEdit.SourceForge.net
 Known Issues:
 -------------------------------------------------------------------------------}
 
-unit SynEditHighlighter deprecated 'Use LazEditHighlighter / this unit will be removed in 5.99';
+(* ****************************************************
+
+   This unit will eventually be reduced to a few selected
+   helper classes.
+
+   ** Those will be under the above license only. **
+
+   For other licenses, use the replacement indicated in the deprecated messages.
+
+   They will be kept for some very limited compatibility
+   with pre-Lazarus-5 highlighters.
+   To activate the helpers, add this unit to your uses clause(s).
+
+   They will be kept with a deprecation note,
+   but no scheduled removal.
+
+   It is left open if/when they will be removed - or moved to a separate package.
+   In doubt maintain a copy in your own project.
+
+   Currently to be kept are *MARKED* public symbols in
+   - TSynHighlighterAttributesHelper
+   - TSynCustomRangeHighlighterLazEditHelper
+   - TSynCustomHighlighterLazEditHelper
+
+   **************************************************** *)
+
+
+unit SynEditHighlighter deprecated 'Use LazEditHighlighter / this unit will have most declarations removed in 5.99 or 6.99';
 
 {$I synedit.inc}
 
@@ -44,9 +71,11 @@ uses
 type
   TSynHighlighterRangeList = TLazHighlighterLineRangeList deprecated 'use TLazHighlighterLineRangeList or TLazHighlighterLineRangeShiftList / to be removed in 5.99';
 
-  TLazSynCustomTextAttributes = TLazEditTextAttribute deprecated 'use TLazEditTextAttribute // to be removed in 5.99';
-  TSynHighlighterAttributes = TLazEditHighlighterAttributes deprecated 'use TLazEditTextAttribute // to be removed in 5.99';
-  TSynHighlighterAttributesModifier = TLazEditHighlighterAttributesModifier deprecated 'use TLazEditTextAttribute // to be removed in 5.99';
+  // TO BE KEPT (for compatibility (3 forwards)
+  TLazSynCustomTextAttributes = TLazEditTextAttribute deprecated 'use TLazEditTextAttribute';
+  TSynHighlighterAttributes = TLazEditHighlighterAttributes deprecated 'use TLazEditTextAttribute';
+  TSynHighlighterAttributesModifier = TLazEditHighlighterAttributesModifier deprecated 'use TLazEditTextAttribute';
+
   TSynHighlighterAttributes_Eol = TLazEditHighlighterAttributes_Eol deprecated 'use TLazEditTextAttribute // to be removed in 5.99';
   TSynHighlighterAttributesModifier_Eol = TLazEditHighlighterAttributesModifier_Eol deprecated 'use TLazEditTextAttribute // to be removed in 5.99';
 
@@ -63,6 +92,7 @@ type
     function GetStyleMaskFromInt : integer;
     procedure SetStyleMaskFromInt(const Value : integer);
   public
+    // TO BE KEPT (for compatibility
     function  LoadFromBorlandRegistry(rootKey: HKEY; attrKey, attrName: string;
                                       oldStyle: boolean): boolean;
     function  LoadFromRegistry(Reg: TRegistry): boolean;
@@ -70,6 +100,7 @@ type
     function  LoadFromFile(Ini : TIniFile): boolean;
     function  SaveToFile(Ini : TIniFile): boolean;
   public
+    // TO BE KEPT (for compatibility
     property IntegerStyle: integer read GetStyleFromInt write SetStyleFromInt;
     property IntegerStyleMask: integer read GetStyleMaskFromInt write SetStyleMaskFromInt;
     property Name: string read GetConstName; deprecated 'use Caption'; // value of Caption at creation, use Caption instead, kept for compatibility
@@ -188,13 +219,15 @@ type
 
   TSynCustomHighlighterClass = class of TSynCustomHighlighter;
 
-  { TSynCustomHighlighterLazEditHelper }
 
   { TSynCustomRangeHighlighterLazEditHelper }
 
   TSynCustomRangeHighlighterLazEditHelper = class helper for TLazEditCustomRangesHighlighter
+    // TO BE KEPT (for compatibility
     function TheCurrentRanges: TLazHighlighterLineRangeList;
   end;
+
+  { TSynCustomHighlighterLazEditHelper }
 
   TSynCustomHighlighterLazEditHelper = class helper for TLazEditCustomHighlighter
   private
@@ -204,32 +237,33 @@ type
   protected
     property KnownLines: TLazEditCustomHighlighter.TLazEditHighlighterAttachedLines read GetKnownLines; deprecated 'use AttachedLines // to be removed in 5.99';
   public
+    property  AttributeChangeNeedScan: Boolean read GetAttributeChangeNeedScan; deprecated 'use RequestFullRescan // to be removed in 5.99';
+  public
+    // TO BE KEPT (for compatibility
     function AddSpecialAttribute(const aCaption: string;
-                     const aStoredName: String = ''): TLazEditTextAttribute; deprecated 'use AddAttribute // to be removed in 5.99';
+                     const aStoredName: String = ''): TLazEditTextAttribute; deprecated 'use AddAttribute;
     function AddSpecialAttribute(const aCaption: PString;
-                     const aStoredName: String = ''): TLazEditTextAttribute; deprecated 'use AddAttribute // to be removed in 5.99';
+                     const aStoredName: String = ''): TLazEditTextAttribute; deprecated 'use AddAttribute';
 
-    procedure ScanRanges; deprecated 'use PrepareLines / to be removed in 5.99';
-    function NeedScan: Boolean;  deprecated 'use FirstUnpreparedLine / to be removed in 5.99';
-    procedure ScanAllRanges; deprecated 'use MarkUnprepared / to be removed in 5.99';
+    procedure ScanRanges; deprecated 'use PrepareLines';
+    function NeedScan: Boolean;  deprecated 'use FirstUnpreparedLine';
+    procedure ScanAllRanges; deprecated 'use MarkUnprepared';
 
     function LoadFromFile(AFileName: String): boolean;                          //DDH 10/16/01
     function SaveToFile(AFileName: String): boolean;                            //DDH 10/16/01
 
-    property  AttributeChangeNeedScan: Boolean read GetAttributeChangeNeedScan; deprecated 'use RequestFullRescan // to be removed in 5.99';
-
     property CommentAttribute: TLazEditHighlighterAttributes
-      index SYN_ATTR_COMMENT read GetDefaultAttrib; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
+      index SYN_ATTR_COMMENT read GetDefaultAttrib; deprecated 'Use GetTokenClassAttribute';
     property IdentifierAttribute: TLazEditHighlighterAttributes
-      index SYN_ATTR_IDENTIFIER read GetDefaultAttrib; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
+      index SYN_ATTR_IDENTIFIER read GetDefaultAttrib; deprecated 'Use GetTokenClassAttribute';
     property KeywordAttribute: TLazEditHighlighterAttributes
-      index SYN_ATTR_KEYWORD read GetDefaultAttrib; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
+      index SYN_ATTR_KEYWORD read GetDefaultAttrib; deprecated 'Use GetTokenClassAttribute';
     property StringAttribute: TLazEditHighlighterAttributes
-      index SYN_ATTR_STRING read GetDefaultAttrib; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
+      index SYN_ATTR_STRING read GetDefaultAttrib; deprecated 'Use GetTokenClassAttribute';
     property SymbolAttribute: TLazEditHighlighterAttributes                         //mh 2001-09-13
-      index SYN_ATTR_SYMBOL read GetDefaultAttrib; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
+      index SYN_ATTR_SYMBOL read GetDefaultAttrib; deprecated 'Use GetTokenClassAttribute';
     property WhitespaceAttribute: TLazEditHighlighterAttributes
-      index SYN_ATTR_WHITESPACE read GetDefaultAttrib; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
+      index SYN_ATTR_WHITESPACE read GetDefaultAttrib; deprecated 'Use GetTokenClassAttribute';
   end;
 
   TSynHighlighterList = class(TList)
