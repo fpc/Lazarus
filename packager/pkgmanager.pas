@@ -266,7 +266,8 @@ type
     function AddPackageToGraph(APackage: TLazPackage): TModalResult;
     procedure DoShowPackageGraph(Show: boolean);
     procedure DoShowPackageGraphPathList(PathList: TFPList); override;
-    function CheckUserSearchPaths(aCompilerOptions: TBaseCompilerOptions): TModalResult; override;
+    function CheckUserSearchPaths(aCompilerOptions: TBaseCompilerOptions;
+      UsedPackages: TFPList = nil): TModalResult; override;
     procedure LazarusSrcDirChanged; override;
     function GetPackageCount: integer; override;
     function GetPackages(Index: integer): TIDEPackage; override;
@@ -1409,6 +1410,8 @@ var
   s: String;
   Btns: TMsgDlgButtons;
   PkgList: TFPList;
+  UsedPkgs: TFPList;
+  ReqFlags: TPkgIntfRequiredFlags;
   i: Integer;
 begin
   {$IFDEF VerbosePkgCompile}
@@ -1419,6 +1422,7 @@ begin
   else Btns := [mbOK];
   PathList:=nil;
   PkgList:=nil;
+  UsedPkgs:=nil;
   try
     // check for unsaved packages
     PathList:=PackageGraph.FindUnsavedDependencyPath(APackage,FirstDependency);
@@ -1471,10 +1475,20 @@ begin
     end;
 
     // check for all used package with wrong
-    PackageGraph.GetAllRequiredPackages(APackage,FirstDependency,PkgList);
+    ReqFlags:=[];
+    if (APackage=nil) and (FirstDependency<>nil)
+        and (FirstDependency.Owner is TProject)
+        and not (pfUseDesignTimePackages in TProject(FirstDependency.Owner).Flags) then
+      Include(ReqFlags,pirSkipDesignTimeOnly);
+    PackageGraph.GetAllRequiredPackages(APackage,FirstDependency,PkgList,ReqFlags);
     if (PkgList<>nil) then begin
+      // search paths are checked against all packages of this compilation
+      UsedPkgs:=TFPList.Create;
+      UsedPkgs.Assign(PkgList);
+      if APackage<>nil then
+        UsedPkgs.Add(APackage);
       for i:=0 to PkgList.Count-1 do begin
-        Result:=CheckUserSearchPaths(TLazPackage(PkgList[i]).CompilerOptions);
+        Result:=CheckUserSearchPaths(TLazPackage(PkgList[i]).CompilerOptions,UsedPkgs);
         if Result<>mrOk then
           exit(mrCancel);
       end;
@@ -1538,6 +1552,7 @@ begin
     end;
 
   finally
+    UsedPkgs.Free;
     PkgList.Free;
     PathList.Free;
   end;
@@ -3918,10 +3933,12 @@ begin
   Result:=IDEMessageDialog(lisMissingPackages, Msg, mtError, [mbOk]);
 end;
 
-function TPkgManager.CheckUserSearchPaths(aCompilerOptions: TBaseCompilerOptions
-  ): TModalResult;
+function TPkgManager.CheckUserSearchPaths(aCompilerOptions: TBaseCompilerOptions;
+  UsedPackages: TFPList): TModalResult;
 var
   aPackage: TLazPackage;
+  OwnUsedPackages: TFPList;
+  ReqFlags: TPkgIntfRequiredFlags;
   CurUnitPath: String;
   CurSrcPath: String;
   CurOutPath: String;
@@ -4075,9 +4092,29 @@ begin
   CurOutPath:=aCompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir);
   //debugln(['TPkgManager.CheckUserSearchPaths CompOpts=',aCompilerOptions.GetOwnerName,' UnitPath="',CurUnitPath,'" IncPath="',CurIncPath,'" SrcPath="',CurSrcPath,'" OutPath="',CurOutPath,'"']);
 
-  // create mapping source-directory to package
-  SrcDirToPkg:=PackageGraph.GetMapSourceDirectoryToPackage(aPackage);
+  // create mapping source-directory to package, only for packages used together
+  OwnUsedPackages:=nil;
+  SrcDirToPkg:=nil;
   try
+    if UsedPackages=nil then begin
+      if aPackage<>nil then begin
+        PackageGraph.GetAllRequiredPackages(aPackage,nil,OwnUsedPackages);
+        if OwnUsedPackages=nil then
+          OwnUsedPackages:=TFPList.Create;
+        OwnUsedPackages.Add(aPackage);
+      end else begin
+        ReqFlags:=[];
+        if not (pfUseDesignTimePackages in TProject(aCompilerOptions.Owner).Flags) then
+          Include(ReqFlags,pirSkipDesignTimeOnly);
+        PackageGraph.GetAllRequiredPackages(nil,
+          TProject(aCompilerOptions.Owner).FirstRequiredDependency,OwnUsedPackages,ReqFlags);
+        if OwnUsedPackages=nil then
+          OwnUsedPackages:=TFPList.Create;
+      end;
+      UsedPackages:=OwnUsedPackages;
+    end;
+    SrcDirToPkg:=PackageGraph.GetMapSourceDirectoryToPackage(aPackage,UsedPackages);
+
     Result:=CheckPathContainsDirOfOtherPkg(pcosUnitPath);
     if Result<>mrOk then exit;
 
@@ -4094,6 +4131,7 @@ begin
     // ToDo: check if UnitPath is in inherited UnitPath
   finally
     SrcDirToPkg.Free;
+    OwnUsedPackages.Free;
   end;
 end;
 
