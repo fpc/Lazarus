@@ -315,7 +315,6 @@ procedure TShowDesktopsToolButton.RefreshMenu;
 
 var
   xPM: TPopupMenu;
-  i: Integer;
   xDesktop: TCustomDesktopOpt;
   xMISave, xMISaveAs, xMISaveAsNew, xMIToggleDebug, xMIToggleDesign: TMenuItem;
 begin
@@ -340,9 +339,8 @@ begin
   xMIToggleDesign.ImageIndex := IDEImages.LoadImage('menu_view_toggle_form_unit');
 
   // Saved desktops
-  for i:=0 to EnvironmentGuiOpts.Desktops.Count-1 do
+  for xDesktop in EnvironmentGuiOpts.Desktops do
   begin
-    xDesktop := EnvironmentGuiOpts.Desktops[i];
     _AddItem(xDesktop, xPM.Items, @ChangeDesktop, False);
     _AddItem(xDesktop, xMISaveAs, @SaveAsDesktop, True);
     _AddItem(xDesktop, xMIToggleDebug, @ToggleAsDebugDesktop, False);
@@ -499,9 +497,8 @@ begin
   // Saved desktops
   DesktopListBox.Items.BeginUpdate;
   try
-    for i:=0 to EnvironmentGuiOpts.Desktops.Count-1 do
+    for DskTop in EnvironmentGuiOpts.Desktops do
     begin
-      DskTop := EnvironmentGuiOpts.Desktops[i];
       DesktopListBox.Items.AddObject(DskTop.Name, DskTop);
       if not DskTop.Compatible then
         HasNonCompatible := True;
@@ -818,7 +815,6 @@ end;
 procedure TDesktopForm.RefreshAssociatedDebugList(SelectedDesktop: TCustomDesktopOpt);
 var
   DskTop: TCustomDesktopOpt;
-  i: Integer;
 begin
   AssociatedDebugDesktopComboBox.Items.BeginUpdate;
   try
@@ -828,12 +824,9 @@ begin
       Exit;
     AssociatedDebugDesktopComboBox.Items.AddObject(dlgPOIconDescNone, nil);
     // Saved desktops
-    for i:=0 to EnvironmentGuiOpts.Desktops.Count-1 do
-    begin
-      DskTop := EnvironmentGuiOpts.Desktops[i];
+    for DskTop in EnvironmentGuiOpts.Desktops do
       if DskTop.Compatible = SelectedDesktop.Compatible then
         AssociatedDebugDesktopComboBox.Items.AddObject(DskTop.Name, DskTop);
-    end;
   finally
     AssociatedDebugDesktopComboBox.Items.EndUpdate;
   end;
@@ -842,7 +835,6 @@ end;
 procedure TDesktopForm.RefreshAssociatedDesignList(SelectedDesktop: TCustomDesktopOpt);
 var
   DskTop: TCustomDesktopOpt;
-  i: Integer;
 begin
   AssociatedDesignDesktopComboBox.Items.BeginUpdate;
   try
@@ -852,12 +844,9 @@ begin
       Exit;
     AssociatedDesignDesktopComboBox.Items.AddObject(dlgPOIconDescNone, nil);
     // Saved desktops
-    for i:=0 to EnvironmentGuiOpts.Desktops.Count-1 do
-    begin
-      DskTop := EnvironmentGuiOpts.Desktops[i];
+    for DskTop in EnvironmentGuiOpts.Desktops do
       if DskTop.Compatible = SelectedDesktop.Compatible then
         AssociatedDesignDesktopComboBox.Items.AddObject(DskTop.Name, DskTop);
-    end;
   finally
     AssociatedDesignDesktopComboBox.Items.EndUpdate;
   end;
