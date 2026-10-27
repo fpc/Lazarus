@@ -13,7 +13,7 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
   DesignTop = 191
   object FilterEdit: TTreeFilterEdit
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Side = asrBottom
+    AnchorSideTop.Control = Owner
     AnchorSideRight.Control = FindKeyButton
     Left = 0
     Height = 23
@@ -23,7 +23,6 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     OnFilterItem = FilterEditFilterItem
     ButtonWidth = 23
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Top = 6
     NumGlyphs = 1
     MaxLength = 0
     ParentFont = False
@@ -35,13 +34,14 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
   object FindKeyButton: TBitBtn
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = FilterEdit
-    AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = ResetKeyFilterBtn
+    AnchorSideBottom.Control = FilterEdit
+    AnchorSideBottom.Side = asrBottom
     Left = 318
     Height = 25
     Top = 5
     Width = 104
-    Anchors = [akTop, akRight]
+    Anchors = [akTop, akRight, akBottom]
     AutoSize = True
     BorderSpacing.Left = 19
     BorderSpacing.Right = 2
@@ -53,7 +53,7 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideTop.Control = FindKeyButton
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = FindKeyButton
+    AnchorSideBottom.Control = FilterEdit
     AnchorSideBottom.Side = asrBottom
     Left = 424
     Height = 25
