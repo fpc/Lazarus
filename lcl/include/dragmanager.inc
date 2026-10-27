@@ -720,6 +720,14 @@ begin
   end;
 end;
 
+function ScaleDragThreshold(AControl: TControl; AThreshold: Integer): Integer;
+begin
+  if GetParentDesignControl(AControl) <> nil then
+    Result := AControl.Scale96ToForm(AThreshold)
+  else
+    Result := AControl.Scale96ToScreen(AThreshold);
+end;
+
 procedure TDragManagerDefault.DragStart(AControl: TControl; AImmediate: Boolean; AThreshold: Integer; StartFromCurrentMouse:Boolean=False);
 //Start a drag operation
 begin
@@ -727,9 +735,9 @@ begin
   begin
     FDelay := 0;
     if AThreshold >= 0 then
-      FThresholdValue := AControl.Scale96ToForm(AThreshold)
+      FThresholdValue := ScaleDragThreshold(AControl, AThreshold)
     else
-      FThresholdValue := AControl.Scale96ToForm(DragThreshold);
+      FThresholdValue := ScaleDragThreshold(AControl, DragThreshold);
     FWaitForTreshold := not AImmediate;
     if StartFromCurrentMouse then
       FStartPosition:=AControl.ClientToScreen(point(0,0))
@@ -767,9 +775,9 @@ begin
     FDelayTimer.Enabled := True;
 
     if AThreshold >= 0 then
-      FThresholdValue := AControl.Scale96ToForm(AThreshold)
+      FThresholdValue := ScaleDragThreshold(AControl, AThreshold)
     else
-      FThresholdValue := AControl.Scale96ToForm(DragThreshold);
+      FThresholdValue := ScaleDragThreshold(AControl, DragThreshold);
 
     FWaitForTreshold := true;
 
@@ -953,9 +961,9 @@ var
   aRect:TRect;
 begin
   if AThreshold<=0 then
-    Threshold:=Site.Scale96ToForm(DragThreshold)
+    Threshold:=ScaleDragThreshold(Site, DragThreshold)
   else
-    Threshold:=Site.Scale96ToForm(AThreshold);
+    Threshold:=ScaleDragThreshold(Site, AThreshold);
   aRect := Site.ClientRect;
   InflateRect(aRect, Threshold, Threshold);
   Result := not PtInRect(aRect, Point(X, Y));
