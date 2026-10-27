@@ -121,7 +121,9 @@ type
     procedure GetPackagesChangedOnDisk(out ListOfPackages: TStringList; IgnoreModifiedFlag: boolean = False); virtual; abstract;
     function RevertPackages(APackageList: TStringList // list of TLazPackage and alternative lpk file name
         ): TModalResult; virtual; abstract;
-    function CheckUserSearchPaths(aCompilerOptions: TBaseCompilerOptions): TModalResult; virtual; abstract;
+    function CheckUserSearchPaths(aCompilerOptions: TBaseCompilerOptions;
+      UsedPackages: TFPList = nil // packages compiled together with aCompilerOptions, nil = required packages of owner
+      ): TModalResult; virtual; abstract;
     procedure DoShowPackageGraphPathList(PathList: TFPList); virtual; abstract;
     procedure LazarusSrcDirChanged; virtual; abstract;
 
