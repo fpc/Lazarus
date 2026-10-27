@@ -229,6 +229,8 @@ type
 
   { TDesktopOptList }
 
+  TDesktopOptListEnumerator = class;
+
   TDesktopOptList = class(TObjectList)
   private
     FXMLCfg: TRttiXMLConfig;
@@ -242,10 +244,24 @@ type
     function IndexOf(aName: string): integer;
     function Find(aName: string): TCustomDesktopOpt;
     property Items[Index: Integer]: TCustomDesktopOpt read GetItem; default;
+    function GetEnumerator: TDesktopOptListEnumerator;
+  end;
+
+  { TDesktopOptListEnumerator }
+
+  TDesktopOptListEnumerator = class
+  protected
+    FList: TDesktopOptList;
+    FIndex: integer; // automatically zeroed on creating instance
+    FCurrent: TCustomDesktopOpt;
+  public
+    property Current: TCustomDesktopOpt read FCurrent;
+    function MoveNext: boolean;
   end;
 
   { TEnvGuiOptions }
 
+type
   TEnvGuiOptions = class(TIDESubOptions)
   private
     FConfigStorage: TXMLOptionsStorage;
@@ -976,6 +992,22 @@ end;
 function TDesktopOptList.GetItem(Index: Integer): TCustomDesktopOpt;
 begin
   Result := TCustomDesktopOpt(inherited Items[Index]);
+end;
+
+function TDesktopOptList.GetEnumerator: TDesktopOptListEnumerator;
+begin
+  result := TDesktopOptListEnumerator.Create;
+  result.FList := self;
+end;
+
+{ TDesktopOptListEnumerator }
+
+function TDesktopOptListEnumerator.MoveNext: boolean;
+begin
+  result := FIndex < FList.Count;
+  if result then
+    FCurrent := FList[FIndex];
+  inc(FIndex);
 end;
 
 { TEnvGuiOptions }
