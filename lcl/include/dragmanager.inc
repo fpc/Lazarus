@@ -41,6 +41,8 @@ type
     FDragObject: TDragObject;
     FDragCursor: TCursor;
     FDragCursorApplied: Boolean;
+    procedure ApplyDragCursor(ACursor: TCursor);
+    procedure RemoveDragCursor;
   protected
     function Dragging(AControl: TControl): boolean; override;
     procedure DragStarted(APosition: TPoint); override;
@@ -172,6 +174,22 @@ begin
     FDragImageList.BeginDrag(0, APosition.X, APosition.Y);
 end;
 
+procedure TDragPerformer.ApplyDragCursor(ACursor: TCursor);
+begin
+  Screen.BeginTempCursor(ACursor);
+  if FDragCursorApplied then
+    Screen.EndTempCursor(FDragCursor);
+  FDragCursor := ACursor;
+  FDragCursorApplied := True;
+end;
+
+procedure TDragPerformer.RemoveDragCursor;
+begin
+  if not FDragCursorApplied then Exit;
+  Screen.EndTempCursor(FDragCursor);
+  FDragCursorApplied := False;
+end;
+
 procedure TDragPerformer.DragMove(APosition: TPoint);
 var 
   ATarget: TControl;
@@ -213,14 +231,11 @@ begin
     end
     else
       FDragImageList.EndDrag;
-  end
-  else begin
-    Screen.BeginTempCursor(DragCursor);
-    if FDragCursorApplied then
-      Screen.EndTempCursor(FDragCursor);
-    FDragCursor := DragCursor;
-    FDragCursorApplied := True;
   end;
+  if (FDragImageList = nil) or not FDragImageList.Dragging then
+    ApplyDragCursor(DragCursor)
+  else
+    RemoveDragCursor;
 end;
 
 procedure TDragPerformer.DragStop(ADropped : Boolean);
@@ -237,10 +252,8 @@ begin
     SetCaptureControl(nil);
 
     if FDragImageList <> nil then
-      FDragImageList.EndDrag
-    else
-    if FDragCursorApplied then
-      Screen.EndTempCursor(FDragCursor);
+      FDragImageList.EndDrag;
+    RemoveDragCursor;
     if (ADragObjectCopy.DragTarget <> nil) and (ADragObjectCopy.DragTarget is TControl) then
       TargetPos := ADragObjectCopy.DragTargetPos //controls can override the position
     else
