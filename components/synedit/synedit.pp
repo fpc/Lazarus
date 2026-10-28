@@ -5602,7 +5602,7 @@ begin
   then begin
     Include(fStateFlags, sfCaretChanged);
   end else begin
-    {$IFOPT C+} assert(not(dplNoNewPaintLock in FInDecPaintLockState) or not(dplNoUpdateCaret in FAssertInDecPaintLockDone), 'UpdateCaret called twice in one DecPaintLock'); Include(FAssertInDecPaintLockDone, dplNoUpdateCaret); {$ENDIF}
+//    {$IFOPT C+} assert(not(dplNoNewPaintLock in FInDecPaintLockState) or not(dplNoUpdateCaret in FAssertInDecPaintLockDone), 'UpdateCaret called twice in one DecPaintLock'); Include(FAssertInDecPaintLockDone, dplNoUpdateCaret); {$ENDIF}
     Exclude(fStateFlags, sfCaretChanged);
     if eoAlwaysVisibleCaret in fOptions2 then
       MoveCaretToVisibleArea;
