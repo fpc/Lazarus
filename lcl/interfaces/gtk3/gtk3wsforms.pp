@@ -457,9 +457,13 @@ var
     GdkDisplay: PGdkDisplay;
     IsX11: Boolean;
     MenuHFix: gint;
+    Monitor: PGdkMonitor;
+    MonitorRect: TGdkRectangle;
+    UseMonitorRect: Boolean;
   begin
     GdkDisplay := gdk_window_get_display(AWindow^.window);
     IsX11 := not Gtk3WidgetSet.IsWayland;
+    UseMonitorRect := False;
     MenuHFix := 0;
     if (AGtk3Widget is TGtk3Window) and
        not Assigned(AForm.Parent) and (AForm.FormStyle <> fsMDIChild) then
@@ -513,8 +517,25 @@ var
       AWindow^.show_all;
     end;
 
-    with AWinControl do
-      AWindow^.window^.move_resize(Left, Top, Width, Height + MenuHFix);
+    if IsX11 and (AForm.WindowState in [wsMaximized, wsFullScreen]) and
+       not PGtkWidget(AWindow)^.get_mapped then
+    begin
+      Monitor := GdkDisplay^.get_monitor_at_window(AWindow^.window);
+      if Monitor <> nil then
+      begin
+        if AForm.WindowState = wsFullScreen then
+          Monitor^.get_geometry(@MonitorRect)
+        else
+          Monitor^.get_workarea(@MonitorRect);
+        UseMonitorRect := (MonitorRect.width > 0) and (MonitorRect.height > 0);
+      end;
+    end;
+
+    if UseMonitorRect then
+      AWindow^.window^.move_resize(MonitorRect.x, MonitorRect.y, MonitorRect.width, MonitorRect.height)
+    else
+      with AWinControl do
+        AWindow^.window^.move_resize(Left, Top, Width, Height + MenuHFix);
 
     gdk_display_flush(GdkDisplay);
 
