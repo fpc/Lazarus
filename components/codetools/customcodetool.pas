@@ -226,7 +226,7 @@ type
     // read atoms
     procedure ReadNextAtom;
     procedure UndoReadNextAtom;
-    procedure ReadPriorAtom;
+    procedure ReadPriorAtom; // use this only for simple cases, pascal must be parsed forward
     procedure ReadPriorAtomSafe(CleanPos: integer);
     procedure ReadAsStringConstant; // start at CurPos.StartPos
 
