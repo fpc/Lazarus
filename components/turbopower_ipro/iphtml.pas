@@ -7740,14 +7740,14 @@ end;
 
 function TIpHtmlCustomPanel.GetVScrollPos: Integer;
 begin
-  if  FMasterFrame <> nil
+  if  (FMasterFrame <> nil) and (FMasterFrame.HyperPanel <> nil)
   then  Result := FMasterFrame.HyperPanel.VScroll.Position
   else  Result := -1;
 end;
 
 procedure TIpHtmlCustomPanel.SetVScrollPos(const Value: Integer);
 begin
-  if  (FMasterFrame <> nil) and (Value >= 0)
+  if  (FMasterFrame <> nil) and (FMasterFrame.HyperPanel <> nil) and (Value >= 0)
   then  FMasterFrame.HyperPanel.VScroll.Position := Value;
 end;
 

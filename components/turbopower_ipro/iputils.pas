@@ -1361,7 +1361,21 @@ begin
           State := psAuthority;
         end;
 
-        else begin
+        '#', '?', '&': begin
+          PotPath := PotAuth;
+          PotAuth := '';
+          State := psPath;
+          case P^ of
+            '#': State := psFragment;
+            '?', '&': begin
+              Rslt.QueryDelim := P^;
+              State := psQuery;
+            end;
+          end;
+        end;
+
+      else
+        begin
           Rslt.Authority := PotAuth;
           PotAuth := '';
           State := psAuthority;
@@ -1631,6 +1645,9 @@ begin
   Rslt.Fragment  := '';
   Rslt.Query     := '';
 
+  if URL = '' then
+    exit(false);
+
   P := @URL[1];
   State := psStart;
 
@@ -1646,9 +1663,15 @@ begin
     Inc(P);
   end;
 
-  if PotAuth <> '' then
-    Rslt.Authority := PotAuth;
-
+  if PotAuth <> '' then begin
+    if (Rslt.Scheme = '') and (Rslt.Authority = '') then begin
+      PotPath := PotAuth;
+      PotAuth := '';
+      State := psPath;
+    end
+    else
+      Rslt.Authority := PotAuth;
+  end;
 
   if Rslt.Path = '' then begin
     if PotPath <> '' then
