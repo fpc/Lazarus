@@ -227,6 +227,7 @@ type
     procedure TestFindDeclaration_TypeOf_TypeCast;
     procedure TestFindDeclaration_TypeOf_TypeCastParenthesized;
     procedure TestFindDeclaration_RecordComposition;
+    procedure TestFindDeclaration_ConstRecordNested;
     procedure TestFindDeclaration_Attributes;
     procedure TestFindDeclaration_BracketOpen;
     procedure TestFindDeclaration_AnonymProc;
@@ -2684,6 +2685,37 @@ begin
   '  v.D{declaration:TChildRec2.D}:=11;',
   '  v.v{declaration:TVarRec.v}.H:=12;',
   '  v.H{declaration:TChildRec3.H}:=13;',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_ConstRecordNested;
+begin
+  StartProgram;
+  Add([
+  'type',
+  '  TnestedInner = record',
+  '    if1, if2: Integer;',
+  '  end;',
+  '  TnestedOuter = record',
+  '    of1, of2: Integer;',
+  '    inner: TnestedInner;',
+  '    arr: array[0..1] of TnestedInner;',
+  '  end;',
+  'const',
+  '  ConstNested: TnestedOuter{declaration:TnestedOuter} = (',
+  '    of1{declaration:TnestedOuter.of1}: 1;',
+  '    inner{declaration:TnestedOuter.inner}: (',
+  '      if1{declaration:TnestedInner.if1}: 3;',
+  '      if2{completion:if1,if2,!of1,!inner}: 4;',
+  '    );',
+  '    of2{completion:of1,of2,inner,arr,!if1}: 2;',
+  '    arr{declaration:TnestedOuter.arr}: (',
+  '      (if1{declaration:TnestedInner.if1}: 5; if2{completion:if1,if2,!arr}: 6),',
+  '      (if1: 7; if2{declaration:TnestedInner.if2}: 8)',
+  '    )',
+  '  );',
+  'begin',
   'end.']);
   FindDeclarations(Code);
 end;

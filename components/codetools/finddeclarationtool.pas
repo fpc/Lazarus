@@ -881,6 +881,8 @@ type
     WordIsPredefinedIdentifier: TKeyWordFunctionList;
     procedure RaiseUsesExpected(id: int64);
     procedure RaiseStrConstExpected(id: int64);
+    function FindTypeOfConstantAtPos(VarConstNode: TCodeTreeNode;
+      CleanPos: integer; Params: TFindDeclarationParams): TFindContext;
   protected
     // node caches
     procedure DoDeleteNodes(StartNode: TCodeTreeNode); override;
@@ -11066,14 +11068,145 @@ function TFindDeclarationTool.FindIdentifierInTypeOfConstant(
   for example:  const p: TPoint = (x:0; y:0);
 }
 var
-  TypeNode: TCodeTreeNode;
-  ExprType: TExpressionType;
-  TypeParams: TFindDeclarationParams;
+  CleanPos: integer;
+  Context: TFindContext;
   OldInput: TFindDeclarationInput;
-
 begin
   Result:=false;
   //debugln(['TFindDeclarationTool.FindIdentifierInTypeOfConstant ',VarConstNode.DescAsString]);
+  CleanPos:=0;
+  if (Params.IdentifierTool=Self) and (Params.Identifier<>nil)
+  and IsPCharInSrc(Params.Identifier) then
+    CleanPos:=Params.Identifier-PChar(Src)+1;
+  Context:=FindTypeOfConstantAtPos(VarConstNode,CleanPos,Params);
+  if Context.Node=nil then exit;
+  // search identifier in type
+  Params.Save(OldInput);
+  Params.ContextNode:=Context.Node;
+  Params.Flags:=Params.Flags-[fdfIgnoreCurContextNode,fdfSearchInParentNodes];
+  Result:=Context.Tool.FindIdentifierInContext(Params);
+  Params.Load(OldInput,true);
+end;
+
+function TFindDeclarationTool.FindTypeOfConstantAtPos(
+  VarConstNode: TCodeTreeNode; CleanPos: integer; Params: TFindDeclarationParams
+  ): TFindContext;
+{ const a: atype = (...);
+  Returns the base type of atype.
+  If CleanPos is in a nested record constant, returns the type of that record.
+  for example:  const a: TOuter = (inner: (if1: 3));
+                at if1 the result is the type of TOuter.inner
+}
+var
+  TypeNode: TCodeTreeNode;
+  ExprType: TExpressionType;
+  TypeParams: TFindDeclarationParams;
+
+  function SkipArrayTypes(SubParams: TFindDeclarationParams): boolean;
+  begin
+    Result:=false;
+    while ExprType.Context.Node.Desc in [ctnRangedArrayType,ctnOpenArrayType] do
+    begin
+      ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(SubParams,
+                                                ExprType.Context.Node.LastChild);
+      if ExprType.Context.Node=nil then
+        exit;
+    end;
+    Result:=true;
+  end;
+
+  function ResolveNestedRecordFields: boolean;
+  { Codetools creates no nodes for the brackets of a record constant.
+    Scan the source in front of CleanPos and resolve the fields. }
+  var
+    ConstNode: TCodeTreeNode;
+    BracketStartPos, i: integer;
+    PrevAtom, PrevPrevAtom: TAtomPosition;
+    FieldPositions: array of integer;
+    FieldParams: TFindDeclarationParams;
+  begin
+    Result:=false;
+    FieldPositions:=nil;
+    if CleanPos>0 then begin
+      ConstNode:=VarConstNode.LastChild;
+      if (ConstNode<>nil) and (ConstNode.Desc=ctnConstant)
+      and (Src[ConstNode.StartPos]='(') then begin
+        if (CleanPos>ConstNode.StartPos) and (CleanPos<ConstNode.EndPos) then
+        begin
+          MoveCursorToCleanPos(ConstNode.StartPos);
+          ReadNextAtom; // (
+          PrevPrevAtom:=CleanAtomPosition;
+          PrevAtom:=CurPos;
+          repeat
+            ReadNextAtom;
+            if (CurPos.StartPos>=CleanPos) or (CurPos.StartPos>SrcLen) then
+              break;
+            if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then
+            begin
+              BracketStartPos:=CurPos.StartPos;
+              if ReadTilBracketClose(false) and (CurPos.EndPos<=CleanPos) then
+              begin
+                // bracket closed in front of identifier -> skip
+              end else begin
+                // identifier is inside this bracket
+                if Src[BracketStartPos]='[' then
+                  exit;
+                case PrevAtom.Flag of
+                cafColon:
+                  begin
+                    // record field, e.g. inner: (
+                    if not IsIdentStartChar[Src[PrevPrevAtom.StartPos]] then
+                      exit;
+                    i:=length(FieldPositions);
+                    SetLength(FieldPositions,i+1);
+                    FieldPositions[i]:=PrevPrevAtom.StartPos;
+                  end;
+                cafRoundBracketOpen,cafComma:
+                  ; // array element, e.g. ((
+                else
+                  exit; // e.g. a: Func(
+                end;
+                MoveCursorToCleanPos(BracketStartPos);
+                ReadNextAtom;
+              end;
+            end;
+            PrevPrevAtom:=PrevAtom;
+            PrevAtom:=CurPos;
+          until false;
+        end;
+      end;
+    end;
+
+    FieldParams:=TFindDeclarationParams.Create(Params);
+    try
+      for i:=0 to length(FieldPositions)-1 do begin
+        if not SkipArrayTypes(FieldParams) then
+          exit;
+        if ExprType.Context.Node.Desc<>ctnRecordType then
+          exit;
+        FieldParams.Clear;
+        FieldParams.ContextNode:=ExprType.Context.Node;
+        FieldParams.SetIdentifier(Self,@Src[FieldPositions[i]],nil);
+        FieldParams.Flags:=fdfDefaultForExpressions
+                       -[fdfIgnoreCurContextNode,fdfSearchInParentNodes,
+                         fdfExceptionOnNotFound];
+        if not ExprType.Context.Tool.FindIdentifierInContext(FieldParams) then
+          exit;
+        if FieldParams.NewNode.Desc<>ctnVarDefinition then
+          exit;
+        ExprType.Context:=FieldParams.NewCodeTool.FindBaseTypeOfNode(
+                                               FieldParams,FieldParams.NewNode);
+        if ExprType.Context.Node=nil then
+          exit;
+      end;
+      Result:=SkipArrayTypes(FieldParams);
+    finally
+      FieldParams.Free;
+    end;
+  end;
+
+begin
+  Result:=CleanFindContext;
   TypeNode:=VarConstNode.FirstChild;
   if TypeNode=nil then exit;
   if TypeNode.Desc in [ctnIdentifier, ctnRangedArrayType] then begin
@@ -11115,21 +11248,17 @@ begin
       TypeParams.SetIdentifier(Self,nil,nil);
       TypeParams.Flags:=fdfDefaultForExpressions;
       ExprType:=FindExpressionTypeOfTerm(TypeNode.StartPos,-1,TypeParams,false);
-      //debugln(['TFindDeclarationTool.FindIdentifierInTypeOfConstant ExprType=',ExprTypeToString(ExprType)]);
+      //debugln(['TFindDeclarationTool.FindTypeOfConstantAtPos ExprType=',ExprTypeToString(ExprType)]);
     finally
       TypeParams.Free;
     end;
     if ExprType.Desc=xtContext then begin
+      if not ResolveNestedRecordFields then exit;
       if ExprType.Context.Node.Parent=nil then exit;
       if not (ExprType.Context.Node.Parent.Desc in [ctnTypeDefinition,ctnGenericType])
-      then
+      and (ExprType.Context.Node.Desc<>ctnRecordType) then
         exit;
-      // search identifier in type
-      Params.Save(OldInput);
-      Params.ContextNode:=ExprType.Context.Node;
-      Params.Flags:=Params.Flags-[fdfIgnoreCurContextNode,fdfSearchInParentNodes];
-      Result:=ExprType.Context.Tool.FindIdentifierInContext(Params);
-      Params.Load(OldInput,true);
+      Result:=ExprType.Context;
     end;
   end;
 end;

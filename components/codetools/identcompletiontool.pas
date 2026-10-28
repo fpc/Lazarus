@@ -2839,6 +2839,27 @@ procedure TIdentCompletionTool.FindCollectionContext(
     end;
   end;
 
+  function CheckRecordConstantField(var GatherContext: TFindContext): boolean;
+  // for example: const a: TRec = (|  or  (x: 1; |  or  (inner: (|
+  var
+    VarConstNode: TCodeTreeNode;
+    Context: TFindContext;
+  begin
+    Result:=false;
+    if CursorNode.Desc<>ctnConstant then exit;
+    VarConstNode:=CursorNode.Parent;
+    if (VarConstNode=nil)
+    or not (VarConstNode.Desc in [ctnConstDefinition,ctnVarDefinition]) then
+      exit;
+    MoveCursorToCleanPos(IdentStartPos);
+    ReadPriorAtom;
+    if not (CurPos.Flag in [cafRoundBracketOpen,cafSemicolon]) then exit;
+    Context:=FindTypeOfConstantAtPos(VarConstNode,IdentStartPos,Params);
+    if (Context.Node=nil) or (Context.Node.Desc<>ctnRecordType) then exit;
+    GatherContext:=Context;
+    Result:=true;
+  end;
+
 var
   IgnoreCurContext: Boolean;
   GatherContext: TFindContext;
@@ -2885,7 +2906,9 @@ begin
       // for example "string.|"
       GatherContext:=CleanFindContext;
     end;
-  end;
+  end else if CheckRecordConstantField(GatherContext) then
+    // field name in a record constant
+    StartInSubContext:=true;
   ExprType.Context := GatherContext;
 end;
 
