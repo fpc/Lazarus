@@ -704,13 +704,11 @@ const
     ctaStart, ctaEnd, ctaCenter);
 var
   titleAnchor: TChartTextAnchor;
-  scaledOwnerWidth: Integer;
   scaledLeftMargin: Integer;
   scaledRightMargin: Integer;
 begin
   Result := inherited;
 
-  scaledOwnerWidth := ADrawer.Scale(FOwner.Width);
   scaledLeftMargin := ADrawer.Scale(Margins.Left);
   scaledRightMargin := ADrawer.Scale(Margins.Right);
 
@@ -724,19 +722,16 @@ begin
       begin
         Result.Left := -ATextSize.X div 2 - scaledLeftMargin;
         Result.Right := Result.Left + ATextSize.X + scaledLeftMargin + scaledRightMargin;
-        FCenter.X := ATextSize.X div 2 + scaledLeftMargin;
       end;
     ctaCenter:
       begin
         Result.Left := -ATextSize.X div 2 - scaledLeftMargin;
         Result.Right := ATextSize.X div 2 + scaledRightMargin;
-        FCenter.X := scaledOwnerWidth div 2;
       end;
     ctaEnd:
       begin
         Result.Right := ATextSize.X div 2 + scaledRightMargin - 1;
         Result.Left := Result.Right - ATextSize.X - scaledLeftMargin - scaledRightMargin;
-        FCenter.X := scaledOwnerWidth - ATextSize.X div 2 - scaledRightMargin;
       end;
   end;
 end;
@@ -778,19 +773,28 @@ procedure TChartTitle.Measure(ADrawer: IChartDrawer;
   ADir, ALeft, ARight: Integer; var AY: Integer);
 var
   ptSize: TPoint;
+  scaledAnchorDist: Integer;
 begin
   if not Visible or (Text.Count = 0) then exit;
 
   if IsWordWrapped then
     WordwrapCaption(ADrawer, ARight - ALeft);
 
+  scaledAnchorDist := ADrawer.Scale(AnchorDistance);
   ptSize := MeasureLabel(ADrawer, GetRealCaption);
-  if not FFullWidth then
+  if FFullWidth then
     case Alignment of
-      taLeftJustify: FCenter.X := ALeft + ptSize.X div 2;
-      taRightJustify: FCenter.X := ARight - ptSize.X div 2;
+      taLeftJustify: FCenter.X := ALeft + scaledAnchorDist + ptSize.X div 2;
+      taRightJustify: FCenter.X := ARight - scaledAnchorDist - ptSize.X div 2;
       taCenter: FCenter.X := (ALeft + ARight) div 2;
+    end
+  else
+    case Anchor of
+      ctaStart: FCenter.X := ALeft + scaledAnchorDist + ptSize.X div 2;
+      ctaEnd: FCenter.X := ARight - scaledAnchorDist - ptSize.X div 2;
+      ctaCenter: FCenter.X := (ALeft + ARight) div 2;
     end;
+
   FCenter.Y := AY + ADir * ptSize.Y div 2;
   AY += ADir * (ptSize.Y + Margin);
 end;
