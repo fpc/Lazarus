@@ -3252,12 +3252,12 @@ begin
 
       P := Points;
       CGContextBeginPath(Context);
-      CGContextMoveToPoint(Context, P^.X, P^.Y);
+      CGContextMoveToPoint(Context, P^.X - Bounds.Left, P^.Y - Bounds.Top);
 
       for I := 1 to NumPts - 1 do
       begin
         Inc(P);
-        CGContextAddLineToPoint(Context, P^.X, P^.Y);
+        CGContextAddLineToPoint(Context, P^.X - Bounds.Left, P^.Y - Bounds.Top);
       end;
 
       CGContextClosePath(Context);
@@ -3282,7 +3282,7 @@ begin
             SX := X; // start of painted row part
           if (C = 0) and (LC = $FF) then
             // end of painted row part (SX, X)
-            AddPart(SX, X,  Pred(H) - Y);
+            AddPart(SX + Bounds.Left, X + Bounds.Left, Pred(H) - Y + Bounds.Top);
 
           LC := C;
           Inc(PData);
