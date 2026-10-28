@@ -1762,7 +1762,7 @@ begin
     end
     else begin
       Path := ExtractEntityPath(DosToNetPath(OldAddrRec.Path));
-      if (Path <> '') and (Path[1] = '/') then
+      if (Path <> '') and (Path[1] = '/') and (OldAddrRec.Authority <> '') then
         Path := Copy(Path, 2, Length(Path) - 1);
       Result := Scheme;
 
