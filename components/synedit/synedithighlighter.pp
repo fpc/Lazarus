@@ -241,7 +241,7 @@ type
   public
     // TO BE KEPT (for compatibility
     function AddSpecialAttribute(const aCaption: string;
-                     const aStoredName: String = ''): TLazEditTextAttribute; deprecated 'use AddAttribute;
+                     const aStoredName: String = ''): TLazEditTextAttribute; deprecated 'use AddAttribute';
     function AddSpecialAttribute(const aCaption: PString;
                      const aStoredName: String = ''): TLazEditTextAttribute; deprecated 'use AddAttribute';
 
