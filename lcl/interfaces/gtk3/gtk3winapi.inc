@@ -2933,7 +2933,6 @@ var
   device: PGdkDevice;
   window: PGdkWindow;
   windowWidget: PGtkWindow;
-  AUnrefWindow: Boolean;
 begin
   Result := 0;
 
@@ -2960,13 +2959,8 @@ begin
       exit;
 
     window := nil;
-    AUnrefWindow := False;
-    //gdk_screen_get_active_window is X11 only and returns a new reference !
     if not IsWayland then
-    begin
-      window := gdk_screen_get_active_window(gdk_screen_get_default);
-      AUnrefWindow := window <> nil;
-    end;
+      window := gdk_screen_get_root_window(gdk_screen_get_default);
     if window = nil then
     begin
       windowWidget := GetActiveGtkWindow;
@@ -2977,9 +2971,13 @@ begin
       window := gdk_device_get_window_at_position(device, nil, nil);
     if window = nil then
       Exit;
-    gdk_device_get_state(device, window, nil, @AModifiers);
-    if AUnrefWindow then
-      g_object_unref(PGObject(window));
+    AModifiers := [];
+    gdk_error_trap_push;
+    try
+      gdk_device_get_state(device, window, nil, @AModifiers);
+    finally
+      gdk_error_trap_pop_ignored;
+    end;
   end else
   begin
     AKeyMap := gdk_keymap_get_for_display(display);
