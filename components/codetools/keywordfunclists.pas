@@ -1386,6 +1386,7 @@ begin
     Add('CONCAT'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CONTINUE'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('COPY'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CHR'         ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DEC'         ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DEFAULT'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DELETE'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1394,6 +1395,7 @@ begin
     Add('EXIT'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FINALIZE'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('GET_FRAME'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('GETTYPEKIND' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('HI'          ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('HIGH'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INC'         ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1420,6 +1422,7 @@ begin
     Add('WRITE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('WRITELN'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('WRITESTR'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('VAL'         ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   WordIsTermOperator:=TKeyWordFunctionList.Create('WordIsTermOperator');
