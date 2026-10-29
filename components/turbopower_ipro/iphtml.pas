@@ -7214,8 +7214,46 @@ begin
 end;
 
 procedure TIpHtmlCustomPanel.OpenURL(const URL: string);
+var
+  AddrRec: TIpAddrRec;
+  S: string;
+  PathPart: string;
+  Suffix: string;
+  P, Q: Integer;
 begin
-  InternalOpenURL('', URL);
+  S := URL;
+
+  // Convert a relative file-system URL to absolute to avoid issues later.
+  Initialize(AddrRec);
+  try
+    IpParseURL(S, AddrRec);
+
+    // Only normalize local paths without a scheme or authority
+    if (AddrRec.Scheme = '') and (AddrRec.Authority = '') then
+    begin
+      // Separate the path from query and fragment
+      P := Length(S) + 1;
+
+      Q := Pos('?', S);
+      if (Q > 0) and (Q < P) then
+        P := Q;
+
+      Q := Pos('#', S);
+      if (Q > 0) and (Q < P) then
+        P := Q;
+
+      PathPart := Copy(S, 1, P - 1);
+      Suffix := Copy(S, P, Length(S) - P + 1);
+
+      // Do not expand an empty path, e.g. a fragment-only URL
+      if PathPart <> '' then
+        S := ExpandFileName(PathPart) + Suffix;
+    end;
+  finally
+    Finalize(AddrRec);
+  end;
+
+  InternalOpenURL('', S);
 end;
 
 procedure TIpHtmlCustomPanel.MakeAnchorVisible(const Name: string);
