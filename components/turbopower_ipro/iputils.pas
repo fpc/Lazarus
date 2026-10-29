@@ -1723,6 +1723,16 @@ begin
     Exit;
   end;
 
+  { NewURL is an absolute Windows drive path }
+  if (Length(NewURL) >= 3) and
+     (UpCase(NewURL[1]) in ['A'..'Z']) and
+     (NewURL[2] in [':', '|']) and
+     (NewURL[3] in ['\', '/']) then
+  begin
+    Result := DOSToNetPath(NewURL);
+    Exit;
+  end;
+
   { Main processing }
   Result := DOSToNetPath(OldURL);
 
