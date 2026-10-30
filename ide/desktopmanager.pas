@@ -1027,13 +1027,12 @@ end;
 
 procedure TDesktopForm.ExportAllActionClick(Sender: TObject);
 var
-  xDesktops: array of TCustomDesktopOpt;
-  I: Integer;
+  l: array of TCustomDesktopOpt = nil;
+  d: TCustomDesktopOpt;
 begin
-  SetLength(xDesktops{%H-}, EnvironmentGuiOpts.Desktops.Count);
-  for I := 0 to Length(xDesktops)-1 do
-    xDesktops[I] := EnvironmentGuiOpts.Desktops[I];
-  ExportDesktops(xDesktops);
+  for d in EnvironmentGuiOpts.Desktops do
+    insert(d, l, length(l));
+  ExportDesktops(l);
 end;
 
 procedure TDesktopForm.SaveAsActionClick(Sender: TObject);
