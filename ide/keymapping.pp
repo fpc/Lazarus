@@ -2844,7 +2844,7 @@ procedure TKeyCommandRelationList.DefineCommandCategories;
 
   function n(const s: string): string;
   begin
-    Result:=StringReplace(s,'&','',[]);
+    Result := RemoveAmpersands(s);
   end;
 
 var
