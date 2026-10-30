@@ -4839,6 +4839,8 @@ var
   prnt:TGtk3Widget;
   wtype:TGType;
 begin
+  Result := False;
+  APoint := Point(0, 0);
   fWidget^.get_allocation(@Alloc);
   if (alloc.X=-1) and (alloc.Y=-1) and (alloc.height=1) and (alloc.width=1) then
   // default allocation
@@ -4872,7 +4874,7 @@ begin
     end;
   end;
 
-  if (self.getType=gtk_window_get_type()) then
+  if Gtk3IsGtkWindow(PGObject(fWidget)) then
   begin
     GdkWindow:=Self.Widget^.window;
     if (GdkWindow<>nil) and (Self.FWidget^.get_mapped) then
