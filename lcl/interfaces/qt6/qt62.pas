@@ -5488,22 +5488,22 @@ type
 procedure QInputMethod_anchorRectangle(handle: QInputMethodH; retval: QRectFH); cdecl; external Qt6PasLib name 'QInputMethod_anchorRectangle';
 procedure QInputMethod_cursorRectangle(handle: QInputMethodH; retval: QRectFH); cdecl; external Qt6PasLib name 'QInputMethod_cursorRectangle';
 function QInputMethod_inputDirection(handle: QInputMethodH): QtLayoutDirection; cdecl; external Qt6PasLib name 'QInputMethod_inputDirection';
-procedure QInputMethod_inputItemClipRectangle(handle: QInputMethodH; retval: QRectFH); external Qt6PasLib name 'QInputMethod_inputItemClipRectangle';
-procedure QInputMethod_inputItemRectangle(handle: QInputMethodH; retval: QRectFH); external Qt6PasLib name 'QInputMethod_inputItemRectangle';
-procedure QInputMethod_inputItemTransform(handle: QInputMethodH; retval: QTransformH); external Qt6PasLib name 'QInputMethod_inputItemTransform';
-function QInputMethod_isAnimating(handle: QInputMethodH): boolean; external Qt6PasLib name 'QInputMethod_isAnimating';
-procedure QInputMethod_keyboardRectangle(handle: QInputMethodH; retval: QRectFH); external Qt6PasLib name 'QInputMethod_keyboardRectangle';
-procedure QInputMethod_locale(handle: QInputMethodH; retval: QLocaleH); external Qt6PasLib name 'QInputMethod_locale';
-procedure QInputMethod_setInputItemRectangle(handle: QInputMethodH; aRect: QRectFH); external Qt6PasLib name 'QInputMethod_setInputItemRectangle';
-procedure QInputMethod_setInputItemTransform(handle: QInputMethodH; transform: QTransformH); external Qt6PasLib name 'QInputMethod_setInputItemTransform';
-function QInputMethod_isVisible(handle: QInputMethodH): boolean; external Qt6PasLib name 'QInputMethod_isVisible';
-procedure QInputMethod_setVisible(handle: QInputMethodH; aVisible: boolean); external Qt6PasLib name 'QInputMethod_setVisible';
-procedure QInputMethod_commit(handle: QInputMethodH); external Qt6PasLib name 'QInputMethod_commit';
-procedure QInputMethod_hide(handle: QInputMethodH); external Qt6PasLib name 'QInputMethod_hide';
-procedure QInputMethod_invokeAction(handle: QInputMethodH; action: QInputMethodAction; cursorPosition: integer); external Qt6PasLib name 'QInputMethod_invokeAction';
-procedure QInputMethod_reset(handle: QInputMethodH); external Qt6PasLib name 'QInputMethod_reset';
-procedure QInputMethod_show(handle: QInputMethodH); external Qt6PasLib name 'QInputMethod_show';
-procedure QInputMethod_update(handle: QInputMethodH; queries: QtInputMethodQueries); external Qt6PasLib name 'QInputMethod_update';
+procedure QInputMethod_inputItemClipRectangle(handle: QInputMethodH; retval: QRectFH); cdecl; external Qt6PasLib name 'QInputMethod_inputItemClipRectangle';
+procedure QInputMethod_inputItemRectangle(handle: QInputMethodH; retval: QRectFH); cdecl; external Qt6PasLib name 'QInputMethod_inputItemRectangle';
+procedure QInputMethod_inputItemTransform(handle: QInputMethodH; retval: QTransformH); cdecl; external Qt6PasLib name 'QInputMethod_inputItemTransform';
+function QInputMethod_isAnimating(handle: QInputMethodH): boolean; cdecl; external Qt6PasLib name 'QInputMethod_isAnimating';
+procedure QInputMethod_keyboardRectangle(handle: QInputMethodH; retval: QRectFH); cdecl; external Qt6PasLib name 'QInputMethod_keyboardRectangle';
+procedure QInputMethod_locale(handle: QInputMethodH; retval: QLocaleH); cdecl; external Qt6PasLib name 'QInputMethod_locale';
+procedure QInputMethod_setInputItemRectangle(handle: QInputMethodH; aRect: QRectFH); cdecl; external Qt6PasLib name 'QInputMethod_setInputItemRectangle';
+procedure QInputMethod_setInputItemTransform(handle: QInputMethodH; transform: QTransformH); cdecl; external Qt6PasLib name 'QInputMethod_setInputItemTransform';
+function QInputMethod_isVisible(handle: QInputMethodH): boolean; cdecl; external Qt6PasLib name 'QInputMethod_isVisible';
+procedure QInputMethod_setVisible(handle: QInputMethodH; aVisible: boolean); cdecl; external Qt6PasLib name 'QInputMethod_setVisible';
+procedure QInputMethod_commit(handle: QInputMethodH); cdecl; external Qt6PasLib name 'QInputMethod_commit';
+procedure QInputMethod_hide(handle: QInputMethodH); cdecl; external Qt6PasLib name 'QInputMethod_hide';
+procedure QInputMethod_invokeAction(handle: QInputMethodH; action: QInputMethodAction; cursorPosition: integer); cdecl; external Qt6PasLib name 'QInputMethod_invokeAction';
+procedure QInputMethod_reset(handle: QInputMethodH); cdecl; external Qt6PasLib name 'QInputMethod_reset';
+procedure QInputMethod_show(handle: QInputMethodH); cdecl; external Qt6PasLib name 'QInputMethod_show';
+procedure QInputMethod_update(handle: QInputMethodH; queries: QtInputMethodQueries); cdecl; external Qt6PasLib name 'QInputMethod_update';
 
 {$ifndef QT_NO_SESSIONMANAGER}
 type
