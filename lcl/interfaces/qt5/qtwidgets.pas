@@ -10887,10 +10887,10 @@ procedure TQtTextEdit.SignalTextChanged(); cdecl;
 var
   Mess: TLMessage;
 begin
-  if (LCLObject = nil) or not GetVisible then
-    exit;
   if Assigned(FList) then
     TQtMemoStrings(FList).TextChanged := True;
+  if (LCLObject = nil) or not GetVisible then
+    exit;
   if not InUpdate then
   begin
     FillChar(Mess{%H-}, SizeOf(Mess), #0);
