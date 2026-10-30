@@ -6,7 +6,7 @@ interface
 
 uses
   // General units
-  Classes, SysUtils, UTF8Process, DB, Typinfo,
+  Classes, SysUtils, UTF8Process, DB, Typinfo, FileUtil,
   // IDE interface
   MenuIntf, propedits, lresources,
   // Data dict units
@@ -62,15 +62,6 @@ Type
 
 Procedure Register;
 
-Const
-{$ifdef windows}
-  lazdatadesktop = 'lazdatadesktop.exe';
-  ApplicationExt = '.exe';
-{$else}
-  lazdatadesktop = 'lazdatadesktop';
-  ApplicationExt = '';
-{$endif}
-
 implementation
 
 {$R reglazdatadict.res}
@@ -88,14 +79,14 @@ begin
   Result:=DataDesktopBinary;
   If (Result='') or not FileExistsUTF8(Result) then
     begin
-    Result:=FileSearchUTF8(LazDataDesktop,GetEnvironmentVariableUTF8('PATH'));
+    Result:=FileSearchUTF8('lazdatadesktop'+GetExeExt,GetEnvironmentVariableUTF8('PATH'));
     If (Result='') then
       if MessageDLG(SErrNoDataDesktopDoSelect,mtInformation,[mbYes,mbNo],0)=mrYes then
         begin
         With TOpenDialog.Create(Application) do
           try
             InitialDir:=Application.Location;
-            Filter:=SApplicationFilter+ApplicationExt;
+            Filter:=SApplicationFilter+GetExeExt;
             Options:=[ofEnableSizing,ofViewDetail,ofFileMustExist];
             If Execute then
               begin
