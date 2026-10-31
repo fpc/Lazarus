@@ -55,7 +55,8 @@ var
   GetIDEConfigStorage: TGetIDEConfigStorage = nil; // load errors: raises exceptions
 
 function EnvironmentAsStringList: TStringList;
-procedure AssignEnvironmentTo(DestStrings, Overrides: TStrings);
+procedure AssignEnvironmentTo(DestStrings, Overrides: TStrings;
+  SubstituteMacros: boolean = true);
 
 implementation
 
@@ -80,7 +81,8 @@ Begin
   end;
 end;
 
-procedure AssignEnvironmentTo(DestStrings, Overrides: TStrings);
+procedure AssignEnvironmentTo(DestStrings, Overrides: TStrings;
+  SubstituteMacros: boolean);
 var
   EnvList: TStringList;
   i: integer;
@@ -94,7 +96,7 @@ begin
       for i:=0 to Overrides.Count-1 do begin
         Variable:=Overrides.Names[i];
         Value:=Overrides.Values[Variable];
-        if Assigned(IDEMacros) then
+        if SubstituteMacros and Assigned(IDEMacros) then
           IDEMacros.SubstituteMacros(Value);
         EnvList.Values[Variable]:=Value;
       end;

@@ -84,6 +84,7 @@ type
   TExternalTool = class(TAbstractExternalTool)
   private
     FThread: TExternalToolThread;
+    fEnvOverridesDone: boolean; // true = do not substitute macros in EnvironmentOverrides
     fExecuteAfter: TFPList; // list of TExternalTool
     fExecuteBefore: TFPList; // list of TExternalTool
     fNeedAfterSync: boolean;
@@ -675,7 +676,7 @@ begin
   WorkerMessages.BaseDirectory:=Process.CurrentDirectory;
   WorkerDirectory:=WorkerMessages.BaseDirectory;
   if EnvironmentOverrides.Count>0 then
-    AssignEnvironmentTo(Process.Environment,EnvironmentOverrides);
+    AssignEnvironmentTo(Process.Environment,EnvironmentOverrides,not fEnvOverridesDone);
 
   // init parsers
   for i:=0 to ParserCount-1 do begin
@@ -1015,9 +1016,12 @@ begin
     Process.Parameters[i]:=s;
   end;
 
-  for i:=0 to EnvironmentOverrides.Count-1 do begin
-    if not Resolve(EnvironmentOverrides[i],s) then exit;
-    EnvironmentOverrides[i]:=s;
+  if not fEnvOverridesDone then begin
+    for i:=0 to EnvironmentOverrides.Count-1 do begin
+      if not Resolve(EnvironmentOverrides[i],s) then exit;
+      EnvironmentOverrides[i]:=s;
+    end;
+    fEnvOverridesDone:=true;
   end;
 
   Result:=true;
@@ -1057,10 +1061,11 @@ function TExternalTools.RunToolAndDetach(ToolOptions: TIDEExternalToolOptions): 
 var
   i: Integer;
   Proc: TProcessUTF8;
-  sl: TStringList;
+  sl, Overrides: TStringList;
   s, Path: String;
 begin
   Result:=false;
+  Overrides:=nil;
   Proc:=TProcessUTF8.Create(nil);
   try
     Proc.InheritHandles:=false;
@@ -1080,17 +1085,20 @@ begin
     Proc.CurrentDirectory:=s;
 
     // environment
-    if ToolOptions.EnvironmentOverrides.Count>0 then
-      AssignEnvironmentTo(Proc.Environment,ToolOptions.EnvironmentOverrides);
-    if ToolOptions.ResolveMacros then begin
-      for i:=0 to Proc.Environment.Count-1 do begin
-        s:=Proc.Environment[i];
-        if not GlobalMacroList.SubstituteStr(s) then begin
-          Err('environment override "'+Proc.Environment[i]+'"');
-          exit;
+    if ToolOptions.EnvironmentOverrides.Count>0 then begin
+      Overrides:=TStringList.Create;
+      Overrides.Assign(ToolOptions.EnvironmentOverrides);
+      if ToolOptions.ResolveMacros then begin
+        for i:=0 to Overrides.Count-1 do begin
+          s:=Overrides[i];
+          if not GlobalMacroList.SubstituteStr(s) then begin
+            Err('environment override "'+Overrides[i]+'"');
+            exit;
+          end;
+          Overrides[i]:=s;
         end;
-        Proc.Environment[i]:=s;
       end;
+      AssignEnvironmentTo(Proc.Environment,Overrides,false);
     end;
 
     // executable
@@ -1179,6 +1187,7 @@ begin
     except
     end;
   finally
+    Overrides.Free;
     Proc.Free;
   end;
 end;
@@ -1213,6 +1222,7 @@ begin
     else
       Tool.Process.ShowWindow:=swoShow;
     Tool.MaxIdleInMS:=ToolOptions.MaxIdleInMS;
+    TExternalTool(Tool).fEnvOverridesDone:=not ToolOptions.ResolveMacros;
     if ToolOptions.ResolveMacros and not Tool.ResolveMacros then begin
       debugln(['Error: (lazarus) [TExternalTools.RunToolWithParsers] failed to resolve macros']);
       exit;
