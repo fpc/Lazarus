@@ -212,8 +212,8 @@ type
     procedure TestFindDeclaration_NameOf;
     procedure TestFindDeclaration_IsConstValue;
     procedure TestFindDeclaration_IsNot;
-    procedure TestFindDeclaration_NotIn;
     procedure TestFindDeclaration_IsNotDelphi;
+    procedure TestFindDeclaration_NotIn;
     procedure TestFindDeclaration_IfExpr;
     procedure TestFindDeclaration_CaseExpr;
     procedure TestFindDeclaration_TryExpr;
