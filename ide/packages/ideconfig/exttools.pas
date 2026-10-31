@@ -1062,7 +1062,7 @@ var
   i: Integer;
   Proc: TProcessUTF8;
   sl, Overrides: TStringList;
-  s, Path: String;
+  s: String;
 begin
   Result:=false;
   Overrides:=nil;
@@ -1110,20 +1110,8 @@ begin
       end;
     end;
     if not FilenameIsAbsolute(s) then begin
-      // search in PATH
-      if Proc.Environment.Count>0 then
-        Path:=Proc.Environment.Values['PATH']
-      else
-        Path:=GetEnvironmentVariableUTF8('PATH');
-      s:=SearchFileInPath(s,Proc.CurrentDirectory,
-                               Path, PathSeparator, sffFindProgramInPath);
-      {$IFDEF Windows}
-      if (s='') and (ExtractFileExt(s)='') then begin
-        s:=SearchFileInPath(s+'.exe',Proc.CurrentDirectory,
-                                 Path, PathSeparator,
-                                 sffFindProgramInPath);
-      end;
-      {$ENDIF}
+      // search in PATH of the IDE
+      s:=FindDefaultExecutablePath(s,Proc.CurrentDirectory);
       if s='' then begin
         Err('missing executable "'+ToolOptions.Executable+'"');
         exit;
