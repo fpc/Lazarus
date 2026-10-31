@@ -640,13 +640,13 @@ begin
   {$ENDIF}
   if not FilenameIsAbsolute(Process.Executable) then begin
     if ExtractFilePath(Process.Executable)<>'' then
-      Process.Executable:=AppendPathDelim(GetCurrentDirUTF8)+Process.Executable
+      Process.Executable:=AppendPathDelim(Process.CurrentDirectory)+Process.Executable
     else if Process.Executable='' then begin
       ErrorMessage:=Format(lisToolHasNoExecutable, [Title]);
       CheckError;
       exit;
     end else begin
-      ExeFile:=FindDefaultExecutablePath(Process.Executable,GetCurrentDirUTF8);
+      ExeFile:=FindDefaultExecutablePath(Process.Executable,Process.CurrentDirectory);
       if ExeFile='' then begin
         ErrorMessage:=Format(lisCanNotFindExecutable, [Process.Executable]);
         CheckError;
