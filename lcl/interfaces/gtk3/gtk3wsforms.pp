@@ -374,7 +374,7 @@ var
 begin
   if Screen = nil then
     Exit;
-  for I := 0 to Screen.CustomFormCount - 1 do
+  for I := Screen.CustomFormCount - 1 downto 0 do
   begin
     F := Screen.CustomForms[I];
     if (fsModal in F.FormState) and F.HandleAllocated then
@@ -382,6 +382,8 @@ begin
       W := PGtkWindow(TGtk3Window(F.Handle).Widget);
       if Gtk3IsGtkWindow(W) then
       begin
+        if AEnable and (not F.Visible or not W^.get_visible) then
+          continue;
         if Gtk3WidgetSet.IsWayland then
         begin
           W^.set_modal(AEnable);
