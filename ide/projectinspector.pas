@@ -488,7 +488,7 @@ begin
   ProjectInspectorItemsMenuRoot:=RegisterIDEMenuRoot(ProjectInspectorMenuItemsRootName);
 
   // register the section for operations on selected files
-  ProjInspMenuSectionFiles:=RegisterIDEMenuSection(ProjectInspectorMenuItemsRootName,'Files');
+  ProjInspMenuSectionFiles:=RegisterIDEMenuSection(ProjectInspectorItemsMenuRoot,'Files');
   AParent:=ProjInspMenuSectionFiles;
   ProjInspMenuAddDiskFile:=RegisterIDEMenuCommand(AParent,'Add disk file',lisAddFilesFromFS);
   ProjInspMenuRemoveNonExistingFiles:=RegisterIDEMenuCommand(AParent,'Remove non existing files',lisRemoveNonExistingFiles);
@@ -501,7 +501,7 @@ begin
   ProjInspMenuDisableI18NForLFM:=RegisterIDEMenuCommand(AParent,'Disable I18N for LFM',lisDisableI18NForLFM);
 
   // register the section for operations on dependencies
-  ProjInspMenuSectionDependencies:=RegisterIDEMenuSection(ProjectInspectorMenuItemsRootName,'Dependencies');
+  ProjInspMenuSectionDependencies:=RegisterIDEMenuSection(ProjectInspectorItemsMenuRoot,'Dependencies');
   AParent:=ProjInspMenuSectionDependencies;
   ProjInspMenuReAddDependency:=RegisterIDEMenuCommand(AParent,'ReAdd dependency',lisPckEditReAddDependency);
   ProjInspMenuMoveDependencyUp:=RegisterIDEMenuCommand(AParent,'Move dependency up',lisPckEditMoveDependencyUp);
