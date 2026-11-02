@@ -409,8 +409,9 @@ class procedure TGtk3WSCustomForm.ShowHide(const AWinControl: TWinControl);
 const
   SplashPaintTimeoutMs = 120;
 var
-  AForm, OtherForm: TCustomForm;
+  AForm, OtherForm, APopupParent: TCustomForm;
   AWindow, ATransient: PGtkWindow;
+  AGroup: PGtkWindowGroup;
   i: Integer;
   SavedH: PtrInt;
   ShouldBeVisible: Boolean;
@@ -671,6 +672,20 @@ begin
         AWindow^.set_app_paintable(True);
         AWindow^.set_visual(TGdkScreen.get_default^.get_rgba_visual);
         AGtk3Widget.SetWindowShape(AGtk3Widget.Shape, AWindow^.window);
+      end;
+    end else
+    if not (fsModal in AForm.FormState) and (AWindow^.transient_for = nil) then
+    begin
+      APopupParent := AForm.GetRealPopupParent;
+      if Assigned(APopupParent) and APopupParent.HandleAllocated then
+      begin
+        AWindow^.set_transient_for(PGtkWindow(TGtk3Window(APopupParent.Handle).Widget));
+        if (fsModal in APopupParent.FormState) and not AWindow^.has_group then
+        begin
+          AGroup := TGtkWindowGroup.new;
+          AGroup^.add_window(AWindow);
+          g_object_unref(PGObject(AGroup));
+        end;
       end;
     end;
   end;
