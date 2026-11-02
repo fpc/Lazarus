@@ -187,7 +187,7 @@ type
     procedure Save(Path: String); override;
     procedure ImportSettingsFromIDE(const AOptions: TEnvGuiOptions);
     procedure ExportSettingsToIDE(const AOptions: TEnvGuiOptions);
-    procedure RestoreDesktop;
+    function RestoreDesktop: boolean;
 
     property IDEWindowCreatorsLayoutList: TSimpleWindowLayoutList read FIDEWindowCreatorsLayoutList write FIDEWindowCreatorsLayoutList;
     property IDEDialogLayoutList: TIDEDialogLayoutList read FIDEDialogLayoutList;
@@ -771,11 +771,10 @@ begin
     FDockedOpt.Load(Path, FXMLCfg);
 end;
 
-procedure TDesktopOpt.RestoreDesktop;
+function TDesktopOpt.RestoreDesktop: boolean;
 begin
   IDEWindowCreators.RestoreSimpleLayout;
-  if Assigned(FDockedOpt) then
-    FDockedOpt.RestoreDesktop;
+  result := (FDockedOpt = nil) or FDockedOpt.RestoreDesktop;
 end;
 
 procedure TDesktopOpt.Save(Path: String);
