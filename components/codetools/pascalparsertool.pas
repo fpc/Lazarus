@@ -6872,16 +6872,18 @@ begin
   case UpChars[p^] of
   'C': if UpAtomIs('CLASS') then exit(true);
   'F': if UpAtomIs('FUNCTION') then exit(true);
-  'S': if UpAtomIs('STRICT') then exit(true);
-  'P':
-    case UpChars[p[1]] of
-    'R':
-      case UpChars[p[2]] of
-      'I': if UpAtomIs('PRIVATE') then exit(true);
-      'O': if UpAtomIs('PROTECTED') or UpAtomIs('PROCEDURE') then exit(true);
-      end;
-    'U': if UpAtomIs('PUBLIC') or UpAtomIs('PUBLISHED') then exit(true);
+  'S': if UpAtomIs('STRICT') then
+    begin
+      ReadNextAtom;
+      if (GetAtom='PRIVATE') or (GetAtom='PROTECTED') then
+        begin
+          UndoReadNextAtom;
+          exit(true);
+        end;
+      UndoReadNextAtom;
     end;
+  
+  'P': if UpAtomIs('PROCEDURE') then exit(true);
   'T': if UpAtomIs('TYPE') then exit(true);
   'V': if UpAtomIs('VAR') then exit(true);
   end;

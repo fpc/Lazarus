@@ -273,6 +273,9 @@ type
     procedure TestFindDeclarationPathAt_UnitPrefix;
     procedure TestFindDeclarationPathAt_Flags;
 
+    // Context-based-keyword identifiers
+    procedure TestFindDeclaration_ContextBasedKeywordIdentifier;
+    
     // ampersands
     procedure TestFindDeclaration_Ampersand;
     procedure TestFindDeclaration_Ampersand_UnitName;
@@ -3410,6 +3413,49 @@ begin
                        [fsfSkipPropertyWithoutType]);
   CheckDeclarationPath('start','TAnimal.Speed','TBase.Speed',
                        [fsfFindMainDeclaration,fsfSkipPropertyWithoutType]);
+end;
+
+
+procedure TTestFindDeclaration.TestFindDeclaration_ContextBasedKeywordIdentifier;
+begin
+  StartProgram;
+  Add([
+  'type',
+  '  TFoo = class',
+  '  public type',
+  '    &protected = integer;',
+  '  private',
+  '    function published(private: protected): protected;',
+  '  public',
+  '    a, public,strict, virtual, inline, deprecated: protected;',
+  '',
+  '    procedure x;',
+  '    property p1[private: protected{declaration:tfoo.protected}]: protected read a;',
+  '    property p2: protected{declaration:tfoo.protected} read a;',
+  '    property p3: protected read public{declaration:tfoo.public};',
+  '    property p4: protected read strict{declaration:tfoo.strict};',
+  '    property p5: protected read virtual{declaration:tfoo.virtual};',
+  '    property p6: protected read inline{declaration:tfoo.inline};',
+  '    property p7: protected read deprecated{declaration:tfoo.deprecated};',
+  '  end;',
+  '',
+  'procedure TFoo.x;',
+  'var',
+  '  ea: Integer;',
+  'begin',
+  '  ea :=public{declaration:tfoo.public};',
+  'end;',
+  '',
+  'function TFoo.published(private: protected): protected{declaration:tfoo.protected};',
+  'begin',
+  '',
+  'end;',
+  '',
+  'begin',
+  '',
+  'end.',
+  '']);
+  FindDeclarations(Code);
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_Ampersand;
