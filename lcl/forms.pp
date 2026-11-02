@@ -481,7 +481,7 @@ type
     fsCreatedMDIChild,   // todo: not mplemented
     fsBorderStyleChanged,// border style is changed before window handle creation
     fsFormStyleChanged,  // form style is changed before window handle creation
-    fsFirstShow,         // form is shown for the first time
+    fsFirstShow,         // form has never been displayed yet
     fsDisableAutoSize    // disable autosize
     );
   TFormState = set of TFormStateType;
