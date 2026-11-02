@@ -92,6 +92,10 @@ function OpenDocument(APath: String): Boolean;
 // Works also with directory names.
 function SelectInFolder(AFullPath: String): Boolean;
 
+// Kill all timers about wnd
+// addresses certain gaps in the WinAPI; particularly useful when destroying handles.
+procedure KillWndAllTimers(const wnd: HWND);
+
 type
   TOpenParamStringProc = function (AString: string): Boolean of object;
 
@@ -252,6 +256,39 @@ begin
   {$IFDEF DebugLCL}
   LastTickValid:=false;
   {$ENDIF}
+end;
+
+procedure KillWndAllTimers(const wnd: HWND);
+var
+  idListToKilled: TFPList = nil;
+  it: TMapIterator;
+  i: Integer;
+  currentInfo: TTimerInfo;
+begin
+  if (wnd=0) or (MTimerInfo=nil) or (MTimerInfo.Count=0) then
+    Exit;
+
+  try
+    it:= TMapIterator.Create(MTimerInfo);
+    while not it.EOM do begin
+      it.GetData(currentInfo);
+      if currentInfo.Wnd = wnd then begin
+        if idListToKilled = nil then
+          idListToKilled:= TFPList.Create;
+        idListToKilled.Add(Pointer(currentInfo.IDEvent));
+      end;
+      it.Next;
+    end;
+
+    if idListToKilled=nil then
+      Exit;
+
+    for i:= 0 to idListToKilled.Count-1 do
+      KillTimer(wnd, UINT_PTR(idListToKilled[i]));
+  finally
+    it.Free;
+    idListToKilled.Free;
+  end;
 end;
 
 initialization
