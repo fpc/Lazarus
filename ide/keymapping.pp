@@ -2020,10 +2020,10 @@ begin
   ecDesignerCut:         SetSingle(VK_X,[ssCtrl],    VK_Delete,[ssShift]);
   ecDesignerPaste:       SetSingle(VK_V,[ssCtrl],    VK_Insert,[ssShift]);
   ecDesignerSelectParent:SetSingle(VK_ESCAPE,[]);
-  ecDesignerMoveToFront: SetSingle(VK_PRIOR,[ssShift]);
-  ecDesignerMoveToBack:  SetSingle(VK_NEXT,[ssShift]);
-  ecDesignerForwardOne:  SetSingle(VK_PRIOR,[ssCtrl]);
-  ecDesignerBackOne:     SetSingle(VK_NEXT,[ssCtrl]);
+  ecDesignerMoveToFront: SetSingle(VK_NEXT,[ssShift]);
+  ecDesignerMoveToBack:  SetSingle(VK_PRIOR,[ssShift]);
+  ecDesignerForwardOne:  SetSingle(VK_NEXT,[ssCtrl]);
+  ecDesignerBackOne:     SetSingle(VK_PRIOR,[ssCtrl]);
   ecDesignerToggleNonVisComps: SetSingle(VK_UNKNOWN,[]);
 
   // macro
@@ -2676,10 +2676,10 @@ begin
   ecDesignerCut:         SetSingle(VK_X,[ssMeta]);
   ecDesignerPaste:       SetSingle(VK_V,[ssMeta]);
   ecDesignerSelectParent:SetSingle(VK_ESCAPE,[]);
-  ecDesignerMoveToFront: SetSingle(VK_PRIOR,[ssShift]);
-  ecDesignerMoveToBack:  SetSingle(VK_NEXT,[ssShift]);
-  ecDesignerForwardOne:  SetSingle(VK_PRIOR,[ssMeta]);
-  ecDesignerBackOne:     SetSingle(VK_NEXT,[ssMeta]);
+  ecDesignerMoveToFront: SetSingle(VK_NEXT,[ssShift]);
+  ecDesignerMoveToBack:  SetSingle(VK_PRIOR,[ssShift]);
+  ecDesignerForwardOne:  SetSingle(VK_NEXT,[ssMeta]);
+  ecDesignerBackOne:     SetSingle(VK_PRIOR,[ssMeta]);
   ecDesignerToggleNonVisComps: SetSingle(VK_UNKNOWN,[]);
 
   // macro
