@@ -684,7 +684,7 @@ begin
     debugln(Msg);
     if not Quiet then begin
       LazMessageWorker(lisCCOErrorCaption, Format(
-        lisThereIsNoFreePascalCompilerEGFpcOrPpcCpuConfigured, [ExeExt,
+        lisThereIsNoFreePascalCompilerEGFpcOrPpcCpuConfigured, [GetExeExt,
         LineEnding, Msg]), mtError, [mbOk]);
     end;
     UnitSetCache:=nil;

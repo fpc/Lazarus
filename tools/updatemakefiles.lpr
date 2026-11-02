@@ -33,7 +33,7 @@ program updatemakefiles;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, sysutils, StrUtils, FileProcs, DefineTemplates, LazFileUtils,
+  Classes, SysUtils, StrUtils, DefineTemplates, LazFileUtils,
   Laz2_XMLCfg, FileUtil, LazLogger;
 
 var
@@ -481,7 +481,7 @@ begin
   writeln(ExtraMakefiles.Text);
   LPKFiles.StrictDelimiter:=true;
   LPKFiles.Delimiter:=' ';
-  LazbuildExe:=SetDirSeparators(LazarusDir+'lazbuild'+ExeExt);
+  LazbuildExe:=SetDirSeparators(LazarusDir+'lazbuild'+GetExeExt);
   if not FileIsExecutable(LazbuildExe) then
   begin
     writeln('Error: missing ',LazbuildExe);
@@ -489,7 +489,7 @@ begin
   end;
 
   // run lazbuild
-  LazbuildOut:=RunTool(SetDirSeparators(LazarusDir+'lazbuild'+ExeExt),'--lazarusdir="'+LazarusDir+'" --create-makefile '+LPKFiles.DelimitedText,LazarusDir);
+  LazbuildOut:=RunTool(SetDirSeparators(LazarusDir+'lazbuild'+GetExeExt),'--lazarusdir="'+LazarusDir+'" --create-makefile '+LPKFiles.DelimitedText,LazarusDir);
   writeln(LazbuildOut.Text);
 
   LazbuildOut.Free;

@@ -10,7 +10,7 @@ uses
   // LCL
   Controls, StdCtrls, Dialogs, CheckLst,
   // CodeTools
-  FileProcs, DefineTemplates, CodeToolManager, LinkScanner,
+  DefineTemplates, CodeToolManager, LinkScanner,
   // LazUtils
   FileUtil, LazFileUtils, LazStringUtils, LazUTF8,
   // BuildIntf
@@ -293,7 +293,7 @@ begin
   chkCompilerRun.Checked := True;
   lblCompiler.Caption := lisCOCommand;
   cobCompiler.Text := '';
-  BrowseCompilerButton.Hint:=lisBrowseAndSelectACompiler+ExeExt+')';
+  BrowseCompilerButton.Hint:=lisBrowseAndSelectACompiler+GetExeExt+')';
 
   ExecuteAfterGroupBox.Caption := lisExecuteAfter;
   chkExecAfterBuild.Caption := lisBuildStage;

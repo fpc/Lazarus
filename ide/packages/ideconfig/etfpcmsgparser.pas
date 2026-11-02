@@ -2918,7 +2918,7 @@ begin
       if (not FilenameIsAbsolute(aFilename)) and (aPhase=etpspAfterReadLine)
       then begin
         CmdLineParams:=Tool.CmdLineParams;
-        if Pos(CmdLineParams,PathDelim+'fpc'+ExeExt+' ')>0 then begin
+        if Pos(CmdLineParams,PathDelim+'fpc'+GetExeExt+' ')>0 then begin
           // short file name => 3. check the cmd line param source file
           SrcFilename:=GetFPCParameterSrcFile(Tool.CmdLineParams);
           if (SrcFilename<>'')
