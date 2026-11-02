@@ -65,15 +65,17 @@ const
 
   SpecialChar = '#'; // used to use PathDelim, e.g. #\
   FileMask = AllFilesMask;
+
   {$IFDEF Windows}
-  ExeExt = '.exe';
+  ExeExt = '.exe'
   {$ELSE}
     {$IFDEF NetWare}
-    ExeExt = '.nlm';
+    ExeExt = '.nlm'
     {$ELSE}
-    ExeExt = '';
+    ExeExt = ''
     {$ENDIF}
   {$ENDIF}
+  deprecated 'Use GetExeExt function from FileUtil of LazUtils / will be removed in v6.99';
 
 type
   TCTSearchFileCase = (

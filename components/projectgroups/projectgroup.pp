@@ -377,12 +377,12 @@ end;
 function GetLazBuildFilename: string;
 begin
   // first check the lazbuild executable in the lazarus directory
-  Result:='$(LazarusDir)'+PathDelim+'lazbuild'+ExeExt;
+  Result:='$(LazarusDir)'+PathDelim+'lazbuild'+GetExeExt;
   IDEMacros.SubstituteMacros(Result);
   if FileExistsCached(Result) then
     exit;
   // then search in PATH
-  Result:=FindDefaultExecutablePath('lazbuild'+ExeExt);
+  Result:=FindDefaultExecutablePath('lazbuild'+GetExeExt);
 end;
 
 { TPGUndoDelete }
@@ -1525,7 +1525,7 @@ begin
 
   LazBuildFilename:=GetLazBuildFilename;
   if LazBuildFilename='' then begin
-    IDEMessageDialog(lisLazbuildNotFound, Format(lisTheLazbuildWasNotFound, [ExeExt])
+    IDEMessageDialog(lisLazbuildNotFound, Format(lisTheLazbuildWasNotFound, [GetExeExt])
       , mtError, [mbOk]);
     exit(arFailed);
   end;

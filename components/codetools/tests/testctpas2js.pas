@@ -16,7 +16,7 @@ uses
   // FPCUnit
   TestRegistry,
   // LazUtils
-  LazUTF8, LazLoggerBase, LazFileUtils,
+  LazUTF8, LazLoggerBase, LazFileUtils, FileUtil,
   // CodeTools
   CodeToolManager, DefineTemplates, LinkScanner, CodeCache, ExprEval, FileProcs,
   // (project)
@@ -195,7 +195,7 @@ begin
       Fail('Environment variable PAS2JS is non existing file "'+Result+'"');
     exit;
   end;
-  ShortFilename:='pas2js'+ExeExt;
+  ShortFilename:='pas2js'+GetExeExt;
   Result:=SearchFileInPath(ShortFilename,'',
                            GetEnvironmentVariableUTF8('PATH'),PathSeparator,ctsfcDefault);
 end;

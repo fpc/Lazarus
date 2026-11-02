@@ -8497,7 +8497,7 @@ begin
       exit;
     end;
     if HasShebang then
-      DefRunCommand:='instantfpc'+ExeExt+' '+Filename
+      DefRunCommand:='instantfpc'+GetExeExt+' '+Filename
     else
       DefRunCommand:=IDEDirDefaultRunCommand;
     RunCommand:=GetIDEStringDirective(DirectiveList,
