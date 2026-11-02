@@ -533,7 +533,7 @@ begin
     WriteLn(Params.Text);
     exit;
   end;
-  {$IFDEF MSWINDOWS}FPDocExe := ChangeFileExt(FPDocExe,'.exe');{$ENDIF}
+  FPDocExe := ChangeFileExt(FPDocExe, GetExeExt);
   if not FileInEnvPATH(FPDocExe) then
   begin
     WriteLn('Error: fpdoc ('+FPDocExe+') cannot be found. Please add its location to the PATH ',
