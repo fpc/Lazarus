@@ -1,6 +1,6 @@
 object FppkgForm: TFppkgForm
-  Left = 2626
-  Height = 674
+  Left = 400
+  Height = 200
   Top = 281
   Width = 800
   Caption = 'FppkgForm'
@@ -9,7 +9,7 @@ object FppkgForm: TFppkgForm
   Menu = MainMenu
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  Position = poScreenCenter
+  Position = poWorkAreaCenter
   LCLVersion = '2.1.0.0'
   object ToolBar: TToolBar
     Left = 0

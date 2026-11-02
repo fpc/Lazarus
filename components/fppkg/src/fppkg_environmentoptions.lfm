@@ -7,8 +7,8 @@ object FppkgEnvironmentOptionsFrame: TFppkgEnvironmentOptionsFrame
   ClientWidth = 436
   ParentFont = False
   TabOrder = 0
-  DesignLeft = 2988
-  DesignTop = 870
+  DesignLeft = 400
+  DesignTop = 200
   object cbInstallDependencies: TCheckBox
     Left = 10
     Height = 40

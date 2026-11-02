@@ -7,8 +7,8 @@ object FppkgPackageOptionsFrm: TFppkgPackageOptionsFrm
   ClientWidth = 520
   ParentFont = False
   TabOrder = 0
-  DesignLeft = 2800
-  DesignTop = 522
+  DesignLeft = 400
+  DesignTop = 200
   object gbBuildMethod: TGroupBox
     Left = 0
     Height = 76
