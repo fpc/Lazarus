@@ -836,22 +836,18 @@ begin
   if FilenameIsAbsolute(Executable) then begin
     Result:=Executable;
     if FileExistsUTF8(Result) then exit;
-    {$IFDEF Windows}
-    if ExtractFileExt(Result)='' then begin
-      Result:=Result+'.exe';
+    if (ExtractFileExt(Result)='') and (GetExeExt<>'') then begin
+      Result:=Result+GetExeExt;
       if FileExistsUTF8(Result) then exit;
     end;
-    {$ENDIF}
   end else begin
     Env:=GetEnvironmentVariableUTF8('PATH');
     Result:=SearchFileInPath(Executable, BaseDir, Env, PathSeparator, sffFindProgramInPath);
     if Result<>'' then exit;
-    {$IFDEF Windows}
-    if ExtractFileExt(Executable)='' then begin
-      Result:=SearchFileInPath(Executable+'.exe', BaseDir, Env, PathSeparator, sffFindProgramInPath);
+    if (ExtractFileExt(Executable)='') and (GetExeExt<>'') then begin
+      Result:=SearchFileInPath(Executable+GetExeExt, BaseDir, Env, PathSeparator, sffFindProgramInPath);
       if Result<>'' then exit;
     end;
-    {$ENDIF}
   end;
   Result:='';
 end;
