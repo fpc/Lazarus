@@ -50,6 +50,7 @@ type
     JumpingGroupBox: TGroupBox;
     IndentFileLabel: TLabel;
     JumpToMethodBodyCheckBox: TCheckBox;
+    FindDeclarationInCommentsCheckBox: TCheckBox;
     SkipForwardDeclarationsCheckBox: TCheckBox;
     JumpSingleLinePosLabel: TLabel;
     JumpSingleLinePosEdit: TSpinEdit;
@@ -132,6 +133,9 @@ begin
   CursorBeyondEOLCheckBox.Caption:=dlgcursorbeyondeol;
   SkipForwardDeclarationsCheckBox.Caption:=dlgSkipForwardClassDeclarations;
   JumpToMethodBodyCheckBox.Caption := dlgJumpToMethodBody;
+  FindDeclarationInCommentsCheckBox.Caption := dlgFindDeclarationInComments;
+  FindDeclarationInCommentsCheckBox.Hint := dlgFindDeclarationInCommentsHint;
+  FindDeclarationInCommentsCheckBox.ShowHint := true;
 
   IndentationGroupBox.Caption:=lisIndentationForPascalSources;
   GeneralAutoIndent.Caption:=lisSetupDefaultIndentation;
@@ -157,6 +161,7 @@ begin
     CursorBeyondEOLCheckBox.Checked := CursorBeyondEOL;
     SkipForwardDeclarationsCheckBox.Checked := SkipForwardDeclarations;
     JumpToMethodBodyCheckBox.Checked := JumpToMethodBody;
+    FindDeclarationInCommentsCheckBox.Checked := FindDeclarationInComments;
     IndentOnLineBreakCheckBox.Checked:=IndentOnLineBreak;
     IndentOnPasteCheckBox.Checked:=IndentOnPaste;
     IndentFileEdit.Text:=IndentationFileName;
@@ -176,6 +181,7 @@ begin
     CursorBeyondEOL := CursorBeyondEOLCheckBox.Checked;
     SkipForwardDeclarations := SkipForwardDeclarationsCheckBox.Checked;
     JumpToMethodBody:=JumpToMethodBodyCheckBox.Checked;
+    FindDeclarationInComments:=FindDeclarationInCommentsCheckBox.Checked;
     IndentOnLineBreak:=IndentOnLineBreakCheckBox.Checked;
     IndentOnPaste:=IndentOnPasteCheckBox.Checked;
     IndentationFileName:=IndentFileEdit.Text;

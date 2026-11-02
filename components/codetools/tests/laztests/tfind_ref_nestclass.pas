@@ -1,7 +1,7 @@
 program Project1{ TODO findrefs:C,...};
 uses Classes;
 type
-  TFoo{findrefs:C,3,4;17,17;11,18;6,19;15,20;17,23;3,30;12,31;26,32;17,33} = class // TODO: misses 15,3
+  TFoo{findrefs:C,3,4;3,15;17,17;11,18;6,19;15,20;17,23;3,30;12,31;26,32;17,33} = class
   type
 
     { TBar }

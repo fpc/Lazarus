@@ -2253,6 +2253,9 @@ resourcestring
   dlgCursorBeyondEOL = 'Cursor beyond EOL';
   dlgSkipForwardClassDeclarations = 'Skip forward class declarations';
   dlgJumpToMethodBody = 'Jump directly to method body';
+  dlgFindDeclarationInComments = 'Find declaration in comments';
+  dlgFindDeclarationInCommentsHint = 'Find declaration also works for '
+    +'identifiers in comments and in disabled code, e.g. in an inactive {$ELSE} part';
   dlgInsertClassParts = 'Insert class parts';
   lisNewMethodsAndMembersAreInsertedAlphabeticallyOrAdd = 'New method and '
     +'member declarations in the class..end sections are inserted alphabetically or added last.';

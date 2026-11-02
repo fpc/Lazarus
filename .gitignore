@@ -17,6 +17,7 @@
 **/*.compiled
 **/*.or
 **/*.log
+**/*.ini
 !**/Makefile.compiled
 /docs/chm/**/*.chm
 /docs/chm/**/*.xct

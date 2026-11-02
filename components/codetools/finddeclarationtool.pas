@@ -731,7 +731,8 @@ type
                             // for procedure: search the corresponding of the forward declaration
     fsfSearchSourceName, // if searching for a unit name, return the source name node
     fsfSkipClassForward, // when a forward class was found, jump further to the class
-    fsfSkipPropertyWithoutType
+    fsfSkipPropertyWithoutType,
+    fsfSearchInComments // if the cursor is in a comment or in disabled code, search the identifier there
     );
   TFindSmartFlags = set of TFindSmartFlag;
 const
@@ -968,6 +969,8 @@ type
       DefaultResultNode: TCodeTreeNode = nil): boolean;
     function FindDeclarationOfIdentAtParam(
       Params: TFindDeclarationParams; DefaultResultNode: TCodeTreeNode = nil): boolean;
+    function FindCommentContextNode(Node: TCodeTreeNode;
+      CleanPos: integer): TCodeTreeNode;
     function IdentifierIsDefined(const IdentAtom: TAtomPosition;
       ContextNode: TCodeTreeNode; Params: TFindDeclarationParams): boolean;
     function FindContextNodeAtCursor(
@@ -2609,9 +2612,69 @@ var
       BlockBottomLine := NewSkipBlockBottomLine;
     end;
   end;
+
+  function CursorInDirectiveOrString(CommentStart, CommentEnd: integer): boolean;
+  // CleanCursorPos is in the comment CommentStart..CommentEnd (outer bounds).
+  // Returns true if CleanCursorPos is in a directive, or in disabled code
+  // (codetools skip comment {#3 #3}) in a directive or string constant.
+  var
+    p, EndP, q: integer;
+    IsComment: boolean;
+  begin
+    Result:=false;
+    p:=CommentStart;
+    if (Src[p]='{') and (p<SrcLen) and (Src[p+1]='$') then
+      exit(true);
+    if (Src[p]='(') and (p+2<=SrcLen) and (Src[p+1]='*') and (Src[p+2]='$') then
+      exit(true);
+    if (Src[p]<>'{') or (p>=SrcLen) or (Src[p+1]<>#3) then
+      exit; // normal comment
+    // disabled code
+    inc(p,2);
+    EndP:=CommentEnd-2; // in front of #3}
+    while p<EndP do begin
+      case Src[p] of
+      '{','(','/':
+        begin
+          IsComment:=(Src[p]='{')
+                     or ((Src[p]='(') and (Src[p+1]='*'))
+                     or ((Src[p]='/') and (Src[p+1]='/'));
+          if IsComment then begin
+            q:=FindCommentEnd(Src,p,Scanner.NestedComments);
+            if q>EndP then
+              q:=EndP;
+            if (CleanCursorPos>=p) and (CleanCursorPos<q) then begin
+              // in a comment inside disabled code
+              if Src[p]='{' then
+                Result:=Src[p+1]='$'
+              else if Src[p]='(' then
+                Result:=Src[p+2]='$';
+              exit;
+            end;
+            p:=q;
+            continue;
+          end;
+        end;
+      '''':
+        begin
+          q:=p+1;
+          while (q<EndP) and (Src[q]<>'''') and not (Src[q] in [#10,#13]) do
+            inc(q);
+          if (q<EndP) and (Src[q]='''') then
+            inc(q);
+          if (CleanCursorPos>p) and (CleanCursorPos<q) then
+            exit(true);
+          p:=q;
+          continue;
+        end;
+      end;
+      inc(p);
+    end;
+  end;
+
 var
   CleanPosInFront: integer;
-  CursorAtIdentifier: boolean;
+  CursorAtIdentifier, InComment: boolean;
   IdentifierStart: PChar;
   LineRange: TLineRange;
   Params: TFindDeclarationParams;
@@ -2717,7 +2780,25 @@ begin
     Debugln;
     {$ENDIF}
 
-    if (CursorNode.Desc = ctnUseUnitNamespace) then begin
+    InComment:=false;
+    if (fsfSearchInComments in SearchSmartFlags)
+    and CleanPosIsInComment(CleanCursorPos,CursorNode.StartPos,CommentStart,CommentEnd)
+    then begin
+      // cursor in comment or disabled code
+      if CursorInDirectiveOrString(CommentStart,CommentEnd) then begin
+        {$IFDEF VerboseFindDeclarationFail}
+        debugln(['TFindDeclarationTool.FindDeclaration cursor in comment at directive or string']);
+        {$ENDIF}
+        exit;
+      end;
+      InComment:=true;
+      SkipChecks:=true;
+      CursorNode:=FindCommentContextNode(CursorNode,CleanCursorPos);
+    end;
+
+    if InComment then begin
+      // search identifier in comment in the scope of CursorNode
+    end else if (CursorNode.Desc = ctnUseUnitNamespace) then begin
       NewExprType.Desc:=xtContext;
       NewExprType.Context.Node:=CursorNode;
       NewExprType.Context.Tool:=Self;
@@ -2788,13 +2869,15 @@ begin
     GetIdentStartEndAtPosition(Src,CleanCursorPos,
                                CurPos.StartPos,CurPos.EndPos);
 
-    if AtomIsStringConstant or CleanPosIsInComment(CleanCursorPos, CursorNode.StartPos, CommentStart, CommentEnd)
+    if AtomIsStringConstant
+    or ((not InComment)
+      and CleanPosIsInComment(CleanCursorPos, CursorNode.StartPos, CommentStart, CommentEnd))
     then begin
       Result := False;
       Exit;
-    end;  
-                                 
-    if (CursorNode.Desc = ctnProperty) and 
+    end;
+
+    if (not InComment) and (CursorNode.Desc = ctnProperty) and
       (CompareIdentifiers(PChar('PROPERTY'),PChar(@Src[CurPos.StartPos]))=0) then begin
       Result := False;
       Exit;
@@ -4873,6 +4956,37 @@ begin
   if ffatUnit in SearchFor then begin
     if CheckUnitByWordAtCursor(aSource,CurAbsPos) then exit(true);
   end;
+end;
+
+function TFindDeclarationTool.FindCommentContextNode(Node: TCodeTreeNode;
+  CleanPos: integer): TCodeTreeNode;
+{ Node is the deepest node at CleanPos, and CleanPos is in a comment or in
+  disabled code.
+  If the comment is between the child nodes of a range node, e.g. between two
+  declarations of a program, return the node behind the comment.
+  Reason: FindDeclarationOfIdentAtParam ignores the start context node and
+  searches in its prior and parent nodes. Starting at the source node would
+  find nothing. }
+var
+  Child: TCodeTreeNode;
+begin
+  Result:=Node;
+  if (Node=nil) or (Node.FirstChild=nil) then exit;
+  if not (Node.Desc in AllSourceTypes+AllDefinitionSections+AllClassSections
+      +AllClasses+[ctnInterface,ctnImplementation,ctnProcedure,ctnRecordType])
+  then
+    exit;
+  // search the first child behind the comment
+  Child:=Node.FirstChild;
+  while (Child<>nil) and (Child.StartPos<CleanPos) do
+    Child:=Child.NextBrother;
+  if Child<>nil then
+    exit(Child);
+  // comment behind last child -> use the last declaration
+  Child:=Node.LastChild;
+  while (Child.LastChild<>nil) and (Child.Desc in AllDefinitionSections) do
+    Child:=Child.LastChild;
+  Result:=Child;
 end;
 
 function TFindDeclarationTool.FindDeclarationOfIdentAtParam(
@@ -7898,7 +8012,10 @@ var
         //here we know if it was a dotted ident and its length, put it in Params and exploit ...
         if not IsDotted then dLen:=0;
         //dLen>0  will force searching from units names first
-        Params.ContextNode:=CursorNode;
+        if IsComment then
+          Params.ContextNode:=FindCommentContextNode(CursorNode,IdentStartPos)
+        else
+          Params.ContextNode:=CursorNode;
         //debugln(['ReadIdentifier "',copy(Src,IdentStartPos,200),'"']);
         Params.SetIdentifier(Self,@Src[IdentStartPos],@CheckSrcIdentifier,dLen);
 
@@ -8050,6 +8167,45 @@ var
     end;
   end;
   
+  procedure SearchDisabledCode;
+  // StartPos is behind {#3 of a codetools skip comment
+  // read identifiers up to #3}, skip directives and string constants
+  var
+    InStrConst: Boolean;
+  begin
+    InStrConst:=false;
+    while StartPos<=MaxPos do begin
+      case Src[StartPos] of
+      #3:
+        if (StartPos<MaxPos) and (Src[StartPos+1]='}') then begin
+          inc(StartPos,2);
+          exit;
+        end;
+      '{':
+        if (not InStrConst) and (StartPos<MaxPos) and (Src[StartPos+1]='$') then
+        begin
+          // skip directive
+          while (StartPos<MaxPos) and (Src[StartPos+1]<>'}') do begin
+            if (Src[StartPos+1]=#3) and (StartPos+1<MaxPos)
+            and (Src[StartPos+2]='}') then
+              break; // end of disabled code
+            inc(StartPos);
+          end;
+        end;
+      'a'..'z','A'..'Z','_','&':
+        if not InStrConst then begin
+          ReadIdentifier(true);
+          continue;
+        end;
+      '''':
+        InStrConst:=not InStrConst;
+      #10,#13:
+        InStrConst:=false;
+      end;
+      inc(StartPos);
+    end;
+  end;
+
   procedure SearchIdentifiers;
   var
     CommentLvl: Integer;
@@ -8064,16 +8220,19 @@ var
         begin
           inc(StartPos);
           if (StartPos<=MaxPos) and (Src[StartPos]=#3) then begin
-            // codetools skip comment {#3 #3}
+            // codetools skip comment {#3 #3} (disabled code)
             inc(StartPos);
-            while (StartPos<=MaxPos) do begin
-              if (Src[StartPos]=#3) and (StartPos<MaxPos) and (Src[StartPos+1]='}')
-              then begin
-                inc(StartPos,2);
-                break;
+            if SkipComments then begin
+              while (StartPos<=MaxPos) do begin
+                if (Src[StartPos]=#3) and (StartPos<MaxPos) and (Src[StartPos+1]='}')
+                then begin
+                  inc(StartPos,2);
+                  break;
+                end;
+                inc(StartPos);
               end;
-              inc(StartPos);
-            end;
+            end else
+              SearchDisabledCode;
           end else begin
             // pascal comment {}
             CommentLvl:=1;

@@ -13,7 +13,7 @@ object CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 176
+    Height = 195
     Top = 6
     Width = 552
     Align = alTop
@@ -22,7 +22,7 @@ object CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
     Caption = 'JumpingGroupBox'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
-    ClientHeight = 156
+    ClientHeight = 175
     ClientWidth = 548
     TabOrder = 0
     object AdjustTopLineDueToCommentCheckBox: TCheckBox
@@ -67,6 +67,17 @@ object CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
       Width = 184
       Caption = 'JumpToMethodBodyCheckBox'
       TabOrder = 3
+    end
+    object FindDeclarationInCommentsCheckBox: TCheckBox
+      AnchorSideLeft.Control = JumpingGroupBox
+      AnchorSideTop.Control = JumpToMethodBodyCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 150
+      Width = 230
+      Caption = 'FindDeclarationInCommentsCheckBox'
+      TabOrder = 7
     end
     object JumpSingleLinePosLabel: TLabel
       AnchorSideLeft.Control = JumpSingleLinePosEdit
@@ -130,7 +141,7 @@ object CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
   object IndentationGroupBox: TGroupBox
     Left = 0
     Height = 151
-    Top = 188
+    Top = 207
     Width = 552
     Align = alTop
     AutoSize = True

@@ -10782,6 +10782,8 @@ begin
   FindFlags := DefaultFindSmartFlags;
   if CodeToolsOpts.SkipForwardDeclarations then
     Include(FindFlags, fsfSkipClassForward);
+  if CodeToolsOpts.FindDeclarationInComments then
+    Include(FindFlags, fsfSearchInComments);
   if CodeToolBoss.FindDeclaration(ActiveUnitInfo.Source,
     LogCaretXY.X, LogCaretXY.Y, NewSource, NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine, FindFlags )
   then begin

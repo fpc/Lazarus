@@ -86,6 +86,7 @@ type
     FCursorBeyondEOL: boolean;
     FSkipForwardDeclarations: boolean;
     FJumpToMethodBody: boolean;
+    FFindDeclarationInComments: boolean;
     
     // Define Templates
     FGlobalDefineTemplates: TDefineTemplate;
@@ -181,6 +182,8 @@ type
       read FCursorBeyondEOL write FCursorBeyondEOL;
     property SkipForwardDeclarations: boolean read FSkipForwardDeclarations write FSkipForwardDeclarations;
     property JumpToMethodBody: boolean read FJumpToMethodBody write FJumpToMethodBody;
+    property FindDeclarationInComments: boolean read FFindDeclarationInComments
+                                              write FFindDeclarationInComments;
     // Define Templates
     property GlobalDefineTemplates: TDefineTemplate read FGlobalDefineTemplates;
     property DefinesEditMainSplitterTop: integer read FDefinesEditMainSplitterTop
@@ -509,6 +512,8 @@ begin
       'CodeToolsOptions/SkipForwardDeclarations/Value',false);
     FJumpToMethodBody:=XMLConfig.GetValue(
       'CodeToolsOptions/JumpToMethodBody/Value',false);
+    FFindDeclarationInComments:=XMLConfig.GetValue(
+      'CodeToolsOptions/FindDeclarationInComments/Value',false);
 
     // Define templates
     LoadGlobalDefineTemplates;
@@ -703,6 +708,8 @@ begin
                              FSkipForwardDeclarations,false);
     XMLConfig.SetDeleteValue('CodeToolsOptions/JumpToMethodBody/Value',
                              FJumpToMethodBody,false);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/FindDeclarationInComments/Value',
+                             FFindDeclarationInComments,false);
     // Define templates
     SaveGlobalDefineTemplates;
     XMLConfig.SetDeleteValue('CodeToolsOptions/DefinesEditMainSplitter/Top',
@@ -925,6 +932,7 @@ begin
     FCompleteProperties:=CodeToolsOpts.CompleteProperties;
     FSkipForwardDeclarations:=CodeToolsOpts.FSkipForwardDeclarations;
     FJumpToMethodBody:=CodeToolsOpts.FJumpToMethodBody;
+    FFindDeclarationInComments:=CodeToolsOpts.FFindDeclarationInComments;
 
     // define templates
     ClearGlobalDefineTemplates;
@@ -1002,6 +1010,7 @@ begin
   FJumpCodeBlockPos:=0;
   FAvoidUnnecessaryJumps:=true;
   FCursorBeyondEOL:=true;
+  FFindDeclarationInComments:=false;
   
   // define templates
   ClearGlobalDefineTemplates;
@@ -1096,6 +1105,7 @@ begin
     and (CompleteProperties=CodeToolsOpts.CompleteProperties)
     and (FSkipForwardDeclarations=CodeToolsOpts.FSkipForwardDeclarations)
     and (FJumpToMethodBody=CodeToolsOpts.FJumpToMethodBody)
+    and (FFindDeclarationInComments=CodeToolsOpts.FFindDeclarationInComments)
     
     // define templates
     and (FGlobalDefineTemplates.IsEqual(
