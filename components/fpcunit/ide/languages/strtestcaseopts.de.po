@@ -79,6 +79,11 @@ msgstr "Serverport"
 msgid "Test Insight"
 msgstr "Test-Insight"
 
+#: strtestcaseopts.rstestprojectstopped
+#, object-pascal-format
+msgid "Test project %s stopped"
+msgstr ""
+
 #: strtestcaseopts.sactcheckall
 msgid "Select all tests"
 msgstr "Alle Tests auswählen"
@@ -123,6 +128,14 @@ msgstr "Ausgewähltes starten"
 #: strtestcaseopts.sactrunhighlightedtesth
 msgid "Run selected test"
 msgstr "Ausgewählte Tests starten"
+
+#: strtestcaseopts.sactstop
+msgid "Stop"
+msgstr ""
+
+#: strtestcaseopts.sactstoph
+msgid "Stop the running test project"
+msgstr ""
 
 #: strtestcaseopts.sactuncheckall
 msgid "Deselect all tests"

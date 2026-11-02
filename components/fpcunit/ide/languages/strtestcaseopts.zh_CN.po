@@ -80,6 +80,11 @@ msgstr "服务器端口"
 msgid "Test Insight"
 msgstr "Test Insight"
 
+#: strtestcaseopts.rstestprojectstopped
+#, object-pascal-format
+msgid "Test project %s stopped"
+msgstr ""
+
 #: strtestcaseopts.sactcheckall
 msgid "Select all tests"
 msgstr "选择所有测试"
@@ -124,6 +129,14 @@ msgstr "运行选中的"
 #: strtestcaseopts.sactrunhighlightedtesth
 msgid "Run selected test"
 msgstr "运行选中的测试"
+
+#: strtestcaseopts.sactstop
+msgid "Stop"
+msgstr ""
+
+#: strtestcaseopts.sactstoph
+msgid "Stop the running test project"
+msgstr ""
 
 #: strtestcaseopts.sactuncheckall
 msgid "Deselect all tests"

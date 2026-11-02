@@ -111,20 +111,25 @@ object TestInsightForm: TTestInsightForm
         Caption = 'ToolButton4'
         Style = tbsSeparator
       end
-      object ToolButton5: TToolButton
+      object ToolButton8: TToolButton
         Left = 85
+        Top = 2
+        Action = actStop
+      end
+      object ToolButton5: TToolButton
+        Left = 111
         Height = 25
         Top = 2
         Caption = 'ToolButton5'
         Style = tbsSeparator
       end
       object ToolButton6: TToolButton
-        Left = 91
+        Left = 117
         Top = 2
         Action = actPrevError
       end
       object ToolButton7: TToolButton
-        Left = 117
+        Left = 143
         Top = 2
         Action = actNextError
       end
@@ -578,6 +583,14 @@ object TestInsightForm: TTestInsightForm
       OnExecute = RunAllExecute
       OnUpdate = actRunAllUpdate
     end
+    object actStop: TAction
+      Category = 'Run'
+      Caption = 'Stop'
+      Hint = 'Stop the running test project'
+      ShortCut = 16497
+      OnExecute = actStopExecute
+      OnUpdate = actStopUpdate
+    end
     object ActCloseForm: TAction
       Caption = 'Close form'
       Hint = 'Close testinsight'
@@ -677,6 +690,9 @@ object TestInsightForm: TTestInsightForm
       Action = ActRunHighlightedTest
       OnClick = ActRunHighlightedTestExecute
     end
+    object miStop: TMenuItem
+      Action = actStop
+    end
     object MenuItem22: TMenuItem
       Action = actNextError
     end
@@ -725,6 +741,9 @@ object TestInsightForm: TTestInsightForm
       end
       object MenuItem11: TMenuItem
         Action = ActRunHighlightedTest
+      end
+      object MenuItemStop: TMenuItem
+        Action = actStop
       end
       object MenuItem20: TMenuItem
         Action = actNextError

@@ -78,6 +78,11 @@ msgstr ""
 msgid "Test Insight"
 msgstr ""
 
+#: strtestcaseopts.rstestprojectstopped
+#, object-pascal-format
+msgid "Test project %s stopped"
+msgstr ""
+
 #: strtestcaseopts.sactcheckall
 msgid "Select all tests"
 msgstr ""
@@ -121,6 +126,14 @@ msgstr ""
 
 #: strtestcaseopts.sactrunhighlightedtesth
 msgid "Run selected test"
+msgstr ""
+
+#: strtestcaseopts.sactstop
+msgid "Stop"
+msgstr ""
+
+#: strtestcaseopts.sactstoph
+msgid "Stop the running test project"
 msgstr ""
 
 #: strtestcaseopts.sactuncheckall

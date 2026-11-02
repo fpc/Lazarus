@@ -55,6 +55,9 @@ resourcestring
   sfrmGUITest = 'FPCUnit - run unit test';
   sactRunAction = '&Run all';
   sactRunActionH = 'Run all checked tests';
+  sactStop = 'Stop';
+  sactStopH = 'Stop the running test project';
+  rsTestProjectStopped = 'Test project %s stopped';
   sactCloseForm = 'Quit';
   sactCloseFormH = 'Quit testing';
   sactCheckCurrentSuite = 'Select current suite';

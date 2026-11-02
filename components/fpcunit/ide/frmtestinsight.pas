@@ -79,9 +79,15 @@ type
     ToolButton5: TToolButton;
     ToolButton6: TToolButton;
     ToolButton7: TToolButton;
+    actStop: TAction;
+    ToolButton8: TToolButton;
+    miStop: TMenuItem;
+    MenuItemStop: TMenuItem;
     procedure actNextErrorUpdate(Sender: TObject);
     procedure actPrevErrorUpdate(Sender: TObject);
     procedure actRunAllUpdate(Sender: TObject);
+    procedure actStopExecute(Sender: TObject);
+    procedure actStopUpdate(Sender: TObject);
     procedure aRefreshExecute(Sender: TObject);
     procedure aRefreshUpdate(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -126,6 +132,7 @@ type
     FServer : TTestInsightServer;
     FTestsRunning : Boolean;
     procedure AddSelected(N: TTreeNode; var Tests: TStringDynArray; var aLen: Integer);
+    function AddStopImage: Integer;
     // Callbacks for server
     procedure DoClearTests(Sender: TObject);
     procedure DoFinishedTests(Sender: TObject);
@@ -345,6 +352,9 @@ begin
   ActCopyErrorMsg.Caption := sactCopyMessageToClipboard;
   ActCopyTextToClipboard.Caption := sactCopyAllToClipboard;
   ActCopyTextToClipboard.Hint := sactCopyAllToClipboardH;
+  actStop.Caption := sactStop;
+  actStop.Hint := sactStopH;
+  actStop.ImageIndex := AddStopImage;
   FServer:=CreateServer(Self);
   FServer.OnClearTests:=@DoClearTests;
   FServer.OnSetTestNames:=@DoSetTestSuite;
@@ -427,6 +437,42 @@ end;
 procedure TTestInsightForm.actRunAllUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled:=Not Self.TestRunning;
+end;
+
+procedure TTestInsightForm.actStopExecute(Sender: TObject);
+begin
+  if not TestRunning then
+    exit;
+  pTest.Terminate(1);
+  // the test project cannot send "finished" anymore
+  FTestsRunning:=False;
+  pbBar.Refresh;
+  ShowMessage(imtInfo,Format(rsTestProjectStopped,[pTest.Executable]));
+end;
+
+procedure TTestInsightForm.actStopUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled:=TestRunning;
+end;
+
+function TTestInsightForm.AddStopImage: Integer;
+// ILMenu has no stop glyph: add a dark red square
+var
+  Bmp: TBitmap;
+  Inset: Integer;
+begin
+  Bmp:=TBitmap.Create;
+  try
+    Bmp.SetSize(ILMenu.Width,ILMenu.Height);
+    Bmp.Canvas.Brush.Color:=clFuchsia;
+    Bmp.Canvas.FillRect(0,0,Bmp.Width,Bmp.Height);
+    Inset:=ILMenu.Width div 4;
+    Bmp.Canvas.Brush.Color:=clMaroon;
+    Bmp.Canvas.FillRect(Inset,Inset,Bmp.Width-Inset,Bmp.Height-Inset);
+    Result:=ILMenu.AddMasked(Bmp,clFuchsia);
+  finally
+    Bmp.Free;
+  end;
 end;
 
 function TTestInsightForm.HaveErrors : Boolean;

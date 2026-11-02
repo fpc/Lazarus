@@ -90,6 +90,11 @@ msgstr "Sunucu portu"
 msgid "Test Insight"
 msgstr "Test Bilgisi"
 
+#: strtestcaseopts.rstestprojectstopped
+#, object-pascal-format
+msgid "Test project %s stopped"
+msgstr ""
+
 #: strtestcaseopts.sactcheckall
 msgid "Select all tests"
 msgstr "Tüm testleri seç"
@@ -135,6 +140,14 @@ msgstr "Seçili olanı çalıştır"
 #: strtestcaseopts.sactrunhighlightedtesth
 msgid "Run selected test"
 msgstr "Seçili testi çalıştır"
+
+#: strtestcaseopts.sactstop
+msgid "Stop"
+msgstr ""
+
+#: strtestcaseopts.sactstoph
+msgid "Stop the running test project"
+msgstr ""
 
 #: strtestcaseopts.sactuncheckall
 msgid "Deselect all tests"
