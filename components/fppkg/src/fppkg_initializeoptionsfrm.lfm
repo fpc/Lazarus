@@ -1,11 +1,12 @@
 object InitializeOptionsForm: TInitializeOptionsForm
-  Left = 2512
-  Height = 450
+  Left = 400
+  Height = 200
   Top = 301
   Width = 473
   Caption = 'Create configuration files'
   ClientHeight = 450
   ClientWidth = 473
+  Position = poWorkAreaCenter
   LCLVersion = '2.1.0.0'
   object FppkgConfigPanel: TPanel
     Left = 0
