@@ -81,8 +81,8 @@ msgstr "Сведения о тестировании"
 
 #: strtestcaseopts.rstestprojectstopped
 #, object-pascal-format
-msgid "Test project %s stopped"
-msgstr ""
+msgid "Test project %s stopped."
+msgstr "Исполнение тестового проекта %s остановлено."
 
 #: strtestcaseopts.sactcheckall
 msgid "Select all tests"
@@ -131,11 +131,11 @@ msgstr "Запустить выбранный тест"
 
 #: strtestcaseopts.sactstop
 msgid "Stop"
-msgstr ""
+msgstr "Остановить"
 
 #: strtestcaseopts.sactstoph
 msgid "Stop the running test project"
-msgstr ""
+msgstr "Остановить исполнение тестового проекта"
 
 #: strtestcaseopts.sactuncheckall
 msgid "Deselect all tests"

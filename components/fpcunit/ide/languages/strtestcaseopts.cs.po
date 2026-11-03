@@ -80,7 +80,7 @@ msgstr ""
 
 #: strtestcaseopts.rstestprojectstopped
 #, object-pascal-format
-msgid "Test project %s stopped"
+msgid "Test project %s stopped."
 msgstr ""
 
 #: strtestcaseopts.sactcheckall
