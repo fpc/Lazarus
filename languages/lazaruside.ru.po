@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-10-26 23:22+0300\n"
+"PO-Revision-Date: 2026-11-03 03:43+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -2059,6 +2059,14 @@ msgstr "Программы"
 msgctxt "lazarusidestrconsts.dlgfilterxml"
 msgid "XML files"
 msgstr "Файлы XML"
+
+#: lazarusidestrconsts.dlgfinddeclarationincomments
+msgid "Find declaration in comments"
+msgstr "Искать объявления в комментариях"
+
+#: lazarusidestrconsts.dlgfinddeclarationincommentshint
+msgid "Find declaration also works for identifiers in comments and in disabled code, e.g. in an inactive {$ELSE} part"
+msgstr "Расширить поиск объявлений также на идентификаторы в комментариях и неактивном коде, например, в недействующей части {$ELSE}"
 
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
