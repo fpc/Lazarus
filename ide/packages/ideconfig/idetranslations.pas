@@ -486,8 +486,9 @@ begin
   Lines:=TStringList.Create;
   try
     POBuf:=CodeToolBoss.LoadFile(TranslatedFilename,true,false);
-    if POBuf<>nil then
-      POFile.ReadPOText(POBuf.Source);
+    if POBuf=nil then
+      exit;
+    POFile.ReadPOText(POBuf.Source);
     POFile.Tag:=1;
     POFile.UpdateTranslation(BasePOFile);
     POFile.SaveToStrings(Lines);
