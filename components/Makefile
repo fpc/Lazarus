@@ -1988,7 +1988,6 @@ clean:
 	${DELTREE} dockedformeditor/lib/*
 	${DELTREE} anchordocking/units/*
 	${DELTREE} anchordocking/design/units/*
-	${DELTREE} aarre/src/lib/*
 	${DELTREE} activex/lib/*
 	${DELTREE} aggpas/lazarus/lib/*
 	${DELTREE} aissist/api/lib/*
@@ -2136,7 +2135,6 @@ distclean:
 	${DELTREE} dockedformeditor/lib/*
 	${DELTREE} anchordocking/units/*
 	${DELTREE} anchordocking/design/units/*
-	${DELTREE} aarre/src/lib/*
 	${DELTREE} activex/lib/*
 	${DELTREE} aggpas/lazarus/lib/*
 	${DELTREE} aissist/api/lib/*
