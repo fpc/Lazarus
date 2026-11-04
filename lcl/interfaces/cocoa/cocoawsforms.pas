@@ -24,7 +24,7 @@ interface
 
 uses
   // RTL,FCL
-  Classes, SysUtils,
+  Classes, SysUtils, Math,
   // LCL
   Controls, Forms, Graphics, LCLType, Messages, LMessages, GraphMath,
   // Widgetset
@@ -102,6 +102,7 @@ type
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
     class procedure SetRealPopupParent(const ACustomForm: TCustomForm;
       const APopupParent: TCustomForm); override;
+    class procedure SetShape(const AWinControl: TWinControl; const AShape: HBITMAP); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
 
     {need to override these }
@@ -1182,6 +1183,97 @@ begin
 //    writeln('SetRealPopupParent ',APopupParent.ClassName);
     NSWindow( NSView(APopupParent.Handle).window).addChildWindow_ordered(win, NSWindowAbove);
   end;
+end;
+
+class procedure TCocoaWSCustomForm.SetShape(const AWinControl: TWinControl;
+  const AShape: HBITMAP);
+var
+  win: NSWindow;
+  cnt: TCocoaWindowContent;
+  bmp: TCocoaBitmap;
+  w, h: Integer;
+  buf, src, dst: PByte;
+  x, y, v: Integer;
+  cs: CGColorSpaceRef;
+  provider: CGDataProviderRef;
+  data: CFDataRef;
+  maskImg: CGImageRef;
+  maskLayer: CALayer;
+begin
+  if not AWinControl.HandleAllocated then
+    Exit;
+  cnt := TCocoaWindowContent(AWinControl.Handle);
+  win := cnt.lclOwnWindow;
+  if not Assigned(win) then
+    Exit;
+
+  if AShape = 0 then
+  begin
+    if Assigned(cnt.layer) then
+      cnt.layer.setMask(nil);
+    win.setOpaque(True);
+    win.setBackgroundColor(NSColor.windowBackgroundColor);
+    win.invalidateShadow;
+    Exit;
+  end;
+
+  bmp := TCocoaBitmap(AShape);
+  w := bmp.Width;
+  h := bmp.Height;
+  if (w <= 0) or (h <= 0) or (bmp.Data = nil) then
+    Exit;
+
+  // convert shape to premultiplied RGBA: white = visible, black = transparent,
+  // gray = partly visible (antialiased edges)
+  buf := AllocMem(w * h * 4);
+  for y := 0 to h - 1 do
+  begin
+    src := PByte(bmp.Data) + y * bmp.BytesPerRow;
+    dst := buf + y * w * 4;
+    for x := 0 to w - 1 do
+    begin
+      case bmp.BitsPerPixel of
+      1:
+        v := ((src[x shr 3] shr (7 - (x and 7))) and 1) * 255;
+      8:
+        v := src[x];
+      24:
+        v := (src[x * 3] + src[x * 3 + 1] + src[x * 3 + 2]) div 3;
+      32:
+        // the position of the alpha/padding byte differs, it is 255 for
+        // opaque pixels, so the minimum is the darkest color channel
+        v := Min(Min(src[x * 4], src[x * 4 + 1]), Min(src[x * 4 + 2], src[x * 4 + 3]));
+      else
+        v := 255;
+      end;
+      // premultiplied: color = alpha
+      FillByte(dst[x * 4], 4, v);
+    end;
+  end;
+
+  data := CFDataCreate(nil, buf, w * h * 4);
+  FreeMem(buf);
+  provider := CGDataProviderCreateWithCFData(data);
+  CFRelease(data);
+  cs := CGColorSpaceCreateDeviceRGB;
+  maskImg := CGImageCreate(w, h, 8, 32, w * 4, cs, kCGImageAlphaPremultipliedLast,
+    provider, nil, 0, kCGRenderingIntentDefault);
+  CGColorSpaceRelease(cs);
+  CGDataProviderRelease(provider);
+  if maskImg = nil then
+    Exit;
+
+  win.setOpaque(False);
+  win.setBackgroundColor(NSColor.clearColor);
+
+  cnt.setWantsLayer(True);
+  maskLayer := CALayer.layer;
+  maskLayer.setContents(id(maskImg));
+  maskLayer.setFrame(cnt.bounds);
+  maskLayer.setAutoresizingMask(kCALayerWidthSizable or kCALayerHeightSizable);
+  cnt.layer.setMask(maskLayer);
+  CGImageRelease(maskImg); // retained by the layer
+  win.invalidateShadow;
 end;
 
 class procedure TCocoaWSCustomForm.ShowHide(const AWinControl: TWinControl);
