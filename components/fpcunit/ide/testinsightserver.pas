@@ -313,6 +313,35 @@ begin
     FEvent(FSender,FResult);
 end;
 
+Type
+
+  { TTransferLog - passes a log message from a connection thread to the main thread }
+
+  TTransferLog = Class
+  Private
+    FEvent: TTestInsightLogEvent;
+    FSender : TObject;
+    FMsgType : TInsightMessageType;
+    FMsg : String;
+  Public
+    constructor create(aEvent: TTestInsightLogEvent; aSender : TObject; aType : TInsightMessageType; const aMsg : String);
+    procedure DoLogEvent;
+  end;
+
+constructor TTransferLog.create(aEvent: TTestInsightLogEvent; aSender: TObject; aType: TInsightMessageType; const aMsg: String);
+begin
+  FEvent:=aEvent;
+  FSender:=aSender;
+  FMsgType:=aType;
+  FMsg:=aMsg;
+end;
+
+procedure TTransferLog.DoLogEvent;
+begin
+  if Assigned(FEvent) then
+    FEvent(FSender,FMsgType,FMsg);
+end;
+
 procedure TTestInsightServer.DoSetTestNames;
 begin
   if Assigned(FOnSetTestNames) then
@@ -675,9 +704,23 @@ end;
 
 
 procedure TTestInsightServer.DoLog(const aType : TInsightMessageType;const aMessage: String);
+var
+  Trans: TTransferLog;
 begin
-  If Assigned(FOnLog) then
+  If not Assigned(FOnLog) then
+    exit;
+  if GetCurrentThreadId=MainThreadID then
+    begin
     FOnLog(Self,aType,aMessage);
+    exit;
+    end;
+  // called from a connection thread: the handler usually accesses the LCL
+  Trans:=TTransferLog.Create(FOnLog,Self,aType,aMessage);
+  try
+    TThread.Synchronize(TThread.CurrentThread,@Trans.DoLogEvent);
+  finally
+    Trans.Free;
+  end;
 end;
 
 procedure TTestInsightServer.DoLog(const aType : TInsightMessageType;const Fmt: String; Args: array of const);
