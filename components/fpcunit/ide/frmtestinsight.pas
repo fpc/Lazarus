@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, LazFileUtils, LazUTF8, Forms, Controls,
   Graphics, Dialogs, ExtCtrls, ComCtrls, ActnList, Menus, Clipbrd, StdCtrls,
-  LCLProc, AsyncProcess, IniFiles, fpJSON, testinsightprotocol,
+  LCLProc, LCLType, AsyncProcess, IniFiles, fpJSON, testinsightprotocol,
   testinsightserver, jsonparser, types, StrUtils, strtestcaseopts;
 
 
@@ -83,6 +83,21 @@ type
     ToolButton8: TToolButton;
     miStop: TMenuItem;
     MenuItemStop: TMenuItem;
+    ToolButton9: TToolButton;
+    pnlFind: TPanel;
+    lblFind: TLabel;
+    edFind: TEdit;
+    ToolButton10: TToolButton;
+    ToolButton11: TToolButton;
+    actFindPrev: TAction;
+    actFindNext: TAction;
+    procedure actFindNextExecute(Sender: TObject);
+    procedure actFindPrevExecute(Sender: TObject);
+    procedure actFindUpdate(Sender: TObject);
+    procedure edFindChange(Sender: TObject);
+    procedure edFindKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure TestTreeCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
+      State: TCustomDrawState; var {%H-}DefaultDraw: Boolean);
     procedure actNextErrorUpdate(Sender: TObject);
     procedure actPrevErrorUpdate(Sender: TObject);
     procedure actRunAllUpdate(Sender: TObject);
@@ -131,8 +146,12 @@ type
     FFirstFailure: TTreeNode; // reference to first failed test
     FServer : TTestInsightServer;
     FTestsRunning : Boolean;
+    FFindText: string; // lowercase
     procedure AddSelected(N: TTreeNode; var Tests: TStringDynArray; var aLen: Integer);
     function AddStopImage: Integer;
+    function AddArrowImage(Up: boolean): Integer;
+    function NodeMatchesFind(Node: TTreeNode): boolean;
+    procedure UpdateFindPanelWidth;
     // Callbacks for server
     procedure DoClearTests(Sender: TObject);
     procedure DoFinishedTests(Sender: TObject);
@@ -169,6 +188,8 @@ type
     procedure RunTest(ATest: TTestItem); virtual;
     procedure NextError;
     procedure PrevError;
+    procedure FindNext;
+    procedure FindPrev;
     procedure MaybeStartTestProject;
     // test project handling. Needs to integrate with Lazarus IDE.
     function ShowRefreshTestproject : Boolean; virtual;
@@ -355,6 +376,16 @@ begin
   actStop.Caption := sactStop;
   actStop.Hint := sactStopH;
   actStop.ImageIndex := AddStopImage;
+  lblFind.Caption := rsFind;
+  UpdateFindPanelWidth;
+  edFind.TextHint := rsFindHint;
+  edFind.Hint := rsFindHint;
+  actFindPrev.Caption := rsFindPrevious;
+  actFindPrev.Hint := rsFindPrevious;
+  actFindPrev.ImageIndex := AddArrowImage(true);
+  actFindNext.Caption := rsFindNext;
+  actFindNext.Hint := rsFindNext;
+  actFindNext.ImageIndex := AddArrowImage(false);
   FServer:=CreateServer(Self);
   FServer.OnClearTests:=@DoClearTests;
   FServer.OnSetTestNames:=@DoSetTestSuite;
@@ -473,6 +504,109 @@ begin
   finally
     Bmp.Free;
   end;
+end;
+
+function TTestInsightForm.AddArrowImage(Up: boolean): Integer;
+// add a dark blue triangle pointing up or down
+var
+  Bmp: TBitmap;
+  Inset, W, H: Integer;
+  Pts: array[0..2] of TPoint;
+begin
+  Bmp:=TBitmap.Create;
+  try
+    W:=ILMenu.Width;
+    H:=ILMenu.Height;
+    Bmp.SetSize(W,H);
+    Bmp.Canvas.Brush.Color:=clFuchsia;
+    Bmp.Canvas.FillRect(0,0,W,H);
+    Inset:=W div 4;
+    if Up then
+    begin
+      Pts[0]:=Point(W div 2,Inset);
+      Pts[1]:=Point(W-Inset,H-Inset);
+      Pts[2]:=Point(Inset,H-Inset);
+    end else
+    begin
+      Pts[0]:=Point(Inset,Inset);
+      Pts[1]:=Point(W-Inset,Inset);
+      Pts[2]:=Point(W div 2,H-Inset);
+    end;
+    Bmp.Canvas.Brush.Color:=clNavy;
+    Bmp.Canvas.Pen.Color:=clNavy;
+    Bmp.Canvas.Polygon(Pts);
+    Result:=ILMenu.AddMasked(Bmp,clFuchsia);
+  finally
+    Bmp.Free;
+  end;
+end;
+
+function TTestInsightForm.NodeMatchesFind(Node: TTreeNode): boolean;
+begin
+  Result:=false;
+  if (FFindText='') or (Node=nil) or (Node.Data=nil) then
+    exit;
+  Result:=Pos(FFindText,UTF8LowerCase(Node.Text))>0;
+end;
+
+procedure TTestInsightForm.UpdateFindPanelWidth;
+// the toolbar sets the height of pnlFind, the width must fit the label and edit
+var
+  LblWidth, LblHeight: Integer;
+begin
+  LblWidth:=0;
+  LblHeight:=0;
+  lblFind.GetPreferredSize(LblWidth,LblHeight);
+  pnlFind.Width:=lblFind.BorderSpacing.Left+LblWidth
+                 +edFind.BorderSpacing.Left+edFind.Width;
+end;
+
+procedure TTestInsightForm.actFindNextExecute(Sender: TObject);
+begin
+  FindNext;
+end;
+
+procedure TTestInsightForm.actFindPrevExecute(Sender: TObject);
+begin
+  FindPrev;
+end;
+
+procedure TTestInsightForm.actFindUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled:=FFindText<>'';
+end;
+
+procedure TTestInsightForm.edFindChange(Sender: TObject);
+begin
+  FFindText:=UTF8LowerCase(edFind.Text);
+  TestTree.Invalidate;
+end;
+
+procedure TTestInsightForm.edFindKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key<>VK_RETURN then
+    exit;
+  if Shift=[] then
+  begin
+    FindNext;
+    Key:=0;
+  end else if Shift=[ssShift] then
+  begin
+    FindPrev;
+    Key:=0;
+  end;
+end;
+
+procedure TTestInsightForm.TestTreeCustomDrawItem(Sender: TCustomTreeView;
+  Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
+begin
+  if cdsSelected in State then
+    exit;
+  if not NodeMatchesFind(Node) then
+    exit;
+  Sender.Canvas.Brush.Color:=$80FFFF;
+  Sender.Canvas.Font.Color:=clBlack;
 end;
 
 function TTestInsightForm.HaveErrors : Boolean;
@@ -1387,6 +1521,66 @@ begin
       Exit;
     end;
   end;
+end;
+
+procedure TTestInsightForm.FindNext;
+var
+  StartNode, Node: TTreeNode;
+begin
+  if FFindText='' then
+    exit;
+  StartNode:=TestTree.Selected;
+  if StartNode=nil then
+    Node:=TestTree.Items.GetFirstNode
+  else
+    Node:=StartNode.GetNext;
+  repeat
+    if Node=nil then
+      Node:=TestTree.Items.GetFirstNode; // wrap around
+    if Node=nil then
+      exit;
+    if NodeMatchesFind(Node) then
+    begin
+      TestTree.Selected:=Node;
+      TestTree.MakeSelectionVisible;
+      exit;
+    end;
+    if Node=StartNode then
+      exit;
+    Node:=Node.GetNext;
+    if (Node=nil) and (StartNode=nil) then
+      exit;
+  until false;
+end;
+
+procedure TTestInsightForm.FindPrev;
+var
+  StartNode, Node: TTreeNode;
+begin
+  if FFindText='' then
+    exit;
+  StartNode:=TestTree.Selected;
+  if StartNode=nil then
+    Node:=TestTree.Items.GetLastSubNode
+  else
+    Node:=StartNode.GetPrev;
+  repeat
+    if Node=nil then
+      Node:=TestTree.Items.GetLastSubNode; // wrap around
+    if Node=nil then
+      exit;
+    if NodeMatchesFind(Node) then
+    begin
+      TestTree.Selected:=Node;
+      TestTree.MakeSelectionVisible;
+      exit;
+    end;
+    if Node=StartNode then
+      exit;
+    Node:=Node.GetPrev;
+    if (Node=nil) and (StartNode=nil) then
+      exit;
+  until false;
 end;
 
 function TTestInsightForm.ShowRefreshTestproject: Boolean;

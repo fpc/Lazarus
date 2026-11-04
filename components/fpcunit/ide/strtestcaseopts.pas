@@ -73,6 +73,10 @@ resourcestring
   smiExpandNodes = 'Expand Nodes';
   rsNextError = 'Next error';
   rsPreviousError = 'Previous error';
+  rsFind = 'Find:';
+  rsFindHint = 'Highlight tests containing this text';
+  rsFindNext = 'Find next';
+  rsFindPrevious = 'Find previous';
   sactCopyAllToClipboard = 'Copy text to clipboard';
   sactCopyMessageToClipboard = 'Copy message to clipboard';
   sactCopyAllToClipboardH = 'Copy the entire text to clipboard';

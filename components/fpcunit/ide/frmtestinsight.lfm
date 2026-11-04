@@ -132,6 +132,60 @@ object TestInsightForm: TTestInsightForm
         Top = 2
         Action = actNextError
       end
+      object ToolButton9: TToolButton
+        Left = 169
+        Height = 25
+        Top = 2
+        Caption = 'ToolButton9'
+        Style = tbsSeparator
+      end
+      object pnlFind: TPanel
+        Left = 175
+        Height = 25
+        Top = 2
+        Width = 188
+        BevelOuter = bvNone
+        ClientHeight = 25
+        ClientWidth = 188
+        ParentBackground = True
+        ParentColor = True
+        TabOrder = 0
+        object lblFind: TLabel
+          AnchorSideLeft.Control = pnlFind
+          AnchorSideTop.Control = pnlFind
+          AnchorSideTop.Side = asrCenter
+          Left = 4
+          Height = 16
+          Top = 5
+          Width = 30
+          BorderSpacing.Left = 4
+          Caption = 'Find:'
+        end
+        object edFind: TEdit
+          AnchorSideLeft.Control = lblFind
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = pnlFind
+          AnchorSideTop.Side = asrCenter
+          Left = 38
+          Height = 22
+          Top = 2
+          Width = 150
+          BorderSpacing.Left = 4
+          TabOrder = 0
+          OnChange = edFindChange
+          OnKeyDown = edFindKeyDown
+        end
+      end
+      object ToolButton10: TToolButton
+        Left = 363
+        Top = 2
+        Action = actFindPrev
+      end
+      object ToolButton11: TToolButton
+        Left = 389
+        Top = 2
+        Action = actFindNext
+      end
     end
   end
   object Panel2: TPanel
@@ -167,6 +221,7 @@ object TestInsightForm: TTestInsightForm
       Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
       OnChange = TestTreeChange
       OnCreateNodeClass = TestTreeCreateNodeClass
+      OnCustomDrawItem = TestTreeCustomDrawItem
       OnDblClick = TestTreeDblClick
       OnMouseDown = TestTreeMouseDown
       OnSelectionChanged = TestTreeSelectionChanged
@@ -659,6 +714,20 @@ object TestInsightForm: TTestInsightForm
       ShortCut = 16464
       OnExecute = actPrevErrorExecute
       OnUpdate = actPrevErrorUpdate
+    end
+    object actFindPrev: TAction
+      Category = 'Find'
+      Caption = 'Find previous'
+      ShortCut = 8306
+      OnExecute = actFindPrevExecute
+      OnUpdate = actFindUpdate
+    end
+    object actFindNext: TAction
+      Category = 'Find'
+      Caption = 'Find next'
+      ShortCut = 114
+      OnExecute = actFindNextExecute
+      OnUpdate = actFindUpdate
     end
     object aRefresh: TAction
       Caption = 'Refresh'

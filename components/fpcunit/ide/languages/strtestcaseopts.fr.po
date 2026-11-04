@@ -49,6 +49,22 @@ msgstr "Message d'exception : %s"
 msgid "%s     Failures: %s"
 msgstr "%s    Échecs : %s"
 
+#: strtestcaseopts.rsfind
+msgid "Find:"
+msgstr ""
+
+#: strtestcaseopts.rsfindhint
+msgid "Highlight tests containing this text"
+msgstr ""
+
+#: strtestcaseopts.rsfindnext
+msgid "Find next"
+msgstr ""
+
+#: strtestcaseopts.rsfindprevious
+msgid "Find previous"
+msgstr ""
+
 #: strtestcaseopts.rsmessage
 #, object-pascal-format
 msgid "Message: %s"
