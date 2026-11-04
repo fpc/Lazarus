@@ -507,6 +507,8 @@ var
   txtblk: TFPTextBlock;
   R,MR : TRect;
   BL,ML : TFPReportLayout;
+  lTM: TLCLTextMetric;
+  lBase: Integer;
 begin
   lMemo := THackReportMemo(AMemo);
 
@@ -529,26 +531,24 @@ begin
   begin
     txtblk := lMemo.TextBlockList[i];
     Canvas.Font := GetFont(txtblk.FontName);
-    Canvas.Font.Size:=Round(lMemo.Font.Size * Zoom);
+    Canvas.Font.Height := -Round(lMemo.Font.Size * Zoom * VDPI / 72);
+    if not Canvas.GetTextMetrics(lTM) then
+      lTM.Ascender := Canvas.TextHeight('Hg');
 
     lXPos := lPt1.Left + txtblk.Pos.Left;
     lYPos := lPt1.Top + txtblk.Pos.Top;
+    { baseline: one CapHeight below the top of the text block }
+    lBase := VmmToPixels(lYPos + txtblk.Height) + FVertOffset;
     R:=Rect(HmmToPixels(lXPos) + FHorzOffset,
-            VmmToPixels(lYPos) + FVertOffset,
+            VmmToPixels(lYPos - txtblk.Descender) + FVertOffset,
             HmmToPixels(lXPos + txtblk.Width) + FHorzOffset,
-            VmmToPixels(lYPos + txtblk.Height + (txtblk.Descender*3)) + FVertOffset);
+            VmmToPixels(lYPos + txtblk.Height + txtblk.Descender) + FVertOffset);
     if txtblk.BGColor <> fpReport.clNone then // DON'T remove "fpReport." prefix.
     begin
       Canvas.Pen.Style := psClear;
       Canvas.Brush.Style := bsSolid;
       Canvas.Brush.Color := RGBtoBGR(txtblk.BGColor);
       Canvas.Rectangle(R);
-{      Canvas.Rectangle(
-          mmToPixels(lXPos) + FHorzOffset,
-          mmToPixels(lYPos) + FVertOffset,
-          mmToPixels(lXPos + txtblk.Width) + FHorzOffset,
-          mmToPixels(lYPos + txtblk.Height + (txtblk.Descender*3)) + FVertOffset
-      );}
     end;
 
     Canvas.Pen.Style := psSolid;
@@ -559,7 +559,7 @@ begin
       begin
       Canvas.TextOut(
           HmmToPixels(lXPos) + FHorzOffset,
-          VmmToPixels(lYPos) + FVertOffset,
+          lBase - lTM.Ascender,
           txtblk.Text
       );
       if Assigned(FHyperLinks) and (txtblk is TFPHTTPTextBlock) then
@@ -570,7 +570,7 @@ begin
       Canvas.TextRect(
           MR,
           HmmToPixels(lXPos) + FHorzOffset,
-          VmmToPixels(lYPos) + FVertOffset,
+          lBase - lTM.Ascender,
           txtblk.Text
       )
       end;
