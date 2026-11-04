@@ -1429,8 +1429,8 @@ begin
     raise Exception.Create('TLFMTree.Create need tree and buffer');
   InvalidateDeclCaches;
   Trees:=TheTrees;
+  LFMBuffer:=aLFMBuf; // must be set before adding, Trees.FItems is sorted by LFMBuffer
   Trees.FItems.Add(Self);
-  LFMBuffer:=aLFMBuf;
   LFMBufferChangeStep:=LFMBuffer.ChangeStep;
   if LFMBufferChangeStep=Low(LFMBufferChangeStep) then
     LFMBufferChangeStep:=High(LFMBufferChangeStep)

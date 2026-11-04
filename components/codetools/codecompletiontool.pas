@@ -2060,8 +2060,8 @@ begin
     EntryContext.Node:=Params.NewNode;
     EntryContext.Tool:=Params.NewCodeTool;
 
-    if NodeIsFunction(EntryContext.Node) then
-      FuncResultNode:=GetProcResultNode(EntryContext.Node)
+    if (EntryContext.Tool<>nil) and EntryContext.Tool.NodeIsFunction(EntryContext.Node) then
+      FuncResultNode:=EntryContext.Tool.GetProcResultNode(EntryContext.Node)
     else
       FuncResultNode:=nil;
     // check if there is another NewType in context of CursorNode

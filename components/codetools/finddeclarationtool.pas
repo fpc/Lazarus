@@ -14753,7 +14753,7 @@ function TFindDeclarationTool.CheckSrcIdentifier(
 
     WasFunction:=false;
 
-    if TargetTool.NodeIsFunction(FoundContext.Node) then begin
+    if FoundContext.Tool.NodeIsFunction(FoundContext.Node) then begin
       // check if it is an internal function result reference by its name
       WasFunction:=true;
       TargetTool.ReadNextAtom; // read after function name
