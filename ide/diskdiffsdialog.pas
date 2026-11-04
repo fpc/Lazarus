@@ -74,7 +74,8 @@ type
     FPackageList: TStringList;
     FCodeList: TFPList;
     FHasLocalModifications: Boolean;
-    FHasExistingFiles: Boolean;
+    FHasChangedFiles: Boolean; // some listed files exist on disk
+    FHasDeletedFiles: Boolean; // some listed files have vanished from disk
     FCachedDiffs: TFPList; // List of PDiffItem
     function ShortenFilename(const aFilename: string): string;
     procedure AddFile2Box(AInfo: TObject; AFileName: string; AModified: Boolean);
@@ -300,7 +301,8 @@ var
   CurModified: Boolean;
 begin
   FHasLocalModifications:=False;
-  FHasExistingFiles:=False;
+  FHasChangedFiles:=False;
+  FHasDeletedFiles:=False;
   FilesListBox.Items.BeginUpdate;
   FilesListBox.Items.Clear;
   if CodeList<>nil then
@@ -314,8 +316,10 @@ begin
         CurUnit:=Project1.UnitWithLFMFilename(aFilename);
       CurModified:=(CurUnit<>nil) and CurUnit.Modified;
       AddFile2Box(aCode, ShortenFilename(aFilename), CurModified);
-      if (not FHasExistingFiles) and FileExistsCached(aFilename) then
-        FHasExistingFiles:=true;
+      if FileExistsCached(aFilename) then
+        FHasChangedFiles:=true
+      else
+        FHasDeletedFiles:=true;
     end;
   end;
   if PackageList<>nil then
@@ -325,19 +329,27 @@ begin
       if IgnoreList.IndexOf(APackage)>=0 then continue;
       AddFile2Box(APackage, APackage.Filename, APackage.Modified);
       AltFilename:=PackageList[i];
-      if not FHasExistingFiles then
+      if not FHasChangedFiles then
       begin
         if FileExistsCached(APackage.Filename)
             or ((CompareFilenames(AltFilename,APackage.Filename)<>0)
               and FileExistsCached(AltFilename)) then
-          FHasExistingFiles:=true;
+          FHasChangedFiles:=true;
       end;
     end;
   end;
   FilesListBox.Items.EndUpdate;
   WarnImage.Visible:=FHasLocalModifications;
   WarnLabel.Visible:=FHasLocalModifications;
-  BtnPanel.OkButton.Visible:=FHasExistingFiles;
+  BtnPanel.OkButton.Visible:=FHasChangedFiles or FHasDeletedFiles;
+  if FHasDeletedFiles then
+  begin
+    if FHasChangedFiles then
+      BtnPanel.OkButton.Caption:=lisDiskDiffReloadCloseCheckedFiles
+    else
+      BtnPanel.OkButton.Caption:=lisDiskDiffCloseCheckedFiles;
+  end else
+    BtnPanel.OkButton.Caption:=lisDiskDiffReloadCheckedFilesFromDisk;
 end;
 
 procedure TDiskDiffsDlg.ShowDiff;

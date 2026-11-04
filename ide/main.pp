@@ -8928,7 +8928,16 @@ begin
         if CurUnit=nil then continue;
 
         if (Reload=mrOk)
-        and (AIgnoreList.IndexOf(CurCode)<0) then begin
+        and (AIgnoreList.IndexOf(CurCode)<0)
+        and (not FileExistsCached(CurCode.Filename))
+        and (CurUnit.OpenEditorInfoCount > 0)
+        and (not CurUnit.IsMainUnit) then begin
+          // file vanished on disk -> close all editors, discarding changes
+          Result:=DoCloseEditorFile(CurUnit.Filename,[]);
+          if Result=mrAbort then exit;
+        end else if (Reload=mrOk)
+        and (AIgnoreList.IndexOf(CurCode)<0)
+        and FileExistsCached(CurCode.Filename) then begin
           // revert
           if CurUnit.OpenEditorInfoCount > 0 then
           begin
@@ -8969,7 +8978,8 @@ begin
         // designer form
         if (Reload=mrOk)
             and (AIgnoreList.IndexOf(CurCode)<0)
-            and (AIgnoreList.IndexOf(CurUnit.SourceLFM)<0) then
+            and (AIgnoreList.IndexOf(CurUnit.SourceLFM)<0)
+            and FileExistsCached(CurCode.Filename) then
         begin
           // revert form
           LFMLoaded.Add(CurUnit.SourceLFM);
@@ -8984,7 +8994,7 @@ begin
 
       // update code filedates
       for i:=0 to BufferList.Count-1 do
-        CurCode.MakeFileDateValid;
+        TCodeBuffer(BufferList[i]).MakeFileDateValid;
     end;
 
     // reload packages

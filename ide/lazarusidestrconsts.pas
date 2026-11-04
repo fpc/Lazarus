@@ -4156,6 +4156,8 @@ resourcestring
   lisDiskDiffSomeFilesHaveLocalChanges = 'Some files have local changes.'
     +' Either local or external changes will be overwritten.';
   lisDiskDiffReloadCheckedFilesFromDisk = 'Reload checked files from disk';
+  lisDiskDiffReloadCloseCheckedFiles = 'Reload/close checked files';
+  lisDiskDiffCloseCheckedFiles = 'Close checked files';
   lisDiskDiffIgnoreAllDiskChanges = 'Ignore all disk changes';
   
   // external tools
