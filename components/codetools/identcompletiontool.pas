@@ -3538,6 +3538,17 @@ var
         CurrentIdentifierList.ContextFlags+[ilcfCanProcDeclaration];
   end;
 
+  function KeywordsAreApplicable(Node: TCodeTreeNode): boolean;
+  begin
+    Result:=false;
+    MoveCursorToCleanPos(IdentStartPos);
+    ReadNextAtom;
+    ReadPriorAtom;
+    if CurPos.Flag<>cafPoint then
+      Result:=true;
+    Node:=FindDeepestNodeAtPos(IdentStartPos,false);
+  end;
+
 begin
   Result:=false;
 
@@ -3551,7 +3562,7 @@ begin
       if not ParseSourceTillCollectionStart(IdentStartXY,CleanCursorPos,CursorNode,
                                             IdentStartPos,IdentEndPos) then
         Exit;
-      FStartedAsFullyQualified:= IsSourceNameOfSelf(CursorPos) ;
+      FStartedAsFullyQualified:= IsSourceNameOfSelf(CursorPos);
       Params:=TFindDeclarationParams.Create(Self,CursorNode);
       try
         if StartedAsFullyQualified and (CursorNode.GetRoot.Desc = ctnUnit)
@@ -3775,8 +3786,6 @@ begin
           end;
 
           CursorContext:=CreateFindContext(Self,CursorNode);
-          if not StartedAsFullyQualified then
-            GatherContextKeywords(CursorContext, IdentStartPos, Beautifier, GatherContext); //note: coth:
 
           // search and gather identifiers in context
           if (GatherContext.Tool<>nil) and (GatherContext.Node<>nil) then begin
@@ -3826,8 +3835,15 @@ begin
           {$IFDEF CTDEBUG}
           DebugLn('TIdentCompletionTool.GatherIdentifiers G');
           {$ENDIF}
-          if not StartedAsFullyQualified then
-            GatherUsefulIdentifiers(IdentStartPos,CursorContext,GatherContext);
+
+          GatherUsefulIdentifiers(IdentStartPos,CursorContext,GatherContext);
+          if KeywordsAreApplicable(CursorNode) then // excluded keywords after point .
+            GatherContextKeywords(CursorContext, IdentStartPos, Beautifier, GatherContext)
+          else if Scanner.CompilerMode = cmOBJFPC then begin
+            if CursorNode.HasParentOfType(ctnTypeDefinition) then // e.g. for
+            // type TFooBarInt = TFoo.|specialize TBar<integer>;
+              AddKeyword('specialize');  // exceptional case
+          end;
         end;
 
         Result:=true;

@@ -4878,7 +4878,9 @@ begin
     Next;
     if (Scanner.CompilerMode=cmOBJFPC) and UpAtomIs('SPECIALIZE') then begin
       ReadSpecialize(ParserFlagsSpecialize, Extract,Copying,Attr);
-      if not(ppDontCreateNodes in ParserFlags) then
+      if not(ppDontCreateNodes in ParserFlags) and
+      (CurNode.LastChild<>nil) // avoid nil dereference in incomplete code
+      then
         LastEnd := CurNode.LastChild.EndPos;
       inc(Cnt,1);
     end
