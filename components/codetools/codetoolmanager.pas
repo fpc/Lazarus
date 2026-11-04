@@ -1357,6 +1357,11 @@ begin
     end else if UpdateFromDisk and Result.AutoRevertFromDisk
     and Result.FileNeedsUpdate then begin
       //debugln(['TCodeToolManager.LoadFile ',ExpandedFilename,' AutoRevert=',Result.AutoRevertFromDisk,' Modified=',Result.Modified,' NeedLoad=',Result.FileNeedsUpdate]);
+      if not FileExistsCached(Result.Filename) then begin
+        // file was deleted on disk
+        Result.IsDeleted:=true;
+        exit(nil);
+      end;
       Result.Reload;
     end;
   end;

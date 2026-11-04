@@ -1165,10 +1165,11 @@ begin
     Code:=TCodeBuffer(Sender);
     if Code.IsVirtual then
       Cache:=DirectoryCachePool.GetCache('',false,false)
-    else begin
+    else if FileExistsCached(Code.Filename) then begin
       Dir:=ExtractFilePath(Code.Filename);
       Cache:=DirectoryCachePool.GetCache(Dir,false,false);
-    end;
+    end else
+      Cache:=nil; // directory cache already knows the file is gone
     if Cache<>nil then
       Cache.Invalidate;
   end;
