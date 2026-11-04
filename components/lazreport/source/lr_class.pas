@@ -7592,14 +7592,31 @@ end;
 
 procedure TfrPage.Clear;
 begin
-  while Objects.Count > 0 do
-    Objects.Delete(0);
+  while Objects.Count>0 do
+    Delete(0);
 end;
 
 procedure TfrPage.Delete(Index: Integer);
+var
+  i: Integer;
+  CanFree: Boolean;
 begin
   if not (doChildComponent in TfrView(Objects[Index]).FDesignOptions) then
-    TfrView(Objects[Index]).Free;
+  begin
+    i:=Objects.Count-1;
+    CanFree:=True;
+    // check another object in Objects
+    while i>=0 do begin
+      if (i<>Index) and (Objects[i]=Objects[Index]) then
+      begin
+        CanFree:=False;
+        break;
+      end;
+      Dec(i);
+    end;
+    if CanFree then
+      TfrView(Objects[Index]).Free;
+  end;
   Objects.Delete(Index);
 end;
 
