@@ -114,21 +114,36 @@ begin
     end;
 end;
 
-Procedure AddSkips (aResult : TTestResult; aSuite : TTest; aAllowed : TTest);
+Procedure AddSkips(aResult : TTestResult; aTest : TTest; const aPath : String;
+  aAllowed : TTest; aInAllowed : Boolean; aSelected : TStrings);
+// Adds the test cases of aTest to the skip list, except those of aAllowed.
+// If aSelected<>nil, only the test cases with a path in aSelected are run.
+// aPath is the path of aTest like in the IDE, e.g. 'Suite.Test'.
 
 Var
   I : Integer;
   T : TTest;
+  ChildPath : String;
 
 begin
-  if (aSuite=aAllowed) then exit;
-  for I:=0 to aSuite.GetChildTestCount-1 do
+  if aTest=aAllowed then
+    aInAllowed:=True;
+  if aTest is TTestCase then
     begin
-    T:=aSuite.GetChildTest(I);
-    if T is TTestCase then
-      aResult.AddToSkipList(T as TTestCase)
+    if not aInAllowed then
+      aResult.AddToSkipList(aTest as TTestCase)
+    else if Assigned(aSelected) and (aSelected.IndexOf(aPath)<0) then
+      aResult.AddToSkipList(aTest as TTestCase);
+    exit;
+    end;
+  for I:=0 to aTest.GetChildTestCount-1 do
+    begin
+    T:=aTest.GetChildTest(I);
+    if aPath='' then
+      ChildPath:=T.TestName
     else
-      AddSkips(aResult,T,aAllowed)
+      ChildPath:=aPath+'.'+T.TestName;
+    AddSkips(aResult,T,ChildPath,aAllowed,aInAllowed,aSelected);
     end;
 end;
 
@@ -139,6 +154,8 @@ var
   TestResult: TTestResult;
   Listener: TTestInsightListener;
   Client : TAbstractTestInsightClient;
+  Selected: TStringList;
+  S: String;
 
 begin
   Suite := GetTestRegistry;
@@ -147,6 +164,7 @@ begin
   Client:=Nil;
   TestResult:=Nil;
   Listener:=Nil;
+  Selected:=Nil;
   try
     Client:=CreateClient(aConfig,BaseURL);
     Listener := TTestInsightListener.Create(Client, Suite);
@@ -154,13 +172,26 @@ begin
       begin
       TestResult := TTestResult.Create;
       if Client.Options.TestSuite<>'' then
-        AddSkips(TestResult,Suite,Suite.FindTest(Client.Options.TestSuite));
+        // run only this suite or test case, e.g. the highlighted test in the IDE
+        AddSkips(TestResult,Suite,'',Suite.FindTest(Client.Options.TestSuite),False,Nil)
+      else if Length(Listener.fSelectedTests)>0 then
+        begin
+        // run only the selected (checked) test cases
+        Selected:=TStringList.Create;
+        Selected.CaseSensitive:=False;
+        Selected.Sorted:=True;
+        Selected.Duplicates:=dupIgnore;
+        for S in Listener.fSelectedTests do
+          Selected.Add(S);
+        AddSkips(TestResult,Suite,'',Nil,True,Selected);
+        end;
       TestResult.AddListener(Listener as ITestListener);
       Suite.Run(TestResult);
       end
     else
       FreeAndNil(Listener);
   finally
+    Selected.Free;
     TestResult.Free;
     Client.Free;
   end;

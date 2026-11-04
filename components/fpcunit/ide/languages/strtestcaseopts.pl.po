@@ -86,11 +86,11 @@ msgid "Test project %s stopped."
 msgstr ""
 
 #: strtestcaseopts.sactcheckall
-msgid "Select all tests"
+msgid "Check all tests"
 msgstr ""
 
 #: strtestcaseopts.sactcheckcurrentsuite
-msgid "Select current suite"
+msgid "Check current suite"
 msgstr ""
 
 #: strtestcaseopts.sactcloseform
@@ -115,7 +115,7 @@ msgid "Copy message to clipboard"
 msgstr ""
 
 #: strtestcaseopts.sactrunaction
-msgid "&Run all"
+msgid "&Run checked tests"
 msgstr ""
 
 #: strtestcaseopts.sactrunactionh
@@ -123,11 +123,11 @@ msgid "Run all checked tests"
 msgstr ""
 
 #: strtestcaseopts.sactrunhighlightedtest
-msgid "Run selected"
+msgid "Run highlighted test"
 msgstr ""
 
 #: strtestcaseopts.sactrunhighlightedtesth
-msgid "Run selected test"
+msgid "Run only the highlighted test or suite"
 msgstr ""
 
 #: strtestcaseopts.sactstop
@@ -139,11 +139,11 @@ msgid "Stop the running test project"
 msgstr ""
 
 #: strtestcaseopts.sactuncheckall
-msgid "Deselect all tests"
+msgid "Uncheck all tests"
 msgstr ""
 
 #: strtestcaseopts.sactuncheckcurrentsuite
-msgid "Deselect current suite"
+msgid "Uncheck current suite"
 msgstr ""
 
 #: strtestcaseopts.sbtncreate

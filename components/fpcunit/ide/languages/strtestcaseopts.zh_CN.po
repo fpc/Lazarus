@@ -86,11 +86,15 @@ msgid "Test project %s stopped."
 msgstr ""
 
 #: strtestcaseopts.sactcheckall
-msgid "Select all tests"
+#, fuzzy
+#| msgid "Select all tests"
+msgid "Check all tests"
 msgstr "选择所有测试"
 
 #: strtestcaseopts.sactcheckcurrentsuite
-msgid "Select current suite"
+#, fuzzy
+#| msgid "Select current suite"
+msgid "Check current suite"
 msgstr "选择当前套件"
 
 #: strtestcaseopts.sactcloseform
@@ -115,7 +119,9 @@ msgid "Copy message to clipboard"
 msgstr "将消息复制到剪贴板"
 
 #: strtestcaseopts.sactrunaction
-msgid "&Run all"
+#, fuzzy
+#| msgid "&Run all"
+msgid "&Run checked tests"
 msgstr "运行全部(&R)"
 
 #: strtestcaseopts.sactrunactionh
@@ -123,11 +129,15 @@ msgid "Run all checked tests"
 msgstr "运行所有选中的测试"
 
 #: strtestcaseopts.sactrunhighlightedtest
-msgid "Run selected"
+#, fuzzy
+#| msgid "Run selected"
+msgid "Run highlighted test"
 msgstr "运行选中的"
 
 #: strtestcaseopts.sactrunhighlightedtesth
-msgid "Run selected test"
+#, fuzzy
+#| msgid "Run selected test"
+msgid "Run only the highlighted test or suite"
 msgstr "运行选中的测试"
 
 #: strtestcaseopts.sactstop
@@ -139,11 +149,15 @@ msgid "Stop the running test project"
 msgstr ""
 
 #: strtestcaseopts.sactuncheckall
-msgid "Deselect all tests"
+#, fuzzy
+#| msgid "Deselect all tests"
+msgid "Uncheck all tests"
 msgstr "取消选择所有测试"
 
 #: strtestcaseopts.sactuncheckcurrentsuite
-msgid "Deselect current suite"
+#, fuzzy
+#| msgid "Deselect current suite"
+msgid "Uncheck current suite"
 msgstr "取消选择当前套件"
 
 #: strtestcaseopts.sbtncreate

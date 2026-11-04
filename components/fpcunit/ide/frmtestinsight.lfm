@@ -97,7 +97,6 @@ object TestInsightForm: TTestInsightForm
         Left = 59
         Top = 2
         Action = ActRunHighlightedTest
-        Caption = 'Run selected'
       end
       object ToolButton3: TToolButton
         Left = 1
@@ -573,8 +572,8 @@ object TestInsightForm: TTestInsightForm
     Top = 128
     object actRunAll: TAction
       Category = 'Run'
-      Caption = '&Run all'
-      Hint = 'Run all selected tests'
+      Caption = '&Run checked tests'
+      Hint = 'Run all checked tests'
       ImageIndex = 3
       SecondaryShortCuts.Strings = (
         'Ctrl+R'
@@ -610,19 +609,19 @@ object TestInsightForm: TTestInsightForm
     end
     object ActCheckCurrentSuite: TAction
       Category = 'Selection'
-      Caption = 'Check the Current Suite'
+      Caption = 'Check current suite'
       OnExecute = ActCheckCurrentSuiteExecute
       OnUpdate = ActRunHighLightedTestUpdate
     end
     object ActUncheckCurrentSuite: TAction
       Category = 'Selection'
-      Caption = 'Uncheck the Current Suite'
+      Caption = 'Uncheck current suite'
       OnExecute = ActUncheckCurrentSuiteExecute
       OnUpdate = ActRunHighLightedTestUpdate
     end
     object ActCheckAll: TAction
       Category = 'Selection'
-      Caption = 'Check All Tests'
+      Caption = 'Check all tests'
       OnExecute = ActCheckAllExecute
     end
     object ActUncheckAll: TAction
@@ -633,6 +632,7 @@ object TestInsightForm: TTestInsightForm
     object ActRunHighlightedTest: TAction
       Category = 'Run'
       Caption = 'Run highlighted test'
+      Hint = 'Run only the highlighted test or suite'
       ImageIndex = 4
       ShortCut = 119
       OnExecute = ActRunHighlightedTestExecute

@@ -85,11 +85,15 @@ msgid "Test project %s stopped."
 msgstr "Исполнение тестового проекта %s остановлено."
 
 #: strtestcaseopts.sactcheckall
-msgid "Select all tests"
+#, fuzzy
+#| msgid "Select all tests"
+msgid "Check all tests"
 msgstr "Выбрать все тесты"
 
 #: strtestcaseopts.sactcheckcurrentsuite
-msgid "Select current suite"
+#, fuzzy
+#| msgid "Select current suite"
+msgid "Check current suite"
 msgstr "Выбрать текущий набор"
 
 #: strtestcaseopts.sactcloseform
@@ -114,7 +118,9 @@ msgid "Copy message to clipboard"
 msgstr "Копировать сообщение в буфер обмена"
 
 #: strtestcaseopts.sactrunaction
-msgid "&Run all"
+#, fuzzy
+#| msgid "&Run all"
+msgid "&Run checked tests"
 msgstr "&Запустить все"
 
 #: strtestcaseopts.sactrunactionh
@@ -122,11 +128,15 @@ msgid "Run all checked tests"
 msgstr "Запустить все выбранные тесты"
 
 #: strtestcaseopts.sactrunhighlightedtest
-msgid "Run selected"
+#, fuzzy
+#| msgid "Run selected"
+msgid "Run highlighted test"
 msgstr "Запустить выбранный"
 
 #: strtestcaseopts.sactrunhighlightedtesth
-msgid "Run selected test"
+#, fuzzy
+#| msgid "Run selected test"
+msgid "Run only the highlighted test or suite"
 msgstr "Запустить выбранный тест"
 
 #: strtestcaseopts.sactstop
@@ -138,11 +148,15 @@ msgid "Stop the running test project"
 msgstr "Остановить исполнение тестового проекта"
 
 #: strtestcaseopts.sactuncheckall
-msgid "Deselect all tests"
+#, fuzzy
+#| msgid "Deselect all tests"
+msgid "Uncheck all tests"
 msgstr "Снять выбор со всех тестов"
 
 #: strtestcaseopts.sactuncheckcurrentsuite
-msgid "Deselect current suite"
+#, fuzzy
+#| msgid "Deselect current suite"
+msgid "Uncheck current suite"
 msgstr "Снять выбор с текущего набора"
 
 #: strtestcaseopts.sbtncreate

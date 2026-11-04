@@ -753,16 +753,20 @@ Var
   I : integer;
 
 begin
-  if Assigned(N.Data) and (TObject(N.Data) is TTestItem) then
-    if (N.StateIndex=Ord(tsChecked)) then
-      if TTestItem(N.Data).IsTestCase then
-        begin
-        Tests[aLen]:=TTestItem(N.Data).TestPath;
-        Inc(aLen);
-        end
-      else if TTestItem(N.Data).IsTestSuite then
-        For I:=0 to N.Count-1 do
-          AddSelected(N.items[i],Tests,aLen);
+  if not (Assigned(N.Data) and (TObject(N.Data) is TTestItem)) then
+    exit;
+  if TTestItem(N.Data).IsTestCase then
+    begin
+    if N.StateIndex=Ord(tsChecked) then
+      begin
+      Tests[aLen]:=TTestItem(N.Data).TestPath;
+      Inc(aLen);
+      end;
+    end
+  else
+    // a suite can be unchecked while some of its tests are checked
+    For I:=0 to N.Count-1 do
+      AddSelected(N.items[i],Tests,aLen);
 end;
 
 procedure TTestInsightForm.DoGetSelectedTests(Sender: TObject; var Tests: TStringDynArray);
