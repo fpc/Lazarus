@@ -168,7 +168,8 @@ begin
     DeclCode,DeclX,DeclY,DeclTopLine,BlockTopLine,BlockBottomLine,
     [fsfFindMainDeclaration,fsfSkipPropertyWithoutType]) then
   begin
-    Fail('CodeToolBoss.FindDeclaration failed '+dbgs(DeclarationCaretXY)+' File='+Code.Filename);
+    Fail('CodeToolBoss.FindDeclaration failed '+dbgs(DeclarationCaretXY)+' File='+Code.Filename
+      +' Error="'+CodeToolBoss.ErrorMessage+'"');
   end;
 
   debugln(['TCustomTestRefactoring.RenameReferences X=',DeclX,' Y=',DeclY,' "',DeclCode.GetLine(DeclY-1,false),'"']);

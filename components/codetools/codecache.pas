@@ -663,22 +663,64 @@ begin
 end;
 
 function TCodeCache.FindFile(AFilename: string): TCodeBuffer;
-var c: integer;
-  ANode: TAVLTreeNode;
+// On case insensitive filesystems there can be several buffers whose names
+// differ only in case, e.g. after renaming unit1.pas to Unit1.pas (see CreateFile).
+// Prefer a not deleted buffer, then the exact name.
+
+  function GetScore(Code: TCodeBuffer): integer;
+  begin
+    Result:=0;
+    if not Code.IsDeleted then
+      inc(Result,2);
+    if Code.Filename=AFilename then
+      inc(Result);
+  end;
+
+var
+  c, BestScore, CurScore: integer;
+  ANode, PrevNode: TAVLTreeNode;
+  Code: TCodeBuffer;
 begin
+  Result:=nil;
   AFilename:=TrimFilename(AFilename);
   ANode:=FItems.Root;
   while ANode<>nil do begin
-    Result:=TCodeBuffer(ANode.Data);
-    c:=CompareFilenames(AFilename,Result.Filename);
+    Code:=TCodeBuffer(ANode.Data);
+    c:=CompareFilenames(AFilename,Code.Filename);
     {$IFDEF CTDEBUG}
-    if c=0 then DebugLn(' File found !!! ',Result.Filename);
+    if c=0 then DebugLn(' File found !!! ',Code.Filename);
     {$ENDIF}
-    if c<0 then ANode:=ANode.Left
-    else if c>0 then ANode:=ANode.Right
-    else exit;
+    if c<0 then
+      ANode:=ANode.Left
+    else if c>0 then
+      ANode:=ANode.Right
+    else
+      break;
   end;
-  Result:=nil;
+  if ANode=nil then exit;
+
+  // go to the first buffer with an equal name
+  repeat
+    PrevNode:=FItems.FindPrecessor(ANode);
+    if PrevNode=nil then break;
+    if CompareFilenames(AFilename,TCodeBuffer(PrevNode.Data).Filename)<>0 then
+      break;
+    ANode:=PrevNode;
+  until false;
+
+  // choose the best of all buffers with an equal name
+  BestScore:=-1;
+  repeat
+    Code:=TCodeBuffer(ANode.Data);
+    CurScore:=GetScore(Code);
+    if CurScore>BestScore then begin
+      Result:=Code;
+      BestScore:=CurScore;
+      if BestScore=3 then exit;
+    end;
+    ANode:=FItems.FindSuccessor(ANode);
+  until (ANode=nil)
+    or (CompareFilenames(AFilename,TCodeBuffer(ANode.Data).Filename)<>0);
 end;
 
 function TCodeCache.FindFilesInDir(Dir: string): TFPList;
