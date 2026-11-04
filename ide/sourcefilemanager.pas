@@ -4475,7 +4475,7 @@ begin
 end;
 
 function SaveProject(Flags: TSaveFlags;
-  const AForcedProjectFilename: string = ''):TModalResult;
+  const AForcedProjectFilename: string = ''): TModalResult;
 var
   i, j: integer;
   AnUnitInfo: TEditableUnitInfo;
@@ -4483,10 +4483,8 @@ var
   SrcEdit: TSourceEditor;
 begin
   Result:=mrCancel;
-  if not (MainIDE.ToolStatus in [itNone,itDebugger]) then begin
-    Result:=mrAbort;
-    exit;
-  end;
+  if not (MainIDE.ToolStatus in [itNone,itDebugger]) then
+    exit(mrAbort);
   // a caller supplied filename always means "save as"
   if AForcedProjectFilename<>'' then
     Include(Flags,sfSaveAs);
@@ -4560,7 +4558,9 @@ begin
       debugln(['SaveProject Project1 has the following information about the source editor:']);
       for TLazProjectFile(AnUnitInfo) in Project1.UnitsWithEditorIndex do begin
         for j:=0 to AnUnitInfo.EditorInfoCount-1 do begin
-          dbgout(['  ',AnUnitInfo.Filename,' ',j,'/',AnUnitInfo.EditorInfoCount,' Component=',dbgsname(AnUnitInfo.EditorInfo[j].EditorComponent),'=',dbgs(Pointer(AnUnitInfo.EditorInfo[j].EditorComponent))]);
+          dbgout(['  ',AnUnitInfo.Filename,' ',j,'/',AnUnitInfo.EditorInfoCount,
+                  ' Component=',dbgsname(AnUnitInfo.EditorInfo[j].EditorComponent),
+                  '=',dbgs(Pointer(AnUnitInfo.EditorInfo[j].EditorComponent))]);
           if AnUnitInfo.EditorInfo[j].EditorComponent<>nil then
             dbgout(AnUnitInfo.EditorInfo[j].EditorComponent.FileName);
           debugln;
@@ -8327,8 +8327,7 @@ begin
   // save project specific settings of the source editor
   SaveSourceEditorProjectSpecificSettings;
 
-  if Project1.IsVirtual
-  and (not (sfDoNotSaveVirtualFiles in Flags)) then
+  if Project1.IsVirtual and not (sfDoNotSaveVirtualFiles in Flags) then
     Include(Flags,sfSaveAs);
   if ([sfSaveAs,sfSaveToTestDir]*Flags=[sfSaveAs]) then begin
     // let user choose a filename (or use the caller supplied one)
