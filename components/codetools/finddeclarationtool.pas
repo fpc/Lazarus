@@ -5771,6 +5771,10 @@ var
       finally
         Params.Flags := OldFlags;
       end;
+      // stop at the first (newest) helper, otherwise searching the older
+      // helpers overwrites the found result, e.g. multiple ObjCCategories
+      if Result then
+        break;
     until ((HelperKind=fdhlkDelphiHelper)
       and (Params.StartTool<>nil)
       and not (cmsMultiHelpers in Params.StartTool.Scanner.CompilerModeSwitches))
@@ -12587,7 +12591,8 @@ var
             end;
           end
           else
-          if (Params.NewNode.Desc = ctnGenericType) and (NextAtomType = vatNone)
+          if (Params.NewNode<>nil)
+             and (Params.NewNode.Desc = ctnGenericType) and (NextAtomType = vatNone)
              and (src[NextAtom.StartPos] = '<') and (NextAtom.EndPos-NextAtom.StartPos=1)
              and (Scanner.CompilerMode in [cmDELPHI, cmDELPHIUNICODE])
           then begin
@@ -12615,9 +12620,10 @@ var
           if Params.NewCodeTool.NodeIsConstructor(Params.NewNode) then begin
             // identifier is a constructor
             if (Context.Node.Desc in AllClassObjects) then begin
-              if NextAtomType = vatPoint  then
-                Exclude(StartFlags,fdfFindVariable);
-              if (not IsEnd) or (not (fdfFindVariable in StartFlags)) then begin
+              // Note: do not change StartFlags here, it would affect the
+              // following identifiers, e.g. TObjCClass.alloc.init
+              if (not IsEnd) or (NextAtomType = vatPoint)
+                  or (not (fdfFindVariable in StartFlags)) then begin
                 // examples:
                 //   TMyClass.Create.
                 //   :=TMyClass.Create;
