@@ -51,19 +51,19 @@ msgstr "%s     Неудач: %s"
 
 #: strtestcaseopts.rsfind
 msgid "Find:"
-msgstr ""
+msgstr "Найти:"
 
 #: strtestcaseopts.rsfindhint
 msgid "Highlight tests containing this text"
-msgstr ""
+msgstr "Подсветить тесты, содержащие этот текст"
 
 #: strtestcaseopts.rsfindnext
 msgid "Find next"
-msgstr ""
+msgstr "Найти следующее"
 
 #: strtestcaseopts.rsfindprevious
 msgid "Find previous"
-msgstr ""
+msgstr "Найти предыдущее"
 
 #: strtestcaseopts.rsmessage
 #, object-pascal-format
@@ -101,14 +101,10 @@ msgid "Test project %s stopped."
 msgstr "Исполнение тестового проекта %s остановлено."
 
 #: strtestcaseopts.sactcheckall
-#, fuzzy
-#| msgid "Select all tests"
 msgid "Check all tests"
 msgstr "Выбрать все тесты"
 
 #: strtestcaseopts.sactcheckcurrentsuite
-#, fuzzy
-#| msgid "Select current suite"
 msgid "Check current suite"
 msgstr "Выбрать текущий набор"
 
@@ -134,26 +130,20 @@ msgid "Copy message to clipboard"
 msgstr "Копировать сообщение в буфер обмена"
 
 #: strtestcaseopts.sactrunaction
-#, fuzzy
-#| msgid "&Run all"
 msgid "&Run checked tests"
-msgstr "&Запустить все"
+msgstr "&Запустить выбранные тесты"
 
 #: strtestcaseopts.sactrunactionh
 msgid "Run all checked tests"
 msgstr "Запустить все выбранные тесты"
 
 #: strtestcaseopts.sactrunhighlightedtest
-#, fuzzy
-#| msgid "Run selected"
 msgid "Run highlighted test"
-msgstr "Запустить выбранный"
+msgstr "Запустить подсвеченный тест"
 
 #: strtestcaseopts.sactrunhighlightedtesth
-#, fuzzy
-#| msgid "Run selected test"
 msgid "Run only the highlighted test or suite"
-msgstr "Запустить выбранный тест"
+msgstr "Запустить только подсвеченный тест либо набор"
 
 #: strtestcaseopts.sactstop
 msgid "Stop"
@@ -164,14 +154,10 @@ msgid "Stop the running test project"
 msgstr "Остановить исполнение тестового проекта"
 
 #: strtestcaseopts.sactuncheckall
-#, fuzzy
-#| msgid "Deselect all tests"
 msgid "Uncheck all tests"
 msgstr "Снять выбор со всех тестов"
 
 #: strtestcaseopts.sactuncheckcurrentsuite
-#, fuzzy
-#| msgid "Deselect current suite"
 msgid "Uncheck current suite"
 msgstr "Снять выбор с текущего набора"
 
