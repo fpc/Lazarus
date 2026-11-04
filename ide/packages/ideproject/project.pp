@@ -1531,7 +1531,7 @@ begin
   if fAutoRevertLockCount=0 then begin
     // deactivate lock
     if Source<>nil then
-      Source.LockAutoDiskRevert;
+      Source.UnlockAutoDiskRevert;
     if Project<>nil then
       Project.AddToOrRemoveFromAutoRevertLockedList(Self);
   end;
