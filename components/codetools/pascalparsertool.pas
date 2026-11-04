@@ -3407,9 +3407,12 @@ function TPascalParserTool.ReadTilVariableEnd(
     inherited A
     A as B
     A<B,C>.D  (mode delphi)
+    specialize A<B,C>.D  (mode objfpc)
+    A.specialize B<C>  (mode objfpc)
 }
 var
   SpecFlags: TPascalParserFlags;
+  IsSpecialize: Boolean;
 begin
   while AtomIsChar('@') do
     ReadNextAtom;
@@ -3419,10 +3422,18 @@ begin
           or (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]);
   if not Result then exit;
   repeat
+    IsSpecialize:=false;
+    if (Scanner.CompilerMode=cmOBJFPC) and UpAtomIs('SPECIALIZE') then begin
+      ReadNextAtom;
+      Result:=AtomIsIdentifierSaveE(20261104100000,not ExceptionOnError);
+      if not Result then exit;
+      IsSpecialize:=true;
+    end;
     if AtomIsIdentifier then begin
       ReadNextAtom;
-      if AtomIsChar('<')
-      and (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) then begin
+      if IsSpecialize
+      or (AtomIsChar('<')
+          and (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE])) then begin
         SpecFlags:=[ppDontCreateNodes];
         if not ExceptionOnError then
           Include(SpecFlags,ppDontRaiseExceptionOnError);

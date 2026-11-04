@@ -15209,8 +15209,7 @@ begin
     if UpAtomIs('SPECIALIZE') and (not (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]))
     then begin
       Node:=FindDeepestNodeAtPos(CurPos.StartPos,false);
-      //if (Node<>nil) and (Node.Desc in [ctnSpecialize,ctnSpecializeParams,ctnSpecializeParam,ctnSpecializeType]) then
-      if (Node<>nil) and (Node.Desc in [ctnSpecialize, ctnBeginBlock]) then // no nodes in begin...end code
+      if (Node<>nil) and (Node.Desc in [ctnSpecialize, ctnBeginBlock, ctnWithVariable]) then
         exit(vatSpecialize)
       else
         exit(vatIdentifier);
