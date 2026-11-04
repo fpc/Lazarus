@@ -11876,6 +11876,7 @@ var
       if CurAtom.StartPos>=EndPos then begin
         IsIdentEndOfVar:=iieovYes;
       end else if CurAtom.Flag=cafWord then begin
+        MoveCursorToCleanPos(CurAtom.EndPos);
         ReadNextAtom;
         if AtomIsChar('(') then begin
           ReadTilBracketClose(true);
@@ -12334,7 +12335,7 @@ var
   begin
     Result:=false;
     if CurAtom.Flag<>cafWord then exit;
-    Identifier:=GetAtom;
+    Identifier:=GetAtom(CurAtom);
     Params.Flags := Params.Flags - [fdfExceptionOnNotFound];
 
     if (CurAtom.EndPos-CurAtom.StartPos<length('Attribute'))
@@ -12620,10 +12621,7 @@ var
           if Params.NewCodeTool.NodeIsConstructor(Params.NewNode) then begin
             // identifier is a constructor
             if (Context.Node.Desc in AllClassObjects) then begin
-              // Note: do not change StartFlags here, it would affect the
-              // following identifiers, e.g. TObjCClass.alloc.init
-              if (not IsEnd) or (NextAtomType = vatPoint)
-                  or (not (fdfFindVariable in StartFlags)) then begin
+              if (not IsEnd) or (not (fdfFindVariable in StartFlags)) then begin
                 // examples:
                 //   TMyClass.Create.
                 //   :=TMyClass.Create;
