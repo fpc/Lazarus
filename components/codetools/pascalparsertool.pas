@@ -3406,7 +3406,10 @@ function TPascalParserTool.ReadTilVariableEnd(
     @B
     inherited A
     A as B
+    A<B,C>.D  (mode delphi)
 }
+var
+  SpecFlags: TPascalParserFlags;
 begin
   while AtomIsChar('@') do
     ReadNextAtom;
@@ -3416,8 +3419,18 @@ begin
           or (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]);
   if not Result then exit;
   repeat
-    if AtomIsIdentifier then
+    if AtomIsIdentifier then begin
       ReadNextAtom;
+      if AtomIsChar('<')
+      and (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) then begin
+        SpecFlags:=[ppDontCreateNodes];
+        if not ExceptionOnError then
+          Include(SpecFlags,ppDontRaiseExceptionOnError);
+        Result:=ReadSpecializeParams(SpecFlags,false,false,[]);
+        if not Result then exit;
+        ReadNextAtom;
+      end;
+    end;
     repeat
       if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]) then begin
         Result:=ReadTilBracketClose(ExceptionOnError);

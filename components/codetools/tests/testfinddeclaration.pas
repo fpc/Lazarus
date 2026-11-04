@@ -266,6 +266,7 @@ type
     procedure TestFindDeclaration_GenericsDelphi_PublicProcType;
     procedure TestFindDeclaration_GenericsDelphi_MultiGenParams;
     procedure TestFindDeclaration_GenericsDelphi_MethodConstraints;
+    procedure TestFindDeclaration_GenericsDelphi_WithGenMethod;
 
     // FindDeclarationPathAt
     procedure TestFindDeclarationPathAt_Basic;
@@ -1909,6 +1910,35 @@ begin
   'begin',
   'end;',
   'begin',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_GenericsDelphi_WithGenMethod;
+begin
+  StartProgram;
+  Add([
+  '{$mode delphi}',
+  'type',
+  '  TWing = class',
+  '    Size: word;',
+  '  end;',
+  '  TBird = class',
+  '    function GetWing<T>: TWing;',
+  '    procedure Fly;',
+  '  end;',
+  'function TBird.GetWing<T>: TWing;',
+  'begin',
+  'end;',
+  'procedure TBird.Fly;',
+  'begin',
+  '  with GetWing<Boolean> do',
+  '    Size{declaration:TWing.Size}:=3;',
+  'end;',
+  'var Bird: TBird;',
+  'begin',
+  '  with Bird.GetWing<Boolean> do',
+  '    Size{declaration:TWing.Size}:=4;',
   'end.']);
   FindDeclarations(Code);
 end;
