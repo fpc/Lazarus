@@ -2102,7 +2102,7 @@ begin
                 begin
                   NewType:=
                   Params.GenParams.SpecializeDictionary.SubstituteGenericItems(
-                    NewType,Params.SpecializedTypeName);
+                    NewType,Params.SpecializedGeneric+'='+Params.SpecializedType);
                   if Scanner.CompilerMode in [cmDELPHI, cmDELPHIUNICODE] then // current source matters
                     {OK}
                   else if (Scanner.CompilerMode=cmOBJFPC) and (Pos('<',NewType)>1) then
@@ -2135,6 +2135,15 @@ begin
         end else
           AddSourceName:=false;
 
+        if Params.GenParams.SpecializeDictionary.Used and (Params.NewNode<>nil) and
+        (Params.NewNode.Desc=ctnGenericType) then begin
+          NewType:=
+          Params.GenParams.SpecializeDictionary.SubstituteGenericItems(
+            NewType,Params.SpecializedGeneric+'='+Params.SpecializedType);
+          if (Scanner.CompilerMode=cmOBJFPC) and (Pos('<',NewType)>1) then
+            NewType:= 'specialize '+NewType;
+          AddSourceName:=false; // not tested but likely for classes unit prefixes not needed
+        end else
         if AddSourceName and (self=ResExprContext.Tool) then begin
           FindProcAndClassNode(CursorNode, ProcNode, ClassNode);
           if not Interactive or (ClassNode=nil) then begin
@@ -2153,7 +2162,7 @@ begin
             begin
               NewType:=
               Params.GenParams.SpecializeDictionary.SubstituteGenericItems(
-                NewType,Params.SpecializedTypeName);
+                NewType,Params.SpecializedGeneric+'='+Params.SpecializedType);
               if Scanner.CompilerMode in [cmDELPHI, cmDELPHIUNICODE] then // current source matters
                 {OK}
               else if (Scanner.CompilerMode=cmOBJFPC) and (Pos('<',NewType)>1) then
