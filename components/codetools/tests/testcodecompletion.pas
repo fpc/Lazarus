@@ -88,6 +88,7 @@ type
 
     // declare local variable
     procedure TestCompleteVariableWithSpecializedType;
+    procedure TestCompleteSpecializedGenericsCollectionsEnumerator;
     procedure TestCompleteLocalVar_ForLoop;
     procedure TestCompleteLocalVar_ForLoopInProc;
     procedure TestCompleteLocalVar_Enum;
@@ -2007,6 +2008,55 @@ begin
     '  dict.Add(''one'', 1);',
     '  dict.Add(''two'', 2);',
     '  apair:=dict.ExtractPair(''one'');',
+    '  dict.free;',
+    'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteSpecializedGenericsCollectionsEnumerator;
+begin
+  Test('TestCompleteSpecializedGenericsCollectionsEnumerator',
+    ['program Project1;',
+    '{$mode objfpc}',
+    'uses',
+    '  Generics.Collections;',
+    '',
+    'type',
+    '  TDict= specialize TDictionary<String, integer>;',
+    'var',
+    '  dict: TDict;',
+    '',
+    'begin',
+    '  dict := TDict.Create();',
+    '  dict.Add(''two'', 2);',
+    '  dict.Add(''three'', 3);',
+    '  dict.Add(''one'', 1);',
+    '',
+    '  for xx in dict do begin',
+    '    writeln(xx.Key,'' '',xx.Value);',
+    '  end;',
+    '  dict.free;',
+    'end.'],
+    17,7,
+    ['program Project1;',
+    '{$mode objfpc}',
+    'uses',
+    '  Generics.Collections;',
+    '',
+    'type',
+    '  TDict= specialize TDictionary<String, integer>;',
+    'var',
+    '  dict: TDict;',
+    '  xx: TDict.TDictionaryPair;',
+    '',
+    'begin',
+    '  dict := TDict.Create();',
+    '  dict.Add(''two'', 2);',
+    '  dict.Add(''three'', 3);',
+    '  dict.Add(''one'', 1);',
+    '',
+    '  for xx in dict do begin',
+    '    writeln(xx.Key,'' '',xx.Value);',
+    '  end;',
     '  dict.free;',
     'end.']);
 end;

@@ -569,6 +569,11 @@ type
     GenericParamName: string; // <T> -> T
     SpecializedType: string; // TAnyPrefix.TypeName
   end;
+  TTypesPair = record
+    GenericType: string; // name
+    SpecializedType: string; // name
+  end;
+
 
   { TSpecializeParamsDictionary }
 
@@ -579,6 +584,7 @@ type
     function KeyToSpecialized(GenericParamName: string): string;
     function GetVerse(GenericParamName: string): integer; // -1 when not present
     function SubstituteGenericItems(GenExpr: string; SpecializedType: string): string;
+      // note: SpecializedType as "GenericTypeName=SpecalizedTypeName" e.g GenType=MySpecType
     function Used: boolean;
     function Count: integer;
     procedure Clear;
@@ -611,6 +617,7 @@ type
     OnIdentifierFound: TOnIdentifierFound;
     IdentifierTool: TFindDeclarationTool;
     FoundProc: PFoundProc;
+    Specialized: TTypesPair;
   end;
 
   { TFindDeclarationParams
@@ -647,7 +654,8 @@ type
     FKnownIdentSpecializeParamCntValid: boolean;
     FIdentifierGenParamCount: integer; // -1 = derive from IdentifierNode
     FSpecializedType: string;
-    FSpecializedClass: string;
+    FSpecializedGeneric: string;
+
     procedure ClearFoundProc;
     procedure FreeFoundProc(aFoundProc: PFoundProc; FreeNext: boolean);
     procedure RemoveFoundProcFromList(aFoundProc: PFoundProc);
@@ -671,6 +679,7 @@ type
     procedure ClearInput;
   public
     // input parameters:
+
     Flags: TFindDeclarationFlags;
     Identifier: PChar;
     IdentifierNode: TCodeTreeNode; // used for specialize to have count of gen-params
@@ -715,8 +724,8 @@ type
     function GetHelpers(HelperKind: TFDHelpersListKind; CreateIfNotExists: boolean = false): TFDHelpersList;
     function IdentSpecializeNodeParamCount: integer;
     property KnownIdentifierLength: integer read FKnownIdentifierLength;
-    property SpecializedTypeName: string read FSpecializedType;
-    property SpecializedClassName: string read FSpecializedClass;
+    property SpecializedType: string read FSpecializedType;
+    property SpecializedGeneric: string read FSpecializedGeneric;
   end;
   
   
@@ -2177,6 +2186,7 @@ end;
 
 function TSpecializeParamsDictionary.SubstituteGenericItems(GenExpr: string;
   SpecializedType: string): string;
+// note: SpecializedType as "GenericTypeName=SpecalizedTypeName" e.g GenType=MySpecType
 var
   List: TStringList;
   i,j,k: integer;
@@ -2185,10 +2195,12 @@ begin
   Result:=GenExpr;
   if GenExpr='' then exit;
   if Count=0 then exit;
-  i:=Pos('.',GenExpr);
-  if (i>0) and (SpecializedType<>'') then begin
+  if CompareIdentifiers(PChar(GenExpr),PChar(SpecializedType))=0 then begin
+    i:=Pos('=',SpecializedType);
+    if i<1 then exit;
+    delete(SpecializedType,1,i);
     delete(GenExpr,1,i-1);
-    insert(SpecializedType,GenExpr,0); // ?1
+    GenExpr:=SpecializedType+GenExpr;
   end;
 
   i:=1;
@@ -6636,8 +6648,10 @@ var
         end;
         SubParams.AppendGenericParamValues(Params.GenParams);
         Params.GenParams:=SubParams.GenParams;
-        Params.FSpecializedType:=SubParams.FSpecializedType;
-        Params.FSpecializedClass:=SubParams.FSpecializedClass;
+        if Params.FSpecializedType='' then begin
+          Params.FSpecializedType:=SubParams.FSpecializedType;
+          Params.FSpecializedGeneric:=SubParams.FSpecializedGeneric;
+        end;
         exit;
       end;
 
@@ -12372,17 +12386,14 @@ var
     IdentFound:=false;
     IsStart:=ExprType.Desc=xtNone;
     IsEnd:=IsIdentifierEndOfVariable;
+
     if IsStart then begin // start context
-      if (SpecializeNode<>nil) then begin
-      // specialized type is known, only first specialization is stored in Params
-        if  (Params.FSpecializedType<>'') then
-          debugln(['ResolveIdentifier: nested specializaton to ', Params.FSpecializedType]) else
-        begin
-          Params.FSpecializedType:=
-            GetIdentifier(PChar(@Src[SpecializeNode.Parent.StartPos]));
-          Params.FSpecializedClass:=ExtractCode(SpecializeNode.FirstChild.StartPos,
-            SpecializeNode.FirstChild.EndPos,[]);
-        end;
+      if (SpecializeNode<>nil) and (Params.SpecializedType='') then begin
+        Params.FSpecializedType:=
+          GetIdentifier(PChar(@Src[SpecializeNode.Parent.StartPos]));
+        Params.FSpecializedGeneric:=
+          ExtractCode(SpecializeNode.FirstChild.StartPos,
+          SpecializeNode.FirstChild.EndPos,[]);
       end
       else if (StartNode.Desc in AllPascalStatements) then begin
         // check special identifier 'Self'
@@ -12459,6 +12470,7 @@ var
         end;
       end;
     end;
+
     // find identifier
     if not IdentFound then begin
       if not (ExprType.Desc in [xtContext,xtNone]) then
@@ -16677,7 +16689,18 @@ function TFindDeclarationTool.FindForInTypeAsString(TermPos: TAtomPosition;
                 SubExprType.Context.Node,true,ExprType,@AliasType, Params)
               then
                 RaiseTermHasNoIterator(20170421211210,SubExprType);
-              Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,@AliasType);
+              Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,@AliasType);  // old fails for specialized
+              Node:=ExprType.Context.Tool.FindClassNode(ExprType.Context.Node);
+              if (Node<>nil) and (Params.FSpecializedType<>'') then begin
+                if (AliasType.Node<>nil) and
+                (AliasType.Node.FirstChild.Desc=ctnSpecialize) then
+                  Result:= Params.FSpecializedType+'.'+ Result;
+                Result:=Params.GenParams.SpecializeDictionary.SubstituteGenericItems(
+                  Result, Params.FSpecializedGeneric+'='+Params.FSpecializedType);
+                if (Params.GenParams.ParamValuesTool.Scanner.CompilerMode = cmOBJFPC)
+                and (Pos('<',Result) > 1) then
+                  Result:='specialize '+Result;
+              end;
             end;
           ctnEnumerationType:
             begin
@@ -16996,7 +17019,7 @@ begin
   try
     // search compatible operator enumerator
     Params.ContextNode:=Node;
-    Params.Flags:=[fdfSearchInParentNodes];
+    Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors];
     Params.Data:=@ExprType;
     Params.SetIdentifier(Self,'Enumerator',@CheckOperatorEnumerator);
     {$IFDEF ShowForInEval}
@@ -17550,8 +17573,18 @@ begin
             ANode:= FindContext.Node;
             Result:= FindContext.Tool.ExtractNode(ANode,[]);
             stop:=Pos('>', Result);
-            if stop>1 then
+            if stop>1 then begin
               delete(Result, stop+1, length(Result));
+              if (Scanner.CompilerMode=cmOBJFPC) then begin
+                MoveCursorToCleanPos(ANode.StartPos);
+                ReadNextAtom;
+                if UpAtomIs('GENERIC') then begin
+                  delete(Result,1,8);
+                  while (Result<>'') and (Result[1]=' ')
+                    do delete(Result,1,1);
+                end;
+              end;
+            end;
           end;
         end;
 
@@ -17897,7 +17930,7 @@ begin
   FKnownIdentifierSpecializeParamCnt := -1;
   FKnownIdentSpecializeParamCntValid := false;
   FSpecializedType:='';
-  FSpecializedClass:='';
+  FSpecializedGeneric:='';
 end;
 
 constructor TFindDeclarationParams.Create(Tool: TFindDeclarationTool;
@@ -17960,6 +17993,8 @@ begin
       FFoundProcStackFirst:=FoundProc;
     FoundProc^.Owner:=Self;
   end;
+  Input.Specialized.GenericType:=FSpecializedGeneric;
+  Input.Specialized.SpecializedType:=FSpecializedType;
 end;
 
 procedure TFindDeclarationParams.Load(Input: TFindDeclarationInput;
@@ -17991,6 +18026,8 @@ begin
       end;
     end;
   end;
+  FSpecializedGeneric:=Input.Specialized.GenericType;
+  FSpecializedType:=Input.Specialized.SpecializedType;
 end;
 
 procedure TFindDeclarationParams.ClearResult(CopyCacheFlags: boolean);
@@ -18249,7 +18286,7 @@ function TFindDeclarationParams.FindGenericParamType: Boolean;
     try
       SubParams.GenParams:=GenParams;
       SubParams.ContextNode:=CtxNode;
-      SubParams.Flags:=Flags;
+      SubParams.Flags:=Flags + [fdfSearchInAncestors]; // searching ancestors cannot be skipped
 
       if (IdentNode <> nil) and not Tool.IsNodeSingleAtom(IdentNode) then begin
         SubParams.Flags:=SubParams.Flags+[fdfFindVariable];
