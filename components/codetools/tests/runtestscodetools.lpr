@@ -48,7 +48,8 @@ uses
   TestBasicCodetools, TestCTRangeScan, TestPascalParser, TestMethodJumpTool,
   TestStdCodetools, TestFindDeclaration, TestIdentCompletion, TestCompleteBlock,
   TestRefactoring, TestCodeCompletion, TestCompReaderWriterPas,
-  TestCTPas2js, TestChangeDeclaration, TestLFMTrees, TestDesignerFormTools;
+  TestCTPas2js, TestChangeDeclaration, TestLFMTrees, TestDesignerFormTools,
+  TestCTDiffPatch;
 
 const
   ConfigFilename = 'codetools.config';

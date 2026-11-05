@@ -188,6 +188,11 @@
         <UnitName Value="TestDesignerFormTools"/>
       </Unit>
       <Unit>
+        <Filename Value="testctdiffpatch.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestCTDiffPatch"/>
+      </Unit>
+      <Unit>
         <Filename Value="moduletests/dsgn_bearcontrols.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Dsgn_BearControls"/>

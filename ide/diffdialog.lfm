@@ -145,7 +145,7 @@ object DiffDlg: TDiffDlg
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = ProgressBar1
+    AnchorSideBottom.Control = CloseButton
     Left = 6
     Height = 197
     Top = 311
@@ -748,38 +748,6 @@ object DiffDlg: TDiffDlg
     Caption = '&Help'
     Kind = bkHelp
     TabOrder = 6
-  end
-  object ProgressBar1: TProgressBar
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = CancelScanningButton
-    AnchorSideBottom.Control = CloseButton
-    Left = 6
-    Height = 24
-    Top = 514
-    Width = 479
-    Anchors = [akLeft, akRight, akBottom]
-    BorderSpacing.Around = 6
-    Step = 0
-    TabOrder = 7
-  end
-  object CancelScanningButton: TBitBtn
-    AnchorSideTop.Control = ProgressBar1
-    AnchorSideTop.Side = asrCenter
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 491
-    Height = 24
-    Top = 514
-    Width = 101
-    Anchors = [akTop, akRight]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = 'Cancel Scanning'
-    Enabled = False
-    OnClick = CancelScanningButtonClick
-    TabOrder = 8
-    Visible = False
   end
   object dlgOpen: TOpenDialog
     DefaultExt = '.pas'

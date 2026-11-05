@@ -41,7 +41,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  Forms, Controls, Buttons, StdCtrls, ExtCtrls, Dialogs, ComCtrls, LCLType,
+  Forms, Controls, Buttons, StdCtrls, ExtCtrls, Dialogs, LCLType,
   // LazUtils
   FileUtil,
   // SynEdit
@@ -106,10 +106,8 @@ type
     CloseButton: TBitBtn;
     DiffSynEdit: TSynEdit;
     OpenInEditorButton: TBitBtn;
-    ProgressBar1: TProgressBar;
     SynDiffSyn1: TSynDiffSyn;
     Text1FileOpenButton: TButton;
-    CancelScanningButton: TBitBtn;
     dlgOpen: TOpenDialog;
 
     Text2FileOpenButton: TButton;
@@ -127,7 +125,6 @@ type
     // options
     OptionsGroupBox: TCheckGroup;
 
-    procedure CancelScanningButtonClick(Sender: TObject);
     procedure FileOpenClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure OnChangeFlag(Sender: TObject);
@@ -136,7 +133,6 @@ type
   private
     fUpdating: Boolean;
     fIdleConnected: boolean;
-    fCancelled: boolean;
     fAvailableFiles: TAvailableDiffFiles;
     fSelectedFile1: TSelectedDiffFile;
     fSelectedFile2: TSelectedDiffFile;
@@ -144,7 +140,6 @@ type
     procedure UpdateDiff;
     procedure SetIdleConnected(const AValue: boolean);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
-    procedure UpdateProgress(aPosition: Integer);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -270,7 +265,6 @@ constructor TDiffDlg.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   fUpdating := False;
-  fCancelled := False;
   fSelectedFile1 := TSelectedDiffFile.Create(Self, Text1Combobox, Text1OnlySelectionCheckBox);
   fSelectedFile2 := TSelectedDiffFile.Create(Self, Text2Combobox, Text2OnlySelectionCheckBox);
   Caption := lisCaptionCompareFiles;
@@ -309,11 +303,6 @@ begin
   end;
 end;
 
-procedure TDiffDlg.CancelScanningButtonClick(Sender: TObject);
-begin
-  fCancelled := True;
-end;
-
 procedure TDiffDlg.Text1ComboboxChange(Sender: TObject);
 begin
   fSelectedFile1.UpdateIndex;
@@ -350,7 +339,6 @@ begin
   end;
 
   // buttons
-  IDEImages.AssignImage(CancelScanningButton, 'btn_cancel');
   CloseButton.Caption:=lisClose;
   OpenInEditorButton.Caption:=lisDiffDlgOpenDiffInEditor;
   HelpButton.Caption:=lisMenuHelp;
@@ -373,12 +361,6 @@ end;
 procedure TDiffDlg.UpdateDiff;
 begin
   IdleConnected:=True;
-end;
-
-procedure TDiffDlg.UpdateProgress(aPosition: Integer);
-begin
-  ProgressBar1.Position := aPosition;
-  Application.ProcessMessages;
 end;
 
 procedure TDiffDlg.SetIdleConnected(const AValue: boolean);
@@ -407,18 +389,14 @@ begin
     Text1GroupBox.Enabled := False;
     Text2GroupBox.Enabled := False;
     OpenInEditorButton.Enabled := False;
-    //CancelScanningButton.Enabled := True;
 
     DiffOutput := TDiffOutput.Create(Text1Src, Text2Src, GetDiffOptions);
     try
-      ProgressBar1.Max := DiffOutput.GetProgressMax;
-      DiffOutput.OnProgressPos := @UpdateProgress;
       DiffSynEdit.Lines.Text := DiffOutput.CreateTextDiff;
     finally
       DiffOutput.Free;
     end;
 
-    //CancelScanningButton.Enabled := False;
     OpenInEditorButton.Enabled := True;
     Text2GroupBox.Enabled := True;
     Text1GroupBox.Enabled := True;
