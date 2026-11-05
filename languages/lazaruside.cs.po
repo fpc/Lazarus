@@ -9276,6 +9276,10 @@ msgstr "Zahodit změny, vytvořit nový projekt"
 msgid "Click on one of the above items to see the diff"
 msgstr "Ke zobrazení rozdílu klikněte na jednu z položek nahoře"
 
+#: lazarusidestrconsts.lisdiskdiffclosecheckedfiles
+msgid "Close checked files"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiskdifferrorreadingfile
 #, object-pascal-format
 msgid "Error reading file: %s"
@@ -9288,6 +9292,10 @@ msgstr "Ignorovat všechny diskové změny"
 #: lazarusidestrconsts.lisdiskdiffreloadcheckedfilesfromdisk
 msgid "Reload checked files from disk"
 msgstr "Znovu načíst ozančené soubory z disku"
+
+#: lazarusidestrconsts.lisdiskdiffreloadclosecheckedfiles
+msgid "Reload/close checked files"
+msgstr ""
 
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"

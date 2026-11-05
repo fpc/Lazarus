@@ -9137,6 +9137,10 @@ msgstr "ຍົກເລີກການປ່ຽນແປງ, ສ້າງໂປ�
 msgid "Click on one of the above items to see the diff"
 msgstr "ຄລິກໃສ່ໜຶ່ງໃນລາຍການຂ້າງເທິງເພື່ອເບິ່ງຄວາມແຕກຕ່າງ (diff)"
 
+#: lazarusidestrconsts.lisdiskdiffclosecheckedfiles
+msgid "Close checked files"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiskdifferrorreadingfile
 #, object-pascal-format
 msgid "Error reading file: %s"
@@ -9149,6 +9153,10 @@ msgstr "ບໍ່ສົນໃຈການປ່ຽນແປງໃນດິດທ
 #: lazarusidestrconsts.lisdiskdiffreloadcheckedfilesfromdisk
 msgid "Reload checked files from disk"
 msgstr "ໂຫຼດໄຟລ໌ທີ່ເລືອກໃໝ່ຈາກດິດ"
+
+#: lazarusidestrconsts.lisdiskdiffreloadclosecheckedfiles
+msgid "Reload/close checked files"
+msgstr ""
 
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"

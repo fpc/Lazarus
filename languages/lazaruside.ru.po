@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-11-03 03:43+0300\n"
+"PO-Revision-Date: 2026-11-05 03:05+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -9099,6 +9099,10 @@ msgstr "Отбросить изменения и создать новый пр�
 msgid "Click on one of the above items to see the diff"
 msgstr "Выберите один из элементов выше, чтобы увидеть разницу"
 
+#: lazarusidestrconsts.lisdiskdiffclosecheckedfiles
+msgid "Close checked files"
+msgstr "Закрыть выбранные файлы"
+
 #: lazarusidestrconsts.lisdiskdifferrorreadingfile
 #, object-pascal-format
 msgid "Error reading file: %s"
@@ -9111,6 +9115,10 @@ msgstr "Игнорировать все изменения на диске"
 #: lazarusidestrconsts.lisdiskdiffreloadcheckedfilesfromdisk
 msgid "Reload checked files from disk"
 msgstr "Перечитать выбранные файлы с диска"
+
+#: lazarusidestrconsts.lisdiskdiffreloadclosecheckedfiles
+msgid "Reload/close checked files"
+msgstr "Перезагрузить/закрыть выбранные файлы"
 
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"

@@ -9342,6 +9342,10 @@ msgstr ""
 msgid "Click on one of the above items to see the diff"
 msgstr "Feu un clic en els elements d'amunt per veure'n les diferencies"
 
+#: lazarusidestrconsts.lisdiskdiffclosecheckedfiles
+msgid "Close checked files"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiskdifferrorreadingfile
 #, object-pascal-format
 msgid "Error reading file: %s"
@@ -9353,6 +9357,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdiskdiffreloadcheckedfilesfromdisk
 msgid "Reload checked files from disk"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiskdiffreloadclosecheckedfiles
+msgid "Reload/close checked files"
 msgstr ""
 
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk

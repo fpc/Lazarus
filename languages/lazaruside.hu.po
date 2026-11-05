@@ -9239,6 +9239,10 @@ msgstr "Változások eldobása, új projekt létrehozása"
 msgid "Click on one of the above items to see the diff"
 msgstr "Kattintson az alábbi elemek egyikére, hogy lássa a különbségeket"
 
+#: lazarusidestrconsts.lisdiskdiffclosecheckedfiles
+msgid "Close checked files"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiskdifferrorreadingfile
 #, object-pascal-format
 msgid "Error reading file: %s"
@@ -9251,6 +9255,10 @@ msgstr "Minden lemezen történt változás figyelmen kívül hagyása"
 #: lazarusidestrconsts.lisdiskdiffreloadcheckedfilesfromdisk
 msgid "Reload checked files from disk"
 msgstr "Kijelölt fájlok újratöltése a lemezről"
+
+#: lazarusidestrconsts.lisdiskdiffreloadclosecheckedfiles
+msgid "Reload/close checked files"
+msgstr ""
 
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"

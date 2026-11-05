@@ -9341,6 +9341,10 @@ msgstr "変更を破棄して新しいプロジェクトを作成"
 msgid "Click on one of the above items to see the diff"
 msgstr "違いを見るために上の項目の一つをクリックしてください。"
 
+#: lazarusidestrconsts.lisdiskdiffclosecheckedfiles
+msgid "Close checked files"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiskdifferrorreadingfile
 #, object-pascal-format
 msgid "Error reading file: %s"
@@ -9353,6 +9357,10 @@ msgstr "すべてのディスク変更を無視"
 #: lazarusidestrconsts.lisdiskdiffreloadcheckedfilesfromdisk
 msgid "Reload checked files from disk"
 msgstr "チェックしたファイルをディスクから再読み込み"
+
+#: lazarusidestrconsts.lisdiskdiffreloadclosecheckedfiles
+msgid "Reload/close checked files"
+msgstr ""
 
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"

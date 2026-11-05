@@ -9346,6 +9346,10 @@ msgstr "Neįrašyti pakeitimų ir kurti naują projektą"
 msgid "Click on one of the above items to see the diff"
 msgstr "Spustelėjus ant elemento bus parodytas jo diff"
 
+#: lazarusidestrconsts.lisdiskdiffclosecheckedfiles
+msgid "Close checked files"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiskdifferrorreadingfile
 #, object-pascal-format
 msgid "Error reading file: %s"
@@ -9358,6 +9362,10 @@ msgstr "Ignoruoti visus pakitimus diske"
 #: lazarusidestrconsts.lisdiskdiffreloadcheckedfilesfromdisk
 msgid "Reload checked files from disk"
 msgstr "Pažymėtus failus iš disko įkelti iš naujo"
+
+#: lazarusidestrconsts.lisdiskdiffreloadclosecheckedfiles
+msgid "Reload/close checked files"
+msgstr ""
 
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"

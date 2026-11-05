@@ -9105,6 +9105,10 @@ msgstr "Απόρριψη αλλαγών, δημιουργία νέου έργο�
 msgid "Click on one of the above items to see the diff"
 msgstr "Κάντε κλικ σε ένα από τα παραπάνω στοιχεία για να δείτε τη διαφορά"
 
+#: lazarusidestrconsts.lisdiskdiffclosecheckedfiles
+msgid "Close checked files"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiskdifferrorreadingfile
 #, object-pascal-format
 msgid "Error reading file: %s"
@@ -9117,6 +9121,10 @@ msgstr "Αγνοήστε όλες τις αλλαγές στο δίσκο"
 #: lazarusidestrconsts.lisdiskdiffreloadcheckedfilesfromdisk
 msgid "Reload checked files from disk"
 msgstr "Επαναφόρτωση ελεγμένων αρχείων από το δίσκο"
+
+#: lazarusidestrconsts.lisdiskdiffreloadclosecheckedfiles
+msgid "Reload/close checked files"
+msgstr ""
 
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
