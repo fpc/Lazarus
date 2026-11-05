@@ -118,6 +118,7 @@ type
     FDiffFlags: TTextDiffFlags;
     FDiffText2: string;
     FDiffText2OnlySelection: boolean;
+    FDiffShowWholeText: boolean;
     FFileDialogSettings: TFileDialogSettings;
     FFilename: string;
   
@@ -197,6 +198,8 @@ type
     property DiffText2: string read FDiffText2 write FDiffText2;
     property DiffText2OnlySelection: boolean read FDiffText2OnlySelection
                                              write FDiffText2OnlySelection;
+    property DiffShowWholeText: boolean read FDiffShowWholeText
+                                        write FDiffShowWholeText;
     // new dialog
     property NewProjectType: string read FNewProjectType write FNewProjectType;
     property NewFileType: string read FNewFileType write FNewFileType;
@@ -259,8 +262,8 @@ implementation
 const
   DefaultHistoryFile = 'inputhistory.xml';
   InputHistoryVersion = 1;
-  DefaultDiffFlags = [tdfIgnoreCase,tdfIgnoreEmptyLineChanges,
-                      tdfIgnoreLineEnds,tdfIgnoreTrailingSpaces];
+  DefaultDiffFlags = [];
+  DefaultDiffShowWholeText = true;
 
 function CompareIHIgnoreItems(Item1, Item2: Pointer): integer;
 var
@@ -348,6 +351,7 @@ begin
   FDiffFlags:=DefaultDiffFlags;
   FDiffText2:='';
   FDiffText2OnlySelection:=false;
+  FDiffShowWholeText:=DefaultDiffShowWholeText;
   FNewProjectType:='';
   FNewFileType:='';
   FLastConvertDelphiProject:='';
@@ -409,6 +413,8 @@ begin
   FDiffText2:=XMLConfig.GetValue(Path+'DiffDialog/Text2/Name','');
   FDiffText2OnlySelection:=
     XMLConfig.GetValue(Path+'DiffDialog/Text2/OnlySelection',false);
+  FDiffShowWholeText:=XMLConfig.GetValue(Path+'DiffDialog/ShowWholeText',
+                                         DefaultDiffShowWholeText);
 
   // new items
   FNewProjectType:=XMLConfig.GetValue(Path+'New/Project/Type','');
@@ -474,6 +480,8 @@ begin
   XMLConfig.SetDeleteValue(Path+'DiffDialog/Text2/Name',FDiffText2,'');
   XMLConfig.SetDeleteValue(Path+'DiffDialog/Text2/OnlySelection',
                            FDiffText2OnlySelection,false);
+  XMLConfig.SetDeleteValue(Path+'DiffDialog/ShowWholeText',
+                           FDiffShowWholeText,DefaultDiffShowWholeText);
 
   // new items
   XMLConfig.SetDeleteValue(Path+'New/Project/Type',FNewProjectType,'');

@@ -3866,6 +3866,9 @@ resourcestring
   lisDiffDlgIgnoreIfSpaceCharsWereAdd = 'Ignore amount of space chars';
   lisDiffDlgIgnoreSpaces = 'Ignore spaces (newline chars not included)';
   lisDiffDlgOpenDiffInEditor = 'Open difference in editor';
+  lisDiffDlgShowWholeText = 'Show whole text';
+  lisDiffDlgPreviousDifference = 'Previous difference';
+  lisDiffDlgNextDifference = 'Next difference';
 
   // packages
   lisCreateNewPackage = '(Create new package)';

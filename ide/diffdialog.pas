@@ -44,14 +44,12 @@ uses
   Forms, Controls, Buttons, StdCtrls, ExtCtrls, Dialogs, LCLType,
   // LazUtils
   FileUtil,
-  // SynEdit
-  SynEdit, SynHighlighterDiff,
   // IdeIntf
   IDEWindowIntf, IDEImagesIntf,
   // IdeUtils
   InputHistory,
   // IDE
-  LazarusIDEStrConsts, EditorOptions, DiffPatch, SourceEditor, EnvironmentOpts;
+  LazarusIDEStrConsts, DiffPatch, SourceEditor, EnvironmentOpts, IDEDiffViewer;
 
 type
 
@@ -104,9 +102,10 @@ type
   TDiffDlg = class(TForm)
     HelpButton: TBitBtn;
     CloseButton: TBitBtn;
-    DiffSynEdit: TSynEdit;
     OpenInEditorButton: TBitBtn;
-    SynDiffSyn1: TSynDiffSyn;
+    PrevDiffButton: TBitBtn;
+    NextDiffButton: TBitBtn;
+    ShowWholeTextCheckBox: TCheckBox;
     Text1FileOpenButton: TButton;
     dlgOpen: TOpenDialog;
 
@@ -128,6 +127,10 @@ type
     procedure FileOpenClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure OnChangeFlag(Sender: TObject);
+    procedure OptionsGroupBoxItemClick(Sender: TObject; Index: integer);
+    procedure ShowWholeTextCheckBoxChange(Sender: TObject);
+    procedure PrevDiffButtonClick(Sender: TObject);
+    procedure NextDiffButtonClick(Sender: TObject);
     procedure Text1ComboboxChange(Sender: TObject);
     procedure Text2ComboboxChange(Sender: TObject);
   private
@@ -137,10 +140,13 @@ type
     fSelectedFile1: TSelectedDiffFile;
     fSelectedFile2: TSelectedDiffFile;
     procedure SetupComponents;
+    procedure UpdateHighlighter;
+    procedure UpdateDiffButtons;
     procedure UpdateDiff;
     procedure SetIdleConnected(const AValue: boolean);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
   public
+    DiffViewer: TIDEDiffViewer;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure Init;
@@ -189,7 +195,7 @@ begin
     DiffDlg.SaveSettings;
     // "Open in editor" button returns mrYes.
     if Result=mrYes then
-      Diff := DiffDlg.DiffSynEdit.Text;
+      Diff := DiffDlg.DiffViewer.GetTextDiff;
   finally
     Files.Free;
     DiffDlg.Free;
@@ -268,7 +274,7 @@ begin
   fSelectedFile1 := TSelectedDiffFile.Create(Self, Text1Combobox, Text1OnlySelectionCheckBox);
   fSelectedFile2 := TSelectedDiffFile.Create(Self, Text2Combobox, Text2OnlySelectionCheckBox);
   Caption := lisCaptionCompareFiles;
-  IDEDialogLayoutList.ApplyLayout(Self,600,500);
+  IDEDialogLayoutList.ApplyLayout(Self,1000,600);
   SetupComponents;
 end;
 
@@ -282,6 +288,36 @@ end;
 procedure TDiffDlg.OnChangeFlag(Sender: TObject);
 begin
   UpdateDiff;
+end;
+
+procedure TDiffDlg.OptionsGroupBoxItemClick(Sender: TObject; Index: integer);
+begin
+  UpdateDiff;
+end;
+
+procedure TDiffDlg.ShowWholeTextCheckBoxChange(Sender: TObject);
+begin
+  DiffViewer.ShowWholeText := ShowWholeTextCheckBox.Checked;
+  UpdateDiffButtons;
+end;
+
+procedure TDiffDlg.PrevDiffButtonClick(Sender: TObject);
+begin
+  DiffViewer.GotoPrevDiff;
+end;
+
+procedure TDiffDlg.NextDiffButtonClick(Sender: TObject);
+begin
+  DiffViewer.GotoNextDiff;
+end;
+
+procedure TDiffDlg.UpdateDiffButtons;
+var
+  Enable: Boolean;
+begin
+  Enable := DiffViewer.HasDiffs;
+  PrevDiffButton.Enabled := Enable;
+  NextDiffButton.Enabled := Enable;
 end;
 
 procedure TDiffDlg.FileOpenClick(Sender: TObject);
@@ -338,12 +374,18 @@ begin
     Items.Add(lisDiffDlgIgnoreSpaces);
   end;
 
+  ShowWholeTextCheckBox.Caption:=lisDiffDlgShowWholeText;
+
   // buttons
   CloseButton.Caption:=lisClose;
   OpenInEditorButton.Caption:=lisDiffDlgOpenDiffInEditor;
   HelpButton.Caption:=lisMenuHelp;
 
   IDEImages.AssignImage(OpenInEditorButton, 'laz_open');
+  PrevDiffButton.Caption:=lisDiffDlgPreviousDifference;
+  NextDiffButton.Caption:=lisDiffDlgNextDifference;
+  IDEImages.AssignImage(PrevDiffButton, 'arrow_up');
+  IDEImages.AssignImage(NextDiffButton, 'arrow_down');
   
   // dialogs
   dlgOpen.Title:=lisOpenExistingFile;
@@ -355,7 +397,36 @@ begin
                  +'|'+dlgFilterLazarusProjectSource+' (*.lpr)|*.lpr';
 
   // diff
-  EditorOpts.GetSynEditSettings(DiffSynEdit);
+  DiffViewer := TIDEDiffViewer.Create(Self);
+  with DiffViewer do
+  begin
+    Name := 'DiffViewer';
+    AnchorSideLeft.Control := Self;
+    AnchorSideTop.Control := Text2GroupBox;
+    AnchorSideTop.Side := asrBottom;
+    AnchorSideRight.Control := Self;
+    AnchorSideRight.Side := asrBottom;
+    AnchorSideBottom.Control := OptionsGroupBox;
+    Anchors := [akTop, akLeft, akRight, akBottom];
+    BorderSpacing.Around := 6;
+    TabOrder := 2;
+    Parent := Self;
+  end;
+end;
+
+procedure TDiffDlg.UpdateHighlighter;
+var
+  DiffFile: TAvailableDiffFile;
+begin
+  DiffFile := fSelectedFile1.fFile;
+  if DiffFile = nil then
+    DiffFile := fSelectedFile2.fFile;
+  if DiffFile = nil then
+    exit;
+  if DiffFile.Editor <> nil then
+    DiffViewer.HighlighterId := DiffFile.Editor.ActiveSyntaxHighlighterId
+  else
+    DiffViewer.SetHighlighterByFilename(DiffFile.Name);
 end;
 
 procedure TDiffDlg.UpdateDiff;
@@ -376,12 +447,11 @@ end;
 procedure TDiffDlg.OnIdle(Sender: TObject; var Done: Boolean);
 var
   Text1Src, Text2Src: string;
-  DiffOutput: TDiffOutput;
 begin
   IdleConnected := false;
   if fUpdating then Exit;
   fUpdating := True;
-  DiffSynEdit.Lines.Text := '';
+  DiffViewer.Clear;
   Text1Src := fSelectedFile1.TextContents;
   Text2Src := fSelectedFile2.TextContents;
   if (Text1Src <> '') and (Text2Src <> '') then
@@ -390,17 +460,14 @@ begin
     Text2GroupBox.Enabled := False;
     OpenInEditorButton.Enabled := False;
 
-    DiffOutput := TDiffOutput.Create(Text1Src, Text2Src, GetDiffOptions);
-    try
-      DiffSynEdit.Lines.Text := DiffOutput.CreateTextDiff;
-    finally
-      DiffOutput.Free;
-    end;
+    UpdateHighlighter;
+    DiffViewer.SetTexts(Text1Src, Text2Src, GetDiffOptions);
 
     OpenInEditorButton.Enabled := True;
     Text2GroupBox.Enabled := True;
     Text1GroupBox.Enabled := True;
   end;
+  UpdateDiffButtons;
   fUpdating:=False;
 end;
 
@@ -423,6 +490,8 @@ begin
   
   // set recent options
   SetDiffOptions(InputHistories.DiffFlags);
+  ShowWholeTextCheckBox.Checked:=InputHistories.DiffShowWholeText;
+  DiffViewer.ShowWholeText:=ShowWholeTextCheckBox.Checked;
 
   // and action ...
   UpdateDiff;
@@ -456,6 +525,7 @@ end;
 procedure TDiffDlg.SaveSettings;
 begin
   InputHistories.DiffFlags:=GetDiffOptions;
+  InputHistories.DiffShowWholeText:=ShowWholeTextCheckBox.Checked;
   if (fSelectedFile2<>nil) and (fSelectedFile2.fFile<>nil) then begin
     InputHistories.DiffText2:=fSelectedFile2.fFile.Name;
     InputHistories.DiffText2OnlySelection:=Text2OnlySelectionCheckBox.Checked;

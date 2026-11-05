@@ -1106,6 +1106,11 @@
         <UnitName Value="DiffDialog"/>
       </Unit>
       <Unit>
+        <Filename Value="idediffviewer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="IDEDiffViewer"/>
+      </Unit>
+      <Unit>
         <Filename Value="keymapschemedlg.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ChooseKeySchemeDlg"/>
