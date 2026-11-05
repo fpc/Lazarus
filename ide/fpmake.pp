@@ -240,7 +240,6 @@ begin
     P.Sources.AddSrc('debugmanager.pas');
     P.Sources.AddSrc('dialogprocs.pas');
     P.Sources.AddSrc('diffdialog.pas');
-    P.Sources.AddSrc('diffpatch.pas');
     P.Sources.AddSrc('diskdiffsdialog.pas');
     P.Sources.AddSrc('editdefinetree.pas');
     P.Sources.AddSrc('editmsgscannersdlg.pas');

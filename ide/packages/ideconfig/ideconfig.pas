@@ -9,7 +9,7 @@ interface
 
 uses
   ApplicationBundle, BaseBuildManager, Compiler, CompilerOptions, 
-  CompOptsModes, CoolBarOptions, DialogProcs, DiffPatch, EditDefineTree, 
+  CompOptsModes, CoolBarOptions, DialogProcs, EditDefineTree, 
   EditorToolBarOptions, EnvironmentOpts, etFPCMsgFilePool, etFPCMsgParser, 
   etMakeMsgParser, etPas2jsMsgParser, ExtTools, ExtToolsConsole, 
   FindProjPackUnit, FppkgHelper, IdeBuilder, IDECmdLine, IdeConfigPckTest, 

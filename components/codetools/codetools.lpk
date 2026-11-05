@@ -24,7 +24,7 @@
     <License Value="GPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="62">
+    <Files Count="63">
       <Item1>
         <Filename Value="Makefile"/>
         <Type Value="Text"/>
@@ -280,6 +280,10 @@
         <Filename Value="ctfilechksums.pas"/>
         <UnitName Value="ctfilechksums"/>
       </Item62>
+      <Item63>
+        <Filename Value="diffpatch.pas"/>
+        <UnitName Value="DiffPatch"/>
+      </Item63>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="docs"/>

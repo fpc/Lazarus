@@ -55,7 +55,6 @@ begin
     t.Dependencies.AddUnit('compoptsmodes');
     t.Dependencies.AddUnit('coolbaroptions');
     t.Dependencies.AddUnit('dialogprocs');
-    t.Dependencies.AddUnit('diffpatch');
     t.Dependencies.AddUnit('editdefinetree');
     t.Dependencies.AddUnit('editortoolbaroptions');
     t.Dependencies.AddUnit('environmentopts');
@@ -87,7 +86,6 @@ begin
     T:=P.Targets.AddUnit('compoptsmodes.pas');
     T:=P.Targets.AddUnit('coolbaroptions.pas');
     T:=P.Targets.AddUnit('dialogprocs.pas');
-    T:=P.Targets.AddUnit('diffpatch.pas');
     T:=P.Targets.AddUnit('editdefinetree.pas');
     T:=P.Targets.AddUnit('editortoolbaroptions.pas');
     T:=P.Targets.AddUnit('environmentopts.pp');

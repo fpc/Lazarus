@@ -99,6 +99,7 @@ begin
     t.Dependencies.AddUnit('ctunitgroupgraph');
     t.Dependencies.AddUnit('codecompletiontemplater');
     t.Dependencies.AddUnit('codetoolgdbtracer');
+    t.Dependencies.AddUnit('diffpatch');
 
     T:=P.Targets.AddUnit('basiccodetools.pas');
     T:=P.Targets.AddUnit('cachecodetools.pas');
@@ -155,6 +156,7 @@ begin
     T:=P.Targets.AddUnit('ctunitgroupgraph.pas');
     T:=P.Targets.AddUnit('codecompletiontemplater.pas');
     T:=P.Targets.AddUnit('codetoolgdbtracer.pas');
+    T:=P.Targets.AddUnit('diffpatch.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.Sources.AddSrc('codetools.compiled');
