@@ -2751,22 +2751,23 @@ begin
       if CursorNode=nil then // prevent AV at this stage
         CleanPosInFront:=1
       else
-      if (fsfFindMainDeclaration in SearchSmartFlags)
-          and CleanPosIsDeclarationIdentifier(CleanCursorPos,CursorNode) then
-      begin
-        //DebugLn(['TFindDeclarationTool.FindDeclaration CleanPosIsDeclarationIdentifier ',CursorNode.DescAsString]);
-        NewExprType.Desc:=xtContext;
-        NewExprType.Context:=FindMainDeclarationNode(CursorNode,
-                                          fsfSkipPropertyWithoutType in SearchSmartFlags);
-        CleanCursorPos:=NewExprType.Context.Tool.GetNodeMainPos(NewExprType.Context.Node);
-
-        Result:= NewExprType.Context.Tool.JumpToCleanPos(CleanCursorPos,CleanCursorPos,CleanCursorPos,
-                               NewPos,NewTopLine,BlockTopLine,BlockBottomLine,false);
-        {$IFDEF VerboseFindDeclarationFail}
-        if not Result then begin
-          debugln(['TFindDeclarationTool.FindDeclaration 20250731120202 cursor at declaration, but JumpToCleanPos failed']);
+      if CleanPosIsDeclarationIdentifier(CleanCursorPos,CursorNode) then begin
+        if (fsfFindMainDeclaration in SearchSmartFlags) then
+        begin
+          //DebugLn(['TFindDeclarationTool.FindDeclaration CleanPosIsDeclarationIdentifier ',CursorNode.DescAsString]);
+          NewExprType.Desc:=xtContext;
+          NewExprType.Context:=FindMainDeclarationNode(CursorNode,
+                                            fsfSkipPropertyWithoutType in SearchSmartFlags);
+          CleanCursorPos:=NewExprType.Context.Tool.GetNodeMainPos(NewExprType.Context.Node);
+  
+          Result:= NewExprType.Context.Tool.JumpToCleanPos(CleanCursorPos,CleanCursorPos,CleanCursorPos,
+                                 NewPos,NewTopLine,BlockTopLine,BlockBottomLine,false);
+          {$IFDEF VerboseFindDeclarationFail}
+          if not Result then begin
+            debugln(['TFindDeclarationTool.FindDeclaration 20250731120202 cursor at declaration, but JumpToCleanPos failed']);
+          end;
+          {$ENDIF}
         end;
-        {$ENDIF}
         exit;
       end;
       if CursorNode=nil then // prevent AV at this stage
