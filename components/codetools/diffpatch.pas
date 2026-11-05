@@ -105,6 +105,7 @@ type
     fLines1, fLines2: TDiffLines;
     function GetChanges(Index: integer): TDiffChange;
     function GetCount: integer;
+    function GetKindCount(Index: integer): integer;
     function IsEmptyLine(const Src: string; const Line: TDiffLine): boolean;
     function GetLineKey(const Src: string; const Line: TDiffLine): string;
     procedure AddChange(aKind: TDiffChangeKind; aOldFirst, aOldLast, aNewFirst, aNewLast: integer);
@@ -125,6 +126,10 @@ type
     property OutputType: TTextDiffOutputType read fOutputType write fOutputType;
     property Count: integer read GetCount;
     property Changes[Index: integer]: TDiffChange read GetChanges; default;
+    // number of changes (blocks) of each kind:
+    property AddCount: integer index ord(dckAdd) read GetKindCount;
+    property DeleteCount: integer index ord(dckDelete) read GetKindCount;
+    property ModifyCount: integer index ord(dckModify) read GetKindCount;
   end;
 
 const
@@ -438,6 +443,18 @@ begin
   if not fComputed then
     Compute;
   Result:=fChanges.Count;
+end;
+
+function TDiffOutput.GetKindCount(Index: integer): integer;
+var
+  i: Integer;
+begin
+  if not fComputed then
+    Compute;
+  Result:=0;
+  for i:=0 to fChanges.Count-1 do
+    if ord(TDiffChange(fChanges[i]).Kind)=Index then
+      inc(Result);
 end;
 
 function TDiffOutput.IsEmptyLine(const Src: string; const Line: TDiffLine

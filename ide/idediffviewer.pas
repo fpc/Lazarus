@@ -46,7 +46,7 @@ uses
   // IdeIntf
   EditorSyntaxHighlighterDef,
   // IDE
-  EditorOptions, SourceEditor;
+  EditorOptions, SourceEditor, LazarusIDEStrConsts;
 
 type
   TIDEDiffLineKind = (
@@ -126,6 +126,7 @@ type
     function IsDiffStart(Index: integer): boolean; // 0-based, first line of a block of changed lines
     function FindDiff(FromLine: integer; Forward: boolean): integer; // 1-based, 0 if not found
     function HasDiffs: boolean;
+    function GetStatsText: string; // e.g. '2 added, 1 deleted, 3 modified'
     function GotoFirstDiff: boolean;
     function GotoNextDiff: boolean;
     function GotoPrevDiff: boolean;
@@ -537,6 +538,15 @@ begin
         exit(i+1);
   end;
   Result := 0;
+end;
+
+function TIDEDiffViewer.GetStatsText: string;
+begin
+  if FDiff = nil then
+    exit('');
+  if (FDiff.AddCount = 0) and (FDiff.DeleteCount = 0) and (FDiff.ModifyCount = 0) then
+    exit(lisDiffDlgNoDifferences);
+  Result := Format(lisDiffDlgStats, [FDiff.AddCount, FDiff.DeleteCount, FDiff.ModifyCount]);
 end;
 
 function TIDEDiffViewer.HasDiffs: boolean;

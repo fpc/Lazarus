@@ -105,6 +105,7 @@ type
     OpenInEditorButton: TBitBtn;
     PrevDiffButton: TBitBtn;
     NextDiffButton: TBitBtn;
+    StatsLabel: TLabel;
     ShowWholeTextCheckBox: TCheckBox;
     Text1FileOpenButton: TButton;
     dlgOpen: TOpenDialog;
@@ -322,6 +323,7 @@ begin
   Enable := DiffViewer.HasDiffs;
   PrevDiffButton.Enabled := Enable;
   NextDiffButton.Enabled := Enable;
+  StatsLabel.Caption := DiffViewer.GetStatsText;
 end;
 
 procedure TDiffDlg.FileOpenClick(Sender: TObject);
@@ -406,7 +408,7 @@ begin
   begin
     Name := 'DiffViewer';
     AnchorSideLeft.Control := Self;
-    AnchorSideTop.Control := Text2GroupBox;
+    AnchorSideTop.Control := StatsLabel;
     AnchorSideTop.Side := asrBottom;
     AnchorSideRight.Control := Self;
     AnchorSideRight.Side := asrBottom;

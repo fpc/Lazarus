@@ -71,6 +71,7 @@ type
     PrevDiffButton: TBitBtn;
     NextDiffButton: TBitBtn;
     InfoLabel: TLabel;
+    StatsLabel: TLabel;
     procedure FilesListBoxClick(Sender: TObject);
     procedure ShowWholeTextCheckBoxChange(Sender: TObject);
     procedure PrevDiffButtonClick(Sender: TObject);
@@ -289,6 +290,7 @@ begin
   Enable:=DiffViewer.HasDiffs;
   PrevDiffButton.Enabled:=Enable;
   NextDiffButton.Enabled:=Enable;
+  StatsLabel.Caption:=DiffViewer.GetStatsText;
 end;
 
 procedure TDiskDiffsDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -524,7 +526,7 @@ begin
   with DiffViewer do begin
     Name:='DiffViewer';
     AnchorSideLeft.Control:=Self;
-    AnchorSideTop.Control:=InfoLabel;
+    AnchorSideTop.Control:=StatsLabel;
     AnchorSideTop.Side:=asrBottom;
     AnchorSideRight.Control:=Self;
     AnchorSideRight.Side:=asrBottom;

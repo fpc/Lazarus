@@ -3869,6 +3869,8 @@ resourcestring
   lisDiffDlgShowWholeText = 'Show whole text';
   lisDiffDlgPreviousDifference = 'Previous difference';
   lisDiffDlgNextDifference = 'Next difference';
+  lisDiffDlgStats = '%d added, %d deleted, %d modified';
+  lisDiffDlgNoDifferences = 'No differences';
 
   // packages
   lisCreateNewPackage = '(Create new package)';

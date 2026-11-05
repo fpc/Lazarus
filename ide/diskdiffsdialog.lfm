@@ -117,6 +117,19 @@ object DiskDiffsDlg: TDiskDiffsDlg
     TabOrder = 6
     OnClick = PrevDiffButtonClick
   end
+  object StatsLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = InfoLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 150
+    Width = 60
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'StatsLabel'
+    ParentColor = False
+  end
   object InfoLabel: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = PrevDiffButton

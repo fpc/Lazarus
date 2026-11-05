@@ -38,6 +38,7 @@ type
     procedure TestDiffDelete;
     procedure TestDiffModify;
     procedure TestDiffMultiple;
+    procedure TestDiffKindCounts;
     procedure TestDiffNoTrailingNewline;
     procedure TestDiffHistogram;
     procedure TestDiffFlags;
@@ -154,6 +155,30 @@ begin
             LinesToText(['a','X','c','d','f','g','h']),
             'None 1-1 1-1, Modify 2-2 2-2, None 3-4 3-4, Delete 5-5 5-4,'
             +' None 6-7 5-6, Add 8-7 7-7');
+end;
+
+procedure TTestCTDiffPatch.TestDiffKindCounts;
+var
+  Diff: TDiffOutput;
+begin
+  Diff:=TDiffOutput.Create(LinesToText(['a','b','c','d','e','f','g','h','i']),
+                           LinesToText(['a','X','c','d','f','g','h','N','i','Y']),[]);
+  try
+    // None, Modify b->X, None, Delete e, None, Add N, None, Add Y
+    AssertEquals('AddCount',2,Diff.AddCount);
+    AssertEquals('DeleteCount',1,Diff.DeleteCount);
+    AssertEquals('ModifyCount',1,Diff.ModifyCount);
+  finally
+    Diff.Free;
+  end;
+  Diff:=TDiffOutput.Create(LinesToText(['a']),LinesToText(['a']),[]);
+  try
+    AssertEquals('equal AddCount',0,Diff.AddCount);
+    AssertEquals('equal DeleteCount',0,Diff.DeleteCount);
+    AssertEquals('equal ModifyCount',0,Diff.ModifyCount);
+  finally
+    Diff.Free;
+  end;
 end;
 
 procedure TTestCTDiffPatch.TestDiffNoTrailingNewline;

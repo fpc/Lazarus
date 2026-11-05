@@ -257,6 +257,19 @@ object DiffDlg: TDiffDlg
     OnClick = NextDiffButtonClick
     TabOrder = 9
   end
+  object StatsLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Text2GroupBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 132
+    Width = 60
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'StatsLabel'
+    ParentColor = False
+  end
   object dlgOpen: TOpenDialog
     DefaultExt = '.pas'
     Filter = 'pascal files|*.pas;*.pp|any file|*.*'
