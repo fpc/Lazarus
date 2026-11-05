@@ -135,6 +135,7 @@ type
     procedure Text2ComboboxChange(Sender: TObject);
   private
     fUpdating: Boolean;
+    fJumpToFirstDiff: Boolean; // set when a file was selected
     fIdleConnected: boolean;
     fAvailableFiles: TAvailableDiffFiles;
     fSelectedFile1: TSelectedDiffFile;
@@ -250,7 +251,10 @@ begin
     fCombobox.Text:='';
     fOnlySelCheckBox.Enabled:=false;
   end;
-  if fFile<>OldFile then fOwner.UpdateDiff;
+  if fFile<>OldFile then begin
+    fOwner.fJumpToFirstDiff:=true;
+    fOwner.UpdateDiff;
+  end;
 end;
 
 procedure TSelectedDiffFile.SetFileName(aFileName: string);
@@ -462,6 +466,10 @@ begin
 
     UpdateHighlighter;
     DiffViewer.SetTexts(Text1Src, Text2Src, GetDiffOptions);
+    if fJumpToFirstDiff then begin
+      fJumpToFirstDiff := false;
+      DiffViewer.GotoFirstDiff;
+    end;
 
     OpenInEditorButton.Enabled := True;
     Text2GroupBox.Enabled := True;

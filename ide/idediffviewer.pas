@@ -118,6 +118,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure Clear;
+    procedure SetMessage(const Msg: string); // show a plain text instead of a diff
     procedure SetTexts(const OldText, NewText: string; Flags: TTextDiffFlags);
     procedure SetHighlighterByFilename(const Filename: string);
     procedure ApplyEditorOptions; // read IDE editor options
@@ -125,6 +126,7 @@ type
     function IsDiffStart(Index: integer): boolean; // 0-based, first line of a block of changed lines
     function FindDiff(FromLine: integer; Forward: boolean): integer; // 1-based, 0 if not found
     function HasDiffs: boolean;
+    function GotoFirstDiff: boolean;
     function GotoNextDiff: boolean;
     function GotoPrevDiff: boolean;
     function DiffBlockStart(Line: integer): integer; // 1-based, 0 if Line is not changed
@@ -318,6 +320,12 @@ begin
   FSynEdit.Lines.Clear;
   FGutterPart.UpdateDigits;
   FSynEdit.Invalidate;
+end;
+
+procedure TIDEDiffViewer.SetMessage(const Msg: string);
+begin
+  Clear;
+  FSynEdit.Lines.Text := Msg;
 end;
 
 function TIDEDiffViewer.GetLineInfo(Index: integer): TIDEDiffLineInfo;
@@ -534,6 +542,16 @@ end;
 function TIDEDiffViewer.HasDiffs: boolean;
 begin
   Result := FindDiff(0, true) > 0;
+end;
+
+function TIDEDiffViewer.GotoFirstDiff: boolean;
+var
+  Line: integer;
+begin
+  Line := FindDiff(0, true);
+  Result := Line > 0;
+  if Result then
+    ShowDiffBlock(Line, true);
 end;
 
 function TIDEDiffViewer.GotoNextDiff: boolean;

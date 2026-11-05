@@ -31,19 +31,19 @@ uses
   // RTL + FCL
   Classes, SysUtils, System.UITypes,
   // LCL
-  Forms, StdCtrls, ExtCtrls, CheckLst, ButtonPanel, Buttons,
+  Forms, Controls, StdCtrls, ExtCtrls, CheckLst, ButtonPanel, Buttons,
   // CodeTools
   CodeCache,
   // LazUtils
   LazFileUtils, LazFileCache, LazLoggerBase,
   // IdeIntf
   IDEImagesIntf,
-  // SynEdit
-  SynEdit, SynHighlighterDiff,
   // IdeConfig
   EnvironmentOpts,
+  // IdeUtils
+  InputHistory,
   // IDE
-  Project, PackageDefs, DiffPatch, LazarusIDEStrConsts, EditorOptions;
+  Project, PackageDefs, DiffPatch, LazarusIDEStrConsts, IDEDiffViewer;
 
 type
   PDiffItem = ^TDiffItem;
@@ -51,7 +51,10 @@ type
     Valid: boolean;
     Code: TCodeBuffer;
     Owner: TObject;
-    Diff: string;
+    Filename: string;
+    Message: string; // e.g. error or info
+    Error: boolean;
+    TxtInIDE: string;
     TxtOnDisk: string;
   end;
 
@@ -60,13 +63,18 @@ type
   TDiskDiffsDlg = class(TForm)
     BtnPanel: TButtonPanel;
     CheckDiskChangesWithLoadingCheckBox: TCheckBox;
-    DiffSynEdit: TSynEdit;
     FilesListBox: TCheckListBox;
     WarnImage: TPaintBox;
     WarnLabel: TLabel;
     Splitter: TSplitter;
-    SynDiffSyn1: TSynDiffSyn;
+    ShowWholeTextCheckBox: TCheckBox;
+    PrevDiffButton: TBitBtn;
+    NextDiffButton: TBitBtn;
+    InfoLabel: TLabel;
     procedure FilesListBoxClick(Sender: TObject);
+    procedure ShowWholeTextCheckBoxChange(Sender: TObject);
+    procedure PrevDiffButtonClick(Sender: TObject);
+    procedure NextDiffButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure WarnImagePaint(Sender: TObject);
   private
@@ -84,7 +92,9 @@ type
     procedure ShowDiff;
     function GetCachedDiff(FileOwner: TObject; AltFilename: string): PDiffItem;
     procedure ClearCache;
+    procedure UpdateDiffButtons;
   public
+    DiffViewer: TIDEDiffViewer;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     property CodeList: TFPList read FCodeList write FCodeList; // list of TCodeBuffer
@@ -256,9 +266,35 @@ begin
   ShowDiff;
 end;
 
+procedure TDiskDiffsDlg.ShowWholeTextCheckBoxChange(Sender: TObject);
+begin
+  DiffViewer.ShowWholeText:=ShowWholeTextCheckBox.Checked;
+  UpdateDiffButtons;
+end;
+
+procedure TDiskDiffsDlg.PrevDiffButtonClick(Sender: TObject);
+begin
+  DiffViewer.GotoPrevDiff;
+end;
+
+procedure TDiskDiffsDlg.NextDiffButtonClick(Sender: TObject);
+begin
+  DiffViewer.GotoNextDiff;
+end;
+
+procedure TDiskDiffsDlg.UpdateDiffButtons;
+var
+  Enable: Boolean;
+begin
+  Enable:=DiffViewer.HasDiffs;
+  PrevDiffButton.Enabled:=Enable;
+  NextDiffButton.Enabled:=Enable;
+end;
+
 procedure TDiskDiffsDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   EnvironmentOptions.CheckDiskChangesWithLoading:=CheckDiskChangesWithLoadingCheckBox.Checked;
+  InputHistories.DiffShowWholeText:=ShowWholeTextCheckBox.Checked;
 end;
 
 procedure TDiskDiffsDlg.WarnImagePaint(Sender: TObject);
@@ -381,11 +417,21 @@ begin
         end;
     end;
   end;
-  if DiffItem<>nil then begin
-    DiffSynEdit.Lines.Text:=DiffItem^.Diff;
-  end else begin
-    DiffSynEdit.Lines.Clear;
+  if DiffItem=nil then
+    DiffViewer.Clear
+  else if DiffItem^.Error then
+    DiffViewer.SetMessage(DiffItem^.Message)
+  else begin
+    DiffViewer.SetHighlighterByFilename(DiffItem^.Filename);
+    DiffViewer.SetTexts(DiffItem^.TxtInIDE,DiffItem^.TxtOnDisk,[]);
+    DiffViewer.GotoFirstDiff;
   end;
+  if (DiffItem<>nil) and not DiffItem^.Error then
+    InfoLabel.Caption:=Trim(DiffItem^.Message)
+  else
+    InfoLabel.Caption:='';
+  InfoLabel.Visible:=InfoLabel.Caption<>'';
+  UpdateDiffButtons;
 end;
 
 function TDiskDiffsDlg.GetCachedDiff(FileOwner: TObject; AltFilename: string
@@ -396,7 +442,6 @@ var
   Filename: String;
   APackage: TLazPackage;
   Source: String;
-  DiffOutput: TDiffOutput;
   Code: TCodeBuffer;
 begin
   if FCachedDiffs=nil then
@@ -407,6 +452,7 @@ begin
   end;
   New(Result);
   Result^.Owner:=FileOwner;
+  Result^.Error:=false;
   try
     if FileOwner is TCodeBuffer then begin
       // compare disk and codetools
@@ -418,7 +464,7 @@ begin
       APackage:=TLazPackage(FileOwner);
       if AltFilename<>'' then begin
         if CompareFilenames(AltFilename,APackage.Filename)<>0 then
-          Result^.Diff+=Format(lisLpkHasVanishedOnDiskUsingAsAlternative,
+          Result^.Message:=Format(lisLpkHasVanishedOnDiskUsingAsAlternative,
                                [LineEnding+AltFilename+LineEnding]);
         Filename:=AltFilename;
       end
@@ -431,21 +477,21 @@ begin
       Filename:='';
       Source:='';
     end;
+    Result^.Filename:=Filename;
+    Result^.TxtInIDE:=Source;
     fs:=TFileStream.Create(Filename,fmOpenRead);
     SetLength(Result^.TxtOnDisk,fs.Size);
     if Result^.TxtOnDisk<>'' then
       fs.Read(Result^.TxtOnDisk[1],length(Result^.TxtOnDisk));
     fs.Free;
 
-    DiffOutput:=TDiffOutput.Create(Source,Result^.TxtOnDisk, []);
-    try
-      Result^.Diff+=DiffOutput.CreateTextDiff;
-    finally
-      DiffOutput.Free;
-    end;
   except
-    On E: Exception do
-      Result^.Diff+='\ '+Format(lisDiskDiffErrorReadingFile, [E.Message]);
+    On E: Exception do begin
+      Result^.Error:=true;
+      if Result^.Message<>'' then
+        Result^.Message+=LineEnding;
+      Result^.Message+=Format(lisDiskDiffErrorReadingFile, [E.Message]);
+    end;
   end;
   FCachedDiffs.Add(Result);
 end;
@@ -460,7 +506,9 @@ begin
     DiffItem:=PDiffItem(FCachedDiffs[i]);
     if DiffItem<>nil then begin
       DiffItem^.TxtOnDisk:='';
-      DiffItem^.Diff:='';
+      DiffItem^.TxtInIDE:='';
+      DiffItem^.Filename:='';
+      DiffItem^.Message:='';
       Dispose(DiffItem);
     end;
   end;
@@ -472,8 +520,30 @@ begin
   inherited Create(TheOwner);
 
   Caption:=lisDiskDiffSomeFilesHaveChangedOnDisk;
-  EditorOpts.GetSynEditSettings(DiffSynEdit);
-  DiffSynEdit.Lines.Text:=lisDiskDiffClickOnOneOfTheAboveItemsToSeeTheDiff;
+  DiffViewer:=TIDEDiffViewer.Create(Self);
+  with DiffViewer do begin
+    Name:='DiffViewer';
+    AnchorSideLeft.Control:=Self;
+    AnchorSideTop.Control:=InfoLabel;
+    AnchorSideTop.Side:=asrBottom;
+    AnchorSideRight.Control:=Self;
+    AnchorSideRight.Side:=asrBottom;
+    AnchorSideBottom.Control:=WarnImage;
+    Anchors:=[akTop, akLeft, akRight, akBottom];
+    BorderSpacing.Around:=6;
+    TabOrder:=2;
+    Parent:=Self;
+  end;
+  DiffViewer.SetMessage(lisDiskDiffClickOnOneOfTheAboveItemsToSeeTheDiff);
+
+  ShowWholeTextCheckBox.Caption:=lisDiffDlgShowWholeText;
+  ShowWholeTextCheckBox.Checked:=InputHistories.DiffShowWholeText;
+  DiffViewer.ShowWholeText:=ShowWholeTextCheckBox.Checked;
+  PrevDiffButton.Caption:=lisDiffDlgPreviousDifference;
+  NextDiffButton.Caption:=lisDiffDlgNextDifference;
+  IDEImages.AssignImage(PrevDiffButton, 'arrow_up');
+  IDEImages.AssignImage(NextDiffButton, 'arrow_down');
+  UpdateDiffButtons;
 
   BtnPanel.OkButton.Caption:=lisDiskDiffReloadCheckedFilesFromDisk;
   Assert(BtnPanel.OKButton.ModalResult=mrOK, 'OKButton.ModalResult<>mrOK');
