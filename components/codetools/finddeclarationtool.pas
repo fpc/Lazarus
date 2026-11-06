@@ -2707,6 +2707,8 @@ var
   LineRange: TLineRange;
   Params: TFindDeclarationParams;
   CommentStart, CommentEnd: Integer;
+  DeclNode, IdentNode: TCodeTreeNode;
+  DeclIdentStartPos, DeclIdentEndPos: integer;
 begin
   Result:=false;
   NewExprType:=CleanExpressionType;
@@ -2750,43 +2752,57 @@ begin
       CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos,true);
       if CursorNode=nil then // prevent AV at this stage
         CleanPosInFront:=1
-      else
-      if (((fsfFindMainDeclaration in SearchSmartFlags)
-          or (CursorNode.Desc in [ctnGenericType,
-                                  ctnVarDefinition,ctnConstDefinition,
-                                  ctnEnumIdentifier,ctnLabel]))
-          and CleanPosIsDeclarationIdentifier(CleanCursorPos,CursorNode)) then
-      begin
-        if fsfFindMainDeclaration in SearchSmartFlags then
-        begin
-          //DebugLn(['TFindDeclarationTool.FindDeclaration CleanPosIsDeclarationIdentifier ',CursorNode.DescAsString]);
-          NewExprType.Desc:=xtContext;
-          NewExprType.Context:=FindMainDeclarationNode(CursorNode,
-                                            fsfSkipPropertyWithoutType in SearchSmartFlags);
-          CleanCursorPos:=NewExprType.Context.Tool.GetNodeMainPos(NewExprType.Context.Node);
-
-          Result:= NewExprType.Context.Tool.JumpToCleanPos(CleanCursorPos,CleanCursorPos,CleanCursorPos,
-                                 NewPos,NewTopLine,BlockTopLine,BlockBottomLine,false);
-          {$IFDEF VerboseFindDeclarationFail}
-          if not Result then begin
-            debugln(['TFindDeclarationTool.FindDeclaration 20250731120202 cursor at declaration, but JumpToCleanPos failed']);
+      else begin
+        DeclNode:=nil;
+        if ((fsfFindMainDeclaration in SearchSmartFlags)
+            or (CursorNode.Desc in [ctnGenericType,
+                    ctnVarDefinition,ctnConstDefinition,
+                    ctnEnumIdentifier,ctnLabel]))
+            and CleanPosIsDeclarationIdentifier(CleanCursorPos,CursorNode) then
+          DeclNode:=CursorNode
+        else begin
+          GetIdentStartEndAtPosition(Src,CleanCursorPos,
+                                     DeclIdentStartPos,DeclIdentEndPos);
+          if DeclIdentStartPos<DeclIdentEndPos then begin
+            IdentNode:=BuildSubTreeAndFindDeepestNodeAtPos(DeclIdentStartPos,false);
+            if (IdentNode<>nil)
+            and ((fsfFindMainDeclaration in SearchSmartFlags)
+              or (IdentNode.Desc in [ctnGenericType,
+                      ctnVarDefinition,ctnConstDefinition,
+                      ctnEnumIdentifier,ctnLabel]))
+            and CleanPosIsDeclarationIdentifier(DeclIdentStartPos,IdentNode) then
+              DeclNode:=IdentNode;
           end;
-          {$ENDIF}
+        end;
+        if DeclNode<>nil then begin
+          if fsfFindMainDeclaration in SearchSmartFlags then
+          begin
+            //DebugLn(['TFindDeclarationTool.FindDeclaration CleanPosIsDeclarationIdentifier ',DeclNode.DescAsString]);
+            NewExprType.Desc:=xtContext;
+            NewExprType.Context:=FindMainDeclarationNode(DeclNode,
+                                              fsfSkipPropertyWithoutType in SearchSmartFlags);
+            CleanCursorPos:=NewExprType.Context.Tool.GetNodeMainPos(NewExprType.Context.Node);
+
+            Result:= NewExprType.Context.Tool.JumpToCleanPos(CleanCursorPos,CleanCursorPos,CleanCursorPos,
+                                   NewPos,NewTopLine,BlockTopLine,BlockBottomLine,false);
+            {$IFDEF VerboseFindDeclarationFail}
+            if not Result then begin
+              debugln(['TFindDeclarationTool.FindDeclaration 20250731120202 cursor at declaration, but JumpToCleanPos failed']);
+            end;
+            {$ENDIF}
+            exit;
+          end;
+          // the cursor is on the name of a declaration that cannot be found
+          // by searching (the context node itself is skipped) -> the
+          // declaration is right here
+          NewExprType.Desc:=xtContext;
+          NewExprType.Context:=CreateFindContext(Self,DeclNode);
+          Result:=JumpToNode(DeclNode,NewPos,NewTopLine,
+                             BlockTopLine,BlockBottomLine,false);
           exit;
         end;
-        // the cursor is on the name of a declaration that cannot be found
-        // by searching (the context node itself is skipped) -> the
-        // declaration is right here
-        NewExprType.Desc:=xtContext;
-        NewExprType.Context:=CreateFindContext(Self,CursorNode);
-        Result:=JumpToNode(CursorNode,NewPos,NewTopLine,
-                           BlockTopLine,BlockBottomLine,false);
-        exit;
-      end;
-      if CursorNode=nil then // prevent AV at this stage
-        CleanPosInFront:=1
-      else
         CleanPosInFront:=CursorNode.StartPos;
+      end;
     end else begin
       CleanPosInFront:=1;
       CursorNode:=nil;
