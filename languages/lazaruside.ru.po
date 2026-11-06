@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-11-05 03:05+0300\n"
+"PO-Revision-Date: 2026-11-06 03:02+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -9007,7 +9007,7 @@ msgstr "Игнорировать добавление/удаление пуст�
 
 #: lazarusidestrconsts.lisdiffdlgignoreiflineendcharsdiffe
 msgid "Ignore difference in line ends (e.g. #10 = #13#10)"
-msgstr "Игнорировать разные концы строк (например, #10 = #13#10)"
+msgstr "Игнорировать различающиеся концы строк (например, #10 = #13#10)"
 
 #: lazarusidestrconsts.lisdiffdlgignoreifspacecharswereadd
 msgid "Ignore amount of space chars"
@@ -9025,13 +9025,34 @@ msgstr "Игнорировать пробелы в конце строки"
 msgid "Ignore spaces at start of line"
 msgstr "Игнорировать пробелы в начале строки"
 
+#: lazarusidestrconsts.lisdiffdlgnextdifference
+msgid "Next difference"
+msgstr "Следующее различие"
+
+#: lazarusidestrconsts.lisdiffdlgnodifferences
+msgid "No differences."
+msgstr "Различий нет."
+
 #: lazarusidestrconsts.lisdiffdlgonlyselection
 msgid "Only selection"
 msgstr "Только выбранное"
 
 #: lazarusidestrconsts.lisdiffdlgopendiffineditor
 msgid "Open difference in editor"
-msgstr "Открыть разницу в редакторе"
+msgstr "Открыть различия в редакторе"
+
+#: lazarusidestrconsts.lisdiffdlgpreviousdifference
+msgid "Previous difference"
+msgstr "Предыдущее различие"
+
+#: lazarusidestrconsts.lisdiffdlgshowwholetext
+msgid "Show whole text"
+msgstr "Показывать текст целиком"
+
+#: lazarusidestrconsts.lisdiffdlgstats
+#, object-pascal-format
+msgid "%d added, %d deleted, %d modified."
+msgstr "Добавления: %d. Удаления: %d. Изменения: %d."
 
 #: lazarusidestrconsts.lisdifferentunitfoundatnewposition
 #, object-pascal-format
@@ -16952,7 +16973,7 @@ msgstr "Выводить подсказки с объявлениями"
 
 #: lazarusidestrconsts.lisshowdifferencesbetweenmodes
 msgid "Show differences between modes ..."
-msgstr "Показать разницу между режимами ..."
+msgstr "Показать различия между режимами ..."
 
 #: lazarusidestrconsts.lisshowemptyunitspackages
 msgid "Show empty units/packages"

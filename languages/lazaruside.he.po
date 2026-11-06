@@ -9487,6 +9487,14 @@ msgstr "התעלם מרווחים בסוף שורה"
 msgid "Ignore spaces at start of line"
 msgstr "התעלם מרווחים בהתחלת שורה"
 
+#: lazarusidestrconsts.lisdiffdlgnextdifference
+msgid "Next difference"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiffdlgnodifferences
+msgid "No differences."
+msgstr ""
+
 #: lazarusidestrconsts.lisdiffdlgonlyselection
 msgid "Only selection"
 msgstr "רק בחירה"
@@ -9496,6 +9504,19 @@ msgstr "רק בחירה"
 #| msgid "Open Diff in editor"
 msgid "Open difference in editor"
 msgstr "פתח Diff בעורך"
+
+#: lazarusidestrconsts.lisdiffdlgpreviousdifference
+msgid "Previous difference"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiffdlgshowwholetext
+msgid "Show whole text"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiffdlgstats
+#, object-pascal-format
+msgid "%d added, %d deleted, %d modified."
+msgstr ""
 
 #: lazarusidestrconsts.lisdifferentunitfoundatnewposition
 #, object-pascal-format

@@ -9063,6 +9063,14 @@ msgstr "ບໍ່ສົນໃຈຍະຫວ່າງທ້າຍແຖວ"
 msgid "Ignore spaces at start of line"
 msgstr "ບໍ່ສົນໃຈຍະຫວ່າງຕົ້ນແຖວ"
 
+#: lazarusidestrconsts.lisdiffdlgnextdifference
+msgid "Next difference"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiffdlgnodifferences
+msgid "No differences."
+msgstr ""
+
 #: lazarusidestrconsts.lisdiffdlgonlyselection
 msgid "Only selection"
 msgstr "ສະເພາະສ່ວນທີ່ເລືອກ"
@@ -9070,6 +9078,19 @@ msgstr "ສະເພາະສ່ວນທີ່ເລືອກ"
 #: lazarusidestrconsts.lisdiffdlgopendiffineditor
 msgid "Open difference in editor"
 msgstr "ເປີດຄວາມແຕກຕ່າງໃນຕົວແກ້ໄຂ"
+
+#: lazarusidestrconsts.lisdiffdlgpreviousdifference
+msgid "Previous difference"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiffdlgshowwholetext
+msgid "Show whole text"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiffdlgstats
+#, object-pascal-format
+msgid "%d added, %d deleted, %d modified."
+msgstr ""
 
 #: lazarusidestrconsts.lisdifferentunitfoundatnewposition
 #, object-pascal-format

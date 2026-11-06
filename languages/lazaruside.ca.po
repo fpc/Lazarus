@@ -9266,6 +9266,14 @@ msgstr "Ignora els espais al final de la línia"
 msgid "Ignore spaces at start of line"
 msgstr "Ignora els espais al començament de la línia"
 
+#: lazarusidestrconsts.lisdiffdlgnextdifference
+msgid "Next difference"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiffdlgnodifferences
+msgid "No differences."
+msgstr ""
+
 #: lazarusidestrconsts.lisdiffdlgonlyselection
 msgid "Only selection"
 msgstr "Selecció única"
@@ -9275,6 +9283,19 @@ msgstr "Selecció única"
 #| msgid "Open Diff in editor"
 msgid "Open difference in editor"
 msgstr "Obre les diferències a l'editor"
+
+#: lazarusidestrconsts.lisdiffdlgpreviousdifference
+msgid "Previous difference"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiffdlgshowwholetext
+msgid "Show whole text"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiffdlgstats
+#, object-pascal-format
+msgid "%d added, %d deleted, %d modified."
+msgstr ""
 
 #: lazarusidestrconsts.lisdifferentunitfoundatnewposition
 #, object-pascal-format

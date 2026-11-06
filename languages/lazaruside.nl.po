@@ -9300,6 +9300,14 @@ msgstr "Negeer spaties aan regeleinde"
 msgid "Ignore spaces at start of line"
 msgstr "Negeer spaties aan begin van regel"
 
+#: lazarusidestrconsts.lisdiffdlgnextdifference
+msgid "Next difference"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiffdlgnodifferences
+msgid "No differences."
+msgstr ""
+
 #: lazarusidestrconsts.lisdiffdlgonlyselection
 msgid "Only selection"
 msgstr "Alleen de selectie"
@@ -9309,6 +9317,19 @@ msgstr "Alleen de selectie"
 #| msgid "Open Diff in editor"
 msgid "Open difference in editor"
 msgstr "Toon verschillen in bewerker"
+
+#: lazarusidestrconsts.lisdiffdlgpreviousdifference
+msgid "Previous difference"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiffdlgshowwholetext
+msgid "Show whole text"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiffdlgstats
+#, object-pascal-format
+msgid "%d added, %d deleted, %d modified."
+msgstr ""
 
 #: lazarusidestrconsts.lisdifferentunitfoundatnewposition
 #, object-pascal-format
