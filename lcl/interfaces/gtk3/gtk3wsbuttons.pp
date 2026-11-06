@@ -233,7 +233,6 @@ class procedure TGtk3WSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
 var
   AImage: PGtkImage;
   AGlyph: TBitmap;
-  resolution: TCustomImageListResolution;
   ScaleFactor: Double;
   raw: TRawImage;
   AIndex: Integer;
@@ -255,11 +254,14 @@ begin
     if (ABitBtn.ImageIndex>=0) and Assigned(ABitBtn.Images) then
     begin
       { find imagelist scaled }
-      resolution := ABitBtn.Images.Resolution[round(AbitBtn.Images.Width*ScaleFactor)];
-      resolution.GetRawImage(ABitBtn.ImageIndex,raw);
-      AGlyph.BeginUpdate();
-      AGlyph.LoadFromRawImage(raw,false);
-      AGlyph.EndUpdate();
+      AImageRes := ABitBtn.Images.ResolutionForPPI[ABitBtn.ImageWidth, ABitBtn.Font.PixelsPerInch, ScaleFactor];
+      if AImageRes.Valid then
+      begin
+        AImageRes.Resolution.GetRawImage(ABitBtn.ImageIndex,raw);
+        AGlyph.BeginUpdate();
+        AGlyph.LoadFromRawImage(raw,false);
+        AGlyph.EndUpdate();
+      end;
     end else
     begin
       AGlyph.BeginUpdate();
