@@ -4407,7 +4407,8 @@ begin
   if FTabStop = NewTabStop then
     Exit;
   FTabStop := NewTabStop;
-  UpdateTabOrder(FTabOrder);
+  if not (csLoading in ComponentState) then
+    UpdateTabOrder(FTabOrder);
   Perform(CM_TABSTOPCHANGED, 0, 0);
 end;
 
