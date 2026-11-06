@@ -49,14 +49,14 @@ interface
 { $DEFINE MEM_CHECK}
 
 // verbosity
-{$DEFINE CTDEBUG}
+{ $DEFINE CTDEBUG}
 { $DEFINE ShowTriedFiles}
 { $DEFINE ShowTriedContexts}
 { $DEFINE ShowTriedBaseContexts}
 { $DEFINE ShowTriedParentContexts}
 { $DEFINE ShowTriedIdentifiers}
 { $DEFINE ShowTriedUnits}
-{$DEFINE ShowExprEval}
+{ $DEFINE ShowExprEval}
 { $DEFINE ShowForInEval}
 { $DEFINE ShowFoundIdentifier}
 { $DEFINE ShowNodeCache}
