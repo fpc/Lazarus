@@ -1781,6 +1781,9 @@ end;
 class procedure TGtk3Widget.UnMapWidget(AWidget: PGtkWidget; Data: gPointer); cdecl;
 begin
   TGtk3Widget(Data).WidgetMapped := False;
+  if (Gtk3WidgetSet.FLCLCaptureWidget <> nil) and
+     (AWidget = Gtk3WidgetSet.FLCLCaptureWidget) then
+    Gtk3WidgetSet.ReleaseCapture;
 end;
 
 procedure Gtk3DbgWidget(AWidget: PGtkWidget); cdecl;
@@ -4836,6 +4839,8 @@ var
   prnt:TGtk3Widget;
   wtype:TGType;
 begin
+  Result := False;
+  APoint := Point(0, 0);
   fWidget^.get_allocation(@Alloc);
   if (alloc.X=-1) and (alloc.Y=-1) and (alloc.height=1) and (alloc.width=1) then
   // default allocation
@@ -4869,7 +4874,7 @@ begin
     end;
   end;
 
-  if (self.getType=gtk_window_get_type()) then
+  if Gtk3IsGtkWindow(PGObject(fWidget)) then
   begin
     GdkWindow:=Self.Widget^.window;
     if (GdkWindow<>nil) and (Self.FWidget^.get_mapped) then
@@ -15127,14 +15132,19 @@ begin
     end;
     NoneAtom := nil; // GDK_NONE = any type
     Data := nil;
-    if gdk_property_get_raw(ActiveWin, PidAtom, NoneAtom, 0, 2,
-      0, @ActualType, @DataFmt, @DataLen, @Data) then
-    begin
-      if Data <> nil then
+    gdk_error_trap_push;
+    try
+      if gdk_property_get_raw(ActiveWin, PidAtom, NoneAtom, 0, 2,
+        0, @ActualType, @DataFmt, @DataLen, @Data) then
       begin
-        Result := (Pgulong(Data)^ = gulong(GetProcessID));
-        g_free(Data);
+        if Data <> nil then
+        begin
+          Result := (Pgulong(Data)^ = gulong(GetProcessID));
+          g_free(Data);
+        end;
       end;
+    finally
+      gdk_error_trap_pop_ignored;
     end;
   finally
     g_object_unref(PGObject(ActiveWin));
@@ -16173,10 +16183,7 @@ begin
       if FWidgetType = [wtHintWindow] then
         gtk_window_set_type_hint(PGtkWindow(Result), GDK_WINDOW_TYPE_HINT_TOOLTIP)
       else
-      if Assigned(Application) and (Application.MainForm = AForm) then
-        gtk_window_set_type_hint(PGtkWindow(Result), GDK_WINDOW_TYPE_HINT_NORMAL)
-      else
-        gtk_window_set_type_hint(PGtkWindow(Result), GDK_WINDOW_TYPE_HINT_UTILITY);
+        gtk_window_set_type_hint(PGtkWindow(Result), GDK_WINDOW_TYPE_HINT_NORMAL);
     end;
     if FWidgetType = [wtHintWindow] then
       FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtScrollingWinControl, wtWindow, wtHintWindow]
