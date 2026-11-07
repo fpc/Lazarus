@@ -30738,6 +30738,9 @@ begin
         NodeBitmap.Width := Round(PaintWidth * ScaleFactor);
         NodeBitmap.Height := 1;
         LCLIntf.SetCanvasScaleFactor(NodeBitmap.Canvas.Handle, ScaleFactor);
+        // sync the buffer canvas font resolution with the target, otherwise
+        // TFont.Assign downconverts the font to Screen.PixelsPerInch:
+        NodeBitmap.Canvas.Font.PixelsPerInch := TargetCanvas.Font.PixelsPerInch;
 
         // Make sure the buffer bitmap and target bitmap use the same transformation mode.
         {$ifndef Gtk}
