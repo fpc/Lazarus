@@ -7,7 +7,7 @@ object VisibilityForm: TVisibilityForm
   Caption = 'VisibilityForm'
   ClientHeight = 536
   ClientWidth = 969
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '5.99.0.0'
   OnCreate = FormCreate
   OnHide = FormHide
   OnShow = FormShow
@@ -8266,7 +8266,7 @@ object VisibilityForm: TVisibilityForm
       SelectionCurveRadius = 3
       ShowHint = True
       TabOrder = 1
-      TreeOptions.AutoOptions = [toAutoDropExpand, toAutoScroll, toAutoTristateTracking]
+      TreeOptions.AutoOptions = [toAutoDropExpand, toAutoScroll, toAutoTristateTracking, toAutoChangeScale]
       TreeOptions.MiscOptions = [toCheckSupport, toInitOnSave, toToggleOnDblClick, toWheelPanning]
       TreeOptions.PaintOptions = [toHideFocusRect, toShowBackground, toShowButtons, toShowDropmark, toShowRoot, toShowTreeLines, toThemeAware, toUseBlendedImages, toUseBlendedSelection]
       TreeOptions.SelectionOptions = [toExtendedFocus, toFullRowSelect]

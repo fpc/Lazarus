@@ -14,7 +14,7 @@ interface
 
 uses
   delphicompat, LCLIntf, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Laz.VirtualTrees, LResources, LCLType, variants;
+  StdCtrls, Laz.VirtualTrees, LResources, LCLType, variants, ImagesDatamodule;
 
 type
 
@@ -24,7 +24,6 @@ type
     VST5: TLazVirtualStringTree;
     GridLineCheckBox: TCheckBox;
     Label15: TLabel;
-    TreeImages: TImageList;
     Label1: TLabel;
     procedure VST5BeforeCellPaint(Sender: TBaseVirtualTree;
       TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
@@ -215,7 +214,8 @@ end;
 
 procedure TGridForm.VST5AfterCellPaint(Sender: TBaseVirtualTree; TargetCanvas: TCanvas; Node: PVirtualNode;
   Column: TColumnIndex; CellRect: TRect);
-
+var
+  wImg, hImg: Integer;
 begin
   if Column = 0 then
     with TargetCanvas do
@@ -227,7 +227,15 @@ begin
         Inc(CellRect.Bottom);
       DrawEdge(Handle, CellRect, BDR_RAISEDINNER, BF_RECT or BF_MIDDLE);
       if Node = Sender.FocusedNode then
-        TreeImages.Draw(TargetCanvas, CellRect.Left + 4, CellRect.Top, 17);
+      begin
+        wImg := ImgDataModule.TreeImages.WidthForPPI[0, Font.PixelsPerInch];
+        hImg := ImgDataModule.TreeImages.HeightForPPI[0, Font.PixelsPerInch];
+        ImgDatamodule.TreeImages.DrawForPPI(TargetCanvas,
+          (CellRect.Left + CellRect.Right - wImg) div 2,
+          (CellRect.Top + CellRect.Bottom - hImg) div 2,
+          17,   // Image index
+          0, Font.PixelsPerInch, GetCanvasScaleFactor);
+      end;
     end;
 end;
 

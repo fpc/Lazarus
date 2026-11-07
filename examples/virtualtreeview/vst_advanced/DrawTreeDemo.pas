@@ -20,7 +20,8 @@ uses
   {$ifdef Windows}
   Windows,
   {$endif}
-  Types, SysUtils, Classes,
+  //Types,
+  SysUtils, Classes,
   LCLIntf, LCLType, LResources, ComCtrls, Graphics, Controls, Forms, Dialogs, StdCtrls,
   Laz.VirtualTrees, shlobjext, delphicompat,
   LazFileUtils;
@@ -180,8 +181,7 @@ procedure TDrawTreeForm.FormCreate(Sender: TObject);
 
 var
   //SFI: TSHFileInfo;
-  I,
-  Count: Integer;
+  Count: Integer = 0;
 
 begin
   VDT1.NodeDataSize := SizeOf(TShellObjectData);
@@ -267,13 +267,12 @@ end;
 function TDrawTreeForm.ReadAttributes(const Name: String): Cardinal;
 
 // Determines the attributes of the given shell object (file, folder).
-
+  {
 const
   SFGAO_CONTENTSMASK = $F0000000; // This value is wrongly defined in ShlObj.
 
 //var
   //Desktop: IShellFolder;
-  {
   Eaten: Cardinal;
   PIDL: PItemIDList;
   Malloc: IMalloc;

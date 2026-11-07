@@ -74,7 +74,7 @@ begin
   Screen.Cursor := crHourGlass;
   with VST1 do
   try
-    Start := GetTickCount;
+    Start := GetTickCount64;
     case (Sender as TButton).Tag of
       0: // add to root
         begin
@@ -90,7 +90,7 @@ begin
           InvalidateToBottom(FocusedNode);
         end;
     end;
-    Label1.Caption := Format('Last operation duration: %d ms', [GetTickCount - Start]);
+    Label1.Caption := Format('Last operation duration: %d ms', [GetTickCount64 - Start]);
     Label3.Caption := Format('Nodes in tree: %d', [VST1.TotalCount]);
   finally
     Screen.Cursor := crDefault;
@@ -107,9 +107,9 @@ var
 begin
   Screen.Cursor := crHourGlass;
   try
-    Start := GetTickCount;
+    Start := GetTickCount64;
     VST1.Clear;
-    Label1.Caption := Format('Clear operation duration: %d ms', [GetTickCount - Start]);
+    Label1.Caption := Format('Clear operation duration: %d ms', [GetTickCount64 - Start]);
     Label3.Caption := 'Nodes in tree: 0';
   finally
     Screen.Cursor := crDefault;
@@ -180,9 +180,9 @@ var
 begin
   Screen.Cursor := crHourGlass;
   try
-    Start := GetTickCount;
+    Start := GetTickCount64;
     VST1.DeleteSelectedNodes;
-    Label1.Caption := Format('Delete operation duration: %d ms', [GetTickCount - Start]);
+    Label1.Caption := Format('Delete operation duration: %d ms', [GetTickCount64 - Start]);
     Label3.Caption := 'Nodes in tree: ' + IntToStr(VST1.TotalCount);
   finally
     Screen.Cursor := crDefault;

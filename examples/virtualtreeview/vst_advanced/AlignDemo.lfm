@@ -8,7 +8,7 @@ object AlignForm: TAlignForm
   ClientHeight = 470
   ClientWidth = 768
   Constraints.MinWidth = 590
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '5.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   object Label8: TLabel
@@ -51,7 +51,7 @@ object AlignForm: TAlignForm
     Left = 248
     Height = 15
     Top = 344
-    Width = 105
+    Width = 104
     Anchors = [akLeft, akBottom]
     BorderSpacing.Bottom = 2
     Caption = 'English text column'
@@ -63,7 +63,7 @@ object AlignForm: TAlignForm
     Left = 440
     Height = 15
     Top = 344
-    Width = 97
+    Width = 96
     Anchors = [akLeft, akBottom]
     BorderSpacing.Bottom = 2
     Caption = 'Greek text column'
@@ -75,7 +75,7 @@ object AlignForm: TAlignForm
     Left = 595
     Height = 15
     Top = 344
-    Width = 145
+    Width = 144
     Anchors = [akLeft, akBottom]
     BorderSpacing.Bottom = 2
     Caption = 'Hebrew/arabic text column'
@@ -173,7 +173,7 @@ object AlignForm: TAlignForm
     Header.Style = hsFlatButtons
     HintMode = hmTooltip
     HotCursor = crHandPoint
-    Images = TreeImages
+    Images = ImgDatamodule.TreeImages
     ParentShowHint = False
     RootNodeCount = 6
     SelectionCurveRadius = 5
@@ -391,7 +391,7 @@ object AlignForm: TAlignForm
       Left = 0
       Height = 19
       Top = 42
-      Width = 70
+      Width = 69
       Caption = 'Show text'
       TabOrder = 2
       OnClick = OptionBoxClick
@@ -439,23 +439,11 @@ object AlignForm: TAlignForm
     TabOrder = 8
     OnChange = LayoutComboChange
   end
-  object TreeImages: TImageList
-    Left = 544
-    Top = 104
-    Bitmap = {
-      4C7A0200000010000000100000008B0000000000000078DACDD24B0E80300804
-      508ECED17AB3519A3641D21F95582721B8E0A15699193C289A446624BCB9477B
-      CF9EFB022CD5F0BD148F6C79CF6BDB7BFE6E9ED6E7954D29F9BCB12EAF6CCDAA
-      CFE72D5D598F97B9D6FB58AFE76A27F56D47BE74D83DA3184FAD3DB36AF8C79E
-      C522BC0CFD2708F008F008F008F008F008F03878FF53E77FEAFFFB3C17CD07C1
-      EF
-    }
-  end
   object HeaderImages: TImageList
     Height = 32
     Width = 32
-    Left = 544
-    Top = 168
+    Left = 536
+    Top = 104
     Bitmap = {
       4C7A410000002000000020000000C51F00000000000078DAED9D4DB6E4280E85
       DF76721BB595DE4A2D21B750C31AF6B0A73DF4566A09D1F9F284A33196401257
@@ -718,7 +706,8 @@ object AlignForm: TAlignForm
     Images = HeaderImages
     AutoPopup = False
     OnPopup = IconPopupPopup
-    Left = 544
-    Top = 232
+    OnClose = IconPopupClose
+    Left = 536
+    Top = 184
   end
 end

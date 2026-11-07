@@ -161,7 +161,7 @@ begin
   begin
     VST1.BeginUpdate;
     try
-      VST1.IterateSubtree(nil, HideNodes, Pointer(ItemIndex), [], True);
+      VST1.IterateSubtree(nil, HideNodes, Pointer(PtrInt(ItemIndex)), [], True);
     finally
       VST1.EndUpdate;
     end;

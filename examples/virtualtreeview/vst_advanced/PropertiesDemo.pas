@@ -11,7 +11,8 @@ interface
 
 uses
   LCLIntf, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Laz.VirtualTrees, ExtCtrls, LResources, LMessages;
+  StdCtrls, Laz.VirtualTrees, ExtCtrls, LResources, LMessages,
+  {%H-}ImagesDataModule;
 
 const
   // Helper message to decouple node change handling from edit handling.
@@ -22,7 +23,6 @@ type
     VST3: TLazVirtualStringTree;
     Label9: TLabel;
     Label10: TLabel;
-    TreeImages: TImageList;
     RadioGroup1: TRadioGroup;
     procedure FormCreate(Sender: TObject);
     procedure VST3Change(Sender: TBaseVirtualTree; Node: PVirtualNode);
@@ -212,7 +212,7 @@ begin
       // to start a new edit operation if the last one is still in progress. So we post us a special message and
       // in the message handler we then can start editing the new node. This works because the posted message
       // is first executed *after* this event and the message, which triggered it is finished.
-      PostMessage(Self.Handle, WM_STARTEDITING, PtrInt(Node), 0);
+      PostMessage(Self.Handle, WM_STARTEDITING, PtrUInt(Node), 0);
     end;
   end;
 end;
@@ -322,7 +322,7 @@ var
   Node: PVirtualNode;
 
 begin
-  Node := Pointer(Message.WParam);
+  Node := Pointer(PtrUInt(Message.WParam));
   // Note: the test whether a node can really be edited is done in the OnEditing event.
   VST3.EditNode(Node, 1);
 end;
