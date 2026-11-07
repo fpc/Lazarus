@@ -38,7 +38,7 @@ begin
     WStr := 'plugins';
     QCoreApplication_addLibraryPath(@WStr);
     {$ENDIF}
-    QGuiApplication_setHighDpiScaleFactorRoundingPolicy(QtHighDpiScaleFactorRoundingPolicy_Round);
+    QGuiApplication_setHighDpiScaleFactorRoundingPolicy(QtHighDpiScaleFactorRoundingPolicy_PassThrough);
     App := QApplication_Create(@argc, argv);
   end;
 
