@@ -366,7 +366,7 @@ function TPropertyEditLink.EndEdit: Boolean; stdcall;
 
 var
   Data: PPropertyData;
-  Buffer: array[0..1024] of Char;
+  //Buffer: array[0..1024] of Char;
   S: String;
 
 begin
@@ -528,7 +528,7 @@ function TGridEditLink.EndEdit: Boolean;
 
 var
   Data: PGridData;
-  Buffer: array[0..1024] of Char;
+  //Buffer: array[0..1024] of Char;
   //S: WideString;
   S: String;
   I: Integer;

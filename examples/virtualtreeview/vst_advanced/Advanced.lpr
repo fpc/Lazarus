@@ -19,15 +19,16 @@ uses
   //WindowsXPStyleDemo in 'WindowsXPStyleDemo.pas' {WindowsXPForm},
   //MultilineDemo in 'MultilineDemo.pas' {NodeForm},
   //HeaderCustomDrawDemo in 'HeaderCustomDrawDemo.pas' {HeaderOwnerDrawForm},
-  States in 'States.pas' {StateForm}, Printer4Lazarus;
+  States in 'States.pas' {StateForm}, Printer4Lazarus, ImagesDatamodule;
 
 {$R *.res}
 {$R extraresources.res}
 
 begin
-  Application.Scaled := True;
-  Application.Title := '';
+  Application.Scaled:=True;
+  Application.Title:='';
   Application.Initialize;
+  Application.CreateForm(TImgDatamodule, ImgDatamodule);
   Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TStateForm, StateForm);
   Application.Run;

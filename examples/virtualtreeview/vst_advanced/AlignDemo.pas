@@ -11,7 +11,8 @@ interface
 
 uses
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ComCtrls, Laz.VirtualTrees,  ExtCtrls, Menus, LResources;
+  StdCtrls, ComCtrls, Laz.VirtualTrees,  ExtCtrls, Menus, LResources,
+  ImagesDatamodule;
 
 type
 
@@ -20,7 +21,6 @@ type
   TAlignForm = class(TForm)
     AlignTree: TLazVirtualStringTree;
     Label8: TLabel;
-    TreeImages: TImageList;
     HeaderImages: TImageList;
     IconPopup: TPopupMenu;
     Label1: TLabel;
@@ -55,6 +55,7 @@ type
     procedure AlignTreeResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure IconPopupClose(Sender: TObject);
     procedure IconPopupPopup(Sender: TObject);
     procedure AlignComboChange(Sender: TObject);
     procedure BidiGroupClick(Sender: TObject);
@@ -227,7 +228,7 @@ begin
 
   Data := Sender.GetNodeData(Node);
 
-  Data.ImageIndex := 0;                          
+  Data.ImageIndex := 16;
   if ParentNode = nil then
   begin
     with Data^ do
@@ -458,6 +459,15 @@ begin
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
+
+procedure TAlignForm.IconPopupClose(Sender: TObject);
+var
+  Index: Integer;
+begin
+//  Index := (Sender as TPopupMenu).Items.IndexOf;
+
+end;
+
 
 procedure TAlignForm.IconPopupPopup(Sender: TObject);
 

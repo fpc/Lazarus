@@ -7,7 +7,7 @@ object HeaderOwnerDrawForm: THeaderOwnerDrawForm
   Caption = 'HeaderOwnerDrawForm'
   ClientHeight = 440
   ClientWidth = 819
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '5.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   object Label8: TLabel
@@ -127,8 +127,8 @@ object HeaderOwnerDrawForm: THeaderOwnerDrawForm
   object HeaderImages: TImageList
     Height = 90
     Width = 90
-    Left = 24
-    Top = 52
+    Left = 200
+    Top = 208
     Bitmap = {
       4C7A030000005A0000005A000000675200000000000078DAECBD67745BD7B92D
       7AFFBF71FEDC7B5F72526E7292BC7372526EEA398EE3C4891D97B83759B6D545
@@ -795,7 +795,7 @@ object HeaderOwnerDrawForm: THeaderOwnerDrawForm
   object AnimationTimer: TTimer
     Interval = 50
     OnTimer = AnimationTimerTimer
-    Left = 24
-    Top = 20
+    Left = 200
+    Top = 144
   end
 end

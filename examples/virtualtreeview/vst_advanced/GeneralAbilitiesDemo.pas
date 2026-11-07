@@ -21,9 +21,13 @@ interface
 uses
   LCLIntf, LCLType, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, Laz.VTHeaderPopup, Laz.VirtualTrees, ComCtrls, ExtCtrls, Menus,
-  ActnList,  LResources, ImgList;
+  ActnList,  LResources, ImgList,
+  {%H-}ImagesDataModule;
 
 type                                        
+
+  { TGeneralForm }
+
   TGeneralForm = class(TForm)
     ButtonFillModeCombo: TComboBox;
     MainColumnLabel: TLabel;
@@ -34,7 +38,6 @@ type
     SwitchMainColumnLabel: TLabel;
     TreeFontButton: TBitBtn;
     Label8: TLabel;
-    TreeImages: TImageList;
     FontDialog1: TFontDialog;
     PopupMenu1: TPopupMenu;
     Onemenuitem1: TMenuItem;
@@ -546,7 +549,7 @@ begin
         4: // Comma separated values ANSI text file
           begin
             TargetName := ChangeFileExt(TargetName, '.csv');
-            S := VST2.ContentToText(tstVisible, ListSeparator);
+            S := VST2.ContentToText(tstVisible, FormatSettings.ListSeparator);
             Data := PChar(S);
             DataSize := Length(S);
           end;

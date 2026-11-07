@@ -14074,7 +14074,7 @@ end;
 function TBaseVirtualTree.IsDefaultNodeHeightStored: Boolean;
 begin
   {$IF LCL_FullVersion >= 1080000}
-  Result := FDefaultNodeHeight <> Scale96ToFont(DEFAULT_NODE_HEIGHT);
+  Result := FDefaultNodeHeight <> Cardinal(Scale96ToFont(DEFAULT_NODE_HEIGHT));
   {$ELSE}
   Result := FDefaultNodeHeight <> DEFAULT_NODE_HEIGHT;
   {$IFEND}
@@ -14143,7 +14143,7 @@ end;
 function TBaseVirtualTree.IsIndentStored: Boolean;
 begin
   {$IF LCL_FullVersion >= 1080000}
-  Result := FIndent <> Scale96ToFont(DEFAULT_INDENT);
+  Result := FIndent <> Cardinal(Scale96ToFont(DEFAULT_INDENT));
   {$ELSE}
   Result := FIndent <> DEFAULT_INDENT;
   {$IFEND}
@@ -14342,7 +14342,6 @@ const
   LineBitsSolid: array [0..7] of Word = (0, 0, 0, 0, 0, 0, 0, 0);
 
 var
-  p9, p8, p6, p4, p2, p1: Integer;
   PatternBitmap: HBITMAP;
   Bits: Pointer;
   Size: TSize;
@@ -14376,6 +14375,9 @@ var
     ABitmap.PixelFormat := pf24Bit;
     ABitmap.Transparent := true;
     ABitmap.SetSize(Size.CX, Size.CY);
+
+    ABitmap.Canvas.Brush.Color := clFuchsia;
+    ABitmap.Canvas.FillRect(0, 0, ABitmap.Width, ABitmap.Height);
 
     if IsWinVistaOrAbove and (tsUseThemes in FStates) and (toUseExplorerTheme in FOptions.FPaintOptions) or VclStyleEnabled then
     begin
@@ -14491,6 +14493,36 @@ begin
 
   if NeedButtons then
   begin
+    {$ifdef ThemeSupport}
+    {$ifdef LCLWin}
+      // Overwrite glyph images if theme is active.
+      if ((tsUseThemes in FStates) and (Theme <> 0)) then
+      begin
+        CreateAndFillBitmap(FPlusBM);
+        CreateAndFillBitmap(FMinusBM);
+        CreateAndFillBitmap(FHotPlusBM);
+        CreateAndFillBitmap(FHotMinusBM);
+        R := Rect(0, 0, Size.cx, Size.cy);
+        DrawThemeBackground(Theme, FPlusBM.Canvas.Handle, TVP_GLYPH, GLPS_CLOSED, R, nil);
+        DrawThemeBackground(Theme, FMinusBM.Canvas.Handle, TVP_GLYPH, GLPS_OPENED, R, nil);
+        if tsUseExplorerTheme in FStates then
+        begin
+          DrawThemeBackground(Theme, FHotPlusBM.Canvas.Handle, TVP_HOTGLYPH, GLPS_CLOSED, R, nil);
+          DrawThemeBackground(Theme, FHotMinusBM.Canvas.Handle, TVP_HOTGLYPH, GLPS_OPENED, R, nil);
+        end
+        else
+        begin
+          FHotPlusBM.Canvas.Draw(0, 0, FPlusBM);
+          FHotMinusBM.Canvas.Draw(0, 0, FMinusBM);
+        end;
+        NeedButtons := false;
+      end;
+    {$endif}
+    {$endif ThemeSupport}
+  end;
+
+  if NeedButtons then
+  begin
     // box is always of odd size
     CreateAndFillBitmap(FMinusBM);
     CreateAndFillBitmap(FHotMinusBM);
@@ -14513,28 +14545,6 @@ begin
         FHotPlusBM.Canvas.Draw(0, 0, FPlusBM);
       end;
     end;
-
-    {$ifdef ThemeSupport}
-    {$ifdef LCLWin}
-      // Overwrite glyph images if theme is active.
-      if ((tsUseThemes in FStates) and (Theme <> 0)) then
-      begin
-        R := Rect(0, 0, Size.cx, Size.cy);
-        DrawThemeBackground(Theme, FPlusBM.Canvas.Handle, TVP_GLYPH, GLPS_CLOSED, R, nil);
-        DrawThemeBackground(Theme, FMinusBM.Canvas.Handle, TVP_GLYPH, GLPS_OPENED, R, nil);
-        if tsUseExplorerTheme in FStates then
-        begin
-          DrawThemeBackground(Theme, FHotPlusBM.Canvas.Handle, TVP_HOTGLYPH, GLPS_CLOSED, R, nil);
-          DrawThemeBackground(Theme, FHotMinusBM.Canvas.Handle, TVP_HOTGLYPH, GLPS_OPENED, R, nil);
-        end
-        else
-        begin
-          FHotPlusBM.Canvas.Draw(0, 0, FPlusBM);
-          FHotMinusBM.Canvas.Draw(0, 0, FMinusBM);
-        end;
-      end;
-    {$endif}
-    {$endif ThemeSupport}
   end;
 
   if NeedLines then
@@ -34378,7 +34388,8 @@ var
   DrawFormat: Integer;
 
 begin
-  GetTextExtentPoint32(Canvas.Handle, PChar(Text), Length(Text), {%H-}Result);
+  Result := Size(0, 0);
+  GetTextExtentPoint32(Canvas.Handle, PChar(Text), Length(Text), Result);
   if vsMultiLine in Node.States then
   begin
     DrawFormat := DT_CALCRECT or DT_NOPREFIX or DT_WORDBREAK or DT_END_ELLIPSIS or DT_EDITCONTROL or AlignmentToDrawFlag[Alignment];

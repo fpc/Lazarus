@@ -9,13 +9,13 @@ object GeneralForm: TGeneralForm
   ClientWidth = 817
   KeyPreview = True
   ShowHint = True
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '5.99.0.0'
   OnCreate = FormCreate
   object SwitchCheckImagesLabel: TLabel
     AnchorSideLeft.Control = DrawSelectionModeRadioGroup
     AnchorSideTop.Control = DrawSelectionModeRadioGroup
     AnchorSideTop.Side = asrBottom
-    Left = 588
+    Left = 589
     Height = 15
     Top = 387
     Width = 113
@@ -27,7 +27,7 @@ object GeneralForm: TGeneralForm
     AnchorSideLeft.Control = CheckMarkCombo
     AnchorSideTop.Control = CheckMarkCombo
     AnchorSideTop.Side = asrBottom
-    Left = 588
+    Left = 589
     Height = 15
     Top = 437
     Width = 112
@@ -41,10 +41,10 @@ object GeneralForm: TGeneralForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = SaveButton
     AnchorSideRight.Side = asrBottom
-    Left = 588
+    Left = 589
     Height = 60
     Top = 48
-    Width = 221
+    Width = 220
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     Caption = 'This sample is an introduction to the general look and feel of Virtual Treeview. Note: you can change almost every visual aspect of the control.'
@@ -56,7 +56,7 @@ object GeneralForm: TGeneralForm
     Left = 11
     Height = 523
     Top = 8
-    Width = 569
+    Width = 570
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoExpandDelay = 300
     BorderSpacing.Right = 8
@@ -109,7 +109,7 @@ object GeneralForm: TGeneralForm
     Header.Style = hsFlatButtons
     HintMode = hmTooltip
     HotCursor = crHandPoint
-    Images = TreeImages
+    Images = ImgDatamodule.TreeImages
     ParentBiDiMode = False
     ParentFont = False
     RootNodeCount = 5
@@ -139,10 +139,10 @@ object GeneralForm: TGeneralForm
     AnchorSideLeft.Control = DrawSelectionModeRadioGroup
     AnchorSideTop.Control = SwitchCheckImagesLabel
     AnchorSideTop.Side = asrBottom
-    Left = 588
+    Left = 589
     Height = 23
     Top = 404
-    Width = 211
+    Width = 210
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 2
     ItemHeight = 15
@@ -166,7 +166,7 @@ object GeneralForm: TGeneralForm
     AnchorSideLeft.Control = SwitchMainColumnLabel
     AnchorSideTop.Control = SwitchMainColumnLabel
     AnchorSideTop.Side = asrBottom
-    Left = 588
+    Left = 589
     Height = 21
     Top = 454
     Width = 41
@@ -183,7 +183,7 @@ object GeneralForm: TGeneralForm
   object TreeFontButton: TBitBtn
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = SaveButton
-    Left = 588
+    Left = 589
     Height = 34
     Hint = 'Pick a font to be used by this tree.'
     Top = 8
@@ -217,10 +217,10 @@ object GeneralForm: TGeneralForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = ThemeRadioGroup
     AnchorSideRight.Side = asrBottom
-    Left = 588
+    Left = 589
     Height = 93
     Top = 204
-    Width = 221
+    Width = 220
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     AutoSize = True
@@ -235,7 +235,7 @@ object GeneralForm: TGeneralForm
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
     ClientHeight = 73
-    ClientWidth = 217
+    ClientWidth = 216
     ItemIndex = 0
     Items.Strings = (
       'Usual +/- buttons and lines'
@@ -248,7 +248,7 @@ object GeneralForm: TGeneralForm
       Height = 23
       Hint = 'Applies only to +/- buttons'
       Top = 44
-      Width = 205
+      Width = 204
       ItemHeight = 15
       ItemIndex = 0
       Items.Strings = (
@@ -269,10 +269,10 @@ object GeneralForm: TGeneralForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = TreeButtonLookRadioGroup
     AnchorSideRight.Side = asrBottom
-    Left = 588
+    Left = 589
     Height = 70
     Top = 307
-    Width = 221
+    Width = 220
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     AutoSize = True
@@ -287,7 +287,7 @@ object GeneralForm: TGeneralForm
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
     ClientHeight = 50
-    ClientWidth = 217
+    ClientWidth = 216
     ItemIndex = 1
     Items.Strings = (
       'Dotted rectangle'
@@ -302,10 +302,10 @@ object GeneralForm: TGeneralForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = SaveButton
     AnchorSideRight.Side = asrBottom
-    Left = 588
+    Left = 589
     Height = 70
     Top = 124
-    Width = 221
+    Width = 220
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     AutoSize = True
@@ -320,7 +320,7 @@ object GeneralForm: TGeneralForm
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
     ClientHeight = 50
-    ClientWidth = 217
+    ClientWidth = 216
     Items.Strings = (
       'Theme aware'
       'Not theme aware'
@@ -334,10 +334,10 @@ object GeneralForm: TGeneralForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = TreeFontButton
     AnchorSideBottom.Side = asrBottom
-    Left = 713
+    Left = 714
     Height = 34
     Top = 8
-    Width = 96
+    Width = 95
     Anchors = [akTop, akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 8
@@ -350,52 +350,12 @@ object GeneralForm: TGeneralForm
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = MainColumnUpDown
     AnchorSideTop.Side = asrCenter
-    Left = 637
+    Left = 638
     Height = 15
     Top = 457
     Width = 98
     BorderSpacing.Left = 8
     Caption = 'MainColumnLabel'
-  end
-  object TreeImages: TImageList
-    Left = 168
-    Top = 232
-    Bitmap = {
-      4C7A120000001000000010000000200400000000000078DAED9A8B9283200C45
-      F3F17CDBFE16BB6E4B1B631E37C1BA75AD338C7D7812406E0828D13B1CAD2F65
-      396AD7DE7E8BED78FF4736D03A6A36D0B6E975C9F3563D8EF0AFB7BFDE7768FF
-      63F77F8E8F6DE4FBBAA69763FC1C7EF4A084BC7580365C9ED999F1EFD9E8C8F1
-      E1FF2F9F2857D03DCC17F5EEF280DE57FCF0393E37A3A0E3A629BF1B36D41863
-      F1E38CFAE7ED32DA02FB97F633FE7991BC5612FEF55916F7EFF233FEA372224D
-      E763C0D2F746FF4BB6B59FDCEDA7FC9E07CBED2CE7F1FFB886FBE6AC5747FD3A
-      69D72CA17FF46CF8E7E760DCC4FE1D5D36D0BFA7EB957E1DFFBCDEF27BC5BF16
-      7F50FFB21EDEF83D85FED93AE2B7DDF27BA061CE2C9F3BFB4CE07C3CAE956778
-      3E164C1BF7FF5E382F6D6CAEBB17207FEF72021E36C6673E575839E0FD3AD2FA
-      2C9B43F2B65A25C8417B9FF04FCE7C7925FF33FCD9D600488CF2E296176351BE
-      C0CAB89DBA8747F1323665F8475C11B119E1254B4A4C65714BE5A343CC2D2ACF
-      FD6BF509798335E6B6558E96F0AFCE67480973CD0BEC03CCE6383BE448A856DD
-      3D1FEDFE2A7C9FF1BF8C484FEF2D587F8CEC869CB53FBFCE2BE4ACBD11DE680B
-      15FCC3BA01D828539ED1DCAC5ECFA875336601DA74FF0BF848B32472012DA6BA
-      3638EFC40A7B8E143CE97B6964E8CCF46FC78E6DCED99CF58966F3889CDDDB6F
-      FBAFFEDF2DE777723D88EB4B9F3CFB6C196861FD39373AF5C1F262AD7B993F6B
-      3EB6F22EADCE9B9C5BE4E4ABFBCFEA3DEAC9734899F7AEF273CEB3765AFED5B1
-      E9F0B75C955869DBFD09C5C6F33AB69E686CEFCBE047E1FC603BA93C51C0AF7E
-      4FF224D796DBF69366C3EA7F65FDB2D1B2F46F8D232F8739D3FAA1170F84A746
-      D3BC65C3E23731C7B0A1F1F2BAAC7F8DCFB4DFBBBED27F6EDD023E6A8BC76BFD
-      86F233F70FB96FD5F6CFF6BFC5BFDD9ABE16AF36FBD889F726541EA94773F6D1
-      917A68EB10C97BF550F73415DEAA87B6D761F1F2F9D59EFEB5B907F58FDCC7E2
-      7858D743F17FC478BCCA7B3CD575037FF6F5F5F5B53A23362C96DBF0EA86EC57
-      3BFBD7C4733DAB0E46BB563CCA2EE78FFF7DFD570A05CFFFAFF61EDFACFE1D9D
-      41AC769F7B42FFDA5879B5FE4BE34EF09998B514AE9F4CDDC77B5472FCA7DBFF
-      7CC658D2BFE43336AC67873BE89FAEAA7FA09F4ADA07F649203ECAD540FFEEF3
-      5EEB58C6DD28159EDBA8F29DE9EEC3EB3CBF4F56A1CF7BFB6FA3FFAEAC7751FD
-      DFF667715EEEB57336A37F8D45F56FB1D0F877D8905FB33D9DBBDDD7DD15FD8E
-      3CA5A27F991B7DF4FF5AED56EDA07B65961D74AFCA8A25595E7B7FB8E07F93FB
-      22BC361633BC964B6479A9A577E0799C28E4028F58C1ED147289959DB3C492B3
-      EABF2BCF7351FDF1392DAD7F237780C69F3297C23C63D3FA116C8A676C56BF7C
-      FEAFE8DFD223A27F6F6FE4A3FFB77D57708F770DF77857718F771DF778577297
-      772D0F7A46F50AFF7FD5FF7F35FE0E3FBE015C24AF5C
-    }
   end
   object FontDialog1: TFontDialog
     Font.Height = -11

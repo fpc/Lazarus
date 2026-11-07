@@ -14,7 +14,11 @@ uses
   ComCtrls, Buttons, ExtCtrls, StdCtrls, ActnList, LResources;
 
 type
+
+  { TMainForm }
+
   TMainForm = class(TForm)
+    MainImageList: TImageList;
     PageScroller1: TPanel;
     SpeedDemoButton: TSpeedButton;
     AbilitiesDemoButton: TSpeedButton;
