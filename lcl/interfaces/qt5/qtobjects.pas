@@ -167,6 +167,7 @@ type
     FDefaultFont: QFontH;
     FMetrics: TQtFontMetrics;
     FFontInfo: TQtFontInfo;
+    FDCList: TFPList;
     function GetFontInfo: TQtFontInfo;
     function GetMetrics: TQtFontMetrics;
     function GetDefaultFont: QFontH;
@@ -177,6 +178,8 @@ type
     constructor Create(CreateHandle: Boolean); virtual;
     constructor Create(AFromFont: QFontH); virtual;
     destructor Destroy; override;
+    procedure RegisterDC(ADC: TObject);
+    procedure UnregisterDC(ADC: TObject);
   public
     function getPointSize: Integer;
     function getPixelSize: Integer;
@@ -456,6 +459,7 @@ type
 
     function font: TQtFont;
     procedure setFont(AFont: TQtFont);
+    procedure ForgetFont(const AFont: TQtFont);
     function brush: TQtBrush;
     procedure setBrush(ABrush: TQtBrush);
     function BackgroundBrush: TQtBrush;
@@ -1550,12 +1554,21 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 destructor TQtFont.Destroy;
+var
+  i: Integer;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtFont.Destroy');
   {$endif}
 
   QtGDIObjects.RemoveGDIObject(Self);
+
+  if FDCList <> nil then
+  begin
+    for i := FDCList.Count - 1 downto 0 do
+      TQtDeviceContext(FDCList[i]).ForgetFont(Self);
+    FDCList.Free;
+  end;
 
   if FMetrics <> nil then
     FMetrics.Free;
@@ -1571,6 +1584,20 @@ begin
 
 
   inherited Destroy;
+end;
+
+procedure TQtFont.RegisterDC(ADC: TObject);
+begin
+  if FDCList = nil then
+    FDCList := TFPList.Create;
+  if FDCList.IndexOf(ADC) < 0 then
+    FDCList.Add(ADC);
+end;
+
+procedure TQtFont.UnregisterDC(ADC: TObject);
+begin
+  if FDCList <> nil then
+    FDCList.Remove(ADC);
 end;
 
 function TQtFont.getPointSize: Integer;
@@ -2338,6 +2365,12 @@ begin
 
   if (vClipRect <> nil) then
     dispose(vClipRect);
+
+  if SelFont <> nil then
+  begin
+    SelFont.UnregisterDC(Self);
+    SelFont := nil;
+  end;
 
   if FMetrics <> nil then
     FreeThenNil(FMetrics);
@@ -3488,13 +3521,29 @@ begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.setFont() ');
   {$endif}
+  if (SelFont <> nil) and (SelFont <> AFont) then
+    SelFont.UnregisterDC(Self);
   SelFont := AFont;
+  AFont.RegisterDC(Self);
   if (AFont.FHandle <> nil) and (Widget <> nil) then
   begin
     QFnt := QFont_Create(AFont.FHandle);
     QPainter_setFont(Widget, QFnt);
     QFont_destroy(QFnt);
     vFont.Angle := AFont.Angle;
+  end;
+end;
+
+procedure TQtDeviceContext.ForgetFont(const AFont: TQtFont);
+begin
+  if SelFont <> AFont then
+    Exit;
+  SelFont := nil;
+  if vFont <> nil then
+  begin
+    vFont.Angle := 0;
+    if Widget <> nil then
+      QPainter_setFont(Widget, vFont.GetDefaultFont);
   end;
 end;
 
