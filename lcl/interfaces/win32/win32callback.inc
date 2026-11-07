@@ -218,12 +218,22 @@ procedure DisposeComboEditWindowInfo(ComboBox: TCustomComboBox);
 var
   Buddy: HWND;
   Info: TComboboxInfo;
+  BuddyInfo: PWin32WindowInfo;
 begin
   Info.cbSize := SizeOf(Info);
   Win32Extra.GetComboBoxInfo(Combobox.Handle, @Info);
   Buddy := Info.hwndItem;
   if (Buddy <> Info.hwndCombo) and (Buddy <> 0) then
+  begin
+    // The edit is destroyed after the combobox. Give it back its own window
+    // procedure before its window info goes: without the info, WindowProc
+    // passes the edit's WM_NCDESTROY to DefWindowProc, and the edit never
+    // frees its data (a GDI font with common controls 6).
+    BuddyInfo := GetWin32WindowInfo(Buddy);
+    if (BuddyInfo <> @DefaultWindowInfo) and (BuddyInfo^.DefWndProc <> nil) then
+      Windows.SetWindowLongPtrW(Buddy, GWL_WNDPROC, LONG_PTR(BuddyInfo^.DefWndProc));
     DisposeWindowInfo(Buddy);
+  end;
 end;
 
 function GetLCLWindowFromPoint(BaseControl: TControl; const Point: TPoint): HWND;
