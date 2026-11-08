@@ -4144,7 +4144,7 @@ function GetVTClipboardFormatDescription(AFormat: TClipboardFormat): string;
 procedure RegisterVTClipboardFormat(AFormat: TClipboardFormat; TreeClass: TVirtualTreeClass; Priority: Cardinal); overload;
 function RegisterVTClipboardFormat(Description: string; TreeClass: TVirtualTreeClass; Priority: Cardinal;
   tymed: Integer = TYMED_HGLOBAL; ptd: PDVTargetDevice = nil; dwAspect: Integer = DVASPECT_CONTENT;
-  lindex: Integer = -1): Word; overload;
+  lindex: Integer = -1): TClipboardFormat; overload;
 
 // utility routines
 {$ifdef EnablePrint}
@@ -4767,7 +4767,7 @@ end;
 
 function RegisterVTClipboardFormat(Description: string; TreeClass: TVirtualTreeClass; Priority: Cardinal;
   tymed: Integer = TYMED_HGLOBAL; ptd: PDVTargetDevice = nil; dwAspect: Integer = DVASPECT_CONTENT;
-  lindex: Integer = -1): Word;
+  lindex: Integer = -1): TClipboardFormat;
 
 // Alternative method to register a certain clipboard format for a given tree class. Registration with the
 // clipboard is done here too and the assigned ID returned by the function.
