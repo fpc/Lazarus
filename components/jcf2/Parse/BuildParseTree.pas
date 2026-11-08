@@ -172,8 +172,8 @@ type
     procedure RecogniseVarDecl(aVarType: TVarType=vtNormal);
     procedure RecogniseVarExpPubDir;
     procedure RecogniseAddOp;
-    procedure RecogniseDesignator;
-    procedure RecogniseDesignatorTail;
+    procedure RecogniseDesignator(pbInFactor: boolean);
+    procedure RecogniseDesignatorTail(pbInFactor: boolean);
     procedure RecogniseExpr(const pbAllowRelop: boolean);
     procedure RecogniseExprList;
     procedure RecogniseFactor;
@@ -183,7 +183,7 @@ type
     procedure RecogniseRelOp;
     procedure RecogniseSetConstructor;
     procedure RecogniseSetElement;
-    procedure RecogniseQualId;
+    procedure RecogniseQualId(pbInFactor: boolean);
     procedure RecogniseConstantExpression;
     procedure RecogniseLiteralString;
 
@@ -2991,7 +2991,7 @@ begin
 
     if not (fcTokenList.FirstSolidTokenType in Operators + BlockExitWords + [ttSemicolon, ttCloseBracket, ttCloseSquareBracket, ttComma]) then
     begin
-      RecogniseDesignator;
+      RecogniseDesignator(true);
       if fcTokenList.FirstSolidTokenType = ttOpenBracket then
       begin
         RecogniseActualParams;
@@ -3071,7 +3071,7 @@ begin
     if lt = ttAmpersand then
       Recognise(ttAmpersand);
 
-    RecogniseDesignator;
+    RecogniseDesignator(true);
     if fcTokenList.FirstSolidTokenType = ttOpenBracket then
     begin
       RecogniseActualParams;
@@ -3097,7 +3097,7 @@ begin
   { can't use lc for FirstSolidToken any more, have moved on }
   if fcTokenList.FirstSolidTokenType in [ttHat, ttDot, ttOpenSquareBracket] then
   begin
-    RecogniseDesignatorTail;
+    RecogniseDesignatorTail(true);
   end
   else if fcTokenList.FirstSolidTokenType = ttOpenBracket then
   begin
@@ -3231,7 +3231,7 @@ begin
     RaiseParseError(lisMsgUnexpectedTokenInMulOp, fcTokenList.FirstSolidToken);
 end;
 
-procedure TBuildParseTree.RecogniseDesignator;
+procedure TBuildParseTree.RecogniseDesignator(pbInFactor:boolean);
 var
   lc: TSourceToken;
 begin
@@ -3251,7 +3251,7 @@ begin
     Recognise(ttAtSign);
   end;
 
-  RecogniseQualId;
+  RecogniseQualId(pbInFactor);
 
   lc := fcTokenList.FirstSolidToken;
   CheckNilInstance(lc, fcRoot.LastLeaf);
@@ -3260,7 +3260,7 @@ begin
     RecogniseGenericType;
   end;
 
-  RecogniseDesignatorTail;
+  RecogniseDesignatorTail(pbInFactor);
 
   PopNode;
 end;
@@ -3283,7 +3283,7 @@ begin
 
 end;
 
-procedure TBuildParseTree.RecogniseDesignatorTail;
+procedure TBuildParseTree.RecogniseDesignatorTail(pbInFactor:boolean);
 const
   DESIGNATOR_TAIL_TOKENS = [ttDot, ttOpenBracket, ttOpenSquareBracket, ttHat,
     ttPlus, ttMinus, ttAs];
@@ -3327,6 +3327,8 @@ begin
       end;
       ttPlus, ttMinus:
       begin
+        if pbInFactor then
+          break;
         Recognise([ttPlus, ttMinus]);
         RecogniseExpr(True);
       end;
@@ -3546,7 +3548,7 @@ begin
   if lt = ttOpenBracket then
   begin
     RecogniseBracketedStatement;
-    RecogniseDesignatorTail;
+    RecogniseDesignatorTail(false);
 
     if fcTokenList.FirstSolidTokenType in AssignmentDirectives then
     begin
@@ -3624,15 +3626,15 @@ begin
    RecognisePossibleAssign;
 
   Recognise(ttCloseBracket);
-  RecogniseDesignatorTail;
+  RecogniseDesignatorTail(false);
 end;
 
 procedure TBuildParseTree.RecognisePossibleAssign;
 begin
   // should be fullblown expression?
-  RecogniseDesignator;
+  RecogniseDesignator(false);
 
-  RecogniseDesignatorTail;
+  RecogniseDesignatorTail(false);
 
   if TokenList.FirstSolidTokenType in AssignmentDirectives then
   begin
@@ -3968,7 +3970,7 @@ begin
     RecogniseVarDecl(vtInFor);
   end
   else
-    RecogniseQualId;
+    RecogniseQualId(false);
 
 
   //type cast    for TCollectionItem(item) in ItemList do 
@@ -3977,7 +3979,7 @@ begin
   while fcTokenList.FirstSolidTokenType=ttOpenBracket do
   begin
     Recognise(ttOpenBracket);
-    RecogniseQualId;
+    RecogniseQualId(false);
     Inc(lCountBrackets);
   end;
   while lCountBrackets>0 do
@@ -5700,7 +5702,7 @@ begin
   RecogniseExpr(True);
 end;
 
-procedure TBuildParseTree.RecogniseQualId;
+procedure TBuildParseTree.RecogniseQualId(pbInFactor:boolean);
 begin
   { typecast, e.g. "(x as Ty)"
      or just bracketed, as in (x).y();
@@ -5711,13 +5713,14 @@ begin
       -> (Designator)
       -> (Designator as type)
       -> ident
-      ->(pointervar + expr)
+      -> (pointervar + expr)  (p+1)^:=7;
+      -> (1 + pointervar)     pointer expression     (1+p)^:=8
   }
   if (fcTokenList.FirstSolidTokenType = ttOpenBracket) then
   begin
     PushNode(nBracketedQual);
     Recognise(ttOpenBracket);
-    RecogniseDesignator;
+    RecogniseDesignator(false);
 
     if (fcTokenList.FirstSolidTokenType = ttAs) then
       RecogniseAsCast;
@@ -5726,8 +5729,13 @@ begin
     PopNode;
   end
   else
+  begin
     // a simple ident - e.g. "x"
-    RecogniseIdentifier(True, idAny);
+    if IsIdentifierToken(fcTokenList.FirstSolidToken,idStrict) then
+      RecogniseIdentifier(True, idAny)
+    else
+      RecogniseExpr(false);
+  end;
 end;
 
 procedure TBuildParseTree.RecogniseIdentifier(const pbCanHaveUnitQualifier: boolean;
