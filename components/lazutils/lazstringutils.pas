@@ -80,7 +80,10 @@ function SpecialCharsToSpaces(const s: string; FixUTF8: boolean): string;
 function ShortDotsLine(const Line: string): string;
 function BeautifyLineXY(const Filename, Line: string; X, Y: integer): string;
 function BreakString(const s: string; MaxLineLength, Indent: integer): string;
-function IntToStrWithSuffix(Value: PtrInt): string;
+function IntToStrWithSuffix(Value: Int64; Digits: Byte = 2; UsePowersOfTwo: Boolean = False; Spacer: String=''): String;
+function IntToStrWithSuffix(Value: UInt64; Digits: Byte = 2; UsePowersOfTwo: Boolean = False; Spacer: String=''): String;
+function IntToStrWithSuffix(Value: Int64; FS: TFormatSettings; Digits: Byte = 2; UsePowersOfTwo: Boolean = False; Spacer: String=''): String;
+function IntToStrWithSuffix(Value: UInt64; FS: TFormatSettings; Digits: Byte = 2; UsePowersOfTwo: Boolean = False; Spacer: String=''): String;
 
 // Conversions to and from a StringList
 function SplitString(const s: string; Delimiter: char): TStrings;
@@ -948,37 +951,80 @@ begin
   until false;
 end;
 
-function IntToStrWithSuffix(Value: PtrInt): string;
-// Like IntToStr but uses a suffix k,M,G,T for big numbers.
+{ Like IntToStr but uses a suffix K,M,G,T for big numbers.
+  Digitis: number of digits after the decimal separator (default = 2: e.g. 1.23M)
+  UsePowerOfTwo: if True, Kilo is 1024 instead of 1000
+  Spacer: string put between the value and the suffix
+}
+function IntToStrWithSuffix(Value: UInt64; FS: TFormatSettings; Digits: Byte; UsePowersOfTwo: Boolean; Spacer: String): String;
+var
+  Kilo, Mega, Giga, Tera: UInt64;
+begin
+  if (Value = 0) then
+    Exit('0');
+  if UsePowersOfTwo then
+    Kilo := 1024
+  else
+    Kilo := 1000;
+  Mega := Kilo * Kilo;
+  Giga := Mega * Kilo;
+  Tera := Giga * Kilo;
+  if (Digits > 3) then
+    Digits := 3;
+  if (Value >= Tera) then
+  begin
+    Result := Format('%.*f%s%s',[Digits, Value/Tera, Spacer, 'T'],FS);
+  end
+  else if (Value >= Giga) then
+  begin
+    Result := Format('%.*f%s%s',[Digits, Value/Giga, Spacer, 'G'], FS);
+  end
+  else if (Value >= Mega) then
+  begin
+    Result := Format('%.*f%s%s',[Digits, Value/Mega, Spacer, 'M'], FS);
+  end
+  else if (Value >= Kilo) then
+  begin
+    Result := Format('%.*f%s%s',[Digits,Value/Kilo, SPacer, 'K'], FS);
+  end
+  else
+  begin
+    Result := IntToStr(Value);
+  end;
+end;
+
+function IntToStrWithSuffix(Value: Int64; FS: TFormatSettings; Digits: Byte; UsePowersOfTwo: Boolean; Spacer: String): String;
 var
   Neg: Boolean;
+  UValue: UInt64;
 begin
-  if Value=0 then
-    exit('0');
-  Result:='';
-  Neg:=Value<0;
+  Neg := Value < 0;
   if Neg then
-    Value:=-Value;              // Absolute value
-  if Value>=100000 then begin
-    Value:=Value div 1000;
-    Result:='k';
-    if Value>=100000 then begin
-      Value:=Value div 1000;
-      Result:='M';
-      if Value>=100000 then begin
-        Value:=Value div 1000;
-        Result:='G';
-        if Value>=100000 then begin
-          Value:=Value div 1000;
-          Result:='T';
-        end;
-      end;
-    end;
-  end;
-  Result:=IntToStr(Value)+Result;
+  begin
+    if (Value = Low(Int64)) then //avoid range check error
+      UValue := UInt64(High(Int64)) + 1
+    else
+      UValue := -Value;
+  end
+  else
+    UValue := Value;
+  Result := IntToStrWithSuffix(UValue, FS, Digits, UsePowersOfTwo, Spacer);
   if Neg then
-    Result:='-'+Result;
+    Result := '-' + Result;
 end;
+
+function IntToStrWithSuffix(Value: UInt64; Digits: Byte; UsePowersOfTwo: Boolean; Spacer: String): String;
+begin
+  Result := IntToStrWithSuffix(Value, DefaultFormatSettings, Digits, UsePowersOfTwo, Spacer);
+end;
+
+function IntToStrWithSuffix(Value: Int64; Digits: Byte; UsePowersOfTwo: Boolean ; Spacer: String): String;
+begin
+  Result := IntToStrWithSuffix(Value, DefaultFormatSettings, Digits, UsePowersOfTwo, Spacer);
+end;
+
+
+
 
 function SplitString(const s: string; Delimiter: char): TStrings;
 begin
