@@ -4077,9 +4077,18 @@ begin
     Dec(FRefCount);
 end;
 
-initialization
+procedure initGDI;
+var
+  pool: NSAutoreleasePool;
+begin
+  pool:= NSAutoreleasePool.new;
   CocoaDefaultGDIObject:= TCocoaDefaultGDIObject.Create;
   CocoaDefaultGDIObject.init;
+  pool.release;
+end;
+
+initialization
+  initGDI;
 
 finalization
   FreeAndNil( CocoaDefaultGDIObject );
