@@ -69,6 +69,7 @@ type
     fiTokenCount: integer;
     procedure ChangeFirstSolidTokenType(peNewTokenType: TTokenType);
     function IsEndOfTypeSection: Boolean;
+    function IsRecordVisibility: Boolean;
     function IsProcedureHintOrDirective(aExcludeTokens: TTokenTypeSet = []): boolean;
     procedure RecogniseTypeHelper;
     procedure SplitGreaterThanOrEqual;
@@ -1142,6 +1143,14 @@ begin
   lc := fcTokenList.FirstSolidToken;
   if lc <> nil then
     lc.TokenType := peNewTokenType;
+end;
+
+{ "private" and the like start a section of an advanced record, but without
+  advanced records they can name a field: then a ':' or a ',' follows. }
+function TBuildParseTree.IsRecordVisibility: Boolean;
+begin
+  Result := (fcTokenList.FirstSolidTokenType in ClassVisibility + [ttStrict]) and
+    not (fcTokenList.SolidTokenType(2) in [ttColon, ttComma]);
 end;
 
 function TBuildParseTree.IsEndOfTypeSection: Boolean;
@@ -2243,7 +2252,7 @@ begin
   CheckNilInstance(lcNextToken, fcRoot.LastLeaf);
 
   { delphi.net records can have public and private parts }
-  while lcNextToken.TokenType in ClassVisibility + [ttStrict, ttClass] do
+  while IsRecordVisibility or (lcNextToken.TokenType = ttClass) do
   begin
     PushNode(nClassVisibility);
     RecogniseClassVisibility;
@@ -2266,7 +2275,7 @@ begin
   lcNextToken := fcTokenList.FirstSolidToken;
   CheckNilInstance(lcNextToken, fcRoot.LastLeaf);
 
-  while not (lcNextToken.TokenType in [ttEnd, ttCase, ttCloseBracket, ttStrict] + ClassVisibility) do
+  while not ((lcNextToken.TokenType in [ttEnd, ttCase, ttCloseBracket]) or IsRecordVisibility) do
   begin
     case lcNextToken.TokenType of
       ttProcedure:
@@ -2313,7 +2322,12 @@ begin
         continue;
       end
       else
+      begin
+        // a field named private, public, ... (see IsRecordVisibility)
+        if lcNextToken.TokenType in ClassVisibility + [ttStrict] then
+          ChangeFirstSolidTokenType(ttIdentifier);
         RecogniseFieldDecl;
+      end;
     end;
 
     lcNextToken := fcTokenList.FirstSolidToken;
@@ -3589,7 +3603,7 @@ begin
   begin
     RecogniseRaise;
   end
-  else if lt = ttInline then
+  else if (lt = ttInline) and (fcTokenList.SolidTokenType(2) = ttOpenBracket) then
   begin
     RecogniseInline;
   end

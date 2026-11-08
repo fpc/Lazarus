@@ -655,8 +655,6 @@ begin
   AddKeyword('implementation', wtReservedWord, ttImplementation);
   AddKeyword('inherited', wtReservedWord, ttInherited);
   AddKeyword('initialization', wtReservedWord, ttInitialization);
-  AddKeyword('inline', wtReservedWord, ttInline);
-  AddKeyword('noinline', wtReservedWord, ttInline);
   AddKeyword('interface', wtReservedWord, ttInterface);
   AddKeyword('label', wtReservedWord, ttLabel);
   AddKeyword('library', wtReservedWord, ttLibrary);
@@ -694,6 +692,9 @@ begin
   AddKeyword('contains', wtReservedWordDirective, ttContains);
   AddKeyword('requires', wtReservedWordDirective, ttRequires);
   AddKeyword('align', wtReservedWordDirective, ttAlign);
+  // inline is reserved only in {$mode tp}; elsewhere it can be a name.
+  AddKeyword('inline', wtReservedWordDirective, ttInline);
+  AddKeyword('noinline', wtReservedWordDirective, ttInline);
 
   { reseved words that are directives }
   AddKeyword('absolute', wtReservedWordDirective, ttAbsolute);
