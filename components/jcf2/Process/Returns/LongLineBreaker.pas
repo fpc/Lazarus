@@ -433,19 +433,13 @@ begin
     case pcToken.TokenType of
       ttRead:
       begin
-        if pcToken.HasParentNode(nProperty) then
-        begin
-          piScoreBefore := GOOD4;
-          piScoreAfter  := BAD2;
-        end;
+        piScoreBefore := GOOD4;
+        piScoreAfter  := BAD2;
       end;
       ttWrite, ttImplements:
       begin
-        if pcToken.HasParentNode(nProperty) then
-        begin
-          piScoreBefore := GOOD3;
-          piScoreAfter  := BAD2;
-        end;
+        piScoreBefore := GOOD3;
+        piScoreAfter  := BAD2;
       end;
       ttExternal:
       begin
@@ -459,12 +453,8 @@ begin
       ttDefault:
       begin
         { default attr in a property is a bad thing to break before }
-        if pcToken.HasParentNode(nProperty) then
-        begin
-          piScoreBefore := BAD1;
-          piScoreAfter  := GOOD1;
-        end;
-
+        piScoreBefore := BAD1;
+        piScoreAfter  := GOOD1;
       end;
     end;
 
