@@ -2684,6 +2684,21 @@ var
     end;
   end;
 
+  function CursorInStringConstant(StartPos: integer): boolean;
+  // Returns true if CleanCursorPos is inside a string constant of the active
+  // code. StartPos must be at an atom start in front of CleanCursorPos.
+  begin
+    Result:=false;
+    MoveCursorToCleanPos(StartPos);
+    repeat
+      ReadNextAtom;
+      if CurPos.StartPos>=CleanCursorPos then
+        exit;
+      if CurPos.EndPos>CleanCursorPos then
+        exit(AtomIsStringConstant);
+    until CurPos.StartPos>SrcLen;
+  end;
+
 var
   CleanPosInFront: integer;
   CursorAtIdentifier, InComment: boolean;
@@ -2881,7 +2896,7 @@ begin
     GetIdentStartEndAtPosition(Src,CleanCursorPos,
                                CurPos.StartPos,CurPos.EndPos);
 
-    if AtomIsStringConstant
+    if ((not InComment) and CursorInStringConstant(CursorNode.StartPos))
     or ((not InComment)
       and CleanPosIsInComment(CleanCursorPos, CursorNode.StartPos, CommentStart, CommentEnd))
     then begin

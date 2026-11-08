@@ -3152,6 +3152,7 @@ procedure TTestFindDeclaration.TestFindDeclaration_InComment;
 begin
   StartProgram;
   Add([
+  '{$modeswitch multilinestrings}',
   'type',
   '  TWing = record',
   '    Size: word;',
@@ -3173,6 +3174,9 @@ begin
   '  (* b *)',
   'end;',
   'begin',
+  '  s:=''TBird b'';',
+  '  s:=`TBird',
+  'b Items`;',
   '  {$IFDEF Undefined}',
   '  b.Wing.Size:=3; { TBird } Items[0].Fly; {$IFDEF TBird}{$ENDIF}',
   '  s:=''b'';',
@@ -3202,10 +3206,21 @@ begin
   CheckFindDeclarationInComment('{$IFDEF TBird}',8,'');
   // string constant in disabled code
   CheckFindDeclarationInComment('''b''',1,'');
+  // string literal in active code
+  CheckFindDeclarationInComment('''TBird b''',1,'');
+  CheckFindDeclarationInComment('''TBird b''',7,'');
+  // multi line string literal
+  CheckFindDeclarationInComment('`TBird',1,'');
+  CheckFindDeclarationInComment('b Items`',0,'');
+  CheckFindDeclarationInComment('b Items`',2,'');
 
   // without fsfSearchInComments
   CheckFindDeclarationInComment('see TBird.Fly',10,'',DefaultFindSmartFlags);
   CheckFindDeclarationInComment('b.Wing.Size:=3',7,'',DefaultFindSmartFlags);
+  CheckFindDeclarationInComment('// Speed and',3,'',DefaultFindSmartFlags);
+  CheckFindDeclarationInComment('''TBird b''',1,'',DefaultFindSmartFlags);
+  CheckFindDeclarationInComment('`TBird',1,'',DefaultFindSmartFlags);
+  CheckFindDeclarationInComment('b Items`',2,'',DefaultFindSmartFlags);
 end;
 
 procedure TTestFindDeclaration.TestFindReferences_InComment;
