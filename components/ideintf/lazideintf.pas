@@ -205,6 +205,8 @@ type
                                  AProject: TLazProject): TModalResult of object;
   TModalHandledFunction = function(Sender: TObject; var Handled: boolean
                               ): TModalResult of object;
+  TLazOpeningFileEvent = function(Sender: TObject; const aFilename: string;
+                              var Handled: boolean): TModalResult of object;
   TLazPackageBuildingEvent = function(Package: TIDEPackage): TModalResult of object;
   TGetFPCFrontEndParams = function(Sender: TObject;
     var Params: string // these parameters are passed to fpc.
@@ -255,7 +257,8 @@ type
     lihtRunDebug, // called when Run was clicked, after building, after debugger class was initialized, before starting the debugger
     lihtRunWithoutDebugBuilding, // called when Run a project without debugger was clicked, before building
     lihtRunWithoutDebugInit, // called when Run a project without debugger was clicked, after building
-    lihtRunFinished //called when ran program finishes
+    lihtRunFinished, //called when ran program finishes
+    lihtOpeningFile // called before IDE opens a file from command line, another instance or drag and drop. Handled=true means the IDE skips it.
     );
     
   TLazToolStatus = (
@@ -407,6 +410,8 @@ type
     function DoCallRunWithoutDebugBuilding(var Handled: boolean): TModalResult;
     function DoCallRunWithoutDebugInit(var Handled: boolean): TModalResult;
     procedure DoCallRunFinishedHandler;
+    function DoCallOpeningFileHandler(const aFilename: string;
+                                      var Handled: boolean): TModalResult;
     function DoAddUnitToProject(AEditor: TSourceEditorInterface): TModalResult; virtual; abstract;
     // project inspector
     function GetProjectInspectorSelection: TFPList; virtual; abstract;
@@ -598,6 +603,9 @@ type
     procedure AddHandlerOnRunFinished(const OnRunFinishedEvent: TNotifyEvent;
                                       AsLast: boolean = false);
     procedure RemoveHandlerOnRunFinished(const OnRunFinishedEvent: TNotifyEvent);
+    procedure AddHandlerOnOpeningFile(const Event: TLazOpeningFileEvent;
+                                      AsLast: boolean = false);
+    procedure RemoveHandlerOnOpeningFile(const Event: TLazOpeningFileEvent);
 
     property IDEStarted: boolean read FIDEStarted;
     property IDEIsClosing: boolean read FIDEIsClosing;
@@ -898,6 +906,25 @@ end;
 procedure TLazIDEInterface.DoCallRunFinishedHandler;
 begin
   DoCallNotifyHandler(lihtRunFinished);
+end;
+
+function TLazIDEInterface.DoCallOpeningFileHandler(const aFilename: string;
+  var Handled: boolean): TModalResult;
+var
+  i: longint;
+  Handler: TMethodList;
+begin
+  Handler:=FLazarusIDEHandlers[lihtOpeningFile];
+  i:=Handler.Count;
+  while Handler.NextDownIndex(i) do
+  begin
+    Handled:=false;
+    Result:=TLazOpeningFileEvent(Handler[i])(Self,aFilename,Handled);
+    if Handled then
+      exit;
+  end;
+  Handled:=false;
+  Result:=mrOk;
 end;
 
 procedure TLazIDEInterface.RemoveAllHandlersOfObject(AnObject: TObject);
@@ -1225,6 +1252,18 @@ procedure TLazIDEInterface.RemoveHandlerOnRunFinished(
   const OnRunFinishedEvent: TNotifyEvent);
 begin
   RemoveHandler(lihtRunFinished,TMethod(OnRunFinishedEvent));
+end;
+
+procedure TLazIDEInterface.AddHandlerOnOpeningFile(
+  const Event: TLazOpeningFileEvent; AsLast: boolean);
+begin
+  AddHandler(lihtOpeningFile,TMethod(Event),AsLast);
+end;
+
+procedure TLazIDEInterface.RemoveHandlerOnOpeningFile(
+  const Event: TLazOpeningFileEvent);
+begin
+  RemoveHandler(lihtOpeningFile,TMethod(Event));
 end;
 
 function TLazIDEInterface.CallHandlerGetFPCFrontEndPath(Sender: TObject;

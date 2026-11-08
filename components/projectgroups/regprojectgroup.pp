@@ -109,6 +109,7 @@ begin
   IDEProjectGroupManager:=TIDEProjectGroupManager.Create;
   ProjectGroupManager:=IDEProjectGroupManager;
   IDEProjectGroupManager.Options.LoadSafe;
+  LazarusIDE.AddHandlerOnOpeningFile(@IDEProjectGroupManager.OnIDEOpeningFile);
 
   PGCmdCategory:=RegisterIDECommandCategory(nil,ProjectGroupCmdCategoryName,lisProjectGroups);
 

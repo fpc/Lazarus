@@ -246,6 +246,9 @@ type
     procedure DoOpenRecentClick(Sender: TObject);
     procedure DoSaveClick(Sender: TObject);
     procedure DoSaveAsClick(Sender: TObject);
+    // Events for IDE
+    function OnIDEOpeningFile(Sender: TObject; const aFilename: string;
+      var Handled: boolean): TModalResult;
     // Public interface
     function CanUndo: boolean; override;
     function CanRedo: boolean; override;
@@ -619,6 +622,8 @@ end;
 
 destructor TIDEProjectGroupManager.Destroy;
 begin
+  if LazarusIDE<>nil then
+    LazarusIDE.RemoveHandlerOnOpeningFile(@OnIDEOpeningFile);
   FreeAndNil(FUndoList);
   FreeAndNil(FRedoList);
   FreeAndNil(FProjectGroup);
@@ -743,6 +748,17 @@ begin
     LoadProjectGroup(Options.LastGroupFile,[pgloLoadRecursively,pgloSkipInvalid]);
   end;
   IdleConnected:=false;
+end;
+
+function TIDEProjectGroupManager.OnIDEOpeningFile(Sender: TObject;
+  const aFilename: string; var Handled: boolean): TModalResult;
+begin
+  Result:=mrOk;
+  if not FilenameExtIs(aFilename,'lpg',true) then
+    exit;
+  Handled:=true;
+  if not LoadProjectGroup(aFilename,[pgloLoadRecursively,pgloSkipInvalid,pgloBringToFront]) then
+    Result:=mrCancel;
 end;
 
 procedure TIDEProjectGroupManager.SetIdleConnected(const AValue: boolean);

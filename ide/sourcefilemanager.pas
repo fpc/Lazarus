@@ -2251,6 +2251,7 @@ var
   OpenFlags: TOpenFlags;
   ModRes: TModalResult;
   i: Integer;
+  Handled: boolean;
 begin
   Result:=False;
   if AFiles=nil then Exit;
@@ -2259,6 +2260,16 @@ begin
     AFilename:=CleanAndExpandFilename(AFiles.Strings[i]);
     if not FileExistsCached(AFilename) then begin
       debugln(['Warning: (lazarus) command line file not found: "',AFilename,'"']);
+      continue;
+    end;
+    // let packages handle the file, e.g. project groups open .lpg files
+    Handled:=false;
+    ModRes:=LazarusIDE.DoCallOpeningFileHandler(AFilename,Handled);
+    if ModRes=mrAbort then
+      break;
+    if Handled then begin
+      if ModRes=mrOK then
+        Result:=True;
       continue;
     end;
     if Project1=nil then begin
