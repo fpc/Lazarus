@@ -1031,6 +1031,7 @@ type
     procedure InitializeWidget; override;
     function IsWidgetOk: Boolean; override;
     procedure SetDefault(const ADefault: Boolean);
+    procedure ApplyChildAlignment;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); override;
     property Layout: Integer read getLayout write SetLayout;
     property Margin: Integer read getMargin write SetMargin;
@@ -14058,6 +14059,7 @@ begin
     PGtkButton(FWidget)^.set_image_position(TGtkPositionType(AValue));
     // set margin and spacing when layout is changed
     SetMargin(FMargin);
+    ApplyChildAlignment;
   end;
 end;
 
@@ -14142,9 +14144,9 @@ begin
     Result := '';
 end;
 
-procedure TGtk3Button.setText(const AValue: String);
+procedure TGtk3Button.ApplyChildAlignment;
 
-  procedure SetLabelJustifyRecursive(AWidget: PGtkWidget);
+  procedure ApplyRecursive(AWidget: PGtkWidget);
   var
     AChildList: PGList;
     AItem: PGList;
@@ -14153,7 +14155,12 @@ procedure TGtk3Button.setText(const AValue: String);
       Exit;
 
     if Gtk3WidgetIsA(AWidget, gtk_label_get_type) then
+    begin
       PGtkLabel(AWidget)^.set_justify(GetDefaultTextJustification);
+      AWidget^.set_valign(GTK_ALIGN_CENTER);
+    end else
+    if Gtk3WidgetIsA(AWidget, gtk_image_get_type) then
+      AWidget^.set_valign(GTK_ALIGN_CENTER);
 
     if Gtk3WidgetIsA(AWidget, gtk_container_get_type) then
     begin
@@ -14161,7 +14168,7 @@ procedure TGtk3Button.setText(const AValue: String);
       AItem := AChildList;
       while AItem <> nil do
       begin
-        SetLabelJustifyRecursive(PGtkWidget(AItem^.data));
+        ApplyRecursive(PGtkWidget(AItem^.data));
         AItem := AItem^.next;
       end;
       g_list_free(AChildList);
@@ -14169,10 +14176,17 @@ procedure TGtk3Button.setText(const AValue: String);
   end;
 
 begin
+  if not IsWidgetOk then
+    Exit;
+  ApplyRecursive(FWidget);
+end;
+
+procedure TGtk3Button.setText(const AValue: String);
+begin
   if IsWidgetOk then
   begin
     {%H-}PGtkButton(FWidget)^.set_label(PgChar({%H-}ReplaceAmpersandsWithUnderscores(AValue)));
-    SetLabelJustifyRecursive(FWidget);
+    ApplyChildAlignment;
     if LCLObject.AutoSize then
     begin
       LCLWidth := 0;
