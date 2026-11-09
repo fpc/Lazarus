@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="6">
     <PathDelim Value="\"/>
     <Name Value="favorites"/>
     <Type Value="DesignTime"/>
@@ -31,29 +31,28 @@
     <Description Value="Creates an additional section for favorite projects in the &quot;Open&quot; tool button drop-down menu."/>
     <License Value="GPL-2"/>
     <Version Minor="1" Release="1"/>
-    <Files Count="2">
-      <Item1>
+    <Files>
+      <Item>
         <Filename Value="favorites_impl.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="favorites_impl"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <Filename Value="favoritesstr.pas"/>
         <UnitName Value="favoritesstr"/>
-      </Item2>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
-      <EnableI18NForLFM Value="True"/>
     </i18n>
-    <RequiredPkgs Count="2">
-      <Item1>
+    <RequiredPkgs>
+      <Item>
         <PackageName Value="IDEIntf"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <PackageName Value="FCL"/>
-      </Item2>
+      </Item>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
