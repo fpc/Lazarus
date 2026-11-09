@@ -4946,6 +4946,10 @@ function TLazPackageGraph.ConvertPackageRSTFiles(APackage: TLazPackage
 var
   PkgOutputDirectory: String;
   POOutputDirectory: String;
+  LRJFiles: TStringList;
+  i: Integer;
+  PkgFile: TPkgFile;
+  LRJFilename: String;
 begin
   Result:=mrOK;
   if (APackage.POOutputDirectory='') then exit;// nothing to do
@@ -4969,9 +4973,25 @@ begin
   end;
 
   PkgOutputDirectory:=AppendPathDelim(APackage.GetOutputDirectory);
-  if not ConvertRSTFiles(PkgOutputDirectory,POOutputDirectory) then begin
-    DebugLn(['Error: (lazarus) [TLazPackageGraph.ConvertPackageRSTFiles] unable to update .po files PkgOutputDirectory=',PkgOutputDirectory,' RSTOutputDirectory=',POOutputDirectory]);
-    exit(mrCancel);
+  LRJFiles:=TStringList.Create;
+  try
+    // the IDE saves the .lrj files of forms next to their units
+    if APackage.EnableI18NForLFM then begin
+      for i:=0 to APackage.FileCount-1 do begin
+        PkgFile:=APackage.Files[i];
+        if not (PkgFile.FileType in PkgFileRealUnitTypes) then continue;
+        if PkgFile.DisableI18NForLFM then continue;
+        LRJFilename:=ChangeFileExt(PkgFile.GetFullFilename,'.lrj');
+        if FileExistsCached(LRJFilename) then
+          LRJFiles.Add(LRJFilename);
+      end;
+    end;
+    if not ConvertRSTFiles(PkgOutputDirectory,POOutputDirectory,'',LRJFiles) then begin
+      DebugLn(['Error: (lazarus) [TLazPackageGraph.ConvertPackageRSTFiles] unable to update .po files PkgOutputDirectory=',PkgOutputDirectory,' RSTOutputDirectory=',POOutputDirectory]);
+      exit(mrCancel);
+    end;
+  finally
+    LRJFiles.Free;
   end;
   Result:=mrOK;
 end;
