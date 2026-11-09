@@ -274,6 +274,10 @@ msgstr "Paquet ajouté avec succès au dépôt."
 msgid "Edit repository details"
 msgstr "Éditer les détails du dépôt"
 
+#: opkman_const.rscreaterepositoryfrm_pnmessage_caption
+msgid "No items to show"
+msgstr ""
+
 #: opkman_const.rscreaterepositoryfrm_repositoryaddress
 msgctxt "opkman_const.rscreaterepositoryfrm_repositoryaddress"
 msgid "Address"
