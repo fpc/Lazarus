@@ -274,6 +274,10 @@ msgstr "Paket başarıyla depoya eklendi."
 msgid "Edit repository details"
 msgstr "Depo açıklamasını düzenle"
 
+#: opkman_const.rscreaterepositoryfrm_pnmessage_caption
+msgid "No items to show"
+msgstr ""
+
 #: opkman_const.rscreaterepositoryfrm_repositoryaddress
 msgctxt "opkman_const.rscreaterepositoryfrm_repositoryaddress"
 msgid "Address"

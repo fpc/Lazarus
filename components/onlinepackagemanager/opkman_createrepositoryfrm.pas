@@ -178,6 +178,7 @@ begin
   bClose.Caption := rsCreateRepositoryFrm_bClose_Caption;
   bClose.Hint := rsCreateRepositoryFrm_bClose_Hint;
   miRepDetails.Caption := rsCreateRepositoryFrm_miRepDetails_Caption;
+  pnMessage.Caption := rsCreateRepositoryFrm_pnMessage_Caption;
   FSortDirection := sdAscending;
   EnableDisableButtons(True);
   ShowHideControls(0);

@@ -467,6 +467,7 @@ resourcestring
   rsCreateRepositoryFrm_bClose_Caption = 'Close';
   rsCreateRepositoryFrm_bClose_Hint = 'Close this dialog';
   rsCreateRepositoryFrm_miRepDetails_Caption = 'Edit repository details';
+  rsCreateRepositoryFrm_pnMessage_Caption = 'No items to show';
   rsCreateRepositoryFrm_VSTPackages_Column0 = 'Repository/Packages';
   rsCreateRepositoryFrm_VSTDetails_Column0 = 'Description';
   rsCreateRepositoryFrm_VSTDetails_Column1 = 'Data';

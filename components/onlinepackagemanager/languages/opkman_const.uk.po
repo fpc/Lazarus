@@ -274,6 +274,10 @@ msgstr "Пакунок успішно додано до сховища."
 msgid "Edit repository details"
 msgstr "Змінити подробиці сховища"
 
+#: opkman_const.rscreaterepositoryfrm_pnmessage_caption
+msgid "No items to show"
+msgstr ""
+
 #: opkman_const.rscreaterepositoryfrm_repositoryaddress
 msgctxt "opkman_const.rscreaterepositoryfrm_repositoryaddress"
 msgid "Address"

@@ -282,6 +282,10 @@ msgstr "Paketti lisättiin säilöön onnistuneesti."
 msgid "Edit repository details"
 msgstr "Muokkaa säilön ominaisuuksia"
 
+#: opkman_const.rscreaterepositoryfrm_pnmessage_caption
+msgid "No items to show"
+msgstr ""
+
 #: opkman_const.rscreaterepositoryfrm_repositoryaddress
 msgctxt "opkman_const.rscreaterepositoryfrm_repositoryaddress"
 msgid "Address"

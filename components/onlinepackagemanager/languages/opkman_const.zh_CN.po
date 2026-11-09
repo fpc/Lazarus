@@ -274,6 +274,10 @@ msgstr "成功地添加软件包到存储库。"
 msgid "Edit repository details"
 msgstr "编辑存储库详情"
 
+#: opkman_const.rscreaterepositoryfrm_pnmessage_caption
+msgid "No items to show"
+msgstr ""
+
 #: opkman_const.rscreaterepositoryfrm_repositoryaddress
 msgctxt "opkman_const.rscreaterepositoryfrm_repositoryaddress"
 msgid "Address"
