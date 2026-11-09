@@ -274,7 +274,7 @@ msgstr "Изменить параметры репозитория"
 
 #: opkman_const.rscreaterepositoryfrm_pnmessage_caption
 msgid "No items to show"
-msgstr ""
+msgstr "Элементы для отображения отсутствуют"
 
 #: opkman_const.rscreaterepositoryfrm_repositoryaddress
 msgctxt "opkman_const.rscreaterepositoryfrm_repositoryaddress"
