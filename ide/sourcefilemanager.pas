@@ -4419,7 +4419,7 @@ begin
   and (not MainIDE.DoResetToolStatus([rfInteractive, rfSuccessOnTrigger])) then exit(mrAbort);
 
   Result:=SaveProjectIfChanged;
-  if Result=mrAbort then exit;
+  if Result in [mrAbort, mrCancel] then exit;
 
   // let user choose the program type
   NewProjectDesc:=nil;
@@ -4600,9 +4600,11 @@ end;
 function SaveProjectIfChanged: TModalResult;
 begin
   if SomethingOfProjectIsModified then begin
-    if IDEMessageDialog(lisProjectChanged, Format(lisSaveChangesToProject,
+    Result:=IDEMessageDialog(lisProjectChanged, Format(lisSaveChangesToProject,
       [Project1.GetTitleOrName]),
-      mtconfirmation, [mbYes, mbNo, mbCancel])=mrYes then
+      mtconfirmation, [mbYes, mbNo, mbCancel]);
+    if Result=mrCancel then exit;
+    if Result=mrYes then
     begin
       if SaveProject([])=mrAbort then
         exit(mrAbort);

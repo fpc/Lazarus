@@ -8129,8 +8129,8 @@ begin
   // clear old error lines
   SourceEditorManager.ClearErrorLines;
 
-  Result:=DoSaveAll([]);
-  if Result<>mrOk then begin
+  Result:=SaveProjectIfChanged;
+  if Result in [mrAbort, mrCancel] then begin
     DebugLn('Error: (lazarus) TMainIDE.DoBuildLazarus: failed because saving failed');
     exit;
   end;
