@@ -82,7 +82,8 @@ function GetLazarusLanguageLocalizedName(const ID: string): String;
 procedure CollectTranslations(const LazarusDir: string); // this updates LazarusTranslations
 
 function ConvertRSTFiles(RSTDirectory, PODirectory: string;
-  POFilename: string = '' // set POFilename to gather all rst into one po file
+  POFilename: string = ''; // set POFilename to gather all rst into one po file
+  ExtraFiles: TStrings = nil // additional .rst/.rsj/.lrj files, e.g. lrj next to the sources
   ): Boolean;
 procedure UpdatePoFileAndTranslations(SrcFiles: TStrings;
   const POFilename: string);
@@ -204,7 +205,8 @@ begin
   FindCloseUTF8(FileInfo);
 end;
 
-function ConvertRSTFiles(RSTDirectory, PODirectory: string; POFilename: string): Boolean;
+function ConvertRSTFiles(RSTDirectory, PODirectory: string; POFilename: string;
+  ExtraFiles: TStrings): Boolean;
 type
   TItem = record
     NeedUpdate: boolean;
@@ -214,13 +216,77 @@ type
   PItem = ^TItem;
 var
   Items: TFPList; // list of PItem
-  RSTFilename: String;
+
+  function IsSameKind(const Filename1, Filename2: string): boolean;
+  begin
+    // rsj are created by FPC 2.7.1+, rst by older -> alternatives of each other
+    // lrj are created by the IDE from the lfm -> they complement the rst/rsj
+    if FilenameExtIs(Filename1,'lrj') then
+      Result:=FilenameExtIs(Filename2,'lrj')
+    else
+      Result:=FilenameExtIn(Filename2,['.rst','.rsj']);
+  end;
+
+  procedure AddSrcFile(RSTFilename: string);
+  var
+    OutputFilename, OtherRSTFilename: String;
+    Item: PItem;
+    j: Integer;
+  begin
+    if not FilenameExtIn(RSTFilename,['.rst','.rsj','.lrj']) then
+      exit;
+    if POFilename='' then
+      OutputFilename:=PODirectory+ChangeFileExt(ExtractFileName(RSTFilename),'.pot')
+    else
+      OutputFilename:=PODirectory+POFilename;
+    //DebugLn(['ConvertRSTFiles RSTFilename=',RSTFilename,' OutputFilename=',OutputFilename]);
+    Item:=nil;
+    for j:=0 to Items.Count-1 do
+      if CompareFilenames(PItem(Items[j])^.OutputFilename,OutputFilename)=0
+      then begin
+        Item:=PItem(Items[j]);
+        break;
+      end;
+    if (Item=nil) then begin
+      New(Item);
+      Item^.NeedUpdate:=false;
+      Item^.RSTFileList:=TStringList.Create;
+      Item^.OutputFilename:=OutputFilename;
+      Items.Add(Item);
+    end else begin
+      // there is already a source file for this .po file
+      //debugln(['ConvertRSTFiles found another source: ',RSTFilename]);
+      for j:=Item^.RSTFileList.Count-1 downto 0 do begin
+        OtherRSTFilename:=Item^.RSTFileList[j];
+        if CompareFilenames(OtherRSTFilename,RSTFilename)=0 then
+          exit; // already added
+        if not IsSameKind(RSTFilename,OtherRSTFilename) then
+          continue;
+        // use only the newest
+        //debugln(['ConvertRSTFiles old: ',OtherRSTFilename]);
+        if FileAgeCached(RSTFilename)<=FileAgeCached(OtherRSTFilename) then
+        begin
+          // this one is older => skip
+          //debugln(['ConvertRSTFiles ',RSTFilename,' is older => skip']);
+          exit;
+        end;
+        // this one is newer
+        //debugln(['ConvertRSTFiles ',RSTFilename,' is newer => ignoring old']);
+        Item^.RSTFileList.Delete(j);
+      end;
+    end;
+    Item^.RSTFileList.Add(RSTFilename);
+    if (not Item^.NeedUpdate)
+    or (not FileExistsCached(OutputFilename))
+    or (FileAgeCached(RSTFilename)>FileAgeCached(OutputFilename)) then
+      Item^.NeedUpdate:=true;
+  end;
+
+var
   Dir: TCTDirectoryCache;
   Files: TStrings;
   i: Integer;
   Item: PItem;
-  j: Integer;
-  OutputFilename, OtherRSTFilename: String;
 begin
   Result:=true;
   if (RSTDirectory='') or (PODirectory='') then exit;// nothing to do
@@ -233,71 +299,20 @@ begin
     exit(true);
   end;
 
-  // find all .rst/.rsj files in package output directory
-  // TODO: lrt files...
-  PODirectory:=AppendPathDelim(PODirectory);
-
+  // find all .rst/.rsj/.lrj files in package output directory
   Dir:=CodeToolBoss.DirectoryCachePool.GetCache(RSTDirectory,true,true);
   Files:=nil;
   Dir.GetFiles(Files,false);
-  if Files=nil then exit(true);
   Items:=TFPList.Create;
   try
     Item:=nil;
     // collect all rst/po files that needs update
-    for i:=0 to Files.Count-1 do begin
-      RSTFilename:=RSTDirectory+Files[i];
-      if not FilenameExtIn(RSTFilename,['.rst','.rsj','.lrj']) then
-        continue;
-      if POFilename='' then
-        OutputFilename:=PODirectory+ChangeFileExt(Files[i],'.pot')
-      else
-        OutputFilename:=PODirectory+POFilename;
-      //DebugLn(['ConvertRSTFiles RSTFilename=',RSTFilename,' OutputFilename=',OutputFilename]);
-      Item:=nil;
-      for j:=0 to Items.Count-1 do
-        if CompareFilenames(PItem(Items[j])^.OutputFilename,OutputFilename)=0
-        then begin
-          Item:=PItem(Items[j]);
-          break;
-        end;
-      if (Item=nil) then begin
-        New(Item);
-        Item^.NeedUpdate:=false;
-        Item^.RSTFileList:=TStringList.Create;
-        Item^.OutputFilename:=OutputFilename;
-        Items.Add(Item);
-      end else begin
-        // there is already a source file for this .po file
-        //debugln(['ConvertRSTFiles found another source: ',RSTFilename]);
-        // Already checked earlier.
-        Assert(FilenameExtIn(RSTFilename,['.rst','.rsj','.lrj']), 'ConvertRSTFiles: Wrong Ext');
-        // rsj are created by FPC 2.7.1+, rst by older => use only the newest
-        for j:=Item^.RSTFileList.Count-1 downto 0 do begin
-          OtherRSTFilename:=Item^.RSTFileList[j];
-          //debugln(['ConvertRSTFiles old: ',OtherRSTFilename]);
-          if FilenameExtIn(OtherRSTFilename,['.rsj','.rst','.lrj']) then begin
-            if FileAgeCached(RSTFilename)<=FileAgeCached(OtherRSTFilename) then
-            begin
-              // this one is older => skip
-              //debugln(['ConvertRSTFiles ',RSTFilename,' is older => skip']);
-              RSTFilename:='';
-              break;
-            end else begin
-              // this one is newer
-              //debugln(['ConvertRSTFiles ',RSTFilename,' is newer => ignoring old']);
-              Item^.RSTFileList.Delete(j);
-            end;
-          end;
-        end;
-      end;
-      if RSTFilename='' then continue;
-      Item^.RSTFileList.Add(RSTFilename);
-      if (not Item^.NeedUpdate)
-      or (not FileExistsCached(OutputFilename))
-      or (FileAgeCached(RSTFilename)>FileAgeCached(OutputFilename)) then
-        Item^.NeedUpdate:=true;
-    end;
+    if Files<>nil then
+      for i:=0 to Files.Count-1 do
+        AddSrcFile(RSTDirectory+Files[i]);
+    if ExtraFiles<>nil then
+      for i:=0 to ExtraFiles.Count-1 do
+        AddSrcFile(TrimFilename(ExtraFiles[i]));
     // update rst/po files
     try
       for i:=0 to Items.Count-1 do begin
