@@ -1645,7 +1645,11 @@ begin
     Inc(liBracketLevel);
     Inc(liMaxBracketLevel);
   end;
-  Inc(liIndex);
+  { step over the token after the brackets, but not a closing bracket:
+    in "([], [x])" the "]" closes the empty set, and the comma after it
+    belongs to the outer list }
+  if not (fcTokenList.SourceTokens[liIndex].TokenType in [ttCloseBracket,ttCloseSquareBracket]) then
+    Inc(liIndex);
 
   // look forward to find the first comma or semicolon
   while True do
@@ -1714,6 +1718,15 @@ begin
     (fcTokenList.SolidTokenType(3) = ttColon) then
   begin
     RecogniseRecordConstant;
+  end
+  { an array of records, "((f: 1), (f: 2))" or "[(f: 1)]", wherever the
+    line breaks and comments fall }
+  else if (fcTokenList.FirstSolidTokenType in [ttOpenBracket,ttOpenSquareBracket]) and
+    (fcTokenList.SolidTokenType(2) = ttOpenBracket) and
+    (fcTokenList.SolidWordType(3) in IdentifierTypes) and
+    (fcTokenList.SolidTokenType(4) = ttColon) then
+  begin
+    RecogniseArrayConstant;
   end
   else if (ArrayConstantNext) then
   begin
