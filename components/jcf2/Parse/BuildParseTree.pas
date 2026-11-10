@@ -2299,6 +2299,20 @@ begin
         RecogniseConstructorHeading(True);
       ttDestructor:
         RecogniseDestructorHeading(True);
+      ttGeneric:
+        { mode objfpc generic methods in an advanced record; anything else
+          is a field named Generic }
+        if (fcTokenList.SolidTokenType(2) in [ttProcedure, ttFunction]) or
+          ((fcTokenList.SolidTokenType(2) = ttClass) and
+           (fcTokenList.SolidTokenType(3) in [ttProcedure, ttFunction])) then
+        begin
+          if ttFunction in [fcTokenList.SolidTokenType(2), fcTokenList.SolidTokenType(3)] then
+            RecogniseFunctionHeading(False, False)
+          else
+            RecogniseProcedureHeading(False, False);
+        end
+        else
+          RecogniseFieldDecl;
       ttClass:
       begin
         lcVarSection:=fcTokenList.SolidTokenType(2) in [ttVar,ttThreadVar];
@@ -5335,6 +5349,27 @@ begin
         if pbInterface then
           RaiseParseError(lisMsgUnexpectedToken, fcTokenList.FirstSolidToken);
         RecogniseDestructorHeading(True);
+      end;
+      ttGeneric:
+      begin
+        { mode objfpc generic methods: "generic function F<T>" and
+          "generic class procedure P<T>"; anything else is a field named
+          Generic }
+        if fcTokenList.SolidTokenType(2) = ttClass then
+          lt := fcTokenList.SolidTokenType(3)
+        else
+          lt := fcTokenList.SolidTokenType(2);
+        case lt of
+          ttProcedure:
+            RecogniseProcedureHeading(False, True);
+          ttFunction:
+            RecogniseFunctionHeading(False, True);
+        else
+          if aExternalClass then
+            RecogniseVarDecl(vtInExternalClassBody)
+          else
+            RecogniseVarDecl(vtInClassBody);
+        end;
       end;
       ttProperty:
         RecogniseProperty;

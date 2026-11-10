@@ -285,7 +285,7 @@ end;
 function IsRunOnProcDecl(const pt: TSourceToken): boolean;
 begin
   Result := pt.HasParentNode(ProcedureHeadings) and
-    (not (pt.TokenType in (ProcedureWords + [ttClass, ttComment])));
+    (not (pt.TokenType in (ProcedureWords + [ttClass, ttGeneric, ttComment])));
 end;
 
 
