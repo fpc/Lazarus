@@ -72,7 +72,10 @@ begin
     {$ENDIF}
     if (AEvent^.focus_change.in_ <> 0) and
        Assigned(Application) and not Application.Active and not Application.Terminated then
+    begin
       Application.IntfAppActivate;
+      Gtk3WidgetSet.AppRestoreStayOnTopFlags(False);
+    end;
   end;
   gtk_main_do_event(AEvent);
 end;

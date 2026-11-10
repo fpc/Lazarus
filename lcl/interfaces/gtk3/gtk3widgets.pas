@@ -15248,11 +15248,17 @@ begin
   if Gtk3X11ActiveWindowIsOurs then
   begin
     if not Application.Active then
+    begin
       Application.IntfAppActivate;
+      Gtk3WidgetSet.AppRestoreStayOnTopFlags(False);
+    end;
   end else
   begin
     if Application.Active then
+    begin
       Application.IntfAppDeactivate;
+      Gtk3WidgetSet.AppRemoveStayOnTopFlags(False);
+    end;
   end;
 end;
 {$ENDIF}
@@ -15282,6 +15288,7 @@ begin
   end;
   {$ENDIF}
   Application.IntfAppDeactivate;
+  Gtk3WidgetSet.AppRemoveStayOnTopFlags(False);
 end;
 
 procedure Gtk3StopAppFocusTimer;
@@ -16164,7 +16171,10 @@ begin
     ' AppActive=', Assigned(Application) and Application.Active]);
   {$ENDIF}
   if Assigned(Application) and not Application.Terminated and not Application.Active then
+  begin
     Application.IntfAppActivate;
+    Gtk3WidgetSet.AppRestoreStayOnTopFlags(False);
+  end;
 end;
 
 class function TGtk3Window.WindowFocusOut(AWidget: PGtkWidget; AEvent: PGdkEventFocus; AData: gpointer): gboolean; cdecl;
