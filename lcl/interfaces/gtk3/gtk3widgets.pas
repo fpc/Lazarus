@@ -1155,6 +1155,7 @@ type
 
     FMDIArea: TGtk3MDIArea; //available only when LCLObject is fsMDIForm
     FWaylandIconified: Boolean;
+    FWasActive: Boolean;
 
     {Deferred resize: when SetBounds is called from within the synchronous
      WindowSizeAllocate delivery, resize() is deferred to a g_idle_add callback
@@ -5173,6 +5174,28 @@ begin
   end;
 end;
 
+function Gtk3HasActiveMappedToplevel: Boolean;
+var
+  AList, L: PGList;
+  AWin: PGtkWidget;
+begin
+  Result := False;
+  AList := gtk_window_list_toplevels;
+  L := AList;
+  while L <> nil do
+  begin
+    AWin := PGtkWidget(L^.data);
+    if Gtk3IsGtkWindow(AWin) and AWin^.get_mapped and PGtkWindow(AWin)^.is_active then
+    begin
+      Result := True;
+      break;
+    end;
+    L := L^.next;
+  end;
+  if AList <> nil then
+    g_list_free(AList);
+end;
+
 procedure TGtk3Widget.SetFocus;
 var
   TopLevel: PGtkWidget;
@@ -5238,6 +5261,48 @@ begin
           AMsgAct.Active := WA_INACTIVE;
           AMsgAct.ActiveWindow := HWND(TopWidget.LCLObject.Handle);
           TGtk3Widget(APopupForm.Handle).DeliverMessage(AMsgAct);
+        end;
+      finally
+        Gtk3WidgetSet.MsgActivationLevel := Gtk3WidgetSet.MsgActivationLevel - 1;
+      end;
+    end;
+  end;
+
+  if Assigned(LCLObject) and (Gtk3WidgetSet.MsgActivationLevel = 0) and
+    Assigned(Application) and Application.Active and
+    Gtk3IsGtkWindow(TopLevel) and TopLevel^.get_mapped and
+    not PGtkWindow(TopLevel)^.is_active and
+    not Gtk3HasActiveMappedToplevel then
+  begin
+    TopWidget := TGtk3Widget(HwndFromGtkWidget(TopLevel));
+    if (TopWidget is TGtk3Window) and Assigned(TopWidget.LCLObject) and
+      (TopWidget.LCLObject is TCustomForm) and
+      TGtk3Window(TopWidget).FWasActive and
+      not (wwiActivating in TGtk3Window(TopWidget).FStateFlags) then
+    begin
+      Gtk3WidgetSet.MsgActivationLevel := Gtk3WidgetSet.MsgActivationLevel + 1;
+      try
+        if not TCustomForm(TopWidget.LCLObject).Active then
+        begin
+          FillChar(AMsgAct{%H-}, SizeOf(AMsgAct), 0);
+          AMsgAct.Msg := LM_ACTIVATE;
+          AMsgAct.Active := WA_ACTIVE;
+          AMsgAct.ActiveWindow := HWND(TopWidget.LCLObject.Handle);
+          Include(TGtk3Window(TopWidget).FStateFlags, wwiActivating);
+          try
+            TopWidget.DeliverMessage(AMsgAct);
+          finally
+            Exclude(TGtk3Window(TopWidget).FStateFlags, wwiActivating);
+          end;
+        end;
+        FillChar(AMsg{%H-}, SizeOf(AMsg), 0);
+        AMsg.Msg := LM_SETFOCUS;
+        DeliverMessage(AMsg);
+        if HasCaret then
+        begin
+          ACaret := TGtk3Caret(g_object_get_data(PGObject(getContainerWidget),'gtk3-caret'));
+          if Assigned(ACaret) and ACaret.RespondToFocus then
+            ACaret.Show;
         end;
       finally
         Gtk3WidgetSet.MsgActivationLevel := Gtk3WidgetSet.MsgActivationLevel - 1;
@@ -16045,6 +16110,8 @@ var
   AIsActivated: Boolean;
 begin
   g_object_get(AObject, 'is-active', [@IsActive, nil]);
+  if IsActive then
+    TGtk3Window(Data).FWasActive := True;
 
   {$IFDEF GTK3DEBUGACTIVATION}
   DebugLn(['[', GetTickCount64, '] TrackWindowActivate: ', TGtk3Window(Data).LCLObject.ClassName,
