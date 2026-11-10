@@ -75,6 +75,12 @@ begin
   if not Assigned(window) then
     exit;
 
+  // do not post another synthetic mouse move while handling one,
+  // otherwise e.g. a SetCursor in MouseMove results in an endless loop
+  event:= NSApp.currentEvent;
+  if Assigned(event) and (event.type_=NSMouseMoved) and (event.timestamp=0) then
+    exit;
+
   TCocoaCursorUtil.getCurrentLCLPos(P);
 
   rect:= NSZeroRect;

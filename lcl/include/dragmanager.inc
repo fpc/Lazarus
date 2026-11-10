@@ -59,6 +59,8 @@ type
   TDockPerformer = class(TDragDockCommon)
   private
     FDockObject: TDragDockObject;
+    FDragCursor: TCursor;
+    FDragCursorApplied: Boolean;
   protected
     function Dragging(AControl: TControl): boolean; override;
     procedure DragStarted(APosition: TPoint); override;
@@ -310,6 +312,7 @@ begin
     FDockObject := TDragDockObject.AutoCreate(AControl);
 
   FDockObject.InitDock(AManager.StartPosition);
+  FDragCursorApplied := False;
   // we are tracking capture change to stop drag/dock is happen
   SetCaptureControl(AControl);
 end;
@@ -562,7 +565,15 @@ begin
     else
       FDragImageList.EndDrag;
   end;
-  WidgetSet.SetCursor(Screen.Cursors[DragCursor]);
+  // only set the cursor when it changed. Some widgetsets (e.g. Cocoa) send
+  // a synthetic mouse move when setting the default cursor, which would
+  // result in an endless DragMove loop, starving the real mouse events.
+  if (not FDragCursorApplied) or (DragCursor <> FDragCursor) then
+  begin
+    FDragCursor := DragCursor;
+    FDragCursorApplied := True;
+    WidgetSet.SetCursor(Screen.Cursors[DragCursor]);
+  end;
 
   //Draw borders for the docking section or the boundaries of the dragged form
   with FDockObject do
