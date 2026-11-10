@@ -2614,7 +2614,7 @@ procedure TBuildParseTree.RecogniseVarSection(const pbClassVars: boolean; aExter
 const
   END_VAR_SECTION: TTokenTypeSet =
     [ttVar, ttThreadVar, ttConst, ttLabel, ttResourceString, ttType,
-    ttBegin, ttEnd, ttImplementation, ttInitialization,
+    ttBegin, ttEnd, ttImplementation, ttInitialization, ttFinalization,
     ttProcedure, ttFunction, ttOperator, ttConstructor, ttDestructor, ttClass, ttAsm, ttGeneric, ttCase];
 var
   leEndVarSection: TTokenTypeSet;
