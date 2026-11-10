@@ -757,9 +757,11 @@ begin
       AddRemovePageHandle(APage);
     PageRemoved(Index);
     TNBPages(FAccess).DeletePage(Index);
-    APage.Parent:=nil;
+    // update FPageIndex before Parent:=nil, otherwise the current page's
+    // HandleObjectShouldBeVisible returns false and the WS hides it (Cocoa)
     if FPageIndex >= Index then
       Dec(FPageIndex);
+    APage.Parent:=nil;
   end;
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn(['TCustomTabControl.RemovePage END ',dbgsName(Self),' Index=',Index,' FAccess.Count=',FAccess.Count,' PageIndex=',PageIndex]);
