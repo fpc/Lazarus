@@ -15,8 +15,14 @@ resourcestring
   adrsMovePageRightmost = 'Move page rightmost';
   adrsUndock = 'Undock';
   adrsHeaderPosition = 'Header position';
-  adrsEnlargeSide = 'Enlarge %s side';
-  adrsMoveSide = 'Move %s';
+  adrsEnlargeLeftSide = 'Enlarge left side';
+  adrsEnlargeTopSide = 'Enlarge top side';
+  adrsEnlargeRightSide = 'Enlarge right side';
+  adrsEnlargeBottomSide = 'Enlarge bottom side';
+  adrsMoveLeft = 'Move left';
+  adrsMoveTop = 'Move top';
+  adrsMoveRight = 'Move right';
+  adrsMoveBottom = 'Move bottom';
   adrsMerge = 'Merge';
   adrsAutomatically = 'Automatically';
   adrsLeft = 'left';

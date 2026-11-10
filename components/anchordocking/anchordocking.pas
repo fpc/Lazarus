@@ -6901,7 +6901,7 @@ var
   HeaderPosItem: TMenuItem;
   ParentSite: TAnchorDockHostSite;
   Side: TAnchorKind;
-  SideCaptions: array[TAnchorKind] of string;
+  SideCaptions, EnlargeCaptions, MoveCaptions: array[TAnchorKind] of string;
   Item: TMenuItem;
   ContainsMainForm: boolean;
   s: String;
@@ -6911,6 +6911,14 @@ begin
   SideCaptions[akTop]:=adrsTop;
   SideCaptions[akRight]:=adrsRight;
   SideCaptions[akBottom]:=adrsBottom;
+  EnlargeCaptions[akLeft]:=adrsEnlargeLeftSide;
+  EnlargeCaptions[akTop]:=adrsEnlargeTopSide;
+  EnlargeCaptions[akRight]:=adrsEnlargeRightSide;
+  EnlargeCaptions[akBottom]:=adrsEnlargeBottomSide;
+  MoveCaptions[akLeft]:=adrsMoveLeft;
+  MoveCaptions[akTop]:=adrsMoveTop;
+  MoveCaptions[akRight]:=adrsMoveRight;
+  MoveCaptions[akBottom]:=adrsMoveBottom;
 
   // menu items: undock, merge
   DockMaster.AddRemovePopupMenuItem(ParentSite.CanUndock,'UndockMenuItem',
@@ -6939,16 +6947,16 @@ begin
   // menu items: enlarge
   for Side:=Low(TAnchorKind) to High(TAnchorKind) do begin
     Item:=DockMaster.AddRemovePopupMenuItem(ParentSite.EnlargeSide(Side,true),
-      'Enlarge'+DbgS(Side)+'MenuItem', Format(adrsEnlargeSide, [
-        SideCaptions[Side]]),@EnlargeSideClick);
+      'Enlarge'+DbgS(Side)+'MenuItem', EnlargeCaptions[Side],
+      @EnlargeSideClick);
     if Item<>nil then Item.Tag:=ord(Side);
   end;
 
   // menu items: move
   for Side:=Low(TAnchorKind) to High(TAnchorKind) do begin
     Item:=DockMaster.AddRemovePopupMenuItem(ParentSite.MoveSide(Side,true),
-      'Move'+DbgS(Side)+'MenuItem', Format(adrsMoveSide, [
-        SideCaptions[Side]]),@MoveSideClick);
+      'Move'+DbgS(Side)+'MenuItem', MoveCaptions[Side],
+      @MoveSideClick);
     if Item<>nil then Item.Tag:=ord(Side);
   end;
 
