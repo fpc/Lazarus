@@ -272,6 +272,11 @@ msgstr "Sayfayı sağa taşı"
 msgid "Move page rightmost"
 msgstr "Sayfayı en sağa taşı"
 
+#: anchordockstr.adrsmoveside
+#, object-pascal-format
+msgid "Move %s"
+msgstr ""
+
 #: anchordockstr.adrsmultilinepages
 msgid "Multiline Tabs"
 msgstr "Çok Satırlı Sekmeler"

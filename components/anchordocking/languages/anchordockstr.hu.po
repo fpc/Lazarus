@@ -270,6 +270,11 @@ msgstr "Lap mozgatása eggyel jobbra"
 msgid "Move page rightmost"
 msgstr "Lap mozgatása a jobb szélre"
 
+#: anchordockstr.adrsmoveside
+#, object-pascal-format
+msgid "Move %s"
+msgstr ""
+
 #: anchordockstr.adrsmultilinepages
 msgid "Multiline Tabs"
 msgstr ""

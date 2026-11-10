@@ -276,6 +276,11 @@ msgstr "移动到页面右侧"
 msgid "Move page rightmost"
 msgstr "移动到页面最右边"
 
+#: anchordockstr.adrsmoveside
+#, object-pascal-format
+msgid "Move %s"
+msgstr ""
+
 #: anchordockstr.adrsmultilinepages
 msgid "Multiline Tabs"
 msgstr "多行标签页"

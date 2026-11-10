@@ -16,6 +16,7 @@ resourcestring
   adrsUndock = 'Undock';
   adrsHeaderPosition = 'Header position';
   adrsEnlargeSide = 'Enlarge %s side';
+  adrsMoveSide = 'Move %s';
   adrsMerge = 'Merge';
   adrsAutomatically = 'Automatically';
   adrsLeft = 'left';

@@ -198,6 +198,7 @@ type
     procedure UndockButtonClick(Sender: TObject);
     procedure MergeButtonClick(Sender: TObject);
     procedure EnlargeSideClick(Sender: TObject);
+    procedure MoveSideClick(Sender: TObject);
     procedure SetHeaderPosition(const AValue: TADLHeaderPosition);
   protected
     procedure Paint; override;
@@ -404,6 +405,8 @@ type
                          OnlyCheckIfPossible: boolean): boolean;
     function EnlargeSideRotateSplitter(Side: TAnchorKind;
                          OnlyCheckIfPossible: boolean): boolean;
+    function MoveSide(Side: TAnchorKind;
+                      OnlyCheckIfPossible: boolean): boolean;
     procedure CreateBoundSplitter(Disabled: boolean=false);
     procedure PositionBoundSplitter;
   public
@@ -6130,6 +6133,121 @@ begin
   end;
 end;
 
+function TAnchorDockHostSite.MoveSide(Side: TAnchorKind;
+  OnlyCheckIfPossible: boolean): boolean;
+{ Swap Self with the neighbor at Side, keeping both sizes and moving the
+  splitter between them.
+  Both must have the same anchors at the other two sides and share the
+  splitter exclusively.
+
+  For example: Side=akLeft
+
+    |#|        |#|      |#|      |#|        |#|      |#|
+    |#|   B    |#| Self |#| --> |#|  Self  |#|   B  |#|
+    |#|        |#|      |#|      |#|        |#|      |#|
+}
+
+  procedure AnchorTo(AControl: TControl; ASide: TAnchorKind;
+    Target: TControl; TargetSide: TAnchorSideReference);
+  begin
+    AControl.AnchorSide[ASide].Control:=Target;
+    AControl.AnchorSide[ASide].Side:=TargetSide;
+    AControl.Anchors:=AControl.Anchors+[ASide];
+  end;
+
+var
+  ParentSite: TAnchorDockHostSite;
+  Splitter: TAnchorDockSplitter;
+  Opposite, CWSide, CCWSide: TAnchorKind;
+  Neighbour, Sibling, NbFarControl, SelfFarControl: TControl;
+  NbFarSide, SelfFarSide: TAnchorSideReference;
+  i, NewSelfPos, NewSplitterPos, NewNbPos: Integer;
+begin
+  Result:=false;
+  if not (Parent is TAnchorDockHostSite) then exit;
+  ParentSite:=TAnchorDockHostSite(Parent);
+  if not GetDockSplitter(Self,Side,Splitter) then exit;
+  Opposite:=OppositeAnchor[Side];
+  CWSide:=ClockwiseAnchor[Side];
+  CCWSide:=OppositeAnchor[CWSide];
+  // check that Splitter spans exactly Self
+  if Splitter.AnchorSide[CWSide].Control<>AnchorSide[CWSide].Control then exit;
+  if Splitter.AnchorSide[CCWSide].Control<>AnchorSide[CCWSide].Control then exit;
+  // find neighbor and check that only Self and neighbor are at Splitter
+  Neighbour:=nil;
+  for i:=0 to Splitter.AnchoredControlCount-1 do begin
+    Sibling:=Splitter.AnchoredControls[i];
+    if Sibling=Self then continue;
+    if Sibling.Parent<>ParentSite then continue;
+    if (Sibling.AnchorSide[Side].Control<>Splitter)
+    and (Sibling.AnchorSide[Opposite].Control<>Splitter) then continue;
+    if Neighbour<>nil then exit;
+    if not (Sibling is TAnchorDockHostSite) then exit;
+    if not Sibling.Visible then exit;
+    if Sibling.AnchorSide[Opposite].Control<>Splitter then exit;
+    if Sibling.AnchorSide[CWSide].Control<>AnchorSide[CWSide].Control then exit;
+    if Sibling.AnchorSide[CCWSide].Control<>AnchorSide[CCWSide].Control then exit;
+    Neighbour:=Sibling;
+  end;
+  if Neighbour=nil then exit;
+  // check the far anchors
+  if not GetDockSplitterOrParent(Neighbour,Side,NbFarControl) then exit;
+  if not GetDockSplitterOrParent(Self,Opposite,SelfFarControl) then exit;
+  Result:=true;
+  if OnlyCheckIfPossible then exit;
+
+  NbFarSide:=Neighbour.AnchorSide[Side].Side;
+  SelfFarSide:=AnchorSide[Opposite].Side;
+  if Side in [akLeft,akRight] then begin
+    if Side=akLeft then begin
+      NewSelfPos:=Neighbour.Left;
+      NewSplitterPos:=NewSelfPos+Width;
+      NewNbPos:=NewSplitterPos+Splitter.Width;
+    end else begin
+      NewNbPos:=Left;
+      NewSplitterPos:=NewNbPos+Neighbour.Width;
+      NewSelfPos:=NewSplitterPos+Splitter.Width;
+    end;
+  end else begin
+    if Side=akTop then begin
+      NewSelfPos:=Neighbour.Top;
+      NewSplitterPos:=NewSelfPos+Height;
+      NewNbPos:=NewSplitterPos+Splitter.Height;
+    end else begin
+      NewNbPos:=Top;
+      NewSplitterPos:=NewNbPos+Neighbour.Height;
+      NewSelfPos:=NewSplitterPos+Splitter.Height;
+    end;
+  end;
+
+  ParentSite.BeginUpdateLayout;
+  ParentSite.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.MoveSide'){$ENDIF};
+  try
+    // re-anchor
+    AnchorTo(Self,Side,NbFarControl,NbFarSide);
+    AnchorTo(Self,Opposite,Splitter,DefaultSideForAnchorKind[Opposite]);
+    AnchorTo(Neighbour,Opposite,SelfFarControl,SelfFarSide);
+    AnchorTo(Neighbour,Side,Splitter,DefaultSideForAnchorKind[Side]);
+    // move
+    // the splitter keeps its relative position and restores it on the next
+    // relayout -> reset it, so that it is computed from the new position
+    Splitter.FPercentPosition:=-1;
+    if Side in [akLeft,akRight] then begin
+      Left:=NewSelfPos;
+      Splitter.Left:=NewSplitterPos;
+      Neighbour.Left:=NewNbPos;
+    end else begin
+      Top:=NewSelfPos;
+      Splitter.Top:=NewSplitterPos;
+      Neighbour.Top:=NewNbPos;
+    end;
+    Splitter.UpdatePercentPosition;
+  finally
+    ParentSite.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.MoveSide'){$ENDIF};
+    ParentSite.EndUpdateLayout;
+  end;
+end;
+
 procedure TAnchorDockHostSite.CreateBoundSplitter(Disabled: boolean);
 begin
   if BoundSplitter<>nil then exit;
@@ -6826,6 +6944,14 @@ begin
     if Item<>nil then Item.Tag:=ord(Side);
   end;
 
+  // menu items: move
+  for Side:=Low(TAnchorKind) to High(TAnchorKind) do begin
+    Item:=DockMaster.AddRemovePopupMenuItem(ParentSite.MoveSide(Side,true),
+      'Move'+DbgS(Side)+'MenuItem', Format(adrsMoveSide, [
+        SideCaptions[Side]]),@MoveSideClick);
+    if Item<>nil then Item.Tag:=ord(Side);
+  end;
+
   // menu item: close or quit
   ContainsMainForm:=ParentSite.IsParentOf(Application.MainForm);
   if ContainsMainForm then
@@ -6920,6 +7046,15 @@ begin
   if not (Sender is TMenuItem) then exit;
   Side:=TAnchorKind(TMenuItem(Sender).Tag);
   TAnchorDockHostSite(Parent).EnlargeSide(Side,false);
+end;
+
+procedure TAnchorDockHeader.MoveSideClick(Sender: TObject);
+var
+  Side: TAnchorKind;
+begin
+  if not (Sender is TMenuItem) then exit;
+  Side:=TAnchorKind(TMenuItem(Sender).Tag);
+  TAnchorDockHostSite(Parent).MoveSide(Side,false);
 end;
 
 procedure TAnchorDockHeader.SetHeaderPosition(const AValue: TADLHeaderPosition);
