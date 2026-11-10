@@ -270,6 +270,11 @@ msgstr "Seite nach rechts"
 msgid "Move page rightmost"
 msgstr "Seite nach ganz rechts"
 
+#: anchordockstr.adrsmoveside
+#, object-pascal-format
+msgid "Move %s"
+msgstr ""
+
 #: anchordockstr.adrsmultilinepages
 msgid "Multiline Tabs"
 msgstr "Mehrzeilige Tabulatoren"

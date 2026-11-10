@@ -8,7 +8,7 @@ uses
   Classes, SysUtils,
   LCLProc, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Menus, ExtCtrls, Buttons, ComCtrls, XMLPropStorage,
-  LazFileUtils,
+  LazFileUtils, LazLoggerBase,
   SimpleFrm, AnchorDocking, AnchorDockStorage, AnchorDockOptionsDlg;
 
 type

@@ -273,6 +273,11 @@ msgstr "Пересунути сторінку вправо"
 msgid "Move page rightmost"
 msgstr "Пересунути сторінку до правого краю"
 
+#: anchordockstr.adrsmoveside
+#, object-pascal-format
+msgid "Move %s"
+msgstr ""
+
 #: anchordockstr.adrsmultilinepages
 msgid "Multiline Tabs"
 msgstr "Багаторядкові вкладки"

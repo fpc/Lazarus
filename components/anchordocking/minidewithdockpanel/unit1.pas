@@ -10,7 +10,7 @@ uses
   LCLProc, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Menus, Buttons, ComCtrls, XMLPropStorage,
   // LazUtils
-  LazFileUtils,
+  LazFileUtils, LazLoggerBase,
   // AnchorDocking
   SimpleFrm, AnchorDocking, AnchorDockStorage, AnchorDockOptionsDlg, AnchorDockPanel;
 
