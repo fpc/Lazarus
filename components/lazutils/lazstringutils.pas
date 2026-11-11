@@ -80,10 +80,10 @@ function SpecialCharsToSpaces(const s: string; FixUTF8: boolean): string;
 function ShortDotsLine(const Line: string): string;
 function BeautifyLineXY(const Filename, Line: string; X, Y: integer): string;
 function BreakString(const s: string; MaxLineLength, Indent: integer): string;
-function IntToStrWithSuffix(Value: Int64; Digits: Byte = 2; UsePowersOfTwo: Boolean = False; Spacer: String=''): String;
-function IntToStrWithSuffix(Value: UInt64; Digits: Byte = 2; UsePowersOfTwo: Boolean = False; Spacer: String=''): String;
-function IntToStrWithSuffix(Value: Int64; FS: TFormatSettings; Digits: Byte = 2; UsePowersOfTwo: Boolean = False; Spacer: String=''): String;
-function IntToStrWithSuffix(Value: UInt64; FS: TFormatSettings; Digits: Byte = 2; UsePowersOfTwo: Boolean = False; Spacer: String=''): String;
+function IntToStrWithSuffix(Value: Int64; Digits: Byte = 2; UsePowersOfTwo: Boolean = False; const Spacer: String=''): String;
+function IntToStrWithSuffix(Value: UInt64; Digits: Byte = 2; UsePowersOfTwo: Boolean = False; const Spacer: String=''): String;
+function IntToStrWithSuffix(Value: Int64; FS: TFormatSettings; Digits: Byte = 2; UsePowersOfTwo: Boolean = False; const Spacer: String=''): String;
+function IntToStrWithSuffix(Value: UInt64; FS: TFormatSettings; Digits: Byte = 2; UsePowersOfTwo: Boolean = False; const Spacer: String=''): String;
 
 // Conversions to and from a StringList
 function SplitString(const s: string; Delimiter: char): TStrings;
@@ -956,7 +956,7 @@ end;
   UsePowerOfTwo: if True, Kilo is 1024 instead of 1000
   Spacer: string put between the value and the suffix
 }
-function IntToStrWithSuffix(Value: UInt64; FS: TFormatSettings; Digits: Byte; UsePowersOfTwo: Boolean; Spacer: String): String;
+function IntToStrWithSuffix(Value: UInt64; FS: TFormatSettings; Digits: Byte; UsePowersOfTwo: Boolean; const Spacer: String): String;
 var
   Kilo, Mega, Giga, Tera: UInt64;
 begin
@@ -993,7 +993,7 @@ begin
   end;
 end;
 
-function IntToStrWithSuffix(Value: Int64; FS: TFormatSettings; Digits: Byte; UsePowersOfTwo: Boolean; Spacer: String): String;
+function IntToStrWithSuffix(Value: Int64; FS: TFormatSettings; Digits: Byte; UsePowersOfTwo: Boolean; const Spacer: String): String;
 var
   Neg: Boolean;
   UValue: UInt64;
@@ -1013,12 +1013,12 @@ begin
     Result := '-' + Result;
 end;
 
-function IntToStrWithSuffix(Value: UInt64; Digits: Byte; UsePowersOfTwo: Boolean; Spacer: String): String;
+function IntToStrWithSuffix(Value: UInt64; Digits: Byte; UsePowersOfTwo: Boolean; const Spacer: String): String;
 begin
   Result := IntToStrWithSuffix(Value, DefaultFormatSettings, Digits, UsePowersOfTwo, Spacer);
 end;
 
-function IntToStrWithSuffix(Value: Int64; Digits: Byte; UsePowersOfTwo: Boolean ; Spacer: String): String;
+function IntToStrWithSuffix(Value: Int64; Digits: Byte; UsePowersOfTwo: Boolean ; const Spacer: String): String;
 begin
   Result := IntToStrWithSuffix(Value, DefaultFormatSettings, Digits, UsePowersOfTwo, Spacer);
 end;
