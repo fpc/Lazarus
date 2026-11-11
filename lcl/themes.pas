@@ -496,7 +496,7 @@ type
     procedure DrawEdge(DC: HDC; Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal;
       AContentRect: PRect = nil); virtual;
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect = nil); virtual;
-    procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST; Index: Integer); virtual; overload;
+    procedure DrawElementForPPI(DC: HDC; Details: TThemedElementDetails; const R: TRect; PPI: Integer; ClipRect: PRect = nil); virtual;    procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST; Index: Integer); virtual; overload;
     procedure DrawIcon(ACanvas: TPersistent; Details: TThemedElementDetails; const P: TPoint; AImageList: TPersistent; Index: Integer;
       AImageWidth: Integer = 0; ARefControl: TPersistent = nil); virtual; overload;
     procedure DrawParentBackground(Window: HWND; Target: HDC; Details: PThemedElementDetails; OnlyIfTransparent: Boolean;
@@ -2342,6 +2342,17 @@ begin
         end;
       end;
   end;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+{ Draws the element for the given PPI. Elements with a fixed native size (check boxes, radio buttons, tree
+  glyphs etc.) are then drawn at the size GetDetailSizeForPPI returns for the same PPI.
+  Widgetsets without per-PPI theme data draw the element like DrawElement does. }
+procedure TThemeServices.DrawElementForPPI(DC: HDC; Details: TThemedElementDetails; const R: TRect; PPI: Integer;
+  ClipRect: PRect = nil);
+begin
+  DrawElement(DC, Details, R, ClipRect);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

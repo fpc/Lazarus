@@ -57,6 +57,8 @@ type
 
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect;
       ClipRect: PRect = nil); override;
+    procedure DrawElementForPPI(DC: HDC; Details: TThemedElementDetails; const R: TRect; PPI: Integer;
+      ClipRect: PRect = nil); override;
     procedure DrawEdge(DC: HDC; Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal;
       AContentRect: PRect = nil); override;
     procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect;
@@ -507,6 +509,18 @@ begin
 
     inherited;
   end;
+end;
+
+procedure TWin32ThemeServices.DrawElementForPPI(DC: HDC; Details: TThemedElementDetails; const R: TRect;
+  PPI: Integer; ClipRect: PRect = nil);
+begin
+  // Theme data for another PPI exists only on Windows 10 and later (GetThemeForPPI),
+  // where the pre-Vista special cases of DrawElement do not apply.
+  if ThemesEnabled and (WindowsVersion >= wv10) and (PPI > 0) and (PPI <> ScreenInfo.PixelsPerInchX) then
+    with Details do
+      DrawThemeBackground(GetThemeForPPI(Element, PPI), DC, Part, State, R, ClipRect)
+  else
+    DrawElement(DC, Details, R, ClipRect);
 end;
 
 procedure TWin32ThemeServices.DrawIcon(DC: HDC; Details: TThemedElementDetails;
