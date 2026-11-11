@@ -149,10 +149,21 @@ msgstr "Включить стыковку окон IDE (требует пере�
 msgid "This option allows to organize groups of windows (or all windows) into a single window. For a \"classic\" IDE with only floating windows turn the option off."
 msgstr "Этот параметр позволяет объединить все окна (или их группы) в рамках одного окна. Отключите его, чтобы получить \"классическую\" IDE с плавающими окнами."
 
-#: anchordockstr.adrsenlargeside
-#, object-pascal-format
-msgid "Enlarge %s side"
-msgstr "Вытянуть край %s"
+#: anchordockstr.adrsenlargebottomside
+msgid "Enlarge bottom side"
+msgstr "Вытянуть нижний край"
+
+#: anchordockstr.adrsenlargeleftside
+msgid "Enlarge left side"
+msgstr "Вытянуть левый край"
+
+#: anchordockstr.adrsenlargerightside
+msgid "Enlarge right side"
+msgstr "Вытянуть правый край"
+
+#: anchordockstr.adrsenlargetopside
+msgid "Enlarge top side"
+msgstr "Вытянуть верхний край"
 
 #: anchordockstr.adrsfilledheaders
 msgid "Fill headers"
@@ -246,6 +257,10 @@ msgstr "отсутствует имя объекта"
 msgid "modal forms can not be made dockable"
 msgstr "модальные формы не могут иметь возможность стыковки"
 
+#: anchordockstr.adrsmovebottom
+msgid "Move bottom"
+msgstr "Переместить вниз"
+
 #: anchordockstr.adrsmoveheadertoleftwhenwidthheight100headeralignleft
 msgid "Move header to left when (Width/Height)*100>=HeaderAlignLeft"
 msgstr "Помещать заголовок слева, когда этот параметр меньше либо равен значению (Ширина/Высота)*100"
@@ -253,6 +268,10 @@ msgstr "Помещать заголовок слева, когда этот па
 #: anchordockstr.adrsmoveheadertotopwhenwidthheight100headeraligntop
 msgid "Move header to top when (Width/Height)*100<=HeaderAlignTop"
 msgstr "Помещать заголовок сверху, когда этот параметр больше либо равен значению (Ширина/Высота)*100"
+
+#: anchordockstr.adrsmoveleft
+msgid "Move left"
+msgstr "Переместить влево"
 
 #: anchordockstr.adrsmovepageleft
 msgid "Move page left"
@@ -270,10 +289,13 @@ msgstr "Переместить вкладку вправо"
 msgid "Move page rightmost"
 msgstr "Поместить вкладку справа"
 
-#: anchordockstr.adrsmoveside
-#, object-pascal-format
-msgid "Move %s"
-msgstr ""
+#: anchordockstr.adrsmoveright
+msgid "Move right"
+msgstr "Переместить вправо"
+
+#: anchordockstr.adrsmovetop
+msgid "Move top"
+msgstr "Переместить вверх"
 
 #: anchordockstr.adrsmultilinepages
 msgid "Multiline Tabs"
