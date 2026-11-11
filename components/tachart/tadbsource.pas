@@ -145,24 +145,28 @@ end;
 procedure TDbChartSource.AfterDraw;
 begin
   inherited AfterDraw;
-  try
-    FDataLink.Dataset.EnableControls;
-    if not FDataLink.Active or (FBookmark = nil) then exit;
-    FDataLink.DataSet.GotoBookmark(FBookmark);
-    FDataLink.DataSet.FreeBookmark(FBookmark);
-  finally
-    FBookmark := nil;
-    VLockedDatasets.Remove(FDataLink.DataSet);
-  end;
+  if Assigned(FDataLink.Dataset) then
+    try
+      FDataLink.Dataset.EnableControls;
+      if not FDataLink.Active or (FBookmark = nil) then exit;
+      FDataLink.DataSet.GotoBookmark(FBookmark);
+      FDataLink.DataSet.FreeBookmark(FBookmark);
+    finally
+      FBookmark := nil;
+      VLockedDatasets.Remove(FDataLink.DataSet);
+    end;
 end;
 
 procedure TDbChartSource.BeforeDraw;
 begin
   inherited BeforeDraw;
-  VLockedDatasets.Add(FDataLink.DataSet);
-  FDataLink.Dataset.DisableControls;
-  if FDataLink.Active and (FBookmark = nil) then
-    FBookmark := FDataLink.DataSet.GetBookmark;
+  if Assigned(FDataLink.DataSet) then
+  begin
+    VLockedDatasets.Add(FDataLink.DataSet);
+    FDataLink.Dataset.DisableControls;
+    if FDataLink.Active and (FBookmark = nil) then
+      FBookmark := FDataLink.DataSet.GetBookmark;
+  end;
 end;
 
 constructor TDbChartSource.Create(AOwner: TComponent);
