@@ -152,10 +152,21 @@ msgstr ""
 msgid "This option allows to organize groups of windows (or all windows) into a single window. For a \"classic\" IDE with only floating windows turn the option off."
 msgstr ""
 
-#: anchordockstr.adrsenlargeside
-#, object-pascal-format
-msgid "Enlarge %s side"
-msgstr "Збільшити %s сторону"
+#: anchordockstr.adrsenlargebottomside
+msgid "Enlarge bottom side"
+msgstr ""
+
+#: anchordockstr.adrsenlargeleftside
+msgid "Enlarge left side"
+msgstr ""
+
+#: anchordockstr.adrsenlargerightside
+msgid "Enlarge right side"
+msgstr ""
+
+#: anchordockstr.adrsenlargetopside
+msgid "Enlarge top side"
+msgstr ""
 
 #: anchordockstr.adrsfilledheaders
 msgid "Fill headers"
@@ -249,6 +260,10 @@ msgstr "відсутня назва об'єкта"
 msgid "modal forms can not be made dockable"
 msgstr "модальні форми не можуть стикуватись"
 
+#: anchordockstr.adrsmovebottom
+msgid "Move bottom"
+msgstr ""
+
 #: anchordockstr.adrsmoveheadertoleftwhenwidthheight100headeralignleft
 msgid "Move header to left when (Width/Height)*100>=HeaderAlignLeft"
 msgstr "Помістити заголовок зліва якщо (Ширина/Висота)*100>=HeaderAlignLeft"
@@ -256,6 +271,10 @@ msgstr "Помістити заголовок зліва якщо (Ширина/
 #: anchordockstr.adrsmoveheadertotopwhenwidthheight100headeraligntop
 msgid "Move header to top when (Width/Height)*100<=HeaderAlignTop"
 msgstr "Помістити заголовок зверху якщо (Ширина/Висота)*100<=HeaderAlignTop"
+
+#: anchordockstr.adrsmoveleft
+msgid "Move left"
+msgstr ""
 
 #: anchordockstr.adrsmovepageleft
 msgid "Move page left"
@@ -273,9 +292,12 @@ msgstr "Пересунути сторінку вправо"
 msgid "Move page rightmost"
 msgstr "Пересунути сторінку до правого краю"
 
-#: anchordockstr.adrsmoveside
-#, object-pascal-format
-msgid "Move %s"
+#: anchordockstr.adrsmoveright
+msgid "Move right"
+msgstr ""
+
+#: anchordockstr.adrsmovetop
+msgid "Move top"
 msgstr ""
 
 #: anchordockstr.adrsmultilinepages

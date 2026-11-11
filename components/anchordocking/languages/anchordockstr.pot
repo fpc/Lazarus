@@ -139,9 +139,20 @@ msgstr ""
 msgid "This option allows to organize groups of windows (or all windows) into a single window. For a \"classic\" IDE with only floating windows turn the option off."
 msgstr ""
 
-#: anchordockstr.adrsenlargeside
-#, object-pascal-format
-msgid "Enlarge %s side"
+#: anchordockstr.adrsenlargebottomside
+msgid "Enlarge bottom side"
+msgstr ""
+
+#: anchordockstr.adrsenlargeleftside
+msgid "Enlarge left side"
+msgstr ""
+
+#: anchordockstr.adrsenlargerightside
+msgid "Enlarge right side"
+msgstr ""
+
+#: anchordockstr.adrsenlargetopside
+msgid "Enlarge top side"
 msgstr ""
 
 #: anchordockstr.adrsfilledheaders
@@ -236,12 +247,20 @@ msgstr ""
 msgid "modal forms can not be made dockable"
 msgstr ""
 
+#: anchordockstr.adrsmovebottom
+msgid "Move bottom"
+msgstr ""
+
 #: anchordockstr.adrsmoveheadertoleftwhenwidthheight100headeralignleft
 msgid "Move header to left when (Width/Height)*100>=HeaderAlignLeft"
 msgstr ""
 
 #: anchordockstr.adrsmoveheadertotopwhenwidthheight100headeraligntop
 msgid "Move header to top when (Width/Height)*100<=HeaderAlignTop"
+msgstr ""
+
+#: anchordockstr.adrsmoveleft
+msgid "Move left"
 msgstr ""
 
 #: anchordockstr.adrsmovepageleft
@@ -260,9 +279,12 @@ msgstr ""
 msgid "Move page rightmost"
 msgstr ""
 
-#: anchordockstr.adrsmoveside
-#, object-pascal-format
-msgid "Move %s"
+#: anchordockstr.adrsmoveright
+msgid "Move right"
+msgstr ""
+
+#: anchordockstr.adrsmovetop
+msgid "Move top"
 msgstr ""
 
 #: anchordockstr.adrsmultilinepages

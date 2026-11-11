@@ -153,10 +153,21 @@ msgstr "启用 IDE 窗口停靠（需要重启 IDE）"
 msgid "This option allows to organize groups of windows (or all windows) into a single window. For a \"classic\" IDE with only floating windows turn the option off."
 msgstr "此选项允许将窗口组（或所有窗口）组织到单个窗口中。对于只有浮动窗口的“经典”IDE，请关闭此选项。"
 
-#: anchordockstr.adrsenlargeside
-#, object-pascal-format
-msgid "Enlarge %s side"
-msgstr "放大 %s 边"
+#: anchordockstr.adrsenlargebottomside
+msgid "Enlarge bottom side"
+msgstr ""
+
+#: anchordockstr.adrsenlargeleftside
+msgid "Enlarge left side"
+msgstr ""
+
+#: anchordockstr.adrsenlargerightside
+msgid "Enlarge right side"
+msgstr ""
+
+#: anchordockstr.adrsenlargetopside
+msgid "Enlarge top side"
+msgstr ""
 
 #: anchordockstr.adrsfilledheaders
 msgid "Fill headers"
@@ -252,6 +263,10 @@ msgstr "缺少控制名称"
 msgid "modal forms can not be made dockable"
 msgstr "模态窗体不能停靠"
 
+#: anchordockstr.adrsmovebottom
+msgid "Move bottom"
+msgstr ""
+
 #: anchordockstr.adrsmoveheadertoleftwhenwidthheight100headeralignleft
 msgid "Move header to left when (Width/Height)*100>=HeaderAlignLeft"
 msgstr "当 (宽度/高度)*100>=HeaderAlignLeft 时将标题移动到左侧"
@@ -259,6 +274,10 @@ msgstr "当 (宽度/高度)*100>=HeaderAlignLeft 时将标题移动到左侧"
 #: anchordockstr.adrsmoveheadertotopwhenwidthheight100headeraligntop
 msgid "Move header to top when (Width/Height)*100<=HeaderAlignTop"
 msgstr "当 (宽度/高度)*100<=头部对齐顶部 时将头部移动到顶部"
+
+#: anchordockstr.adrsmoveleft
+msgid "Move left"
+msgstr ""
 
 #: anchordockstr.adrsmovepageleft
 msgid "Move page left"
@@ -276,9 +295,12 @@ msgstr "移动到页面右侧"
 msgid "Move page rightmost"
 msgstr "移动到页面最右边"
 
-#: anchordockstr.adrsmoveside
-#, object-pascal-format
-msgid "Move %s"
+#: anchordockstr.adrsmoveright
+msgid "Move right"
+msgstr ""
+
+#: anchordockstr.adrsmovetop
+msgid "Move top"
 msgstr ""
 
 #: anchordockstr.adrsmultilinepages

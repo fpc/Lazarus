@@ -151,10 +151,21 @@ msgstr ""
 msgid "This option allows to organize groups of windows (or all windows) into a single window. For a \"classic\" IDE with only floating windows turn the option off."
 msgstr ""
 
-#: anchordockstr.adrsenlargeside
-#, object-pascal-format
-msgid "Enlarge %s side"
-msgstr "%s tarafını büyüt"
+#: anchordockstr.adrsenlargebottomside
+msgid "Enlarge bottom side"
+msgstr ""
+
+#: anchordockstr.adrsenlargeleftside
+msgid "Enlarge left side"
+msgstr ""
+
+#: anchordockstr.adrsenlargerightside
+msgid "Enlarge right side"
+msgstr ""
+
+#: anchordockstr.adrsenlargetopside
+msgid "Enlarge top side"
+msgstr ""
 
 #: anchordockstr.adrsfilledheaders
 msgid "Fill headers"
@@ -248,6 +259,10 @@ msgstr "eksik kontrol adı"
 msgid "modal forms can not be made dockable"
 msgstr "kalıcı formlar yerleştirilemez hale getirilemez"
 
+#: anchordockstr.adrsmovebottom
+msgid "Move bottom"
+msgstr ""
+
 #: anchordockstr.adrsmoveheadertoleftwhenwidthheight100headeralignleft
 msgid "Move header to left when (Width/Height)*100>=HeaderAlignLeft"
 msgstr "Başlığı en sol taşı (Genişlik / Yükseklik)*100>= HeaderAlignleft"
@@ -255,6 +270,10 @@ msgstr "Başlığı en sol taşı (Genişlik / Yükseklik)*100>= HeaderAlignleft
 #: anchordockstr.adrsmoveheadertotopwhenwidthheight100headeraligntop
 msgid "Move header to top when (Width/Height)*100<=HeaderAlignTop"
 msgstr "Başlığı en üste taşı (Genişlik / Yükseklik) * 100 <= HeaderAlignTop"
+
+#: anchordockstr.adrsmoveleft
+msgid "Move left"
+msgstr ""
 
 #: anchordockstr.adrsmovepageleft
 msgid "Move page left"
@@ -272,9 +291,12 @@ msgstr "Sayfayı sağa taşı"
 msgid "Move page rightmost"
 msgstr "Sayfayı en sağa taşı"
 
-#: anchordockstr.adrsmoveside
-#, object-pascal-format
-msgid "Move %s"
+#: anchordockstr.adrsmoveright
+msgid "Move right"
+msgstr ""
+
+#: anchordockstr.adrsmovetop
+msgid "Move top"
 msgstr ""
 
 #: anchordockstr.adrsmultilinepages

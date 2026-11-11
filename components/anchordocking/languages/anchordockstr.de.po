@@ -149,10 +149,21 @@ msgstr "Docking von IDE-Fenstern einschalten (Erfordert Neustart der IDE)"
 msgid "This option allows to organize groups of windows (or all windows) into a single window. For a \"classic\" IDE with only floating windows turn the option off."
 msgstr "Diese Einstellung erlaubt das Organisieren einer Gruppe von Fenstern (oder allen Fenstern) in einem einzigen Fenster. Für eine \"klassische\" IDE mit schwebenden Fenstern schalte diese Einstellung aus."
 
-#: anchordockstr.adrsenlargeside
-#, object-pascal-format
-msgid "Enlarge %s side"
-msgstr "Seite %s vergrößern"
+#: anchordockstr.adrsenlargebottomside
+msgid "Enlarge bottom side"
+msgstr ""
+
+#: anchordockstr.adrsenlargeleftside
+msgid "Enlarge left side"
+msgstr ""
+
+#: anchordockstr.adrsenlargerightside
+msgid "Enlarge right side"
+msgstr ""
+
+#: anchordockstr.adrsenlargetopside
+msgid "Enlarge top side"
+msgstr ""
 
 #: anchordockstr.adrsfilledheaders
 msgid "Fill headers"
@@ -246,6 +257,10 @@ msgstr "fehlender Steuerelementname"
 msgid "modal forms can not be made dockable"
 msgstr "Modale Formulare können nicht angedockt werden"
 
+#: anchordockstr.adrsmovebottom
+msgid "Move bottom"
+msgstr ""
+
 #: anchordockstr.adrsmoveheadertoleftwhenwidthheight100headeralignleft
 msgid "Move header to left when (Width/Height)*100>=HeaderAlignLeft"
 msgstr "Schiebe Header nach links, wenn (Breite/Höhe)*100>=HeaderAlignLeft"
@@ -253,6 +268,10 @@ msgstr "Schiebe Header nach links, wenn (Breite/Höhe)*100>=HeaderAlignLeft"
 #: anchordockstr.adrsmoveheadertotopwhenwidthheight100headeraligntop
 msgid "Move header to top when (Width/Height)*100<=HeaderAlignTop"
 msgstr "Schiebe Header nach oben, wenn (Breite/Höhe)*100<=HeaderAlignTop"
+
+#: anchordockstr.adrsmoveleft
+msgid "Move left"
+msgstr ""
 
 #: anchordockstr.adrsmovepageleft
 msgid "Move page left"
@@ -270,9 +289,12 @@ msgstr "Seite nach rechts"
 msgid "Move page rightmost"
 msgstr "Seite nach ganz rechts"
 
-#: anchordockstr.adrsmoveside
-#, object-pascal-format
-msgid "Move %s"
+#: anchordockstr.adrsmoveright
+msgid "Move right"
+msgstr ""
+
+#: anchordockstr.adrsmovetop
+msgid "Move top"
 msgstr ""
 
 #: anchordockstr.adrsmultilinepages
