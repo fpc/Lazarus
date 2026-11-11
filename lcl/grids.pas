@@ -4861,9 +4861,7 @@ begin
   begin
     Details := ThemeServices.GetElementDetails(arrtb[AState]);
     // Maybe: CSize := ThemeServices.GetDetailSizeForPPI(Details, Font.PixelsPerInch);
-    CSize := ThemeServices.GetDetailSize(Details);
-    CSize.cx := MulDiv(CSize.cx, Font.PixelsPerInch, Screen.PixelsPerInch);
-    CSize.cy := MulDiv(CSize.cy, Font.PixelsPerInch, Screen.PixelsPerInch);
+    CSize := ThemeServices.GetDetailSizeForPPI(Details, Font.PixelsPerInch);
   end;
 
   case bmpAlign of
@@ -4880,7 +4878,7 @@ begin
   PaintRect := Bounds(PaintRect.Left, PaintRect.Top, CSize.cx, CSize.cy);
 
   if Details.State>=0 then
-    ThemeServices.DrawElement(Canvas.Handle, Details, PaintRect, nil)
+    ThemeServices.DrawElementForPPI(Canvas.Handle, Details, PaintRect, Font.PixelsPerInch, nil)
   else
   if Assigned(ChkBitmap) then
     Canvas.StretchDraw(PaintRect, ChkBitmap)

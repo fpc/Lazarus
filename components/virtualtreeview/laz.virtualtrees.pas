@@ -24426,7 +24426,7 @@ begin
           Details.Part := 0;
           Details.State := 0;
         end;
-        ThemeServices.DrawElement(Canvas.Handle, Details, R);
+        ThemeServices.DrawElementForPPI(Canvas.Handle, Details, R, Font.PixelsPerInch);
         {$ifdef USE_DELPHICOMPAT}
         if Index in [21..24] then
           with UtilityImages do

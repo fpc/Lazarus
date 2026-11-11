@@ -396,7 +396,7 @@ begin
     FCheckboxSize := Size(bmp.Width, bmp.Height);
     {$ELSE}
     ted := ThemeServices.GetElementDetails(tb);
-    FCheckboxSize := ThemeServices.GetDetailSize(ted);
+    FCheckboxSize := ThemeServices.GetDetailSizeForPPI(ted, Font.PixelsPerInch);
     {$ENDIF}
   end;
 
@@ -406,7 +406,7 @@ begin
     {$IFDEF USE_BITMAPS}
     Canvas.Draw(rcb.Left, rcb.Top, bmp);
     {$ELSE}
-    ThemeServices.DrawElement(Canvas.Handle, ted, rcb);
+    ThemeServices.DrawElementForPPI(Canvas.Handle, ted, rcb, Font.PixelsPerInch);
     {$ENDIF}
     x := IfThen(isRTL, rcb.Left, rcb.Right);
   end

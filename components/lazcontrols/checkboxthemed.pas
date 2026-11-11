@@ -17,7 +17,8 @@ interface
 uses
   Classes, SysUtils, Types, Math,
   // LCL
-  Controls, StdCtrls, Graphics, ActnList, Forms, LCLIntf, LMessages, LCLType, Themes,
+  Controls, StdCtrls, Graphics, ActnList, Forms,
+  LCLIntf, LMessages, LCLType, LCLVersion, Themes,
   // LazUtils
   LazMethodList;
 
@@ -408,7 +409,11 @@ begin
     aDetails := ThemeServices.GetElementDetails(caDisabledDetails[AState]);
   aHelpRect := Rect(aCheckBoxPoint.X, aCheckBoxPoint.Y,
     aCheckBoxPoint.X + CheckBoxSize.cx, aCheckBoxPoint.Y + CheckBoxSize.cy);
+ {$IF LCL_FullVersion >= 5990000}
+  ThemeServices.DrawElementForPPI(ACanvas.Handle, aDetails, aHelpRect, ACanvas.Font.PixelsPerInch);
+ {$ELSE}
   ThemeServices.DrawElement(ACanvas.Handle, aDetails, aHelpRect);
+ {$ENDIF}
 end;
 
 procedure TCustomCheckBoxThemed.Paint;

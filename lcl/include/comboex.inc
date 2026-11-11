@@ -668,7 +668,7 @@ begin  { do not call inherited ! }
   anyRect.Right:=anyRect.Left+FCheckSize.cx;
   anyRect.Top:=(ARect.Bottom+ARect.Top-FCheckSize.cy) div 2;
   anyRect.Bottom:=anyRect.Top+FCheckSize.cy;
-  ThemeServices.DrawElement(Canvas.Handle, aDetail, anyRect);
+  ThemeServices.DrawElementForPPI(Canvas.Handle, aDetail, anyRect, Font.PixelsPerInch);
   Canvas.Brush.Style:=bsClear;
   if (not (odSelected in State) or not aDropped) and not aFocusedEditableMainItemNoDD
     then Canvas.Font.Color:=clWindowText

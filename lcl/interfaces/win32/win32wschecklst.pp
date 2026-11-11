@@ -243,13 +243,11 @@ class procedure TWin32WSCustomCheckListBox.DefaultWndHandler(
         ARect.Right := ARect.Left + ARect.Bottom - ARect.Top;
 
       Details := ThemeServices.GetElementDetails(ThemeStateMap[CheckListBox.State[Data^.ItemID], Enabled]);
-      sz := ThemeServices.GetDetailSize(Details);
-      sz.cx := MulDiv(sz.cx, CheckListBox.Font.PixelsPerInch, ScreenInfo.PixelsPerInchX);
-      sz.cy := MulDiv(sz.cy, CheckListBox.Font.PixelsPerInch, ScreenInfo.PixelsPerInchY);
+      sz := ThemeServices.GetDetailSizeForPPI(Details, CheckListbox.Font.PixelsPerInch);
       ARect := Bounds((ARect.Left + ARect.Right - sz.cx) div 2, (ARect.Top + ARect.Bottom - sz.cy) div 2,
         sz.cx, sz.cy);
       OffsetRect(ARect, 1, 1);
-      ThemeServices.DrawElement(Data^._HDC, Details, ARect);
+      ThemeServices.DrawElementForPPI(Data^._HDC, Details, ARect, CheckListBox.Font.PixelsPerInch);
     end;
 
     // draw text
