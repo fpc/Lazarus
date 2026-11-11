@@ -495,25 +495,23 @@ begin
 end;
 
 class function TCocoaStringUtil.removeAcceleration(const str: String): String;
-var
-  posAmp: Integer;
-  posRight: Integer;
-  posLeft: Integer;
+  function removeParenthesesAmpersands(const s: String): String;
+  var
+    posRight: Integer;
+    posLeft: Integer;
+  begin
+    Result:= s;
+    posLeft:= str.IndexOf( '(&' );
+    if posLeft < 0 then
+      Exit;
+    posRight:= str.IndexOf( ')', posLeft );
+    if posRight < 0 then
+      Exit;
+    Result:= str.Substring(0,posLeft).TrimRight + str.Substring(posRight+1);
+  end;
 begin
-  Result:= str;
-  posAmp:= DeleteAmpersands(Result);
-  if posAmp < 0 then
-    Exit;
-
-  posRight:= str.IndexOf( ')' );
-  if (posRight<0) or (posRight<posAmp) then
-    Exit;
-
-  posLeft:= str.IndexOf( '(' );
-  if (posLeft<0) or (posLeft>posAmp) then
-    Exit;
-
-  Result:= str.Substring(0,posLeft).Trim;
+  Result:= removeParenthesesAmpersands( str );
+  DeleteAmpersands( Result );
 end;
 
 class function TCocoaStringUtil.getAcceleration(const aTitle: String): Word;
