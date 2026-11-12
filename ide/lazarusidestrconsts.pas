@@ -2674,7 +2674,7 @@ resourcestring
   lisYouCanDisableThisForIndividualFormsViaThePackageEd = 'You can disable '
     +'this for individual forms via the package editor';
   lisPOTFileForFormStrings = 'POT file for form strings:';
-  lisPOTFileForFormStringsHint = 'All form (lfm) strings of the package are '
+  lisPOTFileForFormStringsHint = 'All form (LFM) strings of the package are '
     +'merged into this file. IDE macros like $(PkgName) are allowed. Extension '
     +'.pot is added if missing. If it is the name of a unit with '
     +'resourcestrings, these are merged too.';
