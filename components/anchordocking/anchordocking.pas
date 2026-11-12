@@ -2131,6 +2131,7 @@ procedure TAnchorDockMaster.MapTreeToControls(Tree: TAnchorDockLayoutTree);
     var
       i: Integer;
     begin
+      Result := nil;
       if ChildNode.NodeType in [adltnControl,adltnCustomSite] then
         Result:=TCustomForm(fTreeNameToDocker[ChildNode.Name])
       else
