@@ -15873,6 +15873,14 @@ msgstr "位置"
 msgid "%s (position outside of source)"
 msgstr "%s(位置在源代码外面)"
 
+#: lazarusidestrconsts.lispotfileforformstrings
+msgid "POT file for form strings:"
+msgstr ""
+
+#: lazarusidestrconsts.lispotfileforformstringshint
+msgid "All form (LFM) strings of the package are merged into this file. IDE macros like $(PkgName) are allowed. Extension .pot is added if missing. If it is the name of a unit with resourcestrings, these are merged too."
+msgstr ""
+
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
 msgstr "先前的(Preceding)单词"

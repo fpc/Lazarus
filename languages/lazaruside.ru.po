@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-11-06 03:02+0300\n"
+"PO-Revision-Date: 2026-11-13 02:43+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -15799,6 +15799,14 @@ msgstr "Положение"
 #, object-pascal-format
 msgid "%s (position outside of source)"
 msgstr "%s (положение вне границ исходного кода)"
+
+#: lazarusidestrconsts.lispotfileforformstrings
+msgid "POT file for form strings:"
+msgstr "Файл POT для строк из формы:"
+
+#: lazarusidestrconsts.lispotfileforformstringshint
+msgid "All form (LFM) strings of the package are merged into this file. IDE macros like $(PkgName) are allowed. Extension .pot is added if missing. If it is the name of a unit with resourcestrings, these are merged too."
+msgstr "Все строки из форм (LFM) пакета помещаются в этот файл. Допускается использование макросов IDE, например, $(PkgName). Расширение .pot будет добавлено при его отсутствии. Также в файл помещаются строки ресурсов из одноимённого модуля (при наличии)."
 
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"

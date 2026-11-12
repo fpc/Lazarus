@@ -16207,6 +16207,14 @@ msgstr "Posición"
 msgid "%s (position outside of source)"
 msgstr "%s (posición fuera de la fuente)"
 
+#: lazarusidestrconsts.lispotfileforformstrings
+msgid "POT file for form strings:"
+msgstr ""
+
+#: lazarusidestrconsts.lispotfileforformstringshint
+msgid "All form (LFM) strings of the package are merged into this file. IDE macros like $(PkgName) are allowed. Extension .pot is added if missing. If it is the name of a unit with resourcestrings, these are merged too."
+msgstr ""
+
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
 msgstr "Palabra anterior"
