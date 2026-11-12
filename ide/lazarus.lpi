@@ -1382,6 +1382,13 @@
         <ResourceBaseClass Value="Frame"/>
       </Unit>
       <Unit>
+        <Filename Value="frames/editor_links_options.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="EditorLinksOptionsFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit>
+      <Unit>
         <Filename Value="findrenameidentexec.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="FindRenameIdentExec"/>
