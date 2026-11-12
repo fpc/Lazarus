@@ -27,7 +27,10 @@ type
     POOutDirEdit: TEditButton;
     PoOutDirLabel: TLabel;
     PoForFormsCheckBox: TCheckBox;
+    PoLFMFilenameLabel: TLabel;
+    PoLFMFilenameEdit: TEdit;
     procedure EnableI18NCheckBoxChange(Sender: TObject);
+    procedure PoForFormsCheckBoxChange(Sender: TObject);
     procedure POOutDirButtonClick(Sender: TObject);
   private
     FLazPackage: TLazPackage;
@@ -48,6 +51,12 @@ implementation
 procedure TPackageI18NOptionsFrame.EnableI18NCheckBoxChange(Sender: TObject);
 begin
   I18NGroupBox.Enabled := EnableI18NCheckBox.Checked;
+end;
+
+procedure TPackageI18NOptionsFrame.PoForFormsCheckBoxChange(Sender: TObject);
+begin
+  PoLFMFilenameLabel.Enabled := PoForFormsCheckBox.Checked;
+  PoLFMFilenameEdit.Enabled := PoForFormsCheckBox.Checked;
 end;
 
 procedure TPackageI18NOptionsFrame.POOutDirButtonClick(Sender: TObject);
@@ -73,6 +82,8 @@ begin
   PoOutDirlabel.Caption := rsPOOutputDirectory;
   PoForFormsCheckBox.Caption := lisCreateUpdatePoFileWhenSavingALfmFile;
   PoForFormsCheckBox.Hint := lisYouCanDisableThisForIndividualFormsViaThePackageEd;
+  PoLFMFilenameLabel.Caption := lisPOTFileForFormStrings;
+  PoLFMFilenameEdit.Hint := lisPOTFileForFormStringsHint;
 end;
 
 procedure TPackageI18NOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -82,6 +93,8 @@ begin
   I18NGroupBox.Enabled := FLazPackage.EnableI18N;
   POOutDirEdit.Text := FLazPackage.POOutputDirectory;
   PoForFormsCheckBox.Checked:=FLazPackage.EnableI18NForLFM;
+  PoLFMFilenameEdit.Text := FLazPackage.POLFMFilename;
+  PoForFormsCheckBoxChange(nil);
 
   IDEImages.AssignImage(POOutDirEdit.Button, ResBtnSelDir); //DirectoryEdit
 end;
@@ -94,6 +107,7 @@ begin
   LazPackage.EnableI18N := EnableI18NCheckBox.Checked;
   LazPackage.POOutputDirectory := POOutDirEdit.Text;
   LazPackage.EnableI18NForLFM := PoForFormsCheckBox.Checked;
+  LazPackage.POLFMFilename := PoLFMFilenameEdit.Text;
 end;
 
 class function TPackageI18NOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

@@ -514,6 +514,7 @@ type
     FModifiedLock: integer;
     FOutputStateFile: string;
     FPOOutputDirectory: string;
+    FPOLFMFilename: string;
     FProvides: TStrings;
     fPublishOptions: TPublishPackageOptions;
     FRegistered: boolean;
@@ -551,6 +552,7 @@ type
     procedure SetOutputStateFile(const AValue: string);
     procedure SetProvides(const AValue: TStrings);
     procedure SetPOOutputDirectory(const AValue: string);
+    procedure SetPOLFMFilename(const AValue: string);
     procedure SetEnableI18N(const AValue: boolean);
     procedure SetRegistered(const AValue: boolean);
     procedure SetPackageType(const AValue: TLazPackageType);
@@ -623,6 +625,7 @@ type
     function GetCompilerFilename: string;
     function GetWriteConfigFilePath: string;
     function GetPOOutDirectory: string;
+    function GetPOLFMFilename: string; // resolved pot filename for lfm strings, without path
     function GetUnitPath(RelativeToBaseDir: boolean): string;
     function GetIncludePath(RelativeToBaseDir: boolean): string;
     function GetSrcPath(RelativeToBaseDir: boolean): string;
@@ -747,6 +750,7 @@ type
     property OutputStateFile: string read FOutputStateFile write SetOutputStateFile;
     property PackageType: TLazPackageType read FPackageType write SetPackageType;
     property POOutputDirectory: string read FPOOutputDirectory write SetPOOutputDirectory;
+    property POLFMFilename: string read FPOLFMFilename write SetPOLFMFilename; // unparsed, all lrj are merged into this pot
     property Provides: TStrings read FProvides write SetProvides;
     property PublishOptions: TPublishPackageOptions read fPublishOptions write fPublishOptions;
     property Registered: boolean read FRegistered write SetRegistered;
@@ -768,6 +772,7 @@ type
 
 const
   LazPkgXMLFileVersion = 6;
+  DefaultPOLFMFilename = '$(PkgName)';
 
 var
   // All TPkgDependency are added to this AVL tree (sorted for names, not version!)
@@ -2275,6 +2280,7 @@ begin
     // ToDo: PublishOptions.AssignOptions(aSource.PublishOptions);
     Provides.Assign(aSource.Provides);
     POOutputDirectory:=aSource.POOutputDirectory;
+    POLFMFilename:=aSource.POLFMFilename;
     PackageType:=aSource.PackageType;
     OutputStateFile:=aSource.OutputStateFile;
     License:=aSource.License;
@@ -2507,6 +2513,16 @@ begin
   Modified:=true;
 end;
 
+procedure TLazPackage.SetPOLFMFilename(const AValue: string);
+var
+  NewValue: String;
+begin
+  NewValue:=Trim(AValue);
+  if FPOLFMFilename=NewValue then exit;
+  FPOLFMFilename:=NewValue;
+  Modified:=true;
+end;
+
 procedure TLazPackage.SetEnableI18N(const AValue: boolean);
 begin
   if FEnableI18N=AValue then exit;
@@ -2715,6 +2731,7 @@ begin
     FEnableI18N:=false;
     FEnableI18NForLFM:=false;
     FPOOutputDirectory:='';
+    FPOLFMFilename:=DefaultPOLFMFilename;
     FHasDirectory:=false;
     FHasStaticDirectory:=false;
     FVersion.Clear;
@@ -2908,6 +2925,7 @@ begin
                xmlconfig.GetValue(Path+'i18n/OutDir/Value', ''),PathDelimChanged);
     end;
     EnableI18NForLFM:=xmlconfig.GetValue(Path+'i18n/EnableI18NForLFM/Value', false);
+    POLFMFilename:=xmlconfig.GetValue(Path+'i18n/LFMFilename/Value', DefaultPOLFMFilename);
 
     LoadFiles(Path+'Files/',FFiles);
     UpdateSourceDirectories;
@@ -2992,6 +3010,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'i18n/EnableI18N/Value', EnableI18N, false);
   XMLConfig.SetDeleteValue(Path+'i18n/OutDir/Value',f(FPOOutputDirectory), '');
   XMLConfig.SetDeleteValue(Path+'i18n/EnableI18NForLFM/Value', EnableI18NForLFM, false);
+  XMLConfig.SetDeleteValue(Path+'i18n/LFMFilename/Value', POLFMFilename, DefaultPOLFMFilename);
 
   SavePkgDependencyList(XMLConfig,Path+'RequiredPkgs/',
                         FFirstRequiredDependency,pddRequires,UsePathDelim);
@@ -3911,6 +3930,19 @@ begin
   LongenFilename(Result);
   IDEMacros.SubstituteMacros(Result);
   Result:=TrimFilename(Result);
+end;
+
+function TLazPackage.GetPOLFMFilename: string;
+begin
+  Result:=FPOLFMFilename;
+  if Result='' then
+    Result:=DefaultPOLFMFilename;
+  Result:=SubstitutePkgMacros(Result,false);
+  IDEMacros.SubstituteMacros(Result);
+  Result:=ExtractFileName(Trim(Result));
+  if Result='' then exit;
+  if not FilenameExtIs(Result,'pot') then
+    Result:=Result+'.pot';
 end;
 
 function TLazPackage.GetUnitPath(RelativeToBaseDir: boolean): string;

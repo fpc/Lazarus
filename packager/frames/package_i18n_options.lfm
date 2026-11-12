@@ -46,9 +46,38 @@ object PackageI18NOptionsFrame: TPackageI18NOptionsFrame
       Width = 162
       BorderSpacing.Around = 6
       Caption = 'PoForFormsCheckBox'
+      OnChange = PoForFormsCheckBoxChange
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
+    end
+    object PoLFMFilenameLabel: TLabel
+      AnchorSideLeft.Control = I18NGroupBox
+      AnchorSideTop.Control = PoForFormsCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 18
+      Top = 96
+      Width = 120
+      BorderSpacing.Around = 6
+      Caption = 'PoLFMFilenameLabel'
+      ParentColor = False
+    end
+    object PoLFMFilenameEdit: TEdit
+      AnchorSideLeft.Control = I18NGroupBox
+      AnchorSideTop.Control = PoLFMFilenameLabel
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = I18NGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 32
+      Top = 120
+      Width = 535
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 2
     end
     object POOutDirEdit: TEditButton
       AnchorSideLeft.Control = I18NGroupBox

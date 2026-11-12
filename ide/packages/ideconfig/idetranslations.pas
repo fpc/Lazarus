@@ -83,7 +83,8 @@ procedure CollectTranslations(const LazarusDir: string); // this updates Lazarus
 
 function ConvertRSTFiles(RSTDirectory, PODirectory: string;
   POFilename: string = ''; // set POFilename to gather all rst into one po file
-  ExtraFiles: TStrings = nil // additional .rst/.rsj/.lrj files, e.g. lrj next to the sources
+  ExtraFiles: TStrings = nil; // additional .rst/.rsj/.lrj files, e.g. lrj next to the sources
+  LRJPOFilename: string = '' // if POFilename='', gather all lrj into this po file
   ): Boolean;
 procedure UpdatePoFileAndTranslations(SrcFiles: TStrings;
   const POFilename: string);
@@ -206,7 +207,7 @@ begin
 end;
 
 function ConvertRSTFiles(RSTDirectory, PODirectory: string; POFilename: string;
-  ExtraFiles: TStrings): Boolean;
+  ExtraFiles: TStrings; LRJPOFilename: string): Boolean;
 type
   TItem = record
     NeedUpdate: boolean;
@@ -217,14 +218,16 @@ type
 var
   Items: TFPList; // list of PItem
 
-  function IsSameKind(const Filename1, Filename2: string): boolean;
+  function IsAlternative(const Filename1, Filename2: string): boolean;
   begin
     // rsj are created by FPC 2.7.1+, rst by older -> alternatives of each other
     // lrj are created by the IDE from the lfm -> they complement the rst/rsj
-    if FilenameExtIs(Filename1,'lrj') then
-      Result:=FilenameExtIs(Filename2,'lrj')
-    else
-      Result:=FilenameExtIn(Filename2,['.rst','.rsj']);
+    // several lrj can be merged into one po file -> no alternatives
+    Result:=false;
+    if not FilenameExtIn(Filename1,['.rst','.rsj']) then exit;
+    if not FilenameExtIn(Filename2,['.rst','.rsj']) then exit;
+    Result:=CompareText(ExtractFileNameOnly(Filename1),
+                        ExtractFileNameOnly(Filename2))=0;
   end;
 
   procedure AddSrcFile(RSTFilename: string);
@@ -235,10 +238,16 @@ var
   begin
     if not FilenameExtIn(RSTFilename,['.rst','.rsj','.lrj']) then
       exit;
-    if POFilename='' then
-      OutputFilename:=PODirectory+ChangeFileExt(ExtractFileName(RSTFilename),'.pot')
+    if POFilename<>'' then
+      OutputFilename:=PODirectory+POFilename
+    else if (LRJPOFilename<>'')
+        and (FilenameExtIs(RSTFilename,'lrj')
+          or (CompareText(ExtractFileNameOnly(RSTFilename),
+                          ExtractFileNameOnly(LRJPOFilename))=0)) then
+      // all lrj, plus the rst/rsj of the unit with the same name
+      OutputFilename:=PODirectory+LRJPOFilename
     else
-      OutputFilename:=PODirectory+POFilename;
+      OutputFilename:=PODirectory+ChangeFileExt(ExtractFileName(RSTFilename),'.pot');
     //DebugLn(['ConvertRSTFiles RSTFilename=',RSTFilename,' OutputFilename=',OutputFilename]);
     Item:=nil;
     for j:=0 to Items.Count-1 do
@@ -260,7 +269,7 @@ var
         OtherRSTFilename:=Item^.RSTFileList[j];
         if CompareFilenames(OtherRSTFilename,RSTFilename)=0 then
           exit; // already added
-        if not IsSameKind(RSTFilename,OtherRSTFilename) then
+        if not IsAlternative(RSTFilename,OtherRSTFilename) then
           continue;
         // use only the newest
         //debugln(['ConvertRSTFiles old: ',OtherRSTFilename]);

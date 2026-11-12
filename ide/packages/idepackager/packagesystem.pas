@@ -4959,6 +4959,7 @@ var
   i: Integer;
   PkgFile: TPkgFile;
   LRJFilename: String;
+  LRJPOFilename: String;
 begin
   Result:=mrOK;
   if (APackage.POOutputDirectory='') then exit;// nothing to do
@@ -4995,7 +4996,12 @@ begin
           LRJFiles.Add(LRJFilename);
       end;
     end;
-    if not ConvertRSTFiles(PkgOutputDirectory,POOutputDirectory,'',LRJFiles) then begin
+    // all lrj are merged into one pot file
+    LRJPOFilename:='';
+    if LRJFiles.Count>0 then
+      LRJPOFilename:=APackage.GetPOLFMFilename;
+    if not ConvertRSTFiles(PkgOutputDirectory,POOutputDirectory,'',LRJFiles,
+      LRJPOFilename) then begin
       DebugLn(['Error: (lazarus) [TLazPackageGraph.ConvertPackageRSTFiles] unable to update .po files PkgOutputDirectory=',PkgOutputDirectory,' RSTOutputDirectory=',POOutputDirectory]);
       exit(mrCancel);
     end;
