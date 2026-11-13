@@ -25,10 +25,10 @@ resourcestring
   adrsMoveBottom = 'Move bottom';
   adrsMerge = 'Merge';
   adrsAutomatically = 'Automatically';
-  adrsLeft = 'left';
-  adrsTop = 'top';
-  adrsRight = 'right';
-  adrsBottom = 'bottom';
+  adrsLeft = 'Left';
+  adrsTop = 'Top';
+  adrsRight = 'Right';
+  adrsBottom = 'Bottom';
   adrsLocked = 'Locked';
   adrsDockingOptions = 'Docking options';
   adrsMovePageLeft = 'Move page left';
