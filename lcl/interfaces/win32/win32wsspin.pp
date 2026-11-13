@@ -386,6 +386,8 @@ begin
   UpDown := GetWin32WindowInfo(AWinControl.Handle)^.UpDown;
   GetWindowRect(UpDown, @R);
   Result := R.Right - R.Left;
+  // The following MulDiv required for correct per-monitor high-dpi scaling.
+  Result := MulDiv(Result, AWinControl.Font.PixelsPerInch, ScreenInfo.PixelsPerInchX);
 end;
 
 class function TWin32WSCustomFloatSpinEdit.GetValue(
