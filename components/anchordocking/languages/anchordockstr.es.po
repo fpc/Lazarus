@@ -82,7 +82,9 @@ msgid "Backup successful: %s"
 msgstr ""
 
 #: anchordockstr.adrsbottom
-msgid "bottom"
+#, fuzzy
+#| msgid "bottom"
+msgid "Bottom"
 msgstr "parte inferior"
 
 #: anchordockstr.adrsclose
@@ -232,7 +234,9 @@ msgid "Layout restored successfully"
 msgstr ""
 
 #: anchordockstr.adrsleft
-msgid "left"
+#, fuzzy
+#| msgid "left"
+msgid "Left"
 msgstr "izquierda"
 
 #: anchordockstr.adrslocked
@@ -340,7 +344,9 @@ msgid "Restore selected layout"
 msgstr ""
 
 #: anchordockstr.adrsright
-msgid "right"
+#, fuzzy
+#| msgid "right"
+msgid "Right"
 msgstr "derecha"
 
 #: anchordockstr.adrsscaleonresize
@@ -385,7 +391,9 @@ msgid "There is another dock master installed. Only one docking package can be i
 msgstr "Hay otro maestro de acople instalado. Sólamente se puede instalar un paquete de acoplamiento al mismo tiempo. Desinstale al otro maestro de acople %s y reinicie el IDE"
 
 #: anchordockstr.adrstop
-msgid "top"
+#, fuzzy
+#| msgid "top"
+msgid "Top"
 msgstr "arriba"
 
 #: anchordockstr.adrstouseanchordockingyoumustfirstuninstall

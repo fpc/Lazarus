@@ -84,7 +84,9 @@ msgid "Backup successful: %s"
 msgstr ""
 
 #: anchordockstr.adrsbottom
-msgid "bottom"
+#, fuzzy
+#| msgid "bottom"
+msgid "Bottom"
 msgstr "bas"
 
 #: anchordockstr.adrsclose
@@ -234,7 +236,9 @@ msgid "Layout restored successfully"
 msgstr ""
 
 #: anchordockstr.adrsleft
-msgid "left"
+#, fuzzy
+#| msgid "left"
+msgid "Left"
 msgstr "gauche"
 
 #: anchordockstr.adrslocked
@@ -342,7 +346,9 @@ msgid "Restore selected layout"
 msgstr ""
 
 #: anchordockstr.adrsright
-msgid "right"
+#, fuzzy
+#| msgid "right"
+msgid "Right"
 msgstr "droite"
 
 #: anchordockstr.adrsscaleonresize
@@ -387,7 +393,9 @@ msgid "There is another dock master installed. Only one docking package can be i
 msgstr "Il y a un autre gestionnaire d'amarrage installé. Seul un paquet d'amarrage peut être installé à un moment donné. Veuillez désinstaller le gestionnaire d'amarrage %s et relancer l'EDI"
 
 #: anchordockstr.adrstop
-msgid "top"
+#, fuzzy
+#| msgid "top"
+msgid "Top"
 msgstr "sommet"
 
 #: anchordockstr.adrstouseanchordockingyoumustfirstuninstall

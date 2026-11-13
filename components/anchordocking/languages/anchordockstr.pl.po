@@ -85,7 +85,9 @@ msgid "Backup successful: %s"
 msgstr ""
 
 #: anchordockstr.adrsbottom
-msgid "bottom"
+#, fuzzy
+#| msgid "bottom"
+msgid "Bottom"
 msgstr "dół"
 
 #: anchordockstr.adrsclose
@@ -235,7 +237,7 @@ msgid "Layout restored successfully"
 msgstr ""
 
 #: anchordockstr.adrsleft
-msgid "left"
+msgid "Left"
 msgstr ""
 
 #: anchordockstr.adrslocked
@@ -343,7 +345,7 @@ msgid "Restore selected layout"
 msgstr ""
 
 #: anchordockstr.adrsright
-msgid "right"
+msgid "Right"
 msgstr ""
 
 #: anchordockstr.adrsscaleonresize
@@ -388,7 +390,9 @@ msgid "There is another dock master installed. Only one docking package can be i
 msgstr ""
 
 #: anchordockstr.adrstop
-msgid "top"
+#, fuzzy
+#| msgid "top"
+msgid "Top"
 msgstr "góra"
 
 #: anchordockstr.adrstouseanchordockingyoumustfirstuninstall

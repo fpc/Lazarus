@@ -84,8 +84,8 @@ msgid "Backup successful: %s"
 msgstr "Резервная копия успешно создана: %s"
 
 #: anchordockstr.adrsbottom
-msgid "bottom"
-msgstr "снизу"
+msgid "Bottom"
+msgstr "Снизу"
 
 #: anchordockstr.adrsclose
 msgid "Close"
@@ -234,8 +234,8 @@ msgid "Layout restored successfully"
 msgstr "Разбивка окон успешно восстановлена"
 
 #: anchordockstr.adrsleft
-msgid "left"
-msgstr "слева"
+msgid "Left"
+msgstr "Слева"
 
 #: anchordockstr.adrslocked
 msgid "Locked"
@@ -342,8 +342,8 @@ msgid "Restore selected layout"
 msgstr "Восстановить выбранную разбивку"
 
 #: anchordockstr.adrsright
-msgid "right"
-msgstr "справа"
+msgid "Right"
+msgstr "Справа"
 
 #: anchordockstr.adrsscaleonresize
 msgid "Scale on resize"
@@ -387,8 +387,8 @@ msgid "There is another dock master installed. Only one docking package can be i
 msgstr "Установленный диспетчер стыковки уже имеется. В каждый момент времени может быть установлен только один такой пакет. Удалите диспетчер стыковки %s и перезапустите IDE"
 
 #: anchordockstr.adrstop
-msgid "top"
-msgstr "сверху"
+msgid "Top"
+msgstr "Сверху"
 
 #: anchordockstr.adrstouseanchordockingyoumustfirstuninstall
 #, object-pascal-format

@@ -84,7 +84,9 @@ msgid "Backup successful: %s"
 msgstr ""
 
 #: anchordockstr.adrsbottom
-msgid "bottom"
+#, fuzzy
+#| msgid "bottom"
+msgid "Bottom"
 msgstr "le"
 
 #: anchordockstr.adrsclose
@@ -234,7 +236,9 @@ msgid "Layout restored successfully"
 msgstr ""
 
 #: anchordockstr.adrsleft
-msgid "left"
+#, fuzzy
+#| msgid "left"
+msgid "Left"
 msgstr "balra"
 
 #: anchordockstr.adrslocked
@@ -342,7 +346,9 @@ msgid "Restore selected layout"
 msgstr ""
 
 #: anchordockstr.adrsright
-msgid "right"
+#, fuzzy
+#| msgid "right"
+msgid "Right"
 msgstr "jobbra"
 
 #: anchordockstr.adrsscaleonresize
@@ -387,7 +393,9 @@ msgid "There is another dock master installed. Only one docking package can be i
 msgstr "Már telepítve van egy másik dokkmester. Egyszerre csak egy dokkoló csomag lehet telepítve. Távolítsa el a másik dokkmestert (%s) és indítsa újra az IDE-t!"
 
 #: anchordockstr.adrstop
-msgid "top"
+#, fuzzy
+#| msgid "top"
+msgid "Top"
 msgstr "fel"
 
 #: anchordockstr.adrstouseanchordockingyoumustfirstuninstall
