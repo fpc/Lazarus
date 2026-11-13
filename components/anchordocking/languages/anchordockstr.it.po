@@ -86,7 +86,9 @@ msgid "Backup successful: %s"
 msgstr ""
 
 #: anchordockstr.adrsbottom
-msgid "bottom"
+#, fuzzy
+#| msgid "bottom"
+msgid "Bottom"
 msgstr "basso"
 
 #: anchordockstr.adrsclose
@@ -236,7 +238,9 @@ msgid "Layout restored successfully"
 msgstr ""
 
 #: anchordockstr.adrsleft
-msgid "left"
+#, fuzzy
+#| msgid "left"
+msgid "Left"
 msgstr "sinistra"
 
 #: anchordockstr.adrslocked
@@ -344,7 +348,9 @@ msgid "Restore selected layout"
 msgstr ""
 
 #: anchordockstr.adrsright
-msgid "right"
+#, fuzzy
+#| msgid "right"
+msgid "Right"
 msgstr "destra"
 
 #: anchordockstr.adrsscaleonresize
@@ -389,7 +395,9 @@ msgid "There is another dock master installed. Only one docking package can be i
 msgstr "C'è un altro pacchetto dock master installato: ci può essere un solo dock master nell'IDE, quindi dovete prima disinstallare l'attuale dockmaster %s e poi riavviare l'IDE."
 
 #: anchordockstr.adrstop
-msgid "top"
+#, fuzzy
+#| msgid "top"
+msgid "Top"
 msgstr "alto"
 
 #: anchordockstr.adrstouseanchordockingyoumustfirstuninstall

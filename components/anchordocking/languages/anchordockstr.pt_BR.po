@@ -84,7 +84,9 @@ msgid "Backup successful: %s"
 msgstr ""
 
 #: anchordockstr.adrsbottom
-msgid "bottom"
+#, fuzzy
+#| msgid "bottom"
+msgid "Bottom"
 msgstr "base"
 
 #: anchordockstr.adrsclose
@@ -234,7 +236,9 @@ msgid "Layout restored successfully"
 msgstr ""
 
 #: anchordockstr.adrsleft
-msgid "left"
+#, fuzzy
+#| msgid "left"
+msgid "Left"
 msgstr "esquerda"
 
 #: anchordockstr.adrslocked
@@ -342,7 +346,9 @@ msgid "Restore selected layout"
 msgstr ""
 
 #: anchordockstr.adrsright
-msgid "right"
+#, fuzzy
+#| msgid "right"
+msgid "Right"
 msgstr "direita"
 
 #: anchordockstr.adrsscaleonresize
@@ -387,7 +393,9 @@ msgid "There is another dock master installed. Only one docking package can be i
 msgstr "Existe outro gerenciador de âncoras instalado. Apenas um pacote de ancoragem deve estar instalado. Favor desinstalar o gerenciador %s e reiniciar a IDE"
 
 #: anchordockstr.adrstop
-msgid "top"
+#, fuzzy
+#| msgid "top"
+msgid "Top"
 msgstr "topo"
 
 #: anchordockstr.adrstouseanchordockingyoumustfirstuninstall
