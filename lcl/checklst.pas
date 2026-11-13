@@ -23,7 +23,7 @@ interface
 uses
   Classes, SysUtils, Math,
   // LCL
-  LCLType, LCLIntf, Graphics, LMessages, LResources, Controls, StdCtrls,
+  LCLType, LCLIntf, Graphics, LMessages, LResources, Controls, StdCtrls, Forms,
   // LazUtils
   GraphType, ProjResProc;
   
@@ -223,11 +223,18 @@ begin
 end;
 
 function TCustomCheckListBox.CalculateStandardItemHeight: Integer;
+var
+  hCheck: Integer;
 begin
   Result:=inherited CalculateStandardItemHeight;
   // for Win32WS, ensure item height for internally owner-drawn checkmarks
   if Style <> lbOwnerDrawVariable then
-    Result:= Max(Result, GetSystemMetrics(SM_CYMENUCHECK) + 2);
+  begin
+    hCheck := GetSystemMetrics(SM_CYMENUCHECK) + 2;
+    // The following MulDiv is for correct per-monitor scaling
+    hCheck := MulDiv(hCheck, Font.PixelsPerInch, ScreenInfo.PixelsPerInchX);
+    Result:= Max(Result, hCheck);
+  end;
 end;
 
 procedure TCustomCheckListBox.Toggle(AIndex: Integer);

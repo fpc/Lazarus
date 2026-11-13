@@ -66,6 +66,7 @@ type
     procedure ColorProc(const s: AnsiString);
     procedure SetIndexOnColor(aColor: TColor);
   protected
+    function ColorRectOffsetStored: Boolean;
     function ColorRectWidthStored: Boolean;
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure SetColorList;
@@ -80,7 +81,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     property ColorRectWidth: Integer read GetColorRectWidth write SetColorRectWidth stored ColorRectWidthStored;
-    property ColorRectOffset: Integer read FColorRectOffset write SetColorRectOffset default cDefaultColorRectOffset;
+    property ColorRectOffset: Integer read FColorRectOffset write SetColorRectOffset stored ColorRectOffsetStored;
     property Style: TColorBoxStyle read FStyle write SetStyle
       default [cbStandardColors, cbExtendedColors, cbSystemColors];
     property Colors[Index: Integer]: TColor read GetColor;
@@ -191,6 +192,7 @@ type
     procedure ColorProc(const s: AnsiString);
     procedure SetIndexOnColor(aColor: TColor);
   protected
+    function ColorRectOffsetStored: Boolean;
     function ColorRectWidthStored: Boolean;
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure SetColorList;
@@ -205,7 +207,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     property ColorRectWidth: Integer read GetColorRectWidth write SetColorRectWidth stored ColorRectWidthStored;
-    property ColorRectOffset: Integer read FColorRectOffset write SetColorRectOffset default cDefaultColorRectOffset;
+    property ColorRectOffset: Integer read FColorRectOffset write SetColorRectOffset stored ColorRectOffsetStored;
     property Style: TColorBoxStyle read FStyle write SetStyle
       default [cbStandardColors, cbExtendedColors, cbSystemColors];
     property Colors[Index: Integer]: TColor read GetColors write SetColors;
@@ -392,7 +394,7 @@ begin
   inherited Style := csOwnerDrawFixed;
 
   FColorRectWidth := -1;
-  FColorRectOffset := cDefaultColorRectOffset;
+  FColorRectOffset := Scale96ToFont(cDefaultColorRectOffset);
   FStyle := [cbStandardColors, cbExtendedColors, cbSystemColors];
   FNoneColorColor := clBlack;
   FDefaultColorColor := clBlack;
@@ -554,6 +556,11 @@ begin
   end;
 end;
 
+function TCustomColorBox.ColorRectOffsetStored: Boolean;
+begin
+  Result := FColorRectOffset <> Scale96ToFont(cDefaultColorRectOffset);
+end;
+
 function TCustomColorBox.ColorRectWidthStored: Boolean;
 begin
   Result := FColorRectWidth >= 0;
@@ -568,7 +575,13 @@ begin
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
   begin
     if ColorRectWidthStored then
-      FColorRectWidth := Round(FColorRectWidth * AXProportion);
+      FColorRectWidth := Round(FColorRectWidth * AXProportion)
+    else
+      FColorRectWidth := Scale96ToFont(cDefaultColorRectWidth);
+    if ColorRectOffsetStored then
+      FColorRectOffset := Round(FColorRectOffset * AYProportion)
+    else
+      FColorRectOffset := Scale96ToFont(cDefaultColorRectOffset);
     Invalidate;
   end;
 end;
@@ -765,7 +778,7 @@ begin
   inherited Create(AOwner);
   inherited Style := lbOwnerDrawFixed;
   FColorRectWidth := -1;
-  FColorRectOffset := cDefaultColorRectOffset;
+  FColorRectOffset := Scale96ToFont(cDefaultColorRectOffset);
   FStyle := [cbStandardColors, cbExtendedColors, cbSystemColors];
   FNoneColorColor := clBlack;
   FDefaultColorColor := clBlack;
@@ -948,6 +961,11 @@ begin
   ItemIndex := -1;
 end;
 
+function TCustomColorListBox.ColorRectOffsetStored: Boolean;
+begin
+  Result := FColorRectOffset <> Scale96ToFont(cDefaultColorRectOffset);
+end;
+
 function TCustomColorListBox.ColorRectWidthStored: Boolean;
 begin
   Result := FColorRectWidth >= 0;
@@ -958,11 +976,16 @@ procedure TCustomColorListBox.DoAutoAdjustLayout(
   );
 begin
   inherited DoAutoAdjustLayout(AMode, AXProportion, AYProportion);
-
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
   begin
     if ColorRectWidthStored then
-      FColorRectWidth := Round(FColorRectWidth * AXProportion);
+      FColorRectWidth := Round(FColorRectWidth * AXProportion)
+    else
+      FColorRectWidth := Scale96ToFont(cDefaultColorRectWidth);
+    if ColorRectOffsetStored then
+      FColorRectOffset := Round(FColorRectOffset * AYProportion)
+    else
+      FColorRectOffset := Scale96ToFont(cDefaultColorRectOffset);
     Invalidate;
   end;
 end;

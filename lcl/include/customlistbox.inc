@@ -62,6 +62,8 @@ begin
   try
     B.Canvas.Font := Font;
     Result := B.Canvas.TextHeight('Fj');
+    // The following MulDiv is to ensure correct per-monitor scaling
+    Result := MulDiv(Result, Font.PixelsPerInch, ScreenInfo.PixelsPerInchX);
   finally
     B.Free;
   end;
@@ -490,7 +492,7 @@ begin
       Result := Bottom - Top;
   end;
   if Result = 0 then
-    Result := FItemHeight;
+    Result := Scale96ToFont(FItemHeight);
 end;
 
 procedure TCustomListBox.SetItemHeight(Value: Integer);
@@ -553,11 +555,12 @@ procedure TCustomListBox.DoAutoAdjustLayout(
   );
 begin
   inherited;
-
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
   begin
     if FItemHeight > 0 then
-      ItemHeight := Round(ItemHeight * AYProportion);
+      ItemHeight := Round(FItemHeight * AYProportion)
+    else
+      ItemHeight := CalculateStandardItemHeight;
   end;
 end;
 
