@@ -48,7 +48,7 @@ uses
   Types, Classes, SysUtils, Math, DateUtils,
   // LCL
   LCLType, LCLIntf, LMessages, Controls, Graphics, Buttons, ExtCtrls, Forms, ComCtrls,
-  Themes,
+  Themes, Clipbrd,
   // LazUtils
   LazUTF8, LazMethodList,
   // DateTimeCtrls
@@ -471,6 +471,9 @@ type
     procedure SendExternalKey(const aKey: Char);
     procedure SendExternalKeyCode(const Key: Word);
     procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
+
+    function ToString: ansistring; override;
+    function SetStringValue(const datetimeStr: String): Boolean;
 
     procedure Paint; override;
     procedure EditingDone; override;
@@ -3755,8 +3758,20 @@ begin
       VK_N:
         if (not FReadOnly) and FNullInputAllowed then
           SetDateTime(NullDate);
-    end;
 
+      VK_C:
+        if (ssCtrl in ShState) or (ssMeta in ShState) then begin
+          Clipboard.AsText := ToString;
+          Key := 0;
+        end;
+      VK_V:
+        if (ssCtrl in ShState) or (ssMeta in ShState) then begin
+          if not FReadOnly then
+            if Clipboard.HasFormat(CF_TEXT) then
+              if SetStringValue(Clipboard.AsText) then
+                Key := 0;
+        end;
+    end;
   end;
 
 end;
@@ -4224,6 +4239,31 @@ end;
 function TCustomDateTimePicker.DateIsNull: Boolean;
 begin
   Result := IsNullDate(FDateTime);
+end;
+
+function TCustomDateTimePicker.ToString: ansistring;
+const
+  formats: array[TDateTimeKind] of String = (
+    'yyyy-mm-dd',
+    'hh:nn:ss.zzz',
+    'yyyy-mm-dd hh:nn:ss.zzz');
+begin
+  Result := FormatDateTime(formats[FKind], DateTime);
+end;
+
+function TCustomDateTimePicker.SetStringValue(const datetimeStr: String): Boolean;
+var
+  formatSettings: TFormatSettings;
+  newDatetime: TDateTime;
+begin
+  formatSettings := DefaultFormatSettings;
+  formatSettings.DateSeparator:= '-';
+  formatSettings.LongDateFormat := 'yyyy-mm-dd';
+  formatSettings.TimeSeparator := ':';
+  formatSettings.LongTimeFormat := 'hh:nn:ss.zzz';
+  Result := TryStrToDateTime(datetimeStr, newDatetime, formatSettings);
+  if Result then
+    SetDateTime(newDatetime);
 end;
 
 end.
