@@ -3760,12 +3760,12 @@ begin
           SetDateTime(NullDate);
 
       VK_C:
-        if (ssCtrl in ShState) or (ssMeta in ShState) then begin
+        if ([ssCtrl]=ShState) or ([ssMeta]=ShState) then begin
           Clipboard.AsText := ToString;
           Key := 0;
         end;
       VK_V:
-        if (ssCtrl in ShState) or (ssMeta in ShState) then begin
+        if ([ssCtrl]=ShState) or ([ssMeta]=ShState) then begin
           if not FReadOnly then
             if Clipboard.HasFormat(CF_TEXT) then
               if SetStringValue(Clipboard.AsText) then
