@@ -79,13 +79,6 @@ implementation
 
 {$R *.lfm}
 
-type
-  TDwarfCompilationUnitHack = class(TDwarfCompilationUnit)
-  public
-    property FirstScope;
-    property AbbrevList;
-  end;
-
 { TForm1 }
 
 procedure TForm1.btnLoadClick(Sender: TObject);
@@ -127,7 +120,7 @@ const
 var
   i: Integer;
   Node, ParentNode: PVirtualNode;
-  CU: TDwarfCompilationUnitHack;
+  CU: TDwarfCompilationUnit;
   SM: TDwarfLineInfoStateMachine;
 begin
   VStringTree.BeginUpdate;
@@ -135,7 +128,7 @@ begin
     VStringTree.Clear;
     i := CompUnitListBox.ItemIndex;
     if i < 0 then exit;
-    CU := TDwarfCompilationUnitHack(CompUnitListBox.Items.Objects[i]);
+    CU := TDwarfCompilationUnit(CompUnitListBox.Items.Objects[i]);
     if CU = nil then exit;
 
     SM := CU.FLineInfo.StateMachine;
@@ -245,7 +238,7 @@ end;
 
 procedure TForm1.btnShowUnitClick(Sender: TObject);
 var
-  CU: TDwarfCompilationUnitHack;
+  CU: TDwarfCompilationUnit;
   BaseScopeAddr: Pointer;
 
   function ToHex(var p: pbyte; l : integer):String; inline;
@@ -271,10 +264,13 @@ var
   end;
 
   function DecodeLocation(AData: PByte; ASize: QWord): String;
-    function MakeAddressString(AData: Pointer): string;
+    function MakeAddressString(AData: Pointer; Sz: integer): string;
     begin
-      Result := '$'+IntToHex(PLongWord(AData)^, 8)
-      //Result := '$'+IntToHex(PQWord(AData)^, 16);
+      case sz of
+        2: Result := '$'+IntToHex(PWord(AData)^, 4);
+        4: Result := '$'+IntToHex(PLongWord(AData)^, 8);
+        8: Result := '$'+IntToHex(PQWord(AData)^, 16);
+      end;
     end;
   var
     MaxData: PByte;
@@ -287,7 +283,7 @@ var
       if Result <> '' then Result := Result + ', ';
       case AData^ of
         DW_OP_addr: begin
-          Result := Result + 'DW_OP_addr, AddrB(' + MakeAddressString(@AData[1]) + ')';
+          Result := Result + 'DW_OP_addr, AddrB(' + MakeAddressString(@AData[1], cu.AddressSize) + ')';
           Inc(AData, 4);
         end;
         DW_OP_deref: begin
@@ -490,8 +486,14 @@ var
           Inc(AData, 4);
         end;
         DW_OP_call_ref: begin
-          Result := Result + 'DW_OP_call_ref, AddrB(' + MakeAddressString(@AData[1]) + ')';
-          Inc(AData, 4);
+          if cu.IsDwarf64 then begin
+            Result := Result + 'DW_OP_call_ref, AddrB(' + MakeAddressString(@AData[1], 8) + ')';
+            Inc(AData, 8);
+          end
+          else begin
+            Result := Result + 'DW_OP_call_ref, AddrB(' + MakeAddressString(@AData[1], 4) + ')';
+            Inc(AData, 4);
+          end;
         end;
         DW_OP_form_tls_address: begin
           Result := Result + 'DW_OP_form_tls_address';
@@ -530,8 +532,8 @@ var
     p: Pointer;
     Form: Cardinal;
     Attribute: Cardinal;
-    i: Integer;
-    s1, s2, s3, s4, stest: String;
+    i, j: Integer;
+    s1, s2, s3, stest: String;
     ValueSize: QWord;
     Value: qword;
     SValue: int64;
@@ -660,7 +662,7 @@ var
               //Format(namePreFix+'AddRef(%s, %s, FOO); // %s  %s', [s1, s2, stest, LineEnding]);
           end;
           DW_FORM_ref2     : begin
-            stest := ToHexCommaList(p,3);
+            stest := ToHexCommaList(p,2);
             s3 := ToHex(p, 2);
             PascalTestCAseCode := PascalTestCAseCode +
               Format(namePreFix+'AddRef(%s, %s, @Info__%s_); // %s  %s', [s1, s2, IntToStr(PWord(p-2)^), stest, LineEnding]);
@@ -668,9 +670,8 @@ var
           end;
           DW_FORM_ref4     : begin
             stest := ToHexCommaList(p,4);
-            lnk := PInteger(p)^ -11;
-            s4 := IntToHex(PInteger(p)^ -11, 8);;
-            s3 := ToHex(p, 4) + '    // '+ s4;
+            lnk := PInteger(p)^;
+            s3 := ToHex(p, 4);
             PascalTestCAseCode := PascalTestCAseCode +
               Format(namePreFix+'AddRef(%s, %s, @Info__%s_); // %s  %s', [s1, s2, IntToStr(PDWord(p-4)^), stest, LineEnding]);
               //Format(namePreFix+'AddRef(%s, %s, FOO); // %s %s', [s1, s2, stest, LineEnding]);
@@ -689,8 +690,18 @@ var
               Format(namePreFix+'AddRef(%s, %s, FOO); // %u // ULEB %s', [s1, s2, Value, LineEnding]);
           end;
           DW_FORM_ref_addr : begin
-            stest := ToHexCommaList(p,4);
-            s3 := ToHex(p, 4 {FCU.FAddressSize});
+            { DW_FORM_ref_addr is AddressSize in DWARF2
+              And DWARF>2 it depends on header-type (IsDwarf64)
+            }
+            j := cu.AddressSize;
+            if cu.Version = 2 then begin
+              if cu.IsDwarf64
+              then j := 8
+              else j := 4;
+            end;
+
+            stest := ToHexCommaList(p,j);
+            s3 := ToHex(p, j {FCU.FAddressSize});
             PascalTestCAseCode := PascalTestCAseCode +
               Format(namePreFix+'AddRef(%s, %s, FOO); // %s // %s', [s1, s2, stest, LineEnding]);
           end;
@@ -784,7 +795,7 @@ var
      if VStringTree.IsVisible[Node] then ; // init the node
      GetDataPtr(Node)^.Text := Format('Abr: %d Tag: %d %s ', [Abbrev, Def.tag, DwarfTagToString(Def.tag)]);
 
-     sName := 'Info__'+IntToStr(s.Entry - BaseScopeAddr + 11)+'_.';
+     sName := 'Info__'+IntToStr(s.Entry - BaseScopeAddr)+'_.';
      entryname := AddAbbrev(Node, s, Def, TestCaseText, sName);
 
      pre := '';
@@ -808,7 +819,7 @@ var
      pre := AnsiReplaceStr(pre, '  ', '_');
      pre := AnsiReplaceStr(pre, ' ', '_');
 
-     NameList['Info__'+IntToStr(s.Entry - BaseScopeAddr + 11)+'_']
+     NameList['Info__'+IntToStr(s.Entry - BaseScopeAddr)+'_']
        := pre+'_'+IntToStr(FTestCaseTexts.Count);
      i := 0;
      if s.HasChild then i := 1;
@@ -853,11 +864,11 @@ begin
     VStringTree.Clear;
     i := CompUnitListBox.ItemIndex;
     if i < 0 then exit;
-    CU := TDwarfCompilationUnitHack(CompUnitListBox.Items.Objects[i]);
+    CU := TDwarfCompilationUnit(CompUnitListBox.Items.Objects[i]);
     if CU = nil then exit;
-    s := CU.FirstScope;
-    BaseScopeAddr := s.Entry;
+    BaseScopeAddr := CU.InfoData - CU.HeaderSize;
 
+    s := CU.FirstScope;
     Node := nil;
     while s.IsValid do begin
       Node := AddNode(nil,Node,s);
