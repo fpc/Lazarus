@@ -48,6 +48,9 @@ type
     fcNestings: TNestingLevelList;
 
     fiUserTag: integer;
+    { where IndexOfChild last found a child: walking a long list of
+      children forward then costs no search }
+    fiLastChildIndex: integer;
 
     function GetChildNodes(const piIndex: integer): TParseTreeNode;
   protected
@@ -166,6 +169,7 @@ begin
 
   fcChildNodes := TObjectList.Create;
   fcChildNodes.OwnsObjects := True;
+  fiLastChildIndex := -1;
 
   fcNestings := TNestingLevelList.Create;
 end;
@@ -242,8 +246,25 @@ end;
 
 function TParseTreeNode.IndexOfChild(const pcChild: TParseTreeNode): integer;
 begin
+  { the child found last time, or the one after it, before a search of
+    the whole list.  The list may have changed since: the check compares
+    the child itself, so a stale index only costs the search }
+  Result := fiLastChildIndex;
+  if (Result >= 0) and (Result < fcChildNodes.Count) then
+  begin
+    if fcChildNodes.List^[Result] = Pointer(pcChild) then
+      exit;
+    Inc(Result);
+    if (Result < fcChildNodes.Count) and (fcChildNodes.List^[Result] = Pointer(pcChild)) then
+    begin
+      fiLastChildIndex := Result;
+      exit;
+    end;
+  end;
   Result := fcChildNodes.IndexOf(pcChild);
+  fiLastChildIndex := Result;
 end;
+
 
 function TParseTreeNode.IndexOfSelf: integer;
 begin
