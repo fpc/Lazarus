@@ -65,8 +65,8 @@ FPCFullVersion=`usr/bin/fpc -iW`
 usr/$LIB/fpc/$FPCVersion/samplecfg $TmpFPCDir/usr/$LIB/fpc/$FPCVersion .
 FPCCfg=$TmpFPCDir/fpc.cfg
 export FPCCfg
-FPC=$TmpFPCDir/usr/bin/fpc
-export FPC
+PP=$TmpFPCDir/usr/bin/fpc
+export PP
 FPCDIR=$TmpFPCDir/usr/$LIB/fpc/$FPCVersion
 export FPCDIR
 cd -

@@ -39,7 +39,7 @@ if [ ! -e "$FREEZE" ]; then
   echo "Cannot find freeze"
 fi
 
-export FPC=fpc
+export PP=fpc
 
 $SVN up $LAZSOURCEDIR
 cd $LAZSOURCEDIR/tools/install/macosx
@@ -50,7 +50,7 @@ LazVersion=$(./get_lazarus_version.sh)
 LazFullVersion=$LazVersion.$(./get_svn_revision_number.sh .)
 cd -
 DATESTAMP=$(date +%Y%m%d)
-FPCARCH=$($FPC -iSP)
+FPCARCH=$($PP -iSP)
 DMGFILE=~/tmp/lazarus-$LazFullVersion-$DATESTAMP-$FPCARCH-macosx.dmg
 
 if [ -e $DMGFILE ]; then
