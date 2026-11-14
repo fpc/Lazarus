@@ -222,10 +222,11 @@ const
 var
   lsMessage: string;
 begin
-  if piSpacesToEnd < 0 then
+  if piSpacesToEnd <= 0 then
   begin
-    lsMessage := Format(lisMsgSpacesToEnd, [piSpacesToEnd, pcNext.Describe, pcNext.DescribePosition]) + NativeLineBreak + pcNext.SourceLine;
-    Raise Exception.Create(lsMessage);
+    Exit(1);
+    //lsMessage := Format(lisMsgSpacesToEnd, [piSpacesToEnd, pcNext.Describe, pcNext.DescribePosition]) + NativeLineBreak + pcNext.SourceLine;
+    //Raise Exception.Create(lsMessage);
   end;
 
   if piSpacesToEnd > TAIL_SIZE then
@@ -554,6 +555,7 @@ var
   liScoreBefore, liScoreAfter: integer;
   liPlaceToBreak: integer;
   lcBreakToken, lcNewToken: TSourceToken;
+  liMaxForwardLen: integer;
 begin
   Result := False;
 
@@ -580,6 +582,8 @@ begin
 
   fcTokens.Clear;
 
+  { Workaroud for long long lines.}
+  liMaxForwardLen := 3 * FormattingSettings.Returns.MaxLineLength;
   while (lcNext <> nil) and ( not IsLineBreaker(lcNext)) do
   begin
     fcTokens.Add(lcNext);
@@ -591,10 +595,17 @@ begin
     liTotalWidth := liTotalWidth + Length(lcNext.SourceCode);
 
     lcNext := lcNext.NextToken;
+
+    {workaround for long long lines.}
+    if liTotalWidth > liMaxForwardLen then
+    begin
+      liMaxForwardLen := - 1;
+      break;
+    end;
   end;
 
   // check for trailing conditional compilation removed
-  while (lcNext <> nil) and (not IsLineBreaker(lcNext) or (lcNext.TokenType = ttConditionalCompilationRemoved)) do
+  while (lcNext <> nil) and (liMaxForwardLen >= 0) and (not IsLineBreaker(lcNext) or (lcNext.TokenType = ttConditionalCompilationRemoved)) do
   begin
     liTotalWidth := liTotalWidth + Length(lcNext.SourceCode);
     lcNext := lcNext.NextToken;
@@ -661,7 +672,6 @@ begin
       Self := Self;
     end;
     }
-
     // xpos is indexed from 1
     liScoreAfter := NearEndScore(liTotalWidth - (lcNext.XPosition - 2), lcNext);
     // subtract this one - bad to break near end
