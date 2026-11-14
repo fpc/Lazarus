@@ -70,7 +70,7 @@ type
     function InternalGetLocation(AParamIndex: Integer; ASize: Integer = 0): TFpDbgMemLocation;
     function InternalCreateParamSymbol(ParameterMemLocation: TFpDbgMemLocation; ASymbolType: TFpSymbol; AName: String): TFpValue;
     function InternalCreateParamSymbol(AParamIndex: Integer; ASymbolType: TFpSymbol; AName: String): TFpValue; inline;
-    function AddRecordParam(AParamSymbolType: TFpSymbol; AValue: TFpValue): Boolean;
+    function AddRecordParam(AParamSymbolType: TFpSymbol; AValue: TFpValue; AForceVarParam: boolean = False): Boolean;
     function InternalAddStringResult: Boolean;
   public
     constructor Create(const ABaseContext: TFpDbgLocationContext;
@@ -84,7 +84,11 @@ type
 
     function CreateParamSymbol(AParamIndex: Integer; ASymbolType: TFpSymbol; AName: String = ''): TFpValue; virtual;
 
-    function AddParam(AParamSymbolType: TFpSymbol; AValue: TFpValue): Boolean;
+    (* AForceVarParam:
+       >>> Currently only for record <<<
+       Used for "self". If "self" is a record it must be passed by pointer
+    *) // TODO: need detection based on DWARF
+    function AddParam(AParamSymbolType: TFpSymbol; AValue: TFpValue; AForceVarParam: boolean = False): Boolean;
     function AddOrdinalParam(AParamSymbolType: TFpSymbol; AValue: QWord): Boolean;
     function AddOrdinalParam(AValue: QWord): Boolean; inline;
     (* AddOrdinalViaRefAsParam
@@ -274,8 +278,8 @@ begin
   Result := InternalCreateParamSymbol(InternalGetLocation(AParamIndex), ASymbolType, AName);
 end;
 
-function TFpDbgInfoCallContext.AddRecordParam(AParamSymbolType: TFpSymbol;
-  AValue: TFpValue): Boolean;
+function TFpDbgInfoCallContext.AddRecordParam(AParamSymbolType: TFpSymbol; AValue: TFpValue;
+  AForceVarParam: boolean): Boolean;
 // Only intel/amd
   function ReadRecFromMem(Addr: TDbgPtr; sz: Integer; out Data: QWord): Boolean;
   var
@@ -354,6 +358,14 @@ begin
     end;
     if not Result then begin
       FLastError := AValue.LastError;
+      exit;
+    end;
+
+    if AForceVarParam then begin
+      InitParamSymbol;
+      ParamSymbol.AsCardinal := RecAddr;
+      Result := not IsError(ParamSymbol.LastError);
+      FLastError := ParamSymbol.LastError;
       exit;
     end;
 
@@ -527,14 +539,15 @@ begin
   TFpSymbolDwarfFunctionResult(Result.DbgSymbol).ReadDataToCache(TFpValueDwarf(Result));
 end;
 
-function TFpDbgInfoCallContext.AddParam(AParamSymbolType: TFpSymbol; AValue: TFpValue): Boolean;
+function TFpDbgInfoCallContext.AddParam(AParamSymbolType: TFpSymbol; AValue: TFpValue;
+  AForceVarParam: boolean): Boolean;
 var
   ParamSymbol: TFpSymbolDwarfFunctionResult;
   ParamValue: TFpValue;
   s: TFpDbgValueSize;
 begin
   if AValue.Kind = skRecord then begin
-    Result := AddRecordParam(AParamSymbolType, AValue);
+    Result := AddRecordParam(AParamSymbolType, AValue, AForceVarParam);
     exit;
   end;
 

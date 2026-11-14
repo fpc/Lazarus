@@ -1057,7 +1057,7 @@ begin
 
     try
       if (ASelfValue <> nil) then begin
-        if not CallContext.AddParam(SelfTypeSym.TypeInfo, ASelfValue) then begin
+        if not CallContext.AddParam(SelfTypeSym.TypeInfo, ASelfValue, True) then begin
           DebugLn(FPDBG_FUNCCALL or DBG_WARNINGS, 'Internal error for self');
           AnError := CallContext.LastError;
           exit;
