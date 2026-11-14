@@ -4305,18 +4305,20 @@ function TryAllToDateTime(const AString: String; out ADateTime: TDateTime): Bool
     formatSettings: TFormatSettings;
   begin
     formatSettings := DefaultFormatSettings;
-    formatSettings.DateSeparator:= '-';
     formatSettings.LongDateFormat := 'yyyy-mm-dd';
-    formatSettings.TimeSeparator := ':';
     formatSettings.LongTimeFormat := 'hh:nn:ss.zzz';
     Result := TryStrToDateTime(AString, ADateTime, formatSettings);
     if Result then
       Exit;
+
+    formatSettings.DateSeparator:= '-';
+    formatSettings.TimeSeparator := ':';
+    Result := TryStrToDateTime(AString, ADateTime, formatSettings);
   end;
 
   function tryISO8601: Boolean;
   begin
-    Result:= TryISO8601ToDate(AString, ADateTime, False);
+    Result:= TryISOStrToDateTime(AString, ADateTime);
   end;
 
   function tryPlatform: Boolean;
