@@ -191,6 +191,7 @@ uses
 procedure TForm1.Button1Click(Sender: TObject);
 var
   fcConverter: TConverter;
+  lTime: TDateTime;
 begin
   Memo3.Lines.Clear;
   fcConverter := TConverter.Create;
@@ -201,11 +202,14 @@ begin
     fcConverter.ShowTree:=cbShowTree.Checked;
     fcConverter.OnIncludeFile:= @OnIncludeFile;
     fcConverter.FileName:= edFileNameWithPath.Text;
+    lTime := Now;
     fcConverter.Convert;
+    lTime := Now - lTime;
     if not fcConverter.ConvertError then
     begin
       Memo2.Text := fcConverter.OutputCode;
     end;
+    Memo3.Lines.Add('Elapsed time: ' + FormatDateTime('hh:mm:ss.zzz',lTime));
   finally
     fcConverter.Free;
   end;
