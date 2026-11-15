@@ -6060,6 +6060,7 @@ begin
   NewStack   := AStackPtr;
   NewFrame   := AFramePtr;
   StartStack := AStackPtr;
+  PushedNewFrameAddr := 0;
   CurConditionalForwardAddr := -1;
   BackwardJumpAddress.Address := 0;
   ForwardJumpAddress.Address := 0;
