@@ -373,26 +373,30 @@ begin
 end;
 
 class function TCocoaTypeUtil.toDateTime(const aDateTime: NSDate): TDateTime;
-var
-  cmp : NSDateComponents;
-  mn : TdateTime;
 const
-  convFlag = NSYearCalendarUnit
-  or NSMonthCalendarUnit
-  or NSDayCalendarUnit
-  or NSHourCalendarUnit
-  or NSMinuteCalendarUnit
-  or NSSecondCalendarUnit;
+  flags = NSCalendarUnitYear
+       or NSCalendarUnitMonth
+       or NSCalendarUnitDay
+       or NSCalendarUnitHour
+       or NSCalendarUnitMinute
+       or NSCalendarUnitSecond
+       or NSCalendarUnitNanosecond;
+var
+  components: NSDateComponents;
+  dateValue: TDateTime;
+  timeValue: TDateTime;
+  msValue: TDateTime;
 begin
   if aDateTime = nil then
   begin
     Result:= 0.0;
     Exit;
   end;
-  cmp := NSCalendar.currentCalendar.components_fromDate(convFlag, aDateTime);
-  TryEncodeDate(cmp.year, cmp.month, cmp.day, Result);
-  TryEncodeTime(cmp.hour, cmp.minute, cmp.second, 0, mn);
-  Result := Result + mn;
+  components:= NSCalendar.currentCalendar.components_fromDate(flags, aDateTime);
+  TryEncodeDate(components.year, components.month, components.day, dateValue);
+  TryEncodeTime(components.hour, components.minute, components.second, 0, timeValue);
+  msValue:= components.nanosecond / (MSecsPerDay*1000*1000);
+  Result:= dateValue + timeValue + msValue;
 end;
 
 class function TCocoaTypeUtil.toAlignment( const lclAlignment: TAlignment ): NSTextAlignment;
