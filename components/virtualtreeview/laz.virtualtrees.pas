@@ -1395,9 +1395,6 @@ type
     {$IFEND}
     procedure AutoFitColumns(Animated: Boolean = True; SmartAutoFitType: TSmartAutoFitType = smaUseColumnOption;
       RangeStartCol: Integer = NoColumn; RangeEndCol: Integer = NoColumn); virtual;
-    {$IF LCL_FullVersion >= 2010000}
-    procedure FixDesignFontsPPI(const ADesignTimePPI: Integer); virtual;
-    {$IFEND}
     function InHeader(const P: TPoint): Boolean; virtual;
     function InHeaderSplitterArea(P: TPoint): Boolean; virtual;
     procedure Invalidate(Column: TVirtualTreeColumn; ExpandToBorder: Boolean = False);
@@ -3155,6 +3152,7 @@ type
     procedure FinishCutOrCopy;
     {$IF LCL_FullVersion >= 2010000}
     procedure FixDesignFontsPPI(const ADesignTimePPI: Integer); override;
+    procedure ScaleFontsPPI(const AToPPI: Integer; const AProportion: Double); override;
     {$IFEND}
     procedure FlushClipboard;
     procedure FullCollapse(Node: PVirtualNode = nil);  virtual;
@@ -9675,6 +9673,7 @@ begin
     Font := FHeader.FFont;
     if Font.Color = clDefault then
       Font.Color := FHeader.Treeview.GetDefaultColor(dctFont);
+    Font.PixelsPerInch := FHeader.FFont.PixelsPerInch;
 
     {$IF LCL_FullVersion >= 2000000}
     if Images <> nil then
@@ -9922,7 +9921,7 @@ begin
     lMaxHeight := 0;
     for I := 0 to Self.Columns.Count - 1 do
       lMaxHeight := Max(lMaxHeight, Columns[I].Spacing);
-    // Calculate the required size based on the font, this is important as the use migth just vave increased the size of the icon font
+    // Calculate the required size based on the font, this is important as the user might just have increased the size of the icon font
     with TBitmap.Create do
       try
         Canvas.Font.Assign(FFont);
@@ -11505,16 +11504,24 @@ var
   col: TVirtualTreeColumn;
 begin
   if IsDefaultHeightStored then
-    FDefaultHeight := Round(FDefaultHeight * AYProportion);
+    FDefaultHeight := Round(FDefaultHeight * AYProportion)
+  else
+    FDefaultHeight := FOwner.Scale96ToFont(DEFAULT_HEADER_HEIGHT);
 
   if IsHeightStored then
-    FHeight := Round(FHeight * AYProportion);
+    FHeight := Round(FHeight * AYProportion)
+  else
+    FHeight := FOwner.Scale96ToFont(DEFAULT_HEADER_HEIGHT);
 
   if IsMinHeightStored then
-    FMinHeight := Round(FMinHeight * AYProportion);
+    FMinHeight := Round(FMinHeight * AYProportion)
+  else
+    FMinHeight := FOwner.Scale96ToFont(DEFAULT_MIN_HEIGHT);
 
   if Columns.IsDefaultWidthStored then
-    Columns.DefaultWidth := Round(Columns.DefaultWidth * AXProportion);
+    Columns.DefaultWidth := Round(Columns.DefaultWidth * AXProportion)
+  else
+    Columns.DefaultWidth := FOwner.Scale96ToFont(DEFAULT_COLUMN_WIDTH);
 
   for i := 0 to Columns.Count-1 do begin
     col := Columns[i];
@@ -11602,15 +11609,6 @@ begin
     Treeview.EndOperation(okAutoFitColumns);
   end;
 end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-{$IF LCL_FullVersion >= 2010000}
-procedure TVTHeader.FixDesignFontsPPI(const ADesignTimePPI: Integer);
-begin
-  TreeView.DoFixDesignFontPPI(Font, ADesignTimePPI);
-end;
-{$IFEND}
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -12378,7 +12376,6 @@ begin
   FDragImageKind := diComplete;
   FLastSelectionLevel := -1;
   FSelectionBlendFactor := 128;
-
 
   {$IF LCL_FullVersion >= 1080000}
   FDefaultNodeHeight := Scale96ToFont(DEFAULT_NODE_HEIGHT);
@@ -21885,7 +21882,13 @@ end;
 procedure TBaseVirtualTree.FixDesignFontsPPI(const ADesignTimePPI: Integer);
 begin
   inherited;
-  FHeader.FixDesignFontsPPI(ADesignTimePPI);
+  DoFixDesignFontPPI(FHeader.Font, ADesignTimePPI);
+end;
+
+procedure TBaseVirtualTree.ScaleFontsPPI(const AToPPI: Integer; const AProportion: Double);
+begin
+  inherited;
+  DoScaleFontPPI(FHeader.Font, AToPPI, AProportion);
 end;
 {$IFEND}
 
@@ -26954,28 +26957,52 @@ end;
 {$IF LCL_FullVersion >= 1080000}
 procedure TBaseVirtualTree.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
   const AXProportion, AYProportion: Double);
+var
+  node: PVirtualNode;
+  oldDefaultNodeHeight: Integer;
 begin
   inherited;
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
   begin
     DisableAutoSizing;
     try
-      if IsDefaultNodeHeightStored then
-        FDefaultNodeHeight := Round(FDefaultNodeHeight * AYProportion);
-      if IsIndentStored then
-        FIndent := Round(FIndent * AYProportion);
-      if IsMarginStored then
-        FMargin := Round(FMargin * AXProportion);
-      if IsTextMarginStored then
-        FTextMargin := Round(FTextMargin * AXProportion);
-      if IsSelectionCurveRadiusStored then
-        FSelectionCurveRadius := Round(FSelectionCurveRadius * AXProportion);
-      if IsDragHeightStored then
-        FDragHeight := Round(FDragHeight * AYProportion);
-      if IsDragWidthStored then
-        FDragWidth := Round(FDragWidth * AXProportion);
-      FHeader.AutoAdjustLayout(AXProportion, AYProportion);
-      PrepareBitmaps(true, false);
+      BeginUpdate;
+      try
+        oldDefaultNodeHeight := FDefaultNodeHeight;
+        if IsDefaultNodeHeightStored then
+          SetDefaultNodeHeight(Round(FDefaultNodeHeight * AYProportion))
+        else
+          SetDefaultNodeHeight(Scale96ToFont(DEFAULT_NODE_HEIGHT));
+        // Adjust node heights stored in the nodes
+        node := GetFirst;
+        while Assigned(node) do
+        begin
+          if node^.NodeHeight = oldDefaultNodeHeight then
+            NodeHeight[node] := FDefaultNodeHeight
+          else
+            NodeHeight[node] := Round(node^.NodeHeight * AYProportion);
+          node := GetNext(node);
+        end;
+
+        if IsIndentStored then
+          FIndent := Round(FIndent * AYProportion);
+        if IsMarginStored then
+          FMargin := Round(FMargin * AXProportion);
+        if IsTextMarginStored then
+          FTextMargin := Round(FTextMargin * AXProportion);
+        if IsSelectionCurveRadiusStored then
+          FSelectionCurveRadius := Round(FSelectionCurveRadius * AXProportion);
+        if IsDragHeightStored then
+          FDragHeight := Round(FDragHeight * AYProportion);
+        if IsDragWidthStored then
+          FDragWidth := Round(FDragWidth * AXProportion);
+
+        FHeader.AutoAdjustLayout(AXProportion, AYProportion);
+
+        PrepareBitmaps(true, false);
+      finally
+        EndUpdate;
+      end;
     finally
       EnableAutoSizing;
     end;
