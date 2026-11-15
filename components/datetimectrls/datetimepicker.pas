@@ -4268,7 +4268,8 @@ const
   or NSCalendarUnitDay
   or NSCalendarUnitHour
   or NSCalendarUnitMinute
-  or NSCalendarUnitSecond;
+  or NSCalendarUnitSecond
+  or NSCalendarUnitNanosecond;
 begin
   if aDateTime = nil then
   begin
@@ -4277,7 +4278,7 @@ begin
   end;
   cmp := NSCalendar.currentCalendar.components_fromDate(convFlag, aDateTime);
   TryEncodeDate(cmp.year, cmp.month, cmp.day, Result);
-  TryEncodeTime(cmp.hour, cmp.minute, cmp.second, 0, mn);
+  TryEncodeTime(cmp.hour, cmp.minute, cmp.second, Round(cmp.nanosecond/1000000), mn);
   Result := Result + mn;
 end;
 
@@ -4285,15 +4286,34 @@ function CocoaTryStrToDateTime(const AString: String; out ADateTime: TDateTime):
 var
   formatter: NSDateFormatter;
   cocoaDatetime: NSDate;
+
+  procedure tryVariousStyle;
+  var
+    cocoaString: NSString;
+    dateStyle: NSDateFormatterStyle;
+    timeStyle: NSDateFormatterStyle;
+  begin
+    cocoaString := NSString.stringWithUTF8String(pchar(AString));
+    for dateStyle := NSDateFormatterMediumStyle to NSDateFormatterFullStyle do begin
+      for timeStyle := NSDateFormatterMediumStyle to NSDateFormatterFullStyle do begin
+        formatter.setDateStyle(dateStyle);
+        formatter.setTimeStyle(timeStyle);
+        cocoaDatetime := formatter.dateFromString(cocoaString);
+        if Assigned(cocoaDatetime) then
+          Exit;
+      end;
+    end;
+  end;
+
 begin
   Result := False;
   formatter := NSDateFormatter.new;
-  formatter.setDateStyle(NSDateFormatterMediumStyle);
-  formatter.setTimeStyle(NSDateFormatterMediumStyle);
-  cocoaDatetime := formatter.dateFromString( NSString.stringWithUTF8String(pchar(AString)) );
+  tryVariousStyle;
   formatter.release;
+
   if NOT Assigned(cocoaDatetime) then
     Exit;
+
   ADateTime := NSDateToDateTime(cocoaDatetime);
   Result := True;
 end;
@@ -4305,14 +4325,15 @@ function TryAllToDateTime(const AString: String; out ADateTime: TDateTime): Bool
     formatSettings: TFormatSettings;
   begin
     formatSettings := DefaultFormatSettings;
-    formatSettings.LongDateFormat := 'yyyy-mm-dd';
-    formatSettings.LongTimeFormat := 'hh:nn:ss.zzz';
     Result := TryStrToDateTime(AString, ADateTime, formatSettings);
     if Result then
       Exit;
 
-    formatSettings.DateSeparator:= '-';
+    formatSettings.DateSeparator := '-';
     formatSettings.TimeSeparator := ':';
+    formatSettings.DecimalSeparator := '.';
+    formatSettings.ShortDateFormat := 'yyyy-mm-dd';
+    formatSettings.ShortTimeFormat := 'hh:nn:ss.zzz';
     Result := TryStrToDateTime(AString, ADateTime, formatSettings);
   end;
 
