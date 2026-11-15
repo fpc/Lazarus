@@ -274,10 +274,12 @@ var
 begin
   // FNV-1a
   h:=2166136261;
+  {$PUSH}{$R-}{$Q-}
   for i:=1 to length(Key) do begin
     h:=h xor ord(Key[i]);
     h:=h*16777619;
   end;
+  {$POP}
   Bucket:=integer(h and LongWord(fMask));
   Result:=fBuckets[Bucket];
   while Result>=0 do begin
