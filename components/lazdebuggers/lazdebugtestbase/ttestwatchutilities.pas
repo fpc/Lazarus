@@ -2459,6 +2459,7 @@ constructor TWatchExpectationList.Create(ATest: TDBGTestCase);
 begin
   FWatchResultPrinter := TWatchResultPrinter.Create;
   FWatchResultPrinter.FormatFlags := [];
+  FWatchResultPrinter.TargetAddressSize := SizeOf(Pointer)*8;
   FTest := ATest;
   FTypeNameAliases := TStringList.Create;
   inherited Create;
