@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.9\n"
+"X-Generator: Poedit 3.10\n"
 
 #: ideconfstrconsts.dlgfilterfpcmessagefile
 msgid "FPC message file"
@@ -133,9 +133,8 @@ msgid "Compiler filename"
 msgstr "Compilerdateiname"
 
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
-#, fuzzy
 msgid "Hint: you can set the compiler executable in Tools -> Options-> Files -> Compiler executable"
-msgstr "Anmerkung: Sie können den Compilerpfad setzen unter Werkzeuge -> Einstellungen -> Umgebung -> Dateien -> Compilerpfad"
+msgstr "Hinweis: Sie können den Compilerpfad setzen unter Werkzeuge -> Einstellungen -> Umgebung -> Dateien -> Compilerpfad"
 
 #: ideconfstrconsts.liscompilewithvdformoredetailscheckforduplicates
 msgid "Compile with -vd for more details. Check for duplicates."
@@ -986,7 +985,7 @@ msgstr "Deutsch"
 
 #: ideconfstrconsts.rslanguagegreek
 msgid "Greek"
-msgstr ""
+msgstr "Griechisch"
 
 #: ideconfstrconsts.rslanguagehebrew
 msgid "Hebrew"

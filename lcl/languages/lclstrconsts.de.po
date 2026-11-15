@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-08-28 21:18+0200\n"
+"PO-Revision-Date: 2026-11-15 20:22+0100\n"
 "Last-Translator: Karl-Michael Schindler <tonne1.schindler@web.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Language: de_DE\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 3.9\n"
+"X-Generator: Poedit 3.10\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 #, object-pascal-format
@@ -529,10 +529,8 @@ msgid "Do not set transient order for modal forms."
 msgstr "--lcl-no-transient    Transiente Reihenfolge für modale Formulare nicht setzen."
 
 #: lclstrconsts.rsgtkoptionnoxshm
-#, fuzzy
-#| msgid "--no-xshm             Disable use of the X Shared Memory Extension."
 msgid "Disable use of the X Shared Memory Extension."
-msgstr "--no-xshm             Abschalten der Verwendung der Shared-Memory-Erweiterung von X"
+msgstr "--no-xshm             Abschalten der Verwendung der Shared-Memory-Erweiterung von X."
 
 #: lclstrconsts.rsgtkoptionsync
 #, fuzzy

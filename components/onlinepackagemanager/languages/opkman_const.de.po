@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.9\n"
+"X-Generator: Poedit 3.10\n"
 
 #: opkman_const.rsaddrepositorypackagefrm_bcancel_caption
 msgctxt "opkman_const.rsaddrepositorypackagefrm_bcancel_caption"
@@ -274,7 +274,7 @@ msgstr "Repository-Details bearbeiten"
 
 #: opkman_const.rscreaterepositoryfrm_pnmessage_caption
 msgid "No items to show"
-msgstr ""
+msgstr "Keine Elemente zum Anzeigen"
 
 #: opkman_const.rscreaterepositoryfrm_repositoryaddress
 msgctxt "opkman_const.rscreaterepositoryfrm_repositoryaddress"
@@ -1365,17 +1365,17 @@ msgstr "Diese Frage nicht noch einmal stellen"
 #: opkman_const.rsopensslfrm_error1
 #, object-pascal-format
 msgid "Cannot download the OpenSSL libraries from \"%s\". Error message:"
-msgstr ""
+msgstr "Kann die OpenSSL-Bibliotheken nicht von \"%s\" herunterladen. Fehlermeldung:"
 
 #: opkman_const.rsopensslfrm_error2
 #, object-pascal-format
 msgid "Cannot unzip the OpenSSL libraries \"%s\". Error message:"
-msgstr ""
+msgstr "Kann die OpenSSL-Bibliotheken \"%s\" nicht entpacken. Fehlermeldung:"
 
 #: opkman_const.rsopensslfrm_error3
 #, object-pascal-format
 msgid "The OpenSSL libraries were extracted to \"%s\", but they cannot be loaded."
-msgstr ""
+msgstr "Die OpenSSL-Bibliotheken wurden nach \"%s\" entpackt, aber sie konnten nicht geladen werden."
 
 #: opkman_const.rsopensslfrm_lbmessage1_caption
 msgid "In order to work properly, OPM needs the OpenSSL libraries."

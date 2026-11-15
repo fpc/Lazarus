@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.9\n"
+"X-Generator: Poedit 3.10\n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
 #, object-pascal-format
@@ -22,7 +22,7 @@ msgstr "Erlaube, Docksites zu minimieren"
 
 #: anchordockstr.adrsamountofmillisecondsbeforedragstarts
 msgid "Amount of milliseconds the left mouse button should be kept pressed before drag starts"
-msgstr ""
+msgstr "Anzahl an Millisekunden, die die linke Maustaste gedrückt sein muss, bevor das Ziehen beginnt"
 
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
@@ -84,10 +84,8 @@ msgid "Backup successful: %s"
 msgstr "Sicherung erfolgreich: %s"
 
 #: anchordockstr.adrsbottom
-#, fuzzy
-#| msgid "bottom"
 msgid "Bottom"
-msgstr "unten"
+msgstr "Unten"
 
 #: anchordockstr.adrsclose
 msgid "Close"
@@ -125,7 +123,7 @@ msgstr "Fenster \"%s\" mit der Maus ziehen und andocken"
 
 #: anchordockstr.adrsdragdelay
 msgid "Drag delay"
-msgstr ""
+msgstr "Ziehen-Verzögerung"
 
 #: anchordockstr.adrsdragthreshold
 msgid "Drag threshold"
@@ -153,19 +151,19 @@ msgstr "Diese Einstellung erlaubt das Organisieren einer Gruppe von Fenstern (od
 
 #: anchordockstr.adrsenlargebottomside
 msgid "Enlarge bottom side"
-msgstr ""
+msgstr "Seite unten vergrößern"
 
 #: anchordockstr.adrsenlargeleftside
 msgid "Enlarge left side"
-msgstr ""
+msgstr "Seite links vergrößern"
 
 #: anchordockstr.adrsenlargerightside
 msgid "Enlarge right side"
-msgstr ""
+msgstr "Seite rechts vergrößern"
 
 #: anchordockstr.adrsenlargetopside
 msgid "Enlarge top side"
-msgstr ""
+msgstr "Seite oben vergrößern"
 
 #: anchordockstr.adrsfilledheaders
 msgid "Fill headers"
@@ -236,10 +234,8 @@ msgid "Layout restored successfully"
 msgstr "Layout erfolgreich wieder hergestellt"
 
 #: anchordockstr.adrsleft
-#, fuzzy
-#| msgid "left"
 msgid "Left"
-msgstr "links"
+msgstr "Links"
 
 #: anchordockstr.adrslocked
 msgid "Locked"
@@ -263,7 +259,7 @@ msgstr "Modale Formulare können nicht angedockt werden"
 
 #: anchordockstr.adrsmovebottom
 msgid "Move bottom"
-msgstr ""
+msgstr "Unten verschieben"
 
 #: anchordockstr.adrsmoveheadertoleftwhenwidthheight100headeralignleft
 msgid "Move header to left when (Width/Height)*100>=HeaderAlignLeft"
@@ -275,7 +271,7 @@ msgstr "Schiebe Header nach oben, wenn (Breite/Höhe)*100<=HeaderAlignTop"
 
 #: anchordockstr.adrsmoveleft
 msgid "Move left"
-msgstr ""
+msgstr "Links verschieben"
 
 #: anchordockstr.adrsmovepageleft
 msgid "Move page left"
@@ -295,11 +291,11 @@ msgstr "Seite nach ganz rechts"
 
 #: anchordockstr.adrsmoveright
 msgid "Move right"
-msgstr ""
+msgstr "Rechts verschieben"
 
 #: anchordockstr.adrsmovetop
 msgid "Move top"
-msgstr ""
+msgstr "Oben verschieben"
 
 #: anchordockstr.adrsmultilinepages
 msgid "Multiline Tabs"
@@ -346,10 +342,8 @@ msgid "Restore selected layout"
 msgstr "Ausgewähltes Layout wieder herstellen"
 
 #: anchordockstr.adrsright
-#, fuzzy
-#| msgid "right"
 msgid "Right"
-msgstr "rechts"
+msgstr "Rechts"
 
 #: anchordockstr.adrsscaleonresize
 msgid "Scale on resize"
@@ -393,10 +387,8 @@ msgid "There is another dock master installed. Only one docking package can be i
 msgstr "Ein anderer Dock-Master ist bereits installiert. Mehrere Docking-Packages können nicht gleichzeitig installiert sein. Bitte deinstalliere den anderen Dock-Master %s und starte die IDE neu"
 
 #: anchordockstr.adrstop
-#, fuzzy
-#| msgid "top"
 msgid "Top"
-msgstr "oben"
+msgstr "Oben"
 
 #: anchordockstr.adrstouseanchordockingyoumustfirstuninstall
 #, object-pascal-format

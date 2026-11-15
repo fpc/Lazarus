@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 3.9\n"
+"X-Generator: Poedit 3.10\n"
 
 #: idedebuggerstringconstants.arrnavautohide
 msgid "Hide automatically"
@@ -834,34 +834,36 @@ msgstr "- Ausgeschaltet -"
 
 #: idedebuggerstringconstants.dlgdebugconsolewindowchangetakeseffect
 msgid "A change takes effect when the next debug session starts."
-msgstr ""
+msgstr "Eine Änderung wird aktive, sobald die nächste Debugger-Session startet."
 
 #: idedebuggerstringconstants.dlgdebugconsolewindoweditdiv
 msgid "Edit IDE console provider"
-msgstr ""
+msgstr "IDE-Konsolenanbieter bearbeiten"
 
 #: idedebuggerstringconstants.dlgdebugconsolewindowediting
 #, object-pascal-format
 msgid "Currently editing %s"
-msgstr ""
+msgstr "Derzeit wird %s bearbeitet"
 
 #: idedebuggerstringconstants.dlgdebugconsolewindownone
 msgid "No console window is available."
-msgstr ""
+msgstr "Kein Konsolenfenster verfügbar."
 
 #: idedebuggerstringconstants.dlgdebugconsolewindowoptions
 msgid "Debug Console Window"
-msgstr ""
+msgstr "Debug-Konsolenfenster"
 
 #: idedebuggerstringconstants.dlgdebugconsolewindowrunparamshint
 msgid ""
 "Selects the default Console for showing the target's StdIn/Out in the IDE.\n"
 "Project can override this in their \"Run Parameters\". The default there is \"use IDE default\"."
 msgstr ""
+"Voreingestellte Konsole für die Anzeige von StdIn/Out des Ziels in der IDE.\n"
+"Das Projekt kann dies in seinen \"Lauf-Parametern\" überschreiben. Die Voreinstellung dort ist \"Benutze die IDE-Voreinstellung\"."
 
 #: idedebuggerstringconstants.dlgdebugconsolewindowselectdiv
 msgid "Select provider for IDE console window"
-msgstr ""
+msgstr "Anbieter für das IDE-Konsolenfenster auswählen"
 
 #: idedebuggerstringconstants.dlgdisplayformatdebugoptions
 msgid "Display Format"
@@ -1463,7 +1465,7 @@ msgstr "Aktualisierungen für das ganze Fenster de-/aktivieren"
 
 #: idedebuggerstringconstants.lisdebugconsolebuiltinname
 msgid "IDE Debug Console"
-msgstr ""
+msgstr "IDE-Debug-Konsole"
 
 #: idedebuggerstringconstants.lisdebuggerfeedbackerror
 msgid "Debugger Error"
@@ -2257,7 +2259,7 @@ msgstr "Word (Little Endian)"
 
 #: idedebuggerstringconstants.mnuconsoleinoutputwindow
 msgid "Console In/Output (Lazarus)"
-msgstr ""
+msgstr "Konsolen-Ein/Ausgabe (Lazarus)"
 
 #: idedebuggerstringconstants.optdispguttercustomdisplayformat
 msgid "Custom Display Format"

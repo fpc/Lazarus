@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.9\n"
+"X-Generator: Poedit 3.10\n"
 
 #: heaptrcview.brkfailedtoopenfile
 msgid "Failed to open file"
@@ -21,10 +21,9 @@ msgid "Failed to open \"%s\"."
 msgstr "Öffnen von \"%s\" fehlgeschlagen."
 
 #: heaptrcview.brkfailedtoopensjumptocurren
-#, object-pascal-format, fuzzy
-#| msgid "Failed to open \"%s\". Jump to current editor instead?"
+#, object-pascal-format
 msgid "Failed to open \"%s\". Jump to appropriate line in current editor instead?"
-msgstr "Öffnen von \"%s\" fehlgeschlagen. Zum aktuellen Editor springen?"
+msgstr "Öffnen von \"%s\" fehlgeschlagen. Zur entsprechenden Zeile im aktuellen Editor springen?"
 
 #: heaptrcview.rsdtimes
 #, object-pascal-format
