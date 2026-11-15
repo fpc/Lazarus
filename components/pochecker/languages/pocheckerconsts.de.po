@@ -9,11 +9,11 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.9\n"
+"X-Generator: Poedit 3.10\n"
 
 #: pocheckerconsts.rspochecker
 msgid "Check PO Files ..."
-msgstr "po-Dateien überprüfen ..."
+msgstr "PO-Dateien überprüfen ..."
 
 #: pocheckerconsts.rs_lang_af_za
 msgid "Afrikaans"
@@ -45,7 +45,7 @@ msgstr "Deutsch"
 
 #: pocheckerconsts.rs_lang_el
 msgid "Greek"
-msgstr ""
+msgstr "Griechisch"
 
 #: pocheckerconsts.rs_lang_en
 msgid "English"
@@ -149,10 +149,8 @@ msgid "Check for incompatible format arguments"
 msgstr "Prüfung auf inkompatible Format-Argumente"
 
 #: pocheckerconsts.scheckformismatchesinuntranslatedstrings
-#, fuzzy
-#| msgid "Check for mismatches in untranslated strings"
 msgid "Check for mismatches of originals"
-msgstr "Prüfung auf Diskrepanzen in nicht übersetzten Werten"
+msgstr "Prüfung auf Diskrepanzen im Original"
 
 #: pocheckerconsts.scheckmissingidentifiers
 msgid "Check missing identifiers"
@@ -186,8 +184,7 @@ msgid "[Line %d] %s"
 msgstr "[Zeile %d] %s"
 
 #: pocheckerconsts.sduplicateoriginals
-#, object-pascal-format, fuzzy
-#| msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
+#, object-pascal-format
 msgid "Original value \"%s\" is used for more than 1 entry:"
 msgstr "Der (nicht übersetzte) Wert \"%s\" wird für mehr als 1 Eintrag verwendet:"
 

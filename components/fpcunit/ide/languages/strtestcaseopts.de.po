@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.9\n"
+"X-Generator: Poedit 3.10\n"
 
 #: strtestcaseopts.rsalltests
 msgid "All Tests"
@@ -51,19 +51,19 @@ msgstr "%s     Fehlschläge: %s"
 
 #: strtestcaseopts.rsfind
 msgid "Find:"
-msgstr ""
+msgstr "Suchen:"
 
 #: strtestcaseopts.rsfindhint
 msgid "Highlight tests containing this text"
-msgstr ""
+msgstr "Markiere Tests, die diesen Text enthalten"
 
 #: strtestcaseopts.rsfindnext
 msgid "Find next"
-msgstr ""
+msgstr "Nächstes suchen"
 
 #: strtestcaseopts.rsfindprevious
 msgid "Find previous"
-msgstr ""
+msgstr "Voriges suchen"
 
 #: strtestcaseopts.rsmessage
 #, object-pascal-format
@@ -98,19 +98,15 @@ msgstr "Test-Insight"
 #: strtestcaseopts.rstestprojectstopped
 #, object-pascal-format
 msgid "Test project %s stopped."
-msgstr ""
+msgstr "Test-Projekt %s wurde angehalten."
 
 #: strtestcaseopts.sactcheckall
-#, fuzzy
-#| msgid "Select all tests"
 msgid "Check all tests"
-msgstr "Alle Tests auswählen"
+msgstr "Alle Tests markieren"
 
 #: strtestcaseopts.sactcheckcurrentsuite
-#, fuzzy
-#| msgid "Select current suite"
 msgid "Check current suite"
-msgstr "Aktuelle Suite auswählen"
+msgstr "Aktuelle Suite markieren"
 
 #: strtestcaseopts.sactcloseform
 msgid "Quit"
@@ -134,44 +130,34 @@ msgid "Copy message to clipboard"
 msgstr "Meldung in Zwischenablage kopieren"
 
 #: strtestcaseopts.sactrunaction
-#, fuzzy
-#| msgid "&Run all"
 msgid "&Run checked tests"
-msgstr "Alle sta&rten"
+msgstr "Markierte Tests sta&rten"
 
 #: strtestcaseopts.sactrunactionh
 msgid "Run all checked tests"
 msgstr "Alle markierten Tests starten"
 
 #: strtestcaseopts.sactrunhighlightedtest
-#, fuzzy
-#| msgid "Run selected"
 msgid "Run highlighted test"
-msgstr "Ausgewähltes starten"
+msgstr "Ausgewählten Test starten"
 
 #: strtestcaseopts.sactrunhighlightedtesth
-#, fuzzy
-#| msgid "Run selected test"
 msgid "Run only the highlighted test or suite"
-msgstr "Ausgewählte Tests starten"
+msgstr "Nur ausgewählten Test oder Suite starten"
 
 #: strtestcaseopts.sactstop
 msgid "Stop"
-msgstr ""
+msgstr "Anhalten"
 
 #: strtestcaseopts.sactstoph
 msgid "Stop the running test project"
-msgstr ""
+msgstr "Das laufende Test-Projekt anhalten"
 
 #: strtestcaseopts.sactuncheckall
-#, fuzzy
-#| msgid "Deselect all tests"
 msgid "Uncheck all tests"
 msgstr "Alle Tests abwählen"
 
 #: strtestcaseopts.sactuncheckcurrentsuite
-#, fuzzy
-#| msgid "Deselect current suite"
 msgid "Uncheck current suite"
 msgstr "Aktuelle Suite abwählen"
 
@@ -180,16 +166,12 @@ msgid "Create unit"
 msgstr "Unit erzeugen"
 
 #: strtestcaseopts.schksetup
-#, fuzzy
-#| msgid "Create Setup Method"
 msgid "Create \"&Setup\" method"
-msgstr "Setup-Methode erzeugen"
+msgstr "\"&Setup\"-Methode erzeugen"
 
 #: strtestcaseopts.schktear
-#, fuzzy
-#| msgid "Create TearDown method"
 msgid "Create \"&TearDown\" method"
-msgstr "TearDown-Methode erzeugen"
+msgstr "\"&TearDown\"-Methode erzeugen"
 
 #: strtestcaseopts.screatefirsttestcase
 msgid "&Create first test case"
