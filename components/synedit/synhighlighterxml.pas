@@ -1092,6 +1092,7 @@ function TSynXMLSyn.GetRange: Pointer;
 var
   t: TRangeStore;
 begin
+  t.p := nil;
   t.fRange      := fRange;
   t.fRangeFlags := fRangeFlags;
   CodeFoldRange.RangeType := t.p;
