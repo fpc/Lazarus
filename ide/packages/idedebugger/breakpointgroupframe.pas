@@ -18,6 +18,8 @@ type
   protected
     FDraggingGroupHeader: Boolean;
     procedure AcceptGroupHeaderDrop(ADroppedGroupFrame: TBreakpointGroupFrame; ATargetNode: PVirtualNode); virtual; abstract;
+    function  IsShowingBreaks: boolean; virtual; abstract;
+    function  IsShowingExcepts: boolean; virtual; abstract;
   end;
 
   TOnDeleteGroup = procedure(Sender: TBreakpointGroupFrame; BrkGroup: TIDEBreakPointGroup) of object;
@@ -112,12 +114,14 @@ var
 begin
   FOwner.BeginUpdate;
   try
-    for i := 0 to DebugBoss.BreakPoints.Count - 1 do
-      if DebugBoss.BreakPoints[i].Group = BrkGroup then
-        DebugBoss.BreakPoints[i].Enabled := False;
-    for i := 0 to DebugBoss.Exceptions.Count - 1 do
-      if DebugBoss.Exceptions[i].Group = BrkGroup then
-        DebugBoss.Exceptions[i].Enabled := False;
+    if FOwner.IsShowingBreaks then
+      for i := 0 to DebugBoss.BreakPoints.Count - 1 do
+        if DebugBoss.BreakPoints[i].Group = BrkGroup then
+          DebugBoss.BreakPoints[i].Enabled := False;
+    if FOwner.IsShowingExcepts then
+      for i := 0 to DebugBoss.Exceptions.Count - 1 do
+        if DebugBoss.Exceptions[i].Group = BrkGroup then
+          DebugBoss.Exceptions[i].Enabled := False;
   finally
     FOwner.EndUpdate;
   end;
@@ -129,12 +133,14 @@ var
 begin
   FOwner.BeginUpdate;
   try
-  for i := 0 to DebugBoss.BreakPoints.Count - 1 do
-    if DebugBoss.BreakPoints[i].Group = BrkGroup then
-      DebugBoss.BreakPoints[i].Enabled := True;
-  for i := 0 to DebugBoss.Exceptions.Count - 1 do
-    if DebugBoss.Exceptions[i].Group = BrkGroup then
-      DebugBoss.Exceptions[i].Enabled := True;
+    if FOwner.IsShowingBreaks then
+      for i := 0 to DebugBoss.BreakPoints.Count - 1 do
+        if DebugBoss.BreakPoints[i].Group = BrkGroup then
+          DebugBoss.BreakPoints[i].Enabled := True;
+    if FOwner.IsShowingExcepts then
+      for i := 0 to DebugBoss.Exceptions.Count - 1 do
+        if DebugBoss.Exceptions[i].Group = BrkGroup then
+          DebugBoss.Exceptions[i].Enabled := True;
   finally
     FOwner.EndUpdate;
   end;
