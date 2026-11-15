@@ -4601,7 +4601,9 @@ begin
     MainBuildBoss.UpdateProjectAutomaticFiles('');
 
   // everything went well => clear all modified flags
-  Project1.ClearModifieds(true);
+  // a copy in the test directory is not a save, the changes are still unsaved
+  if not (sfSaveToTestDir in Flags) then
+    Project1.ClearModifieds(true);
   // update menu and buttons state
   MainIDE.UpdateSaveMenuItemsAndButtons(true);
   //DebugLn('SaveProject End');
