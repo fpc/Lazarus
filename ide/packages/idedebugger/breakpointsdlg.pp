@@ -207,8 +207,8 @@ type
     procedure JumpToCurrentBreakPoint;
     procedure ShowProperties;
   protected
-    function  IsShowingBreaks: boolean; inline;
-    function  IsShowingExcepts: boolean; inline;
+    function  IsShowingBreaks: boolean; override;
+    function  IsShowingExcepts: boolean; override;
     procedure AcceptGroupHeaderDrop(ADroppedGroupFrame: TBreakpointGroupFrame; ATargetNode: PVirtualNode); override;
     procedure DoBreakPointsChanged; override;
     procedure DoExceptionsChanged; override;
