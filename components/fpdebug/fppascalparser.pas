@@ -2764,6 +2764,8 @@ end;
 function GetFirstToken(AText: PChar): String;
 begin
   Result := AText[0];
+  if Result = #0 then
+    exit('');
   if AText^ in ['a'..'z', 'A'..'Z', '_', '0'..'9', '$', '&', '%'] then begin
     inc(AText);
     while (AText^ in ['a'..'z', 'A'..'Z', '_', '0'..'9']) and (Length(Result) < 200) do begin
