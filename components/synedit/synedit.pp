@@ -10399,6 +10399,7 @@ begin
 
       if Highlighter.NextToLogX(PosX, True) then begin
         Token := Highlighter.GetToken;
+        Start := Highlighter.GetTokenPos + 1;
         Attri := Highlighter.GetTokenAttribute;
         TokenType := Highlighter.GetTokenKind;
         exit(True);
@@ -10406,6 +10407,7 @@ begin
     end;
   end;
   Token := '';
+  Start := -1;
   Attri := nil;
   TokenType := -1;
   Result := False;
