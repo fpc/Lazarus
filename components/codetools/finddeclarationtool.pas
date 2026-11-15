@@ -2195,7 +2195,8 @@ begin
   Result:=GenExpr;
   if GenExpr='' then exit;
   if Count=0 then exit;
-  if CompareIdentifiers(PChar(GenExpr),PChar(SpecializedType))=0 then begin
+  if (SpecializedType<>'') and
+  (CompareIdentifiers(PChar(GenExpr),PChar(SpecializedType))=0) then begin
     i:=Pos('=',SpecializedType);
     if i<1 then exit;
     delete(SpecializedType,1,i);
