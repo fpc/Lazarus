@@ -4512,26 +4512,53 @@ end;
 procedure TFpPascalExpression.Parse;
 var
   CurPtr, EndPtr, TokenEndPtr: PChar;
-  CurPart, PrevPart, NewPart: TFpPascalExpressionPart;
+  CurPart, NewPart: TFpPascalExpressionPart;
+  CurTokenPartStartChar, CurTokenEndChar: Pchar;
+
+  function GetPrevCharText: String;
+  var
+    Len: Integer;
+  begin
+    Result := '';
+    if (CurTokenPartStartChar < SharedData.TextExpressionAddr) or
+       (CurTokenPartStartChar >= SharedData.TextExpressionAddr + Length(SharedData.TextExpression)) or
+       (CurTokenEndChar = nil)
+    then
+      exit;
+    Len := CurTokenEndChar - CurTokenPartStartChar + 1;
+    if (Len > MAX_ERR_EXPR_QUOTE_LEN) then
+      Len := MAX_ERR_EXPR_QUOTE_LEN;
+    SetString(Result, CurTokenPartStartChar, Len);
+  end;
+
 
   // "Foo-Error 'token' at pos N after 'prev token'"
   procedure SetParserError(AnErrorCode: TFpErrorCode);
+  var
+    s: String;
   begin
-    if PrevPart = nil
+    s := GetPrevCharText;
+    if s = ''
     then SetError(AnErrorCode, [GetFirstToken(CurPtr)], CreateError(fpErrPasParser_AtStart, []), dekParser )
-    else SetError(AnErrorCode, [GetFirstToken(CurPtr)], CreateError(fpErrPasParser_PositionAfter, [FSharedData.PosFromPChar(CurPtr), PrevPart.GetText(MAX_ERR_EXPR_QUOTE_LEN)]), dekParser );
+    else SetError(AnErrorCode, [GetFirstToken(CurPtr)], CreateError(fpErrPasParser_PositionAfter, [FSharedData.PosFromPChar(CurPtr), s]), dekParser );
   end;
   procedure SetParserError(AnErrorCode: TFpErrorCode; AData: array of const);
+  var
+    s: String;
   begin
-    if PrevPart = nil
+    s := GetPrevCharText;
+    if s = ''
     then SetError(AnErrorCode, AData, CreateError(fpErrPasParser_AtStart, []), dekParser )
-    else SetError(AnErrorCode, AData, CreateError(fpErrPasParser_PositionAfter, [FSharedData.PosFromPChar(CurPtr), PrevPart.GetText(MAX_ERR_EXPR_QUOTE_LEN)]), dekParser );
+    else SetError(AnErrorCode, AData, CreateError(fpErrPasParser_PositionAfter, [FSharedData.PosFromPChar(CurPtr), s]), dekParser );
   end;
   procedure SetParserErrorPosOnly(AnErrorCode: TFpErrorCode);
+  var
+    s: String;
   begin
-    if PrevPart = nil
+    s := GetPrevCharText;
+    if s = ''
     then SetError(AnErrorCode, [], CreateError(fpErrPasParser_AtStart, []), dekParser )
-    else SetError(AnErrorCode, [], CreateError(fpErrPasParser_PositionAfter, [FSharedData.PosFromPChar(CurPtr), PrevPart.GetText(MAX_ERR_EXPR_QUOTE_LEN)]), dekParser );
+    else SetError(AnErrorCode, [], CreateError(fpErrPasParser_PositionAfter, [FSharedData.PosFromPChar(CurPtr), s]), dekParser );
   end;
 
   procedure AddPart(AClass: TFpPascalExpressionPartClass);
@@ -4896,7 +4923,7 @@ begin
 
 
   CurPart := nil;
-  PrevPart := nil;
+  CurTokenPartStartChar := nil;
   While (CurPtr < EndPtr) and Valid do begin
     if CurPtr^ in [' ', #9, #10, #13] then begin
       while (CurPtr^ in [' ', #9, #10, #13]) and (CurPtr < EndPtr) do
@@ -4956,7 +4983,13 @@ begin
     if not Valid then
       break;
 
-    PrevPart := NewPart;
+    if NewPart <> nil then begin
+      CurTokenPartStartChar := NewPart.StartChar;
+      CurTokenEndChar   := NewPart.EndChar;
+    end
+    else
+      CurTokenPartStartChar := nil;
+
     if CurPart = nil then
       CurPart := NewPart
     else
