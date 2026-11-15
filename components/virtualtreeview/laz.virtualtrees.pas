@@ -11506,31 +11506,42 @@ begin
   if IsDefaultHeightStored then
     FDefaultHeight := Round(FDefaultHeight * AYProportion)
   else
-    FDefaultHeight := FOwner.Scale96ToFont(DEFAULT_HEADER_HEIGHT);
+    FDefaultHeight := TreeView.Scale96ToFont(DEFAULT_HEADER_HEIGHT);
 
   if IsHeightStored then
     FHeight := Round(FHeight * AYProportion)
   else
-    FHeight := FOwner.Scale96ToFont(DEFAULT_HEADER_HEIGHT);
+    FHeight := TreeView.Scale96ToFont(DEFAULT_HEADER_HEIGHT);
 
   if IsMinHeightStored then
     FMinHeight := Round(FMinHeight * AYProportion)
   else
-    FMinHeight := FOwner.Scale96ToFont(DEFAULT_MIN_HEIGHT);
+    FMinHeight := TreeView.Scale96ToFont(DEFAULT_MIN_HEIGHT);
 
-  if Columns.IsDefaultWidthStored then
-    Columns.DefaultWidth := Round(Columns.DefaultWidth * AXProportion)
-  else
-    Columns.DefaultWidth := FOwner.Scale96ToFont(DEFAULT_COLUMN_WIDTH);
+  Columns.BeginUpdate;
+  try
+    if Columns.IsDefaultWidthStored then
+      Columns.DefaultWidth := Round(Columns.DefaultWidth * AXProportion)
+    else
+      Columns.DefaultWidth := TreeView.Scale96ToFont(DEFAULT_COLUMN_WIDTH);
 
-  for i := 0 to Columns.Count-1 do begin
-    col := Columns[i];
-    if col.IsWidthStored then
-      col.Width := Round(col.Width * AXProportion);
-    if col.IsSpacingStored then
-      col.Spacing := Round(col.Spacing * AXProportion);
-    if col.IsMarginStored then
-      col.Margin := Round(col.Margin * AXProportion);
+    for i := 0 to Columns.Count-1 do begin
+      col := Columns[i];
+      if col.IsWidthStored then
+        col.Width := Round(col.Width * AXProportion)
+      else
+        col.Width := col.Owner.FDefaultWidth;
+      if col.IsSpacingStored then
+        col.Spacing := Round(col.Spacing * AXProportion)
+      else
+        col.Spacing := TreeView.Scale96ToFont(DEFAULT_SPACING);
+      if col.IsMarginStored then
+        col.Margin := Round(col.Margin * AXProportion)
+      else
+        col.Margin := TreeView.Scale96ToFont(DEFAULT_MARGIN);
+    end;
+  finally
+    Columns.EndUpdate;
   end;
 end;
 {$IFEND}
@@ -15335,8 +15346,10 @@ var
   Difference: Integer;
 
 begin
-  if Assigned(Node) and (Node <> FRoot) and (Node.NodeHeight <> Value) and not (toReadOnly in FOptions.FMiscOptions) then
-  begin
+  if Assigned(Node) and (Node <> FRoot) and (Node.NodeHeight <> Value)
+    // wp: why shouldn't it be possible to change nodeheights in read-only mode?
+    {and not (toReadOnly in FOptions.FMiscOptions)}
+  then begin
     Difference := Integer(Value) - Integer(Node.NodeHeight);
     Node.NodeHeight := Value;
 
@@ -26348,7 +26361,7 @@ begin
   begin
     Canvas.Font.Assign(Self.Font);
     lTextHeight := Canvas.TextHeight('Tg');
-    if (lTextHeight > Self.DefaultNodeHeight) then
+  //  if (lTextHeight > Self.DefaultNodeHeight) then
       Self.DefaultNodeHeight := lTextHeight;
   end;
 end;
@@ -26974,28 +26987,44 @@ begin
         else
           SetDefaultNodeHeight(Scale96ToFont(DEFAULT_NODE_HEIGHT));
         // Adjust node heights stored in the nodes
-        node := GetFirst;
+        node := GetFirstNoInit;
         while Assigned(node) do
         begin
           if node^.NodeHeight = oldDefaultNodeHeight then
             NodeHeight[node] := FDefaultNodeHeight
           else
             NodeHeight[node] := Round(node^.NodeHeight * AYProportion);
-          node := GetNext(node);
+          node := GetNextNoInit(node);
         end;
 
         if IsIndentStored then
-          FIndent := Round(FIndent * AYProportion);
+          FIndent := Round(FIndent * AYProportion)
+        else
+          FIndent := Scale96ToFont(DEFAULT_INDENT);
+
         if IsMarginStored then
-          FMargin := Round(FMargin * AXProportion);
+          FMargin := Round(FMargin * AXProportion)
+        else
+          FMargin := Scale96ToFont(DEFAULT_MARGIN);
+
         if IsTextMarginStored then
-          FTextMargin := Round(FTextMargin * AXProportion);
+          FTextMargin := Round(FTextMargin * AXProportion)
+        else
+          FTextMargin := Scale96ToFont(DEFAULT_MARGIN);
+
         if IsSelectionCurveRadiusStored then
           FSelectionCurveRadius := Round(FSelectionCurveRadius * AXProportion);
+        // no else needed since FSelectionCurveRadius is 0 by default
+
         if IsDragHeightStored then
-          FDragHeight := Round(FDragHeight * AYProportion);
+          FDragHeight := Round(FDragHeight * AYProportion)
+        else
+          FDragHeight := Scale96ToFont(DEFAULT_DRAG_HEIGHT);
+
         if IsDragWidthStored then
-          FDragWidth := Round(FDragWidth * AXProportion);
+          FDragWidth := Round(FDragWidth * AXProportion)
+        else
+          FDragWidth := Scale96ToFont(DEFAULT_DRAG_WIDTH);
 
         FHeader.AutoAdjustLayout(AXProportion, AYProportion);
 
