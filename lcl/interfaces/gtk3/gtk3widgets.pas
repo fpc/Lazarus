@@ -3495,7 +3495,7 @@ begin
     end else
     begin
       CSSData := Format('*:not(:disabled) { color: %s; }', [CSSColor]);
-      if FWidget <> GetContainerWidget then
+      if (FWidget <> GetContainerWidget) and not (wtWindow in WidgetType) then
         ApplyCSS(FWidget, CSSData);
       ApplyCSS(GetContainerWidget, CSSData);
     end;
