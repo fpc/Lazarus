@@ -8771,6 +8771,14 @@ var
         if MatchUses or MatchInFile then begin
           // search in search paths
           Code:=FindUnitSource(AUnitName,UnitInFilename,false,StartPos);
+          if (Code<>nil)
+              and (CompareFilenames(Code.Filename,TargetFilename)<>0)
+              and (not FilenameIsAbsolute(TargetFilename))
+              and Assigned(OnFindUsedUnit) then
+          begin
+            // target is a new virtual unit, which can be hidden by a file on disk
+            Code:=OnFindUsedUnit(Self,AUnitName,UnitInFilename);
+          end;
           if (Code<>nil) and (CompareFilenames(Code.Filename,TargetFilename)=0) then
           begin
             // found matching uses

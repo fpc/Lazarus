@@ -42,6 +42,9 @@ type
 
   TTestRefactoring = class(TCustomTestRefactoring)
   private
+    FVirtualUnit: TCodeBuffer;
+    function OnSearchVirtualUnit(const SrcFilename: string;
+      const TheUnitName, TheUnitInFilename: string): TCodeBuffer;
   protected
     procedure TestRenameAlsoLFM(const RedUnitIntf, Form1IntfSrc, NewIdentifier,
       LFMSrc: string; const ExpLFMLines: array of string); virtual;
@@ -100,6 +103,7 @@ type
     procedure TestRenameUsedUnit_FN_KeepShort;
     procedure TestRenameUsedUnit_InFilename;
     procedure TestRenameUsedUnit_LongestUnitnameWins;
+    procedure TestRenameUsedUnit_VirtualHiddenByDiskFile;
 
     // rename also in lfm
     procedure TestRenameAlsoLFM_Empty;
@@ -449,6 +453,17 @@ begin
 end;
 
 { TTestRefactoring }
+
+function TTestRefactoring.OnSearchVirtualUnit(const SrcFilename: string;
+  const TheUnitName, TheUnitInFilename: string): TCodeBuffer;
+begin
+  Result:=nil;
+  if SrcFilename='' then ;
+  if TheUnitInFilename<>'' then exit;
+  if FVirtualUnit=nil then exit;
+  if CompareText(TheUnitName,ExtractFileNameOnly(FVirtualUnit.Filename))<>0 then exit;
+  Result:=FVirtualUnit;
+end;
 
 procedure TTestRefactoring.TestRenameAlsoLFM(const RedUnitIntf, Form1IntfSrc, NewIdentifier,
   LFMSrc: string; const ExpLFMLines: array of string);
@@ -2273,6 +2288,92 @@ begin
     RedUnit.IsDeleted:=true;
     RedGreenUnit.IsDeleted:=true;
     RedGreenBlueUnit.IsDeleted:=true;
+  end;
+end;
+
+procedure TTestRefactoring.TestRenameUsedUnit_VirtualHiddenByDiskFile;
+// A new (virtual) unit1.pas is renamed, while the program is already saved
+// in a directory containing an old unit1.pas from another project.
+// The uses in the program refers to the virtual unit and must be renamed.
+var
+  TmpDir, DiskUnitFilename, PrgFilename: String;
+  DiskUnit, Prg: TCodeBuffer;
+  OldOnSearchUsedUnit: TOnSearchUsedUnit;
+  Files: TStringList;
+  ListOfSrcNameRefs: TObjectList;
+begin
+  TmpDir:=AppendPathDelim(GetTempDir(false))
+    +'TestRenameUsedUnit_VirtualHiddenByDiskFile'+PathDelim;
+  DiskUnitFilename:=TmpDir+'unit1.pas';
+  PrgFilename:=TmpDir+'project2.lpr';
+  DiskUnit:=nil;
+  Prg:=nil;
+  FVirtualUnit:=nil;
+  Files:=nil;
+  ListOfSrcNameRefs:=nil;
+  OldOnSearchUsedUnit:=CodeToolBoss.OnSearchUsedUnit;
+  try
+    if not ForceDirectoriesUTF8(TmpDir) then
+      Fail('unable to create directory "'+TmpDir+'"');
+
+    // old unit1.pas on disk from another project
+    DiskUnit:=CodeToolBoss.CreateFile(DiskUnitFilename);
+    DiskUnit.Source:='unit Unit1;'+LineEnding
+      +'interface'+LineEnding
+      +'implementation'+LineEnding
+      +'end.';
+    if not DiskUnit.Save then
+      Fail('unable to write "'+DiskUnitFilename+'"');
+
+    // new virtual unit1.pas
+    FVirtualUnit:=CodeToolBoss.CreateFile('unit1.pas');
+    FVirtualUnit.Source:='unit Unit1;'+LineEnding
+      +'interface'+LineEnding
+      +'implementation'+LineEnding
+      +'end.';
+
+    // program, already saved
+    Prg:=CodeToolBoss.CreateFile(PrgFilename);
+    Prg.Source:='program Project2;'+LineEnding
+      +'uses'+LineEnding
+      +'  Unit1;'+LineEnding
+      +'begin'+LineEnding
+      +'end.'+LineEnding;
+    if not Prg.Save then
+      Fail('unable to write "'+PrgFilename+'"');
+
+    // the IDE resolves project units to virtual files
+    CodeToolBoss.OnSearchUsedUnit:=@OnSearchVirtualUnit;
+
+    Files:=TStringList.Create;
+    Files.Add(PrgFilename);
+    if not CodeToolBoss.FindSourceNameReferences(FVirtualUnit.Filename,Files,false,
+      ListOfSrcNameRefs) then
+      Fail('CodeToolBoss.FindSourceNameReferences failed');
+    if not CodeToolBoss.RenameSourceNameReferences(FVirtualUnit.Filename,
+      TmpDir+'unit2.pas','Unit2',ListOfSrcNameRefs) then
+      Fail('CodeToolBoss.RenameSourceNameReferences failed');
+
+    CheckDiff(Prg,[
+    'program Project2;',
+    'uses',
+    '  Unit2;',
+    'begin',
+    'end.']);
+  finally
+    CodeToolBoss.OnSearchUsedUnit:=OldOnSearchUsedUnit;
+    ListOfSrcNameRefs.Free;
+    Files.Free;
+    if FVirtualUnit<>nil then
+      FVirtualUnit.IsDeleted:=true;
+    FVirtualUnit:=nil;
+    if Prg<>nil then
+      Prg.IsDeleted:=true;
+    if DiskUnit<>nil then
+      DiskUnit.IsDeleted:=true;
+    DeleteFileUTF8(PrgFilename);
+    DeleteFileUTF8(DiskUnitFilename);
+    RemoveDirUTF8(TmpDir);
   end;
 end;
 
