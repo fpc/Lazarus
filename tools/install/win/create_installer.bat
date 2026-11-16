@@ -79,6 +79,7 @@ if not exist %BUILDDIR%\startlazarus.exe goto WARNING_NO_LAZARUS
 if  [%LAZBUILD_REPLACE_TEXT%]==[] GOTO NO_REPLACE_FCL
 %LAZBUILD_REPLACE_TEXT%  %BUILDDIR%\packager\units\%FPCFULLTARGET%\fcl.compiled "ppcx64.exe" "..\..\fpc\%FPCVERSION%\bin\%FPCFULLTARGET%\fpc.exe"
 %LAZBUILD_REPLACE_TEXT%  %BUILDDIR%\packager\units\%FPCFULLTARGET%\fcl.compiled "ppc386.exe" "..\..\fpc\%FPCVERSION%\bin\%FPCFULLTARGET%\fpc.exe"
+%LAZBUILD_REPLACE_TEXT%  %BUILDDIR%\packager\units\%FPCFULLTARGET%\fcl.compiled 'Version="%FPCVERSION%"' " "
 :NO_REPLACE_FCL
 
 ::---------------------------------------------------------------------

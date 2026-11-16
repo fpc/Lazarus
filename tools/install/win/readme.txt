@@ -44,6 +44,7 @@ You should set the following environment before calling the script
   
   SET LAZBUILD_REPLACE_TEXT=C:\tools\ReplaceText.exe
      the replace text utility / lpi in the Lazarus repository tools\install\win\ReplaceText\
+     MUST be build with FPC 3.3.1 (or up), due to bugs in argv parsing
 
 
 Alternatively you can open the create_installer.bat in a text editor and check the variables, to see if the defaults match your system:
