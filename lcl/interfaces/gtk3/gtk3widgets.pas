@@ -1398,6 +1398,7 @@ var
   AEventWidget: PGtkWidget;
   ATargetWidget: TGtk3Widget;
   AMsgActivate: TLMActivate;
+  AHandled: Boolean;
 begin
   Result := gtk_false;
   if (Data = nil) or (TGtk3Widget(Data).LCLObject = nil) then
@@ -1599,10 +1600,14 @@ begin
          not PGtkComboBox(TGtk3Widget(Data).Widget)^.has_entry and
          not Widget^.has_focus then
       begin
-        TGtk3Widget(Data).GtkEventKey(Widget, Event, True);
+        AHandled := TGtk3Widget(Data).GtkEventKey(Widget, Event, True);
         if (Event^.key.keyval = GDK_KEY_Return) or
            (Event^.key.keyval = GDK_KEY_KP_Enter) or
            (Event^.key.keyval = GDK_KEY_ISO_Enter) then
+          Result := True
+        else
+        if AHandled and
+          ((Event^.key.keyval = GDK_KEY_Tab) or (Event^.key.keyval = GDK_KEY_ISO_Left_Tab)) then
           Result := True;
         exit;
       end;
