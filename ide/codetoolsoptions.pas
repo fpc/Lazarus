@@ -513,7 +513,7 @@ begin
     FJumpToMethodBody:=XMLConfig.GetValue(
       'CodeToolsOptions/JumpToMethodBody/Value',false);
     FFindDeclarationInComments:=XMLConfig.GetValue(
-      'CodeToolsOptions/FindDeclarationInComments/Value',false);
+      'CodeToolsOptions/FindDeclarationInComments/Value',true);
 
     // Define templates
     LoadGlobalDefineTemplates;
@@ -709,7 +709,7 @@ begin
     XMLConfig.SetDeleteValue('CodeToolsOptions/JumpToMethodBody/Value',
                              FJumpToMethodBody,false);
     XMLConfig.SetDeleteValue('CodeToolsOptions/FindDeclarationInComments/Value',
-                             FFindDeclarationInComments,false);
+                             FFindDeclarationInComments,true);
     // Define templates
     SaveGlobalDefineTemplates;
     XMLConfig.SetDeleteValue('CodeToolsOptions/DefinesEditMainSplitter/Top',
@@ -1010,7 +1010,7 @@ begin
   FJumpCodeBlockPos:=0;
   FAvoidUnnecessaryJumps:=true;
   FCursorBeyondEOL:=true;
-  FFindDeclarationInComments:=false;
+  FFindDeclarationInComments:=true;
   
   // define templates
   ClearGlobalDefineTemplates;
