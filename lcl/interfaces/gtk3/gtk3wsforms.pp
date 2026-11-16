@@ -752,6 +752,15 @@ begin
               [GDK_SEAT_CAPABILITY_POINTER, GDK_SEAT_CAPABILITY_TABLET_STYLUS,
                GDK_SEAT_CAPABILITY_KEYBOARD], True, nil, nil,
               @Gtk3WaylandGrabPrepare, AWindow);
+            gdk_display_sync(gdk_window_get_display(AWindow^.window));
+            if not AWindow^.window^.is_viewable then
+            begin
+              gtk_widget_hide(PGtkWidget(AWindow));
+              gdk_seat_grab(ASeat, AWindow^.window,
+                [GDK_SEAT_CAPABILITY_POINTER, GDK_SEAT_CAPABILITY_TABLET_STYLUS,
+                 GDK_SEAT_CAPABILITY_KEYBOARD], True, nil, nil,
+                @Gtk3WaylandGrabPrepare, AWindow);
+            end;
           end;
         end;
       end;
