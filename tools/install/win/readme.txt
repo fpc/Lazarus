@@ -41,6 +41,7 @@ You should set the following environment before calling the script
 SET GIT=C:\____\git.exe
 SET ISCC="C:\Program Files (x86)\Inno Setup _____\iscc.exe"
 SET LAZTEMPBUILDDIR=C:\temp\
+     MUST be build with FPC 3.3.1 (or up), due to bugs in argv parsing
 
 Alternatively you can open the create_installer.bat in a text editor and check the variables, to see if the defaults match your system:
 ISCC: Path to the Inno Setup Compiler .exe file.
