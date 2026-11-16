@@ -12500,6 +12500,7 @@ var
   NewSource, PasCode: TCodeBuffer;
   NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine: integer;
   SrcEdit: TSourceEditor;
+  FindFlags: TFindSmartFlags;
 begin
   SrcEdit:=SourceEditorManager.SenderToEditor(Sender);
   if SrcEdit=nil then begin
@@ -12521,8 +12522,12 @@ begin
                                           NewSource,NewX,NewY);
     exit;
   end;
+  FindFlags := DefaultFindSmartFlags;
+  if CodeToolsOpts.FindDeclarationInComments then
+    Include(FindFlags, fsfSearchInComments);
   AllowMouseLink := CodeToolBoss.FindDeclaration(
-    ActiveUnitInfo.Source,X,Y,NewSource,NewX,NewY,NewTopLine,BlockTopLine,BlockBottomLine);
+    ActiveUnitInfo.Source,X,Y,NewSource,NewX,NewY,NewTopLine,BlockTopLine,BlockBottomLine,
+    FindFlags);
 end;
 
 procedure TMainIDE.SrcNotebookReadOnlyChanged(Sender: TObject);
