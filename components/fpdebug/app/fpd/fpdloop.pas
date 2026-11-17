@@ -211,6 +211,7 @@ begin
   if AName = ''
   then begin
     WriteLn(' File not found');
+    sym.ReleaseReference;
     Exit;
   end;
 
