@@ -286,11 +286,11 @@ end;
 
 destructor TFPDLoop.Destroy;
 begin
-  FMemManager.Free;
-  FMemReader.Free;
-  FMemConvertor.Free;
-  FMemManager.Free;
-  GController.Free;
+  FreeAndNil(FMemManager);
+  FreeAndNil(FMemReader);
+  FreeAndNil(FMemConvertor);
+  FreeAndNil(FMemModel);
+  FreeAndNil(GController);
   inherited Destroy;
 end;
 
