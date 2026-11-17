@@ -191,7 +191,8 @@ begin
   p2 := p;
   p2.X := p2.X + Length(AChar);
   if (Editor.TextBetweenPoints[p, p2] = AChar) then begin
-    Editor.Highlighter.PrepareLines; // TODO: let the bracketcode decide how much scanning is needed
+    if Editor.Highlighter <> nil then
+      Editor.Highlighter.PrepareLines; // TODO: let the bracketcode decide how much scanning is needed
     if GetBracketInfoAt(ToIdx(p.Y), p.X, Editor.Highlighter, fnd, bsdRightOrPartRight, ViewedTextBuffer)
     then begin
       s := GetBracketToken(fnd.BracketKind, False, Editor.Highlighter);
@@ -230,7 +231,8 @@ begin
   if (Command <> ecChar) or not(AChar[1] in FBracketOpenChars) then
     exit;
 
-  Editor.Highlighter.PrepareLines; // TODO: let the bracketcode decide how much scanning is needed
+  if Editor.Highlighter <> nil then
+    Editor.Highlighter.PrepareLines; // TODO: let the bracketcode decide how much scanning is needed
   if GetBracketInfoAt(ToIdx(CaretObj.LinePos), CaretObj.BytePos,
                       Editor.Highlighter, fnd, bsdLeft, ViewedTextBuffer
      ) and
