@@ -605,6 +605,7 @@ begin
       APrettyPrinter := TFpPascalPrettyPrinter.Create(4);
       try
         APrettyPrinter.AddressSize:=AContext.SizeOfAddress;
+        APrettyPrinter.Context := AContext.LocationContext;
         if APrettyPrinter.PrintValue(AVal, APasExpr.ResultValue) then
           begin
           Writeln(AVal)
