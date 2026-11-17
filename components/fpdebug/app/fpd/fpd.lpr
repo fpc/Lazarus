@@ -91,6 +91,7 @@ begin
 {$endif}
   CustomApplication.Initialize;
   CustomApplication.Run;
+  DoBeforeExit;
 {$ifdef windows}
   SetConsoleCtrlHandler(@CtrlCHandler, False);
 {$endif}

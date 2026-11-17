@@ -66,6 +66,8 @@ type
     destructor Destroy; override;
   end;
 
+  procedure DoBeforeExit;
+
 implementation
 
 uses
@@ -88,6 +90,11 @@ resourcestring
   sBreakpointReached = 'Breakpoint reached at %s.';
   sProcessPaused = 'Process paused.';
   sProcessExited = 'Process ended with exit-code %d.';
+
+procedure DoBeforeExit;
+begin
+  FpDbgGlobalWorkerQueue.TerminateAllThreads(True);
+end;
 
 { TPDDbgMemReader }
 
