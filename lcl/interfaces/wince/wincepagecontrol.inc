@@ -213,7 +213,7 @@ class function TWinCEWSCustomNotebook.CreateHandle(const AWinControl: TWinContro
 // The prefered style for the non-supported ones is bottom, as per MS guidelines,
 // so that the user won't cover the screen with the hand while changing tabs
 // Left and Right styles aren't supported because vertical text isn't supported
-// See: http://wiki.lazarus.freepascal.org/Windows_CE_Development_Notes#Tab_Controls_.28TPageControl.29
+// See: https://wiki.freepascal.org/Windows_CE_Development_Notes#Tab_Controls_.28TPageControl.29
 const
   TabPositionFlags: array[TTabPosition] of DWord = (
  { tpTop    } 0,
