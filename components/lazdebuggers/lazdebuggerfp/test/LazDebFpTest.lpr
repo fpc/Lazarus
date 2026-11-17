@@ -7,7 +7,8 @@ uses
   {$IFDEF UNIX}
   cthreads,
   {$ENDIF}
-  TestDbgControlForm,
+  {$ifndef NOGUI} TestDbgControlForm, {$ENDIF}
+
   Interfaces, Forms,
   {$ifdef NOGUI} consoletestrunner, {$ELSE}   GuiTestRunner, {$ENDIF}
   LazClasses, TestVarious,
