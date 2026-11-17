@@ -32,7 +32,7 @@ Type
     // TCustomForm properties that we allow to edit in the IDE.
     // In order to edit properties in the IDE, the class must be registered
     // via a design time package.
-    // See http://wiki.lazarus.freepascal.org/Extending_the_IDE#Forms
+    // See https://wiki.freepascal.org/Extending_the_IDE#Forms
     property Caption;
     property ActiveControl;
     property BorderStyle;
