@@ -45,7 +45,7 @@ end;
 
 procedure TTemplateSettingsForm.HelpButtonClick(Sender: TObject);
 begin
-  OpenUrl('http://wiki.lazarus.freepascal.org/Project_Templates');
+  OpenUrl('https://wiki.freepascal.org/Project_Templates');
 end;
 
 procedure TTemplateSettingsForm.OKButtonClick(Sender: TObject);
