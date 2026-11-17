@@ -59,8 +59,13 @@ uses
 
 type
   TFPDCommandHandler = procedure(AParams: String; out CallProcessLoop: boolean);
+
+  { TBreakPointIdMap }
+
   TBreakPointIdMap = class(specialize TFPGMap<Integer, TFpDbgBreakpoint>)
   public
+    destructor Destroy; override;
+    procedure RemoveAllBreakpoints;
     function DoBreakPointCompare(Key1, Key2: Pointer): Integer;
   end;
 
@@ -105,6 +110,28 @@ resourcestring
   sAddBreakpointFailed = 'Adding breakpoint at %s failed.';
   sRemoveBreakpoint = 'Breakpoint removed from address %s.';
   sRemoveBreakpointFailed = 'Removing breakpoint %s failed.';
+
+destructor TBreakPointIdMap.Destroy;
+begin
+  RemoveAllBreakpoints;
+  inherited Destroy;
+end;
+
+procedure TBreakPointIdMap.RemoveAllBreakpoints;
+var
+  i: Integer;
+  bp: TFpDbgBreakpoint;
+begin
+  i := Count - 1;
+  while i >= 0 do begin
+    bp := Data[i];
+    if (GController <> nil) and (GController.CurrentProcess <> nil) then
+      GController.CurrentProcess.RemoveBreak(bp);
+    bp.Free;
+    dec(i);
+  end;
+  Clear;
+end;
 
 function TBreakPointIdMap.DoBreakPointCompare(Key1, Key2: Pointer): Integer;
 begin
