@@ -400,6 +400,7 @@ procedure TPascalParserTool.CheckOperatorProc(
   var ParseAttr: TParseProcHeadAttributes);
 begin
   if pphIsOperator in ParseAttr then begin
+    ReadShiftOperator; // << and >>
     AtomIsCustomOperator(true,true,true);
     if (UpAtomIs('INITIALIZE') or UpAtomIs('FINALIZE')
                   or UpAtomIs('ADDREF') or UpAtomIs('COPY')) then
@@ -2285,6 +2286,7 @@ begin
       end;
     end;
     if CurPos.StartPos>SrcLen then break;
+    ReadShiftOperator; // << and >>
     if not WordIsTermOperator.DoItCaseInsensitive(Src,CurPos.StartPos,
       CurPos.EndPos-CurPos.StartPos)
     then begin

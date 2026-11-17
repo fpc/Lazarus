@@ -214,6 +214,8 @@ type
     procedure TestFindDeclaration_ArrayMultiDimDot;
     procedure TestFindDeclaration_GuessType;
     procedure TestFindDeclaration_GuessType_Set;
+    procedure TestFindDeclaration_GuessType_ShiftOperators;
+    procedure TestFindDeclaration_GuessType_ShiftOperatorsDelphi;
     procedure TestFindDeclaration_NameOf;
     procedure TestFindDeclaration_IsConstValue;
     procedure TestFindDeclaration_IsNot;
@@ -2258,6 +2260,53 @@ begin
   '  TomatoSalad = Tomato+[green];',
   'begin',
   '  Bla{guesstype:TColors} := TomatoSalad+[blue];',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_GuessType_ShiftOperators;
+begin
+  StartProgram;
+  Add([
+  'var',
+  '  a, b: longint;',
+  'begin',
+  '  x1{guesstype:longint} := a shl b;',
+  '  x2{guesstype:longint} := a << b;',
+  '  x3{guesstype:longint} := a>>b;',
+  '  x4{guesstype:longint} := (a shl 1) >> b;',
+  // < is relational, >> is multiplicative: a < (b shr a)
+  '  x5{guesstype:boolean} := a < b >> a;',
+  '  x6{guesstype:boolean} := a<b>>a;',
+  '  x7{guesstype:boolean} := a << b > a;',
+  // not adjacent: two comparisons
+  '  x8{guesstype:boolean} := (a < b) > (a > b);',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_GuessType_ShiftOperatorsDelphi;
+begin
+  StartProgram;
+  Add([
+  '{$mode delphi}',
+  'type',
+  '  TList<T> = class',
+  '    constructor Create;',
+  '  end;',
+  'constructor TList<T>.Create;',
+  'begin',
+  'end;',
+  'var',
+  '  a, b: longint;',
+  '  L: TList<TList<longint>>;',
+  'begin',
+  '  L:=TList<TList<longint>>.Create{declaration:TList.Create};',
+  '  x1{guesstype:longint} := a << b;',
+  '  x2{guesstype:longint} := a>>b;',
+  // a is not generic -> a < (b shr a)
+  '  x3{guesstype:boolean} := a < b >> a;',
+  '  x4{guesstype:boolean} := a<b>>a;',
   'end.']);
   FindDeclarations(Code);
 end;

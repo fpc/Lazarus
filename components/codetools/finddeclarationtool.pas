@@ -10790,6 +10790,11 @@ begin
       GetAtom,' CurPos.EndPos=',dbgs(CurPos.EndPos),' EndPos=',dbgs(EndPos));
     {$ENDIF}
     IsEnd := (CurPos.EndPos>EndPos) or (CurExprType.Desc=xtNone);
+    if not IsEnd then begin
+      // << and >>
+      if ReadShiftOperator and (CurPos.EndPos>EndPos) then
+        IsEnd:=true;
+    end;
     if not IsEnd then
       IsBinOpMissing := not WordIsBinaryOperator.DoItCaseInsensitive(Src,CurPos.StartPos,
         CurPos.EndPos-CurPos.StartPos)

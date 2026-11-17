@@ -229,6 +229,7 @@ type
     procedure ReadPriorAtom; // use this only for simple cases, pascal must be parsed forward
     procedure ReadPriorAtomSafe(CleanPos: integer);
     procedure ReadAsStringConstant; // start at CurPos.StartPos
+    function ReadShiftOperator: boolean; // extend '<' to '<<' and '>' to '>>'
 
     // read blocks
     function ReadTilBracketClose(ExceptionOnNotFound: boolean): boolean;
@@ -1998,6 +1999,24 @@ begin
   end;
   CurPos.EndPos:=p-PChar(Src)+1;
   LastAtoms.SetCurrent(CurPos);
+end;
+
+function TCustomCodeTool.ReadShiftOperator: boolean;
+// Call this only where an operator is expected.
+// ReadNextAtom returns < and > as single char atoms, e.g. TList<TList<Integer>> works.
+// Check for << and >> and adjust CurAtom.
+var
+  c: Char;
+begin
+  Result:=false;
+  if CurPos.EndPos-CurPos.StartPos<>1 then exit;
+  if CurPos.EndPos>SrcLen then exit;
+  c:=Src[CurPos.StartPos];
+  if not (c in ['<','>']) then exit;
+  if Src[CurPos.EndPos]<>c then exit;
+  inc(CurPos.EndPos);
+  LastAtoms.SetCurrent(CurPos);
+  Result:=true;
 end;
 
 procedure TCustomCodeTool.UndoReadNextAtom;

@@ -829,6 +829,8 @@ begin
   ExtractProcHeadPos:=phepStart;
   if not IsProcType then begin
     // read name
+    if IsOperator then
+      ReadShiftOperator; // << and >>
     if ((not IsOperator)
     or (not WordIsCustomOperator.DoItCaseInsensitive(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)))
     and (not AtomIsIdentifier) then exit;
@@ -852,6 +854,8 @@ begin
         end;
         if CurPos.Flag<>cafPoint then break;
         ExtractNextAtom(true,Attr);
+        if IsOperator then
+          ReadShiftOperator; // << and >>
         if ((not IsOperator)
         or (not WordIsCustomOperator.DoItCaseInsensitive(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)))
         and (not AtomIsIdentifier) then exit;
@@ -882,6 +886,8 @@ begin
           end;
           // read '.'
           ExtractNextAtom(aWithName,Attr);
+          if IsOperator then
+            ReadShiftOperator; // << and >>
           if ((not IsOperator)
           or (not WordIsCustomOperator.DoItCaseInsensitive(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)))
           and (not AtomIsIdentifier) then exit;
@@ -1426,6 +1432,7 @@ begin
   end else begin
     MoveCursorToNodeStart(ProcNode);
     ReadNextAtom;
+    ReadShiftOperator; // operator << and >>
     if AtomIsCustomOperator(true,false,false) then begin
       // read name
       ReadNextAtom;

@@ -1759,6 +1759,8 @@ begin
     Add('SHR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DIV',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('MOD',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('<<',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('>>',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   WordIsNumberOperator:=TKeyWordFunctionList.Create('WordIsNumberOperator');

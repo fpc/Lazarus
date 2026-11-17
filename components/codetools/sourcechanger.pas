@@ -1739,10 +1739,15 @@ begin
           if (CurPos<=SrcLen) then begin
             c2:=Src[CurPos];
             // test for double char operators
-            // :=, +=, -=, /=, *=, <>, <=, >=, **, ><
+            // :=, +=, -=, /=, *=, <>, <=, >=, **, ><, <<, >>
+            // Note: an adjacent >> can also close nested generics, e.g.
+            //   TList<TList<Integer>>. Keeping it as one atom is safe,
+            //   because FPC accepts it there.
             if ((c2='=') and  (IsEqualOperatorStartChar[c1]))
             or ((c1='<') and (c2='>'))
             or ((c1='>') and (c2='<'))
+            or ((c1='<') and (c2='<'))
+            or ((c1='>') and (c2='>'))
             or ((c1='.') and (c2='.'))
             or ((c1='*') and (c2='*'))
             then

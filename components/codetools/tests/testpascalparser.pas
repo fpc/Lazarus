@@ -62,6 +62,8 @@ type
     procedure TestDeprecated;
     procedure TestMissingGenericKeywordObjFPCFail;
     procedure TestParseGenericsDelphi;
+    procedure TestParseShiftOperators;
+    procedure TestParseShiftOperatorsDelphi;
     procedure TestParseExternalConcat;
     procedure TestParseExternalConst;
     procedure TestParseModeTP;
@@ -635,6 +637,85 @@ begin
   'begin',
   'end;',
   'begin']);
+  ParseModule;
+end;
+
+procedure TTestPascalParser.TestParseShiftOperators;
+begin
+  Add([
+  'program test1;',
+  '{$mode objfpc}',
+  'type',
+  '  TRec = record',
+  '    i: longint;',
+  '  end;',
+  '  generic TList<T> = class',
+  '  end;',
+  '  TListOfList = specialize TList<specialize TList<longint>>;',
+  'const',
+  '  c1 = 1 << 3;',
+  '  c2 = c1 >> 1;',
+  '  c3 = (c1<<2)>>(c2 shl 1);',
+  'operator <<(const a: TRec; b: longint): TRec;',
+  'begin',
+  '  Result.i:=a.i << b;',
+  'end;',
+  'operator >>(const a: TRec; b: longint): TRec;',
+  'begin',
+  '  Result.i:=a.i >> b;',
+  'end;',
+  'procedure Run(i: longint = 1 << 2; j: longint = c1>>1);',
+  'begin',
+  'end;',
+  'var',
+  '  i: longint;',
+  '  b: boolean;',
+  'begin',
+  '  i:=i << 2;',
+  '  b:=i < i >> 2;',
+  '  b:=i<i>>2;',
+  'end.']);
+  ParseModule;
+end;
+
+procedure TTestPascalParser.TestParseShiftOperatorsDelphi;
+begin
+  Add([
+  'program test1;',
+  '{$mode delphi}',
+  'type',
+  '  TRec = record',
+  '    i: longint;',
+  '    class operator LeftShift(const a: TRec; b: longint): TRec;',
+  '    class operator RightShift(const a: TRec; b: longint): TRec;',
+  '  end;',
+  '  TList<T> = class',
+  '  end;',
+  '  TListOfList = TList<TList<longint>>;',
+  '  TListOfListOfList = TList<TList<TList<longint>>>;',
+  'const',
+  '  c1 = 1 << 3;',
+  '  c2 = c1 >> 1;',
+  'class operator TRec.LeftShift(const a: TRec; b: longint): TRec;',
+  'begin',
+  '  Result.i:=a.i << b;',
+  'end;',
+  'class operator TRec.RightShift(const a: TRec; b: longint): TRec;',
+  'begin',
+  '  Result.i:=a.i >> b;',
+  'end;',
+  'procedure Run(i: longint = 1 << 2; j: longint = c1>>1);',
+  'begin',
+  'end;',
+  'var',
+  '  i: longint;',
+  '  b: boolean;',
+  '  L: TList<TList<longint>>;',
+  'begin',
+  '  L:=TList<TList<longint>>.Create;',
+  '  i:=i << 2;',
+  '  b:=i < i >> 2;',
+  'end.']);
   ParseModule;
 end;
 
