@@ -53,7 +53,7 @@ uses
 
 const
   lihcFPCMessages = 'Free Pascal Compiler messages';
-  lihFPCMessagesURL = 'http://wiki.lazarus.freepascal.org/';
+  lihFPCMessagesURL = 'https://wiki.freepascal.org/';
   lihFPCMessagesInternalURL = 'file://Build_messages#FreePascal_Compiler_messages';
 
 type

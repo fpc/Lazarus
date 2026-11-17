@@ -7645,7 +7645,7 @@ begin
   // pevent HELP pushbutton from closing the dialog, others should close
   if AModalResult = 500 then begin
      ACanClose := False;
-     ShowHelpOrError('https://wiki.lazarus.freepascal.org/DWARF',
+     ShowHelpOrError('https://wiki.freepascal.org/DWARF',
         'Help for debug info selection','text/html');
   end;
 end;
