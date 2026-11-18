@@ -231,6 +231,15 @@
       <Item>
         <Name Value="EFOpenError"/>
       </Item>
+      <Item>
+        <Name Value="ECodeToolCfgScript"/>
+      </Item>
+      <Item>
+        <Name Value="External: INT DIVIDE BY ZERO"/>
+      </Item>
+      <Item>
+        <Name Value="EParserError"/>
+      </Item>
     </Exceptions>
   </Debugging>
 </CONFIG>
