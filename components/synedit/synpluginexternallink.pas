@@ -28,7 +28,7 @@ unit SynPluginExternalLink;
 interface
 
 uses
-  Graphics, LCLIntf, Clipbrd, SysUtils, Classes, RegExpr, LazFileUtils,
+  Graphics, LCLIntf, Clipbrd, SysUtils, Classes, RegExpr,
   SynEdit, SynEditMarkupCtrlMouseLink, SynEditTypes, SynEditMouseCmds,
   LazEditTextAttributes, LazEditHighlighter, SynEditStrConst;
 
@@ -55,7 +55,8 @@ type
     Pattern is a regular expression (case-insensitive); Url is the address to
     open, where $1..$9 are replaced by the groups of the match ($0 the whole
     match), e.g. Pattern "issue #(\d+)" with Url "https://example.org/issues/$1".
-    With a Folder it only works in files in that folder (see OnGetFileName). }
+    With a Folder it only works where OnIsInFolder says the text is in that
+    folder (e.g. the file in the editor). }
 
   TSynPluginExternalLinkPattern = class(TCollectionItem)
   private
@@ -91,7 +92,7 @@ type
 
   TSynPluginExternalLinkOnLinkOpen = procedure(Sender: TSynPluginExternalLink;
     var ALinkText: string; var AHandled: Boolean);
-  TSynPluginExternalLinkGetFileName = function(Sender: TObject): string of object;
+  TSynPluginExternalLinkIsInFolder = function(Sender: TObject; const AFolder: string): boolean of object;
 
   { TSynPluginExternalLink }
 
@@ -103,7 +104,7 @@ type
     FMouseActions: TSynPluginExternalLinkMouseActions;
     FOnLinkOpen: TSynPluginExternalLinkOnLinkOpen;
     FPatterns: TSynPluginExternalLinkPatterns;
-    FOnGetFileName: TSynPluginExternalLinkGetFileName;
+    FOnIsInFolder: TSynPluginExternalLinkIsInFolder;
     // FPOObservedChanged: MouseActions changed
     procedure FPOObservedChanged(ASender : TObject; Operation : TFPObservedOperation; Data : Pointer);
     function GetCurrentLinkText: string;
@@ -134,8 +135,9 @@ type
     // The address to open: CurrentLinkText, or for a link found by Patterns its Url
     property CurrentLinkTarget: string read GetCurrentLinkTarget;
     property Patterns: TSynPluginExternalLinkPatterns read FPatterns write SetPatterns;
-    // The file in the editor, for patterns with a Folder
-    property OnGetFileName: TSynPluginExternalLinkGetFileName read FOnGetFileName write FOnGetFileName;
+    // For patterns with a Folder: is the text in the editor in that folder.
+    // Without it such patterns find nothing.
+    property OnIsInFolder: TSynPluginExternalLinkIsInFolder read FOnIsInFolder write FOnIsInFolder;
     property MarkupInfo : TLazEditHighlighterAttributesModifier read FMarkupInfo write SetMarkupInfo;
     property MouseActions: TSynPluginExternalLinkMouseActions read FMouseActions;
     property OnLinkOpen: TSynPluginExternalLinkOnLinkOpen read FOnLinkOpen write FOnLinkOpen;
@@ -425,9 +427,7 @@ begin
   if Lim < 1 then
     Lim := 1;
   for i := 0 to FPatterns.Count - 1 do begin
-    if (FPatterns[i].Folder <> '') and
-       ((FOnGetFileName = nil) or not FileIsInPath(FOnGetFileName(Self), FPatterns[i].Folder))
-    then
+    if (FPatterns[i].Folder <> '') and (FOnIsInFolder = nil) then
       continue;
     Expr := FPatterns[i].RegExpr;
     if Expr = nil then
@@ -441,6 +441,9 @@ begin
           if (Expr.MatchLen[0] > 0) and
              (APosX <= Expr.MatchPos[0] + Expr.MatchLen[0])
           then begin
+            // the folder is asked last, only for a match under the mouse
+            if (FPatterns[i].Folder <> '') and not FOnIsInFolder(Self, FPatterns[i].Folder) then
+              break;
             AStart := Expr.MatchPos[0];
             ALength := Expr.MatchLen[0];
             AUrl := Expr.Substitute(FPatterns[i].Url);

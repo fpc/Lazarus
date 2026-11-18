@@ -67,7 +67,7 @@ uses
   LazEditTextAttributes, LazEditHighlighter,
   // IdeIntf
   SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,
-  IDEWindowIntf, ProjectIntf, MacroDefIntf, ToolBarIntf, IDEDialogs, IDECommands,
+  IDEWindowIntf, ProjectIntf, MacroDefIntf, MacroIntf, ToolBarIntf, IDEDialogs, IDECommands,
   EditorSyntaxHighlighterDef, IdeIntfStrConsts, EditorOptionsIntf,
   // DebuggerIntf
   DbgIntfDebuggerBase, LazDebuggerIntfBaseTypes,
@@ -297,7 +297,7 @@ type
     procedure EditorPlaceBookmark(Sender: TObject; var Mark: TSynEditMark);
     procedure EditorClearBookmark(Sender: TObject; var Mark: TSynEditMark);
     procedure EditorEnter(Sender: TObject);
-    function EditorGetFileName(Sender: TObject): string;
+    function EditorIsInFolder(Sender: TObject; const AFolder: string): boolean;
     procedure EditorActivateSyncro(Sender: TObject);
     procedure EditorDeactivateSyncro(Sender: TObject);
     procedure EditorChangeUpdating({%H-}ASender: TObject; AnUpdating: Boolean);
@@ -5555,7 +5555,7 @@ Begin
       OnChangeUpdating  := @EditorChangeUpdating;
       OnMultiCaretBeforeCommand := @DoMultiCaretBeforeCommand;
       RegisterMouseActionExecHandler(@EditorHandleMouseAction);
-      ExternalHttpLink.OnGetFileName := @EditorGetFileName;
+      ExternalHttpLink.OnIsInFolder := @EditorIsInFolder;
       // IMPORTANT: when you change above, don't forget updating UnbindEditor
       Parent := AParent;
       if AParent.Font.PixelsPerInch<>96 then
@@ -5962,9 +5962,14 @@ begin
   end;
 end;
 
-function TSourceEditor.EditorGetFileName(Sender: TObject): string;
+function TSourceEditor.EditorIsInFolder(Sender: TObject; const AFolder: string): boolean;
+var
+  Folder: string;
 begin
-  Result := FileName;
+  // expanded each time: $(FPCSrcDir), $(ProjPath) and the like can change
+  Folder := AFolder;
+  Result := IDEMacros.SubstituteMacros(Folder) and (Folder <> '') and
+    FilenameIsAbsolute(FileName) and FileIsInPath(FileName, Folder);
 end;
 
 function TSourceEditor.GetFilename: string;
@@ -6995,7 +7000,7 @@ begin
     OnChangeUpdating := nil;
     OnIfdefNodeStateRequest := nil;
     UnregisterMouseActionExecHandler(@EditorHandleMouseAction);
-    ExternalHttpLink.OnGetFileName := nil;
+    ExternalHttpLink.OnIsInFolder := nil;
   end;
   for i := 0 to EditorComponent.PluginCount - 1 do
     if EditorComponent.Plugin[i] is TSynPluginSyncronizedEditBase then begin

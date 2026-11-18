@@ -1003,6 +1003,10 @@ type
       For example Symbol in HTML is not mapped and therefore has as default
       value fo style [fsBold] as defined in synhighlighterhtml.pp.
     }
+  TEditOptSampleLink = record
+    StartX, EndX: Integer; // logical, EndX just after the link
+  end;
+
   TEditOptLanguageInfo = class
   private
     MappedAttributes: TStringList; // map attributes to pascal
@@ -1014,6 +1018,8 @@ type
     SampleSource: String;
     // TODO: AddAttrSampleLines > replace by Map(XmlName: String, line: int)
     AddAttrSampleLines: array[TAdditionalHilightAttribute] of Integer; // first line = 1
+    // the links on line AddAttrSampleLines[ahaExternalLink]
+    SampleLinks: array of TEditOptSampleLink;
 //    MappedAttributes: TStringList; // map attributes to pascal
     DefaultCommentType: TCommentType;
     CaretXY: TPoint;
@@ -3629,6 +3635,12 @@ begin
   assert(False, 'TEditOptLangList.Clear: Not allowed - Index is used as ID');
 end;
 
+function SampleLink(AStartX, AEndX: Integer): TEditOptSampleLink;
+begin
+  Result.StartX := AStartX;
+  Result.EndX := AEndX;
+end;
+
 procedure TEditOptLangList.Init;
 var
   NewInfo: TEditOptLanguageInfo;
@@ -3758,6 +3770,9 @@ begin
     AddAttrSampleLines[ahaTextBlock] := 33;
     AddAttrSampleLines[ahaFoldedCode] := 30;
     AddAttrSampleLines[ahaExternalLink] := 46;
+    SetLength(SampleLinks, 2);
+    SampleLinks[0] := SampleLink(12, 24); // issue #41917
+    SampleLinks[1] := SampleLink(29, 56); // https://www.lazarus-ide.org
     CaretXY := Point(21, 24);
   end;
   Add(NewInfo);
@@ -3861,6 +3876,9 @@ begin
     AddAttrSampleLines[ahaTextBlock] := 33;
     AddAttrSampleLines[ahaFoldedCode] := 30;
     AddAttrSampleLines[ahaExternalLink] := 46;
+    SetLength(SampleLinks, 2);
+    SampleLinks[0] := SampleLink(12, 24); // issue #41917
+    SampleLinks[1] := SampleLink(29, 56); // https://www.lazarus-ide.org
     CaretXY := Point(21, 24);
   end;
   Add(NewInfo);
@@ -6064,14 +6082,6 @@ begin
   IDEMacros.SubstituteMacros(result);
 end;
 
-function ExpandLinkFolder(const AFolder: string): string;
-// a macro that can not be expanded must not match every file
-begin
-  Result := AFolder;
-  if (Result <> '') and (not IDEMacros.SubstituteMacros(Result) or (Result = '')) then
-    Result := AFolder;
-end;
-
 function ExternalLinkPatternsEqual(A, B: TSynPluginExternalLinkPatterns): Boolean;
 var
   i: Integer;
@@ -6119,7 +6129,7 @@ var
   DefOpts: TSynEditorOptions;
   OldGutterSeparatorIndex: Int64;
   OldShowLineNumbers: Boolean;
-  LinkCount: Integer;
+  LinkPath: String;
 begin
   try
     FileVersion:=XMLConfig.GetValue('EditorOptions/Version', EditorOptsFormatVersion);
@@ -6311,14 +6321,13 @@ begin
     FShowFileNameInCaption :=
       XMLConfig.GetValue('EditorOptions/Display/ShowFileNameInCaption', False);
     // not stored: the defaults
-    LinkCount := XMLConfig.GetValue('EditorOptions/Display/ExternalLinks/Count', -1);
-    if LinkCount >= 0 then begin
+    if XMLConfig.GetValue('EditorOptions/Display/ExternalLinks/Changed', False) then begin
       FExternalLinkPatterns.Clear;
-      for i := 1 to LinkCount do
-        FExternalLinkPatterns.Add(
-          XMLConfig.GetValue('EditorOptions/Display/ExternalLinks/Item'+IntToStr(i)+'/Pattern', ''),
-          XMLConfig.GetValue('EditorOptions/Display/ExternalLinks/Item'+IntToStr(i)+'/Url', ''),
-          XMLConfig.GetValue('EditorOptions/Display/ExternalLinks/Item'+IntToStr(i)+'/Folder', ''));
+      for i := 0 to XMLConfig.GetListItemCount('EditorOptions/Display/ExternalLinks/', 'Item', False) - 1 do begin
+        LinkPath := 'EditorOptions/Display/ExternalLinks/' + XMLConfig.GetListItemXPath('Item', i) + '/';
+        FExternalLinkPatterns.Add(XMLConfig.GetValue(LinkPath + 'Pattern', ''),
+          XMLConfig.GetValue(LinkPath + 'Url', ''), XMLConfig.GetValue(LinkPath + 'Folder', ''));
+      end;
     end;
 
     // Code Tools options
@@ -6389,6 +6398,7 @@ var
   i: Integer;
   SynEditOpt2: TSynEditorOption2;
   DefLinks: TSynPluginExternalLinkPatterns;
+  LinkPath: String;
 begin
   try
     XMLConfig.SetValue('EditorOptions/Version', EditorOptsFormatVersion);
@@ -6537,14 +6547,13 @@ begin
     try
       SetDefaultExternalLinkPatterns(DefLinks);
       if not ExternalLinkPatternsEqual(FExternalLinkPatterns, DefLinks) then begin
-        XMLConfig.SetValue('EditorOptions/Display/ExternalLinks/Count', FExternalLinkPatterns.Count);
+        // Changed: also an empty list is the user's
+        XMLConfig.SetValue('EditorOptions/Display/ExternalLinks/Changed', True);
         for i := 0 to FExternalLinkPatterns.Count - 1 do begin
-          XMLConfig.SetValue('EditorOptions/Display/ExternalLinks/Item'+IntToStr(i+1)+'/Pattern',
-            FExternalLinkPatterns[i].Pattern);
-          XMLConfig.SetValue('EditorOptions/Display/ExternalLinks/Item'+IntToStr(i+1)+'/Url',
-            FExternalLinkPatterns[i].Url);
-          XMLConfig.SetDeleteValue('EditorOptions/Display/ExternalLinks/Item'+IntToStr(i+1)+'/Folder',
-            FExternalLinkPatterns[i].Folder, '');
+          LinkPath := 'EditorOptions/Display/ExternalLinks/' + XMLConfig.GetListItemXPath('Item', i) + '/';
+          XMLConfig.SetValue(LinkPath + 'Pattern', FExternalLinkPatterns[i].Pattern);
+          XMLConfig.SetValue(LinkPath + 'Url', FExternalLinkPatterns[i].Url);
+          XMLConfig.SetDeleteValue(LinkPath + 'Folder', FExternalLinkPatterns[i].Folder, '');
         end;
       end;
     finally
@@ -7512,9 +7521,7 @@ begin
     if (ASynEdit is TIDESynEditor) and (TIDESynEditor(ASynEdit).ExternalHttpLink <> nil) then
       with TIDESynEditor(ASynEdit).ExternalHttpLink do begin
         MouseActions.Assign(fUserMouseSettings.ExtLinkActions);
-        Patterns := FExternalLinkPatterns;
-        for i := 0 to Patterns.Count - 1 do
-          Patterns[i].Folder := ExpandLinkFolder(Patterns[i].Folder);
+        Patterns := FExternalLinkPatterns; // folders expanded by the source editor
       end;
 
     GutterPartList.Sort;

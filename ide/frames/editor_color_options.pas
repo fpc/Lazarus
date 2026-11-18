@@ -213,15 +213,11 @@ type
 
 implementation
 
-uses editor_display_options, RegExpr, SynPluginExternalLink;
+uses editor_display_options;
 
 {$R *.lfm}
 
 type
-
-  TSampleLinkSpan = record
-    StartX, EndX: Integer; // logical, EndX just after the link
-  end;
 
   { TSampleLinkMarkup
     In the editor a link only shows while the mouse is on it with the key for
@@ -231,7 +227,7 @@ type
   TSampleLinkMarkup = class(TSynEditMarkup)
   public
     Row: Integer; // 0: none
-    Spans: array of TSampleLinkSpan;
+    Spans: array of TEditOptSampleLink;
     function SpanAt(aRow, aLogX: Integer): Integer;
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
       const aStartCol: TLazSynDisplayTokenBound;
@@ -1723,59 +1719,23 @@ begin
 end;
 
 procedure TEditorColorOptionsFrame.UpdateSampleLinks;
-// The links on the sample line of "External (HTTP) link": web addresses and
-// text found by the link patterns (e.g. "issue #123").
+// The links on the sample line of "External (HTTP) link", at the places the
+// language info gives: the preview shows the color, it does not test patterns.
 var
   Links: TSampleLinkMarkup;
-  s: String;
-  i, p, e, n: Integer;
-  Expr: TRegExpr;
-  Span: TSampleLinkSpan;
 begin
   Links := TSampleLinkMarkup(FSampleLinks);
   if Links = nil then
     exit;
   Links.Row := 0;
   Links.Spans := nil;
-  if (CurLanguageID >= 0) then
-    Links.Row := EditorOpts.HighlighterList[CurLanguageID].AddAttrSampleLines[ahaExternalLink];
-  if (Links.Row <= 0) or (Links.Row > ColorPreview.Lines.Count) then begin
-    Links.Row := 0;
+  if CurLanguageID < 0 then
     exit;
-  end;
-  s := ColorPreview.Lines[Links.Row - 1];
-  // web addresses
-  p := Pos('https://', s);
-  while p > 0 do begin
-    e := p;
-    while (e <= Length(s)) and (s[e] > ' ') do
-      inc(e);
-    Span.StartX := p;
-    Span.EndX := e;
-    Insert(Span, Links.Spans, Length(Links.Spans));
-    p := Pos('https://', s, e);
-  end;
-  // the link patterns
-  for i := 0 to EditorOpts.ExternalLinkPatterns.Count - 1 do begin
-    Expr := EditorOpts.ExternalLinkPatterns[i].RegExpr;
-    if Expr = nil then
-      continue;
-    try
-      if Expr.Exec(s) then
-        repeat
-          Span.StartX := Expr.MatchPos[0];
-          Span.EndX := Expr.MatchPos[0] + Expr.MatchLen[0];
-          // not inside one found already (e.g. "issue #1" in "fpc issue #1")
-          if (Expr.MatchLen[0] > 0) and (Links.SpanAt(Links.Row, Span.StartX) < 0) then begin
-            n := 0;
-            while (n < Length(Links.Spans)) and (Links.Spans[n].StartX < Span.StartX) do
-              inc(n);
-            Insert(Span, Links.Spans, n);
-          end;
-        until not Expr.ExecNext;
-    except
-    end;
-  end;
+  Links.Row := EditorOpts.HighlighterList[CurLanguageID].AddAttrSampleLines[ahaExternalLink];
+  if (Links.Row <= 0) or (Links.Row > ColorPreview.Lines.Count) then
+    Links.Row := 0
+  else
+    Links.Spans := EditorOpts.HighlighterList[CurLanguageID].SampleLinks;
   ColorPreview.Invalidate;
 end;
 

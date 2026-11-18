@@ -52,6 +52,9 @@ type
     procedure btnRemoveClick(Sender: TObject);
   private
     procedure FillGrid(APatterns: TSynPluginExternalLinkPatterns);
+  protected
+    procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
+      WithThemeSpace: Boolean); override;
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -65,6 +68,15 @@ implementation
 {$R *.lfm}
 
 { TEditorLinksOptionsFrame }
+
+procedure TEditorLinksOptionsFrame.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  inherited CalculatePreferredSize(PreferredWidth, PreferredHeight, WithThemeSpace);
+  // the wrapped lblInfo asks for its current width, so the page could never
+  // get narrower than it once was: the width is the dialog's
+  PreferredWidth := 0;
+end;
 
 procedure TEditorLinksOptionsFrame.btnAddClick(Sender: TObject);
 begin
