@@ -153,6 +153,8 @@ type
     CurLanguageID: Integer;
     FMouseDownPos: TPoint;
     FMouseDownAttr: TLazEditTextAttribute;
+    FSampleLinks: TSynEditMarkup; // TSampleLinkMarkup, on ColorPreview
+    procedure UpdateSampleLinks;
 
     procedure DoCompletionMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,
       Y: Integer);
@@ -214,6 +216,73 @@ implementation
 uses editor_display_options;
 
 {$R *.lfm}
+
+type
+
+  { TSampleLinkMarkup
+    In the editor a link only shows while the mouse is on it with the key for
+    links held. The preview shows the color of "External (HTTP) link" on the
+    links of its sample text all the time. }
+
+  TSampleLinkMarkup = class(TSynEditMarkup)
+  public
+    Spans: array of TEditOptSampleLink; // sorted by Row, StartX
+    function SpanAt(aRow, aLogX: Integer): Integer;
+    function GetMarkupAttributeAtRowCol(const aRow: Integer;
+      const aStartCol: TLazSynDisplayTokenBound;
+      const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier; override;
+    procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
+      const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo;
+      out ANextPhys, ANextLog: Integer); override;
+  end;
+
+{ TSampleLinkMarkup }
+
+function TSampleLinkMarkup.SpanAt(aRow, aLogX: Integer): Integer;
+var
+  i: Integer;
+begin
+  Result := -1;
+  for i := 0 to Length(Spans) - 1 do
+    if (aRow = Spans[i].Row) and (aLogX >= Spans[i].StartX) and (aLogX < Spans[i].EndX) then
+      exit(i);
+end;
+
+function TSampleLinkMarkup.GetMarkupAttributeAtRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound;
+  const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier;
+var
+  i: Integer;
+begin
+  Result := nil;
+  i := SpanAt(aRow, aStartCol.Logical);
+  if i < 0 then
+    exit;
+  MarkupInfo.SetFrameBoundsLog(Spans[i].StartX, Spans[i].EndX);
+  Result := MarkupInfo;
+end;
+
+procedure TSampleLinkMarkup.GetNextMarkupColAfterRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo;
+  out ANextPhys, ANextLog: Integer);
+var
+  i: Integer;
+begin
+  ANextPhys := -1;
+  ANextLog := -1;
+  for i := 0 to Length(Spans) - 1 do begin
+    if aRow <> Spans[i].Row then
+      continue;
+    if aStartCol.Logical < Spans[i].StartX then begin
+      ANextLog := Spans[i].StartX;
+      exit;
+    end;
+    if aStartCol.Logical < Spans[i].EndX then begin
+      ANextLog := Spans[i].EndX;
+      exit;
+    end;
+  end;
+end;
 
 const
   COLOR_NODE_PREFIX = ' abc  ';
@@ -557,6 +626,9 @@ begin
         AddAttr := ahaNone;
         //NewNode := ColorElementTree.Items.FindNodeWithText(COLOR_NODE_PREFIX+AdditionalHighlightAttributes[AddAttr]);
     end;
+    // a click on a sample link means the link color
+    if (FSampleLinks <> nil) and (TSampleLinkMarkup(FSampleLinks).SpanAt(XY.Y, XY.X) >= 0) then
+      AddAttr := ahaExternalLink;
     if AddAttr <> ahaNone then
       SetAttrByEnum(AddAttr);
       //NewNode := ColorElementTree.Items.FindNodeWithText(COLOR_NODE_PREFIX+AdditionalHighlightAttributes[AddAttr]);
@@ -1633,12 +1705,28 @@ begin
         PreviewEdits[a].SetBookMark(1, 1, 2);
         PreviewEdits[a].SetBookMark(2, 1, 5);
       end;
+      UpdateSampleLinks;
       UpdateCurrentScheme;
     finally
       for a := Low(PreviewEdits) to High(PreviewEdits) do
         PreviewEdits[a].EndUpdate;
     end;
   end;
+end;
+
+procedure TEditorColorOptionsFrame.UpdateSampleLinks;
+// The links in the sample text, at the places the language info gives: the
+// preview shows the color of "External (HTTP) link", it does not test patterns.
+var
+  Links: TSampleLinkMarkup;
+begin
+  Links := TSampleLinkMarkup(FSampleLinks);
+  if Links = nil then
+    exit;
+  Links.Spans := nil;
+  if CurLanguageID >= 0 then
+    Links.Spans := EditorOpts.HighlighterList[CurLanguageID].SampleLinks;
+  ColorPreview.Invalidate;
 end;
 
 procedure TEditorColorOptionsFrame.UpdateCurrentScheme;
@@ -1660,6 +1748,16 @@ begin
 
       if not FIsEditingDefaults then
         FCurrentColorScheme.ApplyTo(FCurrentHighlighter);
+
+      if FSampleLinks <> nil then begin
+        Attri := FCurrentColorScheme.AttributeByEnum[ahaExternalLink];
+        if Attri <> nil then begin
+          Attri.ApplyTo(FSampleLinks.MarkupInfo);
+          FSampleLinks.MarkupInfo.StoredName := Attri.StoredName;
+        end
+        else
+          FSampleLinks.MarkupInfo.Clear;
+      end;
 
       for a := Low(PreviewEdits) to High(PreviewEdits) do begin
         FCurrentColorScheme.ApplyTo(PreviewEdits[a]);
@@ -1815,6 +1913,9 @@ var
 begin
   // Prevent the caret from moving
   ColorPreview.RegisterMouseActionSearchHandler(@DoSynEditMouse);
+  // the links on the sample line, freed by the markup manager
+  FSampleLinks := TSampleLinkMarkup.Create(ColorPreview);
+  ColorPreview.MarkupManager.AddMarkUp(FSampleLinks);
   FDialog := ADialog;
   FCurHighlightElement := nil;
   ToolBar.Images := IDEImages.Images_16;

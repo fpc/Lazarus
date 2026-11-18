@@ -28,7 +28,7 @@ unit SynPluginExternalLink;
 interface
 
 uses
-  Graphics, LCLIntf, Clipbrd, SysUtils, Classes,
+  Graphics, LCLIntf, Clipbrd, SysUtils, Classes, RegExpr,
   SynEdit, SynEditMarkupCtrlMouseLink, SynEditTypes, SynEditMouseCmds,
   LazEditTextAttributes, LazEditHighlighter, SynEditStrConst;
 
@@ -50,8 +50,49 @@ type
 
   TSynPluginExternalLink = class;
 
+  { TSynPluginExternalLinkPattern
+    Text that is not a web address but stands for one, e.g. "issue #123".
+    Pattern is a regular expression (case-insensitive); Url is the address to
+    open, where $1..$9 are replaced by the groups of the match ($0 the whole
+    match), e.g. Pattern "issue #(\d+)" with Url "https://example.org/issues/$1".
+    With a Folder it only works where OnIsInFolder says the text is in that
+    folder (e.g. the file in the editor). }
+
+  TSynPluginExternalLinkPattern = class(TCollectionItem)
+  private
+    FPattern: string;
+    FUrl: string;
+    FFolder: string;
+    FRegExpr: TRegExpr;
+    FInvalid: boolean;
+    procedure SetPattern(AValue: string);
+    procedure SetUrl(AValue: string);
+    function GetRegExpr: TRegExpr;
+  public
+    destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
+    // nil if Pattern is empty or not a valid expression
+    property RegExpr: TRegExpr read GetRegExpr;
+  published
+    property Pattern: string read FPattern write SetPattern;
+    property Url: string read FUrl write SetUrl;
+    property Folder: string read FFolder write FFolder;
+  end;
+
+  { TSynPluginExternalLinkPatterns }
+
+  TSynPluginExternalLinkPatterns = class(TOwnedCollection)
+  private
+    function GetItem(Index: Integer): TSynPluginExternalLinkPattern;
+  public
+    constructor Create(AOwner: TPersistent);
+    function Add(const APattern, AUrl: string; const AFolder: string = ''): TSynPluginExternalLinkPattern; overload;
+    property Items[Index: Integer]: TSynPluginExternalLinkPattern read GetItem; default;
+  end;
+
   TSynPluginExternalLinkOnLinkOpen = procedure(Sender: TSynPluginExternalLink;
     var ALinkText: string; var AHandled: Boolean);
+  TSynPluginExternalLinkIsInFolder = function(Sender: TObject; const AFolder: string): boolean of object;
 
   { TSynPluginExternalLink }
 
@@ -62,10 +103,16 @@ type
     FMarkupLink: TSynEditMarkupMouseLink;
     FMouseActions: TSynPluginExternalLinkMouseActions;
     FOnLinkOpen: TSynPluginExternalLinkOnLinkOpen;
+    FPatterns: TSynPluginExternalLinkPatterns;
+    FOnIsInFolder: TSynPluginExternalLinkIsInFolder;
     // FPOObservedChanged: MouseActions changed
     procedure FPOObservedChanged(ASender : TObject; Operation : TFPObservedOperation; Data : Pointer);
     function GetCurrentLinkText: string;
+    function GetCurrentLinkTarget: string;
     procedure SetEnabled(AValue: boolean);
+    procedure SetPatterns(AValue: TSynPluginExternalLinkPatterns);
+    function FindPatternLink(const ALine: string; APosX: integer;
+      out AStart, ALength: integer; out AUrl: string): boolean;
     procedure DoMarkupInfoChanged(Sender: TObject);
     procedure DoGetShiftStateInfo(ASender: TObject; AShift: TShiftState; out AShouldShow,
       ACanClick: boolean);
@@ -85,6 +132,12 @@ type
     destructor Destroy; override;
     property Enabled: boolean read FEnabled write SetEnabled;
     property CurrentLinkText: string read GetCurrentLinkText;
+    // The address to open: CurrentLinkText, or for a link found by Patterns its Url
+    property CurrentLinkTarget: string read GetCurrentLinkTarget;
+    property Patterns: TSynPluginExternalLinkPatterns read FPatterns write SetPatterns;
+    // For patterns with a Folder: is the text in the editor in that folder.
+    // Without it such patterns find nothing.
+    property OnIsInFolder: TSynPluginExternalLinkIsInFolder read FOnIsInFolder write FOnIsInFolder;
     property MarkupInfo : TLazEditHighlighterAttributesModifier read FMarkupInfo write SetMarkupInfo;
     property MouseActions: TSynPluginExternalLinkMouseActions read FMouseActions;
     property OnLinkOpen: TSynPluginExternalLinkOnLinkOpen read FOnLinkOpen write FOnLinkOpen;
@@ -161,6 +214,79 @@ begin
   Result := Ch^ = #0;
 end;
 
+{ TSynPluginExternalLinkPattern }
+
+procedure TSynPluginExternalLinkPattern.SetPattern(AValue: string);
+begin
+  if FPattern = AValue then Exit;
+  FPattern := AValue;
+  FreeAndNil(FRegExpr);
+  FInvalid := False;
+  Changed(False);
+end;
+
+procedure TSynPluginExternalLinkPattern.SetUrl(AValue: string);
+begin
+  if FUrl = AValue then Exit;
+  FUrl := AValue;
+  Changed(False);
+end;
+
+function TSynPluginExternalLinkPattern.GetRegExpr: TRegExpr;
+begin
+  if (FRegExpr = nil) and (not FInvalid) and (FPattern <> '') then begin
+    FRegExpr := TRegExpr.Create;
+    FRegExpr.ModifierI := True;
+    try
+      FRegExpr.Expression := FPattern;
+      FRegExpr.Compile;
+    except
+      // a pattern that does not compile finds nothing
+      FreeAndNil(FRegExpr);
+      FInvalid := True;
+    end;
+  end;
+  Result := FRegExpr;
+end;
+
+destructor TSynPluginExternalLinkPattern.Destroy;
+begin
+  FreeAndNil(FRegExpr);
+  inherited Destroy;
+end;
+
+procedure TSynPluginExternalLinkPattern.Assign(Source: TPersistent);
+begin
+  if Source is TSynPluginExternalLinkPattern then begin
+    Pattern := TSynPluginExternalLinkPattern(Source).Pattern;
+    Url     := TSynPluginExternalLinkPattern(Source).Url;
+    Folder  := TSynPluginExternalLinkPattern(Source).Folder;
+  end
+  else
+    inherited Assign(Source);
+end;
+
+{ TSynPluginExternalLinkPatterns }
+
+function TSynPluginExternalLinkPatterns.GetItem(Index: Integer): TSynPluginExternalLinkPattern;
+begin
+  Result := TSynPluginExternalLinkPattern(inherited Items[Index]);
+end;
+
+constructor TSynPluginExternalLinkPatterns.Create(AOwner: TPersistent);
+begin
+  inherited Create(AOwner, TSynPluginExternalLinkPattern);
+end;
+
+function TSynPluginExternalLinkPatterns.Add(const APattern, AUrl: string;
+  const AFolder: string): TSynPluginExternalLinkPattern;
+begin
+  Result := TSynPluginExternalLinkPattern(inherited Add);
+  Result.Pattern := APattern;
+  Result.Url := AUrl;
+  Result.Folder := AFolder;
+end;
+
 { TSynPluginExternalLinkMouseActions }
 
 procedure TSynPluginExternalLinkMouseActions.ResetDefaults;
@@ -190,6 +316,7 @@ var
   Line: string;
   PosX: integer;
   Found: boolean;
+  PatternUrl: string;
 begin
   AnInfoState := liNoData;
 
@@ -262,7 +389,9 @@ begin
       Inc(aLinkLength);
     end;
   end;
-  if (PosX >= aLinkStart) and (PosX <= aLinkStart + aLinkLength) then begin
+  if (aLinkStart = 0) or (PosX > aLinkStart + aLinkLength) then
+    FindPatternLink(Line, PosX, aLinkStart, aLinkLength, PatternUrl);
+  if (aLinkStart > 0) and (PosX >= aLinkStart) and (PosX <= aLinkStart + aLinkLength) then begin
     ALinkData.StartPos := point(aLinkStart, ALogXY.Y);
     ALinkData.EndPos   := point(aLinkStart+aLinkLength, ALogXY.Y);
     ALinkData.IsLinkable := True;
@@ -277,6 +406,56 @@ begin
     FMarkupLink.ClearShiftStateCache;
 end;
 
+function TSynPluginExternalLink.FindPatternLink(const ALine: string; APosX: integer; out AStart,
+  ALength: integer; out AUrl: string): boolean;
+// The first of Patterns with a match that covers APosX (the same way a web
+// address does: up to and including the position just after it).
+const
+  MAX_LINK_LEN = 300;
+var
+  i, Lim: integer;
+  Expr: TRegExpr;
+begin
+  Result := False;
+  AStart := 0;
+  ALength := 0;
+  AUrl := '';
+  if (FPatterns = nil) or (ALine = '') then
+    exit;
+  // a match that starts further back can not reach APosX
+  Lim := APosX - MAX_LINK_LEN;
+  if Lim < 1 then
+    Lim := 1;
+  for i := 0 to FPatterns.Count - 1 do begin
+    if (FPatterns[i].Folder <> '') and (FOnIsInFolder = nil) then
+      continue;
+    Expr := FPatterns[i].RegExpr;
+    if Expr = nil then
+      continue;
+    try
+      Expr.InputString := ALine;
+      if Expr.ExecPos(Lim) then
+        repeat
+          if Expr.MatchPos[0] > APosX then
+            break;
+          if (Expr.MatchLen[0] > 0) and
+             (APosX <= Expr.MatchPos[0] + Expr.MatchLen[0])
+          then begin
+            // the folder is asked last, only for a match under the mouse
+            if (FPatterns[i].Folder <> '') and not FOnIsInFolder(Self, FPatterns[i].Folder) then
+              break;
+            AStart := Expr.MatchPos[0];
+            ALength := Expr.MatchLen[0];
+            AUrl := Expr.Substitute(FPatterns[i].Url);
+            exit(True);
+          end;
+        until not Expr.ExecNext;
+    except
+      // a bad expression at run time (e.g. too complex) is no link
+    end;
+  end;
+end;
+
 function TSynPluginExternalLink.GetCurrentLinkText: string;
 begin
   Result := '';
@@ -284,6 +463,31 @@ begin
     exit;
 
   Result := Editor.TextBetweenPoints[FMarkupLink.LinkStartPos, FMarkupLink.LinkEndPos];
+end;
+
+function TSynPluginExternalLink.GetCurrentLinkTarget: string;
+var
+  Line: string;
+  aStart, aLength: integer;
+begin
+  Result := CurrentLinkText;
+  if (Result = '') or (FPatterns = nil) or (FPatterns.Count = 0) then
+    exit;
+  // a link that is a web address opens as it is written
+  if (Pos('://', Result) > 0) or StartBy(PChar(Result), 'www.') then
+    exit;
+  Line := Editor.Lines[FMarkupLink.LinkStartPos.Y - 1];
+  if FindPatternLink(Line, FMarkupLink.LinkStartPos.X, aStart, aLength, Result) and
+     (aStart = FMarkupLink.LinkStartPos.X) and
+     (aStart + aLength = FMarkupLink.LinkEndPos.X)
+  then
+    exit;
+  Result := CurrentLinkText;
+end;
+
+procedure TSynPluginExternalLink.SetPatterns(AValue: TSynPluginExternalLinkPatterns);
+begin
+  FPatterns.Assign(AValue);
 end;
 
 procedure TSynPluginExternalLink.SetEnabled(AValue: boolean);
@@ -316,9 +520,9 @@ begin
         Result := True;
       end;
     emcPluginExternalLinkCopyToClip: begin
-        s := CurrentLinkText;
+        s := CurrentLinkTarget;
         if s <> '' then
-          Clipboard.AsText := CurrentLinkText;
+          Clipboard.AsText := s;
         Result := True;
       end;
     emcPluginExternalLinkSelect: begin
@@ -347,7 +551,7 @@ var
   s: String;
   Done: Boolean;
 begin
-  s := CurrentLinkText;
+  s := CurrentLinkTarget;
 
   if FOnLinkOpen <> nil then begin
     Done := False;
@@ -438,12 +642,15 @@ begin
   FMarkupInfo.InternalSaveDefaultValues;
   FMarkupInfo.OnChange := @DoMarkupInfoChanged;
 
+  FPatterns := TSynPluginExternalLinkPatterns.Create(Self);
+
   inherited Create(AOwner);
 end;
 
 destructor TSynPluginExternalLink.Destroy;
 begin
   inherited Destroy;
+  FPatterns.Free;
   FMarkupInfo.Free;
   FMouseActions.Free;
 end;

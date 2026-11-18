@@ -1003,6 +1003,11 @@ type
       For example Symbol in HTML is not mapped and therefore has as default
       value fo style [fsBold] as defined in synhighlighterhtml.pp.
     }
+  TEditOptSampleLink = record
+    Row: Integer;          // first line = 1
+    StartX, EndX: Integer; // logical, EndX just after the link
+  end;
+
   TEditOptLanguageInfo = class
   private
     MappedAttributes: TStringList; // map attributes to pascal
@@ -1014,6 +1019,8 @@ type
     SampleSource: String;
     // TODO: AddAttrSampleLines > replace by Map(XmlName: String, line: int)
     AddAttrSampleLines: array[TAdditionalHilightAttribute] of Integer; // first line = 1
+    // where SampleSource has links, for the color of ahaExternalLink
+    SampleLinks: array of TEditOptSampleLink;
 //    MappedAttributes: TStringList; // map attributes to pascal
     DefaultCommentType: TCommentType;
     CaretXY: TPoint;
@@ -2078,6 +2085,8 @@ type
     fMarkupCurWordNoKeyword: Boolean;
     fMarkupCurWordTrim: Boolean;
     fMarkupCurWordNoTimer: Boolean;
+    // Text that links to a web page, e.g. "issue #123" (Ctrl+click)
+    FExternalLinkPatterns: TSynPluginExternalLinkPatterns;
     // Code Tools options
     fAutoBlockCompletion: Boolean;
     fAutoCodeParameters: Boolean;
@@ -2109,6 +2118,7 @@ type
     function GetCodeTemplateFileNameExpand: String;
     function GetColorSchemeLanguage(aHighLighter: TLazEditCustomHighlighter;
                           SynColorSchemeName: String = ''): TColorSchemeLanguage;
+    procedure SetExternalLinkPatterns(AValue: TSynPluginExternalLinkPatterns);
   protected
     function GetEditorFontName: string; override;
     procedure SetEditorFontName(const AValue: string); override;
@@ -2124,6 +2134,7 @@ type
     destructor Destroy; override;
     procedure Load;
     procedure Save;
+    class procedure SetDefaultExternalLinkPatterns(APatterns: TSynPluginExternalLinkPatterns);
     function LoadCodeTemplates(AnAutoComplete: TSynEditAutoComplete): TModalResult;
     function SaveCodeTemplates(AnAutoComplete: TSynEditAutoComplete): TModalResult;
     procedure AssignKeyMapTo(ASynEdit: TSynEdit; SimilarEdit: TSynEdit = nil); // Or copy fromSimilarEdit
@@ -2228,6 +2239,8 @@ type
       read fMarkupCurWordTrim write fMarkupCurWordTrim default True;
     property MarkupCurWordNoTimer: Boolean
       read fMarkupCurWordNoTimer write fMarkupCurWordNoTimer default False;
+    property ExternalLinkPatterns: TSynPluginExternalLinkPatterns
+      read FExternalLinkPatterns write SetExternalLinkPatterns;
     // Code Tools options
     property AutoBlockCompletion: Boolean
       read fAutoBlockCompletion write FAutoBlockCompletion default True;
@@ -3623,6 +3636,13 @@ begin
   assert(False, 'TEditOptLangList.Clear: Not allowed - Index is used as ID');
 end;
 
+function SampleLink(ARow, AStartX, AEndX: Integer): TEditOptSampleLink;
+begin
+  Result.Row := ARow;
+  Result.StartX := AStartX;
+  Result.EndX := AEndX;
+end;
+
 procedure TEditOptLangList.Init;
 var
   NewInfo: TEditOptLanguageInfo;
@@ -3707,6 +3727,7 @@ begin
   '      mrCancel, mrIgnore: dec(X)'#13+
   '    end'#13+
   '    ListBox1.Items.Add(IntToStr(X)); // TODO: more work'#13+
+  '    // see issue #41917 and https://www.lazarus-ide.org'#13+
       '    // A multiline'#13 +
       '    // comment'#13 +
 //{ $IFDEF WithSynMarkupIfDef}
@@ -3750,6 +3771,9 @@ begin
     AddAttrSampleLines[ahaExecutionPoint] := 34;
     AddAttrSampleLines[ahaTextBlock] := 33;
     AddAttrSampleLines[ahaFoldedCode] := 30;
+    SetLength(SampleLinks, 2);
+    SampleLinks[0] := SampleLink(46, 12, 24); // issue #41917
+    SampleLinks[1] := SampleLink(46, 29, 56); // https://www.lazarus-ide.org
     CaretXY := Point(21, 24);
   end;
   Add(NewInfo);
@@ -3808,6 +3832,7 @@ begin
   '      mrCancel, mrIgnore: dec(X)'#13+
   '    end'#13+
   '    ListBox1.Items.Add(IntToStr(X)); // TODO: more work'#13+
+  '    // see issue #41917 and https://www.lazarus-ide.org'#13+
       '    // A multiline'#13 +
       '    // comment'#13 +
 //{ $IFDEF WithSynMarkupIfDef}
@@ -3851,6 +3876,9 @@ begin
     AddAttrSampleLines[ahaExecutionPoint] := 34;
     AddAttrSampleLines[ahaTextBlock] := 33;
     AddAttrSampleLines[ahaFoldedCode] := 30;
+    SetLength(SampleLinks, 2);
+    SampleLinks[0] := SampleLink(46, 12, 24); // issue #41917
+    SampleLinks[1] := SampleLink(46, 29, 56); // https://www.lazarus-ide.org
     CaretXY := Point(21, 24);
   end;
   Add(NewInfo);
@@ -5955,6 +5983,8 @@ begin
       XMLConfig := Nil;
     end;
   end;
+  FExternalLinkPatterns := TSynPluginExternalLinkPatterns.Create(nil);
+  SetDefaultExternalLinkPatterns(FExternalLinkPatterns);
   // set defaults
   InitForRttiXmlConf;
   Init;
@@ -5972,6 +6002,7 @@ end;
 destructor TEditorOptions.Destroy;
 begin
   FreeAndNil(FDefaultValues);
+  FreeAndNil(FExternalLinkPatterns);
   FreeAndNil(fMultiWinEditAccessOrder);
   FreeAndNil(fUserDefinedColors);
   FreeAndNil(fUserColorSchemeGroup);
@@ -6051,6 +6082,42 @@ begin
   IDEMacros.SubstituteMacros(result);
 end;
 
+function ExternalLinkPatternsEqual(A, B: TSynPluginExternalLinkPatterns): Boolean;
+var
+  i: Integer;
+begin
+  Result := A.Count = B.Count;
+  if Result then
+    for i := 0 to A.Count - 1 do
+      if (A[i].Pattern <> B[i].Pattern) or (A[i].Url <> B[i].Url) or (A[i].Folder <> B[i].Folder) then
+        exit(False);
+end;
+
+class procedure TEditorOptions.SetDefaultExternalLinkPatterns(
+  APatterns: TSynPluginExternalLinkPatterns);
+const
+  FpcIssueUrl = 'https://gitlab.com/freepascal.org/fpc/source/-/issues/$1';
+  LazIssueUrl = 'https://gitlab.com/freepascal.org/lazarus/lazarus/-/issues/$1';
+begin
+  APatterns.BeginUpdate;
+  try
+    APatterns.Clear;
+    // "fpc issue #123" and "lazarus issue #123" anywhere, a plain
+    // "issue #123" only in the FPC and Lazarus sources
+    APatterns.Add('\bfpc *(?:issue|bug|mantis) *#? *(\d{4,})', FpcIssueUrl);
+    APatterns.Add('\blazarus *(?:issue|bug|mantis) *#? *(\d{4,})', LazIssueUrl);
+    APatterns.Add('\b(?:issue|bug|mantis) *#? *(\d{4,})', FpcIssueUrl, '$(FPCSrcDir)');
+    APatterns.Add('\b(?:issue|bug|mantis) *#? *(\d{4,})', LazIssueUrl, '$(LazarusDir)');
+  finally
+    APatterns.EndUpdate;
+  end;
+end;
+
+procedure TEditorOptions.SetExternalLinkPatterns(AValue: TSynPluginExternalLinkPatterns);
+begin
+  FExternalLinkPatterns.Assign(AValue);
+end;
+
 procedure TEditorOptions.Load;
 // load options from XML file
 var
@@ -6062,6 +6129,7 @@ var
   DefOpts: TSynEditorOptions;
   OldGutterSeparatorIndex: Int64;
   OldShowLineNumbers: Boolean;
+  LinkPath: String;
 begin
   try
     FileVersion:=XMLConfig.GetValue('EditorOptions/Version', EditorOptsFormatVersion);
@@ -6252,6 +6320,15 @@ begin
       XMLConfig.GetValue('EditorOptions/Display/MarkupCurrentWord/NoTimer', False);
     FShowFileNameInCaption :=
       XMLConfig.GetValue('EditorOptions/Display/ShowFileNameInCaption', False);
+    // not stored: the defaults
+    if XMLConfig.GetValue('EditorOptions/Display/ExternalLinks/Changed', False) then begin
+      FExternalLinkPatterns.Clear;
+      for i := 0 to XMLConfig.GetListItemCount('EditorOptions/Display/ExternalLinks/', 'Item', False) - 1 do begin
+        LinkPath := 'EditorOptions/Display/ExternalLinks/' + XMLConfig.GetListItemXPath('Item', i) + '/';
+        FExternalLinkPatterns.Add(XMLConfig.GetValue(LinkPath + 'Pattern', ''),
+          XMLConfig.GetValue(LinkPath + 'Url', ''), XMLConfig.GetValue(LinkPath + 'Folder', ''));
+      end;
+    end;
 
     // Code Tools options
     fAutoBlockCompletion :=
@@ -6320,7 +6397,8 @@ var
   SynEditOptName: String;
   i: Integer;
   SynEditOpt2: TSynEditorOption2;
-
+  DefLinks: TSynPluginExternalLinkPatterns;
+  LinkPath: String;
 begin
   try
     XMLConfig.SetValue('EditorOptions/Version', EditorOptsFormatVersion);
@@ -6463,6 +6541,24 @@ begin
       FMarkupCurWordNoTimer, False);
     XMLConfig.SetDeleteValue('EditorOptions/Display/ShowFileNameInCaption',
         FShowFileNameInCaption, False);
+    // only when changed, so a later change of the defaults reaches everyone
+    XMLConfig.DeletePath('EditorOptions/Display/ExternalLinks');
+    DefLinks := TSynPluginExternalLinkPatterns.Create(nil);
+    try
+      SetDefaultExternalLinkPatterns(DefLinks);
+      if not ExternalLinkPatternsEqual(FExternalLinkPatterns, DefLinks) then begin
+        // Changed: also an empty list is the user's
+        XMLConfig.SetValue('EditorOptions/Display/ExternalLinks/Changed', True);
+        for i := 0 to FExternalLinkPatterns.Count - 1 do begin
+          LinkPath := 'EditorOptions/Display/ExternalLinks/' + XMLConfig.GetListItemXPath('Item', i) + '/';
+          XMLConfig.SetValue(LinkPath + 'Pattern', FExternalLinkPatterns[i].Pattern);
+          XMLConfig.SetValue(LinkPath + 'Url', FExternalLinkPatterns[i].Url);
+          XMLConfig.SetDeleteValue(LinkPath + 'Folder', FExternalLinkPatterns[i].Folder, '');
+        end;
+      end;
+    finally
+      DefLinks.Free;
+    end;
     // Remove an old value from Misc section. Done in Lazarus 3.99, March 2024.
     XMLConfig.DeleteValue('EditorOptions/Misc/ShowFileNameInCaption');
 
@@ -7423,7 +7519,10 @@ begin
       ASynEdit.RightGutter.LineOverviewPart.MouseActionsForMarks.Assign(FUserMouseSettings.GutterActionsOverViewMarks);
     end;
     if (ASynEdit is TIDESynEditor) and (TIDESynEditor(ASynEdit).ExternalHttpLink <> nil) then
-      TIDESynEditor(ASynEdit).ExternalHttpLink.MouseActions.Assign(fUserMouseSettings.ExtLinkActions);
+      with TIDESynEditor(ASynEdit).ExternalHttpLink do begin
+        MouseActions.Assign(fUserMouseSettings.ExtLinkActions);
+        Patterns := FExternalLinkPatterns; // folders expanded by the source editor
+      end;
 
     GutterPartList.Sort;
     for i := 0 to GutterPartList.Count - 1 do begin

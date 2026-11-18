@@ -2021,6 +2021,19 @@ resourcestring
                               ' the begin of the filter.';
 
   dlgMarkupUserDefined = 'User defined markup';
+  dlgExternalLinks = 'Links';
+  dlgExternalLinksGroup = 'Text that links to a web page';
+  dlgExternalLinksInfo = 'Text that matches a pattern is a link, like a web address: '
+    +'hold the key for links (Ctrl) to see it, click to open it. '
+    +'The pattern is a regular expression, upper and lower case alike. '
+    +'In the address, $1 to $9 are the parts of the match in brackets. '
+    +'The first pattern that matches is used. With a folder it only works in files in that folder; '
+    +'IDE macros like $(LazarusDir) or $(ProjPath) can be used there.';
+  dlgExternalLinksPattern = 'Pattern';
+  dlgExternalLinksUrl = 'Address';
+  dlgExternalLinksFolder = 'Only in folder';
+  dlgExternalLinksAdd = 'Add';
+  dlgExternalLinksDefaults = 'Restore defaults';
   dlgMarkupUserDefinedDivSelect = 'Create or Select list';
   dlgMarkupUserDefinedDivEdit   = 'Edit list';
   dlgMarkupUserDefinedNoLists = 'No lists';
