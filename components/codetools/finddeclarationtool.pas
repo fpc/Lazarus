@@ -2288,7 +2288,7 @@ begin
       end;
     until j>k;
     if j>k then // tail
-        List.Append(SubString(PChar(@GenExpr[i]),j-i));
+        List.Append(SubString(PChar(@GenExpr[k]),j-k));
 
     if List.Count>0 then begin
       // debugln(['Old: ',Result]);
