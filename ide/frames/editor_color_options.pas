@@ -222,12 +222,11 @@ type
   { TSampleLinkMarkup
     In the editor a link only shows while the mouse is on it with the key for
     links held. The preview shows the color of "External (HTTP) link" on the
-    links of its sample line all the time. }
+    links of its sample text all the time. }
 
   TSampleLinkMarkup = class(TSynEditMarkup)
   public
-    Row: Integer; // 0: none
-    Spans: array of TEditOptSampleLink;
+    Spans: array of TEditOptSampleLink; // sorted by Row, StartX
     function SpanAt(aRow, aLogX: Integer): Integer;
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
       const aStartCol: TLazSynDisplayTokenBound;
@@ -244,10 +243,9 @@ var
   i: Integer;
 begin
   Result := -1;
-  if (aRow = Row) and (Row > 0) then
-    for i := 0 to Length(Spans) - 1 do
-      if (aLogX >= Spans[i].StartX) and (aLogX < Spans[i].EndX) then
-        exit(i);
+  for i := 0 to Length(Spans) - 1 do
+    if (aRow = Spans[i].Row) and (aLogX >= Spans[i].StartX) and (aLogX < Spans[i].EndX) then
+      exit(i);
 end;
 
 function TSampleLinkMarkup.GetMarkupAttributeAtRowCol(const aRow: Integer;
@@ -272,9 +270,9 @@ var
 begin
   ANextPhys := -1;
   ANextLog := -1;
-  if (aRow <> Row) or (Row <= 0) then
-    exit;
   for i := 0 to Length(Spans) - 1 do begin
+    if aRow <> Spans[i].Row then
+      continue;
     if aStartCol.Logical < Spans[i].StartX then begin
       ANextLog := Spans[i].StartX;
       exit;
@@ -628,11 +626,9 @@ begin
         AddAttr := ahaNone;
         //NewNode := ColorElementTree.Items.FindNodeWithText(COLOR_NODE_PREFIX+AdditionalHighlightAttributes[AddAttr]);
     end;
-    // on the link sample line, only a click on a link means the link color
-    if (AddAttr = ahaExternalLink) and
-       ((FSampleLinks = nil) or (TSampleLinkMarkup(FSampleLinks).SpanAt(XY.Y, XY.X) < 0))
-    then
-      AddAttr := ahaNone;
+    // a click on a sample link means the link color
+    if (FSampleLinks <> nil) and (TSampleLinkMarkup(FSampleLinks).SpanAt(XY.Y, XY.X) >= 0) then
+      AddAttr := ahaExternalLink;
     if AddAttr <> ahaNone then
       SetAttrByEnum(AddAttr);
       //NewNode := ColorElementTree.Items.FindNodeWithText(COLOR_NODE_PREFIX+AdditionalHighlightAttributes[AddAttr]);
@@ -1719,22 +1715,16 @@ begin
 end;
 
 procedure TEditorColorOptionsFrame.UpdateSampleLinks;
-// The links on the sample line of "External (HTTP) link", at the places the
-// language info gives: the preview shows the color, it does not test patterns.
+// The links in the sample text, at the places the language info gives: the
+// preview shows the color of "External (HTTP) link", it does not test patterns.
 var
   Links: TSampleLinkMarkup;
 begin
   Links := TSampleLinkMarkup(FSampleLinks);
   if Links = nil then
     exit;
-  Links.Row := 0;
   Links.Spans := nil;
-  if CurLanguageID < 0 then
-    exit;
-  Links.Row := EditorOpts.HighlighterList[CurLanguageID].AddAttrSampleLines[ahaExternalLink];
-  if (Links.Row <= 0) or (Links.Row > ColorPreview.Lines.Count) then
-    Links.Row := 0
-  else
+  if CurLanguageID >= 0 then
     Links.Spans := EditorOpts.HighlighterList[CurLanguageID].SampleLinks;
   ColorPreview.Invalidate;
 end;
@@ -2152,8 +2142,7 @@ begin
   if CurLanguageID < 0 then
     exit;
   AddAttr := EditorOpts.HighlighterList[CurLanguageID].SampleLineToAddAttr(Info.Line);
-  // links are shown by TSampleLinkMarkup, only where the links are
-  if (AddAttr <> ahaNone) and (AddAttr <> ahaFoldedCode) and (AddAttr <> ahaExternalLink) then begin
+  if (AddAttr <> ahaNone) and (AddAttr <> ahaFoldedCode) then begin
     e := FCurrentColorScheme.AttributeByEnum[AddAttr];
     if e <> nil then begin
       Special := True;

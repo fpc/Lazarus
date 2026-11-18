@@ -1004,6 +1004,7 @@ type
       value fo style [fsBold] as defined in synhighlighterhtml.pp.
     }
   TEditOptSampleLink = record
+    Row: Integer;          // first line = 1
     StartX, EndX: Integer; // logical, EndX just after the link
   end;
 
@@ -1018,7 +1019,7 @@ type
     SampleSource: String;
     // TODO: AddAttrSampleLines > replace by Map(XmlName: String, line: int)
     AddAttrSampleLines: array[TAdditionalHilightAttribute] of Integer; // first line = 1
-    // the links on line AddAttrSampleLines[ahaExternalLink]
+    // where SampleSource has links, for the color of ahaExternalLink
     SampleLinks: array of TEditOptSampleLink;
 //    MappedAttributes: TStringList; // map attributes to pascal
     DefaultCommentType: TCommentType;
@@ -3635,8 +3636,9 @@ begin
   assert(False, 'TEditOptLangList.Clear: Not allowed - Index is used as ID');
 end;
 
-function SampleLink(AStartX, AEndX: Integer): TEditOptSampleLink;
+function SampleLink(ARow, AStartX, AEndX: Integer): TEditOptSampleLink;
 begin
+  Result.Row := ARow;
   Result.StartX := AStartX;
   Result.EndX := AEndX;
 end;
@@ -3769,10 +3771,9 @@ begin
     AddAttrSampleLines[ahaExecutionPoint] := 34;
     AddAttrSampleLines[ahaTextBlock] := 33;
     AddAttrSampleLines[ahaFoldedCode] := 30;
-    AddAttrSampleLines[ahaExternalLink] := 46;
     SetLength(SampleLinks, 2);
-    SampleLinks[0] := SampleLink(12, 24); // issue #41917
-    SampleLinks[1] := SampleLink(29, 56); // https://www.lazarus-ide.org
+    SampleLinks[0] := SampleLink(46, 12, 24); // issue #41917
+    SampleLinks[1] := SampleLink(46, 29, 56); // https://www.lazarus-ide.org
     CaretXY := Point(21, 24);
   end;
   Add(NewInfo);
@@ -3875,10 +3876,9 @@ begin
     AddAttrSampleLines[ahaExecutionPoint] := 34;
     AddAttrSampleLines[ahaTextBlock] := 33;
     AddAttrSampleLines[ahaFoldedCode] := 30;
-    AddAttrSampleLines[ahaExternalLink] := 46;
     SetLength(SampleLinks, 2);
-    SampleLinks[0] := SampleLink(12, 24); // issue #41917
-    SampleLinks[1] := SampleLink(29, 56); // https://www.lazarus-ide.org
+    SampleLinks[0] := SampleLink(46, 12, 24); // issue #41917
+    SampleLinks[1] := SampleLink(46, 29, 56); // https://www.lazarus-ide.org
     CaretXY := Point(21, 24);
   end;
   Add(NewInfo);
