@@ -536,9 +536,7 @@ begin
   AHeight := Max(AHeight, hText);
   if cloShowCheckboxes in Options then
   begin
-    hCheck := GetSystemMetrics(SM_CYMENUCHECK) + 2;
-    // MulDiv required to ensure correct per-monitor scaling.
-    hCheck := MulDiv(hCheck, Font.PixelsPerInch, ScreenInfo.PixelsPerInchx);
+    hCheck := ScaleScreenToFont(GetSystemMetrics(SM_CYMENUCHECK) + 2);
     AHeight := Max(AHeight, hCheck);
   end;
 end;

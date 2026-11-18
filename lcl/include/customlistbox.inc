@@ -61,9 +61,8 @@ begin
   B := TBitmap.Create;
   try
     B.Canvas.Font := Font;
-    Result := B.Canvas.TextHeight('Fj');
-    // The following MulDiv is to ensure correct per-monitor scaling
-    Result := MulDiv(Result, Font.PixelsPerInch, ScreenInfo.PixelsPerInchX);
+    Result := ScaleScreenToFont(B.Canvas.TextHeight('Fj'));
+    // ScaleScreenToFont needed for correct per-monitor scaling
   finally
     B.Free;
   end;

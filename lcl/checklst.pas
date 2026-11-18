@@ -230,9 +230,7 @@ begin
   // for Win32WS, ensure item height for internally owner-drawn checkmarks
   if Style <> lbOwnerDrawVariable then
   begin
-    hCheck := GetSystemMetrics(SM_CYMENUCHECK) + 2;
-    // The following MulDiv is for correct per-monitor scaling
-    hCheck := MulDiv(hCheck, Font.PixelsPerInch, ScreenInfo.PixelsPerInchX);
+    hCheck := ScaleScreenToFont(GetSystemMetrics(SM_CYMENUCHECK) + 2);
     Result:= Max(Result, hCheck);
   end;
 end;

@@ -15346,10 +15346,8 @@ var
   Difference: Integer;
 
 begin
-  if Assigned(Node) and (Node <> FRoot) and (Node.NodeHeight <> Value)
-    // wp: why shouldn't it be possible to change nodeheights in read-only mode?
-    {and not (toReadOnly in FOptions.FMiscOptions)}
-  then begin
+  if Assigned(Node) and (Node <> FRoot) and (Node.NodeHeight <> Value) then
+  begin
     Difference := Integer(Value) - Integer(Node.NodeHeight);
     Node.NodeHeight := Value;
 
