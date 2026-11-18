@@ -3717,7 +3717,10 @@ begin
       end;
     end;
     // $F8..$FE: see $F1
-    $FF: SetOpcode(OPud1);
+    $FF: begin
+      SetOpcode(OPud0);
+      AddGv; AddEv;
+    end;
   end;
 
   if not HasOpcode
@@ -3831,7 +3834,7 @@ begin
         $47: begin SetOpcode(OPvpsllv,      OPS_d_q       ); AddVx;  AddHx;  AddWx;  CheckVex; end;
         $58: begin SetOpcode(OPvpbroadcast, OPSx_d        ); AddVx;  AddWx;          CheckVex; end;
         $59: begin SetOpcode(OPvpbroadcast, OPSx_q        ); AddVx;  AddWx;          CheckVex; end;
-        $5A: begin SetOpcode(OPvpbroadcast, OPSx_i128     ); AddVqq; AddMdq;         CheckVex; end;
+        $5A: begin SetOpcode(OPvbroadcast,  OPSx_i128     ); AddVqq; AddMdq;         CheckVex; end;
         $78: begin SetOpcode(OPvpbroadcast, OPSx_b        ); AddVx;  AddWx;          CheckVex; end;
         $79: begin SetOpcode(OPvpbroadcast, OPSx_w        ); AddVx;  AddWx;          CheckVex; end;
         $80: begin SetOpcode(OPinvept                     ); AddGy;  AddMdq;                   end;
@@ -3894,7 +3897,7 @@ begin
           Flags := Flags - [pre66];
         end;
         $F5: begin SetOpcode(OPpdep                       ); AddGy;  AddBy;  AddEy;  CheckVex; end;
-        $F6: begin SetOpcode(OPmul,         OPSx_x        ); AddBy;  AddGy;  AddReg(regGeneral, MODE_SIZE[ProcessMode], REG_D); AddEy; CheckVex; end;
+        $F6: begin SetOpcode(OPmul,         OPSx_x        ); AddGy;  AddBy;  AddEy;  CheckVex; end;
         $F7: begin SetOpcode(OPshr,         OPSx_x        ); AddGy;  AddEy;  AddBy;  CheckVex; end;
       end;
     end;
