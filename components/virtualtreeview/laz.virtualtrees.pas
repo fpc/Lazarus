@@ -26352,7 +26352,7 @@ end;
 
 procedure TBaseVirtualTree.AutoScale();
 
-// If toAutoChangeScale is set, this method ensures that the defaulz node height is set corectly.
+// If toAutoChangeScale is set, this method ensures that the default node height is set correctly.
 
 var
   lTextHeight: Cardinal;
@@ -26361,7 +26361,7 @@ begin
   begin
     Canvas.Font.Assign(Self.Font);
     lTextHeight := Canvas.TextHeight('Tg');
-  //  if (lTextHeight > Self.DefaultNodeHeight) then
+    if (lTextHeight > Self.DefaultNodeHeight) then
       Self.DefaultNodeHeight := lTextHeight;
   end;
 end;
