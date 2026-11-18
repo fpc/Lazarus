@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 
-  see for todo list: http://wiki.lazarus.freepascal.org/index.php/LazDoc
+  see for todo list: https://wiki.freepascal.org/index.php/LazDoc
 }
 
 unit FPDocEditWindow;

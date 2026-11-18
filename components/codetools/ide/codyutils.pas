@@ -396,7 +396,7 @@ procedure OpenCodyHelp(Path: string);
 var
   BasePath: String;
 begin
-  BasePath:='http://wiki.lazarus.freepascal.org/Cody';
+  BasePath:='https://wiki.freepascal.org/Cody';
   OpenURL(BasePath+Path);
 end;
 

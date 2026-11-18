@@ -747,7 +747,7 @@ begin
   StopOnException:=True;
   fOutputDir:='wikixml';
   FImagesDir:='images';
-  FBaseURL:='https://wiki.lazarus.freepascal.org/';
+  FBaseURL:='https://wiki.freepascal.org/';
   fFirstPage:='Lazarus_Documentation';
   FAllPages:=TStringToPointerTree.Create(true);
   FNeededPages:=TStringToPointerTree.Create(true);

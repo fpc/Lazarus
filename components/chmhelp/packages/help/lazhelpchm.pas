@@ -206,7 +206,7 @@ begin
     // Use '_lhlpctl_' in case application developer uses SimpleIPC
     // and also uses the exe name followed by the process ID.
     // See help protocol specs defined in
-    // http://wiki.lazarus.freepascal.org/Help_protocol
+    // https://wiki.freepascal.org/Help_protocol
     // Use process id in order to avoid conflicts when multiple entries are running
     IPCFile:=LowerCase(ExtractFileName(Application.ExeName))+
       '_lhlpctl_'+

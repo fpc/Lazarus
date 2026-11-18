@@ -11,7 +11,7 @@
     Multiply ++ and -- can be nested. Then for each -- a ++ must be given,
     before the text-area ends.
 
-  See comments below and http://wiki.lazarus.freepascal.org/SynEdit_Highlighter
+  See comments below and https://wiki.freepascal.org/SynEdit_Highlighter
 
 *)
 

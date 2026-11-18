@@ -7,7 +7,7 @@
   - the word "not"  (defaults to red color)
   - words, separated by spaces, that start with a,e,i,o,u  (defaults to bold)
 
-  See comments below and http://wiki.lazarus.freepascal.org/SynEdit_Highlighter
+  See comments below and https://wiki.freepascal.org/SynEdit_Highlighter
 
   How it works:
 

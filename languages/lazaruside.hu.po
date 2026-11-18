@@ -16670,7 +16670,9 @@ msgid "Replacing selection failed."
 msgstr "Kijelölés cseréje sikertelen."
 
 #: lazarusidestrconsts.lisreportingbugurl
-msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
+#, fuzzy
+#| msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
+msgid "https://wiki.freepascal.org/How_do_I_create_a_bug_report"
 msgstr "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report/hu"
 
 #: lazarusidestrconsts.lisrescan

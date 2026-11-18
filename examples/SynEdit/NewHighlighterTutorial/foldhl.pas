@@ -8,7 +8,7 @@ unit FoldHl;
 
     Multiply -(- and -)- can be nested.
 
-  See comments below and http://wiki.lazarus.freepascal.org/SynEdit_Highlighter
+  See comments below and https://wiki.freepascal.org/SynEdit_Highlighter
 
 *)
 

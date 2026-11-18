@@ -286,7 +286,7 @@ begin
     VKKeyCode := CocoaConfigApplication.events.keyEventToVK(Event);
 
   case VKKeyCode of
-    // for sure, these are "non-printable" keys (see http://wiki.lazarus.freepascal.org/LCL_Key_Handling)
+    // for sure, these are "non-printable" keys (see https://wiki.freepascal.org/LCL_Key_Handling)
     VK_F1..VK_F24,                     // Function keys (F1-F12)
     VK_PRINT, VK_SCROLL, VK_PAUSE,     // Print Screen, Scroll Lock, Pause
     VK_CAPITAL, VK_TAB,                // Caps Lock, Tab

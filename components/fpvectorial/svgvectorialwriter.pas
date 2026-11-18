@@ -722,7 +722,7 @@ begin
 
   // Headers
   AStrings.Add('<?xml version="1.0" encoding="UTF-8" standalone="no"?>');
-  AStrings.Add('<!-- Created with fpVectorial (http://wiki.lazarus.freepascal.org/fpvectorial) -->');
+  AStrings.Add('<!-- Created with fpVectorial (https://wiki.freepascal.org/fpvectorial) -->');
   AStrings.Add('');
   AStrings.Add('<svg');
   AStrings.Add('  xmlns:dc="http://purl.org/dc/elements/1.1/"');

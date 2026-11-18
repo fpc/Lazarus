@@ -140,7 +140,7 @@ var
     // * Group Box caption doesn't show
     // * Label x position inside group box is too small
     // * Windows control y position inside group box is too highe
-    // See: http://wiki.lazarus.freepascal.org/Windows_CE_Development_Notes#Regressions
+    // See: https://wiki.freepascal.org/Windows_CE_Development_Notes#Regressions
 
     MoveWindowOrgEx(PaintMsg.DC,-ClientBoundRect.Left,-ClientBoundRect.Top);
     try

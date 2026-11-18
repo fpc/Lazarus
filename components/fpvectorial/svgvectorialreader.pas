@@ -14,7 +14,7 @@ Text is drawn upwards (towards negative Y)
 * Example of a supported SVG image:
 
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with fpVectorial (http://wiki.lazarus.freepascal.org/fpvectorial) -->
+<!-- Created with fpVectorial (https://wiki.freepascal.org/fpvectorial) -->
 
 <svg
   xmlns:dc="http://purl.org/dc/elements/1.1/"
