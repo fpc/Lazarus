@@ -4196,7 +4196,7 @@ begin
           // this often anticipates later LM_SIZE messages from the interface
           // and reduces resizes
           // BUT: Do this only when not a form. Form has its own clientrect specification:
-          // https://wiki.lazarus.freepascal.org/Lazarus_FAQ#Why_are_TForm.ClientWidth.2FClientHeight_the_same_as_TForm.Width.2FHeight
+          // https://wiki.freepascal.org/Lazarus_FAQ#Why_are_TForm.ClientWidth.2FClientHeight_the_same_as_TForm.Width.2FHeight
           inc(Result.Right,Width-InterfaceWidth);
           inc(Result.Bottom,Height-InterfaceHeight);
         end;

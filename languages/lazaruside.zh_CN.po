@@ -16471,7 +16471,9 @@ msgid "Replacing selection failed."
 msgstr "替换选择失败."
 
 #: lazarusidestrconsts.lisreportingbugurl
-msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
+#, fuzzy
+#| msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
+msgid "https://wiki.freepascal.org/How_do_I_create_a_bug_report"
 msgstr "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 
 #: lazarusidestrconsts.lisrescan

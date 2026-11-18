@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-10-26 23:22+0300\n"
+"PO-Revision-Date: 2026-11-18 03:14+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -16396,8 +16396,8 @@ msgid "Replacing selection failed."
 msgstr "Замена выделенного не удалась."
 
 #: lazarusidestrconsts.lisreportingbugurl
-msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
-msgstr "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
+msgid "https://wiki.freepascal.org/How_do_I_create_a_bug_report"
+msgstr "https://wiki.freepascal.org/How_do_I_create_a_bug_report/ru"
 
 #: lazarusidestrconsts.lisrescan
 msgid "Rescan"

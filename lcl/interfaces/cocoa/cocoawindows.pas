@@ -979,7 +979,7 @@ end;
 // for example, there are two buttons showing the selected state.
 // 3. makeFirstResponder() already avoids infinite loops caused by 'Focus-fight'
 // between LCL and COCOA, see also:
-// https://wiki.lazarus.freepascal.org/Cocoa_Internals/Application#Focus_Change
+// https://wiki.freepascal.org/Cocoa_Internals/Application#Focus_Change
 // 4. makeFirstResponder() is Reentrant and Thread-safe
 function TCocoaWindow.makeFirstResponder( aResponder : NSResponder ): ObjCBOOL;
 var

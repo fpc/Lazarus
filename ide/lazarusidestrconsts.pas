@@ -525,7 +525,7 @@ resourcestring
 
   lisMenuOnlineHelp = 'Online Help';
   lisMenuReportingBug = 'Reporting a Bug';
-  lisReportingBugURL = 'http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report';
+  lisReportingBugURL = 'https://wiki.freepascal.org/How_do_I_create_a_bug_report';
   lisKMContextSensitiveHelp = 'Context sensitive help';
   lisKMEditContextSensitiveHelp = 'Edit context sensitive help';
   lisMenuContextHelp = 'Context sensitive Help';

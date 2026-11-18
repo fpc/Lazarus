@@ -184,7 +184,7 @@ end;
     EndHTML:00000339
     StartFragment:00000199
     EndFragment:00000303
-    SourceURL:http://wiki.lazarus.freepascal.org/Clipboard#HTML_source
+    SourceURL:https://wiki.freepascal.org/Clipboard#HTML_source
     <html><body>
     <!--StartFragment-->Write html source to clipboard. This can be done with AddFormat either using TStream or memory Buffer.
     <!--EndFragment-->
