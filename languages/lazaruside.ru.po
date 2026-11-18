@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-11-18 03:14+0300\n"
+"PO-Revision-Date: 2026-11-18 23:46+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -1903,6 +1903,39 @@ msgstr "Вкладки проекта"
 msgctxt "lazarusidestrconsts.dlgenvtype"
 msgid "Type"
 msgstr "Тип"
+
+#: lazarusidestrconsts.dlgexternallinks
+msgid "Links"
+msgstr "Ссылки"
+
+#: lazarusidestrconsts.dlgexternallinksadd
+msgid "Add"
+msgstr "Добавить"
+
+#: lazarusidestrconsts.dlgexternallinksdefaults
+msgctxt "lazarusidestrconsts.dlgexternallinksdefaults"
+msgid "Restore defaults"
+msgstr "Сбросить по умолчанию"
+
+#: lazarusidestrconsts.dlgexternallinksfolder
+msgid "Only in folder"
+msgstr "Только в каталоге"
+
+#: lazarusidestrconsts.dlgexternallinksgroup
+msgid "Text that links to a web page"
+msgstr "Текст со ссылками на веб-страницы"
+
+#: lazarusidestrconsts.dlgexternallinksinfo
+msgid "Text that matches a pattern is a link, like a web address: hold the key for links (Ctrl) to see it, click to open it. The pattern is a regular expression, upper and lower case alike. In the address, $1 to $9 are the parts of the match in brackets. The first pattern that matches is used. With a folder it only works in files in that folder; IDE macros like $(LazarusDir) or $(ProjPath) can be used there."
+msgstr "Текст, соответствующий шаблону, является ссылкой, например, на веб-страницу: удерживайте клавишу ссылок (Ctrl) для отображения, щёлкните для открытия. Шаблон является регулярным выражением, не учитывающим регистр. В адресе идентификаторы с $1 по $9 указывают на части шаблона в скобках. Используется первый подошедший шаблон. При указании каталога сопоставление осуществляется только в содержащихся в нём файлах, при этом могут использоваться макросы IDE, например, $(LazarusDir) или $(ProjPath)."
+
+#: lazarusidestrconsts.dlgexternallinkspattern
+msgid "Pattern"
+msgstr "Шаблон"
+
+#: lazarusidestrconsts.dlgexternallinksurl
+msgid "Address"
+msgstr "Адрес"
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra character spacing"
@@ -8295,6 +8328,7 @@ msgid "Remove selected item from toolbar"
 msgstr "Удалить выбранный элемент с панели"
 
 #: lazarusidestrconsts.liscoolbarrestoredefaults
+msgctxt "lazarusidestrconsts.liscoolbarrestoredefaults"
 msgid "Restore defaults"
 msgstr "Сбросить"
 

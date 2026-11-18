@@ -1955,6 +1955,40 @@ msgctxt "lazarusidestrconsts.dlgenvtype"
 msgid "Type"
 msgstr "Typ"
 
+#: lazarusidestrconsts.dlgexternallinks
+msgid "Links"
+msgstr ""
+
+#: lazarusidestrconsts.dlgexternallinksadd
+msgid "Add"
+msgstr ""
+
+#: lazarusidestrconsts.dlgexternallinksdefaults
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgexternallinksdefaults"
+msgid "Restore defaults"
+msgstr "Przywróć domyślne"
+
+#: lazarusidestrconsts.dlgexternallinksfolder
+msgid "Only in folder"
+msgstr ""
+
+#: lazarusidestrconsts.dlgexternallinksgroup
+msgid "Text that links to a web page"
+msgstr ""
+
+#: lazarusidestrconsts.dlgexternallinksinfo
+msgid "Text that matches a pattern is a link, like a web address: hold the key for links (Ctrl) to see it, click to open it. The pattern is a regular expression, upper and lower case alike. In the address, $1 to $9 are the parts of the match in brackets. The first pattern that matches is used. With a folder it only works in files in that folder; IDE macros like $(LazarusDir) or $(ProjPath) can be used there."
+msgstr ""
+
+#: lazarusidestrconsts.dlgexternallinkspattern
+msgid "Pattern"
+msgstr ""
+
+#: lazarusidestrconsts.dlgexternallinksurl
+msgid "Address"
+msgstr ""
+
 #: lazarusidestrconsts.dlgextracharspacing
 msgctxt "lazarusidestrconsts.dlgextracharspacing"
 msgid "Extra character spacing"
@@ -8533,6 +8567,7 @@ msgid "Remove selected item from toolbar"
 msgstr "Usuń wybrany element z paska narzędzi"
 
 #: lazarusidestrconsts.liscoolbarrestoredefaults
+msgctxt "lazarusidestrconsts.liscoolbarrestoredefaults"
 msgid "Restore defaults"
 msgstr "Przywróć domyślne"
 
