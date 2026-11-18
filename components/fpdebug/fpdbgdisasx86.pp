@@ -167,7 +167,7 @@ type
     OPfsubr, OPftst, OPfucom, OPfwait, OPfxam, OPfxch, OPfxrstor, OPfxsave, OPfxtract,
     OPfyl2x, OPfyl2xp1, OPgf2p8affineinvqb, OPgf2p8affineqb, OPgf2p8mulb,
 
-    OPgetbv, OPgetsec,
+    OPgetsec,
 
     OPhadd, OPhlt, OPhreset, OPhsub,
 
@@ -214,7 +214,7 @@ type
     OPrmpadjust, OPrmpupdate,OProl, OPror, OProrx, OPround, OPrsm, OPrsqrt, OPrstorssp,
 
     OPsahf, OPsal, OPsalc, OPsar, OPsaveprevssp, OPsbb, OPscas, OPserialize, OPset__,
-    OPsetbv, OPsetssbsy, OPsfence, OPsgdt, OPsha1msg1, OPsha1msg2, OPsha1nexte,
+    OPsetssbsy, OPsfence, OPsgdt, OPsha1msg1, OPsha1msg2, OPsha1nexte,
     OPsha1rnds4, OPsha256msg1, OPsha256msg2, OPsha256rnds2, OPshl, OPshr, OPshuf,
     OPsidt, OPskinit, OPsldt, OPsmsw, OPsqrt, OPstac, OPstc, OPstd, OPstgi, OPsti,
     OPstmxcsr, OPstos, OPstr, OPsub, OPswapgs, OPsyscall, OPsysenter, OPsysexit,
@@ -431,6 +431,7 @@ type
     procedure AddVy;
     procedure AddWd;
     procedure AddWdq;
+    procedure AddW128;
     procedure AddWpd;
     procedure AddWps;
     procedure AddWq;
@@ -676,7 +677,7 @@ const
       'fsubr', 'ftst', 'fucom', 'fwait', 'fxam', 'fxch', 'fxrstor', 'fxsave', 'fxtract',
       'fyl2x', 'fyl2xp1', 'gf2p8affineinvqb', 'gf2p8affineqb', 'gf2p8mulb',
 
-      'getbv', 'getsec',
+      'getsec',
 
       'hadd', 'hlt', 'hreset', 'hsub',
 
@@ -723,7 +724,7 @@ const
       'rmpadjust', 'rmpupdate','rol', 'ror', 'rorx', 'round', 'rsm', 'rsqrt', 'rstorssp',
 
       'sahf', 'sal', 'salc', 'sar', 'saveprevssp', 'sbb', 'scas', 'serialize', 'set',
-      'setbv', 'setssbsy', 'sfence', 'sgdt', 'sha1msg1', 'sha1msg2', 'sha1nexte',
+      'setssbsy', 'sfence', 'sgdt', 'sha1msg1', 'sha1msg2', 'sha1nexte',
       'sha1rnds4', 'sha256msg1', 'sha256msg2', 'sha256rnds2', 'shl', 'shr', 'shuf',
       'sidt', 'skinit', 'sldt', 'smsw', 'sqrt', 'stac', 'stc', 'std', 'stgi', 'sti',
       'stmxcsr', 'stos', 'str', 'sub', 'swapgs', 'syscall', 'sysenter', 'sysexit',
@@ -1891,6 +1892,11 @@ begin
   AddModRM([modReg, modMem], VectorSize, regXmm);
 end;
 
+procedure TX86Disassembler.AddW128;
+begin
+  AddModRM([modReg, modMem], os128, regXmm);
+end;
+
 procedure TX86Disassembler.AddWpd;
 begin
   AddModRM([modReg, modMem], VectorSize, regXmm);
@@ -2091,7 +2097,7 @@ procedure TX86Disassembler.DoX87;
         AddReg0; AddRegN;
       end;
       $E9: begin
-        SetOpcode(OPfucom, OPSx_p);
+        SetOpcode(OPfucom, OPSx_pp);
       end;
     else
       SetOpcode(OPX_InvalidX87);
@@ -2159,7 +2165,7 @@ procedure TX86Disassembler.DoX87;
   const
     OPC: array[0..7] of TOpCode =       (OPfld,   OPfisttp, OPfst,   OPfst,  OPfrstor, OPX_InvalidX87, OPfnsave, OPfnstsw);
     OPS: array[0..7] of TOpCodeSuffix = (OPSnone, OPSnone,  OPSnone, OPSx_p, OPSnone,  OPSnone,        OPSnone,  OPSnone);
-    OPCx: array[0..7] of TOpCode =       (OPffree, OPX_InvalidX87, OPfst,   OPfst,  OPX_InvalidX87, OPfucom, OPX_InvalidX87, OPX_InvalidX87);
+    OPCx: array[0..7] of TOpCode =       (OPffree, OPX_InvalidX87, OPfst,   OPfst,  OPfucom,        OPfucom, OPX_InvalidX87, OPX_InvalidX87);
     OPSx: array[0..7] of TOpCodeSuffix = (OPSnone, OPSnone,        OPSnone, OPSx_p, OPSnone,        OPSx_p,  OPSnone,        OPSnone);
   begin
     case Code[ModRMIdx] of
@@ -2476,7 +2482,7 @@ procedure TX86Disassembler.DoGroup7;
 const
   RM0: array [0..7] of TOpCode = (OPX_Group7, OPvmcall, OPvmlaunch, OPvmresume, OPvmxoff, OPX_Group7, OPX_Group7, OPX_Group7);
   RM1: array [0..7] of TOpCode = (OPmonitor, OPmwait, OPclac, OPstac, OPX_Group7, OPX_Group7, OPX_Group7, OPencls);
-  RM2: array [0..7] of TOpCode = (OPgetbv, OPsetbv, OPX_Group7, OPX_Group7, OPvmfunc, OPxend, OPxtest, OPenclu);
+  RM2: array [0..7] of TOpCode = (OPxgetbv, OPxsetbv, OPX_Group7, OPX_Group7, OPvmfunc, OPxend, OPxtest, OPenclu);
   RM3: array [0..7] of TOpCode = (OPvmrun, OPvmmcall, OPvmload, OPvmsave, OPstgi, OPclgi, OPskinit, OPinvlpga);
 begin
   Assert(Code[CodeIdx] = $01, 'Not group 7');
@@ -3488,7 +3494,7 @@ begin
       AddEv; AddGv; AddIb;
     end;
     $AD: begin
-      SetOpcode(OPshl, OPSx_d);
+      SetOpcode(OPshr, OPSx_d);
       AddEv; AddGv;
       AddReg(regGeneral, os8, REG_C);
     end;
@@ -3936,13 +3942,13 @@ begin
         $16: begin SetOpcode(OPpextr,       OPS_d_q,  True); AddEy;    AddVq;  AddIb;                      end;
         $17: begin SetOpcode(OPextract,     OPSx_ps,  True); AddEd;    AddVdq; AddIb;                      end;
         $18: begin SetOpcode(OPinsert,      OPSx_f128,True); AddVqq;   AddHqq; AddWqq;    AddIb; CheckVex; end;
-        $19: begin SetOpcode(OPextract,     OPSx_f128,True); AddWdq;   AddVqq; AddIb;            CheckVex; end;
+        $19: begin SetOpcode(OPextract,     OPSx_f128,True); AddW128;  AddVqq; AddIb;            CheckVex; end;
         $1D: begin SetOpcode(OPcvtps2,      OPSx_ph,  True); AddWx_Mq; AddVx;  AddIb;            CheckVex; end;
         $20: begin SetOpcode(OPpinsr,       OPSx_b,   True); AddVdq;   AddHx;  AddRd_Mb;  AddIb;           end;
         $21: begin SetOpcode(OPinsert,      OPSx_ps,  True); AddVdq;   AddHx;  AddUdq_Md; AddIb;           end;
         $22: begin SetOpcode(OPpinsr,       OPS_d_q,  True); AddVdq;   AddHx;  AddEy;     AddIb;           end;
         $38: begin SetOpcode(OPinsert,      OPSx_i128,True); AddVqq;   AddHqq; AddWqq;    AddIb; CheckVex; end;
-        $39: begin SetOpcode(OPextract,     OPSx_i128,True); AddWdq;   AddVqq; AddIb;            CheckVex; end;
+        $39: begin SetOpcode(OPextract,     OPSx_i128,True); AddW128;  AddVqq; AddIb;            CheckVex; end;
         $40: begin SetOpcode(OPdp,          OPSx_ps,  True); AddVx;    AddHx;  AddWx;     AddIb;           end;
         $41: begin SetOpcode(OPdp,          OPSx_pd,  True); AddVdq;   AddHx;  AddWdq;    AddIb;           end;
         $42: begin SetOpcode(OPmpsadbw,     OPSnone,  True); AddVx;    AddHx;  AddWx;     AddIb;           end;
@@ -4615,9 +4621,11 @@ begin
       end;
       $D4: begin
         SetOpcode(OPaam); Check32;
+        AddIb;
       end;
       $D5: begin
         SetOpcode(OPaad); Check32;
+        AddIb;
       end;
       $D6: begin
         // AMD (old)
