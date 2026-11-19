@@ -2740,7 +2740,7 @@ begin
     end;
   end
   else begin
-    SetOpcode(OPX_Group12);
+    SetOpcode(OPX_Group13);
   end;
 end;
 
@@ -2758,8 +2758,6 @@ begin
   then begin
     DecodeSIMD([soNone, so66]);
 
-    SetOpcode(OPC[ModRM.Index], OPS[ModRM.Index]);
-
     case SimdOpcode of
       soNone: begin
         if ModRM.Index in [2,6]
@@ -2775,7 +2773,7 @@ begin
   Assert(Code[CodeIdx] = $AE, 'Not group 15');
 
   DecodeModRM;
-  DecodeSIMD([soNone, soF3]);
+  DecodeSIMD([soNone, so66, soF3]);
 
   SetOpcode(OPX_Group15);
 
@@ -2802,6 +2800,10 @@ begin
           7: begin SetOpcode(OPclflush               ); AddMb; end
         end;
       end;
+    end;
+    so66: begin
+      if (ModRM.Mode <> 3) and (ModRM.Index = 7)
+      then begin SetOpcode(OPclflushopt); AddMb; end;
     end;
     soF3: begin
       if ModRM.Mode = 3
@@ -3889,11 +3891,11 @@ begin
     end;
     soF2: begin
       case Code[CodeIdx] of
-        $F0: begin SetOpcode(OPcrc32                      ); AddGd;  AddEb;                    end;
+        $F0: begin SetOpcode(OPcrc32                      ); AddGy;  AddEb;                    end;
         $F1: begin
           SetOpcode(OPcrc32);
-          AddGd;
-          if pre66 in Flags then AddEw else AddEy;
+          AddGy;
+          if OperandSize = os16 then AddEw else AddEy;
           Flags := Flags - [pre66];
         end;
         $F5: begin SetOpcode(OPpdep                       ); AddGy;  AddBy;  AddEy;  CheckVex; end;
