@@ -501,6 +501,7 @@ type
     procedure SetOpcode(AOpcode: TOpcode; ASuffix: TOpCodeSuffix = OPSnone; APrefixV: Boolean = False);
     procedure Default64;
     procedure Force64;
+    procedure IVexW;
     function Ignore64(s: String): String;
     function OperandSize: TOperandSize;
     function StdCond(AIndex: Byte): TOpCodeSuffix;
@@ -827,6 +828,11 @@ procedure TX86Disassembler.Force64;
 begin
   if ProcessMode = dm64 then
     Include(Flags, oprForce64);
+end;
+
+procedure TX86Disassembler.IVexW;
+begin
+  if ProcessMode = dm32 then Exclude(Flags, rexW);
 end;
 
 
@@ -2848,6 +2854,7 @@ begin
   else
     Exit;
   end;
+  IVexW;
   CheckVex;
   AddBy; AddEy;
 end;
@@ -3764,9 +3771,9 @@ begin
         $CD: begin SetOpcode(OPsha256msg2                 ); AddVdq; AddWdq;                   end;
         $F0: begin SetOpcode(OPmov,         OPSc_be       ); AddGy;  AddMy;                    end;
         $F1: begin SetOpcode(OPmov,         OPSc_be       ); AddMy;  AddGy;                    end;
-        $F2: begin SetOpcode(OPandn                       ); AddGy;  AddBy;  AddEy;  CheckVex; end;
-        $F5: begin SetOpcode(OPbzhi                       ); AddGy;  AddEy;  AddBy;  CheckVex; end;
-        $F7: begin SetOpcode(OPbextr                      ); AddGy;  AddEy;  AddBy;  CheckVex; end;
+        $F2: begin SetOpcode(OPandn                ); IVexW; AddGy;  AddBy;  AddEy;  CheckVex; end;
+        $F5: begin SetOpcode(OPbzhi                ); IVexW; AddGy;  AddEy;  AddBy;  CheckVex; end;
+        $F7: begin SetOpcode(OPbextr               ); IVexW; AddGy;  AddEy;  AddBy;  CheckVex; end;
       end;
     end;
     so66: begin
@@ -3886,7 +3893,7 @@ begin
         $F0: begin SetOpcode(OPmov,         OPSc_be       ); AddGw;  AddMw;                    end;
         $F1: begin SetOpcode(OPmov,         OPSc_be       ); AddMw;  AddGw;                    end;
         $F6: begin SetOpcode(OPadcx                       ); AddGy;  AddEy;                    end;
-        $F7: begin SetOpcode(OPshl,         OPSx_x        ); AddGy;  AddEy;  AddBy;  CheckVex; end;
+        $F7: begin SetOpcode(OPshl,         OPSx_x ); IVexW; AddGy;  AddEy;  AddBy;  CheckVex; end;
       end;
     end;
     soF2: begin
@@ -3898,16 +3905,16 @@ begin
           if OperandSize = os16 then AddEw else AddEy;
           Flags := Flags - [pre66];
         end;
-        $F5: begin SetOpcode(OPpdep                       ); AddGy;  AddBy;  AddEy;  CheckVex; end;
-        $F6: begin SetOpcode(OPmul,         OPSx_x        ); AddGy;  AddBy;  AddEy;  CheckVex; end;
-        $F7: begin SetOpcode(OPshr,         OPSx_x        ); AddGy;  AddEy;  AddBy;  CheckVex; end;
+        $F5: begin SetOpcode(OPpdep                ); IVexW; AddGy;  AddBy;  AddEy;  CheckVex; end;
+        $F6: begin SetOpcode(OPmul,         OPSx_x ); IVexW; AddGy;  AddBy;  AddEy;  CheckVex; end;
+        $F7: begin SetOpcode(OPshr,         OPSx_x ); IVexW; AddGy;  AddEy;  AddBy;  CheckVex; end;
       end;
     end;
     soF3: begin
       case Code[CodeIdx] of
-        $F5: begin SetOpcode(OPpext                       ); AddGy;  AddBy;  AddEy;  CheckVex; end;
+        $F5: begin SetOpcode(OPpext                ); IVexW; AddGy;  AddBy;  AddEy;  CheckVex; end;
         $F6: begin SetOpcode(OPadox                       ); AddGy;  AddEy;                    end;
-        $F7: begin SetOpcode(OPsar,         OPSx_x        ); AddGy;  AddEy;  AddBy;  CheckVex; end;
+        $F7: begin SetOpcode(OPsar,         OPSx_x ); IVexW; AddGy;  AddEy;  AddBy;  CheckVex; end;
       end;
     end;
   end;
@@ -3971,7 +3978,7 @@ begin
     end;
     soF2: begin
       case Code[CodeIdx] of
-        $F0: begin SetOpcode(OProrx                       ); AddGy;    AddEy;  AddIb;          CheckVex; end;
+        $F0: begin SetOpcode(OProrx                ); IVexW; AddGy;    AddEy;  AddIb;          CheckVex; end;
       end;
     end;
   end;
