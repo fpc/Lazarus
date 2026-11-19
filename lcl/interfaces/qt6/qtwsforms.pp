@@ -437,6 +437,8 @@ var
   APopupParent: TCustomForm;
   ActiveWin: HWND;
   W: QWidgetH;
+  AActiveWidget: QWidgetH;
+  AWindow: QWindowH;
   {$ENDIF}
   Flags: Cardinal;
   AModalWindowFlag: QtWindowFlags;
@@ -614,6 +616,28 @@ begin
         TQtMainWindow(Widget).setRealPopupParent(
           QApplication_activeModalWidget());
       end;
+      {$IFDEF HASX11}
+      if IsWayland and
+        (TCustomForm(AWinControl).BorderStyle = bsNone) and
+        not Assigned(AWinControl.Parent) and
+        not (fsModal in TForm(AWinControl).FormState) and
+        not Widget.IsMdiChild and
+        not (csDesigning in AWinControl.ComponentState) then
+      begin
+        if (Widget.windowFlags and QtWindowType_Mask) <> QtPopup then
+          Widget.setWindowFlags(QtPopup or QtFramelessWindowHint or
+            QtWindowStaysOnTopHint);
+        AActiveWidget := QApplication_activeWindow;
+        if (AActiveWidget <> nil) and (AActiveWidget <> Widget.Widget) then
+        begin
+          QWidget_createWinId(Widget.Widget);
+          AWindow := QWidget_windowHandle(Widget.Widget);
+          if (AWindow <> nil) and (QWindow_transientParent(AWindow) = nil) then
+            QWindow_setTransientParent(AWindow,
+              QWidget_windowHandle(AActiveWidget));
+        end;
+      end;
+      {$ENDIF}
     end else
     begin
       if (TCustomForm(AWinControl).FormStyle in fsAllStayOnTop) then
