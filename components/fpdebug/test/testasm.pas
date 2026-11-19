@@ -41,6 +41,7 @@ var
   DisAss: TX86AsmDecoder;
   Process: TDummyProcess;
   IgnoreSizeWordPtr: Boolean;
+  IgnoreDecodeLen: Boolean; // used for decoding invalid codes => they do not have a defined length
 
 
   procedure TestDis(AName: String; AData: String; AExp: String);
@@ -55,7 +56,8 @@ var
 
     //debugln([AName, ' // ', codeBytes, '  ', asmInstr, '  ', p-@s[1] ,' == ',Length(AData)]);
 
-    AssertEquals(AName+' Cnt bytes', Length(AData), p-@s[1]);
+    if not IgnoreDecodeLen then
+      AssertEquals(AName+' Cnt bytes', Length(AData), p-@s[1]);
 
     s := Trim(LowerCase(asmInstr));
     AExp := LowerCase(AExp);
@@ -923,6 +925,50 @@ begin
   IgnoreSizeWordPtr := False;
   {%endregion vpbroadcastd}
 
+  {%region bad opcodes}
+  IgnoreDecodeLen := True;
+  // Note: the exact representation of the error may change. The test may need to be adjusted in that case
+  TestDis('(bad)',    #$0f#$73#$d9#$01,  '**group14**');
+  TestDis('(bad)',    #$0f#$73#$f9#$01,  '**group14**');
+  TestDis('(bad)',    #$f2#$0f#$73#$d1#$01,  '?repne?**group14**');
+  TestDis('(bad)',    #$f3#$0f#$73#$d9#$01,  '?rep?**group14**');
+  TestDis('(bad)',    #$0f#$73#$c1#$01,  '**group14**');
+  TestDis('data16 (bad)',    #$66#$0f#$73#$e1#$01,  '**group14**');
+  IgnoreDecodeLen := False;
+  {%endregion bad opcodes}
+
+  {%region CRC}
+  IgnoreSizeWordPtr := True;
+  TestDis('crc32 eax,cl',                       #$f2#$0f#$38#$f0#$c1,                          'crc32 eax,cl');
+  TestDis('crc32 eax,cx',                       #$66#$f2#$0f#$38#$f1#$c1,                      'crc32 eax,cx');
+  TestDis('crc32 eax,ecx',                      #$f2#$0f#$38#$f1#$c1,                          'crc32 eax,ecx');
+  TestDis('crc32 eax,DWORD PTR ds:$012341234',  #$f2#$0f#$38#$f1#$04#$25#$34#$12#$34#$12,      'crc32 eax,DWORD PTR [$012341234]');
+  TestDis('crc32 eax,DWORD PTR [rax]',          #$f2#$0f#$38#$f1#$00,                          'crc32 eax,DWORD PTR [rax]');
+  TestDis('crc32 rax,cl',                       #$f2#$48#$0f#$38#$f0#$c1,                      'crc32 rax,cl');
+  TestDis('crc32 rax,rcx',                      #$f2#$48#$0f#$38#$f1#$c1,                      'crc32 rax,rcx');
+  TestDis('crc32 rax,QWORD PTR ds:$012341234',  #$f2#$48#$0f#$38#$f1#$04#$25#$34#$12#$34#$12,  'crc32 rax,QWORD PTR [$012341234]');
+  TestDis('crc32 rax,QWORD PTR [rax]',          #$f2#$48#$0f#$38#$f1#$00,                      'crc32 rax,QWORD PTR [rax]');
+  TestDis('crc32 ebx,cl',                       #$f2#$0f#$38#$f0#$d9,                          'crc32 ebx,cl');
+  TestDis('crc32 ebx,cx',                       #$66#$f2#$0f#$38#$f1#$d9,                      'crc32 ebx,cx');
+  TestDis('crc32 ebx,ecx',                      #$f2#$0f#$38#$f1#$d9,                          'crc32 ebx,ecx');
+  TestDis('crc32 ebx,DWORD PTR ds:$012341234',  #$f2#$0f#$38#$f1#$1c#$25#$34#$12#$34#$12,      'crc32 ebx,DWORD PTR [$012341234]');
+  TestDis('crc32 ebx,DWORD PTR [rcx]',          #$f2#$0f#$38#$f1#$19,                          'crc32 ebx,DWORD PTR [rcx]');
+  TestDis('crc32 rbx,cl',                       #$f2#$48#$0f#$38#$f0#$d9,                      'crc32 rbx,cl');
+  TestDis('crc32 rbx,rcx',                      #$f2#$48#$0f#$38#$f1#$d9,                      'crc32 rbx,rcx');
+  TestDis('crc32 rbx,QWORD PTR ds:$012341234',  #$f2#$48#$0f#$38#$f1#$1c#$25#$34#$12#$34#$12,  'crc32 rbx,QWORD PTR [$012341234]');
+  TestDis('crc32 rbx,QWORD PTR [rcx]',          #$f2#$48#$0f#$38#$f1#$19,                      'crc32 rbx,QWORD PTR [rcx]');
+  IgnoreSizeWordPtr := False;
+  {%endregion CRC}
+
+  {%region clflush}
+  IgnoreSizeWordPtr := True;
+  TestDis('clflush BYTE PTR [eax]',                  #$67#$0f#$ae#$38,      'clflush BYTE PTR [eax]');
+  TestDis('clflushopt BYTE PTR [rax]',               #$66#$0f#$ae#$38,      'clflushopt BYTE PTR [rax]');
+  TestDis('clflushopt BYTE PTR [rsp]',               #$66#$0f#$ae#$3c#$24,  'clflushopt BYTE PTR [rsp]');
+  TestDis('clflushopt BYTE PTR [rip+$012345678]',    #$66#$0f#$ae#$3d#$78#$56#$34#$12,  'clflushopt BYTE PTR [rip+$012345678]');
+  IgnoreSizeWordPtr := False;
+  {%endregion flflush}
+
   {%endregion 64 bit}
 
 
@@ -1467,6 +1513,41 @@ begin
   IgnoreSizeWordPtr := False;
   {%endregion vpbroadcastd}
 
+  {%region bad opcodes}
+  IgnoreDecodeLen := True;
+  // Note: the exact representation of the error may change. The test may need to be adjusted in that case
+  TestDis('(bad)',    #$0f#$73#$d9#$01,  '**group14**');
+  TestDis('(bad)',    #$0f#$73#$f9#$01,  '**group14**');
+  TestDis('(bad)',    #$f2#$0f#$73#$d1#$01,  '?repne?**group14**');
+  TestDis('(bad)',    #$f3#$0f#$73#$d9#$01,  '?rep?**group14**');
+  TestDis('(bad)',    #$0f#$73#$c1#$01,  '**group14**');
+  TestDis('data16 (bad)',    #$66#$0f#$73#$e1#$01,  '**group14**');
+  IgnoreDecodeLen := False;
+  {%endregion bad opcodes}
+
+  {%region CRC}
+  IgnoreSizeWordPtr := True;
+  TestDis('crc32 eax,cl',                         #$f2#$0f#$38#$f0#$c1,                  'crc32 eax,cl');
+  TestDis('crc32 eax,cx',                         #$66#$f2#$0f#$38#$f1#$c1,              'crc32 eax,cx');
+  TestDis('crc32 eax,ecx',                        #$f2#$0f#$38#$f1#$c1,                  'crc32 eax,ecx');
+  TestDis('crc32 eax,DWORD PTR ds:$012341234',    #$f2#$0f#$38#$f1#$05#$34#$12#$34#$12,  'crc32 eax,DWORD PTR [$012341234]');
+  TestDis('crc32 eax,DWORD PTR [eax]',            #$f2#$0f#$38#$f1#$00,                  'crc32 eax,DWORD PTR [eax]');
+  TestDis('crc32 ebx,cl',                         #$f2#$0f#$38#$f0#$d9,                  'crc32 ebx,cl');
+  TestDis('crc32 ebx,cx',                         #$66#$f2#$0f#$38#$f1#$d9,              'crc32 ebx,cx');
+  TestDis('crc32 ebx,ecx',                        #$f2#$0f#$38#$f1#$d9,                  'crc32 ebx,ecx');
+  TestDis('crc32 ebx,DWORD PTR ds:$012341234',    #$f2#$0f#$38#$f1#$1d#$34#$12#$34#$12,  'crc32 ebx,DWORD PTR [$012341234]');
+  TestDis('crc32 ebx,DWORD PTR [ecx]',            #$f2#$0f#$38#$f1#$19,                  'crc32 ebx,DWORD PTR [ecx]');
+  IgnoreSizeWordPtr := False;
+  {%endregion CRC}
+
+  {%region clflush}
+  IgnoreSizeWordPtr := True;
+  TestDis('clflush BYTE PTR [eax]',               #$0f#$ae#$38,          'clflush BYTE PTR [eax]');
+  TestDis('clflushopt BYTE PTR [eax]',            #$66#$0f#$ae#$38,      'clflushopt BYTE PTR [eax]');
+  TestDis('clflushopt BYTE PTR [esp]',            #$66#$0f#$ae#$3c#$24,  'clflushopt BYTE PTR [esp]');
+  TestDis('clflushopt BYTE PTR ds:$012345678',    #$66#$0f#$ae#$3d#$78#$56#$34#$12,  'clflushopt BYTE PTR [$012345678]');
+  IgnoreSizeWordPtr := False;
+  {%endregion flflush}
 
   {%endregion 32 bit}
 
