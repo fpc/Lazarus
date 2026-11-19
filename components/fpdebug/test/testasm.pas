@@ -1501,8 +1501,12 @@ begin
   {%endregion vextractf128}
 
   {%region mulx}
-  //TestDis('mulx eax,eax,ecx',    #$c4#$e2#$fb#$f6#$c1,  'mulx eax,eax,ecx');
-  //TestDis('mulx eax,eax,ecx',    #$c4#$e2#$7b#$f6#$c1,  'mulx eax,eax,ecx');
+  TestDis('mulx eax,eax,ecx',                                       #$c4#$e2#$fb#$f6#$c1,  'mulx eax,eax,ecx');
+  TestDis('mulx eax,eax,ecx',                                       #$c4#$e2#$7b#$f6#$c1,  'mulx eax,eax,ecx');
+  TestDis('mulx ebx,eax,ecx',                                       #$c4#$e2#$fb#$f6#$d9,  'mulx ebx,eax,ecx');
+  IgnoreSizeWordPtr := True;
+  TestDis('mulx eax,eax,DWORD PTR [ecx]',                           #$c4#$e2#$fb#$f6#$01,  'mulx eax,eax,DWORD PTR [ecx]');
+  IgnoreSizeWordPtr := False;
   {%endregion mulx}
 
   {%region vpbroadcastd}
@@ -1568,6 +1572,37 @@ begin
   TestDis('aam $01',    #$d4#$01,  'aam $01');
   TestDis('aad $0a',    #$d5#$0a,  'aad $0a');
   TestDis('aad $01',    #$d5#$01,  'aad $01');
+
+  {%region VEX.W1 / no Rax in 32bit }
+  IgnoreSizeWordPtr := True;
+  TestDis('andn ebx,eax,ecx',                                       #$c4#$e2#$78#$f2#$d9,  'andn ebx,eax,ecx');
+  TestDis('andn ebx,eax,ecx',                                       #$c4#$e2#$f8#$f2#$d9,  'andn ebx,eax,ecx');
+  TestDis('andn ebx,eax,DWORD PTR [ecx]',                           #$c4#$e2#$78#$f2#$19,  'andn ebx,eax,DWORD PTR [ecx]');
+  TestDis('andn ebx,eax,DWORD PTR [ecx]',                           #$c4#$e2#$f8#$f2#$19,  'andn ebx,eax,DWORD PTR [ecx]');
+  TestDis('bzhi ebx,ecx,eax',                                       #$c4#$e2#$78#$f5#$d9,  'bzhi ebx,ecx,eax');
+  TestDis('bzhi ebx,ecx,eax',                                       #$c4#$e2#$f8#$f5#$d9,  'bzhi ebx,ecx,eax');
+  TestDis('bextr ebx,ecx,eax',                                      #$c4#$e2#$78#$f7#$d9,  'bextr ebx,ecx,eax');
+  TestDis('bextr ebx,ecx,eax',                                      #$c4#$e2#$f8#$f7#$d9,  'bextr ebx,ecx,eax');
+  TestDis('shlx ebx,ecx,eax',                                       #$c4#$e2#$79#$f7#$d9,  'shlx ebx,ecx,eax');
+  TestDis('shlx ebx,ecx,eax',                                       #$c4#$e2#$f9#$f7#$d9,  'shlx ebx,ecx,eax');
+  TestDis('shrx ebx,ecx,eax',                                       #$c4#$e2#$7b#$f7#$d9,  'shrx ebx,ecx,eax');
+  TestDis('shrx ebx,ecx,eax',                                       #$c4#$e2#$fb#$f7#$d9,  'shrx ebx,ecx,eax');
+  TestDis('sarx ebx,ecx,eax',                                       #$c4#$e2#$7a#$f7#$d9,  'sarx ebx,ecx,eax');
+  TestDis('sarx ebx,ecx,eax',                                       #$c4#$e2#$fa#$f7#$d9,  'sarx ebx,ecx,eax');
+  TestDis('pdep ebx,eax,ecx',                                       #$c4#$e2#$7b#$f5#$d9,  'pdep ebx,eax,ecx');
+  TestDis('pdep ebx,eax,ecx',                                       #$c4#$e2#$fb#$f5#$d9,  'pdep ebx,eax,ecx');
+  TestDis('pext ebx,eax,ecx',                                       #$c4#$e2#$7a#$f5#$d9,  'pext ebx,eax,ecx');
+  TestDis('pext ebx,eax,ecx',                                       #$c4#$e2#$fa#$f5#$d9,  'pext ebx,eax,ecx');
+  TestDis('rorx ebx,ecx,$04',                                       #$c4#$e3#$03#$f0#$d9#$04,  'rorx ebx,ecx,$04');
+  TestDis('rorx ebx,ecx,$04',                                       #$c4#$e3#$83#$f0#$d9#$04,  'rorx ebx,ecx,$04');
+  TestDis('blsr eax,ecx',                                           #$c4#$e2#$78#$f3#$c9,  'blsr eax,ecx');
+  TestDis('blsr eax,ecx',                                           #$c4#$e2#$f8#$f3#$c9,  'blsr eax,ecx');
+  TestDis('blsmsk eax,ecx',                                         #$c4#$e2#$78#$f3#$d1,  'blsmsk eax,ecx');
+  TestDis('blsmsk eax,ecx',                                         #$c4#$e2#$f8#$f3#$d1,  'blsmsk eax,ecx');
+  TestDis('blsi eax,ecx',                                           #$c4#$e2#$78#$f3#$d9,  'blsi eax,ecx');
+  TestDis('blsi eax,ecx',                                           #$c4#$e2#$f8#$f3#$d9,  'blsi eax,ecx');
+  IgnoreSizeWordPtr := False;
+  {%endregion VEX.W1 }
 
   {%endregion 32 bit}
 
