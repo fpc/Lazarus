@@ -554,9 +554,9 @@ begin
   if timer = nil then Exit;
   timer.retain;
   // adding timer to all "common" loop mode.
-  NSRunLoop.currentRunLoop.addTimer_forMode(timer, NSDefaultRunLoopMode);
-  NSRunLoop.currentRunLoop.addTimer_forMode(timer, NSModalPanelRunLoopMode);
-  NSRunLoop.currentRunLoop.addTimer_forMode(timer, NSEventTrackingRunLoopMode);
+  NSRunLoop.mainRunLoop.addTimer_forMode(timer, NSDefaultRunLoopMode);
+  NSRunLoop.mainRunLoop.addTimer_forMode(timer, NSModalPanelRunLoopMode);
+  NSRunLoop.mainRunLoop.addTimer_forMode(timer, NSEventTrackingRunLoopMode);
 end;
 
 procedure TCocoaTimerObject.invalidate;
