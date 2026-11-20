@@ -2856,7 +2856,7 @@ begin
     Size := ZeroSize;
   if (Size > 0) then begin
     Addr := OrdOrDataAddr;
-    if not IsNilLoc(Addr) then begin
+    if (not IsNilLoc(Addr)) or Context.MemModel.IsReadableMemory(TargetLoc(0)) then begin
       if not Context.ReadAddress(Addr, SizeVal(Context.SizeOfAddress), Result) then
         SetLastError(Context.LastMemError);
     end;
