@@ -19,5 +19,5 @@ this seems to be [GPL v2](LICENSE.md), as referenced in a number of file headers
 [gir2pascal]: https://wiki.freepascal.org/gir2pascal
 [GObject introspection]: https://gi.readthedocs.io/
 [lazarus-ccr]: https://sourceforge.net/projects/lazarus-ccr/
-[wiki-ccr]: https://wiki.lazarus.freepascal.org/Lazarus-ccr_SourceForge_repository
+[wiki-ccr]: https://wiki.freepascal.org/Lazarus-ccr_SourceForge_repository
 [n1tehawk]: https://github.com/n1tehawk/gir2pascal
