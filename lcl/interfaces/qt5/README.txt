@@ -6,5 +6,5 @@ at appropriate place the libQt5Pas.so (linux)
 or Qt5Pas.dll (ms windows) or Qt5Pas.framework (Darwin).
 
 For more information see:
-http://wiki.lazarus.freepascal.org/index.php/Qt_Interface
+https://wiki.freepascal.org/index.php/Qt5_Interface
 

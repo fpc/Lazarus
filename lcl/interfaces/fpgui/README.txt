@@ -40,5 +40,5 @@ Setup to compile LCL-fpGUI
 
 
 For more details see:
-http://wiki.freepascal.org/fpGUI_Interface
+https://wiki.freepascal.org/fpGUI_Interface
 
