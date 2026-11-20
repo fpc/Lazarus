@@ -881,8 +881,10 @@ begin
     AnInfoEntry, OnlyUnitNameLower, AFindFlags);
   FInAllUnitSearch := False;
 
-  if (not Result) and (FFoundSystemInfoEntry <> nil) then
-    AnInfoEntry := FFoundSystemInfoEntry
+  if (not Result) and (FFoundSystemInfoEntry <> nil) then begin
+    AnInfoEntry := FFoundSystemInfoEntry;
+    Result := True;
+  end
   else
     FFoundSystemInfoEntry.ReleaseReference;
 end;
