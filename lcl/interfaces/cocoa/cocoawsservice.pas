@@ -324,8 +324,7 @@ end;
 
 procedure TCocoaWidgetSetBaseService.OnWakeMainThread(Sender: TObject);
 begin
-  NSApp.performSelectorOnMainThread_withObject_waitUntilDone(
-       ObjCSelector('lclSyncCheck:'), nil, false);
+  TCocoaApplicationUtil.wakeupEventLoop;
 end;
 
 constructor TCocoaWidgetSetBaseService.Create;

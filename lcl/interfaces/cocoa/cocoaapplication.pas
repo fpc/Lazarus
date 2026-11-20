@@ -32,8 +32,6 @@ type
   private
     procedure onOpenURL( const url: NSURL );
       message 'lclOnOpenURL:';
-    procedure lclSyncCheck(arg: id);
-      message 'lclSyncCheck:';
   public
     procedure sendEvent(theEvent: NSEvent); override;
     function nextEventMatchingMask_untilDate_inMode_dequeue(mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: LCLObjCBoolean): NSEvent; override;
@@ -422,8 +420,10 @@ function TCocoaApplication.nextEventMatchingMask_untilDate_inMode_dequeue(
   function processWakeupEvent( const event: NSEvent ): NSEvent;
   begin
     Result:= event;
-    if (Result.type_=NSApplicationDefined) and (Result.subtype=LazarusApplicationDefinedSubtypeWakeup) then
+    if (Result.type_=NSApplicationDefined) and (Result.subtype=LazarusApplicationDefinedSubtypeWakeup) then begin
+      CheckSynchronize;
       Result:= nil;
+    end;
   end;
 
   function processTrackingMode( const event: NSEvent ): NSEvent;
@@ -499,26 +499,6 @@ begin
   CocoaWidgetSetState.keyEvent.savedModifiers := Result.modifierFlags;
 
   Result:= processTrackingMode( Result );
-end;
-
-procedure TCocoaApplication.lclSyncCheck(arg: id);
-begin
-  {$ifdef COCOALOOPNATIVE}
-  try
-    CheckSynchronize;
-    if Assigned(Application) then
-      TCrackerApplication(Application).ProcessAsyncCallQueue;
-  except
-    if Assigned(Application) and Application.CaptureExceptions then
-      Application.HandleException(Application)
-    else
-      raise;
-  end;
-  {$else}
-  CheckSynchronize;
-  if Assigned(Application) then
-    TCrackerApplication(Application).ProcessAsyncCallQueue;
-  {$endif}
 end;
 
 {$ifdef COCOAPPRUNNING_OVERRIDEPROPERTY}
