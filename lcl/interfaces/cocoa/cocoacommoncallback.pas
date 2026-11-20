@@ -471,6 +471,11 @@ procedure TLCLCommonCallback.handleEventAfterCocoa(const theEvent: NSEvent);
     windowAtPos: NSWindow;
     windowClientFrame: NSRect;
   begin
+    // pass repetitive synthetic Mouse Moved Event
+    // see also: https://gitlab.com/freepascal.org/lazarus/lazarus/-/commit/38627003c6877d469522abb1d7a572655fc83e7b
+    if CocoaWidgetSetState.CocoaOnlyState then
+      Exit;
+
     if NOT NSAPP.isActive then
       Exit;
 

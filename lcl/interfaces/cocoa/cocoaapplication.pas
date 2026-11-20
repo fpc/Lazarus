@@ -331,6 +331,10 @@ var
           if responder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol)) then
             CocoaWidgetSetState.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText;
         end;
+      NSMouseMoved:
+        // if it's repetitive synthetic Mouse Moved Event
+        CocoaWidgetSetState.CocoaOnlyState := (theEvent.timestamp=0)
+                                          and (NSEvent.pressedMouseButtons<>0);
     end;
   end;
 
