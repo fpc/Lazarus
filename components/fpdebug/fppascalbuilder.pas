@@ -919,7 +919,10 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       if v <> 0 then
         APrintedValue := APrintedValue + '^: ' + QuoteWideText(AValue.AsWideString)
     end
-    else begin
+    else
+    if (v <> 0) or // Don't print deref errors for nil
+       ( (Context <> nil) and Context.MemModel.IsReadableMemory(TargetLoc(0)) )
+    then begin
       m := AValue.Member[0];
       if (m<>nil) and (svfString in m.FieldFlags) then
         APrintedValue := APrintedValue + '^: ' + QuoteText(m.AsString)
@@ -930,7 +933,10 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       if s <> '' then
         APrintedValue := s + '(' + APrintedValue + ')'; // no typeinfo for strings/pchar
       m.ReleaseReference;
-    end;
+    end
+    else
+    if s <> '' then
+      APrintedValue := s + '(' + APrintedValue + ')'; // typeinfo for nil
 
     Result := True;
   end;
