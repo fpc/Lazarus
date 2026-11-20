@@ -15,6 +15,6 @@ You can also compile this with FPC 3.0.4.
 Then proceed as described above.
 
 The SQLDBRESTBRidge support and examples are explained in the WIKI:
-http://wiki.freepascal.org/SQLDBRestBridge#Lazarus
+https://wiki.freepascal.org/SQLDBRestBridge#Lazarus
 
 Author: Michael Van Canneyt 

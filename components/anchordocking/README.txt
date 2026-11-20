@@ -9,5 +9,5 @@ anchordocking.lpk
 design/anchordockingdsgn.lpk
 
 More information can be found at
-http://wiki.lazarus.freepascal.org/Anchor_Docking
+https://wiki.freepascal.org/Anchor_Docking
 

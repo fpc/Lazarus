@@ -4,4 +4,4 @@ When installed, this package replaces source editor tabs/pages with buttons sort
 Author: Ondrej Pokorny
 
 Documentation:
-http://wiki.lazarus.freepascal.org/Package_Tabs
+https://wiki.freepascal.org/Package_Tabs

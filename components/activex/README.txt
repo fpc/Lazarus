@@ -11,6 +11,6 @@ FPC >= 2.6.1
 
 DOCUMENTATION:
 --------------
-Documentation and samples can be found at http://wiki.freepascal.org/LazActiveX
+Documentation and samples can be found at https://wiki.freepascal.org/LazActiveX
 
 

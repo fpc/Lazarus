@@ -6,4 +6,4 @@ Original code from Michael Van Canneyt.
 Author: Mattias Gaertner mattias@freepascal.org
 
 Documentation:
-http://wiki.lazarus.freepascal.org/Project_Groups
+https://wiki.freepascal.org/Project_Groups
