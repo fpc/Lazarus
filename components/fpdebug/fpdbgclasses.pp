@@ -252,6 +252,20 @@ type
       StackPointer, FrameBasePointer: TDBGPtr); override;
   end;
 
+  TDbgFrameBoundaryKind = (
+    bkUnknown,
+    bkBeforePrologue, bkInPrologue, bkMaybeInPrologue,
+    bkInEpilogue, bkMaybeInEpilogue, bkAfterEpiloge,
+    bkInBody
+  );
+
+  TDbgFrameBoundaryInfo = record
+    // mlfConstantDeref: can be used for the register itself, plus/minus an offset
+    ReturnAddressLocation: TFpDbgMemLocation;
+    StackPointerValue: TFpDbgMemLocation;
+    BasePointerValue: TFpDbgMemLocation;
+  end;
+
   { TDbgThread }
   TFpInternalBreakpoint = class;
   TFpInternalWatchpoint  = class;
@@ -269,6 +283,11 @@ type
     FSuspendCount: Integer;
     FSymbolAtCurrentInstructionPtr: TFpSymbol;
     FNoSymbolAtCurrentInstructionPtr: Boolean;
+    FCurIpFrameBoundData: record
+      Valid: Boolean;
+      CurIpFrameBoundKind: TDbgFrameBoundaryKind;
+      CurIpFrameBoundInfo: TDbgFrameBoundaryInfo;
+    end;
 
     function GetRegisterValueList: TDbgRegisterValueList;
   protected
@@ -329,6 +348,7 @@ type
     procedure SetInstructionPointerRegisterValue(AValue: TDbgPtr); virtual; abstract;
     function GetCurrentStackFrameInfo: TDbgStackFrameInfo; virtual;
     function GetSymbolAtCurrentInstructionPtr: TFpSymbol;
+    function GetFrameBoundaryInfoAtInstructionPointer(out AFrameBoundaryInfo: TDbgFrameBoundaryInfo): TDbgFrameBoundaryKind;
 
     function AllocStackMem(ASize: Integer): TDbgPtr; virtual;
     procedure RestoreStackMem;
@@ -964,20 +984,6 @@ type
   TDbgInstInfo = record
     InstrType: (itAny, itJump, itJumpAbs);
     InstrTargetOffs: Int64; // offset from the START address of instruction, or absolute offset
-  end;
-
-  TDbgFrameBoundaryKind = (
-    bkUnknown,
-    bkBeforePrologue, bkInPrologue, bkMaybeInPrologue,
-    bkInEpilogue, bkMaybeInEpilogue, bkAfterEpiloge,
-    bkInBody
-  );
-
-  TDbgFrameBoundaryInfo = record
-    // mlfConstantDeref: can be used for the register itself, plus/minus an offset
-    ReturnAddressLocation: TFpDbgMemLocation;
-    StackPointerValue: TFpDbgMemLocation;
-    BasePointerValue: TFpDbgMemLocation;
   end;
 
   { TDbgAsmDecoder }
@@ -4255,6 +4261,7 @@ begin
   end;
   FNoSymbolAtCurrentInstructionPtr := False;
 
+  FCurIpFrameBoundData.Valid := False;
   FPausedAtHardcodeBreakPoint := False;
   FHitExternalWatchPoint := False;
   ClearHasBreakpointInfoForAddress;
@@ -4289,6 +4296,27 @@ begin
     FNoSymbolAtCurrentInstructionPtr := FSymbolAtCurrentInstructionPtr = nil;
   end;
   Result := FSymbolAtCurrentInstructionPtr;
+end;
+
+function TDbgThread.GetFrameBoundaryInfoAtInstructionPointer(out
+  AFrameBoundaryInfo: TDbgFrameBoundaryInfo): TDbgFrameBoundaryKind;
+var
+  a: TDBGPtr;
+begin
+  a := 0;
+  GetSymbolAtCurrentInstructionPtr;
+  if FSymbolAtCurrentInstructionPtr <> nil then
+    a := LocToAddrOrNil(FSymbolAtCurrentInstructionPtr.Address);
+  if not FCurIpFrameBoundData.Valid then begin
+    FCurIpFrameBoundData.CurIpFrameBoundKind :=
+      Process.Disassembler.GetFrameBoundaryInfo(
+        GetAdjustedInstructionPointerRegisterValue,
+        FCurIpFrameBoundData.CurIpFrameBoundInfo, a
+      );
+    FCurIpFrameBoundData.Valid := True;
+  end;
+  Result := FCurIpFrameBoundData.CurIpFrameBoundKind;
+  AFrameBoundaryInfo := FCurIpFrameBoundData.CurIpFrameBoundInfo;
 end;
 
 function TDbgThread.AllocStackMem(ASize: Integer): TDbgPtr;

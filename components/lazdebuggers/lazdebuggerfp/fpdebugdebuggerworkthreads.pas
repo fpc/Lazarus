@@ -839,11 +839,20 @@ var
   StringAnsiSetLenAddress, StringAnsiDecRefAddress: TDBGPtr;
   StringWideSetLenAddress, StringWideDecRefAddress: TDBGPtr;
   ParRes: Boolean;
+  dummyFB: TDbgFrameBoundaryInfo;
 begin
   Result := False;
   AnError := NoError;
   if FExpressionScope = nil then
     exit;
+
+  if FDebugger.DbgController.CurrentThread.GetFrameBoundaryInfoAtInstructionPointer(dummyFB) in
+     [bkBeforePrologue, bkInPrologue, bkInEpilogue, bkAfterEpiloge]
+  then begin
+    AnError := CreateError(fpErrAnyError, ['Can''t call functions while in pro/epiloque']);
+    exit;
+  end;
+
 (*
    AFunctionValue =>  TFpValueDwarfSubroutine  // gotten from <== TFpSymbolDwarfDataProc.GetValueObject;
                    .DataSympol = TFpSymbolDwarfDataProc  from which we were created
