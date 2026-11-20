@@ -15,11 +15,11 @@ A workaround is to split the script into 2, see the sample program.
 - The logon form is taken from SQLdb_Tutorial3.
 
 Incidentally, it sets up a database with tables and sample data for the Lazarus wiki tutorials:
-http://wiki.lazarus.freepascal.org/SQLdb_Tutorial0
-http://wiki.lazarus.freepascal.org/SQLdb_Tutorial1
-http://wiki.lazarus.freepascal.org/SQLdb_Tutorial2
-http://wiki.lazarus.freepascal.org/SQLdb_Tutorial3
-http://wiki.lazarus.freepascal.org/LazReport_Tutorial
+https://wiki.freepascal.org/SQLdb_Tutorial0
+https://wiki.freepascal.org/SQLdb_Tutorial1
+https://wiki.freepascal.org/SQLdb_Tutorial2
+https://wiki.freepascal.org/SQLdb_Tutorial3
+https://wiki.freepascal.org/LazReport_Tutorial
 
 Please see the SQLdb_Tutorial0 article for instructions and requirements.
 (You'll need database clients and a sample database; see the article)

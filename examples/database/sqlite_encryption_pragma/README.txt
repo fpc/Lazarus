@@ -52,7 +52,7 @@ specific bytes.
 Using the following link, you can find a few options for versions of SQLite 
 that provide support for encryption. Since I'm working mainly on Windows, I 
 opted for the Open Source System.Data.SQLite
-http://wiki.freepascal.org/sqlite#Support_for_SQLite_encryption
+https://wiki.freepascal.org/sqlite#Support_for_SQLite_encryption
 
 I used the "Precompiled Binaries for 32-bit Windows (.NET Framework 3.5 SP1)" 
 and renamed SQLite.Interop.dll to sqlite3.dll, but you should be able to use 
