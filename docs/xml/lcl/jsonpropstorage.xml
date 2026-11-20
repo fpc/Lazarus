@@ -44,7 +44,7 @@ them on the file you specify on
 <short>
 This unit contains the implementation of a path/value pair generic container 
 in JSON format. See package: 
-<url href="http://wiki.freepascal.org/fcl-json">fcl-json</url>.
+<url href="https://wiki.freepascal.org/fcl-json">fcl-json</url>.
 </short>
 </element>
 <element name="LazUTF8"/>

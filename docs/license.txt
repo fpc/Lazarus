@@ -8,7 +8,7 @@ file://cc-by-sa-4-0.txt
 Copyright (c) 1997-2023, by the Lazarus Development Team.
 
 Web site: https://lazarus-ide.org
-Licensing: https://wiki.lazarus.freepascal.org/licensing
+Licensing: https://wiki.freepascal.org/licensing
 Bug reports: https://gitlab.com/freepascal.org/lazarus/lazarus/-/issues/
 Forum: https://forum.lazarus.freepascal.org
 
