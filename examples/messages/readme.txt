@@ -16,7 +16,7 @@ Please do not use any messages in the Windows system range. Use only messages >=
 
 Direct method call and QueueAsyncCall
 =====================================
-If all you are interested it to delay the execution of a method until after an event handler has finished, then Application.QueueAsyncCall is a good alternative. More information about QueueAsyncCall can be found at http://wiki.lazarus.freepascal.org/Asynchronous_Calls
+If all you are interested it to delay the execution of a method until after an event handler has finished, then Application.QueueAsyncCall is a good alternative. More information about QueueAsyncCall can be found at https://wiki.freepascal.org/Asynchronous_Calls
 
 The AsyncCall example shows the use of QueueAsyncCall.
 

@@ -7,6 +7,6 @@
       "highlighter",
       "TSynHighlighterAttributes"
     ],
-    "Description" : "Example for the \"Create your own SynEdit Highlighter\" tutorial on the wiki http://wiki.lazarus.freepascal.org/SynEdit_Highlighter"
+    "Description" : "Example for the \"Create your own SynEdit Highlighter\" tutorial on the wiki https://wiki.freepascal.org/SynEdit_Highlighter"
   }
 }

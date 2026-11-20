@@ -33,6 +33,6 @@ With StringGrid1 do
     Col := Col + 1;
 
 The code is commented, but also read
-http://wiki.freepascal.org/Grids_Reference_Page.
+https://wiki.freepascal.org/Grids_Reference_Page.
 
 Windsurfer 2013
