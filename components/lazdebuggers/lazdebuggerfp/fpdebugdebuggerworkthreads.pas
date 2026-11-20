@@ -1096,7 +1096,9 @@ begin
       FDebugger.BeforeWatchEval(CallContext);
       FDebugger.RunProcessLoop(not FAllowFunctionsAllThread);
 
-      if not CallContext.IsValid then begin
+      if (not CallContext.IsValid) or
+         (FDebugger.DbgController.IsTerminating)
+      then begin
         DebugLn(FPDBG_FUNCCALL or DBG_WARNINGS, ['Error in call ',CallContext.Message]);
         //ReturnMessage := CallContext.Message;
         AnError := CallContext.LastError;
