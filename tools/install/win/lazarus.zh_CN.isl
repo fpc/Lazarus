@@ -75,6 +75,6 @@ OldSecondInBadFolder4=
 SecondTaskUpdate=更新辅助安装，其配置文件位于文件夹：%0:s%1:s%2:s
 SecondTaskCreate=创建辅助安装，其配置文件位于文件夹：%0:s%1:s%2:s
 
-DuringInstall=Lazarus 中文交流群（QQ 群：192903718）	常见问题: http://wiki.lazarus.freepascal.org/Lazarus_Faq%0:s%0:s    Lazarus 是什么？%0:sLazarus 是一个跨平台的 Pascal IDE。它的目标是一次编写，到处编译。%0:s%0:s    如何减小 exe 文件的大小？%0:s默认的二进制文件非常大，因为它们包含了调试信息。对于发布版本，您可以在项目设置中将其关闭。%0:s%0:s    协议：%0:s- LCL 采用除链接外的 LGPL 协议，这允许您使用任何协议创建应用程序，包括专有协议。%0:s- IDE 采用 GPL 协议，如果您发布修改过的 IDE，则必须遵循 GPL 协议。%0:s- 其他的软件包和组件有各自的协议，请参阅每个软件包的自述文件。
+DuringInstall=Lazarus 中文交流群（QQ 群：192903718）	常见问题: https://wiki.freepascal.org/Lazarus_Faq%0:s%0:s    Lazarus 是什么？%0:sLazarus 是一个跨平台的 Pascal IDE。它的目标是一次编写，到处编译。%0:s%0:s    如何减小 exe 文件的大小？%0:s默认的二进制文件非常大，因为它们包含了调试信息。对于发布版本，您可以在项目设置中将其关闭。%0:s%0:s    协议：%0:s- LCL 采用除链接外的 LGPL 协议，这允许您使用任何协议创建应用程序，包括专有协议。%0:s- IDE 采用 GPL 协议，如果您发布修改过的 IDE，则必须遵循 GPL 协议。%0:s- 其他的软件包和组件有各自的协议，请参阅每个软件包的自述文件。
 
 UninstVerbose=即将从 %0:s 文件夹卸载 %1:s，是否继续？
