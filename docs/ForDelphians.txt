@@ -1,7 +1,7 @@
 This text is for people who know Delphi; it describes differences with Delphi.
 
 The online document is more up to date:
-http://wiki.lazarus.freepascal.org/Lazarus_Documentation#Coming_from_Delphi
+https://wiki.freepascal.org/Lazarus_Documentation#Coming_from_Delphi
 
 
 Delphi -> Lazarus

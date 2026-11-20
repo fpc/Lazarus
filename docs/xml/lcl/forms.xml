@@ -184,7 +184,7 @@ wsNormal are understood as wsMaximized, which is the normal state for windows
 in this platform. An exception are windows with BorderStyle=bsDialog or 
 bsNone, which are allowed to have a custom position and size. For more 
 information please read the <url 
-href="http://wiki.lazarus.freepascal.org/Windows_CE_Development_Notes#Positioning_and_size_of_Dialogs_and_Forms">Lazarus 
+href="https://wiki.freepascal.org/Windows_CE_Development_Notes#Positioning_and_size_of_Dialogs_and_Forms">Lazarus 
 Wiki article</url>.
 </dd>
 <dt>Android</dt>

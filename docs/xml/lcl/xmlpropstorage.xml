@@ -58,10 +58,10 @@ More information about TXMLConfig and XMLConf are available on the FPC wiki
 at:
 </p>
 <p>
-<url href="http://wiki.freepascal.org/xmlconf">XMLConf</url>
+<url href="https://wiki.freepascal.org/xmlconf">XMLConf</url>
 </p>
 <p>
-<url href="http://wiki.freepascal.org/TXMLConfig">TXMLConfig</url>
+<url href="https://wiki.freepascal.org/TXMLConfig">TXMLConfig</url>
 </p>
 </descr>
 <seealso/>
@@ -161,8 +161,8 @@ A demonstration program is located in the
 A tutorial for TXMLPropStorage is located on the Lazarus Wiki at:
 </p>
 <p>
-<url href="https://wiki.lazarus.freepascal.org/TXMLPropStorage">
-https://wiki.lazarus.freepascal.org/TXMLPropStorage
+<url href="https://wiki.freepascal.org/TXMLPropStorage">
+https://wiki.freepascal.org/TXMLPropStorage
 </url>
 </p>
 <p>
@@ -212,7 +212,7 @@ The current value for the FileName property.
 <element name="TCustomXMLPropStorage.FixPath">
 <short>
 Turns '.' notation into '/' notation for the XPATH-like implementation in 
-<url href="http://wiki.freepascal.org/xmlconf">XMLConf</url>.
+<url href="https://wiki.freepascal.org/xmlconf">XMLConf</url>.
 </short>
 <descr/>
 <seealso/>
@@ -390,8 +390,8 @@ A demonstration program is located in the
 A tutorial for TXMLPropStorage is located on the Lazarus Wiki at:
 </p>
 <p>
-<url href="https://wiki.lazarus.freepascal.org/TXMLPropStorage">
-https://wiki.lazarus.freepascal.org/TXMLPropStorage
+<url href="https://wiki.freepascal.org/TXMLPropStorage">
+https://wiki.freepascal.org/TXMLPropStorage
 </url>
 </p>
 <p>

@@ -3908,7 +3908,7 @@ control
 <b>True</b> if the control or window should be repainted following the call 
 of this function, <b>False</b> otherwise. See also the wiki documentation: 
 <url 
-href="http://wiki.lazarus.freepascal.org/LCL_Tips#Creating_a_non-rectangular_window_or_control">Creating 
+href="https://wiki.freepascal.org/LCL_Tips#Creating_a_non-rectangular_window_or_control">Creating 
 a Non-Rectangular Window or Control</url>
 </dd>
 </dl>
