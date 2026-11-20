@@ -5,7 +5,7 @@ TAChart tutorials.
 folder "getting_started"
 --------------------------------------------------------------------------------
 tutorial
-  http://wiki.lazarus.freepascal.org/TAChart_Tutorial:_Getting_started
+  https://wiki.freepascal.org/TAChart_Tutorial:_Getting_started
   
 topic:
 - introduction to TAChart basics
@@ -17,7 +17,7 @@ topic:
 folder "moores_law"
 --------------------------------------------------------------------------------
 tutorial
-  http://wiki.lazarus.freepascal.org/TAChart_Tutorial:_ListChartSource,_Logarithmic_Axis,_Fitting
+  https://wiki.freepascal.org/TAChart_Tutorial:_ListChartSource,_Logarithmic_Axis,_Fitting
   
 topics
 - enter data at design-time
@@ -30,7 +30,7 @@ topics
 folder "func_series"
 --------------------------------------------------------------------------------
 tutorial
-  http://wiki.lazarus.freepascal.org/TAChart_Tutorial:_Function_Series
+  https://wiki.freepascal.org/TAChart_Tutorial:_Function_Series
   
 topics
 - TFuncSeries
@@ -41,7 +41,7 @@ topics
 folder "mandelbrot"
 --------------------------------------------------------------------------------
 tutorial 
-  http://wiki.lazarus.freepascal.org/TAChart_Tutorial:_ColorMapSeries,_Zooming
+  https://wiki.freepascal.org/TAChart_Tutorial:_ColorMapSeries,_Zooming
   
 topics:
 - TColorMapSeries
@@ -51,8 +51,8 @@ topics:
 folder "bar_series"
 --------------------------------------------------------------------------------
 tutorials
-  http://wiki.lazarus.freepascal.org/TAChart_Tutorial:_BarSeries
-  http://wiki.lazarus.freepascal.org/TAChart_Tutorial:_Stacked_BarSeries
+  https://wiki.freepascal.org/TAChart_Tutorial:_BarSeries
+  https://wiki.freepascal.org/TAChart_Tutorial:_Stacked_BarSeries
   
 topics
 - multiple bar series arranged side-by-side
@@ -64,7 +64,7 @@ topics
 folder "background"
 --------------------------------------------------------------------------------
 tutorial
-  http://wiki.lazarus.freepascal.org/TAChart_Tutorial:_Background_design
+  https://wiki.freepascal.org/TAChart_Tutorial:_Background_design
   
 topics
 - events used by TChart

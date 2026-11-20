@@ -24,7 +24,7 @@ For instance the FPC 2.4.2 source directory contains the following files:
   utils
 
 See here for more information:
-http://wiki.lazarus.freepascal.org/Installing_Lazarus#FPC_Sources
+https://wiki.freepascal.org/Installing_Lazarus#FPC_Sources
 
 The examples will scan the directories and store the result in a file named
 'codetools.config'. So the next time you start any of the examples it does

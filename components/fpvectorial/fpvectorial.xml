@@ -16,7 +16,7 @@ geometrical, textual and some engineering elements (for example dimension measur
 FPVectorial is almost entirely 2D, but it has a minimal 3D support which was added for use in
 milling machines to signal when the drill should go up and down. Except for this use
 case, FPVectorial should be used as a 2D library.
-See also the website wiki.lazarus.freepascal.org/fpvectorial for more help about this unit
+See also the website wiki.freepascal.org/fpvectorial for more help about this unit
 </descr>
 
 <!-- enumeration type Visibility: default -->

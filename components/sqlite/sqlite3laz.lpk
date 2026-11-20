@@ -13,7 +13,7 @@
       </Other>
     </CompilerOptions>
     <Description Value="TSqlite3Dataset class package.
-There are required binary file dependancies for IDE installation and project distribution, please see: https://wiki.lazarus.freepascal.org/SQLite for information and instructions.
+There are required binary file dependancies for IDE installation and project distribution, please see: https://wiki.freepascal.org/SQLite for information and instructions.
 "/>	
     <License Value="Modified LGPL
 "/>
