@@ -267,6 +267,7 @@ type
 
   TDbgController = class
   private
+    FIsTerminating: boolean;
     FLastError: TFpError;
     FMemManager: TFpDbgMemManager;
     FMemModel: TFpDbgMemModel;
@@ -351,6 +352,7 @@ type
     function Detach: boolean;
     procedure ProcessLoop;
     procedure SendEvents(out continue: boolean);
+    function IsRunning: boolean;
     property CurrentCommand: TDbgControllerCmd read FCommand;
     property OsDbgClasses: TOSDbgClasses read FOsDbgClasses;
     property MemManager: TFpDbgMemManager read FMemManager write FMemManager;
@@ -359,6 +361,7 @@ type
     property LastError: TFpError read FLastError;
     property Event: TFPDEvent read FPDEvent;
     property CanContinueStep: boolean read GetCanContinueStep;
+    property IsTerminating: boolean read FIsTerminating;
 
     property ExecutableFilename: string read FExecutableFilename write SetExecutableFilename;
     property AttachToPid: Integer read FAttachToPid write FAttachToPid;
@@ -1801,8 +1804,10 @@ end;
 
 procedure TDbgController.Stop;
 begin
-  if assigned(FMainProcess) then
+  if assigned(FMainProcess) then begin
+    FIsTerminating := True;
     FMainProcess.TerminateProcess
+  end
   else
     raise Exception.Create('Failed to stop debugging. No main process.');
 end;
@@ -2260,6 +2265,11 @@ begin
   end;
 end;
 
+function TDbgController.IsRunning: boolean;
+begin
+  Result := FRunning > 0;
+end;
+
 function TDbgController.GetProcess(const AProcessIdentifier: THandle; out AProcess: TDbgProcess): Boolean;
 begin
   Result := FProcessMap.GetData(AProcessIdentifier, AProcess) and (AProcess <> nil);
@@ -2272,6 +2282,7 @@ begin
   Result := nil;
   assert(FMainProcess = nil, 'TDbgController.CreateDbgProcess: FMainProcess = nil');
 
+  FIsTerminating := False;
   if AttachToPid = 0 then begin
     if FExecutableFilename = '' then begin
       DebugLn(DBG_WARNINGS, 'No filename given to execute.');

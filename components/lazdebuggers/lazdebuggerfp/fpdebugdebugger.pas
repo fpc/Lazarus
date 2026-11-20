@@ -457,6 +457,7 @@ type
   public
     constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
+    procedure Done; override;
     procedure LockCommandProcessing; override;
     procedure UnLockCommandProcessing; override;
     function IsKernelDebugBreak(ALocation: TDBGLocationRec): Boolean;
@@ -4589,6 +4590,12 @@ begin
   if ACommand in [dcRun, dcStop, dcStepIntoInstr, dcStepOverInstr,
                   dcStepTo, dcRunTo, dcStepOver, dcStepInto, dcStepOut, dcContinueLastStep, dcDetach]
   then begin
+    if FDbgController.IsRunning then begin // don't wait forever if a "watch-function-call" does not stop (endless loop in function)
+      if (ACommand = dcStop) and (not FDbgController.IsTerminating) then
+        FDbgController.Stop // stop exe and with that the watch eval
+      else
+        exit(False);
+    end;
     StopAllWorkers(True);
   end;
 
@@ -5199,6 +5206,15 @@ begin
   FreeAndNil(FMirroredExcludedRoutines);
 end;
 
+procedure TFpDebugDebugger.Done;
+begin
+  if IsInReset and (FDbgController <> nil) and
+     (FDbgController.IsRunning) and (not FDbgController.IsTerminating)
+  then
+    FDbgController.Stop;
+  inherited Done;
+end;
+
 function TFpDebugDebugger.GetLocationRec(AnAddress: TDBGPtr;
   AnAddrOffset: Integer): TDBGLocationRec;
 var
@@ -5373,6 +5389,9 @@ begin
     Result := Result - [dcStepOut, dcStepIntoInstr, dcStepOverInstr];
   if (FDbgController = nil) or not(FDbgController.CanContinueStep) then
     Result := Result - [dcContinueLastStep];
+
+  if (FDbgController <> nil) and FDbgController.IsRunning then
+    Result := Result + [dcStop];
 end;
 
 function TFpDebugDebugger.GetTargetWidth: Byte;
