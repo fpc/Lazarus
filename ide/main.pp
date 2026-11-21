@@ -8135,10 +8135,15 @@ begin
   // clear old error lines
   SourceEditorManager.ClearErrorLines;
 
-  Result:=SaveProjectIfChanged;
-  if Result in [mrAbort, mrCancel] then begin
-    DebugLn('Error: (lazarus) TMainIDE.DoBuildLazarus: failed because saving failed');
-    exit;
+  if SourceEditorManager.SomethingModified then begin
+    Result:=IDEMessageDialog(lisSaveChanges, lisSaveAllModified,
+      mtconfirmation, [mbYes, mbNo, mbCancel]);
+    if Result in [mrAbort, mrCancel] then begin
+      DebugLn('Error: (lazarus) TMainIDE.DoBuildLazarus: failed because saving failed');
+      exit;
+    end;
+    if Result = mrYes then
+      DoSaveAll([sfCheckAmbiguousFiles,sfSaveNonProjectFiles]);
   end;
 
   Result:=DoCallModalFunctionHandler(lihtLazarusBuilding);
