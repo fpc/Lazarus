@@ -26,8 +26,7 @@ type
   published
     procedure TestWatchesScope;
     procedure TestWatchesValue;
-   public procedure TestWatchesProperties;
-   published
+    procedure TestWatchesProperties;
     procedure TestWatchesIntrinsic;
     procedure TestWatchesIntrinsic2;
     procedure TestWatchesFunctions;
@@ -1841,10 +1840,16 @@ var
 begin
   if SkipTest then exit;
   if not TestControlCanTest(ControlTestWatchesProperties) then exit;
+  if (Compiler.Version < 030300) then
+    exit;
+
   t := nil;
 
   Src := GetCommonSourceFor('WatchesPropertiesPrg.lpr');
-  TestCompile(Src, ExeName);
+  if (pos('godwarfproperty', LowerCase(Compiler.ExtraOpts)) < 1) then
+    TestCompile(Src, ExeName, '__prop', '-godwarfproperty')
+  else
+    TestCompile(Src, ExeName);
 
   AssertTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
 
