@@ -948,6 +948,8 @@ Var
   f: TfdSet;
   sleepytime: ttimeval;
 begin
+  if FMasterPtyFd = -1 then
+    exit(0);
   sleepytime.tv_sec := ATimeOutMs div 1000;
   sleepytime.tv_usec := (ATimeOutMs mod 1000)*1000;
   FpFD_ZERO(f);
@@ -961,6 +963,8 @@ var
   ABytesRead: cint;
   s: string;
 begin
+  if FMasterPtyFd = -1 then
+    exit('');
   if fpioctl(FMasterPtyFd, FIONREAD, @ABytesAvailable)<0 then
     ABytesAvailable := 0;
 
@@ -979,6 +983,8 @@ end;
 
 procedure TDbgLinuxProcess.SendConsoleInput(AString: string);
 begin
+  if FMasterPtyFd = -1 then
+    exit;
   if FpWrite(FMasterPtyFd, AString[1], length(AString)) <> Length(AString) then
     DebugLn(DBG_WARNINGS, 'Failed to send input to console.');
 end;
