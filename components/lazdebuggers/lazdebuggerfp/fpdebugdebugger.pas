@@ -5389,9 +5389,6 @@ begin
     Result := Result - [dcStepOut, dcStepIntoInstr, dcStepOverInstr];
   if (FDbgController = nil) or not(FDbgController.CanContinueStep) then
     Result := Result - [dcContinueLastStep];
-
-  if (FDbgController <> nil) and FDbgController.IsRunning then
-    Result := Result + [dcStop];
 end;
 
 function TFpDebugDebugger.GetTargetWidth: Byte;
