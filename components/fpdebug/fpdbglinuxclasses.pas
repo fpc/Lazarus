@@ -1588,6 +1588,8 @@ begin
   begin
     setlength(s, ABytesAvailable);
     ABytesRead := fpRead(FMasterPtyFd, s[1], ABytesAvailable);
+    if ABytesRead < 0 then
+      exit;
     SetLength(s, ABytesRead);
     Result := Result + s;
 
