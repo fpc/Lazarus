@@ -319,6 +319,7 @@ type
     FProcProcess: TProcessWithRedirect;
     FIsTerminating: boolean;
     FMasterPtyFd: cint;
+    FSlavePTyFd: cint;
     FCurrentThreadId: THandle;
     FSingleSteppingThreadID: THandle;
     // This breakpoint is triggered after dynamic libraries have been (un)loaded
@@ -399,7 +400,6 @@ implementation
 var
   DBG_VERBOSE, DBG_WARNINGS, FPDBG_LINUX: PLazLoggerLogGroup;
   GConsoleTty: string;
-  GSlavePTyFd: cint;
 
 type
   Tprocess_vm_readv = function(pid: pid_t; const local_iov: piovec;
@@ -497,10 +497,14 @@ begin
     writeln('Failed to start trace of process. Errcode: '+inttostr(fpgeterrno));
 
   ConsoleTtyFd := -1;
-  if GConsoleTty<>'' then
-    ConsoleTtyFd:=FpOpen(GConsoleTty,O_RDWR+O_NOCTTY)
-  else if GSlavePTyFd>-1 then
-    ConsoleTtyFd:=GSlavePTyFd;
+  if GConsoleTty<>'' then begin
+    ConsoleTtyFd:=FpOpen(GConsoleTty,O_RDWR+O_NOCTTY);
+    if FSlavePTyFd>-1 then
+      FpClose(FSlavePTyFd);
+  end
+  else
+  if FSlavePTyFd>-1 then
+    ConsoleTtyFd:=FSlavePTyFd;
 
   if ConsoleTtyFd>-1 then begin
     if FpSetsid <> -1 then
@@ -523,7 +527,6 @@ begin
   end
   else
     writeln('Failed to open tty '+GConsoleTty+'. Errno: '+inttostr(fpgeterrno));
-
 end;
 
 function TDbgLinuxThread.GetDebugRegOffset(ind: byte): pointer;
@@ -1248,6 +1251,8 @@ var
   AProcess: TProcessWithRedirect;
   AMasterPtyFd: cint;
   AnExecutabeFilename: string;
+const
+  FD_CLOEXEC = 1;
 begin
   Result := false;
   if FMasterPtyFd>-1 then
@@ -1268,17 +1273,23 @@ begin
   end;
 
   AMasterPtyFd:=-1;
+  FSlavePTyFd :=-1;
   if siRediretOutput in AFlags then
     begin
     if AConsoleTty<>'' then
       DebugLn(DBG_VERBOSE, 'It is of no use to provide a console-tty when the console output is being redirected.');
     GConsoleTty:='';
-    if openpty(@AMasterPtyFd, @GSlavePTyFd, nil, nil, nil) <> 0 then
+    if openpty(@AMasterPtyFd, @FSlavePTyFd, nil, nil, nil) <> 0 then
+      begin
+      AMasterPtyFd:=-1;
+      FSlavePTyFd :=-1;
       DebugLn(DBG_WARNINGS, 'Failed to open pseudo-tty. Errcode: '+inttostr(fpgeterrno));
+      end
+      else
+        FpFcntl(AMasterPtyFd, F_SETFD, FD_CLOEXEC);
     end
   else
     begin
-    GSlavePTyFd:=-1;
     GConsoleTty:=AConsoleTty;
     end;
 
@@ -1315,13 +1326,14 @@ begin
       DebugLn(DBG_WARNINGS, Format('Failed to start process "%s". Errormessage: "%s".',[Name, E.Message]));
       AProcess.Free;
 
-    if GSlavePTyFd>-1 then
-      FpClose(GSlavePTyFd);
     if AMasterPtyFd>-1 then
       FpClose(AMasterPtyFd);
     FMasterPtyFd:=-1;
     end;
   end;
+  if FSlavePTyFd>-1 then
+    FpClose(FSlavePTyFd);
+  FSlavePTyFd := -1;
 end;
 
 function TDbgLinuxProcess.AttachToInstance(APid: Integer; out AnError: TFpError
