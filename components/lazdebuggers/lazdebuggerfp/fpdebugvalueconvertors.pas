@@ -428,6 +428,9 @@ var
   CurProc: TDbgProcess;
 begin
   Result := 0;
+  if AnFpDebugger.DbgController.IsTerminating then
+    exit;
+
   CurProc := AnFpDebugger.DbgController.CurrentProcess;
   if CurProc = nil then
     exit;
@@ -497,6 +500,9 @@ var
   r: Boolean;
 begin
   Result := nil;
+  if AnFpDebugger.DbgController.IsTerminating then
+    exit;
+
   if (ASourceValue.Kind <> skRecord) or
      (AnFpDebugger.DbgController.CurrentProcess = nil) or
      ( (AnFpDebugger.DbgController.CurrentProcess.Mode = dm32) and

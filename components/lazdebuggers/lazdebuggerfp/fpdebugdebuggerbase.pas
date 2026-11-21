@@ -179,6 +179,8 @@ procedure TFpDebugDebuggerBase.CallTargetFuncStringDecRef(
 var
   CallContext: TFpDbgInfoCallContext;
 begin
+  if DbgController.IsTerminating then
+    exit;
   if AStringDataAddr = 0 then
     exit;
   if AMemReader = nil then
@@ -208,6 +210,8 @@ var
   CallContext: TFpDbgInfoCallContext;
   AParamAddr: TDBGPtr;
 begin
+  if DbgController.IsTerminating then
+    exit;
   if AMemReader = nil then
     AMemReader := MemReader;
   if AMemConverter = nil then
