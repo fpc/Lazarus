@@ -914,7 +914,7 @@ begin
           Inc(Result);
     until FindNext(lSearch) <> 0;
   finally
-    FindClose(lSearch);
+    SysUtils.FindClose(lSearch);
   end;
 end;
 
