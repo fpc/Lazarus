@@ -985,7 +985,7 @@ end;
 
 procedure TDbgLinuxProcess.SendConsoleInput(AString: string);
 begin
-  if FMasterPtyFd = -1 then
+  if (FMasterPtyFd = -1) or (AString='') then
     exit;
   if FpWrite(FMasterPtyFd, AString[1], length(AString)) <> Length(AString) then
     DebugLn(DBG_WARNINGS, 'Failed to send input to console.');
