@@ -1304,13 +1304,13 @@ begin
       AProcess.SetRedirection(dtStdIn,  Config.StdInRedirFile,  Config.FileOverwriteStdIn);
       if (Config.StdOutRedirFile = Config.StdErrRedirFile) then begin
         if Config.StdOutRedirFile <> '' then begin
-          FProcProcess.SetRedirection(dtStdOut, Config.StdOutRedirFile, Config.FileOverwriteStdOut or Config.FileOverwriteStdErr);
-          FProcProcess.Options := FProcProcess.Options + [poStdErrToOutPut];
+          AProcess.SetRedirection(dtStdOut, Config.StdOutRedirFile, Config.FileOverwriteStdOut or Config.FileOverwriteStdErr);
+          AProcess.Options := AProcess.Options + [poStdErrToOutPut];
         end;
       end
       else begin
-        FProcProcess.SetRedirection(dtStdOut, Config.StdOutRedirFile, Config.FileOverwriteStdOut);
-        FProcProcess.SetRedirection(dtStdErr, Config.StdErrRedirFile, Config.FileOverwriteStdErr);
+        AProcess.SetRedirection(dtStdOut, Config.StdOutRedirFile, Config.FileOverwriteStdOut);
+        AProcess.SetRedirection(dtStdErr, Config.StdErrRedirFile, Config.FileOverwriteStdErr);
       end;
     end;
 
