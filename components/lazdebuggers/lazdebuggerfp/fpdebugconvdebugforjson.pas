@@ -231,6 +231,8 @@ var
   r: Boolean;
 begin
   Result := nil;
+  if AnFpDebugger.DbgController.IsTerminating then
+    exit;
 
   if (not (svfAddress in ASourceValue.FieldFlags)) or
      (not IsTargetAddr(ASourceValue.Address))

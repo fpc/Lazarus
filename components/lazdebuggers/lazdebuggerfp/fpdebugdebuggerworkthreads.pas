@@ -842,6 +842,12 @@ var
   dummyFB: TDbgFrameBoundaryInfo;
 begin
   Result := False;
+  if (FDebugger.DbgController.IsTerminating)
+  then begin
+    AnError := CreateError(fpErrAnyError, ['Error in function execution']);
+    exit;
+  end;
+
   AnError := NoError;
   if FExpressionScope = nil then
     exit;
