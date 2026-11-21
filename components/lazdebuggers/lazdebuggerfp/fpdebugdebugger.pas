@@ -4591,10 +4591,15 @@ begin
                   dcStepTo, dcRunTo, dcStepOver, dcStepInto, dcStepOut, dcContinueLastStep, dcDetach]
   then begin
     if FDbgController.IsRunning then begin // don't wait forever if a "watch-function-call" does not stop (endless loop in function)
-      if (ACommand = dcStop) and (not FDbgController.IsTerminating) then
-        FDbgController.Stop // stop exe and with that the watch eval
-      else
-        exit(False);
+      if (ACommand = dcStop) and (not FDbgController.IsTerminating) then begin
+        FDbgController.Stop; // stop exe and with that the watch eval
+        StopAllWorkers(True);
+        if FDbgController.Event in [deExitProcess, deDetachFromProcess] then
+          DebugLoopFinished(0)
+        else
+          StartDebugLoop;
+      end;
+      exit(False);
     end;
     StopAllWorkers(True);
   end;
