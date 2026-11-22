@@ -50,6 +50,7 @@ type
   TFpDbgLinuxSignalQueue = class(specialize TFPGList<TFpDbgLinuxSignal>)
   public
     procedure AddSignal(APID: THandle; AWaitStatus: cint); overload;
+    procedure RemoveAllForPid(APID: THandle);
     function GetNextSignal(out APID: THandle; out AWaitStatus: cint): Boolean;
   end;
 
@@ -246,6 +247,18 @@ begin
   tmp.PID := APid;
   tmp.WaitStatus := AWaitStatus;
   Add(tmp);
+end;
+
+procedure TFpDbgLinuxSignalQueue.RemoveAllForPid(APID: THandle);
+var
+  i: integer;
+begin
+  i := Count - 1;
+  while i >= 0 do begin
+    if Items[i].PID = APID then
+      delete(i);
+    dec(i);
+  end;
 end;
 
 function TFpDbgLinuxSignalQueue.GetNextSignal(out APID: THandle; out
@@ -1099,6 +1112,9 @@ begin
     Result := CheckNoError;
     exit;
   end;
+  if assigned(AThread) and not FThreadMap.HasId(AThread.ID) then begin
+    AThread := nil;
+  end;
 
   if (AThread <> nil) and TDbgLinuxThread(AThread).FIsPaused then  // in case of deInternal, it may not be paused and can be ignored
     AThread.NextIsSingleStep:=SingleStep;
@@ -1321,6 +1337,7 @@ begin
       begin
       // Thread stopped, just continue
       RemoveThread(AThread.Id);
+      FPostponedSignals.RemoveAllForPid(AThread.Id);
       result := deInternalContinue;
       end;
     end
@@ -1481,6 +1498,7 @@ begin
     TDbgThread(ThreadToPause) := it.Current;
     if ThreadToPause.FHasExited then begin
       Process.RemoveThread(ThreadToPause.ID); // TODO: postpone ?
+      FPostponedSignals.RemoveAllForPid(ThreadToPause.Id);
       if ThreadToPause <> AThread then
         ThreadToPause.Free;
     end;
