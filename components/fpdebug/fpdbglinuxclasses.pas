@@ -1361,7 +1361,7 @@ begin
       debugln(DBG_VERBOSE, ['Attached ', wstopsig(FStatus)]);
       result := deCreateProcess;
       FProcessStarted:=true;
-      if not wstopsig(FStatus) = SIGSTOP then
+      if not (wstopsig(FStatus) = SIGSTOP) then
         FPostponedSignals.AddSignal(AThread.Id, FStatus);
     end
 
