@@ -1909,6 +1909,7 @@ begin
       result := deExitProcess
     else
       result := deInternalContinue;
+    exit;
   end;
 
   TDbgLinuxThread(AThread).FExceptionSignal:=0;
