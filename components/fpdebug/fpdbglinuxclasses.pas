@@ -370,6 +370,8 @@ begin
 end;
 
 function TDbgLinuxThread.CheckSignalForPostponing(AWaitedStatus: cint): Boolean;
+var
+  st: longint;
 begin
   //Assert(not FIsPaused, 'Got WaitStatus while already paused');
   //assert(FExceptionSignal = 0, 'TDbgLinuxThread.CheckSignalForPostponing: FExceptionSignal = 0');
@@ -385,18 +387,25 @@ begin
   FIsPaused := True;
   FIsInInternalPause := False;
 
-  if {FInternalPauseRequested and} (wstopsig(AWaitedStatus) = SIGSTOP) then begin
-    DebugLn(DBG_VERBOSE and not FInternalPauseRequested, 'Received SigStop, but had not (yet) requested it. TId=', [Id]);
-    FInternalPauseRequested := False;
-    FIsInInternalPause := True;
-    // no postpone
-  end
+  if WIFSTOPPED(AWaitedStatus) then begin
+    st := wstopsig(AWaitedStatus);
+    if {FInternalPauseRequested and} (st = SIGSTOP) then begin
+      DebugLn(DBG_VERBOSE and not FInternalPauseRequested, 'Received SigStop, but had not (yet) requested it. TId=', [Id]);
+      FInternalPauseRequested := False;
+      FIsInInternalPause := True;
+      // no postpone
+    end
 
-  else
-  if wstopsig(AWaitedStatus) = SIGTRAP then begin
-    CheckAndResetInstructionPointerAfterBreakpoint;
-    Result := True;
-    // TODO: main loop should search all threads for breakpoints
+    else
+    if st = SIGTRAP then begin
+      CheckAndResetInstructionPointerAfterBreakpoint;
+      Result := True;
+      // TODO: main loop should search all threads for breakpoints
+    end
+
+    else
+      Result := True; // Handle later
+
   end
 
   else
