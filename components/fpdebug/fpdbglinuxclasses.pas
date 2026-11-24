@@ -1832,6 +1832,7 @@ end;
 function TDbgLinuxProcess.WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean;
 var
   PID: THandle;
+  e: longint;
 begin
   ThreadIdentifier:=-1;
   ProcessIdentifier:=-1;
@@ -1848,8 +1849,16 @@ begin
   RestoreTempBreakInstructionCodes; // should only happen after single step, so all threads should be paused
 
   result := PID<>-1;
-  if not result then
-    DebugLn(DBG_WARNINGS, 'Failed to wait for debug event. Errcode: %d', [fpgeterrno])
+  if not result then begin
+    e := fpgeterrno;
+    if e = ESysECHILD then
+    begin
+      GotExitProcess := True; // nothing left to wait for, let ProcessLoop exit
+      exit(True);
+    end;
+
+    DebugLn(DBG_WARNINGS, 'Failed to wait for debug event. Errcode: %d', [e]);
+  end
   else
     begin
     ThreadIdentifier := PID;
