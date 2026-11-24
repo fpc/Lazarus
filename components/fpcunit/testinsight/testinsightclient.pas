@@ -187,6 +187,8 @@ Var
 
 begin
   Result:=[];
+  if aJSON='' then
+    exit;
   D:=GetJSON(aJSON);
   try
     if D=Nil then exit;
@@ -256,8 +258,13 @@ end;
 
 procedure TAbstractTestInsightClient.GetServerOptions;
 
+var
+  lOpts : String;
+
 begin
-  Options.FromJSON(ServerGet(pathOptions))
+  lOpts:=ServerGet(pathOptions);
+  if lOpts<>'' then
+    Options.FromJSON(lOpts);
 end;
 
 procedure TAbstractTestInsightClient.PostResult(
@@ -337,8 +344,15 @@ begin
 end;
 
 function TAbstractTestInsightClient.GetTests: TStringDynArray;
+
+var
+  lTests : String;
+
 begin
-  Result:=JSONToTests(ServerGet(''));
+  Result:=[];
+  lTests:=ServerGet('');
+  if lTests<>'' then
+    Result:=JSONToTests(lTests);
 end;
 
 end.

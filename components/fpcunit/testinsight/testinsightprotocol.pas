@@ -241,6 +241,8 @@ Var
   D : TJSONData;
 
 begin
+  if aJSON='' then
+    exit;
   D:=GetJSON(aJSON);
   try
     if D is TJSONObject then
@@ -301,6 +303,8 @@ Var
   D : TJSONData;
 
 begin
+  if aJSON='' then
+    exit;
   D:=GetJSON(aJSON);
   try
     if D is TJSONObject then

@@ -107,8 +107,12 @@ function IsTestinsightListening(const aConfig : String = ''; const baseUrl: stri
 begin
   With CreateClient(aConfig,BaseURL) do
     try
-      GetServerOptions;
-      Result:=Not HasError;
+      try
+        GetServerOptions;
+        Result:=Not HasError;
+      except
+        Result:=False;
+      end;
     finally
       Free
     end;
