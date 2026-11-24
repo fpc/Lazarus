@@ -8332,8 +8332,11 @@ begin
 
   if Widget = nil then
   begin
-    // we need only `Down`, issue #42651
-    LastMouse.Down := False;
+    // reset only `LastMouse.Down` for correct doubleclicks, issue #42651
+    // !! only in runtime !! (design-time reset lead to false doubleclick)
+    if (LastMouse.WinControl = nil) or not (LastMouse.WinControl is TWinControl) or
+      not (csDesigning in TWinControl(LastMouse.WinControl).ComponentState) then
+        LastMouse.Down := False;
     Exit;
   end;
 
