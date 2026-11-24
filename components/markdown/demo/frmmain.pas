@@ -22,7 +22,7 @@ type
     FRender:TMarkDownCanvasRenderer;
     PMarkDown: TMarkDownControl;
     procedure DoGetImage(Sender: TObject; const aURL: string; var aImage: TPicture);
-    procedure DoOpenURL(Sender: TObject; aURL: String);
+    procedure DoOpenURL(Sender: TObject; const aURL: String);
     procedure RenderFile(const aFileName: string);
   public
 
@@ -48,7 +48,7 @@ procedure TMainForm.btnFileClick(Sender: TObject);
 begin
   with ODMarkDown do
     if Execute then
-      PMarkDown.MarkDown.LoadFromFile(FileName);
+      PMarkDown.LoadFromFile(FileName);
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -65,7 +65,7 @@ begin
   PMarkDown.Visible:=True;
   PMarkDown.MonoFontName:='Monospace';
   if FileExists(DefaultFile) then
-    PMarkDown.MarkDown.LoadFromFile(DefaultFile);
+    PMarkDown.LoadFromFile(DefaultFile);
 end;
 
 procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -101,7 +101,7 @@ begin
     end;
 end;
 
-procedure TMainForm.DoOpenURL(Sender: TObject; aURL: String);
+procedure TMainForm.DoOpenURL(Sender: TObject; const aURL: String);
 begin
   OpenURL(aURL);
 end;

@@ -25,7 +25,7 @@ unit MarkDown.CanvasRender;
 interface
 
 uses
-  SysUtils, Classes, Contnrs, Graphics, Types, Math, MarkDown.Elements, MarkDown.Parser, MarkDown.Render, Markdown.HTMLEntities, LazUTF8;
+  SysUtils, Classes, Contnrs, Graphics, Types, Math, MarkDown.Elements, MarkDown.Parser, MarkDown.Render, Markdown.HTMLEntities, LazUTF8, LazFileUtils;
 
 type
   TLayoutItemKind = (
@@ -68,6 +68,7 @@ type
     FSelectionEnd: LongInt;
     FSelectionStartChar: Integer;
     FSelectionEndChar: Integer;
+    FLineIndex: Integer;
   protected
     function GetColor(aKind : TColorKind; aDefault : TColor) : TColor;
   public
@@ -91,6 +92,8 @@ type
     property SelectionEnd: LongInt read FSelectionEnd write FSelectionEnd;
     property SelectionStartChar: Integer read FSelectionStartChar write FSelectionStartChar;
     property SelectionEndChar: Integer read FSelectionEndChar write FSelectionEndChar;
+    // Index of the layout line the item belongs to
+    property LineIndex: Integer read FLineIndex write FLineIndex;
   end;
 
   { TLayoutItemList }
@@ -141,7 +144,17 @@ type
     LineBelowExtra : LongInt;
     BaselineShiftCurrent : LongInt;
     BaselineFromIndex : Longint;
+    LinkFromIndex : Longint;
+    LineAscent : LongInt;
+    LineDescent : LongInt;
     NeedSpaceBeforeNextText : Boolean;
+  end;
+
+  TAscentCacheEntry = record
+    Mono : Boolean;
+    Size : LongInt;
+    Style : TFontStyles;
+    Ascent : LongInt;
   end;
 
   TLayoutLists = record
@@ -196,7 +209,12 @@ type
 
     // Selection support
     FSelectionColor: TColor;
+    FTableLinesColor: TColor;
     FHTMLEntities : TFPStringHashTable;
+    FBaseDir: string;
+    FLineCount: Integer;
+    FAscentCache: array of TAscentCacheEntry;
+    procedure SetBaseDir(const aValue: string);
   Protected
     // Selection methods
     procedure ClearAllSelections;
@@ -225,6 +243,9 @@ type
       const aFontStyle: TFontStyles; const aContext : TFontContext): LongInt;
     function MeasureTextHeight(const aCanvas: TCanvas; const aFontSize: LongInt; const aFontStyle: TFontStyles;
       const aContext : TFontContext): LongInt;
+    function MeasureTextAscent(const aCanvas: TCanvas; const aFontSize: LongInt; const aFontStyle: TFontStyles;
+      const aContext : TFontContext): LongInt;
+    procedure ShiftLineItems(aDelta: LongInt);
     function GetTextColor(aContext: TFontContext): TColor; virtual;
     function GetTextBGColor(aContext: TFontContext): TColor; virtual;
 
@@ -238,6 +259,7 @@ type
       const aFontStyle: TFontStyles; const aLinkHref: utf8string; const aContext : TFontContext;
       const aPreserveWhitespace, aDryRun: boolean); virtual;
     function LayoutImage(aImageURL: UTF8String): Boolean; virtual;
+    function LoadLocalImage(const aURL: string): TPicture; virtual;
     procedure RenderTextNode(aTextNode: TMarkDownTextNode; aFontSize: LongInt; aFontStyle: TFontStyles; const aContext : TFontContext);
 
     // Actual drawing
@@ -258,6 +280,8 @@ type
     Property BulletLevel : Integer Read FBulletLevel;
     Property CalculatedBlockQuoteIndent : Integer Read FCalculatedBlockQuoteIndent;
     Property Layout : TLayoutData read FLayout;
+    // Items of the current layout
+    Property LayoutItems : TLayoutItemList read FLists.Items;
   public
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
@@ -278,6 +302,10 @@ type
     procedure ClearSelection;
     function GetSelectedText: String;
     function HitTestText(const aX, aY: LongInt): TSelectionPoint;
+    // Height of a line of text in the base font.
+    function MeasureBaseLineHeight(const aCanvas: TCanvas): LongInt;
+    // Free all cached images.
+    procedure ClearImageCache;
 
     // Properties
     property CalculatedWidth: LongInt read FCalculatedWidth;
@@ -306,6 +334,10 @@ type
     Property ImageMargin : integer read FImageMargin Write FImageMargin;
     Property OnGetImage : TMarkdownImageEvent Read FOnGetImage Write FOnGetImage;
     property SelectionColor: TColor read FSelectionColor write FSelectionColor;
+    // Color of the table borders and cell separators.
+    property TableLinesColor: TColor read FTableLinesColor write FTableLinesColor;
+    // Directory used to resolve relative image file names.
+    property BaseDir: string read FBaseDir write SetBaseDir;
   end;
 
   { TCanvasMarkDownBlockRenderer }
@@ -599,6 +631,7 @@ begin
   fBGColor:=clWindow;
   fFontColor:=clWindowText;
   fFontQuoteColor:=clWindowFrame;
+  FTableLinesColor:=clBlack;
 
   fBaseFontSize:=10;
   FLayout.BaselineShiftCurrent:=0;
@@ -749,46 +782,89 @@ end;
 
 function TMarkDownCanvasRenderer.HitTestText(const aX, aY: LongInt): TSelectionPoint;
 var
-  I: Integer;
-  Item: TLayoutItem;
-  RelativeX: LongInt;
-  CharIndex: Integer;
-  CharWidth: LongInt;
-  CurrentX: LongInt;
-  TestChar: UTF8String;
+  I, lBest, lBestDist, lDist, lLine, lCharIndex, lLen: Integer;
+  lItem: TLayoutItem;
+  lRelX, lCurX, lCharW: LongInt;
 begin
   Result.LayoutItemIndex:=-1;
   Result.CharOffset:=0;
-
-  for I:=0 to FLists.Items.Count - 1 do
+  // Text item vertically closest to aY: its line is the target line
+  lBest:=-1;
+  lBestDist:=MaxInt;
+  for I:=0 to FLists.Items.Count-1 do
     begin
-    Item:=FLists.Items[I];
-    if (Item.Kind=likText) and
-       (aX>=Item.X) and (aX<=Item.X+Item.Width) and
-       (aY>=Item.Y) and (aY<=Item.Y+Item.Height) then
+    lItem:=FLists.Items[I];
+    if lItem.Kind<>likText then
+      Continue;
+    if aY<lItem.Y then
+      lDist:=lItem.Y-aY
+    else if aY>=lItem.Y+lItem.Height then
+      lDist:=aY-(lItem.Y+lItem.Height)+1
+    else
+      lDist:=0;
+    if lDist<lBestDist then
       begin
-      Result.LayoutItemIndex:=I;
-      RelativeX:=aX - Item.X;
-
-      // Find character position
-      ApplyFont(fCanvas, Item.FontSize, Item.FontStyle, Item.Context);
-      CurrentX:=0;
-      CharIndex:=0;
-
-      while CharIndex<UTF8Length(Item.Text) do
-        begin
-        TestChar:=UTF8Copy(Item.Text, CharIndex + 1, 1);
-        CharWidth:=fCanvas.TextWidth(TestChar);
-        if RelativeX <= CurrentX + (CharWidth div 2) then
-          Break;
-        CurrentX:=CurrentX + CharWidth;
-        Inc(CharIndex);
-        end;
-
-      Result.CharOffset:=CharIndex;
-      Exit;
+      lBest:=I;
+      lBestDist:=lDist;
       end;
     end;
+  if lBest<0 then
+    Exit;
+  // Last item of that line starting at or before aX, else the first item of the line
+  lLine:=FLists.Items[lBest].LineIndex;
+  lBest:=-1;
+  for I:=0 to FLists.Items.Count-1 do
+    begin
+    lItem:=FLists.Items[I];
+    if (lItem.Kind<>likText) or (lItem.LineIndex<>lLine) then
+      Continue;
+    if (lBest<0) or (lItem.X<=aX) then
+      lBest:=I;
+    end;
+  Result.LayoutItemIndex:=lBest;
+  lItem:=FLists.Items[lBest];
+  lRelX:=aX-lItem.X;
+  if lRelX<=0 then
+    Exit;
+  lLen:=UTF8Length(lItem.Text);
+  if lRelX>=lItem.Width then
+    begin
+    Result.CharOffset:=lLen;
+    Exit;
+    end;
+  ApplyFont(fCanvas, lItem.FontSize, lItem.FontStyle, lItem.Context);
+  lCurX:=0;
+  lCharIndex:=0;
+  while lCharIndex<lLen do
+    begin
+    lCharW:=fCanvas.TextWidth(UTF8Copy(lItem.Text, lCharIndex+1, 1));
+    if lRelX<=lCurX+(lCharW div 2) then
+      Break;
+    Inc(lCurX, lCharW);
+    Inc(lCharIndex);
+    end;
+  Result.CharOffset:=lCharIndex;
+end;
+
+
+function TMarkDownCanvasRenderer.MeasureBaseLineHeight(const aCanvas: TCanvas): LongInt;
+begin
+  Result:=MeasureTextHeight(aCanvas, fBaseFontSize, [], []);
+end;
+
+
+procedure TMarkDownCanvasRenderer.ClearImageCache;
+begin
+  FImageCache.Clear;
+end;
+
+
+procedure TMarkDownCanvasRenderer.SetBaseDir(const aValue: string);
+begin
+  if FBaseDir=aValue then
+    Exit;
+  FBaseDir:=aValue;
+  ClearImageCache;
 end;
 
 procedure TMarkDownCanvasRenderer.SetSelection(const aStart, aEnd: TSelectionPoint);
@@ -816,17 +892,12 @@ begin
       begin
       ItemText:=UTF8Copy(Item.Text, Item.SelectionStartChar + 1,
                           Item.SelectionEndChar - Item.SelectionStartChar);
-      if Result<>'' then
-        begin
-        // Add spacing between items
-        if (I>0) and (PrevItem.Y<>Item.Y) then
-          Result:=Result + LineEnding
-        else
-          Result:=Result + ' ';
-        end;
+      // Runs of one line already contain their separating spaces
+      if (Result<>'') and (PrevItem<>nil) and (PrevItem.LineIndex<>Item.LineIndex) then
+        Result:=Result + LineEnding;
       Result:=Result + ItemText;
+      PrevItem:=Item;
       end;
-    PrevItem:=Item;
     end;
 end;
 
@@ -834,18 +905,22 @@ procedure TMarkDownCanvasRenderer.ParseMarkdown(const aMarkDown: utf8string);
 var
   S: TStrings;
 begin
-  FreeAndNil(fDocument);
   S:=TStringList.Create;
   try
     S.Text:=aMarkDown;
+    ParseMarkdown(S);
   finally
     S.Free;
   end;
 end;
 
 procedure TMarkDownCanvasRenderer.ParseMarkdown(const aMarkDown: TStrings);
+var
+  lDocument: TMarkDownDocument;
 begin
-  fDocument:=fParser.Parse(aMarkDown);
+  lDocument:=fParser.Parse(aMarkDown);
+  FreeAndNil(fDocument);
+  fDocument:=lDocument;
 end;
 
 procedure TMarkDownCanvasRenderer.RenderDocument(aDocument: TMarkDownDocument);
@@ -863,7 +938,9 @@ begin
   fCalculatedWidth:=0;
   fCalculatedHeight:=0;
   FLayout:=Default(TLayoutData);
+  FLayout.BaselineFromIndex:=-1;
   fLineWidth:=0;
+  FLineCount:=0;
   FLayout.NeedSpaceBeforeNextText:=False;
 end;
 
@@ -902,7 +979,11 @@ begin
   FLayout.LineBelowExtra:=0;
   FLayout.NeedSpaceBeforeNextText:=False;
   FLayout.BaselineFromIndex:=FLists.Items.Count-1;
+  FLayout.LinkFromIndex:=FLists.LinkRects.Count;
   FLayout.BaselineShiftCurrent:=0;
+  FLayout.LineAscent:=0;
+  FLayout.LineDescent:=0;
+  Inc(FLineCount);
 end;
 
 procedure TMarkDownCanvasRenderer.ParagraphBreak(const aCanvas: TCanvas);
@@ -995,6 +1076,50 @@ begin
   Result:=Height;
 end;
 
+
+function TMarkDownCanvasRenderer.MeasureTextAscent(const aCanvas: TCanvas; const aFontSize: LongInt;
+  const aFontStyle: TFontStyles; const aContext: TFontContext): LongInt;
+
+var
+  I: Integer;
+  lMono: Boolean;
+  lTM: TLCLTextMetric;
+
+begin
+  lMono:=fcMono in aContext;
+  for I:=0 to Length(FAscentCache)-1 do
+    with FAscentCache[I] do
+      if (Mono=lMono) and (Size=aFontSize) and (Style=aFontStyle) then
+        Exit(Ascent);
+  ApplyFont(aCanvas, aFontSize, aFontStyle, aContext);
+  if aCanvas.GetTextMetrics(lTM) then
+    Result:=lTM.Ascender
+  else
+    Result:=aCanvas.TextHeight(ExtendHeight);
+  I:=Length(FAscentCache);
+  SetLength(FAscentCache, I+1);
+  FAscentCache[I].Mono:=lMono;
+  FAscentCache[I].Size:=aFontSize;
+  FAscentCache[I].Style:=aFontStyle;
+  FAscentCache[I].Ascent:=Result;
+end;
+
+
+procedure TMarkDownCanvasRenderer.ShiftLineItems(aDelta: LongInt);
+
+var
+  I: Integer;
+
+begin
+  for I:=FLayout.BaselineFromIndex+1 to FLists.Items.Count-1 do
+    with FLists.Items[I] do
+      if Kind in [likText,likImage] then
+        Y:=Y+aDelta;
+  for I:=FLayout.LinkFromIndex to FLists.LinkRects.Count-1 do
+    with FLists.LinkRects[I] do
+      FY:=FY+aDelta;
+end;
+
 function TMarkDownCanvasRenderer.GetTextColor(aContext : TFontContext) : TColor;
 
 begin
@@ -1023,22 +1148,33 @@ procedure TMarkDownCanvasRenderer.FlushTextRun(const aCanvas: TCanvas; const aTe
 var
   Item: TLayoutItem;
   lX,lY : Longint;
-  lNewWidth, lHeight, lWidth, BaselineShift: LongInt;
+  lNewWidth, lHeight, lWidth, lAscent, lDescent: LongInt;
 begin
   if length(aText)=0 then
     exit;
 
   lWidth:=MeasureTextWidth(aCanvas, aText, aFontSize, aFontStyle, aContext);
   lHeight:=MeasureTextHeight(aCanvas, aFontSize, aFontStyle, aContext);
-  BaselineShift:=FLayout.BaselineShiftCurrent;
-  if FLayout.LineHeight<(lHeight) then
-    FLayout.LineHeight:=lHeight;
+  lAscent:=MeasureTextAscent(aCanvas, aFontSize, aFontStyle, aContext);
+  lDescent:=Max(0, lHeight-lAscent);
+  // All runs of a line share the baseline at LineAscent below the line top
+  if lAscent>FLayout.LineAscent then
+    begin
+    if FLayout.LineAscent>0 then
+      ShiftLineItems(lAscent-FLayout.LineAscent);
+    FLayout.LineAscent:=lAscent;
+    end;
+  if lDescent>FLayout.LineDescent then
+    FLayout.LineDescent:=lDescent;
+  if FLayout.LineHeight<FLayout.LineAscent+FLayout.LineDescent then
+    FLayout.LineHeight:=FLayout.LineAscent+FLayout.LineDescent;
 
   if not aDryRun then
     begin
     lX:=FLayout.CurrentIndent + FLayout.LineX;
-    lY:=FLayout.LineY + FLayout.LineAboveExtra + BaselineShift;
+    lY:=FLayout.LineY + FLayout.LineAboveExtra + FLayout.BaselineShiftCurrent + (FLayout.LineAscent-lAscent);
     Item:=FLists.Items.NewItem(TLayoutItemKind.likText,lX,lY);
+    Item.LineIndex:=FLineCount;
 
     item.BGColor:=GetTextBGColor(aContext);
     item.color:=GetTextColor(aContext);
@@ -1268,6 +1404,7 @@ begin
     exit;
     end;
   fCanvas:=aCanvas;
+  SetLength(FAscentCache,0);
   if FBlockQuoteIndent<>0 then
     FCalculatedBlockQuoteIndent:=FBlockQuoteIndent
   else
@@ -1329,7 +1466,7 @@ begin
      begin
      aCanvas.Pen.Style:=psSolid;
      if aItem.Kind=TLayoutItemKind.likRect then
-       aCanvas.Pen.Color:=clBlack
+       aCanvas.Pen.Color:=aItem.GetColor(ckForeground,TableLinesColor)
      else
        aCanvas.Pen.Color:=aItem.GetColor(ckBackground,BGColor);
      aCanvas.Pen.Width:=1;
@@ -1338,7 +1475,7 @@ begin
      end;
    TLayoutItemKind.likLine:
      begin
-     aCanvas.Pen.Color:=clBlack;
+     aCanvas.Pen.Color:=aItem.GetColor(ckForeground,TableLinesColor);
      aCanvas.Pen.Width:=1;
      With aItem do
        aCanvas.Line(lX,lY,lX+DeltaX,lY+DeltaY);
@@ -1417,6 +1554,7 @@ end;
 function TMarkDownCanvasRenderer.CreateLayoutItem(aKind: TLayoutItemKind; aX, aY: Longint): TLayoutItem;
 begin
   Result:=FLists.Items.NewItem(aKind,aX,aY);
+  Result.LineIndex:=FLineCount;
 end;
 
 function TMarkDownCanvasRenderer.LayoutImage(aImageURL : UTF8String) : Boolean;
@@ -1431,11 +1569,11 @@ begin
   if not assigned(lImage) then
     begin
     if assigned(FOnGetImage) then
-      begin
       FOnGetImage(Self,aImageURL,lImage);
-      if assigned(lImage) then
-        FImageCache.Add(aImageURL,lImage);
-      end;
+    if not assigned(lImage) then
+      lImage:=LoadLocalImage(aImageURL);
+    if assigned(lImage) then
+      FImageCache.Add(aImageURL,lImage);
     end;
   Result:=assigned(lImage);
   if not Result then exit;
@@ -1464,6 +1602,61 @@ begin
   if FLayout.LineHeight<lImage.Height then
     FLayout.LineHeight:=lImage.Height;
 end;
+
+function TMarkDownCanvasRenderer.LoadLocalImage(const aURL: string): TPicture;
+
+  function PercentDecode(const aValue: string): string;
+  var
+    I, lLen, lCode: Integer;
+  begin
+    Result:='';
+    I:=1;
+    lLen:=Length(aValue);
+    while I<=lLen do
+      begin
+      if (aValue[I]='%') and (I+2<=lLen) and TryStrToInt('$'+Copy(aValue,I+1,2),lCode) then
+        begin
+        Result:=Result+Chr(lCode);
+        Inc(I,3);
+        end
+      else
+        begin
+        Result:=Result+aValue[I];
+        Inc(I);
+        end;
+      end;
+  end;
+
+var
+  lName: string;
+
+begin
+  Result:=nil;
+  lName:=aURL;
+  if SameText(Copy(lName,1,7),'file://') then
+    begin
+    Delete(lName,1,7);
+    // file:///C:/dir/name
+    if (Length(lName)>=3) and (lName[1]='/') and (lName[3]=':') then
+      Delete(lName,1,1);
+    end
+  else if Pos('://',lName)>0 then
+    Exit;
+  lName:=SetDirSeparators(PercentDecode(lName));
+  if lName='' then
+    Exit;
+  if not FilenameIsAbsolute(lName) and (FBaseDir<>'') then
+    lName:=CreateAbsolutePath(lName,FBaseDir);
+  if not FileExists(lName) then
+    Exit;
+  Result:=TPicture.Create;
+  try
+    Result.LoadFromFile(lName);
+  except
+    FreeAndNil(Result);
+  end;
+end;
+
 
 procedure TMarkDownCanvasRenderer.CollectHTMLEntities;
 var
@@ -1962,6 +2155,7 @@ begin
 
      Temp:=Default(TLayoutData);
      Temp.MaxWidth:=TextWidth;
+     Temp.BaselineFromIndex:=-1;
      Saved:=CanvasRenderer.SwapLayout(Temp);
      CellFontStyle:=aFontStyle;
      if lRow=0 then
@@ -2237,6 +2431,9 @@ begin
     Temp.MaxWidth:=CurrentX+CellWidth-FTableRenderer.CellPadding;
     Temp.CurrentIndent:=CurrentX+FTableRenderer.FCellPadding;
     Temp.LineY:=CurrentY+FTableRenderer.FCellPadding;
+    Temp.BaselineFromIndex:=CanvasRenderer.FLists.Items.Count-1;
+    Temp.LinkFromIndex:=CanvasRenderer.FLists.LinkRects.Count;
+    Inc(CanvasRenderer.FLineCount);
     Saved:=CanvasRenderer.SwapLayout(Temp);
     CanvasRenderer.RenderBlock(Cell);
     CanvasRenderer.SwapLayout(Saved);

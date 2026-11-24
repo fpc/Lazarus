@@ -91,7 +91,7 @@ Type
     FLeftTextColor: TColor;
     FOnGetImage: TMarkdownImageEvent;
     FOnItemClick: TItemClickEvent;
-    FOnOpenURL: TOpenURLEvent;
+    FOnOpenURL: TMarkdownOpenURLEvent;
     FRightBackground: TColor;
     FRightTextColor: TColor;
     FTyping : Array[TTextSide] of TTypingIndicator;
@@ -99,7 +99,7 @@ Type
     FMarkDownSizes: Array[0..MaxIntegerIdx] of Integer;
     FMarkdownStrings : Array[0..MaxStringIdx] of string;
     procedure DoGetOnImage(Sender: TObject; const aURL: string; var aImage: TPicture);
-    procedure DoOpenURL(Sender: TObject; aURL: String);
+    procedure DoOpenURL(Sender: TObject; const aURL: String);
     function GetChatCount: Integer;
     function GetMarkDownColor(AIndex: Integer): TColor;
     function GetDisplayItem(aIndex: Integer): TDisplayChatItem;
@@ -261,7 +261,7 @@ Type
     Property ParagraphSpacing : Integer index IdxParagraphSpacing read GetMarkDownInteger Write SetMarkDownInteger;
     Property ImageMargin : integer index IdxImageMargin read GetMarkDownInteger Write SetMarkDownInteger;
     property OnGetImage : TMarkdownImageEvent read FOnGetImage Write FOnGetImage;
-    property OnOpenURL : TOpenURLEvent Read FOnOpenURL Write FOnOpenURL;
+    property OnOpenURL : TMarkdownOpenURLEvent Read FOnOpenURL Write FOnOpenURL;
   Published
     property Align;
     property Anchors;
@@ -489,7 +489,7 @@ begin
     aImage:=nil;
 end;
 
-procedure TChatControl.DoOpenURL(Sender: TObject; aURL: String);
+procedure TChatControl.DoOpenURL(Sender: TObject; const aURL: String);
 begin
   if assigned(FOnOpenURL) then
     FOnOpenURL(Self,aURL);
