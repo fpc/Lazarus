@@ -1239,7 +1239,11 @@ begin
   if not result then begin
     e := fpgeterrno;
     if e = ESysECHILD then
+    begin
       FIsTerminating := True; // process is gone
+      GotExitProcess := True; // nothing left to wait for, let ProcessLoop exit
+      exit(True);
+    end;
 
     DebugLn(DBG_WARNINGS, 'Failed to wait for debug event. Errcode: %d', [e]);
   end
