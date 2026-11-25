@@ -93,6 +93,7 @@ Type
     procedure ScrollView(DeltaX, DeltaY: Integer);
     procedure SetShowScrollBar(Which: Integer; AShow: Boolean);
     procedure UpdateScrollBars; virtual;
+    procedure WMGetDlgCode(var Message: TLMNoParams); message LM_GETDLGCODE;
     procedure WMHScroll(var Msg: TLMScroll); message LM_HSCROLL;
     procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
     property Document : TMarkdownDocument Read GetDocument;
@@ -534,15 +535,43 @@ end;
 
 
 procedure TCustomMarkdownControl.KeyDown(var Key: Word; Shift: TShiftState);
+
+var
+  lHandled: Boolean;
+
 begin
+  lHandled:=True;
   if (Shift=[ssCtrl]) and ((Key=Ord('C')) or (Key=VK_INSERT)) then
-    begin
-    Key:=0;
-    CopySelectionToClipBoard;
+    CopySelectionToClipBoard
+  else if (Shift=[]) or ((Shift=[ssCtrl]) and (Key in [VK_HOME,VK_END])) then
+    case Key of
+      VK_NEXT:  ScrolledTop:=ScrolledTop+ClientHeight-FDefLineHeight;
+      VK_PRIOR: ScrolledTop:=ScrolledTop-ClientHeight+FDefLineHeight;
+      VK_DOWN:  ScrolledTop:=ScrolledTop+FDefLineHeight;
+      VK_UP:    ScrolledTop:=ScrolledTop-FDefLineHeight;
+      VK_RIGHT: ScrolledLeft:=ScrolledLeft+FDefLineHeight div 2;
+      VK_LEFT:  ScrolledLeft:=ScrolledLeft-FDefLineHeight div 2;
+      VK_HOME:  ScrolledTop:=0;
+      VK_END:   ScrolledTop:=GetMaxScrollTop;
+    else
+      lHandled:=False;
     end
+  else
+    lHandled:=False;
+  if lHandled then
+    Key:=0
   else
     inherited KeyDown(Key, Shift);
 end;
+
+
+procedure TCustomMarkdownControl.WMGetDlgCode(var Message: TLMNoParams);
+
+begin
+  inherited;
+  Message.Result:=Message.Result or DLGC_WANTARROWS;
+end;
+
 
 procedure TCustomMarkdownControl.Loaded;
 begin
