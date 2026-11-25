@@ -17638,6 +17638,9 @@ begin
     gtk_file_chooser_set_current_name(PGtkFileChooser(AFileDialog), Pgchar(FileDialog.FileName));
 
   InitializeWidget;
+  // gtk destroys the dialog itself on delete-event (Escape, close button)
+  // -> clear FWidget, otherwise DestroyWidget accesses the freed widget
+  g_signal_connect_data(FWidget, 'destroy', TGCallback(@DestroyWidgetEvent), Self, nil, G_CONNECT_DEFAULT);
 end;
 
 { TGtk3FontSelectionDialog }
