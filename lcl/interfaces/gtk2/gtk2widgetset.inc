@@ -5010,6 +5010,15 @@ var
   Widget: PGtkWidget;
   GtkWindow: PGtkWidget;
 begin
+  // mouse click messages
+  if LastMouse.WinControl = Sender then
+  begin
+    // The LCL object is being destroyed, clear the whole LastMouse state.
+    // Do it before the early exits below: the handle can already be destroyed.
+    // Default() covers all fields of TLastMouseInfo.
+    LastMouse := Default(TLastMouseInfo);
+  end;
+
   Handle := HWnd({%H-}PtrUInt(ObjectToGtkObject(Sender)));
   if Handle=0 then exit;
   Widget:={%H-}PGtkWidget(Handle);
@@ -5037,10 +5046,6 @@ begin
   // clean up unneeded containers
   if Sender is TMenuItem then
     DestroyEmptySubmenu(TMenuItem(Sender));
-
-  // mouse click messages
-  if LastMouse.WinControl=Sender then
-    LastMouse.Button := 0;
 end;
 
 procedure TGtk2WidgetSet.FinishCreateHandle(const AWinControl: TWinControl;

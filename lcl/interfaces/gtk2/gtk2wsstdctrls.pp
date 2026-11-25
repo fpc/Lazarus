@@ -414,12 +414,10 @@ end;
 
 procedure gtkDefaultPopupMenuDeactivate({%H-}Widget: PGtkWidget; {%H-}data: gPointer); cdecl;
 begin
-  LastMouse.Button := 0;
-  LastMouse.ClickCount := 0;
-  LastMouse.Down := False;
-  LastMouse.MousePos := Point(0, 0);
-  LastMouse.Time := 0;
-  LastMouse.WinControl := nil;
+  // Fix freezing some controls (eg SpeedButton) when the system popup menu of
+  // an Entry/Memo is closed without choosing an item (issue #38402).
+  // Default() covers all fields of TLastMouseInfo.
+  LastMouse := Default(TLastMouseInfo);
 end;
 
 function gtkDefaultPopupMenuCloseFix({%H-}Widget: PGtkWidget; Menu: PGtkMenu;
