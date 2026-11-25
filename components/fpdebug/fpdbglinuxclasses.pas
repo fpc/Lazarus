@@ -1267,6 +1267,7 @@ begin
     begin
       FIsTerminating := True; // process is gone
       GotExitProcess := True; // nothing left to wait for, let ProcessLoop exit
+      ProcessIdentifier := 0;
       exit(True);
     end;
 
