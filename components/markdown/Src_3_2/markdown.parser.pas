@@ -199,6 +199,10 @@ type
     function CreateDocumentProcessor: TMarkdownDocumentProcessor; virtual;
     // Run all registered transforms on aDocument
     procedure ApplyTransforms(aDocument : TMarkdownDocument); virtual;
+    // Is source line aLineNo blank once aQuoteDepth block quote markers are removed ?
+    function IsBlankSourceLine(aLineNo, aQuoteDepth : Integer) : Boolean;
+    // Set Loose on the lists in aBlock, which is inside aQuoteDepth block quotes.
+    procedure DetermineLooseLists(aBlock : TMarkdownBlock; aQuoteDepth : Integer);
   public
     class var
       // Inline text processor to use. Assign to install an add-on such as emoji shortcodes.
@@ -580,6 +584,7 @@ begin
     Result.FileName:=FFileName;
     FDocument:=Result;
     parse(Result,lProc);
+    DetermineLooseLists(Result,0);
     processInlines(Result, wsTrim);
     ApplyTransforms(Result);
     lDone:=True;
@@ -655,6 +660,60 @@ begin
       lTransform.Free;
     end;
     end;
+end;
+
+
+function TMarkdownParser.IsBlankSourceLine(aLineNo, aQuoteDepth: Integer): Boolean;
+
+var
+  lText : TMarkdownString;
+  P,lLen,lDepth : Integer;
+
+begin
+  Result:=False;
+  if (aLineNo<1) or (aLineNo>FLines.Count) then
+    Exit;
+  lText:=FLines[aLineNo-1].Line;
+  lLen:=Length(lText);
+  P:=1;
+  for lDepth:=1 to aQuoteDepth do
+    begin
+    while (P<=lLen) and (lText[P] in [' ',#9]) do
+      Inc(P);
+    if (P<=lLen) and (lText[P]='>') then
+      Inc(P);
+    end;
+  while (P<=lLen) and (lText[P] in [' ',#9]) do
+    Inc(P);
+  Result:=P>lLen;
+end;
+
+
+procedure TMarkdownParser.DetermineLooseLists(aBlock: TMarkdownBlock; aQuoteDepth: Integer);
+
+var
+  lList : TMarkdownListBlock;
+  lItem : TMarkdownBlock;
+  I,J : Integer;
+
+begin
+  if aBlock is TMarkdownQuoteBlock then
+    Inc(aQuoteDepth);
+  if aBlock is TMarkdownListBlock then
+    begin
+    lList:=TMarkdownListBlock(aBlock);
+    for I:=0 to lList.ChildCount-1 do
+      begin
+      lItem:=lList.Children[I];
+      if (I>0) and IsBlankSourceLine(lItem.Line-1,aQuoteDepth) then
+        lList.Loose:=True;
+      for J:=1 to lItem.ChildCount-1 do
+        if IsBlankSourceLine(lItem.Children[J].Line-1,aQuoteDepth) then
+          lList.Loose:=True;
+      end;
+    end;
+  for I:=0 to aBlock.ChildCount-1 do
+    DetermineLooseLists(aBlock.Children[I],aQuoteDepth);
 end;
 
 

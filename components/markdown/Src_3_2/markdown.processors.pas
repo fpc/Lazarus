@@ -55,14 +55,11 @@ type
 
   TMarkdownListProcessor = class (TMarkdownBlockProcessor)
   private
-    FHasContent : boolean;
-    FEmptyLine : integer;
     FLastList : TMarkdownListBlock;
     FLastItem : TMarkdownListItemBlock;
     FOuter : TMarkdownBlockProcessor;
   protected
     function InListOrQuote : boolean; override;
-    function Root : Boolean;
     function LastList : TMarkdownListBlock;
     // Set the processor enclosing the outermost list, returns the previous one.
     function EnterList : TMarkdownBlockProcessor;
@@ -489,11 +486,6 @@ begin
   Result:=true;
 end;
 
-function TMarkdownListProcessor.Root: Boolean;
-begin
-  Result:=False;
-end;
-
 function TMarkdownListProcessor.LastList: TMarkdownListBlock;
 begin
   Result:=FLastList;
@@ -585,11 +577,10 @@ end;
 function TMarkdownListProcessor.PrepareLine(aLine: TMarkdownLine; aContext : TMarkdownBlockProcessingContext): boolean;
 
 var
-  lWhiteSpace, lCurrLineNo,lLastIndent,len : integer;
+  lWhiteSpace,lLastIndent,len : integer;
 
 begin
   Result:=False;
-  lCurrLineNo:=aLine.LineNo;
   lLastIndent:=LastList.LastIndent;
   lWhiteSpace:=aLine.LeadingWhitespace;
 
@@ -604,27 +595,6 @@ begin
     Result:=False
   else if not aLine.isWhitespace and isBlock(LastList, FLastItem.blocks, aLine.Remainder, LastList.LastIndent+LastList.grace) then
     Result:=true;
-  if not root then
-    Exit;
-  if not aLine.isWhiteSpace then
-   begin
-      FHasContent:=true;
-      if root and not Result and LastList.HasSeenEmptyLine then
-        LastList.loose:=true;
-    end
-    else if not Result  then
-    begin
-      Parser.Lazy:=true;
-      if not FHasContent then
-      begin
-        if FEmptyLine = -1 then
-          FEmptyLine:=lCurrLineNo
-        else if FEmptyLine <> CurrentLine.LineNo then
-          Result:=true;
-      end;
-      if (aContext = bpGeneral) and (lCurrLineNo<>FLastItem.Line) then
-        LastList.HasSeenEmptyLine:=true;
-    end;
 end;
 
 
@@ -1425,13 +1395,7 @@ begin
   else
     begin
     if Not Assigned(lPar) then
-      begin
-      // A second paragraph in an item follows a blank line, which makes the list loose.
-      if (aParent is TMarkdownListItemBlock) and (aParent.Blocks.Count>0)
-         and (aParent.Parent is TMarkdownListBlock) then
-        TMarkdownListBlock(aParent.Parent).Loose:=True;
       lPar:=TMarkdownParagraphBlock.Create(aParent,aLine.LineNo);
-      end;
     Parser.parseInLine(lPar,aLine.Remainder);
     end;
 end;
