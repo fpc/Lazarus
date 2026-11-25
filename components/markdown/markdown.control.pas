@@ -38,6 +38,8 @@ Type
     FDefLineHeight: integer;
     FInPaint: Boolean;
     FIsSelecting: Boolean;
+    FLinkCursorActive: Boolean;
+    FSavedCursor: TCursor;
     FLastCalcClientWidth : integer;
     FLastClientWidth : integer;
     FLastHorzScrollInfo: TScrollInfo;
@@ -69,6 +71,7 @@ Type
     procedure SetScrolledTop(AValue: integer);
     procedure SetSelectionColor(AValue: TColor);
     procedure SetString(AIndex: Integer; const AValue: string);
+    procedure UpdateLinkCursor(aOverLink: Boolean);
   protected
     procedure Click; override;
     procedure CreateWnd; override;
@@ -584,10 +587,13 @@ procedure TCustomMarkdownControl.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   CurrentPoint: TSelectionPoint;
   P1,P2 : TSelectionPoint;
+  lURL : UTF8String;
 
 begin
   inherited MouseMove(Shift, X, Y);
 
+  UpdateLinkCursor(not FIsSelecting and not (ssLeft in Shift)
+                   and FRenderer.HitTestLink(X+ScrolledLeft, Y+ScrolledTop, lURL));
   if FIsSelecting and (ssLeft in Shift) then
   begin
     if Y<0 then
@@ -603,6 +609,23 @@ begin
     end;
   end;
 end;
+
+// Show the hand cursor while over a link, restore the previous cursor otherwise.
+procedure TCustomMarkdownControl.UpdateLinkCursor(aOverLink: Boolean);
+
+begin
+  if aOverLink=FLinkCursorActive then
+    Exit;
+  FLinkCursorActive:=aOverLink;
+  if aOverLink then
+    begin
+    FSavedCursor:=Cursor;
+    Cursor:=crHandPoint;
+    end
+  else
+    Cursor:=FSavedCursor;
+end;
+
 
 procedure TCustomMarkdownControl.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
