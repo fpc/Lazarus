@@ -15,8 +15,10 @@ type
   TMainForm = class(TForm)
     btnFile: TButton;
     cbWrapCode: TCheckBox;
+    cbGitHubSpacing: TCheckBox;
     ODMarkdown: TOpenDialog;
     procedure btnFileClick(Sender: TObject);
+    procedure cbGitHubSpacingChange(Sender: TObject);
     procedure cbWrapCodeChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -51,6 +53,30 @@ begin
   with ODMarkdown do
     if Execute then
       PMarkdown.LoadFromFile(FileName);
+end;
+
+procedure TMainForm.cbGitHubSpacingChange(Sender: TObject);
+
+begin
+  if cbGitHubSpacing.Checked then
+    begin
+    // Approximation of GitHub spacing, for a line height of 1.5 em
+    PMarkdown.ParagraphSpacing:=16;
+    PMarkdown.HeadingSpacing:=33;
+    PMarkdown.ListItemSpacing:=17;
+    PMarkdown.CodeBlockPadding:=67;
+    PMarkdown.TableCellPaddingX:=54;
+    PMarkdown.TableCellPaddingY:=25;
+    end
+  else
+    begin
+    PMarkdown.ParagraphSpacing:=10;
+    PMarkdown.HeadingSpacing:=0;
+    PMarkdown.ListItemSpacing:=0;
+    PMarkdown.CodeBlockPadding:=0;
+    PMarkdown.TableCellPaddingX:=25;
+    PMarkdown.TableCellPaddingY:=25;
+    end;
 end;
 
 procedure TMainForm.cbWrapCodeChange(Sender: TObject);

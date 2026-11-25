@@ -30,6 +30,16 @@ object MainForm: TMainForm
     TabOrder = 1
     OnChange = cbWrapCodeChange
   end
+  object cbGitHubSpacing: TCheckBox
+    Left = 180
+    Height = 23
+    Top = 561
+    Width = 150
+    Anchors = [akLeft, akBottom]
+    Caption = 'GitHub spacing'
+    TabOrder = 2
+    OnChange = cbGitHubSpacingChange
+  end
   object ODMarkDown: TOpenDialog
     DefaultExt = '.md'
     Filter = 'MarkDown files|*.md|All files|*.*'

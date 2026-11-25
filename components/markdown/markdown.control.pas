@@ -133,6 +133,16 @@ Type
     property ParagraphSpacing : Integer index 2 read GetInteger Write SetInteger;
     property ExtraIndent : Integer index 3 read GetInteger Write SetInteger;
     Property ImageMargin : integer index 4 read GetInteger Write SetInteger;
+    // Extra space above a heading, in percent of the base line height.
+    property HeadingSpacing : Integer index 5 read GetInteger Write SetInteger;
+    // Extra space between list items, in percent of the base line height.
+    property ListItemSpacing : Integer index 6 read GetInteger Write SetInteger;
+    // Padding around the contents of a code block, in percent of the base line height.
+    property CodeBlockPadding : Integer index 7 read GetInteger Write SetInteger;
+    // Horizontal padding of table cells, in percent of the base line height.
+    property TableCellPaddingX : Integer index 8 read GetInteger Write SetInteger;
+    // Vertical padding of table cells, in percent of the base line height.
+    property TableCellPaddingY : Integer index 9 read GetInteger Write SetInteger;
     property OnGetImage : TMarkdownImageEvent read GetOnGetImage Write SetOnGetImage;
     property OnOpenURL : TMarkdownOpenURLEvent Read FOnOpenURL Write FOnOpenURL;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssAutoBoth;
@@ -259,6 +269,11 @@ begin
     2 : Result:=FRenderer.ParagraphSpacing;
     3 : Result:=FRenderer.ExtraIndent;
     4 : Result:=FRenderer.ImageMargin;
+    5 : Result:=FRenderer.HeadingSpacing;
+    6 : Result:=FRenderer.ListItemSpacing;
+    7 : Result:=FRenderer.CodeBlockPadding;
+    8 : Result:=FRenderer.TableCellPaddingX;
+    9 : Result:=FRenderer.TableCellPaddingY;
   else
     Result:=0;
   end;
@@ -308,6 +323,11 @@ begin
     2 : FRenderer.ParagraphSpacing:=aValue;
     3 : FRenderer.ExtraIndent:=aValue;
     4 : FRenderer.ImageMargin:=aValue;
+    5 : FRenderer.HeadingSpacing:=aValue;
+    6 : FRenderer.ListItemSpacing:=aValue;
+    7 : FRenderer.CodeBlockPadding:=aValue;
+    8 : FRenderer.TableCellPaddingX:=aValue;
+    9 : FRenderer.TableCellPaddingY:=aValue;
   end;
   LayoutChanged;
 end;

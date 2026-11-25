@@ -217,6 +217,12 @@ type
     FBaseDir: string;
     FLineCount: Integer;
     FWrapCodeBlocks: Boolean;
+    FHeadingSpacing: Integer;
+    FListItemSpacing: Integer;
+    FCodeBlockPadding: Integer;
+    FTableCellPaddingX: Integer;
+    FTableCellPaddingY: Integer;
+    FBaseLineHeight: LongInt;
     FAscentCache: array of TAscentCacheEntry;
     procedure SetBaseDir(const aValue: string);
   Protected
@@ -240,6 +246,8 @@ type
 
     // Font and measurement
     function DIP(const aValue: LongInt): LongInt;
+    // Pixels for aPercent percent of the base font line height.
+    function EmPercent(const aPercent: Integer): LongInt;
     procedure ApplyFont(const aCanvas: TCanvas; const aFontSize: LongInt; const aFontStyle: TFontStyles;
       const aContext : TFontContext);
     procedure MeasureText(const aCanvas: TCanvas; const aText: utf8string; const aFontSize: LongInt;
@@ -354,6 +362,16 @@ type
     property BaseDir: string read FBaseDir write SetBaseDir;
     // Wrap long lines of fenced code blocks at the available width.
     property WrapCodeBlocks: Boolean read FWrapCodeBlocks write FWrapCodeBlocks;
+    // Extra space above a heading, in percent of the base line height.
+    property HeadingSpacing: Integer read FHeadingSpacing write FHeadingSpacing;
+    // Extra space between list items, in percent of the base line height.
+    property ListItemSpacing: Integer read FListItemSpacing write FListItemSpacing;
+    // Padding around the contents of a code block, in percent of the base line height.
+    property CodeBlockPadding: Integer read FCodeBlockPadding write FCodeBlockPadding;
+    // Horizontal padding of table cells, in percent of the base line height.
+    property TableCellPaddingX: Integer read FTableCellPaddingX write FTableCellPaddingX;
+    // Vertical padding of table cells, in percent of the base line height.
+    property TableCellPaddingY: Integer read FTableCellPaddingY write FTableCellPaddingY;
   end;
 
   { TCanvasMarkdownBlockRenderer }
@@ -467,7 +485,8 @@ type
     FColLayout : TColDataArray;
     FAvailableWidth : Integer;
     FGridSize : Integer;
-    FCellPadding : Integer;
+    FCellPaddingX : Integer;
+    FCellPaddingY : Integer;
     FStartX,FStartY : Integer;
     FRowHeights: TLongintArray;
     FCurrentRow : integer;
@@ -493,8 +512,10 @@ type
     property CurrentRow : Integer Read FCurrentRow;
     // Grid size
     Property GridSize : Integer Read FGridSize;
-    // Cell padding
-    Property CellPadding : Integer Read FCellPadding;
+    // Horizontal cell padding
+    Property CellPaddingX : Integer Read FCellPaddingX;
+    // Vertical cell padding
+    Property CellPaddingY : Integer Read FCellPaddingY;
     // Available width, calculated in DoRender
     Property AvailableWidth : Integer Read FAvailableWidth;
     // Font styles
@@ -680,6 +701,8 @@ begin
   FTableLinesColor:=clBlack;
 
   fBaseFontSize:=10;
+  FTableCellPaddingX:=25;
+  FTableCellPaddingY:=25;
   FLayout.BaselineShiftCurrent:=0;
 
   // Initialize selection
@@ -1131,6 +1154,14 @@ begin
   Result:=(aValue * fTargetDPI + 48) div 96;
 end;
 
+function TMarkdownCanvasRenderer.EmPercent(const aPercent: Integer): LongInt;
+
+begin
+  Result:=(aPercent*FBaseLineHeight+50) div 100;
+end;
+
+
+
 procedure TMarkdownCanvasRenderer.NewLine(const aCanvas: TCanvas);
 begin
   if (aCanvas=Nil) then; // Silence compiler warning
@@ -1575,6 +1606,7 @@ begin
     FCalculatedBlockQuoteIndent:=FBlockQuoteIndent
   else
     FCalculatedBlockQuoteIndent:=MeasureTextWidth(FCanvas,'WWWW',fBaseFontSize,[],[]);
+  FBaseLineHeight:=MeasureBaseLineHeight(FCanvas);
   BeginLayout;
 
   FLayout.MaxWidth:=aMaxWidth;
@@ -2225,6 +2257,8 @@ begin
   FontSize:=CanvasRenderer.fBaseFontSize;
   if (lHeading.Level in [1..FontSizeCount]) then
     Inc(FontSize,FontSizes[lHeading.Level]);
+  if GetCurrentY>0 then
+    SetCurrentY(GetCurrentY+CanvasRenderer.EmPercent(CanvasRenderer.HeadingSpacing));
   Renderer.RenderChildren(lHeading);
   ParagraphBreak;
 end;
@@ -2267,6 +2301,8 @@ begin
   FItemNumber:=0;
   For I:=0 to aBlock.ChildCount-1 do
     begin
+    if I>0 then
+      SetCurrentY(GetCurrentY+CanvasRenderer.EmPercent(CanvasRenderer.ListItemSpacing));
     if lBlock.Ordered then
       FItemNumber:=lBlock.Start+i;
     Renderer.RenderBlock(aBlock.Children[i]);
@@ -2321,11 +2357,34 @@ end;
 { TCanvasMarkdownCodeBlockRenderer }
 
 procedure TCanvasMarkdownCodeBlockRenderer.DoRender(aBlock: TMarkdownBlock);
+
+var
+  lPad : Integer;
+  lBack : TLayoutItem;
+
 begin
   if not assigned(aBlock) then exit;
   ParagraphBreak;
+  lPad:=CanvasRenderer.EmPercent(CanvasRenderer.CodeBlockPadding);
+  lBack:=Nil;
+  if lPad>0 then
+    begin
+    // Background of the whole block, padding included
+    lBack:=CreateLayoutItem(likBackground,0,GetCurrentY);
+    lBack.Width:=LayoutData.MaxWidth;
+    SetCurrentY(GetCurrentY+lPad);
+    Indent(lPad);
+    Dec(CanvasRenderer.FLayout.MaxWidth,lPad);
+    end;
   // Render code with monospace font
   Renderer.RenderChildren(aBlock as TMarkdownContainerBlock);
+  if Assigned(lBack) then
+    begin
+    Inc(CanvasRenderer.FLayout.MaxWidth,lPad);
+    Undent(lPad);
+    SetCurrentY(GetCurrentY+lPad);
+    lBack.Height:=GetCurrentY-lBack.Y;
+    end;
   ParagraphBreak;
 end;
 
@@ -2465,7 +2524,7 @@ begin
 
      CellWidth:=0;
      CellWidth:=CellWidth+FColLayout[lColumn].Width;
-     TextWidth:=CellWidth-(FCellPadding*2);
+     TextWidth:=CellWidth-(FCellPaddingX*2);
      if TextWidth<1 then
       TextWidth:=1;
 
@@ -2490,7 +2549,7 @@ begin
       end;
     if FRowHeights[lRow]<MeasureTextHeight(aFontSize,aFontStyle,aContext) then
       FRowHeights[lRow]:=MeasureTextHeight(aFontSize,aFontStyle,aContext);
-    FRowHeights[lRow]:=FRowHeights[lRow]+(FCellPadding*2);
+    FRowHeights[lRow]:=FRowHeights[lRow]+(FCellPaddingY*2);
     end;
 end;
 
@@ -2517,10 +2576,10 @@ begin
       MeasureCell(lRowBlock.Children[lColumn],lRow=0,lMin,lPref);
       With FColLayout[lColumn] do
         begin
-        if lMin+2*FCellPadding>Min then
-          Min:=lMin+2*FCellPadding;
-        if lPref+2*FCellPadding>Pref then
-          Pref:=lPref+2*FCellPadding;
+        if lMin+2*FCellPaddingX>Min then
+          Min:=lMin+2*FCellPaddingX;
+        if lPref+2*FCellPaddingX>Pref then
+          Pref:=lPref+2*FCellPaddingX;
         end;
       end;
     end;
@@ -2611,7 +2670,8 @@ begin
   CanvasRenderer.MaybeStartParagraph;
   SetLength(FColLayout,Length(lTable.Columns));
   FGridSize:=DIP(1);
-  FCellPadding:=DIP(4);
+  FCellPaddingX:=CanvasRenderer.EmPercent(CanvasRenderer.TableCellPaddingX);
+  FCellPaddingY:=CanvasRenderer.EmPercent(CanvasRenderer.TableCellPaddingY);
   FAvailableWidth:=CanvasRenderer.FLayout.MaxWidth-CanvasRenderer.FLayout.CurrentIndent-(TotalColumns-1)*FGridSize;
   if FAvailableWidth<1 then
     FAvailableWidth:=1;
@@ -2693,9 +2753,9 @@ begin
     Cell:=aBlock.Children[lColumn];
     CellWidth:=FTableRenderer.ColLayout[lColumn].Width;
     Temp:=Default(TLayoutData);
-    Temp.MaxWidth:=CurrentX+CellWidth-FTableRenderer.CellPadding;
-    Temp.CurrentIndent:=CurrentX+FTableRenderer.FCellPadding;
-    Temp.LineY:=CurrentY+FTableRenderer.FCellPadding;
+    Temp.MaxWidth:=CurrentX+CellWidth-FTableRenderer.CellPaddingX;
+    Temp.CurrentIndent:=CurrentX+FTableRenderer.CellPaddingX;
+    Temp.LineY:=CurrentY+FTableRenderer.CellPaddingY;
     Temp.BaselineFromIndex:=CanvasRenderer.FLists.Items.Count-1;
     Temp.LinkFromIndex:=CanvasRenderer.FLists.LinkRects.Count;
     Inc(CanvasRenderer.FLineCount);

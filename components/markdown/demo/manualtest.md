@@ -103,6 +103,27 @@ The items of this loose list are separated by paragraph spacing:
   second paragraph of the same item
 - next item
 
+## 8. Spacing properties (#42758)
+
+Toggle *GitHub spacing* and compare:
+
+- headings get extra space above them, except a heading at the top of the
+  document
+- the items of this list move apart a little
+- the code block below gets padding on all sides, with the background
+  covering the padding; this also works with *Wrap code blocks* on
+- table cells get wider horizontal padding
+
+```
+padded code
+```
+
+| Padding | Value |
+|---------|-------|
+| cell    | cell  |
+
+Unchecking the box restores the original look.
+
 ## Filler to make the document scroll
 
 1. One
