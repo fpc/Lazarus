@@ -2544,11 +2544,21 @@ end;
 { TCanvasMarkdownThematicBreakBlockRenderer }
 
 procedure TCanvasMarkdownThematicBreakBlockRenderer.DoRender(aBlock: TMarkdownBlock);
+var
+  lItem: TLayoutItem;
+  lData: TLayoutData;
+  lHeight: Integer;
 begin
   if not assigned(aBlock) then exit;
-
-  // Render horizontal line
-  LayoutText('────────────────────────────────────────', CanvasRenderer.fBaseFontSize, [], '', []);
+  MaybeStartParagraph;
+  lData:=LayoutData;
+  lHeight:=MeasureTextHeight(CanvasRenderer.fBaseFontSize, [], []);
+  // Line across the available width, vertically centered in one text line
+  lItem:=CreateLayoutItem(likLine, lData.CurrentIndent, lData.LineY+(lHeight div 2));
+  lItem.DeltaX:=Max(1, lData.MaxWidth-lData.CurrentIndent);
+  lItem.DeltaY:=0;
+  lItem.Width:=lItem.DeltaX;
+  SetCurrentY(lData.LineY+lHeight);
   ParagraphBreak;
 end;
 
