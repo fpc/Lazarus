@@ -72,6 +72,7 @@ Type
     procedure SetSelectionColor(AValue: TColor);
     procedure SetString(AIndex: Integer; const AValue: string);
     procedure UpdateLinkCursor(aOverLink: Boolean);
+    procedure SelectTo(const aPoint: TSelectionPoint);
   protected
     procedure Click; override;
     procedure CreateWnd; override;
@@ -456,6 +457,8 @@ begin
     exit;
     end;
   FLayoutNeeded:=False;
+  FIsSelecting:=False;
+  FSelectionStart.LayoutItemIndex:=-1;
 
   // Lay out at the client width that excludes the vertical scrollbar
   lReserveVertSB:=(FSBVertShowing<>Ord(True))
@@ -580,42 +583,50 @@ begin
 end;
 
 procedure TCustomMarkdownControl.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+
+var
+  lPoint: TSelectionPoint;
+
 begin
   inherited MouseDown(Button, Shift, X, Y);
 
   if Button = mbLeft then
   begin
-    // Start text selection
-    FSelectionStart := FRenderer.HitTestText(X+ScrolledLeft, Y+ScrolledTop);
-    if FSelectionStart.LayoutItemIndex <> -1 then
+    lPoint:=FRenderer.HitTestText(X+ScrolledLeft, Y+ScrolledTop);
+    if lPoint.LayoutItemIndex <> -1 then
     begin
+      // Shift+click extends the selection from the existing anchor
+      if (ssShift in Shift) and (FSelectionStart.LayoutItemIndex<>-1) then
+        SelectTo(lPoint)
+      else
+        begin
+        FSelectionStart:=lPoint;
+        FRenderer.ClearSelection;
+        end;
       FIsSelecting := True;
-      FRenderer.ClearSelection;
       Invalidate;
     end;
   end;
 end;
 
-procedure TCustomMarkdownControl.MouseMove(Shift: TShiftState; X, Y: Integer);
 
-  procedure NormalizeSelection(const aStart, aCurrent : TSelectionPoint; out aP1, aP2 : TSelectionPoint);
-  begin
-    if (aStart.LayoutItemIndex>aCurrent.LayoutItemIndex)
-       or ((aStart.LayoutItemIndex=aCurrent.LayoutItemIndex) and (aStart.CharOffset>aCurrent.CharOffset)) then
-      begin
-      aP1:=aCurrent;
-      aP2:=aStart;
-      end
-    else
-      begin
-      aP1:=aStart;
-      aP2:=aCurrent;
-      end
-  end;
+// Select the text between the selection anchor and aPoint.
+procedure TCustomMarkdownControl.SelectTo(const aPoint: TSelectionPoint);
+
+begin
+  if (FSelectionStart.LayoutItemIndex>aPoint.LayoutItemIndex)
+     or ((FSelectionStart.LayoutItemIndex=aPoint.LayoutItemIndex)
+         and (FSelectionStart.CharOffset>aPoint.CharOffset)) then
+    FRenderer.SetSelection(aPoint,FSelectionStart)
+  else
+    FRenderer.SetSelection(FSelectionStart,aPoint);
+end;
+
+
+procedure TCustomMarkdownControl.MouseMove(Shift: TShiftState; X, Y: Integer);
 
 var
   CurrentPoint: TSelectionPoint;
-  P1,P2 : TSelectionPoint;
   lURL : UTF8String;
 
 begin
@@ -632,8 +643,7 @@ begin
     CurrentPoint := FRenderer.HitTestText(X+ScrolledLeft, Y+ScrolledTop);
     if CurrentPoint.LayoutItemIndex <> -1 then
     begin
-      NormalizeSelection(FSelectionStart, CurrentPoint, P1, P2);
-      FRenderer.SetSelection(P1,P2);
+      SelectTo(CurrentPoint);
       Invalidate;
     end;
   end;
@@ -854,6 +864,7 @@ procedure TCustomMarkdownControl.ClearSelection;
 begin
   FRenderer.ClearSelection;
   FIsSelecting := False;
+  FSelectionStart.LayoutItemIndex := -1;
   Invalidate;
 end;
 
