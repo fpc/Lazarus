@@ -72,8 +72,6 @@ type
     // Is the next line an item of aList ? If so, it becomes the current line.
     function NextItemLine(aList : TMarkdownListBlock; out aLine : TMarkdownLine) : Boolean;
     function IsItemInList(aList : TMarkdownListBlock; aLine : TMarkdownLine) : Boolean; virtual; abstract;
-    // Leading whitespace a line needs to continue the last item of aList.
-    function ItemContentColumn(aList : TMarkdownListBlock) : Integer; virtual;
     // Does the blank line aLine stay in the last item of aList ?
     // True when the next non-blank line continues that item or is an item of aList.
     function BlankLineContinuesItem(aList : TMarkdownListBlock; aLine : TMarkdownLine) : Boolean;
@@ -104,7 +102,6 @@ type
     function HasMarker(aLine: TMarkdownLine; out aIndent: integer; out aMarker: TMarkdownString; out aValue: Integer): boolean;
   protected
     function IsItemInList(aList: TMarkdownListBlock; aLine: TMarkdownLine): boolean; override;
-    function ItemContentColumn(aList : TMarkdownListBlock) : Integer; override;
   Public
     function LineEndsBlock(aBlock: TMarkdownContainerBlock; aLine: TMarkdownLine): Boolean; override;
     function HandlesLine(aParent : TMarkdownContainerBlock; aLine: TMarkdownLine): boolean; override;
@@ -563,13 +560,6 @@ begin
 end;
 
 
-function TMarkdownListProcessor.ItemContentColumn(aList: TMarkdownListBlock): Integer;
-
-begin
-  Result:=aList.ContentIndent;
-end;
-
-
 function TMarkdownListProcessor.BlankLineContinuesItem(aList: TMarkdownListBlock; aLine: TMarkdownLine): Boolean;
 
 var
@@ -590,7 +580,7 @@ begin
     else if not lNext.IsWhitespace then
       begin
       lFound:=True;
-      Result:=(lNext.LeadingWhitespace>=ItemContentColumn(aList)) or IsItemInList(aList,lNext);
+      Result:=(lNext.LeadingWhitespace>=aList.ContentIndent) or IsItemInList(aList,lNext);
       end;
     lNext.CursorPos:=lPos;
     if not lFound then
@@ -931,14 +921,6 @@ begin
     Result:=False;
 end;
 
-function TOListProcessor.ItemContentColumn(aList: TMarkdownListBlock): Integer;
-
-begin
-  // The content indent of an ordered list is relative to its marker.
-  Result:=aList.ContentIndent+aList.LastIndent;
-end;
-
-
 function TOListProcessor.LineEndsBlock(aBlock: TMarkdownContainerBlock; aLine: TMarkdownLine): Boolean;
 var
   lBlock : TMarkdownContainerBlock;
@@ -993,8 +975,6 @@ begin
          and (not IsItemInList(lList,aLine)) then
         Result:=True;
       end;
-    if not Result then
-      aLine.Advance(lList.LastIndent);
     end;
   if Result then
     aLine.CursorPos:=lStart;
@@ -1032,8 +1012,7 @@ begin
     lList.Start:=lStart;
     FLastList:=lList;
     end;
-  // Continuation lines of an ordered item arrive with LastIndent already removed.
-  lList.ContentIndent:=lContentIndent-lIndent;
+  lList.ContentIndent:=lContentIndent;
   // While we have a line that part of this list block, add an item and parse it.
   repeat
     lItem:=TMarkdownListItemBlock.Create(lList,aLine.LineNo);
