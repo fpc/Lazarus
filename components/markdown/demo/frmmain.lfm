@@ -7,6 +7,7 @@ object MainForm: TMainForm
   ClientHeight = 594
   ClientWidth = 810
   KeyPreview = True
+  Position = poScreenCenter
   LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown

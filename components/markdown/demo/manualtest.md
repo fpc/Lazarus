@@ -124,6 +124,29 @@ padded code
 
 Unchecking the box restores the original look.
 
+## 9. List numbering and bullets
+
+This ordered list starts at 0, every item is numbered:
+
+0. zero
+1. one
+2. two
+
+A bullet list nested in an ordered list shows bullets, an ordered list nested in
+a bullet list shows numbers, and the fourth bullet level starts again with the
+first bullet character:
+
+1. ordered
+   - bullet
+     - bullet level 2
+       - bullet level 3
+         - bullet level 4
+2. ordered again
+
+- bullet
+  3. three
+  4. four
+
 ## Filler to make the document scroll
 
 1. One

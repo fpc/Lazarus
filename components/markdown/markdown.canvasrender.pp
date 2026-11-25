@@ -448,9 +448,12 @@ type
   TCanvasMarkdownListBlockRenderer = class(TCanvasMarkdownBlockRenderer)
   Private
     FItemNumber : Integer;
+    FOrdered : Boolean;
   protected
     procedure DoRender(aBlock: TMarkdownBlock); override;
     property ItemNumber : Integer Read FItemNumber;
+    // True while rendering an ordered list.
+    property Ordered : Boolean Read FOrdered;
   public
     procedure reset; override;
     class function BlockClass: TMarkdownBlockClass; override;
@@ -2075,9 +2078,9 @@ end;
 
 function TMarkdownCanvasRenderer.GetBulletAt(aLevel: integer): string;
 begin
-  While aLevel>BulletCount do
-    aLevel:=aLevel-BulletCount;
-  Result:=FBullets[aLevel];
+  if aLevel<1 then
+    aLevel:=1;
+  Result:=FBullets[((aLevel-1) mod BulletCount)+1];
 end;
 
 
@@ -2299,6 +2302,7 @@ begin
     CanvasRenderer.IncBulletLevel;
   // Render all list items
   FItemNumber:=0;
+  FOrdered:=lBlock.Ordered;
   For I:=0 to aBlock.ChildCount-1 do
     begin
     if I>0 then
@@ -2316,6 +2320,7 @@ procedure TCanvasMarkdownListBlockRenderer.reset;
 begin
   inherited reset;
   FItemNumber:=0;
+  FOrdered:=False;
 end;
 
 class function TCanvasMarkdownListBlockRenderer.BlockClass: TMarkdownBlockClass;
@@ -2337,7 +2342,7 @@ begin
   if not assigned(aBlock) then exit;
   // Add bullet point and render children
   lListRenderer:=TCanvasMarkdownListBlockRenderer(GetFirstParentWithClass(TCanvasMarkdownListBlockRenderer));
-  if Assigned(lListRenderer) and (lListRenderer.ItemNumber>0) then
+  if Assigned(lListRenderer) and lListRenderer.Ordered then
     lPrefix:=IntToStr(lListRenderer.ItemNumber)+'.'
   else
     lPrefix:=CanvasRenderer.GetBullet;
