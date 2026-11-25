@@ -622,21 +622,19 @@ begin
 end;
 
 function gtkWSPopupDelayedClose(Data: Pointer): gboolean; cdecl;
-var
-  PopupMenu: TPopupMenu absolute data;
 begin
   Result := False;
-  if PopupMenu is TPopupMenu then
-  begin
-    PopupMenu.Close;
-    // Fix freezing some controls (eg SpeedButton) when close PopupMenu
-    LastMouse.Button := 0;
-    LastMouse.ClickCount := 0;
-    LastMouse.Down := False;
-    LastMouse.MousePos := Point(0, 0);
-    LastMouse.Time := 0;
-    LastMouse.WinControl := nil;
-  end;
+  // Fix freezing some controls (eg SpeedButton) when close PopupMenu (issue #38401).
+  // Default() covers all fields of TLastMouseInfo.
+  LastMouse := Default(TLastMouseInfo);
+
+  // Close the LCL menu only if it is still alive.
+  // Comparing with ActivePopupMenu is safe, while `TPopupMenu(Data) is TPopupMenu`
+  // would dereference the (possibly freed) object to read its VMT.
+  // ActivePopupMenu is set in TPopupMenu.PopUp and cleared in TPopupMenu.Close
+  // and TPopupMenu.Destroy, so it always points to a live menu.
+  if (ActivePopupMenu <> nil) and (ActivePopupMenu = TPopupMenu(Data)) then
+    ActivePopupMenu.Close;
 end;
 
 procedure gtkWSPopupMenuDeactivate(widget: PGtkWidget; data: gPointer); cdecl;
