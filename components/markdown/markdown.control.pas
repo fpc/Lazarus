@@ -596,6 +596,8 @@ var
 
 begin
   inherited MouseDown(Button, Shift, X, Y);
+  if CanFocus and not Focused then
+    SetFocus;
 
   if Button = mbLeft then
   begin
