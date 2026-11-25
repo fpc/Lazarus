@@ -70,6 +70,8 @@ Type
     procedure SetScrolledLeft(AValue: integer);
     procedure SetScrolledTop(AValue: integer);
     procedure SetSelectionColor(AValue: TColor);
+    function GetWrapCodeBlocks: Boolean;
+    procedure SetWrapCodeBlocks(AValue: Boolean);
     procedure SetString(AIndex: Integer; const AValue: string);
     procedure UpdateLinkCursor(aOverLink: Boolean);
     procedure SelectTo(const aPoint: TSelectionPoint);
@@ -133,11 +135,13 @@ Type
     Property ImageMargin : integer index 4 read GetInteger Write SetInteger;
     property OnGetImage : TMarkdownImageEvent read GetOnGetImage Write SetOnGetImage;
     property OnOpenURL : TMarkdownOpenURLEvent Read FOnOpenURL Write FOnOpenURL;
-    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssAutoVertical;
+    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssAutoBoth;
     property ScrolledLeft: integer read FScrolledLeft write SetScrolledLeft;
     property ScrolledTop: integer read FScrolledTop write SetScrolledTop;
     property SelectionColor: TColor read GetSelectionColor write SetSelectionColor;
     property SelectedText: String read GetSelectionText;
+    // Wrap long lines of fenced code blocks instead of scrolling horizontally.
+    property WrapCodeBlocks: Boolean read GetWrapCodeBlocks write SetWrapCodeBlocks default False;
   end;
 
   { TMarkdownControl }
@@ -174,6 +178,7 @@ Type
     property ScrollBars;
     property ShowHint;
     property TableLinesColor;
+    property WrapCodeBlocks;
     property TabOrder;
     property TabStop;
     property Visible;
@@ -417,7 +422,7 @@ begin
   FRenderer:=TMarkdownCanvasRenderer.Create(Nil);
   FDefLineHeight:=FRenderer.BaseFontSize*4 div 3;
   FIsSelecting := False;
-  FScrollBars := ssAutoVertical;
+  FScrollBars := ssAutoBoth;
   FSelectionStart.LayoutItemIndex := -1;
   FSelectionStart.CharOffset := 0;
   FSBVertShowing:=-1;
@@ -900,6 +905,19 @@ procedure TCustomMarkdownControl.SetSelectionColor(AValue: TColor);
 begin
   FRenderer.SelectionColor := AValue;
   Invalidate;
+end;
+
+function TCustomMarkdownControl.GetWrapCodeBlocks: Boolean;
+begin
+  Result:=FRenderer.WrapCodeBlocks;
+end;
+
+procedure TCustomMarkdownControl.SetWrapCodeBlocks(AValue: Boolean);
+begin
+  if FRenderer.WrapCodeBlocks=AValue then
+    Exit;
+  FRenderer.WrapCodeBlocks:=AValue;
+  LayoutChanged;
 end;
 
 destructor TCustomMarkdownControl.Destroy;

@@ -14,8 +14,10 @@ type
 
   TMainForm = class(TForm)
     btnFile: TButton;
+    cbWrapCode: TCheckBox;
     ODMarkdown: TOpenDialog;
     procedure btnFileClick(Sender: TObject);
+    procedure cbWrapCodeChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
@@ -49,6 +51,12 @@ begin
   with ODMarkdown do
     if Execute then
       PMarkdown.LoadFromFile(FileName);
+end;
+
+procedure TMainForm.cbWrapCodeChange(Sender: TObject);
+
+begin
+  PMarkdown.WrapCodeBlocks:=cbWrapCode.Checked;
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);

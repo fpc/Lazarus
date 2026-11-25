@@ -20,6 +20,16 @@ object MainForm: TMainForm
     TabOrder = 0
     OnClick = btnFileClick
   end
+  object cbWrapCode: TCheckBox
+    Left = 16
+    Height = 23
+    Top = 561
+    Width = 150
+    Anchors = [akLeft, akBottom]
+    Caption = 'Wrap code blocks'
+    TabOrder = 1
+    OnChange = cbWrapCodeChange
+  end
   object ODMarkDown: TOpenDialog
     DefaultExt = '.md'
     Filter = 'MarkDown files|*.md|All files|*.*'

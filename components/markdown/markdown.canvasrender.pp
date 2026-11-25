@@ -69,6 +69,7 @@ type
     FSelectionStartChar: Integer;
     FSelectionEndChar: Integer;
     FLineIndex: Integer;
+    FSoftBreak: Boolean;
   protected
     function GetColor(aKind : TColorKind; aDefault : TColor) : TColor;
   public
@@ -94,6 +95,8 @@ type
     property SelectionEndChar: Integer read FSelectionEndChar write FSelectionEndChar;
     // Index of the layout line the item belongs to
     property LineIndex: Integer read FLineIndex write FLineIndex;
+    // True if the item continues the text of the previous line after a wrap inside a word or code line
+    property SoftBreak: Boolean read FSoftBreak write FSoftBreak;
   end;
 
   { TLayoutItemList }
@@ -213,6 +216,7 @@ type
     FHTMLEntities : TFPStringHashTable;
     FBaseDir: string;
     FLineCount: Integer;
+    FWrapCodeBlocks: Boolean;
     FAscentCache: array of TAscentCacheEntry;
     procedure SetBaseDir(const aValue: string);
   Protected
@@ -259,6 +263,9 @@ type
     procedure LayoutTextWrapped(const aCanvas: TCanvas; const aText: utf8string; const aFontSize: LongInt;
       const aFontStyle: TFontStyles; const aLinkHref: utf8string; const aContext : TFontContext;
       const aPreserveWhitespace, aDryRun: boolean); virtual;
+    procedure LayoutCharWrapped(const aCanvas: TCanvas; const aText: utf8string; const aFontSize: LongInt;
+      const aFontStyle: TFontStyles; const aLinkHref: utf8string; const aContext : TFontContext;
+      const aDryRun: boolean);
     function LayoutImage(aImageURL: UTF8String): Boolean; virtual;
     function LoadLocalImage(const aURL: string): TPicture; virtual;
     procedure RenderTextNode(aTextNode: TMarkdownTextNode; aFontSize: LongInt; aFontStyle: TFontStyles; const aContext : TFontContext;
@@ -345,6 +352,8 @@ type
     property TableLinesColor: TColor read FTableLinesColor write FTableLinesColor;
     // Directory used to resolve relative image file names.
     property BaseDir: string read FBaseDir write SetBaseDir;
+    // Wrap long lines of fenced code blocks at the available width.
+    property WrapCodeBlocks: Boolean read FWrapCodeBlocks write FWrapCodeBlocks;
   end;
 
   { TCanvasMarkdownBlockRenderer }
@@ -1048,7 +1057,8 @@ begin
       ItemText:=UTF8Copy(Item.Text, Item.SelectionStartChar + 1,
                           Item.SelectionEndChar - Item.SelectionStartChar);
       // Runs of one line already contain their separating spaces
-      if (Result<>'') and (PrevItem<>nil) and (PrevItem.LineIndex<>Item.LineIndex) then
+      if (Result<>'') and (PrevItem<>nil) and (PrevItem.LineIndex<>Item.LineIndex)
+         and not Item.SoftBreak then
         Result:=Result + LineEnding;
       Result:=Result + ItemText;
       PrevItem:=Item;
@@ -1368,62 +1378,9 @@ var
       end;
   end;
 
-  function NextUTF8CharLenAt(const aString: utf8string; const aPosition: integer): integer;
-  var
-    ByteValue: byte;
-  begin
-    if (aPosition<1) or (aPosition>length(aString)) then
-      begin
-      Result:=0;
-      exit;
-      end;
-    ByteValue:=byte(aString[aPosition]);
-    if ByteValue<$80 then
-      Result:=1
-    else if (ByteValue and $e0) = $c0 then
-      Result:=2
-    else if (ByteValue and $f0) = $e0 then
-      Result:=3
-    else
-      Result:=4;
-  end;
-
   procedure BreakLongWord(const aWord: utf8string);
-  var
-    CharPos, WordLen, CharLen: LongInt;
-    CharBuffer, CurrentChar: utf8string;
-    CharWidth: LongInt;
   begin
-    WordLen:=length(aWord);
-    CharBuffer:='';
-    CharPos:=1;
-
-    while CharPos <= WordLen do
-      begin
-      CharLen:=NextUTF8CharLenAt(aWord, CharPos);
-      if CharLen <= 0 then
-        CharLen:=1;
-
-      CurrentChar:=copy(aWord, CharPos, CharLen);
-      CharWidth:=MeasureTextWidth(aCanvas, CharBuffer + CurrentChar, aFontSize, aFontStyle, aContext);
-
-      if (FLayout.CurrentIndent + FLayout.LineX + CharWidth)<=FLayout.MaxWidth then
-        CharBuffer:=CharBuffer + CurrentChar
-      else
-        begin
-        if length(CharBuffer)>0 then
-          begin
-          FlushTextRun(aCanvas, CharBuffer, aFontSize, aFontStyle, aLinkHref, aContext, aDryRun);
-          CharBuffer:='';
-          end;
-        if FLayout.LineX>0 then
-          NewLine(aCanvas);
-        CharBuffer:=CurrentChar;
-        end;
-      Inc(CharPos, CharLen);
-      end;
-    if length(CharBuffer)>0 then
-      FlushTextRun(aCanvas, CharBuffer, aFontSize, aFontStyle, aLinkHref, aContext, aDryRun);
+    LayoutCharWrapped(aCanvas, aWord, aFontSize, aFontStyle, aLinkHref, aContext, aDryRun);
     NeedSpace:=True;
   end;
 
@@ -1548,8 +1505,61 @@ begin
   FLayout.NeedSpaceBeforeNextText:=(lLength>0) and (lText[lLength] in WhiteSpace);
 end;
 
+// Lay out aText, breaking it between characters where it exceeds the available width.
+procedure TMarkdownCanvasRenderer.LayoutCharWrapped(const aCanvas: TCanvas; const aText: utf8string;
+  const aFontSize: LongInt; const aFontStyle: TFontStyles; const aLinkHref: utf8string;
+  const aContext: TFontContext; const aDryRun: boolean);
+
+var
+  lPos, lLen, lStart, lCharLen: Integer;
+  lRunWidth, lCharWidth: LongInt;
+  lAfterWrap: Boolean;
+
+  procedure FlushRun;
+  begin
+    if lPos>lStart then
+      begin
+      FlushTextRun(aCanvas, Copy(aText,lStart,lPos-lStart), aFontSize, aFontStyle, aLinkHref, aContext, aDryRun);
+      if lAfterWrap and not aDryRun then
+        FLists.Items[FLists.Items.Count-1].SoftBreak:=True;
+      end;
+    lAfterWrap:=False;
+  end;
+
+begin
+  lLen:=Length(aText);
+  lPos:=1;
+  lStart:=1;
+  lRunWidth:=0;
+  lAfterWrap:=False;
+  while lPos<=lLen do
+    begin
+    lCharLen:=UTF8CodepointSize(@aText[lPos]);
+    if (lCharLen<1) or (lPos+lCharLen>lLen+1) then
+      lCharLen:=1;
+    lCharWidth:=MeasureTextWidth(aCanvas, Copy(aText,lPos,lCharLen), aFontSize, aFontStyle, aContext);
+    if (FLayout.CurrentIndent+FLayout.LineX+lRunWidth+lCharWidth>FLayout.MaxWidth)
+       and ((lPos>lStart) or (FLayout.LineX>0)) then
+      begin
+      FlushRun;
+      NewLine(aCanvas);
+      lAfterWrap:=lPos>1;
+      lStart:=lPos;
+      lRunWidth:=0;
+      end;
+    Inc(lRunWidth,lCharWidth);
+    Inc(lPos,lCharLen);
+    end;
+  FlushRun;
+end;
+
+
 procedure TMarkdownCanvasRenderer.CalculateLayout(const aCanvas: TCanvas; const aMaxWidth: LongInt;
   out aContentWidth: LongInt; out aContentHeight: LongInt);
+
+var
+  I: Integer;
+
 begin
   if not assigned(aCanvas) then
     begin
@@ -1575,6 +1585,11 @@ begin
     if FLayout.LineX<>0 then
       NewLine(fCanvas);
     fCalculatedHeight:=FLayout.LineY;
+    // Code backgrounds cover lines that are wider than the available width
+    for I:=0 to FLists.Items.Count-1 do
+      with FLists.Items[I] do
+        if (Kind=likBackground) and (X+Width<fCalculatedWidth) then
+          Width:=fCalculatedWidth-X;
     end
   else
     begin
@@ -1919,7 +1934,10 @@ begin
         begin
         lItem:=FLists.Items.NewItem(likBackground,FLayout.LineX,FLayout.LineY);
         lItem.Width:=FLayout.MaxWidth-LItem.X;
-        FlushTextRun(fCanvas, lText, aFontSize, fontStyle, '', lContext, False);
+        if FWrapCodeBlocks then
+          LayoutCharWrapped(fCanvas, lText, aFontSize, fontStyle, '', lContext, False)
+        else
+          FlushTextRun(fCanvas, lText, aFontSize, fontStyle, '', lContext, False);
         NewLine(fCanvas);
         lItem.Height:=FLayout.LineY-lItem.Y;
         end
