@@ -64,7 +64,10 @@ begin
   PMarkdown.OnOpenURL:=@DoOpenURL;
   PMarkdown.Visible:=True;
   PMarkdown.MonoFontName:='Monospace';
-  if FileExists(DefaultFile) then
+  ActiveControl:=PMarkdown;
+  if (ParamCount>0) and FileExists(ParamStr(1)) then
+    PMarkdown.LoadFromFile(ParamStr(1))
+  else if FileExists(DefaultFile) then
     PMarkdown.LoadFromFile(DefaultFile);
 end;
 
@@ -75,7 +78,7 @@ begin
     begin
     // The control does this by itself, we do this only to be able to show the message
     PMarkdown.CopySelectionToClipBoard;
-    ShowMessage('Selection copied to clipboard');
+    ShowMessage('Selection copied to clipboard:'+LineEnding+'['+PMarkdown.SelectedText+']');
     end;
 end;
 

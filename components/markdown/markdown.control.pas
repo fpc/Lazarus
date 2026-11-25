@@ -422,6 +422,7 @@ begin
   FSelectionStart.CharOffset := 0;
   FSBVertShowing:=-1;
   FSBHorzShowing:=-1;
+  ControlStyle := ControlStyle + [csTripleClicks];
   TabStop := True;
   BorderStyle := bsSingle;
   BorderWidth := 0;
@@ -585,7 +586,8 @@ end;
 procedure TCustomMarkdownControl.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 
 var
-  lPoint: TSelectionPoint;
+  lPoint, lStart, lEnd: TSelectionPoint;
+  lFound: Boolean;
 
 begin
   inherited MouseDown(Button, Shift, X, Y);
@@ -595,15 +597,31 @@ begin
     lPoint:=FRenderer.HitTestText(X+ScrolledLeft, Y+ScrolledTop);
     if lPoint.LayoutItemIndex <> -1 then
     begin
-      // Shift+click extends the selection from the existing anchor
-      if (ssShift in Shift) and (FSelectionStart.LayoutItemIndex<>-1) then
-        SelectTo(lPoint)
+      if [ssDouble,ssTriple]*Shift<>[] then
+        begin
+        if ssTriple in Shift then
+          lFound:=FRenderer.GetLineBounds(lPoint, lStart, lEnd)
+        else
+          lFound:=FRenderer.GetWordBounds(lPoint, lStart, lEnd);
+        if lFound then
+          begin
+          FSelectionStart:=lStart;
+          SelectTo(lEnd);
+          end;
+        FIsSelecting:=False;
+        end
       else
         begin
-        FSelectionStart:=lPoint;
-        FRenderer.ClearSelection;
+        // Shift+click extends the selection from the existing anchor
+        if (ssShift in Shift) and (FSelectionStart.LayoutItemIndex<>-1) then
+          SelectTo(lPoint)
+        else
+          begin
+          FSelectionStart:=lPoint;
+          FRenderer.ClearSelection;
+          end;
+        FIsSelecting := True;
         end;
-      FIsSelecting := True;
       Invalidate;
     end;
   end;

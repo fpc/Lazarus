@@ -25,7 +25,7 @@ unit Markdown.CanvasRender;
 interface
 
 uses
-  SysUtils, Classes, Contnrs, Graphics, Types, Math, Markdown.Elements, Markdown.Parser, Markdown.Render, Markdown.HTMLEntities, LazUTF8, LazFileUtils;
+  SysUtils, Classes, Contnrs, Graphics, Types, Math, Markdown.Elements, Markdown.Parser, Markdown.Render, Markdown.HTMLEntities, LazUTF8, LazFileUtils, Character;
 
 type
   TLayoutItemKind = (
@@ -220,6 +220,7 @@ type
     procedure ClearAllSelections;
     procedure ApplySelection(const aStartPoint, aEndPoint: TSelectionPoint);
     function CalculateCharXPosition(aItem: TLayoutItem; aCharIndex: Integer): LongInt;
+    function AdjacentTextItem(aIndex, aDirection: Integer): Integer;
 
     // Layout management
     procedure Clear;
@@ -303,6 +304,11 @@ type
     procedure ClearSelection;
     function GetSelectedText: String;
     function HitTestText(const aX, aY: LongInt): TSelectionPoint;
+    // Bounds of the word around aPoint, which may span several runs of one line.
+    // Returns False if aPoint is not next to a letter, digit or underscore.
+    function GetWordBounds(const aPoint: TSelectionPoint; out aStart, aEnd: TSelectionPoint): Boolean;
+    // Bounds of the layout line containing aPoint.
+    function GetLineBounds(const aPoint: TSelectionPoint; out aStart, aEnd: TSelectionPoint): Boolean;
     // Height of a line of text in the base font.
     function MeasureBaseLineHeight(const aCanvas: TCanvas): LongInt;
     // Free all cached images.
@@ -874,6 +880,126 @@ begin
     end;
   Result.CharOffset:=lCharIndex;
 end;
+
+
+// Check whether a single UTF-8 encoded character is part of a word.
+function IsWordChar(const aChar: utf8string): Boolean;
+
+var
+  lChar: UnicodeString;
+
+begin
+  if aChar='_' then
+    Exit(True);
+  lChar:=UTF8ToUTF16(aChar);
+  Result:=(lChar<>'') and (IsLetterOrDigit(lChar,1)
+          or (GetUnicodeCategory(lChar,1) in [TUnicodeCategory.ucNonSpacingMark,TUnicodeCategory.ucCombiningMark]));
+end;
+
+
+// Index of the next text item of the same line in aDirection (1 or -1), or -1.
+function TMarkdownCanvasRenderer.AdjacentTextItem(aIndex, aDirection: Integer): Integer;
+
+var
+  lLine: Integer;
+
+begin
+  Result:=-1;
+  lLine:=FLists.Items[aIndex].LineIndex;
+  Inc(aIndex,aDirection);
+  while (aIndex>=0) and (aIndex<FLists.Items.Count) do
+    case FLists.Items[aIndex].Kind of
+      likText:
+        begin
+        if FLists.Items[aIndex].LineIndex=lLine then
+          Result:=aIndex;
+        Exit;
+        end;
+      likBackground:
+        Inc(aIndex,aDirection);
+    else
+      Exit;
+    end;
+end;
+
+
+function TMarkdownCanvasRenderer.GetWordBounds(const aPoint: TSelectionPoint; out aStart, aEnd: TSelectionPoint): Boolean;
+
+var
+  lIndex: Integer;
+  lText: utf8string;
+
+begin
+  aStart:=aPoint;
+  aEnd:=aPoint;
+  if (aPoint.LayoutItemIndex<0) or (aPoint.LayoutItemIndex>=FLists.Items.Count) then
+    Exit(False);
+  repeat
+    lText:=FLists.Items[aStart.LayoutItemIndex].Text;
+    if aStart.CharOffset>0 then
+      begin
+      if not IsWordChar(UTF8Copy(lText,aStart.CharOffset,1)) then
+        Break;
+      Dec(aStart.CharOffset);
+      end
+    else
+      begin
+      lIndex:=AdjacentTextItem(aStart.LayoutItemIndex,-1);
+      if lIndex<0 then
+        Break;
+      lText:=FLists.Items[lIndex].Text;
+      if not IsWordChar(UTF8Copy(lText,UTF8Length(lText),1)) then
+        Break;
+      aStart.LayoutItemIndex:=lIndex;
+      aStart.CharOffset:=UTF8Length(lText);
+      end;
+  until False;
+  repeat
+    lText:=FLists.Items[aEnd.LayoutItemIndex].Text;
+    if aEnd.CharOffset<UTF8Length(lText) then
+      begin
+      if not IsWordChar(UTF8Copy(lText,aEnd.CharOffset+1,1)) then
+        Break;
+      Inc(aEnd.CharOffset);
+      end
+    else
+      begin
+      lIndex:=AdjacentTextItem(aEnd.LayoutItemIndex,1);
+      if (lIndex<0) or not IsWordChar(UTF8Copy(FLists.Items[lIndex].Text,1,1)) then
+        Break;
+      aEnd.LayoutItemIndex:=lIndex;
+      aEnd.CharOffset:=0;
+      end;
+  until False;
+  Result:=(aStart.LayoutItemIndex<>aEnd.LayoutItemIndex) or (aStart.CharOffset<>aEnd.CharOffset);
+end;
+
+
+function TMarkdownCanvasRenderer.GetLineBounds(const aPoint: TSelectionPoint; out aStart, aEnd: TSelectionPoint): Boolean;
+
+var
+  I, lLine: Integer;
+
+begin
+  aStart:=aPoint;
+  aEnd:=aPoint;
+  if (aPoint.LayoutItemIndex<0) or (aPoint.LayoutItemIndex>=FLists.Items.Count) then
+    Exit(False);
+  lLine:=FLists.Items[aPoint.LayoutItemIndex].LineIndex;
+  aStart.LayoutItemIndex:=-1;
+  for I:=0 to FLists.Items.Count-1 do
+    with FLists.Items[I] do
+      if (Kind=likText) and (LineIndex=lLine) then
+        begin
+        if aStart.LayoutItemIndex<0 then
+          aStart.LayoutItemIndex:=I;
+        aEnd.LayoutItemIndex:=I;
+        end;
+  aStart.CharOffset:=0;
+  aEnd.CharOffset:=UTF8Length(FLists.Items[aEnd.LayoutItemIndex].Text);
+  Result:=True;
+end;
+
 
 
 function TMarkdownCanvasRenderer.MeasureBaseLineHeight(const aCanvas: TCanvas): LongInt;
