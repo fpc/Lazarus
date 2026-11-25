@@ -86,6 +86,8 @@ type
     // Access to parser methods
     function PeekLine : TMarkdownLine;
     function NextLine : TMarkdownLine;
+    // The source line following aLine, Nil after the last line. Does not move the current line pointer.
+    function LineAfter(aLine : TMarkdownLine) : TMarkdownLine;
     function Done : Boolean;
     procedure RedoLine(aResetLine: Boolean);
     // Same, for the enclosing block, when a line is consumed outside the parse loop.
@@ -369,6 +371,16 @@ function TMarkdownBlockProcessor.NextLine: TMarkdownLine;
 
 begin
   Result:=FParser.NextLine;
+end;
+
+
+function TMarkdownBlockProcessor.LineAfter(aLine: TMarkdownLine): TMarkdownLine;
+
+begin
+  Result:=Nil;
+  // LineNo is 1-based, so it is the index of the following line.
+  if Assigned(aLine) and (aLine.LineNo<FParser.FLines.Count) then
+    Result:=FParser.FLines[aLine.LineNo];
 end;
 
 
