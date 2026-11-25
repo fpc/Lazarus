@@ -378,6 +378,8 @@ type
     function GetCurrentY : Integer;
     procedure NewLine; inline;
     procedure ParagraphBreak; inline;
+    // Ends aBlock: a line break inside an item of a tight list, a paragraph break elsewhere.
+    procedure EndBlock(aBlock : TMarkdownBlock);
     procedure MaybeStartParagraph; inline;
     property Canvas : TCanvas read GetCanvas;
   public
@@ -2146,6 +2148,31 @@ begin
   CanvasRenderer.ParagraphBreak(CanvasRenderer.fCanvas);
 end;
 
+// True when aBlock is a direct child of an item of a tight list.
+function InTightListItem(aBlock : TMarkdownBlock) : Boolean;
+
+var
+  lItem : TMarkdownBlock;
+
+begin
+  Result:=False;
+  lItem:=aBlock.Parent;
+  if not (lItem is TMarkdownListItemBlock) then
+    exit;
+  Result:=(lItem.Parent is TMarkdownListBlock) and not TMarkdownListBlock(lItem.Parent).Loose;
+end;
+
+
+procedure TCanvasMarkdownBlockRenderer.EndBlock(aBlock : TMarkdownBlock);
+
+begin
+  if not InTightListItem(aBlock) then
+    ParagraphBreak
+  else if LayoutData.LineX<>0 then
+    NewLine;
+end;
+
+
 procedure TCanvasMarkdownBlockRenderer.MaybeStartParagraph;
 begin
   CanvasRenderer.MaybeStartParagraph;
@@ -2175,7 +2202,7 @@ begin
 
   // Render paragraph children and add paragraph break
   Renderer.RenderChildren(aBlock as TMarkdownContainerBlock);
-  ParagraphBreak;
+  EndBlock(aBlock);
 end;
 
 class function TCanvasMarkdownParagraphBlockRenderer.BlockClass: TMarkdownBlockClass;
@@ -2246,7 +2273,7 @@ begin
     end;
   if not lBlock.Ordered then
     CanvasRenderer.DecBulletLevel;
-  ParagraphBreak;
+  EndBlock(aBlock);
 end;
 
 procedure TCanvasMarkdownListBlockRenderer.reset;

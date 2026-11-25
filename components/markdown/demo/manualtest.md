@@ -85,6 +85,24 @@ procedure TSomeVeryLongClassName.SomeVeryLongMethodName(const aFirstArgument: st
     indented line after
 ```
 
+## 7. Tight lists (#42758)
+
+The items of this tight list follow each other with no blank space, the nested
+list included:
+
+- one
+- two
+  - nested a
+  - nested b
+- three
+
+The items of this loose list are separated by paragraph spacing:
+
+- first paragraph
+
+  second paragraph of the same item
+- next item
+
 ## Filler to make the document scroll
 
 1. One
