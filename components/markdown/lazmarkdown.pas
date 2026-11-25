@@ -8,15 +8,13 @@ unit lazmarkdown;
 interface
 
 uses
-  markdown.canvasrender, markdown.control, markdown.regide, MarkDown.Elements, Markdown.FPDocRender, Markdown.HTMLEntities, 
-  Markdown.HtmlRender, MarkDown.InlineText, MarkDown.LatexRender, MarkDown.Line, MarkDown.Parser, Markdown.Processors, 
-  MarkDown.Render, MarkDown.Scanner, MarkDown.Utils, LazarusPackageIntf;
+  Markdown.CanvasRender, Markdown.Control, Markdown.RegIDE, LazarusPackageIntf;
 
 implementation
 
 procedure Register;
 begin
-  RegisterUnit('markdown.regide', @markdown.regide.Register);
+  RegisterUnit('Markdown.RegIDE', @Markdown.RegIDE.Register);
 end;
 
 initialization

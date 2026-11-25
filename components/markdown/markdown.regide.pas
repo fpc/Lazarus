@@ -1,22 +1,22 @@
-unit markdown.regide;
+unit Markdown.RegIDE;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, markdown.control;
+  Classes, Markdown.Control;
 
 procedure register;
 
 implementation
 
-uses lresources;
+uses LResources;
 
 procedure register;
 
 begin
-  RegisterComponents('Misc',[TMarkDownControl]);
+  RegisterComponents('Misc',[TMarkdownControl]);
 end;
 
 

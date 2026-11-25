@@ -20,7 +20,7 @@ interface
 
 uses
   Classes, SysUtils, Contnrs, Graphics, Controls, ExtCtrls, StdCtrls, Forms, TypingIndicator,
-  markdown.canvasrender, markdown.control;
+  Markdown.CanvasRender, Markdown.Control;
 
 Const
   DefaultBackground : TColor = $00CDEBD0;
@@ -185,7 +185,7 @@ Type
       TMarkdownDisplayChatItem = class(TDisplayChatItem)
       private
         FMaxWidth: Integer;
-        FControl : TMarkDownControl;
+        FControl : TMarkdownControl;
       Protected
         Procedure SetMarkdownProperty(aIndex : integer; aValue : string); virtual; overload;
         Procedure SetMarkdownProperty(aIndex : integer; aValue : Integer); virtual; overload;
@@ -709,12 +709,12 @@ end;
 
 function TChatControl.CreateMarkdownItem(aText: String; aSide: TTextSide): TDisplayChatItem;
 var
-  C : TMarkDownControl;
+  C : TMarkdownControl;
   S : TShape;
   P : TMarkDownDisplayChatItem;
 begin
   P:=DoCreateMarkdownItem(aText,aSide);
-  C:=TMarkDownControl.Create(Self);
+  C:=TMarkdownControl.Create(Self);
   C.Parent:=Self;
   P.FControl:=C;
   SetMarkDownProperties(P);

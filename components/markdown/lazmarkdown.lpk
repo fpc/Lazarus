@@ -7,74 +7,27 @@
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
-        <OtherUnitFiles Value="Src_3_2"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
+      <Conditionals Value="if GetProjValue(&apos;FPC_FULLVERSION&apos;)&lt;30301 then
+  UnitPath+=&apos;;Src_3_2&apos;;"/>
     </CompilerOptions>
-    <Description Value="Simple but complete Markdown display control"/>
+    <Description Value="Simple but complete Markdown display control. FPC older than 3.3.1 uses the copy of fcl-md in Src_3_2, taken from FPC main 4c3dd6f45f."/>
     <License Value="Modified LGPL license for the LCL-specific code, the code in Src_3_2 is from the FPC code repo, it is modified LGPL"/>
     <Version Major="1"/>
     <Files>
       <Item>
         <Filename Value="markdown.canvasrender.pp"/>
-        <UnitName Value="markdown.canvasrender"/>
+        <UnitName Value="Markdown.CanvasRender"/>
       </Item>
       <Item>
         <Filename Value="markdown.control.pas"/>
-        <UnitName Value="markdown.control"/>
+        <UnitName Value="Markdown.Control"/>
       </Item>
       <Item>
         <Filename Value="markdown.regide.pas"/>
         <HasRegisterProc Value="True"/>
-        <UnitName Value="markdown.regide"/>
-      </Item>
-      <Item>
-        <Filename Value="Src_3_2/markdown.elements.pas"/>
-        <UnitName Value="MarkDown.Elements"/>
-      </Item>
-      <Item>
-        <Filename Value="Src_3_2/markdown.fpdocrender.pas"/>
-        <UnitName Value="Markdown.FPDocRender"/>
-      </Item>
-      <Item>
-        <Filename Value="Src_3_2/markdown.htmlentities.pas"/>
-        <UnitName Value="Markdown.HTMLEntities"/>
-      </Item>
-      <Item>
-        <Filename Value="Src_3_2/markdown.htmlrender.pas"/>
-        <UnitName Value="Markdown.HtmlRender"/>
-      </Item>
-      <Item>
-        <Filename Value="Src_3_2/markdown.inlinetext.pas"/>
-        <UnitName Value="MarkDown.InlineText"/>
-      </Item>
-      <Item>
-        <Filename Value="Src_3_2/markdown.latexrender.pas"/>
-        <UnitName Value="MarkDown.LatexRender"/>
-      </Item>
-      <Item>
-        <Filename Value="Src_3_2/markdown.line.pas"/>
-        <UnitName Value="MarkDown.Line"/>
-      </Item>
-      <Item>
-        <Filename Value="Src_3_2/markdown.parser.pas"/>
-        <UnitName Value="MarkDown.Parser"/>
-      </Item>
-      <Item>
-        <Filename Value="Src_3_2/markdown.processors.pas"/>
-        <UnitName Value="Markdown.Processors"/>
-      </Item>
-      <Item>
-        <Filename Value="Src_3_2/markdown.render.pas"/>
-        <UnitName Value="MarkDown.Render"/>
-      </Item>
-      <Item>
-        <Filename Value="Src_3_2/markdown.scanner.pas"/>
-        <UnitName Value="MarkDown.Scanner"/>
-      </Item>
-      <Item>
-        <Filename Value="Src_3_2/markdown.utils.pas"/>
-        <UnitName Value="MarkDown.Utils"/>
+        <UnitName Value="Markdown.RegIDE"/>
       </Item>
     </Files>
     <RequiredPkgs>
