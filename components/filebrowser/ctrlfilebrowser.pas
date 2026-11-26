@@ -28,13 +28,11 @@ Type
 
     TFileSearchMatch = Class(TObject)
     Private
-      FEntry : TFileEntry;
       FFileName: string;
       FMatchPositions : TMatchPositionArray;
     Public
-      Constructor Create(const aFileName : string; aEntry : TFileEntry; const aPositions : TMatchPositionArray);
+      Constructor Create(const aFileName : string; const aPositions : TMatchPositionArray);
       Property FileName : string Read FFileName;
-      Property Entry : TFileEntry Read FEntry;
       Property MatchPositions : TMatchPositionArray Read FMatchPositions;
     end;
 
@@ -111,7 +109,8 @@ Type
       procedure Init;
       function FillingTree: boolean;
       procedure ConfigBrowser;
-      procedure OpenFiles(aEntries : TFileEntryArray);
+      // Open the files aFileNames in the source editor
+      procedure OpenFiles(const aFileNames : TStringArray);
       function GetResolvedRootDir : String;
       function ShowConfig: Boolean;
       procedure WriteConfig; virtual;
@@ -146,11 +145,9 @@ implementation
 
 { TFileSearchMatch }
 
-constructor TFileSearchMatch.Create(const aFileName: string;
-  aEntry: TFileEntry; const aPositions: TMatchPositionArray);
+constructor TFileSearchMatch.Create(const aFileName: string; const aPositions: TMatchPositionArray);
 begin
   FFileName:=aFileName;
-  FEntry:=aEntry;
   FMatchPositions:=aPositions;
 end;
 
@@ -513,8 +510,7 @@ begin
           end;
         if IsMatch then
           begin
-          Match:=TFileSearchMatch.Create(FFileList[lFileIdx],
-                              TFileEntry(FFileList.Objects[lFileIdx]), lPositions);
+          Match:=TFileSearchMatch.Create(FFileList[lFileIdx], lPositions);
           aOutFileList.Add(Match);
           end;
       end;
@@ -574,12 +570,12 @@ begin
     SyncCurrentFile;
 end;
 
-procedure TFileBrowserController.OpenFiles(aEntries: TFileEntryArray);
+procedure TFileBrowserController.OpenFiles(const aFileNames: TStringArray);
 var
-  E : TFileEntry;
+  lFileName : String;
 begin
-  for E in aEntries do
-    DoOpenFile(Self,E.AbsolutePath);
+  for lFileName in aFileNames do
+    DoOpenFile(Self,lFileName);
 end;
 
 function TFileBrowserController.GetProjectDir : String;

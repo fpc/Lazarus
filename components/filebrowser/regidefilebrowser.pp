@@ -27,22 +27,22 @@ end;
 
 procedure ShowFileSearcher(Sender: TObject);
 var
-  Entries : TFileEntryArray;
+  FileNames : TStringArray;
   C: TFileBrowserController;
 begin
-  Entries:=[];
+  FileNames:=[];
   With TFileSearcherForm.Create(Application) do
     try
       if ShowModal=mrOK then
-        Entries:=GetSelectedItems;
+        FileNames:=GetSelectedItems;
     finally
       Free;
     end;
-  if Length(Entries)>0 then
+  if Length(FileNames)>0 then
     begin
     C := LazarusIDE.OwningComponent.FindComponent('IDEFileBrowserController') as TFileBrowserController;
     if Assigned(C) then
-      C.OpenFiles(Entries);
+      C.OpenFiles(FileNames);
     end;
 end;
 

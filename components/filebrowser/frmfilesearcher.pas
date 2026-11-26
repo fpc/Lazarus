@@ -46,8 +46,8 @@ type
     // Callback when build of index is done
     procedure HandleIndexingDone(Sender: TObject);
   public
-    // selected file items
-    Function GetSelectedItems : TFileEntryArray;
+    // Names of the selected files
+    Function GetSelectedItems : TStringArray;
   end;
 
 var
@@ -135,7 +135,7 @@ begin
   CheckLength;
 end;
 
-function TFileSearcherForm.GetSelectedItems: TFileEntryArray;
+function TFileSearcherForm.GetSelectedItems: TStringArray;
 var
   Idx,I: Integer;
 begin
@@ -145,7 +145,7 @@ begin
   For I:=0 to LBFiles.Count-1 do
     if LBFiles.Selected[I] then
       begin
-      Result[Idx]:=TFileSearchMatch(LBFiles.Items.Objects[i]).Entry;
+      Result[Idx]:=TFileSearchMatch(LBFiles.Items.Objects[i]).FileName;
       Inc(Idx);
       end;
 end;

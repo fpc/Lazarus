@@ -128,7 +128,11 @@ const
 procedure TFileBrowserForm.TVExpanded(Sender: TObject; Node: TTreeNode);
 begin
   if Node.Count = 0 then
+    begin
     AddEntries(Node);
+    if Node.Count = 0 then
+      Node.HasChildren:=False;
+    end;
 end;
 
 procedure TFileBrowserForm.TVSelectionChanged(Sender: TObject);
@@ -472,37 +476,26 @@ procedure TFileBrowserForm.ShowFiles;
 
 Var
   RootNode: TTreeNode;
-  lNode: TTreeNode;
   Dir : String;
 
 begin
   TV.Items.Clear;
-  {$IFDEF MSWINDOWS}
-  { Add Windows drive letters }
-  AddWindowsDriveLetters;
-  {$ENDIF}
+  FreeAndNil(FRoot);
   Dir:=RootDirectory;
   if Dir='' then
     Dir:=PathDelim;
-  FreeAndNil(FRoot);
+  {$IFDEF MSWINDOWS}
+  { The filesystem root shows the drives, read when they are expanded }
+  if (Dir='/') or (Dir='\') then
+    begin
+    AddWindowsDriveLetters;
+    TV.Selected:=TV.Items.GetFirstNode;
+    exit;
+    end;
+  {$ENDIF}
   FRoot:=TDirectoryEntry.Create(Nil,ExcludeTrailingPathDelimiter(Dir));
-  { Remove the path delimiter unless this is root. }
-  if (Dir<>PathDelim) and (Dir[length(Dir)] = PathDelim) then
-    SetLength(Dir, length(Dir)-1);
-  { Find or Create the root node and add it to the Tree View. }
-  RootNode := TV.Items.FindTopLvlNode(Dir + PathDelim);
-  if RootNode = nil then
-    RootNode := AddNode(Nil,FRoot);
-
-  { Add the Subdirectories to Root nodes }
-  lNode := TV.Items.GetFirstNode;
-  while lNode <> nil do
-  begin
-    AddEntries(lNode);
-    lNode := lNode.GetNextSibling;
-  end;
-
-  { Set the original root node as the selected node. }
+  RootNode := AddNode(Nil,FRoot);
+  AddEntries(RootNode);
   TV.Selected := RootNode;
   RootNode.Expand(False);
 end;
@@ -537,23 +530,37 @@ const
 var
   n: integer;
   drvs: string;
+  lDriveType: UINT;
+  lErrorMode: UINT;
   DriveEntry : TDirectoryEntry;
+  lNode : TTreeNode;
 
 begin
   FDriveEntries.Clear;
-  // making drive list, skipping drives A: and B: and Removable Devices without media
-  n := 2;
-  while n <= MAX_DRIVES do
-  begin
-    drvs := chr(n + Ord('A')) + ':\';
-    if (Windows.GetDriveType(PChar(drvs)) <> 1) and
-    (GetDiskFreeSpaceEx(PChar(drvs), nil, nil, nil)) then
-      begin
-      DriveEntry:=TDirectoryEntry.Create(Nil,drvs);
-      FDriveEntries.Add(DriveEntry);
-      AddNode(Nil,DriveEntry);
-      end;
-    Inc(n);
+  lErrorMode:=SetErrorMode(SEM_FAILCRITICALERRORS);
+  try
+    // Skip drives A: and B:, drives that do not exist and removable drives without media
+    n := 2;
+    while n <= MAX_DRIVES do
+    begin
+      drvs := chr(n + Ord('A')) + ':\';
+      lDriveType:=Windows.GetDriveType(PChar(drvs));
+      if (lDriveType<>DRIVE_UNKNOWN) and (lDriveType<>DRIVE_NO_ROOT_DIR)
+         and (((lDriveType<>DRIVE_REMOVABLE) and (lDriveType<>DRIVE_CDROM))
+              or GetDiskFreeSpaceEx(PChar(drvs), nil, nil, nil)) then
+        begin
+        DriveEntry:=TDirectoryEntry.Create(Nil,drvs);
+        FDriveEntries.Add(DriveEntry);
+        lNode:=TV.Items.Add(Nil,DriveEntry.Name);
+        lNode.Data:=DriveEntry;
+        lNode.ImageIndex:=Ord(etDirectory);
+        lNode.SelectedIndex:=Ord(etDirectory);
+        lNode.HasChildren:=True;
+        end;
+      Inc(n);
+    end;
+  finally
+    SetErrorMode(lErrorMode);
   end;
 end;
 {$ENDIF}

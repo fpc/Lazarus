@@ -196,7 +196,7 @@ begin
   S:='';
   While Assigned(E) do
     begin
-    if (S<>'') then
+    if (S<>'') and ((E.Name='') or (E.Name[Length(E.Name)]<>PathDelim)) then
       S:=PathDelim+S;
     S:=E.Name+S;
     E:=E.Parent;
@@ -436,7 +436,7 @@ begin
   case aNode.EntryType of
     etFile,
     etSymlink:
-      FFileList.AddObject(FN, aNode);
+      FFileList.Add(FN);
     etDirectory:
       For I:=0 to ANode.EntryCount-1 do
         AddFileNodes(ANode.Entries[I], FN);
