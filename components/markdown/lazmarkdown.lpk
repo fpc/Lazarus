@@ -12,7 +12,7 @@
       <Conditionals Value="if GetProjValue(&apos;FPC_FULLVERSION&apos;)&lt;30301 then
   UnitPath+=&apos;;Src_3_2&apos;;"/>
     </CompilerOptions>
-    <Description Value="Simple but complete Markdown display control. FPC older than 3.3.1 uses the copy of fcl-md in Src_3_2, taken from FPC main 4c3dd6f45f."/>
+    <Description Value="Simple but complete Markdown display control. FPC older than 3.3.1 uses the copy of fcl-md in Src_3_2, taken from FPC main 47b0238476."/>
     <License Value="Modified LGPL license for the LCL-specific code, the code in Src_3_2 is from the FPC code repo, it is modified LGPL"/>
     <Version Major="1"/>
     <Files>
