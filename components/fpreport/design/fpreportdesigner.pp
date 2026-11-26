@@ -130,8 +130,11 @@ begin
   If (Report is TFPJSONReport) and (csDesigning in Report.ComponentState) then
     begin
     J:=Report as TFPJSONReport;
-    if Assigned(J.DesignTimeJSON) then
+    if Assigned(J.DesignTimeJSON) and (J.DesignTimeJSON.Count>0) then
+      begin
+      J.Clear(False);
       J.LoadFromJSON(J.DesignTimeJSON);
+      end;
     F.OnSaveReport:=@DoSaveDesignJSON;
     end;
   if Caption<>'' then

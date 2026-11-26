@@ -375,8 +375,8 @@ begin
       If Execute then
          If Component is TFPJSONReport then
            begin
-           N:=J.Name;
            J:=Component as TFPJSONReport;
+           N:=J.Name;
            J.Clear;
            J.LoadFromFile(FileName);
            J.DesignTimeJSON.Clear;
