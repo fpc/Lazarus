@@ -27,7 +27,8 @@ uses
 {$ENDIF}
   Markdown.Elements,
   Markdown.Render,
-  Markdown.Utils;
+  Markdown.Utils,
+  Markdown.CodeHighlight;
 
 type
   { TMarkdownLaTeXRenderer }
@@ -61,10 +62,18 @@ type
     class function FastRender(aDocument : TMarkdownDocument; aOptions : TLaTeXOptions = []; const aTitle : TMarkdownString = ''; const aAuthor : TMarkdownString = '') : TMarkdownString;
     // Write aText to the output as-is.
     procedure WriteRaw(const aText : TMarkdownString); override;
+    // Write a line of a code block without escaping, for a verbatim environment.
+    procedure RenderCodeBlock(aBlock: TMarkdownBlock; const aLang: TMarkdownString); override;
     // Remove line breaks at the end of the output.
     procedure TrimTrailingNewLines;
     // \label{id} for a block with an id, empty otherwise.
     function LabelFor(aBlock : TMarkdownBlock) : TMarkdownString;
+    // Name of the command that writes a token of kind aKind in a highlighted code block, e.g. \MdTkKeyword.
+    function CodeTokenCommand(aKind : TMarkdownCodeTokenKind) : TMarkdownString; virtual;
+    // aText with \, { and } replaced by \MdBs{}, \MdLb{} and \MdRb{}, for a Verbatim environment with commandchars.
+    function EscapeCodeVerbatim(const aText : TMarkdownString) : TMarkdownString;
+    // Preamble lines for highlighted code blocks: the fancyvrb and xcolor packages and the token commands.
+    function CodeHighlightPreamble : TMarkdownString; virtual;
     // The document being rendered
     property Document : TMarkdownDocument read FDocument;
   published
@@ -426,6 +435,16 @@ begin
 end;
 
 
+procedure TMarkdownLaTeXRenderer.RenderCodeBlock(aBlock: TMarkdownBlock; const aLang: TMarkdownString);
+
+begin
+  if aBlock is TMarkdownTextBlock then
+    Append(TMarkdownTextBlock(aBlock).Text)
+  else
+    inherited RenderCodeBlock(aBlock,aLang);
+end;
+
+
 procedure TMarkdownLaTeXRenderer.TrimTrailingNewLines;
 
 begin
@@ -441,6 +460,70 @@ begin
     Result:='\label{'+aBlock.ID+'}'
   else
     Result:='';
+end;
+
+
+const
+  CodeTokenLaTeX : Array[TMarkdownCodeTokenKind] of TMarkdownString = (
+    '#1',                                            // ctkDefault
+    '\textcolor[rgb]{0,0,0.6}{\textbf{#1}}',         // ctkKeyword
+    '\textcolor[rgb]{0.4,0.4,0.4}{\textit{#1}}',     // ctkComment
+    '\textcolor[rgb]{0.5,0,0.5}{#1}',                // ctkDirective
+    '\textcolor[rgb]{0,0.4,0.4}{#1}',                // ctkNumber
+    '\textcolor[rgb]{0.6,0.1,0}{#1}',                // ctkString
+    '\textcolor[rgb]{0.6,0.3,0}{#1}',                // ctkEscape
+    '#1',                                            // ctkSymbol
+    '#1',                                            // ctkOperator
+    '\textcolor[rgb]{0,0.4,0.6}{#1}',                // ctkAttribute
+    '\textcolor[rgb]{0,0,0.6}{#1}',                  // ctkKey
+    '\textcolor[rgb]{0,0,0.6}{\textbf{#1}}',         // ctkSection
+    '\textcolor[rgb]{0.8,0,0}{#1}'                   // ctkError
+  );
+
+
+function TMarkdownLaTeXRenderer.CodeTokenCommand(aKind: TMarkdownCodeTokenKind): TMarkdownString;
+
+var
+  lName : TMarkdownString;
+
+begin
+  lName:=CodeTokenKindNames[aKind];
+  Result:='\MdTk'+UpCase(lName[1])+Copy(lName,2,Length(lName)-1);
+end;
+
+
+function TMarkdownLaTeXRenderer.EscapeCodeVerbatim(const aText: TMarkdownString): TMarkdownString;
+
+var
+  C : TMarkdownChar;
+
+begin
+  Result:='';
+  for C in aText do
+    case C of
+      '\' : Result:=Result+'\MdBs{}';
+      '{' : Result:=Result+'\MdLb{}';
+      '}' : Result:=Result+'\MdRb{}';
+    else
+      Result:=Result+C;
+    end;
+end;
+
+
+function TMarkdownLaTeXRenderer.CodeHighlightPreamble: TMarkdownString;
+
+var
+  lKind : TMarkdownCodeTokenKind;
+
+begin
+  Result:='\usepackage{fancyvrb}'+sLineBreak
+         +'\usepackage{xcolor}'+sLineBreak
+         +'\newcommand{\MdBs}{\char`\\}'+sLineBreak
+         +'\newcommand{\MdLb}{\char`\{}'+sLineBreak
+         +'\newcommand{\MdRb}{\char`\}}';
+  for lKind in TMarkdownCodeTokenKind do
+    if lKind<>ctkDefault then
+      Result:=Result+sLineBreak+'\newcommand{'+CodeTokenCommand(lKind)+'}[1]{'+CodeTokenLaTeX[lKind]+'}';
 end;
 
 
@@ -870,14 +953,34 @@ procedure TLaTeXMarkdownCodeBlockRenderer.DoRender(aElement : TMarkdownBlock);
 var
   lNode : TMarkdownCodeBlock absolute aElement;
   lBlock : TMarkdownBlock;
+  lTokens : TMarkdownCodeTokenArray;
+  lLine : TMarkdownCodeTokenArray;
+  lToken : TMarkdownCodeToken;
 begin
-  AppendNl('\begin{verbatim}');
-  for lBlock in LNode.Blocks do
+  if Renderer.HighlightCodeBlock(lNode,lTokens) then
     begin
-    Renderer.RenderCodeBlock(LBlock,lNode.Lang);
-    AppendNl;
+    AppendNl('\begin{Verbatim}[commandchars=\\\{\}]');
+    for lLine in SplitCodeTokenLines(lTokens) do
+      begin
+      for lToken in lLine do
+        if lToken.Kind=ctkDefault then
+          Append(LaTeXRenderer.EscapeCodeVerbatim(lToken.Text))
+        else
+          Append(LaTeXRenderer.CodeTokenCommand(lToken.Kind)+'{'+LaTeXRenderer.EscapeCodeVerbatim(lToken.Text)+'}');
+      AppendNl;
+      end;
+    AppendNl('\end{Verbatim}');
+    end
+  else
+    begin
+    AppendNl('\begin{verbatim}');
+    for lBlock in LNode.Blocks do
+      begin
+      Renderer.RenderCodeBlock(LBlock,lNode.Lang);
+      AppendNl;
+      end;
+    AppendNl('\end{verbatim}');
     end;
-  AppendNl('\end{verbatim}');
 end;
 
 class function TLaTeXMarkdownCodeBlockRenderer.BlockClass: TMarkdownBlockClass;
@@ -1026,6 +1129,23 @@ begin
 end;
 
 
+// True when aBlock is or contains a code block with a language.
+function ContainsCodeLanguage(aBlock : TMarkdownBlock) : Boolean;
+
+var
+  I : Integer;
+
+begin
+  Result:=(aBlock is TMarkdownCodeBlock) and (TMarkdownCodeBlock(aBlock).Lang<>'');
+  I:=0;
+  while not Result and (I<aBlock.ChildCount) do
+    begin
+    Result:=ContainsCodeLanguage(aBlock.Children[I]);
+    Inc(I);
+    end;
+end;
+
+
 procedure TLaTeXMarkdownDocumentRenderer.DoRender(aElement: TMarkdownBlock);
 var
   H : String;
@@ -1039,6 +1159,8 @@ begin
     AppendNL('\usepackage{ulem}'); // For strikethrough
     if ContainsAlert(aElement) then
       AppendNL('\newenvironment{mdalert}[2]{\par\noindent\textbf{#2}\par\begin{quote}}{\end{quote}}');
+    if LaTeXRenderer.CodeHighlight and Assigned(LaTeXRenderer.CodeHighlighter) and ContainsCodeLanguage(aElement) then
+      AppendNL(LaTeXRenderer.CodeHighlightPreamble);
 
     if LaTeXRenderer.Title<>'' then
       AppendNL('\title{' + LaTeXRenderer.EscapeLaTeX(LaTeXRenderer.Title) + '}');

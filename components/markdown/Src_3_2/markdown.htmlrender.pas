@@ -27,7 +27,8 @@ uses
 {$ENDIF}
   Markdown.Elements,
   Markdown.Render,
-  Markdown.Utils;
+  Markdown.Utils,
+  Markdown.CodeHighlight;
 
 type
   { TMarkdownHTMLRenderer }
@@ -203,6 +204,10 @@ type
 
   THTMLMarkdownCodeBlockRenderer = class(THTMLMarkdownBlockRenderer)
   protected
+    // CSS class for a token of kind aKind; empty for no span.
+    function CodeTokenClass(aKind : TMarkdownCodeTokenKind) : TMarkdownString; virtual;
+    // Write highlighted code tokens.
+    procedure RenderCodeTokens(const aTokens : TMarkdownCodeTokenArray); virtual;
     procedure DoRender(aElement : TMarkdownBlock); override;
   public
     class function BlockClass : TMarkdownBlockClass; override;
@@ -1198,11 +1203,40 @@ begin
   Result:=TMarkdownListItemBlock;
 end;
 
+function THTMLMarkdownCodeBlockRenderer.CodeTokenClass(aKind: TMarkdownCodeTokenKind): TMarkdownString;
+
+begin
+  if aKind=ctkDefault then
+    Result:=''
+  else
+    Result:=CodeTokenKindNames[aKind];
+end;
+
+
+procedure THTMLMarkdownCodeBlockRenderer.RenderCodeTokens(const aTokens: TMarkdownCodeTokenArray);
+
+var
+  lToken : TMarkdownCodeToken;
+  lText, lClass : TMarkdownString;
+
+begin
+  for lToken in aTokens do
+    begin
+    lText:=HtmlEscape(lToken.Text);
+    lClass:=CodeTokenClass(lToken.Kind);
+    if lClass<>'' then
+      lText:='<span class="'+lClass+'">'+lText+'</span>';
+    Append(lText);
+    end;
+end;
+
+
 procedure THTMLMarkdownCodeBlockRenderer.DoRender(aElement : TMarkdownBlock);
 var
   lNode : TMarkdownCodeBlock absolute aElement;
   lBlock : TMarkdownBlock;
   lLang : TMarkdownString;
+  lTokens : TMarkdownCodeTokenArray;
 begin
   lLang:=lNode.Lang;
   AppendNL('');
@@ -1211,11 +1245,14 @@ begin
     Append('<code class="language-'+lLang+'">')
   else
     Append('<code>');
-  for lBlock in LNode.Blocks do
-    begin
-    Renderer.RenderCodeBlock(LBlock,lLang);
-    AppendNl;
-    end;
+  if Renderer.HighlightCodeBlock(lNode,lTokens) then
+    RenderCodeTokens(lTokens)
+  else
+    for lBlock in LNode.Blocks do
+      begin
+      Renderer.RenderCodeBlock(LBlock,lLang);
+      AppendNl;
+      end;
   Append('</code></pre>');
   AppendNl;
 end;

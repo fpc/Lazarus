@@ -26,7 +26,8 @@ uses
   Classes, SysUtils, Contnrs,
 {$ENDIF}
   Markdown.Elements,
-  Markdown.Utils;
+  Markdown.Utils,
+  Markdown.CodeHighlight;
 
 Type
   TMarkdownElementRenderer = Class;
@@ -67,6 +68,8 @@ type
   TMarkdownRenderer = class(TComponent)
   private
     FSkipUnknownElements: Boolean;
+    FCodeHighlight: Boolean;
+    FCodeHighlighter: TMarkdownCodeHighlighter;
     FTextRenderer : TMarkdownTextRenderer;
     FRenderStack : TFPList;
     FAlertTitles : Array[TAlertType] of TMarkdownString;
@@ -77,6 +80,7 @@ type
     FOnResolveWikiLink: TMarkdownResolveWikiLinkEvent;
     function GetAlertTitle(aType : TAlertType): TMarkdownString;
     function GetParentElementRenderer: TMarkdownElementRenderer;
+    function GetCodeHighlighter: TMarkdownCodeHighlighter;
     procedure SetAlertTitle(aType : TAlertType; const aValue: TMarkdownString);
   protected
     function CreateRendererInstance(aClass : TMarkdownBlockRendererClass) : TMarkdownBlockRenderer; virtual;
@@ -108,10 +112,17 @@ type
     function GetHeadingNumber(aBlock : TMarkdownBlock) : TMarkdownString; virtual;
     // The label to write before the caption of table or figure aBlock, from OnCaptionNumber.
     function GetCaptionNumber(aBlock : TMarkdownBlock) : TMarkdownString; virtual;
+    // Split the lines of aBlock, each ended by sLineBreak, into tokens with CodeHighlighter. False when CodeHighlight is off,
+    // aBlock has no language, there is no highlighter or the highlighter does not support the language.
+    function HighlightCodeBlock(aBlock : TMarkdownCodeBlock; out aTokens : TMarkdownCodeTokenArray) : Boolean; virtual;
     // Title written above an alert of the given type.
     property AlertTitles[aType : TAlertType] : TMarkdownString read GetAlertTitle write SetAlertTitle;
+    // Highlighter for code blocks, not owned. When not set, TMarkdownCodeHighlighter.DefaultHighlighter.
+    property CodeHighlighter : TMarkdownCodeHighlighter read GetCodeHighlighter write FCodeHighlighter;
   published
     Property SkipUnknownElements : Boolean read FSkipUnknownElements Write FSkipUnknownElements;
+    // Highlight the code in code blocks with a language.
+    Property CodeHighlight : Boolean read FCodeHighlight write FCodeHighlight default True;
     // Called where a marker comment occurs.
     Property OnMarker : TMarkdownMarkerEvent read FOnMarker write FOnMarker;
     // Called for every link before it is written.
@@ -394,6 +405,7 @@ constructor TMarkdownRenderer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FRenderStack:=TFPList.Create;
+  FCodeHighlight:=True;
   FAlertTitles[atNote]:=StringToMarkdown(SAlertNote);
   FAlertTitles[atTip]:=StringToMarkdown(SAlertTip);
   FAlertTitles[atImportant]:=StringToMarkdown(SAlertImportant);
@@ -414,6 +426,38 @@ procedure TMarkdownRenderer.SetAlertTitle(aType : TAlertType; const aValue: TMar
 
 begin
   FAlertTitles[aType]:=aValue;
+end;
+
+
+function TMarkdownRenderer.GetCodeHighlighter: TMarkdownCodeHighlighter;
+
+begin
+  Result:=FCodeHighlighter;
+  if Result=Nil then
+    Result:=TMarkdownCodeHighlighter.DefaultHighlighter;
+end;
+
+
+function TMarkdownRenderer.HighlightCodeBlock(aBlock: TMarkdownCodeBlock; out aTokens: TMarkdownCodeTokenArray): Boolean;
+
+var
+  lHighlighter : TMarkdownCodeHighlighter;
+  lBlock : TMarkdownBlock;
+  lSource : TMarkdownString;
+
+begin
+  aTokens:=[];
+  Result:=False;
+  if not CodeHighlight or (aBlock.Lang='') then
+    Exit;
+  lHighlighter:=CodeHighlighter;
+  if lHighlighter=Nil then
+    Exit;
+  lSource:='';
+  for lBlock in aBlock.Blocks do
+    if lBlock is TMarkdownTextBlock then
+      lSource:=lSource+TMarkdownTextBlock(lBlock).Text+sLineBreak;
+  Result:=lHighlighter.Highlight(aBlock.Lang,lSource,aTokens);
 end;
 
 
