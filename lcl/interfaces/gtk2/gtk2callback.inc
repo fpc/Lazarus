@@ -1731,6 +1731,22 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+Returns True, if LCL will show a context menu for this control, i.e. the
+control itself or one of its parents has a PopupMenu.
+-------------------------------------------------------------------------------}
+function gtk2ControlWantsContextMenu(AControl: TControl): boolean;
+begin
+  Result := True;
+  while AControl <> nil do
+  begin
+    if AControl.PopupMenu <> nil then
+      Exit;
+    AControl := AControl.Parent;
+  end;
+  Result := False;
+end;
+
+{-------------------------------------------------------------------------------
   gtkMouseBtnPress
   Params: widget: PGTKWidget; event: PGDKEventMotion; data: gPointer
   Returns: GBoolean
@@ -1851,28 +1867,31 @@ begin
           FixTabControlFocusBehaviour;
     end
     else
-    // if LCL process LM_CONTEXTMENU then stop the event propagation
+    // The context menu is delivered on button release, see gtkMouseBtnRelease
     if (Event^.button = 3) then
     begin
-      Result:=DeliverContextMenuMessage(widget,true);
-
-      {emit selection change when right mouse button pressed
-       otherwise LCL is not updated since ChangeLock = 1 in case
-       of pressing right mouse button and 'changed' signal never reach lcl.
-       Issues #16972, #17888. }
-      if Result and GTK_IS_TREE_VIEW(Widget) and (event^.button = 3) then
+      // Consume the button press, otherwise gtk widgets with a built-in
+      // context menu (e.g. GtkEntry, GtkTextView) show their own menu.
+      if gtk2ControlWantsContextMenu(TControl(Data)) then
       begin
-        Column := gtk_tree_view_get_column(GTK_TREE_VIEW(Widget), 0);
-        Path:=nil;
-        if gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(Widget), Round(Event^.x), Round(Event^.y),
-          Path, Column, @x, @y) then
-        begin
-          gtk_tree_view_set_cursor(GTK_TREE_VIEW(Widget), Path, Column, False);
-          gtk_widget_queue_draw(Widget);
-        end;
-        StopSignal:=true;
-      end;
+        StopSignal := True;
 
+        {emit selection change when right mouse button pressed
+         otherwise LCL is not updated since ChangeLock = 1 in case
+         of pressing right mouse button and 'changed' signal never reach lcl.
+         Issues #16972, #17888. }
+        if GTK_IS_TREE_VIEW(Widget) then
+        begin
+          Column := gtk_tree_view_get_column(GTK_TREE_VIEW(Widget), 0);
+          Path:=nil;
+          if gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(Widget), Round(Event^.x), Round(Event^.y),
+            Path, Column, @x, @y) then
+          begin
+            gtk_tree_view_set_cursor(GTK_TREE_VIEW(Widget), Path, Column, False);
+            gtk_widget_queue_draw(Widget);
+          end;
+        end;
+      end;
     end;
   end else begin
     if (event^.Button=1) and
@@ -2350,12 +2369,15 @@ begin
   end else
     ReleaseMouseCapture;
 
-  if (csDesigning in TComponent(Data).ComponentState) then
+  // The context menu is shown on button release, so that the modal popup menu
+  // is not opened while the button is still down: otherwise the release that
+  // belongs to the press would activate the item below the mouse cursor.
+  if (Event^.button = 3) then
   begin
-    if (Event^.button = 3) then
-    begin
-      Result:=DeliverContextMenuMessage(widget,false);
-    end;
+    if (csDesigning in TComponent(Data).ComponentState) then
+      Result := DeliverContextMenuMessage(widget, False)
+    else if DeliverContextMenuMessage(widget, True) then
+      Result := not CallBackDefaultReturn;
   end;
 end;
 
