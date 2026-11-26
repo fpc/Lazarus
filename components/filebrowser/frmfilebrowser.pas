@@ -6,7 +6,7 @@ interface
 
 uses
   {$IFDEF MSWINDOWS} Windows, {$ENDIF}
-  Classes, SysUtils,
+  Classes, SysUtils, Contnrs,
   // LCL
   LCLType, Forms, Controls, Dialogs, FileCtrl, ComCtrls, StdCtrls, ExtCtrls,
   // LazUtils
@@ -54,6 +54,7 @@ type
     FOnOpenFile: TOpenFileEvent;
     FOnSelectDir: TNotifyEvent;
     FRoot : TFileSystemEntry;
+    FDriveEntries : TFPObjectList;
     FCurrentDir: string;
     FRootDir: string;
     FShowHidden: Boolean;
@@ -206,6 +207,7 @@ end;
 procedure TFileBrowserForm.FormCreate(Sender: TObject);
 begin
   FShowHidden := False;
+  FDriveEntries := TFPObjectList.Create(True);
   InitializeTreeview;
   cbFilePanel.Filter := cFilter;
   cbTreeFilter.Filter := cFilter;
@@ -214,6 +216,8 @@ end;
 procedure TFileBrowserForm.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FRoot);
+  FreeAndNil(FDriveEntries);
+  FreeAndNil(FSelectedMask);
 end;
 
 procedure TFileBrowserForm.FormShow(Sender: TObject);
@@ -536,6 +540,7 @@ var
   DriveEntry : TDirectoryEntry;
 
 begin
+  FDriveEntries.Clear;
   // making drive list, skipping drives A: and B: and Removable Devices without media
   n := 2;
   while n <= MAX_DRIVES do
@@ -545,6 +550,7 @@ begin
     (GetDiskFreeSpaceEx(PChar(drvs), nil, nil, nil)) then
       begin
       DriveEntry:=TDirectoryEntry.Create(Nil,drvs);
+      FDriveEntries.Add(DriveEntry);
       AddNode(Nil,DriveEntry);
       end;
     Inc(n);
