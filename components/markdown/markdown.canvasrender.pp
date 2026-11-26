@@ -71,7 +71,7 @@ type
     FLineIndex: Integer;
     FSoftBreak: Boolean;
   protected
-    function GetColor(aKind : TColorKind; aDefault : TColor) : TColor;
+    function GetColor(aKind : TColorKind; aDefault : TColor) : TColor; virtual;
   public
     constructor Create(aKind : TLayoutItemKind; aX,aY : Longint);
     property Kind: TLayoutItemKind read FKind;
@@ -105,8 +105,8 @@ type
   private
     function GetItem(const aIndex: LongInt): TLayoutItem;
   public
-    function NewItem: TLayoutItem;
-    function NewItem(aKind: TLayoutItemKind; aX, aY: Integer): TLayoutItem;
+    function NewItem: TLayoutItem; 
+    function NewItem(aKind: TLayoutItemKind; aX, aY: Integer): TLayoutItem; virtual;
     property Items[const Index: LongInt]: TLayoutItem read GetItem; default;
   end;
 
