@@ -4590,7 +4590,8 @@ begin
   if ACommand in [dcRun, dcStop, dcStepIntoInstr, dcStepOverInstr,
                   dcStepTo, dcRunTo, dcStepOver, dcStepInto, dcStepOut, dcContinueLastStep, dcDetach]
   then begin
-    if FDbgController.IsRunning then begin // don't wait forever if a "watch-function-call" does not stop (endless loop in function)
+    // don't wait forever if a "watch-function-call" does not stop (endless loop in function)
+    if (State in [dsPause, dsInternalPause]) and FDbgController.IsRunning then begin
       if (ACommand = dcStop) and (not FDbgController.IsTerminating) then begin
         FDbgController.Stop; // stop exe and with that the watch eval
         StopAllWorkers(True);
