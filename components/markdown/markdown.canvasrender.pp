@@ -223,6 +223,7 @@ type
     FTableCellPaddingX: Integer;
     FTableCellPaddingY: Integer;
     FBaseLineHeight: LongInt;
+    FRunColor: TColor;
     FAscentCache: array of TAscentCacheEntry;
     procedure SetBaseDir(const aValue: string);
   Protected
@@ -299,6 +300,8 @@ type
     Property Layout : TLayoutData read FLayout;
     // Items of the current layout
     Property LayoutItems : TLayoutItemList read FLists.Items;
+    // Text color of the items created by FlushTextRun; clNone uses the color of the font context.
+    Property RunColor : TColor read FRunColor write FRunColor;
   public
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
@@ -681,6 +684,7 @@ begin
   FBullets[3]:='▪';
   FBulletLevel:=0;
   FImageMargin:=2;
+  FRunColor:=clNone;
   FLists.Items:=TLayoutItemList.Create;
   FLists.LinkRects:=TLinkHitRectList.Create;
 
@@ -1383,6 +1387,7 @@ begin
     Item.FontStyle:=aFontStyle;
     Item.URL:=aLinkHref;
     Item.Context:=aContext;
+    Item.Color:=FRunColor;
     if length(aLinkHref)<>0 then
       FLists.LinkRects.Add(lX, lY, lWidth, lHeight, aLinkHref);
     end;
