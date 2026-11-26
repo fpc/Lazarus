@@ -71,6 +71,7 @@ type
     FCurrentVariable: TFPReportVariable;
     FValueControls : Array[TResultType] of TControl;
     procedure CheckExpression;
+    function CheckResetExpression: Boolean;
     procedure CheckResetType;
     procedure FillExpressionsList;
     function GetCurrentIsExpression: Boolean;
@@ -105,6 +106,7 @@ Resourcestring
   SAllowedChars2   = 'The first character must be a letter or underscore';
   SErrIllegalVariableName = 'The variable name %s is not a legal variable name.';
   SWarnDuplicateVariableName = 'The variable name %s already exists.';
+  SErrEmptyGroupReset = 'The variable %s is reset on a group change: please select a reset trigger.';
 
 { TReportVariablesForm }
 
@@ -139,8 +141,12 @@ end;
 procedure TReportVariablesForm.LBVariablesSelectionChange(Sender: TObject;
   User: boolean);
 begin
-  if User then
-    SetCurrentVariableFromList;
+  if not User then
+    exit;
+  if CheckResetExpression then
+    SetCurrentVariableFromList
+  else
+    LBVariables.ItemIndex:=LBVariables.Items.IndexOfObject(FCurrentVariable);
 end;
 
 procedure TReportVariablesForm.DoAddVariable(Sender: TObject);
@@ -152,6 +158,8 @@ Var
   I : Integer;
 
 begin
+  if not CheckResetExpression then
+    exit;
   I:=Variables.Count;
   Repeat
     Inc(I);
@@ -190,8 +198,9 @@ end;
 procedure TReportVariablesForm.FormCloseQuery(Sender: TObject;
   var CanClose: boolean);
 begin
-  SaveCurrentVariable;
-  CanClose:=True;
+  CanClose:=(ModalResult<>mrOK) or CheckResetExpression;
+  if CanClose then
+    SaveCurrentVariable;
 end;
 
 procedure TReportVariablesForm.ADeleteVariableUpdate(Sender: TObject);
@@ -297,6 +306,19 @@ begin
               CBResetExpression.Text:=''
   end;
 end;
+
+function TReportVariablesForm.CheckResetExpression: Boolean;
+
+begin
+  Result:=not (Assigned(FCurrentVariable) and CurrentIsExpression
+               and (CurrentResetType=rtGroup) and (Trim(CBResetExpression.Text)=''));
+  if Result then
+    exit;
+  ShowMessage(Format(SErrEmptyGroupReset,[EName.Text]));
+  if CBResetExpression.CanFocus then
+    CBResetExpression.SetFocus;
+end;
+
 
 procedure TReportVariablesForm.CheckExpression;
 
