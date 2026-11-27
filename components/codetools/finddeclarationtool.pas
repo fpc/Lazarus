@@ -2193,7 +2193,6 @@ var
   ident: string;
 begin
   Result:=GenExpr;
-  exit;
   if GenExpr='' then exit;
   if Count=0 then exit;
   if (SpecializedType<>'') and

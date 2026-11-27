@@ -711,8 +711,8 @@ begin
               [phpWithoutClassName,phpWithoutName,phpWithVarModifiers,
                phpWithParameterNames,phpWithDefaultValues,phpWithResultType,
                phpWithOfObject,phpWithoutSemicolon]);
-            if IdentItem.Specialized.Used then
-              s:=IdentItem.Specialized.SubstituteGenericItems(s,'');
+            //if IdentItem.Specialized.Used then
+            //  s:=IdentItem.Specialized.SubstituteGenericItems(s,'');
           except
             // ignore, show funciton name without header
           end;
@@ -723,16 +723,16 @@ begin
           s:=IdentItem.Tool.ExtractProperty(ItemNode,
             [phpWithoutName,phpWithVarModifiers,
              phpWithParameterNames,phpWithDefaultValues,phpWithResultType]);
-          if IdentItem.Specialized.Used then
-            s:=IdentItem.Specialized.SubstituteGenericItems(s,'');
+          //if IdentItem.Specialized.Used then
+          //  s:=IdentItem.Specialized.SubstituteGenericItems(s,'');
         end;
 
       ctnVarDefinition:
         begin
           ANode:=IdentItem.Tool.FindTypeNodeOfDefinition(ItemNode);
           s:=' : '+IdentItem.Tool.ExtractNode(ANode,[]);
-          if IdentItem.Specialized.Used then
-            s:=IdentItem.Specialized.SubstituteGenericItems(s,'');
+          //if IdentItem.Specialized.Used then
+          //  s:=IdentItem.Specialized.SubstituteGenericItems(s,'');
         end;
 
       ctnTypeDefinition:
@@ -774,8 +774,8 @@ begin
             else
               begin
                 s:=s+IdentItem.Tool.ExtractNode(ANode,[]);
-                if (ANode.Desc=ctnSpecialize) and IdentItem.Specialized.Used then
-                  s:=IdentItem.Specialized.SubstituteGenericItems(s,'');
+                //if (ANode.Desc=ctnSpecialize) and IdentItem.Specialized.Used then
+                //  s:=IdentItem.Specialized.SubstituteGenericItems(s,'');
               end;
             end;
           end else
