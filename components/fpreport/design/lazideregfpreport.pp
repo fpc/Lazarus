@@ -94,6 +94,7 @@ Uses
   frmfpreportalignelements,
   regfpdesigner,
   LResources,
+  PropEdits,
   frmideselectreportdata;
 
 
@@ -400,6 +401,8 @@ begin
     4 : SaveReport;
     5 : LoadReport;
   end;
+  if Assigned(GlobalDesignHook) then
+    GlobalDesignHook.RefreshPropertyValues;
 end;
 
 function TFPReportComponentEditor.GetVerb(Index: Integer): string;
