@@ -1409,6 +1409,8 @@ begin
                            EnvironmentOptions.GetParsedLazarusDirectory,
                            EnvironmentOptions.LanguageID);
   UpdateCaptions;
+  // The debugger frame was created and captioned before the translation was loaded
+  FInitDebuggerFrame.UpdateCaptions;
 end;
 
 constructor TInitialSetupDialog.Create(TheOwner: TComponent);
