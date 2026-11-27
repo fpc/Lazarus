@@ -165,7 +165,7 @@ type
   TGridFlagsOption = (gfEditorUpdateLock, gfNeedsSelectActive, gfEditorTab,
     gfRevEditorTab, gfVisualChange, gfColumnsLocked,
     gfEditingDone, gfSizingStarted, gfPainting, gfUpdatingSize, gfClientRectChange,
-    gfAutoEditPending, gfUpdatingScrollbar);
+    gfAutoEditPending, gfUpdatingScrollbar, gfDeselecting);
   TGridFlags = set of TGridFlagsOption;
 
   TSortOrder = (soAscending, soDescending);
@@ -1166,6 +1166,7 @@ type
     procedure PrepareCanvas(aCol,aRow: Integer; aState:TGridDrawState); virtual;
     procedure PrepareCellHints(ACol, ARow: Integer); virtual;
     function  RangeContains(const ARange: TGridRect; ACol, ARow: Integer): Boolean;
+    procedure RemoveRowFromSelectionRange(const ARow: Integer);
     procedure ResetDefaultColWidths; virtual;
     procedure ResetEditor;
     procedure ResetLastMove;
@@ -4125,6 +4126,101 @@ begin
   RowHeights[aRow] := aHeight;
 end;
 
+procedure TCustomGrid.RemoveRowFromSelectionRange(const ARow: Integer);
+  function splitRectAtRow(const ARect: TGridRect): TGridRectArray;
+  begin
+    if ARect.Height = 0 then begin
+      SetLength(Result, 0);
+    end else if ARow = ARect.Top then begin
+      SetLength(Result, 1);
+      Result[0]:= Rect(ARect.Left, ARect.Top+1, ARect.Right, ARect.Bottom);
+    end else if ARow = Arect.Bottom then begin;
+      SetLength(Result, 1);
+      Result[0]:= Rect(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom-1);
+    end else begin
+      SetLength(Result, 2);
+      Result[0]:= Rect(ARect.Left, ARect.Top, ARect.Right, ARow-1);
+      Result[1]:= Rect(ARect.Left, ARow+1, ARect.Right, ARect.Bottom);
+    end;
+  end;
+
+  procedure doRange;
+  var
+    splitRect: TGridRectArray;
+    selectionsLength: Integer;
+  begin
+    splitRect:= splitRectAtRow(FRange);
+    selectionsLength:= Length(FSelections);
+    case Length(splitRect) of
+      0: begin
+        // there was only one row in FRange, and even that was removed.
+        // then move the last item of FSelections to become FRange
+        if Length(FSelections) > 0 then begin
+          FRange:= FSelections[selectionsLength-1];
+          Delete(FSelections, selectionsLength-1, 1);
+        end else begin
+          FRow:= -1;
+          UpdateSelectionRange;
+        end;
+      end;
+      1: begin
+        // the removed row happens to be the first/last row, the result
+        // remains only one rectangle, it becomes the new FRangge
+        FRange:= splitRect[0];
+      end;
+      2: begin
+        // FRange is split into two rectangles,
+        // the first one is moved into FSelections,
+        // while the second one becomes FRange.
+        Insert(splitRect[0], FSelections, selectionsLength);
+        FRange:= splitRect[1];
+      end;
+    end;
+  end;
+
+  procedure doSelections;
+  var
+    splitRect: TGridRectArray;
+    i: Integer;
+  begin
+    for i:=Low(FSelections) to High(FSelections) do begin
+      if NOT ((FSelections[i].Top <= ARow) and (ARow <= FSelections[i].Bottom)) then
+        continue;
+      splitRect:= splitRectAtRow(FSelections[i]);
+      case Length(splitRect) of
+        0: begin
+          // there was only one row in the current Selection, and even that was removed.
+          // remove the Selection from FSelections
+          Delete(FSelections, i, 1);
+        end;
+        1: begin
+          // the removed row happens to be the first/last row, the result
+          // remains only one rectangle, it becomes the new Selection
+          FSelections[i]:= splitRect[0];
+        end;
+        2: begin
+          // the current Selection is split into two rectangles,
+          // update them to FSelections
+          FSelections[i]:= splitRect[0];
+          Insert(splitRect[1], FSelections, i+1);
+        end;
+      end;
+      // should Break here?
+    end;
+  end;
+
+begin
+  if (FRange.Top <= ARow) and (ARow <= FRange.Bottom) then
+    doRange
+  else
+    doSelections;
+
+  if FRow = ARow then
+    FRow:= -1;
+
+  Invalidate;
+end;
+
 procedure TCustomGrid.HeaderSizing(const IsColumn: boolean; const AIndex,
   ASize: Integer);
 begin
@@ -6993,14 +7089,29 @@ begin
             if ssShift in Shift then
               SelectActive:=(goRangeSelect in Options)
             else begin
-              if (goRangeSelect in Options) and (FRangeSelectMode = rsmMulti)
-                and not IsCellSelected[FGCache.ClickCell.X, FGCache.ClickCell.Y] then
+              if goRangeSelect in Options then
               begin
-                if (MULTISEL_MODIFIER in Shift) then
-                  AddSelectedRange
-                else begin
-                  ClearSelections;
-                  Invalidate;
+                if not IsCellSelected[FGCache.ClickCell.X, FGCache.ClickCell.Y] then
+                begin
+                  if FRangeSelectMode = rsmMulti then
+                  begin
+                    if (MULTISEL_MODIFIER in Shift) then
+                      AddSelectedRange
+                    else begin
+                      ClearSelections;
+                      Invalidate;
+                    end;
+                  end;
+                end
+                else if goRowSelect in Options then
+                begin
+                  if MULTISEL_MODIFIER in Shift then begin
+                    // Ctrl/Cmd + Click on an Selected row
+                    // and Shift is not pressed
+                    // goRangeSelect/goRowSelect enabled
+                    Include(FGridFlags, gfDeselecting);
+                    Exit;
+                  end;
                 end;
               end;
 
@@ -7156,7 +7267,10 @@ begin
 
     gsSelecting:
       begin
-        if SelectActive then
+        if gfDeselecting in GridFlags then begin
+          RemoveRowFromSelectionRange(FGCache.ClickCell.Y);
+          Exclude(FGridFlags, gfDeselecting);
+        end else if SelectActive then
           MoveExtend(False, Cur.x, Cur.y, False)
         else begin
           doAutoEdit;
