@@ -188,6 +188,7 @@ type
     procedure FrameStateChanged(AnSender: ISetupDlgFrame; AState: TInitSetupDlgFrameState; AnAction: TInitSetupDlgFrameAction);
     procedure SetGroupCaption(AGroupId, AName: String);
     procedure UpdateCaptions;
+    procedure AddSetupDlgFrames;
     procedure SelectPage(const ATreeNode: TTreeNode; AnUserSelect: Boolean = False);
     function SelectDirectory(aTitle: string): string;
     function SelectDirectory(aTitle: string; aPathFileName: string;
@@ -430,17 +431,6 @@ end;
 { TInitialSetupDialog }
 
 procedure TInitialSetupDialog.FormCreate(Sender: TObject);
-var
-  FrameList: TSetupDlgFrameList;
-  i, GrpIdx: Integer;
-  NewNode: TTreeNode;
-  NewTab: TTabSheet;
-  ScrollBox: TScrollBox;
-  NewParent: TWinControl;
-  CurFrame: ISetupDlgFrame;
-  Info, GrpInfo: TSetupFrameInfo;
-  Grp: String;
-  NewDiv: TDividerBevel;
 begin
   LazarusTabSheet.Caption:='Lazarus';
   CompilerTabSheet.Caption:=lisCompiler;
@@ -479,6 +469,24 @@ begin
 
   IDEImages.AssignImage(StopScanButton, 'menu_stop');
 
+  UpdateCaptions;
+
+  Application.AddOnActivateHandler(@OnAppActivate);
+end;
+
+procedure TInitialSetupDialog.AddSetupDlgFrames;
+var
+  FrameList: TSetupDlgFrameList;
+  i, GrpIdx: Integer;
+  NewNode: TTreeNode;
+  NewTab: TTabSheet;
+  ScrollBox: TScrollBox;
+  NewParent: TWinControl;
+  CurFrame: ISetupDlgFrame;
+  Info, GrpInfo: TSetupFrameInfo;
+  Grp: String;
+  NewDiv: TDividerBevel;
+begin
   FrameList := SetupDlgFrameList;
   FrameList.Sort(@DoCompFrameList);
   DisableAutoSizing;
@@ -565,10 +573,6 @@ begin
   finally
     EnableAutoSizing;
   end;
-
-  UpdateCaptions;
-
-  Application.AddOnActivateHandler(@OnAppActivate);
 end;
 
 procedure TInitialSetupDialog.CompilerComboBoxChange(Sender: TObject);
@@ -1409,6 +1413,8 @@ begin
                            EnvironmentOptions.GetParsedLazarusDirectory,
                            EnvironmentOptions.LanguageID);
   UpdateCaptions;
+  // The debugger frame was created and captioned before the translation was loaded
+  FInitDebuggerFrame.UpdateCaptions;
 end;
 
 constructor TInitialSetupDialog.Create(TheOwner: TComponent);
@@ -1574,6 +1580,9 @@ begin
     UpdateFppkgNote;
   end;
 
+  // Package frames take their captions from resourcestrings, so they are
+  // added after the translation was loaded above
+  AddSetupDlgFrames;
   for i := 0 to SetupDlgFrameList.Count - 1 do
     SetupDlgFrameList[i].Init;
   for i := 0 to SetupDlgFrameList.Count - 1 do

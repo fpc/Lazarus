@@ -81,6 +81,7 @@ type
     function GetDebuggerPathNote(out ANote: String): TSDFilenameQuality;
   public
     procedure Init;
+    procedure UpdateCaptions;
     function UpdateState: TSDFilenameQuality;
     procedure ApplySelection;
 
@@ -519,7 +520,6 @@ end;
 
 procedure TInitDebuggerFrame.Init;
 var
-  r: TDebuggerIntfClass;
   i: Integer;
   c: TDebuggerPropertiesConfig;
 begin
@@ -529,16 +529,9 @@ begin
     FCurDbgCfg := DebuggerOptions.CurrentDebuggerPropertiesConfig;
     FPathDbgCfg := TDebuggerPropertiesConfig(-1);
 
-    r := RecommendedClass;
-
-    btnBrowse.Caption:=lisPathEditBrowse;
     SpeedButton1.Images := IDEImages.Images_16;
     SpeedButton1.ImageIndex := IDEImages.LoadImage('btn_help');
-
-    lbAboutDebugger.Caption := Format(
-      InitDlgDebugHeaderDefaultForYourOSArchIsS,
-      [ r.Caption ]
-    );
+    UpdateCaptions;
 
     if FCurDbgCfg <> nil then begin
       edDebuggerName.Caption := FCurDbgCfg.DisplayName;
@@ -561,12 +554,6 @@ begin
       cmbDebuggerName.ItemIndex := i;
       FSelDbgCfg := TDebuggerPropertiesConfig(cmbDebuggerName.Items.Objects[i]);
     end;
-
-    rbKeep.Caption              := InitDlgDebugKeepBackend;
-    rbChangePath.Caption        := InitDlgDebugChangePath;
-    rbCreateNew.Caption         := InitDlgDebugCreateANewRecommendedBack;
-    rbChange.Caption            := InitDlgDebugSelectAnExistingBackend;
-    rbIgnore.Caption            := InitDlgDebugIgnore;
 
     case FCurrentState of
       cdsOk: begin
@@ -606,6 +593,20 @@ begin
   finally
     dec(FInChangeLock);
   end;
+end;
+
+procedure TInitDebuggerFrame.UpdateCaptions;
+begin
+  btnBrowse.Caption := lisPathEditBrowse;
+  lbAboutDebugger.Caption := Format(
+    InitDlgDebugHeaderDefaultForYourOSArchIsS,
+    [ RecommendedClass.Caption ]
+  );
+  rbKeep.Caption              := InitDlgDebugKeepBackend;
+  rbChangePath.Caption        := InitDlgDebugChangePath;
+  rbCreateNew.Caption         := InitDlgDebugCreateANewRecommendedBack;
+  rbChange.Caption            := InitDlgDebugSelectAnExistingBackend;
+  rbIgnore.Caption            := InitDlgDebugIgnore;
 end;
 
 function TInitDebuggerFrame.UpdateState: TSDFilenameQuality;
