@@ -2437,13 +2437,7 @@ begin
   if HasCaret then
   begin
     ACaret := TGtk3Caret(g_object_get_data(PGObject(getContainerWidget),'gtk3-caret'));
-    if ACaret.RespondToFocus then
-    begin
-      if Msg.Msg = LM_SETFOCUS then
-        ACaret.Show
-      else
-        ACaret.Hide;
-    end;
+    ACaret.FocusChanged(Msg.Msg = LM_SETFOCUS);
   end;
 
   LContainer := GetContainerWidget;
@@ -5255,8 +5249,8 @@ begin
         if HasCaret then
         begin
           ACaret := TGtk3Caret(g_object_get_data(PGObject(getContainerWidget),'gtk3-caret'));
-          if Assigned(ACaret) and ACaret.RespondToFocus then
-            ACaret.Show;
+          if Assigned(ACaret) then
+            ACaret.FocusChanged(True);
         end;
         if Assigned(APopupForm) and (Screen.FocusedForm <> APopupForm) and
           APopupForm.HandleAllocated and APopupForm.Active then
@@ -5306,8 +5300,8 @@ begin
         if HasCaret then
         begin
           ACaret := TGtk3Caret(g_object_get_data(PGObject(getContainerWidget),'gtk3-caret'));
-          if Assigned(ACaret) and ACaret.RespondToFocus then
-            ACaret.Show;
+          if Assigned(ACaret) then
+            ACaret.FocusChanged(True);
         end;
       finally
         Gtk3WidgetSet.MsgActivationLevel := Gtk3WidgetSet.MsgActivationLevel - 1;

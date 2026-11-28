@@ -37,17 +37,21 @@ type
     FWidth: Integer;
     FHeight: Integer;
     FRespondToFocus: Boolean;
+    FFocusHidden: Boolean;
     FPosChanging: boolean;
     procedure BlinkTimerCallback;
     procedure RepaintLayoutCaret(const ARect: TRect);
     procedure StartBlinking;
     procedure StopBlinking;
     procedure SetRespondToFocus(const ARespond: Boolean);
+    procedure InternalShow;
+    function OwnerHasFocus: Boolean;
   public
     constructor Create(AOwner: PGtkWidget; AWidth, AHeight: Integer);
     destructor Destroy; override;
     procedure Show;
     procedure Hide;
+    procedure FocusChanged(const AFocused: Boolean);
     procedure CairoDrawCaret(cr: Pcairo_t);
     procedure SetPosition(const X, Y: Integer); //Set x and y at once and call one redraw for both.
     procedure SetBlinkInterval(const AInterval: Integer);
@@ -190,8 +194,9 @@ begin
   FPosChanging := False;
 end;
 
-procedure TGtk3Caret.Show;
+procedure TGtk3Caret.InternalShow;
 begin
+  FFocusHidden := False;
   if FVisible then Exit;
   FVisible := True;
   FBlinkState := not FBlinkState;
@@ -199,12 +204,49 @@ begin
   RedrawCaret;
 end;
 
+function TGtk3Caret.OwnerHasFocus: Boolean;
+var
+  W: TGtk3Widget;
+begin
+  if not Assigned(FOwner) then
+    exit(True);
+  Result := FOwner^.has_focus;
+  if Result then
+    exit;
+  W := TGtk3Widget(HwndFromGtkWidget(FOwner));
+  Result := Assigned(W) and Assigned(W.Widget) and W.Widget^.has_focus;
+end;
+
+procedure TGtk3Caret.Show;
+begin
+  if FRespondToFocus and not FVisible and not OwnerHasFocus then
+    FFocusHidden := True
+  else
+    InternalShow;
+end;
+
 procedure TGtk3Caret.Hide;
 begin
+  FFocusHidden := False;
   if not FVisible then Exit;
   FBlinkState := not FBlinkState;
   RedrawCaret;
   FVisible := False;
+end;
+
+procedure TGtk3Caret.FocusChanged(const AFocused: Boolean);
+begin
+  if not FRespondToFocus then Exit;
+  if AFocused then
+  begin
+    if FFocusHidden then
+      InternalShow;
+  end else
+  if FVisible then
+  begin
+    Hide;
+    FFocusHidden := True;
+  end;
 end;
 
 procedure TGtk3Caret.CairoDrawCaret(cr: Pcairo_t);
@@ -267,6 +309,8 @@ begin
   if FRespondToFocus = ARespond then Exit;
 
   FRespondToFocus := ARespond;
+  if not FRespondToFocus and FFocusHidden then
+    InternalShow;
 end;
 
 end.
