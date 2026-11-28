@@ -246,6 +246,9 @@ procedure TReportFontPropertyEditor.Edit;
 var
   FontDialog: TFontDialog;
   R : TFPReportFont;
+{$IF DECLARED(feUnderline)}
+  lEffects : TFPReportFontEffects;
+{$ENDIF}
 
 begin
   FontDialog := TFontDialog.Create(nil);
@@ -254,12 +257,24 @@ begin
     FontDialog.Font.Name := PostScriptNameToFontName(R.Name);
     FontDialog.Font.Size:=R.Size;
     FontDialog.Font.Color:=TFPReportExportCanvas.RGBtoBGR(R.Color);
+    {$IF DECLARED(feUnderline)}
+    FontDialog.Font.Underline:=feUnderline in R.Effects;
+    FontDialog.Font.StrikeThrough:=feStrikeThrough in R.Effects;
+    {$ENDIF}
     FontDialog.Options := FontDialog.Options + [fdShowHelp, fdForceFontExist];
     if FontDialog.Execute then
       begin
       R.Name:=FontNameToPostScriptName(FontDialog.Font.Name,FontDialog.Font.Bold,FontDialog.Font.Italic);
       R.Size:=FontDialog.Font.Size;
       R.Color:=TFPReportExportCanvas.BGRToRGB(FontDialog.Font.Color);
+      {$IF DECLARED(feUnderline)}
+      lEffects:=[];
+      if FontDialog.Font.Underline then
+        Include(lEffects,feUnderline);
+      if FontDialog.Font.StrikeThrough then
+        Include(lEffects,feStrikeThrough);
+      R.Effects:=lEffects;
+      {$ENDIF}
       end;
   finally
     FontDialog.Free;

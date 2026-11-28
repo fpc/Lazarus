@@ -576,6 +576,12 @@ begin
     txtblk := lMemo.TextBlockList[i];
     Canvas.Font := GetFont(txtblk.FontName);
     Canvas.Font.Height := -Round(lMemo.Font.Size * Zoom * VDPI / 72);
+    {$IF DECLARED(feUnderline)}
+    if feUnderline in lMemo.Font.Effects then
+      Canvas.Font.Style := Canvas.Font.Style + [TFontStyle.fsUnderline];
+    if feStrikeThrough in lMemo.Font.Effects then
+      Canvas.Font.Style := Canvas.Font.Style + [TFontStyle.fsStrikeOut];
+    {$ENDIF}
     if not Canvas.GetTextMetrics(lTM) then
       lTM.Ascender := Canvas.TextHeight('Hg');
 
