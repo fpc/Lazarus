@@ -1070,14 +1070,21 @@ begin
 end;
 
 function TDbgLinuxProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread; SingleStep: boolean): boolean;
-  function CheckNoError: Boolean;
+  function CheckNoError(t: TDbgThread = nil): Boolean;
   var
     e: integer;
   begin
     e := fpgeterrno;
     Result := e = 0;
-    if not Result then
+    if not Result then begin
       DebugLn(DBG_WARNINGS, 'Failed to continue process. Errcode: '+inttostr(e));
+      if (e = ESysECHILD) and (t <> nil) then begin
+        // Controller.ProcessLoop currently does not check the result of Continue.
+        // mark the thread, and the next AnalyseDebugEvent will deal with it
+        TDbgLinuxThread(AThread).FHasExited := true;
+        TDbgLinuxThread(AThread).FIsPaused := true;
+      end;
+    end;
   end;
 
 var
@@ -1099,7 +1106,7 @@ begin
     AThread.BeforeContinue;
     fpPTrace(PTRACE_KILL, AThread.ID, pointer(1), nil);
     TDbgLinuxThread(AThread).ResetPauseStates;
-    Result := CheckNoError;
+    Result := CheckNoError(AThread);
     exit;
   end;
   if assigned(AThread) and not FThreadMap.HasId(AThread.ID) then begin
@@ -1136,7 +1143,7 @@ begin
 
           TDbgLinuxThread(ThreadToContinue).ResetPauseStates;
           ThreadToContinue.FIsPaused := True;
-          if CheckNoError then begin
+          if CheckNoError(ThreadToContinue) then begin
             PID := fpWaitPid(ThreadToContinue.ID, WaitStatus, __WALL);
             if PID <> ThreadToContinue.ID then begin
               DebugLn(DBG_WARNINGS, ['XXXXX Error single stepping other thread ', ThreadToContinue.ID, ' waitpid got ', PID, ', ',WaitStatus, ' err ', Errno]);
@@ -1179,7 +1186,7 @@ begin
     FSingleSteppingThreadID := AThread.ID;
     fpPTrace(PTRACE_SINGLESTEP, AThread.ID, pointer(1), pointer(TDbgLinuxThread(AThread).FExceptionSignal));
     TDbgLinuxThread(AThread).ResetPauseStates;
-    Result := CheckNoError;
+    Result := CheckNoError(AThread);
     exit;
   end;
 
@@ -1197,7 +1204,7 @@ begin
       Debugln(FPDBG_LINUX, ['RUN other TID: ', ThreadToContinue.ID]);
       {$ENDIF}
       fpPTrace(PTRACE_CONT, ThreadToContinue.ID, pointer(1), pointer(ThreadToContinue.FExceptionSignal));
-      CheckNoError; // only log
+      CheckNoError(ThreadToContinue); // only log
       ThreadToContinue.ResetPauseStates;
     end;
   end;
@@ -1214,7 +1221,7 @@ begin
     else
       fpPTrace(PTRACE_CONT, AThread.ID, pointer(1), pointer((TDbgLinuxThread(AThread).FExceptionSignal)));
     TDbgLinuxThread(AThread).ResetPauseStates;
-    Result := CheckNoError;
+    Result := CheckNoError(AThread);
   end;
 
   {$IFDEF DebuglnLinuxDebugEvents}
