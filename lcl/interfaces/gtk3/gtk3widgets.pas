@@ -15979,7 +15979,10 @@ var
 begin
   Result := [];
   icns:=AForm.BorderIcons;
-  bs:=AForm.BorderStyle;
+  if csDesigning in AForm.ComponentState then
+    bs := bsSizeable
+  else
+    bs := AForm.BorderStyle;
 
   case bs of
   bsSingle: Include(Result, GDK_DECOR_TITLE{GDK_DECOR_BORDER});
@@ -16231,6 +16234,7 @@ end;
 function TGtk3Window.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
   AForm: TCustomForm;
+  ABorderStyle: TFormBorderStyle;
   decor: TGdkWMDecoration;
 begin
   FIcon := nil;
@@ -16239,13 +16243,17 @@ begin
   FHasPaint := True;
   FMenuBar := nil;
   AForm := TCustomForm(LCLObject);
+  if csDesigning in AForm.ComponentState then
+    ABorderStyle := bsSizeable
+  else
+    ABorderStyle := AForm.BorderStyle;
 
   if (not Assigned(LCLObject.Parent)) and (not (wtMDIChild in FWidgetType)) then
   begin
     if FWidgetType = [wtHintWindow] then
       Result := TGtkWindow.new(GTK_WINDOW_POPUP)
     else
-    if (AForm.BorderStyle = bsNone) and
+    if (ABorderStyle = bsNone) and
        (Gtk3WidgetSet.IsWayland or (csNoFocus in AForm.ControlStyle)) then
     begin
       Result := TGtkWindow.new(GTK_WINDOW_POPUP);
@@ -16260,7 +16268,7 @@ begin
     FWidget^.set_events(GDK_DEFAULT_EVENTS_MASK);
     Title:=Params.Caption;
     if (FWidgetType = [wtHintWindow]) or
-       ((AForm.BorderStyle = bsNone) and
+       ((ABorderStyle = bsNone) and
         (Gtk3WidgetSet.IsWayland or (csNoFocus in AForm.ControlStyle))) then
       decor := []
     else
@@ -16351,7 +16359,7 @@ begin
   begin
     // xdg-popup requires transient_for set BEFORE realize so the compositor
     // has a parent surface to anchor the popup to.
-    if GTK3WidgetSet.IsWayland and (AForm.BorderStyle = bsNone) and
+    if GTK3WidgetSet.IsWayland and (ABorderStyle = bsNone) and
        not (wtHintWindow in FWidgetType) then
       PGtkWindow(Result)^.set_transient_for(GetActiveGtkWindow);
     if (LCLObject.Width > 0) and (LCLObject.Height > 0) then
@@ -16666,6 +16674,7 @@ var
   AShadowW, AShadowH: gint;
 begin
   AForm := TCustomForm(LCLObject);
+  AFixedWidthHeight := False;
   BeginUpdate;
   MenuH := 0;
   if Gtk3IsGtkWindow(fWidget) and
@@ -16714,7 +16723,8 @@ begin
         LCLObject.InvalidateClientRectCache(False);
     end;
 
-    if not ((AForm.BorderStyle = bsNone) and Widget^.get_realized) then
+    if not ((AForm.BorderStyle = bsNone) and not (csDesigning in AForm.ComponentState) and
+      Widget^.get_realized) then
       if Gtk3IsGtkWindow(fWidget) or ((ARect.width >= 2) and (ARect.height >= 2)) then
       begin
         if AIsWayland and Gtk3IsGtkWindow(fWidget) then
@@ -16785,7 +16795,8 @@ begin
 
     if Gtk3IsGtkWindow(FWidget) then
     begin
-      if (AForm.BorderStyle = bsNone) and Widget^.get_realized then
+      if (AForm.BorderStyle = bsNone) and not (csDesigning in AForm.ComponentState) and
+        Widget^.get_realized then
       begin
         Widget^.size_allocate(@ARect);
         if (AWidth > 0) and (AHeight > 0) then
