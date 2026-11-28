@@ -524,6 +524,12 @@ object FPReportDesignerForm: TFPReportDesignerForm
       object MIAlignBottom: TMenuItem
         Action = AAlignBottom
       end
+      object MIStackHorizontal: TMenuItem
+        Action = AStackHorizontal
+      end
+      object MIStackVertical: TMenuItem
+        Action = AStackVertical
+      end
     end
     object MResize: TMenuItem
       Caption = 'Resize Objects'
@@ -786,6 +792,22 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Caption = 'Align bottom edges'
       Hint = 'Align elements vertically using their bottom edges'
       ImageIndex = 14
+      OnExecute = VAlignExecute
+      OnUpdate = VAlignUpdate
+    end
+    object AStackHorizontal: TAction
+      Tag = 8
+      Category = 'Align'
+      Caption = 'Stack left to right'
+      Hint = 'Place each element to the right of the previous one'
+      OnExecute = HAlignExecute
+      OnUpdate = HAlignUpdate
+    end
+    object AStackVertical: TAction
+      Tag = 8
+      Category = 'Align'
+      Caption = 'Stack top to bottom'
+      Hint = 'Place each element below the previous one'
       OnExecute = VAlignExecute
       OnUpdate = VAlignUpdate
     end

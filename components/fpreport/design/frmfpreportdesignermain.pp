@@ -84,6 +84,8 @@ type
     AAlignVCenter: TAction;
     AAlignBottom: TAction;
     AAlign: TAction;
+    AStackHorizontal: TAction;
+    AStackVertical: TAction;
     ACopy: TAction;
     ABringToFront: TAction;
     AImportLazreport: TAction;
@@ -175,6 +177,8 @@ type
     MIAlignTop: TMenuItem;
     MIAlignVCenter: TMenuItem;
     MIAlignBottom: TMenuItem;
+    MIStackHorizontal: TMenuItem;
+    MIStackVertical: TMenuItem;
     MEdit: TMenuItem;
     MIReportProperties: TMenuItem;
     MIReportVariables: TMenuItem;

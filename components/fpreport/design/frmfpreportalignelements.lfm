@@ -50,6 +50,7 @@ object AlignForm: TAlignForm
       'Center on parent band'
       'Flush left on parent band'
       'Flush right on parent band'
+      'Stack left to right'
     )
     TabOrder = 1
   end
@@ -78,6 +79,7 @@ object AlignForm: TAlignForm
       'Center on parent band'
       'Flush top on parent band'
       'Flush bottom on parent band'
+      'Stack top to bottom'
     )
     OnClick = RGVerticalClick
     TabOrder = 2

@@ -33,8 +33,8 @@ Const
 
 Type
   TSelectionSort = (ssNone,ssHorz,ssvert);
-  THAlignAction  = (haNone,haLeft,haCenter,haRight,haSpace,haCentB,haLeftB,haRightB);
-  TVAlignAction  = (vaNone,vaTop,vaCenter,vaBottom,vaSpace,vaCentB,vaTopB,vaBottomB);
+  THAlignAction  = (haNone,haLeft,haCenter,haRight,haSpace,haCentB,haLeftB,haRightB,haStack);
+  TVAlignAction  = (vaNone,vaTop,vaCenter,vaBottom,vaSpace,vaCentB,vaTopB,vaBottomB,vaStack);
   TSizeAdjust    = (saNone,saLargest,saSmallest,saValue,saParent);
   TFrameAction   = (faNone,faAll,faTop,faBottom,faLeft,faRight);
   TResizeHandlePosition = (rhNone,rhTopLeft,rhTop,rhTopRight,rhLeft,rhRight,rhBottomLeft, rhBottom,rhBottomRight);
@@ -1407,6 +1407,8 @@ begin
   Result:=True;
   if (A=haNone) then
     exit;
+  if (A=haStack) and (SelectionCount<2) then
+    exit(False);
   While Result and (I<Count) do
     begin
     O:=Objects[i];
@@ -1432,6 +1434,8 @@ begin
   Result:=True;
   if (A=vaNone) then
     exit;
+  if (A=vaStack) and (SelectionCount<2) then
+    exit(False);
   While Result and (I<Count) do
     begin
     O:=Objects[i];
@@ -1661,7 +1665,26 @@ Var
     EL.Layout.Top:=ElRect.Top;
   end;
 
+  // Place each selected element after the previous one, sorted on position
+  Procedure StackSelection(aSort : TSelectionSort);
 
+  Var
+    lArr : TReportObjectArray;
+    lPrev,lLayout : TFPReportLayout;
+    lIdx : Integer;
+
+  begin
+    lArr:=GetSelectionArray(aSort);
+    For lIdx:=1 to Length(lArr)-1 do
+      begin
+      lPrev:=lArr[lIdx-1].Element.Layout;
+      lLayout:=lArr[lIdx].Element.Layout;
+      if aSort=ssHorz then
+        lLayout.Left:=lPrev.Left+lPrev.Width
+      else
+        lLayout.Top:=lPrev.Top+lPrev.Height;
+      end;
+  end;
 
 
 var
@@ -1670,8 +1693,15 @@ var
   TempVer : TVAlignAction;
   Arr : TReportObjectArray;
   L : TFPReportLayout;
+  lStackHor,lStackVer : Boolean;
 
 begin
+  lStackHor:=(Hor=haStack);
+  lStackVer:=(Ver=vaStack);
+  if lStackHor then
+    Hor:=haNone;
+  if lStackVer then
+    Ver:=vaNone;
   OutlineRect:=GetSelectionRect;
   HCenter:=(OutlineRect.Right+OutlineRect.Left) / 2;
   VCenter:=(OutlineRect.Top+OutlineRect.Bottom) / 2;
@@ -1698,7 +1728,7 @@ begin
       else
         begin
         L:=TReportObject(Arr[Length(Arr)-1]).Element.Layout;
-        Delta:=((L.Left +L.Width/2) - HSCenter) / (Count-1);
+        Delta:=((L.Left +L.Width/2) - HSCenter) / (Length(Arr)-1);
         end;
       If Ver=vaSpace then
         TempVer:=vaNone
@@ -1722,7 +1752,7 @@ begin
       else
         begin
         L:=TReportObject(Arr[Length(Arr)-1]).Element.Layout;
-        Delta:=((L.Top +L.Height/2) - VSCenter) / (Count-1);
+        Delta:=((L.Top +L.Height/2) - VSCenter) / (Length(Arr)-1);
         end;
       If Hor=haSpace then
         TempHor:=haNone
@@ -1736,6 +1766,10 @@ begin
         end;
       end;
     end;
+  if lStackHor then
+    StackSelection(ssHorz);
+  if lStackVer then
+    StackSelection(ssVert);
   SelectRectInvalid;
   ReportChanged;
 end;
