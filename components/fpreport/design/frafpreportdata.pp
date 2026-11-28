@@ -48,6 +48,7 @@ type
     procedure TVVariablesMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
   private
     FIdentifiers: TFPExprIdentifierDefs;
+    FReportFunctions: TFPExprIdentifierDefs;
     FUserVariables : TTreeNode;
     FBuiltinVariables : TTreeNode;
     FDataLastDown : TPoint;
@@ -55,6 +56,7 @@ type
     FReport: TFPReport;
     FReportData: TFPReportDataCollection;
 
+    procedure FillReportIdentifiers(aIdents: TFPExprIdentifierDefs);
     procedure AddBuiltInVariables(aParent: TTreeNode);
     procedure AddUserVariables(aParent: TTreeNode; Vars: TFPReportVariables);
     procedure SetReport(AValue: TFPReport);
@@ -76,6 +78,7 @@ resourcestring
   SUnNamedData = 'Unnamed data %d';
   SBuiltIn = 'Built in';
   SUserDefined = 'User-defined';
+  SReportFunctions = 'Report';
 
 { TReportDataDisplay }
 
@@ -122,7 +125,7 @@ Var
   J : Integer;
   M : TMemoDragDrop;
   N : TTreeNode;
-  D : TFPBuiltInExprIdentifierDef;
+  D : TFPExprIdentifierDef;
 
 begin
   DragObject:=Nil;
@@ -130,9 +133,9 @@ begin
   if (N<>Nil) then
     begin
     S:=TVFunctions.Selected.Text;
-    if Assigned(N.Data) and (TObject(N.Data).InheritsFrom(TFPBuiltInExprIdentifierDef)) then
+    if Assigned(N.Data) and (TObject(N.Data).InheritsFrom(TFPExprIdentifierDef)) then
       begin
-      D:=TFPBuiltInExprIdentifierDef(N.Data);
+      D:=TFPExprIdentifierDef(N.Data);
       S:=D.Name;
       A:='';
       if D.ArgumentCount<>0 then
@@ -209,11 +212,32 @@ Const
     Delete(Result,1,2);
   end;
 
+  // Node text: name, argument types and result type
+  Function IdentText(aID : TFPExprIdentifierDef) : String;
+
+  Var
+    lArgs : String;
+    lIdx : Integer;
+
+  begin
+    Result:=aID.Name;
+    lArgs:='';
+    For lIdx:=1 to aID.ArgumentCount do
+      begin
+      if lIdx>1 then
+        lArgs:=lArgs+',';
+      lArgs:=lArgs+TypeName(CharToResultType(aID.ParameterTypes[lIdx]));
+      end;
+    If (lArgs<>'') then
+      Result:=Result+'('+lArgs+')';
+    Result:=Result+':'+TypeName(aID.ResultType);
+  end;
+
 Var
-  N : TTreeNode;
-  S,A : String;
-  I,J : integer;
+  N,lReportNode : TTreeNode;
+  I : integer;
   ID : TFPBuiltInExprIdentifierDef;
+  lID : TFPExprIdentifierDef;
   CatNodes : Array[TBuiltInCategory] of TTreeNode;
   C : TBuiltInCategory;
   L : TStringList;
@@ -235,18 +259,7 @@ begin
       For I:=0 to L.Count-1 do
         begin
         ID:=TFPBuiltInExprIdentifierDef(L.Objects[i]);
-        S:=ID.Name;
-        A:='';
-        For J:=1 to ID.ArgumentCount do
-          begin
-          if J>1 then
-            A:=A+',';
-          A:=A+TypeName(CharToResultType(ID.ParameterTypes[J]));
-          end;
-        If (A<>'') then
-          S:=S+'('+A+')';
-        S:=S+':'+TypeName(ID.ResultType);
-        N:=AddChild(CatNodes[ID.Category],S);
+        N:=AddChild(CatNodes[ID.Category],IdentText(ID));
         N.Data:=ID;
         end;
       For C in TBuiltInCategory do
@@ -254,6 +267,23 @@ begin
           FreeAndNil(CatNodes[C])
         else
           CatNodes[C].Expand(True);
+      FillReportIdentifiers(FReportFunctions);
+      L.Clear;
+      For I:=0 to FReportFunctions.Count-1 do
+        if FReportFunctions[i].ArgumentCount>0 then
+          L.AddObject(FReportFunctions[i].Name,FReportFunctions[i]);
+      L.Sort;
+      if L.Count>0 then
+        begin
+        lReportNode:=AddChild(Nil,SReportFunctions);
+        For I:=0 to L.Count-1 do
+          begin
+          lID:=TFPExprIdentifierDef(L.Objects[i]);
+          N:=AddChild(lReportNode,IdentText(lID));
+          N.Data:=lID;
+          end;
+        lReportNode.Expand(True);
+        end;
     finally
       EndUpdate;
       FreeAndNil(L);
@@ -274,10 +304,12 @@ begin
   inherited Create(AOwner);
   FReportData:=TFPReportDataCollection.Create(TFPReportDataItem);
   FIdentifiers:=TFPExprIdentifierDefs.Create(TFPExprIdentifierDef);
+  FReportFunctions:=TFPExprIdentifierDefs.Create(TFPExprIdentifierDef);
 end;
 
 destructor TReportDataDisplay.Destroy;
 begin
+  FreeAndNil(FReportFunctions);
   FreeAndNil(FIdentifiers);
   FreeAndNil(FReportData);
   inherited Destroy;
@@ -356,6 +388,17 @@ begin
   AParent.Expand(false);
 end;
 
+procedure TReportDataDisplay.FillReportIdentifiers(aIdents: TFPExprIdentifierDefs);
+
+begin
+  aIdents.Clear;
+  if Assigned(FReport) then
+    FReport.AddBuiltinsToExpressionIdentifiers(aIdents);
+  if aIdents.FindIdentifier('PageCount')=Nil then
+    aIdents.AddIntegerVariable('PageCount',-1);
+end;
+
+
 procedure TReportDataDisplay.AddBuiltInVariables(aParent : TTreeNode);
 
 Var
@@ -365,19 +408,12 @@ Var
   L : TStringList;
 
 begin
-
-  if Assigned(Fidentifiers) then
-    FIdentifiers.Clear
-  else
-    FIdentifiers:=TFPExprIdentifierDefs.Create(TFPExprIdentifierDef);
-  if Assigned(FReport) then
-    FReport.AddBuiltinsToExpressionIdentifiers(FIdentifiers);
-  if FIdentifiers.FindIdentifier('PageCount')=Nil then
-    FIdentifiers.AddIntegerVariable('PageCount',-1);
+  FillReportIdentifiers(FIdentifiers);
   L:=TStringListUTF8Fast.Create;
   try
     For I:=0 to Fidentifiers.Count-1 do
-      L.AddObject(Fidentifiers[i].Name,Fidentifiers[i]);
+      if Fidentifiers[i].ArgumentCount=0 then
+        L.AddObject(Fidentifiers[i].Name,Fidentifiers[i]);
     L.Sort;
     For I:=0 to L.Count-1 do
       begin
