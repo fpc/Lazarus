@@ -183,6 +183,15 @@ uses
   fpwritepng,
   math;
 
+{$IF NOT DECLARED(cFrameCornerRadius)}
+// Frame shape sizes of fcl-report, for versions of fpReport that do not define them
+const
+  cFrameCornerRadius = 2.0;
+  cFrameDoubleGap = 1.0;
+  cFrameShadowWidth = 1.5;
+  cFrameShadowColor = fpReport.clGray;
+{$ENDIF}
+
 Resourcestring
   SErrPageOutOfRange = 'Page index %d out of allowed range [0..%d]';
 
@@ -384,6 +393,8 @@ procedure TFPReportExportCanvas.RenderFrame(const AFrame: TFPReportFrame;
 var
   bStroke, bFill: boolean;
   C : TFPReportColor;
+  lBody : TRect;
+  lShadowX, lShadowY, lGapX, lGapY, lRadius : Integer;
 
 begin
   bStroke := AFrame.Color <> clNone;
@@ -401,7 +412,23 @@ begin
   {$IFDEF DEBUGRD}
   Writeln('Rendering frame [',AFrame.Shape,'] (',ARect.Left,',',ARect.Top,',',ARect.right,',',ARect.Bottom,') : ',(bStroke or bFill));
   {$ENDIF}
-  if (AFrame.Shape=fsRectangle) and (bStroke or bFill) then
+  lBody:=ARect;
+  if AFrame.Shape=fsShadow then
+    begin
+    lShadowX:=Min(HmmToPixels(cFrameShadowWidth),(ARect.Right-ARect.Left) div 2);
+    lShadowY:=Min(VmmToPixels(cFrameShadowWidth),(ARect.Bottom-ARect.Top) div 2);
+    Dec(lBody.Right,lShadowX);
+    Dec(lBody.Bottom,lShadowY);
+    if bStroke then
+      C:=AFrame.Color
+    else
+      C:=cFrameShadowColor;
+    Canvas.Brush.Style:=bsSolid;
+    Canvas.Brush.Color:=RGBtoBGR(C);
+    FCanvas.FillRect(lBody.Right,ARect.Top+lShadowY,ARect.Right,ARect.Bottom);
+    FCanvas.FillRect(ARect.Left+lShadowX,lBody.Bottom,lBody.Right,ARect.Bottom);
+    end;
+  if AFrame.Shape in [fsRectangle,fsDoubleRect,fsShadow] then
     begin
     if bFill then
       begin
@@ -412,13 +439,30 @@ begin
       if c=fpReport.clNone then
         C:=fpReport.clWhite;
       Canvas.Brush.Color := RGBtoBGR(C);
-      FCanvas.FillRect(ARect);
+      FCanvas.FillRect(lBody);
       end;
     if bStroke then
       begin
       Canvas.Brush.Style:=bsClear;
-      FCanvas.Rectangle(ARect);
+      FCanvas.Rectangle(lBody);
+      lGapX:=HmmToPixels(cFrameDoubleGap);
+      lGapY:=VmmToPixels(cFrameDoubleGap);
+      if (AFrame.Shape=fsDoubleRect)
+         and (2*lGapX<ARect.Right-ARect.Left) and (2*lGapY<ARect.Bottom-ARect.Top) then
+        FCanvas.Rectangle(ARect.Left+lGapX,ARect.Top+lGapY,ARect.Right-lGapX,ARect.Bottom-lGapY);
       end;
+    end;
+  if AFrame.Shape=fsRoundedRect then
+    begin
+    lRadius:=Min(HmmToPixels(cFrameCornerRadius),Min(ARect.Right-ARect.Left,ARect.Bottom-ARect.Top) div 2);
+    if bFill then
+      begin
+      Canvas.Brush.Style:=bsSolid;
+      Canvas.Brush.Color:=RGBtoBGR(AFrame.BackgroundColor);
+      end
+    else
+      Canvas.Brush.Style:=bsClear;
+    FCanvas.RoundRect(ARect,2*lRadius,2*lRadius);
     end;
   if (AFrame.Shape=fsNone) and bStroke then
     begin
