@@ -16723,8 +16723,8 @@ begin
         LCLObject.InvalidateClientRectCache(False);
     end;
 
-    if not ((AForm.BorderStyle = bsNone) and not (csDesigning in AForm.ComponentState) and
-      Widget^.get_realized) then
+    if not ((AForm.BorderStyle = bsNone) and Gtk3IsGtkWindow(fWidget) and
+      not (csDesigning in AForm.ComponentState) and Widget^.get_realized) then
       if Gtk3IsGtkWindow(fWidget) or ((ARect.width >= 2) and (ARect.height >= 2)) then
       begin
         if AIsWayland and Gtk3IsGtkWindow(fWidget) then
