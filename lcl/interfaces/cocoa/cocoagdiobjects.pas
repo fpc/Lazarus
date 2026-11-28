@@ -12,7 +12,7 @@ uses
   LCLtype, LCLProc, Controls, fpcanvas, ImgList,
   Graphics, GraphType, LCLIntf, IntfGraphics,
   CocoaAll,
-  CocoaUtils, Cocoa_Extra,
+  CocoaConfig, CocoaUtils, Cocoa_Extra,
   {$ifndef CocoaUseHITheme}
   customdrawndrawers, customdrawn_mac,
   {$endif}
@@ -2650,11 +2650,6 @@ var
   edgePen   : TCocoaPen;
   keepBrush : TCocoaBrush;
   edgeBrush : TCocoaBrush;
-const
-  OutLT = cl3DLight;    // the next to hilight
-  OutBR = cl3DDkShadow; // the darkest (almost black)
-  InnLT = cl3DHiLight;  // the lightest (almost white)
-  InnBR = cl3DShadow;   // darker than light, lighter than dark shadow
 begin
   keepPen := Pen;
   keepBrush := Brush;
@@ -2669,18 +2664,18 @@ begin
     if (edge and BDR_OUTER > 0) then
     begin
       if edge and BDR_RAISEDOUTER > 0 then
-        DrawEdgeRect(r, grfFlags, OutLT, OutBR)
+        DrawEdgeRect(r, grfFlags, CocoaConfigDrawEdge.color.outLeftTop, CocoaConfigDrawEdge.color.outRightBottom)
       else
-        DrawEdgeRect(r, grfFlags, InnBR, InnLT);
+        DrawEdgeRect(r, grfFlags, CocoaConfigDrawEdge.color.innerRightBottom, CocoaConfigDrawEdge.color.innerLeftTop);
       InflateRect(r, -1, -1);
     end;
 
     if (edge and BDR_INNER > 0) then
     begin
       if edge and BDR_RAISEDINNER > 0 then
-        DrawEdgeRect(r, grfFlags, InnLT, InnBR)
+        DrawEdgeRect(r, grfFlags, CocoaConfigDrawEdge.color.innerLeftTop, CocoaConfigDrawEdge.color.innerRightBottom)
       else
-        DrawEdgeRect(r, grfFlags, OutBR, OutLT);
+        DrawEdgeRect(r, grfFlags, CocoaConfigDrawEdge.color.outRightBottom, CocoaConfigDrawEdge.color.outLeftTop);
     end;
 
   finally

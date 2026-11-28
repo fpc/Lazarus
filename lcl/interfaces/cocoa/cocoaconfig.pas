@@ -9,7 +9,7 @@ interface
 
 uses
   Forms, SysUtils,
-  Menus,
+  Graphics, Menus,
   CocoaAll, Cocoa_Extra, CocoaConst, CocoaUtils;
 
 type
@@ -367,6 +367,19 @@ type
 type
   TCocoaConfigPanel = record
     classicFrame3d: Boolean;
+  end;
+
+type
+  TCocoaConfigDrawEdgeColor = record
+    outLeftTop: TColor;
+    outRightBottom: TColor;
+    innerLeftTop: TColor;
+    innerRightBottom: TColor;
+  end;
+
+type
+  TCocoaConfigDrawEdge = record
+    color: TCocoaConfigDrawEdgeColor;
   end;
 
 type

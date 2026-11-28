@@ -256,6 +256,16 @@ var
   );
 
 var
+  CocoaConfigDrawEdge: TCocoaConfigDrawEdge = (
+    color: (
+      outLeftTop: cl3DLight;         // the next to hilight
+      outRightBottom: cl3DDkShadow;  // the darkest (almost black)
+      innerLeftTop: cl3DHiLight;     // the lightest (almost white)
+      innerRightBottom: cl3DShadow;  // darker than light, lighter than dark shadow
+    );
+  );
+
+var
   CocoaConfigDragImage: TCocoaConfigDragImage = (
     alpha: 0.8;
   );
