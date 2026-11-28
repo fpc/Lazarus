@@ -1078,7 +1078,11 @@ function TDbgLinuxProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread; S
     Result := e = 0;
     if not Result then begin
       DebugLn(DBG_WARNINGS, 'Failed to continue process. Errcode: '+inttostr(e));
-      if (e = ESysECHILD) and (t <> nil) then begin
+      // Ptrace should returen ESysESRCH
+      if ((e = ESysECHILD) or (e = ESysESRCH) ) and
+         (t <> nil)
+      then begin
+        (* This check relies on that the thread had been paused *)
         // Controller.ProcessLoop currently does not check the result of Continue.
         // mark the thread, and the next AnalyseDebugEvent will deal with it
         TDbgLinuxThread(AThread).FHasExited := true;
@@ -1237,6 +1241,7 @@ begin
   ThreadIdentifier:=-1;
   ProcessIdentifier:=-1;
 
+  fpseterrno(0);
   if FSingleSteppingThreadID <> -1 then begin
     PID:=FpWaitPid(FSingleSteppingThreadID, FStatus, __WALL);
     if PID <> FSingleSteppingThreadID then
@@ -1251,7 +1256,8 @@ begin
   result := PID<>-1;
   if not result then begin
     e := fpgeterrno;
-    if e = ESysECHILD then
+    // WaitPid should return ESysECHILD;
+    if ((e = ESysECHILD) or (e = ESysESRCH) ) then
     begin
       FIsTerminating := True; // process is gone
       GotExitProcess := True; // nothing left to wait for, let ProcessLoop exit
@@ -1473,10 +1479,12 @@ begin
           if ThreadToPause.FIsPaused or ThreadToPause.FHasExited then
             break;
 
+          fpseterrno(0);
           if fpkill(Process.ProcessID, SIGSTOP) <> 0 then begin
             e := fpgeterrno;
             debugln(['Failed to send SigStop: ', e]);
-            if e = ESysECHILD then begin
+            // fpKill returns ESysESRCH
+            if ((e = ESysECHILD) or (e = ESysESRCH) ) then begin
               Result := deExitProcess;
               break;
             end;
