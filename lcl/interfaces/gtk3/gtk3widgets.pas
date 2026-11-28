@@ -641,6 +641,8 @@ type
   private
     FBorderStyle: TBorderStyle;
     FHBarInitialized, FVBarInitialized: boolean;
+    FHThumbTracking, FVThumbTracking: Boolean;
+    FHThumbPosition, FVThumbPosition: Integer;
     function GetHScrollBarPolicy: TGtkPolicyType;
     function GetVScrollBarPolicy: TGtkPolicyType;
     procedure SetBorderStyle(AValue: TBorderStyle);
@@ -653,6 +655,7 @@ type
     class function RangeChangeValue(ARange: PGtkRange; AScrollType: TGtkScrollType;
       AValue: gdouble; AData: gPointer): gboolean; cdecl; static;
     class procedure RangeValueChanged(range: PGtkRange; data: gpointer); cdecl; static;
+    class procedure RangeEventAfter(AWidget: PGtkWidget; AEvent: PGdkEvent; AData: gpointer); cdecl; static;
 
     procedure SetColor(AValue: TColor); override;
   public
@@ -10885,11 +10888,13 @@ class function TGtk3ScrollableWin.RangeChangeValue(ARange: PGtkRange;
 var
   Msg: TLMVScroll;
   MaxValue: gdouble;
-  StateFlags: TGtkStateFlags;
+  AModState: TGdkModifierType;
   ACtl: TGtk3ScrollableWin;
-  AAtGTKMax: Boolean;
+  AAtGTKMax, ADragging: Boolean;
+  APos: Integer;
 begin
   Result := gtk_false;
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
 
   {$IFDEF GTK3DEBUGSCROLL}
   DebugLn(Format('>TGtk3ScrollableWin.RangeChangeValue Value: %d', [Round(AValue)]),' IsHScrollBar ',dbgs(PGtkOrientable(ARange)^.get_orientation = GTK_ORIENTATION_HORIZONTAL),' InUpdate=',dbgs(TGtk3Widget(AData).InUpdate));
@@ -10955,12 +10960,23 @@ begin
     ScrollBar := HWND(TGtk3Widget(AData)); // HWND({%H-}PtrUInt(ARange));
     ScrollCode := Gtk3ScrollTypeToScrollCode(AScrollType);
   end;
+  APos := Msg.Pos;
   TGtk3Widget(AData).DeliverMessage(Msg, True);
 
   if Msg.Scrollcode = SB_THUMBTRACK then
   begin
-    StateFlags := ARange^.get_state_flags;
-    if not (GTK_STATE_FLAG_ACTIVE in StateFlags) then
+    AModState := [];
+    ADragging := gtk_get_current_event_state(@AModState) and (GDK_BUTTON1_MASK in AModState);
+    if Msg.Msg = LM_HSCROLL then
+    begin
+      ACtl.FHThumbTracking := ADragging;
+      ACtl.FHThumbPosition := APos;
+    end else
+    begin
+      ACtl.FVThumbTracking := ADragging;
+      ACtl.FVThumbPosition := APos;
+    end;
+    if not ADragging then
     begin
       Msg.ScrollCode := SB_THUMBPOSITION;
       TGtk3Widget(AData).DeliverMessage(Msg, False);
@@ -10976,6 +10992,39 @@ begin
   {$IFDEF GTK3DEBUGSCROLL}
   DebugLn('<RangeChangeValue: Result=',dbgs(Result),' FuturePos=', dbgs(Msg.Pos),' ScrollCode=',dbgs(Msg.ScrollCode),' InUpdate=',dbgs(TGtk3Widget(AData).InUpdate));
   {$ENDIF}
+end;
+
+class procedure TGtk3ScrollableWin.RangeEventAfter(AWidget: PGtkWidget; AEvent: PGdkEvent;
+  AData: gpointer); cdecl;
+var
+  ACtl: TGtk3ScrollableWin;
+  Msg: TLMVScroll;
+begin
+  if (AEvent^.type_ <> GDK_BUTTON_RELEASE) or (AEvent^.button.button <> 1) then
+    exit;
+  ACtl := TGtk3ScrollableWin(AData);
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
+  if PGtkOrientable(AWidget)^.get_orientation = GTK_ORIENTATION_HORIZONTAL then
+  begin
+    if not ACtl.FHThumbTracking then
+      exit;
+    ACtl.FHThumbTracking := False;
+    Msg.Msg := LM_HSCROLL;
+    Msg.Pos := ACtl.FHThumbPosition;
+  end else
+  begin
+    if not ACtl.FVThumbTracking then
+      exit;
+    ACtl.FVThumbTracking := False;
+    Msg.Msg := LM_VSCROLL;
+    Msg.Pos := ACtl.FVThumbPosition;
+  end;
+  Msg.SmallPos := Min(Msg.Pos, High(Msg.SmallPos));
+  Msg.ScrollBar := HWND(ACtl);
+  Msg.ScrollCode := SB_THUMBPOSITION;
+  ACtl.DeliverMessage(Msg, False);
+  Msg.ScrollCode := SB_ENDSCROLL;
+  ACtl.DeliverMessage(Msg, False);
 end;
 
 class procedure TGtk3ScrollableWin.RangeValueChanged(range: PGtkRange;
@@ -11026,6 +11075,10 @@ begin
     end;
 
     APressed := Control.CheckIfScrollbarPressed(PGtkScrollBar(range), AMouseOver, GDK_BUTTON1_MASK);
+    if Msg.Msg = LM_VSCROLL then
+      APressed := APressed or Control.FVThumbTracking
+    else
+      APressed := APressed or Control.FHThumbTracking;
     if APressed then
       Msg.ScrollCode := SB_THUMBTRACK
     else
@@ -11170,14 +11223,22 @@ begin
   if AIsHorizontalScrollBar then
   begin
     if not FHBarInitialized then
+    begin
       g_signal_connect_data(getHorizontalScrollbar, 'change-value',
         TGCallback(@RangeChangeValue), Self, nil, G_CONNECT_DEFAULT);
+      g_signal_connect_data(getHorizontalScrollbar, 'event-after',
+        TGCallback(@RangeEventAfter), Self, nil, G_CONNECT_DEFAULT);
+    end;
     FHBarInitialized := True;
   end else
   begin
     if not FVBarInitialized then
+    begin
       g_signal_connect_data(getVerticalScrollbar, 'change-value',
         TGCallback(@RangeChangeValue), Self, nil, G_CONNECT_DEFAULT);
+      g_signal_connect_data(getVerticalScrollbar, 'event-after',
+        TGCallback(@RangeEventAfter), Self, nil, G_CONNECT_DEFAULT);
+    end;
     FVBarInitialized := True;
   end;
 end;
@@ -14700,6 +14761,10 @@ begin
       TGCallback(@RangeChangeValue), Self, nil, G_CONNECT_DEFAULT);
     g_signal_connect_data(gtk_scrolled_window_get_vscrollbar(GetScrolledWindow), 'change-value',
       TGCallback(@RangeChangeValue), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(gtk_scrolled_window_get_hscrollbar(GetScrolledWindow), 'event-after',
+      TGCallback(@RangeEventAfter), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(gtk_scrolled_window_get_vscrollbar(GetScrolledWindow), 'event-after',
+      TGCallback(@RangeEventAfter), Self, nil, G_CONNECT_DEFAULT);
 
     g_signal_connect_data(PGtkRange(gtk_scrolled_window_get_hscrollbar(GetScrolledWindow)),'value-changed',
       TGCallback(@RangeValueChanged), Self, nil, G_CONNECT_DEFAULT);
@@ -17010,6 +17075,10 @@ begin
       TGCallback(@RangeChangeValue), Self, nil, G_CONNECT_DEFAULT);
     g_signal_connect_data(gtk_scrolled_window_get_vscrollbar(GetScrolledWindow), 'change-value',
       TGCallback(@RangeChangeValue), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(gtk_scrolled_window_get_hscrollbar(GetScrolledWindow), 'event-after',
+      TGCallback(@RangeEventAfter), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(gtk_scrolled_window_get_vscrollbar(GetScrolledWindow), 'event-after',
+      TGCallback(@RangeEventAfter), Self, nil, G_CONNECT_DEFAULT);
 
     g_signal_connect_data(PGtkRange(gtk_scrolled_window_get_hscrollbar(GetScrolledWindow)),'value-changed',
       TGCallback(@RangeValueChanged), Self, nil, G_CONNECT_DEFAULT);

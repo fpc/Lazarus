@@ -5052,6 +5052,21 @@ var
       (aPageSize < aVisibleSize div 2)) and (aMaxValue >= aPageSize);
   end;
 
+  procedure CompleteLogicalScrollInfo(ALogical: PGtkAdjustment);
+  begin
+    if not Assigned(ALogical) then
+      exit;
+    if (ScrollInfo.fMask and SIF_RANGE) = 0 then
+    begin
+      ScrollInfo.nMin := Round(ALogical^.lower);
+      ScrollInfo.nMax := Round(ALogical^.upper);
+    end;
+    if (ScrollInfo.fMask and SIF_PAGE) = 0 then
+      ScrollInfo.nPage := Round(ALogical^.page_size);
+    if (ScrollInfo.fMask and SIF_POS) = 0 then
+      ScrollInfo.nPos := Round(ALogical^.value);
+  end;
+
   procedure UpdateContentSize;
   var
     uWidth, uHeight: guint;
@@ -5335,6 +5350,7 @@ begin
       begin
         Adjustment := gtk_scrolled_window_get_hadjustment(ScrollWin);
         ScrollBar := TGtk3ScrollableWin(AControl).getHorizontalScrollbar;
+        CompleteLogicalScrollInfo(TGtk3ScrollableWin(AControl).LCLHAdj);
 
         R := AControl.getClientRect;
         if ([wtScrollingWinControl] * AControl.WidgetType = []) and
@@ -5357,6 +5373,7 @@ begin
       begin
         Adjustment := gtk_scrolled_window_get_vadjustment(ScrollWin);
         ScrollBar := TGtk3ScrollableWin(AControl).getVerticalScrollbar;
+        CompleteLogicalScrollInfo(TGtk3ScrollableWin(AControl).LCLVAdj);
         R := AControl.getClientRect;
 
         if ([wtScrollingWinControl] * AControl.WidgetType = []) and
