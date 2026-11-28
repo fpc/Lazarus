@@ -74,12 +74,11 @@ type
   TDbgLinuxThread = class(TDbgThread)
   private
     FExceptionSignal: cint;
-    FIsPaused, FInternalPauseRequested, FIsInInternalPause: boolean;
+    FIsPaused, FIsInInternalPause: boolean;
     FHasExited: Boolean;
     FIsSteppingBreakPoint: boolean;
     function GetName: String; override;
   protected
-    function RequestInternalPause: Boolean;
     function CheckSignalForPostponing(AWaitedStatus: cint): Boolean;
     procedure ResetPauseStates; virtual;
   public
@@ -345,30 +344,6 @@ begin
     Result := inherited GetName;
 end;
 
-function TDbgLinuxThread.RequestInternalPause: Boolean;
-begin
-  Result := False;
-  if FHasExited then begin
-    DebugLn(DBG_VERBOSE, ['PauseRequest for exited Thread ', ID]);
-    exit;
-  end;
-  if FInternalPauseRequested or FIsPaused then
-    exit;
-
-  result := fpkill(ID, SIGSTOP)=0;
-  {$IFDEF DebuglnLinuxDebugEvents}
-  debugln(FPDBG_LINUX, 'TDbgLinuxThread.RequestInternalPause fpkill(%d, SIGSTOP) => %s', [ID, dbgs(Result)]);
-  {$ENDIF}
-  if not result then
-    begin
-    // TODO: errChld -> remove thread
-    DebugLn(DBG_WARNINGS, 'Failed to send SIGTSTOP to process %d. Errno: %d',[ID, errno]);
-    exit;
-    end;
-
-  FInternalPauseRequested := True;
-end;
-
 function TDbgLinuxThread.CheckSignalForPostponing(AWaitedStatus: cint): Boolean;
 var
   st: longint;
@@ -389,9 +364,7 @@ begin
 
   if WIFSTOPPED(AWaitedStatus) then begin
     st := wstopsig(AWaitedStatus);
-    if {FInternalPauseRequested and} (st = SIGSTOP) then begin
-      DebugLn(DBG_VERBOSE and not FInternalPauseRequested, 'Received SigStop, but had not (yet) requested it. TId=', [Id]);
-      FInternalPauseRequested := False;
+    if (st = SIGSTOP) then begin
       FIsInInternalPause := True;
       // no postpone
     end
@@ -1324,6 +1297,7 @@ var
   Pid: THandle;
   WaitStatus: cint;
   it: TThreadMapUnLockedEnumerator;
+  e: longint;
 begin
   if AThread = nil then begin // should not happen... / just assume the most likely safe failbacks
     if FIsTerminating then
@@ -1468,9 +1442,11 @@ begin
     debuglnenter('STOP ALL THREADS');
     {$ENDIF}
     // Signal all other threads to pause
-    for TDbgThread(ThreadToPause) in FThreadMap do begin
+    (* - Signals are sent to the process's queue and can end up with any thread that
+         is not yet paused.
+    *)    for TDbgThread(ThreadToPause) in FThreadMap do begin
       if (ThreadToPause <> AThread) then begin
-        while  (not ThreadToPause.FIsPaused) do begin
+        while (not ThreadToPause.FIsPaused) and (Result <> deExitProcess) do begin
 
           // Check if any thread is already interrupted
           while ExistsPendingSignal(Pid, WaitStatus, ThreadSignaled, True) do begin
@@ -1482,10 +1458,16 @@ begin
           if ThreadToPause.FIsPaused or ThreadToPause.FHasExited then
             break;
 
-          DebugLn(DBG_VERBOSE and (ThreadToPause.FInternalPauseRequested), ['Re-Request Internal pause for ', ThreadToPause.ID]);
-          ThreadToPause.FInternalPauseRequested:=false;
-          if not ThreadToPause.RequestInternalPause then // will fail, if already paused
-             break;
+          if fpkill(Process.ProcessID, SIGSTOP) <> 0 then begin
+            e := fpgeterrno;
+            debugln(['Failed to send SigStop: ', e]);
+            if e = ESysECHILD then begin
+              Result := deExitProcess;
+              break;
+            end;
+            sleep(20); // and try again
+            system.continue;
+          end;
 
           if ExistsPendingSignal(Pid, WaitStatus, ThreadSignaled, False) then begin
             if (ThreadSignaled = nil) or
