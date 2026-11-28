@@ -35,6 +35,8 @@ Type
 
   TFPreportColorPropertyEditor = Class(TColorPropertyEditor)
   public
+    // Show the color dialog with the report color converted to an LCL color
+    procedure Edit; override;
     function OrdValueToVisualValue(OrdValue: longint): string; override;
     procedure SetValue(const NewValue: ansistring); override;
   end;
@@ -211,26 +213,49 @@ end;
 
 { TFPreportColorPropertyEditor }
 
+procedure TFPreportColorPropertyEditor.Edit;
+
+var
+  lDialog: TColorDialog;
+  lColor: TFPReportColor;
+
+begin
+  lDialog:=TColorDialog.Create(nil);
+  try
+    lColor:=TFPReportColor(GetOrdValue);
+    if lColor<>fpReport.clNone then
+      lDialog.Color:=TFPReportExportCanvas.RGBtoBGR(lColor);
+    if lDialog.Execute then
+      SetOrdValue(Longint(TFPReportExportCanvas.BGRToRGB(lDialog.Color)));
+  finally
+    lDialog.Free;
+  end;
+end;
+
 function TFPreportColorPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;
 
 Var
   lclColor : TColor;
 
 begin
-  lclColor:=TFPReportExportCanvas.RGBtoBGR(UInt32(OrdValue));
+  if TFPReportColor(OrdValue)=fpReport.clNone then
+    lclColor:=Graphics.clNone
+  else
+    lclColor:=TFPReportExportCanvas.RGBtoBGR(UInt32(OrdValue));
   Result:=inherited OrdValueToVisualValue(lclColor);
 end;
 
 procedure TFPreportColorPropertyEditor.SetValue(const NewValue: ansistring);
 
 var
-  CValue: Longint;
+  lclColor: TColor;
 
 begin
-  if IdentToColor(NewValue, CValue) then
-    SetOrdValue(Longint(TFPReportExportCanvas.BGRToRGB(TColor(CValue))))
+  lclColor:=StringToColor(NewValue);
+  if (lclColor=Graphics.clNone) or (lclColor=Graphics.clDefault) then
+    SetOrdValue(Longint(fpReport.clNone))
   else
-    inherited SetValue(NewValue);
+    SetOrdValue(Longint(TFPReportExportCanvas.BGRToRGB(lclColor)));
 end;
 
 { TReportFontNamePropertyEditor }
