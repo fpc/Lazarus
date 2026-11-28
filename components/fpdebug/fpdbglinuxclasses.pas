@@ -942,14 +942,22 @@ function TDbgLinuxProcess.CheckForConsoleOutput(ATimeOutMs: integer): integer;
 Var
   f: TfdSet;
   sleepytime: ttimeval;
+  e: LongInt;
 begin
   if FMasterPtyFd = -1 then
-    exit(0);
+    exit(-1);
   sleepytime.tv_sec := ATimeOutMs div 1000;
   sleepytime.tv_usec := (ATimeOutMs mod 1000)*1000;
   FpFD_ZERO(f);
   fpFD_SET(FMasterPtyFd,f);
   result := fpselect(FMasterPtyFd+1,@f,nil,nil,@sleepytime);
+  if Result < 0 then begin
+    e := fpgeterrno;
+    if e = ESysEINTR then
+      Result := 0
+    else
+      debugln(DBG_VERBOSE, ['CheckForConsoleOutput error: ',e]);
+  end;
 end;
 
 function TDbgLinuxProcess.GetConsoleOutput: string;
