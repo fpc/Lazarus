@@ -1481,11 +1481,14 @@ end;
 function TGtk3WidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
 var
   bFill, bBorder: Boolean;
+  R: TRect;
 begin
   if not IsValidDC(DC) then exit(False);
+  R := NormalizeRect(Rect(x1, y1, x2, y2));
+  if IsRectEmpty(R) then exit(True);
   bFill := (TGtk3DeviceContext(DC).CurrentBrush.Style <> BS_NULL);
   bBorder := TGtk3DeviceContext(DC).CurrentPen.Style <> psClear;
-  TGtk3DeviceContext(DC).drawEllipse(x1, y1, x2 - x1 - 1, y2 - y1 - 1, bFill, bBorder);
+  TGtk3DeviceContext(DC).drawEllipse(R.Left, R.Top, R.Right - R.Left - 1, R.Bottom - R.Top - 1, bFill, bBorder);
   Result := True;
 end;
 

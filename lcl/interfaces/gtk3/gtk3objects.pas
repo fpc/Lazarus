@@ -3391,14 +3391,36 @@ end;
 procedure TGtk3DeviceContext.drawEllipse(x, y, w, h: Integer; AFill, ABorder: Boolean);
 var
   scale_x, scale_y: Double;
-  DevX, DevY: Integer;
+  DevX, DevY, DevX2, DevY2: Integer;
 begin
   EnsureDefaultOperator;
 
   DevX := LToDX(x);
   DevY := LToDY(y);
-  scale_x := (LToDX(x + w) - DevX) / 2.0;
-  scale_y := (LToDY(y + h) - DevY) / 2.0;
+  DevX2 := LToDX(x + w);
+  DevY2 := LToDY(y + h);
+  scale_x := (DevX2 - DevX) / 2.0;
+  scale_y := (DevY2 - DevY) / 2.0;
+
+  if (scale_x = 0) or (scale_y = 0) then
+  begin
+    if ABorder and ((scale_x <> 0) or (scale_y <> 0)) then
+    begin
+      ApplyPen;
+      cairo_new_path(pcr);
+      if scale_x = 0 then
+      begin
+        cairo_move_to(pcr, DevX + PixelOffset, Min(DevY, DevY2));
+        cairo_line_to(pcr, DevX + PixelOffset, Max(DevY, DevY2) + 1);
+      end else
+      begin
+        cairo_move_to(pcr, Min(DevX, DevX2), DevY + PixelOffset);
+        cairo_line_to(pcr, Max(DevX, DevX2) + 1, DevY + PixelOffset);
+      end;
+      cairo_stroke(pcr);
+    end;
+    exit;
+  end;
 
   cairo_save(pcr);
   cairo_translate(pcr, DevX + scale_x + PixelOffset, DevY + scale_y + PixelOffset);
