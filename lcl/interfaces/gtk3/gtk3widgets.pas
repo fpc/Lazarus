@@ -1399,6 +1399,7 @@ var
   ATargetWidget: TGtk3Widget;
   AMsgActivate: TLMActivate;
   AHandled: Boolean;
+  ABlockTreeViewHover: Boolean;
 begin
   Result := gtk_false;
   if (Data = nil) or (TGtk3Widget(Data).LCLObject = nil) then
@@ -1482,7 +1483,14 @@ begin
         if Widget = TGtk3Widget(Data).Widget then
           exit;
       end;
+      ABlockTreeViewHover := (TObject(Data) is TGtk3ListView) and TGtk3ListView(Data).IsTreeView and
+        (Widget = TGtk3Widget(Data).GetContainerWidget) and
+        (Event^.motion.state * [GDK_BUTTON1_MASK, GDK_BUTTON2_MASK, GDK_BUTTON3_MASK,
+          GDK_BUTTON4_MASK, GDK_BUTTON5_MASK] = []) and
+        (Event^.motion.window <> PGtkTreeView(Widget)^.get_bin_window);
       Result := TGtk3Widget(Data).GtkEventMouseMove(Widget, Event);
+      if ABlockTreeViewHover then
+        Result := True;
     end;
   GDK_BUTTON_PRESS:
     begin
