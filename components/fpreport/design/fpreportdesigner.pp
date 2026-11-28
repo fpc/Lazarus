@@ -124,8 +124,6 @@ Var
   J : TFPJSONReport;
 
 begin
-  F.Report:=TFPReport(FReport);
-  F.DesignOptions:=Self.Options;
   // We need to save the design to the JSON
   If (Report is TFPJSONReport) and (csDesigning in Report.ComponentState) then
     begin
@@ -137,6 +135,8 @@ begin
       end;
     F.OnSaveReport:=@DoSaveDesignJSON;
     end;
+  F.Report:=TFPReport(FReport);
+  F.DesignOptions:=Self.Options;
   if Caption<>'' then
     F.Caption:=Caption;
 end;
